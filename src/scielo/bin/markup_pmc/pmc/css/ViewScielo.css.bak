@@ -1,0 +1,75 @@
+/* sobrescreve ViewNLM.css */
+
+
+.body{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+   font-size: 10pt;
+  }
+P {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+   font-size: 10pt;
+  }
+
+/* SciELO */
+.scielo-article-title {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 13pt;
+	margin: 10;
+}
+.scielo-article-other-titles {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 13pt;
+	margin: 20;
+}
+.scielo-article-other-titlesr2l {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+		font-size: 16pt;
+		text-align: right;
+	margin: 20;
+}
+.scielo-authors {
+		font-family: Verdana,Arial,Helvetica,sans-serif;
+		font-weight: bold;
+		font-size: 10pt;
+}
+.abstract-title {
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	font-weight: bold;
+	font-size: 10pt;
+	margin-top: 20pt;
+	margin-bottom: 20pt;
+}
+.abstractr2l {
+		font-size: 14pt;
+		text-align: right;
+		font-family: sans-serif
+}
+.fig {
+	text-align: center;
+}
+.foot {
+	font-size: 8pt;
+		font-family:arial;
+}
+.r2l {
+		font-size: 130%;
+		text-align: right;
+		font-family: sans-serif
+}
+.element {
+	color: red;
+}
+.warning {
+	color: red;
+}
+.limiter {
+	color: blue;
+}
+.xml {
+	background-color: #DDDDDD;
+}
+.destaque{
+	background-color: #FFFFFF;
+	color: #DDDDDD;
+}

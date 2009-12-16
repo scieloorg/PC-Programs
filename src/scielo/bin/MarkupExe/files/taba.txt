@@ -1,0 +1,15 @@
+48
+"Portuguese","English","Spanish","French","Italian","German","Japanese","Russian","Chinese","Unknown","Afrikaans","Arabic","Bulgarian","Czech","Danish","Esperanto","Greek","Hebrew","Hindi","Hungarian","Interlingua","Interlingue","Indonesian","Korean","Latin","Dutch","Norwergian","Polish","Romanian","Sanskrit","Serbo-Croat","Slovak","Slovenian","Swedish","Turkish","Ukrainian","Urdu","Português","Inglês","Espanhol","Francês","Italiano","Alemão","Tcheco","Japonês","Russo","Chinês","Unknown"
+"pt","en","es","fr","It","de","ja","ru","ch","zz","af","ar","bg","cs","da","eo","gr","he","hi","hu","Ia","Ie","In","ko","la","ni","no","pi","ro","sa","sh","sk","sn","sv","tr","uk","ur","pt","en","es","fr","it","de","cs","ja","ru","ch","zz"
+12
+"Not defined","coordinator","publisher","organizer","No definido","coordinador","editor","organizador","Não definido","coordenador","editor","organizador"
+"nd","coord","ed","org","nd","coord","ed","org","nd","coord","ed","org"
+6
+"No Descriptor","Health Science Descriptors","Ningun Descriptor","Descriptores en Ciencia de la Salud","Nenhum Descritor","Descritores em Ciência da Saúde"
+"nd","decs","nd","decs","nd","decs"
+6
+"main","secondary","principal","secundária","principal","secundaria"
+"m","s","m","s","m","s"
+4
+"iso 690/87 - international standard organization","nbr 6023/89 - associação nacional de normas técnicas","other standard","the vancouver group - uniform requirements for manuscripts submitted to biomedical journals"
+"iso690","nbr6023","other","vancouv"

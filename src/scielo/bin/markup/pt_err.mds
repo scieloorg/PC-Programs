@@ -1,0 +1,519 @@
+00101;ERRO. Recomendável sair da Marcação;frmArticle;ComboBox_IssueId_Change
+
+00102;ERRO. Recomendável sair da Marcação;frmArticle;ComboBox_Version_Change
+
+00103;ERRO. Recomendável sair da Marcação;frmArticle;CommandButton_Cancel_Click
+
+00104;ERRO. Recomendável sair da Marcação;frmArticle;CommandButton_Ok_Click
+
+00105;ERRO. Recomendável sair da Marcação;frmArticle;UserForm_Terminate
+
+00106;ERRO. Recomendável sair da Marcação;frmArticle;VerifyFrmArticle
+
+00107;ERRO. Recomendável sair da Marcação;frmArticle;VerifyDateValue
+
+00108;ERRO. Recomendável sair da Marcação;frmArticle;VerifyPII
+
+00109;ERRO. Recomendável sair da Marcação;frmArticle;VerifyORDER
+
+00110;ERRO. Recomendável sair da Marcação;frmArticle;VerifyVOLID
+
+00111;ERRO. Recomendável sair da Marcação;frmArticle;VerifyISSUENO
+
+00112;ERRO. Recomendável sair da Marcação;frmArticle;VerifyDATEISO
+
+00113;ERRO. Recomendável sair da Marcação;frmArticle;VerifySUPPLVOL
+
+00114;ERRO. Recomendável sair da Marcação;frmArticle;VerifySUPLLNO
+
+00115;ERRO. Recomendável sair da Marcação;frmArticle;VerifyTOCCODE
+
+00116;ERRO. Recomendável sair da Marcação;frmArticle;VerifyLANGUAGE
+
+00117;ERRO. Recomendável sair da Marcação;frmArticle;VerifyTYPE
+
+00118;ERRO. Recomendável sair da Marcação;frmArticle;VerifySTATUS
+
+00119;ERRO. Recomendável sair da Marcação;frmArticle;VerifyVERSION
+
+00120;ERRO. Recomendável sair da Marcação;frmArticle;VerifyDOCTOPIC
+
+00121;ERRO. Recomendável sair da Marcação;frmArticle;VerifyCCODE
+
+00122;ERRO. Recomendável sair da Marcação;frmArticle;VerifySTITLE
+
+00123;ERRO. Recomendável sair da Marcação;frmArticle;VerifySECCODE
+
+00124;ERRO. Recomendável sair da Marcação;frmArticle;VerifyISSN
+
+00125;ERRO. Recomendável sair da Marcação;frmArticle;VerifyPAGES
+
+00201;ERRO. Recomendável sair da Marcação;frmAttribute;CommandButton_Cancel_Click
+
+00202;ERRO. Recomendável sair da Marcação;frmAttribute;CommandButton_Ok_Click
+
+00203;ERRO. Recomendável sair da Marcação;frmAttribute;UserForm_Terminate
+
+00204;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyFrmAttribute
+
+00205;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyTB_A1
+
+00206;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyTB_A2
+
+00207;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyTB_A3
+
+00208;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyCB_A1
+
+00209;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyCB_A2
+
+00210;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyCB_A3
+
+00211;ERRO. Recomendável sair da Marcação;frmAttribute;TestAttribute
+
+00212;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyDateValue
+
+00213;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyDATEISO
+
+00214;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyROLE
+
+00215;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyRID
+
+00216;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyTYPE
+
+00217;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyLANGUAGE
+
+00218;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyID
+
+00219;ERRO. Recomendável sair da Marcação;frmAttribute;VerifySCHEME
+
+00220;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyFROM
+
+00221;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyTO
+
+00222;ERRO. Recomendável sair da Marcação;frmAttribute;VerifySTANDARD
+
+00223;ERRO. Recomendável sair da Marcação;frmAttribute;VerifyCOUNT
+
+00224;Error. Recomendável sair da Marcação;frmAttribute;VerifyNO
+
+00225;Error. Recomendável sair da Marcação;frmAttribute;VerifyORGNAME
+
+00226;Error. Recomendável sair da Marcação;frmAttribute;VerifyTB_A4
+
+00227;Error. Recomendável sair da Marcação;frmAttribute;VerifyTB_A5
+
+00228;Error. Recomendável sair da Marcação;frmAttribute;VerifyORGDIV1
+
+00229;Error. Recomendável sair da Marcação;frmAttribute;VerifyORGDIV2
+
+00230;Error. Recomendável sair da Marcação;frmAttribute;VerifyORGDIV3
+
+00301;ERRO. Recomendável sair da Marcação;frmConfig;CommandButton_cancel_Click
+
+00302;ERRO. Recomendável sair da Marcação;frmConfig;CommandButton_clear_Click
+
+00303;ERRO. Recomendável sair da Marcação;frmConfig;CommandButton_OK_Click
+
+00304;ERRO. Recomendável sair da Marcação;frmConfig;CommandButton_record_Click
+
+00305;ERRO. Recomendável sair da Marcação;frmConfig;UserForm_Initialize
+
+00306;ERRO. Recomendável sair da Marcação;frmConfig;UserForm_Terminate
+
+00307;ERRO. Recomendável sair da Marcação;frmConfig;VerifyFrmConfig
+
+00308;ERRO. Recomendável sair da Marcação;frmConfig;SetGlobalValues
+
+00401;ERRO. Recomendável sair da Marcação;frmReferenceMarkup;Form_Load
+
+00402;ERRO. Recomendável sair da Marcação;frmReferenceMarkup;FirstChoice_Click
+
+00403;ERRO. Recomendável sair da Marcação;frmReferenceMarkup;LastChoice_Click
+
+00404;ERRO. Recomendável sair da Marcação;frmReferenceMarkup;Markup_Click
+
+00405;ERRO. Recomendável sair da Marcação;frmReferenceMarkup;NextChoice_Click
+
+00406;ERRO. Recomendável sair da Marcação;frmReferenceMarkup;PreviousChoice_Click
+
+00407;ERRO. Recomendável sair da Marcação;frmReferenceMarkup;Undo_Click
+
+00408;ERRO. Recomendável sair da Marcação;frmReferenceMarkup;UserForm_Terminate
+
+10101;ERRO. Recomendável sair da Marcação;AutoMacros;AutoExec
+
+10102;ERRO. Recomendável sair da Marcação;AutoMacros;AutoOpen
+
+10103;ERRO. Recomendável sair da Marcação;AutoMacros;Delete_AddIn
+
+10104;ERRO. Recomendável sair da Marcação;AutoMacros;AutoClose
+
+10201;ERRO. Recomendável sair da Marcação;MainModule;Main
+
+10202;ERRO. Recomendável sair da Marcação;MainModule;SubStartMarkup
+
+10203;ERRO. Recomendável sair da Marcação;MainModule;SubStop
+
+10204;ERRO. Recomendável sair da Marcação;MainModule;SubChange
+
+10205;ERRO. Recomendável sair da Marcação;MainModule;SubDelete
+
+10206;ERRO. Recomendável sair da Marcação;MainModule;SubAutomatic
+
+10207;ERRO. Recomendável sair da Marcação;MainModule;SubElse
+
+10208;ERRO. Recomendável sair da Marcação;MainModule;SubHelp
+
+10209;ERRO. Recomendável sair da Marcação;MainModule;SubDown
+
+10210;ERRO. Recomendável sair da Marcação;MainModule;SubUp
+
+10211;ERRO. Recomendável sair da Marcação;MainModule;MainConfig
+
+10301;ERRO. Recomendável sair da Marcação;ReferenceMarkup;Markup
+
+10302;ERRO. Recomendável sair da Marcação;ReferenceMarkup;ShowResults
+
+20101;ERRO. Recomendável sair da Marcação;AllResultsTables;Index
+
+20102;ERRO. Recomendável sair da Marcação;AllResultsTables;Count
+
+20103;ERRO. Recomendável sair da Marcação;AllResultsTables;Class_Initialize
+
+20104;ERRO. Recomendável sair da Marcação;AllResultsTables;AddNew
+
+20105;ERRO. Recomendável sair da Marcação;AllResultsTables;Load
+
+20106;ERRO. Recomendável sair da Marcação;AllResultsTables;GetNext
+
+20107;ERRO. Recomendável sair da Marcação;AllResultsTables;GetCurrent
+
+20108;ERRO. Recomendável sair da Marcação;AllResultsTables;GetPrev
+
+20109;ERRO. Recomendável sair da Marcação;AllResultsTables;GetFirst
+
+20110;ERRO. Recomendável sair da Marcação;AllResultsTables;GetLast
+
+20111;ERRO. Recomendável sair da Marcação;AllResultsTables;GetItem
+
+20112;ERRO. Recomendável sair da Marcação;AllResultsTables;Clean
+
+20113;ERRO. Recomendável sair da Marcação;AllResultsTables;Class_Terminate
+
+20201;ERRO. Recomendável sair da Marcação;clsAttribute;InsertValue
+
+20202;ERRO. Recomendável sair da Marcação;clsAttribute;ReturnCount
+
+20301;ERRO. Recomendável sair da Marcação;clsAttrList;InsertAttr
+
+20302;ERRO. Recomendável sair da Marcação;clsAttrList;ReturnCount
+
+20303;ERRO. Recomendável sair da Marcação;clsAttrList;LoadAttributes
+
+20501;ERRO. Recomendável sair da Marcação;clsAutoMarkupList;LoadAutomata
+
+20601;ERRO. Recomendável sair da Marcação;clsBar;SetName
+
+20602;ERRO. Recomendável sair da Marcação;clsBar;SetUpLevel
+
+20603;ERRO. Recomendável sair da Marcação;clsBar;GetName
+
+20604;ERRO. Recomendável sair da Marcação;clsBar;GetUpLevel
+
+20605;ERRO. Recomendável sair da Marcação;clsBar;InsertButton
+
+20606;ERRO. Recomendável sair da Marcação;clsBar;LenListOfButton
+
+20701;ERRO. Recomendável sair da Marcação;clsButton;SetTag
+
+20702;ERRO. Recomendável sair da Marcação;clsButton;SetShortTag
+
+20703;ERRO. Recomendável sair da Marcação;clsButton;SetColor
+
+20704;ERRO. Recomendável sair da Marcação;clsButton;SetRepetitive
+
+20705;ERRO. Recomendável sair da Marcação;clsButton;SetAttrib
+
+20706;ERRO. Recomendável sair da Marcação;clsButton;SetDownLevel
+
+20707;ERRO. Recomendável sair da Marcação;clsButton;GetTag
+
+20708;ERRO. Recomendável sair da Marcação;clsButton;GetShortTag
+
+20709;ERRO. Recomendável sair da Marcação;clsButton;GetColor
+
+20710;ERRO. Recomendável sair da Marcação;clsButton;GetRepetitive
+
+20711;ERRO. Recomendável sair da Marcação;clsButton;GetAttrib
+
+20712;ERRO. Recomendável sair da Marcação;clsButton;GetDownLevel
+
+20801;ERRO. Recomendável sair da Marcação;clsConfig;GetResponsible
+
+20802;ERRO. Recomendável sair da Marcação;clsConfig;SetResponsible
+
+20803;ERRO. Recomendável sair da Marcação;clsConfig;GetLanguage
+
+20804;ERRO. Recomendável sair da Marcação;clsConfig;SetLanguage
+
+20805;ERRO. Recomendável sair da Marcação;clsConfig;SetFirstHour
+
+20806;ERRO. Recomendável sair da Marcação;clsConfig;GetFirstHour
+
+20807;ERRO. Recomendável sair da Marcação;clsConfig;SetLastHour
+
+20808;ERRO. Recomendável sair da Marcação;clsConfig;GetLastHour
+
+20809;ERRO. Recomendável sair da Marcação;clsConfig;GetMarkupTime
+
+20810;ERRO. Recomendável sair da Marcação;clsConfig;LoadPublicValues
+
+20901;ERRO. Recomendável sair da Marcação;clsErr;DisplayErr
+
+20902;ERRO. Recomendável sair da Marcação;clsErr;BuildErrLog
+
+21001;ERRO. Recomendável sair da Marcação;clsErrList;LoadErr
+
+21002;ERRO. Recomendável sair da Marcação;clsErrList;LastExit
+
+21003;ERRO. Recomendável sair da Marcação;clsErrList;BuildLog
+
+21101;ERRO. Recomendável sair da Marcação;clsInterface;ShowFrmArticle
+
+21102;ERRO. Recomendável sair da Marcação;clsInterface;EndFrmArticle
+
+21103;ERRO. Recomendável sair da Marcação;clsInterface;SetFrmArticle
+
+21104;ERRO. Recomendável sair da Marcação;clsInterface;ExitFrmArticle
+
+21105;ERRO. Recomendável sair da Marcação;clsInterface;SetDefaultValueAbbrArticle
+
+21106;ERRO. Recomendável sair da Marcação;clsInterface;ShowFrmAttribute
+
+21107;ERRO. Recomendável sair da Marcação;clsInterface;EndFrmAttribute
+
+21108;ERRO. Recomendável sair da Marcação;clsInterface;ExitFrmAttribute
+
+21109;ERRO. Recomendável sair da Marcação;clsInterface;SetDefaultValueAbbrAttribute
+
+21110;ERRO. Recomendável sair da Marcação;clsInterface;ShowFrmConfig
+
+21111;ERRO. Recomendável sair da Marcação;clsInterface;EndFrmConfig
+
+21112;ERRO. Recomendável sair da Marcação;clsInterface;BuildMarkupBar
+
+21113;ERRO. Recomendável sair da Marcação;clsInterface;DestroyMarkupBar
+
+21114;ERRO. Recomendável sair da Marcação;clsInterface;DisableWordBars
+
+21115;ERRO. Recomendável sair da Marcação;clsInterface;EnableWordBars
+
+21201;ERRO. Recomendável sair da Marcação;clsIssue;InsertSec
+
+21202;ERRO. Recomendável sair da Marcação;clsIssue;ReturnCount
+
+21301;ERRO. Recomendável sair da Marcação;clsIssueList;InsertIssue
+
+21302;ERRO. Recomendável sair da Marcação;clsIssueList;ReturnCount
+
+21303;ERRO. Recomendável sair da Marcação;clsIssueList;LoadIssue
+
+21401;ERRO. Recomendável sair da Marcação;clsLink;InsertAttr
+
+21402;ERRO. Recomendável sair da Marcação;clsLink;ReturnCount
+
+21501;ERRO. Recomendável sair da Marcação;clsListBar;InsertBar
+
+21502;ERRO. Recomendável sair da Marcação;clsListBar;LenListOfBar
+
+21503;ERRO. Recomendável sair da Marcação;clsListBar;LoadBars
+
+21504;ERRO. Recomendável sair da Marcação;clsListBar;CreateBars
+
+21505;ERRO. Recomendável sair da Marcação;clsListBar;KillBars
+
+21506;ERRO. Recomendável sair da Marcação;clsListBar;EnableBar
+
+21507;ERRO. Recomendável sair da Marcação;clsListBar;DisableBar
+
+21508;ERRO. Recomendável sair da Marcação;clsListBar;MoveBarDefault
+
+21509;ERRO. Recomendável sair da Marcação;clsListBar;MoveBarTop
+
+21510;ERRO. Recomendável sair da Marcação;clsListBar;BuildTempFile
+
+21511;ERRO. Recomendável sair da Marcação;clsListBar;LoadTempFile
+
+21601;ERRO. Recomendável sair da Marcação;clsLkList;InsertLink
+
+21602;ERRO. Recomendável sair da Marcação;clsLkList;ReturnCount
+
+21603;ERRO. Recomendável sair da Marcação;clsLkList;LoadLink
+
+21701;ERRO. Recomendável sair da Marcação;clsMarkup;InsertTag
+
+21702;ERRO. Recomendável sair da Marcação;clsMarkup;DeleteTag
+
+21703;ERRO. Recomendável sair da Marcação;clsMarkup;FormatText
+
+21704;ERRO. Recomendável sair da Marcação;clsMarkup;BuildStartTag
+
+21705;ERRO. Recomendável sair da Marcação;clsMarkup;BuildFinishTag
+
+21706;ERRO. Recomendável sair da Marcação;clsMarkup;DisableScreen
+
+21707;ERRO. Recomendável sair da Marcação;clsMarkup;EnableScreen
+
+21708;ERRO. Recomendável sair da Marcação;clsMarkup;ChangeAttribute
+
+21709;ERRO. Recomendável sair da Marcação;clsMarkup;VerifyHierarchy
+
+21710;ERRO. Recomendável sair da Marcação;clsMarkup;BuildLog
+
+21711;ERRO. Recomendável sair da Marcação;clsMarkup;UpLevel
+
+21712;ERRO. Recomendável sair da Marcação;clsMarkup;DownLevel
+
+21713;ERRO. Recomendável sair da Marcação;clsMarkup;DisplayBar
+
+21714;ERRO. Recomendável sair da Marcação;clsMarkup;VerifyDocumentHTMLFormat
+
+21715;ERRO. Recomendável sair da Marcação;clsMarkup;ChangeSTAGO_TAGC
+
+21716;ERRO. Recomendável sair da Marcação;clsMarkup;ChangeFields
+
+21717;ERRO. Recomendável sair da Marcação;clsMarkup;ChangeHtmlMarkup
+
+21718;ERRO. Recomendável sair da Marcação;clsMarkup;ChangeEntity
+
+21719;ERRO. Recomendável sair da Marcação;clsMarkup;FindTag
+
+21720;ERRO. Recomendável sair da Marcação;clsMarkup;FindText
+
+21721;ERRO. Recomendável sair da Marcação;clsMarkup;TestExistTag
+
+21722;ERRO. Recomendável sair da Marcação;clsMarkup;TestExistFloat
+
+21723;ERRO. Recomendável sair da Marcação;clsMarkup;TestFatherTag
+
+21724;ERRO. Recomendável sair da Marcação;clsMarkup;TestOwnSisterTag
+
+21801;ERRO. Recomendável sair da Marcação;clsToken;GetTokens
+
+22001;ERRO. Recomendável sair da Marcação;ResultsTable;Count
+
+22002;ERRO. Recomendável sair da Marcação;ResultsTable;AddNew
+
+22003;ERRO. Recomendável sair da Marcação;ResultsTable;GetItem
+
+22004;ERRO. Recomendável sair da Marcação;ResultsTable;Clean
+
+22005;ERRO. Recomendável sair da Marcação;ResultsTable;Class_Terminate
+
+22101;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Let Element
+
+22102;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Get Element
+
+22103;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Let SubElement
+
+22104;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Get SubElement
+
+22105;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Let StartPos
+
+22106;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Get StartPos
+
+22107;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Let EndPos
+
+22108;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Get EndPos
+
+22109;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Let Level
+
+22110;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Get Level
+
+22111;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Let Terminal
+
+22112;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Get Terminal
+
+22113;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Let AbsSTAGStartPos
+
+22114;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Get AbsSTAGStartPos
+
+22115;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Let AbsSTAGEndPos
+
+22116;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Get AbsSTAGEndPos
+
+22117;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Let AbsETAGStartPos
+
+22118;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Get AbsETAGStartPos
+
+22119;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Let AbsETAGEndPos
+
+22120;ERRO. Recomendável sair da Marcação;ResultsTableEntry;Get AbsETAGEndPos
+
+22201;ERRO. Recomendável sair da Marcação;Tag;Let Symbol
+
+22202;ERRO. Recomendável sair da Marcação;Tag;Get Symbol
+
+22203;ERRO. Recomendável sair da Marcação;Tag;Let Name
+
+22204;ERRO. Recomendável sair da Marcação;Tag;Get Name
+
+22205;ERRO. Recomendável sair da Marcação;Tag;Let Attributes
+
+22301;ERRO. Recomendável sair da Marcação;TagsTable;Count
+
+22302;ERRO. Recomendável sair da Marcação;TagsTable;AddNew
+
+22303;ERRO. Recomendável sair da Marcação;TagsTable;GetItem
+
+22304;ERRO. Recomendável sair da Marcação;TagsTable;Clean
+
+22305;ERRO. Recomendável sair da Marcação;TagsTable;Class_Terminate
+
+40001;ERRO. Recomendável sair da Marcação;clsMarkupRange;InsertTag
+
+40002;ERRO. Recomendável sair da Marcação;clsMarkupRange;DeleteTag
+
+40003;ERRO. Recomendável sair da Marcação;clsMarkupRange;FormatText
+
+40004;ERRO. Recomendável sair da Marcação;clsMarkupRange;BuildStartTag
+
+40005;ERRO. Recomendável sair da Marcação;clsMarkupRange;BuildFinishTag
+
+40006;ERRO. Recomendável sair da Marcação;clsMarkupRange;DisableScreen
+
+40007;ERRO. Recomendável sair da Marcação;clsMarkupRange;EnableScreen
+
+40008;ERRO. Recomendável sair da Marcação;clsMarkupRange;ChangeAttribute
+
+40009;ERRO. Recomendável sair da Marcação;clsMarkupRange;VerifyHierarchy
+
+40010;ERRO. Recomendável sair da Marcação;clsMarkupRange;BuildLog
+
+40011;ERRO. Recomendável sair da Marcação;clsMarkupRange;UpLevel
+
+40012;ERRO. Recomendável sair da Marcação;clsMarkupRange;DownLevel
+
+40013;ERRO. Recomendável sair da Marcação;clsMarkupRange;DisplayBar
+
+40014;ERRO. Recomendável sair da Marcação;clsMarkupRange;VerifyDocumentHTMLFormat
+
+40015;ERRO. Recomendável sair da Marcação;clsMarkupRange;ChangeSTAGO_TAGC
+
+40016;ERRO. Recomendável sair da Marcação;clsMarkupRange;ChangeFields
+
+40017;ERRO. Recomendável sair da Marcação;clsMarkupRange;ChangeHtmlMarkup
+
+40018;ERRO. Recomendável sair da Marcação;clsMarkupRange;ChangeEntity
+
+40019;ERRO. Recomendável sair da Marcação;clsMarkupRange;FindTag
+
+40020;ERRO. Recomendável sair da Marcação;clsMarkupRange;FindText
+
+40021;ERRO. Recomendável sair da Marcação;clsMarkupRange;TestExistTag
+
+40022;ERRO. Recomendável sair da Marcação;clsMarkupRange;TestExistFloat
+
+40023;ERRO. Recomendável sair da Marcação;clsMarkupRange;TestFatherTag
+
+40024;ERRO. Recomendável sair da Marcação;clsMarkupRange;TestOwnSisterTag

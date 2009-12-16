@@ -1,0 +1,11 @@
+300 0 mpl,|EV=|v300
+301 0 mpl,|DATE=|v301
+302 0 mpl,|TIME=|v302
+303 0 mpl,|LOGIN=|v303
+304 0 mpl,|ROLE=|v304
+305 0 mpl,|NEXTEV=|v305
+306 0 mpl,|NEXTLOGIN=|v306
+307 0 mpl,|NEXTROLE=|v307
+308 0 mpl,|STATUS=|v308
+40 0 mpl,|LANGUAGE=|v40
+2 0 mpl,|ID=|v40

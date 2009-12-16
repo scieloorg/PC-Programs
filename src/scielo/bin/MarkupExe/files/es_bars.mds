@@ -1,0 +1,705 @@
+start;nd
+article;Indica el inicio de un artículo;13;#FALSE#;#TRUE#;article
+text;Especifica los textos que no son artículos, como editoriales;13;#FALSE#;#TRUE#;textM
+
+article;start
+front;Identifica el inicio del front matter de un artículo;11;#FALSE#;#FALSE#;front
+down;front
+body;Identifica el inicio del body (el texto completo) de un artículo;11;#FALSE#;#FALSE#;
+back;Identifica el inicio del back matter de un artículo;11;#FALSE#;#FALSE#;back
+down;back
+
+textM;start
+titlegrp;Contiene los elementos del título de un documento;11;#FALSE#;#FALSE#;titlegrpText
+down;titlegrpText
+authgrp;Contiene los elementos para la identificación de los autores individuales o institucionales de un artículo;11;#FALSE#;#FALSE#;authgrpText
+down;authgrpText
+
+ifloat;nd
+aff;Identifica la institución de la cual el autor pertenence;14;#TRUE#;#TRUE#;aff
+down;aff
+ign;Texto ignorado por la marcación;14;#TRUE#;#FALSE#;
+table;Contiene los elementos para identificar una tabla en el cuerpo del texto;14;#TRUE#;#TRUE#;table
+down;table
+figgrp;Contiene los elementos que identificán las imágenes en el cuerpo de un texto;14;#TRUE#;#TRUE#;figgrp
+down;figgrp
+
+table;ifloat
+title;Identifica el título de un documento;14;#FALSE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;14;#FALSE#;#FALSE#;
+legend;Indica la leyenda de una tabla o de una imágene;14;#FALSE#;#FALSE#;
+
+figgrp;ifloat
+title;Identifica el título de un documento;14;#FALSE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;14;#FALSE#;#FALSE#;
+figref;Indicación de las imágenes en el texto;14;#FALSE#;#FALSE#;
+legend;Indica la leyenda de una tabla o de una imágene;14;#FALSE#;#FALSE#;
+
+aff;ifloat
+orgdiv;Identifica la división de una institución;14;#TRUE#;#FALSE#;
+city;Identifica el nombre de una ciudad;14;#FALSE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;14;#FALSE#;#FALSE#;
+country;Identifica el país;14;#FALSE#;#FALSE#;
+zipcode;Identifica el código de la dirección postal;14;#FALSE#;#FALSE#;
+email;Dirección electrónica;14;#FALSE#;#FALSE#;
+
+authgrpText;textM
+author;Contiene los elementos para la identificación de los autores individuales como nombre, apellido y tipo de responsabilidad;6;#TRUE#;#TRUE#;authorText
+down;authorText
+corpauth;Identifica los autores institucionales responsables por el contenido intelectual o artístico del trabajo;6;#TRUE#;#FALSE#;corpauthText
+down;corpauthText
+
+authorText;authgrpText
+fname;Identifica los nombres iniciales de un autor individual;9;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;9;#FALSE#;#FALSE#;
+
+corpauthText;authgrpText
+orgname;Identifica el nombre de una institución o organización;10;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;10;#FALSE#;#FALSE#;
+
+titlegrpText;textM
+title;Identifica el título de un documento;6;#TRUE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;6;#TRUE#;#FALSE#;
+
+front;article
+titlegrp; Contiene los elementos del título de un documento;6;#FALSE#;#FALSE#;titlegrpFront
+down;titlegrpFront
+authgrp; Contiene los elementos para la identificación de los autores individuales como nombre, apellido y el tipo de responsabilidad;6;#FALSE#;#FALSE#;authgrpFront
+down;authgrpFront
+bibcom;Contiene los elementos complementares para la identificación del artículo, como el resumen y las palabras claves;6;#FALSE#;#FALSE#;bibcomFront
+down;bibcomFront
+
+titlegrpFront;front
+title;Identifica el título de un documento;9;#TRUE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;9;#TRUE#;#FALSE#;
+
+authgrpFront;front
+author;Contiene los elementos para la identificación de los autores individuales como nombre, apellido y tipo de responsabilidad;9;#TRUE#;#TRUE#;authorFront
+down;authorFront
+corpauth;Identifica los autores institucionales responsables por el contenido intelectual o artístico del trabajo;9;#TRUE#;#FALSE#;corpauthFront
+down;corpauthFront
+
+authorFront;authgrpFront
+fname;Identifica los nombres iniciales de un autor individual;10;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;10;#FALSE#;#FALSE#;
+
+corpauthFront;authgrpFront
+orgname;Identifica el nombre de una institución o organización;10;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;10;#FALSE#;#FALSE#;
+
+bibcomFront;front
+abstract;Identifica el resumen del artículo;9;#TRUE#;#TRUE#;
+keygrp;Contiene los elementos para la descripción temática del documento;9;#TRUE#;#TRUE#;keygrpBibcom
+down;keygrpBibcom
+confgrp;Contiene los elementos para la identificación de un evento como conferencia, seminario, congreso, etc.;9;#FALSE#;#FALSE#;confgrpBibcom
+down;confgrpBibcom
+report;Contiene informaciones sobre el informe o proyecto, de lo cual el artículo es un producto parcial o final;9;#FALSE#;#FALSE#;reportBibcom
+down;reportBibcom
+thesgrp;Contiene los elementos para la identificación de una tesis o disertación o aún de un producto de una tesis o disertación;9;#FALSE#;#FALSE#;thesgrpBibcom
+down;thesgrpBibcom
+hist;Identifica el histórico de la publicación de un artículo en una revista, conteniendo la fecha de llegada, de acceptación o de revisión;9;#FALSE#;#FALSE#;histBibcom
+down;histBibcom
+title;Identifica el título de un documento;9;#TRUE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;9;#TRUE#;#FALSE#;
+
+keygrpBibcom;bibcomFront
+keyword;Identifica las palabras claves de un documento;10;#TRUE#;#TRUE#;
+subkey;Identifica los calificadores de las palabras claves o descriptores;10;#TRUE#;#TRUE#;
+dperiod;Identifica el período del tiempo relatado en el contenido del documento;10;#TRUE#;#TRUE#;
+
+confgrpBibcom;bibcomFront
+sponsor;Identifica la institución financiadora del proyecto o evento;10;#TRUE#;#FALSE#;sponsorBibcom
+down;sponsorBibcom
+confname;Identifica el nombre de un evento como conferencia, seminario, congreso, etc.;10;#TRUE#;#FALSE#;
+no;Identifica todos los números de la estructura de un artículo, su posición en la estructura es que va a definir su característica;10;#TRUE#;#FALSE#;
+date;Identifica una fecha;10;#TRUE#;#TRUE#;
+city;Identifica el nombre de una ciudad;10;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;10;#TRUE#;#FALSE#;
+country;Identifica el país;10;#TRUE#;#FALSE#;
+
+sponsorBibcom;confgrpBibcom
+orgname;Identifica el nombre de una institución o organización;15;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;15;#FALSE#;#FALSE#;
+
+reportBibcom;bibcomFront
+rsponsor;Identifica la institución financiadora del proyecto o evento;10;#TRUE#;#FALSE#;rsponsorBibcom
+down;rsponsorBibcom
+projname;Identifica el nombre del proyecto de lo cual el artículo es un producto parcial o final;10;#FALSE#;#FALSE#;
+
+rsponsorBibcom;reportBibcom
+orgname;Identifica el nombre de una institución o organización;15;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;15;#FALSE#;#FALSE#;
+contract;Identifica un codigo numerico o alfanumerico de la institución financiadora de un proyecto, de lo cual el artículo es un producto final o parcial;15;#TRUE#;#FALSE#;
+
+thesgrpBibcom;bibcomFront
+city;Identifica el nombre de una ciudad;10;#FALSE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;10;#FALSE#;#FALSE#;
+country;Identifica el país;10;#FALSE#;#FALSE#;
+date;Identifica una fecha;10;#FALSE#;#TRUE#;
+degree;Identifica el grado de una disertación o tesis académica, como una maestria, un doctorado o un pós-grado, etc.;10;#FALSE#;#FALSE#;
+orgname;Identifica el nombre de una institución o organización;10;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;10;#FALSE#;#FALSE#;
+
+histBibcom;bibcomFront
+received;Identifica la fecha en la cual el artículo fue recebido por la revista para publicación;10;#FALSE#;#TRUE#;
+revised;Identifica la fecha en la cual el artículo fue revisado por la revista para publicación;10;#TRUE#;#TRUE#;
+accepted;Identifica la fecha en la cual el artículo fue accepto por la revista para publicación;10;#FALSE#;#TRUE#;
+
+back;article
+bbibcom;Contiene los elementos complementares para la identificación del artículo, como el resumen y las palabras claves;6;#TRUE#;#FALSE#;bbibcomBack
+down;bbibcomBack
+vancouv;Contiene los elementos de una bibliografía para la referenciación de acuerdo con el estandard de Vancouver;6;#FALSE#;#TRUE#;vancouv
+down;vancouv
+iso690;Contiene los elementos de una bibliografía para la referenciación de acuerdo con el estandard ISO 690/87;6;#FALSE#;#TRUE#;iso690
+down;iso690
+abnt6023;Contiene los elementos de una bibliografía para la referenciación de acuerdo con el estandard NBR 6023/89 da ABNT;6;#FALSE#;#TRUE#;abnt6023
+down;abnt6023
+other;Contiene los elementos de una bibliografía para la referenciación que no están de acuerdo con los estandares adoptados por el Proyecto FAPESP/BIREME;6;#FALSE#;#TRUE#;other
+down;other
+
+bbibcomBack;back
+abstract;Identifica el resumen del artículo;9;#TRUE#;#TRUE#;
+keygrp;Contiene los elementos para la descripción temática del documento;9;#TRUE#;#TRUE#;keygrpBbibcom
+down;keygrpBbibcom
+confgrp;Contiene los elementos para la identificación de un evento como conferencia, seminario, congreso, etc.;9;#FALSE#;#FALSE#;confgrpBbibcom
+down;confgrpBbibcom
+report;Contiene informaciones sobre el informe o proyecto, de lo cual el artículo es un producto parcial o final;9;#FALSE#;#FALSE#;reportBbibcom
+down;reportBbibcom
+thesgrp;Contiene los elementos para la identificación de una tesis o disertación o aún de un producto de una tesis o disertación;9;#FALSE#;#FALSE#;thesgrpBbibcom
+down;thesgrpBbibcom
+hist;Identifica el histórico de la publicación de un artículo en una revista, conteniendo la fecha de llegada, de acceptación o de revisión;9;#FALSE#;#FALSE#;histBbibcom
+down;histBbibcom
+title;Identifica el título de un documento;9;#TRUE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;9;#TRUE#;#FALSE#;
+
+keygrpBbibcom;bbibcomBack
+keyword;Identifica las palabras claves de un documento;10;#TRUE#;#TRUE#;
+subkey;Identifica los calificadores de las palabras claves o descriptores;10;#TRUE#;#TRUE#;
+dperiod;Identifica el período del tiempo relatado en el contenido del documento;10;#TRUE#;#TRUE#;
+
+confgrpBbibcom;bbibcomBack
+sponsor;Identifica la institución financiadora del proyecto o evento;10;#TRUE#;#FALSE#;sponsorBbibcom
+down;sponsorBbibcom
+confname;Identifica el nombre de un evento como conferencia, seminario, congreso, etc.;10;#TRUE#;#FALSE#;
+no;Identifica todos los números de la estructura de un artículo, su posición en la estructura es que va a definir su característica;10;#TRUE#;#FALSE#;
+date;Identifica una fecha;10;#TRUE#;#TRUE#;
+city;Identifica el nombre de una ciudad;10;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;10;#TRUE#;#FALSE#;
+country;Identifica el país;10;#TRUE#;#FALSE#;
+
+sponsorBbibcom;confgrpBbibcom
+orgname;Identifica el nombre de una institución o organización;15;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;15;#FALSE#;#FALSE#;
+
+reportBbibcom;bbibcomBack
+rsponsor;Identifica la institución financiadora del proyecto o evento;10;#TRUE#;#FALSE#;rsponsorBbibcom
+down;rsponsorBbibcom
+projname;Identifica el nombre del proyecto de lo cual el artículo es un producto parcial o final;10;#FALSE#;#FALSE#;
+
+rsponsorBbibcom;reportBbibcom
+orgname;Identifica el nombre de una institución o organización;15;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;15;#FALSE#;#FALSE#;
+contract;Identifica un codigo numerico o alfanumerico de la institución financiadora de un proyecto, de lo cual el artículo es un producto final o parcial;15;#TRUE#;#FALSE#;
+
+thesgrpBbibcom;bbibcomBack
+city;Identifica el nombre de una ciudad;10;#FALSE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;10;#FALSE#;#FALSE#;
+country;Identifica el país;10;#FALSE#;#FALSE#;
+date;Identifica una fecha;10;#FALSE#;#TRUE#;
+degree;Identifica el grado de una disertación o tesis académica, como una maestria, un doctorado o un pós-grado, etc.;10;#FALSE#;#FALSE#;
+orgname;Identifica el nombre de una institución o organización;10;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;10;#FALSE#;#FALSE#;
+
+histBbibcom;bbibcomBack
+received;Identifica la fecha en la cual el artículo fue recebido por la revista para publicación;10;#FALSE#;#TRUE#;
+revised;Identifica la fecha en la cual el artículo fue revisado por la revista para publicación;10;#TRUE#;#TRUE#;
+accepted;Identifica la fecha en la cual el artículo fue accepto por la revista para publicación;10;#FALSE#;#TRUE#;
+
+other;back
+ocitat;Identifica el principio de una cita bibliografíca en una bibliografía;9;#TRUE#;#FALSE#;ocitat
+down;ocitat
+
+ocitat;other
+no;Identifica todos los números de la estructura de un artículo, su posición en la estructura es que va a definir su característica;10;#FALSE#;#FALSE#;
+ocontrib;Contiene elementos, como el autor y el título, para la descripción bibliográfica de un trabajo que es parte de una revista o de un libro, como artículos de revistas y capítulos de libros;10;#TRUE#;#FALSE#;ocontrib
+down;ocontrib
+omonog;Contiene los elementos principales para la identificación de una monografia;10;#FALSE#;#FALSE#;omonog
+down;omonog
+oiserial;Contiene elementos de identificación específica de una publicación seriada o periódica;10;#FALSE#;#FALSE#;oiserial
+down;oiserial
+confgrp;Contiene los elementos para la identificación de un evento como conferencia, seminario, congreso, etc.;10;#FALSE#;#FALSE#;confgrpOcitat
+down;confgrpOcitat
+
+ocontrib;ocitat
+oauthor;Contiene los elementos para la identificación de los autores individuales como nombre, apellido y tipo de responsabilidad;15;#TRUE#;#TRUE#;oauthorOcontrib
+down;oauthorOcontrib
+ocorpaut;Identifica los autores institucionales responsables por el contenido intelectual o artístico del trabajo;15;#TRUE#;#FALSE#;ocorpautContrib
+down;ocorpautContrib
+et-al;Indica que la cita bibliográfica contiene autores que no fueran citados;15;#FALSE#;#FALSE#;
+title;Identifica el título de un documento;15;#FALSE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;15;#FALSE#;#FALSE#;
+date;Identifica una fecha;15;#FALSE#;#TRUE#;
+pages;Identifica las páginas de un artículo o de parte de una publicación en una cita bibliográfica;15;#FALSE#;#FALSE#;
+
+oauthorOcontrib;ocontrib
+fname;Identifica los nombres iniciales de un autor individual;2;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;2;#FALSE#;#FALSE#;
+anonym;Indica que la obra es de un autor desconocido;2;#FALSE#;#FALSE#;
+previous;Indica que el autor de la cita bibliográfica es el mismo autor citado en la cita anterior;2;#FALSE#;#FALSE#;
+
+ocorpautContrib;ocontrib
+orgname;Identifica el nombre de una institución o organización;2;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;2;#FALSE#;#FALSE#;
+previous;Indica que el autor de la cita bibliográfica es el mismo autor citado en la cita anterior;2;#FALSE#;#FALSE#;
+
+omonog;ocitat
+oauthor;Contiene los elementos para la identificación de los autores individuales como nombre, apellido y tipo de responsabilidad;15;#TRUE#;#TRUE#;oauthorOmonog
+down;oauthorOmonog
+ocorpaut;Identifica los autores institucionales responsables por el contenido intelectual o artístico del trabajo;15;#TRUE#;#FALSE#;ocorpautOmonog
+down;ocorpautOmonog
+et-al;Indica que la cita bibliográfica contiene autores que no fueran citados;15;#FALSE#;#FALSE#;
+title;Identifica el título de un documento;15;#FALSE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;15;#FALSE#;#FALSE#;
+confgrp;Contiene los elementos para la identificación de un evento como conferencia, seminario, congreso, etc.;15;#FALSE#;#FALSE#;confgrpOmonog
+down;confgrpOmonog
+thesis;Contiene los elementos específicos para la identificación de una disertación o una tesis académica, en una cita bibliográfica;15;#FALSE#;#FALSE#;thesisOmonog
+down;thesisOmonog
+date;Identifica una fecha;15;#FALSE#;#TRUE#;
+pages;Identifica las páginas de un artículo o de parte de una publicación en una cita bibliográfica;15;#FALSE#;#FALSE#;
+edition;Identifica el número de la edición de una obra;2;#TRUE#;#FALSE#;
+city;Identifica el nombre de una ciudad;2;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;2;#TRUE#;#FALSE#;
+country;Identifica el país;2;#TRUE#;#FALSE#;
+pubname;Identifica el nombre de la casa publicadora de un documento;2;#TRUE#;#FALSE#;
+extent;Identifica la extensión de un trabajo como el número de páginas o volumenes de una obra;2;#TRUE#;#FALSE#;
+coltitle;Identifica el título de una colección o série de la cual una obra hace parte;2;#TRUE#;#FALSE#;
+volid;Identifica el número del volumen de un documento;2;#TRUE#;#FALSE#;
+isbn;Identifica el Internacional Standard Book Number (ISBN);2;#TRUE#;#FALSE#;
+othinfo;Contiene datos que no pueden ser identificados por los otros elementos de la referencia bibliográfica;2;#TRUE#;#FALSE#;
+
+oauthorOmonog;omonog
+fname;Identifica los nombres iniciales de un autor individual;2;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;2;#FALSE#;#FALSE#;
+anonym;Indica que la obra es de un autor desconocido;2;#FALSE#;#FALSE#;
+previous;Indica que el autor de la cita bibliográfica es el mismo autor citado en la cita anterior;2;#FALSE#;#FALSE#;
+
+ocorpautOmonog;omonog
+orgname;Identifica el nombre de una institución o organización;2;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;2;#FALSE#;#FALSE#;
+previous;Indica que el autor de la cita bibliográfica es el mismo autor citado en la cita anterior;2;#FALSE#;#FALSE#;
+
+confgrpOmonog;omonog
+sponsor;Identifica la institución financiadora del proyecto o evento;2;#TRUE#;#FALSE#;sponsorOmonog
+down;sponsorOmonog
+confname;Identifica el nombre de un evento como conferencia, seminario, congreso, etc.;2;#TRUE#;#FALSE#;
+no;Identifica todos los números de la estructura de un artículo, su posición en la estructura es que va a definir su característica;2;#TRUE#;#FALSE#;
+date;Identifica una fecha;2;#TRUE#;#TRUE#;
+city;Identifica el nombre de una ciudad;2;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;2;#TRUE#;#FALSE#;
+country;Identifica el país;2;#TRUE#;#FALSE#;
+
+sponsorOmonog;confgrpOmonog
+orgname;Identifica el nombre de una institución o organización;7;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;7;#FALSE#;#FALSE#;
+
+thesisOmonog;omonog
+city;Identifica el nombre de una ciudad;2;#FALSE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;2;#FALSE#;#FALSE#;
+country;Identifica el país;2;#FALSE#;#FALSE#;
+date;Identifica una fecha;2;#FALSE#;#TRUE#;
+degree;Identifica el grado de una disertación o tesis académica, como una maestria, un doctorado o un pós-grado, etc.;2;#FALSE#;#FALSE#;
+orgname;Identifica el nombre de una institución o organización;2;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;2;#FALSE#;#FALSE#;
+
+oiserial;ocitat
+sertitle;Identifica el título de una publicación seriada o periódica;15;#FALSE#;#FALSE#;
+stitle;Contiene el formato corto y estandarizado del titulo de una revista o de una publicación seriada;15;#FALSE#;#FALSE#;
+isstitle;Identifica el título de un número de una publicación seriada o periódica;15;#FALSE#;#FALSE#;
+othinfo;Contiene datos que no pueden ser identificados por los otros elementos de la referencia bibliográfica;15;#FALSE#;#FALSE#;
+city;Identifica el nombre de una ciudad;2;#TRUE#;#FALSE#;
+country;Identifica el país;2;#TRUE#;#FALSE#;
+pubname;Identifica el nombre de la casa publicadora de un documento;2;#TRUE#;#FALSE#;
+volid;Identifica el número del volumen de un documento;2;#TRUE#;#FALSE#;
+issueno;Identifica el número de un fascículo;2;#TRUE#;#FALSE#;
+suppl;Identifica el número del suplemento de una revista;2;#TRUE#;#FALSE#;
+pages;Identifica las páginas de un artículo o de parte de una publicación en una cita bibliográfica;2;#TRUE#;#FALSE#;
+extent;Identifica la extensión de un trabajo como el número de páginas o volumenes de una obra;2;#TRUE#;#FALSE#;
+date;Identifica una fecha;2;#TRUE#;#TRUE#;
+issn;Identifica el Internacional Standard Serial  Number (ISSN);2;#TRUE#;#FALSE#;
+
+confgrpOcitat;ocitat
+sponsor;Identifica la institución financiadora del proyecto o evento;2;#TRUE#;#FALSE#;sponsorOcitat
+down;sponsorOcitat
+confname;Identifica el nombre de un evento como conferencia, seminario, congreso, etc.;2;#TRUE#;#FALSE#;
+no;Identifica todos los números de la estructura de un artículo, su posición en la estructura es que va a definir su característica;2;#TRUE#;#FALSE#;
+date;Identifica una fecha;2;#TRUE#;#TRUE#;
+city;Identifica el nombre de una ciudad;2;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;2;#TRUE#;#FALSE#;
+country;Identifica el país;2;#TRUE#;#FALSE#;
+
+sponsorOcitat;confgrpOcitat
+orgname;Identifica el nombre de una institución o organización;7;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;7;#FALSE#;#FALSE#;
+
+vancouv;back
+vcitat;Identifica el princípio de una cita bibliográfica en una bibliografía;9;#TRUE#;#FALSE#;vcitat
+down;vcitat
+
+vcitat;vancouv
+no;Identifica todos los números de la estructura de un artículo, su posición en la estructura es que va a definir su característica;10;#FALSE#;#FALSE#;
+vcontrib;Contiene elementos, como el autor y el título, para la descripción bibliográfica de un trabajo que es parte de una revista o de un libro, como artículos de revistas o capítulos de libros;10;#FALSE#;#FALSE#;vcontrib
+down;vcontrib
+viserial;Contiene elementos de identificación específicos de una publicación seriada o periódica;10;#FALSE#;#FALSE#;viserial
+down;viserial
+vmonog;Contiene los elementos principales para la identificación de una monografia;10;#FALSE#;#FALSE#;vmonog
+down;vmonog
+
+vcontrib;vcitat
+author;Contiene los elementos para la identificación de los autores individuales como nombre, apellido y tipo de responsabilidad;15;#TRUE#;#TRUE#;authorVcontrib
+down;authorVcontrib
+corpauth;Identifica los autores institucionales responsables por el contenido intelectual o artístico del trabajo;15;#TRUE#;#FALSE#;corpauthVcontrib
+down;corpauthVcontrib
+et-al;Indica que la cita bibliográfica contiene autores que no fueran citados;15;#FALSE#;#FALSE#;
+vtitle;Identifica un conjunto de título de un documento en una cita bibliográfica en el formato de Vancouver;15;#FALSE#;#FALSE#;vtitleVcontrib
+down;vtitleVcontrib
+
+authorVcontrib;vcontrib
+fname;Identifica los nombres iniciales de un autor individual;2;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;2;#FALSE#;#FALSE#;
+
+corpauthVcontrib;vcontrib
+orgname;Identifica el nombre de una institución o organización;2;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;2;#FALSE#;#FALSE#;
+
+vtitleVcontrib;vcontrib
+title;Identifica el título de un documento;2;#FALSE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;2;#FALSE#;#FALSE#;
+tp;Indica el tipo de publicación en una cita bibliográfica como, por ejemplo, un editorial o una revisión de literatura;2;#FALSE#;#FALSE#;
+
+viserial;vcitat
+vstitle;Contiene el formato corto y estandarizado del titulo de una revista o de una publicación seriada;15;#FALSE#;#FALSE#;vstitle
+down;vstitle
+date;Identifica una fecha;15;#TRUE#;#TRUE#;
+inpress;Indica que la cita aún no fue publicada;15;#TRUE#;#FALSE#;
+volid;Identifica el número del volumen de un documento;15;#TRUE#;#FALSE#;
+issueno;Identifica el número de un fascículo;15;#TRUE#;#FALSE#;
+suppl;Identifica el número del suplemento de una revista;15;#TRUE#;#FALSE#;
+part;Indica la parte de una cita bibliográfica;15;#TRUE#;#FALSE#;
+cited;Usado en el estandard de Vancouver para la referenciación de artículos electrónicos, para identificar la fecha en que el artículo fue accesado;15;#TRUE#;#TRUE#;
+extent;Identifica la extensión de un trabajo como el número de páginas o volumenes de una obra;15;#TRUE#;#FALSE#;
+pages;Identifica las páginas de un artículo o de parte de una publicación en una cita bibliográfica;15;#TRUE#;#FALSE#;
+url;Indica, en una cita bibliográfica, la dirección electrónica del documento;15;#TRUE#;#FALSE#;
+
+vstitle;viserial
+stitle;Contiene el formato corto y estandarizado del titulo de una revista o de una publicación seriada;2;#FALSE#;#FALSE#;
+tp;Indica el tipo de publicación en una cita bibliográfica como, por ejemplo, un editorial o una revisión de literatura;2;#FALSE#;#FALSE#;
+
+vmonog;vcitat
+author;Contiene los elementos para la identificación de los autores individuales como nombre, apellido y tipo de responsabilidad;15;#TRUE#;#TRUE#;authorVmonog
+down;authorVmonog
+corpauth;Identifica los autores institucionales responsables por el contenido intelectual o artístico del trabajo;15;#TRUE#;#FALSE#;corpautVmonog
+down;corpautVmonog
+et-al;Indica que la cita bibliográfica contiene autores que no fueran citados;15;#FALSE#;#FALSE#;
+vtitle;Identifica un conjunto de título de un documento en una cita bibliográfica en el formato de Vancouver;15;#FALSE#;#TRUE#;vtitleVmonog
+down;vtitleVmonog
+edition;Identifica el número de la edición de una obra;15;#TRUE#;#FALSE#;
+version;Identifica si la publicación está en el formato electrónico o en el formato impreso;15;#TRUE#;#FALSE#;
+confgrp;Contiene los elementos para la identificación de un evento como conferencia, seminario, congreso, etc.;15;#TRUE#;#FALSE#;confgrpVmonog
+down;confgrpVmonog
+city;Identifica el nombre de una ciudad;15;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;15;#TRUE#;#FALSE#;
+pubname;Identifica el nombre de la casa publicadora de un documento;15;#TRUE#;#FALSE#;
+inpress;Indica que la cita aún no fue publicada;15;#TRUE#;#FALSE#;
+date;Identifica una fecha;15;#TRUE#;#TRUE#;
+pages;Identifica las páginas de un artículo o de parte de una publicación en una cita bibliográfica;15;#TRUE#;#FALSE#;
+report;Contiene informaciones sobre el informe o proyecto, de lo cual el artículo es un producto parcial o final;15;#TRUE#;#FALSE#;reportVmonog
+down;reportVmonog
+thesis;Contiene los elementos específicos para la identificación de una disertación o una tesis académica, en una cita bibliográfica;15;#TRUE#;#FALSE#;thesisVmonog
+down;thesisVmonog
+
+authorVmonog;vmonog
+fname;Identifica los nombres iniciales de un autor individual;2;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;2;#FALSE#;#FALSE#;
+
+corpautVmonog;vmonog
+orgname;Identifica el nombre de una institución o organización;2;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;2;#FALSE#;#FALSE#;
+
+vtitleVmonog;vmonog
+title;Identifica el título de un documento;2;#FALSE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;2;#FALSE#;#FALSE#;
+tp;Indica el tipo de publicación en una cita bibliográfica como, por ejemplo, un editorial o una revisión de literatura;2;#FALSE#;#FALSE#;
+
+confgrpVmonog;vmonog
+sponsor;Identifica la institución financiadora del proyecto o evento;2;#TRUE#;#FALSE#;sponsorVmonog
+down;sponsorVmonog
+confname;Identifica el nombre de un evento como conferencia, seminario, congreso, etc.;2;#TRUE#;#FALSE#;
+no;Identifica todos los números de la estructura de un artículo, su posición en la estructura es que va a definir su característica;2;#TRUE#;#FALSE#;
+date;Identifica una fecha;2;#TRUE#;#TRUE#;
+city;Identifica el nombre de una ciudad;2;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;2;#TRUE#;#FALSE#;
+country;Identifica el país;2;#TRUE#;#FALSE#;
+
+sponsorVmonog;confgrpVmonog
+orgname;Identifica el nombre de una institución o organización;7;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;7;#FALSE#;#FALSE#;
+
+reportVmonog;vmonog
+rsponsor;Identifica la institución financiadora del proyecto o evento;2;#TRUE#;#FALSE#;rsponsorVmonog
+down;rsponsorVmonog
+projname;Identifica el nombre del proyecto de lo cual el artículo es un producto parcial o final;2;#TRUE#;#FALSE#;
+
+rsponsorVmonog;reportVmonog
+orgname;Identifica el nombre de una institución o organización;12;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;12;#FALSE#;#FALSE#;
+contract;Identifica un codigo numerico o alfanumerico de la institución financiadora de un proyecto, de lo cual el artículo es un producto final o parcial;12;#TRUE#;#FALSE#;
+
+thesisVmonog;vmonog
+city;Identifica el nombre de una ciudad;2;#FALSE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;2;#FALSE#;#FALSE#;
+country;Identifica el país;2;#FALSE#;#FALSE#;
+date;Identifica una fecha;2;#FALSE#;#TRUE#;
+degree;Identifica el grado de una disertación o tesis académica, como una maestria, un doctorado o un pós-grado, etc.;2;#FALSE#;#FALSE#;
+orgname;Identifica el nombre de una institución o organización;2;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;2;#FALSE#;#FALSE#;
+
+abnt6023;back
+acitat;Identifica el principio de una cita bibliográfica em una bibliografía;9;#TRUE#;#FALSE#;acitat
+down;acitat
+
+acitat;abnt6023
+no;Identifica todos los números de la estructura de un artículo, su posición en la estructura es que va a definir su característica;10;#FALSE#;#FALSE#;
+acontrib;Contiene elementos, como el autor y el título, para la descripción bibliográfica de un trabajo que es parte de una revista o de un libro, como artículos de revistas y capítulos de libros;10;#FALSE#;#FALSE#;acontrib
+down;acontrib
+amonog;Contiene los elementos principales para la identificación de una monografia;10;#FALSE#;#FALSE#;amonog
+down;amonog
+aiserial;Contiene elementos de identificación específicos de una publicación seriada o periódica;10;#FALSE#;#FALSE#;aiserial
+down;aiserial
+confgrp;Contiene los elementos para la identificación de un evento como conferencia, seminario, congreso, etc.;10;#FALSE#;#FALSE#;confgrpAcitat
+down;confgrpAcitat
+
+acontrib;acitat
+author;Contiene los elementos para la identificación de los autores individuales como nombre, apellido y tipo de responsabilidad;15;#TRUE#;#TRUE#;authorAcontrib
+down;authorAcontrib
+corpauth;Identifica los autores institucionales responsables por el contenido intelectual o artístico del trabajo;15;#TRUE#;#FALSE#;corpautAContrib
+down;corpautAContrib
+et-al;Indica que la cita bibliográfica contiene autores que no fueran citados;15;#FALSE#;#FALSE#;
+title;Identifica el título de un documento;15;#FALSE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;15;#FALSE#;#FALSE#;
+volid;Identifica el número del volumen de un documento;15;#FALSE#;#FALSE#;
+pages;Identifica las páginas de un artículo o de parte de una publicación en una cita bibliográfica;15;#FALSE#;#FALSE#;
+
+authorAcontrib;acontrib
+fname;Identifica los nombres iniciales de un autor individual;2;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;2;#FALSE#;#FALSE#;
+
+corpautAContrib;acontrib
+orgname;Identifica el nombre de una institución o organización;2;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;2;#FALSE#;#FALSE#;
+
+aiserial;acitat
+sertitle;Identifica el título de una publicación seriada o periódica;15;#FALSE#;#FALSE#;
+stitle;Contiene el formato corto y estandarizado del titulo de una revista o de una publicación seriada;15;#FALSE#;#FALSE#;
+isstitle;Identifica el título de un número de una publicación seriada o periódica;15;#FALSE#;#FALSE#;
+city;Identifica el nombre de una ciudad;15;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;15;#TRUE#;#FALSE#;
+country;Identifica el país;15;#TRUE#;#FALSE#;
+pubname;Identifica el nombre de la casa publicadora de un documento;15;#TRUE#;#FALSE#;
+suppl;Identifica el número del suplemento de una revista;2;#TRUE#;#FALSE#;
+volid;Identifica el número del volumen de un documento;15;#TRUE#;#FALSE#;
+issueno;Identifica el número de un fascículo;2;#TRUE#;#FALSE#;
+date;Identifica una fecha;15;#TRUE#;#TRUE#;
+extent;Identifica la extensión de un trabajo como el número de páginas o volumenes de una obra;15;#TRUE#;#FALSE#;
+pages;Identifica las páginas de un artículo o de parte de una publicación en una cita bibliográfica;15;#TRUE#;#FALSE#;
+notes;Contiene datos que no pueden ser identificados por los otros elementos de una referencia;15;#TRUE#;#FALSE#;
+issn;Identifica el Internacional Standard Serial  Number (ISSN);15;#TRUE#;#FALSE#;
+
+amonog;acitat
+author;Contiene los elementos para la identificación de los autores individuales como nombre, apellido y tipo de responsabilidad;15;#TRUE#;#TRUE#;authorAmonog
+down;authorAmonog
+corpauth;Identifica los autores institucionales responsables por el contenido intelectual o artístico del trabajo;15;#TRUE#;#FALSE#;corpautAmonog
+down;corpautAmonog
+et-al;Indica que la cita bibliográfica contiene autores que no fueran citados;15;#FALSE#;#FALSE#;
+title;Identifica el título de un documento;15;#FALSE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;15;#FALSE#;#FALSE#;
+subresp;Indica las responsabilidades que no son principales en una cit como, por ejemplo, los traductores y revisores;15;#TRUE#;#FALSE#;
+edition;Identifica el número de la edición de una obra;15;#TRUE#;#FALSE#;
+confgrp;Contiene los elementos para la identificación de un evento como conferencia, seminario, congreso, etc.;15;#TRUE#;#FALSE#;confgrpAmonog
+down;confgrpAmonog
+city;Identifica el nombre de una ciudad;15;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;15;#TRUE#;#FALSE#;
+country;Identifica el país;15;#TRUE#;#FALSE#;
+pubname;Identifica el nombre de la casa publicadora de un documento;15;#TRUE#;#FALSE#;
+date;Identifica una fecha;15;#TRUE#;#TRUE#;
+volid;Identifica el número del volumen de un documento;15;#TRUE#;#FALSE#;
+tome;Indica una parte de una publicación en una cita bibliográfica;15;#TRUE#;#FALSE#;
+extent;Identifica la extensión de un trabajo como el número de páginas o volumenes de una obra;15;#TRUE#;#FALSE#;
+pages;Identifica las páginas de un artículo o de parte de una publicación en una cita bibliográfica;15;#TRUE#;#FALSE#;
+coltitle;Identifica el título de una colección o série de la cual una obra hace parte;15;#TRUE#;#FALSE#;
+colvolid;Indica el número del volumen de una colección;15;#TRUE#;#FALSE#;
+notes;Contiene datos que no pueden ser identificados por los otros elementos de una referencia;15;#TRUE#;#FALSE#;
+isbn;Identifica el Internacional Standard Book Number (ISBN);15;#TRUE#;#FALSE#;
+thesis;Contiene los elementos específicos para la identificación de una disertación o una tesis académica, en una cita bibliográfica;15;#TRUE#;#FALSE#;thesisAmonog
+down;thesisAmonog
+
+authorAmonog;amonog
+fname;Identifica los nombres iniciales de un autor individual;2;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;2;#FALSE#;#FALSE#;
+
+corpautAmonog;amonog
+orgname;Identifica el nombre de una institución o organización;2;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;2;#FALSE#;#FALSE#;
+
+confgrpAmonog;amonog
+sponsor;Identifica la institución financiadora del proyecto o evento;2;#TRUE#;#FALSE#;sponsorAmonog
+down;sponsorAmonog
+confname;Identifica el nombre de un evento como conferencia, seminario, congreso, etc.;2;#TRUE#;#FALSE#;
+no;Identifica todos los números de la estructura de un artículo, su posición en la estructura es que va a definir su característica;2;#TRUE#;#FALSE#;
+date;Identifica una fecha;2;#TRUE#;#TRUE#;
+city;Identifica el nombre de una ciudad;2;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;2;#TRUE#;#FALSE#;
+country;Identifica el país;2;#TRUE#;#FALSE#;
+
+sponsorAmonog;confgrpAmonog
+orgname;Identifica el nombre de una institución o organización;7;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;7;#FALSE#;#FALSE#;
+
+thesisAmonog;amonog
+city;Identifica el nombre de una ciudad;2;#FALSE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;2;#FALSE#;#FALSE#;
+country;Identifica el país;2;#FALSE#;#FALSE#;
+date;Identifica una fecha;2;#FALSE#;#TRUE#;
+degree;Identifica el grado de una disertación o tesis académica, como una maestria, un doctorado o un pós-grado, etc.;2;#FALSE#;#FALSE#;
+orgname;Identifica el nombre de una institución o organización;2;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;2;#FALSE#;#FALSE#;
+
+confgrpAcitat;acitat
+sponsor;Identifica la institución financiadora del proyecto o evento;2;#TRUE#;#FALSE#;sponsorConfgrpAcitat
+down;sponsorConfgrpAcitat
+confname;Identifica el nombre de un evento como conferencia, seminario, congreso, etc.;2;#TRUE#;#FALSE#;
+no;Identifica todos los números de la estructura de un artículo, su posición en la estructura es que va a definir su característica;2;#TRUE#;#FALSE#;
+date;Identifica una fecha;2;#TRUE#;#TRUE#;
+city;Identifica el nombre de una ciudad;2;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;2;#TRUE#;#FALSE#;
+country;Identifica el país;2;#TRUE#;#FALSE#;
+
+sponsorConfgrpAcitat;confgrpAcitat
+orgname;Identifica el nombre de una institución o organización;7;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;7;#FALSE#;#FALSE#;
+
+iso690;back
+icitat;Identifica el principio de una cita bibliográfica en una bibliografía;9;#TRUE#;#FALSE#;icitat
+down;icitat
+
+icitat;iso690
+no;Identifica todos los números de la estructura de un artículo, su posición en la estructura es que va a definir su característica;10;#FALSE#;#FALSE#;
+icontrib;Contiene elementos, como el autor y el título, para la descripción bibliográfica de un trabajo que es la parte de una revista o de un libro, como artículos de revistas y capítulos de libros;10;#FALSE#;#FALSE#;icontrib
+down;icontrib
+imonog;Contiene los elementos principales para la identificación de una monografia;10;#FALSE#;#FALSE#;imonog
+down;imonog
+iiserial;Contiene los elementos de identificación específicos de una publicación seriada o periódica;10;#FALSE#;#FALSE#;iiserial
+down;iiserial
+
+icontrib;icitat
+author;Contiene los elementos para la identificación de los autores individuales como nombre, apellido y tipo de responsabilidad;15;#TRUE#;#TRUE#;authorIcontrib
+down;authorIcontrib
+corpauth;Identifica los autores institucionales responsables por el contenido intelectual o artístico del trabajo;15;#TRUE#;#FALSE#;corpautIcontrib
+down;corpautIcontrib
+et-al;Indica que la cita bibliográfica contiene autores que no fueran citados;15;#FALSE#;#FALSE#;
+subresp;Indica las responsabilidades que no son principales en una cita como, por ejemplo, traductores y revisores;15;#TRUE#;#TRUE#;subrespIcontrib
+down;subrespIcontrib
+title;Identifica el título de un documento;15;#FALSE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;15;#FALSE#;#FALSE#;
+section;Indica la sección que es citada en una cita bibliográfica;15;#FALSE#;#FALSE#;
+pages;Identifica las páginas de un artículo o de parte de una publicación en una cita bibliográfica;15;#FALSE#;#FALSE#;
+location;Indica la localización de una parte del documento en su contenido total en formato electrónico;15;#FALSE#;#FALSE#;
+notes;Contiene datos que no pueden ser identificados por los otros elementos de una cita;15;#FALSE#;#FALSE#;
+url;Indica, en una cita bibliográfica, la dirección electrónica del documento;15;#FALSE#;#FALSE#;
+isbn;Identifica el Internacional Standard Book Number (ISBN);15;#FALSE#;#FALSE#;
+
+authorIcontrib;icontrib
+fname;Identifica los nombres iniciales de un autor individual;2;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;2;#FALSE#;#FALSE#;
+
+corpautIcontrib;icontrib
+orgname;Identifica el nombre de una institución o organización;2;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;2;#FALSE#;#FALSE#;
+
+subrespIcontrib;icontrib
+fname;Identifica los nombres iniciales de un autor individual;2;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;2;#FALSE#;#FALSE#;
+
+iiserial;icitat
+isstitle;Identifica el título de un número de una publicación seriada o periódica;15;#FALSE#;#FALSE#;
+author;Contiene los elementos para la identificación de los autores individuales como nombre, apellido y tipo de responsabilidad;15;#TRUE#;#TRUE#;authorIiserial
+down;authorIiserial
+corpauth;Identifica los autores institucionales responsables por el contenido intelectual o artístico del trabajo;15;#TRUE#;#FALSE#;corpautIiserial
+down;corpautIiserial
+et-al;Indica que la cita bibliográfica contiene autores que no fueran citados;15;#FALSE#;#FALSE#;
+medium;Indica el formato del médio en que el documento es publicado o editado;15;#FALSE#;#FALSE#;
+sertitle;Identifica el título de una publicación seriada o periódica;15;#FALSE#;#FALSE#;
+stitle;Contiene el formato corto y estandarizado del titulo de una revista o de una publicación seriada;15;#FALSE#;#FALSE#;
+edition;Identifica el número de la edición de una obra;15;#TRUE#;#FALSE#;
+city;Identifica el nombre de una ciudad;15;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;15;#TRUE#;#FALSE#;
+country;Identifica el país;15;#TRUE#;#FALSE#;
+pubname;Identifica el nombre de la casa publicadora de un documento;15;#TRUE#;#FALSE#;
+date;Identifica una fecha;15;#TRUE#;#TRUE#;
+update;Indica la fecha de actualización del trabajo;15;#TRUE#;#FALSE#;
+cited;Indica la fecha en que el artículo electrónico fue accesado;15;#TRUE#;#FALSE#;
+location;Indica la localización de una parte de un documento en su todo en el formato electrónico;15;#TRUE#;#FALSE#;
+volid;Identifica el número del volumen de un documento;15;#TRUE#;#FALSE#;
+isdesig;Identifica las fechas principales de una colección como, por ejemplo, la fecha inicial de la colección;15;#TRUE#;#FALSE#;
+issueno;Identifica el número de un fascículo;15;#TRUE#;#FALSE#;
+pages;Identifica las páginas de un artículo o de parte de una publicación en una cita bibliográfica;15;#TRUE#;#FALSE#;
+notes;Contiene datos que no pueden ser identificados por los otros elementos de una referencia;15;#TRUE#;#FALSE#;
+url;Indica, en una cita bibliográfica, la dirección electrónica del documento;15;#TRUE#;#FALSE#;
+issn;Identifica el Internacional Standard Serial  Number (ISSN);15;#TRUE#;#FALSE#;
+
+authorIiserial;iiserial
+fname;Identifica los nombres iniciales de un autor individual;2;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;2;#FALSE#;#FALSE#;
+
+corpautIiserial;iiserial
+orgname;Identifica el nombre de una institución o organización;2;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;2;#FALSE#;#FALSE#;
+
+imonog;icitat
+author;Contiene los elementos para la identificación de los autores individuales como nombre, apellido y tipo de responsabilidad;15;#TRUE#;#TRUE#;authorImonog
+down;authorImonog
+corpauth;Identifica los autores institucionales responsables por el contenido intelectual o artístico del trabajo;15;#TRUE#;#FALSE#;corpautImonog
+down;corpautImonog
+et-al;Indica que la cita bibliográfica contiene autores que no fueran citados;15;#FALSE#;#FALSE#;
+subresp;Indica las responsabilidades que no son principales en una cita como, por ejemplo, traductores y revisores;15;#TRUE#;#TRUE#;subrespImonog
+down;subrespImonog
+title;Identifica el título de un documento;15;#FALSE#;#TRUE#;
+subtitle;Identifica el subtítulo de un documento;15;#FALSE#;#FALSE#;
+medium;Indica el formato del médio en que el documento es publicado o editado;15;#FALSE#;#FALSE#;
+edition;Identifica el número de la edición de una obra;15;#TRUE#;#FALSE#;
+city;Identifica el nombre de una ciudad;15;#TRUE#;#FALSE#;
+state;Identifica el estado correspondiente al local o ciudad de publicación de una obra;15;#TRUE#;#FALSE#;
+country;Identifica el país;15;#TRUE#;#FALSE#;
+pubname;Identifica el nombre de la casa publicadora de un documento;15;#TRUE#;#FALSE#;
+date;Identifica una fecha;15;#TRUE#;#TRUE#;
+update;Indica la fecha de actualización del trabajo;15;#TRUE#;#FALSE#;
+cited;Indica la fecha en que el artículo electrónico fue accesado;15;#TRUE#;#FALSE#;
+volid;Identifica el número del volumen de un documento;15;#TRUE#;#FALSE#;
+pages;Identifica las páginas de un artículo o de parte de una publicación en una cita bibliográfica;15;#TRUE#;#FALSE#;
+extent;Identifica la extensión de un trabajo como el número de páginas o volumenes de una obra;15;#TRUE#;#FALSE#; 
+location;Indica la localización de la parte de un documento en su todo en el formato electrónico;15;#FALSE#;#FALSE#;
+coltitle;Identifica el título de una colección o série de la cual una obra hace parte;15;#TRUE#;#FALSE#;
+notes;Contiene los datos que no pueden ser identificados por los otros elementos de la cita;15;#TRUE#;#FALSE#;
+url;Indica, en una cita bibliográfica, la dirección electrónica del documento;15;#FALSE#;#FALSE#;
+isbn;Identifica el Internacional Standard Book Number (ISBN);15;#TRUE#;#FALSE#;
+
+authorImonog;imonog
+fname;Identifica los nombres iniciales de un autor individual;2;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;2;#FALSE#;#FALSE#;
+
+corpautImonog;imonog
+orgname;Identifica el nombre de una institución o organización;2;#FALSE#;#FALSE#;
+orgdiv;Identifica la división de una institución;2;#FALSE#;#FALSE#;
+
+subrespImonog;imonog
+fname;Identifica los nombres iniciales de un autor individual;2;#FALSE#;#FALSE#;
+surname;Identifica el apellido de un autor individual;2;#FALSE#;#FALSE#;

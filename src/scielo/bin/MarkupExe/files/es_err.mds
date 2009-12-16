@@ -1,0 +1,457 @@
+00101;Error. Recomendable salir de la Marcación;frmArticle;ComboBox_IssueId_Change
+
+00102;Error. Recomendable salir de la Marcación;frmArticle;ComboBox_Version_Change
+
+00103;Error. Recomendable salir de la Marcación;frmArticle;CommandButton_Cancel_Click
+
+00104;Error. Recomendable salir de la Marcación;frmArticle;CommandButton_Ok_Click
+
+00105;Error. Recomendable salir de la Marcación;frmArticle;UserForm_Terminate
+
+00106;Error. Recomendable salir de la Marcación;frmArticle;VerifyFrmArticle
+
+00107;Error. Recomendable salir de la Marcación;frmArticle;VerifyDateValue
+
+00108;Error. Recomendable salir de la Marcación;frmArticle;VerifyPII
+
+00109;Error. Recomendable salir de la Marcación;frmArticle;VerifyORDER
+
+00110;Error. Recomendable salir de la Marcación;frmArticle;VerifyVOLID
+
+00111;Error. Recomendable salir de la Marcación;frmArticle;VerifyISSUENO
+
+00112;Error. Recomendable salir de la Marcación;frmArticle;VerifyDATEISO
+
+00113;Error. Recomendable salir de la Marcación;frmArticle;VerifySUPPLVOL
+
+00114;Error. Recomendable salir de la Marcación;frmArticle;VerifySUPLLNO
+
+00115;Error. Recomendable salir de la Marcación;frmArticle;VerifyTOCCODE
+
+00116;Error. Recomendable salir de la Marcación;frmArticle;VerifyLANGUAGE
+
+00117;Error. Recomendable salir de la Marcación;frmArticle;VerifyTYPE
+
+00118;Error. Recomendable salir de la Marcación;frmArticle;VerifySTATUS
+
+00119;Error. Recomendable salir de la Marcación;frmArticle;VerifyVERSION
+
+00120;Error. Recomendable salir de la Marcación;frmArticle;VerifyDOCTOPIC
+
+00121;Error. Recomendable salir de la Marcación;frmArticle;VerifyCCODE
+
+00122;Error. Recomendable salir de la Marcación;frmArticle;VerifySTITLE
+
+00123;Error. Recomendable salir de la Marcación;frmArticle;VerifySECCODE
+
+00124;Error. Recomendable salir de la Marcación;frmArticle;VerifyISSN
+
+00125;Error. Recomendable salir de la Marcación;frmArticle;VerifyPAGES
+
+00201;Error. Recomendable salir de la Marcación;frmAttribute;CommandButton_Cancel_Click
+
+00202;Error. Recomendable salir de la Marcación;frmAttribute;CommandButton_Ok_Click
+
+00203;Error. Recomendable salir de la Marcación;frmAttribute;UserForm_Terminate
+
+00204;Error. Recomendable salir de la Marcación;frmAttribute;VerifyFrmAttribute
+
+00205;Error. Recomendable salir de la Marcación;frmAttribute;VerifyTB_A1
+
+00206;Error. Recomendable salir de la Marcación;frmAttribute;VerifyTB_A2
+
+00207;Error. Recomendable salir de la Marcación;frmAttribute;VerifyTB_A3
+
+00208;Error. Recomendable salir de la Marcación;frmAttribute;VerifyCB_A1
+
+00209;Error. Recomendable salir de la Marcación;frmAttribute;VerifyCB_A2
+
+00210;Error. Recomendable salir de la Marcación;frmAttribute;VerifyCB_A3
+
+00211;Error. Recomendable salir de la Marcación;frmAttribute;TestAttribute
+
+00212;Error. Recomendable salir de la Marcación;frmAttribute;VerifyDateValue
+
+00213;Error. Recomendable salir de la Marcación;frmAttribute;VerifyDATEISO
+
+00214;Error. Recomendable salir de la Marcación;frmAttribute;VerifyROLE
+
+00215;Error. Recomendable salir de la Marcación;frmAttribute;VerifyRID
+
+00216;Error. Recomendable salir de la Marcación;frmAttribute;VerifyTYPE
+
+00217;Error. Recomendable salir de la Marcación;frmAttribute;VerifyLANGUAGE
+
+00218;Error. Recomendable salir de la Marcación;frmAttribute;VerifyID
+
+00219;Error. Recomendable salir de la Marcación;frmAttribute;VerifySCHEME
+
+00220;Error. Recomendable salir de la Marcación;frmAttribute;VerifyFROM
+
+00221;Error. Recomendable salir de la Marcación;frmAttribute;VerifyTO
+
+00222;Error. Recomendable salir de la Marcación;frmAttribute;VerifySTANDARD
+
+00223;Error. Recomendable salir de la Marcación;frmAttribute;VerifyCOUNT
+
+00301;Error. Recomendable salir de la Marcación;frmConfig;CommandButton_cancel_Click
+
+00302;Error. Recomendable salir de la Marcación;frmConfig;CommandButton_clear_Click
+
+00303;Error. Recomendable salir de la Marcación;frmConfig;CommandButton_OK_Click
+
+00304;Error. Recomendable salir de la Marcación;frmConfig;CommandButton_record_Click
+
+00305;Error. Recomendable salir de la Marcación;frmConfig;UserForm_Initialize
+
+00306;Error. Recomendable salir de la Marcación;frmConfig;UserForm_Terminate
+
+00307;Error. Recomendable salir de la Marcación;frmConfig;VerifyFrmConfig
+
+00308;Error. Recomendable salir de la Marcación;frmConfig;SetGlobalValues
+
+00401;Error. Recomendable salir de la Marcación;frmReferenceMarkup;Form_Load
+
+00402;Error. Recomendable salir de la Marcación;frmReferenceMarkup;FirstChoice_Click
+
+00403;Error. Recomendable salir de la Marcación;frmReferenceMarkup;LastChoice_Click
+
+00404;Error. Recomendable salir de la Marcación;frmReferenceMarkup;Markup_Click
+
+00405;Error. Recomendable salir de la Marcación;frmReferenceMarkup;NextChoice_Click
+
+00406;Error. Recomendable salir de la Marcación;frmReferenceMarkup;PreviousChoice_Click
+
+00407;Error. Recomendable salir de la Marcación;frmReferenceMarkup;Undo_Click
+
+00408;Error. Recomendable salir de la Marcación;frmReferenceMarkup;UserForm_Terminate
+
+10101;Error. Recomendable salir de la Marcación;AutoMacros;AutoExec
+
+10102;Error. Recomendable salir de la Marcación;AutoMacros;AutoOpen
+
+10103;Error. Recomendable salir de la Marcación;AutoMacros;Delete_AddIn
+
+10104;Error. Recomendable salir de la Marcación;AutoMacros;AutoClose
+
+10201;Error. Recomendable salir de la Marcación;MainModule;Main
+
+10202;Error. Recomendable salir de la Marcación;MainModule;SubStartMarkup
+
+10203;Error. Recomendable salir de la Marcación;MainModule;SubStop
+
+10204;Error. Recomendable salir de la Marcación;MainModule;SubChange
+
+10205;Error. Recomendable salir de la Marcación;MainModule;SubDelete
+
+10206;Error. Recomendable salir de la Marcación;MainModule;SubAutomatic
+
+10207;Error. Recomendable salir de la Marcación;MainModule;SubElse
+
+10208;Error. Recomendable salir de la Marcación;MainModule;SubHelp
+
+10209;Error. Recomendable salir de la Marcación;MainModule;SubDown
+
+10210;Error. Recomendable salir de la Marcación;MainModule;SubUp
+
+10211;Error. Recomendable salir de la Marcación;MainModule;MainConfig
+
+10301;Error. Recomendable salir de la Marcación;ReferenceMarkup;Markup
+
+10302;Error. Recomendable salir de la Marcación;ReferenceMarkup;ShowResults
+
+20101;Error. Recomendable salir de la Marcación;AllResultsTables;Index
+
+20102;Error. Recomendable salir de la Marcación;AllResultsTables;Count
+
+20103;Error. Recomendable salir de la Marcación;AllResultsTables;Class_Initialize
+
+20104;Error. Recomendable salir de la Marcación;AllResultsTables;AddNew
+
+20105;Error. Recomendable salir de la Marcación;AllResultsTables;Load
+
+20106;Error. Recomendable salir de la Marcación;AllResultsTables;GetNext
+
+20107;Error. Recomendable salir de la Marcación;AllResultsTables;GetCurrent
+
+20108;Error. Recomendable salir de la Marcación;AllResultsTables;GetPrev
+
+20109;Error. Recomendable salir de la Marcación;AllResultsTables;GetFirst
+
+20110;Error. Recomendable salir de la Marcación;AllResultsTables;GetLast
+
+20111;Error. Recomendable salir de la Marcación;AllResultsTables;GetItem
+
+20112;Error. Recomendable salir de la Marcación;AllResultsTables;Clean
+
+20113;Error. Recomendable salir de la Marcación;AllResultsTables;Class_Terminate
+
+20201;Error. Recomendable salir de la Marcación;clsAttribute;InsertValue
+
+20202;Error. Recomendable salir de la Marcación;clsAttribute;ReturnCount
+
+20301;Error. Recomendable salir de la Marcación;clsAttrList;InsertAttr
+
+20302;Error. Recomendable salir de la Marcación;clsAttrList;ReturnCount
+
+20303;Error. Recomendable salir de la Marcación;clsAttrList;LoadAttributes
+
+20501;Error. Recomendable salir de la Marcación;clsAutoMarkupList;LoadAutomata
+
+20601;Error. Recomendable salir de la Marcación;clsBar;SetName
+
+20602;Error. Recomendable salir de la Marcación;clsBar;SetUpLevel
+
+20603;Error. Recomendable salir de la Marcación;clsBar;GetName
+
+20604;Error. Recomendable salir de la Marcación;clsBar;GetUpLevel
+
+20605;Error. Recomendable salir de la Marcación;clsBar;InsertButton
+
+20606;Error. Recomendable salir de la Marcación;clsBar;LenListOfButton
+
+20701;Error. Recomendable salir de la Marcación;clsButton;SetTag
+
+20702;Error. Recomendable salir de la Marcación;clsButton;SetShortTag
+
+20703;Error. Recomendable salir de la Marcación;clsButton;SetColor
+
+20704;Error. Recomendable salir de la Marcación;clsButton;SetRepetitive
+
+20705;Error. Recomendable salir de la Marcación;clsButton;SetAttrib
+
+20706;Error. Recomendable salir de la Marcación;clsButton;SetDownLevel
+
+20707;Error. Recomendable salir de la Marcación;clsButton;GetTag
+
+20708;Error. Recomendable salir de la Marcación;clsButton;GetShortTag
+
+20709;Error. Recomendable salir de la Marcación;clsButton;GetColor
+
+20710;Error. Recomendable salir de la Marcación;clsButton;GetRepetitive
+
+20711;Error. Recomendable salir de la Marcación;clsButton;GetAttrib
+
+20712;Error. Recomendable salir de la Marcación;clsButton;GetDownLevel
+
+20801;Error. Recomendable salir de la Marcación;clsConfig;GetResponsible
+
+20802;Error. Recomendable salir de la Marcación;clsConfig;SetResponsible
+
+20803;Error. Recomendable salir de la Marcación;clsConfig;GetLanguage
+
+20804;Error. Recomendable salir de la Marcación;clsConfig;SetLanguage
+
+20805;Error. Recomendable salir de la Marcación;clsConfig;SetFirstHour
+
+20806;Error. Recomendable salir de la Marcación;clsConfig;GetFirstHour
+
+20807;Error. Recomendable salir de la Marcación;clsConfig;SetLastHour
+
+20808;Error. Recomendable salir de la Marcación;clsConfig;GetLastHour
+
+20809;Error. Recomendable salir de la Marcación;clsConfig;GetMarkupTime
+
+20810;Error. Recomendable salir de la Marcación;clsConfig;LoadPublicValues
+
+20901;Error. Recomendable salir de la Marcación;clsErr;DisplayErr
+
+20902;Error. Recomendable salir de la Marcación;clsErr;BuildErrLog
+
+21001;Error. Recomendable salir de la Marcación;clsErrList;LoadErr
+
+21002;Error. Recomendable salir de la Marcación;clsErrList;LastExit
+
+21003;Error. Recomendable salir de la Marcación;clsErrList;BuildLog
+
+21101;Error. Recomendable salir de la Marcación;clsInterface;ShowFrmArticle
+
+21102;Error. Recomendable salir de la Marcación;clsInterface;EndFrmArticle
+
+21103;Error. Recomendable salir de la Marcación;clsInterface;SetFrmArticle
+
+21104;Error. Recomendable salir de la Marcación;clsInterface;ExitFrmArticle
+
+21105;Error. Recomendable salir de la Marcación;clsInterface;SetDefaultValueAbbrArticle
+
+21106;Error. Recomendable salir de la Marcación;clsInterface;ShowFrmAttribute
+
+21107;Error. Recomendable salir de la Marcación;clsInterface;EndFrmAttribute
+
+21108;Error. Recomendable salir de la Marcación;clsInterface;ExitFrmAttribute
+
+21109;Error. Recomendable salir de la Marcación;clsInterface;SetDefaultValueAbbrAttribute
+
+21110;Error. Recomendable salir de la Marcación;clsInterface;ShowFrmConfig
+
+21111;Error. Recomendable salir de la Marcación;clsInterface;EndFrmConfig
+
+21112;Error. Recomendable salir de la Marcación;clsInterface;BuildMarkupBar
+
+21113;Error. Recomendable salir de la Marcación;clsInterface;DestroyMarkupBar
+
+21114;Error. Recomendable salir de la Marcación;clsInterface;DisableWordBars
+
+21115;Error. Recomendable salir de la Marcación;clsInterface;EnableWordBars
+
+21201;Error. Recomendable salir de la Marcación;clsIssue;InsertSec
+
+21202;Error. Recomendable salir de la Marcación;clsIssue;ReturnCount
+
+21301;Error. Recomendable salir de la Marcación;clsIssueList;InsertIssue
+
+21302;Error. Recomendable salir de la Marcación;clsIssueList;ReturnCount
+
+21303;Error. Recomendable salir de la Marcación;clsIssueList;LoadIssue
+
+21401;Error. Recomendable salir de la Marcación;clsLink;InsertAttr
+
+21402;Error. Recomendable salir de la Marcación;clsLink;ReturnCount
+
+21501;Error. Recomendable salir de la Marcación;clsListBar;InsertBar
+
+21502;Error. Recomendable salir de la Marcación;clsListBar;LenListOfBar
+
+21503;Error. Recomendable salir de la Marcación;clsListBar;LoadBars
+
+21504;Error. Recomendable salir de la Marcación;clsListBar;CreateBars
+
+21505;Error. Recomendable salir de la Marcación;clsListBar;KillBars
+
+21506;Error. Recomendable salir de la Marcación;clsListBar;EnableBar
+
+21507;Error. Recomendable salir de la Marcación;clsListBar;DisableBar
+
+21508;Error. Recomendable salir de la Marcación;clsListBar;MoveBarDefault
+
+21509;Error. Recomendable salir de la Marcación;clsListBar;MoveBarTop
+
+21510;Error. Recomendable salir de la Marcación;clsListBar;BuildTempFile
+
+21511;Error. Recomendable salir de la Marcación;clsListBar;LoadTempFile
+
+21601;Error. Recomendable salir de la Marcación;clsLkList;InsertLink
+
+21602;Error. Recomendable salir de la Marcación;clsLkList;ReturnCount
+
+21603;Error. Recomendable salir de la Marcación;clsLkList;LoadLink
+
+21701;Error. Recomendable salir de la Marcación;clsMarkup;InsertTag
+
+21702;Error. Recomendable salir de la Marcación;clsMarkup;DeleteTag
+
+21703;Error. Recomendable salir de la Marcación;clsMarkup;FormatText
+
+21704;Error. Recomendable salir de la Marcación;clsMarkup;BuildStartTag
+
+21705;Error. Recomendable salir de la Marcación;clsMarkup;BuildFinishTag
+
+21706;Error. Recomendable salir de la Marcación;clsMarkup;DisableScreen
+
+21707;Error. Recomendable salir de la Marcación;clsMarkup;EnableScreen
+
+21708;Error. Recomendable salir de la Marcación;clsMarkup;ChangeAttribute
+
+21709;Error. Recomendable salir de la Marcación;clsMarkup;VerifyHierarchy
+
+21710;Error. Recomendable salir de la Marcación;clsMarkup;BuildLog
+
+21711;Error. Recomendable salir de la Marcación;clsMarkup;UpLevel
+
+21712;Error. Recomendable salir de la Marcación;clsMarkup;DownLevel
+
+21713;Error. Recomendable salir de la Marcación;clsMarkup;DisplayBar
+
+21714;Error. Recomendable salir de la Marcación;clsMarkup;VerifyDocumentHTMLFormat
+
+21715;Error. Recomendable salir de la Marcación;clsMarkup;ChangeSTAGO_TAGC
+
+21716;Error. Recomendable salir de la Marcación;clsMarkup;ChangeFields
+
+21717;Error. Recomendable salir de la Marcación;clsMarkup;ChangeHtmlMarkup
+
+21718;Error. Recomendable salir de la Marcación;clsMarkup;ChangeEntity
+
+21719;Error. Recomendable salir de la Marcación;clsMarkup;FindTag
+
+21720;Error. Recomendable salir de la Marcación;clsMarkup;FindText
+
+21721;Error. Recomendable salir de la Marcación;clsMarkup;TestExistTag
+
+21722;Error. Recomendable salir de la Marcación;clsMarkup;TestExistFloat
+
+21723;Error. Recomendable salir de la Marcación;clsMarkup;TestFatherTag
+
+21724;Error. Recomendable salir de la Marcación;clsMarkup;TestOwnSisterTag
+
+21801;Error. Recomendable salir de la Marcación;clsToken;GetTokens
+
+22001;Error. Recomendable salir de la Marcación;ResultsTable;Count
+
+22002;Error. Recomendable salir de la Marcación;ResultsTable;AddNew
+
+22003;Error. Recomendable salir de la Marcación;ResultsTable;GetItem
+
+22004;Error. Recomendable salir de la Marcación;ResultsTable;Clean
+
+22005;Error. Recomendable salir de la Marcación;ResultsTable;Class_Terminate
+
+22101;Error. Recomendable salir de la Marcación;ResultsTableEntry;Let Element
+
+22102;Error. Recomendable salir de la Marcación;ResultsTableEntry;Get Element
+
+22103;Error. Recomendable salir de la Marcación;ResultsTableEntry;Let SubElement
+
+22104;Error. Recomendable salir de la Marcación;ResultsTableEntry;Get SubElement
+
+22105;Error. Recomendable salir de la Marcación;ResultsTableEntry;Let StartPos
+
+22106;Error. Recomendable salir de la Marcación;ResultsTableEntry;Get StartPos
+
+22107;Error. Recomendable salir de la Marcación;ResultsTableEntry;Let EndPos
+
+22108;Error. Recomendable salir de la Marcación;ResultsTableEntry;Get EndPos
+
+22109;Error. Recomendable salir de la Marcación;ResultsTableEntry;Let Level
+
+22110;Error. Recomendable salir de la Marcación;ResultsTableEntry;Get Level
+
+22111;Error. Recomendable salir de la Marcación;ResultsTableEntry;Let Terminal
+
+22112;Error. Recomendable salir de la Marcación;ResultsTableEntry;Get Terminal
+
+22113;Error. Recomendable salir de la Marcación;ResultsTableEntry;Let AbsSTAGStartPos
+
+22114;Error. Recomendable salir de la Marcación;ResultsTableEntry;Get AbsSTAGStartPos
+
+22115;Error. Recomendable salir de la Marcación;ResultsTableEntry;Let AbsSTAGEndPos
+
+22116;Error. Recomendable salir de la Marcación;ResultsTableEntry;Get AbsSTAGEndPos
+
+22117;Error. Recomendable salir de la Marcación;ResultsTableEntry;Let AbsETAGStartPos
+
+22118;Error. Recomendable salir de la Marcación;ResultsTableEntry;Get AbsETAGStartPos
+
+22119;Error. Recomendable salir de la Marcación;ResultsTableEntry;Let AbsETAGEndPos
+
+22120;Error. Recomendable salir de la Marcación;ResultsTableEntry;Get AbsETAGEndPos
+
+22201;Error. Recomendable salir de la Marcación;Tag;Let Symbol
+
+22202;Error. Recomendable salir de la Marcación;Tag;Get Symbol
+
+22203;Error. Recomendable salir de la Marcación;Tag;Let Name
+
+22204;Error. Recomendable salir de la Marcación;Tag;Get Name
+
+22205;Error. Recomendable salir de la Marcación;Tag;Let Attributes
+
+22301;Error. Recomendable salir de la Marcación;TagsTable;Count
+
+22302;Error. Recomendable salir de la Marcación;TagsTable;AddNew
+
+22303;Error. Recomendable salir de la Marcación;TagsTable;GetItem
+
+22304;Error. Recomendable salir de la Marcación;TagsTable;Clean
+
+22305;Error. Recomendable salir de la Marcación;TagsTable;Class_Terminate

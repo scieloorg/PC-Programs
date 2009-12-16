@@ -1,0 +1,10 @@
+Line 15: Class ComctlLib.TreeView of control BVDirStruct was not a loaded control class.
+Line 37: Class ComctlLib.TreeView of control DirStruct was not a loaded control class.
+Line 22: The property name _ExtentX in BVDirStruct is invalid.
+Line 23: The property name _ExtentY in BVDirStruct is invalid.
+Line 24: The property name _Version in BVDirStruct is invalid.
+Line 25: The property name Style in BVDirStruct is invalid.
+Line 44: The property name _ExtentX in DirStruct is invalid.
+Line 45: The property name _ExtentY in DirStruct is invalid.
+Line 46: The property name _Version in DirStruct is invalid.
+Line 47: The property name Style in DirStruct is invalid.

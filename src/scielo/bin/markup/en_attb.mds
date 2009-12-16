@@ -1,0 +1,123 @@
+ccode
+brazilian journal of chemical engineering;brazilian journal of genetics;brazilian journal of medical and biological research;brazilian journal of physics;scielo/bireme;Comisión Nacional de Investigación Científica y Tecnológica;dados - revista de ciências sociais;InfoMed;journal of the brazilian chemical society;journal of the brazilian computer society;memórias do instituto oswaldo cruz;revista brasileira de ciência do solo;revista brasileira de geociências;revista do instituto de medicina tropical de são paulo;revista de saúde pública
+bjce;bjg;bjmbr;bjp;br1.1;conicyt;dados;infomed;jbchs;jbcos;mioc;rbcs;rbgeo;rimtsp;rsp
+
+doctopic
+abstracts;annex;announcements;brief communication;comments;case report;clinical trial;editorial;interview;invited review;letter;methodology;mini-review article;original article;point-of-view;preliminary report;press release;recount;research note;review article;short communication;state-of-the-art review;technical report;update
+ab;ax;an;sc;co;cr;ct;ed;in;ra;le;mt;ra;oa;pv;rn;pr;rc;rn;ra;sc;ra;tr;up
+
+language
+English;Portuguese;Spanish;Afrikaans;Arabic;Bulgarian;Chinese;Czech;Danish;Dutch;Esperanto;French;German;Greek;Hebrew;Hindi;Hungarian;Indonesian;Interlingua;Interlingue;Italian;Japanese;Korean;Latin;Norwergian;Polish;Romanian;Russian;Sanskrit;Serbo-Croat;Slovak;Slovenian;Swedish;Turkish;Ukrainian;Urdu;Other;Galician;Basque;Catalan
+en;pt;es;af;ar;bg;ch;cs;da;nl;eo;fr;de;gr;he;hi;hu;in;ia;ie;it;ja;ko;la;no;pl;ro;ru;sa;sh;sk;sn;sv;tr;uk;ur;zz;gl;eu;ca
+
+illustrative material type
+no illustrative material;figure;graphic;map;table
+nd;ilus;gra;map;tab
+
+version
+3.1
+3.1
+
+toccode
+title;sectitle
+1;2
+
+role
+Not defined;coordinator;publisher;organizer;translator
+nd;coord;ed;org;tr
+
+scheme
+No Descriptor;Health Science Descriptors
+nd;decs
+
+keyword priority level
+main;secondary
+m;s
+
+standard
+iso 690/87 - international standard organization;nbr 6023/89 - associação nacional de normas técnicas;other standard;the vancouver group - uniform requirements for manuscripts submitted to biomedical journals;American Psychological Association
+iso690;nbr6023;other;vancouv;apa
+
+id
+Not defined
+nd
+
+rid
+Not defined
+nd
+
+dateiso
+00000000
+00000000
+
+count
+0
+0
+
+pages
+0-0
+0-0
+
+from
+00000000
+00000000
+
+to
+00000000
+00000000
+
+sponsor
+Not definido
+nd
+
+no
+0
+0
+
+orgname
+nd
+nd
+
+orgdiv1
+nd
+nd
+
+orgdiv2
+nd
+nd
+
+orgdiv3
+nd
+nd
+
+ctdbid
+CT - Clinicaltrials.gov;ACTR - Australian Clinical Trials Registry;ISRCTN - International Standard Randomised Controlled Trial Number Register;NTR - Nederlands Trial Register;UMIN - University Hospital Medical Information Network;ChiCTR - Chinese Clinical Trial Register
+CT;ACTR;ISRCTN;NTR;UMIN;ChiCTR
+
+country
+Afghanistan;Albania;Algeria;American Samoa;Andorra;Angola;Antarctica;Antigua;Argentina;Australia;Austria;Bahamas;Bahrain;Bangladesh;Barbados;Belgium;Belize;Bermuda;Bhutan;Bolivia;Botswana;Bouvet Island;Brazil;British Virgin Islands;Brunei;Bulgaria;Burma;Burundi;Byelorussian RSS;Cameroon;Canada;Cape Verde;Central African Rep.;Chad;Chile;China;Colombia;Congo;Costa Rica;Cuba;Cyprus;Czechoslovakia;Denmark;Dominica;Dominican Republic;Dronning Maud Land;Ecuador;Egypt;El Salvador;Ethiopia;Falkland Islands(Malvinas);Fiji;Filand;France;French Guiana;French Polynesia;Gabon;German Democratic Republic;Germany, Federal Republic;Ghana;Gibraltar;Greece;Greenland;Grenada;Guadeloupe;Guam;Guatemala;Guinea Ecuatorial;Guinea;Guinea-Bissau;Guyana;Haiti;Honduras;Hong Kong;Hungary;Iceland;India;Indonesia;Iran;Iraq;Ireland;Isla de Navidad;Isla Johnston;Isla Niue;Isla Wake;Islands Miscellaneous;Islas Canton y Enderbury;Islas Cocos (Keeling);Islas Cook;Islas Feroe;Islas Heard y Mc Donald;Islas Midway;Islas Pitcairn;Islas Salomón Británico;Islas Svalbard y Jan Mayen;Islas Tokelau;Islas Wallis y Futuna;Israel;Italy;Iugoslavia;Ivory Coast;Jamaica;Japan;Jordan;Kamoras Islands;Kampuchea Democrática;Kayman Islands;Kenya;Korea, Democratic People's ;Korea, Democratic People's;Korea, Republic of;Kuwait;Lao People's Democratic ;Lebanon;Lesotho;Liberia;Libyan;Liechtenstein;Luxembourg;Macau;Madagascar;Malawi;Malaysia;Maldivas;Mali;Malta;Martinique;Mauritania;Mauritius;Mexico;Monaco;Mongolia;Montserrat;Morocco;Mozambique;Namibia;Nauru;Nepal;Netherlands;Netherlands Antilles;New Caledonia;New Zealand;Nicaragua;Niger;Nigeria;Norfolk Island;Norway;Nuevas Hébridas;Oman;Pacific Islands;Pakistan;Panama;Papua New Guinea;Paraguay;Peru;Philippines;Poland;Portugal;Puerto Rico;Qatar;Republic;Réunion;Romania;Rwanda;S. Pedro y Miguelón;Saint Lucia;Saint Vincent;Samoa;San Cristóbal-Nieves-Anguila;San Marino;Sao Tome and Principe;Saudi Arabia;Seichelles;Senegal;Sierra Leone;Sikkim;Singapur;Somalia;South Africa;Spain;Sri Lanka;St. Helena;Sudan;Suriname;Swaziland;Sweden;Switzerland;Syrian Arab Republic;Taiwan;Tanzania;Thailand;Togo;Tonga;Trinidad and Tobago;Tunisia;Turkey;Turks and Caicos Islands;Uganda;Ukrainian RSS;United Arab Emirates;United Kingdom;United States;United States Pacific;Upper Volta;URSS;Uruguay;Vanuatu;Vatican City State;Venezuela;Viet Nam;Western Sahara;Yemen;Yemen, Democratic;Zaire;Zambia;Not defined
+AF;AL;DZ;AS;AD;AO;AQ;AG;AR;AU;AT;BS;BH;BD;BB;BE;BZ;BM;BT;BO;BW;BV;BR;VG;BN;BG;BU;BI;BY;CM;CA;CV;CF;TD;CL;CN;CO;CG;CR;CU;CY;CS;DK;DM;DO;NQ;EC;EG;SV;ET;FK;FJ;FI;FR;GF;PF;GA;DD;DE;GH;GI;GR;GL;GD;GP;GU;GT;GC;GN;GW;GY;HT;HN;HK;HU;IS;IN;ID;IR;IQ;IE;CX;JT;NU;WK;PU;CT;CC;CK;FO;HM;MI;PN;SB;SJ;TK;WF;IL;IT;YU;CI;JM;JP;JO;KM;KH;KY;KE;KD;KP;KR;KW;LD;LB;LS;LR;LY;LI;LU;MO;MG;MW;MY;MV;ML;MT;MQ;MR;MU;MX;MC;MN;MS;MA;MZ;NA;NR;NP;NL;AN;NC;NZ;NI;NE;NG;NF;NO;NH;OM;PC;PK;PA;PG;PY;PE;PH;PL;PT;PR;QA;LA;RE;RO;RW;PM;LC;VC;WS;KN;SM;ST;SA;SC;SN;SL;SK;SG;SO;ZA;ES;LK;SH;SD;SR;SZ;SE;CH;SY;TW;TZ;TH;TG;TO;TT;TN;TR;TC;UG;UA;AE;GB;US;UP;HV;SU;UY;VU;VA;VE;VN;EH;YE;YD;ZR;ZM;nd
+
+deposid
+Unicamp;Unifesp;Unesp;USP;ITA;UFSCar
+1;2;3;4;5;6
+
+entrdate
+
+
+
+embdate
+
+
+
+source
+
+
+
+doctype
+audio;press release;video
+au;pr;vi
+
+cturl
+
+

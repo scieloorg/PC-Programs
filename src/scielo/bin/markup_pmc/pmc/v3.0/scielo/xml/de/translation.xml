@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<translations>
+   
+    <xslid id="sci_abstract">
+        <text find="abstract">Zusammenfassung</text>
+        <text find="keywords">{TRADUZIR PALAVRAS CHAVES EM ALEMAO}</text>
+    </xslid>
+   
+</translations>

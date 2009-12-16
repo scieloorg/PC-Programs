@@ -1,0 +1,26 @@
+,C:,Work Drive,
+Work Drive,SciELO,Work Directory,
+Work Directory,Bin,Program Directory,
+Program Directory,SGMLPars,SGML Parser Program Directory,
+Work Directory,Serial,Serial Directory,
+Serial Directory,Issue,Issue Database Directory,
+Issue Database Directory,issue,Issue Database,
+Serial Directory,Title,Title Database Directory,
+Title Database Directory,tit_issn,Title X ISSN Database,
+Title Database Directory,title,Title Database,1
+Serial Directory,Siglum of the Serial,Serial Siglum Directory,1
+Serial Siglum Directory,Issue Number,Issue Number Directory,1
+Issue Number Directory,base,Database Directory,1
+Issue Number Directory,markup,Markup Directory,1
+Issue Number Directory,body,Body Directory,1
+Issue Number Directory,base,Log Directory,1
+Log Directory,Log,Log File,1
+Database Directory,proctime.txt,Statistic File,1
+Work Directory,adm,Web iso Directory,1
+Web iso Directory,iso-list,iso list database,1
+Web iso Directory,iso-list.txt,iso list file,1
+Web iso Directory,proctype.txt,process type file,1
+Work Directory,PTS,PTS Directory,1
+PTS Directory,pts,pts database,1
+PTS Directory,pts,pts fst file,1
+PTS Directory,pts.pft,pts pft file,1

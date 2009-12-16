@@ -1,0 +1,12 @@
+if size(v1)>0 then v1,',',
+    if v10='en' then
+        ref(l(v1,'lab'),if v2:',' then '"',v2,'"' else v2 fi),',',ref(l(v1,'hlp'),'"',v2,'"')
+    fi
+    if v10='es' then
+        ref(l(v1,'lab'),if v3:',' then '"',v3,'"' else v3 fi),',',ref(l(v1,'hlp'),'"',v3,'"')
+    fi
+    if v10='pt' then
+        ref(l(v1,'lab'),if v4:',' then '"',v4,'"' else v4 fi),',',ref(l(v1,'hlp'),'"',v4,'"')
+    fi
+    #
+fi

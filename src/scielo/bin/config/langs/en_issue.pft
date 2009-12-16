@@ -1,0 +1,39 @@
+,if (v200<>'1') and (size(v30)>0) then
+,v30,' ',|v.|v31,| s.|v131,| n.|v32,| s.|v132,| |v41,,if v32='ahead' or v32='review' then ' ',v65*0.4 fi/,
+,v30,';',
+,v31,';',
+,v131,';',
+,v32,';',
+,v132,';',
+,v65,';',
+,v35,';',
+,v42/,
+,(v49^t|;|),'No section title'/,
+,(v49^c|;|),'nd'/,
+,proc(,ref(['c:\scielo\code\code']l(['c:\scielo\code\code']'en-scheme'),('a999{',v2,'{'),'a998{',(|~|v2^c|~|,v2^v,|#|v2^c|#|),'{'),),
+,if a(v85) then
+	,(if v999^c='nd' then
+		,v999^v/,
+	,fi),
+,else
+	,proc(,
+	,('a997{',
+	,mid(v998[1],instr(v998[1],s(|~|v85|~|))+size(s(|~|v85|~|)),instr(v998[1],s(|#|v85|#|))-instr(v998[1],s(|~|v85|~|))-size(s(|~|v85|~|))),
+        ,'{')),
+	,(v997+|;|)/,
+,fi,
+
+,proc('d999'),
+,proc(,ref(['c:\scielo\code\code']l(['c:\scielo\code\code']'standard'),('a999{',v2,'{')),),
+,if a(v117) then
+	,(if v999^c='other' then
+		,v999^v/,
+	,fi),
+,else
+	,(if v999^c=v117[1] then
+		,v999^v/,
+	,fi),
+,fi,
+
+
+,fi,

@@ -1,0 +1,101 @@
+currentISSN|t|935|*|Current ISSN|ISSN Vigente|ISSN atual
+Issue_Cover|i|97||Cover|Portada|Capa
+issue_creativecommons|i|540tl||Text provided by Creative Commons site according to the license choice|Texto proveído por el sitio Creative Commons de acuerdo con la escoja de la licencia|Texto fornecido pelo site Creative Commons de acordo com a escolha da licença
+Issue_DateISO|i|65|*|Date ISO|Fecha ISO|Data ISO
+Issue_Header|i|48|*|Table of Contents|Tabla de Contenido|Sumário
+issue_Idiom|i|49l||Section Idiom|Idioma de las secciones|Idioma das seções
+Issue_ISSN|t|35|*|Issue ISSN|ISSN del facículo|ISSN do fascículo
+Issue_IssPublisher|i|62||Issue Publisher|Editor del fascículo|Editor do fascículo
+Issue_IssTitle|i|33||Issue Title|Título del fascículo|Título do fascículo
+Issue_MkpDone|i|200|*|Markup done|Marcación fué hecha|Marcação feita
+Issue_month|i|43m||Month|Mes|Mês
+Issue_NumberofDocuments|i|122|*|Number of documents|Cantidad de documentos|Número de documentos
+Issue_Part|i|34||Part|Part|Parte
+Issue_Place|i|43c|*|City/Place|Ciudad|Cidade
+Issue_Scheme|i|85|*|Controled Vocabulary|Vocabulario Controlado|Vocabulário Controlado
+issue_SectionCode|I|49c||Section Code|Código de las secciones|Código das seções
+issue_SectionTitle|I|49t||Section Title|Título de las secciones|Título das seções
+Issue_Sponsor|i|140||Sponsor|Sponsor|Financiador
+Issue_Standard|i|117|*|||
+Issue_status|i|42|*|Status|Status|Status
+Issue_year|i|43y|*|Year|Año|Ano
+IssueIdPart|i|41||Compl|Compl|Compl
+Issueno|i|32||Issue|Fascículo|Número
+IssueSuppl|i|132||Issue Suppl|Supl Fasc|SuplNum
+Sec_Idiom|s|49l||Section Idiom|Idioma de las secciones|Idioma das seções
+Sec_SectionCode|s|49c||Section Code|Código de las secciones|Código das seções
+Sec_SectionTitle|s|49t||Section Title|Título de las secciones|Título das seções
+SequentialNumber|i|36|*|Seq Num|Num Seq|Num Seq
+ser1_HasSuppl|t|550||Has Supplement|Tiene suplemento|Tem suplemento
+ser1_ISOStitle|t|151|*|ISO Short Title|Título ISO Corto |Título ISO Abreviado
+ser1_issn|t|400|*|ISSN|ISSN|ISSN
+ser1_IsSuppl|t|560||Is Supplement|Es suplemento de|É suplemento de
+ser1_NewTitle|t|710||New Title|Título nuevo|Título novo
+ser1_OldTitle|t|610||Old Title|Título antiguo|Título antigo
+ser1_OtherTitles|t|240||Other Titles|Otros títulos|Outros títulos
+ser1_ParallelTitles|t|230||Parallel Titles|Títulos Paralelos|Títulos Paralelos
+ser1_SectionTitle|t|130||Section|Sección|Seção
+ser1_ShortTitle|t|150|*|Short Title|Título Corto|Título Abreviado
+ser1_Subtitle|t|110||Subtitle|Subtítulo|Subtítulo
+ser1_Title|t|100|*|Publication Title|Título|Título
+ser2_LiterType|t|5|*|Type of Literature|Tipo de Literatura|Tipo de Literatura
+ser2_Mission|t|901|*|Mission|Misión|Missão
+ser2_PubLevel|t|330|*|Level of publication|Nivel de publicación|Nível de publicação
+ser2_StudyArea|t|441|*|Study Area |Area del conocimiento|Assunto
+ser2_Subject|t|440|*|Subject/Descriptors |Asunto/Descriptores |Assunto/Descritores 
+ser2_TreatLevel|t|6|*|Treatment Level |Nivel de Tratamiento|Nível de Tratamento 
+ser3_AbstIdiom|t|360|*|Abstract Idiom |Idioma del Resumen|Idioma do Resumo
+ser3_Alphabet|t|340|*|Alphabet |Alfabeto |Alfabeto 
+ser3_Classif|t|430||Classification|Clasificación|Classificação
+ser3_FinNo|t|306||Final Number|Número Final |Número Final 
+ser3_FinVol|t|305||Final Volume|Volumen Final|Volume Final
+ser3_Freq|t|380|*|Frequency|Frecuencia|Frequência
+ser3_InitDate|t|301||Initial Date |Fecha Inicial |Data Inicial 
+ser3_InitNo|t|303||Initial Number |Número Inicial |Número Inicial 
+ser3_InitVol|t|302||Initial Volume|Volumen Inicial|Volume Inicial
+ser3_NationalCode|t|20||National Code |Código Nacional |Código Nacional 
+ser3_PubCity|t|490|*|Publisher's City |Ciudad de la Casa Publicadora|Cidade da Publicação
+ser3_PubCountry|t|310|*|Publisher's Country |Pais de la Casa Publicadora|País da Publicação
+ser3_Publisher|t|480|*|Publisher |Casa Publicadora |Editora 
+ser3_PubState|t|320||Publisher's State |Estado de la Casa Publicadora|Estado da Publicação
+ser3_PubStatus|t|50|*|Publication Status |Status de la Publicación |Status da Publicação 
+ser3_TermDate|t|304||Terminate Date |Fecha Final|Data Final
+ser3_TxtIdiom|t|350|*|Text Idiom |Idioma del Texto|Idioma do Texto
+ser4_Address|t|63|*|Address |Dirección|Endereço 
+ser4_cprightDate|t|621||Copyright Date |Derechos autorales - Fecha|Copyright (Data)
+ser4_cprighter|t|62|*|Copyrighter |Detenedor de los derechos autorales|Detentor dos direitos autorais 
+ser4_email|t|64|*|Electronic Address|Correo Electronico|Endereço Eletrônico
+ser4_Fax|t|632||Fax Number|Número del Fax|Fax
+ser4_idxRange|t|450||Indexation Range|Cobertura de la Indización|Cobertura de Indexação
+ser4_medline|t|420||MEDLINE Code|Código MEDLINE|Código MEDLINE
+ser4_MedlineStitle|t|421||MEDLINE Short Title |Título Corto MEDLINE|Título Abreviado MEDLINE
+ser4_Phone|t|631||Phone Number|Número del Teléfono|Telefone
+ser4_secs|t|37||SECS Code |Código SECS  |Código SECS  
+ser4_sponsor|t|140||Sponsor |Financiador|Financiador
+ser5_CCode|t|10|*|Center Code |Código del Centro|Código do Centro
+ser5_CreatDate|t|940|*|Creation Date |Fecha de Creación  |Data de Criação  
+ser5_DocCreation|t|950|*|Documentalist (Creation)|Documentalista (Creación)|Documentalista (Criação)
+ser5_DocUpdate|t|951|*|Documentalist (Update) |Documentalista (Actualización) |Documentalista (Atualização) 
+ser5_FTP|t|66|*|FTP |FTP |FTP 
+ser5_IdNumber|t|30||Identification Number |Número de Identificación|Número de Identificação
+ser5_ISSNType|t|35|*|ISSN Type|Tipo de ISSN|Tipo de ISSN
+ser5_notes|t|900||Notes |Notas |Notas 
+ser5_PubId|t|68|*|Publication Identifier|Identif de la Publicación|Identif da Publicação
+ser5_SciELONet|t|691|*|SciELO Net|Red SciELO|Rede SciELO
+ser5_Sep|t|65|*|Separator line|Linea Separadora|Linha Separadora
+ser5_siglum|t|930|*|Siglum |Sigla |Sigla 
+ser5_SiteLocation|t|69||URL of the journal|URL de la revista|URL do periódico
+ser5_SubmissionOnline|t|692||URL of Submission Online|URL de Submission Online|URL de Submission Online
+ser5_UpdateDate|t|941|*|Update Date |Fecha de Actualización|Data de Atualização
+ser5_UserSubscription|t|67|*|User Subscription |Suscripción del usuario |Assinatura do usuário 
+ser6_journalStatusHistory|t|51abcd|*|Journal status history in this collection|Histórico de la situación de la revista en esta colección. |Histórico do status do periódico nesta coleção
+ser6_journalEntryDate|t|51abcd|*|Entry date|Fecha de ingreso|Data de entrada
+ser6_journalExitDate|t|51abcd|*|Exit date|Fecha de salida|Data de saída
+ser6_journalExitStatus|t|51abcd|*|Exiting reason|Razón de la salida|Razão da saída
+title_creativecommons|t|540tl||Text provided by Creative Commons site according to the license choice|Texto proveído por el sitio Creative Commons de acuerdo con la escoja de la licencia|Texto fornecido pelo site Creative Commons de acordo com a escolha da licença
+title_Scheme|t|85|*|Controled Vocabulary|Vocabulario Controlado|Vocabulário Controlado
+Title_standard|t|117|*|Standard|Norma|Norma
+VolSuppl|i|131||Vol Suppl|Supl Vol|SuplVol
+Volume|I|31||Volume|Volumen|Volume
+ser5_MainCollectionLocation|t|690||URL of the main collection |URL de la colección principal|URL da coleção principal
+

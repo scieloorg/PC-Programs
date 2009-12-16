@@ -1,0 +1,457 @@
+00101;Error. Exit on the Markup;frmArticle;ComboBox_IssueId_Change
+
+00102;Error. Exit on the Markup;frmArticle;ComboBox_Version_Change
+
+00103;Error. Exit on the Markup;frmArticle;CommandButton_Cancel_Click
+
+00104;Error. Exit on the Markup;frmArticle;CommandButton_Ok_Click
+
+00105;Error. Exit on the Markup;frmArticle;UserForm_Terminate
+
+00106;Error. Exit on the Markup;frmArticle;VerifyFrmArticle
+
+00107;Error. Exit on the Markup;frmArticle;VerifyDateValue
+
+00108;Error. Exit on the Markup;frmArticle;VerifyPII
+
+00109;Error. Exit on the Markup;frmArticle;VerifyORDER
+
+00110;Error. Exit on the Markup;frmArticle;VerifyVOLID
+
+00111;Error. Exit on the Markup;frmArticle;VerifyISSUENO
+
+00112;Error. Exit on the Markup;frmArticle;VerifyDATEISO
+
+00113;Error. Exit on the Markup;frmArticle;VerifySUPPLVOL
+
+00114;Error. Exit on the Markup;frmArticle;VerifySUPLLNO
+
+00115;Error. Exit on the Markup;frmArticle;VerifyTOCCODE
+
+00116;Error. Exit on the Markup;frmArticle;VerifyLANGUAGE
+
+00117;Error. Exit on the Markup;frmArticle;VerifyTYPE
+
+00118;Error. Exit on the Markup;frmArticle;VerifySTATUS
+
+00119;Error. Exit on the Markup;frmArticle;VerifyVERSION
+
+00120;Error. Exit on the Markup;frmArticle;VerifyDOCTOPIC
+
+00121;Error. Exit on the Markup;frmArticle;VerifyCCODE
+
+00122;Error. Exit on the Markup;frmArticle;VerifySTITLE
+
+00123;Error. Exit on the Markup;frmArticle;VerifySECCODE
+
+00124;Error. Exit on the Markup;frmArticle;VerifyISSN
+
+00125;Error. Exit on the Markup;frmArticle;VerifyPAGES
+
+00201;Error. Exit on the Markup;frmAttribute;CommandButton_Cancel_Click
+
+00202;Error. Exit on the Markup;frmAttribute;CommandButton_Ok_Click
+
+00203;Error. Exit on the Markup;frmAttribute;UserForm_Terminate
+
+00204;Error. Exit on the Markup;frmAttribute;VerifyFrmAttribute
+
+00205;Error. Exit on the Markup;frmAttribute;VerifyTB_A1
+
+00206;Error. Exit on the Markup;frmAttribute;VerifyTB_A2
+
+00207;Error. Exit on the Markup;frmAttribute;VerifyTB_A3
+
+00208;Error. Exit on the Markup;frmAttribute;VerifyCB_A1
+
+00209;Error. Exit on the Markup;frmAttribute;VerifyCB_A2
+
+00210;Error. Exit on the Markup;frmAttribute;VerifyCB_A3
+
+00211;Error. Exit on the Markup;frmAttribute;TestAttribute
+
+00212;Error. Exit on the Markup;frmAttribute;VerifyDateValue
+
+00213;Error. Exit on the Markup;frmAttribute;VerifyDATEISO
+
+00214;Error. Exit on the Markup;frmAttribute;VerifyROLE
+
+00215;Error. Exit on the Markup;frmAttribute;VerifyRID
+
+00216;Error. Exit on the Markup;frmAttribute;VerifyTYPE
+
+00217;Error. Exit on the Markup;frmAttribute;VerifyLANGUAGE
+
+00218;Error. Exit on the Markup;frmAttribute;VerifyID
+
+00219;Error. Exit on the Markup;frmAttribute;VerifySCHEME
+
+00220;Error. Exit on the Markup;frmAttribute;VerifyFROM
+
+00221;Error. Exit on the Markup;frmAttribute;VerifyTO
+
+00222;Error. Exit on the Markup;frmAttribute;VerifySTANDARD
+
+00223;Error. Exit on the Markup;frmAttribute;VerifyCOUNT
+
+00301;Error. Exit on the Markup;frmConfig;CommandButton_cancel_Click
+
+00302;Error. Exit on the Markup;frmConfig;CommandButton_clear_Click
+
+00303;Error. Exit on the Markup;frmConfig;CommandButton_OK_Click
+
+00304;Error. Exit on the Markup;frmConfig;CommandButton_record_Click
+
+00305;Error. Exit on the Markup;frmConfig;UserForm_Initialize
+
+00306;Error. Exit on the Markup;frmConfig;UserForm_Terminate
+
+00307;Error. Exit on the Markup;frmConfig;VerifyFrmConfig
+
+00308;Error. Exit on the Markup;frmConfig;SetGlobalValues
+
+00401;Error. Exit on the Markup;frmReferenceMarkup;Form_Load
+
+00402;Error. Exit on the Markup;frmReferenceMarkup;FirstChoice_Click
+
+00403;Error. Exit on the Markup;frmReferenceMarkup;LastChoice_Click
+
+00404;Error. Exit on the Markup;frmReferenceMarkup;Markup_Click
+
+00405;Error. Exit on the Markup;frmReferenceMarkup;NextChoice_Click
+
+00406;Error. Exit on the Markup;frmReferenceMarkup;PreviousChoice_Click
+
+00407;Error. Exit on the Markup;frmReferenceMarkup;Undo_Click
+
+00408;Error. Exit on the Markup;frmReferenceMarkup;UserForm_Terminate
+
+10101;Error. Exit on the Markup;AutoMacros;AutoExec
+
+10102;Error. Exit on the Markup;AutoMacros;AutoOpen
+
+10103;Error. Exit on the Markup;AutoMacros;Delete_AddIn
+
+10104;Error. Exit on the Markup;AutoMacros;AutoClose
+
+10201;Error. Exit on the Markup;MainModule;Main
+
+10202;Error. Exit on the Markup;MainModule;SubStartMarkup
+
+10203;Error. Exit on the Markup;MainModule;SubStop
+
+10204;Error. Exit on the Markup;MainModule;SubChange
+
+10205;Error. Exit on the Markup;MainModule;SubDelete
+
+10206;Error. Exit on the Markup;MainModule;SubAutomatic
+
+10207;Error. Exit on the Markup;MainModule;SubElse
+
+10208;Error. Exit on the Markup;MainModule;SubHelp
+
+10209;Error. Exit on the Markup;MainModule;SubDown
+
+10210;Error. Exit on the Markup;MainModule;SubUp
+
+10211;Error. Exit on the Markup;MainModule;MainConfig
+
+10301;Error. Exit on the Markup;ReferenceMarkup;Markup
+
+10302;Error. Exit on the Markup;ReferenceMarkup;ShowResults
+
+20101;Error. Exit on the Markup;AllResultsTables;Index
+
+20102;Error. Exit on the Markup;AllResultsTables;Count
+
+20103;Error. Exit on the Markup;AllResultsTables;Class_Initialize
+
+20104;Error. Exit on the Markup;AllResultsTables;AddNew
+
+20105;Error. Exit on the Markup;AllResultsTables;Load
+
+20106;Error. Exit on the Markup;AllResultsTables;GetNext
+
+20107;Error. Exit on the Markup;AllResultsTables;GetCurrent
+
+20108;Error. Exit on the Markup;AllResultsTables;GetPrev
+
+20109;Error. Exit on the Markup;AllResultsTables;GetFirst
+
+20110;Error. Exit on the Markup;AllResultsTables;GetLast
+
+20111;Error. Exit on the Markup;AllResultsTables;GetItem
+
+20112;Error. Exit on the Markup;AllResultsTables;Clean
+
+20113;Error. Exit on the Markup;AllResultsTables;Class_Terminate
+
+20201;Error. Exit on the Markup;clsAttribute;InsertValue
+
+20202;Error. Exit on the Markup;clsAttribute;ReturnCount
+
+20301;Error. Exit on the Markup;clsAttrList;InsertAttr
+
+20302;Error. Exit on the Markup;clsAttrList;ReturnCount
+
+20303;Error. Exit on the Markup;clsAttrList;LoadAttributes
+
+20501;Error. Exit on the Markup;clsAutoMarkupList;LoadAutomata
+
+20601;Error. Exit on the Markup;clsBar;SetName
+
+20602;Error. Exit on the Markup;clsBar;SetUpLevel
+
+20603;Error. Exit on the Markup;clsBar;GetName
+
+20604;Error. Exit on the Markup;clsBar;GetUpLevel
+
+20605;Error. Exit on the Markup;clsBar;InsertButton
+
+20606;Error. Exit on the Markup;clsBar;LenListOfButton
+
+20701;Error. Exit on the Markup;clsButton;SetTag
+
+20702;Error. Exit on the Markup;clsButton;SetShortTag
+
+20703;Error. Exit on the Markup;clsButton;SetColor
+
+20704;Error. Exit on the Markup;clsButton;SetRepetitive
+
+20705;Error. Exit on the Markup;clsButton;SetAttrib
+
+20706;Error. Exit on the Markup;clsButton;SetDownLevel
+
+20707;Error. Exit on the Markup;clsButton;GetTag
+
+20708;Error. Exit on the Markup;clsButton;GetShortTag
+
+20709;Error. Exit on the Markup;clsButton;GetColor
+
+20710;Error. Exit on the Markup;clsButton;GetRepetitive
+
+20711;Error. Exit on the Markup;clsButton;GetAttrib
+
+20712;Error. Exit on the Markup;clsButton;GetDownLevel
+
+20801;Error. Exit on the Markup;clsConfig;GetResponsible
+
+20802;Error. Exit on the Markup;clsConfig;SetResponsible
+
+20803;Error. Exit on the Markup;clsConfig;GetLanguage
+
+20804;Error. Exit on the Markup;clsConfig;SetLanguage
+
+20805;Error. Exit on the Markup;clsConfig;SetFirstHour
+
+20806;Error. Exit on the Markup;clsConfig;GetFirstHour
+
+20807;Error. Exit on the Markup;clsConfig;SetLastHour
+
+20808;Error. Exit on the Markup;clsConfig;GetLastHour
+
+20809;Error. Exit on the Markup;clsConfig;GetMarkupTime
+
+20810;Error. Exit on the Markup;clsConfig;LoadPublicValues
+
+20901;Error. Exit on the Markup;clsErr;DisplayErr
+
+20902;Error. Exit on the Markup;clsErr;BuildErrLog
+
+21001;Error. Exit on the Markup;clsErrList;LoadErr
+
+21002;Error. Exit on the Markup;clsErrList;LastExit
+
+21003;Error. Exit on the Markup;clsErrList;BuildLog
+
+21101;Error. Exit on the Markup;clsInterface;ShowFrmArticle
+
+21102;Error. Exit on the Markup;clsInterface;EndFrmArticle
+
+21103;Error. Exit on the Markup;clsInterface;SetFrmArticle
+
+21104;Error. Exit on the Markup;clsInterface;ExitFrmArticle
+
+21105;Error. Exit on the Markup;clsInterface;SetDefaultValueAbbrArticle
+
+21106;Error. Exit on the Markup;clsInterface;ShowFrmAttribute
+
+21107;Error. Exit on the Markup;clsInterface;EndFrmAttribute
+
+21108;Error. Exit on the Markup;clsInterface;ExitFrmAttribute
+
+21109;Error. Exit on the Markup;clsInterface;SetDefaultValueAbbrAttribute
+
+21110;Error. Exit on the Markup;clsInterface;ShowFrmConfig
+
+21111;Error. Exit on the Markup;clsInterface;EndFrmConfig
+
+21112;Error. Exit on the Markup;clsInterface;BuildMarkupBar
+
+21113;Error. Exit on the Markup;clsInterface;DestroyMarkupBar
+
+21114;Error. Exit on the Markup;clsInterface;DisableWordBars
+
+21115;Error. Exit on the Markup;clsInterface;EnableWordBars
+
+21201;Error. Exit on the Markup;clsIssue;InsertSec
+
+21202;Error. Exit on the Markup;clsIssue;ReturnCount
+
+21301;Error. Exit on the Markup;clsIssueList;InsertIssue
+
+21302;Error. Exit on the Markup;clsIssueList;ReturnCount
+
+21303;Error. Exit on the Markup;clsIssueList;LoadIssue
+
+21401;Error. Exit on the Markup;clsLink;InsertAttr
+
+21402;Error. Exit on the Markup;clsLink;ReturnCount
+
+21501;Error. Exit on the Markup;clsListBar;InsertBar
+
+21502;Error. Exit on the Markup;clsListBar;LenListOfBar
+
+21503;Error. Exit on the Markup;clsListBar;LoadBars
+
+21504;Error. Exit on the Markup;clsListBar;CreateBars
+
+21505;Error. Exit on the Markup;clsListBar;KillBars
+
+21506;Error. Exit on the Markup;clsListBar;EnableBar
+
+21507;Error. Exit on the Markup;clsListBar;DisableBar
+
+21508;Error. Exit on the Markup;clsListBar;MoveBarDefault
+
+21509;Error. Exit on the Markup;clsListBar;MoveBarTop
+
+21510;Error. Exit on the Markup;clsListBar;BuildTempFile
+
+21511;Error. Exit on the Markup;clsListBar;LoadTempFile
+
+21601;Error. Exit on the Markup;clsLkList;InsertLink
+
+21602;Error. Exit on the Markup;clsLkList;ReturnCount
+
+21603;Error. Exit on the Markup;clsLkList;LoadLink
+
+21701;Error. Exit on the Markup;clsMarkup;InsertTag
+
+21702;Error. Exit on the Markup;clsMarkup;DeleteTag
+
+21703;Error. Exit on the Markup;clsMarkup;FormatText
+
+21704;Error. Exit on the Markup;clsMarkup;BuildStartTag
+
+21705;Error. Exit on the Markup;clsMarkup;BuildFinishTag
+
+21706;Error. Exit on the Markup;clsMarkup;DisableScreen
+
+21707;Error. Exit on the Markup;clsMarkup;EnableScreen
+
+21708;Error. Exit on the Markup;clsMarkup;ChangeAttribute
+
+21709;Error. Exit on the Markup;clsMarkup;VerifyHierarchy
+
+21710;Error. Exit on the Markup;clsMarkup;BuildLog
+
+21711;Error. Exit on the Markup;clsMarkup;UpLevel
+
+21712;Error. Exit on the Markup;clsMarkup;DownLevel
+
+21713;Error. Exit on the Markup;clsMarkup;DisplayBar
+
+21714;Error. Exit on the Markup;clsMarkup;VerifyDocumentHTMLFormat
+
+21715;Error. Exit on the Markup;clsMarkup;ChangeSTAGO_TAGC
+
+21716;Error. Exit on the Markup;clsMarkup;ChangeFields
+
+21717;Error. Exit on the Markup;clsMarkup;ChangeHtmlMarkup
+
+21718;Error. Exit on the Markup;clsMarkup;ChangeEntity
+
+21719;Error. Exit on the Markup;clsMarkup;FindTag
+
+21720;Error. Exit on the Markup;clsMarkup;FindText
+
+21721;Error. Exit on the Markup;clsMarkup;TestExistTag
+
+21722;Error. Exit on the Markup;clsMarkup;TestExistFloat
+
+21723;Error. Exit on the Markup;clsMarkup;TestFatherTag
+
+21724;Error. Exit on the Markup;clsMarkup;TestOwnSisterTag
+
+21801;Error. Exit on the Markup;clsToken;GetTokens
+
+22001;Error. Exit on the Markup;ResultsTable;Count
+
+22002;Error. Exit on the Markup;ResultsTable;AddNew
+
+22003;Error. Exit on the Markup;ResultsTable;GetItem
+
+22004;Error. Exit on the Markup;ResultsTable;Clean
+
+22005;Error. Exit on the Markup;ResultsTable;Class_Terminate
+
+22101;Error. Exit on the Markup;ResultsTableEntry;Let Element
+
+22102;Error. Exit on the Markup;ResultsTableEntry;Get Element
+
+22103;Error. Exit on the Markup;ResultsTableEntry;Let SubElement
+
+22104;Error. Exit on the Markup;ResultsTableEntry;Get SubElement
+
+22105;Error. Exit on the Markup;ResultsTableEntry;Let StartPos
+
+22106;Error. Exit on the Markup;ResultsTableEntry;Get StartPos
+
+22107;Error. Exit on the Markup;ResultsTableEntry;Let EndPos
+
+22108;Error. Exit on the Markup;ResultsTableEntry;Get EndPos
+
+22109;Error. Exit on the Markup;ResultsTableEntry;Let Level
+
+22110;Error. Exit on the Markup;ResultsTableEntry;Get Level
+
+22111;Error. Exit on the Markup;ResultsTableEntry;Let Terminal
+
+22112;Error. Exit on the Markup;ResultsTableEntry;Get Terminal
+
+22113;Error. Exit on the Markup;ResultsTableEntry;Let AbsSTAGStartPos
+
+22114;Error. Exit on the Markup;ResultsTableEntry;Get AbsSTAGStartPos
+
+22115;Error. Exit on the Markup;ResultsTableEntry;Let AbsSTAGEndPos
+
+22116;Error. Exit on the Markup;ResultsTableEntry;Get AbsSTAGEndPos
+
+22117;Error. Exit on the Markup;ResultsTableEntry;Let AbsETAGStartPos
+
+22118;Error. Exit on the Markup;ResultsTableEntry;Get AbsETAGStartPos
+
+22119;Error. Exit on the Markup;ResultsTableEntry;Let AbsETAGEndPos
+
+22120;Error. Exit on the Markup;ResultsTableEntry;Get AbsETAGEndPos
+
+22201;Error. Exit on the Markup;Tag;Let Symbol
+
+22202;Error. Exit on the Markup;Tag;Get Symbol
+
+22203;Error. Exit on the Markup;Tag;Let Name
+
+22204;Error. Exit on the Markup;Tag;Get Name
+
+22205;Error. Exit on the Markup;Tag;Let Attributes
+
+22301;Error. Exit on the Markup;TagsTable;Count
+
+22302;Error. Exit on the Markup;TagsTable;AddNew
+
+22303;Error. Exit on the Markup;TagsTable;GetItem
+
+22304;Error. Exit on the Markup;TagsTable;Clean
+
+22305;Error. Exit on the Markup;TagsTable;Class_Terminate

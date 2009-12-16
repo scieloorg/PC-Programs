@@ -1,0 +1,48 @@
+<big>|
+</big>|
+<b>|
+</b>|
+<strong>|
+</strong>|
+<i>|
+</i>|
+<em>|
+</em>|
+<small>|
+</small>|
+<u>|
+</u>|
+<br>|
+</br>|
+<BIG>|
+</BIG>|
+<B>|
+</B>|
+<STRONG>|
+</STRONG>|
+<I>|
+</I>|
+<EM>|
+</EM>|
+<SMALL>|
+</SMALL>|
+<U>|
+</U>|
+<BR>|
+</BR>|
+<SUB> | <SUB>
+ </SUB>|</SUB> 
+<SUB>|<SUB>
+</SUB>|</SUB>
+<SUP> |<SUP>
+ </SUP>|</SUP> 
+<SUP>|<SUP>
+</SUP>|</SUP>
+<sub> | <SUB>
+ </sub>|</SUB> 
+<sub>|<SUB>
+</sub>|</SUB>
+<sup> |<SUP>
+ </sup>|</SUP> 
+<sup>|<SUP>
+</sup>|</SUP>

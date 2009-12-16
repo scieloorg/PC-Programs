@@ -1,0 +1,5 @@
+C:\scielo\BIN\SGMLPARS\art.dcl
+C:\scielo\BIN\SGMLPARS\art3_1.dtd
+article
+1
+1

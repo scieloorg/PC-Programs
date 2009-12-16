@@ -1,0 +1,24 @@
+12
+"brazilian journal of chemical engineering","brazilian journal of genetics","brazilian journal of medical and biological research","brazilian journal of physics","dados - revista de ciências sociais","fbpe/bireme","journal of the brazilian chemical society","journal of the brazilian computer society","memórias do instituto oswaldo cruz","revista brasileira de ciência do solo","revista brasileira de geociências","revista do instituto de medicina tropical de são paulo"
+"bjce","bjg","bjmbr","bjp","dados","br1.1","jbchs","jbcos","mioc","rbcs","rbgeo","rimtsp"
+36
+"abstracts","brief communication","comments","case report","editorial","invited review","letter","methodology","mini-review article","original article","point-of-view","preliminary report","research note","review article","short communication","state-of-the-art review","artículo original","cartas","comentarios","editorial","informe de caso","metodología","resumen","artigo original","cartas","comentários","comunicação breve","editorial","nota prévia","nota","metodologia","ponto de vista","relato de caso","resumos","revisão a convite","revisão de literatura"
+"ab","sc","co","cr","ed","ra","le","mt","ra","oa","pv","rn","rn","ra","sc","ra","oa","le","co","ed","cr","mt","ab","oa","le","co","sc","ed","rn","rn","mt","pv","cr","ab","ra","ra"
+48
+"Portuguese","English","Spanish","French","Italian","German","Japanese","Russian","Chinese","Unknown","Afrikaans","Arabic","Bulgarian","Czech","Danish","Esperanto","Greek","Hebrew","Hindi","Hungarian","Interlingua","Interlingue","Indonesian","Korean","Latin","Dutch","Norwergian","Polish","Romanian","Sanskrit","Serbo-Croat","Slovak","Slovenian","Swedish","Turkish","Ukrainian","Urdu","Português","Inglês","Espanhol","Francês","Italiano","Alemão","Tcheco","Japonês","Russo","Chinês","Unknown"
+"pt","en","es","fr","It","de","ja","ru","ch","zz","af","ar","bg","cs","da","eo","gr","he","hi","hu","Ia","Ie","In","ko","la","ni","no","pi","ro","sa","sh","sk","sn","sv","tr","uk","ur","pt","en","es","fr","it","de","cs","ja","ru","ch","zz"
+3
+"Available","Disponible","Disponível"
+"1","1","1"
+29
+"Acta Cirurgica Brasileira","Brazilian Journal of Chemical Engineering","Brazilian Journal of Genetics","Brazilian Journal of Medical and Biological Research","Brazilian Journal of Physics","Ciência da Informação","Dados","Journal of the Brazilian Chemical Society","Journal of the Brazilian Computer Society","Memórias do Instituto Oswaldo Cruz","Revista Brasileira de Ciência do Solo","Revista Brasileira de Geociências","Revista de Saúde Pública","Revista do Instituto de Medicina Tropical de São Paulo","Revista Brasileira de Ciências Sociais","Revista de Odontologia da Universidade de São Paulo","Revista Brasileira de Cirurgia Cardiovascular","Scientia Agricola","Ciência e Tecnologia de Alimentos","DELTA: Documentação de Estudos em Lingüística Teórica e Aplicada","Pesquisa Veterinária Brasileira","Revista Brasileira de História","Psicologia USP","Journal of Venomous Animals and Toxins","Bragantia","Revista Brasileira de Botânica","Genetics and Molecular Biology","Revista da Faculdade de Educação","Revista de Microbiologia"
+"Acta Cir. Bras.","Braz. J. Chem. Eng.","Braz. J. Genet.","Braz J Med Biol Res","Braz. J. Phys.","Ci. Inf.","Dados","J. Braz. Chem. Soc.","J. Braz. Comp. Soc.","Mem. Inst. Oswaldo Cruz","Rev. bras. Ci. Solo","Rev. bras. Geocienc.","Rev. Saúde Pública","Rev. Inst. Med. trop. S. Paulo","Rev. bras. Ci. Soc.","Rev Odontol Univ São Paulo","Rev Bras Cir Cardiovasc","Sci. agric.","Ciênc. Tecnol. Aliment.","DELTA","Pesq. Vet. Bras.","Rev. bras. Hist.","Psicol. USP","J. Venom. Anim. Toxins","Bragantia","Rev. bras. Bot.","Genet. Mol. Biol.","Rev. Fac. Educ.","Rev. Microbiol."
+15
+"no illustrative material","figure","graphic","map","table","sin material ilustrativo ","figura","gráfico","mapa","tabla","sem material ilustrativo ","figura","gráfico","mapa","tabela"
+"nd","fig","gra","map","tab","nd","fig","gra","map","tab","nd","fig","gra","map","tab"
+4
+"1.0","1.1","2.0","3.0"
+"1.0","1.1","2.0","3.0"
+2
+"title","sectitle"
+"1","2"

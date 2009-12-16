@@ -1,0 +1,224 @@
+0044-5967;Acta Amaz.;other
+0102-3306;Acta Bot. Bras.;other
+0102-8650;Acta Cir. Bras.;other
+1413-7852;Acta ortop. bras.;other
+0103-2100;Acta paul. enferm.;vancouv
+1516-1498;Ágora (Rio J.);other
+1517-106X;Alea;other
+1414-753X;Ambient. soc.;other
+0365-0596;An. Bras. Dermatol.;other
+0001-3765;An. Acad. Bras. Ciênc.;other
+0301-8059;An. Soc. Entomol. Bras.;other
+0101-4714;An. mus. paul.;nbr6023
+0102-0935;Arq. Bras. Med. Vet. Zootec.;nbr6023
+0066-782X;Arq. Bras. Cardiol.;vancouv
+0004-2730;Arq Bras Endocrinol Metab;other
+0004-2749;Arq. Bras. Oftalmol.;vancouv
+0365-2203;Arq. fac. hig. Saude Publica Univ. Sao Paulo;
+0004-2803;Arq. Gastroenterol.;vancouv
+0004-282X;Arq. Neuro-Psiquiatr.;vancouv
+1676-0603;Biota Neotrop.;other
+0030-0632;Bol. Of. sanit. panam.;
+0479-3420;Bol. Of. sanit. panam., supl.;
+1014-4390;Bol. panam. sanid. Oficina sanit. int.;
+0006-8705;Bragantia;other
+1516-8913;Braz. arch. biol. technol.;other
+0103-6440;Braz. Dent. J.;other
+1519-6984;Braz. J. Biol.;other
+1678-9741;Braz. j. cardiovasc. surg.;other
+0104-6632;Braz. J. Chem. Eng.;other
+0100-8455;Braz. J. Genet.;other
+1413-8670;Braz J Infect Dis;other
+0100-879X;Braz J Med Biol Res;other
+1517-8382;Braz. J. Microbiol.;other
+1679-8759;Braz. j. oceanogr.;nbr6023
+0103-9733;Braz. J. Phys.;other
+1677-0420;Braz. J. Plant Physiol.;other
+1413-9596;Braz. J. Vet. Res. Anim. Sci.;other
+1806-8324;Braz. oral res.;vancouv
+0301-5750;Bull. Pan Am. Health Organ.;
+0042-9686;Bull World Health Organ;other
+0101-3262;Cad. CEDES;other
+0100-1574;Cad. Pesqui.;other
+0102-311X;Cad. Saúde Pública;vancouv
+0104-8333;Cad. Pagu;other
+0366-6913;Cerâmica;other
+1516-7313;Ciênc. educ. (Bauru);nbr6023
+1413-8123;Ciênc. saúde coletiva;other
+0100-1965;Ci. Inf.;other
+1413-7054;Ciênc. agrotec.;nbr6023
+0101-2061;Ciênc. Tecnol. Aliment.;other
+0103-8478;Cienc. Rural;nbr6023
+1807-5932;Clinics;other
+0101-8205;Mat. apl. comput.;other
+0102-8529;Contexto int.;nbr6023
+0011-5258;Dados;other
+0102-4450;DELTA;other
+0100-4670;Eclet. Quím.;other
+1413-8050;Econ. Apl.;nbr6023
+0104-0618;Econ. soc.;other
+0101-7330;Educ. Soc.;other
+1517-9702;Educ. Pesqui.;other
+0104-4060;Educ. rev.;other
+1516-4055;ECLER Endod.;
+0100-6916;Eng. Agríc.;nbr6023
+1413-4152;Eng. Sanit. Ambient.;other
+0104-4036;Ensaio: aval.pol.públ.Educ.;nbr6023
+0328-0381;Entomol. vectores;other
+0101-546X;Estud. afro-asiát.;other
+0103-4014;Estud. av.;other
+0103-166X;Estud. psicol. (Campinas);other
+1413-294X;Estud. psicol. (Natal);other
+0101-4161;Estud. Econ.;nbr6023
+0100-4158;Fitopatol. bras.;other
+0213-9111;Gac Sanit;other
+1415-4757;Genet. Mol. Biol.;other
+0104-530X;Gest. Prod.;other
+0101-9074;História;other
+0104-5970;Hist. cienc. saude-Manguinhos;other
+0104-7183;Horiz. antropol.;other
+0102-0536;Hortic. Bras.;other
+0073-4721;Iheringia, Sér. Zool.;other
+0122-9907;Inf. Quinc. Epidem. Nac.;
+1518-7012;Interações (Campo Grande);nbr6023
+1414-3283;Interface (Botucatu);nbr6023
+1677-5538;Int. braz j urol.;other
+1676-2444;J. Bras. Patol. Med. Lab.;nbr6023
+1806-3713;J. bras. pneumol.;vancouv
+0047-2085;J. bras. psiquiatr.;vancouv
+0021-7557;J. Pediatr. (Rio J.);vancouv
+0102-3586;J. Pneumologia;vancouv
+1677-5449;J. vasc. bras.;other
+1678-7757;J. Appl. Oral Sci.;vancouv
+1676-2649;J. epilepsy clin. neurophysiol.;vancouv
+0103-5053;J. Braz. Chem. Soc.;other
+0104-6500;J. Braz. Comp. Soc.;other
+0100-7386;J. Braz. Soc. Mech. Sci.;other
+1678-5878;J. Braz. Soc. Mech. Sci. & Eng.;other
+0104-7930;J. Venom. Anim. Toxins;other
+1678-9199;J. Venom. Anim. Toxins incl. Trop. Dis;other
+0100-512X;Kriterion;nbr6023
+0102-6445;Lua Nova;other
+0104-9313;Mana;other
+1517-7076;Matéria (Rio J.);other
+1516-1439;Mat. Res.;other
+0074-0276;Mem. Inst. Oswaldo Cruz;other
+1519-566X;Neotrop. entomol.;other
+1679-6225;Neotrop. ichthyol.;other
+0103-6351;Nova econ.;other
+0101-3300;Novos estud. - CEBRAP;other
+0104-6276;Opin. Publica;other
+0031-1049;Pap. Avulsos Zool. (São Paulo);other
+1413-9936;Perspect. ciênc. inf.;other
+0100-204X;Pesq. agropec. bras.;other
+1517-7491;Pesqui. Odontol. Bras.;vancouv
+0101-7438;Pesqui. Oper.;other
+0100-736X;Pesq. Vet. Bras.;other
+0103-7331;Physis;other
+0100-8358;Planta daninha;nbr6023
+0104-1428;Polímeros;other
+0103-6513;Prod.;nbr6023
+0104-5687;Pró-Fono R. Atual. Cient.;nbr6023
+0102-7182;Psicol. Soc.;nbr6023
+0103-5665;Psicol. clin.;other
+1413-7372;Psicol. estud.;other
+0103-6564;Psicol. USP;other
+0102-7972;Psicol. Reflex. Crit.;other
+0102-3772;Psic.: Teor. e Pesq.;other
+0100-4042;Quím. Nova;other
+0100-3984;Radiol Bras;other
+1676-5648;RAE electron.;nbr6023
+0100-8587;Relig. soc.;other
+0370-4467;Rem: Rev. Esc. Minas;nbr6023
+0100-6762;Rev. Árvore;nbr6023
+0034-7094;Rev. Bras. Anestesiol.;other
+0034-7108;Rev. Bras. Biol.;other
+0100-8404;Rev. bras. Bot.;other
+1516-635X;Rev. Bras. Cienc. Avic.;other
+0100-0683;Rev. Bras. Ciênc. Solo;other
+1516-9332;Rev. Bras. Cienc. Farm.;nbr6023
+0102-6909;Rev. bras. Ci. Soc.;other
+0102-7638;Rev Bras Cir Cardiovasc;other
+0101-9880;Rev bras. colo-proctol.;vancouv
+0034-7140;Rev. Bras. Econ.;other
+1413-2478;Rev. Bras. Educ.;nbr6023
+1413-6538;Rev. bras. educ. espec.;nbr6023
+0100-5502;Rev. bras. educ. med.;other
+0034-7167;Rev. bras. enferm.;vancouv
+1415-4366;Rev. bras. eng. agríc. ambient.;other
+0102-4744;Rev. Bras. Ens. Fis.;other
+0085-5626;Rev. Bras. entomol.;other
+1415-790X;Rev. bras. epidemiol.;vancouv
+0102-3098;Rev. bras. estud. popul.;nbr6023
+0102-695X;Rev. bras. farmacogn.;other
+0103-3131;Rev. Bras. Fisiol. Veg.;other
+1413-3555;Rev. bras. fisioter.;other
+0100-2945;Rev. Bras. Frutic.;other
+0102-261X;Rev. Bras. Geof.;other
+0100-7203;Rev. Bras. Ginecol. Obstet.;other
+1516-8484;Rev. Bras. Hematol. Hemoter.;other
+0102-0188;Rev. Bras. Hist.;other
+1517-8692;Rev Bras Med Esporte;other
+0102-3616;Rev. bras. ortop.;vancouv
+0034-7299;Rev. Bras. Otorrinolaringol.;vancouv
+0034-7329;Rev. bras. polít. int.;nbr6023
+1516-4446;Rev. Bras. Psiquiatr.;vancouv
+0482-5004;Rev. Bras. Reumatol.;other
+1519-3829;Rev. Bras. Saude Mater. Infant.;vancouv
+0101-3122;Rev. bras. sementes;nbr6023
+0103-507X;Rev. bras. ter. intensiva;vancouv
+0101-8175;Rev. Bras. Zool.;other
+1516-3598;R. Bras. Zootec.;other
+1516-1846;Rev. CEFAC;vancouv
+1519-7077;Rev. contab. finanç.;nbr6023
+0864-3466;Rev. cub. salud pública;vancouv
+0104-4230;Rev. Assoc. Med. Bras.;other
+0080-6234;Rev. esc. enferm. USP;vancouv
+0102-2555;Rev. Fac. Educ.;nbr6023
+1516-8034;Rev. soc. bras. fonoaudiol.;vancouv
+0037-8682;Rev. Soc. Bras. Med. Trop.;other
+0034-7612;Rev. Adm. Pública;nbr6023
+0034-7701;Rev. Antropol.;other
+1415-9848;Rev. econ. contemp.;other
+0103-2003;Rev. Econ. Sociol. Rural;nbr6023
+0101-3157;Rev. Econ. Polit.;other
+0001-3714;Rev. Microbiol.;
+1415-5273;Rev. Nutr.;vancouv
+0103-0663;Rev Odontol Univ São Paulo;nbr6023
+0101-6083;Rev. psiquiatr. clín.;other
+0101-8108;Rev. psiquiatr. Rio Gd. Sul;vancouv
+0124-0064;Rev. salud pública;other
+0034-8899;Rev. sanid. hig. publica;
+0034-8910;Rev. Saúde Pública;vancouv
+0104-4478;Rev. Sociol. Polit.;other
+1415-5419;Rev. Dent. Press Ortodon. Ortop. Facial;nbr6023
+0100-6991;Rev. Col. Bras. Cir.;other
+0104-8023;Rev. Dep. Psicol.,UFF;nbr6023
+0041-8781;Rev. Hosp. Clin.;other
+0036-4665;Rev. Inst. Med. trop. S. Paulo;other
+1135-5727;Rev. Esp. Salud Publica;other
+0104-026X;Rev. Estud. Fem.;other
+1414-4980;Rev. katálysis;nbr6023
+0104-1169;Rev. Latino-Am. Enfermagem;other
+1020-4989;Rev Panam Salud Publica;other
+0103-0582;Rev. paul. pediatr.;vancouv
+0036-3634;Salud pública Méx;vancouv
+0102-8839;São Paulo Perspec.;other
+1516-3180;Sao Paulo Med. J.;other
+0103-1759;Sba Controle & Automação;other
+0103-9016;Sci. agric. (Piracicaba, Braz.);nbr6023
+0102-6992;Soc. estado.;nbr6023
+1517-4522;Sociologias;other
+0100-5405;Summa phytopathol.;nbr6023
+1413-7704;Tempo;other
+0103-2070;Tempo soc.;other
+0104-0707;Texto contexto - enferm.;vancouv
+0101-3173;Trans/Form/Ação;nbr6023
+0104-8775;Varia hist.;nbr6023
+0251-2432;World health forum;
+0379-8070;World health stat. q.;
+0103-863X;Paidéia (Ribeirão Preto);other
+0102-7786;Rev. bras. meteorol.;nbr6023
+1415-6555;Rev. adm. contemp.;other
+1414-4077;Avaliação (Campinas);nbr6023
+0102-4698;Educ. rev.;nbr6023

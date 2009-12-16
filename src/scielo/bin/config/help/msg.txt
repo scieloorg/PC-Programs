@@ -1,0 +1,99 @@
+    MandatoryFieldIndication|* represents mandatory field|* representa campo obligatório|* representa campo obrigatório|
+    ButtonOpen|Open|Abrir|Abrir|||
+    ButtonReplace|Replace|Reemplazar|Substituir|||
+    ButtonDelete|Delete|Remover|Remover|||
+    ButtonClose|Close|Cerrar|Fechar|||
+    ButtonOK|OK|Acceptar|Aceitar|||
+    ButtonCancel|Cancel|Cancelar|Cancelar|||
+    ButtonBack|Previous|Anterior|Anterior|||
+    ButtonNext|Next|Próximo|Próximo|||
+    ButtonSave|Save|Guardar|Gravar|||
+    ButtonRemove|Remove|Remover|Remover|||
+    mnFile|File|Archivo|Arquivo|||
+    mnEdit|Edit|Edición|Edição|||
+    mnOptions|Options|Opciones|Opções|||
+    mnHelp|Help|Ayuda|Ajuda|||
+    mnSerialTitles|Serial Titles|Títulos de revistas|Títulos de Periódicos||
+    mnSerialSections|Serial Sections|Secciones de las revistas|Seções dos Periódicos|
+    mnSerialIssues|Serial Issues|Números de las revistas|Fascículos||
+    mnCreateSerial|Create Serial|Crear revista|Criar periódico||
+    mnOpenExistingSerial|Open Existing Serial|Abrir revista|Abrir periódico||
+    mnRemoveSerial|Remove Serial|Remover revista|Remover periódico||
+    mnConfiguration|Configuration|Configuración|Configuração||
+    mnContents|Contents|Contenido|Conteúdo|||
+    mnAbout|About|Acerca|Sobre|||
+    mnExit|Exit|Salir|Sair|||
+    NewSerial|New Title|Nuevo Título|Título novo||
+    ExistingSerial|Existing Titles|Títulos existentes|Títulos existentes||
+    Select_to_Open|Select one title to open|Seleccione un título para abrir|Selecione um título||
+    Select_to_Remove|Select one title to remove|Seleccione un título para remover|Selecione um título para remover
+    volume|Volume|Volumen|Volume|||
+    VolSuppl|Vol Suppl|Supl Vol|SuplVol|||
+    issueno|Issue|Fascículo|Número|||
+    IssueSuppl|Suppl|Supl|Supl|||
+    SequentialNumber|Seq Num|Num Seq|Num Seq|||
+    Issue_Replace|Replace issue|Reemplazar número de la revista|Substituir número da revista|
+    Issue_Current|Current issue|Número Actual|Número atual||
+    Issue_Changeto|Change to|Reemplazar para |Substituir para||
+    Issue_General|General|General|Geral|||
+    Issue_BibliographicStrip|Bibliographic Strip|Tira Bibliográfica|Legenda Bibliográfica||
+    Issue_Tableofcontents|Table of contents|Tabla de contenidos|Sumário|||
+    Issue_InvalidNumDoc|Invalid value for number of documents|Valor inválido para la cantidad de documentos|Valor inválido para o número de documentos
+    Issue_InvalidDateBibStrip|Check the date of the bibliographic strip |Asegure que la fecha de la tira bibliográfica esté correcta|Verifique a data da legenda bibliográfica
+    Issue_Header|Table of Contents|Tabla de Contenido|Sumário|||
+    Issue_SelectSections|Select the sections that are present in |Escoja las secciones de |Selecione as seções de  |
+    Issue_Sectionsof|Sections of |Secciones de |Seções de  ||
+    Issue_CreateSection|Create section|Crear sección|Criar seção||
+    IseqNo_MsgIseqNo|The sequential number and the identification of the issue do not match. What do you want to do?|El número secuencial y la identificación del facículo (volumen, número, suplemento, parte) no están correspondientes. ¿Usted qué quiere hacer?|O número sequencial e a identificação do fascículo (volume, número, suplemento) não correspondem. O que você deseja fazer?
+    ISEQNO_OPENEXISTINGISSUE|I want to open this issue|Quiero abrir este número|Quero abrir este número|
+    ISEQNO_CHANGEISEQNO|I want to change its sequential number to|Quiero cambiar su número secuencial para|Quero modificar seu número sequencial para
+    ISEQNO_CHANGEISSUEID|I want to correct its identification (volume, number, supplement)|Quiero corregir la identificación del facículo (volumen, número, suplemento, parte)|Quero corrigir a identificação do fascículo (volume, número, suplemento)
+    Sec_FrameSectionEdition|Edit Section|Edición de las secciones|Entrada de novas seções|
+    Sec_FrameFilledSections|Filled Sections|Secciones llenadas|Seções preenchidas||
+    Sec_FrameRemSection|Remove a section from the database|Remover las secciónes de la base de datos|Remover as seções da base de dados
+    Sec_SectionCode|Section Code|Código de las secciones|Código das seções||
+    Sec_SectionTitle|Section Title|Título de las secciones|Título das seções||
+    Sec_Idiom|Section Idiom|Idioma de las secciones|Idioma das seções||
+    Sec_CmdADD|Add|Añadir|Inserir|||
+    Sec_CmdRem|Delete|Eliminar|Remover|||
+    Sec_InvalidSecCode|Invalid format of section code|Formato inválido del código de la sección|Formato inválido do código da seção
+    Sec_InvalidSecTit|Invalid format of section title|Título inválido de la sección|Título inválido de seção|
+    Sec_QMsgReplaceSection|This section code already has a title. Do you want to change the title of this section?|Este código de sección ya tiene título. ¿Usted desea cambiar el título de esta sección?|Este código de seção já tem título. Você deseja alterar o título desta seção?
+    ser1_FrameTitle|Information about the title's journal |Información acerca de los títulos de la revista|Informação sobre os títulos do periódico 
+    ser2_SubjectInfo|Subject Information|Información de Asunto|Informação de Assunto|
+    ser2_LiterTypeDefVal|S|S|S|||
+    ser2_TreatLevelDefVal|c|c|c|||
+    ser3_FormalInfo|Formal Information|Información Formal|Informação Formal||
+    ser3_FrameInfoPubJournal|Information About the Publisher and the Journal|Información sobre la casa publicadora y la revista|Informação sobre a editora e o periódico
+    ser4_FrameInfoPubJournal_2|Information About the Publisher and the Journal (Part 2)|Información acerca de la casa publicadora y de la revista (Parte 2)|Informação sobre a editora e o periódico (Parte 2)
+    ser4_FrameInfoHealth|Information for the Health Area|Información para el Area de Salud|Informação para a área da Saúde
+    ser5_FrameSciELOControl|SciELO's control information|Informaciones de controle para SciELO|Informações de controle para SciELO
+    ser5_FrameCenterControl|Center's control information|Información de Controle del Centro Cooperante|Informação de Controle do Centro Cooperante
+    Config_WebBrowserPath|Web Browser Program|Programa Web Browser|Web Browser||
+    Config_FindPath|Find|Busca|Procura|||
+    Config_InterfaceIdiom|Interface Idiom|Idioma de la interface|Idioma da interface||
+    MsgMandatoryContent|Mandatory field|Campo obligatorio|Preenchimento obrigatório|
+    MsgMissingIssueId|Missing the issue identification. Enter the issue identification (volume, number, suppl).|No está identificado el número de la revista. Es necesario identificarlo (volumen, número, suplemento).|Falta identificar o número da revista. Entre com a identificação do número (volume, número, suplemento).
+    MsgSaveChanges|Do you want to save changes?|¿Usted desea guardar los cambios hechos?|Deseja salvar as modificações feitas?
+    MsgExit|Do you want to exit?|¿Usted desea salir?|Deseja sair?||
+    MsgClosebyCancelorClose|Close using the Cancel or Close button|Cierre utilizando el butón de Cancelar o de Cerrar|Feche usando o Botão Cancelar ou Fechar
+    MsgRemoveSerial|Do you really want to remove |¿Usted desea remover|Deseja remover ||
+    MsgUnchangeableCode|Permission deny to change data|No es permitible editar estes datos.|Permissão negada para edição dos dados
+    MsgInvalidFormatSeqNumber|Invalid sequential number. Its format is year(YYYY) and the sequential number in the year. Example: 19991. (first issue number in 1999)|Número secuencial Inválido. Es formado por el año y el número que identifica el orden del número en el año. Ejemplo: 19991. (primer número del año de 1999).|Número sequencial inválido. É formado por ano (AAAA) e número que representa sua ordem no ano. Exemplo: 19991. (primeiro número do ano de 1999)
+    msgSeqNumBelongsToAnotherIssue|Sequential number belongs to another issue.|Número secuencial pertenece a otro número|Número sequencial pertence a outro número
+    MsgInvalidDATEISO|Invalid DATEISO.|DATEISO inválida|DATEISO inválida||
+    MsgReplaceIssue|Current issue are going to be delete and replaced by the specified issue below|El número actual será borrado de la base y reemplazado por el número abajo especificado.|O número atual será apagado da base e substituído pelo número abaixo especificado
+    MSGISSUENOEXIST|This issue does not exist|Este número no existe.|Este número não existe.|
+    MsgReplaceIssueAlreadyExists|You can not change to an issue that already exists. You are probably inserting the same issue again.|Usted no puede reemplazar para un número ya existente. Usted probablemente está inseriendo el mismo número nuevamente.|Você não pode alterar para um número já existente. Você provavelmente está inserindo o mesmo número novamente.
+    MsgDeleteIssue|Are you sure do you want to delete this issue?|¿Usted tiene seguridad que quiere borrar este número?|Você tem certeza que quer apagar este número?
+    MsgInvalidYear|The year in sequential number, in bibliographic strip and in dateiso must be equal, but it is not. If the year of the sequential number is incorrect, close this form and correct the sequential number. If the year of dateiso and/or the year of the bibliographic strip are incorrect, correct its year.|El año en el número secuencial, en las tiras bibliográficas y en la fecha ISO debe ser igual, pero está diferente. Si el número secuencial está incorrecto, cierre la ventana y cambie el número secuencial, si no mire la fecha ISO y la fecha de las tiras bibliográficas.|O ano utilizado no número sequencial, nas legendas bibliográficas e na dateiso da publicação deve ser o mesmo, mas está diferente. Se é o ano do número sequencial que está errado, feche esta janela e mude o número sequencial, senão verifique o ano da data ISO e das legendas bibliográficas
+    MsgUnabledtoClose|Fill the mandatory fields before closing.|Llene los campos obligatorios antes de cerrar.|Complete os campos obrigatórios antes de fechar.
+    Issue_TabConfigurations|Further information|Más información|Mais informação||
+    Sec_UnabledtoChange|This section is already in use in some issue. It can not be changed.|Esta sección ya está en uso en algun facículo. No puede ser cambiada.|Esta seção já está em uso em algum fascículo. Não pode ser modificada.
+    sec_deletequestion|Are you sure you want this section removed?|¿Está seguro que quiere remover esta sección?|Certeza de que deseja remover esta seção?
+    sec_TitlesAlreadyRegistered|These titles are registered for the REPLACE-BY-SECCODE code.|Estes títulos ya están registrados para el código REPLACE-BY-SECCODE|Estes títulos já estão registrados para o código REPLACE-BY-SECCODE.
+    msgTitleIsNotCompleted|Some important data were not filled in. Please, return to the form and complete it.|Datos importantes no fueron llenados. Por favor, completar el registro de este título|Dados importantes não foram preenchido para o título. Voltar ao seu cadastro e completá-lo.
+||||||
+||||||
+||||||
+

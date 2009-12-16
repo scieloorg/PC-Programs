@@ -1,0 +1,3 @@
+if p(v4) then
+	replace(v1,' ',''),',"',v3,'"',#
+fi
