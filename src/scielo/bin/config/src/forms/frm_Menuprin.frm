@@ -59,13 +59,6 @@ Begin VB.Form FormMenuPrin
          Begin VB.Menu mnIssues 
             Caption         =   "Issues"
          End
-         Begin VB.Menu mnNothing 
-            Caption         =   "-"
-         End
-         Begin VB.Menu mnCodes 
-            Caption         =   "Codes"
-            Enabled         =   0   'False
-         End
       End
       Begin VB.Menu mnsep 
          Caption         =   "-"
@@ -118,7 +111,7 @@ Private Sub mnAbout_Click()
 End Sub
 
 Private Sub mnContent_Click()
-    Call openHelp(Paths("Help of Config").path, Paths("Help of Config").FileName)
+    Call openHelp(Paths("Help of Config").Path, Paths("Help of Config").FileName)
 End Sub
 
 

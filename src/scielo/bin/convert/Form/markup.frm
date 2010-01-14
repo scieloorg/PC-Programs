@@ -571,7 +571,7 @@ Private Sub cmdOK_Click()
             End If
             
             Label1.Caption = ""
-            pListDoc.Path = PathCurr + .FileTree.DirNodes("Markup Directory").text
+            pListDoc.Path = Replace(PathCurr + .FileTree.DirNodes("Markup Directory").text, "\\", "\")
             totalOfFiles = pListDoc.ListCount + ArchiveFilesCounter + xmlFilesCounter
             
             LabDocCounter.Caption = InterfaceLabels("LabFileCount").elem2 + CStr(pListDoc.ListCount)

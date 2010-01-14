@@ -430,7 +430,7 @@ Private Sub CmdView_Click()
 End Sub
 
 Private Sub CmdAju_Click()
-    Call openHelp(Paths("Help of Issue").path, Paths("Help of Issue").FileName)
+    Call openHelp(Paths("Help of Issue").Path, Paths("Help of Issue").FileName)
 End Sub
 
 Private Sub CmdViewIseqNo_Click()
@@ -597,7 +597,7 @@ Private Sub Posicionar(x As Double, Y As Double)
 End Sub
 
 Private Sub FormCmdAju_Click()
-    Call openHelp(Paths("Help of Issue").path, Paths("Help of Issue").FileName)
+    Call openHelp(Paths("Help of Issue").Path, Paths("Help of Issue").FileName)
 End Sub
 
 
@@ -630,51 +630,56 @@ Sub OpenIssue(sertitle As String)
     
     loadIssueIdPart
     MyMfnTitle = Serial_CheckExisting(sertitle)
-    TxtSerTitle.Caption = Serial_TxtContent(MyMfnTitle, 100)
-    TxtPubl.text = Serial_TxtContent(MyMfnTitle, 480)
-    Cidade = Serial_TxtContent(MyMfnTitle, 490)
-    SiglaPeriodico = Serial_TxtContent(MyMfnTitle, 930)
-    Title_Standard = Serial_ComboContent(CodeStandard, MyMfnTitle, 117)
-    Title_Scheme = Serial_TxtContent(MyMfnTitle, 85)
-    
-    Call FillList(ListScheme, CodeScheme)
-    Call Serial_ListContent(ListScheme, CodeScheme, MyMfnTitle, 85)
-    Title_Freq = Serial_TxtContent(MyMfnTitle, 380)
-    
-    TxtISOStitle.Caption = Serial_TxtContent(MyMfnTitle, 151)
-    TxtStitle.Caption = Serial_TxtContent(MyMfnTitle, 150)
-    TxtMEDLINEStitle.Caption = Serial_TxtContent(MyMfnTitle, 421)
-    TxtISSN.Caption = Serial_TxtContent(MyMfnTitle, 400)
-    TxtParallel.text = Serial_TxtContent(MyMfnTitle, 230)
-    
+    If isTitleFormCompleted(MyMfnTitle) Then
         
-    With Fields
-    LabISSN.Caption = .getLabel("ser1_issn")
-    LabNro.Caption = .getLabel("Issueno")
-    LabNroSeq.Caption = .getLabel("SequentialNumber")
-    LabPubl.Caption = .getLabel("ser3_Publisher")
-    LabSupplNro.Caption = .getLabel("IssueSuppl")
-    LabIssueIdPart.Caption = .getLabel("IssueIdPart")
-    LabTitAbr.Caption = .getLabel("ser1_ShortTitle")
-    LabISOStitle.Caption = .getLabel("ser1_ISOStitle")
-    LabMEDLINEStitle.Caption = .getLabel("ser4_MedlineStitle")
-    LabTitAlt.Caption = .getLabel("ser1_ParallelTitles")
-    LabTitulo.Caption = .getLabel("ser1_Title")
-    LabVol.Caption = .getLabel("Volume")
+        TxtSerTitle.Caption = Serial_TxtContent(MyMfnTitle, 100)
+        TxtPubl.text = Serial_TxtContent(MyMfnTitle, 480)
+        Cidade = Serial_TxtContent(MyMfnTitle, 490)
+        SiglaPeriodico = Serial_TxtContent(MyMfnTitle, 930)
+        Title_Standard = Serial_ComboContent(CodeStandard, MyMfnTitle, 117)
+        Title_Scheme = Serial_TxtContent(MyMfnTitle, 85)
+        
+        Call FillList(ListScheme, CodeScheme)
+        Call Serial_ListContent(ListScheme, CodeScheme, MyMfnTitle, 85)
+        Title_Freq = Serial_TxtContent(MyMfnTitle, 380)
+        
+        TxtISOStitle.Caption = Serial_TxtContent(MyMfnTitle, 151)
+        TxtStitle.Caption = Serial_TxtContent(MyMfnTitle, 150)
+        TxtMEDLINEStitle.Caption = Serial_TxtContent(MyMfnTitle, 421)
+        TxtISSN.Caption = Serial_TxtContent(MyMfnTitle, 400)
+        TxtParallel.text = Serial_TxtContent(MyMfnTitle, 230)
+        
+            
+        With Fields
+        LabISSN.Caption = .getLabel("ser1_issn")
+        LabNro.Caption = .getLabel("Issueno")
+        LabNroSeq.Caption = .getLabel("SequentialNumber")
+        LabPubl.Caption = .getLabel("ser3_Publisher")
+        LabSupplNro.Caption = .getLabel("IssueSuppl")
+        LabIssueIdPart.Caption = .getLabel("IssueIdPart")
+        LabTitAbr.Caption = .getLabel("ser1_ShortTitle")
+        LabISOStitle.Caption = .getLabel("ser1_ISOStitle")
+        LabMEDLINEStitle.Caption = .getLabel("ser4_MedlineStitle")
+        LabTitAlt.Caption = .getLabel("ser1_ParallelTitles")
+        LabTitulo.Caption = .getLabel("ser1_Title")
+        LabVol.Caption = .getLabel("Volume")
+        
+        End With
+        
+        With ConfigLabels
+        Caption = App.Title + " - " + ISSUE_FORM_CAPTION + sertitle
+        LabIndicationMandatoryField.Caption = .getLabel("MandatoryFieldIndication")
+        CmdClose.Caption = .getLabel("ButtonClose")
+        FormCmdAju.Caption = .getLabel("mnHelp")
+        CmdView.Caption = .getLabel("ButtonOpen")
+        CmdReplace.Caption = .getLabel("ButtonReplace")
+        CmdDelete.Caption = .getLabel("ButtonDelete")
+        End With
     
-    End With
-    
-    With ConfigLabels
-    Caption = App.Title + " - " + ISSUE_FORM_CAPTION + sertitle
-    LabIndicationMandatoryField.Caption = .getLabel("MandatoryFieldIndication")
-    CmdClose.Caption = .getLabel("ButtonClose")
-    FormCmdAju.Caption = .getLabel("mnHelp")
-    CmdView.Caption = .getLabel("ButtonOpen")
-    CmdReplace.Caption = .getLabel("ButtonReplace")
-    CmdDelete.Caption = .getLabel("ButtonDelete")
-    End With
-
-    Show vbModal
+        Show vbModal
+    Else
+        MsgBox ConfigLabels.getLabel("msgTitleIsNotCompleted")
+    End If
 End Sub
 
 Private Function FindIssueToOpen(FoundMfn As Long, journalKey As String, vol As String, SVol As String, No As String, SNo As String, IseqNo As String, IssueIdPart As String) As Boolean

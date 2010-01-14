@@ -73,11 +73,11 @@ Sub Main()
     Set paths = ReadPathsConfigurationFile(PATHS_CONFIGURATION_FILE)
     
     DBCODESPATH = paths("Code Database").path
-    DBNEWCODEFILE = paths("NewCode Database").filename
-    DBCODEFILE = paths("Code Database").filename
+    DBNEWCODEFILE = paths("NewCode Database").FileName
+    DBCODEFILE = paths("Code Database").FileName
     DBCODESLABEL = paths("Code Database").key
     MARKUPPATH = paths("Markup Attributes Table").path
-    ATTB_FILE = paths("Markup Attributes Table").filename
+    ATTB_FILE = paths("Markup Attributes Table").FileName
     ATTB_LABEL = paths("Markup Attributes Table").key
     
     
@@ -113,10 +113,10 @@ Function ReadPathsConfigurationFile(File As String) As ColFileInfo
             Item.key = key
             If InStr(path, "\") > 0 Then
                 Item.path = Mid(path, 1, InStrRev(path, "\") - 1)
-                Item.filename = Mid(path, InStrRev(path, "\") + 1)
+                Item.FileName = Mid(path, InStrRev(path, "\") + 1)
             Else
                 Item.path = ""
-                Item.filename = path
+                Item.FileName = path
             End If
             Item.required = (req > 0)
         End If
@@ -151,7 +151,7 @@ Sub GenerateCodeFile()
                 dbname = DBCODEFILE
             End If
             Call dao.setDB(DBCODESPATH, dbname, dbtype)
-            
+            Print #fn, attr
             If idiom = "yes" Then
                 Print #fn, dao.getCodesAndValues(attr, IdiomsInfo(i).code)
             Else

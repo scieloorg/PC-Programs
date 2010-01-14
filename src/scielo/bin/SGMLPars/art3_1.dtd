@@ -145,7 +145,6 @@
           issn     CDATA #REQUIRED
 		  old-pid CDATA #IMPLIED 
 		  rvpdate CDATA #IMPLIED
-          hcomment CDATA #IMPLIED
 		  ahpdate CDATA #IMPLIED		  
 		  >
 
@@ -213,11 +212,9 @@
 <!--    Back Matter                                                       -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT back     - - (((bbibcom, (vancouv | iso690 | abnt6023 | apa | other)?,
+<!ELEMENT back     - - ((bbibcom, (vancouv | iso690 | abnt6023 | other)?, 
                          bbibcom?) | 
-                         ((vancouv | iso690 | abnt6023 | apa | other), bbibcom?)),
-
-                         licenses) >
+                         ((vancouv | iso690 | abnt6023 | other), bbibcom?)) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Back Bibliographic Complementary Elements                         -->

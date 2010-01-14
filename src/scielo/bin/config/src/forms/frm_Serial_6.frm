@@ -66,8 +66,8 @@ Begin VB.Form SERIAL6
          Height          =   315
          Index           =   10
          Left            =   4920
+         Style           =   2  'Dropdown List
          TabIndex        =   36
-         Text            =   "Combo1"
          Top             =   4200
          Width           =   2295
       End
@@ -91,8 +91,8 @@ Begin VB.Form SERIAL6
          Height          =   315
          Index           =   9
          Left            =   4920
+         Style           =   2  'Dropdown List
          TabIndex        =   33
-         Text            =   "Combo1"
          Top             =   3840
          Width           =   2295
       End
@@ -116,8 +116,8 @@ Begin VB.Form SERIAL6
          Height          =   315
          Index           =   8
          Left            =   4920
+         Style           =   2  'Dropdown List
          TabIndex        =   30
-         Text            =   "Combo1"
          Top             =   3480
          Width           =   2295
       End
@@ -141,8 +141,8 @@ Begin VB.Form SERIAL6
          Height          =   315
          Index           =   7
          Left            =   4920
+         Style           =   2  'Dropdown List
          TabIndex        =   27
-         Text            =   "Combo1"
          Top             =   3120
          Width           =   2295
       End
@@ -166,8 +166,8 @@ Begin VB.Form SERIAL6
          Height          =   315
          Index           =   6
          Left            =   4920
+         Style           =   2  'Dropdown List
          TabIndex        =   24
-         Text            =   "Combo1"
          Top             =   2760
          Width           =   2295
       End
@@ -191,8 +191,8 @@ Begin VB.Form SERIAL6
          Height          =   315
          Index           =   5
          Left            =   4920
+         Style           =   2  'Dropdown List
          TabIndex        =   21
-         Text            =   "Combo1"
          Top             =   2400
          Width           =   2295
       End
@@ -216,8 +216,8 @@ Begin VB.Form SERIAL6
          Height          =   315
          Index           =   4
          Left            =   4920
+         Style           =   2  'Dropdown List
          TabIndex        =   18
-         Text            =   "Combo1"
          Top             =   2040
          Width           =   2295
       End
@@ -241,8 +241,8 @@ Begin VB.Form SERIAL6
          Height          =   315
          Index           =   3
          Left            =   4920
+         Style           =   2  'Dropdown List
          TabIndex        =   15
-         Text            =   "Combo1"
          Top             =   1680
          Width           =   2295
       End
@@ -266,8 +266,8 @@ Begin VB.Form SERIAL6
          Height          =   315
          Index           =   2
          Left            =   4920
+         Style           =   2  'Dropdown List
          TabIndex        =   12
-         Text            =   "Combo1"
          Top             =   1320
          Width           =   2295
       End
@@ -291,8 +291,8 @@ Begin VB.Form SERIAL6
          Height          =   315
          Index           =   1
          Left            =   4920
+         Style           =   2  'Dropdown List
          TabIndex        =   9
-         Text            =   "Combo1"
          Top             =   960
          Width           =   2295
       End
@@ -316,8 +316,8 @@ Begin VB.Form SERIAL6
          Height          =   315
          Index           =   0
          Left            =   4920
+         Style           =   2  'Dropdown List
          TabIndex        =   2
-         Text            =   "Combo1"
          Top             =   600
          Width           =   2295
       End
@@ -378,7 +378,7 @@ Private Const MAX_LINES_INDEX = 10
 Private Sub CmdBack_Click()
     Hide
     IsBack = True
-    If changed Then receiveData
+    If changed(MyMfnTitle) Then receiveData
     JOURNAL5.MyOpen (MyMfnTitle)
 End Sub
 
@@ -413,12 +413,12 @@ Sub MySetLabels()
     
 End Sub
 
-Sub MyGetContentFromBase(MfnTitle As Long)
+Sub MyGetContentFromBase(mfnTitle As Long)
     'JournalStatusAction.setLanguage (CurrCodeIdiom)
     'Set JournalStatusAction.ErrorMessages = ErrorMessages
     'Set JournalStatusAction.myHistory = journalDAO.getHistory(MfnTitle)
     
-    JournalStatusAction.loadHistory (MfnTitle)
+    JournalStatusAction.loadHistory (mfnTitle)
     
     Call PresentsData
 End Sub
@@ -427,18 +427,19 @@ Sub MyClearContent()
     
     For i = 0 To MAX_LINES_INDEX
         TextJournalExitDate(lineCount).text = ""
-        ComboJournalStatus(lineCount).text = ""
+        ComboJournalStatus(lineCount).ListIndex = 0
         TextJournalEntryDate(lineCount).text = ""
     Next
+    Call DisplayLine(0, True)
 End Sub
 
-Function changed() As Boolean
+Function changed(mfnTitle As Long) As Boolean
     receiveData
 
-    changed = JournalStatusAction.changed(MyMfnTitle)
+    changed = JournalStatusAction.changed(mfnTitle)
 End Function
-Sub MyOpen(MfnTitle As Long)
-    MyMfnTitle = MfnTitle
+Sub MyOpen(mfnTitle As Long)
+    MyMfnTitle = mfnTitle
     
     Left = FormMenuPrin.SysInfo1.WorkAreaWidth / 2 - (Width + FrmInfo.Width) / 2
     Top = FormMenuPrin.SysInfo1.WorkAreaHeight / 2 - Height / 2
@@ -482,51 +483,52 @@ Private Sub CmdSave_Click()
     MousePointer = vbArrow
 End Sub
 
-Sub fillComoJournalStatus(Index As Integer)
+Sub fillComoJournalStatus(index As Integer)
     Dim status As String
     
-    If Len(ComboJournalStatus(Index).text) > 0 Then
-        If Len(TextJournalExitDate(Index).text) > 0 Then
+    If Len(ComboJournalStatus(index).text) > 0 Then
+        status = getCode(JournalStatusAction.mycodeStatus, ComboJournalStatus(index).text).Code
+    Else
+        status = "C"
+    End If
+    
+    If status = "C" Then
+        If Len(TextJournalExitDate(index).text) > 0 Then
+            JournalStatusAction.showWarning ("MISSING_STATUS")
+            ComboJournalStatus(index).SetFocus
+        End If
+    Else
+        If Len(TextJournalExitDate(index).text) > 0 Then
             
         Else
             'TextJournalExitDate(index).SetFocus
-            ComboJournalStatus(Index).text = ""
-        End If
-    Else
-        If Len(TextJournalExitDate(Index).text) > 0 Then
-            JournalStatusAction.showWarning ("MISSING_STATUS")
-            ComboJournalStatus(Index).SetFocus
+            ComboJournalStatus(index).ListIndex = 0
         End If
     End If
-    If Index < MAX_LINES_INDEX Then
-        If Len(ComboJournalStatus(Index).text) > 0 Then
-            status = getCode(JournalStatusAction.mycodeStatus, ComboJournalStatus(Index).text).Code
-        Else
-            status = ""
-        End If
-        Call DisplayLine(Index + 1, (status = "S"))
+    If index < MAX_LINES_INDEX Then
+        Call DisplayLine(index + 1, (status <> "D"))
     End If
 
 End Sub
-Private Sub ComboJournalStatus_LostFocus(Index As Integer)
-    Call fillComoJournalStatus(Index)
+Private Sub ComboJournalStatus_LostFocus(index As Integer)
+    Call fillComoJournalStatus(index)
 End Sub
-Private Sub combojournalstatus_change(Index As Integer)
-    Call fillComoJournalStatus(Index)
+Private Sub combojournalstatus_change(index As Integer)
+    Call fillComoJournalStatus(index)
 End Sub
-Private Sub ComboJournalStatus_DblClick(Index As Integer)
+Private Sub ComboJournalStatus_DblClick(index As Integer)
 Debug.Print "ComboJournalStatus_DblClick"
 End Sub
 
-Private Sub ComboJournalStatus_KeyPress(Index As Integer, KeyAscii As Integer)
+Private Sub ComboJournalStatus_KeyPress(index As Integer, KeyAscii As Integer)
     Debug.Print "key_press"
 End Sub
 
-Private Sub ComboJournalStatus_OLESetData(Index As Integer, Data As DataObject, DataFormat As Integer)
+Private Sub ComboJournalStatus_OLESetData(index As Integer, Data As DataObject, DataFormat As Integer)
     Debug.Print "ComboJournalStatus_OLESetData"
 End Sub
 
-Private Sub ComboJournalStatus_Validate(Index As Integer, Cancel As Boolean)
+Private Sub ComboJournalStatus_Validate(index As Integer, Cancel As Boolean)
     Debug.Print "ComboJournalStatus_Validate"
 End Sub
 
@@ -627,9 +629,7 @@ Sub PresentsData()
             DisplayLine (lineCount)
         End If
     Next
-    If myHistory.count = 0 Then
         DisplayLine (0)
-    End If
     If lineCount < MAX_LINES_INDEX And lineCount >= 0 Then
         If Len(ComboJournalStatus(lineCount).text) > 0 Then
             If getCode(JournalStatusAction.mycodeStatus, ComboJournalStatus(lineCount).text).Code = "S" Then
@@ -675,51 +675,51 @@ Private Sub ValidateAndSet(prevStatusDate As String, prevStatus As String, statu
     End If
 End Sub
 
-Private Sub TextJournalEntryDate_LostFocus(Index As Integer)
+Private Sub TextJournalEntryDate_LostFocus(index As Integer)
     Dim prevDate As String
     Dim previousStatus As String
     
-    If Len(TextJournalEntryDate(Index).text) > 0 Then
-        If Index > 0 Then
-            prevDate = TextJournalExitDate(Index - 1).text
-            previousStatus = getCode(JournalStatusAction.mycodeStatus, ComboJournalStatus(Index - 1).text).Code
+    If Len(TextJournalEntryDate(index).text) > 0 Then
+        If index > 0 Then
+            prevDate = TextJournalExitDate(index - 1).text
+            previousStatus = getCode(JournalStatusAction.mycodeStatus, ComboJournalStatus(index - 1).text).Code
         Else
             prevDate = "00000000"
             previousStatus = "_"
         End If
         ' verifica status anterior
         If JournalStatusAction.checkStatus(previousStatus, "C") Then
-            If JournalStatusAction.checkDate(prevDate, TextJournalEntryDate(Index).text) Then
-                If Len(TextJournalExitDate(Index).text) > 0 Then
-                    If Not JournalStatusAction.checkDate(TextJournalEntryDate(Index).text, TextJournalExitDate(Index).text) Then
-                        TextJournalEntryDate(Index).SetFocus
+            If JournalStatusAction.checkDate(prevDate, TextJournalEntryDate(index).text) Then
+                If Len(TextJournalExitDate(index).text) > 0 Then
+                    If Not JournalStatusAction.checkDate(TextJournalEntryDate(index).text, TextJournalExitDate(index).text) Then
+                        TextJournalEntryDate(index).SetFocus
                     End If
                 End If
             Else
-                TextJournalEntryDate(Index).SetFocus
+                TextJournalEntryDate(index).SetFocus
             End If
         Else
-            TextJournalEntryDate(Index).text = ""
+            TextJournalEntryDate(index).text = ""
         End If
     End If
 End Sub
-Private Sub TextJournalEntryDate_change(Index As Integer)
-    If Index > 0 Then
-        ComboJournalStatus(Index - 1).Enabled = (Len(TextJournalEntryDate(Index).text) = 0)
+Private Sub TextJournalEntryDate_change(index As Integer)
+    If index > 0 Then
+        ComboJournalStatus(index - 1).Enabled = (Len(TextJournalEntryDate(index).text) = 0)
     End If
 End Sub
-Private Sub TextJournalExitDate_LostFocus(Index As Integer)
+Private Sub TextJournalExitDate_LostFocus(index As Integer)
     Dim prevDate As String
     Dim checkedDates As Boolean
     
-    If Len(TextJournalExitDate(Index).text) > 0 Then
-        If Len(TextJournalEntryDate(Index).text) > 0 Then
-            prevDate = TextJournalEntryDate(Index).text
+    If Len(TextJournalExitDate(index).text) > 0 Then
+        If Len(TextJournalEntryDate(index).text) > 0 Then
+            prevDate = TextJournalEntryDate(index).text
             
-            If JournalStatusAction.checkDate(TextJournalEntryDate(Index).text, TextJournalExitDate(Index).text) Then
-                If Index < MAX_LINES_INDEX Then
-                    If Len(TextJournalEntryDate(Index + 1).text) > 0 Then
-                        If JournalStatusAction.checkDate(TextJournalExitDate(Index).text, TextJournalEntryDate(Index + 1).text) Then
+            If JournalStatusAction.checkDate(TextJournalEntryDate(index).text, TextJournalExitDate(index).text) Then
+                If index < MAX_LINES_INDEX Then
+                    If Len(TextJournalEntryDate(index + 1).text) > 0 Then
+                        If JournalStatusAction.checkDate(TextJournalExitDate(index).text, TextJournalEntryDate(index + 1).text) Then
                             checkedDates = True
                         End If
                     Else
@@ -730,20 +730,20 @@ Private Sub TextJournalExitDate_LostFocus(Index As Integer)
                 End If
             End If
             If checkedDates Then
-                If ComboJournalStatus(Index).text = "" Then
-                    ComboJournalStatus(Index).SetFocus
+                If ComboJournalStatus(index).text = "" Then
+                    ComboJournalStatus(index).SetFocus
                 End If
             Else
-                TextJournalExitDate(Index).SetFocus
+                TextJournalExitDate(index).SetFocus
             End If
         Else
             JournalStatusAction.showWarning ("MISSING_ENTRY_DATE")
-            TextJournalExitDate(Index).text = ""
-            TextJournalEntryDate(Index).SetFocus
+            TextJournalExitDate(index).text = ""
+            TextJournalEntryDate(index).SetFocus
         End If
     Else
-        If ComboJournalStatus(Index).text <> "" Then
-            ComboJournalStatus(Index).text = ""
+        If ComboJournalStatus(index).text <> "" Then
+            ComboJournalStatus(index).ListIndex = 0
         End If
     End If
 End Sub
@@ -752,17 +752,17 @@ End Sub
 Function getDataToSave() As String
     getDataToSave = JournalStatusAction.getDataToSave()
 End Function
-Sub DisplayLine(Index As Long, Optional visible As Boolean = True)
+Sub DisplayLine(index As Long, Optional visible As Boolean = True)
     If Not visible Then
-        If Len(TextJournalEntryDate(Index).text) > 0 Or Len(TextJournalExitDate(Index).text) > 0 Or Len(ComboJournalStatus(Index).text) > 0 Then
+        If Len(TextJournalEntryDate(index).text) > 0 Or Len(TextJournalExitDate(index).text) > 0 Or Len(ComboJournalStatus(index).text) > 0 Then
             visible = True
         End If
     End If
 
     
-    TextJournalEntryDate(Index).visible = visible
-    TextJournalExitDate(Index).visible = visible
-    ComboJournalStatus(Index).visible = visible
+    TextJournalEntryDate(index).visible = visible
+    TextJournalExitDate(index).visible = visible
+    ComboJournalStatus(index).visible = visible
 
 End Sub
 

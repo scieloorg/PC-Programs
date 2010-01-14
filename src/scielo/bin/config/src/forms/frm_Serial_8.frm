@@ -230,7 +230,7 @@ End Sub
 
 Sub MyGetContentFromBase(MfnTitle As Long)
         
-                TxtNotes.text = Serial_TxtContent(MfnTitle, 900)
+        TxtNotes.text = Serial_TxtContent(MfnTitle, 900)
 
         ComboCCode.text = Serial_ComboContent(CodeCCode, MfnTitle, 10)
         TxtIdNumber.text = Serial_TxtContent(MfnTitle, 30)

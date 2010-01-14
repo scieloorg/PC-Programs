@@ -129,7 +129,7 @@ Function returnIssue(mfn As Long, Optional format As String) As ClsIssue
             .parallelTitles = isis.UsePft(mfn, "(v230/)")
             .ISOTitle = isis.UsePft(mfn, "v151")
             .MedlineTitle = isis.UsePft(mfn, "v421")
-            .issn = isis.UsePft(mfn, "v35")
+            .ISSN = isis.UsePft(mfn, "v35")
             
         End With
         issue.volume = isis.UsePft(mfn, " v31")
@@ -248,7 +248,7 @@ Function getIssueMfnByIssueId(journalKey As String, vol As String, SVol As Strin
     While (i < q) And (MfnIssueId = 0)
         i = i + 1
         Set issue = returnIssue(mfns(i))
-        If (journalKey = issue.journal.issn) And (IssueIdPart = issue.idPart) And (vol = issue.volume) And (SVol = issue.vsuppl) And (No = issue.number) And (SNo = issue.suppl) Then
+        If (journalKey = issue.journal.ISSN) And (IssueIdPart = issue.idPart) And (vol = issue.volume) And (SVol = issue.vsuppl) And (No = issue.number) And (SNo = issue.suppl) Then
             If Len(year) > 0 Then
                 If year = Mid(issue.DateISO, 1, 4) Then
                     MfnIssueId = mfns(i)
@@ -358,7 +358,7 @@ Function tag(issue As ClsIssue) As String
         s = s + TagContent(.MedlineTitle, 421)
         s = s + TagContent(.ISOTitle, 151)
         s = s + TagTxtContent(.parallelTitles, 230)
-        s = s + TagContent(.issn, 35)
+        s = s + TagContent(.ISSN, 35)
         s = s + TagTxtContent(.publisherName, 480)
         s = s + TagContent(.shorttitle, 30)
         s = s + TagContent(.pubid, 930)
@@ -449,7 +449,7 @@ Function UpdateIssueTable(FileName As String, PFTFileName As String) As Boolean
         Close fn
     Else
         For j = 1 To isis.MfnQuantity
-            result = isis.UsePft(mfns(j), "if v200<>'1' then mfn fi")
+            result = isis.UsePft(j, "if v200<>'1' then mfn fi")
             If Len(result) > 0 Then
                 result = isis.UsePft(j, "@" + PFTFileName)
                 If Len(result) > 0 Then Print #fn, result

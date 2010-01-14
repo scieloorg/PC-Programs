@@ -188,7 +188,7 @@ Private Const MAX_LINES_INDEX = 10
 Private Sub CmdBack_Click()
     Hide
     IsBack = True
-    If changed Then receiveData
+    If changed(MyMfnTitle) Then receiveData
     Serial4.MyOpen (MyMfnTitle)
 End Sub
 
@@ -213,14 +213,14 @@ Sub MySetLabels()
     
 End Sub
 
-Sub MyGetContentFromBase(MfnTitle As Long)
+Sub MyGetContentFromBase(mfnTitle As Long)
     'JournalStatusAction.setLanguage (CurrCodeIdiom)
     'Set JournalStatusAction.ErrorMessages = ErrorMessages
     'Set JournalStatusAction.myHistory = journalDAO.getHistory(MfnTitle)
     
-    Set cc = journalDAO.getJournalCreativeCommons(MfnTitle)
-        TxtCprightDate.text = Serial_TxtContent(MfnTitle, 621)
-        TxtCprighter.text = Serial_TxtContent(MfnTitle, 62)
+    Set cc = journalDAO.getJournalCreativeCommons(mfnTitle)
+        TxtCprightDate.text = Serial_TxtContent(mfnTitle, 621)
+        TxtCprighter.text = Serial_TxtContent(mfnTitle, 62)
     
         Call PresentsData
     
@@ -236,13 +236,13 @@ Sub MyClearContent()
 
 End Sub
 
-Function changed() As Boolean
+Function changed(mfnTitle As Long) As Boolean
     'FIXME
     Dim temp As clsCreativeCommons
     Dim change As Boolean
     
     
-    Set temp = journalDAO.getJournalCreativeCommons(MyMfnTitle)
+    Set temp = journalDAO.getJournalCreativeCommons(mfnTitle)
     For i = 1 To IdiomsInfo.count
         If (temp.getLicense(IdiomsInfo(i).Code).text <> TextCreativeCommons(i - 1).text) Then
             change = True
@@ -250,8 +250,8 @@ Function changed() As Boolean
     Next
     changed = change
 End Function
-Sub MyOpen(MfnTitle As Long)
-    MyMfnTitle = MfnTitle
+Sub MyOpen(mfnTitle As Long)
+    MyMfnTitle = mfnTitle
     
     Left = FormMenuPrin.SysInfo1.WorkAreaWidth / 2 - (Width + FrmInfo.Width) / 2
     Top = FormMenuPrin.SysInfo1.WorkAreaHeight / 2 - Height / 2
@@ -290,7 +290,7 @@ End Sub
 Private Sub CmdSave_Click()
     MousePointer = vbHourglass
     
-    If changed Then receiveData
+    If changed(MyMfnTitle) Then receiveData
     MyMfnTitle = Serial_Save(MyMfnTitle)
     MousePointer = vbArrow
 End Sub
@@ -355,7 +355,7 @@ Function getCreativeCommons() As clsCreativeCommons
     Set getCreativeCommons = cc
 End Function
 
-Private Sub TextCreativeCommons_GotFocus(Index As Integer)
+Private Sub TextCreativeCommons_GotFocus(index As Integer)
 Call FrmInfo.ShowHelpMessage(Fields.getLabel("title_creativecommons"), 2)
 
 End Sub

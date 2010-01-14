@@ -43,6 +43,6 @@
  APPINFO NONE>
 
 
-<!DOCTYPE article SYSTEM "C:\SciELO_v3R4\bin\sgmlpars\art3_1.dtd">
-[article pii=nd doctopic=oa language=en ccode=br1.1      status=1 version=3.1 type="ilus tab" order=16 seccode=nd sponsor=GMB040      stitle="Genet. Mol. Biol." volid=32 issueno=1 dateiso=20090000 fpage=111 lpage=116 issn=1415-4757 ahpdate=20090123]
+<!DOCTYPE article SYSTEM "C:\scielo\\bin\sgmlpars\art3_1.dtd">
+[article      pii=nd doctopic=oa language=en ccode=br1.1 status=1 version=3.1 type=tab order=06      seccode=RBP030 sponsor=nd stitle="Rev. Bras. Psiquiatr." volid=31 issueno=4      dateiso=20091200 fpage=314 lpage=321 issn=1516-4446 ahpdate=20090807]
 [/article]

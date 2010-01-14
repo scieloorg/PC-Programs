@@ -1,5 +1,5 @@
-TITLE.mst=v:\SciELO\serial\title\title.mst 
-TITLE.xrf=v:\SciELO\serial\title\title.xrf 
+TITLE.mst=..\..\..\serial\title\title.mst 
+TITLE.xrf=..\..\..\serial\title\title.xrf 
 TITLE.cnt=temp\title.cnt 
 TITLE.n01=temp\title.n01 
 TITLE.n02=temp\title.n02 

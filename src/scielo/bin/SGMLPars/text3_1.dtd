@@ -112,8 +112,7 @@
 <!ENTITY % cita SYSTEM "citation31.dtd">
 %cita;
 
-<!ELEMENT text  - - ( (doi?, related*), (titlegrp? & authgrp? &
-((#PCDATA) | xmlbody )? & back?)) +(%i.float;) >
+<!ELEMENT text  - - ( (doi?, related*), (titlegrp? & authgrp? & (#PCDATA)? & back?)) +(%i.float;) >
 <!ATTLIST text
           pii      CDATA #REQUIRED
           doctopic CDATA #REQUIRED
@@ -137,8 +136,7 @@
           issn     CDATA #REQUIRED
 		  old-pid CDATA #IMPLIED
 		  ahpdate CDATA #IMPLIED
-		  rvpdate CDATA #IMPLIED
-          hcomment CDATA #IMPLIED
+		  rvpdate CDATA #IMPLIED		  
           toccode  CDATA #REQUIRED >
 
 
@@ -146,4 +144,4 @@
 <!--    Back Matter                                                       -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT back     - -  ((vancouv | iso690 | abnt6023 | apa | other), licenses) >
+<!ELEMENT back     - -  (vancouv | iso690 | abnt6023 | other) >

@@ -42,29 +42,23 @@
 <!ELEMENT state   - - (#PCDATA)>
 <!ELEMENT country   - - (#PCDATA)>
 
-<!ELEMENT tabwrap - - ( (label, caption, (table | graphic)) )  >
+<!ELEMENT tabwrap - - ( (label, caption, (table | graphic)) | table )  >
 <!ATTLIST tabwrap
           id       CDATA #REQUIRED>
 
 <!ELEMENT label - - (#PCDATA) >
 <!ELEMENT caption - - (#PCDATA) >
 
-<!ELEMENT figgrp - - (  (graphic, label, caption)   )   >
-<!ATTLIST figgrp
-          id       CDATA #REQUIRED
-          ftype       CDATA #REQUIRED>
-
-<!ELEMENT equation - - (  graphic | texmath | mmlmath   )   >
-<!ATTLIST equation
+<!ELEMENT figgrp - - (  (graphic, label, caption)   | table )   >
+<!ATTLIST figgrp 
           id       CDATA #REQUIRED>
-<!ELEMENT texmath - - CDATA  >
-<!ELEMENT mmlmath - - CDATA  >
+
       
 <!ELEMENT cltrial - - (ctreg+)>
 <!ELEMENT ctreg - - (#PCDATA) >
 <!ATTLIST ctreg
           cturl       CDATA    #REQUIRED 
-	ctdbid      CDATA    #REQUIRED >
+		  ctdbid      CDATA    #REQUIRED >
 
 
 <!ELEMENT uri - - (#PCDATA)  >
@@ -189,14 +183,3 @@
 
 <!ELEMENT sectitle - - (#PCDATA)  +(%i.float;) >
 <!ELEMENT p - - ((#PCDATA) | (label,caption) )  +(%i.float;) >
-
-<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-<!--    license                                                           -->
-<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-<!ELEMENT licenses  - - (license)+  >
-<!ELEMENT license  - - (licensep)  >
-<!ATTLIST license
-          language  CDATA #REQUIRED
-          lictype  CDATA #REQUIRED
-          href  CDATA #REQUIRED>
-<!ELEMENT licensep  - - (#PCDATA)  >

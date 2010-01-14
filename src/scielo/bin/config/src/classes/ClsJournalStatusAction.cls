@@ -14,7 +14,7 @@ Attribute VB_Exposed = False
 Private history As New ClsHistory
 Private mvarCodeStatus As ColCode
 Private Const valid = "DSC"
-Private Const visible = "DS"
+Private Const visible = "DSC"
 
 Function changed(mfn As Long) As Boolean
     Dim H As ClsHistory
@@ -91,7 +91,9 @@ Sub showWarning(warning As String)
         err = "00109"
     End Select
     
-    If Len(err) > 0 Then Call ErrorMessages.display(err, msgParam)
+    If Len(err) > 0 Then
+        Call ErrorMessages.display(err, msgParam)
+    End If
     
 End Sub
 
@@ -170,3 +172,4 @@ End Function
 Function getDataToSave() As String
     getDataToSave = journalDAO.tagHistory(history)
 End Function
+

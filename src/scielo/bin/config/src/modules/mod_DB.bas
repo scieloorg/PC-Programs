@@ -236,10 +236,13 @@ Function Serial_Save(MfnTitle As Long) As Long
         Else
             Call journalDAO.save(MfnTitle, reccontent)
         End If
+        Else
+            Call journalDAO.save(MfnTitle, reccontent)
+        End If
     End If
     
     
-    End If
+    
     Serial_Save = MfnTitle
 End Function
 
@@ -456,8 +459,14 @@ Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     change = change Or (StrComp(SERIAL7.ComboUserSubscription.text, Serial_ComboContent(CodeUsersubscription, MfnTitle, 67)) <> 0)
     change = change Or (StrComp(SERIAL7.Text_SubmissionOnline.text, Serial_TxtContent(MfnTitle, 692)) <> 0)
     
-    change = change Or (StrComp(SERIAL7.ScieloNetWrite, Serial_TxtContent(MfnTitle, 691)) <> 0)
     change = change Or (StrComp(SERIAL8.ComboCCode.text, Serial_ComboContent(CodeCCode, MfnTitle, 10)) <> 0)
+    Dim x As String
+    Dim n As Long
+    
+    x = Serial_TxtContent(MfnTitle, 691)
+    n = Len(SERIAL7.ScieloNetWrite) - Len(x)
+    x = x + Replace(Space(n), " ", "0")
+    change = change Or (StrComp(SERIAL7.ScieloNetWrite, x) <> 0)
     change = change Or (StrComp(SERIAL8.TxtIdNumber.text, Serial_TxtContent(MfnTitle, 30)) <> 0)
     'change = change Or (StrComp(SERIAL7.TxtDocCreation.Text, Serial_TxtContent(MfnTitle, 950)) <> 0)
     'change = change Or (StrComp(SERIAL7.TxtCreatDate.Text, Serial_TxtContent(MfnTitle, 940)) <> 0)
@@ -467,7 +476,8 @@ Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     change = change Or Serial_ChangedListContent(Serial3.ListScheme, CodeScheme, MfnTitle, 85)
     change = change Or Serial_ChangedListContent(Serial3.ListTextIdiom, CodeTxtLanguage, MfnTitle, 350)
     change = change Or Serial_ChangedListContent(Serial3.ListAbstIdiom, CodeAbstLanguage, MfnTitle, 360)
-    change = change Or SERIAL6.changed Or JOURNAL5.changed
+    change = change Or SERIAL6.changed(MfnTitle)
+    change = change Or JOURNAL5.changed(MfnTitle)
     
     Serial_ChangedContents = change
 End Function
@@ -535,10 +545,10 @@ Sub FormQueryUnload(Cancel As Integer, UnloadMode As Integer)
     End If
 End Sub
 
-Function Serial_Remove(Mfns() As Long, q As Long) As Boolean
+Function Serial_Remove(mfns() As Long, q As Long) As Boolean
     Dim i As Long
     For i = 1 To q
-        journalDAO.Delete (Mfns(i))
+        journalDAO.delete (mfns(i))
     Next
 End Function
 
@@ -567,7 +577,7 @@ Sub generateSciELOURL()
     fn = FreeFile
     Open Paths("SciELO URL").Path + "\" + Paths("SciELO URL").FileName For Output As fn
     
-    defaultCollectionURL = Paths("Collection URL").FileName
+    defaultCollectionURL = Paths("SciELO URL").FileName
     For i = 1 To jlist.count
         With jlist.getItemByIndex(i)
         If .CollectionURL <> "" Then
@@ -582,3 +592,19 @@ Sub generateSciELOURL()
         
     
 End Sub
+Function isTitleFormCompleted(mfn As Long) As Boolean
+    
+    Dim i As Long
+    Dim completed As Boolean
+    
+    completed = True
+    
+    While i < Fields.getMandatoryFields.count And (completed)
+        
+        i = i + 1
+        
+        completed = (Len(journalDAO.getRepetitiveFieldValue(mfn, CLng(Fields.getMandatoryFields.item(i)), "")) > 0)
+    Wend
+    
+    isTitleFormCompleted = completed
+End Function

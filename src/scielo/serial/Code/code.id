@@ -9,19 +9,14 @@
 !v002!^cct^vclinical trial
 !v002!^ced^veditorial
 !v002!^cin^vinterview
-!v002!^cra^vinvited review
 !v002!^cle^vletter
 !v002!^cmt^vmethodology
-!v002!^cra^vmini-review article
 !v002!^coa^voriginal article
 !v002!^cpv^vpoint-of-view
-!v002!^crn^vpreliminary report
 !v002!^cpr^vpress release
 !v002!^crc^vrecount
 !v002!^crn^vresearch note
 !v002!^cra^vreview article
-!v002!^csc^vshort communication
-!v002!^cra^vstate-of-the-art review
 !v002!^ctr^vtechnical report
 !v002!^cup^vupdate
 !ID 000002
@@ -58,7 +53,6 @@
 !v002!^cct^vensaios clínicos
 !v002!^cin^ventrevista
 !v002!^ctr^vinforme técnico
-!v002!^crn^vnota prévia
 !v002!^crn^vnota
 !v002!^cmt^vmetodologia
 !v002!^cpv^vponto de vista
@@ -66,8 +60,7 @@
 !v002!^ccr^vrelato de caso
 !v002!^crc^vresenha
 !v002!^cab^vresumos
-!v002!^cra^vrevisão a convite
-!v002!^cra^vrevisão de literatura
+!v002!^cra^vrevisão
 !ID 000004
 !v001!role^len
 !v002!^cnd^vNot defined
@@ -113,6 +106,7 @@
 !v002!^crbgeo^vrevista brasileira de geociências
 !v002!^crimtsp^vrevista do instituto de medicina tropical de são paulo
 !v002!^crsp^vrevista de saúde pública
+!v003!1
 !ID 000009
 !v001!literature type^len
 !v002!^cC^vConference
@@ -938,6 +932,7 @@
 !v002!^cHealth Sciences^vCiências da Saúde
 !v002!^cHuman Sciences^vCiências Humanas
 !v002!^cLinguistics, Letters and Arts^vLingüística, Letras e Artes
+!v003!1
 !ID 000054
 !v001!study area^len
 !v002!^cAgricultural Sciences^vAgricultural Sciences
@@ -948,6 +943,7 @@
 !v002!^cHealth Sciences^vHealth Sciences
 !v002!^cHuman Sciences^vHuman Sciences
 !v002!^cLinguistics, Letters and Arts^vLinguistics, Letters and Arts
+!v003!1
 !ID 000055
 !v001!study area^les
 !v002!^cAgricultural Sciences^vCiencias Agrícolas
@@ -958,6 +954,7 @@
 !v002!^cHealth Sciences^vCiencias de la Salud
 !v002!^cHuman Sciences^vHumanidades
 !v002!^cLinguistics, Letters and Arts^vLinguística, Letras y Artes
+!v003!1
 !ID 000056
 !v001!rid^lpt
 !v002!^cnd^vNão definido
@@ -1549,12 +1546,15 @@
 !ID 000091
 !v001!sponsor^les
 !v002!^vNo definido^cnd
+!v003!1
 !ID 000092
 !v001!sponsor^len
 !v002!^vNot definido^cnd
+!v003!1
 !ID 000093
 !v001!sponsor^lpt
 !v002!^vNão definido^cnd
+!v003!1
 !ID 000094
 !v001!orgname
 !v002!^vnd^cnd
@@ -1682,12 +1682,15 @@
 !ID 000110
 !v001!lictype^len
 !v002!^copen-access^vopen access
+!v002!^cnd^vnot defined
 !ID 000111
 !v001!lictype^les
 !v002!^copen-access^vacceso abierto
+!v002!^cnd^vno definido
 !ID 000112
 !v001!lictype^lpt
 !v002!^copen-access^vacesso aberto
+!v002!^cnd^vnão definido
 !ID 000113
 !v001!pubtype^len
 !v002!^cepub^velectronic publication

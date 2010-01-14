@@ -1187,14 +1187,14 @@ Public Sub LoadIssue(mfn As Long)
         
         With myIssue.journal
             .shorttitle = Issue1.TxtStitle.Caption
-            .Title = Issue1.TxtSerTitle.Caption
+            .Title = Issue1.TxtSertitle.Caption
             .pubid = Issue1.SiglaPeriodico
             .JournalStandard = Issue1.Title_Standard
             .vocabulary = Issue1.Title_Scheme
-            .issn = Issue1.TxtISSN.Caption
+            .ISSN = Issue1.TxtISSN.Caption
             
             .ISOTitle = Issue1.TxtISOStitle.Caption
-            .MedlineTitle = Issue1.TxtMEDLINEStitle.Caption
+            .MedlineTitle = Issue1.TxtMedlineStitle.Caption
             .parallelTitles = Issue1.TxtParallel.text
             .publisherName = Issue1.TxtPubl.text
             
@@ -1203,7 +1203,7 @@ Public Sub LoadIssue(mfn As Long)
         myIssue.number = Issue1.TxtIssueno.text
         myIssue.suppl = Issue1.TxtSupplNo.text
         myIssue.vsuppl = Issue1.TxtSupplVol.text
-        myIssue.issueorder = Issue1.TxtIseqNo.text
+        myIssue.issueorder = Issue1.TxtIseqno.text
         myIssue.idPart = Issue1.ComboIssueIdPart.text
         
         
@@ -1346,7 +1346,7 @@ Private Sub LoadIssueData()
                 TxtSupplVol(i).text = addBSPrefix(TxtSupplVol(i).text, Issue1.TxtSupplVol.text, .lang, "suppl.", "supl.")
                 TxtSupplNro(i).text = addBSPrefix(TxtSupplNro(i).text, Issue1.TxtSupplNo.text, .lang, "suppl.", "supl.")
                 If TxtLoc(i).text = "" Then TxtLoc(i).text = Issue1.Cidade
-                If TxtAno(i).text = "" Then TxtAno(i) = Mid(Issue1.TxtIseqNo.text, 1, 4)
+                If TxtAno(i).text = "" Then TxtAno(i) = Mid(Issue1.TxtIseqno.text, 1, 4)
                 
             End With
         
@@ -1415,7 +1415,7 @@ Private Sub LoadDispoSections()
     
     With Paths("Section Database")
     Set sectionDAO = New ClsSectionDAO
-    Call sectionDAO.create(.path, .FileName, .key)
+    Call sectionDAO.create(.Path, .FileName, .key)
     End With
     
     DispoSecTitle.Clear
@@ -1423,7 +1423,7 @@ Private Sub LoadDispoSections()
     DispoSecCode.Clear
     DispoSecCode.visible = False
     
-    Set journalSections = sectionDAO.getTOC(Issue1.TxtSerTitle.Caption, Issue1.TxtISSN.Caption, Issue1.SiglaPeriodico, mfnSection)
+    Set journalSections = sectionDAO.getTOC(Issue1.TxtSertitle.Caption, Issue1.TxtISSN.Caption, Issue1.SiglaPeriodico, mfnSection)
         
     For i = 1 To IdiomsInfo.count
         lang = IdiomsInfo(i).Code
@@ -1453,7 +1453,7 @@ End Function
 
 Private Sub DispoSecTitleChecked(sectionCode As String, Flag As Boolean)
     Dim i As Long
-    Dim Index As Long
+    Dim index As Long
     Dim found As Boolean
     
     found = False
@@ -1474,7 +1474,7 @@ Private Sub CmdClose_Click()
 End Sub
 
 Private Sub CmdNewSections_Click()
-    Call New_Section2.OpenSection(Issue1.TxtSerTitle.Caption, False)
+    Call New_Section2.OpenSection(Issue1.TxtSertitle.Caption, False)
     
     LoadDispoSections
 End Sub
@@ -1506,7 +1506,7 @@ Private Sub DispoSecTitle_Click()
         'delete
         Set lvSection = LVSections.FindItem(Code, lvwText)
         If Not (lvSection Is Nothing) Then
-            LVSections.ListItems.Remove (lvSection.Index)
+            LVSections.ListItems.Remove (lvSection.index)
         End If
     End If
     
@@ -1560,7 +1560,7 @@ Private Sub Form_Unload(Cancel As Integer)
 End Sub
 
 Private Sub FormCmdAju_Click()
-    Call openHelp(Paths("Help of Issue").path, Paths("Help of Issue").FileName)
+    Call openHelp(Paths("Help of Issue2").Path, Paths("Help of Issue2").FileName)
 End Sub
 
 Private Sub Form_Resize()
@@ -1779,7 +1779,7 @@ Private Function CheckYears() As Boolean
         yearOK = yearOK And (TxtAno(i).text = year)
     Next
     
-    yearOK = yearOK And (Mid(Issue1.TxtIseqNo.text, 1, 4) = year)
+    yearOK = yearOK And (Mid(Issue1.TxtIseqno.text, 1, 4) = year)
     
     
     

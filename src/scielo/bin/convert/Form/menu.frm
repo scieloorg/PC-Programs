@@ -52,9 +52,6 @@ Begin VB.Form FormMenu
       Begin VB.Menu mnAbrirMarkup 
          Caption         =   "Open Markup"
       End
-      Begin VB.Menu mnOpenDBList 
-         Caption         =   "Open Database List"
-      End
       Begin VB.Menu mnsep 
          Caption         =   "-"
       End
@@ -89,7 +86,7 @@ Sub SetLabels()
     Caption = InterfaceLabels("formmenu_caption").elem2
     If Len(Currbv) > 0 Then
         Caption = BV(Currbv).BVname + " - " + Caption
-        mnOpenDBList.Enabled = (StrComp(BV(Currbv).Flag_ISODB, "1", vbTextCompare) = 0)
+        'mnOpenDBList.Enabled = (StrComp(BV(Currbv).Flag_ISODB, "1", vbTextCompare) = 0)
     End If
     
     mnArquivo.Caption = InterfaceLabels("formmenu_file").elem2
@@ -100,7 +97,7 @@ Sub SetLabels()
     mnAjuda.Caption = InterfaceLabels("formmenu_help").elem2
     mnAbout.Caption = InterfaceLabels("formmenu_about").elem2
     mnContent.Caption = InterfaceLabels("formmenu_content").elem2
-    mnOpenDBList.Caption = InterfaceLabels("formdb_caption").elem2
+    'mnOpenDBList.Caption = InterfaceLabels("formdb_caption").elem2
     
 End Sub
 
@@ -140,7 +137,8 @@ Private Sub mnConfig_Click()
 End Sub
 
 Private Sub mnContent_Click()
-    Call openHelp(ConvertDirTree.DirNodes("Help of Converter").Parent.fullpath, ConvertDirTree.DirNodes("Help of Converter").text)
+'FIXME_2010
+    Call openHelp(mainConfig.Item("Help of Converter").elem2, mainConfig.Item("Help of Converter").elem3)
 End Sub
 
 Private Sub mnOpenDB_Click()

@@ -16,7 +16,7 @@ Option Explicit
 
 Private colGeneric As ColFieldsGenericData
 Private colLang As ColFieldsLangDependingData
-
+Private mandatory As Collection
 
 Private Sub LoadGeneric()
     Dim fn As Long
@@ -26,6 +26,7 @@ Private Sub LoadGeneric()
     Dim tag As String
     Dim genField As ClsFieldGenericData
     
+    Set mandatory = New Collection
     fn = FreeFile
     Open App.Path + "\langs\fields.ini" For Input As fn
     
@@ -37,8 +38,11 @@ Private Sub LoadGeneric()
         genField.is_mandatory = is_mandatory
         genField.key = key
         genField.reg = reg
-        genField.tag = tag
+        genField.tag = Replace(Replace(tag, "abcd", ""), "tl", "")
         Call colGeneric.add(key, genField)
+        If is_mandatory <> "" And reg = "t" Then
+            Call mandatory.add(genField.tag, CStr(mandatory.count))
+        End If
     Wend
     Close fn
     
@@ -87,5 +91,7 @@ End Function
 Function getHelp(key As String) As String
     getHelp = colLang.item(key).help
 End Function
-
+Function getMandatoryFields() As Collection
+    Set getMandatoryFields = mandatory
+End Function
 
