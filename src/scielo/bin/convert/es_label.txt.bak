@@ -1,0 +1,192 @@
+CmdSelectAll,Selecciona todo
+CmdDelete,Borra
+CmdCancel,Anula
+CmdOK,Acepta
+CmdClose,Cierra
+CmdHelp,Ayuda
+CmdFind,Busca
+formmenu_caption,Convertidor
+formmenu_file,&Archivos
+formmenu_openmarkup,&Abrir
+formmenu_exit,&Salir
+formmenu_options,&Opciones
+formmenu_config,&Configuración
+formmenu_help,&Ayuda
+formmenu_about,&Sobre
+formmenu_content,&Contenido
+FormMarkup_caption,Marcación
+formMarkup_LabISSN,Identificador del título
+formMarkup_LabSglPer,Sigla
+formMarkup_LabVol,Volumen
+formMarkup_LabSupplVol,Supl Vol
+formMarkup_LabNro,Número
+formMarkup_LabSupplNo,Supl Número
+formMarkup_FramDoc,Documentos
+formMarkup_CmdSelectAll,Selecciona Todo
+formMarkup_CmdLoad,Convierte
+formMarkup_FramDB,Resultado
+formMarkup_LabLoaded,Convertido
+formMarkup_LabNotLoaded,No Convertido
+formMarkup_CmdViewLog,Resultado
+FormViewLog_Caption,Resultado
+FrmResult_Caption,Resultado
+FormConfig_Caption,Configuración
+FormConfig_LabWebBrowserProgram,Navegador Web
+FormConfig_CmdFind,Búsqueda
+FormConfig_LabIdiomInterf,Idioma de la interface
+FormConfig_LabBV,Biblioteca Virtual
+frmFindBrowser_Caption,Busca un navegador Web
+LabFileCount,Documento(s):
+MsgProcessBegin,Inicio
+MsgLoadedDatabase,Cargada
+MsgNotLoadedDatabase,No cargada
+MsgProcessEnd ,Fin de la carga en la base de datos
+MsgTokenTime,Tiempo en segundos: 
+MsgParserResultProblemNoScope,Resultado del parser - Sin escopo
+MsgParserResultProblemNoEndofTag,Resultado del parser - No fue encontrado el fin de la tag:
+MsgParserResultProblemNoStartofTag,Resultado del parser - No fue encontrado el inicio de la tag
+MsgParserResultProblemNoTag,Resultado del parser - Falta de '>' de la tag
+MsgParserResultProblemFilenotOK,Archivo con el resultado del parser no está bien
+MsgMarkupErrors, Errores de marcación: 
+MsgRecordingdata,Grabando los datos en la base
+MsgSettingPrevious,Procesando los autores 'previous'
+MsgSettingISSN,Buscando el ISSN de los títulos de las citas bibliográficas
+MsgEndofSettingISSN,Fin de la búsqueda por el ISSN
+MsgInvalidDocOrder,Valor incorrecto para order en el documento: 
+MsgDocOrderRange,Debe estar entre 
+MsgInvalidDocOrderFormat,Formato inválido de order: %order%. Formato válido de order %right% dígitos.
+MsgDBDocOrder,: está en la base de datos y tiene order=
+MsgDirtyTag,: tag contiene  html tags
+MsgMissingBodyFiles,Faltan unos archivos en el directorio body
+MsgTakenTotalTime,Tiempo total en segundos: 
+MsgSucessPercent,Éxito=
+MsgInvalidNumberofDoc,Número incorrecto de documentos.
+MsgInvalidNumberofDocInMarkup,En el directorio markup:
+MsgInvalidNumberofDocInCfgRec,En el registro de configuración: 
+MsgFailureWriting,Error de escritura en la base de datos. Mfn=
+MsgUpdateFailure,Error de actualización en la base de datos. Mfn=
+msgDeletingFailure_Field,Error al borrar el campo 
+MsgInversionUpdateFailure,Error de actualización de archivo invertido: 
+MsgFieldAddFailure,Error escribiendo en el campo=
+msgRecordDeleteFailure,Error al borrar el registro. Mfn=
+MsgRemoveEmptyRecords,Elimina los registros vacíos.
+MsgDatabaseUpdateFailure,Error en la actualización de la base de datos: 
+MsgRecordCopyFailure,Error en la copia de registro
+MsgMissingReferences,Citas bibliográficas no encontradas en el texto completo=
+MsgRecognizeDocType,Identificando el tipo del documento...
+MsgFinalTagNotFound,Tag final del documento no fue encontrado:
+MsgInvalidDocumentType,Tipo incorrecto del documento:
+MsgLinkedFieldNotExist,Enlace para el campo no existe: 
+MsgAnalyseDoc,Analizando el documento...
+MsgGettingFieldContents,Obteniendo el contenido de los campos...
+MsgPrepareFulltext,Preparando el texto completo...
+MsgSettingReferenceLinks,Identificando las citas bibliográficas en el texto completo...
+MsgGettingfulltext,Obteniendo el texto completo...
+MsgSortingRecords,Ordenando los registros para salvar
+MsgCfgRecMissingInCfgDB,Registro de Configuración no existe en la base de datos de Registros de configuración o en la base 'issue'
+MsgMissingInCfgRec,: no hay en el Registro de Configuración.
+MsgAsPresentInCfgRec,: en el registro de configuración:
+MsgMissingInDoc,: no hay en el documento.
+MsgAsPresentInDoc,: en el documento:
+msgInvalidValueofSeccode,Valor incorrecto de seccode: 
+MsgCheckingCfgDoc,Verificando la configuración del documento.
+label_isstitle,Título
+label_DateISO,Fecha ISO
+label_Eestatus,Estatus
+MsgWrongNumberofRecType,Error en el archivo de inicialización (.ini) de la biblioteca virtual: descripción de DTD
+MsgBVINIFileFailure,Error en el archivo de inicialización (.ini) de la biblioteca virtual: línea: 
+MsgINIFileFailure,Error en convert.ini: línea: 
+MsgISSNFILEFailure,Error en issndb.ini: línea: 
+MsgNotFoundPath, - Directorio no encontrado: 
+MsgNotFoundFile, - Archivo no encontrado: 
+MsgMissingSerial,"No hay títulos en la base de datos. Para insertarlos, use el programa Title Manager."
+MsgDocisnotloaded,: no está cargado.
+MsgCreationInvFileFailure,Error en la creación del archivo invertido
+MsgLogDatabaseEestatusMissing,: sin estatus en la base de datos de log
+MsgExit,Salir?
+MsgInvalidValue, - Valor incorrecto de:
+MsgHelpFilenotfound,Archivo de ayuda no encontrado
+MsgNoWebBrowserwasselected,Ningún web browser fue seleccionado
+formmarkup_lawscope,Alcance
+formmarkup_country,País
+formmarkup_dir1,División 1
+formmarkup_dir2,División 2
+formmarkup_dir3,División 3
+formmarkup_dir4,División 4
+formmarkup_lawyear,Año de las leyes
+formMarkup_lawtype,Tipo de las leyes
+formmarkup_conversiondate,Fecha de la 1er conversión
+formMarkup_invalidjournaltitle,Título incorrecto
+formMarkup_invalidsiglumtitle,Sigla incorrecta
+formMarkup_invalidvolume,Volumen incorrecto
+formMarkup_invalidsupplvol,Suplemento de volumen incorrecto
+formMarkup_invalidissueno,Número incorrecto
+formMarkup_invalidsupplno,Suplemento de número incorrecto
+formmarkup_invalidlawscope,Alcance de la ley incorrecto. Entre con el código del alcance de la ley.
+formmarkup_invalidregion,Región incorrecta. Entre con la región de la ley.
+formmarkup_invalidcountry,País incorrecto. Entre con el país de la ley.
+formmarkup_invalidstate,Provincia incorrecta. Entre con la provincia de la ley.
+formmarkup_invalidcity,Ciudad incorrecta. Entre con la ciudad de la ley.
+formmarkup_invalidlawyear,Año de la ley incorrecto. Entre con el año compuesto por 4 dígitos.
+formmarkup_invalidlawtype,Tipo de la ley incorrecto. Entre con el tipo de la ley con 2 caracteres.
+formmarkup_invalidconvertdate,Fecha de la 1era conversión incorrecta. Entre con la fecha en el formato ISO. Esta fecha es el nombre del directorio de la base de datos que será generada.
+seccode,Código de la sección
+formmarkup_invalidserial,Nombre incorrecto.
+formmarkup_invalidnewsdate,Fecha de la noticia incorrecta.
+formmarkup_invalidsertype,Tipo de la publicación incorrecto.
+formmarkup_newsdate,Fecha
+formmarkup_serial,Publicación
+formmarkup_sertype,Tipo de publicación
+formmarkup_language,Idioma
+formmarkup_invalidlanguage,Idioma incorrecto
+formmarkup_invaliddbname,Nombre de la base de datos incorrecto. Debe tener hasta 8 caracteres.
+formMarkup_LabYear,Año
+formMarkup_invalidyear,Valor incorrecto de año.
+NoParserOutput,Parser no retornó ningun resultado.
+formMarkup_section,Sección
+formMarkup_invalidsection,Valor incorrecto de la sección.
+formMarkup_doctype,Tipo del documento
+formMarkup_invaliddoctype,Valor incorrecto del documento.
+formMarkup_group,Grupo
+formMarkup_invalidgroup,Valor incorrecto do Grupo
+formdb_caption,Administración de las bases de datos
+frmabout_caption,Sobre Converter
+frmabout_prgtitle,Converter
+frmabout_prgversion,versión 2.0
+frmabout_prgctrlcode,20001019
+frmabout_systeminfo,Información de Sistema
+formadm_caption,Administración de las Bases de Datos
+formadm_labsearchtype,Tipo de Búsqueda
+formadm_FrameFind,Lista Bases de Datos
+formsearch_caption,Búsqueda de Bases de Datos
+formsearch_lawno,Número de la ley
+formadm_FrameDelete,Selección de las bases de datos para borrar
+formadm_FoundDB,Bases de Datos encontradas:
+formadm_TotalDB,Total de Bases de Datos encontradas:
+formadm_CmdDetails,Detalles
+formadm_SelectedDB,Bases de Datos seleccionadas para borrar:
+formadm_DeletedDB,Bases de Dados borradas:
+formdelete_Caption,Borrar la base de datos
+formdelete_Warning,Usted ha seleccionado esta base de datos para borrar. ¿Está seguro?
+formmarkup_institution,Institución
+formmarkup_thesisdir,Directorio de la tesis
+formmarkup_invalidthesisdir,Diretório da tese incorrecto
+formoptions_author,Autor
+formoptions_thestitle,Título
+form_invalidinstitution,Institución incorrecta
+thescode,Código da tese
+formmarkup_invaliddir,Nombre de directório incorrecto
+MsgMissingLink,Texto para enlaces no encontrado en el texto completo:
+formmarkup_thesyear,Año (4 dígitos)
+formmarkup_thesmonth,Mes (2 dígitos)
+formmarkup_thesday,Día (2 dígitos)
+formmarkup_thesfname,Nombre
+formmarkup_theslname,Apellido
+formmarkup_invalidthesisfname,Nombre del autor debe tener hasta 8 dígitos y ningun espacio
+formmarkup_invalidthesislname,Apellido del autor debe tener hasta 8 dígitos y ningun espacio
+label_conftitle,Nombre de la Conferencia
+label_id,Identificador de la Conferencia
+or, o 
+MsgAHPDateOrRVPdate,Falta %PARAM_1%
+MsgAHPDateOrRVPdate_BadRange,La fecha %PARAM_1% (%PARAM_2%) debe ser anterior a la fecha %PARAM_4% (%PARAM3%)
+MsgMissingPreviousPID,PID de la versión %PARAM_1% no fue encontrado

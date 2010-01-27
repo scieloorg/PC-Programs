@@ -1,0 +1,68 @@
+,proc('d937',(if mid(v203,1,2)='^l' or mid(v210,1,2)='^l' or mid(v211,1,2)='^l' then 'a937{',v203^l,v210^l,v211^l,'{' fi)),
+
+,proc('d938','a938{',(v937,v37,v937),'{'),
+
+,(,
+,v210^e,
+,v210^s,
+,v210^a,
+,v210^p,
+,if mid(v210,1,2)='^i' then
+	,'<br>' ,
+,fi,
+
+,if mid(v210,1,2)='^l' then	
+	,' <A HREF="http://www.scielo.br/">',v203^l,'[',
+	,if instr(v938[1],v210^l)>0 then
+		,proc('d930a930{',mid(v938[1],size(v210^l)+1,size(v938[1])),'{'),
+		,proc('d931a931{',mid(v930[1],1,instr(v930[1],v210^l)-1),'{'),
+		,| lawtype=|v931^t[1],
+		,| lawno=|v931^n[1],
+		,| lawdiso=|v931^d[1],
+		,| city=|v931^c[1],
+		,| state=|v931^s[1],
+		,| country=|v931^p[1],
+		,| scope=|v931^e[1],
+		,| artno=|v931^a[1],
+	,fi,
+	
+	,']','</A>',
+,fi,
+,),
+
+,(,
+,v203^n,
+,v203^b,
+,v203^p,
+,v203^z,
+,v203^f,
+,v203^1,
+,v203^2,
+,v203^3,
+,v203^y,
+,v203^t,
+,v203^4,
+,v203^5,
+,v203^6,
+,v203^r,
+,v203^x,
+
+,if mid(v203,1,2)='^l' then	
+	,' <A HREF="http://www.scielo.br/">',v203^l,'[',
+	,if instr(v938[1],v203^l)>0 then
+		,proc('d930a930{',mid(v938[1],size(v203^l)+1,size(v938[1])),'{'),
+		,proc('d931a931{',mid(v930[1],1,instr(v930[1],v203^l)-1),'{'),
+		,| lawtype=|v931^t[1],
+		,| lawno=|v931^n[1],
+		,| lawdiso=|v931^d[1],
+		,| city=|v931^c[1],
+		,| state=|v931^s[1],
+		,| country=|v931^p[1],
+		,| scope=|v931^e[1],
+		,| artno=|v931^a[1],
+	,fi,
+	
+	,']','</A>',
+,fi,
+,),
+,if p(v203) then '<br><br>' fi,

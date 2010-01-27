@@ -1,0 +1,92 @@
+directory,C:\Scielo\Bin\Markup\
+prg_name,markup.prg
+parser,C:\Scielo\Bin\SGMLPars\parser.exe
+fileAttrib,en_attb.mds
+fileBar,en_bars.mds
+fileIssue,en_issue.mds
+fileTemp,en_temp.mds
+fileLink,link.mds
+fileErr,en_err.mds
+fileAutomata,automata.mds
+fileTagsAutomata,en_
+msgInvalid,Invalid Data
+msgType,Invalid Data Type
+msgSelection,Select the text to markup
+msgInserting,Error inserting the tag
+msgDeleting,Error deleting the tag. Select the text
+msgOpenFile,Open one .doc or HTM/HTML file only
+msgSure,Are you sure?
+msgSureExit,Do you want to exit?
+msgMoreLater,Do you wish to save the document in TXT format to use the parser?
+msgAutomatic,Do you wish to use the automatic markup of references?
+msgAutomaticErr,This journal don't have automatic markup
+msgDefaultDirectories,Verify the 'html.dot' and/or 'normal.dot' files.
+msgExit1,Save on TXT format and use the Parser now.
+msgExit2,Save on TXT format and use the Parser after.
+msgExit3,Exit without to save on TXT format.
+msgGenerateXML,Generate XML of body
+msgAutomataFileError, It was not possible to recognize the reference structure.
+titleAttribute,Inserting Attribute
+titleTag,Inserting Tag
+titleDelete,Deleting Tag
+titleOpenFile,Open File
+titleFinish,Finish Markup
+titleStart,Start Markup
+titleConfig,Markup Configuration
+titleErr,Error
+tooltipsDown,Down Level
+tooltipsUp,Up Level
+MainModule,MainModule.Main
+BarMarkup,Markup
+STAGO,[
+ETAGO,[/
+TAGC,]
+SLASH,/
+entitySTAGO,&#091;
+entityTAGC,&#093;
+logExtent,log
+txtExtent,txt
+TagSize,11
+tagConf0,article
+tagConf1,text
+textOK,OK
+textCANCEL,Cancel
+textClear,Clear
+textWrite,Write on File
+titlefrmArticle,Markup DTD-SciELO
+titleFields,Config Fields
+titlefrmAttribute,Insert Attribute
+titlefrmConfig,Markup Configuration
+titleLanguage,Markup Interface Language
+titleResponsible,Markup Responsible
+optionEnglish,english
+optionSpanish,spanish
+optionPortuguese,portuguese
+buttonStop,Exit
+buttonChange,Change the tag attribute
+buttonDelete,Delete the tag
+buttonAutomatic,Automatic Markup
+buttonAutomaticWS,Automatic Markup 2
+buttonHelp,Help
+bodyHasChildren,no
+doDebug,no
+buttonParser,Execute the parser
+buttonGenerateXML,Generate the XML
+buttonCheckXML,Site view
+buttonViewMarkup,View Markup
+buttonSave,Save
+msgNoXML,There is no XML file of the article or text
+msgXMLWasSuccessfullyGenerated,XML was successfully generated 
+msgPMCDirectoryCouldNotBeCreated,The directory XXX could not be created.
+msgPMCHTMLCouldNotBeCreated,It was not able to generate the text from XML.
+XSDPMC,http://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd
+msgQuestionCheckingMarkedTablesAndImages,"Before generating the XML file, be sure all the tables, images and their references were marked vbCrlf%PARM1% vbcrlf Generate the XML now?"
+msgInfoXMLError,XML document error: %PARM1% vbCrLf error code: %PARM2% vbCrLf character: %PARM3% vbCrLf %PARM4% vbCrLf
+msgCriticalMissingXMLBODY,You have to mark xmlbody before
+msgBeforExiting1,Save and parse
+msgBeforExiting2,Save and generate XML
+msgBeforExiting3,Save and exit
+msgBeforExiting4,Exit without saving
+msgQuestionGenerate2PMC,Generate XML to PubMed Central?
+msgWarningIssueHasMarkupFinishedInTitleManager,"End Markup program, open Title Manager, change to this issue, the field Markup done, then try again the Markup program."
+pmcVersion,v3.0

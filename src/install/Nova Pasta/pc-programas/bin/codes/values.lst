@@ -1,0 +1,36 @@
+new,ccode,
+curr,doctopic,yes
+curr,language,yes
+curr,illustrative material type,yes
+curr,version,
+curr,toccode,
+curr,role,yes
+curr,scheme,yes
+curr,keyword priority level,yes
+curr,standard,
+curr,id,
+curr,rid,
+curr,dateiso,
+curr,count,
+curr,pages,
+curr,from,
+curr,to,
+new,sponsor,yes
+curr,no,
+curr,orgname,
+curr,orgdiv1,
+curr,orgdiv2,
+curr,orgdiv3,
+curr,ctdbid,
+curr,country,yes
+curr,deposid,
+curr,entrdate,
+curr,embdate,
+curr,source,
+curr,doctype,
+curr,cturl,
+curr,ftype,yes
+curr,lictype,yes
+curr,href,
+curr,pubtype,yes
+curr,hcomment,yes

@@ -1,0 +1,23 @@
+,,Convert Program Directory,
+Convert Program Directory,Common,Conversion Table Directory,
+Conversion Table Directory,find.txt,Search Types,1
+Conversion Table Directory,sgm2win.txt,Conversion sgml to windows,
+Conversion Table Directory,sgm2win1.txt,Conversion sgml to windows 1,
+Conversion Table Directory,sgm2win2.txt,Conversion sgml to windows 2,
+Conversion Table Directory,rsym2win.txt,Conversion symb to win,
+Conversion Table Directory,sgm2rsym.txt,Conversion sgml to replsymb,
+Conversion Table Directory,sup.txt,Conversion sup to windows,
+Conversion Table Directory,present.txt,Conversion presentation tags,
+Conversion Table Directory,dos.txt,Conversion windows to dos,
+Conversion Table Directory,en.txt,Conversion to English,
+Conversion Table Directory,es.txt,Conversion to Spanish,
+Conversion Table Directory,pt.txt,Conversion to Portuguese,
+Conversion Table Directory,iso-list.fst,ISO fst,
+Conversion Table Directory,enthtml.txt,Conversion List of HTML to ASCII,
+Conversion Table Directory,HTMLTags,Valid HTML Tags Table,
+Conversion Table Directory,log.fst,FST log,
+Convert Program Directory,library,Library Directory,
+Convert Program Directory,Help,Converter Help Directory,
+Converter Help Directory,econtent.htm,Help of Configuration,1
+Converter Help Directory,econtent.htm,Help of Converter,1
+Converter Help Directory,emarkup.htm,Help of Markup,1

@@ -1,0 +1,10 @@
+00101,Data inválida - a data %PARAM1% deve ser posterior à data %PARAM2%
+00102,Status inválido - não existe a transição do status %PARAM1% para %PARAM2%
+00103,Status ou data - valor inválido - não pode ser em branco
+00104,Data inválida - a data informada %PARAM1% deve ser anterior à data %PARAM2%
+00105,Nenhum item foi selecionado para substituir
+00106,Deseja substituir %PARAM1% por %PARAM2%?
+00107,"Preencha a data de saída, pois a causa da saída está preenchida"
+00108,"Preencha a data de entrada antes de preencher a data de saída"
+00109,"Preencha a causa da saída"
+00110,"Formato da data deve seguir norma ISO"

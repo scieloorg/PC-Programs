@@ -479,7 +479,7 @@ Function ScieloNetWrite() As String
     
     Set item = New ClCode
     For i = 0 To .ListSciELONet.ListCount - 1
-        Set item = CodeScieloNet(.ListSciELONet.list(i), exist)
+        Set item = CodeScieloNet.item(.ListSciELONet.list(i), exist)
         If exist Then
             If .ListSciELONet.selected(i) Then
                 s(CLng(item.Code)) = "1"

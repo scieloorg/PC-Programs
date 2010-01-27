@@ -15,29 +15,16 @@ Attribute VB_Ext_KEY = "SavedWithClassBuilder" ,"Yes"
 Attribute VB_Ext_KEY = "Collection" ,"ClCode"
 Attribute VB_Ext_KEY = "Member0" ,"ClCode"
 Attribute VB_Ext_KEY = "Top_Level" ,"Yes"
+Option Explicit
+
+
 Private mCol As Collection
 
-Public Function add(Optional SKEY As String, Optional obj As ClCode) As ClCode
-    'create a new object
-    Dim objNewMember As ClCode
-    Set objNewMember = New ClCode
-
-    If Not obj Is Nothing Then
-        Set objNewMember = obj
-    End If
+Public Function add(obj As ClCode, SKEY As String) As ClCode
     
-    'set the properties passed into the method
-    If Len(SKEY) = 0 Then
-        mCol.add objNewMember
-    Else
-        mCol.add objNewMember, SKEY
-    End If
+    Call mCol.add(obj, SKEY)
+    Set add = obj
 
-
-    'return the object created
-    Set add = objNewMember
-    Set objNewMember = Nothing
-Exit Function
 
 End Function
 
@@ -47,15 +34,21 @@ Attribute item.VB_UserMemId = 0
     'vntIndexKey contains either the Index or Key to the collection,
     'this is why it is declared as a Variant
     'Syntax: Set foo = x.Item(xyz) or Set foo = x.Item(5)
-    On Error GoTo notexist
-    Set item = mCol(vntIndexKey)
-    exist = True
-    Exit Property
-notexist:
-
+    
     Dim i As Long
-    exist = False
-    While (Not exist) And (i < count)
+    
+    On Error GoTo NOT_FOUND
+    exist = True
+    Set item = mCol.item(vntIndexKey)
+    
+    
+    
+    
+    Exit Property
+    
+NOT_FOUND:
+exist = False
+While (Not exist) And (i < count)
         i = i + 1
         If StrComp(vntIndexKey, mCol(i).value, vbTextCompare) = 0 Then
             exist = True

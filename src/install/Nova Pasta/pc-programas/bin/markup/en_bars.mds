@@ -1,0 +1,819 @@
+start;nd
+article;Shows the beginning of an article;13;#FALSE#;#TRUE#;article
+text;Specifies the texts that are not articles, as editorials;13;#FALSE#;#TRUE#;textM
+translat;Specifies the translation text;13;#FALSE#;#FALSE#;translat
+
+article;start
+front;Identifies the beginning of the front matter of an article;11;#FALSE#;#FALSE#;front
+down;front
+body;Identifies the beginning of the body (full text) of an article;11;#FALSE#;#FALSE#;
+back;Identifies the beginning of the back matter of an article;11;#FALSE#;#FALSE#;back
+down;back
+
+textM;start
+titlegrp;Contains the elements of the title of a document;11;#FALSE#;#FALSE#;titlegrpText
+down;titlegrpText
+authgrp;Contains the elements for the identifiestion of the individual or institutional authors of an article;11;#FALSE#;#FALSE#;authgrpText
+down;authgrpText
+back;Identifies the beginning of the back matter of an article;11;#FALSE#;#FALSE#;backT
+down;backT
+
+translat;start
+part1;Identifies the part between the begining of the text and the references;11;#FALSE#;#FALSE#;
+refs;Identifies the part of the references;11;#FALSE#;#FALSE#;refs
+down;refs
+part2;Identifies the part between the references and the end of the text;11;#FALSE#;#FALSE#;
+
+refs;translat
+citation;Identifies the citation in a translation text;9;#TRUE#;#FALSE#;
+
+ifloat;nd
+aff;Identifies the institution of which the author belong;14;#TRUE#;#TRUE#;aff
+down;aff
+ign;Text unkown by the markup;14;#TRUE#;#FALSE#;
+table;Contains the elements in order to identify a table in the body of the text;14;#TRUE#;#TRUE#;table
+down;table
+figgrp;Contains the elements in order to identify the images in the body of the text;14;#TRUE#;#TRUE#;figgrp
+down;figgrp
+cltrial;Informs the data about clinical trial;14;#FALSE#;#FALSE#;cltrial
+down;cltrial
+xref;Informs the crossreferences of tables, figures, etc;14;#TRUE#;#TRUE#;xref
+deposit;Inform the data about the repository;14;#FALSE#;#TRUE#;
+
+cltrial;ifloat
+ctreg;Identifies the register number;14;#FALSE#;#FALSE#;
+ctdb;Identifies the database of clinical trials;14;#FALSE#;#TRUE#;
+ctdburl;Identifies the url of the database of clinical trial;14;#FALSE#;#FALSE#;
+
+table;ifloat
+title;Identifies the title of a document;14;#FALSE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;14;#FALSE#;#FALSE#;
+legend;Shows the legend of a table or of an image;14;#FALSE#;#FALSE#;
+
+figgrp;ifloat
+title;Identifies the title of a document;14;#FALSE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;14;#FALSE#;#FALSE#;
+figref;Shows the images in the text;14;#FALSE#;#FALSE#;
+legend;Shows the legend of a table or of an image;14;#FALSE#;#FALSE#;
+
+aff;ifloat
+city;Identifies the name of a city;14;#FALSE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of the work;14;#FALSE#;#FALSE#;
+country;Identifies the country;14;#FALSE#;#FALSE#;
+zipcode;Identifies the zip code;14;#FALSE#;#FALSE#;
+email;Electronic mail;14;#FALSE#;#FALSE#;
+
+authgrpText;textM
+author;Contains the elements for the identification of the individual authors as name, surname and type of responsability;6;#TRUE#;#TRUE#;authorText
+down;authorText
+corpauth;Identifies the institutional authors responsible for the intellectual or artistic content of the work;6;#TRUE#;#FALSE#;corpauthText
+down;corpauthText
+
+authorText;authgrpText
+fname;Identifies the initial names of an individual author;9;#FALSE#;#FALSE#;
+surname;Identifies the surname of an individual author;9;#FALSE#;#FALSE#;
+
+corpauthText;authgrpText
+orgname;Identifies the name of an institution or organization;10;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;10;#FALSE#;#FALSE#;
+
+titlegrpText;textM
+title;Identifies the title of a document;6;#TRUE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;6;#TRUE#;#FALSE#;
+
+front;article
+titlegrp;Contains the elements of the title of a document;6;#FALSE#;#FALSE#;titlegrpFront
+down;titlegrpFront
+authgrp;Contains the elements for the identification of the individual authors as name, surname, and the type of responsability;6;#FALSE#;#FALSE#;authgrpFront
+down;authgrpFront
+bibcom;Contains the complementary elements for the identification of the article, as the summary and the keywords;6;#FALSE#;#FALSE#;bibcomFront
+down;bibcomFront
+
+titlegrpFront;front
+title;Identifies the title of a document;9;#TRUE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;9;#TRUE#;#FALSE#;
+
+authgrpFront;front
+author;Contains the elements for the identification of the individual authors as name, surname and type of responsability;9;#TRUE#;#TRUE#;authorFront
+down;authorFront
+corpauth;Identifies the institutional authors responsible for the intellectual or artistic content of the work;9;#TRUE#;#FALSE#;corpauthFront
+down;corpauthFront
+
+authorFront;authgrpFront
+fname;Identifies the initial names of an individual author;10;#FALSE#;#FALSE#;
+surname;Identifies the surname of an individual author;10;#FALSE#;#FALSE#;
+
+corpauthFront;authgrpFront
+orgname;Identifies the name of an institution or organization;10;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;10;#FALSE#;#FALSE#;
+
+bibcomFront;front
+abstract;Identifies the summary of the article;9;#TRUE#;#TRUE#;
+keygrp;Contains the elements for the description subject matter of the document;9;#TRUE#;#TRUE#;keygrpBibcom
+down;keygrpBibcom
+confgrp;Contains the elements for the identification of an event as conference, seminar, congress, etc .;9;#FALSE#;#FALSE#;confgrpBibcom
+down;confgrpBibcom
+report;Contains information on the report or project, of which the article is a partial or final product;9;#FALSE#;#FALSE#;reportBibcom
+down;reportBibcom
+thesgrp;Contains the elements for the identification of a thesis or dissertation or still of a product of a thesis or dissertation;9;#FALSE#;#FALSE#;thesgrpBibcom
+down;thesgrpBibcom
+hist;Identifies the history of the publication of an article in a journal, containing the date of arrival, of acceptance or of revision;9;#FALSE#;#FALSE#;histBibcom
+down;histBibcom
+title;Identifies the title of a document;9;#TRUE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;9;#TRUE#;#FALSE#;
+
+keygrpBibcom;bibcomFront
+keyword;Identifies the keywords of a document;10;#TRUE#;#TRUE#;
+subkey;Identifies the cualifiers of the keywords or descriptors;10;#TRUE#;#TRUE#;
+dperiod;Identifies the period of the time reported in the content of the document;10;#TRUE#;#TRUE#;
+
+confgrpBibcom;bibcomFront
+sponsor;Identifies the financing institution of the project or event;10;#TRUE#;#FALSE#;sponsorBibcom
+down;sponsorBibcom
+confname;Identifies the name of an event as conference, seminar, congress, etc .;10;#TRUE#;#FALSE#;
+no;Identifies all the numbers of the structure of an article, its position in the structure is that is going to define its characteristic;10;#TRUE#;#FALSE#;
+date;Identifies the date;10;#TRUE#;#TRUE#;
+city;Identifies the name of a city;10;#TRUE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;10;#TRUE#;#FALSE#;
+country;Identifies the country;10;#TRUE#;#FALSE#;
+
+sponsorBibcom;confgrpBibcom
+orgname;Identifies the name of an institution or organization;15;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;15;#FALSE#;#FALSE#;
+
+reportBibcom;bibcomFront
+rsponsor;Identifies the financing institution of the project or event;10;#TRUE#;#FALSE#;rsponsorBibcom
+down;rsponsorBibcom
+projname;Identifies the name of the project of which the article is a partial or final product;10;#FALSE#;#FALSE#;
+
+rsponsorBibcom;reportBibcom
+orgname;Identifies the name of an institution or organization;15;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;15;#FALSE#;#FALSE#;
+contract;Identifies a numerical or alphanumeric code of the financing institution of a project, of which the article is an end or partial product;15;#TRUE#;#FALSE#;
+
+thesgrpBibcom;bibcomFront
+city;Identifies the name of a city;10;#FALSE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;10;#FALSE#;#FALSE#;
+country;Identifies the country;10;#FALSE#;#FALSE#;
+date;Identifies a date;10;#FALSE#;#TRUE#;
+degree;Identifies the degree of a dissertation or academic thesis, as a master's program, a doctorate or a pós-degree, etc .;10;#FALSE#;#FALSE#;
+orgname;Identifies the name of an institution or organization;10;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;10;#FALSE#;#FALSE#;
+
+histBibcom;bibcomFront
+received;Identifies the date in which the article was received by the journal for publication;10;#FALSE#;#TRUE#;
+revised;Identifies the date in which the article was reviewed by the journal for publication;10;#TRUE#;#TRUE#;
+accepted;Identifies the date in which the article was accepted by the journal for publication;10;#FALSE#;#TRUE#;
+
+back;article
+bbibcom;Contains the complementary elements for the identification of the article, as the summary and the keywords;6;#TRUE#;#FALSE#;bbibcomBack
+down;bbibcomBack
+vancouv;Contains the elements of a bibliography reference in accordance with the Vancouver standard;6;#FALSE#;#TRUE#;vancouv
+down;vancouv
+iso690;Contains the elements of a reference bibliography in accordance with the ISO 690/87 standard;6;#FALSE#;#TRUE#;iso690
+down;iso690
+abnt6023;Contains the elements of a reference bibliography in accordance with the NBR 6023/89 standard;6;#FALSE#;#TRUE#;abnt6023
+down;abnt6023
+other;Contains the elements of a reference bibliography that are not in agreement with the standards adopted by the Project FAPESP/BIREME;6;#FALSE#;#TRUE#;other
+down;other
+
+bbibcomBack;back
+abstract;Identifies the summary of the article;9;#TRUE#;#TRUE#;
+keygrp;Contains the elements for the description subject matter of the document;9;#TRUE#;#TRUE#;keygrpBbibcom
+down;keygrpBbibcom
+confgrp;Contains the elements for the identification of an event as conference, seminar, congress, etc .;9;#FALSE#;#FALSE#;confgrpBbibcom
+down;confgrpBbibcom
+report;Contains information on the report or project, of which the article is a partial or final product;9;#FALSE#;#FALSE#;reportBbibcom
+down;reportBbibcom
+thesgrp;Contains the elements for the identification of a thesis or dissertation or still of a product of a thesis or disertation;9;#FALSE#;#FALSE#;thesgrpBbibcom
+down;thesgrpBbibcom
+hist;Identifies the history of the publication of an article in a journal, containing the date of arrival, of accepted or of revision;9;#FALSE#;#FALSE#;histBbibcom
+down;histBbibcom
+title;Identifies the title of a document;9;#TRUE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;9;#TRUE#;#FALSE#;
+
+keygrpBbibcom;bbibcomBack
+keyword;Identifies the keywords of a document;10;#TRUE#;#TRUE#;
+subkey;Identifies the qualifier of the keywords;10;#TRUE#;#TRUE#;
+dperiod;Identifies the period of the time reported in the content of the document;10;#TRUE#;#TRUE#;
+
+confgrpBbibcom;bbibcomBack
+sponsor;Identifies the financing institution of the project or event;10;#TRUE#;#FALSE#;sponsorBbibcom
+down;sponsorBbibcom
+confname;Identifies the name of an event as conference, seminar, congress, etc .;10;#TRUE#;#FALSE#;
+no;Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic;10;#TRUE#;#FALSE#;
+date;Identifies a date;10;#TRUE#;#TRUE#;
+city;Identifies the name of a city;10;#TRUE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;10;#TRUE#;#FALSE#;
+country;Identifies the country;10;#TRUE#;#FALSE#;
+
+sponsorBbibcom;confgrpBbibcom
+orgname;Identifies the name of an institution or organization;15;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;15;#FALSE#;#FALSE#;
+
+reportBbibcom;bbibcomBack
+rsponsor;Identifies the financing institution of the project or event;10;#TRUE#;#FALSE#;rsponsorBbibcom
+down;rsponsorBbibcom
+projname; Identifies the name of the project of which the article is a partial or final product;10;#FALSE#;#FALSE#;
+
+rsponsorBbibcom;reportBbibcom
+orgname;Identifies the name of an institution or organization;15;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;15;#FALSE#;#FALSE#;
+contract;Identifies a numerical or alphanumeric code of the financing institution of a project, of which the article is an end or partial product;15;#TRUE#;#FALSE#;
+
+thesgrpBbibcom;bbibcomBack
+city;Identifies the name of a city;10;#FALSE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;10;#FALSE#;#FALSE#;
+country;Identifies the country;10;#FALSE#;#FALSE#;
+date;Identifies a date;10;#FALSE#;#TRUE#;
+degree;Identifies the degree of a dissertation or academic thesis, as a master's program, a doctorate or a pós-degree, etc .;10;#FALSE#;#FALSE#;
+orgname;Identifies the name of an institution or organization;10;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;10;#FALSE#;#FALSE#;
+
+histBbibcom;bbibcomBack
+received;Identifies the date in which the article was received by the journal for publication;10;#FALSE#;#TRUE#;
+revised;Identifies the date in which the article was reviewed by the journal for publication;10;#TRUE#;#TRUE#;
+accepted;Identifies the date in which the article was accepted by the journal for publication;10;#FALSE#;#TRUE#;
+
+other;back
+ocitat;Identifies the principle of a bibliographic citation in a bibliography;9;#TRUE#;#FALSE#;ocitat
+down;ocitat
+
+ocitat;other
+no;Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic;10;#FALSE#;#FALSE#;
+ocontrib;Contains elements, as the author and the title, for the bibliographic description of a work that is part of a journal or of a book, as articles of journals and chapters of books;10;#TRUE#;#FALSE#;ocontrib
+down;ocontrib
+omonog;Contains the principal elements for the identification of a  monograph;10;#FALSE#;#FALSE#;omonog
+down;omonog
+oiserial;Contains elements of specific identificationof a serial publication;10;#FALSE#;#FALSE#;oiserial
+down;oiserial
+confgrp;Contains the elements for the identificationof an event as conference, seminar, congress, etc;10;#FALSE#;#FALSE#;confgrpOcitat
+down;confgrpOcitat
+
+ocontrib;ocitat
+oauthor;Contains the elements for the identificationof the individual authors as name, surname and type of responsability;15;#TRUE#;#TRUE#;oauthorOcontrib
+down;oauthorOcontrib
+ocorpaut;Identifies the institutional authors responsible for the intellectual or artistic content of the work;15;#TRUE#;#FALSE#;ocorpautContrib
+down;ocorpautContrib
+et-al;Shows that the bibliographic reference contains authors that were not cited;15;#FALSE#;#FALSE#;
+title;Identifies the title of a document;15;#FALSE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;15;#FALSE#;#FALSE#;
+date;Identifies a date;15;#FALSE#;#TRUE#;
+pages;Identifies the pages of an article or from a publication in a bibliograpgic citation;15;#FALSE#;#FALSE#;
+patgrp;Contains the elements of the patente;15;#FALSE#;#TRUE#;patentOcontrib
+down;patentOcontrib
+
+oauthorOcontrib;ocontrib
+fname;Identifies the initial names of an individual author;2;#FALSE#;#FALSE#;
+surname;Identifies the surname of an individual author;2;#FALSE#;#FALSE#;
+anonym;Shows that the work is of unknown author;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+ocorpautContrib;ocontrib
+orgname;Identifies the name of an institution or organization;2;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+omonog;ocitat
+oauthor;Contains the elements for the identification of the individual authors as name, surname and type of responsability;15;#TRUE#;#TRUE#;oauthorOmonog
+down;oauthorOmonog
+ocorpaut;Identifies the institutional authors responsible for the intellectual or artistic content of the work;15;#TRUE#;#FALSE#;ocorpautOmonog
+down;ocorpautOmonog
+et-al;Shows that the bibliographic reference contains authors that were not cited;15;#FALSE#;#FALSE#;
+title;Identifies the title of a document;15;#FALSE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;15;#FALSE#;#FALSE#;
+confgrp;Contains the elements for the identification of an event as conference, seminar, congress, etc;15;#FALSE#;#FALSE#;confgrpOmonog
+down;confgrpOmonog
+thesis;Contains the specific elements for the identification of a dissertation or an academic thesis, in a bibliographic citation;15;#FALSE#;#FALSE#;thesisOmonog
+down;thesisOmonog
+date;Identifies a date;15;#FALSE#;#TRUE#;
+pages;Identifies the pages of an article or from a publication in a bibliographic citation;15;#FALSE#;#FALSE#;
+edition;Identifies the issue of the edition of a work;2;#TRUE#;#FALSE#;
+city;Identifies the name of a city;2;#TRUE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;2;#TRUE#;#FALSE#;
+country;Identifies the country;2;#TRUE#;#FALSE#;
+pubname;Identifies the name of the publishers of a document;2;#TRUE#;#FALSE#;
+extent;Identifies the extension of a work as the issue of pages or volumes of a work;2;#TRUE#;#FALSE#;
+coltitle;Identifies the title of a collection of which a work does part;2;#TRUE#;#FALSE#;
+volid;Identifies the issue of the volume of a document;2;#TRUE#;#FALSE#;
+isbn;Identifies the International Standard Book Number (ISBN);2;#TRUE#;#FALSE#;
+othinfo;Contains data that cannot be identified by the other elements of a bibliographic reference;2;#TRUE#;#FALSE#;
+url;Shows, in a bibliographic reference, the electronic address of the document;15;#TRUE#;#FALSE#;
+cited;Identifies when the article was accessed;15;#TRUE#;#TRUE#;
+patgrp;Contains the elements of the patente;15;#FALSE#;#TRUE#;patentOmonog
+down;patentOmonog
+
+oauthorOmonog;omonog
+fname;Identifies the initial names of an individual author;2;#FALSE#;#FALSE#;
+surname;Identifies the surname of an individual author;2;#FALSE#;#FALSE#;
+anonym;Shows that the work is of an unknwon author;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the previous citation;2;#FALSE#;#FALSE#;
+
+ocorpautOmonog;omonog
+orgname;Identifies the name of an institution or organization;2;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the previous citation;2;#FALSE#;#FALSE#;
+
+confgrpOmonog;omonog
+sponsor;Identifies the financing institution of the project or event;2;#TRUE#;#FALSE#;sponsorOmonog
+down;sponsorOmonog
+confname; Identifies the name of an event as conference, seminar, congress, etc.;2;#TRUE#;#FALSE#;
+no;Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic;2;#TRUE#;#FALSE#;
+date;Identifies the date;2;#TRUE#;#TRUE#;
+city;Identifies the name of a city;2;#TRUE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;2;#TRUE#;#FALSE#;
+country;Identifies the country;2;#TRUE#;#FALSE#;
+
+sponsorOmonog;confgrpOmonog
+orgname;Identifies the name of an institution or organization;5;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;7;#FALSE#;#FALSE#;
+
+thesisOmonog;omonog
+city;Identifies the name of a city;2;#FALSE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;2;#FALSE#;#FALSE#;
+country;Identifies the country;2;#FALSE#;#FALSE#;
+date;Identifies a date;2;#FALSE#;#TRUE#;
+degree;Identifies the degree of a dissertation or academic thesis, as a master's program, a doctorate or a pos-degree, etc;2;#FALSE#;#FALSE#;
+orgname;Identifies the name of an institution or organization;2;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;2;#FALSE#;#FALSE#;
+
+oiserial;ocitat
+sertitle;Identifies the title of a serial publication;15;#FALSE#;#FALSE#;
+stitle;Contains the short format and standardized of the title of a journal;15;#FALSE#;#FALSE#;
+isstitle;Identifies the title of an issue of a serial publication;15;#FALSE#;#FALSE#;
+othinfo;Contains data that cannot be identified by the other elements of the bibliographic reference;15;#FALSE#;#FALSE#;
+city;Identifies the name of a city;2;#TRUE#;#FALSE#;
+country;Identifies the country;2;#TRUE#;#FALSE#;
+pubname;Identifies the name of the publisher of the document;2;#TRUE#;#FALSE#;
+volid;Identifies the issue of the volume of a document;2;#TRUE#;#FALSE#;
+issueno;Identifies the issue of the issue;2;#TRUE#;#FALSE#;
+suppl;Identifies the issue of the supplement of a journal;2;#TRUE#;#FALSE#;
+pages;Identifies the pages of an article or from a publication in a bibliographic citation;2;#TRUE#;#FALSE#;
+extent;Identifies the extension of a work as the issue of pages or volumes of a work;2;#TRUE#;#FALSE#;
+date;Identifies the date;2;#TRUE#;#TRUE#;
+issn;Identifies the International Standard Serial Number (ISSN);2;#TRUE#;#FALSE#;
+url;Shows, in a bibliographic reference, the electronic address of the document;15;#TRUE#;#FALSE#;
+cited;Identifies when the article was accessed;15;#TRUE#;#TRUE#;
+
+confgrpOcitat;ocitat
+sponsor;Identifies the financing institution of the project or event;2;#TRUE#;#FALSE#;sponsorOcitat
+down;sponsorOcitat
+confname;Identifies the name of an event as conference, seminar, congress, etc.;2;#TRUE#;#FALSE#;
+no;Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic;2;#TRUE#;#FALSE#;
+date;Identifies the date;2;#TRUE#;#TRUE#;
+city;Identifies the name of a city;2;#TRUE#;#FALSE#;
+state;Identifies the corresponding state to the site or city of publication of a work;2;#TRUE#;#FALSE#;
+country;Identifies the country;2;#TRUE#;#FALSE#;
+
+sponsorOcitat;confgrpOcitat
+orgname;Identifies the name of an institution or organization;7;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;7;#FALSE#;#FALSE#;
+
+vancouv;back
+vcitat;Identifies the beginning of a bibliographic reference in a bibliography;9;#TRUE#;#FALSE#;vcitat
+down;vcitat
+
+vcitat;vancouv
+no;Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic;10;#FALSE#;#FALSE#;
+vcontrib;Contains elements, as the author and the title, for the bibliographic description of a work that is part of a journal or of a book, as articles of journals or chapters of books;10;#FALSE#;#FALSE#;vcontrib
+down;vcontrib
+viserial;Contains elements of identificationspecific of a serial publication;10;#FALSE#;#FALSE#;viserial
+down;viserial
+vmonog;Contains the principal elements for the identification of a monograph;10;#FALSE#;#FALSE#;vmonog
+down;vmonog
+
+vcontrib;vcitat
+author;Contains the elements for the identification of the individual authors as name, surname and type of responsability;15;#TRUE#;#TRUE#;authorVcontrib
+down;authorVcontrib
+corpauth;Identifies the institutional authors responsible for the intellectual or artistic content of the work;15;#TRUE#;#FALSE#;corpauthVcontrib
+down;corpauthVcontrib
+et-al;Shows that the bibliographic reference contains authors that were not cited;15;#FALSE#;#FALSE#;
+vtitle;Identifies a set of title of a document in a bibliographic reference in the format of Vancouver;15;#FALSE#;#FALSE#;vtitleVcontrib
+down;vtitleVcontrib
+patgrp;Contains the elements of the patente;15;#FALSE#;#TRUE#;patentVcontrib
+down;patentVcontrib
+
+authorVcontrib;vcontrib
+fname;Identifies the initial names of an individual author;2;#FALSE#;#FALSE#;
+surname;Identifies the surname of an individual author;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+corpauthVcontrib;vcontrib
+orgname;Identifies the name of an institution or organization;2;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+vtitleVcontrib;vcontrib
+title;Identifies the title of a document;2;#FALSE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;2;#FALSE#;#FALSE#;
+tp;Shows the type of publication in a bibliographic reference for example, an editorial or a literature review;2;#FALSE#;#FALSE#;
+
+viserial;vcitat
+vstitle;Contains the short format and standardized of the title of a journal;15;#FALSE#;#FALSE#;vstitle
+down;vstitle
+date;Identifies a date;15;#TRUE#;#TRUE#;
+inpress;Shows that the citation was not still published;15;#TRUE#;#FALSE#;
+volid;Identifies the issue of the volume of a document;15;#TRUE#;#FALSE#;
+issueno;Identifies the issue of an issue;15;#TRUE#;#FALSE#;
+suppl;Identifies the issue of the supplement of a journal;15;#TRUE#;#FALSE#;
+part;Shows the part of a bibliographic citation;15;#TRUE#;#FALSE#;
+extent;Identifies the extension of a work as the issue of pages or volumes of a work;15;#TRUE#;#FALSE#;
+pages;Identifies the pages of an article or from a publication in a citation;15;#TRUE#;#FALSE#;
+url;Shows, in a bibliographic reference, the electronic address of the document;15;#TRUE#;#FALSE#;
+cited;Identifies when the article was accessed;15;#TRUE#;#TRUE#;
+
+vstitle;viserial
+stitle;Contains the short format and standardized of the title of a journal;2;#FALSE#;#FALSE#;
+tp;Shows the type of publication in a bibliographic reference for example, an editorial or a literature review;2;#FALSE#;#FALSE#;
+
+vmonog;vcitat
+author;Contains the elements for the identification of the individual authors as name, surname and type of responsability;15;#TRUE#;#TRUE#;authorVmonog
+down;authorVmonog
+corpauth;Identifies the institutional authors responsible for the intellectual or artistic content of the work;15;#TRUE#;#FALSE#;corpautVmonog
+down;corpautVmonog
+et-al;Shows that the bibliographic reference contains authors that were not cited;15;#FALSE#;#FALSE#;
+vtitle;Identifies a set of title of a document in a bibliographic reference in the format of Vancouver;15;#FALSE#;#TRUE#;vtitleVmonog
+down;vtitleVmonog
+edition;Identifies the issue of the edition of a work;15;#TRUE#;#FALSE#;
+version;Identifies if the publication is in the format electronic or in the printed format;15;#TRUE#;#FALSE#;
+confgrp;Contains the elements for the identification of an event as conference, seminar, congress, etc;15;#TRUE#;#FALSE#;confgrpVmonog
+down;confgrpVmonog
+city;Identifies the name of a city;15;#TRUE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;15;#TRUE#;#FALSE#;
+pubname;Identifies the name of the publisher of a document;15;#TRUE#;#FALSE#;
+inpress;Shows that the citation was not still published;15;#TRUE#;#FALSE#;
+date;Identifies a date;15;#TRUE#;#TRUE#;
+pages;Identifies the pages of an article or from a publication in the bibliographic citation;15;#TRUE#;#FALSE#;
+report;Contains information on the report or project, of which the article is a partial or final product;15;#TRUE#;#FALSE#;reportVmonog
+down;reportVmonog
+thesis;Contains the specific elements for the identification of a dissertation or an academic thesis, in a bibliographic citation;15;#TRUE#;#FALSE#;thesisVmonog
+down;thesisVmonog
+url;Shows, in a bibliographic reference, the electronic address of the document;15;#TRUE#;#FALSE#;
+cited;Identifies when the article was accessed;15;#TRUE#;#TRUE#;
+patgrp;Contains the elements of the patente;15;#FALSE#;#TRUE#;patentVmonog
+down;patentVmonog
+
+authorVmonog;vmonog
+fname;Identifies the initial names of an individual author;2;#FALSE#;#FALSE#;
+surname;Identifies the surname of an individual author;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+corpautVmonog;vmonog
+orgname;Identifies the name of an institution or organization;2;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+vtitleVmonog;vmonog
+title;Identifies the title of a document;2;#FALSE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;2;#FALSE#;#FALSE#;
+tp;Shows the type of publication in a bibliographic reference for example, an editorial or a literature review;2;#FALSE#;#FALSE#;
+
+confgrpVmonog;vmonog
+sponsor;Identifies the financing institution of the project or event;2;#TRUE#;#FALSE#;sponsorVmonog
+down;sponsorVmonog
+confname; Identifies the name of an event as conference, seminar, congress, etc.;2;#TRUE#;#FALSE#;
+no;Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic;2;#TRUE#;#FALSE#;
+date;Identifies the date;2;#TRUE#;#TRUE#;
+city;Identifies the name of a city;2;#TRUE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;2;#TRUE#;#FALSE#;
+country;Identifies the country;2;#TRUE#;#FALSE#;
+
+sponsorVmonog;confgrpVmonog
+orgname;Identifies the name of an institution or organization;7;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;7;#FALSE#;#FALSE#;
+
+reportVmonog;vmonog
+rsponsor;Identifies the financing institution of the project or event;2;#TRUE#;#FALSE#;rsponsorVmonog
+down;rsponsorVmonog
+projname;Identifies the name of the project of which the article is a partial or final product;2;#TRUE#;#FALSE#;
+
+rsponsorVmonog;reportVmonog
+orgname;Identifies the name of an institution or organization;12;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;12;#FALSE#;#FALSE#;
+contract;Identifies a numerical or alphanumeric code of the financing institution of a project, of which the article is an end or partial product;12;#TRUE#;#FALSE#;
+
+thesisVmonog;vmonog
+city;Identifies the name of a city;2;#FALSE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;2;#FALSE#;#FALSE#;
+country;Identifies the country;2;#FALSE#;#FALSE#;
+date;Identifies a date;2;#FALSE#;#TRUE#;
+degree;Identifies the degree of a dissertation or academic thesis, as a master's program, a doctorate or a pos-degree, etc;2;#FALSE#;#FALSE#;
+orgname;Identifies the name of an institution or organization;2;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;2;#FALSE#;#FALSE#;
+
+abnt6023;back
+acitat;Identifies the principle of a bibliographic reference em a bibliography;9;#TRUE#;#FALSE#;acitat
+down;acitat
+
+acitat;abnt6023
+no;Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic;10;#FALSE#;#FALSE#;
+acontrib;Contains elements, as the author and the title, for the bibliographic description of a work that is part of a journal or of a book, as articles of journals and chapters of books;10;#FALSE#;#FALSE#;acontrib
+down;acontrib
+amonog;Contains the principal elements for the identification of a monograph;10;#FALSE#;#FALSE#;amonog
+down;amonog
+aiserial;Contains elements of identificationspecific of a serial publication;10;#FALSE#;#FALSE#;aiserial
+down;aiserial
+confgrp;Contains the elements for the identification of an event as conference, seminar, congress, etc;10;#FALSE#;#FALSE#;confgrpAcitat
+down;confgrpAcitat
+
+acontrib;acitat
+author;Contains the elements for the identification of the individual authors as name, surname and type of responsability;15;#TRUE#;#TRUE#;authorAcontrib
+down;authorAcontrib
+corpauth;Identifies the institutional authors responsible for the intellectual or artistic content of the work;15;#TRUE#;#FALSE#;corpautAContrib
+down;corpautAContrib
+et-al;Shows that the bibliographic reference contains authors that were not cited;15;#FALSE#;#FALSE#;
+title;Identifies the title of a document;15;#FALSE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;15;#FALSE#;#FALSE#;
+volid;Identifies the issue of the volume of a document;15;#FALSE#;#FALSE#;
+pages;Identifies the pages of an article or from a publication in a bibliographic citation;15;#FALSE#;#FALSE#;
+patgrp;Contains the elements of the patente;15;#FALSE#;#TRUE#;patentAcontrib
+down;patentAcontrib
+
+authorAcontrib;acontrib
+fname;Identifies the initial names of an individual author;2;#FALSE#;#FALSE#;
+surname;Identifies the surname of an individual author;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+corpautAContrib;acontrib
+orgname;Identifies the name of an institution or organization;2;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+aiserial;acitat
+sertitle;Identifies the title of a serial publication;15;#FALSE#;#FALSE#;
+stitle;Contains the short format and standardized of the title of a journal;15;#FALSE#;#FALSE#;
+isstitle;Identifies the title of an issue of a serial publication;15;#FALSE#;#FALSE#;
+city;Identifies the name of a city;15;#TRUE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;15;#TRUE#;#FALSE#;
+country;Identifies the country;15;#TRUE#;#FALSE#;
+pubname;Identifies the name of the publisher of a document;15;#TRUE#;#FALSE#;
+suppl;Identifies the issue of the supplement of a journal;2;#TRUE#;#FALSE#;
+volid;Identifies the issue of the volume of a document;15;#TRUE#;#FALSE#;
+issueno;Identifies the issue of an issue;2;#TRUE#;#FALSE#;
+date;Identifies a date;15;#TRUE#;#TRUE#;
+extent;Identifies the extension of a work as the issue of pages or volumenes of a work;15;#TRUE#;#FALSE#;
+pages;Identifies the pages of an article or from a publication in a bibliographic citation;15;#TRUE#;#FALSE#;
+notes;Contains data that cannot be identified by the other elements of a reference;15;#TRUE#;#FALSE#;
+issn;Identifies the Internacional Standard Serial  Number (ISSN);15;#TRUE#;#FALSE#;
+url;Shows, in a bibliographic reference, the electronic address of the document;15;#TRUE#;#FALSE#;
+cited;Identifies when the article was accessed;15;#TRUE#;#TRUE#;
+
+amonog;acitat
+author;Contains the elements for the identification of the individual authors as name, surname and type of responsability;15;#TRUE#;#TRUE#;authorAmonog
+down;authorAmonog
+corpauth;Identifies the institutional authors responsible for the intellectual or artistic content of the work;15;#TRUE#;#FALSE#;corpautAmonog
+down;corpautAmonog
+et-al;Shows that the bibliographic reference contains authors that were not cited;15;#FALSE#;#FALSE#;
+title;Identifies the title of a document;15;#FALSE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;15;#FALSE#;#FALSE#;
+subresp;Shows the responsibilities that are not principal in a reference for example, the translators and revisores;15;#TRUE#;#FALSE#;subrespAmonog
+down;subrespAmonog
+edition;Identifies the issue of the edition of a work;15;#TRUE#;#FALSE#;
+confgrp;Contains the elements for the identification of an event as conference, seminar, congress, etc;15;#TRUE#;#FALSE#;confgrpAmonog
+down;confgrpAmonog
+city;Identifies the name of a city;15;#TRUE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;15;#TRUE#;#FALSE#;
+country;Identifies the country;15;#TRUE#;#FALSE#;
+pubname;Identifies the name of the publisher of a document;15;#TRUE#;#FALSE#;
+date;Identifies a date;15;#TRUE#;#TRUE#;
+volid;Identifies the issue of the volume of a document;15;#TRUE#;#FALSE#;
+tome;Shows a part of a publication in a bibliographic citation;15;#TRUE#;#FALSE#;
+extent;Identifies the extension of a work as the issue of pages or volumenes of a work;15;#TRUE#;#FALSE#;
+pages;Identifies the pages of an article or from a publication in a bibliographic citation;15;#TRUE#;#FALSE#;
+coltitle;Identifies the title of a collection of which a work does part;15;#TRUE#;#FALSE#;
+colvolid;Shows the issue of the volume of a collection;15;#TRUE#;#FALSE#;
+notes;Contains data that cannot be identified by the other elements of a collection;15;#TRUE#;#FALSE#;
+isbn;Identifies the Internacional Standard Book Number (ISBN);15;#TRUE#;#FALSE#;
+thesis;Contains the specific elements for the identification of a dissertation or an academic thesis, in a bibliographic citation;15;#TRUE#;#FALSE#;thesisAmonog
+down;thesisAmonog
+url;Shows, in a bibliographic reference, the electronic address of the document;15;#TRUE#;#FALSE#;
+cited;Identifies when the article was accessed;15;#TRUE#;#TRUE#;
+patgrp;Contains the elements of the patente;15;#FALSE#;#TRUE#;patentAmonog
+down;patentAmonog
+
+authorAmonog;amonog
+fname;Identifies the initial names of an individual author;2;#FALSE#;#FALSE#;
+surname;Identifies the surname of an individual author;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+corpautAmonog;amonog
+orgname;Identifies the name of an institution or organization;2;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+confgrpAmonog;amonog
+sponsor;Identifies the financing institution of the project or event;2;#TRUE#;#FALSE#;sponsorAmonog
+down;sponsorAmonog
+confname;Identifies the name of an event as conference, seminar, congress, etc;2;#TRUE#;#FALSE#;
+no;Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic;2;#TRUE#;#FALSE#;
+date;Identifies the date;2;#TRUE#;#TRUE#;
+city;Identifies the name of a city;2;#TRUE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;2;#TRUE#;#FALSE#;
+country;Identifies the country;2;#TRUE#;#FALSE#;
+
+sponsorAmonog;confgrpAmonog
+orgname;Identifies the name of an institution or organization;7;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;7;#FALSE#;#FALSE#;
+
+thesisAmonog;amonog
+city;Identifies the name of a city;2;#FALSE#;#FALSE#;
+state;Identifies the corresponding state to the site or city of publication of a work;2;#FALSE#;#FALSE#;
+country;Identifies the country;2;#FALSE#;#FALSE#;
+date;Identifies a date;2;#FALSE#;#TRUE#;
+degree;Identifies the degree of a dissertation or academic thesis, as a master's program, a doctorate or a pos-degree, etc;2;#FALSE#;#FALSE#;
+orgname;Identifies the name of an institution or organization;2;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;2;#FALSE#;#FALSE#;
+
+confgrpAcitat;acitat
+sponsor;Identifies the financing institution of the project or event;2;#TRUE#;#FALSE#;sponsorConfgrpAcitat
+down;sponsorConfgrpAcitat
+confname;Identifies the name of an event as conference, seminar, congress, etc;2;#TRUE#;#FALSE#;
+no;Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic;2;#TRUE#;#FALSE#;
+date;Identifies the date;2;#TRUE#;#TRUE#;
+city;Identifies the name of a city;2;#TRUE#;#FALSE#;
+state;Identifies the corresponding state to the site or city of publication of a work;2;#TRUE#;#FALSE#;
+country;Identifies the country;2;#TRUE#;#FALSE#;
+
+sponsorConfgrpAcitat;confgrpAcitat
+orgname;Identifies the name of an institution or organization;7;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;7;#FALSE#;#FALSE#;
+
+iso690;back
+icitat;Identifies the principle of a bibliographic reference in a bibliography;9;#TRUE#;#FALSE#;icitat
+down;icitat
+
+icitat;iso690
+no;Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic;10;#FALSE#;#FALSE#;
+icontrib;Contains elements, as the author and the title, for the bibliographic description of a work that is the part of a journal or of a book, as articles of journals and chapters of books;10;#FALSE#;#FALSE#;icontrib
+down;icontrib
+imonog;Contains the principal elements for the identification of a monograph;10;#FALSE#;#FALSE#;imonog
+down;imonog
+iiserial;Contains the elements of identification specific of a serial publication;10;#FALSE#;#FALSE#;iiserial
+down;iiserial
+
+icontrib;icitat
+author;Contains the elements for the identification of the individual authors as name, surname and type of responsability;15;#TRUE#;#TRUE#;authorIcontrib
+down;authorIcontrib
+corpauth;Identifies the institutional authors responsible for the intellectual or artistic content of the work;15;#TRUE#;#FALSE#;corpautIcontrib
+down;corpautIcontrib
+et-al;Shows that the bibliographic reference contains authors that were not cited;15;#FALSE#;#FALSE#;
+subresp;Shows the responsibilities that are not principal in a citation for example, translators and revisors;15;#TRUE#;#TRUE#;subrespIcontrib
+down;subrespIcontrib
+title;Identifies the title of a document;15;#FALSE#;#TRUE#;
+subtitle;Identifies the subtitle of a document;15;#FALSE#;#FALSE#;
+section;Shows the section that is cited in a bibliographic citation;15;#FALSE#;#FALSE#;
+pages;Identifies the pages of an article or from a publication in a bibliographic citation;15;#FALSE#;#FALSE#;
+location;Shows the location of a part of the document in its total content in the electronic format;15;#FALSE#;#FALSE#;
+notes;Contains data that cannot be identified by the other elements of a reference;15;#FALSE#;#FALSE#;
+isbn;Identifies the International Standard Book Number (ISBN);15;#FALSE#;#FALSE#;
+patgrp;Contains the elements of the patente;15;#FALSE#;#TRUE#;patentIcontrib
+down;patentIcontrib
+
+authorIcontrib;icontrib
+fname;Identifies the initial names of an individual author;2;#FALSE#;#FALSE#;
+surname;Identifies the surname of an individual author;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+corpautIcontrib;icontrib
+orgname;Identifies the name of an institution or organization;2;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+subrespIcontrib;icontrib
+fname;Identifies the initial names of an individual author;2;#FALSE#;#FALSE#;
+surname;Identifies the surname of an individual author;2;#FALSE#;#FALSE#;
+
+iiserial;icitat
+isstitle;Identifies the title of an issue of a serial publication;15;#FALSE#;#FALSE#;
+author;Contains the elements for the identification of the individual authors as name, surname and type of responsability;15;#TRUE#;#TRUE#;authorIiserial
+down;authorIiserial
+corpauth;Identifies the institutional authors responsible for the intellectual or artistic content of the work;15;#TRUE#;#FALSE#;corpautIiserial
+down;corpautIiserial
+et-al;Shows that the bibliographic reference contains authors that were not cited;15;#FALSE#;#FALSE#;
+medium;Shows the format of the medium in that the document is published or edited;15;#FALSE#;#FALSE#;
+sertitle;Identifies the title of a serial publication;15;#FALSE#;#FALSE#;
+stitle;Contains the short format and standardized of the title of a journal;15;#FALSE#;#FALSE#;
+edition;Identifies the issue of the edition of a work;15;#TRUE#;#FALSE#;
+city;Identifies the name of a city;15;#TRUE#;#FALSE#;
+state;Identifies the corresponding state to the local or city of publication of a work;15;#TRUE#;#FALSE#;
+country;Identifies the country;15;#TRUE#;#FALSE#;
+pubname;Identifies the name of the publisher of a document;15;#TRUE#;#FALSE#;
+date;Identifies a date;15;#TRUE#;#TRUE#;
+update;Shows the date of updating of the work;15;#TRUE#;#FALSE#;
+location;Shows the location of a part of a document in its everything in electronic format;15;#TRUE#;#FALSE#;
+volid;Identifies the issue of the volume of a document;15;#TRUE#;#FALSE#;
+isdesig;Identifies the principal dates of a collection for example, the initial dates of the collection;15;#TRUE#;#FALSE#;
+issueno;Identifies the issue of a issue;15;#TRUE#;#FALSE#;
+pages;Identifies the pages of an article or from a publication in a bibliographic citation;15;#TRUE#;#FALSE#;
+notes;Contains data that cannot be identified by the other elements of a reference;15;#TRUE#;#FALSE#;
+url;Shows, in a bibliographic reference, the electronic address of the document;15;#TRUE#;#FALSE#;
+cited;Identifies when the article was accessed;15;#TRUE#;#TRUE#;
+issn;Identifies the International Standard Serial Number (ISSN);15;#TRUE#;#FALSE#;
+
+authorIiserial;iiserial
+fname;Identifies the initial names of an individual author;2;#FALSE#;#FALSE#;
+surname;Identifies the surname of an individual author;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+corpautIiserial;iiserial
+orgname;Identifies the name of an institution or organization;2;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+imonog;icitat
+author; Contains the elements for the identification of the individual authors as name, surname and type of responsability;15;#TRUE#;#TRUE#;authorImonog
+down;authorImonog
+corpauth; Identifies the responsible institutional authors for the intellectual or artistic content of the work;15;#TRUE#;#FALSE#;corpautImonog
+down;corpautImonog
+et-al; Shows that the bibliographic reference contains authors that were not cited;15;#FALSE#;#FALSE#;
+subresp; Shows the responsibilities that are not principal in a citation for example, translators and revisores;15;#TRUE#;#TRUE#;subrespImonog
+down;subrespImonog
+title; Identifies the title of a document;15;#FALSE#;#TRUE#;
+subtitle; Identifies the subtitle of a document;15;#FALSE#;#FALSE#;
+medium; Shows the format of the medium in that the document is published or edited;15;#FALSE#;#FALSE#;
+edition; Identifies the issue of the edition of a work;15;#TRUE#;#FALSE#;
+city; Identifies the name of a city;15;#TRUE#;#FALSE#;
+state; Identifies the corresponding state to the site or city of publication of a work;15;#TRUE#;#FALSE#;
+country;Identifies the country;15;#TRUE#;#FALSE#;
+pubname; Identifies the name of the publisher or editor of a document;15;#TRUE#;#FALSE#;
+date;Identifies a date;15;#TRUE#;#TRUE#;
+update;Shows the date of updating of the work;15;#TRUE#;#FALSE#;
+volid;Identifies the issue of the volume of a document;15;#TRUE#;#FALSE#;
+pages;Identifies the pages of an article or from a publication in bibliographic citation;15;#TRUE#;#FALSE#;
+extent;Identifies the extension of a work as the issue of pages or volumenes of a work;15;#TRUE#;#FALSE#; 
+location;Shows the location of the part of a document in its everything in electronic format;15;#FALSE#;#FALSE#;
+coltitle;Identifies the title of a collection or serial of which a work does part;15;#TRUE#;#FALSE#;
+notes;Contains the data that cannot be identified by the other elements of the citation;15;#TRUE#;#FALSE#;
+url;Shows, in a bibliographic reference, the electronic address of the document;15;#FALSE#;#FALSE#;
+cited;Identifies when the article was accessed;15;#TRUE#;#TRUE#;
+isbn;Identifies the International Standard Book Number (ISBN);15;#TRUE#;#FALSE#;
+patgrp;Contains the elements of the patente;15;#FALSE#;#TRUE#;patentImonog
+down;patentImonog
+
+authorImonog;imonog
+fname;Identifies the initial names of individual author;2;#FALSE#;#FALSE#;
+surname;Identifies the surname of individual author;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+corpautImonog;imonog
+orgname;Identifies the name of an institution or organization;2;#FALSE#;#FALSE#;
+orgdiv;Identifies the division of an institution;2;#FALSE#;#FALSE#;
+previous;Shows that the author of the bibliographic reference is the same author cited in the last citation;2;#FALSE#;#FALSE#;
+
+subrespImonog;imonog
+fname;Identifies the initial names of individual author;2;#FALSE#;#FALSE#;
+surname;Identifies the surname of individual author;2;#FALSE#;#FALSE#;
+
+subrespAmonog;amonog
+fname;Identifies the initial names of individual author;2;#FALSE#;#FALSE#;
+surname;Identifies the surname of individual author;2;#FALSE#;#FALSE#;
+
+backT;textM
+vancouv;Contains the elements of a bibliography reference in accordance with the Vancouver standard;6;#FALSE#;#TRUE#;vancouv
+down;vancouv
+iso690;Contains the elements of a reference bibliography in accordance with the ISO 690/87 standard;6;#FALSE#;#TRUE#;iso690
+down;iso690
+abnt6023;Contains the elements of a reference bibliography in accordance with the NBR 6023/89 standard;6;#FALSE#;#TRUE#;abnt6023
+down;abnt6023
+other;Contains the elements of a reference bibliography that are not in agreement with the standards adopted by the Project FAPESP/BIREME;6;#FALSE#;#TRUE#;other
+down;other
+
+patentImonog;imonog
+orgname;Identifies where the patent was registered;6;#FALSE#;#FALSE#;
+patent;Identifies the patent;6;#FALSE#;#FALSE#;
+date;Identifies the patent date;6;#FALSE#;#TRUE#;
+
+patentOmonog;omonog
+orgname;Identifies where the patent was registered;6;#FALSE#;#FALSE#;
+patent;Identifies the patent;6;#FALSE#;#FALSE#;
+date;Identifies the patent date;6;#FALSE#;#TRUE#;
+
+patentAmonog;amonog
+orgname;Identifies where the patent was registered;6;#FALSE#;#FALSE#;
+patent;Identifies the patent;6;#FALSE#;#FALSE#;
+date;Identifies the patent date;6;#FALSE#;#TRUE#;
+
+patentVmonog;vmonog
+orgname;Identifies where the patent was registered;6;#FALSE#;#FALSE#;
+patent;Identifies the patent;6;#FALSE#;#FALSE#;
+date;Identifies the patent date;6;#FALSE#;#TRUE#;
+
+patentIcontrib;icontrib
+orgname;Identifies where the patent was registered;6;#FALSE#;#FALSE#;
+patent;Identifies the patent;6;#FALSE#;#FALSE#;
+date;Identifies the patent date;6;#FALSE#;#TRUE#;
+
+patentOcontrib;ocontrib
+orgname;Identifies where the patent was registered;6;#FALSE#;#FALSE#;
+patent;Identifies the patent;6;#FALSE#;#FALSE#;
+date;Identifies the patent date;6;#FALSE#;#TRUE#;
+
+patentAcontrib;acontrib
+orgname;Identifies where the patent was registered;6;#FALSE#;#FALSE#;
+patent;Identifies the patent;6;#FALSE#;#FALSE#;
+date;Identifies the patent date;6;#FALSE#;#TRUE#;
+
+patentVcontrib;vcontrib
+orgname;Identifies where the patent was registered;6;#FALSE#;#FALSE#;
+patent;Identifies the patent;6;#FALSE#;#FALSE#;
+date;Identifies the patent date;6;#FALSE#;#TRUE#;

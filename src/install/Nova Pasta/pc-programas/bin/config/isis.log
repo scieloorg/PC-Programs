@@ -1,0 +1,410 @@
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-idiom interface
+20091215 16:45:56 code (58026904)  getMfnsByInv es-idiom interface
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 87 if v1^*='idiom interface' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Español;es
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-alphabet of title
+20091215 16:45:56 code (58026904)  getMfnsByInv es-alphabet of title
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 71 if v1^*='alphabet of title' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Romano bás
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-literature type
+20091215 16:45:56 code (58026904)  getMfnsByInv es-literature type
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 65 if v1^*='literature type' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Documento 
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-treatment level
+20091215 16:45:56 code (58026904)  getMfnsByInv es-treatment level
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 66 if v1^*='treatment level' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Nivel cole
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-publication level
+20091215 16:45:56 code (58026904)  getMfnsByInv es-publication level
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 70 if v1^*='publication level' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Científico
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-frequency
+20091215 16:45:56 code (58026904)  getMfnsByInv es-frequency
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 73 if v1^*='frequency' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Anual;A;;B
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-status
+20091215 16:45:56 code (58026904)  getMfnsByInv es-status
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 69 if v1^*='status' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Vigente;C;
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-country
+20091215 16:45:56 code (58026904)  getMfnsByInv es-country
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 22 if v1^*='country' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Andorra;AD
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-state
+20091215 16:45:56 code (58026904)  getMfnsByInv es-state
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 75 if v1^*='state' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Acre;AC;;A
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-usersubscription
+20091215 16:45:56 code (58026904)  getMfnsByInv es-usersubscription
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 52 if v1^*='usersubscription' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft No disponi
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-issn type
+20091215 16:45:56 code (58026904)  getMfnsByInv es-issn type
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 98 if v1^*='issn type' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft versión en
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-ftp
+20091215 16:45:56 code (58026904)  getMfnsByInv es-ftp
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 46 if v1^*='ftp' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft No está di
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-language
+20091215 16:45:56 code (58026904)  getMfnsByInv es-language
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 72 if v1^*='language' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Español;es
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-language
+20091215 16:45:56 code (58026904)  getMfnsByInv es-language
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 72 if v1^*='language' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Español;es
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-issue status
+20091215 16:45:56 code (58026904)  getMfnsByInv es-issue status
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 86 if v1^*='issue status' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Disponible
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind es-scheme
+20091215 16:45:56 code (58026904)  getMfnsByInv es-scheme
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 40 if v1^*='scheme' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Ningun Des
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind -table of contents
+20091215 16:45:56 code (58026904)  getMfnsByInv -table of contents
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 90 if v1^*='table of contents' and v1^l='' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft Table of C
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,newcode,NewCode Database,False
+20091215 16:45:56 newcode (58026904)  MSTFULLPATH C:\SciELO\code\newcode
+20091215 16:45:56 newcode (58026904)  MSTFULLPATH C:\SciELO\code\newcode
+20091215 16:45:56 newcode (58026904)  Inicia True
+20091215 16:45:56 newcode (58026904)  IfCreate newcode,False,
+20091215 16:45:56 newcode (58026904)  IFFULLPATH C:\SciELO\code\newcode
+20091215 16:45:56 newcode (58026904)  IfCreate r=0
+20091215 16:45:56 newcode (58026904)  IFFULLPATH C:\SciELO\code\newcode
+20091215 16:45:56 newcode (58026904)  IfCreate True 0
+20091215 16:45:56 newcode (58026904)  MfnFind es-study area
+20091215 16:45:56 newcode (58026904)  getMfnsByInv es-study area
+20091215 16:45:56 newcode (58026904)  getMfnsByInv 1
+20091215 16:45:56 newcode (58026904)  MfnFind 1
+20091215 16:45:56 newcode (58026904)  UsePft 55 if v1^*='study area' and v1^l='es' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 newcode (58026904)  UsePft Ciencias A
+20091215 16:45:56 newcode (58026904)  MSTFULLPATH C:\SciELO\code\newcode
+20091215 16:45:56 newcode (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,newcode,NewCode Database,False
+20091215 16:45:56 newcode (58026904)  MSTFULLPATH C:\SciELO\code\newcode
+20091215 16:45:56 newcode (58026904)  MSTFULLPATH C:\SciELO\code\newcode
+20091215 16:45:56 newcode (58026904)  Inicia True
+20091215 16:45:56 newcode (58026904)  IfCreate newcode,False,
+20091215 16:45:56 newcode (58026904)  IFFULLPATH C:\SciELO\code\newcode
+20091215 16:45:56 newcode (58026904)  IfCreate r=0
+20091215 16:45:56 newcode (58026904)  IFFULLPATH C:\SciELO\code\newcode
+20091215 16:45:56 newcode (58026904)  IfCreate True 0
+20091215 16:45:56 newcode (58026904)  MfnFind -ccode
+20091215 16:45:56 newcode (58026904)  getMfnsByInv -ccode
+20091215 16:45:56 newcode (58026904)  getMfnsByInv 1
+20091215 16:45:56 newcode (58026904)  MfnFind 1
+20091215 16:45:56 newcode (58026904)  UsePft 8 if v1^*='ccode' and v1^l='' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 newcode (58026904)  UsePft brazilian 
+20091215 16:45:56 newcode (58026904)  MSTFULLPATH C:\SciELO\code\newcode
+20091215 16:45:56 newcode (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind -standard
+20091215 16:45:56 code (58026904)  getMfnsByInv -standard
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 7 if v1^*='standard' and v1^l='' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft iso 690/87
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\code,code,Code Database,False
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Inicia True
+20091215 16:45:56 code (58026904)  IfCreate code,False,
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate r=0
+20091215 16:45:56 code (58026904)  IFFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  IfCreate True 0
+20091215 16:45:56 code (58026904)  MfnFind -scielonet
+20091215 16:45:56 code (58026904)  getMfnsByInv -scielonet
+20091215 16:45:56 code (58026904)  getMfnsByInv 1
+20091215 16:45:56 code (58026904)  MfnFind 1
+20091215 16:45:56 code (58026904)  UsePft 96 if v1^*='scielonet' and v1^l='' then (v2^v|;|,v2^c|;;|) fi 
+20091215 16:45:56 code (58026904)  UsePft SciELO Bra
+20091215 16:45:56 code (58026904)  MSTFULLPATH C:\SciELO\code\code
+20091215 16:45:56 code (58026904)  Class_Terminate 58013616 58026904
+20091215 16:45:56  (0)  Class_Initialize 
+20091215 16:45:56  (58026904)  Class_Initialize 58013616 58026904
+20091215 16:45:56  (58026904)  Inicia C:\SciELO\serial\title,title,Title Database,False
+20091215 16:45:56 title (58026904)  MSTFULLPATH C:\SciELO\serial\title\title
+20091215 16:45:56 title (58026904)  MSTFULLPATH C:\SciELO\serial\title\title
+20091215 16:45:56 title (58026904)  Inicia True
+20091215 16:45:56 title (58026904)  IfCreate tit_issn,False,
+20091215 16:45:56 title (58026904)  IFFULLPATH C:\SciELO\serial\title\tit_issn
+20091215 16:45:56 title (58026904)  IfCreate r=0
+20091215 16:45:56 title (58026904)  IFFULLPATH C:\SciELO\serial\title\tit_issn
+20091215 16:45:56 title (58026904)  IfCreate True 0

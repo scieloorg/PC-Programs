@@ -1,0 +1,51 @@
+[Variables]
+"MKPERRDISPLAYED","50"
+"DEFAULTBROWSERPATH","c:\Program Files\Netscape\Communicator\Program\netscape.exe"
+"CurrIdiomHelp","Português"
+"CurrBV","scieloproceedings"
+"Help","0"
+
+[IdiomHelp]
+Português,pt
+English,en
+Español,es
+
+[GIZMOS]
+Conversion sgml to windows
+Conversion sgml to windows 1
+Conversion sgml to windows 2
+Conversion sgml to replsymb
+Conversion symb to win
+Conversion sup to windows
+Conversion windows to dos
+Conversion presentation tags
+
+[IDIOM CONVERSION TABLES]
+Conversion to English
+Conversion to Spanish
+Conversion to Portuguese
+
+[BV]
+SciELOProceedings,scielo.ini,pathsci.txt,scielo.gif
+Thesis,thesis.ini,paththes.txt,scielo.gif
+ManInd,manind.ini,pathmani.txt,scielo.gif
+News,news.ini,pathnews.txt,scielo.gif
+BVSLaw,bvslaw.ini,pathlaw.txt,bvslaw.gif
+SciELO,scielo.ini,pathsci.txt,scielo.gif
+Cochrane,cochrane.ini,pathcoch.txt,cochrane.gif
+Conf,conf.ini,pathconf.txt,conf.gif
+
+[Tags]
+firsttag=709,,Main Markup Tag
+pii=2,,Tag PII
+database=4,,Tag Data Base
+update=91,,Tag Process Date
+update_time=92,,Tag Process Time
+sertitle=100,,Tag Serial Title
+docrecidx=700,,Tag Document Record Index
+rectpidx=701,,Tag Record Type Index
+docfile=702,,Tag Document Name
+totaldocrec=703,,Tag Total of Document Records
+literattp=705,,Tag Literature Type
+rectp=706,,Tag Record Type
+total of a record type=708,,Tag total of records

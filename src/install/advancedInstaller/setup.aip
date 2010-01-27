@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT type="Advanced Installer" CreateVersion="7.3.1" version="7.3.1" modules="enterprise" RootPath=".*" Language="en">
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
+    <ROW Property="ALLUSERS" Value="2"/>
+    <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
+    <ROW Property="BannerBitmap" MultiBuildValue="DefaultBuild:scielo_banner.jpg" Type="1"/>
+    <ROW Property="DialogBitmap" MultiBuildValue="DefaultBuild:grande.jpg" Type="1"/>
+    <ROW Property="Manufacturer" Value="SciELO" ValueLocId="*"/>
+    <ROW Property="ProductCode" Value="1033:{E871257B-3B4C-42BF-B1F3-26D6B91CF87F} " Type="16"/>
+    <ROW Property="ProductLanguage" Value="1033"/>
+    <ROW Property="ProductName" Value="SciELO PC Programs" ValueLocId="*"/>
+    <ROW Property="ProductVersion" Value="1.0.0"/>
+    <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
+    <ROW Property="UpgradeCode" Value="{62C81DE3-EB40-476A-9FD4-71895D63764F}"/>
+    <ROW Property="WindowsFamilyNT64" MultiBuildValue="DefaultBuild:Windows XP/Vista/Windows7 x64" ValueLocId="-"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
+    <ROW Directory="Code_DIR" Directory_Parent="serial_DIR" DefaultDir="Code"/>
+    <ROW Directory="PubMed_1_DIR" Directory_Parent="general_DIR" DefaultDir="PubMed"/>
+    <ROW Directory="PubMed_DIR" Directory_Parent="config.example_DIR" DefaultDir="PubMed"/>
+    <ROW Directory="SGMLPars_DIR" Directory_Parent="bin_DIR" DefaultDir="SGMLPars"/>
+    <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+    <ROW Directory="auto_DIR" Directory_Parent="markup_pmc_DIR" DefaultDir="auto"/>
+    <ROW Directory="automatas_DIR" Directory_Parent="markup_pmc_DIR" DefaultDir="automa~1|automatas"/>
+    <ROW Directory="batch_DIR" Directory_Parent="general_DIR" DefaultDir="batch"/>
+    <ROW Directory="bin_DIR" Directory_Parent="APPDIR" DefaultDir="bin"/>
+    <ROW Directory="cfg_DIR" Directory_Parent="bin_DIR" DefaultDir="cfg"/>
+    <ROW Directory="check_2_DIR" Directory_Parent="scielo_3_DIR" DefaultDir="check"/>
+    <ROW Directory="codes_DIR" Directory_Parent="bin_DIR" DefaultDir="codes"/>
+    <ROW Directory="common_DIR" Directory_Parent="convert_DIR" DefaultDir="common"/>
+    <ROW Directory="config.example_DIR" Directory_Parent="xml_scielo_DIR" DefaultDir="config~1.exa|config.example"/>
+    <ROW Directory="config_1_DIR" Directory_Parent="PubMed_DIR" DefaultDir="config"/>
+    <ROW Directory="config_DIR" Directory_Parent="bin_DIR" DefaultDir="config"/>
+    <ROW Directory="convert_DIR" Directory_Parent="bin_DIR" DefaultDir="convert"/>
+    <ROW Directory="css_2_DIR" Directory_Parent="v3.0_DIR" DefaultDir="css"/>
+    <ROW Directory="db_DIR" Directory_Parent="refIdentifier_DIR" DefaultDir="db"/>
+    <ROW Directory="de_DIR" Directory_Parent="xml_DIR" DefaultDir="de"/>
+    <ROW Directory="docs_DIR" Directory_Parent="xml_scielo_DIR" DefaultDir="docs"/>
+    <ROW Directory="en_1_DIR" Directory_Parent="xml_DIR" DefaultDir="en"/>
+    <ROW Directory="en_DIR" Directory_Parent="tables_DIR" DefaultDir="en"/>
+    <ROW Directory="es_1_DIR" Directory_Parent="xml_DIR" DefaultDir="es"/>
+    <ROW Directory="es_DIR" Directory_Parent="tables_DIR" DefaultDir="es"/>
+    <ROW Directory="fr_DIR" Directory_Parent="xml_DIR" DefaultDir="fr"/>
+    <ROW Directory="fst_DIR" Directory_Parent="general_DIR" DefaultDir="fst"/>
+    <ROW Directory="general_DIR" Directory_Parent="proc_DIR" DefaultDir="general"/>
+    <ROW Directory="gizmo_DIR" Directory_Parent="general_DIR" DefaultDir="gizmo"/>
+    <ROW Directory="help_1_DIR" Directory_Parent="convert_DIR" DefaultDir="help"/>
+    <ROW Directory="help_DIR" Directory_Parent="config_DIR" DefaultDir="help"/>
+    <ROW Directory="i2x_DIR" Directory_Parent="general_DIR" DefaultDir="i2x"/>
+    <ROW Directory="isi_issn_DIR" Directory_Parent="APPDIR" DefaultDir="isi_issn"/>
+    <ROW Directory="issn_DIR" Directory_Parent="serial_DIR" DefaultDir="issn"/>
+    <ROW Directory="issue_DIR" Directory_Parent="serial_DIR" DefaultDir="issue"/>
+    <ROW Directory="java_DIR" Directory_Parent="general_DIR" DefaultDir="java"/>
+    <ROW Directory="journals_DIR" Directory_Parent="PubMed_DIR" DefaultDir="journals"/>
+    <ROW Directory="langs_DIR" Directory_Parent="config_DIR" DefaultDir="langs"/>
+    <ROW Directory="library_DIR" Directory_Parent="convert_DIR" DefaultDir="library"/>
+    <ROW Directory="log_DIR" Directory_Parent="general_DIR" DefaultDir="log"/>
+    <ROW Directory="markup_pmc_DIR" Directory_Parent="bin_DIR" DefaultDir="markup~1|markup_pmc"/>
+    <ROW Directory="mathml_1_DIR" Directory_Parent="v3.0_DIR" DefaultDir="mathml"/>
+    <ROW Directory="misc_DIR" Directory_Parent="config_DIR" DefaultDir="misc"/>
+    <ROW Directory="mkp97to2000_DIR" Directory_Parent="convert_DIR" DefaultDir="mkp97t~1|mkp97to2000"/>
+    <ROW Directory="php_DIR" Directory_Parent="general_DIR" DefaultDir="php"/>
+    <ROW Directory="pmc_DIR" Directory_Parent="markup_pmc_DIR" DefaultDir="pmc"/>
+    <ROW Directory="prc_DIR" Directory_Parent="general_DIR" DefaultDir="prc"/>
+    <ROW Directory="proc_DIR" Directory_Parent="xml_scielo_DIR" DefaultDir="proc"/>
+    <ROW Directory="pt_1_DIR" Directory_Parent="xml_DIR" DefaultDir="pt"/>
+    <ROW Directory="pt_DIR" Directory_Parent="tables_DIR" DefaultDir="pt"/>
+    <ROW Directory="refIdentifier_DIR" Directory_Parent="markup_pmc_DIR" DefaultDir="refIde~1|refIdentifier"/>
+    <ROW Directory="schema_DIR" Directory_Parent="general_DIR" DefaultDir="schema"/>
+    <ROW Directory="scielo_3_DIR" Directory_Parent="v3.0_DIR" DefaultDir="scielo"/>
+    <ROW Directory="scielo_DIR" Directory_Parent="library_DIR" DefaultDir="scielo"/>
+    <ROW Directory="scripts_DIR" Directory_Parent="general_DIR" DefaultDir="scripts"/>
+    <ROW Directory="section_DIR" Directory_Parent="serial_DIR" DefaultDir="section"/>
+    <ROW Directory="serial_DIR" Directory_Parent="APPDIR" DefaultDir="serial"/>
+    <ROW Directory="site_1_DIR" Directory_Parent="scielo_3_DIR" DefaultDir="site"/>
+    <ROW Directory="tables_1_DIR" Directory_Parent="markup_pmc_DIR" DefaultDir="tables"/>
+    <ROW Directory="tables_DIR" Directory_Parent="config_DIR" DefaultDir="tables"/>
+    <ROW Directory="temp_1_DIR" Directory_Parent="general_DIR" DefaultDir="temp"/>
+    <ROW Directory="temp_2_DIR" Directory_Parent="markup_pmc_DIR" DefaultDir="temp"/>
+    <ROW Directory="temp_DIR" Directory_Parent="codes_DIR" DefaultDir="temp"/>
+    <ROW Directory="title_DIR" Directory_Parent="serial_DIR" DefaultDir="title"/>
+    <ROW Directory="v3.0_DIR" Directory_Parent="pmc_DIR" DefaultDir="v3.0"/>
+    <ROW Directory="validador_DIR" Directory_Parent="java_DIR" DefaultDir="valida~1|validador"/>
+    <ROW Directory="xis_DIR" Directory_Parent="general_DIR" DefaultDir="xis"/>
+    <ROW Directory="xml_DIR" Directory_Parent="scielo_3_DIR" DefaultDir="xml"/>
+    <ROW Directory="xml_scielo_DIR" Directory_Parent="APPDIR" DefaultDir="xml_sc~1|xml_scielo"/>
+    <ROW Directory="xsl_DIR" Directory_Parent="general_DIR" DefaultDir="xsl"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="AI_ExePath" ComponentId="{E66B58A9-C50F-45F6-BF75-BB802218C138}" Directory_="APPDIR" Attributes="4" KeyPath="AI_ExePath"/>
+    <ROW Component="Accent.mst" ComponentId="{1FC697A9-A33D-4DC1-BB8E-E6990E223AA8}" Directory_="gizmo_DIR" Attributes="0" KeyPath="Accent.mst" Type="0"/>
+    <ROW Component="AchouErro.bat" ComponentId="{CC6240AC-D30C-42E3-B194-B526786EAC35}" Directory_="batch_DIR" Attributes="0" KeyPath="AchouErro.bat" Type="0"/>
+    <ROW Component="Asycfilt.dll" ComponentId="{3A9A3510-EB29-40A2-8608-D44BA76C67E6}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Asycfilt.dll_1"/>
+    <ROW Component="Co2c40en.dll" ComponentId="{D6CD3135-2902-494B-8C6F-D99E6376EC46}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Co2c40en.dll"/>
+    <ROW Component="Comcat.dll" ComponentId="{0CF4706C-DC00-4F12-BC0C-2DB4BB037064}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Comcat.dll_1"/>
+    <ROW Component="Comctl32.ocx" ComponentId="{27614DDD-8E89-4E95-97EB-24A08F450E97}" Directory_="codes_DIR" Attributes="0" KeyPath="Comctl32.ocx"/>
+    <ROW Component="Comctl32.ocx_1" ComponentId="{CE6B887C-3E94-4F9D-BBEC-2043F276398D}" Directory_="config_DIR" Attributes="0" KeyPath="Comctl32.ocx_1"/>
+    <ROW Component="Comctl32.ocx_2" ComponentId="{764396B4-F777-480B-BE30-542C89D47294}" Directory_="convert_DIR" Attributes="0" KeyPath="Comctl32.ocx_2"/>
+    <ROW Component="Comctl32.ocx_3" ComponentId="{1BDFCAEB-75E0-496E-9C4F-F4ADE646BBB3}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Comctl32.ocx_3"/>
+    <ROW Component="Comdlg32.ocx" ComponentId="{10E6ED01-E634-4100-A6B8-1E38BDD3B0F6}" Directory_="codes_DIR" Attributes="0" KeyPath="Comdlg32.ocx"/>
+    <ROW Component="Comdlg32.ocx_1" ComponentId="{145524C4-5030-4BC0-A964-82B965A52D91}" Directory_="convert_DIR" Attributes="0" KeyPath="Comdlg32.ocx_1"/>
+    <ROW Component="Comdlg32.ocx_2" ComponentId="{1D471FC0-BFE4-43C1-9479-21B25CB85397}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Comdlg32.ocx_2"/>
+    <ROW Component="Ctl3d32.dll" ComponentId="{4219F51C-6252-44DD-A24F-4E75CD790742}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Ctl3d32.dll"/>
+    <ROW Component="GenerateXML_all.bat" ComponentId="{968B45B6-35A5-416C-BFD8-260757D03D25}" Directory_="proc_DIR" Attributes="0" KeyPath="GenerateXML_all.bat" Type="0"/>
+    <ROW Component="ISI.xsl" ComponentId="{78655620-0BC5-4E74-B898-78B37ED8F9DE}" Directory_="xsl_DIR" Attributes="0" KeyPath="ISI.xsl" Type="0"/>
+    <ROW Component="Markup.exe" ComponentId="{51339AC4-C62A-450E-BDB2-D4E90E4C2B7E}" Directory_="markup_pmc_DIR" Attributes="0" KeyPath="Markup.exe"/>
+    <ROW Component="Mfc40.dll" ComponentId="{84995281-E3D3-4C57-8523-FF49D906D64C}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Mfc40.dll"/>
+    <ROW Component="Mfc42.dll" ComponentId="{1460B444-68D4-4CBF-A5F0-279980EA6DA6}" Directory_="convert_DIR" Attributes="0" KeyPath="Mfc42.dll"/>
+    <ROW Component="Mfc42.dll_1" ComponentId="{86006E99-A002-4F65-9FF5-1977B558D181}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Mfc42.dll_1"/>
+    <ROW Component="Mscomctl.ocx" ComponentId="{18244B44-D9EC-4443-A76A-DD4047CDEFC2}" Directory_="codes_DIR" Attributes="0" KeyPath="Mscomctl.ocx"/>
+    <ROW Component="Mscomctl.ocx_1" ComponentId="{3DC9F43D-5A37-4657-8EAC-3B20F76D526F}" Directory_="convert_DIR" Attributes="0" KeyPath="Mscomctl.ocx_1"/>
+    <ROW Component="Msvbvm50.dll" ComponentId="{B47EA031-CF3B-4635-B7E5-B50032B08C6E}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Msvbvm50.dll"/>
+    <ROW Component="Msvcirt.dll" ComponentId="{3FF9E55D-B5D1-439D-B297-4E65B03ECFBF}" Directory_="convert_DIR" Attributes="0" KeyPath="Msvcirt.dll"/>
+    <ROW Component="Msvcirt.dll_1" ComponentId="{BA4EFED8-C62E-4602-A383-6331C572CCF8}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Msvcirt.dll_1"/>
+    <ROW Component="Msvcrt.dll" ComponentId="{7B8156DB-B2BD-4C1F-B249-4496DEFD255E}" Directory_="convert_DIR" Attributes="0" KeyPath="Msvcrt.dll"/>
+    <ROW Component="Msvcrt.dll_1" ComponentId="{10336133-996D-4525-88E4-B6AA0125B4D5}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Msvcrt.dll_1"/>
+    <ROW Component="Msvcrt20.dll" ComponentId="{E1221D6F-4607-474F-84C6-A526F717F37E}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Msvcrt20.dll"/>
+    <ROW Component="Msvcrt40.dll" ComponentId="{D84284AD-630E-4081-9AD9-D301D95ED67B}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Msvcrt40.dll"/>
+    <ROW Component="Mx.exe" ComponentId="{FF9806C3-C26B-4DB3-AD96-5D3CA4F6F411}" Directory_="cfg_DIR" Attributes="0" KeyPath="Mx.exe_1"/>
+    <ROW Component="Oleaut32.dll" ComponentId="{CE147E52-7EF4-47B1-A5F9-86565791AA5C}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Oleaut32.dll_1"/>
+    <ROW Component="Oledlg.dll" ComponentId="{D29AFF0A-E6E9-41E1-B323-A3C4784C0EA9}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Oledlg.dll"/>
+    <ROW Component="Olepro32.dll" ComponentId="{364F4EC7-412A-4156-AB5A-C2976EB67151}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Olepro32.dll_1"/>
+    <ROW Component="PubMed" ComponentId="{9334C217-26EE-446B-9EC6-DB18DACC4414}" Directory_="PubMed_1_DIR" Attributes="0"/>
+    <ROW Component="Riched32.dll" ComponentId="{77755917-C862-4E6F-B98A-F6818C379D69}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Riched32.dll"/>
+    <ROW Component="Richtx32.ocx" ComponentId="{50A3BE0D-717D-4C51-96E7-A5D8A9333681}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Richtx32.ocx"/>
+    <ROW Component="SGMLPars.dll" ComponentId="{67A56117-116D-4CF7-9315-D7D36E7A6A25}" Directory_="convert_DIR" Attributes="0" KeyPath="SGMLPars.dll"/>
+    <ROW Component="SGMLPars.dll_1" ComponentId="{C357D4ED-A836-425A-8BF9-E59ABD3612B9}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="SGMLPars.dll_1"/>
+    <ROW Component="Shlwapi.dll" ComponentId="{CDB6001E-7398-4AD6-AA87-40045B13B40A}" Directory_="convert_DIR" Attributes="0" KeyPath="Shlwapi.dll"/>
+    <ROW Component="Sysinfo.ocx" ComponentId="{E8A103C6-1E20-4B6A-B18E-2B9F771E4873}" Directory_="codes_DIR" Attributes="0" KeyPath="Sysinfo.ocx"/>
+    <ROW Component="Sysinfo.ocx_1" ComponentId="{A1C1233A-3B0A-484A-9425-62B59BD37E8A}" Directory_="config_DIR" Attributes="0" KeyPath="Sysinfo.ocx_1"/>
+    <ROW Component="Sysinfo.ocx_2" ComponentId="{C98CC119-3C81-4832-BAC5-6D71EB22D231}" Directory_="convert_DIR" Attributes="0" KeyPath="Sysinfo.ocx_2"/>
+    <ROW Component="Sysinfo.ocx_3" ComponentId="{9F372426-E78F-49C1-A5CA-AA8BBBC67B42}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Sysinfo.ocx_3"/>
+    <ROW Component="TABCTL32.OCX" ComponentId="{882E8FCB-AF20-4F26-AB28-B5313E871951}" Directory_="config_DIR" Attributes="0" KeyPath="TABCTL32.OCX_1"/>
+    <ROW Component="Tabctl32.ocx" ComponentId="{EF9FCDC2-3857-4159-B7B5-353303DE3B49}" Directory_="codes_DIR" Attributes="0" KeyPath="Tabctl32.ocx"/>
+    <ROW Component="Tabctl32.ocx_1" ComponentId="{48FF6A76-529A-460F-BF2C-F9CF30686601}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Tabctl32.ocx_2"/>
+    <ROW Component="User32.dll" ComponentId="{D0877BAE-86F0-41FC-800A-42A49214FCC0}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="User32.dll"/>
+    <ROW Component="UserManual.doc" ComponentId="{D9F3FC9C-6CE3-4A32-817E-C5452C652900}" Directory_="docs_DIR" Attributes="0" KeyPath="UserManual.doc" Type="0"/>
+    <ROW Component="Wininet.dll" ComponentId="{4798787F-A606-47D4-BA3D-CECE5B40CF64}" Directory_="convert_DIR" Attributes="0" KeyPath="Wininet.dll_1"/>
+    <ROW Component="Ws2_32.dll" ComponentId="{B327323D-EFA4-48D8-925B-3C3258BC6FD5}" Directory_="convert_DIR" Attributes="0" KeyPath="Ws2_32.dll_1"/>
+    <ROW Component="Ws2help.dll" ComponentId="{D0691AFD-B8F8-4BD2-9B35-E08DD7F1A4B5}" Directory_="convert_DIR" Attributes="0" KeyPath="Ws2help.dll_1"/>
+    <ROW Component="Ws2help.dll_1" ComponentId="{4097B9E3-A887-4F12-9D7D-CC29371E7C76}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Ws2help.dll"/>
+    <ROW Component="Wsock32.dll" ComponentId="{F0A3DC96-E030-4802-A915-BEA480A6DDD3}" Directory_="convert_DIR" Attributes="0" KeyPath="Wsock32.dll_1"/>
+    <ROW Component="Wsock32.dll_1" ComponentId="{8DD45E9F-B4C1-42D4-AF20-14EAA802CB57}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="Wsock32.dll"/>
+    <ROW Component="aabc.amd" ComponentId="{BECB0F23-99A8-4FC7-ACB0-42E58AA9EC61}" Directory_="automatas_DIR" Attributes="0" KeyPath="aabc.amd" Type="0"/>
+    <ROW Component="abnt6023.xsl" ComponentId="{8333CDDF-7523-4324-8E9C-6D45A870521C}" Directory_="auto_DIR" Attributes="0" KeyPath="abnt6023.xsl" Type="0"/>
+    <ROW Component="applyXSL.bat" ComponentId="{63019562-D64A-430D-BDE0-98E229D01424}" Directory_="scripts_DIR" Attributes="0" KeyPath="applyXSL.bat" Type="0"/>
+    <ROW Component="arquivo.cip" ComponentId="{66E35ED7-1734-4CC4-A934-AD07E56A8A8F}" Directory_="config.example_DIR" Attributes="0" KeyPath="arquivo.cip" Type="0"/>
+    <ROW Component="art.dcl" ComponentId="{78365642-D110-4EDE-A3CC-D7CA8E55D19D}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="art.dcl" Type="0"/>
+    <ROW Component="artigos.txt" ComponentId="{2CB9459F-D120-4B3D-80B1-9554D72783D0}" Directory_="refIdentifier_DIR" Attributes="0" KeyPath="artigos.txt" Type="0"/>
+    <ROW Component="asycfilt.dll" ComponentId="{79B1925D-041A-4A09-AF1B-8A918C529EE2}" Directory_="convert_DIR" Attributes="0" KeyPath="asycfilt.dll"/>
+    <ROW Component="automata.dll" ComponentId="{D7D0F152-B7CD-4ADA-A826-614D2AED4AE7}" Directory_="markup_pmc_DIR" Attributes="0" KeyPath="automata.dll"/>
+    <ROW Component="automata.mds" ComponentId="{6E3DCB65-D7E5-47FC-B12A-9A95384233D2}" Directory_="markup_pmc_DIR" Attributes="0" KeyPath="automata.mds" Type="0"/>
+    <ROW Component="call.bat" ComponentId="{4007CB48-1D4F-449E-B253-0E8E411FBEBE}" Directory_="help_DIR" Attributes="0" KeyPath="call.bat" Type="0"/>
+    <ROW Component="cfg.sci" ComponentId="{4E16B567-EC30-4484-8FE8-ADC991E9F5C6}" Directory_="convert_DIR" Attributes="0" KeyPath="cfg.sci" Type="0"/>
+    <ROW Component="cfg_en_issue.pft" ComponentId="{AF589374-C246-47F6-8813-D2367F2CCD9C}" Directory_="config_DIR" Attributes="0" KeyPath="cfg_en_issue.pft" Type="0"/>
+    <ROW Component="chama.bat" ComponentId="{CA79AF92-93BA-43A6-8EDD-F1D5844D050C}" Directory_="validador_DIR" Attributes="0" KeyPath="chama.bat" Type="0"/>
+    <ROW Component="check_aff.xsl_3" ComponentId="{D8A1AA0B-D0C1-4B16-A09A-44B5BA1DA19C}" Directory_="check_2_DIR" Attributes="0" KeyPath="check_aff.xsl_3" Type="0"/>
+    <ROW Component="class.XSLTransformer.php" ComponentId="{227F9ABF-8AD8-4AF5-90EE-B61AA3A0158A}" Directory_="php_DIR" Attributes="0" KeyPath="class.XSLTransformer.php" Type="0"/>
+    <ROW Component="clinicaltrial.bat" ComponentId="{FB7888EC-7CC9-4E13-BAD5-A017F28CF00C}" Directory_="temp_DIR" Attributes="0" KeyPath="clinicaltrial.bat" Type="0"/>
+    <ROW Component="code.CNT" ComponentId="{6F9C9C94-1A2C-40D9-BD95-875CEED3DF84}" Directory_="Code_DIR" Attributes="0" KeyPath="code.CNT" Type="2"/>
+    <ROW Component="code.fst" ComponentId="{14CC5C3A-0D53-4E36-829B-1B82A7C8DAD4}" Directory_="Code_DIR" Attributes="0" KeyPath="code.fst" Type="0"/>
+    <ROW Component="codes.DEP" ComponentId="{14351B5F-2307-4718-9C18-7E2D56737B65}" Directory_="codes_DIR" Attributes="0" KeyPath="codes.DEP" Type="0"/>
+    <ROW Component="codes.exe" ComponentId="{6AA124E8-EBDE-4882-972E-E0F9CC89DB30}" Directory_="codes_DIR" Attributes="0" KeyPath="codes.exe"/>
+    <ROW Component="comcat.dll" ComponentId="{4C814914-21D9-47EF-9445-912BA38C4C83}" Directory_="convert_DIR" Attributes="0" KeyPath="comcat.dll"/>
+    <ROW Component="common" ComponentId="{33BAEBF3-DDB0-4E81-BEF2-1CC6168680F9}" Directory_="common_DIR" Attributes="0"/>
+    <ROW Component="common.css_1" ComponentId="{8CBF4C26-AABC-4332-A05A-A41651228B6F}" Directory_="css_2_DIR" Attributes="0" KeyPath="common.css_1" Type="0"/>
+    <ROW Component="config.cnt" ComponentId="{E8E7CA70-589C-4772-B456-377E4AECC9A1}" Directory_="config_1_DIR" Attributes="0" KeyPath="config.cnt" Type="2"/>
+    <ROW Component="config.exe" ComponentId="{FC422887-0569-4534-9B16-C0FA25955B7E}" Directory_="config_DIR" Attributes="0" KeyPath="config.exe"/>
+    <ROW Component="config.fst" ComponentId="{CB3E5703-0719-45AE-B60B-9DD9E786E4F2}" Directory_="config_1_DIR" Attributes="0" KeyPath="config.fst" Type="0"/>
+    <ROW Component="configure_paths.bat" ComponentId="{88CD892A-8568-4A16-BB03-CC81B93362BB}" Directory_="cfg_DIR" Attributes="0" KeyPath="configure_paths.bat" Type="0"/>
+    <ROW Component="convert.exe" ComponentId="{549445F3-2A54-4B60-9C10-2ADBABA91CEB}" Directory_="convert_DIR" Attributes="0" KeyPath="convert.exe"/>
+    <ROW Component="ctop.xsl_1" ComponentId="{D5B510EF-0E28-4CCF-9842-BE6FD0526E79}" Directory_="mathml_1_DIR" Attributes="0" KeyPath="ctop.xsl_1" Type="0"/>
+    <ROW Component="db.cnt" ComponentId="{9EB89F51-3E3D-4B6A-9B7E-5B4B46B5AAF7}" Directory_="help_DIR" Attributes="0" KeyPath="db.cnt" Type="2"/>
+    <ROW Component="doi_conf.txt" ComponentId="{FFBFC05F-BC9E-4737-8F28-C09C4603FCDB}" Directory_="PubMed_DIR" Attributes="0" KeyPath="doi_conf.txt" Type="0"/>
+    <ROW Component="donotdelete.txt" ComponentId="{72E74719-B501-4A98-AD35-4996B2728F6B}" Directory_="log_DIR" Attributes="0" KeyPath="donotdelete.txt" Type="0"/>
+    <ROW Component="donotdelete.txt_1" ComponentId="{B9DC5A2F-DF00-4982-9157-7FA5335BAA73}" Directory_="temp_1_DIR" Attributes="0" KeyPath="donotdelete.txt_1" Type="0"/>
+    <ROW Component="empty.txt" ComponentId="{0ABEE62A-9303-4CBD-936F-944B2371289A}" Directory_="general_DIR" Attributes="0" KeyPath="empty.txt" Type="0"/>
+    <ROW Component="en_err.txt" ComponentId="{424EE695-3321-4EC2-B075-CBC7F6280D20}" Directory_="langs_DIR" Attributes="0" KeyPath="en_err.txt" Type="0"/>
+    <ROW Component="fontsymbols.txt" ComponentId="{503074CD-4AAD-4FF3-AAA1-462685B69771}" Directory_="tables_1_DIR" Attributes="0" KeyPath="fontsymbols.txt" Type="0"/>
+    <ROW Component="help" ComponentId="{94C9E0B4-99D3-4C54-8039-D57C0C077ACE}" Directory_="help_1_DIR" Attributes="0"/>
+    <ROW Component="i2id.exe" ComponentId="{DE4E926B-8CAC-44A9-B9BC-A059880AA8C0}" Directory_="Code_DIR" Attributes="0" KeyPath="i2id.exe"/>
+    <ROW Component="id2i.exe" ComponentId="{A552235C-5754-44B9-B9DA-2E0762FC65E8}" Directory_="Code_DIR" Attributes="0" KeyPath="id2i.exe"/>
+    <ROW Component="isi.dtd" ComponentId="{5076C297-7787-4891-8129-E653DC813FFA}" Directory_="schema_DIR" Attributes="0" KeyPath="isi.dtd" Type="0"/>
+    <ROW Component="isis32.dll" ComponentId="{4426A744-9BFF-4AD0-86A3-84DFB793788F}" Directory_="codes_DIR" Attributes="0" KeyPath="isis32.dll"/>
+    <ROW Component="isis32.dll_1" ComponentId="{90BC4AEF-5D20-4F08-A78B-24B276D3FDE3}" Directory_="config_DIR" Attributes="0" KeyPath="isis32.dll_1"/>
+    <ROW Component="isis32.dll_2" ComponentId="{DA12AAB2-F872-4343-B153-CB9DE1E2569F}" Directory_="convert_DIR" Attributes="0" KeyPath="isis32.dll_2"/>
+    <ROW Component="isis32.new.dll" ComponentId="{543D7E8F-6317-4B3B-97BD-0F6A7F6AFDC8}" Directory_="convert_DIR" Attributes="0" KeyPath="isis32.new.dll"/>
+    <ROW Component="issn01.cnt" ComponentId="{0911DE60-D2DB-41BA-BC8C-16F091AB2713}" Directory_="issn_DIR" Attributes="0" KeyPath="issn01.cnt" Type="2"/>
+    <ROW Component="issn01.fst" ComponentId="{3FCA4B97-4096-4139-A057-77DE74EDEA4B}" Directory_="issn_DIR" Attributes="0" KeyPath="issn01.fst" Type="0"/>
+    <ROW Component="issn_isi.cnt" ComponentId="{1CCDBDB0-089F-40C0-B8A0-3E2B72E7F404}" Directory_="isi_issn_DIR" Attributes="0" KeyPath="issn_isi.cnt" Type="2"/>
+    <ROW Component="issn_isi.fst" ComponentId="{818E19C6-3F09-4424-A245-671634BB5523}" Directory_="isi_issn_DIR" Attributes="0" KeyPath="issn_isi.fst" Type="0"/>
+    <ROW Component="issue.fst" ComponentId="{11C15D6E-B9F1-4761-9683-B118D96C81B3}" Directory_="issue_DIR" Attributes="0" KeyPath="issue.fst" Type="0"/>
+    <ROW Component="issue.xml.pft" ComponentId="{BFE23410-A59D-4B4C-BE70-3E57BFFDFF9C}" Directory_="misc_DIR" Attributes="0" KeyPath="issue.xml.pft" Type="0"/>
+    <ROW Component="journals.cnt" ComponentId="{410DA21D-9433-4BE2-8C14-9268BAAB2A2C}" Directory_="journals_DIR" Attributes="0" KeyPath="journals.cnt" Type="2"/>
+    <ROW Component="journals.fst" ComponentId="{D2B17F15-939C-4BB6-8C57-D12AED8A516F}" Directory_="journals_DIR" Attributes="0" KeyPath="journals.fst" Type="0"/>
+    <ROW Component="language.xml" ComponentId="{6650F3E9-B830-4301-8836-BEB0A64A5589}" Directory_="en_1_DIR" Attributes="0" KeyPath="language.xml" Type="0"/>
+    <ROW Component="mkp97to2000" ComponentId="{89982790-3260-4765-8112-372E07055026}" Directory_="mkp97to2000_DIR" Attributes="0"/>
+    <ROW Component="msvbvm60.dll" ComponentId="{C7408719-9C51-4E8C-AD11-DA7234217794}" Directory_="convert_DIR" Attributes="0" KeyPath="msvbvm60.dll"/>
+    <ROW Component="mswsock.dll" ComponentId="{73A168AA-9FAB-451C-A340-6173EF825C4A}" Directory_="convert_DIR" Attributes="0" KeyPath="mswsock.dll"/>
+    <ROW Component="mx.exe" ComponentId="{CA9DB370-290B-448A-9709-AEE25FAE47AE}" Directory_="help_DIR" Attributes="0" KeyPath="mx.exe"/>
+    <ROW Component="oleaut32.dll" ComponentId="{A1391992-C954-4B90-8BDE-749CB35C925D}" Directory_="convert_DIR" Attributes="0" KeyPath="oleaut32.dll"/>
+    <ROW Component="olepro32.dll" ComponentId="{86E32F9F-A72C-45A9-B8CA-AEB7CBC3E813}" Directory_="convert_DIR" Attributes="0" KeyPath="olepro32.dll"/>
+    <ROW Component="parser.exe" ComponentId="{0E366068-8A06-401C-97B5-78ADD87BD5A0}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="parser.exe"/>
+    <ROW Component="part.ini" ComponentId="{48DB15C2-C1EE-4E6C-A6C8-7840A473C8CB}" Directory_="en_DIR" Attributes="0" KeyPath="part.ini" Type="0"/>
+    <ROW Component="part.ini_1" ComponentId="{63ACABCD-88A4-4704-A701-4D91912DD448}" Directory_="es_DIR" Attributes="0" KeyPath="part.ini_1" Type="0"/>
+    <ROW Component="part.ini_2" ComponentId="{65D7C386-4590-4638-A685-FC323AD33E27}" Directory_="pt_DIR" Attributes="0" KeyPath="part.ini_2" Type="0"/>
+    <ROW Component="saxon8_dom.jar" ComponentId="{FE026A4E-062E-4B02-8F16-70A55CABBA0E}" Directory_="java_DIR" Attributes="0" KeyPath="saxon8_dom.jar" Type="0"/>
+    <ROW Component="scielo" ComponentId="{6589F4E7-AA8B-4C87-90A7-CCAB299FDD02}" Directory_="scielo_DIR" Attributes="0"/>
+    <ROW Component="scielo_pmc.xsl_2" ComponentId="{1D3DBD15-1ECD-4FD1-8656-B34019440F76}" Directory_="site_1_DIR" Attributes="0" KeyPath="scielo_pmc.xsl_2" Type="0"/>
+    <ROW Component="scilista.lst" ComponentId="{FEFC1517-976F-4868-99F2-30062E3EBA85}" Directory_="xml_scielo_DIR" Attributes="0" KeyPath="scilista.lst" Type="0"/>
+    <ROW Component="section.fst" ComponentId="{C67E873E-BDFD-4CDC-A4E0-2498EB823199}" Directory_="section_DIR" Attributes="0" KeyPath="section.fst" Type="0"/>
+    <ROW Component="segments.gen" ComponentId="{FAD86941-F51D-4803-BD8E-00F165506C23}" Directory_="db_DIR" Attributes="0" KeyPath="segments.gen" Type="0"/>
+    <ROW Component="sgm2win2.txt" ComponentId="{D24313FB-192D-4B4F-ABE8-3ECEE2D68871}" Directory_="pmc_DIR" Attributes="0" KeyPath="sgm2win2.txt" Type="0"/>
+    <ROW Component="sgm2win2.txt_1" ComponentId="{C3B7ECB6-B4F6-455C-BB20-FD95B44FAF81}" Directory_="v3.0_DIR" Attributes="0" KeyPath="sgm2win2.txt_1" Type="0"/>
+    <ROW Component="sp120.dll" ComponentId="{F55465FE-8BCE-4802-B178-77A635FD58AC}" Directory_="convert_DIR" Attributes="0" KeyPath="sp120.dll"/>
+    <ROW Component="sp120.dll_1" ComponentId="{08A0E69E-26AF-45CD-9EFE-4DBB9C909ED2}" Directory_="SGMLPars_DIR" Attributes="0" KeyPath="sp120.dll_1"/>
+    <ROW Component="temp" ComponentId="{19C68E8E-47E1-4586-BA2C-835F5BE5B2ED}" Directory_="temp_2_DIR" Attributes="0"/>
+    <ROW Component="tipo_h.i2x" ComponentId="{50EB865E-C754-448C-B6FA-860CF01DB3F1}" Directory_="i2x_DIR" Attributes="0" KeyPath="tipo_h.i2x" Type="0"/>
+    <ROW Component="tipo_h_pubmed.prc" ComponentId="{E6E911CE-2E87-403C-A0D5-0BE54DE668BC}" Directory_="prc_DIR" Attributes="0" KeyPath="tipo_h_pubmed.prc" Type="0"/>
+    <ROW Component="tit_issn.fst" ComponentId="{90101541-8ACB-434E-ACC9-93EFFB811B4A}" Directory_="title_DIR" Attributes="0" KeyPath="tit_issn.fst" Type="0"/>
+    <ROW Component="title.fst" ComponentId="{7069071E-9532-4A36-8582-CFCE809F01EF}" Directory_="fst_DIR" Attributes="0" KeyPath="title.fst" Type="0"/>
+    <ROW Component="translation.xml" ComponentId="{86D548DD-0C51-4812-BA01-BA4B32D3B720}" Directory_="de_DIR" Attributes="0" KeyPath="translation.xml" Type="0"/>
+    <ROW Component="translation.xml_1" ComponentId="{D9E3675F-6DF5-4C75-94D4-EC17A9979F37}" Directory_="es_1_DIR" Attributes="0" KeyPath="translation.xml_2" Type="0"/>
+    <ROW Component="translation.xml_2" ComponentId="{2D3920BB-40C8-440C-A6D8-2EC568CFF074}" Directory_="fr_DIR" Attributes="0" KeyPath="translation.xml_3" Type="0"/>
+    <ROW Component="translation.xml_3" ComponentId="{68F6D754-3114-4755-A7F2-A712405F8992}" Directory_="pt_1_DIR" Attributes="0" KeyPath="translation.xml_4" Type="0"/>
+    <ROW Component="xml_scielo_articles.xis" ComponentId="{C151B8F8-EEEC-4E46-9504-3058B2691117}" Directory_="xis_DIR" Attributes="0" KeyPath="xml_scielo_articles.xis" Type="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
+    <ROW Feature="Feature" Title="XML SciELO" Description="Description" Display="7" Level="4" Directory_="APPDIR" Attributes="0" Components="arquivo.cip config.cnt config.fst doi_conf.txt journals.cnt journals.fst UserManual.doc AchouErro.bat empty.txt title.fst Accent.mst tipo_h.i2x saxon8_dom.jar chama.bat donotdelete.txt class.XSLTransformer.php tipo_h_pubmed.prc isi.dtd applyXSL.bat donotdelete.txt_1 xml_scielo_articles.xis ISI.xsl GenerateXML_all.bat scilista.lst PubMed"/>
+    <ROW Feature="Feature_1" Title="Title Manager etc" Description="Description" Display="5" Level="4" Directory_="APPDIR" Attributes="0" Components="codes.DEP codes.exe Comctl32.ocx Comdlg32.ocx isis32.dll Mscomctl.ocx Sysinfo.ocx Tabctl32.ocx clinicaltrial.bat cfg_en_issue.pft Comctl32.ocx_1 config.exe call.bat db.cnt mx.exe isis32.dll_1 en_err.txt issue.xml.pft Sysinfo.ocx_1 TABCTL32.OCX part.ini part.ini_1 part.ini_2 asycfilt.dll cfg.sci comcat.dll Comctl32.ocx_2 Comdlg32.ocx_1 convert.exe isis32.dll_2 isis32.new.dll Mfc42.dll Mscomctl.ocx_1 msvbvm60.dll Msvcirt.dll Msvcrt.dll mswsock.dll oleaut32.dll olepro32.dll SGMLPars.dll Shlwapi.dll sp120.dll Sysinfo.ocx_2 Wininet.dll Ws2help.dll Ws2_32.dll Wsock32.dll common help scielo mkp97to2000"/>
+    <ROW Feature="Feature_2" Title="Data" Description="Description" Display="9" Level="1" Directory_="APPDIR" Attributes="0" Components="issn_isi.cnt issn_isi.fst code.CNT code.fst i2id.exe id2i.exe issn01.cnt issn01.fst issue.fst section.fst tit_issn.fst"/>
+    <ROW Feature="MainFeature" Title="Markup and Parser" Description="Description" Display="3" Level="1" Directory_="APPDIR" Attributes="0" Components="AI_ExePath abnt6023.xsl automata.dll automata.mds aabc.amd Markup.exe sgm2win2.txt common.css_1 ctop.xsl_1 check_aff.xsl_3 scielo_pmc.xsl_2 sgm2win2.txt_1 artigos.txt segments.gen fontsymbols.txt translation.xml language.xml translation.xml_1 translation.xml_2 translation.xml_3 temp configure_paths.bat Mx.exe art.dcl Asycfilt.dll Co2c40en.dll Comcat.dll Comctl32.ocx_3 Comdlg32.ocx_2 Ctl3d32.dll Mfc40.dll Mfc42.dll_1 Msvbvm50.dll Msvcirt.dll_1 Msvcrt.dll_1 Msvcrt20.dll Msvcrt40.dll Oleaut32.dll Oledlg.dll Olepro32.dll parser.exe Riched32.dll Richtx32.ocx SGMLPars.dll_1 sp120.dll_1 Sysinfo.ocx_3 Tabctl32.ocx_1 User32.dll Ws2help.dll_1 Wsock32.dll_1"/>
+    <ATTRIBUTE name="CurrentFeature" value="Feature_2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="Accent.mst" Component_="Accent.mst" FileName="Accent.mst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\Accent.mst" SelfReg="false" Sequence="170"/>
+    <ROW File="Accent.xrf" Component_="Accent.mst" FileName="Accent.xrf" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\Accent.xrf" SelfReg="false" Sequence="171"/>
+    <ROW File="AchouErro.bat" Component_="AchouErro.bat" FileName="AchouE~1.bat|AchouErro.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\batch\AchouErro.bat" SelfReg="false" Sequence="156"/>
+    <ROW File="Apagatemp.bat" Component_="AchouErro.bat" FileName="Apagat~1.bat|Apagatemp.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\batch\Apagatemp.bat" SelfReg="false" Sequence="157"/>
+    <ROW File="Asycfilt.dll_1" Component_="Asycfilt.dll" FileName="Asycfilt.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Asycfilt.dll" SelfReg="false" Sequence="416"/>
+    <ROW File="CONFIG.VBP" Component_="cfg_en_issue.pft" FileName="CONFIG.VBP" Attributes="0" SourcePath="Z:\scielo\bin\config\CONFIG.VBP" SelfReg="false" Sequence="28"/>
+    <ROW File="CONFIG.vbw" Component_="cfg_en_issue.pft" FileName="CONFIG.vbw" Attributes="0" SourcePath="Z:\scielo\bin\config\CONFIG.vbw" SelfReg="false" Sequence="29"/>
+    <ROW File="CONVERT.PDM" Component_="cfg.sci" FileName="CONVERT.PDM" Attributes="0" SourcePath="Z:\scielo\bin\convert\CONVERT.PDM" SelfReg="false" Sequence="101"/>
+    <ROW File="CONVERT.VBP" Component_="cfg.sci" FileName="CONVERT.VBP" Attributes="0" SourcePath="Z:\scielo\bin\convert\CONVERT.VBP" SelfReg="false" Sequence="102"/>
+    <ROW File="CONVERT.vbw" Component_="cfg.sci" FileName="CONVERT.vbw" Attributes="0" SourcePath="Z:\scielo\bin\convert\CONVERT.vbw" SelfReg="false" Sequence="103"/>
+    <ROW File="ClHTML.cls" Component_="cfg.sci" FileName="ClHTML.cls" Attributes="0" SourcePath="Z:\scielo\bin\convert\ClHTML.cls" SelfReg="false" Sequence="93"/>
+    <ROW File="ClTempDirNodes.cls" Component_="cfg.sci" FileName="ClTemp~1.cls|ClTempDirNodes.cls" Attributes="0" SourcePath="Z:\scielo\bin\convert\ClTempDirNodes.cls" SelfReg="false" Sequence="94"/>
+    <ROW File="ClTempFileTree.cls" Component_="cfg.sci" FileName="ClTemp~2.cls|ClTempFileTree.cls" Attributes="0" SourcePath="Z:\scielo\bin\convert\ClTempFileTree.cls" SelfReg="false" Sequence="95"/>
+    <ROW File="ClTempFulltext.cls" Component_="cfg.sci" FileName="ClTemp~3.cls|ClTempFulltext.cls" Attributes="0" SourcePath="Z:\scielo\bin\convert\ClTempFulltext.cls" SelfReg="false" Sequence="96"/>
+    <ROW File="Co2c40en.dll" Component_="Co2c40en.dll" FileName="Co2c40en.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Co2c40en.dll" SelfReg="false" Sequence="419"/>
+    <ROW File="Code.lk1" Component_="code.fst" FileName="Code.lk1" Attributes="0" SourcePath="Z:\scielo\serial\Code\Code.lk1" SelfReg="false" Sequence="499"/>
+    <ROW File="Code.lk2" Component_="code.fst" FileName="Code.lk2" Attributes="0" SourcePath="Z:\scielo\serial\Code\Code.lk2" SelfReg="false" Sequence="500"/>
+    <ROW File="Comcat.dll_1" Component_="Comcat.dll" FileName="Comcat.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Comcat.dll" SelfReg="false" Sequence="420"/>
+    <ROW File="Comctl32.ocx" Component_="Comctl32.ocx" FileName="Comctl32.ocx" Attributes="0" SourcePath="Z:\scielo\bin\codes\Comctl32.ocx" SelfReg="false" Sequence="5"/>
+    <ROW File="Comctl32.ocx_1" Component_="Comctl32.ocx_1" FileName="Comctl32.ocx" Attributes="0" SourcePath="Z:\scielo\bin\config\Comctl32.ocx" SelfReg="false" Sequence="25"/>
+    <ROW File="Comctl32.ocx_2" Component_="Comctl32.ocx_2" FileName="Comctl32.ocx" Attributes="0" SourcePath="Z:\scielo\bin\convert\Comctl32.ocx" SelfReg="false" Sequence="98"/>
+    <ROW File="Comctl32.ocx_3" Component_="Comctl32.ocx_3" FileName="Comctl32.ocx" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Comctl32.ocx" SelfReg="false" Sequence="421"/>
+    <ROW File="Comdlg32.ocx" Component_="Comdlg32.ocx" FileName="Comdlg32.ocx" Attributes="0" SourcePath="Z:\scielo\bin\codes\Comdlg32.ocx" SelfReg="false" Sequence="6"/>
+    <ROW File="Comdlg32.ocx_1" Component_="Comdlg32.ocx_1" FileName="Comdlg32.ocx" Attributes="0" SourcePath="Z:\scielo\bin\convert\Comdlg32.ocx" SelfReg="false" Sequence="99"/>
+    <ROW File="Comdlg32.ocx_2" Component_="Comdlg32.ocx_2" FileName="Comdlg32.ocx" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Comdlg32.ocx" SelfReg="false" Sequence="422"/>
+    <ROW File="Ctl3d32.dll" Component_="Ctl3d32.dll" FileName="Ctl3d32.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Ctl3d32.dll" SelfReg="false" Sequence="427"/>
+    <ROW File="FOLLibrary.jar" Component_="artigos.txt" FileName="FOLLib~1.jar|FOLLibrary.jar" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\FOLLibrary.jar" SelfReg="false" Sequence="381"/>
+    <ROW File="GenerateXML_ISI.bat" Component_="GenerateXML_all.bat" FileName="Genera~2.bat|GenerateXML_ISI.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\GenerateXML_ISI.bat" SelfReg="false" Sequence="235"/>
+    <ROW File="GenerateXML_PubMed.bat" Component_="GenerateXML_all.bat" FileName="Genera~3.bat|GenerateXML_PubMed.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\GenerateXML_PubMed.bat" SelfReg="false" Sequence="236"/>
+    <ROW File="GenerateXML_all.bat" Component_="GenerateXML_all.bat" FileName="Genera~1.bat|GenerateXML_all.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\GenerateXML_all.bat" SelfReg="false" Sequence="234"/>
+    <ROW File="GeraInvertido.bat" Component_="AchouErro.bat" FileName="GeraIn~1.bat|GeraInvertido.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\batch\GeraInvertido.bat" SelfReg="false" Sequence="158"/>
+    <ROW File="ISI.xsl" Component_="ISI.xsl" FileName="ISI.xsl" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\xsl\ISI.xsl" SelfReg="false" Sequence="229"/>
+    <ROW File="ISI_DATA.xsl" Component_="ISI.xsl" FileName="ISI_DATA.xsl" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\xsl\ISI_DATA.xsl" SelfReg="false" Sequence="230"/>
+    <ROW File="ISI_validator.xsl" Component_="ISI.xsl" FileName="ISI_va~1.xsl|ISI_validator.xsl" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\xsl\ISI_validator.xsl" SelfReg="false" Sequence="231"/>
+    <ROW File="ISOamsa.sgm" Component_="art.dcl" FileName="ISOamsa.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOamsa.sgm" SelfReg="false" Sequence="428"/>
+    <ROW File="ISOamsb.sgm" Component_="art.dcl" FileName="ISOamsb.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOamsb.sgm" SelfReg="false" Sequence="429"/>
+    <ROW File="ISOamsc.sgm" Component_="art.dcl" FileName="ISOamsc.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOamsc.sgm" SelfReg="false" Sequence="430"/>
+    <ROW File="ISOamsn.sgm" Component_="art.dcl" FileName="ISOamsn.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOamsn.sgm" SelfReg="false" Sequence="431"/>
+    <ROW File="ISOamso.sgm" Component_="art.dcl" FileName="ISOamso.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOamso.sgm" SelfReg="false" Sequence="432"/>
+    <ROW File="ISOamsr.sgm" Component_="art.dcl" FileName="ISOamsr.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOamsr.sgm" SelfReg="false" Sequence="433"/>
+    <ROW File="ISObox.sgm" Component_="art.dcl" FileName="ISObox.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISObox.sgm" SelfReg="false" Sequence="434"/>
+    <ROW File="ISOcyr1.sgm" Component_="art.dcl" FileName="ISOcyr1.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOcyr1.sgm" SelfReg="false" Sequence="435"/>
+    <ROW File="ISOcyr2.sgm" Component_="art.dcl" FileName="ISOcyr2.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOcyr2.sgm" SelfReg="false" Sequence="436"/>
+    <ROW File="ISOdia.sgm" Component_="art.dcl" FileName="ISOdia.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOdia.sgm" SelfReg="false" Sequence="437"/>
+    <ROW File="ISOgrk1.sgm" Component_="art.dcl" FileName="ISOgrk1.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOgrk1.sgm" SelfReg="false" Sequence="438"/>
+    <ROW File="ISOgrk2.sgm" Component_="art.dcl" FileName="ISOgrk2.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOgrk2.sgm" SelfReg="false" Sequence="439"/>
+    <ROW File="ISOgrk3.sgm" Component_="art.dcl" FileName="ISOgrk3.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOgrk3.sgm" SelfReg="false" Sequence="440"/>
+    <ROW File="ISOgrk4.sgm" Component_="art.dcl" FileName="ISOgrk4.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOgrk4.sgm" SelfReg="false" Sequence="441"/>
+    <ROW File="ISOlat1.sgm" Component_="isi.dtd" FileName="ISOlat1.sgm" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\schema\ISOlat1.sgm" SelfReg="false" Sequence="211"/>
+    <ROW File="ISOlat1.sgm_1" Component_="art.dcl" FileName="ISOlat1.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOlat1.sgm" SelfReg="false" Sequence="442"/>
+    <ROW File="ISOlat2.sgm" Component_="art.dcl" FileName="ISOlat2.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOlat2.sgm" SelfReg="false" Sequence="443"/>
+    <ROW File="ISOnum.sgm" Component_="art.dcl" FileName="ISOnum.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOnum.sgm" SelfReg="false" Sequence="444"/>
+    <ROW File="ISOpub.sgm" Component_="art.dcl" FileName="ISOpub.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOpub.sgm" SelfReg="false" Sequence="445"/>
+    <ROW File="ISOtech.sgm" Component_="art.dcl" FileName="ISOtech.sgm" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ISOtech.sgm" SelfReg="false" Sequence="446"/>
+    <ROW File="InformaLog.bat" Component_="AchouErro.bat" FileName="Inform~1.bat|InformaLog.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\batch\InformaLog.bat" SelfReg="false" Sequence="159"/>
+    <ROW File="Lucene.jar" Component_="artigos.txt" FileName="Lucene.jar" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\Lucene.jar" SelfReg="false" Sequence="385"/>
+    <ROW File="MarcaAutomaticamente.bat" Component_="abnt6023.xsl" FileName="MarcaA~1.bat|MarcaAutomaticamente.bat" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\auto\MarcaAutomaticamente.bat" SelfReg="false" Sequence="242"/>
+    <ROW File="Marcador.jar" Component_="artigos.txt" FileName="Marcador.jar" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\Marcador.jar" SelfReg="false" Sequence="386"/>
+    <ROW File="Markup.exe" Component_="Markup.exe" FileName="Markup.exe" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\Markup.exe" SelfReg="false" Sequence="328"/>
+    <ROW File="Mfc40.dll" Component_="Mfc40.dll" FileName="Mfc40.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Mfc40.dll" SelfReg="false" Sequence="448"/>
+    <ROW File="Mfc42.dll" Component_="Mfc42.dll" FileName="Mfc42.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\Mfc42.dll" SelfReg="false" Sequence="109"/>
+    <ROW File="Mfc42.dll_1" Component_="Mfc42.dll_1" FileName="Mfc42.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Mfc42.dll" SelfReg="false" Sequence="449"/>
+    <ROW File="Mscomctl.ocx" Component_="Mscomctl.ocx" FileName="Mscomctl.ocx" Attributes="0" SourcePath="Z:\scielo\bin\codes\Mscomctl.ocx" SelfReg="false" Sequence="9"/>
+    <ROW File="Mscomctl.ocx_1" Component_="Mscomctl.ocx_1" FileName="Mscomctl.ocx" Attributes="0" SourcePath="Z:\scielo\bin\convert\Mscomctl.ocx" SelfReg="false" Sequence="110"/>
+    <ROW File="Msvbvm50.dll" Component_="Msvbvm50.dll" FileName="Msvbvm50.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Msvbvm50.dll" SelfReg="false" Sequence="450"/>
+    <ROW File="Msvcirt.dll" Component_="Msvcirt.dll" FileName="Msvcirt.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\Msvcirt.dll" SelfReg="false" Sequence="112"/>
+    <ROW File="Msvcirt.dll_1" Component_="Msvcirt.dll_1" FileName="Msvcirt.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Msvcirt.dll" SelfReg="false" Sequence="451"/>
+    <ROW File="Msvcrt.dll" Component_="Msvcrt.dll" FileName="Msvcrt.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\Msvcrt.dll" SelfReg="false" Sequence="113"/>
+    <ROW File="Msvcrt.dll_1" Component_="Msvcrt.dll_1" FileName="Msvcrt.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Msvcrt.dll" SelfReg="false" Sequence="452"/>
+    <ROW File="Msvcrt20.dll" Component_="Msvcrt20.dll" FileName="Msvcrt20.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Msvcrt20.dll" SelfReg="false" Sequence="453"/>
+    <ROW File="Msvcrt40.dll" Component_="Msvcrt40.dll" FileName="Msvcrt40.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Msvcrt40.dll" SelfReg="false" Sequence="454"/>
+    <ROW File="Mx.exe_1" Component_="Mx.exe" FileName="Mx.exe" Attributes="0" SourcePath="Z:\scielo\bin\cfg\Mx.exe" SelfReg="false" Sequence="407"/>
+    <ROW File="Oleaut32.dll_1" Component_="Oleaut32.dll" FileName="Oleaut32.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Oleaut32.dll" SelfReg="false" Sequence="455"/>
+    <ROW File="Oledlg.dll" Component_="Oledlg.dll" FileName="Oledlg.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Oledlg.dll" SelfReg="false" Sequence="456"/>
+    <ROW File="Olepro32.dll_1" Component_="Olepro32.dll" FileName="Olepro32.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Olepro32.dll" SelfReg="false" Sequence="457"/>
+    <ROW File="PubMed.bat" Component_="artigos.txt" FileName="PubMed.bat" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\PubMed.bat" SelfReg="false" Sequence="387"/>
+    <ROW File="PubMed.bat.bak" Component_="artigos.txt" FileName="PubMed~1.bak|PubMed.bat.bak" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\PubMed.bat.bak" SelfReg="false" Sequence="388"/>
+    <ROW File="PubMed.sh" Component_="artigos.txt" FileName="PubMed.sh" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\PubMed.sh" SelfReg="false" Sequence="389"/>
+    <ROW File="PubMed.xsl" Component_="ISI.xsl" FileName="PubMed.xsl" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\xsl\PubMed.xsl" SelfReg="false" Sequence="232"/>
+    <ROW File="PubMed_Link.xsl" Component_="ISI.xsl" FileName="PubMed~1.xsl|PubMed_Link.xsl" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\xsl\PubMed_Link.xsl" SelfReg="false" Sequence="233"/>
+    <ROW File="ReadConfigFile.bat" Component_="AchouErro.bat" FileName="ReadCo~1.bat|ReadConfigFile.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\batch\ReadConfigFile.bat" SelfReg="false" Sequence="160"/>
+    <ROW File="Riched32.dll" Component_="Riched32.dll" FileName="Riched32.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Riched32.dll" SelfReg="false" Sequence="459"/>
+    <ROW File="Richtx32.ocx" Component_="Richtx32.ocx" FileName="Richtx32.ocx" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Richtx32.ocx" SelfReg="false" Sequence="460"/>
+    <ROW File="SGMLPars.dll" Component_="SGMLPars.dll" FileName="SGMLPars.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\SGMLPars.dll" SelfReg="false" Sequence="120"/>
+    <ROW File="SGMLPars.dll_1" Component_="SGMLPars.dll_1" FileName="SGMLPars.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\SGMLPars.dll" SelfReg="false" Sequence="466"/>
+    <ROW File="Scielo.ico" Component_="cfg_en_issue.pft" FileName="Scielo.ico" Attributes="0" SourcePath="Z:\scielo\bin\config\Scielo.ico" SelfReg="false" Sequence="65"/>
+    <ROW File="Scielo.ico_1" Component_="art.dcl" FileName="Scielo.ico" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Scielo.ico" SelfReg="false" Sequence="461"/>
+    <ROW File="Seq2Master.bat" Component_="AchouErro.bat" FileName="Seq2Ma~1.bat|Seq2Master.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\batch\Seq2Master.bat" SelfReg="false" Sequence="161"/>
+    <ROW File="Settings.cfg" Component_="art.dcl" FileName="Settings.cfg" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Settings.cfg" SelfReg="false" Sequence="465"/>
+    <ROW File="Shlwapi.dll" Component_="Shlwapi.dll" FileName="Shlwapi.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\Shlwapi.dll" SelfReg="false" Sequence="121"/>
+    <ROW File="St5unst.log" Component_="art.dcl" FileName="St5unst.log" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\St5unst.log" SelfReg="false" Sequence="468"/>
+    <ROW File="Stdole2.tlb_1" Component_="art.dcl" FileName="Stdole2.tlb" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Stdole2.tlb" SelfReg="false" Sequence="469"/>
+    <ROW File="Sysinfo.ocx" Component_="Sysinfo.ocx" FileName="Sysinfo.ocx" Attributes="0" SourcePath="Z:\scielo\bin\codes\Sysinfo.ocx" SelfReg="false" Sequence="11"/>
+    <ROW File="Sysinfo.ocx_1" Component_="Sysinfo.ocx_1" FileName="Sysinfo.ocx" Attributes="0" SourcePath="Z:\scielo\bin\config\Sysinfo.ocx" SelfReg="false" Sequence="66"/>
+    <ROW File="Sysinfo.ocx_2" Component_="Sysinfo.ocx_2" FileName="Sysinfo.ocx" Attributes="0" SourcePath="Z:\scielo\bin\convert\Sysinfo.ocx" SelfReg="false" Sequence="124"/>
+    <ROW File="Sysinfo.ocx_3" Component_="Sysinfo.ocx_3" FileName="Sysinfo.ocx" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Sysinfo.ocx" SelfReg="false" Sequence="470"/>
+    <ROW File="TABCTL32.OCX_1" Component_="TABCTL32.OCX" FileName="TABCTL32.OCX" Attributes="0" SourcePath="Z:\scielo\bin\config\TABCTL32.OCX" SelfReg="false" Sequence="67"/>
+    <ROW File="Tabctl32.ocx" Component_="Tabctl32.ocx" FileName="Tabctl32.ocx" Attributes="0" SourcePath="Z:\scielo\bin\codes\Tabctl32.ocx" SelfReg="false" Sequence="12"/>
+    <ROW File="Tabctl32.ocx_2" Component_="Tabctl32.ocx_1" FileName="Tabctl32.ocx" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Tabctl32.ocx" SelfReg="false" Sequence="471"/>
+    <ROW File="TitleManager02_help.doc" Component_="call.bat" FileName="TitleM~1.doc|TitleManager02_help.doc" Attributes="0" SourcePath="Z:\scielo\bin\config\help\TitleManager02_help.doc" SelfReg="false" Sequence="49"/>
+    <ROW File="TitleManager02_help.txt" Component_="call.bat" FileName="TitleM~1.txt|TitleManager02_help.txt" Attributes="0" SourcePath="Z:\scielo\bin\config\help\TitleManager02_help.txt" SelfReg="false" Sequence="50"/>
+    <ROW File="TitleManager_gen_labels.doc" Component_="call.bat" FileName="TitleM~2.doc|TitleManager_gen_labels.doc" Attributes="0" SourcePath="Z:\scielo\bin\config\help\TitleManager_gen_labels.doc" SelfReg="false" Sequence="51"/>
+    <ROW File="TitleManager_gen_labels.txt" Component_="call.bat" FileName="TitleM~2.txt|TitleManager_gen_labels.txt" Attributes="0" SourcePath="Z:\scielo\bin\config\help\TitleManager_gen_labels.txt" SelfReg="false" Sequence="52"/>
+    <ROW File="Untitled3.dtd" Component_="isi.dtd" FileName="Untitl~1.dtd|Untitled3.dtd" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\schema\Untitled3.dtd" SelfReg="false" Sequence="212"/>
+    <ROW File="Untitled4.dtd" Component_="isi.dtd" FileName="Untitl~2.dtd|Untitled4.dtd" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\schema\Untitled4.dtd" SelfReg="false" Sequence="213"/>
+    <ROW File="User32.dll" Component_="User32.dll" FileName="User32.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\User32.dll" SelfReg="false" Sequence="477"/>
+    <ROW File="UserManual.doc" Component_="UserManual.doc" FileName="UserMa~1.doc|UserManual.doc" Attributes="0" SourcePath="Z:\scielo\xml_scielo\docs\UserManual.doc" SelfReg="false" Sequence="153"/>
+    <ROW File="VerifExisteArquivo.bat" Component_="AchouErro.bat" FileName="VerifE~1.bat|VerifExisteArquivo.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\batch\VerifExisteArquivo.bat" SelfReg="false" Sequence="162"/>
+    <ROW File="VerifExisteBase.bat" Component_="AchouErro.bat" FileName="VerifE~2.bat|VerifExisteBase.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\batch\VerifExisteBase.bat" SelfReg="false" Sequence="163"/>
+    <ROW File="VerifPresencaParametro.bat" Component_="AchouErro.bat" FileName="VerifP~1.bat|VerifPresencaParametro.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\batch\VerifPresencaParametro.bat" SelfReg="false" Sequence="164"/>
+    <ROW File="ViewNLM.css_2" Component_="common.css_1" FileName="ViewNLM.css" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\css\ViewNLM.css" SelfReg="false" Sequence="335"/>
+    <ROW File="ViewScielo.css_2" Component_="common.css_1" FileName="ViewSc~1.css|ViewScielo.css" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\css\ViewScielo.css" SelfReg="false" Sequence="336"/>
+    <ROW File="Visualizador.bat" Component_="artigos.txt" FileName="Visual~1.bat|Visualizador.bat" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\Visualizador.bat" SelfReg="false" Sequence="390"/>
+    <ROW File="Wininet.dll_1" Component_="Wininet.dll" FileName="Wininet.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\Wininet.dll" SelfReg="false" Sequence="126"/>
+    <ROW File="Ws2_32.dll_1" Component_="Ws2_32.dll" FileName="Ws2_32.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\Ws2_32.dll" SelfReg="false" Sequence="128"/>
+    <ROW File="Ws2help.dll" Component_="Ws2help.dll_1" FileName="Ws2help.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Ws2help.dll" SelfReg="false" Sequence="478"/>
+    <ROW File="Ws2help.dll_1" Component_="Ws2help.dll" FileName="Ws2help.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\Ws2help.dll" SelfReg="false" Sequence="127"/>
+    <ROW File="Wsock32.dll" Component_="Wsock32.dll_1" FileName="Wsock32.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\Wsock32.dll" SelfReg="false" Sequence="479"/>
+    <ROW File="Wsock32.dll_1" Component_="Wsock32.dll" FileName="Wsock32.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\Wsock32.dll" SelfReg="false" Sequence="129"/>
+    <ROW File="XML.php" Component_="class.XSLTransformer.php" FileName="XML.php" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\php\XML.php" SelfReg="false" Sequence="207"/>
+    <ROW File="XMLCheck.jar" Component_="chama.bat" FileName="XMLCheck.jar" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\java\validador\XMLCheck.jar" SelfReg="false" Sequence="199"/>
+    <ROW File="Xml_SciELO_LinkOut_tec.doc" Component_="UserManual.doc" FileName="XmlSci~1.doc|Xml SciELO LinkOut_tec.doc" Attributes="0" SourcePath="Z:\scielo\xml_scielo\docs\Xml SciELO LinkOut_tec.doc" SelfReg="false" Sequence="154"/>
+    <ROW File="aabc.amd" Component_="aabc.amd" FileName="aabc.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\aabc.amd" SelfReg="false" Sequence="247"/>
+    <ROW File="abb.amd" Component_="aabc.amd" FileName="abb.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\abb.amd" SelfReg="false" Sequence="248"/>
+    <ROW File="abc.amd" Component_="aabc.amd" FileName="abc.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\abc.amd" SelfReg="false" Sequence="249"/>
+    <ROW File="abem.amd" Component_="aabc.amd" FileName="abem.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\abem.amd" SelfReg="false" Sequence="250"/>
+    <ROW File="abmvz.amd" Component_="aabc.amd" FileName="abmvz.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\abmvz.amd" SelfReg="false" Sequence="251"/>
+    <ROW File="abnt6023.xsl" Component_="abnt6023.xsl" FileName="abnt6023.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\auto\abnt6023.xsl" SelfReg="false" Sequence="240"/>
+    <ROW File="acb.amd" Component_="aabc.amd" FileName="acb.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\acb.amd" SelfReg="false" Sequence="252"/>
+    <ROW File="acent2ent.mst" Component_="Accent.mst" FileName="acent2~1.mst|acent2ent.mst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\acent2ent.mst" SelfReg="false" Sequence="172"/>
+    <ROW File="acent2ent.xrf" Component_="Accent.mst" FileName="acent2~1.xrf|acent2ent.xrf" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\acent2ent.xrf" SelfReg="false" Sequence="173"/>
+    <ROW File="ag.amd" Component_="aabc.amd" FileName="ag.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\ag.amd" SelfReg="false" Sequence="253"/>
+    <ROW File="anp.amd" Component_="aabc.amd" FileName="anp.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\anp.amd" SelfReg="false" Sequence="254"/>
+    <ROW File="ans2lat.mst" Component_="Accent.mst" FileName="ans2lat.mst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\ans2lat.mst" SelfReg="false" Sequence="174"/>
+    <ROW File="ans2lat.seq" Component_="Accent.mst" FileName="ans2lat.seq" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\ans2lat.seq" SelfReg="false" Sequence="175"/>
+    <ROW File="ans2lat.seq.mst" Component_="Accent.mst" FileName="ans2la~1.mst|ans2lat.seq.mst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\ans2lat.seq.mst" SelfReg="false" Sequence="176"/>
+    <ROW File="ans2lat.seq.xrf" Component_="Accent.mst" FileName="ans2la~1.xrf|ans2lat.seq.xrf" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\ans2lat.seq.xrf" SelfReg="false" Sequence="177"/>
+    <ROW File="ans2lat.xrf" Component_="Accent.mst" FileName="ans2lat.xrf" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\ans2lat.xrf" SelfReg="false" Sequence="178"/>
+    <ROW File="ans2utf.mst" Component_="Accent.mst" FileName="ans2utf.mst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\ans2utf.mst" SelfReg="false" Sequence="179"/>
+    <ROW File="ans2utf.seq" Component_="Accent.mst" FileName="ans2utf.seq" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\ans2utf.seq" SelfReg="false" Sequence="180"/>
+    <ROW File="ans2utf.xrf" Component_="Accent.mst" FileName="ans2utf.xrf" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\ans2utf.xrf" SelfReg="false" Sequence="181"/>
+    <ROW File="applyXSL.bat" Component_="applyXSL.bat" FileName="applyXSL.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\scripts\applyXSL.bat" SelfReg="false" Sequence="214"/>
+    <ROW File="arquivo.cip" Component_="arquivo.cip" FileName="arquivo.cip" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\arquivo.cip" SelfReg="false" Sequence="131"/>
+    <ROW File="art.dcl" Component_="art.dcl" FileName="art.dcl" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\art.dcl" SelfReg="false" Sequence="409"/>
+    <ROW File="art1_1.dtd" Component_="art.dcl" FileName="art1_1.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\art1_1.dtd" SelfReg="false" Sequence="410"/>
+    <ROW File="art2_0.dtd" Component_="art.dcl" FileName="art2_0.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\art2_0.dtd" SelfReg="false" Sequence="411"/>
+    <ROW File="art3_0.dtd" Component_="art.dcl" FileName="art3_0.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\art3_0.dtd" SelfReg="false" Sequence="412"/>
+    <ROW File="art3_0.pts" Component_="art.dcl" FileName="art3_0.pts" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\art3_0.pts" SelfReg="false" Sequence="413"/>
+    <ROW File="art3_1.dtd" Component_="art.dcl" FileName="art3_1.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\art3_1.dtd" SelfReg="false" Sequence="414"/>
+    <ROW File="art4_0.dtd" Component_="art.dcl" FileName="art4_0.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\art4_0.dtd" SelfReg="false" Sequence="415"/>
+    <ROW File="artigos.txt" Component_="artigos.txt" FileName="artigos.txt" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\artigos.txt" SelfReg="false" Sequence="372"/>
+    <ROW File="asycfilt.dll" Component_="asycfilt.dll" FileName="asycfilt.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\asycfilt.dll" SelfReg="false" Sequence="91"/>
+    <ROW File="automata.dll" Component_="automata.dll" FileName="automata.dll" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automata.dll" SelfReg="false" Sequence="245"/>
+    <ROW File="automata.mds" Component_="automata.mds" FileName="automata.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automata.mds" SelfReg="false" Sequence="246"/>
+    <ROW File="automata.mds_1" Component_="aabc.amd" FileName="automata.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\automata.mds" SelfReg="false" Sequence="255"/>
+    <ROW File="babt.amd" Component_="aabc.amd" FileName="babt.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\babt.amd" SelfReg="false" Sequence="256"/>
+    <ROW File="bars.bat" Component_="automata.mds" FileName="bars.bat" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\bars.bat" SelfReg="false" Sequence="304"/>
+    <ROW File="bjce.amd" Component_="aabc.amd" FileName="bjce.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\bjce.amd" SelfReg="false" Sequence="257"/>
+    <ROW File="bjid.amd" Component_="aabc.amd" FileName="bjid.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\bjid.amd" SelfReg="false" Sequence="258"/>
+    <ROW File="bjm.amd" Component_="aabc.amd" FileName="bjm.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\bjm.amd" SelfReg="false" Sequence="259"/>
+    <ROW File="bjmbr.amd" Component_="aabc.amd" FileName="bjmbr.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\bjmbr.amd" SelfReg="false" Sequence="260"/>
+    <ROW File="bjvras.amd" Component_="aabc.amd" FileName="bjvras.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\bjvras.amd" SelfReg="false" Sequence="261"/>
+    <ROW File="brag.amd" Component_="aabc.amd" FileName="brag.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\brag.amd" SelfReg="false" Sequence="262"/>
+    <ROW File="bwho.amd" Component_="aabc.amd" FileName="bwho.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\bwho.amd" SelfReg="false" Sequence="263"/>
+    <ROW File="call.bat" Component_="call.bat" FileName="call.bat" Attributes="0" SourcePath="Z:\scielo\bin\config\help\call.bat" SelfReg="false" Sequence="30"/>
+    <ROW File="cfg.pft" Component_="call.bat" FileName="cfg.pft" Attributes="0" SourcePath="Z:\scielo\bin\config\help\cfg.pft" SelfReg="false" Sequence="31"/>
+    <ROW File="cfg.sci" Component_="cfg.sci" FileName="cfg.sci" Attributes="0" SourcePath="Z:\scielo\bin\convert\cfg.sci" SelfReg="false" Sequence="92"/>
+    <ROW File="cfg_en_issue.pft" Component_="cfg_en_issue.pft" FileName="cfg_en~1.pft|cfg_en_issue.pft" Attributes="0" SourcePath="Z:\scielo\bin\config\cfg_en_issue.pft" SelfReg="false" Sequence="22"/>
+    <ROW File="cfg_es_issue.pft" Component_="cfg_en_issue.pft" FileName="cfg_es~1.pft|cfg_es_issue.pft" Attributes="0" SourcePath="Z:\scielo\bin\config\cfg_es_issue.pft" SelfReg="false" Sequence="23"/>
+    <ROW File="cfg_pt_issue.pft" Component_="cfg_en_issue.pft" FileName="cfg_pt~1.pft|cfg_pt_issue.pft" Attributes="0" SourcePath="Z:\scielo\bin\config\cfg_pt_issue.pft" SelfReg="false" Sequence="24"/>
+    <ROW File="cfs" Component_="segments.gen" FileName="_2.cfs" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\db\_2.cfs" SelfReg="false" Sequence="377"/>
+    <ROW File="cfs_1" Component_="segments.gen" FileName="_5.cfs" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\db\_5.cfs" SelfReg="false" Sequence="378"/>
+    <ROW File="chama.bat" Component_="chama.bat" FileName="chama.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\java\validador\chama.bat" SelfReg="false" Sequence="198"/>
+    <ROW File="check_aff.xsl_3" Component_="check_aff.xsl_3" FileName="check_~1.xsl|check_aff.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\check\check_aff.xsl" SelfReg="false" Sequence="344"/>
+    <ROW File="check_references.xsl_3" Component_="check_aff.xsl_3" FileName="check_~2.xsl|check_references.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\check\check_references.xsl" SelfReg="false" Sequence="345"/>
+    <ROW File="check_xmllang.xsl_3" Component_="check_aff.xsl_3" FileName="check_~3.xsl|check_xmllang.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\check\check_xmllang.xsl" SelfReg="false" Sequence="346"/>
+    <ROW File="citation31.dtd" Component_="art.dcl" FileName="citati~1.dtd|citation31.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\citation31.dtd" SelfReg="false" Sequence="417"/>
+    <ROW File="citation4_0.dtd" Component_="art.dcl" FileName="citati~2.dtd|citation4_0.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\citation4_0.dtd" SelfReg="false" Sequence="418"/>
+    <ROW File="class.XSLTransformer.php" Component_="class.XSLTransformer.php" FileName="classX~1.php|class.XSLTransformer.php" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\php\class.XSLTransformer.php" SelfReg="false" Sequence="203"/>
+    <ROW File="class.XSLTransformer40.php" Component_="class.XSLTransformer.php" FileName="classX~2.php|class.XSLTransformer40.php" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\php\class.XSLTransformer40.php" SelfReg="false" Sequence="204"/>
+    <ROW File="class.XSLTransformer41.php" Component_="class.XSLTransformer.php" FileName="classX~3.php|class.XSLTransformer41.php" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\php\class.XSLTransformer41.php" SelfReg="false" Sequence="205"/>
+    <ROW File="clinicaltrial.bat" Component_="clinicaltrial.bat" FileName="clinic~1.bat|clinicaltrial.bat" Attributes="0" SourcePath="Z:\scielo\bin\codes\temp\clinicaltrial.bat" SelfReg="false" Sequence="13"/>
+    <ROW File="clinicaltrial.prc" Component_="clinicaltrial.bat" FileName="clinic~1.prc|clinicaltrial.prc" Attributes="0" SourcePath="Z:\scielo\bin\codes\temp\clinicaltrial.prc" SelfReg="false" Sequence="14"/>
+    <ROW File="clinicaltrial.txt" Component_="clinicaltrial.bat" FileName="clinic~1.txt|clinicaltrial.txt" Attributes="0" SourcePath="Z:\scielo\bin\codes\temp\clinicaltrial.txt" SelfReg="false" Sequence="15"/>
+    <ROW File="code.CNT" Component_="code.CNT" FileName="code.CNT" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.CNT" SelfReg="false" Sequence="493"/>
+    <ROW File="code.IFP" Component_="code.fst" FileName="code.IFP" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.IFP" SelfReg="false" Sequence="496"/>
+    <ROW File="code.L01" Component_="code.fst" FileName="code.L01" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.L01" SelfReg="false" Sequence="497"/>
+    <ROW File="code.L02" Component_="code.fst" FileName="code.L02" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.L02" SelfReg="false" Sequence="498"/>
+    <ROW File="code.LN1" Component_="code.fst" FileName="code.LN1" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.LN1" SelfReg="false" Sequence="501"/>
+    <ROW File="code.LN2" Component_="code.fst" FileName="code.LN2" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.LN2" SelfReg="false" Sequence="502"/>
+    <ROW File="code.N01" Component_="code.fst" FileName="code.N01" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.N01" SelfReg="false" Sequence="504"/>
+    <ROW File="code.N02" Component_="code.fst" FileName="code.N02" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.N02" SelfReg="false" Sequence="505"/>
+    <ROW File="code.fst" Component_="code.fst" FileName="code.fst" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.fst" SelfReg="false" Sequence="494"/>
+    <ROW File="code.id" Component_="code.fst" FileName="code.id" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.id" SelfReg="false" Sequence="495"/>
+    <ROW File="code.mst" Component_="code.fst" FileName="code.mst" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.mst" SelfReg="false" Sequence="503"/>
+    <ROW File="code.txt" Component_="code.fst" FileName="code.txt" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.txt" SelfReg="false" Sequence="506"/>
+    <ROW File="code.xrf" Component_="code.fst" FileName="code.xrf" Attributes="0" SourcePath="Z:\scielo\serial\Code\code.xrf" SelfReg="false" Sequence="507"/>
+    <ROW File="codes.DEP" Component_="codes.DEP" FileName="codes.DEP" Attributes="0" SourcePath="Z:\scielo\bin\codes\codes.DEP" SelfReg="false" Sequence="1"/>
+    <ROW File="codes.exe" Component_="codes.exe" FileName="codes.exe" Attributes="0" SourcePath="Z:\scielo\bin\codes\codes.exe" SelfReg="false" Sequence="2"/>
+    <ROW File="codes.ini" Component_="codes.DEP" FileName="codes.ini" Attributes="0" SourcePath="Z:\scielo\bin\codes\codes.ini" SelfReg="false" Sequence="17"/>
+    <ROW File="codes.vbp" Component_="codes.DEP" FileName="codes.vbp" Attributes="0" SourcePath="Z:\scielo\bin\codes\codes.vbp" SelfReg="false" Sequence="3"/>
+    <ROW File="codes.vbw" Component_="codes.DEP" FileName="codes.vbw" Attributes="0" SourcePath="Z:\scielo\bin\codes\codes.vbw" SelfReg="false" Sequence="4"/>
+    <ROW File="comcat.dll" Component_="comcat.dll" FileName="comcat.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\comcat.dll" SelfReg="false" Sequence="97"/>
+    <ROW File="common.css_1" Component_="common.css_1" FileName="common.css" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\css\common.css" SelfReg="false" Sequence="334"/>
+    <ROW File="common2.dtd" Component_="art.dcl" FileName="common2.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\common2.dtd" SelfReg="false" Sequence="423"/>
+    <ROW File="common3.dtd" Component_="art.dcl" FileName="common3.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\common3.dtd" SelfReg="false" Sequence="424"/>
+    <ROW File="common31.dtd" Component_="art.dcl" FileName="common31.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\common31.dtd" SelfReg="false" Sequence="425"/>
+    <ROW File="common4_0.dtd" Component_="art.dcl" FileName="common~1.dtd|common4_0.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\common4_0.dtd" SelfReg="false" Sequence="426"/>
+    <ROW File="config.DEP" Component_="cfg_en_issue.pft" FileName="config.DEP" Attributes="0" SourcePath="Z:\scielo\bin\config\config.DEP" SelfReg="false" Sequence="26"/>
+    <ROW File="config.cnt" Component_="config.cnt" FileName="config.cnt" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\config\config.cnt" SelfReg="false" Sequence="132"/>
+    <ROW File="config.exe" Component_="config.exe" FileName="config.exe" Attributes="0" SourcePath="Z:\scielo\bin\config\config.exe" SelfReg="false" Sequence="27"/>
+    <ROW File="config.fst" Component_="config.fst" FileName="config.fst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\config\config.fst" SelfReg="false" Sequence="133"/>
+    <ROW File="config.ifp" Component_="config.fst" FileName="config.ifp" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\config\config.ifp" SelfReg="false" Sequence="134"/>
+    <ROW File="config.l01" Component_="config.fst" FileName="config.l01" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\config\config.l01" SelfReg="false" Sequence="135"/>
+    <ROW File="config.l02" Component_="config.fst" FileName="config.l02" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\config\config.l02" SelfReg="false" Sequence="136"/>
+    <ROW File="config.mst" Component_="config.fst" FileName="config.mst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\config\config.mst" SelfReg="false" Sequence="137"/>
+    <ROW File="config.n01" Component_="config.fst" FileName="config.n01" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\config\config.n01" SelfReg="false" Sequence="138"/>
+    <ROW File="config.n02" Component_="config.fst" FileName="config.n02" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\config\config.n02" SelfReg="false" Sequence="139"/>
+    <ROW File="config.seq" Component_="config.fst" FileName="config.seq" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\config\config.seq" SelfReg="false" Sequence="140"/>
+    <ROW File="config.xrf" Component_="config.fst" FileName="config.xrf" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\config\config.xrf" SelfReg="false" Sequence="141"/>
+    <ROW File="configure_paths.bat" Component_="configure_paths.bat" FileName="config~1.bat|configure_paths.bat" Attributes="0" SourcePath="Z:\scielo\bin\cfg\configure_paths.bat" SelfReg="false" Sequence="406"/>
+    <ROW File="convert.exe" Component_="convert.exe" FileName="convert.exe" Attributes="0" SourcePath="Z:\scielo\bin\convert\convert.exe" SelfReg="false" Sequence="100"/>
+    <ROW File="convert.ini" Component_="cfg.sci" FileName="convert.ini" Attributes="0" SourcePath="Z:\scielo\bin\convert\convert.ini" SelfReg="false" Sequence="130"/>
+    <ROW File="csc.amd" Component_="aabc.amd" FileName="csc.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\csc.amd" SelfReg="false" Sequence="264"/>
+    <ROW File="csp.amd" Component_="aabc.amd" FileName="csp.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\csp.amd" SelfReg="false" Sequence="265"/>
+    <ROW File="cta.amd" Component_="aabc.amd" FileName="cta.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\cta.amd" SelfReg="false" Sequence="266"/>
+    <ROW File="ctop.xsl_1" Component_="ctop.xsl_1" FileName="ctop.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\mathml\ctop.xsl" SelfReg="false" Sequence="337"/>
+    <ROW File="db.cnt" Component_="db.cnt" FileName="db.cnt" Attributes="0" SourcePath="Z:\scielo\bin\config\help\db.cnt" SelfReg="false" Sequence="32"/>
+    <ROW File="db.fst" Component_="call.bat" FileName="db.fst" Attributes="0" SourcePath="Z:\scielo\bin\config\help\db.fst" SelfReg="false" Sequence="33"/>
+    <ROW File="db.ifp" Component_="call.bat" FileName="db.ifp" Attributes="0" SourcePath="Z:\scielo\bin\config\help\db.ifp" SelfReg="false" Sequence="34"/>
+    <ROW File="db.l01" Component_="call.bat" FileName="db.l01" Attributes="0" SourcePath="Z:\scielo\bin\config\help\db.l01" SelfReg="false" Sequence="35"/>
+    <ROW File="db.l02" Component_="call.bat" FileName="db.l02" Attributes="0" SourcePath="Z:\scielo\bin\config\help\db.l02" SelfReg="false" Sequence="36"/>
+    <ROW File="db.mst" Component_="call.bat" FileName="db.mst" Attributes="0" SourcePath="Z:\scielo\bin\config\help\db.mst" SelfReg="false" Sequence="37"/>
+    <ROW File="db.n01" Component_="call.bat" FileName="db.n01" Attributes="0" SourcePath="Z:\scielo\bin\config\help\db.n01" SelfReg="false" Sequence="38"/>
+    <ROW File="db.n02" Component_="call.bat" FileName="db.n02" Attributes="0" SourcePath="Z:\scielo\bin\config\help\db.n02" SelfReg="false" Sequence="39"/>
+    <ROW File="db.xrf" Component_="call.bat" FileName="db.xrf" Attributes="0" SourcePath="Z:\scielo\bin\config\help\db.xrf" SelfReg="false" Sequence="40"/>
+    <ROW File="db2conf.bat" Component_="call.bat" FileName="db2conf.bat" Attributes="0" SourcePath="Z:\scielo\bin\config\help\db2conf.bat" SelfReg="false" Sequence="41"/>
+    <ROW File="default.mds" Component_="automata.mds" FileName="default.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\default.mds" SelfReg="false" Sequence="305"/>
+    <ROW File="displayErrors.bat" Component_="applyXSL.bat" FileName="displa~1.bat|displayErrors.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\scripts\displayErrors.bat" SelfReg="false" Sequence="215"/>
+    <ROW File="doi_conf.txt" Component_="doi_conf.txt" FileName="doi_conf.txt" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\doi_conf.txt" SelfReg="false" Sequence="142"/>
+    <ROW File="dom4j_1.6.1.jar" Component_="artigos.txt" FileName="dom4j-~1.jar|dom4j-1.6.1.jar" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\dom4j-1.6.1.jar" SelfReg="false" Sequence="380"/>
+    <ROW File="donotdelete.txt" Component_="donotdelete.txt" FileName="donotd~1.txt|donotdelete.txt" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\log\donotdelete.txt" SelfReg="false" Sequence="201"/>
+    <ROW File="donotdelete.txt_1" Component_="donotdelete.txt_1" FileName="donotd~1.txt|donotdelete.txt" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\temp\donotdelete.txt" SelfReg="false" Sequence="225"/>
+    <ROW File="ecler.amd" Component_="aabc.amd" FileName="ecler.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\ecler.amd" SelfReg="false" Sequence="267"/>
+    <ROW File="empty.txt" Component_="empty.txt" FileName="empty.txt" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\empty.txt" SelfReg="false" Sequence="165"/>
+    <ROW File="en_attb.mds" Component_="automata.mds" FileName="en_attb.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\en_attb.mds" SelfReg="false" Sequence="306"/>
+    <ROW File="en_bars.mds" Component_="automata.mds" FileName="en_bars.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\en_bars.mds" SelfReg="false" Sequence="307"/>
+    <ROW File="en_conf.mds" Component_="automata.mds" FileName="en_conf.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\en_conf.mds" SelfReg="false" Sequence="308"/>
+    <ROW File="en_err.mds" Component_="automata.mds" FileName="en_err.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\en_err.mds" SelfReg="false" Sequence="309"/>
+    <ROW File="en_err.txt" Component_="en_err.txt" FileName="en_err.txt" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\en_err.txt" SelfReg="false" Sequence="56"/>
+    <ROW File="en_fields.ini" Component_="call.bat" FileName="en_fie~1.ini|en_fields.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\help\en_fields.ini" SelfReg="false" Sequence="69"/>
+    <ROW File="en_fields.ini_1" Component_="en_err.txt" FileName="en_fie~1.ini|en_fields.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\en_fields.ini" SelfReg="false" Sequence="76"/>
+    <ROW File="en_files.ini" Component_="en_err.txt" FileName="en_files.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\en_files.ini" SelfReg="false" Sequence="77"/>
+    <ROW File="en_issue.mds" Component_="automata.mds" FileName="en_issue.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\en_issue.mds" SelfReg="false" Sequence="310"/>
+    <ROW File="en_issue.pft" Component_="en_err.txt" FileName="en_issue.pft" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\en_issue.pft" SelfReg="false" Sequence="57"/>
+    <ROW File="en_label.txt" Component_="cfg.sci" FileName="en_label.txt" Attributes="0" SourcePath="Z:\scielo\bin\convert\en_label.txt" SelfReg="false" Sequence="104"/>
+    <ROW File="en_labels.ini" Component_="codes.DEP" FileName="en_lab~1.ini|en_labels.ini" Attributes="0" SourcePath="Z:\scielo\bin\codes\en_labels.ini" SelfReg="false" Sequence="18"/>
+    <ROW File="en_labels.ini_1" Component_="cfg_en_issue.pft" FileName="en_lab~1.ini|en_labels.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\en_labels.ini" SelfReg="false" Sequence="68"/>
+    <ROW File="en_labels.ini_2" Component_="call.bat" FileName="en_lab~1.ini|en_labels.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\help\en_labels.ini" SelfReg="false" Sequence="70"/>
+    <ROW File="en_labels.ini_3" Component_="en_err.txt" FileName="en_lab~1.ini|en_labels.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\en_labels.ini" SelfReg="false" Sequence="78"/>
+    <ROW File="en_labels.pft" Component_="call.bat" FileName="en_lab~1.pft|en_labels.pft" Attributes="0" SourcePath="Z:\scielo\bin\config\help\en_labels.pft" SelfReg="false" Sequence="42"/>
+    <ROW File="en_temp.mds" Component_="automata.mds" FileName="en_temp.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\en_temp.mds" SelfReg="false" Sequence="311"/>
+    <ROW File="en_tgabnt.amd" Component_="automata.mds" FileName="en_tga~1.amd|en_tgabnt.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\en_tgabnt.amd" SelfReg="false" Sequence="312"/>
+    <ROW File="en_tgother.amd" Component_="automata.mds" FileName="en_tgo~1.amd|en_tgother.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\en_tgother.amd" SelfReg="false" Sequence="313"/>
+    <ROW File="en_tgvanc.amd" Component_="automata.mds" FileName="en_tgv~1.amd|en_tgvanc.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\en_tgvanc.amd" SelfReg="false" Sequence="314"/>
+    <ROW File="entities.php" Component_="class.XSLTransformer.php" FileName="entities.php" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\php\entities.php" SelfReg="false" Sequence="206"/>
+    <ROW File="ep.amd" Component_="aabc.amd" FileName="ep.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\ep.amd" SelfReg="false" Sequence="268"/>
+    <ROW File="epsic.amd" Component_="aabc.amd" FileName="epsic.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\epsic.amd" SelfReg="false" Sequence="269"/>
+    <ROW File="erManual.doc" Component_="UserManual.doc" FileName="~$erMa~1.doc|~$erManual.doc" Attributes="0" SourcePath="Z:\scielo\xml_scielo\docs\~$erManual.doc" SelfReg="false" Sequence="155"/>
+    <ROW File="error.txt" Component_="empty.txt" FileName="error.txt" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\error.txt" SelfReg="false" Sequence="166"/>
+    <ROW File="error_end.txt" Component_="empty.txt" FileName="error_~1.txt|error_end.txt" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\error_end.txt" SelfReg="false" Sequence="167"/>
+    <ROW File="es.amd" Component_="aabc.amd" FileName="es.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\es.amd" SelfReg="false" Sequence="270"/>
+    <ROW File="es_attb.mds" Component_="automata.mds" FileName="es_attb.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\es_attb.mds" SelfReg="false" Sequence="315"/>
+    <ROW File="es_bars.mds" Component_="automata.mds" FileName="es_bars.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\es_bars.mds" SelfReg="false" Sequence="316"/>
+    <ROW File="es_conf.mds" Component_="automata.mds" FileName="es_conf.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\es_conf.mds" SelfReg="false" Sequence="317"/>
+    <ROW File="es_err.mds" Component_="automata.mds" FileName="es_err.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\es_err.mds" SelfReg="false" Sequence="318"/>
+    <ROW File="es_err.txt" Component_="en_err.txt" FileName="es_err.txt" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\es_err.txt" SelfReg="false" Sequence="58"/>
+    <ROW File="es_fields.ini" Component_="call.bat" FileName="es_fie~1.ini|es_fields.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\help\es_fields.ini" SelfReg="false" Sequence="71"/>
+    <ROW File="es_fields.ini_1" Component_="en_err.txt" FileName="es_fie~1.ini|es_fields.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\es_fields.ini" SelfReg="false" Sequence="79"/>
+    <ROW File="es_files.ini" Component_="en_err.txt" FileName="es_files.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\es_files.ini" SelfReg="false" Sequence="80"/>
+    <ROW File="es_issue.mds" Component_="automata.mds" FileName="es_issue.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\es_issue.mds" SelfReg="false" Sequence="319"/>
+    <ROW File="es_issue.pft" Component_="en_err.txt" FileName="es_issue.pft" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\es_issue.pft" SelfReg="false" Sequence="59"/>
+    <ROW File="es_label.txt" Component_="cfg.sci" FileName="es_label.txt" Attributes="0" SourcePath="Z:\scielo\bin\convert\es_label.txt" SelfReg="false" Sequence="105"/>
+    <ROW File="es_labels.ini" Component_="codes.DEP" FileName="es_lab~1.ini|es_labels.ini" Attributes="0" SourcePath="Z:\scielo\bin\codes\es_labels.ini" SelfReg="false" Sequence="19"/>
+    <ROW File="es_labels.ini_1" Component_="call.bat" FileName="es_lab~1.ini|es_labels.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\help\es_labels.ini" SelfReg="false" Sequence="72"/>
+    <ROW File="es_labels.ini_2" Component_="en_err.txt" FileName="es_lab~1.ini|es_labels.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\es_labels.ini" SelfReg="false" Sequence="81"/>
+    <ROW File="es_labels.pft" Component_="call.bat" FileName="es_lab~1.pft|es_labels.pft" Attributes="0" SourcePath="Z:\scielo\bin\config\help\es_labels.pft" SelfReg="false" Sequence="43"/>
+    <ROW File="es_temp.mds" Component_="automata.mds" FileName="es_temp.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\es_temp.mds" SelfReg="false" Sequence="320"/>
+    <ROW File="es_tgabnt.amd" Component_="automata.mds" FileName="es_tga~1.amd|es_tgabnt.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\es_tgabnt.amd" SelfReg="false" Sequence="321"/>
+    <ROW File="es_tgother.amd" Component_="aabc.amd" FileName="es_tgo~1.amd|es_tgother.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\es_tgother.amd" SelfReg="false" Sequence="271"/>
+    <ROW File="es_tgother.amd_1" Component_="automata.mds" FileName="es_tgo~1.amd|es_tgother.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\es_tgother.amd" SelfReg="false" Sequence="322"/>
+    <ROW File="es_tgvanc.amd" Component_="automata.mds" FileName="es_tgv~1.amd|es_tgvanc.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\es_tgvanc.amd" SelfReg="false" Sequence="323"/>
+    <ROW File="ex_nreview.fst" Component_="cfg.sci" FileName="ex-nre~1.fst|ex-nreview.fst" Attributes="0" SourcePath="Z:\scielo\bin\convert\ex-nreview.fst" SelfReg="false" Sequence="106"/>
+    <ROW File="fb.amd" Component_="aabc.amd" FileName="fb.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\fb.amd" SelfReg="false" Sequence="272"/>
+    <ROW File="fields.ini" Component_="call.bat" FileName="fields.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\help\fields.ini" SelfReg="false" Sequence="73"/>
+    <ROW File="fields.ini_1" Component_="en_err.txt" FileName="fields.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\fields.ini" SelfReg="false" Sequence="82"/>
+    <ROW File="fontsymbols.txt" Component_="fontsymbols.txt" FileName="fontsy~1.txt|fontsymbols.txt" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\tables\fontsymbols.txt" SelfReg="false" Sequence="393"/>
+    <ROW File="fontsymbols.txt.bak" Component_="fontsymbols.txt" FileName="fontsy~1.bak|fontsymbols.txt.bak" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\tables\fontsymbols.txt.bak" SelfReg="false" Sequence="394"/>
+    <ROW File="formatInUse.mds" Component_="automata.mds" FileName="format~1.mds|formatInUse.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\formatInUse.mds" SelfReg="false" Sequence="324"/>
+    <ROW File="gen_labels.bat" Component_="call.bat" FileName="gen_la~1.bat|gen_labels.bat" Attributes="0" SourcePath="Z:\scielo\bin\config\help\gen_labels.bat" SelfReg="false" Sequence="44"/>
+    <ROW File="generateCalls.bat" Component_="applyXSL.bat" FileName="genera~1.bat|generateCalls.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\scripts\generateCalls.bat" SelfReg="false" Sequence="216"/>
+    <ROW File="generateXML.bat" Component_="applyXSL.bat" FileName="genera~2.bat|generateXML.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\scripts\generateXML.bat" SelfReg="false" Sequence="217"/>
+    <ROW File="generateXML.ini" Component_="automata.mds" FileName="genera~1.ini|generateXML.ini" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\generateXML.ini" SelfReg="false" Sequence="399"/>
+    <ROW File="gizmoHTML.mst" Component_="Accent.mst" FileName="gizmoH~1.mst|gizmoHTML.mst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\gizmoHTML.mst" SelfReg="false" Sequence="182"/>
+    <ROW File="gizmoHTML.xrf" Component_="Accent.mst" FileName="gizmoH~1.xrf|gizmoHTML.xrf" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\gizmoHTML.xrf" SelfReg="false" Sequence="183"/>
+    <ROW File="gizmoXML.mst" Component_="Accent.mst" FileName="gizmoXML.mst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\gizmoXML.mst" SelfReg="false" Sequence="184"/>
+    <ROW File="gizmoXML.seq" Component_="Accent.mst" FileName="gizmoXML.seq" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\gizmoXML.seq" SelfReg="false" Sequence="185"/>
+    <ROW File="gizmoXML.xrf" Component_="Accent.mst" FileName="gizmoXML.xrf" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\gizmoXML.xrf" SelfReg="false" Sequence="186"/>
+    <ROW File="gmb.amd" Component_="aabc.amd" FileName="gmb.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\gmb.amd" SelfReg="false" Sequence="273"/>
+    <ROW File="i2id.exe" Component_="i2id.exe" FileName="i2id.exe" Attributes="0" SourcePath="Z:\scielo\serial\Code\i2id.exe" SelfReg="false" Sequence="508"/>
+    <ROW File="id2i.exe" Component_="id2i.exe" FileName="id2i.exe" Attributes="0" SourcePath="Z:\scielo\serial\Code\id2i.exe" SelfReg="false" Sequence="509"/>
+    <ROW File="ign.txt" Component_="fontsymbols.txt" FileName="ign.txt" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\tables\ign.txt" SelfReg="false" Sequence="395"/>
+    <ROW File="importClinicalTrialDataFromLilacs.bat" Component_="codes.DEP" FileName="import~1.bat|importClinicalTrialDataFromLilacs.bat" Attributes="0" SourcePath="Z:\scielo\bin\codes\importClinicalTrialDataFromLilacs.bat" SelfReg="false" Sequence="7"/>
+    <ROW File="isi.dtd" Component_="isi.dtd" FileName="isi.dtd" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\schema\isi.dtd" SelfReg="false" Sequence="210"/>
+    <ROW File="isis.log" Component_="cfg_en_issue.pft" FileName="isis.log" Attributes="0" SourcePath="Z:\scielo\bin\config\isis.log" SelfReg="false" Sequence="54"/>
+    <ROW File="isis32.dll" Component_="isis32.dll" FileName="isis32.dll" Attributes="0" SourcePath="Z:\scielo\bin\codes\isis32.dll" SelfReg="false" Sequence="8"/>
+    <ROW File="isis32.dll_1" Component_="isis32.dll_1" FileName="isis32.dll" Attributes="0" SourcePath="Z:\scielo\bin\config\isis32.dll" SelfReg="false" Sequence="55"/>
+    <ROW File="isis32.dll_2" Component_="isis32.dll_2" FileName="isis32.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\isis32.dll" SelfReg="false" Sequence="107"/>
+    <ROW File="isis32.new.dll" Component_="isis32.new.dll" FileName="isis32~1.dll|isis32.new.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\isis32.new.dll" SelfReg="false" Sequence="108"/>
+    <ROW File="iso.xsl" Component_="abnt6023.xsl" FileName="iso.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\auto\iso.xsl" SelfReg="false" Sequence="241"/>
+    <ROW File="issn01.cnt" Component_="issn01.cnt" FileName="issn01.cnt" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.cnt" SelfReg="false" Sequence="511"/>
+    <ROW File="issn01.fst" Component_="issn01.fst" FileName="issn01.fst" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.fst" SelfReg="false" Sequence="512"/>
+    <ROW File="issn01.ifp" Component_="issn01.fst" FileName="issn01.ifp" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.ifp" SelfReg="false" Sequence="513"/>
+    <ROW File="issn01.l01" Component_="issn01.fst" FileName="issn01.l01" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.l01" SelfReg="false" Sequence="514"/>
+    <ROW File="issn01.l02" Component_="issn01.fst" FileName="issn01.l02" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.l02" SelfReg="false" Sequence="515"/>
+    <ROW File="issn01.lk1" Component_="issn01.fst" FileName="issn01.lk1" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.lk1" SelfReg="false" Sequence="516"/>
+    <ROW File="issn01.lk2" Component_="issn01.fst" FileName="issn01.lk2" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.lk2" SelfReg="false" Sequence="517"/>
+    <ROW File="issn01.ln1" Component_="issn01.fst" FileName="issn01.ln1" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.ln1" SelfReg="false" Sequence="518"/>
+    <ROW File="issn01.ln2" Component_="issn01.fst" FileName="issn01.ln2" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.ln2" SelfReg="false" Sequence="519"/>
+    <ROW File="issn01.mst" Component_="issn01.fst" FileName="issn01.mst" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.mst" SelfReg="false" Sequence="520"/>
+    <ROW File="issn01.n01" Component_="issn01.fst" FileName="issn01.n01" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.n01" SelfReg="false" Sequence="521"/>
+    <ROW File="issn01.n02" Component_="issn01.fst" FileName="issn01.n02" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.n02" SelfReg="false" Sequence="522"/>
+    <ROW File="issn01.xrf" Component_="issn01.fst" FileName="issn01.xrf" Attributes="0" SourcePath="Z:\scielo\serial\issn\issn01.xrf" SelfReg="false" Sequence="523"/>
+    <ROW File="issn_isi.cnt" Component_="issn_isi.cnt" FileName="issn_isi.cnt" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.cnt" SelfReg="false" Sequence="480"/>
+    <ROW File="issn_isi.fst" Component_="issn_isi.fst" FileName="issn_isi.fst" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.fst" SelfReg="false" Sequence="481"/>
+    <ROW File="issn_isi.ifp" Component_="issn_isi.fst" FileName="issn_isi.ifp" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.ifp" SelfReg="false" Sequence="482"/>
+    <ROW File="issn_isi.l01" Component_="issn_isi.fst" FileName="issn_isi.l01" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.l01" SelfReg="false" Sequence="483"/>
+    <ROW File="issn_isi.l02" Component_="issn_isi.fst" FileName="issn_isi.l02" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.l02" SelfReg="false" Sequence="484"/>
+    <ROW File="issn_isi.lk1" Component_="issn_isi.fst" FileName="issn_isi.lk1" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.lk1" SelfReg="false" Sequence="485"/>
+    <ROW File="issn_isi.lk2" Component_="issn_isi.fst" FileName="issn_isi.lk2" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.lk2" SelfReg="false" Sequence="486"/>
+    <ROW File="issn_isi.ln1" Component_="issn_isi.fst" FileName="issn_isi.ln1" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.ln1" SelfReg="false" Sequence="487"/>
+    <ROW File="issn_isi.ln2" Component_="issn_isi.fst" FileName="issn_isi.ln2" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.ln2" SelfReg="false" Sequence="488"/>
+    <ROW File="issn_isi.mst" Component_="issn_isi.fst" FileName="issn_isi.mst" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.mst" SelfReg="false" Sequence="489"/>
+    <ROW File="issn_isi.n01" Component_="issn_isi.fst" FileName="issn_isi.n01" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.n01" SelfReg="false" Sequence="490"/>
+    <ROW File="issn_isi.n02" Component_="issn_isi.fst" FileName="issn_isi.n02" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.n02" SelfReg="false" Sequence="491"/>
+    <ROW File="issn_isi.xrf" Component_="issn_isi.fst" FileName="issn_isi.xrf" Attributes="0" SourcePath="Z:\scielo\isi_issn\issn_isi.xrf" SelfReg="false" Sequence="492"/>
+    <ROW File="issue.fst" Component_="issue.fst" FileName="issue.fst" Attributes="0" SourcePath="Z:\scielo\serial\issue\issue.fst" SelfReg="false" Sequence="525"/>
+    <ROW File="issue.xml.pft" Component_="issue.xml.pft" FileName="issuex~1.pft|issue.xml.pft" Attributes="0" SourcePath="Z:\scielo\bin\config\misc\issue.xml.pft" SelfReg="false" Sequence="63"/>
+    <ROW File="issue2.fst" Component_="issue.xml.pft" FileName="issue2.fst" Attributes="0" SourcePath="Z:\scielo\bin\config\misc\issue2.fst" SelfReg="false" Sequence="64"/>
+    <ROW File="jbchs.amd" Component_="aabc.amd" FileName="jbchs.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\jbchs.amd" SelfReg="false" Sequence="274"/>
+    <ROW File="journal_standard.txt" Component_="automata.mds" FileName="journa~1.txt|journal-standard.txt" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\journal-standard.txt" SelfReg="false" Sequence="325"/>
+    <ROW File="journals.cnt" Component_="journals.cnt" FileName="journals.cnt" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\journals\journals.cnt" SelfReg="false" Sequence="143"/>
+    <ROW File="journals.fst" Component_="journals.fst" FileName="journals.fst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\journals\journals.fst" SelfReg="false" Sequence="144"/>
+    <ROW File="journals.ifp" Component_="journals.fst" FileName="journals.ifp" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\journals\journals.ifp" SelfReg="false" Sequence="145"/>
+    <ROW File="journals.l01" Component_="journals.fst" FileName="journals.l01" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\journals\journals.l01" SelfReg="false" Sequence="146"/>
+    <ROW File="journals.l02" Component_="journals.fst" FileName="journals.l02" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\journals\journals.l02" SelfReg="false" Sequence="147"/>
+    <ROW File="journals.mst" Component_="journals.fst" FileName="journals.mst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\journals\journals.mst" SelfReg="false" Sequence="148"/>
+    <ROW File="journals.n01" Component_="journals.fst" FileName="journals.n01" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\journals\journals.n01" SelfReg="false" Sequence="149"/>
+    <ROW File="journals.n02" Component_="journals.fst" FileName="journals.n02" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\journals\journals.n02" SelfReg="false" Sequence="150"/>
+    <ROW File="journals.seq" Component_="journals.fst" FileName="journals.seq" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\journals\journals.seq" SelfReg="false" Sequence="151"/>
+    <ROW File="journals.xrf" Component_="journals.fst" FileName="journals.xrf" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\PubMed\journals\journals.xrf" SelfReg="false" Sequence="152"/>
+    <ROW File="lang.ini" Component_="codes.DEP" FileName="lang.ini" Attributes="0" SourcePath="Z:\scielo\bin\codes\lang.ini" SelfReg="false" Sequence="20"/>
+    <ROW File="language.xml" Component_="language.xml" FileName="language.xml" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\xml\en\language.xml" SelfReg="false" Sequence="401"/>
+    <ROW File="line.txt" Component_="empty.txt" FileName="line.txt" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\line.txt" SelfReg="false" Sequence="200"/>
+    <ROW File="link.mds" Component_="automata.mds" FileName="link.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\link.mds" SelfReg="false" Sequence="326"/>
+    <ROW File="livros.txt" Component_="artigos.txt" FileName="livros.txt" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\livros.txt" SelfReg="false" Sequence="382"/>
+    <ROW File="log.cfg" Component_="art.dcl" FileName="log.cfg" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\log.cfg" SelfReg="false" Sequence="447"/>
+    <ROW File="lucene_core_2.2.0.jar" Component_="artigos.txt" FileName="lucene~1.jar|lucene-core-2.2.0.jar" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\lucene-core-2.2.0.jar" SelfReg="false" Sequence="383"/>
+    <ROW File="lucene_core_2.3.1.jar" Component_="artigos.txt" FileName="lucene~2.jar|lucene-core-2.3.1.jar" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\lucene-core-2.3.1.jar" SelfReg="false" Sequence="384"/>
+    <ROW File="mainGenerateXML.bat" Component_="applyXSL.bat" FileName="mainGe~1.bat|mainGenerateXML.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\scripts\mainGenerateXML.bat" SelfReg="false" Sequence="218"/>
+    <ROW File="mana.amd" Component_="aabc.amd" FileName="mana.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\mana.amd" SelfReg="false" Sequence="275"/>
+    <ROW File="marcado.xml" Component_="abnt6023.xsl" FileName="marcado.xml" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\auto\marcado.xml" SelfReg="false" Sequence="398"/>
+    <ROW File="markup.err" Component_="automata.mds" FileName="markup.err" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\markup.err" SelfReg="false" Sequence="327"/>
+    <ROW File="markup.prg" Component_="automata.mds" FileName="markup.prg" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\markup.prg" SelfReg="false" Sequence="329"/>
+    <ROW File="mathml.xsl_1" Component_="ctop.xsl_1" FileName="mathml.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\mathml\mathml.xsl" SelfReg="false" Sequence="338"/>
+    <ROW File="message.txt" Component_="empty.txt" FileName="message.txt" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\message.txt" SelfReg="false" Sequence="202"/>
+    <ROW File="mioc.amd" Component_="aabc.amd" FileName="mioc.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\mioc.amd" SelfReg="false" Sequence="276"/>
+    <ROW File="months" Component_="en_err.txt" FileName="months" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\months" SelfReg="false" Sequence="60"/>
+    <ROW File="msg.txt" Component_="call.bat" FileName="msg.txt" Attributes="0" SourcePath="Z:\scielo\bin\config\help\msg.txt" SelfReg="false" Sequence="45"/>
+    <ROW File="msvbvm60.dll" Component_="msvbvm60.dll" FileName="msvbvm60.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\msvbvm60.dll" SelfReg="false" Sequence="111"/>
+    <ROW File="mswsock.dll" Component_="mswsock.dll" FileName="mswsock.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\mswsock.dll" SelfReg="false" Sequence="114"/>
+    <ROW File="mx.exe" Component_="mx.exe" FileName="mx.exe" Attributes="0" SourcePath="Z:\scielo\bin\config\help\mx.exe" SelfReg="false" Sequence="46"/>
+    <ROW File="newcode.fst" Component_="code.fst" FileName="newcode.fst" Attributes="0" SourcePath="Z:\scielo\serial\Code\newcode.fst" SelfReg="false" Sequence="510"/>
+    <ROW File="nomodel.txt" Component_="cfg.sci" FileName="nomodel.txt" Attributes="0" SourcePath="Z:\scielo\bin\convert\nomodel.txt" SelfReg="false" Sequence="115"/>
+    <ROW File="nosertit.fst" Component_="issn01.fst" FileName="nosertit.fst" Attributes="0" SourcePath="Z:\scielo\serial\issn\nosertit.fst" SelfReg="false" Sequence="524"/>
+    <ROW File="oleaut32.dll" Component_="oleaut32.dll" FileName="oleaut32.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\oleaut32.dll" SelfReg="false" Sequence="116"/>
+    <ROW File="olepro32.dll" Component_="olepro32.dll" FileName="olepro32.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\olepro32.dll" SelfReg="false" Sequence="117"/>
+    <ROW File="other.xsl" Component_="abnt6023.xsl" FileName="other.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\auto\other.xsl" SelfReg="false" Sequence="243"/>
+    <ROW File="pab.amd" Component_="aabc.amd" FileName="pab.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\pab.amd" SelfReg="false" Sequence="277"/>
+    <ROW File="parser.exe" Component_="parser.exe" FileName="parser.exe" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\parser.exe" SelfReg="false" Sequence="458"/>
+    <ROW File="part.ini" Component_="part.ini" FileName="part.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\tables\en\part.ini" SelfReg="false" Sequence="87"/>
+    <ROW File="part.ini_1" Component_="part.ini_1" FileName="part.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\tables\es\part.ini" SelfReg="false" Sequence="88"/>
+    <ROW File="part.ini_2" Component_="part.ini_2" FileName="part.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\tables\pt\part.ini" SelfReg="false" Sequence="89"/>
+    <ROW File="paths.txt" Component_="cfg.sci" FileName="paths.txt" Attributes="0" SourcePath="Z:\scielo\bin\convert\paths.txt" SelfReg="false" Sequence="118"/>
+    <ROW File="pmathml.xsl_1" Component_="ctop.xsl_1" FileName="pmathml.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\mathml\pmathml.xsl" SelfReg="false" Sequence="339"/>
+    <ROW File="pmathmlcss.xsl_1" Component_="ctop.xsl_1" FileName="pmathm~1.xsl|pmathmlcss.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\mathml\pmathmlcss.xsl" SelfReg="false" Sequence="340"/>
+    <ROW File="pob.amd" Component_="aabc.amd" FileName="pob.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\pob.amd" SelfReg="false" Sequence="278"/>
+    <ROW File="pt_attb.mds" Component_="automata.mds" FileName="pt_attb.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pt_attb.mds" SelfReg="false" Sequence="363"/>
+    <ROW File="pt_bars.mds" Component_="automata.mds" FileName="pt_bars.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pt_bars.mds" SelfReg="false" Sequence="364"/>
+    <ROW File="pt_conf.mds" Component_="automata.mds" FileName="pt_conf.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pt_conf.mds" SelfReg="false" Sequence="365"/>
+    <ROW File="pt_err.mds" Component_="automata.mds" FileName="pt_err.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pt_err.mds" SelfReg="false" Sequence="366"/>
+    <ROW File="pt_err.txt" Component_="en_err.txt" FileName="pt_err.txt" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\pt_err.txt" SelfReg="false" Sequence="61"/>
+    <ROW File="pt_fields.ini" Component_="call.bat" FileName="pt_fie~1.ini|pt_fields.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\help\pt_fields.ini" SelfReg="false" Sequence="74"/>
+    <ROW File="pt_fields.ini_1" Component_="en_err.txt" FileName="pt_fie~1.ini|pt_fields.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\pt_fields.ini" SelfReg="false" Sequence="83"/>
+    <ROW File="pt_files.ini" Component_="en_err.txt" FileName="pt_files.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\pt_files.ini" SelfReg="false" Sequence="84"/>
+    <ROW File="pt_issue.mds" Component_="automata.mds" FileName="pt_issue.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pt_issue.mds" SelfReg="false" Sequence="367"/>
+    <ROW File="pt_issue.pft" Component_="en_err.txt" FileName="pt_issue.pft" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\pt_issue.pft" SelfReg="false" Sequence="62"/>
+    <ROW File="pt_label.txt" Component_="cfg.sci" FileName="pt_label.txt" Attributes="0" SourcePath="Z:\scielo\bin\convert\pt_label.txt" SelfReg="false" Sequence="119"/>
+    <ROW File="pt_labels.ini" Component_="codes.DEP" FileName="pt_lab~1.ini|pt_labels.ini" Attributes="0" SourcePath="Z:\scielo\bin\codes\pt_labels.ini" SelfReg="false" Sequence="21"/>
+    <ROW File="pt_labels.ini_1" Component_="call.bat" FileName="pt_lab~1.ini|pt_labels.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\help\pt_labels.ini" SelfReg="false" Sequence="75"/>
+    <ROW File="pt_labels.ini_2" Component_="en_err.txt" FileName="pt_lab~1.ini|pt_labels.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\langs\pt_labels.ini" SelfReg="false" Sequence="85"/>
+    <ROW File="pt_labels.pft" Component_="call.bat" FileName="pt_lab~1.pft|pt_labels.pft" Attributes="0" SourcePath="Z:\scielo\bin\config\help\pt_labels.pft" SelfReg="false" Sequence="47"/>
+    <ROW File="pt_temp.mds" Component_="automata.mds" FileName="pt_temp.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pt_temp.mds" SelfReg="false" Sequence="368"/>
+    <ROW File="pt_tgabnt.amd" Component_="aabc.amd" FileName="pt_tga~1.amd|pt_tgabnt.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\pt_tgabnt.amd" SelfReg="false" Sequence="280"/>
+    <ROW File="pt_tgabnt.amd_1" Component_="automata.mds" FileName="pt_tga~1.amd|pt_tgabnt.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pt_tgabnt.amd" SelfReg="false" Sequence="369"/>
+    <ROW File="pt_tgother.amd" Component_="automata.mds" FileName="pt_tgo~1.amd|pt_tgother.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pt_tgother.amd" SelfReg="false" Sequence="370"/>
+    <ROW File="pt_tgvanc.amd" Component_="aabc.amd" FileName="pt_tgv~1.amd|pt_tgvanc.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\pt_tgvanc.amd" SelfReg="false" Sequence="281"/>
+    <ROW File="pt_tgvanc.amd_1" Component_="automata.mds" FileName="pt_tgv~1.amd|pt_tgvanc.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pt_tgvanc.amd" SelfReg="false" Sequence="371"/>
+    <ROW File="ptp.amd" Component_="aabc.amd" FileName="ptp.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\ptp.amd" SelfReg="false" Sequence="279"/>
+    <ROW File="pvb.amd" Component_="aabc.amd" FileName="pvb.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\pvb.amd" SelfReg="false" Sequence="282"/>
+    <ROW File="qn.amd" Component_="aabc.amd" FileName="qn.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\qn.amd" SelfReg="false" Sequence="283"/>
+    <ROW File="r" Component_="call.bat" FileName="r" Attributes="0" SourcePath="Z:\scielo\bin\config\help\r" SelfReg="false" Sequence="48"/>
+    <ROW File="ramb.amd" Component_="aabc.amd" FileName="ramb.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\ramb.amd" SelfReg="false" Sequence="284"/>
+    <ROW File="rb.amd" Component_="aabc.amd" FileName="rb.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rb.amd" SelfReg="false" Sequence="285"/>
+    <ROW File="rbb.amd" Component_="aabc.amd" FileName="rbb.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rbb.amd" SelfReg="false" Sequence="286"/>
+    <ROW File="rbbio.amd" Component_="aabc.amd" FileName="rbbio.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rbbio.amd" SelfReg="false" Sequence="287"/>
+    <ROW File="rbccv.amd" Component_="aabc.amd" FileName="rbccv.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rbccv.amd" SelfReg="false" Sequence="288"/>
+    <ROW File="rbcsoc.amd" Component_="aabc.amd" FileName="rbcsoc.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rbcsoc.amd" SelfReg="false" Sequence="289"/>
+    <ROW File="rbp.amd" Component_="aabc.amd" FileName="rbp.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rbp.amd" SelfReg="false" Sequence="290"/>
+    <ROW File="rbz.amd" Component_="aabc.amd" FileName="rbz.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rbz.amd" SelfReg="false" Sequence="291"/>
+    <ROW File="readme.txt" Component_="codes.DEP" FileName="readme.txt" Attributes="0" SourcePath="Z:\scielo\bin\codes\readme.txt" SelfReg="false" Sequence="10"/>
+    <ROW File="resp.amd" Component_="aabc.amd" FileName="resp.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\resp.amd" SelfReg="false" Sequence="292"/>
+    <ROW File="rhc.amd" Component_="aabc.amd" FileName="rhc.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rhc.amd" SelfReg="false" Sequence="293"/>
+    <ROW File="rimtsp.amd" Component_="aabc.amd" FileName="rimtsp.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rimtsp.amd" SelfReg="false" Sequence="294"/>
+    <ROW File="rn.amd" Component_="aabc.amd" FileName="rn.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rn.amd" SelfReg="false" Sequence="295"/>
+    <ROW File="rousp.amd" Component_="aabc.amd" FileName="rousp.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rousp.amd" SelfReg="false" Sequence="296"/>
+    <ROW File="rpsp.amd" Component_="aabc.amd" FileName="rpsp.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rpsp.amd" SelfReg="false" Sequence="297"/>
+    <ROW File="rsbmt.amd" Component_="aabc.amd" FileName="rsbmt.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rsbmt.amd" SelfReg="false" Sequence="298"/>
+    <ROW File="rsocp.amd" Component_="aabc.amd" FileName="rsocp.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rsocp.amd" SelfReg="false" Sequence="299"/>
+    <ROW File="rsp.amd" Component_="aabc.amd" FileName="rsp.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\rsp.amd" SelfReg="false" Sequence="300"/>
+    <ROW File="sa.amd" Component_="aabc.amd" FileName="sa.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\sa.amd" SelfReg="false" Sequence="301"/>
+    <ROW File="saxon8.jar" Component_="saxon8_dom.jar" FileName="saxon8.jar" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\java\saxon8.jar" SelfReg="false" Sequence="197"/>
+    <ROW File="saxon8_dom.jar" Component_="saxon8_dom.jar" FileName="saxon8~1.jar|saxon8-dom.jar" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\java\saxon8-dom.jar" SelfReg="false" Sequence="191"/>
+    <ROW File="saxon8_dom4j.jar" Component_="saxon8_dom.jar" FileName="saxon8~2.jar|saxon8-dom4j.jar" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\java\saxon8-dom4j.jar" SelfReg="false" Sequence="192"/>
+    <ROW File="saxon8_jdom.jar" Component_="saxon8_dom.jar" FileName="saxon8~3.jar|saxon8-jdom.jar" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\java\saxon8-jdom.jar" SelfReg="false" Sequence="193"/>
+    <ROW File="saxon8_sql.jar" Component_="saxon8_dom.jar" FileName="saxon8~4.jar|saxon8-sql.jar" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\java\saxon8-sql.jar" SelfReg="false" Sequence="194"/>
+    <ROW File="saxon8_xom.jar" Component_="saxon8_dom.jar" FileName="saxon8~5.jar|saxon8-xom.jar" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\java\saxon8-xom.jar" SelfReg="false" Sequence="195"/>
+    <ROW File="saxon8_xpath.jar" Component_="saxon8_dom.jar" FileName="saxon8~6.jar|saxon8-xpath.jar" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\java\saxon8-xpath.jar" SelfReg="false" Sequence="196"/>
+    <ROW File="scielo_pmc.xsl_2" Component_="scielo_pmc.xsl_2" FileName="scielo~1.xsl|scielo_pmc.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\site\scielo_pmc.xsl" SelfReg="false" Sequence="348"/>
+    <ROW File="scielo_pmc_fig.xsl_2" Component_="scielo_pmc.xsl_2" FileName="scielo~2.xsl|scielo_pmc_fig.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\site\scielo_pmc_fig.xsl" SelfReg="false" Sequence="349"/>
+    <ROW File="scielo_pmc_front.xsl_1" Component_="scielo_pmc.xsl_2" FileName="scielo~3.xsl|scielo_pmc_front.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\site\scielo_pmc_front.xsl" SelfReg="false" Sequence="350"/>
+    <ROW File="scielo_pmc_main.xsl_1" Component_="scielo_pmc.xsl_2" FileName="scielo~4.xsl|scielo_pmc_main.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\site\scielo_pmc_main.xsl" SelfReg="false" Sequence="351"/>
+    <ROW File="scielo_pmc_references.xsl_2" Component_="scielo_pmc.xsl_2" FileName="scielo~5.xsl|scielo_pmc_references.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\site\scielo_pmc_references.xsl" SelfReg="false" Sequence="352"/>
+    <ROW File="scielo_pmc_references_gmb.xsl_1" Component_="scielo_pmc.xsl_2" FileName="scielo~6.xsl|scielo_pmc_references_gmb.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\site\scielo_pmc_references_gmb.xsl" SelfReg="false" Sequence="353"/>
+    <ROW File="scielo_pmc_table.xsl_2" Component_="scielo_pmc.xsl_2" FileName="scielo~7.xsl|scielo_pmc_table.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\site\scielo_pmc_table.xsl" SelfReg="false" Sequence="354"/>
+    <ROW File="scilista.lst" Component_="scilista.lst" FileName="scilista.lst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\scilista.lst" SelfReg="false" Sequence="237"/>
+    <ROW File="scipath.ini" Component_="cfg_en_issue.pft" FileName="scipath.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\scipath.ini" SelfReg="false" Sequence="86"/>
+    <ROW File="section.fst" Component_="section.fst" FileName="section.fst" Attributes="0" SourcePath="Z:\scielo\serial\section\section.fst" SelfReg="false" Sequence="526"/>
+    <ROW File="segments.gen" Component_="segments.gen" FileName="segments.gen" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\db\segments.gen" SelfReg="false" Sequence="373"/>
+    <ROW File="segments_1sfw" Component_="segments.gen" FileName="segmen~1|segments_1sfw" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\db\segments_1sfw" SelfReg="false" Sequence="374"/>
+    <ROW File="segments_7" Component_="segments.gen" FileName="segmen~2|segments_7" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\db\segments_7" SelfReg="false" Sequence="375"/>
+    <ROW File="segments_e" Component_="segments.gen" FileName="segmen~3|segments_e" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\db\segments_e" SelfReg="false" Sequence="376"/>
+    <ROW File="sep.txt" Component_="empty.txt" FileName="sep.txt" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\sep.txt" SelfReg="false" Sequence="224"/>
+    <ROW File="ser1_0.dtd" Component_="art.dcl" FileName="ser1_0.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ser1_0.dtd" SelfReg="false" Sequence="462"/>
+    <ROW File="ser2_0.dtd" Component_="art.dcl" FileName="ser2_0.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ser2_0.dtd" SelfReg="false" Sequence="463"/>
+    <ROW File="ser3_0.dtd" Component_="art.dcl" FileName="ser3_0.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\ser3_0.dtd" SelfReg="false" Sequence="464"/>
+    <ROW File="sgm2win2.txt" Component_="sgm2win2.txt" FileName="sgm2win2.txt" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\sgm2win2.txt" SelfReg="false" Sequence="330"/>
+    <ROW File="sgm2win2.txt_1" Component_="sgm2win2.txt_1" FileName="sgm2win2.txt" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\sgm2win2.txt" SelfReg="false" Sequence="357"/>
+    <ROW File="sgml2generic.xsl" Component_="sgm2win2.txt" FileName="sgml2g~1.xsl|sgml2generic.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\sgml2generic.xsl" SelfReg="false" Sequence="331"/>
+    <ROW File="sgml2generic.xsl_1" Component_="sgm2win2.txt_1" FileName="sgml2g~1.xsl|sgml2generic.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\sgml2generic.xsl" SelfReg="false" Sequence="358"/>
+    <ROW File="sgml2pmc.xsl" Component_="sgm2win2.txt" FileName="sgml2pmc.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\sgml2pmc.xsl" SelfReg="false" Sequence="332"/>
+    <ROW File="sgml2pmc.xsl_1" Component_="sgm2win2.txt_1" FileName="sgml2pmc.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\sgml2pmc.xsl" SelfReg="false" Sequence="359"/>
+    <ROW File="sgml2xmlscielo.xsl" Component_="sgm2win2.txt" FileName="sgml2x~1.xsl|sgml2xmlscielo.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\sgml2xmlscielo.xsl" SelfReg="false" Sequence="333"/>
+    <ROW File="sgml2xmlscielo.xsl_1" Component_="sgm2win2.txt_1" FileName="sgml2x~1.xsl|sgml2xmlscielo.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\sgml2xmlscielo.xsl" SelfReg="false" Sequence="360"/>
+    <ROW File="show_xml.xsl_3" Component_="check_aff.xsl_3" FileName="show-xml.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\check\show-xml.xsl" SelfReg="false" Sequence="347"/>
+    <ROW File="sp120.dll" Component_="sp120.dll" FileName="sp120.dll" Attributes="0" SourcePath="Z:\scielo\bin\convert\sp120.dll" SelfReg="false" Sequence="122"/>
+    <ROW File="sp120.dll_1" Component_="sp120.dll_1" FileName="sp120.dll" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\sp120.dll" SelfReg="false" Sequence="467"/>
+    <ROW File="spm.amd" Component_="aabc.amd" FileName="spm.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\spm.amd" SelfReg="false" Sequence="302"/>
+    <ROW File="spmj.amd" Component_="aabc.amd" FileName="spmj.amd" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\automatas\spmj.amd" SelfReg="false" Sequence="303"/>
+    <ROW File="start.mds" Component_="automata.mds" FileName="start.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\start.mds" SelfReg="false" Sequence="392"/>
+    <ROW File="stdole2.tlb" Component_="cfg.sci" FileName="stdole2.tlb" Attributes="0" SourcePath="Z:\scielo\bin\convert\stdole2.tlb" SelfReg="false" Sequence="123"/>
+    <ROW File="svg.xsl_1" Component_="ctop.xsl_1" FileName="svg.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\mathml\svg.xsl" SelfReg="false" Sequence="341"/>
+    <ROW File="temp.txt" Component_="configure_paths.bat" FileName="temp.txt" Attributes="0" SourcePath="Z:\scielo\bin\cfg\temp.txt" SelfReg="false" Sequence="408"/>
+    <ROW File="test.log" Component_="automata.mds" FileName="test.log" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\test.log" SelfReg="false" Sequence="396"/>
+    <ROW File="teste.xsl_1" Component_="ctop.xsl_1" FileName="teste.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\mathml\teste.xsl" SelfReg="false" Sequence="342"/>
+    <ROW File="text1_0.dtd" Component_="art.dcl" FileName="text1_0.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\text1_0.dtd" SelfReg="false" Sequence="472"/>
+    <ROW File="text3_0.dtd" Component_="art.dcl" FileName="text3_0.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\text3_0.dtd" SelfReg="false" Sequence="473"/>
+    <ROW File="text3_1.dtd" Component_="art.dcl" FileName="text3_1.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\text3_1.dtd" SelfReg="false" Sequence="474"/>
+    <ROW File="text4_0.dtd" Component_="art.dcl" FileName="text4_0.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\text4_0.dtd" SelfReg="false" Sequence="475"/>
+    <ROW File="tipo_h.i2x" Component_="tipo_h.i2x" FileName="tipo_h.i2x" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\i2x\tipo_h.i2x" SelfReg="false" Sequence="190"/>
+    <ROW File="tipo_h_pubmed.prc" Component_="tipo_h_pubmed.prc" FileName="tipo_h~1.prc|tipo_h_pubmed.prc" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\prc\tipo_h_pubmed.prc" SelfReg="false" Sequence="209"/>
+    <ROW File="tit_issn.fst" Component_="tit_issn.fst" FileName="tit_issn.fst" Attributes="0" SourcePath="Z:\scielo\serial\title\tit_issn.fst" SelfReg="false" Sequence="527"/>
+    <ROW File="title.fst" Component_="title.fst" FileName="title.fst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\fst\title.fst" SelfReg="false" Sequence="168"/>
+    <ROW File="transfer.bat" Component_="applyXSL.bat" FileName="transfer.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\scripts\transfer.bat" SelfReg="false" Sequence="219"/>
+    <ROW File="transform.bat" Component_="applyXSL.bat" FileName="transf~1.bat|transform.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\scripts\transform.bat" SelfReg="false" Sequence="220"/>
+    <ROW File="transformByJava.bat" Component_="applyXSL.bat" FileName="transf~2.bat|transformByJava.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\scripts\transformByJava.bat" SelfReg="false" Sequence="221"/>
+    <ROW File="transformByPHP.bat" Component_="applyXSL.bat" FileName="transf~3.bat|transformByPHP.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\scripts\transformByPHP.bat" SelfReg="false" Sequence="222"/>
+    <ROW File="transl3_1.dtd" Component_="art.dcl" FileName="transl~1.dtd|transl3_1.dtd" Attributes="0" SourcePath="Z:\scielo\bin\SGMLPars\transl3_1.dtd" SelfReg="false" Sequence="476"/>
+    <ROW File="translation.xml" Component_="translation.xml" FileName="transl~1.xml|translation.xml" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\xml\de\translation.xml" SelfReg="false" Sequence="400"/>
+    <ROW File="translation.xml_1" Component_="language.xml" FileName="transl~1.xml|translation.xml" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\xml\en\translation.xml" SelfReg="false" Sequence="402"/>
+    <ROW File="translation.xml_2" Component_="translation.xml_1" FileName="transl~1.xml|translation.xml" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\xml\es\translation.xml" SelfReg="false" Sequence="403"/>
+    <ROW File="translation.xml_3" Component_="translation.xml_2" FileName="transl~1.xml|translation.xml" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\xml\fr\translation.xml" SelfReg="false" Sequence="404"/>
+    <ROW File="translation.xml_4" Component_="translation.xml_3" FileName="transl~1.xml|translation.xml" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\xml\pt\translation.xml" SelfReg="false" Sequence="405"/>
+    <ROW File="txt2db.bat" Component_="call.bat" FileName="txt2db.bat" Attributes="0" SourcePath="Z:\scielo\bin\config\help\txt2db.bat" SelfReg="false" Sequence="53"/>
+    <ROW File="utf2lat.mst" Component_="Accent.mst" FileName="utf2lat.mst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\utf2lat.mst" SelfReg="false" Sequence="187"/>
+    <ROW File="utf2lat.seq" Component_="Accent.mst" FileName="utf2lat.seq" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\utf2lat.seq" SelfReg="false" Sequence="188"/>
+    <ROW File="utf2lat.xrf" Component_="Accent.mst" FileName="utf2lat.xrf" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\gizmo\utf2lat.xrf" SelfReg="false" Sequence="189"/>
+    <ROW File="validateXML.bat" Component_="applyXSL.bat" FileName="valida~1.bat|validateXML.bat" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\scripts\validateXML.bat" SelfReg="false" Sequence="223"/>
+    <ROW File="validfileformat.mds" Component_="automata.mds" FileName="validf~1.mds|validfileformat.mds" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\validfileformat.mds" SelfReg="false" Sequence="397"/>
+    <ROW File="value.ini" Component_="cfg_en_issue.pft" FileName="value.ini" Attributes="0" SourcePath="Z:\scielo\bin\config\value.ini" SelfReg="false" Sequence="90"/>
+    <ROW File="values.lst" Component_="codes.DEP" FileName="values.lst" Attributes="0" SourcePath="Z:\scielo\bin\codes\values.lst" SelfReg="false" Sequence="16"/>
+    <ROW File="vancouv.xsl" Component_="abnt6023.xsl" FileName="vancouv.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\auto\vancouv.xsl" SelfReg="false" Sequence="244"/>
+    <ROW File="viewText.xsl" Component_="sgm2win2.txt_1" FileName="viewText.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\viewText.xsl" SelfReg="false" Sequence="361"/>
+    <ROW File="viewText.xsl_1" Component_="sgm2win2.txt" FileName="viewText.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\viewText.xsl" SelfReg="false" Sequence="362"/>
+    <ROW File="viewnlm_v2.xsl_2" Component_="scielo_pmc.xsl_2" FileName="viewnl~1.xsl|viewnlm-v2.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\site\viewnlm-v2.xsl" SelfReg="false" Sequence="355"/>
+    <ROW File="viewnlm_v2_scielo.xsl_2" Component_="scielo_pmc.xsl_2" FileName="viewnl~2.xsl|viewnlm-v2_scielo.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\scielo\site\viewnlm-v2_scielo.xsl" SelfReg="false" Sequence="356"/>
+    <ROW File="w7v.cfs" Component_="segments.gen" FileName="_w7v.cfs" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\db\_w7v.cfs" SelfReg="false" Sequence="379"/>
+    <ROW File="warnings.txt" Component_="cfg.sci" FileName="warnings.txt" Attributes="0" SourcePath="Z:\scielo\bin\convert\warnings.txt" SelfReg="false" Sequence="125"/>
+    <ROW File="x.xml" Component_="chama.bat" FileName="x.xml" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\java\validador\x.xml" SelfReg="false" Sequence="239"/>
+    <ROW File="xmessage.txt" Component_="empty.txt" FileName="xmessage.txt" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\xmessage.txt" SelfReg="false" Sequence="228"/>
+    <ROW File="xml_scielo.fst" Component_="title.fst" FileName="xml_sc~1.fst|xml_scielo.fst" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\fst\xml_scielo.fst" SelfReg="false" Sequence="169"/>
+    <ROW File="xml_scielo.ini" Component_="arquivo.cip" FileName="xml_sc~1.ini|xml_scielo.ini" Attributes="0" SourcePath="Z:\scielo\xml_scielo\config.example\xml_scielo.ini" SelfReg="false" Sequence="238"/>
+    <ROW File="xml_scielo_articles.xis" Component_="xml_scielo_articles.xis" FileName="xml_sc~1.xis|xml_scielo_articles.xis" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\xis\xml_scielo_articles.xis" SelfReg="false" Sequence="226"/>
+    <ROW File="xml_scielo_getXSL.xis" Component_="xml_scielo_articles.xis" FileName="xml_sc~2.xis|xml_scielo_getXSL.xis" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\xis\xml_scielo_getXSL.xis" SelfReg="false" Sequence="227"/>
+    <ROW File="xml_xsl.php" Component_="class.XSLTransformer.php" FileName="xml_xsl.php" Attributes="0" SourcePath="Z:\scielo\xml_scielo\proc\general\php\xml_xsl.php" SelfReg="false" Sequence="208"/>
+    <ROW File="xsldoc.xsl_1" Component_="ctop.xsl_1" FileName="xsldoc.xsl" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\pmc\v3.0\mathml\xsldoc.xsl" SelfReg="false" Sequence="343"/>
+    <ROW File="zeus.jar" Component_="artigos.txt" FileName="zeus.jar" Attributes="0" SourcePath="Z:\scielo\bin\markup_pmc\refIdentifier\zeus.jar" SelfReg="false" Sequence="391"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageName="setup" Languages="en" InstallationType="2" CabsLocation="1" CompressCabs="false" UseLzma="true" PackageType="1" FilesInsideExe="true" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\install" ExtUI="true"/>
+    <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
+    <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
+    <ROW Fragment="FolderDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\FolderDlg.aip"/>
+    <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
+    <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;classic\fragments\UI.aip"/>
+    <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
+    <ROW Action="AI_DeleteLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
+    <ROW Action="AI_DeleteRLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
+    <ROW Action="AI_ExtractLzma" Description="Extracting files from archive" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiAppSearchComponent">
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_CU" Builds="DefaultBuild"/>
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_LM" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+    <ROW Name="grande.jpg" SourcePath="grande.jpg"/>
+    <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
+    <ROW Name="scielo_banner.jpg" SourcePath="scielo_banner.jpg"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
+    <ROW Dialog_="FolderDlg" Control="BannerLine" Type="Line" X="0" Y="44" Width="372" Height="0" Attributes="1" Control_Next="FolderDlgPathEdit_1" MsiKey="FolderDlg#BannerLine"/>
+    <ROW Dialog_="NewSeqDialog" Control="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Attributes="1" Text="[ButtonText_Back]" Control_Next="Title" TextLocId="-"/>
+    <ROW Dialog_="NewSeqDialog" Control="Bitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="234" Attributes="1048577" Text="[DialogBitmap]" Control_Next="Back"/>
+    <ROW Dialog_="NewSeqDialog" Control="BottomLine" Type="Line" X="0" Y="234" Width="372" Height="0" Attributes="1" Control_Next="Next"/>
+    <ROW Dialog_="NewSeqDialog" Control="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Cancel]" Control_Next="Bitmap" TextLocId="-"/>
+    <ROW Dialog_="NewSeqDialog" Control="Description" Type="Text" X="135" Y="86" Width="220" Height="60" Attributes="196611" Text="New Dialog Description..." Control_Next="BottomLine"/>
+    <ROW Dialog_="NewSeqDialog" Control="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Attributes="3" Text="[ButtonText_Next]" Control_Next="Cancel" TextLocId="-"/>
+    <ROW Dialog_="NewSeqDialog" Control="Title" Type="Text" X="135" Y="20" Width="220" Height="60" Attributes="196611" Text="New Dialog" TextStyle="VerdanaBold13" Control_Next="Description"/>
+    <ROW Dialog_="FolderDlg" Control="FolderDlgPathEdit_1" Type="PathEdit" X="18" Y="183" Width="252" Height="18" Attributes="7" Property="APPDIR_1" Control_Next="FolderDlgText_1" Help="|" HelpLocId="Control.Help.FolderDlg#FolderEdit"/>
+    <ROW Dialog_="FolderDlg" Control="FolderDlgText_1" Type="Text" X="20" Y="171" Width="348" Height="12" Attributes="3" Text="&amp;Folder for data (serial):" Control_Next="FolderDlgPushButton_1" Help="|" TextLocId="Control.Text.FolderDlg#FolderLabel" HelpLocId="Control.Help.FolderDlg#FolderLabel"/>
+    <ROW Dialog_="FolderDlg" Control="FolderDlgPushButton_1" Type="PushButton" X="278" Y="183" Width="90" Height="18" Attributes="3" Text="[ButtonText_Browse]" Control_Next="Next" Help="|" TextLocId="-" HelpLocId="Control.Help.FolderDlg#Browse"/>
+    <ATTRIBUTE name="FixedSizeBitmaps" value="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
+    <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL" Ordering="3"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceWelcomeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="2"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="1"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_PATCH" Ordering="3"/>
+    <ROW Dialog_="NewSeqDialog" Control_="Cancel" Event="SpawnDialog" Argument="CancelDlg" Condition="1" Ordering="1"/>
+    <ROW Dialog_="NewSeqDialog" Control_="Next" Event="EndDialog" Argument="Return" Condition="1" Ordering="1"/>
+    <ROW Dialog_="FolderDlg" Control_="FolderDlgPushButton_1" Event="SpawnDialog" Argument="BrowseDlg" Condition="1" Ordering="2"/>
+    <ROW Dialog_="FolderDlg" Control_="FolderDlgPushButton_1" Event="[_BrowseProperty]" Argument="APPDIR_1" Condition="1" Ordering="1"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
+    <ROW Directory_="common_DIR" Component_="common"/>
+    <ROW Directory_="help_1_DIR" Component_="help"/>
+    <ROW Directory_="scielo_DIR" Component_="scielo"/>
+    <ROW Directory_="mkp97to2000_DIR" Component_="mkp97to2000"/>
+    <ROW Directory_="PubMed_1_DIR" Component_="PubMed"/>
+    <ROW Directory_="temp_2_DIR" Component_="temp"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
+    <ROW Action="AI_DeleteCadLzma" Type="51" Source="AI_DeleteLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DeleteLzma" Type="1025" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
+    <ROW Action="AI_DeleteRCadLzma" Type="51" Source="AI_DeleteRLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DeleteRLzma" Type="1281" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
+    <ROW Action="AI_ExtractCadLzma" Type="51" Source="AI_ExtractLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_ExtractLzma" Type="1025" Source="lzmaextractor.dll" Target="ExtractLZMAFiles"/>
+    <ROW Action="AI_FindExeLzma" Type="1" Source="lzmaextractor.dll" Target="FindEXE"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
+    <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[WindowsVolume]\[ProductName]"/>
+    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
+    <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDialogComponent">
+    <ROW Dialog="NewSeqDialog" HCentering="50" VCentering="50" Width="370" Height="270" Attributes="3" Title="[ProductName] [Setup]" Control_First="Next" Control_Default="Next" Control_Cancel="Cancel"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
+    <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+    <ROW Action="AI_STORE_LOCATION" Condition="Not Installed" Sequence="1501"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
+    <ROW Action="AI_DeleteCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="199" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteRCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="198" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="197" Builds="DefaultBuild"/>
+    <ROW Action="AI_FindExeLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="196" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="1549" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteRLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="1548" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="6599" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
+    <ROW Condition="Version9X OR (VersionNT AND (NOT VersionNT64))" Description="[ProductName] cannot be installed on [WindowsFamilyNT64]" DescriptionLocId="AI.LaunchCondition.NoNT64" IsPredefined="true" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
+    <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+    <ROW Signature_="AI_EXE_PATH_LM" Root="2" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+    <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="AI_ExePath"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
+    <ROW ThemeName="classic" ThemeManifestFilePath="&lt;AI_THEMES&gt;classic\classic.ini"/>
+    <ATTRIBUTE name="UsedTheme" value="classic"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMax="[|ProductVersion]" Attributes="1025" ActionProperty="OLDPRODUCTS"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
+    <ROW Directory_="config_DIR" SourcePath="Z:\scielo\bin\config" Feature="Feature_1" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store|nbproj*|src" ExcludeFlags="6"/>
+    <ROW Directory_="convert_DIR" SourcePath="Z:\scielo\bin\convert" Feature="Feature_1" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6" ExcludeSubFolders="true"/>
+    <ROW Directory_="xml_scielo_DIR" SourcePath="Z:\scielo\xml_scielo" Feature="Feature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6"/>
+    <ROW Directory_="cfg_DIR" SourcePath="Z:\scielo\bin\cfg" Feature="MainFeature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6" ExcludeSubFolders="true"/>
+  </COMPONENT>
+</DOCUMENT>

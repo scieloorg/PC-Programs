@@ -41,10 +41,12 @@ Public Property Set mycodeStatus(codeStatus As ColCode)
     For i = 1 To codeStatus.count
         If InStr(valid, codeStatus(i).Code) > 0 Then
             Set c = New ClCode
-            Set c = mvarCodeStatus.add(codeStatus(i).Code)
             c.Code = codeStatus(i).Code
             c.value = codeStatus(i).value
             c.unabled = (InStr(visible, codeStatus(i).Code) = 0)
+            
+            Call mvarCodeStatus.add(c, c.Code)
+            
         End If
     Next
 End Property

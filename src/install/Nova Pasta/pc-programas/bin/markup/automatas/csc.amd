@@ -1,0 +1,73 @@
+ocitat
+o1
+o4
+o1;o2;NT;ocontrib;". In"
+o1;o3;NT;ocontrib;"."
+o1;o4;NT;omonog;"pp."
+o1;o4;NT;omonog;".";"pp",". In"
+o2;o4;NT;omonog;"."
+o3;o4;NT;oiserial;"."
+
+ocontrib
+oc1
+oc7
+oc1;oc1;NT;oauthor;","
+oc1;oc2;NT;oauthor;"&"
+oc1;oc3;NT;oauthor;" "
+oc2;oc3;NT;oauthor;" "
+oc3;oc4;T;date;"."
+oc4;oc5;T;title;":"
+oc4;oc6;T;title;".";"pp",":"
+oc4;oc6;T;title;", pp."
+oc4;oc7;T;title;".";"pp",":"
+oc5;oc6;T;subtitle;", pp."
+oc5;oc7;T;subtitle;".";"pp"
+oc6;oc7;T;pages;". In"
+
+oiserial
+oi1
+oi5
+oi1;oi2;NT;sertitle;" "
+oi2;oi3;T;volid;"("
+oi2;oi4;T;volid;":";"("
+oi3;oi4;T;issueno;"):"
+oi4;oi5;T;pages;"."
+
+omonog
+om1
+om12
+om1;om1;NT;oauthor;","
+om1;om2;NT;oauthor;"&"
+om1;om3;NT;oauthor;" "
+om1;om4;NT;oauthor;"("
+om1;om5;NT;oauthor;"&"
+om1;om7;NT;oauthor;" "
+om2;om3;NT;oauthor;" "
+om3;om7;T;date;"."
+om4;om7;T;ign;")."
+om5;om6;NT;oauthor;"("
+om6;om7;T;ign;")."
+om7;om8;T;title;":"
+om7;om9;T;title;"."
+om8;om9;T;subtitle;"."
+om9;om10;T;pubname;","
+om10;om11;T;city;","
+om10;om12;T;city;"."
+om11;om12;T;extent;"pp."
+
+oauthor
+oa1
+oa4
+oa1;oa2;T;surname;" "
+oa1;oa3;T;fname;" "
+oa2;oa4;T;fname;" "
+oa2;oa4;T;fname;","
+oa2;oa4;T;fname;"&"
+oa3;oa4;T;surname;"("
+oa3;oa4;T;surname;"&"
+
+sertitle
+s1
+s2
+s1;s1;T;ign;" "
+s1;s2;T;ign;" "

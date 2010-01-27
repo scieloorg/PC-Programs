@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE locale SYSTEM "../locale.dtd">
+<!--
+  * locale.xml
+  *
+  * Copyright (c) 2003-2005 The Public Knowledge Project
+  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+  *
+  * Localization strings for the es_ES (Español España) locale.
+  *
+  * $Id: locale.xml,v 1.5 2006/02/03 20:07:08 alec Exp $
+  *
+  * locale.xml,v 1.1 2005/09/06 00:00:00 Sergio Ruiz Exp 
+  * Traducción de la versión original 1.365 por Sergio Ruiz (sruiz@revistaesalud.com) - 2005/09/29    
+    -->
+<locale name="es_ES" full_name="Español (España)">
+	<!--
+	 * This file is organized into several major sections, separated
+	 * by comments like this one. These sections are called:
+	 *  COMMON - Contains frequently-used words
+	 *  ENTITIES - Contains terms pertaining to the system's major
+	 *             entities, e.g. Article, Journal, Section
+	 *  INTERFACE - Contains phrases organized by the section of the
+	 *              user interface they appear in.
+	 *  LOG - Contains phrases related to log entries
+	 *  MISC - Entries that don't belong elsewhere.
+	 *  DEFAULT - Default settings for configuration items.
+	-->
+	<!--
+	 *
+	 * COMMON - This section contains the most frequently-used words
+	 *
+	-->
+	<!-- Common Messages -->
+	<message key="common.and">y</message>
+	<message key="common.between">entre</message>
+	<message key="common.all">Todos</message>
+	<message key="common.on">On</message>
+	<message key="common.off">Off</message>
+	<message key="common.openJournalSystems">Open Journal Systems</message>
+	<message key="common.delete">Borrar</message>
+	<message key="common.edit">Editar</message>
+	<message key="common.save">Guardar</message>
+	<message key="common.export">Exportar</message>
+	<message key="common.import">Importar</message>
+	<message key="common.saveAndContinue">Guardar y continuar</message>
+	<message key="common.saveAndEmail">Guardar y enviar por correo-e</message>
+	<message key="common.continue">Continuar</message>
+	<message key="common.cancel">Cancelar</message>
+	<message key="common.done">Hecho</message>
+	<message key="common.search">Buscar</message>
+	<message key="common.up">Arriba</message>
+	<message key="common.top">Top</message>
+	<message key="common.url">URL</message>
+	<message key="common.description">Descripción</message>
+	<message key="common.keywords">Palabras clave</message>
+	<message key="common.order">Solicitar</message>
+	<message key="common.back">Atrás</message>
+	<message key="common.title">Título</message>
+	<message key="common.upload">Subir</message>
+	<message key="common.download">Descargar</message>
+	<message key="common.replaceFile">Reemplazar fichero</message>
+	<message key="common.subject">Asunto</message>
+	<message key="common.type">Tipo</message>
+	<message key="common.publisher">Editor</message>
+	<message key="common.note">Nota</message>
+	<message key="common.notes">Notas</message>
+	<message key="common.date">Fecha</message>
+	<message key="common.weeks">semanas</message>
+	<message key="common.source">Fuente</message>
+	<message key="common.language">Idioma</message>
+	<message key="common.id">ID</message>
+	<message key="common.status">Estado</message>
+	<message key="common.remove">Eliminar</message>
+	<message key="common.file">Fichero</message>
+	<message key="common.uploadedFile">Fichero subido</message>
+	<message key="common.fileName">Nombre del fichero</message>
+	<message key="common.dateSubmitted">Fecha de envío</message>
+	<message key="common.dateRequested">Fecha de petición</message>
+	<message key="common.dateCompleted">Fecha de finalización</message>
+	<message key="common.dateUploaded">Fecha de envío del fichero</message>
+	<message key="common.dateModified">Fecha de modificación</message>
+	<message key="common.other">Otro</message>
+	<message key="common.fileSize">Tamaño del fichero</message>
+	<message key="common.size">Tamaño</message>
+	<message key="common.fileType">Tipo de fichero</message>
+	<message key="common.originalFileName">Nombre del fichero original</message>
+	<message key="common.none">Ninguno</message>
+	<message key="common.required">Obligatorio</message>
+	<message key="common.requiredField">* Campos obligatorios</message>
+	<message key="common.or">o</message>
+	<message key="common.notAvailable">No disponible</message>
+	<message key="common.notApplicable">Not applicable</message>
+	<message key="common.notApplicableShort">N/A</message>
+	<message key="common.yes">Sí</message>
+	<message key="common.no">No</message>
+	<message key="common.languages">Idiomas</message>
+	<message key="common.changesSaved">Los cambios se han guardado.</message>
+	<message key="common.chooseOne">Elija uno</message>
+	<message key="common.alreadyAssigned">Ya asignado</message>
+	<message key="common.assign">Asignar</message>
+	<message key="common.assigned">Asignado</message>
+	<message key="common.record">Registro</message>
+	<message key="common.width">Anchura</message>
+	<message key="common.height">Altura</message>
+	<message key="common.user">Usuario</message>
+	<message key="common.event">Evento</message>
+	<message key="common.action">Acción</message>
+	<message key="common.select">Seleccionar</message>
+	<message key="common.selectAll">Seleccionar todo</message>
+	<message key="common.selectNone">Deseleccionar todo</message>
+	<message key="common.applyAction">Apply Action</message>
+	<message key="common.deleteSelection">Eliminar selección</message>
+	<message key="common.removeSelection">Eliminar selección</message>
+	<message key="common.year">Año</message>
+	<message key="common.month">Mes</message>
+	<message key="common.day">Día</message>
+	<message key="common.hour">Hora</message>
+	<message key="common.minute">Minuto(s)</message>
+	<message key="common.second">Segundo(s)</message>
+	<message key="common.create">Crear</message>
+	<message key="common.modify">Modificar</message>
+	<message key="common.notify">Notificar</message>
+	<message key="common.noneAssigned">Ninguno asignado</message>
+	<message key="common.cancelled">Cancelado</message>
+	<message key="common.inProgress">En progreso</message>
+	<message key="common.replaced">Sustituido</message>
+	<message key="common.uninitiated">Sin iniciar</message>
+	<message key="common.updated">Actualizado</message>
+	<message key="common.untitled">Sin título</message>
+	<message key="common.view">Ver</message>
+	<message key="common.related">Relacionado</message>
+	<message key="common.active">Activo</message>
+	<message key="common.completed">Completado</message>
+	<message key="common.mailingAddress">Dirección postal</message>
+	<message key="common.country">País</message>
+	<message key="common.close">Cerrar</message>
+	<message key="common.closeWindow">Cerrar ventana</message>
+	<message key="common.initiate">Iniciar</message>
+	<message key="common.complete">Completar</message>
+	<message key="common.options">Opciones</message>
+	<message key="common.plugin">Plugin</message>
+	<message key="common.default">Por defecto</message>
+	<message key="common.addSelf">Añadirse a si mismo</message>
+	<!-- Common Form Messages -->
+	<message key="form.errorsOccurred">Ha ocurrido un error. El formulario no se ha procesado.</message>
+	<message key="form.saveToUpload">Use 'Guardar' para subir el fichero.</message>
+	<message key="form.contains">contiene</message>
+	<message key="form.is">es</message>
+	<message key="form.required">(* Obligatorio)</message>
+	<message key="form.submit">Enviar</message>
+	<message key="form.send">Enviar</message>
+	<message key="form.resubmit">Reenviar</message>
+	<message key="TextViewer.uploadForm.ACTION_SELECT_FILE_TO_UPLOAD">Seleccione el fichero que contenga el XML del cual quiere visualizar el texto</message>
+	<message key="TextViewer.uploadForm.LABEL_FILE_TO_VIEW_TEXT">fichero que contenga el XML del cual quiere visualizar el texto</message>
+	<message key="TextViewer.uploadImagesForm.ACTION">Suba las imágenes del texto. No es necesario subir todas de una vez.</message>
+	<message key="TextViewer.uploadImagesForm.uploadImage">Suba la imagen</message>
+	<message key="TextViewer.uploadForm.page.title">Fichero del texto</message>
+	<message key="TextViewer.uploadImages.page.title">Imágenes del texto</message>
+	<message key="TextViewer.uploadImages.missing.page.title">Imágenes del texto - completar las imágenes</message>
+	<message key="TextViewer.text.page.title">Texto completo</message>
+		<message key="TextViewer.text.page.warning.missingMarkup">ATENCIÓN: Algunos textos deberían haber sido marcados</message>
+
+		<message key="TextViewer.text.page.warning.missing">ATENCIÓN: Falta(n)</message>
+<message key="TextViewer.text.page.warning.missingLanguage">ATENCIÓN: Falta @xml:lang</message>
+
+
+</locale>

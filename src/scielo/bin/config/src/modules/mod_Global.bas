@@ -102,17 +102,15 @@ Private Sub Main()
    
     isisfn = FreeFile
     
-    Open App.path + "\isis.log" For Output As isisfn
+    Open App.Path + "\isis.log" For Output As isisfn
     
     AppHandle = IsisAppNew()
     Call IsisAppDebug(AppHandle, DEBUG_LIGHT)
     
     SepLinha = Chr(13) + Chr(10)
-        
     If ConfigGet Then
                 
         ChangeInterfaceIdiom = CurrIdiomHelp
-        
         
         Set ErrorMessages = New ClsErrorMessages
         ErrorMessages.load ("langs\" + CurrIdiomHelp + "_err.txt")
@@ -146,12 +144,12 @@ Function ConfigGet() As Boolean
     
     
     fn = FreeFile
-    Open App.path + "\scipath.ini" For Input As fn
+    Open App.Path + "\scipath.ini" For Input As fn
     Input #fn, SciELOPath
     Close fn
     
     fn = FreeFile(1)
-    Open App.path + "\value.ini" For Input As fn
+    Open App.Path + "\value.ini" For Input As fn
     'Input #fn, Key, SciELOPath
     Input #fn, key, VolSiglum
     Input #fn, key, NoSiglum
@@ -258,7 +256,7 @@ End Function
 Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColCode)
     Dim isisCode As ClIsisdll
     Dim mfn As Long
-    Dim mfns() As Long
+    Dim Mfns() As Long
     Dim q As Long
     Dim i As Long
     Dim aux As String
@@ -268,27 +266,35 @@ Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColC
     Dim val As String
     Dim cod As String
     Dim exist As Boolean
-    
+    Dim format As String
+    Dim find As String
     
     With CodeDB
     Set Code = New ColCode
     Set isisCode = New ClIsisdll
-    If isisCode.Inicia(.path, .FileName, .key) Then
+    If isisCode.Inicia(.Path, .FileName, .key) Then
         If isisCode.IfCreate(.FileName) Then
-            q = isisCode.MfnFind(Idiom + CODE_SEP + key, mfns)
-            While (i < q) And (mfn = 0)
-                i = i + 1
-                aux = isisCode.UsePft(mfns(i), "if v1^*='" + key + "' and v1^l='" + Idiom + "' then (v2^v|;|,v2^c|;;|) fi")
-                If Len(aux) > 0 Then mfn = mfns(i)
-            Wend
+            i = 0
+            mfn = 0
+            
+            find = key
+            If Len(Idiom) > 0 Then
+                find = Idiom & CODE_SEP & find
+            End If
+            q = isisCode.MfnFind(find, Mfns)
+            
+                While (i < q) And (mfn = 0)
+                    i = i + 1
+                    format = "if v1^*='" + key + "' and (v1^l='" + Idiom + "' or a(v1^l))  then (v2^v|;|,v2^c|;;|) else mfn,';',v1,';;' fi"
+                    
+                    aux = isisCode.UsePft(Mfns(i), format)
+                    format = format & vbCrLf & aux & vbCrLf & CStr(Mfns(i))
+                    If Len(aux) > 0 Then mfn = Mfns(i)
+                Wend
             
             If mfn > 0 Then
-                
-                Set itemCode = New ClCode
-                
                 p2 = InStr(aux, ";;")
                 p = InStr(aux, ";")
-                
                 While p2 > 0
                     val = Mid(aux, 1, p - 1)
                     cod = Mid(aux, p + 1, p2 - p - 1)
@@ -300,11 +306,14 @@ Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColC
 '                        itemCode.Code = cod
 '                    End If
                     
-                    Set itemCode = Code.item(cod, exist)
+                    Set itemCode = Code.item(CVar(cod), exist)
+                    format = format + vbCrLf + "(" + cod + "," + val + ")" + CStr(exist)
                     If Not exist Then
-                        Set itemCode = Code.add(cod)
+                        Set itemCode = New ClCode
+                        
                         itemCode.value = val
                         itemCode.Code = cod
+                        Call Code.add(itemCode, CVar(cod))
                     End If
                 
                     aux = Mid(aux, p2 + 2)
@@ -314,35 +323,32 @@ Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColC
             End If
         End If
     End If
+    If Code.count = 0 Then MsgBox "count=0 q=" + CStr(q) + " " + Idiom + CODE_SEP + key + " " + format + " " + aux
+    
     End With
 End Sub
 
 
 Property Let ChangeInterfaceIdiom(Idiom As String)
     Dim i As Long
-    Dim x As ClIdiom
+    Dim X As ClIdiom
     Dim CodeDB As ClFileInfo
     
     CurrIdiomHelp = Idiom
-    
     Set Paths = New ColFileInfo
     Set Paths = ReadPathsConfigurationFile(PathsConfigurationFile)
-    
-    'ReadDirTree (CurrIdiomHelp + "_files.ini")
-    'MakeTree
-
     Set ConfigLabels = New ClLabels
     ConfigLabels.SetLabels (Idiom)
     Set Fields = New ColFields
     Fields.SetLabels (Idiom)
     
-    
     loadIssueIdPart Idiom
-Set CodeDB = New ClFileInfo
+    Set CodeDB = New ClFileInfo
 
     Set CodeDB = Paths("Code Database")
     
     Call LoadCodes(CodeDB, Idiom, "idiom interface", CodeIdiom)
+    
     Call LoadCodes(CodeDB, Idiom, "alphabet of title", CodeAlphabet)
     Call LoadCodes(CodeDB, Idiom, "literature type", CodeLiteratureType)
     Call LoadCodes(CodeDB, Idiom, "treatment level", CodeTreatLevel)
@@ -360,41 +366,40 @@ Set CodeDB = New ClFileInfo
     Call LoadCodes(CodeDB, Idiom, "language", CodeTxtLanguage)
     Call LoadCodes(CodeDB, Idiom, "issue status", CodeIssStatus)
     Call LoadCodes(CodeDB, Idiom, "scheme", CodeScheme)
-    
     Call LoadCodes(CodeDB, "", "table of contents", CodeTOC)
-    
-    
     Set CodeDB = Paths("NewCode Database")
+
     Call LoadCodes(CodeDB, Idiom, "study area", CodeStudyArea)
     'Call LoadCodes(CodeDB, Idiom, "scheme", CodeScheme)
             
-    
     Set IdiomsInfo = New ColIdiom
-    Set x = New ClIdiom
+    Set X = New ClIdiom
     For i = 1 To CodeIdiom.count
         'Set x = IdiomsInfo(CodeIdiom(i).Code)
         'If x Is Nothing Then
-            Set x = IdiomsInfo.add(CodeIdiom(i).Code, CodeIdiom(i).value, CodeTOC(CodeIdiom(i).Code).value, CodeIdiom(i).Code)
+        
+            Set X = IdiomsInfo.add(CodeIdiom.item(i).Code, CodeIdiom(i).value, CodeTOC.item(CodeIdiom(i).Code).value, CodeIdiom(i).Code)
         'Else
         '    IdiomsInfo.item(CodeIdiom(i).Code).label = CodeIdiom(i).value
         '    IdiomsInfo.item(CodeIdiom(i).Code).More = CodeTOC(CodeIdiom(i).Code).value
         'End If
     Next
+MsgBox "changeInterfaceIdiom 29"
     
 End Property
 
 
-Function ReadPathsConfigurationFile(file As String) As ColFileInfo
+Function ReadPathsConfigurationFile(File As String) As ColFileInfo
     Dim fn As Long
     Dim lineread As String
     Dim item As ClFileInfo
     Dim key As String
-    Dim path As String
+    Dim Path As String
     Dim CollectionPaths As ColFileInfo
     Dim req As Long
     
     fn = FreeFile
-    Open file For Input As fn
+    Open File For Input As fn
         
     Set CollectionPaths = New ColFileInfo
     
@@ -402,20 +407,20 @@ Function ReadPathsConfigurationFile(file As String) As ColFileInfo
         Line Input #fn, lineread
         If InStr(lineread, "=") > 0 Then
             key = Mid(lineread, 1, InStr(lineread, "=") - 1)
-            path = Mid(lineread, InStr(lineread, "=") + 1)
-            req = InStr(path, ",required")
+            Path = Mid(lineread, InStr(lineread, "=") + 1)
+            req = InStr(Path, ",required")
             If req > 0 Then
-                path = Mid(path, 1, req - 1)
+                Path = Mid(Path, 1, req - 1)
                 
             End If
             Set item = CollectionPaths.add(key)
             item.key = key
-            If InStr(path, "\") > 0 Then
-                item.path = Mid(path, 1, InStrRev(path, "\") - 1)
-                item.FileName = Mid(path, InStrRev(path, "\") + 1)
+            If InStr(Path, "\") > 0 Then
+                item.Path = Mid(Path, 1, InStrRev(Path, "\") - 1)
+                item.FileName = Mid(Path, InStrRev(Path, "\") + 1)
             Else
-                item.path = ""
-                item.FileName = path
+                item.Path = ""
+                item.FileName = Path
             End If
             item.required = (req > 0)
         End If
@@ -431,23 +436,23 @@ Sub loadIssueIdPart(CurrCodeIdiom As String)
     
     Set issueidparts = New ColCode
     fn = FreeFile
-    Open App.path + "\tables\" + CurrCodeIdiom + "\part.ini" For Input As fn
+    Open App.Path + "\tables\" + CurrCodeIdiom + "\part.ini" For Input As fn
     While Not EOF(fn)
         Input #fn, key, value
         
         Set obj = New ClCode
-        obj.Index = issueidparts.count + 1
+        obj.index = issueidparts.count + 1
         obj.value = value
         obj.Code = key
-        issueidparts.add key, obj
+        issueidparts.add obj, key
          
     Wend
     Close fn
 End Sub
 
-Sub openHelp(path As String, Optional file As String)
+Sub openHelp(Path As String, Optional File As String)
     Dim f As String
-    If Len(file) > 0 Then f = "\" & CurrIdiomHelp & file
-    Call Shell("cmd.exe /k start " & path & f, vbHide)
+    If Len(File) > 0 Then f = "\" & CurrIdiomHelp & File
+    Call Shell("cmd.exe /k start " & Path & f, vbHide)
     
 End Sub

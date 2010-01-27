@@ -1,0 +1,3 @@
+ALL,List all
+PARTIAL,List partially
+RECREATE,Recreate the list

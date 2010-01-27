@@ -1,0 +1,66 @@
+acitat
+a1
+a4
+a1;a2;NT;acontrib;"."
+a1;a3;NT;acontrib;". In:"
+a1;a4;NT;amonog;"."
+a1;a4;NT;amonog;"p."
+a2;a4;NT;aiserial;"."
+a3;a4;NT;amonog;"."
+
+acontrib
+ac1
+ac5
+ac1;ac1;NT;author;","
+ac1;ac2;NT;author;"et al."
+ac1;ac2;NT;author;" "
+ac2;ac3;T;et-al;". "
+ac2;ac5;T;title;".";":";". In:"
+ac2;ac5;T;title;". In:"
+ac2;ac4;T;title;":";"."
+ac3;ac5;T;title;".";":";". In:"
+ac3;ac5;T;title;". In:"
+ac3;ac4;T;title;":";"."
+ac4;ac5;T;subtitle;".";". In:"
+ac4;ac5;T;subtitle;". In:"
+
+author
+a1
+a3
+a1;a2;T;surname;","
+a2;a3;T;fname;","
+a2;a3;T;fname;"et al."
+a2;a3;T;fname;" "
+
+aiserial
+ai1
+ai6
+ai1;ai2;T;stitle;", v."
+ai1;ai3;T;stitle;", n."
+ai2;ai3;T;volid;", n."
+ai2;ai4;T;volid;", p."
+ai3;ai4;T;issueno;", p."
+ai4;ai5;T;pages;","
+ai5;ai6;T;date;"."
+
+amonog
+am1
+am9
+am1;am1;NT;author;","
+am1;am2;NT;author;"et al."
+am1;am2;NT;author;" "
+am2;am3;T;et-al;". "
+am2;am4;T;title;"."
+am2;am3;T;title;":"
+am3;am4;T;subtitle;"."
+am4;am5;T;edition;"ed."
+am4;am5;T;edition;".Ed."
+am4;am5;T;edition;".ed."
+am4;am6;T;city;":"
+am5;am6;T;city;":"
+am6;am7;T;pubname;","
+am7;am8;T;date;"."
+am7;am8;T;date;". p."
+am7;am9;T;date;"."
+am8;am9;T;extent;"p."
+am8;am9;T;pages;"."

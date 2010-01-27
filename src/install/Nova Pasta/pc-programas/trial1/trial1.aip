@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT type="Advanced Installer" CreateVersion="7.3.1" version="7.3.1" modules="enterprise" RootPath="." Language="en">
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
+    <ROW Property="ALLUSERS" Value="2"/>
+    <ROW Property="APPDIR2" Value="APPDIR"/>
+    <ROW Property="APPDIR3" Value="[APPDIR]"/>
+    <ROW Property="APPDIR4" Value="[|APPDIR]"/>
+    <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
+    <ROW Property="BannerBitmap" MultiBuildValue="DefaultBuild:banner_image.jpg" Type="1"/>
+    <ROW Property="DialogBitmap" MultiBuildValue="DefaultBuild:dialog_image.jpg" Type="1"/>
+    <ROW Property="Manufacturer" Value="SciELO" ValueLocId="*"/>
+    <ROW Property="ProductCode" Value="1033:{ADE73EF6-BABD-4619-937E-5F330388D9F2} " Type="16"/>
+    <ROW Property="ProductLanguage" Value="1033"/>
+    <ROW Property="ProductName" Value="SciELO PC Programs" ValueLocId="*"/>
+    <ROW Property="ProductVersion" Value="1.0.0"/>
+    <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
+    <ROW Property="UpgradeCode" Value="{C38B19EB-B8E8-4AC3-AFE5-445979EF28CE}"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
+    <ROW Directory="APPDIR4" Directory_Parent="TARGETDIR" DefaultDir="APPDIR4" IsPseudoRoot="1"/>
+    <ROW Directory="Code_DIR" Directory_Parent="serial_DIR" DefaultDir="Code"/>
+    <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+    <ROW Directory="bin_DIR" Directory_Parent="APPDIR" DefaultDir="bin"/>
+    <ROW Directory="config_DIR" Directory_Parent="bin_DIR" DefaultDir="config"/>
+    <ROW Directory="dlls_DIR" Directory_Parent="src_DIR" DefaultDir="dlls"/>
+    <ROW Directory="en_DIR" Directory_Parent="tables_DIR" DefaultDir="en"/>
+    <ROW Directory="es_DIR" Directory_Parent="tables_DIR" DefaultDir="es"/>
+    <ROW Directory="help_DIR" Directory_Parent="config_DIR" DefaultDir="help"/>
+    <ROW Directory="issn_DIR" Directory_Parent="serial_DIR" DefaultDir="issn"/>
+    <ROW Directory="issue_DIR" Directory_Parent="serial_DIR" DefaultDir="issue"/>
+    <ROW Directory="langs_DIR" Directory_Parent="config_DIR" DefaultDir="langs"/>
+    <ROW Directory="misc_DIR" Directory_Parent="config_DIR" DefaultDir="misc"/>
+    <ROW Directory="nbproject_DIR" Directory_Parent="config_DIR" DefaultDir="nbproj~1|nbproject"/>
+    <ROW Directory="private_DIR" Directory_Parent="nbproject_DIR" DefaultDir="private"/>
+    <ROW Directory="pt_DIR" Directory_Parent="tables_DIR" DefaultDir="pt"/>
+    <ROW Directory="section_DIR" Directory_Parent="serial_DIR" DefaultDir="section"/>
+    <ROW Directory="serial_DIR" Directory_Parent="APPDIR4" DefaultDir="serial"/>
+    <ROW Directory="src_DIR" Directory_Parent="config_DIR" DefaultDir="src"/>
+    <ROW Directory="tables_DIR" Directory_Parent="config_DIR" DefaultDir="tables"/>
+    <ROW Directory="title_DIR" Directory_Parent="serial_DIR" DefaultDir="title"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="AI_ExePath" ComponentId="{8388BAFD-D723-4C7A-8536-C29EF5780E38}" Directory_="APPDIR" Attributes="4" KeyPath="AI_ExePath"/>
+    <ROW Component="Comctl32.oca" ComponentId="{3C8B1D5B-3D4E-4536-B7DC-8D849DE436C3}" Directory_="dlls_DIR" Attributes="0" KeyPath="Comctl32.oca" Type="0"/>
+    <ROW Component="Comctl32.ocx" ComponentId="{2F1FD51F-4936-4C94-B353-765F138FB96E}" Directory_="config_DIR" Attributes="0" KeyPath="Comctl32.ocx"/>
+    <ROW Component="Comdlg32.ocx" ComponentId="{D5ED31B3-154D-46EB-A7E7-07CCAA0A85C4}" Directory_="dlls_DIR" Attributes="0" KeyPath="Comdlg32.ocx"/>
+    <ROW Component="Mfc42.dll" ComponentId="{B9DCA2B2-328D-44DD-AB63-4E564E1AEF59}" Directory_="dlls_DIR" Attributes="0" KeyPath="Mfc42.dll"/>
+    <ROW Component="Mscomctl.ocx" ComponentId="{C401D5B6-3E75-4617-A60C-FEFBF4AFC6F6}" Directory_="dlls_DIR" Attributes="0" KeyPath="Mscomctl.ocx"/>
+    <ROW Component="Msvcirt.dll" ComponentId="{F3C4293B-A6A7-40C0-81B8-CC0AD50C9E86}" Directory_="dlls_DIR" Attributes="0" KeyPath="Msvcirt.dll"/>
+    <ROW Component="Msvcrt.dll" ComponentId="{F0E62F86-726A-4868-A0BF-6CC24EE246D9}" Directory_="dlls_DIR" Attributes="0" KeyPath="Msvcrt.dll"/>
+    <ROW Component="Shlwapi.dll" ComponentId="{F538954E-04F0-4C08-B19C-FA275EF743DB}" Directory_="dlls_DIR" Attributes="0" KeyPath="Shlwapi.dll"/>
+    <ROW Component="Sysinfo.ocx" ComponentId="{F8508B15-11F4-4B12-A487-E24506FEBE53}" Directory_="config_DIR" Attributes="0" KeyPath="Sysinfo.ocx"/>
+    <ROW Component="TABCTL32.OCX" ComponentId="{2422BB46-47C4-4108-8AF8-17BCA76A1A16}" Directory_="config_DIR" Attributes="0" KeyPath="TABCTL32.OCX"/>
+    <ROW Component="Wininet.dll" ComponentId="{E361DF9E-DC61-4B4D-95B1-598791A68EBE}" Directory_="dlls_DIR" Attributes="0" KeyPath="Wininet.dll"/>
+    <ROW Component="Ws2_32.dll" ComponentId="{EB60D805-C9CC-4256-94E9-6004FE7A8D4B}" Directory_="dlls_DIR" Attributes="0" KeyPath="Ws2_32.dll"/>
+    <ROW Component="Ws2help.dll" ComponentId="{7C532D3A-3325-40F9-952C-63C2F127DAE2}" Directory_="dlls_DIR" Attributes="0" KeyPath="Ws2help.dll"/>
+    <ROW Component="Wsock32.dll" ComponentId="{FCD4A525-A7CE-47F3-9B0B-69F30C6A1B1F}" Directory_="dlls_DIR" Attributes="0" KeyPath="Wsock32.dll"/>
+    <ROW Component="asycfilt.dll" ComponentId="{4CA88E2D-FFC1-4C2F-A3F0-04159B54D496}" Directory_="dlls_DIR" Attributes="0" KeyPath="asycfilt.dll"/>
+    <ROW Component="call.bat" ComponentId="{8DB0B484-E6FD-4B4F-A885-C79EF3B78574}" Directory_="help_DIR" Attributes="0" KeyPath="call.bat" Type="0"/>
+    <ROW Component="cfg_en_issue.pft" ComponentId="{95943427-BA3C-44E1-ACAA-3AA6866F3C2F}" Directory_="config_DIR" Attributes="0" KeyPath="cfg_en_issue.pft" Type="0"/>
+    <ROW Component="code.CNT" ComponentId="{A5B0FE08-C618-40E6-A64C-4AD483A8F7AF}" Directory_="Code_DIR" Attributes="0" KeyPath="code.CNT" Type="2"/>
+    <ROW Component="code.fst" ComponentId="{4144FF88-08EF-417C-8B00-E6A6957EAD4E}" Directory_="Code_DIR" Attributes="0" KeyPath="code.fst" Type="0"/>
+    <ROW Component="comcat.dll" ComponentId="{E4320165-B203-42D4-A906-D49E0F728FC3}" Directory_="dlls_DIR" Attributes="0" KeyPath="comcat.dll"/>
+    <ROW Component="config.exe" ComponentId="{9B79586D-AA70-45C3-AA00-1B6DCCBA580F}" Directory_="config_DIR" Attributes="0" KeyPath="config.exe"/>
+    <ROW Component="db.cnt" ComponentId="{D84E9AF4-CBB1-4129-A97E-2878CF4483FD}" Directory_="help_DIR" Attributes="0" KeyPath="db.cnt" Type="2"/>
+    <ROW Component="en_err.txt" ComponentId="{D0AD18B1-B595-4F8E-8C86-9D7DC5B5D959}" Directory_="langs_DIR" Attributes="0" KeyPath="en_err.txt" Type="0"/>
+    <ROW Component="i2id.exe" ComponentId="{EE5D5E00-E3D8-4B20-A922-DEE0822C7DD2}" Directory_="Code_DIR" Attributes="0" KeyPath="i2id.exe"/>
+    <ROW Component="id2i.exe" ComponentId="{709FE109-7AB7-42E1-8D40-DC5B3C93C66E}" Directory_="Code_DIR" Attributes="0" KeyPath="id2i.exe"/>
+    <ROW Component="isis32.dll" ComponentId="{2EA69227-7DB9-437E-8450-7937FA641EB4}" Directory_="config_DIR" Attributes="0" KeyPath="isis32.dll"/>
+    <ROW Component="isis32.dll_1" ComponentId="{D3FCB607-E931-4E0D-8CAD-BDEC633D28A3}" Directory_="dlls_DIR" Attributes="0" KeyPath="isis32.dll_1"/>
+    <ROW Component="isis32.old.dll" ComponentId="{074BFB99-AC3B-4090-BC41-45550C6D7342}" Directory_="dlls_DIR" Attributes="0" KeyPath="isis32.old.dll"/>
+    <ROW Component="issn01.cnt" ComponentId="{79F0998C-2B91-40FC-96E1-2102978532DD}" Directory_="issn_DIR" Attributes="0" KeyPath="issn01.cnt" Type="2"/>
+    <ROW Component="issn01.fst" ComponentId="{70C06436-EE46-4B16-B4AC-E39AD5E1DD04}" Directory_="issn_DIR" Attributes="0" KeyPath="issn01.fst" Type="0"/>
+    <ROW Component="issue.fst" ComponentId="{F2AD6431-A3FD-4337-913E-CE484ADDBD83}" Directory_="issue_DIR" Attributes="0" KeyPath="issue.fst" Type="0"/>
+    <ROW Component="issue.xml.pft" ComponentId="{81807FB3-EE18-4227-82C0-2FE61333A08E}" Directory_="misc_DIR" Attributes="0" KeyPath="issue.xml.pft" Type="0"/>
+    <ROW Component="msvbvm60.dll" ComponentId="{9FCB4869-EACE-4AB6-9F6D-72CF86073215}" Directory_="dlls_DIR" Attributes="0" KeyPath="msvbvm60.dll"/>
+    <ROW Component="mswsock.dll" ComponentId="{F6898A1B-C978-4F9A-AAFA-535B18726188}" Directory_="dlls_DIR" Attributes="0" KeyPath="mswsock.dll"/>
+    <ROW Component="mx.exe" ComponentId="{7BB3C84B-D34A-4A0E-B2D0-6A02B3AAA83F}" Directory_="help_DIR" Attributes="0" KeyPath="mx.exe"/>
+    <ROW Component="oleaut32.dll" ComponentId="{5502D808-D8EC-4D0B-A466-7E0DA6E2B783}" Directory_="dlls_DIR" Attributes="0" KeyPath="oleaut32.dll"/>
+    <ROW Component="olepro32.dll" ComponentId="{C164A400-615D-410E-8841-2E1A4BA5DAC5}" Directory_="dlls_DIR" Attributes="0" KeyPath="olepro32.dll"/>
+    <ROW Component="part.ini" ComponentId="{9F0B5D2A-DACE-4C5B-9A65-6C1050DB01D0}" Directory_="en_DIR" Attributes="0" KeyPath="part.ini" Type="0"/>
+    <ROW Component="part.ini_1" ComponentId="{F2114464-F78D-41A8-B7B1-2F7554ACFC5A}" Directory_="es_DIR" Attributes="0" KeyPath="part.ini_1" Type="0"/>
+    <ROW Component="part.ini_2" ComponentId="{5E53A7A3-62AC-4464-BBD8-7E89E1D1122E}" Directory_="pt_DIR" Attributes="0" KeyPath="part.ini_2" Type="0"/>
+    <ROW Component="private.properties" ComponentId="{0F75980B-E622-472D-989B-BE929720DC0D}" Directory_="private_DIR" Attributes="0" KeyPath="private.properties" Type="0"/>
+    <ROW Component="project.properties" ComponentId="{ABD60C11-9820-4017-8194-69F917083CEF}" Directory_="nbproject_DIR" Attributes="0" KeyPath="project.properties" Type="0"/>
+    <ROW Component="section.fst" ComponentId="{2D7312C0-5A52-47B2-B9C9-2B721980BD89}" Directory_="section_DIR" Attributes="0" KeyPath="section.fst" Type="0"/>
+    <ROW Component="tit_issn.fst" ComponentId="{44325926-8AC6-4C59-B524-546D823D5906}" Directory_="title_DIR" Attributes="0" KeyPath="tit_issn.fst" Type="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
+    <ROW Feature="Feature" Title="Teste" Description="Description" Display="4" Level="4" Directory_="APPDIR4" Attributes="36" Components="code.CNT code.fst i2id.exe id2i.exe issn01.cnt issn01.fst issue.fst section.fst tit_issn.fst"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="2" Level="4" Directory_="APPDIR" Attributes="36" Components="AI_ExePath cfg_en_issue.pft Comctl32.ocx config.exe call.bat db.cnt mx.exe isis32.dll en_err.txt issue.xml.pft private.properties project.properties asycfilt.dll comcat.dll Comctl32.oca Comdlg32.ocx isis32.dll_1 isis32.old.dll Mfc42.dll Mscomctl.ocx msvbvm60.dll Msvcirt.dll Msvcrt.dll mswsock.dll oleaut32.dll olepro32.dll Shlwapi.dll Wininet.dll Ws2help.dll Ws2_32.dll Wsock32.dll Sysinfo.ocx TABCTL32.OCX part.ini part.ini_1 part.ini_2"/>
+    <ATTRIBUTE name="CurrentFeature" value="Feature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="Code.lk1" Component_="code.fst" FileName="Code.lk1" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\Code.lk1" SelfReg="false" Sequence="100"/>
+    <ROW File="Code.lk2" Component_="code.fst" FileName="Code.lk2" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\Code.lk2" SelfReg="false" Sequence="101"/>
+    <ROW File="Comctl32.oca" Component_="Comctl32.oca" FileName="Comctl32.oca" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Comctl32.oca" SelfReg="false" Sequence="67"/>
+    <ROW File="Comctl32.ocx" Component_="Comctl32.ocx" FileName="Comctl32.ocx" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\Comctl32.ocx" SelfReg="false" Sequence="4"/>
+    <ROW File="Comdlg32.oca" Component_="Comctl32.oca" FileName="Comdlg32.oca" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Comdlg32.oca" SelfReg="false" Sequence="68"/>
+    <ROW File="Comdlg32.ocx" Component_="Comdlg32.ocx" FileName="Comdlg32.ocx" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Comdlg32.ocx" SelfReg="false" Sequence="69"/>
+    <ROW File="Mfc42.dll" Component_="Mfc42.dll" FileName="Mfc42.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Mfc42.dll" SelfReg="false" Sequence="72"/>
+    <ROW File="Mscomctl.ocx" Component_="Mscomctl.ocx" FileName="Mscomctl.ocx" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Mscomctl.ocx" SelfReg="false" Sequence="73"/>
+    <ROW File="Msvcirt.dll" Component_="Msvcirt.dll" FileName="Msvcirt.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Msvcirt.dll" SelfReg="false" Sequence="75"/>
+    <ROW File="Msvcrt.dll" Component_="Msvcrt.dll" FileName="Msvcrt.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Msvcrt.dll" SelfReg="false" Sequence="76"/>
+    <ROW File="Scielo.ico" Component_="cfg_en_issue.pft" FileName="Scielo.ico" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\Scielo.ico" SelfReg="false" Sequence="63"/>
+    <ROW File="Shlwapi.dll" Component_="Shlwapi.dll" FileName="Shlwapi.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Shlwapi.dll" SelfReg="false" Sequence="80"/>
+    <ROW File="Sysinfo.oca" Component_="Comctl32.oca" FileName="Sysinfo.oca" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Sysinfo.oca" SelfReg="false" Sequence="82"/>
+    <ROW File="Sysinfo.ocx" Component_="Sysinfo.ocx" FileName="Sysinfo.ocx" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\Sysinfo.ocx" SelfReg="false" Sequence="88"/>
+    <ROW File="TABCTL32.OCX" Component_="TABCTL32.OCX" FileName="TABCTL32.OCX" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\TABCTL32.OCX" SelfReg="false" Sequence="89"/>
+    <ROW File="Tabctl32.oca" Component_="Comctl32.oca" FileName="Tabctl32.oca" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Tabctl32.oca" SelfReg="false" Sequence="83"/>
+    <ROW File="TitleManager02_help.doc" Component_="call.bat" FileName="TitleM~1.doc|TitleManager02_help.doc" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\TitleManager02_help.doc" SelfReg="false" Sequence="34"/>
+    <ROW File="TitleManager02_help.txt" Component_="call.bat" FileName="TitleM~1.txt|TitleManager02_help.txt" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\TitleManager02_help.txt" SelfReg="false" Sequence="35"/>
+    <ROW File="TitleManager_gen_labels.doc" Component_="call.bat" FileName="TitleM~2.doc|TitleManager_gen_labels.doc" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\TitleManager_gen_labels.doc" SelfReg="false" Sequence="36"/>
+    <ROW File="TitleManager_gen_labels.txt" Component_="call.bat" FileName="TitleM~2.txt|TitleManager_gen_labels.txt" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\TitleManager_gen_labels.txt" SelfReg="false" Sequence="37"/>
+    <ROW File="Wininet.dll" Component_="Wininet.dll" FileName="Wininet.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Wininet.dll" SelfReg="false" Sequence="84"/>
+    <ROW File="Ws2_32.dll" Component_="Ws2_32.dll" FileName="Ws2_32.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Ws2_32.dll" SelfReg="false" Sequence="86"/>
+    <ROW File="Ws2help.dll" Component_="Ws2help.dll" FileName="Ws2help.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Ws2help.dll" SelfReg="false" Sequence="85"/>
+    <ROW File="Wsock32.dll" Component_="Wsock32.dll" FileName="Wsock32.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\Wsock32.dll" SelfReg="false" Sequence="87"/>
+    <ROW File="asycfilt.dll" Component_="asycfilt.dll" FileName="asycfilt.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\asycfilt.dll" SelfReg="false" Sequence="65"/>
+    <ROW File="call.bat" Component_="call.bat" FileName="call.bat" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\call.bat" SelfReg="false" Sequence="8"/>
+    <ROW File="cfg.pft" Component_="call.bat" FileName="cfg.pft" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\cfg.pft" SelfReg="false" Sequence="9"/>
+    <ROW File="cfg_en_issue.pft" Component_="cfg_en_issue.pft" FileName="cfg_en~1.pft|cfg_en_issue.pft" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\cfg_en_issue.pft" SelfReg="false" Sequence="1"/>
+    <ROW File="cfg_es_issue.pft" Component_="cfg_en_issue.pft" FileName="cfg_es~1.pft|cfg_es_issue.pft" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\cfg_es_issue.pft" SelfReg="false" Sequence="2"/>
+    <ROW File="cfg_pt_issue.pft" Component_="cfg_en_issue.pft" FileName="cfg_pt~1.pft|cfg_pt_issue.pft" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\cfg_pt_issue.pft" SelfReg="false" Sequence="3"/>
+    <ROW File="code.CNT" Component_="code.CNT" FileName="code.CNT" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.CNT" SelfReg="false" Sequence="94"/>
+    <ROW File="code.IFP" Component_="code.fst" FileName="code.IFP" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.IFP" SelfReg="false" Sequence="97"/>
+    <ROW File="code.L01" Component_="code.fst" FileName="code.L01" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.L01" SelfReg="false" Sequence="98"/>
+    <ROW File="code.L02" Component_="code.fst" FileName="code.L02" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.L02" SelfReg="false" Sequence="99"/>
+    <ROW File="code.LN1" Component_="code.fst" FileName="code.LN1" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.LN1" SelfReg="false" Sequence="102"/>
+    <ROW File="code.LN2" Component_="code.fst" FileName="code.LN2" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.LN2" SelfReg="false" Sequence="103"/>
+    <ROW File="code.N01" Component_="code.fst" FileName="code.N01" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.N01" SelfReg="false" Sequence="105"/>
+    <ROW File="code.N02" Component_="code.fst" FileName="code.N02" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.N02" SelfReg="false" Sequence="106"/>
+    <ROW File="code.fst" Component_="code.fst" FileName="code.fst" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.fst" SelfReg="false" Sequence="95"/>
+    <ROW File="code.id" Component_="code.fst" FileName="code.id" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.id" SelfReg="false" Sequence="96"/>
+    <ROW File="code.mst" Component_="code.fst" FileName="code.mst" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.mst" SelfReg="false" Sequence="104"/>
+    <ROW File="code.txt" Component_="code.fst" FileName="code.txt" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.txt" SelfReg="false" Sequence="107"/>
+    <ROW File="code.xrf" Component_="code.fst" FileName="code.xrf" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\code.xrf" SelfReg="false" Sequence="108"/>
+    <ROW File="comcat.dll" Component_="comcat.dll" FileName="comcat.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\comcat.dll" SelfReg="false" Sequence="66"/>
+    <ROW File="config.DEP" Component_="cfg_en_issue.pft" FileName="config.DEP" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\config.DEP" SelfReg="false" Sequence="5"/>
+    <ROW File="config.exe" Component_="config.exe" FileName="config.exe" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\config.exe" SelfReg="false" Sequence="6"/>
+    <ROW File="db.cnt" Component_="db.cnt" FileName="db.cnt" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\db.cnt" SelfReg="false" Sequence="10"/>
+    <ROW File="db.fst" Component_="call.bat" FileName="db.fst" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\db.fst" SelfReg="false" Sequence="11"/>
+    <ROW File="db.ifp" Component_="call.bat" FileName="db.ifp" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\db.ifp" SelfReg="false" Sequence="12"/>
+    <ROW File="db.l01" Component_="call.bat" FileName="db.l01" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\db.l01" SelfReg="false" Sequence="13"/>
+    <ROW File="db.l02" Component_="call.bat" FileName="db.l02" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\db.l02" SelfReg="false" Sequence="14"/>
+    <ROW File="db.mst" Component_="call.bat" FileName="db.mst" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\db.mst" SelfReg="false" Sequence="15"/>
+    <ROW File="db.n01" Component_="call.bat" FileName="db.n01" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\db.n01" SelfReg="false" Sequence="16"/>
+    <ROW File="db.n02" Component_="call.bat" FileName="db.n02" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\db.n02" SelfReg="false" Sequence="17"/>
+    <ROW File="db.xrf" Component_="call.bat" FileName="db.xrf" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\db.xrf" SelfReg="false" Sequence="18"/>
+    <ROW File="db2conf.bat" Component_="call.bat" FileName="db2conf.bat" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\db2conf.bat" SelfReg="false" Sequence="19"/>
+    <ROW File="en_err.txt" Component_="en_err.txt" FileName="en_err.txt" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\en_err.txt" SelfReg="false" Sequence="41"/>
+    <ROW File="en_fields.ini" Component_="call.bat" FileName="en_fie~1.ini|en_fields.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\en_fields.ini" SelfReg="false" Sequence="20"/>
+    <ROW File="en_fields.ini_1" Component_="en_err.txt" FileName="en_fie~1.ini|en_fields.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\en_fields.ini" SelfReg="false" Sequence="42"/>
+    <ROW File="en_files.ini" Component_="en_err.txt" FileName="en_files.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\en_files.ini" SelfReg="false" Sequence="43"/>
+    <ROW File="en_issue.pft" Component_="en_err.txt" FileName="en_issue.pft" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\en_issue.pft" SelfReg="false" Sequence="44"/>
+    <ROW File="en_labels.ini" Component_="cfg_en_issue.pft" FileName="en_lab~1.ini|en_labels.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\en_labels.ini" SelfReg="false" Sequence="7"/>
+    <ROW File="en_labels.ini_1" Component_="call.bat" FileName="en_lab~1.ini|en_labels.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\en_labels.ini" SelfReg="false" Sequence="21"/>
+    <ROW File="en_labels.ini_2" Component_="en_err.txt" FileName="en_lab~1.ini|en_labels.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\en_labels.ini" SelfReg="false" Sequence="45"/>
+    <ROW File="en_labels.pft" Component_="call.bat" FileName="en_lab~1.pft|en_labels.pft" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\en_labels.pft" SelfReg="false" Sequence="22"/>
+    <ROW File="es_err.txt" Component_="en_err.txt" FileName="es_err.txt" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\es_err.txt" SelfReg="false" Sequence="46"/>
+    <ROW File="es_fields.ini" Component_="call.bat" FileName="es_fie~1.ini|es_fields.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\es_fields.ini" SelfReg="false" Sequence="23"/>
+    <ROW File="es_fields.ini_1" Component_="en_err.txt" FileName="es_fie~1.ini|es_fields.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\es_fields.ini" SelfReg="false" Sequence="47"/>
+    <ROW File="es_files.ini" Component_="en_err.txt" FileName="es_files.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\es_files.ini" SelfReg="false" Sequence="48"/>
+    <ROW File="es_issue.pft" Component_="en_err.txt" FileName="es_issue.pft" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\es_issue.pft" SelfReg="false" Sequence="49"/>
+    <ROW File="es_labels.ini" Component_="call.bat" FileName="es_lab~1.ini|es_labels.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\es_labels.ini" SelfReg="false" Sequence="24"/>
+    <ROW File="es_labels.ini_1" Component_="en_err.txt" FileName="es_lab~1.ini|es_labels.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\es_labels.ini" SelfReg="false" Sequence="50"/>
+    <ROW File="es_labels.pft" Component_="call.bat" FileName="es_lab~1.pft|es_labels.pft" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\es_labels.pft" SelfReg="false" Sequence="25"/>
+    <ROW File="fields.ini" Component_="call.bat" FileName="fields.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\fields.ini" SelfReg="false" Sequence="26"/>
+    <ROW File="fields.ini_1" Component_="en_err.txt" FileName="fields.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\fields.ini" SelfReg="false" Sequence="51"/>
+    <ROW File="gen_labels.bat" Component_="call.bat" FileName="gen_la~1.bat|gen_labels.bat" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\gen_labels.bat" SelfReg="false" Sequence="27"/>
+    <ROW File="i2id.exe" Component_="i2id.exe" FileName="i2id.exe" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\i2id.exe" SelfReg="false" Sequence="109"/>
+    <ROW File="id2i.exe" Component_="id2i.exe" FileName="id2i.exe" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\id2i.exe" SelfReg="false" Sequence="110"/>
+    <ROW File="isis.log" Component_="cfg_en_issue.pft" FileName="isis.log" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\isis.log" SelfReg="false" Sequence="39"/>
+    <ROW File="isis32.dll" Component_="isis32.dll" FileName="isis32.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\isis32.dll" SelfReg="false" Sequence="40"/>
+    <ROW File="isis32.dll_1" Component_="isis32.dll_1" FileName="isis32.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\isis32.dll" SelfReg="false" Sequence="70"/>
+    <ROW File="isis32.old.dll" Component_="isis32.old.dll" FileName="isis32~1.dll|isis32.old.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\isis32.old.dll" SelfReg="false" Sequence="71"/>
+    <ROW File="issn01.cnt" Component_="issn01.cnt" FileName="issn01.cnt" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.cnt" SelfReg="false" Sequence="112"/>
+    <ROW File="issn01.fst" Component_="issn01.fst" FileName="issn01.fst" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.fst" SelfReg="false" Sequence="113"/>
+    <ROW File="issn01.ifp" Component_="issn01.fst" FileName="issn01.ifp" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.ifp" SelfReg="false" Sequence="114"/>
+    <ROW File="issn01.l01" Component_="issn01.fst" FileName="issn01.l01" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.l01" SelfReg="false" Sequence="115"/>
+    <ROW File="issn01.l02" Component_="issn01.fst" FileName="issn01.l02" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.l02" SelfReg="false" Sequence="116"/>
+    <ROW File="issn01.lk1" Component_="issn01.fst" FileName="issn01.lk1" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.lk1" SelfReg="false" Sequence="117"/>
+    <ROW File="issn01.lk2" Component_="issn01.fst" FileName="issn01.lk2" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.lk2" SelfReg="false" Sequence="118"/>
+    <ROW File="issn01.ln1" Component_="issn01.fst" FileName="issn01.ln1" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.ln1" SelfReg="false" Sequence="119"/>
+    <ROW File="issn01.ln2" Component_="issn01.fst" FileName="issn01.ln2" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.ln2" SelfReg="false" Sequence="120"/>
+    <ROW File="issn01.mst" Component_="issn01.fst" FileName="issn01.mst" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.mst" SelfReg="false" Sequence="121"/>
+    <ROW File="issn01.n01" Component_="issn01.fst" FileName="issn01.n01" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.n01" SelfReg="false" Sequence="122"/>
+    <ROW File="issn01.n02" Component_="issn01.fst" FileName="issn01.n02" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.n02" SelfReg="false" Sequence="123"/>
+    <ROW File="issn01.xrf" Component_="issn01.fst" FileName="issn01.xrf" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\issn01.xrf" SelfReg="false" Sequence="124"/>
+    <ROW File="issue.fst" Component_="issue.fst" FileName="issue.fst" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issue\issue.fst" SelfReg="false" Sequence="126"/>
+    <ROW File="issue.xml.pft" Component_="issue.xml.pft" FileName="issuex~1.pft|issue.xml.pft" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\misc\issue.xml.pft" SelfReg="false" Sequence="58"/>
+    <ROW File="issue2.fst" Component_="issue.xml.pft" FileName="issue2.fst" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\misc\issue2.fst" SelfReg="false" Sequence="59"/>
+    <ROW File="months" Component_="en_err.txt" FileName="months" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\months" SelfReg="false" Sequence="52"/>
+    <ROW File="msg.txt" Component_="call.bat" FileName="msg.txt" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\msg.txt" SelfReg="false" Sequence="28"/>
+    <ROW File="msvbvm60.dll" Component_="msvbvm60.dll" FileName="msvbvm60.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\msvbvm60.dll" SelfReg="false" Sequence="74"/>
+    <ROW File="mswsock.dll" Component_="mswsock.dll" FileName="mswsock.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\mswsock.dll" SelfReg="false" Sequence="77"/>
+    <ROW File="mx.exe" Component_="mx.exe" FileName="mx.exe" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\mx.exe" SelfReg="false" Sequence="29"/>
+    <ROW File="newcode.fst" Component_="code.fst" FileName="newcode.fst" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\Code\newcode.fst" SelfReg="false" Sequence="111"/>
+    <ROW File="nosertit.fst" Component_="issn01.fst" FileName="nosertit.fst" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\issn\nosertit.fst" SelfReg="false" Sequence="125"/>
+    <ROW File="oleaut32.dll" Component_="oleaut32.dll" FileName="oleaut32.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\oleaut32.dll" SelfReg="false" Sequence="78"/>
+    <ROW File="olepro32.dll" Component_="olepro32.dll" FileName="olepro32.dll" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\olepro32.dll" SelfReg="false" Sequence="79"/>
+    <ROW File="part.ini" Component_="part.ini" FileName="part.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\tables\en\part.ini" SelfReg="false" Sequence="90"/>
+    <ROW File="part.ini_1" Component_="part.ini_1" FileName="part.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\tables\es\part.ini" SelfReg="false" Sequence="91"/>
+    <ROW File="part.ini_2" Component_="part.ini_2" FileName="part.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\tables\pt\part.ini" SelfReg="false" Sequence="92"/>
+    <ROW File="private.properties" Component_="private.properties" FileName="privat~1.pro|private.properties" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\nbproject\private\private.properties" SelfReg="false" Sequence="60"/>
+    <ROW File="project.properties" Component_="project.properties" FileName="projec~1.pro|project.properties" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\nbproject\project.properties" SelfReg="false" Sequence="61"/>
+    <ROW File="project.xml" Component_="project.properties" FileName="project.xml" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\nbproject\project.xml" SelfReg="false" Sequence="62"/>
+    <ROW File="pt_err.txt" Component_="en_err.txt" FileName="pt_err.txt" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\pt_err.txt" SelfReg="false" Sequence="53"/>
+    <ROW File="pt_fields.ini" Component_="call.bat" FileName="pt_fie~1.ini|pt_fields.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\pt_fields.ini" SelfReg="false" Sequence="30"/>
+    <ROW File="pt_fields.ini_1" Component_="en_err.txt" FileName="pt_fie~1.ini|pt_fields.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\pt_fields.ini" SelfReg="false" Sequence="54"/>
+    <ROW File="pt_files.ini" Component_="en_err.txt" FileName="pt_files.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\pt_files.ini" SelfReg="false" Sequence="55"/>
+    <ROW File="pt_issue.pft" Component_="en_err.txt" FileName="pt_issue.pft" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\pt_issue.pft" SelfReg="false" Sequence="56"/>
+    <ROW File="pt_labels.ini" Component_="call.bat" FileName="pt_lab~1.ini|pt_labels.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\pt_labels.ini" SelfReg="false" Sequence="31"/>
+    <ROW File="pt_labels.ini_1" Component_="en_err.txt" FileName="pt_lab~1.ini|pt_labels.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\langs\pt_labels.ini" SelfReg="false" Sequence="57"/>
+    <ROW File="pt_labels.pft" Component_="call.bat" FileName="pt_lab~1.pft|pt_labels.pft" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\pt_labels.pft" SelfReg="false" Sequence="32"/>
+    <ROW File="r" Component_="call.bat" FileName="r" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\r" SelfReg="false" Sequence="33"/>
+    <ROW File="scipath.ini" Component_="cfg_en_issue.pft" FileName="scipath.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\scipath.ini" SelfReg="false" Sequence="64"/>
+    <ROW File="section.fst" Component_="section.fst" FileName="section.fst" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\section\section.fst" SelfReg="false" Sequence="127"/>
+    <ROW File="stdole2.tlb" Component_="Comctl32.oca" FileName="stdole2.tlb" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\src\dlls\stdole2.tlb" SelfReg="false" Sequence="81"/>
+    <ROW File="tit_issn.fst" Component_="tit_issn.fst" FileName="tit_issn.fst" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial\title\tit_issn.fst" SelfReg="false" Sequence="128"/>
+    <ROW File="txt2db.bat" Component_="call.bat" FileName="txt2db.bat" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\help\txt2db.bat" SelfReg="false" Sequence="38"/>
+    <ROW File="value.ini" Component_="cfg_en_issue.pft" FileName="value.ini" Attributes="0" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config\value.ini" SelfReg="false" Sequence="93"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageName="trial1" Languages="en" InstallationType="2" CabsLocation="1" CompressCabs="false" UseLzma="true" PackageType="1" FilesInsideExe="true" ExtractionFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\install"/>
+    <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
+    <ROW Fragment="CommonUI.aip" Path="&lt;AI_FRAGS&gt;CommonUI.aip"/>
+    <ROW Fragment="FolderDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\FolderDlg.aip"/>
+    <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
+    <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="UI.aip" Path="&lt;AI_THEMES&gt;classic\fragments\UI.aip"/>
+    <ROW Fragment="Validation.aip" Path="&lt;AI_FRAGS&gt;Validation.aip"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
+    <ROW Action="AI_DeleteLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
+    <ROW Action="AI_DeleteRLzma" Description="Deleting files extracted from archive" DescriptionLocId="ActionText.Description.AI_DeleteLzma" TemplateLocId="-"/>
+    <ROW Action="AI_ExtractLzma" Description="Extracting files from archive" DescriptionLocId="ActionText.Description.AI_ExtractLzma" TemplateLocId="-"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiAppSearchComponent">
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_CU" Builds="DefaultBuild"/>
+    <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_LM" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+    <ROW Name="banner_image.jpg" SourcePath="&lt;AI_THEMES&gt;classic\resources\banner-image.jpg"/>
+    <ROW Name="dialog_image.jpg" SourcePath="&lt;AI_THEMES&gt;classic\resources\dialog-image.jpg"/>
+    <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
+    <ATTRIBUTE name="FixedSizeBitmaps" value="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceWelcomeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="2"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="1"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_PATCH" Ordering="3"/>
+    <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL" Ordering="3"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
+    <ROW Action="AI_DeleteCadLzma" Type="51" Source="AI_DeleteLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DeleteLzma" Type="1025" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
+    <ROW Action="AI_DeleteRCadLzma" Type="51" Source="AI_DeleteRLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_DeleteRLzma" Type="1281" Source="lzmaextractor.dll" Target="DeleteLZMAFiles"/>
+    <ROW Action="AI_ExtractCadLzma" Type="51" Source="AI_ExtractLzma" Target="[AI_SETUPEXEPATH]"/>
+    <ROW Action="AI_ExtractLzma" Type="1025" Source="lzmaextractor.dll" Target="ExtractLZMAFiles"/>
+    <ROW Action="AI_FindExeLzma" Type="1" Source="lzmaextractor.dll" Target="FindEXE"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
+    <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[WindowsVolume]\[ProductName]"/>
+    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
+    <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
+    <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+    <ROW Action="AI_STORE_LOCATION" Condition="Not Installed" Sequence="1501"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
+    <ROW Action="AI_DeleteCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="199" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteRCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="198" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractCadLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="197" Builds="DefaultBuild"/>
+    <ROW Action="AI_FindExeLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="196" Builds="DefaultBuild"/>
+    <ROW Action="AI_ExtractLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="1549" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteRLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="1548" Builds="DefaultBuild"/>
+    <ROW Action="AI_DeleteLzma" Condition="SETUPEXEDIR=&quot;&quot; AND Installed AND (REMOVE&lt;&gt;&quot;ALL&quot;) AND (NOT PATCH)" Sequence="6599" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
+    <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+    <ROW Signature_="AI_EXE_PATH_LM" Root="2" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiRegsComponent">
+    <ROW Registry="AI_ExePath" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Value="[AI_SETUPEXEPATH]" Component_="AI_ExePath"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
+    <ROW ThemeName="classic" ThemeManifestFilePath="&lt;AI_THEMES&gt;classic\classic.ini"/>
+    <ATTRIBUTE name="UsedTheme" value="classic"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMax="[|ProductVersion]" Attributes="1025" ActionProperty="OLDPRODUCTS"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
+    <ROW Directory_="config_DIR" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\bin\config" Feature="MainFeature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store|class*|Mod*|*.vb*|form*|*.cls" ExcludeFlags="6"/>
+    <ROW Directory_="serial_DIR" SourcePath="\\Fs2009035\d\c\svn.reddes.bvsalud.org\scielo-metodologia\pc_programs\trunk\src\scielo\serial" Feature="Feature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6"/>
+  </COMPONENT>
+</DOCUMENT>

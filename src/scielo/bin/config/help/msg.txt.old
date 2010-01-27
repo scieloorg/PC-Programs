@@ -1,0 +1,180 @@
+msg|Some important data were not filled in. Please, return to the form and complete it.|Datos importantes no fueron llenados. Por favor, completar el registro de este título|Dados importantes não foram preenchido para o título. Voltar ao seu cadastro e completá-lo.|||
+ButtonBack|Previous|Anterior|Anterior|||
+ButtonCancel|Cancel|Cancelar|Cancelar|||
+ButtonClose|Close|Cerrar|Fechar|||
+ButtonDelete|Delete|Remover|Remover|||
+ButtonNext|Next|Próximo|Próximo|||
+ButtonOK|OK|Aceptar|Aceitar|||
+ButtonOpen|Open|Abrir|Abrir|||
+ButtonRemove|Remove|Remover|Remover|||
+ButtonReplace|Replace|Reemplazar|Substituir|||
+ButtonSave|Save|Guardar|Gravar|||
+Config_FindPath|Find|Buscar|Procurar|||
+Config_InterfaceIdiom|Find|Buscar|Procurar|||
+Config_WebBrowserPath|Web Browser Program|Navegador Web|Navegador web|||
+ExistingSerial|Existing Titles|Títulos existentes|Títulos existentes|||
+ISEQNO_CHANGEISEQNO|I want to change its sequential number to|Quiero cambiar su número secuencial para|Quero modificar seu número sequencial para|||
+ISEQNO_CHANGEISSUEID|I want to correct its identification (volume, number, supplement)|Quiero corregir la identificación del facículo (volumen, número, suplemento, parte)|Quero corrigir a identificação do fascículo (volume, número, suplemento)|||
+IseqNo_MsgIseqNo|The sequential number and the identification of the issue do not match. What do you want to do?|El número secuencial y la identificación del facículo (volumen, número, suplemento, parte) no están correspondientes. ¿Usted qué quiere hacer?|O número sequencial e a identificação do fascículo (volume, número, suplemento) não correspondem. O que você deseja fazer?|||
+ISEQNO_OPENEXISTINGISSUE|I want to open this issue|Quiero abrir este número|Quero abrir este número|||
+Issue_BibliographicStrip|Bibliographic Strip|Tira Bibliográfica|Legenda Bibliográfica|||
+Issue_Changeto|Change to|Reemplazar para |Substituir para|||
+Issue_Cover|Cover|Portada|Capa|||
+Issue_CreateSection|Create section|Crear sección|Criar seção|||
+Issue_Current|Current issue|Número Actual|Número atual|||
+Issue_DateISO|Date ISO|Fecha ISO|Data ISO|||
+Issue_General|General|General|Geral|||
+Issue_Header|Table of Contents|Tabla de Contenido|Sumário|||
+Issue_InvalidDateBibStrip|Check the date of the bibliographic strip |Asegure que la fecha de la tira bibliográfica esté correcta|Verifique a data da legenda bibliográfica|||
+Issue_InvalidNumDoc|Invalid value for number of documents|Valor inválido para la cantidad de documentos|Valor inválido para o número de documentos|||
+Issue_IssPublisher|Issue Publisher|Editor del fascículo|Editor do fascículo|||
+Issue_IssTitle|Issue Title|Título del fascículo|Título do fascículo|||
+Issue_MkpDone|Markup done|Marcación fué hecha|Marcação feita|||
+Issue_month|Month|Mes|Mês|||
+Issue_NumberofDocuments|Number of documents|Cantidad de documentos|Número de documentos|||
+Issue_Part|Part|Part|Parte|||
+Issue_Place|City/Place|Ciudad|Cidade|||
+Issue_Replace|Replace issue|Reemplazar número de la revista|Substituir número da revista|||
+Issue_Scheme|Controled Vocabulary|Vocabulario Controlado|Vocabulário Controlado|||
+Issue_Sectionsof|Sections of |Secciones de |Seções de  |||
+Issue_SelectSections|Select the sections that are present in |Escoja las secciones de |Selecione as seções de  |||
+Issue_Sponsor|Sponsor|Sponsor|Financiador|||
+Issue_Standard|Standard|Norma|Norma|||
+Issue_status|Status|Status|Status|||
+Issue_TabConfigurations|Entry date in SciELO|Fecha de entrada|Data de entrada mais recente|||
+Issue_Tableofcontents|Table of contents|Tabla de contenidos|Sumário|||
+Issue_year|Year|Año|Ano|||
+issueno|Issue|Fascículo|Número|||
+IssueSuppl|Suppl|Supl|Supl|||
+MandatoryFieldIndication|* represents mandatory field|* representa campo obligatório|* representa campo obrigatório|||
+mnAbout|About|Acerca|Sobre|||
+mnConfiguration|Configuration|Configuración|Configuração|||
+mnContents|Contents|Contenido|Conteúdo|||
+mnCreateSerial|Create Serial|Crear revista|Criar periódico|||
+mnEdit|Edit|Edición|Edição|||
+mnExit|Exit|Salir|Sair|||
+mnFile|File|Archivo|Arquivo|||
+mnHelp|Help|Ayuda|Ajuda|||
+mnOpenExistingSerial|Open Existing Serial|Abrir revista|Abrir periódico|||
+mnOptions|Options|Opciones|Opções|||
+mnRemoveSerial|Remove Serial|Remover revista|Remover periódico|||
+mnSerialIssues|Serial Issues|Números de las revistas|Fascículos|||
+mnSerialSections|Serial Sections|Secciones de las revistas|Seções dos Periódicos|||
+mnSerialTitles|Serial Titles|Títulos de revistas|Títulos de Periódicos|||
+MsgClosebyCancelorClose|Do you want to exit?|¿Usted desea salir?|Deseja sair?|||
+MsgDeleteIssue|You can not change to an issue that already exists. You are probably inserting the same issue again.|Usted no puede reemplazar para un número ya existente. Usted probablemente está inseriendo el mismo número nuevamente.|Você não pode alterar para um número já existente. Você provavelmente está inserindo o mesmo número novamente.|||
+MsgExit|Do you want to save changes?|¿Usted desea guardar los cambios hechos?|Deseja salvar as modificações feitas?|||
+MsgInvalidDATEISO|Sequential number belongs to another issue.|Número secuencial pertenece a otro número|Número sequencial pertence a outro número|||
+MsgInvalidFormatSeqNumber|Permission deny to change data|No es permitible editar estes datos.|Permissão negada para edição dos dados|||
+MsgInvalidYear|Are you sure do you want to delete this issue?|¿Usted tiene seguridad que quiere borrar este número?|Você tem certeza que quer apagar este número?|||
+MSGISSUENOEXIST|Current issue are going to be delete and replaced by the specified issue below|El número actual será borrado de la base y reemplazado por el número abajo especificado.|O número atual será apagado da base e substituído pelo número abaixo especificado|||
+MsgMandatoryContent|Interface Idiom|Idioma de la interface|Idioma da interface|||
+MsgMissingIssueId|Mandatory field|Campo obligatorio|Preenchimento obrigatório|||
+MsgRemoveSerial|Close using the Cancel or Close button|Cierre utilizando el butón de Cancelar o de Cerrar|Feche usando o Botão Cancelar ou Fechar|||
+MsgReplaceIssue|Invalid DATEISO.|DATEISO inválida|DATEISO inválida|||
+MsgReplaceIssueAlreadyExists|This issue does not exist|Este número no existe.|Este número não existe.|||
+MsgSaveChanges|Missing the issue identification. Enter the issue identification (volume, number, suppl).|No está identificado el número de la revista. Es necesario identificarlo (volumen, número, suplemento).|Falta identificar o número da revista. Entre com a identificação do número (volume, número, suplemento).|||
+msgSeqNumBelongsToAnotherIssue|Invalid sequential number. Its format is year(YYYY) and the sequential number in the year. Example: 19991. (first issue number in 1999)|Número secuencial Inválido. Es formado por el año y el número que identifica el orden del número en el año. Ejemplo: 19991. (primer número del año de 1999).|Número sequencial inválido. É formado por ano (AAAA) e número que representa sua ordem no ano. Exemplo: 19991. (primeiro número do ano de 1999)|||
+msgTitleIsNotCompleted|These titles are registered for the REPLACE-BY-SECCODE code.|Estes títulos ya están registrados para el código REPLACE-BY-SECCODE|Estes títulos já estão registrados para o código REPLACE-BY-SECCODE.|||
+MsgUnabledtoClose|The year in sequential number, in bibliographic strip and in dateiso must be equal, but it is not. If the year of the sequential number is incorrect, close this form and correct the sequential number. If the year of dateiso and/or the year of the bibliographic strip are incorrect, correct its year.|El año en el número secuencial, en las tiras bibliográficas y en la fecha ISO debe ser igual, pero está diferente. Si el número secuencial está incorrecto, cierre la ventana y cambie el número secuencial, si no mire la fecha ISO y la fecha de las tiras bibliográficas.|O ano utilizado no número sequencial, nas legendas bibliográficas e na dateiso da publicação deve ser o mesmo, mas está diferente. Se é o ano do número sequencial que está errado, feche esta janela e mude o número sequencial, senão verifique o ano da data ISO e das legendas bibliográficas|||
+MsgUnchangeableCode|Do you really want to remove |¿Usted desea remover|Deseja remover |||
+NewSerial|New Title|Nuevo Título|Título novo|||
+Sec_CmdADD|Add|Añadir|Inserir|||
+Sec_CmdRem|Delete|Eliminar|Remover|||
+sec_deletequestion|This section is already in use in some issue. It can not be changed.|Esta sección ya está en uso en algun facículo. No puede ser cambiada.|Esta seção já está em uso em algum fascículo. Não pode ser modificada.|||
+Sec_FrameFilledSections|Filled Sections|Secciones llenadas|Seções preenchidas|||
+Sec_FrameRemSection|Remove a section from the database|Remover las secciónes de la base de datos|Remover as seções da base de dados|||
+Sec_FrameSectionEdition|Edit Section|Edición de las secciones|Entrada de novas seções|||
+Sec_Idiom|Section Idiom|Idioma de las secciones|Idioma das seções|||
+Sec_InvalidSecCode|Invalid format of section code|Formato inválido del código de la sección|Formato inválido do código da seção|||
+Sec_InvalidSecTit|Invalid format of section title|Título inválido de la sección|Título inválido de seção|||
+Sec_QMsgReplaceSection|This section code already has a title. Do you want to change the title of this section?|Este código de sección ya tiene título. ¿Usted desea cambiar el título de esta sección?|Este código de seção já tem título. Você deseja alterar o título desta seção?|||
+Sec_SectionCode|Section Code|Código de las secciones|Código das seções|||
+Sec_SectionTitle|Section Title|Título de las secciones|Título das seções|||
+sec_TitlesAlreadyRegistered|Are you sure you want this section removed?|¿Está seguro que quiere remover esta sección?|Certeza de que deseja remover esta seção?|||
+Sec_UnabledtoChange|Further information|Más información|Mais informação|||
+Select_to_Open|Select one title to open|Seleccione un título para abrir|Selecione um título|||
+Select_to_Remove|Select one title to remove|Seleccione un título para remover|Selecione um título para remover|||
+SequentialNumber|Seq Num|Num Seq|Num Seq|||
+ser1_FrameTitle|Information about the title's journal |Información acerca de los títulos de la revista|Informação sobre os títulos do periódico |||
+ser1_HasSuppl|Has Supplement|Tiene suplemento|Tem suplemento|||
+ser1_ISOStitle|ISO Short Title|Título ISO Corto |Título ISO Abreviado|||
+ser1_issn|ISSN|ISSN|ISSN|||
+ser1_IsSuppl|Is Supplement|Es suplemento de|É suplemento de|||
+ser1_NewTitle|New Title|Título nuevo|Título novo|||
+ser1_OldTitle|Old Title|Título antiguo|Título antigo|||
+ser1_OtherTitles|Other Titles|Otros títulos|Outros títulos|||
+ser1_ParallelTitles|Parallel Titles|Títulos Paralelos|Títulos Alternativos|||
+ser1_SectionTitle|Section|Sección|Seção|||
+ser1_ShortTitle|Short Title|Título Corto|Título Abreviado|||
+ser1_Subtitle|Subtitle|Subtítulo|Subtítulo|||
+ser1_Title|Publication Title|Título|Título|||
+ser2_LiterType|Type of Literature|Tipo de Literatura|Tipo de Literatura|||
+ser2_LiterTypeDefVal|S|S|S|||
+ser2_Mission|Mission|Misión|Missão|||
+ser2_StudyArea|Study Area |Area del conocimiento|Assunto|||
+ser2_Subject|Subject/Descriptors |Asunto/Descriptores |Assunto/Descritores |||
+ser2_SubjectInfo|Subject Information|Información de Asunto|Informação de Assunto|||
+ser2_TreatLevel|Treatment Level |Nivel de Tratamiento|Nível de Tratamento |||
+ser2_TreatLevelDefVal|c|c|c|||
+ser3_AbstIdiom|Text Idiom |Idioma del Texto|Idioma do Texto|||
+ser3_Alphabet|Publication Status |Status de la Publicación |Status da Publicação |||
+ser3_Classif|National Code |Código Nacional |Código Nacional |||
+ser3_FinNo|Final Volume|Volumen Final|Volume Final|||
+ser3_FinVol|Terminate Date |Fecha Final|Data Final|||
+ser3_FormalInfo|Level of publication|Nivel de publicación|Nível de publicação|||
+ser3_FrameInfoPubJournal|Classification|Clasificación|Classificação|||
+ser3_Freq|Final Number|Número Final |Número Final |||
+ser3_InitDate|Formal Information|Información Formal|Informação Formal|||
+ser3_InitNo|Initial Volume|Volumen Inicial|Volume Inicial|||
+ser3_InitVol|Initial Date |Fecha Inicial |Data Inicial |||
+ser3_NationalCode|Abstract Idiom |Idioma del Resumen|Idioma do Resumo|||
+ser3_PubCity|Publisher's State |Estado de la Casa Publicadora|Estado da Publicação|||
+ser3_PubCountry|Publisher |Casa Publicadora |Editora |||
+ser3_Publisher|Information About the Publisher and the Journal|Información sobre la casa publicadora y la revista|Informação sobre a editora e o periódico|||
+ser3_PubState|Publisher's Country |Pais de la Casa Publicadora|País da Publicação|||
+ser3_PubStatus|Frequency|Frecuencia|Frequência|||
+ser3_TermDate|Initial Number |Número Inicial |Número Inicial |||
+ser3_TxtIdiom|Alphabet |Alfabeto |Alfabeto |||
+ser4_Address|Information About the Publisher and the Journal (Part 2)|Información acerca de la casa publicadora y de la revista (Parte 2)|Informação sobre a editora e o periódico (Parte 2)|||
+ser4_cprightDate|Electronic Address|Correo Electronico|Endereço Eletrônico|||
+ser4_cprighter|Copyright Date |Derechos autorales - Fecha|Copyright (Data)|||
+ser4_email|Fax Number|Número del Fax|Fax|||
+ser4_Fax|Phone Number|Número del Teléfono|Telefone|||
+ser4_FrameInfoHealth|Sponsor |Financiador|Financiador|||
+ser4_FrameInfoPubJournal_2|Publisher's City |Ciudad de la Casa Publicadora|Cidade da Publicação|||
+ser4_idxRange|MEDLINE Short Title |Título Corto MEDLINE|Título Abreviado MEDLINE|||
+ser4_medline|SECS Code |Código SECS  |Código SECS  |||
+ser4_MedlineStitle|MEDLINE Code|Código MEDLINE|Código MEDLINE|||
+ser4_Phone|Address |Dirección|Endereço |||
+ser4_secs|Information for the Health Area|Información para el Area de Salud|Informação para a área da Saúde|||
+ser4_sponsor|Copyrighter |Detenedor de los derechos autorales|Detentor dos direitos autorais |||
+ser5_CCode|Center's control information|Información de Controle del Centro Cooperante|Informação de Controle do Centro Cooperante|||
+ser5_CreatDate|Documentalist (Creation)|Documentalista (Creación)|Documentalista (Criação)|||
+ser5_DocCreation|Identification Number |Número de Identificación|Número de Identificação|||
+ser5_DocUpdate|Creation Date |Fecha de Creación  |Data de Criação  |||
+ser5_FrameCenterControl|SciELO Submission Online URL|URL de la sumisión en línea|URL da submissão online da SciELO|||
+ser5_FrameSciELOControl|Notes |Notas |Notas |||
+ser5_FTP|Site Location |Dirección del sitio|Endereço do site|||
+ser5_IdNumber|Center Code |Código del Centro|Código do Centro|||
+ser5_notes|Indexation Range|Cobertura de la Indización|Cobertura de Indexação|||
+ser5_PubId|Siglum |Sigla |Sigla |||
+ser5_SciELONet|User Subscription |Suscripción del usuario |Assinatura do usuário |||
+ser5_Sep|Publication Identifier|Identif de la Publicación|Identif da Publicação|||
+ser5_siglum|SciELO's control information|Informaciones de controle para SciELO|Informações de controle para SciELO|||
+ser5_SiteLocation|Separator line|Linea Separadora|Linha Separadora|||
+ser5_SubmissionOnline|SciELO Net|Red SciELO|Rede SciELO|||
+ser5_UpdateDate|Documentalist (Update) |Documentalista (Actualización) |Documentalista (Atualização) |||
+ser5_UserSubscription|FTP |FTP |FTP |||
+ser6_Add|Insert|Añadir|Añadir|||
+
+ser6_Edit|
+ser6_journalEntryDate|Entry date in SciELO|Fecha de entrada|Data de entrada mais recente|||
+ser6_journalExitDate|Exit date in SciELO|Fecha de la salida|Data de saída mais recente|||
+ser6_journalExitStatus|Reason of exiting|Causa de la salida|Causa da saída|||
+ser6_journalStatusHistory|History of entries and exits in SciELO collection|Histórico de entrada y salida de la revista en la colección SciELO|Histórico de entrada e saída do periódico na coleção SciELO|||
+ser6_Remove|Modify|Cambiar|Cambiar|||
+ser6_Replace|Replace|Reemplazar|Reemplazar|||
+VolSuppl|Vol Suppl|Supl Vol|SuplVol|||
+volume|Volume|Volumen|Volume|||
+

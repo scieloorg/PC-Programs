@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE locale SYSTEM "../locale.dtd">
+<!--
+  * locale.xml
+  *
+  * Copyright (c) 2003-2005 The Public Knowledge Project
+  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+  *
+  * Localization strings for the en_US (U.S. English) locale.
+  *
+  * $Id: locale.xml,v 1.440 2006/03/09 04:56:29 michaelf Exp $
+  -->
+<locale name="en_US" full_name="U.S. English">
+	<!--
+	 * This file is organized into several major sections, separated
+	 * by comments like this one. These sections are called:
+	 *  COMMON - Contains frequently-used words
+	 *  ENTITIES - Contains terms pertaining to the system's major
+	 *             entities, e.g. Article, Journal, Section
+	 *  INTERFACE - Contains phrases organized by the section of the
+	 *              user interface they appear in.
+	 *  LOG - Contains phrases related to log entries
+	 *  MISC - Entries that don't belong elsewhere.
+	 *  DEFAULT - Default settings for configuration items.
+	-->
+	<!--
+	 *
+	 * COMMON - This section contains the most frequently-used words
+	 *
+	-->
+	<!-- Common Messages -->
+	<message key="common.and">and</message>
+	<message key="common.between">between</message>
+	<message key="common.all">All</message>
+	<message key="common.on">On</message>
+	<message key="common.off">Off</message>
+	<message key="common.openJournalSystems">Open Journal Systems</message>
+	<message key="common.delete">Delete</message>
+	<message key="common.edit">Edit</message>
+	<message key="common.save">Save</message>
+	<message key="common.export">Export</message>
+	<message key="common.import">Import</message>
+	<message key="common.saveAndContinue">Save and continue</message>
+	<message key="common.saveAndEmail">Save and email</message>
+	<message key="common.continue">Continue</message>
+	<message key="common.cancel">Cancel</message>
+	<message key="common.done">Done</message>
+	<message key="common.search">Search</message>
+	<message key="common.up">Up</message>
+	<message key="common.top">Top</message>
+	<message key="common.url">URL</message>
+	<message key="common.description">Description</message>
+	<message key="common.keywords">Keywords</message>
+	<message key="common.order">Order</message>
+	<message key="common.back">Back</message>
+	<message key="common.title">Title</message>
+	<message key="common.upload">Upload</message>
+	<message key="common.download">Download</message>
+	<message key="common.replaceFile">Replace file</message>
+	<message key="common.subject">Subject</message>
+	<message key="common.type">Type</message>
+	<message key="common.publisher">Publisher</message>
+	<message key="common.note">Note</message>
+	<message key="common.notes">Notes</message>
+	<message key="common.date">Date</message>
+	<message key="common.weeks">weeks</message>
+	<message key="common.source">Source</message>
+	<message key="common.language">Language</message>
+	<message key="common.id">ID</message>
+	<message key="common.status">Status</message>
+	<message key="common.remove">Remove</message>
+	<message key="common.file">File</message>
+	<message key="common.uploadedFile">Uploaded file</message>
+	<message key="common.fileName">File name</message>
+	<message key="common.dateSubmitted">Date submitted</message>
+	<message key="common.dateRequested">Date requested</message>
+	<message key="common.dateCompleted">Date completed</message>
+	<message key="common.dateUploaded">Date uploaded</message>
+	<message key="common.dateModified">Date modified</message>
+	<message key="common.other">Other</message>
+	<message key="common.fileSize">File size</message>
+	<message key="common.size">Size</message>
+	<message key="common.fileType">File type</message>
+	<message key="common.originalFileName">Original file name</message>
+	<message key="common.none">None</message>
+	<message key="common.required">Required</message>
+	<message key="common.requiredField">* Denotes required field</message>
+	<message key="common.or">or</message>
+	<message key="common.notAvailable">Not available</message>
+	<message key="common.notApplicable">Not applicable</message>
+	<message key="common.notApplicableShort">N/A</message>
+	<message key="common.yes">Yes</message>
+	<message key="common.no">No</message>
+	<message key="common.languages">Languages</message>
+	<message key="common.changesSaved">Your changes have been saved.</message>
+	<message key="common.chooseOne">Choose One</message>
+	<message key="common.alreadyAssigned">Assigned</message>
+	<message key="common.assign">Assign</message>
+	<message key="common.assigned">Assigned</message>
+	<message key="common.record">Record</message>
+	<message key="common.width">Width</message>
+	<message key="common.height">Height</message>
+	<message key="common.user">User</message>
+	<message key="common.event">Event</message>
+	<message key="common.action">Action</message>
+	<message key="common.select">Select</message>
+	<message key="common.selectAll">Select All</message>
+	<message key="common.selectNone">Select None</message>
+	<message key="common.applyAction">Apply Action</message>
+	<message key="common.deleteSelection">Delete Selection</message>
+	<message key="common.removeSelection">Remove Selection</message>
+	<message key="common.year">Year</message>
+	<message key="common.month">Month</message>
+	<message key="common.day">Day</message>
+	<message key="common.hour">Hour</message>
+	<message key="common.minute">Minute(s)</message>
+	<message key="common.second">Second(s)</message>
+	<message key="common.create">Create</message>
+	<message key="common.modify">Modify</message>
+	<message key="common.notify">Notify</message>
+	<message key="common.noneAssigned">None assigned</message>
+	<message key="common.cancelled">Cancelled</message>
+	<message key="common.inProgress">In progress</message>
+	<message key="common.replaced">Replaced</message>
+	<message key="common.uninitiated">Uninitiated</message>
+	<message key="common.updated">Updated</message>
+	<message key="common.untitled">Untitled</message>
+	<message key="common.view">View</message>
+	<message key="common.related">Related</message>
+	<message key="common.active">Active</message>
+	<message key="common.completed">Completed</message>
+	<message key="common.mailingAddress">Mailing Address</message>
+	<message key="common.country">Country</message>
+	<message key="common.close">Close</message>
+	<message key="common.closeWindow">Close Window</message>
+	<message key="common.initiate">Initiate</message>
+	<message key="common.complete">Complete</message>
+	<message key="common.options">Options</message>
+	<message key="common.plugin">Plugin</message>
+	<message key="common.default">Default</message>
+	<message key="common.addSelf">Add Self</message>
+	<!-- Common Form Messages -->
+	<message key="form.errorsOccurred">Errors occurred processing this form</message>
+	<message key="form.saveToUpload">Use Save to upload file.</message>
+	<message key="form.contains">contains</message>
+	<message key="form.is">is</message>
+	<message key="form.required">(* Required)</message>
+	<message key="form.submit">Submit</message>
+	<message key="form.send">Send</message>
+	<message key="form.resubmit">Resubmit</message>
+	<message key="TextViewer.uploadForm.ACTION_SELECT_FILE_TO_UPLOAD">Select the file that contains the XML which you want to view the text</message>
+	<message key="TextViewer.uploadForm.LABEL_FILE_TO_VIEW_TEXT">file that contains the XML which you want to view the text</message>
+	<message key="TextViewer.uploadImagesForm.ACTION">Upload the text's images. You do NOT have to upload all at once.</message>
+	<message key="TextViewer.uploadImagesForm.uploadImage">Upload the image</message>
+	<message key="TextViewer.uploadForm.page.title">Text's file</message>
+	<message key="TextViewer.uploadImages.page.title">Text's images</message>
+	<message key="TextViewer.uploadImages.missing.page.title">Text's images - missing images</message>
+	<message key="TextViewer.text.page.title">Fulltext</message>
+	<message key="TextViewer.text.page.warning.missingMarkup">WARNING: There are some texts should have been marked</message>	
+<message key="TextViewer.text.page.warning.missing">WARNING: Missing</message>
+<message key="TextViewer.text.page.warning.missingLanguage">WARNING: Missing @xml:lang</message>
+
+</locale>

@@ -1,0 +1,17 @@
+300 0 mpl,|EV=|v300
+301 0 mpl,|DATE=|v301
+302 0 mpl,|TIME=|v302
+303 0 mpl,|LOGIN=|v303
+304 0 mpl,|ROLE=|v304
+305 0 mpl,|NEXTEV=|v305
+306 0 mpl,|NEXTLOGIN=|v306
+307 0 mpl,|NEXTROLE=|v307
+308 0 mpl,|STATUS=|v308
+163 0 mpl,|SCOPE=|v163
+67 0 mpl,|COUNTRY=|v67
+68 0 mpl,|STATE=|v68
+66 0 mpl,|CITY=|v66
+165 0 mpl,|LAWDISO=|v165
+31 0 mpl,|LAWTYPE=|v31
+32 0 mpl,|LAWNO=|v32
+2 0 mpl,|ID=|v163,v67,v68,v66,v165,v31,v32

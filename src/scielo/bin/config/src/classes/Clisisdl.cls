@@ -632,7 +632,7 @@ Public Function FieldOccCount(mfn As Long, Campo As Long) As Long
     FieldOccCount = QtdOcc
 End Function
 
-Private Function getMfnsBySearch(ByVal query As String, ByRef mfns() As Long) As Long
+Private Function getMfnsBySearch(ByVal query As String, ByRef Mfns() As Long) As Long
     Dim r, i As Long
 
     Dim SearchStru As IsisSrcHeader
@@ -643,11 +643,11 @@ Private Function getMfnsBySearch(ByVal query As String, ByRef mfns() As Long) As
     r = IsisSrcSearch(H, 0, query, SearchStru)
     If r > 0 Then
         ReDim SrcMfn(SearchStru.recs)
-        ReDim mfns(SearchStru.recs)
+        ReDim Mfns(SearchStru.recs)
         r = IsisSrcMfnMap(AppHandle, 0, 0, 1, SearchStru.recs, SrcMfn(0))
         
             For i = 1 To SearchStru.recs
-                mfns(i) = SrcMfn(i - 1).mfn
+                Mfns(i) = SrcMfn(i - 1).mfn
             Next i
         
         End If
@@ -656,7 +656,7 @@ Private Function getMfnsBySearch(ByVal query As String, ByRef mfns() As Long) As
    
     getMfnsBySearch = SearchStru.recs
 End Function
-Private Function getMfns(ByVal query As String, ByRef mfns() As Long) As Long
+Private Function getMfns(ByVal query As String, ByRef Mfns() As Long) As Long
     Dim i As Long
     Dim QtdTrm As Long
     Dim r As Long
@@ -674,11 +674,11 @@ Private Function getMfns(ByVal query As String, ByRef mfns() As Long) As Long
         from_Posting = 1 'from mfn posting 1
         to_Posting = r 'to mfn posting r
         ReDim pIsisTrmMfn(r) 'redim array of mfns
-        ReDim mfns(r) 'redim array of mfns
+        ReDim Mfns(r) 'redim array of mfns
         
         r = IsisTrmMfnMap(H, 0, from_Posting, to_Posting, pIsisTrmMfn(0))
         For i = 0 To r - 1 'loop all mfns
-            mfns(i + 1) = pIsisTrmMfn(i).mfn
+            Mfns(i + 1) = pIsisTrmMfn(i).mfn
         Next i
     Else
         
@@ -688,7 +688,7 @@ Private Function getMfns(ByVal query As String, ByRef mfns() As Long) As Long
     getMfns = r
 End Function
 
-Private Function getMfnsByInv(ByVal Termo As String, ByRef mfns() As Long) As Long
+Private Function getMfnsByInv(ByVal Termo As String, ByRef Mfns() As Long) As Long
     Dim i As Long
     Dim QtdTrm As Long
     Dim q As Long
@@ -706,9 +706,9 @@ Call tracing("getMfnsByInv " & CStr(Termo))
     If QtdTrm > ZERO Then
         ReDim pIsisTrmMfn(QtdTrm)
         q = IsisTrmMfnMap(H, 0, 1, QtdTrm, pIsisTrmMfn(0))
-        If q > 0 Then ReDim mfns(q)
+        If q > 0 Then ReDim Mfns(q)
         For i = 1 To q
-            mfns(i) = pIsisTrmMfn(i - 1).mfn
+            Mfns(i) = pIsisTrmMfn(i - 1).mfn
         Next
         
     Else
@@ -726,19 +726,15 @@ End Function
 'Mfns   - os Mfns encontrados
 'Retorno    - a quantidade de Mfns
 '-----------------------------------------------------------------------
-Public Function MfnFind(ByVal Termo As String, ByRef mfns() As Long, Optional ByVal xtimer As Long) As Long
+Public Function MfnFind(ByVal Termo As String, ByRef Mfns() As Long, Optional ByVal xtimer As Long) As Long
     Dim timer As Long
     Dim q As Long
-Call tracing("MfnFind " & CStr(Termo))
     
-    q = getMfnsByInv(Termo, mfns)
+    
+    q = getMfns(Termo, Mfns)
     If q = 0 Then
-        Call IfCreate(IFFILE)
-        q = getMfnsByInv(Termo, mfns)
-'Call tracing("MfnFind (try 2) " & CStr(Termo))
-        'q = getMfnsBySearch(Termo, Mfns)
-        
-        
+    q = getMfnsByInv(Termo, Mfns)
+            
     End If
     
     Call tracing("MfnFind " & CStr(q))

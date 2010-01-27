@@ -1,0 +1,13 @@
+TITLE.mst=v:\SciELO\serial\title\title.mst 
+TITLE.xrf=v:\SciELO\serial\title\title.xrf 
+TITLE.cnt=temp\title.cnt 
+TITLE.n01=temp\title.n01 
+TITLE.n02=temp\title.n02 
+TITLE.l01=temp\title.l01 
+TITLE.l02=temp\title.l02 
+TITLE.ifp=temp\title.ifp 
+tipo_h.i2x=i2x\tipo_h.i2x
+CORRIGE.PROC=prc\tipo_h_pubmed.prc
+DOI_CONF=..\..\config\PubMed\doi_conf.txt
+JOURNALS.*=..\..\config\PubMed\journals\journals.*
+CONFIG.*=..\..\config\PubMed\config\config.*

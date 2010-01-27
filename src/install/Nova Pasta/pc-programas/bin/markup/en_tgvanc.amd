@@ -1,0 +1,20 @@
+no;Número
+vcontrib;Contribuição
+viserial;Publicação Seriada
+vmonog;Monografía
+author;Autor;role,id
+corpauth;Autor corporativo
+title;Título;language
+subresp;Responsabilidade secundária
+edition;Edição
+city;Cidade
+pubname;Nome do publicador
+date;Data;dateiso
+extent;Extensão do trabalho
+volid;Volume
+coltitle;Título da coleção
+notes;Notas
+surname;Sobrenome
+fname;Nome
+pages;Número de páginas
+sertitle;Título de publicação seriada
