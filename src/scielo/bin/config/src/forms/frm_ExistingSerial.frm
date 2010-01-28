@@ -83,6 +83,7 @@ Sub OpenExistingSerial()
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
-generateSciELOURL
+    generateSciELOURL
+    generateFile_JournalList4Automata
 End Sub
 

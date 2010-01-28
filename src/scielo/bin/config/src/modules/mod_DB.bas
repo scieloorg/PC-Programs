@@ -594,6 +594,52 @@ Sub generateSciELOURL()
         
     
 End Sub
+Sub generateFile_JournalList4Automata()
+    Dim i As Long
+    Dim fn As Long
+    Dim defaultCollectionURL As String
+    Dim curl As String
+    
+    Dim citat As ClsParams
+    Dim c As String
+    Dim tgs As New ClsParams
+    Dim tg As String
+    
+    Set citat = New ClsParams
+    For i = 1 To CodeStandard.count
+        c = Mid(CodeStandard(i).Code, 1, 1)
+        Select Case CodeStandard(i).Code
+        Case "iso690"
+            tg = "tgiso"
+        Case "nbr6023"
+            c = "a"
+            tg = "tgabnt"
+        Case "other"
+            tg = "tgother"
+        Case "vancouv"
+            tg = "tgvanc"
+        Case "apa"
+            c = "p"
+            tg = "tgapa"
+        End Select
+        
+        Call citat.add(c, CodeStandard(i).Code)
+        Call tgs.add(tg, CodeStandard(i).Code)
+    Next
+    
+    fn = FreeFile
+    Open Paths("JournalList4Automata").Path + "\" + Paths("JournalList4Automata").FileName For Output As fn
+    ' Acta Cir. Bras.;ocitat;acb.amd;tgother.amd
+    For i = 1 To jlist.count
+        With jlist.getItemByIndex(i)
+        Print #fn, .shorttitle & ";" & citat.item(.JournalStandard) & "citat;" & .pubid & ".amd;" & tgs.item(.JournalStandard) & ".amd"
+        Print #fn, ""
+        End With
+    Next
+    Close fn
+        
+    
+End Sub
 Function isTitleFormCompleted(mfn As Long) As Boolean
     
     Dim i As Long
