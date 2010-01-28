@@ -75,6 +75,7 @@
 
 <!ELEMENT xref - - (#PCDATA | graphic)    >
 <!ATTLIST xref
+          ref-type  CDATA #IMPLIED 
           rid       CDATA #REQUIRED>
 
 <!ELEMENT table - - (tr+)    >

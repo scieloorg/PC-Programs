@@ -37,7 +37,7 @@
 <!--    Contribution                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT pcontrib - - ( (author | corpauth) , date , title, subtitle? ) >
+<!ELEMENT pcontrib - - ( (author | corpauth) , date , (%m.title;) ) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Serial Level                                                      -->
@@ -107,7 +107,7 @@ city, country?, pubname)>
 <!ELEMENT vmonog   - - ( ((author | corpauth)*, et-al?)  & ( edition |
                         confgrp | vtitle | date | version  | city | state |
                         pubname | inpress |
-                        ges | report | thesis | url | doi |  cited | patgrp)*) >
+                        pages | report | thesis | url | doi |  cited | patgrp)*) >
 <!ELEMENT edition  - - (#PCDATA) >
 <!ELEMENT version  - - (#PCDATA) >
 <!ELEMENT pubname  - - (#PCDATA) >
