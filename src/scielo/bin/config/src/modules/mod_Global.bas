@@ -285,7 +285,7 @@ Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColC
             
                 While (i < q) And (mfn = 0)
                     i = i + 1
-                    format = "if v1^*='" + key + "' and (v1^l='" + Idiom + "' or a(v1^l))  then (v2^v|;|,v2^c|;;|) else mfn,';',v1,';;' fi"
+                    format = "if v1^*='" + key + "' and (v1^l='" + Idiom + "' or a(v1^l))  then (v2^v|;|,v2^c|;;|)  fi"
                     
                     aux = isisCode.UsePft(Mfns(i), format)
                     format = format & vbCrLf & aux & vbCrLf & CStr(Mfns(i))
@@ -384,7 +384,7 @@ Property Let ChangeInterfaceIdiom(Idiom As String)
         '    IdiomsInfo.item(CodeIdiom(i).Code).More = CodeTOC(CodeIdiom(i).Code).value
         'End If
     Next
-MsgBox "changeInterfaceIdiom 29"
+'MsgBox "changeInterfaceIdiom 29"
     
 End Property
 
