@@ -460,15 +460,15 @@ Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     change = change Or (StrComp(SERIAL7.Text_SubmissionOnline.text, Serial_TxtContent(MfnTitle, 692)) <> 0)
     
     change = change Or (StrComp(SERIAL8.ComboCCode.text, Serial_ComboContent(CodeCCode, MfnTitle, 10)) <> 0)
-    Dim X As String
+    Dim x As String
     Dim n As Long
     
-    X = Serial_TxtContent(MfnTitle, 691)
-    If Len(SERIAL7.ScieloNetWrite) > Len(X) Then
-        n = Len(SERIAL7.ScieloNetWrite) - Len(X)
-        X = X + Replace(Space(n), " ", "0")
+    x = Serial_TxtContent(MfnTitle, 691)
+    If Len(SERIAL7.ScieloNetWrite) > Len(x) Then
+        n = Len(SERIAL7.ScieloNetWrite) - Len(x)
+        x = x + Replace(Space(n), " ", "0")
     End If
-    change = change Or (StrComp(SERIAL7.ScieloNetWrite, X) <> 0)
+    change = change Or (StrComp(SERIAL7.ScieloNetWrite, x) <> 0)
     change = change Or (StrComp(SERIAL8.TxtIdNumber.text, Serial_TxtContent(MfnTitle, 30)) <> 0)
     'change = change Or (StrComp(SERIAL7.TxtDocCreation.Text, Serial_TxtContent(MfnTitle, 950)) <> 0)
     'change = change Or (StrComp(SERIAL7.TxtCreatDate.Text, Serial_TxtContent(MfnTitle, 940)) <> 0)
@@ -547,10 +547,10 @@ Sub FormQueryUnload(Cancel As Integer, UnloadMode As Integer)
     End If
 End Sub
 
-Function Serial_Remove(Mfns() As Long, q As Long) As Boolean
+Function Serial_Remove(mfns() As Long, q As Long) As Boolean
     Dim i As Long
     For i = 1 To q
-        journalDAO.delete (Mfns(i))
+        journalDAO.delete (mfns(i))
     Next
 End Function
 
@@ -579,7 +579,7 @@ Sub generateSciELOURL()
     fn = FreeFile
     Open Paths("SciELO URL").Path + "\" + Paths("SciELO URL").FileName For Output As fn
     
-    defaultCollectionURL = Paths("SciELO URL").FileName
+    defaultCollectionURL = Paths("SciELO WEB URL").FileName
     For i = 1 To jlist.count
         With jlist.getItemByIndex(i)
         If .CollectionURL <> "" Then

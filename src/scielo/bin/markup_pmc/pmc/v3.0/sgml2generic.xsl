@@ -588,6 +588,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates/>
 		</comment>
 	</xsl:template>
+	<xsl:template match="xref/*">
+		<xsl:value-of select="text()"/>
+	</xsl:template>
 	<xsl:template match="xref[@rid!='']">
 		<xsl:variable name="rid" select="@rid"/>
 		<xsl:if test="$xref_id[@id=$rid]">

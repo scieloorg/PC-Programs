@@ -18,6 +18,7 @@ Sub Main()
     retDir = Dir(path)
     If retDir = "WINWORD.EXE" Then
         'executa o WORD97 com a macro q prepara ambiente de marcação
+        
         Shell path & " /l " & App.path & "\markup.prg", vbMaximizedFocus
     Else
         DepePath.Text1.Text = path
