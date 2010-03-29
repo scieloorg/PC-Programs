@@ -79,7 +79,7 @@ msgNoXML,No existe el fichero XML del artículo o texto
 msgXMLWasSuccessfullyGenerated,XML fue generado con éxito
 msgPMCDirectoryCouldNotBeCreated,No fue posible crear la carpeta XXX
 msgPMCHTMLCouldNotBeCreated,No fue posible crear el texto desde el XML.
-XSDPMC,http://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd
+XML_TOOL_TYPE,java
 msgQuestionCheckingMarkedTablesAndImages,"Antes de generar el XML, esté seguro que fue hecha la marcación de todas las tablas, imágenes y sus referencias: vbCrlf%PARM1% vbcrlfGenerar el XML ahora?"
 msgInfoXMLError,Error en el archivo XML: %PARM1% vbCrLf código del error: %PARM2% vbCrLf caracter: %PARM3% vbCrLf %PARM4% vbCrLf
 msgCriticalMissingXMLBODY,Necesario marcar xmlbody antes de generar el archivo XML
