@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util" xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
-	<xsl:output encoding="utf-8" method="xml" indent="yes" doctype-public="SYSTEM" doctype-system="http://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd"/>
+	<!--xsl:output encoding="utf-8" method="xml" indent="yes" doctype-public="SYSTEM" doctype-system="http://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd"/-->
+	
+<xsl:output encoding="utf-8" method="xml" indent="yes" doctype-public="SYSTEM" doctype-system="file://D:/c/svn.reddes.bvsalud.org/scielo-metodologia/pc_programs/trunk/src/scielo/bin/markup_pmc/pmc/v3.0/publishing/journalpublishing3.dtd"/>
+	
+	
 	<xsl:include href="sgml2generic.xsl"/>
 	<xsl:template match="aff/city | aff/state | aff/@orgdiv1 | aff/@orgdiv2 | aff/@orgdiv3"/>
 	<xsl:template match="aff/@orgdiv1 | aff/@orgdiv2 | aff/@orgdiv3" mode="org-aff">

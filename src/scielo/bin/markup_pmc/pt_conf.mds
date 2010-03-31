@@ -90,3 +90,4 @@ msgBeforExiting4,Sair sem salvar
 msgQuestionGenerate2PMC,Gerar XML para PubMed Central?
 msgWarningIssueHasMarkupFinishedInTitleManager,"Saia do Markup, abra o programa Title Manager, modifique para este fascículo o campo Marcação feita e tente novamente o programa Markup."
 pmcVersion,v3.0
+timer,999999999
