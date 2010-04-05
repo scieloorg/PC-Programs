@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<translations>
+   
+    <xslid id="sci_abstract">
+        <text find="abstract">Resumé</text>
+        <text find="keywords">Mots clés</text>
+    </xslid>
+   
+</translations>
