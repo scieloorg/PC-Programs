@@ -15,9 +15,9 @@ Option Explicit
 
 Private isis As ClIsisDll
 
-Sub setDB(path As String, File As String, label As String)
+Sub setDB(Path As String, File As String, label As String)
     Set isis = New ClIsisDll
-    If isis.Inicia(path, File, label) Then
+    If isis.Inicia(Path, File, label) Then
         isis.IfCreate (File)
     End If
 End Sub
@@ -135,7 +135,10 @@ Sub save(table As clsTable)
                     End With
                 Next
                 
-                id = lang + "-" + table.label
+                
+                id = table.label
+                If Len(lang) > 0 Then id = lang + "_" + id
+                
                 q = isis.MfnFind(id, Mfns)
                 
                 If q > 0 Then
@@ -157,8 +160,10 @@ Function getCodesAndValues(attr As String, Optional lang As String) As String
     Dim q As Long
     Dim Mfns() As Long
     Dim res As String
-    
-    q = isis.MfnFind(lang + "-" + attr, Mfns)
+    Dim find As String
+    find = attr
+    If Len(lang) > 0 Then find = lang + "_" + find
+    q = isis.MfnFind(find, Mfns)
     If q > 0 Then
         res = res + isis.UsePft(Mfns(q), "(v2^v+|;|)") + vbCrLf
         res = res + isis.UsePft(Mfns(q), "(v2^c+|;|)") + vbCrLf

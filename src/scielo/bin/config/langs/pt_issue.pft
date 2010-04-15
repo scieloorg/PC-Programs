@@ -10,7 +10,7 @@
 ,v42/,
 ,(v49^t|;|),'Sem título de seção'/,
 ,(v49^c|;|),'nd'/,
-,proc(,ref(['c:\scielo\code\code']l(['c:\scielo\code\code']'pt-scheme'),('a999{',v2,'{'),'a998{',(|~|v2^c|~|,v2^v,|#|v2^c|#|),'{'),),
+,proc(,ref(['c:\scielo\code\code']l(['c:\scielo\code\code']'pt_scheme'),('a999{',v2,'{'),'a998{',(|~|v2^c|~|,v2^v,|#|v2^c|#|),'{'),),
 ,if a(v85) then
 	,(if v999^c='nd' then
 		,v999^v/,

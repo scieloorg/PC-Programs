@@ -1,0 +1,64 @@
+1001  title
+
+005  Type of Literature (Subject Information)
+006  Treatment Level  (Subject Information)
+010  Center Code (Center's control Information)
+020  National code
+030  Identification Number (Center)
+035  Tipo de ISSN                              PRINT/CDROM/DISKE/ONLIN
+037  SECS Identifier
+050  Publication Status
+062  Copyright (?)
+063  Address (Editora)
+064  Eletronic Address
+065  Separator (control information)
+066  FTP
+067  User's subscription
+068  Publisher's identifier (Sigla lowercase)
+069  Site Location          (Previsto)
+085  Descritor                                                 nd/decs
+100  Publication Title
+110  Publication Subtitle
+130  Section Title          ( ** Nao presente na base **)
+117  Norma
+140  Sponsor
+150  Short Title
+151  Titulo LILACS
+230  Parallel Titles
+240  Other Titles
+301  Initial date (formal information)
+302  Initial Volume (formal information)
+303  Initial Number (formal information)
+304  Termination Date (formal information)
+305  Final Volume (formal information)
+306  Final Number
+310  Publisher's country
+320  Publisher's state
+330  Level of publication
+340  Alphabet
+350  Text idiom
+360  Abstract idiom
+380  Frequency
+400  ISSN
+420  MEDLINE Code
+421  Short title for MEDLINE
+430  Classification
+440  Subject
+441  Study area
+450  Indexation Range
+480  Publisher
+490  Publisher's city
+550  Has supplement
+560  Is supplement
+610  Old Title
+691  Mascara de bits relacionada a tabela codes
+     (Em qual scielo esta presente)
+710  New Title
+900  Notes
+901  Mission
+930  Siglum        (Sigla uppercase)
+940  Creation Date
+941  Update Date
+950  Documentalist (creation)
+951  Documentalist (update)
+

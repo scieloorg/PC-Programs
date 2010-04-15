@@ -2,7 +2,7 @@ Attribute VB_Name = "ModGlobal"
 Option Explicit
 
 Public Const SECTION_SEP = "%"
-Public Const CODE_SEP = "-"
+
 'Uso de isisdll
 Public AppHandle    As Long
 Public Const delim1 = "<"
@@ -255,18 +255,18 @@ End Function
 
 Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColCode)
     Dim isisCode As ClIsisdll
-    Dim mfn As Long
-    Dim Mfns() As Long
+    Dim Mfn As Long
+    Dim mfns() As Long
     Dim q As Long
     Dim i As Long
     Dim aux As String
-    Dim p As Long
-    Dim p2 As Long
+    Dim a_codes() As String
+    Dim a_values() As String
+    Dim a() As String
     Dim itemCode As ClCode
-    Dim val As String
-    Dim cod As String
     Dim exist As Boolean
     Dim format As String
+    Dim tracing As String
     Dim find As String
     
     With CodeDB
@@ -275,55 +275,50 @@ Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColC
     If isisCode.Inicia(.Path, .FileName, .key) Then
         If isisCode.IfCreate(.FileName) Then
             i = 0
-            mfn = 0
+            Mfn = 0
             
             find = key
             If Len(Idiom) > 0 Then
-                find = Idiom & CODE_SEP & find
+                find = Idiom & "_" & find
             End If
-            q = isisCode.MfnFind(find, Mfns)
+            'q = isisCode.MfnFind(Replace(find, " ", "_"), mfns)
+            q = isisCode.MfnFind(find, mfns)
             
-                While (i < q) And (mfn = 0)
-                    i = i + 1
-                    format = "if v1^*='" + key + "' and (v1^l='" + Idiom + "' or a(v1^l))  then (v2^v|;|,v2^c|;;|)  fi"
-                    
-                    aux = isisCode.UsePft(Mfns(i), format)
-                    format = format & vbCrLf & aux & vbCrLf & CStr(Mfns(i))
-                    If Len(aux) > 0 Then mfn = Mfns(i)
-                Wend
+            'format = "if v1^*='" + key + "' and (v1^l='" + Idiom + "' or a(v1^l))  then (v2^v|;|,v2^c|;;|)  fi"
+            format = "if v1^*='" + key + "' and (v1^l='" + Idiom + "' or a(v1^l))  then (v2^v|;|),'|',(v2^c|;;|)  fi"
             
-            If mfn > 0 Then
-                p2 = InStr(aux, ";;")
-                p = InStr(aux, ";")
-                While p2 > 0
-                    val = Mid(aux, 1, p - 1)
-                    cod = Mid(aux, p + 1, p2 - p - 1)
+            tracing = "format: " & format
+            While (i < q) And (Mfn = 0)
+                i = i + 1
                 
-'                    Set itemCode = Code.Item(val, exist)
-'                    If Not exist Then
-'                        Set itemCode = Code.Add(val)
-'                        itemCode.Value = val
-'                        itemCode.Code = cod
-'                    End If
-                    
-                    Set itemCode = Code.item(CVar(cod), exist)
-                    format = format + vbCrLf + "(" + cod + "," + val + ")" + CStr(exist)
+                aux = isisCode.UsePft(mfns(i), format)
+                
+                If Len(aux) > 0 Then Mfn = mfns(i)
+                
+            Wend
+            tracing = tracing & vbCrLf & "result:" & aux & vbCrLf & "mfn: " & CStr(Mfn)
+            
+            If Mfn > 0 Then
+                a = Split(aux, "|")
+                a_values = Split(a(0), ";")
+                a_codes = Split(a(1), ";;")
+                
+                For i = 0 To UBound(a_values) - 1
+                    Set itemCode = Code.item(CVar(a_codes(i)), exist)
+                    tracing = tracing + vbCrLf + "(" + a_codes(i) + "," + a_values(i) + ")" + CStr(exist)
                     If Not exist Then
                         Set itemCode = New ClCode
                         
-                        itemCode.value = val
-                        itemCode.Code = cod
-                        Call Code.add(itemCode, CVar(cod))
+                        itemCode.value = a_values(i)
+                        itemCode.Code = a_codes(i)
+                        Call Code.add(itemCode, CVar(a_codes(i)))
                     End If
+                Next
                 
-                    aux = Mid(aux, p2 + 2)
-                    p2 = InStr(aux, ";;")
-                    p = InStr(aux, ";")
-                Wend
             End If
         End If
     End If
-    If Code.count = 0 Then MsgBox "count=0 q=" + CStr(q) + " " + Idiom + CODE_SEP + key + " " + format + " " + aux
+    If Code.count = 0 Then MsgBox "count=0 q=" + CStr(q) + " " + Idiom + "_" + key + " " + tracing + " " + aux
     
     End With
 End Sub
@@ -331,7 +326,7 @@ End Sub
 
 Property Let ChangeInterfaceIdiom(Idiom As String)
     Dim i As Long
-    Dim X As ClIdiom
+    Dim x As ClIdiom
     Dim CodeDB As ClFileInfo
     
     CurrIdiomHelp = Idiom
@@ -373,12 +368,12 @@ Property Let ChangeInterfaceIdiom(Idiom As String)
     'Call LoadCodes(CodeDB, Idiom, "scheme", CodeScheme)
             
     Set IdiomsInfo = New ColIdiom
-    Set X = New ClIdiom
+    Set x = New ClIdiom
     For i = 1 To CodeIdiom.count
         'Set x = IdiomsInfo(CodeIdiom(i).Code)
         'If x Is Nothing Then
         
-            Set X = IdiomsInfo.add(CodeIdiom.item(i).Code, CodeIdiom(i).value, CodeTOC.item(CodeIdiom(i).Code).value, CodeIdiom(i).Code)
+            Set x = IdiomsInfo.add(CodeIdiom.item(i).Code, CodeIdiom(i).value, CodeTOC.item(CodeIdiom(i).Code).value, CodeIdiom(i).Code)
         'Else
         '    IdiomsInfo.item(CodeIdiom(i).Code).label = CodeIdiom(i).value
         '    IdiomsInfo.item(CodeIdiom(i).Code).More = CodeTOC(CodeIdiom(i).Code).value

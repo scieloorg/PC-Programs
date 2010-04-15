@@ -1,0 +1,98 @@
+<!-- alteracao em 23/02/2000 -->
+<!-- devido a filiacao, que deve ter orgdiv1,2,3 como atributo, e ter eliminado orgdiv -->
+
+<!-- ==================================================================== -->
+<!--    Common Elements  (ARTICLE 3.1, TEXT 3.1)                          -->
+<!-- ==================================================================== -->
+
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!--   Common Models                                                      -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<!ENTITY % i.float  "aff | ign | table | figgrp | cltrial | deposit " > 
+<!ENTITY % m.name   "(fname? & surname)" >
+<!ENTITY % m.org    "(orgname? & orgdiv?)" >
+<!ENTITY % m.title  "title, subtitle?" >
+
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!--   Floating Elements                                                  -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<!ELEMENT ign - - CDATA >
+
+<!ELEMENT aff - - (city? & state? & country? & zipcode? & email? & (#PCDATA)?)>
+<!ATTLIST aff
+          id       ID    #REQUIRED
+          orgname  CDATA #REQUIRED
+	  orgdiv1  CDATA #IMPLIED
+	  orgdiv2  CDATA #IMPLIED
+	  orgdiv3  CDATA #IMPLIED >
+
+<!ELEMENT zipcode - - (#PCDATA)>
+<!ELEMENT email   - - (#PCDATA)>
+<!ELEMENT city   - - (#PCDATA)>
+<!ELEMENT state   - - (#PCDATA)>
+<!ELEMENT country   - - (#PCDATA)>
+
+<!ELEMENT table - - ((%m.title;)? & legend?) >
+<!ATTLIST table
+          no       CDATA #REQUIRED>
+
+<!ELEMENT legend - - (#PCDATA) >
+
+<!ELEMENT figgrp - - ((%m.title;)? & figref? & legend?) >
+<!ATTLIST figgrp 
+          no       CDATA #REQUIRED>
+
+<!ELEMENT figref - - (#PCDATA) >
+          
+<!ELEMENT cltrial - - (ctreg & ctdb & ctdburl?)>
+<!ELEMENT ctreg - - (#PCDATA) >
+<!ELEMENT ctdb - - (#PCDATA) >
+<!ATTLIST ctdb
+          ctdbid       CDATA    #REQUIRED >
+<!ELEMENT ctdburl - - (#PCDATA) >
+
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!--    Title Group                                                       -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<!ELEMENT titlegrp - - (%m.title;)+ >
+
+<!ELEMENT title    - - CDATA >
+<!ATTLIST title
+          language CDATA #REQUIRED >
+<!ELEMENT subtitle - - CDATA >
+
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!--    Author Group                                                      -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<!ELEMENT authgrp  - - (author | corpauth)+ >
+    
+<!ELEMENT author   - - ((%m.name;) | previous ) >
+<!ATTLIST author
+          role     NAMES  #REQUIRED
+          rid      IDREFS #IMPLIED>
+<!ELEMENT corpauth - - ((%m.org;) | previous ) >
+
+<!ELEMENT fname    - - (#PCDATA) >
+<!ELEMENT surname  - - (#PCDATA) >
+<!ELEMENT orgname  - - (#PCDATA) >
+
+
+<!ELEMENT orgdiv   - - (#PCDATA) >
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!--   Date                                                      -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<!ELEMENT date     - - (#PCDATA) >
+<!ATTLIST date
+          dateiso  CDATA #IMPLIED >
+
+

@@ -1,0 +1,38 @@
+1001  newissue
+
+4|Path completo do arquivo newissue ?? checar qdo cria
+6|issue order in journal published list to discover "last" (issue - pos processamento)
+30|Short Title (?)
+31|Vol
+32|Number
+33|Issue Title (repetitive per language)
+34|Part
+35|ISSN
+36|Sequencial Number
+42|Status
+43|Bibliographic Strip (repetitive per language)
+48|Table of Contents  (repetitive per language)
+49|Section     (Repetitive)
+62|Editor
+64|Publication Date (repetitive)
+65|Date ISO
+85|Scheme  (Data?)   (** not present **)
+91|(outra data?)
+97|Cover Picture
+117|Standard  (Norma)
+122|Number of Documents
+130|Title
+131|Supplement Vol
+132|Supplement Number
+140|Sponsor
+151|ISO Short Title
+200|Markup Done (Flag 0 - needs markup)
+230|Alternative Titles
+421|Medline Short Title
+480|Publisher
+700|??? sempre 0 - ordem na base do issue (proc)
+701|??? sempre 1 - ordem no tipo de registro (proc)
+706|??? sempre i - tipo de registro (proc)
+930|Sigla
+991|??? processamento
+

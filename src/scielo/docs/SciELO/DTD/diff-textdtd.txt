@@ -1,0 +1,56 @@
+Comparando os arquivos text4_0.dtd e V3\TEXT3_1.DTD
+***** text4_0.dtd
+<!-- ==================================================================== -->
+<!--    Text DTD, Version 4.0                                             -->
+<!-- ==================================================================== -->
+***** V3\TEXT3_1.DTD
+<!-- ==================================================================== -->
+<!--    Text DTD, Version 3.0                                             -->
+<!-- ==================================================================== -->
+*****
+
+***** text4_0.dtd
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!ENTITY % common SYSTEM "common4_0.dtd">
+%common;
+<!ENTITY % cita SYSTEM "citation4_0.dtd">
+%cita;
+<!ELEMENT text  - - ( (doi?, related*), (titlegrp? & authgrp? &
+((#PCDATA) | xmlbody )? & back?)) +(%i.float;) >
+<!ATTLIST text
+***** V3\TEXT3_1.DTD
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!ENTITY % common SYSTEM "common31.dtd">
+%common;
+<!ENTITY % cita SYSTEM "citation31.dtd">
+%cita;
+<!ELEMENT text  - - (titlegrp? & authgrp? & (#PCDATA)? & back?) +(%i.float;) >
+<!ATTLIST text
+*****
+
+***** text4_0.dtd
+          supplno  CDATA #IMPLIED 
+          isidpart CDATA #IMPLIED 
+          dateiso  CDATA #REQUIRED
+***** V3\TEXT3_1.DTD
+          supplno  CDATA #IMPLIED 
+          dateiso  CDATA #REQUIRED
+*****
+
+***** text4_0.dtd
+                  rvpdate CDATA #IMPLIED
+          hcomment CDATA #IMPLIED
+          toccode  CDATA #REQUIRED >
+***** V3\TEXT3_1.DTD
+                  rvpdate CDATA #IMPLIED                  
+          toccode  CDATA #REQUIRED >
+*****
+
+***** text4_0.dtd
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!ELEMENT back     - -  ((vancouv | iso690 | abnt6023 | apa | other), licenses) >
+***** V3\TEXT3_1.DTD
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!ELEMENT back     - -  (vancouv | iso690 | abnt6023 | other) >
+*****
+

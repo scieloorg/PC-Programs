@@ -16,10 +16,10 @@ if exist %2\serial\code\code.fst xcopy /K /Q /Y /O  %2\serial\code\code.fst %2\s
 if exist %2\serial\code\newcode.mst goto FIM
 if exist %2\serial\code\code.mst xcopy /K /Q /Y /O %2\serial\code\code.* %2\serial\code\newcode.*
 
-
-
-
 :FIM
+
+if exist %2\serial\code\code.mst %1\bin\cfg\mx %2\serial\code\code fst=@ fullinv=%2\serial\code\code
+if exist %2\serial\code\newcode.mst %1\bin\cfg\mx %2\serial\code\newcode fst=@ fullinv=%2\serial\code\newcode
 
 SET BAP=OS23470a
 
