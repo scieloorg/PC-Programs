@@ -3,7 +3,7 @@
 
 rem Inicializa variaveis
 set SHELL=C:\COMMAND.COM /P /E:1024
-set CISIS_DIR=..\..\cisis
+set CISIS_DIR=..\cisis
 
 
 rem Set parametros para execucao

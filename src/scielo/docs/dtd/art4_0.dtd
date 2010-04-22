@@ -110,8 +110,7 @@
 <!ENTITY % common SYSTEM "common4_0.dtd">
 %common;
 
-<!ENTITY % m.bib    "(((abstract? & keygrp?) & confgrp? & report? & thesgrp? 
-                      & hist? & (%m.title;)?)+)" >
+<!ENTITY % m.bib    "(abstract, keygrp?)* , (confgrp? , report? , thesgrp? , hist? )" >
 
 <!ENTITY % cita SYSTEM "citation4_0.dtd">
 %cita;

@@ -281,22 +281,19 @@ Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColC
             If Len(Idiom) > 0 Then
                 find = Idiom & "_" & find
             End If
+            
+            find = Replace(find, " ", "_")
             'q = isisCode.MfnFind(Replace(find, " ", "_"), mfns)
             q = isisCode.MfnFind(find, mfns)
             
             'format = "if v1^*='" + key + "' and (v1^l='" + Idiom + "' or a(v1^l))  then (v2^v|;|,v2^c|;;|)  fi"
-            format = "if v1^*='" + key + "' and (v1^l='" + Idiom + "' or a(v1^l))  then (v2^v|;|),'|',(v2^c|;;|)  fi"
-            
-            tracing = "format: " & format
+            format = "if s(v1^*)='" + key + "' and (s(v1^l)='" + Idiom + "' or a(v1^l))  then (v2^v|;|),'|',(v2^c|;;|) fi"
             While (i < q) And (Mfn = 0)
                 i = i + 1
-                
                 aux = isisCode.UsePft(mfns(i), format)
-                
                 If Len(aux) > 0 Then Mfn = mfns(i)
-                
             Wend
-            tracing = tracing & vbCrLf & "result:" & aux & vbCrLf & "mfn: " & CStr(Mfn)
+            tracing = vbCrLf & "format: " & format & vbCrLf & "result:" & aux & vbCrLf & "mfn: " & CStr(Mfn)
             
             If Mfn > 0 Then
                 a = Split(aux, "|")
@@ -318,7 +315,7 @@ Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColC
             End If
         End If
     End If
-    If Code.count = 0 Then MsgBox "count=0 q=" + CStr(q) + " " + Idiom + "_" + key + " " + tracing + " " + aux
+    If Code.count = 0 Then MsgBox "count=0 q=" + CStr(q) + " " + find + " " + tracing
     
     End With
 End Sub

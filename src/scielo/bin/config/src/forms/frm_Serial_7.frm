@@ -103,7 +103,6 @@ Begin VB.Form JOURNAL5
          Left            =   1200
          MultiLine       =   -1  'True
          TabIndex        =   0
-         Text            =   "frm_Serial_7.frx":030A
          Top             =   1080
          Width           =   6135
       End
@@ -113,7 +112,6 @@ Begin VB.Form JOURNAL5
          Left            =   1200
          MultiLine       =   -1  'True
          TabIndex        =   1
-         Text            =   "frm_Serial_7.frx":040C
          Top             =   2040
          Width           =   6135
       End
@@ -123,7 +121,6 @@ Begin VB.Form JOURNAL5
          Left            =   1200
          MultiLine       =   -1  'True
          TabIndex        =   2
-         Text            =   "frm_Serial_7.frx":050E
          Top             =   2880
          Width           =   6135
       End
@@ -213,14 +210,14 @@ Sub MySetLabels()
     
 End Sub
 
-Sub MyGetContentFromBase(mfnTitle As Long)
+Sub MyGetContentFromBase(MfnTitle As Long)
     'JournalStatusAction.setLanguage (CurrCodeIdiom)
     'Set JournalStatusAction.ErrorMessages = ErrorMessages
     'Set JournalStatusAction.myHistory = journalDAO.getHistory(MfnTitle)
     
-    Set cc = journalDAO.getJournalCreativeCommons(mfnTitle)
-        TxtCprightDate.text = Serial_TxtContent(mfnTitle, 621)
-        TxtCprighter.text = Serial_TxtContent(mfnTitle, 62)
+    Set cc = journalDAO.getJournalCreativeCommons(MfnTitle)
+        TxtCprightDate.text = Serial_TxtContent(MfnTitle, 621)
+        TxtCprighter.text = Serial_TxtContent(MfnTitle, 62)
     
         Call PresentsData
     
@@ -236,13 +233,13 @@ Sub MyClearContent()
 
 End Sub
 
-Function changed(mfnTitle As Long) As Boolean
+Function changed(MfnTitle As Long) As Boolean
     'FIXME
     Dim temp As clsCreativeCommons
     Dim change As Boolean
     
     
-    Set temp = journalDAO.getJournalCreativeCommons(mfnTitle)
+    Set temp = journalDAO.getJournalCreativeCommons(MfnTitle)
     For i = 1 To IdiomsInfo.count
         If (temp.getLicense(IdiomsInfo(i).Code).text <> TextCreativeCommons(i - 1).text) Then
             change = True
@@ -250,8 +247,8 @@ Function changed(mfnTitle As Long) As Boolean
     Next
     changed = change
 End Function
-Sub MyOpen(mfnTitle As Long)
-    MyMfnTitle = mfnTitle
+Sub MyOpen(MfnTitle As Long)
+    MyMfnTitle = MfnTitle
     
     Left = FormMenuPrin.SysInfo1.WorkAreaWidth / 2 - (Width + FrmInfo.Width) / 2
     Top = FormMenuPrin.SysInfo1.WorkAreaHeight / 2 - Height / 2
@@ -335,7 +332,7 @@ Sub receiveData()
     Next
     filling = (filled Or noFilled)
         
-    If filled Or Not noFilled Then
+    'If filled Or Not noFilled Then
         For i = 1 To IdiomsInfo.count
             If Len(TextCreativeCommons(i - 1).text) > 0 Then
                 t = TextCreativeCommons(i - 1).text
@@ -348,7 +345,7 @@ Sub receiveData()
             item.lang = IdiomsInfo(i).Code
             item.text = t
         Next
-    End If
+    'End If
 End Sub
 
 Function getCreativeCommons() As clsCreativeCommons

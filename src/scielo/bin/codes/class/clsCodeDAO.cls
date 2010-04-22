@@ -58,7 +58,7 @@ Function getCodes(label As String) As clsTable
     
     res.label = label
     
-    q = isis.MfnFind(label, Mfns)
+    q = isis.MfnFind(Replace(label, " ", "_"), Mfns)
     If q > 0 Then
         If (StrComp(label, isis.UsePft(Mfns(q), "v1^*")) = 0) Then
             l = isis.UsePft(Mfns(q), "v1^l")
@@ -138,7 +138,7 @@ Sub save(table As clsTable)
                 
                 id = table.label
                 If Len(lang) > 0 Then id = lang + "_" + id
-                
+                id = Replace(id, " ", "_")
                 q = isis.MfnFind(id, Mfns)
                 
                 If q > 0 Then
@@ -163,6 +163,7 @@ Function getCodesAndValues(attr As String, Optional lang As String) As String
     Dim find As String
     find = attr
     If Len(lang) > 0 Then find = lang + "_" + find
+    find = Replace(find, " ", "_")
     q = isis.MfnFind(find, Mfns)
     If q > 0 Then
         res = res + isis.UsePft(Mfns(q), "(v2^v+|;|)") + vbCrLf

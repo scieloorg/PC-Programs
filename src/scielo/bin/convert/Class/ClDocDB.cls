@@ -32,7 +32,7 @@ End Property
 'FileName   - FileName do arquivo da base
 'Retorno        - sucesso ou fracasso
 '-----------------------------------------------------------------------
-Function Initiate(Path As String, filename As String, Label As String) As Boolean
+Function Initiate(Path As String, FileName As String, Label As String) As Boolean
     Dim ret As Boolean
     
     'Call articleDAO.setData(Path, fileName, Label)
@@ -44,7 +44,7 @@ Function Initiate(Path As String, filename As String, Label As String) As Boolea
  '           If Isis.MfnQuantity > 0 Then Call Isis.IfUpdate(1, Isis.MfnQuantity)
  '           ret = True
             DBPath = Path
-            dbname = filename
+            dbname = FileName
             'IfName = FileName
  '       End If
  '   End If
@@ -290,7 +290,7 @@ Function DOCSave(DocId As String) As Boolean
     Dim percent As Double
     Dim recidx As Long
     Dim pages As String
-    Dim p As Long
+    Dim P As Long
     Dim p2 As Long
     Dim isis As ClIsisDll
     Dim NewRangeInit As Long
@@ -540,15 +540,15 @@ Sub FinishDocConversion()  '(TransSymbolPath As String, TransSymbolFile As Strin
     If BV(Currbv).Flag_PreviousAuthor = "1" Then SetPrevious
     If BV(Currbv).Flag_ISSN = "1" Then ISSNSet
     
-    If BV(Currbv).Flag_ISODB = "1" Then
-        Convert2ISO
-    Else
-        If EXISTDELETEDRECORDS Then DBRemoveDeletedRecords
-    End If
+    'If BV(Currbv).Flag_ISODB = "1" Then
+    '    Convert2ISO
+    'Else
+    '    If EXISTDELETEDRECORDS Then DBRemoveDeletedRecords
+    'End If
         
-    Set iso = New ClISODB
-    Call iso.ISOUpdate(GetDatabaseId, Mid(DBPath, 1, 2), Mid(DBPath, 4), dbname)
-    Set iso = Nothing
+    'Set iso = New ClISODB
+    'Call iso.ISOUpdate(GetDatabaseId, Mid(DBPath, 1, 2), Mid(DBPath, 4), dbname)
+    'Set iso = Nothing
     
     
     Set pts = New ClPTSDB
@@ -591,7 +591,7 @@ Function GetConversionInfo() As String
     Dim Path As String
     Dim name As String
     Dim PathBase As String
-    Dim p As Long
+    Dim P As Long
     
     Set isis = New ClIsisDll
     
@@ -608,15 +608,15 @@ Function GetConversionInfo() As String
             eventdata = eventdata + .TagContents(GetTimeISO(Time), 302)
             
             PathBase = DBPath + PathSep + dbname
-            p = InStr(PathBase, ":")
-            If p > 0 Then
-                drv = Mid(PathBase, 1, p)
-                name = Mid(PathBase, p + 1)
-                p = InStr(name, "\")
-                While p > 0
-                    Path = Path + Mid(name, 1, p)
-                    name = Mid(name, p + 1)
-                    p = InStr(name, "\")
+            P = InStr(PathBase, ":")
+            If P > 0 Then
+                drv = Mid(PathBase, 1, P)
+                name = Mid(PathBase, P + 1)
+                P = InStr(name, "\")
+                While P > 0
+                    Path = Path + Mid(name, 1, P)
+                    name = Mid(name, P + 1)
+                    P = InStr(name, "\")
                 Wend
             End If
             eventdata = eventdata + .TagContents(drv, 500)

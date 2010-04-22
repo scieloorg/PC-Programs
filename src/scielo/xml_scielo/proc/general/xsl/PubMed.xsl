@@ -427,7 +427,7 @@
 				<xsl:if test="not(address)">
 					<xsl:apply-templates select="$others[normalize-space(institution)=$aff]" mode="address"/>
 				</xsl:if>
-				<xsl:if test="e-mail">, <xsl:apply-templates select="e-mail"/>
+				<xsl:if test="e-mail">, <xsl:value-of select="e-mail/text()"/>
 				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>

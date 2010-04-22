@@ -32,9 +32,9 @@ Function Serial_CheckExisting(SerialTitle_to_find As String) As Long
     End If
 End Function
 
-Function Serial_TxtContent(mfn As Long, tag As Long, Optional language As String) As String
+Function Serial_TxtContent(Mfn As Long, tag As Long, Optional language As String) As String
 'xxx
-    Serial_TxtContent = journalDAO.getFieldContentByLanguage(mfn, tag, language)
+    Serial_TxtContent = journalDAO.getFieldContentByLanguage(Mfn, tag, language)
 End Function
 
 Function Serial_ComboDefaultValue(Code As ColCode, DefaultOption As String) As String
@@ -55,8 +55,8 @@ Function Serial_ComboDefaultValue(Code As ColCode, DefaultOption As String) As S
     
     Serial_ComboDefaultValue = content
 End Function
-Function Serial_ComboContent(Code As ColCode, mfn As Long, tag As Long, Optional DefaultOption As String) As String
-    Serial_ComboContent = journalDAO.getDecodedValue(Code, mfn, tag, DefaultOption)
+Function Serial_ComboContent(Code As ColCode, Mfn As Long, tag As Long, Optional DefaultOption As String) As String
+    Serial_ComboContent = journalDAO.getDecodedValue(Code, Mfn, tag, DefaultOption)
 End Function
 
 Function TagTxtContent(content As String, tag As Long) As String
@@ -75,7 +75,7 @@ Function TagTxtContent(content As String, tag As Long) As String
     TagTxtContent = NewContent
 End Function
 
-Sub Serial_ListContent(list As ListBox, Code As ColCode, mfn As Long, tag As Long)
+Sub Serial_ListContent(list As ListBox, Code As ColCode, Mfn As Long, tag As Long)
     Dim content As String
     Dim exist As Boolean
     Dim itemCode As ClCode
@@ -86,7 +86,7 @@ Sub Serial_ListContent(list As ListBox, Code As ColCode, mfn As Long, tag As Lon
     Dim found As Boolean
     
     sep = "%"
-    content = journalDAO.getRepetitiveFieldValue(mfn, tag, sep)
+    content = journalDAO.getRepetitiveFieldValue(Mfn, tag, sep)
     
     For i = 0 To list.ListCount - 1
         list.selected(i) = False
@@ -228,6 +228,8 @@ Function Serial_Save(MfnTitle As Long) As Long
     reccontent = reccontent + TagTxtContent(SERIAL8.TxtUpdateDate.text, 941)
     
     reccontent = reccontent + SERIAL6.getDataToSave
+    
+    JOURNAL5.receiveData
     reccontent = reccontent + journalDAO.tagCreativeCommons(JOURNAL5.getCreativeCommons)
     
     If MfnTitle = 0 Then
@@ -632,7 +634,7 @@ Sub generateFile_JournalList4Automata()
     ' Acta Cir. Bras.;ocitat;acb.amd;tgother.amd
     For i = 1 To jlist.count
         With jlist.getItemByIndex(i)
-        Print #fn, .shorttitle & ";" & citat.item(.JournalStandard) & "citat;" & .pubid & ".amd;" & tgs.item(.JournalStandard) & ".amd"
+        Print #fn, .ISSN & ";" & citat.item(.JournalStandard) & "citat;" & .pubid & ".amd;" & tgs.item(.JournalStandard) & ".amd"
         Print #fn, ""
         End With
     Next
@@ -640,7 +642,7 @@ Sub generateFile_JournalList4Automata()
         
     
 End Sub
-Function isTitleFormCompleted(mfn As Long) As Boolean
+Function isTitleFormCompleted(Mfn As Long) As Boolean
     
     Dim i As Long
     Dim completed As Boolean
@@ -651,7 +653,7 @@ Function isTitleFormCompleted(mfn As Long) As Boolean
         
         i = i + 1
         
-        completed = (Len(journalDAO.getRepetitiveFieldValue(mfn, CLng(Fields.getMandatoryFields.item(i)), "")) > 0)
+        completed = (Len(journalDAO.getRepetitiveFieldValue(Mfn, CLng(Fields.getMandatoryFields.item(i)), "")) > 0)
     Wend
     
     isTitleFormCompleted = completed
