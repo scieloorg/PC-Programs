@@ -50,17 +50,18 @@ Begin VB.Form Issue2
       _ExtentY        =   8916
       _Version        =   393216
       Tabs            =   4
-      Tab             =   1
+      Tab             =   3
       TabsPerRow      =   4
       TabHeight       =   520
       TabCaption(0)   =   "General"
       TabPicture(0)   =   "frm_issue_2.frx":030A
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "FramFasc2(0)"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "Bibliographic Strip"
       TabPicture(1)   =   "frm_issue_2.frx":0326
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "FramLeg"
       Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
@@ -71,23 +72,32 @@ Begin VB.Form Issue2
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Settings"
       TabPicture(3)   =   "frm_issue_2.frx":035E
-      Tab(3).ControlEnabled=   0   'False
+      Tab(3).ControlEnabled=   -1  'True
       Tab(3).Control(0)=   "FrameCreativeCommons"
+      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       Begin VB.Frame FrameCreativeCommons 
          Caption         =   "Creative Commons"
          Height          =   4455
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   100
          Top             =   480
          Width           =   8535
+         Begin VB.ComboBox ComboIssueLicText 
+            Height          =   315
+            Left            =   1560
+            Style           =   2  'Dropdown List
+            TabIndex        =   109
+            Top             =   360
+            Width           =   3135
+         End
          Begin VB.TextBox TextCreativeCommons 
             Height          =   975
             Index           =   2
             Left            =   1560
+            Locked          =   -1  'True
             MultiLine       =   -1  'True
-            TabIndex        =   104
-            Text            =   "frm_issue_2.frx":037A
+            TabIndex        =   103
             Top             =   3120
             Width           =   6855
          End
@@ -95,9 +105,9 @@ Begin VB.Form Issue2
             Height          =   975
             Index           =   1
             Left            =   1560
+            Locked          =   -1  'True
             MultiLine       =   -1  'True
-            TabIndex        =   103
-            Text            =   "frm_issue_2.frx":047C
+            TabIndex        =   102
             Top             =   2040
             Width           =   6855
          End
@@ -105,9 +115,9 @@ Begin VB.Form Issue2
             Height          =   975
             Index           =   0
             Left            =   1560
+            Locked          =   -1  'True
             MultiLine       =   -1  'True
             TabIndex        =   101
-            Text            =   "frm_issue_2.frx":057E
             Top             =   960
             Width           =   6855
          End
@@ -116,7 +126,7 @@ Begin VB.Form Issue2
             Height          =   255
             Index           =   2
             Left            =   120
-            TabIndex        =   107
+            TabIndex        =   106
             Top             =   3120
             Width           =   1335
          End
@@ -125,7 +135,7 @@ Begin VB.Form Issue2
             Height          =   255
             Index           =   1
             Left            =   120
-            TabIndex        =   106
+            TabIndex        =   105
             Top             =   2040
             Width           =   1335
          End
@@ -134,17 +144,9 @@ Begin VB.Form Issue2
             Height          =   255
             Index           =   0
             Left            =   120
-            TabIndex        =   105
+            TabIndex        =   104
             Top             =   960
             Width           =   1335
-         End
-         Begin VB.Label LabelCreativeCommonsInstructions 
-            Caption         =   "LabelCreativeCommonsInstructions"
-            Height          =   375
-            Left            =   120
-            TabIndex        =   102
-            Top             =   360
-            Width           =   8295
          End
       End
       Begin VB.Frame FramFasc2 
@@ -157,7 +159,7 @@ Begin VB.Form Issue2
          Begin VB.TextBox Text_IssueISSN 
             Height          =   285
             Left            =   6360
-            TabIndex        =   108
+            TabIndex        =   107
             Top             =   2280
             Width           =   1935
          End
@@ -264,7 +266,7 @@ Begin VB.Form Issue2
             Caption         =   "Issue ISSN"
             Height          =   195
             Left            =   6360
-            TabIndex        =   109
+            TabIndex        =   108
             Top             =   2040
             Width           =   795
          End
@@ -394,7 +396,7 @@ Begin VB.Form Issue2
       End
       Begin VB.Frame FramLeg 
          Height          =   3495
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   46
          Top             =   480
          Width           =   8535
@@ -1176,25 +1178,25 @@ Private journalSections As ClsTOC
 
 Private Const MaxLenSectitle = 500
 
-Public Sub LoadIssue(mfn As Long)
+Public Sub LoadIssue(Mfn As Long)
     
-    mfnIssue = mfn
-    If mfn > 0 Then
-        Set myIssue = Issue0.issueDAO.returnIssue(mfn)
+    mfnIssue = Mfn
+    If Mfn > 0 Then
+        Set myIssue = Issue0.issueDAO.returnIssue(Mfn)
     Else
         Set myIssue = New ClsIssue
         
         
         With myIssue.journal
             .shorttitle = Issue1.TxtStitle.Caption
-            .Title = Issue1.TxtSertitle.Caption
+            .Title = Issue1.TxtSerTitle.Caption
             .pubid = Issue1.SiglaPeriodico
             .JournalStandard = Issue1.Title_Standard
             .vocabulary = Issue1.Title_Scheme
             .ISSN = Issue1.TxtISSN.Caption
             
             .ISOTitle = Issue1.TxtISOStitle.Caption
-            .MedlineTitle = Issue1.TxtMedlineStitle.Caption
+            .MedlineTitle = Issue1.TxtMEDLINEStitle.Caption
             .parallelTitles = Issue1.TxtParallel.text
             .publisherName = Issue1.TxtPubl.text
             
@@ -1203,7 +1205,7 @@ Public Sub LoadIssue(mfn As Long)
         myIssue.number = Issue1.TxtIssueno.text
         myIssue.suppl = Issue1.TxtSupplNo.text
         myIssue.vsuppl = Issue1.TxtSupplVol.text
-        myIssue.issueorder = Issue1.TxtIseqno.text
+        myIssue.issueorder = Issue1.TxtIseqNo.text
         myIssue.idPart = Issue1.ComboIssueIdPart.text
         
         
@@ -1256,7 +1258,6 @@ Private Sub loadFormLayout()
     LabScheme.Caption = .getLabel("Issue_Scheme")
     LabStandard.Caption = .getLabel("Title_standard")
     MkpCheck.Caption = .getLabel("Issue_MkpDone")
-    LabelCreativeCommonsInstructions.Caption = .getLabel("issue_creativecommons")
     End With
     
     With ConfigLabels
@@ -1307,13 +1308,15 @@ End Sub
 
 Private Sub loadFormData()
     LoadDispoSections
-        LoadIssueData
+    LoadIssueData
 End Sub
 Private Sub LoadIssueData()
     Dim i As Long
     Dim j As Long
     Dim bs As ClsBibStrip
     Dim lang As String
+    
+    Call FillCombo(ComboIssueLicText, CodeLicText, True)
     
     
     TxtDoccount.text = myIssue.doccount
@@ -1346,7 +1349,7 @@ Private Sub LoadIssueData()
                 TxtSupplVol(i).text = addBSPrefix(TxtSupplVol(i).text, Issue1.TxtSupplVol.text, .lang, "suppl.", "supl.")
                 TxtSupplNro(i).text = addBSPrefix(TxtSupplNro(i).text, Issue1.TxtSupplNo.text, .lang, "suppl.", "supl.")
                 If TxtLoc(i).text = "" Then TxtLoc(i).text = Issue1.Cidade
-                If TxtAno(i).text = "" Then TxtAno(i) = Mid(Issue1.TxtIseqno.text, 1, 4)
+                If TxtAno(i).text = "" Then TxtAno(i) = Mid(Issue1.TxtIseqNo.text, 1, 4)
                 
             End With
         
@@ -1360,7 +1363,7 @@ Private Sub LoadIssueData()
     Next
         
         
-    
+    ComboIssueLicText.text = myIssue.lic
     TxtIssPublisher.text = myIssue.issuePublisher
     TxtCover.text = myIssue.issueCover
     
@@ -1423,7 +1426,7 @@ Private Sub LoadDispoSections()
     DispoSecCode.Clear
     DispoSecCode.visible = False
     
-    Set journalSections = sectionDAO.getTOC(Issue1.TxtSertitle.Caption, Issue1.TxtISSN.Caption, Issue1.SiglaPeriodico, mfnSection)
+    Set journalSections = sectionDAO.getTOC(Issue1.TxtSerTitle.Caption, Issue1.TxtISSN.Caption, Issue1.SiglaPeriodico, mfnSection)
         
     For i = 1 To IdiomsInfo.count
         lang = IdiomsInfo(i).Code
@@ -1474,10 +1477,22 @@ Private Sub CmdClose_Click()
 End Sub
 
 Private Sub CmdNewSections_Click()
-    Call New_Section2.OpenSection(Issue1.TxtSertitle.Caption, False)
+    Call New_Section2.OpenSection(Issue1.TxtSerTitle.Caption, False)
     
     LoadDispoSections
 End Sub
+
+Private Sub ComboIssueLicText_Click()
+Dim i As Long
+    
+    'Set currentLicText = New ColIdiom
+    For i = 1 To IdiomsInfo.count
+        TextCreativeCommons(i - 1).text = CodeLicTextMultilingue.getItemByLang(IdiomsInfo(i).Code).item(ComboIssueLicText.text).value
+    Next
+    
+End Sub
+
+
 
 Private Sub DispoSecTitle_Click()
     Dim i As Long
@@ -1779,7 +1794,7 @@ Private Function CheckYears() As Boolean
         yearOK = yearOK And (TxtAno(i).text = year)
     Next
     
-    yearOK = yearOK And (Mid(Issue1.TxtIseqno.text, 1, 4) = year)
+    yearOK = yearOK And (Mid(Issue1.TxtIseqNo.text, 1, 4) = year)
     
     
     
@@ -1855,6 +1870,7 @@ Private Sub UpdateData()
             
             
         Next
+        .lic = Issue2.ComboIssueLicText.text
         Set .toc = New ClsTOC
         Set .toc = getNewTOC
     .issueISSN = Issue2.Text_IssueISSN.text

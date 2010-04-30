@@ -42,6 +42,8 @@ Public NodeInfo() As String
 Public FileNotRequired() As Boolean
 Public Counter As Long
 
+Public CodeLicTextMultilingue As ColObjByLang
+Public CodeLicText As ColCode
 Public CodeStudyArea As ColCode
 Public CodeAlphabet As ColCode
 Public CodeLiteratureType As ColCode
@@ -109,8 +111,16 @@ Private Sub Main()
     
     SepLinha = Chr(13) + Chr(10)
     If ConfigGet Then
-                
+        
         ChangeInterfaceIdiom = CurrIdiomHelp
+        Set CodeDB = Paths("NewCode Database")
+        Call LoadCodes(CodeDB, "", "ccode", CodeCCode)
+        
+        Set CodeDB = Paths("Code Database")
+        Call LoadCodes(CodeDB, "", "standard", CodeStandard)
+        Call LoadCodes(CodeDB, "", "scielonet", CodeScieloNet)
+        
+        
         
         Set ErrorMessages = New ClsErrorMessages
         ErrorMessages.load ("langs\" + CurrIdiomHelp + "_err.txt")
@@ -118,12 +128,6 @@ Private Sub Main()
         Set Months = New ColIdiomMeses
         Months.ReadMonthTable
     
-        Set CodeDB = Paths("NewCode Database")
-        Call LoadCodes(CodeDB, "", "ccode", CodeCCode)
-        
-        Set CodeDB = Paths("Code Database")
-        Call LoadCodes(CodeDB, "", "standard", CodeStandard)
-        Call LoadCodes(CodeDB, "", "scielonet", CodeScieloNet)
         
         
         FormMenuPrin.OpenMenu
@@ -253,7 +257,7 @@ End Function
 
 
 
-Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColCode)
+Sub LoadCodes(CodeDB As ClFileInfo, idiom As String, key As String, Code As ColCode, Optional codeEqualValue As Boolean = False)
     Dim isisCode As ClIsisdll
     Dim Mfn As Long
     Dim mfns() As Long
@@ -278,8 +282,8 @@ Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColC
             Mfn = 0
             
             find = key
-            If Len(Idiom) > 0 Then
-                find = Idiom & "_" & find
+            If Len(idiom) > 0 Then
+                find = idiom & "_" & find
             End If
             
             find = Replace(find, " ", "_")
@@ -287,7 +291,7 @@ Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColC
             q = isisCode.MfnFind(find, mfns)
             
             'format = "if v1^*='" + key + "' and (v1^l='" + Idiom + "' or a(v1^l))  then (v2^v|;|,v2^c|;;|)  fi"
-            format = "if s(v1^*)='" + key + "' and (s(v1^l)='" + Idiom + "' or a(v1^l))  then (v2^v|;|),'|',(v2^c|;;|) fi"
+            format = "if s(v1^*)='" + key + "' and (s(v1^l)='" + idiom + "' or a(v1^l))  then (v2^v|;|),'|',(v2^c|;;|) fi"
             While (i < q) And (Mfn = 0)
                 i = i + 1
                 aux = isisCode.UsePft(mfns(i), format)
@@ -306,8 +310,12 @@ Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColC
                     If Not exist Then
                         Set itemCode = New ClCode
                         
-                        itemCode.value = a_values(i)
                         itemCode.Code = a_codes(i)
+                        If codeEqualValue Then
+                            itemCode.value = a_codes(i)
+                        Else
+                            itemCode.value = a_values(i)
+                        End If
                         Call Code.add(itemCode, CVar(a_codes(i)))
                     End If
                 Next
@@ -320,49 +328,118 @@ Sub LoadCodes(CodeDB As ClFileInfo, Idiom As String, key As String, Code As ColC
     End With
 End Sub
 
-
-Property Let ChangeInterfaceIdiom(Idiom As String)
+Sub LoadCodesMultilingue(CodeDB As ClFileInfo, key As String, tableList As ColObjByLang)
+    Dim isisCode As ClIsisdll
+    Dim Mfn As Long
+    Dim mfns() As Long
+    Dim q As Long
+    Dim i As Long
+    Dim k As Long
+    Dim aux As String
+    Dim a_codes() As String
+    Dim a_values() As String
+    Dim a() As String
+    Dim table As ColCode
+    Dim itemCode As ClCode
+    Dim exist As Boolean
+    Dim format As String
+    Dim tracing As String
+    Dim find As String
+    Dim lang As String
+    
+    With CodeDB
+    Set tableList = New ColObjByLang
+    Set isisCode = New ClIsisdll
+    If isisCode.Inicia(.Path, .FileName, .key) Then
+        If isisCode.IfCreate(.FileName) Then
+            
+            Mfn = 0
+            Set tableList = New ColObjByLang
+            
+            find = key
+            find = Replace(find, " ", "_")
+            
+            q = isisCode.MfnFind(find, mfns)
+            format = "if s(v1^*)='" + key + "' then (v2^v|~|),'|',(v2^c|~~|) fi,,'|',v1^l"
+            For k = 1 To q
+                aux = isisCode.UsePft(mfns(k), format)
+                If Len(aux) > 0 Then
+                    Mfn = mfns(k)
+                    tracing = vbCrLf & "format: " & format & vbCrLf & "result:" & aux & vbCrLf & "mfn: " & CStr(Mfn)
+                    
+                    If Mfn > 0 Then
+                        a = Split(aux, "|")
+                        a_values = Split(a(0), "~")
+                        a_codes = Split(a(1), "~~")
+                        lang = a(2)
+                        Set table = New ColCode
+                        table.lang = lang
+                        
+                        For i = 0 To UBound(a_values) - 1
+                            Set itemCode = New ClCode
+                            itemCode.value = a_values(i)
+                            itemCode.Code = a_codes(i)
+                            Call table.add(itemCode, CVar(a_codes(i)))
+                        Next
+                        
+                        Call tableList.add(table)
+                    End If
+                End If
+            Next
+        End If
+    End If
+    'If tableList.count = 0 Then MsgBox "count=0 q=" + CStr(q) + " " + find + " " + tracing
+    
+    End With
+End Sub
+Property Let ChangeInterfaceIdiom(idiom As String)
     Dim i As Long
     Dim x As ClIdiom
     Dim CodeDB As ClFileInfo
     
-    CurrIdiomHelp = Idiom
+    CurrIdiomHelp = idiom
     Set Paths = New ColFileInfo
     Set Paths = ReadPathsConfigurationFile(PathsConfigurationFile)
     Set ConfigLabels = New ClLabels
-    ConfigLabels.SetLabels (Idiom)
+    ConfigLabels.SetLabels (idiom)
     Set Fields = New ColFields
-    Fields.SetLabels (Idiom)
+    Fields.SetLabels (idiom)
     
-    loadIssueIdPart Idiom
+    loadIssueIdPart idiom
     Set CodeDB = New ClFileInfo
 
     Set CodeDB = Paths("Code Database")
-    
-    Call LoadCodes(CodeDB, Idiom, "idiom interface", CodeIdiom)
-    
-    Call LoadCodes(CodeDB, Idiom, "alphabet of title", CodeAlphabet)
-    Call LoadCodes(CodeDB, Idiom, "literature type", CodeLiteratureType)
-    Call LoadCodes(CodeDB, Idiom, "treatment level", CodeTreatLevel)
-    Call LoadCodes(CodeDB, Idiom, "publication level", CodePubLevel)
-    Call LoadCodes(CodeDB, Idiom, "frequency", CodeFrequency)
-    Call LoadCodes(CodeDB, Idiom, "status", codeStatus)
-    Call LoadCodes(CodeDB, Idiom, "country", CodeCountry)
-    Call LoadCodes(CodeDB, Idiom, "state", CodeState)
-    
-    Call LoadCodes(CodeDB, Idiom, "usersubscription", CodeUsersubscription)
-    Call LoadCodes(CodeDB, Idiom, "issn type", CodeISSNType)
-    Call LoadCodes(CodeDB, Idiom, "ftp", CodeFTP)
-        
-    Call LoadCodes(CodeDB, Idiom, "language", CodeAbstLanguage)
-    Call LoadCodes(CodeDB, Idiom, "language", CodeTxtLanguage)
-    Call LoadCodes(CodeDB, Idiom, "issue status", CodeIssStatus)
-    Call LoadCodes(CodeDB, Idiom, "scheme", CodeScheme)
-    Call LoadCodes(CodeDB, "", "table of contents", CodeTOC)
-    Set CodeDB = Paths("NewCode Database")
+    If CodeLicTextMultilingue Is Nothing Then
+        Call LoadCodesMultilingue(CodeDB, "license_text", CodeLicTextMultilingue)
+    End If
 
-    Call LoadCodes(CodeDB, Idiom, "study area", CodeStudyArea)
-    'Call LoadCodes(CodeDB, Idiom, "scheme", CodeScheme)
+    'Call LoadCodes(CodeDB, Idiom, "license_text", ComboLicText)
+    Call LoadCodes(CodeDB, idiom, "idiom interface", CodeIdiom)
+    
+    Call LoadCodes(CodeDB, idiom, "alphabet of title", CodeAlphabet)
+    Call LoadCodes(CodeDB, idiom, "literature type", CodeLiteratureType)
+    Call LoadCodes(CodeDB, idiom, "treatment level", CodeTreatLevel)
+    Call LoadCodes(CodeDB, idiom, "publication level", CodePubLevel)
+    Call LoadCodes(CodeDB, idiom, "frequency", CodeFrequency)
+    Call LoadCodes(CodeDB, idiom, "status", codeStatus)
+    Call LoadCodes(CodeDB, idiom, "country", CodeCountry)
+    Call LoadCodes(CodeDB, idiom, "state", CodeState)
+    
+    Call LoadCodes(CodeDB, idiom, "usersubscription", CodeUsersubscription)
+    Call LoadCodes(CodeDB, idiom, "issn type", CodeISSNType)
+    Call LoadCodes(CodeDB, idiom, "ftp", CodeFTP)
+        
+    Call LoadCodes(CodeDB, idiom, "language", CodeAbstLanguage)
+    Call LoadCodes(CodeDB, idiom, "language", CodeTxtLanguage)
+    Call LoadCodes(CodeDB, idiom, "issue status", CodeIssStatus)
+    Call LoadCodes(CodeDB, idiom, "scheme", CodeScheme)
+    Call LoadCodes(CodeDB, "", "table of contents", CodeTOC)
+    
+    Set CodeLicText = CodeLicTextMultilingue.getItemByLang(idiom)
+    
+    Set CodeDB = Paths("NewCode Database")
+    Call LoadCodes(CodeDB, idiom, "study area", CodeStudyArea)
+    
             
     Set IdiomsInfo = New ColIdiom
     Set x = New ClIdiom

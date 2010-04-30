@@ -19,6 +19,7 @@ Option Explicit
 
 
 Private mCol As Collection
+Public lang As String
 
 Public Function add(obj As ClCode, SKEY As String) As ClCode
     
@@ -66,14 +67,14 @@ Public Property Get count() As Long
 End Property
 
 
-Public Sub remove(vntIndexKey As Variant)
+Public Sub Remove(vntIndexKey As Variant)
     'used when removing an element from the collection
     'vntIndexKey contains either the Index or Key, which is why
     'it is declared as a Variant
     'Syntax: x.Remove(xyz)
 
 
-    mCol.remove vntIndexKey
+    mCol.Remove vntIndexKey
 End Sub
 
 

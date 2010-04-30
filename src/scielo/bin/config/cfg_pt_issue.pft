@@ -10,7 +10,7 @@
 ,v42/,
 ,(v49^t|;|),'Sem título de seção'/,
 ,(v49^c|;|),'nd'/,
-,proc(,ref(['C:\SCIELO\\serial\code\code']l(['C:\SCIELO\\serial\code\code']'pt-scheme'),('a999{',v2,'{'),'a998{',(|~|v2^c|~|,v2^v,|#|v2^c|#|),'{'),),
+,proc(,ref(['c:\Scielo\serial\code\code']l(['c:\Scielo\serial\code\code']'pt_scheme'),('a999{',v2,'{'),'a998{',(|~|v2^c|~|,v2^v,|#|v2^c|#|),'{'),),
 ,if a(v85) then
 	,(if v999^c='nd' then
 		,v999^v/,
@@ -24,7 +24,7 @@
 ,fi,
 
 ,proc('d999'),
-,proc(,ref(['C:\SCIELO\\serial\code\code']l(['C:\SCIELO\\serial\code\code']'standard'),('a999{',v2,'{')),),
+,proc(,ref(['c:\Scielo\serial\code\code']l(['c:\Scielo\serial\code\code']'standard'),('a999{',v2,'{')),),
 ,if a(v117) then
 	,(if v999^c='other' then
 		,v999^v/,

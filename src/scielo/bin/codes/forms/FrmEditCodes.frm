@@ -175,6 +175,7 @@ Option Explicit
 Private CodeDAO As clsCodeDAO
 Private current As String
 Private USED_BY_ADM As Boolean
+Private listItems() As String
 
 Public Sub loadForm(pathdb As String, filedb As String, label As String)
     Dim r As ClsTextCollection
@@ -217,10 +218,12 @@ End Sub
 Private Sub CmdChange_Click()
     Call displayEditingCommands(False)
 'ComboTableName.Enabled = False
+
+    listItems(List1.ListIndex) = Mid(List1.List(List1.ListIndex), 1, InStr(List1.List(List1.ListIndex), "|")) + " " + Text2.text + " | " + Text3.text + " | " + Text4.text
     List1.List(List1.ListIndex) = Mid(List1.List(List1.ListIndex), 1, InStr(List1.List(List1.ListIndex), "|")) + " " + Text2.text + " | " + Text3.text + " | " + Text4.text
-        Text2.text = ""
-        Text3.text = ""
-        Text4.text = ""
+    Text2.text = ""
+    Text3.text = ""
+    Text4.text = ""
     TextCode.text = ""
 End Sub
 
@@ -263,7 +266,7 @@ Private Function retCodeRecord() As clsTable
     
     Set table.code_translations = New clsCodeCollection
     For k = 1 To List1.ListCount
-        Item = Split(List1.List(k - 1), " | ")
+        Item = Split(listItems(k - 1), " | ")
         
         Set c = table.code_translations.Item(Item(0))
         If c Is Nothing Then
@@ -337,12 +340,14 @@ Private Function loadCodeRecord(label As String, Optional theList As ListBox) As
                     For k = 1 To IdiomsInfo.Count
                         Set tr = r.code_translations.Item(i).translations(IdiomsInfo(k).code)
                         If tr Is Nothing Then
-                            Else
+                        Else
                             Item = Item + " | " + tr.text
                         End If
                     Next
                 End If
                 theList.AddItem (Item)
+                ReDim Preserve listItems(theList.ListCount)
+                listItems(theList.ListCount - 1) = Item
                 current = current + Item
             Next
             Call displayTextBoxes(r.code_translations.Item(1).translations.Count > 1)
@@ -354,14 +359,21 @@ Private Function isChanged() As Boolean
     Dim i As Long
      
     For i = 0 To List1.ListCount - 1
-        x = x + List1.List(i)
+        x = x + listItems(i)
     Next
     isChanged = (x <> current)
 End Function
 
 
 Private Sub CmdDelete_Click()
-    List1.RemoveItem (List1.ListIndex)
+    Dim index As Long
+    index = List1.ListIndex
+    List1.RemoveItem (index)
+    Dim i As Long
+    For i = index To List1.ListCount - 1
+        listItems(i) = listItems(i + 1)
+    Next
+    ReDim Preserve listItems(List1.ListCount)
     Call displayEditingCommands(False)
 End Sub
 
@@ -383,6 +395,8 @@ Private Sub CmdNewCode_Click()
             If found Then
                 MsgBox "FIXME Código já está em uso"
             Else
+                ReDim Preserve listItems(List1.ListCount + 1)
+                listItems(List1.ListCount + 1) = TextCode.text + " | " + Text2.text + " | " + Text3.text + " | " + Text4.text
                 List1.AddItem (TextCode.text + " | " + Text2.text + " | " + Text3.text + " | " + Text4.text)
                 TextCode.text = ""
                 Text2.text = ""
@@ -408,7 +422,7 @@ Private Sub save()
     current = ""
     
     For i = 0 To List1.ListCount - 1
-        current = current + List1.List(i)
+        current = current + listItems(i)
     Next
     
     Set r = retCodeRecord()
@@ -465,7 +479,7 @@ End Sub
 
 Private Sub List1_Click()
     Dim t() As String
-    t = Split(List1.List(List1.ListIndex), " | ")
+    t = Split(listItems(List1.ListIndex), " | ")
     TextCode.text = t(0)
     
     Call displayEditingCommands(True)

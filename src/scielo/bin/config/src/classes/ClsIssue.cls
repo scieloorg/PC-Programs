@@ -34,6 +34,7 @@ Public status As String
 Public journal As ClsJournal
 Public issueTitle As ColTextByLang
 Public licenses As ColTextByLang
+Public lic As String
 Public bibstrips As ColObjByLang
 Public toc As ClsTOC
 Private mvarISSN As String
@@ -48,24 +49,24 @@ End Property
 
          
 Function issueId() As String
-    Dim X As String
+    Dim x As String
     
     If volume <> "" Then
-        X = X + "v" + volume
+        x = x + "v" + volume
     End If
     If vsuppl <> "" Then
-        X = X + "s" + vsuppl
+        x = x + "s" + vsuppl
     End If
     If number <> "" Then
-        X = X + "n" + number
+        x = x + "n" + number
     End If
     If suppl <> "" Then
-        X = X + "s" + suppl
+        x = x + "s" + suppl
     End If
     If idPart <> "" Then
-        X = X + idPart
+        x = x + idPart
     End If
-    issueId = X + " " + issueorder
+    issueId = x + " " + issueorder
 End Function
 
 Private Sub Class_Initialize()

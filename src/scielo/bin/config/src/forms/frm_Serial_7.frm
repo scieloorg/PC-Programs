@@ -50,7 +50,7 @@ Begin VB.Form JOURNAL5
    Begin VB.Frame Frame1 
       Height          =   975
       Left            =   120
-      TabIndex        =   14
+      TabIndex        =   13
       Top             =   3960
       Width           =   7455
       Begin VB.TextBox TxtCprighter 
@@ -64,7 +64,7 @@ Begin VB.Form JOURNAL5
       Begin VB.TextBox TxtCprightDate 
          Height          =   285
          Left            =   5280
-         TabIndex        =   15
+         TabIndex        =   14
          Text            =   "Text4"
          Top             =   480
          Visible         =   0   'False
@@ -75,7 +75,7 @@ Begin VB.Form JOURNAL5
          Caption         =   "Copyrighter"
          Height          =   195
          Left            =   120
-         TabIndex        =   17
+         TabIndex        =   16
          Top             =   240
          Width           =   795
       End
@@ -84,7 +84,7 @@ Begin VB.Form JOURNAL5
          Caption         =   "Copyright (Date)"
          Height          =   195
          Left            =   5280
-         TabIndex        =   16
+         TabIndex        =   15
          Top             =   240
          Visible         =   0   'False
          Width           =   1140
@@ -97,10 +97,21 @@ Begin VB.Form JOURNAL5
       TabIndex        =   9
       Top             =   120
       Width           =   7455
+      Begin VB.ComboBox ComboLicText 
+         Height          =   315
+         ItemData        =   "frm_Serial_7.frx":030A
+         Left            =   1200
+         List            =   "frm_Serial_7.frx":030C
+         Style           =   2  'Dropdown List
+         TabIndex        =   17
+         Top             =   360
+         Width           =   3135
+      End
       Begin VB.TextBox TextCreativeCommons 
          Height          =   855
          Index           =   0
          Left            =   1200
+         Locked          =   -1  'True
          MultiLine       =   -1  'True
          TabIndex        =   0
          Top             =   1080
@@ -110,6 +121,7 @@ Begin VB.Form JOURNAL5
          Height          =   735
          Index           =   1
          Left            =   1200
+         Locked          =   -1  'True
          MultiLine       =   -1  'True
          TabIndex        =   1
          Top             =   2040
@@ -119,18 +131,11 @@ Begin VB.Form JOURNAL5
          Height          =   855
          Index           =   2
          Left            =   1200
+         Locked          =   -1  'True
          MultiLine       =   -1  'True
          TabIndex        =   2
          Top             =   2880
          Width           =   6135
-      End
-      Begin VB.Label LabelCreativeCommonsInstructions 
-         Caption         =   "LabelCreativeCommonsInstructions"
-         Height          =   735
-         Left            =   120
-         TabIndex        =   13
-         Top             =   240
-         Width           =   7215
       End
       Begin VB.Label Label10 
          Caption         =   "Inglês"
@@ -178,7 +183,7 @@ Attribute VB_Exposed = False
 Public IsBack As Boolean
 Private MyMfnTitle As Long
 Private cc As New clsCreativeCommons
-
+'Private currentLicText As ColIdiom
 Private Const MAX_LINES_INDEX = 10
 
 
@@ -192,13 +197,13 @@ End Sub
 Sub MySetLabels()
     
     With Fields
-    LabelCreativeCommonsInstructions.Caption = .getLabel("issue_creativecommons")
+    'LabelCreativeCommonsInstructions.Caption = .getLabel("issue_creativecommons")
     For i = 1 To IdiomsInfo.count
         Label10(i - 1).Caption = IdiomsInfo(i).label
     Next
     LabCprightDate.Caption = .getLabel("ser4_cprightDate")
     LabCprighter.Caption = .getLabel("ser4_cprighter")
-
+    Call FillCombo(ComboLicText, CodeLicText, True)
     End With
     
     With ConfigLabels
@@ -214,12 +219,31 @@ Sub MyGetContentFromBase(MfnTitle As Long)
     'JournalStatusAction.setLanguage (CurrCodeIdiom)
     'Set JournalStatusAction.ErrorMessages = ErrorMessages
     'Set JournalStatusAction.myHistory = journalDAO.getHistory(MfnTitle)
+    Dim lic As String
+    lic = Serial_TxtContent(MfnTitle, 541)
+    
     
     Set cc = journalDAO.getJournalCreativeCommons(MfnTitle)
-        TxtCprightDate.text = Serial_TxtContent(MfnTitle, 621)
-        TxtCprighter.text = Serial_TxtContent(MfnTitle, 62)
-    
-        Call PresentsData
+    TxtCprightDate.text = Serial_TxtContent(MfnTitle, 621)
+    TxtCprighter.text = Serial_TxtContent(MfnTitle, 62)
+
+    Call PresentsData
+    If Len(lic) = 0 Then
+        If InStr(TextCreativeCommons(1).text, "<p> </p>") > 0 Then
+            lic = "nd"
+        Else
+            If Len(TextCreativeCommons(1).text) = 0 Then
+                lic = "BY-NC"
+            Else
+                lic = "BY"
+            End If
+        End If
+        Dim i As Long
+        For i = 1 To IdiomsInfo.count
+            TextCreativeCommons(i - 1).text = CodeLicTextMultilingue.getItemByLang(IdiomsInfo(i).Code).item(lic).value
+        Next
+    End If
+    ComboLicText.text = lic
     
 End Sub
 Sub MyClearContent()
@@ -293,6 +317,18 @@ Private Sub CmdSave_Click()
 End Sub
 
 
+
+
+
+Private Sub ComboLicText_Click()
+Dim i As Long
+    
+    'Set currentLicText = New ColIdiom
+    For i = 1 To IdiomsInfo.count
+        TextCreativeCommons(i - 1).text = CodeLicTextMultilingue.getItemByLang(IdiomsInfo(i).Code).item(ComboLicText.text).value
+    Next
+    
+End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
     Call FormQueryUnload(Cancel, UnloadMode)
