@@ -1363,7 +1363,11 @@ Private Sub LoadIssueData()
     Next
         
         
+<<<<<<< .mine
+If Len(myIssue.lic) > 0 Then ComboIssueLicText.text = myIssue.lic
+=======
     ComboIssueLicText.text = myIssue.lic
+>>>>>>> .r4061
     TxtIssPublisher.text = myIssue.issuePublisher
     TxtCover.text = myIssue.issueCover
     
