@@ -3,8 +3,8 @@ brazilian journal of chemical engineering;brazilian journal of genetics;brazilia
 bjce;bjg;bjmbr;bjp;conicyt;dados;br1.1;infomed;jbchs;jbcos;mioc;rbcs;rbgeo;rimtsp;rsp
 
 doctopic
-abstracts;annex;announcements;brief communication;comments;case report;clinical trial;editorial;interview;invited review;letter;methodology;mini-review article;original article;point-of-view;preliminary report;press release;recount;research note;review article;short communication;state-of-the-art review;technical report;update
-ab;ax;an;sc;co;cr;ct;ed;in;ra;le;mt;ra;oa;pv;rn;pr;rc;rn;ra;sc;ra;tr;up
+abstracts;annex;announcements;brief communication;comments;case report;clinical trial;editorial;interview;letter;methodology;original article;point-of-view;press release;recount;research note;review article;technical report;update
+ab;ax;an;sc;co;cr;ct;ed;in;le;mt;oa;pv;pr;rc;rn;ra;tr;up
 
 language
 English;Portuguese;Spanish;Afrikaans;Arabic;Bulgarian;Chinese;Czech;Danish;Dutch;Esperanto;French;German;Greek;Hebrew;Hindi;Hungarian;Indonesian;Interlingua;Interlingue;Italian;Japanese;Korean;Latin;Norwergian;Polish;Romanian;Russian;Sanskrit;Serbo-Croat;Slovak;Slovenian;Swedish;Turkish;Ukrainian;Urdu;Other;Galician;Basque;Catalan
@@ -15,8 +15,8 @@ no illustrative material;figure;graphic;map;table
 nd;ilus;gra;map;tab
 
 version
-3.1
-3.1
+3.1;4.0
+3.1;4.0
 
 toccode
 title;sectitle
@@ -39,12 +39,12 @@ iso 690/87 - international standard organization;nbr 6023/89 - associação nacion
 iso690;nbr6023;other;vancouv;apa
 
 id
-
-
+No definido
+nd
 
 rid
-
-
+No definido
+nd
 
 dateiso
 00000000
@@ -127,8 +127,8 @@ graphic;cartoon;chart;diagram;drawing;exhibit;illustration;map;plate;schema;othe
 graphic;cartoon;chart;diagram;drawing;exhibit;illustration;map;plate;schema;other;workflow
 
 lictype
-open access
-open-access
+open access;not defined
+open-access;nd
 
 href
 
@@ -137,4 +137,8 @@ href
 pubtype
 electronic publication;print publication
 epub;ppub
+
+hcomment
+people can not comment;people can comment
+0;1
 

@@ -1,0 +1,798 @@
+ = Índice = #index 
+ * [wiki:SciELO_PCPrograms_Code#alphabet_of_title alphabet of title]
+ * [wiki:SciELO_PCPrograms_Code#article_status article status]
+ * [wiki:SciELO_PCPrograms_Code#ccode ccode]
+ * [wiki:SciELO_PCPrograms_Code#count count]
+ * [wiki:SciELO_PCPrograms_Code#country country]
+ * [wiki:SciELO_PCPrograms_Code#ctdbid ctdbid]
+ * [wiki:SciELO_PCPrograms_Code#date date]
+ * [wiki:SciELO_PCPrograms_Code#dateiso dateiso]
+ * [wiki:SciELO_PCPrograms_Code#deposid deposid]
+ * [wiki:SciELO_PCPrograms_Code#doctopic doctopic]
+ * [wiki:SciELO_PCPrograms_Code#doctype doctype]
+ * [wiki:SciELO_PCPrograms_Code#frequency frequency]
+ * [wiki:SciELO_PCPrograms_Code#from from]
+ * [wiki:SciELO_PCPrograms_Code#ftp ftp]
+ * [wiki:SciELO_PCPrograms_Code#ftype ftype]
+ * [wiki:SciELO_PCPrograms_Code#hcomment hcomment]
+ * [wiki:SciELO_PCPrograms_Code#id id]
+ * [wiki:SciELO_PCPrograms_Code#idiom_interface idiom interface]
+ * [wiki:SciELO_PCPrograms_Code#illustrative_material_type illustrative material type]
+ * [wiki:SciELO_PCPrograms_Code#indexing_coverage indexing coverage]
+ * [wiki:SciELO_PCPrograms_Code#issn_type issn type]
+ * [wiki:SciELO_PCPrograms_Code#issue_status issue status]
+ * [wiki:SciELO_PCPrograms_Code#keyword_priority_level keyword priority level]
+ * [wiki:SciELO_PCPrograms_Code#language language]
+ * [wiki:SciELO_PCPrograms_Code#lictype lictype]
+ * [wiki:SciELO_PCPrograms_Code#literature_type literature type]
+ * [wiki:SciELO_PCPrograms_Code#month month]
+ * [wiki:SciELO_PCPrograms_Code#no no]
+ * [wiki:SciELO_PCPrograms_Code#orgdiv orgdiv]
+ * [wiki:SciELO_PCPrograms_Code#orgdiv1 orgdiv1]
+ * [wiki:SciELO_PCPrograms_Code#orgdiv2 orgdiv2]
+ * [wiki:SciELO_PCPrograms_Code#orgdiv3 orgdiv3]
+ * [wiki:SciELO_PCPrograms_Code#orgname orgname]
+ * [wiki:SciELO_PCPrograms_Code#pages pages]
+ * [wiki:SciELO_PCPrograms_Code#pii pii]
+ * [wiki:SciELO_PCPrograms_Code#publication_level publication level]
+ * [wiki:SciELO_PCPrograms_Code#pubtype pubtype]
+ * [wiki:SciELO_PCPrograms_Code#rid rid]
+ * [wiki:SciELO_PCPrograms_Code#role role]
+ * [wiki:SciELO_PCPrograms_Code#scheme scheme]
+ * [wiki:SciELO_PCPrograms_Code#scielonet scielonet]
+ * [wiki:SciELO_PCPrograms_Code#sponsor sponsor]
+ * [wiki:SciELO_PCPrograms_Code#standard standard]
+ * [wiki:SciELO_PCPrograms_Code#state state]
+ * [wiki:SciELO_PCPrograms_Code#status status]
+ * [wiki:SciELO_PCPrograms_Code#stitle stitle]
+ * [wiki:SciELO_PCPrograms_Code#study_area study area]
+ * [wiki:SciELO_PCPrograms_Code#table_of_contents table of contents]
+ * [wiki:SciELO_PCPrograms_Code#to to]
+ * [wiki:SciELO_PCPrograms_Code#toccode toccode]
+ * [wiki:SciELO_PCPrograms_Code#treatment_level treatment level]
+ * [wiki:SciELO_PCPrograms_Code#usersubscription usersubscription]
+ * [wiki:SciELO_PCPrograms_Code#version version]
+=== standard === #standard [wiki:SciELO_PCPrograms_Code#index topo]
+||iso690||iso 690/87 - international standard organization||
+||nbr6023||nbr 6023/89 - associação nacional de normas técnicas||
+||other||other standard||
+||vancouv||the vancouver group - uniform requirements for manuscripts submitted to biomedical journals||
+||apa||American Psychological Association||
+
+
+=== ccode === #ccode [wiki:SciELO_PCPrograms_Code#index topo]
+||bjce||brazilian journal of chemical engineering||
+||bjg||brazilian journal of genetics||
+||bjmbr||brazilian journal of medical and biological research||
+||bjp||brazilian journal of physics||
+||conicyt||Comisión Nacional de Investigación Científica y Tecnológica||
+||dados||dados - revista de ciências sociais||
+||br1.1||scielo/bireme||
+||infomed||InfoMed||
+||jbchs||journal of the brazilian chemical society||
+||jbcos||journal of the brazilian computer society||
+||mioc||memórias do instituto oswaldo cruz||
+||rbcs||revista brasileira de ciência do solo||
+||rbgeo||revista brasileira de geociências||
+||rimtsp||revista do instituto de medicina tropical de são paulo||
+||rsp||revista de saúde pública||
+
+
+=== stitle === #stitle [wiki:SciELO_PCPrograms_Code#index topo]
+||Acta Cir. Bras.||Acta Cirurgica Brasileira||
+||Bragantia||Bragantia||
+||Braz. J. Chem. Eng.||Brazilian Journal of Chemical Engineering||
+||Braz. J. Genet.||Brazilian Journal of Genetics||
+||Braz J Med Biol Res||Brazilian Journal of Medical and Biological Research||
+||Braz. J. Phys.||Brazilian Journal of Physics||
+||Cad. CEDES||Cadernos CEDES||
+||Cad. Saúde Púbica||Cadernos de Saúde Pública||
+||Ci. Inf.||Ciência da Informação||
+||Ciênc. Tecnol. Aliment.||Ciência e Tecnologia de Alimentos||
+||DELTA||DELTA: Documentação de Estudos em Lingüística Teórica e Aplicada||
+||Dados||Dados||
+||Educ. Soc.||Educação & Sociedade||
+||Genet. Mol. Biol.||Genetics and Molecular Biology||
+||J. Venom. Anim. Toxins||Journal of Venomous Animals and Toxins||
+||J. Braz. Chem. Soc.||Journal of the Brazilian Chemical Society||
+||J. Braz. Comp. Soc.||Journal of the Brazilian Computer Society||
+||Mem. Inst. Oswaldo Cruz||Memórias do Instituto Oswaldo Cruz||
+||Pesq. Vet. Bras.||Pesquisa Veterinária Brasileira||
+||Psicol. USP||Psicologia USP||
+||Rev. bras. Bot.||Revista Brasileira de Botânica||
+||Rev Bras Cir Cardiovasc||Revista Brasileira de Cirurgia Cardiovascular||
+||Rev. bras. Ci. Solo||Revista Brasileira de Ciência do Solo||
+||Rev. bras. Ci. Soc.||Revista Brasileira de Ciências Sociais||
+||Rev. bras. Geocienc.||Revista Brasileira de Geosciences||
+||Rev. bras. Hist.||Revista Brasileira de História||
+||Rev Panam Salud Publica||Revista Panamericana de Salud Pública||
+||Rev. Fac. Educ.||Revista da Faculdade de Educação||
+||Rev. Microbiol.||Revista de Microbiologia||
+||Rev Odontol Univ São Paulo||Revista de Odontologia da Universidade de São Paulo||
+||Rev. Saúde Pública||Revista de Saúde Pública||
+||Rev. Inst. Med. trop. S. Paulo||Revista do Instituto de Medicina Tropical de São Paulo||
+||Sci. agric.||Scientia Agricola||
+||Salud pública Méx||Salud Pública de México||
+
+
+=== version === #version [wiki:SciELO_PCPrograms_Code#index topo]
+||3.1||3.1||
+||4.0||4.0||
+
+
+=== from === #from [wiki:SciELO_PCPrograms_Code#index topo]
+||00000000||00000000||
+
+
+=== to === #to [wiki:SciELO_PCPrograms_Code#index topo]
+||00000000||00000000||
+
+
+=== toccode === #toccode [wiki:SciELO_PCPrograms_Code#index topo]
+||1||title||
+||2||sectitle||
+
+
+=== dateiso === #dateiso [wiki:SciELO_PCPrograms_Code#index topo]
+||00000000||00000000||
+
+
+=== count === #count [wiki:SciELO_PCPrograms_Code#index topo]
+||0||0||
+
+
+=== pages === #pages [wiki:SciELO_PCPrograms_Code#index topo]
+||0-0||0-0||
+
+
+=== table of contents === #table_of_contents [wiki:SciELO_PCPrograms_Code#index topo]
+||en||Table of Contents||
+||pt||Sumário||
+||es||Sumario||
+
+
+=== orgname === #orgname [wiki:SciELO_PCPrograms_Code#index topo]
+||nd||nd||
+
+
+=== no === #no [wiki:SciELO_PCPrograms_Code#index topo]
+||0||0||
+
+
+=== scielonet === #scielonet [wiki:SciELO_PCPrograms_Code#index topo]
+||1||SciELO Brasil||
+||2||SciELO Chile||
+||3||SciELO Salud Pública||
+||4||SciELO BEEP||
+||5||SciELO Ecler||
+||6||SciELO Cuba||
+||7||SciELO Colombia||
+||8||SciELO Costa Rica||
+||9||SciELO Uruguay||
+||10||SciELO Argentina||
+||11||SciELO Biodiversidade||
+||12||SciELO Bolivia||
+||13||SciELO España||
+||14||SciELO Jamaica||
+||15||SciELO México||
+||16||SciELO Perú||
+||17||SciELO Portugal||
+||18||SciELO Venezuela||
+||19||SciELO Adolec||
+||20||SciELO Social Sciences||
+||21||SciELO Paraguay||
+||22||SciELO Ecuador||
+||23||SciELO Caribbean||
+
+
+=== orgdiv1 === #orgdiv1 [wiki:SciELO_PCPrograms_Code#index topo]
+||nd||nd||
+
+
+=== orgdiv2 === #orgdiv2 [wiki:SciELO_PCPrograms_Code#index topo]
+||nd||nd||
+
+
+=== orgdiv3 === #orgdiv3 [wiki:SciELO_PCPrograms_Code#index topo]
+||nd||nd||
+
+
+=== orgdiv === #orgdiv [wiki:SciELO_PCPrograms_Code#index topo]
+||nd||nd||
+
+
+=== ctdbid === #ctdbid [wiki:SciELO_PCPrograms_Code#index topo]
+||CT||CT - Clinicaltrials.gov||
+||ACTR||ACTR - Australian Clinical Trials Registry||
+||ISRCTN||ISRCTN - International Standard Randomised Controlled Trial Number Register||
+||NTR||NTR - Nederlands Trial Register||
+||UMIN||UMIN - University Hospital Medical Information Network||
+||ChiCTR||ChiCTR - Chinese Clinical Trial Register||
+
+
+=== doctype === #doctype [wiki:SciELO_PCPrograms_Code#index topo]
+||au||audio||
+||pr||press release||
+||vi||video||
+
+
+=== deposid === #deposid [wiki:SciELO_PCPrograms_Code#index topo]
+||1||Unicamp||
+||2||Unifesp||
+||3||Unesp||
+||4||USP||
+||5||ITA||
+||6||UFSCar||
+
+
+
+
+=== acquisition priority === #acquisition_priority [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||1||Indispensable||
+||2||Dispensable because exists in the Country||
+||3||Dispensable because exists in the Region||
+
+=== alphabet of title === #alphabet_of_title [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||A||Basic Roman||Romano básico||Romano básico||
+||B||Extensive Roman||Romano extendido||Romano estendido||
+||C||Cirillic||Cirílico||Cirílico||
+||D||Japanese||Japonés||Japonês||
+||E||Chinese||Chino||Chinês||
+||K||Korean||Coreano||Coreano||
+||O||Another alphabet||Otros alfabetos||Outros alfabetos||
+
+=== article status === #article_status [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||1||Available||Disponible||Disponível||
+
+=== country === #country [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||AD||Andorra||Andorra||Andorra||
+||AE||United Arab Emirates||Emiratos Arabes Unidos||Emirados Arábes Unidos||
+||AF||Afghanistan||Afganistán||Afeganistão||
+||AG||Antigua||Antigua||Antígua||
+||AL||Albania||Albania||Albânia||
+||AN||Netherlands Antilles||Antillas Neerlandesas||Antilhas Holandesas||
+||AO||Angola||Angola||Angola||
+||AQ||Antarctica||Antarctica||Antártida||
+||AR||Argentina||Argentina||Argentina||
+||AS||American Samoa||Samoa Americana||Samoa Americana||
+||AT||Austria||Austria||Austria||
+||AU||Australia||Australia||Austrália||
+||BB||Barbados||Barbados||Barbados||
+||BD||Bangladesh||Bangladesh||Bangladesh||
+||BE||Belgium||Bélgica||Bélgica||
+||BG||Bulgaria||Bulgaria||Bulgária||
+||BH||Bahrain||Bahrein||Barém||
+||BI||Burundi||Burundi||Burundi||
+||BM||Bermuda||Bermudas||Bermudas||
+||BN||Brunei||Brunei||Brunei||
+||BO||Bolivia||Bolivia||Bolívia||
+||BR||Brazil||Brasil||Brasil||
+||BS||Bahamas||Bahamas||Bahamas||
+||BT||Bhutan||Bután||Butão||
+||BU||Burma||Birmania||Birmânia||
+||BV||Bouvet Island||Isla Bouvet||Ilha Bouvet||
+||BW||Botswana||Botswana||Botsuana||
+||BY||Byelorussian RSS||RSS de Bielorrusia||RSS de Bielorrusia||
+||BZ||Belize||Bélice||Belice||
+||CA||Canada||Canadá||Canadá||
+||CC||Islas Cocos (Keeling)||Islas Cocos (Keeling)||Islas Cocos (Keeling)||
+||CF||Central African Rep.||República Centroáfrica||Rep. Centro Africa||
+||CG||Congo||Congo||Congo||
+||CH||Switzerland||Suiza||Suiça||
+||CI||Ivory Coast||Costa de Marfil||Costa de Marfin||
+||CK||Islas Cook||Islas Cook||Islas Cook||
+||CL||Chile||Chile||Chile||
+||CM||Cameroon||Camerún||Camarões||
+||CN||China||China||China||
+||CO||Colombia||Colombia||Colômbia||
+||CR||Costa Rica||Costa Rica||Costa Rica||
+||CS||Czechoslovakia||Checoslovaquia||Tchecollovaquia||
+||CT||Islas Canton y Enderbury||Islas Canton y Enderbury||Islas Canton y Enderbury||
+||CU||Cuba||Cuba||Cuba||
+||CV||Cape Verde||Islas de Cabo Verde||Ilhas do Cabo Verde||
+||CX||Isla de Navidad||Isla de Navidad||Isla de Navidad||
+||CY||Cyprus||Chipre||Chipre||
+||DD||German Democratic Republic||Alemania, República Democrática||Alemanha, R. Democrát.||
+||DE||Germany, Federal Republic||Alemania, República Federal||Alemanha, R. Federal||
+||DK||Denmark||Dinamarca||Dinamarca||
+||DM||Dominica||Dominica||Dominica||
+||DO||Dominican Republic||República Dominicana||República Dominicana||
+||DZ||Algeria||Argelia||Argélia||
+||EC||Ecuador||Ecuador||Equador||
+||EG||Egypt||Egipto||Egito||
+||EH||Western Sahara||Sahara Occidental||Saara Ocidental||
+||ES||Spain||España||Espanha||
+||ET||Ethiopia||Etiopía||Etiópia||
+||FI||Filand||Finlandia||Filândia||
+||FJ||Fiji||Fiji||Fiji||
+||FK||Falkland Islands(Malvinas)|| Islas Malvinas (Falkland)||Ilhas Malvinas (Falkl.)||
+||FO||Islas Feroe||Islas Feroe||Islas Feroe||
+||FR||France||Francia||França||
+||GA||Gabon||Gabón||Gabão||
+||GB||United Kingdom||Reino Unido||Reino Unido||
+||GC||Guinea Ecuatorial||Guinea Ecuatorial||Guiné Equatorial||
+||GD||Grenada||Granada||Granada||
+||GF||French Guiana||Guiana Francesa||Guiana Francesa||
+||GH||Ghana||Ghana||Gana||
+||GI||Gibraltar||Gibraltar||Gibraltar||
+||GL||Greenland||Groenlandia||Groenlândia||
+||GN||Guinea||Guinea||Guiné||
+||GP||Guadeloupe||Guadalupe||Guadalupe||
+||GR||Greece||Grecia||Grécia||
+||GT||Guatemala||Guatemala||Guatemala||
+||GU||Guam||Guam||Guam||
+||GW||Guinea-Bissau||Guinea Bissau||Guiné Bissau||
+||GY||Guyana||Guyana||Guiana||
+||HK||Hong Kong||Hong Kong||Hong Kong||
+||HM||Islas Heard y Mc Donald||Islas Heard y Mc Donald||Islas Heard y Mc Donald||
+||HN||Honduras||Honduras||Honduras||
+||HT||Haiti||Haití||Haiti||
+||HU||Hungary||Hungría||Hungria||
+||HV||Upper Volta||Alto Volta||Alto Volta||
+||ID||Indonesia||Indonesia||Indonésia||
+||IE||Ireland||Irlanda||Irlanda||
+||IL||Israel||Israel||Israel||
+||IN||India||India||India||
+||IQ||Iraq||Irak||Iraque||
+||IR||Iran||Irán||Irã||
+||IS||Iceland||Islandia||Islândia||
+||IT||Italy||Italia||Itália||
+||JM||Jamaica||Jamaica||Jamaica||
+||JO||Jordan||Jordania||Jordânia||
+||JP||Japan||Japón||Japão||
+||JT||Isla Johnston||Isla Johnston||Isla Johnston||
+||KD||Korea, Democratic People's ||Korea, Democratic People's ||Korea, Democratic People's ||
+||KE||Kenya||Kenia||Quênia||
+||KH||Kampuchea Democrática||Kampuchea Democrática||Kampuchea Democrática||
+||KM||Kamoras Islands||Islas Comoras||Ilhas Comoras||
+||KN||San Cristóbal-Nieves-Anguila||San Cristóbal-Nieves-Anguila||San Cristóbal-Nieves-Anguila||
+||KP||Korea, Democratic People's||Corea, República Democrática Popular||Coréia, R. D. Popular||
+||KR||Korea, Republic of||Corea, República de||Coréia||
+||KW||Kuwait||Kuwait||Coveite||
+||KY||Kayman Islands||Islas Caimán||Ilhas Caimã||
+||LA||Republic||Laos||Laos||
+||LB||Lebanon||Líbano||Líbano||
+||LC||Saint Lucia||Santa Lucía||Santa Lucia||
+||LD||Lao People's Democratic ||Lao People's Democratic ||Lao People's Democratic ||
+||LI||Liechtenstein||Liechtenstein||Liechtenstein||
+||LK||Sri Lanka||Sri Lanka||Sri Lanka||
+||LR||Liberia||Liberia||Liberia||
+||LS||Lesotho||Lesotho||Lesoto||
+||LU||Luxembourg||Luxemburgo||Luxemburgo||
+||LY||Libyan||Libia||Líbia||
+||MA||Morocco||Marruecos||Marrócos||
+||MC||Monaco||Mónaco||Monaco||
+||MG||Madagascar||Madagascar||Madagascar||
+||MI||Islas Midway||Islas Midway||Islas Midway||
+||ML||Mali||Malí||Mali||
+||MN||Mongolia||Mongolia||Mongólio||
+||MO||Macau||Macao||Macao||
+||MQ||Martinique||Martinica||Martinica||
+||MR||Mauritania||Mauritania||Mauritânia||
+||MS||Montserrat||Montserrat||Monte Serrat||
+||MT||Malta||Malta||Malta||
+||MU||Mauritius||Mauricio||Maurício||
+||MV||Maldivas||Maldivas||Maldivas||
+||MW||Malawi||Malawi||Malavi||
+||MX||Mexico||México||México||
+||MY||Malaysia||Malasia||Malásia||
+||MZ||Mozambique||Mozambique||Moçambique||
+||NA||Namibia||Namibia||Namíbia||
+||NC||New Caledonia||Nueva Caledonia||Nova Caledônia||
+||nd||Not defined||No definido||Não definido||
+||NE||Niger||Níger||Níger||
+||NF||Norfolk Island||Isla Norfolk||Ilha Norfolk||
+||NG||Nigeria||Nigeria||Nigéria||
+||NH||Nuevas Hébridas||Nuevas Hébridas||Novas Hébridas||
+||NI||Nicaragua||Nicaragua||Nicarágua||
+||NL||Netherlands||Países Bajos||Países Baixos||
+||NO||Norway||Noruega||Noruega||
+||NP||Nepal||Nepal||Nepal||
+||NQ||Dronning Maud Land||Terra de Maud Dronning||Terra de Maud Dronning||
+||NR||Nauru||Nauru||Nauru||
+||NU||Isla Niue||Isla Niue||Isla Niue||
+||NZ||New Zealand||Nueva Zelandia||Nova Zelândia||
+||OM||Oman||Omán||Omã||
+||PA||Panama||Panamá||Panamá||
+||PC||Pacific Islands||Islas del Pacífico (Territorio en fideicomiso)||Ilhas do Pacífico||
+||PE||Peru||Perú||Perú||
+||PF||French Polynesia||Polinesia Francesa||Polinésia Francesa||
+||PG||Papua New Guinea||Papua Nueva Guinea||Papua Nova Guiné||
+||PH||Philippines||Filipinas||Filipinas||
+||PK||Pakistan||Pakistán||Paquistão||
+||PL||Poland||Polonia||Polônia||
+||PM||S. Pedro y Miguelón||S. Pedro y Miguelón||S. Pedro y Miguelón||
+||PN||Islas Pitcairn||Islas Pitcairn||Islas Pitcairn||
+||PR||Puerto Rico||Puerto Rico||Porto Rico||
+||PT||Portugal||Portugal||Portugal||
+||PU||Islands Miscellaneous||Islas diversas del Pacífico (US)||Ilhas do Pacífico (US)||
+||PY||Paraguay||Paraguay||Paraguai||
+||QA||Qatar||Qatar||Catar||
+||RE||Réunion||Reunión||Reunião||
+||RO||Romania||Rumania||Romênia||
+||RW||Rwanda||Rwanda||Ruanda||
+||SA||Saudi Arabia||Arabia Saudita||Arábia Saudita||
+||SB||Islas Salomón Británico||Islas Salomón Británico||Islas Salomón Británico||
+||SC||Seichelles||Seychelles||Seichelles||
+||SD||Sudan||Sudán||Sudão||
+||SE||Sweden||Suecia||Suécia||
+||SG||Singapur||Singapur||Singapura||
+||SH||St. Helena||Santa Elena||Santa Elena||
+||SJ||Islas Svalbard y Jan Mayen||Islas Svalbard y Jan Mayen||Islas Svalbard y Jan Mayen||
+||SK||Sikkim||Sikkim||Sikkin||
+||SL||Sierra Leone||Sierra Leona||Serra Leoa||
+||SM||San Marino||San Marino||San Marino||
+||SN||Senegal||Senegal||Senegal||
+||SO||Somalia||Somalía||Somália||
+||SR||Suriname||Suriname||Suriname||
+||ST||Sao Tome and Principe||Sto. Tomé y Príncipe||São Tomé e Príncipe||
+||SU||URSS||URSS||URSS||
+||SV||El Salvador||El Salvador||El Salvador||
+||SY||Syrian Arab Republic||Siria||Síria||
+||SZ||Swaziland||Swazilandia||Suazilândia||
+||TC||Turks and Caicos Islands||Islas Turcos y Caicos||Ilhas Turcas e Caicos||
+||TD||Chad||Chad||Chade||
+||TG||Togo||Togo||Togo||
+||TH||Thailand||Tailandia||Tailândia||
+||TK||Islas Tokelau||Islas Tokelau||Islas Tokelau||
+||TN||Tunisia||Túnez||Tunísia||
+||TO||Tonga||Tonga||Tonga||
+||TR||Turkey||Turquía||Turquia||
+||TT||Trinidad and Tobago||Trinidad y Tobago||Trinidad e Tobago||
+||TW||Taiwan||Taiwán||Formosa||
+||TZ||Tanzania||Tanzania, Rep. Unida||Tanzânia||
+||UA||Ukrainian RSS||RSS de Ucrania||RSS de Ucrania||
+||UG||Uganda||Uganda||Uganda||
+||UP||United States Pacific||United States Pacific||United States Pacific||
+||US||United States||Estados Unidos||Estados Unidos||
+||UY||Uruguay||Uruguay||Uruguai||
+||VA||Vatican City State||Ciudad del Vaticano||Cidade do Vaticano||
+||VC||Saint Vincent||San Vicente||São Vicente||
+||VE||Venezuela||Venezuela||Venezuela||
+||VG||British Virgin Islands||Islas Vírgenes Británicas||Ilhas Virgens Britân.||
+||VN||Viet Nam||Vietnam||Vietnã||
+||VU||Vanuatu||Vanuatu||Vanuatu||
+||WF||Islas Wallis y Futuna||Islas Wallis y Futuna||Islas Wallis y Futuna||
+||WK||Isla Wake||Isla Wake||Isla Wake||
+||WS||Samoa||Samoa Ocidental||Samoa Ocidental||
+||YD||Yemen, Democratic||Yemen Democrático||Iêmen Democrático||
+||YE||Yemen||Yemen||Iêmen||
+||YU||Iugoslavia||Yugoslavia||Iugoslávia||
+||ZA||South Africa||Sudáfrica||Africa do Sul||
+||ZM||Zambia||Zambia||Zâmbia||
+||ZR||Zaire||Zaire||Zaire||
+
+=== date === #date [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||abr.||Abril||Abril||
+||ago.||Agosto||Agosto||
+||Apr.||April||
+||Aug.||August||
+||Dec.||December||
+||dez.||Dezembro||
+||dic.||Diciembre||
+||ene.||Enero||
+||Feb.||February||
+||feb.||Febrero||
+||fev.||Fevereiro||
+||Jan.||January||
+||jan.||Janeiro||
+||jul.||Julio||Julho||
+||July||July||
+||Jun.||June||
+||jun.||Junio||Junho||
+||maio||Maio||
+||Mar.||March||
+||mar.||Marzo||Março||
+||May||May||
+||mayo||Mayo||
+||Nov.||November||
+||nov.||Noviembre||Novembro||
+||Oct.||October||
+||oct.||Octubre||
+||out.||Outubro||
+||Sept.||September||
+||set.||Septiembre||Setembro||
+
+=== doctopic === #doctopic [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||ab||abstracts||resumen||resumos||
+||an||announcements||anuncio||anúncio||
+||ax||annex||anexo||anexo||
+||co||comments||comentarios||comentários||
+||cr||case report||informe de caso||relato de caso||
+||ct||clinical trial||ensayos clínicos||ensaios clínicos||
+||ed||editorial||editorial||editorial||
+||in||interview||entrevista||entrevista||
+||le||letter||cartas||cartas||
+||mt||methodology||metodología||metodologia||
+||oa||original article||artículo original||artigo original||
+||pr||press release||press release||press release||
+||pv||point-of-view||punto de vista||ponto de vista||
+||ra||review article||revisión||revisão||
+||rc||recount||reseña||resenha||
+||rn||research note||nota||nota||
+||sc||brief communication||comunicación breve||comunicação breve||
+||tr||technical report||informe técnico||informe técnico||
+||up||update||actualización||atualização||
+
+=== frequency === #frequency [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||?||Unknown||Frecuencia desconocida||Frequência desconhecida||
+||A||Annual||Anual||Anual||
+||B||Bimonthly (every two months)||Bimestral||Bimestral||
+||C||Semiweekly (twice a week)||Bisemanal||Bissemanal||
+||D||Daily||Diario||Diário||
+||E||Biweekly (every two weeks)||Quincenal||Quinzenal||
+||F||Semiannual (twice a year)||Semestral/bianual||Semestral/bianual||
+||G||Biennial (every two years)||Bienal||Bienal||
+||H||Triennial (every three years)||Trienal||Trienal||
+||I||Three times a week||Tres veces por semana||Três vezes por semana||
+||J||Three times a month||Tres veces por mes||Três vezes por mês||
+||K||Irregular (known to be so)||Irregular||Irregular||
+||M||Monthly||Mensual||Mensal||
+||Q||Quarterly||Trimestral||Trimestral||
+||S||Semimonthly (twice a month)||Bimensual||Bimensal||
+||T||Three times a year||Cuatrimestral||Quadrimestral||
+||W||Weekly||Semanal||Semanal||
+||Z||Other frequencies||Otras frecuencias||Outras frequências||
+
+=== ftp === #ftp [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||art||article based - a PDF file for each article||basado en artículos - un archivo PDF por artículo||baseado em artigos - um arquivo PDF para cada artigo||
+||iss||issue based - a PDF file for each issue||basado en facículos - un archivo PDF por facículo||baseado em fascículo - um arquivo PDF para cada fascículo||
+||na||Not Available||No está disponible||Não Disponível||
+
+=== ftype === #ftype [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||cartoon||cartoon||cartoon||cartoon||
+||chart||chart||cuadro||quadro||
+||diagram||diagram||diagrama||diagrama||
+||drawing||drawing||diseño||desenho||
+||exhibit||exhibit||demostración (exhibit)||demostração (exhibit)||
+||graphic||graphic||gráfico||gráfico||
+||illustration||illustration||ilustración||ilustração||
+||map||map||mapa||mapa||
+||other||other||otro||outro||
+||plate||plate||gravura (plate)||gravura (plate)||
+||schema||schema||esquema||esquema||
+||workflow||workflow||flujo de trabajo||workflow||
+
+=== hcomment === #hcomment [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||0||people can not comment||no se puede comentar||não recebe comentarios||
+||1||people can comment||se puede comentar||recebe comentarios||
+
+=== id === #id [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||nd||Not defined||No definido||Não definido||
+
+=== idiom interface === #idiom_interface [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||en||English||Inglés||Inglês||
+||es||Spanish||Español||Espanhol||
+||pt||Portuguese||Portugués||Português||
+
+=== illustrative material type === #illustrative_material_type [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||gra||graphic||gráfico||gráfico||
+||ilus||figure||figura||figura||
+||map||map||mapa||mapa||
+||nd||no illustrative material||sin material ilustrativo ||sem material ilustrativo ||
+||tab||table||tabla||tabela||
+
+=== indexing coverage === #indexing_coverage [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||BA||Biological Abstracts||Biological Abstracts||Biological Abstracts||
+||EM||Excerpta Medica||Excerpta Medica||Excerpta Medica||
+||IM||Index Medicus||Index Medicus||Index Medicus||
+||LL||LILACS||LILACS||LILACS||
+||SP||Salud Publica||Salud Publica||Saúde Pública||
+
+=== issn type === #issn_type [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||CDROM||CD-ROM ISSN||versión en CD-ROM||versão em CD-ROM||
+||DISKT||Diskette ISSN||versión en disquete||versão em disquete||
+||ONLIN||On line ISSN||versión on line||versão on line||
+||PRINT||PRINT ISSN||versión impresa||versão impressa||
+
+=== issue status === #issue_status [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||0||Not available||No disponible||Não disponível||
+||1||Available||Disponible||Disponível||
+||2||Partial available||Parcialmente disponible||Parcialmente disponível||
+
+=== keyword priority level === #keyword_priority_level [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||m||main||principal||principal||
+||s||secondary||secundaria||secundária||
+
+=== language === #language [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||af||Afrikaans||Africano||Africaner||
+||ar||Arabic||Arabe||Arabe||
+||bg||Bulgarian||Búlgaro||Búlgaro||
+||ca||Catalan||Catalán||Catalão||
+||ch||Chinese||Chino||Chinês||
+||cs||Czech||Tcheco||Tcheco||
+||da||Danish||Dinamarqués||Dinamarquês||
+||de||German||Alemán||Alemão||
+||en||English||Inglés||Inglês||
+||eo||Esperanto||Esperanto||Esperanto||
+||es||Spanish||Español||Espanhol||
+||eu||Basque||Vasco||Vasco||
+||fr||French||Francés||Francês||
+||gl||Galician||Gallego||Galego||
+||gr||Greek||Griego||Grego||
+||he||Hebrew||Hebreo||Hebraico||
+||hi||Hindi||Hindú||Hindu||
+||hu||Hungarian||Húngaro||Húngaro||
+||ia||Interlingua||Interlingua||Interlingua||
+||ie||Interlingue||Interlingue||Interlingue||
+||in||Indonesian||Indonesio||Indonésio||
+||it||Italian||Italiano||Italiano||
+||ja||Japanese||Japonés||Japonês||
+||ko||Korean||Coreano||Coreano||
+||la||Latin||Latín||Latim||
+||nl||Dutch||Holandés||Holandês||
+||no||Norwergian||Noruego||Norueguês||
+||pl||Polish||Polaco||Polonês||
+||pt||Portuguese||Portugués||Português||
+||ro||Romanian||Rumano||Românico||
+||ru||Russian||Ruso||Russo||
+||sa||Sanskrit||Sánscrito||Sânscrito||
+||sh||Serbo-Croat||Servo-Croata||Servo-Croata||
+||sk||Slovak||Eslovaco||Eslovaco||
+||sn||Slovenian||Slovenian||Slovenian||
+||sv||Swedish||Sueco||Sueco||
+||tr||Turkish||Turco||Turco||
+||uk||Ukrainian||Ucrano||Ucraniano||
+||ur||Urdu||Urdú||Urdu||
+||zz||Other||Otros||Outros||
+
+=== lictype === #lictype [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||nd||not defined||no definido||não definido||
+||open-access||open access||acceso abierto||acesso aberto||
+
+=== literature type === #literature_type [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||C||Conference||
+||M||Monograph||Documento publicado en una monografía||Documento publicado em uma Monografia||
+||MC||Conference papers as Monograph||Documento de conferencia en una monografía||Documento de conferência em uma monografia||
+||MCP||Documento de proyecto y conferencia en una monografía||Documento de projeto e conferência em uma monografia||
+||MP||Project papers as Monograph||Documento de proyecto en una monografía||Documento de projeto em uma monografia||
+||MPC||Project and Conference papers as monograph||
+||MS||Monograph Series||Documento publicado en una serie monográfica||Documento publicado em uma série monográfica||
+||MSC||Conference papers as Monograph Series||Documento de conferencia en una serie monográfica||Documento de conferência em uma série monográfica||
+||MSP||Project papers as Monograph Series||Documento de proyecto en una serie monográfica||Documento de projeto em uma série monográfica||
+||N||Document in a non conventional form||Documento no convencional||Documento não convencional||
+||NC||Conference papers in a non conventional form||Documento de conferencia en forma no convencional||Documento de conferência em forma não convencional||
+||NP||Project papers in a non conventional form||Documento de proyecto en forma no convencional||Documento de projeto em forma não convencional||
+||P||Project||
+||S||Serial||Documento publicado en una serie periódica||Documento publicado em uma série periódica||
+||SC||Conference papers as Periodical Series||Documento de conferencia en una serie periódica||Documento de conferência em uma série periódica||
+||SCP||Conference and Project papers as periodical series||Documento de proyecto y conferencia en una serie periódica||Documento de projeto e conferência em uma série periódica||
+||SP||Project papers as Periodical Series||Documento de proyecto en una serie periódica||Documento de projeto em uma série periódica||
+||T||Thesis and Dissertation||Tesis (publicada o no)||Tese (publicada ou não)||
+||TS||Thesis Series||Tesis que pertenece a una serie monográfica||Tese pertencente a uma série monográfica||
+
+=== month === #month [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||1||Jan.||ene.||jan.||
+||10||Oct.||oct.||out.||
+||11||Nov.||nov.||nov.||
+||12||Dec.||dic.||dez.||
+||2||Feb.||feb.||fev.||
+||3||Mar.||mar.||mar.||
+||4||Apr.||abr.||abr.||
+||5||May||mayo||maio||
+||6||June||jun.||jun.||
+||7||July||jul.||jul.||
+||8||Aug.||ago.||ago.||
+||9||Sept.||set.||set.||
+
+=== pii === #pii [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||nd||Not defined||No definido||Não definido||
+
+=== publication level === #publication_level [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||CT||Scientific/technical||Científico/técnico||Científico/técnico||
+||DI||Divulgation||Divulgación||Divulgação||
+
+=== pubtype === #pubtype [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||epub||electronic publication||publicación electrónica||publicação electrônica||
+||ppub||print publication||publicación impresa||publicação impressa||
+
+=== rid === #rid [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||nd||Not defined||No definido||Não definido||
+
+=== role === #role [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||coord||coordinator||coordinador||coordenador||
+||ed||publisher||editor||editor||
+||nd||Not defined||No definido||Não definido||
+||org||organizer||organizador||organizador||
+||tr||translator||traductor||tradutor||
+
+=== scheme === #scheme [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||decs||Health Science Descriptors||Descriptores en Ciencia de la Salud||Descritores em Ciência da Saúde||
+||nd||No Descriptor||Ningun Descriptor||Nenhum Descritor||
+
+=== sponsor === #sponsor [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||nd||Not definido||No definido||Não definido||
+
+=== state === #state [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||AC||Acre||Acre||Acre||
+||AL||Alagoas||Alagoas||Alagoas||
+||AM||Amazonas||Amazonas||Amazonas||
+||AP||Amapá||Amapá||Amapá||
+||BA||Bahia||Bahia||Bahia||
+||CE||Ceará||Ceará||Ceará||
+||DF||Distrito Federal||Distrito Federal||Distrito Federal||
+||ES||Espírito Santo||Espírito Santo||Espírito Santo||
+||FN||Fernando de Noronha||Fernando de Noronha||Fernando de Noronha||
+||GO||Goiás||Goiás||Goiás||
+||MA||Maranhão||Maranhão||Maranhão||
+||MG||Minas Gerais||Minas Gerais||Minas Gerais||
+||MS||Mato Grosso do Sul||Mato Grosso do Sul||Mato Grosso do Sul||
+||MT||Mato Grosso||Mato Grosso||Mato Grosso||
+||PA||Pará||Pará||Pará||
+||PB||Paraíba||Paraíba||Paraíba||
+||PE||Pernambuco||Pernambuco||Pernambuco||
+||PI||Piauí||Piauí||Piauí||
+||PR||Paraná||Paraná||Paraná||
+||RJ||Rio de Janeiro||Rio de Janeiro||Rio de Janeiro||
+||RN||Rio Grande do Norte||Rio Grande do Norte||Rio Grande do Norte||
+||RO||Rondônia||Rondônia||Rondônia||
+||RR||Roraima||Roraima||Roraima||
+||RS||Rio Grande do Sul||Rio Grande do Sul||Rio Grande do Sul||
+||SC||Santa Catarina||Santa Catarina||Santa Catarina||
+||SE||Sergipe||Sergipe||Sergipe||
+||SP||São Paulo||São Paulo||São Paulo||
+
+=== status === #status [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||?||Unknown||Desconocido||Desconhecido||
+||C||Current||Vigente||Corrente||
+||D||Ceased||Terminado||Encerrado||
+||R||Reports only||Solamente para los informes estadísticos||Somente para os relatórios estatísticos||
+||S||Suspended||Sospendido||Suspenso||
+
+=== study area === #study_area [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||Agricultural Sciences||Agricultural Sciences||Ciencias Agrícolas||Ciências Agrárias||
+||Applied Social Sciences||Applied Social Sciences||Ciencias Sociales Aplicadas||Ciências Sociais Aplicadas||
+||Biological Sciences||Biological Sciences||Ciencias Biológicas||Ciências Biológicas||
+||Engineering||Engineering||Ingeniería||Engenharias||
+||Exact and Earth Sciences||Exact and Earth Sciences||Ciencias Exactas y de la Tierra||Ciências Exatas e da Terra||
+||Health Sciences||Health Sciences||Ciencias de la Salud||Ciências da Saúde||
+||Human Sciences||Human Sciences||Humanidades||Ciências Humanas||
+||Linguistics, Letters and Arts||Linguistics, Letters and Arts||Linguística, Letras y Artes||Lingüística, Letras e Artes||
+
+=== treatment level === #treatment_level [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||am||analytical of a monograph||Nivel analítico monográfico||Nível analítico monográfico||
+||amc||analytical of a monograph in a collection||Nivel analítico monográfico de colección||Nível analítico monográfico de coleção||
+||ams||analytical of a monograph in a serial||Nivel analítico monográfico de serie||Nível analítico monográfico de série||
+||as||analytical of a serial||Nivel analítico de serie||Nível analítico de série||
+||c||collective level||Nivel colección||Nível coleção||
+||m||monographic level||Nivel monográfico||Nível monográfico||
+||mc||monographic in a collection||Nivel monográfico de colección||Nível monográfico de coleção||
+||ms||monographic series level||Nivel monográfico de serie||Nível monográfico de série||
+
+=== usersubscription === #usersubscription [wiki:SciELO_PCPrograms_Code#index topo]
+||||English||Español||Português||
+||na||Not Available||No disponible||Não disponível||
+||reg||Electronic Registration||Registro Electrónico||Registro Eletrônico||
+||sub||Regular Subscription||Suscripción Regular||Assinatura Regular||

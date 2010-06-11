@@ -1,5 +1,0 @@
-C:\SCIELO\BIN\SGMLPARS\art.dcl
-C:\SCIELO\BIN\SGMLPARS\art3_1.dtd
-article
-1
-1

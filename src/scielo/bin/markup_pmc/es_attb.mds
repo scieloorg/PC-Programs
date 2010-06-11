@@ -15,8 +15,8 @@ sin material ilustrativo ;figura;gráfico;mapa;tabla
 nd;ilus;gra;map;tab
 
 version
-3.1
-3.1
+3.1;4.0
+3.1;4.0
 
 toccode
 title;sectitle
@@ -39,12 +39,12 @@ iso 690/87 - international standard organization;nbr 6023/89 - associação nacion
 iso690;nbr6023;other;vancouv;apa
 
 id
-
-
+No definido
+nd
 
 rid
-
-
+No definido
+nd
 
 dateiso
 00000000
@@ -127,8 +127,8 @@ gráfico;cartoon;cuadro;diagrama;diseño;demostración (exhibit);ilustración;mapa;g
 graphic;cartoon;chart;diagram;drawing;exhibit;illustration;map;plate;schema;workflow;other
 
 lictype
-acceso abierto
-open-access
+acceso abierto;no definido
+open-access;nd
 
 href
 
@@ -137,4 +137,8 @@ href
 pubtype
 publicación electrónica;publicación impresa
 epub;ppub
+
+hcomment
+no se puede comentar;se puede comentar
+0;1
 

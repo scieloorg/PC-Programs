@@ -1,3 +1,0 @@
-ALL,Lista todas
-PARTIAL,Lista parcial
-RECREATE,Recria a lista

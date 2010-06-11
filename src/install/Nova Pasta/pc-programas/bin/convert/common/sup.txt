@@ -1,8 +1,0 @@
-<SUP>1/2</SUP>|½
-<SUP>1/4</SUP>|¼
-<SUP>3/4</SUP>|¾
-<SUP>1</SUP>|¹
-<SUP>2</SUP>|²
-<SUP>3</SUP>|³
-<SUP>a</SUP>|ª
-<SUP>o</SUP>|º

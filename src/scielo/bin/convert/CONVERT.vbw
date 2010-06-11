@@ -1,5 +1,5 @@
 ISIS001 = 22, 29, 700, 585, C
-Converter = 198, 261, 979, 848, 
+Converter = 14, 121, 795, 708, 
 ISIS32 = 44, 58, 722, 614, C
 General = 110, 145, 766, 732, 
 ClFila = 0, 0, 0, 0, C
@@ -8,7 +8,7 @@ ColField = 0, 0, 0, 0, C
 ClField = 0, 0, 0, 0, C
 ClLink = 110, 145, 852, 770, 
 ColLink = 0, 0, 0, 0, C
-ClDBDoc = 44, 58, 825, 645, Z
+ClDBDoc = 44, 58, 825, 645, 
 ClTxt = 31, 158, 989, 489, 
 modErrorHandling = 0, 0, 0, 0, C
 modClassIDGenerator = 0, 0, 0, 0, C
