@@ -28,13 +28,13 @@ item: Global
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=4.0.001
+  Version File=4.0.011
   Version Description=SciELO
   Version Copyright=2010
   Version Company=SciELO
   Distribute Path=C:\2007\scielo
   Distribute Type=1
-  Step View=Properties
+  Step View=All
   Variable Name1=_SYS_
   Variable Default1=C:\WINNT\system32
   Variable Flags1=00001000
@@ -89,7 +89,7 @@ item: Set Variable
 end
 item: Set Variable
   Variable=GROUP
-  Value=SciELO
+  Value=SciELO (Menu)
   Flags=10000000
 end
 item: Set Variable
@@ -98,7 +98,7 @@ item: Set Variable
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=c:\SciELO
+  Value=SciELO
   Flags=10000000
 end
 item: Set Variable
@@ -533,7 +533,7 @@ item: Custom Dialog Set
       Text French=%MAINDIR%
       Text German=%MAINDIR%
       Text Portuguese=%PROGDIR%
-      Text Spanish=%MAINDIR%
+      Text Spanish=%PROGDIR%
       Text Italian=%MAINDIR%
       Text Danish=%MAINDIR%
       Text Dutch=%MAINDIR%
@@ -541,10 +541,10 @@ item: Custom Dialog Set
       Text Swedish=%MAINDIR%
     end
     item: Push Button
-      Control Name=%MAINDIR%
+      Control Name=%PROGDIR%
       Rectangle=215 126 257 140
       Variable=PROGDIR_SAVE
-      Value=%MAINDIR%
+      Value=%PROGDIR%
       Destination Dialog=1
       Action=2
       Create Flags=01010000000000010000000000000000
@@ -565,13 +565,14 @@ item: Custom Dialog Set
       Enabled Color=00000000000000001111111111111111
       Create Flags=01010000000000000000000000000000
       Text=%DATADIR%
-      Text Spanish=%MAINDIR%
+      Text Portuguese=%DATADIR%
+      Text Spanish=%DATADIR%
     end
     item: Push Button
       Control Name=%DATADIR%
       Rectangle=215 156 257 171
-      Variable=MAINDIR_SAVE
-      Value=%MAINDIR%
+      Variable=DATADIR_SAVE
+      Value=%DATADIR%
       Destination Dialog=2
       Action=2
       Enabled Color=00000000000000001111111111111111
@@ -617,12 +618,12 @@ item: Custom Dialog Set
       Help Context=16711681
       Enabled Color=00000000000000001111111111111111
       Create Flags=01010000100000010000000000000000
-      Text=%APPTITLE%
+      Text=%GROUP%
       Text Spanish=%GROUP%
     end
     item: Editbox
       Rectangle=94 98 211 111
-      Variable=NAME
+      Variable=MYSCIELOURL
       Help Context=16711681
       Enabled Color=00000000000000001111111111111111
       Create Flags=01010000100000010000000000000000
@@ -648,9 +649,10 @@ item: Custom Dialog Set
     item: Listbox
       Rectangle=5 2 160 149
       Variable=PROGDIR
-      Create Flags=01010000100000010000000101000000
-      Flags=0000110000100010
+      Create Flags=01010000100000010000000101000001
+      Flags=0000110000000010
       Text=%MAINDIR%
+      Text=
       Text French=%MAINDIR%
       Text German=%MAINDIR%
       Text Portuguese=%MAINDIR%
@@ -703,7 +705,7 @@ item: Custom Dialog Set
     Font Size=8
     item: Listbox
       Rectangle=5 5 160 152
-      Variable=MAINDIR
+      Variable=DATADIR
       Create Flags=01010000100000010000000101000001
       Flags=0000110000000010
       Text=%DATADIR%
@@ -1004,6 +1006,10 @@ remarked item: Custom Dialog Set
       Text Spanish=%PUBMED_PROVIDER_ID%
     end
   end
+end
+item: Display Message
+  Title=GROUP
+  Text=%GROUP%
 end
 remarked item: End Block
 end
@@ -2113,7 +2119,7 @@ end
 item: End Block
 end
 item: Create Directory
-  Pathname=%PROGDIR%\serial
+  Pathname=%DATADIR%\serial
 end
 item: If/While Statement
   Variable=COMPONENTS
@@ -4587,286 +4593,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\windows\system\msxml3.dll
-  Destination=%PROGDIR%\bin\markup\windows\system\msxml3.dll
-  Flags=0001000010000011
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\windows\system\msxml6.dll
-  Destination=%PROGDIR%\bin\markup\windows\system\msxml6.dll
-  Flags=0001000010000011
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\spmj.amd
-  Destination=%PROGDIR%\bin\markup\automatas\spmj.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\spm.amd
-  Destination=%PROGDIR%\bin\markup\automatas\spm.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\sa.amd
-  Destination=%PROGDIR%\bin\markup\automatas\sa.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rsp.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rsp.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rsocp.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rsocp.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rsbmt.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rsbmt.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rpsp.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rpsp.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rousp.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rousp.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rn.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rn.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rimtsp.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rimtsp.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rhc.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rhc.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\resp.amd
-  Destination=%PROGDIR%\bin\markup\automatas\resp.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rbz.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rbz.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rbp.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rbp.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rbcsoc.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rbcsoc.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rbccv.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rbccv.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rbbio.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rbbio.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rbb.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rbb.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\rb.amd
-  Destination=%PROGDIR%\bin\markup\automatas\rb.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\ramb.amd
-  Destination=%PROGDIR%\bin\markup\automatas\ramb.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\qn.amd
-  Destination=%PROGDIR%\bin\markup\automatas\qn.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\pvb.amd
-  Destination=%PROGDIR%\bin\markup\automatas\pvb.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\ptp.amd
-  Destination=%PROGDIR%\bin\markup\automatas\ptp.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\pob.amd
-  Destination=%PROGDIR%\bin\markup\automatas\pob.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\pab.amd
-  Destination=%PROGDIR%\bin\markup\automatas\pab.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\mioc.amd
-  Destination=%PROGDIR%\bin\markup\automatas\mioc.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\mana.amd
-  Destination=%PROGDIR%\bin\markup\automatas\mana.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\jbchs.amd
-  Destination=%PROGDIR%\bin\markup\automatas\jbchs.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\gmb.amd
-  Destination=%PROGDIR%\bin\markup\automatas\gmb.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\fb.amd
-  Destination=%PROGDIR%\bin\markup\automatas\fb.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\es.amd
-  Destination=%PROGDIR%\bin\markup\automatas\es.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\epsic.amd
-  Destination=%PROGDIR%\bin\markup\automatas\epsic.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\ep.amd
-  Destination=%PROGDIR%\bin\markup\automatas\ep.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\ecler.amd
-  Destination=%PROGDIR%\bin\markup\automatas\ecler.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\cta.amd
-  Destination=%PROGDIR%\bin\markup\automatas\cta.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\csp.amd
-  Destination=%PROGDIR%\bin\markup\automatas\csp.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\csc.amd
-  Destination=%PROGDIR%\bin\markup\automatas\csc.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\bwho.amd
-  Destination=%PROGDIR%\bin\markup\automatas\bwho.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\brag.amd
-  Destination=%PROGDIR%\bin\markup\automatas\brag.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\bjvras.amd
-  Destination=%PROGDIR%\bin\markup\automatas\bjvras.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\bjmbr.amd
-  Destination=%PROGDIR%\bin\markup\automatas\bjmbr.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\bjm.amd
-  Destination=%PROGDIR%\bin\markup\automatas\bjm.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\bjid.amd
-  Destination=%PROGDIR%\bin\markup\automatas\bjid.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\bjce.amd
-  Destination=%PROGDIR%\bin\markup\automatas\bjce.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\babt.amd
-  Destination=%PROGDIR%\bin\markup\automatas\babt.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\automata.mds
-  Destination=%PROGDIR%\bin\markup\automatas\automata.mds
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\anp.amd
-  Destination=%PROGDIR%\bin\markup\automatas\anp.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\ag.amd
-  Destination=%PROGDIR%\bin\markup\automatas\ag.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\acb.amd
-  Destination=%PROGDIR%\bin\markup\automatas\acb.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\abmvz.amd
-  Destination=%PROGDIR%\bin\markup\automatas\abmvz.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\abem.amd
-  Destination=%PROGDIR%\bin\markup\automatas\abem.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\abc.amd
-  Destination=%PROGDIR%\bin\markup\automatas\abc.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\abb.amd
-  Destination=%PROGDIR%\bin\markup\automatas\abb.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=z:\src\scielo\bin\markup_pmc\automatas\aabc.amd
-  Destination=%PROGDIR%\bin\markup\automatas\aabc.amd
-  Flags=0000000010000010
-end
-item: Install File
   Source=z:\src\SciELO\bin\markup_pmc\windows\system\msxml6.dll
   Destination=%SYS32%\msxml6.dll
   Flags=0001000010000011
@@ -4952,76 +4678,13 @@ item: Get Registry Key Value
   Value Name=Common Programs
   Flags=00000100
 end
-item: Set Variable
+remarked item: Set Variable
   Variable=CGROUP_SAVE
   Value=%GROUP%
 end
 item: Set Variable
   Variable=GROUP
   Value=%GROUPDIR%\%GROUP%
-end
-item: Create Shortcut
-  Source Spanish=%PATH_SGMLPARS%\Bin\SGMLPars\parser.exe
-  Destination Spanish=%GROUP%\SGML Parser.lnk
-  Working Directory Spanish=%PATH_SGMLPARS%\Bin\SGMLPars
-  Icon Number Spanish=0
-  Icon Pathname Spanish=%PATH_SGMLPARS%\Bin\SGMLPars\PARSER.EXE
-end
-item: If/While Statement
-  Variable=COMPONENTS
-  Value=A
-  Flags=00001010
-end
-item: Create Shortcut
-  Source Spanish=%PROGDIR%\bin\Codes\codes.exe
-  Destination Spanish=%GROUP%\Code Manager.lnk
-  Working Directory Spanish=%PROGDIR%\bin\CODES
-  Icon Number Spanish=0
-  Icon Pathname Spanish=%PROGDIR%\bin\CODES\codes.EXE
-end
-item: End Block
-end
-item: If/While Statement
-  Variable=COMPONENTS
-  Value=A
-  Flags=00001010
-end
-item: Create Shortcut
-  Source Spanish=%PROGDIR%\bin\config\config.exe
-  Destination Spanish=%GROUP%\Title Manager.lnk
-  Working Directory Spanish=%PROGDIR%\bin\CONFIG
-  Icon Number Spanish=0
-  Icon Pathname Spanish=%PROGDIR%\bin\CONFIG\CONFIG.EXE
-end
-item: End Block
-end
-item: If/While Statement
-  Variable=COMPONENTS
-  Value=B
-  Flags=00001010
-end
-item: Create Shortcut
-  Source Spanish=%PROGDIR%\bin\markup\Markup.exe
-  Destination Spanish=%GROUP%\Markup.lnk
-  Working Directory Spanish=%PROGDIR%\bin\MARKUP
-  Icon Number Spanish=0
-  Icon Pathname Spanish=%PROGDIR%\bin\MARKUP\MARKUP.EXE
-end
-item: End Block
-end
-item: If/While Statement
-  Variable=COMPONENTS
-  Value=D
-  Flags=00001010
-end
-item: Create Shortcut
-  Source Spanish=%PROGDIR%\bin\convert\convert.exe
-  Destination Spanish=%GROUP%\Converter.lnk
-  Working Directory Spanish=%PROGDIR%\bin\CONVERT
-  Icon Number Spanish=0
-  Icon Pathname Spanish=%PROGDIR%\bin\CONVERT\CONVERT.EXE
-end
-item: End Block
 end
 item: Create Shortcut
   Source Spanish=%PROGDIR%\Unwise.exe
@@ -5032,16 +4695,77 @@ item: Create Shortcut
   Key Type Spanish=1536
   Flags=00000001
 end
+item: Create Shortcut
+  Source=%PATH_SGMLPARS%\Bin\SGMLPars\parser.exe
+  Destination=%GROUP%\SGML Parser.lnk
+  Working Directory=%PATH_SGMLPARS%\Bin\SGMLPars
+  Icon Number=0
+  Icon Pathname=%PATH_SGMLPARS%\Bin\SGMLPars\PARSER.EXE
+end
+item: If/While Statement
+  Variable=COMPONENTS
+  Value=A
+  Flags=00001010
+end
+item: Create Shortcut
+  Source=%PROGDIR%\bin\Codes\codes.exe
+  Destination=%GROUP%\Code Manager.lnk
+  Working Directory=%PROGDIR%\bin\CODES
+  Icon Number=0
+  Icon Pathname=%PROGDIR%\bin\CODES\codes.EXE
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=COMPONENTS
+  Value=A
+  Flags=00001010
+end
+item: Create Shortcut
+  Source=%PROGDIR%\bin\config\config.exe
+  Destination=%GROUP%\Title Manager.lnk
+  Working Directory=%PROGDIR%\bin\CONFIG
+  Icon Number=0
+  Icon Pathname=%PROGDIR%\bin\CONFIG\CONFIG.EXE
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=COMPONENTS
+  Value=B
+  Flags=00001010
+end
+item: Create Shortcut
+  Source=%PROGDIR%\bin\markup\Markup.exe
+  Destination=%GROUP%\Markup.lnk
+  Working Directory=%PROGDIR%\bin\MARKUP
+  Icon Number=0
+  Icon Pathname=%PROGDIR%\bin\MARKUP\MARKUP.EXE
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=COMPONENTS
+  Value=D
+  Flags=00001010
+end
+item: Create Shortcut
+  Source=%PROGDIR%\bin\convert\convert.exe
+  Destination=%GROUP%\Converter.lnk
+  Working Directory=%PROGDIR%\bin\CONVERT
+  Icon Number=0
+  Icon Pathname=%PROGDIR%\bin\CONVERT\CONVERT.EXE
+end
+item: End Block
+end
 item: Else Statement
 end
 item: Add ProgMan Icon
   Group=%GROUP%
-  Icon Name=Uninstall
-  Icon Name Portuguese=Uninstall
   Icon Name Spanish=Uninstall
-  Command Line=%MAINDIR%\Unwise.exe
+  Command Line=%PROGDIR%\Unwise.exe
   Icon Pathname=%MAINDIR%\unwise.exe
-  Default Directory=%MAINDIR%
+  Default Directory=%PROGDIR%
   Flags=01000000
 end
 item: Add ProgMan Icon
