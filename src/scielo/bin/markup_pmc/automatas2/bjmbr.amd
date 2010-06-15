@@ -1,0 +1,131 @@
+ocitat
+c1
+c5
+c1;c2;T;no;".";","
+c2;c3;NT;ocontrib;"."
+c2;c3;NT;ocontrib;"?"
+c2;c4;NT;ocontrib;". In:"
+c2;c4;NT;ocontrib;"? In:"
+c2;c5;NT;omonog;"."
+c2;c5;NT;omonog;")."
+c3;c5;NT;oiserial;"."
+c3;c5;NT;oiserial;")."
+c4;c5;NT;omonog;"."
+c4;c5;NT;omonog;")."
+
+ocontrib
+oc1
+oc6
+oc1;oc1;NT;oauthor;","
+oc1;oc2;NT;oauthor;"&"
+oc1;oc3;NT;oauthor;"("
+oc2;oc3;NT;oauthor;"("
+oc1;oc3;NT;ocorpaut;"("
+oc3;oc4;T;date;").";".",","
+oc4;oc5;T;title;":";"."
+oc4;oc5;T;title;".";":"
+oc4;oc6;T;title;". In:"
+oc4;oc6;T;title;"? In:"
+oc5;oc6;T;subtitle;". In:"
+oc5;oc6;T;subtitle;"? In:"
+oc4;oc6;T;title;".";":"
+oc4;oc6;T;title;"?";":"
+oc5;oc6;T;subtitle;".";":"
+oc5;oc6;T;subtitle;"?";",","."
+
+omonog
+om1
+om10
+om1;om1;NT;oauthor;","
+om1;om2;NT;oauthor;"&"
+om1;om3;NT;oauthor;"("
+om2;om3;NT;oauthor;"("
+om1;om3;NT;ocorpaut;"("
+om3;om4;T;ign;") (";".",":",","
+om3;om5;T;date;").";".",",","("
+om3;om5;T;ign;"),";".",":",","
+om4;om5;T;date;").";".",","
+om5;om6;T;title;":";"."
+om5;omp10;T;title;". Vol.";":"
+om5;omp1;T;title;".";":"
+om5;om6;T;title;".";":"
+om6;omp10;T;subtitle;". Vol."
+om6;omp1;T;subtitle;".";"Vol"
+omp1;omp6;T;edition;"st edn."
+omp1;omp6;T;edition;"nd edn."
+omp1;omp6;T;edition;"rd edn."
+omp1;omp6;T;edition;"th edn."
+omp1;omp7;T;pubname;",";"thesis","Vol."
+omp10;omp4;T;volid;".";","
+omp10;omp6;T;volid;".";","
+omp1;omp5;T;volid;":";"."
+omp1;omp3;T;volid;",";"."
+omp3;omp4;T;othinfo;"."
+omp3;omp6;T;othinfo;"."
+omp4;omp6;T;edition;"st edn."
+omp4;omp6;T;edition;"nd edn."
+omp4;omp6;T;edition;"rd edn."
+omp4;omp6;T;edition;"th edn."
+omp6;omp7;T;pubname;",";"thesis","Vol."
+omp7;om8;T;city;",";":","("
+omp7;omp8;T;city;",";":","(","-"
+omp7;omp9;T;city;",";":","(","-"
+omp7;om10;T;city;".";":","(",",","-"
+omp7;omp7;T;city;"/";":","(",",","-"
+omp7;omp7;T;city;"&";":","(",",","-"
+omp8;omp9;T;state;",";":","(","-"
+omp8;om10;T;state;".";",",":","(",",","-"
+omp9;om8;T;country;",";":","(",")",".","-"
+omp9;om10;T;country;".";":","(",")",",","-"
+om8;om10;T;pages;".";":","(",")",","
+om8;om9;T;pages;" (";":",","
+omp5;om10;T;pages;".";":","(",")",","
+om9;om10;T;othinfo;")."
+omp1;om10;NT;thesis;"."
+
+oiserial
+oi1
+oi7
+oi1;oi2;T;sertitle;","
+oi1;oi8;T;sertitle;","
+oi1;oi6;T;sertitle;" ("
+oi8;oi2;T;country;","
+oi2;oi3;T;volid;"(";"("
+oi2;oi5;T;volid;":";"("
+oi2;oi6;T;volid;":(";"("
+oi3;oi4;T;ign;" ";")"
+oi3;oi5;T;suppl;"):";" "
+oi4;oi5;T;suppl;"):"
+oi5;oi7;T;pages;".";":","(",")"
+oi5;oi6;T;pages;"(";":"
+oi6;oi7;T;othinfo;")."
+
+thesis
+th1
+th7
+th1;th2;T;degree;","
+th1;th2;T;degree;"thesis,"
+th2;th4;T;orgname;","
+th2;th3;T;orgdiv;","
+th3;th4;T;orgname;","
+th4;th6;T;city;",";"-"
+th4;th5;T;city;",";"-"
+th4;th7;T;city;".";"-"
+th5;th6;T;state;",";"-"
+th5;th7;T;state;".";"-"
+th6;th7;T;country;".";"-"
+
+oauthor
+oau1
+oau3
+oau1;oau2;T;surname;" ";".","&"
+oau2;oau3;T;fname;",";".","&"
+oau2;oau3;T;fname;"&";",","."
+oau2;oau3;T;fname;"(";",","&"
+
+ocorpaut
+ocau1
+ocau3
+ocau1;ocau2;T;orgdiv;"."
+ocau2;ocau3;T;orgname;"(";","
+ocau1;ocau3;T;orgname;"(";","
