@@ -2,9 +2,12 @@ mx ..\..\convert\library\scielo\artmodel lw=99999 "pft=@genConverterArtmodel.pft
 mx seq=genConverter_artmodel.seq create=genConverter_artmodel  now -all fst=@ fullinv=genConverter_artmodel
 
 
-mx "seq=..\..\convert\library\scielo\article.2db;" create=genConverter_art2db now -all "fst=1 0 v1/" fullinv=genConverter_art2db 
-
-mx "seq=..\..\convert\library\scielo\article.trl," create=genConverter_transl now -all "fst=@genConverterTransl.fst" fullinv=genConverter_transl 
+mx "seq=..\..\convert\library\scielo\article.2db" create=genConverter_art2db now -all 
+mx genConverter_art2db lw=9999 "pft=v1/" now | sort > article.2db
+mx "seq=article.2db;" create=genConverter_art2db now -all  "fst=1 0 v1/" fullinv=genConverter_art2db
+ 
+mx "seq=..\..\convert\library\scielo\article.trl," "pft=@genConverter_transl.pft" now > genConverter_transl.xml
+echo "</root>"  >> genConverter_transl.xml
 
 rem 1 tag
 rem 2 tag/subc

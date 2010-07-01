@@ -1,288 +1,288 @@
-=== É suplemento de ===
-Campo: 560[[BR]]
-É suplemento ou parte de; estabelece link entre o título principal e o suplemento ou parte deste.[[BR]]Entre o título principal ao qual o suplemento ou parte está relacionado e da mesma forma como foi registrado na coleção.[[BR]]Exemplo: Boletim da Academia Brasileira de Neurologia[[BR]]É parte de: Arquivos de neuro-psiquiatria[[BR]]        [[BR]] [[BR]]
-
 === Alfabeto  ===
 Campo: 340[[BR]]
-Entre o alfabeto usado no título original do periódico
+Regístrese este campo el alfabeto original del título de la publicación seriada.
 
-=== Assinatura do usuário  ===
-Campo: 67[[BR]]
-Identifica como é o acesso aos artigos por assinatura. [[BR]]Selecione o código correspondente:[[BR]]   sub (regular subscription); assinatura[[BR]]   reg (electronic registration) – assinatura eletrônica [[BR]]   na (not available) – não há assinatura.[[BR]] [[BR]] [[BR]]   [[BR]]
-
-=== Assunto/Descritores  ===
-Campo: 440[[BR]]
-Descritores; Inclua os termos que designam a representação do assunto do periódico.[[BR]]Os termos devem ser registrados um em seguida ao outro, em letras maiúsculas e separados por <enter>, um termo por linha.[[BR]][[BR]] 
-
-=== Assunto ===
+=== Area del conocimiento ===
 Campo: 441[[BR]]
-Áreas do conhecimento as quais o periódico pertence. Esse campo é utilizado para a apresentação dos títulos dos periódicos por assunto.
+Áreas del Conocimiento a las cuales la revista pertenece. Este campo está relacionado al listado de revistas por materia en el sitio.
 
-=== Código do Centro ===
+=== Asunto/Descriptores  ===
+Campo: 440[[BR]]
+Descriptores;  Términos normalizados utilizados para la representación temática de la publicación seriada descrita.[[BR]] [[BR]]Si la revista es del área de salud, para el registro de este campo use términos extraidos del DeCS (Descriptores en Ciencias de la Salud). Un término por línea en caja alta. [[BR]] [[BR]]Regístrese un máximo de 4 descriptores.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Descriptores: MEDICINA OCUPACIONAL[[BR]] [[BR]]b) Descriptores: PEDIATRIA[[BR]] [[BR]]c) Descriptores: NEUROLOGIA[[BR]] [[BR]]d) Descriptores: GINECOLOGIA[[BR]]
+
+=== Código del Centro ===
 Campo: 10[[BR]]
-Selecionar o centro responsável pela informação[[BR]]
+Identifica el Centro responsable por la creación de un registro bibliográfico
 
 === Código MEDLINE ===
 Campo: 420[[BR]]
-Código que identifica o periódico na base MEDLINE.[[BR]] [[BR]]
+Código MEDLINE del título si es indizado en las bases de datos MEDLINE. 
 
 === Código Nacional  ===
 Campo: 20[[BR]]
-Código que identifica o periódico no sistema de classificação de cada país (ou seu equivalente) com o propósito de facilitar a transferência de dados entre sistemas relacionados.[[BR]]Entre nesse campo o código designado pela instituição responsável pela atribuição dessa informação.[[BR]]
+Código que identifica el título, en el sistema nacional de publicaciones seriadas de cada país (o su quivalente) con el propósito de facilitar la transferencia de datos entre éste y otros sistemas afines.[[BR]] [[BR]]Regístrese en este campo el código asignado por la instituición responsable por el sistema nacional de publicaciones seriadas de cada país (o su equivalente).[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Código nacional: 000456-1[[BR]] [[BR]]b) Código nacional: 00043/93[[BR]]
 
 === Código SECS   ===
 Campo: 37[[BR]]
-Entre nesse campo o número SECS atribuido pela BIREME que identifica o periódico no SeCS (Seriadas em Ciências da Saúde)[[BR]][[BR]] [[BR]]
+Regístrese en ese campo el número fornecido por BIREME que identifica el título en la base de dados de Seriados em Ciências de la Salud; SeCS.[[BR]] [[BR]]Este campo debe ser completado obligatoriamente por los Centros que participan con sus colecciones del Registro de Pulicaciones Seriadas en Ciencias de la Salud; BIREME.[[BR]] [[BR]]Este campo es utilizado por el sistema para generar los archivos de datos de colecciones a ser enviado para la BIREME[[BR]] [[BR]]Siempre que el título estiver identificado como SECS (campo de Sistemas relacionados) este campo también deberá ser completado.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Número SECS: 2[[BR]] [[BR]]b) Número SECS: 4[[BR]]
 
-=== Cidade da Publicação ===
-Campo: 490[[BR]]
-Nome do local (cidade) onde o periódico é editado ou publicado.[[BR]]Entre o nome do local por completo assim como aparece no impresso/site.[[BR]]Quando não é possível identificar o local exato da publicação entre a abreviação s.l.[[BR]]
-
-=== Classificação ===
-Campo: 430[[BR]]
-Número de classificação do assunto do periódico de acordo com o sistema de classificação adotado pelo centro responsável.
-
-=== Cobertura de Indexação ===
-Campo: 450[[BR]]
-Cobertura de Indexação; Entre as informações uma após a outra separando-as com <enter>. Uma base de dados por linha.[[BR]]Exemplos: [[BR]]IM- Index Medicus[[BR]]LL- LILACS[[BR]]IL- Index Medicus Latino Americano[[BR]]EM- Excerpta Medica[[BR]]BA- Biological Abstracts[[BR]]SP- LILACS-SP[[BR]] 
-
-=== Copyright (Data) ===
-Campo: 621[[BR]]
-Data de copyright
-
-=== Data de Atualização ===
-Campo: 941[[BR]]
-Data de atualização do registro [[BR]]
-
-=== Data de Criação   ===
-Campo: 940[[BR]]
-Data de criação do registro [[BR]]
-
-=== Data de entrada ===
-Campo: 51abcd[[BR]]
-
-
-=== Data de saída ===
-Campo: 51abcd[[BR]]
-
-
-=== Data Final ===
-Campo: 304[[BR]]
-Data em formato ISO em que o título foi publicado pela última vez.[[BR]] [[BR]]Exemplos:[[BR]]     a) Data final: 1984 = 19840000[[BR]] [[BR]]     b) Data final: Set./Dez.1988 = 19880900[[BR]]
-
-=== Data Inicial  ===
-Campo: 301[[BR]]
-Entre a data do primeiro número do periódico em formato isso (4 dígitos para año, 2 para mês, 2 para dia)[[BR]]Exemplos:[[BR]]     a) Ene./Mar. 1974 = 19740100[[BR]] [[BR]]     b) 1987 = 19870000[[BR]] [[BR]]     c) Sept. 1988 = 19880900
-
-=== Detentor dos direitos autorais  ===
-Campo: 62[[BR]]
-Detentor dos direitos autorais (Copyrighter)[[BR]]Inserir nesse campo a instituição responsável pela publicação.[[BR]][[BR]]Exemplos:[[BR]] [[BR]]a) Brazilian Journal of Medical and Biological Research[[BR]] [[BR]]b) Sociedade Brasileira de Genética[[BR]] [[BR]]c) Instituto Universitário de Pesquisas do Rio de Janeiro [[BR]] [[BR]]d) Revista Brasileira de Ciências Sociais[[BR]] [[BR]]
-
-=== Documentalista (Atualização)  ===
-Campo: 951[[BR]]
-Iniciais do responsável pela atualização deste registro
-
-=== Documentalista (Criação) ===
-Campo: 950[[BR]]
-Iniciais do responsável pela criação deste registro
-
-=== Editora  ===
+=== Casa Publicadora  ===
 Campo: 480[[BR]]
-Nome da instituição responsável pelo periódico.[[BR]]Não é a gráfica.[[BR]]Entre o nome do publicador conforme indicado no impresso/site.[[BR]]No caso de mais de um publicador, entre o primeiro mencionado ou aquele que coincide com o local da publicação.[[BR]][[BR]]
+Nombre del editor comercial y/o publicista de la[[BR]]publicación seriada descrita.[[BR]] [[BR]]Regístrese en este campo el editor responsable comercial de la publicación seriada, conforme aparece en ella.[[BR]] [[BR]]Cuando el editor responsable sea el mismo de la mención de responsabilidad, no necesita repetirlo en este campo, salvo que se registre en forma abreviada o cuando es imprescindible para propósitos de adquisición.[[BR]] [[BR]]En el caso de más de un editor comercial se registra el primero que aparece o que coincide con el lugar de publicación.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Editor: Pergamon Press[[BR]] [[BR]]b) Editor: Plenum Press [[BR]]
 
-=== Endereço  ===
-Campo: 63[[BR]]
-Inserir nesse campo o endereço de contato do periódico. Incluir telefone e fax (quando houver)[[BR]]Separar as informações com <ENTER>. [[BR]]Estes dados são apresentados no rodapé do site e também é usado para entrar em contato com o publicador.[[BR]]Ejemplos:[[BR]] [[BR]]a) Rua Capitão Adelmio Norberto da Silva, 736[[BR]]14025-670 Ribeirão Preto, SP; Brasil[[BR]]Telephone and Fax: (55 16) 621.8540, 620.1251, 620.1253[[BR]] [[BR]] [[BR]]b) Avenida Lineu Prestes, 2227; Caixa Postal 8216[[BR]]Cidade Universitária Armando de Salles Oliveira[[BR]]05508-900 São Paulo, SP; Brasil[[BR]]Telefone: (55 11) 818.7861[[BR]]Fax: (55 11) 818.7413[[BR]][[BR]] [[BR]]
+=== Ciudad de la Casa Publicadora ===
+Campo: 490[[BR]]
+Nombre del lugar (ciudad) donde se edita y/o publica la publicación seriada descrita.[[BR]] [[BR]]Regístrese el nombre de la ciudad por extenso en el idioma en que aparece en la publicación.[[BR]] [[BR]]Cuando el título aparece en más de un idioma, regístrese la ciudad en el idioma del título propio.[[BR]] [[BR]]Cuando no es posible determinar el lugar de edicion y/o publicación de la publicación seriada, regístrese la abreviatura s.l.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Ciudad: São Paulo[[BR]] [[BR]]b) Ciudad: Santiago[[BR]] [[BR]]c) Ciudad: s.l[[BR]]
 
-=== Endereço Eletrônico ===
+=== Clasificación ===
+Campo: 430[[BR]]
+Notación de clasificación de materia asignada a la publicación seriada de acuerdo al (los) sistema(s) de clasificación adoptado(s).
+
+=== Cobertura de la Indización ===
+Campo: 450[[BR]]
+Cobertura de la indización; Regístrese las bases de datos en las cuales la revista está indizada. [[BR]] Cada base de datos en una línea. [[BR]] Ejemplos: [[BR]]   IM; Index Medicus.[[BR]] [[BR]]   IL; Index Medicus Latinoamericano.[[BR]] [[BR]]   EM; Excerpta Medica.[[BR]] [[BR]]   BA; Biological Abstracts.[[BR]] [[BR]]   LL; LILACS.[[BR]] [[BR]][[BR]]
+
+=== Correo Electronico ===
 Campo: 64[[BR]]
-Registrar o e-mail de contato do periódico, preferencialmente e-mail do periódico ou da instituição/setor responsável pela publicação.[[BR]]Recomenda-se não colocar e-mails pessoais do editor, secretária, etc...[[BR]]
+Correo Electrónico, lo usado para el proceso de publicación de la revista. NO USAR correo PERSONAL. Esta información será presentada en todas las páginas del sitio de la revista, además de ser usada para entrar en contacto con la revista. 
 
-=== Estado da Publicação ===
+=== Derechos autorales - Fecha ===
+Campo: 621[[BR]]
+Copyright Date
+
+=== Detenedor de los derechos autorales ===
+Campo: 62[[BR]]
+Nota de información de crédito de derecho de reproducción en las páginas del sitio de la revista. [[BR]] [[BR]]Regístrese este campo en el formato: nombre oficial del poseedor de los derechos de reproducción.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Brazilian Journal of Medical and Biological Research[[BR]] [[BR]]b) Sociedade Brasileira de Genética[[BR]] [[BR]]c) Instituto Universitário de Pesquisas do Rio de Janeiro [[BR]] [[BR]]d) Revista Brasileira de Ciências Sociais[[BR]] [[BR]]
+
+=== Dirección ===
+Campo: 63[[BR]]
+Regístrese en este campo las informaciones de dirección y teléfono, utilizando <ENTER> para el cambio de linea. Esta información será presentada en todas las páginas del sitio de la revista. [[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Rua Capitão Adelmio Norberto da Silva, 736[[BR]]14025-670 Ribeirão Preto, SP; Brasil[[BR]]Telephone and Fax: (55 16) 621.8540, 620.1251, 620.1253[[BR]] [[BR]] [[BR]]b) Avenida Lineu Prestes, 2227; Caixa Postal 8216[[BR]]Cidade Universitária Armando de Salles Oliveira[[BR]]05508-900 São Paulo, SP; Brasil[[BR]]Telefone: (55 11) 818.7861[[BR]]Fax: (55 11) 818.7413[[BR]][[BR]] [[BR]]
+
+=== Documentalista (Actualización)  ===
+Campo: 951[[BR]]
+Iniciales en letras mayúsculas de la persona responsable por la descripción del documento y análisis.
+
+=== Documentalista (Creación) ===
+Campo: 950[[BR]]
+Iniciales en letras mayúsculas de la persona responsable por la descripción del documento y análisis.
+
+=== Es suplemento de ===
+Campo: 560[[BR]]
+Es suplemento o inserción de; Nota que actúa como nota de relación entre el título del suplemento/inserción y el título principal o propio.[[BR]] [[BR]]Regístrese el título principal o propio al cual el suplemento/inserción está vinculado.[[BR]]
+
+=== Estado de la Casa Publicadora ===
 Campo: 320[[BR]]
-Unidade Federativa ou Região da publicação; Campo 320[[BR]] [[BR]]Entre com o local da publicação dentro do país que não a cidade.[[BR]] [[BR]]
+Estado/provincia; Regístrese el local de publicación dentro do país, que no la ciudad.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Estado/provincia: SP[[BR]] [[BR]]b) Estado/provincia: RJ[[BR]]
 
-=== Fax ===
-Campo: 632[[BR]]
-Fax
+=== Fecha de Actualización ===
+Campo: 941[[BR]]
+Automáticamente registrada la fecha de actualización de este registro.
+
+=== Fecha de Creación   ===
+Campo: 940[[BR]]
+Automáticamente registrada la fecha de ingreso de este registro.
+
+=== Fecha de ingreso ===
+Campo: 51abcd[[BR]]
+
+
+=== Fecha de salida ===
+Campo: 51abcd[[BR]]
+
+
+=== Fecha Final ===
+Campo: 304[[BR]]
+Fecha en formato ISO, en la cual la revista fue publicada por la última vez.Ejemplos:[[BR]] [[BR]]a) Fecha termino: oct. 1984 = 19841000[[BR]] [[BR]]b) Fecha termino: 1988 = 19880000[[BR]]
+
+=== Fecha Inicial  ===
+Campo: 301[[BR]]
+Fecha de inicio de la publicación seriada en formato  ISO (4 dígitos para año, 2 para mes, 2 para día).[[BR]]Ejemplos:[[BR]]     a) Ene./Mar. 1974 = 19740100[[BR]] [[BR]]     b) 1987 = 19870000[[BR]] [[BR]]     c) Sept. 1988 = 19880900[[BR]]
 
 === Financiador ===
 Campo: 140[[BR]]
-Entre o nome da pessoa ou instituição que finacia o periódico aparece no publicação/site ou conforme informação do editor. [[BR]]Exemplos:[[BR]] [[BR]]a) Financiador: CONICYT Chile, FAPESP (Fundação de Amparo a Pesquisa do Estados de São Paulo)[[BR]]
+Regístrese el nombre de la(s) institución(es) responsable(s) por el financiamento. [[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Financiador: CONICYT Chile, FAPESP (Fundação de Amparo a Pesquisa do Estados de São Paulo)[[BR]]
 
-=== Frequência ===
+=== Frecuencia ===
 Campo: 380[[BR]]
-Código que identifica o intervalo de tempo no qual os fascículos são publicados.[[BR]]
+Código que identifica los intervalos de tiempo con que se publican los fascículos de la publicación.[[BR]]
 
 === FTP  ===
 Campo: 66[[BR]]
-Informe sobre a disponibilidade de arquivos PDF dos artigos. Selecione entre Um arquivo PDF por artigo, Um arquivo PDF por fascículo ou Indisponível, conforme o caso.[[BR]]
+Registrar la información acerca de archivos PDF de los artículos.[[BR]]Seleccione entre:[[BR]] na (not available); si no está disponible[[BR]] [[BR]]   art (article based); un archivo para cada artículo de la revista[[BR]] [[BR]]   iss (issue based); un archivo para cada fascículo[[BR]] [[BR]][[BR]]
 
-=== Histórico do status do periódico nesta coleção ===
+=== Histórico de la situación de la revista en esta colección.  ===
 Campo: 51abcd[[BR]]
-Data e status que identificam as mudanças de status do periódico na coleção. [[BR]][[BR]]A data deve estar em formato ISO YYYYMMDD [[BR]] [[BR]]O status pode ser:[[BR]][[BR]]Encerrado[[BR]]periódico que não será publicado mais.[[BR]][[BR]]Corrente [[BR]]periódico publicado regularmente.[[BR]][[BR]]Suspenso [[BR]]periódico que deixou de seguir os critérios de la coleción. No futuro pode voltar a ser corrente.[[BR]]
+Fecha y situación las cuales identifican los cambios de situación de la revista en la colección. [[BR]][[BR]]La fecha debe estar en formato ISO YYYYMMDD [[BR]] [[BR]]La situación puede ser:[[BR]][[BR]]Terminado[[BR]]revista que no será publicada jamás.[[BR]][[BR]]Vigente [[BR]]revista con publicación regular.[[BR]][[BR]]Sospendido [[BR]]revista que dejó de estar de acuerdo con los criterios de la colección. En el futuro puede volver a ser vigente.[[BR]]
 
-=== Identif da Publicação ===
+=== Identif de la Publicación ===
 Campo: 68[[BR]]
-Nome da pasta (ou diretorio) de arquivos do periódico abaixo da pasta seriall. Automaticamente preenchido pelo programa ao ser preenchido o acronimo do título da publicação
+Nombre de la carpeta de archivos de la revista en serial. Llenado automáticamente al ser llenado el campo acrónimo del título de la publicación [[BR]]
 
-=== Idioma do Resumo ===
+=== Idioma del Resumen ===
 Campo: 360[[BR]]
-Idiomas dos resumos 
+Idioma de los resúmenes
 
-=== Idioma do Texto ===
+=== Idioma del Texto ===
 Campo: 350[[BR]]
-Idiomas nos quais os textos completos são publicados, incusive as traduções. Este campo está relacionado à apresentação dos textos completos no site.
+Idiomas en los cuales los textos completos son publicados, incluso las traducciones. Este campo está relacionado a la presentación de todos los textos completos en el sitio.
 
-=== ISSN atual ===
-Campo: 935[[BR]]
-Registrar o ISSN eletrônico ou se não houver, o impresso.
-
-=== ISSN do fascículo ===
+=== ISSN del facículo ===
 Campo: 35[[BR]]
 
+
+=== ISSN Vigente ===
+Campo: 935[[BR]]
+Regístrese en este campo el ISSN vigente. Puede ser igual o distinto al ISSN usado como ID, pero generalmente es el ISSN eletrónico.
 
 === ISSN ===
 Campo: 400[[BR]]
-ISSN; impresso ou eletrônico – o qual é o identificador do título no sistema; não poderá ser modificado
+ISSN – impreso o electrónico – lo cual no podrá ser cambiado por ser un identificador en el sistema
 
-=== Linha Separadora ===
+=== Linea Separadora ===
 Campo: 65[[BR]]
-Em desuso
+En desuso
 
-=== Missão ===
+=== Misión ===
 Campo: 901[[BR]]
-Registrar nesse campo a missão do periódico nos idiomas correspondentes da interface (português, espanhol e inglês).[[BR]]Esse campo é utilizado na página principal do periódico no site na coleção.[[BR]]
+Regístrese en este campo, la misión de la revista, en los idiomas de la interface (español, inglés y portugués).[[BR]] [[BR]]Este campo es utilizado en la página principal del sítio de la revista.[[BR]] [[BR]]Ejemplos:[[BR]]   a) Misión: To publish the results of original research which contribute significantly to knowledge in medical and biological sciences[[BR]] [[BR]]   b) Misión: La revista publica contribuciones originales de investigadores de todo el mundo en las áreas de parasitología, microbiología, medicina tropical, así como estudios básicos en bioquímica, inmunología, biología celular y molecular, fisiología, y genética relacionados con esas áreas[[BR]] [[BR]]
 
-=== Número de Identificação ===
+=== Número de Identificación ===
 Campo: 30[[BR]]
-Número sequencial que identifica a publicação seriada na base de dados, atribuído e controlado pelo Centro Processador.[[BR]] [[BR]]Registra-se neste campo, o número correspondente ao título que se descreve.[[BR]] [[BR]]Este campo é utilizado pelo sistema para fazer a união entre o registro do título e os fascículos correspondentes.[[BR]] [[BR]]Ejemplos:[[BR]]   a) Número de registro: 1050[[BR]] [[BR]]   b) Número de registro: 415 [[BR]]
+Número secuencial que identifica la publicación seriada en la base de datos, atribuído y controlado por el Centro Procesador.[[BR]] [[BR]]Regístrese en este campo, el número correspondiente al título que se describe.[[BR]] [[BR]]Este campo es utilizado por el sistema para hacer la unión entre el registro del título y los fascículos correspondentes.[[BR]] [[BR]]Ejemplos:[[BR]]   a) Número de registro: 1050[[BR]] [[BR]]   b) Número de registro: 415 [[BR]]
+
+=== Número del Fax ===
+Campo: 632[[BR]]
+Fax Number
+
+=== Número del Teléfono ===
+Campo: 631[[BR]]
+Phone Number
 
 === Número Final  ===
 Campo: 306[[BR]]
-Número do último fascículo publicado na coleção.[[BR]]Entre a informação em algarismos arábicos.[[BR]] [[BR]]
+Regístrese el número en algoritmos arábigos.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Número término: 7[[BR]] [[BR]]b) Número término: 10[[BR]]
 
 === Número Inicial  ===
 Campo: 303[[BR]]
-Número do primeiro fascículo do periódico.[[BR]]Entre a informação em algarismos arábicos.[[BR]] [[BR]]
+Regístrese el número de inicio en algoritmos arábigos.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Número inicial: 1[[BR]] [[BR]]b) Número inicial: 2[[BR]]
 
-=== Norma ===
-Campo: 117[[BR]]
-Norma para identificação de elementos bibliográficos do periódico.[[BR]]Esse campo está relacionado ao programa de marcação de elementos bibliográficos.[[BR]]Campo pode ser alterado se o periódico mudar a norma em algum momento.[[BR]]Para periódicos que não adotam uma das normas padronizadas, escolher a opção other standard.[[BR]]
-
-=== Notas  ===
-Campo: 900[[BR]]
-Entre nesse campo, em estilo livre, informações de interesse sobre o periódico.[[BR]]No caso de mais de uma nota, entre cada uma em sequência separando-as com <enter>.[[BR]] [[BR]]
-
-=== Nível de publicação ===
+=== Nivel de publicación ===
 Campo: 330[[BR]]
 
 
-=== Nível de Tratamento  ===
+=== Nivel de Tratamiento ===
 Campo: 6[[BR]]
-Código que identifica o nível de tratamento que se decide dar para a descrição bibliográfica de um documento.[[BR]] [[BR]]Escolha a opção Nível Coleção:[[BR]] [[BR]]Nível Coleção: Este nível se usa na descrição de uma coleção no todo, considerando-a como um único documento. Considera-se como coleção, todo documento composto por um número definido de partes (volumes) com títulos próprios. [[BR]]
+Código que identifica el nivel de tratamiento que se decide dar para la descripción bibliográfica de un documento.[[BR]]Consulte las sugestiones y selecione la opción a que se refere a revistas seriadas.[[BR]]Los niveles de tratamiento definidos por el sistema son:[[BR]]c; Nivel colección: Este nivel se usa en la Descripción de una colección en un todo, considerándola como un único documento. Se considera como colección, todo documento compuesto por un número definido de partes (volúmenes) con títulos propios además del título colectivo que los reune (título de colección).
 
-=== Outros títulos ===
+=== Norma ===
+Campo: 117[[BR]]
+Norma de formateo de las citas bibliográficas. El contenido de este campo está directamente relacionado al programa Markup, en el momento de marcar los elementos de las citas bibliográficas.
+
+=== Notas  ===
+Campo: 900[[BR]]
+Regístrese en este campo, en lenguaje libre, informaciones que sean de interés para el centro responsable por la descripción de la publicación seriada.[[BR]]
+
+=== Otros títulos ===
 Campo: 240[[BR]]
-Outras formas do título que aparecem  no periódico ou variações do título principal que não requerem um novo registro.[[BR]]Em caso de haver mais de uma forma do título, entre cada uma em sequência na ordem em que aparecem separando-as com <enter>, ou seja, cada título em uma linha.[[BR]] [[BR]]Examples:[[BR]]Título Principal: Journal of the National Cancer Institute[[BR]]Outra forma do título:  JNCI: Journal of the National Cancer Institute[[BR]] [[BR]]   
+Otras formas de título que aparecen en la publicación seriada tales como: título de cubierta que difiere del título de la portada, título por extenso y otras variantes del título.[[BR]] [[BR]]Inclúyanse aquí variantes menores del título propio que no necesitan nuevo registro, pero que justifican su recuperación. Si hay más de uno, separarlos con ENTER, es decir, cada uno en una línea.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Título de la publicación: Boletín de la Academia Nacional[[BR]]   de Medicina de Buenos Aires[[BR]] [[BR]]   Otras variantes del título: Boletín de la Academia de[[BR]]   Medicina de Buenos Aires[[BR]] [[BR]]b) Título de la publicación: Folha médica[[BR]]   Otras variantes del título: a folha médica [[BR]]
 
-=== País da Publicação ===
+=== Pais de la Casa Publicadora ===
 Campo: 310[[BR]]
-Código do País da publicação
+Código del país de la publicación
 
-=== Razão da saída ===
+=== Razón de la salida ===
 Campo: 51abcd[[BR]]
 
 
-=== Rede SciELO ===
+=== Red SciELO ===
 Campo: 691[[BR]]
-Selecione as coleções as quais o periódico pertence.[[BR]]
+Seleccione las colecciones a las cuales pertenece este título.
 
-=== Seção ===
+=== Sección ===
 Campo: 130[[BR]]
-Entre nesse campo o nome da seção, Parte ou Suplemento, se existe, na forma como aparece no ISSN respeitando maiúsculas, minúsculas e acentuação.[[BR]]Exemplo:[[BR]]Título:  Acta pathologica et microbiologica Scandinavica[[BR]]Suplemento publicado independente do título principal: Acta Pathologica et Microbiologica Scandinavica, Supplementum[[BR]]Parte da publicação principal publicada independente: Acta pathologica et microbiologica Scandinavica. Section A. Pathology[[BR]] [[BR]]
+Regístrese el nombre de la Sección, Parte o Suplemento, si existe,   conforme aparece en la portada o sustituto de ella, registrando en mayúscula la inicial de la primera palabra.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Título de la publicación: Acta Amazônica[[BR]]   Título de la sección/parte: Suplemento[[BR]] [[BR]]b) Título de la publicación: Bulletin signaletique[[BR]]   Sección/parte: Section 330[[BR]]   Título de la sección/parte: Sciences pharmacologiques [[BR]]
 
 === Sigla  ===
 Campo: 930[[BR]]
-Registrar o acrônimo da revista, com todas as letras em caixa alta e/o baixa, máximo 8 caracteres, e único, não repetir o mesmo acrônimo para outro periódico. É usado para nomear a pasta do periódico que conterá todos os seus arquivos (markup, body, imagens, etc) e usado para o prefixo do código das seções do título.
+Regístrese en este campo el acrónimo de la revista, utilizando letras mayúsculas y/o minúsculas, máximo de 8 (ocho) caracteres.[[BR]] [[BR]]Este campo es utilizado por el sistema para nombrar el directorio de la revista, y tambien, para los códigos de las secciones de la revista.[[BR]] [[BR]]Ejemplos:[[BR]]   a) Título de la publicación: Revista chilena de neurocirurgía [[BR]]      Acrónimo de la revista: RChNeur [[BR]] [[BR]]   b) Título de la publicación: Revista brasileira de saúde ocupacional [[BR]]      Acrónimo de la revista: RBrOcup [[BR]] [[BR]]
 
-=== Status da Publicação  ===
+=== Status de la Publicación  ===
 Campo: 50[[BR]]
-Código que identifica que o título pode ser ou já é publicado na coleção. Em outras palavras, se o título pode ser processado pelo gerapadrao.[[BR]][[BR]]Corrente – título pode ser acessado no site da coleção[[BR]] [[BR]]Desconhecido;  para periódicos que ainda não se  integram à coleção, mas estão sendo preparados.[[BR]] [[BR]]Encerrado; para periódicos que não fazem parte da coleção mas estão relacionados a títulos que fazem[[BR]]Somente para os relatorios estatísticos – títulos que não são da coleção mas usados em relatorios estatísticos[[BR]]
+Código que identifica si el título puede ser o ya es publicado en la colección. En otras palabras, si el título que puede ser procesado por gerapadrao.[[BR]][[BR]][[BR]]Vigente – revista que puede ser accedido en el sitio de la colección [[BR]] [[BR]]Desconhecido – para revistas que tienen su entrada aprovada en la colección pero aún no están listas para ser presentadas en el sitio.[[BR]] [[BR]]Terminado; revista que no hace parte de la colección, pero está relacionada a revistas de la colección [[BR]] [[BR]]Solamente para los informes estadísticos – revista que no pertenecen a la colección pero que es usada en informes
 
 === Subtítulo ===
 Campo: 110[[BR]]
-Informação subordinada ao título principal que o completa, qualifica ou o torna mais explícito.[[BR]]Entre o registro conforme apresentado no ISSN.[[BR]] [[BR]]Exemplo:[[BR]] [[BR]]a) Título de la publicación: MMWR[[BR]] [[BR]]   Subtítulo: morbidity and mortality weekly report[[BR]]
+Cualquiera información subordinada al título propiamente dicho que lo completa, califica o lo hace más explícito. [[BR]] [[BR]]Regístrese en este campo solamente información definida como subtítulo, en el entendido que esa información sea valiosa para la correcta identificación del título. Otras variantes del título, tales como títulos paralelos, etc., regístrese en campos específicos según corresponda.[[BR]] [[BR]]Ejemplo:[[BR]] [[BR]]a) Título de la publicación: MMWR[[BR]] [[BR]]   Subtítulo: morbidity and mortality weekly report[[BR]]
 
-=== Telefone ===
-Campo: 631[[BR]]
-Telefone
+=== Suscripción del usuario  ===
+Campo: 67[[BR]]
+Identifica cómo es el acceso a los artículos por suscrición. [[BR]]Regístrese el código correspondiente: [[BR]]   reg (electronic registration); registro electrónico [[BR]]   sub (regular subscription); suscripción [[BR]]   na (not available) – no hay suscrición [[BR]] [[BR]]
 
-=== Tem suplemento ===
-Campo: 550[[BR]]
-Indica se tem suplemento; estabelece um relacionamento entre título principal e seu suplemento ou parte publicados separadamente com seu próprio número de ISSN e coleção.[[BR]]Entre nesse campo o título do suplemento exatamente como registrado na coleção.[[BR]]Exemplo:[[BR]]Título principal: Revista Médica de Chile[[BR]]Tem suplemento: Boletín de la Sociedad de Cirugía de Chile[[BR]] [[BR]]
-
-=== Texto fornecido pelo site Creative Commons de acordo com a escolha da licença ===
+=== Texto proveído por el sitio Creative Commons de acuerdo con la escoja de la licencia ===
 Campo: 540tl[[BR]]
-Entrar em cada idioma da interface (português, inglês e espanhol)com um texto em HTML que informe a licença de uso do conteúdo do periódico (Creative Commons)
+Regístrese para cada idioma de la interfaz (español, inglés, portugués)  un texto en HTML lo cual informa la licencia de uso del contenido de la revista (Creative Commons)
+
+=== Tiene suplemento ===
+Campo: 550[[BR]]
+Indicación de que tiene suplemento o inserción; nota de relación entre el título principal o propio y otro editado generalmente en forma separada, con numeración propia y que lo complementa (suplemento/inserción).[[BR]] [[BR]]Regístrese el título del suplemento/inserción.[[BR]]
 
 === Tipo de ISSN ===
 Campo: 35[[BR]]
-Selecione entre as opções oferecidas aquela que está relacionada ao ISSN ATUAL
+Identifica el tipo del ISSN VIGENTE
 
 === Tipo de Literatura ===
 Campo: 5[[BR]]
-Código que identifica o tipo de literatura do documento.[[BR]](S) Serie: Documento impresso ou não, publicado indefinidamente, em geral a intervalos fixos ou irregulares, em partes sucessivas, cada uma  delas contendo indicações numéricas ou cronológicas e que pretendem continuar indefinidamente. [[BR]] [[BR]]Para propósitos práticos e de funcionalidade, as séries são divididas em dois grupos:[[BR]] [[BR]]a) Séries periódicas, que incluem revistas, periódicos e anuários;[[BR]] [[BR]]b)Séries monográficas, que incluem as monografias pertencentes a uma série.[[BR]][[BR]]
+Código que identifica el Tipo de Literatura del documento de acuerdo a las categorias sugeridas por el UNISIST:[[BR]] [[BR]](S) Serie: Documento impreso o no, publicado indefinidamente, en general a intervalos fijos o irregulares, en partes sucesivas, cada una de ellas conteniendo indicaciones numéricas o cronológicas y que pretenden continuar indefinidamente. [[BR]] [[BR]]Para propósitos prácticos y de funcionalidad, las series son divididas en dos grupos:[[BR]] [[BR]]a) Las series periódicas, que incluyen revistas, periódicos y anuarios;[[BR]] [[BR]]b) Las series monográficas, que incluyen las monografias pertenecientes a una serie.[[BR]] 
 
-=== Título Abreviado MEDLINE ===
-Campo: 421[[BR]]
-Título abreviado em MEDLINE[[BR]]
-
-=== Título Abreviado ===
-Campo: 150[[BR]]
-Título principal do periódico abreviado respeitando maiúsculas, minúsculas e acentuação de acordo com a norma adotado pelo periódico.[[BR]] [[BR]]
-
-=== Título antigo ===
+=== Título antiguo ===
 Campo: 610[[BR]]
-Nota de título antigo que permite estabelecer link entre o título atual e o que o antecedeu.[[BR]]Entre nesse campo o título anterior conforme foi  registrado na coleção.[[BR]]Exemplo:[[BR]]Título antigo: Fitopatologia Brasileira[[BR]]Título Novo: Tropical Plant Pathology[[BR]][[BR]][[BR]] [[BR]][[BR]]Se o título antigo está na coleção será apresentado no site o link do título atual para o título antigo e vice-versa.
+Nota de título anterior. Regístrese el título de la publicación seriada. [[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Título de la publicación: Revista argentina de urología y[[BR]]   nefrología[[BR]]   Continuación de: Revista argentina de urología[[BR]]b) Título de la publicación: Revista de la Asociación Médica[[BR]]   Argentina[[BR]]   Continuación de: Revista de la Sociedad Médica Argentina[[BR]][[BR]]Si el título anterior está en la colección, entonces será presentado un enlace del título corriente para lo anterior y vice-versa.
 
-=== Título ISO Abreviado ===
+=== Título Corto MEDLINE ===
+Campo: 421[[BR]]
+Título corto usado en MEDLINE [[BR]]
+
+=== Título Corto ===
+Campo: 150[[BR]]
+Regístrese el título abreviado respetando las mayúsculas, minúsculas y acentuación del idioma correspondiente, conforme norma de la revista.[[BR]]
+
+=== Título ISO Corto  ===
 Campo: 151[[BR]]
-Entre o título ISO abreviado respeitando maiúsculas, minúsculas e acentuação na idioma correspondente de acordo com a norma ISO 4; 1984.[[BR]] [[BR]]Exemplos:[[BR]]a) West Indian medical journal[[BR]]    Forma abreviada: West Indian med. j.[[BR]] [[BR]]b) Dados (Rio de Janeiro. Impresso)[[BR]]Forma abreviada: Dados (Rio J. Impr.) [[BR]]
+Regístrese el título abreviado respetando las mayúsculas, minúsculas y acentuación del idioma correspondiente, conforme norma ISO 4-1984 y List of serial title word abbreviations.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Título de la publicación: Revista brasileira de saúde[[BR]]   ocupacional[[BR]]   Título abreviado: Rev. bras. saúde ocup[[BR]] [[BR]]b) Título de la publicación: Abboterapia (ed. español)[[BR]]   Título abreviado: Abboterapia (ed. esp)[[BR]] [[BR]]c) Título de la publicación: Pediatría (Sao Paulo)[[BR]]   Título abreviado: Pediatría (Sao Paulo) [[BR]]
 
-=== Título novo ===
+=== Título nuevo ===
 Campo: 710[[BR]]
-Entre o título novo conforme foi registrado na coleção.[[BR]]Se o título novo estiver na coleção, no site, será apresentado um link entre o título e seu título novo, e vice-versa.
+Regístrese el título posterior de la publicación seriada[[BR]]Si el título posterior está en la colección, entonces, en el sitio, habrá un enlace entre el título y el título posterior, y vice-versa
 
 === Título ===
 Campo: 100[[BR]]
-Título principal ou próprio do periódico, no idioma e forma na qual aparece registrado no ISSN.[[BR]] [[BR]][[BR]]Exemplos:[[BR]] [[BR]]a) British journal of surgery[[BR]] [[BR]]b) Ciência & educação (Bauru. Impresso)[[BR]] [[BR]]c) Zoologia (Curitiba. Impresso)[[BR]]
+Título principal o propio de la publicación seriada, en el idioma y forma en que aparece en ella[[BR]]Ejemplos:[[BR]]a) Título de la publicación: Revista chilena de neurocirugía[[BR]]b) Título de la publicación: Acta pediátrica de México[[BR]]c) Título de la publicación: Pediatria (São Paulo)[[BR]]d) Título de la publicación: Pediatría (Bogotá)[[BR]]e) Título de la publicación: Abboterapia (English ed.)[[BR]]f) Título de la publicación: Abboterapia (ed. español)[[BR]]
 
 === Títulos Paralelos ===
 Campo: 230[[BR]]
-Título principal da revista que aparece em outro idioma na capa/site do periódico. Consultar o registro no ISSN.[[BR]]Se houver mais de um título paralelo entre um após o outro,  separando-os com <enter>, ou seja, cada um em uma linha.[[BR]]Exemplo: [[BR]]Título principal: Revista Brasileira de Cirurgia Cardiovascular[[BR]]Título paralelo: Brazilian Journal of Cardiovascular Surgery[[BR]] [[BR]]Título Principal: Archives of toxicology [[BR]] Título paralelo: Archiv fur Toxikologie[[BR]] [[BR]] 
+Regístrense títulos paralelos de acuerdo a la secuencia y tipografía en que aparecen en la portada o parte que la sustituye, y conforme a las reglas de ISBD(S). [[BR]]Si hay más de uno, separar con ENTER, es decir entrar uno por línea.[[BR]]Ejemplos:[[BR]] [[BR]]a) Título de la publicación: Archives of toxicology[[BR]] [[BR]]   Título paralelo: Archiv für toxicologie[[BR]] [[BR]]b) Título de la publicación: Arzneimittel forschung[[BR]] [[BR]]   Título paralelo: Drug research[[BR]]
 
-=== URL da coleção principal ===
+=== URL de la colección principal ===
 Campo: 690[[BR]]
-Entrar a URL do site da coleção principal. Ex. SciELO Brasil = www.scielo.br
+Regístrese el URL del sitio de la colección principal. Ej.: SciELO Brasil = www.scielo.br
+
+=== URL de la revista ===
+Campo: 69[[BR]]
+Si la revista es publicada en otro sitio,  regístrese en este campo la localización de este sitio
 
 === URL de Submission Online ===
 Campo: 692[[BR]]
-Entrar a URL do site de submissão online
+Regístrese el URL del sitio de sumisión de manuscritos
 
-=== URL do periódico ===
-Campo: 69[[BR]]
-Se o título é publicado em outro site, colocar o endereço neste campo
-
-=== Vocabulário Controlado ===
+=== Vocabulario Controlado ===
 Campo: 85[[BR]]
-Indicar o vocabulario controlado usado para as palavras-chaves
+Indicar el vocabulario controlado usado para las palabras claves
 
-=== Volume Final ===
+=== Volumen Final ===
 Campo: 305[[BR]]
-Número do último volume do periódico  publicado.[[BR]]Entre a informação em algarismos arábicos.[[BR]] [[BR]]
+Número del último volumen editado de una publicación seriada.[[BR]] [[BR]]Regístrese el volumen en algoritmos arábigos.[[BR]] [[BR]]Omítase información de publicaciones seriadas que no incluyen información clara sobre el volumen de término.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Volumen termino: 10[[BR]] [[BR]]b) Volumen termino: 12[[BR]]
 
-=== Volume Inicial ===
+=== Volumen Inicial ===
 Campo: 302[[BR]]
-Entre e informação em algarismos arábicos.[[BR]]Omita essa informação para periódicos que não tem claro a informação de volume.[[BR]] [[BR]]
+Regístrese el volumen de inicio en números arábigos.[[BR]] [[BR]]Omítase información de publicaciones seriadas que no incluyen información clara sobre el volumen.[[BR]] [[BR]]Ejemplos:[[BR]] [[BR]]a) Volumen inicial: 1[[BR]] [[BR]]b) Volumen inicial: 4[[BR]]
 
