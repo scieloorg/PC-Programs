@@ -1,0 +1,100 @@
+===  ===
+Field: 117[[BR]]
+
+
+=== City/Place ===
+Field: 43c[[BR]]
+
+
+=== Compl ===
+Field: 41[[BR]]
+
+
+=== Controled Vocabulary ===
+Field: 85[[BR]]
+
+
+=== Cover ===
+Field: 97[[BR]]
+
+
+=== Date ISO ===
+Field: 65[[BR]]
+
+
+=== Issue Publisher ===
+Field: 62[[BR]]
+
+
+=== Issue Suppl ===
+Field: 132[[BR]]
+
+
+=== Issue Title ===
+Field: 33[[BR]]
+
+
+=== Issue ===
+Field: 32[[BR]]
+
+
+=== Markup done ===
+Field: 200[[BR]]
+
+
+=== Month ===
+Field: 43m[[BR]]
+
+
+=== Number of documents ===
+Field: 122[[BR]]
+
+
+=== Part ===
+Field: 34[[BR]]
+
+
+=== Section Code ===
+Field: 49c[[BR]]
+
+
+=== Section Idiom ===
+Field: 49l[[BR]]
+
+
+=== Section Title ===
+Field: 49t[[BR]]
+
+
+=== Seq Num ===
+Field: 36[[BR]]
+
+
+=== Sponsor ===
+Field: 140[[BR]]
+
+
+=== Status ===
+Field: 42[[BR]]
+
+
+=== Table of Contents ===
+Field: 48[[BR]]
+
+
+=== Text provided by Creative Commons site according to the license choice ===
+Field: 540tl[[BR]]
+
+
+=== Vol Suppl ===
+Field: 131[[BR]]
+
+
+=== Volume ===
+Field: 31[[BR]]
+
+
+=== Year ===
+Field: 43y[[BR]]
+
+

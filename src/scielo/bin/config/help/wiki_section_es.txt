@@ -1,0 +1,12 @@
+=== Código de las secciones ===
+Campo: 49c[[BR]]
+
+
+=== Idioma de las secciones ===
+Campo: 49l[[BR]]
+
+
+=== Título de las secciones ===
+Campo: 49t[[BR]]
+
+

@@ -1,0 +1,100 @@
+===  ===
+Campo: 117[[BR]]
+
+
+=== Año ===
+Campo: 43y[[BR]]
+
+
+=== Código de las secciones ===
+Campo: 49c[[BR]]
+
+
+=== Cantidad de documentos ===
+Campo: 122[[BR]]
+
+
+=== Ciudad ===
+Campo: 43c[[BR]]
+
+
+=== Compl ===
+Campo: 41[[BR]]
+
+
+=== Editor del fascículo ===
+Campo: 62[[BR]]
+
+
+=== Fascículo ===
+Campo: 32[[BR]]
+
+
+=== Fecha ISO ===
+Campo: 65[[BR]]
+
+
+=== Idioma de las secciones ===
+Campo: 49l[[BR]]
+
+
+=== Marcación fué hecha ===
+Campo: 200[[BR]]
+
+
+=== Mes ===
+Campo: 43m[[BR]]
+
+
+=== Num Seq ===
+Campo: 36[[BR]]
+
+
+=== Part ===
+Campo: 34[[BR]]
+
+
+=== Portada ===
+Campo: 97[[BR]]
+
+
+=== Sponsor ===
+Campo: 140[[BR]]
+
+
+=== Status ===
+Campo: 42[[BR]]
+
+
+=== Supl Fasc ===
+Campo: 132[[BR]]
+
+
+=== Supl Vol ===
+Campo: 131[[BR]]
+
+
+=== Tabla de Contenido ===
+Campo: 48[[BR]]
+
+
+=== Texto proveído por el sitio Creative Commons de acuerdo con la escoja de la licencia ===
+Campo: 540tl[[BR]]
+
+
+=== Título de las secciones ===
+Campo: 49t[[BR]]
+
+
+=== Título del fascículo ===
+Campo: 33[[BR]]
+
+
+=== Vocabulario Controlado ===
+Campo: 85[[BR]]
+
+
+=== Volumen ===
+Campo: 31[[BR]]
+
+

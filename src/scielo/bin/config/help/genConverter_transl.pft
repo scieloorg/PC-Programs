@@ -1,0 +1,5 @@
+ if mfn=1 then
+   '<?xml version="1.0">',#
+   '<root>',#
+ fi
+ '<item from="',v1,'"' to="',v2,'"'/>',#

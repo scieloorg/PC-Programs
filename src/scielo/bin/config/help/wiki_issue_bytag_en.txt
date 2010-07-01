@@ -1,0 +1,25 @@
+||031||Volume||||
+||032||Issue||||
+||033||Issue Title||||
+||034||Part||||
+||036||Seq Num||||
+||041||Compl||||
+||042||Status||||
+||043||City/Place||||
+||043||Month||||
+||043||Year||||
+||048||Table of Contents||||
+||049||Section Code||||
+||049||Section Idiom||||
+||049||Section Title||||
+||062||Issue Publisher||||
+||065||Date ISO||||
+||085||Controled Vocabulary||||
+||097||Cover||||
+||117||||||
+||122||Number of documents||||
+||131||Vol Suppl||||
+||132||Issue Suppl||||
+||140||Sponsor||||
+||200||Markup done||||
+||540||Text provided by Creative Commons site according to the license choice||||

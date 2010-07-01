@@ -1,0 +1,25 @@
+||031||Volumen||||
+||032||Fascículo||||
+||033||Título del fascículo||||
+||034||Part||||
+||036||Num Seq||||
+||041||Compl||||
+||042||Status||||
+||043||Año||||
+||043||Ciudad||||
+||043||Mes||||
+||048||Tabla de Contenido||||
+||049||Código de las secciones||||
+||049||Idioma de las secciones||||
+||049||Título de las secciones||||
+||062||Editor del fascículo||||
+||065||Fecha ISO||||
+||085||Vocabulario Controlado||||
+||097||Portada||||
+||117||||||
+||122||Cantidad de documentos||||
+||131||Supl Vol||||
+||132||Supl Fasc||||
+||140||Sponsor||||
+||200||Marcación fué hecha||||
+||540||Texto proveído por el sitio Creative Commons de acuerdo con la escoja de la licencia||||
