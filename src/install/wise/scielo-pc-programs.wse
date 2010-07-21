@@ -4,7 +4,7 @@ item: Global
   Title=SciELO Installation
   Title Portuguese=SciELO Installation
   Title Spanish=SciELO Installation
-  Flags=00000100
+  Flags=00010100
   Languages=65 0 0 0 0 67 66 0 0 0 0 0 0 0 0 0
   Copy Default=1
   Japanese Font Name=MS Gothic
@@ -23,7 +23,7 @@ item: Global
   Patch Flags=0000000000000001
   Patch Threshold=85
   Patch Memory=4000
-  EXE Filename=scielo-pc-programs-4.0.011.exe
+  EXE Filename=scielo-pc-programs-4.0.013.exe
   Language INI Filename=z:\src\install\wise\languages.ini
   FTP Cluster Size=20
   Per-User Version ID=1
@@ -89,7 +89,7 @@ item: Set Variable
 end
 item: Set Variable
   Variable=GROUP
-  Value=SciELO (Menu)
+  Value=SciELO
   Flags=10000000
 end
 item: Set Variable
@@ -1006,10 +1006,6 @@ remarked item: Custom Dialog Set
       Text Spanish=%PUBMED_PROVIDER_ID%
     end
   end
-end
-item: Display Message
-  Title=GROUP
-  Text=%GROUP%
 end
 remarked item: End Block
 end
@@ -4308,6 +4304,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=z:\src\scielo\bin\markup_pmc\en_bars.tr
+  Destination=%PROGDIR%\bin\markup\en_bars.tr
+  Flags=0000000010000010
+end
+item: Install File
   Source=z:\src\scielo\bin\markup_pmc\en_conf.mds
   Destination=%PROGDIR%\bin\markup\en_conf.mds
   Flags=0000000010000010
@@ -4350,6 +4351,11 @@ end
 item: Install File
   Source=z:\src\scielo\bin\markup_pmc\es_bars.mds
   Destination=%PROGDIR%\bin\markup\es_bars.mds
+  Flags=0000000010000010
+end
+item: Install File
+  Source=z:\src\scielo\bin\markup_pmc\es_bars.tr
+  Destination=%PROGDIR%\bin\markup\es_bars.tr
   Flags=0000000010000010
 end
 item: Install File
@@ -4505,6 +4511,11 @@ end
 item: Install File
   Source=z:\src\scielo\bin\markup_pmc\pt_bars.mds
   Destination=%PROGDIR%\bin\markup\pt_bars.mds
+  Flags=0000000010000010
+end
+item: Install File
+  Source=z:\src\scielo\bin\markup_pmc\pt_bars.tr
+  Destination=%PROGDIR%\bin\markup\pt_bars.tr
   Flags=0000000010000010
 end
 item: Install File

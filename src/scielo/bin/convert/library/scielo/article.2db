@@ -8,8 +8,10 @@
 224;rvpdate;text
 225;old-pid;article
 225;old-pid;text
-237;doi;article
+237;doi;front,article
 237;doi;text
+238;url;front,article
+238;url;text
 250;hcomment;article
 250;hcomment;text
 241;id;related,text

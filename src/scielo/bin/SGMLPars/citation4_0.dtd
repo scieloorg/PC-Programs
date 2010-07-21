@@ -268,7 +268,7 @@ city, country?, pubname)>
 
 <!ELEMENT oiserial - - ((sertitle | stitle)? & (isstitle? & othinfo? &
                         city? & country? & pubname? & volid? & issueno? & suppl?
-                        & pages? & extent? & date? & issn? & url? & cited? )+) >
+                        & pages? & extent? & date? & issn? & url? & cited? & doi? )+) >
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->

@@ -610,9 +610,12 @@ Function Convert2Win(s As String) As String
     End If
     
     
-    result = ReplaceString(result, "&lt;", "<", vbBinaryCompare)
-    result = ReplaceString(result, "&gt;", ">", vbBinaryCompare)
-    
+    If InStr(result, "&lt;") > 0 And InStr(result, "&gt;") > 0 Then
+        result = ReplaceString(result, "&lt;", "<", vbBinaryCompare)
+    Else
+        result = ReplaceString(result, "&lt;", "<", vbBinaryCompare)
+        result = ReplaceString(result, "&gt;", ">", vbBinaryCompare)
+    End If
     Convert2Win = result
 End Function
 

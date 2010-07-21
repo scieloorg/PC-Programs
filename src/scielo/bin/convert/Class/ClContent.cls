@@ -35,33 +35,33 @@ End Function
 
 Function fixDamagingContent(start As Long, content As String) As String
     Dim text As String
-    Dim p As Long
+    Dim P As Long
     
-    p = findTextBetweenltAndgt(start, content, text)
-    If p > 0 And p < Len(content) Then
-        If validText(p, content, text) Then
-            p = p + 1
+    P = findTextBetweenltAndgt(start, content, text)
+    If P > 0 And P < Len(content) Then
+        If validText(P, content, text) Then
+            P = P + 1
         Else
-            content = fixText(p, content, text)
+            content = fixText(P, content, text)
         End If
-        content = fixDamagingContent(p, content)
+        content = fixDamagingContent(P, content)
     End If
     fixDamagingContent = content
 End Function
 Function findTextBetweenltAndgt(start As Long, content As String, text As String) As Long
-    Dim p As Long
+    Dim P As Long
     Dim p2 As Long
     
-    p = InStr(start, content, "<", vbTextCompare)
-    If p > 0 Then
-        p2 = InStr(p, content, ">", vbTextCompare)
+    P = InStr(start, content, "<", vbTextCompare)
+    If P > 0 Then
+        p2 = InStr(P, content, ">", vbTextCompare)
         If p2 > 0 Then
-            text = Mid(content, p + 1, p2 - p - 1)
+            text = Mid(content, P + 1, p2 - P - 1)
         End If
     End If
-    findTextBetweenltAndgt = p
+    findTextBetweenltAndgt = P
 End Function
-Function validText(p As Long, content As String, text As String) As Boolean
+Function validText(P As Long, content As String, text As String) As Boolean
     Dim r As Boolean
     Dim s As String
     
@@ -69,7 +69,7 @@ Function validText(p As Long, content As String, text As String) As Boolean
         If (text Like Replace(Space(Len(text)), " ", "#")) Then
         
             s = "</" + text + ">"
-            If InStr(p, content, s, vbTextCompare) > 0 Then
+            If InStr(P, content, s, vbTextCompare) > 0 Then
                 r = True
             Else
                 r = False
@@ -77,7 +77,7 @@ Function validText(p As Long, content As String, text As String) As Boolean
         ElseIf (text Like ("/" & Replace(Space(Len(text) - 1), " ", "#"))) Then
             
             s = "<" & Mid(text, 2) & ">"
-            If InStr(1, Mid(content, 1, p), s, vbTextCompare) > 0 Then
+            If InStr(1, Mid(content, 1, P), s, vbTextCompare) > 0 Then
                 r = True
             Else
                 r = False
@@ -90,9 +90,9 @@ Function validText(p As Long, content As String, text As String) As Boolean
     End If
     validText = r
 End Function
-Function fixText(p As Long, content As String, text As String) As String
+Function fixText(P As Long, content As String, text As String) As String
     Dim r As String
     
-    r = Mid(content, 1, p - 1) + "&lt;" + Mid(content, p + 1)
+    r = Mid(content, 1, P - 1) + "&lt;" + Mid(content, P + 1)
     fixText = r
 End Function
