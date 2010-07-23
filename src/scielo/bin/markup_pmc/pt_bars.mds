@@ -46,12 +46,11 @@ tabwrap;ifloat
 label;Identifica o rótulo da tabela (ex. Tabela 1);10;#FALSE#;#FALSE#;
 caption;Indica a legenda da tabela;10;#FALSE#;#FALSE#;
 graphic;Indica a imagem;10;#FALSE#;#FALSE#;
-table;Indica a tabela;10;#FALSE#;#FALSE#;
 
 figgrp;ifloat
 label;Identifica o rótulo da figura (ex. Figura 1);10;#FALSE#;#FALSE#;
 caption;Indica a legenda da figura;10;#FALSE#;#FALSE#;
-graphic;Indica a imagem;10;#FALSE#;#FALSE#;
+graphic;Indica a imagem da tabela;10;#FALSE#;#FALSE#;
 
 equation;ifloat
 graphic;Indica a imagem;10;#FALSE#;#FALSE#;

@@ -42,6 +42,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="@*">
 		<xsl:attribute name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 	</xsl:template>
+	<xsl:template match="@filename">
+		<graphic href="{.}"/>
+	</xsl:template>
+
+	<xsl:template match="graphic">
+		<graphic href="{@href}"/>
+	</xsl:template>
+
 	<xsl:template match="@doctopic" mode="type">
 		<xsl:attribute name="article-type"><xsl:choose><xsl:when test=".='oa'">research-article</xsl:when><xsl:when test=".='ab'">abstract</xsl:when><xsl:when test=".='an'">announcement</xsl:when><xsl:when test=".='co'">article-commentary</xsl:when><xsl:when test=".='cr'">case-report</xsl:when><xsl:when test=".='ed'">editorial</xsl:when><xsl:when test=".='le'">letter</xsl:when><xsl:when test=".='ra'">review-article</xsl:when><xsl:when test=".='sc'">rapid-communication</xsl:when><xsl:when test=".='??'">addendum</xsl:when><xsl:when test=".='??'">book-review</xsl:when><xsl:when test=".='??'">books-received</xsl:when><xsl:when test=".='??'">brief-report</xsl:when><xsl:when test=".='??'">calendar</xsl:when><xsl:when test=".='??'">collection</xsl:when><xsl:when test=".='??'">correction</xsl:when><xsl:when test=".='??'">discussion</xsl:when><xsl:when test=".='??'">dissertation</xsl:when><xsl:when test=".='??'">in-brief</xsl:when><xsl:when test=".='??'">introduction</xsl:when><xsl:when test=".='??'">meeting-report</xsl:when><xsl:when test=".='??'">news</xsl:when><xsl:when test=".='??'">obituary</xsl:when><xsl:when test=".='??'">oration</xsl:when><xsl:when test=".='??'">partial-retraction</xsl:when><xsl:when test=".='??'">product-review</xsl:when><xsl:when test=".='??'">reply</xsl:when><xsl:when test=".='??'">reprint</xsl:when><xsl:when test=".='??'">retraction</xsl:when><xsl:when test=".='??'">translation</xsl:when><xsl:otherwise>other</xsl:otherwise></xsl:choose></xsl:attribute>
 	</xsl:template>
@@ -405,22 +413,22 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="*"/>
 		</ack>
 	</xsl:template>
-	<xsl:template match="vancouv | abnt6023 | iso690 | other ">
+	<xsl:template match="vancouv | abnt6023 | iso690 | other | apa">
 		<ref-list>
 			<xsl:if test="$cit">
 				<xsl:apply-templates select="$cit/*"/>
 			</xsl:if>
-			<xsl:apply-templates select="vcitat | acitat | icitat | ocitat "/>
+			<xsl:apply-templates select="vcitat | acitat | icitat | ocitat | pcitat"/>
 		</ref-list>
 	</xsl:template>
-	<xsl:template match="vcitat | acitat | icitat | ocitat ">
+	<xsl:template match="vcitat | acitat | icitat | ocitat |pcitat">
 		<ref id="R{position()}">
 			<xsl:apply-templates select="no"/>
 			<!-- book, communication, letter, review, conf-proc, journal, list, patent, thesis, discussion, report, standard, and working-paper.  -->
 			<xsl:variable name="type">
 				<xsl:choose>
-					<xsl:when test="viserial or aiserial or oiserial or iiserial">journal</xsl:when>
-					<xsl:when test="vmonog or amonog or omonog or imonog">book</xsl:when>
+					<xsl:when test="viserial or aiserial or oiserial or iiserial piserial">journal</xsl:when>
+					<xsl:when test="vmonog or amonog or omonog or imonog or pmonog">book</xsl:when>
 					<xsl:when test=".//confgrp">conf-proc</xsl:when>
 					<xsl:when test=".//degree">thesis</xsl:when>
 					<xsl:when test=".//patgrp">patent</xsl:when>
@@ -534,7 +542,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<fig id="{@id}" fig-type="{@ftype}">
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
-			<xsl:apply-templates select=".//graphic">
+			<xsl:apply-templates select="." mode="graphic">
 				<xsl:with-param name="id" select="@id"/>
 			</xsl:apply-templates>
 		</fig>
@@ -557,8 +565,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
 			<xsl:choose>
-				<xsl:when test=".//graphic">
-					<xsl:apply-templates select=".//graphic">
+				<xsl:when test=".//graphic | @filename">
+					<xsl:apply-templates select="." mode="graphic">
 						<xsl:with-param name="id" select="@id"/>
 					</xsl:apply-templates>
 				</xsl:when>
@@ -688,7 +696,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="text()[normalize-space(.)='']"/>
 	<xsl:template match="equation">
 		<disp-formula>
-			<xsl:apply-templates select=".//graphic">
+			<xsl:apply-templates select=".//graphic | @filename">
 				<xsl:with-param name="id" select="@id"/>
 			</xsl:apply-templates>
 		</disp-formula>
@@ -750,4 +758,12 @@ et al.</copyright-statement>
 		</elocation-id>
 	</xsl:template>
 	<xsl:template match="sec/text() | subsec/text()"/>
+	
+	<xsl:template match="*[@filename or graphic] " mode="graphic">
+		<xsl:param name="id"/>
+		<xsl:apply-templates select="@filename | graphic"	>
+			<xsl:with-param name="id" select="$id"/>
+			
+		</xsl:apply-templates>
+	</xsl:template>
 </xsl:stylesheet>
