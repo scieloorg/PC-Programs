@@ -67,6 +67,7 @@ buttonChange,Cambiar el atributo de la tag
 buttonDelete,Apagar la tag
 buttonAutomatic,Marcación Automática
 buttonAutomaticWS,Marcación Automática 2
+buttonAutomaticStyles,Marcación Automática con estilos
 buttonHelp,Ayuda
 bodyHasChildren,no
 doDebug,no
@@ -89,5 +90,6 @@ msgBeforExiting3,Guardar y salir
 msgBeforExiting4,Salir sin guardar
 msgQuestionGenerate2PMC,Generar XML para PubMed Central?
 msgWarningIssueHasMarkupFinishedInTitleManager,"Salga del Markup, abra el programa Title Manager, cambie para ese facículo el campo Marcación hecha y intente nuevamente el programa Markup."
+msgAutomaticStyles,Serán marcados los elementos de acuerdo con los estilos. Seguir?
 pmcVersion,v3.0
 timer,99999999

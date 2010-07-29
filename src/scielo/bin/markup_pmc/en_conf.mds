@@ -67,6 +67,7 @@ buttonChange,Change the tag attribute
 buttonDelete,Delete the tag
 buttonAutomatic,Automatic Markup
 buttonAutomaticWS,Automatic Markup 2
+buttonAutomaticStyles,Automatic Markup using styles
 buttonHelp,Help
 bodyHasChildren,no
 doDebug,no
@@ -89,5 +90,6 @@ msgBeforExiting3,Save and exit
 msgBeforExiting4,Exit without saving
 msgQuestionGenerate2PMC,Generate XML to PubMed Central?
 msgWarningIssueHasMarkupFinishedInTitleManager,"End Markup program, open Title Manager, change to this issue, the field Markup done, then try again the Markup program."
+msgAutomaticStyles,The elements will be marked according to the styles. Do you want to continue?
 pmcVersion,v3.0
 timer,99999999
