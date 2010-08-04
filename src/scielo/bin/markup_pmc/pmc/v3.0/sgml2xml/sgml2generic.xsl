@@ -427,7 +427,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<!-- book, communication, letter, review, conf-proc, journal, list, patent, thesis, discussion, report, standard, and working-paper.  -->
 			<xsl:variable name="type">
 				<xsl:choose>
-					<xsl:when test="viserial or aiserial or oiserial or iiserial piserial">journal</xsl:when>
+					<xsl:when test="viserial or aiserial or oiserial or iiserial or piserial">journal</xsl:when>
 					<xsl:when test="vmonog or amonog or omonog or imonog or pmonog">book</xsl:when>
 					<xsl:when test=".//confgrp">conf-proc</xsl:when>
 					<xsl:when test=".//degree">thesis</xsl:when>

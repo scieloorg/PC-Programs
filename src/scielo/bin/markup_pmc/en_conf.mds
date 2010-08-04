@@ -78,6 +78,7 @@ buttonViewMarkup,View Markup
 buttonSave,Save
 msgNoXML,There is no XML file of the article or text
 msgXMLWasSuccessfullyGenerated,XML was successfully generated 
+msgXMLWasNotGenerated,XML was not generated. See errors in: 
 msgPMCDirectoryCouldNotBeCreated,The directory XXX could not be created.
 msgPMCHTMLCouldNotBeCreated,It was not able to generate the text from XML.
 XML_TOOL_TYPE,java

@@ -78,6 +78,7 @@ buttonViewMarkup,Visualizar Markup
 buttonSave,Guardar
 msgNoXML,No existe el fichero XML del artículo o texto
 msgXMLWasSuccessfullyGenerated,XML fue generado con éxito
+msgXMLWasNotGenerated,XML no fue generado. Ver errores en: 
 msgPMCDirectoryCouldNotBeCreated,No fue posible crear la carpeta XXX
 msgPMCHTMLCouldNotBeCreated,No fue posible crear el texto desde el XML.
 XML_TOOL_TYPE,java
