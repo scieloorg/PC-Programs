@@ -94,3 +94,4 @@ msgWarningIssueHasMarkupFinishedInTitleManager,"Salga del Markup, abra el progra
 msgAutomaticStyles,Serán marcados los elementos de acuerdo con los estilos. Seguir?
 pmcVersion,v3.0
 timer,99999999
+DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
