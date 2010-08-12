@@ -43,24 +43,20 @@
 <!ELEMENT tabwrap - - ( (label, caption, (table | graphic)) )  >
 <!ATTLIST tabwrap
           id       CDATA #REQUIRED
-          filename       CDATA #IMPLIED
-          >
+filename       CDATA #IMPLIED>
 
 <!ELEMENT label - - (#PCDATA) >
 <!ELEMENT caption - - (#PCDATA) >
 
-<!ELEMENT figgrp - - (  (graphic, label, caption)   )   >
+<!ELEMENT figgrp - - (  graphic | ( label, caption)   )   >
 <!ATTLIST figgrp
           id       CDATA #REQUIRED
-          ftype       CDATA #REQUIRED
-          filename       CDATA #IMPLIED
-          >
+          ftype       CDATA #REQUIRED 
+  filename       CDATA #IMPLIED>
 
 <!ELEMENT equation - - (  graphic | texmath | mmlmath   )   >
 <!ATTLIST equation
-          id       CDATA #REQUIRED
-          filename       CDATA #IMPLIED
-          >
+          id       CDATA #REQUIRED>
 <!ELEMENT texmath - - CDATA  >
 <!ELEMENT mmlmath - - CDATA  >
       

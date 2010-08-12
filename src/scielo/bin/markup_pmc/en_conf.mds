@@ -95,3 +95,5 @@ msgAutomaticStyles,The elements will be marked according to the styles. Do you w
 pmcVersion,v3.0
 timer,99999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
+buttonApply,Apply
+buttonChange2,Change

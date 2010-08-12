@@ -95,3 +95,5 @@ msgAutomaticMarkup,Os elementos serão marcados de acordo com os estilos. Continu
 pmcVersion,v3.0
 timer,999999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
+buttonApply,Aplicar
+buttonChange2,Modificar
