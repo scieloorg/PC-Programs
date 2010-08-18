@@ -30,9 +30,19 @@
 	<xsl:variable name="var_IMAGES_INFO" select="//images-info"/>
 	<xsl:variable name="languages" select="document('../xml/en/language.xml')"/>
 	<xsl:variable name="person-strings" select="document('viewnlm-v2_scielo.xsl')//util:map[@id='person-strings']/item"/>
-      	<xsl:variable name="css_path" select="//css-path"/>
+      	<!--xsl:variable name="css_path" select="//css-path"/-->
+      	<xsl:variable name="css_path"><xsl:choose>
+								<xsl:when test="//css-path"><xsl:value-of select="//css-path"/></xsl:when>
+								<xsl:otherwise>http://www.scielo.br/css/pmc/</xsl:otherwise>
+							</xsl:choose></xsl:variable>
 	
-        <xsl:include href="viewnlm-v2_scielo.xsl"/>
+        <!--xsl:include href="viewnlm-v2_scielo.xsl"/-->
+        
+        <xsl:template name="nl-1"></xsl:template>
+        <xsl:template name="nl-2"></xsl:template>
+
+        <xsl:template name="make-id"></xsl:template>
+
 	<xsl:include href="scielo_pmc.xsl"/>
 	<xsl:include href="scielo_pmc_front.xsl"/>
 	<xsl:include href="scielo_pmc_table.xsl"/>

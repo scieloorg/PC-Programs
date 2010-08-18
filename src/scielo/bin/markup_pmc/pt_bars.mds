@@ -518,7 +518,7 @@ down;pcitat
 
 pcitat;apa
 no;Identifica todos os tipos de número que passam a ser específicos segundo sua posição na estrutura;10;#FALSE#;#FALSE#;
-pcontrib;Reúne elementos, como autor e título, para a descrição bibliográfica de um trabalho que é parte de um periódico ou de um livro, como artigos de periódicos e capítulos de livros;10;#FALSE#;#FALSE#;acontrib
+pcontrib;Reúne elementos, como autor e título, para a descrição bibliográfica de um trabalho que é parte de um periódico ou de um livro, como artigos de periódicos e capítulos de livros;10;#FALSE#;#FALSE#;pcontrib
 down;pcontrib
 pmonog;Reúne os elementos principais para a identificação de uma monografia;10;#FALSE#;#FALSE#;pmonog
 down;pmonog
@@ -526,19 +526,27 @@ piserial;Contém elementos de identificação específicos de uma publicação seriada
 down;piserial
 
 pcontrib;pcitat
-author;Reúne elementos para identificação dos autores individuais, como nome, sobrenome e tipo de responsabilidade;15;#TRUE#;#TRUE#;authorp
-down;authorp
+author;Reúne elementos para identificação dos autores individuais, como nome, sobrenome e tipo de responsabilidade;15;#TRUE#;#TRUE#;authorpContrib
+down;authorpContrib
 corpauth;Identifica os autores corporativos responsáveis pelo conteúdo intelectual ou artístico do trabalho;15;#TRUE#;#FALSE#;corpautp
 down;corpautp
-date;Identifica a data de publicação;15;#FALSE#;#FALSE#;
+date;Identifica a data de publicação;15;#FALSE#;#TRUE#;
 title;Identifica o título de um documento;15;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo de um documento;15;#FALSE#;#FALSE#;
 
-authorp;pcontrib
+authorpContrib;pcontrib
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
 
-corpautp;pcontrib
+corpautpContrib;pcontrib
+orgname;Identifica o nome de uma organização;2;#FALSE#;#FALSE#;
+orgdiv;Identifica a divisão de uma organização;2;#FALSE#;#FALSE#;
+
+authorpMonog;pmonog
+fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
+surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
+
+corpautpMonog;pmonog
 orgname;Identifica o nome de uma organização;2;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão de uma organização;2;#FALSE#;#FALSE#;
 
@@ -553,10 +561,10 @@ doi;Indica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Indica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 
 pmonog;pcitat
-author;Reúne elementos para identificação dos autores individuais como nome,sobrenome e tipo de responsabilidade;15;#TRUE#;#TRUE#;authorp
-down;authorp
-corpauth;Identifica os autores corporativos responsáveis pelo conteúdo intelectual ou artístico do trabalho;15;#TRUE#;#FALSE#;corpautp
-down;corpautp
+author;Reúne elementos para identificação dos autores individuais como nome,sobrenome e tipo de responsabilidade;15;#TRUE#;#TRUE#;authorpMonog
+down;authorpMonog
+corpauth;Identifica os autores corporativos responsáveis pelo conteúdo intelectual ou artístico do trabalho;15;#TRUE#;#FALSE#;corpautpMonog
+down;corpautpMonog
 title;Identifica um grupo de título de um documento;15;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo de um documento;15;#FALSE#;#FALSE#;
 extent;Identifica a extensão de um trabalho como o número de páginas ou volumes de uma obra;15;#TRUE#;#FALSE#;

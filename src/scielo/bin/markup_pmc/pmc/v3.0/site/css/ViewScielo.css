@@ -246,3 +246,7 @@ fig-file a  {
 margin-top: 60pt;
 	
 }
+
+.section-list {
+list-style-type: none
+}

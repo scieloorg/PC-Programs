@@ -63,11 +63,9 @@
 		<xsl:param name="pos"/>
 		<xsl:param name="pub-id"/>
 		<xsl:variable name="position" select="concat(substring('00000',1,5 - string-length($pos)),$pos)"/>
-		&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;[&#32;<a>
+		<xsl:text> </xsl:text><xsl:text> </xsl:text><xsl:text> </xsl:text><xsl:text> </xsl:text><xsl:text> </xsl:text><xsl:text> </xsl:text><xsl:text> </xsl:text><xsl:text> </xsl:text>[<xsl:text> </xsl:text><a>
 			<xsl:attribute name="href">javascript:void(0);</xsl:attribute>
-			<xsl:attribute name="onclick">javascript: window.open('/scieloOrg/php/reflinks.php?refpid=<xsl:value-of select="$pid"/><xsl:value-of select="$position"/>&amp;pid=<xsl:value-of select="$pid"/>&amp;lng=<xsl:value-of select="$LANGUAGE"/>&amp;script=sci_reflinks&amp;refid=<xsl:value-of select="../@id"/><xsl:apply-templates select="$pub-id" mode="param"/>','','width=640,height=500,resizable=yes,scrollbars=1,menubar=yes,');</xsl:attribute>
-			<!--xsl:attribute name="onclick">javascript: window.open('/scielo.php?pid=<xsl:value-of select="$pid"/><xsl:value-of select="$position"/>&amp;lng=<xsl:value-of select="$LANGUAGE"/>&amp;script=sci_reflinks<xsl:apply-templates select="$pub-id" mode="param"/>','','width=640,height=500,resizable=yes,scrollbars=1,menubar=yes,');</xsl:attribute-->
-		Links</a>&#160;]
+			<xsl:attribute name="onclick">javascript: window.open('/scieloOrg/php/reflinks.php?refpid=<xsl:value-of select="$pid"/><xsl:value-of select="$position"/>&amp;pid=<xsl:value-of select="$pid"/>&amp;lng=<xsl:value-of select="$LANGUAGE"/>&amp;script=sci_reflinks&amp;refid=<xsl:value-of select="../@id"/><xsl:apply-templates select="$pub-id" mode="param"/>','','width=640,height=500,resizable=yes,scrollbars=1,menubar=yes,');</xsl:attribute>Links</a><xsl:text> </xsl:text>]
 	</xsl:template>
 	<xsl:template match="pub-id" mode="param">&amp;<xsl:value-of select="@pub-id-type"/>=<xsl:value-of select="."/>
 		<xsl:if test="@pub-id-type='pmid'">&amp;medline_db=MEDLINE_<xsl:choose>
@@ -80,8 +78,8 @@
 	<xsl:template match="pub-id" mode="nscitation"/>
 	<xsl:template match="pub-id" mode="link">
 		<xsl:if test="position()=1">
-			<br/>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</xsl:if>
-		[&#160;<xsl:apply-templates select="." mode="link-value"/>&#160;]&#160;
+			<br/><xsl:text> </xsl:text><xsl:text> </xsl:text><xsl:text> </xsl:text><xsl:text> </xsl:text><xsl:text> </xsl:text><xsl:text> </xsl:text><xsl:text> </xsl:text><xsl:text> </xsl:text></xsl:if>
+		[<xsl:text> </xsl:text><xsl:apply-templates select="." mode="link-value"/><xsl:text> </xsl:text>]<xsl:text> </xsl:text>
 	</xsl:template>
 	<xsl:template match="pub-id[@pub-id-type='pmid']" mode="link-value">
 		<a target="_blank">
@@ -106,7 +104,7 @@
 		<xsl:apply-templates/>
 		<xsl:if test="../..//@citation-type!='journal'">
 			<xsl:apply-templates select="." mode="dot"/>
-		</xsl:if>&#160;</xsl:template>
+		</xsl:if><xsl:text> </xsl:text></xsl:template>
 	<xsl:template match="*" mode="dot">
 		<xsl:variable name="x" select="normalize-space(.)"/>
 		<xsl:if test="not(contains('?.!',substring($x,string-length($x),1)))">.</xsl:if>

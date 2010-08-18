@@ -6,6 +6,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 -->
 <xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util" xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
 	<xsl:variable name="corresp" select=".//unidentified[contains(.,'Corresp')]"/>
+	<xsl:variable name="corresp2" select=".//unidentified[contains(.,'@')]"/>
 	<xsl:variable name="ack" select=".//unidentified[contains(.,'Ack') or contains(.,'Agradec')]"/>
 	<xsl:variable name="cit" select=".//unidentified[not(sec) and contains(.,'Refer') ]"/>
 	<xsl:variable name="xref_id" select=".//*[@id]"/>
@@ -204,11 +205,23 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</email>
 	</xsl:template>
 	<xsl:template match="*" mode="author-notes">
-		<author-notes>
-			<corresp>
-				<xsl:apply-templates select="$corresp//p" mode="corresp"/>
-			</corresp>
-		</author-notes>
+		<xsl:choose>
+			<xsl:when test="$corresp//p">
+				<author-notes>
+					<corresp>
+						<xsl:apply-templates select="$corresp//p" mode="corresp"/>
+					</corresp>
+				</author-notes>
+			</xsl:when>
+			<xsl:otherwise>
+				<author-notes>
+					<corresp>
+						<xsl:apply-templates select="$corresp2//p" mode="corresp"/>
+					</corresp>
+				</author-notes>
+			
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="p" mode="corresp">
 		<xsl:apply-templates select="bold|italic|sup|sub|uri|text()"/>
@@ -383,6 +396,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<back>
 			<xsl:apply-templates select="$ack" mode="ack"/>
 			<xsl:apply-templates select="back/vancouv | back/abnt6023 | back/iso690 | back/other| back/apa "/>
+			<xsl:apply-templates select="..//hist" mode="back"/>
 			<xsl:apply-templates select="back//fngrp"/>
 			<!--xsl:apply-templates select="$otherUnidentified"/-->
 			<!--xsl:apply-templates select=".//bbibcom" mode="back-info"/-->
@@ -408,20 +422,27 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</p>
 		</notes>
 	</xsl:template-->
+	<xsl:template match="hist" mode="back">
+	<notes>
+		<xsl:apply-templates mode="back-hist"/></notes>
+	</xsl:template>
 	<xsl:template match="unidentified" mode="ack">
 		<ack>
 			<xsl:apply-templates select="*"/>
 		</ack>
 	</xsl:template>
-	<xsl:template match="vancouv | abnt6023 | iso690 | other | apa">
+	<xsl:template match="*[@standard]">
 		<ref-list>
+			<xsl:if test="bold">
+				<label><xsl:value-of select="bold"/></label>
+			</xsl:if>
 			<xsl:if test="$cit">
 				<xsl:apply-templates select="$cit/*"/>
 			</xsl:if>
-			<xsl:apply-templates select="vcitat | acitat | icitat | ocitat | pcitat"/>
+			<xsl:apply-templates select="*"/>
 		</ref-list>
 	</xsl:template>
-	<xsl:template match="vcitat | acitat | icitat | ocitat |pcitat">
+	<xsl:template match="*[@standard]/*">
 		<ref id="R{position()}">
 			<xsl:apply-templates select="no"/>
 			<!-- book, communication, letter, review, conf-proc, journal, list, patent, thesis, discussion, report, standard, and working-paper.  -->
@@ -455,7 +476,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test=".//node()[@role='ed']">editor</xsl:when>
 				<xsl:when test=".//node()[@role='nd']">author</xsl:when>
 				<xsl:when test=".//node()[@role='tr']">translator</xsl:when>
-				
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:if test=".//*[contains(name(),'auth')]">
@@ -484,7 +504,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:with-param name="position" select="$position - 1"/>
 		</xsl:apply-templates>
 	</xsl:template>
-	<xsl:template match="back//stitle | back//vstitle | vmonog/vtitle/title">
+	<xsl:template match="back//stitle | back//vstitle | vmonog/vtitle/title | coltitle">
 		<source>
 			<xsl:value-of select="."/>
 		</source>
@@ -831,7 +851,10 @@ et al.</copyright-statement>
 	<xsl:template match="fn">
 		<fn>
 			<xsl:apply-templates select="@*"/>
-		<p><xsl:value-of select="."/></p></fn>
+			<p>
+				<xsl:value-of select="."/>
+			</p>
+		</fn>
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'contrib')]/italic | *[contains(name(),'contrib')]/bold | *[contains(name(),'monog')]/italic | *[contains(name(),'monog')]/bold"/>
 </xsl:stylesheet>

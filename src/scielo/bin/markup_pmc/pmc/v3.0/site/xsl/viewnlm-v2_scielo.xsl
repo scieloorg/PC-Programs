@@ -2545,7 +2545,7 @@
 	<!-- symbol or id is displayed by the first para within the fn     -->
 	<xsl:template match="fn">
 		<div id="{@id}">
-			<!--xsl:apply-templates/-->
+			<xsl:apply-templates/>
 		</div>
 	</xsl:template>
 	<!-- ============================================================= -->

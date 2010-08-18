@@ -20,6 +20,25 @@
 			<xsl:otherwise>/</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
+	<xsl:template match="xref">
+		<sup>
+			<a href="#{@rid}">
+				<xsl:value-of select="@rid"/>
+			</a>
+		</sup>
+	</xsl:template>
+	<xsl:template match="bold">
+		<b>
+			<xsl:apply-templates/>
+		</b>
+	</xsl:template>
+	<xsl:template match="italic">
+		<i>
+			<xsl:apply-templates/>
+		</i>
+	</xsl:template>
+	<!--
+	-->
 	<xsl:template match="*" mode="make-a-piece">
 		<!-- variable to be used in div id's to keep them unique -->
 		<xsl:variable name="which-piece">
@@ -49,20 +68,41 @@
 		<!-- retrieval metadata, at end -->
 		<xsl:call-template name="nl-2"/>
 	</xsl:template>
+	<!--
+		body
+	-->
 	<xsl:template match="*" mode="make-body">
 		<xsl:apply-templates select=".//body/*"/>
 	</xsl:template>
 	<xsl:template match="sec[@sec-type]">
 		<div class="section">
 			<a name="{@sec-type}"/>
-			<xsl:apply-templates select="*"/>
+			<xsl:apply-templates select="label" mode="body"/>
+			<xsl:apply-templates select="*[name()!='label']"/>
 		</div>
+	</xsl:template>
+	<xsl:template match="sec/label" mode="body">
+		<h3>
+			<xsl:apply-templates/>
+			<a href="#topo">-</a>
+		</h3>
 	</xsl:template>
 	<xsl:template match="sec/sec">
 		<div class="subsection">
 			<xsl:apply-templates select="*"/>
 		</div>
 	</xsl:template>
+	<xsl:template match="p">
+		<xsl:comment>p66666666</xsl:comment>
+		<p>
+			<xsl:call-template name="make-id"/>
+			<xsl:apply-templates select="*|@*|text()"/>
+		</p>
+		<xsl:call-template name="nl-1"/>
+	</xsl:template>
+	<!-- 
+	back
+	-->
 	<xsl:template match="*" mode="make-back">
 		<xsl:comment>*, make-back</xsl:comment>
 		<xsl:variable name="layout" select="'float'"/>
@@ -78,105 +118,73 @@
 				<xsl:apply-templates select="." mode="figures-and-tables"/>
 			</xsl:otherwise>
 		</xsl:choose>
-		<div>
-			<xsl:apply-templates select="//ack"/>
-		</div>
+		<xsl:apply-templates select="//ack"/>
 		<xsl:apply-templates select=".//back/ref-list"/>
-		<div>
-			<xsl:apply-templates select=".//back/*[name()!='ref-list'  and name()!='ack' and name()!='fn-group' and not(.//table-wrap)]"/>
-			<xsl:apply-templates select="//author-notes" mode="text"/>
-			<xsl:apply-templates select="//history" mode="text"/>
-			<xsl:apply-templates select="//fn-group" mode="text"/>
-			<xsl:apply-templates select="//permissions"/>
+		<xsl:apply-templates select="//author-notes" mode="back"/>
+		<xsl:apply-templates select="//permissions" mode="back"/>
+		<xsl:apply-templates select=".//back/*[name()!='ref-list'  and name()!='ack' and not(.//table-wrap)]"/>
+	</xsl:template>
+	<xsl:template match="ref-list/label">
+		<h3><xsl:apply-templates /></h3>
+	</xsl:template>
+	<xsl:template match="author-notes" mode="back">
+		<div id="{name()}" class="back">
+			<xsl:apply-templates select="@*|*|text()"/>
 		</div>
 	</xsl:template>
-	<xsl:template match="author-notes" mode="text">
-		<xsl:apply-templates select="*" mode="text"/>
-	</xsl:template>
-	<xsl:template match="author-notes/corresp" mode="text">
-		<p>
-			<br/>
-		</p>
-		<p>
-			<br/>
-		</p>
-		<a>
-			<xsl:attribute name="href">#top</xsl:attribute>
-			<img src="/img/seta.gif" alt="" border="0" align="middle"/>
+	<xsl:template match="author-notes" mode="back">
+		<div id="corresp" class="back">
+			<p>
+				<br/>
+			</p>
+			<p>
+				<br/>
+			</p>
+			<a>
+				<xsl:attribute name="href">#top</xsl:attribute>^
 		</a>
-		<xsl:text> </xsl:text>
-		<a name="CORRESP">&#160;
+			<xsl:text> </xsl:text>
+			<a name="CORRESP">&#160;
 		</a>
-		<xsl:apply-templates select="*|text()"/>
-	</xsl:template>
-	<!--xsl:template match="author-notes/fn" mode="text">
-		
-	</xsl:template-->
-	<xsl:template match="corresp" mode="copyValue">
-		<xsl:apply-templates select="*|text()"/>
-	</xsl:template>
-	<!-- ScELO -->
-	<xsl:template match="history" mode="text">
-		<div class="history">
-			<xsl:apply-templates select="date" mode="text"/>
-			<xsl:text>.</xsl:text>
+			<xsl:apply-templates select="*|text()"/>
 		</div>
 	</xsl:template>
-	<xsl:template match="date" mode="text">
-		<xsl:if test="position()!=1">; </xsl:if>
-		<xsl:variable name="the-type">
-			<xsl:choose>
-				<xsl:when test="@date-type='accepted'">Accepted: </xsl:when>
-				<xsl:when test="@date-type='received'">Received: </xsl:when>
-				<xsl:when test="@date-type='rev-request'">Revision Requested: </xsl:when>
-				<xsl:when test="@date-type='rev-recd'">Revision Received: </xsl:when>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:if test="@date-type">
-			<!--span class="gen"-->
-			<xsl:value-of select="$the-type"/>
-			<xsl:text/>
-			<!--/span-->
-		</xsl:if>
-		<xsl:variable name="the-month">
-			<xsl:choose>
-				<xsl:when test="month='01'">January</xsl:when>
-				<xsl:when test="month='02'">February</xsl:when>
-				<xsl:when test="month='03'">March</xsl:when>
-				<xsl:when test="month='04'">April</xsl:when>
-				<xsl:when test="month='05'">May</xsl:when>
-				<xsl:when test="month='06'">June</xsl:when>
-				<xsl:when test="month='07'">July</xsl:when>
-				<xsl:when test="month='08'">August</xsl:when>
-				<xsl:when test="month='09'">September</xsl:when>
-				<xsl:when test="month='10'">October</xsl:when>
-				<xsl:when test="month='11'">November</xsl:when>
-				<xsl:when test="month='12'">December</xsl:when>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:value-of select="$the-month"/>
-		<xsl:text> </xsl:text>
-		<xsl:value-of select="day"/>
-		<xsl:text>, </xsl:text>
-		<xsl:value-of select="year"/>
-	</xsl:template>
-	<xsl:template match="fn-group" mode="text">
-		<p>
-			<br/>
-		</p>
-		<p>
-			<br/>
-		</p>
-		<p>
-			<br/>
-		</p>
-		<xsl:value-of select="fn"/>
-	</xsl:template>
-	<xsl:template match="fn" mode="text">
+	<!--
+	 footnotes
+	-->
+	<xsl:template match="fn">
 		<p>
 			<xsl:apply-templates select="@*|*|text()"/>
 		</p>
 	</xsl:template>
+	<xsl:template match="fn/p">
+		<xsl:apply-templates select="text()"/>
+	</xsl:template>
+	<xsl:template match="fn/@*">
+	</xsl:template>
+	<xsl:template match="fn/@id">
+		<sup>
+			<a name="{.}"/>
+			<a href="#back_fn{.}">
+				<xsl:value-of select="."/>
+			</a>
+		</sup>
+	</xsl:template>
+	<xsl:template match="xref[@ref-type='fn']">
+		<a name="back_fn{@rid}">
+			</a>
+		<sup>
+			<xsl:text> </xsl:text>
+			<a href="#{@rid}">
+				<xsl:value-of select="@rid"/>
+			</a>
+		</sup>
+		<xsl:text> </xsl:text>
+	</xsl:template>
+	<!--
+	 
+	-->
+	<!-- ScELO -->
 	<xsl:template match="*" mode="make-end-metadata">
 		<xsl:apply-templates select=".//article-meta"/>
 	</xsl:template>
@@ -213,34 +221,8 @@
 			<xsl:apply-templates/>
 		</a>
 	</xsl:template>
-	<xsl:template match="author-notes" mode="translate">
-		<xsl:param name="lang">
-			<xsl:choose>
-				<xsl:when test="../../../../..//ARTICLE/@TEXTLANG">
-					<xsl:value-of select="../../../../..//ARTICLE/@TEXTLANG"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="../../../..//@xml:lang"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:param>
-		<xsl:choose>
-			<xsl:when test="$lang='pt' ">Correspondência</xsl:when>
-			<xsl:when test="$lang='es' ">Correspondencia</xsl:when>
-			<xsl:when test="$lang='en' ">Send correspondence to</xsl:when>
-		</xsl:choose>
-	</xsl:template>
-	<xsl:template match="*" mode="back">
-		<!--a href="javascript: back()">_</a-->
-	</xsl:template>
 	<xsl:template match="title[normalize-space(.//text())='']">
 		<xsl:comment>empty title</xsl:comment>
-	</xsl:template>
-	<xsl:template match="back/*">
-		<div>
-			<xsl:attribute name="id"><xsl:value-of select="name()"/></xsl:attribute>
-			<xsl:apply-templates/>
-		</div>
 	</xsl:template>
 	<xsl:template match="back/*[.//table-wrap]">
 		<div id="tables">
@@ -252,28 +234,17 @@
 			<xsl:apply-templates/>
 		</div>
 	</xsl:template>
-	<xsl:template match="permissions">
+	<xsl:template match="permissions" mode="back">
 		<p>
 			<xsl:value-of select="copyright-year"/>
 			<xsl:value-of select="copyright-statement"/>
 			<xsl:apply-templates select="license"/>
 		</p>
 	</xsl:template>
-	<xsl:template match="fn/@id">
-		<a name="{.}">&#160;</a>
-	</xsl:template>
 	<xsl:template match="ext-link[not(contains(@xlink:href,':')) and contains(@xlink:href,'.pdf')]">
 		<a href="{concat($var_SUPPLMAT_PATH,@xlink:href)}" target="_blank">
 			<xsl:apply-templates select="*|text()"/>
 		</a>
-	</xsl:template>
-	<xsl:template match="p">
-		<xsl:comment>p66666666</xsl:comment>
-		<p>
-			<xsl:call-template name="make-id"/>
-			<xsl:apply-templates select="*|@*|text()"/>
-		</p>
-		<xsl:call-template name="nl-1"/>
 	</xsl:template>
 	<xsl:template match="a">
 		<xsl:copy-of select="."/>
