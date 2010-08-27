@@ -1,5 +1,5 @@
 <!-- ==================================================================== -->
-<!--    Citation Elements  (ARTICLE 3.1, TEXT 3.1)                          -->
+<!--    Citation Elements  (ARTICLE 4.0, TEXT 4.0)                          -->
 <!-- ==================================================================== -->
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -31,27 +31,37 @@
           standard CDATA #REQUIRED 
           count    CDATA #REQUIRED >
 
-<!ELEMENT pcitat   - - (text-ref?, pcontrib?, (piserial | pmonog)+  ) >
+<!ELEMENT pcitat   - - (text-ref?, pcontrib?, (piserial | pmonog)  ) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Contribution                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT pcontrib - - ( (author | corpauth) , date , (%m.title;) ) >
+<!ELEMENT pcontrib - - ( (author+ | corpauth+) , date , (%m.title;) ) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Serial Level                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT piserial - - (sertitle, volid, issueno?, suppl?, pages, (url | doi |  cited)? ) >
+<!ELEMENT piserial - - (sertitle, volid, issueno?, suppl?, pages, (cited, url)?, doi? ) >
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Monographic Level                                                 -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT pmonog   - - ( (author | corpauth)*, (%m.title;), extent?, edition?,
-city, country?, pubname)>
+<!ELEMENT pmonog   - - ( (author+ | corpauth+), date?, (%m.title;), 
+                         ( 
+                           (thesis, extent?, city?, country? )
+                         |  
+                           ( 
+                             (coltitle, colvolid)?, 
+                             (pages | extent)?, edition?, 
+                             city, country?, pubname+
+                           ) 
+                         ),  
+                         (cited, url)?, doi?, othinfo? 
+                      )>
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    VANCOUVER                                                         -->

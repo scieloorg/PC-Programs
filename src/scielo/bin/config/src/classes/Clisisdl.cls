@@ -14,7 +14,7 @@ Attribute VB_Exposed = False
 Option Explicit
 Const changelinetextbox = vbCrLf
 
-Const MaxTamArea = 30000
+Const MaxTamArea = 64000
 Const Delim = "{"
 Const SEM_ERR = 0
 
@@ -632,7 +632,7 @@ Public Function FieldOccCount(mfn As Long, Campo As Long) As Long
     FieldOccCount = QtdOcc
 End Function
 
-Private Function getMfnsBySearch(ByVal query As String, ByRef Mfns() As Long) As Long
+Private Function getMfnsBySearch(ByVal query As String, ByRef mfns() As Long) As Long
     Dim r, i As Long
 
     Dim SearchStru As IsisSrcHeader
@@ -643,11 +643,11 @@ Private Function getMfnsBySearch(ByVal query As String, ByRef Mfns() As Long) As
     r = IsisSrcSearch(H, 0, query, SearchStru)
     If r > 0 Then
         ReDim SrcMfn(SearchStru.recs)
-        ReDim Mfns(SearchStru.recs)
+        ReDim mfns(SearchStru.recs)
         r = IsisSrcMfnMap(AppHandle, 0, 0, 1, SearchStru.recs, SrcMfn(0))
         
             For i = 1 To SearchStru.recs
-                Mfns(i) = SrcMfn(i - 1).mfn
+                mfns(i) = SrcMfn(i - 1).mfn
             Next i
         
         End If
@@ -656,7 +656,7 @@ Private Function getMfnsBySearch(ByVal query As String, ByRef Mfns() As Long) As
    
     getMfnsBySearch = SearchStru.recs
 End Function
-Private Function getMfns(ByVal query As String, ByRef Mfns() As Long) As Long
+Private Function getMfns(ByVal query As String, ByRef mfns() As Long) As Long
     Dim i As Long
     Dim QtdTrm As Long
     Dim r As Long
@@ -674,11 +674,11 @@ Private Function getMfns(ByVal query As String, ByRef Mfns() As Long) As Long
         from_Posting = 1 'from mfn posting 1
         to_Posting = r 'to mfn posting r
         ReDim pIsisTrmMfn(r) 'redim array of mfns
-        ReDim Mfns(r) 'redim array of mfns
+        ReDim mfns(r) 'redim array of mfns
         
         r = IsisTrmMfnMap(H, 0, from_Posting, to_Posting, pIsisTrmMfn(0))
         For i = 0 To r - 1 'loop all mfns
-            Mfns(i + 1) = pIsisTrmMfn(i).mfn
+            mfns(i + 1) = pIsisTrmMfn(i).mfn
         Next i
     Else
         
@@ -688,7 +688,7 @@ Private Function getMfns(ByVal query As String, ByRef Mfns() As Long) As Long
     getMfns = r
 End Function
 
-Private Function getMfnsByInv(ByVal Termo As String, ByRef Mfns() As Long) As Long
+Private Function getMfnsByInv(ByVal Termo As String, ByRef mfns() As Long) As Long
     Dim i As Long
     Dim QtdTrm As Long
     Dim q As Long
@@ -706,9 +706,9 @@ Call tracing("getMfnsByInv " & CStr(Termo))
     If QtdTrm > ZERO Then
         ReDim pIsisTrmMfn(QtdTrm)
         q = IsisTrmMfnMap(H, 0, 1, QtdTrm, pIsisTrmMfn(0))
-        If q > 0 Then ReDim Mfns(q)
+        If q > 0 Then ReDim mfns(q)
         For i = 1 To q
-            Mfns(i) = pIsisTrmMfn(i - 1).mfn
+            mfns(i) = pIsisTrmMfn(i - 1).mfn
         Next
         
     Else
@@ -726,15 +726,14 @@ End Function
 'Mfns   - os Mfns encontrados
 'Retorno    - a quantidade de Mfns
 '-----------------------------------------------------------------------
-Public Function MfnFind(ByVal Termo As String, ByRef Mfns() As Long, Optional ByVal xtimer As Long) As Long
+Public Function MfnFind(ByVal Termo As String, ByRef mfns() As Long, Optional ByVal xtimer As Long) As Long
     Dim timer As Long
     Dim q As Long
     
     
-    q = getMfns(Termo, Mfns)
+    q = getMfns(Termo, mfns)
     If q = 0 Then
-    q = getMfnsByInv(Termo, Mfns)
-            
+        q = getMfnsByInv(Termo, mfns)
     End If
     
     Call tracing("MfnFind " & CStr(q))
@@ -914,21 +913,36 @@ Public Function UsePft(mfn As Long, format As String, Optional proc As String) A
     Dim ResultLen As Long
     Dim result As String
     Dim p As IsisSpaHeader
+    Dim r As Long
     
-    Call tracing("UsePft " & CStr(mfn) & " " & CStr(format) & " " & proc)
+    Dim log As String
+    
+    log = "UsePft(" & CStr(mfn) & ", " & CStr(format) & ", " & proc & ")"
     
     If proc <> "" Then
 
         Call IsisSpaPftCisis(H, proc)
     End If
-    
-        If IsisSpaPftCisis(H, format) = ZERO Then
-            If IsisRecRead(H, 0, mfn) = ZERO Then
-                ResultLen = IsisRecFormatCisis(H, 0, area, MaxTamArea)
-                If ResultLen > 0 Then result = Left(area, ResultLen)
+    r = IsisSpaPftCisis(H, format)
+    If r = ZERO Then
+        r = IsisRecRead(H, 0, mfn)
+        If r = ZERO Then
+            ResultLen = IsisRecFormatCisis(H, 0, area, MaxTamArea)
+            If ResultLen > 0 Then
+                result = Left(area, ResultLen)
+            Else
+                log = log + vbCrLf + "IsisRecFormatCisis -> " + area
             End If
+        Else
+            log = log + vbCrLf + "IsisRecRead -> " + CStr(r)
         End If
-    Call tracing("UsePft " & Mid(result, 1, 10))
+    Else
+        log = log + vbCrLf + "IsisSpaPftCisis -> " + CStr(r)
+    End If
+    If Len(result) = 0 Then
+        Call tracing(log)
+        Call tracing(result)
+    End If
     UsePft = result
 End Function
 

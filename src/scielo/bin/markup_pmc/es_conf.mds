@@ -50,7 +50,7 @@ TagSize,11
 tagConf0,article
 tagConf1,text
 textOK,OK
-textCANCEL,Cancelar
+textCANCEL,Anular
 textClear,Limpiar
 textWrite,Escribir en el archivo
 titlefrmArticle,Marcación DTD-SciELO
@@ -73,8 +73,8 @@ bodyHasChildren,no
 doDebug,no
 buttonParser,Ejecutar el parser
 buttonGenerateXML,Generar el XML
-buttonCheckXML,Ver como en el sitio
-buttonViewMarkup,Visualizar Markup
+buttonCheckXML,Ver texto completo generado desde del XML
+buttonViewMarkup,Ver texto com marcas
 buttonSave,Guardar
 msgNoXML,No existe el fichero XML del artículo o texto
 msgXMLWasSuccessfullyGenerated,XML fue generado con éxito
@@ -97,3 +97,4 @@ timer,99999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
 buttonApply,Aplicar
 buttonChange2,Cambiar
+msgMissingImportantInformation,"Información importante de ISSUEID no fue encontrada en \bin\markup\issue.mds"

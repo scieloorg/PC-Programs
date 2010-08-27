@@ -3,6 +3,7 @@ c,vcitat,vancouv
 c,icitat,iso690
 c,acitat,abnt6023
 c,citation,biblist
+c,pcitat,apa
 r,ocitat,other
 r,vcitat,vancouv
 r,icitat,iso690

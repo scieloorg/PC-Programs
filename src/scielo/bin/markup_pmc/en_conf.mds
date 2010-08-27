@@ -73,8 +73,8 @@ bodyHasChildren,no
 doDebug,no
 buttonParser,Execute the parser
 buttonGenerateXML,Generate the XML
-buttonCheckXML,Site view
-buttonViewMarkup,View Markup
+buttonCheckXML,View text generated from XML
+buttonViewMarkup,View text with mark up
 buttonSave,Save
 msgNoXML,There is no XML file of the article or text
 msgXMLWasSuccessfullyGenerated,XML was successfully generated 
@@ -97,3 +97,4 @@ timer,99999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
 buttonApply,Apply
 buttonChange2,Change
+msgMissingImportantInformation,"Important information of ISSUEID was not found in \bin\markup\issue.mds"

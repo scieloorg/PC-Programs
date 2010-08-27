@@ -5,6 +5,7 @@ Begin VB.Form DepePath
    ClientLeft      =   60
    ClientTop       =   345
    ClientWidth     =   5325
+   Icon            =   "DepePath.frx":0000
    LinkTopic       =   "Form1"
    ScaleHeight     =   3195
    ScaleWidth      =   5325
@@ -70,7 +71,8 @@ Private Sub Command1_OK_Click()
     On Error GoTo volta
     'executa o WORD97 chamando a macro que prepara o ambiente
     'de marcacao. O caminho é o indicado pelo usuário
-    Shell path & " /l" & App.path & "\markup.prg", vbMaximizedFocus
+    callWord (path)
+    
     Unload DepePath
     DepePath.Hide
     'Set conf = Nothing

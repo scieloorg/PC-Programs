@@ -244,6 +244,10 @@
 37;url;omonog,ocitat,other,back,article
 37;url;aiserial,acitat,abnt6023,back,article
 37;url;amonog,acitat,abnt6023,back,article
+37;url;pmonog,pcitat,apa
+37;url;piserial,pcitat,apa
+237;doi;pmonog,pcitat,apa
+237;doi;piserial,pcitat,apa
 38;type;article
 38;type;text
 39;isdesig;iiserial,icitat,iso690,back,article
@@ -306,6 +310,7 @@
 51;degree;thesgrp,bbibcom,back,article
 51;degree;thesgrp,bibcom,front,article
 51;degree;thesgrp,front,article
+51;degree;thesis,pmonog,pcitat,apa,back,article
 51;degree;thesis,amonog,acitat,abnt6023,back,article
 51;degree;thesis,monog,citation,biblist,back,article
 51;degree;thesis,omonog,ocitat,other,back,article
@@ -1433,9 +1438,17 @@
 18;title;pmonog,pcitat,apa,back,article
 18;language;title,pmonog,pcitat,apa,back,article
 20;extent;pmonog,pcitat,apa,back,article
+25;coltitle;pmonog,pcitat,apa,back,article
+25;coltitle;pmonog,pcitat,apa,back,text
+26;colvolid;pmonog,pcitat,apa,back,article
+26;colvolid;pmonog,pcitat,apa,back,text
 30;sertitle;piserial,pcitat,apa,back,article
 31;volid;piserial,pcitat,apa,back,article
 37;url;piserial,pcitat,apa,back,article
+45;date;thesis,pmonog,pcitat,apa,back,article
+45;dateiso;date,thesis,pmonog,pcitat,apa,back,article
+46;city;thesis,pmonog,pcitat,apa,back,article
+50;orgname;thesis,pmonog,pcitat,apa,back,article
 62;pubname;pmonog,pcitat,apa,back,article
 63;edition;pmonog,pcitat,apa,back,article
 64;date;pcontrib,pcitat,apa,back,article
@@ -1486,6 +1499,8 @@
 67;country;pmonog,pcitat,apa,back,text
 109;cited;piserial,pcitat,apa,back,text
 110;dateiso;cited,piserial,pcitat,apa,back,text
+109;cited;pmonog,pcitat,apa
+110;dateiso;cited,pmonog,pcitat,apa
 888;ign;pcitat,apa,back,text
 888;ign;pcontrib,pcitat,apa,back,text
 888;ign;piserial,pcitat,apa,back,text

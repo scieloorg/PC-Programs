@@ -8,4 +8,5 @@ set validate_dtd=%5
 
 if not exist %validation_result_filename%.tmp echo error > %validation_result_filename%
 if exist %validation_result_filename%.tmp copy %validation_result_filename%.tmp %validation_result_filename%
-if exist %validation_result_filename%.tmp del %validation_result_filename%.tmp
+
+echo fim > %validation_result_filename%.ctrl

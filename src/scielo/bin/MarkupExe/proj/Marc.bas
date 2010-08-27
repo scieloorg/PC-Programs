@@ -19,10 +19,23 @@ Sub Main()
     If retDir = "WINWORD.EXE" Then
         'executa o WORD97 com a macro q prepara ambiente de marcação
         
-        Shell path & " /l " & App.path & "\markup.prg", vbMaximizedFocus
+        callWord (path)
     Else
         DepePath.Text1.Text = path
         DepePath.Show
     End If
     Set conf = Nothing
+End Sub
+
+Sub callWord(WordPath As String)
+    Dim fn As Long
+    Dim callw As String
+    
+    callw = WordPath & " /l" & App.path & "\markup.prg"
+    fn = FreeFile
+    Open App.path & "\temp\openmarkup.log" For Output As #fn
+    Print #fn, callw
+    Close #fn
+    
+    Shell callw, vbMaximizedFocus
 End Sub

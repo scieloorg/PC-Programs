@@ -1,40 +1,72 @@
-ocitat
+pcitat
 o1
 o3
-o1;o3;NT;omonog;"."
-o1;o2;NT;ocontrib;". "
-o2;o3;NT;oiserial;"."
+o1;o2;NT;pcontrib;". "
+o2;o3;NT;piserial;"."
+o1;o3;NT;pmonog;")."
+o1;o3;NT;pmonog;")"
+o1;o3;NT;pmonog;"."
+o1;o4;NT;pcontrib;". In "
+o1;o4;NT;pcontrib;". Em "
+o4;o3;NT;pmonog;"."
+o4;o3;NT;pmonog;")."
+o4;o3;NT;pmonog;")"
 
-omonog
+pmonog
 om1
 om8
-om1;om1;NT;oauthor;", ";"&"
-om1;om2;NT;oauthor;", & "
-om1;om3;NT;oauthor;" ("
-om2;om3;NT;oauthor;" ("
+om1;om1;NT;author;", ";"&"
+om1;om2;NT;author;", & "
+om1;om3;NT;author;" ("
+om2;om3;NT;author;" ("
+om1;om1;NT;corpauth;", ";"&"
+om1;om2;NT;corpauth;", & "
+om1;om3;NT;corpauth;" ("
+om2;om3;NT;corpauth;" ("
 om3;om4;T;date;"). "
 om4;om5;T;title;": "
+om5;om9;T;subtitle;". Retirado em "
+om4;om9;T;title;". Retirado em "
 om5;om6;T;subtitle;". "
 om4;om6;T;title;". "
+om5;om11;T;subtitle;"(pp."
+om4;om11;T;title;"(pp."
 om6;om7;T;city;": "
+om6;om8;NT;thesis;"."
 om7;om8;T;pubname;"."
+om7;om12;T;pubname;". ("
+om9;om10;T;cited;", de "
+om10;om8;T;url;"."
+om11;om6;T;pages;")."
+om12;om8;T;othinfo;")"
+om12;om8;T;othinfo;")."
 
-ocontrib
+pcontrib
 oc1
 oc6
-oc1;oc1;NT;oauthor;", ";"&"
-oc1;oc2;NT;oauthor;", & "
-oc1;oc3;NT;oauthor;" ("
-oc2;oc3;NT;oauthor;" ("
+oc1;oc3;NT;author;" ("
+oc1;oca11;NT;author;", & "
+oca11;oc3;NT;author;" ("
+oc1;oca10;NT;author;", "
+oca10;oca10;NT;author;", "
+oca10;oca11;NT;author;", & ";"&"
+oc1;oc3;NT;corpauth;" ("
+oc1;oc11;NT;corpauth;", & "
+oc11;oc3;NT;corpauth;" ("
+oc1;oc10;NT;corpauth;", "
+oc10;oc10;NT;corpauth;", "
+oc10;oc11;NT;corpauth;", & ";"&"
 oc3;oc4;T;date;"). "
-oc4;oc6;T;title;". "
-oc4;oc6;T;title;". In "
 oc4;oc5;T;title;": "
-oc4;oc5;T;title;". "
 oc5;oc6;T;subtitle;". "
+oc4;oc6;T;title;". In "
+oc4;oc6;T;title;". Em "
+oc4;oc6;T;title;". "
+oc4;oc5;T;title;". "
 oc5;oc6;T;subtitle;". In "
+oc5;oc6;T;subtitle;". Em "
 
-oiserial
+piserial
 oi1
 oi5
 oi1;oi2;T;sertitle;", "
@@ -42,11 +74,27 @@ oi2;oi4;T;volid;", "
 oi2;oi3;T;volid;"("
 oi3;oi4;T;issueno;"), "
 oi4;oi5;T;pages;"."
+oi4;oi6;T;pages;". doi:"
+oi6;oi5;T;doi;"."
 
-oauthor
+author
 oa1
 oa4
 oa1;oa2;T;surname;", ";"&"
 oa2;oa4;T;fname;", ";"&"
 oa2;oa4;T;fname;" ("
 oa2;oa4;T;fname;", & "
+
+corpauth
+a1
+a2
+a1;a2;T;orgname;", ";"&"
+a1;a2;T;orgname;" ("
+a1;a2;T;orgname;", & "
+
+thesis
+t1
+t5
+t1;t2;T;degree;", "
+t2;t3;T;orgname;", "
+t3;t5;T;city;"."

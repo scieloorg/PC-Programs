@@ -556,22 +556,36 @@ volid;Identifica o número do volume ao qual pertence um documento;15;#TRUE#;#FAL
 issueno;Identifica o número de um número;2;#TRUE#;#FALSE#;
 suppl;Identifica o número do suplemento de um periódico;2;#TRUE#;#FALSE#;
 pages;Especifica a paginação inclusiva de um artigo ou parte de uma publicação em uma referência bibliográfica;15;#TRUE#;#FALSE#;
+cited;Indica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 url;Indica, em uma referência bibliográfica, o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 doi;Indica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
-cited;Indica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 
 pmonog;pcitat
 author;Reúne elementos para identificação dos autores individuais como nome,sobrenome e tipo de responsabilidade;15;#TRUE#;#TRUE#;authorpMonog
 down;authorpMonog
 corpauth;Identifica os autores corporativos responsáveis pelo conteúdo intelectual ou artístico do trabalho;15;#TRUE#;#FALSE#;corpautpMonog
 down;corpautpMonog
+date;Identifica a data de publicação;15;#FALSE#;#TRUE#;
 title;Identifica um grupo de título de um documento;15;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo de um documento;15;#FALSE#;#FALSE#;
-extent;Identifica a extensão de um trabalho como o número de páginas ou volumes de uma obra;15;#TRUE#;#FALSE#;
+thesis;Contém elementos específicos para identificar uma dissertação ou uma tese acadêmica, em uma referência bibliiográfica;15;#FALSE#;#FALSE#;thesisPmonog
+down;thesisPmonog
+coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;15;#TRUE#;#FALSE#;
+colvolid;Indica o número do volume de uma coleção;15;#TRUE#;#FALSE#;
+notes;Contém dados que não estão identificados pelos demais elementos de uma citação;15;#TRUE#;#FALSE#;
+pages;Especifica a paginação inclusiva de um artigo ou parte de uma publicação em uma referência bibliográfica;15;#TRUE#;#FALSE#;
 edition;Identifica o número da edição de uma obra;15;#TRUE#;#FALSE#;
 city;Identifica o nome de uma cidade;15;#TRUE#;#FALSE#;
 country;Identifica um país;15;#TRUE#;#FALSE#;
 pubname;Identifica o nome do publicador ou editor de um documento;15;#TRUE#;#FALSE#;
+cited;Indica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
+url;Indica, em uma referência bibliográfica, o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
+doi;Indica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
+
+thesisPmonog;pmonog
+degree; Identifica o grau de uma dissertaçào ou tese acadêmica, como mestrado, doutorado, livre-docência etc;2;#FALSE#;#FALSE#;
+orgname;Identifica o nome de uma organização;2;#FALSE#;#FALSE#;
+city;Identifica o nome de uma cidade;2;#FALSE#;#FALSE#;
 
 abnt6023;back
 acitat;Identifica o começo de uma referência bibliográfica em uma bibliografia;9;#TRUE#;#FALSE#;acitat

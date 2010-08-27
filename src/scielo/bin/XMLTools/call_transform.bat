@@ -18,3 +18,4 @@ if exist %transformation_result_filename%.tmp copy %transformation_result_filena
 
 if exist %transformation_result_filename%.tmp del %transformation_result_filename%.tmp
 
+echo fim > %transformation_result_filename%.ctrl

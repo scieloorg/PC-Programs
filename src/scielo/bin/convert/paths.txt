@@ -17,7 +17,3 @@ Conversion Table Directory,enthtml.txt,Conversion List of HTML to ASCII,
 Conversion Table Directory,HTMLTags,Valid HTML Tags Table,
 Conversion Table Directory,log.fst,FST log,
 Convert Program Directory,library,Library Directory,
-Convert Program Directory,Help,Converter Help Directory,
-Converter Help Directory,econtent.htm,Help of Configuration,1
-Converter Help Directory,econtent.htm,Help of Converter,1
-Converter Help Directory,emarkup.htm,Help of Markup,1

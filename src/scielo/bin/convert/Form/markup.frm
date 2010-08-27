@@ -611,7 +611,7 @@ Private Sub ComboFolder_Change(Index As Integer)
 End Sub
 
 Private Sub Form_Load()
-    CmdHelp.Visible = (help <> "0")
+    CmdHelp.Visible = True
 End Sub
 
 Private Sub Form_Resize()
@@ -993,7 +993,8 @@ Private Sub ListOutDB_Click()
 End Sub
 
 Private Sub CmdHelp_Click()
-    Call openHelp(ConvertDirTree.DirNodes("Help of Markup").Parent.fullpath, ConvertDirTree.DirNodes("Help of Markup").text)
+Call openHelp(mainConfig.Item("Help of Converter").elem2, mainConfig.Item("Help of Converter").elem3)
+    'Call openHelp(ConvertDirTree.DirNodes("Help of Markup").Parent.fullpath, ConvertDirTree.DirNodes("Help of Markup").text)
 End Sub
 
 Private Sub cmdclose_Click()
