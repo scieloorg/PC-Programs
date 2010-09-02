@@ -421,6 +421,10 @@
 60;contract;rsponsor,report,bbibcom,back,article
 60;contract;rsponsor,report,bibcom,front,article
 60;contract;rsponsor,report,vmonog,vcitat,vancouv,back,article
+61;notes;piserial,pcitat,apa
+61;notes;pmonog,pcitat,apa
+61;otherinfo;piserial,pcitat,apa
+61;otherinfo;pmonog,pcitat,apa
 61;notes;aiserial,acitat,abnt6023,back,article
 61;notes;amonog,acitat,abnt6023,back,article
 61;notes;icontrib,icitat,iso690,back,article
@@ -693,6 +697,15 @@
 165;dateiso;text
 132;supplno;article
 132;supplno;text
+888;ign;pcitat,apa
+888;ign;pmonog,pcitat,apa
+888;ign;pcontrib,pcitat,apa
+888;ign;piserial,pcitat,apa
+888;ign;author,pmonog,pcitat,apa
+888;ign;author,pcontrib,pcitat,apa
+888;ign;sertitle,piserial,pcitat,apa
+888;ign;title,pmonog,pcitat,apa
+888;ign;title,pcontrib,pcitat,apa
 888;ign;acitat,abnt6023,back,article
 888;ign;acontrib,acitat,abnt6023,back,article
 888;ign;aiserial,acitat,abnt6023,back,article
@@ -1357,6 +1370,7 @@
 888;ign;thesis,amonog,acitat,abnt6023,back,text
 888;ign;thesis,citation,biblist,back,text
 888;ign;thesis,monog,citation,biblist,back,text
+888;ign;thesis,pmonog,pcitat,apa
 888;ign;thesis,omonog,ocitat,other,back,text
 888;ign;thesis,vmonog,vcitat,vancouv,back,text
 888;ign;vcitat,vancouv,back,text
@@ -1415,6 +1429,7 @@
 0;text-ref;icitat,iso690,back,text
 0;text-ref;ocitat,other,back,article
 0;text-ref;ocitat,other,back,text
+0;text-ref;pcitat,apa
 264;embdate;deposit
 265;entrdate;deposit
 268;deposid;deposit
@@ -1521,3 +1536,6 @@
 540;language;license
 540;href;license
 540;lictype;license
+64;date;pmonog,pcitat,apa
+65;dateiso;date,pmonog,pcitat,apa,back
+14;pages;pmonog,pcitat,apa

@@ -43,24 +43,26 @@
 <!--    Serial Level                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT piserial - - (sertitle, volid, issueno?, suppl?, pages, (cited, url)?, doi? ) >
+<!ELEMENT piserial - - (sertitle, volid, issueno?, suppl?, 
+ ( pages | (cited, url))?, doi? ) >
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Monographic Level                                                 -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT pmonog   - - ( (author+ | corpauth+), date?, (%m.title;), 
+<!ELEMENT pmonog   - - ( (author* | corpauth*), date?, (%m.title;), 
                          ( 
                            (thesis, extent?, city?, country? )
                          |  
                            ( 
                              (coltitle, colvolid)?, 
                              (pages | extent)?, edition?, 
-                             city, country?, pubname+
+					author*,
+                             city?, country?, pubname*
                            ) 
                          ),  
-                         (cited, url)?, doi?, othinfo? 
+                         (cited, url)?, doi?, (notes|othinfo)? 
                       )>
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
