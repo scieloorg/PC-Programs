@@ -91,7 +91,7 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!ELEMENT viserial - - (vstitle & (date | inpress | volid | issueno | suppl |
-                        part | cited | extent | pages | url )*) >
+                        part | cited | extent | pages | url | doi )*) >
 
 <!ELEMENT vstitle  - - (stitle, tp?) >
 <!ELEMENT stitle   - - (#PCDATA) >
