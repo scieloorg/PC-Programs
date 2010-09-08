@@ -395,8 +395,8 @@ Private Sub CmdNewCode_Click()
             If found Then
                 MsgBox "FIXME Código já está em uso"
             Else
-                ReDim Preserve listItems(List1.ListCount + 1)
-                listItems(List1.ListCount + 1) = TextCode.text + " | " + Text2.text + " | " + Text3.text + " | " + Text4.text
+                ReDim Preserve listItems(List1.ListCount)
+                listItems(List1.ListCount) = TextCode.text + " | " + Text2.text + " | " + Text3.text + " | " + Text4.text
                 List1.AddItem (TextCode.text + " | " + Text2.text + " | " + Text3.text + " | " + Text4.text)
                 TextCode.text = ""
                 Text2.text = ""
