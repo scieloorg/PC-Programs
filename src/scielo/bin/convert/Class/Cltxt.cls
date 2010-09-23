@@ -81,7 +81,7 @@ Sub test_InString(ByVal SearchingBeginRow As Long, ByVal SearchingBeginCol As Lo
                 prevRow As Long, prevCol As Long, nextRow As Long, nextCol As Long, comp As VbCompareMethod)
     Dim s As String
     Dim pTerm As Long
-    Dim p As Long
+    Dim P As Long
     
     Dim pfoundPrevious As Long
         
@@ -99,22 +99,22 @@ Sub test_InString(ByVal SearchingBeginRow As Long, ByVal SearchingBeginCol As Lo
     pTerm = InStr(SearchingBeginCol, s, term, comp)
         
     If pTerm > 0 Then
-        p = pTerm - 1
+        P = pTerm - 1
         prevRow = SearchingBeginRow
-        Call test_getStringEndPosition(p, prevRow, prevCol)
+        Call test_getStringEndPosition(P, prevRow, prevCol)
         
         TermBeginRow = SearchingBeginRow
         Call test_getStringEndPosition(pTerm, TermBeginRow, TermBeginCol)
         
         If TermBeginCol > 0 Then
                     
-            p = pTerm + Len(term) - 1
+            P = pTerm + Len(term) - 1
             TermEndRow = SearchingBeginRow
-            Call test_getStringEndPosition(p, TermEndRow, TermEndCol)
+            Call test_getStringEndPosition(P, TermEndRow, TermEndCol)
             
-            p = pTerm + Len(term)
+            P = pTerm + Len(term)
             nextRow = SearchingBeginRow
-            Call test_getStringEndPosition(p, nextRow, nextCol)
+            Call test_getStringEndPosition(P, nextRow, nextCol)
             
         End If
     End If
@@ -958,7 +958,7 @@ Function ReplaceAllHTMLbySpaces() As ClTxt
     Dim result As ClTxt
     Dim first As TpPosition
     Dim last As TpPosition
-    Dim p As TpPosition
+    Dim P As TpPosition
     Dim p1 As TpPosition
     Dim p2 As TpPosition
     Dim P3 As TpPosition
@@ -982,15 +982,15 @@ Function ReplaceAllHTMLbySpaces() As ClTxt
                 HTMLTag = GetSubstrRange(p1.i, p1.j, p2.i, p2.j)
                 If Len(HTMLTag) > 2 Then
                     Debug.Print HTMLTag
-                    p = p1
-                    Call ForwardPosition(p.i, p.j, 1)
-                    Call InString(p.i, p.j, p2.i, p2.j, "<", P3.i, P3.j, vbBinaryCompare)
+                    P = p1
+                    Call ForwardPosition(P.i, P.j, 1)
+                    Call InString(P.i, P.j, p2.i, p2.j, "<", P3.i, P3.j, vbBinaryCompare)
             
                     While (P3.j > 0) And (((P3.i = p2.i) And (P3.j < p2.j)) Or (p2.i > P3.i))
-                        p = P3
+                        P = P3
                         p1 = P3
-                        Call ForwardPosition(p.i, p.j, 1)
-                        Call InString(p.i, p.j, p2.i, p2.j, "<", P3.i, P3.j, vbBinaryCompare)
+                        Call ForwardPosition(P.i, P.j, 1)
+                        Call InString(P.i, P.j, p2.i, p2.j, "<", P3.i, P3.j, vbBinaryCompare)
                     Wend
                     
                     If InStr(1, HTMLTag, "face=" + Chr(34) + "symbol" + Chr(34), vbTextCompare) > 0 Then
@@ -1063,7 +1063,7 @@ Function CheckErrorinMarkupTag() As Long
     Dim result As Long
     Dim first As TpPosition
     Dim last As TpPosition
-    Dim p As TpPosition
+    Dim P As TpPosition
     Dim p1 As TpPosition
     Dim p2 As TpPosition
     Dim P3 As TpPosition
@@ -1087,16 +1087,16 @@ Function CheckErrorinMarkupTag() As Long
                 MarkupTag = GetSubstrRange(p1.i, p1.j, p2.i, p2.j)
                 If Len(MarkupTag) > 2 Then
                     
-                    p = p1
-                    Call ForwardPosition(p.i, p.j, 1)
-                    Call InString(p.i, p.j, p2.i, p2.j, "[", P3.i, P3.j, vbBinaryCompare)
+                    P = p1
+                    Call ForwardPosition(P.i, P.j, 1)
+                    Call InString(P.i, P.j, p2.i, p2.j, "[", P3.i, P3.j, vbBinaryCompare)
             
                     While (P3.j > 0) And (((P3.i = p2.i) And (P3.j < p2.j)) Or (p2.i > P3.i))
-                        p = P3
+                        P = P3
                         Debug.Print P3.i, P3.j
                         p1 = P3
-                        Call ForwardPosition(p.i, p.j, 1)
-                        Call InString(p.i, p.j, p2.i, p2.j, "[", P3.i, P3.j, vbBinaryCompare)
+                        Call ForwardPosition(P.i, P.j, 1)
+                        Call InString(P.i, P.j, p2.i, p2.j, "[", P3.i, P3.j, vbBinaryCompare)
                     Wend
                     Debug.Print p1.i, p1.j
                     
@@ -1176,7 +1176,7 @@ Sub Insert_igntag(UnclosedTags As ColPair)
     
     Dim pContinue As TpPosition
     Dim last As TpPosition
-    Dim p As TpPosition
+    Dim P As TpPosition
     Dim pUnclosedTag As TpPosition
     Dim pOpenIGNtag As TpPosition
     Dim pCloseIGNtag As TpPosition
@@ -1271,7 +1271,7 @@ Sub Old_Insert_igntag(UnclosedTags As ColPair)
     
     Dim pContinue As TpPosition
     Dim last As TpPosition
-    Dim p As TpPosition
+    Dim P As TpPosition
     Dim pUnclosedTag As TpPosition
     Dim pOpenIGNtag As TpPosition
     Dim pCloseIGNtag As TpPosition
@@ -1360,7 +1360,7 @@ Sub Insert_igntag2(UnclosedTags As ColPair)
     
     Dim pContinue As TpPosition
     Dim last As TpPosition
-    Dim p As TpPosition
+    Dim P As TpPosition
     Dim pUnclosedTag As TpPosition
     Dim pOpenIGNtag As TpPosition
     Dim pCloseIGNtag As TpPosition

@@ -1145,7 +1145,7 @@ Sub MARKUP_CleanTags()
     
     For i = 1 To qSPAN
         Call MARKUP_Text.test_InString(LimInf.i, LimInf.j, spanTags(i), mkpStart.i, mkpStart.j, mkpEnd.i, mkpEnd.j, prevPosition.i, prevPosition.j, nextPosition.i, nextPosition.j, vbBinaryCompare)
-        LimInf = nextPosition
+        LimInf = mkpStart
         test = MARKUP_Text.test_getSubstring(mkpStart.i, mkpStart.j, mkpEnd.i, mkpEnd.j)
         test = RmAllHTML2(test)
         Call MARKUP_Text.replaceSubstring(test, mkpStart.i, mkpStart.j, mkpEnd.i, mkpEnd.j)

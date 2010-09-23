@@ -38,24 +38,22 @@
 		</xsl:if>
 		<xsl:apply-templates select=".//contrib-group" mode="front"/>
 		<xsl:if test=".//aff">
-			<p>
-				<xsl:apply-templates select=".//aff" mode="front"/>
-			</p>
+			<div class="aff">
+				<xsl:apply-templates select=".//aff"/>
+			</div>
 		</xsl:if>
-		<xsl:apply-templates select="//author-notes" mode="format"/>
+		<xsl:apply-templates select="//author-notes"/>
 		<div>
-			<xsl:apply-templates select="." mode="sections"/>
+			<xsl:apply-templates select="." mode="section-index"/>
 		</div>
 		<hr/>
 		<xsl:apply-templates select=".//abstract" mode="format"/>
 		<xsl:apply-templates select=".//trans-abstract" mode="format"/>
-		
 	</xsl:template>
 	<!--
 	TITLE
 	-->
-	<xsl:template match="subtitle" mode="format">
-		: <xsl:apply-templates select="."/>
+	<xsl:template match="subtitle" mode="format">: <xsl:apply-templates select="."/>
 	</xsl:template>
 	<xsl:template match="article-title" mode="format">
 		<a name="top">&#160;</a>
@@ -82,10 +80,10 @@
 	</xsl:template>
 	<xsl:template match="name" mode="front">
 		<xsl:apply-templates select="given-names" mode="front"/>&#160;<xsl:apply-templates select="surname" mode="front"/>
-		<xsl:apply-templates select="../xref" mode="front"/>
+		<xsl:apply-templates select="../xref"/>
 		<xsl:if test="position()!=last()">; </xsl:if>
 	</xsl:template>
-	<xsl:template match="xref[@ref-type='aff']" mode="front">
+	<xsl:template match="xref[@ref-type='aff']">
 		<xsl:if test="$countAFF&gt;1">
 			<xsl:choose>
 				<xsl:when test="sup">
@@ -116,7 +114,8 @@
 	<!-- 
 	AFF
 	-->
-	<xsl:template match="aff" mode="front">
+	<xsl:template match="aff">
+		<p>
 		<xsl:if test="$countAFF&gt;1">
 			<xsl:if test="not(label)">
 				<sup>
@@ -124,59 +123,30 @@
 						<xsl:with-param name="xref" select="substring-after(@id,'aff')"/>
 					</xsl:apply-templates>
 				</sup>&#160;
+			</xsl:if>
 		</xsl:if>
-		</xsl:if>
-		<xsl:apply-templates mode="front"/>
-		<br/>
+		<xsl:apply-templates/>
+		</p>
 	</xsl:template>
-	<xsl:template match="aff/*" mode="front">
+	<xsl:template match="aff/*">
 		<xsl:apply-templates/>
 		<xsl:if test="position()!=last()">, </xsl:if>
 	</xsl:template>
-	<!--
-		AUTHOR NOTES
-	-->
-	<xsl:template match="xref[@ref-type='author-notes']" mode="front">
-		<a href="#{@rid}">
+	
+	<xsl:template match="author-notes" >
+		<div id="author-notes">
+			<xsl:apply-templates select="*|text()"/>
+		</div>
+	</xsl:template>
+	<xsl:template match="corresp">
+		<p>
 			<xsl:apply-templates/>
-		</a>
-	</xsl:template>
-	<xsl:template match="author-notes" mode="format">
-		<xsl:variable name="xref" select="corresp/@id"/>
-		<p>
-			<a>
-				<xsl:attribute name="href">#CORRESP</xsl:attribute>
-				<xsl:apply-templates select="." mode="translate"/>
-			</a>
 		</p>
-		<p>
-			<br/>
-		</p>
-		<p>
-			<br/>
-		</p>
-	</xsl:template>
-	<xsl:template match="author-notes" mode="translate">
-		<xsl:param name="lang">
-			<xsl:choose>
-				<xsl:when test="../../../../..//ARTICLE/@TEXTLANG">
-					<xsl:value-of select="../../../../..//ARTICLE/@TEXTLANG"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="../../../..//@xml:lang"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:param>
-		<xsl:choose>
-			<xsl:when test="$lang='pt' ">Correspondencia</xsl:when>
-			<xsl:when test="$lang='es' ">Correspondencia</xsl:when>
-			<xsl:when test="$lang='en' ">Send correspondence to</xsl:when>
-		</xsl:choose>
 	</xsl:template>
 	<!--
 	SECTIONS
 	-->
-	<xsl:template match="*|@*|text" mode="sections">
+	<xsl:template match="*|@*|text" mode="section-index">
 		<ul class="section-list">
 			<a name="topo"/>
 			<xsl:if test=".//abstract">
@@ -192,7 +162,7 @@
 	<xsl:template match="sec" mode="link2sections">
 		<li>
 			<a href="#{@sec-type}">
-				<xsl:apply-templates select="label"/>
+				<xsl:apply-templates select="label[1]"/>
 			</a>
 		</li>
 	</xsl:template>
@@ -207,7 +177,6 @@
 	<!--
 	KEYWORDS
 	-->
-
 	<xsl:template match="kwd-group">
 		<p>
 			<span class="scielo-authors">
@@ -224,13 +193,13 @@
 			<xsl:apply-templates select="kwd"/>
 		</p>
 	</xsl:template>
-	<xsl:template match="kwd" >
-		<xsl:value-of select="."/><xsl:if test="position()!=last()">; </xsl:if>
+	<xsl:template match="kwd">
+		<xsl:value-of select="."/>
+		<xsl:if test="position()!=last()">; </xsl:if>
 	</xsl:template>
 	<!--
 	ABSTRACT
 	-->
-
 	<xsl:template match="abstract | trans-abstract" mode="format">
 		<xsl:variable name="lang" select="@xml:lang"/>
 		<a name="ABSTRACT"/>
@@ -241,9 +210,7 @@
 			</span>: <xsl:apply-templates select="*[not(self::title)]|text()"/>
 		</div>
 		<xsl:apply-templates select="..//kwd-group[@xml:lang=$lang or not(@xml:lang)]"/>
-		
-			<hr/>
-		
+		<hr/>
 	</xsl:template>
 	<xsl:template match="*" mode="words-for-abstract-title">
 		<xsl:choose>

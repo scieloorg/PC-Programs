@@ -4,7 +4,9 @@ set xml_filename=%3
 set xsl_filename=%4
 set transformation_result_filename=%5
 set error_filename=%6
+set ctrl_filename=%7
 
+if exist %ctrl_filename% del %ctrl_filename% 
 if exist %transformation_result_filename%.tmp del %transformation_result_filename%.tmp
 if exist %transformation_result_filename% del %transformation_result_filename%
 if exist %error_filename% del %error_filename%
@@ -18,4 +20,4 @@ if exist %transformation_result_filename%.tmp copy %transformation_result_filena
 
 if exist %transformation_result_filename%.tmp del %transformation_result_filename%.tmp
 
-echo fim > %transformation_result_filename%.ctrl
+echo fim > %ctrl_filename%

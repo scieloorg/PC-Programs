@@ -247,6 +247,18 @@ margin-top: 60pt;
 	
 }
 
-.section-list {
+div .section-list {
+ margin: 3pt;
+}
+.section-list li {
 list-style-type: none
 }
+
+#author-notes P {
+ margin: 0pt;
+}
+
+#author-notes  {
+ margin: 2pt;
+}
+

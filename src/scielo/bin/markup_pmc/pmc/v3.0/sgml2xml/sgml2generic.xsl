@@ -23,9 +23,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	<xsl:variable name="fileName">
-		<xsl:value-of select="concat($journal_issn,$journal_acron,'-',$journal_vol,'-',$article_page)"/>
-	</xsl:variable>
+	
 	<xsl:variable name="prefixFigOrTabId">
 		<xsl:value-of select="//extra-scielo/changeFigOrTabId"/>
 	</xsl:variable>
@@ -34,7 +32,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	-->
 	<xsl:template match="text()">
-		<xsl:value-of select="normalize-space(.)" disable-output-escaping="no"/>
+		<xsl:value-of select="." disable-output-escaping="no"/>
 	</xsl:template>
 	<xsl:template match="*">
 		<xsl:param name="id"/>
@@ -47,11 +45,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="@*">
 		<xsl:attribute name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 	</xsl:template>
-	<xsl:template match="@filename">
-		<graphic href="{.}"/>
-	</xsl:template>
+	
 	<xsl:template match="graphic">
-		<graphic href="{@href}"/>
+		<graphic xlink:href="{@href}"/>
+	</xsl:template>
+	<xsl:template match="@filename">
 	</xsl:template>
 	<xsl:template match="@doctopic" mode="type">
 		<xsl:attribute name="article-type"><xsl:choose><xsl:when test=".='oa'">research-article</xsl:when><xsl:when test=".='ab'">abstract</xsl:when><xsl:when test=".='an'">announcement</xsl:when><xsl:when test=".='co'">article-commentary</xsl:when><xsl:when test=".='cr'">case-report</xsl:when><xsl:when test=".='ed'">editorial</xsl:when><xsl:when test=".='le'">letter</xsl:when><xsl:when test=".='ra'">review-article</xsl:when><xsl:when test=".='sc'">rapid-communication</xsl:when><xsl:when test=".='??'">addendum</xsl:when><xsl:when test=".='??'">book-review</xsl:when><xsl:when test=".='??'">books-received</xsl:when><xsl:when test=".='??'">brief-report</xsl:when><xsl:when test=".='??'">calendar</xsl:when><xsl:when test=".='??'">collection</xsl:when><xsl:when test=".='??'">correction</xsl:when><xsl:when test=".='??'">discussion</xsl:when><xsl:when test=".='??'">dissertation</xsl:when><xsl:when test=".='??'">in-brief</xsl:when><xsl:when test=".='??'">introduction</xsl:when><xsl:when test=".='??'">meeting-report</xsl:when><xsl:when test=".='??'">news</xsl:when><xsl:when test=".='??'">obituary</xsl:when><xsl:when test=".='??'">oration</xsl:when><xsl:when test=".='??'">partial-retraction</xsl:when><xsl:when test=".='??'">product-review</xsl:when><xsl:when test=".='??'">reply</xsl:when><xsl:when test=".='??'">reprint</xsl:when><xsl:when test=".='??'">retraction</xsl:when><xsl:when test=".='??'">translation</xsl:when><xsl:otherwise>other</xsl:otherwise></xsl:choose></xsl:attribute>
@@ -208,23 +206,29 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:choose>
 			<xsl:when test="$corresp//p">
 				<author-notes>
-					<corresp>
-						<xsl:apply-templates select="$corresp//p" mode="corresp"/>
-					</corresp>
+					<xsl:apply-templates select="$corresp//p" mode="corresp"/>
 				</author-notes>
 			</xsl:when>
 			<xsl:otherwise>
 				<author-notes>
-					<corresp>
-						<xsl:apply-templates select="$corresp2//p" mode="corresp"/>
-					</corresp>
+					<xsl:apply-templates select="$corresp2//p" mode="corresp"/>
 				</author-notes>
-			
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="p" mode="corresp">
-		<xsl:apply-templates select="bold|italic|sup|sub|uri|text()"/>
+		<corresp>
+			<xsl:choose>
+				<xsl:when test="contains(.,'@') and not(contains(normalize-space(.),' '))">
+					<email>
+						<xsl:apply-templates select="bold|italic|sup|sub|uri|text()"/>
+					</email>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="bold|italic|sup|sub|uri|text()"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</corresp>
 	</xsl:template>
 	<xsl:template match="@volid | volid">
 		<volume>
@@ -423,8 +427,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</notes>
 	</xsl:template-->
 	<xsl:template match="hist" mode="back">
-	<notes>
-		<xsl:apply-templates mode="back-hist"/></notes>
+		<notes>
+			<xsl:apply-templates mode="back-hist"/>
+		</notes>
 	</xsl:template>
 	<xsl:template match="unidentified" mode="ack">
 		<ack>
@@ -434,12 +439,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="*[@standard]">
 		<ref-list>
 			<xsl:if test="bold">
-				<label><xsl:value-of select="bold"/></label>
+				<label>
+					<xsl:value-of select="bold"/>
+				</label>
 			</xsl:if>
 			<xsl:if test="$cit">
 				<xsl:apply-templates select="$cit/*"/>
 			</xsl:if>
-			<xsl:apply-templates select="*"/>
+			<!--xsl:apply-templates select="*[contains(name(),'citat')]"/-->
 		</ref-list>
 	</xsl:template>
 	<xsl:template match="*[@standard]/*">
@@ -593,14 +600,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//text()"/>
 		</email>
 	</xsl:template>
-	<xsl:template match="figgrp">
+	<xsl:template match="figgrp"><p>
 		<fig id="{@id}" fig-type="{@ftype}">
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
 			<xsl:apply-templates select="." mode="graphic">
 				<xsl:with-param name="id" select="@id"/>
 			</xsl:apply-templates>
-		</fig>
+		</fig></p>
 	</xsl:template>
 	<xsl:template match="graphic/*|graphic/text()">
 	</xsl:template>
@@ -615,7 +622,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="@*" mode="tableless">
 		<xsl:apply-templates select="text()"/>
 	</xsl:template>
-	<xsl:template match="tabwrap">
+	<xsl:template match="tabwrap"><p>
 		<table-wrap id="{@id}">
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
@@ -629,7 +636,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select=".//table"/>
 				</xsl:otherwise>
 			</xsl:choose>
-		</table-wrap>
+		</table-wrap></p>
 	</xsl:template>
 	<xsl:template match="caption">
 		<caption>
@@ -723,7 +730,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="@href"/>
 		</graphic>
 	</xsl:template>
-	<xsl:template match="figgrp//graphic/@href | tabwrap//graphic/@href | equation//graphic/@href">
+	<!--xsl:template match="figgrp//graphic/@href | tabwrap//graphic/@href | equation//graphic/@href">
 		<xsl:param name="id"/>
 		<xsl:variable name="SLASH">
 			<xsl:choose>
@@ -764,14 +771,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:value-of select="$text"/>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template-->
 	<xsl:template match="text()[normalize-space(.)='']"/>
-	<xsl:template match="equation">
+	<xsl:template match="equation"><p>
 		<disp-formula>
 			<xsl:apply-templates select=".//graphic | @filename">
 				<xsl:with-param name="id" select="@id"/>
 			</xsl:apply-templates>
-		</disp-formula>
+		</disp-formula></p>
 	</xsl:template>
 	<xsl:template match="equation[.//table]">
 		<p>

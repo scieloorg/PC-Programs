@@ -22,9 +22,7 @@
 				</xsl:if>
 				<xsl:if test="//ISSUE/@SUPPL">s<xsl:value-of select="//ISSUE/@SUPPL"/>
 				</xsl:if>/</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="//image-path"/>
-			</xsl:otherwise>
+			<xsl:otherwise>../img/</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="var_IMAGES_INFO" select="//images-info"/>
@@ -45,9 +43,11 @@
 
 	<xsl:include href="scielo_pmc.xsl"/>
 	<xsl:include href="scielo_pmc_front.xsl"/>
-	<xsl:include href="scielo_pmc_table.xsl"/>
-	<xsl:include href="scielo_pmc_fig.xsl"/>
+	<xsl:include href="scielo_pmc_body.xsl"/>
+	<xsl:include href="scielo_pmc_back.xsl"/>
 	<xsl:include href="scielo_pmc_references.xsl"/>
+	<xsl:include href="scielo_pmc_table.xsl"/>
+	<xsl:include href="scielo_pmc_graphic.xsl"/>
 	
 	
 	<!--xsl:include href="viewnlm-v2_scielo.xsl"/>
@@ -62,7 +62,6 @@
 	
 	-->
 	<xsl:template match="*" mode="css">
-		<link rel="stylesheet" type="text/css" href="{$css_path}/common.css"/>
 		<link rel="stylesheet" type="text/css" href="{$css_path}/ViewNLM.css"/>
 		<link rel="stylesheet" type="text/css" href="{$css_path}/ViewScielo.css"/>
 	</xsl:template>
