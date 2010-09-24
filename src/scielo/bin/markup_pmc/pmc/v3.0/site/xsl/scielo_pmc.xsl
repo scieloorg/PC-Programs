@@ -25,9 +25,10 @@
 	-->
 	<xsl:template match="*">
 		<xsl:comment> *, <xsl:value-of select="name()"/></xsl:comment>
-			<xsl:apply-templates select="@* | * | text()"/>
+		
+		<xsl:apply-templates select="@* | * | text()"/>
 	</xsl:template>
-	<xsl:template match="a | p | xref | sup | sub">
+	<xsl:template match="a | p |  sup | sub">
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="@* | * | text()"/>
 		</xsl:element>
@@ -36,23 +37,33 @@
 		<xsl:value-of select="."/>
 	</xsl:template>
 	<xsl:template match="@*">
-		<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
+		<!--xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute-->
 	</xsl:template>
 	
+	<xsl:template match="@id">
+		<a name="{.}"/>
+	</xsl:template>
 	<!--
 		xref
 	-->
+	
+	<xsl:template match="xref/@rid">
+		<a href="#{.}">
+			<xsl:value-of select="."/>
+		</a>
+	</xsl:template>
 	<xsl:template match="xref">
 		<sup>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</sup>
+	</xsl:template>
+	<xsl:template match="xref[text()!='']">
+		<sup>
 			<a href="#{@rid}">
-				<xsl:apply-templates select="." mode="xref-label"/>
+			<xsl:value-of select="."/>
 			</a>
 		</sup>
 	</xsl:template>
-	<xsl:template match="xref" mode="xref-label">
-		<xsl:value-of select="label"/>
-	</xsl:template>
-	
 	<!--
 		bold, italic
 	-->
@@ -66,8 +77,6 @@
 			<xsl:apply-templates/>
 		</i>
 	</xsl:template>
-
-	
 	<!--
 		inicio
 	-->
@@ -100,7 +109,6 @@
 		<!-- retrieval metadata, at end -->
 		<xsl:call-template name="nl-2"/>
 	</xsl:template>
-	
 	<xsl:template match="*" mode="make-end-metadata">
 		<xsl:apply-templates select=".//article-meta"/>
 	</xsl:template>
@@ -126,19 +134,16 @@
 		</xsl:variable>
 		<img src="{concat(//MIMETEX,'?',$f)}" alt="" border="0" align="middle"/>
 	</xsl:template>
-	
 	<xsl:template match="email">
 		<a href="mailto:{.}">
 			<xsl:apply-templates/>
 		</a>
 	</xsl:template>
-<xsl:template match="ext-link[not(contains(@xlink:href,':')) and contains(@xlink:href,'.pdf')]">
+	<xsl:template match="ext-link[not(contains(@xlink:href,':')) and contains(@xlink:href,'.pdf')]">
 		<a href="{concat($var_SUPPLMAT_PATH,@xlink:href)}" target="_blank">
 			<xsl:apply-templates select="*|text()"/>
 		</a>
 	</xsl:template>
-	
-	
 	<xsl:template match="title[normalize-space(.//text())='']">
 		<xsl:comment>empty title</xsl:comment>
 	</xsl:template>

@@ -4,26 +4,63 @@
 	<!--
 		DEFAULT
 	-->
-	<xsl:template match="xref" mode="front">
-		<xsl:apply-templates/>
-	</xsl:template>
 	<xsl:template match="*|@*|text()" mode="arabic2romanNumber">
-		<xsl:param name="xref"/>
+		<xsl:param name="arabicNumber"/>
 		<xsl:choose>
-			<xsl:when test="$xref='1'">I</xsl:when>
-			<xsl:when test="$xref='2'">II</xsl:when>
-			<xsl:when test="$xref='3'">III</xsl:when>
-			<xsl:when test="$xref='4'">IV</xsl:when>
-			<xsl:when test="$xref='5'">V</xsl:when>
-			<xsl:when test="$xref='6'">VI</xsl:when>
-			<xsl:when test="$xref='7'">VII</xsl:when>
-			<xsl:when test="$xref='8'">VIII</xsl:when>
-			<xsl:when test="$xref='9'">IX</xsl:when>
-			<xsl:when test="$xref='10'">X</xsl:when>
+			<xsl:when test="$arabicNumber='1'">I</xsl:when>
+			<xsl:when test="$arabicNumber='2'">II</xsl:when>
+			<xsl:when test="$arabicNumber='3'">III</xsl:when>
+			<xsl:when test="$arabicNumber='4'">IV</xsl:when>
+			<xsl:when test="$arabicNumber='5'">V</xsl:when>
+			<xsl:when test="$arabicNumber='6'">VI</xsl:when>
+			<xsl:when test="$arabicNumber='7'">VII</xsl:when>
+			<xsl:when test="$arabicNumber='8'">VIII</xsl:when>
+			<xsl:when test="$arabicNumber='9'">IX</xsl:when>
+			<xsl:when test="$arabicNumber='10'">X</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="$xref"/>
+				<xsl:value-of select="$arabicNumber"/>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="xref[@ref-type='aff']">
+		<xsl:if test="$countAFF&gt;1">
+			<sup>
+				<xsl:if test="position()&gt;1">, </xsl:if>
+				<xsl:choose>
+					<xsl:when test="sup">
+						<xsl:value-of select="sup"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:variable name="xref" select="substring-after(@rid,'aff')"/>
+						<xsl:apply-templates select="." mode="arabic2romanNumber">
+							<xsl:with-param name="arabicNumber" select="$xref"/>
+						</xsl:apply-templates>
+					</xsl:otherwise>
+				</xsl:choose>
+			</sup>
+		</xsl:if>
+	</xsl:template>
+	
+	<!-- 
+	AFF
+	-->
+	<xsl:template match="aff">
+		<p>
+			<xsl:if test="$countAFF&gt;1">
+				<xsl:if test="not(label)">
+					<sup>
+						<xsl:apply-templates select="." mode="arabic2romanNumber">
+							<xsl:with-param name="arabicNumber" select="substring-after(@id,'aff')"/>
+						</xsl:apply-templates>
+					</sup>&#160;
+			</xsl:if>
+			</xsl:if>
+			<xsl:apply-templates/>
+		</p>
+	</xsl:template>
+	<xsl:template match="aff/*">
+		<xsl:apply-templates/>
+		<xsl:if test="position()!=last()">, </xsl:if>
 	</xsl:template>
 	<!--
 	make-front
@@ -83,57 +120,7 @@
 		<xsl:apply-templates select="../xref"/>
 		<xsl:if test="position()!=last()">; </xsl:if>
 	</xsl:template>
-	<xsl:template match="xref[@ref-type='aff']">
-		<xsl:if test="$countAFF&gt;1">
-			<xsl:choose>
-				<xsl:when test="sup">
-					<sup>
-						<xsl:if test="position()&gt;1">, </xsl:if>
-						<xsl:value-of select="sup"/>
-					</sup>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:variable name="xref" select="substring-after(@rid,'aff')"/>
-					<sup>
-						<xsl:if test="position()&gt;1">, </xsl:if>
-						<xsl:apply-templates select="." mode="arabic2romanNumber">
-							<xsl:with-param name="xref" select="$xref"/>
-						</xsl:apply-templates>
-					</sup>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:if>
-	</xsl:template>
-	<xsl:template match="xref[@ref-type='aff']/@rid | aff/@id" mode="front">
-		<xsl:if test="$countAFF&gt;1">
-			<sup>
-				<xsl:apply-templates select="."/>
-			</sup>
-		</xsl:if>
-	</xsl:template>
-	<!-- 
-	AFF
-	-->
-	<xsl:template match="aff">
-		<p>
-		<xsl:if test="$countAFF&gt;1">
-			<xsl:if test="not(label)">
-				<sup>
-					<xsl:apply-templates select="." mode="arabic2romanNumber">
-						<xsl:with-param name="xref" select="substring-after(@id,'aff')"/>
-					</xsl:apply-templates>
-				</sup>&#160;
-			</xsl:if>
-		</xsl:if>
-		<xsl:apply-templates/>
-		</p>
-	</xsl:template>
-	<xsl:template match="aff/*">
-		<xsl:apply-templates/>
-		<xsl:if test="position()!=last()">, </xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="author-notes" >
+	<xsl:template match="author-notes">
 		<div id="author-notes">
 			<xsl:apply-templates select="*|text()"/>
 		</div>
@@ -162,11 +149,11 @@
 	<xsl:template match="sec" mode="link2sections">
 		<li>
 			<a href="#{@sec-type}">
-				<xsl:apply-templates select="label[1]"/>
+				<xsl:apply-templates select="title[1]"/>
 			</a>
 		</li>
 	</xsl:template>
-	<xsl:template match="sec//label">
+	<xsl:template match="sec//title">
 		<xsl:apply-templates select="*|@*|text()"/>
 	</xsl:template>
 	<xsl:template match="subject">

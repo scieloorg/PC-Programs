@@ -23,7 +23,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	
 	<xsl:variable name="prefixFigOrTabId">
 		<xsl:value-of select="//extra-scielo/changeFigOrTabId"/>
 	</xsl:variable>
@@ -45,7 +44,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="@*">
 		<xsl:attribute name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 	</xsl:template>
-	
 	<xsl:template match="graphic">
 		<graphic xlink:href="{@href}"/>
 	</xsl:template>
@@ -389,9 +387,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</sec>
 	</xsl:template>
 	<xsl:template match="sectitle">
-		<label>
+		<title>
 			<xsl:apply-templates/>
-		</label>
+			<xsl:apply-templates select="following-sibling::node()[1 and name()='xref']" mode="xref-in-sectitle"/>
+		</title>
 	</xsl:template>
 	<xsl:template match="@href">
 		<xsl:attribute name="xlink:href"><xsl:value-of select="."/></xsl:attribute>
@@ -428,7 +427,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template-->
 	<xsl:template match="hist" mode="back">
 		<notes>
-			<xsl:apply-templates mode="back-hist"/>
+			<p>
+				<xsl:apply-templates select=".//text()"/>
+			</p>
 		</notes>
 	</xsl:template>
 	<xsl:template match="unidentified" mode="ack">
@@ -600,14 +601,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//text()"/>
 		</email>
 	</xsl:template>
-	<xsl:template match="figgrp"><p>
-		<fig id="{@id}" fig-type="{@ftype}">
-			<xsl:apply-templates select=".//label"/>
-			<xsl:apply-templates select=".//caption"/>
-			<xsl:apply-templates select="." mode="graphic">
-				<xsl:with-param name="id" select="@id"/>
-			</xsl:apply-templates>
-		</fig></p>
+	<xsl:template match="figgrp">
+		<p>
+			<fig id="{@id}" fig-type="{@ftype}">
+				<xsl:apply-templates select=".//label"/>
+				<xsl:apply-templates select=".//caption"/>
+				<xsl:apply-templates select="." mode="graphic">
+					<xsl:with-param name="id" select="@id"/>
+				</xsl:apply-templates>
+			</fig>
+		</p>
 	</xsl:template>
 	<xsl:template match="graphic/*|graphic/text()">
 	</xsl:template>
@@ -622,21 +625,23 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="@*" mode="tableless">
 		<xsl:apply-templates select="text()"/>
 	</xsl:template>
-	<xsl:template match="tabwrap"><p>
-		<table-wrap id="{@id}">
-			<xsl:apply-templates select=".//label"/>
-			<xsl:apply-templates select=".//caption"/>
-			<xsl:choose>
-				<xsl:when test=".//graphic | @filename">
-					<xsl:apply-templates select="." mode="graphic">
-						<xsl:with-param name="id" select="@id"/>
-					</xsl:apply-templates>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select=".//table"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</table-wrap></p>
+	<xsl:template match="tabwrap">
+		<p>
+			<table-wrap id="{@id}">
+				<xsl:apply-templates select=".//label"/>
+				<xsl:apply-templates select=".//caption"/>
+				<xsl:choose>
+					<xsl:when test=".//graphic | @filename">
+						<xsl:apply-templates select="." mode="graphic">
+							<xsl:with-param name="id" select="@id"/>
+						</xsl:apply-templates>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:apply-templates select=".//table"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</table-wrap>
+		</p>
 	</xsl:template>
 	<xsl:template match="caption">
 		<caption>
@@ -698,6 +703,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</uri>
 			</graphic>
 		</xsl:if>
+	</xsl:template>
+	<xsl:template match="xref" mode="xref-in-sectitle">
+		<xsl:copy-of select="."/>
 	</xsl:template>
 	<xsl:template match="text()" mode="nostyle">
 		<xsl:value-of select="."/>
@@ -773,12 +781,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template-->
 	<xsl:template match="text()[normalize-space(.)='']"/>
-	<xsl:template match="equation"><p>
-		<disp-formula>
-			<xsl:apply-templates select=".//graphic | @filename">
-				<xsl:with-param name="id" select="@id"/>
-			</xsl:apply-templates>
-		</disp-formula></p>
+	<xsl:template match="equation">
+		<p>
+			<disp-formula>
+				<xsl:apply-templates select=".//graphic | @filename">
+					<xsl:with-param name="id" select="@id"/>
+				</xsl:apply-templates>
+			</disp-formula>
+		</p>
 	</xsl:template>
 	<xsl:template match="equation[.//table]">
 		<p>
@@ -864,4 +874,7 @@ et al.</copyright-statement>
 		</fn>
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'contrib')]/italic | *[contains(name(),'contrib')]/bold | *[contains(name(),'monog')]/italic | *[contains(name(),'monog')]/bold"/>
+	<xsl:template match="subsec/xref | sec/xref">
+		<xsl:comment>xref</xsl:comment>
+	</xsl:template>
 </xsl:stylesheet>
