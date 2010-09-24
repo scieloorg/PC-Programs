@@ -50,12 +50,11 @@ Begin VB.Form Issue2
       _ExtentY        =   8916
       _Version        =   393216
       Tabs            =   4
-      Tab             =   3
       TabsPerRow      =   4
       TabHeight       =   520
       TabCaption(0)   =   "General"
       TabPicture(0)   =   "frm_issue_2.frx":030A
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "FramFasc2(0)"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
@@ -72,14 +71,14 @@ Begin VB.Form Issue2
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Settings"
       TabPicture(3)   =   "frm_issue_2.frx":035E
-      Tab(3).ControlEnabled=   -1  'True
+      Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "FrameCreativeCommons"
       Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       Begin VB.Frame FrameCreativeCommons 
          Caption         =   "Creative Commons"
          Height          =   4455
-         Left            =   120
+         Left            =   -74880
          TabIndex        =   100
          Top             =   480
          Width           =   8535
@@ -87,7 +86,7 @@ Begin VB.Form Issue2
             Height          =   315
             Left            =   1560
             Style           =   2  'Dropdown List
-            TabIndex        =   109
+            TabIndex        =   108
             Top             =   360
             Width           =   3135
          End
@@ -152,16 +151,17 @@ Begin VB.Form Issue2
       Begin VB.Frame FramFasc2 
          Height          =   4575
          Index           =   0
-         Left            =   -74880
+         Left            =   120
          TabIndex        =   74
          Top             =   360
          Width           =   8535
-         Begin VB.TextBox Text_IssueISSN 
-            Height          =   285
+         Begin VB.ComboBox Text_issueissn 
+            Height          =   315
             Left            =   6360
-            TabIndex        =   107
+            Style           =   2  'Dropdown List
+            TabIndex        =   109
             Top             =   2280
-            Width           =   1935
+            Width           =   2055
          End
          Begin VB.ListBox ListScheme 
             Height          =   960
@@ -256,8 +256,8 @@ Begin VB.Form Issue2
          Begin VB.ComboBox ComboStatus 
             Height          =   315
             Left            =   240
+            Style           =   2  'Dropdown List
             TabIndex        =   0
-            Text            =   "ComboStatus"
             Top             =   480
             Width           =   3375
          End
@@ -266,7 +266,7 @@ Begin VB.Form Issue2
             Caption         =   "Issue ISSN"
             Height          =   195
             Left            =   6360
-            TabIndex        =   108
+            TabIndex        =   107
             Top             =   2040
             Width           =   795
          End
@@ -1230,7 +1230,8 @@ Private Sub loadFormLayout()
     
     
     With Fields
-    Caption = App.Title + " - " + myIssue.journal.pubid + " " + myIssue.issueId
+    Caption = App.Title + " - " + myIssue.journal.pubid + " " + myIssue.issueId + " ISSN ID: " + Issue1.issn_id
+    
     'Caption = TxtTitAbr(idiomidx).text + " " + TxtVol(idiomidx).text + " " + TxtSupplVol(idiomidx).text + " " + TxtNro(idiomidx).text + " " + TxtSupplNro(idiomidx).text
     
     For i = 1 To IdiomsInfo.count
@@ -1281,6 +1282,16 @@ Private Sub loadFormLayout()
     Call FillCombo(ComboStandard, CodeStandard)
     Call FillList(ListScheme, CodeScheme)
     
+    Text_issueissn.Clear
+    Text_issueissn.AddItem ("")
+    If Len(Issue1.issn_current) > 0 Then
+        Text_issueissn.AddItem (Issue1.issn_current)
+    End If
+    If Len(Issue1.issn_id) > 0 And (Issue1.issn_current <> Issue1.issn_id) Then
+        Text_issueissn.AddItem (Issue1.issn_id)
+    End If
+    
+    
     Label9.Caption = Label9.Caption + " " + Caption
     Frame2.Caption = Frame2.Caption + " " + Caption
     
@@ -1322,7 +1333,14 @@ Private Sub LoadIssueData()
     TxtDoccount.text = myIssue.doccount
     currDate = myIssue.DateISO
     TxtDateIso.text = currDate
-    Text_IssueISSN.text = myIssue.issueISSN
+    
+    If InStr("|" + Issue1.issn_current + "|" + Issue1.issn_id + "|", "|" + myIssue.issueISSN + "|") > 0 Then
+        Text_issueissn.text = myIssue.issueISSN
+    Else
+        myIssue.issueISSN = ""
+    End If
+    
+    
     TxtIssuept.text = myIssue.issuepart
     
     TxtIssSponsor.text = myIssue.issueSponsor
@@ -1745,7 +1763,7 @@ Private Function WarnMandatoryFields() As Boolean
     
     If Not CheckDateISO(TxtDateIso.text) Then warning = warning + ConfigLabels.getLabel("MsgInvalidDATEISO") + vbCrLf
         
-    warning = warning + .isA_mandatoryField(Text_IssueISSN.text, "Issue_ISSN")
+    warning = warning + .isA_mandatoryField(Text_issueissn.text, "Issue_ISSN")
     
     warning = warning + .isA_mandatoryField(ComboStatus.text, "Issue_status")
     warning = warning + .isA_mandatoryField(ComboStandard.text, "Issue_Standard")
@@ -1874,7 +1892,7 @@ Private Sub UpdateData()
         .lic = Issue2.ComboIssueLicText.text
         Set .toc = New ClsTOC
         Set .toc = getNewTOC
-    .issueISSN = Issue2.Text_IssueISSN.text
+    .issueISSN = Issue2.Text_issueissn.text
     .DateISO = Issue2.TxtDateIso.text
         .doccount = Issue2.TxtDoccount.text
         .issueCover = Issue2.TxtCover.text
@@ -1924,4 +1942,5 @@ Private Function getNewTOC() As ClsTOC
     Next
     Set getNewTOC = toc
 End Function
+
 
