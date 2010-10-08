@@ -86,6 +86,8 @@
 		<hr/>
 		<xsl:apply-templates select=".//abstract" mode="format"/>
 		<xsl:apply-templates select=".//trans-abstract" mode="format"/>
+		
+		<xsl:apply-templates select=".//notes/disp-quote"/>
 	</xsl:template>
 	<!--
 	TITLE
@@ -143,12 +145,13 @@
 					</a>
 				</li>
 			</xsl:if>
-			<xsl:apply-templates select="..//sec[@sec-type]" mode="link2sections"/>
+			<xsl:apply-templates select=".//body/sec" mode="link2sections"/>
 		</ul>
 	</xsl:template>
 	<xsl:template match="sec" mode="link2sections">
 		<li>
-			<a href="#{@sec-type}">
+			<a>
+				<xsl:attribute name="href">sec-<xsl:value-of select="position()"/></xsl:attribute>
 				<xsl:apply-templates select="title[1]"/>
 			</a>
 		</li>

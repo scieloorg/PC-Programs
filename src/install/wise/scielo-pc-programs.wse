@@ -4569,6 +4569,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=Z:\pc_programs\trunk\src\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_graphic.xsl
+  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_graphic.xsl
+  Flags=0000000010000010
+end
+item: Install File
   Source=Z:\pc_programs\trunk\src\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_table.xsl
   Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_table.xsl
   Flags=0000000010000010
@@ -4576,6 +4581,16 @@ end
 item: Install File
   Source=Z:\pc_programs\trunk\src\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_front.xsl
   Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_front.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=Z:\pc_programs\trunk\src\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_body.xsl
+  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_body.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=Z:\pc_programs\trunk\src\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_back.xsl
+  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_back.xsl
   Flags=0000000010000010
 end
 item: Install File

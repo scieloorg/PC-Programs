@@ -5,8 +5,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 -->
 <xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util" xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
-	<xsl:variable name="corresp" select=".//unidentified[contains(.,'Corresp')]"/>
-	<xsl:variable name="corresp2" select=".//unidentified[contains(.,'@')]"/>
+	<xsl:variable name="corresp" select=".//unidentified[contains(.//text(),'Corresp')]"/>
+	<xsl:variable name="corresp2" select=".//unidentified[contains(.//text(),'@')]"/>
 	<xsl:variable name="ack" select=".//unidentified[contains(.,'Ack') or contains(.,'Agradec')]"/>
 	<xsl:variable name="cit" select=".//unidentified[not(sec) and contains(.,'Refer') ]"/>
 	<xsl:variable name="xref_id" select=".//*[@id]"/>
@@ -34,6 +34,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="." disable-output-escaping="no"/>
 	</xsl:template>
 	<xsl:template match="*">
+		<xsl:apply-templates select="*|@*|text()"/>
+	</xsl:template>
+	<xsl:template match="caption">
+		<caption>
+			<title>
+				<xsl:apply-templates select="*|@*|text()"/>
+			</title>
+		</caption>
+	</xsl:template>
+	<xsl:template match="p | sec | bold | italic | sub | sup |  label | subtitle">
 		<xsl:param name="id"/>
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="*|@*|text()">
@@ -43,11 +53,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="@*">
 		<xsl:attribute name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
-	</xsl:template>
-	<xsl:template match="graphic">
-		<graphic xlink:href="{@href}"/>
-	</xsl:template>
-	<xsl:template match="@filename">
 	</xsl:template>
 	<xsl:template match="@doctopic" mode="type">
 		<xsl:attribute name="article-type"><xsl:choose><xsl:when test=".='oa'">research-article</xsl:when><xsl:when test=".='ab'">abstract</xsl:when><xsl:when test=".='an'">announcement</xsl:when><xsl:when test=".='co'">article-commentary</xsl:when><xsl:when test=".='cr'">case-report</xsl:when><xsl:when test=".='ed'">editorial</xsl:when><xsl:when test=".='le'">letter</xsl:when><xsl:when test=".='ra'">review-article</xsl:when><xsl:when test=".='sc'">rapid-communication</xsl:when><xsl:when test=".='??'">addendum</xsl:when><xsl:when test=".='??'">book-review</xsl:when><xsl:when test=".='??'">books-received</xsl:when><xsl:when test=".='??'">brief-report</xsl:when><xsl:when test=".='??'">calendar</xsl:when><xsl:when test=".='??'">collection</xsl:when><xsl:when test=".='??'">correction</xsl:when><xsl:when test=".='??'">discussion</xsl:when><xsl:when test=".='??'">dissertation</xsl:when><xsl:when test=".='??'">in-brief</xsl:when><xsl:when test=".='??'">introduction</xsl:when><xsl:when test=".='??'">meeting-report</xsl:when><xsl:when test=".='??'">news</xsl:when><xsl:when test=".='??'">obituary</xsl:when><xsl:when test=".='??'">oration</xsl:when><xsl:when test=".='??'">partial-retraction</xsl:when><xsl:when test=".='??'">product-review</xsl:when><xsl:when test=".='??'">reply</xsl:when><xsl:when test=".='??'">reprint</xsl:when><xsl:when test=".='??'">retraction</xsl:when><xsl:when test=".='??'">translation</xsl:when><xsl:otherwise>other</xsl:otherwise></xsl:choose></xsl:attribute>
@@ -73,6 +78,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<front>
 			<xsl:apply-templates select="." mode="journal-meta"/>
 			<xsl:apply-templates select="." mode="article-meta"/>
+			<xsl:apply-templates select="unidentified">
+				<xsl:with-param name="requiredname">xmlbody</xsl:with-param>
+			</xsl:apply-templates>
 		</front>
 	</xsl:template>
 	<xsl:template match="article|text" mode="journal-meta">
@@ -207,10 +215,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="$corresp//p" mode="corresp"/>
 				</author-notes>
 			</xsl:when>
-			<xsl:otherwise>
+			<xsl:when test="$corresp2//p">
 				<author-notes>
-					<xsl:apply-templates select="$corresp2//p" mode="corresp"/>
+					<xsl:apply-templates select="$corresp//p" mode="corresp"/>
 				</author-notes>
+			</xsl:when>
+			<xsl:otherwise>
+				
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -401,6 +412,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="back/vancouv | back/abnt6023 | back/iso690 | back/other| back/apa "/>
 			<xsl:apply-templates select="..//hist" mode="back"/>
 			<xsl:apply-templates select="back//fngrp"/>
+			<xsl:apply-templates select="back/unidentified">
+				<xsl:with-param name="requiredname">bbibcom</xsl:with-param>
+			</xsl:apply-templates>
+			<xsl:apply-templates select="back/unidentified">
+				<xsl:with-param name="requiredname">fngrp</xsl:with-param>
+			</xsl:apply-templates>
 			<!--xsl:apply-templates select="$otherUnidentified"/-->
 			<!--xsl:apply-templates select=".//bbibcom" mode="back-info"/-->
 		</back>
@@ -439,18 +456,20 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="*[@standard]">
 		<ref-list>
-			<xsl:if test="bold">
-				<label>
-					<xsl:value-of select="bold"/>
-				</label>
-			</xsl:if>
-			<xsl:if test="$cit">
-				<xsl:apply-templates select="$cit/*"/>
-			</xsl:if>
-			<!--xsl:apply-templates select="*[contains(name(),'citat')]"/-->
+			<xsl:choose>
+				<xsl:when test="$cit">
+					<xsl:apply-templates select="$cit/*"/>
+				</xsl:when>
+				<xsl:when test="bold">
+					<label>
+						<xsl:value-of select="bold"/>
+					</label>
+				</xsl:when>
+			</xsl:choose>
+			<xsl:apply-templates select="*[contains(name(),'citat')]"/>
 		</ref-list>
 	</xsl:template>
-	<xsl:template match="*[@standard]/*">
+	<xsl:template match="*[@standard]/*[contains(name(),'citat')]">
 		<ref id="R{position()}">
 			<xsl:apply-templates select="no"/>
 			<!-- book, communication, letter, review, conf-proc, journal, list, patent, thesis, discussion, report, standard, and working-paper.  -->
@@ -606,18 +625,24 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<fig id="{@id}" fig-type="{@ftype}">
 				<xsl:apply-templates select=".//label"/>
 				<xsl:apply-templates select=".//caption"/>
-				<xsl:apply-templates select="." mode="graphic">
-					<xsl:with-param name="id" select="@id"/>
-				</xsl:apply-templates>
+				<xsl:apply-templates select="." mode="graphic"/>
 			</fig>
 		</p>
-	</xsl:template>
-	<xsl:template match="graphic/*|graphic/text()">
 	</xsl:template>
 	<xsl:template match="*[name()!='tabwrap']/table">
 		<p>
 			<xsl:apply-templates select="*|@*|text()" mode="tableless"/>
 		</p>
+	</xsl:template>
+	<xsl:template match="p/figgrp">
+		<fig id="{@id}" fig-type="{@ftype}">
+			<xsl:apply-templates select=".//label"/>
+			<xsl:apply-templates select=".//caption"/>
+			<xsl:apply-templates select="." mode="graphic"/>
+		</fig>
+	</xsl:template>
+	<xsl:template match="p/*[name()!='tabwrap']/table">
+		<xsl:apply-templates select="*|@*|text()" mode="tableless"/>
 	</xsl:template>
 	<xsl:template match="*" mode="tableless">
 		<xsl:apply-templates select="*|@*|text()" mode="tableless"/>
@@ -630,25 +655,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<table-wrap id="{@id}">
 				<xsl:apply-templates select=".//label"/>
 				<xsl:apply-templates select=".//caption"/>
-				<xsl:choose>
-					<xsl:when test=".//graphic | @filename">
-						<xsl:apply-templates select="." mode="graphic">
-							<xsl:with-param name="id" select="@id"/>
-						</xsl:apply-templates>
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:apply-templates select=".//table"/>
-					</xsl:otherwise>
-				</xsl:choose>
+				<xsl:apply-templates select="." mode="graphic"/>
 			</table-wrap>
 		</p>
-	</xsl:template>
-	<xsl:template match="caption">
-		<caption>
-			<p>
-				<xsl:apply-templates/>
-			</p>
-		</caption>
 	</xsl:template>
 	<xsl:template match="back//*[contains(name(),'monog') or contains(name(),'contrib')]//subtitle"/>
 	<xsl:template match="back//*[contains(name(),'monog') or contains(name(),'contrib')]//subtitle" mode="title">: <xsl:apply-templates select="@* | * | text()"/>
@@ -733,10 +742,28 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:comment>debugging - end</xsl:comment>
 	</xsl:template>
 	<xsl:template match="xmlbody[sec]/p | unidentified[../xmlbody[sec]]"/>
-	<xsl:template match="figgrp//graphic | tabwrap//graphic | equation//graphic">
-		<graphic>
-			<xsl:apply-templates select="@href"/>
-		</graphic>
+	<xsl:template match="figgrp | tabwrap" mode="graphic">
+		<xsl:choose>
+			<xsl:when test="@filename">
+				<xsl:apply-templates select="@filename"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select=".//graphic/@href"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="figgrp/@filename | tabwrap/@filename | graphic/@href">
+		<xsl:variable name="file">
+			<xsl:choose>
+				<xsl:when test="contains(.,'\')">
+					<xsl:value-of select="substring-before(substring-after(.,'img\'),'.')"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<graphic xlink:href="{$file}"/>
 	</xsl:template>
 	<!--xsl:template match="figgrp//graphic/@href | tabwrap//graphic/@href | equation//graphic/@href">
 		<xsl:param name="id"/>
@@ -844,12 +871,6 @@ et al.</copyright-statement>
 		</elocation-id>
 	</xsl:template>
 	<xsl:template match="sec/text() | subsec/text()"/>
-	<xsl:template match="*[@filename or graphic] " mode="graphic">
-		<xsl:param name="id"/>
-		<xsl:apply-templates select="@filename | graphic">
-			<xsl:with-param name="id" select="$id"/>
-		</xsl:apply-templates>
-	</xsl:template>
 	<xsl:template match="thesis">
 		<xsl:apply-templates select="@* | * | text()">
 		</xsl:apply-templates>
@@ -861,6 +882,8 @@ et al.</copyright-statement>
 		</comment>
 	</xsl:template>
 	<xsl:template match="fngrp">
+	</xsl:template>
+	<xsl:template match="fngrp[*]">
 		<fn-group>
 			<xsl:apply-templates select="*"/>
 		</fn-group>
@@ -876,5 +899,37 @@ et al.</copyright-statement>
 	<xsl:template match="*[contains(name(),'contrib')]/italic | *[contains(name(),'contrib')]/bold | *[contains(name(),'monog')]/italic | *[contains(name(),'monog')]/bold"/>
 	<xsl:template match="subsec/xref | sec/xref">
 		<xsl:comment>xref</xsl:comment>
+	</xsl:template>
+	<xsl:template match="unidentified[*] | unidentified[normalize-space(text())!='']">
+		<xsl:param name="requiredname"/>
+		<xsl:variable name="next" select="following-sibling::*"/>
+		<!--xsl:comment>self <xsl:copy-of select="."/></xsl:comment>
+		<xsl:comment>next <xsl:copy-of select="$next"/></xsl:comment-->
+		<xsl:variable name="name">
+			<xsl:choose>
+				<xsl:when test="$next!=''"><xsl:value-of select="$next[1]/name()"/></xsl:when>
+				<xsl:otherwise></xsl:otherwise>
+			</xsl:choose>
+			
+		</xsl:variable>
+		<!--xsl:comment>
+			<xsl:value-of select="$name"/>
+		</xsl:comment-->
+		<xsl:if test="$name = $requiredname">
+			<xsl:if test="* or normalize-space(text())!=''">
+				<notes>
+					<xsl:choose>
+						<xsl:when test="$name='xmlbody'">
+							<disp-quote>
+								<xsl:apply-templates select="*|text()"/>
+							</disp-quote>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="*|text()"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				</notes>
+			</xsl:if>
+		</xsl:if>
 	</xsl:template>
 </xsl:stylesheet>

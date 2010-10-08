@@ -4,9 +4,12 @@
 	<xsl:template match="*" mode="make-body">
 		<xsl:apply-templates select=".//body/*"/>
 	</xsl:template>
-	<xsl:template match="sec[@sec-type]">
+	<xsl:template match="sec[@sec-type] | body/sec">
 		<div class="section">
-			<a name="{@sec-type}"/>
+			<a>
+				<xsl:attribute name="name">sec-<xsl:value-of select="position()"/></xsl:attribute>
+			</a>
+			
 			<xsl:apply-templates select="label | title" mode="body"/>
 			<xsl:apply-templates select="*[name()!='label' and name()!='title']"/>
 		</div>
@@ -17,7 +20,7 @@
 			<a href="#topo">-</a>
 		</h3>
 	</xsl:template>
-	<xsl:template match="sec/sec | sec[not(@sec-type)]">
+	<xsl:template match="sec/sec">
 		<div class="subsection">
 			<xsl:apply-templates select="*|text()"/>
 		</div>
