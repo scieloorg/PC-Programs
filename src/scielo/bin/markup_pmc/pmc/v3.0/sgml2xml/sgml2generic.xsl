@@ -4,15 +4,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 
 -->
-<xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util" xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
+<xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util" xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl" >
 	<xsl:variable name="corresp" select=".//unidentified[contains(.//text(),'Corresp')]"/>
 	<xsl:variable name="corresp2" select=".//unidentified[contains(.//text(),'@')]"/>
-	<xsl:variable name="ack" select=".//unidentified[contains(.,'Ack') or contains(.,'Agradec')]"/>
 	<xsl:variable name="cit" select=".//unidentified[not(sec) and contains(.,'Refer') ]"/>
 	<xsl:variable name="xref_id" select=".//*[@id]"/>
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
 	<xsl:variable name="journal_issn" select="node()/@issn"/>
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
+	
+	
 	<xsl:variable name="article_page">
 		<xsl:choose>
 			<xsl:when test="./@fpage='0'">
@@ -30,6 +31,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<!--
 	
 	-->
+	
 	<xsl:template match="text()">
 		<xsl:value-of select="." disable-output-escaping="no"/>
 	</xsl:template>
@@ -43,7 +45,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</title>
 		</caption>
 	</xsl:template>
-	<xsl:template match="p | sec | bold | italic | sub | sup |  label | subtitle">
+	<xsl:template match="zipcode"><addr-line content-type="zipcode"><xsl:value-of select="."/></addr-line></xsl:template>
+	<xsl:template match="extent">
+		<size units="pages">
+			<xsl:value-of select="."/>
+		</size>
+	</xsl:template>
+	<xsl:template match="p | sec | bold | italic | sub | sup |  label | subtitle | edition">
 		<xsl:param name="id"/>
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="*|@*|text()">
@@ -71,14 +79,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="@language"/>
 			<xsl:apply-templates select="." mode="front"/>
 			<xsl:apply-templates select="." mode="body"/>
-			<xsl:apply-templates select="." mode="back"/>
+			<xsl:apply-templates select="." mode="back"/>			
 		</article>
 	</xsl:template>
 	<xsl:template match="*" mode="front">
 		<front>
 			<xsl:apply-templates select="." mode="journal-meta"/>
 			<xsl:apply-templates select="." mode="article-meta"/>
-			<xsl:apply-templates select="unidentified">
+			<xsl:apply-templates select="unidentified" mode="classify">
 				<xsl:with-param name="requiredname">xmlbody</xsl:with-param>
 			</xsl:apply-templates>
 		</front>
@@ -123,7 +131,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</year>
 			</pub-date>
 			<xsl:apply-templates select="@volid | @issueno | @supplvol | @supplno | @fpage | @lpage"/>
-			<xsl:apply-templates select=".//hist"/>
+			<xsl:apply-templates select=".//hist" mode="front"/>
 			<xsl:apply-templates select=".//back/licenses"/>
 			<xsl:apply-templates select=".//abstract[@language=$l]"/>
 			<xsl:apply-templates select=".//abstract[@language!=$l]" mode="trans"/>
@@ -217,7 +225,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:when>
 			<xsl:when test="$corresp2//p">
 				<author-notes>
-					<xsl:apply-templates select="$corresp//p" mode="corresp"/>
+					<xsl:apply-templates select="$corresp2//p" mode="corresp"/>
 				</author-notes>
 			</xsl:when>
 			<xsl:otherwise>
@@ -269,12 +277,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="."/>
 		</page-range>
 	</xsl:template>
-	<xsl:template match="hist">
+	<xsl:template match="hist" mode="front">
 		<history>
-			<xsl:apply-templates select="received | revised | accepted "/>
+			<xsl:apply-templates select="received | revised | accepted " mode="front"/>
 		</history>
 	</xsl:template>
-	<xsl:template match="received | revised | accepted">
+	<xsl:template match="received | revised | accepted" mode="front">
 		<date date-type="{name()}">
 			<day>
 				<xsl:value-of select="substring(@dateiso,7,2)"/>
@@ -375,22 +383,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="*" mode="body">
 		<body>
-			<xsl:apply-templates select="xmlbody|unidentified"/>
+			<xsl:apply-templates select="xmlbody| unidentified"/>
 		</body>
 	</xsl:template>
 	<xsl:template match="body"/>
 	<xsl:template match="xmlbody">
 		<xsl:apply-templates select=" * |text()"/>
-	</xsl:template>
-	<xsl:template match="unidentified">
-		<xsl:apply-templates select="*"/>
-	</xsl:template>
-	<xsl:template match="text/unidentified | article/unidentified">
-		<xsl:choose>
-			<xsl:when test="not(contains(.,'Corresp')) and not(contains(.,'Ack') or contains(.,'Agradec')) and not(contains(.,'Refer'))">
-				<xsl:apply-templates select="*"/>
-			</xsl:when>
-		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="subsec">
 		<sec>
@@ -406,55 +404,30 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="@href">
 		<xsl:attribute name="xlink:href"><xsl:value-of select="."/></xsl:attribute>
 	</xsl:template>
-	<xsl:template match="*" mode="back">
-		<back>
-			<xsl:apply-templates select="$ack" mode="ack"/>
-			<xsl:apply-templates select="back/vancouv | back/abnt6023 | back/iso690 | back/other| back/apa "/>
-			<xsl:apply-templates select="..//hist" mode="back"/>
-			<xsl:apply-templates select="back//fngrp"/>
-			<xsl:apply-templates select="back/unidentified">
-				<xsl:with-param name="requiredname">bbibcom</xsl:with-param>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="back/unidentified">
-				<xsl:with-param name="requiredname">fngrp</xsl:with-param>
-			</xsl:apply-templates>
-			<!--xsl:apply-templates select="$otherUnidentified"/-->
-			<!--xsl:apply-templates select=".//bbibcom" mode="back-info"/-->
+	<xsl:template match="*[back]" mode="back">
+		<back>			
+			<xsl:apply-templates select="back" mode="back"/>
 		</back>
 	</xsl:template>
-	<!--xsl:template match="bbibcom " mode="back-info">
-		<xsl:apply-templates select="*|text()" mode="back-info"/>
+	<xsl:template match="back" mode="back">
+			<xsl:if test="*[contains(.//text(),'Ack') or contains(.//text(),'Agrade') or contains(.//text(),'ACK') or contains(.//text(),'AGRADE') or contains(.//text(),' thank')]">
+				<ack>
+				<xsl:apply-templates select="*[contains(.//text(),'Ack') or contains(.//text(),'Agrade') or contains(.//text(),'ACK') or contains(.//text(),'AGRADE') or contains(.//text(),' thank')]" mode="ack"/>
+				</ack>
+			</xsl:if>
+			<xsl:apply-templates select="*[@standard]" mode="citations"/>
+			<fn-group>
+			<xsl:apply-templates select="*" mode="back"/>
+			</fn-group>
+		
 	</xsl:template>
-	<xsl:template match="bbibcom//* | bbibcom//text() " mode="back-info">
-		<xsl:value-of select="."/>&#160;
+	
+	
+	<xsl:template match="*[@standard]" mode="back">
 	</xsl:template>
-	<xsl:template match="bbibcom/text() " mode="back-info">
-		<notes>
-			<p>
-				<xsl:value-of select="."/>
-			</p>
-		</notes>
-	</xsl:template>
-	<xsl:template match="bbibcom/* " mode="back-info">
-		<notes>
-			<p>
-				<xsl:apply-templates select="*|text()" mode="back-info"/>
-			</p>
-		</notes>
-	</xsl:template-->
-	<xsl:template match="hist" mode="back">
-		<notes>
-			<p>
-				<xsl:apply-templates select=".//text()"/>
-			</p>
-		</notes>
-	</xsl:template>
-	<xsl:template match="unidentified" mode="ack">
-		<ack>
-			<xsl:apply-templates select="*"/>
-		</ack>
-	</xsl:template>
-	<xsl:template match="*[@standard]">
+	
+	
+	<xsl:template match="*[@standard]" mode="citations">
 		<ref-list>
 			<xsl:choose>
 				<xsl:when test="$cit">
@@ -505,12 +478,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test=".//node()[@role='tr']">translator</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:if test=".//*[contains(name(),'auth')]">
+		<xsl:if test=".//*[fname]">
 			<person-group person-group-type="{$type}">
-				<xsl:apply-templates select=".//*[contains(name(),'auth')]"/>
+				<xsl:apply-templates select=".//*[fname]"/>
 			</person-group>
 		</xsl:if>
-		<xsl:apply-templates select="*[not(contains(name(),'auth'))]"/>
+		<xsl:apply-templates select="*[not(fname)]"/>
 	</xsl:template>
 	<xsl:template match="back//*[contains(name(),'corpaut')]">
 		<collab>
@@ -765,48 +738,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:variable>
 		<graphic xlink:href="{$file}"/>
 	</xsl:template>
-	<!--xsl:template match="figgrp//graphic/@href | tabwrap//graphic/@href | equation//graphic/@href">
-		<xsl:param name="id"/>
-		<xsl:variable name="SLASH">
-			<xsl:choose>
-				<xsl:when test="contains(.,'/')">/</xsl:when>
-				<xsl:when test="contains(.,'\')">\</xsl:when>
-				<xsl:otherwise/>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:variable name="noSlash">
-			<xsl:choose>
-				<xsl:when test="$SLASH!=''">
-					<xsl:apply-templates select="." mode="onlyFileName">
-						<xsl:with-param name="text" select="."/>
-						<xsl:with-param name="slash" select="$SLASH"/>
-					</xsl:apply-templates>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="."/>
-				</xsl:otherwise>
-			</xsl:choose>.
-		</xsl:variable>
-		<xsl:variable name="noExt">
-			<xsl:value-of select="substring-before($noSlash,'.')"/>
-		</xsl:variable>
-		<xsl:attribute name="xlink:href"><xsl:choose><xsl:when test="$prefixFigOrTabId='yes'"><xsl:value-of select="concat($fileName,'-',$id)"/></xsl:when><xsl:otherwise><xsl:value-of select="$noExt"/></xsl:otherwise></xsl:choose></xsl:attribute>
-	</xsl:template>
-	<xsl:template match="@href" mode="onlyFileName">
-		<xsl:param name="text"/>
-		<xsl:param name="slash"/>
-		<xsl:choose>
-			<xsl:when test="contains($text,$slash)">
-				<xsl:apply-templates select="." mode="onlyFileName">
-					<xsl:with-param name="text" select="substring-after($text,$slash)"/>
-					<xsl:with-param name="slash" select="$slash"/>
-				</xsl:apply-templates>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="$text"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template-->
+	
 	<xsl:template match="text()[normalize-space(.)='']"/>
 	<xsl:template match="equation">
 		<p>
@@ -900,36 +832,104 @@ et al.</copyright-statement>
 	<xsl:template match="subsec/xref | sec/xref">
 		<xsl:comment>xref</xsl:comment>
 	</xsl:template>
-	<xsl:template match="unidentified[*] | unidentified[normalize-space(text())!='']">
+	<xsl:template match="unidentified[*] | unidentified[normalize-space(text())!='']" mode="classify">
 		<xsl:param name="requiredname"/>
 		<xsl:variable name="next" select="following-sibling::*"/>
-		<!--xsl:comment>self <xsl:copy-of select="."/></xsl:comment>
-		<xsl:comment>next <xsl:copy-of select="$next"/></xsl:comment-->
+		<xsl:comment>self <xsl:copy-of select="."/></xsl:comment>
+		<xsl:comment>next <xsl:copy-of select="$next"/></xsl:comment>
 		<xsl:variable name="name">
 			<xsl:choose>
-				<xsl:when test="$next!=''"><xsl:value-of select="$next[1]/name()"/></xsl:when>
-				<xsl:otherwise></xsl:otherwise>
+				<xsl:when test="following-sibling::*">
+					<xsl:apply-templates select="following-sibling::*" mode="next"/>
+				</xsl:when>
+				<xsl:when test="normalize-space($next)=''"/>
+				<xsl:otherwise/>
 			</xsl:choose>
-			
 		</xsl:variable>
 		<!--xsl:comment>
 			<xsl:value-of select="$name"/>
 		</xsl:comment-->
-		<xsl:if test="$name = $requiredname">
-			<xsl:if test="* or normalize-space(text())!=''">
-				<notes>
-					<xsl:choose>
-						<xsl:when test="$name='xmlbody'">
-							<disp-quote>
+			<xsl:if test="$name = $requiredname">
+				<xsl:if test="* or normalize-space(text())!=''">
+					<notes>
+						<xsl:choose>
+							<xsl:when test="$name='xmlbody'">
+								<disp-quote>
+									<xsl:apply-templates select="*|text()"/>
+								</disp-quote>
+							</xsl:when>
+							<xsl:otherwise>
 								<xsl:apply-templates select="*|text()"/>
-							</disp-quote>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:apply-templates select="*|text()"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</notes>
+							</xsl:otherwise>
+						</xsl:choose>
+					</notes>
+				</xsl:if>
 			</xsl:if>
+	</xsl:template>
+	<xsl:template match="*[*]" mode="next">
+		<xsl:if test="position()=1">
+			<xsl:value-of select="name()"/>
 		</xsl:if>
 	</xsl:template>
+
+	<xsl:template match="unidentified">
+		<xsl:apply-templates select="*|text()"/>
+	</xsl:template>
+	<xsl:template match="text/unidentified | article/unidentified">
+		<xsl:choose>
+			<xsl:when test="not(contains(.,'Corresp')) and not(contains(.,'Ack') or contains(.,'ACK') or contains(.,'Agradec') or contains(.,'AGRADEC')) and not(contains(.,'Refer'))">
+				<xsl:apply-templates select="* | text()"/>
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="back/unidentified" mode="back">
+	</xsl:template>
+	
+	<xsl:template match="back/*[not(@standard) and normalize-space(.//text())!='']"  mode="back">
+		<fn>
+		<xsl:apply-templates select="*|text()"  mode="back"/>
+		</fn>
+	</xsl:template>
+	<xsl:template match="back/*[not(@standard)]/* | back/*[not(@standard)]/text()"  mode="back">   	    
+		<p>
+			<xsl:apply-templates select="*|text()"  mode="back"/>
+		</p>
+	</xsl:template>
+	<xsl:template match="back/unidentified[normalize-space(.//text())!='']/* | back/unidentified[normalize-space(.//text())!='']/text()"  mode="back">
+		<p>
+			<xsl:apply-templates select="*|text()"  mode="back"/>
+	      </p>
+	</xsl:template>
+	<xsl:template match="back/unidentified[normalize-space(.//text())!='']"  mode="back">
+		<fn>
+			<xsl:apply-templates select="*|text()"  mode="back"/>
+		</fn>
+	</xsl:template>
+      <!-- ACK INICIO -->
+	<xsl:template match="back/*[contains(.//text(),'Ack') or contains(.//text(),'Agrade') or contains(.//text(),'ACK') or contains(.//text(),'AGRADE') or contains(.//text(),' thank')]"  mode="back">
+	</xsl:template>
+
+	<xsl:template match="back/*[contains(.//text(),'Ack') or contains(.//text(),'Agrade') or contains(.//text(),'ACK') or contains(.//text(),'AGRADE') or contains(.//text(),' thank')]//*" mode="ack">
+		<xsl:apply-templates select="*|text()" mode="ack"/>
+	</xsl:template>
+
+	<xsl:template match="back/*[contains(.//text(),'Ack') or contains(.//text(),'Agrade') or contains(.//text(),'ACK') or contains(.//text(),'AGRADE') or contains(.//text(),' thank')]//text()" mode="ack">
+		<xsl:value-of select="."/>
+	</xsl:template>
+
+	<xsl:template match="back/*[contains(.//text(),'Ack') or contains(.//text(),'Agrade') or contains(.//text(),'ACK') or contains(.//text(),'AGRADE') or contains(.//text(),' thank')]/p" mode="ack">
+		<xsl:copy-of select="."/>
+	</xsl:template>
+
+	<xsl:template match="back/*[contains(.//text(),'Ack') or contains(.//text(),'Agrade') or contains(.//text(),'ACK') or contains(.//text(),'AGRADE') or contains(.//text(),' thank')]" mode="ack">
+		<p><xsl:apply-templates select="*|text()" mode="ack"/></p>
+	</xsl:template>
+
+	<xsl:template match="back/bold[contains(.//text(),'Ack') or contains(.//text(),'Agrade') or contains(.//text(),'ACK') or contains(.//text(),'AGRADE') or contains(.//text(),' thank')]" mode="ack">
+		<title><xsl:value-of select="."/></title>
+	</xsl:template>
+      <!-- ACK FIM -->
+	
+	<xsl:template match="back/*[@standard]"  mode="back"></xsl:template>
 </xsl:stylesheet>

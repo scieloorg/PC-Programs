@@ -17,7 +17,7 @@
 	<xsl:template match="sec/label | sec/title" mode="body">
 		<h3>
 			<xsl:apply-templates/>
-			<a href="#topo">-</a>
+			<a href="#topo">^</a>
 		</h3>
 	</xsl:template>
 	<xsl:template match="sec/sec">

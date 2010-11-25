@@ -151,7 +151,7 @@
 	<xsl:template match="sec" mode="link2sections">
 		<li>
 			<a>
-				<xsl:attribute name="href">sec-<xsl:value-of select="position()"/></xsl:attribute>
+				<xsl:attribute name="href">#sec-<xsl:value-of select="position()"/></xsl:attribute>
 				<xsl:apply-templates select="title[1]"/>
 			</a>
 		</li>
