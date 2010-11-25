@@ -217,7 +217,7 @@
                          bbibcom?) | 
                          ((vancouv | iso690 | abnt6023 | apa | other), bbibcom?)),
 
-                         licenses) >
+                         licenses?) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Back Bibliographic Complementary Elements                         -->

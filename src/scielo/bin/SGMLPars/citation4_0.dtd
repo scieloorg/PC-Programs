@@ -105,7 +105,7 @@
           dateiso  CDATA #REQUIRED >
 <!ELEMENT extent   - - (#PCDATA) >
 <!ELEMENT pages    - - (#PCDATA) >
-<!ELEMENT url      - - (#PCDATA) >
+<!ELEMENT url      - - CDATA >
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
