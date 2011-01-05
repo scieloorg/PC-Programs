@@ -16,7 +16,7 @@ item: Global
   Log Pathname=%MAINDIR%\INSTALL.LOG
   Message Font=MS Sans Serif
   Font Size=8
-  Icon Pathname=Z:\pc_programs\trunk\src\scielo\bin\config\Scielo.ico
+  Icon Pathname=W:\scieloorg\PCPrograms\src\scielo\bin\codes\forms\SCIELO.ICO
   Pages Modified=00110001011101001000001100001011
   Extra Pages=00000000000000000000000000110010
   Disk Filename=SETUP
@@ -24,13 +24,13 @@ item: Global
   Patch Threshold=85
   Patch Memory=4000
   EXE Filename=scielo-pc-programs-4.exe
-  Language INI Filename=Z:\pc_programs\trunk\src\install\wise\languages.ini
+  Language INI Filename=W:\scieloorg\PCPrograms\src\install\wise\languages.ini
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=4.0.011
+  Version File=4.0.025
   Version Description=SciELO
-  Version Copyright=2010
+  Version Copyright=2011
   Version Company=SciELO
   Distribute Path=C:\2007\scielo
   Distribute Type=1
@@ -3357,11 +3357,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\bin\config\Scielo.ico
-  Destination=%PROGDIR%\bin\config\Scielo.ico
-  Flags=0000000010000010
-end
-item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\bin\config\Comctl32.oca
   Destination=%PROGDIR%\bin\config\Comctl32.oca
   Flags=0000000010000010
@@ -4812,6 +4807,7 @@ end
 item: Add ProgMan Icon
   Group=%GROUP%
   Icon Name=SGML Parser
+  Icon Name Portuguese=SGML Parser
   Icon Name Spanish=Uninstall
   Command Line=%PATH_SGMLPARS%\Bin\SGMLPars\parser.exe
   Icon Pathname=%PATH_SGMLPARS%\Bin\SGMLPars\Parser.ico
