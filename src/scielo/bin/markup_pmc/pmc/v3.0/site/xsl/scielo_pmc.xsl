@@ -64,6 +64,12 @@
 			</a>
 		</sup>
 	</xsl:template>
+	<xsl:template match="xref[@ref-type='fig' or @ref-type='table' or @ref-type='equation']">
+		<a href="#{@rid}">
+			<xsl:value-of select="."/>
+			</a>
+		
+	</xsl:template>
 	<!--
 		bold, italic
 	-->

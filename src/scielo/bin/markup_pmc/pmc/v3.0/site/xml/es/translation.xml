@@ -94,7 +94,6 @@
 	<xslid id="sci_artref">
 		<text find="ahead_of_print">ahead of print</text>
 		<text find="provisional">provisorio</text>
-
 		<text find="review_in_progress">en revisión</text>
 		<text find="not_printed">no impresso</text>
 		<text find="special_issue">número especial</text>
@@ -183,6 +182,7 @@
 	</xslid>
 	<xslid id="sci_arttext">
 		<text find="original_version_published_in">versión original publicada en</text>
+		<text find="correspondencia">Contacto</text>
 	</xslid>
 	<xslid id="sci_abstract">
 		<text find="abstract">Resumen</text>

@@ -186,6 +186,7 @@
 	</xslid>
 	<xslid id="sci_arttext">
 		<text find="original_version_published_in">original version published in</text>
+		<text find="correspondencia">Correspondence</text>
 	</xslid>
 	<xslid id="sci_abstract">
 		<text find="abstract">Abstract</text>

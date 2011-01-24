@@ -35,11 +35,19 @@
 			<xsl:apply-templates/>
 		</div>
 	</xsl:template>
-	<xsl:template match="fig/label | fig/caption">
+	<xsl:template match="fig/label">
+	</xsl:template>
+	<xsl:template match="fig/caption">
+		<xsl:if test="../label">
+		<span class="fig-label">
+			<xsl:value-of select="../label"/>.
+		</span>
+		</xsl:if>
 		<span class="fig-{name()}">
 			<xsl:apply-templates/>
 		</span>
 	</xsl:template>
+	
 	<xsl:template match="fig">
 		<xsl:apply-templates select="." mode="display"/>
 	</xsl:template>

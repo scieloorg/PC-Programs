@@ -19,11 +19,35 @@
 				<xsl:apply-templates select="." mode="figures-and-tables"/>
 			</xsl:otherwise>
 		</xsl:choose>
-		<xsl:apply-templates select="//ack"/>
-		<xsl:apply-templates select=".//back/ref-list"/>
-		<xsl:apply-templates select="//author-notes" mode="back"/>
-		<xsl:apply-templates select="//permissions" mode="back"/>
+		<xsl:if test="//ack">
+			<div id="ack" class="sec">			
+			<xsl:apply-templates select="//ack"/>
+			</div>
+		</xsl:if>
+		<xsl:if test=".//back/ref-list">
+			<div id="ref-list" class="sec">			
+				<xsl:apply-templates select=".//back/ref-list"/>
+			</div>
+		</xsl:if>
+		<xsl:if test="//author-notes">
+			<div id="author-notes" class="sec">			
+				<a name="corresp"></a>
+				<a href="#back_corresp">^</a>
+				<xsl:apply-templates select="//author-notes" mode="back"/>
+			</div>
+		</xsl:if>
+		
+		<xsl:if test="//permissions">
+			<div id="permissions" class="sec">			
+				<xsl:apply-templates select="//permissions" mode="back"/>
+			</div>
+		</xsl:if>
+		<xsl:if test=".//back/*[name()!='ref-list'  and name()!='ack' and not(.//table-wrap)]">
+			<div class="sec">
 		<xsl:apply-templates select=".//back/*[name()!='ref-list'  and name()!='ack' and not(.//table-wrap)]"/>
+			
+			</div>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template match="ref-list/label">
 		<h3><xsl:apply-templates /></h3>

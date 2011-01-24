@@ -1,112 +1,44 @@
 /* sobrescreve ViewNLM.css */
 html {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12pt;
 	margin-left:  8%;
-    margin-right: 8%;
+    	margin-right: 8%;
     }
 
  
-.fm  {
-     font-size:   9pt;
-     line-height: 1.5;
-	
- 	
-     }
-
-.body
+body
      {
      font-family : Verdana, Arial, Helvetica, sans-serif;
      font-size:   10pt;
      line-height: 1.4;
      margin-top: 50pt;
-	width: 100%;
+     width: 100%;
      }
 
-
-.bm {
- margin-top: 50pt;
-     font-size:   9pt;
-     line-height: 1.5;
-	width: 100%;
-	font-family:Verdana,courier new;
-
+div {
+    margin-top: 24pt;
+    margin-bottom: 24pt;
 }
 
-.tl-main-part {
-	display: block;
-	font-size: 12pt;
-	font-weight: bold;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	color: black;   
-   margin-top: 30pt;
-  }
- .tl-section-level {
-   display: block;
-   font-family: Verdana, Arial, Helvetica, sans-serif;
-   font-size: 14pt;
-   font-weight: bold;
-   color: black;
-
-   }
- 
-/* titling level 4: lowest designed level */
-.tl-lowest-section {
-   display: block;
-   font-family: Verdana, Arial, Helvetica, sans-serif;
-   font-size: 10pt;
-   font-weight: bold;
-   color: black;
-   line-height: 130%;
-   margin-top: 10pt;
-   }
-
-/* default titling level */
-.tl-default {
-   display: block;
-   font-family:  Verdana, Arial, Helvetica, sans-serif;
-   font-size: 10pt;
-   font-style: italic;
-   color: black;
-   line-height: 130%;
-   margin-top: 5pt;
-  }
-
-
-hr.section-rule {
-	display: none;
-    margin-top: 40pt;
-    margin-bottom: 40pt;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-    }
-/* SciELO */
 .scielo-article-title {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-weight: bold;
-	font-size: 18px;
+	font-size: 13pt;
 	margin: 10;
 	margin-bottom: 80px;
 }
 .scielo-article-other-titles {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 13pt;
 	margin: 20;
 }
 .scielo-article-other-titlesr2l {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-		font-size: 16pt;
-		text-align: right;
+	font-size: 16pt;
+	text-align: right;
 	margin: 20;
 }
 .scielo-authors {
-		font-family: Verdana,Arial,Helvetica,sans-serif;
 		font-weight: bold;
-		font-size: 10pt;
 }
 .abstract-title {
-	font-family: Verdana,Arial,Helvetica,sans-serif;
 	font-weight: bold;
-	font-size: 10pt;
 	margin-top: 20px;
 	margin-bottom: 20px;
 	text-transform: uppercase;
@@ -114,55 +46,52 @@ hr.section-rule {
 .abstractr2l {
 		font-size: 14pt;
 		text-align: right;
-		font-family: sans-serif
 }
 .r2l {
 		font-size: 130%;
 		text-align: right;
-		font-family: sans-serif
 }
 
 .fig {
-	text-align: left;
+	text-align: center;
 	margin-top: 40pt;
 	margin-bottom: 40pt;
+	border-spacing: 20pt;
+
+
 }
 .table {	
 	margin-bottom: 50pt;
+	text-align: center;
+	border-spacing: 20pt;
+	
 }
 
 
-.fig-file {
-	text-align: left;
-	margin-left: 0pt;
-	margin-right: 20pt;
+.fig-file {	
+	margin: 20pt;
 }
 .fig-data {
-	margin-left: 10pt;
-	margin-right: 20pt;
+	margin:  20pt;
 }
 
 .table-label, .fig-label {
-		font-family : Times New Roman;
-		font-size: 11pt;
+		font-size: 9pt;
 		font-weight: bold;
-		text-align: justify;
+	
 }
 
 .table-caption, .fig-caption {
-		font-family : Times New Roman;
-		font-size: 11pt;
-	text-align: justify;
+	font-size: 9pt;
+	
 }
 
 .table-content {
 	margin-top: 0
 }
 .table table {
-empty-cells: show ;
+	empty-cells: show ;
 	border-style: dotted  dotted dotted dotted;
-	 font-family : Verdana, Arial, Helvetica, sans-serif;
-
 	table-layout: automatic;
 }
 
@@ -174,9 +103,8 @@ empty-cells: show ;
 
 .table table  td {
     font-size : 8pt;
-	border-bottom: 1px solid black;
-	
-border-spacing: 20pt;
+    border-bottom: 1px solid black;
+    border-spacing: 20pt;
 }
 
 
@@ -212,14 +140,12 @@ border-spacing: 20pt;
 	color: #DDDDDD;
 }
 
-.bm div div, .bm div {
-	width: 100%;	
-}
+
 .subject {
 	text-transform: uppercase;
 }
 .foot {
- font-family : Verdana, Arial, Helvetica, sans-serif;
+
      font-size:   8pt;	
 }
 
@@ -235,7 +161,7 @@ fig-file a  {
 .license P, .license  A, .license  SPAN{
 	text-align: center;
 	font-size: 8pt;
-	color: black
+	
 }
 
 .license img {
@@ -243,11 +169,10 @@ fig-file a  {
 }
 
 .license  {
-margin-top: 60pt;
-	
+	margin-top: 60pt;	
 }
 
-div .section-list {
+.section-list {
  margin: 3pt;
 }
 .section-list li {

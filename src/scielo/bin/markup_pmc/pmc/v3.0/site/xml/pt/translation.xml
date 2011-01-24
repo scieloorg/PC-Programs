@@ -182,6 +182,7 @@
 	</xslid>
 	<xslid id="sci_arttext">
 		<text find="original_version_published_in">versão original publicada em</text>
+		<text find="correspondencia">Endereço de correspondencia</text>
 	</xslid>
 	<xslid id="sci_abstract">
 		<text find="abstract">Resumo</text>

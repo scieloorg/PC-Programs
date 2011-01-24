@@ -31,7 +31,8 @@
       	<!--xsl:variable name="css_path" select="//css-path"/-->
       	<xsl:variable name="css_path"><xsl:choose>
 								<xsl:when test="//css-path"><xsl:value-of select="//css-path"/></xsl:when>
-								<xsl:otherwise>http://www.scielo.br/css/pmc/</xsl:otherwise>
+								<xsl:when test="//ISSUE">/css/pmc</xsl:when>
+								<xsl:otherwise><xsl:value-of select="document('../xml/css_path.xml')//css-path"/></xsl:otherwise>
 							</xsl:choose></xsl:variable>
 	
         <!--xsl:include href="viewnlm-v2_scielo.xsl"/-->

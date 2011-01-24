@@ -40,7 +40,6 @@
 			</sup>
 		</xsl:if>
 	</xsl:template>
-	
 	<!-- 
 	AFF
 	-->
@@ -55,7 +54,7 @@
 					</sup>&#160;
 			</xsl:if>
 			</xsl:if>
-			<xsl:apply-templates/>
+			<xsl:apply-templates select="*"/>
 		</p>
 	</xsl:template>
 	<xsl:template match="aff/*">
@@ -86,7 +85,6 @@
 		<hr/>
 		<xsl:apply-templates select=".//abstract" mode="format"/>
 		<xsl:apply-templates select=".//trans-abstract" mode="format"/>
-		
 		<xsl:apply-templates select=".//notes/disp-quote"/>
 	</xsl:template>
 	<!--
@@ -122,11 +120,35 @@
 		<xsl:apply-templates select="../xref"/>
 		<xsl:if test="position()!=last()">; </xsl:if>
 	</xsl:template>
-	<xsl:template match="author-notes">
-		<div id="author-notes">
+	<xsl:template match="xref[@ref-type='corresp']">
+		<!-- colocado no final da página
+		
+		div id="author-notes">
 			<xsl:apply-templates select="*|text()"/>
+		</div-->
+		<div id="corresp">
+			<a name="back_fn{@rid}">	</a>
+
+			<a href="#{@rid}">
+				<xsl:value-of select="document(concat('../xml/',$mainLanguage,'/translation.xml'))//xslid[@id='sci_arttext']/text[@find='correspondencia']"/>
+			</a>
 		</div>
 	</xsl:template>
+		<xsl:template match="author-notes">
+		<!-- colocado no final da página
+		
+		div id="author-notes">
+			<xsl:apply-templates select="*|text()"/>
+		</div-->
+		<div id="corresp">
+			<a name="back_corresp">	</a>
+
+			<a href="#corresp">
+				<xsl:value-of select="document(concat('../xml/',$mainLanguage,'/translation.xml'))//xslid[@id='sci_arttext']/text[@find='correspondencia']"/>
+			</a>
+		</div>
+	</xsl:template>
+
 	<xsl:template match="corresp">
 		<p>
 			<xsl:apply-templates/>
