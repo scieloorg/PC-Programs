@@ -415,12 +415,13 @@ Function MakeConversion(ByVal DocMarkup As String, ByVal DocBody As String, ByVa
     Dim DocConfigRecord As String
     Dim PartialT    As String
     Dim ErrorCount  As Long
-    Dim SciELODoc   As ClDocum
+    Dim docReader   As ClDocReader
     Dim ConversionOK As Boolean
     Dim DocId As String
     Dim ret As Boolean
     Dim RefLinkError As Boolean
     Dim epubDateError As Boolean
+    Dim docOrder As String
     
     'Dim others As Boolean
     
@@ -469,38 +470,34 @@ Function MakeConversion(ByVal DocMarkup As String, ByVal DocBody As String, ByVa
         
         
         'Initiate the document
-        Set SciELODoc = New ClDocum
-        Call SciELODoc.ArticleAction.init(journalDirstructure.relatedissues)
+        Set docReader = New ClDocReader
+        Call docReader.ArticleAction.init(journalDirstructure.relatedissues)
             
         
         'Check whether the DTD in document is accepted by the conversion program
-        If SciELODoc.MARKUP_IsValidDTD(PathMarkup, DocMarkup) Then
+        If docReader.MARKUP_IsValidDTD(PathMarkup, DocMarkup) Then
             
             'Verify if the document attributes are according to the configuration record
-            ConfigOK = CfgRec.CfgRecCheck(SciELODoc.MARKUP_DocConfigRecord(DocMarkup))
+            ConfigOK = CfgRec.CfgRecCheck(docReader.MARKUP_DocConfigRecord(DocMarkup, docOrder))
                         
-            If UBound(BV(Currbv).getDocOrderLen(-1)) > 0 Then
-                OrderOK = ArticleAction.OrderCheck(DocMarkup, SciELODoc.docOrder)
-            Else
-                OrderOK = True
-            End If
+            OrderOK = ArticleAction.OrderCheck(DocMarkup, docOrder)
             
-            'others = SciELODoc.MARKUP_CheckArticleDates(epubdate) And SciELODoc.MARKUP_checkPreviousPIDs
+            'others = docReader.MARKUP_CheckArticleDates(epubdate) And docReader.MARKUP_checkPreviousPIDs
             
             'Parse the document and get the data
-            NoErrorFound = SciELODoc.MARKUP_ParseDoc(PathMarkup, DocMarkup, Msg.MsgDir, Msg.MsgFile, ErrorCount)
-            If NoErrorFound And ConfigOK And OrderOK And SciELODoc.MARKUP_checkPreviousPIDs Then
+            NoErrorFound = docReader.MARKUP_ParseDoc(PathMarkup, DocMarkup, Msg.MsgDir, Msg.MsgFile, ErrorCount)
+            If NoErrorFound And ConfigOK And OrderOK And docReader.MARKUP_checkPreviousPIDs Then
                 
             
                 ' DocId
-                epubDateError = Not SciELODoc.MARKUP_CheckArticleDates(epubdate)
+                epubDateError = Not docReader.MARKUP_CheckArticleDates(epubdate)
                 DocId = CfgRec.ReturnDocId(BV(Currbv).BuildDocId)
                 If Len(DocId) = 0 Then
                     DocId = DocMarkup
                 End If
                                                    
                 'Build the database structure
-                Set BD.Records = SciELODoc.DB_BuildDocDatabase(DocId, PathMarkup, DocMarkup, PathBody, DocBody, PathBase + "\" + DocDB, BD.ImportCfgRecordContent("v151"), BD.ImportCfgRecordContent("(if v43^l='" + CfgRec.ImportDocRecordContent("if v706='h' then v40 fi") + "' then |^m|v43^m,|^a|v43^a fi)"), BD.ImportCfgRecordContent(BV(Currbv).EletronicMediumPft(LCase(BD.ImportCfgRecordContent("v930")))), RefLinkError)
+                Set BD.Records = docReader.DB_BuildDocDatabase(DocId, PathMarkup, DocMarkup, PathBody, DocBody, PathBase + "\" + DocDB, BD.ImportCfgRecordContent("v151"), BD.ImportCfgRecordContent("(if v43^l='" + CfgRec.ImportDocRecordContent("if v706='h' then v40 fi") + "' then |^m|v43^m,|^a|v43^a fi)"), BD.ImportCfgRecordContent(BV(Currbv).EletronicMediumPft(LCase(BD.ImportCfgRecordContent("v930")))), RefLinkError)
                 If Not (BD.Records Is Nothing) Then
                 
                     'Save document in database
@@ -515,7 +512,7 @@ Function MakeConversion(ByVal DocMarkup As String, ByVal DocBody As String, ByVa
             End If
             
         End If
-        Set SciELODoc = Nothing
+        Set docReader = Nothing
         
         'Processing Time of the Document
         PartialT = CStr(DateDiff("s", InitialTime, Time))

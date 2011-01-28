@@ -13,45 +13,63 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Function getOrderFormats(documentOrder As String, ByRef Count As Long) As Variant
+Private privOrderLengthArray As Variant
+
+Property Let OrderLengthArray(v As Variant)
+    privOrderLengthArray = v
+End Property
+Property Get OrderLengthArray() As Variant
+    OrderLengthArray = privOrderLengthArray
+End Property
+
+Function getFormattedOrders(documentOrder As String, ByRef Count As Long) As Variant
     Dim i As Long
     Dim numberOfDigits As Long
     Dim formatedOrder() As String
-    Count = 0
-    For i = 0 To UBound(BV(Currbv).getDocOrderLen(-1))
-        numberOfDigits = CLng(BV(Currbv).getDocOrderLen(i))
-        If Len(documentOrder) > numberOfDigits Then
-            'nao seria possivel encontrar na base
-        Else
-            ' formata o order para que ele seja encontrado na base,
-            ' de acordo com a quantidade de dígitos exigida pelos padrões disponíveis
+    
+    Dim val As String
+    Dim formatted As String
+    
+    
+    val = CStr(CLng(documentOrder))
+    Count = Count + 1
+    ReDim Preserve formatedOrder(Count)
+    formatedOrder(Count) = val
+    
+    For i = 0 To UBound(OrderLengthArray)
+        numberOfDigits = CLng(OrderLengthArray(i))
+        formatted = privFormatOrder(documentOrder, numberOfDigits)
+        If val <> formatted Then
             Count = Count + 1
             ReDim Preserve formatedOrder(Count)
-            formatedOrder(Count) = Replace(Space(numberOfDigits - Len(documentOrder)), " ", "0") + documentOrder
+            formatedOrder(Count) = formatted
         End If
     Next
-    getOrderFormats = formatedOrder
+    getFormattedOrders = formatedOrder
 End Function
     
+Private Function privFormatOrder(documentOrder As String, numberOfDigits As Long) As String
+    Dim formatedOrder As String
+    
+    If Len(documentOrder) <= numberOfDigits Then
+        formatedOrder = Replace(Space(numberOfDigits - Len(documentOrder)), " ", "0") + documentOrder
+    End If
+    
+    privFormatOrder = formatedOrder
+End Function
+    
+
 Function formatOrder(documentOrder As String) As String
     Dim i As Long
     Dim numberOfDigits As Long
-    Dim formatedOrder As String
+    Dim formatted As String
     
     i = 0
-    formatedOrder = ""
-    While i < UBound(BV(Currbv).getDocOrderLen(-1)) And (formatedOrder = "")
-        
-        numberOfDigits = CLng(BV(Currbv).getDocOrderLen(i))
-        If Len(documentOrder) > numberOfDigits Then
-            'nao seria possivel encontrar na base
-        Else
-            ' formata o order para que ele seja encontrado na base,
-            ' de acordo com a quantidade de dígitos exigida pelos padrões disponíveis
-            formatedOrder = Replace(Space(numberOfDigits - Len(documentOrder)), " ", "0") + documentOrder
-        End If
+    
+    While (Len(formatted) = 0) And (i <= UBound(OrderLengthArray))
+        numberOfDigits = CLng(OrderLengthArray(i))
+        formatted = privFormatOrder(documentOrder, numberOfDigits)
         i = i + 1
     Wend
-    formatOrder = formatedOrder
+    formatOrder = formatted
 End Function
-    

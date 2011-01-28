@@ -43,6 +43,6 @@
  APPINFO NONE>
 
 
-<!DOCTYPE article SYSTEM "C:\scielo\\bin\sgmlpars\art3_1.dtd">
-[article      pii=nd doctopic=oa language=en ccode=br1.1 status=1 version=3.1 type=tab order=06      seccode=RBP030 sponsor=nd stitle="Rev. Bras. Psiquiatr." volid=31 issueno=4      dateiso=20091200 fpage=314 lpage=321 issn=1516-4446 ahpdate=20090807]
+<!DOCTYPE article SYSTEM "C:\SciELO\bin\sgmlpars\art4_0.dtd">
+[article pii="nd" doctopic="oa" language="pt" ccode="br1.1" status="1" version="4.0" type="gra tab" order="00115" seccode="nd" sponsor="nd" stitle="Rev. CEFAC" issueno="ahead" dateiso="20100000" fpage="0" lpage="0" issn="1516-1846" ahpdate="20101029"]
 [/article]

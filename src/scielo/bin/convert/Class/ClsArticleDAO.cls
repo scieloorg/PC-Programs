@@ -16,6 +16,7 @@ Option Explicit
 Private isis As New ClIsisDll
 Private myIssueOrder As String
 
+Private docOrderManager As New ClDocOrder
 
 Sub setData(Path As String, mst As String, Label As String)
     If isis.Initiate(Path, mst, Label) Then
@@ -36,26 +37,20 @@ Function getDocCounter() As Long
     getDocCounter = totalOfDocuments
 End Function
 
-Function getMFNs(filenameOrOrder As String, Mfns() As Long) As Long
-    Dim q As Long
-       
-    q = isis.MfnFind(filenameOrOrder, Mfns)
-    If q = 0 And IsNumber(filenameOrOrder) Then
-        q = getMfnByOrder(filenameOrOrder, Mfns)
-    End If
-    getMFNs = q
+Private Function getMfnByFilename(filename As String, Mfns() As Long) As Long
+    getMfnByFilename = isis.MfnFind(filename, Mfns)
 End Function
-Function getDocument(filenameOrOrder As String) As ClsArticle
+Function getDocument(filename As String) As ClsArticle
     Dim q As Long
     Dim Mfns() As Long
     Dim a As ClsArticle
     
     
-    q = getMFNs(filenameOrOrder, Mfns)
+    q = getMfnByFilename(filename, Mfns)
     If q > 0 Then
         Set a = New ClsArticle
         With a
-        .FileName = isis.FieldContentOccGet(Mfns(1), COMMONISISTAGS("pii").Value, 1)
+        .filename = isis.FieldContentOccGet(Mfns(1), COMMONISISTAGS("pii").Value, 1)
         .order = isis.FieldContentOccGet(Mfns(1), BV(Currbv).BVISISTAGS("order").Value, 1)
         
         Set .VersionHistory = New ClsArticleVersionHistory
@@ -80,12 +75,12 @@ Function getDocument(filenameOrOrder As String) As ClsArticle
         Set getDocument = a
     End If
 End Function
-Function getDocumentRange(filenameOrOrder As String, inicio As Long, fim As Long) As Boolean
+Private Function getDocumentRange(filename As String, inicio As Long, fim As Long) As Boolean
     Dim q As Long
     Dim Mfns() As Long
     Dim qtdDocRecords As String
     
-    q = getMFNs(filenameOrOrder, Mfns)
+    q = getMfnByFilename(filename, Mfns)
     If q > 0 Then
         inicio = Mfns(1) - 1
         
@@ -95,27 +90,20 @@ Function getDocumentRange(filenameOrOrder As String, inicio As Long, fim As Long
     getDocumentRange = (inicio > 0 And inicio < fim)
 End Function
 
-Function getDocOrder(FileName As String) As String
-    Dim q As Long
-    Dim Mfns() As Long
-    
-    q = getMFNs(FileName, Mfns)
-    If q > 0 Then
-        getDocOrder = isis.FieldContentOccGet(Mfns(1), BV(Currbv).BVISISTAGS("order").Value, 1)
-    End If
-End Function
-Function getMfnByOrder(order As String, Mfns() As Long) As Long
+'XXCHECKXX
+Private Function getMfnByOrder(order As String, Mfns() As Long) As Long
 'Verifica se o order pertence a outro documento
     Dim Count As Long
     Dim formattedOrders() As String
-    Dim docOrder As New ClDocOrder
+    
     Dim i As Long
     Dim a As New ClsArticle
     Dim q As Long
     Dim found As Boolean
         
-    formattedOrders = docOrder.getOrderFormats(order, Count)
     i = 0
+    formattedOrders = docOrderManager.getFormattedOrders(order, Count)
+    
     While (Not found) And (i < Count)
         i = i + 1
         
@@ -127,14 +115,13 @@ Function getMfnByOrder(order As String, Mfns() As Long) As Long
     getMfnByOrder = q
 End Function
 Function getDocumentByOrder(order As String) As ClsArticle
-    Dim docOrder As New ClDocOrder
     Dim a As New ClsArticle
     Dim Mfns() As Long
     Dim q As Long
     
     q = getMfnByOrder(order, Mfns)
     If q > 0 Then
-        a.FileName = isis.FieldContentOccGet(Mfns(1), COMMONISISTAGS("pii").Value, 1)
+        a.filename = isis.FieldContentOccGet(Mfns(1), COMMONISISTAGS("pii").Value, 1)
         a.order = isis.FieldContentOccGet(Mfns(1), BV(Currbv).BVISISTAGS("order").Value, 1)
     End If
     Set getDocumentByOrder = a
@@ -157,6 +144,7 @@ End Property
 
 Private Sub Class_Initialize()
     Set isis = New ClIsisDll
+    docOrderManager.OrderLengthArray = BV(Currbv).getDocOrderLen(-1)
 End Sub
 
 Function Delete(filenameOrOrder As String) As Boolean
@@ -171,7 +159,7 @@ Function Delete(filenameOrOrder As String) As Boolean
 End Function
 
 
-Function ImportRecord(record As String, FileName As String, order As String) As Boolean
+Function ImportRecord(record As String, filename As String, order As String) As Boolean
     Dim q As Long
     Dim Mfns() As Long
     Dim r As Boolean
@@ -180,11 +168,11 @@ Function ImportRecord(record As String, FileName As String, order As String) As 
     Dim d As String
     
     If Len(record) > 0 Then
-        q = isis.MfnFind(FileName, Mfns)
+        q = getMfnByFilename(filename, Mfns)
         If q > 0 Then
             MfnFileName = Mfns(1)
         End If
-        q = isis.MfnFind(order, Mfns)
+        q = getMfnByOrder(order, Mfns)
         If q > 0 Then
             MfnOrder = Mfns(1)
         End If
@@ -201,12 +189,12 @@ Function ImportRecord(record As String, FileName As String, order As String) As 
 End Function
 
 
-Function getRecordContent(FileName As String) As String
+Function getRecordContent(filename As String) As String
     Dim q As Long
     Dim Mfns() As Long
     Dim tagged As String
     
-    q = isis.MfnFind(FileName, Mfns)
+    q = getMfnByFilename(filename, Mfns)
     If q > 0 Then
         tagged = isis.RecordGet(Mfns(1))
     End If

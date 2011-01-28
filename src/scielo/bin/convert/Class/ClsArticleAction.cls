@@ -46,39 +46,42 @@ Function OrderCheck(MarkupDocId As String, markupDocOrder As String) As Boolean
     Dim RangeOK As Boolean
     Dim DocumentAndOrderMatch As Boolean
     Dim freeOrder As Boolean
-    Dim i_order As Long
+    Dim i_markupDocOrder As Long
     Dim totalOfDocuments As Long
     Dim formatOk As Boolean
     Dim formated As String
-    
+    Dim OrderOK As Boolean
     Dim i As Long
-    Dim article As ClsArticle
+    Dim articleInDB As ClsArticle
     
-    Dim docOrder As New ClDocOrder
+    Dim docOrderManager As New ClDocOrder
     
-    Set article = New ClsArticle
-    article.FileName = MarkupDocId
+    Set articleInDB = New ClsArticle
     
-    Set article = findArticle(article)
     
-    If IsNumber(markupDocOrder) Then i_order = CLng(markupDocOrder)
+    articleInDB.filename = MarkupDocId
+    Set articleInDB = findArticle(articleInDB)
+    
+    If IsNumber(markupDocOrder) Then i_markupDocOrder = CLng(markupDocOrder)
     totalOfDocuments = ArticleDAO.getDocCounter()
         
+    docOrderManager.OrderLengthArray = BV(Currbv).getDocOrderLen(-1)
+    markupDocOrder = docOrderManager.formatOrder(markupDocOrder)
+    
     'Check the range
-    If (i_order > 0) And (i_order <= totalOfDocuments) Then
+    If (i_markupDocOrder > 0) And (i_markupDocOrder <= totalOfDocuments) Then
         RangeOK = True
         
         'Verifica se existe o documento na base
-        If article Is Nothing Then
-            'Não existe o documento
+        If articleInDB Is Nothing Then
+            'Não existe o documento na base
         Else
             'Existe, verificar se o order se mantém
-            If i_order = CLng(article.order) Then
-                DocumentAndOrderMatch = True
-            End If
+            DocumentAndOrderMatch = (i_markupDocOrder = CLng(articleInDB.order))
         End If
         
         If Not DocumentAndOrderMatch Then
+            
             'Verifica se o order pertence a outro documento
             Dim otherArticle As ClsArticle
             freeOrder = isFreeOrder(markupDocOrder, otherArticle)
@@ -91,22 +94,18 @@ Function OrderCheck(MarkupDocId As String, markupDocOrder As String) As Boolean
                     Call Msg.GiveRunInformation(otherArticle.order + " " + InterfaceLabels("MsgInvalidDocOrder").elem2 + MarkupDocId)
                 End If
                 ' apresentar mensagem que o order pertence a outro documento
-                Call Msg.GiveRunInformation(otherArticle.FileName + " " + InterfaceLabels("MsgDBDocOrder").elem2 + markupDocOrder)
+                Call Msg.GiveRunInformation(otherArticle.filename + " " + InterfaceLabels("MsgDBDocOrder").elem2 + markupDocOrder)
             End If
         End If
                 
-        If DocumentAndOrderMatch Or freeOrder Then
-            'Check format/number of digits expected for the order of the document
-            formated = docOrder.formatOrder(markupDocOrder)
-            If Len(formated) > 0 Then markupDocOrder = formated
-        End If
+        
     Else
         Call Msg.GiveRunInformation(InterfaceLabels("MsgDocOrderRange").elem2 + " [1-" + CStr(totalOfDocuments) + "].")
         RangeOK = False
     End If
-        
-
-    OrderCheck = (RangeOK And (DocumentAndOrderMatch Or freeOrder))
+    OrderOK = (RangeOK And (DocumentAndOrderMatch Or freeOrder))
+    
+    OrderCheck = OrderOK
 End Function
 '--------------------------------------------------------------------------------
 'OrderCheck - Check if the order of document is valid
@@ -141,9 +140,9 @@ Function findArticle(article As ClsArticle) As ClsArticle
     Dim a As ClsArticle
     
     
-    Set a = ArticleDAO.getDocument(article.FileName)
+    Set a = ArticleDAO.getDocument(article.filename)
     If a Is Nothing Then
-        Set a = ArchiveDAO.getDocument(article.FileName)
+        Set a = ArchiveDAO.getDocument(article.filename)
         If Not (a Is Nothing) Then
             a.IsArchived = True
         End If
@@ -156,10 +155,10 @@ Function archive(article As ClsArticle) As Boolean
     Dim r As Boolean
     Dim previousContent As String
     
-    r = dirStructure.archiveFile(article.FileName, article.FileName)
-    previousContent = ArticleDAO.getRecordContent(article.FileName)
-    If ArchiveDAO.ImportRecord(previousContent, article.FileName, article.order) Then
-        r = ArticleDAO.Delete(article.FileName)
+    r = dirStructure.archiveFile(article.filename, article.filename)
+    previousContent = ArticleDAO.getRecordContent(article.filename)
+    If ArchiveDAO.ImportRecord(previousContent, article.filename, article.order) Then
+        r = ArticleDAO.Delete(article.filename)
     Else
         r = True
     End If
@@ -231,7 +230,7 @@ Function FindPreviousArticle(article As ClsArticle, PreviousIssue As ClsRelatedI
     
 'If Not (foundDocument Is Nothing) Then
  '           hasOldPid = foundDocument.pid
-  '          Call PreviousArticleAction.importPreviousPIDs(SciELODoc.article, foundDocument)
+  '          Call PreviousArticleAction.importPreviousPIDs(docReader.article, foundDocument)
    '     End If
 End Function
 

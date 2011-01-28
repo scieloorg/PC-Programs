@@ -6,7 +6,7 @@ BEGIN
   DataSourceBehavior  = 0  'vbNone
   MTSTransactionMode  = 0  'NotAnMTSObject
 END
-Attribute VB_Name = "ClDocum"
+Attribute VB_Name = "ClDocReader"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
@@ -80,7 +80,7 @@ Private FindWhat(6) As String
 
 Private RecordInfo As ColRecordInfo
 
-Public docOrder As String
+
 
 Private LawStructure As ColRegistro
 
@@ -1406,7 +1406,7 @@ Private Function MARKUP_ParserResult2Fields(DocId As String, MarkupFileName As S
     Set LinkMarkup2Body = New ColPair
     Set LinkMark = New ColPair
     
-    article.FileName = MarkupFileName
+    article.filename = MarkupFileName
         
     'hasDocIdinMarkup = False
     
@@ -1940,7 +1940,7 @@ End Function
 '--------------------------------------------------------------------------------
 'MARKUP_DocConfigRecord - Return the configuration record of the document
 '--------------------------------------------------------------------------------
-Function MARKUP_DocConfigRecord(MarkupFileName As String) As String
+Function MARKUP_DocConfigRecord(MarkupFileName As String, ByRef docOrder As String) As String
     Dim DocConfigRecord   As String
     Dim parser As ClParser
     Dim NoErrorFound As Boolean
