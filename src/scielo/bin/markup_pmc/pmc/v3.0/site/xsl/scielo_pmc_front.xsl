@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xsl:transform version="1.0" id="ViewNLM-v2-04_scielo.xsl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:util="http://dtd.nlm.nih.gov/xsl/util" xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
 	<xsl:variable name="countAFF" select="count(//aff)"/>
 	<!--
@@ -79,7 +79,7 @@
 			</div>
 		</xsl:if>
 		<xsl:apply-templates select="//author-notes"/>
-		<div>
+		<div id="section-list">
 			<xsl:apply-templates select="." mode="section-index"/>
 		</div>
 		<hr/>
@@ -94,7 +94,7 @@
 	</xsl:template>
 	<xsl:template match="article-title" mode="format">
 		<a name="top">&#160;</a>
-		<p class="scielo-article-title">
+		<p id="scielo-article-title">
 			<!--xsl:value-of select="." disable-output-escaping="yes"/-->
 			<xsl:apply-templates/>
 			<xsl:apply-templates select=" ../subtitle" mode="format"/>
@@ -102,7 +102,7 @@
 	</xsl:template>
 	<xsl:template match="trans-title" mode="format">
 		<xsl:variable name="lang" select="@xml:lang"/>
-		<p class="scielo-article-other-titles{$languages//language[@id=$lang]/@view}">
+		<p id="scielo-article-other-titles{$languages//language[@id=$lang]/@view}">
 			<xsl:apply-templates/>
 			<xsl:apply-templates select=" ../subtitle" mode="format"/>
 		</p>
@@ -111,7 +111,7 @@
 	contrib-group
 	-->
 	<xsl:template match="contrib-group" mode="front">
-		<p class="scielo-authors">
+		<p id="scielo-authors">
 			<xsl:apply-templates select=".//contrib/name" mode="front"/>
 		</p>
 	</xsl:template>
@@ -121,26 +121,22 @@
 		<xsl:if test="position()!=last()">; </xsl:if>
 	</xsl:template>
 	<xsl:template match="xref[@ref-type='corresp']">
-		<!-- colocado no final da página
+		<!-- colocado no final da pà¦©na
 		
 		div id="author-notes">
 			<xsl:apply-templates select="*|text()"/>
 		</div-->
-		<div id="corresp">
-			<a name="back_fn{@rid}">	</a>
+			<a name="back_fn{@rid}"></a>
 
-			<a href="#{@rid}">
-				<xsl:value-of select="document(concat('../xml/',$mainLanguage,'/translation.xml'))//xslid[@id='sci_arttext']/text[@find='correspondencia']"/>
-			</a>
-		</div>
+			<a href="#{@rid}">*</a>
 	</xsl:template>
 		<xsl:template match="author-notes">
-		<!-- colocado no final da página
+		<!-- colocado no final da pà¦©na
 		
 		div id="author-notes">
 			<xsl:apply-templates select="*|text()"/>
 		</div-->
-		<div id="corresp">
+		<div id="correspondence">
 			<a name="back_corresp">	</a>
 
 			<a href="#corresp">
@@ -158,7 +154,7 @@
 	SECTIONS
 	-->
 	<xsl:template match="*|@*|text" mode="section-index">
-		<ul class="section-list">
+		<ul>
 			<a name="topo"/>
 			<xsl:if test=".//abstract">
 				<li>
@@ -191,7 +187,7 @@
 	-->
 	<xsl:template match="kwd-group">
 		<p>
-			<span class="scielo-authors">
+			<span id="scielo-authors">
 				<xsl:call-template name="make-id"/>
 				<xsl:choose>
 					<xsl:when test="@xml:lang">
@@ -242,5 +238,13 @@
 			</xsl:when>
 			<!-- there is no logical otherwise -->
 		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="article-categories//subject">
+		<p class="r2l"><xsl:value-of select="."/></p>
+	</xsl:template>
+	<xsl:template match="article-categories">
+		<div id="{name}">
+			<xsl:apply-templates select=".//subject"/>
+		</div>
 	</xsl:template>
 </xsl:transform>

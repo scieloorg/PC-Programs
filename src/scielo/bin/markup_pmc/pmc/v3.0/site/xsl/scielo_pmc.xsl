@@ -24,8 +24,8 @@
 		node, attr, text
 	-->
 	<xsl:template match="*">
-		<xsl:comment> *, <xsl:value-of select="name()"/></xsl:comment>
-		
+		<xsl:comment> *, <xsl:value-of select="name()"/>
+		</xsl:comment>
 		<xsl:apply-templates select="@* | * | text()"/>
 	</xsl:template>
 	<xsl:template match="a | p |  sup | sub">
@@ -39,14 +39,12 @@
 	<xsl:template match="@*">
 		<!--xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute-->
 	</xsl:template>
-	
 	<xsl:template match="@id">
 		<a name="{.}"/>
 	</xsl:template>
 	<!--
 		xref
 	-->
-	
 	<xsl:template match="xref/@rid">
 		<a href="#{.}">
 			<xsl:value-of select="."/>
@@ -60,15 +58,14 @@
 	<xsl:template match="xref[text()!='']">
 		<sup>
 			<a href="#{@rid}">
-			<xsl:value-of select="."/>
+				<xsl:value-of select="."/>
 			</a>
 		</sup>
 	</xsl:template>
 	<xsl:template match="xref[@ref-type='fig' or @ref-type='table' or @ref-type='equation']">
 		<a href="#{@rid}">
 			<xsl:value-of select="."/>
-			</a>
-		
+		</a>
 	</xsl:template>
 	<!--
 		bold, italic
@@ -88,32 +85,20 @@
 	-->
 	<xsl:template match="*" mode="make-a-piece">
 		<!-- variable to be used in div id's to keep them unique -->
-		<xsl:variable name="which-piece">
-			<xsl:value-of select="concat(local-name(), '-level-', count(ancestor::*))"/>
-		</xsl:variable>
-		<!-- front matter, in table -->
-		<xsl:call-template name="nl-2"/>
-		<div id="{$which-piece}-front" class="fm">
+		
+		<div id="front" class="fm">
 			<!-- class is repeated on contained table elements -->
-			<xsl:call-template name="nl-1"/>
+
 			<xsl:apply-templates select="." mode="make-front"/>
-			<xsl:call-template name="nl-1"/>
 		</div>
-		<xsl:call-template name="nl-2"/>
-		<div id="{$which-piece}-body" class="body">
-			<xsl:call-template name="nl-1"/>
+		<div id="body" class="body">
 			<xsl:apply-templates select="." mode="make-body"/>
-			<xsl:call-template name="nl-1"/>
 		</div>
-		<xsl:call-template name="nl-2"/>
-		<div id="{$which-piece}-back" class="bm">
+		<div id="back" class="bm">
 			<!-- class is repeated on contained table elements -->
-			<xsl:call-template name="nl-1"/>
 			<xsl:apply-templates select="." mode="make-back"/>
-			<xsl:call-template name="nl-1"/>
 		</div>
 		<!-- retrieval metadata, at end -->
-		<xsl:call-template name="nl-2"/>
 	</xsl:template>
 	<xsl:template match="*" mode="make-end-metadata">
 		<xsl:apply-templates select=".//article-meta"/>
