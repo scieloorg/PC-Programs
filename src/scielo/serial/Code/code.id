@@ -925,6 +925,7 @@
 !v002!^csub^vSuscripción Regular
 !ID 000053
 !v001!study area^lpt
+!v003!
 !v002!^cAgricultural Sciences^vCiências Agrárias
 !v002!^cApplied Social Sciences^vCiências Sociais Aplicadas
 !v002!^cBiological Sciences^vCiências Biológicas
@@ -933,9 +934,9 @@
 !v002!^cHealth Sciences^vCiências da Saúde
 !v002!^cHuman Sciences^vCiências Humanas
 !v002!^cLinguistics, Letters and Arts^vLingüística, Letras e Artes
-!v003!1
 !ID 000054
 !v001!study area^len
+!v003!
 !v002!^cAgricultural Sciences^vAgricultural Sciences
 !v002!^cApplied Social Sciences^vApplied Social Sciences
 !v002!^cBiological Sciences^vBiological Sciences
@@ -943,10 +944,10 @@
 !v002!^cExact and Earth Sciences^vExact and Earth Sciences
 !v002!^cHealth Sciences^vHealth Sciences
 !v002!^cHuman Sciences^vHuman Sciences
-!v002!^cLinguistics, Letters and Arts^vLinguistics, Letters and Arts
-!v003!1
+!v002!^cLinguistics, Letters and Arts^vLinguistic, Literature and Arts
 !ID 000055
 !v001!study area^les
+!v003!
 !v002!^cAgricultural Sciences^vCiencias Agrícolas
 !v002!^cApplied Social Sciences^vCiencias Sociales Aplicadas
 !v002!^cBiological Sciences^vCiencias Biológicas
@@ -955,7 +956,6 @@
 !v002!^cHealth Sciences^vCiencias de la Salud
 !v002!^cHuman Sciences^vHumanidades
 !v002!^cLinguistics, Letters and Arts^vLinguística, Letras y Artes
-!v003!1
 !ID 000056
 !v001!rid^lpt
 !v002!^cnd^vNão definido
@@ -1566,7 +1566,7 @@
 !v001!scielonet
 !v002!^vSciELO Brasil^c1
 !v002!^vSciELO Chile^c2
-!v002!^vSciELO Salud Pública América Latina y Caribe^c3
+!v002!^vSciELO Salud Pública^c3
 !v002!^vSciELO BEEP^c4
 !v002!^vSciELO Ecler^c5
 !v002!^vSciELO Cuba^c6
@@ -1587,6 +1587,7 @@
 !v002!^vSciELO Paraguay^c21
 !v002!^vSciELO Ecuador^c22
 !v002!^vSciELO Caribbean^c23
+!v002!^vSciELO South Africa^c24
 !ID 000097
 !v001!issn type^lpt
 !v002!^vversão em CD-ROM^cCDROM
@@ -1716,3 +1717,90 @@
 !v001!hcomment^lpt
 !v002!^c0^vnão recebe comentarios
 !v002!^c1^vrecebe comentarios
+!ID 000119
+!v001!license_text^len
+!v003!
+!v002!^cBY^v<a rel="license" href="http://creativecommons.org/licenses/by/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/80x15.png" /></a> All the contents of this journal, except where otherwise noted, is licensed under a  <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution License</a>
+!v002!^cBY-NC^v<a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/3.0/80x15.png" /></a> All the contents of this journal, except where otherwise noted, is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/">Creative Commons Attribution License</a>
+!v002!^cnd^v<p> </p>
+!ID 000120
+!v001!license_text^les
+!v003!
+!v002!^cBY^v<a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.es"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/80x15.png" /></a> Todo el contenido de la revista, excepto dónde está identificado, está bajo una <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.es">Licencia Creative Commons</a>
+!v002!^cBY-NC^v<a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/3.0/80x15.png" /></a> Todo el contenido de esta revista, excepto dónde está identificado, est&#225; bajo una <a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/">Licencia Creative Commons</a>
+!v002!^cnd^v<p> </p>
+!ID 000121
+!v001!license_text^lpt
+!v003!
+!v002!^cBY^v<a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.pt"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/80x15.png" /></a> Todo o conteúdo do periódico, exceto onde está identificado, está licenciado sob uma <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.pt">Licença Creative Commons</a>
+!v002!^cBY-NC^v<a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/3.0/80x15.png" /></a> Todo o conteúdo deste periódico, exceto onde est&#225 identificado, est&#225; licenciado sob uma <a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/">Licen&#231;a Creative Commons</a>
+!v002!^cnd^v<p> </p>
+!ID 000122
+!v001!ref-type^lpt
+!v003!
+!v002!^caff^vafiliação
+!v002!^capp^vApêndice
+!v002!^cauthor-notes^vNotas de autor
+!v002!^cbibr^vReferencia bibliográfica.
+!v002!^cboxed-text^vCaixa de texto ou barra lateral
+!v002!^cchem^vEstrutura química
+!v002!^ccontrib^vContribuição
+!v002!^ccorresp^vAutor correspondente
+!v002!^cdisp-formula^vFórmula
+!v002!^cfig^vFigura
+!v002!^cfn^vNota de rodapé
+!v002!^ckwd^vPalavra-chave
+!v002!^clist^vItem de lista
+!v002!^cother^vOutro
+!v002!^cplate^vPlaca
+!v002!^cscheme^vEsquema
+!v002!^csec^vSeção
+!v002!^cstatement^vdeclaração
+!v002!^csupplementary-material^vInformação complementar
+!v002!^ctable^vTabela
+!ID 000123
+!v001!ref-type^les
+!v003!
+!!v002!^caff^vafiliación
+!v002!^capp^vApendice
+!v002!^cauthor-notes^vNotas de autor
+!v002!^cbibr^vReferencia bibliográfica.
+!v002!^cboxed-text^vCaja de texto o barra lateral
+!v002!^cchem^vEstructura química
+!v002!^ccontrib^vContribución
+!v002!^ccorresp^vAutor correspondiente
+!v002!^cdisp-formula^vFórmula
+!v002!^cfig^vFigura
+!v002!^cfn^vNota de pie de página
+!v002!^ckwd^vPalabra clave
+!v002!^clist^víten de lista
+!v002!^cother^vOtro
+!v002!^cplate^vPlaca
+!v002!^cscheme^vEsquema
+!v002!^csec^vSección
+!v002!^cstatement^vdeclaración
+!v002!^csupplementary-material^vInformación complementar
+!v002!^ctable^vTabla
+!ID 000124
+!v001!ref-type^len
+!v003!
+!v002!^caff^vAffiliation
+!v002!^capp^vAppendix
+!v002!^cauthor-notes^vAuthor notes
+!v002!^cbibr^vBibliographic reference
+!v002!^cboxed-text^vTextbox or sidebar
+!v002!^cchem^vChemical structure
+!v002!^ccontrib^vContributor
+!v002!^ccorresp^vCorresponding author
+!v002!^cdisp-formula^vDisplay formula
+!v002!^cfig^vFigure or group of figures
+!v002!^cfn^vFootnote
+!v002!^ckwd^vKeyword
+!v002!^clist^vList or list item
+!v002!^cother^vNone of the items listed
+!v002!^cplate^vPlate
+!v002!^cscheme^vScheme
+!v002!^csec^vSection
+!v002!^cstatement^vStatement
+!v002!^csupplementary-material^vSupplementary information
+!v002!^ctable^vTable or group of tables
