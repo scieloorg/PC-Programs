@@ -187,3 +187,6 @@ list-style-type: none
  margin: 2pt;
 }
 
+.warning {
+background-color:yellow
+}

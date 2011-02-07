@@ -40,7 +40,7 @@
 <!ELEMENT state   - - (#PCDATA)>
 <!ELEMENT country   - - (#PCDATA)>
 
-<!ELEMENT tabwrap - - ( (label, caption, (table | graphic)) )  >
+<!ELEMENT tabwrap - - ( (label?, caption,(table | graphic)) | ((table | graphic), label?, caption)  )  >
 <!ATTLIST tabwrap
           id       CDATA #REQUIRED
 filename       CDATA #IMPLIED>
@@ -48,7 +48,7 @@ filename       CDATA #IMPLIED>
 <!ELEMENT label - - (#PCDATA) >
 <!ELEMENT caption - - (#PCDATA) >
 
-<!ELEMENT figgrp - - (  graphic | ( label, caption)   )   >
+<!ELEMENT figgrp - - (  graphic , ( label?, caption)   )   >
 <!ATTLIST figgrp
           id       CDATA #REQUIRED
           ftype       CDATA #REQUIRED 

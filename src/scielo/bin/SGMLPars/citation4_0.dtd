@@ -56,11 +56,13 @@
                            (thesis, extent?, city?, country? )
                          |  
                            ( 
-                             (coltitle, colvolid)?, 
+                             coltitle, colvolid?, 
                              (pages | extent)?, edition?, 
-					author*,
-                             city?, country?, pubname*
+				     author*,
+                             city, country?, pubname+
                            ) 
+                         | 
+                           (edition?, pages?, city, country?, pubname+)
                          ),  
                          (cited, url)?, doi?, (notes|othinfo)? 
                       )>

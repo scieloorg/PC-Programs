@@ -13,6 +13,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
 	<xsl:variable name="journal_issn" select="node()/@issn"/>
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
+	<xsl:variable name="subject" select="$unident[1]"/>
 	<xsl:variable name="article_page">
 		<xsl:choose>
 			<xsl:when test="./@fpage='0'">
@@ -129,6 +130,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:value-of select="substring(10000 + substring(..//extra-scielo/issue-order,5),2)"/>
 					<xsl:value-of select="substring-after(100000 + @order,'1')"/>
 				</article-id>
+				<xsl:if test="$subject">
+					<article-categories>
+						<subj-group>
+							<subject>
+								<xsl:value-of select="$subject"/>
+							</subject>
+						</subj-group>
+					</article-categories>
+				</xsl:if>
 			</xsl:if>
 			<xsl:apply-templates select="." mode="article-title"/>
 			<xsl:apply-templates select=".//authgrp" mode="front"/>

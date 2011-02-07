@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:transform version="1.0" id="ViewNLM-v2-04_scielo.xsl" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:util="http://dtd.nlm.nih.gov/xsl/util" xmlns:doc="http://www.dcarlisle.demon.co.uk/xsldoc" xmlns:ie5="http://www.w3.org/TR/WD-xsl" xmlns:msxsl="urn:schemas-microsoft-com:xslt" xmlns:fns="http://www.w3.org/2002/Math/preference" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:pref="http://www.w3.org/2002/Math/preference" pref:renderer="mathplayer" exclude-result-prefixes="util xsl">
 	<xsl:variable name="mainLanguage" select="//article/@xml:lang"/>
+	<xsl:variable name="all_id" select="//*[@id]"/>
+	
 	<xsl:variable name="var_SUPPLMAT_PATH">
 		<xsl:choose>
 			<xsl:when test="//SIGLUM and //ISSUE">/pdf/<xsl:value-of select="//SIGLUM"/>/<xsl:if test="//ISSUE/@VOL">v<xsl:value-of select="//ISSUE/@VOL"/>
@@ -80,11 +82,38 @@
 			<xsl:apply-templates/>
 		</i>
 	</xsl:template>
+	
+	<xsl:template match="*[@rid]" mode="check">
+		<xsl:variable name="rid" select="@rid"/>
+		<xsl:comment>
+			<xsl:value-of select="$rid"/>=<xsl:value-of select="$all_id[@id=$rid]/@id"/>?
+		</xsl:comment>
+		<xsl:if test="not($all_id[@id=$rid])">
+			<p>Missing id=<xsl:value-of select="$rid"/></p>
+		</xsl:if>
+	
+	</xsl:template>
+	<xsl:template match="xref[not(@rid)]" mode="check">
+		<p>Missing or invalid rid. In markup file, find "<xsl:value-of select="."/>[/xref]" and check the rid. There must be something like  [xref rid="???"]<xsl:value-of select="."/>[/xref], where ??? is a valid id, e.g.: f01</p>
+
+	
+	</xsl:template>
+
+	
 	<!--
 		inicio
 	-->
 	<xsl:template match="*" mode="make-a-piece">
 		<!-- variable to be used in div id's to keep them unique -->
+		
+		<xsl:if test="not(//ARTICLE)">
+		<div class="warning">		
+			<xsl:apply-templates select=".//xref[not(@rid)]" mode="check"/>
+			<xsl:apply-templates select=".//*[@rid]" mode="check"/>
+		</div>
+		
+		</xsl:if>
+		
 		
 		<div id="front" class="fm">
 			<!-- class is repeated on contained table elements -->
