@@ -99,5 +99,5 @@ buttonApply,Aplicar
 buttonChange2,Modificar
 msgMissingImportantInformation,"Informação importante de ISSUEID não foi encontrada no arquivo \bin\markup\issue.mds"
 pmcfolder,pmc
-tifsrcffolder,tif
+tifsrcffolder,img_src
 tifdestfolder,pmc
