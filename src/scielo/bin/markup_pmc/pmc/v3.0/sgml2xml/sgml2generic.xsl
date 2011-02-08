@@ -13,6 +13,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
 	<xsl:variable name="journal_issn" select="node()/@issn"/>
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
+	
 	<xsl:variable name="subject" select="$unident[1]"/>
 	<xsl:variable name="article_page">
 		<xsl:choose>
@@ -24,6 +25,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
+	<xsl:variable name="prefix" select="concat($journal_issn,'-',$journal_acron,'-',$journal_vol,'-',$article_page,'-')"/>
+	<!--xsl:variable name="g" select="//*[name()!='equation' and .//graphic]"/>
+	<xsl:variable name="e" select="//equation[.//graphic]"/-->
+  	
+
 	<xsl:variable name="data4previous" select="//back//*[contains(name(),'citat')]"/>
 	<!--
 	
@@ -815,7 +821,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="xmlbody[sec]/p | unidentified[../xmlbody[sec]]"/>
 	<xsl:template match="figgrp | tabwrap | equation" mode="graphic">
-		<xsl:variable name="filename1">
+		<!--xsl:variable name="filename1">
 			<xsl:choose>
 				<xsl:when test="@filename">
 					<xsl:value-of select="@filename"/>
@@ -835,8 +841,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:value-of select="$filename"/>
 				</xsl:otherwise>
 			</xsl:choose>
-		</xsl:variable>
-		<graphic xlink:href="{$file}"/>
+		</xsl:variable-->
+		<xsl:variable name="standardname"><xsl:value-of select="$prefix"/>
+		<xsl:choose>
+			<xsl:when test="name()='equation'">e</xsl:when>
+			<xsl:otherwise>g</xsl:otherwise>
+		</xsl:choose><xsl:value-of select="@id"/></xsl:variable>
+		<graphic xlink:href="{$standardname}"/>
 	</xsl:template>
 	<xsl:template match="equation">
 		<p>
