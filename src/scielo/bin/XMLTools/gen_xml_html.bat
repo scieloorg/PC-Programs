@@ -9,8 +9,9 @@ set XSL_HTML=%4
 set ERR_FILENAME=%5
 set OUTPUT_XML=%6
 set OUTPUT_HTML=%7
-set IMG_SRC=%8
-set IMG_DEST=%9
+set ISSUE_PATH=%8
+set FILENAME=%9
+
 
 SET XSL_RENAME_IMG=%XML_TOOLS_PATH%\rename_img.xsl
 
@@ -96,7 +97,7 @@ rem
 echo Transform %XML_FILENAM% %XSL_RENAME_IMG% >> %log_file%
 if exist %temp_file% del %temp_file%
 %JAVA_EXE% -jar %XML_TOOLS_PATH%\core\saxon8.jar -novw -w0 -o %temp_file% %XML_FILENAM% %XSL_RENAME_IMG% 
-if exist %temp_file% call %XML_TOOLS_PATH%\ren_img_filenames.bat %XML_TOOLS_PATH% %IMG_SRC% %IMG_DEST% %temp_file%
+if exist %temp_file% call %XML_TOOLS_PATH%\rename_files.bat %XML_TOOLS_PATH% %temp_file% %ISSUE_PATH% %OUTPUT_XML% %FILENAME%
 if exist %temp_file% del %temp_file%
 
 goto END

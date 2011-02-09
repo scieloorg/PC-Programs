@@ -19,10 +19,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	<xsl:variable name="prefix" select="concat($journal_issn,'-',$journal_acron,'-',$journal_vol,'-',$article_page,'-')"/>
+	<xsl:variable name="PREFIXO" select="concat($journal_issn,'-',$journal_acron,'-',$journal_vol,'-',$article_page)"/>
+	<xsl:variable name="prefix" select="concat($PREFIXO,'-')"/>
 	
-	<xsl:template match="/">
-		<xsl:apply-templates select=".//figgrp | .//tabwrap | .//equation"/>
+	<xsl:template match="/"><xsl:value-of select="$PREFIXO"/>|<xsl:text>
+</xsl:text><xsl:apply-templates select=".//figgrp | .//tabwrap | .//equation"/>
 	</xsl:template>
 	
 	<xsl:template match="figgrp | tabwrap | equation">
