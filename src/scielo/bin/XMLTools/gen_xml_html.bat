@@ -21,11 +21,14 @@ set log_file=%XML_FILENAM%.log
 set temp_sh_file=%XML_FILENAM%.bat
 
 if exist %log_file% del %log_file%
-if exist %OUTPUT_XML% del %OUTPUT_XML%
-if exist %OUTPUT_HTML% del %OUTPUT_HTML%
+
+
+if exist %ERR_FILENAME% del %ERR_FILENAME%
+if exist %OUTPUT_XML%   del %OUTPUT_XML%
+if exist %OUTPUT_HTML%  del %OUTPUT_HTML%
 
 if exist %temp_errfile% del %temp_errfile%
-if exist %temp_file% del %temp_file%
+if exist %temp_file%    del %temp_file%
 if exist %temp_sh_file% del %temp_sh_file%
 
 rem 
@@ -35,7 +38,7 @@ echo Validate %XML_FILENAM%  >> %log_file%
 %JAVA_EXE% -cp %XML_TOOLS_PATH%\core\XMLCheck.jar br.bireme.XMLCheck.XMLCheck %XML_FILENAM%  > %temp_file%
 if not exist %temp_file% echo validation error %XML_FILENAM% > %temp_errfile%
 
-if exist %temp_file% %XML_TOOLS_PATH%\..\cfg\mx seq=%temp_file% "pft=if s(mpu,v1,mpl):'ERROR' then 'copy %temp_file% %temp_errfile%' fi" now > %temp_sh_file%
+if exist %temp_file% %XML_TOOLS_PATH%\..\cfg\mx seq=%temp_file% "pft=if s(mpu,v1,mpl):'ERROR' then 'copy %temp_file% %temp_errfile%'/ fi" now > %temp_sh_file%
 if exist %temp_sh_file% call %temp_sh_file%
 
 if exist %temp_errfile% goto ERR_VALIDATE
@@ -68,7 +71,7 @@ if exist %temp_file% del %temp_file%
 %JAVA_EXE% -cp %XML_TOOLS_PATH%\core\XMLCheck.jar br.bireme.XMLCheck.XMLCheck %OUTPUT_XML% --validate  > %temp_file%
 if not exist %temp_file% echo validation error %OUTPUT_XML% > %temp_errfile%
 
-if exist %temp_file% %XML_TOOLS_PATH%\..\cfg\mx seq=%temp_file% "pft=if s(mpu,v1,mpl):'ERROR' then 'copy %temp_file% %temp_errfile%' fi" now > %temp_sh_file%
+if exist %temp_file% %XML_TOOLS_PATH%\..\cfg\mx seq=%temp_file% "pft=if s(mpu,v1,mpl):'ERROR' then 'copy %temp_file% %temp_errfile%'/ fi" now > %temp_sh_file%
 if exist %temp_sh_file% call %temp_sh_file%
 
 if exist %temp_errfile% goto ERR_VALIDATE

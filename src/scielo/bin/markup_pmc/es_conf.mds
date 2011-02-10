@@ -100,4 +100,4 @@ buttonChange2,Cambiar
 msgMissingImportantInformation,"Información importante de ISSUEID no fue encontrada en \bin\markup\issue.mds"
 pmcfolder,pmc
 tifsrcffolder,img_src
-pmctempfolder,pmc_temp
+pmctempfolder,pmc_work
