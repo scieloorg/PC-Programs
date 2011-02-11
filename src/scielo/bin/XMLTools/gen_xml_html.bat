@@ -40,6 +40,8 @@ if not exist %temp_file% echo validation error %XML_FILENAM% > %temp_errfile%
 
 if exist %temp_file% %XML_TOOLS_PATH%\..\cfg\mx seq=%temp_file% "pft=if s(mpu,v1,mpl):'ERROR' then 'copy %temp_file% %temp_errfile%'/ fi" now > %temp_sh_file%
 if exist %temp_sh_file% call %temp_sh_file%
+if exist %temp_sh_file% del %temp_sh_file%
+
 
 if exist %temp_errfile% goto ERR_VALIDATE
 
@@ -73,6 +75,7 @@ if not exist %temp_file% echo validation error %OUTPUT_XML% > %temp_errfile%
 
 if exist %temp_file% %XML_TOOLS_PATH%\..\cfg\mx seq=%temp_file% "pft=if s(mpu,v1,mpl):'ERROR' then 'copy %temp_file% %temp_errfile%'/ fi" now > %temp_sh_file%
 if exist %temp_sh_file% call %temp_sh_file%
+if exist %temp_sh_file% del %temp_sh_file%
 
 if exist %temp_errfile% goto ERR_VALIDATE
 

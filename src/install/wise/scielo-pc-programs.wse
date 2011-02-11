@@ -1192,6 +1192,31 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=W:\scieloorg\PCPrograms\src\scielo\bin\XMLTools\gen_xml_html.bat
+  Destination=%PROGDIR%\bin\XMLTools\gen_xml_html.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scieloorg\PCPrograms\src\scielo\bin\XMLTools\rename_article.bat
+  Destination=%PROGDIR%\bin\XMLTools\rename_article.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scieloorg\PCPrograms\src\scielo\bin\XMLTools\rename_img.xsl
+  Destination=%PROGDIR%\bin\XMLTools\rename_img.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scieloorg\PCPrograms\src\scielo\bin\XMLTools\rename_img.bat
+  Destination=%PROGDIR%\bin\XMLTools\rename_img.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scieloorg\PCPrograms\src\scielo\bin\XMLTools\rename_files.bat
+  Destination=%PROGDIR%\bin\XMLTools\rename_files.bat
+  Flags=0000000010000010
+end
+item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\bin\XMLTools\core\saxon8-dom4j.jar
   Destination=%PROGDIR%\bin\XMLTools\core\saxon8-dom4j.jar
   Flags=0000000010000010
@@ -4531,11 +4556,6 @@ end
 item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\bin\markup_pmc\pt_tgother.amd
   Destination=%PROGDIR%\bin\markup\pt_tgother.amd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\cache\pt_BR.inc.php
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\locale\cache\pt_BR.inc.php
   Flags=0000000010000010
 end
 item: Install File

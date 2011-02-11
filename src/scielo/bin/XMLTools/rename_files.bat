@@ -25,6 +25,6 @@ if exist %temp_batch_seq% del %temp_batch_seq%
 copy  %temp_batch_complete%  %temp_batch_seq%
 
 
-%XML_TOOLS_PATH%\..\cfg\mx "seq=%temp_batch_seq%" lw=9999 "pft=if v1<>'call %temp_batch_partial%' then v1/ fi" now >  %temp_batch_complete%
+%XML_TOOLS_PATH%\..\cfg\mx "seq=%temp_batch_seq%" lw=9999 "pft=if not v1:'call %temp_batch_partial%' then v1/ fi" now | sort >  %temp_batch_complete%
 
 echo call %temp_batch_partial% >> %temp_batch_complete%
