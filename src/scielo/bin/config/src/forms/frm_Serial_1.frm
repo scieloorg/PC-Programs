@@ -370,7 +370,7 @@ Sub MyOpenSerial(SERIALTITLE As String, IsNewSerial As Boolean)
     SERIAL6.IsBack = False
     JOURNAL5.IsBack = False
     SERIAL8.IsBack = False
-    MyMfnTitle = Serial_CheckExisting(SERIALTITLE)
+    
     If MyMfnTitle > 0 Then
         MyGetContentFromBase (MyMfnTitle)
         Serial2.MyGetContentFromBase (MyMfnTitle)

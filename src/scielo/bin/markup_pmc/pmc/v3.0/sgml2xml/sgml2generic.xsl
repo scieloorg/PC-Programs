@@ -478,17 +478,19 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:variable name="text">
 			<xsl:apply-templates select="*|text()" mode="text"/>
 		</xsl:variable>
-				<fn>
+
 		<xsl:choose>
 			<xsl:when test="contains($text,'@')">
-				<xsl:attribute name="id">corresp</xsl:attribute>
-				<xsl:attribute name="fn-type">corresp</xsl:attribute>
+				<!--xsl:attribute name="id">corresp</xsl:attribute>
+				<xsl:attribute name="fn-type">corresp</xsl:attribute-->
 			</xsl:when>
 			<xsl:otherwise>
-					<xsl:apply-templates select="." mode="back"/>
+				<fn>					<xsl:apply-templates select="." mode="back"/>				</fn>
+
 			</xsl:otherwise>
 		</xsl:choose>
-				</fn>
+	</xsl:template>
+	<xsl:template match="back/licenses" mode="back-fn">
 	</xsl:template>
 	<xsl:template match="back/*" mode="back">
 		<xsl:choose>

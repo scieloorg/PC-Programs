@@ -17,7 +17,7 @@ set temp_batch_complete=%WORK%\rename_files.bat
 set temp_batch_seq=%XML_TOOLS_PATH%\temp.seq
 
 
-if exist %this2that% %XML_TOOLS_PATH%\..\cfg\mx seq=%this2that% lw=9999 "pft=if p(v1) then if p(v2) then 'call %XML_TOOLS_PATH%\rename_img.bat ',v1,' ',v2,' %ISSUE_PATH%\pmc %WORK_ART% %ISSUE_PATH%\img_src  %ISSUE_PATH%\img '/ else 'call %XML_TOOLS_PATH%\rename_article.bat %FILENAME% ',v1,' %ISSUE_PATH% %XML_FILE% '/, fi fi" now > %temp_batch_partial%
+if exist %this2that% %XML_TOOLS_PATH%\..\cfg\mx seq=%this2that% lw=9999 "pft=if p(v1) then if p(v2) then 'call %XML_TOOLS_PATH%\rename_img.bat ',v1,' ',v2,' %ISSUE_PATH%\pmc %WORK_ART% %ISSUE_PATH%\img_src  %ISSUE_PATH%\img %XML_TOOLS_PATH%'/ else 'call %XML_TOOLS_PATH%\rename_article.bat %FILENAME% ',v1,' %ISSUE_PATH% %XML_FILE% '/, fi fi" now > %temp_batch_partial%
 if exist %temp_batch_partial% call %temp_batch_partial% 
 
 if exist %temp_batch_seq% del %temp_batch_seq%
