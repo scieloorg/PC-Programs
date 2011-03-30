@@ -13,7 +13,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
 	<xsl:variable name="journal_issn" select="node()/@issn"/>
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
-	
 	<xsl:variable name="subject" select="$unident[1]"/>
 	<xsl:variable name="article_page">
 		<xsl:choose>
@@ -28,8 +27,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="prefix" select="concat($journal_issn,'-',$journal_acron,'-',$journal_vol,'-',$article_page,'-')"/>
 	<!--xsl:variable name="g" select="//*[name()!='equation' and .//graphic]"/>
 	<xsl:variable name="e" select="//equation[.//graphic]"/-->
-  	
-
 	<xsl:variable name="data4previous" select="//back//*[contains(name(),'citat')]"/>
 	<!--
 	
@@ -77,7 +74,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</size>
 	</xsl:template>
 	<xsl:template match="body"/>
-	<xsl:template match="p | sec | bold | italic | sub | sup |  label | subtitle | edition | country | uri ">
+	<xsl:template match="p | sec | bold | italic | sub | sup |  label | subtitle | edition | aff/country | uri ">
 		<xsl:param name="id"/>
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="@*| * | text()">
@@ -478,15 +475,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:variable name="text">
 			<xsl:apply-templates select="*|text()" mode="text"/>
 		</xsl:variable>
-
 		<xsl:choose>
 			<xsl:when test="contains($text,'@')">
 				<!--xsl:attribute name="id">corresp</xsl:attribute>
 				<xsl:attribute name="fn-type">corresp</xsl:attribute-->
 			</xsl:when>
 			<xsl:otherwise>
-				<fn>					<xsl:apply-templates select="." mode="back"/>				</fn>
-
+				<fn>
+					<xsl:apply-templates select="." mode="back"/>
+				</fn>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -617,11 +614,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="."/>
 		</publisher-name>
 	</xsl:template>
-	<xsl:template match="back//city">
-		<publisher-loc>
-			<xsl:value-of select="."/>
-		</publisher-loc>
-	</xsl:template>
 	<xsl:template match="*[contains(name(),'contrib')]">
 		<xsl:param name="position"/>
 		<person-group person-group-type="author">
@@ -734,9 +726,44 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</article-title>
 	</xsl:template>
 	<xsl:template match="othinfo">
-		<comment>
-			<xsl:apply-templates/>
-		</comment>
+		<xsl:choose>
+			<xsl:when test="contains(.,'DOI:') and contains(.,'PMID:')">
+				<xsl:variable name="teste1" select="substring-after(.,': ')"/>
+				<xsl:choose>
+					<xsl:when test="contains($teste1,'PMID')">
+						<pub-id pub-id-type="doi">
+							<xsl:value-of select="substring-before($teste1,'PMID:')"/>
+						</pub-id>
+						<pub-id pub-id-type="pmid">
+							<xsl:value-of select="substring-after(.,'PMID:')"/>
+						</pub-id>
+					</xsl:when>
+					<xsl:otherwise>
+						<pub-id pub-id-type="doi">
+							<xsl:value-of select="substring-after(.,'DOI:')"/>
+						</pub-id>
+						<pub-id pub-id-type="pmid">
+							<xsl:value-of select="substring-before(.,'DOI:')"/>
+						</pub-id>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="contains(.,'DOI:')">
+				<pub-id pub-id-type="doi">
+					<xsl:value-of select="substring-after(.,'DOI:')"/>
+				</pub-id>
+			</xsl:when>
+			<xsl:when test="contains(.,'PMID:')">
+				<pub-id pub-id-type="pmid">
+					<xsl:value-of select="substring-after(.,'PMID:')"/>
+				</pub-id>
+			</xsl:when>
+			<xsl:otherwise>
+				<comment>
+					<xsl:apply-templates/>
+				</comment>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="xref/text()">
 		<xsl:value-of select="."/>
@@ -844,11 +871,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable-->
-		<xsl:variable name="standardname"><xsl:value-of select="$prefix"/>
-		<xsl:choose>
-			<xsl:when test="name()='equation'">e</xsl:when>
-			<xsl:otherwise>g</xsl:otherwise>
-		</xsl:choose><xsl:value-of select="@id"/></xsl:variable>
+		<xsl:variable name="standardname">
+			<xsl:value-of select="$prefix"/>
+			<xsl:choose>
+				<xsl:when test="name()='equation'">e</xsl:when>
+				<xsl:otherwise>g</xsl:otherwise>
+			</xsl:choose>
+			<xsl:value-of select="@id"/>
+		</xsl:variable>
 		<graphic xlink:href="{$standardname}"/>
 	</xsl:template>
 	<xsl:template match="equation">

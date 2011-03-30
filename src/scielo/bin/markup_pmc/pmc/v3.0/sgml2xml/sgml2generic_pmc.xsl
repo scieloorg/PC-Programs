@@ -2,37 +2,48 @@
 <xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util" xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
 	
 	<xsl:template match="xref[@rid='']"/>
-	<xsl:template match="report | thesgrp"/>
-	<xsl:template match="rsponsor/*"/>
-	<xsl:template match="rsponsor">
-		<award-group award-type="contract">
+	<xsl:template match="thesgrp"/>
+	
+	<xsl:template match="report">
+		<funding-group>
+			<xsl:apply-templates/>
+		</funding-group>
+		<funding-statement>
+		<xsl:apply-templates select=".//text()"/>
+		</funding-statement>
+	</xsl:template>
+	
+	<xsl:template match="rsponsor | projname">
+		<award-group><xsl:attribute name="award-type">
+			<xsl:choose>
+				<xsl:when test=".//contract">contract</xsl:when>
+				<xsl:otherwise>grant</xsl:otherwise>
+			</xsl:choose></xsl:attribute>
 			<xsl:apply-templates/>
 		</award-group>
 	</xsl:template>
-	<xsl:template match="rsponsor/text()">
-		<!--xsl:comment><xsl:apply-templates/></xsl:comment-->
-	</xsl:template>
+	
+	
 	<xsl:template match="contract">
 		<award-id>
 			<xsl:apply-templates/>
 		</award-id>
 	</xsl:template>
+	<xsl:template match="rsponsor/orgdiv"/>
 	<xsl:template match="rsponsor/orgname">
 		<funding-source>
 			<xsl:value-of select="."/>
-			<xsl:value-of select="../orgdiv"/>
+			<xsl:if test="../orgdiv">, 
+				<xsl:value-of select="../orgdiv"/>
+			</xsl:if>
 		</funding-source>
 	</xsl:template>
-	<xsl:template match="report/text()"/>
-	<xsl:template match="report">
-		<funding-group>
-			<xsl:apply-templates/>
-		</funding-group>
-	</xsl:template>
-	<xsl:template match="back//*[contains(name(),'monog')]//state | back//*[contains(name(),'monog')]//country"/>
-	<xsl:template match="back//*[contains(name(),'monog')]//city">
+	
+	<xsl:template match="back//*[contains(name(),'citat')]//city | back//*[contains(name(),'citat')]//state | back//*[contains(name(),'citat')]//country">
 		<publisher-loc>
-			<xsl:value-of select="."/>
+			<xsl:if test="../city">
+				<xsl:value-of select="../city"/>			
+			</xsl:if>
 			<xsl:if test="../state">, <xsl:value-of select="../state"/>
 			</xsl:if>
 			<xsl:if test="../country">, <xsl:value-of select="../country"/>
