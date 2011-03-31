@@ -6,11 +6,12 @@
 	
 	<xsl:template match="report">
 		<funding-group>
-			<xsl:apply-templates/>
-		</funding-group>
+			<xsl:apply-templates select="*"/>
+		
 		<funding-statement>
 		<xsl:apply-templates select=".//text()"/>
 		</funding-statement>
+		</funding-group>
 	</xsl:template>
 	
 	<xsl:template match="rsponsor | projname">
@@ -19,7 +20,7 @@
 				<xsl:when test=".//contract">contract</xsl:when>
 				<xsl:otherwise>grant</xsl:otherwise>
 			</xsl:choose></xsl:attribute>
-			<xsl:apply-templates/>
+			<xsl:apply-templates select="*"/>
 		</award-group>
 	</xsl:template>
 	

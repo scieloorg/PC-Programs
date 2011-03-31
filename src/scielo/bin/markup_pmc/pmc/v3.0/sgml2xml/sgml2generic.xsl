@@ -74,7 +74,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</size>
 	</xsl:template>
 	<xsl:template match="body"/>
-	<xsl:template match="p | sec | bold | italic | sub | sup |  label | subtitle | edition | aff/country | uri ">
+	<xsl:template match="p | sec | bold | italic | sub | sup |  label | subtitle | edition | aff/country | uri | issn">
 		<xsl:param name="id"/>
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="@*| * | text()">
@@ -731,31 +731,33 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:variable name="teste1" select="substring-after(.,': ')"/>
 				<xsl:choose>
 					<xsl:when test="contains($teste1,'PMID')">
+						<!-- DOI vem antes de PMID -->
 						<pub-id pub-id-type="doi">
-							<xsl:value-of select="substring-before($teste1,'PMID:')"/>
+							<xsl:value-of select="substring-before($teste1,'. PMID: ')"/>
 						</pub-id>
 						<pub-id pub-id-type="pmid">
-							<xsl:value-of select="substring-after(.,'PMID:')"/>
+							<xsl:value-of select="substring-after(.,'PMID: ')"/>
 						</pub-id>
 					</xsl:when>
 					<xsl:otherwise>
-						<pub-id pub-id-type="doi">
-							<xsl:value-of select="substring-after(.,'DOI:')"/>
-						</pub-id>
+						<!-- DOI vem depois de PMID -->
 						<pub-id pub-id-type="pmid">
-							<xsl:value-of select="substring-before(.,'DOI:')"/>
+							<xsl:value-of select="substring-before($teste1, '. DOI: ')"/>
+						</pub-id>
+						<pub-id pub-id-type="doi">
+							<xsl:value-of select="substring-after($teste1,' DOI: ')"/>
 						</pub-id>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
-			<xsl:when test="contains(.,'DOI:')">
+			<xsl:when test="contains(.,'DOI: ')">
 				<pub-id pub-id-type="doi">
-					<xsl:value-of select="substring-after(.,'DOI:')"/>
+					<xsl:value-of select="substring-after(.,'DOI: ')"/>
 				</pub-id>
 			</xsl:when>
-			<xsl:when test="contains(.,'PMID:')">
+			<xsl:when test="contains(.,'PMID: ')">
 				<pub-id pub-id-type="pmid">
-					<xsl:value-of select="substring-after(.,'PMID:')"/>
+					<xsl:value-of select="substring-after(.,'PMID: ')"/>
 				</pub-id>
 			</xsl:when>
 			<xsl:otherwise>
