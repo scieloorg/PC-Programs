@@ -6,7 +6,7 @@
 	-->
 	<xsl:template match="*" mode="make-back">
 		<xsl:comment>*, make-back</xsl:comment>
-		<xsl:variable name="layout" select="'float'"/>
+		<xsl:variable name="layout" select="'nofloat'"/>
 		<xsl:choose>
 			<xsl:when test=".//back//table-wrap or .//body//sec//fig">
 				<xsl:apply-templates select=".//back/*[.//table-wrap] | .//back/*[.//fig] "/>
@@ -14,10 +14,11 @@
 			<xsl:when test=".//body//sec//table-wrap or .//body//sec//fig">
 				<xsl:comment>no graphic here</xsl:comment>
 			</xsl:when>
-			<xsl:otherwise>
+			<xsl:when test="$layout='float'">
+
 				<xsl:comment>layout float</xsl:comment>
 				<xsl:apply-templates select="." mode="figures-and-tables"/>
-			</xsl:otherwise>
+			</xsl:when>
 		</xsl:choose>
 		<xsl:if test="//ack">
 			<div id="ack" class="sec">			

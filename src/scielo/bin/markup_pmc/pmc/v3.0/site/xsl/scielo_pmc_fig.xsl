@@ -16,7 +16,7 @@
 	</xsl:template>
 	<xsl:template match="fig/label | fig/caption">
 		<span class="fig-{name()}">
-			<xsl:apply-templates/>
+						<xsl:apply-templates select="*|text()"/>
 		</span>
 	</xsl:template>
 	<xsl:template match="fig">

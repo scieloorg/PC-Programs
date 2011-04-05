@@ -25,7 +25,7 @@
 				</xsl:if>
 				<xsl:if test="//ISSUE/@SUPPL">s<xsl:value-of select="//ISSUE/@SUPPL"/>
 				</xsl:if>/</xsl:when>
-			<xsl:otherwise>./../../img/</xsl:otherwise>
+			<xsl:otherwise></xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="var_IMAGES_INFO" select="//images-info"/>

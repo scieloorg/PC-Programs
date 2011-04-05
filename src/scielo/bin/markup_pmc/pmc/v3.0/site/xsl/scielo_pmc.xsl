@@ -164,7 +164,7 @@
 			<xsl:apply-templates select="*|text()"/>
 		</a>
 	</xsl:template>
-	<xsl:template match="title[normalize-space(.//text())='']">
+	<xsl:template match="title[normalize-space(.)='']">
 		<xsl:comment>empty title</xsl:comment>
 	</xsl:template>
 	<xsl:template match="trans-title" mode="format">
