@@ -1,30 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util" xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
-	
 	<xsl:template match="xref[@rid='']"/>
 	<xsl:template match="thesgrp"/>
-	
 	<xsl:template match="report">
 		<funding-group>
-			<xsl:apply-templates select="*"/>
-		
-		<funding-statement>
-		<xsl:apply-templates select=".//text()"/>
-		</funding-statement>
+			<xsl:apply-templates select="rsponsor | projname "/>
+			<funding-statement>
+				<xsl:apply-templates select=".//text()"/>
+			</funding-statement>
 		</funding-group>
 	</xsl:template>
-	
 	<xsl:template match="rsponsor | projname">
-		<award-group><xsl:attribute name="award-type">
-			<xsl:choose>
-				<xsl:when test=".//contract">contract</xsl:when>
-				<xsl:otherwise>grant</xsl:otherwise>
-			</xsl:choose></xsl:attribute>
-			<xsl:apply-templates select="*"/>
+		<award-group>
+			<xsl:attribute name="award-type"><xsl:choose><xsl:when test=".//contract">contract</xsl:when><xsl:otherwise>grant</xsl:otherwise></xsl:choose></xsl:attribute>
+			<xsl:apply-templates select="orgname|contract"/>
 		</award-group>
 	</xsl:template>
-	
-	
 	<xsl:template match="contract">
 		<award-id>
 			<xsl:apply-templates/>
@@ -39,11 +30,10 @@
 			</xsl:if>
 		</funding-source>
 	</xsl:template>
-	
 	<xsl:template match="back//*[contains(name(),'citat')]//city | back//*[contains(name(),'citat')]//state | back//*[contains(name(),'citat')]//country">
 		<publisher-loc>
 			<xsl:if test="../city">
-				<xsl:value-of select="../city"/>			
+				<xsl:value-of select="../city"/>
 			</xsl:if>
 			<xsl:if test="../state">, <xsl:value-of select="../state"/>
 			</xsl:if>
@@ -64,8 +54,7 @@
 					<xsl:value-of select="city"/>
 					<xsl:if test="city and state">, </xsl:if>
 					<xsl:value-of select="state"/>
-				<xsl:if test="(city or state) and country">,</xsl:if>
-
+					<xsl:if test="(city or state) and country">,</xsl:if>
 					<xsl:value-of select="country"/>
 				</conf-loc>
 			</xsl:if>

@@ -68,13 +68,18 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="."/>
 		</addr-line>
 	</xsl:template>
+	<xsl:template match="et-al"><etal><xsl:value-of select="."/></etal>
+	</xsl:template>
 	<xsl:template match="extent">
 		<size units="pages">
 			<xsl:value-of select="."/>
 		</size>
 	</xsl:template>
 	<xsl:template match="body"/>
-	<xsl:template match="p | sec | bold | italic | sub | sup |  label | subtitle | edition | aff/country | uri | issn">
+	<xsl:template match="uri">
+		<xsl:element name="{name()}"><xsl:apply-templates select="@*"/><xsl:value-of select="text()"/></xsl:element>
+	</xsl:template>
+	<xsl:template match="p | sec | bold | italic | sub | sup |  label | subtitle | edition | aff/country | issn">
 		<xsl:param name="id"/>
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="@*| * | text()">
@@ -886,12 +891,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="equation">
 		<p>
 			<disp-formula>
+				<xsl:apply-templates select="@*" />
 				<xsl:apply-templates select="." mode="graphic"/>
 			</disp-formula>
 		</p>
 	</xsl:template>
 	<xsl:template match="p/equation">
 		<disp-formula>
+				<xsl:apply-templates select="@*" />
 			<xsl:apply-templates select="." mode="graphic"/>
 		</disp-formula>
 	</xsl:template>

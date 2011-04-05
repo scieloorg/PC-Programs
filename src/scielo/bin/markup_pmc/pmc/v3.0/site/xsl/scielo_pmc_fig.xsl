@@ -24,6 +24,10 @@
 			<xsl:apply-templates select="." mode="display"/>
 		</xsl:if-->
 	</xsl:template>
+	
+	<xsl:template match="caption/title">
+		<xsl:apply-templates select="*|text()"/>
+	</xsl:template>
 	<xsl:template match="fig[graphic[not(@alt-version) and not(@alternate-form-of)]]" mode="display">
 		<p>
 			<a name="{@id}"/>
