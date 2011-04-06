@@ -79,7 +79,7 @@ copy %OUTPUT_XML% %TEMP_FILE2%
 echo %date% %time% %TEMP_FILE2% %TEMP_OUTPUT_XML%>>%LOG_FILE%
 echo %date% %time% change to local dtd >>%LOG_FILE%
 
-%XML_TOOLS_PATH%\..\cfg\mx mfrl=32000 seq=%TEMP_FILE2% lw=9999 "pft=if v1:'journalpublishing3.dtd' then replace(v1,'http://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd',s('file:///',replace('%XML_TOOLS_PATH%','\','/'),'/../markup/pmc/v3.0/dtd/publishing/journalpublishing3.dtd')),else v1 fi" now > %TEMP_OUTPUT_XML%
+%XML_TOOLS_PATH%\..\cfg\mx mfrl=32000 fmtl=32000  seq=%TEMP_FILE2% lw=9999 "pft=if v1:'journalpublishing3.dtd' then replace(v1,'http://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd',s('file:///',replace('%XML_TOOLS_PATH%','\','/'),'/../markup/pmc/v3.0/dtd/publishing/journalpublishing3.dtd')),else v1 fi" now > %TEMP_OUTPUT_XML%
 
 echo %date% %time% changed >>%LOG_FILE%
 
