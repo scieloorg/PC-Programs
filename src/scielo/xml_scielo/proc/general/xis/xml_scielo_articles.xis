@@ -183,7 +183,40 @@
 		<field action="export" tag="list">881,223</field>
 
 	</function>
+	<function name="check_languages" action="replace" tag="702">
 
+      	<field action="import" tag="list">350</field>
+
+		<list action="load" type="list"><pft>(v350/)</pft></list>
+
+		<do task="list">
+			<field action=define tag="1001">Isis_Current</field>
+			<field action=define tag="1002">Isis_Items</field>
+			<field action=define tag="1">Isis_Item</field>
+
+			<loop>
+		 		<field action="import" tag="list">702,9350</field>
+		 	
+	 
+				<field action="replace" tag="9702" split="occ">
+					<pft>				
+					replace(v702[1],'\markup\',s('\',v1,'_body\',v1,'_')) 
+					</pft>
+				</field>	
+				
+				<field action="statusfile" tag="9000"><pft>v9702</pft></field>
+				<field action="add" tag="9350"><pft>if v9000^s : 'e' then mpu,v1,mpl fi</pft></field>
+				<field action="export" tag="list">9350</field>
+	
+	     		</loop>
+
+	  	</do>
+
+	  	<list action="delete">now</list>
+
+            <field action="export" tag="list">9350</field>
+		
+	</function>
 <section>
 
 	<field action="cgi" tag="1000">debug</field>
@@ -266,9 +299,9 @@
 		<parm name="gizmo"><pft>v5000</pft></parm>
 
 		<loop>
-			<field action="export" tag="list">100,400</field>
+			<field action="export" tag="list">100,400,350</field>
 		</loop>
-		<field action="export" tag="list">100,400</field>
+		<field action="export" tag="list">100,400,350</field>
 	</do>
 	<file action="close" type="database">TITLE</file>
 	<file action="close" type="database"><pft>v5000</pft></file>
@@ -299,7 +332,6 @@
 		'<name>',v7001,'</name>'/,
 		'<email_address>',v7002,'</email_address>'/,
 		'<doi-prefix>',v7003,'</doi-prefix>'/,
-
 		'</depositor>'/,
 		'</doi-configuration>'/,
 	</pft></display>
@@ -406,7 +438,7 @@
 
 
 		<loop>
-			<field action="import" tag="list">2013</field>
+			<field action="import" tag="list">2013,350</field>
 			<field action="replace" tag="949"><pft>if p(v2013) and v706='h' then (if v2013=v49[1] then 'true' break, fi) fi</pft></field>
 			<!-- AHEAD OF PRINT v2.0
 				Em uma das versões v222=new-pid. 
@@ -484,6 +516,11 @@
 			<call name="fixAttributes"><pft>v10,v70</pft></call>
 
 			<proc><pft>@CORRIGE.PROC</pft></proc>
+			
+			<field action="delete" tag="list"><pft>if v706='h' then '9350' fi</pft></field>
+                  <call name="check_languages"><pft>if v706='h' then ref(mfn-1,v702) fi</pft></call>
+			<field action="add" tag="9350"><pft>if v706='h' then mpu,v40,mpl fi</pft></field>
+
 			
 			<field action="replace" tag="880"><pft>if v706='c' then v880,s(f(100000+val(v701),2,0))*1.5 fi</pft></field>
 			<display><isisxml>*</isisxml></display>

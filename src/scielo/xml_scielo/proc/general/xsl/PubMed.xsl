@@ -3,6 +3,7 @@
 	<xsl:output method="xml" indent="yes" encoding="UTF-8" doctype-public="-//NLM//DTD PubMed 2.4//EN" doctype-system="http://www.ncbi.nlm.nih.gov/entrez/query/static/PubMed.dtd"/>
 	<xsl:variable name="doi_prefix" select="//xml_scielo//doi-configuration//doi-prefix"/>
 	<xsl:variable name="replaceISSN" select="//xml_scielo//replace-issn"/>
+	
 	<xsl:template match="/">
 		<xsl:apply-templates/>
 	</xsl:template>
@@ -87,7 +88,7 @@
 			<ELocationID EIdType="pii">
 				<xsl:apply-templates select="." mode="pii"/>
 			</ELocationID>
-			<xsl:apply-templates select="article_language"/>
+			<xsl:apply-templates select="text-languages"/>
 			<!-- FIXED 20040504 
 			Roberta Mayumi Takenaka
 			Solicitado por Solange email: 20040429
@@ -152,9 +153,13 @@
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="article_language">
-		<xsl:element name="Language">
-			<xsl:value-of select="occ"/>
-		</xsl:element>
+	       
+	</xsl:template>
+	<xsl:template match="text-languages">
+		<xsl:apply-templates select="occ"/>
+	</xsl:template>
+	<xsl:template match="text-languages/occ">
+		<Language><xsl:value-of select="."/></Language>
 	</xsl:template>
 	<xsl:template match="record" mode="pii">
 		<xsl:choose>
