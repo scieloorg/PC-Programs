@@ -235,17 +235,17 @@
 	</xsl:template>
 	<xsl:template match="volume_id">
 		<Volume>
-			<xsl:apply-templates/>
-			<xsl:if test="string-length(.//supl/occ)&gt;0">suppl.<xsl:if test="..//supl!='0'">&#160;
-						<xsl:value-of select="..//supl"/>
-				</xsl:if>
-			</xsl:if>
+			<xsl:apply-templates select="occ"/>
+			<xsl:if test="string-length(..//supl/occ)&gt;0"> Suppl<xsl:if test="..//supl!='0'">&#160;<xsl:value-of select="..//supl/occ"/></xsl:if></xsl:if>
 		</Volume>
 	</xsl:template>
 	<xsl:template match="issue_no">
 		<Issue>
 			<xsl:if test="not(contains(.,'ahead')) and not(contains(.,'review'))">
-				<xsl:apply-templates/>
+				<xsl:apply-templates select="occ"/>
+				<xsl:if test="string-length(..//numsupl/occ)&gt;0"> Suppl<xsl:if test="..//numsupl!='0'">&#160;<xsl:value-of select="..//numsupl/occ"/></xsl:if>
+			</xsl:if>
+
 			</xsl:if>
 		</Issue>
 	</xsl:template>
