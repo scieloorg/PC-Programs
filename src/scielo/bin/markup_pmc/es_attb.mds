@@ -123,8 +123,8 @@ cturl
 
 
 ftype
-gráfico;cartoon;cuadro;diagrama;diseño;demostración (exhibit);ilustración;mapa;gravura (plate);esquema;flujo de trabajo;otro
-graphic;cartoon;chart;diagram;drawing;exhibit;illustration;map;plate;schema;workflow;other
+gráfico;cartoon;cuadro;diagrama;diseño;demostración (exhibit);ilustración;mapa;lámina;esquema;flujo de trabajo;otro;foto
+graphic;cartoon;chart;diagram;drawing;exhibit;illustration;map;plate;schema;workflow;other;photo
 
 lictype
 acceso abierto;no definido
