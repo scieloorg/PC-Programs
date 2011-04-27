@@ -14,7 +14,9 @@
 	<xsl:if test="orgname or contract">
 		<award-group>
 			<xsl:attribute name="award-type"><xsl:choose><xsl:when test=".//contract">contract</xsl:when><xsl:otherwise>grant</xsl:otherwise></xsl:choose></xsl:attribute>
-			<xsl:apply-templates select="orgname|contract"/>
+			<xsl:apply-templates select="orgname"/>
+						<xsl:apply-templates select="contract"/>
+
 		</award-group>
 		</xsl:if>
 	</xsl:template>

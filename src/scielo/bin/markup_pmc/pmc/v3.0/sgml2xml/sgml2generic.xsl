@@ -258,7 +258,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="aff">
-		<xsl:comment>aff</xsl:comment>
 		<aff id="aff{substring(@id,3)}">
 			<xsl:apply-templates select="@*[name()!='id']"/>
 			<xsl:apply-templates select="city | state | country | zipcode | e-mail"/>
@@ -485,7 +484,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="*" mode="body">
 		<body>
-			<xsl:apply-templates select="xmlbody| unidentified"/>
+			<xsl:apply-templates select="xmlbody| unidentified[normalize-space(text())!='']"/>
 		</body>
 	</xsl:template>
 	<xsl:template match="subsec">
@@ -549,9 +548,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="*|text()"/>
 			</xsl:when>
 			<xsl:otherwise>
+			<xsl:if test="normalize-space(.//text())!=''">
 				<p>
 					<xsl:apply-templates select="*|text()" mode="back"/>
 				</p>
+				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -820,9 +821,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</pub-id>
 			</xsl:when>
 			<xsl:otherwise>
-				<comment>
-					<xsl:apply-templates/>
-				</comment>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -838,9 +836,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="xref[@rid!='']">
 		<xsl:variable name="rid" select="@rid"/>
 		<xsl:if test="not($xref_id[@id=$rid])">
-			<xsl:comment> no match found: 
-				<xsl:value-of select="@rid"/> (<xsl:apply-templates select="$xref_id" mode="display-id"/>)
-			</xsl:comment>
 		</xsl:if>
 		<xref>
 			<xsl:apply-templates select="@*|*[name()!='graphic']|text()"/>
@@ -904,10 +899,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	</xsl:template>
 	<xsl:template match="*" mode="debug">
-		<xsl:comment>debugging - start </xsl:comment>
-		<xsl:if test="contains(text(),'Ref')">sim</xsl:if>
-		<xsl:copy-of select="."/>
-		<xsl:comment>debugging - end</xsl:comment>
 	</xsl:template>
 	<xsl:template match="xmlbody[sec]/p | unidentified[../xmlbody[sec]]"/>
 	<xsl:template match="figgrp | tabwrap | equation" mode="graphic">
@@ -1008,10 +999,6 @@ et al.</copyright-statement>
 		</xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="degree ">
-		<comment>
-			<xsl:apply-templates select="@* | * | text()">
-		</xsl:apply-templates>
-		</comment>
 	</xsl:template>
 	<xsl:template match="fngrp">
 	</xsl:template>
@@ -1030,17 +1017,12 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'contrib')]/italic | *[contains(name(),'contrib')]/bold | *[contains(name(),'monog')]/italic | *[contains(name(),'monog')]/bold"/>
 	<xsl:template match="subsec/xref | sec/xref">
-		<xsl:comment>xref</xsl:comment>
 	</xsl:template>
 	<xsl:template match="unidentified" mode="front">
 	</xsl:template>
 	<xsl:template match="unidentified[*] | unidentified[normalize-space(text())!='']" mode="front">
 		<xsl:param name="requiredname"/>
 		<xsl:variable name="next" select="following-sibling::*"/>
-		<xsl:comment>self <xsl:copy-of select="."/>
-		</xsl:comment>
-		<xsl:comment>next <xsl:copy-of select="$next"/>
-		</xsl:comment>
 		<xsl:variable name="name">
 			<xsl:choose>
 				<xsl:when test="following-sibling::*">
@@ -1050,9 +1032,6 @@ et al.</copyright-statement>
 				<xsl:otherwise/>
 			</xsl:choose>
 		</xsl:variable>
-		<!--xsl:comment>
-			<xsl:value-of select="$name"/>
-		</xsl:comment-->
 		<xsl:if test="$name = $requiredname">
 			<xsl:if test="* or normalize-space(text())!=''">
 				<notes>
@@ -1109,4 +1088,6 @@ et al.</copyright-statement>
 	<xsl:template match="caption/bold | caption/italic | caption/sub | caption/sup | subtitle/bold | subtitle/italic | subtitle/sub | subtitle/sup | sectitle/bold | sectitle/italic | sectitle/sub | sectitle/sup |title/bold | title/italic | title/sub | title/sup | article-title/bold | article-title/italic | article-title/sub | article-title/sup | label/bold | label/italic | label/sub | label/sup">
 		<xsl:value-of select="."/>
 	</xsl:template>
+	<xsl:template match="edition/italic | edition/bold | edition/sub | edition/sup "><xsl:value-of select="."/></xsl:template>
+	<xsl:template match="p[normalize-space(text())='']"></xsl:template>
 </xsl:stylesheet>
