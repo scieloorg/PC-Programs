@@ -110,6 +110,9 @@
 		<div class="warning">		
 			<xsl:apply-templates select=".//xref[not(@rid)]" mode="check"/>
 			<xsl:apply-templates select=".//*[@rid]" mode="check"/>
+			<xsl:if test="normalize-space(.//license-p//text())=''">
+				<p>Missing license</p>
+			</xsl:if>
 		</div>
 		
 		</xsl:if>

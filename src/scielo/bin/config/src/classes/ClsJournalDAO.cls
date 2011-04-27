@@ -25,6 +25,21 @@ Function getJournalStandardList() As MyCollection
         journal.ISSN = isis.FieldContentOccGet(i, 400, 1)
         journal.shorttitle = isis.FieldContentOccGet(i, 150, 1)
         journal.JournalStandard = isis.FieldContentOccGet(i, 117, 1)
+        
+        journal.CURRENTISSN = isis.FieldContentOccGet(i, 935, 1)
+        journal.ISSNTYPE = isis.FieldContentOccGet(i, 35, 1)
+        
+        If journal.ISSNTYPE = "PRINT" Then
+            journal.ISSNTYPE = "ppub"
+        Else
+            journal.ISSNTYPE = "epub"
+        End If
+        If journal.CURRENTISSN = "" Then
+            journal.CURRENTISSN = journal.ISSN
+        End If
+        
+        journal.SUBJECT = isis.UsePft(i, "(v441+|/|)")
+        
         Call journals.add(journal, journal.ISSN + journal.shorttitle)
     Next
     Set getJournalStandardList = journals
@@ -183,9 +198,9 @@ Function existJournal(journalKey As String, journalTitle As String) As Long
     End If
 End Function
 
-Function existRecord(key As String, format As String, Optional prefix As String) As Long
+Function existRecord(key As String, format As String, Optional Prefix As String) As Long
     Dim MfnCounter As Long
-    Dim Mfns() As Long
+    Dim mfns() As Long
     Dim i As Long
     Dim found As Boolean
     Dim value As String
@@ -193,15 +208,15 @@ Function existRecord(key As String, format As String, Optional prefix As String)
     Dim mfn As Long
     
     ID = key
-    If Len(key) > 30 Then key = Mid(prefix + key, 1, 30)
-    MfnCounter = isis.MfnFind(key, Mfns)
+    If Len(key) > 30 Then key = Mid(Prefix + key, 1, 30)
+    MfnCounter = isis.MfnFind(key, mfns)
     
     i = 0
     While (i < MfnCounter) And (Not found)
         i = i + 1
-        value = isis.UsePft(Mfns(i), format)
+        value = isis.UsePft(mfns(i), format)
         If StrComp(value, ID) = 0 Then
-            mfn = Mfns(i)
+            mfn = mfns(i)
             found = True
         End If
     Wend

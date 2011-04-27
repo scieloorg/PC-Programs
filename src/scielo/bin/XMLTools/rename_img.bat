@@ -11,8 +11,15 @@ rem RENOMEIA IMAGEM ORIGINAL TIFF PARA PMC
 
 if exist %IMG_SRC%\%THIS%.tif  copy %IMG_SRC%\%THIS%.tif   %PMC%\%THAT%.tif
 if exist %IMG_SRC%\%THIS%.tiff copy %IMG_SRC%\%THIS%.tiff  %PMC%\%THAT%.tif
-if exist %IMG_SRC%\%THIS%.eps copy %IMG_SRC%\%THIS%.eps  %PMC%\%THAT%.eps
 
+if exist %PMC%\%THAT%.tif goto END
+
+if exist %IMG_SRC%\%THIS%.eps copy %IMG_SRC%\%THIS%.eps  %PMC%\%THAT%.eps
+if exist %PMC%\%THAT%.eps goto END
+
+echo %IMG_SRC%\%THIS% %PMC%\%THAT% >> %PMC_TEMP%\..\missing.txt
+
+:END
 if exist %IMG%\%THIS%.jpg  copy %IMG%\%THIS%.jpg   %PMC_TEMP%\%THAT%.jpg
 
 

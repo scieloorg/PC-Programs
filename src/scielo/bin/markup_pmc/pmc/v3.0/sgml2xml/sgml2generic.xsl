@@ -11,9 +11,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="cit" select="$unident[not(sec) and contains(.,'Refer') ]"/>
 	<xsl:variable name="xref_id" select="//*[@id]"/>
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
-	<xsl:variable name="journal_issn" select="node()/@issn"/>
+	<xsl:variable name="JOURNAL_PID" select="node()/@issn"/>
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
-	<xsl:variable name="subject" select="$unident[1]"/>
+	<xsl:variable name="subject" select="$unident[1]//text()"/>
+	<xsl:variable name="PUB_TYPE" select=".//extra-scielo/issn-type"/>
+	<xsl:variable name="CURRENT_ISSN" select=".//extra-scielo/current-issn"/>
 	<xsl:variable name="article_page">
 		<xsl:choose>
 			<xsl:when test="./@fpage='0'">
@@ -24,7 +26,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	<xsl:variable name="prefix" select="concat($journal_issn,'-',$journal_acron,'-',$journal_vol,'-',$article_page,'-')"/>
+	<xsl:variable name="prefix" select="concat($JOURNAL_PID,'-',$journal_acron,'-',$journal_vol,'-',$article_page,'-')"/>
 	<!--xsl:variable name="g" select="//*[name()!='equation' and .//graphic]"/>
 	<xsl:variable name="e" select="//equation[.//graphic]"/-->
 	<xsl:variable name="data4previous" select="//back//*[contains(name(),'citat')]"/>
@@ -68,7 +70,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="."/>
 		</addr-line>
 	</xsl:template>
-	<xsl:template match="et-al"><etal><xsl:value-of select="."/></etal>
+	<xsl:template match="et-al">
+		<etal>
+			<xsl:value-of select="."/>
+		</etal>
 	</xsl:template>
 	<xsl:template match="extent">
 		<size units="pages">
@@ -77,7 +82,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="body"/>
 	<xsl:template match="uri">
-		<xsl:element name="{name()}"><xsl:apply-templates select="@*"/><xsl:value-of select="text()"/></xsl:element>
+		<xsl:element name="{name()}">
+			<xsl:apply-templates select="@*"/>
+			<xsl:value-of select="text()"/>
+		</xsl:element>
 	</xsl:template>
 	<xsl:template match="p | sec | bold | italic | sub | sup |  label | subtitle | edition | aff/country | issn">
 		<xsl:param name="id"/>
@@ -114,8 +122,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="article|text" mode="journal-meta">
 		<journal-meta>
 			<xsl:copy-of select=".//journal-id"/>
-			<journal-id journal-id-type="publisher">
-				<xsl:value-of select="@issn"/>
+			<journal-id journal-id-type="publisher-id">
+				<xsl:value-of select="$JOURNAL_PID"/>
 			</journal-id>
 			<journal-title-group>
 				<abbrev-journal-title abbrev-type="publisher">
@@ -123,8 +131,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</abbrev-journal-title>
 				<xsl:copy-of select=".//journal-title"/>
 			</journal-title-group>
-			<issn>
-				<xsl:value-of select="@issn"/>
+			<issn pub-type="{$PUB_TYPE}">
+				<xsl:value-of select="$CURRENT_ISSN"/>
 			</issn>
 			<xsl:copy-of select="..//extra-scielo/publisher"/>
 		</journal-meta>
@@ -133,30 +141,60 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:variable name="l" select="@language"/>
 		<article-meta>
 			<xsl:if test="..//extra-scielo/issue-order">
-				<article-id pub-id-type="publisher-id">S<xsl:value-of select="@issn"/>
+				<article-id pub-id-type="publisher-id">S<xsl:value-of select="$JOURNAL_PID"/>
 					<xsl:value-of select="substring(@dateiso,1,4)"/>
 					<xsl:value-of select="substring(10000 + substring(..//extra-scielo/issue-order,5),2)"/>
 					<xsl:value-of select="substring-after(100000 + @order,'1')"/>
 				</article-id>
-				<xsl:if test="$subject">
-					<article-categories>
-						<subj-group>
-							<subject>
-								<xsl:value-of select="$subject"/>
-							</subject>
-						</subj-group>
-					</article-categories>
-				</xsl:if>
+				
 			</xsl:if>
+			
+			<article-categories>
+					<subj-group>
+						<subject>
+							<xsl:choose>
+								<xsl:when test="normalize-space($subject)!=''">
+									<xsl:value-of select="$subject"/>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="..//extra-scielo/subject/text()"/>
+								</xsl:otherwise>
+							</xsl:choose>
+							
+						</subject>
+					</subj-group>
+				</article-categories>
 			<xsl:apply-templates select="." mode="article-title"/>
 			<xsl:apply-templates select=".//authgrp" mode="front"/>
 			<xsl:apply-templates select="." mode="author-notes"/>
-			<pub-date pub-type="pub">
+			<xsl:variable name="date">
+				<xsl:choose>
+					<xsl:when test="@rvpdate">
+						<xsl:value-of select="@rvpdate"/>
+					</xsl:when>
+					<xsl:when test="@ahpdate">
+						<xsl:value-of select="@ahpdate"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="@dateiso"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:variable name="datetype">
+				<xsl:choose>
+					<xsl:when test="@rvpdate">epub</xsl:when>
+					<xsl:when test="@ahpdate">epub</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$PUB_TYPE"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
+			<pub-date pub-type="{$datetype}">
 				<month>
-					<xsl:value-of select="substring(@dateiso,5,2)"/>
+					<xsl:value-of select="substring($date,5,2)"/>
 				</month>
 				<year>
-					<xsl:value-of select="substring(@dateiso,1,4)"/>
+					<xsl:value-of select="substring($date,1,4)"/>
 				</year>
 			</pub-date>
 			<xsl:apply-templates select="@volid | @issueno | @supplvol | @supplno | @fpage | @lpage"/>
@@ -339,7 +377,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</history>
 	</xsl:template>
 	<xsl:template match="received | revised | accepted" mode="front">
-		<date date-type="{name()}">
+		<xsl:variable name="dtype">
+			<xsl:choose>
+				<xsl:when test="name()='revised'">rev-recd</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="name()"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<date date-type="{$dtype}">
 			<day>
 				<xsl:value-of select="substring(@dateiso,7,2)"/>
 			</day>
@@ -465,9 +511,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="back" mode="back">
 		<xsl:variable name="preceding" select="*[@standard]/preceding-sibling::node()"/>
 		<xsl:variable name="following" select="*[@standard]/following-sibling::node()"/>
-		<ack>
-			<xsl:apply-templates select="$preceding[normalize-space(.//text())!='']" mode="back"/>
-		</ack>
+		<xsl:if test="$preceding[normalize-space(.//text())!='']!=''">
+			<ack>
+				<xsl:apply-templates select="$preceding[normalize-space(.//text())!='']" mode="back"/>
+			</ack>
+		</xsl:if>
 		<xsl:apply-templates select="*[@standard]" mode="back"/>
 		<fn-group>
 			<xsl:apply-templates select="$following[normalize-space(.//text())!='']" mode="back-fn"/>
@@ -621,11 +669,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'contrib')]">
 		<xsl:param name="position"/>
+		<xsl:if test=".//fname or .//surname">
 		<person-group person-group-type="author">
 			<xsl:apply-templates select="*[contains(name(),'aut')] | *[contains(name(),'corpaut')]">
 				<xsl:with-param name="position" select="$position"/>
 			</xsl:apply-templates>
 		</person-group>
+		</xsl:if>
 		<xsl:apply-templates select=".//title"/>
 	</xsl:template>
 	<xsl:template match="vtitle">
@@ -639,7 +689,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</source>
 	</xsl:template>
 	<xsl:template match="url">
-		<ext-link>
+		<ext-link ext-link-type="uri" xlink:href=".">
 			<xsl:apply-templates/>
 		</ext-link>
 	</xsl:template>
@@ -737,20 +787,24 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:choose>
 					<xsl:when test="contains($teste1,'PMID')">
 						<!-- DOI vem antes de PMID -->
+						<xsl:variable name="doi" select="substring-before($teste1,'. PMID: ')"/>
+						<xsl:variable name="pmid" select="substring-after(.,'PMID: ')"/>
 						<pub-id pub-id-type="doi">
-							<xsl:value-of select="substring-before($teste1,'. PMID: ')"/>
+							<xsl:value-of select="$doi"/>
 						</pub-id>
 						<pub-id pub-id-type="pmid">
-							<xsl:value-of select="substring-after(.,'PMID: ')"/>
+							<xsl:value-of select="$pmid"/>
 						</pub-id>
 					</xsl:when>
 					<xsl:otherwise>
 						<!-- DOI vem depois de PMID -->
+						<xsl:variable name="pmid" select="substring-before($teste1, '. DOI: ')"/>
+						<xsl:variable name="doi" select="substring-after($teste1,' DOI: ')"/>
 						<pub-id pub-id-type="pmid">
-							<xsl:value-of select="substring-before($teste1, '. DOI: ')"/>
+							<xsl:value-of select="$pmid"/>
 						</pub-id>
 						<pub-id pub-id-type="doi">
-							<xsl:value-of select="substring-after($teste1,' DOI: ')"/>
+							<xsl:value-of select="$doi"/>
 						</pub-id>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -891,14 +945,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="equation">
 		<p>
 			<disp-formula>
-				<xsl:apply-templates select="@*" />
+				<xsl:apply-templates select="@*"/>
 				<xsl:apply-templates select="." mode="graphic"/>
 			</disp-formula>
 		</p>
 	</xsl:template>
 	<xsl:template match="p/equation">
 		<disp-formula>
-				<xsl:apply-templates select="@*" />
+			<xsl:apply-templates select="@*"/>
 			<xsl:apply-templates select="." mode="graphic"/>
 		</disp-formula>
 	</xsl:template>
@@ -920,15 +974,18 @@ et al.</copyright-statement>
 			<xsl:apply-templates select="licensep|text()"/>
 		</license>
 	</xsl:template>
-	<xsl:template match="license/text()">
+	<xsl:template match="license/text()"><xsl:if test="normalize-space(.)!=''">
+
 		<license-p>
 			<xsl:value-of select="."/>
-		</license-p>
+		</license-p></xsl:if>
+
 	</xsl:template>
 	<xsl:template match="licensep">
+		<xsl:if test="normalize-space(.)!=''">
 		<license-p>
 			<xsl:apply-templates/>
-		</license-p>
+		</license-p></xsl:if>
 	</xsl:template>
 	<xsl:template match="mmlmath">
 		<mml:math>
@@ -1023,17 +1080,13 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="back/bold[contains(text(),'ACK') or contains(text(),'Ack') ]" mode="back">
 		<title>
-			<bold>
-				<xsl:value-of select="."/>
-			</bold>
+			<xsl:value-of select="."/>
 		</title>
 	</xsl:template>
 	<xsl:template match="back/bold" mode="back">
 		<xsl:if test="contains(., 'ACK') or contains(.,'Ack')">
 			<title>
-				<bold>
-					<xsl:value-of select="."/>
-				</bold>
+				<xsl:value-of select="."/>
 			</title>
 		</xsl:if>
 	</xsl:template>
@@ -1053,4 +1106,7 @@ et al.</copyright-statement>
 	<xsl:template match="unidentified//text()" mode="text">
 		{{val:<xsl:value-of select="."/>}}
 	</xsl:template-->
+	<xsl:template match="caption/bold | caption/italic | caption/sub | caption/sup | subtitle/bold | subtitle/italic | subtitle/sub | subtitle/sup | sectitle/bold | sectitle/italic | sectitle/sub | sectitle/sup |title/bold | title/italic | title/sub | title/sup | article-title/bold | article-title/italic | article-title/sub | article-title/sup | label/bold | label/italic | label/sub | label/sup">
+		<xsl:value-of select="."/>
+	</xsl:template>
 </xsl:stylesheet>
