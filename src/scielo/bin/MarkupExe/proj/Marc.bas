@@ -1,4 +1,14 @@
 Attribute VB_Name = "Marc"
+Declare Function ShellExecute Lib "shell32.dll" Alias _
+  "ShellExecuteA" (ByVal hwnd As Long, ByVal lpOperation _
+  As String, ByVal lpFile As String, ByVal lpParameters _
+  As String, ByVal lpDirectory As String, ByVal nShowCmd _
+  As Long) As Long
+
+Public Const SW_SHOWNORMAL = 1
+Public Const SW_SHOWMINIMIZED = 2
+Public Const SW_SHOWMAXIMIZED = 3
+
 Sub Main()
 'este módulo lê o arquivo inicia.txt, obtendo o caminho
 'para encontrar o arquivo winword.exe
@@ -37,5 +47,13 @@ Sub callWord(WordPath As String)
     Print #fn, callw
     Close #fn
     
-    Shell callw, vbMaximizedFocus
+    
+     'ShellExecute hwnd, "Open", lpFile, lparameters, lpDirectory, SW_SHOWMAXIMIZED
+     Call ShellExecute(hwnd, "open", "winword", " /l" & App.path & "\markup.prg", Mid(WordPath, 1, InStr(WordPath, "\winword") - 1), SW_SHOWNORMAL)
+     
+     'hWndAccessApp , "Open", strFolder, 0, 0, SW_SHOWNORMAL
+
+    
+'    Shell callw, vbMaximizedFocus
 End Sub
+
