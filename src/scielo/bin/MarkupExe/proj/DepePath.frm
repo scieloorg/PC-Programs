@@ -61,23 +61,38 @@ Private Sub Command1_OK_Click()
     'Dim conf As New clsConfig
     '------------------------
     'conf.LoadPublicValues
+    Dim path As String
+    Dim paramOpen As String
+    Dim paramProgram As String
+    Dim paramParameters As String
+    Dim paramDirectory As String
     
     path = DepePath.Text1.Text
     Open App.path & "\start.mds" For Output As #1
     Write #1, path
     Close #1
     
+    Open App.path & "\p.mds" For Input As #1
+    Input #1, param, paramOpen
+    Input #1, param, paramProgram
+    Input #1, param, paramParameters
+    Input #1, param, paramDirectory
+    Close #1
+
+    
     'caso ainda nao encontre continua no mesmo form
     On Error GoTo volta
     'executa o WORD97 chamando a macro que prepara o ambiente
     'de marcacao. O caminho é o indicado pelo usuário
-    callWord (path)
+    'callWord (path)
+    Call callWord(path, paramOpen, paramProgram, paramParameters, paramDirectory)
     
     Unload DepePath
     DepePath.Hide
     'Set conf = Nothing
     End
 volta:
+MsgBox Err.Description
     MsgBox "Not found. Type the right path.", vbCritical, "Error to find the archive"
     'Set conf = Nothing
 End Sub

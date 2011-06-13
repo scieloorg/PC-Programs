@@ -20,16 +20,48 @@ Sub Main()
     '------------------------
     'conf.LoadPublicValues
     
-     Open App.path & "\start.mds" For Input As #1
+    Dim paramOpen As String
+    Dim paramProgram As String
+    Dim paramParameters As String
+    Dim paramDirectory As String
+    Dim test As String
+    Dim retDirExpected As String
+    Dim ret As Long
+    
+    Open App.path & "\start.mds" For Input As #1
     Input #1, path
+    Close #1
+    
+    Open App.path & "\p.mds" For Input As #1
+    Input #1, param, paramOpen
+    Input #1, param, paramProgram
+    Input #1, param, paramParameters
+    Input #1, param, paramDirectory
     Close #1
 
     'verifica a existência do winword.exe
+    retDirExpected = paramProgram
+    test = Mid(path, InStr(1, path, "\office", vbTextCompare) + Len("\office"))
+    test = Mid(test, 1, InStr(test, "\") - 1)
+    If CLng(test) > 11 Then
+        retDirExpected = ""
+    End If
+    
     retDir = Dir(path)
-    If retDir = "WINWORD.EXE" Then
+    
+    fn = FreeFile
+    Open App.path & "\temp\openmarkup.log" For Output As #fn
+    Print #fn, "path=" & path
+    Print #fn, "retDir=" & retDir
+    Print #fn, "paramProgram=" & paramProgram
+    Print #fn, "retDirExpected=" & retDirExpected
+    Close #fn
+    
+    If (LCase(retDir) = LCase(paramProgram)) Or (LCase(retDir) = LCase(retDirExpected)) Then
         'executa o WORD97 com a macro q prepara ambiente de marcação
         
-        callWord (path)
+        ret = callWord(path, paramOpen, paramProgram, paramParameters, paramDirectory)
+        
     Else
         DepePath.Text1.Text = path
         DepePath.Show
@@ -37,23 +69,24 @@ Sub Main()
     Set conf = Nothing
 End Sub
 
-Sub callWord(WordPath As String)
+Function callWord(WordPath As String, paramOpen As String, paramProgram As String, paramParameters As String, paramDirectory As String) As Long
     Dim fn As Long
     Dim callw As String
     
-    callw = WordPath & " /l" & App.path & "\markup.prg"
+    'callw = WordPath & " /l" & App.path & "\markup.prg"
+    callw = "ShellExecute " & paramOpen & " " & paramProgram & " " & "/l" & App.path & "\markup.prg" & " " & WordPath & " " & CStr(SW_SHOWNORMAL)
     fn = FreeFile
-    Open App.path & "\temp\openmarkup.log" For Output As #fn
+    Open App.path & "\temp\openmarkup.log" For Append As #fn
     Print #fn, callw
     Close #fn
     
     
      'ShellExecute hwnd, "Open", lpFile, lparameters, lpDirectory, SW_SHOWMAXIMIZED
-     Call ShellExecute(hwnd, "open", "winword", " /l" & App.path & "\markup.prg", Mid(WordPath, 1, InStr(WordPath, "\winword") - 1), SW_SHOWNORMAL)
-     
+     'Call ShellExecute(hwnd, paramOpen, paramProgram, paramParameters, paramDirectory, SW_SHOWNORMAL)
+     callWord = ShellExecute(hwnd, paramOpen, paramProgram, " /l" & App.path & "\markup.prg", WordPath, SW_SHOWNORMAL)
      'hWndAccessApp , "Open", strFolder, 0, 0, SW_SHOWNORMAL
 
     
 '    Shell callw, vbMaximizedFocus
-End Sub
+End Function
 

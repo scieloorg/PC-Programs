@@ -216,17 +216,64 @@ Private Sub CheckLangDepending_Click()
 End Sub
 
 Private Sub CmdChange_Click()
-    Call displayEditingCommands(False)
+    
 'ComboTableName.Enabled = False
 
+    If CheckTexts Then
+    Call displayEditingCommands(False)
     listItems(List1.ListIndex) = Mid(List1.List(List1.ListIndex), 1, InStr(List1.List(List1.ListIndex), "|")) + " " + Text2.text + " | " + Text3.text + " | " + Text4.text
     List1.List(List1.ListIndex) = Mid(List1.List(List1.ListIndex), 1, InStr(List1.List(List1.ListIndex), "|")) + " " + Text2.text + " | " + Text3.text + " | " + Text4.text
     Text2.text = ""
     Text3.text = ""
     Text4.text = ""
     TextCode.text = ""
+    End If
 End Sub
 
+Function CheckTexts() As Boolean
+    Dim text As String
+    If FrmCodes.CheckLangDepending.value = 1 Then
+        If Trim(Text2.text) <> "" Then
+            text = Text2.text
+        Else
+            If Trim(Text3.text) <> "" Then
+                text = Text3.text
+            Else
+                If Trim(Text4.text) <> "" Then
+                    text = Text4.text
+                Else
+                    text = ""
+                End If
+            End If
+        End If
+        If Trim(text) <> "" Then
+            If Trim(Text2.text) = "" Then
+                Text2.text = text
+            End If
+            If Trim(Text3.text) = "" Then
+                Text3.text = text
+            End If
+            If Trim(Text4.text) = "" Then
+                Text4.text = text
+            End If
+            
+        End If
+    Else
+        If Trim(Text2.text) <> "" Then
+            text = Text2.text
+        End If
+        
+        If Trim(text) <> "" Then
+            If Trim(Text2.text) = "" Then
+                Text2.text = text
+            End If
+        End If
+        Text3.text = ""
+        Text4.text = ""
+        
+    End If
+    CheckTexts = (Len(Trim(text)) > 0)
+End Function
 Private Sub CmdClose_Click()
     If isChanged Then
         CloseQuestion
@@ -293,6 +340,142 @@ Private Function retCodeRecord() As clsTable
     Set retCodeRecord = table
 End Function
 Private Function loadCodeRecord(label As String, Optional theList As ListBox) As Boolean
+    Dim r As clsTable
+    Dim i As Long
+    Dim k As Long
+    Dim tr As clsText
+    Dim listItem As String
+    Dim Item As clsCode
+    Dim text As String
+    
+    current = ""
+    
+    If theList Is Nothing Then
+        Set theList = List1
+    End If
+    
+    Set r = CodeDAO.getCodes(label)
+    If r Is Nothing Then
+    Else
+    
+        If r.status = "1" Then
+            CheckEnableUserEditing.value = 1
+        Else
+            CheckEnableUserEditing.value = 0
+        End If
+        
+        If r.code_translations Is Nothing Then
+            CheckLangDepending.value = 0
+        Else
+            If (r.code_translations.Item(1).translations.Count > 1) Then
+                CheckLangDepending.value = 1
+            Else
+                CheckLangDepending.value = 0
+            End If
+        End If
+        
+        theList.Clear
+        CmdDelete.Enabled = False
+        CmdChange.Enabled = False
+        
+        If Not r.code_translations Is Nothing Then
+            For i = 1 To r.code_translations.Count
+                Set Item = r.code_translations.Item(i)
+                listItem = Item.code
+                If CheckLangDepending.value = 1 Then
+                    For k = 1 To IdiomsInfo.Count
+                        Set tr = Item.translations(IdiomsInfo(k).code)
+                        If tr Is Nothing Then
+                            text = ""
+                        Else
+                            
+                            text = tr.text
+                        End If
+                        listItem = listItem + " | " + text
+                    Next
+                Else
+                    listItem = listItem + " | " + Item.translations(1).text + " |  | "
+                End If
+                theList.AddItem (listItem)
+                ReDim Preserve listItems(theList.ListCount)
+                listItems(theList.ListCount - 1) = listItem
+                current = current + listItem
+            Next
+            Call displayTextBoxes((CheckLangDepending.value = 1))
+        End If
+    End If
+End Function
+Private Function old2_loadCodeRecord(label As String, Optional theList As ListBox) As Boolean
+    Dim r As clsTable
+    Dim i As Long
+    Dim k As Long
+    Dim tr As clsText
+    Dim listItem As String
+    Dim Item As clsCode
+    Dim text As String
+    
+    current = ""
+    
+    If theList Is Nothing Then
+        Set theList = List1
+    End If
+    
+    Set r = CodeDAO.getCodes(label)
+    If r Is Nothing Then
+    Else
+    
+        If r.status = "1" Then
+            CheckEnableUserEditing.value = 1
+        Else
+            CheckEnableUserEditing.value = 0
+        End If
+        
+        If r.code_translations Is Nothing Then
+            CheckLangDepending.value = 0
+        Else
+            If (r.code_translations.Item(1).translations.Count > 1) Then
+                CheckLangDepending.value = 1
+            Else
+                CheckLangDepending.value = 0
+            End If
+        End If
+        
+        theList.Clear
+        CmdDelete.Enabled = False
+        CmdChange.Enabled = False
+        
+        If Not r.code_translations Is Nothing Then
+            If CheckLangDepending.value = 1 Then
+                
+                For i = 1 To r.code_translations.Count
+                    Set Item = r.code_translations.Item(i)
+                    
+                    
+                    listItem = Item.code
+                    For k = 1 To IdiomsInfo.Count
+                        Set tr = Item.translations(IdiomsInfo(k).code)
+                        If tr Is Nothing Then
+                            text = ""
+                        Else
+                            
+                            text = tr.text
+                        End If
+                        listItem = listItem + " | " + text
+                    Next
+                    theList.AddItem (listItem)
+                    ReDim Preserve listItems(theList.ListCount)
+                    listItems(theList.ListCount - 1) = listItem
+                    current = current + listItem
+                Next
+            Else
+                listItem = r.code_translations.Item(1).code + " | " + r.code_translations.Item(1).translations(1).text + " |  | "
+            End If
+            Call displayTextBoxes(r.code_translations.Item(1).translations.Count > 1)
+        End If
+    End If
+End Function
+
+Private Function old_loadCodeRecord(label As String, Optional theList As ListBox) As Boolean
     Dim r As clsTable
     Dim i As Long
     Dim k As Long
@@ -395,14 +578,16 @@ Private Sub CmdNewCode_Click()
             If found Then
                 MsgBox "FIXME Código já está em uso"
             Else
-                ReDim Preserve listItems(List1.ListCount)
-                listItems(List1.ListCount) = TextCode.text + " | " + Text2.text + " | " + Text3.text + " | " + Text4.text
-                List1.AddItem (TextCode.text + " | " + Text2.text + " | " + Text3.text + " | " + Text4.text)
-                TextCode.text = ""
-                Text2.text = ""
-                Text3.text = ""
-                Text4.text = ""
-                
+                If CheckTexts Then
+                    
+                    ReDim Preserve listItems(List1.ListCount)
+                    listItems(List1.ListCount) = TextCode.text + " | " + Text2.text + " | " + Text3.text + " | " + Text4.text
+                    List1.AddItem (TextCode.text + " | " + Text2.text + " | " + Text3.text + " | " + Text4.text)
+                    TextCode.text = ""
+                    Text2.text = ""
+                    Text3.text = ""
+                    Text4.text = ""
+                End If
             End If
         End If
     
@@ -512,3 +697,4 @@ Private Sub displayEditingCommands(status As Boolean)
     'Text3.Enabled = status
     'Text4.Enabled = status
 End Sub
+

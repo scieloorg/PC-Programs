@@ -3032,11 +3032,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\serial\Code\newcode.id
-  Destination=%DATADIR%\serial\Code\newcode.id
-  Flags=0000000010000010
-end
-item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\serial\issn\issn01.ifp
   Destination=%DATADIR%\serial\issn\issn01.ifp
   Flags=0000000010000010
@@ -3224,11 +3219,6 @@ end
 item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\serial\Code\id2i.exe
   Destination=%DATADIR%\serial\Code\id2i.exe
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\serial\Code\newcode.txt
-  Destination=%DATADIR%\serial\Code\newcode.txt
   Flags=0000000010000010
 end
 item: Install File
@@ -4316,6 +4306,11 @@ end
 item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\bin\markup_pmc\en_attb.mds
   Destination=%PROGDIR%\bin\markup\en_attb.mds
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scieloorg\PCPrograms\src\scielo\bin\markup_pmc\p.mds
+  Destination=%PROGDIR%\bin\markup\p.mds
   Flags=0000000010000010
 end
 item: Install File
