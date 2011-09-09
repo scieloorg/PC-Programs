@@ -2907,16 +2907,6 @@ item: If/While Statement
   Flags=00001010
 end
 item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\section\section.n01
-  Destination=%PROGDIR%\export\temp\serial\section\section.n01
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\section\section.mst
-  Destination=%PROGDIR%\export\temp\serial\section\section.mst
-  Flags=0000000010000010
-end
-item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\serial\issn\issn01.fst
   Destination=%DATADIR%\serial\issn\issn01.fst
   Flags=0000000010000010
@@ -2952,61 +2942,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\title.lst
-  Destination=%PROGDIR%\export\temp\title.lst
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\title\tit_issn.n01
-  Destination=%PROGDIR%\export\temp\serial\title\tit_issn.n01
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\title\tit_issn.l01
-  Destination=%PROGDIR%\export\temp\serial\title\tit_issn.l01
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\title\tit_issn.cnt
-  Destination=%PROGDIR%\export\temp\serial\title\tit_issn.cnt
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\title\title.mst
-  Destination=%PROGDIR%\export\temp\serial\title\title.mst
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\section\section.n02
-  Destination=%PROGDIR%\export\temp\serial\section\section.n02
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\issue\issue.ifp
-  Destination=%PROGDIR%\export\temp\serial\issue\issue.ifp
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\issue\issue.l02
-  Destination=%PROGDIR%\export\temp\serial\issue\issue.l02
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\issue\issue.n01
-  Destination=%PROGDIR%\export\temp\serial\issue\issue.n01
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\issue\issue.xrf
-  Destination=%PROGDIR%\export\temp\serial\issue\issue.xrf
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\section\section.ifp
-  Destination=%PROGDIR%\export\temp\serial\section\section.ifp
-  Flags=0000000010000010
-end
-item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\help\Config\ptsection.htm
   Destination=%PROGDIR%\Help\Config\ptsection.htm
   Flags=0000000010000010
@@ -3014,16 +2949,6 @@ end
 item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\help\Config\ptissue.htm
   Destination=%PROGDIR%\Help\Config\ptissue.htm
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\title\tit_issn.l02
-  Destination=%PROGDIR%\export\temp\serial\title\tit_issn.l02
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\issue\issue.mst
-  Destination=%PROGDIR%\export\temp\serial\issue\issue.mst
   Flags=0000000010000010
 end
 item: Install File
@@ -3049,26 +2974,6 @@ end
 item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\export\scripts\ExportSerial_invert.bat
   Destination=%PROGDIR%\export\scripts\ExportSerial_invert.bat
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\title\title.xrf
-  Destination=%PROGDIR%\export\temp\serial\title\title.xrf
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\issue\issue.cnt
-  Destination=%PROGDIR%\export\temp\serial\issue\issue.cnt
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\section\section.l01
-  Destination=%PROGDIR%\export\temp\serial\section\section.l01
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\issue\issue.n02
-  Destination=%PROGDIR%\export\temp\serial\issue\issue.n02
   Flags=0000000010000010
 end
 item: Install File
@@ -3114,11 +3019,6 @@ end
 item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\serial\issn\issn01.n01
   Destination=%DATADIR%\serial\issn\issn01.n01
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\section\section.l02
-  Destination=%PROGDIR%\export\temp\serial\section\section.l02
   Flags=0000000010000010
 end
 item: Install File
@@ -3172,26 +3072,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\issue\issue.l01
-  Destination=%PROGDIR%\export\temp\serial\issue\issue.l01
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\section\section.xrf
-  Destination=%PROGDIR%\export\temp\serial\section\section.xrf
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\title\tit_issn.ifp
-  Destination=%PROGDIR%\export\temp\serial\title\tit_issn.ifp
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\title\tit_issn.n02
-  Destination=%PROGDIR%\export\temp\serial\title\tit_issn.n02
-  Flags=0000000010000010
-end
-item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\export\ExportSerial.bat
   Destination=%PROGDIR%\export\ExportSerial.bat
   Flags=0000000010000010
@@ -3224,11 +3104,6 @@ end
 item: Install File
   Source=W:\scieloorg\PCPrograms\src\scielo\serial\isi_issn\issn_isi.cnt
   Destination=%DATADIR%\serial\isi_issn\issn_isi.cnt
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scieloorg\PCPrograms\src\scielo\export\temp\serial\section\section.cnt
-  Destination=%PROGDIR%\export\temp\serial\section\section.cnt
   Flags=0000000010000010
 end
 item: Install File

@@ -142,10 +142,13 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Contribution                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-
-<!ELEMENT icontrib - - ( ((author | corpauth)*, et-al?) & subresp* & 
+<!-- ELEMENT icontrib - - ( ((author | corpauth)*, et-al?) & subresp* & 
                         (%m.title;)? & section? & pages? & location? &
-                        notes?  & isbn? & patgrp? ) >
+                        notes?  & isbn? & patgrp? ) -->
+
+
+<!ELEMENT icontrib - - ( ((author | corpauth)*, et-al?) , subresp* , date , 
+                        (%m.title;)? ) >
 
 <!ELEMENT subresp  - - (%m.name;) >
 <!ATTLIST subresp
@@ -157,11 +160,14 @@
 <!--    Serial Level                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT iiserial - - (isstitle? & ((author | corpauth)*, et-al?) & medium? 
+<!-- original ELEMENT iiserial - - (isstitle? & ((author | corpauth)*, et-al?) & medium? 
                         & (stitle | sertitle)? & (edition | city | state |
                         country | pubname | date | update | cited | location
                         | volid | isdesig | issueno | pages | notes | url | doi |
-                        issn)*) >
+                        issn)*) -->
+<!ELEMENT iiserial - - (isstitle? , ((author | corpauth)*, et-al?) , medium? 
+                        , (stitle | sertitle)? ,  (date | city | pubname | volid | issueno| pages | notes)*, 
+                        (url & cited)? ) >
 
 <!ELEMENT isstitle - - (#PCDATA) >
 <!ELEMENT medium   - - (#PCDATA) >
@@ -173,11 +179,23 @@
 <!--    Monographic Level                                                 -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT imonog   - - (  ((author | corpauth)*, et-al?) & (%m.title;) & medium?
+<!-- original ELEMENT imonog   - - (  ((author | corpauth)*, et-al?) & (%m.title;) & medium?
                         & ( edition | subresp | city | state | country 
                         | pubname | date | update | cited | volid | pages
                         | extent | location | coltitle | notes | url | doi |  isbn |
-                        patgrp)*) >
+                        patgrp)*) -->
+
+<!ELEMENT imonog   - -   ( ((author | corpauth)*, et-al?) , (update?, date?), (%m.title;), medium?, subresp?, 
+			           ((
+                              (coltitle? & volid? & notes? &  edition? & ((city? | state? | country?), pubname) & (extent | pages)? & isbn? )
+                               ,(url & cited)? 
+                             )
+                              
+                             |
+                             (url & cited)
+                             )
+                           )
+                           >
 
 <!ELEMENT coltitle - - (#PCDATA) >
 <!ELEMENT update   - - (#PCDATA) >

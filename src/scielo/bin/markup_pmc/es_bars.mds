@@ -654,15 +654,9 @@ down;corpautIcontrib
 et-al;Indica que la cita bibliográfica contiene autores que no fueran citados;15;#FALSE#;#FALSE#;
 subresp;Indica las responsabilidades que no son principales en una cita como, por ejemplo, traductores y revisores;15;#TRUE#;#TRUE#;subrespIcontrib
 down;subrespIcontrib
+date;Identifica una fecha;15;#TRUE#;#TRUE#;
 title;Identifica el título de un documento;15;#FALSE#;#TRUE#;
 subtitle;Identifica el subtítulo de un documento;15;#FALSE#;#FALSE#;
-section;Indica la sección que es citada en una cita bibliográfica;15;#FALSE#;#FALSE#;
-pages;Identifica las páginas de un artículo o de parte de una publicación en una cita bibliográfica;15;#FALSE#;#FALSE#;
-location;Indica la localización de una parte del documento en su contenido total en formato electrónico;15;#FALSE#;#FALSE#;
-notes;Contiene datos que no pueden ser identificados por los otros elementos de una cita;15;#FALSE#;#FALSE#;
-isbn;Identifica el Internacional Standard Book Number (ISBN);15;#FALSE#;#FALSE#;
-patgrp;Contiene los elementos para la identificación de patente;15;#FALSE#;#TRUE#;patentIcontrib
-down;patentIcontrib
 
 authorIcontrib;icontrib
 fname;Identifica los nombres iniciales de un autor individual;2;#FALSE#;#FALSE#;

@@ -659,15 +659,9 @@ down;corpautIcontrib
 et-al;Shows that the bibliographic reference contains authors that were not cited;15;#FALSE#;#FALSE#;
 subresp;Shows the responsibilities that are not principal in a citation for example, translators and revisors;15;#TRUE#;#TRUE#;subrespIcontrib
 down;subrespIcontrib
+date;Identifica una fecha;15;#TRUE#;#TRUE#;
 title;Identifies the title of a document;15;#FALSE#;#TRUE#;
 subtitle;Identifies the subtitle of a document;15;#FALSE#;#FALSE#;
-section;Shows the section that is cited in a bibliographic citation;15;#FALSE#;#FALSE#;
-pages;Identifies the pages of an article or from a publication in a bibliographic citation;15;#FALSE#;#FALSE#;
-location;Shows the location of a part of the document in its total content in the electronic format;15;#FALSE#;#FALSE#;
-notes;Contains data that cannot be identified by the other elements of a reference;15;#FALSE#;#FALSE#;
-isbn;Identifies the International Standard Book Number (ISBN);15;#FALSE#;#FALSE#;
-patgrp;Contains the elements of the patente;15;#FALSE#;#TRUE#;patentIcontrib
-down;patentIcontrib
 
 authorIcontrib;icontrib
 fname;Identifies the initial names of an individual author;2;#FALSE#;#FALSE#;

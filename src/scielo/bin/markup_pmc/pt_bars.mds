@@ -747,15 +747,9 @@ down;corpautIcontrib
 et-al;Indica que a referência bibliográfica possui autores que não foram mencionados;15;#FALSE#;#FALSE#;
 subresp;Indica as responsabilidades secundárias em uma citação como, por exemplo, tradutores e revisores;15;#TRUE#;#TRUE#;subrespIcontrib
 down;subrespIcontrib
+date;Identifica a data de publicação;15;#TRUE#;#TRUE#;
 title;Identifica o título de um documento;15;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo de um documento;15;#FALSE#;#FALSE#;
-section;Indica a seção que está sendo citada em uma referência bibliográfica;15;#FALSE#;#FALSE#;
-pages;Especifica a paginação inclusiva de um artigo ou parte de uma publicação em uma referência bibliográfica;15;#FALSE#;#FALSE#;
-location;Informa a localização da parte de um documento no seu todo eletrônico;15;#FALSE#;#FALSE#;
-notes;Contém dados que não estão identificados pelos demais elementos de uma citação;15;#FALSE#;#FALSE#;
-isbn;Código que fornece a identificação do título de uma monografia específica e não seriada;15;#FALSE#;#FALSE#;
-patgrp;Reúne elementos para identificação da patente;15;#FALSE#;#TRUE#;patentIcontrib
-down;patentIcontrib
 
 authorIcontrib;icontrib
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
