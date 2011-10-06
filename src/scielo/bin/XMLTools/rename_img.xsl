@@ -37,7 +37,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:variable name="filename" select="substring-before($filename1,'.jpg')"/>
+		
+		<xsl:variable name="filename"><xsl:choose>
+			<xsl:when test="contains($filename1,'.gif')"><xsl:value-of select="substring-before($filename1,'.gif')"/></xsl:when><xsl:when test="contains($filename1,'.jpg')"><xsl:value-of select="substring-before($filename1,'.jpg')"/></xsl:when><xsl:otherwise><xsl:value-of select="$filename1"/></xsl:otherwise></xsl:choose>		
+		</xsl:variable>
 		<xsl:variable name="file">
 			<xsl:choose>
 				<xsl:when test="contains($filename,'\')">

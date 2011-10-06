@@ -487,6 +487,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="xmlbody| unidentified[normalize-space(text())!='']"/>
 		</body>
 	</xsl:template>
+	<xsl:template match="sec[contains(.//sectitle//text(),'Materials and methods')]/@sec-type"><xsl:attribute name="sec-type">materials|methods</xsl:attribute></xsl:template>
 	<xsl:template match="subsec">
 		<sec>
 			<xsl:apply-templates select="@*|*|text()"/>
