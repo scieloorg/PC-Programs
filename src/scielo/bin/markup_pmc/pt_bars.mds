@@ -528,8 +528,8 @@ down;piserial
 pcontrib;pcitat
 author;Reúne elementos para identificação dos autores individuais, como nome, sobrenome e tipo de responsabilidade;15;#TRUE#;#TRUE#;authorpContrib
 down;authorpContrib
-corpauth;Identifica os autores corporativos responsáveis pelo conteúdo intelectual ou artístico do trabalho;15;#TRUE#;#FALSE#;corpautp
-down;corpautp
+corpauth;Identifica os autores corporativos responsáveis pelo conteúdo intelectual ou artístico do trabalho;15;#TRUE#;#FALSE#;corpautpContrib
+down;corpautpContrib
 date;Identifica a data de publicação;15;#FALSE#;#TRUE#;
 title;Identifica o título de um documento;15;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo de um documento;15;#FALSE#;#FALSE#;
