@@ -15,7 +15,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
 	<xsl:variable name="subject" select="$unident[1]//text()"/>
 	<xsl:variable name="PUB_TYPE" select=".//extra-scielo/issn-type"/>
-	<xsl:variable name="CURRENT_ISSN" select=".//extra-scielo/current-issn"/>
+	<xsl:variable name="CURRENT_" select=".//extra-scielo/current-issn"/>
 	<xsl:variable name="article_page">
 		<xsl:choose>
 			<xsl:when test="./@fpage='0'">
@@ -94,6 +94,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:with-param name="id" select="$id"/>
 			</xsl:apply-templates>
 		</xsl:element>
+	</xsl:template>
+	<xsl:template match="issn[contains(.,'PMID:')]">
+		<pub-id pub-id-type="pmid"><xsl:value-of select="substring-after(., 'PMID:')"/></pub-id>
 	</xsl:template>
 	<xsl:template match="@doctopic" mode="type">
 		<xsl:attribute name="article-type"><xsl:choose><xsl:when test=".='oa'">research-article</xsl:when><xsl:when test=".='ab'">abstract</xsl:when><xsl:when test=".='an'">announcement</xsl:when><xsl:when test=".='co'">article-commentary</xsl:when><xsl:when test=".='cr'">case-report</xsl:when><xsl:when test=".='ed'">editorial</xsl:when><xsl:when test=".='le'">letter</xsl:when><xsl:when test=".='ra'">review-article</xsl:when><xsl:when test=".='sc'">rapid-communication</xsl:when><xsl:when test=".='??'">addendum</xsl:when><xsl:when test=".='??'">book-review</xsl:when><xsl:when test=".='??'">books-received</xsl:when><xsl:when test=".='??'">brief-report</xsl:when><xsl:when test=".='??'">calendar</xsl:when><xsl:when test=".='??'">collection</xsl:when><xsl:when test=".='??'">correction</xsl:when><xsl:when test=".='??'">discussion</xsl:when><xsl:when test=".='??'">dissertation</xsl:when><xsl:when test=".='??'">in-brief</xsl:when><xsl:when test=".='??'">introduction</xsl:when><xsl:when test=".='??'">meeting-report</xsl:when><xsl:when test=".='??'">news</xsl:when><xsl:when test=".='??'">obituary</xsl:when><xsl:when test=".='??'">oration</xsl:when><xsl:when test=".='??'">partial-retraction</xsl:when><xsl:when test=".='??'">product-review</xsl:when><xsl:when test=".='??'">reply</xsl:when><xsl:when test=".='??'">reprint</xsl:when><xsl:when test=".='??'">retraction</xsl:when><xsl:when test=".='??'">translation</xsl:when><xsl:otherwise>other</xsl:otherwise></xsl:choose></xsl:attribute>
@@ -190,6 +193,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:choose>
 			</xsl:variable>
 			<pub-date pub-type="{$datetype}">
+				<xsl:if test="substring($date,7,2)!='00'"><day><xsl:value-of select="substring($date,7,2)"/></day></xsl:if>
 				<month>
 					<xsl:value-of select="substring($date,5,2)"/>
 				</month>
@@ -385,12 +389,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:choose>
 		</xsl:variable>
 		<date date-type="{$dtype}">
+			<xsl:if test="substring(@dateiso,7,2)!='00'">
 			<day>
 				<xsl:value-of select="substring(@dateiso,7,2)"/>
 			</day>
+			</xsl:if>
+			<xsl:if test="substring(@dateiso,5,2)!='00'">
 			<month>
 				<xsl:value-of select="substring(@dateiso,5,2)"/>
 			</month>
+			</xsl:if>
 			<year>
 				<xsl:value-of select="substring(@dateiso,1,4)"/>
 			</year>
@@ -511,7 +519,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="back" mode="back">
 		<xsl:variable name="preceding" select="*[@standard]/preceding-sibling::node()"/>
 		<xsl:variable name="following" select="*[@standard]/following-sibling::node()"/>
-		<xsl:if test="$preceding[normalize-space(.//text())!='']!=''">
+		<xsl:if test="$preceding[normalize-space(.//text())!='']!='' and not(..//report)">
 			<ack>
 				<xsl:apply-templates select="$preceding[normalize-space(.//text())!='']" mode="back"/>
 			</ack>
@@ -640,12 +648,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</source>
 	</xsl:template>
 	<xsl:template match="back//date">
-		<day>
+		<xsl:if test="substring(@dateiso,7,2)!='00'"><day>
 			<xsl:value-of select="substring(@dateiso,7,2)"/>
 		</day>
+		</xsl:if>
+		<xsl:if test="substring(@dateiso,5,2)!='00'"><day>
 		<month>
 			<xsl:value-of select="substring(@dateiso,5,2)"/>
 		</month>
+		</xsl:if>
 		<year>
 			<xsl:value-of select="substring(@dateiso,1,4)"/>
 		</year>
