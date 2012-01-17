@@ -1179,4 +1179,10 @@ et al.</copyright-statement>
 			<xsl:value-of select="substring($dateiso,1,4)"/>
 		</year>
 	</xsl:template>	
+
+	<xsl:template match="sciname">
+		<named-content content-type="scientific-name">
+			<xsl:apply-templates/>
+		</named-content>
+	</xsl:template>
 </xsl:stylesheet>
