@@ -49,6 +49,15 @@ Contém os elementos para identificar uma tabela no corpo do texto
 ifloat;figgrp
 Contém os elementos que identificam as imagens no corpo de um texto
 
+ifloat;figgrps
+Agrupa figuras de uma figura composta
+
+figgrps;label
+Rótulo de figura composta
+
+figgrps;caption
+Legenda de figura composta
+
 ifloat;equation
 Contém os elementos que identificam uma fórmula
 
@@ -75,6 +84,9 @@ Indica a imagem
 
 tabwrap;table
 Indica a tabela
+
+tabwrap;notes
+Identifica nota de rodapé de uma tabela
 
 figgrp;label
 Identifica o rótulo da figura (ex. Figura 1)

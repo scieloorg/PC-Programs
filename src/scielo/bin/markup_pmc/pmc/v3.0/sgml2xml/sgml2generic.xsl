@@ -15,7 +15,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
 	<xsl:variable name="subject" select="$unident[1]//text()"/>
 	<xsl:variable name="PUB_TYPE" select=".//extra-scielo/issn-type"/>
-	<xsl:variable name="CURRENT_" select=".//extra-scielo/current-issn"/>
+	<xsl:variable name="CURRENT_ISSN" select=".//extra-scielo/current-issn"/>
 	<xsl:variable name="article_page">
 		<xsl:choose>
 			<xsl:when test="./@fpage='0'">
@@ -170,6 +170,25 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="article-title"/>
 			<xsl:apply-templates select=".//authgrp" mode="front"/>
 			<xsl:apply-templates select="." mode="author-notes"/>
+			<xsl:variable name="dateepub">
+				<xsl:choose>
+					<xsl:when test="@rvpdate">
+						<xsl:value-of select="@rvpdate"/>
+					</xsl:when>
+					<xsl:when test="@ahpdate">
+						<xsl:value-of select="@ahpdate"/>
+					</xsl:when>
+					
+				</xsl:choose>
+			</xsl:variable>
+			<xsl:if test="string-length($dateepub)&gt;0">
+				<pub-date pub-type="epub">
+					<xsl:call-template name="display_date">
+					<xsl:with-param name="dateiso"><xsl:value-of select="$dateepub"/></xsl:with-param>
+					</xsl:call-template>
+				</pub-date>
+			</xsl:if>
+			
 			<xsl:variable name="date">
 				<xsl:choose>
 					<xsl:when test="@rvpdate">
@@ -193,13 +212,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:choose>
 			</xsl:variable>
 			<pub-date pub-type="{$datetype}">
-				<xsl:if test="substring($date,7,2)!='00'"><day><xsl:value-of select="substring($date,7,2)"/></day></xsl:if>
-				<month>
-					<xsl:value-of select="substring($date,5,2)"/>
-				</month>
-				<year>
-					<xsl:value-of select="substring($date,1,4)"/>
-				</year>
+				<xsl:call-template name="display_date">
+					<xsl:with-param name="dateiso"><xsl:value-of select="$date"/></xsl:with-param>
+					</xsl:call-template>
 			</pub-date>
 			<xsl:apply-templates select="@volid | @issueno | @supplvol | @supplno | @fpage | @lpage"/>
 			<xsl:apply-templates select=".//hist" mode="front"/>
@@ -389,19 +404,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:choose>
 		</xsl:variable>
 		<date date-type="{$dtype}">
-			<xsl:if test="substring(@dateiso,7,2)!='00'">
-			<day>
-				<xsl:value-of select="substring(@dateiso,7,2)"/>
-			</day>
-			</xsl:if>
-			<xsl:if test="substring(@dateiso,5,2)!='00'">
-			<month>
-				<xsl:value-of select="substring(@dateiso,5,2)"/>
-			</month>
-			</xsl:if>
-			<year>
-				<xsl:value-of select="substring(@dateiso,1,4)"/>
-			</year>
+			<xsl:call-template name="display_date">
+					<xsl:with-param name="dateiso"><xsl:value-of select="@dateiso"/></xsl:with-param>
+			</xsl:call-template>
 		</date>
 	</xsl:template>
 	<xsl:template match="abstract" mode="trans">
@@ -648,18 +653,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</source>
 	</xsl:template>
 	<xsl:template match="back//date">
-		<xsl:if test="substring(@dateiso,7,2)!='00'"><day>
-			<xsl:value-of select="substring(@dateiso,7,2)"/>
-		</day>
-		</xsl:if>
-		<xsl:if test="substring(@dateiso,5,2)!='00'"><day>
-		<month>
-			<xsl:value-of select="substring(@dateiso,5,2)"/>
-		</month>
-		</xsl:if>
-		<year>
-			<xsl:value-of select="substring(@dateiso,1,4)"/>
-		</year>
+		<xsl:call-template name="display_date">
+					<xsl:with-param name="dateiso"><xsl:value-of select="@dateiso"/></xsl:with-param>
+			</xsl:call-template>
 	</xsl:template>
 	<xsl:template match="back//cited">
 		<date-in-citation content-type="access-date">
@@ -731,6 +727,56 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//text()"/>
 		</email>
 	</xsl:template>
+	<!-- 
+	<fig id="fg-012">
+  <label>Figure 12. </label>
+  <caption><title>Three Perspectives on My Dog</title></caption>
+  <graphic xlink:href="frontView.png">
+   <label>a.</label>
+   <caption><p>View A: From the Front, Laughing</p></caption>
+  </graphic>
+  <graphic xlink:href="sideView.png">
+   <label>b.</label>
+   <caption><p>View B: From the Side, Best Profile</p></caption>
+  </graphic>
+  <graphic xlink:href="motionView.png">
+   <label>c.</label>
+   <caption><p>View C: In Motion, A Blur on Feet</p></caption>
+  </graphic>
+</fig>
+Here is a figure group, with three figures inside, each of which contains a graphic. The figure group also has a title that applies to all the figures.
+<fig-group id="dogpix4">
+  <caption><title>Three perspectives on My Dog</title></caption>
+  <fig id="fg-12">
+   <label>a.</label>
+   <caption><p>View A: From the Front, Laughing</p></caption>
+     <graphic xlink:href="frontView.png"/>
+  </fig>
+  <fig id="fg-13">
+   <label>b.</label>
+   <caption><p>View B: From the Side, Best Profile</p></caption>
+     <graphic xlink:href="sideView.png"/>
+  </fig>
+  <fig id="fg-14">
+   <label>c.</label>
+   <caption><p>View C: In Motion, A Blur on Feet</p></caption>
+     <graphic xlink:href="motionView.png"/>
+  </fig>
+</fig-group>
+	 -->
+	 <xsl:template match="figgrps[not(label)]">
+		<fig-group id="{@id}">
+		  <xsl:apply-templates select="caption"/>
+		  <xsl:apply-templates select=".//figgrp"/>
+		</fig-group>
+	</xsl:template>
+	<xsl:template match="figgrps[label]">
+		<fig id="{@id}">
+		  <xsl:apply-templates select="label"/>
+		  <xsl:apply-templates select="caption"/>
+		  <xsl:apply-templates select=".//figgrp"/>
+		</fig>
+	</xsl:template>
 	<xsl:template match="figgrp">
 		<p>
 			<fig id="{@id}" fig-type="{@ftype}">
@@ -745,7 +791,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="@*| * | text()" mode="tableless"/>
 		</p>
 	</xsl:template>
-	<xsl:template match="p/figgrp">
+	<xsl:template match="p/figgrp|figgrps/figgrp">
 		<fig id="{@id}" fig-type="{@ftype}">
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
@@ -758,6 +804,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select=".//label"/>
 				<xsl:apply-templates select=".//caption"/>
 				<xsl:apply-templates select="." mode="graphic"/>
+				<xsl:if test=".//notes">
+				<table-wrap-foot>
+					<fn-group>
+					<fn><p><xsl:value-of select=".//notes"/></p></fn>
+					</fn-group>
+				</table-wrap-foot>
+				</xsl:if>
 			</table-wrap>
 		</p>
 	</xsl:template>
@@ -766,6 +819,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
 			<xsl:apply-templates select="." mode="graphic"/>
+			<xsl:if test=".//notes">
+				<table-wrap-foot>
+					<fn-group>
+					<fn><p><xsl:value-of select=".//notes"/></p></fn>
+					</fn-group>
+				</table-wrap-foot>
+				</xsl:if>
 		</table-wrap>
 	</xsl:template>
 	<xsl:template match="back//*[contains(name(),'monog') or contains(name(),'contrib')]//subtitle"/>
@@ -1014,9 +1074,9 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="fngrp">
 	</xsl:template>
-	<xsl:template match="fngrp[*]">
+	<xsl:template match="fngrp[p or fn]">
 		<fn-group>
-			<xsl:apply-templates select="*"/>
+			<xsl:apply-templates select="fn|p"/>
 		</fn-group>
 	</xsl:template>
 	<xsl:template match="fn">
@@ -1100,6 +1160,23 @@ et al.</copyright-statement>
 	<xsl:template match="caption/bold | caption/italic | caption/sub | caption/sup | subtitle/bold | subtitle/italic | subtitle/sub | subtitle/sup | sectitle/bold | sectitle/italic | sectitle/sub | sectitle/sup |title/bold | title/italic | title/sub | title/sup | article-title/bold | article-title/italic | article-title/sub | article-title/sup | label/bold | label/italic | label/sub | label/sup">
 		<xsl:value-of select="."/>
 	</xsl:template>
+	<xsl:template match="figgrps/figgrp/caption"><caption>
+			<p>
+				<xsl:apply-templates select="@*| * | text()"/>
+			</p>
+		</caption>
+	</xsl:template>
 	<xsl:template match="edition/italic | edition/bold | edition/sub | edition/sup "><xsl:value-of select="."/></xsl:template>
 	<xsl:template match="p[normalize-space(text())='']"></xsl:template>
+	
+	<xsl:template name="display_date">
+		<xsl:param name="dateiso"/>
+		
+		<xsl:if test="substring($dateiso,7,2)!='00'"><day><xsl:value-of select="substring($dateiso,7,2)"/></day></xsl:if>
+		<xsl:if test="substring($dateiso,5,2)!='00'"><month><xsl:value-of select="substring($dateiso,5,2)"/></month></xsl:if>
+					
+		<year>
+			<xsl:value-of select="substring($dateiso,1,4)"/>
+		</year>
+	</xsl:template>	
 </xsl:stylesheet>

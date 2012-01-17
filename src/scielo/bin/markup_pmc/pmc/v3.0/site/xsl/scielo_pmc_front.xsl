@@ -79,7 +79,7 @@
 			</div>
 		</xsl:if>
 		<xsl:apply-templates select="//author-notes"/>
-		<div id="section-list">
+		<div id="section-list" >
 			<xsl:apply-templates select="." mode="section-index"/>
 		</div>
 		<hr/>
@@ -102,7 +102,7 @@
 	</xsl:template>
 	<xsl:template match="trans-title" mode="format">
 		<xsl:variable name="lang" select="@xml:lang"/>
-		<p id="scielo-article-other-titles{$languages//language[@id=$lang]/@view}">
+		<p class="scielo-article-other-titles{$languages//language[@id=$lang]/@view}">
 			<xsl:apply-templates/>
 			<xsl:apply-templates select=" ../subtitle" mode="format"/>
 		</p>

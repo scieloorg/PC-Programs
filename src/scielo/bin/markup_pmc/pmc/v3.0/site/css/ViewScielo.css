@@ -19,12 +19,37 @@ div {
     margin-bottom: 24pt;
 }
 
-.scielo-article-title {
+
+#section-list {
+ margin: 3pt;
+}
+#section-list li {
+list-style-type: none
+}
+
+#author-notes P, .author-notes P {
+ margin: 0pt;
+}
+
+#author-notes, .author-notes  {
+ margin: 2pt;
+}
+
+#scielo-article-title {
 	font-weight: bold;
 	font-size: 13pt;
 	margin: 10;
 	margin-bottom: 80px;
 }
+
+#article-categories {
+	text-align: right;
+}
+#scielo-authors {
+		font-weight: bold;
+}
+
+
 .scielo-article-other-titles {
 	font-size: 13pt;
 	margin: 20;
@@ -33,9 +58,6 @@ div {
 	font-size: 16pt;
 	text-align: right;
 	margin: 20;
-}
-.scielo-authors {
-		font-weight: bold;
 }
 .abstract-title {
 	font-weight: bold;
@@ -108,15 +130,6 @@ div {
 }
 
 
-/*
-.table table td {
-		
-	border: 1px solid gray;
-}*/
-
-.article-categories {
-	text-align: right;
-}
 .element {
 	color: red;
 }
@@ -144,7 +157,7 @@ div {
 .subject {
 	text-transform: uppercase;
 }
-.foot {
+.foot , #corresp {
 
      font-size:   8pt;	
 }
@@ -172,21 +185,7 @@ fig-file a  {
 	margin-top: 60pt;	
 }
 
-.section-list {
- margin: 3pt;
-}
-.section-list li {
-list-style-type: none
-}
 
-#author-notes P {
- margin: 0pt;
-}
-
-#author-notes  {
- margin: 2pt;
-}
-
-.warning {
-background-color:yellow
+.sciname {
+	font-style: italic
 }

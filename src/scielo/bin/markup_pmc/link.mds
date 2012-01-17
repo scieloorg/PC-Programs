@@ -61,6 +61,9 @@ id;filename
 figgrp
 id;ftype;filename
 
+figgrps
+id
+
 equation
 id;filename
 

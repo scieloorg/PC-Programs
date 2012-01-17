@@ -13,6 +13,7 @@ msgInvalid,Dado Invalido
 msgType,Tipo de dado invalido
 msgSelection,Selecione o texto para marcação
 msgInserting,Erro inserindo a tag
+msgEditingAttr,Tag não tem atributos para editar
 msgDeleting,Erro apagando a tag. Selecione o texto
 msgOpenFile,Abra somente um arquivo em htm/html ou .doc
 msgSure,Deseja continuar?
@@ -63,7 +64,7 @@ optionEnglish,inglês
 optionSpanish,espanhol
 optionPortuguese,português
 buttonStop,Sair da Marcação
-buttonChange,Mudar o atributo da tag
+buttonChange,Editar atributos
 buttonDelete,Apagar a tag
 buttonAutomatic,Marcação Automática
 buttonAutomaticWS,Marcação Automática 2
@@ -71,7 +72,8 @@ buttonAutomaticStyles,Marcação Automática usando estilos
 buttonHelp,Ajuda
 bodyHasChildren,no
 doDebug,no
-buttonParser,Executar o parser
+buttonParser,Verificar a marcação
+buttonParser,Verificar o XML
 buttonGenerateXML,Gerar o XML
 buttonCheckXML,Visualizar texto completo gerado a partir do XML
 buttonViewMarkup,Visualizar texto com marcação
@@ -98,7 +100,8 @@ DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
 buttonApply,Aplicar
 buttonChange2,Modificar
 msgMissingImportantInformation,"Informação importante de ISSUEID não foi encontrada no arquivo \bin\markup\issue.mds"
-pmcfolder,pmc
-tifsrcffolder,img_src
-pmctempfolder,pmc_work
+pmcfolder,pmc\pmc_package
+tifsrcffolder,pmc\pmc_img
+pmctempfolder,pmc\pmc_work
+pmcmarkupfolder,pmc\pmc_markup
 msgMissingFile,não encontrado.
