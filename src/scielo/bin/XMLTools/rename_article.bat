@@ -10,6 +10,6 @@ SET PDF_FILE=%7
 
 copy %XML_FILE% %WORK_ART%\%NEW_FILENAME%.xml 
 if exist %WORK_ART%\%NEW_FILENAME%.xml   copy %WORK_ART%\%NEW_FILENAME%.xml   %PACK%\%NEW_FILENAME%.xml
-if exist %PDF_FILE% copy %PDF_FILE%f %PACK%\%NEW_FILENAME%.pdf
+if exist %PDF_FILE% copy %PDF_FILE% %PACK%\%NEW_FILENAME%.pdf
 
 del %XML_FILE%

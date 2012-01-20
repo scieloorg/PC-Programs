@@ -8,7 +8,7 @@
 <!--   Common Models                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ENTITY % i.float  "aff | ign | tabwrap | figgrp | cltrial | xref | uri | graphic " > 
+<!ENTITY % i.float  "aff | ign | tabwrap | figgrp | cltrial | xref | uri | sciname" > 
 <!ENTITY % m.name   "(fname? & surname)" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
@@ -187,13 +187,16 @@ filename       CDATA #IMPLIED>
 
 
 <!ELEMENT xmlbody  - - (sec|p)+  >
-<!ELEMENT sec  - - (sectitle, (subsec | p)+ )  >
+<!ELEMENT sec  - - (sectitle, (subsec | p | list )+ )  >
 <!ATTLIST sec
           sec-type  CDATA #IMPLIED>
-<!ELEMENT subsec  - - (sectitle, (subsec | p)+ )  >
+<!ELEMENT subsec  - - (sectitle, (subsec | p | list )+ )  >
 
 <!ELEMENT sectitle - - (#PCDATA)  +(%i.float;) >
-<!ELEMENT p - - ((#PCDATA) | (label,caption) )  +(%i.float;) >
+<!--ELEMENT p - - ((#PCDATA) | (label,caption) | list )  +(%i.float;) -->
+<!ELEMENT p - - (#PCDATA)   +(%i.float;) >
+<!ELEMENT list  - - (li)+  >
+<!ELEMENT li  - - (#PCDATA) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    license                                                           -->
@@ -202,6 +205,6 @@ filename       CDATA #IMPLIED>
 <!ELEMENT license  - - (licensep)  >
 <!ATTLIST license
           language  CDATA #REQUIRED
-          lictype  CDATA #REQUIRED
-          href  CDATA #REQUIRED>
+          lictype   CDATA #REQUIRED
+          href      CDATA #REQUIRED >
 <!ELEMENT licensep  - - (#PCDATA)  >

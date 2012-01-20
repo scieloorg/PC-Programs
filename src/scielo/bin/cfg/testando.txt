@@ -1,0 +1,538 @@
+
+W:\scielo\bin\cfg>set JAVA_EXE=java 
+
+W:\scielo\bin\cfg>set PATH_XML_TOOLS=C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>set FILE_SGM_XML=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml 
+
+W:\scielo\bin\cfg>set FILE_XSL_SGM2XML=C:\SciELO\bin\markup\pmc\v3.0\sgml2xml\sgml2pmc.xsl 
+
+W:\scielo\bin\cfg>set PATH_XSL=C:\SciELO\bin\markup\pmc\v3.0\check 
+
+W:\scielo\bin\cfg>set ERR_FILENAME=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml.err 
+
+W:\scielo\bin\cfg>set OUTPUT_XML=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml 
+
+W:\scielo\bin\cfg>set OUTPUT_REPORT=Z:\bjm\v41n3\pmc\pmc_work\a01v41n3\a01v41n3.rep.html 
+
+W:\scielo\bin\cfg>set ISSUE_PATH=Z:\bjm\v41n3\ 
+
+W:\scielo\bin\cfg>set FILENAME=a01v41n3 
+
+W:\scielo\bin\cfg>set XSL_ERR=C:\SciELO\bin\markup\pmc\v3.0\check\pmcstylechecker.xsl 
+
+W:\scielo\bin\cfg>set XSL_REPORT=C:\SciELO\bin\markup\pmc\v3.0\check\pmcstylereporter.xsl 
+
+W:\scielo\bin\cfg>set LOG_FILE=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>set TEMP_ERRFILE=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err 
+
+W:\scielo\bin\cfg>set XSL_RENAME_IMG=C:\SciELO\bin\XMLTools\rename_img.xsl 
+
+W:\scielo\bin\cfg>set TEMP_FILE1=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.01.tmp 
+
+W:\scielo\bin\cfg>set TEMP_FILE2=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.02.tmp 
+
+W:\scielo\bin\cfg>set TEMP_FILE3=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.03.tmp 
+
+W:\scielo\bin\cfg>set TEMP_FILE4=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.04.tmp 
+
+W:\scielo\bin\cfg>set TEMP_FILE5=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp 
+
+W:\scielo\bin\cfg>set TEMP_FILE6=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp 
+
+W:\scielo\bin\cfg>set OUTPUT_HTML=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml.html 
+
+W:\scielo\bin\cfg>set OUTPUT_XML_LOCAL=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml 
+
+W:\scielo\bin\cfg>set FILE_XML4REPORT=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml 
+
+W:\scielo\bin\cfg>set TMP_SH_FILE=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml.err del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml.err 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\pmc\pmc_work\a01v41n3\a01v41n3.rep.html del /F Z:\bjm\v41n3\pmc\pmc_work\a01v41n3\a01v41n3.rep.html 
+Z:\bjm\v41n3\pmc\pmc_work\a01v41n3\a01v41n3.rep.html
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat 
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:26,78 inicio  1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>rem  
+
+W:\scielo\bin\cfg>rem PASSO 1 VALIDATE sgm.xml 
+
+W:\scielo\bin\cfg>rem
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:26,79 Passo 1 Validate Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml   1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>set TEMP_FILE=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.01.tmp 
+
+W:\scielo\bin\cfg>java -cp C:\SciELO\bin\XMLTools\core\XMLCheck.jar br.bireme.XMLCheck.XMLCheck Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml   1>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.01.tmp 
+
+W:\scielo\bin\cfg>if not exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.01.tmp echo validation error Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml  1>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.01.tmp C:\SciELO\bin\XMLTools\..\cfg\mx seq=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.01.tmp lw=9999 "pft=if s(mpu,v1,mpl):'ERROR' then 'copy Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.01.tmp Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err'/ fi" now  1>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat call Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err goto ERR_VALIDATE 
+
+W:\scielo\bin\cfg>rem  
+
+W:\scielo\bin\cfg>rem PASSO 2 TRANSFORMATION sgm.xml xml 
+
+W:\scielo\bin\cfg>rem
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:27,09 Passo 2 Transform Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml C:\SciELO\bin\markup\pmc\v3.0\sgml2xml\sgml2pmc.xsl   1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>set TEMP_FILE=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.02.tmp 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.02.tmp del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.02.tmp 
+
+W:\scielo\bin\cfg>java -jar C:\SciELO\bin\XMLTools\core\saxon8.jar -novw -w0 -o Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.02.tmp Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml C:\SciELO\bin\markup\pmc\v3.0\sgml2xml\sgml2pmc.xsl  
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.02.tmp echo copying Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml 1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.02.tmp copy Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.02.tmp Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.02.tmp goto STEP3 
+
+W:\scielo\bin\cfg>rem  
+
+W:\scielo\bin\cfg>rem PASSO 3 VALIDATE xml 
+
+W:\scielo\bin\cfg>rem
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:27,86 Passo 3 Validate Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml   1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>set TEMP_FILE=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.03.tmp 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.03.tmp del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.03.tmp 
+
+W:\scielo\bin\cfg>set XML_TMP=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml  
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:27,87 Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.02.tmp Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml 1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:27,88 change to local dtd  1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>C:\SciELO\bin\XMLTools\..\cfg\mx mfrl=32000 fmtl=32000 seq=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml   lw=9999 "pft=if v1:'journalpublishing3.dtd' then replace(v1,'http://dtd.nlm.nih.gov/publishing/3.0/journalpublishing3.dtd',s('file:///',replace('C:\SciELO\bin\XMLTools','\','/'),'/../markup/pmc/v3.0/dtd/publishing/journalpublishing3.dtd')),else v1,if p(v2) then '|'v2 fi fi" now  1>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml 
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:28,22 changed  1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:28,22 validating locally Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml 1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>java -cp C:\SciELO\bin\XMLTools\core\XMLCheck.jar br.bireme.XMLCheck.XMLCheck Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml --validate   1>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.03.tmp 
+
+W:\scielo\bin\cfg>if not exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.03.tmp echo validation error Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml  1>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.03.tmp C:\SciELO\bin\XMLTools\..\cfg\mx seq=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.03.tmp lw=9999 "pft=if s(mpu,v1,mpl):'ERROR' then 'copy Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.03.tmp Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err'/ fi" now  1>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat call Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.bat 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err goto ERR_VALIDATE 
+
+W:\scielo\bin\cfg>rem  
+
+W:\scielo\bin\cfg>rem PASSO 4 TRANSFORMATION xml 2 report.xml 
+
+W:\scielo\bin\cfg>rem
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:28,70 Passo 4 Transform Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml C:\SciELO\bin\markup\pmc\v3.0\check\pmcstylechecker.xsl  1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>set TEMP_FILE=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml 
+
+W:\scielo\bin\cfg>set TEMP_XML=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml 
+
+W:\scielo\bin\cfg>java -jar C:\SciELO\bin\XMLTools\core\saxon8.jar -novw -w0 -o Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml C:\SciELO\bin\markup\pmc\v3.0\check\pmcstylechecker.xsl  
+
+W:\scielo\bin\cfg>if not exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml echo PASSO 4 Transformation error      1>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err 
+
+W:\scielo\bin\cfg>if not exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml echo java -jar C:\SciELO\bin\XMLTools\core\saxon8.jar -novw -w0 -o Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml C:\SciELO\bin\markup\pmc\v3.0\check\pmcstylechecker.xsl  1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err 
+
+W:\scielo\bin\cfg>if not exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml goto ERR_TRANSF 
+
+W:\scielo\bin\cfg>rem  
+
+W:\scielo\bin\cfg>rem PASSO 5 TRANSFORMATION xml 2 report 
+
+W:\scielo\bin\cfg>rem
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:30,03 Passo 5 Transform Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml C:\SciELO\bin\markup\pmc\v3.0\check\pmcstylereporter.xsl  1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>copy  Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml 
+NÆo se pode copiar um arquivo nele mesmo.
+        0 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>set TEMP_FILE=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp 
+
+W:\scielo\bin\cfg>java -jar C:\SciELO\bin\XMLTools\core\saxon8.jar -novw -w0 -o Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml C:\SciELO\bin\markup\pmc\v3.0\check\pmcstylereporter.xsl  
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp copy Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp Z:\bjm\v41n3\pmc\pmc_work\a01v41n3\a01v41n3.rep.html 
+        0 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if not exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp echo PASSO 5 Transformation error      1>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err 
+
+W:\scielo\bin\cfg>if not exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp echo java -jar C:\SciELO\bin\XMLTools\core\saxon8.jar -novw -w0 -o Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.rep.xml C:\SciELO\bin\markup\pmc\v3.0\check\pmcstylereporter.xsl  1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err 
+
+W:\scielo\bin\cfg>if not exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp goto ERR_TRANSF 
+
+W:\scielo\bin\cfg>rem  
+
+W:\scielo\bin\cfg>rem PASSO 5b TRANSFORMATION xml 2 html 
+
+W:\scielo\bin\cfg>rem
+
+W:\scielo\bin\cfg>set XSL_HTML=C:\SciELO\bin\markup\pmc\v3.0\check\viewText.xsl 
+
+W:\scielo\bin\cfg>set TEMP_FILE5b=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml  
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:30,62 Passo 5b Transform Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml  C:\SciELO\bin\markup\pmc\v3.0\check\viewText.xsl  1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp 
+
+W:\scielo\bin\cfg>echo java -jar C:\SciELO\bin\XMLTools\core\saxon8.jar -novw -w0 -o Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml  C:\SciELO\bin\markup\pmc\v3.0\check\viewText.xsl  1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>java -jar C:\SciELO\bin\XMLTools\core\saxon8.jar -novw -w0 -o Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml  C:\SciELO\bin\markup\pmc\v3.0\check\viewText.xsl  
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp copy Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml.html 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if not exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp echo PASSO 5b Transformation error      1>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err 
+
+W:\scielo\bin\cfg>if not exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp echo java -jar C:\SciELO\bin\XMLTools\core\saxon8.jar -novw -w0 -o Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.local.xml  C:\SciELO\bin\markup\pmc\v3.0\check\viewText.xsl   1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.tmp.err 
+
+W:\scielo\bin\cfg>if not exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.05.tmp goto ERR_TRANSF 
+
+W:\scielo\bin\cfg>rem  
+
+W:\scielo\bin\cfg>rem PASSO 6 TRANSFORMATION RENAMING IMG 
+
+W:\scielo\bin\cfg>rem
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:31,67 Passo 6 Transform Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml C:\SciELO\bin\XMLTools\rename_img.xsl  1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 
+
+W:\scielo\bin\cfg>set TEMP_FILE=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp 
+
+W:\scielo\bin\cfg>java -jar C:\SciELO\bin\XMLTools\core\saxon8.jar -novw -w0 -o Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml C:\SciELO\bin\XMLTools\rename_img.xsl  
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp call C:\SciELO\bin\XMLTools\rename_files.bat C:\SciELO\bin\XMLTools Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp Z:\bjm\v41n3\ Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml a01v41n3 
+
+W:\scielo\bin\cfg>set XML_TOOLS_PATH=C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>set this2that=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp 
+
+W:\scielo\bin\cfg>set ISSUE_PATH=Z:\bjm\v41n3\ 
+
+W:\scielo\bin\cfg>set XML_FILE=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml 
+
+W:\scielo\bin\cfg>set FILENAME=a01v41n3 
+
+W:\scielo\bin\cfg>SET WORK=Z:\bjm\v41n3\\pmc\pmc_work 
+
+W:\scielo\bin\cfg>SET PACK=Z:\bjm\v41n3\\pmc\pmc_package 
+
+W:\scielo\bin\cfg>SET PATH_PMC_IMG=Z:\bjm\v41n3\\pmc\pmc_img 
+
+W:\scielo\bin\cfg>SET PATH_IMG=Z:\bjm\v41n3\\img 
+
+W:\scielo\bin\cfg>SET WORK_ART=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 
+
+W:\scielo\bin\cfg>if not exist Z:\bjm\v41n3\\pmc\pmc_package mkdir Z:\bjm\v41n3\\pmc\pmc_package 
+
+W:\scielo\bin\cfg>set  temp_batch_partial=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\rename_files.bat 
+
+W:\scielo\bin\cfg>set temp_batch_complete=Z:\bjm\v41n3\\pmc\pmc_work\rename_files.bat 
+
+W:\scielo\bin\cfg>set temp_batch_seq=C:\SciELO\bin\XMLTools\temp.seq 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp C:\SciELO\bin\XMLTools\..\cfg\mx seq=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp lw=9999 "pft=if p(v1) then if p(v2) then 'call C:\SciELO\bin\XMLTools\rename_img.bat ',v1,' ',v2,' Z:\bjm\v41n3\\pmc\pmc_package Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 Z:\bjm\v41n3\\pmc\pmc_img Z:\bjm\v41n3\\img C:\SciELO\bin\XMLTools'/ else 'call C:\SciELO\bin\XMLTools\rename_article.bat a01v41n3 ',v1,' Z:\bjm\v41n3\ Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml Z:\bjm\v41n3\\pmc\pmc_package Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 '/, fi fi" now  1>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\rename_files.bat 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\rename_files.bat call Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\rename_files.bat  
+
+W:\scielo\bin\cfg>call C:\SciELO\bin\XMLTools\rename_article.bat a01v41n3 1517-8382-bjm-41-519 Z:\bjm\v41n3\ Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml Z:\bjm\v41n3\\pmc\pmc_package Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3  
+
+W:\scielo\bin\cfg>set FILENAME=a01v41n3 
+
+W:\scielo\bin\cfg>set NEW_FILENAME=1517-8382-bjm-41-519 
+
+W:\scielo\bin\cfg>set ISSUE_PATH=Z:\bjm\v41n3\ 
+
+W:\scielo\bin\cfg>set XML_FILE=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml 
+
+W:\scielo\bin\cfg>SET PACK=Z:\bjm\v41n3\\pmc\pmc_package 
+
+W:\scielo\bin\cfg>SET WORK_ART=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 
+
+W:\scielo\bin\cfg>copy Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\1517-8382-bjm-41-519.xml  
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\1517-8382-bjm-41-519.xml copy Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\1517-8382-bjm-41-519.xml   Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519.xml 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pdf\a01v41n3.pdf copy Z:\bjm\v41n3\\pdf\a01v41n3.pdf Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519.pdf 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>del Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.xml 
+
+W:\scielo\bin\cfg>call C:\SciELO\bin\XMLTools\rename_img.bat a01tab01 1517-8382-bjm-41-519-gt01 Z:\bjm\v41n3\\pmc\pmc_package Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 Z:\bjm\v41n3\\pmc\pmc_img Z:\bjm\v41n3\\img C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>set THIS=a01tab01 
+
+W:\scielo\bin\cfg>set THAT=1517-8382-bjm-41-519-gt01 
+
+W:\scielo\bin\cfg>set PMC=Z:\bjm\v41n3\\pmc\pmc_package 
+
+W:\scielo\bin\cfg>set PMC_TEMP=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 
+
+W:\scielo\bin\cfg>set IMG_SRC=Z:\bjm\v41n3\\pmc\pmc_img 
+
+W:\scielo\bin\cfg>set IMG=Z:\bjm\v41n3\\img 
+
+W:\scielo\bin\cfg>set XML_TOOLS_PATH=C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>rem RENOMEIA IMAGEM ORIGINAL TIFF PARA PMC 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01tab01.tif copy Z:\bjm\v41n3\\pmc\pmc_img\a01tab01.tif   Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gt01.tif 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01tab01.tiff copy Z:\bjm\v41n3\\pmc\pmc_img\a01tab01.tiff  Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gt01.tif 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gt01.tif goto END 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\img\a01tab01.jpg copy Z:\bjm\v41n3\\img\a01tab01.jpg   Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\1517-8382-bjm-41-519-gt01.jpg 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>call C:\SciELO\bin\XMLTools\rename_img.bat a01img01 1517-8382-bjm-41-519-gf01 Z:\bjm\v41n3\\pmc\pmc_package Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 Z:\bjm\v41n3\\pmc\pmc_img Z:\bjm\v41n3\\img C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>set THIS=a01img01 
+
+W:\scielo\bin\cfg>set THAT=1517-8382-bjm-41-519-gf01 
+
+W:\scielo\bin\cfg>set PMC=Z:\bjm\v41n3\\pmc\pmc_package 
+
+W:\scielo\bin\cfg>set PMC_TEMP=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 
+
+W:\scielo\bin\cfg>set IMG_SRC=Z:\bjm\v41n3\\pmc\pmc_img 
+
+W:\scielo\bin\cfg>set IMG=Z:\bjm\v41n3\\img 
+
+W:\scielo\bin\cfg>set XML_TOOLS_PATH=C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>rem RENOMEIA IMAGEM ORIGINAL TIFF PARA PMC 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01img01.tif copy Z:\bjm\v41n3\\pmc\pmc_img\a01img01.tif   Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf01.tif 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01img01.tiff copy Z:\bjm\v41n3\\pmc\pmc_img\a01img01.tiff  Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf01.tif 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf01.tif goto END 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\img\a01img01.jpg copy Z:\bjm\v41n3\\img\a01img01.jpg   Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\1517-8382-bjm-41-519-gf01.jpg 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>call C:\SciELO\bin\XMLTools\rename_img.bat a01tab02 1517-8382-bjm-41-519-gt02 Z:\bjm\v41n3\\pmc\pmc_package Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 Z:\bjm\v41n3\\pmc\pmc_img Z:\bjm\v41n3\\img C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>set THIS=a01tab02 
+
+W:\scielo\bin\cfg>set THAT=1517-8382-bjm-41-519-gt02 
+
+W:\scielo\bin\cfg>set PMC=Z:\bjm\v41n3\\pmc\pmc_package 
+
+W:\scielo\bin\cfg>set PMC_TEMP=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 
+
+W:\scielo\bin\cfg>set IMG_SRC=Z:\bjm\v41n3\\pmc\pmc_img 
+
+W:\scielo\bin\cfg>set IMG=Z:\bjm\v41n3\\img 
+
+W:\scielo\bin\cfg>set XML_TOOLS_PATH=C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>rem RENOMEIA IMAGEM ORIGINAL TIFF PARA PMC 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01tab02.tif copy Z:\bjm\v41n3\\pmc\pmc_img\a01tab02.tif   Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gt02.tif 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01tab02.tiff copy Z:\bjm\v41n3\\pmc\pmc_img\a01tab02.tiff  Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gt02.tif 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gt02.tif goto END 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\img\a01tab02.jpg copy Z:\bjm\v41n3\\img\a01tab02.jpg   Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\1517-8382-bjm-41-519-gt02.jpg 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>call C:\SciELO\bin\XMLTools\rename_img.bat a01img02 1517-8382-bjm-41-519-gf02 Z:\bjm\v41n3\\pmc\pmc_package Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 Z:\bjm\v41n3\\pmc\pmc_img Z:\bjm\v41n3\\img C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>set THIS=a01img02 
+
+W:\scielo\bin\cfg>set THAT=1517-8382-bjm-41-519-gf02 
+
+W:\scielo\bin\cfg>set PMC=Z:\bjm\v41n3\\pmc\pmc_package 
+
+W:\scielo\bin\cfg>set PMC_TEMP=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 
+
+W:\scielo\bin\cfg>set IMG_SRC=Z:\bjm\v41n3\\pmc\pmc_img 
+
+W:\scielo\bin\cfg>set IMG=Z:\bjm\v41n3\\img 
+
+W:\scielo\bin\cfg>set XML_TOOLS_PATH=C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>rem RENOMEIA IMAGEM ORIGINAL TIFF PARA PMC 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01img02.tif copy Z:\bjm\v41n3\\pmc\pmc_img\a01img02.tif   Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf02.tif 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01img02.tiff copy Z:\bjm\v41n3\\pmc\pmc_img\a01img02.tiff  Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf02.tif 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf02.tif goto END 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\img\a01img02.jpg copy Z:\bjm\v41n3\\img\a01img02.jpg   Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\1517-8382-bjm-41-519-gf02.jpg 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>call C:\SciELO\bin\XMLTools\rename_img.bat a01img03 1517-8382-bjm-41-519-gf03 Z:\bjm\v41n3\\pmc\pmc_package Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 Z:\bjm\v41n3\\pmc\pmc_img Z:\bjm\v41n3\\img C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>set THIS=a01img03 
+
+W:\scielo\bin\cfg>set THAT=1517-8382-bjm-41-519-gf03 
+
+W:\scielo\bin\cfg>set PMC=Z:\bjm\v41n3\\pmc\pmc_package 
+
+W:\scielo\bin\cfg>set PMC_TEMP=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 
+
+W:\scielo\bin\cfg>set IMG_SRC=Z:\bjm\v41n3\\pmc\pmc_img 
+
+W:\scielo\bin\cfg>set IMG=Z:\bjm\v41n3\\img 
+
+W:\scielo\bin\cfg>set XML_TOOLS_PATH=C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>rem RENOMEIA IMAGEM ORIGINAL TIFF PARA PMC 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01img03.tif copy Z:\bjm\v41n3\\pmc\pmc_img\a01img03.tif   Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf03.tif 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01img03.tiff copy Z:\bjm\v41n3\\pmc\pmc_img\a01img03.tiff  Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf03.tif 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf03.tif goto END 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\img\a01img03.jpg copy Z:\bjm\v41n3\\img\a01img03.jpg   Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\1517-8382-bjm-41-519-gf03.jpg 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>call C:\SciELO\bin\XMLTools\rename_img.bat a01img04 1517-8382-bjm-41-519-gf04 Z:\bjm\v41n3\\pmc\pmc_package Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 Z:\bjm\v41n3\\pmc\pmc_img Z:\bjm\v41n3\\img C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>set THIS=a01img04 
+
+W:\scielo\bin\cfg>set THAT=1517-8382-bjm-41-519-gf04 
+
+W:\scielo\bin\cfg>set PMC=Z:\bjm\v41n3\\pmc\pmc_package 
+
+W:\scielo\bin\cfg>set PMC_TEMP=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 
+
+W:\scielo\bin\cfg>set IMG_SRC=Z:\bjm\v41n3\\pmc\pmc_img 
+
+W:\scielo\bin\cfg>set IMG=Z:\bjm\v41n3\\img 
+
+W:\scielo\bin\cfg>set XML_TOOLS_PATH=C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>rem RENOMEIA IMAGEM ORIGINAL TIFF PARA PMC 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01img04.tif copy Z:\bjm\v41n3\\pmc\pmc_img\a01img04.tif   Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf04.tif 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01img04.tiff copy Z:\bjm\v41n3\\pmc\pmc_img\a01img04.tiff  Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf04.tif 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf04.tif goto END 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\img\a01img04.jpg copy Z:\bjm\v41n3\\img\a01img04.jpg   Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\1517-8382-bjm-41-519-gf04.jpg 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>call C:\SciELO\bin\XMLTools\rename_img.bat a01img05 1517-8382-bjm-41-519-gf05 Z:\bjm\v41n3\\pmc\pmc_package Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 Z:\bjm\v41n3\\pmc\pmc_img Z:\bjm\v41n3\\img C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>set THIS=a01img05 
+
+W:\scielo\bin\cfg>set THAT=1517-8382-bjm-41-519-gf05 
+
+W:\scielo\bin\cfg>set PMC=Z:\bjm\v41n3\\pmc\pmc_package 
+
+W:\scielo\bin\cfg>set PMC_TEMP=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 
+
+W:\scielo\bin\cfg>set IMG_SRC=Z:\bjm\v41n3\\pmc\pmc_img 
+
+W:\scielo\bin\cfg>set IMG=Z:\bjm\v41n3\\img 
+
+W:\scielo\bin\cfg>set XML_TOOLS_PATH=C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>rem RENOMEIA IMAGEM ORIGINAL TIFF PARA PMC 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01img05.tif copy Z:\bjm\v41n3\\pmc\pmc_img\a01img05.tif   Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf05.tif 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01img05.tiff copy Z:\bjm\v41n3\\pmc\pmc_img\a01img05.tiff  Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf05.tif 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf05.tif goto END 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\img\a01img05.jpg copy Z:\bjm\v41n3\\img\a01img05.jpg   Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\1517-8382-bjm-41-519-gf05.jpg 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>call C:\SciELO\bin\XMLTools\rename_img.bat a01img06 1517-8382-bjm-41-519-gf06 Z:\bjm\v41n3\\pmc\pmc_package Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 Z:\bjm\v41n3\\pmc\pmc_img Z:\bjm\v41n3\\img C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>set THIS=a01img06 
+
+W:\scielo\bin\cfg>set THAT=1517-8382-bjm-41-519-gf06 
+
+W:\scielo\bin\cfg>set PMC=Z:\bjm\v41n3\\pmc\pmc_package 
+
+W:\scielo\bin\cfg>set PMC_TEMP=Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3 
+
+W:\scielo\bin\cfg>set IMG_SRC=Z:\bjm\v41n3\\pmc\pmc_img 
+
+W:\scielo\bin\cfg>set IMG=Z:\bjm\v41n3\\img 
+
+W:\scielo\bin\cfg>set XML_TOOLS_PATH=C:\SciELO\bin\XMLTools 
+
+W:\scielo\bin\cfg>rem RENOMEIA IMAGEM ORIGINAL TIFF PARA PMC 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01img06.tif copy Z:\bjm\v41n3\\pmc\pmc_img\a01img06.tif   Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf06.tif 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_img\a01img06.tiff copy Z:\bjm\v41n3\\pmc\pmc_img\a01img06.tiff  Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf06.tif 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_package\1517-8382-bjm-41-519-gf06.tif goto END 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\img\a01img06.jpg copy Z:\bjm\v41n3\\img\a01img06.jpg   Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\1517-8382-bjm-41-519-gf06.jpg 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>if exist C:\SciELO\bin\XMLTools\temp.seq del C:\SciELO\bin\XMLTools\temp.seq 
+
+W:\scielo\bin\cfg>copy  Z:\bjm\v41n3\\pmc\pmc_work\rename_files.bat  C:\SciELO\bin\XMLTools\temp.seq 
+        1 arquivo(s) copiado(s).
+
+W:\scielo\bin\cfg>C:\SciELO\bin\XMLTools\..\cfg\mx "seq=C:\SciELO\bin\XMLTools\temp.seq" lw=9999 "pft=if not v1:'call Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\rename_files.bat' then v1/ fi" now   | sort  1>Z:\bjm\v41n3\\pmc\pmc_work\rename_files.bat 
+
+W:\scielo\bin\cfg>echo call Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\rename_files.bat  1>>Z:\bjm\v41n3\\pmc\pmc_work\rename_files.bat 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp del /F Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp 
+
+W:\scielo\bin\cfg>goto END 
+
+W:\scielo\bin\cfg>if exist Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp del Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.06.tmp 
+
+W:\scielo\bin\cfg>echo qua 01/11/aaaa 16:27:50,84 fim  1>>Z:\bjm\v41n3\\pmc\pmc_work\a01v41n3\\a01v41n3.sgm.xml.log 

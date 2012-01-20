@@ -48,13 +48,13 @@ ctreg;Identifica o número do registro do ensaio clínico;10;#TRUE#;#TRUE#;
 tabwrap;ifloat
 label;Identifica o rótulo da tabela (ex. Tabela 1);10;#FALSE#;#FALSE#;
 caption;Identifica a legenda da tabela;10;#FALSE#;#FALSE#;
-graphic;Identifica a imagem da tabela;10;#FALSE#;#FALSE#;
+graphic;Identifica a imagem da tabela;10;#FALSE#;#TRUE#;
 notes;Identifica as notas de tabela;10;#FALSE#;#FALSE#;
 
 figgrp;ifloat
 label;Identifica o rótulo da figura (ex. Figura 1);10;#FALSE#;#FALSE#;
 caption;Identifica a legenda da figura;10;#FALSE#;#FALSE#;
-graphic;Identifica a imagem da figura;10;#FALSE#;#FALSE#;
+graphic;Identifica a imagem da figura;10;#FALSE#;#TRUE#;
 
 figgrps;ifloat
 label;Identifica o rótulo da figura (ex. Figura 1);10;#FALSE#;#FALSE#;
@@ -63,7 +63,7 @@ figgrp;Identifica cada parte da figura composta;10;#TRUE#;#TRUE#;figgrp
 down;figgrp
 
 equation;ifloat
-graphic;Identifica a imagem da equação;10;#FALSE#;#FALSE#;
+graphic;Identifica a imagem da equação;10;#FALSE#;#TRUE#;
 texmath;Tex Math Equation;10;#FALSE#;#FALSE#;
 mmlmath;Math (MathML 2.0 Tag Set);10;#FALSE#;#FALSE#;
 
@@ -918,12 +918,19 @@ bodyArt;xmlbody
 sec;Identifica a seção do artigo;6;#TRUE#;#FALSE#;secBody
 down;secBody
 p;Identifica paragráfo;6;#TRUE#;#FALSE#;
+list;Identifica uma lista;6;#FALSE#;#FALSE#;list
+down;list
 
 secBody;bodyArt
 sectitle;Identifica o título da seção;6;#TRUE#;#FALSE#;
 subsec;Identifica a sub-seção do artigo ou texto;6;#TRUE#;#FALSE#;secsec
 down;secsec
 p;Identifica paragráfo;6;#TRUE#;#FALSE#;
+list;Identifica uma lista;6;#FALSE#;#FALSE#;list
+down;list
+
+list;list
+li;Identifica os itens da lista;2;#TRUE#;#FALSE#;
 
 secsec;secBody
 sectitle;Identifica o título da subseção;6;#TRUE#;#FALSE#;

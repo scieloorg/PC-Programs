@@ -75,6 +75,23 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="."/>
 		</etal>
 	</xsl:template>
+	<xsl:template match="list">
+		<xslcomment><xsl:value-of select="text()"/></xslcomment>
+		<xsl:variable name="t"><xsl:choose>
+		<xsl:when test="contains(text(),'1')">order</xsl:when>
+		<xsl:when test="contains(text(),'a')">alpha-lower</xsl:when>
+		<xsl:when test="contains(text(),'i')">roman-lower</xsl:when>
+		<xsl:when test="contains(text(),'A')">alpha-upper</xsl:when>
+		<xsl:when test="contains(text(),'I')">roman-upper</xsl:when>
+		<xsl:otherwise>bullet</xsl:otherwise>
+		</xsl:choose>
+		</xsl:variable>
+		<list list-type="{$t}">
+			<xsl:apply-templates select=".//li"/>
+		</list>
+	</xsl:template>
+	<xsl:template match="li"><list-item><p><xsl:apply-templates select="*|text()"/></p></list-item>
+	</xsl:template>
 	<xsl:template match="extent">
 		<size units="pages">
 			<xsl:value-of select="."/>

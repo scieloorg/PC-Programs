@@ -1192,6 +1192,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=W:\scielo\bin\XMLTools\gen_xml_and_check.bat
+  Destination=%PROGDIR%\bin\XMLTools\gen_xml_and_check.bat
+  Flags=0000000010000010
+end
+item: Install File
   Source=W:\scielo\bin\XMLTools\gen_xml_html.bat
   Destination=%PROGDIR%\bin\XMLTools\gen_xml_html.bat
   Flags=0000000010000010
@@ -1239,6 +1244,11 @@ end
 item: Install File
   Source=W:\scielo\bin\cfg\temp.txt
   Destination=%PROGDIR%\bin\cfg\temp.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scielo\bin\cfg\version.txt
+  Destination=%PROGDIR%\bin\cfg\version.txt
   Flags=0000000010000010
 end
 remarked item: Include Script
@@ -4034,6 +4044,16 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\check\pmcstylechecker.xsl
+  Destination=%PROGDIR%\bin\markup\pmc\v3.0\check\pmcstylechecker.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\check\pmcstylereporter.xsl
+  Destination=%PROGDIR%\bin\markup\pmc\v3.0\check\pmcstylereporter.xsl
+  Flags=0000000010000010
+end
+item: Install File
   Source=W:\scielo\bin\markup_pmc\pmc\v3.0\check\show-xml.xsl
   Destination=%PROGDIR%\bin\markup\pmc\v3.0\check\show-xml.xsl
   Flags=0000000010000010
@@ -4161,6 +4181,31 @@ end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\mathml\ctop.xsl
   Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\mathml\ctop.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\nlm-style-4.5.5\nlm-stylechecker.xsl
+  Destination=%PROGDIR%\bin\markup\pmc\v3.0\nlm-style-4.5.5\nlm-stylechecker.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\nlm-style-4.5.5\style-reporter.xsl
+  Destination=%PROGDIR%\bin\markup\pmc\v3.0\nlm-style-4.5.5\style-reporter.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\nlm-style-4.5.5\stylecheck-helper-templates.xsl
+  Destination=%PROGDIR%\bin\markup\pmc\v3.0\nlm-style-4.5.5\stylecheck-helper-templates.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\nlm-style-4.5.5\stylecheck-match-templates.xsl
+  Destination=%PROGDIR%\bin\markup\pmc\v3.0\nlm-style-4.5.5\stylecheck-match-templates.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\nlm-style-4.5.5\stylecheck-named-tests.xsl
+  Destination=%PROGDIR%\bin\markup\pmc\v3.0\nlm-style-4.5.5\stylecheck-named-tests.xsl
   Flags=0000000010000010
 end
 item: Install File
