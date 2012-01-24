@@ -3,15 +3,15 @@ class GroupItem:
 	def __init__(self):
 		self.item_name = ''
 		self.tr = {}
-		self.tr['en'] = ''
-		self.tr['es'] = ''
-		self.tr['pt'] = ''
+		self.tr = ''
 	def translate(self,lang,term):
-		self.tr[lang] = term
+		self.tr = term
 	def display(self):
 		print "item: " +self.item_name
 		print self.tr
-
+    def translated():
+        return self.tr
+        
 class GroupItems:
 	def __init__(self):
 		self.dict = {}
@@ -52,6 +52,13 @@ class Bar:
 			grupo.append(item)
 		return grupo
 
+	def get_translations():
+	    d = {}
+	    for g in self.list:
+	        for item in g: 
+	            d[ id ][ self.lang ] = item.translated()
+	    return d
+	     
 	def load_bars(self, file_name, lang):
 	    f = open(file_name, 'r')
 	    content = f.readlines()
@@ -79,6 +86,9 @@ class Bar:
 	    return self.list   
     
 bar = Bar()
-o = bar.load_bars('../pt_bars.mds','pt')
+pt = bar.load_bars('../pt_bars.mds','pt')
+es = bar.load_bars('../es_bars.mds','es')
+en = bar.load_bars('../en_bars.mds','en')
+
 bar.display()
         

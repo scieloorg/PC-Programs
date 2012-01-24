@@ -104,7 +104,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="text()"/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="p | sec | bold | italic | sub | sup |  label | subtitle | edition | aff/country | issn">
+	
+	<xsl:template match="p | sec | bold  | sub | sup |  label | subtitle | edition | aff/country | issn | italic">
 		<xsl:param name="id"/>
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="@*| * | text()">
@@ -823,9 +824,8 @@ Here is a figure group, with three figures inside, each of which contains a grap
 				<xsl:apply-templates select="." mode="graphic"/>
 				<xsl:if test=".//notes">
 				<table-wrap-foot>
-					<fn-group>
 					<fn><p><xsl:value-of select=".//notes"/></p></fn>
-					</fn-group>
+					
 				</table-wrap-foot>
 				</xsl:if>
 			</table-wrap>
@@ -838,9 +838,9 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			<xsl:apply-templates select="." mode="graphic"/>
 			<xsl:if test=".//notes">
 				<table-wrap-foot>
-					<fn-group>
+					
 					<fn><p><xsl:value-of select=".//notes"/></p></fn>
-					</fn-group>
+					
 				</table-wrap-foot>
 				</xsl:if>
 		</table-wrap>
@@ -1174,7 +1174,7 @@ et al.</copyright-statement>
 	<xsl:template match="unidentified//text()" mode="text">
 		{{val:<xsl:value-of select="."/>}}
 	</xsl:template-->
-	<xsl:template match="caption/bold | caption/italic | caption/sub | caption/sup | subtitle/bold | subtitle/italic | subtitle/sub | subtitle/sup | sectitle/bold | sectitle/italic | sectitle/sub | sectitle/sup |title/bold | title/italic | title/sub | title/sup | article-title/bold | article-title/italic | article-title/sub | article-title/sup | label/bold | label/italic | label/sub | label/sup">
+	<xsl:template match="caption/bold | caption/sub | caption/sup | subtitle/bold |  subtitle/sub | subtitle/sup | sectitle/bold | sectitle/sub | sectitle/sup |title/bold |  title/sub | title/sup | article-title/bold |  article-title/sub | article-title/sup | label/bold | label/italic | label/sub | label/sup">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	<xsl:template match="figgrps/figgrp/caption"><caption>
@@ -1197,7 +1197,7 @@ et al.</copyright-statement>
 		</year>
 	</xsl:template>	
 
-	<xsl:template match="sciname">
+	<xsl:template match="sciname | caption/italic | subtitle/italic |title/italic | sectitle/italic | article-title/italic | p/italic">
 		<named-content content-type="scientific-name">
 			<xsl:apply-templates/>
 		</named-content>
