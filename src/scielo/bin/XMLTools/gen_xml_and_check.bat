@@ -186,6 +186,7 @@ if exist %TEMP_RESULT% copy %TEMP_RESULT% %RESULT%
 if exist %RESULT% call %PATH_XML_TOOLS%\rename_files.bat %PATH_XML_TOOLS% %RESULT% %ISSUE_PATH% %OUTPUT_XML% %FILENAME%
 
 :DELETE_TEMP_FILES
+goto END
 if exist %TEMP_ERRFILE%     del /F %TEMP_ERRFILE%
 
 if exist %TEMP_FILE1% del /F %TEMP_FILE1%

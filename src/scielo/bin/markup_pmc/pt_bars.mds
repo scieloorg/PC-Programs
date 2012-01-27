@@ -4,24 +4,24 @@ text;Identifica o texto;13;#FALSE#;#TRUE#;textM
 
 article;start
 deposit;Identifica os dados sobre o repositório de artigos;10;#FALSE#;#TRUE#;
-front;Identifica o começo do front matter de um artigo;11;#FALSE#;#FALSE#;front
+front;Identifica a parte anterior ao corpo do artigo, ou seja, títulos, autores, resumos, palavras-chaves;11;#FALSE#;#FALSE#;front
 down;front
-xmlbody;Identifica o corpo do texto do artigo com mais detalhes;11;#FALSE#;#FALSE#;bodyArt
+xmlbody;Identifica o corpo do artigo com detalhes;11;#FALSE#;#FALSE#;bodyArt
 down;bodyArt
 body;Identifica o corpo do texto do artigo sem detalhes;11;#FALSE#;#FALSE#;
-back;Identifica o back matter de um artigo;11;#FALSE#;#FALSE#;back
+back;Identifica a parte posterior ao corpo do artigo;11;#FALSE#;#FALSE#;back
 down;back
 
 textM;start
 doi;Identifica o DOI do documento;10;#TRUE#;#FALSE#;
-related;Identifica id de documentos relacionados;10;#TRUE#;#TRUE#;
-titlegrp;Agrupa os título de um documento;11;#FALSE#;#FALSE#;titlegrpText
+related;Identifica documentos relacionados;10;#TRUE#;#TRUE#;
+titlegrp;Agrupa os título do documento;11;#FALSE#;#FALSE#;titlegrpText
 down;titlegrpText
 authgrp;Agrupa os autores individuais ou corporativos de um artigo;11;#FALSE#;#FALSE#;authgrpText
 down;authgrpText
-xmlbody;Identifica o corpo do texto do artigo com mais detalhes;11;#FALSE#;#FALSE#;bodyArt
+xmlbody;Identifica o corpo do artigo com detalhes;11;#FALSE#;#FALSE#;bodyArt
 down;bodyArt
-back;Identifica o back matter de um texto;11;#FALSE#;#FALSE#;backT
+back;Identifica a parte posterior ao corpo do texto;11;#FALSE#;#FALSE#;backT
 down;backT
 
 ifloat;nd

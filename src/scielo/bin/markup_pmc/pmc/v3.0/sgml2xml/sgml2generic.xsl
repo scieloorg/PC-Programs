@@ -155,8 +155,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<issn pub-type="{$PUB_TYPE}">
 				<xsl:value-of select="$CURRENT_ISSN"/>
 			</issn>
-			<xsl:copy-of select="..//extra-scielo/publisher"/>
+			<publisher>
+				<publisher-name>
+					<xsl:apply-templates select="..//extra-scielo/publisher/publisher-name"/>
+				</publisher-name>
+			</publisher>
+			
 		</journal-meta>
+	</xsl:template>
+	<xsl:template match="extra-scielo/publisher/publisher-name">
+		<xsl:value-of select="."></xsl:value-of><xsl:if test="position()!=last()">, </xsl:if>
 	</xsl:template>
 	<xsl:template match="article|text" mode="article-meta">
 		<xsl:variable name="l" select="@language"/>
