@@ -123,8 +123,8 @@ cturl
 
 
 ftype
-graphic;cartoon;chart;diagram;drawing;exihibit;illustration;map;plate;schema;workflow;other;photo;audiogram;cardiogram;dendrogram;photomicrograph;polysomnogram;radiography;scan;ultrasonography
-graphic;cartoon;chart;diagram;drawing;exihibit;illustration;map;plate;schema;workflow;other;photo;audiogram;cardiogram;dendrogram;photomicrograph;polysomnogram;radiography;scan;ultrasonography
+audiogram;cardiogram;cartoon;chart;chemical structure;dendrogram;diagram;drawing;exihibit;graphic;illustration;map;medical image;other;photo;photomicrograph;plate;polysomnogram;schema;workflow
+audiogram;cardiogram;cartoon;chart;chemical structure;dendrogram;diagram;drawing;exihibit;graphic;illustration;map;medical image;other;photo;photomicrograph;plate;polysomnogram;schema;workflow
 
 lictype
 open access;not defined

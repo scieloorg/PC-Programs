@@ -1640,46 +1640,70 @@
 !v002!^c5^vITA
 !v002!^c6^vUFSCar
 !ID 000107
-!v001!ftype^lpt
-!v002!^cgraphic^vgráfico
+!v002!^caudiogram^vaudiograma
+!v002!^ccardiogram^vcardiograma
 !v002!^ccartoon^vcartoon
 !v002!^cchart^vquadro
+!v002!^cchemical structure^vestrutura química
+!v002!^cdendrogram^vdendrograma
 !v002!^cdiagram^vdiagrama
 !v002!^cdrawing^vdesenho
-!v002!^cexhibit^vdemostração (exhibit)
+!v002!^cexihibit^vdemonstração (exihibit)
+!v002!^cgraphic^vgráfico
 !v002!^cillustration^vilustração
 !v002!^cmap^vmapa
-!v002!^cplate^vgravura (plate)
-!v002!^cschema^vesquema
-!v002!^cworkflow^vworkflow
+!v002!^cmedical image^vimagem médica
 !v002!^cother^voutro
+!v002!^cphoto^vfoto
+!v002!^cphotomicrograph^vfotomicrografia
+!v002!^cplate^vlâmina
+!v002!^cpolysomnogram^vpolissonografia
+!v002!^cschema^vesquema
+!v002!^cworkflow^vfluxograma
+!v001!ftype^lpt
 !ID 000108
 !v001!ftype^les
-!v002!^cgraphic^vgráfico
+!v002!^caudiogram^vaudiograma
+!v002!^ccardiogram^vcardiograma
 !v002!^ccartoon^vcartoon
 !v002!^cchart^vcuadro
+!v002!^cchemical structure^vestructura química
+!v002!^cdendrogram^vdendrograma
 !v002!^cdiagram^vdiagrama
-!v002!^cdrawing^vdiseño
-!v002!^cexhibit^vdemostración (exhibit)
+!v002!^cdrawing^vdibujo
+!v002!^cexihibit^vdemostración (exihibit)
+!v002!^cgraphic^vgráfico
 !v002!^cillustration^vilustración
 !v002!^cmap^vmapa
-!v002!^cplate^vgravura (plate)
-!v002!^cschema^vesquema
-!v002!^cworkflow^vflujo de trabajo
+!v002!^cmedical image^vimagen médica
 !v002!^cother^votro
+!v002!^cphoto^vfotografía
+!v002!^cphotomicrograph^vfotomicrografía
+!v002!^cplate^vlámina
+!v002!^cpolysomnogram^vpolisomnograma
+!v002!^cschema^vesquema
+!v002!^cworkflow^vdiagrama de flujo
 !ID 000109
 !v001!ftype^len
-!v002!^cgraphic^vgraphic
+!v002!^caudiogram^vaudiogram
+!v002!^ccardiogram^vcardiogram
 !v002!^ccartoon^vcartoon
 !v002!^cchart^vchart
+!v002!^cchemical structure^vchemical structure
+!v002!^cdendrogram^vdendrogram
 !v002!^cdiagram^vdiagram
 !v002!^cdrawing^vdrawing
-!v002!^cexhibit^vexhibit
+!v002!^cexihibit^vexihibit
+!v002!^cgraphic^vgraphic
 !v002!^cillustration^villustration
 !v002!^cmap^vmap
-!v002!^cplate^vplate
-!v002!^cschema^vschema
+!v002!^cmedical image^vmedical image
 !v002!^cother^vother
+!v002!^cphoto^vphoto
+!v002!^cphotomicrograph^vphotomicrograph
+!v002!^cplate^vplate
+!v002!^cpolysomnogram^vpolysomnogram
+!v002!^cschema^vschema
 !v002!^cworkflow^vworkflow
 !ID 000110
 !v001!lictype^len
@@ -1760,8 +1784,7 @@
 !v002!^ctable^vTabela
 !ID 000123
 !v001!ref-type^les
-!v003!
-!!v002!^caff^vafiliación
+!v003!!!v002!^caff^vafiliación
 !v002!^capp^vApendice
 !v002!^cauthor-notes^vNotas de autor
 !v002!^cbibr^vReferencia bibliográfica.

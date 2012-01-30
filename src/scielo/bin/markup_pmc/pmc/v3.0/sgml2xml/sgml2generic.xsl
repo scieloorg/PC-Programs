@@ -556,9 +556,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</ack>
 		</xsl:if>
 		<xsl:apply-templates select="*[@standard]" mode="back"/>
-		<fn-group>
+		
 			<xsl:apply-templates select="$following[normalize-space(.//text())!='']" mode="back-fn"/>
-		</fn-group>
+		
 	</xsl:template>
 	<xsl:template match="back//*" mode="back">
 		<xsl:apply-templates select="*|text()" mode="back"/>
@@ -573,9 +573,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:attribute name="fn-type">corresp</xsl:attribute-->
 			</xsl:when>
 			<xsl:otherwise>
-				<fn>
+				<fn-group><fn>
 					<xsl:apply-templates select="." mode="back"/>
-				</fn>
+				</fn></fn-group>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

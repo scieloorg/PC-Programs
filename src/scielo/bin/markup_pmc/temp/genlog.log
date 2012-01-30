@@ -1,4 +1,29 @@
-01-05-2012 12:18:14 inicio
-01-05-2012 12:18:14 SubStartMarkup
-01-05-2012 12:18:14 loadConfigurations
-01-05-2012 12:18:14 VerifyDocumentMarkupFormat
+01-30-2012 08:53:17 inicio
+01-30-2012 08:53:17 SubStartMarkup
+01-30-2012 08:53:17 loadConfigurations
+01-30-2012 08:53:17 VerifyDocumentMarkupFormat
+01-30-2012 08:53:17 loadTables
+01-30-2012 08:53:20 ChangeEntity
+01-30-2012 08:53:20 ChangeFields
+01-30-2012 08:53:20 DisplayBars
+01-30-2012 08:53:20 LoadTempFile
+01-30-2012 08:53:20 1
+01-30-2012 08:53:20 [article pii="nd" doctopic="oa" language="en" ccode="br1.1" status="1" version="4.0" type="ilus" order="03" seccode="AG190" sponsor="nd" stitle="Arq. Gastroenterol." volid="48" issueno="4" dateiso="20111200" fpage="231" lpage="235" issn="0004-2803"][front]ORIGINAL ARTICLE ARTIGO ORIGINAL
+01-30-2012 08:53:20 article pii="nd" doctopic="oa" language="en" ccode="br1.1" status="1" version="4.0" type="ilus" order="03" seccode="AG190" sponsor="nd" stitle="Arq. Gastroenterol." volid="48" issueno="4" dateiso="20111200" fpage="231" lpage="235" issn="0004-2803"
+01-30-2012 08:53:20 .article.
+01-30-2012 08:53:20 isChanged_STAGO_TAGC=true
+01-30-2012 08:53:20 firstValidParag
+01-30-2012 08:53:20 RetAttrValue
+01-30-2012 08:53:20 AutoMarkupIsAvailable
+01-30-2012 08:53:20 getIssueId
+01-30-2012 08:53:20 XMLTools
+01-30-2012 08:53:20 fim SubStartMarkup
+01-30-2012 08:53:26 executeChangeSTAGO_TAGC 1
+01-30-2012 08:53:26 executeChangeSTAGO_TAGC 4
+01-30-2012 08:53:26 SaveDocumentAsSciELOMarkup 1
+01-30-2012 08:53:26 SaveDocumentAsSciELOMarkup format: 8
+01-30-2012 08:53:27 SaveDocumentAsSciELOMarkup 6
+01-30-2012 08:53:42 subexit Salvar e usar o parser
+01-30-2012 08:53:42 subexit Salvar e gerar XML
+01-30-2012 08:53:42 subexit Salvar e sair
+01-30-2012 08:53:42 subexit Sair sem salvar
