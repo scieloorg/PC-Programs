@@ -1,0 +1,164 @@
+organização financiadora ou patrocinadora|sponsor or financial organization|organización financiera o patrocinadora
+à qual o autor está vinculado|to which the author is related|a la cual el autor está relacionado 
+que não seguem as normas adotadas| which are not according to any adopted standard| lo cual no está de acuerdo con las normas adoptadas
+Agrupa elementos para a descrição temática do documento|Group elements which indicate the subject of the document|Agrupa elementos que indican el tema del documento
+o endereço eletrônico|the electronic address|la dirección electrónica
+para a descrição bibliográfica|for bibliographic description|para la descrición bibliográfica
+Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final|Group the data of the report from which article is partial or final product|Agrupa datos del inform o proyecto de lo cual el artículo es producto parcial o final
+Identifica que a obra é de autoria anônima|Indicate unknown authorship|Indica autoría anónima
+Identifica que o documento citado ainda está em processo de publicação|Indicate the publication of the document in progress|Indica que la publicación del documento está en curso
+Identifica as datas principais de uma coleção como, por exemplo, a data inicial da coleção|Identify the main dates of a collection, such as initial date of the collection|Identifica las principales fechas de la collección, como fecha inicial de la colección
+elementos complementares para a identificação do artigo|other elements to identify the article|otros elementos para identificar el artículo 
+periódico ou publicação seriada|journal or serial publication|revista o publicación seriada
+autores individuais ou corporativos|individual or corporative authors|autores individuales o corporativos
+Indica que há autores não mencionados|Indicate non cited authors|Indica autores no citados
+ o | the | el 
+extensão|extension|extensión
+volumes|volumes|volúmenes
+volume|volume|volumen
+resumos|abstracts|resúmenes
+afiliação|affiliation|afiliación
+sem detalhes|without details|sin detalles
+ um editorial| an editorial| un editorial
+um autor individual|an individual author|un autor individual
+autores individuais ou corporativos|individual or corporative authors|autores individuales o corporativos
+autores corporativos|corporative authors|autores corporativos
+um author individual|an individual author|un autor individual
+autoria anônima|unknow authorship|autoría desconocida
+autoria|authorship|autoría
+ no | at the | en el 
+cidade|city|ciudad
+data de recebimento, de aceitação ou de revisão|dates of reception, revision and approval|fechas de recebimento, revisión y aprobación 
+eletrônico|electronic|electrónico
+Texto ignorado pela marcação|Ignored text|Texto ignorado
+link|link|enlace
+Identifica que|Identify|Identifica que
+ como, por exemplo|, for instance|, por ejemplo
+estado|state/region|provincia/región
+as formas utilizadas para qualificar|the used forms to classify|las formas usadas para clasificar
+dissertação ou tese acadêmica|thesis|tesis
+mestrado, doutorado, livre-docência|Master, Doctor|Maestría, Doctorado
+data de publicação|publication date|fecha de publicación
+data de registro|registration date|fecha de registro
+data|date|fecha
+repositorio|repository|repositorio
+dissertação ou tese acadêmica|thesis|tesis 
+Identifica|Identify|Identifica
+Agrupa|Group|Agrupa
+foi submetido ao|was submitted to the|Fue sometido al
+grupo|group|grupo
+publicação seriada ou periódica|serial publication or journal|publicación seriada o revista
+para a referenciação|to reference|para citar
+da qual uma obra faz parte|of which a work is part of|de la cual es un trabajo hace parte
+mesmo|same|mismo
+conferencia|conference|conferencia
+seminario|seminar|seminario
+congresso|congress|congreso
+número|number|número
+necessario|required|necesario
+para a identificação|to identify|para la identificación
+Endereço eletrônico|Electronic address|Dirección electrónica
+endereço eletrônico|electronic address|dirección electrónica
+referencia cruzada|cross-reference|referencia cruzada
+patente|patent|patente
+suplemento|supplement|suplemento
+ sem | no | sin 
+ com | with | con 
+ figura| figure| figura
+ Figura| Figure| Figura
+processo de revisão por pares|peer review process|proceso de revisión por pares
+ por exemplo| for instance| por ejemplo
+páginas|pages|páginas
+parte anterior ao|previous part of the|parte anterior al
+parte posterior ao|following part of the|parte posterior al
+cada|each|cada
+parte|part|parte
+série|serial|seriada
+abela|able|abla
+ex.|e.g.|ej.
+papel|role|papel
+responsáveis pelo|responsible for|responsables por el
+ensaios clínicos|clinical trials|ensayos clínicos
+documentos relacionados|related documents|documentos relacionados
+figura composta|grouped figure|figura compuesta
+a legenda|the caption|el título
+legenda|caption|título
+rótulo|label|etiqueta
+tese|thesis|tesis
+histórico|history|histórico
+itens|items|ítenes
+lista |list |listado 
+ao qual pertence|to which belongs|al cual pertenece
+grau|degree|grado
+autores individuais|individual authors|autores individuales
+dados|data|datos
+fórmula|formule|fórmula
+palavras-chave|key words|palabras-clave
+descritores|descriptors|descriptores
+formato|format|formato
+revisão|revision|revisión
+literatura|literature|literatura
+conteúdo|content|contenido
+responsáveis|responsibles|responsables
+licença|license|licencia
+segundo a norma|according to|de acuerdo con
+ou seja|it means|es decir
+periódico|journal|revista
+livro|book|libro
+capítulo|chapter|capítulo
+texto|text|texto
+referencia anterior|previous reference|cita anterior 
+resumo|abstract|resumen
+seção|section|sección
+título|title|título
+seções|sections|secciones
+evento|event|evento
+elementos|elements|elementos
+sobrenome|last name|apellido
+primeiros nomes|first names|nombres
+nome|name|nombre
+título|title|título
+da organização autora|of the corporative author|del autor corporativo
+organização autora|corporative author|autor corporativo
+organização financiadora|financial organization|organización financiera
+autores|authors|autores
+autor|author|autor
+coleções|collections|colecciones
+coleção|collection|colección
+estão|are|están
+complementares|complementar|complementares
+artigo|article|artículo
+projeto|project|proyecto
+organização|organization|organización
+divisão|division|división
+tipo|type|tipo
+ obra| work| obra
+ corpo | body | cuerpo 
+ documento| document| documento
+relatorio|report|informe
+imagem|image|imagen
+registro|registration|registro
+referencia bibliográfica|citation|cita
+referencia|citation|cita
+bibliografia|bibliography|bibliografía
+ção|tion|ción
+ a | the | la 
+uma lista|a list|un listado
+ na | at the | en la 
+ em uma| in a| en una
+ em um | in a | en un 
+ é | is | es 
+ uma | a | una 
+ um | a | un 
+ de | of | de 
+ dos | of the | de los 
+ das | of the | de las
+ do | of the | del 
+ da | of the | de la 
+ e | and | y 
+ as | the | las 
+ os | the | los 
+ , como |, such as |, como 
+ como |, such as |, como 
+ ou | or | o 
+,,|,|,
