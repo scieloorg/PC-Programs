@@ -429,7 +429,7 @@ viserial;vcitat
 vstitle;Agrupa a forma abreviada e padronizada do título de um periódico ou publicação seriada;15;#FALSE#;#FALSE#;vstitle
 down;vstitle
 date;Identifica a data de publicação;15;#TRUE#;#TRUE#;
-inpress;Identifica que o documento citado ainda está em processo de publicação;15;#TRUE#;#FALSE#;
+inpress;Identifica que a processo de publicação do documento está em andamento;15;#TRUE#;#FALSE#;
 volid;Identifica o volume ao qual pertence um documento;15;#TRUE#;#FALSE#;
 issueno;Identifica o número de um fascículo;15;#TRUE#;#FALSE#;
 suppl;Identifica o número do suplemento de um periódico;15;#TRUE#;#FALSE#;

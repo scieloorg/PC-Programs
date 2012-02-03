@@ -1,1527 +1,1743 @@
 start;article
-Shows the beginning of an article
+Identify the article
 
 start;text
-Specifies the texts that are not articles, as editorials
+Identify the text
 
-start;translat
-Specifies the translation text
+article;deposit
+Identify the date sobre the repository of articles
 
 article;front
-Identifies the beginning of the front matter of an article
+Identify the previous part of the body of the article, it means, titles, authors, abstracts, key words
+
+article;xmlbody
+Identify the body of the article with detalhes
 
 article;body
-Identifies the beginning of the body (full text) of an article
+Identify the body of the text of the article without details
 
 article;back
-Identifies the beginning of the back matter of an article
+Identify the following part of the body of the article
+
+textM;doi
+Identify the DOI of the document
+
+textM;related
+Identify related documents
 
 textM;titlegrp
-Contains the elements of the title of a document
+Group the titles of the document
 
 textM;authgrp
-Contains the elements for the identifiestion of the individual or institutional authors of an article
+Group the individual or corporative authors of the document
+
+textM;xmlbody
+Identify the body of the article with detalhes
 
 textM;back
-Identifies the beginning of the back matter of an article
-
-translat;part1
-Identifies the part between the begining of the text and the references
-
-translat;refs
-Identifies the part of the references
-
-translat;part2
-Identifies the part between the references and the end of the text
-
-refs;citation
-Identifies the citation in a translation text
+Identify the following part of the body of the text
 
 ifloat;aff
-Identifies the institution of which the author belong
+Identify the organization to which the author is related
 
 ifloat;ign
-Text unkown by the markup
+Ignored text
 
-ifloat;table
-Contains the elements in order to identify a table in the body of the text
+ifloat;tabwrap
+Identify date of a table
+
+ifloat;figgrps
+Identify figures compostas (Fig 1A, 1B,...)
 
 ifloat;figgrp
-Contains the elements in order to identify the images in the body of the text
+Identify date of a figure
+
+ifloat;equation
+Identify date of a formule
 
 ifloat;cltrial
-Informs the data about clinical trial
+Identify date of clinical trials
 
 ifloat;xref
-Informs the crossreferences of tables, figures, etc
+Identify cross-reference of tables, figures, etc
 
-ifloat;deposit
-Inform the data about the repository
+ifloat;uri
+Identify a link
+
+ifloat;sciname
+Identify names científicos
 
 cltrial;ctreg
-Identifies the register number
+Identify the number of the registration of the ensaio clínico
 
-cltrial;ctdb
-Identifies the database of clinical trials
+tabwrap;label
+Identify the label of the table (e.g. Table 1)
 
-cltrial;ctdburl
-Identifies the url of the database of clinical trial
+tabwrap;caption
+Identify the caption of the table
 
-table;title
-Identifies the title of a document
+tabwrap;graphic
+Identify the image of the table
 
-table;subtitle
-Identifies the subtitle of a document
+tabwrap;notes
+Identify the notas of the table
 
-table;legend
-Shows the legend of a table or of an image
+figgrp;label
+Identify the label of the figure (e.g. Figure 1)
 
-figgrp;title
-Identifies the title of a document
+figgrp;caption
+Identify the caption of the figure
 
-figgrp;subtitle
-Identifies the subtitle of a document
+figgrp;graphic
+Identify the image of the figure
 
-figgrp;figref
-Shows the images in the text
+figgrps;label
+Identify the label of the figure (e.g. Figure 1)
 
-figgrp;legend
-Shows the legend of a table or of an image
+figgrps;caption
+Identify the caption of the figure
+
+figgrps;figgrp
+Identify each part of the grouped figure
+
+equation;graphic
+Identify the image of the equation
+
+equation;texmath
+Tex Math Equation
+
+equation;mmlmath
+Math (MathML 2.0 Tag Set)
 
 aff;city
-Identifies the name of a city
+Identify the name of the city of the affiliation
 
 aff;state
-Identifies the corresponding state to the local or city of publication of the work
+Identify the state/region (local) of the city of the affiliation
 
 aff;country
-Identifies the country
+Identify the país of the affiliation
 
 aff;zipcode
-Identifies the zip code
+Código of endereçamento postal of the affiliation
 
 aff;email
-Electronic mail
+Electronic address of the author
 
 authgrpText;author
-Contains the elements for the identification of the individual authors as name, surname and type of responsability
+Group date of the individual authors, such as name,sobrename and role
 
 authgrpText;corpauth
-Identifies the institutional authors responsible for the intellectual or artistic content of the work
+Group date of the corporative authors
 
 authorText;fname
-Identifies the initial names of an individual author
+Identify the first names of an individual author
 
 authorText;surname
-Identifies the surname of an individual author
+Identify the sobrename of an individual author
 
 corpauthText;orgname
-Identifies the name of an institution or organization
+Identify the name of the corporative author
 
 corpauthText;orgdiv
-Identifies the division of an institution
+Identify the division of the corporative authoro
 
 titlegrpText;title
-Identifies the title of a document
+Identify the title of the document
 
 titlegrpText;subtitle
-Identifies the subtitle of a document
+Identify the subtitle of the document
+
+front;doi
+Identify the DOI of the document
+
+front;related
+Identify date of related documents
 
 front;titlegrp
-Contains the elements of the title of a document
+Group the titles of the document
 
 front;authgrp
-Contains the elements for the identification of the individual authors as name, surname, and the type of responsability
+Group date of the individual authors, such as name,sobrename and role
 
 front;bibcom
-Contains the complementary elements for the identification of the article, as the summary and the keywords
+Group other elements to identify of the article, such as abstract and key words
 
 titlegrpFront;title
-Identifies the title of a document
+Identify the title of the document
 
 titlegrpFront;subtitle
-Identifies the subtitle of a document
+Identify the subtitle of the document
 
 authgrpFront;author
-Contains the elements for the identification of the individual authors as name, surname and type of responsability
+Group the date of individual authors, such as name,sobrename and role
 
 authgrpFront;corpauth
-Identifies the institutional authors responsible for the intellectual or artistic content of the work
+Identify the corporative authors
 
 authorFront;fname
-Identifies the initial names of an individual author
+Identify the first names of an individual author
 
 authorFront;surname
-Identifies the surname of an individual author
+Identify the sobrename of an individual author
 
 corpauthFront;orgname
-Identifies the name of an institution or organization
+Identify the name of the corporative author of the document
 
 corpauthFront;orgdiv
-Identifies the division of an institution
+Identify the division of the corporative author of the document
 
 bibcomFront;abstract
-Identifies the summary of the article
+Identify the abstract of the article
 
 bibcomFront;keygrp
-Contains the elements for the description subject matter of the document
+Group the key words of the article
 
 bibcomFront;confgrp
-Contains the elements for the identification of an event as conference, seminar, congress, etc .
+Group the date of a event, such as conference, seminário, congress, etc. contidas em anais and publicações similares
 
 bibcomFront;report
-Contains information on the report or project, of which the article is a partial or final product
+Group date of the report or project of which the article is partial or final product
 
 bibcomFront;thesgrp
-Contains the elements for the identification of a thesis or dissertation or still of a product of a thesis or dissertation
+Group the date of a thesis or dissertaçãp, or que is derivado of a thesis or dissertation
 
 bibcomFront;hist
-Identifies the history of the publication of an article in a journal, containing the date of arrival, of acceptance or of revision
-
-bibcomFront;title
-Identifies the title of a document
-
-bibcomFront;subtitle
-Identifies the subtitle of a document
+Identify the history of the publication of a article in a journal (dates of reception, revision and approval)
 
 keygrpBibcom;keyword
-Identifies the keywords of a document
+Identify the key words of the document
 
 keygrpBibcom;subkey
-Identifies the cualifiers of the keywords or descriptors
+Identify the used forms para qualificar the key words or descriptors
 
 keygrpBibcom;dperiod
-Identifies the period of the time reported in the content of the document
+Identify the período of tempo tratado at the content of the document
 
 confgrpBibcom;sponsor
-Identifies the financing institution of the project or event
+Identify the sponsor or financial organization of a project or event
 
 confgrpBibcom;confname
-Identifies the name of an event as conference, seminar, congress, etc .
+Identify the name of a event, such as conference, seminar, congress, etc.
 
 confgrpBibcom;no
-Identifies all the numbers of the structure of an article, its position in the structure is that is going to define its characteristic
+Identify the number of the event
 
 confgrpBibcom;date
-Identifies the date
+Identify the publication date of the event
 
 confgrpBibcom;city
-Identifies the name of a city
+Identify the city of the event
 
 confgrpBibcom;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) of the event
 
 confgrpBibcom;country
-Identifies the country
+Identify the país of the event
 
 sponsorBibcom;orgname
-Identifies the name of an institution or organization
+Identify the name of the financial organization of the event
 
 sponsorBibcom;orgdiv
-Identifies the division of an institution
+Identify the division of the financial organization of the event
 
 reportBibcom;rsponsor
-Identifies the financing institution of the project or event
+Identify the sponsor or financial organization of a project or event
 
 reportBibcom;projname
-Identifies the name of the project of which the article is a partial or final product
+Identify the name of the project of which the article is partial or final product
 
 rsponsorBibcom;orgname
-Identifies the name of an institution or organization
+Identify the name of the financial organization
 
 rsponsorBibcom;orgdiv
-Identifies the division of an institution
+Identify the division of the financial organization
 
 rsponsorBibcom;contract
-Identifies a numerical or alphanumeric code of the financing institution of a project, of which the article is an end or partial product
+Identify a código numérico or alfanumérico fornecido pela financial organization of a project, of which the article is produto final or parcial
 
 thesgrpBibcom;city
-Identifies the name of a city
+Identify the city of the thesis
 
 thesgrpBibcom;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) (lcoal) of the thesis
 
 thesgrpBibcom;country
-Identifies the country
+Identify the país of the thesis
 
 thesgrpBibcom;date
-Identifies a date
+Identify the date of the thesis
 
 thesgrpBibcom;degree
-Identifies the degree of a dissertation or academic thesis, as a master's program, a doctorate or a pós-degree, etc .
+ Identify the degree of a thesis, such as Master, Doctor etc
 
 thesgrpBibcom;orgname
-Identifies the name of an institution or organization
+Identify the name of the organization of the thesis
 
 thesgrpBibcom;orgdiv
-Identifies the division of an institution
+Identify the division of the organization of the thesis
 
 histBibcom;received
-Identifies the date in which the article was received by the journal for publication
+Identify the date em que the article was submitted to the peer review process
 
 histBibcom;revised
-Identifies the date in which the article was reviewed by the journal for publication
+Identify the date em que inicio-se the revision of the article pelo peer review process
 
 histBibcom;accepted
-Identifies the date in which the article was accepted by the journal for publication
+Identify the date em que the article foi aprovado para the publication
 
 back;bbibcom
-Contains the complementary elements for the identification of the article, as the summary and the keywords
+Group other elements que are at the following part of the body of the text
 
 back;vancouv
-Contains the elements of a bibliography reference in accordance with the Vancouver standard
+Group the elements of  bibliography according to Vancouver
 
 back;iso690
-Contains the elements of a reference bibliography in accordance with the ISO 690/87 standard
+Group the elements of  bibliography according to ISO 690/87
 
 back;abnt6023
-Contains the elements of a reference bibliography in accordance with the NBR 6023/89 standard
+Group the elements of  bibliography  according to NBR 6023/89 of the ABNT
+
+back;apa
+Group the elements of  bibliography according to APA
 
 back;other
-Contains the elements of a reference bibliography that are not in agreement with the standards adopted by the Project FAPESP/BIREME
+Group the elements of  bibliography que não seguem nenhuma of the demais normas
+
+back;licenses
+Group the elements of license
 
 bbibcomBack;abstract
-Identifies the summary of the article
+Identify the abstract of the article
 
 bbibcomBack;keygrp
-Contains the elements for the description subject matter of the document
+Group elements which indicate the subject of the document
 
 bbibcomBack;confgrp
-Contains the elements for the identification of an event as conference, seminar, congress, etc .
+Group the date of a event, such as conference, seminário, congress, etc. contidas em anais and publicações similares
 
 bbibcomBack;report
-Contains information on the report or project, of which the article is a partial or final product
+Group date of the report or project of which the article is partial or final product
 
 bbibcomBack;thesgrp
-Contains the elements for the identification of a thesis or dissertation or still of a product of a thesis or disertation
+Group the elements requireds to identify of a thesis or dissertation, or que is derivado of a thesis or dissertation
 
 bbibcomBack;hist
-Identifies the history of the publication of an article in a journal, containing the date of arrival, of accepted or of revision
+Identify the history of the publication of a article in a journal (dates of reception, revision and approval)
 
 bbibcomBack;title
-Identifies the title of a document
+Identify the title of the document
 
 bbibcomBack;subtitle
-Identifies the subtitle of a document
+Identify the subtitle of the document
 
 keygrpBbibcom;keyword
-Identifies the keywords of a document
+Identify the key words of the document
 
 keygrpBbibcom;subkey
-Identifies the qualifier of the keywords
+Identify the used forms para qualificar the key words or descriptors
 
 keygrpBbibcom;dperiod
-Identifies the period of the time reported in the content of the document
+Identify the período of tempo tratado at the content of the document
 
 confgrpBbibcom;sponsor
-Identifies the financing institution of the project or event
+Identify the sponsor or financial organization of a project or event
 
 confgrpBbibcom;confname
-Identifies the name of an event as conference, seminar, congress, etc .
+Identify the name of a event, such as conference, seminar, congress, etc.
 
 confgrpBbibcom;no
-Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic
+Identify the number of the event
 
 confgrpBbibcom;date
-Identifies a date
+Identify the publication date of the event
 
 confgrpBbibcom;city
-Identifies the name of a city
+Identify the city of the event
 
 confgrpBbibcom;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) of the event
 
 confgrpBbibcom;country
-Identifies the country
+Identify the país of the event
 
-sponsorBbibcom;orgname
-Identifies the name of an institution or organization
+sponsorBbibcom; Identifica o nome da organização financiadora
+15
 
 sponsorBbibcom;orgdiv
-Identifies the division of an institution
+Identify the division of the financial organization
 
 reportBbibcom;rsponsor
-Identifies the financing institution of the project or event
+Identify the sponsor or financial organization of a project or event
 
 reportBbibcom;projname
- Identifies the name of the project of which the article is a partial or final product
+Identify the name of the project of which the article is partial or final product
 
 rsponsorBbibcom;orgname
-Identifies the name of an institution or organization
+Identify the name of the financial organization
 
 rsponsorBbibcom;orgdiv
-Identifies the division of an institution
+Identify the division of the financial organization
 
 rsponsorBbibcom;contract
-Identifies a numerical or alphanumeric code of the financing institution of a project, of which the article is an end or partial product
+Identify a código numérico or alfanumérico fornecido pela financial organization of a project, of which the article is produto final or parcial
 
 thesgrpBbibcom;city
-Identifies the name of a city
+Identify the city of the thesis
 
 thesgrpBbibcom;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) (lcoal) of the thesis
 
 thesgrpBbibcom;country
-Identifies the country
+Identify the país of the thesis
 
 thesgrpBbibcom;date
-Identifies a date
+Identify the date of the thesis
 
 thesgrpBbibcom;degree
-Identifies the degree of a dissertation or academic thesis, as a master's program, a doctorate or a pós-degree, etc .
+ Identify the degree of a thesis, such as Master, Doctor etc
 
 thesgrpBbibcom;orgname
-Identifies the name of an institution or organization
+Identify the name of the organization of the thesis
 
 thesgrpBbibcom;orgdiv
-Identifies the division of an institution
+Identify the division of the organization of the thesis
 
 histBbibcom;received
-Identifies the date in which the article was received by the journal for publication
+Identify the date em que the article was submitted to the peer review process
 
 histBbibcom;revised
-Identifies the date in which the article was reviewed by the journal for publication
+Identify the date em que inicio-se the revision of the article pelo peer review process
 
 histBbibcom;accepted
-Identifies the date in which the article was accepted by the journal for publication
+Identify the date em que the article foi aprovado para the publication
 
 other;ocitat
-Identifies the principle of a bibliographic citation in a bibliography
+Identify a citation at the bibliography
 
 ocitat;no
-Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic
+Identify the number of the citation
 
 ocitat;ocontrib
-Contains elements, as the author and the title, for the bibliographic description of a work that is part of a journal or of a book, as articles of journals and chapters of books
+Group elements, such as author and title, for bibliographic description of a article of journal or chapter of book
 
 ocitat;omonog
-Contains the principal elements for the identification of a  monograph
+Group the elements principais to identify of a monografia
 
 ocitat;oiserial
-Contains elements of specific identificationof a serial publication
+Group elements of identification específicos of a serial publication or journal
 
 ocitat;confgrp
-Contains the elements for the identificationof an event as conference, seminar, congress, etc
+Group the date of a event, such as conference, seminário, congress, etc. contidas em anais and publicações similares
 
 ocontrib;oauthor
-Contains the elements for the identificationof the individual authors as name, surname and type of responsability
+Group the date of the individual authors, such as name, sobrename and role
 
 ocontrib;ocorpaut
-Identifies the institutional authors responsible for the intellectual or artistic content of the work
+Identify the corporative authors
 
 ocontrib;et-al
-Shows that the bibliographic reference contains authors that were not cited
+Indicate non cited authors
 
 ocontrib;title
-Identifies the title of a document
+Identify the title of the document
 
 ocontrib;subtitle
-Identifies the subtitle of a document
+Identify the subtitle of the document
 
 ocontrib;date
-Identifies a date
+Identify the publication date
 
 ocontrib;pages
-Identifies the pages of an article or from a publication in a bibliograpgic citation
+Identify the pagination
 
 ocontrib;patgrp
-Contains the elements of the patente
+Group the date of patent
 
 oauthorOcontrib;fname
-Identifies the initial names of an individual author
+Identify the first names of an individual author
 
 oauthorOcontrib;surname
-Identifies the surname of an individual author
+Identify the sobrename of an individual author
 
 oauthorOcontrib;anonym
-Shows that the work is of unknown author
+Identify the work is of unknow authorship
 
 oauthorOcontrib;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 ocorpautContrib;orgname
-Identifies the name of an institution or organization
+Identify the name of the corporative author
 
 ocorpautContrib;orgdiv
-Identifies the division of an institution
+Identify the division of the corporative author
 
 ocorpautContrib;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 omonog;oauthor
-Contains the elements for the identification of the individual authors as name, surname and type of responsability
+Group the date of individual authors, such as name, sobrename and role
 
 omonog;ocorpaut
-Identifies the institutional authors responsible for the intellectual or artistic content of the work
+Identify the corporative authors
 
 omonog;et-al
-Shows that the bibliographic reference contains authors that were not cited
+Indicate non cited authors
 
 omonog;title
-Identifies the title of a document
+Identify the title of the document
 
 omonog;subtitle
-Identifies the subtitle of a document
+Identify the subtitle of the document
 
 omonog;confgrp
-Contains the elements for the identification of an event as conference, seminar, congress, etc
+Group the date of a event, such as conference, seminário, congress, etc. contidas em anais and publicações similares
 
 omonog;thesis
-Contains the specific elements for the identification of a dissertation or an academic thesis, in a bibliographic citation
+Group date of a thesis, in a citation
 
 omonog;date
-Identifies a date
+Identify the date of the thesis
 
 omonog;pages
-Identifies the pages of an article or from a publication in a bibliographic citation
+Identify the pagination
 
 omonog;edition
-Identifies the issue of the edition of a work
+Identify the number of the edition
 
 omonog;city
-Identifies the name of a city
+Identify the city of publication
 
 omonog;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) of publication
 
 omonog;country
-Identifies the country
+Identify the país of publication
 
 omonog;pubname
-Identifies the name of the publishers of a document
+Identify the casa publicadora
 
 omonog;extent
-Identifies the extension of a work as the issue of pages or volumes of a work
+Identify the extension of the work, such as the number of pages or volumes
 
 omonog;coltitle
-Identifies the title of a collection of which a work does part
+Identify the title of a collection or serial of the which the work is part of
 
 omonog;volid
-Identifies the issue of the volume of a document
+Identify the volume to which belongs a document
 
 omonog;isbn
-Identifies the International Standard Book Number (ISBN)
+Identify the Internacional Standard Book Number (ISBN)
 
 omonog;othinfo
-Contains data that cannot be identified by the other elements of a bibliographic reference
+Group date que não are identificados pelos demais elements of a citation
 
 omonog;url
-Shows, in a bibliographic reference, the electronic address of the document
+Identify the number of the edition
+
+omonog;doi
+Identify, in a citation, doi of the document
 
 omonog;cited
-Identifies when the article was accessed
+Identify the date em que the article electronic foi acessado
 
 omonog;patgrp
-Contains the elements of the patente
+Group the date of patent
 
 oauthorOmonog;fname
-Identifies the initial names of an individual author
+Identify the first names of an individual author
 
 oauthorOmonog;surname
-Identifies the surname of an individual author
+Identify the sobrename of an individual author
 
 oauthorOmonog;anonym
-Shows that the work is of an unknwon author
+Identify the work is of unknow authorship
 
 oauthorOmonog;previous
-Shows that the author of the bibliographic reference is the same author cited in the previous citation
+Identify the author of the citation is the same author citado at the previous reference
 
 ocorpautOmonog;orgname
-Identifies the name of an institution or organization
+Identify the name of the corporative author
 
 ocorpautOmonog;orgdiv
-Identifies the division of an institution
+Identify the division of the corporative author
 
 ocorpautOmonog;previous
-Shows that the author of the bibliographic reference is the same author cited in the previous citation
+Identify the author of the citation is the same author citado at the previous reference
 
 confgrpOmonog;sponsor
-Identifies the financing institution of the project or event
+Identify the sponsor or financial organization of a project or event
 
 confgrpOmonog;confname
- Identifies the name of an event as conference, seminar, congress, etc.
+Identify the name of a event, such as conference, seminar, congress, etc.
 
 confgrpOmonog;no
-Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic
+Identify the number of the event
 
 confgrpOmonog;date
-Identifies the date
+Identify the publication date of the event
 
 confgrpOmonog;city
-Identifies the name of a city
+Identify the city of the event
 
 confgrpOmonog;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) of the event
 
 confgrpOmonog;country
-Identifies the country
+Identify the país of the event
 
 sponsorOmonog;orgname
-Identifies the name of an institution or organization
+Identify the name of the financial organization
 
 sponsorOmonog;orgdiv
-Identifies the division of an institution
+Identify the division of the financial organization
 
 thesisOmonog;city
-Identifies the name of a city
+Identify the city of the thesis
 
 thesisOmonog;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) of the thesis
 
 thesisOmonog;country
-Identifies the country
+Identify the país of the thesis
 
 thesisOmonog;date
-Identifies a date
+Identify the date of the thesis
 
 thesisOmonog;degree
-Identifies the degree of a dissertation or academic thesis, as a master's program, a doctorate or a pos-degree, etc
+ Identify the degree of a thesis, such as Master, Doctor etc
 
 thesisOmonog;orgname
-Identifies the name of an institution or organization
+Identify the name of the organization of the thesis
 
 thesisOmonog;orgdiv
-Identifies the division of an institution
+Identify the division of the organization of the thesis
 
 oiserial;sertitle
-Identifies the title of a serial publication
+Identify the title of a serial publication or journal
 
 oiserial;stitle
-Contains the short format and standardized of the title of a journal
+Group the forma abreviada and padronizada of the title of a journal or serial publication
 
 oiserial;isstitle
-Identifies the title of an issue of a serial publication
+Identify the title of a fascículo of serial publication or journal
 
 oiserial;othinfo
-Contains data that cannot be identified by the other elements of the bibliographic reference
+Group date que não are identificados pelos demais elements of a citation
 
 oiserial;city
-Identifies the name of a city
+Identify the city of publication
 
 oiserial;country
-Identifies the country
+Identify the país of publication
 
 oiserial;pubname
-Identifies the name of the publisher of the document
+Identify the casa publicadora
 
 oiserial;volid
-Identifies the issue of the volume of a document
+Identify the volume to which belongs a document
 
 oiserial;issueno
-Identifies the issue of the issue
+Identify the number of a fascículo
 
 oiserial;suppl
-Identifies the issue of the supplement of a journal
+Identify the number of the supplement of a journal
 
 oiserial;pages
-Identifies the pages of an article or from a publication in a bibliographic citation
+Identify the pagination
 
 oiserial;extent
-Identifies the extension of a work as the issue of pages or volumes of a work
+Identify the extension of the work, such as the number of pages or volumes
 
 oiserial;date
-Identifies the date
+Identify the publication date
 
 oiserial;issn
-Identifies the International Standard Serial Number (ISSN)
+Identify the Internacional Standard Serial  Number (ISSN)
 
 oiserial;url
-Shows, in a bibliographic reference, the electronic address of the document
+Identify the number of the edition
+
+oiserial;doi
+Identify, in a citation, doi of the document
 
 oiserial;cited
-Identifies when the article was accessed
+Identify the date em que the article electronic foi acessado
 
 confgrpOcitat;sponsor
-Identifies the financing institution of the project or event
+Identify the sponsor or financial organization of a project or event
 
 confgrpOcitat;confname
-Identifies the name of an event as conference, seminar, congress, etc.
+Identify the name of a event, such as conference, seminar, congress, etc.
 
 confgrpOcitat;no
-Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic
+Identify the number of the event
 
 confgrpOcitat;date
-Identifies the date
+Identify the publication date of the event
 
 confgrpOcitat;city
-Identifies the name of a city
+Identify the city of the event
 
 confgrpOcitat;state
-Identifies the corresponding state to the site or city of publication of a work
+Identify the state/region (local) of the event
 
 confgrpOcitat;country
-Identifies the country
+Identify the país of the event
 
 sponsorOcitat;orgname
-Identifies the name of an institution or organization
+Identify the name of the financial organization
 
 sponsorOcitat;orgdiv
-Identifies the division of an institution
+Identify the division of the financial organization
 
 vancouv;vcitat
-Identifies the beginning of a bibliographic reference in a bibliography
+Identify a citation at the bibliography
 
 vcitat;no
-Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic
+Identify the number of the citation
 
 vcitat;vcontrib
-Contains elements, as the author and the title, for the bibliographic description of a work that is part of a journal or of a book, as articles of journals or chapters of books
+Group elements, such as author and title, for bibliographic description of a article of journal or chapter of book
 
 vcitat;viserial
-Contains elements of identificationspecific of a serial publication
+Group elements of identification específicos of a serial publication or journal
 
 vcitat;vmonog
-Contains the principal elements for the identification of a monograph
+Group the elements principais to identify of a monografia
 
 vcontrib;author
-Contains the elements for the identification of the individual authors as name, surname and type of responsability
+Group the date of individual authors, such as name,sobrename and role
 
 vcontrib;corpauth
-Identifies the institutional authors responsible for the intellectual or artistic content of the work
+Identify the corporative authors responsible for the content intelectual or artístico of the trabalho
 
 vcontrib;et-al
-Shows that the bibliographic reference contains authors that were not cited
+Indicate non cited authors
 
 vcontrib;vtitle
-Identifies a set of title of a document in a bibliographic reference in the format of Vancouver
+Identify a group of title of the document in a citation according to Vancouver
 
 vcontrib;patgrp
-Contains the elements of the patente
+Group the date of patent
 
 authorVcontrib;fname
-Identifies the initial names of an individual author
+Identify the first names of an individual author
 
 authorVcontrib;surname
-Identifies the surname of an individual author
+Identify the sobrename of an individual author
 
 authorVcontrib;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 corpauthVcontrib;orgname
-Identifies the name of an institution or organization
+Identify the name of the corporative author
 
 corpauthVcontrib;orgdiv
-Identifies the division of an institution
+Identify the division of the corporative author
 
 corpauthVcontrib;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author of the previous reference
 
 vtitleVcontrib;title
-Identifies the title of a document
+Identify the title of the document
 
 vtitleVcontrib;subtitle
-Identifies the subtitle of a document
+Identify the subtitle of the document
 
 vtitleVcontrib;tp
-Shows the type of publication in a bibliographic reference for example, an editorial or a literature review
+Identify the type of publication in a citation, for instance, an editorial or a revision of literature
 
 viserial;vstitle
-Contains the short format and standardized of the title of a journal
+Group the forma abreviada and padronizada of the title of a journal or serial publication
 
 viserial;date
-Identifies a date
+Identify the publication date
 
 viserial;inpress
-Shows that the citation was not still published
+Identify the publishing of the document is in progress
 
 viserial;volid
-Identifies the issue of the volume of a document
+Identify the volume to which belongs a document
 
 viserial;issueno
-Identifies the issue of an issue
+Identify the number of a fascículo
 
 viserial;suppl
-Identifies the issue of the supplement of a journal
+Identify the number of the supplement of a journal
 
 viserial;part
-Shows the part of a bibliographic citation
+Identify the part of the volume or fascículo
 
 viserial;extent
-Identifies the extension of a work as the issue of pages or volumes of a work
+Identify the extension of the work, such as the number of pages or volumes
 
 viserial;pages
-Identifies the pages of an article or from a publication in a citation
+Identify the pagination
 
 viserial;url
-Shows, in a bibliographic reference, the electronic address of the document
+Identify the number of the edition
+
+viserial;doi
+Identify, in a citation, doi of the document
 
 viserial;cited
-Identifies when the article was accessed
+Identify the date em que the article electronic foi acessado
 
 vstitle;stitle
-Contains the short format and standardized of the title of a journal
+Group the forma abreviada and padronizada of the title of a journal or serial publication
 
 vstitle;tp
-Shows the type of publication in a bibliographic reference for example, an editorial or a literature review
+Identify the type of publication in a citation, for instance, an editorial or a revision of literature
 
 vmonog;author
-Contains the elements for the identification of the individual authors as name, surname and type of responsability
+Group the date of individual authors, such as name,sobrename and role
 
 vmonog;corpauth
-Identifies the institutional authors responsible for the intellectual or artistic content of the work
+Identify the corporative authors responsible for the content intelectual or artístico of the trabalho
 
 vmonog;et-al
-Shows that the bibliographic reference contains authors that were not cited
+Indicate non cited authors
 
 vmonog;vtitle
-Identifies a set of title of a document in a bibliographic reference in the format of Vancouver
+Identify a group of title of the document in a citation according to Vancouver
 
 vmonog;edition
-Identifies the issue of the edition of a work
+Identify the number of the edition
 
 vmonog;version
-Identifies if the publication is in the format electronic or in the printed format
+Identify se the publication is em format electronic or role
 
 vmonog;confgrp
-Contains the elements for the identification of an event as conference, seminar, congress, etc
+Group the date of a event, such as conference, seminário, congress, etc. contidas em anais and publicações similares
 
 vmonog;city
-Identifies the name of a city
+Identify the city of publication
 
 vmonog;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) of publication
 
 vmonog;pubname
-Identifies the name of the publisher of a document
+Identify the casa publicadora
 
 vmonog;inpress
-Shows that the citation was not still published
+Identify the citation citada ainda is em publishing
 
 vmonog;date
-Identifies a date
+Identify the publication date
 
 vmonog;pages
-Identifies the pages of an article or from a publication in the bibliographic citation
+Identify the pagination
 
 vmonog;report
-Contains information on the report or project, of which the article is a partial or final product
+Group date of the report or project of which the article is partial or final product
 
 vmonog;thesis
-Contains the specific elements for the identification of a dissertation or an academic thesis, in a bibliographic citation
+Group date of a thesis, in a citation
 
 vmonog;url
-Shows, in a bibliographic reference, the electronic address of the document
+Identify the number of the edition
+
+vmonog;doi
+Identify, in a citation, doi of the document
 
 vmonog;cited
-Identifies when the article was accessed
+Identify the date em que the article electronic foi acessado
 
 vmonog;patgrp
-Contains the elements of the patente
+Group the date of patent
 
 authorVmonog;fname
-Identifies the initial names of an individual author
+Identify the first names of an individual author
 
 authorVmonog;surname
-Identifies the surname of an individual author
+Identify the sobrename of an individual author
 
 authorVmonog;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 corpautVmonog;orgname
-Identifies the name of an institution or organization
+Identify the name of the corporative author
 
 corpautVmonog;orgdiv
-Identifies the division of an institution
+Identify the division of the corporative author
 
 corpautVmonog;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 vtitleVmonog;title
-Identifies the title of a document
+Identify the title of the document
 
 vtitleVmonog;subtitle
-Identifies the subtitle of a document
+Identify the subtitle of the document
 
 vtitleVmonog;tp
-Shows the type of publication in a bibliographic reference for example, an editorial or a literature review
+Identify the type of publication in a citation, for instance, an editorial or a revision of literature
 
 confgrpVmonog;sponsor
-Identifies the financing institution of the project or event
+Identify the sponsor or financial organization of a project or event
 
 confgrpVmonog;confname
- Identifies the name of an event as conference, seminar, congress, etc.
+Identify the name of a event, such as conference, seminar, congress, etc.
 
 confgrpVmonog;no
-Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic
+Identify the number of the event
 
 confgrpVmonog;date
-Identifies the date
+Identify the publication date of the event
 
 confgrpVmonog;city
-Identifies the name of a city
+Identify the city of the event
 
 confgrpVmonog;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) of the event
 
 confgrpVmonog;country
-Identifies the country
+Identify the país of the event
 
 sponsorVmonog;orgname
-Identifies the name of an institution or organization
+Identify the name of the financial organization
 
 sponsorVmonog;orgdiv
-Identifies the division of an institution
+Identify the division of the financial organization
 
 reportVmonog;rsponsor
-Identifies the financing institution of the project or event
+Identify the sponsor or financial organization of a project or event
 
 reportVmonog;projname
-Identifies the name of the project of which the article is a partial or final product
+Identify the name of the project of which the article is partial or final product
 
 rsponsorVmonog;orgname
-Identifies the name of an institution or organization
+Identify the name of the financial organization
 
 rsponsorVmonog;orgdiv
-Identifies the division of an institution
+Identify the division of the financial organization
 
 rsponsorVmonog;contract
-Identifies a numerical or alphanumeric code of the financing institution of a project, of which the article is an end or partial product
+Identify a código numérico or alfanumérico fornecido pela financial organization of a project, of which the article is produto final or parcial
 
 thesisVmonog;city
-Identifies the name of a city
+Identify the city of the thesis
 
 thesisVmonog;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) (lcoal) of the thesis
 
 thesisVmonog;country
-Identifies the country
+Identify the país of the thesis
 
 thesisVmonog;date
-Identifies a date
+Identify the date of the thesis
 
 thesisVmonog;degree
-Identifies the degree of a dissertation or academic thesis, as a master's program, a doctorate or a pos-degree, etc
+ Identify the degree of a thesis, such as Master, Doctor etc
 
 thesisVmonog;orgname
-Identifies the name of an institution or organization
+Identify the name of the organization of the thesis
 
 thesisVmonog;orgdiv
-Identifies the division of an institution
+Identify the division of the organization of the thesis
+
+apa;pcitat
+Identify a citation at the bibliography
+
+pcitat;no
+Identify the number of the citation
+
+pcitat;pcontrib
+Group elements, such as author and title, for bibliographic description of a article of journal or chapter of book
+
+pcitat;pmonog
+Group the elements principais to identify of a monografia
+
+pcitat;piserial
+Group elements of identification específicos of a serial publication or journal
+
+pcontrib;author
+Group the date of individual authors, such as name, sobrename and role
+
+pcontrib;corpauth
+Identify the corporative authors responsible for the content intelectual or artístico of the trabalho
+
+pcontrib;date
+Identify the publication date
+
+pcontrib;title
+Identify the title of the document
+
+pcontrib;subtitle
+Identify the subtitle of the document
+
+authorpContrib;fname
+Identify the first names of an individual author
+
+authorpContrib;surname
+Identify the sobrename of an individual author
+
+corpautpContrib;orgname
+Identify the name of the corporative author
+
+corpautpContrib;orgdiv
+Identify the division of the corporative author
+
+authorpMonog;fname
+Identify the first names of an individual author
+
+authorpMonog;surname
+Identify the sobrename of an individual author
+
+corpautpMonog;orgname
+Identify the name of the corporative author
+
+corpautpMonog;orgdiv
+Identify the division of the corporative author
+
+piserial;sertitle
+Identify the title of a serial publication or journal
+
+piserial;volid
+Identify the volume to which belongs a document
+
+piserial;issueno
+Identify the number of a fascículo
+
+piserial;suppl
+Identify the number of the supplement of a journal
+
+piserial;pages
+Identify the pagination
+
+piserial;cited
+Identify the date em que the article electronic foi acessado
+
+piserial;url
+Identify the number of the edition
+
+piserial;doi
+Identify, in a citation, doi of the document
+
+pmonog;author
+Group the date of individual authors, such as name,sobrename and role
+
+pmonog;corpauth
+Identify the corporative authors responsible for the content intelectual or artístico of the trabalho
+
+pmonog;date
+Identify the publication date
+
+pmonog;title
+Identify the title of the document
+
+pmonog;subtitle
+Identify the subtitle of the document
+
+pmonog;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica
+15
+
+pmonog;coltitle
+Identify the title of a collection or serial of the which the work is part of
+
+pmonog;colvolid
+Identify the volume of a collection
+
+pmonog;notes
+Group date que não are identificados pelos demais elements of a citation
+
+pmonog;pages
+Identify the pagination
+
+pmonog;edition
+Identify the number of the edition
+
+pmonog;city
+Identify the city of publication
+
+pmonog;country
+Identify the país of publication
+
+pmonog;pubname
+Identify the casa publicadora
+
+pmonog;cited
+Identify the date em que the article electronic foi acessado
+
+pmonog;url
+Identify the number of the edition
+
+pmonog;doi
+Identify, in a citation, doi of the document
+
+thesisPmonog;degree
+ Identify the degree of a thesis, such as Master, Doctor etc
+
+thesisPmonog;orgname
+Identify the name of the organization of the thesis
+
+thesisPmonog;city
+Identify the city of the thesis
 
 abnt6023;acitat
-Identifies the principle of a bibliographic reference em a bibliography
+Identify a citation at the bibliography
 
 acitat;no
-Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic
+Identify the number of the citation
 
 acitat;acontrib
-Contains elements, as the author and the title, for the bibliographic description of a work that is part of a journal or of a book, as articles of journals and chapters of books
+Group elements, such as author and title, for bibliographic description of a article of journal or chapter of book
 
 acitat;amonog
-Contains the principal elements for the identification of a monograph
+Group the elements principais to identify of a monografia
 
 acitat;aiserial
-Contains elements of identificationspecific of a serial publication
+Group elements of identification específicos of a serial publication or journal
 
 acitat;confgrp
-Contains the elements for the identification of an event as conference, seminar, congress, etc
+Group the date of a event, such as conference, seminário, congress, etc. contidas em anais and publicações similares
 
 acontrib;author
-Contains the elements for the identification of the individual authors as name, surname and type of responsability
+Group the date of individual authors, such as name, sobrename and role
 
 acontrib;corpauth
-Identifies the institutional authors responsible for the intellectual or artistic content of the work
+Identify the corporative authors responsible for the content intelectual or artístico of the trabalho
 
 acontrib;et-al
-Shows that the bibliographic reference contains authors that were not cited
+Indicate non cited authors
 
 acontrib;title
-Identifies the title of a document
+Identify the title of the document
 
 acontrib;subtitle
-Identifies the subtitle of a document
+Identify the subtitle of the document
 
 acontrib;volid
-Identifies the issue of the volume of a document
+Identify the volume to which belongs a document
 
 acontrib;pages
-Identifies the pages of an article or from a publication in a bibliographic citation
+Identify the pagination
 
 acontrib;patgrp
-Contains the elements of the patente
+Group the date of patent
 
 authorAcontrib;fname
-Identifies the initial names of an individual author
+Identify the first names of an individual author
 
 authorAcontrib;surname
-Identifies the surname of an individual author
+Identify the sobrename of an individual author
 
 authorAcontrib;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 corpautAContrib;orgname
-Identifies the name of an institution or organization
+Identify the name of the corporative author
 
 corpautAContrib;orgdiv
-Identifies the division of an institution
+Identify the division of the corporative author
 
 corpautAContrib;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 aiserial;sertitle
-Identifies the title of a serial publication
+Identify the title of a serial publication or journal
 
 aiserial;stitle
-Contains the short format and standardized of the title of a journal
+Group the forma abreviada and padronizada of the title of a journal or serial publication
 
 aiserial;isstitle
-Identifies the title of an issue of a serial publication
+Identify the title of a fascículo of serial publication or journal
 
 aiserial;city
-Identifies the name of a city
+Identify the city of publication
 
 aiserial;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) of publication
 
 aiserial;country
-Identifies the country
+Identify the país of publication
 
 aiserial;pubname
-Identifies the name of the publisher of a document
+Identify the casa publicadora
 
 aiserial;suppl
-Identifies the issue of the supplement of a journal
+Identify the number of the supplement of a journal
 
 aiserial;volid
-Identifies the issue of the volume of a document
+Identify the volume to which belongs a document
 
 aiserial;issueno
-Identifies the issue of an issue
+Identify the number of a fascículo
 
 aiserial;date
-Identifies a date
+Identify the publication date
 
 aiserial;extent
-Identifies the extension of a work as the issue of pages or volumenes of a work
+Identify the extension of the work, such as the number of pages or volumes
 
 aiserial;pages
-Identifies the pages of an article or from a publication in a bibliographic citation
+Identify the pagination
 
 aiserial;notes
-Contains data that cannot be identified by the other elements of a reference
+Group date que não are identificados pelos demais elements of a citation
 
 aiserial;issn
-Identifies the Internacional Standard Serial  Number (ISSN)
+Identify the Internacional Standard Serial  Number (ISSN)
 
 aiserial;url
-Shows, in a bibliographic reference, the electronic address of the document
+Identify the number of the edition
+
+aiserial;doi
+Identify, in a citation, doi of the document
 
 aiserial;cited
-Identifies when the article was accessed
+Identify the date em que the article electronic foi acessado
 
 amonog;author
-Contains the elements for the identification of the individual authors as name, surname and type of responsability
+Group the date of individual authors, such as name,sobrename and role
 
 amonog;corpauth
-Identifies the institutional authors responsible for the intellectual or artistic content of the work
+Identify the corporative authors responsible for the content intelectual or artístico of the trabalho
 
 amonog;et-al
-Shows that the bibliographic reference contains authors that were not cited
+Indicate non cited authors
 
 amonog;title
-Identifies the title of a document
+Identify the title of the document
 
 amonog;subtitle
-Identifies the subtitle of a document
+Identify the subtitle of the document
 
 amonog;subresp
-Shows the responsibilities that are not principal in a reference for example, the translators and revisores
+Identify the responsabilidades secundarias in a citation, for instance, tradutores and revisores
 
 amonog;edition
-Identifies the issue of the edition of a work
+Identify the number of the edition
 
 amonog;confgrp
-Contains the elements for the identification of an event as conference, seminar, congress, etc
+Group the date of a event, such as conference, seminário, congress, etc. contidas em anais and publicações similares
 
 amonog;city
-Identifies the name of a city
+Identify the city of publication
 
 amonog;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) of publication
 
 amonog;country
-Identifies the country
+Identify the país of publication
 
 amonog;pubname
-Identifies the name of the publisher of a document
+Identify the casa publicadora
 
 amonog;date
-Identifies a date
+Identify the publication date
 
 amonog;volid
-Identifies the issue of the volume of a document
+Identify the volume to which belongs a document
 
 amonog;tome
-Shows a part of a publication in a bibliographic citation
+Identify the tomo of a publication in a citation
 
 amonog;extent
-Identifies the extension of a work as the issue of pages or volumenes of a work
+Identify the extension of the work, such as the number of pages or volumes
 
 amonog;pages
-Identifies the pages of an article or from a publication in a bibliographic citation
+Identify the pagination
 
 amonog;coltitle
-Identifies the title of a collection of which a work does part
+Identify the title of a collection or serial of the which the work is part of
 
 amonog;colvolid
-Shows the issue of the volume of a collection
+Identify the volume of a collection
 
 amonog;notes
-Contains data that cannot be identified by the other elements of a collection
+Group date que não are identificados pelos demais elements of a citation
 
 amonog;isbn
-Identifies the Internacional Standard Book Number (ISBN)
+Identify the Internacional Standard Book Number (ISBN)
 
 amonog;thesis
-Contains the specific elements for the identification of a dissertation or an academic thesis, in a bibliographic citation
+Group date of a thesis, in a citation
 
 amonog;url
-Shows, in a bibliographic reference, the electronic address of the document
+Identify the number of the edition
+
+amonog;doi
+Identify, in a citation, doi of the document
 
 amonog;cited
-Identifies when the article was accessed
+Identify the date em que the article electronic foi acessado
 
 amonog;patgrp
-Contains the elements of the patente
+Group the date of patent
 
 authorAmonog;fname
-Identifies the initial names of an individual author
+Identify the first names of an individual author
 
 authorAmonog;surname
-Identifies the surname of an individual author
+Identify the sobrename of an individual author
 
 authorAmonog;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 corpautAmonog;orgname
-Identifies the name of an institution or organization
+Identify the name of the corporative author
 
 corpautAmonog;orgdiv
-Identifies the division of an institution
+Identify the division of the corporative author
 
 corpautAmonog;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 confgrpAmonog;sponsor
-Identifies the financing institution of the project or event
+Identify the sponsor or financial organization of a project or event
 
 confgrpAmonog;confname
-Identifies the name of an event as conference, seminar, congress, etc
+Identify the name of a event, such as conference, seminar, congress, etc.
 
 confgrpAmonog;no
-Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic
+Identify the number of the event
 
 confgrpAmonog;date
-Identifies the date
+Identify the publication date of the event
 
 confgrpAmonog;city
-Identifies the name of a city
+Identify the city of the event
 
 confgrpAmonog;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) of the event
 
 confgrpAmonog;country
-Identifies the country
+Identify the país of the event
 
 sponsorAmonog;orgname
-Identifies the name of an institution or organization
+Identify the name of the financial organization
 
 sponsorAmonog;orgdiv
-Identifies the division of an institution
+Identify the division of the financial organization
 
 thesisAmonog;city
-Identifies the name of a city
+Identify the city of the thesis
 
 thesisAmonog;state
-Identifies the corresponding state to the site or city of publication of a work
+Identify the state/region (local) (lcoal) of the thesis
 
 thesisAmonog;country
-Identifies the country
+Identify the país of the thesis
 
 thesisAmonog;date
-Identifies a date
+Identify the date of the thesis
 
 thesisAmonog;degree
-Identifies the degree of a dissertation or academic thesis, as a master's program, a doctorate or a pos-degree, etc
+ Identify the degree of a thesis, such as Master, Doctor etc
 
 thesisAmonog;orgname
-Identifies the name of an institution or organization
+Identify the name of the organization of the thesis
 
 thesisAmonog;orgdiv
-Identifies the division of an institution
+Identify the division of the organization of the thesis
 
 confgrpAcitat;sponsor
-Identifies the financing institution of the project or event
+Identify the sponsor or financial organization of a project or event
 
 confgrpAcitat;confname
-Identifies the name of an event as conference, seminar, congress, etc
+Identify the name of a event, such as conference, seminar, congress, etc.
 
 confgrpAcitat;no
-Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic
+Identify the number of the event
 
 confgrpAcitat;date
-Identifies the date
+Identify the publication date of the event
 
 confgrpAcitat;city
-Identifies the name of a city
+Identify the city of the event
 
 confgrpAcitat;state
-Identifies the corresponding state to the site or city of publication of a work
+Identify the state/region (local) of the event
 
 confgrpAcitat;country
-Identifies the country
+Identify the país of the event
 
 sponsorConfgrpAcitat;orgname
-Identifies the name of an institution or organization
+Identify the name of the financial organization
 
 sponsorConfgrpAcitat;orgdiv
-Identifies the division of an institution
+Identify the division of the financial organization
 
 iso690;icitat
-Identifies the principle of a bibliographic reference in a bibliography
+Identify a citation at the bibliography
 
 icitat;no
-Identifies all the issues of the structure of an article, its position in the structure is that is going to define its characteristic
+Identify the number of the citation
 
 icitat;icontrib
-Contains elements, as the author and the title, for the bibliographic description of a work that is the part of a journal or of a book, as articles of journals and chapters of books
+Group elements, such as author and title, for bibliographic description of a article of journal or chapter of book
 
 icitat;imonog
-Contains the principal elements for the identification of a monograph
+Group the elements principais to identify of a monografia
 
 icitat;iiserial
-Contains the elements of identification specific of a serial publication
+Group elements of identification específicos of a serial publication or journal
 
 icontrib;author
-Contains the elements for the identification of the individual authors as name, surname and type of responsability
+Group the date of individual authors, such as name, sobrename and role
 
 icontrib;corpauth
-Identifies the institutional authors responsible for the intellectual or artistic content of the work
+Identify the corporative authors responsible for the content intelectual or artístico of the trabalho
 
 icontrib;et-al
-Shows that the bibliographic reference contains authors that were not cited
+Indicate non cited authors
 
 icontrib;subresp
-Shows the responsibilities that are not principal in a citation for example, translators and revisors
+Identify the responsabilidades secundarias in a citation, for instance, tradutores and revisores
+
+icontrib;date
+Identify the publication date
 
 icontrib;title
-Identifies the title of a document
+Identify the title of the document
 
 icontrib;subtitle
-Identifies the subtitle of a document
-
-icontrib;section
-Shows the section that is cited in a bibliographic citation
-
-icontrib;pages
-Identifies the pages of an article or from a publication in a bibliographic citation
-
-icontrib;location
-Shows the location of a part of the document in its total content in the electronic format
-
-icontrib;notes
-Contains data that cannot be identified by the other elements of a reference
-
-icontrib;isbn
-Identifies the International Standard Book Number (ISBN)
-
-icontrib;patgrp
-Contains the elements of the patente
+Identify the subtitle of the document
 
 authorIcontrib;fname
-Identifies the initial names of an individual author
+Identify the first names of an individual author
 
 authorIcontrib;surname
-Identifies the surname of an individual author
+Identify the sobrename of an individual author
 
 authorIcontrib;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 corpautIcontrib;orgname
-Identifies the name of an institution or organization
+Identify the name of the corporative author
 
 corpautIcontrib;orgdiv
-Identifies the division of an institution
+Identify the division of the corporative author
 
 corpautIcontrib;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 subrespIcontrib;fname
-Identifies the initial names of an individual author
+Identify the first names of an individual author
 
 subrespIcontrib;surname
-Identifies the surname of an individual author
+Identify the sobrename of an individual author
 
 iiserial;isstitle
-Identifies the title of an issue of a serial publication
+Identify the title of a fascículo of serial publication or journal
 
 iiserial;author
-Contains the elements for the identification of the individual authors as name, surname and type of responsability
+Group the date of individual authors, such as name, sobrename and role
 
 iiserial;corpauth
-Identifies the institutional authors responsible for the intellectual or artistic content of the work
+Identify the corporative authors responsible for the content intelectual or artístico of the trabalho
 
 iiserial;et-al
-Shows that the bibliographic reference contains authors that were not cited
+Indicate non cited authors
 
 iiserial;medium
-Shows the format of the medium in that the document is published or edited
+Identify the format of the meio em que the document is sendo publicado or editado
 
 iiserial;sertitle
-Identifies the title of a serial publication
+Identify the title of a serial publication or journal
 
 iiserial;stitle
-Contains the short format and standardized of the title of a journal
+Group the forma abreviada and padronizada of the title of a journal or serial publication
 
 iiserial;edition
-Identifies the issue of the edition of a work
+Identify the number of the edition
 
 iiserial;city
-Identifies the name of a city
+Identify the city of publication
 
 iiserial;state
-Identifies the corresponding state to the local or city of publication of a work
+Identify the state/region (local) of publication
 
 iiserial;country
-Identifies the country
+Identify the país of publication
 
 iiserial;pubname
-Identifies the name of the publisher of a document
+Identify the casa publicadora
 
 iiserial;date
-Identifies a date
+Identify the publication date
 
 iiserial;update
-Shows the date of updating of the work
+update
 
 iiserial;location
-Shows the location of a part of a document in its everything in electronic format
+Identify the electronic address of the document
 
 iiserial;volid
-Identifies the issue of the volume of a document
+Identify the volume to which belongs a document
 
 iiserial;isdesig
-Identifies the principal dates of a collection for example, the initial dates of the collection
+Identify the main dates of a collection, for instance, the initial date of the collection
 
 iiserial;issueno
-Identifies the issue of a issue
+Identify the number of a fascículo
 
 iiserial;pages
-Identifies the pages of an article or from a publication in a bibliographic citation
+Identify the pagination
 
 iiserial;notes
-Contains data that cannot be identified by the other elements of a reference
+Group date que não are identificados pelos demais elements of a citation
 
 iiserial;url
-Shows, in a bibliographic reference, the electronic address of the document
+Identify the number of the edition
+
+iiserial;doi
+Identify, in a citation, doi of the document
 
 iiserial;cited
-Identifies when the article was accessed
+Identify the date em que the article electronic foi acessado
 
 iiserial;issn
-Identifies the International Standard Serial Number (ISSN)
+Identify the Internacional Standard Serial  Number (ISSN)
 
 authorIiserial;fname
-Identifies the initial names of an individual author
+Identify the first names of an individual author
 
 authorIiserial;surname
-Identifies the surname of an individual author
+Identify the sobrename of an individual author
 
 authorIiserial;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 corpautIiserial;orgname
-Identifies the name of an institution or organization
+Identify the name of the corporative author
 
 corpautIiserial;orgdiv
-Identifies the division of an institution
+Identify the division of the corporative author
 
 corpautIiserial;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 imonog;author
- Contains the elements for the identification of the individual authors as name, surname and type of responsability
+Group the date of individual authors, such as name, sobrename and role
 
 imonog;corpauth
- Identifies the responsible institutional authors for the intellectual or artistic content of the work
+Identify the corporative authors responsible for the content intelectual or artístico of the trabalho
 
 imonog;et-al
- Shows that the bibliographic reference contains authors that were not cited
+Indicate non cited authors
 
 imonog;subresp
- Shows the responsibilities that are not principal in a citation for example, translators and revisores
+Identify the responsabilidades secundarias in a citation, for instance, tradutores and revisores
 
 imonog;title
- Identifies the title of a document
+Identify the title of the document
 
 imonog;subtitle
- Identifies the subtitle of a document
+Identify the subtitle of the document
 
 imonog;medium
- Shows the format of the medium in that the document is published or edited
+Identify the format of the meio em que the document is sendo publicado or editado
 
 imonog;edition
- Identifies the issue of the edition of a work
+Identify the number of the edition
 
 imonog;city
- Identifies the name of a city
+Identify the city of publication
 
 imonog;state
- Identifies the corresponding state to the site or city of publication of a work
+Identify the state/region (local) of publication
 
 imonog;country
-Identifies the country
+Identify the país of publication
 
 imonog;pubname
- Identifies the name of the publisher or editor of a document
+Identify the casa publicadora
 
 imonog;date
-Identifies a date
+Identify the publication date
 
 imonog;update
-Shows the date of updating of the work
+update
 
 imonog;volid
-Identifies the issue of the volume of a document
+Identify the volume to which belongs a document
 
 imonog;pages
-Identifies the pages of an article or from a publication in bibliographic citation
+Identify the pagination
 
 imonog;extent
-Identifies the extension of a work as the issue of pages or volumenes of a work
+Identify the extension of the work, such as the number of pages or volumes
 
 imonog;location
-Shows the location of the part of a document in its everything in electronic format
+Identify the electronic address of the document
 
 imonog;coltitle
-Identifies the title of a collection or serial of which a work does part
+Identify the title of a collection or serial of the which the work is part of
 
 imonog;notes
-Contains the data that cannot be identified by the other elements of the citation
+Group date que não are identificados pelos demais elements of a citation
 
 imonog;url
-Shows, in a bibliographic reference, the electronic address of the document
+Identify the number of the edition
+
+imonog;doi
+Identify, in a citation, doi of the document
 
 imonog;cited
-Identifies when the article was accessed
+Identify the date em que the article electronic foi acessado
 
 imonog;isbn
-Identifies the International Standard Book Number (ISBN)
+Identify the Internacional Standard Book Number (ISBN)
 
 imonog;patgrp
-Contains the elements of the patente
+Group the date of patent
 
 authorImonog;fname
-Identifies the initial names of individual author
+Identify the first names of an individual author
 
 authorImonog;surname
-Identifies the surname of individual author
+Identify the sobrename of an individual author
 
 authorImonog;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 corpautImonog;orgname
-Identifies the name of an institution or organization
+Identify the name of the corporative author
 
 corpautImonog;orgdiv
-Identifies the division of an institution
+Identify the division of the corporative author
 
 corpautImonog;previous
-Shows that the author of the bibliographic reference is the same author cited in the last citation
+Identify the author of the citation is the same author citado at the previous reference
 
 subrespImonog;fname
-Identifies the initial names of individual author
+Identify the first names of an individual author
 
 subrespImonog;surname
-Identifies the surname of individual author
+Identify the sobrename of an individual author
 
 subrespAmonog;fname
-Identifies the initial names of individual author
+Identify the first names of an individual author
 
 subrespAmonog;surname
-Identifies the surname of individual author
+Identify the sobrename of an individual author
 
 backT;vancouv
-Contains the elements of a bibliography reference in accordance with the Vancouver standard
+Group the elements of bibliography according to Vancouver
 
 backT;iso690
-Contains the elements of a reference bibliography in accordance with the ISO 690/87 standard
+Group the elements of bibliography according to ISO 690/87
 
 backT;abnt6023
-Contains the elements of a reference bibliography in accordance with the NBR 6023/89 standard
+Group the elements of bibliography according to NBR 6023/89 of the ABNT
+
+backT;apa
+Group the elements of bibliography para according to APA
 
 backT;other
-Contains the elements of a reference bibliography that are not in agreement with the standards adopted by the Project FAPESP/BIREME
+Group the elements of bibliography which are not according to any adopted standard
+
+backT;licenses
+Group the elements of license
 
 patentImonog;orgname
-Identifies where the patent was registered
+Identify onde foi registrada the patent
 
 patentImonog;patent
-Identifies the patent
+Identify the number of the patent
 
 patentImonog;date
-Identifies the patent date
+Identify the registration date of the patent
 
 patentOmonog;orgname
-Identifies where the patent was registered
+Identify onde foi registrada the patent
 
 patentOmonog;patent
-Identifies the patent
+Identify the number of the patent
 
 patentOmonog;date
-Identifies the patent date
+Identify the registration date of the patent
 
 patentAmonog;orgname
-Identifies where the patent was registered
+Identify onde foi registrada the patent
 
 patentAmonog;patent
-Identifies the patent
+Identify the number of the patent
 
 patentAmonog;date
-Identifies the patent date
+Identify the registration date of the patent
 
 patentVmonog;orgname
-Identifies where the patent was registered
+Identify onde foi registrada the patent
 
 patentVmonog;patent
-Identifies the patent
+Identify the number of the patent
 
 patentVmonog;date
-Identifies the patent date
+Identify the registration date of the patent
 
 patentIcontrib;orgname
-Identifies where the patent was registered
+Identify onde foi registrada the patent
 
 patentIcontrib;patent
-Identifies the patent
+Identify the number of the patent
 
 patentIcontrib;date
-Identifies the patent date
+Identify the registration date of the patent
 
 patentOcontrib;orgname
-Identifies where the patent was registered
+Identify onde foi registrada the patent
 
 patentOcontrib;patent
-Identifies the patent
+Identify the number of the patent
 
 patentOcontrib;date
-Identifies the patent date
+Identify the registration date of the patent
 
 patentAcontrib;orgname
-Identifies where the patent was registered
+Identify onde foi registrada the patent
 
 patentAcontrib;patent
-Identifies the patent
+Identify the number of the patent
 
 patentAcontrib;date
-Identifies the patent date
+Identify the registration date of the patent
 
 patentVcontrib;orgname
-Identifies where the patent was registered
+Identify onde foi registrada the patent
 
 patentVcontrib;patent
-Identifies the patent
+Identify the number of the patent
 
 patentVcontrib;date
-Identifies the patent date
+Identify the registration date of the patent
+
+bodyArt;sec
+Identify a section of the text
+
+bodyArt;p
+Identify paragráfo
+
+bodyArt;list
+Identify the list
+
+secBody;sectitle
+Identify the title of the section
+
+secBody;subsec
+Identify the sub-section of the text
+
+secBody;p
+Identify paragráfo
+
+secBody;list
+Identify the list
+
+list;li
+Identify the items of the lista
+
+secsec;sectitle
+Identify the title of the subsection
+
+secsec;p
+Identify paragráfo
+
+licensesBar;license
+Identify the text of the license
+
+licenseBar;licensep
+Identify the parágrafo of the license
 
