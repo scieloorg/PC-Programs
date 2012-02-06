@@ -302,10 +302,6 @@ Identifica o estado (local) da cidade da afiliação
 Identify the state/region (local) of the city of the affiliation
 Identifica el provincia/región (local) de la ciudad de la afiliación
 
-Agrupa os dados de uma tese ou dissertaçãp, ou que é derivado de uma tese ou dissertação
-Group the date of a thesis or dissertaçãp, or que is derivado of a thesis or dissertation
-Agrupa los datos de una tesis o dissertaçãp, o que es derivado de una tesis o dissertación
-
 Identifica o número do evento
 Identify the number of the event
 Identifica el número del evento
@@ -369,10 +365,6 @@ Agrupa datos del informe o proyecto de lo cual el artículo es producto parcial o
 Identifica o estado (local) de publicação
 Identify the state/region (local) of publication
 Identifica el provincia/región (local) de publicación
-
-Agrupa os elementos necessarios para a identificação de uma tese ou dissertação, ou que é derivado de uma tese ou dissertação
-Group the elements requireds to identify of a thesis or dissertation, or que is derivado of a thesis or dissertation
-Agrupa los elementos necesarios para la identificación de una tesis o dissertación, o que es derivado de una tesis o dissertación
 
 Agrupa os elementos de  bibliografia que não seguem nenhuma das demais normas
 Group the elements of  bibliography que não seguem nenhuma of the demais normas
@@ -442,9 +434,9 @@ Identifica o número de um fascículo
 Identify the number of a fascículo
 Identifica el número de un fascículo
 
-15
-15
-15
+ Identifica o nome da organização financiadora
+ Identify the name of the financial organization
+ Identifica el nombre de la organización financiera
 
 Identifica o país do evento
 Identify the país of the event

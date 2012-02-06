@@ -128,7 +128,7 @@ confgrp;Agrupa os dados de um evento como conferencia, seminário, congresso, etc
 down;confgrpBibcom
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;9;#FALSE#;#FALSE#;reportBibcom
 down;reportBibcom
-thesgrp;Agrupa os dados de uma tese ou dissertaçãp, ou que é derivado de uma tese ou dissertação;9;#FALSE#;#FALSE#;thesgrpBibcom
+thesgrp;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;9;#FALSE#;#FALSE#;thesgrpBibcom
 down;thesgrpBibcom
 hist;Identifica o histórico da publicação de um artigo em um periódico (data de recebimento, de aceitação ou de revisão);9;#FALSE#;#FALSE#;histBibcom
 down;histBibcom
@@ -200,7 +200,7 @@ confgrp;Agrupa os dados de um evento como conferencia, seminário, congresso, etc
 down;confgrpBbibcom
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;9;#FALSE#;#FALSE#;reportBbibcom
 down;reportBbibcom
-thesgrp;Agrupa os elementos necessarios para a identificação de uma tese ou dissertação, ou que é derivado de uma tese ou dissertação;9;#FALSE#;#FALSE#;thesgrpBbibcom
+thesgrp;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;9;#FALSE#;#FALSE#;thesgrpBbibcom
 down;thesgrpBbibcom
 hist;Identifica o histórico da publicação de um artigo em um periódico (data de recebimento, de aceitação ou de revisão);9;#FALSE#;#FALSE#;histBbibcom
 down;histBbibcom
@@ -223,7 +223,7 @@ state;Identifica o estado (local) do evento;10;#TRUE#;#FALSE#;
 country;Identifica o país do evento;10;#TRUE#;#FALSE#;
 
 sponsorBbibcom;confgrpBbibcom
- Identifica o nome da organização financiadora;15;#FALSE#;#FALSE#;
+orgname; Identifica o nome da organização financiadora;15;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização financiadora;15;#FALSE#;#FALSE#;
 
 reportBbibcom;bbibcomBack
@@ -576,7 +576,7 @@ down;corpautpMonog
 date;Identifica a data de publicação;15;#FALSE#;#TRUE#;
 title;Identifica o título do documento;15;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;15;#FALSE#;#FALSE#;
-Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;15;#FALSE#;#FALSE#;thesisPmonog
+thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;15;#FALSE#;#FALSE#;thesisPmonog
 down;thesisPmonog
 coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;15;#TRUE#;#FALSE#;
 colvolid;Identifica o volume de uma coleção;15;#TRUE#;#FALSE#;

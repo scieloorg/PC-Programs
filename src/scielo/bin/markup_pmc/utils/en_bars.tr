@@ -200,7 +200,7 @@ bibcomFront;report
 Group date of the report or project of which the article is partial or final product
 
 bibcomFront;thesgrp
-Group the date of a thesis or dissertaçãp, or que is derivado of a thesis or dissertation
+Group date of a thesis, in a citation
 
 bibcomFront;hist
 Identify the history of the publication of a article in a journal (dates of reception, revision and approval)
@@ -320,7 +320,7 @@ bbibcomBack;report
 Group date of the report or project of which the article is partial or final product
 
 bbibcomBack;thesgrp
-Group the elements requireds to identify of a thesis or dissertation, or que is derivado of a thesis or dissertation
+Group date of a thesis, in a citation
 
 bbibcomBack;hist
 Identify the history of the publication of a article in a journal (dates of reception, revision and approval)
@@ -361,8 +361,8 @@ Identify the state/region (local) of the event
 confgrpBbibcom;country
 Identify the país of the event
 
-sponsorBbibcom; Identifica o nome da organização financiadora
-15
+sponsorBbibcom;orgname
+ Identify the name of the financial organization
 
 sponsorBbibcom;orgdiv
 Identify the division of the financial organization
@@ -1030,8 +1030,8 @@ Identify the title of the document
 pmonog;subtitle
 Identify the subtitle of the document
 
-pmonog;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica
-15
+pmonog;thesis
+Group date of a thesis, in a citation
 
 pmonog;coltitle
 Identify the title of a collection or serial of the which the work is part of

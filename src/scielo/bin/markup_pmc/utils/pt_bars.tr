@@ -200,7 +200,7 @@ bibcomFront;report
 Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final
 
 bibcomFront;thesgrp
-Agrupa os dados de uma tese ou dissertaçãp, ou que é derivado de uma tese ou dissertação
+Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica
 
 bibcomFront;hist
 Identifica o histórico da publicação de um artigo em um periódico (data de recebimento, de aceitação ou de revisão)
@@ -320,7 +320,7 @@ bbibcomBack;report
 Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final
 
 bbibcomBack;thesgrp
-Agrupa os elementos necessarios para a identificação de uma tese ou dissertação, ou que é derivado de uma tese ou dissertação
+Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica
 
 bbibcomBack;hist
 Identifica o histórico da publicação de um artigo em um periódico (data de recebimento, de aceitação ou de revisão)
@@ -361,8 +361,8 @@ Identifica o estado (local) do evento
 confgrpBbibcom;country
 Identifica o país do evento
 
-sponsorBbibcom; Identifica o nome da organização financiadora
-15
+sponsorBbibcom;orgname
+ Identifica o nome da organização financiadora
 
 sponsorBbibcom;orgdiv
 Identifica a divisão da organização financiadora
@@ -1030,8 +1030,8 @@ Identifica o título do documento
 pmonog;subtitle
 Identifica o subtítulo do documento
 
-pmonog;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica
-15
+pmonog;thesis
+Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica
 
 pmonog;coltitle
 Identifica o título de uma coleção ou série da qual uma obra faz parte
