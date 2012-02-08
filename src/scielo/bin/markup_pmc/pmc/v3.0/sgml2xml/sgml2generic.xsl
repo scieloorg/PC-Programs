@@ -830,27 +830,42 @@ Here is a figure group, with three figures inside, each of which contains a grap
 				<xsl:apply-templates select=".//label"/>
 				<xsl:apply-templates select=".//caption"/>
 				<xsl:apply-templates select="." mode="graphic"/>
-				<xsl:if test=".//notes">
+				<xsl:apply-templates select="." mode="notes"/>
+			
+				<!-- xsl:if test=".//notes">
 				<table-wrap-foot>
 					<fn><p><xsl:value-of select=".//notes"/></p></fn>
 					
 				</table-wrap-foot>
-				</xsl:if>
+				</xsl:if> -->
 			</table-wrap>
 		</p>
+	</xsl:template>
+	<xsl:template match="tabwrap//notes" mode="table">
+		<fn><p><xsl:value-of select="."/></p></fn>
+	</xsl:template>
+	<xsl:template match="tabwrap" mode="notes">
+		<xsl:if test=".//notes">
+		
+				<table-wrap-foot>
+					<xsl:apply-templates select=".//notes" mode="table"/>
+					
+				</table-wrap-foot>
+	    </xsl:if>
 	</xsl:template>
 	<xsl:template match="p/tabwrap">
 		<table-wrap id="{@id}">
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
 			<xsl:apply-templates select="." mode="graphic"/>
-			<xsl:if test=".//notes">
+			<xsl:apply-templates select="." mode="notes"/>
+			<!-- xsl:if test=".//notes">
 				<table-wrap-foot>
 					
 					<fn><p><xsl:value-of select=".//notes"/></p></fn>
 					
 				</table-wrap-foot>
-				</xsl:if>
+				</xsl:if> -->
 		</table-wrap>
 	</xsl:template>
 	<xsl:template match="back//*[contains(name(),'monog') or contains(name(),'contrib')]//subtitle"/>

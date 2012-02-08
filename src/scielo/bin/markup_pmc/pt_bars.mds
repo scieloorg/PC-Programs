@@ -49,7 +49,7 @@ tabwrap;ifloat
 label;Identifica o rótulo da tabela (ex. Tabela 1);10;#FALSE#;#FALSE#;
 caption;Identifica a legenda da tabela;10;#FALSE#;#FALSE#;
 graphic;Identifica a imagem da tabela;10;#FALSE#;#TRUE#;
-notes;Identifica as notas da tabela;10;#FALSE#;#FALSE#;
+notes;Identifica as notas da tabela;10;#TRUE#;#FALSE#;
 
 figgrp;ifloat
 label;Identifica o rótulo da figura (ex. Figura 1);10;#FALSE#;#FALSE#;

@@ -204,13 +204,17 @@ goto END
 
 :ERR_TRANSF
 echo %date% %time% ERR_TRANSF >> %LOG_FILE%
-if exist %TEMP_ERRFILE% copy %TEMP_ERRFILE% %ERR_FILENAME%
+rem if exist %TEMP_ERRFILE% copy %TEMP_ERRFILE% %ERR_FILENAME%
+more %TEMP_ERRFILE% >> %LOG_FILE%
+copy %LOG_FILE% %ERR_FILENAME%
 goto END
 
 
 :ERR_VALIDATE
 echo %date% %time% ERR_VALIDATE >> %LOG_FILE%
-if exist %TEMP_ERRFILE% copy %TEMP_ERRFILE% %ERR_FILENAME%
+rem if exist %TEMP_ERRFILE% copy %TEMP_ERRFILE% %ERR_FILENAME%
+more %TEMP_ERRFILE% >> %LOG_FILE% 
+copy %LOG_FILE% %ERR_FILENAME%
 goto END
 
 

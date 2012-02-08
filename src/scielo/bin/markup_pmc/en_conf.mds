@@ -99,7 +99,7 @@ timer,99999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
 buttonApply,Apply
 buttonChange2,Change
-msgMissingImportantInformation,"Important information of ISSUEID was not found in \bin\markup\issue.mds"
+msgMissingImportantInformation,"Be sure the data of ISSUEID are in \bin\markup\issue.mds and \bin\markup\journal-standard.txt"
 pmcfolder,pmc\pmc_package
 tifsrcffolder,pmc\pmc_img
 pmctempfolder,pmc\pmc_work
