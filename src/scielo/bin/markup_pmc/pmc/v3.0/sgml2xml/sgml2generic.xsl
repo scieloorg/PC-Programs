@@ -75,22 +75,110 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="."/>
 		</etal>
 	</xsl:template>
+	<xsl:template match="ign"></xsl:template>
 	<xsl:template match="list">
-		<xslcomment><xsl:value-of select="text()"/></xslcomment>
-		<xsl:variable name="t"><xsl:choose>
-		<xsl:when test="contains(text(),'1')">order</xsl:when>
-		<xsl:when test="contains(text(),'a')">alpha-lower</xsl:when>
-		<xsl:when test="contains(text(),'i')">roman-lower</xsl:when>
-		<xsl:when test="contains(text(),'A')">alpha-upper</xsl:when>
-		<xsl:when test="contains(text(),'I')">roman-upper</xsl:when>
-		<xsl:otherwise>bullet</xsl:otherwise>
-		</xsl:choose>
+		<xsl:variable name="label"><xsl:value-of select="normalize-space(item[1]/label)"/></xsl:variable>
+	    <xsl:variable name="label2"><xsl:if test="count(item)&gt;1"><xsl:value-of select="normalize-space(item[2]/label)"/></xsl:if>
+	    </xsl:variable>
+	    <xsl:variable name="pattern">
+			<xsl:choose>
+			    <xsl:when test="@type='bullet'"><xsl:value-of select="@type"/></xsl:when>
+				<xsl:when test="$label!=''">
+					<xsl:choose>
+						<xsl:when test="contains($label,'1')"><xsl:value-of select="concat(substring-before($label,'1'),'#',substring-after($label,'1'))"/></xsl:when>
+						<xsl:when test="contains($label,'a')"><xsl:value-of select="concat(substring-before($label,'a'),'#',substring-after($label,'a'))"/></xsl:when>
+						<xsl:when test="contains($label,'A')"><xsl:value-of select="concat(substring-before($label,'A'),'#',substring-after($label,'A'))"/></xsl:when>
+						<xsl:when test="contains($label,'i')"><xsl:value-of select="concat(substring-before($label,'i'),'#',substring-after($label,'i'))"/></xsl:when>
+						<xsl:when test="contains($label,'I')"><xsl:value-of select="concat(substring-before($label,'I'),'#',substring-after($label,'I'))"/></xsl:when>
+						<xsl:otherwise>?</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="$label2!=''">
+					<xsl:choose>
+						<xsl:when test="contains($label2,'2')"><xsl:value-of select="concat(substring-before($label2,'2'),'#',substring-after($label2,'2'))"/></xsl:when>
+						<xsl:when test="contains($label2,'b')"><xsl:value-of select="concat(substring-before($label2,'b'),'#',substring-after($label2,'b'))"/></xsl:when>
+						<xsl:when test="contains($label2,'B')"><xsl:value-of select="concat(substring-before($label2,'B'),'#',substring-after($label2,'B'))"/></xsl:when>
+						<xsl:when test="contains($label2,'ii')"><xsl:value-of select="concat(substring-before($label2,'ii'),'#',substring-after($label2,'ii'))"/></xsl:when>
+						<xsl:when test="contains($label2,'I')"><xsl:value-of select="concat(substring-before($label2,'II'),'#',substring-after($label2,'II'))"/></xsl:when>
+						<xsl:otherwise>?</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:otherwise>?</xsl:otherwise>
+	       	</xsl:choose>
+	    </xsl:variable>
+	       	<!--  se pattern != '' entao priorizar label, senao ignorar label, usar list-type -->
+		
+	    
+	    <xsl:variable name="t">
+	    	<xsl:choose>
+			    <xsl:when test="$pattern='#'">
+					<xsl:choose>
+						<xsl:when test="contains($label,'1') or contains($label2,'2')">order</xsl:when>
+						<xsl:when test="contains($label,'a') or contains($label2,'b')">alpha-lower</xsl:when>
+						<xsl:when test="contains($label,'i') or contains($label2,'ii')">roman-lower</xsl:when>
+						<xsl:when test="contains($label,'A') or contains($label2,'B')">alpha-upper</xsl:when>
+						<xsl:when test="contains($label,'I') or contains($label2,'II')">roman-upper</xsl:when>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="$pattern='bullet'">bullet</xsl:when>
+				<xsl:otherwise></xsl:otherwise>
+	       	</xsl:choose></xsl:variable>
+	    <xsl:variable name="first">
+			<xsl:choose>
+				<xsl:when test="$pattern='#'">
+					<xsl:choose>
+						<xsl:when test="$t='order'">1</xsl:when>
+						<xsl:when test="$t='alpha-lower'">a</xsl:when>
+						<xsl:when test="$t='roman-lower'">I</xsl:when>
+						<xsl:when test="$t='alpha-upper'">A</xsl:when>
+						<xsl:when test="$t='roman-upper'">II</xsl:when>
+					</xsl:choose>
+				</xsl:when>
+				<xsl:when test="$t='bullet'"></xsl:when>
+				<xsl:otherwise>
+				<xsl:choose>
+						<xsl:when test="contains($label,'1') or contains($label2,'2')"><xsl:value-of select="translate($pattern,'#','1')"/></xsl:when>
+						<xsl:when test="contains($label,'a') or contains($label2,'b')"><xsl:value-of select="translate($pattern,'#','a')"/></xsl:when>
+						<xsl:when test="contains($label,'i') or contains($label2,'ii')"><xsl:value-of select="translate($pattern,'#','i')"/></xsl:when>
+						<xsl:when test="contains($label,'A') or contains($label2,'B')"><xsl:value-of select="translate($pattern,'#','A')"/></xsl:when>
+						<xsl:when test="contains($label,'I') or contains($label2,'II')"><xsl:value-of select="translate($pattern,'#','I')"/></xsl:when>
+					</xsl:choose>
+				</xsl:otherwise>
+	       	</xsl:choose>
 		</xsl:variable>
-		<list list-type="{$t}">
-			<xsl:apply-templates select=".//li"/>
+	    
+		<list>
+			<xsl:choose>
+				<xsl:when test="$t!='' and ($pattern='#' or $pattern='bullet')">
+					<xsl:attribute name="list-type"><xsl:value-of select="$t"/></xsl:attribute>
+					<xsl:apply-templates select=".//item[li]">
+						<xsl:with-param name="first" select="$first"/>
+					</xsl:apply-templates>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select=".//item[li]" mode="label">
+						<xsl:with-param name="first" select="$first"/>
+					</xsl:apply-templates>
+				</xsl:otherwise>
+	       	</xsl:choose>
+	       	
 		</list>
 	</xsl:template>
-	<xsl:template match="li"><list-item><p><xsl:apply-templates select="*|text()"/></p></list-item>
+	<xsl:template match="item"><list-item><p><xsl:apply-templates select="li"/></p></list-item>
+	</xsl:template>
+	<xsl:template match="item" mode="label">
+		<xsl:param name="first"/> 
+		<list-item><label><xsl:choose>
+				<xsl:when test="label=''">
+					<xsl:value-of select="normalize-space($first)"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="normalize-space(label)"/>
+				</xsl:otherwise>
+	       	</xsl:choose></label>
+	       	
+			<p><xsl:apply-templates select="li"/></p>
+		</list-item>
 	</xsl:template>
 	<xsl:template match="extent">
 		<size units="pages">
