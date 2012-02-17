@@ -150,3 +150,15 @@ ref-type
 Affiliation;Appendix;Author notes;Bibliographic reference;Textbox or sidebar;Chemical structure;Contributor;Corresponding author;Display formula;Figure or group of figures;Footnote;Keyword;List or list item;None of the items listed;Plate;Scheme;Section;Statement;Supplementary information;Table or group of tables
 aff;app;author-notes;bibr;boxed-text;chem;contrib;corresp;disp-formula;fig;fn;kwd;list;other;plate;scheme;sec;statement;supplementary-material;table
 
+sec-type
+Cases/Case Reports;Conclusions/Comment;Discussion/Interpretation;Introduction/Synopsis;Materials;Methods/Methodology/Procedures;Results/Statement of Findings;Subjects/Participants/Patients;Supplementary materials
+cases;conclusions;discussion;intro;materials;methods;results;subjects;supplementary-material
+
+listtype
+Ordered list. Prefix character is a number or a letter, depending on style;Unordered or bulleted list. Prefix character is a bullet, dash, or other symbol;Ordered list. Prefix character is a lowercase alphabetical character;Ordered list. Prefix character is an uppercase alphabetical character;Ordered list. Prefix character is a lowercase roman numeral;Ordered list. Prefix character is an uppercase roman numeral;Simple or plain list (No prefix character before each item) 
+order;bullet;alpha-lower;alpha-upper;roman-lower;roman-upper;simple
+
+fntype
+Abbreviations;Communicated-by information;Contributed-by information;Conflict of interest statements;Corresponding author information not identified separately, but merely footnoted;Contributor's current affiliation;Person has died since article was written;Contributor has the role of an editor;Contributed equally to the creation of the document;Statement of funding or denial of funds received in support of the research on which an article is based;Contributor is on sabbatical or other leave of absence;Some footnote type, other than those enumerated.;Contributor was a researcher for an article;Contributor's current address;Conference, colloquium, or other occasion at which this paper was presented;Contributor who presented the material;Contributor's previous location or affiliation;Contributor was a member of the study group for the research;Points to or describes supplementary material for the article;Research upon which an article is based was supported by some entity
+abbr;com;con;conflict;corresp;current-aff;deceased;edited-by;equal;financial-disclosure;on-leave;other;participating-researchers;present-address;presented-at;presented-by;previously-at;study-group-members;supplementary-material;supported-by
+

@@ -33,6 +33,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<!--
 	
 	-->
+	<xsl:template match="*" mode="text"><xsl:apply-templates select="*|text()" mode="text"/></xsl:template>
+	<xsl:template match="text()" mode="text"><xsl:value-of select="."/></xsl:template>
 	<xsl:template match="text()">
 		<xsl:value-of select="." disable-output-escaping="no"/>
 	</xsl:template>
@@ -254,6 +256,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="extra-scielo/publisher/publisher-name">
 		<xsl:value-of select="."></xsl:value-of><xsl:if test="position()!=last()">, </xsl:if>
 	</xsl:template>
+	<xsl:template match="front/doi">
+		<article-id pub-id-type="doi"><xsl:value-of select="."/></article-id>
+	</xsl:template>
 	<xsl:template match="article|text" mode="article-meta">
 		<xsl:variable name="l" select="@language"/>
 		<article-meta>
@@ -263,7 +268,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:value-of select="substring(10000 + substring(..//extra-scielo/issue-order,5),2)"/>
 					<xsl:value-of select="substring-after(100000 + @order,'1')"/>
 				</article-id>
-				
+				<xsl:apply-templates select="front/doi"></xsl:apply-templates>
 			</xsl:if>
 			
 			<article-categories>
@@ -271,6 +276,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						<subject>
 							<xsl:choose>
 								<xsl:when test="normalize-space($subject)!=''">
+									<xsl:attribute name="subj-group-type">heading</xsl:attribute>
 									<xsl:value-of select="$subject"/>
 								</xsl:when>
 								<xsl:otherwise>
@@ -377,12 +383,30 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="@role">
 		<xsl:attribute name="contrib-type"><xsl:choose><xsl:when test=".='nd'">author</xsl:when><xsl:when test=".='ed'">editor</xsl:when><xsl:when test=".='tr'">translator</xsl:when><xsl:when test=".='rev'">rev</xsl:when></xsl:choose></xsl:attribute>
 	</xsl:template>
-	<xsl:template match="author|corpauth" mode="front">
+	<xsl:template match="author" mode="front">
 		<contrib>
 			<xsl:apply-templates select="@role"/>
 			<xsl:apply-templates select="."/>
 			<xsl:apply-templates select="@rid"/>
 		</contrib>
+	</xsl:template>
+	<xsl:template match="authgrp/corpauth" mode="front">
+		<xsl:variable name="teste"><xsl:apply-templates select="./../../authgrp" mode="text"/></xsl:variable>
+		<xsl:choose>
+			<xsl:when test="contains($teste,'behalf')">
+			<on-behalf-of>
+			<xsl:apply-templates select="orgdiv"/><xsl:if test="orgdiv and orgname">, </xsl:if><xsl:apply-templates select="orgname"/>
+			</on-behalf-of>
+			</xsl:when>
+			<xsl:otherwise>
+			<contrib>
+			<xsl:apply-templates select="@role"/>
+			<xsl:apply-templates select="."/>
+			<xsl:apply-templates select="@rid"/>
+		</contrib>
+			</xsl:otherwise>
+		</xsl:choose>
+		
 	</xsl:template>
 	<xsl:template match="author/@rid">
 		<xref ref-type="aff" rid="aff{substring(normalize-space(.),3,1)}"/>
@@ -652,19 +676,18 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:apply-templates select="*|text()" mode="back"/>
 	</xsl:template>
 	<xsl:template match="back/*" mode="back-fn">
-		<xsl:variable name="text">
-			<xsl:apply-templates select="*|text()" mode="text"/>
-		</xsl:variable>
+		<xsl:variable name="text" select="normalize-space(.//text())"/>
 		<xsl:choose>
 			<xsl:when test="contains($text,'@')">
 				<!--xsl:attribute name="id">corresp</xsl:attribute>
 				<xsl:attribute name="fn-type">corresp</xsl:attribute-->
 			</xsl:when>
-			<xsl:otherwise>
+			<xsl:when test="$text!=''">
+				
 				<fn-group><fn>
 					<xsl:apply-templates select="." mode="back"/>
 				</fn></fn-group>
-			</xsl:otherwise>
+			</xsl:when>
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="back/licenses" mode="back-fn">
@@ -957,7 +980,14 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		</table-wrap>
 	</xsl:template>
 	<xsl:template match="back//*[contains(name(),'monog') or contains(name(),'contrib')]//subtitle"/>
-	<xsl:template match="back//*[contains(name(),'monog') or contains(name(),'contrib')]//subtitle" mode="title">: <xsl:apply-templates select="@* | * | text()"/>
+	<xsl:template match="back//*[contains(name(),'monog') or contains(name(),'contrib')]//subtitle" mode="title">
+		<xsl:variable name="texts"><xsl:choose>
+			<xsl:when test="../../vtitle">
+				<xsl:value-of select="../../../text-ref/text()"/></xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="..//text()"/></xsl:otherwise>
+		</xsl:choose></xsl:variable><xsl:value-of select="substring(substring-after($texts,../title),1,2)"/>				
+		<xsl:value-of select="text()"/>
 	</xsl:template>
 	<xsl:template match="back//*[contains(name(),'monog')]//title">
 		<xsl:choose>
@@ -968,7 +998,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 				</source>
 			</xsl:when>
 			<xsl:otherwise>
-				<article-title>
+			    <article-title>
 					<xsl:apply-templates select="@language|*|text()"/>
 					<xsl:apply-templates select="../subtitle" mode="title"/>
 				</article-title>
@@ -1202,7 +1232,7 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="fngrp">
 	</xsl:template>
-	<xsl:template match="fngrp[p or fn]">
+	<xsl:template match="fngrp[normalize-space(.//text())!='']">
 		<fn-group>
 			<xsl:apply-templates select="fn|p"/>
 		</fn-group>
@@ -1233,7 +1263,7 @@ et al.</copyright-statement>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:if test="$name = $requiredname">
-			<xsl:if test="* or normalize-space(text())!=''">
+			<xsl:if test="* or normalize-space(.//text())!=''">
 				<notes>
 					<xsl:choose>
 						<xsl:when test="$name='xmlbody'">
@@ -1308,7 +1338,7 @@ et al.</copyright-statement>
 		</year>
 	</xsl:template>	
 
-	<xsl:template match="sciname | caption/italic | subtitle/italic |title/italic | sectitle/italic | article-title/italic | p/italic">
+	<xsl:template match="sciname">
 		<named-content content-type="scientific-name">
 			<xsl:apply-templates/>
 		</named-content>

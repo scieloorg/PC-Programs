@@ -1741,3 +1741,9 @@ Identifica el texto de la licencia
 licenseBar;licensep
 Identifica el parágrafo de la licencia
 
+libar;item
+Texto del item de la lista
+
+libar;label
+Etiqueta del item de la lista
+

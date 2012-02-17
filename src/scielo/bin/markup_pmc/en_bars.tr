@@ -1721,7 +1721,7 @@ secBody;subsec
 Identify the sub-section of the text
 
 secBody;p
-Identify paragráfo
+Identify paragraph 
 
 secBody;list
 Identify the list
@@ -1739,5 +1739,11 @@ licensesBar;license
 Identify the text of the license
 
 licenseBar;licensep
-Identify the parágrafo of the license
+Identify the paragraph of the license
+
+libar;item
+Text of the item of the list
+
+libar;label
+Label of the item of the list
 

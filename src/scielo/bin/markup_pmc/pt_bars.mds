@@ -915,26 +915,33 @@ patent;Identifica o número da patente;6;#FALSE#;#FALSE#;
 date;Identifica a data de registro da patente;6;#FALSE#;#TRUE#;
 
 bodyArt;xmlbody
-sec;Identifica uma seção do texto;6;#TRUE#;#FALSE#;secBody
+sec;Identifica uma seção do texto;6;#TRUE#;#TRUE#;secBody
 down;secBody
 p;Identifica paragráfo;6;#TRUE#;#FALSE#;
-list;Identifica uma lista;6;#FALSE#;#FALSE#;list
-down;list
+list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar
+down;listBar
 
 secBody;bodyArt
 sectitle;Identifica o título da seção;6;#TRUE#;#FALSE#;
 subsec;Identifica a sub-seção do texto;6;#TRUE#;#FALSE#;secsec
 down;secsec
 p;Identifica paragráfo;6;#TRUE#;#FALSE#;
-list;Identifica uma lista;6;#FALSE#;#FALSE#;list
-down;list
+list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar
+down;listBar
 
-list;list
-li;Identifica os itens da lista;2;#TRUE#;#FALSE#;
+listBar;list
+li;Identifica os itens da lista;2;#TRUE#;#FALSE#;libar
+down;libar
+
+libar;li
+label;Identifica o rótulo do item da lista;2;#FALSE#;#FALSE#;
+item;Identifica o texto do item da lista;2;#FALSE#;#FALSE#;
 
 secsec;secBody
 sectitle;Identifica o título da subseção;6;#TRUE#;#FALSE#;
 p;Identifica paragráfo;6;#TRUE#;#FALSE#;
+list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar
+down;listBar
 
 licensesBar;back
 license;Identifica o texto da licença;2;#TRUE#;#TRUE#;licenseBar

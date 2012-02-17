@@ -260,7 +260,7 @@ thesgrpBibcom;city
 Identifica a cidade da tese
 
 thesgrpBibcom;state
-Identifica o estado (local) (lcoal) da tese
+Identifica o estado (local) da tese
 
 thesgrpBibcom;country
 Identifica o país da tese
@@ -386,7 +386,7 @@ thesgrpBbibcom;city
 Identifica a cidade da tese
 
 thesgrpBbibcom;state
-Identifica o estado (local) (lcoal) da tese
+Identifica o estado (local) da tese
 
 thesgrpBbibcom;country
 Identifica o país da tese
@@ -920,7 +920,7 @@ thesisVmonog;city
 Identifica a cidade da tese
 
 thesisVmonog;state
-Identifica o estado (local) (lcoal) da tese
+Identifica o estado (local) da tese
 
 thesisVmonog;country
 Identifica o país da tese
@@ -1316,7 +1316,7 @@ thesisAmonog;city
 Identifica a cidade da tese
 
 thesisAmonog;state
-Identifica o estado (local) (lcoal) da tese
+Identifica o estado (local) da tese
 
 thesisAmonog;country
 Identifica o país da tese
@@ -1740,4 +1740,10 @@ Identifica o texto da licença
 
 licenseBar;licensep
 Identifica o parágrafo da licença
+
+libar;item
+Texto do item da lista
+
+libar;label
+Rótulo do item da lista
 

@@ -35,4 +35,7 @@ curr,href,
 curr,pubtype,yes
 curr,hcomment,yes
 curr,filename,
-curr,ref-type,
+curr,ref-type,yes
+curr,sec-type,yes
+curr,listtype,yes
+curr,fntype,yes

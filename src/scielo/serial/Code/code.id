@@ -1827,3 +1827,129 @@
 !v002!^cstatement^vStatement
 !v002!^csupplementary-material^vSupplementary information
 !v002!^ctable^vTable or group of tables
+!ID 000125
+!v001!fntype^lpt
+!v002!^cabbr^vAbreviações
+!v002!^ccom^vInformação de comunicado
+!v002!^ccon^vInformação de contribuição
+!v002!^cconflict^vDeclaração de conflito de interesse
+!v002!^ccorresp^vInformação de correspondencia
+!v002!^ccurrent-aff^vAfiliação atual do autor
+!v002!^cdeceased^vPessoa morreu desde que o artigo foi escrito
+!v002!^cedited-by^vAutor é o editor
+!v002!^cequal^vContribuiu igualmente na criação do documento
+!v002!^cfinancial-disclosure^vDeclaração de financiamento ou negação do recebido no apoio da pesquisa na qual o artigo é baseado
+!v002!^con-leave^vAutor está ausente (sabático ou outro)
+!v002!^cother^vOutro tipo de nota
+!v002!^cparticipating-researchers^vAutor foi um pesquisador para um artigo
+!v002!^cpresent-address^vEndereço atual do autor
+!v002!^cpresented-at^vApresentado neste evento
+!v002!^cpresented-by^vApresentador del material
+!v002!^cpreviously-at^vAfiliação do autor anterior
+!v002!^cstudy-group-members^vAutor foi um membro do grupo de estudo para a pesquisa
+!v002!^csupplementary-material^vIndica ou descreve o material suplementar para o artigo
+!v002!^csupported-by^vPesquisa na qual um artigo é baseado, foi apoiado por alguma entidade
+!ID 000126
+!v001!fntype^les
+!v002!^cabbr^vAbreviaciones
+!v002!^ccom^vInformación de comunicado
+!v002!^ccon^vInformación de comunicación
+!v002!^cconflict^vDeclaración de conflito de interese
+!v002!^ccorresp^vInformación de correspondencia
+!v002!^ccurrent-aff^vAfiliación vigente del autor
+!v002!^cdeceased^vPersona se morrió desde la escritura del artículo
+!v002!^cedited-by^vAutor es el editor
+!v002!^cequal^vContribuyo igualmente en la creación del documento
+!v002!^cfinancial-disclosure^vDeclaración de financiamiento o negación de recebimiento en el apoyo de la investigación en la cual el artículo es basado 
+!v002!^con-leave^vAutor está ausente (sabático o otro)
+!v002!^cother^vOtro tipo de nota
+!v002!^cparticipating-researchers^vAutor fue un investigador para un artículo
+!v002!^cpresent-address^vDirección vigente del autor
+!v002!^cpresented-at^vPresentado en este evento
+!v002!^cpresented-by^vPresentador del material
+!v002!^cpreviously-at^vAfiliación del autor anterior
+!v002!^cstudy-group-members^vAutor fue un miembro del grupo de estudio para la investigación
+!v002!^csupplementary-material^vIndica o describe el material suplementar para el artículo
+!v002!^csupported-by^vInvestigación en la cual un artículo fue basado fue apoyado por alguna entidad. 
+!ID 000127
+!v001!fntype^len
+!v002!^cabbr^vAbbreviations
+!v002!^ccom^vCommunicated-by information
+!v002!^ccon^vContributed-by information
+!v002!^cconflict^vConflict of interest statements
+!v002!^ccorresp^vCorresponding author information not identified separately, but merely footnoted
+!v002!^ccurrent-aff^vContributor's current affiliation
+!v002!^cdeceased^vPerson has died since article was written
+!v002!^cedited-by^vContributor has the role of an editor
+!v002!^cequal^vContributed equally to the creation of the document
+!v002!^cfinancial-disclosure^vStatement of funding or denial of funds received in support of the research on which an article is based
+!v002!^con-leave^vContributor is on sabbatical or other leave of absence
+!v002!^cother^vSome footnote type, other than those enumerated.
+!v002!^cparticipating-researchers^vContributor was a researcher for an article
+!v002!^cpresent-address^vContributor's current address
+!v002!^cpresented-at^vConference, colloquium, or other occasion at which this paper was presented
+!v002!^cpresented-by^vContributor who presented the material
+!v002!^cpreviously-at^vContributor's previous location or affiliation
+!v002!^cstudy-group-members^vContributor was a member of the study group for the research
+!v002!^csupplementary-material^vPoints to or describes supplementary material for the article
+!v002!^csupported-by^vResearch upon which an article is based was supported by some entity
+!ID 000128
+!v001!listtype^len
+!v002!^corder^vOrdered list. Prefix character is a number or a letter, depending on style
+!v002!^cbullet^vUnordered or bulleted list. Prefix character is a bullet, dash, or other symbol
+!v002!^calpha-lower^vOrdered list. Prefix character is a lowercase alphabetical character
+!v002!^calpha-upper^vOrdered list. Prefix character is an uppercase alphabetical character
+!v002!^croman-lower^vOrdered list. Prefix character is a lowercase roman numeral
+!v002!^croman-upper^vOrdered list. Prefix character is an uppercase roman numeral
+!v002!^csimple^vSimple or plain list (No prefix character before each item) 
+!ID 000129
+!v001!listtype^lpt
+!v002!^corder^vLista ordenada. Caracter do prefixo é um número ou letra dependendo do estilo
+!v002!^cbullet^vLista não-ordenada. Caracter do prefixo é um caracter especial
+!v002!^calpha-lower^vLista ordenada. Caracter do prefixo é um caracter alfabético em caixa baixa
+!v002!^calpha-upper^vLista ordenada. Caracter do prefixo é um caracter alfabético em caixa alta
+!v002!^croman-lower^vLista ordenada. Caracter do prefixo é um numeral romano em caixa baixa
+!v002!^croman-upper^vLista ordenada. Caracter do prefixo é um numeral romano em caixa alta
+!v002!^csimple^vLista simples (nenhum prefixo)
+!ID 000130
+!v001!listtype^les
+!v002!^corder^vLista ordenada. Caracter del prefijo es un número o letra dependiendo del estilo
+!v002!^cbullet^vLista no-ordenada. Caracter del prefijo es un caracter especial
+!v002!^calpha-lower^vLista ordenada. Caracter del prefijo es un caracter alfabético en caja baja
+!v002!^calpha-upper^vLista ordenada. Caracter del prefijo es un caracter alfabético en caja alta
+!v002!^croman-lower^vLista ordenada. Caracter del prefijo es un numeral romano en caja baja
+!v002!^croman-upper^vLista ordenada. Caracter del prefijo es un numeral romano en caja alta
+!v002!^csimple^vLista simple (ningun prefijo)
+!ID 000131
+!v001!sec-type^len
+!v002!^ccases^vCases/Case Reports
+!v002!^cconclusions^vConclusions/Comment
+!v002!^cdiscussion^vDiscussion/Interpretation
+!v002!^cintro^vIntroduction/Synopsis
+!v002!^cmaterials^vMaterials
+!v002!^cmethods^vMethods/Methodology/Procedures
+!v002!^cresults^vResults/Statement of Findings
+!v002!^csubjects^vSubjects/Participants/Patients
+!v002!^csupplementary-material^vSupplementary materials
+!ID 000132
+!v001!sec-type^lpt
+!v002!^ccases^vRelatos de Caso
+!v002!^cconclusions^vConclusões ou Comentarios
+!v002!^cdiscussion^vDiscussões ou Interpretações
+!v002!^cintro^vIntrodução ou sinopse
+!v002!^cmaterials^vMateriais
+!v002!^cmethods^vMétodos/Metodologia/Procedimentos
+!v002!^cresults^vResultados/Declaração de descobertas
+!v002!^csubjects^vAssuntos/Participantes/Pacientes
+!v002!^csupplementary-material^vMateriais suplementares
+!ID 000133
+!v001!sec-type^les
+!v002!^ccases^vInformes de casos
+!v002!^cconclusions^vConclusiones o comentarios
+!v002!^cdiscussion^vDiscusiones o interpretaciones
+!v002!^cintro^vIntroducción o sinopsis
+!v002!^cmaterials^vMateriales
+!v002!^cmethods^vMétodos/Metodología/Procedimientos
+!v002!^cresults^vResultados/Declaración de descobiertas
+!v002!^csubjects^vTemas/Participantes/Pacientes
+!v002!^csupplementary-material^vMateriales suplementares
