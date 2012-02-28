@@ -26,6 +26,10 @@ Indica que há autores não mencionados
 Indicate non cited authors
 Indica autores no citados
 
+Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares
+Group the date of a event, such as conference, sininario, congress, etc. contidas in anais and publicações similares
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
+
 Agrupa os autores individuais ou corporativos do documento
 Group the individual or corporative authors of the document
 Agrupa los autores individuales o corporativos del documento
@@ -43,8 +47,8 @@ Identify the key words of the document
 Identifica las palabras-clave del documento
 
 Agrupa elementos complementares para a identificação do artigo, como resumo e palavras-chave
-Group other elements to identify of the article, such as abstract and key words
-Agrupa otros elementos para la identificación del artículo, como resumen y palabras-clave
+Group other elinents to identify of the article, such as abstract and key words
+Agrupa otros elenentos para la identificación del artículo, como resumen y palabras-clave
 
 Math (MathML 2.0 Tag Set)
 Math (MathML 2.0 Tag Set)
@@ -67,8 +71,8 @@ Group date of the corporative authors
 Agrupa datos de los autores corporativos
 
 Agrupa os elementos de bibliografia segundo a norma Vancouver
-Group the elements of bibliography according to Vancouver
-Agrupa los elementos de bibliografía de acuerdo con Vancouver
+Group the elinentos of bibliography according to Vancouver
+Agrupa los elenentos de bibliografía de acuerdo con Vancouver
 
 Identifica os autores corporativos
 Identify the corporative authors
@@ -99,12 +103,12 @@ Identify the article
 Identifica el artículo
 
 Identifica a imagem da figura
-Identify the image of the figure
+Identify the imagin of the figure
 Identifica la imagen de la figura
 
 Identifica o tipo de publicação em uma referencia bibliográfica como, por exemplo, um editorial ou uma revisão de literatura
 Identify the type of publication in a citation, for instance, an editorial or a revision of literature
-Identifica el tipo de publicación en una  cita, por ejemplo, un editorial o una revisión de literatura
+Identifica el tipo de publicación en una  cita, por ejenplo, un editorial o una revisión de literatura
 
 Identifica a cidade do evento
 Identify the city of the event
@@ -119,8 +123,8 @@ Group the key words of the article
 Agrupa las palabras-clave del artículo
 
 Agrupa os elementos de bibliografia segundo a norma ISO 690/87
-Group the elements of bibliography according to ISO 690/87
-Agrupa los elementos de bibliografía de acuerdo con ISO 690/87
+Group the elinentos of bibliography according to ISO 690/87
+Agrupa los elenentos de bibliografía de acuerdo con ISO 690/87
 
 Identifica o título da subseção
 Identify the title of the subsection
@@ -128,7 +132,7 @@ Identifica el título de la subsección
 
 Identifica as datas principais de uma coleção como, por exemplo, a data inicial da coleção
 Identify the main dates of a collection, for instance, the initial date of the collection
-Identifica las fechas principales de una colección, por ejemplo, la fecha inicial de la colección
+Identifica las fechas principales de una colección, por ejenplo, la fecha inicial de la colección
 
 Identifica o texto da licença
 Identify the text of the license
@@ -150,13 +154,17 @@ Identifica a organização à qual o autor está vinculado
 Identify the organization to which the author is related
 Identifica la organización a la cual el autor está relacionado
 
+Identifica parágrafo
+Identify paragraph
+Identifica párrafo
+
 Identifica um link
 Identify a link
 Identifica un enlace
 
 Agrupa elementos, como autor e título, para a descrição bibliográfica de um artigo de periódico ou capítulo de livro
-Group elements, such as author and title, for bibliographic description of a article of journal or chapter of book
-Agrupa elementos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+Group elinentos, such as author and title, for bibliographic description of a article of journal or chapter of book
+Agrupa elenentos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
 
 Agrupa a forma abreviada e padronizada do título de um periódico ou publicação seriada
 Group the forma abreviada and padronizada of the title of a journal or serial publication
@@ -191,20 +199,20 @@ Identify the publication date of the event
 Identifica la fecha de publicación del evento
 
 Identifica a imagem da equação
-Identify the image of the equation
-Identifica la imagen de la equación
+Identify the imagin of the equation
+Identifica la imagen de la ecuación
 
 Agrupa os elementos de  bibliografia segundo a norma ISO 690/87
-Group the elements of  bibliography according to ISO 690/87
-Agrupa los elementos de  bibliografía de acuerdo con ISO 690/87
+Group the elinentos of  bibliography according to ISO 690/87
+Agrupa los elenentos de  bibliografía de acuerdo con ISO 690/87
 
 Identifica o subtítulo do documento
 Identify the subtitle of the document
 Identifica el subtítulo del documento
 
 Identifica o corpo do artigo com detalhes
-Identify the body of the article with detalhes
-Identifica el cuerpo del artículo con detalhes
+Identify the body of the article with details
+Identifica el cuerpo del artículo con detalles
 
 Identifica a organização financiadora ou patrocinadora de um projeto ou evento
 Identify the sponsor or financial organization of a project or event
@@ -227,19 +235,19 @@ Identify the title of the section
 Identifica el título de la sección
 
 Identifica a data em que o artigo eletrônico foi acessado
-Identify the date em que the article electronic foi acessado
-Identifica la fecha em que el artículo electrónico foi acessado
+Identify the date in which the article electronic was accessed
+Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 Identifica o período de tempo tratado no conteúdo do documento
-Identify the período of tempo tratado at the content of the document
-Identifica el período de tempo tratado en el contenido del documento
+Identify the período of tinpo tratado at the content of the document
+Identifica el período de tenpo tratado en el contenido del documento
 
 Identifica o nome da organização autora
 Identify the name of the corporative author
 Identifica el nombre del autor corporativo
 
 Identifica a imagem da tabela
-Identify the image of the table
+Identify the imagin of the table
 Identifica la imagen de la tabla
 
 Identifica figuras compostas (Fig 1A, 1B,...)
@@ -266,25 +274,21 @@ Identifica o nome da organização autora do documento
 Identify the name of the corporative author of the document
 Identifica el nombre del autor corporativo del documento
 
-Identifica o estado (local) (lcoal) da tese
-Identify the state/region (local) (lcoal) of the thesis
-Identifica el provincia/región (local) (lcoal) de la tesis
-
 Identifica a divisão da organização financiadora do evento
 Identify the division of the financial organization of the event
 Identifica la división de la organización financiera del evento
 
 Agrupa os elementos de bibliografia para segundo a norma APA
-Group the elements of bibliography para according to APA
-Agrupa los elementos de bibliografía para de acuerdo con APA
+Group the elinentos of bibliography para according to APA
+Agrupa los elenentos de bibliografía para de acuerdo con APA
 
 Agrupa elementos de identificação específicos de uma publicação seriada ou periódica
-Group elements of identification específicos of a serial publication or journal
-Agrupa elementos de identificación específicos de una publicación seriada o revista
+Group elinentos of identification específicos of a serial publication or journal
+Agrupa elenentos de identificación específicos de una publicación seriada o revista
 
 Identifica os autores corporativos responsáveis pelo conteúdo intelectual ou artístico do trabalho
-Identify the corporative authors responsible for the content intelectual or artístico of the trabalho
-Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabalho
+Identify the corporative authors responsible for the content intelectual or artístico of the work
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
 
 Identifica a cidade de publicação
 Identify the city of publication
@@ -295,12 +299,16 @@ Identify the país of publication
 Identifica el país de publicación
 
 Agrupa os elementos de  bibliografia  segundo a norma NBR 6023/89 da ABNT
-Group the elements of  bibliography  according to NBR 6023/89 of the ABNT
-Agrupa los elementos de  bibliografía  de acuerdo con NBR 6023/89 de la ABNT
+Group the elinentos of  bibliography  according to NBR 6023/89 of the ABNT
+Agrupa los elenentos de  bibliografía  de acuerdo con NBR 6023/89 de la ABNT
 
 Identifica o estado (local) da cidade da afiliação
 Identify the state/region (local) of the city of the affiliation
 Identifica el provincia/región (local) de la ciudad de la afiliación
+
+Identifica o texto do item da lista
+Identify the text of the itin of the lista
+Identifica el texto del iten de la lista
 
 Identifica o número do evento
 Identify the number of the event
@@ -308,7 +316,7 @@ Identifica el número del evento
 
 Identifica as responsabilidades secundarias em uma referencia como, por exemplo, tradutores e revisores
 Identify the responsabilidades secundarias in a citation, for instance, tradutores and revisores
-Identifica las responsabilidades secundarias en una  cita, por ejemplo, tradutores y revisores
+Identifica las responsabilidades secundarias en una  cita, por ejenplo, tradutores y revisores
 
 Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica
 Group date of a thesis, in a citation
@@ -331,24 +339,24 @@ Identify the abstract of the article
 Identifica el resumen del artículo
 
 Identifica o parágrafo da licença
-Identify the parágrafo of the license
-Identifica el parágrafo de la licencia
+Identify the paragraph of the license
+Identifica el párrafo de la licencia
 
 Identifica a parte anterior ao corpo do artigo, ou seja, títulos, autores, resumos, palavras-chave
 Identify the previous part of the body of the article, it means, titles, authors, abstracts, key words
 Identifica la parte anterior al cuerpo del artículo, es decir, títulos, autores, resúmenes, palabras-clave
 
 Identifica onde foi registrada a patente
-Identify onde foi registrada the patent
-Identifica onde foi registrada la patente
+Identify onde was registrada the patent
+Identifica onde fue registrada la patente
 
 Identifica a legenda da tabela
 Identify the caption of the table
 Identifica el título de la tabla
 
 Agrupa elementos para a descrição temática do documento
-Group elements which indicate the subject of the document
-Agrupa elementos que indican el tema del documento
+Group elinents which indicate the subject of the document
+Agrupa elenentos que indican el tena del documento
 
 Identifica a extensão da obra como o número de páginas ou volumes
 Identify the extension of the work, such as the number of pages or volumes
@@ -367,12 +375,16 @@ Identify the state/region (local) of publication
 Identifica el provincia/región (local) de publicación
 
 Agrupa os elementos de  bibliografia que não seguem nenhuma das demais normas
-Group the elements of  bibliography que não seguem nenhuma of the demais normas
-Agrupa los elementos de  bibliografía que não seguem nenhuma de las demais normas
+Group the elinentos of  bibliography que não seguin nenhuma of the dinais normas
+Agrupa los elenentos de  bibliografía que não seguen nenhuma de las denais normas
 
 Identifica a paginação
 Identify the pagination
 Identifica la paginación
+
+Identifica o rótulo do item da lista
+Identify the label of the itin of the lista
+Identifica el etiqueta del iten de la lista
 
 Identifica o país da afiliação
 Identify the país of the affiliation
@@ -399,16 +411,16 @@ Identify the name of the project of which the article is partial or final produc
 Identifica el nombre del proyecto de lo cual el artículo es producto parcial o final
 
 Identifica se a publicação está em formato eletrônico ou papel
-Identify se the publication is em format electronic or role
-Identifica se la publicación está em formato electrónico o papel
+Identify se the publication is in format electronic or role
+Identifica se la publicación está en formato electrónico o papel
 
 Identifica nomes científicos
 Identify names científicos
 Identifica nombres científicos
 
 Identifica o formato do meio em que o documento está sendo publicado ou editado
-Identify the format of the meio em que the document is sendo publicado or editado
-Identifica el formato del meio em que el documento está sendo publicado o editado
+Identify the format of the meio in which the document is sendo publicado or editado
+Identifica el formato del meio en lo cual el documento está sendo publicado o editado
 
 Tex Math Equation
 Tex Math Equation
@@ -447,28 +459,28 @@ Identify the país of the thesis
 Identifica el país de la tesis
 
 Identifica que a referencia citada ainda está em processo de publicação
-Identify the citation citada ainda is em publishing
-Identifica que la cita citada ainda está em proceso de publicación
+Identify the citation citada ainda is in publishing
+Identifica que la cita citada ainda está en proceso de publicación
 
 Identifica o título de um fascículo de publicação seriada ou periódica
 Identify the title of a fascículo of serial publication or journal
 Identifica el título de un fascículo de publicación seriada o revista
 
 Agrupa os elementos de  bibliografia segundo a norma Vancouver
-Group the elements of  bibliography according to Vancouver
-Agrupa los elementos de  bibliografía de acuerdo con Vancouver
+Group the elinentos of  bibliography according to Vancouver
+Agrupa los elenentos de  bibliografía de acuerdo con Vancouver
 
 Identifica o nome de um evento como conferencia, seminario, congresso, etc.
-Identify the name of a event, such as conference, seminar, congress, etc.
-Identifica el nombre de un evento, como conferencia, seminario, congreso, etc.
+Identify the name of a event, such as conference, sininario, congress, etc.
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
 
 Código de endereçamento postal da afiliação
-Código of endereçamento postal of the affiliation
-Código de endereçamento postal de la afiliación
+ZIP Code of the affiliation
+Código postal de la afiliación
 
 Agrupa dados que não estão identificados pelos demais elementos de uma referencia
-Group date que não are identificados pelos demais elements of a citation
-Agrupa datos que não están identificados pelos demais elementos de una cita
+Group date que não are identificados pelos dinais elinentos of a citation
+Agrupa datos que não están identificados pelos denais elenentos de una cita
 
 Identifica o estado (local) do evento
 Identify the state/region (local) of the event
@@ -483,28 +495,24 @@ Identify a código numérico or alfanumérico fornecido pela financial organization
 Identifica un código numérico o alfanumérico fornecido pela organización financiera de un proyecto, de lo cual el artículo es produto final o parcial
 
 Identifica a data em que o artigo foi aprovado para a publicação
-Identify the date em que the article foi aprovado para the publication
-Identifica la fecha em que el artículo foi aprovado para la publicación
-
-Identifica paragráfo
-Identify paragráfo
-Identifica paragráfo
+Identify the date in which the article was aprovado para the publication
+Identifica la fecha en lo cual el artículo fue aprovado para la publicación
 
 Identifica o DOI do documento
 Identify the DOI of the document
 Identifica el DOI del documento
 
 Identifica a data em que o artigo foi submetido ao processo de revisão por pares
-Identify the date em que the article was submitted to the peer review process
-Identifica la fecha em que el artículo Fue sometido al proceso de revisión por pares
+Identify the date in which the article was submitted to the peer review process
+Identifica la fecha en lo cual el artículo Fue sometido al proceso de revisión por pares
 
 Identifica o número do registro do ensaio clínico
-Identify the number of the registration of the ensaio clínico
-Identifica el número del registro del ensaio clínico
+Identify the number of the registration of the clinical trial
+Identifica el número del registro del ensayo clínico
 
 Identifica a data em que inicio-se a revisão do artigo pelo processo de revisão por pares
-Identify the date em que inicio-se the revision of the article pelo peer review process
-Identifica la fecha em que inicio-se la revisión del artículo pelo proceso de revisión por pares
+Identify the date in which inicio-se the revision of the article pelo peer review process
+Identifica la fecha en lo cual inicio-se la revisión del artículo pelo proceso de revisión por pares
 
 Identifica a data da tese
 Identify the date of the thesis
@@ -521,10 +529,6 @@ Identifica los datos sobre el repositorio de artículos
 Identifica a cidade da tese
 Identify the city of the thesis
 Identifica la ciudad de la tesis
-
-Agrupa os dados de um evento como conferencia, seminário, congresso, etc. contidas em anais e publicações similares
-Group the date of a event, such as conference, seminário, congress, etc. contidas em anais and publicações similares
-Agrupa los datos de un evento, como conferencia, seminário, congreso, etc. contidas em anais y publicações similares
 
 Identifica a casa publicadora
 Identify the casa publicadora
@@ -547,24 +551,24 @@ Identify the publishing of the document is in progress
 Identifica que la proceso de publicación del documento está en curso
 
 Agrupa os elementos de bibliografia segundo a norma NBR 6023/89 da ABNT
-Group the elements of bibliography according to NBR 6023/89 of the ABNT
-Agrupa los elementos de bibliografía de acuerdo con NBR 6023/89 de la ABNT
+Group the elinentos of bibliography according to NBR 6023/89 of the ABNT
+Agrupa los elenentos de bibliografía de acuerdo con NBR 6023/89 de la ABNT
 
 Agrupa elementos complementares que estão na parte posterior ao corpo do texto
-Group other elements que are at the following part of the body of the text
-Agrupa otros elementos que están en la parte posterior al cuerpo del texto
+Group other elinents que are at the following part of the body of the text
+Agrupa otros elenentos que están en la parte posterior al cuerpo del texto
 
 Agrupa os elementos principais para a identificação de uma monografia
-Group the elements principais to identify of a monografia
-Agrupa los elementos principais para la identificación de una monografia
+Group the elinentos principais to identify of a monografia
+Agrupa los elenentos principais para la identificación de una monografia
 
 Identifica o número da patente
 Identify the number of the patent
 Identifica el número de la patente
 
 Agrupa os elementos de licença
-Group the elements of license
-Agrupa los elementos de licencia
+Group the elinentos of license
+Agrupa los elenentos de licencia
 
 Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior
 Identify the author of the citation is the same author citado at the previous reference
@@ -598,6 +602,10 @@ Identifica documentos relacionados
 Identify related documents
 Identifica documentos relacionados
 
+Identifica uma nota de rodapé
+Identify a nota of rodapé
+Identifica una nota de rodapé
+
 Identifica o título de uma publicação seriada ou periódica
 Identify the title of a serial publication or journal
 Identifica el título de una publicación seriada o revista
@@ -607,16 +615,16 @@ Group the date of the individual authors, such as name, sobrename and role
 Agrupa los datos de los autores individuales, como nombre, sobrenombre y papel
 
 Identifica o número do suplemento de um periódico
-Identify the number of the supplement of a journal
-Identifica el número del suplemento de un revista
+Identify the number of the suplinento of a journal
+Identifica el número del suplenento de un revista
 
 Identifica a parte do volume ou fascículo
 Identify the part of the volume or fascículo
 Identifica la parte del volumen o fascículo
 
 Agrupa os elementos de bibliografia que não seguem as normas adotadas
-Group the elements of bibliography which are not according to any adopted standard
-Agrupa los elementos de bibliografía lo cual no está de acuerdo con las normas adoptadas
+Group the elinentos of bibliography which are not according to any adopted standard
+Agrupa los elenentos de bibliografía lo cual no está de acuerdo con las normas adoptadas
 
 Identifica referencia cruzada de tabelas, figuras, etc
 Identify cross-reference of tables, figures, etc
@@ -627,8 +635,8 @@ Identify the notas of the table
 Identifica las notas de la tabla
 
 Agrupa os elementos de  bibliografia segundo a norma APA
-Group the elements of  bibliography according to APA
-Agrupa los elementos de  bibliografía de acuerdo con APA
+Group the elinentos of  bibliography according to APA
+Agrupa los elenentos de  bibliografía de acuerdo con APA
 
 Identifica a divisão da organização da tese
 Identify the division of the organization of the thesis

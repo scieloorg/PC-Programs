@@ -95,7 +95,7 @@ rem
 set XML=%OUTPUT_XML_LOCAL%
 set TEMP_RESULT=%TEMP_FILE3%
 echo %date% %time% Passo 3 Validate %XML%  >> %LOG_FILE%
-%JAVA_EXE% -cp %PATH_XML_TOOLS%\core\XMLCheck.jar br.bireme.XMLCheck.XMLCheck %XML%  > %TEMP_RESULT%
+%JAVA_EXE% -cp %PATH_XML_TOOLS%\core\XMLCheck.jar br.bireme.XMLCheck.XMLCheck %XML%  --validate> %TEMP_RESULT%
 if not exist %TEMP_RESULT%  echo validation error %XML% > %TEMP_ERRFILE%
 if exist %TEMP_RESULT%   %PATH_XML_TOOLS%\..\cfg\mx seq=%TEMP_RESULT% lw=9999 "pft=if s(mpu,v1,mpl):'ERROR' then 'copy %TEMP_RESULT% %TEMP_ERRFILE%'/ fi" now > %TMP_SH_FILE%
 if exist %TMP_SH_FILE% call %TMP_SH_FILE%
@@ -213,7 +213,13 @@ goto END
 :ERR_VALIDATE
 echo %date% %time% ERR_VALIDATE >> %LOG_FILE%
 rem if exist %TEMP_ERRFILE% copy %TEMP_ERRFILE% %ERR_FILENAME%
+echo " "  >> %LOG_FILE%
+echo ...................................................... >> %LOG_FILE%
+if exist %XML% echo  %XML% >> %LOG_FILE%
+echo ...................................................... >> %LOG_FILE%
 more %TEMP_ERRFILE% >> %LOG_FILE% 
+echo  >> %LOG_FILE%
+
 copy %LOG_FILE% %ERR_FILENAME%
 goto END
 

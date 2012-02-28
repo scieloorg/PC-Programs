@@ -2,6 +2,7 @@ Agrupa elementos para a descrição temática do documento|Group elements which ind
 produto parcial ou final|partial or final product|producto parcial ==o== final
 da qual|of the which|de la cual
 à qual|to which|==a== la cual
+em que|in which|en lo cual
 Indica que há autores não mencionados|Indicate non cited authors|Indica autores ==no== citados
 autores individuais ou corporativos|individual or corporative authors|autores individuales ==o== corporativos
 organização financiadora ou patrocinadora|sponsor or financial organization|organización financiera ==o== patrocinadora
@@ -14,6 +15,7 @@ faz parte|is part of|hace parte
  um editorial| an editorial| un editorial
 um autor individual|an individual author|un autor individual
 uma obra|a work|un trabajo
+Código de endereçamento postal|ZIP Code|Código postal
 o endereço eletrônico|the electronic address|la dirección electrónica
 a legenda|the caption|el título
 autores corporativos|corporative authors|autores corporativos
@@ -40,7 +42,9 @@ primeiros nomes|first names|nombres
 processo de publicação|publishing|proceso de publicación
 referencia anterior|previous reference|cita anterior
 sem detalhes|without details|sin detalles
+detalhe|detail|detalle
 ensaios clínicos|clinical trials|ensayos clínicos
+ensaio clínico|clinical trial|ensayo clínico
 figura composta|grouped figure|figura compuesta
 Identifica que|Identify|Identifica que
 ou seja|it means|es decir
@@ -51,6 +55,7 @@ ao qual pertence|to which belongs|al cual pertenece
 responsáveis pelo|responsible for the|responsables por el
 segundo a norma|according to|de acuerdo con
 referencia cruzada|cross-reference|referencia cruzada
+foi aprovado pelo|was approved by the|fue aprobado por el
 foi submetido ao|was submitted to the|Fue sometido al
 mestrado, doutorado, livre-docência|Master, Doctor|Maestría, Doctorado
 para a descrição bibliográfica|for bibliographic description|para la descrición bibliográfica
@@ -78,6 +83,8 @@ do qual|of which|de lo cual
  e | and | y 
  em um | in a | en un 
  em uma| in a| en una 
+em|in|en
+foi|was|fue
  figura| figure| figura
  na | at the | en la 
  obra| work| obra 
@@ -90,6 +97,7 @@ do qual|of which|de lo cual
 Agrupa|Group|Agrupa
 Identifica|Identify|Identifica
 abela|able|abla
+acessado|accessed|accedido
 afiliação|affiliation|afiliación
 artigo|article|artículo
 autores|authors|autores
@@ -140,6 +148,7 @@ parte|part|parte
 patente|patent|patente
 periódico|journal|revista
 projeto|project|proyecto
+parágrafo|paragraph|párrafo
 páginas|pages|páginas
 referencia bibliográfica|citation|cita
 referencia|citation|cita
@@ -163,8 +172,10 @@ tipo|type|tipo
 título|title|título
 volumes|volumes|volúmenes
 volume|volume|volumen
+equação|equation|ecuación
 ção|tion|ción
 está |is |está 
 vinculado|related|relacionado
+trabalho|work|trabajo
 ==||
 ,,|,|,

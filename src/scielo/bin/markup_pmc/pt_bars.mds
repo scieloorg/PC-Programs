@@ -6,11 +6,11 @@ article;start
 deposit;Identifica os dados sobre o repositorio de artigos;10;#FALSE#;#TRUE#;
 front;Identifica a parte anterior ao corpo do artigo, ou seja, títulos, autores, resumos, palavras-chave;11;#FALSE#;#FALSE#;front
 down;front
-xmlbody;Identifica o corpo do artigo com detalhes;11;#FALSE#;#FALSE#;bodyArt
-down;bodyArt
+xmlbody;Identifica o corpo do artigo com detalhes;11;#FALSE#;#FALSE#;xmlbodyBar
+down;xmlbodyBar
 body;Identifica o corpo do texto do artigo sem detalhes;11;#FALSE#;#FALSE#;
-back;Identifica a parte posterior ao corpo do artigo;11;#FALSE#;#FALSE#;back
-down;back
+back;Identifica a parte posterior ao corpo do artigo;11;#FALSE#;#FALSE#;backBar
+down;backBar
 
 textM;start
 doi;Identifica o DOI do documento;10;#TRUE#;#FALSE#;
@@ -19,8 +19,8 @@ titlegrp;Agrupa os títulos do documento;11;#FALSE#;#FALSE#;titlegrpText
 down;titlegrpText
 authgrp;Agrupa os autores individuais ou corporativos do documento;11;#FALSE#;#FALSE#;authgrpText
 down;authgrpText
-xmlbody;Identifica o corpo do artigo com detalhes;11;#FALSE#;#FALSE#;bodyArt
-down;bodyArt
+xmlbody;Identifica o corpo do artigo com detalhes;11;#FALSE#;#FALSE#;xmlbodyBar
+down;xmlbodyBar
 back;Identifica a parte posterior ao corpo do texto;11;#FALSE#;#FALSE#;backT
 down;backT
 
@@ -38,7 +38,9 @@ equation;Identifica dados de uma fórmula;10;#TRUE#;#TRUE#;equation
 down;equation
 cltrial;Identifica dados de ensaios clínicos;10;#FALSE#;#FALSE#;cltrial
 down;cltrial
-xref;Identifica referencia cruzada de tabelas, figuras, etc;10;#TRUE#;#TRUE#;xref
+list;Identifica uma lista;6;#FALSE#;#TRUE#;list
+down;list
+xref;Identifica referencia cruzada de tabelas, figuras, etc;10;#TRUE#;#TRUE#;
 uri;Identifica um link;10;#TRUE#;#TRUE#;
 sciname;Identifica nomes científicos;10;#TRUE#;#TRUE#;
 
@@ -124,7 +126,7 @@ bibcomFront;front
 abstract;Identifica o resumo do artigo;9;#TRUE#;#TRUE#;
 keygrp;Agrupa as palavras-chave do artigo;9;#TRUE#;#TRUE#;keygrpBibcom
 down;keygrpBibcom
-confgrp;Agrupa os dados de um evento como conferencia, seminário, congresso, etc. contidas em anais e publicações similares;9;#FALSE#;#FALSE#;confgrpBibcom
+confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;9;#FALSE#;#FALSE#;confgrpBibcom
 down;confgrpBibcom
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;9;#FALSE#;#FALSE#;reportBibcom
 down;reportBibcom
@@ -164,7 +166,7 @@ contract;Identifica um código numérico ou alfanumérico fornecido pela organizaçã
 
 thesgrpBibcom;bibcomFront
 city;Identifica a cidade da tese;10;#FALSE#;#FALSE#;
-state;Identifica o estado (local) (lcoal) da tese;10;#FALSE#;#FALSE#;
+state;Identifica o estado (local) da tese;10;#FALSE#;#FALSE#;
 country;Identifica o país da tese;10;#FALSE#;#FALSE#;
 date;Identifica a data da tese;10;#FALSE#;#TRUE#;
 degree; Identifica o grau de uma dissertação ou tese acadêmica, como mestrado, doutorado, livre-docência etc;10;#FALSE#;#FALSE#;
@@ -176,9 +178,9 @@ received;Identifica a data em que o artigo foi submetido ao processo de revisão 
 revised;Identifica a data em que inicio-se a revisão do artigo pelo processo de revisão por pares;10;#TRUE#;#TRUE#;
 accepted;Identifica a data em que o artigo foi aprovado para a publicação;10;#FALSE#;#TRUE#;
 
-back;article
-bbibcom;Agrupa elementos complementares que estão na parte posterior ao corpo do texto;6;#TRUE#;#FALSE#;bbibcomBack
-down;bbibcomBack
+backBar;article
+bbibcom;Agrupa elementos complementares que estão na parte posterior ao corpo do texto;6;#TRUE#;#FALSE#;bbibcomBar
+down;bbibcomBar
 vancouv;Agrupa os elementos de  bibliografia segundo a norma Vancouver;6;#FALSE#;#TRUE#;vancouv
 down;vancouv
 iso690;Agrupa os elementos de  bibliografia segundo a norma ISO 690/87;6;#FALSE#;#TRUE#;iso690
@@ -192,11 +194,11 @@ down;other
 licenses;Agrupa os elementos de licença;6;#FALSE#;#FALSE#;licensesBar
 down;licensesBar
 
-bbibcomBack;back
+bbibcomBar;backBar
 abstract;Identifica o resumo do artigo;9;#TRUE#;#TRUE#;
 keygrp;Agrupa elementos para a descrição temática do documento;9;#TRUE#;#TRUE#;keygrpBbibcom
 down;keygrpBbibcom
-confgrp;Agrupa os dados de um evento como conferencia, seminário, congresso, etc. contidas em anais e publicações similares;9;#FALSE#;#FALSE#;confgrpBbibcom
+confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;9;#FALSE#;#FALSE#;confgrpBbibcom
 down;confgrpBbibcom
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;9;#FALSE#;#FALSE#;reportBbibcom
 down;reportBbibcom
@@ -204,15 +206,16 @@ thesgrp;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bib
 down;thesgrpBbibcom
 hist;Identifica o histórico da publicação de um artigo em um periódico (data de recebimento, de aceitação ou de revisão);9;#FALSE#;#FALSE#;histBbibcom
 down;histBbibcom
+fngrp;Identifica uma nota de rodapé;6;#TRUE#;#TRUE#;
 title;Identifica o título do documento;9;#TRUE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;9;#TRUE#;#FALSE#;
 
-keygrpBbibcom;bbibcomBack
+keygrpBbibcom;bbibcomBar
 keyword;Identifica as palavras-chave do documento;10;#TRUE#;#TRUE#;
 subkey;Identifica as formas utilizadas para qualificar as palavras-chave ou descritores;10;#TRUE#;#TRUE#;
 dperiod;Identifica o período de tempo tratado no conteúdo do documento;10;#TRUE#;#TRUE#;
 
-confgrpBbibcom;bbibcomBack
+confgrpBbibcom;bbibcomBar
 sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;10;#TRUE#;#FALSE#;sponsorBbibcom
 down;sponsorBbibcom
 confname;Identifica o nome de um evento como conferencia, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
@@ -226,7 +229,7 @@ sponsorBbibcom;confgrpBbibcom
 orgname; Identifica o nome da organização financiadora;15;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização financiadora;15;#FALSE#;#FALSE#;
 
-reportBbibcom;bbibcomBack
+reportBbibcom;bbibcomBar
 rsponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;10;#TRUE#;#FALSE#;rsponsorBbibcom
 down;rsponsorBbibcom
 projname;Identifica o nome do projeto do qual o artigo é produto parcial ou final;10;#FALSE#;#FALSE#;
@@ -236,21 +239,21 @@ orgname;Identifica o nome da organização financiadora;15;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização financiadora;15;#FALSE#;#FALSE#;
 contract;Identifica um código numérico ou alfanumérico fornecido pela organização financiadora de um projeto, do qual o artigo é produto final ou parcial;15;#TRUE#;#FALSE#;
 
-thesgrpBbibcom;bbibcomBack
+thesgrpBbibcom;bbibcomBar
 city;Identifica a cidade da tese;10;#FALSE#;#FALSE#;
-state;Identifica o estado (local) (lcoal) da tese;10;#FALSE#;#FALSE#;
+state;Identifica o estado (local) da tese;10;#FALSE#;#FALSE#;
 country;Identifica o país da tese;10;#FALSE#;#FALSE#;
 date;Identifica a data da tese;10;#FALSE#;#TRUE#;
 degree; Identifica o grau de uma dissertação ou tese acadêmica, como mestrado, doutorado, livre-docência etc;10;#FALSE#;#FALSE#;
 orgname;Identifica o nome da organização da tese;10;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização da tese;10;#FALSE#;#FALSE#;
 
-histBbibcom;bbibcomBack
+histBbibcom;bbibcomBar
 received;Identifica a data em que o artigo foi submetido ao processo de revisão por pares;10;#FALSE#;#TRUE#;
 revised;Identifica a data em que inicio-se a revisão do artigo pelo processo de revisão por pares;10;#TRUE#;#TRUE#;
 accepted;Identifica a data em que o artigo foi aprovado para a publicação;10;#FALSE#;#TRUE#;
 
-other;back
+other;backBar
 ocitat;Identifica uma referencia bibliográfica na bibliografia;9;#TRUE#;#FALSE#;ocitat
 down;ocitat
 
@@ -262,7 +265,7 @@ omonog;Agrupa os elementos principais para a identificação de uma monografia;10;
 down;omonog
 oiserial;Agrupa elementos de identificação específicos de uma publicação seriada ou periódica;10;#FALSE#;#FALSE#;oiserial
 down;oiserial
-confgrp;Agrupa os dados de um evento como conferencia, seminário, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrpOcitat
+confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrpOcitat
 down;confgrpOcitat
 
 ocontrib;ocitat
@@ -297,7 +300,7 @@ down;ocorpautOmonog
 et-al;Indica que há autores não mencionados;15;#FALSE#;#FALSE#;
 title;Identifica o título do documento;15;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;15;#FALSE#;#FALSE#;
-confgrp;Agrupa os dados de um evento como conferencia, seminário, congresso, etc. contidas em anais e publicações similares;15;#FALSE#;#FALSE#;confgrpOmonog
+confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;15;#FALSE#;#FALSE#;confgrpOmonog
 down;confgrpOmonog
 thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;15;#FALSE#;#FALSE#;thesisOmonog
 down;thesisOmonog
@@ -386,7 +389,7 @@ sponsorOcitat;confgrpOcitat
 orgname;Identifica o nome da organização financiadora;7;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização financiadora;7;#FALSE#;#FALSE#;
 
-vancouv;back
+vancouv;backBar
 vcitat;Identifica uma referencia bibliográfica na bibliografia;9;#TRUE#;#FALSE#;vcitat
 down;vcitat
 
@@ -454,7 +457,7 @@ vtitle;Identifica um grupo de título do documento em uma referencia bibliográfic
 down;vtitleVmonog
 edition;Identifica o número da edição;15;#TRUE#;#FALSE#;
 version;Identifica se a publicação está em formato eletrônico ou papel;15;#TRUE#;#FALSE#;
-confgrp;Agrupa os dados de um evento como conferencia, seminário, congresso, etc. contidas em anais e publicações similares;15;#TRUE#;#FALSE#;confgrpVmonog
+confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;15;#TRUE#;#FALSE#;confgrpVmonog
 down;confgrpVmonog
 city;Identifica a cidade de publicação;15;#TRUE#;#FALSE#;
 state;Identifica o estado (local) de publicação;15;#TRUE#;#FALSE#;
@@ -513,14 +516,14 @@ contract;Identifica um código numérico ou alfanumérico fornecido pela organizaçã
 
 thesisVmonog;vmonog
 city;Identifica a cidade da tese;10;#FALSE#;#FALSE#;
-state;Identifica o estado (local) (lcoal) da tese;10;#FALSE#;#FALSE#;
+state;Identifica o estado (local) da tese;10;#FALSE#;#FALSE#;
 country;Identifica o país da tese;10;#FALSE#;#FALSE#;
 date;Identifica a data da tese;10;#FALSE#;#TRUE#;
 degree; Identifica o grau de uma dissertação ou tese acadêmica, como mestrado, doutorado, livre-docência etc;10;#FALSE#;#FALSE#;
 orgname;Identifica o nome da organização da tese;10;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização da tese;10;#FALSE#;#FALSE#;
 
-apa;back
+apa;backBar
 pcitat;Identifica uma referencia bibliográfica na bibliografia;9;#TRUE#;#FALSE#;pcitat
 down;pcitat
 
@@ -595,7 +598,7 @@ degree; Identifica o grau de uma dissertação ou tese acadêmica, como mestrado, d
 orgname;Identifica o nome da organização da tese;2;#FALSE#;#FALSE#;
 city;Identifica a cidade da tese;2;#FALSE#;#FALSE#;
 
-abnt6023;back
+abnt6023;backBar
 acitat;Identifica uma referencia bibliográfica na bibliografia;9;#TRUE#;#FALSE#;acitat
 down;acitat
 
@@ -607,7 +610,7 @@ amonog;Agrupa os elementos principais para a identificação de uma monografia;10;
 down;amonog
 aiserial;Agrupa elementos de identificação específicos de uma publicação seriada ou periódica;10;#FALSE#;#FALSE#;aiserial
 down;aiserial
-confgrp;Agrupa os dados de um evento como conferencia, seminário, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrpAcitat
+confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrpAcitat
 down;confgrpAcitat
 
 acontrib;acitat
@@ -664,7 +667,7 @@ subtitle;Identifica o subtítulo do documento;15;#FALSE#;#FALSE#;
 subresp;Identifica as responsabilidades secundarias em uma referencia como, por exemplo, tradutores e revisores;15;#TRUE#;#FALSE#;subrespAmonog
 down;subrespAmonog
 edition;Identifica o número da edição;15;#TRUE#;#FALSE#;
-confgrp;Agrupa os dados de um evento como conferencia, seminário, congresso, etc. contidas em anais e publicações similares;15;#TRUE#;#FALSE#;confgrpAmonog
+confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;15;#TRUE#;#FALSE#;confgrpAmonog
 down;confgrpAmonog
 city;Identifica a cidade de publicação;15;#TRUE#;#FALSE#;
 state;Identifica o estado (local) de publicação;15;#TRUE#;#FALSE#;
@@ -713,7 +716,7 @@ orgdiv;Identifica a divisão da organização financiadora;7;#FALSE#;#FALSE#;
 
 thesisAmonog;amonog
 city;Identifica a cidade da tese;10;#FALSE#;#FALSE#;
-state;Identifica o estado (local) (lcoal) da tese;10;#FALSE#;#FALSE#;
+state;Identifica o estado (local) da tese;10;#FALSE#;#FALSE#;
 country;Identifica o país da tese;10;#FALSE#;#FALSE#;
 date;Identifica a data da tese;10;#FALSE#;#TRUE#;
 degree; Identifica o grau de uma dissertação ou tese acadêmica, como mestrado, doutorado, livre-docência etc;10;#FALSE#;#FALSE#;
@@ -734,7 +737,7 @@ sponsorConfgrpAcitat;confgrpAcitat
 orgname;Identifica o nome da organização financiadora;7;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização financiadora;7;#FALSE#;#FALSE#;
 
-iso690;back
+iso690;backBar
 icitat;Identifica uma referencia bibliográfica na bibliografia;9;#TRUE#;#FALSE#;icitat
 down;icitat
 
@@ -861,6 +864,7 @@ fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
 
 backT;textM
+fngrp;Identifica uma nota de rodapé;6;#TRUE#;#TRUE#;
 vancouv;Agrupa os elementos de bibliografia segundo a norma Vancouver;6;#FALSE#;#TRUE#;vancouv
 down;vancouv
 iso690;Agrupa os elementos de bibliografia segundo a norma ISO 690/87;6;#FALSE#;#TRUE#;iso690
@@ -914,36 +918,35 @@ orgname;Identifica onde foi registrada a patente;6;#FALSE#;#FALSE#;
 patent;Identifica o número da patente;6;#FALSE#;#FALSE#;
 date;Identifica a data de registro da patente;6;#FALSE#;#TRUE#;
 
-bodyArt;xmlbody
-sec;Identifica uma seção do texto;6;#TRUE#;#TRUE#;secBody
-down;secBody
-p;Identifica paragráfo;6;#TRUE#;#FALSE#;
-list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar
-down;listBar
+xmlbodyBar;article
+sec;Identifica uma seção do texto;6;#TRUE#;#TRUE#;secBar
+down;secBar
+p;Identifica parágrafo;6;#TRUE#;#FALSE#;
 
-secBody;bodyArt
+secBar;xmlbodyBar
 sectitle;Identifica o título da seção;6;#TRUE#;#FALSE#;
-subsec;Identifica a sub-seção do texto;6;#TRUE#;#FALSE#;secsec
-down;secsec
-p;Identifica paragráfo;6;#TRUE#;#FALSE#;
-list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar
-down;listBar
+subsec;Identifica a sub-seção do texto;6;#TRUE#;#FALSE#;subsecBar
+down;subsecBar
+p;Identifica parágrafo;6;#TRUE#;#FALSE#;
 
-listBar;list
+subsecBar;secBar
+sectitle;Identifica o título da subseção;6;#TRUE#;#FALSE#;
+subsec;Identifica a sub-seção do texto;6;#TRUE#;#FALSE#;subsec2Bar
+p;Identifica parágrafo;6;#TRUE#;#FALSE#;
+
+subsec2Bar;subsecBar
+sectitle;Identifica o título da subseção nível 2;6;#TRUE#;#FALSE#;
+p;Identifica parágrafo;6;#TRUE#;#FALSE#;
+
+list;ifloat
 li;Identifica os itens da lista;2;#TRUE#;#FALSE#;libar
 down;libar
 
-libar;li
-label;Identifica o rótulo do item da lista;2;#FALSE#;#FALSE#;
-item;Identifica o texto do item da lista;2;#FALSE#;#FALSE#;
+libar;list
+lilabel;Identifica o rótulo do item da lista;15;#FALSE#;#FALSE#;
+litext;Identifica o texto do item da lista;15;#FALSE#;#FALSE#;
 
-secsec;secBody
-sectitle;Identifica o título da subseção;6;#TRUE#;#FALSE#;
-p;Identifica paragráfo;6;#TRUE#;#FALSE#;
-list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar
-down;listBar
-
-licensesBar;back
+licensesBar;backBar
 license;Identifica o texto da licença;2;#TRUE#;#TRUE#;licenseBar
 down;licenseBar
 

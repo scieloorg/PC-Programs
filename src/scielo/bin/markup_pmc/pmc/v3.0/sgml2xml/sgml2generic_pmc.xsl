@@ -5,9 +5,10 @@
 	<xsl:template match="report">
 		<funding-group>
 			<xsl:apply-templates select="rsponsor | projname "/>
+			<xsl:if test="not($unident_back[contains(.//text,'ACK') or contains(.//text,'Ack') or contains(.//text,'Agrad') or contains(.//text,'AGRAD')])">
 			<funding-statement>
 				<xsl:apply-templates select=".//text()"/>
-			</funding-statement>
+			</funding-statement></xsl:if>
 		</funding-group>
 	</xsl:template>
 	<xsl:template match="rsponsor | projname">

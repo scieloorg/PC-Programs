@@ -11,7 +11,7 @@ article;front
 Identifica la parte anterior al cuerpo del artículo, es decir, títulos, autores, resúmenes, palabras-clave
 
 article;xmlbody
-Identifica el cuerpo del artículo con detalhes
+Identifica el cuerpo del artículo con detalles
 
 article;body
 Identifica el cuerpo del texto del artículo sin detalles
@@ -32,7 +32,7 @@ textM;authgrp
 Agrupa los autores individuales o corporativos del documento
 
 textM;xmlbody
-Identifica el cuerpo del artículo con detalhes
+Identifica el cuerpo del artículo con detalles
 
 textM;back
 Identifica la parte posterior al cuerpo del texto
@@ -68,7 +68,7 @@ ifloat;sciname
 Identifica nombres científicos
 
 cltrial;ctreg
-Identifica el número del registro del ensaio clínico
+Identifica el número del registro del ensayo clínico
 
 tabwrap;label
 Identifica el etiqueta de la tabla (ej. Tabla 1)
@@ -101,7 +101,7 @@ figgrps;figgrp
 Identifica cada parte de la figura compuesta
 
 equation;graphic
-Identifica la imagen de la equación
+Identifica la imagen de la ecuación
 
 equation;texmath
 Tex Math Equation
@@ -119,7 +119,7 @@ aff;country
 Identifica el país de la afiliación
 
 aff;zipcode
-Código de endereçamento postal de la afiliación
+Código postal de la afiliación
 
 aff;email
 Dirección electrónica del autor
@@ -161,7 +161,7 @@ front;authgrp
 Agrupa datos de los autores individuales, como nombre,sobrenombre y papel
 
 front;bibcom
-Agrupa otros elementos para la identificación del artículo, como resumen y palabras-clave
+Agrupa otros elenentos para la identificación del artículo, como resumen y palabras-clave
 
 titlegrpFront;title
 Identifica el título del documento
@@ -194,7 +194,7 @@ bibcomFront;keygrp
 Agrupa las palabras-clave del artículo
 
 bibcomFront;confgrp
-Agrupa los datos de un evento, como conferencia, seminário, congreso, etc. contidas em anais y publicações similares
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
 
 bibcomFront;report
 Agrupa datos del informe o proyecto de lo cual el artículo es producto parcial o final
@@ -212,13 +212,13 @@ keygrpBibcom;subkey
 Identifica las formas usadas para qualificar las palabras-clave o descriptores
 
 keygrpBibcom;dperiod
-Identifica el período de tempo tratado en el contenido del documento
+Identifica el período de tenpo tratado en el contenido del documento
 
 confgrpBibcom;sponsor
 Identifica la organización financiera o patrocinadora de un proyecto o evento
 
 confgrpBibcom;confname
-Identifica el nombre de un evento, como conferencia, seminario, congreso, etc.
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
 
 confgrpBibcom;no
 Identifica el número del evento
@@ -260,7 +260,7 @@ thesgrpBibcom;city
 Identifica la ciudad de la tesis
 
 thesgrpBibcom;state
-Identifica el provincia/región (local) (lcoal) de la tesis
+Identifica el provincia/región (local) de la tesis
 
 thesgrpBibcom;country
 Identifica el país de la tesis
@@ -278,57 +278,57 @@ thesgrpBibcom;orgdiv
 Identifica la división de la organización de la tesis
 
 histBibcom;received
-Identifica la fecha em que el artículo Fue sometido al proceso de revisión por pares
+Identifica la fecha en lo cual el artículo Fue sometido al proceso de revisión por pares
 
 histBibcom;revised
-Identifica la fecha em que inicio-se la revisión del artículo pelo proceso de revisión por pares
+Identifica la fecha en lo cual inicio-se la revisión del artículo pelo proceso de revisión por pares
 
 histBibcom;accepted
-Identifica la fecha em que el artículo foi aprovado para la publicación
+Identifica la fecha en lo cual el artículo fue aprovado para la publicación
 
-back;bbibcom
-Agrupa otros elementos que están en la parte posterior al cuerpo del texto
+backBar;bbibcom
+Agrupa otros elenentos que están en la parte posterior al cuerpo del texto
 
-back;vancouv
-Agrupa los elementos de  bibliografía de acuerdo con Vancouver
+backBar;vancouv
+Agrupa los elenentos de  bibliografía de acuerdo con Vancouver
 
-back;iso690
-Agrupa los elementos de  bibliografía de acuerdo con ISO 690/87
+backBar;iso690
+Agrupa los elenentos de  bibliografía de acuerdo con ISO 690/87
 
-back;abnt6023
-Agrupa los elementos de  bibliografía  de acuerdo con NBR 6023/89 de la ABNT
+backBar;abnt6023
+Agrupa los elenentos de  bibliografía  de acuerdo con NBR 6023/89 de la ABNT
 
-back;apa
-Agrupa los elementos de  bibliografía de acuerdo con APA
+backBar;apa
+Agrupa los elenentos de  bibliografía de acuerdo con APA
 
-back;other
-Agrupa los elementos de  bibliografía que não seguem nenhuma de las demais normas
+backBar;other
+Agrupa los elenentos de  bibliografía que não seguen nenhuma de las denais normas
 
-back;licenses
-Agrupa los elementos de licencia
+backBar;licenses
+Agrupa los elenentos de licencia
 
-bbibcomBack;abstract
+bbibcomBar;abstract
 Identifica el resumen del artículo
 
-bbibcomBack;keygrp
-Agrupa elementos que indican el tema del documento
+bbibcomBar;keygrp
+Agrupa elenentos que indican el tena del documento
 
-bbibcomBack;confgrp
-Agrupa los datos de un evento, como conferencia, seminário, congreso, etc. contidas em anais y publicações similares
+bbibcomBar;confgrp
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
 
-bbibcomBack;report
+bbibcomBar;report
 Agrupa datos del informe o proyecto de lo cual el artículo es producto parcial o final
 
-bbibcomBack;thesgrp
+bbibcomBar;thesgrp
 Agrupa datos de una tesis, en una  cita
 
-bbibcomBack;hist
+bbibcomBar;hist
 Identifica el histórico de la publicación de un artículo en un revista (fechas de recebimento, revisión y aprobación)
 
-bbibcomBack;title
+bbibcomBar;title
 Identifica el título del documento
 
-bbibcomBack;subtitle
+bbibcomBar;subtitle
 Identifica el subtítulo del documento
 
 keygrpBbibcom;keyword
@@ -338,13 +338,13 @@ keygrpBbibcom;subkey
 Identifica las formas usadas para qualificar las palabras-clave o descriptores
 
 keygrpBbibcom;dperiod
-Identifica el período de tempo tratado en el contenido del documento
+Identifica el período de tenpo tratado en el contenido del documento
 
 confgrpBbibcom;sponsor
 Identifica la organización financiera o patrocinadora de un proyecto o evento
 
 confgrpBbibcom;confname
-Identifica el nombre de un evento, como conferencia, seminario, congreso, etc.
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
 
 confgrpBbibcom;no
 Identifica el número del evento
@@ -386,7 +386,7 @@ thesgrpBbibcom;city
 Identifica la ciudad de la tesis
 
 thesgrpBbibcom;state
-Identifica el provincia/región (local) (lcoal) de la tesis
+Identifica el provincia/región (local) de la tesis
 
 thesgrpBbibcom;country
 Identifica el país de la tesis
@@ -404,13 +404,13 @@ thesgrpBbibcom;orgdiv
 Identifica la división de la organización de la tesis
 
 histBbibcom;received
-Identifica la fecha em que el artículo Fue sometido al proceso de revisión por pares
+Identifica la fecha en lo cual el artículo Fue sometido al proceso de revisión por pares
 
 histBbibcom;revised
-Identifica la fecha em que inicio-se la revisión del artículo pelo proceso de revisión por pares
+Identifica la fecha en lo cual inicio-se la revisión del artículo pelo proceso de revisión por pares
 
 histBbibcom;accepted
-Identifica la fecha em que el artículo foi aprovado para la publicación
+Identifica la fecha en lo cual el artículo fue aprovado para la publicación
 
 other;ocitat
 Identifica una cita en la bibliografía
@@ -419,16 +419,16 @@ ocitat;no
 Identifica el número de la cita
 
 ocitat;ocontrib
-Agrupa elementos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+Agrupa elenentos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
 
 ocitat;omonog
-Agrupa los elementos principais para la identificación de una monografia
+Agrupa los elenentos principais para la identificación de una monografia
 
 ocitat;oiserial
-Agrupa elementos de identificación específicos de una publicación seriada o revista
+Agrupa elenentos de identificación específicos de una publicación seriada o revista
 
 ocitat;confgrp
-Agrupa los datos de un evento, como conferencia, seminário, congreso, etc. contidas em anais y publicações similares
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
 
 ocontrib;oauthor
 Agrupa los datos de los autores individuales, como nombre, sobrenombre y papel
@@ -491,7 +491,7 @@ omonog;subtitle
 Identifica el subtítulo del documento
 
 omonog;confgrp
-Agrupa los datos de un evento, como conferencia, seminário, congreso, etc. contidas em anais y publicações similares
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
 
 omonog;thesis
 Agrupa datos de una tesis, en una  cita
@@ -530,7 +530,7 @@ omonog;isbn
 Identifica el Internacional Standard Book Number (ISBN)
 
 omonog;othinfo
-Agrupa datos que não están identificados pelos demais elementos de una cita
+Agrupa datos que não están identificados pelos denais elenentos de una cita
 
 omonog;url
 Identifica el número de la edición
@@ -539,7 +539,7 @@ omonog;doi
 Identifica, en una  cita, doi del documento
 
 omonog;cited
-Identifica la fecha em que el artículo electrónico foi acessado
+Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 omonog;patgrp
 Agrupa los datos de patente
@@ -569,7 +569,7 @@ confgrpOmonog;sponsor
 Identifica la organización financiera o patrocinadora de un proyecto o evento
 
 confgrpOmonog;confname
-Identifica el nombre de un evento, como conferencia, seminario, congreso, etc.
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
 
 confgrpOmonog;no
 Identifica el número del evento
@@ -623,7 +623,7 @@ oiserial;isstitle
 Identifica el título de un fascículo de publicación seriada o revista
 
 oiserial;othinfo
-Agrupa datos que não están identificados pelos demais elementos de una cita
+Agrupa datos que não están identificados pelos denais elenentos de una cita
 
 oiserial;city
 Identifica la ciudad de publicación
@@ -641,7 +641,7 @@ oiserial;issueno
 Identifica el número de un fascículo
 
 oiserial;suppl
-Identifica el número del suplemento de un revista
+Identifica el número del suplenento de un revista
 
 oiserial;pages
 Identifica la paginación
@@ -662,13 +662,13 @@ oiserial;doi
 Identifica, en una  cita, doi del documento
 
 oiserial;cited
-Identifica la fecha em que el artículo electrónico foi acessado
+Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 confgrpOcitat;sponsor
 Identifica la organización financiera o patrocinadora de un proyecto o evento
 
 confgrpOcitat;confname
-Identifica el nombre de un evento, como conferencia, seminario, congreso, etc.
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
 
 confgrpOcitat;no
 Identifica el número del evento
@@ -698,19 +698,19 @@ vcitat;no
 Identifica el número de la cita
 
 vcitat;vcontrib
-Agrupa elementos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+Agrupa elenentos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
 
 vcitat;viserial
-Agrupa elementos de identificación específicos de una publicación seriada o revista
+Agrupa elenentos de identificación específicos de una publicación seriada o revista
 
 vcitat;vmonog
-Agrupa los elementos principais para la identificación de una monografia
+Agrupa los elenentos principais para la identificación de una monografia
 
 vcontrib;author
 Agrupa los datos de autores individuales, como nombre,sobrenombre y papel
 
 vcontrib;corpauth
-Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabalho
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
 
 vcontrib;et-al
 Indica autores no citados
@@ -746,7 +746,7 @@ vtitleVcontrib;subtitle
 Identifica el subtítulo del documento
 
 vtitleVcontrib;tp
-Identifica el tipo de publicación en una  cita, por ejemplo, un editorial o una revisión de literatura
+Identifica el tipo de publicación en una  cita, por ejenplo, un editorial o una revisión de literatura
 
 viserial;vstitle
 Agrupa la forma abreviada y padronizada del título de un revista el publicación seriada
@@ -764,7 +764,7 @@ viserial;issueno
 Identifica el número de un fascículo
 
 viserial;suppl
-Identifica el número del suplemento de un revista
+Identifica el número del suplenento de un revista
 
 viserial;part
 Identifica la parte del volumen o fascículo
@@ -782,19 +782,19 @@ viserial;doi
 Identifica, en una  cita, doi del documento
 
 viserial;cited
-Identifica la fecha em que el artículo electrónico foi acessado
+Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 vstitle;stitle
 Agrupa la forma abreviada y padronizada del título de un revista el publicación seriada
 
 vstitle;tp
-Identifica el tipo de publicación en una  cita, por ejemplo, un editorial o una revisión de literatura
+Identifica el tipo de publicación en una  cita, por ejenplo, un editorial o una revisión de literatura
 
 vmonog;author
 Agrupa los datos de autores individuales, como nombre,sobrenombre y papel
 
 vmonog;corpauth
-Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabalho
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
 
 vmonog;et-al
 Indica autores no citados
@@ -806,10 +806,10 @@ vmonog;edition
 Identifica el número de la edición
 
 vmonog;version
-Identifica se la publicación está em formato electrónico o papel
+Identifica se la publicación está en formato electrónico o papel
 
 vmonog;confgrp
-Agrupa los datos de un evento, como conferencia, seminário, congreso, etc. contidas em anais y publicações similares
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
 
 vmonog;city
 Identifica la ciudad de publicación
@@ -821,7 +821,7 @@ vmonog;pubname
 Identifica la casa publicadora
 
 vmonog;inpress
-Identifica que la cita citada ainda está em proceso de publicación
+Identifica que la cita citada ainda está en proceso de publicación
 
 vmonog;date
 Identifica la fecha de publicación
@@ -842,7 +842,7 @@ vmonog;doi
 Identifica, en una  cita, doi del documento
 
 vmonog;cited
-Identifica la fecha em que el artículo electrónico foi acessado
+Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 vmonog;patgrp
 Agrupa los datos de patente
@@ -872,13 +872,13 @@ vtitleVmonog;subtitle
 Identifica el subtítulo del documento
 
 vtitleVmonog;tp
-Identifica el tipo de publicación en una  cita, por ejemplo, un editorial o una revisión de literatura
+Identifica el tipo de publicación en una  cita, por ejenplo, un editorial o una revisión de literatura
 
 confgrpVmonog;sponsor
 Identifica la organización financiera o patrocinadora de un proyecto o evento
 
 confgrpVmonog;confname
-Identifica el nombre de un evento, como conferencia, seminario, congreso, etc.
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
 
 confgrpVmonog;no
 Identifica el número del evento
@@ -920,7 +920,7 @@ thesisVmonog;city
 Identifica la ciudad de la tesis
 
 thesisVmonog;state
-Identifica el provincia/región (local) (lcoal) de la tesis
+Identifica el provincia/región (local) de la tesis
 
 thesisVmonog;country
 Identifica el país de la tesis
@@ -944,19 +944,19 @@ pcitat;no
 Identifica el número de la cita
 
 pcitat;pcontrib
-Agrupa elementos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+Agrupa elenentos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
 
 pcitat;pmonog
-Agrupa los elementos principais para la identificación de una monografia
+Agrupa los elenentos principais para la identificación de una monografia
 
 pcitat;piserial
-Agrupa elementos de identificación específicos de una publicación seriada o revista
+Agrupa elenentos de identificación específicos de una publicación seriada o revista
 
 pcontrib;author
 Agrupa los datos de autores individuales, como nombre, sobrenombre y papel
 
 pcontrib;corpauth
-Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabalho
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
 
 pcontrib;date
 Identifica la fecha de publicación
@@ -1001,13 +1001,13 @@ piserial;issueno
 Identifica el número de un fascículo
 
 piserial;suppl
-Identifica el número del suplemento de un revista
+Identifica el número del suplenento de un revista
 
 piserial;pages
 Identifica la paginación
 
 piserial;cited
-Identifica la fecha em que el artículo electrónico foi acessado
+Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 piserial;url
 Identifica el número de la edición
@@ -1019,7 +1019,7 @@ pmonog;author
 Agrupa los datos de autores individuales, como nombre,sobrenombre y papel
 
 pmonog;corpauth
-Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabalho
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
 
 pmonog;date
 Identifica la fecha de publicación
@@ -1040,7 +1040,7 @@ pmonog;colvolid
 Identifica el volumen de una colección
 
 pmonog;notes
-Agrupa datos que não están identificados pelos demais elementos de una cita
+Agrupa datos que não están identificados pelos denais elenentos de una cita
 
 pmonog;pages
 Identifica la paginación
@@ -1058,7 +1058,7 @@ pmonog;pubname
 Identifica la casa publicadora
 
 pmonog;cited
-Identifica la fecha em que el artículo electrónico foi acessado
+Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 pmonog;url
 Identifica el número de la edición
@@ -1082,22 +1082,22 @@ acitat;no
 Identifica el número de la cita
 
 acitat;acontrib
-Agrupa elementos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+Agrupa elenentos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
 
 acitat;amonog
-Agrupa los elementos principais para la identificación de una monografia
+Agrupa los elenentos principais para la identificación de una monografia
 
 acitat;aiserial
-Agrupa elementos de identificación específicos de una publicación seriada o revista
+Agrupa elenentos de identificación específicos de una publicación seriada o revista
 
 acitat;confgrp
-Agrupa los datos de un evento, como conferencia, seminário, congreso, etc. contidas em anais y publicações similares
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
 
 acontrib;author
 Agrupa los datos de autores individuales, como nombre, sobrenombre y papel
 
 acontrib;corpauth
-Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabalho
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
 
 acontrib;et-al
 Indica autores no citados
@@ -1157,7 +1157,7 @@ aiserial;pubname
 Identifica la casa publicadora
 
 aiserial;suppl
-Identifica el número del suplemento de un revista
+Identifica el número del suplenento de un revista
 
 aiserial;volid
 Identifica el volumen al cual pertenece un documento
@@ -1175,7 +1175,7 @@ aiserial;pages
 Identifica la paginación
 
 aiserial;notes
-Agrupa datos que não están identificados pelos demais elementos de una cita
+Agrupa datos que não están identificados pelos denais elenentos de una cita
 
 aiserial;issn
 Identifica el Internacional Standard Serial  Number (ISSN)
@@ -1187,13 +1187,13 @@ aiserial;doi
 Identifica, en una  cita, doi del documento
 
 aiserial;cited
-Identifica la fecha em que el artículo electrónico foi acessado
+Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 amonog;author
 Agrupa los datos de autores individuales, como nombre,sobrenombre y papel
 
 amonog;corpauth
-Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabalho
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
 
 amonog;et-al
 Indica autores no citados
@@ -1205,13 +1205,13 @@ amonog;subtitle
 Identifica el subtítulo del documento
 
 amonog;subresp
-Identifica las responsabilidades secundarias en una  cita, por ejemplo, tradutores y revisores
+Identifica las responsabilidades secundarias en una  cita, por ejenplo, tradutores y revisores
 
 amonog;edition
 Identifica el número de la edición
 
 amonog;confgrp
-Agrupa los datos de un evento, como conferencia, seminário, congreso, etc. contidas em anais y publicações similares
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
 
 amonog;city
 Identifica la ciudad de publicación
@@ -1247,7 +1247,7 @@ amonog;colvolid
 Identifica el volumen de una colección
 
 amonog;notes
-Agrupa datos que não están identificados pelos demais elementos de una cita
+Agrupa datos que não están identificados pelos denais elenentos de una cita
 
 amonog;isbn
 Identifica el Internacional Standard Book Number (ISBN)
@@ -1262,7 +1262,7 @@ amonog;doi
 Identifica, en una  cita, doi del documento
 
 amonog;cited
-Identifica la fecha em que el artículo electrónico foi acessado
+Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 amonog;patgrp
 Agrupa los datos de patente
@@ -1289,7 +1289,7 @@ confgrpAmonog;sponsor
 Identifica la organización financiera o patrocinadora de un proyecto o evento
 
 confgrpAmonog;confname
-Identifica el nombre de un evento, como conferencia, seminario, congreso, etc.
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
 
 confgrpAmonog;no
 Identifica el número del evento
@@ -1316,7 +1316,7 @@ thesisAmonog;city
 Identifica la ciudad de la tesis
 
 thesisAmonog;state
-Identifica el provincia/región (local) (lcoal) de la tesis
+Identifica el provincia/región (local) de la tesis
 
 thesisAmonog;country
 Identifica el país de la tesis
@@ -1337,7 +1337,7 @@ confgrpAcitat;sponsor
 Identifica la organización financiera o patrocinadora de un proyecto o evento
 
 confgrpAcitat;confname
-Identifica el nombre de un evento, como conferencia, seminario, congreso, etc.
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
 
 confgrpAcitat;no
 Identifica el número del evento
@@ -1367,25 +1367,25 @@ icitat;no
 Identifica el número de la cita
 
 icitat;icontrib
-Agrupa elementos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+Agrupa elenentos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
 
 icitat;imonog
-Agrupa los elementos principais para la identificación de una monografia
+Agrupa los elenentos principais para la identificación de una monografia
 
 icitat;iiserial
-Agrupa elementos de identificación específicos de una publicación seriada o revista
+Agrupa elenentos de identificación específicos de una publicación seriada o revista
 
 icontrib;author
 Agrupa los datos de autores individuales, como nombre, sobrenombre y papel
 
 icontrib;corpauth
-Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabalho
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
 
 icontrib;et-al
 Indica autores no citados
 
 icontrib;subresp
-Identifica las responsabilidades secundarias en una  cita, por ejemplo, tradutores y revisores
+Identifica las responsabilidades secundarias en una  cita, por ejenplo, tradutores y revisores
 
 icontrib;date
 Identifica la fecha de publicación
@@ -1427,13 +1427,13 @@ iiserial;author
 Agrupa los datos de autores individuales, como nombre, sobrenombre y papel
 
 iiserial;corpauth
-Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabalho
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
 
 iiserial;et-al
 Indica autores no citados
 
 iiserial;medium
-Identifica el formato del meio em que el documento está sendo publicado o editado
+Identifica el formato del meio en lo cual el documento está sendo publicado o editado
 
 iiserial;sertitle
 Identifica el título de una publicación seriada o revista
@@ -1469,7 +1469,7 @@ iiserial;volid
 Identifica el volumen al cual pertenece un documento
 
 iiserial;isdesig
-Identifica las fechas principales de una colección, por ejemplo, la fecha inicial de la colección
+Identifica las fechas principales de una colección, por ejenplo, la fecha inicial de la colección
 
 iiserial;issueno
 Identifica el número de un fascículo
@@ -1478,7 +1478,7 @@ iiserial;pages
 Identifica la paginación
 
 iiserial;notes
-Agrupa datos que não están identificados pelos demais elementos de una cita
+Agrupa datos que não están identificados pelos denais elenentos de una cita
 
 iiserial;url
 Identifica el número de la edición
@@ -1487,7 +1487,7 @@ iiserial;doi
 Identifica, en una  cita, doi del documento
 
 iiserial;cited
-Identifica la fecha em que el artículo electrónico foi acessado
+Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 iiserial;issn
 Identifica el Internacional Standard Serial  Number (ISSN)
@@ -1514,13 +1514,13 @@ imonog;author
 Agrupa los datos de autores individuales, como nombre, sobrenombre y papel
 
 imonog;corpauth
-Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabalho
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
 
 imonog;et-al
 Indica autores no citados
 
 imonog;subresp
-Identifica las responsabilidades secundarias en una  cita, por ejemplo, tradutores y revisores
+Identifica las responsabilidades secundarias en una  cita, por ejenplo, tradutores y revisores
 
 imonog;title
 Identifica el título del documento
@@ -1529,7 +1529,7 @@ imonog;subtitle
 Identifica el subtítulo del documento
 
 imonog;medium
-Identifica el formato del meio em que el documento está sendo publicado o editado
+Identifica el formato del meio en lo cual el documento está sendo publicado o editado
 
 imonog;edition
 Identifica el número de la edición
@@ -1568,7 +1568,7 @@ imonog;coltitle
 Identifica el título de una colección o seriada de la cual un trabajo hace parte
 
 imonog;notes
-Agrupa datos que não están identificados pelos demais elementos de una cita
+Agrupa datos que não están identificados pelos denais elenentos de una cita
 
 imonog;url
 Identifica el número de la edición
@@ -1577,7 +1577,7 @@ imonog;doi
 Identifica, en una  cita, doi del documento
 
 imonog;cited
-Identifica la fecha em que el artículo electrónico foi acessado
+Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 imonog;isbn
 Identifica el Internacional Standard Book Number (ISBN)
@@ -1615,26 +1615,29 @@ Identifica los nombres de un autor individual
 subrespAmonog;surname
 Identifica el sobrenombre de un autor individual
 
+backT;fngrp
+Identifica una nota de rodapé
+
 backT;vancouv
-Agrupa los elementos de bibliografía de acuerdo con Vancouver
+Agrupa los elenentos de bibliografía de acuerdo con Vancouver
 
 backT;iso690
-Agrupa los elementos de bibliografía de acuerdo con ISO 690/87
+Agrupa los elenentos de bibliografía de acuerdo con ISO 690/87
 
 backT;abnt6023
-Agrupa los elementos de bibliografía de acuerdo con NBR 6023/89 de la ABNT
+Agrupa los elenentos de bibliografía de acuerdo con NBR 6023/89 de la ABNT
 
 backT;apa
-Agrupa los elementos de bibliografía para de acuerdo con APA
+Agrupa los elenentos de bibliografía para de acuerdo con APA
 
 backT;other
-Agrupa los elementos de bibliografía lo cual no está de acuerdo con las normas adoptadas
+Agrupa los elenentos de bibliografía lo cual no está de acuerdo con las normas adoptadas
 
 backT;licenses
-Agrupa los elementos de licencia
+Agrupa los elenentos de licencia
 
 patentImonog;orgname
-Identifica onde foi registrada la patente
+Identifica onde fue registrada la patente
 
 patentImonog;patent
 Identifica el número de la patente
@@ -1643,7 +1646,7 @@ patentImonog;date
 Identifica la fecha de registro de la patente
 
 patentOmonog;orgname
-Identifica onde foi registrada la patente
+Identifica onde fue registrada la patente
 
 patentOmonog;patent
 Identifica el número de la patente
@@ -1652,7 +1655,7 @@ patentOmonog;date
 Identifica la fecha de registro de la patente
 
 patentAmonog;orgname
-Identifica onde foi registrada la patente
+Identifica onde fue registrada la patente
 
 patentAmonog;patent
 Identifica el número de la patente
@@ -1661,7 +1664,7 @@ patentAmonog;date
 Identifica la fecha de registro de la patente
 
 patentVmonog;orgname
-Identifica onde foi registrada la patente
+Identifica onde fue registrada la patente
 
 patentVmonog;patent
 Identifica el número de la patente
@@ -1670,7 +1673,7 @@ patentVmonog;date
 Identifica la fecha de registro de la patente
 
 patentIcontrib;orgname
-Identifica onde foi registrada la patente
+Identifica onde fue registrada la patente
 
 patentIcontrib;patent
 Identifica el número de la patente
@@ -1679,7 +1682,7 @@ patentIcontrib;date
 Identifica la fecha de registro de la patente
 
 patentOcontrib;orgname
-Identifica onde foi registrada la patente
+Identifica onde fue registrada la patente
 
 patentOcontrib;patent
 Identifica el número de la patente
@@ -1688,7 +1691,7 @@ patentOcontrib;date
 Identifica la fecha de registro de la patente
 
 patentAcontrib;orgname
-Identifica onde foi registrada la patente
+Identifica onde fue registrada la patente
 
 patentAcontrib;patent
 Identifica el número de la patente
@@ -1697,7 +1700,7 @@ patentAcontrib;date
 Identifica la fecha de registro de la patente
 
 patentVcontrib;orgname
-Identifica onde foi registrada la patente
+Identifica onde fue registrada la patente
 
 patentVcontrib;patent
 Identifica el número de la patente
@@ -1705,45 +1708,48 @@ Identifica el número de la patente
 patentVcontrib;date
 Identifica la fecha de registro de la patente
 
-bodyArt;sec
+xmlbodyBar;sec
 Identifica una sección del texto
 
-bodyArt;p
-Identifica paragráfo
+xmlbodyBar;p
+Identifica párrafo
 
-bodyArt;list
+xmlbodyBar;list
 Identifica un listado
 
-secBody;sectitle
+secBar;sectitle
 Identifica el título de la sección
 
-secBody;subsec
+secBar;subsec
 Identifica la sub-sección del texto
 
-secBody;p
-Identifica paragráfo
+secBar;p
+Identifica párrafo
 
-secBody;list
+secBar;list
 Identifica un listado
 
-list;li
-Identifica los ítenes de la lista
-
-secsec;sectitle
+subsecBar;sectitle
 Identifica el título de la subsección
 
-secsec;p
-Identifica paragráfo
+subsecBar;p
+Identifica párrafo
+
+subsecBar;list
+Identifica un listado
+
+listBar;li
+Identifica los ítenes de la lista
+
+libar;lilabel
+Identifica el etiqueta del iten de la lista
+
+libar;litext
+Identifica el texto del iten de la lista
 
 licensesBar;license
 Identifica el texto de la licencia
 
 licenseBar;licensep
-Identifica el parágrafo de la licencia
-
-libar;item
-Texto del item de la lista
-
-libar;label
-Etiqueta del item de la lista
+Identifica el párrafo de la licencia
 

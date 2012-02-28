@@ -147,7 +147,7 @@
                         notes?  & isbn? & patgrp? ) -->
 
 
-<!ELEMENT icontrib - - ( ((author | corpauth)*, et-al?) , subresp* , date , 
+<!ELEMENT icontrib - - ( ((author | corpauth)*, et-al?) , subresp* ,  date , 
                         (%m.title;)? ) >
 
 <!ELEMENT subresp  - - (%m.name;) >
@@ -166,7 +166,7 @@
                         | volid | isdesig | issueno | pages | notes | url | doi |
                         issn)*) -->
 <!ELEMENT iiserial - - (isstitle? , ((author | corpauth)*, et-al?) , medium? 
-                        , (stitle | sertitle)? ,  (date | city | pubname | volid | issueno| pages | notes)*, 
+                        , (stitle | sertitle)? ,  (update  | date | city | pubname | volid | issueno| pages | notes)*, 
                         (url & cited)? ) >
 
 <!ELEMENT isstitle - - (#PCDATA) >
