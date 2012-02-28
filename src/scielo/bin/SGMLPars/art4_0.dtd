@@ -111,7 +111,7 @@
 %common;
 
 <!ENTITY % m.bib    "(((abstract? & keygrp?) & confgrp? & report? & thesgrp? 
-                      & hist? & (%m.title;)?)+)" >
+                      & hist? & fngrp* & (%m.title;)?)+)" >
 
 <!ENTITY % cita SYSTEM "citation4_0.dtd">
 %cita;

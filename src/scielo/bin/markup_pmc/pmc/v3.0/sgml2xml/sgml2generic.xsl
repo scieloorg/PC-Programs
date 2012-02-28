@@ -14,8 +14,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="JOURNAL_PID" select="node()/@issn"/>
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
 	<xsl:variable name="subject">
-	<xsl:choose><xsl:when test="//front"><xsl:apply-templates select=".//front/*[1]/text()"/>
-	</xsl:when><xsl:when test=".//text/unidentified"><xsl:apply-templates select=".//text//unidentified[1]/text()"/></xsl:when>
+	<xsl:choose><xsl:when test="//front"><xsl:variable name="n" select=".//front/*"/><xsl:apply-templates select="$n[1]//text()"/>
+	</xsl:when><xsl:when test=".//text"><xsl:variable name="n" select=".//text/*"/><xsl:apply-templates select="$n[1]//text()"/></xsl:when>
 	</xsl:choose>
 	</xsl:variable>
 	<xsl:variable name="PUB_TYPE" select=".//extra-scielo/issn-type"/>
@@ -174,7 +174,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="extra-scielo/publisher/publisher-name">
 		<xsl:value-of select="."></xsl:value-of><xsl:if test="position()!=last()">, </xsl:if>
 	</xsl:template>
-	<xsl:template match="front/doi">
+	<xsl:template match="front/doi | text/doi">
 		<article-id pub-id-type="doi"><xsl:value-of select="."/></article-id>
 	</xsl:template>
 	<xsl:template match="article|text" mode="article-meta">
@@ -543,11 +543,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template-->
 	<!-- BACK -->
 	<xsl:template match="article|text" mode="back">
-		<back>
-			<xsl:apply-templates select="back"/>
-		</back>
+		<xsl:if test="back/fngrp[normalize-space(.)!=''] or back/unidentified or back/*[@standard] or back/bbibcom">
+			<back>
+				<xsl:apply-templates select="back"/>
+			</back>
+		</xsl:if>
 	</xsl:template>
-	<xsl:template match="back">
+	
+	<xsl:template match="back[unidentified]">
 		<xsl:apply-templates select="unidentified" mode="ACK"/>
 		<xsl:apply-templates select="*[@standard]"/>
 		
@@ -615,7 +618,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="back//fngrp[@fntype]" mode="NOTES">
-	<fn><xsl:attribute name="fn-type"><xsl:value-of select="@fntype"/></xsl:attribute><p><xsl:value-of select="text()" /></p></fn>
+	<fn><xsl:attribute name="fn-type"><xsl:value-of select="@fntype"/></xsl:attribute><p><xsl:apply-templates select="*|text()"/></p></fn>
 	</xsl:template>
 	<xsl:template match="back/bbibcom" mode="NOTES">
 		<xsl:apply-templates select="text()|unidentified|fngrp" mode="NOTES"></xsl:apply-templates>

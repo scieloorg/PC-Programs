@@ -146,4 +146,4 @@
 <!--    Back Matter                                                       -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT back     - -  ((vancouv | iso690 | abnt6023 | apa | other), licenses?) >
+<!ELEMENT back     - -  ((vancouv | iso690 | abnt6023 | apa | other)?, fngrp*, licenses?) >

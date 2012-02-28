@@ -14,7 +14,7 @@ set PDF_PATH=%ISSUE_PATH%\pdf
 if exist %ISSUE_PATH%\pmc\pmc_pdf set PDF_PATH=%ISSUE_PATH%\pmc\pmc_pdf
 if not exist %PACK% mkdir %PACK%
 
-set  temp_batch_partial=%WORK_ART%\rename_files.bat
+set temp_batch_partial=%WORK_ART%\rename_files.bat
 set temp_batch_complete=%WORK%\rename_files.bat
 set temp_batch_seq=%XML_TOOLS_PATH%\temp.seq
 

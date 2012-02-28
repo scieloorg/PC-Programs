@@ -88,7 +88,12 @@ filename       CDATA #IMPLIED>
 <!ELEMENT tr - - (td+)    >
 <!ELEMENT td - - (p+)    >
 
+<!ELEMENT sciname - - (#PCDATA)>
 
+<!ELEMENT fngrp - - (#PCDATA) +(%i.float;) >
+<!ATTLIST fngrp
+          fntype       CDATA    #REQUIRED 
+	 >
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Deposit                                                        -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
