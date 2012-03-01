@@ -107,6 +107,9 @@ Function getJournalCreativeCommons(mfn As Long) As clsCreativeCommons
     Dim texts() As String
     Dim creativeCommons As New clsCreativeCommons
     
+    
+    creativeCommons.code = Serial_TxtContent(mfn, 541)
+    
     q = isis.SubfieldContentGet(mfn, 540, "l", languages)
     q = isis.SubfieldContentGet(mfn, 540, "t", texts)
     
@@ -115,7 +118,7 @@ Function getJournalCreativeCommons(mfn As Long) As clsCreativeCommons
     Next
     If q = 0 Then
         For i = 1 To IdiomsInfo.count
-            Call creativeCommons.add("", IdiomsInfo(i).Code)
+            Call creativeCommons.add("", IdiomsInfo(i).code)
         Next
     End If
     Set getJournalCreativeCommons = creativeCommons
@@ -250,7 +253,7 @@ Function getFieldContentByLanguage(mfn As Long, tag As Long, Optional language A
     getFieldContentByLanguage = isis.getFieldContentByLanguage(mfn, tag, language, subf)
 End Function
 
-Function getDecodedValue(Code As ColCode, mfn As Long, tag As Long, Optional DefaultOption As String) As String
+Function getDecodedValue(code As ColCode, mfn As Long, tag As Long, Optional DefaultOption As String) As String
     Dim content As String
     Dim exist As Boolean
     Dim itemCode As ClCode
@@ -260,7 +263,7 @@ Function getDecodedValue(Code As ColCode, mfn As Long, tag As Long, Optional Def
         
         If Len(content) > 0 Then
             Set itemCode = New ClCode
-            Set itemCode = Code(content, exist)
+            Set itemCode = code(content, exist)
             If exist Then
                 content = itemCode.value
             Else

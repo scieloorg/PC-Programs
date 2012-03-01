@@ -14,6 +14,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private cc As New ColTextByLang
+Public code As String
 
 Sub add(text As String, lang As String)
     Dim textByLang As New ClsTextByLang

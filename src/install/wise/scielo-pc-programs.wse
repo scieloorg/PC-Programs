@@ -3272,11 +3272,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\config\misc\issue2.fst
-  Destination=%PROGDIR%\bin\config\misc\issue2.fst
-  Flags=0000000010000010
-end
-item: Install File
   Source=W:\scielo\bin\config\misc\issue.xml.pft
   Destination=%PROGDIR%\bin\config\misc\issue.xml.pft
   Flags=0000000010000010

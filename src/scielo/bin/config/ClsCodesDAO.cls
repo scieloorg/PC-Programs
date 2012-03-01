@@ -11,8 +11,6 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-Option Explicit
-
 Private isis As ClIsisdll
 
 Sub create(Path As String, FileName As String, key As String)
@@ -158,3 +156,4 @@ Sub getMultilingueTable(key As String, tableList As ColObjByLang)
     
     
 End Sub
+

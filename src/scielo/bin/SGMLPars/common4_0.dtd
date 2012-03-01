@@ -201,6 +201,9 @@ filename       CDATA #IMPLIED>
 <!--ELEMENT p - - ((#PCDATA) | (label,caption) | list )  +(%i.float;) -->
 <!ELEMENT p - - (#PCDATA)   +(%i.float;) >
 <!ELEMENT list  - - (li)+  >
+<!ATTLIST list
+          listtype  CDATA #REQUIRED
+           >
 <!ELEMENT li  - - (#PCDATA) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->

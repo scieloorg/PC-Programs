@@ -182,7 +182,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Public IsBack As Boolean
 Private MyMfnTitle As Long
-Private cc As New clsCreativeCommons
+Private cc As clsCreativeCommons
 'Private currentLicText As ColIdiom
 Private Const MAX_LINES_INDEX = 10
 
@@ -219,31 +219,20 @@ Sub MyGetContentFromBase(MfnTitle As Long)
     'JournalStatusAction.setLanguage (CurrCodeIdiom)
     'Set JournalStatusAction.ErrorMessages = ErrorMessages
     'Set JournalStatusAction.myHistory = journalDAO.getHistory(MfnTitle)
-    Dim lic As String
-    lic = Serial_TxtContent(MfnTitle, 541)
+    Set cc = New clsCreativeCommons
     
     
     Set cc = journalDAO.getJournalCreativeCommons(MfnTitle)
+    
     TxtCprightDate.text = Serial_TxtContent(MfnTitle, 621)
     TxtCprighter.text = Serial_TxtContent(MfnTitle, 62)
 
-    Call PresentsData
-    If Len(lic) = 0 Then
-        If InStr(TextCreativeCommons(1).text, "<p> </p>") > 0 Then
-            lic = "nd"
-        Else
-            If Len(TextCreativeCommons(1).text) = 0 Then
-                lic = "BY-NC"
-            Else
-                lic = "BY"
-            End If
-        End If
-        Dim i As Long
-        For i = 1 To IdiomsInfo.count
-            TextCreativeCommons(i - 1).text = CodeLicTextMultilingue.getItemByLang(IdiomsInfo(i).Code).item(lic).value
-        Next
+    If Len(cc.code) > 0 Then
+        ComboLicText.text = cc.code
+    Else
+        ComboLicText.text = "nd"
     End If
-    ComboLicText.text = lic
+    
     
 End Sub
 Sub MyClearContent()
@@ -265,7 +254,7 @@ Function changed(MfnTitle As Long) As Boolean
     
     Set temp = journalDAO.getJournalCreativeCommons(MfnTitle)
     For i = 1 To IdiomsInfo.count
-        If (temp.getLicense(IdiomsInfo(i).Code).text <> TextCreativeCommons(i - 1).text) Then
+        If (temp.getLicense(IdiomsInfo(i).code).text <> TextCreativeCommons(i - 1).text) Then
             change = True
         End If
     Next
@@ -321,12 +310,28 @@ End Sub
 
 
 Private Sub ComboLicText_Click()
-Dim i As Long
+    Dim i As Long
     
+    
+    'Set temp = journalDAO.getJournalCreativeCommons(MfnTitle)
+    'For i = 1 To IdiomsInfo.count
+    '    If (temp.getLicense(IdiomsInfo(i).code).text <> TextCreativeCommons(i - 1).text) Then
+    '        change = True
+    '    End If
+    'Next
     'Set currentLicText = New ColIdiom
-    For i = 1 To IdiomsInfo.count
-        TextCreativeCommons(i - 1).text = CodeLicTextMultilingue.getItemByLang(IdiomsInfo(i).Code).item(ComboLicText.text).value
-    Next
+    
+    If ComboLicText.text = cc.code Then
+        For i = 1 To IdiomsInfo.count
+            TextCreativeCommons(i - 1).text = cc.getLicense(IdiomsInfo(i).code).text
+            TextCreativeCommons(i - 1).Locked = False
+        Next
+    Else
+        For i = 1 To IdiomsInfo.count
+            TextCreativeCommons(i - 1).text = CodeLicTextMultilingue.getItemByLang(IdiomsInfo(i).code).item(ComboLicText.text).value
+            TextCreativeCommons(i - 1).Locked = False
+        Next
+    End If
     
 End Sub
 
@@ -336,15 +341,7 @@ End Sub
 
 
 
-Sub PresentsData()
-    Dim i As Long
-    
-    If cc.count > 0 Then
-        For i = 1 To IdiomsInfo.count
-            TextCreativeCommons(i - 1).text = cc.getLicense(IdiomsInfo(i).Code).text
-        Next
-    End If
-End Sub
+
 
 Sub receiveData()
     Dim i As Long
@@ -376,9 +373,9 @@ Sub receiveData()
                 t = text
                 TextCreativeCommons(i - 1).text = text
             End If
-            Set item = cc.getLicense(IdiomsInfo(i).Code)
+            Set item = cc.getLicense(IdiomsInfo(i).code)
             
-            item.lang = IdiomsInfo(i).Code
+            item.lang = IdiomsInfo(i).code
             item.text = t
         Next
     'End If
@@ -388,7 +385,7 @@ Function getCreativeCommons() As clsCreativeCommons
     Set getCreativeCommons = cc
 End Function
 
-Private Sub TextCreativeCommons_GotFocus(index As Integer)
+Private Sub TextCreativeCommons_GotFocus(Index As Integer)
 Call FrmInfo.ShowHelpMessage(Fields.getLabel("title_creativecommons"), 2)
 
 End Sub

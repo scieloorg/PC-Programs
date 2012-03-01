@@ -186,7 +186,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:value-of select="substring(10000 + substring(..//extra-scielo/issue-order,5),2)"/>
 					<xsl:value-of select="substring-after(100000 + @order,'1')"/>
 				</article-id>
-				<xsl:apply-templates select="front/doi"></xsl:apply-templates>
+				<xsl:apply-templates select="front/doi|doi"></xsl:apply-templates>
 			</xsl:if>
 			
 			<article-categories>
@@ -550,7 +550,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="back[unidentified]">
+	<xsl:template match="back">
 		<xsl:apply-templates select="unidentified" mode="ACK"/>
 		<xsl:apply-templates select="*[@standard]"/>
 		

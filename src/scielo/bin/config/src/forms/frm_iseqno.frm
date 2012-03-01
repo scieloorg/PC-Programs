@@ -312,18 +312,19 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-Private result As Boolean
-
+Private selected As Long
 Private Sub CmdCancel_Click()
     Unload Me
 End Sub
 
 Private Sub CmdOK_Click()
-    Dim selected As Long
     
         If OptionIssue(1).value Then
+            'existente, entao quer abrir, informou por engano  o num seq
+            
             selected = 1
         Else
+            ' novo, trocar o num seq
             selected = 0
         End If
         
@@ -335,11 +336,11 @@ Private Sub CmdOK_Click()
         Issue1.ComboIssueIdPart.text = TextIdPart(selected).text
         
         Unload Me
-        result = True
+        
        
 End Sub
 
-Function CheckSeqNo(Question2 As String, vol As String, VolSuppl As String, No As String, NoSuppl As String, SeqNo As String, idPart As String, Optional Vol2 As String, Optional VolSuppl2 As String, Optional No2 As String, Optional NoSuppl2 As String, Optional SeqNo2 As String, Optional idPart2 As String) As Boolean
+Function ReplaceSeqNo(Question2 As String, vol As String, VolSuppl As String, No As String, NoSuppl As String, SeqNo As String, idPart As String, Optional Vol2 As String, Optional VolSuppl2 As String, Optional No2 As String, Optional NoSuppl2 As String, Optional SeqNo2 As String, Optional idPart2 As String) As Boolean
     Dim i As Long
     
     With ConfigLabels
@@ -380,6 +381,6 @@ Function CheckSeqNo(Question2 As String, vol As String, VolSuppl As String, No A
         TextIdPart(1).text = idPart
         
         Me.Show vbModal
-        CheckSeqNo = result
+        ReplaceSeqNo = (selected = 0)
 End Function
 

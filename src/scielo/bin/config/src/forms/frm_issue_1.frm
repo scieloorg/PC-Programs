@@ -367,7 +367,7 @@ Private Sub CmdDelete_Click()
     '    End If
     'End If
     If CheckIssueId Then
-        mfn = Issue0.issueDAO.getIssueMfnByIssueId(TxtISSN.Caption, TxtVolid.text, TxtSupplVol.text, TxtIssueno.text, TxtSupplNo.text, ComboIssueIdPart.text, TxtIseqNo.text)
+        mfn = Issue0.issueDAO.getIssueMfnByIssueId(TxtISSN.Caption, TxtVolid.text, TxtSupplVol.text, TxtIssueno.text, TxtSupplNo.text, ComboIssueIdPart.text, TxtIseqno.text)
         If mfn > 0 Then
             resp = MsgBox(ConfigLabels.getLabel("MsgDeleteIssue"), vbYesNo + vbDefaultButton2)
             If resp = vbYes Then
@@ -377,7 +377,7 @@ Private Sub CmdDelete_Click()
                     TxtSupplVol.text = ""
                     TxtIssueno.text = ""
                     TxtSupplNo.text = ""
-                    TxtIseqNo.text = ""
+                    TxtIseqno.text = ""
                     ComboIssueIdPart.text = ""
                 End If
             End If
@@ -402,7 +402,7 @@ Private Sub CmdReplace_Click()
         '    End If
         'End If
         If CheckIssueId Then
-            Call FrmReplaceIssue.ReplaceIssue(TxtISSN.Caption, TxtVolid, TxtSupplVol, TxtIssueno, TxtSupplNo, ComboIssueIdPart, TxtIseqNo)
+            Call FrmReplaceIssue.ReplaceIssue(TxtISSN.Caption, TxtVolid, TxtSupplVol, TxtIssueno, TxtSupplNo, ComboIssueIdPart, TxtIseqno)
         Else
         End If
     End If
@@ -424,7 +424,7 @@ Private Sub CmdView_Click()
             '        TxtSupplVol.text = TxtSuppl.text
             '    End If
             'End If
-            If FindIssueToOpen(mfnIssue, TxtISSN.Caption, TxtVolid.text, TxtSupplVol.text, TxtIssueno.text, TxtSupplNo.text, TxtIseqNo.text, ComboIssueIdPart.text) Then
+            If FindIssueToOpen(mfnIssue, TxtISSN.Caption, TxtVolid.text, TxtSupplVol.text, TxtIssueno.text, TxtSupplNo.text, TxtIseqno.text, ComboIssueIdPart.text) Then
                 Issue2.LoadIssue (mfnIssue)
             End If
         End If
@@ -458,7 +458,7 @@ Private Sub CmdViewIseqNo_Click()
     
     issueno = TxtIssueno.text
     
-    IseqNo = TxtIseqNo.text
+    IseqNo = TxtIseqno.text
     x = ComboIssueIdPart.text
     
     Call FrmSeqNumber.ViewIseqNo(TxtISSN.Caption, volid, supplvol, issueno, Supplno, IseqNo, x)
@@ -466,7 +466,7 @@ Private Sub CmdViewIseqNo_Click()
     TxtSupplVol.text = supplvol
     TxtIssueno.text = issueno
     TxtSupplNo.text = Supplno
-    TxtIseqNo.text = IseqNo
+    TxtIseqno.text = IseqNo
     ComboIssueIdPart.text = x
     
     'TxtSuppl.text = TxtSupplNo.text
@@ -497,17 +497,17 @@ Private Function CheckIssueId_Iseqno() As Boolean
     
     If Not retorno Then MsgBox ConfigLabels.getLabel("MsgMissingIssueId")
     
-    If Len(Trim(TxtIseqNo.text)) < 5 Then
+    If Len(Trim(TxtIseqno.text)) < 5 Then
         retorno = False
-    ElseIf Not (TxtIseqNo.text Like String(Len(TxtIseqNo.text), "#")) Then
+    ElseIf Not (TxtIseqno.text Like String(Len(TxtIseqno.text), "#")) Then
         retorno = False
     End If
     
     If Not retorno Then
         MsgBox (ConfigLabels.getLabel("MsgInvalidFormatSeqNumber"))
-        TxtIseqNo.SetFocus
+        TxtIseqno.SetFocus
     Else
-        year = Mid(TxtIseqNo.text, 1, 4)
+        year = Mid(TxtIseqno.text, 1, 4)
     End If
     
     CheckIssueId_Iseqno = retorno
@@ -526,7 +526,7 @@ Private Function CheckIssueId() As Boolean
         retorno = True
     End If
     If TxtIssueno.text = "ahead" Then
-        If Len(Trim(TxtIseqNo.text)) > 0 Then
+        If Len(Trim(TxtIseqno.text)) > 0 Then
             retorno = True
         End If
     End If
@@ -568,7 +568,7 @@ End Sub
 Private Sub Posicionar(x As Double, Y As Double)
     Call Redimensionar(FramPer, x, Y, x, Y)
     Call Redimensionar(LabTitulo, x, Y, 1, 1)
-    Call Redimensionar(TxtSerTitle, x, Y, x, 1)
+    Call Redimensionar(TxtSertitle, x, Y, x, 1)
     Call Redimensionar(LabTitAbr, x, Y, 1, 1)
     Call Redimensionar(TxtStitle, x, Y, x, 1)
     Call Redimensionar(LabTitAlt, x, Y, 1, 1)
@@ -589,7 +589,7 @@ Private Sub Posicionar(x As Double, Y As Double)
     Call Redimensionar(LabSupplNro, x, Y, 1, 1)
     Call Redimensionar(TxtSupplNo, x, Y, x, 1)
     Call Redimensionar(LabNroSeq, x, Y, 1, 1)
-    Call Redimensionar(TxtIseqNo, x, Y, x, 1)
+    Call Redimensionar(TxtIseqno, x, Y, x, 1)
     
     'Call Redimensionar(CmdGarbageCollection, x, Y, x, Y)
     Call Redimensionar(CmdView, x, Y, x, Y)
@@ -634,7 +634,7 @@ Sub OpenIssue(sertitle As String)
     MyMfnTitle = Serial_CheckExisting(sertitle)
     If isTitleFormCompleted(MyMfnTitle) Then
         
-        TxtSerTitle.Caption = Serial_TxtContent(MyMfnTitle, 100)
+        TxtSertitle.Caption = Serial_TxtContent(MyMfnTitle, 100)
         TxtPubl.text = Serial_TxtContent(MyMfnTitle, 480)
         Cidade = Serial_TxtContent(MyMfnTitle, 490)
         SiglaPeriodico = Serial_TxtContent(MyMfnTitle, 930)
@@ -647,7 +647,7 @@ Sub OpenIssue(sertitle As String)
         
         TxtISOStitle.Caption = Serial_TxtContent(MyMfnTitle, 151)
         TxtStitle.Caption = Serial_TxtContent(MyMfnTitle, 150)
-        TxtMEDLINEStitle.Caption = Serial_TxtContent(MyMfnTitle, 421)
+        TxtMedlineStitle.Caption = Serial_TxtContent(MyMfnTitle, 421)
         issn_id = Serial_TxtContent(MyMfnTitle, 400)
         issn_current = Serial_TxtContent(MyMfnTitle, 935)
         
@@ -663,7 +663,7 @@ Sub OpenIssue(sertitle As String)
         LabIssueIdPart.Caption = .getLabel("IssueIdPart")
         LabTitAbr.Caption = .getLabel("ser1_ShortTitle")
         LabISOStitle.Caption = .getLabel("ser1_ISOStitle")
-        LabMEDLINEStitle.Caption = .getLabel("ser4_MedlineStitle")
+        LabMedlineStitle.Caption = .getLabel("ser4_MedlineStitle")
         LabTitAlt.Caption = .getLabel("ser1_ParallelTitles")
         LabTitulo.Caption = .getLabel("ser1_Title")
         LabVol.Caption = .getLabel("Volume")
@@ -700,19 +700,20 @@ Private Function FindIssueToOpen(FoundMfn As Long, journalKey As String, vol As 
         resp = True
     ElseIf (MfnIseqNo > 0) Then
         MsgBox ConfigLabels.getLabel("msgSeqNumBelongsToAnotherIssue")
-        TxtIseqNo.SetFocus
+        TxtIseqno.SetFocus
         
         'CmdViewIseqNo_Click
     ElseIf (MfnIssueId > 0) Then
         'perguntar se deseja alterar o num seq deste issue
         Set issue = Issue0.issueDAO.returnIssue(MfnIssueId)
             
-            resp1 = FormSeqNo.CheckSeqNo(ConfigLabels.getLabel("ISEQNO_CHANGEISEQNO"), vol, SVol, No, SNo, issue.issueorder, IssueIdPart)
-            If resp1 Then
-                FoundMfn = Issue0.issueDAO.UpdateIssueId(MfnIssueId, vol, SVol, No, SNo, IseqNo, IssueIdPart)
-            End If
-        ' senao abrir para escolher o issue
-        CmdViewIseqNo_Click
+        resp1 = FormSeqNo.ReplaceSeqNo(ConfigLabels.getLabel("ISEQNO_CHANGEISEQNO"), vol, SVol, No, SNo, issue.issueorder, IssueIdPart)
+        If resp1 Then
+            FoundMfn = Issue0.issueDAO.UpdateIssueId(MfnIssueId, vol, SVol, No, SNo, IseqNo, IssueIdPart)
+        Else
+            FoundMfn = MfnIssueId
+        End If
+        resp = True
     End If
     
     
