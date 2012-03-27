@@ -34,9 +34,9 @@ Agrupa os autores individuais ou corporativos do documento
 Group the individual or corporative authors of the document
 Agrupa los autores individuales o corporativos del documento
 
-Identifica a legenda da figura
-Identify the caption of the figure
-Identifica el título de la figura
+Agrupa elementos complementares que estão na parte posterior ao corpo do texto
+Group other elinents que are at the following part of the body of the text
+Agrupa otros elenentos que están en la parte posterior al cuerpo del texto
 
 Identifica um grupo de título do documento em uma referencia bibliográfica segundo a norma Vancouver
 Identify a group of title of the document in a citation according to Vancouver
@@ -462,6 +462,10 @@ Identifica que a referencia citada ainda está em processo de publicação
 Identify the citation citada ainda is in publishing
 Identifica que la cita citada ainda está en proceso de publicación
 
+Identifica o título da subseção nível 2
+Identify the title of the subsection nível 2
+Identifica el título de la subsección nível 2
+
 Identifica o título de um fascículo de publicação seriada ou periódica
 Identify the title of a fascículo of serial publication or journal
 Identifica el título de un fascículo de publicación seriada o revista
@@ -554,9 +558,9 @@ Agrupa os elementos de bibliografia segundo a norma NBR 6023/89 da ABNT
 Group the elinentos of bibliography according to NBR 6023/89 of the ABNT
 Agrupa los elenentos de bibliografía de acuerdo con NBR 6023/89 de la ABNT
 
-Agrupa elementos complementares que estão na parte posterior ao corpo do texto
-Group other elinents que are at the following part of the body of the text
-Agrupa otros elenentos que están en la parte posterior al cuerpo del texto
+Identifica a legenda da figura
+Identify the caption of the figure
+Identifica el título de la figura
 
 Agrupa os elementos principais para a identificação de uma monografia
 Group the elinentos principais to identify of a monografia

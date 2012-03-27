@@ -58,6 +58,9 @@ Identifica datos de una fórmula
 ifloat;cltrial
 Identifica datos de ensayos clínicos
 
+ifloat;list
+Identifica un listado
+
 ifloat;xref
 Identifica cita cruzada de tablas, figuras, etc
 
@@ -325,6 +328,9 @@ Agrupa datos de una tesis, en una  cita
 bbibcomBar;hist
 Identifica el histórico de la publicación de un artículo en un revista (fechas de recebimento, revisión y aprobación)
 
+bbibcomBar;fngrp
+Identifica una nota de rodapé
+
 bbibcomBar;title
 Identifica el título del documento
 
@@ -533,7 +539,7 @@ omonog;othinfo
 Agrupa datos que não están identificados pelos denais elenentos de una cita
 
 omonog;url
-Identifica el número de la edición
+Identifica la dirección electrónica del documento
 
 omonog;doi
 Identifica, en una  cita, doi del documento
@@ -656,7 +662,7 @@ oiserial;issn
 Identifica el Internacional Standard Serial  Number (ISSN)
 
 oiserial;url
-Identifica el número de la edición
+Identifica la dirección electrónica del documento
 
 oiserial;doi
 Identifica, en una  cita, doi del documento
@@ -776,7 +782,7 @@ viserial;pages
 Identifica la paginación
 
 viserial;url
-Identifica el número de la edición
+Identifica la dirección electrónica del documento
 
 viserial;doi
 Identifica, en una  cita, doi del documento
@@ -836,7 +842,7 @@ vmonog;thesis
 Agrupa datos de una tesis, en una  cita
 
 vmonog;url
-Identifica el número de la edición
+Identifica la dirección electrónica del documento
 
 vmonog;doi
 Identifica, en una  cita, doi del documento
@@ -1010,7 +1016,7 @@ piserial;cited
 Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 piserial;url
-Identifica el número de la edición
+Identifica la dirección electrónica del documento
 
 piserial;doi
 Identifica, en una  cita, doi del documento
@@ -1061,7 +1067,7 @@ pmonog;cited
 Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 pmonog;url
-Identifica el número de la edición
+Identifica la dirección electrónica del documento
 
 pmonog;doi
 Identifica, en una  cita, doi del documento
@@ -1181,7 +1187,7 @@ aiserial;issn
 Identifica el Internacional Standard Serial  Number (ISSN)
 
 aiserial;url
-Identifica el número de la edición
+Identifica la dirección electrónica del documento
 
 aiserial;doi
 Identifica, en una  cita, doi del documento
@@ -1256,7 +1262,7 @@ amonog;thesis
 Agrupa datos de una tesis, en una  cita
 
 amonog;url
-Identifica el número de la edición
+Identifica la dirección electrónica del documento
 
 amonog;doi
 Identifica, en una  cita, doi del documento
@@ -1481,7 +1487,7 @@ iiserial;notes
 Agrupa datos que não están identificados pelos denais elenentos de una cita
 
 iiserial;url
-Identifica el número de la edición
+Identifica la dirección electrónica del documento
 
 iiserial;doi
 Identifica, en una  cita, doi del documento
@@ -1571,7 +1577,7 @@ imonog;notes
 Agrupa datos que não están identificados pelos denais elenentos de una cita
 
 imonog;url
-Identifica el número de la edición
+Identifica la dirección electrónica del documento
 
 imonog;doi
 Identifica, en una  cita, doi del documento
@@ -1714,9 +1720,6 @@ Identifica una sección del texto
 xmlbodyBar;p
 Identifica párrafo
 
-xmlbodyBar;list
-Identifica un listado
-
 secBar;sectitle
 Identifica el título de la sección
 
@@ -1726,19 +1729,22 @@ Identifica la sub-sección del texto
 secBar;p
 Identifica párrafo
 
-secBar;list
-Identifica un listado
-
 subsecBar;sectitle
 Identifica el título de la subsección
+
+subsecBar;subsec
+Identifica la sub-sección del texto
 
 subsecBar;p
 Identifica párrafo
 
-subsecBar;list
-Identifica un listado
+subsec2Bar;sectitle
+Identifica el título de la subsección nível 2
 
-listBar;li
+subsec2Bar;p
+Identifica párrafo
+
+list;li
 Identifica los ítenes de la lista
 
 libar;lilabel

@@ -14,7 +14,7 @@ Public issueidparts As New ColCode
 Public ConfigLabels As ClLabels
 Public Fields As ColFields
 Public Months As ColIdiomMeses
-Public IdiomsInfo As ColIdiom
+Public idiomsinfo As ColIdiom
 
 'Variaveis de configuracao
 Public SciELOPath As String
@@ -42,7 +42,8 @@ Public NodeInfo() As String
 Public FileNotRequired() As Boolean
 Public Counter As Long
 
-Public CodeLicTextMultilingue As ColObjByLang
+
+Public LicensesList As ColLicenses
 Public CodeLicText As ColCode
 Public CodeStudyArea As ColCode
 Public CodeAlphabet As ColCode
@@ -258,7 +259,7 @@ End Function
 
 
 
-Sub LoadCodes(CodeDB As ClFileInfo, idiom As String, key As String, Code As ColCode, Optional codeEqualValue As Boolean = False)
+Sub LoadCodes(CodeDB As ClFileInfo, idiom As String, key As String, code As ColCode, Optional codeEqualValue As Boolean = False)
     Dim isisCode As ClIsisdll
     Dim Mfn As Long
     Dim mfns() As Long
@@ -275,7 +276,7 @@ Sub LoadCodes(CodeDB As ClFileInfo, idiom As String, key As String, Code As ColC
     Dim find As String
     
     With CodeDB
-    Set Code = New ColCode
+    Set code = New ColCode
     Set isisCode = New ClIsisdll
     If Not isisCode.Inicia(.Path, .FileName, .key) Then
             MsgBox "Problem with " + .FileName
@@ -319,25 +320,25 @@ Sub LoadCodes(CodeDB As ClFileInfo, idiom As String, key As String, Code As ColC
                 a_codes = Split(a(1), ";;")
                 
                 For i = 0 To UBound(a_values) - 1
-                    Set itemCode = Code.item(CVar(a_codes(i)), exist)
+                    Set itemCode = code.item(CVar(a_codes(i)), exist)
                     tracing = tracing + vbCrLf + "(" + a_codes(i) + "," + a_values(i) + ")" + CStr(exist)
                     If Not exist Then
                         Set itemCode = New ClCode
                         
-                        itemCode.Code = a_codes(i)
+                        itemCode.code = a_codes(i)
                         If codeEqualValue Then
                             itemCode.value = a_codes(i)
                         Else
                             itemCode.value = a_values(i)
                         End If
-                        Call Code.add(itemCode, CVar(a_codes(i)))
+                        Call code.add(itemCode, CVar(a_codes(i)))
                     End If
                 Next
                 
             End If
         End If
     End If
-    If Code.count = 0 Then MsgBox CodeDB.Path + "\" + CodeDB.FileName + vbCrLf + find + " " + tracing
+    If code.count = 0 Then MsgBox CodeDB.Path + "\" + CodeDB.FileName + vbCrLf + find + " " + tracing
     
     End With
 End Sub
@@ -392,7 +393,7 @@ Sub LoadCodesMultilingue(CodeDB As ClFileInfo, key As String, tableList As ColOb
                         For i = 0 To UBound(a_values) - 1
                             Set itemCode = New ClCode
                             itemCode.value = a_values(i)
-                            itemCode.Code = a_codes(i)
+                            itemCode.code = a_codes(i)
                             Call table.add(itemCode, CVar(a_codes(i)))
                         Next
                         
@@ -425,8 +426,14 @@ Property Let ChangeInterfaceIdiom(idiom As String)
 
     Set CodeDB = Paths("Code Database")
     Call codedao.create(CodeDB.Path, CodeDB.FileName, CodeDB.key)
-    If CodeLicTextMultilingue Is Nothing Then
-        Call codedao.getMultilingueTable("license_text", CodeLicTextMultilingue)
+    If LicensesList Is Nothing Then
+        Set LicensesList = New ColLicenses
+        Dim LicensesListByLang As ColObjByLang
+        Call codedao.getMultilingueTable("license_text", LicensesListByLang)
+        Call LicensesList.load(LicensesListByLang)
+        
+        
+    
     End If
 
     
@@ -453,7 +460,7 @@ Property Let ChangeInterfaceIdiom(idiom As String)
     Call codedao.getTable(idiom, "scheme", CodeScheme)
     Call codedao.getTable("", "table of contents", CodeTOC)
     
-    Set CodeLicText = CodeLicTextMultilingue.getItemByLang(idiom)
+    Set CodeLicText = LicensesListByLang.getItemByLang(idiom)
     
     Set CodeDB = Paths("NewCode Database")
     Call codedao.create(CodeDB.Path, CodeDB.FileName, CodeDB.key)
@@ -461,13 +468,13 @@ Property Let ChangeInterfaceIdiom(idiom As String)
     Call codedao.getTable(idiom, "study area", CodeStudyArea)
     
             
-    Set IdiomsInfo = New ColIdiom
+    Set idiomsinfo = New ColIdiom
     Set x = New ClIdiom
     For i = 1 To CodeIdiom.count
         'Set x = IdiomsInfo(CodeIdiom(i).Code)
         'If x Is Nothing Then
         
-            Set x = IdiomsInfo.add(CodeIdiom.item(i).Code, CodeIdiom(i).value, CodeTOC.item(CodeIdiom(i).Code).value, CodeIdiom(i).Code)
+            Set x = idiomsinfo.add(CodeIdiom.item(i).code, CodeIdiom(i).value, CodeTOC.item(CodeIdiom(i).code).value, CodeIdiom(i).code)
         'Else
         '    IdiomsInfo.item(CodeIdiom(i).Code).label = CodeIdiom(i).value
         '    IdiomsInfo.item(CodeIdiom(i).Code).More = CodeTOC(CodeIdiom(i).Code).value
@@ -532,7 +539,7 @@ Sub loadIssueIdPart(CurrCodeIdiom As String)
         Set obj = New ClCode
         obj.index = issueidparts.count + 1
         obj.value = value
-        obj.Code = key
+        obj.code = key
         issueidparts.add obj, key
          
     Wend

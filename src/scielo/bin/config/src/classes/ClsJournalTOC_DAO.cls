@@ -46,7 +46,7 @@ Property Set toc(t As ClsTOC)
     journalTOC.loadDict
 End Property
 
-Public Function whereSectionInUse(Code As String, resultType As String, issues As ClsIssues) As Boolean
+Public Function whereSectionInUse(code As String, resultType As String, issues As ClsIssues) As Boolean
     Dim issueDAO As ClsIssueDAO
     
     With Paths("Issue Database")
@@ -54,11 +54,11 @@ Public Function whereSectionInUse(Code As String, resultType As String, issues A
     Call issueDAO.create(.Path, .FileName, .key)
     End With
     
-    whereSectionInUse = issueDAO.whereSectionInUse(xJournalInfo.pubid, Code, issues, resultType)
+    whereSectionInUse = issueDAO.whereSectionInUse(xJournalInfo.pubid, code, issues, resultType)
     Set issueDAO = Nothing
 End Function
 
-Public Function checkSectionTitles(Code As String, titles As String, codes As String) As Boolean
+Public Function checkSectionTitles(code As String, titles As String, codes As String) As Boolean
     Dim x As Collection
     Dim i As Long
     Dim r As Boolean
@@ -69,7 +69,7 @@ Public Function checkSectionTitles(Code As String, titles As String, codes As St
     Else
         
         For i = 1 To x.count
-            If x.item(i) = Code Then
+            If x.item(i) = code Then
                 r = True
             Else
                 codes = codes + x.item(i) + "; "
@@ -81,7 +81,7 @@ End Function
 
 Public Function compare(toc1 As ClsTOC, toc2 As ClsTOC) As Boolean
     
-    compare = (sectionDAO.generalTOC_DAO.tagTOC(toc1) = sectionDAO.generalTOC_DAO.tagTOC(toc2))
+    compare = (sectionDAO.section_TOC_DAO.tagTOC(toc1) = sectionDAO.section_TOC_DAO.tagTOC(toc2))
 End Function
 
 Public Function save() As Boolean

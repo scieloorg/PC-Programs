@@ -336,7 +336,8 @@ Sub MyGetContentFromBase(MfnTitle As Long)
 End Sub
 
 Sub MyOpenSerial(SERIALTITLE As String, IsNewSerial As Boolean)
-
+    
+    
     Set journal = New ClsJournal
     
     FillingNewSerial = IsNewSerial

@@ -37,7 +37,7 @@ Function Serial_TxtContent(Mfn As Long, tag As Long, Optional language As String
     Serial_TxtContent = journalDAO.getFieldContentByLanguage(Mfn, tag, language)
 End Function
 
-Function Serial_ComboDefaultValue(Code As ColCode, DefaultOption As String) As String
+Function Serial_ComboDefaultValue(code As ColCode, DefaultOption As String) As String
     Dim exist As Boolean
     Dim itemCode As ClCode
     Dim content As String
@@ -45,7 +45,7 @@ Function Serial_ComboDefaultValue(Code As ColCode, DefaultOption As String) As S
     
         If Len(DefaultOption) > 0 Then
             Set itemCode = New ClCode
-            Set itemCode = Code(DefaultOption, exist)
+            Set itemCode = code(DefaultOption, exist)
             If exist Then
                 content = itemCode.value
             Else
@@ -55,8 +55,8 @@ Function Serial_ComboDefaultValue(Code As ColCode, DefaultOption As String) As S
     
     Serial_ComboDefaultValue = content
 End Function
-Function Serial_ComboContent(Code As ColCode, Mfn As Long, tag As Long, Optional DefaultOption As String) As String
-    Serial_ComboContent = journalDAO.getDecodedValue(Code, Mfn, tag, DefaultOption)
+Function Serial_ComboContent(code As ColCode, Mfn As Long, tag As Long, Optional DefaultOption As String) As String
+    Serial_ComboContent = journalDAO.getDecodedValue(code, Mfn, tag, DefaultOption)
 End Function
 
 Function TagTxtContent(content As String, tag As Long) As String
@@ -75,7 +75,7 @@ Function TagTxtContent(content As String, tag As Long) As String
     TagTxtContent = NewContent
 End Function
 
-Sub Serial_ListContent(list As ListBox, Code As ColCode, Mfn As Long, tag As Long)
+Sub Serial_ListContent(list As ListBox, code As ColCode, Mfn As Long, tag As Long)
     Dim content As String
     Dim exist As Boolean
     Dim itemCode As ClCode
@@ -97,7 +97,7 @@ Sub Serial_ListContent(list As ListBox, Code As ColCode, Mfn As Long, tag As Lon
     p = InStr(content, sep)
     While p > 0
         item = Mid(content, 1, p - 1)
-        Set itemCode = Code(item, exist)
+        Set itemCode = code(item, exist)
         If exist Then
             item = itemCode.value
             i = 0
@@ -149,8 +149,8 @@ Function Serial_Save(MfnTitle As Long) As Long
     reccontent = reccontent + TagTxtContent(Serial1.TxtHasSuppl.text, 550)
     
     
-    For i = 1 To IdiomsInfo.count
-        If Len(Serial2.TxtMission(i).text) > 0 Then reccontent = reccontent + TagTxtContent(Serial2.TxtMission(i).text + "^l" + IdiomsInfo(i).Code, 901)
+    For i = 1 To idiomsinfo.count
+        If Len(Serial2.TxtMission(i).text) > 0 Then reccontent = reccontent + TagTxtContent(Serial2.TxtMission(i).text + "^l" + idiomsinfo(i).code, 901)
     Next
     
     reccontent = reccontent + TagTxtContent(UCase(Serial2.TxtDescriptors.text), 440)
@@ -231,7 +231,11 @@ Function Serial_Save(MfnTitle As Long) As Long
     
     JOURNAL5.receiveData
     reccontent = reccontent + journalDAO.tagCreativeCommons(JOURNAL5.getCreativeCommons)
-    reccontent = reccontent + TagTxtContent(JOURNAL5.ComboLicText.text, 541)
+    If InStr(JOURNAL5.ComboLicText.text, "*") > 0 Then
+        reccontent = reccontent + TagTxtContent(Mid(JOURNAL5.ComboLicText.text, 1, InStr(JOURNAL5.ComboLicText.text, "*") - 1), 541)
+    Else
+        reccontent = reccontent + TagTxtContent(JOURNAL5.ComboLicText.text, 541)
+    End If
     
     If MfnTitle = 0 Then
         If journalDAO.existISSN(Serial1.TxtISSN.text) > 0 Then
@@ -249,15 +253,15 @@ Function Serial_Save(MfnTitle As Long) As Long
     Serial_Save = MfnTitle
 End Function
 
-Function TagComboContent(Code As ColCode, content As String, tag As Long) As String
+Function TagComboContent(code As ColCode, content As String, tag As Long) As String
     Dim exist As Boolean
     Dim itemCode As ClCode
         
     If Len(content) > 0 Then
         Set itemCode = New ClCode
-        Set itemCode = Code(content, exist)
+        Set itemCode = code(content, exist)
         If exist Then
-            content = itemCode.Code
+            content = itemCode.code
         Else
         
         End If
@@ -266,7 +270,7 @@ Function TagComboContent(Code As ColCode, content As String, tag As Long) As Str
     TagComboContent = TagContent(content, tag)
 End Function
 
-Function TagListContent(Code As ColCode, list As ListBox, tag As Long) As String
+Function TagListContent(code As ColCode, list As ListBox, tag As Long) As String
     Dim exist As Boolean
     Dim itemCode As ClCode
     Dim i As Long
@@ -275,9 +279,9 @@ Function TagListContent(Code As ColCode, list As ListBox, tag As Long) As String
         Set itemCode = New ClCode
         For i = 0 To list.ListCount - 1
             If list.selected(i) Then
-                Set itemCode = Code(list.list(i), exist)
+                Set itemCode = code(list.list(i), exist)
                 If exist Then
-                    content = content + TagContent(itemCode.Code, tag)
+                    content = content + TagContent(itemCode.code, tag)
                 Else
                     Debug.Print
                 End If
@@ -287,40 +291,40 @@ Function TagListContent(Code As ColCode, list As ListBox, tag As Long) As String
     TagListContent = content
 End Function
 
-Sub FillListStudyArea(list As ListBox, Code As ColCode)
+Sub FillListStudyArea(list As ListBox, code As ColCode)
     Dim i As Long
     
     list.Clear
-    For i = 1 To Code.count
-        If StrComp(Code(i).value, Code(i).Code) = 0 Then
-            list.AddItem Code(i).value
+    For i = 1 To code.count
+        If StrComp(code(i).value, code(i).code) = 0 Then
+            list.AddItem code(i).value
         Else
             If (i Mod 2) <> 0 Then
-                list.AddItem Code(i).value
+                list.AddItem code(i).value
             End If
         End If
     Next
 End Sub
-Sub FillList(list As ListBox, Code As ColCode)
+Sub FillList(list As ListBox, code As ColCode)
     Dim i As Long
     
     list.Clear
     
-    For i = 1 To Code.count
-        list.AddItem Code(i).value
+    For i = 1 To code.count
+        list.AddItem code(i).value
     Next
 End Sub
 
-Sub FillCombo(combo As ComboBox, Code As ColCode, Optional valueEqCode As Boolean = False)
+Sub FillCombo(combo As ComboBox, code As ColCode, Optional valueEqCode As Boolean = False)
     Dim i As Long
     
     combo.Clear
-    For i = 1 To Code.count
-        If Not Code(i).unabled Then
+    For i = 1 To code.count
+        If Not code(i).unabled Then
             If valueEqCode Then
-                combo.AddItem Code(i).Code
+                combo.AddItem code(i).code
             Else
-                combo.AddItem Code(i).value
+                combo.AddItem code(i).value
             End If
         End If
     Next
@@ -410,8 +414,8 @@ Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     change = change Or (StrComp(Serial1.TxtIsSuppl.text, Serial_TxtContent(MfnTitle, 560)) <> 0)
     change = change Or (StrComp(Serial1.TxtHasSuppl.text, Serial_TxtContent(MfnTitle, 550)) <> 0)
     
-    For i = 1 To IdiomsInfo.count
-        change = change Or (StrComp(Serial2.TxtMission(i).text, Serial_TxtContent(MfnTitle, 901, IdiomsInfo(i).Code)) <> 0)
+    For i = 1 To idiomsinfo.count
+        change = change Or (StrComp(Serial2.TxtMission(i).text, Serial_TxtContent(MfnTitle, 901, idiomsinfo(i).code)) <> 0)
     Next
 
     change = change Or (StrComp(Serial2.TxtDescriptors.text, Serial_TxtContent(MfnTitle, 440), vbTextCompare) <> 0)
@@ -491,7 +495,7 @@ Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     Serial_ChangedContents = change
 End Function
 
-Function Serial_ChangedListContent(list As ListBox, Code As ColCode, MfnTitle As Long, tag As Long) As Boolean
+Function Serial_ChangedListContent(list As ListBox, code As ColCode, MfnTitle As Long, tag As Long) As Boolean
     Dim content As String
     Dim exist As Boolean
     Dim changed As Long
@@ -510,7 +514,7 @@ Function Serial_ChangedListContent(list As ListBox, Code As ColCode, MfnTitle As
     p = InStr(content, sep)
     While p > 0
         item = Mid(content, 1, p - 1)
-        Set itemCode = Code(item, exist)
+        Set itemCode = code(item, exist)
         If exist Then values = values + itemCode.value + sep
         content = Mid(content, p + 1)
         p = InStr(content, sep)
@@ -561,14 +565,14 @@ Function Serial_Remove(mfns() As Long, q As Long) As Boolean
     Next
 End Function
 
-Function getCode(Code As ColCode, content As String) As ClCode
+Function getCode(code As ColCode, content As String) As ClCode
     Dim exist As Boolean
     Dim itemCode As ClCode
     Dim r As ClCode
     
     If Len(content) > 0 Then
         
-        Set itemCode = Code(content, exist)
+        Set itemCode = code(content, exist)
         If exist Then
             Set r = itemCode
         End If
@@ -614,8 +618,8 @@ Sub generateFile_JournalList4Automata()
     
     Set citat = New ClsParams
     For i = 1 To CodeStandard.count
-        c = Mid(CodeStandard(i).Code, 1, 1)
-        Select Case CodeStandard(i).Code
+        c = Mid(CodeStandard(i).code, 1, 1)
+        Select Case CodeStandard(i).code
         Case "iso690"
             tg = "tgiso"
         Case "nbr6023"
@@ -630,8 +634,8 @@ Sub generateFile_JournalList4Automata()
             tg = "tgapa"
         End Select
         
-        Call citat.add(c, CodeStandard(i).Code)
-        Call tgs.add(tg, CodeStandard(i).Code)
+        Call citat.add(c, CodeStandard(i).code)
+        Call tgs.add(tg, CodeStandard(i).code)
     Next
     
     fn = FreeFile

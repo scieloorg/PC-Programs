@@ -104,11 +104,11 @@ Private Function UpdateIssueTable() As Boolean
     MousePointer = vbHourglass
     
     With Paths("Markup Issue Table")
-        For i = 1 To IdiomsInfo.count
-            originalPft = IdiomsInfo(i).Code + "_" + Paths("Markup Issue Table Format").FileName
+        For i = 1 To idiomsinfo.count
+            originalPft = idiomsinfo(i).code + "_" + Paths("Markup Issue Table Format").FileName
             configuredPft = "cfg_" + originalPft
             Call ConfigurePft(originalPft, configuredPft, "c:\scielo\code\code", Paths("Code Database").Path + "\" + Paths("Code Database").FileName)
-            Call issueDAO.UpdateIssueTable(.Path + "\" + IdiomsInfo(i).Code + "_" + .FileName, configuredPft)
+            Call issueDAO.UpdateIssueTable(.Path + "\" + idiomsinfo(i).code + "_" + .FileName, configuredPft)
         Next
     Call issueDAO.UpdateIssueTable(.Path + "\" + .FileName, App.Path + "\misc\issue.xml.pft")
     End With

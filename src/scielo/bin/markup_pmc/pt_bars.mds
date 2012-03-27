@@ -316,7 +316,7 @@ coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;
 volid;Identifica o volume ao qual pertence um documento;2;#TRUE#;#FALSE#;
 isbn;Identifica o Internacional Standard Book Number (ISBN);2;#TRUE#;#FALSE#;
 othinfo;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;2;#TRUE#;#FALSE#;
-url;Identifica o número da edição;15;#TRUE#;#FALSE#;
+url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 patgrp;Agrupa os dados de patente;15;#FALSE#;#TRUE#;patentOmonog
@@ -371,7 +371,7 @@ pages;Identifica a paginação;2;#TRUE#;#FALSE#;
 extent;Identifica a extensão da obra como o número de páginas ou volumes;2;#TRUE#;#FALSE#;
 date;Identifica a data de publicação;2;#TRUE#;#TRUE#;
 issn;Identifica o Internacional Standard Serial  Number (ISSN);2;#TRUE#;#FALSE#;
-url;Identifica o número da edição;15;#TRUE#;#FALSE#;
+url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 
@@ -439,7 +439,7 @@ suppl;Identifica o número do suplemento de um periódico;15;#TRUE#;#FALSE#;
 part;Identifica a parte do volume ou fascículo;15;#TRUE#;#FALSE#;
 extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
-url;Identifica o número da edição;15;#TRUE#;#FALSE#;
+url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 
@@ -469,7 +469,7 @@ report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial o
 down;reportVmonog
 thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;15;#TRUE#;#FALSE#;thesisVmonog
 down;thesisVmonog
-url;Identifica o número da edição;15;#TRUE#;#FALSE#;
+url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 patgrp;Agrupa os dados de patente;15;#FALSE#;#TRUE#;patentVmonog
@@ -568,7 +568,7 @@ issueno;Identifica o número de um fascículo;2;#TRUE#;#FALSE#;
 suppl;Identifica o número do suplemento de um periódico;2;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
-url;Identifica o número da edição;15;#TRUE#;#FALSE#;
+url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 
 pmonog;pcitat
@@ -590,7 +590,7 @@ city;Identifica a cidade de publicação;15;#TRUE#;#FALSE#;
 country;Identifica o país de publicação;15;#TRUE#;#FALSE#;
 pubname;Identifica a casa publicadora;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
-url;Identifica o número da edição;15;#TRUE#;#FALSE#;
+url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 
 thesisPmonog;pmonog
@@ -652,7 +652,7 @@ extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRU
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
 notes;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#TRUE#;#FALSE#;
 issn;Identifica o Internacional Standard Serial  Number (ISSN);15;#TRUE#;#FALSE#;
-url;Identifica o número da edição;15;#TRUE#;#FALSE#;
+url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 
@@ -684,7 +684,7 @@ notes;Agrupa dados que não estão identificados pelos demais elementos de uma ref
 isbn;Identifica o Internacional Standard Book Number (ISBN);15;#TRUE#;#FALSE#;
 thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;15;#TRUE#;#FALSE#;thesisAmonog
 down;thesisAmonog
-url;Identifica o número da edição;15;#TRUE#;#FALSE#;
+url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 patgrp;Agrupa os dados de patente;15;#FALSE#;#TRUE#;patentAmonog
@@ -786,23 +786,22 @@ et-al;Indica que há autores não mencionados;15;#FALSE#;#FALSE#;
 medium;Identifica o formato do meio em que o documento está sendo publicado ou editado;15;#FALSE#;#FALSE#;
 sertitle;Identifica o título de uma publicação seriada ou periódica;15;#FALSE#;#FALSE#;
 stitle;Agrupa a forma abreviada e padronizada do título de um periódico ou publicação seriada;15;#FALSE#;#FALSE#;
-edition;Identifica o número da edição;15;#TRUE#;#FALSE#;
 city;Identifica a cidade de publicação;15;#TRUE#;#FALSE#;
 state;Identifica o estado (local) de publicação;15;#TRUE#;#FALSE#;
 country;Identifica o país de publicação;15;#TRUE#;#FALSE#;
+edition;Identifica o número da edição;15;#TRUE#;#FALSE#;
 pubname;Identifica a casa publicadora;15;#TRUE#;#FALSE#;
 date;Identifica a data de publicação;15;#TRUE#;#TRUE#;
 update;update;15;#TRUE#;#FALSE#;
-location;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 volid;Identifica o volume ao qual pertence um documento;15;#TRUE#;#FALSE#;
-isdesig;Identifica as datas principais de uma coleção como, por exemplo, a data inicial da coleção;15;#TRUE#;#FALSE#;
 issueno;Identifica o número de um fascículo;15;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
+isdesig;Identifica as datas principais de uma coleção como, por exemplo, a data inicial da coleção;15;#TRUE#;#FALSE#;
 notes;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#TRUE#;#FALSE#;
-url;Identifica o número da edição;15;#TRUE#;#FALSE#;
-doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
-cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 issn;Identifica o Internacional Standard Serial  Number (ISSN);15;#TRUE#;#FALSE#;
+url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
+cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
+doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 
 authorIiserial;iiserial
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
@@ -835,10 +834,9 @@ update;update;15;#TRUE#;#FALSE#;
 volid;Identifica o volume ao qual pertence um documento;15;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
 extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRUE#;#FALSE#; 
-location;Identifica o endereço eletrônico do documento;15;#FALSE#;#FALSE#;
 coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;15;#TRUE#;#FALSE#;
 notes;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#TRUE#;#FALSE#;
-url;Identifica o número da edição;15;#FALSE#;#FALSE#;
+url;Identifica o endereço eletrônico do documento;15;#FALSE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 isbn;Identifica o Internacional Standard Book Number (ISBN);15;#TRUE#;#FALSE#;

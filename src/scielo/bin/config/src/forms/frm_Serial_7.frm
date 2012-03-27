@@ -182,9 +182,10 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Public IsBack As Boolean
 Private MyMfnTitle As Long
-Private cc As clsCreativeCommons
+Private savedlicense As clsCreativeCommons
 'Private currentLicText As ColIdiom
 Private Const MAX_LINES_INDEX = 10
+
 
 
 Private Sub CmdBack_Click()
@@ -198,8 +199,8 @@ Sub MySetLabels()
     
     With Fields
     'LabelCreativeCommonsInstructions.Caption = .getLabel("issue_creativecommons")
-    For i = 1 To IdiomsInfo.count
-        Label10(i - 1).Caption = IdiomsInfo(i).label
+    For i = 1 To idiomsinfo.count
+        Label10(i - 1).Caption = idiomsinfo(i).label
     Next
     LabCprightDate.Caption = .getLabel("ser4_cprightDate")
     LabCprighter.Caption = .getLabel("ser4_cprighter")
@@ -219,22 +220,31 @@ Sub MyGetContentFromBase(MfnTitle As Long)
     'JournalStatusAction.setLanguage (CurrCodeIdiom)
     'Set JournalStatusAction.ErrorMessages = ErrorMessages
     'Set JournalStatusAction.myHistory = journalDAO.getHistory(MfnTitle)
-    Set cc = New clsCreativeCommons
+    Dim customized As Boolean
     
-    
-    Set cc = journalDAO.getJournalCreativeCommons(MfnTitle)
-    
-    TxtCprightDate.text = Serial_TxtContent(MfnTitle, 621)
-    TxtCprighter.text = Serial_TxtContent(MfnTitle, 62)
-
-    If Len(cc.code) > 0 Then
-        ComboLicText.text = cc.code
+    Set savedlicense = New clsCreativeCommons
+    Set savedlicense = journalDAO.getJournalCreativeCommons(MfnTitle)
+    If LicensesList.isCustomizedLicense(savedlicense) Then
+        ComboLicText.AddItem (savedlicense.code & "* " & ConfigLabels.getLabel("CUSTOMIZED_FOR_JOURNAL"))
+        customized = True
+    End If
+    If Len(savedlicense.code) > 0 Then
+        If customized Then
+            ComboLicText.text = savedlicense.code & "* " & ConfigLabels.getLabel("CUSTOMIZED_FOR_JOURNAL")
+        Else
+            ComboLicText.text = savedlicense.code
+        End If
+        
     Else
         ComboLicText.text = "nd"
     End If
     
-    
+    TxtCprightDate.text = Serial_TxtContent(MfnTitle, 621)
+    TxtCprighter.text = Serial_TxtContent(MfnTitle, 62)
+
 End Sub
+
+
 Sub MyClearContent()
     Dim i As Long
     
@@ -253,8 +263,8 @@ Function changed(MfnTitle As Long) As Boolean
     
     
     Set temp = journalDAO.getJournalCreativeCommons(MfnTitle)
-    For i = 1 To IdiomsInfo.count
-        If (temp.getLicense(IdiomsInfo(i).code).text <> TextCreativeCommons(i - 1).text) Then
+    For i = 1 To idiomsinfo.count
+        If (temp.getLicense(idiomsinfo(i).code).text <> TextCreativeCommons(i - 1).text) Then
             change = True
         End If
     Next
@@ -320,19 +330,21 @@ Private Sub ComboLicText_Click()
     '    End If
     'Next
     'Set currentLicText = New ColIdiom
-    
-    If ComboLicText.text = cc.code Then
-        For i = 1 To IdiomsInfo.count
-            TextCreativeCommons(i - 1).text = cc.getLicense(IdiomsInfo(i).code).text
+    If InStr(ComboLicText.text, "*") > 0 Then
+        'customized
+        For i = 1 To idiomsinfo.count
+            TextCreativeCommons(i - 1).text = savedlicense.getLicense(idiomsinfo(i).code).text
             TextCreativeCommons(i - 1).Locked = False
         Next
     Else
-        For i = 1 To IdiomsInfo.count
-            TextCreativeCommons(i - 1).text = CodeLicTextMultilingue.getItemByLang(IdiomsInfo(i).code).item(ComboLicText.text).value
+         For i = 1 To idiomsinfo.count
+            TextCreativeCommons(i - 1).text = LicensesList.item(ComboLicText.text).getLicense(idiomsinfo(i).code).text
             TextCreativeCommons(i - 1).Locked = False
         Next
+    
     End If
     
+   
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
@@ -356,7 +368,7 @@ Sub receiveData()
     noFilled = True
     filled = True
     
-    For i = 1 To IdiomsInfo.count
+    For i = 1 To idiomsinfo.count
         filled = filled And (Len(TextCreativeCommons(i - 1).text) > 0)
         noFilled = noFilled And (Len(TextCreativeCommons(i - 1).text) = 0)
         If Len(TextCreativeCommons(i - 1).text) > 0 Then
@@ -366,26 +378,26 @@ Sub receiveData()
     filling = (filled Or noFilled)
         
     'If filled Or Not noFilled Then
-        For i = 1 To IdiomsInfo.count
+        For i = 1 To idiomsinfo.count
             If Len(TextCreativeCommons(i - 1).text) > 0 Then
                 t = TextCreativeCommons(i - 1).text
             Else
                 t = text
                 TextCreativeCommons(i - 1).text = text
             End If
-            Set item = cc.getLicense(IdiomsInfo(i).code)
+            Set item = savedlicense.getLicense(idiomsinfo(i).code)
             
-            item.lang = IdiomsInfo(i).code
+            item.lang = idiomsinfo(i).code
             item.text = t
         Next
     'End If
 End Sub
 
 Function getCreativeCommons() As clsCreativeCommons
-    Set getCreativeCommons = cc
+    Set getCreativeCommons = savedlicense
 End Function
 
-Private Sub TextCreativeCommons_GotFocus(Index As Integer)
+Private Sub TextCreativeCommons_GotFocus(index As Integer)
 Call FrmInfo.ShowHelpMessage(Fields.getLabel("title_creativecommons"), 2)
 
 End Sub

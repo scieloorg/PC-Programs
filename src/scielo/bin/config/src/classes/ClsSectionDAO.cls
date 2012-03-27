@@ -18,14 +18,14 @@ Private isisSection As ClIsisdll
 Sub create(isis As ClIsisdll)
     Set isisSection = isis
 End Sub
-Private Function getTempHeader(mfn As Long, language As String) As String
+Private Function getTempHeader(Mfn As Long, language As String) As String
     Dim content As String
     
-    content = isisSection.UsePft(mfn, "(if v48^l='" + language + "' then v48^h fi)")
+    content = isisSection.UsePft(Mfn, "(if v48^l='" + language + "' then v48^h fi)")
     getTempHeader = content
 End Function
 
-Private Sub getSections(mfn As Long, lang As String, sections As ClsSections)
+Private Sub getSections(Mfn As Long, lang As String, sections As ClsSections)
     Dim s As String
     Dim p0 As Long
     Dim p As Long
@@ -39,7 +39,7 @@ Private Sub getSections(mfn As Long, lang As String, sections As ClsSections)
     Dim textSectionTitle As String
     
     
-    s = isisSection.UsePft(mfn, "(if v49^l='" + lang + "' then v49^c|*|,v49^t|#| fi)")
+    s = isisSection.UsePft(Mfn, "(if v49^l='" + lang + "' then v49^c|*|,v49^t|#| fi)")
         
     p0 = 1
     p = InStr(s, "#")
@@ -92,17 +92,17 @@ Function getTOC(mfnSection As Long, tocObj As ClsTOC) As ClsTOC
        Set tocObj.sections = New ClsSections
         Set tocObj.names = New ColTextByLang
             
-        For i = 1 To IdiomsInfo.count
+        For i = 1 To idiomsinfo.count
         
        
             Set headers = New ClsTextByLang
-            headers.lang = IdiomsInfo(i).Code
+            headers.lang = idiomsinfo(i).code
             
             If mfnSection > 0 Then
-                headers.text = getTempHeader(mfnSection, IdiomsInfo(i).Code)
-                Call getSections(mfnSection, IdiomsInfo(i).Code, tocObj.sections)
+                headers.text = getTempHeader(mfnSection, idiomsinfo(i).code)
+                Call getSections(mfnSection, idiomsinfo(i).code, tocObj.sections)
             End If
-            If Len(headers.text) = 0 Then headers.text = IdiomsInfo(i).More
+            If Len(headers.text) = 0 Then headers.text = idiomsinfo(i).More
             Call tocObj.names.add(headers)
             
         Next

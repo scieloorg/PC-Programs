@@ -14,28 +14,19 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private isis As ClIsisdll
-Public generalTOC_DAO As New ClsTOC_DAO
+Public issue_TOC_DAO As New ClsTOC_DAO
 Public dbLabel As String
 
 Sub create(Path As String, FileName As String, key As String, Optional generateTOC As Boolean = True)
     Set isis = New ClIsisdll
     If isis.Inicia(Path, FileName, key) Then
         If isis.IfCreate(FileName) Then
-            If generateTOC Then Call generalTOC_DAO.create(isis)
+            If generateTOC Then Call issue_TOC_DAO.create(isis)
         End If
     End If
 End Sub
 
-'Function reinvert(newfst As String, log As String) As Boolean
-'
-    'Dim Ret As Boolean
- '
-    'Dim isisDAO As New ClsIsisDAO
-    'If isisDAO.create(isis.MSTPATH, isis.MSTFILE, "") Then
-    '    Ret = isisDAO.reinvertIfNecessary(newfst, log)
-    'End If
-    'reinvert = Ret
-'End Function
+
 Function returnSectionsInUse(journal As String) As ClsTOC
     Dim mfnQtd As Long
     Dim mfnList() As Long
@@ -48,7 +39,7 @@ Function returnSectionsInUse(journal As String) As ClsTOC
     
     mfnQtd = isis.MfnFind(journal, mfnList)
     For i = 1 To mfnQtd
-        Set toc = generalTOC_DAO.getTOC(mfnList(i), toc)
+        Set toc = issue_TOC_DAO.getTOC(mfnList(i), toc)
     Next
     
     Set returnSectionsInUse = toc
@@ -96,7 +87,7 @@ Function whereSectionInUse(journal As String, code As String, issues As ClsIssue
     End Select
     whereSectionInUse = found
 End Function
-Function returnIssue(mfn As Long, Optional format As String) As ClsIssue
+Function returnIssue(Mfn As Long, Optional format As String) As ClsIssue
     Dim issue As ClsIssue
     Dim x As String
     Dim Y() As String
@@ -104,7 +95,7 @@ Function returnIssue(mfn As Long, Optional format As String) As ClsIssue
     Dim lic As String
     Set issue = New ClsIssue
     If format <> "" Then
-        x = isis.UsePft(mfn, format)
+        x = isis.UsePft(Mfn, format)
         If Len(x) > 0 Then
             Y = Split(x, "|")
             
@@ -120,35 +111,35 @@ Function returnIssue(mfn As Long, Optional format As String) As ClsIssue
     Else
         
         With issue.journal
-            .shorttitle = isis.UsePft(mfn, "v30")
-            .Title = isis.UsePft(mfn, "v130")
-            .pubid = isis.UsePft(mfn, "v930")
-            .JournalStandard = isis.UsePft(mfn, "v117")
-            .vocabulary = isis.UsePft(mfn, "v85")
-            .publisherName = isis.UsePft(mfn, "v480")
-            .parallelTitles = isis.UsePft(mfn, "(v230/)")
-            .ISOTitle = isis.UsePft(mfn, "v151")
-            .MedlineTitle = isis.UsePft(mfn, "v421")
-            .ISSN = isis.UsePft(mfn, "v35")
+            .shorttitle = isis.UsePft(Mfn, "v30")
+            .Title = isis.UsePft(Mfn, "v130")
+            .pubid = isis.UsePft(Mfn, "v930")
+            .JournalStandard = isis.UsePft(Mfn, "v117")
+            .vocabulary = isis.UsePft(Mfn, "v85")
+            .publisherName = isis.UsePft(Mfn, "v480")
+            .parallelTitles = isis.UsePft(Mfn, "(v230/)")
+            .ISOTitle = isis.UsePft(Mfn, "v151")
+            .MedlineTitle = isis.UsePft(Mfn, "v421")
+            .ISSN = isis.UsePft(Mfn, "v35")
             
         End With
-        issue.volume = isis.UsePft(mfn, " v31")
-        issue.number = isis.UsePft(mfn, " v32")
-        issue.suppl = isis.UsePft(mfn, " v132")
-        issue.vsuppl = isis.UsePft(mfn, "v131")
-        issue.issueorder = isis.UsePft(mfn, " v36")
-        issue.idPart = isis.UsePft(mfn, " v41")
-        issue.doccount = isis.UsePft(mfn, " v122")
-        issue.DateISO = isis.UsePft(mfn, " v65")
-        issue.issuepart = isis.UsePft(mfn, " v34")
-        issue.issueSponsor = isis.UsePft(mfn, " v140")
-        issue.issuePublisher = isis.UsePft(mfn, " v62")
-        issue.issueCover = isis.UsePft(mfn, " v97")
-        issue.markupDone = isis.UsePft(mfn, " v200")
-        issue.issueISSN = isis.UsePft(mfn, " v935")
+        issue.volume = isis.UsePft(Mfn, " v31")
+        issue.number = isis.UsePft(Mfn, " v32")
+        issue.suppl = isis.UsePft(Mfn, " v132")
+        issue.vsuppl = isis.UsePft(Mfn, "v131")
+        issue.issueorder = isis.UsePft(Mfn, " v36")
+        issue.idPart = isis.UsePft(Mfn, " v41")
+        issue.doccount = isis.UsePft(Mfn, " v122")
+        issue.DateISO = isis.UsePft(Mfn, " v65")
+        issue.issuepart = isis.UsePft(Mfn, " v34")
+        issue.issueSponsor = isis.UsePft(Mfn, " v140")
+        issue.issuePublisher = isis.UsePft(Mfn, " v62")
+        issue.issueCover = isis.UsePft(Mfn, " v97")
+        issue.markupDone = isis.UsePft(Mfn, " v200")
+        issue.issueISSN = isis.UsePft(Mfn, " v935")
         
         
-        issue.status = isis.UsePft(mfn, " v42")
+        issue.status = isis.UsePft(Mfn, " v42")
         
         Dim t As ClsTextByLang
         Dim obj As ClsBibStrip
@@ -162,23 +153,23 @@ Function returnIssue(mfn As Long, Optional format As String) As ClsIssue
         subf(6) = "c"
         subf(7) = "m"
         subf(8) = "a"
+        
+        Set issue.toc = New ClsTOC
+        Set issue.toc = issue_TOC_DAO.getTOC(Mfn, issue.toc)
         Set issue.licenses = New clsCreativeCommons
-        issue.licenses.code = isis.UsePft(mfn, "v541")
+        issue.licenses.code = isis.UsePft(Mfn, "v541")
         
         
-        For i = 1 To IdiomsInfo.count
+        For i = 1 To idiomsinfo.count
             Set t = New ClsTextByLang
-            t.lang = IdiomsInfo.item(i).code
-            t.text = isis.getFieldContentByLanguage(mfn, 33, IdiomsInfo.item(i).code, "*")
-            
-            
+            t.lang = idiomsinfo.item(i).code
+            t.text = isis.getFieldContentByLanguage(Mfn, 33, idiomsinfo.item(i).code, "*")
             issue.issueTitle.add t
             
+            Call issue.licenses.add(isis.getFieldContentByLanguage(Mfn, 540, idiomsinfo.item(i).code, "t"), idiomsinfo.item(i).code)
             
-            Call issue.licenses.add(isis.getFieldContentByLanguage(mfn, 540, IdiomsInfo.item(i).code, "t"), IdiomsInfo.item(i).code)
             Set obj = New ClsBibStrip
-            
-            Call isis.getSubFieldsContentByLanguage(mfn, 43, IdiomsInfo.item(i).code, subf, content)
+            Call isis.getSubFieldsContentByLanguage(Mfn, 43, idiomsinfo.item(i).code, subf, content)
             With obj
                 .stitle = content(1)
                 .v = content(2)
@@ -188,13 +179,13 @@ Function returnIssue(mfn As Long, Optional format As String) As ClsIssue
                 .loc = content(6)
                 .month = content(7)
                 .year = content(8)
-                .lang = IdiomsInfo.item(i).code
+                .lang = idiomsinfo.item(i).code
             End With
-            
             Call issue.bibstrips.add(obj)
             
-        Next
             
+        Next
+        
         
     End If
     Set returnIssue = issue
@@ -273,16 +264,16 @@ Function getIssueMfnByIssueId(journalKey As String, vol As String, SVol As Strin
     getIssueMfnByIssueId = MfnIssueId
 End Function
 Function getIssueMfnByFormat(format As String) As Long
-    Dim mfn As Long
+    Dim Mfn As Long
     Dim mfnfound As Long
     Dim r As String
     
-    While (mfn < isis.MfnQuantity) And (mfnfound = 0)
-        mfn = mfn + 1
-        r = isis.UsePft(mfn, format)
+    While (Mfn < isis.MfnQuantity) And (mfnfound = 0)
+        Mfn = Mfn + 1
+        r = isis.UsePft(Mfn, format)
         
         If Len(r) > 0 Then
-            mfnfound = mfn
+            mfnfound = Mfn
         End If
     Wend
     getIssueMfnByFormat = mfnfound
@@ -294,26 +285,26 @@ Function getIssueMfn(journalKey As String, vol As String, SVol As String, No As 
     
     getIssueMfn = (MfnIseqNo = MfnIssueId)
 End Function
-Function deleteRecord(mfn As Long) As Boolean
-    If isis.RecordDel(mfn) Then
-        Call isis.IfUpdate(mfn, mfn)
+Function deleteRecord(Mfn As Long) As Boolean
+    If isis.RecordDel(Mfn) Then
+        Call isis.IfUpdate(Mfn, Mfn)
         deleteRecord = True
     End If
 End Function
-Function UpdateIssueId(mfn As Long, vol As String, vs As String, n As String, s As String, iseq As String, idPart As String) As Long
+Function UpdateIssueId(Mfn As Long, vol As String, vs As String, n As String, s As String, iseq As String, idPart As String) As Long
     Dim xMfn As Long
     Dim resp As Boolean
     
     With isis
     
-        If .FieldContentUpdate(mfn, 36, iseq) Then
-        If .FieldContentUpdate(mfn, 31, vol) Then
-        If .FieldContentUpdate(mfn, 32, n) Then
-        If .FieldContentUpdate(mfn, 131, vs) Then
-        If .FieldContentUpdate(mfn, 132, s) Then
-        If .FieldContentUpdate(mfn, 41, idPart) Then
-            resp = .IfUpdate(mfn, mfn)
-            xMfn = mfn
+        If .FieldContentUpdate(Mfn, 36, iseq) Then
+        If .FieldContentUpdate(Mfn, 31, vol) Then
+        If .FieldContentUpdate(Mfn, 32, n) Then
+        If .FieldContentUpdate(Mfn, 131, vs) Then
+        If .FieldContentUpdate(Mfn, 132, s) Then
+        If .FieldContentUpdate(Mfn, 41, idPart) Then
+            resp = .IfUpdate(Mfn, Mfn)
+            xMfn = Mfn
         End If
         End If
         End If
@@ -381,27 +372,27 @@ Function tag(issue As ClsIssue) As String
         s = s + TagContent(.issuePublisher, 62)
         s = s + TagContent(.issueCover, 97)
         
-        s = s + generalTOC_DAO.tagTOC(.toc)
+        s = s + issue_TOC_DAO.tagTOC(.toc)
         
         Dim bs As ClsBibStrip
         Set .bibstrips.nullObject = New ClsBibStrip
         Dim t As String
-        For i = 1 To IdiomsInfo.count
-            Set bs = .bibstrips.getItemByLang(IdiomsInfo(i).code)
+        For i = 1 To idiomsinfo.count
+            Set bs = .bibstrips.getItemByLang(idiomsinfo(i).code)
             With bs
             s = s + TagContent(TagSubf(.lang, "l") + TagSubf(.stitle, "t") + TagSubf(.v, "v") + TagSubf(.vs, "w") + TagSubf(.n, "n") + TagSubf(.s, "s") + TagSubf(.loc, "c") + TagSubf(.month, "m") + TagSubf(.year, "a"), 43)
             End With
         Next
         
-        For i = 1 To IdiomsInfo.count
-            If Len(Trim(.licenses.getLicense(IdiomsInfo(i).code).text)) > 0 Then
-                s = s + TagContent(TagSubf(.licenses.getLicense(IdiomsInfo(i).code).text, "t") + TagSubf(IdiomsInfo(i).code, "l"), 540)
+        For i = 1 To idiomsinfo.count
+            If Len(Trim(.licenses.getLicense(idiomsinfo(i).code).text)) > 0 Then
+                s = s + TagContent(TagSubf(.licenses.getLicense(idiomsinfo(i).code).text, "t") + TagSubf(idiomsinfo(i).code, "l"), 540)
             End If
         Next
         s = s + TagContent(.licenses.code, 541)
-        For i = 1 To IdiomsInfo.count
+        For i = 1 To idiomsinfo.count
             If Len(.issueTitle.getItemByIndex(i).text) > 0 Then
-              s = s + TagContent(.issueTitle.getItemByIndex(i).text + "^l" + IdiomsInfo(i).code, 33)
+              s = s + TagContent(.issueTitle.getItemByIndex(i).text + "^l" + idiomsinfo(i).code, 33)
             End If
         Next
         

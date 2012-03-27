@@ -58,6 +58,9 @@ Identify date of a formule
 ifloat;cltrial
 Identify date of clinical trials
 
+ifloat;list
+Identify the list
+
 ifloat;xref
 Identify cross-reference of tables, figures, etc
 
@@ -325,6 +328,9 @@ Group date of a thesis, in a citation
 bbibcomBar;hist
 Identify the history of the publication of a article in a journal (dates of reception, revision and approval)
 
+bbibcomBar;fngrp
+Identify a nota of rodapé
+
 bbibcomBar;title
 Identify the title of the document
 
@@ -533,7 +539,7 @@ omonog;othinfo
 Group date que não are identificados pelos dinais elinentos of a citation
 
 omonog;url
-Identify the number of the edition
+Identify the electronic address of the document
 
 omonog;doi
 Identify, in a citation, doi of the document
@@ -656,7 +662,7 @@ oiserial;issn
 Identify the Internacional Standard Serial  Number (ISSN)
 
 oiserial;url
-Identify the number of the edition
+Identify the electronic address of the document
 
 oiserial;doi
 Identify, in a citation, doi of the document
@@ -776,7 +782,7 @@ viserial;pages
 Identify the pagination
 
 viserial;url
-Identify the number of the edition
+Identify the electronic address of the document
 
 viserial;doi
 Identify, in a citation, doi of the document
@@ -836,7 +842,7 @@ vmonog;thesis
 Group date of a thesis, in a citation
 
 vmonog;url
-Identify the number of the edition
+Identify the electronic address of the document
 
 vmonog;doi
 Identify, in a citation, doi of the document
@@ -1010,7 +1016,7 @@ piserial;cited
 Identify the date in which the article electronic was accessed
 
 piserial;url
-Identify the number of the edition
+Identify the electronic address of the document
 
 piserial;doi
 Identify, in a citation, doi of the document
@@ -1061,7 +1067,7 @@ pmonog;cited
 Identify the date in which the article electronic was accessed
 
 pmonog;url
-Identify the number of the edition
+Identify the electronic address of the document
 
 pmonog;doi
 Identify, in a citation, doi of the document
@@ -1181,7 +1187,7 @@ aiserial;issn
 Identify the Internacional Standard Serial  Number (ISSN)
 
 aiserial;url
-Identify the number of the edition
+Identify the electronic address of the document
 
 aiserial;doi
 Identify, in a citation, doi of the document
@@ -1256,7 +1262,7 @@ amonog;thesis
 Group date of a thesis, in a citation
 
 amonog;url
-Identify the number of the edition
+Identify the electronic address of the document
 
 amonog;doi
 Identify, in a citation, doi of the document
@@ -1481,7 +1487,7 @@ iiserial;notes
 Group date que não are identificados pelos dinais elinentos of a citation
 
 iiserial;url
-Identify the number of the edition
+Identify the electronic address of the document
 
 iiserial;doi
 Identify, in a citation, doi of the document
@@ -1571,7 +1577,7 @@ imonog;notes
 Group date que não are identificados pelos dinais elinentos of a citation
 
 imonog;url
-Identify the number of the edition
+Identify the electronic address of the document
 
 imonog;doi
 Identify, in a citation, doi of the document
@@ -1714,9 +1720,6 @@ Identify a section of the text
 xmlbodyBar;p
 Identify paragraph
 
-xmlbodyBar;list
-Identify the list
-
 secBar;sectitle
 Identify the title of the section
 
@@ -1726,19 +1729,22 @@ Identify the sub-section of the text
 secBar;p
 Identify paragraph
 
-secBar;list
-Identify the list
-
 subsecBar;sectitle
 Identify the title of the subsection
+
+subsecBar;subsec
+Identify the sub-section of the text
 
 subsecBar;p
 Identify paragraph
 
-subsecBar;list
-Identify the list
+subsec2Bar;sectitle
+Identify the title of the subsection nível 2
 
-listBar;li
+subsec2Bar;p
+Identify paragraph
+
+list;li
 Identify the items of the lista
 
 libar;lilabel

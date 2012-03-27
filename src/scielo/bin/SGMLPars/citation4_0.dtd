@@ -166,7 +166,8 @@
                         | volid | isdesig | issueno | pages | notes | url | doi |
                         issn)*) -->
 <!ELEMENT iiserial - - (isstitle? , ((author | corpauth)*, et-al?) , medium? 
-                        , (stitle | sertitle)? ,  (update  | date | city | pubname | volid | issueno| pages | notes)*, 
+                        , (stitle | sertitle)? ,  
+                        (update  | date | city | state | country | pubname | volid | issueno| pages | notes)*, 
                         (url & cited)? ) >
 
 <!ELEMENT isstitle - - (#PCDATA) >
@@ -186,14 +187,11 @@
                         patgrp)*) -->
 
 <!ELEMENT imonog   - -   ( ((author | corpauth)*, et-al?) , (update?, date?), (%m.title;), medium?, subresp?, 
-			           ((
-                              (coltitle? & volid? & notes? &  edition? & ((city? | state? | country?), pubname) & (extent | pages)? & isbn? )
-                               ,(url & cited)? 
-                             )
-                              
-                             |
-                             (url & cited)
-                             )
+			              ( edition  | city | state | country 
+                        | pubname | date | update |  volid | pages
+                        | extent |  coltitle | notes |  isbn |
+                        patgrp)* ,
+                           (url & cited)?, doi?
                            )
                            >
 
