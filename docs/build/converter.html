@@ -1,0 +1,239 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Converter &mdash; pcprograms 4.0.050 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.0.050',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pcprograms 4.0.050 documentation" href="index.html" />
+    <link rel="up" title="Tutorials" href="tutorials.html" />
+    <link rel="next" title="Code Manager" href="xmlscielo.html" />
+    <link rel="prev" title="SGML Parser" href="parser.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="xmlscielo.html" title="Code Manager"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="parser.html" title="SGML Parser"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pcprograms 4.0.050 documentation</a> &raquo;</li>
+          <li><a href="tutorials.html" accesskey="U">Tutorials</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="converter">
+<h1>Converter<a class="headerlink" href="#converter" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>single-user program built in Visual Basic, to use only by a centralized server, denominated [wiki:en_SciELO_Metodologia_Conceitos#servidorLocal local server]. Only one installation by [wiki:en_SciELO_Metodologia_Conceitos#instanciaSciELO SciELO collection or instance].</li>
+<li>Converter reads the files in markup and body, and the databases in title and issue, then generates a ISIS database in base folders.</li>
+</ul>
+<div class="section" id="opening-the-program">
+<h2>Opening the program<a class="headerlink" href="#opening-the-program" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><img alt="_images/converter_menu.jpg" src="_images/converter_menu.jpg" />
+</div></blockquote>
+</div>
+<div class="section" id="checking-the-program-version">
+<h2>Checking the program version<a class="headerlink" href="#checking-the-program-version" title="Permalink to this headline">¶</a></h2>
+<p>To check the version of the program, see [wiki:en_SciELO_PCPrograms_Comum#VerVersao Show program version].</p>
+</div>
+<div class="section" id="changing-the-interface-language">
+<h2>Changing the interface language<a class="headerlink" href="#changing-the-interface-language" title="Permalink to this headline">¶</a></h2>
+<p>To change the language of the program interface, see [wiki:en_SciELO_PCPrograms_Comum#Alterar_idioma_interface Change interface language].</p>
+</div>
+<div class="section" id="running-the-program">
+<h2>Running the program<a class="headerlink" href="#running-the-program" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Select &#8216;&#8217;&#8216;Files&#8217;&#8216;&#8217;.</p>
+<blockquote>
+<div><img alt="_images/converter_menu2.jpg" src="_images/converter_menu2.jpg" />
+</div></blockquote>
+</li>
+<li><p class="first">Fill the fields:</p>
+</li>
+</ol>
+<ul>
+<li><p class="first">journal&#8217;s title: select the title of the journal.</p>
+</li>
+<li><p class="first">year: FILL ONLY if it is AHEAD or REVIEW number</p>
+</li>
+<li><p class="first">volume: fill it in with the volume</p>
+</li>
+<li><p class="first">supplement of volume: fill it in with the supplement of volume, if it exists</p>
+</li>
+<li><p class="first">number: fill it in with the number. If it is an ahead or review/provisional number, use &#8216;&#8217;&#8216;ahead&#8217;&#8216;&#8217; or &#8216;&#8217;&#8216;review&#8217;&#8216;&#8217;, respectively</p>
+</li>
+<li><p class="first">supplement of number: fill it in with the supplement of number, if it exists</p>
+</li>
+<li><p class="first">part: fill it in, if it exists. Recently it is used to &#8216;&#8217;press release&#8217;&#8216;, fill it in with &#8216;&#8217;&#8216;pr&#8217;&#8216;&#8217;.</p>
+<blockquote>
+<div><img alt="_images/converter_01.jpg" src="_images/converter_01.jpg" />
+</div></blockquote>
+</li>
+</ul>
+<ol class="arabic" start="3">
+<li><p class="first">Click on &#8216;&#8217;&#8216;OK&#8217;&#8216;&#8217; button.</p>
+</li>
+<li><p class="first">Converter uses these data to identify the issue&#8217;s, [wiki:en_SciELO_Metodologia_Conceitos#Estrutura_das_pastas markup and body] folders. If the data are correct, the program will list the markup files.</p>
+<img alt="_images/converter_listaarquivos.jpg" src="_images/converter_listaarquivos.jpg" />
+</li>
+<li><p class="first">Click on &#8216;&#8217;&#8216;Converter&#8217;&#8216;&#8217; button.</p>
+</li>
+<li><dl class="first docutils">
+<dt>Converter will convert the selected files. [[BR]]</dt>
+<dd><p class="first last">For each file, the program :
+- extracts the marked data
+- compares the issue&#8217;s data in the markup file and in the issue database, managed by ([wiki:en_SciELO_PCPrograms_Title_Manager_ISSUE Title Manager / issue]).</p>
+</dd>
+</dl>
+<p>If there is some conflicting data, the data are not converted to the database. It is a fatal error. The user must check and correct the data in the markup document (using Markup program) and/or in issue database (using Title Manager).</p>
+<p>If the issue&#8217;s data is correct, the files are converted to the database and the result will be shown on the screen.</p>
+<img alt="_images/converter_resultado.jpg" src="_images/converter_resultado.jpg" />
+<p>Results:
+- successfully converted: [], in red.
+- converted, with errors: [X], in blue before its name. They have some markup errors, but not fatal enough to avoid conversion. For example, markup error, probably identified by Parser, but not corrected by the user.
+- not converted: at the inferior part, in green. It is usually related to issue&#8217;s data, such as ISSN, abbreviated title, volume and number, which do not match in the markup file and in the issue database.</p>
+</li>
+<li><dl class="first docutils">
+<dt>Clicking on each file in the result area and then on &#8216;&#8217;&#8216;Result&#8217;&#8216;&#8217; button, the user can see how the conversion run.</dt>
+<dd><ol class="first arabic">
+<li><p class="first">Successfully converted:</p>
+<blockquote>
+<div><img alt="_images/converter_resultado4.jpg" src="_images/converter_resultado4.jpg" />
+</div></blockquote>
+</li>
+</ol>
+<ol class="arabic" start="2">
+<li><p class="first">Converted, but no fatal error: markup error</p>
+<blockquote>
+<div><img alt="_images/converter_resultado2.jpg" src="_images/converter_resultado2.jpg" />
+</div></blockquote>
+</li>
+<li><p class="first">Converted, but no fatal error: some bibliographic references not identified</p>
+</li>
+</ol>
+<p>Converter locates each bibliographic reference of the markup file in the body file, identifying the points where &#8216;&#8217;&#8216;[Links]&#8217;&#8216;&#8217; must be inserted at the article page, in the website.</p>
+<blockquote>
+<div><img alt="_images/converter_resultado6.jpg" src="_images/converter_resultado6.jpg" />
+</div></blockquote>
+<p>Clicking on &#8216;&#8217;&#8216;[Links]&#8217;&#8216;&#8217;, a window is open to display a list of links to the referenced fulltext.</p>
+<blockquote>
+<div><img alt="_images/converter_resultado6b.jpg" src="_images/converter_resultado6b.jpg" />
+</div></blockquote>
+<p>If there are bibliographic reference location errors, Converter will present the result bellow:</p>
+<blockquote>
+<div><img alt="_images/converter_resultado5.jpg" src="_images/converter_resultado5.jpg" />
+</div></blockquote>
+<ol class="last arabic" start="4">
+<li><p class="first">Not converted, because of fatal errors:</p>
+<blockquote>
+<div><img alt="_images/converter_resultado3.jpg" src="_images/converter_resultado3.jpg" />
+</div></blockquote>
+</li>
+</ol>
+</dd>
+</dl>
+</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Converter</a><ul>
+<li><a class="reference internal" href="#opening-the-program">Opening the program</a></li>
+<li><a class="reference internal" href="#checking-the-program-version">Checking the program version</a></li>
+<li><a class="reference internal" href="#changing-the-interface-language">Changing the interface language</a></li>
+<li><a class="reference internal" href="#running-the-program">Running the program</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="parser.html"
+                        title="previous chapter">SGML Parser</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="xmlscielo.html"
+                        title="next chapter">Code Manager</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/converter.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="xmlscielo.html" title="Code Manager"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="parser.html" title="SGML Parser"
+             >previous</a> |</li>
+        <li><a href="index.html">pcprograms 4.0.050 documentation</a> &raquo;</li>
+          <li><a href="tutorials.html" >Tutorials</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, SciELO .
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

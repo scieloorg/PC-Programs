@@ -20,7 +20,7 @@ msgSure,Are you sure?
 msgSureExit,Do you want to exit?
 msgMoreLater,Do you wish to save the document in TXT format to use the parser?
 msgAutomatic,Do you wish to use the automatic markup of references?
-msgAutomaticErr,This journal don't have automatic markup
+msgAutomaticErr,This journal does not have its automata file. Create one at <scielo_dir>\bin\markup\<acronym>.amd
 msgDefaultDirectories,Verify the 'html.dot' and/or 'normal.dot' files.
 msgExit1,Save on TXT format and use the Parser now.
 msgExit2,Save on TXT format and use the Parser after.
