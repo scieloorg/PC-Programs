@@ -1,1 +1,24 @@
+4.0.051
+=======
+- [FIXED] Markup: Automata 2. Not allow to insert tag. Problem at checking hierarchy.
+
 4.0.050
+=======
+- Title Manager
+    - [FIXED]: journal issues list
+    - [FIXED]: display sections
+    - [NEW]: field for creative commons is editable
+- [NEW|FIXED] Markup PMC
+
+4.0.049
+=======
+- [NEW|FIXED] Markup PMC
+
+
+
+
+
+
+
+
+

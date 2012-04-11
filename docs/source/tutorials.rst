@@ -3,19 +3,25 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Tutorials
-=========
-
-Contents:
+Programs for local server
+-------------------------
 
 .. toctree::
    :maxdepth: 2
 
    codemanager.rst
    titlemanager.rst
+   converter.rst
+   xmlscielo.rst   
+
+
+Programs for Markup computers
+-----------------------------
+
+.. toctree::
+   :maxdepth: 2
+
    markup.rst
    markup_pmc.rst
    parser.rst
-   converter.rst
-   xmlscielo.rst   
 

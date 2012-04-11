@@ -47,4 +47,23 @@ How to install
 5. Install Java and set its location in PATH.
 #. The shortcurts are created to administrator user, so copy the shortcuts for all the users.
 #. Give the write permission to non-admin users on C: (for Parser usage) and all the folders below the bin folder, because the programs generate files in these folders.
+    #. Select the C: drive and click on Properties option.
+
+        .. image:: img/en/permissao001.png
+
+    #. Open the security tab
+
+        .. image:: img/en/permissao002.png
+
+    #. Select '''users''' (common users)
+
+        .. image:: img/en/permissao003.png
+
+    #. Click on Edit button
+
+        .. image:: img/en/permissao004.png
+
+    #. Check all the permissions. Then click on Apply to set the permissions.
+
+        .. image:: img/en/permissao005.png
 

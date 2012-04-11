@@ -6,23 +6,20 @@
 Welcome to SciELO PC Programs' documentation!
 ======================================
 
-**SciELO PC Programs** is a set of tools of SciELO Methodology. They run on Windows and are used to manage of the journals, issues and articles data, in order to prepare them to the data processing which generates the website (`SciELO Site </projects/scielo-site/en/latest/>`).
+**SciELO PC Programs** is a set of tools of SciELO Methodology. They run on Windows and are used to manage of the journals, issues and articles data, in order to prepare them to the data processing which generates the website (`SciELO Site </projects/scielo-site/en/latest/>`_).
 
 
-Contents:
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   download.rst
-   howtoinstall.rst
-   tutorials.rst
-   
+    download.rst
+    howtoinstall.rst
 
-Indices and tables
-==================
+    concepts.rst
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    tutorials.rst
 
+Support
+-------
+How to get `support <http://docs.scielo.org/en/latest/index.html#support>`_ 
