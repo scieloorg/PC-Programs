@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>XML SciELO &mdash; pcprograms 4.0.050 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.0.050',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pcprograms 4.0.050 documentation" href="index.html" />
+    <link rel="up" title="Programs for local server" href="tutorials.html" />
+    <link rel="next" title="Local website" href="localwebsite.html" />
+    <link rel="prev" title="Converter" href="converter.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="localwebsite.html" title="Local website"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="converter.html" title="Converter"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pcprograms 4.0.050 documentation</a> &raquo;</li>
+          <li><a href="tutorials.html" accesskey="U">Programs for local server</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="xml-scielo">
+<h1>XML SciELO<a class="headerlink" href="#xml-scielo" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>DOS Batch program</li>
+<li>local server</li>
+</ul>
+<p>This program generates XML and SGML files to PubMed and ISI.</p>
+<p>For PubMed, there are two types of files:</p>
+<ul>
+<li><dl class="first docutils">
+<dt>Journal data: [<a class="reference external" href="http://www.ncbi.nlm.nih.gov/books/bv.fcgi?rid=helplinkout.section.files.Resource_File#files.Resource_File_Format">http://www.ncbi.nlm.nih.gov/books/bv.fcgi?rid=helplinkout.section.files.Resource_File#files.Resource_File_Format</a>].</dt>
+<dd><p class="first last">Sent once or every time the journal data was changed.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Articles data: [<a class="reference external" href="http://www.ncbi.nlm.nih.gov/entrez/query/static/spec.html">http://www.ncbi.nlm.nih.gov/entrez/query/static/spec.html</a>].</dt>
+<dd><p class="first last">Sent one XML file for each issue.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>This program is installed in PROGRAMS_PATH on the local Server using the SciELO PC-Programs package, where PROGRAMS_PATH is the path for all the SciELO PC programs.</p>
+<p>The examples are considering PROGRAMS_PATH equal to c:scielo.</p>
+<p>It is also necessary to install java, if there is no java installed.</p>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="configuring-the-files-and-paths">
+<h3>Configuring the files and paths<a class="headerlink" href="#configuring-the-files-and-paths" title="Permalink to this headline">¶</a></h3>
+<p>Some configurations are done automatically as installing the PC Programs. The configuration files for all the PC Programs is c:scielobinscielo_paths.ini.</p>
+<p>This program use the following parameters of this configuration file:</p>
+<div class="line-block">
+<div class="line">; Serial</div>
+<div class="line">Serial Directory=f:serial,required</div>
+<div class="line">…</div>
+<div class="line">; xml_scielo</div>
+<div class="line">XML_SCIELO_PROGRAM_PATH=c:scieloxml_scielo</div>
+<div class="line">PHP_EXE=c:serverphpphp.exe</div>
+<div class="line">JAVA_EXE=java</div>
+<div class="line">PubMed_DIR_COPY=c:scieloserial</div>
+<div class="line">SCI_LISTA_SITE=c:scielowebprocscilista.lst</div>
+<div class="line">PubMed_PROVIDER_ID=3081</div>
+<div class="line"><br /></div>
+</div>
+<dl class="docutils">
+<dt>Serial Directory</dt>
+<dd>it is the place for all the journal and issues data. So, it indicates to the program where to find the data: c:scieloserialtitletitle, c:scieloserial&lt;revistas&gt;&lt;issue&gt;.</dd>
+<dt>XML_SCIELO_PROGRAM_PATH</dt>
+<dd>it indicates the place where the programs is installed. E.g.: c:scieloxml_scielo.</dd>
+<dt>PHP_EXE</dt>
+<dd>it indicates the full path to php.exe, used for XML transformation. E.g: c:serverphpphp.exe.</dd>
+<dt>JAVA_EXE</dt>
+<dd>it indicates the full path to java or just java, if it is already in the PATH, used for XML transformation. E.g: java.</dd>
+<dt>PubMed_DIR_COPY</dt>
+<dd>it indicates the place where there Will be a copy of the generated files.</dd>
+<dt>SCI_LISTA_SITE</dt>
+<dd>it indicates the list used to generate the website. This program uses this list to create another list, used by itself.</dd>
+<dt>PubMed_PROVIDER_ID</dt>
+<dd>it is the ID of the provider. SciELO is one of the providers whose ID is 3081, for all the SciELO Collection.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="configuration-of-the-data">
+<h2>Configuration of the data<a class="headerlink" href="#configuration-of-the-data" title="Permalink to this headline">¶</a></h2>
+<p>If it is the first installation, you have some procedures to execute.</p>
+<p>There is a file in c:scieloxml_scieloconfig.example. You have to copy and rename to &#8216;&#8217;&#8216;config&#8217;&#8216;&#8217;.</p>
+<p>Configure the files:</p>
+<ul class="simple">
+<li>PubMeddoi_conf.txt</li>
+<li>PubMedconfigconfig.seq</li>
+<li>PubMedjournalsjournals.seq</li>
+</ul>
+<div class="section" id="file-doi-conf-txt">
+<h3>File doi_conf.txt<a class="headerlink" href="#file-doi-conf-txt" title="Permalink to this headline">¶</a></h3>
+<p>It contains the data of the Publisher and the prefix given by CrossRef, according to the agreement signed by CrossRef and the SciELO of each country. IF YOUR SCIELO DOES NOT HAVE IT. SO THIS FILE MUST BE EMPTY.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">INSTITUTION SPACE E-MAIL SPACE PREFIX</div>
+<div class="line"><br /></div>
+</div>
+<blockquote>
+<div><img alt="_images/xml_scielo_doiconf.jpg" src="_images/xml_scielo_doiconf.jpg" />
+</div></blockquote>
+</div>
+<div class="section" id="file-config-config-seq">
+<h3>File config\config.seq<a class="headerlink" href="#file-config-config-seq" title="Permalink to this headline">¶</a></h3>
+<p>The file configconfig.seq is to informe to the program which articles or text should not be sent to PubMed, because some kind of documents are not accepted. So by their section in the table of contents it is possible to know if the document would be accept or not. So, this file contains the list of sections whose documents will not be accepted by PubMed.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">Acronym space sectionId</div>
+<div class="line"><br /></div>
+</div>
+<blockquote>
+<div><img alt="_images/xml_scielo_scilista.jpg" src="_images/xml_scielo_scilista.jpg" />
+</div></blockquote>
+</div>
+<div class="section" id="file-journals-journals-seq">
+<h3>File journals\journals.seq<a class="headerlink" href="#file-journals-journals-seq" title="Permalink to this headline">¶</a></h3>
+<p>This file journalsjournals.seq contains data used to generate XML file of the journal: journals_acronimo.xml. This is the first XML file which must be sent to PubMed in order to register the journal. Read more: [<a class="reference external" href="http://www.ncbi.nlm.nih.gov/books/bv.fcgi?rid=helplinkout.section.files.Resource_File#files.Resource_File_Format">http://www.ncbi.nlm.nih.gov/books/bv.fcgi?rid=helplinkout.section.files.Resource_File#files.Resource_File_Format</a>].
+Its format is:</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">ACRONYM SPACE FIRST_YEAR_IN_PubMed SPACE SCIELO_URL SPACE ISSN</div>
+<div class="line"><br /></div>
+</div>
+<p>One line for each journal.</p>
+<blockquote>
+<div><img alt="_images/xml_scielo_journal.jpg" src="_images/xml_scielo_journal.jpg" />
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="executing">
+<h2>Executing<a class="headerlink" href="#executing" title="Permalink to this headline">¶</a></h2>
+<p>It has to be executed using the command line in DOS.</p>
+<blockquote>
+<div><img alt="_images/xml_scielo_doscommand.jpg" src="_images/xml_scielo_doscommand.jpg" />
+</div></blockquote>
+<p>Go to the folder where this program is installed. E.g.: c:scieloxml_scieloproc.</p>
+<blockquote>
+<div><img alt="_images/xml_scielo_doscommand2.jpg" src="_images/xml_scielo_doscommand2.jpg" />
+</div></blockquote>
+<p>In proc you will find three scripts:
+- GenerateXML_all.bat: generates at the same time ISI and PubMed
+- GenerateXML_ISI.bat: generates SGML to ISI
+- GenerateXML_PubMed.bat: generates XML to PubMed</p>
+<blockquote>
+<div><img alt="_images/xml_scielo_doscommand3.jpg" src="_images/xml_scielo_doscommand3.jpg" />
+</div></blockquote>
+<p>Provide a list similar to scilist, to execute any of them.</p>
+<p>The program will open the scilist file and you have to check it, and include or remove lines, according to what you want to generate.</p>
+<blockquote>
+<div><img alt="_images/xml_scielo_doscommand4.jpg" src="_images/xml_scielo_doscommand4.jpg" />
+</div></blockquote>
+<p>To generate also the XML file which contains journal data, journals_&lt;acronimo&gt;.xml, add one more parameter “YES”:</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">hcsm v13n2 YES</div>
+<div class="line"><br /></div>
+</div>
+<p>To generate ONLY the XML file which contains journal data, journals_&lt;acronimo&gt;.xml, the second parameter must be “NONE” and third one must be YES.</p>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line">hcsm NONE YES</div>
+<div class="line"><br /></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">XML SciELO</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="#configuring-the-files-and-paths">Configuring the files and paths</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuration-of-the-data">Configuration of the data</a><ul>
+<li><a class="reference internal" href="#file-doi-conf-txt">File doi_conf.txt</a></li>
+<li><a class="reference internal" href="#file-config-config-seq">File config\config.seq</a></li>
+<li><a class="reference internal" href="#file-journals-journals-seq">File journals\journals.seq</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#executing">Executing</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="converter.html"
+                        title="previous chapter">Converter</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="localwebsite.html"
+                        title="next chapter">Local website</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/xmlscielo.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="localwebsite.html" title="Local website"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="converter.html" title="Converter"
+             >previous</a> |</li>
+        <li><a href="index.html">pcprograms 4.0.050 documentation</a> &raquo;</li>
+          <li><a href="tutorials.html" >Programs for local server</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, SciELO .
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

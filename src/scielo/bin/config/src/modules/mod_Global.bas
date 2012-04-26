@@ -44,7 +44,9 @@ Public Counter As Long
 
 
 Public LicensesList As ColLicenses
+Public LicensesListByLang As ColObjByLang
 Public CodeLicText As ColCode
+
 Public CodeStudyArea As ColCode
 Public CodeAlphabet As ColCode
 Public CodeLiteratureType As ColCode
@@ -428,17 +430,13 @@ Property Let ChangeInterfaceIdiom(idiom As String)
     Call codedao.create(CodeDB.Path, CodeDB.FileName, CodeDB.key)
     If LicensesList Is Nothing Then
         Set LicensesList = New ColLicenses
-        Dim LicensesListByLang As ColObjByLang
         Call codedao.getMultilingueTable("license_text", LicensesListByLang)
         Call LicensesList.load(LicensesListByLang)
-        
-        
-    
     End If
-
+    Set CodeLicText = LicensesListByLang.getItemByLang(idiom)
     
+    'Call codedao.getTable(idiom, "license_text", ComboLicText)
     
-    'Call codedao.getTable( Idiom, "license_text", ComboLicText)
     Call codedao.getTable(idiom, "idiom interface", CodeIdiom)
     
     Call codedao.getTable(idiom, "alphabet of title", CodeAlphabet)
@@ -460,7 +458,6 @@ Property Let ChangeInterfaceIdiom(idiom As String)
     Call codedao.getTable(idiom, "scheme", CodeScheme)
     Call codedao.getTable("", "table of contents", CodeTOC)
     
-    Set CodeLicText = LicensesListByLang.getItemByLang(idiom)
     
     Set CodeDB = Paths("NewCode Database")
     Call codedao.create(CodeDB.Path, CodeDB.FileName, CodeDB.key)

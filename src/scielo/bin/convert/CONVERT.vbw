@@ -1,5 +1,5 @@
 ISIS001 = 22, 29, 700, 585, C
-Converter = 14, 121, 795, 708, Z
+Converter = 14, 121, 795, 708, 
 ISIS32 = 44, 58, 722, 614, C
 General = 110, 145, 766, 732, 
 ClFila = 0, 0, 0, 0, C
@@ -31,7 +31,7 @@ FormViewLog = 0, 0, 0, 0, C, 22, 29, 803, 616, C
 FrmResult = 0, 0, 0, 0, C, 44, 58, 825, 645, C
 ClLista = 0, 0, 0, 0, C
 ClDocReader = 88, 116, 869, 703, 
-FormConfig = 110, 145, 735, 770, , 88, 116, 869, 703, C
+FormConfig = 135, 10, 760, 635, , 88, 116, 869, 703, C
 ClSortList = 176, 232, 854, 788, 
 ClCvtTab = 132, 174, 874, 727, C
 ClProc = 0, 0, 0, 0, C
