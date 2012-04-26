@@ -11,6 +11,7 @@ Concepts of the SciELO Methodology
 
 Local server
 ------------ 
+
 It's a Windows machine where the PC Programs and SciELO website (local site) run.
 
 SciELO collection or instance
@@ -27,13 +28,13 @@ regular or supplement
     number formed by articles and texts
 
 ahead
-    manuscripts that were approved by editorial board but they are not in a definitive issue. There is an ''ahead'' number by year.
+    manuscripts that were approved by editorial board but they are not in a definitive issue. There is an **ahead** number by year.
 
 review/provisional
-    number whose purpose is to group accepted articles which are still under review, leaving only their metadata published. There is a ''review'' number by year. Note: at the site the name adopted is ''provisional''
+    number whose purpose is to group accepted articles which are still under review, leaving only their metadata published. There is a **review** number by year. Note: at the site the name adopted is **provisional**
 
 pr (press release)
-    number whose purpose is to group the press releases texts of a number or article. There is a ''pr'' number by issue.
+    number whose purpose is to group the press releases texts of a number or article. There is a **pr** number by issue.
 
 Sequential number
 -----------------
@@ -42,14 +43,14 @@ The sequential number is a number formed by year (YYYY), followed by a number th
 
 This number has two purposes: 
 
-* order of the issue within a year in the "all issues" page of the website
-* forming PID. It is strongly recommendable DO NOT MODIFY THIS ITEM if the issue has already been published on the website.
+- order of the issue within a year in the "all issues" page of the website
+- forming PID. It is strongly recommendable DO NOT MODIFY THIS ITEM if the issue has already been published on the website.
 
 By convention, the sequential number is:
 
-* ahead = 50
-* review/provisional = 75
-* pr = from 100
+- ahead = 50
+- review/provisional = 75
+- pr = from 100
 
 Example:
 
@@ -70,8 +71,8 @@ Folders Structure
 
 SciELO PC Programs  package has the folders:
 
-* bin and xml_scielo, for programs
-* serial, for data
+- bin and xml_scielo, for programs
+- serial, for data
 
 You can install them in the same or different folders. BUT by CONVENTION, we recommend C:\\scielo\\bin and c:\\scielo\\serial.
 
@@ -141,7 +142,7 @@ There are rules to name theses folders:
             - v31s1 (volume 31, supplement 1)
             - v31nspe (volume 31, special number)
             - v31n3a (volume 31, number 3A)
-    - Review / Provisional's and ahead's folder: publication’s year, n, followed by the word ''review'' or ''ahead''
+    - Review / Provisional's and ahead's folder: publication’s year, n, followed by the word **review** or **ahead**
         Examples:
             - 2009nahead 
             - 2010nreview

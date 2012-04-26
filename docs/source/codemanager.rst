@@ -86,7 +86,7 @@ Code database
 ISIS database. One record by table. 
 
 Field 1
-    Subfield *: table name
+    Subfield \*: table name
     Subfield l, optional: language 
 
 Field 2
