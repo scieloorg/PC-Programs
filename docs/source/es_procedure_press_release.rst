@@ -53,7 +53,10 @@ Markup
 - Press release
     Se los marcan como text. Van a tener un atributo llamado **isidpart**, cuyo valor es **pr**.
 
-    .. image:: img/en/pr_markup.png
+
+    .. code-block:: text
+
+        [text pii="nd" doctopic="pr" language="pt" ccode="br1.1" status="1" version="4.0" type="nd" order="01" seccode="nd" sponsor="nd" stitle="Cienc. Rural" volid="42" issueno="1" isidpart="pr" dateiso="20120100" fpage="0" lpage="0" issn="0103-8478" toccode="2"]
 
 
 - Artículo divulgado
@@ -67,7 +70,7 @@ Converter
 
 Complete el campo compl con **pr**.
 
-   .. image:: imag/en/pressrelease_converter.jpg
+   .. image:: img/en/pressrelease_converter.jpg
 
 
 GeraPadrao
