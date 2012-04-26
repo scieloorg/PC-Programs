@@ -86,7 +86,7 @@ supplement of volume              131
 number                            32
 supplement of number              132
 complement                        41
-sequential number                 36      The `sequential number <concepts.html#sequential-number>`_ is the year followed by the order for publication of the issue within a year.
+sequential number                 36      The sequential number is the year followed by the order for publication of the issue within a year.
                                           The sequential number is part of the PID of the issue. Must not be modified after publication of the issue.
                                           It also is used for the presentation of issues on the page **all** the issues, giving their order of presentation in the table.
 ================================  ======  ==========================================
@@ -137,7 +137,7 @@ The sequential number is the year followed by the order of the issue within a ye
 
 
 Problems on filling the sequential number
---------------------------------------
+-----------------------------------------
 
 When the sequential number and the issue identification do not match, the program  presents two conflict situations:
 
