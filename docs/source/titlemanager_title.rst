@@ -64,11 +64,11 @@ It is used to remove records of one or more titles.
 
 
 
-Use it '''only''' if you are sure the journal '''HAS NEVER BEEN PUBLISHED'''.
+Use it **only** if you are sure the journal **HAS NEVER BEEN PUBLISHED**.
 
 
 
-'''IT Is MANDATORY''' to keep all the titles registered, although ceased or removed off the collection, they must keep published.
+**IT Is MANDATORY** to keep all the titles registered, although ceased or removed off the collection, they must keep published.
 
 
 
