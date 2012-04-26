@@ -17,17 +17,18 @@ Opening the program
 Important concepts
 ------------------
 Read:
- * [wiki:en_SciELO_Metodologia_Conceitos#Tipos_de_números Types of issues]
- * [wiki:en_SciELO_Metodologia_Conceitos#Número_sequencial Sequential Number]
- * [wiki:en_SciELO_Metodologia_Conceitos#Estrutura_das_pastas structure of folders]
+ * `type of issues <concepts.html#type-of-issues>`_
+ * `sequential number <concepts.html#sequential-number>`_
+ * `folders structure <concepts.html#folders-structure>`_ 
 
 Issues form
 -----------
 From this screen, you have the following options:
+
 - List the issues
 - Create an issue
--  Edit an issue
--  Delete an issue
+- Edit an issue
+- Delete an issue
 
 .. image:: img/en/01_iss_01.jpg
 
@@ -37,11 +38,20 @@ Listing issues
 
 .. image:: img/en/01_iss_02.jpg
 
-#. Clicking on the .. image:: img/en/01_iss_botao.jpg button to list all the issues.
-#. If you want to list all the numbers of a given volume, fill the volume field, then click on the .. image:: img/en/01_iss_botao.jpg button.
+#. Clicking on the 
+
+    .. image:: img/en/01_iss_botao.jpg 
+
+button to list all the issues.
+
+#. If you want to list all the numbers of a given volume, fill the volume field, then click on the 
+
+    .. image:: img/en/01_iss_botao.jpg 
+
+button.
 
 
-.. image:: img/en/01_iss_03_reg_supl_ahead_pr.jpg
+    .. image:: img/en/01_iss_03_reg_supl_ahead_pr.jpg
 
 
 The first highlighted line  in orange is one example of ahead numbers of the year 2009.
@@ -58,12 +68,12 @@ The lines highlighted in green are examples of supplement of volume.
 
 .. image:: img/en/01_iss_03_review.jpg
 
-The lines are highlighted examples of numbers ''review / provisional''.
+The lines are highlighted examples of numbers **review / provisional**.
 
 Identifying the issue and its sequential number
 -----------------------------------------------
 To create, edit or remove, identify the issue, filling the volume, issue, supplement, complement, sequential number. 
-(Read about [wiki:en_SciELO_Metodologia_Conceitos Tipos_de_números Types#number], [wiki:en_SciELO_Metodologia_Conceitos#Número_sequencial sequence] and [wiki:en_SciELO_Metodologia_Conceitos#Estrutura_das_pastas structure of folders]).
+`Read about it <concepts.html>`_.
 
 Issue identification
 --------------------
@@ -76,10 +86,9 @@ supplement of volume              131
 number                            32
 supplement of number              132
 complement                        41
-sequential number                 36      The sequential number is the year followed by the order for publication of the issue within a year.
+sequential number                 36      The `sequential number <concepts.html#sequential-number>`_ is the year followed by the order for publication of the issue within a year.
                                           The sequential number is part of the PID of the issue. Must not be modified after publication of the issue.
-                                          [wiki:en_SciELO_Metodologia_Conceitos#Número_sequencial Read more about the sequential number].
-                                          It also is used for the presentation of issues on the page '''all''' the issues, giving their order of presentation in the table.
+                                          It also is used for the presentation of issues on the page **all** the issues, giving their order of presentation in the table.
 ================================  ======  ==========================================
 
     
@@ -98,7 +107,7 @@ Identifying supplements
 
 When they exist, fill volume, supplement of volume (when there is no number), number, and supplement of number.
  
-If the supplement is identified only with the word ''Supplement'', fill in with 0, otherwise the label which identifies the supplement, for example, 1, A, etc.
+If the supplement is identified only with the word **Supplement**, fill in with 0, otherwise the label which identifies the supplement, for example, 1, A, etc.
 
 On the site, so that all supplements are presented after the regular issues within a year, the sequential numbers of the supplements must be greater than the sequential number of the last regular issue.
 Eg: If there are 4 regular numbers in the year, then the sequential number for the supplements starts in 5.
@@ -108,10 +117,11 @@ Eg: If there are 4 regular numbers in the year, then the sequential number for t
 Identifying ahead or review / provisional issues
 ................................................
 
-Fill in the ''number'' field the word ahead, for ahead issue. By convention its sequential number is 50.
-Fill in the ''number'' field the word review, for review or provisional issue. By convention its sequential number is 75.
+Fill in the **number** field the word ahead, for ahead issue. By convention its sequential number is 50.
+Fill in the **number** field the word review, for review or provisional issue. By convention its sequential number is 75.
 
 The sequential number is the year followed by the order of the issue within year, but by convention:
+
 - Ahead is equal to 50
 - Review / provisional is equal to 75 
 
@@ -120,8 +130,8 @@ The sequential number is the year followed by the order of the issue within year
 Indentifying press release issues
 .................................
 
-Populate the same fields in accordance with the rules above, plus '''pr''' in the complement.
-The sequential number is the year followed by the order of the issue within a year, but by '''convention''' starts in 100.
+Populate the same fields in accordance with the rules above, plus **pr** in the complement.
+The sequential number is the year followed by the order of the issue within a year, but by **convention** starts in 100.
 
 .. image:: img/en/01_iss_pr.jpg
 
@@ -149,7 +159,7 @@ Mistake or replacement?
 
 .. image:: img/en/01_iss_06.jpg
 
-When the user reports an issue identification and a sequential number which do not match and the sequential number '''DOES NOT BELONG TO''' another issue, the program allows to:
+When the user reports an issue identification and a `sequential number <concepts.html#sequential-number>`_  which do not match and the sequential number **DOES NOT BELONG TO** another issue, the program allows to:
 
 - open the issue, using the identification informed, but correcting its sequential number 
 - change the issue's sequential number to the informed one
@@ -160,13 +170,12 @@ When the user reports an issue identification and a sequential number which do n
 | The program does not know if the issue is already published or not. The user must be responsible for knowing it.
 
 
-[wiki:en_SciELO_Metodologia_Conceitos#Número_sequencial Read more about the sequence number].
 
 
 Creating/editing an issue
 -------------------------
 
-#. Identify the issue. Read `Issue identification`.
+#. Identify the issue. Read `Issue identification`_.
 #. Click on the Open button
    
 
@@ -278,12 +287,13 @@ The user must choose the sections that are part of the issue.
 
 The program will present the table below, sorted by language.
 
-If there are missing sections, the user must click on'''Create sections''' which open a screen for the ([wiki:en_SciELO_PCPrograms_Title_Manager_SECTION management the sections of the table of contents]). 
+If there are missing sections, the user must click on **Create sections** which open a screen for the `Sections' form <titlemanager_section.html>`_.
 
 Header of table of contents
 ...........................
 
-    Field: 48, one occurrence for each language (es, pt, en). [[BR]]
+    Field: 48, one occurrence for each language (es, pt, en). 
+
     - Subfield l: language header. pt (Portuguese), es (Spanish), en (English)
     - Subfield h: header. Sumario (en), Tabla de contenido (es), Table of Contents (en)
 
@@ -291,8 +301,9 @@ Sections Data
 .............
 
 Field: 49
+
    - Subfield l: language of the section pt (Portuguese), es (Spanish), en (English)
-   - Subfield c: section code/id, formed by [wiki:en_SciELO_PCPrograms_Title_Manager_TITLE#Preenchimento_de_dados_para_o_site Acronym], followed by 010, or 020, or 030, and so on
+   - Subfield c: section code/id, formed by `acronym <titlemanager_title.html#acronym>`_, followed by 010, or 020, or 030, and so on
    - Subfield t: section title
 
 Creative Commons License
@@ -302,16 +313,17 @@ Creative Commons License
 
 Text provided by the Creative Commons site in accordance with the choice of license 
 
-Field: 540, for each language an occurrence (es, en, pt). [[BR]]
+Field: 540, for each language an occurrence (es, en, pt). 
+
 - Subfield l: language of the license text (pt (Portuguese), es (Spanish), en (English))
 - Subfield t: license text in HTML format
 
 Deleting issue
 --------------
- 1. [wiki:en_SciELO_PCPrograms_Title_Manager_ISSUE#Identificando_o_fascículo_e_o_número_sequencial Informing the issue and its sequential number]
+ 1. Informing the issue and its sequential number
  1. Click on Remove button
 
-'''NOTE:''' This option only delete the record of the issue database, does not remove the issue from the website. 
+**NOTE:** This option only delete the record of the issue database, does not remove the issue from the website. 
 
 
 Issue database
@@ -319,7 +331,8 @@ Issue database
 
 ISIS Base. One record per issue. Each record contains the following tags:
 
-===  =   =======================================================================================
+===  =  ========================================================================================
+---  -  ----------------------------------------------------------------------------------------
 030      Short Title. Corresponds to 150 of TITLE
 031      Volume
 032      Number

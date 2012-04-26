@@ -6,17 +6,20 @@ Markup
 ======
 
 
-- single-user program, built in Visual Basic for Application Word, to descentralized use in any workstation. 
-   Its installation can be done in distinct computer, others than [wiki:en_SciELO_Metodologia_Conceitos#servidorLocal local server].
-- tool to identify bibliographic elements in the articles and texts, according to [wiki:SciELO_DTD DTD SciELO], based on standard ISO 8879-1986 (SGML - Standard Generalized Markup Language) and ISO 12083-1994 (Electronic Manuscript Preparation and Markup).
+- single-user program, built in Visual Basic Application for Word, to descentralized use in any workstation. 
+
+- Its installation can be done in several computers, others than `local server <concepts.html#local-server>`_.
+
+- tool to identify bibliographic elements in the articles and texts, according to SciELO DTD for `article <dtd.html#article>`_ and for `text <dtd.html#text>`_, based on standard ISO 8879-1986 (SGML - Standard Generalized Markup Language) and ISO 12083-1994 (Electronic Manuscript Preparation and Markup).
 
 With this program, the user can:
 
 - open the articles or text files
 - identify the bibliographic elements in the file, by select them with the mouse or keyboard and then tagging them, according DTD
 - markup bibliographics references semiautomatically
-- validate the markup according to [wiki:SciELO_DTD DTD SciELO]
-- generate XML PMC [http://dtd.nlm.nih.gov/publishing/3.0/]. Read the instructions given by [wiki:en_MarkupPubMedCentral PubMed Central].
+- validate the identification according to article `<dtd.html#article>`_ and for `text <dtd.html#text>`_
+- generate PMC XML (under development) `http://dtd.nlm.nih.gov/publishing/3.0/`. Read the instructions given by `Markup PMC <markup_pmc.html>`_.
+- validate PMC XML 
 - preview the text generated from XML PMC
 
 Before using the Markup
@@ -26,7 +29,7 @@ Before using the Markup
 - check if the file contents is same of printed version or PDF file
 - check if the file format is HTML, .doc, .rtf
 - check if the number which the articles belong is recorded in title and issue databases
-- If the markup will be done in a different machine than [wiki:en_SciELO_Metodologia_Conceitos#servidorLocal local server], copy  the files bellow from (local server)\bin\markup :
+- If the markup will be done in a different machine than `local server <concepts.html#local-server>`_, copy  the files bellow from (local server)\bin\markup :
     - ??_issue.mds - it is updated when a new issue data is input on or modified in the database 
     - issue.mds - it is updated when a new issue data is input on or modified in the database 
     - ??_attb.mds - it is updated when a new code table data is input on or modified in the database
@@ -36,15 +39,15 @@ Before using the Markup
 Open the program
 ----------------
 
-Go to the menu, select "SciELO" and "Markup"
+Go to the menu, select **SciELO** and **Markup**
 
     .. image:: img/en/markup_abrir_programa.jpg
 
-The program will try to open the Microsoft Word Program which is set in the file bin\markup\start.mds.
+The program will try to open the Microsoft Word Program which is set in the file bin\\markup\\start.mds.
 
 If the path is not valid, the program will ask for the right path of Microsoft Word Program.
 
-Other option is to change this path by editing the bin\markup\start.mds file.
+Other option is to change this path by editing the bin\\markup\\start.mds file.
 
     .. image:: img/en/markup_word_path.jpg
 
@@ -76,16 +79,16 @@ In Word 2007:
 
 If the macro was not loaded normally, the message bellow will appear:
 
-    .. image:: img/en/markup_loadproblem.JPG
+    .. image:: img/en/markup_loadproblem.jpg
 
 To solve it, select the  Tools->Supplements and Models option of the menu.
 
-    .. image:: img/en/markup_habilitarmacro.JPG
+    .. image:: img/en/markup_habilitarmacro.jpg
 
 
-So, remove the incorrect item, and put on the right path file corresponding of c:\scielo\bin\markup\markup.prg.
+So, remove the incorrect item, and put on the right path file corresponding of c:\\scielo\\bin\\markup\\markup.prg.
 
-    .. image:: img/en/markup_habilitarmacro2.JPG
+    .. image:: img/en/markup_habilitarmacro2.jpg
 
 
 Using the program
@@ -119,22 +122,25 @@ The bars
 --------
 General bar
 ...........
+
+    .. image:: img/en/markup_main_bar.png
+
 Exit button
 ...........
 To exit the program, click on Exit button.
 
-    .. image:: img/en/markup_botao_sair.jpg
+    .. image:: img/en/markup_main_bar_exit.png
 
 Choose one of the options bellow.
 
-    .. image:: img/en/markup_botao_sair_pergunta.jpg
+    .. image:: img/en/markup_exit_message.png
 
 Element's attribute edition button
 ..................................
 
 To edit attributes of an element, select the name element, then click on the edit (pencil) button. The program will ask for changing the values of the attributes.
 
-   .. image:: img/en/markup_botao_editar.jpg
+   .. image:: img/en/markup_main_bar_edit_attr.png
 
 
 Delete element button
@@ -142,23 +148,24 @@ Delete element button
 
 To delete one element and its attributes, select the element name, then click on the delete button. The program will ask to confirm this action.
 
-    .. image:: img/en/markup_botao_apagar.jpg
+    .. image:: img/en/markup_main_bar_del.png
 
 
 Save file button
 ................
 To save a file, click on the save button.
 
-    .. image:: img/en/markup_botao_salvar.jpg
+    .. image:: img/en/markup_main_bar_save.png
 
 
 Automata 1 button
 .................
 To mark bibliographic references automatically:
-- the journal have to have an [wiki:SciELO_PCPrograms_Automata Automata] file, which configures the rules to identify the references elements.
+
+- the journal have to have an `Automata file <automata.html#automata-file>`_, which configures the rules to identify the references elements.
 - select one bibliographic reference until its final dot, including, and then click on the Automata 1 button.
 
-    .. image:: img/en/markup_botao_auto1.jpg
+    .. image:: img/en/markup_main_bar_auto1.png
 
 This action will activate a tool which will try to identify the bibliographic reference elements automatically. The tool will present the several possibilities of identification. So the user have to select the correct one. 
 
@@ -175,7 +182,7 @@ Select one or more bibliographic references and then click on the Automata 2 but
 
     .. image:: img/en/markup_automata2_select.jpg
 
-    .. image:: img/en/markup_botao_auto2.jpg
+    .. image:: img/en/markup_main_bar_auto2.png
 
 
 The program will mark all references it can identify and will also keep the original reference, marked as [text-ref]. Thus the user can compare them in order to check if the reference was correctly identified and proceed the correction, if it is necessary.
@@ -187,49 +194,18 @@ The program will mark all references it can identify and will also keep the orig
 Validate markup button
 ......................
 
-To validate the markup, click on the ''Validate markup'' button. 
-It will run the [wiki:en_SciELO_PCPrograms_SGMLParser SGML Parser].
-
-    .. image:: img/en/markup_botao_parser.jpg
-
-XML generate button
-...................
-To generate XML PMC, the user must garantee that xmlbody element and all figures and tables had been marked, and click on the button.
-The program will generate two XML files:
-- XML PMC 
-- XML PMC adapted to SciELO (<file_name>.scielo.xml) 
-and it will validate them.
+To validate the markup, click on the **Validate markup** button. 
+It will run the `SGML Parser <parser.html>`_.
 
 
-| Note: If you have any questions about XML PMC, read `PMC Files Specifications` <http://www.ncbi.nlm.nih.gov/pmc/about/PMC_Filespec.html>  
-| This include nomenclature files rules
+    .. image:: img/en/markup_main_bar_parser.png
 
 
-    .. image:: img/en/markup_botao_gerarxml.jpg
-
-Preview text button (fulltext, no tags, generated from XML file)
-................................................................
-
-To preview the text, generated from XML file, in order to check if how the fulltext will be presented in the website, click on the ''Preview text'' button. 
-
-    .. image:: img/en/markup_botao_view.jpg
-
-
-Markup button
--------------
-
-After previewing the text, click on the Markup button to see the marked text.
-
-    .. image:: img/en/markup_botao_view_markup.jpg
-
-
-Help
-....
 
 Floating tag bar
 ----------------
 
-    .. image:: img/en/markup_barra_flutuante.jpg
+    .. image:: img/en/markup_bar_floating.png
 
 The floating elements are the ones which can appear in any part of the text.
 
@@ -238,17 +214,23 @@ aff
 ign 
     identifies a text which can be ignored
 tabwrap 
-    identifies a table (includes label, caption and image)
+    (only valid for XML PMC)
+figgrps 
+    (only valid for XML PMC)
 figgrp 
-    identifies a figure (includes label, caption and image)
+    (only valid for XML PMC)
 equation 
-    identifies an equation (represented by image or LaTex or mml:math)
+    (only valid for XML PMC)
 cltrial 
     identifies clinical trials data
+list
+    (only valid for XML PMC)
 xref 
-    identifies a cross reference
+    (only valid for XML PMC)
 uri 
-    identifies a link
+    (only valid for XML PMC)
+sciname
+    (only valid for XML PMC)
 
 Hierarchical tags bar
 ---------------------
@@ -278,15 +260,15 @@ For example:
 
 Down
 ....
-Bar of "front" element
+Bar of **front** element
 
     .. image:: img/en/markup_barra_front.jpg
 
-Bar of "front" element's children
+Bar of **front** element's children
 
     .. image:: img/en/markup_barra_titlegrp.jpg
 
-Bar of "titlegrp" element's chidren
+Bar of **titlegrp** element's chidren
 
     .. image:: img/en/markup_barra_title.jpg
 
@@ -302,6 +284,7 @@ Error messages
 --------------
 
 To avoid errors and to guide the user during the markup, the program presents some messages in case the procedures described previously have not been correctly done. For example:
+
 - If the user has clicked on an element button and no text was selected.
 - If a mandatory atribute value wasn't filled in.
 - If the user try to insert a tag in an incorrect place, disaccording to DTD.

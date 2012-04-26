@@ -8,13 +8,12 @@ c3;c5;NT;oiserial;"."
 ocontrib
 oc1
 oc5
-oc1;oc8;NT;oauthor;", "
 oc1;oc1;NT;oauthor;", "
 oc1;oc2;NT;oauthor;" & "
-oc2;oc8;NT;oauthor;", "
-oc8;oc3;T;date;". "
-oc3;oc5;T;title;". "
-oc3;oc5;T;title;"? "
+oc2;oc3;NT;oauthor;", "
+oc3;oc4;T;date;". "
+oc4;oc5;T;title;". "
+oc4;oc5;T;title;"? "
 
 oiserial
 oi1

@@ -4,9 +4,9 @@
    contain the root `toctree` directive.
 
 Welcome to SciELO PC Programs' documentation!
-======================================
+=============================================
 
-**SciELO PC Programs** is a set of tools of SciELO Methodology. They run on Windows and are used to manage of the journals, issues and articles data, in order to prepare them to the data processing which generates the website (`SciELO Site </projects/scielo-site/en/latest/>`_).
+**SciELO PC Programs** is a set of tools of SciELO Methodology. They run on Windows and are used to manage journals, issues and articles data, in order to prepare them to the data processing which generates the website (`SciELO Site </projects/scielo-site/en/latest/>`_).
 
 
 

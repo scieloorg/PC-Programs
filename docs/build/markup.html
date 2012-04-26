@@ -28,7 +28,7 @@
     <link rel="top" title="pcprograms 4.0.050 documentation" href="index.html" />
     <link rel="up" title="Programs for local server" href="tutorials.html" />
     <link rel="next" title="Markup PMC" href="markup_pmc.html" />
-    <link rel="prev" title="XML SciELO" href="xmlscielo.html" /> 
+    <link rel="prev" title="Local website" href="localwebsite.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,7 +41,7 @@
           <a href="markup_pmc.html" title="Markup PMC"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="xmlscielo.html" title="XML SciELO"
+          <a href="localwebsite.html" title="Local website"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">pcprograms 4.0.050 documentation</a> &raquo;</li>
           <li><a href="tutorials.html" accesskey="U">Programs for local server</a> &raquo;</li> 
@@ -55,23 +55,19 @@
             
   <div class="section" id="markup">
 <h1>Markup<a class="headerlink" href="#markup" title="Permalink to this headline">¶</a></h1>
-<ul>
-<li><dl class="first docutils">
-<dt>single-user program, built in Visual Basic for Application Word, to descentralized use in any workstation.</dt>
-<dd><p class="first last">Its installation can be done in distinct computer, others than [wiki:en_SciELO_Metodologia_Conceitos#servidorLocal local server].</p>
-</dd>
-</dl>
-</li>
-<li><p class="first">tool to identify bibliographic elements in the articles and texts, according to [wiki:SciELO_DTD DTD SciELO], based on standard ISO 8879-1986 (SGML - Standard Generalized Markup Language) and ISO 12083-1994 (Electronic Manuscript Preparation and Markup).</p>
-</li>
+<ul class="simple">
+<li>single-user program, built in Visual Basic Application for Word, to descentralized use in any workstation.</li>
+<li>Its installation can be done in several computers, others than <a class="reference external" href="concepts.html#local-server">local server</a>.</li>
+<li>tool to identify bibliographic elements in the articles and texts, according to SciELO DTD for <a class="reference external" href="dtd.html#article">article</a> and for <a class="reference external" href="dtd.html#text">text</a>, based on standard ISO 8879-1986 (SGML - Standard Generalized Markup Language) and ISO 12083-1994 (Electronic Manuscript Preparation and Markup).</li>
 </ul>
 <p>With this program, the user can:</p>
 <ul class="simple">
 <li>open the articles or text files</li>
 <li>identify the bibliographic elements in the file, by select them with the mouse or keyboard and then tagging them, according DTD</li>
 <li>markup bibliographics references semiautomatically</li>
-<li>validate the markup according to [wiki:SciELO_DTD DTD SciELO]</li>
-<li>generate XML PMC [<a class="reference external" href="http://dtd.nlm.nih.gov/publishing/3.0/">http://dtd.nlm.nih.gov/publishing/3.0/</a>]. Read the instructions given by [wiki:en_MarkupPubMedCentral PubMed Central].</li>
+<li>validate the identification according to article <a class="reference external" href="dtd.html#article">dtd.html#article</a> and for <a class="reference external" href="dtd.html#text">text</a></li>
+<li>generate PMC XML (under development) <cite>http://dtd.nlm.nih.gov/publishing/3.0/</cite>. Read the instructions given by <a class="reference external" href="markup_pmc.html">Markup PMC</a>.</li>
+<li>validate PMC XML</li>
 <li>preview the text generated from XML PMC</li>
 </ul>
 <div class="section" id="before-using-the-markup">
@@ -86,7 +82,7 @@
 <li><p class="first">check if the number which the articles belong is recorded in title and issue databases</p>
 </li>
 <li><dl class="first docutils">
-<dt>If the markup will be done in a different machine than [wiki:en_SciELO_Metodologia_Conceitos#servidorLocal local server], copy  the files bellow from (local server)binmarkup :</dt>
+<dt>If the markup will be done in a different machine than <a class="reference external" href="concepts.html#local-server">local server</a>, copy  the files bellow from (local server)binmarkup :</dt>
 <dd><ul class="first last simple">
 <li>??_issue.mds - it is updated when a new issue data is input on or modified in the database</li>
 <li>issue.mds - it is updated when a new issue data is input on or modified in the database</li>
@@ -101,15 +97,15 @@
 </div>
 <div class="section" id="open-the-program">
 <h2>Open the program<a class="headerlink" href="#open-the-program" title="Permalink to this headline">¶</a></h2>
-<p>Go to the menu, select &#8220;SciELO&#8221; and &#8220;Markup&#8221;</p>
+<p>Go to the menu, select <strong>SciELO</strong> and <strong>Markup</strong></p>
 <blockquote>
 <div><img alt="_images/markup_abrir_programa.jpg" src="_images/markup_abrir_programa.jpg" />
 </div></blockquote>
-<p>The program will try to open the Microsoft Word Program which is set in the file binmarkupstart.mds.</p>
+<p>The program will try to open the Microsoft Word Program which is set in the file bin\markup\start.mds.</p>
 <p>If the path is not valid, the program will ask for the right path of Microsoft Word Program.</p>
-<p>Other option is to change this path by editing the binmarkupstart.mds file.</p>
+<p>Other option is to change this path by editing the bin\markup\start.mds file.</p>
 <blockquote>
-<div><img alt="img/en/markup_word_path.jpg" src="img/en/markup_word_path.jpg" />
+<div><img alt="_images/markup_word_path.jpg" src="_images/markup_word_path.jpg" />
 </div></blockquote>
 <p>Just in case it doesn&#8217;t appear the message about macro execution, you need to drop the macro&#8217;s security level down.</p>
 <p>In Word 2003, it appears as following:</p>
@@ -132,15 +128,15 @@
 </div></blockquote>
 <p>If the macro was not loaded normally, the message bellow will appear:</p>
 <blockquote>
-<div><img alt="img/en/markup_loadproblem.JPG" src="img/en/markup_loadproblem.JPG" />
+<div><img alt="_images/markup_loadproblem.jpg" src="_images/markup_loadproblem.jpg" />
 </div></blockquote>
 <p>To solve it, select the  Tools-&gt;Supplements and Models option of the menu.</p>
 <blockquote>
-<div><img alt="img/en/markup_habilitarmacro.JPG" src="img/en/markup_habilitarmacro.JPG" />
+<div><img alt="_images/markup_habilitarmacro.jpg" src="_images/markup_habilitarmacro.jpg" />
 </div></blockquote>
-<p>So, remove the incorrect item, and put on the right path file corresponding of c:scielobinmarkupmarkup.prg.</p>
+<p>So, remove the incorrect item, and put on the right path file corresponding of c:\scielo\bin\markup\markup.prg.</p>
 <blockquote>
-<div><img alt="img/en/markup_habilitarmacro2.JPG" src="img/en/markup_habilitarmacro2.JPG" />
+<div><img alt="_images/markup_habilitarmacro2.jpg" src="_images/markup_habilitarmacro2.jpg" />
 </div></blockquote>
 </div>
 <div class="section" id="using-the-program">
@@ -178,47 +174,54 @@
 <h2>The bars<a class="headerlink" href="#the-bars" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="general-bar">
 <h3>General bar<a class="headerlink" href="#general-bar" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><img alt="_images/markup_main_bar.png" src="_images/markup_main_bar.png" />
+</div></blockquote>
 </div>
 <div class="section" id="exit-button">
 <h3>Exit button<a class="headerlink" href="#exit-button" title="Permalink to this headline">¶</a></h3>
 <p>To exit the program, click on Exit button.</p>
 <blockquote>
-<div><img alt="_images/markup_botao_sair.jpg" src="_images/markup_botao_sair.jpg" />
+<div><img alt="_images/markup_main_bar_exit.png" src="_images/markup_main_bar_exit.png" />
 </div></blockquote>
 <p>Choose one of the options bellow.</p>
 <blockquote>
-<div><img alt="_images/markup_botao_sair_pergunta.jpg" src="_images/markup_botao_sair_pergunta.jpg" />
+<div><img alt="_images/markup_exit_message.png" src="_images/markup_exit_message.png" />
 </div></blockquote>
 </div>
 <div class="section" id="element-s-attribute-edition-button">
 <h3>Element&#8217;s attribute edition button<a class="headerlink" href="#element-s-attribute-edition-button" title="Permalink to this headline">¶</a></h3>
 <p>To edit attributes of an element, select the name element, then click on the edit (pencil) button. The program will ask for changing the values of the attributes.</p>
 <blockquote>
-<div><img alt="_images/markup_botao_editar.jpg" src="_images/markup_botao_editar.jpg" />
+<div><img alt="_images/markup_main_bar_edit_attr.png" src="_images/markup_main_bar_edit_attr.png" />
 </div></blockquote>
 </div>
 <div class="section" id="delete-element-button">
 <h3>Delete element button<a class="headerlink" href="#delete-element-button" title="Permalink to this headline">¶</a></h3>
 <p>To delete one element and its attributes, select the element name, then click on the delete button. The program will ask to confirm this action.</p>
 <blockquote>
-<div><img alt="_images/markup_botao_apagar.jpg" src="_images/markup_botao_apagar.jpg" />
+<div><img alt="_images/markup_main_bar_del.png" src="_images/markup_main_bar_del.png" />
 </div></blockquote>
 </div>
 <div class="section" id="save-file-button">
 <h3>Save file button<a class="headerlink" href="#save-file-button" title="Permalink to this headline">¶</a></h3>
 <p>To save a file, click on the save button.</p>
 <blockquote>
-<div><img alt="_images/markup_botao_salvar.jpg" src="_images/markup_botao_salvar.jpg" />
+<div><img alt="_images/markup_main_bar_save.png" src="_images/markup_main_bar_save.png" />
 </div></blockquote>
 </div>
 <div class="section" id="automata-1-button">
 <h3>Automata 1 button<a class="headerlink" href="#automata-1-button" title="Permalink to this headline">¶</a></h3>
-<p>To mark bibliographic references automatically:
-- the journal have to have an [wiki:SciELO_PCPrograms_Automata Automata] file, which configures the rules to identify the references elements.
-- select one bibliographic reference until its final dot, including, and then click on the Automata 1 button.</p>
+<p>To mark bibliographic references automatically:</p>
+<ul>
+<li><p class="first">the journal have to have an <a class="reference external" href="automata.html#automata-file">Automata file</a>, which configures the rules to identify the references elements.</p>
+</li>
+<li><p class="first">select one bibliographic reference until its final dot, including, and then click on the Automata 1 button.</p>
 <blockquote>
-<div><img alt="_images/markup_botao_auto1.jpg" src="_images/markup_botao_auto1.jpg" />
+<div><img alt="_images/markup_main_bar_auto1.png" src="_images/markup_main_bar_auto1.png" />
 </div></blockquote>
+</li>
+</ul>
 <p>This action will activate a tool which will try to identify the bibliographic reference elements automatically. The tool will present the several possibilities of identification. So the user have to select the correct one.</p>
 <blockquote>
 <div><img alt="_images/automata1b.jpg" src="_images/automata1b.jpg" />
@@ -230,7 +233,7 @@
 Select one or more bibliographic references and then click on the Automata 2 button.</p>
 <blockquote>
 <div><img alt="_images/markup_automata2_select.jpg" src="_images/markup_automata2_select.jpg" />
-<img alt="_images/markup_botao_auto2.jpg" src="_images/markup_botao_auto2.jpg" />
+<img alt="_images/markup_main_bar_auto2.png" src="_images/markup_main_bar_auto2.png" />
 </div></blockquote>
 <p>The program will mark all references it can identify and will also keep the original reference, marked as [text-ref]. Thus the user can compare them in order to check if the reference was correctly identified and proceed the correction, if it is necessary.</p>
 <blockquote>
@@ -239,49 +242,17 @@ Select one or more bibliographic references and then click on the Automata 2 but
 </div>
 <div class="section" id="validate-markup-button">
 <h3>Validate markup button<a class="headerlink" href="#validate-markup-button" title="Permalink to this headline">¶</a></h3>
-<p>To validate the markup, click on the &#8216;&#8217;Validate markup&#8217;&#8217; button.
-It will run the [wiki:en_SciELO_PCPrograms_SGMLParser SGML Parser].</p>
+<p>To validate the markup, click on the <strong>Validate markup</strong> button.
+It will run the <a class="reference external" href="parser.html">SGML Parser</a>.</p>
 <blockquote>
-<div><img alt="img/en/markup_botao_parser.jpg" src="img/en/markup_botao_parser.jpg" />
+<div><img alt="_images/markup_main_bar_parser.png" src="_images/markup_main_bar_parser.png" />
 </div></blockquote>
-</div>
-<div class="section" id="xml-generate-button">
-<h3>XML generate button<a class="headerlink" href="#xml-generate-button" title="Permalink to this headline">¶</a></h3>
-<p>To generate XML PMC, the user must garantee that xmlbody element and all figures and tables had been marked, and click on the button.
-The program will generate two XML files:
-- XML PMC
-- XML PMC adapted to SciELO (&lt;file_name&gt;.scielo.xml)
-and it will validate them.</p>
-<div class="line-block">
-<div class="line">Note: If you have any questions about XML PMC, read <cite>PMC Files Specifications</cite> &lt;<a class="reference external" href="http://www.ncbi.nlm.nih.gov/pmc/about/PMC_Filespec.html">http://www.ncbi.nlm.nih.gov/pmc/about/PMC_Filespec.html</a>&gt;</div>
-<div class="line">This include nomenclature files rules</div>
-</div>
-<blockquote>
-<div><img alt="img/en/markup_botao_gerarxml.jpg" src="img/en/markup_botao_gerarxml.jpg" />
-</div></blockquote>
-</div>
-<div class="section" id="preview-text-button-fulltext-no-tags-generated-from-xml-file">
-<h3>Preview text button (fulltext, no tags, generated from XML file)<a class="headerlink" href="#preview-text-button-fulltext-no-tags-generated-from-xml-file" title="Permalink to this headline">¶</a></h3>
-<p>To preview the text, generated from XML file, in order to check if how the fulltext will be presented in the website, click on the &#8216;&#8217;Preview text&#8217;&#8217; button.</p>
-<blockquote>
-<div><img alt="img/en/markup_botao_view.jpg" src="img/en/markup_botao_view.jpg" />
-</div></blockquote>
-</div>
-</div>
-<div class="section" id="markup-button">
-<h2>Markup button<a class="headerlink" href="#markup-button" title="Permalink to this headline">¶</a></h2>
-<p>After previewing the text, click on the Markup button to see the marked text.</p>
-<blockquote>
-<div><img alt="img/en/markup_botao_view_markup.jpg" src="img/en/markup_botao_view_markup.jpg" />
-</div></blockquote>
-<div class="section" id="help">
-<h3>Help<a class="headerlink" href="#help" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 <div class="section" id="floating-tag-bar">
 <h2>Floating tag bar<a class="headerlink" href="#floating-tag-bar" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><img alt="_images/markup_barra_flutuante.jpg" src="_images/markup_barra_flutuante.jpg" />
+<div><img alt="_images/markup_bar_floating.png" src="_images/markup_bar_floating.png" />
 </div></blockquote>
 <p>The floating elements are the ones which can appear in any part of the text.</p>
 <dl class="docutils">
@@ -290,17 +261,23 @@ and it will validate them.</p>
 <dt>ign</dt>
 <dd>identifies a text which can be ignored</dd>
 <dt>tabwrap</dt>
-<dd>identifies a table (includes label, caption and image)</dd>
+<dd>(only valid for XML PMC)</dd>
+<dt>figgrps</dt>
+<dd>(only valid for XML PMC)</dd>
 <dt>figgrp</dt>
-<dd>identifies a figure (includes label, caption and image)</dd>
+<dd>(only valid for XML PMC)</dd>
 <dt>equation</dt>
-<dd>identifies an equation (represented by image or LaTex or mml:math)</dd>
+<dd>(only valid for XML PMC)</dd>
 <dt>cltrial</dt>
 <dd>identifies clinical trials data</dd>
+<dt>list</dt>
+<dd>(only valid for XML PMC)</dd>
 <dt>xref</dt>
-<dd>identifies a cross reference</dd>
+<dd>(only valid for XML PMC)</dd>
 <dt>uri</dt>
-<dd>identifies a link</dd>
+<dd>(only valid for XML PMC)</dd>
+<dt>sciname</dt>
+<dd>(only valid for XML PMC)</dd>
 </dl>
 </div>
 <div class="section" id="hierarchical-tags-bar">
@@ -326,15 +303,15 @@ and it will validate them.</p>
 </div>
 <div class="section" id="down">
 <h3>Down<a class="headerlink" href="#down" title="Permalink to this headline">¶</a></h3>
-<p>Bar of &#8220;front&#8221; element</p>
+<p>Bar of <strong>front</strong> element</p>
 <blockquote>
 <div><img alt="_images/markup_barra_front.jpg" src="_images/markup_barra_front.jpg" />
 </div></blockquote>
-<p>Bar of &#8220;front&#8221; element&#8217;s children</p>
+<p>Bar of <strong>front</strong> element&#8217;s children</p>
 <blockquote>
 <div><img alt="_images/markup_barra_titlegrp.jpg" src="_images/markup_barra_titlegrp.jpg" />
 </div></blockquote>
-<p>Bar of &#8220;titlegrp&#8221; element&#8217;s chidren</p>
+<p>Bar of <strong>titlegrp</strong> element&#8217;s chidren</p>
 <blockquote>
 <div><img alt="_images/markup_barra_title.jpg" src="_images/markup_barra_title.jpg" />
 </div></blockquote>
@@ -350,10 +327,13 @@ and it will validate them.</p>
 </div>
 <div class="section" id="error-messages">
 <h2>Error messages<a class="headerlink" href="#error-messages" title="Permalink to this headline">¶</a></h2>
-<p>To avoid errors and to guide the user during the markup, the program presents some messages in case the procedures described previously have not been correctly done. For example:
-- If the user has clicked on an element button and no text was selected.
-- If a mandatory atribute value wasn&#8217;t filled in.
-- If the user try to insert a tag in an incorrect place, disaccording to DTD.</p>
+<p>To avoid errors and to guide the user during the markup, the program presents some messages in case the procedures described previously have not been correctly done. For example:</p>
+<ul>
+<li><p class="first">If the user has clicked on an element button and no text was selected.</p>
+</li>
+<li><p class="first">If a mandatory atribute value wasn&#8217;t filled in.</p>
+</li>
+<li><p class="first">If the user try to insert a tag in an incorrect place, disaccording to DTD.</p>
 <blockquote>
 <div><img alt="_images/markup_msg_01.jpg" src="_images/markup_msg_01.jpg" />
 <p>Bad value to a mandatory attribute</p>
@@ -362,6 +342,8 @@ and it will validate them.</p>
 <img alt="_images/markup_msg_03.jpg" src="_images/markup_msg_03.jpg" />
 <p>the user has clicked on an element button and no text was selected</p>
 </div></blockquote>
+</li>
+</ul>
 </div>
 </div>
 
@@ -386,12 +368,6 @@ and it will validate them.</p>
 <li><a class="reference internal" href="#automata-1-button">Automata 1 button</a></li>
 <li><a class="reference internal" href="#automata-2-button">Automata 2 Button</a></li>
 <li><a class="reference internal" href="#validate-markup-button">Validate markup button</a></li>
-<li><a class="reference internal" href="#xml-generate-button">XML generate button</a></li>
-<li><a class="reference internal" href="#preview-text-button-fulltext-no-tags-generated-from-xml-file">Preview text button (fulltext, no tags, generated from XML file)</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#markup-button">Markup button</a><ul>
-<li><a class="reference internal" href="#help">Help</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#floating-tag-bar">Floating tag bar</a></li>
@@ -407,8 +383,8 @@ and it will validate them.</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="xmlscielo.html"
-                        title="previous chapter">XML SciELO</a></p>
+  <p class="topless"><a href="localwebsite.html"
+                        title="previous chapter">Local website</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="markup_pmc.html"
                         title="next chapter">Markup PMC</a></p>
@@ -444,7 +420,7 @@ and it will validate them.</p>
           <a href="markup_pmc.html" title="Markup PMC"
              >next</a> |</li>
         <li class="right" >
-          <a href="xmlscielo.html" title="XML SciELO"
+          <a href="localwebsite.html" title="Local website"
              >previous</a> |</li>
         <li><a href="index.html">pcprograms 4.0.050 documentation</a> &raquo;</li>
           <li><a href="tutorials.html" >Programs for local server</a> &raquo;</li> 

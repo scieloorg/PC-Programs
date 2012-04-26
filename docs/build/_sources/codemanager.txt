@@ -29,27 +29,26 @@ Managing the tables
 
 #. Select Files
 
-.. image:: img/en/01_menu_arquivos.jpg
+    .. image:: img/en/codemanager_file_open.png
 
 - "Restricted Area" is used only by the developers of SciELO methodology. It is password protected.
 - "Customizing Tables" is to manage the customizable tables.
 
-.. image:: img/en/01_menu_arquivos_personalizar.jpg
 
 Accessing a table
 -----------------
  
-.. image:: img/en/01_menu_arquivos_personalizar_lista_de_tabelas.jpg
+    .. image:: img/en/codemanager_select_table.png
 
 
 Select one of the tables, clicking the button ...
 
-.. image:: img/en/01_menu_arquivos_personalizar_seleciona_tabela.jpg
+    .. image:: img/en/codemanager_table.png
 
 
 The data of the tables will be presented in the format: code | label in Portuguese | Spanish | English.
-
-.. image:: img/en/01_menu_arquivos_personalizar_dados.jpg
+    
+    .. image:: img/en/codemanager_select_row.png
 
 
 Removing a row of the table
@@ -66,7 +65,7 @@ Updating a row of the table
 #. Click on Update button. 
 #. Click on Save button
 
-.. image:: img/en/01_menu_arquivos_personalizar_editar_linha.jpg
+    .. image:: img/en/01_menu_arquivos_personalizar_editar_linha.jpg
 
 
 Creating a new row
@@ -74,9 +73,9 @@ Creating a new row
 
 #. Fill in the fields: code and label of each language
  
-.. image:: img/en/01_menu_arquivos_personalizar_novos1.jpg
+    .. image:: img/en/01_menu_arquivos_personalizar_novos1.jpg
 
-.. image:: img/en/01_menu_arquivos_personalizar_novos2.jpg
+    .. image:: img/en/01_menu_arquivos_personalizar_novos2.jpg
 
 Technical information
 ---------------------

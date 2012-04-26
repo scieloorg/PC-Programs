@@ -13,7 +13,7 @@
 Journal
 =======
 
-.. image:: img/en/01_menu_title.jpg
+.. image:: img/en/titlemanager_open_journals.png
 
 
 
@@ -26,7 +26,7 @@ Creating a new record
 
 #. Write the title of the journal and click on Open button.
 
-    .. image:: img/en/01_menu_title_novo.jpg
+    .. image:: img/en/titlemanager_new_title.png
 
 #. Register the journal data. Read `Journal form`_.   
 
@@ -72,7 +72,7 @@ Use it '''only''' if you are sure the journal '''HAS NEVER BEEN PUBLISHED'''.
 
 
 
-If the journal has to be disabled, read `Journal history`.
+If the journal has to be disabled, read `Journal history`_.
 
 
 
@@ -760,8 +760,8 @@ Registering data for the website
 
 
 
-Siglum 
-........
+Acronym (Lowercase and/or Uppercase letters)
+............................................
 Field: 930
 
 
@@ -770,8 +770,8 @@ Enter in this field the acronym of the journal, max 8 characters length, in capi
 
 
 
-Publication Identifier
-.......................
+Acronym
+.......
 Field: 68
 
 

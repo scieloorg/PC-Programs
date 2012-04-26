@@ -7,17 +7,19 @@ SGML Parser
 
 - single-user program built in Visual Basic and C, and uses sp120.dll library.
 - It is always installed, because it is used in several situations: by the Markup, by the Converter (internally), and stand-alone.
-- tool to check whether the markup done using [wiki:en_SciELO_PCPrograms_Markup Markup] is according to [wiki:en_SciELO_DTD DTD SciELO]. 
+- tool to check whether the markup done using `Markup <markup.html>`_ is according to `DTD SciELO <dtd_scielo.html>`_. 
 
 
 This program can be run:
-- or from `Markup <markup.rst>` 
 
-    .. image:: img/en/markup_botao_parser.jpg
+- or from `Markup <markup.html>`_ 
 
-- or by PC Programs menu
+    .. image:: img/en/markup_main_bar_parser.png
+
+- or by PC Programs' menu
 
     .. image:: img/en/markup_abrir_programa.jpg
+
 
 - or by Converter, internal use, to analyze and obtain the values of the elements and their attributes. 
 
@@ -25,7 +27,7 @@ Parser called by Markup: the file, which is open in the Markup program, is open 
 
     .. image:: img/en/parser_01.jpg
 
-Parser called by Menu: after opening SGML Parser program, the user have to open a file .txt or .sci, by accessing the ''File'' menu option.
+Parser called by Menu: after opening SGML Parser program, the user have to open a file .txt or .sci, by accessing the **File** menu option.
 
     .. image:: img/en/parser_openFile.jpg
 
@@ -46,20 +48,20 @@ Access the Menu and select Configuration option.
 
     .. image:: img/en/parser_config.jpg
 
-The options "Add ignore markup to document" and "Add SGML declaration to document" must be selected, when the document is:
+The options **Add ignore markup to document** and **Add SGML declaration to document** must be selected, when the document is:
     - an article
-        - "File Containing the DTD" = C:\SCIELO\BIN\SGMLPARS\article4_0.dtd 
-        - "Document Type Name" = article
+        - **File Containing the DTD** = C:\\SCIELO\\BIN\\SGMLPARS\\article4_0.dtd 
+        - **Document Type Name** = article
     - a text
-        - "File Containing the DTD" = C:\SCIELO\BIN\SGMLPARS\text4_0.dtd 
-        - "Document Type Name" = text
+        - **File Containing the DTD** = C:\\SCIELO\\BIN\\SGMLPARS\\text4_0.dtd 
+        - **Document Type Name** = text
 
     .. image:: img/en/parser_config1.jpg
 
 Document analysis
 -----------------
 
-After configuring, the user have to use '''Parse''' menu option in order to analyze the marked document.
+After configuring, the user have to use **Parse** menu option in order to analyze the marked document.
 
     .. image:: img/en/parser_parse.jpg
 

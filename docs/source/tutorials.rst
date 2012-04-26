@@ -13,6 +13,7 @@ Programs for local server
    titlemanager.rst
    converter.rst
    xmlscielo.rst   
+   localwebsite.rst
 
 
 Programs for Markup computers

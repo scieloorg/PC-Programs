@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pcprograms 4.0.050 documentation" href="index.html" />
-    <link rel="up" title="Tutorials" href="tutorials.html" />
+    <link rel="up" title="Programs for local server" href="tutorials.html" />
     <link rel="next" title="SGML Parser" href="parser.html" />
     <link rel="prev" title="Markup" href="markup.html" /> 
   </head>
@@ -44,7 +44,7 @@
           <a href="markup.html" title="Markup"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">pcprograms 4.0.050 documentation</a> &raquo;</li>
-          <li><a href="tutorials.html" accesskey="U">Tutorials</a> &raquo;</li> 
+          <li><a href="tutorials.html" accesskey="U">Programs for local server</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,6 +55,92 @@
             
   <div class="section" id="markup-pmc">
 <h1>Markup PMC<a class="headerlink" href="#markup-pmc" title="Permalink to this headline">¶</a></h1>
+<p>Use the same Markup Program. So, read its documentation.</p>
+<p>And use a copy of the markup file to generate the XML file to PMC.</p>
+<p>The PMC Markup will be done on a copy of a markup file.</p>
+<p>PMC Files Specifications: <a class="reference external" href="http://www.ncbi.nlm.nih.gov/pmc/pub/filespec/">http://www.ncbi.nlm.nih.gov/pmc/pub/filespec/</a></p>
+<div class="section" id="the-bars">
+<h2>The bars<a class="headerlink" href="#the-bars" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="general-bar">
+<h3>General bar<a class="headerlink" href="#general-bar" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><img alt="_images/markup_main_bar.png" src="_images/markup_main_bar.png" />
+</div></blockquote>
+</div>
+<div class="section" id="generate-xml-file-button">
+<h3>Generate XML file button<a class="headerlink" href="#generate-xml-file-button" title="Permalink to this headline">¶</a></h3>
+<p>To generate the XML files to PMC, the user must guarantee that xmlbody and other tags must exist, including the regular markup.</p>
+<blockquote>
+<div><img alt="_images/markup_main_bar_genxml.png" src="_images/markup_main_bar_genxml.png" />
+</div></blockquote>
+</div>
+<div class="section" id="validate-xml-file-button">
+<h3>Validate XML file button<a class="headerlink" href="#validate-xml-file-button" title="Permalink to this headline">¶</a></h3>
+<p>Click on it, to validate the XML file.</p>
+<blockquote>
+<div><img alt="_images/markup_main_bar_parser_xml.png" src="_images/markup_main_bar_parser_xml.png" />
+</div></blockquote>
+<p>If the XML file is invalid:</p>
+<blockquote>
+<div><img alt="_images/pmc_stylechecker_errors.png" src="_images/pmc_stylechecker_errors.png" />
+</div></blockquote>
+<p>If the XML file is valid:</p>
+<blockquote>
+<div><img alt="_images/pmc_stylechecker_noerror.png" src="_images/pmc_stylechecker_noerror.png" />
+</div></blockquote>
+</div>
+<div class="section" id="preview-the-text-generated-using-the-xml-file-button">
+<h3>Preview the text generated using the XML file button<a class="headerlink" href="#preview-the-text-generated-using-the-xml-file-button" title="Permalink to this headline">¶</a></h3>
+<p>To preview the text, generated from XML file, in order to check if how the fulltext will be presented in the website, click on the Preview text button.</p>
+<blockquote>
+<div><img alt="_images/pmc_scielochecker_errors.png" src="_images/pmc_scielochecker_errors.png" />
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="markup-button">
+<h2>Markup button<a class="headerlink" href="#markup-button" title="Permalink to this headline">¶</a></h2>
+<p>To go back to markup file.</p>
+<blockquote>
+<div><img alt="_images/markup_main_bar_markup.png" src="_images/markup_main_bar_markup.png" />
+</div></blockquote>
+</div>
+<div class="section" id="floating-tag-bar">
+<h2>Floating tag bar<a class="headerlink" href="#floating-tag-bar" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><img alt="_images/markup_bar_floating.png" src="_images/markup_bar_floating.png" />
+</div></blockquote>
+<p>The floating elements are the ones which can appear in any part of the text.</p>
+<dl class="docutils">
+<dt>aff</dt>
+<dd>identifies an author affiliation</dd>
+<dt>ign</dt>
+<dd>identifies a text which can be ignored</dd>
+<dt>tabwrap</dt>
+<dd>identifies a table (includes label, caption and image)
+(only valid for XML PMC)</dd>
+<dt>figgrps</dt>
+<dd>identifies a compound figure (Fig 1A, 1B, etc), and each one must be figgrp
+(only valid for XML PMC)</dd>
+<dt>figgrp</dt>
+<dd>identifies a figure (includes label, caption and image)
+(only valid for XML PMC)</dd>
+<dt>equation</dt>
+<dd>identifies an equation (represented by image or LaTex or mml:math)
+(only valid for XML PMC)</dd>
+<dt>list</dt>
+<dd>identifies a list
+(only valid for XML PMC)</dd>
+<dt>xref</dt>
+<dd>identifies cross reference
+(only valid for XML PMC)</dd>
+<dt>uri</dt>
+<dd>identifies external links
+(only valid for XML PMC)</dd>
+<dt>sciname</dt>
+<dd>identifies scientific names
+(only valid for XML PMC)</dd>
+</dl>
+</div>
 </div>
 
 
@@ -63,6 +149,22 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Markup PMC</a><ul>
+<li><a class="reference internal" href="#the-bars">The bars</a><ul>
+<li><a class="reference internal" href="#general-bar">General bar</a></li>
+<li><a class="reference internal" href="#generate-xml-file-button">Generate XML file button</a></li>
+<li><a class="reference internal" href="#validate-xml-file-button">Validate XML file button</a></li>
+<li><a class="reference internal" href="#preview-the-text-generated-using-the-xml-file-button">Preview the text generated using the XML file button</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#markup-button">Markup button</a></li>
+<li><a class="reference internal" href="#floating-tag-bar">Floating tag bar</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="markup.html"
                         title="previous chapter">Markup</a></p>
@@ -104,7 +206,7 @@
           <a href="markup.html" title="Markup"
              >previous</a> |</li>
         <li><a href="index.html">pcprograms 4.0.050 documentation</a> &raquo;</li>
-          <li><a href="tutorials.html" >Tutorials</a> &raquo;</li> 
+          <li><a href="tutorials.html" >Programs for local server</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
