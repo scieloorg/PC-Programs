@@ -129,7 +129,7 @@ Exit button
 ...........
 To exit the program, click on Exit button.
 
-    .. image:: img/en/markup_main_bar_exit.png
+    .. image:: img/en/markup_main_bar_exit.jpg
 
 Choose one of the options bellow.
 
@@ -140,7 +140,7 @@ Element's attribute edition button
 
 To edit attributes of an element, select the name element, then click on the edit (pencil) button. The program will ask for changing the values of the attributes.
 
-   .. image:: img/en/markup_main_bar_edit_attr.png
+   .. image:: img/en/markup_main_bar_edit_attr.jpg
 
 
 Delete element button
