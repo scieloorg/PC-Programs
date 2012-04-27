@@ -148,14 +148,14 @@ Delete element button
 
 To delete one element and its attributes, select the element name, then click on the delete button. The program will ask to confirm this action.
 
-    .. image:: img/en/markup_main_bar_del.png
+    .. image:: img/en/markup_main_bar_del.JPG
 
 
 Save file button
 ................
 To save a file, click on the save button.
 
-    .. image:: img/en/markup_main_bar_save.png
+    .. image:: img/en/markup_main_bar_save.JPG
 
 
 Automata 1 button
@@ -165,7 +165,7 @@ To mark bibliographic references automatically:
 - the journal have to have an `Automata file <automata.html#automata-file>`_, which configures the rules to identify the references elements.
 - select one bibliographic reference until its final dot, including, and then click on the Automata 1 button.
 
-    .. image:: img/en/markup_main_bar_auto1.png
+    .. image:: img/en/markup_main_bar_auto1.JPG
 
 This action will activate a tool which will try to identify the bibliographic reference elements automatically. The tool will present the several possibilities of identification. So the user have to select the correct one. 
 
@@ -182,7 +182,7 @@ Select one or more bibliographic references and then click on the Automata 2 but
 
     .. image:: img/en/markup_automata2_select.jpg
 
-    .. image:: img/en/markup_main_bar_auto2.png
+    .. image:: img/en/markup_main_bar_auto2.JPG
 
 
 The program will mark all references it can identify and will also keep the original reference, marked as [text-ref]. Thus the user can compare them in order to check if the reference was correctly identified and proceed the correction, if it is necessary.
@@ -198,7 +198,7 @@ To validate the markup, click on the **Validate markup** button.
 It will run the `SGML Parser <parser.html>`_.
 
 
-    .. image:: img/en/markup_main_bar_parser.png
+    .. image:: img/en/markup_main_bar_parser.JPG
 
 
 
