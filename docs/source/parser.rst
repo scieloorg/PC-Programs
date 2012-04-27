@@ -14,7 +14,7 @@ This program can be run:
 
 - or from `Markup <markup.html>`_ 
 
-    .. image:: img/en/markup_main_bar_parser.png
+    .. image:: img/en/markup_main_bar_parser.JPG
 
 - or by PC Programs' menu
 
