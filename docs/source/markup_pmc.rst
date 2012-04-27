@@ -26,14 +26,14 @@ Generate XML file button
 
 To generate the XML files to PMC, the user must guarantee that xmlbody and other tags must exist, including the regular markup.
 
-    .. image:: img/en/markup_main_bar_genxml.png
+    .. image:: img/en/markup_main_bar_genxml.JPG
 
 Validate XML file button
 ........................
 
 Click on it, to validate the XML file.
 
-    .. image:: img/en/markup_main_bar_parser_xml.png
+    .. image:: img/en/markup_main_bar_parser_xml.JPG
 
 
 If the XML file is invalid:
@@ -52,6 +52,8 @@ Preview the text generated using the XML file button
 To preview the text, generated from XML file, in order to check if how the fulltext will be presented in the website, click on the Preview text button.
 
 
+    .. image:: img/en/markup_main_bar_stylechecker.JPG
+
     .. image:: img/en/pmc_scielochecker_errors.png
 
 
@@ -60,7 +62,7 @@ Markup button
 
 To go back to markup file.
 
-    .. image:: img/en/markup_main_bar_markup.png
+    .. image:: img/en/markup_main_bar_markup.JPG
 
 
 Floating tag bar
