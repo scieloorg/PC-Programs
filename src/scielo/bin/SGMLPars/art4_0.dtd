@@ -111,7 +111,7 @@
 %common;
 
 <!ENTITY % m.bib    "(((abstract? & keygrp?) & confgrp? & report? & thesgrp? 
-                      & hist? & fngrp* & (%m.title;)?)+)" >
+                      & hist? &  (%m.title;)?)+)" >
 
 <!ENTITY % cita SYSTEM "citation4_0.dtd">
 %cita;
@@ -163,7 +163,7 @@
 
 <!ELEMENT bibcom   - - (%m.bib;) >
 
-<!ELEMENT abstract - - CDATA >
+<!ELEMENT abstract - - ( txtblock | (#PCDATA)) >
 <!ATTLIST abstract
           language CDATA #REQUIRED >
 <!ELEMENT keygrp   - - ((keyword, subkey*)*, dperiod*)  >
@@ -213,11 +213,12 @@
 <!--    Back Matter                                                       -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT back     - - (((bbibcom, (vancouv | iso690 | abnt6023 | apa | other)?,
+<!-- ELEMENT back     - - (((bbibcom, (vancouv | iso690 | abnt6023 | apa | other)?,
                          bbibcom?) | 
                          ((vancouv | iso690 | abnt6023 | apa | other), bbibcom?)),
 
-                         licenses?) >
+                         licenses?) -->
+<!ELEMENT back     - - ( (bbibcom & (vancouv | iso690 | abnt6023 | apa | other) & txtblock? & aff? & fngrp? )+, licenses?) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Back Bibliographic Complementary Elements                         -->

@@ -8,8 +8,8 @@
 <!--   Common Models                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ENTITY % i.float  "aff | ign | tabwrap | figgrp | cltrial | xref | uri | sciname" > 
-<!ENTITY % m.name   "(fname? & surname)" >
+<!ENTITY % i.float  "aff | ign | tabwrap | figgrp | cltrial | xref | uri | sciname " > 
+<!ENTITY % m.name   "(fname? & surname & onbehalf)" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
 
@@ -25,7 +25,7 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!ELEMENT ign - - CDATA >
-
+<!ELEMENT txtblock - - (sec | p )+ >
 <!ELEMENT aff - - (city? & state? & country? & zipcode? & email? & (#PCDATA)?)>
 <!ATTLIST aff
           id       ID    #REQUIRED
@@ -88,7 +88,7 @@ filename       CDATA #IMPLIED>
 <!ELEMENT tr - - (td+)    >
 <!ELEMENT td - - (p+)    >
 
-<!ELEMENT sciname - - (#PCDATA)>
+<!ELEMENT sciname - - (#PCDATA) >
 
 <!ELEMENT fngrp - - (#PCDATA) +(%i.float;) >
 <!ATTLIST fngrp
@@ -141,6 +141,7 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT fname    - - (#PCDATA) >
 <!ELEMENT surname  - - (#PCDATA) >
+<!ELEMENT onbehalf  - - (#PCDATA) >
 <!ELEMENT orgname  - - (#PCDATA) >
 
 
@@ -191,7 +192,7 @@ filename       CDATA #IMPLIED>
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 
-<!ELEMENT xmlbody  - - (sec|p)+  >
+<!ELEMENT xmlbody  - - (sec | p | txtblock)+  >
 <!ELEMENT sec  - - (sectitle, (subsec | p | list )+ )  >
 <!ATTLIST sec
           sec-type  CDATA #IMPLIED>
@@ -204,7 +205,10 @@ filename       CDATA #IMPLIED>
 <!ATTLIST list
           listtype  CDATA #REQUIRED
            >
-<!ELEMENT li  - - (#PCDATA) >
+<!ELEMENT li  - - (lilabel?, litext) >
+<!ELEMENT lilabel  - - (#PCDATA) >
+<!ELEMENT litext  - - (#PCDATA) +(%i.float;) >
+
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    license                                                           -->

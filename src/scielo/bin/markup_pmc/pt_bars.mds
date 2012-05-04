@@ -191,6 +191,7 @@ apa;Agrupa os elementos de  bibliografia segundo a norma APA;6;#FALSE#;#TRUE#;ap
 down;apa
 other;Agrupa os elementos de  bibliografia que não seguem nenhuma das demais normas;6;#FALSE#;#TRUE#;other
 down;other
+fngrp;Identifica uma nota de rodapé;6;#TRUE#;#TRUE#;
 licenses;Agrupa os elementos de licença;6;#FALSE#;#FALSE#;licensesBar
 down;licensesBar
 
@@ -206,7 +207,6 @@ thesgrp;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bib
 down;thesgrpBbibcom
 hist;Identifica o histórico da publicação de um artigo em um periódico (data de recebimento, de aceitação ou de revisão);9;#FALSE#;#FALSE#;histBbibcom
 down;histBbibcom
-fngrp;Identifica uma nota de rodapé;6;#TRUE#;#TRUE#;
 title;Identifica o título do documento;9;#TRUE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;9;#TRUE#;#FALSE#;
 
@@ -862,7 +862,6 @@ fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
 
 backT;textM
-fngrp;Identifica uma nota de rodapé;6;#TRUE#;#TRUE#;
 vancouv;Agrupa os elementos de bibliografia segundo a norma Vancouver;6;#FALSE#;#TRUE#;vancouv
 down;vancouv
 iso690;Agrupa os elementos de bibliografia segundo a norma ISO 690/87;6;#FALSE#;#TRUE#;iso690
@@ -873,6 +872,7 @@ apa;Agrupa os elementos de bibliografia para segundo a norma APA;6;#FALSE#;#TRUE
 down;apa
 other;Agrupa os elementos de bibliografia que não seguem as normas adotadas;6;#FALSE#;#TRUE#;other
 down;other
+fngrp;Identifica uma nota de rodapé;6;#TRUE#;#TRUE#;
 licenses;Agrupa os elementos de licença;6;#FALSE#;#FALSE#;licensesBar
 down;licensesBar
 
