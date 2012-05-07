@@ -38,8 +38,6 @@ equation;Identifica dados de uma fórmula;10;#TRUE#;#TRUE#;equation
 down;equation
 cltrial;Identifica dados de ensaios clínicos;10;#FALSE#;#FALSE#;cltrial
 down;cltrial
-list;Identifica uma lista;6;#FALSE#;#TRUE#;list
-down;list
 xref;Identifica referencia cruzada de tabelas, figuras, etc;10;#TRUE#;#TRUE#;
 uri;Identifica um link;10;#TRUE#;#TRUE#;
 sciname;Identifica nomes científicos;10;#TRUE#;#TRUE#;
@@ -79,12 +77,14 @@ email;Endereço eletrônico do autor;10;#FALSE#;#FALSE#;
 authgrpText;textM
 author;Agrupa dados dos autores individuais como nome,sobrenome e papel;6;#TRUE#;#TRUE#;authorText
 down;authorText
+onbehalf;Identifica a instituição representada;6;#FALSE#;#FALSE#;
 corpauth;Agrupa dados dos autores corporativos;6;#TRUE#;#FALSE#;corpauthText
 down;corpauthText
 
 authorText;authgrpText
 fname;Identifica os primeiros nomes de um autor individual;9;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;9;#FALSE#;#FALSE#;
+onbehalf;Identifica a instituição representada;9;#FALSE#;#FALSE#;
 
 corpauthText;authgrpText
 orgname;Identifica o nome da organização autora;10;#FALSE#;#FALSE#;
@@ -111,6 +111,7 @@ subtitle;Identifica o subtítulo do documento;9;#TRUE#;#FALSE#;
 authgrpFront;front
 author;Agrupa os dados de autores individuais como nome,sobrenome e papel;9;#TRUE#;#TRUE#;authorFront
 down;authorFront
+onbehalf;Identifica a instituição representada;9;#FALSE#;#FALSE#;
 corpauth;Identifica os autores corporativos;9;#TRUE#;#FALSE#;corpauthFront
 down;corpauthFront
 
@@ -920,17 +921,47 @@ xmlbodyBar;article
 sec;Identifica uma seção do texto;6;#TRUE#;#TRUE#;secBar
 down;secBar
 p;Identifica parágrafo;6;#TRUE#;#FALSE#;
+list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar_xmlbody
+down;listBar_xmlbody
+
+listBar_xmlbody;xmlbodyBar
+li;Identifica os itens da lista;2;#TRUE#;#FALSE#;libar_xmlbody
+down;libar_xmlbody
+
+libar_xmlbody;listBar_xmlbody
+lilabel;Identifica o rótulo do item da lista;15;#FALSE#;#FALSE#;
+litext;Identifica o texto do item da lista;15;#FALSE#;#FALSE#;
 
 secBar;xmlbodyBar
 sectitle;Identifica o título da seção;6;#TRUE#;#FALSE#;
 subsec;Identifica a sub-seção do texto;6;#TRUE#;#FALSE#;subsecBar
 down;subsecBar
 p;Identifica parágrafo;6;#TRUE#;#FALSE#;
+list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar_secBar
+down;listBar_secBar
+
+listBar_secBar;secBar
+li;Identifica os itens da lista;2;#TRUE#;#FALSE#;libar_secBar
+down;libar_secBar
+
+libar_secBar;listBar_secBar
+lilabel;Identifica o rótulo do item da lista;15;#FALSE#;#FALSE#;
+litext;Identifica o texto do item da lista;15;#FALSE#;#FALSE#;
 
 subsecBar;secBar
 sectitle;Identifica o título da subseção;6;#TRUE#;#FALSE#;
 subsec;Identifica a sub-seção do texto;6;#TRUE#;#FALSE#;subsec2Bar
 p;Identifica parágrafo;6;#TRUE#;#FALSE#;
+list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar_subsecBar
+down;listBar_subsecBar
+
+listBar_subsecBar;subsecBar
+li;Identifica os itens da lista;2;#TRUE#;#FALSE#;libar_subsecBar
+down;libar_subsecBar
+
+libar_subsecBar;listBar_subsecBar
+lilabel;Identifica o rótulo do item da lista;15;#FALSE#;#FALSE#;
+litext;Identifica o texto do item da lista;15;#FALSE#;#FALSE#;
 
 subsec2Bar;subsecBar
 sectitle;Identifica o título da subseção nível 2;6;#TRUE#;#FALSE#;

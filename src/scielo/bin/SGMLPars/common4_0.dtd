@@ -9,7 +9,7 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!ENTITY % i.float  "aff | ign | tabwrap | figgrp | cltrial | xref | uri | sciname " > 
-<!ENTITY % m.name   "(fname? & surname & onbehalf)" >
+<!ENTITY % m.name   "(fname? & surname )" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
 
@@ -131,7 +131,8 @@ filename       CDATA #IMPLIED>
 <!--    Author Group                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT authgrp  - - (author | corpauth)+ >
+<!--ELEMENT authgrp  - - (author | corpauth)+ -->
+<!ELEMENT authgrp  - - ( (author+, onbehalf?) & corpauth)+ >
     
 <!ELEMENT author   - - ((%m.name;) | previous ) >
 <!ATTLIST author
