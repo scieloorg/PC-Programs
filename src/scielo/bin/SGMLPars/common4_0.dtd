@@ -8,7 +8,7 @@
 <!--   Common Models                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ENTITY % i.float  "aff | ign | tabwrap | figgrp | cltrial | xref | uri | sciname " > 
+<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrp | cltrial | xref | uri | sciname " > 
 <!ENTITY % m.name   "(fname? & surname )" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
@@ -25,8 +25,17 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!ELEMENT ign - - CDATA >
-<!ELEMENT txtblock - - (sec | p )+ >
-<!ELEMENT aff - - (city? & state? & country? & zipcode? & email? & (#PCDATA)?)>
+<!ELEMENT xmlabstr - - (sec | p | list)+ >
+<!ATTLIST xmlabstr
+          language    #REQUIRED >
+<!ELEMENT txtblock - - (sec | p | list)+ >
+<!ATTLIST txtblock
+          language    #REQUIRED 
+          blcktype     #REQUIRED>
+
+
+<!ELEMENT corresp - - (email & (#PCDATA)?)>
+<!ELEMENT aff - - (label? & city? & state? & country? & zipcode? & email? & (#PCDATA)?)>
 <!ATTLIST aff
           id       ID    #REQUIRED
           orgname  CDATA #REQUIRED
@@ -132,7 +141,7 @@ filename       CDATA #IMPLIED>
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!--ELEMENT authgrp  - - (author | corpauth)+ -->
-<!ELEMENT authgrp  - - ( (author+, onbehalf?) & corpauth)+ >
+<!ELEMENT authgrp  - - ((author+, onbehalf?) | corpauth)+ >
     
 <!ELEMENT author   - - ((%m.name;) | previous ) >
 <!ATTLIST author

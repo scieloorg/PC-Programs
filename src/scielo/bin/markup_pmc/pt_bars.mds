@@ -27,6 +27,8 @@ down;backT
 ifloat;nd
 aff;Identifica a organização à qual o autor está vinculado;10;#TRUE#;#TRUE#;aff
 down;aff
+corresp;Identifica os dados de correspondencia;10;#FALSE#;#FALSE#;corresp
+down;corresp
 ign;Texto ignorado pela marcação;10;#TRUE#;#FALSE#;
 tabwrap;Identifica dados de uma tabela;10;#TRUE#;#TRUE#;tabwrap
 down;tabwrap
@@ -41,6 +43,9 @@ down;cltrial
 xref;Identifica referencia cruzada de tabelas, figuras, etc;10;#TRUE#;#TRUE#;
 uri;Identifica um link;10;#TRUE#;#TRUE#;
 sciname;Identifica nomes científicos;10;#TRUE#;#TRUE#;
+
+corresp;ifloat
+email;Endereço eletrônico do autor;10;#FALSE#;#FALSE#;
 
 cltrial;ifloat
 ctreg;Identifica o número do registro do ensaio clínico;10;#TRUE#;#TRUE#;
@@ -68,6 +73,7 @@ texmath;Tex Math Equation;10;#FALSE#;#FALSE#;
 mmlmath;Math (MathML 2.0 Tag Set);10;#FALSE#;#FALSE#;
 
 aff;ifloat
+label;Identifica o rótulo da afiliação;#FALSE#;#FALSE#;
 city;Identifica o nome da cidade da afiliação;10;#FALSE#;#FALSE#;
 state;Identifica o estado (local) da cidade da afiliação;10;#FALSE#;#FALSE#;
 country;Identifica o país da afiliação;10;#FALSE#;#FALSE#;
@@ -125,6 +131,7 @@ orgdiv;Identifica a divisão da organização autora do documento;10;#FALSE#;#FALSE
 
 bibcomFront;front
 abstract;Identifica o resumo do artigo;9;#TRUE#;#TRUE#;
+xmlabstr;Identifica o resumo estruturado de artigo;9;#TRUE#;#TRUE#;xmlabstr
 keygrp;Agrupa as palavras-chave do artigo;9;#TRUE#;#TRUE#;keygrpBibcom
 down;keygrpBibcom
 confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;9;#FALSE#;#FALSE#;confgrpBibcom
@@ -135,6 +142,21 @@ thesgrp;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bib
 down;thesgrpBibcom
 hist;Identifica o histórico da publicação de um artigo em um periódico (data de recebimento, de aceitação ou de revisão);9;#FALSE#;#FALSE#;histBibcom
 down;histBibcom
+
+xmlabstr;bibcomFront
+sec;Identifica uma seção do texto;6;#TRUE#;#TRUE#;sec_xmlabstr
+down;sec_xmlabstr
+p;Identifica parágrafo;6;#TRUE#;#FALSE#;
+list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar_xmlabstr
+down;listBar_xmlabstr
+
+listBar_xmlabstr;xmlabstr
+li;Identifica os itens da lista;2;#TRUE#;#FALSE#;libar_xmlabstr
+down;libar_xmlabstr
+
+libar_xmlabstr;listBar_xmlabstr
+lilabel;Identifica o rótulo do item da lista;15;#FALSE#;#FALSE#;
+litext;Identifica o texto do item da lista;15;#FALSE#;#FALSE#;
 
 keygrpBibcom;bibcomFront
 keyword;Identifica as palavras-chave do documento;10;#TRUE#;#TRUE#;

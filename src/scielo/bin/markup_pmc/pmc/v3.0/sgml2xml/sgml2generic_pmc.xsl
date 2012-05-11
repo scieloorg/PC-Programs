@@ -35,16 +35,34 @@
 			</xsl:if>
 		</funding-source>
 	</xsl:template>
-	<xsl:template match="back//*[contains(name(),'citat')]//city | back//*[contains(name(),'citat')]//state | back//*[contains(name(),'citat')]//country">
-		<publisher-loc>
-			<xsl:if test="../city">
-				<xsl:value-of select="../city"/>
-			</xsl:if>
-			<xsl:if test="../state">, <xsl:value-of select="../state"/>
-			</xsl:if>
-			<xsl:if test="../country">, <xsl:value-of select="../country"/>
-			</xsl:if>
+	<xsl:template match="back//*[contains(name(),'citat')]//country">
+		<xsl:choose>
+			<xsl:when test="../city">
+					
+			</xsl:when>
+			<xsl:when test="../state">
+				
+			</xsl:when>
+			<xsl:otherwise>
+				<publisher-loc><xsl:value-of select="."/></publisher-loc>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="back//*[contains(name(),'citat')]//city">
+		<publisher-loc><xsl:value-of select="."/>
+		<xsl:if test="../state">, <xsl:value-of select="../state"/></xsl:if>
+		<xsl:if test="../country">, <xsl:value-of select="../country"/></xsl:if>
 		</publisher-loc>
+	</xsl:template>
+	<xsl:template match="back//*[contains(name(),'citat')]//state">
+		<xsl:choose>
+			<xsl:when test="../city">
+					
+			</xsl:when>
+			<xsl:otherwise>
+				<publisher-loc><xsl:value-of select="."/><xsl:if test="../country">, <xsl:value-of select="../country"/></xsl:if></publisher-loc>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="confgrp">
 		<conference>
@@ -91,6 +109,37 @@
 				<xsl:value-of select="sponsor"/>
 			</conf-sponsor>
 		</xsl:if>
+	</xsl:template>
+	<xsl:template match="confgrp">
+		<conference><xsl:apply-templates select="*|text()"/></conference>
+	</xsl:template>
+	<xsl:template match="*[contains(name(),'citat')]//confgrp">
+		<xsl:apply-templates select="*|text()"/>
+	</xsl:template>
+	<xsl:template match="confgrp/date">
+		<conf-date><xsl:value-of select="."/></conf-date>
+	</xsl:template>
+	<xsl:template match="confgrp/sponsor">
+		<conf-sponsor><xsl:value-of select="."/></conf-sponsor>
+	</xsl:template>
+	<xsl:template match="confgrp/city">
+		<conf-loc><xsl:value-of select="."/>
+		<xsl:if test="../state">, <xsl:value-of select="../state"/></xsl:if>
+		<xsl:if test="../country">, <xsl:value-of select="../country"/></xsl:if>
+		</conf-loc>
+	</xsl:template>
+	<xsl:template match="confgrp/state">
+		<xsl:if test="not(../city)">
+		
+		<conf-loc><xsl:value-of select="."/>
+		<xsl:if test="../country">, <xsl:value-of select="../country"/></xsl:if>
+		</conf-loc></xsl:if>
+	</xsl:template>
+	<xsl:template match="confgrp/country">
+		<xsl:if test="not(../city) and not(../state)">
+		
+		<conf-loc><xsl:value-of select="."/>
+		</conf-loc></xsl:if>
 	</xsl:template>
 	<xsl:template match="confgrp/no | confgrp/confname">
 		<xsl:value-of select="."/>&#160;</xsl:template>
