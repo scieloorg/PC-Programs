@@ -141,6 +141,12 @@
 		<conf-loc><xsl:value-of select="."/>
 		</conf-loc></xsl:if>
 	</xsl:template>
-	<xsl:template match="confgrp/no | confgrp/confname">
-		<xsl:value-of select="."/>&#160;</xsl:template>
+	<xsl:template match="confgrp/no"/>
+	<xsl:template match="confgrp/confname"><conf-name><xsl:apply-templates select="../..//confgrp" mode="fulltitle"/></conf-name></xsl:template>
+		
+	<xsl:template match="confgrp" mode="fulltitle">
+		<xsl:apply-templates select="no|confname" mode="fulltitle"/></xsl:template>
+		
+	<xsl:template match="confgrp/confname | confgrp/no"  mode="fulltitle"><xsl:value-of select="."/> &#160; </xsl:template>
+	
 </xsl:stylesheet>

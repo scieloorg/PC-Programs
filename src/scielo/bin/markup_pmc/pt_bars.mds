@@ -43,6 +43,7 @@ down;cltrial
 xref;Identifica referencia cruzada de tabelas, figuras, etc;10;#TRUE#;#TRUE#;
 uri;Identifica um link;10;#TRUE#;#TRUE#;
 sciname;Identifica nomes científicos;10;#TRUE#;#TRUE#;
+quote;Identifica citação ou epígrafe;10;#TRUE#;#FALSE#;
 
 corresp;ifloat
 email;Endereço eletrônico do autor;10;#FALSE#;#FALSE#;
@@ -73,7 +74,7 @@ texmath;Tex Math Equation;10;#FALSE#;#FALSE#;
 mmlmath;Math (MathML 2.0 Tag Set);10;#FALSE#;#FALSE#;
 
 aff;ifloat
-label;Identifica o rótulo da afiliação;#FALSE#;#FALSE#;
+label;Identifica o rótulo da afiliação;10;#FALSE#;#FALSE#;
 city;Identifica o nome da cidade da afiliação;10;#FALSE#;#FALSE#;
 state;Identifica o estado (local) da cidade da afiliação;10;#FALSE#;#FALSE#;
 country;Identifica o país da afiliação;10;#FALSE#;#FALSE#;

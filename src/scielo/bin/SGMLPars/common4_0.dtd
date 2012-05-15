@@ -8,12 +8,13 @@
 <!--   Common Models                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrp | cltrial | xref | uri | sciname " > 
+<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrp | cltrial | xref | uri | sciname | quote" > 
 <!ENTITY % m.name   "(fname? & surname )" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
 
-<!ENTITY % m.conf   "(sponsor | confname | no | date | city | state | country)*" >
+<!--ENTITY % m.conf   "(sponsor | confname | no | date | city | state | country)*" -->
+<!ENTITY % m.conf   "(sponsor* & (confname & no?)+ & date & (city, state?, country?))" >
 
 <!ENTITY % m.thes   "(city? & state? & country? & date? & degree? & 
                       (%m.org;)?)" >
@@ -27,11 +28,11 @@
 <!ELEMENT ign - - CDATA >
 <!ELEMENT xmlabstr - - (sec | p | list)+ >
 <!ATTLIST xmlabstr
-          language    #REQUIRED >
+          language CDATA    #REQUIRED >
 <!ELEMENT txtblock - - (sec | p | list)+ >
 <!ATTLIST txtblock
-          language    #REQUIRED 
-          blcktype     #REQUIRED>
+          language CDATA    #REQUIRED 
+          blcktype CDATA     #REQUIRED>
 
 
 <!ELEMENT corresp - - (email & (#PCDATA)?)>
@@ -103,6 +104,8 @@ filename       CDATA #IMPLIED>
 <!ATTLIST fngrp
           fntype       CDATA    #REQUIRED 
 	 >
+<!ELEMENT quote - - (#PCDATA)>
+
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Deposit                                                        -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
