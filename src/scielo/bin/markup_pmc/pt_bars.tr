@@ -328,7 +328,7 @@ Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfi
 bbibcomBar;hist
 Identifica o histórico da publicação de um artigo em um periódico (data de recebimento, de aceitação ou de revisão)
 
-bbibcomBar;fngrp
+backBar;fngrp
 Identifica uma nota de rodapé
 
 bbibcomBar;title

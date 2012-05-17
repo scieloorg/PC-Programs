@@ -8,12 +8,13 @@
 <!--   Common Models                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ENTITY % i.float  "aff | ign | tabwrap | figgrp | cltrial | xref | uri | sciname" > 
-<!ENTITY % m.name   "(fname? & surname)" >
+<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrp | cltrial | xref | uri | sciname | quote" > 
+<!ENTITY % m.name   "(fname? & surname )" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
 
-<!ENTITY % m.conf   "(sponsor | confname | no | date | city | state | country)*" >
+<!--ENTITY % m.conf   "(sponsor | confname | no | date | city | state | country)*" -->
+<!ENTITY % m.conf   "(sponsor* & (confname & no?)+ & date & (city, state?, country?))" >
 
 <!ENTITY % m.thes   "(city? & state? & country? & date? & degree? & 
                       (%m.org;)?)" >
@@ -25,8 +26,17 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!ELEMENT ign - - CDATA >
+<!ELEMENT xmlabstr - - (sec | p | list)+ >
+<!ATTLIST xmlabstr
+          language CDATA    #REQUIRED >
+<!ELEMENT txtblock - - (sec | p | list)+ >
+<!ATTLIST txtblock
+          language CDATA    #REQUIRED 
+          blcktype CDATA     #REQUIRED>
 
-<!ELEMENT aff - - (city? & state? & country? & zipcode? & email? & (#PCDATA)?)>
+
+<!ELEMENT corresp - - (email & (#PCDATA)?)>
+<!ELEMENT aff - - (label? & city? & state? & country? & zipcode? & email? & (#PCDATA)?)>
 <!ATTLIST aff
           id       ID    #REQUIRED
           orgname  CDATA #REQUIRED
@@ -88,12 +98,14 @@ filename       CDATA #IMPLIED>
 <!ELEMENT tr - - (td+)    >
 <!ELEMENT td - - (p+)    >
 
-<!ELEMENT sciname - - (#PCDATA)>
+<!ELEMENT sciname - - (#PCDATA) >
 
 <!ELEMENT fngrp - - (#PCDATA) +(%i.float;) >
 <!ATTLIST fngrp
           fntype       CDATA    #REQUIRED 
 	 >
+<!ELEMENT quote - - (#PCDATA)>
+
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Deposit                                                        -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -131,7 +143,8 @@ filename       CDATA #IMPLIED>
 <!--    Author Group                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT authgrp  - - (author | corpauth)+ >
+<!--ELEMENT authgrp  - - (author | corpauth)+ -->
+<!ELEMENT authgrp  - - ((author+, onbehalf?) | corpauth)+ >
     
 <!ELEMENT author   - - ((%m.name;) | previous ) >
 <!ATTLIST author
@@ -141,6 +154,7 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT fname    - - (#PCDATA) >
 <!ELEMENT surname  - - (#PCDATA) >
+<!ELEMENT onbehalf  - - (#PCDATA) >
 <!ELEMENT orgname  - - (#PCDATA) >
 
 
@@ -191,7 +205,7 @@ filename       CDATA #IMPLIED>
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 
-<!ELEMENT xmlbody  - - (sec|p)+  >
+<!ELEMENT xmlbody  - - (sec | p | txtblock)+  >
 <!ELEMENT sec  - - (sectitle, (subsec | p | list )+ )  >
 <!ATTLIST sec
           sec-type  CDATA #IMPLIED>
@@ -204,7 +218,10 @@ filename       CDATA #IMPLIED>
 <!ATTLIST list
           listtype  CDATA #REQUIRED
            >
-<!ELEMENT li  - - (#PCDATA) >
+<!ELEMENT li  - - (lilabel?, litext) >
+<!ELEMENT lilabel  - - (#PCDATA) >
+<!ELEMENT litext  - - (#PCDATA) +(%i.float;) >
+
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    license                                                           -->

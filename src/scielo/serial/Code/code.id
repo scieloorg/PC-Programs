@@ -1784,7 +1784,8 @@
 !v002!^ctable^vTabela
 !ID 000123
 !v001!ref-type^les
-!v003!!!v002!^caff^vafiliación
+!v003!
+!v002!^caff^vafiliación
 !v002!^capp^vApendice
 !v002!^cauthor-notes^vNotas de autor
 !v002!^cbibr^vReferencia bibliográfica.
@@ -1922,10 +1923,12 @@
 !v002!^csimple^vLista simple (ningun prefijo)
 !ID 000131
 !v001!sec-type^len
+!v002!^cnd^vundefined
 !v002!^ccases^vCases/Case Reports
 !v002!^cconclusions^vConclusions/Comment
 !v002!^cdiscussion^vDiscussion/Interpretation
 !v002!^cintro^vIntroduction/Synopsis
+!v002!^cmaterials|methods^vMaterials and Methodology
 !v002!^cmaterials^vMaterials
 !v002!^cmethods^vMethods/Methodology/Procedures
 !v002!^cresults^vResults/Statement of Findings
@@ -1933,10 +1936,12 @@
 !v002!^csupplementary-material^vSupplementary materials
 !ID 000132
 !v001!sec-type^lpt
+!v002!^cnd^vindefinido
 !v002!^ccases^vRelatos de Caso
 !v002!^cconclusions^vConclusões ou Comentarios
 !v002!^cdiscussion^vDiscussões ou Interpretações
 !v002!^cintro^vIntrodução ou sinopse
+!v002!^cmaterials|methods^vMateriais and Métodos
 !v002!^cmaterials^vMateriais
 !v002!^cmethods^vMétodos/Metodologia/Procedimentos
 !v002!^cresults^vResultados/Declaração de descobertas
@@ -1944,12 +1949,26 @@
 !v002!^csupplementary-material^vMateriais suplementares
 !ID 000133
 !v001!sec-type^les
+!v002!^cnd^vindefinido
 !v002!^ccases^vInformes de casos
 !v002!^cconclusions^vConclusiones o comentarios
 !v002!^cdiscussion^vDiscusiones o interpretaciones
 !v002!^cintro^vIntroducción o sinopsis
+!v002!^cmaterials|methods^vMateriales y Metodologías
 !v002!^cmaterials^vMateriales
 !v002!^cmethods^vMétodos/Metodología/Procedimientos
 !v002!^cresults^vResultados/Declaración de descobiertas
 !v002!^csubjects^vTemas/Participantes/Pacientes
 !v002!^csupplementary-material^vMateriales suplementares
+!ID 000134
+!v001!blcktype^len
+!v002!^cnd^vundefined
+!v002!^cack^vAcknowledge
+!ID 000135
+!v001!blcktype^lpt
+!v002!^cnd^vindefinido
+!v002!^cack^vAgradecimentos
+!ID 000136
+!v001!blcktype^les
+!v002!^cnd^vindefinido
+!v002!^cack^vAgradecimientos
