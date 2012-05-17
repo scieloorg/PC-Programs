@@ -7,6 +7,12 @@ language
 abstract
 language
 
+xmlabstr
+language
+
+txtblock
+blcktype
+
 date
 dateiso
 
