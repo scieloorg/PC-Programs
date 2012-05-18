@@ -151,14 +151,30 @@ afiliação;Apêndice;Notas de autor;Referencia bibliográfica.;Caixa de texto ou ba
 aff;app;author-notes;bibr;boxed-text;chem;contrib;corresp;disp-formula;fig;fn;kwd;list;other;plate;scheme;sec;statement;supplementary-material;table
 
 sec-type
-Relatos de Caso;Conclusões ou Comentarios;Discussões ou Interpretações;Introdução ou sinopse;Materiais;Métodos/Metodologia/Procedimentos;Resultados/Declaração de descobertas;Assuntos/Participantes/Pacientes;Materiais suplementares
-cases;conclusions;discussion;intro;materials;methods;results;subjects;supplementary-material
+indefinido;Materiais e Métodos;* Resultados e Discussão;* Resultados e Conclusões;* Resultados, Discussão, Conclusões;Relatos de Caso;Conclusões ou Comentarios;Discussões ou Interpretações;Introdução ou sinopse;Materiais;Métodos/Metodologia/Procedimentos;Resultados/Declaração de descobertas;Assuntos/Participantes/Pacientes;Materiais suplementares
+nd;materials|methods;results|discussion;results|conclusions;results|discussion|conclusions;cases;conclusions;discussion;intro;materials;methods;results;subjects;supplementary-material
 
 listtype
 Lista ordenada. Caracter do prefixo é um número ou letra dependendo do estilo;Lista não-ordenada. Caracter do prefixo é um caracter especial;Lista ordenada. Caracter do prefixo é um caracter alfabético em caixa baixa;Lista ordenada. Caracter do prefixo é um caracter alfabético em caixa alta;Lista ordenada. Caracter do prefixo é um numeral romano em caixa baixa;Lista ordenada. Caracter do prefixo é um numeral romano em caixa alta;Lista simples (nenhum prefixo)
 order;bullet;alpha-lower;alpha-upper;roman-lower;roman-upper;simple
 
 fntype
-Abreviações;Informação de comunicado;Informação de contribuição;Declaração de conflito de interesse;Informação de correspondencia;Afiliação atual do autor;Pessoa morreu desde que o artigo foi escrito;Autor é o editor;Contribuiu igualmente na criação do documento;Declaração de financiamento ou negação do recebido no apoio da pesquisa na qual o artigo é baseado;Autor está ausente (sabático ou outro);Outro tipo de nota;Autor foi um pesquisador para um artigo;Endereço atual do autor;Apresentado neste evento;Apresentador del material;Afiliação do autor anterior;Autor foi um membro do grupo de estudo para a pesquisa;Indica ou descreve o material suplementar para o artigo;Pesquisa na qual um artigo é baseado, foi apoiado por alguma entidade
-abbr;com;con;conflict;corresp;current-aff;deceased;edited-by;equal;financial-disclosure;on-leave;other;participating-researchers;present-address;presented-at;presented-by;previously-at;study-group-members;supplementary-material;supported-by
+Abreviações;Informação de comunicado;Informação de contribuição;Declaração de conflito de interesse;Informação de correspondencia;Afiliação atual do autor;Pessoa morreu desde que o artigo foi escrito;Autor é o editor;Contribuiu igualmente na criação do documento;Declaração de financiamento ou negação do recebido no apoio da pesquisa na qual o artigo é baseado;Autor está ausente (sabático ou outro);Outro tipo de nota;Outro tipo de nota relacionada ao autor;Autor foi um pesquisador para um artigo;Endereço atual do autor;Apresentado neste evento;Apresentador del material;Afiliação do autor anterior;Autor foi um membro do grupo de estudo para a pesquisa;Indica ou descreve o material suplementar para o artigo;Pesquisa na qual um artigo é baseado, foi apoiado por alguma entidade
+abbr;com;con;conflict;corresp;current-aff;deceased;edited-by;equal;financial-disclosure;on-leave;other;author;participating-researchers;present-address;presented-at;presented-by;previously-at;study-group-members;supplementary-material;supported-by
+
+blcktype
+indefinido;Agradecimentos
+nd;ack
+
+corresp
+sim;não
+y;n
+
+eqcontr
+sim;não
+y;n
+
+deceased
+sim;não
+y;n
 

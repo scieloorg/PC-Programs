@@ -21,7 +21,8 @@ Sub generateJournalStandardListForMarkup()
     Open Paths("Markup Issue Table").Path + "\journal-standard.txt" For Output As fn
     For i = 1 To journalList.count
         Set j = journalList(i)
-        Print #fn, j.ISSN & "#" & j.shorttitle & "#" & j.JournalStandard & "#" & j.ISSNTYPE & "#" & j.CURRENTISSN & "#" & j.SUBJECT
+        Print #fn, j.ISSN & "#" & j.shorttitle & "#" & j.JournalStandard & "#" & j.ISSNTYPE & "#" & j.CURRENTISSN & "#" & j.SUBJECT & "#" & j.MedlineTitle & "#" & j.pmid
+        
     Next
     Close fn
 End Sub

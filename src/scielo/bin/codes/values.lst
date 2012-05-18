@@ -40,3 +40,6 @@ curr,sec-type,yes
 curr,listtype,yes
 curr,fntype,yes
 curr,blcktype,yes
+curr,corresp,yes
+curr,eqcontr,yes
+curr,deceased,yes

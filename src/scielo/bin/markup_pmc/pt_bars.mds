@@ -203,6 +203,7 @@ revised;Identifica a data em que inicio-se a revisão do artigo pelo processo de 
 accepted;Identifica a data em que o artigo foi aprovado para a publicação;10;#FALSE#;#TRUE#;
 
 backBar;article
+ack;Identifica agradecimento;6;#FALSE#;#FALSE#;
 bbibcom;Agrupa elementos complementares que estão na parte posterior ao corpo do texto;6;#TRUE#;#FALSE#;bbibcomBar
 down;bbibcomBar
 vancouv;Agrupa os elementos de  bibliografia segundo a norma Vancouver;6;#FALSE#;#TRUE#;vancouv
@@ -215,9 +216,13 @@ apa;Agrupa os elementos de  bibliografia segundo a norma APA;6;#FALSE#;#TRUE#;ap
 down;apa
 other;Agrupa os elementos de  bibliografia que não seguem nenhuma das demais normas;6;#FALSE#;#TRUE#;other
 down;other
-fngrp;Identifica uma nota de rodapé;6;#TRUE#;#TRUE#;
+fngrp;Identifica uma nota de rodapé;6;#TRUE#;#TRUE#;fngrpBackBar
+down;fngrpBackBar
 licenses;Agrupa os elementos de licença;6;#FALSE#;#FALSE#;licensesBar
 down;licensesBar
+
+fngrpBackBar;backBar
+label;Identifica o rótulo da nota;9;#FALSE#;#FALSE#;
 
 bbibcomBar;backBar
 abstract;Identifica o resumo do artigo;9;#TRUE#;#TRUE#;
@@ -946,6 +951,11 @@ down;secBar
 p;Identifica parágrafo;6;#TRUE#;#FALSE#;
 list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar_xmlbody
 down;listBar_xmlbody
+sigblock;Identifica o bloco de assinatura;6;#FALSE#;#FALSE#;sigblockBar
+down;sigblockBar
+
+sigblockBar;xmlbodyBar
+sig;Identifica uma assinatura;15;#TRUE#;#FALSE#;
 
 listBar_xmlbody;xmlbodyBar
 li;Identifica os itens da lista;2;#TRUE#;#FALSE#;libar_xmlbody
@@ -956,7 +966,7 @@ lilabel;Identifica o rótulo do item da lista;15;#FALSE#;#FALSE#;
 litext;Identifica o texto do item da lista;15;#FALSE#;#FALSE#;
 
 secBar;xmlbodyBar
-sectitle;Identifica o título da seção;6;#TRUE#;#FALSE#;
+sectitle;Identifica o título da seção;6;#FALSE#;#FALSE#;
 subsec;Identifica a sub-seção do texto;6;#TRUE#;#FALSE#;subsecBar
 down;subsecBar
 p;Identifica parágrafo;6;#TRUE#;#FALSE#;

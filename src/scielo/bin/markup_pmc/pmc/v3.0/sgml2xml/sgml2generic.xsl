@@ -8,7 +8,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="unident" select="//unidentified"/>
 	<xsl:variable name="corresp" select="//corresp"/>
 	<xsl:variable name="unident_back" select="//back//unidentified"/>
-	
+	<xsl:variable name="fn" select=".//fngrp[@fntype='author']"/>
 	
 	<xsl:variable name="xref_id" select="//*[@id]"/>
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
@@ -115,13 +115,21 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="body"/>
 	
-	<xsl:template match="uri | p | sec | bold  | sub | sup |  label | subtitle | edition |  issn | italic | corresp">
+	<xsl:template match="uri | p | sec | bold  | sub | sup |  label | subtitle | edition |  issn | italic | corresp | ack | sig-block">
 		<xsl:param name="id"/>
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="@*| * | text()">
 				<xsl:with-param name="id" select="$id"/>
 			</xsl:apply-templates>
 		</xsl:element>
+	</xsl:template>
+	<xsl:template match="sigblock">
+		<xsl:param name="id"/>
+		<sig-block>
+			<xsl:apply-templates select="@*| * | text()">
+				<xsl:with-param name="id" select="$id"/>
+			</xsl:apply-templates>
+		</sig-block>
 	</xsl:template>
 	<xsl:template match="version"><edition><xsl:value-of select="."/></edition>
 	</xsl:template>
@@ -152,7 +160,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="article|text" mode="journal-meta">
 		<journal-meta>
-			<xsl:copy-of select=".//journal-id"/>
+			<xsl:if test=".//nlm-title"><journal-id journal-id-type="nlm-ta"><xsl:value-of select=".//nlm-title"/></journal-id></xsl:if>
 			<journal-id journal-id-type="publisher-id">
 				<xsl:value-of select="$JOURNAL_PID"/>
 			</journal-id>
@@ -190,6 +198,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:value-of select="substring-after(100000 + @order,'1')"/>
 				</article-id>
 				<xsl:apply-templates select="front/doi|doi"></xsl:apply-templates>
+				
 			</xsl:if>
 			
 			<article-categories>
@@ -284,15 +293,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<contrib-group>
 			<xsl:apply-templates select="author|corpauth" mode="front"/>
 			<xsl:if test="onbehalf"><on-behalf-of><xsl:value-of select="onbehalf"/></on-behalf-of></xsl:if>
-			
+			<xsl:if test="count(..//aff)=1"><xsl:apply-templates select="..//aff"/></xsl:if>
 		</contrib-group>
-		<xsl:apply-templates select="..//aff"/>
+		<xsl:if test="count(..//aff)&gt;1"><xsl:apply-templates select="..//aff"/></xsl:if>
 	</xsl:template>
 	<xsl:template match="@role">
 		<xsl:attribute name="contrib-type"><xsl:choose><xsl:when test=".='nd'">author</xsl:when><xsl:when test=".='ed'">editor</xsl:when><xsl:when test=".='tr'">translator</xsl:when><xsl:when test=".='rev'">rev</xsl:when></xsl:choose></xsl:attribute>
 	</xsl:template>
 	<xsl:template match="author" mode="front">
 		<contrib>
+		<xsl:if test="contains($corresp,.//fname) and contains($corresp,//surname)"><xsl:attribute name="corresp">yes</xsl:attribute></xsl:if>
 			<xsl:apply-templates select="@role"/>
 			<xsl:apply-templates select="."/>
 			<xsl:apply-templates select="@rid"/>
@@ -349,7 +359,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</email>
 	</xsl:template>
 	<xsl:template match="*" mode="author-notes">
+		<author-notes>
 		<xsl:apply-templates select="$corresp"></xsl:apply-templates>	
+		<xsl:apply-templates select="$fn[@fntype='author']"/>
+		</author-notes>
+	</xsl:template>
+	
+	<xsl:template match="@fntype[.='author']"><xsl:attribute name="fn-type">other</xsl:attribute>
 	</xsl:template>
 	
 	<xsl:template match="@volid | volid">
@@ -358,9 +374,20 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</volume>
 	</xsl:template>
 	<xsl:template match="@issueno | issueno">
-		<issue>
-			<xsl:value-of select="."/>
-		</issue>
+		<xsl:choose>
+			<xsl:when test="contains(.,' Pt ')">
+				<issue>
+					<xsl:value-of select="substring-before(.,' Pt ')"/>
+				</issue>
+				<issue-part>Pt <xsl:value-of select="substring-after(.,' Pt ')"/></issue-part>
+			</xsl:when>
+			<xsl:otherwise>
+			<issue>
+				<xsl:value-of select="."/>
+			</issue>
+			</xsl:otherwise>
+		</xsl:choose>
+		
 	</xsl:template>
 	<xsl:template match="@supplvol | @supplno | suppl">
 		<supplement>
@@ -466,12 +493,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<!--word-count count="2847"/-->
 		</counts>
 	</xsl:template>
+	<xsl:template match="@sec-type[.='nd']">
+	</xsl:template>
 	<xsl:template match="*" mode="body">
 		<body>
 			<xsl:apply-templates select="xmlbody"/>
 		</body>
 	</xsl:template>
-	<xsl:template match="sec[contains(.//sectitle//text(),'Materials and methods')]/@sec-type"><xsl:attribute name="sec-type">materials|methods</xsl:attribute></xsl:template>
 	<xsl:template match="subsec">
 		<sec>
 			<xsl:apply-templates select="@*|*|text()"/>
@@ -488,7 +516,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template-->
 	<!-- BACK -->
 	<xsl:template match="article|text" mode="back">
-		<xsl:if test="back/fngrp[normalize-space(.)!=''] or back/fxmlbody or back/*[@standard] or back/bbibcom">
+		<xsl:if test="back/fngrp[normalize-space(.)!=''] or back/ack or back/fxmlbody or back/*[@standard] or back/bbibcom">
 			<back>
 				<xsl:apply-templates select="back"/>
 			</back>
@@ -497,7 +525,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	
 	<xsl:template match="back">
-				<xsl:apply-templates select="fxmlbody[@type='ack']"/>
+				<xsl:apply-templates select="fxmlbody[@type='ack']|ack"/>
 				<xsl:apply-templates select="*[@standard]"/>
 				<xsl:if test=".//fngrp[@fntype]">
 					<fn-group>
@@ -554,6 +582,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:when test=".//patgrp">patent</xsl:when>
 					<xsl:when test=".//report">report</xsl:when>
 					<xsl:when test=".//version">software</xsl:when>
+					<xsl:when test=".//url and .//cited and not (.//pages or .//extent)">web</xsl:when>
 					<xsl:when test="vmonog or amonog or omonog or imonog or pmonog">book</xsl:when>
 					<xsl:otherwise>other</xsl:otherwise>
 				</xsl:choose>
@@ -562,8 +591,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="*[name()!='no' and name()!='text-ref']">
 					<xsl:with-param name="position" select="position()"/>
 				</xsl:apply-templates>
+				<xsl:apply-templates select="." mode="text-ref"/>
 			</element-citation>
-			<xsl:apply-templates select="." mode="text-ref"/>
+			
 		</ref>
 	</xsl:template>
 	
@@ -696,7 +726,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ext-link>
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'citat')]" mode="text-ref">
-		<mixed-citation>
+		<alternatives>
+		<textual-form>
 			<xsl:choose>
 				<xsl:when test="text-ref">
 					<xsl:value-of select="text-ref" disable-output-escaping="yes"/>
@@ -705,7 +736,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="." mode="create-text-ref"/>
 				</xsl:otherwise>
 			</xsl:choose>
-		</mixed-citation>
+		</textual-form></alternatives>
 	</xsl:template>
 	<xsl:template match="*" mode="create-text-ref">
 		<xsl:apply-templates select="@* | * | text() " mode="create-text-ref"/>
@@ -847,6 +878,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			
 	</xsl:template>
 	<xsl:template match="back//*[contains(name(),'contrib')]//title">
+		
 		<xsl:choose>
 			<xsl:when test="../../..//node()[contains(name(),'monog')]">
 				<chapter-title>
@@ -855,7 +887,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 				</chapter-title>
 			</xsl:when>
 			<xsl:otherwise>
-			<xsl:choose><xsl:when test="contains(.,'[') and contains(.,']')">
+			<xsl:choose><xsl:when test="substring(.,1,1)='[' and substring(.,string-length(.),1)=']'">
 			<trans-title>
 					<xsl:apply-templates select="@language"/>
 					<xsl:variable name="t"><xsl:apply-templates select="*|text()"/></xsl:variable>
@@ -905,7 +937,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 	</xsl:template>
 	
 	
-	<xsl:template match="othinfo">
+	<xsl:template match="othinfo | vmonog/text()">
 		<xsl:variable name="valor"><xsl:choose><xsl:when test="contains(.,'doi:')"><xsl:value-of select="substring-before(.,'doi:')"/>DOI:<xsl:value-of select="substring-after(.,'doi:')"/></xsl:when><xsl:otherwise><xsl:value-of select="."/></xsl:otherwise></xsl:choose></xsl:variable>
 		<xsl:variable name="valor2"><xsl:choose><xsl:when test="contains($valor,'pmid:')"><xsl:value-of select="substring-before($valor,'pmid:')"/>PMID:<xsl:value-of select="substring-after($valor,'pmid:')"/></xsl:when><xsl:otherwise><xsl:value-of select="$valor"/></xsl:otherwise></xsl:choose></xsl:variable>
 		<xsl:choose>
@@ -946,6 +978,11 @@ Here is a figure group, with three figures inside, each of which contains a grap
 					<xsl:value-of select="substring-after($valor2,'PMID: ')"/>
 				</pub-id>
 			</xsl:when>
+			<xsl:when test="contains($valor2,'serie')">
+				<series>
+					<xsl:value-of select="."/>
+				</series>
+			</xsl:when>
 			<xsl:otherwise><comment><xsl:value-of select="."/></comment>
 			</xsl:otherwise>
 		</xsl:choose>
@@ -956,7 +993,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 	<xsl:template match="xref/@rid">
 		<xsl:variable name="rid" select="."/>
 		
-		<xsl:if test="$xref_id[@id=$rid] or r=substring($rid,1,1)">
+		<xsl:if test="$xref_id[@id=$rid] or 'r'=substring($rid,1,1)">
 			<xsl:attribute name="rid"><xsl:value-of select="."/></xsl:attribute>
 		</xsl:if>
 	</xsl:template>
@@ -1239,5 +1276,7 @@ et al.</copyright-statement>
 		<xsl:apply-templates select="no|confname" mode="fulltitle"/></xsl:template>
 		
 	<xsl:template match="confgrp/confname | confgrp/no"  mode="fulltitle"><xsl:value-of select="."/> &#160; </xsl:template>
+	
+	<xsl:template match="coltitle"><series><xsl:value-of select="."/></series></xsl:template>
 	
 </xsl:stylesheet>

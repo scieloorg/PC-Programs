@@ -1842,6 +1842,7 @@
 !v002!^cfinancial-disclosure^vDeclaração de financiamento ou negação do recebido no apoio da pesquisa na qual o artigo é baseado
 !v002!^con-leave^vAutor está ausente (sabático ou outro)
 !v002!^cother^vOutro tipo de nota
+!v002!^cauthor^vOutro tipo de nota relacionada ao autor
 !v002!^cparticipating-researchers^vAutor foi um pesquisador para um artigo
 !v002!^cpresent-address^vEndereço atual do autor
 !v002!^cpresented-at^vApresentado neste evento
@@ -1864,6 +1865,7 @@
 !v002!^cfinancial-disclosure^vDeclaración de financiamiento o negación de recebimiento en el apoyo de la investigación en la cual el artículo es basado 
 !v002!^con-leave^vAutor está ausente (sabático o otro)
 !v002!^cother^vOtro tipo de nota
+!v002!^cauthor^vOtro tipo de nota relacionada ao autor
 !v002!^cparticipating-researchers^vAutor fue un investigador para un artículo
 !v002!^cpresent-address^vDirección vigente del autor
 !v002!^cpresented-at^vPresentado en este evento
@@ -1886,6 +1888,7 @@
 !v002!^cfinancial-disclosure^vStatement of funding or denial of funds received in support of the research on which an article is based
 !v002!^con-leave^vContributor is on sabbatical or other leave of absence
 !v002!^cother^vSome footnote type, other than those enumerated.
+!v002!^cauthor^vSome footnote type, other than those enumerated, but related to author.
 !v002!^cparticipating-researchers^vContributor was a researcher for an article
 !v002!^cpresent-address^vContributor's current address
 !v002!^cpresented-at^vConference, colloquium, or other occasion at which this paper was presented
@@ -1924,11 +1927,14 @@
 !ID 000131
 !v001!sec-type^len
 !v002!^cnd^vundefined
+!v002!^cmaterials|methods^v* Materials and Methodology
+!v002!^cresults|discussion^v* Results and Discussion
+!v002!^cresults|conclusions^v* Results and Conclusions
+!v002!^cresults|discussion|conclusions^v* Results, Discussion, Conclusions
 !v002!^ccases^vCases/Case Reports
 !v002!^cconclusions^vConclusions/Comment
 !v002!^cdiscussion^vDiscussion/Interpretation
 !v002!^cintro^vIntroduction/Synopsis
-!v002!^cmaterials|methods^vMaterials and Methodology
 !v002!^cmaterials^vMaterials
 !v002!^cmethods^vMethods/Methodology/Procedures
 !v002!^cresults^vResults/Statement of Findings
@@ -1937,11 +1943,14 @@
 !ID 000132
 !v001!sec-type^lpt
 !v002!^cnd^vindefinido
+!v002!^cmaterials|methods^vMateriais e Métodos
+!v002!^cresults|discussion^v* Resultados e Discussão
+!v002!^cresults|conclusions^v* Resultados e Conclusões
+!v002!^cresults|discussion|conclusions^v* Resultados, Discussão, Conclusões
 !v002!^ccases^vRelatos de Caso
 !v002!^cconclusions^vConclusões ou Comentarios
 !v002!^cdiscussion^vDiscussões ou Interpretações
 !v002!^cintro^vIntrodução ou sinopse
-!v002!^cmaterials|methods^vMateriais and Métodos
 !v002!^cmaterials^vMateriais
 !v002!^cmethods^vMétodos/Metodologia/Procedimentos
 !v002!^cresults^vResultados/Declaração de descobertas
@@ -1950,11 +1959,14 @@
 !ID 000133
 !v001!sec-type^les
 !v002!^cnd^vindefinido
+!v002!^cmaterials|methods^vMateriales y Metodologías
+!v002!^cresults|discussion^v* Resultados y Discusión
+!v002!^cresults|conclusions^v* Resultados y Conclusiones
+!v002!^cresults|discussion|conclusions^v* Resultados, Discusión, Conclusiones
 !v002!^ccases^vInformes de casos
 !v002!^cconclusions^vConclusiones o comentarios
 !v002!^cdiscussion^vDiscusiones o interpretaciones
 !v002!^cintro^vIntroducción o sinopsis
-!v002!^cmaterials|methods^vMateriales y Metodologías
 !v002!^cmaterials^vMateriales
 !v002!^cmethods^vMétodos/Metodología/Procedimientos
 !v002!^cresults^vResultados/Declaración de descobiertas
@@ -1972,3 +1984,39 @@
 !v001!blcktype^les
 !v002!^cnd^vindefinido
 !v002!^cack^vAgradecimientos
+!ID 000137
+!v001!corresp^len
+!v002!^cy^vyes
+!v002!^cn^vno
+!ID 000138
+!v001!corresp^lpt
+!v002!^cy^vsim
+!v002!^cn^vnão
+!ID 000139
+!v001!corresp^les
+!v002!^cn^vno
+!v002!^cy^vsí
+!ID 000140
+!v001!deceased^len
+!v002!^cy^vyes
+!v002!^cn^vno
+!ID 000141
+!v001!deceased^lpt
+!v002!^cy^vsim
+!v002!^cn^vnão
+!ID 000142
+!v001!deceased^les
+!v002!^cn^vno
+!v002!^cy^vsí
+!ID 000143
+!v001!eqcontr^len
+!v002!^cy^vyes
+!v002!^cn^vno
+!ID 000144
+!v001!eqcontr^lpt
+!v002!^cy^vsim
+!v002!^cn^vnão
+!ID 000145
+!v001!eqcontr^les
+!v002!^cn^vno
+!v002!^cy^vsí

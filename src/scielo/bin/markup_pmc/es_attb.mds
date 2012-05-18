@@ -147,18 +147,34 @@ filename
 
 
 ref-type
-Apendice;Notas de autor;Referencia bibliográfica.;Caja de texto o barra lateral;Estructura química;Contribución;Autor correspondiente;Fórmula;Figura;Nota de pie de página;Palabra clave;íten de lista;Otro;Placa;Esquema;Sección;declaración;Información complementar;Tabla
-app;author-notes;bibr;boxed-text;chem;contrib;corresp;disp-formula;fig;fn;kwd;list;other;plate;scheme;sec;statement;supplementary-material;table
+afiliación;Apendice;Notas de autor;Referencia bibliográfica.;Caja de texto o barra lateral;Estructura química;Contribución;Autor correspondiente;Fórmula;Figura;Nota de pie de página;Palabra clave;íten de lista;Otro;Placa;Esquema;Sección;declaración;Información complementar;Tabla
+aff;app;author-notes;bibr;boxed-text;chem;contrib;corresp;disp-formula;fig;fn;kwd;list;other;plate;scheme;sec;statement;supplementary-material;table
 
 sec-type
-Informes de casos;Conclusiones o comentarios;Discusiones o interpretaciones;Introducción o sinopsis;Materiales;Métodos/Metodología/Procedimientos;Resultados/Declaración de descobiertas;Temas/Participantes/Pacientes;Materiales suplementares
-cases;conclusions;discussion;intro;materials;methods;results;subjects;supplementary-material
+indefinido;Materiales y Metodologías;* Resultados y Discusión;* Resultados y Conclusiones;* Resultados, Discusión, Conclusiones;Informes de casos;Conclusiones o comentarios;Discusiones o interpretaciones;Introducción o sinopsis;Materiales;Métodos/Metodología/Procedimientos;Resultados/Declaración de descobiertas;Temas/Participantes/Pacientes;Materiales suplementares
+nd;materials|methods;results|discussion;results|conclusions;results|discussion|conclusions;cases;conclusions;discussion;intro;materials;methods;results;subjects;supplementary-material
 
 listtype
 Lista ordenada. Caracter del prefijo es un número o letra dependiendo del estilo;Lista no-ordenada. Caracter del prefijo es un caracter especial;Lista ordenada. Caracter del prefijo es un caracter alfabético en caja baja;Lista ordenada. Caracter del prefijo es un caracter alfabético en caja alta;Lista ordenada. Caracter del prefijo es un numeral romano en caja baja;Lista ordenada. Caracter del prefijo es un numeral romano en caja alta;Lista simple (ningun prefijo)
 order;bullet;alpha-lower;alpha-upper;roman-lower;roman-upper;simple
 
 fntype
-Abreviaciones;Información de comunicado;Información de comunicación;Declaración de conflito de interese;Información de correspondencia;Afiliación vigente del autor;Persona se morrió desde la escritura del artículo;Autor es el editor;Contribuyo igualmente en la creación del documento;Declaración de financiamiento o negación de recebimiento en el apoyo de la investigación en la cual el artículo es basado ;Autor está ausente (sabático o otro);Otro tipo de nota;Autor fue un investigador para un artículo;Dirección vigente del autor;Presentado en este evento;Presentador del material;Afiliación del autor anterior;Autor fue un miembro del grupo de estudio para la investigación;Indica o describe el material suplementar para el artículo;Investigación en la cual un artículo fue basado fue apoyado por alguna entidad. 
-abbr;com;con;conflict;corresp;current-aff;deceased;edited-by;equal;financial-disclosure;on-leave;other;participating-researchers;present-address;presented-at;presented-by;previously-at;study-group-members;supplementary-material;supported-by
+Abreviaciones;Información de comunicado;Información de comunicación;Declaración de conflito de interese;Información de correspondencia;Afiliación vigente del autor;Persona se morrió desde la escritura del artículo;Autor es el editor;Contribuyo igualmente en la creación del documento;Declaración de financiamiento o negación de recebimiento en el apoyo de la investigación en la cual el artículo es basado ;Autor está ausente (sabático o otro);Otro tipo de nota;Otro tipo de nota relacionada ao autor;Autor fue un investigador para un artículo;Dirección vigente del autor;Presentado en este evento;Presentador del material;Afiliación del autor anterior;Autor fue un miembro del grupo de estudio para la investigación;Indica o describe el material suplementar para el artículo;Investigación en la cual un artículo fue basado fue apoyado por alguna entidad. 
+abbr;com;con;conflict;corresp;current-aff;deceased;edited-by;equal;financial-disclosure;on-leave;other;author;participating-researchers;present-address;presented-at;presented-by;previously-at;study-group-members;supplementary-material;supported-by
+
+blcktype
+indefinido;Agradecimientos
+nd;ack
+
+corresp
+no;sí
+n;y
+
+eqcontr
+no;s
+n;y
+
+deceased
+no;sí
+n;y
 

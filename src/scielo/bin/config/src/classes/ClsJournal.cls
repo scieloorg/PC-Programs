@@ -32,6 +32,7 @@ Public CollectionURL As String
 Private mvarCURRENTISSN As String
 Private mvarISSNTYPE As String
 Private mvarSUBJECT As String
+Public pmid As String
 
 Public Property Let SUBJECT(ByVal vNewValue As String)
     mvarSUBJECT = vNewValue
