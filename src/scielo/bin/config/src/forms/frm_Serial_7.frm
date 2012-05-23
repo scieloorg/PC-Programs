@@ -182,7 +182,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Public IsBack As Boolean
 Private MyMfnTitle As Long
-Private savedlicense As clsCreativeCommons
+Private savedlicense As New clsCreativeCommons
 'Private currentLicText As ColIdiom
 Private Const MAX_LINES_INDEX = 10
 
@@ -225,14 +225,14 @@ Sub MyGetContentFromBase(MfnTitle As Long)
     Set savedlicense = New clsCreativeCommons
     Set savedlicense = journalDAO.getJournalCreativeCommons(MfnTitle)
     If LicensesList.isCustomizedLicense(savedlicense) Then
-        ComboLicText.AddItem (savedlicense.code & "* " & ConfigLabels.getLabel("CUSTOMIZED_FOR_JOURNAL"))
+        ComboLicText.AddItem (savedlicense.Code & "* " & ConfigLabels.getLabel("CUSTOMIZED_FOR_JOURNAL"))
         customized = True
     End If
-    If Len(savedlicense.code) > 0 Then
+    If Len(savedlicense.Code) > 0 Then
         If customized Then
-            ComboLicText.text = savedlicense.code & "* " & ConfigLabels.getLabel("CUSTOMIZED_FOR_JOURNAL")
+            ComboLicText.text = savedlicense.Code & "* " & ConfigLabels.getLabel("CUSTOMIZED_FOR_JOURNAL")
         Else
-            ComboLicText.text = savedlicense.code
+            ComboLicText.text = savedlicense.Code
         End If
         
     Else
@@ -264,7 +264,7 @@ Function changed(MfnTitle As Long) As Boolean
     
     Set temp = journalDAO.getJournalCreativeCommons(MfnTitle)
     For i = 1 To idiomsinfo.count
-        If (temp.getLicense(idiomsinfo(i).code).text <> TextCreativeCommons(i - 1).text) Then
+        If (temp.getLicense(idiomsinfo(i).Code).text <> TextCreativeCommons(i - 1).text) Then
             change = True
         End If
     Next
@@ -333,12 +333,12 @@ Private Sub ComboLicText_Click()
     If InStr(ComboLicText.text, "*") > 0 Then
         'customized
         For i = 1 To idiomsinfo.count
-            TextCreativeCommons(i - 1).text = savedlicense.getLicense(idiomsinfo(i).code).text
+            TextCreativeCommons(i - 1).text = savedlicense.getLicense(idiomsinfo(i).Code).text
             TextCreativeCommons(i - 1).Locked = False
         Next
     Else
          For i = 1 To idiomsinfo.count
-            TextCreativeCommons(i - 1).text = LicensesList.item(ComboLicText.text).getLicense(idiomsinfo(i).code).text
+            TextCreativeCommons(i - 1).text = LicensesList.item(ComboLicText.text).getLicense(idiomsinfo(i).Code).text
             TextCreativeCommons(i - 1).Locked = False
         Next
     
@@ -385,10 +385,12 @@ Sub receiveData()
                 t = text
                 TextCreativeCommons(i - 1).text = text
             End If
-            Set item = savedlicense.getLicense(idiomsinfo(i).code)
-            
-            item.lang = idiomsinfo(i).code
-            item.text = t
+            If Not savedlicense Is Nothing Then
+                Set item = savedlicense.getLicense(idiomsinfo(i).Code)
+                
+                item.lang = idiomsinfo(i).Code
+                item.text = t
+            End If
         Next
     'End If
 End Sub

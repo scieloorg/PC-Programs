@@ -34,7 +34,7 @@ item: Global
   Version Company=SciELO
   Distribute Path=C:\2007\scielo
   Distribute Type=1
-  Step View=Properties
+  Step View=All
   Variable Name1=_SYS_
   Variable Default1=C:\WINNT\system32
   Variable Flags1=00001000
@@ -1160,6 +1160,76 @@ item: Open/Close INSTALL.LOG
 end
 item: Check Disk Space
   Component=COMPONENTS
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\PMCXMLGeneratorAndValidator.py
+  Destination=%PROGDIR%\bin\PMCXMLTools\PMCXMLGeneratorAndValidator.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\PMCXML.py
+  Destination=%PROGDIR%\bin\PMCXMLTools\PMCXML.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\PMCFilesManager.py
+  Destination=%PROGDIR%\bin\PMCXMLTools\PMCFilesManager.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\myXML.py
+  Destination=%PROGDIR%\bin\PMCXMLTools\myXML.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\MKPXML.py
+  Destination=%PROGDIR%\bin\PMCXMLTools\MKPXML.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\JavaXMLManager.py
+  Destination=%PROGDIR%\bin\PMCXMLTools\JavaXMLManager.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\core\XMLCheck.jar
+  Destination=%PROGDIR%\bin\PMCXMLTools\core\XMLCheck.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\core\saxon8.jar
+  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\core\saxon8-xpath.jar
+  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8-xpath.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\core\saxon8-xom.jar
+  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8-xom.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\core\saxon8-sql.jar
+  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8-sql.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\core\saxon8-jdom.jar
+  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8-jdom.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\core\saxon8-dom4j.jar
+  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8-dom4j.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\PMCXMLTools\core\saxon8-dom.jar
+  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8-dom.jar
+  Flags=0000000010000010
 end
 item: Install File
   Source=W:\scielo\bin\XMLTools\core\saxon8.jar

@@ -154,7 +154,7 @@
 <!--    Front Matter                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT front    - - (doi?, url?, related*, titlegrp, authgrp?, bibcom?) >
+<!ELEMENT front    - - (toctitle?,doi?, url?, related*, titlegrp, authgrp?, bibcom?) >
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->

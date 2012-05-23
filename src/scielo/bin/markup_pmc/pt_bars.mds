@@ -46,7 +46,7 @@ sciname;Identifica nomes científicos;10;#TRUE#;#TRUE#;
 quote;Identifica citação ou epígrafe;10;#TRUE#;#FALSE#;
 
 corresp;ifloat
-email;Endereço eletrônico do autor;10;#FALSE#;#FALSE#;
+email;Endereço eletrônico do autor;10;#TRUE#;#FALSE#;
 
 cltrial;ifloat
 ctreg;Identifica o número do registro do ensaio clínico;10;#TRUE#;#TRUE#;
@@ -102,6 +102,7 @@ title;Identifica o título do documento;6;#TRUE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;6;#TRUE#;#FALSE#;
 
 front;article
+toctitle;Identifica a seção do sumario;10;#FALSE#;#FALSE#;
 doi;Identifica o DOI do documento;10;#TRUE#;#FALSE#;
 related;Identifica dados de documentos relacionados;10;#TRUE#;#TRUE#;
 titlegrp;Agrupa os títulos do documento;6;#FALSE#;#FALSE#;titlegrpFront
