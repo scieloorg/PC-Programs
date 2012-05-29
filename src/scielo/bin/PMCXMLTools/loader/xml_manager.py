@@ -35,7 +35,7 @@ class XMLManager:
                 try:
             	    r = n.findall(p)
             	except:
-            	    print('Invalid xpath: ' + p)
+            	    print('Invalid xpath: ' + "\n    " + p)
             else:
                 p = '.'
                 r.append(n)
