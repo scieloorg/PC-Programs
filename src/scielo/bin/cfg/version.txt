@@ -1,3 +1,13 @@
+4.0.052
+=======
+- [FIXED] Title Manager: an expected error, as saving data of journal form (4.0.050 - creative commons)
+- [FIXED] Markup: As completing attributes, set the value using the last entry
+
+- [NEW] Markup PMC/Parser: tickets milestone5
+- [NEW] Title Manager: generation of files for Markup PMC program
+- [NEW] Code Manager and code database: generation of files for Markup PMC program
+- [NEW] PMCXMLTools: python programs used by Markup PMC
+
 4.0.051
 =======
 - [FIXED] Markup: Automata 2. Not allow to insert tag. Problem at checking hierarchy.

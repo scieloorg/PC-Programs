@@ -20,7 +20,7 @@ class MyXML:
             self.ns = ''
         self.debug = debug
 
-    def get_nodes(self, xpath = '', current_node = None):
+    def _get_nodes_(self, xpath = '', current_node = None):
         #'//{http://www.w3.org/2005/Atom}link'
         r = []
         n = current_node
@@ -30,6 +30,7 @@ class MyXML:
         if n != None:
             if xpath != '':
                 p = './/' + self.ns + xpath
+                print(p)
             	r = n.findall(p)
             else:
                 p = '.'
@@ -47,35 +48,62 @@ class MyXML:
                 print('---- FIM DEBUG get_nodes')
         return r
         
-    def get_text(self, xpath, current_node = None):
-        #'//{http://www.w3.org/2005/Atom}link'
-        n = current_node
-        if n == None:
-            n = self.root
-
-        r =[]
-        if n != None:
-            if self.debug > 0:
-                print('---- DEBUG get_text')
-                print('xml of current node:')
-                print(etree.tostring(n))
-                print('xpath:' + xpath)
-
-            entries = self.get_nodes(xpath, n)
-
-            for e in entries:
-                test = e.text
-                if test == None:
-                    test = ''
-                r.append(test)
-            if entries == None:
-                r.append('')
-
-            if self.debug > 0:
-                print('resultado:')
-                print(r)
-
-                print('---- FIM DEBUG get_text')
-        return r
-
     
+        
+    
+    
+    def get_value(self, xpath = '', parent_element = None, attr_name = None, attr_value = None):
+        parent_nodes = [None]
+        if parent_element != None:
+             parent_nodes = self._get_nodes_(parent_element)
+        
+        values = []  
+        for current_node in parent_nodes:
+            nodes = self.get_nodes(xpath, current_node, attr_name, attr_value)
+            for node in nodes:
+                if attr_name != None:
+                    v = nodes[0].attrib[attr_name]
+                    if attr_value != None:
+                        if v == attr_value:
+                            values.append(nodes[0].text)
+                        else:
+                            pass 
+                    else:
+                        values.append(v)
+                else:
+                    values.append(nodes[0].text)
+        if len(values)==1:
+            r = values[0]            
+        else:
+            if len(values)==0:
+                r = ''
+            else:
+                r = values
+        return r
+    
+    def get_nodes(self, xpath = '', current_node = None, attr_name = None, attr_value = None):
+        nodes = self._get_nodes_(xpath, current_node)
+        r = []
+        
+        if attr_value!= None:
+            if attr_name != None:
+                for node in nodes:
+                    try:
+                        val = node.attrib[attr_name]
+                    except:
+                        val =''
+                    if val == attr_value:
+                        r.append(node)
+            else:
+                for node in nodes:
+                    try:
+                        val = node.attrib[attr_name] 
+                    except:
+                        val =''
+                    if val!='':
+                        r.append(node)
+        else:
+            r = nodes
+        
+        
+        return r
