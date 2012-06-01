@@ -51,38 +51,55 @@ class XMLManager:
                 
                 print('---- FIM DEBUG get_nodes')
         return r
-    def get_values(self, xpath):
-        v = []
-        nodes = self.return_nodes(xpath)
+        
+    def return_multi_values(self, xpath, subf_xpaths, parent_node):
+        
+        values = []
+        nodes = self.return_nodes(xpath, parent_node)
         for node in nodes:
-            v.append(node.text)
-        if len(v)==1:
-            r = v[0]
+            occ = {}
+            for subf, subf_xpath in subf_xpaths.items():
+                elem, attr, default = subf_xpath
+                if elem != '': 
+                    elem_node = self.return_nodes('.//' + elem, node)
+                    if len(elem_node)>0:
+                        value = elem_node[0].text
+                    else:
+                        value = '' 
+                if attr != '':
+                    if elem != '' and  len(elem_node)>0:
+                        value = self.return_node_attr_value(elem_node, attr)
+                    else:
+                        value = self.return_node_attr_value(node, attr)
+                if attr == '' and elem == '':
+                    if default !=  '' :
+                        value = default
+                    else:
+                        value = node.text
+                    
+                occ[subf] = value
+            values.append(occ)
+	        
+        return values
+    
+    def return_node_attr_value(self, node, attr_name):
+        attr = '' 
+        if ':' in attr_name:
+            aname = attr_name[attr_name.find(':')+1:]
+            for k,a in node.attrib.items():
+                if aname == k[k.find('}')+1:]:
+                    attr = a 
+                    if self.debug >0:
+                        print(k)
         else:
-            if len(v)==0:
-                r = ''
-            else:
-                r = v
-        return r
-    def get_attr_values(self, xpath, attr_name):
-        v = []
-        nodes = self.return_nodes(xpath)
-        for node in nodes:
             try:
                 attr = node.attrib[attr_name]
             except:
-                attr = ''
-            if attr != '': 
-                v.append(attr)
-        if len(v)==1:
-            r = v[0]
-        else:
-            if len(v)==0:
-                r = ''
-            else:
-                r = v
-        return r
-         
+                if self.debug >0:
+                    print(node.attrib)
+                
+        
+        return attr  
    
 #filename = '/Users/robertatakenaka/Documents/vm_dados/dados_pmc/anp/v69n6/pmc/pmc_package/0004-282X-anp-69-859.xml'
 filename = '/Users/robertatakenaka/Documents/vm_dados/dados_pmc/ag/v49n1/pmc/pmc_work/02-05/02-05.sgm.xml.local.xml'

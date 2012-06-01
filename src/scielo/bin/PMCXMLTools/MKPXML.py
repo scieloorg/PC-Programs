@@ -9,11 +9,17 @@ class MKPXML:
     
     def __init__(self, xml_filename, debug=0):
         self.xml = MyXML(xml_filename, debug)
+        self.xml_filename = xml_filename
         self.debug = debug
     
     def return_filename(self):
         nodes = self.xml.get_nodes()
-        acron = self.xml.get_text('journal-acron')[0]
+        
+        folders = self.xml_filename[0:self.xml_filename.find('/pmc/')]
+        folders = folders[0:folders.rfind('/')]
+        
+        
+        acron = folders[folders.rfind('/')+1:]
         
         #print acron
         

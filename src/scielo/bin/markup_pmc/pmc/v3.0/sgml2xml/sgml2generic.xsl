@@ -346,7 +346,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="*" mode="author-notes">
 		<xsl:variable name="fnauthors"><xsl:apply-templates select="$fn" mode="fnauthors"/></xsl:variable>
-	<xsl:if test="$corresp or $fnauthors">
+	<xsl:if test="$corresp or $fnauthors!='' ">
 		<author-notes>
 		<xsl:apply-templates select="$corresp"></xsl:apply-templates>	
 		<xsl:apply-templates select="$fn" mode="fnauthors"/>
@@ -697,25 +697,46 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:choose>
 			<xsl:when test="contains(surname,'Jr') or contains(surname,'Sr') or contains(surname,'nior')">
 				<surname><xsl:value-of select="substring-before(surname,' ')"/></surname>
-				<suffix><xsl:value-of select="substring-after(surname,' ')"/></suffix>
+				
 			</xsl:when>
 			<xsl:when test="contains(surname,' Neto')">
 				<surname><xsl:value-of select="substring-before(surname,' Neto')"/></surname>
-				<suffix>Neto</suffix>
+				
 			</xsl:when>
 			<xsl:when test="contains(surname,' Filho')">
 				<surname><xsl:value-of select="substring-before(surname,' Filho')"/></surname>
-				<suffix>Filho</suffix>
+				
 			</xsl:when>
 			<xsl:when test="contains(surname,' Sobrinho')">
 				<surname><xsl:value-of select="substring-before(surname,' Sobrinho')"/></surname>
-				<suffix>Sobrinho</suffix>
+				
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates select="surname"/>
 			</xsl:otherwise>
 			</xsl:choose>
 			<xsl:apply-templates select="fname"/>
+			<xsl:choose>
+			<xsl:when test="contains(surname,'Jr') or contains(surname,'Sr') or contains(surname,'nior')">
+				
+				<suffix><xsl:value-of select="substring-after(surname,' ')"/></suffix>
+			</xsl:when>
+			<xsl:when test="contains(surname,' Neto')">
+				
+				<suffix>Neto</suffix>
+			</xsl:when>
+			<xsl:when test="contains(surname,' Filho')">
+				
+				<suffix>Filho</suffix>
+			</xsl:when>
+			<xsl:when test="contains(surname,' Sobrinho')">
+				
+				<suffix>Sobrinho</suffix>
+			</xsl:when>
+			<xsl:otherwise>
+				
+			</xsl:otherwise>
+			</xsl:choose>
 			</name>
 	</xsl:template>
 	<xsl:template match="back//*[previous]">

@@ -38,10 +38,6 @@ class PMCFilesManager:
             self.pdf_path = pmc_path + 'pmc_pdf' 
             self.pdf_filename = self.pdf_path + '/' + self.filename.replace('sgm.xml', 'pdf')
             
-            mkp_xml = MKPXML(self.fullname)
-            self.newfilename = mkp_xml.return_filename()
-            self.images = mkp_xml.return_images()
-            self.new_fullname = self.package_path + '/' + self.newfilename 
             
             if not os.path.exists(self.package_path):
                 try:
@@ -66,35 +62,42 @@ class PMCFilesManager:
                 os.remove(self.work_path + '/' + f)
                                             
     def copy_files_from_work_to_package_folder(self, pmc_xml_fullname):
-         if not os.path.isfile(pmc_xml_fullname):
+        if not os.path.isfile(pmc_xml_fullname):
              print 'Expected: ' + pmc_xml_fullname
-         else:
-             shutil.copy(pmc_xml_fullname, self.new_fullname + '.xml')
-             shutil.copy(self.pdf_filename, self.new_fullname + '.pdf')
+        else:
+            mkp_xml = MKPXML(self.fullname)
+            newfilename = mkp_xml.return_filename()
+            images = mkp_xml.return_images()
+            new_fullname = self.package_path + '/' + newfilename 
+            
+            shutil.copy(pmc_xml_fullname, new_fullname + '.xml')
+            shutil.copy(self.pdf_filename, new_fullname + '.pdf')
              
-             img_extension = ''
-             for src_dest_img in self.images:
-                 src = src_dest_img[0]
-                 if '.jpg' in src:
-                     src = src.replace('.jpg','')
+            img_extension = ''
+            for src_dest_img in images:
+                src = src_dest_img[0]
+                if '.jpg' in src:
+                    src = src.replace('.jpg','')
              
-                 test_ext = False
-                 i = 0
-                 msg =  'ERROR: one of the files below is expected:' + "\n"
-                 while (not test_ext) and (i < len(self.valid_extensions)):
-                     img_extension = self.valid_extensions[i]
-                     if os.path.isfile(self.img_path + '/' + src + img_extension):
-                 	     test_ext = True
-                 	     shutil.copy(self.img_path + '/' + src + img_extension, self.new_fullname + '-' + src_dest_img[1] +  img_extension)
-                     else:
-                         msg = msg + '   - '  +  self.img_path + '/' + src + img_extension + ' does not exist' + "\n"
-                     i+=1
-                 if not test_ext:
-                     print msg
+                test_ext = False
+                i = 0
+                msg =  'ERROR: one of the files below is expected:' + "\n"
+                while (not test_ext) and (i < len(self.valid_extensions)):
+                    img_extension = self.valid_extensions[i]
+                    if os.path.isfile(self.img_path + '/' + src + img_extension):
+                 	    test_ext = True
+                 	    shutil.copy(self.img_path + '/' + src + img_extension, new_fullname + '-' + src_dest_img[1] +  img_extension)
+                    else:
+                        msg = msg + '   - '  +  self.img_path + '/' + src + img_extension + ' does not exist' + "\n"
+                    i+=1
+                if not test_ext:
+                    print msg
                      
     def copy_files_from_img_to_work_folder(self):
         msg = ''
-        for src_dest_img in self.images:
+        mkp_xml = MKPXML(self.fullname)
+        images = mkp_xml.return_images()
+        for src_dest_img in images:
             
             src = src_dest_img[0]
             if not '.jpg' in src:

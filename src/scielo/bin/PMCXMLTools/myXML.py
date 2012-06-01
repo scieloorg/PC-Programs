@@ -4,21 +4,23 @@ import xml.etree.ElementTree as etree
 class MyXML:
     root = {}
     def __init__(self, xml_filename, debug=0):
-        
-        self.root = etree.parse(xml_filename).getroot()
-        if debug > 0:
-            print('root')
-            print(self.root)
-            print('root tag')
-            print(self.root.tag)
-            print('root attributes')
-            print(self.root.attrib)
+        try:
+            self.root = etree.parse(xml_filename).getroot()
+            if debug > 0:
+                print('root')
+                print(self.root)
+                print('root tag')
+                print(self.root.tag)
+                print('root attributes')
+                print(self.root.attrib)
             
-        if '{' in self.root.tag:
-            self.ns = self.root.tag[0:self.root.tag.find('}')+1]
-        else:
-            self.ns = ''
-        self.debug = debug
+            if '{' in self.root.tag:
+                self.ns = self.root.tag[0:self.root.tag.find('}')+1]
+            else:
+                self.ns = ''
+            self.debug = debug
+        except:
+            print('XML IS NOT WELL-FORMED!!!')
 
     def _get_nodes_(self, xpath = '', current_node = None):
         #'//{http://www.w3.org/2005/Atom}link'
