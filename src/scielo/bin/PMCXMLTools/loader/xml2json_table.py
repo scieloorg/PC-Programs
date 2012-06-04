@@ -1,9 +1,12 @@
-class ConversionTable:
+class XML2JSONTable:
 
-    def __init__(self, filename):
+    def __init__(self, filename, report):
+        self.report = report
+        
         f = open(filename, 'r')
         lines = f.readlines()
         f.close()
+        
         self.records = {}
         self.index = {}
         
@@ -53,15 +56,15 @@ class ConversionTable:
         
     def print_structure(self):
         for k,tags in self.records.items():
-            print(k)
+            self.report.register(k)
             
             for tag,tag_subfs in tags.items():
-                print("  " + tag)
+                self.reporter.register("  " + tag, '')
                 for subf, info in tag_subfs.items():
                     s = "    " + subf
                     for k, i in info.items():
                         s += ' ' + i
-                    print(s)
+                    self.report.register(s, '')
         
     
         
