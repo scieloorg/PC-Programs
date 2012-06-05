@@ -32,9 +32,10 @@ class XML2JSONConverter:
             self.report.debugging(rec_name + ' ' + str(occ), 'XML2JSONConverter._convert_record_: rec and index ', 2)
             for tag, subfs in record_tags.items():
                 subf_xpath = {}
-                for subf, subf_info in subfs.items():
+                result = {}
+                for subf, subf_info in subfs.subfs.items():
                     subf_xpath[subf] = (subf_info['elem'], subf_info['attr'], subf_info['default'])
-                record_content[tag] = xml_manager.return_multi_values(subf_info['xpath'], subf_xpath, parent_node)
+                record_content[tag] = xml_manager.return_multi_values(result, subfs.group, subf_info['xpath'], subf_xpath, parent_node)
             self.report.debugging(record_content, 'XML2JSONConverter._convert_record_: record_content ', 2)
             record_occurrences.append(record_content)
         return record_occurrences

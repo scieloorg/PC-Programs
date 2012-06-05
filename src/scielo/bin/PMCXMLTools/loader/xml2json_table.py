@@ -51,8 +51,10 @@ class XML2JSONTable:
         tags = self.records[reg].keys()
         if not tag in tags:
             self.records[reg][tag] = {}
+            self.records[reg][tag].subfs = {}
         
-        self.records[reg][tag][subf] = { 'xpath': xpath, 'elem': elem, 'attr': attr, 'default': default, 'mandatory': mandatory,  'data_conversion': data_conversion}
+        self.records[reg][tag].group = xpath
+        self.records[reg][tag].subfs[subf] = { 'xpath': xpath, 'elem': elem, 'attr': attr, 'default': default, 'mandatory': mandatory,  'data_conversion': data_conversion}
         
     def print_structure(self):
         for k,tags in self.records.items():

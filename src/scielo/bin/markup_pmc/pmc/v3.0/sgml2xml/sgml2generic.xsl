@@ -379,6 +379,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="."/>
 		</volume>
 	</xsl:template>
+	<xsl:template match="part"><issue-part><xsl:value-of select="."/></issue-part>
+	</xsl:template>
 	<xsl:template match="@issueno | issueno">
 		<xsl:choose>
 			<xsl:when test="contains(.,' Pt ')">
@@ -972,7 +974,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 	<xsl:template match="*[contains(name(),'citat')]//title/text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
-	<xsl:template match="stitle | vmonog/vtitle/title | coltitle ">
+	<xsl:template match="stitle | vmonog/vtitle/title ">
 		<xsl:variable name="lang"><xsl:value-of select="../../../..//title/@language"/></xsl:variable>
 				<source xml:lang="{$lang}">
 		
@@ -1210,7 +1212,7 @@ et al.</copyright-statement>
 	
 	
 	
-	<xsl:template match="*[contains(name(),'contrib')]//italic | *[contains(name(),'contrib')]//bold | *[contains(name(),'monog')]//italic | *[contains(name(),'monog')]//bold"/>
+	<xsl:template match=" *[contains(name(),'contrib')]//bold |  *[contains(name(),'monog')]//bold"/>
 	<xsl:template match="subsec/xref | sec/xref">
 	</xsl:template>
 	<xsl:template match="*[*]" mode="next">
@@ -1222,8 +1224,8 @@ et al.</copyright-statement>
 	<xsl:template match="caption//bold  | caption//sup |caption//italic |
 	   subtitle//bold |  subtitle//sub | subtitle//sup | subtitle//italic |
 	   sectitle//bold |  sectitle//sup | sectitle//italic |
-	   title//bold |   title//sup | title//italic |
-	   article-title//bold | article-title//italic |  article-title//sub | article-title//sup | 
+	   title//bold |   title//sup  |
+	   
 	   label//bold | label//italic | label//sub | label//sup">
 	   <xsl:choose>
 	   	<xsl:when  test="*">

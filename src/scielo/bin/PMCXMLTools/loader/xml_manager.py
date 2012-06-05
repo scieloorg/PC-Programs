@@ -45,7 +45,70 @@ class XMLManager:
                 
         return r
         
-    def return_multi_values(self, xpath, subf_xpaths, parent_node):
+    def return_multi_values(self, result, group, xpath, subf_xpaths, parent_node):
+        
+        values = []
+        s = {} 
+        
+        nodes = self.return_nodes(xpath, parent_node)
+        for node in nodes:
+            occ = {}
+            for subf, subf_xpath in subf_xpaths.items():
+                elem, attr, default = subf_xpath
+                if default != '':
+                    value = default
+                    occ[subf] = value
+                else: 
+                    if elem != '': 
+                        s[subf] = ('', attr, '')
+                        occ[subf] = self.return_multi_values(acum, group, './/' + elem, s, node)
+                        if len(values) != len(occ[subf]):
+                            values = self._fix_(values, occ, subf)
+                    else:
+                        if attr != '':
+                            value = self.return_node_attr_value(node, attr)
+                        else:
+                            value = node.text
+                        occ[subf] = value
+                
+                        
+                
+            values.append(occ)
+	    return values
+        
+    def _fix_(self, occs, new_values, subf_name):
+        new_occs = []
+        if len(occs) > len(new_values):
+            new_occs = self._fix_occs_are_greater(occs, new_values, subf_name)
+        else:
+            new_occs = self._fix_new_values_are_greater(occs, new_values, subf_name)
+         
+        return new_occs
+        
+    def _fix_new_values_are_greater(self, occs, new_values, subf_name):
+        new_occs = []
+        for value in new_values:
+            new_occ = {}
+            for occ in occs:
+            
+                new_occ[subf_name] = value
+                for occ_k, occ_i in occ.items():
+                    new_occ[occ_k] = occ_i
+                new_occs.append(new_occ)
+        return new_occs
+        
+    def _fix_occs_are_greater(self, occs, new_values, subf_name):
+        r = []
+        new_occs = []
+        
+        for occ in occs:
+            for value in new_values:
+                occ[subf_name] = value
+            new_occs.append(occ)
+        return new_occs    
+        
+    
+    def old_return_multi_values(self, xpath, subf_xpaths, parent_node):
         
         values = []
         nodes = self.return_nodes(xpath, parent_node)
@@ -74,7 +137,6 @@ class XMLManager:
             values.append(occ)
 	        
         return values
-    
     def return_node_attr_value(self, node, attr_name):
         self.report.debugging(node, 'XMLManager.return_node_attr_value: node')
         self.report.debugging(attr_name, 'XMLManager.return_node_attr_value: attr_name')
