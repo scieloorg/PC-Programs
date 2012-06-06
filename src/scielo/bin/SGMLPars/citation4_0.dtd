@@ -121,7 +121,7 @@
 <!ELEMENT vmonog   - - ( ((author | corpauth)*, et-al?)  & ( edition |
                         confgrp | vtitle | date | version  | city | state |
                         pubname | inpress |
-                        pages | report | thesis | url | doi |  cited | patgrp)*) >
+                        pages | report | thesis | url | doi |  cited | patgrp | coltitle)*) >
 <!ELEMENT edition  - - (#PCDATA) >
 <!ELEMENT version  - - (#PCDATA) >
 <!ELEMENT pubname  - - (#PCDATA) >

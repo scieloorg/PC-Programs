@@ -7,6 +7,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 <xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util" xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
 	<xsl:variable name="unident" select="//unidentified"/>
 	<xsl:variable name="corresp" select="//corresp"/>
+	<xsl:variable name="deceased" select="//fngrp[@fntype='deceased']"/>
+	<xsl:variable name="eqcontrib" select="//fngrp[@fntype='equal']"/>
 	<xsl:variable name="unident_back" select="//back//unidentified"/>
 	<xsl:variable name="fn_author" select=".//fngrp[@fntype='author']"/>
 	<xsl:variable name="fn" select=".//fngrp"/>
@@ -286,14 +288,24 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="@role">
 		<xsl:attribute name="contrib-type"><xsl:choose><xsl:when test=".='nd'">author</xsl:when><xsl:when test=".='ed'">editor</xsl:when><xsl:when test=".='tr'">translator</xsl:when><xsl:when test=".='rev'">rev</xsl:when></xsl:choose></xsl:attribute>
 	</xsl:template>
+	<xsl:template match="author/@*[.='y']" ><xsl:if test="not($corresp)"><xsl:attribute name="{name()}">yes</xsl:attribute>
+	</xsl:if></xsl:template>
+	
+	<xsl:template match="author/@deceased[.='y']" ><xsl:if test="not($deceased)"><xsl:attribute name="{name()}">yes</xsl:attribute>
+	</xsl:if></xsl:template>
+	
+	<xsl:template match="author/@eqcontr[.='y']" ><xsl:if test="not($eqcontrib)"><xsl:attribute name="equal-contrib">yes</xsl:attribute>
+	</xsl:if></xsl:template>
 	<xsl:template match="author" mode="front">
 		<contrib>
 		<!-- xsl:if test="contains($corresp,.//fname) and contains($corresp,//surname)"><xsl:attribute name="corresp">yes</xsl:attribute></xsl:if> -->
-			<xsl:apply-templates select="@role"/>
+			<xsl:apply-templates select="@*[name()!='rid']"/>
 			<xsl:apply-templates select="."/>
 			<xsl:apply-templates select="@rid"/>
+			<xsl:apply-templates select="xref"/>
 		</contrib>
 	</xsl:template>
+	
 	<xsl:template match="authgrp/corpauth" mode="front">
 		<xsl:variable name="teste"><xsl:apply-templates select="./../../authgrp" mode="text"/></xsl:variable>
 		<xsl:choose>
@@ -556,7 +568,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	
 	<xsl:template match="back//fngrp[@fntype]">
-		<fn><xsl:attribute name="fn-type"><xsl:value-of select="@fntype"/></xsl:attribute><p><xsl:apply-templates select="*|text()"/></p></fn>
+		<fn><xsl:apply-templates select="@*|label"/><p><xsl:apply-templates select="*[name()!='label']|text()"/></p></fn>
+	</xsl:template>
+	<xsl:template match="fngrp/@fntype">
+		<xsl:attribute name="fn-type"><xsl:value-of select="."/></xsl:attribute>
 	</xsl:template>
 	
 	<xsl:template match="tified">
@@ -696,8 +711,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'author')]">
 		<name>
+		<xsl:choose>
+			<xsl:when test="contains(surname,' ')">
 			<xsl:choose>
-			<xsl:when test="contains(surname,'Jr') or contains(surname,'Sr') or contains(surname,'nior')">
+			<xsl:when test="contains(surname,' Jr') or contains(surname,' Sr') or contains(surname,'nior')">
 				<surname><xsl:value-of select="substring-before(surname,' ')"/></surname>
 				
 			</xsl:when>
@@ -717,29 +734,42 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="surname"/>
 			</xsl:otherwise>
 			</xsl:choose>
-			<xsl:apply-templates select="fname"/>
-			<xsl:choose>
-			<xsl:when test="contains(surname,'Jr') or contains(surname,'Sr') or contains(surname,'nior')">
-				
-				<suffix><xsl:value-of select="substring-after(surname,' ')"/></suffix>
 			</xsl:when>
-			<xsl:when test="contains(surname,' Neto')">
-				
-				<suffix>Neto</suffix>
-			</xsl:when>
-			<xsl:when test="contains(surname,' Filho')">
-				
-				<suffix>Filho</suffix>
-			</xsl:when>
-			<xsl:when test="contains(surname,' Sobrinho')">
-				
-				<suffix>Sobrinho</suffix>
-			</xsl:when>
-			<xsl:otherwise>
-				
-			</xsl:otherwise>
-			</xsl:choose>
+			<xsl:otherwise><xsl:apply-templates select="surname"/></xsl:otherwise>
+		</xsl:choose>
+			
+		<xsl:apply-templates select="fname"/>
+			
+		<xsl:if test="contains(surname,' ')">
+				<xsl:choose>
+					<xsl:when test="contains(surname,' Jr') or contains(surname,' Sr') or contains(surname,'nior')">
+						
+						<suffix><xsl:value-of select="substring-after(surname,' ')"/></suffix>
+					</xsl:when>
+					<xsl:when test="contains(surname,' Neto')">
+						
+						<suffix>Neto</suffix>
+					</xsl:when>
+					<xsl:when test="contains(surname,' Filho')">
+						
+						<suffix>Filho</suffix>
+					</xsl:when>
+					<xsl:when test="contains(surname,' Sobrinho')">
+						
+						<suffix>Sobrinho</suffix>
+					</xsl:when>
+					<xsl:otherwise>
+						
+					</xsl:otherwise>
+				</xsl:choose>
+			
+		</xsl:if>
+			
+			
+			
+			
 			</name>
+			
 	</xsl:template>
 	<xsl:template match="back//*[previous]">
 		<xsl:param name="position"/>

@@ -504,6 +504,7 @@ doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FAL
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 patgrp;Agrupa os dados de patente;15;#FALSE#;#TRUE#;patentVmonog
 down;patentVmonog
+coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;2;#TRUE#;#FALSE#;
 
 authorVmonog;vmonog
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
