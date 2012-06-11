@@ -12,7 +12,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="unident_back" select="//back//unidentified"/>
 	<xsl:variable name="fn_author" select=".//fngrp[@fntype='author']"/>
 	<xsl:variable name="fn" select=".//fngrp"/>
-	
+	<xsl:variable name="affs" select=".//aff"/>
 	<xsl:variable name="xref_id" select="//*[@id]"/>
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
 	<xsl:variable name="JOURNAL_PID" select="node()/@issn"/>
@@ -113,7 +113,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="body"/>
 	
-	<xsl:template match="uri | p | sec | bold  | sub | sup |  label | subtitle | edition |  issn | italic | corresp | ack | sig-block">
+	<xsl:template match="sig |  p | sec | bold  | sub | sup |  label | subtitle | edition |  issn | italic | corresp | ack | sig-block">
 		<xsl:param name="id"/>
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="@*| * | text()">
@@ -301,8 +301,17 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<!-- xsl:if test="contains($corresp,.//fname) and contains($corresp,//surname)"><xsl:attribute name="corresp">yes</xsl:attribute></xsl:if> -->
 			<xsl:apply-templates select="@*[name()!='rid']"/>
 			<xsl:apply-templates select="."/>
-			<xsl:apply-templates select="@rid"/>
-			<xsl:apply-templates select="xref"/>
+			<xsl:choose>
+				<xsl:when test="xref[@ref-type='aff'] and count($affs)&gt;1">
+				<xsl:apply-templates select="xref[@ref-type='aff']"/>
+				</xsl:when>
+				<xsl:when test="@rid!='' and count($affs)&gt;1">
+				<xsl:apply-templates select="@rid"/>
+				</xsl:when>
+			</xsl:choose>
+			
+			
+			<xsl:apply-templates select="xref[@ref-type!='aff']"/>
 		</contrib>
 	</xsl:template>
 	
@@ -332,6 +341,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xref ref-type="aff" rid="aff{substring(substring-after(normalize-space(.),' '),3,1)}"/>
 		</xsl:if>
 	</xsl:template>
+	
 	<xsl:template match="aff">
 		<aff id="aff{substring(@id,3)}">
 			<!-- xsl:apply-templates select="@*[name()!='id']"/> -->
@@ -516,13 +526,38 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="*" mode="counts">
 		<counts>
-			<fig-count count="{count(.//figgrp)}"/>
-			<table-count count="{count(.//tabwrap)}"/>
-			<equation-count count="{count(.//equation)}"/>
-			<ref-count count="{count(.//back//*[contains(name(),'citat')])}"/>
-			<page-count count="{@lpage - @fpage + 1}"/>
-			<!--word-count count="2847"/-->
+		    <xsl:apply-templates select="." mode="element-counts">
+		    	<xsl:with-param name="element_name" select="'fig-count'"/>
+		    	<xsl:with-param name="count" select="count(.//figgrp)"/>
+		    </xsl:apply-templates>
+		
+		    <xsl:apply-templates select="." mode="element-counts">
+		    	<xsl:with-param name="element_name" select="'table-count'"/>
+		    	<xsl:with-param name="count" select="count(.//tabwrap)"/>
+		    </xsl:apply-templates>
+		    <xsl:apply-templates select="." mode="element-counts">
+		    	<xsl:with-param name="element_name" select="'equation-count'"/>
+		    	<xsl:with-param name="count" select="count(.//equation)"/>
+		    </xsl:apply-templates>
+		    <xsl:apply-templates select="." mode="element-counts">
+		    	<xsl:with-param name="element_name" select="'ref-count'"/>
+		    	<xsl:with-param name="count" select="count(.//back//*[contains(name(),'citat')])"/>
+		    </xsl:apply-templates>
+		    <xsl:apply-templates select="." mode="element-counts">
+		    	<xsl:with-param name="element_name" select="'page-count'"/>
+		    	<xsl:with-param name="count" select="@lpage - @fpage + 1"/>
+		    </xsl:apply-templates>
+
 		</counts>
+	</xsl:template>
+	<xsl:template match="*" mode="element-counts">
+		<xsl:param name="element_name"/>
+		<xsl:param name="count"/>
+		<xsl:if test="$count&gt;0">
+			<xsl:element name="{$element_name}">
+			    <xsl:attribute name="count"><xsl:value-of select="$count"/></xsl:attribute>
+			</xsl:element>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template match="@sec-type[.='nd']">
 	</xsl:template>
@@ -810,7 +845,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:apply-templates/>
 	</xsl:template>
 	
-	<xsl:template match="url">
+	<xsl:template match="url | uri">
 		<ext-link ext-link-type="uri" xlink:href="{.}">
 			<xsl:apply-templates/>
 		</ext-link>
@@ -967,7 +1002,8 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			
 	</xsl:template>
 	<xsl:template match="back//*[contains(name(),'contrib')]//title">
-		
+	    <xsl:variable name="title"><xsl:apply-templates select="*|text()"/><xsl:apply-templates select="../subtitle" mode="title"/></xsl:variable>
+		<xsl:variable name="t" select="normalize-space($title)"/>
 		<xsl:choose>
 			<xsl:when test="../../..//node()[contains(name(),'monog')]">
 				<chapter-title>
@@ -976,12 +1012,11 @@ Here is a figure group, with three figures inside, each of which contains a grap
 				</chapter-title>
 			</xsl:when>
 			<xsl:otherwise>
-			<xsl:choose><xsl:when test="substring(.,1,1)='[' and substring(.,string-length(.),1)=']'">
+			<xsl:choose><xsl:when test="substring($t,1,1)='[' and substring(.,string-length($t),1)=']'">
 			<trans-title>
 					<xsl:apply-templates select="@language"/>
-					<xsl:variable name="t"><xsl:apply-templates select="*|text()"/></xsl:variable>
 					<xsl:value-of select="translate(translate($t,'[',''),']','')"/>
-					<xsl:apply-templates select="../subtitle" mode="title"/>
+					
 				</trans-title>
 			</xsl:when>
 			<xsl:otherwise>
@@ -1083,7 +1118,16 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		<xsl:variable name="rid" select="."/>
 		
 		<xsl:if test="$xref_id[@id=$rid] or 'r'=substring($rid,1,1)">
-			<xsl:attribute name="rid"><xsl:value-of select="."/></xsl:attribute>
+			<xsl:choose>
+			
+				<xsl:when test="../@ref-type='aff'">
+					<xsl:attribute name="rid">aff<xsl:value-of select="substring(.,3,1)"/></xsl:attribute>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="rid"><xsl:value-of select="."/></xsl:attribute>
+				</xsl:otherwise>
+			</xsl:choose>
+			
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="xref[@rid!='']">
@@ -1091,6 +1135,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		<xsl:if test="not($xref_id[@id=$rid])">
 		</xsl:if>
 		<xref>
+			
 			<xsl:apply-templates select="@*|*[name()!='graphic']|text()"/>
 		</xref>
 		<xsl:if test="graphic">

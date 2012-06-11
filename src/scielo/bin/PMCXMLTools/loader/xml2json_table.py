@@ -1,3 +1,9 @@
+
+class FieldInfo:
+    def __init__(self, xpath):
+        self.subfs = {}
+        self.group = xpath
+
 class XML2JSONTable:
 
     def __init__(self, filename, report):
@@ -50,10 +56,8 @@ class XML2JSONTable:
             self.index[reg] = index
         tags = self.records[reg].keys()
         if not tag in tags:
-            self.records[reg][tag] = {}
-            self.records[reg][tag].subfs = {}
-        
-        self.records[reg][tag].group = xpath
+            self.records[reg][tag] = FieldInfo(xpath)
+            
         self.records[reg][tag].subfs[subf] = { 'xpath': xpath, 'elem': elem, 'attr': attr, 'default': default, 'mandatory': mandatory,  'data_conversion': data_conversion}
         
     def print_structure(self):

@@ -49,7 +49,6 @@ class XMLManager:
         
         values = []
         s = {} 
-        
         nodes = self.return_nodes(xpath, parent_node)
         for node in nodes:
             occ = {}
@@ -61,7 +60,7 @@ class XMLManager:
                 else: 
                     if elem != '': 
                         s[subf] = ('', attr, '')
-                        occ[subf] = self.return_multi_values(acum, group, './/' + elem, s, node)
+                        occ[subf] = self.return_multi_values(values, group, './/' + elem, s, node)
                         if len(values) != len(occ[subf]):
                             values = self._fix_(values, occ, subf)
                     else:

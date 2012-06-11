@@ -60,13 +60,15 @@ class PMCXML2ISIS:
                 self.id_file.write('!ID ' + record_id + "\n", '')
                 for tag, tag_occs in rec_occ.items():
                     t = '000' + tag
-                    for tag_occ in tag_occs:
-                        tagged = '' 
-                        for subf_name, subf_content in tag_occ.items():
-                            if subf_name == 'value': 
-                                tagged = subf_content + tagged
-                            else:
-                                tagged += '^' + subf_name + self._convert_value_(subf_content, '') #FIXME
+                    if tag_occs != None:
+                        for tag_occ in tag_occs:
+                            tagged = '' 
+                            for subf_name, subf_content in tag_occ.items():
+                                if subf_name == 'value': 
+                                    tagged = subf_content + tagged
+                                else:
+                                    print(subf_content)
+                                    tagged += '^' + subf_name + self._convert_value_(subf_content, '') #FIXME
                         
                         rec_content += '!v' + t[-3:] + '!' + tagged + "\n"
                         
