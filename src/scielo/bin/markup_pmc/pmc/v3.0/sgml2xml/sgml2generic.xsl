@@ -162,26 +162,30 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="article|text" mode="journal-meta">
 		<journal-meta>
-			<xsl:if test=".//nlm-title"><journal-id journal-id-type="nlm-ta"><xsl:value-of select=".//nlm-title"/></journal-id></xsl:if>
-			<journal-id journal-id-type="publisher-id">
-				<xsl:value-of select="$JOURNAL_PID"/>
-			</journal-id>
+			<xsl:if test=".//nlm-title and .//nlm-title!=''"><journal-id journal-id-type="nlm-ta"><xsl:value-of select=".//nlm-title"/></journal-id></xsl:if>
+			
+			<xsl:if test="string-length($JOURNAL_PID)=23">
+				<journal-id journal-id-type="publisher-id">
+					<xsl:value-of select="$JOURNAL_PID"/>
+				</journal-id>
+			</xsl:if>
 			<journal-title-group>
-			<xsl:copy-of select=".//journal-title"/>
+			    <xsl:if test=".//journal-title!=''"><xsl:copy-of select=".//journal-title"/>
 				<abbrev-journal-title abbrev-type="publisher">
 					<xsl:value-of select="@stitle"/>
 				</abbrev-journal-title>
-				
+				</xsl:if>
 			</journal-title-group>
 			<issn pub-type="{$PUB_TYPE}">
 				<xsl:value-of select="$CURRENT_ISSN"/>
 			</issn>
-			<publisher>
-				<publisher-name>
-					<xsl:apply-templates select="..//extra-scielo/publisher/publisher-name"/>
-				</publisher-name>
-			</publisher>
-			
+			<xsl:if test="..//extra-scielo/publisher/publisher-name!=''">
+				<publisher>
+					<publisher-name>
+						<xsl:apply-templates select="..//extra-scielo/publisher/publisher-name"/>
+					</publisher-name>
+				</publisher>
+			</xsl:if>
 		</journal-meta>
 	</xsl:template>
 	<xsl:template match="extra-scielo/publisher/publisher-name">
@@ -1046,9 +1050,19 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			<xsl:apply-templates select="*|text()"/>
 		</source>
 	</xsl:template>
-	<xsl:template match="*[contains(name(),'serial')]/sertitle">
-			<xsl:apply-templates select="*|text()"/>
+	<xsl:template match="*[contains(name(),'serial')]/sertitle"><source><xsl:choose>
+			<xsl:when test="normalize-space(text())!=''">
+				<xsl:apply-templates select="*|text()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="*|text()" mode="ignore-style"/>
+			</xsl:otherwise>
+		</xsl:choose></source>
 	</xsl:template>
+	<xsl:template match="bold | italic"  mode="ignore-style"><xsl:apply-templates select="text()"/></xsl:template>
+	
+	
+	
 	<xsl:template match="back//*[contains(name(),'monog') or contains(name(),'contrib')]//subtitle"/>
 	<xsl:template match="back//*[contains(name(),'monog') or contains(name(),'contrib')]//subtitle" mode="title">
 		<xsl:variable name="texts"><xsl:choose>
@@ -1061,55 +1075,192 @@ Here is a figure group, with three figures inside, each of which contains a grap
 	</xsl:template>
 	
 	
-	<xsl:template match="othinfo | vmonog/text()">
-		<xsl:variable name="valor"><xsl:choose><xsl:when test="contains(.,'doi:')"><xsl:value-of select="substring-before(.,'doi:')"/>DOI:<xsl:value-of select="substring-after(.,'doi:')"/></xsl:when><xsl:otherwise><xsl:value-of select="."/></xsl:otherwise></xsl:choose></xsl:variable>
-		<xsl:variable name="valor2"><xsl:choose><xsl:when test="contains($valor,'pmid:')"><xsl:value-of select="substring-before($valor,'pmid:')"/>PMID:<xsl:value-of select="substring-after($valor,'pmid:')"/></xsl:when><xsl:otherwise><xsl:value-of select="$valor"/></xsl:otherwise></xsl:choose></xsl:variable>
-		<xsl:choose>
-			<xsl:when test="contains($valor2,'DOI:') and contains($valor2,'PMID:')">
-				<xsl:variable name="teste1" select="substring-after($valor2,': ')"/>
-				<xsl:choose>
-					<xsl:when test="contains($teste1,'PMID')">
-						<!-- DOI vem antes de PMID -->
-						<xsl:variable name="doi" select="substring-before($teste1,'. PMID: ')"/>
-						<xsl:variable name="pmid" select="substring-after($teste1,'PMID: ')"/>
-						<pub-id pub-id-type="doi">
-							<xsl:value-of select="$doi"/>
-						</pub-id>
-						<pub-id pub-id-type="pmid">
-							<xsl:value-of select="$pmid"/>
-						</pub-id>
-					</xsl:when>
-					<xsl:otherwise>
-						<!-- DOI vem depois de PMID -->
-						<xsl:variable name="pmid" select="substring-before($teste1, '. DOI: ')"/>
-						<xsl:variable name="doi" select="substring-after($teste1,' DOI: ')"/>
-						<pub-id pub-id-type="pmid">
-							<xsl:value-of select="$pmid"/>
-						</pub-id>
-						<pub-id pub-id-type="doi">
-							<xsl:value-of select="$doi"/>
-						</pub-id>
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:when>
-			<xsl:when test="contains($valor2,'DOI: ')">
-				<pub-id pub-id-type="doi">
-					<xsl:value-of select="substring-after($valor2,'DOI: ')"/>
-				</pub-id>
-			</xsl:when>
-			<xsl:when test="contains($valor2,'PMID: ')">
-				<pub-id pub-id-type="pmid">
-					<xsl:value-of select="substring-after($valor2,'PMID: ')"/>
-				</pub-id>
-			</xsl:when>
-			<xsl:when test="contains($valor2,'serie')">
-				<series>
-					<xsl:value-of select="."/>
-				</series>
-			</xsl:when>
-			<xsl:otherwise><comment><xsl:value-of select="."/></comment>
-			</xsl:otherwise>
-		</xsl:choose>
+	
+	
+	<xsl:template match="*" mode= "identify-ids">
+	    <xsl:param name="first_str"/>
+	    <xsl:param name="second_str"/>
+	    <xsl:param name="third_str"/>
+	    <xsl:param name="first_name"/>
+	    <xsl:param name="second_name"/>
+	    <xsl:param name="third_name"/>
+	    <xsl:param name="extra_str"/>
+	    <xsl:param name="extra_name"/>
+	    
+	    <xsl:variable name="first" select="normalize-space(substring-before($first_str,$second_name))"/>
+  	    <xsl:variable name="sep" select="substring($first,string-length($first),1)"/>
+  	    <xsl:variable name="fixed_first"><xsl:choose><xsl:when test="contains('.,;',$sep)"><xsl:value-of select="substring($first,1,string-length($first)-1)"/></xsl:when><xsl:otherwise><xsl:value-of select="$first"/></xsl:otherwise></xsl:choose></xsl:variable>
+        
+        <xsl:variable name="second"><xsl:choose><xsl:when test="$third_name!=''"><xsl:value-of select="normalize-space(substring-before($second_str,$third_name))"/></xsl:when><xsl:otherwise><xsl:value-of select="$second_str"/></xsl:otherwise></xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="sep2" select="substring($second,string-length($second),1)"/>
+  	    <xsl:variable name="fixed_second"><xsl:choose><xsl:when test="contains('.,;',$sep2)"><xsl:value-of select="substring($second,1,string-length($second)-1)"/></xsl:when><xsl:otherwise><xsl:value-of select="$second"/></xsl:otherwise></xsl:choose></xsl:variable>
+        
+        <xsl:if test="$extra_name!=''">
+  	    <xsl:variable name="extra" select="normalize-space(substring-before($extra_str,concat($first_name,':')))"/>
+  	    <xsl:variable name="sep4" select="substring($extra,string-length($extra),1)"/>
+  	    <xsl:variable name="fixed_extra"><xsl:choose><xsl:when test="contains('.,;',$sep4)"><xsl:value-of select="substring($extra,1,string-length($extra)-1)"/></xsl:when><xsl:otherwise><xsl:value-of select="$extra"/></xsl:otherwise></xsl:choose>
+  	    </xsl:variable>
+  	    <pub-id pub-id-type="{$extra_name}"><xsl:value-of select="$fixed_extra"/></pub-id>
+  	    
+  	    </xsl:if>
+        
+        <pub-id pub-id-type="{$first_name}"><xsl:value-of select="$fixed_first"/></pub-id>
+  	    <pub-id pub-id-type="{$second_name}"><xsl:value-of select="$fixed_second"/></pub-id>
+  	    
+  	    <xsl:if test="$third_name!=''">
+  	    <xsl:variable name="third" select="normalize-space($third_str)"/>
+  	    <xsl:variable name="sep3" select="substring($third,string-length($third),1)"/>
+  	    <xsl:variable name="fixed_third"><xsl:choose><xsl:when test="contains('.,;',$sep3)"><xsl:value-of select="substring($third,1,string-length($third)-1)"/></xsl:when><xsl:otherwise><xsl:value-of select="$third"/></xsl:otherwise></xsl:choose>
+  	    </xsl:variable>
+  	    <pub-id pub-id-type="{$third_name}"><xsl:value-of select="$fixed_third"/></pub-id>
+  	    
+  	    </xsl:if>
+  	    
+	</xsl:template>
+	
+	<xsl:template match="*" mode="identify-two-ids">
+	    <xsl:param name="e1"/>
+	    <xsl:param name="e2"/>
+	    <xsl:param name="e1_name"/>
+	    <xsl:param name="e2_name"/>
+	    <xsl:param name="first"/>
+	    <xsl:param name="first_name"/>
+	    
+	    
+	    <xsl:comment>e1:<xsl:value-of select="$e1"/></xsl:comment>
+	    <xsl:comment>e2:<xsl:value-of select="$e2"/></xsl:comment>
+	    <xsl:comment>e1_name:<xsl:value-of select="$e1_name"/></xsl:comment>
+	    <xsl:comment>e2_name:<xsl:value-of select="$e2_name"/></xsl:comment>
+	    <xsl:variable name="maior"><xsl:choose>
+	    	<xsl:when test="string-length($e1) &gt; string-length($e2)"><xsl:value-of select="$e1_name"/></xsl:when>
+	    	<xsl:otherwise><xsl:value-of select="$e2_name"/></xsl:otherwise>
+	    </xsl:choose></xsl:variable>
+	    <xsl:comment>maior: <xsl:value-of select="$maior"/>| <xsl:value-of select="$e1_name"/>/<xsl:value-of select="$e2_name"/></xsl:comment>
+	    <xsl:choose>
+	    	<xsl:when test="$maior=$e1_name">
+	    		<xsl:apply-templates select="." mode="identify-ids">
+   	    	    	<xsl:with-param name="first_str" select="$e1"/>
+   	    	    	<xsl:with-param name="second_str" select="$e2"/>
+   	    	    	<xsl:with-param name="first_name" select="$e1_name"/>
+   	    	    	<xsl:with-param name="second_name" select="$e2_name"/>
+   	    	    	<xsl:with-param name="extra_str" select="$first"/>
+   	    	    	<xsl:with-param name="extra_name" select="$first_name"/>
+   	    	    </xsl:apply-templates>
+	    	</xsl:when>
+	    	<xsl:when test="$maior=$e2_name">
+   				
+   	    	    <xsl:apply-templates select="." mode="identify-ids">
+   	    	    	<xsl:with-param name="first_str" select="$e2"/>
+   	    	    	<xsl:with-param name="second_str" select="$e1"/>
+   	    	    	<xsl:with-param name="first_name" select="$e2_name"/>
+   	    	    	<xsl:with-param name="second_name" select="$e1_name"/>
+   	    	    	<xsl:with-param name="extra_str" select="$first"/>
+   	    	    	<xsl:with-param name="extra_name" select="$first_name"/>
+   	    	    </xsl:apply-templates>
+	    	</xsl:when>
+	    </xsl:choose>	        
+	    
+	</xsl:template>
+	
+	<xsl:template match="othinfo | vmonog/text() | notes ">
+	    <xsl:variable name="lowercase" select="translate(.,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')"/>
+	    <!-- doi,pmid,pmcid -->
+	    <xsl:variable name="has"><xsl:choose><xsl:when test="contains($lowercase,'doi:')">1</xsl:when><xsl:otherwise>0</xsl:otherwise></xsl:choose><xsl:choose><xsl:when test="contains($lowercase,'pmid:')">1</xsl:when><xsl:otherwise>0</xsl:otherwise></xsl:choose><xsl:choose><xsl:when test="contains($lowercase,'pmcid:')">1</xsl:when><xsl:otherwise>0</xsl:otherwise></xsl:choose></xsl:variable>	    
+	    
+	    <xsl:variable name="b_pmcid" select="normalize-space(substring-before($lowercase,'pmcid'))"/>
+   	    <xsl:variable name="b_pmid" select="normalize-space(substring-before($lowercase,'pmid'))"/>
+   		<xsl:variable name="a_pmcid" select="normalize-space(substring-after($lowercase,'pmcid:'))"/>
+   	    <xsl:variable name="a_pmid" select="normalize-space(substring-after($lowercase,'pmid:'))"/>
+   		<xsl:variable name="b_doi" select="normalize-space(substring-before($lowercase,'doi'))"/>
+   	    <xsl:variable name="a_doi" select="normalize-space(substring-after($lowercase,'doi:'))"/>
+   	    
+	    <xsl:choose>
+	    	<xsl:when test="$has='000'"><comment><xsl:value-of select="."/></comment></xsl:when>
+	    	<xsl:when test="$has='001'"><pub-id pub-id-type="pmcid"><xsl:value-of select="normalize-space(translate(substring-after($lowercase, 'pmcid:'),'.',''))"/></pub-id></xsl:when>
+	    	<xsl:when test="$has='010'"><pub-id pub-id-type="pmid"><xsl:value-of select="normalize-space(translate(substring-after($lowercase, 'pmid:'),'.',''))"/></pub-id></xsl:when>
+	    	<xsl:when test="$has='100'">
+	    	    <xsl:variable name="doi"><xsl:value-of select="normalize-space(substring-after($lowercase, 'doi:'))"/></xsl:variable>
+	    	    <xsl:variable name="fixed_doi"><xsl:choose><xsl:when test="substring($doi,string-length($doi),1)='.' or substring($doi,string-length($doi),1)=',' or substring($doi,string-length($doi),1)=';' "><xsl:value-of select="substring($doi,1,string-length($doi)-1)"/></xsl:when><xsl:otherwise><xsl:value-of select="$doi"/></xsl:otherwise></xsl:choose></xsl:variable>
+	    	    <pub-id pub-id-type="doi"><xsl:value-of select="$fixed_doi"/></pub-id></xsl:when>
+	    	<xsl:when test="$has='011'">
+	    	    <!-- pmcid / pmid -->
+	    		<xsl:apply-templates select="." mode="identify-two-ids">
+	    			<xsl:with-param name="e1" select="$a_pmcid"/>
+	    			<xsl:with-param name="e2" select="$a_pmid"/>
+	    			<xsl:with-param name="e1_name" select="'pmcid'"/>
+	    			<xsl:with-param name="e2_name" select="'pmid'"/>
+	    		</xsl:apply-templates>
+	    	</xsl:when>
+	    	<xsl:when test="$has='101'">
+	    		<!-- pmcid / doi -->
+	    		<xsl:apply-templates select="." mode="identify-two-ids">
+	    			<xsl:with-param name="e1" select="$a_pmcid"/>
+	    			<xsl:with-param name="e2" select="$a_doi"/>
+	    			<xsl:with-param name="e1_name" select="'pmcid'"/>
+	    			<xsl:with-param name="e2_name" select="'doi'"/>
+	    		</xsl:apply-templates>
+	    	</xsl:when>
+	    	<xsl:when test="$has='110'">
+	    	<!-- pmcid / doi -->
+	    		<xsl:apply-templates select="." mode="identify-two-ids">
+	    			<xsl:with-param name="e1" select="$a_pmid"/>
+	    			<xsl:with-param name="e2" select="$a_doi"/>
+	    			<xsl:with-param name="e1_name" select="'pmid'"/>
+	    			<xsl:with-param name="e2_name" select="'doi'"/>
+	    		</xsl:apply-templates>
+	    	</xsl:when>
+	    	<xsl:when test="$has='111'">
+	    		<xsl:variable name="first"><xsl:choose>
+	    		<xsl:when test="$b_doi=''"><xsl:value-of select="$a_doi"/></xsl:when>
+	    		<xsl:when test="$b_pmid=''"><xsl:value-of select="$a_pmid"/></xsl:when>
+	    		<xsl:when test="$b_pmcid=''"><xsl:value-of select="$a_pmcid"/></xsl:when>
+	    		</xsl:choose></xsl:variable>
+	    		
+	    		<xsl:variable name="first_name"><xsl:choose>
+	    		<xsl:when test="$b_doi=''">doi</xsl:when>
+	    		<xsl:when test="$b_pmid=''">pmid</xsl:when>
+	    		<xsl:when test="$b_pmcid=''">pmcid</xsl:when>
+	    		</xsl:choose></xsl:variable>
+	    		
+	    		
+	    		
+	    	    <xsl:comment><xsl:value-of select="$first_name"/></xsl:comment>
+	    	    <xsl:choose>
+	    	    	<xsl:when test="$first_name='doi'"><!-- doi,?,? -->
+	    	    		
+	    	    	    <xsl:apply-templates select="." mode="identify-two-ids">
+			    			<xsl:with-param name="e1" select="$a_pmid"/>
+			    			<xsl:with-param name="e2" select="$a_pmcid"/>
+			    			<xsl:with-param name="e1_name" select="'pmid'"/>
+			    			<xsl:with-param name="e2_name" select="'pmcid'"/>
+			    			<xsl:with-param name="first" select="$first"/>
+			    			<xsl:with-param name="first_name" select="$first_name"/>
+			    		</xsl:apply-templates>
+	    	    	</xsl:when>
+	    	    	<xsl:when test="$first_name='pmid'"><!-- pmid,?,? -->
+	    	    		<xsl:apply-templates select="." mode="identify-two-ids">
+			    			<xsl:with-param name="e1" select="$a_doi"/>
+			    			<xsl:with-param name="e2" select="$a_pmcid"/>
+			    			<xsl:with-param name="e1_name" select="'doi'"/>
+			    			<xsl:with-param name="e2_name" select="'pmcid'"/>
+			    			<xsl:with-param name="first" select="$first"/>
+			    			<xsl:with-param name="first_name" select="$first_name"/>
+			    		</xsl:apply-templates>
+	    	    	</xsl:when>
+	    	    	<xsl:when test="$first_name='pmcid'"><!-- pmcid,?,? -->
+	    	    	    <xsl:apply-templates select="." mode="identify-two-ids">
+			    			<xsl:with-param name="e1" select="$a_doi"/>
+			    			<xsl:with-param name="e2" select="$a_pmid"/>
+			    			<xsl:with-param name="e1_name" select="'doi'"/>
+			    			<xsl:with-param name="e2_name" select="'pmid'"/>
+			    			<xsl:with-param name="first" select="$first"/>
+			    			<xsl:with-param name="first_name" select="$first_name"/>
+			    		</xsl:apply-templates>
+	    	    	</xsl:when>
+	    	   	</xsl:choose>
+	    	</xsl:when>
+	    </xsl:choose>
 	</xsl:template>
 	<xsl:template match="xref/text()">
 		<xsl:value-of select="."/>
