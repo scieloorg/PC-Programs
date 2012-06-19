@@ -27,4 +27,14 @@ class Report:
             print(action)
             print('[/DEBUG]' + "\n" )
             
-    
+    def display_data(self, message, data):
+        
+        print('==> ' +  message ) 
+        
+        
+        try: 
+            print(data)
+        except:
+            print('unabled to print data')
+        print('------------------------------------') 
+            

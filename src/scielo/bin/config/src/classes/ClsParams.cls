@@ -13,7 +13,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Private col As New Collection
 
-Sub add(value As Variant, key As Variant)
+Sub add(value As String, key As Variant)
     Call col.add(value, key)
         'Call col.add(value, key)
 End Sub

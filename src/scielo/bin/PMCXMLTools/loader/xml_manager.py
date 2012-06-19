@@ -4,6 +4,7 @@ import xml.etree.ElementTree as etree
 class XMLManager:
 
     root = {}
+    debug = True
 
     def __init__(self, xml_filename, report):
         try:
@@ -22,6 +23,8 @@ class XMLManager:
         except:
             self.report.register('Unable to load ' + xml_filename, '')
 
+    
+    
     def return_nodes(self, xpath = '', current_node = None):
         #'//{http://www.w3.org/2005/Atom}link'
         r = []
@@ -45,97 +48,112 @@ class XMLManager:
                 
         return r
         
-    def return_multi_values(self, result, group, xpath, subf_xpaths, parent_node):
-        
-        values = []
-        s = {} 
-        nodes = self.return_nodes(xpath, parent_node)
-        for node in nodes:
-            occ = {}
-            for subf, subf_xpath in subf_xpaths.items():
-                elem, attr, default = subf_xpath
-                if default != '':
-                    value = default
-                    occ[subf] = value
-                else: 
-                    if elem != '': 
-                        s[subf] = ('', attr, '')
-                        occ[subf] = self.return_multi_values(values, group, './/' + elem, s, node)
-                        if len(values) != len(occ[subf]):
-                            values = self._fix_(values, occ, subf)
-                    else:
-                        if attr != '':
-                            value = self.return_node_attr_value(node, attr)
-                        else:
-                            value = node.text
-                        occ[subf] = value
+    def return_multi_values(self, result, start, subfs, parent_node):
+        # subfs = lista de tupla ( parent_elem, elem, attr, default)
+        self.report.display_data('begin_return_multi_values', '')
+        self.report.display_data('subfs:', subfs)
                 
-                        
-                
-            values.append(occ)
-	    return values
+        tag_occs = []
+        nodes = [None]
         
-    def _fix_(self, occs, new_values, subf_name):
-        new_occs = []
-        if len(occs) > len(new_values):
-            new_occs = self._fix_occs_are_greater(occs, new_values, subf_name)
-        else:
-            new_occs = self._fix_new_values_are_greater(occs, new_values, subf_name)
-         
-        return new_occs
-        
-    def _fix_new_values_are_greater(self, occs, new_values, subf_name):
-        new_occs = []
-        for value in new_values:
-            new_occ = {}
-            for occ in occs:
+        if start != '':
+            nodes = self.return_nodes('.//'+start, parent_node)
+            parent_node = nodes[0]
             
-                new_occ[subf_name] = value
-                for occ_k, occ_i in occ.items():
-                    new_occ[occ_k] = occ_i
-                new_occs.append(new_occ)
-        return new_occs
+        parent_elem = subfs[0][0]
+        if parent_elem != '':
+            nodes = self.return_nodes('.//' + parent_elem, parent_node)
+        for node in nodes:
+            saved_values = []
+            saved_values = self._return_multi_values_for_group(saved_values, subfs, node)
+            for item in saved_values:
+                tag_occs.append(item)
+                 
+        self.report.display_data('retorno', tag_occs)
+        self.report.display_data('end_return_multi_values','')
+        return tag_occs
+    
+    def _return_multi_values_for_group(self, saved_values, subfs, parent_node):
         
-    def _fix_occs_are_greater(self, occs, new_values, subf_name):
-        r = []
-        new_occs = []
         
-        for occ in occs:
-            for value in new_values:
-                occ[subf_name] = value
-            new_occs.append(occ)
-        return new_occs    
+        self.report.display_data('_return_multi_values_for_group:', '')
+        self.report.display_data('node:', parent_node)
+        
+        for subf_xpath in subfs:
+            ign, subf_name, elem, attr, default = subf_xpath
+            self.report.display_data('subf_name:', subf_name)
+            self.report.display_data('subf_xpath:', subf_xpath)
+            subf_occs = self._return_multi_values_for_subf(parent_node, elem, attr, default)
+    
+            if len(saved_values) >= len(subf_occs):
+                saved_values = self._append1(saved_values, subf_occs, subf_name)
+            else:
+                saved_values = self._append2(saved_values, subf_occs, subf_name)
+                
+        return saved_values
+        
+    def _return_multi_values_for_subf(self, parent_node, elem, attr, default):
+        
+        subf_occs = []
+        if default != '':
+            subf_occs.append(default)
+        else: 
+            if elem != '': 
+                nodes = self.return_nodes('.//' + elem, parent_node)
+                
+                for node in nodes:
+                    r = self._return_multi_values_for_subf(node, '', attr, default)
+                    subf_occs.append(r[0])
+            else:
+                if attr != '':
+                    value = self.return_node_attr_value(parent_node, attr)
+                else:
+                    value = parent_node.text
+                subf_occs.append(value)
+        return subf_occs
+               
+   
+    def _append1(self, list_of_dict, list, dict_key):
+        
+        print('begin_append1', '')
+        
+        self.report.display_data('list_of_dict:', list_of_dict)
+        self.report.display_data('list:', list)
+        
+
+        for dict in list_of_dict:
+            # occ tem subfs
+            self.report.display_data('dict', dict)
+            self.report.display_data('list', list)
+            for list_item in list:
+                self.report.display_data('list_item in list:', list_item)
+                dict[dict_key] = list_item
+                
+        self.report.display_data('retorno', list_of_dict)
+        self.report.display_data('end_append1', '')
+        return list_of_dict     
+
+    def _append2(self, list_of_dict, list, dict_key):
+        
+        print('begin_append2', '')
+        
+            
+        self.report.display_data('list_of_dict:', list_of_dict)
+        self.report.display_data('list:', list)
+        
+        for list_item in list:
+            self.report.display_data('listitem', list_item)
+            dict = {}
+            dict[dict_key] = list_item
+            list_of_dict.append(dict)
+            self.report.display_data('retorno', list_of_dict)
+                    
+        self.report.display_data('retorno', list_of_dict)
+        self.report.display_data('end_append2', '')
+        return list_of_dict     
         
     
-    def old_return_multi_values(self, xpath, subf_xpaths, parent_node):
-        
-        values = []
-        nodes = self.return_nodes(xpath, parent_node)
-        for node in nodes:
-            occ = {}
-            for subf, subf_xpath in subf_xpaths.items():
-                elem, attr, default = subf_xpath
-                if default != '':
-                    value = default
-                else: 
-                    if elem != '': 
-                        elem_node = self.return_nodes('.//' + elem, node)
-                        if len(elem_node)>0:
-                            value = elem_node[0].text
-                        else:
-                            value = '' 
-                    if attr != '':
-                        if elem != '' and  len(elem_node)>0:
-                            value = self.return_node_attr_value(elem_node, attr)
-                        else:
-                            value = self.return_node_attr_value(node, attr)
-                    if attr == '' and elem == '':
-                        value = node.text
-                    
-                occ[subf] = value
-            values.append(occ)
-	        
-        return values
+    
     def return_node_attr_value(self, node, attr_name):
         self.report.debugging(node, 'XMLManager.return_node_attr_value: node')
         self.report.debugging(attr_name, 'XMLManager.return_node_attr_value: attr_name')

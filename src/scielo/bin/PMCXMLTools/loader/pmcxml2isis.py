@@ -49,8 +49,8 @@ class PMCXML2ISIS:
     def format_records(self, main_json, suppl_json):
         rec_content =  ''
         
-        for record in self.records_order:
-            for rec_occ in main_json[record]:
+        for record_name in self.records_order:
+            for rec_occ in main_json[record_name]:
                 
                 self.record_number += 1
                 record_id = '000000' + str(self.record_number)
@@ -67,15 +67,54 @@ class PMCXML2ISIS:
                                 if subf_name == 'value': 
                                     tagged = subf_content + tagged
                                 else:
-                                    print(subf_content)
-                                    tagged += '^' + subf_name + self._convert_value_(subf_content, '') #FIXME
+                                    #print(subf_content)
+                                    tagged += '^' + subf_name + self._convert_subfields_(subf_content, '') #FIXME
                         
-                        rec_content += '!v' + t[-3:] + '!' + tagged + "\n"
-                        
-                        self.id_file.write('!v' + t[-3:] + '!' + tagged + "\n", ''  )
+                            rec_content += '!v' + t[-3:] + '!' + tagged + "\n"
+                            self.id_file.write('!v' + t[-3:] + '!' + tagged + "\n", ''  )
         return rec_content
                     
+    def _convert_subfields_(self, value, data_conversion):
+        if value != '':
+            try:
+                value = value.encode('iso-8859-1')
+            except:
+                self.report.register('encode failure', 'Unable to convert to iso') 
+        if value != '' and data_conversion != '':
+            v = ''
+            try:
+                t = self.tables[data_conversion]
+                try:
+                    v = self.tables[data_conversion][value]
+                except:
+                    self.report.register('Expected data_conversion of ' + data_conversion + ': ' + value, '')
+            except:
+                self.report.register('Expected table ' + data_conversion, '') 
+            if v != '':
+                value = v                    
+        return value
+
     def _convert_value_(self, value, data_conversion):
+        if value != '':
+            try:
+                value = value.encode('iso-8859-1')
+            except:
+                self.report.register('encode failure', 'Unable to convert to iso') 
+        if value != '' and data_conversion != '':
+            v = ''
+            try:
+                t = self.tables[data_conversion]
+                try:
+                    v = self.tables[data_conversion][value]
+                except:
+                    self.report.register('Expected data_conversion of ' + data_conversion + ': ' + value, '')
+            except:
+                self.report.register('Expected table ' + data_conversion, '') 
+            if v != '':
+                value = v                    
+        return value
+
+    def old_convert_value_(self, value, data_conversion):
         if value != '':
             try:
                 value = value.encode('iso-8859-1')

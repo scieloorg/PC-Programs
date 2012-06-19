@@ -1,2 +1,449 @@
 !ID 000001
-!v071!research-article
+!v065!2012
+!v064!
+            
+!v070!Universidad Libre Seccional Barranquilla, Barranquilla, Colombia^iaff1
+!v085!^kLactose intolerance^len
+!v085!^kLactase^len
+!v085!^kPolymorphism, single nucleotide^len
+!v085!^kBreath tests^len
+!v085!^kColombia^len
+!v085!^kCaribbean region^len
+!v085!^kIntolerância à lactose^lpt
+!v085!^kLactase^lpt
+!v085!^kPolimorfismo de um único nucleotídeo^lpt
+!v085!^kTestes respiratórios^lpt
+!v085!^kColômbia^lpt
+!v085!^kRegião do Caribe^lpt
+!v010!^1aff1^sMendoza Torres^rND^nEvelyn
+!v010!^1aff1^sVarela Prieto^rND^nLourdes Luz
+!v010!^1aff1^sVillarreal Camacho^rND^nJosé Luis
+!v010!^1aff1^sVillanueva Torregroza^rND^nDaniel Antonio
+!v012!^tDiagnosis of adult-type hypolactasia/lactase persistence^len
+!v012!^sa genotipagem do polimorfismo de um único nucleotídeo (SNP) C/T-13910 não é consistente com o teste de hidrogênio na população do Caribe Colombiano^tDiagnóstico de hipolactasia tipo adulto/persistência da lactase^lpt
+!v032!1
+!v014!^l8^f8
+!v030!Arq. Gastroenterol.
+!v031!49
+!ID 000002
+!v010!^sArola^rND^nH
+!v010!^sKoivula^rND^nT
+!v010!^sJokela^rND^nH
+!v010!^sJauhiainen^rND^nM
+!v010!^sKeyriläinen^rND^nO
+!v010!^sAhola^rND^nT
+!v010!^sUusitalo^rND^nA
+!v010!^sIsokoski^rND^nM
+!v071!journal
+!v031!23
+!v030!Scand J Gastroenterol
+!v064!1988
+!v065!1988
+!v118!1
+!v014!^l357^f357
+!ID 000003
+!v010!^sBersaglieri^rND^nT
+!v010!^sSabeti^rND^nPC
+!v010!^sPatterson^rND^nN
+!v010!^sVanderploeg^rND^nT
+!v010!^sSchaffner^rND^nSF
+!v010!^sDrake^rND^nJA
+!v010!^sRhodes^rND^nM
+!v010!^sReich^rND^nDE
+!v010!^sHirschhorn^rND^nJN
+!v071!journal
+!v031!74
+!v030!Am J Hum Genet
+!v064!2004
+!v065!2004
+!v118!2
+!v014!^l1120^f1120
+!ID 000004
+!v010!^sBulhões^rND^nAC
+!v010!^sGoldani^rND^nHA
+!v010!^sOliveira^rND^nFS
+!v010!^sMatte^rND^nUS
+!v010!^sMazzuca^rND^nRB
+!v010!^sSilveira^rND^nTR
+!v071!journal
+!v031!40
+!v030!Braz J Med Biol Res
+!v064!2007
+!v065!2007
+!v118!3
+!v014!^l1446^f1446
+!ID 000005
+!v010!^sDahlqvist^rND^nA
+!v071!journal
+!v031!44
+!v030!Scand J Clin Lab Invest
+!v064!1984
+!v065!1984
+!v118!4
+!v014!^l172^f172
+!ID 000006
+!v010!^sDi Stefano^rND^nM
+!v010!^sTerulla^rND^nV
+!v010!^sTana^rND^nP
+!v010!^sMazzocchi^rND^nS
+!v010!^sRomero^rND^nE
+!v010!^sCorazza^rND^nGR
+!v071!journal
+!v031!41
+!v030!Dig Liver Dis
+!v064!2009
+!v065!2009
+!v118!5
+!v014!^l479^f479
+!ID 000007
+!v010!^sEnattah^rND^nNS
+!v010!^sSahi^rND^nT
+!v010!^sSavilahti^rND^nE
+!v010!^sTerwilliger^rND^nJD
+!v010!^sPeltonen^rND^nL
+!v010!^sJärvelä^rND^nI
+!v071!journal
+!v031!30
+!v030!Nat Genet
+!v064!2002
+!v065!2002
+!v118!6
+!v014!^l237^f237
+!ID 000008
+!v010!^sEnattah^rND^nNS
+!v010!^sJensen^rND^nTG
+!v010!^sNielsen^rND^nM
+!v010!^sLewinski^rND^nR
+!v010!^sKuokkanen^rND^nM
+!v010!^sRasinpera^rND^nH
+!v010!^sEl-Shanti^rND^nH
+!v010!^sSeo^rND^nJK
+!v010!^sAlifrangis^rND^nM
+!v010!^sKhalil^rND^nIF
+!v010!^sNatah^rND^nA
+!v010!^sAli^rND^nA
+!v010!^sNatah^rND^nS
+!v010!^sComas^rND^nD
+!v010!^sMehdi^rND^nSQ
+!v010!^sGroop^rND^nL
+!v010!^sVestergaard^rND^nEM
+!v010!^sImtiaz^rND^nF
+!v010!^sRashed^rND^nMS
+!v010!^sMeyer^rND^nB
+!v010!^sTroelsen^rND^nJ
+!v010!^sPeltonen^rND^nL
+!v071!journal
+!v031!82
+!v030!Am J Hum Genet
+!v064!2008
+!v065!2008
+!v118!7
+!v014!^l72^f72
+!ID 000009
+!v010!^sExcoffier^rND^nL
+!v010!^sLaval^rND^nG
+!v010!^sSchneider^rND^nS
+!v071!journal
+!v031!1
+!v030!Evol Bioinform Online
+!v064!2007
+!v065!2007
+!v118!8
+!v014!^l50^f50
+!ID 000010
+!v010!^sGonçalves^rND^nVF
+!v010!^sCarvalho^rND^nCM
+!v010!^sBortolini^rND^nMC
+!v010!^sBydlowski^rND^nSP
+!v010!^sPena^rND^nSD
+!v071!journal
+!v031!65
+!v030!Hum Hered
+!v064!2008
+!v065!2008
+!v118!9
+!v014!^l32^f32
+!ID 000011
+!v010!^sHögenauer^rND^nC
+!v010!^sHammer^rND^nHF
+!v010!^sMellitzer^rND^nK
+!v010!^sRenner^rND^nW
+!v010!^sKrejs^rND^nGJ
+!v010!^sToplak^rND^nH
+!v071!journal
+!v031!17
+!v030!Eur J Gastroenterol Hepatol
+!v064!2005
+!v065!2005
+!v118!10
+!v014!^l376^f376
+!ID 000012
+!v010!^sIngram^rND^nCJ
+!v010!^sElamin^rND^nMF
+!v010!^sMulcare^rND^nCA
+!v010!^sWeale^rND^nME
+!v010!^sTarekegn^rND^nA
+!v010!^sRaga^rND^nTO
+!v010!^sBekele^rND^nE
+!v010!^sElamin^rND^nFM
+!v010!^sThomas^rND^nMG
+!v010!^sBradman^rND^nN
+!v010!^sSwallow^rND^nDM
+!v071!journal
+!v031!120
+!v030!Hum Genet
+!v064!2007
+!v065!2007
+!v118!11
+!v014!^l788^f788
+!ID 000013
+!v010!^sIngram^rND^nCJ
+!v010!^sMulcare^rND^nCA
+!v010!^sItan^rND^nY
+!v010!^sThomas^rND^nMG
+!v010!^sSwallow^rND^nDM
+!v071!journal
+!v031!124
+!v030!Hum Genet
+!v064!2009
+!v065!2009
+!v118!12
+!v014!^l591^f591
+!ID 000014
+!v010!^sKrawczyk^rND^nM
+!v010!^sWolska^rND^nM
+!v010!^sSchwartz^rND^nS
+!v010!^sGruenhage^rND^nF
+!v010!^sTerjung^rND^nB
+!v010!^sPortincasa^rND^nP
+!v010!^sSauerbruch^rND^nT
+!v010!^sLammert^rND^nF
+!v071!journal
+!v031!17
+!v030!J Gastrointestin Liver Dis
+!v064!2008
+!v065!2008
+!v118!13
+!v014!^l139^f139
+!ID 000015
+!v010!^sKuokkanen^rND^nM
+!v010!^sEnattah^rND^nNS
+!v010!^sOksanen^rND^nA
+!v010!^sSavilahti^rND^nE
+!v010!^sOrpana^rND^nA
+!v010!^sJärvelä^rND^nI
+!v071!journal
+!v031!52
+!v030!Gut
+!v064!2003
+!v065!2003
+!v118!14
+!v014!^l652^f652
+!ID 000016
+!v010!^sMattar^rND^nR
+!v010!^sMonteiro^rND^nMdoS
+!v010!^sVillares^rND^nCA
+!v010!^sdos Santos^rND^nAF
+!v010!^sCarrilho^rND^nFJ
+!v071!journal
+!v031!41
+!v030!Clin Biochem
+!v064!2008
+!v065!2008
+!v118!15
+!v014!^l630^f630
+!ID 000017
+!v010!^sMattar^rND^nR
+!v010!^sMonteiro^rND^nMS
+!v010!^sVillares^rND^nCA
+!v010!^sSantos^rND^nAF
+!v010!^sSilva^rND^nJM
+!v010!^sCarrilho^rND^nFJ
+!v071!journal
+!v031!8
+!v030!Nutr J
+!v064!2009
+!v065!2009
+!v118!16
+!v014!^l48^f48
+!ID 000018
+!v010!^sMendoza^rND^nE
+!v010!^sHernandez^rND^nAC
+!v010!^sWilches^rND^nR
+!v010!^sVarela^rND^nLL
+!v010!^sVillarreal^rND^nJL
+!v010!^sBarrera^rND^nLA
+!v010!^sVillanueva^rND^nDA
+!v071!journal
+!v031!41
+!v030!Colomb Med
+!v064!2010
+!v065!2010
+!v118!17
+!v014!^l294^f294
+!ID 000019
+!v010!^sMulcare^rND^nCA
+!v010!^sWeale^rND^nME
+!v010!^sJones^rND^nAL
+!v010!^sConnell^rND^nB
+!v010!^sZeitlyn^rND^nD
+!v010!^sTarekegn^rND^nA
+!v010!^sSwallow^rND^nDM
+!v010!^sBradman^rND^nN
+!v010!^sThomas^rND^nMG
+!v071!journal
+!v031!74
+!v030!Am J Hum Genet
+!v064!2004
+!v065!2004
+!v118!18
+!v014!^l1110^f1110
+!ID 000020
+!v010!^sNagy^rND^nD
+!v010!^sBojácsi-Szabó^rND^nE
+!v010!^sVárkonyi^rND^nÁ
+!v010!^sCsányi^rND^nB
+!v010!^sCzibula^rND^nÁ
+!v010!^sBede^rND^nO
+!v010!^sTari^rND^nB
+!v010!^sRaskó^rND^nI
+!v071!journal
+!v031!63
+!v030!Eur J Clin Nutr
+!v064!2009
+!v065!2009
+!v118!19
+!v014!^l912^f912
+!ID 000021
+!v010!^sOjetti^rND^nV
+!v010!^sLa Mura^rND^nR
+!v010!^sZocco^rND^nMA
+!v010!^sCesaro^rND^nP
+!v010!^sDe Masi^rND^nE
+!v010!^sLa Mazza^rND^nA
+!v010!^sCammarota^rND^nG
+!v010!^sGasbarrini^rND^nG
+!v010!^sGasbarrini^rND^nA
+!v071!journal
+!v031!53
+!v030!Dig Dis Sci
+!v064!2008
+!v065!2008
+!v118!20
+!v014!^l1592^f1592
+!ID 000022
+!v010!^sOlds^rND^nLC
+!v010!^sAhn^rND^nJK
+!v010!^sSibley^rND^nE
+!v071!journal
+!v031!129
+!v030!Hum Genet
+!v064!2011
+!v065!2011
+!v118!21
+!v014!^l113^f113
+!ID 000023
+!v010!^sPohl^rND^nD
+!v010!^sSavarino^rND^nE
+!v010!^sHersberger^rND^nM
+!v010!^sBehlis^rND^nZ
+!v010!^sStutz^rND^nB
+!v010!^sGoetze^rND^nO
+!v010!^sEckardstein^rND^nAV
+!v010!^sFried^rND^nM
+!v010!^sTutuian^rND^nR
+!v071!journal
+!v031!104
+!v030!Br J Nutr
+!v064!2010
+!v065!2010
+!v118!22
+!v014!^l907^f907
+!ID 000024
+!v010!^sRidefelt^rND^nP
+!v010!^sHakansson^rND^nLD
+!v071!journal
+!v031!40
+!v030!Scand J Gastroenterol
+!v064!2005
+!v065!2005
+!v118!23
+!v014!^l826^f826
+!ID 000025
+!v010!^sRomagnuolo^rND^nJ
+!v010!^sSchiller^rND^nD
+!v010!^sBailey^rND^nRJ
+!v071!journal
+!v031!97
+!v030!Am J Gastroenterol
+!v064!2002
+!v065!2002
+!v118!24
+!v014!^l1126^f1126
+!ID 000026
+!v010!^sSahi^rND^nT
+!v071!journal
+!v031!202
+!v030!Scand J Gastroenterol Suppl
+!v064!1994
+!v065!1994
+!v118!25
+!v014!^l20^f20
+!ID 000027
+!v010!^sSalzano^rND^nFM
+!v010!^sBortolini^rND^nMC
+!v071!report
+!v062!Cambridge University Press
+!v064!2002
+!v065!2002
+!v066!Cambridge, UK
+!v118!26
+!ID 000028
+!v010!^sSwallow^rND^nDM
+!v071!journal
+!v031!37
+!v030!Ann Rev Genet
+!v064!2003
+!v065!2003
+!v118!27
+!v014!^l219^f219
+!ID 000029
+!v010!^sTishkoff^rND^nSA
+!v010!^sReed^rND^nFA
+!v010!^sRanciaro^rND^nA
+!v010!^sVoight^rND^nBF
+!v010!^sBabbitt^rND^nCC
+!v010!^sSilverman^rND^nJS
+!v010!^sPowell^rND^nK
+!v010!^sMortensen^rND^nHM
+!v010!^sHirbo^rND^nJB
+!v010!^sOsman^rND^nM
+!v010!^sIbrahim^rND^nM
+!v010!^sOmar^rND^nSA
+!v010!^sLema^rND^nG
+!v010!^sNyambo^rND^nTB
+!v010!^sGhori^rND^nJ
+!v010!^sBumpstead^rND^nS
+!v010!^sPritchard^rND^nJK
+!v010!^sWray^rND^nGA
+!v010!^sDeloukas^rND^nP
+!v071!journal
+!v031!39
+!v030!Nat Genet
+!v064!2007
+!v065!2007
+!v118!28
+!v014!^l40^f40
+!ID 000030
+!v010!^sTorniainen^rND^nS
+!v010!^sParker^rND^nMI
+!v010!^sHolmberg^rND^nV
+!v010!^sLahtela^rND^nE
+!v010!^sDandara^rND^nC
+!v010!^sJarvela^rND^nI
+!v071!journal
+!v031!10
+!v030!BMC Genet
+!v064!2009
+!v065!2009
+!v118!29

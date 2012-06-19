@@ -16,10 +16,10 @@ Private mvarCodeStatus As ColCode
 Private Const valid = "DSC"
 Private Const visible = "DSC"
 
-Function changed(mfn As Long) As Boolean
+Function changed(Mfn As Long) As Boolean
     Dim H As ClsHistory
     
-    Set H = journalDAO.getHistory(mfn)
+    Set H = journalDAO.getHistory(Mfn)
     changed = (journalDAO.tagHistory(H) <> journalDAO.tagHistory(history))
 End Function
 
@@ -104,7 +104,7 @@ Function checkDate(previousDate As String, currDate As String) As Boolean
     Dim msgParam As New ClsParams
     
     If checkDateFormat(currDate, err) Then
-        If previousDate >= currDate Then
+        If previousDate > currDate Then
             err = "00101"
             Call msgParam.add(currDate, 1)
             Call msgParam.add(previousDate, 2)
@@ -167,8 +167,8 @@ Function isValidStatusTransition(previousStatus As String, status As String) As 
     isValidStatusTransition = r
 End Function
 
-Function loadHistory(mfn As Long)
-    Set history = journalDAO.getHistory(mfn)
+Function loadHistory(Mfn As Long)
+    Set history = journalDAO.getHistory(Mfn)
 End Function
 
 Function getDataToSave() As String

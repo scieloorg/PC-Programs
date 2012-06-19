@@ -216,7 +216,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="article-title"/>
 			<xsl:apply-templates select=".//authgrp" mode="front"/>
 			<xsl:apply-templates select="." mode="author-notes"/>
-			<xsl:variable name="epub_date"><xsl:choose>
+			<xsl:variable name="preprint_date"><xsl:choose>
 					<xsl:when test="@rvpdate">
 						<xsl:value-of select="@rvpdate"/>
 					</xsl:when>
@@ -224,16 +224,21 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						<xsl:value-of select="@ahpdate"/>
 					</xsl:when></xsl:choose></xsl:variable>
 			
-			<xsl:if test="string-length($epub_date)&gt;0">
+			<xsl:if test="string-length($preprint_date)&gt;0">
 				<pub-date pub-type="epub">
 					<xsl:call-template name="display_date">
-					<xsl:with-param name="dateiso"><xsl:value-of select="$epub_date"/></xsl:with-param>
+					<xsl:with-param name="dateiso"><xsl:value-of select="$preprint_date"/></xsl:with-param>
 					</xsl:call-template>
 				</pub-date>
 			</xsl:if>
 			
 			
-			<xsl:variable name="date_type"><xsl:choose><xsl:when test="$PUB_TYPE='epub'">collection</xsl:when><xsl:otherwise>ppub</xsl:otherwise></xsl:choose>
+			<xsl:variable name="date_type">
+				<xsl:choose>
+					<xsl:when test="$PUB_TYPE='epub' and $preprint_date!=''">collection</xsl:when>
+					<xsl:when test="$PUB_TYPE='epub' and $preprint_date=''">epub-ppub</xsl:when>
+					<xsl:otherwise>ppub</xsl:otherwise>
+				</xsl:choose>
 			</xsl:variable>
 			<pub-date pub-type="{$date_type}">
 				<xsl:call-template name="display_date">
@@ -396,8 +401,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				
 			</xsl:otherwise>
 			</xsl:choose>
-	</xsl:template>
-	<xsl:template match="@fntype[.='author']"><xsl:attribute name="fn-type">other</xsl:attribute>
 	</xsl:template>
 	
 	<xsl:template match="@volid | volid">
@@ -609,8 +612,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="back//fngrp[@fntype]">
 		<fn><xsl:apply-templates select="@*|label"/><p><xsl:apply-templates select="*[name()!='label']|text()"/></p></fn>
 	</xsl:template>
-	<xsl:template match="fngrp/@fntype">
-		<xsl:attribute name="fn-type"><xsl:value-of select="."/></xsl:attribute>
+	<xsl:template match="fngrp/@fntype"><xsl:attribute name="fn-type">
+		<xsl:choose>
+			<xsl:when test=".='author'">other</xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose></xsl:attribute>
 	</xsl:template>
 	
 	<xsl:template match="tified">
@@ -1128,15 +1134,10 @@ Here is a figure group, with three figures inside, each of which contains a grap
 	    <xsl:param name="first_name"/>
 	    
 	    
-	    <xsl:comment>e1:<xsl:value-of select="$e1"/></xsl:comment>
-	    <xsl:comment>e2:<xsl:value-of select="$e2"/></xsl:comment>
-	    <xsl:comment>e1_name:<xsl:value-of select="$e1_name"/></xsl:comment>
-	    <xsl:comment>e2_name:<xsl:value-of select="$e2_name"/></xsl:comment>
 	    <xsl:variable name="maior"><xsl:choose>
 	    	<xsl:when test="string-length($e1) &gt; string-length($e2)"><xsl:value-of select="$e1_name"/></xsl:when>
 	    	<xsl:otherwise><xsl:value-of select="$e2_name"/></xsl:otherwise>
 	    </xsl:choose></xsl:variable>
-	    <xsl:comment>maior: <xsl:value-of select="$maior"/>| <xsl:value-of select="$e1_name"/>/<xsl:value-of select="$e2_name"/></xsl:comment>
 	    <xsl:choose>
 	    	<xsl:when test="$maior=$e1_name">
 	    		<xsl:apply-templates select="." mode="identify-ids">
@@ -1225,7 +1226,6 @@ Here is a figure group, with three figures inside, each of which contains a grap
 	    		
 	    		
 	    		
-	    	    <xsl:comment><xsl:value-of select="$first_name"/></xsl:comment>
 	    	    <xsl:choose>
 	    	    	<xsl:when test="$first_name='doi'"><!-- doi,?,? -->
 	    	    		
@@ -1507,7 +1507,9 @@ et al.</copyright-statement>
 			</xsl:when>
 			
 			<xsl:otherwise>
-				
+				<xsl:if test="substring($dateiso,7,2)!='00'"><day><xsl:value-of select="substring($dateiso,7,2)"/></day></xsl:if>
+				<xsl:if test="substring($dateiso,5,2)!='00'"><month><xsl:value-of select="substring($dateiso,5,2)"/></month></xsl:if>
+			
 			</xsl:otherwise>
 		</xsl:choose>
 					
