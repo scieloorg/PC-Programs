@@ -62,20 +62,29 @@ class PMCFilesManager:
                 os.remove(self.work_path + '/' + f)
                                             
     def copy_files_from_work_to_package_folder(self, pmc_xml_fullname):
+        print('copy_files_from_work_to_package_folder')
         if not os.path.isfile(pmc_xml_fullname):
              print 'Expected: ' + pmc_xml_fullname
         else:
             mkp_xml = MKPXML(self.fullname)
             newfilename = mkp_xml.return_filename()
-            images = mkp_xml.return_images()
-            new_fullname = self.package_path + '/' + newfilename 
             
+            print('new filename:' + newfilename)
+            
+            images = mkp_xml.return_images()
+            print('images')
+            print(images)
+            
+            new_fullname = self.package_path + '/' + newfilename 
+            print('copy ' + pmc_xml_fullname + ' ' + new_fullname)
             shutil.copy(pmc_xml_fullname, new_fullname + '.xml')
+            print('copy ' + self.pdf_filename + ' ' + new_fullname)
             shutil.copy(self.pdf_filename, new_fullname + '.pdf')
              
             img_extension = ''
             for src_dest_img in images:
                 src = src_dest_img[0]
+                print(src)
                 if '.jpg' in src:
                     src = src.replace('.jpg','')
              
@@ -95,8 +104,11 @@ class PMCFilesManager:
                      
     def copy_files_from_img_to_work_folder(self):
         msg = ''
+        print('copy_files_from_img_to_work_folder')
         mkp_xml = MKPXML(self.fullname)
         images = mkp_xml.return_images()
+        print('images')
+        print(images)
         for src_dest_img in images:
             
             src = src_dest_img[0]

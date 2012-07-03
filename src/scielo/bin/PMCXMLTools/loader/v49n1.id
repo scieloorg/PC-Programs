@@ -1,8 +1,26 @@
 !ID 000001
-!v065!2012
-!v064!
-            
 !v070!Universidad Libre Seccional Barranquilla, Barranquilla, Colombia^iaff1
+!v010!^1aff1^sMendoza Torres^rND^nEvelyn
+!v010!^1aff1^sVarela Prieto^rND^nLourdes Luz
+!v010!^1aff1^sVillarreal Camacho^rND^nJosé Luis
+!v010!^1aff1^sVillanueva Torregroza^rND^nDaniel Antonio
+!v114!
+               
+!v012!^tDiagnosis of adult-type hypolactasia/lactase persistence^len
+!v012!^sa genotipagem do polimorfismo de um único nucleotídeo (SNP) C/T-13910 não é consistente com o teste de hidrogênio na população do Caribe Colombiano^tDiagnóstico de hipolactasia tipo adulto/persistência da lactase^lpt
+!v113!
+               
+!v112!
+               
+!v032!1
+!v030!Arq. Gastroenterol.
+!v031!49
+!v014!^l8^f8
+!v040!en
+!v065!2012
+!v064!Jan-Mar
+!v083!^a
+            ^len
 !v085!^kLactose intolerance^len
 !v085!^kLactase^len
 !v085!^kPolymorphism, single nucleotide^len
@@ -15,16 +33,10 @@
 !v085!^kTestes respiratórios^lpt
 !v085!^kColômbia^lpt
 !v085!^kRegião do Caribe^lpt
-!v010!^1aff1^sMendoza Torres^rND^nEvelyn
-!v010!^1aff1^sVarela Prieto^rND^nLourdes Luz
-!v010!^1aff1^sVillarreal Camacho^rND^nJosé Luis
-!v010!^1aff1^sVillanueva Torregroza^rND^nDaniel Antonio
-!v012!^tDiagnosis of adult-type hypolactasia/lactase persistence^len
-!v012!^sa genotipagem do polimorfismo de um único nucleotídeo (SNP) C/T-13910 não é consistente com o teste de hidrogênio na população do Caribe Colombiano^tDiagnóstico de hipolactasia tipo adulto/persistência da lactase^lpt
-!v032!1
-!v014!^l8^f8
-!v030!Arq. Gastroenterol.
-!v031!49
+!v072!29
+!v071!research-article
+!v111!
+               
 !ID 000002
 !v010!^sArola^rND^nH
 !v010!^sKoivula^rND^nT
@@ -39,8 +51,8 @@
 !v030!Scand J Gastroenterol
 !v064!1988
 !v065!1988
-!v118!1
 !v014!^l357^f357
+!v118!1
 !ID 000003
 !v010!^sBersaglieri^rND^nT
 !v010!^sSabeti^rND^nPC
@@ -56,8 +68,8 @@
 !v030!Am J Hum Genet
 !v064!2004
 !v065!2004
-!v118!2
 !v014!^l1120^f1120
+!v118!2
 !ID 000004
 !v010!^sBulhões^rND^nAC
 !v010!^sGoldani^rND^nHA
@@ -70,8 +82,8 @@
 !v030!Braz J Med Biol Res
 !v064!2007
 !v065!2007
-!v118!3
 !v014!^l1446^f1446
+!v118!3
 !ID 000005
 !v010!^sDahlqvist^rND^nA
 !v071!journal
@@ -79,8 +91,8 @@
 !v030!Scand J Clin Lab Invest
 !v064!1984
 !v065!1984
-!v118!4
 !v014!^l172^f172
+!v118!4
 !ID 000006
 !v010!^sDi Stefano^rND^nM
 !v010!^sTerulla^rND^nV
@@ -93,8 +105,8 @@
 !v030!Dig Liver Dis
 !v064!2009
 !v065!2009
-!v118!5
 !v014!^l479^f479
+!v118!5
 !ID 000007
 !v010!^sEnattah^rND^nNS
 !v010!^sSahi^rND^nT
@@ -107,8 +119,8 @@
 !v030!Nat Genet
 !v064!2002
 !v065!2002
-!v118!6
 !v014!^l237^f237
+!v118!6
 !ID 000008
 !v010!^sEnattah^rND^nNS
 !v010!^sJensen^rND^nTG
@@ -137,8 +149,8 @@
 !v030!Am J Hum Genet
 !v064!2008
 !v065!2008
-!v118!7
 !v014!^l72^f72
+!v118!7
 !ID 000009
 !v010!^sExcoffier^rND^nL
 !v010!^sLaval^rND^nG
@@ -148,8 +160,8 @@
 !v030!Evol Bioinform Online
 !v064!2007
 !v065!2007
-!v118!8
 !v014!^l50^f50
+!v118!8
 !ID 000010
 !v010!^sGonçalves^rND^nVF
 !v010!^sCarvalho^rND^nCM
@@ -161,8 +173,8 @@
 !v030!Hum Hered
 !v064!2008
 !v065!2008
-!v118!9
 !v014!^l32^f32
+!v118!9
 !ID 000011
 !v010!^sHögenauer^rND^nC
 !v010!^sHammer^rND^nHF
@@ -175,8 +187,8 @@
 !v030!Eur J Gastroenterol Hepatol
 !v064!2005
 !v065!2005
-!v118!10
 !v014!^l376^f376
+!v118!10
 !ID 000012
 !v010!^sIngram^rND^nCJ
 !v010!^sElamin^rND^nMF
@@ -194,8 +206,8 @@
 !v030!Hum Genet
 !v064!2007
 !v065!2007
-!v118!11
 !v014!^l788^f788
+!v118!11
 !ID 000013
 !v010!^sIngram^rND^nCJ
 !v010!^sMulcare^rND^nCA
@@ -207,8 +219,8 @@
 !v030!Hum Genet
 !v064!2009
 !v065!2009
-!v118!12
 !v014!^l591^f591
+!v118!12
 !ID 000014
 !v010!^sKrawczyk^rND^nM
 !v010!^sWolska^rND^nM
@@ -223,8 +235,8 @@
 !v030!J Gastrointestin Liver Dis
 !v064!2008
 !v065!2008
-!v118!13
 !v014!^l139^f139
+!v118!13
 !ID 000015
 !v010!^sKuokkanen^rND^nM
 !v010!^sEnattah^rND^nNS
@@ -237,8 +249,8 @@
 !v030!Gut
 !v064!2003
 !v065!2003
-!v118!14
 !v014!^l652^f652
+!v118!14
 !ID 000016
 !v010!^sMattar^rND^nR
 !v010!^sMonteiro^rND^nMdoS
@@ -250,8 +262,8 @@
 !v030!Clin Biochem
 !v064!2008
 !v065!2008
-!v118!15
 !v014!^l630^f630
+!v118!15
 !ID 000017
 !v010!^sMattar^rND^nR
 !v010!^sMonteiro^rND^nMS
@@ -264,8 +276,8 @@
 !v030!Nutr J
 !v064!2009
 !v065!2009
-!v118!16
 !v014!^l48^f48
+!v118!16
 !ID 000018
 !v010!^sMendoza^rND^nE
 !v010!^sHernandez^rND^nAC
@@ -279,8 +291,8 @@
 !v030!Colomb Med
 !v064!2010
 !v065!2010
-!v118!17
 !v014!^l294^f294
+!v118!17
 !ID 000019
 !v010!^sMulcare^rND^nCA
 !v010!^sWeale^rND^nME
@@ -296,8 +308,8 @@
 !v030!Am J Hum Genet
 !v064!2004
 !v065!2004
-!v118!18
 !v014!^l1110^f1110
+!v118!18
 !ID 000020
 !v010!^sNagy^rND^nD
 !v010!^sBojácsi-Szabó^rND^nE
@@ -312,8 +324,8 @@
 !v030!Eur J Clin Nutr
 !v064!2009
 !v065!2009
-!v118!19
 !v014!^l912^f912
+!v118!19
 !ID 000021
 !v010!^sOjetti^rND^nV
 !v010!^sLa Mura^rND^nR
@@ -329,8 +341,8 @@
 !v030!Dig Dis Sci
 !v064!2008
 !v065!2008
-!v118!20
 !v014!^l1592^f1592
+!v118!20
 !ID 000022
 !v010!^sOlds^rND^nLC
 !v010!^sAhn^rND^nJK
@@ -340,8 +352,8 @@
 !v030!Hum Genet
 !v064!2011
 !v065!2011
-!v118!21
 !v014!^l113^f113
+!v118!21
 !ID 000023
 !v010!^sPohl^rND^nD
 !v010!^sSavarino^rND^nE
@@ -357,8 +369,8 @@
 !v030!Br J Nutr
 !v064!2010
 !v065!2010
-!v118!22
 !v014!^l907^f907
+!v118!22
 !ID 000024
 !v010!^sRidefelt^rND^nP
 !v010!^sHakansson^rND^nLD
@@ -367,8 +379,8 @@
 !v030!Scand J Gastroenterol
 !v064!2005
 !v065!2005
-!v118!23
 !v014!^l826^f826
+!v118!23
 !ID 000025
 !v010!^sRomagnuolo^rND^nJ
 !v010!^sSchiller^rND^nD
@@ -378,8 +390,8 @@
 !v030!Am J Gastroenterol
 !v064!2002
 !v065!2002
-!v118!24
 !v014!^l1126^f1126
+!v118!24
 !ID 000026
 !v010!^sSahi^rND^nT
 !v071!journal
@@ -387,8 +399,8 @@
 !v030!Scand J Gastroenterol Suppl
 !v064!1994
 !v065!1994
-!v118!25
 !v014!^l20^f20
+!v118!25
 !ID 000027
 !v010!^sSalzano^rND^nFM
 !v010!^sBortolini^rND^nMC
@@ -405,8 +417,8 @@
 !v030!Ann Rev Genet
 !v064!2003
 !v065!2003
-!v118!27
 !v014!^l219^f219
+!v118!27
 !ID 000029
 !v010!^sTishkoff^rND^nSA
 !v010!^sReed^rND^nFA
@@ -432,8 +444,8 @@
 !v030!Nat Genet
 !v064!2007
 !v065!2007
-!v118!28
 !v014!^l40^f40
+!v118!28
 !ID 000030
 !v010!^sTorniainen^rND^nS
 !v010!^sParker^rND^nMI

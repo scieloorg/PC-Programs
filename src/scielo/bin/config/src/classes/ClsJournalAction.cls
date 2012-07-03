@@ -16,13 +16,18 @@ Sub generateJournalStandardListForMarkup()
     Dim i As Long
     Dim fn As Long
     Dim j As ClsJournal
+    Dim text As String
+    
     fn = FreeFile
     Set journalList = journalDAO.getJournalStandardList
     Open Paths("Markup Issue Table").Path + "\journal-standard.txt" For Output As fn
     For i = 1 To journalList.count
         Set j = journalList(i)
-        Print #fn, j.ISSN & "#" & j.shorttitle & "#" & j.JournalStandard & "#" & j.ISSNTYPE & "#" & j.CURRENTISSN & "#" & j.SUBJECT & "#" & j.MedlineTitle & "#" & j.pmid
         
+        text = j.ISSN & "#" & j.shorttitle & "#" & j.JournalStandard & "#" & j.ISSNTYPE & "#" & j.CURRENTISSN & "#" & j.SUBJECT & "#" & j.MedlineTitle & "#" & j.pmid
+        text = text & "#" & j.fulltitle & "#" & j.acron & "#" & j.print_issn & "#" & j.online_issn & "#" & j.publisherName
+        
+        Print #fn, text
     Next
     Close fn
 End Sub

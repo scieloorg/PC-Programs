@@ -54,7 +54,8 @@ class XMLManager:
         self.report.display_data('subfs:', subfs)
                 
         tag_occs = []
-        nodes = [None]
+        nodes = self.return_nodes('', parent_node)
+        
         
         if start != '':
             nodes = self.return_nodes('.//'+start, parent_node)

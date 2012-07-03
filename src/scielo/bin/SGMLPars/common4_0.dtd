@@ -50,7 +50,7 @@
 <!ELEMENT state   - - (#PCDATA)>
 <!ELEMENT country   - - (#PCDATA)>
 
-<!ELEMENT tabwrap - - ( ((label?, caption,(table | graphic)) | ((table | graphic), label?, caption)), notes*  )  >
+<!ELEMENT tabwrap - - ( ((label?, caption,(table | graphic)) | ((table | graphic), label?, caption)), fntable*  )  >
 <!ATTLIST tabwrap
           id       CDATA #REQUIRED
 filename       CDATA #IMPLIED>
@@ -102,7 +102,13 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT fngrp - - (label?, (#PCDATA)) +(%i.float;) >
 <!ATTLIST fngrp
+          id       CDATA    #REQUIRED
           fntype       CDATA    #REQUIRED 
+          
+	 >
+<!ELEMENT fntable - - (label?, (#PCDATA)) +(%i.float;) >
+<!ATTLIST fntable
+          id       CDATA    #REQUIRED 
 	 >
 <!ELEMENT quote - - (#PCDATA)>
 

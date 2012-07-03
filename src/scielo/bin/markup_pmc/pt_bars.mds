@@ -55,7 +55,19 @@ tabwrap;ifloat
 label;Identifica o rótulo da tabela (ex. Tabela 1);10;#FALSE#;#FALSE#;
 caption;Identifica a legenda da tabela;10;#FALSE#;#FALSE#;
 graphic;Identifica a imagem da tabela;10;#FALSE#;#TRUE#;
-notes;Identifica as notas da tabela;10;#TRUE#;#FALSE#;
+table;Identifica a tabela codificada;10;#FALSE#;#FALSE#;table_tabwrap
+fntable;Identifica uma nota de tabela;6;#TRUE#;#TRUE#;fngrp_tabwrap
+down;fngrp_tabwrap
+
+table_tabwrap;tabwrap
+tr;Identifica uma linha da tabela;10;#TRUE#;#FALSE#;tr_tabwrap
+
+tr_tabwrap;table_tabwrap
+th;Identifica uma célula de cabeçalho da tabela;10;#TRUE#;#FALSE#;
+td;Identifica uma célula da tabela;10;#TRUE#;#FALSE#;
+
+fngrp_tabwrap;tabwrap
+label;Identifica o rótulo da nota;10;#FALSE#;#FALSE#;
 
 figgrp;ifloat
 label;Identifica o rótulo da figura (ex. Figura 1);10;#FALSE#;#FALSE#;
@@ -149,7 +161,7 @@ xmlabstr;bibcomFront
 sec;Identifica uma seção do texto;6;#TRUE#;#TRUE#;sec_xmlabstr
 down;sec_xmlabstr
 p;Identifica parágrafo;6;#TRUE#;#FALSE#;
-list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar_xmlabstr
+list;Identifica uma lista;6;#TRUE#;#TRUE#;listBar_xmlabstr
 down;listBar_xmlabstr
 
 listBar_xmlabstr;xmlabstr
@@ -951,7 +963,7 @@ xmlbodyBar;article
 sec;Identifica uma seção do texto;6;#TRUE#;#TRUE#;secBar
 down;secBar
 p;Identifica parágrafo;6;#TRUE#;#FALSE#;
-list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar_xmlbody
+list;Identifica uma lista;6;#TRUE#;#TRUE#;listBar_xmlbody
 down;listBar_xmlbody
 sigblock;Identifica o bloco de assinatura;6;#FALSE#;#FALSE#;sigblockBar
 down;sigblockBar
@@ -972,7 +984,7 @@ sectitle;Identifica o título da seção;6;#FALSE#;#FALSE#;
 subsec;Identifica a sub-seção do texto;6;#TRUE#;#FALSE#;subsecBar
 down;subsecBar
 p;Identifica parágrafo;6;#TRUE#;#FALSE#;
-list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar_secBar
+list;Identifica uma lista;6;#TRUE#;#TRUE#;listBar_secBar
 down;listBar_secBar
 
 listBar_secBar;secBar
@@ -987,7 +999,7 @@ subsecBar;secBar
 sectitle;Identifica o título da subseção;6;#TRUE#;#FALSE#;
 subsec;Identifica a sub-seção do texto;6;#TRUE#;#FALSE#;subsec2Bar
 p;Identifica parágrafo;6;#TRUE#;#FALSE#;
-list;Identifica uma lista;6;#FALSE#;#TRUE#;listBar_subsecBar
+list;Identifica uma lista;6;#TRUE#;#TRUE#;listBar_subsecBar
 down;listBar_subsecBar
 
 listBar_subsecBar;subsecBar

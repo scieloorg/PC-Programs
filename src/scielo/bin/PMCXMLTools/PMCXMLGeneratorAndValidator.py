@@ -30,13 +30,13 @@ class PMCXMLGeneratorAndValidator:
         result_filename = sgm_xml_filename + '.res.tmp'
         err_filename = sgm_xml_filename + '.err.tmp'
         
-        if os.path.exists(param_result_filename):
+        if os.path.isfile(param_result_filename):
             os.remove(param_result_filename)
-        if os.path.exists(param_err_filename):
+        if os.path.isfile(param_err_filename):
             os.remove(param_err_filename)
-        if os.path.exists(result_filename):
+        if os.path.isfile(result_filename):
             os.remove(result_filename)
-        if os.path.exists(err_filename):
+        if os.path.isfile(err_filename):
             os.remove(err_filename)
             
         pmc_files_manager = PMCFilesManager(sgm_xml_filename)
@@ -69,15 +69,16 @@ class PMCXMLGeneratorAndValidator:
                                     done = True
                                        
         if done:
-            os.rename(xml_filename, param_result_filename)
+            if preview_filename != param_result_filename:
+                os.rename(preview_filename, param_result_filename)
         else:
             if not os.path.exists(err_filename):
             
                 f = open(err_filename, 'w')
                 f.write('error')
                 f.close()
-                
-            os.rename(err_filename, param_err_filename)
+            if err_filename != param_err_filename:
+                os.rename(err_filename, param_err_filename)
             
         pmc_files_manager.remove_tmp_files()
         

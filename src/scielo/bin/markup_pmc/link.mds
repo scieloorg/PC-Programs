@@ -103,5 +103,8 @@ sec-type
 fngrp
 id;fntype
 
+fntable
+id
+
 list
 listtype

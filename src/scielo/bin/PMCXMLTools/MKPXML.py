@@ -35,21 +35,41 @@ class MKPXML:
         
         #print page_or_order
         
-        return nodes[0].attrib['issn'] + '-' + acron + '-' + nodes[0].attrib['volid']+ '-' + nodes[0].attrib['issueno'] + '-' +  page_or_order
+        issueno = ''
+        try: 
+            issueno = nodes[0].attrib['supplvol'] + '-'
+        except:
+            pass
+            
         
+        issueno = issueno + nodes[0].attrib['issueno']
+        try: 
+            issueno = issueno + '-' + nodes[0].attrib['supplno'] 
+        except:
+            pass
+       
+        
+        #print page_or_order
+        
+        return nodes[0].attrib['issn'] + '-' + acron + '-' + nodes[0].attrib['volid']+ '-' + issueno + '-' +  page_or_order
+    
     def return_images(self, tags='figgrp | tabwrap | equation'):
         a = []
         
         names = tags.split(' | ')
+        print('return_images ')
+        print(names)
         for tag in names:
             #print tag
-            
+            self.xml.debug = 3
             nodes = self.xml.get_nodes(tag)
+            print(nodes)
             for node in nodes:
-                #print node
+                print(node)
                 
                 attr_filename = ''
                 type = node.attrib['id']
+                print('type=' + type)
                 if type[0:1] == 'e':
                     type = 'e' + type
                 else:
@@ -61,7 +81,10 @@ class MKPXML:
                     attr_filename = node.attrib['filename']
                 except:
                     graphic_nodes = self.xml.get_nodes('graphic', node)
+                    print(graphic_nodes)
+                    
                     for gnode in graphic_nodes:
+                        print(gnode.attrib)
                         try:
                             attr_filename = gnode.attrib['href']
                         except:

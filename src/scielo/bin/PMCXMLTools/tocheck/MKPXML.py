@@ -27,9 +27,23 @@ class MKPXML:
         else:
             page_or_order = fpage
         
+        issueno = ''
+        try: 
+            issueno = nodes[0].attrib['supplvol'] + '-'
+        except:
+            pass
+            
+        
+        issueno = issueno + nodes[0].attrib['issueno']
+        try: 
+            issueno = issueno + '-' + nodes[0].attrib['supplno'] 
+        except:
+            pass
+       
+        
         #print page_or_order
         
-        return nodes[0].attrib['issn'] + '-' + acron + '-' + nodes[0].attrib['volid']+ '-' + nodes[0].attrib['issueno'] + '-' +  page_or_order
+        return nodes[0].attrib['issn'] + '-' + acron + '-' + nodes[0].attrib['volid']+ '-' + issueno + '-' +  page_or_order
         
     def return_images(self, tags='figgrp | tabwrap | equation'):
         a = []

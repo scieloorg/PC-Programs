@@ -30,17 +30,30 @@ Function getJournalStandardList() As MyCollection
         
         journal.CURRENTISSN = isis.FieldContentOccGet(i, 935, 1)
         journal.ISSNTYPE = isis.FieldContentOccGet(i, 35, 1)
+        journal.print_issn = isis.FieldContentOccGet(i, 936, 1)
+        journal.online_issn = isis.FieldContentOccGet(i, 937, 1)
         
-        If journal.ISSNTYPE = "PRINT" Then
-            journal.ISSNTYPE = "ppub"
-        Else
-            journal.ISSNTYPE = "epub"
-        End If
+        
         If journal.CURRENTISSN = "" Then
             journal.CURRENTISSN = journal.ISSN
         End If
         
+        If journal.ISSNTYPE = "PRINT" Then
+            journal.ISSNTYPE = "ppub"
+            If journal.print_issn = "" Then
+                journal.print_issn = journal.CURRENTISSN
+            End If
+        Else
+            journal.ISSNTYPE = "epub"
+            If journal.online_issn = "" Then
+                journal.online_issn = journal.CURRENTISSN
+            End If
+        End If
+        journal.publisherName = isis.UsePft(i, "(v480+|, |)")
         journal.SUBJECT = isis.UsePft(i, "(v441+|/|)")
+        journal.fulltitle = isis.FieldContentOccGet(i, 100, 1)
+        journal.acron = isis.FieldContentOccGet(i, 68, 1)
+        
         
         Call journals.add(journal, journal.ISSN + journal.shorttitle)
     Next
@@ -110,7 +123,7 @@ Function getJournalCreativeCommons(Mfn As Long) As clsCreativeCommons
     Dim creativeCommons As New clsCreativeCommons
     
     
-    creativeCommons.code = Serial_TxtContent(Mfn, 541)
+    creativeCommons.Code = Serial_TxtContent(Mfn, 541)
     
     q = isis.SubfieldContentGet(Mfn, 540, "l", languages)
     q = isis.SubfieldContentGet(Mfn, 540, "t", texts)
@@ -120,7 +133,7 @@ Function getJournalCreativeCommons(Mfn As Long) As clsCreativeCommons
     Next
     If q = 0 Then
         For i = 1 To idiomsinfo.count
-            Call creativeCommons.add("", idiomsinfo(i).code)
+            Call creativeCommons.add("", idiomsinfo(i).Code)
         Next
     End If
     Set getJournalCreativeCommons = creativeCommons
@@ -255,7 +268,7 @@ Function getFieldContentByLanguage(Mfn As Long, tag As Long, Optional language A
     getFieldContentByLanguage = isis.getFieldContentByLanguage(Mfn, tag, language, subf)
 End Function
 
-Function getDecodedValue(code As ColCode, Mfn As Long, tag As Long, Optional DefaultOption As String) As String
+Function getDecodedValue(Code As ColCode, Mfn As Long, tag As Long, Optional DefaultOption As String) As String
     Dim content As String
     Dim exist As Boolean
     Dim itemCode As ClCode
@@ -265,7 +278,7 @@ Function getDecodedValue(code As ColCode, Mfn As Long, tag As Long, Optional Def
         
         If Len(content) > 0 Then
             Set itemCode = New ClCode
-            Set itemCode = code(content, exist)
+            Set itemCode = Code(content, exist)
             If exist Then
                 content = itemCode.value
             Else

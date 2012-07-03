@@ -34,6 +34,11 @@ Private mvarISSNTYPE As String
 Private mvarSUBJECT As String
 Public pmid As String
 
+Public fulltitle As String
+Public acron As String
+Public print_issn As String
+Public online_issn As String
+
 Public Property Let SUBJECT(ByVal vNewValue As String)
     mvarSUBJECT = vNewValue
 End Property
