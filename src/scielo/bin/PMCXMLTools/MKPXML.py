@@ -21,33 +21,23 @@ class MKPXML:
         
         acron = folders[folders.rfind('/')+1:]
         
-        #print acron
         
-        order = nodes[0].attrib['order']
+
+        order = '00' + nodes[0].attrib['order']
+        order = order[-3:]
         
-        #print acron
-        
-        fpage = nodes[0].attrib['fpage']
-        if fpage == '0':
+        fpage = '000' + nodes[0].attrib['fpage']
+        fpage = fpage[-4:]
+        if fpage == '0000':
             page_or_order ='e' + order
         else:
             page_or_order = fpage
         
         #print page_or_order
         
-        issueno = ''
-        try: 
-            issueno = nodes[0].attrib['supplvol'] + '-'
-        except:
-            pass
-            
-        
-        issueno = issueno + nodes[0].attrib['issueno']
-        try: 
-            issueno = issueno + '-' + nodes[0].attrib['supplno'] 
-        except:
-            pass
-       
+        issueno = '0' + nodes[0].attrib['issueno']
+        issueno = issueno[-2:]
+
         
         #print page_or_order
         

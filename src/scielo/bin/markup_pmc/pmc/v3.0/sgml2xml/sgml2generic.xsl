@@ -20,21 +20,24 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
 	<xsl:variable name="JOURNAL_PID" select="node()/@issn"/>
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
-	<xsl:variable name="journal_issue"><xsl:if test="node()/@supplvol"><xsl:value-of select="node()/@supplvol"/>-</xsl:if><xsl:value-of  select="node()/@issueno"/><xsl:if test="node()/@supplno">-<xsl:value-of select="node()/@supplno"/></xsl:if></xsl:variable>
+	<xsl:variable name="journal_issue"><xsl:if test="string-length(node()/@issueno)=1">0</xsl:if><xsl:value-of select="node()/@issueno"/></xsl:variable>
 	<xsl:variable name="PUB_TYPE" select=".//extra-scielo/issn-type"/>
 	<xsl:variable name="CURRENT_ISSN" select=".//extra-scielo/current-issn"/>
-	<xsl:variable name="article_page">
-		<xsl:choose>
-			<xsl:when test="./@fpage='0'">
-				<xsl:value-of select="node()/@order"/>
+	<xsl:variable name="zeros_page">000<xsl:value-of select="node()/@fpage"/></xsl:variable>
+	<xsl:variable name="zeros_order">00<xsl:value-of select="node()/@order"/></xsl:variable>
+	<xsl:variable name="normalized_page"><xsl:value-of select="substring($zeros_page,string-length($zeros_page)-3)"/></xsl:variable>
+	<xsl:variable name="normalized_order"><xsl:value-of select="substring($zeros_order,string-length($zeros_order)-3)"/></xsl:variable>
+	<xsl:variable name="article_page"><xsl:choose>
+			<xsl:when test="$normalized_page='0000'">
+				e<xsl:value-of select="$normalized_order"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="node()/@fpage"/>
+				<xsl:value-of select="$normalized_page"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
-	<xsl:variable name="prefix" select="concat($JOURNAL_PID,'-',$journal_acron,'-',$journal_vol,'-',$journal_issue,'-',$article_page,'-')"/>
-	<!--xsl:variable name="g" select="//*[name()!='equation' and .//graphic]"/>
+	<xsl:variable name="prefix"><xsl:value-of select="$JOURNAL_PID"/>-<xsl:value-of select="$journal_acron"/>-<xsl:value-of select="$journal_vol"/>-<xsl:value-of select="$journal_issue"/>-<xsl:value-of select="$article_page"/>-</xsl:variable>
+	 <!--xsl:variable name="g" select="//*[name()!='equation' and .//graphic]"/>
 	<xsl:variable name="e" select="//equation[.//graphic]"/-->
 	<xsl:variable name="data4previous" select="//back//*[contains(name(),'citat')]"/>
 	<!--
@@ -559,20 +562,17 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<page-range><xsl:value-of select="."/></page-range>
 			</xsl:when>
 			<xsl:when test="contains(.,'-')">
-				<xsl:variable name="pagination" select="translate(.,',',';')"/>
-				<xsl:variable name="page1"><xsl:value-of select="substring-before(.,'-')"/></xsl:variable>
-				<xsl:variable name="fpage"><xsl:apply-templates select="." mode="get-fpage"><xsl:with-param name="pages" select="substring-after($pagination,';')"/></xsl:apply-templates></xsl:variable>
-				<xsl:variable name="lpage"><xsl:apply-templates select="." mode="get-lpage"><xsl:with-param name="pages" select="substring-after($pagination,';')"/></xsl:apply-templates></xsl:variable>
+				<xsl:variable name="fpage"><xsl:value-of select="substring-before(.,'-')"/></xsl:variable>
+				<xsl:variable name="lpage"><xsl:value-of select="substring-after(.,'-')"/></xsl:variable>
 				
-				<fpage><xsl:value-of select="$page1"/></fpage>
-				<lpage>
-				<xsl:if test="string-length($lpage)&lt;string-length($fpage)">
+				<fpage><xsl:value-of select="$fpage"/></fpage>
+				<lpage><xsl:if test="string-length($lpage)&lt;string-length($fpage)">
 					<xsl:value-of select="substring($fpage,1,string-length($fpage) - string-length($lpage))"/>
 				</xsl:if><xsl:value-of select="$lpage"/></lpage>
 				
 			</xsl:when>
 			<xsl:otherwise>
-				<fpage><xsl:value-of select="."/></fpage>
+				<fpage><xsl:value-of select="."/></fpage><lpage><xsl:value-of select="."/></lpage>
 			</xsl:otherwise>
 		</xsl:choose>
 		
@@ -824,15 +824,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:otherwise>author</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:if test=".//*[fname] or .//*[orgname]">
+		<xsl:if test=".//*[fname] or .//*[contains(name(),'corpaut')]">
 			<person-group person-group-type="{$type}">
-				
 				<xsl:apply-templates select=".//*[fname] | .//*[contains(name(),'corpaut')] | .//et-al">
-				
 			</xsl:apply-templates>
 			</person-group>
 		</xsl:if>
-		<xsl:apply-templates select="*[not(fname) and not(orgname)]"/>
+		<xsl:apply-templates select="*[not(fname) and not(contains(name(),'corpaut'))]"/>
 	</xsl:template>
 	<xsl:template match="back//*[contains(name(),'corpaut')]">
 		<collab>
@@ -1078,13 +1076,16 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		</p>
 	</xsl:template>
 	<xsl:template match="tabwrap//fntable" mode="table">
-		<fn id="TFN{substring(@id,4)}"><xsl:apply-templates select="label"/><p><xsl:apply-templates select="text()|*[name()!='label']"/></p></fn>
+	    <xsl:param name="table_id"/>
+		<fn id="TFN{substring(@id,4)}{$table_id}"><xsl:apply-templates select="label"/><p><xsl:apply-templates select="text()|*[name()!='label']"/></p></fn>
 	</xsl:template>
 	<xsl:template match="tabwrap" mode="notes">
 		<xsl:if test=".//fntable">
 		
 				<table-wrap-foot>
-					<xsl:apply-templates select=".//fntable" mode="table"/>
+					<xsl:apply-templates select=".//fntable" mode="table">
+						<xsl:with-param name="table_id" select="@id"/>
+					</xsl:apply-templates>
 					
 				</table-wrap-foot>
 	    </xsl:if>

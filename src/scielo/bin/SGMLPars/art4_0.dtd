@@ -155,7 +155,7 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!ELEMENT front    - - (toctitle?,doi?, url?, related*, titlegrp, authgrp?, bibcom?) >
-
+<!ELEMENT toctitle - - (#PCDATA) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Bibliographic Complementary Elements                              -->  
