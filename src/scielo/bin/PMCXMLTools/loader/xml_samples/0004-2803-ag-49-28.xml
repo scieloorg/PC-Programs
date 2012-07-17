@@ -1,0 +1,1686 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article
+  PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "journalpublishing3.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:mml="http://www.w3.org/1998/Math/MathML"
+         dtd-version="3.0"
+         article-type="research-article"
+         xml:lang="en">
+   <front>
+      <journal-meta>
+         <journal-id journal-id-type="nlm-ta">Arq Gastroenterol</journal-id>
+         <journal-id journal-id-type="publisher-id">0004-2803</journal-id>
+         <journal-title-group>
+            <journal-title>Arquivos de Gastroenterologia</journal-title>
+            <abbrev-journal-title abbrev-type="publisher">Arq. Gastroenterol.</abbrev-journal-title>
+         </journal-title-group>
+         <issn pub-type="ppub">0004-2803</issn>
+         <publisher>
+            <publisher-name>Instituto Brasileiro de Estudos e Pesquisas de Gastroenterologia - IBEPEGE , Colégio Brasileiro de Cirurgia Digestiva - CBCD , Sociedade Brasileira de Motilidade Digestiva - SBMD , Federação Brasileira de Gastroenterologia - FBG, Sociedade Brasileira de Hepatologia - SBH, Sociedade Brasileira de Endoscopia Digestiva - SOBED</publisher-name>
+         </publisher>
+      </journal-meta>
+      <article-meta>
+         <article-id pub-id-type="publisher-id">S0004-28032012000100006</article-id>
+         <article-id pub-id-type="doi">10.1590/S0004-28032012000100006</article-id>
+         <article-categories>
+            <subj-group subj-group-type="heading">
+               <subject> 
+ORIGINAL ARTICLE</subject>
+            </subj-group>
+         </article-categories>
+         <title-group>
+            <article-title xml:lang="en">Investigation of nutritional risk factors using anthropometric indicators in hospitalized surgery patients</article-title>
+            <trans-title-group xml:lang="pt">
+               <trans-title>Investigação de fatores de risco nutricional por meio de indicadores antropométricos em pacientes cirúrgicos hospitalizados</trans-title>
+            </trans-title-group>
+         </title-group>
+         <contrib-group>
+            <contrib contrib-type="author">
+               <name>
+                  <surname>Leandro-Merhi</surname>
+                  <given-names>Vânia Aparecida</given-names>
+               </name>
+               <xref ref-type="aff" rid="aff1"> I</xref>
+            </contrib>
+            <contrib contrib-type="author">
+               <name>
+                  <surname>Aquino</surname>
+                  <given-names>José Luiz Braga de</given-names>
+               </name>
+               <xref ref-type="aff" rid="aff2"> II</xref>
+            </contrib>
+         </contrib-group>
+         <aff id="aff1">
+            <label>I</label>Escola de Nutrição, PUC-Campinas</aff>
+         <aff id="aff2">
+            <label>II</label>Escola de Medicina, PUC-Campinas, Campinas, SP, Brasil</aff>
+         <author-notes>
+            <corresp> 
+               <bold>Correspondence:</bold>  Dr. Vânia A. Leandro-Merhi E-mail: <email>valm@dglnet.com.br</email>
+            </corresp>
+            <fn fn-type="conflict">
+               <p>The authors declare that they have no competing interests.</p>
+            </fn>
+            <fn fn-type="con">
+               <p>Vania Aparecida Leandro Merhi and José Luiz Braga de Aquino were involved in the protocol and study design, analysis, carried out the statistical analysis, writing of the article and critically reviewed the article. </p>
+            </fn>
+         </author-notes>
+         <pub-date pub-type="ppub">
+            <season>Jan-Mar</season>
+            <year>2012</year>
+         </pub-date>
+         <volume>49</volume>
+         <issue>1</issue>
+         <fpage>28</fpage>
+         <lpage>34</lpage>
+         <history>
+            <date date-type="received">
+               <day>14</day>
+               <month>04</month>
+               <year>2011</year>
+            </date>
+            <date date-type="accepted">
+               <day>11</day>
+               <month>08</month>
+               <year>2011</year>
+            </date>
+         </history>
+         <permissions>
+            <license license-type="open-access"
+                     xlink:href="http://creativecommons.org/licenses/by-nc/3.0/">
+               <license-p>This is an Open Access article distributed under the terms of the Creative Commons Attribution Non-Commercial License, which permits unrestricted non-commercial use, distribution, and reproduction in any medium, provided the original work is properly cited.</license-p>
+            </license>
+         </permissions>
+         <abstract xml:lang="en">
+            <p>
+               <bold>CONTEXT:</bold> The investigation of risk factors associated with nutritional status could contribute for better knowledge of the malnutrition. <bold>OBJECTIVE:</bold> To investigate the incidence of malnutrition and its possible association with many parameters that assess nutritional status and to identify the associated risk factors. <bold>METHODS:</bold> The nutritional status was assessed in 235 hospitalized patients. Malnutrition was defined as present when the patient presented at least two anthropometric criteria below the normal range and habitual energy intake below 75% of the energy requirement (HEI/ER&lt;75%). Gender, age, type of disease, recent weight change and dental problems were investigated as possible associated risk factors. The chi-square and Mann-Whitney tests were used to compare the data and univariate and multiple logistic regressions were used to identify the factors associated with malnutrition. The odds ratio (OR) and confidence interval (CI) of 95% were calculated with the significance level set at 5% (<italic>P</italic>&lt;0.05). <bold>RESULTS:</bold> One-fifth (20%) of the patients were malnourished on admission to the hospital and 27.5% reported recent weight loss. Malnutrition (<italic>P</italic>&lt;0.0001) was greater in patients with malignant diseases. The only variables significantly associated with malnutrition according to univariate logistic regression were recent weight loss (<italic>P</italic> = 0.0058; OR = 2.909; IC95% = 1.362; 6.212) and malignant disease (<italic>P</italic> = 0.0001; OR = 3.847; IC95% = 1.948; 7.597). When multiple regression was used in the model which included type of disease, malignant disease was shown to increase the chance of malnutrition fourfold (<italic>P</italic> = 0.0002; OR = 3.855; IC95% = 1.914; 7.766). When disease was excluded, recent weight loss also increased malnutrition fourfold (<italic>P</italic> = 0.0012; OR = 3.716; IC95% = 1.677; 8.236). <bold>CONCLUSION:</bold> Patients with a history of recent weight loss and those with malignant diseases are more susceptible to malnutrition.</p>
+         </abstract>
+         <trans-abstract xml:lang="pt">
+            <p>
+               <bold>CONTEXTO</bold>: A investigação de fatores de risco associados ao estado nutricional pode contribuir para o melhor conhecimento da desnutrição. <bold>OBJETIVO:</bold> Investigar a incidência de risco nutricional com a associação de vários parâmetros de avaliação nutricional e identificar os fatores de risco relacionados. <bold>MÉTODO:</bold> Foi avaliado o risco nutricional em 235 pacientes hospitalizados com doenças benignas e malignas, sendo o sexo, a faixa etária, o tipo de doença, a alteração de peso recente e os problemas dentários, investigados como possíveis fatores de risco associados. Para a comparação dos dados, foi utilizado o teste Qui ao quadrado e Mann-Whitney e para identificar os fatores associados ao risco nutricional foi utilizada a análise de regressão logística univariada e múltipla, sendo calculado o odds ratio (OR) e o intervalo de confiança (IC) de 95%, com <italic>P</italic>&lt;0,05. <bold>RESULTADOS:</bold> Verificou-se 20% dos pacientes com risco nutricional na admissão hospitalar e 27,5% referiram perda de peso recente, com diferença significativa entre os grupos nos parâmetros avaliados e para o risco nutricional de desnutrição (<italic>P</italic>&lt;0,0001), maior naqueles com doenças malignas. Na regressão logística univariada, as únicas variáveis significativas para o risco nutricional foram a perda de peso recente (<italic>P</italic> = 0,0058; OR = 2,909; IC95% = 1,362; 6,212) e a doença maligna (<italic>P</italic> = 0,0001; OR = 3,847; IC95% =1 ,948; 7,597). Posteriormente, na regressão múltipla, no modelo com o tipo de doença, foi comprovado que a doença maligna elevou a chance de risco nutricional em 4 vezes (<italic>P</italic> = 0,0002; OR = 3,855; IC95% = 1,914; 7,766). Excluindo-se a doença, comprovou-se que a perda de peso recente elevou o risco nutricional também em quase 4 vezes (<italic>P</italic> = 0,0012; OR = 3,716; IC95% = 1,677; 8,236). <bold>CONCLUSÃO:</bold> Pacientes que perderam peso recentemente e aqueles com doença maligna apresentaram mais chances de desenvolver risco nutricional.</p>
+         </trans-abstract>
+         <kwd-group xml:lang="en">
+            <kwd>Nutritional status</kwd>
+            <kwd>Malnutrition</kwd>
+            <kwd>Postoperative period</kwd>
+            <kwd>Anthropometry</kwd>
+            <kwd>Risk factors</kwd>
+            <kwd>Inpatients</kwd>
+         </kwd-group>
+         <kwd-group xml:lang="pt">
+            <kwd>Estado nutricional</kwd>
+            <kwd>Desnutrição</kwd>
+            <kwd>Período pós-operatório</kwd>
+            <kwd>Antropometria</kwd>
+            <kwd>Fatores de risco</kwd>
+            <kwd>Pacientes internados</kwd>
+         </kwd-group>
+         <counts>
+            <fig-count count="1"/>
+            <table-count count="4"/>
+            <equation-count count="0"/>
+            <ref-count count="40"/>
+            <page-count count="7"/>
+         </counts>
+      </article-meta>
+   </front>
+   <body>
+      <sec sec-type="intro">
+         <title>INTRODUCTION</title>
+         <p>Malnutrition in hospitalized patients is still considered highly prevalent in most hospitals, with hospital malnutrition rates ranging from 15% to 60%<sup>(1, 11, 18, 35, 39)</sup> depending on the type of hospital, region, studied population and methods routinely used to investigate nutritional status<sup>(2, 3, 11, 28, 32)</sup>. These data have been used in an attempt to establish diagnostic and nutritional intervention strategies that reduce the impact of poor nutritional status and its implications on the disease, morbidity, mortality, length of hospital stay and, especially, to reverse the high hospital malnutrition rates<sup>(1, 11, 35, 39)</sup>.</p>
+         <p>The investigation of risk factors associated with nutritional status right after admission could contribute for better knowledge and identification of this situation, allowing better control of strategies for the primary prevention of this condition. Generally, the diagnosis of malnutrition is based on objective measurements of nutritional status, which may include assessment of energy intake, weight loss, anthropometric data, biochemical data and body composition<sup>(2, 11, 28, 39)</sup>.</p>
+         <p>Many methods have been developed and used for the assessment and diagnosis of hospital malnutrition, such as anthropometric measurements, biochemical tests, subjective global assessment (SGA), nutritional risk index (NRI), nutritional risk screening (NRS), and a combination of these. However, literature diverges on what is considered the gold standard among these various methods. Some studies indicate that the SGA has greater sensitivity for identifying patients at nutritional risk<sup>(9)</sup>, others suggest the use of the NRS<sup>(17, 19)</sup> or the NRI<sup>(27, 37)</sup> to reflect the risk of malnutrition regardless of the severity of the disease, and still others claim that the biochemical and anthropometric markers are good predictors of nutritional status in hospitalized patients<sup>(3, 29, 39)</sup>.</p>
+         <p>The objective of the present study was to investigate the incidence of malnutrition at admission and its possible association with many parameters that assess nutritional status and to identify the associated risk factors in hospitalized patient.</p>
+      </sec>
+      <sec sec-type="methods">
+         <title>METHODS</title>
+         <p>This study was done from January to December 2010 and included 235 hospitalized patients of both genders (46.4% females and 53.6% males), staying at the surgery ward of Hospital e Maternidade Celso Pierro of the Pontifical Catholic University of Campinas, state of São Paulo, Brazil. This is a tertiary-care university hospital that, in its routine, includes cases of high risk such as politrauma and complex cancer surgeries.</p>
+         <p>The study began after approval from the hospital administration and local Research Ethics Committee, protocol number 743/09. This study is part of a bigger project called "Nutritional status of the hospitalized patient and its relationship with disease, clinical and surgical variables and length of hospital stay."</p>
+         <p>The inclusion criteria were: age equal to or greater than 18 years, having undergone nutritional assessment within the first 48 hours after hospital admission, length of hospital stay and disease recorded in the medical records of the institution.</p>
+         <sec>
+            <title>Anthropometric indicators</title>
+            <p>The following anthropometric indicators were measured: current weight; height; arm circumference; triceps skinfold thickness (TST) and calf circumference (CC). From these measurements the body mass index (BMI), mid-arm muscle circumference (MAMC), arm muscle area (AMA), and arm fat area (AFA) were calculated. AC and AFA were classified according to the parameters established by Frisancho<sup>(13)</sup> and MAMC and AMA were classified according to Frisancho<sup>(12)</sup>. The TST were assessed as determined by Heymsfield et al.<sup>(15)</sup>. The anthropometric parameters established by Burr and Phillips<sup>(5)</sup> were used for the elderly.</p>
+            <p>BMI was obtained by dividing weight by the square of the height and classified according to the WHO's criteria<sup>(40)</sup> for adults up to 60 years of age: underweight if BMI &lt;18.4 kg/m<sup>
+                  <xref ref-type="bibr" rid="r02">2</xref>
+               </sup>; normal weight if 18.5 &lt;BMI &lt;24.9 kg/m<sup>
+                  <xref ref-type="bibr" rid="r02">2</xref>
+               </sup> ; pre-obese if 25.0 &lt;BMI &lt;29.9 kg/m<sup>
+                  <xref ref-type="bibr" rid="r02">2</xref>
+               </sup> and obese if BMI &gt;30.0 kg/m<sup>
+                  <xref ref-type="bibr" rid="r02">2</xref>
+               </sup>. For the elderly (&gt;60 years of age), BMI was classified as determined by Lipschitz<sup>(24)</sup>, who gives the following cut-off points: underweight if BMI &lt;22 kg/m<sup>
+                  <xref ref-type="bibr" rid="r02">2</xref>
+               </sup>; normal weight if 22 &lt;BMI &lt;27 kg/m<sup>
+                  <xref ref-type="bibr" rid="r02">2</xref>
+               </sup>; and overweight if BMI &gt;27 kg/m<sup>
+                  <xref ref-type="bibr" rid="r02">2</xref>
+               </sup>.</p>
+            <p>Recent weight change was classified as weight maintenance for patients who reported not losing or gaining weight before admission, weight loss for those who reported losing weight shortly before admission and weight gain for those who reported gaining weight shortly before admission. The average weight loss was declared by the patients.</p>
+         </sec>
+         <sec>
+            <title>Investigation of the habitual energy intake (HEI)</title>
+            <p>The habitual energy intake (HEI) was assessed based on the habitual food intake when the patient was admitted and was calculated by the software NutWin<sup>(r)(38)</sup>, as previously described in previous papers<sup>(8, 20, 22, 30)</sup>. The energy adequacy of the habitual energy intake in relation to the energy requirement (ER) was then calculated (%HEI/ER). The ER represents the total energy expenditure of the individual and was calculated by the Harris-Benedict equation<sup>(14)</sup>.</p>
+         </sec>
+         <sec>
+            <title>Assessment of malnutrition</title>
+            <p>Malnutrition was assessed after the nutritional status with the objective parameters described above. In this study, the criterion to malnutrition was proposed based on anthropometric nutritional status parameters. Malnutrition was defined as present when the patient presented at least two anthropometric criteria below the normal range and habitual energy intake below 75% of the energy requirement (HEI/ER&lt;75%)<sup>(26)</sup>. The anthropometric criteria were: BMI &lt;18.5 kg/m<sup>
+                  <xref ref-type="bibr" rid="r02">2</xref>
+               </sup> for adults and &lt;22 kg/m<sup>
+                  <xref ref-type="bibr" rid="r02">2</xref>
+               </sup> for the elderly and AC, TST, MAMC, AMA or AFA below the 10th percentile (&lt;<italic>P</italic>10).</p>
+         </sec>
+         <sec>
+            <title>Assessment of the risk factors associated with malnutrition</title>
+            <p>Gender, age, type of disease, recent weight change, presence or absence of dental problems, number of drugs prescribed during hospital stay and length of hospital stay were investigated as possible risk factors to malnutrition. The diseases were classified into two categories: benign diseases and malignant diseases (neoplasms). We considered patients with malignant diseases those who had carcinoma in general, and patients with benign diseases those who had other clinical conditions such as the digestive tract diseases and annexed glands, vascular diseases, urological diseases and others.</p>
+         </sec>
+         <sec>
+            <title>Statistical analysis</title>
+            <p>At first, a descriptive analysis of the data was done by determining the mean, standard deviation and proportion of the studied variables. The chi-square test or Fisher's exact test, when necessary, were used to compare the proportions. The Mann-Whitney test was used to compare the continuous or ordinal measurements between two groups. Univariate and multiple logistic regressions were used to identify the factors associated with malnutrition. The odds ratio (OR) and confidence interval (CI) of 95% were calculated<sup>(6, 16)</sup> and the significance level was set at 5% (<italic>P</italic>&lt;0.05). The data were analyzed by the software Statistical Analysis System (SAS)<sup>(34)</sup>.</p>
+         </sec>
+      </sec>
+      <sec sec-type="results">
+         <title>RESULTS</title>
+         <p>Of the 235 studied patients, 126 (53.6%) were males and 109 (46.4%) were females; 60% were in the 18 to 59 years age range, 20.8% were in the 60 to 69 years age range and 19.2% were 70 years old or older. Most (75.7%) had benign diseases and 24.3% had malignant diseases. About half (50.6%) the patients reported having dental problems (use of prosthesis, missing teeth, etc.). Almost one-third (27.5%) of the patients reported losing weight before admission, 24.9% reported gaining weight and 47.6% reported no weight change in the few months before admission (6 months). The average weight lost before admission was 9.45 ± 5.95 kg and the mean weight gained was 6.45 ± 5.0 kg.</p>
+         <p>The mean age of the entire sample was 53.0 ± 17.9 years; the mean BMI was 25.0 ± 5.4 kg/m<sup>
+               <xref ref-type="bibr" rid="r02">2</xref>
+            </sup>; mean CC was 32.2 ± 4.4 cm; mean AC was 28.5 ± 4.5 cm; mean TST was 17.9 ± 9.2 mm; mean MAMC was 228.6 ± 36.0 mm; mean AMA was 42.6 ± 13.1 cm<sup>
+               <xref ref-type="bibr" rid="r02">2</xref>
+            </sup>; mean AFA was 23.6 ± 13.9 cm<sup>
+               <xref ref-type="bibr" rid="r02">2</xref>
+            </sup>; and mean length of hospital stay was 7.7 ± 9.4 days. Note that 20% of the patients were already at malnutrition at admission and 45% of the patients had a HEI below 75% of their requirement.</p>
+         <p>
+            <xref ref-type="fig" rid="f01">Figure 1</xref> shows the percentage distribution of the criteria used for the definition of malnutrition in each disease group and also of the assessed malnutrition by type of disease. A significant difference was found between the groups for the following criteria: BMI (<italic>P</italic>&lt;0.0001); AC (<italic>P</italic> = 0.0020); MAMC (<italic>P</italic> = 0.0090); AMA (<italic>P</italic> = 0.0003) and mainly for malnutrition (<italic>P</italic>&lt;0.0001), evidencing that malnutrition was greater in patients with malignant diseases.</p>
+         <p>
+            <fig id="f01">
+               <label>FIGURE 1</label>
+               <caption>
+                  <title>Percentage distribution of the criteria used to define malnutrition and of the risk assessed in each disease group. There was a significant difference between the groups for the criteria: (a) P-value&lt;0.0001 (chi-square); (b) P-value = 0.0020 (chi-square); (c) P-value = 0.0090 (chi-square); (d) P-value = 0.0003 (chi-square) and for assessed malnutrition (e) P-value&lt;0.0001 (chi-square)</title>
+               </caption>
+               <graphic xlink:href="0004-2803-ag-49-28-gf01"/>
+            </fig>
+         </p>
+         <p>When the characteristics of the population were compared by type of disease (<xref ref-type="table" rid="t01">Table 1</xref>), a statistically significant difference was found between the two types of disease regarding gender (<italic>P</italic> = 0.0014), age group (<italic>P</italic> = 0.0004), recent weight change (<italic>P</italic> = 0.0005) and death (<italic>P</italic> = 0.0319). When the numerical variables were compared between the two types of diseases (<xref ref-type="table" rid="t02">Table 2</xref>), a significant difference was found for nearly all studied indicators, except for calf circumference CC, HEI and %HEI/ER.</p>
+         <p>
+            <table-wrap id="t01">
+               <label>TABLE 1</label>
+               <caption>
+                  <title>Comparison of the characteristics of the population by type of disease</title>
+               </caption>
+               <graphic xlink:href="0004-2803-ag-49-28-gt01"/>
+               <table-wrap-foot>
+                  <fn>
+                     <p>*Chi-square test; **Fisher's exact test</p>
+                  </fn>
+               </table-wrap-foot>
+            </table-wrap>
+         </p>
+         <p>
+            <table-wrap id="t02">
+               <label>TABLE 2</label>
+               <caption>
+                  <title>Comparison of the studied nutritional indicators by type of disease</title>
+               </caption>
+               <graphic xlink:href="0004-2803-ag-49-28-gt02"/>
+               <table-wrap-foot>
+                  <fn>
+                     <p>* Mann-Whitney test</p>
+                  </fn>
+               </table-wrap-foot>
+            </table-wrap>
+         </p>
+         <p>Univariate and multiple logistic regressions were then used to analyze the risk factors associated with malnutrition. <xref ref-type="table" rid="t03">Table 3</xref> shows the factors associated with malnutrition analyzed using a univariate logistic regression model. The model evidenced that the only significant variables for malnutrition were recent weight loss (<italic>P</italic> = 0.0058; OR = 2.909; CI95% = 1.362; 6.212) and malignant disease (<italic>P</italic> = 0.0001; OR = 3.847; CI95% = 1.948; 7.597). Additional data are shown in <xref ref-type="table" rid="t03">Table 3</xref>.</p>
+         <p>
+            <table-wrap id="t03">
+               <label>TABLE 3</label>
+               <caption>
+                  <title>Factors associated with malnutrition analyzed by univariate logistic regression</title>
+               </caption>
+               <graphic xlink:href="0004-2803-ag-49-28-gt03"/>
+            </table-wrap>
+         </p>
+         <p>In an attempt to identify the best model for malnutrition analysis (<xref ref-type="table" rid="t04">Table 4</xref>), a multiple logistic regression analysis was done for studying malnutrition estimated by the stepwise selection process, with or without type of disease. In the model with type of disease, the presence of malignant disease increased the chance of malnutrition fourfold (<italic>P</italic> = 0.0002; OR = 3.855; CI95% = 1.914; 7.766). When type of disease was left out, recent weight loss also increased malnutrition almost fourfold (<italic>P</italic> = 0.0012; OR = 3.716; CI95% = 1.677; 8.236).</p>
+         <p>
+            <table-wrap id="t04">
+               <label>TABLE 4</label>
+               <caption>
+                  <title>Multiple logistic regression model for the study of malnutrition estimated by the stepwise selection process with and without the type of disease</title>
+               </caption>
+               <graphic xlink:href="0004-2803-ag-49-28-gt04"/>
+               <table-wrap-foot>
+                  <fn>
+                     <p>RWC: recent weight change; OR: odds ratio; CI: confidence interval</p>
+                  </fn>
+               </table-wrap-foot>
+            </table-wrap>
+         </p>
+      </sec>
+      <sec sec-type="discussion">
+         <title>DISCUSSION</title>
+         <p>First of all, it is important to point out that the present study is part of an area of research that has been conducted about the nutritional status of hospitalized patients as shown in previous works<sup>(21, 22, 25)</sup>.</p>
+         <p>Despite the existence of many published studies<sup>(1, 11, 18, 29, 39)</sup> discussing the nutritional status of hospitalized patients, the strength of this study was to use univariate and multiple logistic regression analyses to investigate which factors were associated with risk.</p>
+         <p>In this study, 20% of the patients presented malnutrition and this diagnosis was done shortly after admission to the hospital, as well as the investigation of the other nutritional indicators, which may suggest that these patients were already at nutritional risk at admission and the findings of the study are consistent with many published studies<sup>(11, 29, 39)</sup>. In a recent study, Filipovic et al.<sup>(11)</sup>, compared nutritional assessment methods in 299 patients with gastrointestinal diseases and found some degree of malnutrition in 45.7% of their sample when they used the SGA and 63.9% when they used the NRI. In another multicentric study, Amaral et al.<sup>(1)</sup> found 36% of their sample to be at risk of malnutrition when the NRS was used and 9.7% to be malnourished when anthropometry was used. Other studies in European hospitals have shown a prevalence of malnutrition ranging from 10% to 50%, depending on the group of studied patients<sup>(33)</sup>. In a British study, Stratton et al.<sup>(36)</sup> reported that the prevalence of malnutrition in hospitalized patients ranged from 19% to 60%, and a study in German hospitals revealed a malnutrition rate of 27.4% according to the SGA<sup>(29)</sup>. Recently, a study with hospitalized patients in Turkey<sup>(18)</sup> found 15% of the patients to be at nutritional risk. Other studies<sup>(21, 22)</sup> carried out in Brazil, with hospitalized surgery patients using anthropometrical indicators to assess the nutritional status, showed malnutrition rates between 11.4% and 14.1%. These findings corroborate the data found in this present study. Another study<sup>(26)</sup>, also conducted in Brazil but with medical clinic inpatients, found that 45.3% of the patients were underweight according to their BMI.</p>
+         <p>Other contemporary studies have also reported prevalence of 30% to 50%<sup>(23, 35)</sup>. This evidences the different malnutrition rates found by different studies, using different instruments. This situation implies on the need to use many nutritional assessment parameters in an attempt to diagnose hospital malnutrition. This fact was considered in the present study which used more than one indicator to investigate malnutrition with objective parameters and associated factors. Other studies<sup>(10, 21, 22, 25, 39)</sup> also show malnutrition with objective parameters of nutritional assessment in hospitalized patients. This fact reinforces the importance of submitting the patient to nutritional assessment right after admission in order to implement intervention strategies early to improve the nutritional status of the patient, improve his or her clinical course and reduce the length of hospital stay<sup>(7)</sup>. However, a study which compared the accuracy of commonly used nutritional assessment parameters found that the adopted methods were considered weak predictive factors of clinical outcomes, death, infection and length of hospital stay<sup>(3)</sup>.</p>
+         <p>The data found in the present study show that when nutritional indicators are compared by type of disease (<xref ref-type="table" rid="t02">Table 2</xref>) depletion is greater in those with malignant diseases, except for CC and HEI/ER &lt;75%. Habitual food intake is a weak tool to evaluate energy intake to compare with energy needs and this was a limitation of this study. For the same sample, other factors were higher age (<italic>P</italic> = 0.0004), recent weight loss (<italic>P</italic> = 0.0005) and death (<italic>P</italic> = 0.0319) (<xref ref-type="table" rid="t01">Table 1</xref>), in addition to greater malnutrition (<italic>P</italic>&lt;0.0001) (<xref ref-type="fig" rid="f01">Figure 1</xref>) found in those with malignant diseases.</p>
+         <p>With specific regard to inpatients of a surgery ward, many studies have already documented malnutrition that these patients present in the postoperative period when they had a poor nutritional prognosis in the preoperative period, especially patients who had lost weight shortly before surgery. Literature has shown that malnutrition in this population is a significant risk factor for postoperative complications, especially after abdominal surgeries<sup>(4, 10, 18, 31)</sup>.</p>
+         <p>The present study also found that 46.4% of the patients with malignant diseases and 21.5% of those with benign diseases lost weight during their hospital stay. This is a worrisome fact since literature states that isolated weight loss or weight loss in combination with other assessment parameters has been considered the main indicator of poor nutritional status<sup>(4)</sup>.</p>
+         <p>Univariate analysis revealed that weight change and presence of malignant disease are significant factors for malnutrition. Multiple regression analysis then revealed that the risk was greater in patients who had lost weight recently (<italic>P</italic> = 0.0012; OR = 3.716; CI95% = 1.677; 8.236) or had malignant diseases (<italic>P</italic> = 0.0002; OR = 3.855; CI95% = 1.914; 7.766): they were almost 4 times more likely to present malnutrition.</p>
+         <p>This was a study on anthropometric nutritional status indicators of hospitalized patients. The results showed that malignant disease is a determinant in the depletion of body tissues, regardless of gender and age. This confirms the pertinence of using anthropometry for assessing the nutritional status of hospitalized patients and this study reinforces the need of paying attention to patients who report weight loss at admission. This is often ignored by the medical and health professional teams during initial assessment. Using univariate and multiple logistic regressions, this study has shown that recent weight loss is the main factor, together with malignant disease, that facilitates the development of malnutrition.</p>
+      </sec>
+      <sec sec-type="conclusions">
+         <title>CONCLUSION</title>
+         <p>In the conditions of this study, the analyzed data demonstrated that the main factors associated with malnutrition were recent weight loss and malignant disease.</p>
+      </sec>
+   </body>
+   <back>
+      <ack>
+         <sec>
+            <title>ACKNOWLEDGMENTS</title>
+            <p>Research Support Fund of the Pontifícia Universidade Católica de Campinas, SP, Brazil.</p>
+         </sec>
+      </ack>
+      <ref-list>
+         <ref id="r01">
+            <label>1</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Amaral</surname>
+                     <given-names>TF</given-names>
+                  </name>
+                  <name>
+                     <surname>Matos</surname>
+                     <given-names>LC</given-names>
+                  </name>
+                  <name>
+                     <surname>Teixeira</surname>
+                     <given-names>MA</given-names>
+                  </name>
+                  <name>
+                     <surname>Tavares</surname>
+                     <given-names>MM</given-names>
+                  </name>
+                  <name>
+                     <surname>Álvares</surname>
+                     <given-names>L</given-names>
+                  </name>
+                  <name>
+                     <surname>Antunes</surname>
+                     <given-names>A</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Undernutrition and associated factors among hospitalized patients</article-title>
+               <source xml:lang="en">Clin Nutr</source>
+               <year>2010</year>
+               <volume>29</volume>
+               <fpage>580</fpage>
+               <lpage>585</lpage>
+               <alternatives>
+                  <textual-form>1. Amaral TF, Matos LC, Teixeira MA, Tavares MM, Álvares L, Antunes A. Undernutrition and associated factors among hospitalized patients. Clin Nutr. 2010;29:580-5.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r02">
+            <label>2</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Beghetto</surname>
+                     <given-names>MG</given-names>
+                  </name>
+                  <name>
+                     <surname>Manna</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Candal</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Mello</surname>
+                     <given-names>ED</given-names>
+                  </name>
+                  <name>
+                     <surname>Polanczyk</surname>
+                     <given-names>CA</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="pt">Triagem nutricional em adultos hospitalizados</article-title>
+               <source xml:lang="en">Rev Nutr</source>
+               <year>2008</year>
+               <volume>21</volume>
+               <fpage>589</fpage>
+               <lpage>601</lpage>
+               <alternatives>
+                  <textual-form>2. Beghetto MG, Manna B, Candal A, Mello ED, Polanczyk CA. Triagem nutricional em adultos hospitalizados. Rev Nutr. 2008;21:589-601.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r03">
+            <label>3</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Beghetto</surname>
+                     <given-names>MG</given-names>
+                  </name>
+                  <name>
+                     <surname>Luft</surname>
+                     <given-names>VC</given-names>
+                  </name>
+                  <name>
+                     <surname>Mello</surname>
+                     <given-names>ED</given-names>
+                  </name>
+                  <name>
+                     <surname>Polanczyk</surname>
+                     <given-names>CA</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Accuracy of nutritional assessment tools for predicting adverse hospital outcomes</article-title>
+               <source xml:lang="en">Nutr Hosp</source>
+               <year>2009</year>
+               <volume>24</volume>
+               <fpage>56</fpage>
+               <lpage>62</lpage>
+               <alternatives>
+                  <textual-form>3. Beghetto MG, Luft VC, Mello ED, Polanczyk CA. Accuracy of nutritional assessment tools for predicting adverse hospital outcomes. Nutr Hosp. 2009;24:56-62.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r04">
+            <label>4</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Bozzetti</surname>
+                     <given-names>F</given-names>
+                  </name>
+                  <name>
+                     <surname>Gianotti</surname>
+                     <given-names>L</given-names>
+                  </name>
+                  <name>
+                     <surname>Braga</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Di Carloc</surname>
+                     <given-names>V</given-names>
+                  </name>
+                  <name>
+                     <surname>Mariani</surname>
+                     <given-names>L</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Postoperative complications in gastrointestinal cancer patients: the joint role of the nutritional status and the nutritional support</article-title>
+               <source xml:lang="en">Clin Nutr</source>
+               <year>2007</year>
+               <volume>26</volume>
+               <fpage>698</fpage>
+               <lpage>709</lpage>
+               <alternatives>
+                  <textual-form>4. Bozzetti F, Gianotti L, Braga M, Di Carloc V, Mariani L. Postoperative complications in gastrointestinal cancer patients: the joint role of the nutritional status and the nutritional support. Clin Nutr. 2007;26:698-709.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r05">
+            <label>5</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Burr</surname>
+                     <given-names>ML</given-names>
+                  </name>
+                  <name>
+                     <surname>Phillips</surname>
+                     <given-names>KM</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Anthropometric norms in the elderly</article-title>
+               <source xml:lang="en">Br J Nutr</source>
+               <year>1984</year>
+               <volume>51</volume>
+               <fpage>165</fpage>
+               <lpage>169</lpage>
+               <alternatives>
+                  <textual-form>5. Burr ML, Phillips KM. Anthropometric norms in the elderly. Br J Nutr. 1984;51:165-9.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r06">
+            <label>6</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Conover</surname>
+                     <given-names>WJ</given-names>
+                  </name>
+               </person-group>
+               <source xml:lang="en">Practical nonparametric statistics</source>
+               <publisher-loc>New York</publisher-loc>
+               <publisher-name>John Wiley</publisher-name>
+               <year>1971</year>
+               <alternatives>
+                  <textual-form>6. Conover WJ. Practical nonparametric statistics. New York: John Wiley; 1971.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r07">
+            <label>7</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Correia</surname>
+                     <given-names>MI</given-names>
+                  </name>
+                  <name>
+                     <surname>Waitzberg</surname>
+                     <given-names>DL</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">The impact of malnutrition on morbidity, mortality, length of hospital stay and costs evaluated through a multivariate model analysis</article-title>
+               <source xml:lang="en">Clin Nutr</source>
+               <year>2003</year>
+               <volume>22</volume>
+               <fpage>235</fpage>
+               <lpage>239</lpage>
+               <alternatives>
+                  <textual-form>7. Correia MI, Waitzberg DL. The impact of malnutrition on morbidity, mortality, length of hospital stay and costs evaluated through a multivariate model analysis. Clin Nutr. 2003;22:235-9.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r08">
+            <label>8</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>De Oliveira</surname>
+                     <given-names>MRM</given-names>
+                  </name>
+                  <name>
+                     <surname>Leandro-Merhi</surname>
+                     <given-names>VA</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Food intake and nutritional status of hospitalized older people</article-title>
+               <source xml:lang="en">Int J Older People Nurs</source>
+               <year>2010</year>
+               <pub-id pub-id-type="doi">10.1111/j.1748-3743.2010.00227.x</pub-id>
+               <alternatives>
+                  <textual-form>8. De Oliveira MRM, Leandro-Merhi VA. Food intake and nutritional status of hospitalized older people. Int J Older People Nurs. 2010 Jun 8. doi: 10.1111/j.1748-3743.2010.00227.x</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r09">
+            <label>9</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Detsky</surname>
+                     <given-names>AS</given-names>
+                  </name>
+                  <name>
+                     <surname>McLaughlin</surname>
+                     <given-names>JR</given-names>
+                  </name>
+                  <name>
+                     <surname>Baker</surname>
+                     <given-names>JP</given-names>
+                  </name>
+                  <name>
+                     <surname>Johnston</surname>
+                     <given-names>N</given-names>
+                  </name>
+                  <name>
+                     <surname>Whittaker</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Mendelson</surname>
+                     <given-names>RA</given-names>
+                  </name>
+                  <name>
+                     <surname>Jeejeebhoy</surname>
+                     <given-names>KN</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">What is subjective global assessment of nutritional status?</article-title>
+               <source xml:lang="en">JPEN J Parenter Enteral Nutr</source>
+               <year>1987</year>
+               <volume>11</volume>
+               <fpage>8</fpage>
+               <lpage>13</lpage>
+               <alternatives>
+                  <textual-form>9. Detsky AS, McLaughlin JR, Baker JP, Johnston N, Whittaker S, Mendelson RA, Jeejeebhoy KN. What is subjective global assessment of nutritional status? JPEN J Parenter Enteral Nutr. 1987;11:8-13.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r10">
+            <label>10</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Fettes</surname>
+                     <given-names>SB</given-names>
+                  </name>
+                  <name>
+                     <surname>Davidson</surname>
+                     <given-names>HIM</given-names>
+                  </name>
+                  <name>
+                     <surname>Richardson</surname>
+                     <given-names>RA</given-names>
+                  </name>
+                  <name>
+                     <surname>Pennington</surname>
+                     <given-names>CR</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Nutritional status of elective gastrointestinal surgery patients pre-and post-operatively</article-title>
+               <source xml:lang="en">Clin Nutr</source>
+               <year>2002</year>
+               <volume>21</volume>
+               <fpage>249</fpage>
+               <lpage>254</lpage>
+               <alternatives>
+                  <textual-form>10. Fettes SB, Davidson HIM, Richardson RA, Pennington CR. Nutritional status of elective gastrointestinal surgery patients pre-and post-operatively. Clin Nutr. 2002;21:249-54.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r11">
+            <label>11</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>FilipoviĆ</surname>
+                     <given-names>BF</given-names>
+                  </name>
+                  <name>
+                     <surname>GajiĆ</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>MiliniĆ</surname>
+                     <given-names>N</given-names>
+                  </name>
+                  <name>
+                     <surname>MilovanoviĆ</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>FilipoviĆ</surname>
+                     <given-names>BR</given-names>
+                  </name>
+                  <name>
+                     <surname>CvetkoviĆ</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>SibaliĆ</surname>
+                     <given-names>N</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Comparison of two nutritional assessment methods in gastroenterology patients</article-title>
+               <source xml:lang="en">World J Gastroenterol</source>
+               <year>2010</year>
+               <volume>16</volume>
+               <fpage>1999</fpage>
+               <lpage>2004</lpage>
+               <alternatives>
+                  <textual-form>11. FilipoviĆ BF, GajiĆ M, MiliniĆ N, MilovanoviĆ B, FilipoviĆ BR, CvetkoviĆ M, SibaliĆ N. Comparison of two nutritional assessment methods in gastroenterology patients. World J Gastroenterol. 2010;16:1999-2004.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r12">
+            <label>12</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Frisancho</surname>
+                     <given-names>AR</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">New norms of upper limb fat muscle areas for assessment of nutritional status</article-title>
+               <source xml:lang="en">Am J Clin Nutr</source>
+               <year>1981</year>
+               <volume>34</volume>
+               <fpage>2540</fpage>
+               <lpage>2545</lpage>
+               <alternatives>
+                  <textual-form>12. Frisancho AR. New norms of upper limb fat muscle areas for assessment of nutritional status. Am J Clin Nutr. 1981;34:2540-5.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r13">
+            <label>13</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Frisancho</surname>
+                     <given-names>AR</given-names>
+                  </name>
+               </person-group>
+               <source xml:lang="en">Anthropometric standards for the assessment of growth and nutritional status</source>
+               <publisher-loc>Ann Arbor</publisher-loc>
+               <publisher-name>University of Michigan Press</publisher-name>
+               <year>1990</year>
+               <alternatives>
+                  <textual-form>13. Frisancho AR. Anthropometric standards for the assessment of growth and nutritional status. Ann Arbor: University of Michigan Press; 1990.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r14">
+            <label>14</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Harris</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Benedict</surname>
+                     <given-names>F</given-names>
+                  </name>
+               </person-group>
+               <source xml:lang="en">A biometric study of basal metabolism in man</source>
+               <publisher-loc>Washington, DC</publisher-loc>
+               <publisher-name>Carnegie Institute of Washington</publisher-name>
+               <year>1919</year>
+               <alternatives>
+                  <textual-form>14. Harris J, Benedict F. A biometric study of basal metabolism in man. Washington, DC: Carnegie Institute of Washington; 1919.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r15">
+            <label>15</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Heymsfield</surname>
+                     <given-names>SB</given-names>
+                  </name>
+                  <name>
+                     <surname>Thighe</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Wang</surname>
+                     <given-names>ZM</given-names>
+                  </name>
+               </person-group>
+               <chapter-title>Nutritional assessment by anthropometric and biochemical methods</chapter-title>
+               <person-group person-group-type="editor">
+                  <name>
+                     <surname>Shills</surname>
+                     <given-names>ME</given-names>
+                  </name>
+                  <name>
+                     <surname>Olson</surname>
+                     <given-names>JA</given-names>
+                  </name>
+                  <name>
+                     <surname>Shije</surname>
+                     <given-names>M</given-names>
+                  </name>
+               </person-group>
+               <source xml:lang="en">Modern nutrition in health and disease</source>
+               <edition>9 th ed.</edition>
+               <publisher-loc>Baltimore</publisher-loc>
+               <publisher-name>Williams &amp; Wilkins</publisher-name>
+               <year>1999</year>
+               <fpage>812</fpage>
+               <lpage>841</lpage>
+               <alternatives>
+                  <textual-form>15. Heymsfield SB, Thighe A, Wang ZM. Nutritional assessment by anthropometric and biochemical methods. In: Shills ME, Olson JA, Shije M, editors. Modern nutrition in health and disease. 9 th ed. Baltimore: Williams &amp; Wilkins; 1999. p.812-41.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r16">
+            <label>16</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Hosmer</surname>
+                     <given-names>DW</given-names>
+                  </name>
+                  <name>
+                     <surname>Lemeshow</surname>
+                     <given-names>S</given-names>
+                  </name>
+               </person-group>
+               <source xml:lang="en">Applied logistic regression</source>
+               <publisher-loc>New York</publisher-loc>
+               <publisher-name>John Wiley</publisher-name>
+               <year>1989</year>
+               <alternatives>
+                  <textual-form>16. Hosmer DW, Lemeshow S. Applied logistic regression. New York: John Wiley; 1989.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r17">
+            <label>17</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Kondrup</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Allison</surname>
+                     <given-names>SP</given-names>
+                  </name>
+                  <name>
+                     <surname>Elia</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Vellas</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Plauth</surname>
+                     <given-names>M</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">ESPEN guidelines for nutrition screening 2002</article-title>
+               <source xml:lang="en">Clin Nutr</source>
+               <year>2003</year>
+               <volume>22</volume>
+               <fpage>415</fpage>
+               <lpage>421</lpage>
+               <alternatives>
+                  <textual-form>17. Kondrup J, Allison SP, Elia M, Vellas B, Plauth M. ESPEN guidelines for nutrition screening 2002. Clin Nutr. 2003;22:415-21.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r18">
+            <label>18</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Korfali</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>GündoĞdu</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Aydmtug</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Bahar</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Besler</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Moral</surname>
+                     <given-names>AR</given-names>
+                  </name>
+                  <name>
+                     <surname>OĞuz</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Sakarya</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Uyar</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>KihçturĞay</surname>
+                     <given-names>S</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Nutritional risk of hospitalized patients in Turkey</article-title>
+               <source xml:lang="en">Clin Nutr.</source> 
+               <year>2009</year>
+               <volume>28</volume>
+               <fpage>533</fpage>
+               <lpage>537</lpage>
+               <alternatives>
+                  <textual-form>18. Korfali G, GündoĞdu H, Aydmtug S, Bahar M, Besler T, Moral AR, OĞuz M, Sakarya M, Uyar M, KihçturĞay S. Nutritional risk of hospitalized patients in Turkey. Clin Nutr. 2009;28:533-7.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r19">
+            <label>19</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Kyle</surname>
+                     <given-names>UG</given-names>
+                  </name>
+                  <name>
+                     <surname>Kossovsky</surname>
+                     <given-names>MP</given-names>
+                  </name>
+                  <name>
+                     <surname>Karsegard</surname>
+                     <given-names>VL</given-names>
+                  </name>
+                  <name>
+                     <surname>Pichard</surname>
+                     <given-names>C</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Comparison of tools for nutritional assessment and screening at hospital admission: a population study</article-title>
+               <source xml:lang="en">Clin Nutr</source>
+               <year>2006</year>
+               <volume>25</volume>
+               <fpage>409</fpage>
+               <lpage>417</lpage>
+               <alternatives>
+                  <textual-form>19. Kyle UG, Kossovsky MP, Karsegard VL, Pichard C. Comparison of tools for nutritional assessment and screening at hospital admission: a population study. Clin Nutr. 2006;25:409-17.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r20">
+            <label>20</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Leandro-Merhi</surname>
+                     <given-names>VA</given-names>
+                  </name>
+                  <name>
+                     <surname>Portero-Mclellan</surname>
+                     <given-names>KC</given-names>
+                  </name>
+                  <name>
+                     <surname>Bernardi</surname>
+                     <given-names>JLD</given-names>
+                  </name>
+                  <name>
+                     <surname>Frenhani</surname>
+                     <given-names>PB</given-names>
+                  </name>
+                  <name>
+                     <surname>de Camargo</surname>
+                     <given-names>JG</given-names>
+                  </name>
+                  <name>
+                     <surname>de Aquino</surname>
+                     <given-names>JL</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Dental and gastrointestinal changes as indicators of nutritional depletion in elderly inpatients</article-title>
+               <source xml:lang="en">J Eval Clin Pract</source>
+               <year>2010</year>
+               <volume>16</volume>
+               <fpage>873</fpage>
+               <lpage>877</lpage>
+               <alternatives>
+                  <textual-form>20. Leandro-Merhi VA, Portero-Mclellan KC, Bernardi JLD, Frenhani PB, de Camargo JG, de Aquino JL. Dental and gastrointestinal changes as indicators of nutritional depletion in elderly inpatients. J Eval Clin Pract. 2010;16:873-7.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r21">
+            <label>21</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Leandro-Merhi</surname>
+                     <given-names>VA</given-names>
+                  </name>
+                  <name>
+                     <surname>de Aquino</surname>
+                     <given-names>JL</given-names>
+                  </name>
+                  <name>
+                     <surname>de Camargo</surname>
+                     <given-names>JG</given-names>
+                  </name>
+                  <name>
+                     <surname>Frenhani</surname>
+                     <given-names>PB</given-names>
+                  </name>
+                  <name>
+                     <surname>Bernardi</surname>
+                     <given-names>JLD</given-names>
+                  </name>
+                  <name>
+                     <surname>Portero-Mclellan</surname>
+                     <given-names>KC</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Clinical and nutritional status of surgical patients with and without malignant diseases: cross-sectional study</article-title>
+               <source xml:lang="en">Arq Gastroenterol</source>
+               <year>2011</year>
+               <volume>48</volume>
+               <fpage>58</fpage>
+               <lpage>61</lpage>
+               <alternatives>
+                  <textual-form>21. Leandro-Merhi VA, de Aquino JL, de Camargo JG, Frenhani PB, Bernardi JLD, Portero-Mclellan KC. Clinical and nutritional status of surgical patients with and without malignant diseases: cross-sectional study. Arq Gastroenterol. 2011;48:58-61.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r22">
+            <label>22</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Leandro-Merhi</surname>
+                     <given-names>VA</given-names>
+                  </name>
+                  <name>
+                     <surname>de Aquino</surname>
+                     <given-names>JL</given-names>
+                  </name>
+                  <name>
+                     <surname>Sales Chagas</surname>
+                     <given-names>JF</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Nutrition status and risk factors associated with length of hospital stay for surgical patients</article-title>
+               <source xml:lang="en">JPEN J Parenter Enteral Nutr</source>
+               <year>2011</year>
+               <volume>35</volume>
+               <fpage>241</fpage>
+               <lpage>248</lpage>
+               <alternatives>
+                  <textual-form>22. Leandro-Merhi VA, de Aquino JL, Sales Chagas JF. Nutrition status and risk factors associated with length of hospital stay for surgical patients. JPEN J Parenter Enteral Nutr. 2011;35:241-8.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r23">
+            <label>23</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Liang</surname>
+                     <given-names>X</given-names>
+                  </name>
+                  <name>
+                     <surname>Jiang</surname>
+                     <given-names>ZM</given-names>
+                  </name>
+                  <name>
+                     <surname>Nolan</surname>
+                     <given-names>MT</given-names>
+                  </name>
+                  <name>
+                     <surname>Efron</surname>
+                     <given-names>DT</given-names>
+                  </name>
+                  <name>
+                     <surname>Kondrup</surname>
+                     <given-names>J</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Comparative survey on nutritional risk and nutritional support between Beijing and Baltimore teaching hospitals</article-title>
+               <source xml:lang="en">Nutrition</source>
+               <year>2008</year>
+               <volume>24</volume>
+               <fpage>9696</fpage>
+               <lpage>9676</lpage>
+               <alternatives>
+                  <textual-form>23. Liang X, Jiang ZM, Nolan MT, Efron DT, Kondrup J. Comparative survey on nutritional risk and nutritional support between Beijing and Baltimore teaching hospitals. Nutrition. 2008;24:9696-76.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r24">
+            <label>24</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Lipschitz</surname>
+                     <given-names>DA</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Screening for nutritional status in the elderly</article-title>
+               <source xml:lang="en">Prim Care</source>
+               <year>1994</year>
+               <volume>22</volume>
+               <fpage>55</fpage>
+               <lpage>67</lpage>
+               <alternatives>
+                  <textual-form>24. Lipschitz DA. Screening for nutritional status in the elderly. Prim Care. 1994;22:55-67.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r25">
+            <label>25</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>McLellan</surname>
+                     <given-names>KCP</given-names>
+                  </name>
+                  <name>
+                     <surname>Bernardi</surname>
+                     <given-names>JLD</given-names>
+                  </name>
+                  <name>
+                     <surname>Jacob</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Soares</surname>
+                     <given-names>CSR</given-names>
+                  </name>
+                  <name>
+                     <surname>Frenhani</surname>
+                     <given-names>PB</given-names>
+                  </name>
+                  <name>
+                     <surname>Leandro-Merhi</surname>
+                     <given-names>VA</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="pt">Estado nutricional e composição corporal de pacientes hospitalizados: reflexos da transição nutricional</article-title>
+               <source xml:lang="en">Rev Bras Promoç Saúde</source>
+               <year>2010</year>
+               <volume>23</volume>
+               <fpage>25</fpage>
+               <lpage>33</lpage>
+               <alternatives>
+                  <textual-form>25. McLellan KCP, Bernardi JLD, Jacob P, Soares CSR, Frenhani PB, Leandro-Merhi VA. Estado nutricional e composição corporal de pacientes hospitalizados: reflexos da transição nutricional. Rev Bras Promoç Saúde. 2010;23:25-33.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r26">
+            <label>26</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Mimiran</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Hosseinpour-Niazi</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Mehrabani</surname>
+                     <given-names>HH</given-names>
+                  </name>
+                  <name>
+                     <surname>Kavian</surname>
+                     <given-names>F</given-names>
+                  </name>
+                  <name>
+                     <surname>Azizi</surname>
+                     <given-names>F</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Validity and reliability of a nutrition screening tool in hospitalized patients</article-title>
+               <source xml:lang="en">Nutrition</source>
+               <year>2010</year>
+               <volume>27</volume>
+               <fpage>647</fpage>
+               <lpage>652</lpage>
+               <alternatives>
+                  <textual-form>26. Mimiran P, Hosseinpour-Niazi S, Mehrabani HH, Kavian F, Azizi F. Validity and reliability of a nutrition screening tool in hospitalized patients. Nutrition. 2010;27:647-52.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r27">
+            <label>27</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Naber</surname>
+                     <given-names>TH</given-names>
+                  </name>
+                  <name>
+                     <surname>Schermer</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>de Bree</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Nusteling</surname>
+                     <given-names>K</given-names>
+                  </name>
+                  <name>
+                     <surname>Eggink</surname>
+                     <given-names>L</given-names>
+                  </name>
+                  <name>
+                     <surname>Kruimel</surname>
+                     <given-names>JW</given-names>
+                  </name>
+                  <name>
+                     <surname>Bakkeren</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>van Heereveld</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Katan</surname>
+                     <given-names>MB</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Prevalence of malnutrition in nonsurgical hospitalized patients and its association with disease complications</article-title>
+               <source xml:lang="en">Am J Clin Nutr</source>
+               <year>1997</year>
+               <volume>66</volume>
+               <fpage>1232</fpage>
+               <lpage>1239</lpage>
+               <alternatives>
+                  <textual-form>27. Naber TH, Schermer T, de Bree A, Nusteling K, Eggink L, Kruimel JW, Bakkeren J, van Heereveld H, Katan MB. Prevalence of malnutrition in nonsurgical hospitalized patients and its association with disease complications. Am J Clin Nutr. 1997;66:1232-9.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r28">
+            <label>28</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Pereira Borges</surname>
+                     <given-names>N</given-names>
+                  </name>
+                  <name>
+                     <surname>D'Alegria Silva</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Cohen</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Portari Filho</surname>
+                     <given-names>PE</given-names>
+                  </name>
+                  <name>
+                     <surname>Medeiros</surname>
+                     <given-names>FJ</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Comparison of the nutritional diagnosis, obtained through different methods and indicators, in patients with cancer</article-title>
+               <source xml:lang="en">Nutr Hosp</source>
+               <year>2009</year>
+               <volume>24</volume>
+               <fpage>51</fpage>
+               <lpage>55</lpage>
+               <alternatives>
+                  <textual-form>28. Pereira Borges N, D'Alegria Silva B, Cohen C, Portari Filho PE, Medeiros FJ. Comparison of the nutritional diagnosis, obtained through different methods and indicators, in patients with cancer. Nutr Hosp. 2009;24:51-5.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r29">
+            <label>29</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Pirlich</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Schütz</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Norman</surname>
+                     <given-names>K</given-names>
+                  </name>
+                  <name>
+                     <surname>Gastell</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Lübke</surname>
+                     <given-names>HJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Bischoff</surname>
+                     <given-names>SC</given-names>
+                  </name>
+                  <name>
+                     <surname>Bolder</surname>
+                     <given-names>U</given-names>
+                  </name>
+                  <name>
+                     <surname>Frieling</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Güldenzoph</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Hahn</surname>
+                     <given-names>K</given-names>
+                  </name>
+                  <name>
+                     <surname>Jauch</surname>
+                     <given-names>KW</given-names>
+                  </name>
+                  <name>
+                     <surname>Schindler</surname>
+                     <given-names>K</given-names>
+                  </name>
+                  <name>
+                     <surname>Stein</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Volkert</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>Weimann</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Werner</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Wolf</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Zürcher</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Bauer</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Lochs</surname>
+                     <given-names>H</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">The German hospital malnutrition study</article-title>
+               <source xml:lang="en">Clin Nutr</source>
+               <year>2006</year>
+               <volume>25</volume>
+               <fpage>563</fpage>
+               <lpage>572</lpage>
+               <alternatives>
+                  <textual-form>29. Pirlich M, Schütz T, Norman K, Gastell S, Lübke HJ, Bischoff SC, Bolder U, Frieling T, Güldenzoph H, Hahn K, Jauch KW, Schindler K, Stein J, Volkert D, Weimann A, Werner H, Wolf C, Zürcher G, Bauer P, Lochs H. The German hospital malnutrition study. Clin Nutr. 2006;25:563-72.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r30">
+            <label>30</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Portero-McLellan</surname>
+                     <given-names>KC</given-names>
+                  </name>
+                  <name>
+                     <surname>Staudt</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Silva</surname>
+                     <given-names>FR</given-names>
+                  </name>
+                  <name>
+                     <surname>Delbue Bernardi</surname>
+                     <given-names>JL</given-names>
+                  </name>
+                  <name>
+                     <surname>Baston Frenhani</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Leandro-Merhi</surname>
+                     <given-names>VA</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">The use of calf circumference measurement as an anthropometric tool to monitor nutritional status in elderly inpatients</article-title>
+               <source xml:lang="en">J Nutr Health Aging</source>
+               <year>2010</year>
+               <volume>14</volume>
+               <fpage>266</fpage>
+               <lpage>270</lpage>
+               <alternatives>
+                  <textual-form>30. Portero-McLellan KC, Staudt C, Silva FR, Delbue Bernardi JL, Baston Frenhani P, Leandro-Merhi VA. The use of calf circumference measurement as an anthropometric tool to monitor nutritional status in elderly inpatients. J Nutr Health Aging. 2010;14:266-70.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r31">
+            <label>31</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Putwatana</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Reodecha</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Sirapo-ngam</surname>
+                     <given-names>Y</given-names>
+                  </name>
+                  <name>
+                     <surname>Lertsithichai</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Sumboonnanonda</surname>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Nutrition screening tools and the prediction of postoperative infectious and wound complications: comparison of methods in presence of risk adjustment</article-title>
+               <source xml:lang="en">Nutrition</source>
+               <year>2005</year>
+               <volume>21</volume>
+               <fpage>691</fpage>
+               <lpage>697</lpage>
+               <alternatives>
+                  <textual-form>31. Putwatana P, Reodecha P, Sirapo-ngam Y, Lertsithichai P, Sumboonnanonda. Nutrition screening tools and the prediction of postoperative infectious and wound complications: comparison of methods in presence of risk adjustment. Nutrition. 2005;21:691-7.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r32">
+            <label>32</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Raslan</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Gonzalez</surname>
+                     <given-names>MC</given-names>
+                  </name>
+                  <name>
+                     <surname>Dias</surname>
+                     <given-names>MCG</given-names>
+                  </name>
+                  <name>
+                     <surname>Paes-Barbosa</surname>
+                     <given-names>FL</given-names>
+                  </name>
+                  <name>
+                     <surname>Cecconello</surname>
+                     <given-names>I</given-names>
+                  </name>
+                  <name>
+                     <surname>Waitzberg</surname>
+                     <given-names>DL</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="pt">Aplicabilidade dos métodos de triagem nutricional no paciente hospitalizado</article-title>
+               <source xml:lang="en">Rev Nutr</source>
+               <year>2008</year>
+               <volume>21</volume>
+               <fpage>553</fpage>
+               <lpage>561</lpage>
+               <alternatives>
+                  <textual-form>32. Raslan M, Gonzalez MC, Dias MCG, Paes-Barbosa FL, Cecconello I, Waitzberg DL. Aplicabilidade dos métodos de triagem nutricional no paciente hospitalizado. Rev Nutr. 2008;21:553-61.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r33">
+            <label>33</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Rasmussen</surname>
+                     <given-names>HH</given-names>
+                  </name>
+                  <name>
+                     <surname>Kondrup</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Staun</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Ladefoged</surname>
+                     <given-names>K</given-names>
+                  </name>
+                  <name>
+                     <surname>Kristensen</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Wengler</surname>
+                     <given-names>A</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Prevalence of patients at nutritional risk in Danish hospitals</article-title>
+               <source xml:lang="en">Clin Nutr</source>
+               <year>2004</year>
+               <volume>23</volume>
+               <fpage>1009</fpage>
+               <lpage>1015</lpage>
+               <alternatives>
+                  <textual-form>33. Rasmussen HH, Kondrup J, Staun M, Ladefoged K, Kristensen H, Wengler A. Prevalence of patients at nutritional risk in Danish hospitals. Clin Nutr. 2004;23:1009-15.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r34">
+            <label>34</label>
+            <element-citation publication-type="software">
+               <source xml:lang="en">SAS System for Windows (Statistical Analysis System)</source>
+               <edition>versão 9.2</edition>
+               <publisher-loc>Cary, NC</publisher-loc>
+               <publisher-name>SAS Institute Inc</publisher-name>
+               <season>2002-</season>
+               <year>2008</year>
+               <alternatives>
+                  <textual-form>34. SAS System for Windows (Statistical Analysis System), versão 9.2. Cary, NC, USA: SAS Institute Inc; 2002-2008.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r35">
+            <label>35</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Sorensen</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Kondrup</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Prokopowicz</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Schiesser</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Krähenbbühl</surname>
+                     <given-names>L</given-names>
+                  </name>
+                  <name>
+                     <surname>Meier</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Liberda</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <collab>EuroOOPS study group</collab>
+               </person-group>
+               <article-title xml:lang="en">EuroOOPS: an international, multicentre study to implement nutritional risk screening and evaluate clinical outcome</article-title>
+               <source xml:lang="en">Clin Nutr</source>
+               <year>2008</year>
+               <volume>27</volume>
+               <fpage>340</fpage>
+               <lpage>349</lpage>
+               <alternatives>
+                  <textual-form>35. Sorensen J, Kondrup J, Prokopowicz J, Schiesser M, Krähenbbühl L, Meier R, Liberda M, EuroOOPS study group. EuroOOPS: an international, multicentre study to implement nutritional risk screening and evaluate clinical outcome. Clin Nutr. 2008;27:340-9.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r36">
+            <label>36</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Stratton</surname>
+                     <given-names>RJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Hackston</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Longmore</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>Dixon</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Price</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Stroud</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>King</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Elia</surname>
+                     <given-names>M</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Malnutrition in hospital outpatients and inpatients: prevalence, concurrent validity and ease of use of the 'malnutrition screening tool universal tool' ('MUST') for adults</article-title>
+               <source xml:lang="en">Br J Nutr</source>
+               <year>2004</year>
+               <volume>92</volume>
+               <fpage>799</fpage>
+               <lpage>808</lpage>
+               <alternatives>
+                  <textual-form>36. Stratton RJ, Hackston A, Longmore D, Dixon R, Price S, Stroud M, King C, Elia M. Malnutrition in hospital outpatients and inpatients: prevalence, concurrent validity and ease of use of the 'malnutrition screening tool universal tool' ('MUST') for adults. Br J Nutr. 2004;92:799-808.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r37">
+            <label>37</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Sungurtekin</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Sungurtekin</surname>
+                     <given-names>U</given-names>
+                  </name>
+                  <name>
+                     <surname>Hanci</surname>
+                     <given-names>V</given-names>
+                  </name>
+                  <name>
+                     <surname>Erdem</surname>
+                     <given-names>E</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Comparison of two nutrition assessment techniques in hospitalized patients</article-title>
+               <source xml:lang="en">Nutrition</source>
+               <year>2004</year>
+               <volume>20</volume>
+               <fpage>428</fpage>
+               <lpage>432</lpage>
+               <alternatives>
+                  <textual-form>37. Sungurtekin H, Sungurtekin U, Hanci V, Erdem E. Comparison of two nutrition assessment techniques in hospitalized patients. Nutrition. 2004;20:428-32.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r38">
+            <label>38</label>
+            <element-citation publication-type="software">
+               <person-group person-group-type="author">
+                  <collab>Universidade Federal de São Paulo. Escola Paulista de Medicina</collab>
+               </person-group>
+               <source xml:lang="en">Programa de Apoio a Nutrição (NUTWIN) - programa de computador</source>
+               <edition>versão 1.5</edition>
+               <publisher-loc>São Paulo</publisher-loc>
+               <publisher-name>UNIFESP/ EPM</publisher-name>
+               <year>2002</year>
+               <alternatives>
+                  <textual-form>38. Universidade Federal de São Paulo. Escola Paulista de Medicina. Programa de Apoio a Nutrição (NUTWIN) - programa de computador, versão 1.5. São Paulo: UNIFESP/ EPM; 2002.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r39">
+            <label>39</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Westergren</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Wann-Hansson</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Borgdal</surname>
+                     <given-names>EB</given-names>
+                  </name>
+                  <name>
+                     <surname>Sjolander</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Stromblad</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Klevsgard</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Axelsson</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Lindholm</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Ulander</surname>
+                     <given-names>K</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Malnutrition prevalence and precision in nutritional care differed in relation to hospital volume-a cross-sectional survey</article-title>
+               <source xml:lang="en">Nutr J</source>
+               <year>2009</year>
+               <volume>8</volume>
+               <fpage>20</fpage>
+               <alternatives>
+                  <textual-form>39. Westergren A, Wann-Hansson C, Borgdal EB, Sjolander J, Stromblad R, Klevsgard R, Axelsson C, Lindholm C, Ulander K. Malnutrition prevalence and precision in nutritional care differed in relation to hospital volume-a cross-sectional survey. Nutr J. 2009;8:20.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+         <ref id="r40">
+            <label>40</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <collab>World Health Organization</collab>
+               </person-group>
+               <source xml:lang="en">Obesity: preventing and managing the global epidemic - Report of a WHO consultation on obesity</source>
+               <publisher-loc>Geneva</publisher-loc>
+               <publisher-name>WHO</publisher-name>
+               <year>1998</year>
+               <alternatives>
+                  <textual-form>40. World Health Organization. Obesity: preventing and managing the global epidemic - Report of a WHO consultation on obesity. Geneva: WHO, 1998.</textual-form>
+               </alternatives>
+            </element-citation>
+         </ref>
+      </ref-list>
+   </back>
+</article>

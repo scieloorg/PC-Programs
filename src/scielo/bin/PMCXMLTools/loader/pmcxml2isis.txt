@@ -29,8 +29,8 @@ h|1|060|||||MANDATORY|||article-meta|award-id||||||||
 h|1|064|||||MANDATORY|||article-meta|pub-date[@pub-type='ppub']|season|||||||
 h|1|065|||||MANDATORY|||article-meta|pub-date[@pub-type='ppub']|year|||||||
 h|1|066|||||MANDATORY|||article-meta|publisher-loc||||||||
-h|1|014|f||||MANDATORY|||article-meta|fpage|||||||||
-h|1|014|l||||MANDATORY|||article-meta|lpage|||||||||
+h|1|014|f||||MANDATORY|||article-meta||fpage||||||||
+h|1|014|l||||MANDATORY|||article-meta||lpage||||||||
 
 h|1|070|i||||MANDATORY|||article-meta|aff||@id|||||||
 h|1|070|value||||MANDATORY|||article-meta|aff|||||||||
@@ -50,8 +50,10 @@ h|1|112|||||MANDATORY|||article-meta|date[@date-type='received']|||||||||
 h|1|113|||||MANDATORY|||article-meta|date[@date-type='accepted']|||||||||
 h|1|114|||||MANDATORY|||article-meta|date[@date-type='accepted']|||||||||
 
+h|1|120|||||MANDATORY|||article-meta|fpage|||||||||
 
-r|ref|71|||||MANDATORY||||element-citation||@publication-type||||||
+
+r|ref|071|||||MANDATORY||||element-citation||@publication-type||||||
 r|ref|012|t||||MANDATORY||||article-title||||||||
 r|ref|012|l||||MANDATORY||||article-title||@xml:lang||||||
 r|ref|013|t|012|||MANDATORY||||translation-title||||||||

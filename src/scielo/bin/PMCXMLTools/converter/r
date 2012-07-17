@@ -1,0 +1,242 @@
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+  
+  article  
+    . h 
+      @article-type 71 
+      @xml:lang 40 
+    journal-meta h 
+      abbrev-journal-title 030 
+    article-meta h 
+      kwd-group 085 
+        @xml:lang l 
+        kwd k 
+      contrib 010 
+        given-names n 
+        surname s 
+        . r ND
+        xref#@rid 1 
+      article-title 012 
+        . t 
+        @xml:lang l 
+      trans-title-group 012 
+        trans-title t 
+        trans-subtitle s 
+        @xml:lang l 
+      volume 031 
+      issue 032 
+      issn 035 
+      suppl 132 
+      funding-source 058 
+      award-id 060 
+      pub-date[@pub-type='ppub'] 064 
+        season  
+      pub-date[@pub-type='ppub'] 065 
+        year  
+      publisher-loc 066 
+      . 014 
+        fpage f 
+        lpage l 
+      aff 070 
+        @id i 
+        .  
+      ref-count@count 72 
+      abstract 083 
+        . a 
+        @xml:lang l 
+      trans-abstract 83 
+        . a 
+        @xml:lang l 
+      date[@date-type='received'] 111 
+        year  
+        month  
+        day  
+        season  
+      date[@date-type='received'] 112 
+        year  
+        month  
+        day  
+        season  
+      date[@date-type='accepted'] 113 
+        year  
+        month  
+        day  
+        season  
+      date[@date-type='accepted'] 114 
+        year  
+        month  
+        day  
+        season  
+      fpage 120 
+    ref r 
+      element-citation@publication-type 071 
+      article-title 012 
+        . t 
+        @xml:lang l 
+      translation-title 012 
+        . t 
+        @xml:lang l 
+      chapter-title 012 
+        . t 
+        @xml:lang l 
+      element-citation[@publication-type='journal']//source 30 
+      element-citation[@publication-type='report']//source 18 
+      element-citation[@publication-type='book']//source 18 
+      element-citation[@publication-type='conf-proc']//source 18 
+      element-citation[@publication-type='thesis']//source 18 
+      element-citation[@publication-type='patent']//source 18 
+      element-citation[@publication-type='software']//source 18 
+      element-citation[@publication-type='web']//source 18 
+      element-citation[@publication-type='other']//source 18 
+      name 10 
+        given-names n 
+        surname s 
+        . r ND
+      volume 31 
+      issue 32 
+      publisher-name 62 
+      edition 63 
+      year 64 
+      year 65 
+      publisher-loc 66 
+      fpage 14 
+        . f 
+        . l 
+      label 118 
+      et-al 810 
+      ext-link 37 
+      comment 61 
+      notes 61 
+      pub-id[@pub-type='doi'] 237 
+      pub-id[@pub-type='pmid'] 238 
+      pub-id[@pub-type='pmcid'] 239 
+  
+  article  
+    . h 
+      @article-type 71 
+      @xml:lang 40 
+    journal-meta h 
+      abbrev-journal-title 030 
+    article-meta h 
+      kwd-group 085 
+        @xml:lang l 
+        kwd k 
+      contrib 010 
+        given-names n 
+        surname s 
+        . r ND
+        xref#@rid 1 
+      article-title 012 
+        . t 
+        @xml:lang l 
+      trans-title-group 012 
+        trans-title t 
+        trans-subtitle s 
+        @xml:lang l 
+      volume 031 
+      issue 032 
+      issn 035 
+      suppl 132 
+      funding-source 058 
+      award-id 060 
+      pub-date[@pub-type='ppub'] 064 
+        season  
+      pub-date[@pub-type='ppub'] 065 
+        year  
+      publisher-loc 066 
+      . 014 
+        fpage f 
+        lpage l 
+      aff 070 
+        @id i 
+        .  
+      ref-count@count 72 
+      abstract 083 
+        . a 
+        @xml:lang l 
+      trans-abstract 83 
+        . a 
+        @xml:lang l 
+      date[@date-type='received'] 111 
+        year  
+        month  
+        day  
+        season  
+      date[@date-type='received'] 112 
+        year  
+        month  
+        day  
+        season  
+      date[@date-type='accepted'] 113 
+        year  
+        month  
+        day  
+        season  
+      date[@date-type='accepted'] 114 
+        year  
+        month  
+        day  
+        season  
+      fpage 120 
+    ref r 
+      element-citation@publication-type 071 
+      article-title 012 
+        . t 
+        @xml:lang l 
+      translation-title 012 
+        . t 
+        @xml:lang l 
+      chapter-title 012 
+        . t 
+        @xml:lang l 
+      element-citation[@publication-type='journal']//source 30 
+      element-citation[@publication-type='report']//source 18 
+      element-citation[@publication-type='book']//source 18 
+      element-citation[@publication-type='conf-proc']//source 18 
+      element-citation[@publication-type='thesis']//source 18 
+      element-citation[@publication-type='patent']//source 18 
+      element-citation[@publication-type='software']//source 18 
+      element-citation[@publication-type='web']//source 18 
+      element-citation[@publication-type='other']//source 18 
+      name 10 
+        given-names n 
+        surname s 
+        . r ND
+      volume 31 
+      issue 32 
+      publisher-name 62 
+      edition 63 
+      year 64 
+      year 65 
+      publisher-loc 66 
+      fpage 14 
+        . f 
+        . l 
+      label 118 
+      et-al 810 
+      ext-link 37 
+      comment 61 
+      notes 61 
+      pub-id[@pub-type='doi'] 237 
+      pub-id[@pub-type='pmid'] 238 
+      pub-id[@pub-type='pmcid'] 239 

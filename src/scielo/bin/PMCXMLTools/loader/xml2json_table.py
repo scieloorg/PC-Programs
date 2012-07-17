@@ -1,10 +1,10 @@
 
 class FieldInfo:
-    def __init__(self, start, grouped_by, retag):
-        self.subfs = {}
-        self.grouped_by = grouped_by
-        self.start = start
-        self.retag = retag
+    def __init__(self, xpath_start, xpath_for_level1, level2_rename):
+        self.level3_data = {}
+        self.xpath_for_level1 = xpath_for_level1
+        self.xpath_start = xpath_start
+        self.level2_rename = level2_rename
 
 class XML2JSONTable:
 
@@ -15,65 +15,65 @@ class XML2JSONTable:
         lines = f.readlines()
         f.close()
         
-        self.records = {}
-        self.grouped_by = {}
+        self.level1 = {}
+        self.xpath_for_level1 = {}
         
         for l in lines:
             l = l.replace("\n", "").replace("\r", "")
             if '|' in l:
-                # s = [ reg, index, tag, subf, retag, x, x, 0-6
+                # s = [ level1_label, xpath_for_level1, level2_label, level3_label, level2_rename, x, x, 0-6
                 #        mandatory, x, x,             7-9
-                #        start,parent_elem, elem, attr, x, x, x,   10-16 
-                #        default, table, ]             17-18
+                #        xpath_start,xpath_parent_elem, xpath_elem, xpath_attr, x, x, x,   10-16 
+                #        default_value, table, ]             17-18
 	            a = l.replace("\n","").replace("\r","").split('|')
 	            d = {}
 	            
 	            
-	            reg = a[0]
-	            grouped_by = a[1]
-	            if grouped_by == '1':
-	                grouped_by = ''
-	            tag = a[2]
-	            subf = a[3]
-	            retag = a[4]
+	            level1_label = a[0]
+	            xpath_for_level1 = a[1]
+	            if xpath_for_level1 == '1':
+	                xpath_for_level1 = ''
+	            level2_label = a[2]
+	            level3_label = a[3]
+	            level2_rename = a[4]
 	            mandatory = a[6]
 	            
-	            start = a[10]
-	            parent_elem = a[11].replace('.//', '')
-	            elem = a[12]
-	            attr = a[13]
+	            xpath_start = a[10]
+	            xpath_parent_elem = a[11].replace('.//', '')
+	            xpath_elem = a[12]
+	            xpath_attr = a[13]
 	            
-	            default = a[17]
-	            data_conversion = a[18]
+	            default_value = a[17]
+	            conversion_function = a[18]
 	           
-	            self._build_structure_(start, parent_elem, elem, attr, default, data_conversion,  reg, tag, subf, retag, mandatory, grouped_by)
+	            self._build_structure_(xpath_start, xpath_parent_elem, xpath_elem, xpath_attr, default_value, conversion_function,  level1_label, level2_label, level3_label, level2_rename, mandatory, xpath_for_level1)
         #self.print_structure()   
         
-    def _build_structure_(self, start, parent_elem, elem, attr, default, data_conversion,  reg, tag, subf, retag, mandatory, grouped_by):
-        if subf == '':
-            subf = 'value'
+    def _build_structure_(self, xpath_start, xpath_parent_elem, xpath_elem, xpath_attr, default_value, conversion_function,  level1_label, level2_label, level3_label, level2_rename, mandatory, xpath_for_level1):
+        if level3_label == '':
+            level3_label = 'value'
             
-        record_types = self.records.keys()
-        if not reg in record_types:
-            self.records[reg] = {}
-            self.grouped_by[reg] = grouped_by
-        tags = self.records[reg].keys()
-        if not tag in tags:
-            self.records[reg][tag] = FieldInfo(start, grouped_by, retag)
+        label1_labels = self.level1.keys()
+        if not level1_label in label1_labels:
+            self.level1[level1_label] = {}
+            self.xpath_for_level1[level1_label] = xpath_for_level1
+        level2_labels = self.level1[level1_label].keys()
+        if not level2_label in level2_labels:
+            self.level1[level1_label][level2_label] = FieldInfo(xpath_start, xpath_for_level1, level2_rename)
             
-        self.records[reg][tag].subfs[subf] = { 'parent_elem': parent_elem, 'elem': elem, 'attr': attr, 'default': default, 'mandatory': mandatory,  'data_conversion': data_conversion}
+        self.level1[level1_label][level2_label].level3_data[level3_label] = { 'xpath_parent_elem': xpath_parent_elem, 'xpath_elem': xpath_elem, 'xpath_attr': xpath_attr, 'default_value': default_value, 'mandatory': mandatory,  'conversion_function': conversion_function}
         
     def print_structure(self):
-        for k,tags in self.records.items():
-            self.report.register(k)
+        for k,level2_labels in self.level1.items():
+            self.report.display_data('level1 label', k)
             
-            for tag,tag_subfs in tags.items():
-                self.reporter.register("  " + tag, '')
-                for subf, info in tag_subfs.items():
-                    s = "    " + subf
+            for level2_label,level3_spec in level2_labels.items():
+                self.reporter.display_data('level2 label', level2_label)
+                for level3_label, info in level3_spec.items():
+                    s = "    " + level3_label
                     for k, i in info.items():
                         s += ' ' + i
-                    self.report.register(s, '')
+                    self.report.display_data('level3 label', s)
         
     
         

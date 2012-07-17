@@ -1,146 +1,103 @@
+import os
+import sys
+
 from xml2json_converter import XML2JSONConverter
+from json2id import JSON2IDFile
+from id2isis import IDFile2ISIS
+
+
 from report import Report
+from parameters import Parameters
+from my_files import MyFiles
 
-class IDFile:
+my_files = MyFiles()
 
-    def __init__(self, filename, report):
-        self.filename = filename
-        f = open(filename, 'w')
-        f.close()
-        self.report = report
-        
-    def write(self, content, context):
-        f = open(self.filename, 'a+')
-        try:
-            f.write(content)
-        except:
-            try:
-                self.report.register('ERROR:' + content + '('+ context + ')', 'Unable to write id filename')
-            except:
-                pass
-        f.close()
 
 class PMCXML2ISIS:
 
-    def __init__(self, records_order, xml2json_table_filename = 'pmcxml2isis.txt'):
+    def __init__(self, records_order, id2isis, xml2json_table_filename = 'pmcxml2isis.txt'):
        self.xml2json_table_filename = xml2json_table_filename
        self.records_order = records_order
        self.tables = {}
-       self.record_number = 0
+       self.id2isis = id2isis
        
        
-    def convert(self, xml_filename, supplementary_xml_filename, id_filename, report_filename, debug):
-        self.report = Report(report_filename, debug)
-        self.id_file = IDFile(id_filename, debug)
-        
-        xml2json_converter = XML2JSONConverter(self.xml2json_table_filename, self.report)
-        main_json = xml2json_converter.convert(xml_filename)
-        
-        suppl_json =  {}
-        if supplementary_xml_filename != '':
-            suppl_json = xml2json_converter.convert(supplementary_xml_filename)
-        
-        r = self.format_records(main_json, suppl_json)
-        
-        #self.report.register(r)
-        
-        
-        
-    def format_records(self, main_json, suppl_json):
-        rec_content =  ''
-        
-        for record_name in self.records_order:
-            for rec_occ in main_json[record_name]:
-                
-                self.record_number += 1
-                record_id = '000000' + str(self.record_number)
-                record_id = record_id[-6:]
+    def generate_json(self, xml_filename, supplementary_xml_filename, report):
+        xml2json_converter = XML2JSONConverter(self.xml2json_table_filename, report)
+        json_data = xml2json_converter.convert(xml_filename)
+        return json_data
             
-                rec_content += '!ID ' + record_id + "\n"
-                self.id_file.write('!ID ' + record_id + "\n", '')
-                for tag, tag_occs in rec_occ.items():
-                    t = '000' + tag
-                    if tag_occs != None:
-                        for tag_occ in tag_occs:
-                            tagged = '' 
-                            for subf_name, subf_content in tag_occ.items():
-                                if subf_name == 'value': 
-                                    tagged = subf_content + tagged
-                                else:
-                                    #print(subf_content)
-                                    tagged += '^' + subf_name + self._convert_subfields_(subf_content, '') #FIXME
-                        
-                            rec_content += '!v' + t[-3:] + '!' + tagged + "\n"
-                            self.id_file.write('!v' + t[-3:] + '!' + tagged + "\n", ''  )
-        return rec_content
-                    
-    def _convert_subfields_(self, value, data_conversion):
-        if value != '':
-            try:
-                value = value.encode('iso-8859-1')
-            except:
-                self.report.register('encode failure', 'Unable to convert to iso') 
-        if value != '' and data_conversion != '':
-            v = ''
-            try:
-                t = self.tables[data_conversion]
-                try:
-                    v = self.tables[data_conversion][value]
-                except:
-                    self.report.register('Expected data_conversion of ' + data_conversion + ': ' + value, '')
-            except:
-                self.report.register('Expected table ' + data_conversion, '') 
-            if v != '':
-                value = v                    
-        return value
+    def generate_id_file(self, json_data, id_filename, report):
+        id_file = JSON2IDFile(id_filename, report)
+        id_file.format_records_and_save(self.records_order, json_data)
+        
+    def generate_id_file_list(self, files_set, report):
+        
+        cmd = ''
+        files_set.prepare()
+        id_filename_list = []
+        list = os.listdir(files_set.xml_path)
+        for f in list:
+            if '.xml' in f:
+                xml_filename = files_set.xml_path + '/' + f
+                id_filename = f.replace('.xml', '.id')
+                
+                json_data = self.generate_json(xml_filename, files_set.suppl_filename, report)
+                self.generate_id_file(json_data, files_set.output_path + '/' + id_filename, report)
+                
+    def convert_id_files_to_mst(self, db_path, db_name, script_filename, report):
+        cmds = self.id2isis.create_script_content(db_path, db_name, report)
+        self.id2isis.run_commands(cmds)
+        if not os.path.exists(db_path + '/' + db_name + '.mst'):
+            self.id2isis.run_commands(cmds, True)
+        if not os.path.exists(db_path + '/' + db_name + '.mst'):
+            self.id2isis.write_script(script_filename + '.bat', cmds)
+            self.id2isis.write_script(script_filename + '.sh', cmds)
+            
+    def execute(self, xml_path, suppl_filename, output_path, db_name, script_filename, debug_depth, display_on_screen):
+        files_set = PMCXML_FilesSet(xml_path, suppl_filename, output_path, db_name)
+        report = Report(files_set.log_filename, files_set.err_filename, debug_depth, display_on_screen) 
+        
+        self.generate_id_file_list(files_set, report)
+        self.convert_id_files_to_mst(output_path, db_name, output_path + '/'+ script_filename, report)
+        
+class PMCXML_FilesSet:
 
-    def _convert_value_(self, value, data_conversion):
-        if value != '':
-            try:
-                value = value.encode('iso-8859-1')
-            except:
-                self.report.register('encode failure', 'Unable to convert to iso') 
-        if value != '' and data_conversion != '':
-            v = ''
-            try:
-                t = self.tables[data_conversion]
-                try:
-                    v = self.tables[data_conversion][value]
-                except:
-                    self.report.register('Expected data_conversion of ' + data_conversion + ': ' + value, '')
-            except:
-                self.report.register('Expected table ' + data_conversion, '') 
-            if v != '':
-                value = v                    
-        return value
-
-    def old_convert_value_(self, value, data_conversion):
-        if value != '':
-            try:
-                value = value.encode('iso-8859-1')
-            except:
-                self.report.register('encode failure', 'Unable to convert to iso') 
-        if value != '' and data_conversion != '':
-            v = ''
-            try:
-                t = self.tables[data_conversion]
-                try:
-                    v = self.tables[data_conversion][value]
-                except:
-                    self.report.register('Expected data_conversion of ' + data_conversion + ': ' + value, '')
-            except:
-                self.report.register('Expected table ' + data_conversion, '') 
-            if v != '':
-                value = v                    
-        return value
-                   
+    def __init__(self, xml_path, suppl_filename, output_path, db_name):
+        self.xml_path = xml_path
+        self.output_path = output_path
+        self.db_name = db_name
+        self.db_filename = output_path + '/' + db_name
+        self.suppl_filename = suppl_filename
+        self.log_filename = output_path + '/' + db_name + '.log'
+        self.err_filename = output_path + '/' + db_name + '.err.log'
+        
     
-filename = '/Users/robertatakenaka/Documents/vm_dados/dados_pmc/ag/v49n1/pmc/pmc_work/02-05/02-05.sgm.xml.local.xml'
-suppl_filename = ''
-id_filename = 'v49n1.id'
-
-log_filename = 'v49n1.log'
-debug = 0
-
-converter = PMCXML2ISIS('hr')
-converter.convert(filename, suppl_filename, id_filename, log_filename, debug)
+    def prepare(self):
+        if os.path.exists(self.output_path):
+            files = os.listdir(self.output_path)
+            for f in files:
+                print('deleting ' + self.output_path + '/' + f + '?')
+                ext = f[f.rfind('.'):]
+                if ext in ['.id', '.mst', '.xrf', '.log', ]:
+                    print('deleting ' + self.output_path + '/' + f)
+                    #os.remove(self.output_path + '/' + f)
+        else:
+            os.makedirs(self.output_path)
+    
+                
+if __name__ == '__main__':
+    parameter_list = ['', 'path of XML files', 'supplementary XML', 'output path', 'database name (no extension)', 'batch and shell script filename to generate .mst database name (no extension)', 'cisis path', 'debug_depth', 'display messages on screen? yes|no']
+    parameters = Parameters(parameter_list)
+    if parameters.check_parameters(sys.argv):
+    	this_script_name, xml_path, suppl_xml, output_path, db_name, script_filename, cisis_path, debug_depth, display_on_screen = sys.argv
+        
+        output_path = output_path.replace('\\', '/')
+        xml_path = xml_path.replace('\\', '/')
+        
+        pmcxml2isis = PMCXML2ISIS('hr', IDFile2ISIS(cisis_path), 'pmcxml2isis.txt')
+        pmcxml2isis.execute(xml_path, suppl_xml, output_path, db_name, script_filename, int(debug_depth), (display_on_screen == 'yes'))
+        
+        
+    
+    

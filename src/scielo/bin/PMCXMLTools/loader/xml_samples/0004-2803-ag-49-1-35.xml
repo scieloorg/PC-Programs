@@ -1,0 +1,1439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article
+  PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "journalpublishing3.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:mml="http://www.w3.org/1998/Math/MathML"
+         dtd-version="3.0"
+         article-type="research-article"
+         xml:lang="en">
+   <front>
+      <journal-meta>
+         <journal-id journal-id-type="nlm-ta">Arq Gastroenterol</journal-id>
+         <journal-id journal-id-type="publisher-id">0004-2803</journal-id>
+         <journal-title-group>
+            <journal-title>Arquivos de Gastroenterologia</journal-title>
+            <abbrev-journal-title abbrev-type="publisher">Arq. Gastroenterol.</abbrev-journal-title>
+         </journal-title-group>
+         <issn pub-type="ppub">0004-2803</issn>
+         <publisher>
+            <publisher-name>Instituto Brasileiro de Estudos e Pesquisas de Gastroenterologia - IBEPEGE , Colégio Brasileiro de Cirurgia Digestiva - CBCD , Sociedade Brasileira de Motilidade Digestiva - SBMD , Federação Brasileira de Gastroenterologia - FBG, Sociedade Brasileira de Hepatologia - SBH, Sociedade Brasileira de Endoscopia Digestiva - SOBED</publisher-name>
+         </publisher>
+      </journal-meta>
+      <article-meta>
+         <article-id pub-id-type="publisher-id">S0004-28032012000100007</article-id>
+         <article-id pub-id-type="doi">10.1590/S0004-28032012000100007</article-id>
+         <article-categories>
+            <subj-group>
+               <subject>ORIGINAL ARTICLE</subject>
+            </subj-group>
+         </article-categories>
+         <title-group>
+            <article-title xml:lang="en">Immunohistochemical evaluation of p53 and Ki-67 proteins in colorectal adenomas</article-title>
+            <trans-title-group xml:lang="pt">
+               <trans-title>Avaliação imunoistoquímica das proteínas p53 e Ki-67 em adenomas colorretais</trans-title>
+            </trans-title-group>
+         </title-group>
+         <contrib-group>
+            <contrib contrib-type="author">
+               <name>
+                  <surname>Sousa</surname>
+                  <given-names>Walysson Alves Tocantins de</given-names>
+               </name>
+               <xref ref-type="aff" rid="aff1"/>
+            </contrib>
+            <contrib contrib-type="author">
+               <name>
+                  <surname>Rodrigues</surname>
+                  <given-names>Lusmar Veras</given-names>
+               </name>
+               <xref ref-type="aff" rid="aff1"/>
+            </contrib>
+            <contrib contrib-type="author">
+               <name>
+                  <surname>da</surname>
+                  <given-names>Raimundo Gerônimo</given-names>
+                  <suffix>Silva Jr.</suffix>
+               </name>
+               <xref ref-type="aff" rid="aff1"/>
+            </contrib>
+            <contrib contrib-type="author">
+               <name>
+                  <surname>Vieira</surname>
+                  <given-names>Fernando Lopes</given-names>
+               </name>
+               <xref ref-type="aff" rid="aff1"/>
+            </contrib>
+            <aff id="aff1">Department of Surgery, Federal University of Ceará, Fortaleza, Brazil</aff>
+         </contrib-group>
+         <author-notes>
+            <corresp> 
+               <bold>Correspondence</bold>:  Dr. Walysson Alves Tocantins de Sousa Avenida Lindolfo Monteiro, 2801 - apt. 402 Fátima - Teresina, PI, Brasil E-mail: <email>wtocantins@yahoo.com.br</email>
+            </corresp>
+            <fn fn-type="conflict">
+               <p>No conflicts of interest.</p>
+            </fn>
+            <fn fn-type="financial-disclosure">
+               <p>Financial disclosures: none reported.</p>
+            </fn>
+         </author-notes>
+         <pub-date pub-type="ppub">
+            <season>Jan-Mar</season>
+            <year>2012</year>
+         </pub-date>
+         <volume>49</volume>
+         <issue>1</issue>
+         <fpage>35</fpage>
+         <lpage>40</lpage>
+         <history>
+            <date date-type="received">
+               <day>01</day>
+               <month>06</month>
+               <year>2011</year>
+            </date>
+            <date date-type="accepted">
+               <day>23</day>
+               <month>08</month>
+               <year>2011</year>
+            </date>
+         </history>
+         <permissions>
+            <license license-type="open-access"
+                     xlink:href="http://creativecommons.org/licenses/by-nc/3.0/">
+               <license-p>This is an Open Access article distributed under the terms of the Creative Commons Attribution Non-Commercial License, which permits unrestricted non-commercial use, distribution, and reproduction in any medium, provided the original work is properly cited.</license-p>
+            </license>
+         </permissions>
+         <abstract xml:lang="en">
+            <sec>
+               <title>CONTEXT:</title>
+               <p> The appearance of adenomas and their progression to adenocarcinomas is the result of an accumulation of genetic changes in cells of the intestinal mucosa inherited or acquired during life. Several proteins have been studied in relation to the development and progression of colorectal cancer, including tumor protein p53 (p53) and antigen identified by monoclonal antibody Ki-67 (Ki-67). </p>
+            </sec>
+            <sec>
+               <title>OBJECTIVE:</title>
+               <p> To evaluate the expression of p53 and Ki-67 in colorectal adenomas and correlate the observed levels with clinical and pathologic findings. </p>
+            </sec>
+            <sec>
+               <title>METHOD:</title>
+               <p> The sample consisted of 50 adenomatous polyps from patients undergoing colonoscopy. After performing polypectomy, polyps were preserved in a formalin solution with 10% (vol./vol.) phosphate buffer, submitted for routine preparation of sections and slides and stained with hematoxylin and eosin. For each adenoma we then performed immunohistochemistry to detect specific p53 and Ki-67 proteins using a streptavidin-biotin-peroxidase enzyme immunoassay. </p>
+            </sec>
+            <sec>
+               <title>RESULTS:</title>
+               <p> p53 was detected in 18% of the adenomas. The average Ki-67 protein index (i.Ki-67) was 0.49. A statistically significant difference was observed in p53 (<italic>P</italic> = 0.0003) and Ki-67 (<italic>P</italic> = 0.02) expression between adenomas with low- and high-grade dysplasia, particularly for p53. The expression of Ki-67 was greater in rectal adenomas than in colic adenomas (<italic>P</italic> = 0.02). No relationship was found between the expression of the two proteins in the sample. </p>
+            </sec>
+            <sec>
+               <title>CONCLUSION:</title>
+               <p> The p53 protein is expressed in a proportion of adenomas, while the Ki-67 protein was expressed in all adenomas. The expression of p53 was higher in adenomas with high-grade dysplasia. The expression of Ki-67 was higher in rectal adenomas and in adenomas with high-grade dysplasia.
+</p>
+            </sec>
+         </abstract>
+         <trans-abstract xml:lang="pt">
+            <sec>
+               <title>CONTEXTO:</title>
+               <p> O aparecimento de adenomas intestinais e sua progressão para adenocarcinoma é o resultado do acúmulo de mutações genéticas da mucosa intestinal, herdadas ou adquiridas durante a vida. Dessa forma, várias proteínas têm sido estudadas em relação ao desenvolvimento e progressão do câncer colorretal, incluindo as proteínas p53 e Ki-67. </p>
+            </sec>
+            <sec>
+               <title>OBJETIVO:</title>
+               <p> Avaliar a expressão das proteínas p53 e Ki-67 em adenomas colorretais, suas relações com características clinicopatológicas e avaliar a relação entre as duas proteínas.  </p>
+            </sec>
+            <sec>
+               <title>MÉTODO:</title>
+               <p> A amostra consistiu de 50 pólipos adenomatosos encontrados em pacientes submetidos a exames colonoscópicos. Após a realização de polipectomia, os pólipos eram conservados em solução tamponada de formalina a 10% e submetidos a rotina de preparo de cortes e lâminas e coloração pela hematoxilina-eosina para confirmação da natureza adenomatosa. Realizou-se imunoistoquímica específica para as proteínas p53 e Ki-67 pelo método imunoenzimático da streptoavidina-biotina-peroxidase para cada adenoma. </p>
+            </sec>
+            <sec>
+               <title>RESULTADOS:</title>
+               <p> A proteína p53 foi positiva em 18% dos adenomas e a proteína Ki-67, expresso como índice (i.Ki-67), obteve média de 0,49. Houve diferença estatisticamente significante na expressão de p53 (<italic>P</italic> = 0,0003) e Ki-67(<italic>P</italic> = 0,02) entre os adenomas com alto e baixo grau de displasia, sendo maior no primeiro grupo. Encontrou-se, ainda maior expressão da proteína Ki-67 nos adenomas retais em relação aos de localização cólica (<italic>P</italic> = 0,02). Não houve relação entre a expressão das duas proteínas, na amostra. </p>
+            </sec>
+            <sec>
+               <title>CONCLUSÃO:</title>
+               <p> A proteína p53 é expressa em parte dos adenomas enquanto Ki-67 é expressa na sua totalidade. A expressão de p53 foi maior nos adenomas com alto grau de displasia. A expressão de Ki-67 foi maior nos adenomas retais e com alto grau de displasia.
+</p>
+            </sec>
+         </trans-abstract>
+         <kwd-group xml:lang="en">
+            <kwd>Colorectal neoplasm</kwd>
+            <kwd>Tumor suppressor protein p53</kwd>
+            <kwd>Ki67-antigen</kwd>
+            <kwd>Immunohistochemistry</kwd>
+         </kwd-group>
+         <kwd-group xml:lang="pt">
+            <kwd>Neoplasias colorretais</kwd>
+            <kwd>Proteína supressora de tumor p53</kwd>
+            <kwd>Antígeno Ki67</kwd>
+            <kwd>Imunoistoquímica</kwd>
+         </kwd-group>
+         <counts>
+            <fig-count count="3"/>
+            <table-count count="2"/>
+            <equation-count count="0"/>
+            <ref-count count="33"/>
+            <page-count count="6"/>
+         </counts>
+      </article-meta>
+   </front>
+   <body>
+      <sec sec-type="intro">
+         <title>INTRODUCTION</title>
+         <p>Colorectal cancer is among the most frequent types of malignancy. In terms of incidence, it is the third most common cancer worldwide in both sexes<sup>(<xref ref-type="bibr" rid="r07">7</xref>)</sup>. Among the key risk factors associated with the presence of adenomas is a factor closely linked to the development of malignant neoplasms. The chances of cure and survival are greater when detected at an early stage. Thus, the management of adenomas has an important role in the prevention of colorectal cancer, making it necessary to conduct studies to determine new prognostic factors related to development and progression.</p>
+         <p>The cell cycle is controlled by several genes, the main function of which is the synthesis of proteins that promote perfectly organized cell multiplication. These genes are basically divided into two groups: genes that stimulate cell proliferation, called proto-oncogenes, and genes that inhibit cell proliferation, called tumor suppressor genes<sup>(<xref ref-type="bibr" rid="r21">21</xref>, <xref ref-type="bibr" rid="r28">28</xref>)</sup>. The appearance of adenomas and their progression to adenocarcinomas is the result of an accumulation of genetic changes, in cells of the intestinal mucosa that have been inherited or acquired during life. Several proteins have been studied in relation to the development and progression of colorectal cancer, including tumor protein p53 (p53) and antigen identified by monoclonal antibody Ki-67 (Ki-67).</p>
+         <p>In humans, the p53 tumor suppressor gene is located on the locus of subdivision 13 of the short arm of chromosome 17 (17p13). Composed of 11 exons interspersed by 10 introns<sup>(<xref ref-type="bibr" rid="r08">8</xref>, <xref ref-type="bibr" rid="r14">14</xref>)</sup>, it encodes a nuclear phosphoprotein - molecular mass equivalent to 53 kDa - that contains a sequence of 393 amino acids<sup>(<xref ref-type="bibr" rid="r13">13</xref>)</sup>. The main function of p53 is to mediate the cell response when DNA is damaged, assisting in the maintenance of genomic stability<sup>(<xref ref-type="bibr" rid="r26">26</xref>, <xref ref-type="bibr" rid="r33">33</xref>)</sup>. Mutation of the p53 gene (also known as TP53) promotes an accumulation of this protein in the cell nucleus and extends its half-life, making it detectable by immunohistochemistry<sup>(<xref ref-type="bibr" rid="r06">6</xref>, <xref ref-type="bibr" rid="r19">19</xref>)</sup>
+         </p>
+         <p>The expression of the Ki-67 protein in humans is closely associated with cell proliferation, and this is detected during the cell-cycle phases G1, S, G2 and mitosis, and absent in the G0 phase. Thus, Ki-67 is an excellent marker for proliferating cells<sup>(<xref ref-type="bibr" rid="r22">22</xref>)</sup>.</p>
+         <p>The aim of this study was to evaluate the expression of p53 and Ki-67 in colorectal adenomas and correlate the observed levels with clinical and pathologic findings.</p>
+      </sec>
+      <sec sec-type="methods">
+         <title>METHODS</title>
+         <p>The study was conducted at the Department of Coloproctology at Walter Cantídio University Hospital, Federal University of Ceará, Fortaleza, CE, Brazil and at the Digestive Endoscopy Service at Santa Maria Hospital in Teresina, PI, Brazil after having been approved by the local ethics committee (protocol 593/2009).</p>
+         <sec>
+            <title>Sample</title>
+            <p>The sample consisted of 50 adenomas from 44 patients who underwent routine screening colonoscopy and were diagnosed with colorectal adenomatous polyps. Twenty-five adenomas were from 23 female patients and 25 from 21 male patients. The average age of the patients was 62.7 years (41-89 years).</p>
+         </sec>
+         <sec>
+            <title>Inclusion criteria</title>
+            <p>To be included in the study, individuals had to have histopathologic confirmation of colorectal adenoma.</p>
+         </sec>
+         <sec>
+            <title>Exclusion criteria</title>
+            <p>Patients with current or previous malignant neoplasms, intestinal polyposis, prior radiotherapy or inflammatory bowel disease were excluded.</p>
+         </sec>
+         <sec>
+            <title>Endoscopy</title>
+            <p>Patients underwent complete colonoscopy after mechanical preparation of the colon with a 10% (vol./vol.) mannitol solution. All examinations were performed by the same professional.</p>
+            <p>All polyps were resected using a diathermy loop and measured with the aid of a caliper. The polyps were preserved in a formalin solution with 10% (vol./vol.) phosphate buffer.</p>
+         </sec>
+         <sec>
+            <title>Histopathology</title>
+            <p>The material was sent to the pathology laboratory for macroscopic analysis and preparation for routine histological sectioning and staining with hematoxylin and eosin. The histological type and grade of dysplasia were subsequently determined<sup>(<xref ref-type="bibr" rid="r27">27</xref>)</sup>. All cases were evaluated independently by two pathologists for confirmation of histopathologic findings.</p>
+         </sec>
+         <sec>
+            <title>Immunohistochemistry</title>
+            <p>An immunohistochemical analysis was carried out to detect the expression of the p53 and Ki-67 proteins, using a streptavidin-biotin immunoenzymic method. This included the following steps: (1) deparaffinization at 60ºC (20 min); (2) deparaffinization at room temperature (30 min); (3) hydration with alcohol and water; (4) antigen retrieval: heating the slides in a solution of 0.01 mol/L citric acid (pH 6.0) in a microwave oven (maximum power) for p53 (10 min), and in a pressure cooker for Ki-67 (5 min); (5) blockage of endogenous peroxidase in two baths of 3% (vol./vol.) H2O2 (10 min each) and rinsing with water and phosphate buffered saline (PBS); (6) incubation in a moist chamber at 4ºC (18 h) with monoclonal mouse antibody-specific primary anti-human MIB-1 (Dako(r), Carpinteria, CA, USA) at a titration of 1:100 for Ki-67 and monoclonal mouse anti-human DO-7 (Dako(r), Carpinteria, CA, USA) at a titration of 1:800 for p53; (7) incubation with secondary biotinylated antibody(kit LSAB Dako(r), Carpinteria, CA, USA) in a moist chamber at 25ºC (30 min) followed by rinsing in PBS; (8) incubation with the streptavidin-biotin-peroxidase complex in a moist chamber (37ºC) for 30 min followed by rinsing in PBS; (9) disclosure by immersion in a solution of 60 mg% diaminobenzidine in PBS containing 0.06% (vol./vol.) hydrogen peroxide followed by rinsing in distilled water; and (10) counterstaining in Harris hematoxylin, dehydration in alcohol and mounting in Entellan with coverslips. The positive nuclei present a typical brownish hue for each of the markers.</p>
+         </sec>
+         <sec>
+            <title>Quantitative analysis of p53 and Ki-67</title>
+            <p>The expression of p53 and Ki-67 was quantified with an automated system consisting of a Nikon light microscope coupled to a color video camera (Digital Camera Samsung SCC-131, Seoul, South Korea) with image acquisition by microcomputer (Pentium IV, 80 GB hard disk, 3.0 GHz processor, 1024 MB RAM and graphics card for Windows XP(r)).</p>
+            <p>Cell counts positive and negative for the expression of p53 and Ki-67 were performed under ×400 magnification for the most intensely stained samples.</p>
+            <p>After scanning, 500 cells were counted in random fields of the mucosal epithelium using the image analysis program Image J(r). Fairly obvious dark-brown staining of cell nuclei was considered positive.</p>
+            <p>The calculation of the index of expression was performed using the following formula: i = (number of immunostained nuclei / number of nuclei counted).</p>
+            <p>Samples were considered positive for p53 when at least 10% of the cells presented this staining<sup>(<xref ref-type="bibr" rid="r10">10</xref>, <xref ref-type="bibr" rid="r17">17</xref>)</sup>. The cell proliferation index for Ki-67 (i.Ki-67) was calculated with the same formula and was expressed in absolute values.</p>
+         </sec>
+         <sec>
+            <title>Statistical analysis</title>
+            <p>The results were expressed as mean, standard deviation (SD), standard error (SE), minimum and maximum values for numerical variables and frequency for nominal variables.</p>
+            <p>Nominal variables were tested for statistical significance with Fisher's exact test. Numerical variables were submitted to Student's <italic>t</italic> test or Pearson's linear correlation. The level of statistical significance was set at <italic>P</italic>&lt;0.05. The statistics software Bioestat 5.0(r) was used for statistical analysis.</p>
+         </sec>
+      </sec>
+      <sec sec-type="results">
+         <title>RESULTS</title>
+         <sec>
+            <title>Location</title>
+            <p>The polyps were distributed as follows: 15 (30%) were located in the rectum and 35 (70%) in the colon.</p>
+         </sec>
+         <sec>
+            <title>Synchronous polyps</title>
+            <p>Five patients had synchronous polyps with a total of 11 adenomas (<xref ref-type="table" rid="t01">Table 1</xref>). One patient had 3 adenomas. The remainder had 2 each.</p>
+            <p>
+               <table-wrap id="t01">
+                  <label>TABLE 1</label>
+                  <caption>
+                     <title>Expression of p53 protein in adenomas</title>
+                  </caption>
+                  <graphic xlink:href="0004-2803-ag-49-35-gt01"/>
+                  <table-wrap-foot>
+                     <fn>
+                        <p>a The difference between two groups was statistically significant</p>
+                     </fn>
+                  </table-wrap-foot>
+               </table-wrap>
+            </p>
+         </sec>
+         <sec>
+            <title>Macroscopic findings</title>
+            <p>The size of the polyps ranged from 3 mm to 25 mm (average: 6.5 ± 4.7 mm). Polyps measured &lt;10 mm in 36 cases (72%) and &gt;10 mm in 14 cases (28%) (<xref ref-type="table" rid="t01">Tables 1</xref> and <xref ref-type="table" rid="t02">2</xref>).</p>
+            <p>
+               <table-wrap id="t02">
+                  <label>TABLE 2</label>
+                  <caption>
+                     <title>Expression of Ki-67 protein in adenomas</title>
+                  </caption>
+                  <graphic xlink:href="0004-2803-ag-49-35-gt02"/>
+                  <table-wrap-foot>
+                     <fn>
+                        <p>a, bThe difference between the two groups was statistically significant</p>
+                     </fn>
+                  </table-wrap-foot>
+               </table-wrap>
+            </p>
+         </sec>
+         <sec>
+            <title>Microscopic findings</title>
+            <p>With the exception of one case of tubulo-villous adenoma, all other cases were histologically classified as tubular adenoma. Regarding the degree of dysplasia, 33 (66%) were classified as low grade and 17 (34%) as high grade (<xref ref-type="table" rid="t01">Tables 1</xref> and <xref ref-type="table" rid="t02">2</xref>).</p>
+         </sec>
+         <sec>
+            <title>Immunohistochemistry</title>
+            <p>Nine specimens (18%) were considered positive for p53 (<xref ref-type="table" rid="t01">Table 1</xref>). The average (±SD) expression of Ki-67 was 0.49 ± 0.17 (<xref ref-type="table" rid="t02">Table 2</xref>).</p>
+            <p>Specimens positive for p53 came from patients aged 65.2 ± 9.1 years (range: 52-80 years). The corresponding figures for p53-negative specimens were 62.2 ± 10.9 years (41-89 years) (<italic>P</italic> = 0.42) (<xref ref-type="fig" rid="f01">Figure 1</xref>).</p>
+            <p>
+               <fig id="f01">
+                  <label>FIGURE 1</label>
+                  <caption>
+                     <title>Box-plot of patients' age according to p53 protein expression</title>
+                  </caption>
+                  <graphic xlink:href="0004-2803-ag-49-35-gf01"/>
+               </fig>
+            </p>
+            <p>The expression of p53 in relation to sex was positive in three men and six women (<italic>P</italic> = 0.46) (<xref ref-type="table" rid="t01">Table 1</xref>).</p>
+            <p>Polyps &lt;10 mm were p53-positive in five cases (13.8%). Polyps &gt;10 mm were p53-positive in four cases (28.5%) (<italic>P</italic> =  0.41) (<xref ref-type="table" rid="t01">Table 1</xref>).</p>
+            <p>As for location, two (13.3%) of the polyps located in the rectum and seven (20%) of the polyps located in the colon were positive for p53 (<italic>P</italic> = 0.7) (<xref ref-type="table" rid="t01">Table 1</xref>).</p>
+            <p>Concerning the degree of dysplasia, one out of 33 low-grade specimens and eight out of 17 high-grade specimens were positive for p53 (<italic>P</italic> = 0.0003) (<xref ref-type="table" rid="t01">Table 1</xref>).</p>
+            <p>As for synchronous polyps (n = 11), one case was positive for p53. Eight of the 39 single polyps were p53 positive (<italic>P</italic> = 0.66) (<xref ref-type="table" rid="t01">Table 1</xref>).</p>
+            <p>When the association between p53 and Ki-67 expression was evaluated, i.Ki-67 was 0.53 ± 0.1 for p53-positive polyps and 0.48 ± 0.18 for p53-negative polyps (<italic>P</italic> = 0.4) (<xref ref-type="fig" rid="f02">Figure 2</xref>).</p>
+            <p>
+               <fig id="f02">
+                  <label>FIGURE 2</label>
+                  <caption>
+                     <title>Box-plot of the expression of Ki-67 protein according to p53 protein expression</title>
+                  </caption>
+                  <graphic xlink:href="0004-2803-ag-49-35-gf02"/>
+               </fig>
+            </p>
+            <p>Pearson's linear correlation was used to test the association between age and Ki-67 expression. The resulting coefficient was <italic>r</italic> = "0.04 (<italic>P</italic> = 0.67) (<xref ref-type="fig" rid="f03">Figure 3</xref>).</p>
+            <p>
+               <fig id="f03">
+                  <label>FIGURE 3</label>
+                  <caption>
+                     <title>Scatter plot between age and i.Ki-67</title>
+                  </caption>
+                  <graphic xlink:href="0004-2803-ag-49-35-gf03"/>
+               </fig>
+            </p>
+            <p>On average, Ki-67 expression was 0.46 ± 0.14 in women and 0.51 ± 0.19 in men (<italic>P</italic> = 0.35) (<xref ref-type="table" rid="t02">Table 2</xref>).</p>
+            <p>With regard to size, Ki-67 expression was 0.49 ± 0.19 for polyps &lt;10 mm and 0.47 ± 0.11 for polyps &gt;10 mm (<italic>P</italic> = 0.7) (<xref ref-type="table" rid="t02">Table 2</xref>).</p>
+            <p>Ki-67 expression was 0.57 ± 0.19 in rectal polyps and 0.45 ± 0.15 in colonic polyps (<italic>P</italic> = 0.02) (<xref ref-type="table" rid="t02">Table 2</xref>).</p>
+            <p>Concerning the degree of dysplasia, the average Ki-67 expression index was 0.45 ± 0.16 for polyps with low-grade dysplasia and 0.56 ± 0.17 for polyps with high-grade dysplasia (<italic>P</italic> = 0.02) (<xref ref-type="table" rid="t02">Table 2</xref>).</p>
+         </sec>
+      </sec>
+      <sec sec-type="discussion">
+         <title>DISCUSSION</title>
+         <p>Knowledge of factors associated with the genesis and progression of colorectal cancer is of great importance in the development of strategies for prevention and treatment. Polypectomy currently constitutes the best strategy for preventing colorectal cancer<sup>(<xref ref-type="bibr" rid="r02">2</xref>)</sup>.</p>
+         <p>The identification of parameters reflecting the biological behavior of tumors, correlated with the severity and degree of evolution, is an important determinant of prognosis and improvement in cancer therapy. Despite recent progress in the study of the molecular mechanisms of cancer development and progression, few biological markers of prognostic value have been identified.</p>
+         <p>The p53 protein, sometimes referred to as the 'guardian of the genome', has been extensively researched in various types of cancers. Mutations are found in about 50% of all human cancers and more than 50 types of tumor<sup>(<xref ref-type="bibr" rid="r12">12</xref>)</sup>.</p>
+         <p>The association of the protein Ki-67 is important when measuring cellular proliferative activity that may be exacerbated in neoplastic cells or in cells that have lost the ability to self-regulate. A high cell-proliferation index suggests a more aggressive behavior on part of the neoplasm and may have important prognostic implications<sup>(<xref ref-type="bibr" rid="r22">22</xref>)</sup>. The average age of the study population was 63 years and the sex distribution was fairly equal, matching findings in the literature showing the prevalence of polyps in patients aged &gt;50 years, with no sex preference<sup>(<xref ref-type="bibr" rid="r09">9</xref>, <xref ref-type="bibr" rid="r11">11</xref>, <xref ref-type="bibr" rid="r18">18</xref>, <xref ref-type="bibr" rid="r32">32</xref>)</sup>. The data also support the claim that patients with adenomas and colorectal cancer have a similar age distribution (generally &gt;50 years)<sup>(<xref ref-type="bibr" rid="r01">1</xref>, <xref ref-type="bibr" rid="r11">11</xref>, <xref ref-type="bibr" rid="r21">21</xref>)</sup>.</p>
+         <p>In our study, nine specimens tested positive for p53 (18% of all cases). Watatani et al.<sup>(<xref ref-type="bibr" rid="r31">31</xref>)</sup> analyzed the expression of p53 in adenomas and found variable rates of expression: initial adenomas, 12%; synchronous adenomas with carcinomas, 20%; metachronous adenoma after initial adenoma, 8%; and metachronous adenoma after carcinoma, 30%<sup>(<xref ref-type="bibr" rid="r27">27</xref>)</sup>. Other authors have found positivity rates between 10% and 60%<sup>(<xref ref-type="bibr" rid="r03">3</xref>, <xref ref-type="bibr" rid="r17">17</xref>, <xref ref-type="bibr" rid="r24">24</xref>, <xref ref-type="bibr" rid="r30">30</xref>)</sup>
+         </p>
+         <p>The rate of p53 expression depends on the criteria used in the research method. In this study, only those cases in which the expression index was above 10% were considered positive. The choice of this cut-off point to classify the expression of p53 is owing to the fact that this figure shows the highest correlation between the immunohistochemical detection and mutation points of the <named-content content-type="scientific-name">
+               <italic>P53</italic>
+            </named-content> gene<sup>(<xref ref-type="bibr" rid="r05">5</xref>, <xref ref-type="bibr" rid="r23">23</xref>)</sup>.</p>
+         <p>The cellular levels of p53 are known to be very low under normal conditions because of the short half-life of the protein (5-45 min). Thus, detection by immunohistochemistry is not possible<sup>(<xref ref-type="bibr" rid="r06">6</xref>)</sup>. However, mutations in the <named-content content-type="scientific-name">
+               <italic>P53</italic>
+            </named-content> gene lead to the production of a p53 protein with greater stability and that may be detected immunohistochemically<sup>(<xref ref-type="bibr" rid="r19">19</xref>)</sup>.</p>
+         <p>When relating the expression of p53 to clinical and pathologic characteristics (sex, age, location, size and degree of dysplasia), a statistically significant difference was found for the degree of polyp dysplasia, matching findings from earlier studies showing a positive relation between the degree of tumor dysplasia and immunohistochemical positivity for p53<sup>(<xref ref-type="bibr" rid="r19">19</xref>, <xref ref-type="bibr" rid="r24">24</xref>, <xref ref-type="bibr" rid="r29">29</xref>, <xref ref-type="bibr" rid="r31">31</xref>)</sup>.</p>
+         <p>The relationship between p53 and the clinical and pathologic characteristics of adenomas is rarely explored in studies on this topic. In addition to a study by Vernillo et al.<sup>(<xref ref-type="bibr" rid="r29">29</xref>)</sup> Voskuil et al.<sup>(<xref ref-type="bibr" rid="r30">30</xref>)</sup> evaluated the immunohistochemical expression of p53 in sporadic adenomas and in adenomas from families with hereditary non-polyposis colorectal cancer (HNPCC). The study included intergroup (sporadic x hereditary) and intragroup comparisons. Sporadic adenomas &gt;10 mm were associated with a higher frequency of p53 positivity. No other aspects, including the degree of dysplasia, were statistically significant.</p>
+         <p>Likewise, no relationship was found between the presence of synchronous adenomas and the detection of the p53 protein. The only p53-positive case of synchronous adenoma came from a patient with two adenomas, of which only one was positive. The factor responsible for such differences in positivity in the same patient remains unknown. The two adenomas also differed in size and degree of dysplasia: the p53-positive adenoma was &gt;10 mm and presented high-grade dysplasia.</p>
+         <p>Fearon and Vogelstein<sup>(<xref ref-type="bibr" rid="r04">4</xref>)</sup> suggested a model for the evolution of colorectal tumors. The adenoma-to-carcinoma sequence is the result of an accumulation of genetic mutations that involve a different sequence: the mutation of the APC gene, DNA hypomethylation, activation of the K-ras protein, mutation of DCC (deleted in colorectal carcinoma) protein and, finally, mutation of the p53 protein. According to these authors, this last step is characteristic of carcinomas and rare in adenomas at any stage. In this study, 18% positivity in mutated p53 protein can not be regarded as unusual, although it is evident that the expression of p53 increases as the adenoma accumulates more dysplasia.</p>
+         <p>There was greater expression of Ki-67 protein in adenomas with high-grade dysplasia compared with low-grade dysplasia, matching results published by Radovanovic-Dinic et al.<sup>(<xref ref-type="bibr" rid="r20">20</xref>)</sup>.</p>
+         <p>The expression of Ki-67 was also higher in adenomas located in the rectum compared with the colon. To our knowledge, earlier studies contain no references to Ki-67 expression in relation to adenoma location. Thus, our results suggest that neoplastic cells in the rectal mucosa have a higher power of cell proliferation. This would explain the peculiar behavior of rectal cancer in relation to the location of colonic adenomas and also the higher frequency of malignancy in this segment of the large intestine.</p>
+         <p>As for the other parameters evaluated for the protein Ki-67 (sex, age and size), no significant differences were found. Similar results were reported by Vernillo et al.<sup>(<xref ref-type="bibr" rid="r29">29</xref>)</sup>. In another study, Radovanovic-Dinic et al.<sup>(<xref ref-type="bibr" rid="r20">20</xref>)</sup> found a higher expression of Ki-67 in adenomas of diameter larger than 10 mm.</p>
+         <p>In fact, the proliferative activity of cells in the colorectal mucosa and throughout the gastrointestinal tract is constant, but increases under special circumstances, such as in inflammatory and neoplastic conditions<sup>(<xref ref-type="bibr" rid="r15">15</xref>, <xref ref-type="bibr" rid="r16">16</xref>, <xref ref-type="bibr" rid="r24">24</xref>, <xref ref-type="bibr" rid="r25">25</xref>)</sup>. In a study of patients with ulcerative colitis, Shinozaki et al.<sup>(<xref ref-type="bibr" rid="r25">25</xref>)</sup> found a higher expression of Ki-67 in areas of dysplastic mucosa compared with areas without dysplasia. Muneyuki et al.<sup>(<xref ref-type="bibr" rid="r15">15</xref>)</sup> conducted an evaluation of the expression of several proteins in tumors of the small intestine, in which i.Ki-67 was significantly higher in tumor areas than in areas of cancer-free mucosa. Sheikh et al.<sup>(<xref ref-type="bibr" rid="r24">24</xref>)</sup> evaluated the expression of Ki-67 in colorectal adenomas and observed an invariably stronger expression in areas with higher dysplasia. In a study on p53 and Ki-67 in gastrointestinal stromal tumors, Neves et al.<sup>(<xref ref-type="bibr" rid="r16">16</xref>)</sup> found higher values of Ki-67 in patients with tumors of medium and high risk.</p>
+         <p>There was no statistically significant relationship between the expression of p53 and Ki-67, in support of the results published by Vernillo et al.<sup>(<xref ref-type="bibr" rid="r29">29</xref>)</sup> who found no association between p53 and Ki-67 in a group of 68 adenomas. The loss of function of p53 and its suppressive activity may have led to uncontrolled cellular activity with consequent accumulation of Ki-67, but further studies would be needed to confirm this association as most other studies in this area have assessed proteins individually rather than testing possible correlations between them. In addition, other factors and proteins act concurrently, either stimulating or suppressing cell proliferation.</p>
+         <p>The determination of more prognostic factors related to the development of colorectal cancer is of fundamental importance for primary prevention programs. Thus, the expression of p53 and Ki-67 may be useful as prognostic factors for adenomas in association with other known histopathologic features.</p>
+         <p>In conclusion, the p53 protein is expressed in a proportion of adenomas, while the Ki-67 protein is expressed in all adenomas. There is greater expression of p53 in adenomas with high-grade dysplasia, while the expression of Ki-67 is higher in rectal adenomas and adenomas with high-grade dysplasia. No other parameters correlated with protein expression.</p>
+      </sec>
+   </body>
+   <back>
+      <ref-list>
+         <title>REFERENCES</title>
+         <ref id="r01">
+            <label>1</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Brenner</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Hoffmeister</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Haug</surname>
+                     <given-names>U</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Should colorectal cancer screening start at same age in European countries? Contributions from descriptive epidemiology</article-title>
+               <source xml:lang="en">Br J Cancer</source>
+               <year>2008</year>
+               <volume>99</volume>
+               <fpage>532</fpage>
+               <lpage>535</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r02">
+            <label>2</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Citarda</surname>
+                     <given-names>F</given-names>
+                  </name>
+                  <name>
+                     <surname>Tomaselli</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Capocaccia</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Barcherini</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Crespi</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <collab>Italian Multicenter Study Group</collab>
+               </person-group>
+               <article-title xml:lang="en">Efficacy in standard clinical pratice of colonoscopic polipectomy in reducing colorectal cancer incidence</article-title>
+               <source xml:lang="en">Gut</source>
+               <year>2001</year>
+               <volume>48</volume>
+               <fpage>812</fpage>
+               <lpage>815</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r03">
+            <label>3</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Enomoto</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Kuranami</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Kakita</surname>
+                     <given-names>A</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Variations in the expression of platelet-derived endothelial cell growth factor in human colorectal polyps</article-title>
+               <source xml:lang="en">Surg Today</source>
+               <year>2000</year>
+               <volume>30</volume>
+               <fpage>711</fpage>
+               <lpage>717</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r04">
+            <label>4</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Fearon</surname>
+                     <given-names>ER</given-names>
+                  </name>
+                  <name>
+                     <surname>Volgelstein</surname>
+                     <given-names>B</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">A genetic model for colorectal tumorigenesis</article-title>
+               <source xml:lang="en">Cell</source>
+               <year>1990</year>
+               <volume>61</volume>
+               <fpage>759</fpage>
+               <lpage>767</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r05">
+            <label>5</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Grizzle</surname>
+                     <given-names>WE</given-names>
+                  </name>
+                  <name>
+                     <surname>Myers</surname>
+                     <given-names>RB</given-names>
+                  </name>
+                  <name>
+                     <surname>Manne</surname>
+                     <given-names>U</given-names>
+                  </name>
+                  <name>
+                     <surname>Srivastava</surname>
+                     <given-names>S</given-names>
+                  </name>
+               </person-group>
+               <chapter-title>Immunohistochemical evaluation of biomarkers in prostatic and colorectal neoplasia</chapter-title>
+               <person-group person-group-type="editor">
+                  <name>
+                     <surname>Hanausek</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Walaszek</surname>
+                     <given-names>Z</given-names>
+                  </name>
+               </person-group>
+               <source xml:lang="en">Methods in molecular medicine-tumor marker protocols</source>
+               <publisher-loc>Totowa</publisher-loc>
+               <publisher-name>Humana Press</publisher-name>
+               <year>1998</year>
+               <fpage>143</fpage>
+               <lpage>160</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r06">
+            <label>6</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Horiuchi</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Kawamata</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Omotehara</surname>
+                     <given-names>F</given-names>
+                  </name>
+                  <name>
+                     <surname>Fujii</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Fujimori</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Kuroda</surname>
+                     <given-names>Y</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Negative immunohistochemical staining of p53 protein does not always reflect wild-type p53 gene in cancer cells</article-title>
+               <source xml:lang="en">J Gastroenterol</source>
+               <year>2004</year>
+               <volume>39</volume>
+               <fpage>801</fpage>
+               <lpage>803</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r07">
+            <label>7</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <collab>Instituto Nacional do Câncer</collab>
+               </person-group>
+               <source xml:lang="en">Estimativa 2010 - Incidência de câncer no Brasil</source>
+               <publisher-loc>Rio de Janeiro</publisher-loc>
+               <publisher-name>INCA</publisher-name>
+               <year>2010</year>
+               <ext-link ext-link-type="uri" xlink:href="http://www.inca.gov.br">http://www.inca.gov.br</ext-link>
+            </element-citation>
+         </ref>
+         <ref id="r08">
+            <label>8</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Isobe</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Emmanuel</surname>
+                     <given-names>BS</given-names>
+                  </name>
+                  <name>
+                     <surname>Givol</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>Oren</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Crocen</surname>
+                     <given-names>CM</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Localization of gene for human p53 tumor antigen to band 17p13</article-title>
+               <source xml:lang="en">Nature</source>
+               <year>1986</year>
+               <volume>320</volume>
+               <fpage>84</fpage>
+               <lpage>85</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r09">
+            <label>9</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Loeve</surname>
+                     <given-names>F</given-names>
+                  </name>
+                  <name>
+                     <surname>Boer</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Zauber</surname>
+                     <given-names>AG</given-names>
+                  </name>
+                  <name>
+                     <surname>Van Ballegooijen</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Van Oortmarssen</surname>
+                     <given-names>GJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Winamer</surname>
+                     <given-names>SJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Habbema</surname>
+                     <given-names>JD</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">National polyp study data: evidence for regression of adenomas</article-title>
+               <source xml:lang="en">Int J cancer</source>
+               <year>2004</year>
+               <volume>111</volume>
+               <fpage>633</fpage>
+               <lpage>639</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r10">
+            <label>10</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Lustosa</surname>
+                     <given-names>SA</given-names>
+                  </name>
+                  <name>
+                     <surname>Logullo</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Artigiani</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Saad</surname>
+                     <given-names>SS</given-names>
+                  </name>
+                  <name>
+                     <surname>Goldenberg</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Matos</surname>
+                     <given-names>D</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Analysis of the correlation between p53 and bcl-2 expression with staging and prognosis of the colorectal adenocarcinoma</article-title>
+               <source xml:lang="en">Acta Cir Bras</source>
+               <year>2005</year>
+               <volume>20</volume>
+               <fpage>353</fpage>
+               <lpage>357</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r11">
+            <label>11</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Mansmann</surname>
+                     <given-names>U</given-names>
+                  </name>
+                  <name>
+                     <surname>Crispin</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Henschel</surname>
+                     <given-names>V</given-names>
+                  </name>
+                  <name>
+                     <surname>Adrion</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Augustin</surname>
+                     <given-names>V</given-names>
+                  </name>
+                  <name>
+                     <surname>Birkner</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Munte</surname>
+                     <given-names>A</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Epidemiology and quality of control of 245 000 outpatient colonoscopies</article-title>
+               <source xml:lang="en">Dtsch Arztebl Int</source>
+               <year>2008</year>
+               <volume>105</volume>
+               <fpage>434</fpage>
+               <lpage>440</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r12">
+            <label>12</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Matos</surname>
+                     <given-names>LL</given-names>
+                  </name>
+                  <name>
+                     <surname>Machado</surname>
+                     <given-names>LN</given-names>
+                  </name>
+                  <name>
+                     <surname>Sugiyama</surname>
+                     <given-names>MM</given-names>
+                  </name>
+                  <name>
+                     <surname>Bozzetti</surname>
+                     <given-names>RM</given-names>
+                  </name>
+                  <name>
+                     <surname>Pinhal</surname>
+                     <given-names>AS</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Technology applied to the detection of tumor markers</article-title>
+               <source xml:lang="en">Arq Med ABC</source>
+               <year>2005</year>
+               <volume>30</volume>
+               <fpage>19</fpage>
+               <lpage>25</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r13">
+            <label>13</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>May</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>May</surname>
+                     <given-names>E</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Twenty years of p53 research: structural and functions aspects of the protein</article-title>
+               <source xml:lang="en">Oncogene</source>
+               <year>1999</year>
+               <volume>18</volume>
+               <fpage>7621</fpage>
+               <lpage>7738</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r14">
+            <label>14</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Miller</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Mohandas</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Wolf</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>Prokocimer</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Rotter</surname>
+                     <given-names>V</given-names>
+                  </name>
+                  <name>
+                     <surname>Koeffler</surname>
+                     <given-names>HP</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Human p53 gene localized to short arm of chromosome 17</article-title>
+               <source xml:lang="en">Nature</source>
+               <year>1986</year>
+               <volume>319</volume>
+               <fpage>783</fpage>
+               <lpage>784</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r15">
+            <label>15</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Muneyuki</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Watanabe</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Yamanaka</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Isaji</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Kawarada</surname>
+                     <given-names>Y</given-names>
+                  </name>
+                  <name>
+                     <surname>Yatani</surname>
+                     <given-names>R</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Combination analysis of genetic alterations and cell proliferation in small intestinal carcinomas</article-title>
+               <source xml:lang="en">Dig Dis Sci</source>
+               <year>2000</year>
+               <volume>45</volume>
+               <fpage>2022</fpage>
+               <lpage>2028</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r16">
+            <label>16</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Neves</surname>
+                     <given-names>LR</given-names>
+                  </name>
+                  <name>
+                     <surname>Oshima</surname>
+                     <given-names>CT</given-names>
+                  </name>
+                  <name>
+                     <surname>Artingiani-Neto</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Yanaguibashi</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Lourenço</surname>
+                     <given-names>LG</given-names>
+                  </name>
+                  <name>
+                     <surname>Forones</surname>
+                     <given-names>NM</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Ki67 and p53 in gastrointestinal stromal tumors - GIST</article-title>
+               <source xml:lang="en">Arq Gastroenterol</source>
+               <year>2009</year>
+               <volume>46</volume>
+               <fpage>116</fpage>
+               <lpage>120</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r17">
+            <label>17</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Nomura</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Watari</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Yokota</surname>
+                     <given-names>K</given-names>
+                  </name>
+                  <name>
+                     <surname>Saitoh</surname>
+                     <given-names>Y</given-names>
+                  </name>
+                  <name>
+                     <surname>Obara</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Kohgo</surname>
+                     <given-names>Y</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Morphogenesis of nonpolypoid colorectal adenomas and early carcinomas assessed by cell proliferation and apoptosis</article-title>
+               <source xml:lang="en">Virchows Arch</source>
+               <year>2000</year>
+               <volume>437</volume>
+               <fpage>17</fpage>
+               <lpage>24</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r18">
+            <label>18</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Petroianu</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Alberti</surname>
+                     <given-names>LR</given-names>
+                  </name>
+                  <name>
+                     <surname>de Lima</surname>
+                     <given-names>DC</given-names>
+                  </name>
+                  <name>
+                     <surname>Hauter</surname>
+                     <given-names>HL</given-names>
+                  </name>
+                  <name>
+                     <surname>Rodrigues</surname>
+                     <given-names>KC</given-names>
+                  </name>
+                  <name>
+                     <surname>Mendes</surname>
+                     <given-names>JC</given-names>
+                  </name>
+               </person-group>
+               <trans-title xml:lang="en">Colonoscopic findings in asymptomatic people</trans-title>
+               <source xml:lang="en">Arq Gastroenterol</source>
+               <year>2009</year>
+               <volume>46</volume>
+               <fpage>173</fpage>
+               <lpage>178</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r19">
+            <label>19</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Porcelli</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Frosi</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Arezzini</surname>
+                     <given-names>L</given-names>
+                  </name>
+                  <name>
+                     <surname>Marinello</surname>
+                     <given-names>E</given-names>
+                  </name>
+                  <name>
+                     <surname>Vernillo</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>De Martino</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Vatti</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Minacci</surname>
+                     <given-names>C</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Expression of p185 and p53 in benign and malignant colorectal lesions</article-title>
+               <source xml:lang="en">Histochem J</source>
+               <year>2001</year>
+               <volume>33</volume>
+               <fpage>51</fpage>
+               <lpage>57</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r20">
+            <label>20</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Radovanovic-Dinic</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Nagorni</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Katic</surname>
+                     <given-names>V</given-names>
+                  </name>
+                  <name>
+                     <surname>Satmenkovic</surname>
+                     <given-names>I</given-names>
+                  </name>
+                  <name>
+                     <surname>Zlatic</surname>
+                     <given-names>A</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">An immunohistochemical study of Ki-67 in colorectal adenoma</article-title>
+               <source xml:lang="en">Med Arh</source>
+               <year>2009</year>
+               <volume>63</volume>
+               <fpage>16</fpage>
+               <lpage>18</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r21">
+            <label>21</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Santos</surname>
+                     <given-names>JCM</given-names>
+                     <suffix>Jr</suffix>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Ano-rectal-colic cancer. Current Issues II - Colorectal cancer - Risk factors and prevention</article-title>
+               <source xml:lang="en">Rev Bras Coloproctol</source>
+               <year>2007</year>
+               <volume>27</volume>
+               <fpage>459</fpage>
+               <lpage>473</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r22">
+            <label>22</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Scholzen</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Gerdes</surname>
+                     <given-names>J</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">The Ki-67 protein: from the known and the unknown</article-title>
+               <source xml:lang="en">J Cell Physiol</source>
+               <year>2000</year>
+               <volume>182</volume>
+               <fpage>311</fpage>
+               <lpage>322</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r23">
+            <label>23</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Shanmugam</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Katkoori</surname>
+                     <given-names>VR</given-names>
+                  </name>
+                  <name>
+                     <surname>Jhala</surname>
+                     <given-names>NC</given-names>
+                  </name>
+                  <name>
+                     <surname>Grizzle</surname>
+                     <given-names>WE</given-names>
+                  </name>
+                  <name>
+                     <surname>Siegal</surname>
+                     <given-names>GP</given-names>
+                  </name>
+                  <name>
+                     <surname>Manne</surname>
+                     <given-names>U. </given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">p53 Nuclear accumulation and Bcl-2 expression in contiguous adenomatous components of colorectal adenocarcinomas predict aggressive tumor behavior</article-title>
+               <source xml:lang="en">J Histochem cytochem</source>
+               <year>2008</year>
+               <volume>56</volume>
+               <fpage>305</fpage>
+               <lpage>312</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r24">
+            <label>24</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Sheikh</surname>
+                     <given-names>RA</given-names>
+                  </name>
+                  <name>
+                     <surname>Min</surname>
+                     <given-names>BH</given-names>
+                  </name>
+                  <name>
+                     <surname>Yasmeen</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Teplitz</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Tesluk</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Ruebner</surname>
+                     <given-names>BH</given-names>
+                  </name>
+                  <name>
+                     <surname>Tobi</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Hatfield</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Fligiel</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Lawson</surname>
+                     <given-names>MJ</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Correlation of Ki-67, p53, and Adnab-9 immunohistochemical staining and ploidy with clinical and histopathologic features of severely dysplastic colorectal adenomas</article-title>
+               <source xml:lang="en">Dig Dis Sci</source>
+               <year>2003</year>
+               <volume>48</volume>
+               <fpage>223</fpage>
+               <lpage>229</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r25">
+            <label>25</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Shinozaki</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Watanabe</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Kubota</surname>
+                     <given-names>Y</given-names>
+                  </name>
+                  <name>
+                     <surname>Sawada</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Nagawa</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Muto</surname>
+                     <given-names>T</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">High proliferative activity is associated with diysplasia in ulcerative colitis</article-title>
+               <source xml:lang="en">Dis Colon Rectum</source>
+               <year>2000</year>
+               <volume>43</volume>
+               <fpage>34</fpage>
+               <lpage>39</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r26">
+            <label>26</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Soussi</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Caron de Fromentel</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>May</surname>
+                     <given-names>P</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Structural aspects of p53 protein in relation to gene evolution</article-title>
+               <source xml:lang="en">Oncogene</source>
+               <year>1990</year>
+               <volume>5</volume>
+               <fpage>5945</fpage>
+               <lpage>5952</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r27">
+            <label>27</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Sugai</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Habano</surname>
+                     <given-names>W</given-names>
+                  </name>
+                  <name>
+                     <surname>Uesugi</surname>
+                     <given-names>N</given-names>
+                  </name>
+                  <name>
+                     <surname>Jiao</surname>
+                     <given-names>Y</given-names>
+                  </name>
+                  <name>
+                     <surname>Nakamura</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Sato</surname>
+                     <given-names>K</given-names>
+                  </name>
+                  <name>
+                     <surname>Chiba</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Ishii</surname>
+                     <given-names>M</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Molecular validation of the modified Vienna classification of colorectal tumors</article-title>
+               <source xml:lang="en">J Mol Diagn</source>
+               <year>2002</year>
+               <volume>4</volume>
+               <fpage>191</fpage>
+               <lpage>200</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r28">
+            <label>28</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Vermeulen</surname>
+                     <given-names>K</given-names>
+                  </name>
+                  <name>
+                     <surname>Van Bockstaele</surname>
+                     <given-names>DR</given-names>
+                  </name>
+                  <name>
+                     <surname>Berneman</surname>
+                     <given-names>ZN</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">The cell cycle: a review of regulation, desregulation and therapeutic targets in cancer</article-title>
+               <source xml:lang="en">Cell Prolif</source>
+               <year>2003</year>
+               <volume>36</volume>
+               <fpage>131</fpage>
+               <lpage>149</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r29">
+            <label>29</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Vernillo</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Lorenzi</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Banduccci</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Minacci</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Vindigni</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Lucenti Fei</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Lorenzi</surname>
+                     <given-names>M</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Immunohistochemical expression of p53 and ki67 in colorectal adenomas and prediction of malignancy and development of new polyps</article-title>
+               <source xml:lang="en">Int J Biol Markers</source>
+               <year>2008</year>
+               <volume>23</volume>
+               <fpage>89</fpage>
+               <lpage>95</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r30">
+            <label>30</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Voskuil</surname>
+                     <given-names>DW</given-names>
+                  </name>
+                  <name>
+                     <surname>Kampman</surname>
+                     <given-names>E</given-names>
+                  </name>
+                  <name>
+                     <surname>van Geloof</surname>
+                     <given-names>W</given-names>
+                  </name>
+                  <name>
+                     <surname>Grubben</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Kok</surname>
+                     <given-names>F</given-names>
+                  </name>
+                  <name>
+                     <surname>Van Muijen</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Nagengast</surname>
+                     <given-names>F</given-names>
+                  </name>
+                  <name>
+                     <surname>Vasen</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Van't Veer</surname>
+                     <given-names>P</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">No major difference in K-ras and p53 abnormalities in sporadic and hereditary nonpolyposis colorectal adenomas</article-title>
+               <source xml:lang="en">Dig Dis Sci</source>
+               <year>2000</year>
+               <volume>45</volume>
+               <fpage>2187</fpage>
+               <lpage>2194</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r31">
+            <label>31</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Watatani</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Ieda</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Kuroda</surname>
+                     <given-names>K</given-names>
+                  </name>
+                  <name>
+                     <surname>Inui</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Nishimura</surname>
+                     <given-names>K</given-names>
+                  </name>
+                  <name>
+                     <surname>Yasutomi</surname>
+                     <given-names>M</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Comparison of p53 and bcl-2 expression in initial, synchronous, and metachronous colorectal adenomas</article-title>
+               <source xml:lang="en">Surg Today</source>
+               <year>1999</year>
+               <fpage>29:707</fpage>
+               <lpage>29:712</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r32">
+            <label>32</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Williams</surname>
+                     <given-names>AR</given-names>
+                  </name>
+                  <name>
+                     <surname>Balasooriya</surname>
+                     <given-names>BA</given-names>
+                  </name>
+                  <name>
+                     <surname>Day</surname>
+                     <given-names>DW</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Polyps and cancer of the large bowel: a necropsy study in Liverpool</article-title>
+               <source xml:lang="en">Gut</source>
+               <year>1982</year>
+               <volume>23</volume>
+               <fpage>835</fpage>
+               <lpage>842</lpage>
+            </element-citation>
+         </ref>
+         <ref id="r33">
+            <label>33</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Yonish-Rouach</surname>
+                     <given-names>E</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">A question of lie or death: the p53 tumor suppressor gene</article-title>
+               <source xml:lang="en">Pathol Biol</source>
+               <year>1997</year>
+               <volume>45</volume>
+               <fpage>815</fpage>
+               <lpage>823</lpage>
+            </element-citation>
+         </ref>
+      </ref-list>
+   </back>
+</article>

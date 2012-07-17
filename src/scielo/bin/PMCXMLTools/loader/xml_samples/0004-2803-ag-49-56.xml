@@ -1,0 +1,1615 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE article
+  PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "journalpublishing3.dtd">
+<article xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:mml="http://www.w3.org/1998/Math/MathML"
+         dtd-version="3.0"
+         article-type="research-article"
+         xml:lang="en">
+   <front>
+      <journal-meta>
+         <journal-id journal-id-type="publisher-id">0004-2803</journal-id>
+         <journal-title-group>
+            <journal-title>Arquivos de Gastroenterologia</journal-title>
+            <abbrev-journal-title abbrev-type="publisher">Arq. Gastroenterol.</abbrev-journal-title>
+         </journal-title-group>
+         <issn pub-type="ppub">0004-2803</issn>
+         <publisher>
+            <publisher-name>Instituto Brasileiro de Estudos e Pesquisas de Gastroenterologia - IBEPEGE , Colégio Brasileiro de Cirurgia Digestiva - CBCD , Sociedade Brasileira de Motilidade Digestiva - SBMD , Federação Brasileira de Gastroenterologia - FBG, Sociedade Brasileira de Hepatologia - SBH, Sociedade Brasileira de Endoscopia Digestiva - SOBED</publisher-name>
+         </publisher>
+      </journal-meta>
+      <article-meta>
+         <article-id pub-id-type="publisher-id">S0004-28032012000100010</article-id>
+         <article-id pub-id-type="doi">10.1590/S0004-28032012000100010</article-id>
+         <article-categories>
+            <subj-group subj-group-type="heading">
+               <subject> 
+ORIGINAL ARTICLE</subject>
+            </subj-group>
+         </article-categories>
+         <title-group>
+            <article-title xml:lang="en">Helicobacter pylori eradication does not influence gastroesophageal reflux disease</article-title>
+            <subtitle>a prospective, parallel, randomized, open-label, controlled trial</subtitle>
+            <trans-title-group xml:lang="pt">
+               <trans-title>Erradicação do Helicobacter pylori não influencia a doença do refluxo gastroesofágico</trans-title>
+               <trans-subtitle>estudo prospectivo, paralelo, randomizado, aberto e controlado</trans-subtitle>
+            </trans-title-group>
+         </title-group>
+         <contrib-group>
+            <contrib contrib-type="author">
+               <name>
+                  <surname>Rodrigues Jr.</surname>
+                  <given-names>Lino</given-names>
+               </name>
+            </contrib>
+            <contrib contrib-type="author">
+               <name>
+                  <surname>Faria</surname>
+                  <given-names>Cintya Miler de</given-names>
+               </name>
+            </contrib>
+            <contrib contrib-type="author">
+               <name>
+                  <surname>Geocze</surname>
+                  <given-names>Stephan</given-names>
+               </name>
+            </contrib>
+            <contrib contrib-type="author">
+               <name>
+                  <surname>Chehter</surname>
+                  <given-names>Luiz</given-names>
+               </name>
+            </contrib>
+         </contrib-group>
+         <pub-date pub-type="ppub">
+            <season>Jan-Mar</season>
+            <year>2012</year>
+         </pub-date>
+         <volume>49</volume>
+         <issue>1</issue>
+         <fpage>56</fpage>
+         <lpage>63</lpage>
+         <history>
+            <date date-type="received">
+               <day>08</day>
+               <month>04</month>
+               <year>2011</year>
+            </date>
+            <date date-type="accepted">
+               <day>01</day>
+               <month>09</month>
+               <year>2011</year>
+            </date>
+         </history>
+         <permissions>
+            <license license-type="open-access"
+                     xlink:href="http://creativecommons.org/licenses/by-nc/3.0/">
+               <license-p>This is an Open Access article distributed under the terms of the Creative Commons Attribution Non-Commercial License, which permits unrestricted non-commercial use, distribution, and reproduction in any medium, provided the original work is properly cited.</license-p>
+            </license>
+         </permissions>
+         <abstract xml:lang="en">
+            <p>
+               <bold>CONTEXT</bold>: <italic>Helicobacter</italic> 
+               <italic>pylori</italic> has been associated with worsening of gastroesophageal reflux disease (GERD). <bold>OBJECTIVE</bold>: To evaluate the effect of <italic>H</italic>. <italic>pylori</italic> eradication in GERD patients. <bold>METHODS</bold>: We conducted a prospective, randomized, controlled trial performing symptom evaluation, endoscopy, histology, manometry and esophageal pH testing on GERD patients. Patients infected with <italic>H</italic>. <italic>pylori</italic> were randomized to: 1) eradication treatment plus proton pump inhibitors treatment, or 2) proton pump inhibitors alone. Patients not infected constituted a negative control group. After 3 months, patients were re-evaluated by symptom assessment, endoscopy, histology and manometry. <bold>RESULTS</bold>: GERD treatment resulted in significantly higher lower esophageal sphincter pressure, as measured by mean expiratory pressure, in <italic>H</italic>. <italic>pylori</italic> negative patients. There was significantly lower proportion of hypotensive waves and significantly higher proportion of normotensive waves in non-eradicated patients. All symptom scores were significantly reduced in the post-treatment period compared to baseline, to values that were similar among the three groups, in the post-treatment period. In the post-treatment period, erosive esophagitis was significantly less frequent on those not eradicated. <bold>CONCLUSION</bold>: Manometric, clinical and endoscopic data showed no benefit in eradicating <italic>H</italic>. <italic>pylori</italic> in GERD. Our data supports the hypothesis that <italic>H</italic>. <italic>pylori</italic> eradication does not influence GERD.</p>
+         </abstract>
+         <trans-abstract xml:lang="pt">
+            <p>
+               <bold>CONTEXTO</bold>: Existem trabalhos associando a erradicação do <italic>Helicobacter</italic> 
+               <italic>pylori</italic> à piora da doença do refluxo gastroesofágico (DRGE). <bold>OBJETIVO</bold>: Avaliar o efeito da erradicação do <italic>H</italic>. <italic>pylori</italic> em pacientes com DRGE. <bold>MÉTODOS</bold>: Estudo prospectivo, randomizado, controlado em que se avaliaram clínica, endoscopia digestiva alta, histologia, manometria e pHmetria de pacientes com DRGE. Pacientes infectados pelo <italic>H</italic>. <italic>pylori</italic> foram randomizados para: 1) erradicação da infecção seguida de tratamento com inibidor de bomba protônica, ou 2) tratamento com inibidor de bomba protônica apenas. Os não-infectados constituíram grupo-controle negativo. Após 3 meses, os pacientes foram reavaliados. <bold>RESULTADOS</bold>: A pressão do esfíncter inferior do esôfago, medida pela pressão expiratória máxima, foi significativamente maior em pacientes <italic>H</italic>. <italic>pylori</italic> negativos. Houve redução significativa na proporção de ondas hipotensivas e aumento significativo na proporção de ondas normotensivas nos pacientes que permaneceram <italic>Helicobacter</italic> 
+               <italic>pylori</italic> positivos. Todos os escores de sintomas foram reduzidos significativamente em comparação ao período inicial, para valores semelhantes, entre os três grupos, no pós-tratamento. Esofagite erosiva foi significativamente menos frequente no período pós-tratamento no grupo não-erradicado. <bold>CONCLUSÃO</bold>: Os achados manométricos, clínicos e endoscópicos não mostram benefício em se erradicar a infecção em pacientes com DRGE. Este estudo apoia a hipótese de que a erradicação do <italic>H</italic>. <italic>pylori</italic> não influencia a DRGE.</p>
+         </trans-abstract>
+         <kwd-group xml:lang="en">
+            <kwd>Helicobacter infections</kwd>
+            <kwd>Gastroesophageal reflux</kwd>
+         </kwd-group>
+         <kwd-group xml:lang="pt">
+            <kwd>Infecções por helicobacter</kwd>
+            <kwd>Refluxo gastroesofágico</kwd>
+         </kwd-group>
+         <counts>
+            <fig-count count="1"/>
+            <table-count count="5"/>
+            <equation-count count="0"/>
+            <ref-count count="38"/>
+            <page-count count="8"/>
+         </counts>
+      </article-meta>
+   </front>
+   <body>
+      <sec sec-type="intro">
+         <title>INTRODUCTION</title>
+         <p>Since the publication of the discovery of <named-content content-type="scientific-name">
+               <italic>Helicobacter</italic> 
+               <italic>pylori</italic>
+            </named-content> (Hp) in 1984(<sup>21</sup>), its presence has been associated with various diseases, such as peptic ulcer disease (PUD), gastric cancer and mucosal-associated lymphoid tissue lymphoma(<sup>3</sup>, <sup>19</sup>, <sup>27</sup>, <sup>29</sup>).</p>
+         <p>Gastroesophageal reflux disease (GERD) is a multi-factorial disease whose mechanisms include lower esophageal sphincter (LES) hypotension, LES transient relaxation, esophageal/gastric dysmotility and altered gastric juice composition, among others(<sup>8</sup>, <sup>23</sup>). GERD is very prevalent and often co-exists with Hp infection. Whether Hp infection worsens, attenuates or does not influence GERD is not fully demonstrated yet.</p>
+         <p>Epidemiological studies have shown similar prevalences of GERD in both healthy and Hp infected subjects(<sup>26</sup>, <sup>28</sup>). However, Hp-derived antritis is associated with hypergastrinemia(<sup>37</sup>) with consequent gastric hyperacidity which may aggravate GERD(<sup>17</sup>). Additionally, cardia inflammation, associated to Hp-derived pangastritis, can increase the frequency of LES transient relaxation either via local or vagus-mediated pathways(<sup>10</sup>). Patients with esophagitis have higher prevalence of cytotoxin producing (TOX+) Hp strains, which may lead to increased direct mucosal damage(<sup>11</sup>, <sup>34</sup>).</p>
+         <p>Hp infection also alters proton pump inhibitors (PPI) treatment efficacy. Labenz et al.(<sup>15</sup>) demonstrated that Hp-positive patients reached higher pH levels during omeprazole treatment than non-infected patients.</p>
+         <p>On the other hand, hypergastrinemia associated with Hp infection can increase LES pressure, while atrophic gastritis found in Hp pangastritis leads to hypochloridria, which may attenuate GERD(<sup>22</sup>). Additionally, it was found a higher incidence of erosive esophagitis (EE) in patients whose Hp infection was eradicated(<sup>16</sup>) and a lower risk of GERD complications, like Barrett's esophagus and esophageal cancer, in patients infected with CagA + Hp strains(<sup>5</sup>, <sup>36</sup>).</p>
+         <p>In light of these findings, we conducted a prospective trial to evaluate the effects of Hp eradication on GERD patients treated with PPI.</p>
+      </sec>
+      <sec sec-type="methods">
+         <title>METHODS</title>
+         <p>This was a prospective, parallel, randomized, open-label, controlled trial. Patients who satisfy selection criteria were submitted to symptom evaluation, upper gastrointestinal endoscopy (UGE), histological evaluation and esophageal manometry and 24h pH testing. Hp positive patients were randomized to eradication treatment or PPI treatment. Those not infected constituted a negative control group. Three moths after baseline evaluation, patients were re-evaluated by symptom assessment, UGE, histology and esophageal manometry. Written informed consent was obtained from all individuals before any study procedure was performed. This study was approved by the Institutional Review Board of the Federal University of São Paulo (UNIFESP), São Paulo, SP, Brazil, under record number 127600 and complies with all national and international ethical standards in clinical research.</p>
+         <sec>
+            <title>Patients</title>
+            <p>GERD patients at least 18 years old, with typical symptoms for at least 6 months before enrollment, confirmed by UGE and/or ambulatory pH study were included in the trial. We excluded patients with history of complicated PUD, hepatobiliary diseases, diabetes, adrenal and thyroid dysfunction, Chagas' and Crohn's disease, connective tissue diseases; those with previous eradication of Hp, previous upper digestive tract surgery, presence of active PUD, neoplasia, eosinophilic esophagitis or grade IV esophagitis; pregnant or lactating women; those using antibiotics, bismuth-containing medications, antacids, H2-receptor antagonists, PPIs, prokinetics, steroidal or non-steroidal anti-inflammatory drugs (NSAID), xanthines, antidepressants, benzodiazepines, chemotherapeutic agents, calcium channel blockers, anticholinergics or hormone replacement therapy within 30 days from baseline measurements or those unable to follow the protocol requirements.</p>
+         </sec>
+         <sec>
+            <title>Symptom assessment</title>
+            <p>Symptoms were assessed for frequency and severity. Frequency was coded as follows: 0 = asymptomatic; 1 = less than twice/week, 2 = 2 to 4 times/week, and 3 = more than 4 times/week. Severity was coded as follows: 0 = asymptomatic; 1 = symptoms with spontaneous resolution; 2 = symptoms that resolve with symptomatic treatment (antacids), and 3 = symptoms that persist despite of symptomatic treatment.</p>
+            <p>For each symptom, a score was calculated multiplying frequency by severity. Heartburn and regurgitation scores were added to define the Typical Symptoms Score (TySS). All symptom scores were added to define the Total Symptoms Score (ToSS). Symptom assessment was performed by the same investigator before (baseline), and 2 months after treatment was completed. Symptom improvement was defined as at least 50% decrease in symptom scores.</p>
+         </sec>
+         <sec>
+            <title>Upper gastrointestinal endoscopy</title>
+            <p>UGE was performed in all patients. EE presence and severity were assessed using Savary-Miller classification. Hp status was evaluated in fragments collected from the corpus and antrum, by both urease and histology methods. Histology examinations were performed after staining with Giemsa. Patients were defined as Hp-positive if either urease or histology test was positive. Presence and severity of gastritis were evaluated according to the updated endoscopic division of the Sydney system(<sup>9</sup>). Hp eradication was defined as the histological absence of bacteria and a negative urease test result 3 months after eradication treatment.</p>
+         </sec>
+         <sec>
+            <title>Manometry</title>
+            <p>All medications that alter esophageal motility were discontinued 7 days prior to manometry. Medtronics and Synetics hardware/software were used. Conventional stepwise pull-through technique was used to define position and pressure of LES and upper esophageal sphincter. Esophageal body peristalsis was assessed after 10 wet swallows 3 cm above LES. Quantitative evaluation was performed according to Dalton and Castell(<sup>6</sup>), Cargill(<sup>4</sup>), and Mittal et al.(<sup>24</sup>). LES resting pressure was calculated both as maximum expiratory pressure (MEP) and mean respiratory pressure (MRP). MRP was defined as the arithmetic mean of the mean respiratory amplitudes in the four radial channels (in mm Hg), measured within the high pressure zone, immediately before the pressure inversion point (PIP), relatively to gastric baseline. MEP was defined as the arithmetic mean of the expiratory values in the four radial channels (in mm Hg), measured within the high pressure zone, immediately before the PIP, relatively to gastric baseline. All tracings were analyzed by the same investigator.</p>
+         </sec>
+         <sec>
+            <title>24h esophageal pH study</title>
+            <p>Antisecretory and prokinetic drugs were not allowed 2 weeks prior to pH study, as well as antacids 12 hours before the pH study, which was performed according to standard technique(<sup>7</sup>), using Medtronics and Synetics hardware/software. In patients with extra-esophageal symptoms, two-channel catheters were used, in order to detect supra-esophageal reflux. Patients were asked to behave normally, eating, working and sleeping in their regular patterns. All tracings were analyzed by the same investigator. Symptom association was evaluated using the symptom association probability (SAP), and was defined as positive if SAP was equal or greater than 80%. GERD confirmation by pH study required abnormal acid exposure in distal or proximal channels or a positive SAP.</p>
+         </sec>
+         <sec>
+            <title>Groups and treatment assignment</title>
+            <p>After baseline assessments, Hp-positive patients were randomized in a 1:1 ratio to receive open-label eradication treatment or lansoprazole by one of the investigators. Randomization codes were generated by a computer program; concealed allocation was achieved by using sequentially numbered opaque envelopes prepared by one of the authors not involved in patient randomization and assessment.</p>
+            <p>All patients received non-pharmacological recommendations for GERD. Those randomized for eradication received 1-week triple therapy (amoxicillin 2 g/d, clarithromycin 1 g/d and lansoprazole 60 mg/d), followed by lansoprazole 30 mg/d for 7 additional weeks. Patients randomized to lansoprazole received lansoprazole 60 mg/d for 1 week followed by 30 mg/d for 7 additional weeks. Hp-negative patients received lansoprazole 60 mg/d for 1 week followed by 30 mg/d for 7 additional weeks. Treatment compliance was evaluated by pill count and was required to be greater than 80% during the study. Adherence to non-pharmacological recommendations was evaluated by the investigator at the post-treatment visit and classified as total (followed all recommendations), partial (followed some recommendations) and absent (followed none).</p>
+            <p>One month after the end of treatment, patients underwent symptomatic and endoscopic assessment and esophageal manometry. Based on post-treatment Hp status, patients were classified into: group 1 (eradicated) - patients randomized to eradication treatment that were negative after 3 months; group 2 (non-eradicated) - patients randomized to receive lansoprazole plus patients randomized to the eradication in whom treatment was unsuccessful; and group 3 (negative control) - patients originally Hp negative.</p>
+         </sec>
+         <sec>
+            <title>Statistical analysis</title>
+            <p>Demographic data was tabulated for each group. Simple randomization was used, with a 1:1 ratio. Nominal variables were summarized by absolute (n) and relative (%) frequency. Continuous variables were summarized as means or medians ± standard deviation (SD). Categorical variables were analyzed using Pearson's chi-square (or Fisher's exact, when appropriate). Two continuous paired variables were tested with Wilcoxon signed-rank test. When three or more continuous variables were evaluated, the Kruskal-Wallis one-way analysis of variance was used. McNemar's test was applied for dichotomous, categorical variables and the Spearman's rank correlation coefficient was used as a measure of statistical dependence between two variables.</p>
+            <p>The primary evaluation was the final (post-treatment) manometric values from the eradicated group (group 1) compared to the non-eradicated (group 2) and negative control (group 3) scores. Sample size was calculated by UNIFESP's statistical department, assuming α = 0.05 (two-sided) and (1-β) = 80%. Data was analyzed with Statistical Package for Social Sciences (SPSS Inc, Chicago, USA) version 17.0.</p>
+         </sec>
+      </sec>
+      <sec sec-type="results">
+         <title>RESULTS</title>
+         <p>Thirty-two patients were included in the trial. Nineteen (59.4%) were Hp positive and 13 were Hp negative (40.6%). Eleven Hp positive patients received triple therapy and eight Hp positive received lansoprazole treatment.</p>
+         <p>Nine patients were negative after 3 months (eradication rate = 81.8%) and entered group 1. Group 2 was composed by eight Hp positive patients treated with lansoprazole plus two patients treated with triple therapy that remained positive (eradication failures). Group 3 was composed by 13 Hp negative subjects. All patients who received at least one dose of study medication were analyzed, composing an intention-to-treat analysis set.</p>
+         <p>The three groups were comparable at baseline regarding demographic variables. GERD severity was similar among the groups at baseline, as the groups had similar esophagitis rates, DeMeester scores and ToSS, atypical symptoms and hiatal hernia presence. Manometric parameters were also similar at baseline between the three groups (<xref ref-type="table" rid="t01">Table 1</xref>).</p>
+         <p>
+            <table-wrap id="t01">
+               <label>TABLE 1</label>
+               <caption>
+                  <title>Baseline characteristics by group</title>
+               </caption>
+               <graphic xlink:href="0004-2803-ag-49-56-gt01"/>
+               <table-wrap-foot>
+                  <fn>
+                     <p>§ expressed as mean (standard deviation). BMI = body mass index</p>
+                  </fn>
+               </table-wrap-foot>
+            </table-wrap>
+         </p>
+         <sec>
+            <title>LES</title>
+            <p>Resting LES pressures, when measured by MRP were not affected by treatments in any group. Furthermore, post-treatment values for all groups were also similar. However, when measured by MEP, group 3 showed a small but statistically significant rise in pressure after lansoprazole treatment compared to baseline (6.2 ± 4.9 vs 3.9 ± 3.9, respectively, <italic>P</italic> = 0.033).</p>
+         </sec>
+         <sec>
+            <title>Esophageal peristalsis</title>
+            <p>Amplitude and duration of contractile waves at distal esophagus were not altered neither by eradication nor lansoprazole treatment in all groups. Post-treatment values were also similar between the groups. However, patients who remained Hp positive (group 2) had a smaller proportion of hypotensive waves (23.6% ± 41.8% vs 35.3% ± 43.0%, <italic>P</italic> = 0.043) and a higher proportion of normotensive waves (75.4% ± 41.3% vs 55.2% ± 44.6%, <italic>P</italic> = 0.012) after lansoprazole treatment compared to baseline values.</p>
+            <p>Upper esophageal sphincter parameters were similar in all groups. Manometric parameters are summarized in <xref ref-type="table" rid="t02">Table 2</xref>.</p>
+            <p>
+               <table-wrap id="t02">
+                  <label>TABLE 2</label>
+                  <caption>
+                     <title>Manometric features pre and post-treatment, by groups</title>
+                  </caption>
+                  <graphic xlink:href="0004-2803-ag-49-56-gt02"/>
+                  <table-wrap-foot>
+                     <fn>
+                        <p>SD = standard deviation. * Whenever P values for all comparisons (pre vs post-treatment in each group and inter-groups post-treatment values) are &gt;0.05, NS is indicated. If any comparison is significant, the P value for that comparison is indicated; ‡ Group 3, pre vs post; § Group 2, pre vs post; † Group 2, pre vs post</p>
+                     </fn>
+                  </table-wrap-foot>
+               </table-wrap>
+            </p>
+         </sec>
+         <sec>
+            <title>Clinical evaluation</title>
+            <p>Among all patients, 87.5% had symptom improvement with treatment (77.8%, 90.0% and 92.3% in the groups 1, 2 and 3, respectively; <italic>P</italic> = 0.574). Every individual symptom score was significantly reduced in the post-treatment period compared to baseline measurements (<xref ref-type="table" rid="t03">Table 3</xref>). ToSS and TySS were also significantly reduced from baseline for each group (<xref ref-type="fig" rid="f01">Figure 1</xref>).</p>
+            <p>
+               <table-wrap id="t03">
+                  <label>TABLE 3</label>
+                  <caption>
+                     <title>Symptom scores pre and post-treatment for all patients</title>
+                  </caption>
+                  <graphic xlink:href="0004-2803-ag-49-56-gt03"/>
+                  <table-wrap-foot>
+                     <fn>
+                        <p>* Values expressed as means (standard deviation). ToSS = total symptom score; TySS = typical symptom score</p>
+                     </fn>
+                  </table-wrap-foot>
+               </table-wrap>
+            </p>
+            <p>
+               <fig id="f01">
+                  <label>FIGURE 1</label>
+                  <caption>
+                     <title>Comparison of pre and post total symptom score. Means are represented as thick horizontal bars</title>
+                  </caption>
+                  <graphic xlink:href="0004-2803-ag-49-56-gf01"/>
+               </fig>
+            </p>
+            <p>In the post treatment period, ToSS and TySS reached similar values between the three groups (ToSS, <italic>P</italic> = 0.411; TySS, <italic>P</italic> = 0.276).</p>
+            <p>Body mass index (BMI) pre and post-treatment did not differ (<xref ref-type="table" rid="t04">Table 4</xref>), as well as adherence to non-pharmacological recommendations (total in 66.7%, 60.0 and 71.9%, for groups 1, 2 and 3, respectively, <italic>P</italic> = 0.394).</p>
+            <p>
+               <table-wrap id="t04">
+                  <label>TABLE 4</label>
+                  <caption>
+                     <title>Endoscopic, histological and clinical variables pre and post-treatment, by group</title>
+                  </caption>
+                  <graphic xlink:href="0004-2803-ag-49-56-gt04"/>
+                  <table-wrap-foot>
+                     <fn>
+                        <p>* Whenever P values for all comparisons (pre vs post-treatment in each group and inter-groups post-treatment values) are &gt;0.05, NS is indicated. If any comparison is significant, the P value for that comparison is indicated; § Post-treatment: Group 2 vs Groups 1 and 3; † Pre-treatment, Group 3 vs Groups 1 and 2; ‡ Body mass index, expressed as mean (standard deviation)</p>
+                     </fn>
+                  </table-wrap-foot>
+               </table-wrap>
+            </p>
+            <p>Ten (31.3%) patients reported side-effects with treatments, 9 (81.8%) of 11 patients who received eradication treatment and 1 (4.8%) of 21 who received lansoprazole treatment (<italic>P</italic> = 0.000).</p>
+            <p>From those receiving eradication treatment: six (63.6%) had transient diarrhea, one (9.1%) had a cutaneous rash, one (9.1%) had dizziness and one (9.1%) had dysgeusia. From those receiving lansoprazole treatments only one (4.8%) had headache. All reported side-effects were mild in severity, did not interfere with treatment continuation and resolved spontaneously after treatment completion.</p>
+         </sec>
+         <sec>
+            <title>Endoscopic and histological evaluation</title>
+            <p>EE was present in 59.4% of all patients and did not differ between groups at baseline. Three months after treatment EE was present in significantly smaller proportion in group 2. Endoscopic gastritis presence also did not differ at baseline and was present at similar frequencies in the post-treatment periods (<xref ref-type="table" rid="t04">Table 4</xref>). Detailing of the EE grade according to period and group is presented in <xref ref-type="table" rid="t05">Table 5</xref>.</p>
+            <p>
+               <table-wrap id="t05">
+                  <label>TABLE 5</label>
+                  <caption>
+                     <title>Frequency of erosive esophagitis by period and group, according to Savary-Miller</title>
+                  </caption>
+                  <graphic xlink:href="0004-2803-ag-49-56-gt05"/>
+                  <table-wrap-foot>
+                     <fn>
+                        <p>* Whenever P values for all comparisons are &gt;0.05, NS is indicated. If any comparison is significant, the P value for that comparison is indicated; § for absence versus presence: Group 2 vs Groups 1 and 3</p>
+                     </fn>
+                  </table-wrap-foot>
+               </table-wrap>
+            </p>
+            <p>According to histology, gastritis was present at baseline in all Hp positive subjects. There was no significant difference in gastritis patterns (pangastritis in 100% and 90% in groups 1 and 2, respectively, <italic>P</italic> = 0.526). After Hp eradication, gastritis frequency became similar to the Hp negative group (<xref ref-type="table" rid="t04">Table 4</xref>).</p>
+            <p>There was no association between LES pressure and gastritis pattern (<italic>P</italic> = 0.851 using MEP and <italic>P</italic> = 0.682 using MRP). There was also no correlation between gastritis pattern and symptom improvement [correlation coefficient (r) = 0.234; <italic>P</italic> = 0.197].</p>
+         </sec>
+      </sec>
+      <sec sec-type="discussion">
+         <title>DISCUSSION</title>
+         <p>Baseline characteristics (clinical, endoscopic, manometric and pHmetric) between Hp positive and negative subjects were comparable. Manes et al.(<sup>20</sup>) also found no significant difference between Hp positive and negative subjects, regarding manometric variables. They evaluated, however, only baseline differences, rather than pre and post-treatment differences.</p>
+         <p>In our study, manometric data analysis showed a small but significant rise in LES pressure, when measured by MEP, in Hp negative subjects treated with PPI. However, there was no difference on the post-treatment LES pressures between Hp positive (non-eradicated) and Hp negative (either eradicated or originally negative). That is in accordance with findings by Sarnelli et al.(<sup>30</sup>), who found similar LES resting pressures in negative patients and those whose infection was eradicated.</p>
+         <p>Although these authors found a significantly longer acid clearance time in pH monitoring in eradicated subject, compared to negative controls, esophageal distal wave amplitudes were similar in the two groups(<sup>30</sup>).</p>
+         <p>We found similar results for both amplitude and duration of peristaltic waves on distal esophagus, as well as for the proportion of hypotensive, normotensive and hypertensive waves.</p>
+         <p>However, when comparing pre and post treatment data, a significant decrease in the mean percentage of hypotensive and rise in the mean percentage of normotensive waves in subjects that were Hp positive and were not eradicated was also noted. Both effects were not present in eradicated patients and one may suggest that those benefits were masked by the effect of the eradication itself. However the effect was also not present in negative controls, which makes it unlikely that eradication exerted a detrimental effect on esophageal peristalsis.</p>
+         <p>In this study, conventional manometry was used. Although measurements were performed consistently at the same period of the day, circadian variations of measured parameters can not be excluded. The use of ambulatory manometry in future studies may provide useful.</p>
+         <p>GERD treatment was effective in reducing disease symptoms: all symptom scores improved significantly from pre to post-treatment, and they improved similarly between all groups, for every score calculated. At week 12, there were no significant differences on both total and typical scores. These findings are consistent with previous randomized controlled trials that showed no GERD benefit on treating Hp(<sup>18</sup>).</p>
+         <p>The present trial had a limited duration of only 12 weeks; however, the clinical findings here reported seem to be maintained throughout 1 year of observation, as demonstrated by a similar randomized double-blind placebo-controlled trial(<sup>25</sup>). Additionally, the relatively small sample size studied may have interfered with the statistical power of the measurements. Nevertheless, statistical significance was reached for the primary comparison and clinical scores.</p>
+         <p>
+            <named-content content-type="scientific-name">
+               <italic>H</italic>. <italic>pylori</italic>
+            </named-content> has been associated with augmentation of the effect of PPIs on intragastric pH(<sup>13</sup>, <sup>33</sup>) and its eradication may restore full gastric secretory capacity with lower pH values achieved with omeprazole treatment(<sup>4</sup>). In our study, however, endoscopic resolution of EE was achieved in only 53% of the treated patients. It is known that subjects with atypical symptoms need PPI regimens of longer duration. The fact that 53.1% of our subject sample had atypical symptoms may explain why the EE healing rate was lower that expected in our sample.</p>
+         <p>Furthermore, EE healing was achieved in a significantly greater proportion on patients whose infection was not eradicated. Hackelsberger et al.(<sup>12</sup>) have found lower reflux grades in Hp-positive patients with GERD compared with Hp-negative ones.</p>
+         <p>Likewise, Sekiguchi et al.(<sup>32</sup>) also found a greater proportion of Hp presence in patients with mild reflux esophagitis, compared with those with severe reflux esophagitis. Another study achieved results similar to ours: Schenk at al.(<sup>31</sup>) studied prospectively GERD patients and found that Hp-negative subjects had more severe esophagitis and significantly higher prevalence of Barrett's esophagus, however failing to show significant difference on PPI dosage needed to keep patients asymptomatic or esophagitis-free.</p>
+         <p>Drug effect seems unlikely to explain differences found, since clarithromycin effect on augmenting LES pressure and esophageal wave amplitude(<sup>2</sup>) is not expected to last after 3 months. Additionally, there is no sound evidence that lansoprazole has a direct effect in LES pressure or peristalsis, apart from indirect influence due to gastrin changes, which is known to modulate LES pressure in healthy subjects(<sup>1</sup>). Although gastrin levels were not measured, we would not expect any PPI effect one month after PPI discontinuation, since even with delayed release formulations of PPIs, gastrin levels return to baseline values within 1 week of drug discontinuation(<sup>38</sup>).</p>
+         <p>We found no correlation between gastritis pattern and LES pressures. Additionally, post-treatment LES pressures between all groups did not differ, which makes it unlikely that it could explain any clinical or endoscopic difference between groups.</p>
+         <p>Conversely, subjects that remained Hp positive had a better peristaltic profile with greater proportion of normotensive waves and fewer hypotensive waves which may explain the smaller esophagitis rates in this group, since investigations on pathophysiology of reflux esophagitis using combined high resolution manometry and pHmetry, like the one by Ikawari et al.(<sup>13</sup>), have demonstrated that esophageal clearance is the key factor on esophagitis healing.</p>
+         <p>Preservation of acid secretion on those Hp-negative or restoration of secretion on those eradicated may lead to lower rates of esophagitis healing, compared to Hp-positive patients, whose secretory capacity remains impaired(<sup>16</sup>). Besides that putative link, other factors may confound this relationship, like timing of measurements, changes on BMI, occurrence of acid rebound amongst others.</p>
+         <p>The gastritis pattern may modify GERD symptomatic response to Hp eradication: Hp infection causing corpus gastritis may interfere with gastric acid production, while eradicating Hp could restore secretory capacity and trigger GERD. Additionally, PPI treatment in Hp-positive patients may lead to strong corpus gastritis(<sup>14</sup>), lowering acid output substantially.</p>
+         <p>In our study we did not find any correlation between gastritis pattern and GERD symptomatic response. There was also no significant difference in the gastritis pattern between groups 1 and 2, so we do not expect that this could have accounted for the endoscopic findings. Similarly, there was no significant difference in weight variation (pre minus post) between the three groups. Likewise, adherence to non-pharmacological recommendations may not have interfered in the results, since a similar proportion of patients in each group followed all recommendations given.</p>
+         <p>We can not infer on acid rebound, since pH testing was carried out only at baseline, which constitutes one of the limitations of this study. Changes in the feeding patterns besides the standard recommendations for GERD treatment were not measured in this study. Selective alterations on these variables could interfere with the endoscopic findings and may have contributed to the discrepancy observed with the clinical data. GERD is a multi-factorial disease and other factors not measured in this study like mucosal barrier permeability, gastric emptying, submucosal blood flow and epithelial function may be implicated. Other underlying mechanisms may still be discovered, since known parameters can not explain disease course in all patients.</p>
+         <p>Our prospective trial shows that the treatment of Hp infection is effective in 81.8% of patients, a result similar to what other Brazilian groups reported previously in trials with larger samples(<sup>35</sup>). Treatment is well tolerated with most side-effects being mild and self-limited in nature.</p>
+         <p>In conclusion, our study supports the hypothesis that Hp eradication does not influence GERD. Symptom resolution after treatment was not influenced by eradication. Statistically significant manometric differences were demonstrated only in the non-eradicated and Hp-negative groups, with endoscopic healing significantly more frequent in patients whose Hp infection was not eradicated. Clinical, endoscopic and manometric data collected in this study showed no benefit in eradicating Hp in GERD.</p>
+      </sec>
+   </body>
+   <back>
+      <ref-list>
+         <ref id="r01">
+            <label>1</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Allescher</surname>
+                     <given-names>HD</given-names>
+                  </name>
+                  <name>
+                     <surname>Stoschus</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Wünsch</surname>
+                     <given-names>E</given-names>
+                  </name>
+                  <name>
+                     <surname>Schusdziarra</surname>
+                     <given-names>V</given-names>
+                  </name>
+                  <name>
+                     <surname>Classen</surname>
+                     <given-names>M</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Effect of human gastrin-17 with and without acid suppression on human esophageal motility</article-title>
+               <source xml:lang="en">Z Gastroenterol</source>
+               <year>1995</year>
+               <volume>33</volume>
+               <fpage>385</fpage>
+               <lpage>391</lpage>
+            </element-citation>
+            <mixed-citation>1. Allescher HD, Stoschus B, Wünsch E, Schusdziarra V, Classen M. Effect of human gastrin-17 with and without acid suppression on human esophageal motility. Z Gastroenterol. 1995;33:385-91.</mixed-citation>
+         </ref>
+         <ref id="r02">
+            <label>2</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Bortolotti</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Pandolfo</surname>
+                     <given-names>N</given-names>
+                  </name>
+                  <name>
+                     <surname>La Rovere</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Giovannini</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Miglioli</surname>
+                     <given-names>M</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Effect of clarithromycin on esophageal motility</article-title>
+               <source xml:lang="en">Dis Esophagus</source>
+               <year>2000</year>
+               <volume>13</volume>
+               <fpage>231</fpage>
+               <lpage>233</lpage>
+            </element-citation>
+            <mixed-citation>2. Bortolotti M, Pandolfo N, La Rovere G, Giovannini M, Miglioli M. Effect of clarithromycin on esophageal motility. Dis Esophagus. 2000;13:231-3.</mixed-citation>
+         </ref>
+         <ref id="r03">
+            <label>3</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Buckley</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Culhane</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Drumm</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Keane</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Moran</surname>
+                     <given-names>AP</given-names>
+                  </name>
+                  <name>
+                     <surname>O'Connor</surname>
+                     <given-names>HJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Collins</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Kelleher</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>McAvinchey</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>Sloan</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>O'Morain</surname>
+                     <given-names>C</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Guidelines for the management of <named-content content-type="scientific-name">Helicobacter pylori</named-content>-related upper gastrointestinal diseases. Irish <named-content content-type="scientific-name">Helicobacter Pylori</named-content> Study Group</article-title>
+               <source xml:lang="en">Ir J Med Sci</source>
+               <year>1996</year>
+               <volume>165</volume>
+               <fpage>1</fpage>
+               <lpage>11</lpage>
+            </element-citation>
+            <mixed-citation>3. Buckley M, Culhane A, Drumm B, Keane C, Moran AP, O'Connor HJ, Collins J, Kelleher D, McAvinchey D, Sloan J, O'Morain C. Guidelines for the management of Helicobacter pylori-related upper gastrointestinal diseases. Irish Helicobacter Pylori Study Group . Ir J Med Sci. 1996;165:1-11.</mixed-citation>
+         </ref>
+         <ref id="r04">
+            <label>4</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Cargill</surname>
+                     <given-names>G</given-names>
+                  </name>
+               </person-group>
+               <chapter-title>How can the contribution of intra-abdominal pressure, crural diaphragm, and smooth muscle sphincter be distinguished in LESP and in LES movements?</chapter-title>
+               <person-group person-group-type="editor">
+                  <name>
+                     <surname>Giuli</surname>
+                     <given-names>R</given-names>
+                  </name>
+               </person-group>
+               <source xml:lang="en">The esophagogastric junction</source>
+               <publisher-loc>Paris</publisher-loc>
+               <publisher-name>John Libbey Eurotext</publisher-name>
+               <year>1998</year>
+               <fpage>19</fpage>
+               <lpage>23</lpage>
+            </element-citation>
+            <mixed-citation>4. Cargill G. How can the contribution of intra-abdominal pressure, crural diaphragm, and smooth muscle sphincter be distinguished in LESP and in LES movements? In: Giuli R, editor. O.E.S.O - The esophagogastric junction. Paris: John Libbey Eurotext; 1998. p. 19-23.</mixed-citation>
+         </ref>
+         <ref id="r05">
+            <label>5</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Chow</surname>
+                     <given-names>WH</given-names>
+                  </name>
+                  <name>
+                     <surname>Blaser</surname>
+                     <given-names>MJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Blot</surname>
+                     <given-names>WJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Gammon</surname>
+                     <given-names>MD</given-names>
+                  </name>
+                  <name>
+                     <surname>Vaughan</surname>
+                     <given-names>TL</given-names>
+                  </name>
+                  <name>
+                     <surname>Risch</surname>
+                     <given-names>HA</given-names>
+                  </name>
+                  <name>
+                     <surname>Perez-Perez</surname>
+                     <given-names>GI</given-names>
+                  </name>
+                  <name>
+                     <surname>Schoenberg</surname>
+                     <given-names>JB</given-names>
+                  </name>
+                  <name>
+                     <surname>Stanford</surname>
+                     <given-names>JL</given-names>
+                  </name>
+                  <name>
+                     <surname>Rotterdam</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>West</surname>
+                     <given-names>AB</given-names>
+                  </name>
+                  <name>
+                     <surname>Fraumeni</surname>
+                     <given-names>JF Jr</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">An inverse relation between cagA+ strains of <named-content content-type="scientific-name">Helicobacter pylori </named-content>infection and risk of esophageal and gastric cardia adenocarcinoma</article-title>
+               <source xml:lang="en">Cancer Res</source>
+               <year>1998</year>
+               <volume>58</volume>
+               <fpage>588</fpage>
+               <lpage>590</lpage>
+            </element-citation>
+            <mixed-citation>5. Chow WH, Blaser MJ, Blot WJ, Gammon MD, Vaughan TL, Risch HA, Perez-Perez GI, Schoenberg JB, Stanford JL, Rotterdam H, West AB, Fraumeni JF Jr. An inverse relation between cagA+ strains of Helicobacter pylori infection and risk of esophageal and gastric cardia adenocarcinoma. Cancer Res. 1998;58:588-90.</mixed-citation>
+         </ref>
+         <ref id="r06">
+            <label>6</label>
+            <element-citation publication-type="book">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Dalton</surname>
+                     <given-names>CB</given-names>
+                  </name>
+                  <name>
+                     <surname>Castell</surname>
+                     <given-names>DO</given-names>
+                  </name>
+               </person-group>
+               <chapter-title>Measurements and interpretations</chapter-title>
+               <person-group person-group-type="editor">
+                  <name>
+                     <surname>Castell</surname>
+                     <given-names>DO</given-names>
+                  </name>
+                  <name>
+                     <surname>Castell</surname>
+                     <given-names>JA</given-names>
+                  </name>
+               </person-group>
+               <source xml:lang="en">Esophageal motility testing</source>
+               <publisher-loc>Norwalk, Connecticut</publisher-loc>
+               <publisher-name>Appleton &amp; Lange</publisher-name>
+               <year>1994</year>
+               <fpage>61</fpage>
+               <lpage>80</lpage>
+            </element-citation>
+            <mixed-citation>6. Dalton CB, Castell DO. Measurements and interpretations. In: Castell DO, Castell JA, editors. Esophageal motility testing. Norwalk, Connecticut: Appleton &amp; Lange; 1994. p. 61-80.</mixed-citation>
+         </ref>
+         <ref id="r07">
+            <label>7</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Demeester</surname>
+                     <given-names>TR</given-names>
+                  </name>
+                  <name>
+                     <surname>Johnson</surname>
+                     <given-names>LF</given-names>
+                  </name>
+                  <name>
+                     <surname>Joseph</surname>
+                     <given-names>GJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Toscano</surname>
+                     <given-names>MS</given-names>
+                  </name>
+                  <name>
+                     <surname>Hall</surname>
+                     <given-names>AW</given-names>
+                  </name>
+                  <name>
+                     <surname>Skinner</surname>
+                     <given-names>DB</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Patterns of gastroesophageal reflux in health and disease</article-title>
+               <source xml:lang="en">Ann Surg</source>
+               <year>1976</year>
+               <volume>184</volume>
+               <fpage>459</fpage>
+               <lpage>470</lpage>
+            </element-citation>
+            <mixed-citation>7. Demeester TR, Johnson LF, Joseph GJ, Toscano MS, Hall AW, Skinner DB. Patterns of gastroesophageal reflux in health and disease. Ann Surg. 1976;184:459-70.</mixed-citation>
+         </ref>
+         <ref id="r08">
+            <label>8</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Dent</surname>
+                     <given-names>J</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Gastro-oesophageal reflux disease</article-title>
+               <source xml:lang="en">Digestion</source>
+               <year>1998</year>
+               <volume>59</volume>
+               <fpage>433</fpage>
+               <lpage>445</lpage>
+            </element-citation>
+            <mixed-citation>8. Dent J. Gastro-oesophageal reflux disease. Digestion. 1998;59:433-45.</mixed-citation>
+         </ref>
+         <ref id="r09">
+            <label>9</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Dixon</surname>
+                     <given-names>MF</given-names>
+                  </name>
+                  <name>
+                     <surname>Genta</surname>
+                     <given-names>RM</given-names>
+                  </name>
+                  <name>
+                     <surname>Yardley</surname>
+                     <given-names>JH</given-names>
+                  </name>
+                  <name>
+                     <surname>Correa</surname>
+                     <given-names>P</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Classification and grading of gastritis. The updated Sydney System. International Workshop on the Histopathology of Gastritis, Houston 1994</article-title>
+               <source xml:lang="en">Am J Surg Pathol</source>
+               <year>1996</year>
+               <volume>20</volume>
+               <fpage>1161</fpage>
+               <lpage>1181</lpage>
+            </element-citation>
+            <mixed-citation>9. Dixon MF, Genta RM, Yardley JH, Correa P. Classification and grading of gastritis. The updated Sydney System. International Workshop on the Histopathology of Gastritis, Houston 1994. Am J Surg Pathol. 1996;20:1161-81.</mixed-citation>
+         </ref>
+         <ref id="r10">
+            <label>10</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Genta</surname>
+                     <given-names>RM</given-names>
+                  </name>
+                  <name>
+                     <surname>Huberman</surname>
+                     <given-names>RM</given-names>
+                  </name>
+                  <name>
+                     <surname>Graham</surname>
+                     <given-names>DY</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">The gastric cardia in <named-content content-type="scientific-name">Helicobacter pylori </named-content>infection</article-title>
+               <source xml:lang="en">Hum Pathol</source>
+               <year>1994</year>
+               <volume>25</volume>
+               <fpage>915</fpage>
+               <lpage>919</lpage>
+            </element-citation>
+            <mixed-citation>10. Genta RM, Huberman RM, Graham DY. The gastric cardia in Helicobacter pylori infection. Hum Pathol. 1994;25:915-9.</mixed-citation>
+         </ref>
+         <ref id="r11">
+            <label>11</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Gisbert</surname>
+                     <given-names>JP</given-names>
+                  </name>
+                  <name>
+                     <surname>Pajares</surname>
+                     <given-names>JM</given-names>
+                  </name>
+                  <name>
+                     <surname>Losa</surname>
+                     <given-names>C</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">
+                  <named-content content-type="scientific-name">Helicobacter pylori </named-content>and gastroesophageal reflux disease: friends or foes? </article-title>
+               <source xml:lang="en">Hepatogastroenterology</source>
+               <year>1999</year>
+               <volume>46</volume>
+               <fpage>1023</fpage>
+               <lpage>1029</lpage>
+            </element-citation>
+            <mixed-citation>11. Gisbert JP, Pajares JM, Losa C. Helicobacter pylori and gastroesophageal reflux disease: friends or foes?  Hepatogastroenterology. 1999;46:1023-9.</mixed-citation>
+         </ref>
+         <ref id="r12">
+            <label>12</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Hackelsberger</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Schultze</surname>
+                     <given-names>V</given-names>
+                  </name>
+                  <name>
+                     <surname>Gunther</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <etal/>
+               </person-group>
+               <article-title xml:lang="en">
+                  <named-content content-type="scientific-name">Hpylori </named-content>prevalence in reflux esophagitis - a case-control study [abstract]</article-title>
+               <source xml:lang="en">Gastroenterology</source>
+               <year>1997</year>
+               <volume>112</volume> 
+               <supplement>(Suppl)</supplement>
+               <fpage>A137</fpage>
+            </element-citation>
+            <mixed-citation>12. Hackelsberger A, Schultze V, Gunther T, et al. H. pylori prevalence in reflux esophagitis - a case-control study [abstract] . Gastroenterology. 1997;112 (Suppl):A137.</mixed-citation>
+         </ref>
+         <ref id="r13">
+            <label>13</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Iwakiri</surname>
+                     <given-names>K</given-names>
+                  </name>
+                  <name>
+                     <surname>Kawami</surname>
+                     <given-names>N</given-names>
+                  </name>
+                  <name>
+                     <surname>Sano</surname>
+                     <given-names>H</given-names>
+                  </name>
+                  <name>
+                     <surname>Tanaka</surname>
+                     <given-names>Y</given-names>
+                  </name>
+                  <name>
+                     <surname>Umezawa</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Kotoyori</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Hoshihara</surname>
+                     <given-names>Y</given-names>
+                  </name>
+                  <name>
+                     <surname>Sakamoto</surname>
+                     <given-names>C</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Mechanisms of excessive esophageal acid exposure in patients with reflux esophagitis</article-title>
+               <source xml:lang="en">Dig Dis Sci</source>
+               <year>2009</year>
+               <volume>54</volume>
+               <fpage>1686</fpage>
+               <lpage>1692</lpage>
+            </element-citation>
+            <mixed-citation>13. Iwakiri K, Kawami N, Sano H, Tanaka Y, Umezawa M, Kotoyori M, Hoshihara Y, Sakamoto C. Mechanisms of excessive esophageal acid exposure in patients with reflux esophagitis. Dig Dis Sci. 2009;54:1686-92.</mixed-citation>
+         </ref>
+         <ref id="r14">
+            <label>14</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Kuipers</surname>
+                     <given-names>EJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Uyterlinde</surname>
+                     <given-names>AM</given-names>
+                  </name>
+                  <name>
+                     <surname>Peña</surname>
+                     <given-names>AS</given-names>
+                  </name>
+                  <name>
+                     <surname>Hazenberg</surname>
+                     <given-names>HJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Bloemena</surname>
+                     <given-names>E</given-names>
+                  </name>
+                  <name>
+                     <surname>Lindeman</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Klinkenberg-Knol</surname>
+                     <given-names>EC</given-names>
+                  </name>
+                  <name>
+                     <surname>Meuwissen</surname>
+                     <given-names>SG</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Increase of <named-content content-type="scientific-name">Helicobacter pylori</named-content>-associated corpus gastritis during acid suppressive therapy: implications for long-term safety</article-title>
+               <source xml:lang="en">Am J Gastroenterol</source>
+               <year>1995</year>
+               <volume>90</volume>
+               <fpage>1401</fpage>
+               <lpage>1406</lpage>
+            </element-citation>
+            <mixed-citation>14. Kuipers EJ, Uyterlinde AM, Peña AS, Hazenberg HJ, Bloemena E, Lindeman J, Klinkenberg-Knol EC, Meuwissen SG. Increase of Helicobacter pylori-associated corpus gastritis during acid suppressive therapy: implications for long-term safety. Am J Gastroenterol. 1995;90:1401-6.</mixed-citation>
+         </ref>
+         <ref id="r15">
+            <label>15</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Labenz</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Tillenburg</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Peitz</surname>
+                     <given-names>U</given-names>
+                  </name>
+                  <name>
+                     <surname>Idström</surname>
+                     <given-names>JP</given-names>
+                  </name>
+                  <name>
+                     <surname>Verdú</surname>
+                     <given-names>EF</given-names>
+                  </name>
+                  <name>
+                     <surname>Stolte</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Börsch</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Blum</surname>
+                     <given-names>AL</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">
+                  <named-content content-type="scientific-name">Helicobacter pylori</named-content> augments the pH-increasing effect of omeprazole in patients with duodenal ulcer</article-title>
+               <source xml:lang="en">Gastroenterology</source>
+               <year>1996</year>
+               <volume>110</volume>
+               <fpage>725</fpage>
+               <lpage>732</lpage>
+            </element-citation>
+            <mixed-citation>15. Labenz J, Tillenburg B, Peitz U, Idström JP, Verdú EF, Stolte M, Börsch G, Blum AL. Helicobacter pylori augments the pH-increasing effect of omeprazole in patients with duodenal ulcer. Gastroenterology. 1996;110:725-32.</mixed-citation>
+         </ref>
+         <ref id="r16">
+            <label>16</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Labenz</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Blum</surname>
+                     <given-names>AL</given-names>
+                  </name>
+                  <name>
+                     <surname>Bayerdörffer</surname>
+                     <given-names>E</given-names>
+                  </name>
+                  <name>
+                     <surname>Meining</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Stolte</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Börsch</surname>
+                     <given-names>G</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Curing <named-content content-type="scientific-name">Helicobacter pylori </named-content>infection in patients with duodenal ulcer may provoke reflux esophagitis</article-title>
+               <source xml:lang="en">Gastroenterology</source>
+               <year>1997</year>
+               <volume>112</volume>
+               <fpage>1442</fpage>
+               <lpage>1447</lpage>
+            </element-citation>
+            <mixed-citation>16. Labenz J, Blum AL, Bayerdörffer E, Meining A, Stolte M, Börsch G. Curing Helicobacter pylori infection in patients with duodenal ulcer may provoke reflux esophagitis. Gastroenterology. 1997;112:1442-7.</mixed-citation>
+         </ref>
+         <ref id="r17">
+            <label>17</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Labenz</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Malfertheiner</surname>
+                     <given-names>P</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">
+                  <named-content content-type="scientific-name">Helicobacter pylori </named-content>in gastro-oesophageal reflux disease: causal agent, independent or protective factor?</article-title>
+               <source xml:lang="en">Gut</source>
+               <year>1997</year>
+               <volume>41</volume>
+               <fpage>277</fpage>
+               <lpage>280</lpage>
+            </element-citation>
+            <mixed-citation>17. Labenz J, Malfertheiner P. Helicobacter pylori in gastro-oesophageal reflux disease: causal agent, independent or protective factor? Gut. 1997;41:277-80.</mixed-citation>
+         </ref>
+         <ref id="r18">
+            <label>18</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Laine</surname>
+                     <given-names>L</given-names>
+                  </name>
+                  <name>
+                     <surname>Sugg</surname>
+                     <given-names>J</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Effect of <named-content content-type="scientific-name">Helicobacter pylori</named-content> eradication on development of erosive esophagitis and gastroesophageal reflux disease symptoms: a post hoc analysis of eight double blind prospective studies</article-title>
+               <source xml:lang="en">Am J Gastroenterol</source>
+               <year>2002</year>
+               <volume>97</volume>
+               <fpage>2992</fpage>
+               <lpage>2997</lpage>
+            </element-citation>
+            <mixed-citation>18. Laine L, Sugg J. Effect of Helicobacter pylori eradication on development of erosive esophagitis and gastroesophageal reflux disease symptoms: a post hoc analysis of eight double blind prospective studies. Am J Gastroenterol. 2002;97:2992-7.</mixed-citation>
+         </ref>
+         <ref id="r19">
+            <label>19</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Malfertheiner</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Mégraud</surname>
+                     <given-names>F</given-names>
+                  </name>
+                  <name>
+                     <surname>O'Morain</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Bell</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>Bianchi Porro</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Deltenre</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Forman</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>Gasbarrini</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Jaup</surname>
+                     <given-names>B</given-names>
+                  </name>
+                  <name>
+                     <surname>Misiewicz</surname>
+                     <given-names>JJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Pajares</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Quina</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Rauws</surname>
+                     <given-names>E</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Current European concepts in the management of <named-content content-type="scientific-name">Helicobacter pylori</named-content> infection-the Maastricht Consensus Report. The European <named-content content-type="scientific-name">Helicobacter Pylori</named-content>Study Group (EHPSG)</article-title>
+               <source xml:lang="en">Eur J Gastroenterol Hepatol</source>
+               <year>1997</year>
+               <volume>9</volume>
+               <fpage>1</fpage>
+               <lpage>2</lpage>
+            </element-citation>
+            <mixed-citation>19. Malfertheiner P, Mégraud F, O'Morain C, Bell D, Bianchi Porro G, Deltenre M, Forman D, Gasbarrini G, Jaup B, Misiewicz JJ, Pajares J, Quina M, Rauws E. Current European concepts in the management of Helicobacter pylori infection-the Maastricht Consensus Report. The European Helicobacter PyloriStudy Group (EHPSG). Eur J Gastroenterol Hepatol. 1997;9:1-2.</mixed-citation>
+         </ref>
+         <ref id="r20">
+            <label>20</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Manes</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Esposito</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Lioniello</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Bove</surname>
+                     <given-names>A</given-names>
+                  </name>
+                  <name>
+                     <surname>Mosca</surname>
+                     <given-names>S</given-names>
+                  </name>
+                  <name>
+                     <surname>Balzano</surname>
+                     <given-names>A</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Manometric and pH-metric features in gastro-oesophageal reflux disease patients with and without <named-content content-type="scientific-name">Helicobacter pylori</named-content> infection</article-title>
+               <source xml:lang="en">Dig Liver Dis</source>
+               <year>2000</year>
+               <volume>32</volume>
+               <fpage>372</fpage>
+               <lpage>377</lpage>
+            </element-citation>
+            <mixed-citation>20. Manes G, Esposito P, Lioniello M, Bove A, Mosca S, Balzano A. Manometric and pH-metric features in gastro-oesophageal reflux disease patients with and without Helicobacter pylori infection. Dig Liver Dis. 2000;32:372-7.</mixed-citation>
+         </ref>
+         <ref id="r21">
+            <label>21</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Marshall</surname>
+                     <given-names>BJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Warren</surname>
+                     <given-names>JR</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Unidentified curved bacilli in the stomach of patients with gastritis and peptic ulceration</article-title>
+               <source xml:lang="en">Lancet</source>
+               <year>1984</year>
+               <volume>1</volume>
+               <fpage>1311</fpage>
+               <lpage>1315</lpage>
+            </element-citation>
+            <mixed-citation>21. Marshall BJ, Warren JR. Unidentified curved bacilli in the stomach of patients with gastritis and peptic ulceration. Lancet. 1984;1:1311-5.</mixed-citation>
+         </ref>
+         <ref id="r22">
+            <label>22</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>McCallum</surname>
+                     <given-names>RW</given-names>
+                  </name>
+                  <name>
+                     <surname>Walsh</surname>
+                     <given-names>JH</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Relationship between lower esophageal sphincter pressure and serum gastrin concentration in Zollinger-Ellison syndrome and other clinical settings</article-title>
+               <source xml:lang="en">Gastroenterology</source>
+               <year>1979</year>
+               <volume>76</volume>
+               <fpage>76</fpage>
+               <lpage>81</lpage>
+            </element-citation>
+            <mixed-citation>22. McCallum RW, Walsh JH. Relationship between lower esophageal sphincter pressure and serum gastrin concentration in Zollinger-Ellison syndrome and other clinical settings. Gastroenterology. 1979;76:76-81.</mixed-citation>
+         </ref>
+         <ref id="r23">
+            <label>23</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>McNamara</surname>
+                     <given-names>D</given-names>
+                  </name>
+                  <name>
+                     <surname>O'Morain</surname>
+                     <given-names>C</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Gastro-oesophageal reflux disease and <named-content content-type="scientific-name">Helicobacter pylori</named-content>: an intricate relation</article-title>
+               <source xml:lang="en">Gut</source>
+               <year>1999</year>
+               <volume>45</volume>
+               <fpage>I13</fpage>
+               <lpage>I17</lpage>
+            </element-citation>
+            <mixed-citation>23. McNamara D, O'Morain C. Gastro-oesophageal reflux disease and Helicobacter pylori: an intricate relation. Gut. 1999 Jul;45:I13-7.</mixed-citation>
+         </ref>
+         <ref id="r24">
+            <label>24</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Mittal</surname>
+                     <given-names>RK</given-names>
+                  </name>
+                  <name>
+                     <surname>Rochester</surname>
+                     <given-names>DF</given-names>
+                  </name>
+                  <name>
+                     <surname>McCallum</surname>
+                     <given-names>RW</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Sphincteric action of the diaphragm during a relaxed lower esophageal sphincter in humans</article-title>
+               <source xml:lang="en">Am J Physiol</source>
+               <year>1989</year>
+               <volume>256</volume>
+               <issue>1</issue>
+               <issue-part>Pt 1</issue-part>
+               <fpage>G139</fpage>
+               <lpage>G144</lpage>
+            </element-citation>
+            <mixed-citation>24. Mittal RK, Rochester DF, McCallum RW. Sphincteric action of the diaphragm during a relaxed lower esophageal sphincter in humans. Am J Physiol. 1989;256(1 Pt 1):G139-44.</mixed-citation>
+         </ref>
+         <ref id="r25">
+            <label>25</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Moayyedi</surname>
+                     <given-names>P</given-names>
+                  </name>
+                  <name>
+                     <surname>Bardhan</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Young</surname>
+                     <given-names>L</given-names>
+                  </name>
+                  <name>
+                     <surname>Dixon</surname>
+                     <given-names>MF</given-names>
+                  </name>
+                  <name>
+                     <surname>Brown</surname>
+                     <given-names>L</given-names>
+                  </name>
+                  <name>
+                     <surname>Axon</surname>
+                     <given-names>AT</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">
+                  <named-content content-type="scientific-name">Helicobacter pylori</named-content> eradication does not exacerbate reflux symptoms in gastroesophageal reflux disease</article-title>
+               <source xml:lang="en">Gastroenterology</source>
+               <year>2001</year>
+               <volume>121</volume>
+               <fpage>1120</fpage>
+               <lpage>1126</lpage>
+            </element-citation>
+            <mixed-citation>25. Moayyedi P, Bardhan C, Young L, Dixon MF, Brown L, Axon AT. Helicobacter pylori eradication does not exacerbate reflux symptoms in gastroesophageal reflux disease. Gastroenterology. 2001;121:1120-6.</mixed-citation>
+         </ref>
+         <ref id="r26">
+            <label>26</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Newton</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Bryan</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Burnham</surname>
+                     <given-names>WR</given-names>
+                  </name>
+                  <name>
+                     <surname>Kamm</surname>
+                     <given-names>MA</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Evaluation of <named-content content-type="scientific-name">Helicobacter pylori</named-content> in reflux oesophagitis and Barrett's oesophagus</article-title>
+               <source xml:lang="en">Gut</source>
+               <year>1997</year>
+               <volume>40</volume>
+               <fpage>9</fpage>
+               <lpage>13</lpage>
+            </element-citation>
+            <mixed-citation>26. Newton M, Bryan R, Burnham WR, Kamm MA. Evaluation of Helicobacter pylori in reflux oesophagitis and Barrett's oesophagus. Gut. 1997;40:9-13.</mixed-citation>
+         </ref>
+         <ref id="r27">
+            <label>27</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <collab>NIH Consensus Conference</collab>
+               </person-group>
+               <article-title xml:lang="en">
+                  <named-content content-type="scientific-name">Helicobacter pylori</named-content> in peptic ulcer disease. NIH Consensus Development Panel on <named-content content-type="scientific-name">Helicobacter pylori</named-content> in Peptic Ulcer Disease</article-title>
+               <source xml:lang="en">JAMA</source>
+               <year>1994</year>
+               <volume>272</volume>
+               <fpage>65</fpage>
+               <lpage>69</lpage>
+            </element-citation>
+            <mixed-citation>27. NIH Consensus Conference. Helicobacter pylori in peptic ulcer disease. NIH Consensus Development Panel on Helicobacter pylori in Peptic Ulcer Disease. JAMA. 1994;272:65-9.</mixed-citation>
+         </ref>
+         <ref id="r28">
+            <label>28</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>O'Connor</surname>
+                     <given-names>HJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Cunnane</surname>
+                     <given-names>K</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">
+                  <named-content content-type="scientific-name">Helicobacter pylori</named-content> and gastro-oesophageal reflux disease - a prospective study</article-title>
+               <source xml:lang="en">Ir J Med Sci</source>
+               <year>1994</year>
+               <volume>163</volume>
+               <fpage>369</fpage>
+               <lpage>373</lpage>
+            </element-citation>
+            <mixed-citation>28. O'Connor HJ, Cunnane K. Helicobacter pylori and gastro-oesophageal reflux disease - a prospective study. Ir J Med Sci. 1994;163:369-73.</mixed-citation>
+         </ref>
+         <ref id="r29">
+            <label>29</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Sainz</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Borda</surname>
+                     <given-names>F</given-names>
+                  </name>
+                  <name>
+                     <surname>Domínguez</surname>
+                     <given-names>E</given-names>
+                  </name>
+                  <name>
+                     <surname>Gisbert</surname>
+                     <given-names>JP</given-names>
+                  </name>
+               </person-group>
+               <trans-title xml:lang="en">Helicobacter pylori infection. The Spanish consensus report. The Spanish Consensus Conference Group</trans-title>
+               <source xml:lang="en">Rev Esp Enferm Dig</source>
+               <year>1999</year>
+               <volume>91</volume>
+               <fpage>777</fpage>
+               <lpage>784</lpage>
+            </element-citation>
+            <mixed-citation>29. Sainz R, Borda F, Domínguez E, Gisbert JP. [Helicobacter pylori infection. The Spanish consensus report. The Spanish Consensus Conference Group]. Rev Esp Enferm Dig. 1999;91:777-84.</mixed-citation>
+         </ref>
+         <ref id="r30">
+            <label>30</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Sarnelli</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Ierardi</surname>
+                     <given-names>E</given-names>
+                  </name>
+                  <name>
+                     <surname>Grasso</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Verde</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Bottiglieri</surname>
+                     <given-names>ME</given-names>
+                  </name>
+                  <name>
+                     <surname>Nardone</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Budillon</surname>
+                     <given-names>G</given-names>
+                  </name>
+                  <name>
+                     <surname>Cuomo</surname>
+                     <given-names>R</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Acid exposure and altered acid clearance in GERD patients treated for <named-content content-type="scientific-name">Helicobacter pylori</named-content> infection</article-title>
+               <source xml:lang="en">Dig Liver Dis</source>
+               <year>2003</year>
+               <volume>35</volume>
+               <fpage>151</fpage>
+               <lpage>156</lpage>
+            </element-citation>
+            <mixed-citation>30. Sarnelli G, Ierardi E, Grasso R, Verde C, Bottiglieri ME, Nardone G, Budillon G, Cuomo R. Acid exposure and altered acid clearance in GERD patients treated for Helicobacter pylori infection. Dig Liver Dis. 2003;35:151-6.</mixed-citation>
+         </ref>
+         <ref id="r31">
+            <label>31</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Schenk</surname>
+                     <given-names>BE</given-names>
+                  </name>
+                  <name>
+                     <surname>Kuipers</surname>
+                     <given-names>EJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Klinkenberg-Knol</surname>
+                     <given-names>EC</given-names>
+                  </name>
+                  <name>
+                     <surname>Eskes</surname>
+                     <given-names>SA</given-names>
+                  </name>
+                  <name>
+                     <surname>Meuwissen</surname>
+                     <given-names>SGM</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">
+                  <named-content content-type="scientific-name">Hpylori</named-content>, GERD and the efficacy of omeprazole therapy [abstract] </article-title>
+               <source xml:lang="en">Gastroenterology</source>
+               <year>1997</year>
+               <volume>112</volume> 
+               <supplement>(Suppl)</supplement>
+               <fpage>A282</fpage>
+            </element-citation>
+            <mixed-citation>31. Schenk BE, Kuipers EJ, Klinkenberg-Knol EC, Eskes SA, Meuwissen SGM. H. pylori, GERD and the efficacy of omeprazole therapy [abstract] . Gastroenterology. 1997;112 (Suppl):A282.</mixed-citation>
+         </ref>
+         <ref id="r32">
+            <label>32</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Sekiguchi</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Shirota</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <name>
+                     <surname>Horikoshi</surname>
+                     <given-names>T</given-names>
+                  </name>
+                  <etal/>
+               </person-group>
+               <article-title xml:lang="en">
+                  <named-content content-type="scientific-name">Helicobacter pylori </named-content>infection and severity of reflux [abstract]</article-title>
+               <source xml:lang="en">Gastroenterology</source>
+               <year>1996</year>
+               <volume>110</volume> 
+               <supplement>(Suppl)</supplement>
+               <fpage>A755</fpage>
+            </element-citation>
+            <mixed-citation>32. Sekiguchi T, Shirota T, Horikoshi T, et al. Helicobacter pylori infection and severity of reflux [abstract]. Gastroenterology. 1996;110 (Suppl):A755.</mixed-citation>
+         </ref>
+         <ref id="r33">
+            <label>33</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Simpson</surname>
+                     <given-names>RJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Graham</surname>
+                     <given-names>SM</given-names>
+                  </name>
+                  <name>
+                     <surname>Florida-James</surname>
+                     <given-names>GD</given-names>
+                  </name>
+                  <name>
+                     <surname>Connaboy</surname>
+                     <given-names>C</given-names>
+                  </name>
+                  <name>
+                     <surname>Clement</surname>
+                     <given-names>R</given-names>
+                  </name>
+                  <name>
+                     <surname>Jackson</surname>
+                     <given-names>AS</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Perceived exertion and heart rate models for estimating metabolic workload in elite British soldiers performing a backpack load-carriage task</article-title>
+               <source xml:lang="en">Appl Physiol Nutr Metab</source>
+               <year>2010</year>
+               <volume>35</volume>
+               <fpage>650</fpage>
+               <lpage>656</lpage>
+            </element-citation>
+            <mixed-citation>33. Simpson RJ, Graham SM, Florida-James GD, Connaboy C, Clement R, Jackson AS. Perceived exertion and heart rate models for estimating metabolic workload in elite British soldiers performing a backpack load-carriage task. Appl Physiol Nutr Metab. 2010;35:650-6.</mixed-citation>
+         </ref>
+         <ref id="r34">
+            <label>34</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Tee</surname>
+                     <given-names>W</given-names>
+                  </name>
+                  <name>
+                     <surname>Lambert</surname>
+                     <given-names>JR</given-names>
+                  </name>
+                  <name>
+                     <surname>Dwyer</surname>
+                     <given-names>B</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Cytotoxin production by <named-content content-type="scientific-name">Helicobacter pylori</named-content>from patients with upper gastrointestinal tract diseases</article-title>
+               <source xml:lang="en">J Clin Microbiol</source>
+               <year>1995</year>
+               <volume>33</volume>
+               <fpage>1203</fpage>
+               <lpage>1205</lpage>
+            </element-citation>
+            <mixed-citation>34. Tee W, Lambert JR, Dwyer B. Cytotoxin production by Helicobacter pylorifrom patients with upper gastrointestinal tract diseases. J Clin Microbiol. 1995;33:1203-5.</mixed-citation>
+         </ref>
+         <ref id="r35">
+            <label>35</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Vakily</surname>
+                     <given-names>M</given-names>
+                  </name>
+                  <name>
+                     <surname>Wu</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Atkinson</surname>
+                     <given-names>SN</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Lack of electrocardiographic effect of dexlansoprazole MR, a novel modified-release formulation of the proton pump inhibitor dexlansoprazole, in healthy participants</article-title>
+               <source xml:lang="en">J Clin Pharmacol</source>
+               <year>2009</year>
+               <volume>49</volume>
+               <fpage>1447</fpage>
+               <lpage>1455</lpage>
+            </element-citation>
+            <mixed-citation>35. Vakily M, Wu J, Atkinson SN. Lack of electrocardiographic effect of dexlansoprazole MR, a novel modified-release formulation of the proton pump inhibitor dexlansoprazole, in healthy participants. J Clin Pharmacol. 2009;49:1447-55.</mixed-citation>
+         </ref>
+         <ref id="r36">
+            <label>36</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Vicari</surname>
+                     <given-names>JJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Peek</surname>
+                     <given-names>RM</given-names>
+                  </name>
+                  <name>
+                     <surname>Falk</surname>
+                     <given-names>GW</given-names>
+                  </name>
+                  <name>
+                     <surname>Goldblum</surname>
+                     <given-names>JR</given-names>
+                  </name>
+                  <name>
+                     <surname>Easley</surname>
+                     <given-names>KA</given-names>
+                  </name>
+                  <name>
+                     <surname>Schnell</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Perez-Perez</surname>
+                     <given-names>GI</given-names>
+                  </name>
+                  <name>
+                     <surname>Halter</surname>
+                     <given-names>SA</given-names>
+                  </name>
+                  <name>
+                     <surname>Rice</surname>
+                     <given-names>TW</given-names>
+                  </name>
+                  <name>
+                     <surname>Blaser</surname>
+                     <given-names>MJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Richter</surname>
+                     <given-names>JE</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">The seroprevalence of cagA-positive <named-content content-type="scientific-name">Helicobacter pylori</named-content> strains in the spectrum of gastroesophageal reflux disease</article-title>
+               <source xml:lang="en">Gastroenterology</source>
+               <year>1998</year>
+               <volume>115</volume>
+               <fpage>50</fpage>
+               <lpage>57</lpage>
+            </element-citation>
+            <mixed-citation>36. Vicari JJ, Peek RM, Falk GW, Goldblum JR, Easley KA, Schnell J, Perez-Perez GI, Halter SA, Rice TW, Blaser MJ, Richter JE. The seroprevalence of cagA-positive Helicobacter pylori strains in the spectrum of gastroesophageal reflux disease. Gastroenterology. 1998;115:50-7.</mixed-citation>
+         </ref>
+         <ref id="r37">
+            <label>37</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Wu</surname>
+                     <given-names>JC</given-names>
+                  </name>
+                  <name>
+                     <surname>Sung</surname>
+                     <given-names>JJ</given-names>
+                  </name>
+                  <name>
+                     <surname>Ng</surname>
+                     <given-names>EK</given-names>
+                  </name>
+                  <name>
+                     <surname>Go</surname>
+                     <given-names>MY</given-names>
+                  </name>
+                  <name>
+                     <surname>Chan</surname>
+                     <given-names>WB</given-names>
+                  </name>
+                  <name>
+                     <surname>Chan</surname>
+                     <given-names>FK</given-names>
+                  </name>
+                  <name>
+                     <surname>Leung</surname>
+                     <given-names>WK</given-names>
+                  </name>
+                  <name>
+                     <surname>Choi</surname>
+                     <given-names>CL</given-names>
+                  </name>
+                  <name>
+                     <surname>Chung</surname>
+                     <given-names>SC</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Prevalence and distribution of <named-content content-type="scientific-name">Helicobacter pylori</named-content> in gastroesophageal reflux disease: a study from the East</article-title>
+               <source xml:lang="en">Am J Gastroenterol</source>
+               <year>1999</year>
+               <volume>94</volume>
+               <fpage>1790</fpage>
+               <lpage>1794</lpage>
+            </element-citation>
+            <mixed-citation>37. Wu JC, Sung JJ, Ng EK, Go MY, Chan WB, Chan FK, Leung WK, Choi CL, Chung SC. Prevalence and distribution of Helicobacter pylori in gastroesophageal reflux disease: a study from the East. Am J Gastroenterol. 1999;94:1790-4.</mixed-citation>
+         </ref>
+         <ref id="r38">
+            <label>38</label>
+            <element-citation publication-type="journal">
+               <person-group person-group-type="author">
+                  <name>
+                     <surname>Zhang</surname>
+                     <given-names>W</given-names>
+                  </name>
+                  <name>
+                     <surname>Wu</surname>
+                     <given-names>J</given-names>
+                  </name>
+                  <name>
+                     <surname>Atkinson</surname>
+                     <given-names>SN</given-names>
+                  </name>
+               </person-group>
+               <article-title xml:lang="en">Effects of dexlansoprazole MR, a novel dual delayed release formulation of a proton pump inhibitor, on plasma gastrin levels in healthy subjects</article-title>
+               <source xml:lang="en">J Clin Pharmacol</source>
+               <year>2009</year>
+               <volume>49</volume>
+               <fpage>444</fpage>
+               <lpage>454</lpage>
+            </element-citation>
+            <mixed-citation>38. Zhang W, Wu J, Atkinson SN. Effects of dexlansoprazole MR, a novel dual delayed release formulation of a proton pump inhibitor, on plasma gastrin levels in healthy subjects. J Clin Pharmacol. 2009;49:444-54.</mixed-citation>
+         </ref>
+      </ref-list>
+      <fn-group>
+         <fn fn-type="conflict">
+            <p>The authors have no conflict of interest to declare.</p>
+         </fn>
+      </fn-group>
+   </back>
+</article>
