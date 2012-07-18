@@ -15,7 +15,7 @@ my_files = MyFiles()
 
 class PMCXML2ISIS:
 
-    def __init__(self, records_order, id2isis, xml2json_table_filename = 'pmcxml2isis.txt'):
+    def __init__(self, records_order, id2isis, xml2json_table_filename = '_pmcxml2isis.txt'):
        self.xml2json_table_filename = xml2json_table_filename
        self.records_order = records_order
        self.tables = {}
@@ -25,6 +25,7 @@ class PMCXML2ISIS:
     def generate_json(self, xml_filename, supplementary_xml_filename, report):
         xml2json_converter = XML2JSONConverter(self.xml2json_table_filename, report)
         json_data = xml2json_converter.convert(xml_filename)
+        #xml2json_converter.pretty_print(json_data)
         return json_data
             
     def generate_id_file(self, json_data, id_filename, report):
@@ -94,7 +95,7 @@ if __name__ == '__main__':
         output_path = output_path.replace('\\', '/')
         xml_path = xml_path.replace('\\', '/')
         
-        pmcxml2isis = PMCXML2ISIS('hr', IDFile2ISIS(cisis_path), 'pmcxml2isis.txt')
+        pmcxml2isis = PMCXML2ISIS('hr', IDFile2ISIS(cisis_path), '_pmcxml2isis.txt')
         pmcxml2isis.execute(xml_path, suppl_xml, output_path, db_name, script_filename, int(debug_depth), (display_on_screen == 'yes'))
         
         

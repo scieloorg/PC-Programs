@@ -15,6 +15,7 @@ class XML2JSONTable:
         last_level = -1
         parent_node = MyNode(None)
         current_node = self.start
+        self.start.xpath = '.'
         current_node.parent = parent_node
         
         
@@ -67,7 +68,7 @@ class XML2JSONTable:
             last_level = level
             
             
-        self.print_structure()
+        #self.print_structure()
             
     def print_structure(self):
         self.print_node(self.start, 0)
@@ -105,6 +106,6 @@ class MyNode:
 
 
 
-t =  XML2JSONTable('_pmcxml2isis.txt', Report('table.log', 'table.err', 0, False))
-t.print_structure()   
+#t =  XML2JSONTable('_pmcxml2isis.txt', Report('table.log', 'table.err', 0, False))
+#t.print_structure()   
         

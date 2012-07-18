@@ -1,10 +1,9 @@
-article
+.
   . h
     @article-type 71
     @xml:lang 40    
-  journal-meta h
-    abbrev-journal-title 030
-  article-meta h
+    journal-meta//abbrev-journal-title 030
+    subj-group[@subj-group-type='heading']/subject 49
     kwd-group 085
       @xml:lang l
       kwd k
@@ -12,28 +11,27 @@ article
       given-names n
       surname s
       . r ND
-      xref#@rid 1
-    article-title 012
+      xref@rid 1
+    article-meta//article-title 012
       . t
       @xml:lang l
-    trans-title-group 012
+    article-meta//trans-title-group 012
       trans-title t
       trans-subtitle s
       @xml:lang l
-    volume 031    
-    issue 032    
-    issn 035    
-    suppl 132    
-    funding-source 058    
-    award-id 060    
-    pub-date[@pub-type='ppub'] 064
-      season 
-    pub-date[@pub-type='ppub'] 065
-      year
-    publisher-loc 066    
-    . 014
+    article-meta//volume 031    
+    article-meta//issue 032    
+    journal-meta//issn 035    
+    article-meta//suppl 132    
+    article-meta//funding-source 058    
+    article-meta//award-id 060    
+    article-meta//pub-date[@pub-type='ppub']/season 064
+    article-meta//pub-date[@pub-type='ppub']/year 065
+    article-meta//publisher-loc 066    
+    article-meta 014
       fpage f
       lpage l
+    article-meta//fpage 120
     aff 070
       @id i
       .
@@ -63,8 +61,7 @@ article
       year
       month
       day
-      season
-    fpage 120
+      season    
   ref r
     element-citation@publication-type 071
     article-title 012

@@ -9,7 +9,6 @@ class PMCXML2JSON:
        self.xml2json_table_filename = xml2json_table_filename
        
     def convert(self, xml_filename, report):
-        
         xml2json_converter = XML2JSONConverter(self.xml2json_table_filename, report)
         return xml2json_converter.convert(xml_filename)
    
