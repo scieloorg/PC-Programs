@@ -25,7 +25,6 @@ class PMCXML2ISIS:
     def generate_json(self, xml_filename, supplementary_xml_filename, report):
         xml2json_converter = XML2JSONConverter(self.xml2json_table_filename, report)
         json_data = xml2json_converter.convert(xml_filename)
-        #xml2json_converter.pretty_print(json_data)
         return json_data
             
     def generate_id_file(self, json_data, id_filename, report):
@@ -44,7 +43,7 @@ class PMCXML2ISIS:
                 id_filename = f.replace('.xml', '.id')
                 
                 json_data = self.generate_json(xml_filename, files_set.suppl_filename, report)
-                self.generate_id_file(json_data, files_set.output_path + '/' + id_filename, report)
+                #self.generate_id_file(json_data, files_set.output_path + '/' + id_filename, report)
                 
     def convert_id_files_to_mst(self, db_path, db_name, script_filename, report):
         cmds = self.id2isis.create_script_content(db_path, db_name, report)

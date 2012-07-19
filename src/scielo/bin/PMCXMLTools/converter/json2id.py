@@ -1,20 +1,37 @@
 import os
 import sys
 
-class JSON2IDFile:
 
+class JSON2IDFile:
+    """
+    Class which creates an ID file from JSON (ISIS) document
+    """
     def __init__(self, filename, report):
+        """
+        Arguments: 
+        filename -- path and file name for ID file
+        report   -- object Report
+        """
         self.filename = filename
         self.report = report
         
     def format_records_and_save(self, records_order, json_data):
+        """
+        Arguments: 
+        records_order -- list of dictionary keys of json data that are related to each record
+        json_data   -- data in json format
+        """
+        
         rec_content =  ''
         record_number = 0
+        
         f = open(self.filename, 'w')
         f.close()
+        
+        
         for record_name in records_order:
             for rec_occ in json_data[record_name]:
-                
+                print(json.dumps(json_data[record_name], sort_keys=True, indent=4))
                 record_number += 1
                 record_id = '000000' + str(record_number)
                 record_id = record_id[-6:]
@@ -30,7 +47,7 @@ class JSON2IDFile:
                         for tag_occ in tag_occs:
                             tagged = '' 
                             for subf_name, subf_content in tag_occ.items():
-                                if subf_name == 'value': 
+                                if subf_name == '_': 
                                     tagged = self._convert_value_(subf_content) + tagged
                                 else:
                                     tagged += '^' + subf_name + self._convert_value_(subf_content) #FIXME

@@ -19,15 +19,18 @@ class Report:
      
     def __write__(self, filename, content):
         f = open(filename, 'a+')
-        f.write("\n" + datetime.now().isoformat() + "\n")
         f.write(content + "\n")
         f.close()   
+    
+    def what_time(self):
+        return datetime.now().isoformat() 
         
     def __write_all__(self, content, msg_type):
-        content = '[' + msg_type + ']'+ "\n" + content + "\n" + '[/' + msg_type + ']'
+        content = self.what_time() + '|' + msg_type + '|' + content.replace("\n", '_BREAK_')
         self.__write__(self.report_filename, content)
     
     def __write_err__(self, content):
+        content = self.what_time() + '|' + content.replace("\n", '_BREAK_')
         self.__write__(self.err_filename, content)
         
     def log_error(self, error_msg, data = None):
@@ -67,12 +70,12 @@ class Report:
             except:
                 self.__write_all__(label + "\n" + "UNABLE TO PRINT DATA", 'DEBUG')
             
-    def display_data(self, label, data):
+    def display_data(self, label, data = '' ):
         try:
-            self.__write_all__(label + "\n" + str(data), 'DISPLAY_DATA')
+            self.__write_all__(label + ":" + str(data), 'DISPLAY_DATA')
             
         except:
-            self.__write_all__(label + "\nUNABLE TO PRINT DATA" , 'DISPLAY_DATA')
+            self.__write_all__(label + ": UNABLE TO PRINT DATA" , 'DISPLAY_DATA')
             
         if self.display_output == True:
             print('[DISPLAY_DATA]')

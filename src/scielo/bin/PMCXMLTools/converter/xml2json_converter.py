@@ -4,89 +4,68 @@ import json
 
 class XML2JSONConverter:
 
-    def __init__(self, xml2json_table_filename, report):
+    def __init__(self, xml2json_table_filename, report, debug = False):
         self.conversion_table = XML2JSONTable(xml2json_table_filename, report)
         self.report = report
+        self.debug = debug
     
     def convert(self, xml_filename):
         self.xml_manager = XMLManager(xml_filename, self.report)
-        converted = self.__convert__(self.conversion_table.start, None)
-        return converted  
-         
+        converted = {}
+        converted['doc'] = self.__convert__(self.conversion_table.start, None)
+        self.report.display_data('converted', a)  
+        return converted 
+
+    def pretty(self, json_data):
+        return json.dumps(json_data, sort_keys=True, indent=4)
+        
     def pretty_print(self, json_data):
-        j = json.dumps(json_data, sort_keys=True, indent=4)
-        print(j)
+        print(self.pretty(json_data))
         
     def __convert__(self, table_node, xml_parent_node):
         sep = ''
         s = ''
         a = []
-        print('') 
-        print('__convert__ ' + table_node.xpath)
-        print('xml_parent_node: ')
-        print(xml_parent_node)
-        
+        if self.debug:
+            self.report.display_data('__convert__ ', table_node.xpath)
         xpath = table_node.xpath
         
-        if xpath == '.':
-            xml_nodes = self.xml_manager.return_nodes('', xml_parent_node)
+        if table_node.xpath == '.' or  table_node.xpath[0:1] == '@':
+            xpath = ''
         else:
-            if xpath[0:1] == '@':
-                xml_nodes = self.xml_manager.return_nodes('', xml_parent_node)
+            if not '[@' in xpath and '@' in xpath:
+                xpath = './/' + table_node.xpath[0:table_node.xpath.find('@')]
+                table_node.xpath = xpath[xpath.find('@'):]
             else:
-                if not '[@' in xpath and '@' in xpath:
-                    xml_nodes = self.xml_manager.return_nodes('.//' + xpath[0:xpath.find('@')], xml_parent_node)
-                    table_node.xpath = xpath[xpath.find('@'):]
-                    print(table_node.xpath)
-                else:
-                    xml_nodes = self.xml_manager.return_nodes('.//' + xpath, xml_parent_node)
+                xpath = './/' + table_node.xpath
+        xml_nodes = self.xml_manager.return_nodes(xpath, xml_parent_node)
                 
-        print('xml_nodes')    
-        print(xml_nodes)
         if len(table_node.children) == 0:
-            print(xpath + ' has no children')
-            a = self.return_values(table_node, xml_nodes)
-            s = self.format_json(table_node.to, a)
+            r = self.return_values(table_node, xml_nodes)
+            if len(r) == 1:
+                a = r[0]
+            else:
+                a = r
         else:
+            r = []
             for xml_node in xml_nodes:
-                r = ''
+                d = {}
                 for child in table_node.children:
-                    print('child')
-                    print(xpath + '/' + child.xpath)
-                    print(xml_node)
                     v = self.__convert__(child, xml_node)
-                    if len(v) > 0:
-                        r += ',' + v 
-                    
-                if len(r) > 0:
-                    r = r[1:]
-                if ':' in r:
-                    r = '{' + r + '}'
-                a.append(r)        
-            s = self.format_json(table_node.to, a)
-        print('result:' + s)  
-        return s
+                    if len(v)>0:
+                        if child.to == '':
+                            d['_'] = v
+                        else:
+                            d[child.to] = v
+                r.append(d)        
+            if len(r) == 1:
+               a = r[0]
+            else:
+               a = r
+        if self.debug:
+            self.report.display_data('result', a)  
+        return a
     
-    def format_json(self, key, list_of_values):
-        s = ''
-        if len(list_of_values) == 1:
-            s = list_of_values[0]
-        else:
-            for item in list_of_values:
-                s += ',' + item 
-                
-            if len(s) > 0:
-                s = s[1:]
-            if len(list_of_values) > 1:    
-                s = '[' + s  + ']' 
-                
-        if len(s) > 0:
-            if not s[0:1] in "{['":
-                s = "'" + s + "'"
-            if key != '' :
-                s = "'" + key + "':" + s 
-        return s
-        
     
     def return_values(self, table_node, xml_nodes):
         a = []
@@ -104,15 +83,16 @@ class XML2JSONConverter:
         return a
          
     def _convert_value_(self, value):
+        enc = 'utf-8'
         if value != '':
             try:
-                value = value.encode('iso-8859-1')
+                value = value.encode(enc)
             except:
                 
                 v = ''
                 for c in value:
                     try:
-                        v += c.encode('iso-8859-1')
+                        v += c.encode(enc)
                     except:
                         v += '&#' + str(hex(ord(c))) + ';' 
                 value = v
