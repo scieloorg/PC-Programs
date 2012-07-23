@@ -1,12 +1,13 @@
-.
-  . h
+. doc
+  . f
+    @dtd-version 120
     @article-type 71
     @xml:lang 40    
     journal-meta//abbrev-journal-title 030
     subj-group[@subj-group-type='heading']/subject 49
-    kwd-group 085
-      @xml:lang l
-      kwd k
+    kwd-group//kwd 085
+      . k
+      ../@xml:lang l
     contrib 010
       given-names n
       surname s
@@ -19,19 +20,20 @@
       trans-title t
       trans-subtitle s
       @xml:lang l
+    article-meta//article-id[@pub-id-type='doi'] 237
     article-meta//volume 031    
     article-meta//issue 032    
     journal-meta//issn 035    
     article-meta//suppl 132    
     article-meta//funding-source 058    
     article-meta//award-id 060    
-    article-meta//pub-date[@pub-type='ppub']/season 064
-    article-meta//pub-date[@pub-type='ppub']/year 065
+    article-meta//pub-date/season 064
+    article-meta//pub-date/year 065
     article-meta//publisher-loc 066    
     article-meta 014
       fpage f
       lpage l
-    article-meta//fpage 120
+    article-meta//fpage 121
     aff 070
       @id i
       .
@@ -43,26 +45,20 @@
       . a
       @xml:lang l
     date[@date-type='received'] 111
-      year
-      month
-      day
-      season    
+      year y
+      month m
+      day d
+      season s   
     date[@date-type='received'] 112    
-      year
-      month
-      day
-      season
+      year 
     date[@date-type='accepted'] 113    
-      year
-      month
-      day
-      season
+      year y
+      month m 
+      day d
+      season s
     date[@date-type='accepted'] 114    
-      year
-      month
-      day
-      season    
-  ref r
+      year    
+  ref c
     element-citation@publication-type 071
     article-title 012
       . t
@@ -93,9 +89,9 @@
     year 64    
     year 65    
     publisher-loc 66    
-    fpage 14
-      . f
-      . l
+    element-citation 14
+      fpage f
+      lpage l
     label 118    
     et-al 810    
     ext-link 37    

@@ -25,41 +25,49 @@ class PMCXML2ISIS:
     def generate_json(self, xml_filename, supplementary_xml_filename, report):
         xml2json_converter = XML2JSONConverter(self.xml2json_table_filename, report)
         json_data = xml2json_converter.convert(xml_filename)
+        #xml2json_converter.pretty_print(json_data)
         return json_data
             
-    def generate_id_file(self, json_data, id_filename, report):
+    def generate_id_file(self, json_data, id_filename, report, db_name):
         id_file = JSON2IDFile(id_filename, report)
-        id_file.format_records_and_save(self.records_order, json_data)
+        id_file.format_and_save_document_data(self.records_order, json_data, db_name)
         
-    def generate_id_file_list(self, files_set, report):
-        
+    def generate_db(self, files_set, report):
         cmd = ''
         files_set.prepare()
         id_filename_list = []
         list = os.listdir(files_set.xml_path)
         for f in list:
             if '.xml' in f:
+                print(f)
                 xml_filename = files_set.xml_path + '/' + f
                 id_filename = f.replace('.xml', '.id')
                 
                 json_data = self.generate_json(xml_filename, files_set.suppl_filename, report)
-                #self.generate_id_file(json_data, files_set.output_path + '/' + id_filename, report)
                 
-    def convert_id_files_to_mst(self, db_path, db_name, script_filename, report):
-        cmds = self.id2isis.create_script_content(db_path, db_name, report)
-        self.id2isis.run_commands(cmds)
-        if not os.path.exists(db_path + '/' + db_name + '.mst'):
-            self.id2isis.run_commands(cmds, True)
-        if not os.path.exists(db_path + '/' + db_name + '.mst'):
-            self.id2isis.write_script(script_filename + '.bat', cmds)
-            self.id2isis.write_script(script_filename + '.sh', cmds)
+                json_data = self.generate_record(json_data, 'f', 'h')
+                json_data = self.generate_record(json_data, 'f', 'l')
+                
+                self.generate_id_file(json_data['doc'], files_set.output_path + '/' + id_filename, report, files_set.db_name)
+                self.id2isis.id2mst(files_set.output_path + '/' + id_filename, files_set.db_filename)
+    
+    def generate_record(self, json_data, src, dest):
+        #print(json_data)
+        d = json_data['doc'][src]
+        json_data['doc'][dest] = self.convert_record(d)
+        return json_data
+    
+    def convert_record(self, json_record):
+        return json_record
+                
+    
             
     def execute(self, xml_path, suppl_filename, output_path, db_name, script_filename, debug_depth, display_on_screen):
         files_set = PMCXML_FilesSet(xml_path, suppl_filename, output_path, db_name)
         report = Report(files_set.log_filename, files_set.err_filename, debug_depth, display_on_screen) 
-        self.generate_id_file_list(files_set, report)
-        self.convert_id_files_to_mst(output_path, db_name, output_path + '/'+ script_filename, report)
+        self.generate_db(files_set, report)
         
+
 class PMCXML_FilesSet:
 
     def __init__(self, xml_path, suppl_filename, output_path, db_name):
@@ -80,7 +88,7 @@ class PMCXML_FilesSet:
                 ext = f[f.rfind('.'):]
                 if ext in ['.id', '.mst', '.xrf', '.log', ]:
                     print('deleting ' + self.output_path + '/' + f)
-                    #os.remove(self.output_path + '/' + f)
+                    os.remove(self.output_path + '/' + f)
         else:
             os.makedirs(self.output_path)
     
@@ -94,7 +102,7 @@ if __name__ == '__main__':
         output_path = output_path.replace('\\', '/')
         xml_path = xml_path.replace('\\', '/')
         
-        pmcxml2isis = PMCXML2ISIS('hr', IDFile2ISIS(cisis_path), '_pmcxml2isis.txt')
+        pmcxml2isis = PMCXML2ISIS('ohflc', IDFile2ISIS(cisis_path), '_pmcxml2isis.txt')
         pmcxml2isis.execute(xml_path, suppl_xml, output_path, db_name, script_filename, int(debug_depth), (display_on_screen == 'yes'))
         
         

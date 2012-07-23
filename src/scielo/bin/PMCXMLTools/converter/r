@@ -57,7 +57,2387 @@ deleting /Users/robertatakenaka/Documents/vm_dados/dados_pmc/ag/v49n1/pmc/pmc_ba
 deleting /Users/robertatakenaka/Documents/vm_dados/dados_pmc/ag/v49n1/pmc/pmc_base/v49n1.sh?
 deleting /Users/robertatakenaka/Documents/vm_dados/dados_pmc/ag/v49n1/pmc/pmc_base/v49n1.xrf?
 deleting /Users/robertatakenaka/Documents/vm_dados/dados_pmc/ag/v49n1/pmc/pmc_base/v49n1.xrf
-"{ 'doc' : {'h':{'71':'research-article','40':'en','030':'Arq. Gastroenterol.','49':'ORIGINAL ARTICLE','085':[{'l':'en','k':['Polymorphysm, genetic','Hepatitis C, chronic','Ferritins','Interferons']},{'l':'pt','k':['Polimorfismo gen\u00e9tico','Hepatite C cr\u00f4nica','Ferritinas','Interferons']}],'010':[{'n':'Silvia','s':'Coelho-Borges','r':'ND'},{'n':'Hugo','s':'Cheinquer','r':'ND','1':''},{'n':'Fernando Herz','s':'Wolff','r':'ND','1':''},{'n':'Nelson','s':'Cheinquer','r':'ND','1':''},{'n':'Luciano','s':'Krug','r':'ND','1':''},{'n':'Patricia','s':'Ashton-Prolla','r':'ND','1':''}],'012':{'t':'Effect of HFE gene polymorphism on sustained virological response in patients with chronic hepatitis C and elevated serum ferritin','l':'en'},'012':{'t':'Efeito do polimorfismo do gene HFE sobre a resposta viral sustentada em portadores de hepatite cr\u00f4nica C com ferritina s\u00e9rica elevada','l':'pt'},'031':'49','032':'1','035':'0004-2803','064':'Jan-Mar','065':'2012','014':{'f':'9','l':'13'},'120':'9','070':[{'i':'aff1','Gastroenterology Department, Hospital de Cl\u00ednicas de Porto Alegre'},{'i':'aff2','National Institute of Science and Technology for Health Technology Assessment (IATS) CNPq/Brazil'},{'i':'aff3','Amplicon - Molecular Biology Laboratory'},{'i':'aff4','Medical Genetics Service, Hospital de Cl\u00ednicas de Porto Alegre'},{'i':'aff5','Genetics Department, UFRGS, Porto Alegre, RS, Brasil'}],'72':'37','083':{'a':'<p>\n               <bold>CONTEXT</bold>: Abnormal serum ferritin levels are found in approximately 20%-30% of the patients with chronic hepatitis C and are associated with a lower response rate to interferon therapy. <bold>OBJECTIVE</bold>: To determine if the presence of HFE gene mutations had any effect on the sustained virological response rate to interferon based therapy in chronic hepatitis C patients with elevated serum ferritin. <bold>METHODS</bold>: A total of 44 treatment na&#207;ve patients with histologically demonstrated chronic hepatitis C, all infected with hepatitis C virus genotype non-1 (38 genotype 3; 6 genotype 2) and serum ferritin above 500 ng/mL were treated with interferon (3 MU, 3 times a week) and ribavirin (1.000 mg, daily) for 24 weeks. <bold>RESULTS</bold>: Sustained virological response was defined as negative qualitative HCV-RNA more than 24 weeks after the end of treatment. Serum HCV-RNA was measured by qualitative in house polymerase chain reaction with a limit of detection of 200 IU/mL. HFE gene mutation was detected using restriction-enzyme digestion with RsaI (C282Y mutation analysis) and BclI (H63D mutation analysis) in 16 (37%) patients, all heterozygous (11 H63D, 2 C282Y and 3 both). Sustained virological response was achieved in 0 of 16 patients with HFE gene mutations and 11 (41%) of 27 patients without HFE gene mutations (<italic>P</italic> = 0.002; exact Fisher test). <bold>CONCLUSION</bold>: Heterozigozity for H63D and/or C282Y HFE gene mutation predicts absence of sustained virological response to combination treatment with interferon and ribavirin in patients with chronic hepatitis C, non-1 genotype and serum ferritin levels above 500 ng/mL.</p>','l':'en'},'83':{'a':'<p>\n               <bold>CONTEXTO</bold>: N&#237;veis s&#233;ricos anormais de ferritina s&#227;o encontrados em aproximadamente 20%-30% dos pacientes com hepatite cr&#244;nica C e est&#227;o associadas a uma baixa taxa de resposta &#224; terapia com interferon. <bold>OBJETIVO</bold>: Avaliar a associa&#231;&#227;o entre a presen&#231;a de muta&#231;&#245;es do gene HFE e a taxa de resposta virol&#243;gica sustentada ao interferon em pacientes portadores de hepatite cr&#244;nica C com ferritina s&#233;rica elevada. <bold>M&#201;TODOS</bold>: Um total de 44 pacientes, virgem de tratamento, infectado pelo v&#237;rus da hepatite C de gen&#243;tipos n&#227;o-1 (38 gen&#243;tipo 3; 6 gen&#243;tipo 2) e ferritina s&#233;rica acima de 500 ng/mL foi tratado com interferon (3 MU, tr&#234;s vezes por semana) e ribavirina (1000 mg/dia) por 24 semanas. Resposta virol&#243;gica sustentada foi definida como HCV-RNA indetect&#225;vel 24 semanas ap&#243;s o fim do tratamento. Foi utilizado t&#233;cnica de rea&#231;&#227;o em cadeia da polimerase em tempo-real com limite de detec&#231;&#227;o de 200 UI /mL. <bold>RESULTADOS</bold>: Muta&#231;&#245;es do gene HFE foram detectadas por \"restriction-enzyme digestion\" com RsaI (an&#225;lise de muta&#231;&#227;o C282Y) e BclI (an&#225;lise de muta&#231;&#227;o H63D) em 16 pacientes (37%), todos heterozigotos (11 H63D, 2 C282Y e 3 ambos). Resposta virol&#243;gica sustentada foi alcan&#231;ada em 0 de 16 pacientes com muta&#231;&#245;es do gene HFE e 11 (41%) dos 27 pacientes sem muta&#231;&#245;es do gene HFE (P = 0,002; teste exato de Fisher). <bold>CONCLUS&#195;O</bold>: A heterozigose para os genes H63D e/ou C282Y HFE est&#225; associada &#224; redu&#231;&#227;o significativa da taxa de resposta virol&#243;gica sustentada ao tratamento com interferon e ribavirina em pacientes com hepatite cr&#244;nica C, gen&#243;tipo n&#227;o-1 e com n&#237;veis s&#233;ricos de ferritina acima de 500 ng/mL.</p>','l':'pt'},'111':'2011','04','25','112':'2011','04','25','113':'2011','08','10','114':'2011','08','10'},'r':[{'071':'journal','012':{'t':'[Interferon-alpha and ribavirin therapy on chronic hepatitis C virus infection: the experience of Rio Grande do Sul State Health Department, Brazil]','l':'en'},'30':'Arq Gastroenterol','10':[{'n':'AV','s':'Alves','r':'ND'},{'n':'AP','s':'de Azevedo','r':'ND'},{'n':'C','s':'Perin','r':'ND'},{'n':'GZ','s':'Ramos','r':'ND'},{'n':'AB','s':'Brand\u00e3o','r':'ND'},{'n':'AA','s':'de Mattos','r':'ND'},{'n':'PR','s':'de Almeida','r':'ND'}],'31':'40','64':'2003','65':'2003','14':{'f':'227','l':'227'},'118':'1'},{'071':'','012':{'t':'Threshold effect of liver iron content on hepatic inflammation and fibrosis in hepatitis B and C','l':'en'},'30':'J Hepatol','10':[{'n':'NK','s':'Beinker','r':'ND'},{'n':'MD','s':'Voigt','r':'ND'},{'n':'M','s':'Arendse','r':'ND'},{'n':'J','s':'Smit','r':'ND'},{'n':'IA','s':'Stander','r':'ND'},{'n':'RE','s':'Kirsch','r':'ND'}],'31':'25','64':'1996','65':'1996','14':{'f':'633','l':'633'},'118':'2'},{'071':'','012':{'t':'Iron and chronic viral hepatitis','l':'en'},'30':'Hepatology','10':[{'n':'HL','s':'Bonkovsky','r':'ND'},{'n':'BF','s':'Banner','r':'ND'},{'n':'AL','s':'Rothman','r':'ND'}],'31':'25','64':'1997','65':'1997','14':{'f':'759','l':'759'},'118':'3'},{'071':'','012':{'t':'Iron as a comorbid factor in chronic viral hepatitis','l':'en'},'30':'Am J Gastroenterol','10':{'n':'HL','s':'Bonkovsky','r':'ND'},'31':'97','64':'2002','65':'2002','14':{'f':'1','l':'1'},'118':'4'},{'071':'','012':{'t':'Iron and HFE or TfR1 mutations as comorbid factors for development and progression of chronic hepatitis C','l':'en'},'30':'J Hepatol','10':[{'n':'HL','s':'Bonkovsky','r':'ND'},{'n':'N','s':'Troy','r':'ND'},{'n':'K','s':'McNeal','r':'ND'},{'n':'BF','s':'Banner','r':'ND'},{'n':'A','s':'Sharma','r':'ND'},{'n':'J','s':'Obando','r':'ND'},{'n':'S','s':'Mehta','r':'ND'},{'n':'RS','s':'Koff','r':'ND'},{'n':'Q','s':'Liu','r':'ND'},{'n':'CC','s':'Hsieh','r':'ND'}],'31':'37','64':'2002','65':'2002','14':{'f':'848','l':'848'},'118':'5'},{'071':'','012':{'t':'Roles of iron and HFE mutations on severity and response to therapy during retreatment of advanced chronic hepatitis C','l':'en'},'30':'Gastroenterology','10':[{'n':'HL','s':'Bonkovsky','r':'ND'},{'n':'D','s':'Naishadham','r':'ND'},{'n':'RW','s':'Lambrecht','r':'ND'},{'n':'RT','s':'Chung','r':'ND'},{'n':'JC','s':'Hoefs','r':'ND'},{'n':'SR','s':'Nash','r':'ND'},{'n':'TE','s':'Rogers','r':'ND'},{'n':'BF','s':'Banner','r':'ND'},{'n':'RK','s':'Sterling','r':'ND'},{'n':'JA','s':'Donovan','r':'ND'},{'n':'RJ','s':'Fontana','r':'ND'},{'n':'AM','s':'Di Bisceglie','r':'ND'},{'n':'MG','s':'Ghany','r':'ND'},{'n':'C','s':'Morishima','r':'ND'}],'31':'131','64':'2006','65':'2006','14':{'f':'1440','l':'1440'},'118':'6'},{'071':'','18':'Portaria 34 de 28 de setembro de 2007. Disp\u00f5e sobre protocolo cl\u00ednico e diretrizes terap\u00eauticas para hepatite viral C','62':'Minist\u00e9rio da Sa\u00fade','64':'2007','65':'2007','66':'Bras\u00edlia','118':'7'},{'071':'','012':{'t':'The H63D genetic variant of the HFE gene is independently associated with the virological response to interferon and ribavirin therapy in chronic hepatitis C','l':'en'},'30':'Eur J Gastroenterol Hepatol','10':[{'n':'MV','s':'Carneiro','r':'ND'},{'n':'FF','s':'Souza','r':'ND'},{'n':'AC','s':'Teixeira','r':'ND'},{'n':'JF','s':'Figueiredo','r':'ND'},{'n':'MG','s':'Villanova','r':'ND'},{'n':'M','s':'Secaf','r':'ND'},{'n':'AD','s':'Passos','r':'ND'},{'n':'LN','s':'Ramalho','r':'ND'},{'n':'FP','s':'Carneiro','r':'ND'},{'n':'S','s':'Zucoloto','r':'ND'},{'n':'AL','s':'Candolo Martinelli','r':'ND'}],'31':'22','64':'2010','65':'2010','14':{'f':'1204','l':'1204'},'118':'8'},{'071':'','012':{'t':'HCV genotype 3: an independent predictor of fibrosis progression in chronic hepatitis C','l':'en'},'30':'J Hepatol','10':[{'n':'S','s':'De Nicola','r':'ND'},{'n':'A','s':'Aghemo','r':'ND'},{'n':'MG','s':'Rumi','r':'ND'},{'n':'M','s':'Colombo','r':'ND'}],'31':'51','64':'2009','65':'2009','14':{'f':'964','l':'964'},'118':'9'},{'071':'','012':{'t':'Measurements of iron status in patients with chronic hepatitis','l':'en'},'30':'Gastroenterology','10':[{'n':'AM','s':'Di Bisceglie','r':'ND'},{'n':'CA','s':'Axiotis','r':'ND'},{'n':'JH','s':'Hoofnagle','r':'ND'},{'n':'BR','s':'Bacon','r':'ND'}],'31':'102','64':'1992','65':'1992','14':{'f':'2108','l':'2108'},'118':'10'},{'071':'','012':{'t':'Iron reduction as an adjuvant to interferon therapy in patients with chronic hepatitis C who have previously not responded to interferon: a multicenter, prospective, randomized, controlled trial','l':'en'},'30':'Hepatology','10':[{'n':'AM','s':'Di Bisceglie','r':'ND'},{'n':'HL','s':'Bonkovsky','r':'ND'},{'n':'S','s':'Chopra','r':'ND'},{'n':'S','s':'Flamm','r':'ND'},{'n':'RK','s':'Reddy','r':'ND'},{'n':'N','s':'Grace','r':'ND'},{'n':'P','s':'Killenberg','r':'ND'},{'n':'C','s':'Hunt','r':'ND'},{'n':'C','s':'Tamburro','r':'ND'},{'n':'AS','s':'Tavill','r':'ND'},{'n':'R','s':'Ferguson','r':'ND'},{'n':'E','s':'Krawitt','r':'ND'},{'n':'B','s':'Banner','r':'ND'},{'n':'BR','s':'Bacon','r':'ND'}],'31':'32','64':'2000','65':'2000','14':{'f':'135','l':'135'},'118':'11'},{'071':'','012':{'t':'Raised serum ferritin predicts non-response to interferon and ribavirin treatment in patients with chronic hepatitis C infection','l':'en'},'30':'Liver','10':[{'n':'S','s':'Distante','r':'ND'},{'n':'K','s':'Bj\u00d8ro','r':'ND'},{'n':'KB','s':'Hellum','r':'ND'},{'n':'B','s':'Myrvang','r':'ND'},{'n':'JP','s':'Berg','r':'ND'},{'n':'K','s':'Skaug','r':'ND'},{'n':'N','s':'Raknerud','r':'ND'},{'n':'H','s':'Bell','r':'ND'}],'31':'22','64':'2002','65':'2002','14':{'f':'269','l':'269'},'118':'12'},{'071':'','012':{'t':'A novel MHC class I-like gene is mutated in patients with hereditary haemochromatosis','l':'en'},'30':'Nat Genet','10':[{'n':'JN','s':'Feder','r':'ND'},{'n':'A','s':'Gnirke','r':'ND'},{'n':'W','s':'Thomas','r':'ND'},{'n':'Z','s':'Tsuchihashi','r':'ND'},{'n':'DA','s':'Ruddy','r':'ND'},{'n':'A','s':'Basava','r':'ND'},{'n':'F','s':'Dormishian','r':'ND'},{'n':'R Jr','s':'Domingo','r':'ND'},{'n':'MC','s':'Ellis','r':'ND'},{'n':'A','s':'Fullan','r':'ND'},{'n':'LM','s':'Hinton','r':'ND'},{'n':'NL','s':'Jones','r':'ND'},{'n':'BE','s':'Kimmel','r':'ND'},{'n':'GS','s':'Kronmal','r':'ND'},{'n':'P','s':'Lauer','r':'ND'},{'n':'VK','s':'Lee','r':'ND'},{'n':'DB','s':'Loeb','r':'ND'},{'n':'FA','s':'Mapa','r':'ND'},{'n':'E','s':'McClelland','r':'ND'},{'n':'NC','s':'Meyer','r':'ND'},{'n':'GA','s':'Mintier','r':'ND'},{'n':'N','s':'Moeller','r':'ND'},{'n':'T','s':'Moore','r':'ND'},{'n':'E','s':'Morikang','r':'ND'},{'n':'CE','s':'Prass','r':'ND'},{'n':'L','s':'Quintana','r':'ND'},{'n':'SM','s':'Starnes','r':'ND'},{'n':'RC','s':'Schatzman','r':'ND'},{'n':'KJ','s':'Brunke','r':'ND'},{'n':'DT','s':'Drayna','r':'ND'},{'n':'NJ','s':'Risch','r':'ND'},{'n':'BR','s':'Bacon','r':'ND'},{'n':'RK','s':'Wolff','r':'ND'}],'31':'13','64':'1996','65':'1996','14':{'f':'399','l':'399'},'118':'13'},{'071':'','012':{'t':'Predictors of response to therapy for chronic hepatitis C','l':'en'},'30':'Semin Liver Dis','10':{'n':'P','s':'Ferenci','r':'ND'},'31':'24','64':'2004','65':'2004','14':{'f':'25','l':'25'},'118':'14'},{'071':'','012':{'t':'Peginterferon alfa-2a plus ribavirin for chronic hepatitis C virus infection','l':'en'},'30':'N Engl J Med','10':[{'n':'MW','s':'Fried','r':'ND'},{'n':'ML','s':'Shiffman','r':'ND'},{'n':'KR','s':'Reddy','r':'ND'},{'n':'C','s':'Smith','r':'ND'},{'n':'G','s':'Marinos','r':'ND'},{'n':'FL Jr','s':'Gon\u00e7ales','r':'ND'},{'n':'D','s':'H\u00e4ussinger','r':'ND'},{'n':'M','s':'Diago','r':'ND'},{'n':'G','s':'Carosi','r':'ND'},{'n':'D','s':'Dhumeaux','r':'ND'},{'n':'A','s':'Craxi','r':'ND'},{'n':'A','s':'Lin','r':'ND'},{'n':'J','s':'Hoffman','r':'ND'},{'n':'J','s':'Yu','r':'ND'}],'31':'347','64':'2002','65':'2002','14':{'f':'975','l':'975'},'118':'15'},{'071':'','012':{'t':'Hepatic iron accumulation is associated with disease progression and resistance to interferon/ribavirin combination therapy in chronic hepatitis C','l':'en'},'30':'J Gastroenterol Hepatol','10':[{'n':'N','s':'Fujita','r':'ND'},{'n':'R','s':'Sugimoto','r':'ND'},{'n':'N','s':'Urawa','r':'ND'},{'n':'J','s':'Araki','r':'ND'},{'n':'R','s':'Mifuji','r':'ND'},{'n':'M','s':'Yamamoto','r':'ND'},{'n':'S','s':'Horiike','r':'ND'},{'n':'H','s':'Tanaka','r':'ND'},{'n':'M','s':'Iwasa','r':'ND'},{'n':'Y','s':'Kobayashi','r':'ND'},{'n':'Y','s':'Adachi','r':'ND'},{'n':'M','s':'Kaito','r':'ND'}],'31':'22','64':'2007','65':'2007','14':{'f':'1886','l':'1886'},'118':'16'},{'071':'','012':{'t':'Selection-driven immune escape is not a significant factor in the failure of CD4 T cell responses in persistent hepatitis C virus infection','l':'en'},'30':'Hepatology','10':[{'n':'MJ','s':'Fuller','r':'ND'},{'n':'NH','s':'Shoukry','r':'ND'},{'n':'T','s':'Gushima','r':'ND'},{'n':'DG','s':'Bowen','r':'ND'},{'n':'B','s':'Callendret','r':'ND'},{'n':'KJ','s':'Campbell','r':'ND'},{'n':'DL','s':'Hasselschwert','r':'ND'},{'n':'AL','s':'Hughes','r':'ND'},{'n':'CM','s':'Walker','r':'ND'}],'31':'51','64':'2010','65':'2010','14':{'f':'378','l':'378'},'118':'17'},{'071':'','012':{'t':'Hereditary haemochromatosis as an immunological disease','l':'en'},'30':'Br J Haematol','10':[{'n':'GS','s':'Gerhard','r':'ND'},{'n':'AE','s':'Ten Elshof','r':'ND'},{'n':'MJ','s':'Chorney','r':'ND'}],'31':'100','64':'1998','65':'1998','14':{'f':'247','l':'247'},'118':'18'},{'071':'','012':{'t':'HCV substitutions and IL28B polymorphisms on outcome of peg-interferon plus ribavirin combination therapy','l':'en'},'30':'Gut','10':[{'n':'CN','s':'Hayes','r':'ND'},{'n':'M','s':'Kobayashi','r':'ND'},{'n':'N','s':'Akuta','r':'ND'},{'n':'F','s':'Suzuki','r':'ND'},{'n':'H','s':'Kumada','r':'ND'},{'n':'H','s':'Abe','r':'ND'},{'n':'D','s':'Miki','r':'ND'},{'n':'M','s':'Imamura','r':'ND'},{'n':'H','s':'Ochi','r':'ND'},{'n':'N','s':'Kamatani','r':'ND'},{'n':'Y','s':'Nakamura','r':'ND'},{'n':'K','s':'Chayama','r':'ND'}],'31':'60','64':'2011','65':'2011','14':{'f':'261','l':'261'},'118':'19'},{'071':'','012':{'t':'The epidemiology of hyperferritinaemia','l':'en'},'30':'World J Gastroenterol','10':[{'n':'S','s':'Hearnshaw','r':'ND'},{'n':'NP','s':'Thompson','r':'ND'},{'n':'A','s':'McGill','r':'ND'}],'31':'12','64':'2006','65':'2006','14':{'f':'5866','l':'5866'},'118':'20'},{'071':'','012':{'t':'Iron depletion is not effective in inducing a virologic response in patients with chronic hepatitis C who failed to respond to interferon therapy','l':'en'},'30':'Am J Gastroenterol','10':{'n':'JL','s':'Herrera','r':'ND'},'31':'94','64':'1999','65':'1999','14':{'f':'3571','l':'3571'},'118':'21'},{'071':'','012':{'t':'Liver iron accumulation in patients with chronic active hepatitis C: prevalence and role of hemochromatosis gene mutations and relationship with hepatic histological lesions','l':'en'},'30':'J Hepatol','10':[{'n':'C','s':'H\u00e9zode','r':'ND'},{'n':'C','s':'Cazeneuve','r':'ND'},{'n':'O','s':'Cou\u00e9','r':'ND'},{'n':'F','s':'Roudot-Thoraval','r':'ND'},{'n':'I','s':'Lonjon','r':'ND'},{'n':'A','s':'Bastie','r':'ND'},{'n':'C','s':'Duvoux','r':'ND'},{'n':'JM','s':'Pawlotsky','r':'ND'},{'n':'ES','s':'Zafrani','r':'ND'},{'n':'S','s':'Amselem','r':'ND'},{'n':'D','s':'Dhumeaux','r':'ND'}],'31':'31','64':'1999','65':'1999','14':{'f':'979','l':'979'},'118':'22'},{'071':'','012':{'t':'Hepatic iron concentration does not predict response to standard and pegylated-IFN/ribavirin therapy in patients with chronic hepatitis C','l':'en'},'30':'J Hepatol','10':[{'n':'H','s':'Hofer','r':'ND'},{'n':'C','s':'Osterreicher','r':'ND'},{'n':'W','s':'Jessner','r':'ND'},{'n':'M','s':'Penz','r':'ND'},{'n':'P','s':'Steindl-Munda','r':'ND'},{'n':'F','s':'Wrba','r':'ND'},{'n':'P','s':'Ferenci','r':'ND'}],'31':'40','64':'2004','65':'2004','14':{'f':'1018','l':'1018'},'118':'23'},{'071':'','012':{'t':'The relation of iron status and hemochromatosis gene mutations in patients with chronic hepatitis C','l':'en'},'30':'Gastroenterology','10':[{'n':'L','s':'Kazemi-Shirazi','r':'ND'},{'n':'C','s':'Datz','r':'ND'},{'n':'T','s':'Maier-Dobersberger','r':'ND'},{'n':'K','s':'Kaserer','r':'ND'},{'n':'F','s':'Hackl','r':'ND'},{'n':'C','s':'Polli','r':'ND'},{'n':'PE','s':'Steindl','r':'ND'},{'n':'E','s':'Penner','r':'ND'},{'n':'P','s':'Ferenci','r':'ND'}],'31':'116','64':'1999','65':'1999','14':{'f':'127','l':'127'},'118':'24'},{'071':'','012':{'t':'Influence of HFE gene polymorphism on the progression and treatment of chronic hepatitis C','l':'en'},'30':'J Viral Hepat','10':[{'n':'P','s':'Lebray','r':'ND'},{'n':'H','s':'Zylberberg','r':'ND'},{'n':'S','s':'Hue','r':'ND'},{'n':'B','s':'Poulet','r':'ND'},{'n':'F','s':'Carnot','r':'ND'},{'n':'S','s':'Martin','r':'ND'},{'n':'Y','s':'Chretien','r':'ND'},{'n':'S','s':'Pol','r':'ND'},{'n':'S','s':'Caillat-Zuckman','r':'ND'},{'n':'C','s':'Br\u00e9chot','r':'ND'},{'n':'B','s':'Nalpas','r':'ND'}],'31':'11','64':'2004','65':'2004','14':{'f':'175','l':'175'},'118':'25'},{'071':'','012':{'t':'An IL28B polymorphism determines treatment response of hepatitis C virus genotype 2 or 3 patients who do not achieve a rapid virologic response','l':'en'},'30':'Gastroenterology','10':[{'n':'A','s':'Mangia','r':'ND'},{'n':'AJ','s':'Thompson','r':'ND'},{'n':'R','s':'Santoro','r':'ND'},{'n':'V','s':'Piazzolla','r':'ND'},{'n':'HL','s':'Tillmann','r':'ND'},{'n':'K','s':'Patel','r':'ND'},{'n':'KV','s':'Shianna','r':'ND'},{'n':'L','s':'Mottola','r':'ND'},{'n':'D','s':'Petruzzellis','r':'ND'},{'n':'D','s':'Bacca','r':'ND'},{'n':'V','s':'Carretta','r':'ND'},{'n':'N','s':'Minerva','r':'ND'},{'n':'DB','s':'Goldstein','r':'ND'},{'n':'JG','s':'McHutchison','r':'ND'}],'31':'139','64':'2010','65':'2010','14':{'f':'821','l':'821'},'118':'26'},{'071':'','012':{'t':'Peginterferon alfa-2b plus ribavirin compared with interferon alfa-2b plus ribavirin for initial treatment of chronic hepatitis C: a randomised trial','l':'en'},'30':'Lancet','10':[{'n':'MP','s':'Manns','r':'ND'},{'n':'JG','s':'McHutchison','r':'ND'},{'n':'SC','s':'Gordon','r':'ND'},{'n':'VK','s':'Rustgi','r':'ND'},{'n':'M','s':'Shiffman','r':'ND'},{'n':'R','s':'Reindollar','r':'ND'},{'n':'ZD','s':'Goodman','r':'ND'},{'n':'K','s':'Koury','r':'ND'},{'n':'M','s':'Ling','r':'ND'},{'n':'JK','s':'Albrecht','r':'ND'}],'31':'358','64':'2001','65':'2001','14':{'f':'958','l':'958'},'118':'27'},{'071':'','012':{'t':'Host and viral factors contributing to CD8+ T cell failure in hepatitis C virus infection','l':'en'},'30':'World J Gastroenterol','10':[{'n':'C','s':'Neumann-Haefelin','r':'ND'},{'n':'HC','s':'Spangenberg','r':'ND'},{'n':'HE','s':'Blum','r':'ND'},{'n':'R','s':'Thimme','r':'ND'}],'31':'13','64':'2007','65':'2007','14':{'f':'4839','l':'4839'},'118':'28'},{'071':'','012':{'t':'Hepatic iron concentration does not influence response to therapy with interferon plus ribavirin in chronic HCV infection','l':'en'},'30':'J Interferon Cytokine Res','10':[{'n':'S','s':'Pianko','r':'ND'},{'n':'JG','s':'McHutchison','r':'ND'},{'n':'SC','s':'Gordon','r':'ND'},{'n':'S','s':'Heaton','r':'ND'},{'n':'ZD','s':'Goodman','r':'ND'},{'n':'K','s':'Patel','r':'ND'},{'n':'CM','s':'Cortese','r':'ND'},{'n':'EM','s':'Brunt','r':'ND'},{'n':'BR','s':'Bacon','r':'ND'},{'n':'LM','s':'Blatt','r':'ND'}],'31':'22','64':'2002','65':'2002','14':{'f':'483','l':'483'},'118':'29'},{'071':'','012':{'t':'Genetic variation in IL28B is associated with chronic hepatitis C and treatment failure: a genome-wide association study','l':'en'},'30':'Gastroenterology','10':[{'n':'A','s':'Rauch','r':'ND'},{'n':'Z','s':'Kutalik','r':'ND'},{'n':'P','s':'Descombes','r':'ND'},{'n':'T','s':'Cai','r':'ND'},{'n':'J','s':'Di Iulio','r':'ND'},{'n':'T','s':'Mueller','r':'ND'},{'n':'M','s':'Bochud','r':'ND'},{'n':'M','s':'Battegay','r':'ND'},{'n':'E','s':'Bernasconi','r':'ND'},{'n':'J','s':'Borovicka','r':'ND'},{'n':'S','s':'Colombo','r':'ND'},{'n':'A','s':'Cerny','r':'ND'},{'n':'JF','s':'Dufour','r':'ND'},{'n':'H','s':'Furrer','r':'ND'},{'n':'HF','s':'G\u00fcnthard','r':'ND'},{'n':'M','s':'Heim','r':'ND'},{'n':'B','s':'Hirschel','r':'ND'},{'n':'R','s':'Malinverni','r':'ND'},{'n':'D','s':'Moradpour','r':'ND'},{'n':'B','s':'M\u00fcllhaupt','r':'ND'},{'n':'A','s':'Witteck','r':'ND'},{'n':'JS','s':'Beckmann','r':'ND'},{'n':'T','s':'Berg','r':'ND'},{'n':'S','s':'Bergmann','r':'ND'},{'n':'F','s':'Negro','r':'ND'},{'n':'A','s':'Telenti','r':'ND'},{'n':'PY','s':'Bochud','r':'ND'}],'31':'138','64':'2010','65':'2010','14':{'f':'1338','l':'1338'},'118':'30'},{'071':'','012':{'t':'Associations between the human MHC and sustained virologic response in the treatment of chronic hepatitis C virus infection','l':'en'},'30':'Genes Immun','10':[{'n':'SL','s':'Rhodes','r':'ND'},{'n':'H','s':'Erlich','r':'ND'},{'n':'KA','s':'Im','r':'ND'},{'n':'J','s':'Wang','r':'ND'},{'n':'J','s':'Li','r':'ND'},{'n':'T','s':'Bugawan','r':'ND'},{'n':'L','s':'Jeffers','r':'ND'},{'n':'X','s':'Tong','r':'ND'},{'n':'X','s':'Su','r':'ND'},{'n':'HR','s':'Rosen','r':'ND'},{'n':'LJ','s':'Yee','r':'ND'},{'n':'TJ','s':'Liang','r':'ND'},{'n':'H','s':'Yang','r':'ND'}],'31':'9','64':'2008','65':'2008','14':{'f':'328','l':'328'},'118':'31'},{'071':'','012':{'t':'Heterozygosity for hereditary hemochromatosis is associated with more fibrosis in chronic hepatitis C','l':'en'},'30':'Hepatology','10':[{'n':'BC','s':'Smith','r':'ND'},{'n':'J','s':'Gorve','r':'ND'},{'n':'MA','s':'Guzail','r':'ND'},{'n':'CP','s':'Day','r':'ND'},{'n':'AK','s':'Daly','r':'ND'},{'n':'AD','s':'Burt','r':'ND'},{'n':'MF','s':'Bassendine','r':'ND'}],'31':'27','64':'1998','65':'1998','14':{'f':'1695','l':'1695'},'118':'32'},{'071':'','012':{'t':'Effect of iron overload on the severity of liver histologic alterations and on the response to interferon and ribavirin therapy of patients with hepatitis C infection','l':'en'},'30':'Braz J Med Biol Res','10':[{'n':'RM','s':'Souza','r':'ND'},{'n':'LA','s':'Freitas','r':'ND'},{'n':'AC','s':'Lyra','r':'ND'},{'n':'CF','s':'Moraes','r':'ND'},{'n':'EL','s':'Braga','r':'ND'},{'n':'LG','s':'Lyra','r':'ND'}],'31':'39','64':'2006','65':'2006','14':{'f':'79','l':'79'},'118':'33'},{'071':'','012':{'t':'Gamma delta intraepithelial lymphocytes drive tumor necrosis factor-alpha responsiveness to intestinal iron challenge: relevance to hemochromatosis','l':'en'},'30':'Immunol Rev','10':[{'n':'AE','s':'Ten Elshof','r':'ND'},{'n':'GM','s':'Brittenham','r':'ND'},{'n':'KA','s':'Chorney','r':'ND'},{'n':'MJ','s':'Page','r':'ND'},{'n':'G','s':'Gerhard','r':'ND'},{'n':'EE','s':'Cable','r':'ND'},{'n':'MJ','s':'Chorney','r':'ND'}],'31':'167','64':'1999','65':'1999','14':{'f':'223','l':'223'},'118':'34'},{'071':'','012':{'t':'The role of iron and haemochromatosis gene mutations in the progression of liver disease in chronic hepatitis C','l':'en'},'30':'Gut','10':[{'n':'D','s':'Thorburn','r':'ND'},{'n':'G','s':'Curry','r':'ND'},{'n':'R','s':'Spooner','r':'ND'},{'n':'E','s':'Spence','r':'ND'},{'n':'K','s':'Oien','r':'ND'},{'n':'D','s':'Halls','r':'ND'},{'n':'R','s':'Fox','r':'ND'},{'n':'EA','s':'McCruden','r':'ND'},{'n':'RN','s':'MacSween','r':'ND'},{'n':'PR','s':'Mills','r':'ND'}],'31':'50','64':'2002','65':'2002','14':{'f':'248','l':'248'},'118':'35'},{'071':'','012':{'t':'Prognostic effect of human leukocyte antigen class I and II alleles on chronic hepatitis C patients treated by pegylated interferon-alfa plus ribavirin in Taiwan','l':'en'},'30':'Hepatogastroenterology','10':[{'n':'KC','s':'Tseng','r':'ND'},{'n':'CK','s':'Chang','r':'ND'},{'n':'AL','s':'Chou','r':'ND'},{'n':'YH','s':'Hsieh','r':'ND'},{'n':'CA','s':'Tseng','r':'ND'},{'n':'NS','s':'Lai','r':'ND'}],'31':'57','64':'2010','65':'2010','14':{'f':'456','l':'456'},'118':'36'},{'071':'','012':{'t':'Hepatitis C, iron status, and disease severity: relationship with HFE mutations','l':'en'},'30':'Gastroenterology','10':[{'n':'BY','s':'Tung','r':'ND'},{'n':'MJ','s':'Emond','r':'ND'},{'n':'MP','s':'Bronner','r':'ND'},{'n':'SD','s':'Raaka','r':'ND'},{'n':'SJ','s':'Cotler','r':'ND'},{'n':'KV','s':'Kowdley','r':'ND'}],'31':'124','64':'2003','65':'2003','14':{'f':'318','l':'318'},'118':'37'}]}}"
+0004-2803-ag-49-9.xml
+Empty element
+<Element 'ref-count' at 0x10211d850>
+1
+None
+{
+    "doc": {
+        "h": {
+            "010": [
+                {
+                    "n": "Silvia", 
+                    "r": "ND", 
+                    "s": "Coelho-Borges"
+                }, 
+                {
+                    "n": "Hugo", 
+                    "r": "ND", 
+                    "s": "Cheinquer"
+                }, 
+                {
+                    "n": "Fernando Herz", 
+                    "r": "ND", 
+                    "s": "Wolff"
+                }, 
+                {
+                    "n": "Nelson", 
+                    "r": "ND", 
+                    "s": "Cheinquer"
+                }, 
+                {
+                    "n": "Luciano", 
+                    "r": "ND", 
+                    "s": "Krug"
+                }, 
+                {
+                    "n": "Patricia", 
+                    "r": "ND", 
+                    "s": "Ashton-Prolla"
+                }
+            ], 
+            "012": {
+                "l": "pt", 
+                "t": "Efeito do polimorfismo do gene HFE sobre a resposta viral sustentada em portadores de hepatite cr\u00f4nica C com ferritina s\u00e9rica elevada"
+            }, 
+            "014": {
+                "f": "9", 
+                "l": "13"
+            }, 
+            "030": "Arq. Gastroenterol.", 
+            "031": "49", 
+            "032": "1", 
+            "035": "0004-2803", 
+            "064": "Jan-Mar", 
+            "065": "2012", 
+            "070": [
+                {
+                    "_": "Gastroenterology Department, Hospital de Cl\u00ednicas de Porto Alegre", 
+                    "i": "aff1"
+                }, 
+                {
+                    "_": "National Institute of Science and Technology for Health Technology Assessment (IATS) CNPq/Brazil", 
+                    "i": "aff2"
+                }, 
+                {
+                    "_": "Amplicon - Molecular Biology Laboratory", 
+                    "i": "aff3"
+                }, 
+                {
+                    "_": "Medical Genetics Service, Hospital de Cl\u00ednicas de Porto Alegre", 
+                    "i": "aff4"
+                }, 
+                {
+                    "_": "Genetics Department, UFRGS, Porto Alegre, RS, Brasil", 
+                    "i": "aff5"
+                }
+            ], 
+            "083": {
+                "a": "<p>\n               <bold>CONTEXT</bold>: Abnormal serum ferritin levels are found in approximately 20%-30% of the patients with chronic hepatitis C and are associated with a lower response rate to interferon therapy. <bold>OBJECTIVE</bold>: To determine if the presence of HFE gene mutations had any effect on the sustained virological response rate to interferon based therapy in chronic hepatitis C patients with elevated serum ferritin. <bold>METHODS</bold>: A total of 44 treatment na&#207;ve patients with histologically demonstrated chronic hepatitis C, all infected with hepatitis C virus genotype non-1 (38 genotype 3; 6 genotype 2) and serum ferritin above 500 ng/mL were treated with interferon (3 MU, 3 times a week) and ribavirin (1.000 mg, daily) for 24 weeks. <bold>RESULTS</bold>: Sustained virological response was defined as negative qualitative HCV-RNA more than 24 weeks after the end of treatment. Serum HCV-RNA was measured by qualitative in house polymerase chain reaction with a limit of detection of 200 IU/mL. HFE gene mutation was detected using restriction-enzyme digestion with RsaI (C282Y mutation analysis) and BclI (H63D mutation analysis) in 16 (37%) patients, all heterozygous (11 H63D, 2 C282Y and 3 both). Sustained virological response was achieved in 0 of 16 patients with HFE gene mutations and 11 (41%) of 27 patients without HFE gene mutations (<italic>P</italic> = 0.002; exact Fisher test). <bold>CONCLUSION</bold>: Heterozigozity for H63D and/or C282Y HFE gene mutation predicts absence of sustained virological response to combination treatment with interferon and ribavirin in patients with chronic hepatitis C, non-1 genotype and serum ferritin levels above 500 ng/mL.</p>", 
+                "l": "en"
+            }, 
+            "085": [
+                {
+                    "k": [
+                        "Polymorphysm, genetic", 
+                        "Hepatitis C, chronic", 
+                        "Ferritins", 
+                        "Interferons"
+                    ], 
+                    "l": "en"
+                }, 
+                {
+                    "k": [
+                        "Polimorfismo gen\u00e9tico", 
+                        "Hepatite C cr\u00f4nica", 
+                        "Ferritinas", 
+                        "Interferons"
+                    ], 
+                    "l": "pt"
+                }
+            ], 
+            "111": {
+                "_": "25"
+            }, 
+            "112": {
+                "_": "25"
+            }, 
+            "113": {
+                "_": "10"
+            }, 
+            "114": {
+                "_": "10"
+            }, 
+            "120": "9", 
+            "40": "en", 
+            "49": "ORIGINAL ARTICLE", 
+            "71": "research-article", 
+            "83": {
+                "a": "<p>\n               <bold>CONTEXTO</bold>: N&#237;veis s&#233;ricos anormais de ferritina s&#227;o encontrados em aproximadamente 20%-30% dos pacientes com hepatite cr&#244;nica C e est&#227;o associadas a uma baixa taxa de resposta &#224; terapia com interferon. <bold>OBJETIVO</bold>: Avaliar a associa&#231;&#227;o entre a presen&#231;a de muta&#231;&#245;es do gene HFE e a taxa de resposta virol&#243;gica sustentada ao interferon em pacientes portadores de hepatite cr&#244;nica C com ferritina s&#233;rica elevada. <bold>M&#201;TODOS</bold>: Um total de 44 pacientes, virgem de tratamento, infectado pelo v&#237;rus da hepatite C de gen&#243;tipos n&#227;o-1 (38 gen&#243;tipo 3; 6 gen&#243;tipo 2) e ferritina s&#233;rica acima de 500 ng/mL foi tratado com interferon (3 MU, tr&#234;s vezes por semana) e ribavirina (1000 mg/dia) por 24 semanas. Resposta virol&#243;gica sustentada foi definida como HCV-RNA indetect&#225;vel 24 semanas ap&#243;s o fim do tratamento. Foi utilizado t&#233;cnica de rea&#231;&#227;o em cadeia da polimerase em tempo-real com limite de detec&#231;&#227;o de 200 UI /mL. <bold>RESULTADOS</bold>: Muta&#231;&#245;es do gene HFE foram detectadas por \"restriction-enzyme digestion\" com RsaI (an&#225;lise de muta&#231;&#227;o C282Y) e BclI (an&#225;lise de muta&#231;&#227;o H63D) em 16 pacientes (37%), todos heterozigotos (11 H63D, 2 C282Y e 3 ambos). Resposta virol&#243;gica sustentada foi alcan&#231;ada em 0 de 16 pacientes com muta&#231;&#245;es do gene HFE e 11 (41%) dos 27 pacientes sem muta&#231;&#245;es do gene HFE (P = 0,002; teste exato de Fisher). <bold>CONCLUS&#195;O</bold>: A heterozigose para os genes H63D e/ou C282Y HFE est&#225; associada &#224; redu&#231;&#227;o significativa da taxa de resposta virol&#243;gica sustentada ao tratamento com interferon e ribavirina em pacientes com hepatite cr&#244;nica C, gen&#243;tipo n&#227;o-1 e com n&#237;veis s&#233;ricos de ferritina acima de 500 ng/mL.</p>", 
+                "l": "pt"
+            }
+        }, 
+        "r": [
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "[Interferon-alpha and ribavirin therapy on chronic hepatitis C virus infection: the experience of Rio Grande do Sul State Health Department, Brazil]"
+                }, 
+                "071": "<person-group person-group-type=\"author\">\n                  <name>\n                     <surname>Alves</surname>\n                     <given-names>AV</given-names>\n                  </name>\n                  <name>\n                     <surname>de Azevedo</surname>\n                     <given-names>AP</given-names>\n                  </name>\n                  <name>\n                     <surname>Perin</surname>\n                     <given-names>C</given-names>\n                  </name>\n                  <name>\n                     <surname>Ramos</surname>\n                     <given-names>GZ</given-names>\n                  </name>\n                  <name>\n                     <surname>Brand&#227;o</surname>\n                     <given-names>AB</given-names>\n                  </name>\n                  <name>\n                     <surname>de Mattos</surname>\n                     <given-names>AA</given-names>\n                  </name>\n                  <name>\n                     <surname>de Almeida</surname>\n                     <given-names>PR</given-names>\n                  </name>\n               </person-group>\n               <article-title xml:lang=\"en\">[Interferon-alpha and ribavirin therapy on chronic hepatitis C virus infection: the experience of Rio Grande do Sul State Health Department, Brazil] </article-title>\n               <source xml:lang=\"en\">Arq Gastroenterol</source>\n               <year>2003</year>\n               <volume>40</volume>\n               <fpage>227</fpage>\n               <lpage>32</lpage>", 
+                "10": [
+                    {
+                        "n": "AV", 
+                        "r": "ND", 
+                        "s": "Alves"
+                    }, 
+                    {
+                        "n": "AP", 
+                        "r": "ND", 
+                        "s": "de Azevedo"
+                    }, 
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "Perin"
+                    }, 
+                    {
+                        "n": "GZ", 
+                        "r": "ND", 
+                        "s": "Ramos"
+                    }, 
+                    {
+                        "n": "AB", 
+                        "r": "ND", 
+                        "s": "Brand\u00e3o"
+                    }, 
+                    {
+                        "n": "AA", 
+                        "r": "ND", 
+                        "s": "de Mattos"
+                    }, 
+                    {
+                        "n": "PR", 
+                        "r": "ND", 
+                        "s": "de Almeida"
+                    }
+                ], 
+                "118": "1", 
+                "14": {
+                    "f": "227", 
+                    "l": "227"
+                }, 
+                "30": "Arq Gastroenterol", 
+                "31": "40", 
+                "64": "2003", 
+                "65": "2003"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Threshold effect of liver iron content on hepatic inflammation and fibrosis in hepatitis B and C"
+                }, 
+                "10": [
+                    {
+                        "n": "NK", 
+                        "r": "ND", 
+                        "s": "Beinker"
+                    }, 
+                    {
+                        "n": "MD", 
+                        "r": "ND", 
+                        "s": "Voigt"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Arendse"
+                    }, 
+                    {
+                        "n": "J", 
+                        "r": "ND", 
+                        "s": "Smit"
+                    }, 
+                    {
+                        "n": "IA", 
+                        "r": "ND", 
+                        "s": "Stander"
+                    }, 
+                    {
+                        "n": "RE", 
+                        "r": "ND", 
+                        "s": "Kirsch"
+                    }
+                ], 
+                "118": "2", 
+                "14": {
+                    "f": "633", 
+                    "l": "633"
+                }, 
+                "30": "J Hepatol", 
+                "31": "25", 
+                "64": "1996", 
+                "65": "1996"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Iron and chronic viral hepatitis"
+                }, 
+                "10": [
+                    {
+                        "n": "HL", 
+                        "r": "ND", 
+                        "s": "Bonkovsky"
+                    }, 
+                    {
+                        "n": "BF", 
+                        "r": "ND", 
+                        "s": "Banner"
+                    }, 
+                    {
+                        "n": "AL", 
+                        "r": "ND", 
+                        "s": "Rothman"
+                    }
+                ], 
+                "118": "3", 
+                "14": {
+                    "f": "759", 
+                    "l": "759"
+                }, 
+                "30": "Hepatology", 
+                "31": "25", 
+                "64": "1997", 
+                "65": "1997"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Iron as a comorbid factor in chronic viral hepatitis"
+                }, 
+                "10": {
+                    "n": "HL", 
+                    "r": "ND", 
+                    "s": "Bonkovsky"
+                }, 
+                "118": "4", 
+                "14": {
+                    "f": "1", 
+                    "l": "1"
+                }, 
+                "30": "Am J Gastroenterol", 
+                "31": "97", 
+                "64": "2002", 
+                "65": "2002"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Iron and HFE or TfR1 mutations as comorbid factors for development and progression of chronic hepatitis C"
+                }, 
+                "10": [
+                    {
+                        "n": "HL", 
+                        "r": "ND", 
+                        "s": "Bonkovsky"
+                    }, 
+                    {
+                        "n": "N", 
+                        "r": "ND", 
+                        "s": "Troy"
+                    }, 
+                    {
+                        "n": "K", 
+                        "r": "ND", 
+                        "s": "McNeal"
+                    }, 
+                    {
+                        "n": "BF", 
+                        "r": "ND", 
+                        "s": "Banner"
+                    }, 
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Sharma"
+                    }, 
+                    {
+                        "n": "J", 
+                        "r": "ND", 
+                        "s": "Obando"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Mehta"
+                    }, 
+                    {
+                        "n": "RS", 
+                        "r": "ND", 
+                        "s": "Koff"
+                    }, 
+                    {
+                        "n": "Q", 
+                        "r": "ND", 
+                        "s": "Liu"
+                    }, 
+                    {
+                        "n": "CC", 
+                        "r": "ND", 
+                        "s": "Hsieh"
+                    }
+                ], 
+                "118": "5", 
+                "14": {
+                    "f": "848", 
+                    "l": "848"
+                }, 
+                "30": "J Hepatol", 
+                "31": "37", 
+                "64": "2002", 
+                "65": "2002"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Roles of iron and HFE mutations on severity and response to therapy during retreatment of advanced chronic hepatitis C"
+                }, 
+                "10": [
+                    {
+                        "n": "HL", 
+                        "r": "ND", 
+                        "s": "Bonkovsky"
+                    }, 
+                    {
+                        "n": "D", 
+                        "r": "ND", 
+                        "s": "Naishadham"
+                    }, 
+                    {
+                        "n": "RW", 
+                        "r": "ND", 
+                        "s": "Lambrecht"
+                    }, 
+                    {
+                        "n": "RT", 
+                        "r": "ND", 
+                        "s": "Chung"
+                    }, 
+                    {
+                        "n": "JC", 
+                        "r": "ND", 
+                        "s": "Hoefs"
+                    }, 
+                    {
+                        "n": "SR", 
+                        "r": "ND", 
+                        "s": "Nash"
+                    }, 
+                    {
+                        "n": "TE", 
+                        "r": "ND", 
+                        "s": "Rogers"
+                    }, 
+                    {
+                        "n": "BF", 
+                        "r": "ND", 
+                        "s": "Banner"
+                    }, 
+                    {
+                        "n": "RK", 
+                        "r": "ND", 
+                        "s": "Sterling"
+                    }, 
+                    {
+                        "n": "JA", 
+                        "r": "ND", 
+                        "s": "Donovan"
+                    }, 
+                    {
+                        "n": "RJ", 
+                        "r": "ND", 
+                        "s": "Fontana"
+                    }, 
+                    {
+                        "n": "AM", 
+                        "r": "ND", 
+                        "s": "Di Bisceglie"
+                    }, 
+                    {
+                        "n": "MG", 
+                        "r": "ND", 
+                        "s": "Ghany"
+                    }, 
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "Morishima"
+                    }
+                ], 
+                "118": "6", 
+                "14": {
+                    "f": "1440", 
+                    "l": "1440"
+                }, 
+                "30": "Gastroenterology", 
+                "31": "131", 
+                "64": "2006", 
+                "65": "2006"
+            }, 
+            {
+                "118": "7", 
+                "18": "Portaria 34 de 28 de setembro de 2007. Disp\u00f5e sobre protocolo cl\u00ednico e diretrizes terap\u00eauticas para hepatite viral C", 
+                "62": "Minist\u00e9rio da Sa\u00fade", 
+                "64": "2007", 
+                "65": "2007", 
+                "66": "Bras\u00edlia"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "The H63D genetic variant of the HFE gene is independently associated with the virological response to interferon and ribavirin therapy in chronic hepatitis C"
+                }, 
+                "10": [
+                    {
+                        "n": "MV", 
+                        "r": "ND", 
+                        "s": "Carneiro"
+                    }, 
+                    {
+                        "n": "FF", 
+                        "r": "ND", 
+                        "s": "Souza"
+                    }, 
+                    {
+                        "n": "AC", 
+                        "r": "ND", 
+                        "s": "Teixeira"
+                    }, 
+                    {
+                        "n": "JF", 
+                        "r": "ND", 
+                        "s": "Figueiredo"
+                    }, 
+                    {
+                        "n": "MG", 
+                        "r": "ND", 
+                        "s": "Villanova"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Secaf"
+                    }, 
+                    {
+                        "n": "AD", 
+                        "r": "ND", 
+                        "s": "Passos"
+                    }, 
+                    {
+                        "n": "LN", 
+                        "r": "ND", 
+                        "s": "Ramalho"
+                    }, 
+                    {
+                        "n": "FP", 
+                        "r": "ND", 
+                        "s": "Carneiro"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Zucoloto"
+                    }, 
+                    {
+                        "n": "AL", 
+                        "r": "ND", 
+                        "s": "Candolo Martinelli"
+                    }
+                ], 
+                "118": "8", 
+                "14": {
+                    "f": "1204", 
+                    "l": "1204"
+                }, 
+                "30": "Eur J Gastroenterol Hepatol", 
+                "31": "22", 
+                "64": "2010", 
+                "65": "2010"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "HCV genotype 3: an independent predictor of fibrosis progression in chronic hepatitis C"
+                }, 
+                "10": [
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "De Nicola"
+                    }, 
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Aghemo"
+                    }, 
+                    {
+                        "n": "MG", 
+                        "r": "ND", 
+                        "s": "Rumi"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Colombo"
+                    }
+                ], 
+                "118": "9", 
+                "14": {
+                    "f": "964", 
+                    "l": "964"
+                }, 
+                "30": "J Hepatol", 
+                "31": "51", 
+                "64": "2009", 
+                "65": "2009"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Measurements of iron status in patients with chronic hepatitis"
+                }, 
+                "10": [
+                    {
+                        "n": "AM", 
+                        "r": "ND", 
+                        "s": "Di Bisceglie"
+                    }, 
+                    {
+                        "n": "CA", 
+                        "r": "ND", 
+                        "s": "Axiotis"
+                    }, 
+                    {
+                        "n": "JH", 
+                        "r": "ND", 
+                        "s": "Hoofnagle"
+                    }, 
+                    {
+                        "n": "BR", 
+                        "r": "ND", 
+                        "s": "Bacon"
+                    }
+                ], 
+                "118": "10", 
+                "14": {
+                    "f": "2108", 
+                    "l": "2108"
+                }, 
+                "30": "Gastroenterology", 
+                "31": "102", 
+                "64": "1992", 
+                "65": "1992"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Iron reduction as an adjuvant to interferon therapy in patients with chronic hepatitis C who have previously not responded to interferon: a multicenter, prospective, randomized, controlled trial"
+                }, 
+                "10": [
+                    {
+                        "n": "AM", 
+                        "r": "ND", 
+                        "s": "Di Bisceglie"
+                    }, 
+                    {
+                        "n": "HL", 
+                        "r": "ND", 
+                        "s": "Bonkovsky"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Chopra"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Flamm"
+                    }, 
+                    {
+                        "n": "RK", 
+                        "r": "ND", 
+                        "s": "Reddy"
+                    }, 
+                    {
+                        "n": "N", 
+                        "r": "ND", 
+                        "s": "Grace"
+                    }, 
+                    {
+                        "n": "P", 
+                        "r": "ND", 
+                        "s": "Killenberg"
+                    }, 
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "Hunt"
+                    }, 
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "Tamburro"
+                    }, 
+                    {
+                        "n": "AS", 
+                        "r": "ND", 
+                        "s": "Tavill"
+                    }, 
+                    {
+                        "n": "R", 
+                        "r": "ND", 
+                        "s": "Ferguson"
+                    }, 
+                    {
+                        "n": "E", 
+                        "r": "ND", 
+                        "s": "Krawitt"
+                    }, 
+                    {
+                        "n": "B", 
+                        "r": "ND", 
+                        "s": "Banner"
+                    }, 
+                    {
+                        "n": "BR", 
+                        "r": "ND", 
+                        "s": "Bacon"
+                    }
+                ], 
+                "118": "11", 
+                "14": {
+                    "f": "135", 
+                    "l": "135"
+                }, 
+                "30": "Hepatology", 
+                "31": "32", 
+                "64": "2000", 
+                "65": "2000"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Raised serum ferritin predicts non-response to interferon and ribavirin treatment in patients with chronic hepatitis C infection"
+                }, 
+                "10": [
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Distante"
+                    }, 
+                    {
+                        "n": "K", 
+                        "r": "ND", 
+                        "s": "Bj\u00d8ro"
+                    }, 
+                    {
+                        "n": "KB", 
+                        "r": "ND", 
+                        "s": "Hellum"
+                    }, 
+                    {
+                        "n": "B", 
+                        "r": "ND", 
+                        "s": "Myrvang"
+                    }, 
+                    {
+                        "n": "JP", 
+                        "r": "ND", 
+                        "s": "Berg"
+                    }, 
+                    {
+                        "n": "K", 
+                        "r": "ND", 
+                        "s": "Skaug"
+                    }, 
+                    {
+                        "n": "N", 
+                        "r": "ND", 
+                        "s": "Raknerud"
+                    }, 
+                    {
+                        "n": "H", 
+                        "r": "ND", 
+                        "s": "Bell"
+                    }
+                ], 
+                "118": "12", 
+                "14": {
+                    "f": "269", 
+                    "l": "269"
+                }, 
+                "30": "Liver", 
+                "31": "22", 
+                "64": "2002", 
+                "65": "2002"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "A novel MHC class I-like gene is mutated in patients with hereditary haemochromatosis"
+                }, 
+                "10": [
+                    {
+                        "n": "JN", 
+                        "r": "ND", 
+                        "s": "Feder"
+                    }, 
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Gnirke"
+                    }, 
+                    {
+                        "n": "W", 
+                        "r": "ND", 
+                        "s": "Thomas"
+                    }, 
+                    {
+                        "n": "Z", 
+                        "r": "ND", 
+                        "s": "Tsuchihashi"
+                    }, 
+                    {
+                        "n": "DA", 
+                        "r": "ND", 
+                        "s": "Ruddy"
+                    }, 
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Basava"
+                    }, 
+                    {
+                        "n": "F", 
+                        "r": "ND", 
+                        "s": "Dormishian"
+                    }, 
+                    {
+                        "n": "R Jr", 
+                        "r": "ND", 
+                        "s": "Domingo"
+                    }, 
+                    {
+                        "n": "MC", 
+                        "r": "ND", 
+                        "s": "Ellis"
+                    }, 
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Fullan"
+                    }, 
+                    {
+                        "n": "LM", 
+                        "r": "ND", 
+                        "s": "Hinton"
+                    }, 
+                    {
+                        "n": "NL", 
+                        "r": "ND", 
+                        "s": "Jones"
+                    }, 
+                    {
+                        "n": "BE", 
+                        "r": "ND", 
+                        "s": "Kimmel"
+                    }, 
+                    {
+                        "n": "GS", 
+                        "r": "ND", 
+                        "s": "Kronmal"
+                    }, 
+                    {
+                        "n": "P", 
+                        "r": "ND", 
+                        "s": "Lauer"
+                    }, 
+                    {
+                        "n": "VK", 
+                        "r": "ND", 
+                        "s": "Lee"
+                    }, 
+                    {
+                        "n": "DB", 
+                        "r": "ND", 
+                        "s": "Loeb"
+                    }, 
+                    {
+                        "n": "FA", 
+                        "r": "ND", 
+                        "s": "Mapa"
+                    }, 
+                    {
+                        "n": "E", 
+                        "r": "ND", 
+                        "s": "McClelland"
+                    }, 
+                    {
+                        "n": "NC", 
+                        "r": "ND", 
+                        "s": "Meyer"
+                    }, 
+                    {
+                        "n": "GA", 
+                        "r": "ND", 
+                        "s": "Mintier"
+                    }, 
+                    {
+                        "n": "N", 
+                        "r": "ND", 
+                        "s": "Moeller"
+                    }, 
+                    {
+                        "n": "T", 
+                        "r": "ND", 
+                        "s": "Moore"
+                    }, 
+                    {
+                        "n": "E", 
+                        "r": "ND", 
+                        "s": "Morikang"
+                    }, 
+                    {
+                        "n": "CE", 
+                        "r": "ND", 
+                        "s": "Prass"
+                    }, 
+                    {
+                        "n": "L", 
+                        "r": "ND", 
+                        "s": "Quintana"
+                    }, 
+                    {
+                        "n": "SM", 
+                        "r": "ND", 
+                        "s": "Starnes"
+                    }, 
+                    {
+                        "n": "RC", 
+                        "r": "ND", 
+                        "s": "Schatzman"
+                    }, 
+                    {
+                        "n": "KJ", 
+                        "r": "ND", 
+                        "s": "Brunke"
+                    }, 
+                    {
+                        "n": "DT", 
+                        "r": "ND", 
+                        "s": "Drayna"
+                    }, 
+                    {
+                        "n": "NJ", 
+                        "r": "ND", 
+                        "s": "Risch"
+                    }, 
+                    {
+                        "n": "BR", 
+                        "r": "ND", 
+                        "s": "Bacon"
+                    }, 
+                    {
+                        "n": "RK", 
+                        "r": "ND", 
+                        "s": "Wolff"
+                    }
+                ], 
+                "118": "13", 
+                "14": {
+                    "f": "399", 
+                    "l": "399"
+                }, 
+                "30": "Nat Genet", 
+                "31": "13", 
+                "64": "1996", 
+                "65": "1996"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Predictors of response to therapy for chronic hepatitis C"
+                }, 
+                "10": {
+                    "n": "P", 
+                    "r": "ND", 
+                    "s": "Ferenci"
+                }, 
+                "118": "14", 
+                "14": {
+                    "f": "25", 
+                    "l": "25"
+                }, 
+                "30": "Semin Liver Dis", 
+                "31": "24", 
+                "64": "2004", 
+                "65": "2004"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Peginterferon alfa-2a plus ribavirin for chronic hepatitis C virus infection"
+                }, 
+                "10": [
+                    {
+                        "n": "MW", 
+                        "r": "ND", 
+                        "s": "Fried"
+                    }, 
+                    {
+                        "n": "ML", 
+                        "r": "ND", 
+                        "s": "Shiffman"
+                    }, 
+                    {
+                        "n": "KR", 
+                        "r": "ND", 
+                        "s": "Reddy"
+                    }, 
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "Smith"
+                    }, 
+                    {
+                        "n": "G", 
+                        "r": "ND", 
+                        "s": "Marinos"
+                    }, 
+                    {
+                        "n": "FL Jr", 
+                        "r": "ND", 
+                        "s": "Gon\u00e7ales"
+                    }, 
+                    {
+                        "n": "D", 
+                        "r": "ND", 
+                        "s": "H\u00e4ussinger"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Diago"
+                    }, 
+                    {
+                        "n": "G", 
+                        "r": "ND", 
+                        "s": "Carosi"
+                    }, 
+                    {
+                        "n": "D", 
+                        "r": "ND", 
+                        "s": "Dhumeaux"
+                    }, 
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Craxi"
+                    }, 
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Lin"
+                    }, 
+                    {
+                        "n": "J", 
+                        "r": "ND", 
+                        "s": "Hoffman"
+                    }, 
+                    {
+                        "n": "J", 
+                        "r": "ND", 
+                        "s": "Yu"
+                    }
+                ], 
+                "118": "15", 
+                "14": {
+                    "f": "975", 
+                    "l": "975"
+                }, 
+                "30": "N Engl J Med", 
+                "31": "347", 
+                "64": "2002", 
+                "65": "2002"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Hepatic iron accumulation is associated with disease progression and resistance to interferon/ribavirin combination therapy in chronic hepatitis C"
+                }, 
+                "10": [
+                    {
+                        "n": "N", 
+                        "r": "ND", 
+                        "s": "Fujita"
+                    }, 
+                    {
+                        "n": "R", 
+                        "r": "ND", 
+                        "s": "Sugimoto"
+                    }, 
+                    {
+                        "n": "N", 
+                        "r": "ND", 
+                        "s": "Urawa"
+                    }, 
+                    {
+                        "n": "J", 
+                        "r": "ND", 
+                        "s": "Araki"
+                    }, 
+                    {
+                        "n": "R", 
+                        "r": "ND", 
+                        "s": "Mifuji"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Yamamoto"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Horiike"
+                    }, 
+                    {
+                        "n": "H", 
+                        "r": "ND", 
+                        "s": "Tanaka"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Iwasa"
+                    }, 
+                    {
+                        "n": "Y", 
+                        "r": "ND", 
+                        "s": "Kobayashi"
+                    }, 
+                    {
+                        "n": "Y", 
+                        "r": "ND", 
+                        "s": "Adachi"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Kaito"
+                    }
+                ], 
+                "118": "16", 
+                "14": {
+                    "f": "1886", 
+                    "l": "1886"
+                }, 
+                "30": "J Gastroenterol Hepatol", 
+                "31": "22", 
+                "64": "2007", 
+                "65": "2007"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Selection-driven immune escape is not a significant factor in the failure of CD4 T cell responses in persistent hepatitis C virus infection"
+                }, 
+                "10": [
+                    {
+                        "n": "MJ", 
+                        "r": "ND", 
+                        "s": "Fuller"
+                    }, 
+                    {
+                        "n": "NH", 
+                        "r": "ND", 
+                        "s": "Shoukry"
+                    }, 
+                    {
+                        "n": "T", 
+                        "r": "ND", 
+                        "s": "Gushima"
+                    }, 
+                    {
+                        "n": "DG", 
+                        "r": "ND", 
+                        "s": "Bowen"
+                    }, 
+                    {
+                        "n": "B", 
+                        "r": "ND", 
+                        "s": "Callendret"
+                    }, 
+                    {
+                        "n": "KJ", 
+                        "r": "ND", 
+                        "s": "Campbell"
+                    }, 
+                    {
+                        "n": "DL", 
+                        "r": "ND", 
+                        "s": "Hasselschwert"
+                    }, 
+                    {
+                        "n": "AL", 
+                        "r": "ND", 
+                        "s": "Hughes"
+                    }, 
+                    {
+                        "n": "CM", 
+                        "r": "ND", 
+                        "s": "Walker"
+                    }
+                ], 
+                "118": "17", 
+                "14": {
+                    "f": "378", 
+                    "l": "378"
+                }, 
+                "30": "Hepatology", 
+                "31": "51", 
+                "64": "2010", 
+                "65": "2010"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Hereditary haemochromatosis as an immunological disease"
+                }, 
+                "10": [
+                    {
+                        "n": "GS", 
+                        "r": "ND", 
+                        "s": "Gerhard"
+                    }, 
+                    {
+                        "n": "AE", 
+                        "r": "ND", 
+                        "s": "Ten Elshof"
+                    }, 
+                    {
+                        "n": "MJ", 
+                        "r": "ND", 
+                        "s": "Chorney"
+                    }
+                ], 
+                "118": "18", 
+                "14": {
+                    "f": "247", 
+                    "l": "247"
+                }, 
+                "30": "Br J Haematol", 
+                "31": "100", 
+                "64": "1998", 
+                "65": "1998"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "HCV substitutions and IL28B polymorphisms on outcome of peg-interferon plus ribavirin combination therapy"
+                }, 
+                "10": [
+                    {
+                        "n": "CN", 
+                        "r": "ND", 
+                        "s": "Hayes"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Kobayashi"
+                    }, 
+                    {
+                        "n": "N", 
+                        "r": "ND", 
+                        "s": "Akuta"
+                    }, 
+                    {
+                        "n": "F", 
+                        "r": "ND", 
+                        "s": "Suzuki"
+                    }, 
+                    {
+                        "n": "H", 
+                        "r": "ND", 
+                        "s": "Kumada"
+                    }, 
+                    {
+                        "n": "H", 
+                        "r": "ND", 
+                        "s": "Abe"
+                    }, 
+                    {
+                        "n": "D", 
+                        "r": "ND", 
+                        "s": "Miki"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Imamura"
+                    }, 
+                    {
+                        "n": "H", 
+                        "r": "ND", 
+                        "s": "Ochi"
+                    }, 
+                    {
+                        "n": "N", 
+                        "r": "ND", 
+                        "s": "Kamatani"
+                    }, 
+                    {
+                        "n": "Y", 
+                        "r": "ND", 
+                        "s": "Nakamura"
+                    }, 
+                    {
+                        "n": "K", 
+                        "r": "ND", 
+                        "s": "Chayama"
+                    }
+                ], 
+                "118": "19", 
+                "14": {
+                    "f": "261", 
+                    "l": "261"
+                }, 
+                "30": "Gut", 
+                "31": "60", 
+                "64": "2011", 
+                "65": "2011"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "The epidemiology of hyperferritinaemia"
+                }, 
+                "10": [
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Hearnshaw"
+                    }, 
+                    {
+                        "n": "NP", 
+                        "r": "ND", 
+                        "s": "Thompson"
+                    }, 
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "McGill"
+                    }
+                ], 
+                "118": "20", 
+                "14": {
+                    "f": "5866", 
+                    "l": "5866"
+                }, 
+                "30": "World J Gastroenterol", 
+                "31": "12", 
+                "64": "2006", 
+                "65": "2006"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Iron depletion is not effective in inducing a virologic response in patients with chronic hepatitis C who failed to respond to interferon therapy"
+                }, 
+                "10": {
+                    "n": "JL", 
+                    "r": "ND", 
+                    "s": "Herrera"
+                }, 
+                "118": "21", 
+                "14": {
+                    "f": "3571", 
+                    "l": "3571"
+                }, 
+                "30": "Am J Gastroenterol", 
+                "31": "94", 
+                "64": "1999", 
+                "65": "1999"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Liver iron accumulation in patients with chronic active hepatitis C: prevalence and role of hemochromatosis gene mutations and relationship with hepatic histological lesions"
+                }, 
+                "10": [
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "H\u00e9zode"
+                    }, 
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "Cazeneuve"
+                    }, 
+                    {
+                        "n": "O", 
+                        "r": "ND", 
+                        "s": "Cou\u00e9"
+                    }, 
+                    {
+                        "n": "F", 
+                        "r": "ND", 
+                        "s": "Roudot-Thoraval"
+                    }, 
+                    {
+                        "n": "I", 
+                        "r": "ND", 
+                        "s": "Lonjon"
+                    }, 
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Bastie"
+                    }, 
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "Duvoux"
+                    }, 
+                    {
+                        "n": "JM", 
+                        "r": "ND", 
+                        "s": "Pawlotsky"
+                    }, 
+                    {
+                        "n": "ES", 
+                        "r": "ND", 
+                        "s": "Zafrani"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Amselem"
+                    }, 
+                    {
+                        "n": "D", 
+                        "r": "ND", 
+                        "s": "Dhumeaux"
+                    }
+                ], 
+                "118": "22", 
+                "14": {
+                    "f": "979", 
+                    "l": "979"
+                }, 
+                "30": "J Hepatol", 
+                "31": "31", 
+                "64": "1999", 
+                "65": "1999"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Hepatic iron concentration does not predict response to standard and pegylated-IFN/ribavirin therapy in patients with chronic hepatitis C"
+                }, 
+                "10": [
+                    {
+                        "n": "H", 
+                        "r": "ND", 
+                        "s": "Hofer"
+                    }, 
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "Osterreicher"
+                    }, 
+                    {
+                        "n": "W", 
+                        "r": "ND", 
+                        "s": "Jessner"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Penz"
+                    }, 
+                    {
+                        "n": "P", 
+                        "r": "ND", 
+                        "s": "Steindl-Munda"
+                    }, 
+                    {
+                        "n": "F", 
+                        "r": "ND", 
+                        "s": "Wrba"
+                    }, 
+                    {
+                        "n": "P", 
+                        "r": "ND", 
+                        "s": "Ferenci"
+                    }
+                ], 
+                "118": "23", 
+                "14": {
+                    "f": "1018", 
+                    "l": "1018"
+                }, 
+                "30": "J Hepatol", 
+                "31": "40", 
+                "64": "2004", 
+                "65": "2004"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "The relation of iron status and hemochromatosis gene mutations in patients with chronic hepatitis C"
+                }, 
+                "10": [
+                    {
+                        "n": "L", 
+                        "r": "ND", 
+                        "s": "Kazemi-Shirazi"
+                    }, 
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "Datz"
+                    }, 
+                    {
+                        "n": "T", 
+                        "r": "ND", 
+                        "s": "Maier-Dobersberger"
+                    }, 
+                    {
+                        "n": "K", 
+                        "r": "ND", 
+                        "s": "Kaserer"
+                    }, 
+                    {
+                        "n": "F", 
+                        "r": "ND", 
+                        "s": "Hackl"
+                    }, 
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "Polli"
+                    }, 
+                    {
+                        "n": "PE", 
+                        "r": "ND", 
+                        "s": "Steindl"
+                    }, 
+                    {
+                        "n": "E", 
+                        "r": "ND", 
+                        "s": "Penner"
+                    }, 
+                    {
+                        "n": "P", 
+                        "r": "ND", 
+                        "s": "Ferenci"
+                    }
+                ], 
+                "118": "24", 
+                "14": {
+                    "f": "127", 
+                    "l": "127"
+                }, 
+                "30": "Gastroenterology", 
+                "31": "116", 
+                "64": "1999", 
+                "65": "1999"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Influence of HFE gene polymorphism on the progression and treatment of chronic hepatitis C"
+                }, 
+                "10": [
+                    {
+                        "n": "P", 
+                        "r": "ND", 
+                        "s": "Lebray"
+                    }, 
+                    {
+                        "n": "H", 
+                        "r": "ND", 
+                        "s": "Zylberberg"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Hue"
+                    }, 
+                    {
+                        "n": "B", 
+                        "r": "ND", 
+                        "s": "Poulet"
+                    }, 
+                    {
+                        "n": "F", 
+                        "r": "ND", 
+                        "s": "Carnot"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Martin"
+                    }, 
+                    {
+                        "n": "Y", 
+                        "r": "ND", 
+                        "s": "Chretien"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Pol"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Caillat-Zuckman"
+                    }, 
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "Br\u00e9chot"
+                    }, 
+                    {
+                        "n": "B", 
+                        "r": "ND", 
+                        "s": "Nalpas"
+                    }
+                ], 
+                "118": "25", 
+                "14": {
+                    "f": "175", 
+                    "l": "175"
+                }, 
+                "30": "J Viral Hepat", 
+                "31": "11", 
+                "64": "2004", 
+                "65": "2004"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "An IL28B polymorphism determines treatment response of hepatitis C virus genotype 2 or 3 patients who do not achieve a rapid virologic response"
+                }, 
+                "10": [
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Mangia"
+                    }, 
+                    {
+                        "n": "AJ", 
+                        "r": "ND", 
+                        "s": "Thompson"
+                    }, 
+                    {
+                        "n": "R", 
+                        "r": "ND", 
+                        "s": "Santoro"
+                    }, 
+                    {
+                        "n": "V", 
+                        "r": "ND", 
+                        "s": "Piazzolla"
+                    }, 
+                    {
+                        "n": "HL", 
+                        "r": "ND", 
+                        "s": "Tillmann"
+                    }, 
+                    {
+                        "n": "K", 
+                        "r": "ND", 
+                        "s": "Patel"
+                    }, 
+                    {
+                        "n": "KV", 
+                        "r": "ND", 
+                        "s": "Shianna"
+                    }, 
+                    {
+                        "n": "L", 
+                        "r": "ND", 
+                        "s": "Mottola"
+                    }, 
+                    {
+                        "n": "D", 
+                        "r": "ND", 
+                        "s": "Petruzzellis"
+                    }, 
+                    {
+                        "n": "D", 
+                        "r": "ND", 
+                        "s": "Bacca"
+                    }, 
+                    {
+                        "n": "V", 
+                        "r": "ND", 
+                        "s": "Carretta"
+                    }, 
+                    {
+                        "n": "N", 
+                        "r": "ND", 
+                        "s": "Minerva"
+                    }, 
+                    {
+                        "n": "DB", 
+                        "r": "ND", 
+                        "s": "Goldstein"
+                    }, 
+                    {
+                        "n": "JG", 
+                        "r": "ND", 
+                        "s": "McHutchison"
+                    }
+                ], 
+                "118": "26", 
+                "14": {
+                    "f": "821", 
+                    "l": "821"
+                }, 
+                "30": "Gastroenterology", 
+                "31": "139", 
+                "64": "2010", 
+                "65": "2010"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Peginterferon alfa-2b plus ribavirin compared with interferon alfa-2b plus ribavirin for initial treatment of chronic hepatitis C: a randomised trial"
+                }, 
+                "10": [
+                    {
+                        "n": "MP", 
+                        "r": "ND", 
+                        "s": "Manns"
+                    }, 
+                    {
+                        "n": "JG", 
+                        "r": "ND", 
+                        "s": "McHutchison"
+                    }, 
+                    {
+                        "n": "SC", 
+                        "r": "ND", 
+                        "s": "Gordon"
+                    }, 
+                    {
+                        "n": "VK", 
+                        "r": "ND", 
+                        "s": "Rustgi"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Shiffman"
+                    }, 
+                    {
+                        "n": "R", 
+                        "r": "ND", 
+                        "s": "Reindollar"
+                    }, 
+                    {
+                        "n": "ZD", 
+                        "r": "ND", 
+                        "s": "Goodman"
+                    }, 
+                    {
+                        "n": "K", 
+                        "r": "ND", 
+                        "s": "Koury"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Ling"
+                    }, 
+                    {
+                        "n": "JK", 
+                        "r": "ND", 
+                        "s": "Albrecht"
+                    }
+                ], 
+                "118": "27", 
+                "14": {
+                    "f": "958", 
+                    "l": "958"
+                }, 
+                "30": "Lancet", 
+                "31": "358", 
+                "64": "2001", 
+                "65": "2001"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Host and viral factors contributing to CD8+ T cell failure in hepatitis C virus infection"
+                }, 
+                "10": [
+                    {
+                        "n": "C", 
+                        "r": "ND", 
+                        "s": "Neumann-Haefelin"
+                    }, 
+                    {
+                        "n": "HC", 
+                        "r": "ND", 
+                        "s": "Spangenberg"
+                    }, 
+                    {
+                        "n": "HE", 
+                        "r": "ND", 
+                        "s": "Blum"
+                    }, 
+                    {
+                        "n": "R", 
+                        "r": "ND", 
+                        "s": "Thimme"
+                    }
+                ], 
+                "118": "28", 
+                "14": {
+                    "f": "4839", 
+                    "l": "4839"
+                }, 
+                "30": "World J Gastroenterol", 
+                "31": "13", 
+                "64": "2007", 
+                "65": "2007"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Hepatic iron concentration does not influence response to therapy with interferon plus ribavirin in chronic HCV infection"
+                }, 
+                "10": [
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Pianko"
+                    }, 
+                    {
+                        "n": "JG", 
+                        "r": "ND", 
+                        "s": "McHutchison"
+                    }, 
+                    {
+                        "n": "SC", 
+                        "r": "ND", 
+                        "s": "Gordon"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Heaton"
+                    }, 
+                    {
+                        "n": "ZD", 
+                        "r": "ND", 
+                        "s": "Goodman"
+                    }, 
+                    {
+                        "n": "K", 
+                        "r": "ND", 
+                        "s": "Patel"
+                    }, 
+                    {
+                        "n": "CM", 
+                        "r": "ND", 
+                        "s": "Cortese"
+                    }, 
+                    {
+                        "n": "EM", 
+                        "r": "ND", 
+                        "s": "Brunt"
+                    }, 
+                    {
+                        "n": "BR", 
+                        "r": "ND", 
+                        "s": "Bacon"
+                    }, 
+                    {
+                        "n": "LM", 
+                        "r": "ND", 
+                        "s": "Blatt"
+                    }
+                ], 
+                "118": "29", 
+                "14": {
+                    "f": "483", 
+                    "l": "483"
+                }, 
+                "30": "J Interferon Cytokine Res", 
+                "31": "22", 
+                "64": "2002", 
+                "65": "2002"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Genetic variation in IL28B is associated with chronic hepatitis C and treatment failure: a genome-wide association study"
+                }, 
+                "10": [
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Rauch"
+                    }, 
+                    {
+                        "n": "Z", 
+                        "r": "ND", 
+                        "s": "Kutalik"
+                    }, 
+                    {
+                        "n": "P", 
+                        "r": "ND", 
+                        "s": "Descombes"
+                    }, 
+                    {
+                        "n": "T", 
+                        "r": "ND", 
+                        "s": "Cai"
+                    }, 
+                    {
+                        "n": "J", 
+                        "r": "ND", 
+                        "s": "Di Iulio"
+                    }, 
+                    {
+                        "n": "T", 
+                        "r": "ND", 
+                        "s": "Mueller"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Bochud"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Battegay"
+                    }, 
+                    {
+                        "n": "E", 
+                        "r": "ND", 
+                        "s": "Bernasconi"
+                    }, 
+                    {
+                        "n": "J", 
+                        "r": "ND", 
+                        "s": "Borovicka"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Colombo"
+                    }, 
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Cerny"
+                    }, 
+                    {
+                        "n": "JF", 
+                        "r": "ND", 
+                        "s": "Dufour"
+                    }, 
+                    {
+                        "n": "H", 
+                        "r": "ND", 
+                        "s": "Furrer"
+                    }, 
+                    {
+                        "n": "HF", 
+                        "r": "ND", 
+                        "s": "G\u00fcnthard"
+                    }, 
+                    {
+                        "n": "M", 
+                        "r": "ND", 
+                        "s": "Heim"
+                    }, 
+                    {
+                        "n": "B", 
+                        "r": "ND", 
+                        "s": "Hirschel"
+                    }, 
+                    {
+                        "n": "R", 
+                        "r": "ND", 
+                        "s": "Malinverni"
+                    }, 
+                    {
+                        "n": "D", 
+                        "r": "ND", 
+                        "s": "Moradpour"
+                    }, 
+                    {
+                        "n": "B", 
+                        "r": "ND", 
+                        "s": "M\u00fcllhaupt"
+                    }, 
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Witteck"
+                    }, 
+                    {
+                        "n": "JS", 
+                        "r": "ND", 
+                        "s": "Beckmann"
+                    }, 
+                    {
+                        "n": "T", 
+                        "r": "ND", 
+                        "s": "Berg"
+                    }, 
+                    {
+                        "n": "S", 
+                        "r": "ND", 
+                        "s": "Bergmann"
+                    }, 
+                    {
+                        "n": "F", 
+                        "r": "ND", 
+                        "s": "Negro"
+                    }, 
+                    {
+                        "n": "A", 
+                        "r": "ND", 
+                        "s": "Telenti"
+                    }, 
+                    {
+                        "n": "PY", 
+                        "r": "ND", 
+                        "s": "Bochud"
+                    }
+                ], 
+                "118": "30", 
+                "14": {
+                    "f": "1338", 
+                    "l": "1338"
+                }, 
+                "30": "Gastroenterology", 
+                "31": "138", 
+                "64": "2010", 
+                "65": "2010"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Associations between the human MHC and sustained virologic response in the treatment of chronic hepatitis C virus infection"
+                }, 
+                "10": [
+                    {
+                        "n": "SL", 
+                        "r": "ND", 
+                        "s": "Rhodes"
+                    }, 
+                    {
+                        "n": "H", 
+                        "r": "ND", 
+                        "s": "Erlich"
+                    }, 
+                    {
+                        "n": "KA", 
+                        "r": "ND", 
+                        "s": "Im"
+                    }, 
+                    {
+                        "n": "J", 
+                        "r": "ND", 
+                        "s": "Wang"
+                    }, 
+                    {
+                        "n": "J", 
+                        "r": "ND", 
+                        "s": "Li"
+                    }, 
+                    {
+                        "n": "T", 
+                        "r": "ND", 
+                        "s": "Bugawan"
+                    }, 
+                    {
+                        "n": "L", 
+                        "r": "ND", 
+                        "s": "Jeffers"
+                    }, 
+                    {
+                        "n": "X", 
+                        "r": "ND", 
+                        "s": "Tong"
+                    }, 
+                    {
+                        "n": "X", 
+                        "r": "ND", 
+                        "s": "Su"
+                    }, 
+                    {
+                        "n": "HR", 
+                        "r": "ND", 
+                        "s": "Rosen"
+                    }, 
+                    {
+                        "n": "LJ", 
+                        "r": "ND", 
+                        "s": "Yee"
+                    }, 
+                    {
+                        "n": "TJ", 
+                        "r": "ND", 
+                        "s": "Liang"
+                    }, 
+                    {
+                        "n": "H", 
+                        "r": "ND", 
+                        "s": "Yang"
+                    }
+                ], 
+                "118": "31", 
+                "14": {
+                    "f": "328", 
+                    "l": "328"
+                }, 
+                "30": "Genes Immun", 
+                "31": "9", 
+                "64": "2008", 
+                "65": "2008"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Heterozygosity for hereditary hemochromatosis is associated with more fibrosis in chronic hepatitis C"
+                }, 
+                "10": [
+                    {
+                        "n": "BC", 
+                        "r": "ND", 
+                        "s": "Smith"
+                    }, 
+                    {
+                        "n": "J", 
+                        "r": "ND", 
+                        "s": "Gorve"
+                    }, 
+                    {
+                        "n": "MA", 
+                        "r": "ND", 
+                        "s": "Guzail"
+                    }, 
+                    {
+                        "n": "CP", 
+                        "r": "ND", 
+                        "s": "Day"
+                    }, 
+                    {
+                        "n": "AK", 
+                        "r": "ND", 
+                        "s": "Daly"
+                    }, 
+                    {
+                        "n": "AD", 
+                        "r": "ND", 
+                        "s": "Burt"
+                    }, 
+                    {
+                        "n": "MF", 
+                        "r": "ND", 
+                        "s": "Bassendine"
+                    }
+                ], 
+                "118": "32", 
+                "14": {
+                    "f": "1695", 
+                    "l": "1695"
+                }, 
+                "30": "Hepatology", 
+                "31": "27", 
+                "64": "1998", 
+                "65": "1998"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Effect of iron overload on the severity of liver histologic alterations and on the response to interferon and ribavirin therapy of patients with hepatitis C infection"
+                }, 
+                "10": [
+                    {
+                        "n": "RM", 
+                        "r": "ND", 
+                        "s": "Souza"
+                    }, 
+                    {
+                        "n": "LA", 
+                        "r": "ND", 
+                        "s": "Freitas"
+                    }, 
+                    {
+                        "n": "AC", 
+                        "r": "ND", 
+                        "s": "Lyra"
+                    }, 
+                    {
+                        "n": "CF", 
+                        "r": "ND", 
+                        "s": "Moraes"
+                    }, 
+                    {
+                        "n": "EL", 
+                        "r": "ND", 
+                        "s": "Braga"
+                    }, 
+                    {
+                        "n": "LG", 
+                        "r": "ND", 
+                        "s": "Lyra"
+                    }
+                ], 
+                "118": "33", 
+                "14": {
+                    "f": "79", 
+                    "l": "79"
+                }, 
+                "30": "Braz J Med Biol Res", 
+                "31": "39", 
+                "64": "2006", 
+                "65": "2006"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Gamma delta intraepithelial lymphocytes drive tumor necrosis factor-alpha responsiveness to intestinal iron challenge: relevance to hemochromatosis"
+                }, 
+                "10": [
+                    {
+                        "n": "AE", 
+                        "r": "ND", 
+                        "s": "Ten Elshof"
+                    }, 
+                    {
+                        "n": "GM", 
+                        "r": "ND", 
+                        "s": "Brittenham"
+                    }, 
+                    {
+                        "n": "KA", 
+                        "r": "ND", 
+                        "s": "Chorney"
+                    }, 
+                    {
+                        "n": "MJ", 
+                        "r": "ND", 
+                        "s": "Page"
+                    }, 
+                    {
+                        "n": "G", 
+                        "r": "ND", 
+                        "s": "Gerhard"
+                    }, 
+                    {
+                        "n": "EE", 
+                        "r": "ND", 
+                        "s": "Cable"
+                    }, 
+                    {
+                        "n": "MJ", 
+                        "r": "ND", 
+                        "s": "Chorney"
+                    }
+                ], 
+                "118": "34", 
+                "14": {
+                    "f": "223", 
+                    "l": "223"
+                }, 
+                "30": "Immunol Rev", 
+                "31": "167", 
+                "64": "1999", 
+                "65": "1999"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "The role of iron and haemochromatosis gene mutations in the progression of liver disease in chronic hepatitis C"
+                }, 
+                "10": [
+                    {
+                        "n": "D", 
+                        "r": "ND", 
+                        "s": "Thorburn"
+                    }, 
+                    {
+                        "n": "G", 
+                        "r": "ND", 
+                        "s": "Curry"
+                    }, 
+                    {
+                        "n": "R", 
+                        "r": "ND", 
+                        "s": "Spooner"
+                    }, 
+                    {
+                        "n": "E", 
+                        "r": "ND", 
+                        "s": "Spence"
+                    }, 
+                    {
+                        "n": "K", 
+                        "r": "ND", 
+                        "s": "Oien"
+                    }, 
+                    {
+                        "n": "D", 
+                        "r": "ND", 
+                        "s": "Halls"
+                    }, 
+                    {
+                        "n": "R", 
+                        "r": "ND", 
+                        "s": "Fox"
+                    }, 
+                    {
+                        "n": "EA", 
+                        "r": "ND", 
+                        "s": "McCruden"
+                    }, 
+                    {
+                        "n": "RN", 
+                        "r": "ND", 
+                        "s": "MacSween"
+                    }, 
+                    {
+                        "n": "PR", 
+                        "r": "ND", 
+                        "s": "Mills"
+                    }
+                ], 
+                "118": "35", 
+                "14": {
+                    "f": "248", 
+                    "l": "248"
+                }, 
+                "30": "Gut", 
+                "31": "50", 
+                "64": "2002", 
+                "65": "2002"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Prognostic effect of human leukocyte antigen class I and II alleles on chronic hepatitis C patients treated by pegylated interferon-alfa plus ribavirin in Taiwan"
+                }, 
+                "10": [
+                    {
+                        "n": "KC", 
+                        "r": "ND", 
+                        "s": "Tseng"
+                    }, 
+                    {
+                        "n": "CK", 
+                        "r": "ND", 
+                        "s": "Chang"
+                    }, 
+                    {
+                        "n": "AL", 
+                        "r": "ND", 
+                        "s": "Chou"
+                    }, 
+                    {
+                        "n": "YH", 
+                        "r": "ND", 
+                        "s": "Hsieh"
+                    }, 
+                    {
+                        "n": "CA", 
+                        "r": "ND", 
+                        "s": "Tseng"
+                    }, 
+                    {
+                        "n": "NS", 
+                        "r": "ND", 
+                        "s": "Lai"
+                    }
+                ], 
+                "118": "36", 
+                "14": {
+                    "f": "456", 
+                    "l": "456"
+                }, 
+                "30": "Hepatogastroenterology", 
+                "31": "57", 
+                "64": "2010", 
+                "65": "2010"
+            }, 
+            {
+                "012": {
+                    "l": "en", 
+                    "t": "Hepatitis C, iron status, and disease severity: relationship with HFE mutations"
+                }, 
+                "10": [
+                    {
+                        "n": "BY", 
+                        "r": "ND", 
+                        "s": "Tung"
+                    }, 
+                    {
+                        "n": "MJ", 
+                        "r": "ND", 
+                        "s": "Emond"
+                    }, 
+                    {
+                        "n": "MP", 
+                        "r": "ND", 
+                        "s": "Bronner"
+                    }, 
+                    {
+                        "n": "SD", 
+                        "r": "ND", 
+                        "s": "Raaka"
+                    }, 
+                    {
+                        "n": "SJ", 
+                        "r": "ND", 
+                        "s": "Cotler"
+                    }, 
+                    {
+                        "n": "KV", 
+                        "r": "ND", 
+                        "s": "Kowdley"
+                    }
+                ], 
+                "118": "37", 
+                "14": {
+                    "f": "318", 
+                    "l": "318"
+                }, 
+                "30": "Gastroenterology", 
+                "31": "124", 
+                "64": "2003", 
+                "65": "2003"
+            }
+        ]
+    }
+}
+mmmmmmmmmm
 0004-2803-ag-49-01-0005.id
 0004-2803-ag-49-1-1.id
 0004-2803-ag-49-1-19.id

@@ -8,12 +8,13 @@ class XML2JSONConverter:
         self.conversion_table = XML2JSONTable(xml2json_table_filename, report)
         self.report = report
         self.debug = debug
-    
+        self.dict = {}
+
     def convert(self, xml_filename):
         self.xml_manager = XMLManager(xml_filename, self.report)
         converted = {}
-        converted['doc'] = self.__convert__(self.conversion_table.start, None)
-        self.report.display_data('converted', a)  
+        converted = self.__convert__(self.conversion_table.start, None, None)
+        self.report.display_data('converted', converted)  
         return converted 
 
     def pretty(self, json_data):
@@ -22,7 +23,7 @@ class XML2JSONConverter:
     def pretty_print(self, json_data):
         print(self.pretty(json_data))
         
-    def __convert__(self, table_node, xml_parent_node):
+    def __convert__(self, table_node, xml_parent_node, parent_xml_parent_node, num = 1):
         sep = ''
         s = ''
         a = []
@@ -34,40 +35,73 @@ class XML2JSONConverter:
             xpath = ''
         else:
             if not '[@' in xpath and '@' in xpath:
-                xpath = './/' + table_node.xpath[0:table_node.xpath.find('@')]
-                table_node.xpath = xpath[xpath.find('@'):]
+                if '../' in table_node.xpath:
+                    xpath = ''
+                    xml_parent_node = parent_xml_parent_node
+                    table_node.xpath = table_node.xpath[table_node.xpath.find('../'):]
+                else:
+                    xpath = './/' + table_node.xpath[0:table_node.xpath.find('@')]
+                table_node.xpath = table_node.xpath[table_node.xpath.find('@'):]
+                
             else:
                 xpath = './/' + table_node.xpath
-        xml_nodes = self.xml_manager.return_nodes(xpath, xml_parent_node)
+        if xpath != None:
+            xml_nodes = self.xml_manager.return_nodes(xpath, xml_parent_node)
                 
         if len(table_node.children) == 0:
-            r = self.return_values(table_node, xml_nodes)
-            if len(r) == 1:
-                a = r[0]
+            content = self.return_content(table_node, xml_nodes)
+            if len(content) == 1:
+                result = content[0]
             else:
-                a = r
+                result = content 
         else:
-            r = []
+            occs = []
+            number = 0
             for xml_node in xml_nodes:
-                d = {}
+                # FIXME pode haver mais de uma instancia d{12}
+                occ = {}
+                number += 1
                 for child in table_node.children:
-                    v = self.__convert__(child, xml_node)
+                    v = self.__convert__(child, xml_node, xml_parent_node, number)
                     if len(v)>0:
                         if child.to == '':
-                            d['_'] = v
+                            occ['_'] = v
                         else:
-                            d[child.to] = v
-                r.append(d)        
-            if len(r) == 1:
-               a = r[0]
+                            occ[child.to] = v
+                if occ != {}:
+                    occs.append(occ)        
+
+            if len(occs) == 0:
+                result = ''
             else:
-               a = r
+                if len(occs) == 1:
+                    result = occs[0]
+                else:
+                    result = occs
+                result = self.__control_occ__(table_node, num, result)
+                
         if self.debug:
-            self.report.display_data('result', a)  
-        return a
+            self.report.display_data('result', result)  
+        return result
     
-    
-    def return_values(self, table_node, xml_nodes):
+    def __control_occ__(self, table_node, num, result):
+        key = table_node.parent.to + '_' +  str(num) + '_' + table_node.to
+        
+        if key in self.dict.keys():
+            if type(self.dict[key]) != type([]):
+                s = self.dict[key]
+                self.dict[key] = []
+                self.dict[key].append(s)
+                
+            
+            self.dict[key].append(result)
+            result = self.dict[key]
+            print(key)
+            print(result)
+        else:
+            self.dict[key] = result
+        return result
+    def return_content(self, table_node, xml_nodes):
         a = []
         for xml_node in xml_nodes:
             if table_node.default != '':

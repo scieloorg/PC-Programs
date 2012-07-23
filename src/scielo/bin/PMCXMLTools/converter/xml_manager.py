@@ -58,6 +58,7 @@ class XMLManager:
                 s = r.strip()
             except:
                 s = ''
+                print('Empty element')
                 print(node)
                 print(n)
                 print(r)        
@@ -74,7 +75,7 @@ class XMLManager:
                     for k,a in node.attrib.items():
                         if aname == k[k.find('}')+1:]:
                             attr = a 
-                        else:
+                else:
                     if attr_name[0:1] == '@':
                         attr_name = attr_name[1:]
                     try:
