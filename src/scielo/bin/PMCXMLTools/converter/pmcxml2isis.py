@@ -5,7 +5,7 @@ from xml2json_converter import XML2JSONConverter
 from json2id import JSON2IDFile
 from id2isis import IDFile2ISIS
 
-
+from article import ArticleFixer
 from report import Report
 from parameters import Parameters
 from my_files import MyFiles
@@ -16,17 +16,32 @@ my_files = MyFiles()
 class PMCXML2ISIS:
 
     def __init__(self, records_order, id2isis, xml2json_table_filename = '_pmcxml2isis.txt'):
-       self.xml2json_table_filename = xml2json_table_filename
-       self.records_order = records_order
-       self.tables = {}
-       self.id2isis = id2isis
+        self.xml2json_table_filename = xml2json_table_filename
+        self.records_order = records_order
+        self.tables = {}
+        self.id2isis = id2isis
        
+        f = open('tables', 'r')
+        lines = f.readlines()
+        f.close()
+
+        for l in lines:
+            table_name, key, value = l.replace("\n",'').split('|')
+            if len(table_name) > 0:
+                if not table_name in self.tables.keys():
+                    self.tables[table_name] = {}
+            if len(key)>0:
+                self.tables[table_name][key] = value
+
+
        
     def generate_json(self, xml_filename, supplementary_xml_filename, report):
         xml2json_converter = XML2JSONConverter(self.xml2json_table_filename, report)
         json_data = xml2json_converter.convert(xml_filename)
-        #xml2json_converter.pretty_print(json_data)
-        return json_data
+        
+        article = ArticleFixer(json_data, self.tables)
+        article.fix_data()
+        return article.doc
             
     def generate_id_file(self, json_data, id_filename, report, db_name):
         id_file = JSON2IDFile(id_filename, report)
@@ -36,6 +51,10 @@ class PMCXML2ISIS:
         cmd = ''
         files_set.prepare()
         id_filename_list = []
+        docs = []
+
+        sections = {}
+
         list = os.listdir(files_set.xml_path)
         for f in list:
             if '.xml' in f:
@@ -44,12 +63,23 @@ class PMCXML2ISIS:
                 id_filename = f.replace('.xml', '.id')
                 
                 json_data = self.generate_json(xml_filename, files_set.suppl_filename, report)
+
+                if '49' in json_data['doc']['f']:   
+                    section = json_data['doc']['f']['49']
+                    if not section in sections.keys():
+                        sections[section] = 'SECTION' + str(len(sections))
+                    json_data['doc']['f']['49'] = sections[section]
+                if not '49' in json_data['doc']['f']: 
+                    json_data['doc']['f']['49'] = 'MISSING'
+                docs.append((id_filename, json_data))
+
+        for doc in docs:
+            id_filename, json_data = doc
+            json_data = self.generate_record(json_data, 'f', 'h')
+            json_data = self.generate_record(json_data, 'f', 'l')
                 
-                json_data = self.generate_record(json_data, 'f', 'h')
-                json_data = self.generate_record(json_data, 'f', 'l')
-                
-                self.generate_id_file(json_data['doc'], files_set.output_path + '/' + id_filename, report, files_set.db_name)
-                self.id2isis.id2mst(files_set.output_path + '/' + id_filename, files_set.db_filename)
+            self.generate_id_file(json_data['doc'], files_set.output_path + '/' + id_filename, report, files_set.db_name)
+            self.id2isis.id2mst(files_set.output_path + '/' + id_filename, files_set.db_filename)
     
     def generate_record(self, json_data, src, dest):
         #print(json_data)

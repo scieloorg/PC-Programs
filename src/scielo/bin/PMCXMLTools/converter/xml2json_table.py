@@ -22,19 +22,20 @@ class XML2JSONTable:
         for line in lines:
             level = self.get_level(line)
             
-            c = line.strip()
+            c = line.strip() 
+
             values  = c.split(' ')
             
             xpath = ''
             to = ''
             default = ''
-            if len(values) == 3:
-                default = values[2]
-            if len(values) >= 2:
-                to = values[1]
             if len(values) >= 1:
                 xpath = values[0]
-                
+            if len(values) >= 2:
+                to = values[1]
+            if len(values) >= 3:
+                default = values[2]
+            
             new_node = MyNode(parent_node)
             new_node.xpath = xpath
             new_node.to = to

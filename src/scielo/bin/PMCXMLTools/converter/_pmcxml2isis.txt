@@ -1,17 +1,17 @@
 . doc
   . f
     @dtd-version 120
-    @article-type 71
+    @article-type 71 
     @xml:lang 40    
     journal-meta//abbrev-journal-title 030
     subj-group[@subj-group-type='heading']/subject 49
-    kwd-group//kwd 085
-      . k
-      ../@xml:lang l
+    kwd-group 085
+      kwd k
+      @xml:lang l
     contrib 010
       given-names n
       surname s
-      . r ND
+      @role r ND
       xref@rid 1
     article-meta//article-title 012
       . t
@@ -81,7 +81,7 @@
     name 10
       given-names n
       surname s
-      . r ND
+      @role r ND
     volume 31    
     issue 32    
     publisher-name 62    

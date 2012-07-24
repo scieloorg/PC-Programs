@@ -27,6 +27,8 @@ class XML2JSONConverter:
         sep = ''
         s = ''
         a = []
+
+        test = False
         if self.debug:
             self.report.display_data('__convert__ ', table_node.xpath)
         xpath = table_node.xpath
@@ -38,16 +40,25 @@ class XML2JSONConverter:
                 if '../' in table_node.xpath:
                     xpath = ''
                     xml_parent_node = parent_xml_parent_node
-                    table_node.xpath = table_node.xpath[table_node.xpath.find('../'):]
+                    table_node.xpath = table_node.xpath[table_node.xpath.find('../')+3:]
+                    
+
                 else:
                     xpath = './/' + table_node.xpath[0:table_node.xpath.find('@')]
+                    test = True
                 table_node.xpath = table_node.xpath[table_node.xpath.find('@'):]
                 
             else:
                 xpath = './/' + table_node.xpath
         if xpath != None:
             xml_nodes = self.xml_manager.return_nodes(xpath, xml_parent_node)
-                
+
+        if test:
+            print(xpath)
+            print(xml_nodes)
+            print(table_node.xpath)
+            test = False
+
         if len(table_node.children) == 0:
             content = self.return_content(table_node, xml_nodes)
             if len(content) == 1:
@@ -62,6 +73,7 @@ class XML2JSONConverter:
                 occ = {}
                 number += 1
                 for child in table_node.children:
+                    #print(table_node.xpath + '=>' + child.xpath)
                     v = self.__convert__(child, xml_node, xml_parent_node, number)
                     if len(v)>0:
                         if child.to == '':
@@ -96,24 +108,25 @@ class XML2JSONConverter:
             
             self.dict[key].append(result)
             result = self.dict[key]
-            print(key)
-            print(result)
+            
         else:
             self.dict[key] = result
         return result
+
     def return_content(self, table_node, xml_nodes):
         a = []
         for xml_node in xml_nodes:
-            if table_node.default != '':
-                v = table_node.default
-            else:
-                if table_node.xpath[0:1] == '@':
-                    
-                    v = self.xml_manager.return_node_attr_value(xml_node, table_node.xpath[1:])
-                else:
-                    v = self.xml_manager.return_node_value(xml_node)
+            
+            if table_node.xpath[0:1] == '@':
+                v = self.xml_manager.return_node_attr_value(xml_node, table_node.xpath[1:])
                 
-            a.append(self._convert_value_(v))
+            else:
+                v = self.xml_manager.return_node_value(xml_node)
+            if v == '':
+                v = table_node.default
+                
+            if v != '':
+                a.append(self._convert_value_(v))
         return a
          
     def _convert_value_(self, value):
