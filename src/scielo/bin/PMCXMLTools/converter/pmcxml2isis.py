@@ -9,6 +9,7 @@ from article import ArticleFixer
 from report import Report
 from parameters import Parameters
 from my_files import MyFiles
+from table_ent_and_char import TableEntAndChar
 
 my_files = MyFiles()
 
@@ -20,7 +21,8 @@ class PMCXML2ISIS:
         self.records_order = records_order
         self.tables = {}
         self.id2isis = id2isis
-       
+        self.table_entity_and_char = TableEntAndChar()
+
         f = open('tables', 'r')
         lines = f.readlines()
         f.close()
@@ -77,17 +79,22 @@ class PMCXML2ISIS:
             id_filename, json_data = doc
             json_data = self.generate_record(json_data, 'f', 'h')
             json_data = self.generate_record(json_data, 'f', 'l')
-                
+               
             self.generate_id_file(json_data['doc'], files_set.output_path + '/' + id_filename, report, files_set.db_name)
             self.id2isis.id2mst(files_set.output_path + '/' + id_filename, files_set.db_filename)
     
     def generate_record(self, json_data, src, dest):
         #print(json_data)
         d = json_data['doc'][src]
-        json_data['doc'][dest] = self.convert_record(d)
+        json_data['doc'][dest] = self.convert_into_h_record(d)
         return json_data
     
-    def convert_record(self, json_record):
+    def convert_into_h_record(self, json_record):
+        s = json.JSONEncoder().encode(json_record)
+
+        s = self.table_entity_and_char.convert_entities(s)
+        json_record = json.loads(s)
+
         return json_record
                 
     
