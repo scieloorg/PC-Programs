@@ -58,10 +58,10 @@ class XMLManager:
                 s = r.strip()
             except:
                 s = ''
-                print('Empty element')
-                print(node)
-                print(n)
-                print(r)        
+                self.report.log_event('Empty element')
+                self.report.display_data('node', node)
+                self.report.display_data('n', n)
+                self.report.display_data('r', r)        
         return s
     
     

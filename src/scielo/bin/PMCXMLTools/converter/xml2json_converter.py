@@ -45,7 +45,7 @@ class XML2JSONConverter:
 
                 else:
                     xpath = './/' + table_node.xpath[0:table_node.xpath.find('@')]
-                    test = True
+                    #test = True
                 table_node.xpath = table_node.xpath[table_node.xpath.find('@'):]
                 
             else:
@@ -65,6 +65,7 @@ class XML2JSONConverter:
                 result = content[0]
             else:
                 result = content 
+            
         else:
             occs = []
             number = 0
@@ -76,7 +77,7 @@ class XML2JSONConverter:
                     #print(table_node.xpath + '=>' + child.xpath)
                     v = self.__convert__(child, xml_node, xml_parent_node, number)
                     if len(v)>0:
-                        if child.to == '':
+                        if child.to == '' or child.to == '_':
                             occ['_'] = v
                         else:
                             occ[child.to] = v
@@ -127,7 +128,11 @@ class XML2JSONConverter:
                 
             if v != '':
                 a.append(self._convert_value_(v))
+                
         return a
+         
+    def x_convert_value_(self, value):
+         return value
          
     def _convert_value_(self, value):
         enc = 'utf-8'
@@ -136,14 +141,24 @@ class XML2JSONConverter:
                 value = value.encode(enc)
             except:
                 
-                v = ''
-                for c in value:
-                    try:
-                        v += c.encode(enc)
-                    except:
-                        v += '&#' + str(hex(ord(c))) + ';' 
-                value = v
+                value = self.convert_chr(value)
             
         return value
- 
+
+    def convert_chr(self, value):
+        v = ''
+        for c in value:
+            try:
+                v += c.encode('utf-8')
+            except:
+                try: 
+                    n = ord(c)
+                    
+                except:
+
+                    n = 256*ord(c[0]) + ord(c[1])
+                    
+
+                v += '&#' + str(hex(n)) + ';'
+        return v
         

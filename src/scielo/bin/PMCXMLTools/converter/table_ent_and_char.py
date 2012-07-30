@@ -1,26 +1,46 @@
 class TableEntAndChar:
-    def __inti__(self, filename = 'table_ent'):
+    def __init__(self, filename = 'table_ent_char'):
         f = open(filename, 'r')
         lines = f.readlines()
         f.close()
         
         self.table_ent2chr = {}
         self.table_chr2ent = {}
+        self.table_noaccent = {}
         for line in lines:
-            char, ent, ign1, ign2 = line.split('|')
+            char, ent, ign1, ign2, no_accent = line.replace("\n", "").split('|')
             self.table_chr2ent[char] = ent
             self.table_ent2chr[ent] = char
+            self.table_noaccent[ent] = no_accent
+            self.table_noaccent[char] = no_accent
     
-
-    def convert_entities(self, content):
-        for k,v in self.table_ent2chr:
+    def ent2chr(self, content):
+        entities = self.find_entities(content)
+        for ent in entities:
+            content = content.replace(ent, self.table_ent2chr[ent])
+        return content
+    
+    def remove_accent(self, content):
+        for k,v in self.table_noaccent.items():
             content = content.replace(k, v)
         return content
-    def convert_chars(self, content):
-        for k,v in self.table_chr2ent:
+
+        
+
+    def find_entities(self, content):
+        l = []
+        if '&#' in content and ';' in content:
+            p = content.find('&#')
+            ent = content[p:]
+            ent = ent[0:ent.find(';')+1]
+            if ent in self.table_ent2chr.keys():
+                l.append(ent)
+        return l
+    def chr2ent(self, content):
+
+        for k,v in self.table_chr2ent.items():
             content = content.replace(k, v)
         return content
-
 
 
 

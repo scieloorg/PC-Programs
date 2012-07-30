@@ -36,8 +36,10 @@
     article-meta//fpage 121
     aff 070
       @id i
-      .
+      . _
     ref-count@count 72    
+    table-count@count 900
+    fig-count@count 901
     abstract 083
       . a
       @xml:lang l

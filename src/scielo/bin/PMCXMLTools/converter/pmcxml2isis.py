@@ -1,15 +1,15 @@
 import os
 import sys
+import json
 
 from xml2json_converter import XML2JSONConverter
-from json2id import JSON2IDFile
+from json2id_article import JSON2IDFile_Article
 from id2isis import IDFile2ISIS
 
 from article import ArticleFixer
 from report import Report
 from parameters import Parameters
 from my_files import MyFiles
-from table_ent_and_char import TableEntAndChar
 
 my_files = MyFiles()
 
@@ -19,35 +19,17 @@ class PMCXML2ISIS:
     def __init__(self, records_order, id2isis, xml2json_table_filename = '_pmcxml2isis.txt'):
         self.xml2json_table_filename = xml2json_table_filename
         self.records_order = records_order
-        self.tables = {}
         self.id2isis = id2isis
-        self.table_entity_and_char = TableEntAndChar()
-
-        f = open('tables', 'r')
-        lines = f.readlines()
-        f.close()
-
-        for l in lines:
-            table_name, key, value = l.replace("\n",'').split('|')
-            if len(table_name) > 0:
-                if not table_name in self.tables.keys():
-                    self.tables[table_name] = {}
-            if len(key)>0:
-                self.tables[table_name][key] = value
-
-
+        self.article_fixer = ArticleFixer()
        
     def generate_json(self, xml_filename, supplementary_xml_filename, report):
         xml2json_converter = XML2JSONConverter(self.xml2json_table_filename, report)
         json_data = xml2json_converter.convert(xml_filename)
-        
-        article = ArticleFixer(json_data, self.tables)
-        article.fix_data()
-        return article.doc
+        return self.article_fixer.fix_data(json_data)
             
     def generate_id_file(self, json_data, id_filename, report, db_name):
-        id_file = JSON2IDFile(id_filename, report)
-        id_file.format_and_save_document_data(self.records_order, json_data, db_name)
+        id_file = JSON2IDFile_Article(id_filename, report)
+        id_file.format_and_save_document_data(json_data, self.records_order, db_name)
         
     def generate_db(self, files_set, report):
         cmd = ''
@@ -55,7 +37,7 @@ class PMCXML2ISIS:
         id_filename_list = []
         docs = []
 
-        sections = {}
+        
 
         list = os.listdir(files_set.xml_path)
         for f in list:
@@ -66,39 +48,22 @@ class PMCXML2ISIS:
                 
                 json_data = self.generate_json(xml_filename, files_set.suppl_filename, report)
 
-                if '49' in json_data['doc']['f']:   
-                    section = json_data['doc']['f']['49']
-                    if not section in sections.keys():
-                        sections[section] = 'SECTION' + str(len(sections))
-                    json_data['doc']['f']['49'] = sections[section]
-                if not '49' in json_data['doc']['f']: 
-                    json_data['doc']['f']['49'] = 'MISSING'
+                json_data = self.article_fixer.get_section_id(json_data)
                 docs.append((id_filename, json_data))
 
         for doc in docs:
             id_filename, json_data = doc
-            json_data = self.generate_record(json_data, 'f', 'h')
-            json_data = self.generate_record(json_data, 'f', 'l')
-               
+            json_data['doc']['h'] = self.article_fixer.format_for_indexing(json_data['doc']['f'])
+            json_data['doc']['l'] = self.article_fixer.format_for_indexing(json_data['doc']['h'])
+            new_c = []
+            for rec in json_data['doc']['c']:
+                r = self.article_fixer.format_for_indexing(rec)
+                new_c.append(r)
+            json_data['doc']['c'] = new_c 
+            
             self.generate_id_file(json_data['doc'], files_set.output_path + '/' + id_filename, report, files_set.db_name)
             self.id2isis.id2mst(files_set.output_path + '/' + id_filename, files_set.db_filename)
-    
-    def generate_record(self, json_data, src, dest):
-        #print(json_data)
-        d = json_data['doc'][src]
-        json_data['doc'][dest] = self.convert_into_h_record(d)
-        return json_data
-    
-    def convert_into_h_record(self, json_record):
-        s = json.JSONEncoder().encode(json_record)
 
-        s = self.table_entity_and_char.convert_entities(s)
-        json_record = json.loads(s)
-
-        return json_record
-                
-    
-            
     def execute(self, xml_path, suppl_filename, output_path, db_name, script_filename, debug_depth, display_on_screen):
         files_set = PMCXML_FilesSet(xml_path, suppl_filename, output_path, db_name)
         report = Report(files_set.log_filename, files_set.err_filename, debug_depth, display_on_screen) 
