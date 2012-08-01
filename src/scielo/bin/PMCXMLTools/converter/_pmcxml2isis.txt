@@ -3,7 +3,9 @@
     @dtd-version 120
     @article-type 71 
     @xml:lang 40    
+    journal-meta//journal-title 100
     journal-meta//abbrev-journal-title 030
+    journal-meta//journal-id[@journal-id-type='publisher-id'] 035 
     subj-group[@subj-group-type='heading']/subject 49
     kwd-group 085
       kwd k
@@ -23,7 +25,6 @@
     article-meta//article-id[@pub-id-type='doi'] 237
     article-meta//volume 031    
     article-meta//issue 032    
-    journal-meta//issn 035    
     article-meta//suppl 132    
     article-meta//funding-source 058    
     article-meta//award-id 060    

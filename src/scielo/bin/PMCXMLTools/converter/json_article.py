@@ -1,8 +1,16 @@
+from journal_issue_article import Journal
+from journal_issue_article import JournalIssue
+from journal_issue_article import Article
 from table_ent_and_char import TableEntAndChar
 from table_conversion import ConversionTables
 
 
-class ArticleFixer:
+   
+
+
+
+
+class JSON_ArticleFixer:
     def __init__(self):
         self.conversion_tables = ConversionTables()
         self.table_entity_and_char = TableEntAndChar()
@@ -42,7 +50,7 @@ class ArticleFixer:
     
     
 
-    def fix_data(self, doc):
+    def fix_all(self, doc):
         doc = self.fix_keywords(doc)
         doc = self.replace_value(doc, 'doctopic', 'f', '71')
         doc['doc']['f']['42'] = '1'
@@ -139,16 +147,33 @@ class ArticleFixer:
         return json_record_dest
 
     
-    def get_section_id(self, json_data):
-        if '49' in json_data['doc']['f']:   
-            section = json_data['doc']['f']['49']
-            if not section in self.sections.keys():
-                self.sections[section] = 'SECTION' + str(len(self.sections))
-            json_data['doc']['f']['49'] = self.sections[section]
-        if not '49' in json_data['doc']['f']: 
-            json_data['doc']['f']['49'] = 'nd'
-        return json_data 
+class JSON_Article:
+    def __init__(self):
+    	pass
 
-          
+    def extract_journal_issue_article(self, article_json_data):
+
+        article_json_data = JSON_ArticleFixer.fix_all(article_json_data)
+        
+        journal = Journal(article_json_data['doc']['f']['100'])
+
+        issue = JournalIssue(journal, article_json_data['doc']['f']['031'], article_json_data['doc']['f']['032'], article_json_data['doc']['f']['65'], article_json_data['doc']['f']['132'])
+        
+        if not '49' in article_json_data['doc']['f'].keys():
+            json_data['doc']['f']['49'] = ''
+
+        issue.toc.insert(article_json_data['doc']['f']['49'], False)
+
+        json_data['doc']['h'] = JSON_ArticleFixer.format_for_indexing(json_data['doc']['f'])
+        json_data['doc']['l'] = JSON_ArticleFixer.format_for_indexing(json_data['doc']['h'])
+        new_c = []
+        for rec in json_data['doc']['c']:
+            r = JSON_ArticleFixer.format_for_indexing(rec)
+            new_c.append(r)
+            json_data['doc']['c'] = new_c 
+            
+        article = Article(issue, article_json_data['doc']['f']['014']['f'], article_json_data['doc']['f']['010'][0]['s'])
+        article.json_data = article_json_data['doc']
+        return (journal, issue, article)  
 
     

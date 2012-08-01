@@ -13,17 +13,13 @@ class MyFiles:
         return r
             
     def garante_filename_path(self, filename, delete):
-        r = os.path.exists(filename)
-        if not r:
-            if filename.rfind('/')>0:
-                path = filename[0:filename.rfind('/')]
-                r = os.path.exists(path)
-                if not r:
-                    print('Created ' +  path)
-                    os.mkdir(path)
-                    r = os.path.exists(path)
-            else:
-                r = True
+        if os.path.exists(filename):
+            r = True
+        else:
+            path = os.path.dirname(filename)
+            if not os.path.exists(path):
+                os.makedirs(path)
+            r = os.path.exists(path)
         if delete:
             self.delete_filename(filename)    
         return r

@@ -72,7 +72,7 @@ class JSON2IDFile_Article(JSON2IDFile):
      
     def save_file_data(self, db_name, center_code = 'br1.1'):
         f = self.filename.replace('.id', '.xml')
-        r = self.tag_it('2', f[f.rfind('/')+1:])
+        r = self.tag_it('2', os.path.basename(f))
         r += self.tag_it('702', f)
         r += self.tag_it('4', db_name)
         r += self.tag_it('1', center_code)
