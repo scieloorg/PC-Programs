@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as etree
-
+import os
 
 class XMLManager:
 
@@ -7,16 +7,23 @@ class XMLManager:
     debug = True
 
     def __init__(self, xml_filename, report):
-        self.report = report
-        self.ns = ''
-        try:
-            self.root = etree.parse(xml_filename).getroot()
-            if '{' in self.root.tag:
-                self.ns = self.root.tag[0:self.root.tag.find('}')+1]
-            else:
-                self.ns = ''
-        except:
-            self.report.log_error('Unable to load ' + xml_filename)
+        self.root = None
+        if os.path.exists(xml_filename):
+            self.report = report
+            self.ns = ''
+            try:
+                self.root = etree.parse(xml_filename).getroot()
+                if '{' in self.root.tag:
+                    self.ns = self.root.tag[0:self.root.tag.find('}')+1]
+                else:
+                    self.ns = ''
+            except:
+
+                self.report.log_error('Unable to load ' + xml_filename)
+                
+        else:
+            self.report.log_error('Missing XML file:' + xml_filename)
+            
     
     def return_nodes(self, xpath = '', current_node = None):
         r = []

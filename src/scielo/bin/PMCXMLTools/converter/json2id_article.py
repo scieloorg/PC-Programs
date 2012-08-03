@@ -3,6 +3,7 @@ import sys
 from datetime import datetime
 from json2id import JSON2IDFile
 
+
 class JSON2IDFile_Article(JSON2IDFile):
     """
     Class which creates an ID file from JSON (ISIS) document

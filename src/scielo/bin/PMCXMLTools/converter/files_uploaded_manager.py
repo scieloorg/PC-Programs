@@ -4,7 +4,7 @@ import shutil
 from files_extractor import extract_file, is_compressed_file
 
 
-class FilesCounter:
+class UploadedFilesManager:
     def __init__(self, packages_path, work_path, trash_path):
     	self.packages_path = packages_path
     	self.work_path = work_path
@@ -31,7 +31,7 @@ class FilesCounter:
 
                     if os.path.exists(wrk_path):  
                         report.log_event('Copy ' + package_file + ' to ' + wrk_path)  
-                        shutil.move(package_file, wrk_path)
+                        self.move_file_to_folder(package_file, wrk_path)
                         moved_package_file = wrk_path + '/' + filename
                         if os.path.exists(moved_package_file):
 
@@ -48,8 +48,22 @@ class FilesCounter:
                         os.makedirs(self.trash_path)
                     if os.path.exists(self.trash_path):  
                         report.log_event('Move ' + package_file + ' to ' + self.trash_path)
-                        shutil.move(package_file, self.trash_path)
+                        self.move_file_to_folder(package_file, self.trash_path)
                
         else:
             report.log_error('Invalid package path: ' + self.packages_path)
+    
+    def move_file_to_folder(self, file_or_folder, dest_path):
+        if os.path.isfile(file_or_folder) and os.path.isdir(dest_path) :
+            filename = os.path.basename(file_or_folder)
+            path = os.path.dirname(file_or_folder)
+            if os.path.exists(dest_path + '/' + filename):
+            	os.unlink(dest_path + '/' + filename)
+            shutil.move(file_or_folder, dest_path)
+
+
+
+
+
+
 

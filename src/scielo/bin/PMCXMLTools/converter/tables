@@ -1,4 +1,5 @@
 doctopic|research-article|oa
+doctopic|editorial|ed
 formatting|<sub>|
 formatting|</sub>|
 formatting|<sup>|
@@ -28,3 +29,4 @@ aff|Progr|1
 aff|Porto Alegre|c
 aff|RS|s
 aff|Brasil|p
+aff|Brazil|p

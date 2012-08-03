@@ -1,4 +1,5 @@
 import shutil
+import os
 
 class PMCXML_FilesSet:
 
@@ -38,6 +39,26 @@ class PMCXML_FilesSet:
         matched_files = [ filename for filename in os.listdir(path) if f in filename ]
         for matched_file in matched_files:
             if self.copy_file_to_path(path + '/' + matched_file, self.extracted_package_path):
+                count += 1
+        return (count == len(matched_files))
+
+    def move_file_to_path(self, filename, dest_path):
+        f = os.path.basename(filename)
+        if not os.path.exists(dest_path):
+            os.makedirs(dest_path)
+        if os.path.exists(dest_path + '/' + f):
+            os.unlink(dest_path + '/' + f)
+        shutil.move(filename, dest_path)
+        return os.path.exists(dest_path + '/' + f)
+    
+    def move_extracted_files_to_their_paths(self, xml_filename):
+        count = 0
+        f = os.path.basename(xml_filename).replace('.xml', '') + '-'
+        path = os.path.dirname(xml_filename)
+        matched_files = [ filename for filename in os.listdir(path) if f in filename ]
+        matched_files.append(os.path.basename(xml_filename))
+        for matched_file in matched_files:
+            if self.move_file_to_path(path + '/' + matched_file, self.extracted_package_path):
                 count += 1
         return (count == len(matched_files))
 
