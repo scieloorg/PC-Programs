@@ -1,4 +1,3 @@
-from report import Report
 
 class XML2JSONTable:
 

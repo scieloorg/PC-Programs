@@ -1,7 +1,7 @@
 import os
 import sys
 
-class IDFile2ISIS:
+class CISIS:
     def __init__(self, cisis_path):
         cisis_path = cisis_path.replace('\\', '/')
         

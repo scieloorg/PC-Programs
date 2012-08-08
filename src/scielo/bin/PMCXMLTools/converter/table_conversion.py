@@ -5,7 +5,7 @@ class ConversionTables:
         self.tables = {}
         
 
-        f = open('tables', 'r')
+        f = open('inputs/tables', 'r')
         lines = f.readlines()
         f.close()
 

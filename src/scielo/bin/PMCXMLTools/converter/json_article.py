@@ -46,11 +46,18 @@ class JSON_ArticleFixer:
         lang = ''
         new = [{}]
         if list != None:
+            
             for item in list:
-                if 'l' in item.keys():
-                    lang = item['l']
-                for kw in item['k']:
-                    new.append({'k': kw, 'l': lang})
+                if type(item) == type({}):
+
+                    if 'l' in item.keys():
+                        lang = item['l']
+                    for kw in item['k']:
+                        new.append({'k': kw, 'l': lang})
+                elif type(item) == type(''):
+                
+                    new.append({'k' : item, 'l': 'en'})
+
             doc['doc']['f']['85'] = new    
         return doc
     
@@ -62,7 +69,11 @@ class JSON_ArticleFixer:
         doc['doc']['f']['42'] = '1'
         
         if len(doc['doc']['f']['65']) == 4:
-            doc['doc']['f']['65'] = doc['doc']['f']['65'] + self.return_month_number(doc['doc']['f']['64']) + '00'
+            m = '00'
+            if '64' in doc['doc']['f'].keys():
+                m = doc['doc']['f']['64']
+                m = self.return_month_number(m)
+            doc['doc']['f']['65'] = doc['doc']['f']['65'] + m + '00'
         doc = self.fix_38(doc)
 
         doc = self.fix_affiliations(doc)
@@ -129,10 +140,16 @@ class JSON_ArticleFixer:
     
     def return_month_number(self, month_range):
         m = month_range
-        if '-' in m:
-            m = m[m.find('-')+1:]
+        
+        if m.isdigit():
+            m = '00' + m
+            m = m[-2:]
+        else:
+            if '-' in m:
+                m = m[m.find('-')+1:]
+            m = self.conversion_tables.return_fixed_value('month', m)
 
-        return self.conversion_tables.return_fixed_value('month', m) 
+        return m 
 
     def format_for_indexing(self, json_record):
         if type(json_record) == type({}):
@@ -156,40 +173,45 @@ class JSON_ArticleFixer:
 class JSON_Article:
     def __init__(self):
         pass
+    
+    
 
-     
-
-    def return_issues(self, article_json_data, journal_list, issues_list, xml_filename):
-        journal = journal_list.find_journal(article_json_data['doc']['f']['100'])
-
-        article_json_data['doc']['f']['35'] = journal.issn_id
-
-        article_json_data = JSON_ArticleFixer().fix_json_data(article_json_data)
-        
+    def load_article(self, article_json_data, journal_list, xml_filename):
         doc_f = article_json_data['doc']['f']
         
+        journal = journal_list.find_journal(doc_f['100'])
+        if journal == None:
+            journal = Journal(doc_f['100'], doc_f['35'])
+            
         issue = self.return_issue(doc_f, journal)
-        
-        find_issue = issues_list.get(issue)
-        if find_issue == None:
-            find_issue = issues_list.insert(issue, False)
-            #find_issue = self.set_issue_data(issue, doc_f)
-        section_title = ''
-        if '49' in doc_f.keys():
-            section_title = doc_f['49']
-        section = find_issue.toc.insert(Section(section_title), False)
-        article_json_data['doc']['f']['49'] = section.code
-        article_json_data['doc']['l']['49'] = section.code
-        article_json_data['doc']['h']['49'] = section.code
+        issue.json_data = self.return_issue_json_data(doc_f, issue)
 
-        #print(article_json_data)
         article = self.return_article(article_json_data, issue)
         article.xml_filename = xml_filename
-        
-        find_issue.articles.insert(article, True)
-        find_issue = issues_list.insert(find_issue, True)
+        article = self.update_toc(article)
 
-        return issues_list 
+        return article
+
+    
+
+    
+    def update_toc(self, article):
+        
+        section_title = ''
+        if '49' in article.json_data['f'].keys():
+            section_title = article.json_data['f']['49']
+
+        section = article.issue.toc.insert(Section(section_title), False)
+
+        article.json_data['f']['49'] = section.code
+        article.section_title = section_title
+        article_json_data = {}
+        article_json_data['doc'] = article.json_data
+        article_json_data = JSON_ArticleFixer().fix_json_data(article_json_data)
+        article.json_data = article_json_data['doc']
+
+        article.issue.articles.insert(article, True)
+        return article
 
     def return_issue(self, doc_f, journal):
         suppl = ''
@@ -197,20 +219,29 @@ class JSON_Article:
 
         if '131' in doc_f.keys():
             suppl = doc_f['131']
+            
         if '132' in doc_f.keys():
             suppl = doc_f['132']
         if '31' in doc_f.keys():
             vol = doc_f['31']
         if '32' in doc_f.keys():
-            num = doc_f['32']
+            num = doc_f['32'].strip()
         if '65' in doc_f.keys():
             date = doc_f['65']
-
+        if 'suppl' in num:
+            if ' ' in num:
+                if '(' in num:
+                    suppl = num[num.find('(')+1:]
+                    suppl = suppl[0:suppl.find(')')]
+                else:
+                    suppl = num[num.rfind(' ')+1:]
+                num = num[0:num.find(' ')]
         issue = JournalIssue(journal, vol, num, date, suppl) 
         return  issue     
 
-    def set_issue_data(self, issue, doc_f):
-        i_record = {}
+    def return_issue_json_data(self, doc_f, issue):
+
+        i_record = issue.json_data
         keep_list = [30, 31, 32, 132, 35, 42, 65, 100, 480, ]
         for key, item in doc_f.items():
             if int(key) in keep_list:
@@ -225,9 +256,9 @@ class JSON_Article:
         i_record['48'].append({'l': 'en', 'h': 'Table of Contents'})
         i_record['48'].append({'l': 'pt', 'h': 'Sumário'})
         i_record['48'].append({'l': 'es', 'h': 'Sumario'})
-
-        issue.json_data = i_record
-        return  issue     
+        i_record['36'] = issue.order
+        
+        return  i_record     
         
     def return_article(self, article_json_data, issue):   
         doc_f = article_json_data['doc']['f']
@@ -239,7 +270,11 @@ class JSON_Article:
                 surname =  doc_f['10'][0]['s']
             else:
                 surname =  doc_f['10']['s']
-        article = Article(issue, doc_f['14']['f'], surname)
+        if type(doc_f['14']['f']) == type(''):
+            page = doc_f['14']['f']
+        else:
+            page = doc_f['14']['f'][0]
+        article = Article(issue, page, surname)
         article.json_data = article_json_data['doc']
         return article
    

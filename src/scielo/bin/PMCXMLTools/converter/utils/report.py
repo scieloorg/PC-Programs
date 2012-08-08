@@ -1,20 +1,40 @@
 
 from datetime import datetime
-from my_files import MyFiles
+import os
 
 class Report:
 
     def __init__(self, report_filename, err_filename, debug_depth = 0, display_output = False):
         self.debug_depth = debug_depth
-        self.my_files = MyFiles()
+        
         self.display_output = display_output
         self.report_filename = report_filename
-        if not self.my_files.garante_filename_path(report_filename, True):
+        if not self.garante_filename_path(report_filename, True):
             print('ERROR: there is no path for ' + report_filename)
         self.err_filename = err_filename
-        if not self.my_files.garante_filename_path(err_filename, True):
+        if not self.garante_filename_path(err_filename, True):
             print('ERROR: there is no path for ' + err_filename)
      
+    def garante_filename_path(self, filename, delete):
+        if os.path.exists(filename):
+            r = True
+        else:
+            path = os.path.dirname(filename)
+            if not os.path.exists(path):
+                os.makedirs(path)
+            r = os.path.exists(path)
+        if delete:
+            self.delete_filename(filename)    
+        return r
+
+    def delete_filename(self, filename):
+        if os.path.isfile(filename):
+            try:
+                os.remove(filename)
+            except:
+                print('Unable to delete ' + filename)
+        return (not os.path.isfile(filename))
+    
     def __write__(self, filename, content):
         f = open(filename, 'a+')
         f.write(content + "\n")
@@ -33,9 +53,15 @@ class Report:
         
     def log_error(self, error_msg, data = None, display_on_screen = False):
         if display_on_screen:
+            print('!' * 80)
             print('ERROR: ' + error_msg)
-            print(data)
+            if data != None:
+                print(data)
+            print('-' * 80)
+            print('')
+            
         if data != None:
+            
             try:
                 self.__write_err__(error_msg + ': '+ str(data))
                 self.__write_all__(error_msg + ': '+ str(data), 'ERROR')
@@ -50,7 +76,9 @@ class Report:
     def log_event(self, event, display_output = False):
         self.__write_all__(event, 'EVENT')
         if self.display_output == True or display_output == True:
+            
             print(event)
+            print('')
         
 
     def debugging(self, data, label, level=0):

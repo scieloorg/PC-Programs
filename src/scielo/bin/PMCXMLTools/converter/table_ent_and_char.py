@@ -1,5 +1,5 @@
 class TableEntAndChar:
-    def __init__(self, filename = 'table_ent_char'):
+    def __init__(self, filename = 'inputs/table_ent_char'):
         f = open(filename, 'r')
         lines = f.readlines()
         f.close()

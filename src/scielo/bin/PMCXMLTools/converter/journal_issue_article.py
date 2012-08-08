@@ -1,4 +1,5 @@
 import hashlib
+
 from datetime import datetime
 
 class ID:
@@ -46,8 +47,8 @@ class TOC(Items):
     def return_json(self):
         r = []
         for key, section in self.elements.items():
-            r.append({'l' : 'en'})
-        return json_data
+            r.append({'l' : 'en', 'c': section.code, 't': section.title})
+        return r
 
 
 
@@ -93,7 +94,31 @@ class Journal:
 
     def generate_id(self, journal_title):
         return ID().generate( journal_title)
-    
+ 
+class JournalIssueOrder:
+    def __init__(self):
+        #self.order = ( [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23], [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24], range(37,49))
+        self.order = ( [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23], range(25,37), range(37,49))
+
+
+    def generate(self, volume, number, suppl):
+        
+        if number == 'ahead':
+            r = '50'
+
+        elif number == 'review':
+            r = '75'
+        else:
+            n = int(number)
+            if suppl != '' and suppl != None:
+                if number != '' and number != None:
+                    i = 1
+                else:
+                    i = 2
+            else:
+                i = 0
+            r = str(self.order[i][n])
+        return r
 
 class JournalIssue:
     def __init__(self, journal, volume, number, dateiso, suppl = None):
@@ -105,6 +130,9 @@ class JournalIssue:
         self.journal = journal
         self.id = ID().generate( journal.title + volume + number + dateiso + suppl)
         self.articles = JournalIssueArticles()
+        self.status = ''
+        self.json_from_db = {}
+        self.order = dateiso[0:4] + JournalIssueOrder().generate(volume, number, suppl)
 
         label = ''
         if number in ['ahead', 'review']:
@@ -122,9 +150,28 @@ class JournalIssue:
     def generate_id(self, journal, volume, number, dateiso, suppl):
         return ID().generate( journal.title + volume + number + dateiso + suppl)
     
+    def return_invalid_value_msg(self, label, invalid_value, correct_value = ''):
+        r =  invalid_value + ' is not a valid ' + label 
+        if len(correct_value) > 0:
+            r += '. Expected: ' + correct_value
+        return r 
 
+    def is_valid(self, correct_issue):
+        errors = []
+        
+        items = {}
+        items['ISSN'] = (correct_issue.journal.issn_id, self.journal.issn_id)
+        items['journal title'] = (correct_issue.journal.title, self.journal.title)
+        items['acron'] = (correct_issue.journal.acron, self.journal.acron)
+        items['issue'] = (correct_issue.journal.acron + ' ' + correct_issue.name, self.journal.acron + ' ' + self.name)
+        items['dateiso'] = (correct_issue.dateiso, self.dateiso)
+        
+        for key, item in items.items():
+            if item[0] != item[1]:
+                errors.append(self.return_invalid_value_msg(key, item[1], item[0]))
+        return errors
     
-
+    
 
 class Article:
     def __init__(self, issue, page, author):
@@ -133,6 +180,7 @@ class Article:
         self.json_data = {}
         self.page = '0' * 10 + page
         self.page = self.page[-5:]
+        self.xml_filename = ''
 
     def generate_id(self, issue, page, author):
         return ID().generate( issue.id + page + author)
@@ -141,7 +189,7 @@ class JournalList(Items):
     def __init__(self):
         Items.__init__(self)
 
-        f = open('table_journals.seq', 'r')
+        f = open('inputs/table_journals.seq', 'r')
         rows = f.readlines()
         f.close()
 

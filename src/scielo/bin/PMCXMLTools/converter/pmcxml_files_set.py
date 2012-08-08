@@ -9,7 +9,7 @@ class PMCXML_FilesSet:
         self.package_path = path + '/pmc_package_source' 
         self.extracted_package_path = path + '/pmc_package_extracted' 
         self.db_path = path + '/pmc_base' 
-        
+        self.xml_path = path + '/pmc_xml'
         #self.xml_path = path + '/xml' 
         #self.img_path = path + '/pmc_img' 
         #self.pdf_path = path + '/pmc_pdf' 
@@ -25,6 +25,12 @@ class PMCXML_FilesSet:
     def prepare_db_folder(self):
         self.clean_folder(self.db_path, ['.id', '.mst', '.xrf', '.log', ])
     
+    def archive(self, xml_filename):
+        self.move_file_to_path(xml_filename, self.xml_path)
+        self.move_extracted_files_to_their_paths(xml_filename)
+
+        
+
     def copy_file_to_path(self, filename, dest_path):
         f = os.path.basename(filename)
         if not os.path.exists(dest_path):
@@ -56,9 +62,10 @@ class PMCXML_FilesSet:
         f = os.path.basename(xml_filename).replace('.xml', '') + '-'
         path = os.path.dirname(xml_filename)
         matched_files = [ filename for filename in os.listdir(path) if f in filename ]
-        matched_files.append(os.path.basename(xml_filename))
+        #matched_files.append(os.path.basename(xml_filename))
         for matched_file in matched_files:
-            if self.move_file_to_path(path + '/' + matched_file, self.extracted_package_path):
+            
+            if self.move_file_to_path(path + '/' + matched_file, self.xml_path):
                 count += 1
         return (count == len(matched_files))
 

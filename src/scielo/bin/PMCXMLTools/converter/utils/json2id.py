@@ -3,7 +3,7 @@
 import os
 import sys
 from datetime import datetime
-from table_ent_and_char import TableEntAndChar
+
 
 class JSON2IDFile:
     """
@@ -17,7 +17,9 @@ class JSON2IDFile:
         """
         self.filename = filename
         self.report = report
-        #self.conversion = TableEntAndChar()
+        if not os.path.exists(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
+        
         
     def format_and_save_document_data(self, json_data):
         """

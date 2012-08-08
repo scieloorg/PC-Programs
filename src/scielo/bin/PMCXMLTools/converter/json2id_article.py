@@ -1,7 +1,8 @@
 import os
 import sys
+
 from datetime import datetime
-from json2id import JSON2IDFile
+from utils.json2id import JSON2IDFile
 
 
 class JSON2IDFile_Article(JSON2IDFile):

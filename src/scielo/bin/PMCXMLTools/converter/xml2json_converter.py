@@ -1,4 +1,4 @@
-from xml_manager import XMLManager
+from utils.xml_manager import XMLManager
 from xml2json_table import XML2JSONTable
 import json
 
@@ -12,7 +12,6 @@ class XML2JSONConverter:
 
     def convert(self, xml_filename):
         self.xml_manager = XMLManager(xml_filename, self.report)
-        converted = {}
         converted = self.__convert__(self.conversion_table.start, None, None)
         self.report.display_data('converted', converted)  
         return converted 
@@ -44,12 +43,18 @@ class XML2JSONConverter:
                     
 
                 else:
-                    xpath = './/' + table_node.xpath[0:table_node.xpath.find('@')]
+                    ##xpath = './/' + table_node.xpath[0:table_node.xpath.find('@')]
+                    xpath = table_node.xpath[0:table_node.xpath.find('@')]
+                    if not './/' in xpath:
+                        xpath = './' + xpath
                     #test = True
                 table_node.xpath = table_node.xpath[table_node.xpath.find('@'):]
                 
             else:
-                xpath = './/' + table_node.xpath
+                ##xpath = './/' + table_node.xpath
+                xpath = table_node.xpath
+                if not './/' in xpath:
+                    xpath = './' + xpath
         if xpath != None:
             xml_nodes = self.xml_manager.return_nodes(xpath, xml_parent_node)
 
