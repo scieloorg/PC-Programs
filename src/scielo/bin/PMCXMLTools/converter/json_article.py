@@ -215,7 +215,7 @@ class JSON_Article:
 
     def return_issue(self, doc_f, journal):
         suppl = ''
-        vol = num = date = suppl
+        order = vol = num = date = suppl
 
         if '131' in doc_f.keys():
             suppl = doc_f['131']
@@ -228,6 +228,8 @@ class JSON_Article:
             num = doc_f['32'].strip()
         if '65' in doc_f.keys():
             date = doc_f['65']
+        if '36' in doc_f.keys():
+            order = doc_f['36']
         if 'suppl' in num:
             if ' ' in num:
                 if '(' in num:
@@ -236,7 +238,8 @@ class JSON_Article:
                 else:
                     suppl = num[num.rfind(' ')+1:]
                 num = num[0:num.find(' ')]
-        issue = JournalIssue(journal, vol, num, date, suppl) 
+        issue = JournalIssue(journal, vol, num, date, suppl, order) 
+
         return  issue     
 
     def return_issue_json_data(self, doc_f, issue):

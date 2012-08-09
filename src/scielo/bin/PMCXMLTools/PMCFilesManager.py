@@ -78,8 +78,10 @@ class PMCFilesManager:
             new_fullname = self.package_path + '/' + newfilename 
             print('copy ' + pmc_xml_fullname + ' ' + new_fullname)
             shutil.copy(pmc_xml_fullname, new_fullname + '.xml')
-            print('copy ' + self.pdf_filename + ' ' + new_fullname)
-            shutil.copy(self.pdf_filename, new_fullname + '.pdf')
+
+            if os.path.exists(self.pdf_filename):
+                print('copy ' + self.pdf_filename + ' ' + new_fullname)
+                shutil.copy(self.pdf_filename, new_fullname + '.pdf')
              
             img_extension = ''
             for src_dest_img in images:

@@ -20,6 +20,22 @@ class PMCXMLGeneratorAndValidator:
         
         
     def execute(self, sgm_xml_filename, param_result_filename, param_err_filename):
+        #sgm_xml_filename = original_sgm_xml_filename.replace('.sgm.xml', '.fixed.sgm.xml')
+
+        #shutil.copyfile(original_sgm_xml_filename, sgm_xml_filename)
+
+        f = open(sgm_xml_filename, 'r')
+        c = f.read()
+        f.close()
+
+        new_c = c[0:c.rfind('>')+1]
+        if new_c != c:
+            
+            f = open(sgm_xml_filename, 'w')
+            f.write(new_c)
+            f.close()
+
+
         filename = sgm_xml_filename.replace('.sgm.xml', '')
         local_xml = filename + '.local.xml'
         xml_report = filename + '.rep.xml'
@@ -39,6 +55,8 @@ class PMCXMLGeneratorAndValidator:
         if os.path.isfile(err_filename):
             os.remove(err_filename)
             
+
+
         pmc_files_manager = PMCFilesManager(sgm_xml_filename)
         pmc_files_manager.clean_directory()
         
@@ -83,7 +101,90 @@ class PMCXMLGeneratorAndValidator:
         pmc_files_manager.remove_tmp_files()
         
         return done
-                            
+
+
+    def execute_old(self, original_sgm_xml_filename, param_result_filename, param_err_filename):
+        sgm_xml_filename = original_sgm_xml_filename.replace('.sgm.xml', '.fixed.sgm.xml')
+
+        shutil.copyfile(original_sgm_xml_filename, sgm_xml_filename)
+
+        f = open(sgm_xml_filename, 'r')
+        c = f.read()
+        f.close()
+
+        new_c = c[0:c.rfind('>')+1]
+        if new_c != c:
+            
+            f = open(sgm_xml_filename, 'w')
+            f.write(new_c)
+            f.close()
+
+
+        filename = sgm_xml_filename.replace('.sgm.xml', '')
+        local_xml = filename + '.local.xml'
+        xml_report = filename + '.rep.xml'
+        html_report = filename + '.rep.html'
+        preview_filename = filename + '.xml.html'
+        xml_filename = filename + '.xml'
+                    
+        result_filename = sgm_xml_filename + '.res.tmp'
+        err_filename = sgm_xml_filename + '.err.tmp'
+        
+        if os.path.isfile(param_result_filename):
+            os.remove(param_result_filename)
+        if os.path.isfile(param_err_filename):
+            os.remove(param_err_filename)
+        if os.path.isfile(result_filename):
+            os.remove(result_filename)
+        if os.path.isfile(err_filename):
+            os.remove(err_filename)
+            
+
+
+        pmc_files_manager = PMCFilesManager(sgm_xml_filename)
+        pmc_files_manager.clean_directory()
+        
+        done = False
+           
+        # Validate sgm.xml
+        if self.xml_manager.validate(sgm_xml_filename, False, result_filename, err_filename):
+           
+            # Generate xml, setting a local DTD
+            if self.xml_manager.transform(sgm_xml_filename, self.xsl_sgml2xml_localvalidation, local_xml, err_filename):
+
+                # Validate xml, using a local DTD
+                if self.xml_manager.validate(local_xml, True, result_filename, err_filename):
+
+                    # Generate report.xml 
+                    if self.xml_manager.transform(local_xml, self.xsl_err, xml_report, err_filename):
+                        
+                        # Generate report.html
+                        if self.xml_manager.transform(xml_report, self.xsl_report, html_report, err_filename):
+                            os.remove(xml_report)
+                            # Preview text
+                            pmc_files_manager.copy_files_from_img_to_work_folder()
+                            if self.xml_manager.transform(local_xml, self.xsl_preview, preview_filename, err_filename):
+
+                                # Generate xml (final version)
+                                if self.xml_manager.transform(sgm_xml_filename, self.xsl_sgml2xml, xml_filename, err_filename):
+                                    pmc_files_manager.copy_files_from_work_to_package_folder(xml_filename)
+                                    done = True
+                                       
+        if done:
+            if preview_filename != param_result_filename:
+                os.rename(preview_filename, param_result_filename)
+        else:
+            if not os.path.exists(err_filename):
+            
+                f = open(err_filename, 'w')
+                f.write('error')
+                f.close()
+            if err_filename != param_err_filename:
+                os.rename(err_filename, param_err_filename)
+            
+        pmc_files_manager.remove_tmp_files()
+        
+        return done                            
                             
                             
 if __name__ == '__main__':

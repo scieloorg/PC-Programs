@@ -98,30 +98,32 @@ class Journal:
 class JournalIssueOrder:
     def __init__(self):
         #self.order = ( [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23], [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24], range(37,49))
-        self.order = ( [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23], range(25,37), range(37,49))
-
+        #self.order = ( [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23], range(25,37), range(37,49), [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24],)
+        #self.order = range(1,50)
+        pass
 
     def generate(self, volume, number, suppl):
         
         if number == 'ahead':
-            r = '50'
+            r = '9050'
 
         elif number == 'review':
-            r = '75'
+            r = '9075'
         else:
-            n = int(number)
-            if suppl != '' and suppl != None:
-                if number != '' and number != None:
-                    i = 1
+            if suppl != '':
+                s = '0000' + suppl
+                if number != '':
+                    r = '3'
                 else:
-                    i = 2
+                    r = '2'
             else:
-                i = 0
-            r = str(self.order[i][n])
+                r = '1'
+                s = '0000' + number
+            r = r + s[-3:]
         return r
 
 class JournalIssue:
-    def __init__(self, journal, volume, number, dateiso, suppl = None):
+    def __init__(self, journal, volume, number, dateiso, suppl, order):
         self.volume = volume
         self.number = number
         self.dateiso = dateiso
@@ -132,7 +134,10 @@ class JournalIssue:
         self.articles = JournalIssueArticles()
         self.status = ''
         self.json_from_db = {}
-        self.order = dateiso[0:4] + JournalIssueOrder().generate(volume, number, suppl)
+        if order != '':
+            self.order = order
+        else:
+            self.order = dateiso[0:4] + JournalIssueOrder().generate(volume, number, suppl)
 
         label = ''
         if number in ['ahead', 'review']:

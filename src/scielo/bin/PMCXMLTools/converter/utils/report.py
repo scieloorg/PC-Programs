@@ -4,17 +4,22 @@ import os
 
 class Report:
 
-    def __init__(self, report_filename, err_filename, debug_depth = 0, display_output = False):
+    def __init__(self, log_filename, err_filename, summary_filename, debug_depth = 0, display_output = False):
         self.debug_depth = debug_depth
-        
+        self.summary_filename = summary_filename
         self.display_output = display_output
-        self.report_filename = report_filename
-        if not self.garante_filename_path(report_filename, True):
-            print('ERROR: there is no path for ' + report_filename)
+        self.log_filename = log_filename
+        if not self.garante_filename_path(log_filename, True):
+            print('ERROR: there is no path for ' + log_filename)
         self.err_filename = err_filename
         if not self.garante_filename_path(err_filename, True):
             print('ERROR: there is no path for ' + err_filename)
-     
+        if not self.garante_filename_path(summary_filename, True):
+            print('ERROR: there is no path for ' + summary_filename)
+    
+    def log_summary(self, content):
+        self.__write__(self.summary_filename, content)
+
     def garante_filename_path(self, filename, delete):
         if os.path.exists(filename):
             r = True
@@ -45,7 +50,7 @@ class Report:
         
     def __write_all__(self, content, msg_type):
         content = self.what_time() + '|' + msg_type + '|' + content.replace("\n", '_BREAK_')
-        self.__write__(self.report_filename, content)
+        self.__write__(self.log_filename, content)
     
     def __write_err__(self, content):
         content = self.what_time() + '|' + content.replace("\n", '_BREAK_')

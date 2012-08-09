@@ -8,6 +8,8 @@ class MKPXML:
     
     
     def __init__(self, xml_filename, debug=0):
+
+        
         self.xml = MyXML(xml_filename, debug)
         self.xml_filename = xml_filename
         self.debug = debug

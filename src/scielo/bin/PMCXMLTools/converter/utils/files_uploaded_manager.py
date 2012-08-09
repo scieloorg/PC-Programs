@@ -17,7 +17,7 @@ class UploadedFilesManager:
         #files_set = PMCXML_FilesSet(self.work_path, suppl_filename, self.output_path, db_name)
         dst = datetime.now().isoformat().replace(':', '')
         dst = self.bkp_path + '/' + dst[0:dst.find('.')] 
-        print(dst)
+        
         if not os.path.exists(dst):
             os.makedirs(dst)
                        
@@ -25,7 +25,7 @@ class UploadedFilesManager:
         if os.path.exists(self.packages_path):
             for filename in os.listdir(self.packages_path):
                 package_file = self.packages_path + '/' + filename
-
+                report.log_summary('package file: ' + package_file)
                 if os.path.isfile(package_file):
                     if is_compressed_file(package_file):
                         name = filename[0:filename.rfind('.')]
@@ -37,7 +37,6 @@ class UploadedFilesManager:
                 
                     # backup of package or file
                     report.log_event('Backup ' + package_file + ' to ' + dst + '/' + os.path.basename(package_file), True)  
-                        
                     shutil.copyfile(package_file, dst + '/' + os.path.basename(package_file))
                         
 
@@ -46,8 +45,6 @@ class UploadedFilesManager:
 
                     if os.path.exists(wrk_path):  
                         report.log_event('Move ' + package_file + ' to ' + wrk_path)  
-                        
-                        
                         self.move_file_to_folder(package_file, wrk_path)
                         
                         moved_package_file = wrk_path + '/' + filename
@@ -63,8 +60,6 @@ class UploadedFilesManager:
                                         files = os.listdir(wrk_path + '/' + folder)
                                         for file in files:
                                             self.move_file_to_folder(wrk_path + '/' + folder + '/' + file, wrk_path)
-                            
-
                     else:
                         report.log_error('It was not possible to create the work path: ' + wrk_path)
                 else:
