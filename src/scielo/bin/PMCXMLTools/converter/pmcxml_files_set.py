@@ -15,8 +15,7 @@ class PMCXML_FilesSet:
         #self.xml_path = path + '/xml' 
         #self.img_path = path + '/pmc_img' 
         #self.pdf_path = path + '/pmc_pdf' 
-        self.img_converter = ImageConverter()
-
+        
         self.db_name = db_name
 
         self.db_filename = self.db_path + '/' + db_name

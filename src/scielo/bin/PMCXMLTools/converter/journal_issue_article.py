@@ -133,6 +133,7 @@ class JournalIssue:
         self.id = ID().generate( journal.title + volume + number + dateiso + suppl)
         self.articles = JournalIssueArticles()
         self.status = ''
+
         self.json_from_db = {}
         if order != '':
             self.order = order
@@ -189,6 +190,14 @@ class Article:
 
     def generate_id(self, issue, page, author):
         return ID().generate( issue.id + page + author)
+
+    def is_valid(self):
+        errors = [] 
+        if '70' in self.json_data['f'].keys():
+            for aff in self.json_data['f']['70']:
+                if not 'p' in aff:
+                    errors.append('Incomplete affiliation: ' + aff['9'])
+        return errors
 
 class JournalList(Items):
     def __init__(self):

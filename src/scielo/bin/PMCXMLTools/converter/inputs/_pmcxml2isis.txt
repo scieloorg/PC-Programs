@@ -6,6 +6,7 @@
     .//journal-meta//journal-title 100
     .//journal-meta//abbrev-journal-title 30
     .//journal-meta//journal-id[@journal-id-type='publisher-id'] 35 
+    .//subj-group[1]/subject 49
     .//subj-group[@subj-group-type='heading']/subject 49
     .//kwd-group 85
       kwd k
@@ -13,11 +14,12 @@
     .//contrib 10
       name/given-names n
       name/surname s
-      @role r ND
-      xref@rid 1
-    .//article-meta//article-title 12
-      . t
-      @xml:lang l
+      @contrib-type r ND
+      .//xref@rid 1
+    .//article-meta/title-group 12
+      subtitle s
+      article-title t
+      article-title/@xml:lang l
     .//article-meta//trans-title-group 12
       trans-title t
       trans-subtitle s
@@ -37,6 +39,7 @@
       lpage l
     .//article-meta/fpage 121
     .//aff 70
+      label l
       @id i
       . _
     .//ref-count@count 72    
@@ -48,19 +51,19 @@
     .//article-meta/trans-abstract 83
       . a
       @xml:lang l
-    .//article-meta/date[@date-type='received'] 111
+    .//article-meta//date[@date-type='received'] 111
       year y
       month m
       day d
       season s   
-    .//article-meta/date[@date-type='received'] 112    
+    .//article-meta//date[@date-type='received'] 112    
       year 
-    .//article-meta/date[@date-type='accepted'] 113    
+    .//article-meta//date[@date-type='accepted'] 113    
       year y
       month m 
       day d
       season s
-    .//article-meta/date[@date-type='accepted'] 114    
+    .//article-meta//date[@date-type='accepted'] 114    
       year    
   .//ref c
     .//element-citation@publication-type 71

@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from journal_issue_article import Journal
-from journal_issue_article import JournalIssue
-from journal_issue_article import Article
-from journal_issue_article import Section
+from journal_issue_article import Journal, JournalIssue, Article, Section
 
 from table_ent_and_char import TableEntAndChar
 from table_conversion import ConversionTables
@@ -31,7 +28,7 @@ class JSON_ArticleFixer:
             v = None
         return v
 
-    def replace_value(self, doc, table_name, rec_name, tag):
+    def convert_value(self, doc, table_name, rec_name, tag):
         a = self.get(doc, rec_name, tag)
         if a != None:
             doc['doc'][rec_name][tag] = self.conversion_tables.return_fixed_value(table_name, a)
@@ -40,24 +37,33 @@ class JSON_ArticleFixer:
     
 
     def fix_keywords(self, doc):
-        list = self.get(doc, 'f', '85')
+        kw_groups = self.get(doc, 'f', '85')
+        keyword_groups = []
+        if type(kw_groups) == type({}):
+            keyword_groups.append(kw_groups)
+        else:
+            keyword_groups = kw_groups
         
-        #print(list)
-        lang = ''
-        new = [{}]
-        if list != None:
-            
-            for item in list:
-                if type(item) == type({}):
+        if len(keyword_groups) > 0:
+            new = [{}]
+            for keyword_group in keyword_groups:
+                lang = 'en'
+                if type(keyword_group) == type({}):
 
-                    if 'l' in item.keys():
-                        lang = item['l']
-                    for kw in item['k']:
+                    if 'l' in keyword_group.keys():
+                        lang = keyword_group['l']
+
+                    for kw in keyword_group['k']:
                         new.append({'k': kw, 'l': lang})
-                elif type(item) == type(''):
-                
-                    new.append({'k' : item, 'l': 'en'})
 
+                elif type(keyword_group) == type([]):
+                    for kw in keyword_group:
+                        new.append({'k': kw, 'l': lang})
+
+                    
+                elif type(keyword_group) == type(''):
+                    new.append({'k' : keyword_group, 'l': 'en'})
+            print(new)
             doc['doc']['f']['85'] = new    
         return doc
     
@@ -65,9 +71,14 @@ class JSON_ArticleFixer:
 
     def fix_f_record(self, doc):
         doc = self.fix_keywords(doc)
-        doc = self.replace_value(doc, 'doctopic', 'f', '71')
-        doc['doc']['f']['42'] = '1'
+        doc = self.convert_value(doc, 'doctopic', 'f', '71')
         
+        if '120' in doc['doc']['f'].keys():
+            doc['doc']['f']['120'] = 'XML_' + doc['doc']['f']['120']
+
+        doc['doc']['f']['42'] = '1'
+        doc['doc']['f']['42'] = '1'
+
         if len(doc['doc']['f']['65']) == 4:
             m = '00'
             if '64' in doc['doc']['f'].keys():
@@ -81,18 +92,23 @@ class JSON_ArticleFixer:
         return doc
     
     def fix_affiliations(self, doc):
-        aff = self.get(doc, 'f', '70')
-        if aff != None:
-            if type(aff) == type([]):
-                new_aff = []
-                for a in aff:
-                    r = self.fix_aff(a)
-                    new_aff.append(r)
+        aff_occs = self.get(doc, 'f', '70')
+        affiliations = []
 
-            else:
-                new_aff = self.fix_aff(aff)
-            if len(new_aff) > 0:
-                doc['doc']['f']['70'] = new_aff
+        if type(aff_occs) == type({}):
+            affiliations.append(aff_occs)
+        else:
+            if aff_occs != None:
+                affiliations = aff_occs
+
+        new_affiliations = []
+        for a in affiliations:
+            r = self.fix_aff(a)
+            new_affiliations.append(r)
+
+            
+        if len(new_affiliations) > 0:
+            doc['doc']['f']['70'] = new_affiliations
         return doc
 
     def fix_aff(self, aff):
@@ -100,22 +116,59 @@ class JSON_ArticleFixer:
         new_aff = aff 
         list = []
         unmatched = []
-        if ',' in aff['_']:
-            new_aff['4'] = aff['_']
-            new_aff['_'] = ''
 
-            aff_parts = aff['_'].split(', ')
-            for key, s in self.conversion_tables.tables['aff'].items():
-                for part in aff_parts:
-                    if key in part:
-                        new_aff[s] = part.strip() 
-                        list.append(part)
-            for part in aff_parts:
-                if not part in list:
-                    unmatched.append(part)
-            if len(unmatched) > 0:
-                new_aff['2'] = ', '.join(unmatched)
-            aff = new_aff
+        if not 'p' in aff.keys():
+            if ', ' in aff['_']:
+                full_affiliation = aff['_']
+                aff['_'] = ''
+                aff['9'] = full_affiliation
+                aff_parts = full_affiliation.split(', ')
+                
+
+                institution = country = state = ''
+                for aff_part in aff_parts:
+
+                    if 'Univ' == aff_part[0:4]:
+                        institution = aff_part
+                        aff['_'] = institution
+                    elif 'U' == aff_part[0:1]:
+                        institution = aff_part
+                        aff['_'] = institution
+                    elif aff_part in self.conversion_tables.tables['country'].keys():
+                        country = aff_part
+
+                    elif aff_part in self.conversion_tables.tables['state'].keys():
+                        state = aff_part
+
+                    
+                loc = ''
+                if len(state) > 0:
+                    loc += ', ' + state
+                if len(country) > 0:
+                    loc += ', ' + country
+                if len(loc) > 0:
+                    p = full_affiliation.find(loc)
+                    if full_affiliation[p:] == loc:
+                        city = full_affiliation[0:p]
+                        city = city[city.rfind(', ')+2:]
+                        loc = ', ' + city + loc
+                        aff['c'] = city
+                        if len(state) > 0:
+                            aff['s'] = state
+                        if len(country) > 0:
+                            aff['p'] = country
+                unidentified = sep = ''
+                for aff_part in aff_parts:
+                    if not aff_part in aff.values():
+                        unidentified += aff_part + sep
+                        sep = ', '
+                if aff['_'] == '':
+                    aff['_'] = unidentified
+                    aff['5'] = '?'
+                else:
+                    aff['1'] = unidentified
+                
+            
         return aff 
 
 
@@ -177,6 +230,7 @@ class JSON_Article:
     
 
     def load_article(self, article_json_data, journal_list, xml_filename):
+        article_json_data = JSON_ArticleFixer().fix_json_data(article_json_data)
         doc_f = article_json_data['doc']['f']
         
         journal = journal_list.find_journal(doc_f['100'])
@@ -190,6 +244,9 @@ class JSON_Article:
         article.xml_filename = xml_filename
         article = self.update_toc(article)
 
+        
+        article.issue.articles.insert(article, True)
+        
         return article
 
     
@@ -205,12 +262,7 @@ class JSON_Article:
 
         article.json_data['f']['49'] = section.code
         article.section_title = section_title
-        article_json_data = {}
-        article_json_data['doc'] = article.json_data
-        article_json_data = JSON_ArticleFixer().fix_json_data(article_json_data)
-        article.json_data = article_json_data['doc']
-
-        article.issue.articles.insert(article, True)
+        
         return article
 
     def return_issue(self, doc_f, journal):
@@ -260,6 +312,9 @@ class JSON_Article:
         i_record['48'].append({'l': 'pt', 'h': 'Sumário'})
         i_record['48'].append({'l': 'es', 'h': 'Sumario'})
         i_record['36'] = issue.order
+        i_record['35'] = issue.journal.issn_id
+        i_record['2'] = 'br1.1'
+
         
         return  i_record     
         

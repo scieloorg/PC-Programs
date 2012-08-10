@@ -86,8 +86,9 @@ class PMCXML2ISIS:
             
                 create, issue_to_compare = self.return_issue_to_compare(article)
                 errors = article.issue.is_valid(issue_to_compare)
-                
-
+                if len(errors) == 0:
+                    errors = article.is_valid()
+                    
                 if len(errors) == 0:
                     report.log_event(article.issue.journal.title + ' ' + article.issue.name , True)
                     report.log_summary('  ' + article.issue.journal.title + ' ' + article.issue.name + ' ' + article.page)
@@ -137,13 +138,13 @@ class PMCXML2ISIS:
         files_set.delete_db()
         
         
-        id_file = JSON2IDFile(files_set.db_path + '/i', report)
+        id_file = JSON2IDFile(files_set.db_path + '/i.id', report)
         issue.json_data['122'] = str(len(issue.articles.elements))
         issue.json_data['49'] = issue.toc.return_json()
 
         id_file.format_and_save_document_data(issue.json_data)
     
-        self.cisis.id2mst(files_set.db_path + '/i', files_set.db_filename)
+        self.cisis.id2mst(files_set.db_path + '/i.id', files_set.db_filename)
         if issue.status == 'not_registered':
             self.cisis.append(files_set.db_filename, 'new_issues')
 
