@@ -15,6 +15,22 @@ Begin VB.Form Serial2
    ScaleHeight     =   5460
    ScaleWidth      =   7710
    ShowInTaskbar   =   0   'False
+   Begin VB.CheckBox check_wok_aehci 
+      Caption         =   "A&&HCI"
+      Height          =   375
+      Left            =   6360
+      TabIndex        =   21
+      Top             =   2880
+      Width           =   975
+   End
+   Begin VB.CheckBox check_wok_ssci 
+      Caption         =   "SSCI"
+      Height          =   375
+      Left            =   5400
+      TabIndex        =   20
+      Top             =   2880
+      Width           =   975
+   End
    Begin VB.CommandButton CmdSave 
       Caption         =   "Save"
       Height          =   375
@@ -54,15 +70,31 @@ Begin VB.Form Serial2
       TabIndex        =   10
       Top             =   120
       Width           =   7455
+      Begin VB.ListBox List_wok_area 
+         Height          =   1410
+         Left            =   4320
+         Style           =   1  'Checkbox
+         TabIndex        =   22
+         Top             =   3240
+         Width           =   2895
+      End
+      Begin VB.CheckBox check_wok_scie 
+         Caption         =   "SCI-E"
+         Height          =   375
+         Left            =   4320
+         TabIndex        =   19
+         Top             =   2760
+         Width           =   1095
+      End
       Begin VB.Frame FrameIdxRange 
          Caption         =   "Indexation range"
-         Height          =   1935
-         Left            =   3360
+         Height          =   1095
+         Left            =   120
          TabIndex        =   18
-         Top             =   2760
+         Top             =   3600
          Width           =   3975
          Begin VB.TextBox TxtIdxRange 
-            Height          =   1575
+            Height          =   735
             Left            =   120
             MultiLine       =   -1  'True
             TabIndex        =   5
@@ -72,22 +104,22 @@ Begin VB.Form Serial2
          End
       End
       Begin VB.ListBox ListStudyArea 
-         Height          =   735
-         Left            =   120
+         Height          =   510
+         Left            =   1200
          Style           =   1  'Checkbox
          TabIndex        =   4
-         Top             =   3960
-         Width           =   3135
+         Top             =   3000
+         Width           =   2895
       End
       Begin VB.Frame FrameMission 
          Caption         =   "Mission"
-         Height          =   2415
+         Height          =   2055
          Left            =   120
          TabIndex        =   13
          Top             =   240
          Width           =   7215
          Begin VB.TextBox TxtMission 
-            Height          =   615
+            Height          =   495
             Index           =   1
             Left            =   1080
             ScrollBars      =   2  'Vertical
@@ -97,23 +129,23 @@ Begin VB.Form Serial2
             Width           =   6015
          End
          Begin VB.TextBox TxtMission 
-            Height          =   615
+            Height          =   495
             Index           =   3
             Left            =   1080
             ScrollBars      =   2  'Vertical
             TabIndex        =   2
             Text            =   "texto não repetitivo com várias linhas"
-            Top             =   1680
+            Top             =   1440
             Width           =   6015
          End
          Begin VB.TextBox TxtMission 
-            Height          =   615
+            Height          =   495
             Index           =   2
             Left            =   1080
             ScrollBars      =   2  'Vertical
             TabIndex        =   1
             Text            =   "texto não repetitivo com várias linhas"
-            Top             =   960
+            Top             =   840
             Width           =   6015
          End
          Begin VB.Label LabIdiom 
@@ -133,7 +165,7 @@ Begin VB.Form Serial2
             Index           =   2
             Left            =   120
             TabIndex        =   15
-            Top             =   840
+            Top             =   720
             Width           =   570
          End
          Begin VB.Label LabIdiom 
@@ -148,13 +180,21 @@ Begin VB.Form Serial2
          End
       End
       Begin VB.TextBox TxtDescriptors 
-         Height          =   615
-         Left            =   120
+         Height          =   495
+         Left            =   1200
          MultiLine       =   -1  'True
          TabIndex        =   3
          Text            =   "frm_Serial_2.frx":0315
-         Top             =   3000
-         Width           =   3135
+         Top             =   2400
+         Width           =   2895
+      End
+      Begin VB.Label Label1 
+         Caption         =   "Web of Knowledge"
+         Height          =   255
+         Left            =   4320
+         TabIndex        =   23
+         Top             =   2400
+         Width           =   2775
       End
       Begin VB.Label LabSubject 
          AutoSize        =   -1  'True
@@ -162,7 +202,7 @@ Begin VB.Form Serial2
          Height          =   195
          Left            =   120
          TabIndex        =   12
-         Top             =   2760
+         Top             =   2400
          Width           =   540
       End
       Begin VB.Label LabStudyArea 
@@ -171,7 +211,7 @@ Begin VB.Form Serial2
          Height          =   195
          Left            =   120
          TabIndex        =   11
-         Top             =   3720
+         Top             =   3000
          Width           =   765
       End
    End
@@ -192,6 +232,10 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Private MyMfnTitle As Long
 Public IsBack As Boolean
+
+Private Sub Check1_Click()
+
+End Sub
 
 Private Sub CmdBack_Click()
     Hide
@@ -222,8 +266,8 @@ End Sub
 Sub MySetLabels()
     Dim i As Long
     
-    For i = 1 To IdiomsInfo.count
-        LabIdiom(i).Caption = IdiomsInfo(i).label
+    For i = 1 To idiomsinfo.count
+        LabIdiom(i).Caption = idiomsinfo(i).label
     Next
     
     With Fields
@@ -248,22 +292,30 @@ Sub MySetLabels()
     
     'Call FillListStudyArea(ListStudyArea, CodeStudyArea)
     Call FillList(ListStudyArea, CodeStudyArea)
-
-
+    Call FillList(List_wok_area, wok_subjects)
+    
+    
+    
 End Sub
 
 Sub MyClearContent()
     Dim i As Long
     
-    For i = 1 To IdiomsInfo.count
+    For i = 1 To idiomsinfo.count
         TxtMission(i).text = ""
     Next
     
     TxtDescriptors.text = ""
     
     Call UnselectList(ListStudyArea)
+    Call UnselectList(List_wok_area)
     
     TxtIdxRange.text = ""
+    
+    check_wok_scie.value = 0
+    check_wok_ssci.value = 0
+    check_wok_aehci.value = 0
+    
     
 End Sub
 
@@ -271,15 +323,26 @@ Sub MyGetContentFromBase(MfnTitle As Long)
     Dim aux As String
     Dim i As Long
     
-    For i = 1 To IdiomsInfo.count
-        TxtMission(i).text = Serial_TxtContent(MfnTitle, 901, IdiomsInfo(i).Code)
+    For i = 1 To idiomsinfo.count
+        TxtMission(i).text = Serial_TxtContent(MfnTitle, 901, idiomsinfo(i).Code)
     Next
 
     TxtDescriptors.text = UCase(Serial_TxtContent(MfnTitle, 440))
     Call Serial_ListContent(ListStudyArea, CodeStudyArea, MfnTitle, 441)
+    Call Serial_ListContent(List_wok_area, wok_subjects, MfnTitle, 854)
         
     TxtIdxRange.text = Serial_TxtContent(MfnTitle, 450)
-
+    
+    aux = Serial_TxtContent(MfnTitle, 851)
+    If Len(aux) > 0 Then check_wok_scie.value = 1
+    
+    
+    aux = Serial_TxtContent(MfnTitle, 852)
+    If Len(aux) > 0 Then check_wok_ssci.value = 1
+    
+    aux = Serial_TxtContent(MfnTitle, 853)
+    If Len(aux) > 0 Then check_wok_aehci.value = 1
+    
 End Sub
 
 Sub MyOpen(MfnTitle As Long)
@@ -311,7 +374,7 @@ Private Sub TxtDescriptors_Gotfocus()
     FrmInfo.ShowHelpMessage Fields.getHelp("ser2_Subject")
 End Sub
 
-Private Sub TxtMission_GotFocus(Index As Integer)
+Private Sub TxtMission_GotFocus(index As Integer)
     FrmInfo.ShowHelpMessage Fields.getHelp("ser2_Mission")
 End Sub
 

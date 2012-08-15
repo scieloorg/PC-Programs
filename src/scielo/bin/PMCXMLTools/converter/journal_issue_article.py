@@ -193,11 +193,19 @@ class Article:
 
     def is_valid(self):
         errors = [] 
+        warnings = [] 
         if '70' in self.json_data['f'].keys():
-            for aff in self.json_data['f']['70']:
+            list = []
+            if type(self.json_data['f']['70']) == type({}):
+                list.append(self.json_data['f']['70'])
+            elif type(self.json_data['f']['70']) == type([]):
+                list = self.json_data['f']['70']
+            for aff in list:
                 if not 'p' in aff:
-                    errors.append('Incomplete affiliation: ' + aff['9'])
-        return errors
+                    print(' ???? incomplete affiliation ????')
+                    print(aff)
+                    warnings.append('Incomplete affiliation' )
+        return (errors, warnings)
 
 class JournalList(Items):
     def __init__(self):

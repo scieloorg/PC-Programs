@@ -58,12 +58,11 @@ class Report:
         
     def log_error(self, error_msg, data = None, display_on_screen = False):
         if display_on_screen:
-            print('!' * 80)
-            print('ERROR: ' + error_msg)
+            
+            print(' ! ERROR: ' + error_msg)
             if data != None:
                 print(data)
-            print('-' * 80)
-            print('')
+            
             
         if data != None:
             

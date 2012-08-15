@@ -15,8 +15,8 @@ class UploadedFilesManager:
     
     def organize_files(self, report):
         #files_set = PMCXML_FilesSet(self.work_path, suppl_filename, self.output_path, db_name)
-        dst = datetime.now().isoformat().replace(':', '')
-        dst = self.bkp_path + '/' + dst[0:dst.find('.')] 
+        dst = datetime.now().isoformat()[0:10]
+        dst = self.bkp_path + '/' + dst
         
         if not os.path.exists(dst):
             os.makedirs(dst)

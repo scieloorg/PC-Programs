@@ -4141,7 +4141,7 @@ end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\start.mds
   Destination=%PROGDIR%\bin\markup\start.mds
-  Flags=0000000010000010
+  Flags=0000000010001010
 end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\refIdentifier\zeus.jar
@@ -4316,12 +4316,12 @@ end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\en_issue.mds
   Destination=%PROGDIR%\bin\markup\en_issue.mds
-  Flags=0000000010000010
+  Flags=0000000010001010
 end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\en_temp.mds
   Destination=%PROGDIR%\bin\markup\en_temp.mds
-  Flags=0000000010000010
+  Flags=0000000010001010
 end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\en_tgabnt.amd
@@ -4371,12 +4371,12 @@ end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\es_issue.mds
   Destination=%PROGDIR%\bin\markup\es_issue.mds
-  Flags=0000000010000010
+  Flags=0000000010001010
 end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\es_temp.mds
   Destination=%PROGDIR%\bin\markup\es_temp.mds
-  Flags=0000000010000010
+  Flags=0000000010001010
 end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\es_tgabnt.amd
@@ -4411,7 +4411,7 @@ end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\journal-standard.txt
   Destination=%PROGDIR%\bin\markup\journal-standard.txt
-  Flags=0000000010000010
+  Flags=0000000010001010
 end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\link.mds
@@ -4471,7 +4471,7 @@ end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\pt_issue.mds
   Destination=%PROGDIR%\bin\markup\pt_issue.mds
-  Flags=0000000010000010
+  Flags=0000000010001010
 end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\es_ES\locale.xml
@@ -4501,7 +4501,7 @@ end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\pt_temp.mds
   Destination=%PROGDIR%\bin\markup\pt_temp.mds
-  Flags=0000000010000010
+  Flags=0000000010001010
 end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\mathml\pmathmlcss.xsl
@@ -4626,12 +4626,12 @@ end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\windows\system\msxml6.dll
   Destination=%SYS32%\msxml6.dll
-  Flags=0001000010000011
+  Flags=0001000010001010
 end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\windows\system\msxml3.dll
   Destination=%SYS32%\msxml3.dll
-  Flags=0001000010000011
+  Flags=0001000010001010
 end
 item: Install File
   Source=c:\windows\system32\Fm20.dll

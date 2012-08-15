@@ -69,7 +69,7 @@
     .//element-citation@publication-type 71
     .//mixed-citation@publication-type 71
     .//article-title 12
-      . t
+      . _
       @xml:lang l
     .//translation-title 12
       . t
@@ -106,12 +106,14 @@
     .//year 64    
     .//year 65    
     .//publisher-loc 66    
-    .//element-citation 14
+    .//element-citation 514
       fpage f
       lpage l
-    .//mixed-citation 14
+      page-range r
+    .//mixed-citation 514
       fpage f
       lpage l
+      page-range r
     label 118    
     .//et-al 810    
     .//ext-link 37    

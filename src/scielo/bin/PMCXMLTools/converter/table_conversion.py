@@ -1,14 +1,9 @@
 class ConversionTables:
     def __init__(self):
-        
-
         self.tables = {}
-        
-
         f = open('inputs/tables', 'r')
         lines = f.readlines()
         f.close()
-
         for l in lines:
             table_name, key, value = l.replace("\n",'').split('|')
             if len(table_name) > 0:
@@ -16,6 +11,15 @@ class ConversionTables:
                     self.tables[table_name] = {}
             if len(key)>0:
                 self.tables[table_name][key] = value
+    
+    def return_month_number(self, textual_month):
+        if textual_month[0:3] in self.tables['month'].keys():
+            m = self.tables['month'][textual_month[0:3]]
+        elif textual_month[0:3].lower() in self.tables['month'].keys():
+            m = self.tables['month'][textual_month[0:3]]
+        else:
+            m = '00'
+        return m
 
     def return_fixed_value(self, table_name, key):
         v = key 

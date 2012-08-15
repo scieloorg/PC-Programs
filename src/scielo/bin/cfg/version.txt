@@ -1,5 +1,11 @@
 
 
+4.0.054
+=======
+- [FIXED] Markup PMC. Fix bug related to generation of .sgm.xml which contained unexpected characters after </article>.
+- [NEW] Title Manager: new fields related to Web of Knowledge 
+
+
 4.0.053
 =======
 - [NEW|FIXED] Markup PMC (milestone6)

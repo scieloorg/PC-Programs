@@ -56,8 +56,12 @@ class JSON2IDFile:
     
     def save_document_data(self, fields_info):
         if type(fields_info) == type({}):
-            for tag, field_occs in fields_info.items():
+            tag_list = fields_info.keys()
+            tag_list.sort()
+            for tag in tag_list:
+                
                 if tag.isdigit():
+                    field_occs = fields_info[tag]
                     if type(field_occs) == type([]):
                         for field_occ in field_occs:
                             self.format_field_occ(tag, field_occ)

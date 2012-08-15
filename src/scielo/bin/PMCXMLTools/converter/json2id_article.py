@@ -93,7 +93,8 @@ class JSON2IDFile_Article(JSON2IDFile):
             record_data += self.tag_it('91', datetime.now().isoformat()[0:10].replace('-', ''))
             record_data += self.tag_it('92', datetime.now().isoformat()[11:19].replace(':',''))
             record_data += self.tag_it('703', str(total_of_records))
-        
+        else:
+            record_data += self.tag_it('1', 'br1.1')
 
         self.__write__(record_data)
         

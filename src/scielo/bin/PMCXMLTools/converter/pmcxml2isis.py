@@ -22,7 +22,6 @@ class PMCXML2ISIS:
         self.xml2json_table_filename = xml2json_table_filename
         self.records_order = records_order
         self.cisis = cisis
-        self.json_article = JSON_Article()
         self.db_issues_list = JournalIssues()
         self.journal_list = JournalList()
         self.issues_list = JournalIssues()
@@ -64,6 +63,8 @@ class PMCXML2ISIS:
 
 
     def generate_id_files(self, package_path, serial_path, report):
+        json_article = JSON_Article(report)
+        
         list = os.listdir(package_path)
         xml_list = [ f for f in list if '.xml' in f ]
         
@@ -82,15 +83,22 @@ class PMCXML2ISIS:
             issue = None
             if type(json_data) == type({}):
 
-                article = self.json_article.load_article(json_data, self.journal_list, xml_filename)
+                article = json_article.load_article(json_data, self.journal_list, xml_filename)
             
                 create, issue_to_compare = self.return_issue_to_compare(article)
                 errors = article.issue.is_valid(issue_to_compare)
+                warnings = []
                 if len(errors) == 0:
-                    errors = article.is_valid()
-                    
+                    errors, warnings = article.is_valid()
+                else:
+                    report.log_error('Invalid issue data of ' + xml_filename, None, True)
+                    for err in errors:
+                        report.log_error(err, None, True)
+                        report.log_summary(' ! Error: ' + err)
+                
+
                 if len(errors) == 0:
-                    report.log_event(article.issue.journal.title + ' ' + article.issue.name , True)
+                    report.log_event(article.issue.journal.title + ' ' + article.issue.name  + ' ' + article.page, True)
                     report.log_summary('  ' + article.issue.journal.title + ' ' + article.issue.name + ' ' + article.page)
 
                     section = issue_to_compare.toc.insert(Section(article.section_title), False)
@@ -99,11 +107,15 @@ class PMCXML2ISIS:
                     issues[article.issue.journal.title + ' ' + article.issue.name] = issue_to_compare
                     self.generate_id_file(article, serial_path, report)
                 else:
-                    report.log_error('Invalid issue data of ' + xml_filename, None, True)
-                    report.log_summary(' ! Error: Invalid issue data')
+                    #report.log_summary(' ! Error: Invalid article data')
                     for err in errors:
                         report.log_error(err, None, True)
-                        report.log_summary(' ! ' + err)
+                        report.log_summary(' ! Error: ' + err)
+                if len(warnings) > 0:
+                    for err in warnings:
+                        report.log_error(err, None, True)
+                        report.log_summary(' ! Warning: ' + err)
+
             else:
                 report.log_error('Invalid xml ' + xml_filename, None, True)
                 report.log_summary(' ! Error: Invalid xml')
@@ -126,7 +138,7 @@ class PMCXML2ISIS:
         id_file.format_and_save_document_data(article.json_data, self.records_order, files_set.db_name)
         
         
-        files_set.archive(article.xml_filename)
+        #files_set.archive(article.xml_filename)
 
 
     def generate_db(self, serial_path, issue):
@@ -170,12 +182,12 @@ class PMCXML2ISIS:
             if os.path.isdir(work_path + '/' + folder):
                 self.generate_id_files(work_path + '/' + folder, issues_path, report)
 
-    def load_xml_issues_list(self, issue_db_filename):
+    def load_xml_issues_list(self, issue_db_filename, report):
         self.cisis.i2id(issue_db_filename, 'issue.id')
         issue_id_file = IDFile('issue.id')
         json_issues = issue_id_file.id2json()
         self.db_issues_list = JournalIssues()
-        json_article = JSON_Article()
+        json_article = JSON_Article(report)
      
         for json_issue in json_issues:
 
@@ -207,13 +219,13 @@ if __name__ == '__main__':
         print(bkp_path)
 
 
+        report = Report(log_filename, err_filename, summary_filename, int(debug_depth), (display_on_screen == 'yes')) 
         
         pmcxml2isis = PMCXML2ISIS('ohflc', CISIS(cisis_path), 'inputs/_pmcxml2isis.txt')
-        report = Report(log_filename, err_filename, summary_filename, int(debug_depth), (display_on_screen == 'yes')) 
         uploaded_files_manager = UploadedFilesManager(packages_path, work_path, trash_path, bkp_path)
         uploaded_files_manager.organize_files(report)
 
-        pmcxml2isis.load_xml_issues_list(db_issue_filename)
+        pmcxml2isis.load_xml_issues_list(db_issue_filename, report)
 
         pmcxml2isis.receive_packages(uploaded_files_manager.work_path, serial_path, report)
         print(log_filename)

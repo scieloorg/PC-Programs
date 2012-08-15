@@ -6,43 +6,134 @@ from table_ent_and_char import TableEntAndChar
 from table_conversion import ConversionTables
 
 class JSON_ArticleFixer:
-    def __init__(self):
+    def __init__(self, report, json_data):
         self.conversion_tables = ConversionTables()
         self.table_entity_and_char = TableEntAndChar()
         self.sections = {}
+        self.report = report
+        self.json_data = json_data
 
-    def fix_json_data(self, article_json_data):
-        article_json_data = self.fix_f_record(article_json_data)
-        article_json_data['doc']['h'] = self.format_for_indexing(article_json_data['doc']['f'])
-        article_json_data['doc']['l'] = self.format_for_indexing(article_json_data['doc']['h'])
+        doctopics = {}
+        doctopics['journal'] = ['12', '30', '10', '65', '14']
+        doctopics['book'] = [ '18', '10', '65', '62', '66', '67']
+        doctopics['conf-proc'] = ['53', '65']
+        doctopics['thesis'] = ['50', '51', '65']
+        doctopics['patent'] = ['150', '65']
+        doctopics['report'] = ['58', '60', '65']
+        doctopics['software'] = ['95', '65']
+        doctopics['web'] = ['110']
+        doctopics['unidentified'] = ['65', '10']
+
+        self._labels = {}
+        self._labels['10'] = 'authors'
+        self._labels['12'] = 'chapter or article title'
+        self._labels['14'] = 'pages'
+        self._labels['30'] = 'journal title'
+        self._labels['18'] = 'book title'
+        self._labels['65'] = 'publication date'
+        self._labels['62'] = 'publisher'
+        self._labels['63'] = 'edition'
+        self._labels['66'] = 'city'
+        self._labels['67'] = 'country'
+        self._labels['53'] = 'conference name'
+        self._labels['50'] = 'institution of the thesis'
+        self._labels['51'] = 'thesis degree'
+        self._labels['150'] = 'patent'
+        self._labels['58'] = 'sponsor'
+        self._labels['60'] = 'contract number'
+        self._labels['95'] = 'software version'
+        self._labels['110'] = 'cited date'
         
-        for rec in article_json_data['doc']['c']:
-            rec = self.format_for_indexing(rec)
-            
-        return article_json_data
+        self._doctopics = doctopics
 
-    def get(self, doc, rec_name, tag):
-        if tag in doc['doc'][rec_name].keys():
-            v = doc['doc'][rec_name][tag]
+    def fix(self):
+        self.fix_metadata()
+        self.json_data['h'] = self.format_for_indexing(self.json_data['f'])
+        self.json_data['l'] = self.format_for_indexing(self.json_data['h'])
+
+        k = 0
+        for citation in self.json_data['c']:
+            citation = self.format_for_indexing(citation)
+            citation = self.fix_dates(citation, '65', '64')
+            citation['865'] = self.json_data['f']['65']
+            citation = self.join_pages(citation)
+            missing = self.validate_citation(citation) 
+            if len(missing) > 0:
+                self.report.log_error('Missing data in reference ' + str(k + 1) + ': ' + missing )
+                self.report.log_summary(' ! Missing data in reference ' + str(k + 1) + ': ' + missing)
+            self.json_data['c'][k] = citation
+            k += 1
+        return self.json_data
+    
+    def join_pages(self, citation):
+        if '514' in citation.keys():
+            citation['14'] = ''
+            if 'r' in citation['514'].keys():
+                citation['14'] = citation['514']['r']
+            else:
+                if 'f' in citation['514'].keys():
+                    citation['14'] = citation['514']['f']
+                    if 'l' in citation['514'].keys():
+                        if type(citation['514']['l']) == type('') and type(citation['14']) == type(''):
+                            if citation['14'].isdigit() and citation['514']['l'].isdigit():
+                                if len(citation['14']) != len(citation['514']['l']):
+                                    citation['14'] += '-' + citation['514']['l']
+                                else:
+                                    i = 0
+                                    citation['14'] += '-'
+                                    for c in citation['514']['l']:
+                                        if not citation['14'][i:1] == c:
+                                            citation['14'] += c
+                                        i += 1
+                            else:
+                                citation['14'] += '-' + citation['514']['l']
+                        else:
+                            self.report.log_summary(' ! Warning: Check fpage, lpage, page-range of reference ' + str(k + 1))
+                            self.report.log_error('Check fpage, lpage, page-range of reference ' + str(k + 1), rec['514'], True)
+        return citation
+
+    def validate_citation(self, citation):
+        missing = []
+        doctopic = ''
+        if '71' in citation.keys(): 
+            doctopic = citation['71'] 
+            if not doctopic in self._doctopics.keys():
+                doctopic = 'unidentified'
+
+            for tag in self._doctopics[doctopic]:
+                if not tag in citation.keys():
+                    if tag in self._labels.keys():
+                        missing.append(self._labels[tag])
+                    else:
+                        missing.append(tag)
+
+        return ', '.join(missing)
+         
+
+    def get(self, group_name, tag):
+        # group_name = h, f, l, c, etc
+        if tag in self.json_data[group_name].keys():
+            v = self.json_data[group_name][tag]
         else:
             v = None
         return v
 
-    def convert_value(self, doc, table_name, rec_name, tag):
-        a = self.get(doc, rec_name, tag)
+    def convert_value(self, table_name, group_name, tag):
+        a = self.get(group_name, tag)
         if a != None:
-            doc['doc'][rec_name][tag] = self.conversion_tables.return_fixed_value(table_name, a)
-        return doc
+            self.json_data[group_name][tag] = self.conversion_tables.return_fixed_value(table_name, a)
+        
                 
     
 
-    def fix_keywords(self, doc):
-        kw_groups = self.get(doc, 'f', '85')
+    def fix_keywords(self):
+        kw_groups = self.get('f', '85')
         keyword_groups = []
         if type(kw_groups) == type({}):
             keyword_groups.append(kw_groups)
         else:
-            keyword_groups = kw_groups
+            if kw_groups != None:
+                keyword_groups = kw_groups
         
         if len(keyword_groups) > 0:
             new = [{}]
@@ -63,36 +154,45 @@ class JSON_ArticleFixer:
                     
                 elif type(keyword_group) == type(''):
                     new.append({'k' : keyword_group, 'l': 'en'})
-            print(new)
-            doc['doc']['f']['85'] = new    
-        return doc
-    
-    
-
-    def fix_f_record(self, doc):
-        doc = self.fix_keywords(doc)
-        doc = self.convert_value(doc, 'doctopic', 'f', '71')
+            #print(new)
+            self.json_data['f']['85'] = new    
         
-        if '120' in doc['doc']['f'].keys():
-            doc['doc']['f']['120'] = 'XML_' + doc['doc']['f']['120']
-
-        doc['doc']['f']['42'] = '1'
-        doc['doc']['f']['42'] = '1'
-
-        if len(doc['doc']['f']['65']) == 4:
-            m = '00'
-            if '64' in doc['doc']['f'].keys():
-                m = doc['doc']['f']['64']
-                m = self.return_month_number(m)
-            doc['doc']['f']['65'] = doc['doc']['f']['65'] + m + '00'
-        doc = self.fix_38(doc)
-
-        doc = self.fix_affiliations(doc)
-
-        return doc
     
-    def fix_affiliations(self, doc):
-        aff_occs = self.get(doc, 'f', '70')
+    def fix_dates(self, doc, tag_iso, tag_noiso):
+        if tag_iso in doc.keys():
+            m = '00'
+            if tag_noiso in doc.keys():
+                m = self.return_month_number(doc[tag_noiso])
+                
+            if len(doc[tag_iso]) == 4:
+                doc[tag_iso] += m
+                if len(m) == 2:
+                    doc[tag_iso] += '00'
+            
+        return doc
+
+    
+
+    def fix_metadata(self):
+        self.fix_keywords()
+        self.convert_value('doctopic', 'f', '71')
+        
+        if '120' in self.json_data['f'].keys():
+            self.json_data['f']['120'] = 'XML_' + self.json_data['f']['120']
+
+        self.json_data['f']['42'] = '1'
+        
+        self.json_data['f'] = self.fix_dates(self.json_data['f'], '65', '64')
+        
+        
+        self.fix_illustrative_materials()
+
+        self.fix_affiliations()
+
+        
+    
+    def fix_affiliations(self):
+        aff_occs = self.get( 'f', '70')
         affiliations = []
 
         if type(aff_occs) == type({}):
@@ -100,16 +200,24 @@ class JSON_ArticleFixer:
         else:
             if aff_occs != None:
                 affiliations = aff_occs
-
         new_affiliations = []
+
         for a in affiliations:
             r = self.fix_aff(a)
-            new_affiliations.append(r)
 
-            
+            new_affiliations.append(r)
+        
+        print(new_affiliations)
         if len(new_affiliations) > 0:
-            doc['doc']['f']['70'] = new_affiliations
-        return doc
+            self.json_data['f']['70'] = new_affiliations
+        
+
+        new_affiliations = self.fix_affiliations_location(new_affiliations)
+        print(new_affiliations)
+
+        if len(new_affiliations) > 0:
+            self.json_data['f']['70'] = new_affiliations
+        
 
     def fix_aff(self, aff):
 
@@ -120,6 +228,8 @@ class JSON_ArticleFixer:
         if not 'p' in aff.keys():
             if ', ' in aff['_']:
                 full_affiliation = aff['_']
+                if '</label>' in full_affiliation:
+                    full_affiliation = full_affiliation[full_affiliation.find('</label>')+len('</label>'):]
                 aff['_'] = ''
                 aff['9'] = full_affiliation
                 aff_parts = full_affiliation.split(', ')
@@ -139,6 +249,8 @@ class JSON_ArticleFixer:
 
                     elif aff_part in self.conversion_tables.tables['state'].keys():
                         state = aff_part
+                    elif aff_part in self.conversion_tables.tables['state'].values():
+                        state = aff_part
 
                     
                 loc = ''
@@ -150,59 +262,118 @@ class JSON_ArticleFixer:
                     p = full_affiliation.find(loc)
                     if full_affiliation[p:] == loc:
                         city = full_affiliation[0:p]
-                        city = city[city.rfind(', ')+2:]
-                        loc = ', ' + city + loc
-                        aff['c'] = city
+                        if city.rfind(', ') > 0:
+                            city = city[city.rfind(', '):]
+                            loc = city + loc
+                            aff['c'] = city
                         if len(state) > 0:
                             aff['s'] = state
                         if len(country) > 0:
                             aff['p'] = country
-                unidentified = sep = ''
-                for aff_part in aff_parts:
-                    if not aff_part in aff.values():
-                        unidentified += aff_part + sep
-                        sep = ', '
+                unidentified = [ aff_part for aff_part in aff_parts if not aff_part in aff.values() ]
+
                 if aff['_'] == '':
-                    aff['_'] = unidentified
+                    aff['_'] = ', '.join(unidentified)
                     aff['5'] = '?'
                 else:
-                    aff['1'] = unidentified
+                    aff['1'] = ', '.join(unidentified)
                 
             
         return aff 
+    
+    def fix_affiliations_location(self, affiliations):
+        r = []
+        loc = {}
+        for aff in affiliations:
+            if 'p' in aff.keys():
+                l = {}
+                l['p'] = aff['p']
+                
+                if 's' in aff.keys():
+                    l['s'] = aff['s']
+                if 'c' in aff.keys():
+                    l['c'] = aff['c']
+                loc[', '.join(l.values())] = l
+        location = ''
 
+        if len(loc) > 1:
+            print('')
+            print('location:')
+            print(loc)
 
+        if len(loc) == 1:
+            location = loc.values()[0]
+            
+            for aff in affiliations:
+                print(aff)
+                if not 'p' in aff.keys():
+                    aff['p'] = location['p']
+                if not 's' in aff.keys() and 's' in location.keys():
+                    aff['s'] = location['s']
+                if not 'c' in aff.keys() and 'c' in location.keys():
+                    aff['c'] = location['c']
+                print(aff)
+                r.append(aff)
+        return r
 
     
-    def fix_38(self, doc):
-        v38 = []
-        fig_count = self.get(doc, 'f', '901')
+    def fix_illustrative_materials(self):
+        illustrative_materials = []
+        fig_count = self.get('f', '901')
         if fig_count != None:
 
             if int(fig_count)>0:
-                v38.append('GRA')
-            del doc['doc']['f']['901']
-        tab_count = self.get(doc, 'f', '900')
+                illustrative_materials.append('GRA')
+            del self.json_data['f']['901']
+        tab_count = self.get('f', '900')
         if tab_count != None:
             if int(tab_count)>0:
-                v38.append('TAB')
-            del doc['doc']['f']['900']
-        if len(v38) > 0:
-            doc['doc']['f']['38'] = v38
-        return doc
-    
-    def return_month_number(self, month_range):
-        m = month_range
-        
-        if m.isdigit():
-            m = '00' + m
-            m = m[-2:]
+                illustrative_materials.append('TAB')
+            del self.json_data['f']['900']
+        if len(illustrative_materials) > 0:
+            self.json_data['f']['38'] = illustrative_materials
         else:
-            if '-' in m:
-                m = m[m.find('-')+1:]
-            m = self.conversion_tables.return_fixed_value('month', m)
+            self.json_data['f']['38'] = 'ND'
+        
+    
+    def return_month_number(self, textual_date):
+        d = '00'
 
-        return m 
+        if type(textual_date) == type(''):
+            m = textual_date
+        elif type(textual_date) == type([]):
+            m = textual_date[0]
+        if m.isdigit():
+            if len(m) == 4:
+                # is year
+                m = '00'
+            elif len(m) <= 2:
+                # is month
+                m = '00' + m
+                m = m[-2:]
+        else:
+            
+            date_parts = []
+            if ' ' in m:
+                date_parts = m.split(' ')
+            else:
+                date_parts.append(m)
+
+            m = '00'
+            for part in date_parts:
+                if part.isdigit() and len(part) <= 2:
+
+                    d = '00' + part
+                    d = d[-2:]
+                else:
+                    if '-' in part:
+                        part = part[part.find('-')+1:]
+                    
+                    r = self.conversion_tables.return_month_number(part)
+                    if r != '00':
+                        m = r
+            
+        return m + d
 
     def format_for_indexing(self, json_record):
         if type(json_record) == type({}):
@@ -224,19 +395,31 @@ class JSON_ArticleFixer:
 
     
 class JSON_Article:
-    def __init__(self):
-        pass
+    def __init__(self, report):
+        self.report = report
     
     
 
     def load_article(self, article_json_data, journal_list, xml_filename):
-        article_json_data = JSON_ArticleFixer().fix_json_data(article_json_data)
         doc_f = article_json_data['doc']['f']
-        
+
         journal = journal_list.find_journal(doc_f['100'])
         if journal == None:
             journal = Journal(doc_f['100'], doc_f['35'])
-            
+        
+        if '35' in doc_f.keys():
+            if doc_f['35'] != journal.issn_id:
+                doc_f['35'] = journal.issn_id
+        else:
+            doc_f['35'] = journal.issn_id
+
+        json_fixer = JSON_ArticleFixer(self.report, article_json_data['doc'])
+        article_json_data['doc'] = json_fixer.fix()
+        
+        
+        
+
+
         issue = self.return_issue(doc_f, journal)
         issue.json_data = self.return_issue_json_data(doc_f, issue)
 
@@ -261,6 +444,8 @@ class JSON_Article:
         section = article.issue.toc.insert(Section(section_title), False)
 
         article.json_data['f']['49'] = section.code
+        article.json_data['h']['49'] = section.code
+        article.json_data['l']['49'] = section.code
         article.section_title = section_title
         
         return article
@@ -334,6 +519,7 @@ class JSON_Article:
             page = doc_f['14']['f'][0]
         article = Article(issue, page, surname)
         article.json_data = article_json_data['doc']
+
         return article
    
     
