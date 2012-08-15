@@ -261,11 +261,13 @@ class JSON_ArticleFixer:
                 if len(loc) > 0:
                     p = full_affiliation.find(loc)
                     if full_affiliation[p:] == loc:
-                        city = full_affiliation[0:p]
-                        if city.rfind(', ') > 0:
-                            city = city[city.rfind(', '):]
-                            loc = city + loc
-                            aff['c'] = city
+                        might_be_city = full_affiliation[0:p]
+                        p = might_be_city.rfind(', ')
+                        if p > 0:
+                            might_be_city = might_be_city[p:]
+                        if 
+                            loc = might_be_city + loc
+                            aff['c'] = might_be_city
                         if len(state) > 0:
                             aff['s'] = state
                         if len(country) > 0:

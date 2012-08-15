@@ -3262,6 +3262,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=W:\scielo\bin\config\subjects_categories_wok.csv
+  Destination=%PROGDIR%\bin\config\subjects_categories_wok.csv
+  Flags=0000000010000010
+end
+item: Install File
   Source=W:\scielo\bin\config\cfg_en_issue.pft
   Destination=%PROGDIR%\bin\config\cfg_en_issue.pft
   Flags=0000000010000010
