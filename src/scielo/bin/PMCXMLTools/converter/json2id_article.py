@@ -46,9 +46,10 @@ class JSON2IDFile_Article(JSON2IDFile):
                 record_index += 1
                 record_number += 1
                 self.save_record_number(record_number)
-                self.save_record_data(record_name, record_number, record_index, 1, total)
-                self.save_file_data(db_name)
-                #self.save_document_data(data)
+                data = {}
+                data = self.add_record_data(data, record_name, record_number, record_index, 1, total)
+                data = self.add_file_data(db_name, data)
+                self.save_document_data(data)
             else:
                 if type([]) == type(data):
                     # is a list of record of same type
@@ -56,8 +57,8 @@ class JSON2IDFile_Article(JSON2IDFile):
                         record_index += 1
                         record_number += 1
                         self.save_record_number(record_number)
-                        self.save_record_data(record_name, record_number, record_index, len(data), total)
-                        self.save_file_data(db_name)
+                        rec_occ = self.add_record_data(rec_occ, record_name, record_number, record_index, len(data), total)
+                        rec_occ = self.add_file_data(db_name, rec_occ)
                         self.save_document_data(rec_occ)
                     
                 else:
@@ -66,21 +67,39 @@ class JSON2IDFile_Article(JSON2IDFile):
                         record_index += 1
                         record_number += 1
                         self.save_record_number(record_number)
-                        self.save_record_data(record_name, record_number, record_index, 1, total)
-                        self.save_file_data(db_name)
+                        data = self.add_record_data(data, record_name, record_number, record_index, 1, total)
+                        data = self.add_file_data(db_name, data)
                         self.save_document_data(data)
                 
     
      
-    def save_file_data(self, db_name):
+    def add_file_data(self, db_name, data):
         f = self.filename.replace('.id', '.xml')
-        r = self.tag_it('2', os.path.basename(f))
-        r += self.tag_it('702', f)
-        r += self.tag_it('4', db_name)
-        #r += self.tag_it('1', center_code)
+
+        data['2'] = os.path.basename(f)
+        data['702'] = f
+        data['4'] = db_name
         
-        self.__write__(r)
-                
+        
+        return data
+      
+    def add_record_data(self, data, record_name, record_number, record_index, total_of_record_type, total_of_records ):
+        
+        data['700'] = str(record_number)
+        data['701'] = str(record_index)
+        data['705'] = 'S'
+        data['706'] = record_name
+        data['708'] = str(total_of_record_type)
+
+        if record_name == 'o':
+            data['91'] = datetime.now().isoformat()[0:10].replace('-', '')
+            data['92'] = datetime.now().isoformat()[11:19].replace(':', '')
+            data['703'] = str(total_of_records)
+        else:
+            data['1'] = 'br1.1'
+
+        return data
+
     def save_record_data(self, record_name, record_number, record_index, total_of_record_type, total_of_records ):
         record_data = ''
         record_data += self.tag_it('700', str(record_number))

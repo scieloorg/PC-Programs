@@ -18,17 +18,17 @@ Begin VB.Form Serial2
    Begin VB.CheckBox check_wok_aehci 
       Caption         =   "A&&HCI"
       Height          =   375
-      Left            =   6360
+      Left            =   1920
       TabIndex        =   21
-      Top             =   2880
+      Top             =   3240
       Width           =   975
    End
    Begin VB.CheckBox check_wok_ssci 
       Caption         =   "SSCI"
       Height          =   375
-      Left            =   5400
+      Left            =   1080
       TabIndex        =   20
-      Top             =   2880
+      Top             =   3240
       Width           =   975
    End
    Begin VB.CommandButton CmdSave 
@@ -71,82 +71,87 @@ Begin VB.Form Serial2
       Top             =   120
       Width           =   7455
       Begin VB.ListBox List_wok_area 
-         Height          =   1410
-         Left            =   4320
+         Height          =   960
+         ItemData        =   "frm_Serial_2.frx":030A
+         Left            =   120
+         List            =   "frm_Serial_2.frx":030C
          Style           =   1  'Checkbox
          TabIndex        =   22
-         Top             =   3240
-         Width           =   2895
+         Top             =   3600
+         Width           =   7095
       End
       Begin VB.CheckBox check_wok_scie 
          Caption         =   "SCI-E"
          Height          =   375
-         Left            =   4320
+         Left            =   120
          TabIndex        =   19
-         Top             =   2760
+         Top             =   3120
          Width           =   1095
       End
       Begin VB.Frame FrameIdxRange 
          Caption         =   "Indexation range"
          Height          =   1095
-         Left            =   120
+         Left            =   4320
          TabIndex        =   18
-         Top             =   3600
-         Width           =   3975
+         Top             =   1920
+         Width           =   3015
          Begin VB.TextBox TxtIdxRange 
             Height          =   735
             Left            =   120
             MultiLine       =   -1  'True
             TabIndex        =   5
-            Text            =   "frm_Serial_2.frx":030A
+            Text            =   "frm_Serial_2.frx":030E
             Top             =   240
-            Width           =   3615
+            Width           =   2775
          End
       End
       Begin VB.ListBox ListStudyArea 
          Height          =   510
-         Left            =   1200
+         Left            =   4440
          Style           =   1  'Checkbox
          TabIndex        =   4
-         Top             =   3000
+         Top             =   1320
          Width           =   2895
       End
       Begin VB.Frame FrameMission 
          Caption         =   "Mission"
-         Height          =   2055
+         Height          =   2535
          Left            =   120
          TabIndex        =   13
          Top             =   240
-         Width           =   7215
+         Width           =   4095
          Begin VB.TextBox TxtMission 
-            Height          =   495
+            Height          =   735
             Index           =   1
             Left            =   1080
+            MultiLine       =   -1  'True
             ScrollBars      =   2  'Vertical
             TabIndex        =   0
-            Text            =   "texto não repetitivo com várias linhas"
+            Text            =   "frm_Serial_2.frx":0319
             Top             =   240
-            Width           =   6015
+            Width           =   2775
          End
          Begin VB.TextBox TxtMission 
-            Height          =   495
+            Height          =   735
             Index           =   3
             Left            =   1080
+            MultiLine       =   -1  'True
             ScrollBars      =   2  'Vertical
             TabIndex        =   2
-            Text            =   "texto não repetitivo com várias linhas"
-            Top             =   1440
-            Width           =   6015
+            Text            =   "frm_Serial_2.frx":0340
+            Top             =   1680
+            Width           =   2775
          End
          Begin VB.TextBox TxtMission 
-            Height          =   495
+            Height          =   735
             Index           =   2
             Left            =   1080
+            MultiLine       =   -1  'True
             ScrollBars      =   2  'Vertical
             TabIndex        =   1
-            Text            =   "texto não repetitivo com várias linhas"
-            Top             =   840
-            Width           =   6015
+            Text            =   "frm_Serial_2.frx":0367
+            Top             =   960
+            Width           =   2775
          End
          Begin VB.Label LabIdiom 
             AutoSize        =   -1  'True
@@ -155,7 +160,7 @@ Begin VB.Form Serial2
             Index           =   3
             Left            =   120
             TabIndex        =   16
-            Top             =   1560
+            Top             =   1680
             Width           =   510
          End
          Begin VB.Label LabIdiom 
@@ -165,7 +170,7 @@ Begin VB.Form Serial2
             Index           =   2
             Left            =   120
             TabIndex        =   15
-            Top             =   720
+            Top             =   960
             Width           =   570
          End
          Begin VB.Label LabIdiom 
@@ -181,37 +186,37 @@ Begin VB.Form Serial2
       End
       Begin VB.TextBox TxtDescriptors 
          Height          =   495
-         Left            =   1200
+         Left            =   4440
          MultiLine       =   -1  'True
          TabIndex        =   3
-         Text            =   "frm_Serial_2.frx":0315
-         Top             =   2400
+         Text            =   "frm_Serial_2.frx":038E
+         Top             =   480
          Width           =   2895
       End
       Begin VB.Label Label1 
          Caption         =   "Web of Knowledge"
          Height          =   255
-         Left            =   4320
+         Left            =   120
          TabIndex        =   23
-         Top             =   2400
+         Top             =   2880
          Width           =   2775
       End
       Begin VB.Label LabSubject 
          AutoSize        =   -1  'True
          Caption         =   "Subject"
          Height          =   195
-         Left            =   120
+         Left            =   4440
          TabIndex        =   12
-         Top             =   2400
+         Top             =   240
          Width           =   540
       End
       Begin VB.Label LabStudyArea 
          AutoSize        =   -1  'True
          Caption         =   "Study area"
          Height          =   195
-         Left            =   120
+         Left            =   4440
          TabIndex        =   11
-         Top             =   3000
+         Top             =   1080
          Width           =   765
       End
    End

@@ -246,7 +246,6 @@ Pisa||Italia
 Orlando||U.S.A
 Barcelona||Talleres gra´ficos de Montaner y Simó
 Thousand Oaks||US
-RJ||Brazil
 Tropical BeekeepingSan José||Costa Rica
 San Jose||C. Rica
 Boca Raton||U. S. A
@@ -463,7 +462,7 @@ CambridgeMassachusetts||England
 Klagenfurt||Germany
 Ravenna||Itália
 Alegre|RS|Brasil
-KY||USA
+San Cristóbal de las Casas|Chiapas|México
 San Sebastián||País Vasco
 San José||C. R
 Lins|São Paulo|Brasil
@@ -525,7 +524,6 @@ São Paulo State||Brazil
 Belém||BR
 Caçador|Santa Catarina|Brasil
 Vélez|Santander|Colombia
-PB||Brasil
 Trowbridge||Great Britain
 San Luis Obispo|California|USA
 Rio Largo|AL|Brasil
@@ -738,7 +736,6 @@ Vila Pitinga|AM|Brasil
 Canada||USA
 Sertão|RS|Brasil
 Eau Claire||USA
-NY|Ithaca|USA
 Keele||UK
 Flammarion||Paris
 Manchester||Reino Unido
@@ -748,7 +745,7 @@ São Paulo||Fundação Instituto Butantan
 Ohio||EUA
 Fuengirola|MA|España
 Matelândia|PR|Brasil
-CE||BR
+Shiyan||China
 Hobart||Australia
 Kfar Saba||Israel
 Lagos de Moreno|Jal.|México
@@ -830,7 +827,7 @@ Río Piedras||Puerto Rico
 Sehremini Capa||Turkey
 Iha Solteira|SP|Brasil
 San Juan||Estado Libre Asociado de Puerto Rico
-NY||Estados Unidos
+Teresópolis|RJ|Brazil
 Melbourne||Austrália
 Porto Velho|RO|Brazil
 Cordova||USA
@@ -1021,7 +1018,6 @@ D.F.||México
 Lincoln||E.U.A.
 Otawa||Canadá
 Najaf||Iraq
-MG||Brazil
 Tutzing||Germany
 Jales|SP|Brazil
 Wymondham||Norfolk
@@ -1086,7 +1082,6 @@ Ubatuba|SP|Brazil
 Kawaguchi||Japan
 Leon||España
 Votuporanga|São Paulo|Brazil
-MG|Belo Horizonte|EUA
 São Pa|SP|Brazil
 Viena||EUA
 New York||NY
@@ -1108,7 +1103,6 @@ ASM Press||DC
 Campina Grande|Paraíba|Brasil
 Cuernavaca|MOR|México
 La Havana||Cuba
-EU||SuisseNorvègeFrance
 Yanpu||Taiwan
 Ferrara||Italy
 Monterey||México
@@ -1173,7 +1167,6 @@ Araquari||Brasil
 Rio de JaneiroRio de Janeiro||Brasil
 Bauru|São Paulo|Brasil
 Criciúma||Brasil
-MT||Brasil
 Rio Pomba||Brasil
 Los Angeles||US
 Albany||Australia
@@ -1669,7 +1662,6 @@ Inra de Theix||France
 Reykjavik||Islândia
 São Bernardo do Campo|SP|Brazil
 Columbia||EUA
-AL||USA
 São Luís|MA|Brazil
 Tübingen||Germany
 Stanford||USA
@@ -1683,7 +1675,7 @@ Belo Horizonte|MG|Braisl
 Hermosillo Sonora||México
 Munich||Germany
 Mararay||Venezuela
-Araraquara­|SP|Brasil
+Cali||Columbia
 Montrouge||France
 Concord|NE|Estados Unidos
 Nijmegen||Netherlands
@@ -1845,7 +1837,6 @@ Sinauer||Massachussets
 Isla de Margarita||Venezuela
 Changchun|Jilin|P. R. China
 Cordoba||España
-PA||USA
 Bangu|RJ|Brasil
 Palhoça||Brasil
 São Caetano do Sul|SP|Brasil
@@ -2019,7 +2010,6 @@ Seropédica|RJ|BRASIL
 Diamantina||MG
 Weinhem||Fed. Repub. Germany
 Bellingham|WA|E.E.U.U
-MG||Brasil
 Tucksa||USA
 Seewiesen||Germany
 Brasilia|DF|BRAZIL
@@ -2080,7 +2070,7 @@ Hildesheim||Alemanha
 São Carlos|São Paulo|Brasil
 Alfenas|Minas Gerais|Brazil
 FloridaBoca Raton||USA
-RS||BR
+Tunis|Belvedere|Tunisie
 Iowa||USA
 Morris|MN|USA
 Gandra||Portugal
@@ -2135,7 +2125,6 @@ Amman||Jordon
 Auburn||Alabama
 St. Prim||France
 Aracaju||Brasil
-UK||USA
 Northampton||EUA
 Sorocaba||Brasil
 Edgbaston|Birmingham|UK
@@ -2251,7 +2240,7 @@ Botucatu||Brazil
 Tefé|Amazonas|Brasil
 Hurley||UK
 Votuporanga|SP|Brazil
-Cachoeirinha||Brasil
+Divinolândia|SP|Brasil
 Porto Alegre||Br
 Cianorte|PR|Brazil
 Subang Jaya|Selangor|Malaysia
@@ -2290,7 +2279,6 @@ Aldershot||UK
 Freiburg||Deutschland
 Stanford||EUA
 Dubai||UAE
-PR||Brazil
 Houston|Texas|EUA
 Bouzaréah|Algiers|Algeria
 Keltern||Germany
@@ -2491,12 +2479,11 @@ Burjassot Valencia||Spain
 ltajaí|Santa Catarina|Brasil
 Puerto Madryn|Chubut|Argentina
 Bernal|Provincia de Buenos Aires|Argentina
-NY||US
 BelémBelém||Brasil
 Perpignan||France
 Santo Antônio de Jesus||Brasil
 Cleveland|Ohio|U.S.A.
-Hefei||P. R. China
+Banglore||India
 Moffett Field|CA|USA
 Oxford||UK
 New York City||U.S.A
@@ -2523,7 +2510,6 @@ Seropédica|Rio de Janeiro|Brasil
 Minnessota||USA
 Mossoró||Brasil
 St. Martin d'Hères||França
-SP|São Paulo|Brasil
 Sobral|CE|Brasil
 Tucson||EUA
 Islamabad||Paksitan
@@ -2558,7 +2544,6 @@ Vitório|ES|Brasil
 Tokai|Ibaraki|Japan
 Nova Iorque||Estados Unidos
 Bagé|RS|Brasil
-BA||Brasil
 Cambridge||Cambridge University Press
 Ciudad Universitaria||MÉXICO
 Manila||Philipines
@@ -2639,7 +2624,6 @@ Elazig||Turkey
 Berkley||USA
 Helsinki||FI
 Porland||USA
-CE||Brazil
 San Juan|Puerto Rico|USA
 Sandviken||Suécia
 Chicago||EUA
@@ -2695,7 +2679,7 @@ Taoyuan County||Taiwan
 Morristown|NJ|USA
 Leicester||Inglaterra
 Campos de Goitacazes|RJ|Brasil
-BH|MG|Brasil
+Kuala Lumpur||Malaysia
 Louvain-la-Neuve||Bélgica
 Tessalônica||Grécia
 MontepellierMontepellier||France
@@ -2755,7 +2739,6 @@ Potenza||Itália
 Berkeley||Ca
 Rorainópolis|RR|Brazil
 Boulder||Mexico
-Manaus||Amazonas
 Dordrecht||The Netherlands
 Marilia|SP|Brazil
 Pucón||Chile
@@ -2768,7 +2751,6 @@ São Paulo|SP|Brzail
 San Francisco|CA|USA
 Berkeley||CA
 Washington||D.C
-Soladevanhalli||India
 Victoria|B. C.|Canada
 Stafford||USA
 München||República Federal da Alemanha
@@ -2901,7 +2883,6 @@ Lower Parel|Mumbai|India
 Mogi-Mirim|SP|Brasil
 Boston|Massachussets|EUA
 Texcoco|Estado de México|Mexico
-San Cristóbal de las Casas|Chiapas|México
 Halle||Germany
 Dordretcht||The Netherlands
 São Luís||Brasil
@@ -2922,7 +2903,6 @@ Hangzhou|P. R.|China
 Ste-Anne de Bellevue||Canada
 Jaboticabal|SP|Brasil
 Guarulhos|SP|Brasil
-IN||Estados Unidos
 New York||United State of America
 Trnava||Slovakia
 Porto Alegre-|RS|Brazil
@@ -3000,7 +2980,6 @@ Navi Mumbai||India
 Eagle Lake|TX|USA
 Philadephia||USA
 Rio de Janeiro||Autor
-LA||USA
 MaldenOxfordCarlton||USAUKAustralia
 Lisse||The Netherlands
 The Netherlands||Amsterdam
@@ -3213,7 +3192,7 @@ Leon||Spain
 São Paulo|S. P.|Brazil
 Manaus|Amazônia|Brasil
 Plön||Alemanha
-NW||Canada
+Tervuren||Belgium
 Villa Gualino||Italy
 Cary||EUA
 SãoPaulo||Brazil
@@ -3341,9 +3320,8 @@ Rotterdam|Rijnmond|Netherlands
 Créteil||France
 Pombal|Paraíba|Brasil
 Rouvray||France
-BH|Minas Gerais|Brazil
+Ouro Preto||Brazil
 Hangzhou||P. R. China
-PA||EUA
 Minas Gerais||Brazil
 Lyamungu||Tanganika
 Ogbomoso||Nigeria
@@ -3411,7 +3389,6 @@ München||Alemanha
 São PauloCampinas||Brasil
 Lanzhou|Gansu|China
 South Padre Island||USA
-RS||Brasil
 Charlote||EUA
 Notre Dame||USA
 Sioux Falls|SD|USA
@@ -3441,7 +3418,6 @@ Guelph||Can.
 Barranquilla||Colombia
 Jiangsu Province||China
 Bushehr||Iran
-MD||Spain
 Olinda|PE|Brasil
 Mondragón||Spain
 Sarab||Iran
@@ -3532,7 +3508,6 @@ Itabira|MG|Brasil
 Cosanga||Ecuador
 Humacao||Puerto Rico
 São José|Santa Catarina|Brasil
-Villeurbanne cedex||France
 San Rafael||USA
 New York||Italy
 Venetiis||II
@@ -3585,7 +3560,6 @@ Bratislava||Slovak Republic
 Viçosa|Al|Brasil
 Corumbá||Brasil
 Destelbergen||Belgium
-New York|NY|U.S.A.
 Rio Branco|PA|Brazil
 Juazeiro do Norte|CE|Brazil
 Bushland||USA
@@ -3597,7 +3571,6 @@ SouthamptonDresden||Germany
 IZMIR||TURKIYE
 Murcia||Espana
 Tulsa||USA
-PE||Brasil
 Tubarão|Santa Catarina|Brasil
 São Carlos|S.P|Brazil
 Campus de Diamantina|MG|Brazil
@@ -3645,7 +3618,6 @@ Kýrýkkale||Turkey
 Sázava||Czechoslovakia
 Tulsa||UK
 Reading||United Kingdom
-Safety Harbour||USA
 Hove||Inglaterra
 Pucallpa|Ucayali|Perú
 Bambuí||Brasil
@@ -3757,7 +3729,6 @@ Charleston|South Carolina|USA
 Noosa||Australia
 Bethesda||United States of America
 East MelbourneVic||Australia
-Québec||Canadá
 MANAUS||Brasil
 Resende|Rio de Janeiro|Brazil
 Goiania|Goias|Brazil
@@ -3893,7 +3864,7 @@ Belo Horizonte||SAT/CETEC
 Viçosa|MG|Brazil
 Santiago||Brasil
 OxfordLiège||InglaterraBélgica
-RS||Brazil
+Talawakelle|St. Coomb's Estate|Sri Lanka
 Sao Jose Rio Preto|SP|Brazil
 Innspruk||Austria
 BrasíliaBrasília||Brasil
@@ -4173,7 +4144,6 @@ Genova||IT
 Mississippi|MS|USA
 Baltimore|MD|U.S.A.
 Fort Collins|Colorado|USA
-PA|Belém|Brazil
 Sholapur|Maharashtra|India
 Organizacion Panamericana de la Salud||Honduras
 Brasýlia||Brazil
@@ -4247,7 +4217,7 @@ Trichy||India
 Guerrero||Mx
 Pindamonhangaba||Brazil
 Rio de Janeiro||Brasil
-MD||USA
+São Paulo||Scortecci
 Wuxi||People's Republic of China
 Chatham||United Kingdom
 Long Grover||USA
@@ -4739,7 +4709,6 @@ Hyattsville||United States of America
 Rio Grande|RS|Brtasil
 Leidschendam||Netherlands
 Rohtak||India
-SP||Brazi
 Nyon||Suíça
 Cambridge||US
 Aldeshot||UK
@@ -5098,7 +5067,6 @@ Cheltenham||England
 Campo Mourão|PR|Brasil
 Liestal||Switzerland
 Batucatu|SP|Brasil
-CA||USA
 São João Del Rei|MG|Brazil
 Belgrad||Yugoslavia
 Brasília|DF|Brasi.l
@@ -5146,7 +5114,6 @@ Pirassununga|SP|Brasil
 Itapuranga|Goiás|Brasil
 Verona||Itália
 Beecoft||Australia
-Teresópolis|RJ|Brazil
 Caracarai|Roraima|Brazil
 Acaraju|SE|Brasil
 Sunderland||Massachusetts
@@ -5169,7 +5136,6 @@ Alta Floresta|MT|Brasil
 Uberlândia|MG|Brasil
 Criciúma|Santa Catarina|Brasil
 Candelária|Rio Grande do Sul|Brasil
-DF||Brasil
 Colatina|Espírito Santo|Brazil
 Uyo||Nigeria
 Zabol||Iran
@@ -5252,7 +5218,6 @@ Petén||Guatemala
 Yonago||Japan
 Monreal||Canada
 São Paulo||Cultrix
-BH|MG|Brazil
 Padova||Italia
 SENEPA||Paraguay
 Monteria|Córdoba|Colombia
@@ -5265,7 +5230,7 @@ Chettenham||UK
 Recife|PE|Brazil
 Missoula||USA
 Campinas||Brasil
-Divinolândia|SP|Brasil
+Cachoeirinha||Brasil
 Rowley||Massachusetts
 Tucson||Arizona
 Rez||Czech Republic
@@ -6087,7 +6052,6 @@ Praha||Czech Republic
 Dourado|MS|Brasil
 Curitiba|PR|Brasil
 Roraima||Brazil
-RP||Brasil
 Ardabil Branch||Iran
 Kigali||Rwanda
 Santiago de Chile||Chile
@@ -6316,7 +6280,6 @@ Harper Collins||USA
 Covelo||USA
 Rafsanjan||Iran
 São Paulo||Brazi
-ON||Canada
 Adelaide||Austrália
 Chicago||E.U.A
 TulsaOK||USA
@@ -6666,7 +6629,6 @@ Espírito Santo do Pinhal|SP|Brasil
 CABA||Argentina
 Seattle||US
 Talence||France
-DF||Mexico
 Divisa Nova|MG|Brasil
 Port Harcourt||Nigéria
 Hamamatsu|Shizuoka|Japan
@@ -6786,7 +6748,7 @@ Farmington|CT|USA
 Dortmund||Deutschland
 Dharwad||India
 Fontilles||Spain
-SC|Florianópolis|Brasil
+São Gabriel|RS|Brazil
 Wolfpassing||Austria
 Houston||TX
 Davis||USA
@@ -6796,7 +6758,7 @@ Firoozabad||Iran
 Camerino||Italy
 Vermont||U.S.A.
 Guarapuava||Brasil
-Dallas||U
+Reins||France
 New York|NY|U.S
 Cancún||México
 Onderstepoort||Republic of South Africa
@@ -6908,7 +6870,6 @@ Concord||Canada
 Ashford||England
 CaryCary||Estados Unidos
 White Plains||EUA
-SP||Brasil
 Cairns||Australia
 Brown & CompanyMA||USA
 Antigua||Guatemala
@@ -7013,7 +6974,6 @@ Espinho||Portugal
 Bristol||UK
 Englewood Cliffs||New Jersey
 Salt Lake City|UT|USA
-Tervuren||Belgium
 Rockville||US
 Saint-Gilles||Les Bains
 Catalunya||España
@@ -7159,10 +7119,8 @@ Nova Iguaçu||Brasil
 Descalvado||Brasil
 Ottawa||CanadaThe Micronutrient Iniciative/Unicef
 San Cristobal||Venezuela
-ve||d f
 Bom Jardim|Rio de Janeiro|Brasil
 Heimstetten||Germany
-BA|Salvador|Brasil
 Porto Alegre|RS|Brasil
 Chidambaram|Tamil Nadu|India
 ST. Louis||USA
@@ -7226,7 +7184,6 @@ Cruz-Quebrada||Portuga
 Piraeus||Greece
 Chicago||U.S.A
 San Diego||E.U.A.
-Kuala Lumpur||Malaysia
 Famaillá|Tucumán|Argentina
 Peterborough||Canada
 Tilburg||Holanda
@@ -7242,7 +7199,7 @@ Oxford||United Kingdom
 Rebouças|PR|Brasil
 Calabar|CRS|Nigeria
 Ft Worth||USA
-Tunis|Belvedere|Tunisie
+Villeurbanne cedex||France
 San FranciscoLondon||Amsterdam
 Newburry Park||USA
 Miami|FL|USA
@@ -7737,7 +7694,6 @@ Guangzhou||People's Republic of China
 Kiyoritau Shuppan||KK
 Whittier|CA|USA
 Philadelphia||U.S.A.
-V&uml;axj&uml;o||Sweden
 Concórdia||Brazil
 MaldenOxfordLondonEdinburgCarlton||U.K
 Joseph||USA
@@ -7860,7 +7816,6 @@ Saint-Gilles||France
 Pebas|Loreto|Perú
 São Lourenço||Brasil
 Sunnyvale||USA
-IL||USA
 Anhui|P.R.|China
 Dresden||Germany
 Shahrekord||Iran
@@ -7961,7 +7916,7 @@ Vassouras|RJ|Brazil
 Wallingford||United Kingdom
 Fisciano||Itália
 Nova York|NY|Estados Unidos
-DC||USA
+Québec||Canadá
 Treinta y Três||Uruguay
 Ekpoma||Nigeria
 Pleven||Bulgaria
@@ -7978,13 +7933,12 @@ WokinghamReading||England
 Pasto||Colombia
 Resultados preliminaresSão Paulo||Brasil
 Chepes||Argentina
-NY||USA
+Petrópolis||Brazil
 Botucatu|Sao Paulo State|Brazil
 Brighton||UK
 São Paulo|SP|BR
 Araraquara|SP|Brazil
 Nimes||França
-NH|RS|Brazil
 Cambridge||U.K.
 Mysore||Índia
 Ames|Iowa|USA
@@ -8162,7 +8116,6 @@ Descalvado|SP|Brasil
 Essex||GB
 Gonnet||Argentina
 Sta. Bárbara D´Oeste|SP|Brasil
-Talawakelle|St. Coomb's Estate|Sri Lanka
 SoloduriSolothurn||Suiça
 Qingdao|Shandong|China
 Danvers||USA
@@ -8385,7 +8338,6 @@ Zibo Shandong||China
 Indiana||USA
 Hartford|Connecticut|USA
 Bananeiras|PB|Brasil
-Ouro Preto||Brazil
 Lodi||Italy
 Iowa city||USA
 Jakarta||Indonésia
@@ -8762,7 +8714,7 @@ Bern||Switz
 Bucarest||Romania
 Kumasi||Gana
 Veracruz||Mexico
-MA||USA
+Safety Harbour||USA
 Peshawar||Pakistan
 Cacak||Republic of Serbia
 Campinas||Sorocaba
@@ -8842,7 +8794,7 @@ Copenhagen||Luxemburgo
 Hunan||China
 Piracicaba|S.P.|Brazil
 Richard Toll||Senegal
-CE|Fortaleza|Brasil
+Soladevanhalli||India
 AVI||USA
 Velho ritiba|PR|Brasil
 Bremen||Alemanha
@@ -9043,7 +8995,6 @@ Szczecin||Poland
 Pau dos Ferros|RN|Brasil
 Genève||Switzerland
 Filadélfia|Pensilvânia|USA
-DF||Brasília
 Naperville||EUA
 Winnipeg|Manitoba|Canada
 Barbalha|CE|Brazil
@@ -9196,7 +9147,6 @@ Ajmer||India
 Columbus|IN|USA
 São Paulo||Sarvier
 Kwangju||Korea
-SP|Sao Paulo|Brazil
 Edmunds||UK
 Colonia||Alemanha
 Worblaufen-Bern||Suiza
@@ -9298,7 +9248,6 @@ St-Petersburg||Russia
 Nova Odessa|São Paulo|Brazil
 Campo Limpo Paulista|SP|Brasil
 Isfahan||Iran
-MS||USA
 Fortaleza|CE|Brazil
 Morro do Chapéu|BA|Brazil
 Lincoln||USA
@@ -9348,7 +9297,6 @@ Três Coracpes|MG|Brazil
 Thanjavur|Tamil Nadu|India
 Freising||Germany
 Indaial|Santa Catarina|Brasil
-MG||BR
 Fremont||USA
 Praia Grande|SP|Brasil
 Prov. Buenos Aires||Argentina
@@ -9416,7 +9364,6 @@ Edinburg||Austrália
 Ribeirão Pret o|SP|Brasil
 Durban||USA
 Piracicaba|SP|Brazil
-NJ||USA
 Washington||United State of America
 Paolo Alto||USA
 Galveston||EUA
@@ -9434,7 +9381,6 @@ Aracatuba|São Paulo|Brazil
 Nankohu||Japan
 Barueri|SP|Brazil
 Washington||AOAC
-RJ|Rio de Janeiro|Brasil
 Lahti||Finland
 Atibaia|SP|Brasil
 OxfordLeuven||EnglandBelgium
@@ -9526,7 +9472,7 @@ Municipalidad de Los Andes||Chile
 Domaine de Vilvert||France
 Campinas|SP|BRAZIL
 Pirassununga||Brazil
-SP||BR
+Split||Croatia
 Pennsilvania||USA
 Irvine|CA|US
 Buenos Aires|Salta|Argentina
@@ -9850,7 +9796,6 @@ Hampshire||England
 Centerton||USA
 Brasilia||BRASIL
 Sakhalin||Russia
-OH||USA
 Sinop||Brasil
 CartagenaCali||Colombia
 Tarímbaro|Michoacán|Mexico
@@ -10165,13 +10110,13 @@ Rijeka||Croatia
 Patiala||India
 Muriaé|MG|Brasil
 Paraná|PR|Brazil
+Araraquara­|SP|Brasil
 Ponta Porá|Mato Grosso do Sul|Brazil
 Matinhos|Paraná|Brazil
 Kubang Kerian|Kelantan|Malaysia
 Santa Cruz||USA
 Wooster|Ohio|USA
 Pullman||U.S.A.
-Cali||Columbia
 Harare||Zimbabwe
 West Point|Pennsylvania|USA
 Plonzane||France
@@ -10190,7 +10135,7 @@ São Paulo||BrasilGuatemala
 Berkeley||California
 Montpellier cedex||France
 Campinas|São Paulo|Br
-Banglore||India
+Hefei||P. R. China
 CheltenhanNorthampton||UKUSA
 Uttaranchal||India
 Navsari||India
@@ -10240,7 +10185,7 @@ Mexico City||Mexico
 Mariana|Minas Gerais|Brasil
 Cambridge||Massachusetts
 Manhasset and New Hyde Park|NY|USA
-DF||México
+Manaus||Amazonas
 São Paulo||BRAZIL
 Gioiânia|GO|Brasil
 Rio Janeiro||Brasil
@@ -10393,7 +10338,6 @@ Barretos|SP|Brasil
 Ceara||Brazil
 Texcoco||Mexico
 Rio Grande|RS|Brazil
-PE||Brasília
 Durham||NC
 Evry||France
 WashingtonJanuary||UK
@@ -10402,7 +10346,6 @@ OxfordNova York||Inglaterra
 Belfast||Northern Ireland
 Cuernavaca|Mor.|Mexico
 Garmisch-Partenkirchen||Alemanha
-PA||Estados Unidos
 Santo Antonio de Jesus|BA|Brazil
 Recife||Pernambuco
 Matsuyama|Ehime|Japão
@@ -10551,7 +10494,7 @@ Kilbirnie|Wellington|New Zealand
 Manila||Filipinas
 Herceghalom||Hungary
 Quixeramombim|Ceará|Brasil
-GO||Brasil
+New York|NY|U.S.A.
 Zemun||Yugoslavia
 Meylan||France
 Kristiansand||NORUEGA
@@ -10596,7 +10539,6 @@ Santo Domingo||República Dominicana
 ColoradoSprings||Estados Unidos da América
 Gatton||Australia
 Rijeka||Croácia
-NC||USA
 Cambrigde||U.K.
 Cordoba||Espanha
 Montpellier Cedex||France
@@ -10665,7 +10607,6 @@ Taubate|SP|Brazil
 São Domingos||República Dominicana
 Mayaguez||Puerto Rico
 Butantã|SP|Brazil
-NB||Canadá
 Navirai|MS|Brasil
 Pirassununga|São Paulo|Brazil
 Pietermaritizburg||South Africa
@@ -10901,7 +10842,6 @@ Spektrum Akademischer||Germany
 PosadasMisiones||Argentina
 Darmstadt||Alemanha
 Milan||Italy
-SP||Brazil
 Rio de Mouro||Portugal
 Marechal Cândido Rondon||Brasil
 Waterloo||Canadá
@@ -11053,7 +10993,6 @@ Itabaiana|Sergipe|Brasil
 Vila Betel|SP|Brasil
 Cádiz||España
 AmsterdamOxford||UK
-Villejuif||France
 Gran Canaria||España
 PretoriaAtami||Japan
 MaidstoneKent||England
@@ -11298,7 +11237,6 @@ BarcelonaCambridge||UK
 Jiangsu Yancheng||China
 Coari|AM|Brazil
 Boulder||EUA
-São Gabriel|RS|Brazil
 Itapira|São Paulo|Brazil
 Milton Keynes||United Kingdom
 Begriffe||German
@@ -11402,7 +11340,7 @@ Nice||França
 Syracuse||US
 Pindorama|SP|Brasil
 São Gonçalo|Rio de Janeiro|Brasil
-RJ||Brasil
+Trivandrum|Kerala|India
 Nova Friburgo|RJ|Brasil
 UetikonZurich||Switzerland
 St. Maló||France
@@ -11532,7 +11470,6 @@ Lauderdale Lakes|Florida|USA
 Cary||United States
 Cold Spring Harbor||U.S.A.
 Leiden||The Netherlands
-SP|São Paulo|Brazil
 Indianapolis|IN|EUA
 Porto||Pt
 Hagondange Cedex||France
@@ -11549,14 +11486,12 @@ Alagoinhas|Bahia|Brasil
 Shijiazhuang|Hebei|P. R. China
 Orlando|FL|U.S.A
 Lagoa Vermelha||Brasil
-QC||Canada
 Dauphine||França
 Candelária|RS|Brasil
 Palotina|Paraná|Brazil
 Athens|Ohio|USA
 Balcali|Adana|Turkey
 Banbury||UK
-São Paulo|SP|-
 Areias|PB|Brasil
 West Conshohocken||EUA
 Burnaby||Canada
@@ -11662,7 +11597,6 @@ Marechal Cândido Rondon|PR|Brazil
 Novo Horizonte|BA|Brasil
 Bethesda|MD|USA
 Carouge||Switzerland
-Petrópolis||Brazil
 Brasília|D. F.|Brasil
 Fujisawa|Kanagawa|Japan
 Manhattan|Kansas|USA
@@ -11701,7 +11635,6 @@ Corumbá|DF|Brasil
 Zlin||Czech Republic
 Lelystad||Países Bajos
 Irvine|CA|U.S.A.
-Neuquén||a
 Aurora|Colorado|EUA
 Guadeloupe||France
 Hagen||Alemanha
@@ -11748,7 +11681,6 @@ Mogi das Cruzes||Brazil
 Dera Ghazi Khan||Pakistan
 São José do Rio|SP|Brazil
 Larissa||Greece
-São Paulo|SP|a
 Weiden||Germany
 S.J. dos Campos|SP|Brasil
 CambridgeUnited KingdomNew York||USA
@@ -12429,7 +12361,6 @@ Sedona||AZ
 West Point|PA|USA
 Apodi|RN|Brasil
 Tiruchirappalli|TamilNadu|India
-São Paulo||Scortecci
 Mirassol|SP|Brasil
 Campina Grande|Paraíba State|Brazil
 Belém||EDUFPA
@@ -12584,7 +12515,6 @@ Guarapari||Brasil
 Lawrence||EUA
 Washington|D.C.|U.S.A.
 Riberirão Preto|SP|Brazil
-NS||Canada
 Ashland||USA
 Itaquera|SP|Brasil
 Inc.||MA
@@ -12701,7 +12631,6 @@ Roterdã||Holanda
 Vassouras|Rio de Janeiro|Brasil
 RiversideChicago||USA
 Stockolm||Sweden
-Shiyan||China
 Casarza Ligure|GE|Italy
 Porto Alegre|Rio Grande do Sul|Brazil
 Boulder|CO|USA
@@ -12740,7 +12669,6 @@ Glasgow||UK
 Montréal||CA
 Santa Teresa|Espírito Santo|Brazil
 Farnham Royal Bucks||England
-TX||USA
 Netanya||Israel
 Hayama||Japan
 Martigny||Switzerland
@@ -12777,7 +12705,6 @@ Burns|Or|USA
 Castelar||Argentina
 New YorkTokioSydney||MexicoHong Kong
 Cuiaba|Mato Grosso|Brazil
-Reins||France
 Portland|OR|USA
 Patos|Paraíba|Brasil
 Wallingford||Reino Unido
@@ -12923,7 +12850,6 @@ Caceres|MT|Brasil
 Cary||SAS Institute
 Rio Branco|Acre|Brasil
 Tifton|GA|USA
-PE||Brazil
 Kusatsu||Japan
 Crato|PE|Brasil
 México|D. F.|Mexico
@@ -13320,7 +13246,6 @@ Campos do Goytacazes|RJ|Brazil
 San Cristobal||Rep. Dom.
 Itaguaí|RJ|Brasil
 Suva||Fiji
-Trivandrum|Kerala|India
 Rennes||França
 Valley|NE|USA
 Iguazú||Argentina
@@ -13666,7 +13591,7 @@ Garanhuns||Brasil
 Santa Rosa|RS|Brasil
 São Jose||Costa Rica
 Petrópolis|RJ|BR
-RS|Porto Alegre|Brasil
+Villejuif||France
 Hamadan||I.R
 Ocoyoacac||México
 San Salvador||El Salvador
@@ -13841,7 +13766,6 @@ São CarlosRio de JaneiroLeiden||Holanda
 Estocolmo||Suécia
 São Carlos|SP|Brazi
 Zurique||Suíça
-RN||Brasil
 São Paulo|SP|BRASIL
 Hershey||EUA
 Puebla|Puebla|Mexico
@@ -14069,7 +13993,6 @@ Petrópolis|RJ|Brasi
 Espírito Santo|RS|Brazil
 Paranavaí|PR|Brasil
 Wallinford||U.K.
-SP|SP|Brasil
 La PlataLa Plata||Argentina
 San Vicente|Alicante|España
 Newbury Park||USA
@@ -14561,7 +14484,6 @@ Asunción||Paraguay
 Acrelândia||Brasil
 Taiyuan||China
 Wuxi|Jiangsu Province|China
-PR||Brasil
 Zeist||The Netherland
 Arba Minch||Ethiopia
 Hualien||Taiwan
@@ -14585,7 +14507,6 @@ Campinas||BrazilBrazil
 Henley on Thames||England
 CambridgeNew York||United KingdomUSA
 Francisco Beltrão|PR|Brasil
-Split||Croatia
 W. Lafayette||USA
 Planaltina||Brasil
 Rio Grande-RS||Brazil
