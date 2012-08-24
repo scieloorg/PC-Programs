@@ -5,16 +5,19 @@ from journal_issue_article import Journal, JournalIssue, Article, Section
 from table_ent_and_char import TableEntAndChar
 from table_conversion import ConversionTables
 from utils.aff_table import AffiliationTable
+from utils.table_issn import ISSN_Table
 
 class JSON_ArticleFixer:
-    def __init__(self, report, json_data):
+    def __init__(self, report):
         self.conversion_tables = ConversionTables()
         self.table_entity_and_char = TableEntAndChar()
+        self.issn_norm = ISSN_Table('inputs/issn_norm.seq')
+        self.issn = ISSN_Table('inputs/issn.seq')
+
         self.table_aff = AffiliationTable('inputs/valid_affiliations.seq')
         self.sections = {}
         self.report = report
-        self.json_data = json_data
-
+        
         doctopics = {}
         doctopics['journal'] = ['12', '30', '10', '65', '14']
         doctopics['book'] = [ '18', '10', '65', '62', '66', '67']
@@ -48,7 +51,15 @@ class JSON_ArticleFixer:
         
         self._doctopics = doctopics
 
-    def fix(self):
+    def return_issn_and_norm_title(self, journal_title, location):
+        issn, journal_title = self.issn_norm.return_issn_and_title(journal_title, location)
+        if len(issn) == 0:
+            issn, title = self.issn.return_issn_and_title(journal_title, location)
+            journal_title = ''
+        return (issn, journal_title)
+
+    def fix(self, filename, json_data):
+        self.json_data = json_data
         self.fix_metadata()
         self.json_data['h'] = self.format_for_indexing(self.json_data['f'])
         self.json_data['l'] = self.format_for_indexing(self.json_data['h'])
@@ -56,9 +67,6 @@ class JSON_ArticleFixer:
         k = 0
         for citation in self.json_data['c']:
             citation = self.format_for_indexing(citation)
-            print('-')
-            print(k)
-            print(citation)
             if '40' in citation.keys() and '18' in citation.keys():
                 monog_title = citation['18']
                 citation['18'] = { 'l':citation['40'], '_': monog_title}
@@ -72,16 +80,6 @@ class JSON_ArticleFixer:
                         if not 'l' in citation['12']:
                             citation['12']['l'] = citation['40']
 
-            if 'xxx65' in citation.keys():
-                if '65m' in citation.keys() or '65d' in citation.keys():
-                    if '65m' in citation.keys():
-                        citation['65'] = citation['65'][0:4] + citation['65m'] + citation['65'][6:8]
-                        del citation['65m']
-                    if '65d' in citation.keys():
-                        citation['65'] = citation['65'][0:6] +  citation['65d']
-                        del citation['65d']
-                if 4 <= len(citation['65']) < 8:
-                    citation['65'] += '0' * (8 - len(citation['65']))
 
             citation = self.fix_dates(citation, '65', '64')
             if '32' in citation:
@@ -92,15 +90,20 @@ class JSON_ArticleFixer:
                             d[key] = v
                     citation['32'] = d
             
-            if '65m' in citation.keys():
-                del citation['65m']
-            if '65d' in citation.keys():
-                del citation['65d']
+            if '30' in citation.keys() and not '35' in citation.keys():
+                issn, title = self.return_issn_and_norm_title(citation['30'], '')
+                if len(issn) > 0:
+                    citation['35'] = issn
+                    if len(title) > 0:
+                        citation['801'] = title
+
             citation['865'] = self.json_data['f']['65']
             citation = self.join_pages(citation, k)
             missing = self.validate_citation(citation) 
             if len(missing) > 0:
+                self.report.log_error(filename )
                 self.report.log_error('Missing data in reference ' + str(k + 1) + ': ' + missing )
+                self.report.log_summary(filename)
                 self.report.log_summary(' ! Missing data in reference ' + str(k + 1) + ': ' + missing)
             self.json_data['c'][k] = citation
             k += 1
@@ -199,16 +202,41 @@ class JSON_ArticleFixer:
             self.json_data['f']['85'] = new    
         
     
+    
     def fix_dates(self, doc, tag_iso, tag_noiso):
+
         if tag_iso in doc.keys():
+            d_iso = doc[tag_iso]
+            if type(d_iso) == type([]):
+                d_iso = doc[tag_iso][0]
+            
+
             m = '00'
-            if tag_noiso in doc.keys():
-                m = self.return_month_number(doc[tag_noiso])
-                
-            if len(doc[tag_iso]) == 4:
-                doc[tag_iso] += m
-                if len(m) == 2:
-                    doc[tag_iso] += '00'
+            d = '00'
+            y = '0000'
+            if len(d_iso) >= 4:
+                y = d_iso[0:4]
+            if len(d_iso) >= 6:
+                m = d_iso[4:6]
+            if len(d_iso) >= 8:
+                d = d_iso[6:8]
+            res = {'m': m, 'd': d}
+            for item in res.keys():
+                if res[item] == '00':
+                    if tag_iso + item in doc.keys():
+                        r = '00' + doc[tag_iso + item]
+                        r = r[-2:]
+                        del doc[tag_iso + item]
+                        res[item] = r
+            
+            if res['m'] == '00': 
+                if tag_noiso in doc.keys():
+                    m = self.return_month_number(doc[tag_noiso])
+                    if len(m)>2:
+                        d = m[2:4]
+                    m = m[0:2]
+            doc[tag_iso] = y + m + d
+            
             
         return doc
 
@@ -233,14 +261,40 @@ class JSON_ArticleFixer:
 
         return '/'.join(r)
 
+    def fix_xref(self):
+        if '10' in self.json_data['f'].keys():
+        
+            changed = False
+            if type(self.json_data['f']['10']) == type([]):
+                authors = self.json_data['f']['10']
+            else:
+                authors = [self.json_data['f']['10']]
+            new_authors = []
+            for author in  authors:
+                if '1' in author.keys():
+                    if type(author['1']) == type([]):
+                        #print(self.json_data['f']['10'])
+                        author['1'] = ' '.join(author['1'])
+                        #print(self.json_data['f']['10'])
+                        changed = True
+                new_authors.append(author)
+            if changed:
+                if len(new_authors) == 1:
+                    self.json_data['f']['10'] = new_authors[0]
+                else:
+                    self.json_data['f']['10'] = new_authors
     def fix_metadata(self):
         self.fix_keywords()
         self.convert_value('doctopic', 'f', '71')
+
         
-        if '112' in self.json_data['f']:
+        self.fix_xref()
+
+           
+        if '112' in self.json_data['f'].keys():
             self.json_data['f']['111'] = self.fix_history_date_display(self.json_data['f']['112'])
             self.json_data['f']['112'] = self.fix_history_date(self.json_data['f']['112'])
-        if '114' in self.json_data['f']:
+        if '114' in self.json_data['f'].keys():
             self.json_data['f']['113'] = self.fix_history_date_display(self.json_data['f']['114'])
             self.json_data['f']['114'] = self.fix_history_date(self.json_data['f']['114'])
         
@@ -255,7 +309,7 @@ class JSON_ArticleFixer:
         self.fix_illustrative_materials()
 
         self.fix_affiliations()
-
+        
     
     
     def fix_affiliations(self):
@@ -374,12 +428,12 @@ class JSON_ArticleFixer:
 class JSON_Article:
     def __init__(self, report):
         self.report = report
-    
+        self.json_fixer = JSON_ArticleFixer(report)
     
 
     def load_article(self, article_json_data, journal_list, xml_filename):
         doc_f = article_json_data['doc']['f']
-
+        
         journal = journal_list.find_journal(doc_f['100'])
         if journal == None:
             journal = Journal(doc_f['100'], doc_f['35'])
@@ -390,8 +444,7 @@ class JSON_Article:
         else:
             doc_f['35'] = journal.issn_id
 
-        json_fixer = JSON_ArticleFixer(self.report, article_json_data['doc'])
-        article_json_data['doc'] = json_fixer.fix()
+        article_json_data['doc'] = self.json_fixer.fix(xml_filename, article_json_data['doc'])
         
         
         
@@ -486,6 +539,7 @@ class JSON_Article:
         #print([ k  for k in doc_f.keys() ])
         surname = ''
         if '10' in  doc_f.keys():
+            
             if type(doc_f['10']) == type([]):
                 surname =  doc_f['10'][0]['s']
             else:
@@ -498,7 +552,7 @@ class JSON_Article:
         article.json_data = article_json_data['doc']
 
         return article
-   
+
+#539
     
 
-    

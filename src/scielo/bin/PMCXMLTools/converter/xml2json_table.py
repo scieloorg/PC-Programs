@@ -1,8 +1,8 @@
 
 class XML2JSONTable:
 
-    def __init__(self, filename, report):
-        self.report = report
+    def __init__(self, filename):
+        
         self.start = MyNode(None)
         
         f = open(filename, 'r')
@@ -25,6 +25,7 @@ class XML2JSONTable:
 
             values  = c.split(' ')
             
+            attr = ''
             xpath = ''
             to = ''
             default = ''
@@ -35,10 +36,22 @@ class XML2JSONTable:
             if len(values) >= 3:
                 default = values[2]
             
+            if xpath.startswith('@'):
+                attr = xpath
+                xpath = ''
+            elif xpath == '.':
+                xpath = ''
+            elif '/@' in xpath:
+                attr = xpath[xpath.find('/@')+1:]
+                xpath = xpath[0:xpath.find('/@')]
+            if len(xpath)>0 and not xpath.startswith('.//') :
+                xpath = './' + xpath
+            
             new_node = MyNode(parent_node)
             new_node.xpath = xpath
             new_node.to = to
             new_node.default = default
+            new_node.attr = attr
             if last_level < level:
                 # down
                 parent_node = current_node
@@ -103,9 +116,9 @@ class MyNode:
         self.default = ''
         self.children = []
         self.parent = parent
+        self.attr = ''
 
 
 
-#t =  XML2JSONTable('_pmcxml2isis.txt', Report('table.log', 'table.err', 0, False))
-#t.print_structure()   
+
         

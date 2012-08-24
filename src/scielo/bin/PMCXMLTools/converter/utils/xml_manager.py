@@ -6,10 +6,11 @@ class XMLManager:
     root = {}
     debug = True
 
-    def __init__(self, xml_filename, report):
+    def __init__(self, xml_filename, debug_report):
         self.root = None
+        self.debug_report = debug_report
         if os.path.exists(xml_filename):
-            self.report = report
+            
             self.ns = ''
             try:
                 self.root = etree.parse(xml_filename).getroot()
@@ -19,10 +20,10 @@ class XMLManager:
                     self.ns = ''
             except:
 
-                self.report.log_error('Unable to load ' + xml_filename)
+                self.debug_report.log_error('Unable to load ' + xml_filename)
                 
         else:
-            self.report.log_error('Missing XML file:' + xml_filename)
+            self.debug_report.log_error('Missing XML file:' + xml_filename)
             
     
     def return_nodes(self, xpath = '', current_node = None):
@@ -37,7 +38,7 @@ class XMLManager:
                 try:
             	    r = n.findall(p)
             	except:
-            	    self.report.log_error('Invalid xpath: ' + p)
+            	    self.debug_report.log_error('Invalid xpath: ' + p)
             else:
                 p = '.'
                 r.append(n)
@@ -65,10 +66,10 @@ class XMLManager:
                 s = r.strip()
             except:
                 s = ''
-                self.report.log_event('Empty element')
-                self.report.display_data('node', node)
-                self.report.display_data('n', n)
-                self.report.display_data('r', r)        
+                self.debug_report.log_event('Empty element')
+                self.debug_report.display_data('node', node)
+                self.debug_report.display_data('n', n)
+                self.debug_report.display_data('r', r)        
         return s
     
     

@@ -15,7 +15,7 @@
       name/given-names n
       name/surname s
       @contrib-type r ND
-      xref/@rid 1
+      xref[@ref-type='aff']/@rid 1
     .//article-meta/title-group 12
       subtitle s
       article-title t
@@ -71,6 +71,7 @@
       day d
       season s      
   .//ref c
+    .//source/@xml:lang 40
     .//element-citation/@publication-type 71
     .//mixed-citation/@publication-type 71
     .//article-title 12
@@ -81,7 +82,6 @@
       @xml:lang l
     .//chapter-title 12
       . t
-    .//source/@xml:lang 40
     .//element-citation[@publication-type='journal']//source 30    
     .//element-citation[@publication-type='report']//source 18    
     .//element-citation[@publication-type='book']//source 18    
@@ -112,14 +112,14 @@
     .//issue 32  
       . _  
     .//supplement 32
-      . s 
-    .//publisher-name 62    
+      . s n
     .//edition 63    
     .//year 64    
     .//year 65    
     .//month 65m
     .//day 65d
-    .//publisher-loc 66    
+    .//publisher-loc 66
+    .//publisher-name 62
     .//element-citation 514
       fpage f
       lpage l

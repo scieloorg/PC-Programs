@@ -4,16 +4,17 @@ import json
 
 class XML2JSONConverter:
 
-    def __init__(self, xml2json_table_filename, report, debug = False):
-        self.conversion_table = XML2JSONTable(xml2json_table_filename, report)
-        self.report = report
+    def __init__(self, xml2json_table_filename, debug_report, debug = False):
+        self.conversion_table = XML2JSONTable(xml2json_table_filename)
+        self.debug_report = debug_report
         self.debug = debug
-        self.dict = {}
+        
 
     def convert(self, xml_filename):
-        self.xml_manager = XMLManager(xml_filename, self.report)
+        self.dict = {}
+        self.xml_manager = XMLManager(xml_filename, self.debug_report)
         converted = self.__convert__(self.conversion_table.start, None, None)
-        self.report.display_data('converted', converted)  
+        self.debug_report.display_data('converted', converted)  
         return converted 
 
     def pretty(self, json_data):
@@ -22,33 +23,21 @@ class XML2JSONConverter:
     def pretty_print(self, json_data):
         print(self.pretty(json_data))
         
-    def __return_new_xpath_and_table_xpath__(self, table_node):
-        xpath = table_node.xpath
-        
-        if table_node.xpath == '.' or  table_node.xpath.startswith('@'):
-            xpath = ''
-        elif '/@' in xpath:
-            xpath = table_node.xpath[0:table_node.xpath.find('/@')]
-            #print(table_node.xpath)
-            table_node.xpath = table_node.xpath[table_node.xpath.find('/@')+1:]
-            #print(table_node.xpath)
-        
-        
-        if len(xpath)>0 and not xpath.startswith('.//'):
-            xpath = './' + xpath
-        return (xpath, table_node.xpath)
+
 
     def __convert__(self, table_node, xml_parent_node, parent_xml_parent_node, num = 1):
-        t = (table_node.xpath == './/source/@xml:lang')
+        t = False
+        t = (table_node.xpath.startswith( 'xref' ))
+
         test = False
         if self.debug:
-            self.report.display_data('__convert__ ', table_node.xpath)
+            self.debug_report.display_data('__convert__ ', table_node.xpath)
         #print(' -- --- --')
         #print(table_node.xpath)
-        xpath, table_node.xpath = self.__return_new_xpath_and_table_xpath__(table_node)
+        #xpath, table_node.xpath = self.__return_new_xpath_and_table_xpath__(table_node)
         #print(xpath)
         #print(table_node.xpath)
-        xml_nodes = self.xml_manager.return_nodes(xpath, xml_parent_node)
+        xml_nodes = self.xml_manager.return_nodes(table_node.xpath, xml_parent_node)
         #print(xml_nodes)
         if test:
             print(xpath)
@@ -57,21 +46,24 @@ class XML2JSONConverter:
             test = False
 
         if len(table_node.children) == 0:
-            result = self.return_leaf_content(table_node, xml_nodes, t)            
+            if t: print('leaf')
+            result = self.return_leaf_content(table_node, xml_nodes, num, t)            
         else:
-            result = self.return_branch_content(table_node, xml_nodes, xml_parent_node, num)
+            if t: print('branch')
+            result = self.return_branch_content(table_node, xml_nodes, xml_parent_node, num, t)
     
-        
+        if t:
+            print(result)
         if self.debug:
-            self.report.display_data('result', result)  
+            self.debug_report.display_data('result', result)  
         return result
 
-    def return_leaf_content(self, table_node, xml_nodes, debug = False):
+    def return_leaf_content(self, table_node, xml_nodes, num, debug = False):
         a = []
         for xml_node in xml_nodes:
             
-            if table_node.xpath[0:1] == '@':
-                v = self.xml_manager.return_node_attr_value(xml_node, table_node.xpath[1:])
+            if table_node.attr != '':
+                v = self.xml_manager.return_node_attr_value(xml_node, table_node.attr[1:])
                 
             else:
                 v = self.xml_manager.return_node_value(xml_node)
@@ -85,7 +77,7 @@ class XML2JSONConverter:
             
         return self.__format__(table_node, a)
 
-    def return_branch_content(self, table_node, xml_nodes, xml_parent_node, num):
+    def return_branch_content(self, table_node, xml_nodes, xml_parent_node, num, debug = False):
         occs = []
         number = 0
         for xml_node in xml_nodes:
@@ -93,7 +85,7 @@ class XML2JSONConverter:
             occ = {}
             number += 1
             for child in table_node.children:
-                #print(table_node.xpath + '=>' + child.xpath)
+                if debug: print(table_node.xpath + '=>' + child.xpath)
                 v = self.__convert__(child, xml_node, xml_parent_node, number)
                 if len(v)>0:
                     if child.to == '' or child.to == '_':
@@ -102,7 +94,7 @@ class XML2JSONConverter:
                         occ[child.to] = v
             if occ != {}:
                 occs.append(occ)        
-
+        if debug: print(occs)
         return self.__format__(table_node, occs, num)  
 
     def __format__(self, table_node, result, num = None):
@@ -141,11 +133,12 @@ class XML2JSONConverter:
         enc = 'utf-8'
         if value != '':
             try:
-                value = value.encode(enc)
+                test = value.encode(enc)
             except:
                 
-                value = self.convert_chr(value)
-            
+                test = self.convert_chr(value)
+            if type(test) == type(''):
+                value = test
         return value
 
     def convert_chr(self, value):
@@ -172,7 +165,7 @@ class XML2JSONConverter:
 
         test = False
         if self.debug:
-            self.report.display_data('__convert__ ', table_node.xpath)
+            self.debug_report.display_data('__convert__ ', table_node.xpath)
         xpath = table_node.xpath
         
         if table_node.xpath == '.' or  table_node.xpath[0:1] == '@':
@@ -242,5 +235,5 @@ class XML2JSONConverter:
                 result = self.__control_occ__(table_node, num, result)
                 
         if self.debug:
-            self.report.display_data('result', result)  
+            self.debug_report.display_data('result', result)  
         return result   
