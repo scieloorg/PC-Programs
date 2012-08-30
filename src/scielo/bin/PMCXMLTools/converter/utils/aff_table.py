@@ -5,7 +5,7 @@ import os.path
 
 class AffiliationTable:
 
-    def __init__(self, filename):
+    def __init__(self, filename = 'inputs/valid_affiliations.seq'):
         self.filename = filename
         self.institution_names = {}
         self.table_location = LocationTable('inputs/valid_locations.seq')

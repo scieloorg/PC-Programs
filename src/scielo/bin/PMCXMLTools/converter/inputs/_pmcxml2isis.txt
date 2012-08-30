@@ -30,6 +30,7 @@
     .//article-meta/suppl 132    
     .//article-meta//funding-source 58    
     .//article-meta//award-id 60    
+    .//article-meta//funding-statement 102
     .//article-meta/pub-date/season 64
     .//article-meta/pub-date/month 64
     .//article-meta/pub-date/year 65
@@ -78,36 +79,23 @@
       . _
       @xml:lang l en
     .//trans-title 12
-      . t
+      . _
       @xml:lang l
     .//chapter-title 12
-      . t
+      . _
+      @xml:lang l en
+    .//source 18    
     .//element-citation[@publication-type='journal']//source 30    
-    .//element-citation[@publication-type='report']//source 18    
-    .//element-citation[@publication-type='book']//source 18    
-    .//element-citation[@publication-type='conf-proc']//source 18    
-    .//element-citation[@publication-type='thesis']//source 18    
-    .//element-citation[@publication-type='patent']//source 18    
-    .//element-citation[@publication-type='software']//source 18    
-    .//element-citation[@publication-type='web']//source 18    
-    .//element-citation[@publication-type='other']//source 18    
     .//mixed-citation[@publication-type='journal']//source 30    
-    .//mixed-citation[@publication-type='report']//source 18    
-    .//mixed-citation[@publication-type='book']//source 18    
-    .//mixed-citation[@publication-type='conf-proc']//source 18    
-    .//mixed-citation[@publication-type='thesis']//source 18    
-    .//mixed-citation[@publication-type='patent']//source 18    
-    .//mixed-citation[@publication-type='software']//source 18    
-    .//mixed-citation[@publication-type='web']//source 18    
-    .//mixed-citation[@publication-type='other']//source 18   
-    .//person-group[@person-group-type='author']//name 10
+    .//person-group/@person-group-type roles
+    .//person-group[1]/name 10
       given-names n
       surname s
-      @role r ND
-    .//person-group[@person-group-type='editor']//name 16
+    .//person-group[2]/name 16
       given-names n
       surname s
-      @role r ed
+    .//person-group[1]/collab 11
+    .//person-group[2]/collab 17
     .//volume 31    
     .//issue 32  
       . _  
@@ -128,11 +116,18 @@
       fpage f
       lpage l
       page-range r
+    size 20
+      . _
+      @units u
     label 118    
     .//et-al 810    
     .//ext-link 37    
+    .//date-in-citation[content-type='access-date'] 109
     .//comment 61    
     .//notes 61    
     .//pub-id[@pub-id-type='doi'] 237    
     .//pub-id[@pub-id-type='pmid'] 238    
     .//pub-id[@pub-id-type='pmcid'] 239    
+    .//conf-name 53
+    .//conf-loc 56
+    .//conf-date 54

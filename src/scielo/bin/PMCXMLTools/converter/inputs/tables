@@ -1,6 +1,14 @@
 doctopic|research-article|oa
 doctopic|editorial|ed
 role|author|ND
+role|editor|ED
+role|assignee|assignee
+role|compiler|compiler
+role|director|director
+role|guest-editor|guest-editor
+role|inventor|inventor
+role|transed|transed
+role|translator|TR
 formatting|<sub>|
 formatting|</sub>|
 formatting|<sup>|

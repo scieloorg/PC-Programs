@@ -4,17 +4,17 @@ import os
 
 class PMCXML_FilesSet:
 
-    def __init__(self, main_path, journal_folder, issue_folder, db_name):
-        path = main_path + '/' + journal_folder + '/' + issue_folder + '/pmc'
+    def __init__(self, source_path, server_serial_path, img_path, pdf_path, xml_path, journal_folder, issue_folder, db_name):
+        self.source_path = source_path + '/' + journal_folder + '/' + issue_folder + '/pmc'
+        self.server_serial_path = server_serial_path + '/' + journal_folder + '/' + issue_folder 
+        self.pdf_path = pdf_path + '/' + journal_folder + '/' + issue_folder
+        self.img_path = img_path + '/' + journal_folder + '/' + issue_folder
+        self.xml_path = xml_path + '/' + journal_folder + '/' + issue_folder
+
+        self.package_path = self.source_path + '/pmc_package_source' 
+        self.extracted_package_path = self.source_path + '/pmc_package_extracted' 
         
-        self.package_path = path + '/pmc_package_source' 
-        self.extracted_package_path = path + '/pmc_package_extracted' 
-        self.db_path = path + '/pmc_base' 
-        self.xml_path = path + '/pmc_xml'
-        self.jpg_path = path + '/img'
-        #self.xml_path = path + '/xml' 
-        #self.img_path = path + '/pmc_img' 
-        #self.pdf_path = path + '/pmc_pdf' 
+        self.db_path = self.server_serial_path + '/base' 
         
         self.db_name = db_name
 
@@ -22,6 +22,10 @@ class PMCXML_FilesSet:
         
         self.log_filename = self.db_path + '/' + db_name + '.log'
         self.err_filename = self.db_path + '/' + db_name + '.err.log'
+
+        for f in [self.source_path, self.server_serial_path, self.pdf_path, self.img_path, self.xml_path, self.package_path, self.extracted_package_path, self.db_path, ]:
+            if not os.path.exists(f):
+                os.makedirs(f)
         
     def prepare_db_folder(self):
         self.delete_files_by_extension(self.db_path, ['.id', '.mst', '.xrf', '.log', ])

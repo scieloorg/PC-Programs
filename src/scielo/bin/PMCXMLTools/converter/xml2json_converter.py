@@ -26,39 +26,34 @@ class XML2JSONConverter:
 
 
     def __convert__(self, table_node, xml_parent_node, parent_xml_parent_node, num = 1):
-        t = False
-        t = (table_node.xpath.startswith( 'xref' ))
-
-        test = False
+        
         if self.debug:
-            self.debug_report.display_data('__convert__ ', table_node.xpath)
-        #print(' -- --- --')
-        #print(table_node.xpath)
-        #xpath, table_node.xpath = self.__return_new_xpath_and_table_xpath__(table_node)
-        #print(xpath)
-        #print(table_node.xpath)
+            self.debug_report.log_event('__convert__ ')
+            self.debug_report.display_data('table_node.xpath', table_node.xpath)
+        
         xml_nodes = self.xml_manager.return_nodes(table_node.xpath, xml_parent_node)
-        #print(xml_nodes)
-        if test:
-            print(xpath)
-            print(xml_nodes)
-            print(table_node.xpath)
-            test = False
-
+        if self.debug: 
+            self.debug_report.display_data('xml_nodes', xml_nodes)
+        
         if len(table_node.children) == 0:
-            if t: print('leaf')
-            result = self.return_leaf_content(table_node, xml_nodes, num, t)            
+            if self.debug: 
+                self.debug_report.display_data('leaf', xml_nodes)  
+            result = self.return_leaf_content(table_node, xml_nodes)            
         else:
-            if t: print('branch')
-            result = self.return_branch_content(table_node, xml_nodes, xml_parent_node, num, t)
-    
-        if t:
-            print(result)
-        if self.debug:
+            if self.debug: 
+                self.debug_report.display_data('branch', xml_nodes) 
+            result = self.return_branch_content(table_node, xml_nodes, xml_parent_node, num)
+        
+        if self.debug: 
+            self.debug_report.display_data('result before __format__', result)  
+        
+        result = self.__format__(table_node, result, num)
+        
+        if self.debug: 
             self.debug_report.display_data('result', result)  
         return result
 
-    def return_leaf_content(self, table_node, xml_nodes, num, debug = False):
+    def return_leaf_content(self, table_node, xml_nodes, debug = False):
         a = []
         for xml_node in xml_nodes:
             
@@ -67,15 +62,16 @@ class XML2JSONConverter:
                 
             else:
                 v = self.xml_manager.return_node_value(xml_node)
-            if debug:
-                print(v)
+            if self.debug: 
+                self.debug_report.display_data('v', v)  
             if v == '' or v == None:
                 v = table_node.default
                 
             if v != '':
                 a.append(self._convert_value_(v))
             
-        return self.__format__(table_node, a)
+        #return self.__format__(table_node, a)
+        return a
 
     def return_branch_content(self, table_node, xml_nodes, xml_parent_node, num, debug = False):
         occs = []
@@ -85,7 +81,8 @@ class XML2JSONConverter:
             occ = {}
             number += 1
             for child in table_node.children:
-                if debug: print(table_node.xpath + '=>' + child.xpath)
+                if self.debug:
+                    self.debug_report.log_event(table_node.xpath + '=>' + child.xpath)
                 v = self.__convert__(child, xml_node, xml_parent_node, number)
                 if len(v)>0:
                     if child.to == '' or child.to == '_':
@@ -94,10 +91,23 @@ class XML2JSONConverter:
                         occ[child.to] = v
             if occ != {}:
                 occs.append(occ)        
-        if debug: print(occs)
-        return self.__format__(table_node, occs, num)  
+        
+        return occs  
 
     def __format__(self, table_node, result, num = None):
+        r = result
+        if type(result) == type([]):
+
+            if len(result) == 1:
+                r = result[0]
+            elif len(result) == 0:
+                r = ''
+            
+        #r = self.__control_occ__(table_node, num, r)
+        return r
+
+    
+    def old__format__(self, table_node, result, num = None):
         if len(result) == 0:
             r = ''
         else:

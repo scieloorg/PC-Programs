@@ -191,22 +191,7 @@ class Article:
     def generate_id(self, issue, page, author):
         return ID().generate( issue.id + page + author)
 
-    def is_valid(self):
-        errors = [] 
-        warnings = [] 
-        if '70' in self.json_data['f'].keys():
-            list = []
-            if type(self.json_data['f']['70']) == type({}):
-                list.append(self.json_data['f']['70'])
-            elif type(self.json_data['f']['70']) == type([]):
-                list = self.json_data['f']['70']
-            for aff in list:
-                if not 'p' in aff:
-                    print(' ???? incomplete affiliation ????')
-                    print(aff)
-                    warnings.append('Incomplete affiliation' )
-        return (errors, warnings)
-
+    
 class JournalList(Items):
     def __init__(self):
         Items.__init__(self)

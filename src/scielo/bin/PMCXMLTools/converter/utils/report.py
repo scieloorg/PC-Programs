@@ -20,6 +20,34 @@ class Report:
     def log_summary(self, content):
         self.__write__(self.summary_filename, content)
 
+    def log_error(self, error_msg, data = None, display_on_screen = False):
+        if display_on_screen:
+            
+            print(' ! ERROR: ' + error_msg)
+            if data != None:
+                print(data)
+            
+            
+        if data != None:
+            
+            try:
+                self.__write_err__(error_msg + ': '+ str(data))
+                self.__write_all__(error_msg + ': '+ str(data), 'ERROR')
+            except: 
+                self.__write_err__(error_msg + ': UNABLE TO PRINT DATA**')
+                self.__write_all__(error_msg + ': UNABLE TO PRINT DATA**', 'ERROR')
+        else:
+            self.__write_err__(error_msg)
+            self.__write_all__(error_msg, 'ERROR')
+            
+        
+    def log_event(self, event, display_output = False):
+        self.__write_all__(event, 'EVENT')
+        if self.display_output == True or display_output == True:
+            
+            print(event)
+            print('')
+
     def garante_filename_path(self, filename, delete):
         if os.path.exists(filename):
             r = True
@@ -56,33 +84,7 @@ class Report:
         content = self.what_time() + '|' + content.replace("\n", '_BREAK_')
         self.__write__(self.err_filename, content)
         
-    def log_error(self, error_msg, data = None, display_on_screen = False):
-        if display_on_screen:
-            
-            print(' ! ERROR: ' + error_msg)
-            if data != None:
-                print(data)
-            
-            
-        if data != None:
-            
-            try:
-                self.__write_err__(error_msg + ': '+ str(data))
-                self.__write_all__(error_msg + ': '+ str(data), 'ERROR')
-            except: 
-                self.__write_err__(error_msg + ': UNABLE TO PRINT DATA**')
-                self.__write_all__(error_msg + ': UNABLE TO PRINT DATA**', 'ERROR')
-        else:
-            self.__write_err__(error_msg)
-            self.__write_all__(error_msg, 'ERROR')
-            
-        
-    def log_event(self, event, display_output = False):
-        self.__write_all__(event, 'EVENT')
-        if self.display_output == True or display_output == True:
-            
-            print(event)
-            print('')
+
         
 
     def debugging(self, data, label, level=0):
