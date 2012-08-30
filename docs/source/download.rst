@@ -13,7 +13,12 @@ Download by FTP
 
 Last version
 ---------------
+4.0.054
 
+- Title Manager: inclusion of new fields related to Web of Knowledge
+
+Previous versions
+-----------------
 4.0.050
 
 - Fixes issues list
@@ -21,8 +26,4 @@ Last version
 - Fixes issues of Markup PMC
 - Fixes ISO standard Markup/Parser/Converter
 - Allows Creative Commons field to be editable
-
-Previous versions
------------------
-
 
