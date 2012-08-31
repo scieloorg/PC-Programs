@@ -8,7 +8,8 @@ from utils.aff_table import AffiliationTable
 from utils.table_issn import ISSN_Table
 
 class Generic:
-    def __init__(self):
+    def __init__(self, general_report):
+        self.general_report = general_report
         self.conversion_tables = ConversionTables()
         self.table_entity_and_char = TableEntAndChar()
 
@@ -155,26 +156,29 @@ class Generic:
 
         return '/'.join(r)
 
-    def report_missing_data(self, missing, header, report, report_ok = False):
-        if len(missing) > 0:
-            message = ', '.join(missing)
-            report.log_error('Missing data in ' + header + ': ' + message )
-            report.log_summary(' ! Missing data in '  + header + ': ' + message)
-        else:
-            if report_ok: 
-                report.log_summary(' ' + header + ': OK')
-
-    def report_missing_data_in_citation(self, missing, index, report, report_ok = False):
-        self.report_missing_data(missing, 'reference ' + index, report)
+    
    
-    def report_missing_data_in_article(self, missing, report, report_ok = False):
-        self.report_missing_data(missing, 'metadata', report)
-        
+    def write_report(self, report_package, message, message_type, error_data, display_on_screen = False):
+
+
+        if message_type == 'error' or message_type == 'warning':
+            self.general_report.log_error(message, error_data, display_on_screen)
+            self.general_report.log_summary(' ! ' + message_type.upper() + ': ' + message)
+
+            report_package.log_error(message, error_data)
+            report_package.log_summary(' ! ' + message_type.upper() + ': ' + message)
+            
+        else:
+            self.general_report.log_event(message, display_on_screen)
+            self.general_report.log_summary(message)
+
+            report_package.log_event(message)
+            report_package.log_summary(message)     
 
 class TaggedData:
 
-    def __init__(self):
-        self.generic = Generic()
+    def __init__(self, general_report):
+        self.generic = Generic(general_report)
         self.issn_table = ISSN_Table()
         self.table_aff = AffiliationTable()
 
@@ -182,8 +186,8 @@ class TaggedData:
         # communication, letter, review, list, discussion, standard, and working-paper
         doctopics = {}
         doctopics['journal'] = ['65', '12', '30']
-        doctopics['book'] = [ '65', '62', '18', '16', ]
-        doctopics['book-part'] = [ '65', '62', '18', '16', '12',]
+        doctopics['book'] = [ '65', '62', '18',  ]
+        doctopics['book-part'] = [ '65', '62', '18',  '12',]
 
         doctopics['conf-proc'] = ['65', '53', ]
         doctopics['thesis'] = ['65', '50', '51' ]
@@ -381,30 +385,30 @@ class TaggedData:
         # roles
         roles = self.generic.return_json_data_multi_values(citation, 'roles')
         roles = [ self.generic.conversion_tables.return_fixed_value('role', r)  for r in roles ]
-        print(roles)
+        #print(roles)
         if len(roles) > 0:
             del citation['roles']
 
         authors_monog = self.generic.return_json_data_multi_values(citation, '16')
-        print(authors_monog)
+        #print(authors_monog)
         if len(roles) > 0:
             for a in authors_monog:
                 a['r'] = roles[len(roles)-1]
-                print(a)
+                #print(a)
             if len(authors_monog) > 0:
                 citation['16'] = authors_monog
-        print(authors_monog)
+        #print(authors_monog)
         
 
         authors_analyt = self.generic.return_json_data_multi_values(citation, '10')
-        print(authors_analyt)
+        #print(authors_analyt)
         if len(roles) > 0:
             for a in authors_analyt:
                 a['r'] = roles[0]
-                print(a)
+                #print(a)
             if len(authors_analyt) > 0:
                 citation['10'] = authors_analyt
-        print(authors_analyt)
+        #print(authors_analyt)
         analytic_title = self.generic.return_json_data_multi_values(citation, '12')
         
         if len(analytic_title) == 0:
@@ -599,7 +603,11 @@ class TaggedData:
         self.json_data['l'] = self.generic.format_for_indexing(self.json_data['h'])
         
         errors, warnings = self.article_is_valid()
-        self.generic.report_missing_data_in_article(warnings, self.article_report)
+        if len(warnings) > 0:
+            self.generic.write_report(self.article_report, 'Missing desirable data in article front : ' + ', '.join(warnings), 'warning', '', True)
+        if len(errors) > 0:
+            self.generic.write_report(self.article_report, 'Missing required data in article front : ' + ', '.join(errors), 'warning', '', True)
+
         k = 0
         ok = []
         for citation in self.json_data['c']:
@@ -607,14 +615,14 @@ class TaggedData:
             citation = self.fix_citation(citation, k)
             missing_data = self.validate_citation(citation)
             if len(missing_data) > 0:
-                self.generic.report_missing_data_in_citation(missing_data, str(k + 1), self.article_report)
+                self.generic.write_report(self.article_report, 'Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), 'warning', '', True)
             else:
                 ok.append(k + 1)
             self.json_data['c'][k] = citation 
             k += 1
         if len(ok) > 0:
-            self.article_report.log_summary('Valid references: ' + str(len(ok)))
-            self.article_report.log_event('Valid references: ' + str(len(ok)))
+            self.generic.write_report(self.article_report, '  Valid references: ' + str(len(ok)) + '/' + str(len(self.json_data['c'])), '', '')
+
 
 
     def article_is_valid(self):
@@ -623,16 +631,18 @@ class TaggedData:
         list = self.generic.return_json_data_multi_values(self.json_data['f'], '70')
         for aff in list:
             if not 'p' in aff:
-                print(' ???? incomplete affiliation ????')
-                print(aff)
-                warnings.append('Incomplete affiliation ' + aff['i'])
+                if 'i' in aff.keys():
+                    warnings.append('Incomplete affiliation ' + aff['i'])
+                else:
+                    warnings.append('Incomplete affiliation ')
         return (errors, warnings)
 
     
 class JSON_Article:
-    def __init__(self, general_report ):
+    def __init__(self, debug_report, general_report ):
+        self.debug_report = debug_report
         self.general_report = general_report
-        self.tagged_data = TaggedData()
+        self.tagged_data = TaggedData(general_report)
     
 
     def return_article(self, article_json_data, journal_list, xml_filename, article_report):

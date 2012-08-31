@@ -28,7 +28,7 @@ class PMCXML2ISIS:
         self.report = report
         self.debug_report = debug_report
         self.xml2json_converter = XML2JSONConverter(xml2json_table_filename, debug_report, debug)
-        self.json_article = JSON_Article(debug_report)
+        self.json_article = JSON_Article(debug_report, report)
 
        
         
@@ -58,8 +58,21 @@ class PMCXML2ISIS:
 
         return (create_i_record, issue)
 
+    def write_report_package(self, report_package, message, error_message, error_data, display_on_screen = False):
+        if len(error_message) > 0:
+            self.report.log_error(error_message, error_data, display_on_screen)
+            self.report.log_summary(' ! Error: ' + error_message)
+            report_package.log_error(error_message, error_data)
+            report_package.log_summary(' ! Error: ' + error_message)
+            
+        else:
+            self.report.log_event(message, display_on_screen)
+            self.report.log_summary(message)
+            report_package.log_event(message)
+            report_package.log_summary(message)
+            
 
-    def generate_id_files(self, package_path, received_path, server_serial_path, img_path, pdf_path, xml_path):
+    def generate_id_files(self, report_package, package_path, serial_data_path, server_serial_path, img_path, pdf_path, xml_path):
         list = os.listdir(package_path)
         xml_list = [ f for f in list if '.xml' in f ]
         issues = {}
@@ -67,110 +80,114 @@ class PMCXML2ISIS:
 
         for f in xml_list:
             xml_filename = package_path + '/' + f
-            self.report.log_event('XML filename: ' + xml_filename, True)
-            self.report.log_summary("\n " + 'XML filename: ' + xml_filename)
             
+            self.write_report_package(report_package, '\n' + '-' * 80 + '\n' + 'XML filename: ' + xml_filename, '', '', True)
+
             json_data = self.xml2json_converter.convert(xml_filename)
             issue = None
+
             if type(json_data) == type({}):
 
-                article = self.json_article.return_article(json_data, self.journal_list, xml_filename, self.report)
+                article = self.json_article.return_article(json_data, self.journal_list, xml_filename, report_package)
             
                 create, issue_to_compare = self.return_issue_to_compare(article)
                 errors = article.issue.is_valid(issue_to_compare)
+
                 warnings = []
                 if len(errors) == 0:
                     errors, warnings = self.json_article.article_is_valid()
                 else:
                     self.report.log_error('Invalid issue data of ' + xml_filename, None, True)
                     for err in errors:
-                        self.report.log_error(err, None, True)
-                        self.report.log_summary(' ! Error: ' + err)
-                
+                        self.write_report_package(report_package, '', err, None, True)
 
                 if len(errors) == 0:
-                    self.report.log_event(article.issue.journal.title + ' ' + article.issue.name  + ' ' + article.page, True)
-                    self.report.log_summary('  ' + article.issue.journal.title + ' ' + article.issue.name + ' ' + article.page)
+                    self.write_report_package(report_package, ' Identified as ' + article.issue.journal.title + ' ' + article.issue.name + ' ' + article.page, '', None, True)
 
                     section = issue_to_compare.toc.insert(Section(article.section_title), False)
                     article.issue = issue_to_compare
                     issue_to_compare.articles.insert(article, True)
                     issues[article.issue.journal.title + ' ' + article.issue.name] = issue_to_compare
-                    self.generate_id_file(article, received_path, server_serial_path, img_path, pdf_path, xml_path)
+                    self.generate_id_file(report_package, article, serial_data_path, server_serial_path, img_path, pdf_path, xml_path)
                 else:
                     #self.report.log_summary(' ! Error: Invalid article data')
                     for err in errors:
-                        self.report.log_error(err, None, True)
-                        self.report.log_summary(' ! Error: ' + err)
-                
-
+                        self.write_report_package(report_package, '', err, None, True)
             else:
-                self.report.log_error('Invalid xml ' + xml_filename, None, True)
-                self.report.log_summary(' ! Error: Invalid xml')
-        for key, issue in issues.items():
-            self.generate_db(received_path, server_serial_path, img_path, pdf_path, xml_path, issue)
+                self.write_report_package(report_package, '   Invalid xml ' + xml_filename, '', None, True)
 
-    def generate_id_file(self, article, received_path, server_serial_path, img_path, pdf_path, xml_path):
+        for key, issue in issues.items():
+            self.generate_db(report_package, serial_data_path, server_serial_path, img_path, pdf_path, xml_path, issue)
+
+    def generate_id_file(self, report_package, article, serial_data_path, server_serial_path, img_path, pdf_path, xml_path):
         issue = article.issue
 
         journal_folder = issue.journal.acron
         issue_folder = issue.name 
         db_name = issue.name
             
-        files_set = PMCXML_FilesSet(received_path, server_serial_path, img_path, pdf_path, xml_path, journal_folder, issue_folder, db_name)
-        
+        files_set = PMCXML_FilesSet(serial_data_path, server_serial_path, img_path, pdf_path, xml_path, journal_folder, issue_folder, db_name)
 
         id_filename = os.path.basename(article.xml_filename.replace('.xml', '.id'))
     
-        id_file = JSON2IDFile_Article(files_set.db_path + '/' + id_filename, self.report)
+        id_file = JSON2IDFile_Article(files_set.id_path + '/' + id_filename, self.report)
         id_file.format_and_save_document_data(article.json_data, self.records_order, files_set.db_name)
         
         
-        #files_set.archive(article.xml_filename)
+        files_set.archive(article.xml_filename)
 
 
-    def generate_db(self, received_path, server_serial_path, img_path, pdf_path, xml_path, issue):
-        self.report.log_summary('Generating db ' + received_path + ' ' + issue.name)
-        self.report.log_event('Generating db ' + received_path + ' ' + issue.name, True)
+    def generate_db(self, report_package, serial_data_path, server_serial_path, img_path, pdf_path, xml_path, issue):
             
-
+        self.write_report_package(report_package, 'Generating db ' + serial_data_path + ' ' + issue.name, '', '', True )
+        
         journal_folder = issue.journal.acron
         issue_folder = issue.name 
         db_name = issue.name
             
-        files_set = PMCXML_FilesSet(received_path, server_serial_path, img_path, pdf_path, xml_path, journal_folder, issue_folder, db_name)
+        files_set = PMCXML_FilesSet(serial_data_path, server_serial_path, img_path, pdf_path, xml_path, journal_folder, issue_folder, db_name)
         files_set.delete_db()
         
-        
-        id_file = JSON2IDFile(files_set.db_path + '/i.id', report)
+
+        id_file = JSON2IDFile(files_set.id_path + '/i.id', report)
         issue.json_data['122'] = str(len(issue.articles.elements))
         issue.json_data['49'] = issue.toc.return_json()
 
         id_file.format_and_save_document_data(issue.json_data)
     
-        self.cisis.id2mst(files_set.db_path + '/i.id', files_set.db_filename)
+        self.cisis.id2mst(files_set.id_path + '/i.id', files_set.db_filename)
         if issue.status == 'not_registered':
             self.cisis.append(files_set.db_filename, 'new_issues')
 
-        list = os.listdir(files_set.db_path)
+        list = os.listdir(files_set.id_path)
         articles_id = [ f for f in list if '.id' in f and  f != 'i.id' ]
         
-        report.log_summary("\n" + ' Total of xml files: ' + str(len(issue.articles.elements)))
-        report.log_summary(' Total of id files: ' + str(len(articles_id)) + "\n")
-        report.log_summary(' Status of ' + journal_folder +  ' ' + issue_folder + ': ' + issue.status)
+        
+        self.write_report_package(report_package, ' Total of xml files: ' + str(len(issue.articles.elements)), '', '', False )
+        self.write_report_package(report_package, ' Total of id files: ' + str(len(articles_id)) , '', '', False )
+        self.write_report_package(report_package, ' Status of ' + journal_folder +  ' ' + issue_folder + ': ' + issue.status, '', '', False )
+        
+
 
         if len(issue.articles.elements) != len(articles_id):
-            report.log_summary("\n" + ' ! WARNING: Check total of xml files and id files' + "\n")
+            self.write_report_package(report_package, ' ! WARNING: Check total of xml files and id files', '', '', True )
+        
         if issue.status == 'not_registered':
-            report.log_summary("\n" + ' ! WARNING: New issue '  + journal_folder +  ' ' + issue_folder + "\n" )
+            self.write_report_package(report_package, "\n" + ' ! WARNING: New issue '  + journal_folder +  ' ' + issue_folder + "\n" , '', '', True)
         for f in articles_id:        
-            self.cisis.id2mst(files_set.db_path + '/' + f, files_set.db_filename)
+            self.cisis.id2mst(files_set.id_path + '/' + f, files_set.db_filename)
 
-    def receive_packages(self,  work_path, received_path, server_serial_path, img_path, pdf_path, xml_path):
+    def process_packages(self,  work_path, report_path, serial_data_path, server_serial_path, img_path, pdf_path, xml_path):
         for folder in os.listdir(work_path):
             if os.path.isdir(work_path + '/' + folder):
-                self.report.log_summary('Receiving package ' + work_path + '/' + folder)
-                self.generate_id_files(work_path + '/' + folder, received_path, server_serial_path, img_path, pdf_path, xml_path)
+                files = ['detailed.log', 'error.log', 'summarized.txt'] 
+                log_filename, err_filename, summary_filename = [ report_path + folder + '_' + f for f in files ]
+                report_package = Report(log_filename, err_filename, summary_filename, 0, False) 
+        
+                self.write_report_package(report_package, 'Processing package ' + work_path + '/' + folder, '', '', False )
+        
+                self.generate_id_files(report_package, work_path + '/' + folder, serial_data_path, server_serial_path, img_path, pdf_path, xml_path)
+                
 
     def load_xml_issues_list(self, issue_db_filename, report):
         self.cisis.i2id(issue_db_filename, 'issue.id')
@@ -198,7 +215,7 @@ if __name__ == '__main__':
             configuration[c[0]] = c[1]
     f.close()
 
-    parameters = ['DB_ISSUE_FILENAME', 'PACKAGES_PATH', 'WORK_PATH', 'TRASH_PATH', 'SERIAL_DATA_PATH', 'SERIAL_PROC_PATH', 'PDF_PATH', 'IMG_PATH', 'XML_PATH', 'CISIS_PATH', 'LOG_FILENAME', 'ERROR_FILENAME', 'SUMMARY_REPORT', 'DEBUG_DEPTH', 'DISPLAY_MESSAGES_ON_SCREEN']
+    parameters = ['DB_ISSUE_FILENAME', 'INCOMING_PACKAGES_PATH', 'WORK_PATH', 'TRASH_PATH', 'SERIAL_DATA_PATH', 'SERIAL_PROC_PATH', 'PDF_PATH', 'IMG_PATH', 'XML_PATH', 'CISIS_PATH', 'LOG_FILENAME', 'ERROR_FILENAME', 'SUMMARY_REPORT', 'DEBUG_DEPTH', 'DISPLAY_MESSAGES_ON_SCREEN']
     error = False
     for i in parameters:
         if not i in configuration.keys():
@@ -211,45 +228,61 @@ if __name__ == '__main__':
 
     if not error:
         db_issue_filename = configuration['DB_ISSUE_FILENAME']
-        packages_path = configuration['PACKAGES_PATH'].replace('\\', '/')
+        incoming_path = configuration['INCOMING_PACKAGES_PATH'].replace('\\', '/')
         work_path = configuration['WORK_PATH'].replace('\\', '/')
+
+        report_path = work_path + '/reports'  
+        if not os.path.exists(report_path):
+            os.makedirs(report_path)
+
+        from datetime import datetime 
+        report_path += '/' + datetime.now().isoformat().replace('T', '-').replace(':', '-')[0:16] + '_'
+
         trash_path = configuration['TRASH_PATH'].replace('\\', '/')
         #issues_path = issues_path.replace('\\', '/')
-        received_path = configuration['SERIAL_DATA_PATH'].replace('\\', '/')
+        serial_data_path = configuration['SERIAL_DATA_PATH'].replace('\\', '/')
         server_serial_path = configuration['SERIAL_PROC_PATH'].replace('\\', '/')
         web_pdf_path = configuration['PDF_PATH'].replace('\\', '/')
         web_img_path = configuration['IMG_PATH'].replace('\\', '/')
         web_xml_path = configuration['XML_PATH'].replace('\\', '/')
 
         cisis_path = configuration['CISIS_PATH'].replace('\\', '/')
+        
         log_filename = configuration['LOG_FILENAME'].replace('\\', '/')
         err_filename = configuration['ERROR_FILENAME'].replace('\\', '/')
         summary_filename = configuration['SUMMARY_REPORT'].replace('\\', '/')
+
         debug_depth = configuration['DEBUG_DEPTH']
         display_on_screen = configuration['DISPLAY_MESSAGES_ON_SCREEN']
 
-        bkp_path = packages_path + '.bkp'
+        bkp_path = incoming_path + '.bkp'
         print(bkp_path)
 
         files = [ log_filename, err_filename, summary_filename]
-        files = [ f.replace(os.path.basename(f), 'debug_' + os.path.basename(f)) for f in files ]
-
-        debug_log_filename, debug_err_filename, debug_summary_filename = files
+        
+        debug_log_filename, debug_err_filename, debug_summary_filename =  [ report_path + 'debug_' + f for f in files ]
         debug_report = Report(debug_log_filename, debug_err_filename, debug_summary_filename, int(debug_depth), (display_on_screen == 'yes')) 
         
+        log_filename, err_filename, summary_filename = [ report_path +  f for f in files ]
         report = Report(log_filename, err_filename, summary_filename, int(debug_depth), (display_on_screen == 'yes')) 
         
         pmcxml2isis = PMCXML2ISIS('ohflc', CISIS(cisis_path), 'inputs/_pmcxml2isis.txt', report, debug_report)
-        uploaded_files_manager = UploadedFilesManager(packages_path, work_path, trash_path, bkp_path)
+        uploaded_files_manager = UploadedFilesManager(incoming_path, work_path, trash_path, bkp_path)
         uploaded_files_manager.organize_files(report)
 
         pmcxml2isis.load_xml_issues_list(db_issue_filename, report)
 
-        pmcxml2isis.receive_packages(uploaded_files_manager.work_path, received_path, server_serial_path, web_img_path, web_pdf_path, web_xml_path)
-        print(log_filename)
-        print(err_filename)
-        print(summary_filename)
+        pmcxml2isis.process_packages(uploaded_files_manager.work_path, report_path , serial_data_path, server_serial_path, web_img_path, web_pdf_path, web_xml_path)
 
+        print('-' * 80)
+        print('Check report files:  ')
+        print('Errors report: ' + err_filename)
+        print('Summarized report: ' + summary_filename)
+        
+        print('Detailed report: ' + log_filename)
+        print('Reports for each package of XML files in ' + work_path)
+
+        
         
         
     

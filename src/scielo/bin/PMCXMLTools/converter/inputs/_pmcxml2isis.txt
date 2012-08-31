@@ -122,7 +122,7 @@
     label 118    
     .//et-al 810    
     .//ext-link 37    
-    .//date-in-citation[content-type='access-date'] 109
+    .//date-in-citation[@content-type='access-date'] 109
     .//comment 61    
     .//notes 61    
     .//pub-id[@pub-id-type='doi'] 237    

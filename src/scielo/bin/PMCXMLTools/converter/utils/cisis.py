@@ -19,8 +19,9 @@ class CISIS:
         os.system(cmd)
         
     def id2mst(self, id_filename, mst_filename):
-        self.id2i(id_filename, mst_filename + '.tmp')
-        self.append(mst_filename + '.tmp', mst_filename)
+        temp = os.path.dirname(id_filename) + '/' + os.path.basename(mst_filename)
+        self.id2i(id_filename, temp)
+        self.append(temp, mst_filename)
 
     def i2id(self, mst_filename, id_filename):
         cmd = self.cisis_path + '/i2id ' + mst_filename + ' > ' + id_filename 
