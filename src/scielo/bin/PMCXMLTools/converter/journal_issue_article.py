@@ -133,7 +133,7 @@ class JournalIssue:
         self.id = ID().generate( journal.title + volume + number + dateiso + suppl)
         self.articles = JournalIssueArticles()
         self.status = ''
-
+        
         self.json_from_db = {}
         if order != '':
             self.order = order

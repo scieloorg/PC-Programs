@@ -52,7 +52,7 @@ class PMCXML_FilesSet:
     def archive(self, xml_filename):
         self.move_related_files(xml_filename)
 
-    def archive_package(self, package_file):
+    def archive_package_file(self, package_file):
         self.move_file_to_path(package_file, self.package_path)
 
     def copy_file_to_path(self, filename, dest_path):

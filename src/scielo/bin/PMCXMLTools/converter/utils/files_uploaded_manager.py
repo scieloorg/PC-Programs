@@ -1,89 +1,100 @@
 import os
 import shutil
 
-from datetime import datetime
+from datetime import date
 
 from files_extractor import extract_file, is_compressed_file
 
 
 class UploadedFilesManager:
-    def __init__(self, packages_path, work_path, trash_path, bkp_path):
+    def __init__(self, report, packages_path):
     	self.packages_path = packages_path
-    	self.work_path = work_path
-    	self.trash_path = trash_path
-        self.bkp_path = bkp_path 
-    
-    def organize_files(self, report):
-        #files_set = PMCXML_FilesSet(self.work_path, suppl_filename, self.output_path, db_name)
-        dst = datetime.now().isoformat()[0:10]
-        dst = self.bkp_path + '/' + dst
+        self.report = report
+    	
+    def backup(self, package_file):
+        d = date.today().isoformat()
+
+        folder =  os.path.basename(package_file)
+        folder = folder[0:folder.rfind('.')]
         
-        if not os.path.exists(dst):
-            os.makedirs(dst)
-                       
+        backup_path = self.packages_path + '.bkp/' + folder
+        if not os.path.exists(backup_path):
+            os.makedirs(backup_path)
+
+        if os.path.exists(backup_path):
+            self.__copy_file_to_folder__(package_file, backup_path)
+        
+
+    def transfer_files(self, destination_path):
+        r = False
+
+        if not os.path.exists(destination_path):
+            os.makedirs(destination_path)
         
         if os.path.exists(self.packages_path):
             for filename in os.listdir(self.packages_path):
                 package_file = self.packages_path + '/' + filename
-                report.log_summary('package file: ' + package_file)
+
+                self.report.write('package file: ' + package_file, True, False, True)
+                
                 if os.path.isfile(package_file):
                     if is_compressed_file(package_file):
-                        name = filename[0:filename.rfind('.')]
-                        wrk_path = self.work_path + '/' + name
-                        compressed = True 
-                    else:
-                        wrk_path = self.work_path + '/unpacked' 
-                        compressed = False
-                
-                    # backup of package or file
-                    report.log_event('Backup ' + package_file + ' to ' + dst + '/' + os.path.basename(package_file), True)  
-                    shutil.copyfile(package_file, dst + '/' + os.path.basename(package_file))
+
+                        self.report.write('Move ' + package_file + ' to ' + destination_path, True, False, True)  
+                        self.__move_file_to_folder__(package_file, destination_path)
                         
-
-                    if not os.path.exists(wrk_path):
-                        os.makedirs(wrk_path)
-
-                    if os.path.exists(wrk_path):  
-                        report.log_event('Move ' + package_file + ' to ' + wrk_path)  
-                        self.move_file_to_folder(package_file, wrk_path)
-                        
-                        moved_package_file = wrk_path + '/' + filename
-                        if os.path.exists(moved_package_file):
-
-                            if compressed:
-                                report.log_event('Extract file ' + moved_package_file)  
-                                extract_file(moved_package_file, wrk_path)
-                                folders = os.listdir(wrk_path)
-
-                                for folder in folders:
-                                    if os.path.isdir(wrk_path + '/' + folder):
-                                        files = os.listdir(wrk_path + '/' + folder)
-                                        for file in files:
-                                            self.move_file_to_folder(wrk_path + '/' + folder + '/' + file, wrk_path)
+                        destination_filename = destination_path + '/' + filename
+                        if os.path.exists(destination_filename):
+                            r = True
+                        else:
+                            self.report.write('Unable to move ' + destination_filename, True, True, True) 
+                            
                     else:
-                        report.log_error('It was not possible to create the work path: ' + wrk_path)
+                        self.report.write(package_file + ' is not a valid package file. It must be a compressed file.', True, True, True)
+
                 else:
-                    report.log_error(package_file + ' is not a valid package file. It must be a file')
-                    if not os.path.exists(self.trash_path):
-                        os.makedirs(self.trash_path)
-                    if os.path.exists(self.trash_path):  
-                        report.log_event('Move ' + package_file + ' to ' + self.trash_path)
-                        self.move_file_to_folder(package_file, self.trash_path)
-               
+                    self.report.write(package_file + ' is not a valid package file. It must be a compressed file.', True, True, True)
         else:
-            report.log_error('Invalid package path: ' + self.packages_path)
+            self.report.write('Invalid package path: ' + self.packages_path, True, True, True)
+            
+        return r
+
     
-    def move_file_to_folder(self, file_or_folder, dest_path):
-        if os.path.isfile(file_or_folder) and os.path.isdir(dest_path) :
-            filename = os.path.basename(file_or_folder)
-            path = os.path.dirname(file_or_folder)
-            if os.path.exists(dest_path + '/' + filename):
-            	os.unlink(dest_path + '/' + filename)
-            shutil.move(file_or_folder, dest_path)
 
+    def extract_file(self, filename, destination_path):
+        self.report.write('Extract file ' + filename, True, False, True)  
+        
+        import tempfile
+        tmp_path = tempfile.mkdtemp().replace('\\', '/')
 
+        
+        if os.path.isdir(tmp_path):
+            extract_file(filename, tmp_path)
+            for file_or_folder in os.listdir(tmp_path):
+                extracted_file_or_folder = tmp_path + '/' + file_or_folder
+                if os.path.isdir(extracted_file_or_folder):
+                    files = os.listdir(extracted_file_or_folder)
+                    for file in files:
+                        self.__move_file_to_folder__(extracted_file_or_folder + '/' + file, destination_path)
+                    print('apagar ' + extracted_file_or_folder)
+                    shutil.rmtree(extracted_file_or_folder)
+                elif os.path.isfile(extracted_file_or_folder):
+                    self.__move_file_to_folder__(extracted_file_or_folder, destination_path)
+            print('apagar ' + tmp_path)
+            shutil.rmtree(tmp_path)
+    
+    def __move_file_to_folder__(self, filename, dest_path):
+        if os.path.isfile(filename) and os.path.isdir(dest_path) :
+            name = os.path.basename(filename)
+            path = os.path.dirname(filename)
+            if os.path.exists(dest_path + '/' + name):
+                os.unlink(dest_path + '/' + name)
+            shutil.move(filename, dest_path)
 
-
-
-
-
+    def __copy_file_to_folder__(self, filename, dest_path):
+        if os.path.isfile(filename) and os.path.isdir(dest_path) :
+            name = os.path.basename(filename)
+            path = os.path.dirname(filename)
+            if os.path.exists(dest_path + '/' + name):
+                os.unlink(dest_path + '/' + name)
+            shutil.copyfile(filename, dest_path + '/' + name)

@@ -98,9 +98,8 @@
     .//person-group[2]/collab 17
     .//volume 31    
     .//issue 32  
-      . _  
-    .//supplement 32
-      . s n
+    .//supplement 132
+      . s
     .//edition 63    
     .//year 64    
     .//year 65    

@@ -158,22 +158,7 @@ class Generic:
 
     
    
-    def write_report(self, report_package, message, message_type, error_data, display_on_screen = False):
 
-
-        if message_type == 'error' or message_type == 'warning':
-            self.general_report.log_error(message, error_data, display_on_screen)
-            self.general_report.log_summary(' ! ' + message_type.upper() + ': ' + message)
-
-            report_package.log_error(message, error_data)
-            report_package.log_summary(' ! ' + message_type.upper() + ': ' + message)
-            
-        else:
-            self.general_report.log_event(message, display_on_screen)
-            self.general_report.log_summary(message)
-
-            report_package.log_event(message)
-            report_package.log_summary(message)     
 
 class TaggedData:
 
@@ -368,13 +353,15 @@ class TaggedData:
         return citation 
 
     def fix_citation_issue_number(self, citation):
-        if '32' in citation:
-            if type(citation['32']) == type([]):
-                d = {}
-                for occ in citation['32']:
-                    for key,v in occ.items(): 
-                        d[key] = v
-                citation['32'] = d
+        if '132' in citation:
+            if '32' in citation:
+                citation['132'].update({'_':citation['32']})
+                citation['32'] = citation['132']
+
+            else:
+                citation['32'] = citation['132']
+            del citation['132']
+            
         return citation
     
     def fix_citation_monographic_or_analytic_data(self, citation):
@@ -604,9 +591,9 @@ class TaggedData:
         
         errors, warnings = self.article_is_valid()
         if len(warnings) > 0:
-            self.generic.write_report(self.article_report, 'Missing desirable data in article front : ' + ', '.join(warnings), 'warning', '', True)
+            self.article_report.write(' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), True, True, True)
         if len(errors) > 0:
-            self.generic.write_report(self.article_report, 'Missing required data in article front : ' + ', '.join(errors), 'warning', '', True)
+            self.article_report.write(' ! ERROR: Missing required data in article front : ' + ', '.join(errors), True, True, True)
 
         k = 0
         ok = []
@@ -615,13 +602,14 @@ class TaggedData:
             citation = self.fix_citation(citation, k)
             missing_data = self.validate_citation(citation)
             if len(missing_data) > 0:
-                self.generic.write_report(self.article_report, 'Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), 'warning', '', True)
+                self.article_report.write(' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), True, True, True)
+
             else:
                 ok.append(k + 1)
             self.json_data['c'][k] = citation 
             k += 1
         if len(ok) > 0:
-            self.generic.write_report(self.article_report, '  Valid references: ' + str(len(ok)) + '/' + str(len(self.json_data['c'])), '', '')
+            self.article_report.write('  Valid references: ' + str(len(ok)) + '/' + str(len(self.json_data['c'])), True, False, True)
 
 
 

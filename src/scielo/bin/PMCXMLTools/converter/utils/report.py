@@ -16,7 +16,19 @@ class Report:
             print('ERROR: there is no path for ' + err_filename)
         if not self.garante_filename_path(summary_filename, True):
             print('ERROR: there is no path for ' + summary_filename)
-    
+        
+
+    def write(self, message, is_summary, is_error, display_on_screen = False, error_data = None):
+        
+        if is_error:
+            self.log_error(message, error_data)
+            
+        if is_summary:
+            self.log_summary( message)
+            
+        self.log_event(message, display_on_screen)
+        
+
     def log_summary(self, content):
         self.__write__(self.summary_filename, content)
 
