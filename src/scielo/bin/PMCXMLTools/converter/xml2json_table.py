@@ -35,7 +35,8 @@ class XML2JSONTable:
                 to = values[1]
             if len(values) >= 3:
                 default = values[2]
-            
+                
+
             if xpath.startswith('@'):
                 attr = xpath
                 xpath = ''
@@ -50,7 +51,11 @@ class XML2JSONTable:
             new_node = MyNode(parent_node)
             new_node.xpath = xpath
             new_node.to = to
-            new_node.default = default
+            if default == 'XML':
+                new_node.xml = True
+            else:
+                new_node.default = default
+            
             new_node.attr = attr
             if last_level < level:
                 # down
@@ -117,7 +122,7 @@ class MyNode:
         self.children = []
         self.parent = parent
         self.attr = ''
-
+        self.xml = False
 
 
 

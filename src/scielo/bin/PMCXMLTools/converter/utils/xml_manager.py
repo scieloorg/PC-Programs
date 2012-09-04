@@ -6,9 +6,19 @@ class XMLManager:
     root = {}
     debug = True
 
-    def __init__(self, xml_filename, debug_report):
+    def __init__(self, xml_filename, table_ent, debug_report):
         self.root = None
         self.debug_report = debug_report
+
+
+        if os.path.exists(xml_filename):
+            f = open(xml_filename, 'r')
+            c = f.read()
+            f.close()
+            c = table_ent.replace_to_numeric_entities(c)
+            f = open(xml_filename, 'w')
+            f.write(c)
+            f.close()
         if os.path.exists(xml_filename):
             
             self.ns = ''
@@ -71,6 +81,14 @@ class XMLManager:
                 self.debug_report.display_data('n', n)
                 self.debug_report.display_data('r', r)        
         return s
+    
+    def return_xml(self, node):
+        r = '' 
+        
+        if node != None:
+            r = etree.tostring(node)
+             
+        return r
     
     
     

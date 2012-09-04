@@ -163,6 +163,7 @@ class Generic:
 class TaggedData:
 
     def __init__(self, general_report):
+        self.general_report = general_report
         self.generic = Generic(general_report)
         self.issn_table = ISSN_Table()
         self.table_aff = AffiliationTable()
@@ -592,8 +593,10 @@ class TaggedData:
         errors, warnings = self.article_is_valid()
         if len(warnings) > 0:
             self.article_report.write(' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), True, True, True)
+            self.general_report.write(' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), True, True, False)
         if len(errors) > 0:
             self.article_report.write(' ! ERROR: Missing required data in article front : ' + ', '.join(errors), True, True, True)
+            self.general_report.write(' ! ERROR: Missing required data in article front : ' + ', '.join(errors), True, True, False)
 
         k = 0
         ok = []
@@ -603,14 +606,17 @@ class TaggedData:
             missing_data = self.validate_citation(citation)
             if len(missing_data) > 0:
                 self.article_report.write(' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), True, True, True)
+                self.general_report.write(' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), True, True, False)
+                if '704' in citation.keys():
+                    self.article_report.write(citation['704'], True, True, False)
+                    self.general_report.write(citation['704'], True, True, False)
 
             else:
                 ok.append(k + 1)
             self.json_data['c'][k] = citation 
             k += 1
-        if len(ok) > 0:
-            self.article_report.write('  Valid references: ' + str(len(ok)) + '/' + str(len(self.json_data['c'])), True, False, True)
-
+        self.article_report.write('  Valid references: ' + str(len(ok)) + '/' + str(len(self.json_data['c'])), True, False, True)
+        self.general_report.write('  Valid references: ' + str(len(ok)) + '/' + str(len(self.json_data['c'])), True, False, False)
 
 
     def article_is_valid(self):

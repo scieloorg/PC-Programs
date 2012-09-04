@@ -85,6 +85,8 @@
       . _
       @xml:lang l en
     .//source 18    
+    .//element-citation 704 XML
+    .//mixed-citation 704 XML
     .//element-citation[@publication-type='journal']//source 30    
     .//mixed-citation[@publication-type='journal']//source 30    
     .//person-group/@person-group-type roles

@@ -7,12 +7,14 @@ class TableEntAndChar:
         self.table_ent2chr = {}
         self.table_chr2ent = {}
         self.table_noaccent = {}
+        self.table_nonum = {}
         for line in lines:
-            char, ent, ign1, ign2, no_accent = line.replace("\n", "").split('|')
+            char, ent, entnonum, ign2, no_accent = line.replace("\n", "").split('|')
             self.table_chr2ent[char] = ent
             self.table_ent2chr[ent] = char
             self.table_noaccent[ent] = no_accent
             self.table_noaccent[char] = no_accent
+            self.table_nonum[entnonum] = ent
     
     def ent2chr(self, content):
         entities = self.find_entities(content)
@@ -25,7 +27,10 @@ class TableEntAndChar:
             content = content.replace(k, v)
         return content
 
-        
+    def replace_to_numeric_entities(self, content):
+        for k,v in self.table_nonum.items():
+            content = content.replace(k, v)
+        return content        
 
     def find_entities(self, content):
         l = []
