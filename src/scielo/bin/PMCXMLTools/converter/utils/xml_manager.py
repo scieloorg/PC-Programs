@@ -19,8 +19,8 @@ class XMLManager:
             f = open(xml_filename, 'w')
             f.write(c)
             f.close()
+
         if os.path.exists(xml_filename):
-            
             self.ns = ''
             try:
                 self.root = etree.parse(xml_filename).getroot()
@@ -29,11 +29,10 @@ class XMLManager:
                 else:
                     self.ns = ''
             except:
-
-                self.debug_report.log_error('Unable to load ' + xml_filename)
+                self.debug_report.write('Unable to load ' + xml_filename)
                 
         else:
-            self.debug_report.log_error('Missing XML file:' + xml_filename)
+            self.debug_report.write('Missing XML file:' + xml_filename)
             
     
     def return_nodes(self, xpath = '', current_node = None):
@@ -48,7 +47,7 @@ class XMLManager:
                 try:
             	    r = n.findall(p)
             	except:
-            	    self.debug_report.log_error('Invalid xpath: ' + p)
+            	    self.debug_report.write('Invalid xpath: ' + p)
             else:
                 p = '.'
                 r.append(n)
@@ -76,10 +75,10 @@ class XMLManager:
                 s = r.strip()
             except:
                 s = ''
-                self.debug_report.log_event('Empty element')
-                self.debug_report.display_data('node', node)
-                self.debug_report.display_data('n', n)
-                self.debug_report.display_data('r', r)        
+                self.debug_report.write('Empty element')
+                self.debug_report.write('node', False, False, False, node)
+                self.debug_report.write('n', False, False, False, n)
+                self.debug_report.write('r', False, False, False, r)        
         return s
     
     def return_xml(self, node):

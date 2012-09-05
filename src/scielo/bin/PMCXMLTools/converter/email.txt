@@ -1,8 +1,8 @@
-Prezados REPLACE_XML_PROVIDER
+Prezados 
 
-O pacote REPLACE_PACKAGE foi processado e segue em anexo os relatorios do processamento e de erros encontrados.
+O pacote REPLACE_PACKAGE foi processado e seguem REPLACE_ATTACHED_OR_BELOW os relatorios do processamento e de erros encontrados.
 
-Cada erro deve ser avaliado.
+Cada erro deve ser avaliado para confirmar o se é erro ou não. 
 
-Sendo erro no XML, corrigir e reenviar o pacote parcial ou integralmente.
+Sendo erro, corrigir e reenviar um pacote somente contendo os arquivos que foram corrigidos. 
 

@@ -154,6 +154,6 @@ class JSON2IDFile:
         try:
             f.write(content)
         except:
-            self.report.log_error('Unable to write content in id filename. ',  content )
+            self.report.write('Unable to write content in id filename. ', True, True, True,  content )
             
         f.close()

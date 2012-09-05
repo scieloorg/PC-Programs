@@ -15,11 +15,11 @@ from journal_issue_article import JournalList, JournalIssues, Journal, Section
 from pmcxml_files_set import PMCXML_FilesSet
 
 from utils.img_converter import ImageConverter
-from email_sender import EmailSender
+from utils.email_sender import EmailSender
 
 class PMCXML2ISIS:
 
-    def __init__(self, records_order, cisis, xml2json_table_filename, report, email_sender, debug_report, debug = False):
+    def __init__(self, records_order, cisis, xml2json_table_filename, email_sender, report, debug_report, debug = False):
         self.records_order = records_order
         self.cisis = cisis
         self.db_issues_list = JournalIssues()
@@ -78,7 +78,7 @@ class PMCXML2ISIS:
         for f in xml_list:
             xml_filename = work_path + '/' + f
             
-            self.write_report_package(report_package, '\n' + '-' * 80 + '\n' + 'XML filename: ' + f, True, False, True)
+            self.write_report_package(report_package, '\n' + '-' * 80 + '\n' + 'Processing ' + f, True, True, True)
 
             json_data = self.xml2json_converter.convert(xml_filename)
             issue = None
@@ -88,10 +88,10 @@ class PMCXML2ISIS:
                 article = self.json_article.return_article(json_data, self.journal_list, xml_filename, report_package)
             
                 create, issue_to_compare = self.return_issue_to_compare(article)
-                errors = article.issue.is_valid(issue_to_compare)
+                issue_errors = article.issue.is_valid(issue_to_compare)
 
                 warnings = []
-                if len(errors) == 0:
+                if len(issue_errors) == 0:
                     issue = article.issue
                     
                     journal_folder = issue.journal.acron
@@ -104,15 +104,6 @@ class PMCXML2ISIS:
                         files_set = PMCXML_FilesSet(serial_data_path, server_serial_path, img_path, pdf_path, xml_path, journal_folder, issue_folder, db_name)
                         files_set_list[journal_folder + db_name] = files_set
 
-
-
-                    errors, warnings = self.json_article.article_is_valid()
-                else:
-                    self.write_report_package(report_package, ' ! ERROR: Invalid issue data of ' + xml_filename, True, True, True)
-                    for err in errors:
-                        self.write_report_package(report_package, err, True, True, True)
-
-                if len(errors) == 0:
                     self.write_report_package(report_package, ' => ' + article.issue.journal.title + ' ' + article.issue.name + ' ' + article.page, True, False, False)
 
                     section = issue_to_compare.toc.insert(Section(article.section_title), False)
@@ -122,9 +113,10 @@ class PMCXML2ISIS:
 
                     self.generate_id_file(report_package, article, files_set)
                 else:
-                    #self.report.log_summary(' ! Error: Invalid article data')
-                    for err in errors:
+                    self.write_report_package(report_package, ' ! ERROR: Invalid issue data of ' + xml_filename, True, True, True)
+                    for err in issue_errors:
                         self.write_report_package(report_package, err, True, True, True)
+
             else:
                 self.write_report_package(report_package, ' ! ERROR: Invalid xml ' + xml_filename, True, True, True)
 
@@ -183,9 +175,9 @@ class PMCXML2ISIS:
         articles_id = [ f for f in list if '.id' in f and  f != 'i.id' ]
         
         
-        self.write_report_package(report_package, ' Total of xml files: ' + str(len(issue.articles.elements)), True, False, True )
-        self.write_report_package(report_package, ' Total of id files: ' + str(len(articles_id)) , True, False, True  )
-        self.write_report_package(report_package, ' Status of ' + issue.journal.acron +  ' ' + issue.name  + ': ' + issue.status, True, False, True  )
+        self.write_report_package(report_package, ' Total of xml files: ' + str(len(issue.articles.elements)), True, False, False )
+        self.write_report_package(report_package, ' Total of id files: ' + str(len(articles_id)) , True, False, False  )
+        self.write_report_package(report_package, ' Status of ' + issue.journal.acron +  ' ' + issue.name  + ': ' + issue.status, True, False, False  )
         
 
 
@@ -228,32 +220,54 @@ class PMCXML2ISIS:
             emails = f.read()
             f.close()
 
-        
-
         self.generate_id_files(report_package, package_file, work_path, serial_data_path, server_serial_path, img_path, pdf_path, xml_path)
         
-        self.send_email(email_data, emails, package_name, [err_filename, summary_filename])
+        self.send_email(email_data, emails, package_name, [summary_filename,err_filename, ])
 
-    def send_email(self, email_data, emails, package_name, report_files):
-        if email_data['IS_AVAILABLE_EMAIL_SERVICE'] == 'yes':
-            emails = emails.replace(';', ',')
+    def send_email(self, email_data, emails, package_name, report_files):        
+        emails = emails.replace(';', ',')
+        
+
+        if email_data['FLAG_SEND_EMAIL_TO_XML_PROVIDER'] == 'yes':
             to = emails.split(',')
-            if not email_data['FLAG_SEND_EMAIL_TO_XML_PROVIDER'] == 'yes':
-                to = [] 
-                
-            to_text = ','.join(to)
-
             text = ''
-            if len(email_data['EMAIL_TEXT']) > 0:
-                if os.path.isfile(email_data['EMAIL_TEXT']):
-                    f = open(email_data['EMAIL_TEXT'], 'r')
-                    text = f.read()
-                    f.close()
+            bcc = email_data['BCC_EMAIL']
+        else:
+            to = email_data['BCC_EMAIL']
+            text = email_data['ALERT_FORWARD'] + emails + '\n'  + '-' * 80
+            bcc = []
 
-                    text = text.replace('REPLACE_XML_PROVIDER', to_text)
-                    text = text.replace('REPLACE_PACKAGE', package_name)
+        if len(email_data['EMAIL_TEXT']) > 0:
+            if os.path.isfile(email_data['EMAIL_TEXT']):
+                f = open(email_data['EMAIL_TEXT'], 'r')
+                text = f.read()
+                f.close()
 
+                text = text.replace('REPLACE_PACKAGE', package_name)
+        
+        if email_data['FLAG_ATTACH_REPORTS'] == 'yes':
+            text = text.replace('REPLACE_ATTACHED_OR_BELOW', 'em anexo')
+
+            for item in report_files:
+                f = open(item, 'r')
+                text += '-'* 80 + '\n'+ f.read() + '-'* 80 + '\n' 
+                f.close()
+
+        else:
+            report_files = []
+            text = text.replace('REPLACE_ATTACHED_OR_BELOW', 'abaixo')
+        
+
+        if email_data['IS_AVAILABLE_EMAIL_SERVICE'] == 'yes':
             email_sender.send(to, [], email_data['BCC_EMAIL'], 'XML SciELO ' + package_name, text, report_files)
+        else:
+            self.report.write('Email data:' + package_name)
+            
+            self.report.write('to:' + ','.join(to))
+            self.report.write('bcc:' + ','.join(bcc))
+            self.report.write('text:' + text)
+            self.report.write('files:' + ','.join(report_files))
+
 
         
     def load_xml_issues_list(self, issue_db_filename, report):
@@ -284,7 +298,7 @@ if __name__ == '__main__':
                 if not os.path.exists(configuration[c[0]]):
                     os.makedirs(configuration[c[0]])
     f.close()
-    config_parameters = ['IS_AVAILABLE_EMAIL_SERVICE', 'EMAIL_TEXT', 'SENDER_EMAIL', 'BCC_EMAIL', 'FLAG_SEND_EMAIL_TO_XML_PROVIDER', 'DB_ISSUE_FILENAME', 'FTP_PATH', 'IN_PROC_PATH',  'WORK_PATH', 'TRASH_PATH', 'SERIAL_DATA_PATH', 'SERIAL_PROC_PATH', 'PDF_PATH', 'IMG_PATH', 'XML_PATH', 'CISIS_PATH', 'LOG_FILENAME', 'ERROR_FILENAME', 'SUMMARY_REPORT', 'DEBUG_DEPTH', 'DISPLAY_MESSAGES_ON_SCREEN']
+    config_parameters = ['FLAG_ATTACH_REPORTS','ALERT_FORWARD', 'IS_AVAILABLE_EMAIL_SERVICE', 'EMAIL_TEXT', 'SENDER_EMAIL', 'BCC_EMAIL', 'FLAG_SEND_EMAIL_TO_XML_PROVIDER', 'DB_ISSUE_FILENAME', 'FTP_PATH', 'IN_PROC_PATH',  'WORK_PATH', 'TRASH_PATH', 'SERIAL_DATA_PATH', 'SERIAL_PROC_PATH', 'PDF_PATH', 'IMG_PATH', 'XML_PATH', 'CISIS_PATH', 'LOG_FILENAME', 'ERROR_FILENAME', 'SUMMARY_REPORT', 'DEBUG_DEPTH', 'DISPLAY_MESSAGES_ON_SCREEN']
     
     error = False
     for i in config_parameters:
@@ -293,7 +307,7 @@ if __name__ == '__main__':
             error = True
             break
 
-    
+    what_to_do = ''
     if not error:
         from datetime import date
         
@@ -304,7 +318,6 @@ if __name__ == '__main__':
             script_name, what_to_do = sys.argv
         else:
             what_to_do = 'process'
-
         # setting configuration
         db_issue_filename = configuration['DB_ISSUE_FILENAME']
         
@@ -341,6 +354,9 @@ if __name__ == '__main__':
         email_data['FLAG_SEND_EMAIL_TO_XML_PROVIDER'] = configuration['FLAG_SEND_EMAIL_TO_XML_PROVIDER']
         email_data['EMAIL_TEXT'] = configuration['EMAIL_TEXT']
         email_data['IS_AVAILABLE_EMAIL_SERVICE'] = configuration['IS_AVAILABLE_EMAIL_SERVICE']
+        email_data['ALERT_FORWARD'] = configuration['ALERT_FORWARD']
+        email_data['FLAG_ATTACH_REPORTS'] = configuration['FLAG_ATTACH_REPORTS']
+
         # instancing reports
         files = [ log_filename, err_filename, summary_filename]
         
@@ -359,7 +375,7 @@ if __name__ == '__main__':
         uploaded_files_manager = UploadedFilesManager(report, ftp_path)
         uploaded_files_manager.transfer_files(inproc_path)
 
-        pmcxml2isis = PMCXML2ISIS('ohflc', CISIS(cisis_path), 'inputs/_pmcxml2isis.txt', EmailSender(email_sender), report, debug_report)
+        pmcxml2isis = PMCXML2ISIS('ohflc', CISIS(cisis_path), 'inputs/_pmcxml2isis.txt', EmailSender(email_data['SENDER_EMAIL']), report, debug_report)
         
         # load data of all the issues registered in issue database
         pmcxml2isis.load_xml_issues_list(db_issue_filename, report)
@@ -378,6 +394,8 @@ if __name__ == '__main__':
     elif what_to_do == 'ftp':
         # baixar do servidor de ftp e apagar de la
         # TODO
+        from utils.my_ftp import MyFTP
+
         print(what_to_do)
     
         

@@ -66,7 +66,7 @@ class UploadedFilesManager:
     
 
     def extract_file(self, filename, destination_path):
-        self.report.write('Extract file ' + filename, True, False, True)  
+        self.report.write('Extract file ' + filename)  
         if not os.path.exists(destination_path):
             os.makedirs(destination_path)
         import tempfile
@@ -74,23 +74,23 @@ class UploadedFilesManager:
         if os.path.isdir(tmp_path):
             extract_file(filename, tmp_path)
             
-            self.report.write('Content extracted: ' + ','.join(os.listdir(tmp_path)), False, False, False)
+            self.report.write('Content extracted: ' + ','.join(os.listdir(tmp_path)))
             for file_or_folder in os.listdir(tmp_path):
                 extracted_file_or_folder = tmp_path + '/' + file_or_folder
                 if os.path.isdir(extracted_file_or_folder):
-                    self.report.write('Content of ' + extracted_file_or_folder + ': ' + ','.join(os.listdir(extracted_file_or_folder)), False, False, False)
+                    self.report.write('Content of ' + extracted_file_or_folder + ': ' + ','.join(os.listdir(extracted_file_or_folder)))
                     for file in os.listdir(extracted_file_or_folder):
                         self.__move_file_to_folder__(extracted_file_or_folder + '/' + file, destination_path)
 
-                    print('apagar ' + extracted_file_or_folder)
+                    #print('apagar ' + extracted_file_or_folder)
                     shutil.rmtree(extracted_file_or_folder)
                 elif os.path.isfile(extracted_file_or_folder):
                     self.__move_file_to_folder__(extracted_file_or_folder, destination_path)
 
-            print('apagar ' + tmp_path)
+            #print('apagar ' + tmp_path)
             shutil.rmtree(tmp_path)
             
-            self.report.write('Moved to ' + destination_path + ': ' + ','.join(os.listdir(destination_path)), False, False, False)
+            self.report.write('Moved to ' + destination_path + ': ' + ','.join(os.listdir(destination_path)))
 
 
     def __move_file_to_folder__(self, filename, dest_path):

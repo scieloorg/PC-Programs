@@ -17,7 +17,7 @@ class XML2JSONConverter:
 
         self.xml_manager = XMLManager(xml_filename, TableEntAndChar(), self.debug_report)
         converted = self.__convert__(self.conversion_table.start, None, None)
-        self.debug_report.display_data('converted', converted)  
+        self.debug_report.write('converted', False, False, False, converted)  
         return converted 
 
     def pretty(self, json_data):
@@ -31,29 +31,29 @@ class XML2JSONConverter:
     def __convert__(self, table_node, xml_parent_node, parent_xml_parent_node, num = 1):
         
         if self.debug:
-            self.debug_report.log_event('__convert__ ')
-            self.debug_report.display_data('table_node.xpath', table_node.xpath)
+            self.debug_report.write('__convert__ ')
+            self.debug_report.write('table_node.xpath', False, False, False, table_node.xpath)
         
         xml_nodes = self.xml_manager.return_nodes(table_node.xpath, xml_parent_node)
         if self.debug: 
-            self.debug_report.display_data('xml_nodes', xml_nodes)
+            self.debug_report.write('xml_nodes', False, False, False, xml_nodes)
         
         if len(table_node.children) == 0:
             if self.debug: 
-                self.debug_report.display_data('leaf', xml_nodes)  
+                self.debug_report.write('leaf',False, False, False, xml_nodes)  
             result = self.return_leaf_content(table_node, xml_nodes)            
         else:
             if self.debug: 
-                self.debug_report.display_data('branch', xml_nodes) 
+                self.debug_report.write('branch', False, False, False, xml_nodes) 
             result = self.return_branch_content(table_node, xml_nodes, xml_parent_node, num)
         
         if self.debug: 
-            self.debug_report.display_data('result before __format__', result)  
+            self.debug_report.write('result before __format__', False, False, False, result)  
         
         result = self.__format__(table_node, result, num)
         
         if self.debug: 
-            self.debug_report.display_data('result', result)  
+            self.debug_report.write('result', False, False, False, result)  
         return result
 
     def return_leaf_content(self, table_node, xml_nodes, debug = False):
@@ -67,7 +67,7 @@ class XML2JSONConverter:
             else:
                 v = self.xml_manager.return_node_value(xml_node)
             if self.debug: 
-                self.debug_report.display_data('v', v)  
+                self.debug_report.write('v', False, False, False, v)  
             if v == '' or v == None:
                 v = table_node.default
                 
@@ -86,7 +86,7 @@ class XML2JSONConverter:
             number += 1
             for child in table_node.children:
                 if self.debug:
-                    self.debug_report.log_event(table_node.xpath + '=>' + child.xpath)
+                    self.debug_report.write(table_node.xpath + '=>' + child.xpath)
                 v = self.__convert__(child, xml_node, xml_parent_node, number)
                 if len(v)>0:
                     if child.to == '' or child.to == '_':

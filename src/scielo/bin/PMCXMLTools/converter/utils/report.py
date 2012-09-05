@@ -18,48 +18,56 @@ class Report:
             print('ERROR: there is no path for ' + summary_filename)
         
 
-    def write(self, message, is_summary, is_error, display_on_screen = False, error_data = None):
-        
+    def write(self, message, is_summary = False, is_error = False, display_on_screen = False, data = None):
+        msg_type = 'INFO'
         if is_error:
-            self.log_error(message, error_data)
-            
+            self.__write_error__(message, data)
+            if 'ERROR' in message.upper():
+                msg_type = 'ERROR'
+            elif 'WARNING' in message.upper():
+                msg_type = 'WARNING'
+            else:
+                msg_type = 'WARNING'
+
         if is_summary:
-            self.log_summary( message)
+            self.__write_summary__(message)
             
-        self.log_event(message, display_on_screen)
-        
+        self.__write_event__(message, msg_type)
 
-    def log_summary(self, content):
-        self.__write__(self.summary_filename, content)
-
-    def log_error(self, error_msg, data = None, display_on_screen = False):
         if display_on_screen:
-            
-            print(' ! ERROR: ' + error_msg)
+            print(message)
             if data != None:
                 print(data)
-            
-            
-        if data != None:
-            
-            try:
-                self.__write_err__(error_msg + ': '+ str(data))
-                self.__write_all__(error_msg + ': '+ str(data), 'ERROR')
-            except: 
-                self.__write_err__(error_msg + ': UNABLE TO PRINT DATA**')
-                self.__write_all__(error_msg + ': UNABLE TO PRINT DATA**', 'ERROR')
-        else:
-            self.__write_err__(error_msg)
-            self.__write_all__(error_msg, 'ERROR')
-            
-        
-    def log_event(self, event, display_output = False):
-        self.__write_all__(event, 'EVENT')
-        if self.display_output == True or display_output == True:
-            
-            print(event)
-            print('')
 
+    def __write_summary__(self, message, data = None):
+        self.__write__(self.summary_filename, message)
+        if data != None:
+            try:
+                self.__write__(self.summary_filename, str(data))
+            except: 
+                self.__write__(self.summary_filename, 'UNABLE TO CONVERT DATA TO STR')
+
+    def __write_error__(self, message, data = None):
+        self.__write__(self.err_filename, message)
+        if data != None:
+            try:
+                self.__write__(self.err_filename, str(data))
+            except: 
+                self.__write__(self.err_filename, 'UNABLE TO CONVERT DATA TO STR')
+    
+    def __write_event__(self, message, msg_type, data = None):
+        message = self.what_time() + '|' + msg_type + '|' + message.replace("\n", '_BREAK_')
+        self.__write__(self.log_filename, message)
+        if data != None:
+            try:
+                self.__write__(self.log_filename, str(data))
+            except: 
+                self.__write__(self.log_filename, 'UNABLE TO CONVERT DATA TO STR')
+    
+
+    
+        
+    
     def garante_filename_path(self, filename, delete):
         if os.path.exists(filename):
             r = True
@@ -88,49 +96,6 @@ class Report:
     def what_time(self):
         return datetime.now().isoformat() 
         
-    def __write_all__(self, content, msg_type):
-        content = self.what_time() + '|' + msg_type + '|' + content.replace("\n", '_BREAK_')
-        self.__write__(self.log_filename, content)
     
-    def __write_err__(self, content):
-        content = self.what_time() + '|' + content.replace("\n", '_BREAK_')
-        self.__write__(self.err_filename, content)
-        
 
-        
-
-    def debugging(self, data, label, level=0):
-        doit = False
-        
-        
-        if self.debug_depth >= level: 
-            doit = True
-        
-        if doit:
-            if self.display_output == True:
-                print("\n"  + '[DEBUG]')
-                print(label)
-                print(data)
-                print('[/DEBUG]' )
-            try:
-                self.__write_all__(label + "\n" + str(data), 'DEBUG')
-            except:
-                self.__write_all__(label + "\n" + "UNABLE TO PRINT DATA", 'DEBUG')
-            
-    def display_data(self, label, data = '' ):
-        try:
-            self.__write_all__(label + ":" + str(data), 'DISPLAY_DATA')
-            
-        except:
-            self.__write_all__(label + ": UNABLE TO PRINT DATA" , 'DISPLAY_DATA')
-            
-        if self.display_output == True:
-            print('[DISPLAY_DATA]')
-            print(label + ':') 
-            try: 
-                print(data)
-            except:
-                print('unabled to print data')
-            print('[/DISPLAY_DATA]')
-            
-     
+    

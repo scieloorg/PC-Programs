@@ -424,7 +424,7 @@ class TaggedData:
         
         return citation
     
-    def validate_citation(self, citation):
+    def validate_citation_metadata(self, citation):
         missing = []
         doctopic = self.return_doctopic(citation)
 
@@ -466,9 +466,6 @@ class TaggedData:
                                         i += 1
                             else:
                                 citation['14'] += '-' + citation['514']['l']
-                        #else:
-                        #    self.report.log_summary(' ! Warning: Check fpage, lpage, page-range of reference ' + str(k + 1))
-                        #    self.report.log_error('Check fpage, lpage, page-range of reference ' + str(k + 1), citation['514'], True)
         return citation
 
 
@@ -584,42 +581,48 @@ class TaggedData:
         
 
 
-    def fix(self):
-        
+    def fix_and_validate(self):
+        alert = 0
         self.fix_metadata()
         self.json_data['h'] = self.generic.format_for_indexing(self.json_data['f'])
         self.json_data['l'] = self.generic.format_for_indexing(self.json_data['h'])
         
-        errors, warnings = self.article_is_valid()
-        if len(warnings) > 0:
-            self.article_report.write(' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), True, True, True)
-            self.general_report.write(' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), True, True, False)
-        if len(errors) > 0:
-            self.article_report.write(' ! ERROR: Missing required data in article front : ' + ', '.join(errors), True, True, True)
-            self.general_report.write(' ! ERROR: Missing required data in article front : ' + ', '.join(errors), True, True, False)
+        #self.article_report.write(self.filename, True, False, False)
+        #self.general_report.write(self.filename, True, False, False)
 
+
+        errors, warnings = self.validate_article_metadata()
+        if len(warnings) > 0:
+            self.article_report.write(' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), False, True, False)
+            self.general_report.write(' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), False, True, False)
+            alert += 1
+        if len(errors) > 0:
+            self.article_report.write(' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
+            self.general_report.write(' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
+            alert += 1
         k = 0
-        ok = []
+        
         for citation in self.json_data['c']:
             citation = self.generic.format_for_indexing(citation)
             citation = self.fix_citation(citation, k)
-            missing_data = self.validate_citation(citation)
+            missing_data = self.validate_citation_metadata(citation)
             if len(missing_data) > 0:
-                self.article_report.write(' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), True, True, True)
-                self.general_report.write(' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), True, True, False)
+                self.article_report.write(' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), False, True, False)
+                self.general_report.write(' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), False, True, False)
                 if '704' in citation.keys():
-                    self.article_report.write(citation['704'], True, True, False)
-                    self.general_report.write(citation['704'], True, True, False)
-
-            else:
-                ok.append(k + 1)
+                    self.article_report.write(citation['704'], False, True, False)
+                    self.general_report.write(citation['704'], False, True, False)
+                alert += 1
+            
             self.json_data['c'][k] = citation 
             k += 1
-        self.article_report.write('  Valid references: ' + str(len(ok)) + '/' + str(len(self.json_data['c'])), True, False, True)
-        self.general_report.write('  Valid references: ' + str(len(ok)) + '/' + str(len(self.json_data['c'])), True, False, False)
-
-
-    def article_is_valid(self):
+        if alert > 0:
+            self.article_report.write('  Check errors report.', True, False, False)
+            self.general_report.write('  Check errors report.', True, False, False)
+        self.article_report.write('  References:' + str(k), True, False, False)
+        self.general_report.write('  References:' + str(k), True, False, False)
+    
+    def validate_article_metadata(self):
         errors = [] 
         warnings = [] 
         list = self.generic.return_json_data_multi_values(self.json_data['f'], '70')
@@ -646,7 +649,7 @@ class JSON_Article:
         if journal == None:
             journal = Journal(self.tagged_data.return_journal_title(), self.tagged_data.return_issn_id())
 
-        self.tagged_data.fix()
+        self.tagged_data.fix_and_validate()
 
         issue = self.tagged_data.return_issue(journal)
         issue.json_data = self.tagged_data.return_issue_json_data(issue)
@@ -668,8 +671,4 @@ class JSON_Article:
 
     def return_issue(self, json_data, journal):
         return self.tagged_data.return_issue(journal, json_data)
-
-    def article_is_valid(self):
-        return self.tagged_data.article_is_valid()
-
 
