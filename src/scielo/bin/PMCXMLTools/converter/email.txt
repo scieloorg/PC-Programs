@@ -1,8 +1,0 @@
-Prezados 
-
-O pacote REPLACE_PACKAGE foi processado e seguem REPLACE_ATTACHED_OR_BELOW os relatorios do processamento e de erros encontrados.
-
-Cada erro deve ser avaliado para confirmar o se é erro ou não. 
-
-Sendo erro, corrigir e reenviar um pacote somente contendo os arquivos que foram corrigidos. 
-
