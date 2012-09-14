@@ -5,7 +5,7 @@
     @xml:lang 40 en    
     .//journal-meta//journal-title 100
     .//journal-meta//abbrev-journal-title 30
-    .//journal-meta//journal-id[@journal-id-type='publisher-id'] 35 
+    .//issn[1] 35 
     .//subj-group[1]/subject 49
     .//subj-group[@subj-group-type='heading']/subject 49
     .//kwd-group 85
@@ -52,7 +52,8 @@
       institution[@content-type='orgdiv2'] 2
       institution[@content-type='orgdiv1'] 1
       institution[@content-type='orgname'] _
-    .//aff 770 XML
+    .//clinical-trial 770 XML
+    .//aff 170 XML
     .//ref-count/@count 72    
     .//table-count/@count 900
     .//fig-count/@count 901

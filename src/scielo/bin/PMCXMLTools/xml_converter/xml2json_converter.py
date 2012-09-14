@@ -8,14 +8,17 @@ class XML2JSONConverter:
 
     def __init__(self, xml2json_table_filename, debug_report, debug = False):
         self.conversion_table = XML2JSONTable(xml2json_table_filename)
+        
         self.debug_report = debug_report
         self.debug = debug
-        
+        self.table_ent_and_char = TableEntAndChar()
 
-    def convert(self, xml_filename):
+    def convert(self, xml_filename, report):
         self.dict = {}
 
-        self.xml_manager = XMLManager(xml_filename, TableEntAndChar(), self.debug_report)
+        self.xml_manager = XMLManager(xml_filename, self.table_ent_and_char, report, self.debug_report)
+        #if self.xml_filename.error_message
+
         converted = self.__convert__(self.conversion_table.start, None, None)
         self.debug_report.write('converted', False, False, False, converted)  
         return converted 

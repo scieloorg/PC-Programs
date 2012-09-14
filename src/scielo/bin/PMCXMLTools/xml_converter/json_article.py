@@ -237,7 +237,11 @@ class TaggedData:
     def return_issue(self, journal, data = None):
 
         suppl = ''
-        order = vol = num = date = suppl
+        order = ''
+        vol = ''
+        num = ''
+        date = ''
+
         
         if data == None:
             data = self.json_data['f']
@@ -602,7 +606,8 @@ class TaggedData:
             count_errors += len(errors)
 
         #####
-        missing_files = missing_href = []
+        missing_files = []
+        missing_href = []
         href_list = []
         if 'body' in self.json_data:
             href_list = list(set(self.generic.return_json_data_multi_values(self.json_data['body'], 'file')))
@@ -611,15 +616,21 @@ class TaggedData:
                 missing_files.append(href)
         if len(missing_files) > 0:
             self.article_report.write('\n'+ ' ! ERROR: Missing image files: ' + ', '.join(missing_files), False, True, False)
-            self.general_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
+            self.general_report.write('\n'+ ' ! ERROR: Missing image files: ' + ', '.join(missing_files), False, True, False)
             count_errors += len(missing_files)
         for file in img_files:
             if not file in href_list:
                 missing_href.append(file)
+
         if len(missing_href) > 0:
             self.article_report.write('\n'+ ' ! ERROR: Missing graphic/@xlink:href: ' + ', '.join(missing_href), False, True, False)
             self.general_report.write('\n'+ ' ! ERROR: Missing graphic/@xlink:href: ' + ', '.join(missing_href), False, True, False)
             count_errors += len(missing_href)
+
+        if len(missing_href) + len(missing_files)  > 0:
+            print('VERIFICAR')
+            print(href_list)
+            print(img_files)
         ###     
 
         k = 0
@@ -671,29 +682,33 @@ class JSON_Article:
     
 
     def return_article(self, article_json_data, img_files, journal_list, xml_filename, article_report):
+        article = None
+
         self.tagged_data.load(article_json_data['doc'], xml_filename, article_report)
         
         journal = journal_list.find_journal(self.tagged_data.return_journal_title())
         if journal == None:
-            journal = Journal(self.tagged_data.return_journal_title(), self.tagged_data.return_issn_id())
 
-        self.tagged_data.fix_and_validate(img_files)
+            #journal = Journal(self.tagged_data.return_journal_title(), self.tagged_data.return_issn_id())
+            article_report.write(self.tagged_data.return_journal_title() + ' was not found in title database. The processing will use ' + self.tagged_data.return_issn_id() +  ' as its ISSN.', True, True)
+        else:
+            self.tagged_data.fix_and_validate(img_files)
 
-        issue = self.tagged_data.return_issue(journal)
-        issue.json_data = self.tagged_data.return_issue_json_data(issue)
+            issue = self.tagged_data.return_issue(journal)
+            issue.json_data = self.tagged_data.return_issue_json_data(issue)
 
-        article = self.tagged_data.return_article(issue)
-        article.xml_filename = xml_filename
+            article = self.tagged_data.return_article(issue)
+            article.xml_filename = xml_filename
 
-        section_title = self.tagged_data.return_section_title()
-        if len(section_title) > 0:
-            section = article.issue.toc.insert(Section(section_title), False)
-            self.tagged_data.set_section_code(section.code)
-            article.section_title = section_title
+            section_title = self.tagged_data.return_section_title()
+            if len(section_title) > 0:
+                section = article.issue.toc.insert(Section(section_title), False)
+                self.tagged_data.set_section_code(section.code)
+                article.section_title = section_title
         
 
-        article.issue.articles.insert(article, True)
-        article.json_data = self.tagged_data.json_data
+            article.issue.articles.insert(article, True)
+            article.json_data = self.tagged_data.json_data
 
         return article
 

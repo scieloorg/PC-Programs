@@ -10,8 +10,8 @@ class XMLFoldersSet:
         self.img_path = img_path 
         self.xml_path = xml_path 
         self.scilista = scilista
-        
-        for f in [self.serial_path, self.server_serial_path, self.pdf_path, self.img_path, self.xml_path]:
+        self.id_folder = server_serial_path + '/i'
+        for f in [self.id_folder, self.serial_path, self.server_serial_path, self.pdf_path, self.img_path, self.xml_path]:
             if not os.path.exists(f):
                 os.makedirs(f)
         

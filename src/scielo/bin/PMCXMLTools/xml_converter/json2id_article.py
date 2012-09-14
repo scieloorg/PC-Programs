@@ -17,7 +17,7 @@ class JSON2IDFile_Article(JSON2IDFile):
         """
         JSON2IDFile.__init__(self, filename, report)
         
-    def format_and_save_document_data(self, json_data, records_order, db_name):
+    def format_and_save_document_data(self, json_data, records_order, db_name, xml_filename = ''):
         """
         Arguments: 
         records_order -- list of dictionary keys of json data that are related to each record
@@ -48,7 +48,7 @@ class JSON2IDFile_Article(JSON2IDFile):
                 self.save_record_number(record_number)
                 data = {}
                 data = self.add_record_data(data, record_name, record_number, record_index, 1, total)
-                data = self.add_file_data(db_name, data)
+                data = self.add_file_data(xml_filename, db_name, data)
                 self.save_document_data(data)
             else:
                 if type([]) == type(data):
@@ -58,7 +58,7 @@ class JSON2IDFile_Article(JSON2IDFile):
                         record_number += 1
                         self.save_record_number(record_number)
                         rec_occ = self.add_record_data(rec_occ, record_name, record_number, record_index, len(data), total)
-                        rec_occ = self.add_file_data(db_name, rec_occ)
+                        rec_occ = self.add_file_data(xml_filename, db_name, rec_occ)
                         self.save_document_data(rec_occ)
                     
                 else:
@@ -68,16 +68,16 @@ class JSON2IDFile_Article(JSON2IDFile):
                         record_number += 1
                         self.save_record_number(record_number)
                         data = self.add_record_data(data, record_name, record_number, record_index, 1, total)
-                        data = self.add_file_data(db_name, data)
+                        data = self.add_file_data(xml_filename, db_name, data)
                         self.save_document_data(data)
                 
     
      
-    def add_file_data(self, db_name, data):
+    def add_file_data(self, xml_filename, db_name, data):
         f = self.filename.replace('.id', '.xml')
 
         data['2'] = os.path.basename(f)
-        data['702'] = f
+        data['702'] = xml_filename
         data['4'] = db_name
         
         
@@ -100,22 +100,7 @@ class JSON2IDFile_Article(JSON2IDFile):
 
         return data
 
-    def save_record_data(self, record_name, record_number, record_index, total_of_record_type, total_of_records ):
-        record_data = ''
-        record_data += self.tag_it('700', str(record_number))
-        record_data += self.tag_it('701', str(record_index))
-        record_data += self.tag_it('705', 'S')
-        record_data += self.tag_it('706', record_name)
-        record_data += self.tag_it('708', str(total_of_record_type))
-
-        if record_name == 'o':
-            record_data += self.tag_it('91', datetime.now().isoformat()[0:10].replace('-', ''))
-            record_data += self.tag_it('92', datetime.now().isoformat()[11:19].replace(':',''))
-            record_data += self.tag_it('703', str(total_of_records))
-        else:
-            record_data += self.tag_it('1', 'br1.1')
-
-        self.__write__(record_data)
+    
         
     
     

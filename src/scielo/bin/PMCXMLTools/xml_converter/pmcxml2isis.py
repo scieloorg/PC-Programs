@@ -20,46 +20,55 @@ from utils.email_service import EmailService
 
 class PMCXML2ISIS:
 
-    def __init__(self, records_order, cisis, xml2json_table_filename, email_service, report, debug_report, debug = False):
+    def __init__(self, records_order, xml2json_table_filename, cisis, xml_folders, email_service, report, debug_report, debug = False):
         self.records_order = records_order
         self.cisis = cisis
-        self.db_issues_list = JournalIssues()
-        self.journal_list = JournalList()
-        self.issues_list = JournalIssues()
+        
+        self.registered_journals = JournalList()
+        self.registered_issues = JournalIssues()
+        self.not_registered_issues = JournalIssues()
+
+        # issues of this processing
+        self.inproc_issues = JournalIssues()
+
+        # journals of this processing
+        self.inproc_journals = []
+        
+        self.not_registered_issues_db = 'new_issues'
+        
+        self.xml_folders = xml_folders
+
         self.img_converter = ImageConverter()
-        self.report = report
-        self.debug_report = debug_report
         self.xml2json_converter = XML2JSONConverter(xml2json_table_filename, debug_report, debug)
         self.json_article = JSON_Article(debug_report, report)
         self.email_service = email_service
 
-       
+
+        self.report = report
+        self.debug_report = debug_report
         
-    def list_issues(self):
-        for issue in self.issues_list:   
-            journal_folder = issue.journal.acron
-            issue_folder = issue.name 
-            db_name = issue.name
-            print(journal_folder + ' ' + issue_folder + ' ' + issue.order + ' ' + issue.status)
-            
-    
-
-    def return_issue_to_compare(self, article):
-        create_i_record = False
-        issue = self.issues_list.get(article.issue.id)
-        if issue == None:
-            create_i_record = True
-            # issue is not in issues_list, check db_list
-            db_issue = self.db_issues_list.get(article.issue.id)
-            if db_issue == None:
-                # issue is new
-                issue = self.issues_list.insert(article.issue, False)
-                issue.status = 'not_registered'
+        
+    def return_issue_to_compare(self, issue):
+        
+        found = self.inproc_issues.get(issue.id)
+        if found == None:
+            # issue is registered
+            found = self.registered_issues.get(issue.id)
+            if found == None:
+                # issue is in new_issues
+                found = self.not_registered_issues.get(issue.id)
+                if found == None:
+                    found = self.inproc_issues.insert(issue, False)
+                    found.status = 'not_registered'
+                else:
+                    found = self.inproc_issues.insert(issue, False)
+                    found.status = 'new_issues'
             else:
-                issue = self.issues_list.insert(db_issue, False)
-                issue.status = 'registered'
+                found = self.inproc_issues.insert(issue, False)
+                found.status = 'registered'
 
-        return (create_i_record, issue)
+        
+        return found
 
     def write_report_package(self, report_package, message, is_summary, is_error, display_on_screen = False, error_data = None):
         self.report.write(message, is_summary, is_error, display_on_screen, error_data)
@@ -67,7 +76,7 @@ class PMCXML2ISIS:
         
 
 
-    def generate_id_files(self, report_package, package_file, work_path, xml_folders):
+    def generate_id_files(self, report_package, package_file, work_path):
         files = os.listdir(work_path)
         xml_list = [ f for f in files if '.xml' in f ]
         issues = {}
@@ -81,7 +90,7 @@ class PMCXML2ISIS:
             
             self.write_report_package(report_package, '\n' + '-' * 80 + '\n' + 'File: ' + f, True, True, True)
 
-            json_data = self.xml2json_converter.convert(xml_filename)
+            json_data = self.xml2json_converter.convert(xml_filename, report_package)
             issue = None
 
             if type(json_data) == type({}):
@@ -89,40 +98,43 @@ class PMCXML2ISIS:
                 img_files = [ img_file[0:img_file.rfind('.')] for img_file in files if img_file.startswith(f.replace('.xml', '-'))  ]
                 img_files = list(set(img_files))
 
-                article = self.json_article.return_article(json_data, img_files, self.journal_list, xml_filename, report_package)
-            
-                create, issue_to_compare = self.return_issue_to_compare(article)
-                issue_errors = article.issue.is_valid(issue_to_compare)
+                article = self.json_article.return_article(json_data, img_files, self.registered_journals, xml_filename, report_package)
+                if article != None:
+                    issue_to_compare = self.return_issue_to_compare(article.issue)
+                    issue_errors = article.issue.is_valid(issue_to_compare)
 
-                warnings = []
-                if len(issue_errors) == 0:
-                    issue = article.issue
+                    warnings = []
+                    if len(issue_errors) == 0:
+                        issue = article.issue
                     
-                    journal_folder = issue.journal.acron
-                    issue_folder = issue.name 
-                    db_name = issue.name
+                        journal_folder = issue.journal.acron
+                        issue_folder = issue.name 
+                        db_name = issue.name
             
-                    if journal_folder + db_name in files_set_list.keys():
-                        files_set = files_set_list[journal_folder + db_name]
+                        if journal_folder + db_name in files_set_list.keys():
+                            files_set = files_set_list[journal_folder + db_name]
+                        else:
+                            files_set = XMLFilesSet(self.xml_folders, journal_folder, issue_folder, db_name)
+                            files_set_list[journal_folder + db_name] = files_set
+
+                        self.write_report_package(report_package, ' => ' + article.issue.journal.title + ' ' + article.issue.name + ' ' + article.page, True, False, False)
+
+                        if not article.issue.journal.title in self.inproc_journals:
+                            self.inproc_journals.append(article.issue.journal.title)
+
+                        section = issue_to_compare.toc.insert(Section(article.section_title), False)
+                        article.issue = issue_to_compare
+                        issue_to_compare.articles.insert(article, True)
+                        issues[article.issue.journal.acron + article.issue.name] = issue_to_compare
+
+                        self.generate_id_file(report_package, article, files_set)
                     else:
-                        files_set = XMLFilesSet(xml_folders, journal_folder, issue_folder, db_name)
-                        files_set_list[journal_folder + db_name] = files_set
+                        self.write_report_package(report_package, ' ! ERROR: Invalid issue data of ' + xml_filename, True, True, True)
+                        for err in issue_errors:
+                            self.write_report_package(report_package, err, True, True, True)
 
-                    self.write_report_package(report_package, ' => ' + article.issue.journal.title + ' ' + article.issue.name + ' ' + article.page, True, False, False)
-
-                    section = issue_to_compare.toc.insert(Section(article.section_title), False)
-                    article.issue = issue_to_compare
-                    issue_to_compare.articles.insert(article, True)
-                    issues[article.issue.journal.acron + article.issue.name] = issue_to_compare
-
-                    self.generate_id_file(report_package, article, files_set)
                 else:
-                    self.write_report_package(report_package, ' ! ERROR: Invalid issue data of ' + xml_filename, True, True, True)
-                    for err in issue_errors:
-                        self.write_report_package(report_package, err, True, True, True)
-
-            else:
-                self.write_report_package(report_package, ' ! ERROR: Invalid xml ' + xml_filename, True, True, True)
+                    self.write_report_package(report_package, ' ! ERROR: Invalid xml ' + xml_filename, True, True, True)
 
         
         for key, issue in issues.items():
@@ -130,7 +142,7 @@ class PMCXML2ISIS:
 
             files_set.archive_package_file(package_file)
             self.generate_db(report_package, issue, files_set)
-            xml_folders.add_to_scilista(issue.journal.acron, issue.name)
+            self.xml_folders.add_to_scilista(issue.journal.acron, issue.name)
 
             files = os.listdir(work_path)
             if len(files)>0:
@@ -153,7 +165,7 @@ class PMCXML2ISIS:
         id_filename = os.path.basename(article.xml_filename.replace('.xml', '.id'))
     
         id_file = JSON2IDFile_Article(files_set.id_path + '/' + id_filename, self.report)
-        id_file.format_and_save_document_data(article.json_data, self.records_order, files_set.db_name)
+        id_file.format_and_save_document_data(article.json_data, self.records_order, files_set.db_name, files_set.xml_filename(article.xml_filename))
         
         
         files_set.archive(article.xml_filename)
@@ -172,9 +184,11 @@ class PMCXML2ISIS:
 
         id_file.format_and_save_document_data(issue.json_data)
     
-        self.cisis.id2mst(files_set.id_path + '/i.id', files_set.db_filename)
+        self.save_issue_id_in_proc_folder(files_set.id_path + '/i.id', issue.journal.acron, issue.name)
+
+        self.cisis.id2mst(files_set.id_path + '/i.id', files_set.db_filename, True)
         if issue.status == 'not_registered':
-            self.cisis.append(files_set.db_filename, 'new_issues')
+            self.cisis.append(files_set.db_filename, self.not_registered_issues_db)
 
         list = os.listdir(files_set.id_path)
         articles_id = [ f for f in list if '.id' in f and  f != 'i.id' ]
@@ -192,14 +206,14 @@ class PMCXML2ISIS:
         if issue.status == 'not_registered':
             self.write_report_package(report_package, "\n" + ' ! WARNING: New issue '  + issue.journal.acron +  ' ' + issue.name  + "\n" , True, True, True )
         for f in articles_id:        
-            self.cisis.id2mst(files_set.id_path + '/' + f, files_set.db_filename)
+            self.cisis.id2mst(files_set.id_path + '/' + f, files_set.db_filename, False)
 
-    def process_packages(self, package_path, work_path, report_path, xml_folders, email_data):
+    def process_packages(self, package_path, work_path, report_path, email_data):
         for filename in os.listdir(package_path):
             package_file = package_path + '/' + filename
-            self.process_package(package_file, work_path, report_path, xml_folders, email_data)
+            self.process_package(package_file, work_path, report_path, email_data)
 
-    def process_package(self, package_file, work_path, report_path, xml_folders, email_data):
+    def process_package(self, package_file, work_path, report_path, email_data):
         package_path = os.path.dirname(package_file)
         folder = os.path.basename(package_file)
         folder = folder[0:folder.rfind('.')]
@@ -225,7 +239,7 @@ class PMCXML2ISIS:
             emails = f.read()
             f.close()
 
-        self.generate_id_files(report_package, package_file, work_path, xml_folders)
+        self.generate_id_files(report_package, package_file, work_path)
         
         self.send_email(email_data, emails, package_name, [summary_filename,err_filename, ])
 
@@ -274,23 +288,95 @@ class PMCXML2ISIS:
         if email_data['IS_AVAILABLE_EMAIL_SERVICE'] == 'yes':
             self.email_service.send(to, [], email_data['BCC_EMAIL'], '[SciELO-XML] ' + package_name, text, report_files)
 
+    def save_issue_id_in_proc_folder(self, id_filename, acron, issue_name):
+        fname = self.xml_folders.id_folder + '/' + acron + issue_name + '.id'
+        if os.path.exists(fname):
+            os.unlink(fname)
+        shutil.copyfile(id_filename, fname)
 
+    def db2json(self, db):
+        from tempfile import mkstemp
+        import os
+        r = []
+        if os.path.exists(db + '.mst'):
+            _, f = mkstemp()
+            self.cisis.i2id(db, f)
+            r = IDFile(f).id2json()
+            os.remove(f)
+        return r
 
+    def __load_issues__(self, issue_db_filename, report):
         
-    def load_xml_issues_list(self, issue_db_filename, report):
-        self.cisis.i2id(issue_db_filename, 'issue.id')
-        issue_id_file = IDFile('issue.id')
-        json_issues = issue_id_file.id2json()
-        self.db_issues_list = JournalIssues()
+        json_issues = self.db2json(issue_db_filename)
+        issues_list = JournalIssues()
         
         for json_issue in json_issues:
-
-            j = self.journal_list.find_journal(json_issue['130'])
+            if '130' in json_issue:
+                test = json_issue['130']
+            else:
+                test = json_issue['100']
+            j = self.registered_journals.find_journal(test)
+            
             if j != None:
                 issue = self.json_article.return_issue(json_issue, j)
                 issue.json_data = json_issue
-                self.db_issues_list.insert(issue, False)
+                issues_list.insert(issue, False)
+        return issues_list
         
+    def load_journals(self, title_db_filename, report):
+        json = self.db2json(title_db_filename)
+        self.registered_journals = JournalList()
+        
+        for json_item in json:
+            j = Journal(json_item['100'], json_item['400'], json_item['68'])
+            print(j.title + ' ' + j.issn_id)
+            self.registered_journals.insert(j, False)
+
+
+    def load_issues_lists(self, issue_db_filename, report):
+        self.registered_issues = self.__load_issues__(issue_db_filename, report)
+        self.not_registered_issues = self.__load_issues__(self.not_registered_issues_db, report)
+        
+    
+        
+    def load_proc_journal_list(self, subset_title_db):
+        json_titles = self.db2json(subset_title_db)
+        
+        self.inproc_journals = []
+        for json_title in json_titles:
+            if '100' in json_title:
+                if not json_title['100'] in self.inproc_journals:
+                    self.inproc_journals.append(json_title['100'])
+
+    def create_proc_title_db(self, original_title_db, subset_title_db, report):
+        json_titles = self.db2json(original_title_db)
+        
+        new = []
+        for json_title in json_titles:
+            if '100' in json_title:
+                if json_title['100'] in self.inproc_journals:
+                    new.append(json_title)
+
+        from tempfile import mkstemp
+        import os
+        _, temp_title_id_filename = mkstemp()
+                    
+        JSON2IDFile(temp_title_id_filename, report).format_and_save_document_data(new)   
+        self.cisis.id2i(temp_title_id_filename, subset_title_db)
+        os.remove(temp_title_id_filename)
+        
+
+    def create_proc_issue_db(self, original_issue_db, proc_issue_db, report):
+        self.cisis.create('null count=0', proc_issue_db)
+        for f in os.listdir(self.xml_folders.id_folder):
+            self.cisis.id2mst(self.xml_folders.id_folder + '/' + f, proc_issue_db, False)
+
+
+        
+    def create_proc_title_and_issue_db(self, original_title_db,  proc_title_db, original_issue_db,   proc_issue_db, report):
+        self.create_proc_title_db(original_title_db,  proc_title_db, report)
+        self.create_proc_issue_db(original_issue_db,   proc_issue_db, report)
+
 
         
 if __name__ == '__main__':
@@ -305,7 +391,7 @@ if __name__ == '__main__':
                 if not os.path.exists(configuration[c[0]]):
                     os.makedirs(configuration[c[0]])
     f.close()
-    config_parameters = [ 'FTP_SERVER',  'FTP_USER','FTP_PSWD',  'FTP_DIR', 'FLAG_ATTACH_REPORTS','ALERT_FORWARD', 'IS_AVAILABLE_EMAIL_SERVICE', 'EMAIL_TEXT', 'SENDER_EMAIL', 'BCC_EMAIL', 'FLAG_SEND_EMAIL_TO_XML_PROVIDER', 'DB_ISSUE_FILENAME', 'FTP_PATH', 'QUEUE_PATH', 'IN_PROC_PATH',  'WORK_PATH', 'TRASH_PATH', 'SERIAL_DATA_PATH', 'SERIAL_PROC_PATH', 'PDF_PATH', 'IMG_PATH', 'XML_PATH', 'CISIS_PATH', 'LOG_FILENAME', 'ERROR_FILENAME', 'SUMMARY_REPORT', 'DEBUG_DEPTH', 'DISPLAY_MESSAGES_ON_SCREEN']
+    config_parameters = [ 'PROC_DB_TITLE_FILENAME','PROC_DB_ISSUE_FILENAME','DB_TITLE_FILENAME', 'FTP_SERVER',  'FTP_USER','FTP_PSWD',  'FTP_DIR', 'FLAG_ATTACH_REPORTS','ALERT_FORWARD', 'IS_AVAILABLE_EMAIL_SERVICE', 'EMAIL_TEXT', 'SENDER_EMAIL', 'BCC_EMAIL', 'FLAG_SEND_EMAIL_TO_XML_PROVIDER', 'DB_ISSUE_FILENAME', 'FTP_PATH', 'QUEUE_PATH', 'IN_PROC_PATH',  'WORK_PATH', 'TRASH_PATH', 'SERIAL_DATA_PATH', 'SERIAL_PROC_PATH', 'PDF_PATH', 'IMG_PATH', 'XML_PATH', 'CISIS_PATH', 'LOG_FILENAME', 'ERROR_FILENAME', 'SUMMARY_REPORT', 'DEBUG_DEPTH', 'DISPLAY_MESSAGES_ON_SCREEN']
 
     error = False
     for i in config_parameters:
@@ -330,8 +416,15 @@ if __name__ == '__main__':
             what_to_do = 'process'
         # setting configuration
         db_issue_filename = configuration['DB_ISSUE_FILENAME']
-        
+        db_title_filename = configuration['DB_TITLE_FILENAME']
+        proc_title_db = configuration['PROC_DB_TITLE_FILENAME']
+        proc_issue_db = configuration['PROC_DB_ISSUE_FILENAME']
 
+        if not os.path.exists(os.path.dirname(proc_issue_db)):
+            os.makedirs(os.path.dirname(proc_issue_db))
+
+        if not os.path.exists(os.path.dirname(proc_title_db)):
+            os.makedirs(os.path.dirname(proc_title_db))
 
         ftp_path = configuration['FTP_PATH']
         queue_path = configuration['QUEUE_PATH']
@@ -391,13 +484,19 @@ if __name__ == '__main__':
         uploaded_files_manager = UploadedFilesManager(report, queue_path)
         uploaded_files_manager.transfer_files(inproc_path)
 
-        pmcxml2isis = PMCXML2ISIS('ohflc', CISIS(cisis_path), 'inputs/_pmcxml2isis.txt', EmailService(email_data['SENDER_EMAIL']), report, debug_report)
-        
+        pmcxml2isis = PMCXML2ISIS('ohflc', 'inputs/_pmcxml2isis.txt', CISIS(cisis_path), xml_folders, EmailService(email_data['SENDER_EMAIL']), report, debug_report)
+        pmcxml2isis.load_journals(db_title_filename, report)
+        # load journal titles which are in proc
+        pmcxml2isis.load_proc_journal_list(proc_title_db)
+
         # load data of all the issues registered in issue database
-        pmcxml2isis.load_xml_issues_list(db_issue_filename, report)
+        pmcxml2isis.load_issues_lists(db_issue_filename, report)
+        
 
         # process the package of XML files. Each package file is a compressed file and must contains all the articles of an issue
-        pmcxml2isis.process_packages(inproc_path, work_path, report_path, xml_folders, email_data)
+        pmcxml2isis.process_packages(inproc_path, work_path, report_path, email_data)
+
+        pmcxml2isis.create_proc_title_and_issue_db(db_title_filename,  proc_title_db, db_issue_filename,  proc_issue_db, report)
 
         print('-' * 80)
         print('Check report files:  ')

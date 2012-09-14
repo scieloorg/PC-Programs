@@ -1,4 +1,8 @@
+PROC_DB_TITLE_FILENAME=/bases/xml.000/serial/issue/issue
+PROC_DB_ISSUE_FILENAME=/bases/xml.000/serial/issue/issue
 
+
+DB_TITLE_FILENAME=/bases/scl.000/bases/title/title
 DB_ISSUE_FILENAME=/bases/scl.000/bases/issue/issue
 
 FTP_PATH=/bases/xml.000/xml_data/ftp

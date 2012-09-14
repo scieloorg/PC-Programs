@@ -43,8 +43,10 @@ Sub Main()
     retDirExpected = paramProgram
     test = Mid(path, InStr(1, path, "\office", vbTextCompare) + Len("\office"))
     test = Mid(test, 1, InStr(test, "\") - 1)
-    If CLng(test) > 11 Then
-        retDirExpected = ""
+    If Len(test) > 0 Then
+        If CLng(test) > 11 Then
+            retDirExpected = ""
+        End If
     End If
     
     retDir = Dir(path)

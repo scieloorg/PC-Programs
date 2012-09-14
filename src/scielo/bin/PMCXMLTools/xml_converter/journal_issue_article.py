@@ -111,7 +111,12 @@ class JournalIssueOrder:
             r = '9075'
         else:
             if suppl != '':
-                s = '0000' + suppl
+                if suppl.isdigit():
+                    s = '0000' + suppl
+                else:
+                    digits = [ digit for digit in suppl if digit.isdigit()]
+                    s = '0000' + ''.join(digits)
+
                 if number != '':
                     r = '3'
                 else:
@@ -132,8 +137,10 @@ class JournalIssue:
         self.journal = journal
         self.id = ID().generate( journal.title + volume + number + dateiso + suppl)
         self.articles = JournalIssueArticles()
+        
         self.status = ''
         
+
         self.json_from_db = {}
         if order != '':
             self.order = order
@@ -196,16 +203,7 @@ class JournalList(Items):
     def __init__(self):
         Items.__init__(self)
 
-        f = open('inputs/table_journals.seq', 'r')
-        rows = f.readlines()
-        f.close()
-
-        for row in rows:
-            if '|' in row:
-                title, issn, acron = row.replace("\n", '').split('|')
-                j = Journal(title.strip(), issn.strip(), acron.strip())
-                self.insert(j, False)
-
+    
     def find_journal(self, journal_title):
         return self.get(Journal(journal_title).id)
 

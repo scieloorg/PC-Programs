@@ -5,12 +5,14 @@ from xml_folders_set import XMLFoldersSet
 class XMLFilesSet:
 
     def __init__(self, xml_folders, journal_folder, issue_folder, db_name):
-        self.serial_path = xml_folders.serial_path + '/' + journal_folder + '/' + issue_folder + '/pmc'
+        self.acron_issue_folder = journal_folder + '/' + issue_folder
+ 
+        self.serial_path = xml_folders.serial_path + '/' + self.acron_issue_folder + '/pmc'
 
-        self.server_serial_path = xml_folders.server_serial_path + '/' + journal_folder + '/' + issue_folder 
-        self.pdf_path = xml_folders.pdf_path + '/' + journal_folder + '/' + issue_folder
-        self.img_path = xml_folders.img_path + '/' + journal_folder + '/' + issue_folder
-        self.xml_path = xml_folders.xml_path + '/' + journal_folder + '/' + issue_folder
+        self.server_serial_path = xml_folders.server_serial_path + '/' + self.acron_issue_folder 
+        self.pdf_path = xml_folders.pdf_path + '/' + self.acron_issue_folder
+        self.img_path = xml_folders.img_path + '/' + self.acron_issue_folder
+        self.xml_path = xml_folders.xml_path + '/' + self.acron_issue_folder
 
         self.package_path = self.serial_path + '/pmc_package_source' 
         self.extracted_package_path = self.serial_path + '/pmc_package_extracted' 
@@ -34,6 +36,9 @@ class XMLFilesSet:
         self.extensions['id'] = self.id_path
         self.extensions['jpg'] = self.img_path
         self.extensions['pdf'] = self.pdf_path
+
+    def xml_filename(self, filename):
+        return self.acron_issue_folder + '/' + os.path.basename(filename)
 
     def identify_destination_path(self, filename):
         ext = filename[filename.rfind('.')+1:]

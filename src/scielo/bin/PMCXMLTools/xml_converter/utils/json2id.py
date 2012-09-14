@@ -68,11 +68,11 @@ class JSON2IDFile:
                 field_occs = fields_info[tag]
                 if type(field_occs) == type([]):
                     for field_occ in field_occs:
-                        self.format_field_occ(tag, field_occ)
+                        self.__format_field_occ__(tag, field_occ)
                 else:
-                    self.format_field_occ(tag, field_occs)            
+                    self.__format_field_occ__(tag, field_occs)            
         
-    def format_field_occ(self, t, field_occ):
+    def __format_field_occ__(self, t, field_occ):
         """
         field_occ -- str (string) or [] (repetitive field (with/without subf) or {} (field with subfields)
         """ 
@@ -83,28 +83,28 @@ class JSON2IDFile:
                 if type(subf_occs) == type([]):
                     # campo repetitivo 
                     for subf_occ in subf_occs:
-                        s = self._convert_value_(subf_occ)
-                        s = self.format_subfield(subf_label, s, '')
-                        s = self.tag_it(t, s)
+                        s = self.__convert_value__(subf_occ)
+                        s = self.__format_subfield__(subf_label, s, '')
+                        s = self.__tag_it__(t, s)
                         self.__write__(s)
                 else:
                     # campo com varios subcampos
-                    s = self._convert_value_(subf_occs)
-                    tagged = self.format_subfield(subf_label, s, tagged)
+                    s = self.__convert_value__(subf_occs)
+                    tagged = self.__format_subfield__(subf_label, s, tagged)
             if len(tagged)>0:
-                s = self.tag_it(t, tagged)
+                s = self.__tag_it__(t, tagged)
                 self.__write__(s)
         else:
             if type(field_occ) == type([]):  
                 for tagged in field_occ:
-                    self.format_field_occ(t, tagged)
+                    self.__format_field_occ__(t, tagged)
             else:    
                 if type(field_occ) == type(''):
-                    s = self._convert_value_(field_occ)
-                    s = self.tag_it(t, s)
+                    s = self.__convert_value__(field_occ)
+                    s = self.__tag_it__(t, s)
                     self.__write__(s)
         
-    def format_subfield(self, subf_label, subf_content, content):
+    def __format_subfield__(self, subf_label, subf_content, content):
         if subf_label == '_':
             content = subf_content + content
         else:
@@ -112,12 +112,12 @@ class JSON2IDFile:
             
         return content
         
-    def tag_it(self, tag, content):
+    def __tag_it__(self, tag, content):
         tag = '000' + tag
         return '!v' + tag[-3:] + '!' + content + "\n"
             
            
-    def _convert_value_(self, value):
+    def __convert_value__(self, value):
         #print(value)
         if value != '':
             try:
@@ -128,10 +128,10 @@ class JSON2IDFile:
                     value = value.encode('iso-8859-1')
                 except:
                 
-                    value = self.convert_chr(value)
+                    value = self.__convert_chr__(value)
         return value
 
-    def convert_chr(self, value):
+    def __convert_chr__(self, value):
         v = ''
         for c in value:
             try:

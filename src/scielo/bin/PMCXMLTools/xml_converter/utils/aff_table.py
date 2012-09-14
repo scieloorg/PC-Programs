@@ -206,7 +206,9 @@ class AffiliationTable:
         # several cases, the country is suppressed
         # 
         new = []
-        country = state = city = ''
+        country = ''
+        state = ''
+        city = ''
         affiliations.reverse()
         for aff in affiliations:
             if 'p' in aff.keys():

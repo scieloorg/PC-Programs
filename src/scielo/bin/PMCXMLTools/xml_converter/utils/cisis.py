@@ -9,7 +9,8 @@ class CISIS:
             self.cisis_path = cisis_path
         else:
             print('Invalid cisis path: ' + cisis_path)
-    
+
+
     def id2i(self, id_filename, mst_filename):
         cmd = self.cisis_path + '/id2i ' + id_filename + ' create=' + mst_filename
         os.system(cmd)
@@ -18,10 +19,20 @@ class CISIS:
         cmd = self.cisis_path + '/mx ' + src + '  append=' + dest + ' now -all'
         os.system(cmd)
         
-    def id2mst(self, id_filename, mst_filename):
-        temp = os.path.dirname(id_filename) + '/' + os.path.basename(mst_filename)
+    def create(self, src, dest):
+        cmd = self.cisis_path + '/mx ' + src + '  create=' + dest + ' now -all'
+        os.system(cmd)
+        
+    def id2mst(self, id_filename, mst_filename, reset):
+        from tempfile import mkstemp
+    
+        _, temp = mkstemp()
         self.id2i(id_filename, temp)
+
+        if reset:
+            self.create('null count=0', mst_filename)
         self.append(temp, mst_filename)
+        os.remove(temp)
 
     def i2id(self, mst_filename, id_filename):
         cmd = self.cisis_path + '/i2id ' + mst_filename + ' > ' + id_filename 
