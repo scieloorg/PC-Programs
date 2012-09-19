@@ -1247,6 +1247,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=W:\scielo\bin\XMLTools\call_transform.py
+  Destination=%PROGDIR%\bin\XMLTools\call_transform.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=W:\scielo\bin\XMLTools\call_transform.bat
   Destination=%PROGDIR%\bin\XMLTools\call_transform.bat
   Flags=0000000010000010
@@ -3631,6 +3636,11 @@ end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\refIdentifier\PubMed.sh
   Destination=%PROGDIR%\bin\markup\refIdentifier\PubMed.sh
+  Flags=0000000010000010
+end
+item: Install File
+  Source=W:\scielo\bin\markup_pmc\refIdentifier\PubMed.py
+  Destination=%PROGDIR%\bin\markup\refIdentifier\PubMed.py
   Flags=0000000010000010
 end
 item: Install File
