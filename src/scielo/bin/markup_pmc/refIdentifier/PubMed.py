@@ -37,7 +37,7 @@ os.system(cmd)
 print(os.path.exists(result_filename))
 
 
-#check_file(ctrl_filename)
+check_file(ctrl_filename)
 shutil.copyfile(result_filename, ctrl_filename)
 
 print(os.path.exists(ctrl_filename))

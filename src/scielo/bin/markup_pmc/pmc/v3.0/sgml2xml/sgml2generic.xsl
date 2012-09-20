@@ -265,6 +265,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						<xsl:variable name="t" select="normalize-space(.//toctitle)"/>
 						
 						<subject><xsl:apply-templates select="." mode="format-subject"><xsl:with-param name="t" select="$t"/></xsl:apply-templates></subject></xsl:if>
+						<xsl:if test="not(.//toctitle)">
+						
+						<subject>Article</subject></xsl:if>
 					</subj-group>
 				</article-categories>
 			<xsl:apply-templates select="." mode="article-title"/>
@@ -692,7 +695,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template-->
 	<!-- BACK -->
 	<xsl:template match="article|text" mode="back">
-		<xsl:if test="back/fngrp[@fntype] or back/ack or back/fxmlbody or back/*[@standard] or back/bbibcom">
+		<xsl:variable name="test"><xsl:apply-templates select=".//fngrp[@fntype]" mode="notfnauthors"></xsl:apply-templates></xsl:variable>
+				
+		<xsl:if test="$test!='' or back/ack or back/fxmlbody or back/*[@standard] or back/bbibcom">
 			<back>
 				<xsl:apply-templates select="back"/>
 			</back>
@@ -770,11 +775,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:otherwise>other</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
+			<xsl:comment>[mixed-citation]<xsl:apply-templates select="." mode="text-ref"/>[/mixed-citation]</xsl:comment>
 			<element-citation publication-type="{$type}">
 				<xsl:apply-templates select="*[name()!='no' and name()!='text-ref']">
 					<xsl:with-param name="position" select="position()"/>
 				</xsl:apply-templates>
-				<xsl:apply-templates select="." mode="text-ref"/>
+				
 			</element-citation>
 			
 		</ref>
@@ -962,7 +968,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ext-link>
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'citat')]" mode="text-ref">
-		<!-- mixed-citation specific-use="archive-only">
+		<mixed-citation specific-use="archive-only">
 			<xsl:choose>
 				<xsl:when test="text-ref">
 					<xsl:value-of select="text-ref" disable-output-escaping="yes"/>
@@ -971,7 +977,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="." mode="create-text-ref"/>
 				</xsl:otherwise>
 			</xsl:choose>
-		</mixed-citation> -->
+		</mixed-citation>
 	</xsl:template>
 	<xsl:template match="*" mode="create-text-ref">
 		<xsl:apply-templates select="@* | * | text() " mode="create-text-ref"/>

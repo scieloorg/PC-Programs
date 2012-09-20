@@ -19,20 +19,21 @@ class PMCFilesManager:
             self.fullname = mkp_xml_fullname
              
             # 02-05.sgm.xml
-            self.filename = mkp_xml_fullname[mkp_xml_fullname.rfind('/')+1:] 
+            self.filename = os.path.basename(mkp_xml_fullname) 
             
             # <???>/ag/v49n1/pmc/pmc_work/02-05
-            self.work_path = mkp_xml_fullname[0:mkp_xml_fullname.rfind('/')]
+            self.work_path = os.path.dirname(mkp_xml_fullname) 
             
             # <???>/ag/v49n1/pmc/
-            pmc_path = self.work_path[0:self.work_path.rfind('/pmc_work')+1] 
+            pmc_path = os.path.dirname(os.path.dirname(self.work_path) )  + '/'
             
             # <???>/ag/v49n1/pmc/pmc_package
             self.package_path = pmc_path + 'pmc_package' 
+            self.xml_package_path = pmc_path + 'xml_package' 
             
             # <???>/ag/v49n1/pmc/pmc_img
             self.img_path = pmc_path + 'pmc_img' 
-            self.jpg_path = mkp_xml_fullname[0:mkp_xml_fullname.rfind('/pmc/pmc_work')+1] + 'img'
+            self.jpg_path = os.path.dirname(pmc_path)  + '/img'
             
             # <???>/ag/v49n1/pmc/pmc_pdf
             self.pdf_path = pmc_path + 'pmc_pdf' 
@@ -43,8 +44,16 @@ class PMCFilesManager:
                 try:
                     os.makedirs(self.package_path)
                 except:
-                    print 'Unable to create ' +self.package_path
+                    print 'Unable to create ' + self.package_path
     
+            mkp_xml = MKPXML(self.fullname)
+            self.new_filename = mkp_xml.return_filename()
+            
+            print('new filename:' + self.new_filename)
+            
+            self.xml_images_list = mkp_xml.return_images()
+            
+
     def clean_directory(self):
         
         filename = self.filename.replace('.sgm.xml','')
@@ -60,22 +69,36 @@ class PMCFilesManager:
         for f in list:
             if '.tmp' in f:
                 os.remove(self.work_path + '/' + f)
-                                            
+    
+
+    def create_xml_package(self, xml_file):
+        if os.path.exists(xml_file):
+            new_file = self.xml_package_path + '/' + self.new_filename + '.xml'
+            new_path = self.xml_package_path
+            if not os.path.exists(new_path):
+                os.makedirs(new_path)
+            if os.path.exists(new_path):
+                
+                f = open(xml_file, 'r')
+                c = f.read()
+                f.close()
+
+                f = open(new_file, 'w')
+                c = c.replace('<!--[mixed-citation]', '<mixed-citation>').replace('[/mixed-citation]-->', '</mixed-citation>')
+                f.write(c)
+                f.close()
+
+    
+
+
     def copy_files_from_work_to_package_folder(self, pmc_xml_fullname):
         print('copy_files_from_work_to_package_folder')
         if not os.path.isfile(pmc_xml_fullname):
              print 'Expected: ' + pmc_xml_fullname
         else:
-            mkp_xml = MKPXML(self.fullname)
-            newfilename = mkp_xml.return_filename()
             
-            print('new filename:' + newfilename)
             
-            images = mkp_xml.return_images()
-            print('images')
-            print(images)
-            
-            new_fullname = self.package_path + '/' + newfilename 
+            new_fullname = self.package_path + '/' + self.new_filename 
             print('copy ' + pmc_xml_fullname + ' ' + new_fullname)
             shutil.copy(pmc_xml_fullname, new_fullname + '.xml')
 
@@ -84,7 +107,7 @@ class PMCFilesManager:
                 shutil.copy(self.pdf_filename, new_fullname + '.pdf')
              
             img_extension = ''
-            for src_dest_img in images:
+            for src_dest_img in self.xml_images_list:
                 src = src_dest_img[0]
                 print(src)
                 if '.jpg' in src:
@@ -103,15 +126,13 @@ class PMCFilesManager:
                     i+=1
                 if not test_ext:
                     print msg
-                     
+                 
+
     def copy_files_from_img_to_work_folder(self):
         msg = ''
         print('copy_files_from_img_to_work_folder')
-        mkp_xml = MKPXML(self.fullname)
-        images = mkp_xml.return_images()
-        print('images')
-        print(images)
-        for src_dest_img in images:
+        
+        for src_dest_img in self.xml_images_list:
             
             src = src_dest_img[0]
             if not '.jpg' in src:

@@ -84,6 +84,7 @@ class PMCXMLGeneratorAndValidator:
                                 # Generate xml (final version)
                                 if self.xml_manager.transform(sgm_xml_filename, self.xsl_sgml2xml, xml_filename, err_filename):
                                     pmc_files_manager.copy_files_from_work_to_package_folder(xml_filename)
+                                    pmc_files_manager.create_xml_package(xml_filename)
                                     done = True
                                        
         if done:
