@@ -94,6 +94,7 @@ zipcode;Código de endereçamento postal da afiliação;10;#FALSE#;#FALSE#;
 email;Endereço eletrônico do autor;10;#FALSE#;#FALSE#;
 
 authgrpText;textM
+author+;Marca automaticamente varios author;11;#FALSE#;#FALSE#;authgrpText
 author;Agrupa dados dos autores individuais como nome,sobrenome e papel;6;#TRUE#;#TRUE#;authorText
 down;authorText
 onbehalf;Identifica a instituição representada;6;#FALSE#;#FALSE#;
@@ -129,6 +130,7 @@ title;Identifica o título do documento;9;#TRUE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;9;#TRUE#;#FALSE#;
 
 authgrpFront;front
+author+;Marca automaticamente varios author;11;#FALSE#;#FALSE#;authorFront
 author;Agrupa os dados de autores individuais como nome,sobrenome e papel;9;#TRUE#;#TRUE#;authorFront
 down;authorFront
 onbehalf;Identifica a instituição representada;9;#FALSE#;#FALSE#;

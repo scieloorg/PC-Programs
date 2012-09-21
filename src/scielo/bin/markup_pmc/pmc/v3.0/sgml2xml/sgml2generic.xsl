@@ -392,12 +392,18 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="author/sup"><xsl:value-of select=".//text()"/>
+	<xsl:template match="author/sup">
+        <xsl:value-of select=".//text()"/>
+	</xsl:template>
+	<xsl:template match="author/sup" mode="aff-label">
+		<xsl:variable name="sup" select="."/>
+		<xsl:if test="not($xref_id[@id=$sup])">
+        <xsl:value-of select=".//text()"/></xsl:if>
 	</xsl:template>
 	<xsl:template match="author/@rid">
-		<xref ref-type="aff" rid="aff{substring(normalize-space(.),3,1)}"><xsl:apply-templates select="../sup" mode="label"/></xref>
+		<xref ref-type="aff" rid="aff{substring(normalize-space(.),3,1)}"><xsl:apply-templates select="..//sup" mode="aff-label"/></xref>
 		<xsl:if test="string-length(normalize-space(.))&gt;3">
-			<xref ref-type="aff" rid="aff{substring(substring-after(normalize-space(.),' '),3,1)}"/>
+			<xref ref-type="aff" rid="aff{substring(substring-after(normalize-space(.),' '),3,1)}"><xsl:apply-templates select="..//sup" mode="aff-label"/></xref>
 		</xsl:if>
 	</xsl:template>
 	
