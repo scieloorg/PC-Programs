@@ -127,12 +127,14 @@ class PMCFilesManager:
             src = src_dest_img[0]
             if not '.jpg' in src:
                 src = src + '.jpg'
- 
-            
+            dest = src_dest_img[1]
+            if not '.jpg' in dest:
+                dest += '.jpg'
+
             if os.path.isfile(self.jpg_path + '/' + src ):
-     	        shutil.copy(self.jpg_path + '/' + src , self.work_path + '/' + src)
+     	        shutil.copy(self.jpg_path + '/' + src , self.work_path + '/' + self.new_filename + '-' + dest)
             else:
-                msg = msg + '   - Missing file: '  +  self.jpg_path + '/' + src   + "\n"
+                msg = msg + '   - Missing file: '  +  self.jpg_path + '/' +  src   + "\n"
          
         if len(msg)>0:
             print msg          
