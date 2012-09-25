@@ -1725,10 +1725,10 @@ et al.</copyright-statement>
 	<xsl:template match="front//report | bbibcom//report">
 		<funding-group>
 			<xsl:apply-templates select="rsponsor | projname "/>
-			<xsl:if test="not($unident_back[contains(.//text,'ACK') or contains(.//text,'Ack') or contains(.//text,'Agrad') or contains(.//text,'AGRAD')])">
+			<!--xsl:if test="not($unident_back[contains(.//text,'ACK') or contains(.//text,'Ack') or contains(.//text,'Agrad') or contains(.//text,'AGRAD')])"-->
 			<funding-statement>
 				<xsl:apply-templates select=".//text()"/>
-			</funding-statement></xsl:if>
+			</funding-statement><!--/xsl:if-->
 		</funding-group>
 	</xsl:template>
 	<xsl:template match="front//rsponsor | front//projname| bbibcom//rsponsor | bbibcom//projname">
