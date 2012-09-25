@@ -75,6 +75,8 @@ class JavaXMLManager:
             
         if r == True:
             os.rename(temp_result, result_filename)
+            print(result_filename)
         else:
             os.rename(temp_result, err_filename)
+            print(err_filename)
         return r

@@ -33,7 +33,7 @@ class PMCFilesManager:
             
             # <???>/ag/v49n1/pmc/pmc_img
             self.img_path = pmc_path + 'pmc_img' 
-            self.jpg_path = os.path.dirname(pmc_path)  + '/img'
+            self.jpg_path = os.path.dirname(pmc_path)  + '/pmc_img'
             
             # <???>/ag/v49n1/pmc/pmc_pdf
             self.pdf_path = pmc_path + 'pmc_pdf' 
@@ -78,18 +78,8 @@ class PMCFilesManager:
             if not os.path.exists(new_path):
                 os.makedirs(new_path)
             if os.path.exists(new_path):
+                shutil.copyfile(xml_file, new_file)
                 
-                f = open(xml_file, 'r')
-                c = f.read()
-                f.close()
-
-                f = open(new_file, 'w')
-                c = c.replace('<!--[mixed-citation]', '<mixed-citation>').replace('[/mixed-citation]-->', '</mixed-citation>')
-                f.write(c)
-                f.close()
-
-    
-
 
     def copy_files_from_work_to_package_folder(self, pmc_xml_fullname):
         print('copy_files_from_work_to_package_folder')
