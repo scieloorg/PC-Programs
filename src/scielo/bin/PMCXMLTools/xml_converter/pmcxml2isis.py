@@ -86,7 +86,7 @@ class PMCXML2ISIS:
                 shutil.copyfile(work_path+'/'+f, new_name)
                 if os.path.exists(new_name):
                     self.write_report_package(report_package, 'Converted ' + new_name, True, False, False)
-                    os.path.unlink(work_path+'/'+f)
+                    os.unlink(work_path+'/'+f)
                 else:
                     self.write_report_package(report_package, 'Unable to convert ' + new_name, True, False, False)
 
