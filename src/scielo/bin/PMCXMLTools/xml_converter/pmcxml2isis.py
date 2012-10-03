@@ -78,10 +78,10 @@ class PMCXML2ISIS:
 
     def generate_id_files(self, report_package, package_file, work_path):
         files = os.listdir(work_path)
-        xml_list = [ f for f in files if '.XML' in f ]
+        xml_list = [ f for f in files if f.endswith('.XML') ]
         if len(xml_list)>0:
             self.write_report_package(report_package, 'Program will convert .XML to .xml', True, False, False)
-            for f in files:
+            for f in xml_list:
                 new_name = work_path +'/' + f.replace('.XML','.xml')
                 shutil.copyfile(work_path+'/'+f, new_name)
                 if os.path.exists(new_name):
@@ -90,7 +90,7 @@ class PMCXML2ISIS:
                 else:
                     self.write_report_package(report_package, 'Unable to convert ' + new_name, True, False, False)
 
-        xml_list = [ f for f in files if '.xml' in f ]
+        xml_list = [ f for f in files if f.endswith('.xml') ]
         issues = {}
         self.img_converter.img_to_jpeg(work_path, work_path)
 
