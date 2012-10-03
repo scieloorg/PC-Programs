@@ -78,13 +78,28 @@ class PMCXML2ISIS:
 
     def generate_id_files(self, report_package, package_file, work_path):
         files = os.listdir(work_path)
+        xml_list = [ f for f in files if '.XML' in f ]
+        if len(xml_list)>0:
+            self.write_report_package(report_package, 'Program will convert .XML to .xml', True, False, False)
+            for f in files:
+                new_name = work_path +'/' + f.replace('.XML','.xml')
+                shutil.copyfile(work_path+'/'+f, new_name)
+                if os.path.exists(new_name):
+                    self.write_report_package(report_package, 'Converted ' + new_name, True, False, False)
+                    os.path.unlink(work_path+'/'+f)
+                else:
+                    self.write_report_package(report_package, 'Unable to convert ' + new_name, True, False, False)
+
         xml_list = [ f for f in files if '.xml' in f ]
         issues = {}
         self.img_converter.img_to_jpeg(work_path, work_path)
 
         files_set_list = {}
         files_set = None
-
+        
+        self.write_report_package(report_package, 'XML Files: ' + str(len(xml_list)), True, True, True)
+        if len(xml_list) == 0:
+            self.write_report_package(report_package, 'All the files in the package: ' + '\n' + '\n'.join(files), False, True, False)
         for f in xml_list:
             xml_filename = work_path + '/' + f
             
@@ -268,25 +283,29 @@ class PMCXML2ISIS:
                 f.close()
 
                 text = text.replace('REPLACE_PACKAGE', package_name)
-        
+
+        attached_files = [ item for item in report_files if os.path.exists(item) ]
         if email_data['FLAG_ATTACH_REPORTS'] == 'yes':
             text = text.replace('REPLACE_ATTACHED_OR_BELOW', 'em anexo')
+
         else:
             text = text.replace('REPLACE_ATTACHED_OR_BELOW', 'abaixo')
-            for item in report_files:
+            
+            for item in attached_files:
+                
                 f = open(item, 'r')
                 text += '-'* 80 + '\n'+ f.read() + '-'* 80 + '\n' 
                 f.close()
-            report_files = []
+            attached_files = []
 
         self.report.write('Email data:' + package_name)
         self.report.write('to:' + ','.join(to))
         self.report.write('bcc:' + ','.join(bcc))
-        self.report.write('files:' + ','.join(report_files))
+        self.report.write('files:' + ','.join(attached_files))
         self.report.write('text:' + text)
 
         if email_data['IS_AVAILABLE_EMAIL_SERVICE'] == 'yes':
-            self.email_service.send(to, [], email_data['BCC_EMAIL'], '[SciELO-XML] ' + package_name, text, report_files)
+            self.email_service.send(to, [], email_data['BCC_EMAIL'], email_data['EMAIL_SUBJECT_PREFIX'] + package_name, text, attached_files)
 
     def save_issue_id_in_proc_folder(self, id_filename, acron, issue_name):
         fname = self.xml_folders.id_folder + '/' + acron + issue_name + '.id'
@@ -391,7 +410,7 @@ if __name__ == '__main__':
                 if not os.path.exists(configuration[c[0]]):
                     os.makedirs(configuration[c[0]])
     f.close()
-    config_parameters = [ 'PROC_DB_TITLE_FILENAME','PROC_DB_ISSUE_FILENAME','DB_TITLE_FILENAME', 'FTP_SERVER',  'FTP_USER','FTP_PSWD',  'FTP_DIR', 'FLAG_ATTACH_REPORTS','ALERT_FORWARD', 'IS_AVAILABLE_EMAIL_SERVICE', 'EMAIL_TEXT', 'SENDER_EMAIL', 'BCC_EMAIL', 'FLAG_SEND_EMAIL_TO_XML_PROVIDER', 'DB_ISSUE_FILENAME', 'FTP_PATH', 'QUEUE_PATH', 'IN_PROC_PATH',  'WORK_PATH', 'TRASH_PATH', 'SERIAL_DATA_PATH', 'SERIAL_PROC_PATH', 'PDF_PATH', 'IMG_PATH', 'XML_PATH', 'CISIS_PATH', 'LOG_FILENAME', 'ERROR_FILENAME', 'SUMMARY_REPORT', 'DEBUG_DEPTH', 'DISPLAY_MESSAGES_ON_SCREEN']
+    config_parameters = [ 'EMAIL_SUBJECT_PREFIX','PROC_DB_TITLE_FILENAME','PROC_DB_ISSUE_FILENAME','DB_TITLE_FILENAME', 'FTP_SERVER',  'FTP_USER','FTP_PSWD',  'FTP_DIR', 'FLAG_ATTACH_REPORTS','ALERT_FORWARD', 'IS_AVAILABLE_EMAIL_SERVICE', 'EMAIL_TEXT', 'SENDER_EMAIL', 'BCC_EMAIL', 'FLAG_SEND_EMAIL_TO_XML_PROVIDER', 'DB_ISSUE_FILENAME', 'FTP_PATH', 'QUEUE_PATH', 'IN_PROC_PATH',  'WORK_PATH', 'TRASH_PATH', 'SERIAL_DATA_PATH', 'SERIAL_PROC_PATH', 'PDF_PATH', 'IMG_PATH', 'XML_PATH', 'CISIS_PATH', 'LOG_FILENAME', 'ERROR_FILENAME', 'SUMMARY_REPORT', 'DEBUG_DEPTH', 'DISPLAY_MESSAGES_ON_SCREEN']
 
     error = False
     for i in config_parameters:
@@ -462,7 +481,7 @@ if __name__ == '__main__':
         email_data['IS_AVAILABLE_EMAIL_SERVICE'] = configuration['IS_AVAILABLE_EMAIL_SERVICE']
         email_data['ALERT_FORWARD'] = configuration['ALERT_FORWARD']
         email_data['FLAG_ATTACH_REPORTS'] = configuration['FLAG_ATTACH_REPORTS']
-
+        email_data['EMAIL_SUBJECT_PREFIX'] = configuration['EMAIL_SUBJECT_PREFIX']
         # instancing reports
         files = [ log_filename, err_filename, summary_filename]
         

@@ -105,13 +105,18 @@
 				<ArticleId IdType="pii">
 					<xsl:apply-templates select="." mode="pii"/>
 				</ArticleId>
-				<xsl:if test="$doi_prefix and $doi_prefix!=''">
-					<xsl:if test="not(contains(.//issue_no,'review'))">
-						<ArticleId IdType="doi">
-							<xsl:value-of select="$doi_prefix"/>/<xsl:apply-templates select="." mode="pii"/>
-						</ArticleId>
-					</xsl:if>
-				</xsl:if>
+				<xsl:choose>
+					<xsl:when test="normalize-space(.//doi//text())!=''">
+						<ArticleId IdType="doi"><xsl:value-of select="normalize-space(.//doi//text())"/></ArticleId>
+					</xsl:when>
+					<xsl:when  test="$doi_prefix and $doi_prefix!=''">
+						<xsl:if test="not(contains(.//issue_no,'review'))">
+							<ArticleId IdType="doi">
+								<xsl:value-of select="$doi_prefix"/>/<xsl:apply-templates select="." mode="pii"/>
+							</ArticleId>
+						</xsl:if>
+					</xsl:when>
+				</xsl:choose>
 			</ArticleIdList>
 			<xsl:if test=".//received_dateiso[occ] or .//accepted_dateiso[occ] or .//rvpdate[occ] or .//ahpdate[occ]">
 				<History>

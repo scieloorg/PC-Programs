@@ -59,8 +59,9 @@ class CISIS:
 
 class IDFile:
 
-    def __init__(self, id_filename):
+    def __init__(self, id_filename, convert2utf8 = True):
         self.id_filename = id_filename
+        self.convert2utf8 = convert2utf8
 
     def id2json(self):
         f = open(self.id_filename, 'r')
@@ -73,7 +74,8 @@ class IDFile:
         rec = {} 
         for l in c:
             l = l.replace('\n', '')
-
+            if self.convert2utf8:
+                l = l.decode('iso-8859-1').encode('utf-8')
             if '!ID ' in l:
                 if len(rec) > 0:
                     r.append(rec)

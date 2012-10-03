@@ -26,7 +26,16 @@ class XMLManager:
         if os.path.exists(xml_filename):
             self.ns = ''
             try:
-                self.root = etree.parse(xml_filename).getroot()
+                parser = etree.XMLParser(recover=True, remove_blank_text=True, resolve_entities=False) #recovers from bad characters.
+            except:
+                parser = None
+                
+            try:
+                if parser != None:
+                    self.root = etree.parse(xml_filename, parser).getroot()
+                else:
+                    self.root = etree.parse(xml_filename).getroot()
+                
                 if '{' in self.root.tag:
                     self.ns = self.root.tag[0:self.root.tag.find('}')+1]
                 else:

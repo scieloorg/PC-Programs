@@ -1,3 +1,4 @@
+@echo off
 set serial=%1\serial
 
 
@@ -10,7 +11,7 @@ if exist %serial%\issue\issue.mst     mx %serial%\issue\issue     fst=@ fullinv=
 if exist %serial%\code\code.mst       mx %serial%\code\code       fst=@ fullinv=%serial%\code\code
 if exist %serial%\code\newcode.mst    mx %serial%\code\newcode    fst=@ fullinv=%serial%\code\newcode
 if exist %serial%\title\title.mst     mx %serial%\title\title     fst=@%serial%\title\tit_issn.fst fullinv=%serial%\title\tit_issn
-
+goto FIM
 
 
 :ERROR1

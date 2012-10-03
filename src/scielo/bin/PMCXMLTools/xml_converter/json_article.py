@@ -634,20 +634,22 @@ class TaggedData:
         ###     
 
         k = 0
-        for citation in self.json_data['c']:
-            citation = self.generic.format_for_indexing(citation)
-            citation = self.fix_citation(citation, k)
-            missing_data = self.validate_citation_metadata(citation)
-            if len(missing_data) > 0:
-                self.article_report.write('\n'+ ' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), False, True, False)
-                self.general_report.write('\n'+ ' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), False, True, False)
-                if '704' in citation.keys():
-                    self.article_report.write('\n'+citation['704'], False, True, False)
-                    self.general_report.write('\n'+citation['704'], False, True, False)
-                count_errors += len(missing_data)
+        if 'c' in self.json_data.keys():
             
-            self.json_data['c'][k] = citation 
-            k += 1
+            for citation in self.json_data['c']:
+                citation = self.generic.format_for_indexing(citation)
+                citation = self.fix_citation(citation, k)
+                missing_data = self.validate_citation_metadata(citation)
+                if len(missing_data) > 0:
+                    self.article_report.write('\n'+ ' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), False, True, False)
+                    self.general_report.write('\n'+ ' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), False, True, False)
+                    if '704' in citation.keys():
+                        self.article_report.write('\n'+citation['704'], False, True, False)
+                        self.general_report.write('\n'+citation['704'], False, True, False)
+                    count_errors += len(missing_data)
+            
+                self.json_data['c'][k] = citation 
+                k += 1
         self.article_report.write('  References:' + str(k), True, False, False)
         self.general_report.write('  References:' + str(k), True, False, False)
         
@@ -688,9 +690,15 @@ class JSON_Article:
         
         journal = journal_list.find_journal(self.tagged_data.return_journal_title())
         if journal == None:
-
+            titles = ''
+            try:
+                for t in journal_list:
+                    titles += ',' + t.title
+                titles = titles[1:]
+            except:
+                pass
             #journal = Journal(self.tagged_data.return_journal_title(), self.tagged_data.return_issn_id())
-            article_report.write(self.tagged_data.return_journal_title() + ' was not found in title database. The processing will use ' + self.tagged_data.return_issn_id() +  ' as its ISSN.', True, True)
+            article_report.write(self.tagged_data.return_journal_title() + ' was not found in title database. '+ '\n' + titles + '\n' + 'The processing will use ' + self.tagged_data.return_issn_id() +  ' as its ISSN.', True, True)
         else:
             self.tagged_data.fix_and_validate(img_files)
 
