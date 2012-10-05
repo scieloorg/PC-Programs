@@ -24,21 +24,58 @@
 
 #echo fim > %ctrl_filename%
 
-import os, sys, shutil
+import os, sys, shutil, time
+
+def check_file(filename, content='', taken_time=0, max_taken_time=100):
+    c = ''
+    start = time.time()
+    r = False
+    if os.path.exists(filename):
+        try:
+            f = open(filename, 'r')
+            c = f.read()
+            f.close()
+             
+            if len(c)>0:
+                r = (len(content) == len(c))
+            
+        except:
+            r = False
+
+    end = time.time()
+    print(taken_time)
+    if r == False:
+        taken_time += taken_time + start - end
+        if taken_time < max_taken_time:
+            r = check_file(filename, c, taken_time, max_taken_time)
+    return r
+
+
+def execute_command_line(command_line):
+    import shlex, subprocess
+    p = subprocess.Popen(shlex.split(command_line))
+    p.wait()
+
 
 script, java_exe, curr_path, xml_filename, xsl_filename, transformation_result_filename, error_filename, ctrl_filename = sys.argv
 temp = transformation_result_filename + '.tmp'
 files = [ctrl_filename, transformation_result_filename, temp, error_filename]
 for f in files:
-	if os.path.exists(f):
-	    os.unlink(f)
+    if os.path.exists(f):
+        os.unlink(f)
+
 cmd = 'java -jar ' + curr_path  + '/core/saxon8.jar -novw -w0 -o ' + temp + ' ' + xml_filename + '  ' + xsl_filename 
+
 os.system(cmd)
+check_file(temp)
+
+#execute_command_line(cmd)
+
 
 if os.path.exists(temp):
-	shutil.copyfile(temp, transformation_result_filename)
-	if os.path.exists(temp):
-	    os.unlink(temp)
-	f = open(ctrl_filename, 'w')
-	f.write('fim')
-	f.close()
+    shutil.copyfile(temp, transformation_result_filename)
+    os.unlink(temp)
+
+f = open(ctrl_filename, 'w')
+f.write('fim')
+f.close()

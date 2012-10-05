@@ -90,6 +90,7 @@ class PMCXML2ISIS:
                 else:
                     self.write_report_package(report_package, 'Unable to convert ' + new_name, True, False, False)
 
+        files = os.listdir(work_path)
         xml_list = [ f for f in files if f.endswith('.xml') ]
         issues = {}
         self.img_converter.img_to_jpeg(work_path, work_path)
