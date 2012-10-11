@@ -34,7 +34,7 @@ def check_file(filename, content='', taken_time=0, max_taken_time=100):
     end = time.time()
     print(taken_time)
     if r == False:
-        taken_time += taken_time + start - end
+        taken_time += taken_time - start + end
         if taken_time < max_taken_time:
             r = check_file(filename, c, taken_time, max_taken_time)
     return r

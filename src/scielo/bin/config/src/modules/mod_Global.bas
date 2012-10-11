@@ -477,7 +477,7 @@ Property Let ChangeInterfaceIdiom(idiom As String)
     Call codedao.getTable("", "table of contents", CodeTOC)
     
     
-    Set CodeDB = Paths("Code Database")
+    Set CodeDB = Paths("NewCode Database")
     Call codedao.create(CodeDB.Path, CodeDB.FileName, CodeDB.key)
     
     Call codedao.getTable(idiom, "study area", CodeStudyArea)

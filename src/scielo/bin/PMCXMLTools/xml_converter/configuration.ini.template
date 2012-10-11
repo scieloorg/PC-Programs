@@ -1,37 +1,31 @@
-PROC_DB_TITLE_FILENAME=/bases/xml.000/serial/issue/issue
-PROC_DB_ISSUE_FILENAME=/bases/xml.000/serial/issue/issue
+DB_TITLE_FILENAME=/bases/scl.000/bases/title/title;/bases/spa.000/bases/title/title
+DB_ISSUE_FILENAME=/bases/scl.000/bases/issue/issue;/bases/spa.000/bases/issue/issue
+
+TEMP_PROC_DB_TITLE_FILENAME=/bases/xml.000/result/teste/serial/title/title
+TEMP_PROC_DB_ISSUE_FILENAME=/bases/xml.000/result/teste/serial/issue/issue
+TEMP_SERIAL_PATH=/bases/xml.000/result/teste/serial
 
 
-DB_TITLE_FILENAME=/bases/scl.000/bases/title/title
-DB_ISSUE_FILENAME=/bases/scl.000/bases/issue/issue
+PROC_DB_TITLE_FILENAME=/bases/xml.000/result/[WEB-APP]/serial/title/title
+PROC_DB_ISSUE_FILENAME=/bases/xml.000/result/[WEB-APP]/serial/issue/issue
+SERIAL_PROC_PATH=/bases/xml.000/result/[WEB-APP]/serial
+XML_PATH=/bases/xml.000/result/[WEB-APP]/bases/xml
+PDF_PATH=/bases/xml.000/result/[WEB-APP]/bases/pdf
+IMG_PATH=/bases/xml.000/result/[WEB-APP]/htdocs/img
 
 FTP_PATH=/bases/xml.000/xml_data/ftp
-
 QUEUE_PATH=/bases/xml.000/xml_data/queue
-
 IN_PROC_PATH=/bases/xml.000/xml_data/inproc
-
-
 WORK_PATH=/bases/xml.000/xml_data/work
-
 TRASH_PATH=/bases/xml.000/xml_data/trash
+REPORT_PATH=/bases/xml.000/xml_data/reports
 
 SERIAL_DATA_PATH=/bases/xml.000/archive/serial
-
-SERIAL_PROC_PATH=/bases/xml.000/proc/serial
-
-PDF_PATH=/bases/xml.000/bases/pdf
-
-IMG_PATH=/bases/xml.000/htdocs/img
-
-XML_PATH=/bases/xml.000/bases/xml
 
 CISIS_PATH=/bases/xml.000/proc/cisis
 
 LOG_FILENAME=detailed.log
-
 ERROR_FILENAME=error.log
-
 SUMMARY_REPORT=summarized.txt
 
 DEBUG_DEPTH=0
