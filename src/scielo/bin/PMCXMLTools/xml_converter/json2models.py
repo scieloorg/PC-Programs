@@ -8,8 +8,8 @@ from utils.aff_table import AffiliationTable
 from utils.table_issn import ISSN_Table
 
 class Generic:
-    def __init__(self, general_report):
-        self.general_report = general_report
+    def __init__(self):
+        #self.general_report = general_report
         self.conversion_tables = ConversionTables()
         self.table_entity_and_char = TableEntAndChar()
 
@@ -160,73 +160,141 @@ class Generic:
    
 
 
-class TaggedData:
 
-    def __init__(self, general_report):
-        self.general_report = general_report
-        self.generic = Generic(general_report)
+
+class JSONArticle:
+    def __init__(self, json_data, filename, report):
+        self.json_data = json_data
+        self.report = report
+        self.filename = filename
         self.issn_table = ISSN_Table()
         self.table_aff = AffiliationTable()
+    
 
-        # book, conf-proc, journal, patent, thesis, report, 
-        # communication, letter, review, list, discussion, standard, and working-paper
-        doctopics = {}
-        doctopics['journal'] = ['65', '12', '30']
-        doctopics['book'] = [ '65', '62', '18',  ]
-        doctopics['book-part'] = [ '65', '62', '18',  '12',]
-
-        doctopics['conf-proc'] = ['65', '53', ]
-        doctopics['thesis'] = ['65',  '51' ]
-        doctopics['patent'] = ['65', '150', ]
-        doctopics['report'] = ['65', '58', '60', ]
-        doctopics['software'] = ['65', '95', ]
-        doctopics['web'] = ['37', '109']
-        doctopics['unidentified'] = ['65', ]
-
-        self._evidences = {}
-        self._evidences_order = [30, 18, 51, 53]
-        self._evidences_order = [ str(i) for i in self._evidences_order ]
-        self._evidences['30'] = 'journal'
-        self._evidences['18'] = 'book'
-
-        self._evidences['51'] = 'thesis'
-        self._evidences['53'] = 'conf-proc'
-        self._evidences['150'] = 'patent'
-        self._evidences['58'] = 'report'
-        self._evidences['95'] = 'software'
-        self._evidences['37'] = 'web'
+    def return_article(self, issue):   
+        doc_f = self.json_data['f']
         
+        #print([ k  for k in doc_f.keys() ])
+        surname = ''
+        if '10' in  doc_f.keys():            
+            if type(doc_f['10']) == type([]):
+                surname =  doc_f['10'][0]['s']
+            else:
+                surname =  doc_f['10']['s']
+        if type(doc_f['14']['f']) == type(''):
+            page = doc_f['14']['f']
+        else:
+            page = doc_f['14']['f'][0]
+        self.json_data['35'] = issue.journal.issn_id
+        return Article(issue, page, surname)
+
+    def return_section_title(self):
+        return self.generic.return_json_data_single_value(self.json_data['f'], '49')
+
+
+    def fix_and_validate(self, img_files):
+        count_errors = 0
+        
+        self.fix_metadata()
+
+
+        self.json_data['h'] = self.generic.format_for_indexing(self.json_data['f'])
+        self.json_data['l'] = self.generic.format_for_indexing(self.json_data['h'])
+        
+        #self.article_report.write(self.filename, True, False, False)
+        ##self.general_report.write(self.filename, True, False, False)
+
+
+        errors, warnings = self.validate_article_metadata()
+        if len(warnings) > 0:
+            self.article_report.write('\n'+ ' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), False, True, False)
+            #self.general_report.write('\n'+ ' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), False, True, False)
+            count_errors += len(warnings)
+        if len(errors) > 0:
+            self.article_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
+            #self.general_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
+            count_errors += len(errors)
+
+        #####
+        missing_files = []
+        missing_href = []
+        href_list = []
+        if 'body' in self.json_data:
+            href_list = list(set(self.generic.return_json_data_multi_values(self.json_data['body'], 'file')))
+        for href in href_list:
+            if not href in img_files:
+                missing_files.append(href)
+        if len(missing_files) > 0:
+            self.article_report.write('\n'+ ' ! ERROR: Missing image files: ' + ', '.join(missing_files), False, True, False)
+            #self.general_report.write('\n'+ ' ! ERROR: Missing image files: ' + ', '.join(missing_files), False, True, False)
+            count_errors += len(missing_files)
+        for file in img_files:
+            if not file in href_list:
+                missing_href.append(file)
+
+        if len(missing_href) > 0:
+            self.article_report.write('\n'+ ' ! ERROR: Missing graphic/@xlink:href: ' + ', '.join(missing_href), False, True, False)
+            #self.general_report.write('\n'+ ' ! ERROR: Missing graphic/@xlink:href: ' + ', '.join(missing_href), False, True, False)
+            count_errors += len(missing_href)
+
+        if len(missing_href) + len(missing_files)  > 0:
+            print('VERIFICAR')
+            print(href_list)
+            print(img_files)
+        ###     
+
+        k = 0
+        if 'c' in self.json_data.keys():
+            
+            for citation in self.json_data['c']:
+                citation = self.generic.format_for_indexing(citation)
+                citation = self.fix_citation(citation, k)
+                missing_data = self.validate_citation_metadata(citation)
+                if len(missing_data) > 0:
+                    self.article_report.write('\n'+ ' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), False, True, False)
+                    #self.general_report.write('\n'+ ' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), False, True, False)
+                    if '704' in citation.keys():
+                        self.article_report.write('\n'+citation['704'], False, True, False)
+                        #self.general_report.write('\n'+citation['704'], False, True, False)
+                    count_errors += len(missing_data)
+            
+                self.json_data['c'][k] = citation 
+                k += 1
+        self.article_report.write('  References:' + str(k), True, False, False)
+        #self.general_report.write('  References:' + str(k), True, False, False)
         
 
-        self._labels = {}
-        self._labels['10'] = 'analytic authors'
-        self._labels['16'] = 'monographic authors'
-        self._labels['12'] = 'chapter or article title'
-        self._labels['14'] = 'pages'
-        self._labels['30'] = 'journal title'
-        self._labels['18'] = 'book title'
-        self._labels['65'] = 'publication date'
-        self._labels['62'] = 'publisher'
-        self._labels['63'] = 'edition'
-        self._labels['66'] = 'city'
-        self._labels['67'] = 'country'
-        self._labels['53'] = 'conference name'
-        self._labels['50'] = 'institution of the thesis'
-        self._labels['51'] = 'thesis degree'
-        self._labels['150'] = 'patent'
-        self._labels['58'] = 'sponsor'
-        self._labels['60'] = 'contract number'
-        self._labels['95'] = 'software version'
-        self._labels['109'] = 'cited date'
-        self._labels['37'] = 'URL'
-        self._labels['authors'] = 'authors'
-        self._doctopics = doctopics
+        self.article_report.write('Errors found: ' + str(count_errors), True, True, False)
+        #self.general_report.write('Errors found: ' + str(count_errors), True, True, False)
+    
+    def fix_keywords(self):
+        keyword_groups = self.generic.return_json_data_multi_values(self.json_data['f'], '85')
+        
+        new = []
+        for keyword_group in keyword_groups:
+            lang = 'en'
+            if type(keyword_group) == type({}):
 
-    def load(self, json_data, filename, article_report):
-        self.json_data = json_data
-        self.article_report = article_report
-        self.filename = filename
+                if 'l' in keyword_group.keys():
+                    lang = keyword_group['l']
 
+                for kw in keyword_group['k']:
+                    new.append({'k': kw, 'l': lang})
+
+            elif type(keyword_group) == type([]):
+                for kw in keyword_group:
+                    new.append({'k': kw, 'l': lang})
+
+                
+            elif type(keyword_group) == type(''):
+                new.append({'k' : keyword_group, 'l': 'en'})
+            
+        if len(new) > 0:
+            self.json_data['f']['85'] = new   
+
+    
+
+    
 
     def return_journal_title(self):
         return self.json_data['f']['100']
@@ -440,34 +508,7 @@ class TaggedData:
 
 
 
-    def fix_keywords(self):
-        keyword_groups = self.generic.return_json_data_multi_values(self.json_data['f'], '85')
-        
-        new = []
-        for keyword_group in keyword_groups:
-            lang = 'en'
-            if type(keyword_group) == type({}):
-
-                if 'l' in keyword_group.keys():
-                    lang = keyword_group['l']
-
-                for kw in keyword_group['k']:
-                    new.append({'k': kw, 'l': lang})
-
-            elif type(keyword_group) == type([]):
-                for kw in keyword_group:
-                    new.append({'k': kw, 'l': lang})
-
-                
-            elif type(keyword_group) == type(''):
-                new.append({'k' : keyword_group, 'l': 'en'})
-            
-        if len(new) > 0:
-            self.json_data['f']['85'] = new    
-            
     
-    
-
     def fix_metadata_authors(self):
         authors = self.generic.return_json_data_multi_values(self.json_data['f'], '10')
         changed = False
@@ -551,80 +592,7 @@ class TaggedData:
         
 
 
-    def fix_and_validate(self, img_files):
-        count_errors = 0
-        
-        self.fix_metadata()
-
-
-        self.json_data['h'] = self.generic.format_for_indexing(self.json_data['f'])
-        self.json_data['l'] = self.generic.format_for_indexing(self.json_data['h'])
-        
-        #self.article_report.write(self.filename, True, False, False)
-        #self.general_report.write(self.filename, True, False, False)
-
-
-        errors, warnings = self.validate_article_metadata()
-        if len(warnings) > 0:
-            self.article_report.write('\n'+ ' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), False, True, False)
-            self.general_report.write('\n'+ ' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), False, True, False)
-            count_errors += len(warnings)
-        if len(errors) > 0:
-            self.article_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
-            self.general_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
-            count_errors += len(errors)
-
-        #####
-        missing_files = []
-        missing_href = []
-        href_list = []
-        if 'body' in self.json_data:
-            href_list = list(set(self.generic.return_json_data_multi_values(self.json_data['body'], 'file')))
-        for href in href_list:
-            if not href in img_files:
-                missing_files.append(href)
-        if len(missing_files) > 0:
-            self.article_report.write('\n'+ ' ! ERROR: Missing image files: ' + ', '.join(missing_files), False, True, False)
-            self.general_report.write('\n'+ ' ! ERROR: Missing image files: ' + ', '.join(missing_files), False, True, False)
-            count_errors += len(missing_files)
-        for file in img_files:
-            if not file in href_list:
-                missing_href.append(file)
-
-        if len(missing_href) > 0:
-            self.article_report.write('\n'+ ' ! ERROR: Missing graphic/@xlink:href: ' + ', '.join(missing_href), False, True, False)
-            self.general_report.write('\n'+ ' ! ERROR: Missing graphic/@xlink:href: ' + ', '.join(missing_href), False, True, False)
-            count_errors += len(missing_href)
-
-        if len(missing_href) + len(missing_files)  > 0:
-            print('VERIFICAR')
-            print(href_list)
-            print(img_files)
-        ###     
-
-        k = 0
-        if 'c' in self.json_data.keys():
-            
-            for citation in self.json_data['c']:
-                citation = self.generic.format_for_indexing(citation)
-                citation = self.fix_citation(citation, k)
-                missing_data = self.validate_citation_metadata(citation)
-                if len(missing_data) > 0:
-                    self.article_report.write('\n'+ ' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), False, True, False)
-                    self.general_report.write('\n'+ ' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), False, True, False)
-                    if '704' in citation.keys():
-                        self.article_report.write('\n'+citation['704'], False, True, False)
-                        self.general_report.write('\n'+citation['704'], False, True, False)
-                    count_errors += len(missing_data)
-            
-                self.json_data['c'][k] = citation 
-                k += 1
-        self.article_report.write('  References:' + str(k), True, False, False)
-        self.general_report.write('  References:' + str(k), True, False, False)
-        
-
-        self.article_report.write('Errors found: ' + str(count_errors), True, True, False)
-        self.general_report.write('Errors found: ' + str(count_errors), True, True, False)
+    
         
     def validate_article_metadata(self):
         errors = [] 
@@ -643,146 +611,7 @@ class TaggedData:
                     warnings.append('Incomplete affiliation ' + xml)
             i += 1
         return (errors, warnings)
-
-class JSONArticle:
-    def __init__(self, json_data, filename, report):
-        self.json_data = json_data
-        self.report = report
-        self.filename = filename
-
-    def return_article(self, issue):   
-        doc_f = self.json_data['f']
-        
-        #print([ k  for k in doc_f.keys() ])
-        surname = ''
-        if '10' in  doc_f.keys():            
-            if type(doc_f['10']) == type([]):
-                surname =  doc_f['10'][0]['s']
-            else:
-                surname =  doc_f['10']['s']
-        if type(doc_f['14']['f']) == type(''):
-            page = doc_f['14']['f']
-        else:
-            page = doc_f['14']['f'][0]
-        self.json_data['35'] = issue.journal.issn_id
-        return Article(issue, page, surname)
-
-    def return_section_title(self):
-        return self.generic.return_json_data_single_value(self.json_data['f'], '49')
-
-
-    def load(self, img_files):
-        count_errors = 0
-        
-        self.fix_keywords()
-        self.json_data['f'] = self.generic.convert_value(self.json_data['f'], '71', 'doctopic')
-        self.fix_metadata_authors()
-        self.json_data['f'] = self.generic.fix_history(self.json_data['f'], '111', '112')
-        self.json_data['f'] = self.generic.fix_history(self.json_data['f'], '113', '114')
-
-        if '120' in self.json_data['f'].keys():
-            self.json_data['f']['120'] = 'XML_' + self.json_data['f']['120']
-        self.json_data['f']['42'] = '1'
-        
-        self.json_data['f'] = self.generic.fix_dates(self.json_data['f'], '65', '64')
-        
-        self.fix_illustrative_materials()
-        self.fix_affiliations()
-
-
-        self.json_data['h'] = self.generic.format_for_indexing(self.json_data['f'])
-        self.json_data['l'] = self.generic.format_for_indexing(self.json_data['h'])
-        
-        #self.article_report.write(self.filename, True, False, False)
-        #self.general_report.write(self.filename, True, False, False)
-
-
-        errors, warnings = self.validate_article_metadata()
-        if len(warnings) > 0:
-            self.article_report.write('\n'+ ' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), False, True, False)
-            self.general_report.write('\n'+ ' ! WARNING: Missing desirable data in article front : ' + ', '.join(warnings), False, True, False)
-            count_errors += len(warnings)
-        if len(errors) > 0:
-            self.article_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
-            self.general_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
-            count_errors += len(errors)
-
-        #####
-        missing_files = []
-        missing_href = []
-        href_list = []
-        if 'body' in self.json_data:
-            href_list = list(set(self.generic.return_json_data_multi_values(self.json_data['body'], 'file')))
-        for href in href_list:
-            if not href in img_files:
-                missing_files.append(href)
-        if len(missing_files) > 0:
-            self.article_report.write('\n'+ ' ! ERROR: Missing image files: ' + ', '.join(missing_files), False, True, False)
-            self.general_report.write('\n'+ ' ! ERROR: Missing image files: ' + ', '.join(missing_files), False, True, False)
-            count_errors += len(missing_files)
-        for file in img_files:
-            if not file in href_list:
-                missing_href.append(file)
-
-        if len(missing_href) > 0:
-            self.article_report.write('\n'+ ' ! ERROR: Missing graphic/@xlink:href: ' + ', '.join(missing_href), False, True, False)
-            self.general_report.write('\n'+ ' ! ERROR: Missing graphic/@xlink:href: ' + ', '.join(missing_href), False, True, False)
-            count_errors += len(missing_href)
-
-        if len(missing_href) + len(missing_files)  > 0:
-            print('VERIFICAR')
-            print(href_list)
-            print(img_files)
-        ###     
-
-        k = 0
-        if 'c' in self.json_data.keys():
-            
-            for citation in self.json_data['c']:
-                citation = self.generic.format_for_indexing(citation)
-                citation = self.fix_citation(citation, k)
-                missing_data = self.validate_citation_metadata(citation)
-                if len(missing_data) > 0:
-                    self.article_report.write('\n'+ ' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), False, True, False)
-                    self.general_report.write('\n'+ ' ! WARNING: Missing data in citation ' + str(k + 1) +': ' + ', '.join(missing_data), False, True, False)
-                    if '704' in citation.keys():
-                        self.article_report.write('\n'+citation['704'], False, True, False)
-                        self.general_report.write('\n'+citation['704'], False, True, False)
-                    count_errors += len(missing_data)
-            
-                self.json_data['c'][k] = citation 
-                k += 1
-        self.article_report.write('  References:' + str(k), True, False, False)
-        self.general_report.write('  References:' + str(k), True, False, False)
-        
-
-        self.article_report.write('Errors found: ' + str(count_errors), True, True, False)
-        self.general_report.write('Errors found: ' + str(count_errors), True, True, False)
-    
-    def fix_keywords(self):
-        keyword_groups = self.generic.return_json_data_multi_values(self.json_data['f'], '85')
-        
-        new = []
-        for keyword_group in keyword_groups:
-            lang = 'en'
-            if type(keyword_group) == type({}):
-
-                if 'l' in keyword_group.keys():
-                    lang = keyword_group['l']
-
-                for kw in keyword_group['k']:
-                    new.append({'k': kw, 'l': lang})
-
-            elif type(keyword_group) == type([]):
-                for kw in keyword_group:
-                    new.append({'k': kw, 'l': lang})
-
-                
-            elif type(keyword_group) == type(''):
-                new.append({'k' : keyword_group, 'l': 'en'})
-            
-        if len(new) > 0:
-            self.json_data['f']['85'] = new    
+ 
 
 class JSONIssue:
     def __init__(self, json_data):
@@ -856,6 +685,65 @@ class JSONJournal:
 class JSON2Models:
     def __init__(self, report):
         self.report = report
+
+
+        #self.general_report = general_report
+        self.generic = Generic()
+        
+
+        # book, conf-proc, journal, patent, thesis, report, 
+        # communication, letter, review, list, discussion, standard, and working-paper
+        doctopics = {}
+        doctopics['journal'] = ['65', '12', '30']
+        doctopics['book'] = [ '65', '62', '18',  ]
+        doctopics['book-part'] = [ '65', '62', '18',  '12',]
+
+        doctopics['conf-proc'] = ['65', '53', ]
+        doctopics['thesis'] = ['65',  '51' ]
+        doctopics['patent'] = ['65', '150', ]
+        doctopics['report'] = ['65', '58', '60', ]
+        doctopics['software'] = ['65', '95', ]
+        doctopics['web'] = ['37', '109']
+        doctopics['unidentified'] = ['65', ]
+
+        self._evidences = {}
+        self._evidences_order = [30, 18, 51, 53]
+        self._evidences_order = [ str(i) for i in self._evidences_order ]
+        self._evidences['30'] = 'journal'
+        self._evidences['18'] = 'book'
+
+        self._evidences['51'] = 'thesis'
+        self._evidences['53'] = 'conf-proc'
+        self._evidences['150'] = 'patent'
+        self._evidences['58'] = 'report'
+        self._evidences['95'] = 'software'
+        self._evidences['37'] = 'web'
+        
+        
+
+        self._labels = {}
+        self._labels['10'] = 'analytic authors'
+        self._labels['16'] = 'monographic authors'
+        self._labels['12'] = 'chapter or article title'
+        self._labels['14'] = 'pages'
+        self._labels['30'] = 'journal title'
+        self._labels['18'] = 'book title'
+        self._labels['65'] = 'publication date'
+        self._labels['62'] = 'publisher'
+        self._labels['63'] = 'edition'
+        self._labels['66'] = 'city'
+        self._labels['67'] = 'country'
+        self._labels['53'] = 'conference name'
+        self._labels['50'] = 'institution of the thesis'
+        self._labels['51'] = 'thesis degree'
+        self._labels['150'] = 'patent'
+        self._labels['58'] = 'sponsor'
+        self._labels['60'] = 'contract number'
+        self._labels['95'] = 'software version'
+        self._labels['109'] = 'cited date'
+        self._labels['37'] = 'URL'
+        self._labels['authors'] = 'authors'
+        self._doctopics = doctopics
     
     def return_journals_list(self, json):
         #json = self.db2json(title_db_filename)
@@ -891,7 +779,7 @@ class JSON2Models:
         json_article = JSONArticle(article_json_data['doc'], xml_filename, article_report)
 
         
-        json_article.load(img_files)
+        json_article.fix_and_validate(img_files)
 
         ###
         json_issue = JSONIssue(article_json_data['doc']['h'])
@@ -901,15 +789,15 @@ class JSON2Models:
         article = json_article.return_article(issue)
         article.xml_filename = xml_filename
 
-        section_title = self.tagged_data.return_section_title()
+        section_title = json_article.return_section_title()
         if len(section_title) > 0:
             section = article.issue.toc.insert(Section(section_title), False)
-            self.tagged_data.set_section_code(section.code)
+            json_article.set_section_code(section.code)
             article.section_title = section_title
     
 
         article.issue.articles.insert(article, True)
-        article.json_data = self.tagged_data.json_data
+        article.json_data = json_article.json_data
 
         return article
 
