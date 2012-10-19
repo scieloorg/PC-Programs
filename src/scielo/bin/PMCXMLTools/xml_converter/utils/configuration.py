@@ -16,7 +16,7 @@ class Configuration:
         f.close()
     
     def check(self, config_parameters):
-        error = False
+        valid = True
         msg = [] 
         for i in config_parameters:
             if i in self.parameters.keys():
@@ -24,5 +24,5 @@ class Configuration:
                     msg.append('No value for ' + i)
             else:
                 msg.append('Missing ' + i)
-                error = True
-        return error, '\n'.join(msg)
+                valid = False
+        return valid, '\n'.join(msg)

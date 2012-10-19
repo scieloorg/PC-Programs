@@ -106,8 +106,8 @@
 					<xsl:apply-templates select="." mode="pii"/>
 				</ArticleId>
 				<xsl:choose>
-					<xsl:when test="normalize-space(.//doi//text())!=''">
-						<ArticleId IdType="doi"><xsl:value-of select="normalize-space(.//doi//text())"/></ArticleId>
+					<xsl:when test="doi/occ">
+						<ArticleId IdType="doi"><xsl:value-of select="normalize-space(.//doi/occ)"/></ArticleId>
 					</xsl:when>
 					<xsl:when  test="$doi_prefix and $doi_prefix!=''">
 						<xsl:if test="not(contains(.//issue_no,'review'))">

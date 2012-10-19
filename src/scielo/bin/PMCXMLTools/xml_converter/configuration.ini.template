@@ -1,26 +1,7 @@
-DB_TITLE_FILENAME=/bases/scl.000/bases/title/title;/bases/spa.000/bases/title/title
-DB_ISSUE_FILENAME=/bases/scl.000/bases/issue/issue;/bases/spa.000/bases/issue/issue
 
 TEMP_PROC_DB_TITLE_FILENAME=/bases/xml.000/result/teste/serial/title/title
 TEMP_PROC_DB_ISSUE_FILENAME=/bases/xml.000/result/teste/serial/issue/issue
 TEMP_SERIAL_PATH=/bases/xml.000/result/teste/serial
-
-
-PROC_DB_TITLE_FILENAME=/bases/xml.000/result/[WEB-APP]/serial/title/title
-PROC_DB_ISSUE_FILENAME=/bases/xml.000/result/[WEB-APP]/serial/issue/issue
-SERIAL_PROC_PATH=/bases/xml.000/result/[WEB-APP]/serial
-XML_PATH=/bases/xml.000/result/[WEB-APP]/bases/xml
-PDF_PATH=/bases/xml.000/result/[WEB-APP]/bases/pdf
-IMG_PATH=/bases/xml.000/result/[WEB-APP]/htdocs/img
-
-FTP_PATH=/bases/xml.000/xml_data/ftp
-QUEUE_PATH=/bases/xml.000/xml_data/queue
-IN_PROC_PATH=/bases/xml.000/xml_data/inproc
-WORK_PATH=/bases/xml.000/xml_data/work
-TRASH_PATH=/bases/xml.000/xml_data/trash
-REPORT_PATH=/bases/xml.000/xml_data/reports
-
-SERIAL_DATA_PATH=/bases/xml.000/archive/serial
 
 CISIS_PATH=/bases/xml.000/proc/cisis
 
@@ -31,16 +12,6 @@ SUMMARY_REPORT=summarized.txt
 DEBUG_DEPTH=0
 
 DISPLAY_MESSAGES_ON_SCREEN=no
-
-SENDER_EMAIL=roberta.takenaka@scielo.org
-BCC_EMAIL=viviane.santos@scielo.org,leticia.aquino@scielo.org,solange.santos@scielo.org
-
-FLAG_SEND_EMAIL_TO_XML_PROVIDER=no
-EMAIL_TEXT=email.txt
-IS_AVAILABLE_EMAIL_SERVICE=yes
-ALERT_FORWARD=O sistema está configurado para NÃO ENVIAR automaticamente a mensagem abaixo. Sendo assim, a mensagem deve ser encaminhada para 
-FLAG_ATTACH_REPORTS=no
-
 
 FTP_SERVER=
 FTP_USER=

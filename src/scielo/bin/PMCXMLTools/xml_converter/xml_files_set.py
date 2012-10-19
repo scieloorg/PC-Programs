@@ -7,35 +7,33 @@ class XMLFilesSet:
     def __init__(self, xml_folders, journal_folder, issue_folder, db_name):
         self.acron_issue_folder = journal_folder + '/' + issue_folder
  
-        self.serial_path = xml_folders.serial_path + '/' + self.acron_issue_folder + '/pmc'
+        self.archive_serial_path = xml_folders.archive_serial_path + '/' + self.acron_issue_folder + '/pmc'
 
-        self.server_serial_path = xml_folders.server_serial_path + '/' + self.acron_issue_folder 
-        self.pdf_path = xml_folders.pdf_path + '/' + self.acron_issue_folder
-        self.img_path = xml_folders.img_path + '/' + self.acron_issue_folder
-        self.xml_path = xml_folders.xml_path + '/' + self.acron_issue_folder
+        self.processing_serial_path = xml_folders.processing_serial_path + '/' + self.acron_issue_folder 
+        self.web_pdf_path = xml_folders.pdf_path + '/' + self.acron_issue_folder
+        self.web_img_path = xml_folders.img_path + '/' + self.acron_issue_folder
+        self.web_xml_path = xml_folders.xml_path + '/' + self.acron_issue_folder
 
-        self.package_path = self.serial_path + '/pmc_package_source' 
-        self.extracted_package_path = self.serial_path + '/pmc_package_extracted' 
+        self.package_path = self.archive_serial_path + '/pmc_package_source' 
+        self.extracted_package_path = self.archive_serial_path + '/pmc_package_extracted' 
+        self.id_path = self.archive_serial_path + '/pmc_base'
         
-        self.id_path = self.serial_path + '/pmc_base'
-        self.db_path = self.server_serial_path + '/base' 
-        
+        self.db_path = self.processing_serial_path + '/base' 
         self.db_name = db_name
-
         self.db_filename = self.db_path + '/' + db_name
         
         #self.log_filename = self.db_path + '/' + db_name + '.log'
         #self.err_filename = self.db_path + '/' + db_name + '.err.log'
 
-        for f in [self.serial_path, self.server_serial_path, self.pdf_path, self.img_path, self.xml_path, self.package_path, self.extracted_package_path, self.db_path, self.id_path, ]:
+        for f in [self.archive_serial_path, self.processing_serial_path, self.web_pdf_path, self.web_img_path, self.web_xml_path, self.package_path, self.extracted_package_path, self.db_path, self.id_path, ]:
             if not os.path.exists(f):
                 os.makedirs(f)
         
         self.extensions = {}
-        self.extensions['xml'] = self.xml_path
+        self.extensions['xml'] = self.web_xml_path
         self.extensions['id'] = self.id_path
-        self.extensions['jpg'] = self.img_path
-        self.extensions['pdf'] = self.pdf_path
+        self.extensions['jpg'] = self.web_img_path
+        self.extensions['pdf'] = self.web_pdf_path
 
     def xml_filename(self, filename):
         return self.acron_issue_folder + '/' + os.path.basename(filename)

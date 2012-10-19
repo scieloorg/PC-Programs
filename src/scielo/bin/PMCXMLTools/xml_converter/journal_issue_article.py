@@ -163,28 +163,7 @@ class JournalIssue:
     def generate_id(self, journal, volume, number, dateiso, suppl):
         return ID().generate( journal.title + volume + number + dateiso + suppl)
     
-    def return_invalid_value_msg(self, label, invalid_value, correct_value = ''):
-        r =  invalid_value + ' is not a valid ' + label 
-        if len(correct_value) > 0:
-            r += '. Expected: ' + correct_value
-        return r 
 
-    def is_valid(self, correct_issue):
-        errors = []
-        
-        items = {}
-        items['ISSN'] = (correct_issue.journal.issn_id, self.journal.issn_id)
-        items['journal title'] = (correct_issue.journal.title, self.journal.title)
-        items['acron'] = (correct_issue.journal.acron, self.journal.acron)
-        items['issue'] = (correct_issue.journal.acron + ' ' + correct_issue.name, self.journal.acron + ' ' + self.name)
-        items['dateiso'] = (correct_issue.dateiso, self.dateiso)
-        
-        for key, item in items.items():
-            if item[0] != item[1]:
-                errors.append(self.return_invalid_value_msg(key, item[1], item[0]))
-        return errors
-    
-    
 
 class Article:
     def __init__(self, issue, page, author):

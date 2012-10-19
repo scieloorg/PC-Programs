@@ -10,7 +10,7 @@ class MyFTP:
         self.report = report
         self.ftp = FTP(server)
 
-    def download_files(self, local_path, dirname):
+    def download_files(self, local_path, path_in_ftp_server):
         if not os.path.isdir(local_path):
             os.makedirs(local_path)
         os.chdir(local_path)
@@ -18,17 +18,20 @@ class MyFTP:
         r = self.ftp.login(self.user, self.pswd)
         self.report.write(r, True, False, True)
         
-        self.download_files_of_subdir(local_path, dirname, False)
+        self.download_files_of_subdir(local_path, path_in_ftp_server, False)
 
         r = self.ftp.close()
         self.report.write('ftp finished', True, False, True)
     
-    def download_files_of_subdir(self, local_path, folder, delete_folder):
-        r = self.ftp.cwd(folder)
+    def download_files_of_subdir(self, local_path, path_in_ftp_server, delete_path_in_ftp_server = False):
+        levels = len(path_in_ftp_server.split('/'))
+        
+        # go to ftp directory
+        r = self.ftp.cwd(path_in_ftp_server)
         self.report.write(r, True, False, True)
 
+        # download files
         files_or_folders = self.ftp.nlst()
-        
         for folder_or_file in files_or_folders:
             if '.' in folder_or_file:
                 # must be a file
@@ -36,11 +39,14 @@ class MyFTP:
             else:
                 # supposed to be a folder
                 self.download_files_of_subdir(local_path, folder_or_file, False)
-        r = self.ftp.cwd('..')
-        self.report.write(r, True, False, True)
 
-        if delete_folder:
-            r = self.ftp.rmd(folder)
+        # up level
+        for i in range(0,levels):
+            r = self.ftp.cwd('..')
+            self.report.write(r, True, False, True)
+
+        if delete_path_in_ftp_server:
+            r = self.ftp.rmd(path_in_ftp_server)
         self.report.write(r, True, False, True)
         
         

@@ -2,16 +2,16 @@ import os
 
 class XMLFoldersSet:
 
-    def __init__(self, serial_path, server_serial_path, img_path, pdf_path, xml_path, scilista):
-        self.serial_path = serial_path 
+    def __init__(self, archive_serial_path, processing_serial_path, web_img_path, web_pdf_path, web_xml_path, scilista):
+        self.archive_serial_path = archive_serial_path 
 
-        self.server_serial_path = server_serial_path  
-        self.pdf_path = pdf_path 
-        self.img_path = img_path 
-        self.xml_path = xml_path 
+        self.processing_serial_path = processing_serial_path  
+        self.web_pdf_path = web_pdf_path 
+        self.web_img_path = web_img_path 
+        self.web_xml_path = web_xml_path 
         self.scilista = scilista
-        self.id_folder = server_serial_path + '/i'
-        for f in [self.id_folder, self.serial_path, self.server_serial_path, self.pdf_path, self.img_path, self.xml_path]:
+        self.id_folder = processing_serial_path + '/i'
+        for f in [self.id_folder, self.archive_serial_path, self.processing_serial_path, self.web_pdf_path, self.web_img_path, self.web_xml_path]:
             if not os.path.exists(f):
                 os.makedirs(f)
         

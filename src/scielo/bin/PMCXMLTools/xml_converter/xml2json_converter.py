@@ -11,12 +11,14 @@ class XML2JSONConverter:
         
         self.debug_report = debug_report
         self.debug = debug
-        self.table_ent_and_char = TableEntAndChar()
+        
+        self.xml_manager = XMLManager(TableEntAndChar(), report, self.debug_report)
+        
 
     def convert(self, xml_filename, report):
         self.dict = {}
 
-        self.xml_manager = XMLManager(xml_filename, self.table_ent_and_char, report, self.debug_report)
+        self.xml_manager.load(xml_filename)
         #if self.xml_filename.error_message
 
         converted = self.__convert__(self.conversion_table.start, None, None)
