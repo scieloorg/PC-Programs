@@ -32,7 +32,7 @@ class Report:
         if is_summary:
             self.__write_summary__(message)
             
-        self.__write_event__(message, msg_type)
+        self.__write_event__(message, msg_type, data)
 
         if display_on_screen:
             print(message)

@@ -6,23 +6,24 @@ import json
 
 class XML2JSONConverter:
 
-    def __init__(self, xml2json_table_filename, debug_report, debug = False):
+    def __init__(self, xml2json_table_filename, debug = True):
         self.conversion_table = XML2JSONTable(xml2json_table_filename)
         
-        self.debug_report = debug_report
         self.debug = debug
         
-        self.xml_manager = XMLManager(TableEntAndChar(), report, self.debug_report)
+        self.xml_manager = XMLManager(TableEntAndChar())
         
 
     def convert(self, xml_filename, report):
         self.dict = {}
+        self.report = report 
 
-        self.xml_manager.load(xml_filename)
+        self.xml_manager.load(xml_filename, report)
         #if self.xml_filename.error_message
 
         converted = self.__convert__(self.conversion_table.start, None, None)
-        self.debug_report.write('converted', False, False, False, converted)  
+
+        report.write('converted', False, False, False, converted)  
         return converted 
 
     def pretty(self, json_data):
@@ -36,29 +37,29 @@ class XML2JSONConverter:
     def __convert__(self, table_node, xml_parent_node, parent_xml_parent_node, num = 1):
         
         if self.debug:
-            self.debug_report.write('__convert__ ')
-            self.debug_report.write('table_node.xpath', False, False, False, table_node.xpath)
+            self.report.write('__convert__ ')
+            self.report.write('table_node.xpath', False, False, False, table_node.xpath)
         
         xml_nodes = self.xml_manager.return_nodes(table_node.xpath, xml_parent_node)
         if self.debug: 
-            self.debug_report.write('xml_nodes', False, False, False, xml_nodes)
+            self.report.write('xml_nodes', False, False, False, xml_nodes)
         
         if len(table_node.children) == 0:
             if self.debug: 
-                self.debug_report.write('leaf',False, False, False, xml_nodes)  
+                self.report.write('leaf',False, False, False, xml_nodes)  
             result = self.return_leaf_content(table_node, xml_nodes)            
         else:
             if self.debug: 
-                self.debug_report.write('branch', False, False, False, xml_nodes) 
+                self.report.write('branch', False, False, False, xml_nodes) 
             result = self.return_branch_content(table_node, xml_nodes, xml_parent_node, num)
         
         if self.debug: 
-            self.debug_report.write('result before __format__', False, False, False, result)  
+            self.report.write('result before __format__', False, False, False, result)  
         
         result = self.__format__(table_node, result, num)
         
         if self.debug: 
-            self.debug_report.write('result', False, False, False, result)  
+            self.report.write('result', False, False, False, result)  
         return result
 
     def return_leaf_content(self, table_node, xml_nodes, debug = False):
@@ -72,14 +73,14 @@ class XML2JSONConverter:
             else:
                 v = self.xml_manager.return_node_value(xml_node)
             if self.debug: 
-                self.debug_report.write('v', False, False, False, v)  
+                self.report.write('v', False, False, False, v)  
             if v == '' or v == None:
                 v = table_node.default
                 
             if v != '':
                 a.append(self._convert_value_(v))
             
-        #return self.__format__(table_node, a)
+        a = self.__format__(table_node, a)
         return a
 
     def return_branch_content(self, table_node, xml_nodes, xml_parent_node, num, debug = False):
@@ -91,7 +92,7 @@ class XML2JSONConverter:
             number += 1
             for child in table_node.children:
                 if self.debug:
-                    self.debug_report.write(table_node.xpath + '=>' + child.xpath)
+                    self.report.write(table_node.xpath + '=>' + child.xpath)
                 v = self.__convert__(child, xml_node, xml_parent_node, number)
                 if len(v)>0:
                     if child.to == '' or child.to == '_':

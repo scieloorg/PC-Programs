@@ -9,12 +9,13 @@ class JSON2IDFile:
     """
     Class which creates an ID file from JSON (ISIS) document
     """
-    def __init__(self, filename, report):
+    def __init__(self, filename, report, convert2iso=True):
         """
         Arguments: 
         filename -- path and file name for ID file
         report   -- object Report
         """
+        self.convert2iso = convert2iso
         self.filename = filename
         self.report = report
         if not os.path.exists(os.path.dirname(filename)):
@@ -120,15 +121,8 @@ class JSON2IDFile:
     def __convert_value__(self, value):
         #print(value)
         if value != '':
-            try:
-                value = value.encode('iso-8859-1')
-            except:
-                try:
-                    value = value.decode('utf-8')
-                    value = value.encode('iso-8859-1')
-                except:
-                
-                    value = self.__convert_chr__(value)
+            if self.convert2iso:
+                value = self.utf8_2_iso(value)
         return value
 
     def __convert_chr__(self, value):
@@ -157,3 +151,47 @@ class JSON2IDFile:
             self.report.write('Unable to write content in id filename. ', True, True, True,  content )
             
         f.close()
+    def utf8_2_iso(self, utf8):
+        utf8 = utf8.replace('\ufeff','')
+        
+        try:
+            print('try 1')
+            b = utf8.encode('iso-8859-1')
+            iso = b.decode('iso-8859-1')
+        except:
+            print('except 1')
+
+            if ' ' in utf8:
+                words = utf8.split(' ')
+                sep = ' '
+            else:
+                words = utf8 
+                sep = ''
+            new = []
+            for w in words:
+                if len(w)==1:
+                    print('char')
+                    try: 
+                        print('try ord')
+                        n = ord(w)
+                        i = w 
+                    except:
+                        print('except ord')
+                        try:
+                            print('try num ent')
+                            n = 256*ord(w[0]) + ord(w[1])
+
+                            i = '&#' + str(hex(n)) + ';'
+                        except:
+                            print('except num ent')
+                            i = '?'
+                else:
+                    print('word')
+                    i = self.utf8_2_iso(w)
+                
+                    
+                new.append(i)
+            iso = sep.join(new)
+        
+        
+        return iso

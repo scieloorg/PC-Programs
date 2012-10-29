@@ -9,12 +9,16 @@ class TableEntAndChar:
         self.table_noaccent = {}
         self.table_nonum = {}
         for line in lines:
-            char, ent, entnonum, ign2, no_accent = line.replace("\n", "").split('|')
-            self.table_chr2ent[char] = ent
-            self.table_ent2chr[ent] = char
-            self.table_noaccent[ent] = no_accent
-            self.table_noaccent[char] = no_accent
-            self.table_nonum[entnonum] = ent
+            values = line.replace("\n", "").split('|')
+            if len(values) != 5:
+                print(line)
+            else:
+                char, ent, entnonum, ign2, no_accent = values
+                self.table_chr2ent[char] = ent
+                self.table_ent2chr[ent] = char
+                self.table_noaccent[ent] = no_accent
+                self.table_noaccent[char] = no_accent
+                self.table_nonum[entnonum] = ent
     
     def ent2chr(self, content):
         entities = self.find_entities(content)

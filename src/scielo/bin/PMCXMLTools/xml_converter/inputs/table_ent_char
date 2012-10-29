@@ -60,7 +60,8 @@
 ý|&#253;|&yacute;|small y, acute accent|y
 þ|&#254;|&thorn;|small thorn, Icelandic|thorn
 ÿ|&#255;|&yuml;|small y, umlaut mark|y
-'|&#x2019;|&rsquo;|RIGHT SINGLE QUOTATION MARK|nbsp|&#160;|&nbsp;| no-break space |nbsp
+'|&#x2019;|&rsquo;|RIGHT SINGLE QUOTATION MARK|rsquo
+nbsp|&#160;|&nbsp;| no-break space |nbsp
 iexcl|&#161;|&iexcl;| inverted exclamation mark |iexcl
 cent|&#162;|&cent;| cent sign |cent
 pound|&#163;|&pound;| pound sterling sign |pound

@@ -13,7 +13,7 @@ class ImageConverter:
 
         for f in files:
             if f.endswith('.tif') or f.endswith('.tiff') or f.endswith('.eps'):
-                tiff_filename = img_path + '/'+ f
+                hd_image_filename = img_path + '/'+ f
                 jpg_filename = jpg_path + '/'+ f[0:f.rfind('.')] + '.jpg'
 
                 doit = True
@@ -25,9 +25,10 @@ class ImageConverter:
                 
                 if doit:
                     try:
-                        im = Image.open(tiff_filename)
+                        im = Image.open(hd_image_filename)
                         im.thumbnail(im.size)
                         im.save(jpg_filename, "JPEG")
+                    
                     except Exception, e:
                         print e
                         print jpg_filename

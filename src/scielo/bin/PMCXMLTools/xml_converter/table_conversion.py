@@ -13,13 +13,15 @@ class ConversionTables:
                 self.tables[table_name][key] = value
     
     def return_month_number(self, textual_month):
-        if textual_month[0:3] in self.tables['month'].keys():
-            m = self.tables['month'][textual_month[0:3]]
-        elif textual_month[0:3].lower() in self.tables['month'].keys():
-            m = self.tables['month'][textual_month[0:3]]
+        r = '00'
+        months = self.tables['month'].keys()
+        if textual_month in months:
+            r = self.tables['month'][textual_month]
         else:
-            m = '00'
-        return m
+            for m in months:
+                if m in textual_month:
+                    r = self.tables['month'][m]
+        return r
 
     def return_fixed_value(self, table_name, key):
         v = key 

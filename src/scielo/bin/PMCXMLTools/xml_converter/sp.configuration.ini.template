@@ -45,6 +45,8 @@ IS_AVAILABLE_EMAIL_SERVICE=yes
 ALERT_FORWARD=O sistema está configurado para NÃO ENVIAR automaticamente a mensagem abaixo. Sendo assim, a mensagem deve ser encaminhada para 
 FLAG_ATTACH_REPORTS=no
 
+EMAIL_SUBJECT_PREFIX=[SciELO-XML] [Package evaluation report]
+
 
 FTP_SERVER=
 FTP_USER=

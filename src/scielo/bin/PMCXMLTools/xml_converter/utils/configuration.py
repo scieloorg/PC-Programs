@@ -1,7 +1,8 @@
+import os
+
 class Configuration:
-	
-	def __init__(self, filename = 'configuration.ini'):
-        
+
+    def __init__(self, filename = 'configuration.ini'):
         f = open(filename, 'r')
         self.parameters = {}
         for c in f.readlines():

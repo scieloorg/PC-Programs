@@ -1,3 +1,4 @@
+import os
 import hashlib
 
 from datetime import datetime
@@ -166,18 +167,39 @@ class JournalIssue:
 
 
 class Article:
-    def __init__(self, issue, page, author):
-        self.id = ID().generate( issue.id + page)
+    def __init__(self, issue, first_page, last_page, xml_filename):
+        self.id = self.generate_id(issue, first_page, xml_filename)
         self.issue = issue
         self.json_data = {}
-        self.page = '0' * 10 + page
-        self.page = self.page[-5:]
-        self.xml_filename = ''
+        self.pages = first_page + '-' + last_page
+        self.xml_filename = xml_filename
+        self.titles = []
+        self.authors = []
 
-    def generate_id(self, issue, page, author):
-        return ID().generate( issue.id + page + author)
 
-    
+    def generate_id(self, issue, first_page, xml_filename):
+        first_page = '0' * 10 + first_page
+        first_page = first_page[-5:]
+        xml_filename = os.path.basename(xml_filename)
+        return ID().generate( issue.id + first_page + xml_filename)
+
+    def display(self, display_labels = True):
+        label_titles = 'Titles: '
+        label_authors = 'Authors: '
+
+        if not display_labels:
+            label_titles = ''
+            label_authors = ''
+
+        text = '\n'
+        text += self.issue.journal.title + ' ' + self.issue.name + ' ' + self.pages + '\n' * 2
+        
+
+        text += label_titles + '\n'.join(self.titles) + '\n' * 2
+        text += label_authors + '; '.join(self.authors) + '\n' * 2
+
+        return text
+
 class JournalList(Items):
     def __init__(self):
         Items.__init__(self)

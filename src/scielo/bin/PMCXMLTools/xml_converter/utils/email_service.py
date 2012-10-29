@@ -12,10 +12,10 @@ from email.mime.text import MIMEText
 from email.header import Header
 
 class EmailService:
-    def __init__(self, mail_from, server="localhost"):
+    def __init__(self, label_from, mail_from, server="localhost"):
         self.mail_from = mail_from
         self.server = server
-
+        self.label_from = label_from
         
 
     def send(self, to, cc, bcc, subject, text, files=[]):
@@ -49,10 +49,10 @@ class EmailService:
                 msg.attach(part)
 
             smtp = smtplib.SMTP(self.server)
-            smtp.sendmail(self.mail_from, to, msg.as_string())
+            smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
             smtp.close()
 
 if __name__ == '__main__':
-    s = EmailService('sender@email.com')
+    s = EmailService('Nome do remetente',  'sender@email.com')
     to = ['dest@email.com']
     s.send(to, 'teste', 'isso eh um teste', [])

@@ -31,9 +31,11 @@
     .//article-meta//funding-source 58    
     .//article-meta//award-id 60    
     .//article-meta//funding-statement 102
-    .//article-meta/pub-date/season 64
-    .//article-meta/pub-date/month 64
-    .//article-meta/pub-date/year 65
+    .//article-meta/pub-date 64
+      season s
+      month m
+      year y
+      day d
     .//article-meta/publisher-loc 66    
     .//article-meta 14
       fpage f
@@ -90,9 +92,8 @@
       . _
       @xml:lang l en
     .//source 18    
-    .//element-citation 704 XML
+    . 9704 XML
     .//mixed-citation 704 XML
-    .//citation 704 XML
     .//citation[@citation-type='journal']//source 30 
     .//element-citation[@publication-type='journal']//source 30    
     .//mixed-citation[@publication-type='journal']//source 30    
@@ -110,10 +111,10 @@
     .//supplement 132
       . s
     .//edition 63    
-    .//year 64    
-    .//year 65    
-    .//month 65m
-    .//day 65d
+    .//year 964    
+    .//month 964m
+    .//day 964d
+    .//season 964s
     .//publisher-loc 66
     .//publisher-name 62
     .//element-citation 514

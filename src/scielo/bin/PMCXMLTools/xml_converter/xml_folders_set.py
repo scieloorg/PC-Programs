@@ -11,6 +11,7 @@ class XMLFoldersSet:
         self.web_xml_path = web_xml_path 
         self.scilista = scilista
         self.id_folder = processing_serial_path + '/i'
+        self.new_issues_db = processing_serial_path + '/newissues'
         for f in [self.id_folder, self.archive_serial_path, self.processing_serial_path, self.web_pdf_path, self.web_img_path, self.web_xml_path]:
             if not os.path.exists(f):
                 os.makedirs(f)

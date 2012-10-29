@@ -52,7 +52,7 @@ class PMCFilesManager:
             print('new filename:' + self.new_filename)
             
             self.xml_images_list = mkp_xml.return_images()
-            
+            print(self.xml_images_list)
 
     def clean_directory(self):
         
@@ -104,24 +104,26 @@ class PMCFilesManager:
                     src = src.replace('.jpg','')
              
                 test_ext = False
-                i = 0
-                msg =  'ERROR: one of the files below is expected:' + "\n"
-                while (not test_ext) and (i < len(self.valid_extensions)):
-                    img_extension = self.valid_extensions[i]
+                
+
+                expected_files = [] 
+                
+                for img_extension in self.valid_extensions:
+
                     if os.path.isfile(self.img_path + '/' + src + img_extension):
                  	    test_ext = True
-                 	    shutil.copy(self.img_path + '/' + src + img_extension, new_fullname + '-' + src_dest_img[1] +  img_extension)
+                        shutil.copy(self.img_path + '/' + src + img_extension, new_fullname + '-' + src_dest_img[1] +  img_extension)
+                        break
                     else:
-                        msg = msg + '   - '  +  self.img_path + '/' + src + img_extension + ' does not exist' + "\n"
-                    i+=1
-                if not test_ext:
-                    print msg
+                        expected_files.append(self.img_path + '/' + src + img_extension)
+                if not test_ext and len(expected_files)>0:
+                    print('ERROR: one of the files below is expected:' + "\n" + '\n'.join(expected_files))
                  
 
     def copy_files_from_img_to_work_folder(self):
         msg = ''
         print('copy_files_from_img_to_work_folder')
-        
+        print(self.xml_images_list)
         for src_dest_img in self.xml_images_list:
             
             src = src_dest_img[0]

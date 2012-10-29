@@ -10,9 +10,9 @@ class XMLFilesSet:
         self.archive_serial_path = xml_folders.archive_serial_path + '/' + self.acron_issue_folder + '/pmc'
 
         self.processing_serial_path = xml_folders.processing_serial_path + '/' + self.acron_issue_folder 
-        self.web_pdf_path = xml_folders.pdf_path + '/' + self.acron_issue_folder
-        self.web_img_path = xml_folders.img_path + '/' + self.acron_issue_folder
-        self.web_xml_path = xml_folders.xml_path + '/' + self.acron_issue_folder
+        self.web_pdf_path = xml_folders.web_pdf_path + '/' + self.acron_issue_folder
+        self.web_img_path = xml_folders.web_img_path + '/' + self.acron_issue_folder
+        self.web_xml_path = xml_folders.web_xml_path + '/' + self.acron_issue_folder
 
         self.package_path = self.archive_serial_path + '/pmc_package_source' 
         self.extracted_package_path = self.archive_serial_path + '/pmc_package_extracted' 
