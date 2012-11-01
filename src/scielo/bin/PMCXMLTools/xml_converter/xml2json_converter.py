@@ -1,6 +1,6 @@
 from utils.xml_manager import XMLManager
 from xml2json_table import XML2JSONTable
-from table_ent_and_char import TableEntAndChar
+from utils.table_ent_and_char import TableEntAndChar
 
 import json
 

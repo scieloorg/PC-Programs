@@ -77,7 +77,7 @@ class XMLManager:
         
         self.report.write('named2number:' + new_xml_filename)
         f = open(new_xml_filename, 'w')
-        f.write(self.table_ent.replace_to_numeric_entities(original))
+        f.write(self.table_ent.replace_to_numeric_entities(original.replace('\ufeff','')))
         f.close()
     
     def return_nodes(self, xpath = '', current_node = None):

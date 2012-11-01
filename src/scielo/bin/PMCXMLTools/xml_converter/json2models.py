@@ -4,7 +4,7 @@ import os
 
 from journal_issue_article import Journal, JournalIssue, Article, Section, JournalList, JournalIssues
 
-from table_ent_and_char import TableEntAndChar
+from utils.table_ent_and_char import TableEntAndChar
 from table_conversion import ConversionTables
 from utils.aff_table import AffiliationTable
 from utils.table_issn import ISSN_Table
@@ -180,7 +180,7 @@ class JSONArticle:
         self._doctopics['patent'] = ['65', '150', ]
         self._doctopics['report'] = ['65', '58', '60', ]
         self._doctopics['software'] = ['65', '95', ]
-        self._doctopics['web'] = ['65','37', '109']
+        self._doctopics['web'] = ['65', '37', '109']
         self._doctopics['unidentified'] = ['65', ]
 
         self._evidences = {}
@@ -757,6 +757,7 @@ class JSONIssue:
         i_record['36'] = issue.order
         i_record['35'] = issue.journal.issn_id
         i_record['2'] = 'br1.1'        
+        i_record['930'] = issue.journal.journal_acron.upper()
         return  i_record    
 
 
