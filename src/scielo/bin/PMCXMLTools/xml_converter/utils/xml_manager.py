@@ -21,16 +21,16 @@ class XMLManager:
     
         
 
-    def _load(self, xml_filename):
+    def __load__(self, xml_filename):
         self.ns = ''
         self.root = None
-        self.report.write('_load ' + xml_filename)
+        self.report.write('__load__ ' + xml_filename)
         try:
             if self.parser != None:
-                self.report.write('_load self.parser != None')
+                self.report.write('__load__ self.parser != None')
                 self.root = etree.parse(xml_filename, self.parser).getroot()
             else:
-                self.report.write('_load self.parser == None')
+                self.report.write('__load__ self.parser == None')
                 self.root = etree.parse(xml_filename).getroot()
             
             if '{' in self.root.tag:
@@ -49,24 +49,54 @@ class XMLManager:
 
         r = False
         if os.path.exists(xml_filename):
-            r = self._load(xml_filename)
+            r = self.__load__(xml_filename)
 
             if not r:
-                from tempfile import mkstemp
-                _, new_xml_filename = mkstemp()
+                new_xml_filename = self.remove_bad_character(xml_filename)
 
-                self.named2number(xml_filename, new_xml_filename)
-                r = self._load(new_xml_filename)
-                if not r:
+                r = self.__load__(new_xml_filename)
+
+                fixed_file = ''
+
+                if r:
+                    fixed_file = new_xml_filename
+                else:
+                    new2 = self.create_temp()
+                    self.named2number(new_xml_filename, new2)
+                    os.unlink(new_xml_filename)
+
+                    r = self.__load__(new2)
+                    if r:
+                        fixed_file = new2
+                        
+                if fixed_file != '':
                     import shutil
-                    shutil.copyfile(new_xml_filename,xml_filename.replace('.xml', '.fixed.xml'))
+                    shutil.copyfile(fixed_file, xml_filename.replace('.xml', '.fixed.xml'))
                     self.report.write('Invalid XML file:' + xml_filename.replace('.xml', '.fixed.xml'), True, True)
-                os.unlink(new_xml_filename)
+                    os.unlink(fixed_file)
         else:
             self.report.write('Missing XML file:' + xml_filename, True, True)
         return r
 
+    def create_temp(self):
+        from tempfile import mkstemp
+        _, new_xml_filename = mkstemp()
+        return new_xml_filename
     
+
+    def remove_bad_character(self, xml_filename):
+        
+        f = open(xml_filename, 'r')
+        original = f.read()
+        f.close()
+        
+        new_xml_filename = self.create_temp()
+        f = open(new_xml_filename, 'w')
+        f.write(original.replace('\ufeff',''))
+        f.close()
+
+        return new_xml_filename
+
 
     def named2number(self, xml_filename, new_xml_filename):
         

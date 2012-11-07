@@ -531,10 +531,10 @@ if __name__ == '__main__':
             else:
                 what_to_do = 'nothing'
 
-                print('There is no ' + collection + '.configuration.ini')
+                msg = 'There is no ' + collection + '.configuration.ini'
             
         else:
-            print('Invalid operation ' + what_to_do + '. Try load or ftp.')
+            msg = 'Invalid operation ' + what_to_do + '. Try load or ftp.'
         ####################################
 
         if not valid_conf:

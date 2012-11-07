@@ -75,7 +75,8 @@ class Generic:
         
 
         publication_dates = self.return_value(json_data, tag)
-        #print(publication_dates)
+        print('dates')
+        print(publication_dates)
 
         r = ''
         s = ''
@@ -90,16 +91,16 @@ class Generic:
             else:
                 pdate = '0000'
             if 'm' in d.keys():
-                s = d['m'] + ' ' + s
+                s = d['m'] + '/' + s
                 pdate += self.return_month_number(d['m'])
             elif 's' in d.keys():
-                s = d['s'] + ' ' + s
+                s = d['s'] + '/' + s
                 pdate += self.return_month_number(d['s'])
             else:
                 pdate += '00'
             if 'd' in d.keys():
-                s = d['d'] + ' ' + s
-                pdate = self.fill_number_with_zeros(d['d'], 2)
+                s = d['d'] + '/' + s
+                pdate += self.fill_number_with_zeros(d['d'], 2)
             else:
                 pdate += '00'
             
@@ -113,7 +114,8 @@ class Generic:
         if len(r)>0:
             json_data[tag_iso] = r
             json_data[tag_not_iso] = display
-
+            print(r)
+            print(s)
         return json_data     
 
     def fix_citation_dates(self, json_data, tag, tag_iso, tag_not_iso):
@@ -152,7 +154,7 @@ class Generic:
         if number_or_text_month.isdigit():
             m = '00' + number_or_text_month
             m = m[-2:]
-            if 0 <= m <=12:
+            if 0 <= int(m) <=12:
                 r = m
         else:
             r = self.conversion_tables.return_month_number(number_or_text_month)
@@ -248,12 +250,12 @@ class JSONArticle:
         for a in authors:
             author = ''
 
-            if 'n' in a:
-                author += a['n'] + ' '
-            
             if 's' in a:
-                author += a['s']
-
+                author += a['s'] + ', '
+            if 'n' in a:
+                author += a['n']
+            
+            
             new.append(author)
         return new
     
@@ -684,6 +686,9 @@ class JSONArticle:
         if self.publication_dateiso == '':
             errors.append('Missing publication date')
         i = 0
+
+        if len(affiliations) == 0:
+            warnings.append('Missing affiliations')
         for aff in affiliations:
             missing_parts = []
             for required_key, required_label in self._aff_required_parts.items():
@@ -757,7 +762,7 @@ class JSONIssue:
         i_record['36'] = issue.order
         i_record['35'] = issue.journal.issn_id
         i_record['2'] = 'br1.1'        
-        i_record['930'] = issue.journal.journal_acron.upper()
+        i_record['930'] = issue.journal.acron.upper()
         return  i_record    
 
 

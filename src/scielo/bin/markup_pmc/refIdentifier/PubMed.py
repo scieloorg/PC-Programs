@@ -1,6 +1,8 @@
 #@java -DLucene_Path=%LOCAL_PATH%/db -cp %LOCAL_PATH%;%LOCAL_PATH%/Marcador.jar;%LOCAL_PATH%/dom4j-1.6.1.jar;%LOCAL_PATH%/FOLLibrary.jar;%LOCAL_PATH%/Lucene.jar;%lucene%;%LOCAL_PATH%/zeus.jar RefBib.PubMedCentral -infile:%1 -outfile:%2
 
 import sys, os, shutil, time
+from datetime import datetime
+
 def log(logfile, msg):
     f = open(logfile, 'a+')
     f.write(msg + '\n')
@@ -10,6 +12,7 @@ def check_file(logfile, filename, content='', taken_time=0, max_taken_time=100):
     log(logfile, 'check_file ' + str(taken_time))
     c = ''
     start = time.time()
+    log(logfile, datetime.today().isoformat())
     log(logfile, 'start: ' + str(start))
     r = False
     if os.path.exists(filename):
@@ -29,6 +32,8 @@ def check_file(logfile, filename, content='', taken_time=0, max_taken_time=100):
 
     end = time.time()
     log(logfile, 'end: ' + str(end))
+    log(logfile, datetime.today().isoformat())
+    
     log(logfile, 'taken time: ' + str(end - start) )
     if r == False:
         taken_time +=  end - start 
