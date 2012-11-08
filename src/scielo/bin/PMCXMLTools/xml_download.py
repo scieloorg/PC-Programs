@@ -5,6 +5,8 @@ from datetime import date
     
 
 from email_service.email_service import EmailService
+from email_service.report_sender import EmailService
+
 from ftp_service.ftp_service import FTPService
 
 from input_output.configuration import Configuration
@@ -14,6 +16,8 @@ from input_output.parameters import Parameters
 from files.compressed_file import CompressedFile
 
 from files_reception.reception import Reception
+
+from datetime import date
 
 # read parameters of execution 
 parameter_list = ['script', 'collection' ]         
@@ -56,6 +60,7 @@ if parameters.check_parameters(sys.argv):
         report_ftp = Report(log_filename, err_filename, summary_filename, int(debug_depth), (display_on_screen == 'yes')) 
     
         work_path = config.parameters['WORK_PATH']
+        backup_path = config.parameters['WORK_PATH'] + '.bkp'
         download_path = config.parameters['FTP_PATH']
 
 
@@ -76,6 +81,10 @@ if parameters.check_parameters(sys.argv):
         pasw = config.parameters['FTP_PSWD']
         folder = config.parameters['FTP_DIR']
     
+       
+        backup_path = backup_path + '/' +  date.today().isoformat()
+
+
         fservice = FTPService(report_ftp, server, user, pasw)
         compressed_file = CompressedFile(self.report)
         
@@ -85,6 +94,6 @@ if parameters.check_parameters(sys.argv):
 
         reception = Reception(report_ftp)
         reception.download_files(fservice, folder, download_path)
-        reception.extract_files(compressed_file, download_path, work_path, work_path + '.bkp', report_sender)
+        reception.extract_files(compressed_file, download_path, work_path, backup_path, report_sender)
 
             

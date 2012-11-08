@@ -44,7 +44,7 @@ class XMLManager:
             r = False
         return r
 
-    def load(self, xml_filename, report):
+    def load(self, xml_filename, doctype, report):
         self.report = report
 
         r = False
@@ -53,6 +53,7 @@ class XMLManager:
 
             if not r:
                 new_xml_filename = self.remove_bad_character(xml_filename)
+                new_xml_filename = self.fix_doctype(new_xml_filename, doctype)
 
                 r = self.__load__(new_xml_filename)
 
@@ -92,7 +93,32 @@ class XMLManager:
         
         new_xml_filename = self.create_temp()
         f = open(new_xml_filename, 'w')
-        f.write(original.replace('\ufeff',''))
+        original = original.replace('\ufeff','')
+        
+        f.write(original)
+        f.close()
+
+        return new_xml_filename
+
+    def fix_doctype(self, xml_filename, new_doctype):
+        
+        f = open(xml_filename, 'r')
+        original = f.read()
+        f.close()
+        
+        new_xml_filename = self.create_temp()
+        f = open(new_xml_filename, 'w')
+        #<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "journalpublishing3.dtd">
+        original = original.replace('\ufeff','')
+        if '<!DOCTYPE' in original:
+            p = original.find('<!DOCTYPE')
+            doctype = original[p:]
+            p = doctype.find('>')
+            doctype = doctype[0:p]
+
+            original = original.replace(doctype, new_doctype)
+
+        f.write(original)
         f.close()
 
         return new_xml_filename

@@ -59,11 +59,14 @@ class DBManager:
             if '100' in json_title:
                 if json_title['100'] in self.inproc_journal_titles:
                     new.append(json_title)
-
+        print(json_title)
         from tempfile import mkstemp
         import os
         _, temp_title_id_filename = mkstemp()
                     
+        print(json_registered_journals)
+        print( '~' * 80)
+        print(new)
         JSON2IDFile(temp_title_id_filename, self.report).format_and_save_document_data(new)   
         self.cisis.id2i(temp_title_id_filename, proc_title_db)
         os.remove(temp_title_id_filename)
@@ -585,6 +588,9 @@ if __name__ == '__main__':
                 reception.download(MyFTP(report_ftp, server, user, pasw), folder, download_path)
 
             elif what_to_do == 'gerapadrao':
+                db_title_filename = config.parameters['DB_TITLE_FILENAME']
+
+                
                 proc_title_db = config.parameters['PROC_DB_TITLE_FILENAME']
                 proc_issue_db = config.parameters['PROC_DB_ISSUE_FILENAME']
 
@@ -592,6 +598,7 @@ if __name__ == '__main__':
                 cisis.create('null count=0', proc_title_db)
                 cisis.create('null count=0', proc_issue_db)
 
+                
                 if os.path.exists(config.parameters['SERIAL_PROC_PATH'] + '/scilista.lst'):
                     os.unlink(config.parameters['SERIAL_PROC_PATH'] + '/scilista.lst')
 
@@ -654,7 +661,9 @@ if __name__ == '__main__':
                 inproc_path = config.parameters['IN_PROC_PATH']
                 work_path = config.parameters['WORK_PATH']
                 trash_path = config.parameters['TRASH_PATH']
-
+                
+                'cisis.append(db_title_filename)
+                
         
                 archive_serial_path = config.parameters['SERIAL_DATA_PATH']
                 processing_serial_path = config.parameters['SERIAL_PROC_PATH']
