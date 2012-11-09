@@ -1,6 +1,6 @@
 
 
-class Reception:
+class Downloader:
     def __init__(self, report):
         
         self.report = report

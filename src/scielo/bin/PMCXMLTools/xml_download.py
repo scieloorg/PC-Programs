@@ -15,7 +15,7 @@ from input_output.parameters import Parameters
 
 from files.compressed_file import CompressedFile
 
-from files_reception.reception import Reception
+from downloader.downloader import Downloader
 
 from datetime import date
 
@@ -92,8 +92,8 @@ if parameters.check_parameters(sys.argv):
 
         report_sender = ReportSender(email_service, email_data)
 
-        reception = Reception(report_ftp)
-        reception.download_files(fservice, folder, download_path)
-        reception.extract_files(compressed_file, download_path, work_path, backup_path, report_sender)
+        downloader = Downloader(report_ftp)
+        downloader.download_files(fservice, folder, download_path)
+        downloader.extract_files(compressed_file, download_path, work_path, backup_path, report_sender)
 
             

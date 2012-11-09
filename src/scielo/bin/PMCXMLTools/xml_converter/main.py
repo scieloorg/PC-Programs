@@ -59,17 +59,22 @@ class DBManager:
             if '100' in json_title:
                 if json_title['100'] in self.inproc_journal_titles:
                     new.append(json_title)
-        print(json_title)
+                
+            else:
+                print('No 100 in json title')
+        
         from tempfile import mkstemp
         import os
         _, temp_title_id_filename = mkstemp()
                     
-        print(json_registered_journals)
-        print( '~' * 80)
-        print(new)
-        JSON2IDFile(temp_title_id_filename, self.report).format_and_save_document_data(new)   
-        self.cisis.id2i(temp_title_id_filename, proc_title_db)
-        os.remove(temp_title_id_filename)
+        
+        if len(new) >0 :
+        
+            JSON2IDFile(temp_title_id_filename, self.report).format_and_save_document_data(new)   
+            self.cisis.id2i(temp_title_id_filename, proc_title_db)
+            os.remove(temp_title_id_filename)
+        else:
+            print('No title')
 
     def copy_to_central_processing(self, proc_title_db, proc_issue_db, proc_serial_path, central_title_db, central_issue_db, central_serial_path):
         path = os.path.basename(central_title_db)
@@ -187,7 +192,7 @@ class DBManager:
 
 
 class Loader:
-    def __init__(self, xml2json_converter, records_order, json2model, registered_journals, db_manager, xml_folders):
+    def __init__(self, xml2json_converter, doctype, records_order, json2model, registered_journals, db_manager, xml_folders):
         self.xml2json_converter = xml2json_converter
         self.records_order = records_order
 
@@ -196,7 +201,7 @@ class Loader:
         self.db_manager = db_manager
 
         self.xml_folders = xml_folders
-
+        self.doctype = doctype
         self.registered_journals = registered_journals
         self.inproc_issues = JournalIssues()
         self.not_registered_issues = JournalIssues()
@@ -276,7 +281,7 @@ class Loader:
             if not os.path.exists(pdf_filename):
                 package.report.write(' ! WARNING: Missing ' + os.path.basename(pdf_filename), True, True)
 
-            json_data = self.xml2json_converter.convert(xml_filename, package.report)
+            json_data = self.xml2json_converter.convert(xml_filename, self.doctype, package.report)
             
             article = self.load_article(json_data, package, xml_fname)
             if article != None:
@@ -588,7 +593,7 @@ if __name__ == '__main__':
                 reception.download(MyFTP(report_ftp, server, user, pasw), folder, download_path)
 
             elif what_to_do == 'gerapadrao':
-                db_title_filename = config.parameters['DB_TITLE_FILENAME']
+                #db_title_filename = config.parameters['DB_TITLE_FILENAME']
 
                 
                 proc_title_db = config.parameters['PROC_DB_TITLE_FILENAME']
@@ -662,7 +667,6 @@ if __name__ == '__main__':
                 work_path = config.parameters['WORK_PATH']
                 trash_path = config.parameters['TRASH_PATH']
                 
-                'cisis.append(db_title_filename)
                 
         
                 archive_serial_path = config.parameters['SERIAL_DATA_PATH']
@@ -699,7 +703,7 @@ if __name__ == '__main__':
                 
                 xml2json_converter = XML2JSONConverter('inputs/_pmcxml2isis.txt')
             
-                loader = Loader(xml2json_converter, 'ohflc', json2models, registered_journals, db_manager, xml_folders)
+                loader = Loader(xml2json_converter, config.parameters['DTD'], 'ohflc', json2models, registered_journals, db_manager, xml_folders)
 
                 reception = Reception(config, report)
                 reception.put_files_in_queue(download_path, queue_path)

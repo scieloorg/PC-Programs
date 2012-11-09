@@ -77,7 +77,7 @@ class JournalIssues(Items):
 
 class Section:
     def __init__(self, title):
-        self.id = ID().generate( title)
+        self.id = self.generate_id( title)
         self.title = title
         self.code = self.title.replace(' ','_').upper()
 
@@ -89,7 +89,7 @@ class Journal:
     def __init__(self, journal_title, issn_id = '', acron = ''):
         self.title = journal_title
         
-        self.id = ID().generate(journal_title)
+        self.id = self.generate_id(journal_title)
         self.issn_id = issn_id
         self.acron = acron
 
@@ -136,7 +136,7 @@ class JournalIssue:
         self.suppl = suppl
         self.toc = TOC()
         self.journal = journal
-        self.id = ID().generate( journal.title + volume + number + dateiso + suppl)
+        self.id = self.generate_id( journal, volume, number, dateiso, suppl)
         self.articles = JournalIssueArticles()
         
         self.status = ''

@@ -1,5 +1,7 @@
 import xml.etree.ElementTree as etree
+from xml.etree.ElementTree import XMLTreeBuilder
 import os
+import shutil
 
 class XMLManager:
 
@@ -8,17 +10,18 @@ class XMLManager:
 
     def __init__(self, table_ent):
         self.root = None
-        
+        self.REPLACE = '[NAME-ENT]&amp;[/NAME-ENT]'
         
         self.invalid = []
         self.table_ent = table_ent
         self.error_message = ''
 
         try:
-            self.parser = etree.XMLParser(recover=True, remove_blank_text=True, resolve_entities=False) #recovers from bad characters.
+            self.parser = etree.XMLParser(recover=True, remove_blank_text=True, resolve_entities=True) #recovers from bad characters.
         except:
+            #self.parser = XMLTreeBuilder()
+            #self.parser.doctype('article', '-//NLM//DTD Journal Publishing DTD v3.0 200800202//EN', 'http://dtd.nlm.nih.gov/publishing/3.0/journalpublishing.dtd')
             self.parser = None
-    
         
 
     def __load__(self, xml_filename):
@@ -50,31 +53,21 @@ class XMLManager:
         r = False
         if os.path.exists(xml_filename):
             r = self.__load__(xml_filename)
-
             if not r:
-                new_xml_filename = self.remove_bad_character(xml_filename)
-                new_xml_filename = self.fix_doctype(new_xml_filename, doctype)
-
+                new_xml_filename = self.create_temp()
+                shutil.copyfile(xml_filename, new_xml_filename)
+                self.fix_doctype(new_xml_filename, doctype)
                 r = self.__load__(new_xml_filename)
-
-                fixed_file = ''
-
-                if r:
-                    fixed_file = new_xml_filename
-                else:
-                    new2 = self.create_temp()
-                    self.named2number(new_xml_filename, new2)
+                if not r:
+                    self.named2number(new_xml_filename)
+                    r = self.__load__(new_xml_filename)
+                    if not r:
+                        self.ignore_named_entities(new_xml_filename)
+                        r = self.__load__(new_xml_filename)
+                if os.path.exists(new_xml_filename):                    
+                    shutil.copyfile(new_xml_filename, xml_filename.replace('.xml', '.xml.fixed'))
+                    self.report.write('Invalid XML file:' + xml_filename.replace('.xml', '.xml.fixed'), True, True)
                     os.unlink(new_xml_filename)
-
-                    r = self.__load__(new2)
-                    if r:
-                        fixed_file = new2
-                        
-                if fixed_file != '':
-                    import shutil
-                    shutil.copyfile(fixed_file, xml_filename.replace('.xml', '.fixed.xml'))
-                    self.report.write('Invalid XML file:' + xml_filename.replace('.xml', '.fixed.xml'), True, True)
-                    os.unlink(fixed_file)
         else:
             self.report.write('Missing XML file:' + xml_filename, True, True)
         return r
@@ -85,20 +78,18 @@ class XMLManager:
         return new_xml_filename
     
 
-    def remove_bad_character(self, xml_filename):
-        
+    def ignore_named_entities(self, xml_filename):
         f = open(xml_filename, 'r')
         original = f.read()
         f.close()
         
-        new_xml_filename = self.create_temp()
-        f = open(new_xml_filename, 'w')
-        original = original.replace('\ufeff','')
-        
+        original = original.replace('&', self.REPLACE)
+        original = original.replace(self.REPLACE + '#', '&#')
+
+        f = open(xml_filename, 'w')
         f.write(original)
         f.close()
 
-        return new_xml_filename
 
     def fix_doctype(self, xml_filename, new_doctype):
         
@@ -106,33 +97,35 @@ class XMLManager:
         original = f.read()
         f.close()
         
-        new_xml_filename = self.create_temp()
-        f = open(new_xml_filename, 'w')
+        f = open(xml_filename, 'w')
         #<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "journalpublishing3.dtd">
-        original = original.replace('\ufeff','')
         if '<!DOCTYPE' in original:
             p = original.find('<!DOCTYPE')
             doctype = original[p:]
             p = doctype.find('>')
-            doctype = doctype[0:p]
+            doctype = doctype[0:p+1]
 
+            print(doctype)
+            new_doctype = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "' + new_doctype  +  '">'
+            
+            print(new_doctype)
             original = original.replace(doctype, new_doctype)
-
+        print( '-')
+        print(original[0:300])
+        print('-')
         f.write(original)
         f.close()
 
-        return new_xml_filename
 
-
-    def named2number(self, xml_filename, new_xml_filename):
+    def named2number(self, xml_filename):
         
         self.report.write('named2number:' + xml_filename)
         f = open(xml_filename, 'r')
         original = f.read()
         f.close()
         
-        self.report.write('named2number:' + new_xml_filename)
-        f = open(new_xml_filename, 'w')
+        self.report.write('named2number:' + xml_filename)
+        f = open(xml_filename, 'w')
         f.write(self.table_ent.replace_to_numeric_entities(original.replace('\ufeff','')))
         f.close()
     
@@ -152,9 +145,9 @@ class XMLManager:
             else:
                 p = '.'
                 r.append(n)
-            n_str = ''
-            if len(n)>0:
-                n_str = etree.tostring(n)
+            #n_str = ''
+            #if len(n)>0:
+            #    n_str = etree.tostring(n)
         return r
 
     def return_node_value(self, node):
@@ -179,7 +172,8 @@ class XMLManager:
                 self.report.write('Empty element')
                 self.report.write('node', False, False, False, node)
                 self.report.write('n', False, False, False, n)
-                self.report.write('r', False, False, False, r)        
+                self.report.write('r', False, False, False, r)    
+            s = s.replace(self.REPLACE, '&')     
         return s
     
     def return_xml(self, node):
@@ -187,7 +181,7 @@ class XMLManager:
         
         if node != None:
             r = etree.tostring(node)
-             
+            r = r.replace(self.REPLACE, '&')
         return r
     
     
@@ -208,5 +202,5 @@ class XMLManager:
                         attr = node.attrib[attr_name]
                     except:
                         attr = ''
-            
+        attr = attr.replace(self.REPLACE, '&')
         return attr  
