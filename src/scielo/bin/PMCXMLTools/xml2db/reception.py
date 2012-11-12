@@ -1,149 +1,141 @@
 
+from .. import input_output.report 
 
 class Reception:
-    def __init__(self, config, report):
-        self.config = config 
-        self.report = report
+    def __init__(self, input_path, report_sender, report_path):
+        self.input_path = input_path
+        self.report_sender = report_sender
+        self.report_path  = report_path
 
-    def download(self, my_ftp, subdir_in_ftp_server, download_path):
-        self.report.write('Before downloading. Files in ' + download_path, True)
-        for f in os.listdir(download_path):
-            self.report.write(f, True, False, True)
-        self.report.write('Downloading...', True, False, True)
-
-        my_ftp.download_files(download_path, subdir_in_ftp_server)
-
-        self.report.write('After downloading. Files in ' + download_path, True, False, True)
-        for f in os.listdir(download_path):
-            self.report.write(f, True, False, True)
-
-    def put_files_in_queue(self, download_path, queue_path):   
-        uploaded_files_manager = UploadedFilesManager(self.report, download_path)
-        uploaded_files_manager.transfer_files(queue_path)
-
-        self.report.write('Downloaded files in ' + queue_path, True, False, True)
-        for f in os.listdir(queue_path):
-            self.report.write(f, True, False, True)
-    
-        self.report.write('Read '+ self.report.summary_filename, True, False, True)
-        
-
-    def open_packages(self, loader, email_service, email_data, package_path, work_path, report_path):
-        for filename in os.listdir(package_path):
-            package_file = package_path + '/' + filename
-
-            package = Package(package_file, work_path, report_path)
-            package.open_package()
-            package.read_package_sender_email()
-
-            # processa
-            loader.load(package)
-
-            self.send_report(email_service, email_data, package)
-
-        
-    def send_report(self, email_service, email_data, package):        
-        emails = package.package_sender_email
-        
-
-        if email_data['FLAG_SEND_EMAIL_TO_XML_PROVIDER'] == 'yes':
-            to = emails.split(',')
-            text = ''
-            bcc = email_data['BCC_EMAIL']
-        else:
-
-            to = email_data['BCC_EMAIL']
-            if len(emails) > 0:
-                foward_to = emails
-            else:
-                foward_to = '(e-mail ausente no pacote)'
-            text = email_data['ALERT_FORWARD'] + ' ' +  foward_to + '\n'  + '-' * 80 + '\n\n'
-            bcc = []
-
-        if len(email_data['EMAIL_TEXT']) > 0:
-            if os.path.isfile(email_data['EMAIL_TEXT']):
-                f = open(email_data['EMAIL_TEXT'], 'r')
-                text += f.read()
-                f.close()
-
-                text = text.replace('REPLACE_PACKAGE', package.package_name)
-
-        attached_files = package.report_files_to_send
-        if email_data['FLAG_ATTACH_REPORTS'] == 'yes':
-            text = text.replace('REPLACE_ATTACHED_OR_BELOW', 'em anexo')
-
-        else:
-            text = text.replace('REPLACE_ATTACHED_OR_BELOW', 'abaixo')
-            
-            for item in attached_files:
-                f = open(item, 'r')
-                text += '-'* 80 + '\n'+ f.read() + '-'* 80 + '\n' 
-                f.close()
-            attached_files = []
-
-        self.report.write('Email data:' + package.package_name)
-        self.report.write('to:' + ','.join(to))
-        self.report.write('bcc:' + ','.join(bcc))
-        self.report.write('files:' + ','.join(attached_files))
-        self.report.write('text:' + text)
-
-        if email_data['IS_AVAILABLE_EMAIL_SERVICE'] == 'yes':
-            email_service.send(to, [], email_data['BCC_EMAIL'], email_data['EMAIL_SUBJECT_PREFIX'] + package.package_name, text, attached_files)
-
-    
-
+    def open_packages(self, loader, db):
+        for folder in os.listdir(self.input_path):
+            package_folder = self.input_path + '/' + folder
+            if os.path.isdir(package_folder):
+                package = Package(package_folder, self.report_path + '/' + folder )
+                package.open_package()
+                package.read_package_sender_email()
+                issue = loader.load_package(package)
+                db.store(issue)
 
 class Package:
-    def __init__(self, package_file, work_path, report_path):
-        self.package_sender_email = ''
-        self.package_file = package_file 
+    def __init__(self, package_path, report_path, img_converter):
+        self.img_converter = img_converter
         self.report_path = report_path
-        self.package_path = os.path.dirname(package_file)
-        self.package_filename = os.path.basename(package_file)
+        if not os.path.exists(report_path):
+            os.makedirs(report_path)
 
-        self.package_name = self.package_filename
-        self.package_name = self.package_name[0:self.package_name.rfind('.')]
-
-        self.work_path = work_path + '/' + self.package_name
+        self.package_path = package_path
         
+        self.package_sender_email = ''
+        
+
         files = ['detailed.log', 'error.log', 'summarized.txt'] 
         self.report_files = [ report_path + '/' +  self.package_name + '_' + f for f in files ]
         log_filename, err_filename, summary_filename = self.report_files
         self.report = Report(log_filename, err_filename, summary_filename, 0, False) 
         self.report_files_to_send = [ summary_filename, err_filename ]
-        #self.files = os.listdir(self.work_path)
-
-    def open_package(self):
-        self.report.write('\n' +'=' * 80 + '\n' +  'Package: ' + self.package_filename, True, False, True )
-        uploaded_files_manager = UploadedFilesManager(self.report, self.package_path)
-        uploaded_files_manager.backup(self.package_file)
-        uploaded_files_manager.extract_file(self.package_file, self.work_path)
-        self.files = os.listdir(self.work_path)
+        
         
     def read_package_sender_email(self):
-        if os.path.exists(work_path + '/email.txt'):
-            f = open(work_path + '/email.txt', 'r')
+        if os.path.exists(self.package_path + '/email.txt'):
+            f = open(self.package_path + '/email.txt', 'r')
             self.package_sender_email = f.read()
             self.package_sender_email = self.package_sender_email.replace(';', ',')
             f.close()
         return self.package_sender_email
 
-    def fix_xml_extension(self):
-        xml_list = [ f for f in self.files if f.endswith('.XML') ]
-        if len(xml_list)>0:
-            self.report.write('Program will convert .XML to .xml', True, False, False)
-            for f in xml_list:
-                new_name = self.work_path +'/' + f.replace('.XML','.xml')
-                shutil.copyfile(self.work_path+'/'+f, new_name)
-                if os.path.exists(new_name):
-                    self.report.write('Converted ' + new_name, False, False, False)
-                    os.unlink(self.work_path+'/'+f)
-                else:
-                    self.report.write('Unable to convert ' + new_name, True, False, False)
-
     def convert_img_to_jpg(self):
-        ImageConverter().img_to_jpeg(self.work_path, self.work_path)
+        self.img_converter.img_to_jpeg(self.package_path, self.package_path)
 
-    def return_xml_images(self, xml_name):
-        img_files = [ img_file[0:img_file.rfind('.')] for img_file in self.files if img_file.startswith(xml_name.replace('.xml', '-'))  ]
-        return list(set(img_files))
+    def fix_extensions(self):
+        
+        for f in os.listdir(self.package_path):
+            extension = f[f.rfind('.'):]
+            if extension != extension.lower():
+                new_f = f[0:len(f)-len(extension)] + f[len(f)-len(extension):].lower()
+                new_name = self.package_path + '/' + new_f
+                shutil.rename(self.package_path + '/' + f, new_name)
+                if os.path.exists(new_name):
+                    self.report.write('Fixed extension of ' + new_name, False, False, False)
+                else:
+                    self.report.write('Unable to fix extension of ' + new_name, True, False, False)
+
+    def return_matching_files(self, startswith, extension):
+        #pattern = xml_name.replace('.xml', '-')
+        if len(startswith)>0 and len(extension)>0:
+            filenames = [ filename for filename in os.listdir(self.package_path) if filename.startswith(startswith) and filename.endswith(extension) ]
+        elif len(startswith) == 0 and len(extension) == 0:
+            filenames = os.listdir(self.package_path)
+        elif len(extension)> 0 :
+            filenames = [ filename for filename in os.listdir(self.package_path) if  filename.endswith(extension) ]
+        elif len(startswith) == 0:
+            filenames = [ filename for filename in os.listdir(self.package_path) if filename.startswith(startswith) ]
+
+        return list(set(filenames))
+
+class Loader:
+    def __init__(self, xml2json, json2model, registered_journals):
+        self.xml2json = xml2json
+        self.json2model = json2model
+        self.registered_journals = registered_journals
+        
+        
+    def load_package(self, package):
+
+        loaded_issues = {}
+        
+        package.fix_extensions()
+        package.convert_img_to_jpg()
+
+        package_files = os.listdir(package.package_path)
+        
+        package_pdf_files = package.return_matching_files('', '.pdf')
+
+        package_xml_files = package.return_matching_files('', '.xml')
+
+        unmatched_pdf = [ pdf for pdf in package_pdf_files if not pdf.replace('.pdf', '.xml') in package_xml_files ]
+
+        package.report.write('XML Files: ' + str(len(package_xml_files)), True)
+        package.report.write('PDF Files: ' + str(len(package_pdf_files)), True)
+
+        if len(package_xml_files) == 0:
+            package.report.write('All the files in the package: ' + '\n' + '\n'.join(package_files), False, True, False)
+
+        if len(unmatched_pdf) > 0:
+            package.report.write('PDF files which there is no corresponding XML file: ' + '\n' + '\n'.join(unmatched_pdf), True, True, False)
+
+        # load all xml files of the package
+        for xml_fname in package_xml_files:
+            issue = None
+            xml_filename = package.package_path + '/' + xml_fname
+            
+            package.report.write('\n' + '-' * 80 + '\n' + 'File: ' + xml_fname + '\n', True, True, True)
+            pdf_filename = xml_filename.replace('.xml', '.pdf')
+            if not os.path.exists(pdf_filename):
+                package.report.write(' ! WARNING: Expected ' + os.path.basename(pdf_filename), True, True)
+
+            json_data = self.xml2json.convert(xml_filename, package.report)
+            
+            document = self.load_document(json_data, package, xml_fname)
+            if document != None:
+                package.report.write(document.display(), True, False, False)
+                #self.db_manager.store_document(document, self.records_order, xml_filename)
+                
+                # loaded issue
+                loaded_issues[document.issue.journal.acron + document.issue.name] = document.issue
+        
+        # finish loading, checking issue data
+        #for key, issue in loaded_issues.items():
+            # store documents 
+            #self.db_manager.store_issue_documents(issue)
+
+            # for GeraPadrao
+            #self.db_manager.add_to_scilista(issue)
+
+            # archive files
+            #self.archive_package(package, issue)
+            
+        
+        #if len(loaded_issues) > 1:
+        #    package.report.write(' ! ERROR: This package contains data of more than one issue:' + ','.join(loaded_issues.keys()), True, True, True)
+        return loaded_issues

@@ -1,27 +1,27 @@
-from utils.xml_manager import XMLManager
-from xml2json_table import XML2JSONTable
-from utils.table_ent_and_char import TableEntAndChar
 
 import json
 
-class XML2JSONConverter:
+class XML2JSON:
 
-    def __init__(self, xml2json_table_filename, debug = True):
-        self.conversion_table = XML2JSONTable(xml2json_table_filename)
+    def __init__(self, xml2json_table, xml_tree, debug):
+        #self.xml2json_table = XML2JSONTable(xml2json_table_filename)
+        #self.debug = debug
+        #self.xml_tree = XMLManager(TableEntAndChar())
+        self.xml2json_table = xml2json_table
         
         self.debug = debug
         
-        self.xml_manager = XMLManager(TableEntAndChar())
+        self.xml_tree = xml_tree
         
 
     def convert(self, xml_filename, report):
         self.dict = {}
         self.report = report 
 
-        self.xml_manager.load(xml_filename, report)
+        self.xml_tree.load(xml_filename, report)
         #if self.xml_filename.error_message
 
-        converted = self.__convert__(self.conversion_table.start, None, None)
+        converted = self.__convert__(self.xml2json_table.start, None, None)
 
         report.write('converted', False, False, False, converted)  
         return converted 
@@ -40,7 +40,7 @@ class XML2JSONConverter:
             self.report.write('__convert__ ')
             self.report.write('table_node.xpath', False, False, False, table_node.xpath)
         
-        xml_nodes = self.xml_manager.return_nodes(table_node.xpath, xml_parent_node)
+        xml_nodes = self.xml_tree.return_nodes(table_node.xpath, xml_parent_node)
         if self.debug: 
             self.report.write('xml_nodes', False, False, False, xml_nodes)
         
@@ -67,11 +67,11 @@ class XML2JSONConverter:
         for xml_node in xml_nodes:
             
             if table_node.attr != '':
-                v = self.xml_manager.return_node_attr_value(xml_node, table_node.attr[1:])
+                v = self.xml_tree.return_node_attr_value(xml_node, table_node.attr[1:])
             elif table_node.xml:
-                v = self.xml_manager.return_xml(xml_node)
+                v = self.xml_tree.return_xml(xml_node)
             else:
-                v = self.xml_manager.return_node_value(xml_node)
+                v = self.xml_tree.return_node_value(xml_node)
             if self.debug: 
                 self.report.write('v', False, False, False, v)  
             if v == '' or v == None:

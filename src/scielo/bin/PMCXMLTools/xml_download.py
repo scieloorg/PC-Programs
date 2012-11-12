@@ -17,7 +17,7 @@ from files.compressed_file import CompressedFile
 
 from downloader.downloader import Downloader
 
-from datetime import date
+
 
 # read parameters of execution 
 parameter_list = ['script', 'collection' ]         

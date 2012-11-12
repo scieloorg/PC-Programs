@@ -31,8 +31,6 @@ class DBManager:
         self.registered_issues = JournalIssues()
         self.not_registered_issues = JournalIssues()
 
-        # issues of this processing
-        self.inproc_issues = JournalIssues()
         
 
     def db2json(self, db):
@@ -204,27 +202,24 @@ class Loader:
         self.doctype = doctype
         self.registered_journals = registered_journals
         self.inproc_issues = JournalIssues()
-        self.not_registered_issues = JournalIssues()
-        self.registered_issues = JournalIssues()
-
+        
 
     def return_issue(self, issue):        
         found = self.inproc_issues.get(issue.id)
         if found == None:
             # issue is registered
-            found = self.registered_issues.get(issue.id)
+            found = self.db_manager.registered_issues.get(issue.id)
             if found == None:
                 # issue is in new_issues
-                found = self.not_registered_issues.get(issue.id)
+                # ???
+                found = self.db_manager.not_registered_issues.get(issue.id)
                 if found == None:
-                    found = self.inproc_issues.insert(issue, False)
                     found.status = 'not_registered'
-                else:
-                    found = self.inproc_issues.insert(issue, False)
-                    found.status = 'new_issues'
+                    self.db_manager.not_registered_issues.insert(issue, False)                
             else:
-                found = self.inproc_issues.insert(issue, False)
                 found.status = 'registered'        
+            found = self.inproc_issues.insert(issue, False)
+            
         return found
 
     def return_invalid_value_msg(self, label, invalid_value, correct_value = ''):
@@ -656,12 +651,6 @@ if __name__ == '__main__':
 
                 proc_title_db = config.parameters['PROC_DB_TITLE_FILENAME']
                 proc_issue_db = config.parameters['PROC_DB_ISSUE_FILENAME']
-
-                if not os.path.exists(os.path.dirname(proc_issue_db)):
-                    os.makedirs(os.path.dirname(proc_issue_db))
-
-                if not os.path.exists(os.path.dirname(proc_title_db)):
-                    os.makedirs(os.path.dirname(proc_title_db))
 
                 inproc_path = config.parameters['IN_PROC_PATH']
                 work_path = config.parameters['WORK_PATH']
