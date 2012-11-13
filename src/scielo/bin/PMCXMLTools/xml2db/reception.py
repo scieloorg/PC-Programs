@@ -62,6 +62,10 @@ class Package:
 
     def return_matching_files(self, startswith, extension):
         #pattern = xml_name.replace('.xml', '-')
+        if '/' in startswith:
+            startswith = os.path.basename(startswith) 
+        if extension[0:1] != '.':
+            extension = '.' + extension
         if len(startswith)>0 and len(extension)>0:
             filenames = [ filename for filename in os.listdir(self.package_path) if filename.startswith(startswith) and filename.endswith(extension) ]
         elif len(startswith) == 0 and len(extension) == 0:
@@ -114,16 +118,16 @@ class Loader:
             if not os.path.exists(pdf_filename):
                 package.report.write(' ! WARNING: Expected ' + os.path.basename(pdf_filename), True, True)
 
-            json_data = self.xml2json.convert(xml_filename, package.report)
             
-            document = self.load_document(json_data, package, xml_fname)
+            document = self.load_document(xml_filename, package)
             if document != None:
                 package.report.write(document.display(), True, False, False)
                 #self.db_manager.store_document(document, self.records_order, xml_filename)
                 
                 # loaded issue
                 loaded_issues[document.issue.journal.acron + document.issue.name] = document.issue
-        
+            else:
+                package.report.write('Unable to identify its data', True, True, False)
         # finish loading, checking issue data
         #for key, issue in loaded_issues.items():
             # store documents 
@@ -139,3 +143,50 @@ class Loader:
         #if len(loaded_issues) > 1:
         #    package.report.write(' ! ERROR: This package contains data of more than one issue:' + ','.join(loaded_issues.keys()), True, True, True)
         return loaded_issues
+
+    def load_document(self, xml_filename, package):
+        json_data = self.xml2json.convert(xml_filename, package.report)
+        if type(json_data) != type({}):
+            package.report.write(' ! ERROR: Invalid JSON ' + xml_filename, False, Fale, False, json_data)
+        else:
+            img_files = package.return_matching_files(xml_filename, '.jpg')
+
+            self.json2model.set_data(json_data, xml_filename, package.report)
+            journal_title = self.json2model.return_journal_title()
+             
+            if len(journal_title) == 0:
+                package.report.write('Unable to identify journal title in the file', True, True)
+            else:
+                journal = self.registered_journals.find_journal(journal_title)
+                if journal == None:
+                    titles = ''
+                    for t in self.journal_list:
+                        titles += ',' + t.title
+                    titles = titles[1:]
+                    package.report.write(journal_title + ' was not found in title database. '+ '\n' + titles , True, True)
+                else:
+                    article = self.json2model.return_article(json_data, journal, img_files, xml_filename, package.report)
+                    if article == None:
+                        package.report.write(' ! ERROR: Invalid ARTICLE JSON ' + xml_filename, True, True, True, json_data)
+                        print(json_data)
+                    else:
+                        package_issue = self.return_issue(article.issue)
+                        errors_in_issue = self.validate_issue(package_issue, article.issue)
+
+                        warnings = []
+                        if len(errors_in_issue) == 0:
+                            article.issue = package_issue
+                    
+                            section = article.issue.toc.insert(Section(article.section_title), False)
+                    
+                            article.issue.articles.insert(article, True)
+                        else:
+                            package.report.write(' ! ERROR: Invalid issue data of ' + xml_filename, True, True, True)
+                            for err in errors_in_issue:
+                                package.report.write(err, True, True, True)
+        
+        return article
+
+
+#JSON_Conversion
+
