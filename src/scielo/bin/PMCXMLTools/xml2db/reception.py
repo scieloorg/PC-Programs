@@ -1,21 +1,46 @@
 
-from .. import input_output.report 
+from ..input_output.report import Report 
 
 class Reception:
-    def __init__(self, input_path, report_sender, report_path):
+    def __init__(self, input_path, report_sender, report_path, tracker):
         self.input_path = input_path
         self.report_sender = report_sender
         self.report_path  = report_path
+        self.tracker = tracker
 
-    def open_packages(self, loader, db):
+    def open_packages(self, document_analyst, shelves_organizer):
         for folder in os.listdir(self.input_path):
             package_folder = self.input_path + '/' + folder
             if os.path.isdir(package_folder):
                 package = Package(package_folder, self.report_path + '/' + folder )
-                package.open_package()
+                
+                self.tracker.register(package.name, 'open package')
                 package.read_package_sender_email()
-                issue = loader.load_package(package)
-                db.store(issue)
+                
+                self.tracker.register(package.name, 'analyze_package')
+                boxes = document_analyst.analyze_package(package)
+                
+                self.tracker.register(package.name, 'put_on_the_shelves')
+                shelves_organizer.put_on_the_shelf(boxes, package)
+
+                self.tracker.register(package.name, 'send report')
+                self.send_report(package)
+                
+                self.tracker.register(package.name, 'end')
+                
+    
+    def send_report(self, package):
+        self.report_sender.send_report(package.name, package.package_sender_email, '', [ package.report.summary_filename, package.report.err_filename ], [] )
+
+class ShelvesOrganizer:
+    def __init__(self, db):
+        self.db = db
+
+    def put_on_the_shelf(self, box, package):
+        self.db.put_on_the_shelf(box, package)
+
+    #def archive_package(self, package):
+    #    self.db.archive_package(package)
 
 class Package:
     def __init__(self, package_path, report_path, img_converter):
@@ -47,8 +72,7 @@ class Package:
     def convert_img_to_jpg(self):
         self.img_converter.img_to_jpeg(self.package_path, self.package_path)
 
-    def fix_extensions(self):
-        
+    def fix_extensions(self):        
         for f in os.listdir(self.package_path):
             extension = f[f.rfind('.'):]
             if extension != extension.lower():
@@ -77,16 +101,19 @@ class Package:
 
         return list(set(filenames))
 
-class Loader:
-    def __init__(self, xml2json, json2model, registered_journals):
+
+
+class DocumentAnalyst:
+    def __init__(self, xml2json, json2model, registered_titles, boxes):
         self.xml2json = xml2json
         self.json2model = json2model
-        self.registered_journals = registered_journals
+        self.registered_titles = registered_titles
+        self.boxes = boxes
         
         
-    def load_package(self, package):
+    def analyze_package(self, package):
 
-        loaded_issues = {}
+        loaded_boxes = {}
         
         package.fix_extensions()
         package.convert_img_to_jpg()
@@ -110,7 +137,7 @@ class Loader:
 
         # load all xml files of the package
         for xml_fname in package_xml_files:
-            issue = None
+            
             xml_filename = package.package_path + '/' + xml_fname
             
             package.report.write('\n' + '-' * 80 + '\n' + 'File: ' + xml_fname + '\n', True, True, True)
@@ -119,73 +146,58 @@ class Loader:
                 package.report.write(' ! WARNING: Expected ' + os.path.basename(pdf_filename), True, True)
 
             
-            document = self.load_document(xml_filename, package)
-            if document != None:
-                package.report.write(document.display(), True, False, False)
-                #self.db_manager.store_document(document, self.records_order, xml_filename)
-                
-                # loaded issue
-                loaded_issues[document.issue.journal.acron + document.issue.name] = document.issue
-            else:
-                package.report.write('Unable to identify its data', True, True, False)
-        # finish loading, checking issue data
-        #for key, issue in loaded_issues.items():
-            # store documents 
-            #self.db_manager.store_issue_documents(issue)
+            document = self.analyze_document(xml_filename, package)
 
-            # for GeraPadrao
-            #self.db_manager.add_to_scilista(issue)
-
-            # archive files
-            #self.archive_package(package, issue)
-            
         
-        #if len(loaded_issues) > 1:
-        #    package.report.write(' ! ERROR: This package contains data of more than one issue:' + ','.join(loaded_issues.keys()), True, True, True)
-        return loaded_issues
+            if document != None:
+                loaded_boxes[document.box.title.acron + document.box.name] = document.box
+            
+        return loaded_boxes
 
-    def load_document(self, xml_filename, package):
+    def analyze_document(self, xml_filename, package):
         json_data = self.xml2json.convert(xml_filename, package.report)
         if type(json_data) != type({}):
-            package.report.write(' ! ERROR: Invalid JSON ' + xml_filename, False, Fale, False, json_data)
+            package.report.write(' ! ERROR: Invalid JSON ' + xml_filename, False, False, False, json_data)
         else:
             img_files = package.return_matching_files(xml_filename, '.jpg')
 
             self.json2model.set_data(json_data, xml_filename, package.report)
-            journal_title = self.json2model.return_journal_title()
-             
-            if len(journal_title) == 0:
-                package.report.write('Unable to identify journal title in the file', True, True)
-            else:
-                journal = self.registered_journals.find_journal(journal_title)
-                if journal == None:
-                    titles = ''
-                    for t in self.journal_list:
-                        titles += ',' + t.title
-                    titles = titles[1:]
-                    package.report.write(journal_title + ' was not found in title database. '+ '\n' + titles , True, True)
-                else:
-                    article = self.json2model.return_article(json_data, journal, img_files, xml_filename, package.report)
-                    if article == None:
-                        package.report.write(' ! ERROR: Invalid ARTICLE JSON ' + xml_filename, True, True, True, json_data)
-                        print(json_data)
-                    else:
-                        package_issue = self.return_issue(article.issue)
-                        errors_in_issue = self.validate_issue(package_issue, article.issue)
 
-                        warnings = []
-                        if len(errors_in_issue) == 0:
-                            article.issue = package_issue
-                    
-                            section = article.issue.toc.insert(Section(article.section_title), False)
-                    
-                            article.issue.articles.insert(article, True)
-                        else:
-                            package.report.write(' ! ERROR: Invalid issue data of ' + xml_filename, True, True, True)
-                            for err in errors_in_issue:
-                                package.report.write(err, True, True, True)
+            publication_title = self.json2model.publication_title
+            
+            publication = self.registered_titles.return_valid_publication_title(publication_title, package.report)
+            
+            document = None             
+            if publication != None:
+                document, errors, warnings, refcount = self.json2model.return_document(publication, img_files)
+                
+
+                if document != None:
+                    package.report.write(document.display(), True, False, False)
+
+                    box = self.boxes.box_template(document.box)
+                    if box.status == 'not_registered':
+                        package.report.write("\n" + ' ! WARNING: '  + issue.journal.acron +  ' ' + issue.name  + ' is not registered yet.' + "\n" , True, True, True )
+     
+
+                    incoherences = self.boxes.return_incoherences(box, document.box)
+
+                    if len(incoherences) == 0:
+                        document.box = box
+                
+                        section = document.box.toc.insert(document.section, False)
+                
+                        document.box.documents.insert(document, True)
+                    else:
+                        package.report.write(' ! ERROR: There are inconsistencies of data ' + xml_filename, True, True, True)
+                        for err in incoherences:
+                            package.report.write(err, True, True, True)
         
-        return article
+                    document.box.json_data['122'] = str(len(document.box.documents.elements))
+                    document.box.json_data['49'] = document.box.toc.return_json()
+        return document
+
+
 
 
 #JSON_Conversion

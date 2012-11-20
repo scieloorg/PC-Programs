@@ -4,18 +4,19 @@ import shutil
 from datetime import date
     
 
-from email_service.email_service import EmailService
-from email_service.report_sender import EmailService
+from reuse.services.email_service.email_service import EmailService
+from reuse.services.email_service.report_sender import ReportSender, MessageType
 
-from ftp_service.ftp_service import FTPService
+from reuse.services.ftp_service.ftp_service import FTPService
 
-from input_output.configuration import Configuration
-from input_output.report import Report
-from input_output.parameters import Parameters
+from reuse.input_output.configuration import Configuration
+from reuse.input_output.report import Report
+from reuse.input_output.parameters import Parameters
+from reuse.input_output.tracker import Tracker
 
-from files.compressed_file import CompressedFile
+from reuse.files.compressed_file import CompressedFile
 
-from downloader.downloader import Downloader
+from reuse.downloader.downloader import Downloader
 
 
 
@@ -25,7 +26,7 @@ parameters = Parameters(parameter_list)
 if parameters.check_parameters(sys.argv):
     script_name, collection = sys.argv
     
-    required = ['FTP_SERVER', 'FTP_USER', 'FTP_PSWD', 'FTP_DIR', 'FTP_PATH', 'QUEUE_PATH']
+    required = ['FTP_SERVER', 'FTP_USER', 'FTP_PSWD', 'FTP_DIR', 'DOWNLOAD_PATH', 'WORK_PATH', 'DOWNLOAD_ARCHIVE_PATH']
 
     required += ['SENDER_NAME', 'EMAIL_TEXT_DOWNLOAD' , 'EMAIL_SUBJECT_PREFIX_DOWNLOAD', 'FLAG_ATTACH_REPORTS','ALERT_FORWARD', 'IS_AVAILABLE_EMAIL_SERVICE', 'EMAIL_TEXT', 'SENDER_EMAIL', 'BCC_EMAIL', ]
     valid_conf = False
@@ -60,40 +61,34 @@ if parameters.check_parameters(sys.argv):
         report_ftp = Report(log_filename, err_filename, summary_filename, int(debug_depth), (display_on_screen == 'yes')) 
     
         work_path = config.parameters['WORK_PATH']
-        backup_path = config.parameters['WORK_PATH'] + '.bkp'
-        download_path = config.parameters['FTP_PATH']
+        backup_path = config.parameters['DOWNLOAD_ARCHIVE_PATH'] 
+        download_path = config.parameters['DOWNLOAD_PATH']
 
 
-        email_data = {}
-        email_data['SENDER_EMAIL'] = config.parameters['SENDER_EMAIL']
-        email_data['BCC_EMAIL'] = config.parameters['BCC_EMAIL'].split(',')
-        email_data['FLAG_SEND_EMAIL_TO_XML_PROVIDER'] = config.parameters['FLAG_SEND_EMAIL_TO_XML_PROVIDER']
-        email_data['EMAIL_TEXT'] = config.parameters['EMAIL_TEXT_DOWNLOAD']
-        email_data['IS_AVAILABLE_EMAIL_SERVICE'] = config.parameters['IS_AVAILABLE_EMAIL_SERVICE']
-        email_data['ALERT_FORWARD'] = config.parameters['ALERT_FORWARD']
-        email_data['FLAG_ATTACH_REPORTS'] = config.parameters['FLAG_ATTACH_REPORTS']
-        email_data['EMAIL_SUBJECT_PREFIX'] = config.parameters['EMAIL_SUBJECT_PREFIX_DOWNLOAD']
+
         
-        email_data['XML_PROVIDER_EMAIL'] = ''
 
-        server = config.parameters['FTP_SERVER']
-        user = config.parameters['FTP_USER']
-        pasw = config.parameters['FTP_PSWD']
-        folder = config.parameters['FTP_DIR']
+        
+
+        server = config.parameter('FTP_SERVER')
+        user = config.parameter('FTP_USER')
+        pasw = config.parameter('FTP_PSWD')
+        folder = config.parameter('FTP_DIR')
     
        
         backup_path = backup_path + '/' +  date.today().isoformat()
 
 
         fservice = FTPService(report_ftp, server, user, pasw)
-        compressed_file = CompressedFile(self.report)
+        compressed_file = CompressedFile(report_ftp)
+        tracker = Tracker(config.parameter('DOWNLOAD_TRACKER_PATH'))
+        email_service = EmailService('', config.parameter('SENDER_EMAIL'))
+        message_type = MessageType(config.parameter('EMAIL_SUBJECT_PREFIX_DOWNLOAD'), config.parameter('EMAIL_TEXT_DOWNLOAD'), config.parameter('FLAG_SEND_EMAIL_TO_XML_PROVIDER'), config.parameter('ALERT_FORWARD'), config.parameter('FLAG_ATTACH_REPORTS'))
+        report_sender = ReportSender(report_ftp, config.parameter('IS_AVAILABLE_EMAIL_SERVICE'), email_service, config.parameter('BCC_EMAIL').split(','), message_type)
+
         
-        email_service = EmailService('', email_data['SENDER_EMAIL'])
-
-        report_sender = ReportSender(email_service, email_data)
-
-        downloader = Downloader(report_ftp)
-        downloader.download_files(fservice, folder, download_path)
+        downloader = Downloader(report_ftp, tracker)
+        downloader.download(fservice, folder, download_path)
         downloader.extract_files(compressed_file, download_path, work_path, backup_path, report_sender)
 
             
