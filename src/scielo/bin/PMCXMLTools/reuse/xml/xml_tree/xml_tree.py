@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as etree
-import os
+import os, shutil
 
 class XMLTree:
 
@@ -52,16 +52,11 @@ class XMLTree:
             r = self._load(xml_filename)
 
             if not r:
-                from tempfile import mkstemp
-                _, new_xml_filename = mkstemp()
-
-                self.named2number(xml_filename, new_xml_filename)
-                r = self._load(new_xml_filename)
-                if not r:
-                    import shutil
-                    shutil.copyfile(new_xml_filename,xml_filename.replace('.xml', '.fixed.xml'))
-                    self.report.write('Invalid XML file:' + xml_filename.replace('.xml', '.fixed.xml'), True, True)
-                os.unlink(new_xml_filename)
+                shutil.copyfile(xml_filename, xml_filename.replace('.xml', '.original.xml'))
+                
+                self.named2number(xml_filename, xml_filename)
+                r = self._load(xml_filename)
+                
         else:
             self.report.write('Missing XML file:' + xml_filename, True, True)
         return r
@@ -77,7 +72,7 @@ class XMLTree:
         
         self.report.write('named2number:' + new_xml_filename)
         f = open(new_xml_filename, 'w')
-        f.write(self.table_ent.replace_to_numeric_entities(original.replace('\ufeff','')))
+        f.write(self.table_ent.name2number(original.replace('\ufeff','')))
         f.close()
     
     def return_nodes(self, xpath = '', current_node = None):

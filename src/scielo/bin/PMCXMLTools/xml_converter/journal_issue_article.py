@@ -208,3 +208,5 @@ class JournalList(Items):
     def find_journal(self, journal_title):
         return self.get(Journal(journal_title).id)
 
+
+         

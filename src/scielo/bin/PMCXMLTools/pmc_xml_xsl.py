@@ -1,6 +1,6 @@
 from reuse.xml.xml_java.JavaXMLTransformer import JavaXMLTransformer
 
-from reuse.xml.xml_pmc.xml_pmc import XML_PMC
+from pmc.xml_pmc.xml_pmc import XML_PMC
 
 from reuse.input_output.configuration import Configuration
 from reuse.input_output.parameters import Parameters 
@@ -24,4 +24,4 @@ if parameters.check_parameters(sys.argv):
     pmc.generate_preview(pmc_xml, output_filename, err_filename, report)       
 
 
-# java xml_java/jar/saxonb9-1-0-8j xml_java/jar xml_pmc/jpub3-preview-xslt xmlfilename output errfile  
+# java reuse/xml/xml_java/jar/saxonb9-1-0-8j reuse/xml/xml_java/jar pmc/versions/v3.0/jpub3-preview-xslt xmlfilename output errfile  

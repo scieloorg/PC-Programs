@@ -14,7 +14,7 @@ class XML_PMC:
         self.path_xsl = path_xsl
          
         # XSL
-        self.xsl_web = path_xsl + '/jpub3-PMCcit-web-html.xsl'
+        self.xsl_web = path_xsl + '/scielo/jpub3-PMCcit-xhtml-scielo-previewer.xsl'
         
     def load(self, xml_file, report):
         self.xml_file = xml_file

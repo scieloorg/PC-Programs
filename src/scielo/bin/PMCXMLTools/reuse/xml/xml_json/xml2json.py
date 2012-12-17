@@ -3,7 +3,7 @@ import json
 
 class XML2JSON:
 
-    def __init__(self, xml2json_table, xml_tree, debug):
+    def __init__(self, xml2json_table, xml_tree, debug = False):
         #self.xml2json_table = XML2JSONTable(xml2json_table_filename)
         #self.debug = debug
         #self.xml_tree = XMLManager(TableEntAndChar())

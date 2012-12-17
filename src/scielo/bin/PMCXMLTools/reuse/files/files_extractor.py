@@ -15,8 +15,11 @@ def is_compressed_file(path):
     return r 
 
 def extract_file(path, to_directory='.'):
+    r = False
+
     if path.endswith('.zip'):
         opener, mode = zipfile.ZipFile, 'r'
+        
     elif path.endswith('.tar.gz') or path.endswith('.tgz'):
         opener, mode = tarfile.open, 'r:gz'
     elif path.endswith('.tar.bz2') or path.endswith('.tbz'):
@@ -31,6 +34,11 @@ def extract_file(path, to_directory='.'):
         file = opener(path, mode)
         try: file.extractall()
         finally: file.close()
+        r = True
+    except IOError:
+        print('Invalid file ' + path)
+        r = False
     finally:
         os.chdir(cwd)
+        return r
 ## end of http://code.activestate.com/recipes/576714/ }}}

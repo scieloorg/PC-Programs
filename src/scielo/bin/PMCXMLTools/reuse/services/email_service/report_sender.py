@@ -1,16 +1,22 @@
 class MessageType:
-    def __init__(self, subject, message_header, flag_send_to_package_provider, forward_alert, flag_attach_reports):
+    def __init__(self, subject, message_header_filename, flag_send_to_package_provider, forward_alert, flag_attach_reports):
         self.flag_send_to_package_provider = flag_send_to_package_provider
-        self.message_header = message_header
+        self.message_header_filename = message_header_filename
         self.forward_alert = forward_alert
         self.subject = subject
         self.flag_attach_reports = flag_attach_reports
-
+    
+    def message_header(self):
+        fn = open(self.message_header_filename, 'r')
+        content = fn.read()
+        fn.close()
+        return '\n' + content + '\n'
 
 
 class ReportSender:
     def __init__(self, report, is_available_email_service, email_service, bcc, message_type):
-        self.report = reporself.is_available_email_service = is_available_email_service
+        self.report = report
+        self.is_available_email_service = is_available_email_service
         self.email_service = email_service
         self.bcc = bcc        
         self.message_type = message_type
@@ -41,15 +47,16 @@ class ReportSender:
             fn = open(f, 'r')
             content = fn.read()
             fn.close()
-            msg += content + '\n'  + '='*80
+            msg += content + '\n'  + '='*80 + '\n'
 
         return msg
 
-    def send_report(self,  package_name, package_sender_email, msg, report_files, attached_files):        
+    
+    def send_report(self,  package_name, package_sender_email, msg, report_files, attached_files):   
+        #compressed, '', text, [], attached_files     
         to, bcc, forward_to = self.configure_destinatary(package_sender_email)
-
-        text = self.message_type.forward_alert + '\n' + '='*80
-        text += self.message_type.message_header
+        text = self.message_type.forward_alert + '\n' + '='*80 + '\n'
+        text += self.message_type.message_header()
         text += msg 
         text = text.replace('REPLACE_PACKAGE', package_name)
 

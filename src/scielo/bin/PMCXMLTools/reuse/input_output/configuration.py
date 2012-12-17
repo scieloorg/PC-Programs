@@ -6,7 +6,7 @@ class Configuration:
         f = open(filename, 'r')
         self.parameters = {}
         for c in f.readlines():
-            if '=' in c:
+            if '=' in c and not c.startswith('#'):
                 c = c.strip('\n').split('=')
                 self.parameters[c[0]] = c[1].replace('\\', '/')
                 if '_PATH' in c[0] and '/' in self.parameters[c[0]]:

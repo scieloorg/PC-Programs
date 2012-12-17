@@ -19,27 +19,33 @@ from reuse.xml.xml_json.xml2json_table import XML2JSONTable
 from reuse.xml.xml_tree.xml_tree import XMLTree
 
 from reuse.encoding.entities import Entities
+from reuse.encoding.table_entities import  TableEntities
 from reuse.encoding.converter_utf8_iso import ConverterUTF8_ISO
 
 from reuse.tables.table_conversion import ConversionTables
 from reuse.tables.locations import Locations
 from reuse.tables.normalized_affiliations import NormalizedAffiliations
 
+from reuse.files.img_converter import ImageConverter
+from reuse.files.name_file import return_path_based_on_date
 
 from reuse.db.isis.cisis import CISIS, IDFile
 from reuse.db.isis.json2id import JSON2IDFile
 
+from xml2db.json_functions import JSON_Normalizer 
+from xml2db.box_folder_document import AllFolders, Folders
 
-from xml2db.models.json2models import JSON_Models
-from xml2db.models.json_functions import JSON_Normalizer, JSON_Dates, JSON_Values
+from xml2db.custom.articles.models.journal_issue_article import AllIssues, JournalIssuesList
 
-from xml2db.articles.models.json2article import JSON_Articles_Models, AffiliationsHandler
-from xml2db.articles.db.isis.articles_isis import ISISArticle, Paths
-from xml2db.articles.db.isis.articles_json2id import JSON2IDFile_Article
-from xml2db.articles.db.articles_db import DBArticles
-from xml2db.reception import Reception, DocumentAnalyst, ShelvesOrganizer
+from xml2db.custom.articles.db.isis.json2article import JSON2Article, AffiliationsHandler, return_journals_list, return_issues_list
+from xml2db.custom.articles.db.isis.articles_isis import ISISManager4Articles, Paths
+from xml2db.custom.articles.db.isis.articles_json2id import JSON2IDFile_Article
 
 
+from xml2db.xml_to_db import Reception, DocumentsAnalyst, DocumentsArchiver, JSON2Document, QueueOrganizer
+
+from reuse.xml.xml_java.JavaXMLTransformer import JavaXMLTransformer
+from reuse.xml.xml2output.fulltext_generator import FullTextGenerator
 
 # read parameters of execution 
 parameter_list = ['script', 'collection' ]         
@@ -51,7 +57,7 @@ if parameters.check_parameters(sys.argv):
      'EMAIL_TEXT', 'FLAG_SEND_EMAIL_TO_XML_PROVIDER', 'ALERT_FORWARD', 
      'FLAG_ATTACH_REPORTS', 'IS_AVAILABLE_EMAIL_SERVICE', 
      'BCC_EMAIL', 'LOG_FILENAME' , 'ERROR_FILENAME', 'SUMMARY_REPORT', 'DEBUG_DEPTH', 'DISPLAY_MESSAGES_ON_SCREEN', 
-     'REPORT_PATH', 'WORK_PATH', 'SERIAL_PROC_PATH', 'PDF_PATH', 'IMG_PATH', 'XML_PATH', 'CISIS_PATH', 'XML2DB_TRACKER_PATH' ]
+     'REPORT_PATH', 'WORK_PATH', 'COL_PROC_SERIAL_PATH', 'PDF_PATH', 'IMG_PATH', 'XML_PATH', 'CISIS_PATH', 'XML2DB_TRACKER_PATH' ]
 
     valid_conf = False
     if os.path.exists(collection + '.configuration.ini'):
@@ -75,17 +81,19 @@ if parameters.check_parameters(sys.argv):
         debug_depth = config.parameters['DEBUG_DEPTH']
         display_on_screen = config.parameters['DISPLAY_MESSAGES_ON_SCREEN']
 
-        report_path = config.parameter('REPORT_PATH') + '/' + date.today().isoformat()
+        report_path = config.parameter('REPORT_PATH') + '/' + return_path_based_on_date()
         if not os.path.exists(report_path):
             os.makedirs(report_path)
     
         files = [ log_filename, err_filename, summary_filename]
+        log_filename, err_filename, summary_filename = [ report_path + '/xmlproc_' + f for f in files ]
+        report = Report(log_filename, err_filename, summary_filename, int(debug_depth), (display_on_screen == 'yes')) 
     
         # work path
         work_path = config.parameter('WORK_PATH')
         
 
-        processing_serial_path = config.parameters['SERIAL_PROC_PATH']
+        processing_serial_path = config.parameters['COL_PROC_SERIAL_PATH']
 
         web_pdf_path = config.parameters['PDF_PATH']
         web_img_path = config.parameters['IMG_PATH']
@@ -94,62 +102,83 @@ if parameters.check_parameters(sys.argv):
         cisis_path = config.parameters['CISIS_PATH']
         
 
-        tracker = Tracker(config.parameter('XML2DB_TRACKER_PATH'))
+        tracker = Tracker(config.parameter('XML2DB_TRACKER_PATH'), config.parameter('XML2DB_TRACKER_NAME'))
+
+        archive_path = config.parameters['DOWNLOAD_ARCHIVE_PATH'] 
+        download_path = config.parameters['DOWNLOAD_PATH'] 
+        
 
 
         # Tables
-        entities = Entities('reuse/encoding/entities')
+        table_entities = TableEntities('reuse/encoding/entities')
+        #entities = Entities()
         tables = ConversionTables('reuse/tables/tables')
         locations = Locations('reuse/tables/valid_locations.seq')
         normalized_affiliations = NormalizedAffiliations('reuse/tables/valid_affiliations.seq', locations)
         
-        xml_tree = XMLTree(entities)
-        xml2json_table = XML2JSONTable('reuse/xml/xml_json/_pmcxml2isis.txt')
+        xml_tree = XMLTree(table_entities)
+        xml2json_table = XML2JSONTable('xml2db/custom/articles/db/isis/_pmcxml2isis.txt')
         xml2json = XML2JSON(xml2json_table, xml_tree)
         
         
-        json_values = JSON_Values()
-        json_dates = JSON_Dates(tables, json_values)
-        json_normalizer = JSON_Normalizer(tables, entities, json_values)
+        json_normalizer = JSON_Normalizer(tables)
     
 
         aff_handler = AffiliationsHandler(normalized_affiliations)
-        json2articlemodel = JSON_Articles_Models(aff_handler, json_normalizer, json_dates)
+        json2articlemodel = JSON2Article(aff_handler, json_normalizer)
 
-        json2models = JSON_Models(json2articlemodel)
+        
         
         #FIXME
         #cisis, idfile, paths, records_order, json2idfile, json2idfile_article
         converter_utf8_iso = ConverterUTF8_ISO()
 
-        app_paths = Paths(processing_serial_path, web_pdf_path, web_xml_path, web_img_path, processing_serial_path + '/scilista.lst')
-        db_manager = ISISArticle(CISIS(cisis_path), IDFile(), app_paths, 'ohflc', JSONIDFile(converter_utf8_iso), JSON2IDFile_Article(JSONIDFile(converter_utf8_iso)))
+        app_paths = Paths(processing_serial_path, web_pdf_path, web_xml_path, web_img_path, config.parameter('COL_SCILISTA'))
+        db_manager = ISISManager4Articles(CISIS(cisis_path), IDFile(), app_paths, 'ohflc', JSON2IDFile(converter_utf8_iso), JSON2IDFile_Article(JSON2IDFile(converter_utf8_iso)))
         
 
-        db_articles = DBArticles(db_manager)
-        db_articles.create_table('title', db_title_filename)
-        db_articles.create_table('issue', db_issue_filename)
+        document_archiver = DocumentsArchiver(db_manager, tracker, 'issue')
+        document_archiver.create_table('title', config.parameter('DB_TITLE_FILENAME'))
+        document_archiver.create_table('issue', config.parameter('DB_ISSUE_FILENAME'))
+        document_archiver.create_table('proc_title', config.parameter('COL_PROC_DB_TITLE_FILENAME'))
+        document_archiver.create_table('proc_issue', config.parameter('COL_PROC_DB_ISSUE_FILENAME'))
 
         
-        json_titles = db_articles.db2json('title')
-        json_boxes = db_articles.db2json('issue')
+        json_titles = document_archiver.db2json('title')
+        json_boxes = document_archiver.db2json('issue')
                 
         #
-        registered_titles = json2models.return_publications_list(json_titles)
-        registered_boxes = json2models.return_publication_items_list(json_boxes, registered_titles)
+        registered_titles = return_journals_list(json_titles)
+        registered_boxes = return_issues_list(json_boxes, registered_titles)
         
-        all_boxes = Issues(registered_issues, JournalIssues())
+
+        all_boxes = AllFolders(registered_boxes, JournalIssuesList(), AllIssues())
 
         email_service = EmailService('', config.parameter('SENDER_EMAIL'))
         message_type = MessageType(config.parameter('EMAIL_SUBJECT_PREFIX'), config.parameter('EMAIL_TEXT'), config.parameter('FLAG_SEND_EMAIL_TO_XML_PROVIDER'), config.parameter('ALERT_FORWARD'), config.parameter('FLAG_ATTACH_REPORTS'))
         report_sender = ReportSender(report, config.parameter('IS_AVAILABLE_EMAIL_SERVICE'), email_service, config.parameter('BCC_EMAIL').split(','), message_type)
      
 
-        document_analyst = DocumentAnalyst(xml2json, json2models, registered_titles, all_boxes)
-        shelves_organizer = ShelvesOrganizer(db_articles)
+        document_analyst = DocumentsAnalyst(xml2json, json2articlemodel, registered_titles, all_boxes)
 
-        reception = Reception(config.parameter('WORK_PATH'), report_sender, report_path, tracker)
-        reception.open_packages(document_analyst, shelves_organizer)
+        queue_organizer = QueueOrganizer(report, tracker, download_path)
+        queue_organizer.archive_and_extract_files(archive_path, work_path, report_sender)
+
+        
+        java_xml_transformer = JavaXMLTransformer(config.parameter('JAVA_PATH'), config.parameter('SAXON_PATH'), config.parameter('VALIDATOR_PATH'))
+
+        pmc_xsl_and_output = Configuration( 'pmc.article.xsl.ini')
+        
+        xsl_and_output_list = {}
+        for k, item in pmc_xsl_and_output.parameters.items():
+            pair = item.split(',')
+            xsl_and_output_list[k] = {'xsl': pair[0], 'output': pair[1]}
+        
+        fulltext_generator = FullTextGenerator(java_xml_transformer, xsl_and_output_list)
+        
+        reception = Reception(work_path, report_sender, report_path, tracker)
+        reception.open_packages(document_analyst, document_archiver, ImageConverter(), fulltext_generator)
+
 
         print('-' * 80)
         print('Check report files:  ')

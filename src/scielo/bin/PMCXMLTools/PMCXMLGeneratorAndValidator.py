@@ -26,7 +26,7 @@ if parameters.check_parameters(sys.argv):
     if app_path + '/' == jar_path:
         app_path = os.path.dirname(os.path.dirname(app_path))
     
-    pmc = MarkupPMC(JavaXMLTransformer(java_path, jar_saxon , jar_path),  XMLTree(Entities(app_path + '/reuse/tables/entities')), xsl_path)
+    pmc = MarkupPMC(JavaXMLTransformer(java_path, jar_saxon , jar_path),  XMLTree(Entities()), xsl_path)
     
     report = Report(sgm_xml_filename + '.report.log', sgm_xml_filename + '.report.err', sgm_xml_filename + '.report.txt')
     pmc.generate_xml(sgm_xml_filename, output_filename, err_filename, report)       

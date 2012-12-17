@@ -50,7 +50,16 @@ class JavaXMLTransformer:
         
         return valid
         
-    def transform(self, xml_filename, xsl_filename, result_filename, err_filename):
+    def format_parameters(self, parameters):
+        r = ''
+        for k, v in parameters.items():
+            if  ' ' in v:
+                r += k + '=' + '"' + v + '" '
+            else:
+                r += k + '=' +  v + ' '
+        return r
+
+    def transform(self, xml_filename, xsl_filename, result_filename, err_filename, parameters = {}):
         r = False
         temp_result = result_filename + '.tmp'
         
@@ -65,7 +74,7 @@ class JavaXMLTransformer:
             jar_saxon = self.path_jar_transformer + '/saxon9.jar'
         else:
             jar_saxon = self.path_jar_transformer + '/saxon8.jar'
-        cmd = self.java_path + ' -jar ' +  jar_saxon + ' -novw -w0 -o ' + temp_result + ' ' + xml_filename + ' ' + xsl_filename
+        cmd = self.java_path + ' -jar ' +  jar_saxon + ' -novw -w0 -o "' + temp_result + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + self.format_parameters(parameters)
         os.system(cmd)
         print cmd
         
