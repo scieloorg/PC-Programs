@@ -8,8 +8,6 @@ class XMLTree:
 
     def __init__(self, table_ent):
         self.root = None
-        
-        
         self.invalid = []
         self.table_ent = table_ent
         self.error_message = ''
@@ -37,7 +35,6 @@ class XMLTree:
                 self.ns = self.root.tag[0:self.root.tag.find('}')+1]
             else:
                 self.ns = ''
-            
             r = True
         except Exception as inst:
             self.report.write('Unable to load ' + xml_filename, True, True, False, inst)
@@ -50,21 +47,61 @@ class XMLTree:
         r = False
         if os.path.exists(xml_filename):
             r = self._load(xml_filename)
-
             if not r:
-                shutil.copyfile(xml_filename, xml_filename.replace('.xml', '.original.xml'))
-                
-                self.named2number(xml_filename, xml_filename)
+                shutil.copyfile(xml_filename, xml_filename.replace('.xml', '.xml~'))
+                self.number2char(xml_filename, xml_filename)
+                self.named2char(xml_filename, xml_filename)
                 r = self._load(xml_filename)
-                
+            if not r:
+                shutil.copyfile(xml_filename, xml_filename.replace('.xml', '.xml~~'))
+                self.named2number(xml_filename, xml_filename)
+                self.number2char(xml_filename, xml_filename)
+                r = self._load(xml_filename)                
+            if not r:
+                self.report.write('Unresolved entities: ' + '\n'.join(self.find_entities(xml_filename)), True, True)
         else:
             self.report.write('Missing XML file:' + xml_filename, True, True)
         return r
 
-    
+    def find_entities(self, xml_filename):
+        self.report.write('named2char:' + xml_filename)
+        f = open(xml_filename, 'r')
+        original = f.read()
+        f.close()
+        original = original.replace('&#', '#NUMBERENT#')
+        e = original.split('&')
+        ents = []
+        if len(e) > 1:            
+            for i in e:
+                if ';' in i:
+                    ent = '&' + i[0:i.find(';')+1]
+                    if not ent in ents and not ' ' in ent:
+                        ents.append(ent)
+        return ents
+
+    def named2char(self, xml_filename, new_xml_filename):
+        self.report.write('named2char:' + xml_filename)
+        f = open(xml_filename, 'r')
+        original = f.read()
+        f.close()
+        
+        self.report.write('named2char:' + new_xml_filename)
+        f = open(new_xml_filename, 'w')
+        f.write(self.table_ent.name2char(original.replace('\ufeff','')))
+        f.close()
+        
+    def number2char(self, xml_filename, new_xml_filename):
+        self.report.write('number2char:' + xml_filename)
+        f = open(xml_filename, 'r')
+        original = f.read()
+        f.close()
+        
+        self.report.write('number2char:' + new_xml_filename)
+        f = open(new_xml_filename, 'w')
+        f.write(self.table_ent.number2char(original.replace('\ufeff','')))
+        f.close()
 
     def named2number(self, xml_filename, new_xml_filename):
-        
         self.report.write('named2number:' + xml_filename)
         f = open(xml_filename, 'r')
         original = f.read()

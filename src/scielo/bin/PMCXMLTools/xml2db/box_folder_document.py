@@ -103,11 +103,8 @@ class TOC(Items):
                 section = sec
                 break
             elif sec.code == _section.code:
-                if sec.title == _section.title:
-                    section = sec
-                else:
-                    section = sec
-                    section.title = _section.title
+                section = sec
+                
                     
                 break
         return section
@@ -131,6 +128,7 @@ class Document:
     def display(self):
         return self.document.display()
 
+# abstract of issue
 class Folder:
     def __init__(self, folder):
         self.folder = folder
@@ -151,7 +149,7 @@ class Documents(Items):
         return Items.count(self)
            
 
-
+# abstraction of Journals
 class Boxes(Items):
     def __init__(self):
         Items.__init__(self)
@@ -168,7 +166,7 @@ class Boxes(Items):
             box = self.find(box_label)
             if box == None:
                 labels = ''
-                for t in self.box_list:
+                for k,t in Items.elements.items():
                     labels += ',' + t.title
                 labels = labels[1:]
                 report.write(box_label + ' is not registered. '+ '\n' + labels , True, True)

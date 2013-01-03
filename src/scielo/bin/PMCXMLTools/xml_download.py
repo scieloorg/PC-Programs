@@ -80,6 +80,6 @@ if parameters.check_parameters(sys.argv):
         report_sender = ReportSender(report_ftp, config.parameter('IS_AVAILABLE_EMAIL_SERVICE'), email_service, config.parameter('BCC_EMAIL').split(','), message_type)
 
         
-        downloader = Downloader(report_ftp, tracker, download_path)
+        downloader = Downloader(report_ftp, tracker, report_sender, download_path)
         downloader.download(fservice, folder,  True)
         

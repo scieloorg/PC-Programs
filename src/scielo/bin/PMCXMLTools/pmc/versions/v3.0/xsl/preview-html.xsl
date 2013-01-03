@@ -53,9 +53,7 @@
   <xsl:variable name="processes">
     <!-- format citations in NLM/PMC format -->
     <step>jpub/citations-prep/jpub3-PMCcit.xsl</step>
-    <!-- convert into HTML for display
-		Selecionar algum dos arquivos que está na mesma pasta para escolher a saída
-	 -->
+    <!-- convert into HTML for display -->
     <step>scielo-html.xsl</step>
   </xsl:variable>
 

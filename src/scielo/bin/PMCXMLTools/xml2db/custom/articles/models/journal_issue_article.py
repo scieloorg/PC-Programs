@@ -20,7 +20,7 @@ class JournalsList(Items):
             box = self.find_journal(box_label)
             if box == None:
                 labels = ''
-                for t in self.box_list:
+                for k,t in self.elements.items():
                     labels += ',' + t.title
                 labels = labels[1:]
                 report.write(box_label + ' is not registered. '+ '\n' + labels , True, True)
@@ -36,6 +36,7 @@ class AllIssues:
         
     def compare(self, issue_in_db, issue_in_file):
         items = {}
+        items['order'] = (issue_in_db.order, issue_in_file.order)
         items['ISSN'] = (issue_in_db.journal.issn_id, issue_in_file.journal.issn_id)
         items['journal title'] = (issue_in_db.journal.title, issue_in_file.journal.title)
         items['acron'] = (issue_in_db.journal.acron, issue_in_file.journal.acron)
@@ -97,33 +98,44 @@ class JournalIssue:
         self.suppl = suppl
         self.toc = TOC()
         self.journal = journal
-        self.id = self.generate_id( journal, volume, number, suppl, compl)
         self.articles = None
-        
+        self.compl = compl
         self.status = ''
         
+        if volume.replace('0', '') == '':
+            self.volume = ''
+        if number.replace('0', '') == '':
+            self.number = ''
+        if self.volume == '' and self.number == '':
+            self.number = 'ahead'
+            if self.journal.acron == 'bjmbr' and int(self.dateiso[0:4]) <= 2012:
+                self.number = 'review'
 
         self.json_from_db = {}
+
+        self.id = self.generate_id( journal, self.volume, self.number, self.suppl, self.compl, self.dateiso[0:4])
+        
+
         if order != '':
             self.order = order
         else:
-            self.order = dateiso[0:4] + JournalIssueOrder().generate(volume, number, suppl)
+            self.order = dateiso[0:4] + JournalIssueOrder().generate(self.volume, self.number, self.suppl)
 
         label = ''
-        if number in ['ahead', 'review']:
+        if self.number in ['ahead', 'review']:
             label = dateiso[0:4]
-        if volume != '':
-            label += 'v' + volume
-        if number != '':
-            label += 'n' + number
-        if suppl != '':
-            label += 's' + suppl 
+        if self.volume != '':
+            label += 'v' + self.volume
+        if self.number != '':
+            label += 'n' + self.number
+        if self.suppl != '':
+            label += 's' + self.suppl 
 
         self.name = label
         self.json_data = {}
     
-    def generate_id(self, journal, volume, number, suppl, compl):
-        return id_generate( journal.title + '-' +  volume + '-' +  number  + '-' +  suppl + '-' +  compl)
+    def generate_id(self, journal, volume, number, suppl, compl, year):
+        return id_generate( journal.title + '-' +  volume + '-' +  number  + '-' +  suppl + '-' +  compl + '-' +  year)
     
     @property 
     def box(self):
@@ -148,6 +160,8 @@ class JournalIssue:
             count = len(self.articles.elements)
         self.json_data['122'] = str(count) #str(len(document.folder.documents.elements))
         self.json_data['49'] = self.toc.return_json()
+        self.json_data['36'] = self.order
+        self.json_data['65'] = self.dateiso
         return self.json_data
 
 class Article:

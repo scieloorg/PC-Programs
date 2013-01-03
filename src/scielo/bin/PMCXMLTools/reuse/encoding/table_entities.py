@@ -1,30 +1,54 @@
 from unicodedata import normalize
 
 class TableEntities:
-    def __init__(self, filename = 'tables/table_ent_char'):
+    def __init__(self, filename = 'entities'):
         f = open(filename, 'r')
         lines = f.readlines()
         f.close()
         
-        self.table_ent2chr = {}
-        self.table_chr2ent = {}
+        self.table_number2char = {}
+        self.table_char2number = {}
         self.table_noaccent = {}
-        self.table_nonum = {}
+        self.table_named2number = {}
+        self.table_named2char = {}
+
         for line in lines:
             values = line.replace("\n", "").split('|')
             if len(values) != 5:
                 print(line)
             else:
-                char, ent, entnonum, ign2, no_accent = values
-                self.table_chr2ent[char] = ent
-                self.table_ent2chr[ent] = char
-                self.table_noaccent[ent] = no_accent
-                self.table_noaccent[char] = no_accent
-                self.table_nonum[entnonum] = ent
-    
-    
+                char, number_ent, named_ent, ign2, no_accent = values
+
+                entity_char = named_ent.replace('&','').replace(';','')
+
+                if char != '' and not char in  self.table_char2number.keys():
+                    self.table_char2number[char] = number_ent
+                    self.table_noaccent[char] = no_accent
+                
+                if named_ent != '' and not named_ent in self.table_named2number.keys():
+                    self.table_named2number[named_ent] = number_ent
+                    if char != entity_char:
+                        self.table_named2char[named_ent] = char
+
+                if number_ent != '' and not number_ent in self.table_noaccent.keys():
+                    if char != entity_char:
+                        self.table_number2char[number_ent] = char
+                    self.table_noaccent[number_ent] = no_accent
+                
+    def number2char(self, content):
+        for k,v in self.table_number2char.items():
+            content = content.replace(k, v)
+        return content
+
     def name2number(self, content):
-        for k,v in self.table_nonum.items():
+        for k,v in self.table_named2number.items():
+            
+            content = content.replace(k, v)
+        return content
+
+    def name2char(self, content):
+        for k,v in self.table_named2char.items():
+            
             content = content.replace(k, v)
         return content
 
@@ -34,20 +58,20 @@ class TableEntities:
     #        p = content.find('&#')
     #        ent = content[p:]
     #        ent = ent[0:ent.find(';')+1]
-    #        if ent in self.table_ent2chr.keys():
+    #        if ent in self.table_number2char.keys():
     #            l.append(ent)
     #    return l
         
     #def chr2ent(self, content):
 
-    #    for k,v in self.table_chr2ent.items():
+    #    for k,v in self.table_char2number.items():
     #        content = content.replace(k, v)
     #    return content
 
     #def ent2chr(self, content):
     #    entities = self.find_number_entities(content)
     #    for ent in entities:
-    #        content = content.replace(ent, self.table_ent2chr[ent])
+    #        content = content.replace(ent, self.table_number2char[ent])
     #    return content
     
 

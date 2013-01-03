@@ -1,0 +1,382 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Mulberry Technologies, Inc.: User's Guide for the Journal Publishing 3.0 Preview
+          Stylesheets</title><link rel="stylesheet" type="text/css" href="jpub-preview.css"></head><body><div id="article1-front" class="front"><table width="100%" class="metadata two-column"><tr><td><h4 class="generated">Journal Information</h4><div class="metadata-group"><p class="metadata-entry"><span class="generated">Journal ID: </span>N/A</p><p class="metadata-entry"><span class="generated">ISSN: </span>N/A</p></div></td><td><h4 class="generated">Article Information</h4><div class="metadata-group"><p class="metadata-entry"><span class="generated">Publication date: </span>2009</p></div></td></tr><tr><td colspan="2"><hr class="part-rule"></td></tr><tr><td colspan="2"><h1 class="document-title">User's Guide for the Journal Publishing 3.0 Preview
+          Stylesheets</h1><div class="document-title-notes metadata-group"><p class="metadata-entry"><span class="generated">Alternative title (<span class="data">running-head</span>): </span>Journal Publishing 3.0 Preview Stylesheets: User's
+          Guide</p></div></td></tr><tr><td align="right"><div class="metadata-group"><p class="metadata-entry"><a name="d10e15"><!-- named anchor --></a>Mulberry Technologies, Inc.</p></div></td><td><div class="metadata-group"></div></td></tr><tr><td colspan="2"><hr class="part-rule"></td></tr></table></div><div id="article1-body" class="body"><div class="section"><a name="d10e22"><!-- named anchor --></a><h2 class="main-title">Introduction</h2><p id="d10e25">These stylesheets format documents encoded in XML using version 3.0 of the NLM/NCBI Journal
+        Publishing tag set. Previews in both HTML and PDF format (via XSL-FO) are supported. Most
+        generic Journal Publishing structures are supported, with assumptions and limitations as
+        described here.</p><p id="d10e27">This documentation, including this User Guide, the Quick Start Guide, and Technical
+        documentation, are all included in this package encoded in NLM/NCBI Journal Publishing XML,
+        with HTML and PDF presentation versions generated using the Preview stylesheets.</p><p id="d10e29">Assuming the user already has valid Journal Publishing 3.0 data, the most important
+        consideration regarding application of these stylesheets regards the bibliographic citation
+        format desired. This distribution provides for semi-automated formatting of citations in two
+        formats: NLM/Pubmed, and APA. Users who have a requirement to display citations in another
+        format, or who do not need any citation processing, should refer to the <a href="#citations">Citations</a> section below.</p><p id="d10e34">For a more precise description of the technical dependencies of these stylesheets, along
+        with documentation of alternative ways to deploy and apply them and how to extend and modify
+        them, users should consult the Technical documentation.</p></div><div class="section"><a name="d10e36"><!-- named anchor --></a><h2 class="main-title">Getting started</h2><p id="d10e39">To select which stylesheet to use, you will first need to determine the following:<div class="list"><a name="d10e41"><!-- named anchor --></a><ol style="list-style-type: decimal"><li><p id="d10e43">Do you want HTML/CSS, or PDF?</p></li><li><p id="d10e46">Are your citations in NLM/Pubmed format? APA format? (These are the only formats
+              supported by these stylesheets.)</p></li><li><p id="d10e49">To make HTML:</p><div class="list"><a name="d10e51"><!-- named anchor --></a><ul><li><p id="d10e53">If your citations use NLM/Pubmed style, you will use
+                    <tt>jpub3-PMCcit-html.xsl</tt></p></li><li><p id="d10e58">If your citations use APA style, you will use
+                    <tt>jpub3-APAcit-html.xsl</tt></p></li></ul></div></li><li><p id="d10e63">To make PDF:</p><div class="list"><a name="d10e65"><!-- named anchor --></a><ul><li><p id="d10e67">If your citations use NLM/Pubmed style, you will use
+                    <tt>jpub3-PMCcit-xslfo.xsl</tt></p></li><li><p id="d10e72">If your citations use APA style, you will use
+                    <tt>jpub3-APAcit-xslfo.xsl</tt></p></li></ul></div></li></ol></div>Then:<div class="list"><a name="d10e77"><!-- named anchor --></a><ol style="list-style-type: decimal"><li><p id="d10e79">Apply the stylesheet to a valid Journal Publishing 3.0 document, or a subdirectory of
+              such documents, using a recent version of Saxon (a freely available XSLT 2.0
+                processor).<a href="#saxon-versions"><span class="generated">[1]</span></a></p><p id="d10e84">When you run the stylesheet, messages will be echoed to your console reporting on
+              progress. Do not be concerned by warning messages stating that you are running an XSLT
+              1.0 stylesheet with a 2.0 processor, since that is what you are doing. These
+              stylesheets will run in XSLT "backward compatibility mode", and have been designed to
+              work properly with either 1.0 or 2.0 processors.</p></li><li><p id="d10e87">When the result format is HTML, copy <tt>jpub-preview.css</tt> to the
+              file system next to the result file(s).</p></li><li><p id="d10e93">When the result format is XSL-FO, run the result file in an XSL-FO formatter,
+              according to its instructions.</p><p id="d10e95">(Many XSL-FO formatters allow running an XSLT transformation directly to apply a
+              stylesheet to a document. If you wish to do this and you are using one of the shell
+              stylesheets provided, see to it that your formatter invokes Saxon as its XSLT
+              component.)</p></li></ol></div></p><div class="boxed-text panel"><a name="InvokingSaxon9"><!-- named anchor --></a><h5 class="label">Invoking&nbsp;SaxonB&nbsp;9&nbsp;from&nbsp;the&nbsp;command&nbsp;line</h5><p id="d10e100">Saxon is a Java application and requires Java to be installed. Java 1.4 is required; at
+          least Java 1.5 is preferred. Saxon 9 is also available within a number of different
+          toolkits and XML editing environments, which provide their own user interfaces to the
+          tool. If SaxonSA is used, the command line will be different. See the Saxon documentation
+          at <a target="xrefwindow" href="http://saxonica.com/documentation/index/intro.html" id="d10e102">http://saxonica.com/documentation/index/intro.html</a> for more
+          details.</p><p id="d10e105">From the command line, SaxonB (the free version of the product) may be
+          invoked as follows (on one
+          line):</p><pre class="preformat">c:\Projects\NLM3\xmlfiles&gt; java -jar c:\path\to\saxon9.jar
+        -o mydocument.html mydocument.xml jpub3-APAcit-html.xsl </pre><p id="d10e109">Within
+          the <tt>c:\Projects\NLM3\xmlfiles</tt> subdirectory, this will generate an
+          output document <tt>mydocument.html</tt> from the input
+            <tt>mydocument.xml</tt>.</p><p id="d10e120">MS Windows path syntax is used in this
+          example; adjust accordingly for your system.</p></div></div><div class="section"><a name="d10e122"><!-- named anchor --></a><h2 class="main-title">Advanced options</h2><p id="d10e125">In addition to the straightforward application of formatting to Journal Publishing content
+        using either of the supported bibliographic citation styles, this suite of stylesheets
+        supports a number of advanced options. Some of these work directly; others are included as
+        demonstrations of how processes may be customized to meet local requirements.</p><p id="d10e127">In order to learn more, see the section on <a href="#special-purpose">Special-purpose
+          stylesheets</a> below, along with the Technical documentation.</p></div><div class="section"><a name="citations-sec"><!-- named anchor --></a><h2 class="main-title">Assumptions made by the preview processing</h2><p id="d10e135">These stylesheets are designed to handle a broad range of inputs, generally requiring only
+        that input data be XML valid to the NLM/NCBI Journal Publishing 3.0 DTD. Inevitably,
+        however, there are limitations in their handling of structures that are valid but unlikely
+        and/or poorly controlled by a schema, and of variant patterns of tagging.</p><p id="d10e137">Caution: while these stylesheets do their best to handle "normal" input, they should not be
+        taken as an indicator of a norm. "Variant" does not necessarily mean "incorrect", and where
+        local practice has evolved to meet particular local processing requirements, these
+        stylesheets may and should be altered or extended to accommodate them.</p><div class="section"><a name="d10e139"><!-- named anchor --></a><h3 class="section-title">Known limitations of these stylesheets</h3><div class="section"><a name="d10e142"><!-- named anchor --></a><h4 class="subsection-title">Running page headers</h4><p id="d10e145">The PDF Preview stylesheet generates running headers using the main article title
+              (<tt>article-title</tt> inside
+              <tt>article-meta/title-group</tt>). If the main article title is too
+            long, an alternative title can be provided for the page header; if available, an
+              <tt>alt-title</tt> with <tt>alt-title-type</tt> of
+            'running-head' will be used.</p></div><div class="section"><a name="d10e159"><!-- named anchor --></a><h4 class="subsection-title">Super- and subscripting limitations</h4><p id="d10e162">On <tt>sub</tt> and <tt>sup</tt> elements the
+              <tt>arrange</tt> attribute is not supported in either preview. All
+            instances will be treated as <tt>arrange='stagger'</tt>.</p></div><div class="section"><a name="d10e176"><!-- named anchor --></a><h4 class="subsection-title">Addresses</h4><p id="d10e179">The document model allows addresses (the <tt>address</tt> element) both
+            as structured elements, and within inline content such as paragraphs.</p><p id="d10e184">The preview stylesheets assume that addresses are formatted as blocks broken into
+            separate lines, one for each element in the address, <i>unless</i> the address
+            contains no <tt>address-line</tt> elements <i>and</i> it appears
+            in paragraph content (that is, directly within <tt>p</tt>,
+              <tt>license-p</tt>, <tt>collab</tt>,
+              <tt>named-content</tt> and <tt>styled-content</tt>
+            elements).</p><p id="d10e211">Address elements inside <tt>aff</tt> (affiliation) are always formatted
+            in line.</p></div><div class="section"><a name="d10e216"><!-- named anchor --></a><h4 class="subsection-title">Sub-articles</h4><p id="d10e219">The HTML preview stylesheet includes code for handling sub-articles, including the
+            elements <tt>sub-article</tt> and <tt>response</tt>. Because
+            the Journal Publishing tag set allows a wide range of ways to deploy and manage such
+            content, particularly with respect to metadata and ancillary materials such as
+            references and footnotes, these features have not been fully tested. If you have
+              <tt>sub-article</tt> or <tt>response</tt> content,
+            extending one or both stylesheets in view of your particular tagging patterns and
+            requirements will probably be necessary.</p></div><div class="section"><a name="d10e233"><!-- named anchor --></a><h4 class="subsection-title">Section metadata</h4><p id="d10e236">The same thing is true of section-level metadata (<tt>sec-meta</tt>),
+            particularly with respect to the <tt>contrib-group</tt> element inside
+              <tt>sec-meta</tt>. </p><p id="d10e247">Also, within <tt>sec-meta</tt> in the PDF preview, only simple keywords
+              (<tt>kwd</tt>) within <tt>kwd-group</tt> will be rendered;
+              <tt>compound-kwd</tt> is ignored by these stylesheets.</p><p id="d10e261">Test the stylesheets against your content and be prepared to amend the stylesheets, if
+            necessary.</p></div><div class="section"><a name="d10e263"><!-- named anchor --></a><h4 class="subsection-title">Special characters</h4><p id="d10e266">These stylesheets do not support the <tt>private-char</tt>,
+              <tt>glyph-data</tt>, or <tt>glyph-ref</tt> elements.</p></div><div class="section"><a name="d10e277"><!-- named anchor --></a><h4 class="subsection-title">Graphics</h4><p id="d10e280">Graphics are not resized in the HTML preview, but displayed at native resolution. In
+            the PDF preview, they may be scaled down to fit in available space, but smaller graphics
+            that already fit will not be adjusted.</p><p id="d10e282">In the HTML preview, graphics are expected to be located as given in the source data
+            relative to the HTML <i>result</i> file. So, if source data has a graphic with
+              <tt>xlink:href='snapshots/babypic.jpg'</tt>, the result file will link
+            to 'snapshots/babypic.jpg'. If graphic files are maintained relative to the source data,
+            they should either be copied to the same location relative to the result, or an absolute
+            path to the graphic should be given as the value, or (most simply) the HTML result file
+            should be placed next to the XML source file, in order to ensure that graphics will be
+            visible in the browser.</p><p id="d10e290">In the PDF preview, a runtime parameter, <tt>base-dir</tt>, must be given
+            to identify the directory relative to which graphics are located. If the XSL process is
+            initiated using one of the provided XSLT 2.0 shell stylesheets, this parameter will be
+            provided automatically as the base directory of the source file, so graphics should be
+            located relative to the source data. If no parameter is given, either graphics must be
+            designated with absolute path names, or they must be located relative to the
+              <i>stylesheet</i>.</p><p id="d10e298">Alternative text on graphics provided as <tt>alt-text</tt> are not
+            rendered in the PDF preview.</p></div><div class="section"><a name="d10e303"><!-- named anchor --></a><h4 class="subsection-title">Styled content and the HTML <tt>style</tt> attribute</h4><p id="d10e309">The Journal Publishing document model makes provision for styling content directly by
+            using CSS styles, either associated with table elements (HTML table elements in this
+            model) or as the value given the <tt>style</tt> attribute of the
+              <tt>styled-content</tt> inline element.</p><p id="d10e317">When this appears, the HTML preview stylesheet will simply pass the values through.
+            Results will depend on the level of CSS conformance both in the code and in the
+            browser.</p><p id="d10e319">In the PDF preview, <tt>width</tt> and
+              <tt>vertical-align</tt> values associated with tables are mapped to
+            formatting in the result. On any element with the <tt>style</tt>
+            attribute, values of the following properties are mapped: <tt>color</tt>;
+              <tt>background-color</tt>; <tt>font-size</tt>;
+              <tt>font-weight</tt>; <tt>font-style</tt>;
+              <tt>font-family</tt>; <tt>text-decoration</tt>. Note that
+            incorrect CSS values may result in errors when XSL-FO stylesheet results are
+            formatted.</p><p id="d10e352">Note in particular that CSS properties related to borders are not supported in the PDF
+            preview. For table cell borders, some bordering behavior can be specified using
+            attributes on the <tt>table</tt> element.</p></div><div class="section"><a name="d10e357"><!-- named anchor --></a><h4 class="subsection-title">Floating objects and the <tt>position</tt> attribute</h4><p id="d10e363">Floating behavior actually entails two different functionalities: allowing a formatting
+            application to determine (and presumably optimize) the position on the page of objects
+            whose position is not to be anchored in the flow of text; and managing objects out of
+            line (probably but not necessarily so they can be so placed) by gathering them into a
+            group at the end of the document.</p><p id="d10e365">The first feature in Journal Publishing tagging is controlled through the use of
+              <tt>position</tt> attributes on objects that may be placed in this way
+            by the formatter. These elements include <tt>boxed-text</tt>,
+              <tt>chem-struct-wrap</tt>, <tt>fig</tt>,
+              <tt>fig-group</tt>, <tt>graphic</tt>,
+              <tt>media</tt>, <tt>preformat</tt>,
+              <tt>supplementary-material</tt>, <tt>table-wrap</tt>,
+              <tt>table-wrap-group</tt>. The second feature is supported by means of
+            the <tt>floats-group</tt> element, where such objects may be gathered.</p><p id="d10e405">Note that <tt>position='float'</tt> may be assigned to any of these
+            objects irrespective of whether it is gathered into <tt>floats-group</tt>.
+            Similarly, it is possible (although not ordinary) for an object to be placed inside
+              <tt>floats-group</tt>, and not in the body of the document, without
+            assigning it <tt>position='float'</tt>.</p><p id="d10e419">In this context, it is especially important to note that by default, on all these
+            objects, <tt>position</tt> is assigned a value of 'float' by the Journal
+            Publishing DTD. If the attribute is not set in the data, the formatting stylesheets
+            assume the value should be 'float', both out of respect for the semantics specified by
+            the formal document model, and in order to prevent different formatting when the DTD is
+            used from when it is not.</p><p id="d10e424">Any object assigned <tt>position='float'</tt> will be allowed to float on
+            the page. Exceptions to this rule include the following:<div class="list"><a name="d10e429"><!-- named anchor --></a><ul><li><p id="d10e431">No object, even one set to float, will float if it appears inside another object
+                  set to float. Note again that objects are set to float implicitly, unless position
+                  is set to 'anchor' or 'margin'.</p></li><li><p id="d10e434"><tt>graphic</tt> and <tt>media</tt> will not float
+                  when they appear inside any of the other elements that may float. (A
+                    <tt>graphic</tt> inside a <tt>fig</tt> will not
+                  float, even if its <tt>position</tt> is set to float and
+                  irrespective of whether the <tt>fig</tt> floats.)</p></li><li><p id="d10e454"><tt>fig</tt> will not float inside <tt>fig-group</tt>
+                  (though the <tt>fig-group</tt> may float).</p></li><li><p id="d10e465"><tt>table-wrap</tt> will not float inside
+                    <tt>table-wrap-group</tt> (though the group may float).</p></li><li><p id="d10e473"><tt>preformat</tt> will not float inside
+                  <tt>bio</tt>, <tt>boxed-text</tt>,
+                    <tt>chem-struct</tt>, <tt>chem-struct-wrap</tt>,
+                    <tt>disp-formula</tt>, <tt>disp-quote</tt>,
+                    <tt>fig</tt>, <tt>glossary</tt>,
+                    <tt>supplementary-material</tt>,
+                    <tt>disp-formula</tt>, or <tt>table-wrap</tt>. Note,
+                  however, that like other floatable objects, <tt>preformat</tt> will
+                  ordinarily float unless its position says not to!</p></li></ul></div></p><p id="d10e515">Also, the value 'margin' is not supported; objects with
+              <tt>position='margin'</tt> will act as if they have
+              <tt>position='anchor'</tt>.</p><p id="d10e523">In the HTML preview, floating an object will not move it on the page; it will only
+            allow text to flow around it.</p><p id="d10e525">In the PDF preview, objects with <tt>position</tt> = 'float' will be
+            positioned on the page by the formatting engine, typically at the top of the same page
+            where the object would appear if its <tt>position</tt> were 'anchor'. The
+            exact placement will depend on the formatting engine.</p><p id="d10e533">Where floating is not wanted, the easiest solution is to set
+              <tt>position</tt> to 'anchor' on the element.</p></div><div class="section"><a name="d10e538"><!-- named anchor --></a><h4 class="subsection-title">Gathering objects in <tt>floats-group</tt></h4><p id="d10e543">Just like objects elsewhere, the placement of objects tagged inside
+              <tt>floats-group</tt> is determined by their
+              <tt>position</tt> attribute. The difference is that when assigned
+              <tt>position='float'</tt> (and remember this is the value by default),
+            in the PDF preview the object is formatted near its first cross-reference. Otherwise,
+            and when no such cross-reference appears in the document, it is formatted at the end of
+            the document.</p><p id="d10e554">The HTML preview stylesheet displays all objects inside
+              <tt>floats-group</tt> at the end of the document. (In this case,
+            however, cross-references are also hyperlinked.)</p><p id="d10e559">When articles should be formatted with a "Figures" or "Tables" section at the end, an
+              <tt>app</tt> or <tt>sec</tt> should be used for this
+            purpose, and the objects anchored in place. The preview stylesheets assume that
+              <tt>floats-group</tt> is specifically for collecting objects that are
+            intended to be formatted elsewhere.</p></div><div class="section"><a name="d10e571"><!-- named anchor --></a><h4 class="subsection-title">Correct numbering of floating objects</h4><p id="d10e574">As described below, the preview stylesheets do not provide automated numbering for
+            floating objects (distinguished, as a class, from footnotes, which may also "float"). In
+            systems where the stylesheet is extended to provide autonumbering, rules will need to be
+            formulated and followed to govern where floating objects are encoded, whether and where
+            they are cross-referenced, and the relation between settings of
+              <tt>position</tt> and appearance (and order) inside
+              <tt>floats-group</tt>, with appropriate enforcement of these
+            constraints. Otherwise it can be expected that their numbers will not always be properly
+            sequenced.</p></div><div class="section"><a name="d10e582"><!-- named anchor --></a><h4 class="subsection-title">Setting <tt>orientation</tt></h4><p id="d10e587">A number of objects also have an <tt>orientation</tt> attribute, which is
+            intended to allow specifying that they should be rotated in display, by setting its
+            value to 'landscape'.</p><p id="d10e592">The HTML preview stylesheet does not support orientation. The PDF stylesheet does
+            rotate the object; however, it assigns (somewhat arbitrarily) a width (i.e., a
+              <i>vertical</i> spacing for an object formatted in landscape) of 6 inches
+            for tables and 4 inches for other objects. While this will almost never be optimal, it
+            is the best that can be accomplished without particular formatting specifications for
+            each object, and it is enough to show that the orientation is set. Users may wish to
+            adjust the stylesheet to meet local needs for positioning and sizing tables and
+            figures.</p></div><div class="section"><a name="d10e597"><!-- named anchor --></a><h4 class="subsection-title">Sizing tables</h4><p id="d10e600">In HTML, tables are sized dynamically or according to attributes given on the table
+            element.</p><p id="d10e602">In the PDF Preview, by default, tables are formatted at column width. If the
+              <tt>width</tt> attribute on a table is set to "100%" and
+              <tt>orientation</tt> is "portrait" (the default), the entire
+              <tt>table-group</tt> it appears in will be formatted at page width.</p></div><div class="section"><a name="d10e613"><!-- named anchor --></a><h4 class="subsection-title">Footnotes</h4><p id="d10e616">The Journal Publishing model supports either of two general approaches to encoding
+            footnotes in valid data. The <tt>fn</tt> element may be used in line where
+            a reference to a footnote (generally the first or only reference) should appear, with
+            the footnote content moved in rendition (typically to the bottom of the page). Or
+            footnotes are encoded together in a structured grouping, the
+              <tt>fn-group</tt> element, and footnote references in the text are
+            encoded with <tt>xref</tt> elements, like any other cross-reference. The
+            latter style of encoding is said in the Journal Publishing documentation to be
+            appropriate for "end notes" as opposed to footnotes <i>per se</i>.
+              <tt>fn-group</tt> is permitted in a number of places, including within
+            the article back matter and in several other locations where footnotes are commonly
+            grouped in journal articles.</p><p id="d10e633">These stylesheets will support either approach to encoding footnotes. In the HTML
+            preview output, all footnotes encoded inline are grouped together in a section called
+            "Notes" appearing at the end of the document. In the PDF, footnotes encoded inline are
+            formatted at the foot of the page. In both cases, footnotes grouped in
+              <tt>fn-group</tt> or in <tt>author-notes</tt> appear
+            collected together where the <tt>fn-group</tt> or
+              <tt>author-notes</tt> appears. This will usually be inside the back
+            matter, but it can also occur in other places such as in the front matter,
+              <tt>boxed-text</tt> or <tt>table-wrap-foot</tt>.</p><p id="d10e654">Note that the two approaches (loose <tt>fn</tt> elements and
+              <tt>fn</tt> within <tt>fn-group</tt>) may be combined, but
+            this is inadvisable unless footnotes are numbered in the data, since it may result in
+            two distinct sets of footnote numbering. It is best to encode footnotes all one way or
+            all the other. Generally, if you use <tt>fn</tt> elements within mixed
+            content, do not also use <tt>fn-group</tt>. If you use
+              <tt>fn-group</tt>, use it for all footnotes and use
+              <tt>xref</tt> to provide references to them.</p><p id="d10e678">Additionally, in the PDF preview, errors will result if inline footnotes appear inside
+            floating objects (such as boxed text or figures). This is because the XSL-FO formatter
+            cannot position both a footnote and a floating object together (since when a footnote is
+            moved to appear on the same page as a float, the page layout determining where the float
+            can be placed may also be thrown off). This restriction means, in effect, that if you
+            have footnotes in your floating objects, you must locate the footnotes inside an
+              <tt>fn-group</tt>, and reference them with <tt>xref</tt>,
+            rather than using <tt>fn</tt> elements inline.</p><p id="d10e689">With regard to their numbering, footnotes are described further below.</p></div></div><div class="section"><a name="d10e691"><!-- named anchor --></a><h3 class="section-title">Autonumbering, labels, and cross-references</h3><p id="d10e694">Except for two element types, <tt>ref</tt> (reference) and
+            <tt>fn</tt> (footnote), these preview stylesheets do not generate numbered
+          labels automatically. If figures, tables and similar structures such as statements,
+          supplementary material, etc. are to be labelled, they must be labelled in the data. Labels
+          provided in the data (<tt>label</tt> elements) are displayed with the
+          elements they label; the same label content also appears in cross-references that point to
+          those elements when a cross-reference element (<tt>xref</tt> elements) is
+          given as empty. (When <tt>xref</tt> elements have text content, it is used
+          as the text of the cross-reference, irrespective of whether a label appears with its
+          target.)</p><p id="d10e711">The approach to labelling taken by these stylesheets is meant to be as transparent and
+          easy to understand as possible: it assumes that when labels are wanted on content, they
+          will be provided explicitly in the source data (and therefore should not be generated
+          automatically), and that when a cross-reference is made to an object, it will either have
+          content of its own (which can serve as anchoring text), or its target will have an
+          explicit label that can be used unaltered as the text in the cross-reference.<a href="#d10e713"><span class="generated">[2]</span></a></p><p id="d10e716">There are two exceptions to this principle: numbering is be provided for footnotes
+            (<tt>fn</tt> elements) and for references (<tt>ref</tt>
+          elements) when they do not have explicit labels, as these elements' primary purpose is
+          their systematic cross-referencing. In both cases, explicit labels
+            (<tt>label</tt> elements or, in the case of footnotes,
+            <tt>symbol</tt> attributes) will override autogenerated labels, allowing
+          for projects to control these values in their data when necessary. In order to protect the
+          consistency of labeling, warning messages may be generated for unlabelled elements where
+          labels were expected. In certain places, such as within the document metadata
+            (<tt>author-notes</tt> or <tt>fn-group</tt> inside
+            <tt>title-group</tt>), unlabelled footnotes are permitted in the PDF
+          preview, and will not generate warning labels even if other footnotes have labels.</p><p id="d10e740">Automated numbers are assigned based on the order of footnotes in the document, not of
+          first references to them. Similarly, in the PDF output, since footnotes are placed based
+          on the location of the <tt>fn</tt> element in the document, a
+          cross-reference can be made to a footnote that will appear on a subsequent page. This also
+          means that if footnote A appears before footnote B in the document, a reference to
+          footnote B will appear out of sequence if it appears before footnote A does. The easiest
+          ways to avoid this are (a) to use footnotes as endnotes (group them in
+            <tt>fn-group</tt> in the back matter), or (b) make sure that if inline
+          footnotes are used (resulting in actual footnotes in the PDF), they are not placed before
+          cross-references to the same footnote.</p><p id="d10e748">These stylesheets do not accommodate a practice of redundant tagging, whereby a footnote
+          encoded inline is also provided with an <tt>xref</tt> (cross-reference)
+          element to that footnote. If an <tt>fn</tt> element is used in line, a
+          reference will appear for it. Cross-references to footnotes should be used only for end
+          notes (<tt>fn</tt> elements in <tt>fn-group</tt>) or in cases
+          where more than one reference is made to a single footnote.</p><div class="section"><a name="d10e762"><!-- named anchor --></a><h4 class="subsection-title">Summary of best practice respecting cross-references and labels</h4><p id="d10e765">For correct operation with these stylesheets, the simplest approach to using labels and
+            assuring that cross-references are clear is to follow an "all or nothing" rule:<div class="list"><a name="d10e767"><!-- named anchor --></a><ul><li><p id="d10e769">As described above, either all footnotes (<tt>fn</tt> elements)
+                  should be enclosed in <tt>fn-group</tt> elements (effectively, to
+                  present as endnotes), or all should be placed inline at their point of first
+                  reference.</p><p id="d10e777">Avoid using (empty) <tt>xref</tt> elements to refer to footnotes
+                  that have not yet appeared, unless the footnote is inside
+                    <tt>fn-group</tt>, as this will result in numbering out of
+                  sequence. Footnote numbers are assigned in the order of the footnotes, not of
+                  first reference to them. (This will not matter if footnotes are labelled in the
+                  source data or if <tt>xref</tt> elements have data content, in which
+                  case maintaining correct referencing is an editorial task.)</p></li><li><p id="d10e789">Either label all footnotes explicitly in the source data (using
+                    <tt>label</tt> elements or <tt>symbol</tt>
+                  attributes), or let the system number all of them.</p></li><li><p id="d10e798">Similarly, no reference elements (<tt>ref</tt>), whether they are
+                  cross-referenced or not, should be given <tt>label</tt> elements, or
+                  all of them should.</p></li><li><p id="d10e807">Any object type (such as figures or tables) that is cross-referenced should be
+                  given <tt>label</tt> elements consistently and throughout,
+                    <i>or</i> cross-references (<tt>xref</tt> elements)
+                  should never be empty.</p></li></ul></div></p><p id="d10e818">As described in the Technical documentation, any of the stylesheet logic regarding
+            generating labels and/or automatic numbering can be modified in the stylesheets.</p></div><div class="section"><a name="d10e820"><!-- named anchor --></a><h4 class="subsection-title">Warning messages for missing labels</h4><p id="d10e823">While (apart from the complications of footnotes and references) this logic is fairly
+            simple, an error condition may still arise if an object has no
+              <tt>label</tt> element, and a cross-reference
+              (<tt>xref</tt>) pointing to it has no content of its own. That is, while
+            either its own content or its target's label can provide text for a cross-reference, a
+            particular cross-reference might have neither (even in a valid document). When this
+            happens, a warning message will be generated in place of a label, both with the object
+            and wherever it is cross-referenced. A summary view of all such warning messages is also
+            provided in a special section entitled <b>Process Warnings</b> at the end of the
+            document.</p><p id="d10e834">This error is corrected either by providing the targeted object with a
+              <tt>label</tt> element (or alternatively, for a footnote, a
+              <tt>symbol</tt> attribute), by providing its cross-reference(s) with
+            content, or both.</p><p id="d10e842">When there are no such errors, the <b>Process Warnings</b> section does not
+            appear.</p></div><div class="section"><a name="d10e847"><!-- named anchor --></a><h4 class="subsection-title">Other limitations on <tt>xref</tt> elements</h4><p id="d10e853">The current implementation of the preview stylesheets does not support cross-references
+            to more than one target using a single <tt>xref</tt> element. Although
+            according to the DTD, an <tt>IDREFS</tt> value is allowed on
+              <tt>xref/@rid</tt>, only a single <tt>IDREF</tt> will
+            work.</p><p id="d10e867">In other
+            words,<pre class="preformat">&lt;xref rid="fig1"&gt;See Figure 1&lt;/xref&gt;</pre>will
+            generate a cross-reference in the output,
+            but<pre class="preformat">&lt;xref rid="fig1 fig2"&gt;See Figures 1 and 2&lt;/xref&gt;</pre>will
+            not work correctly (it will attempt to link to an object identified as "fig1 fig2").</p></div></div><div class="section"><a name="citations"><!-- named anchor --></a><h3 class="section-title">Citations</h3><p id="d10e878">Journal Publishing XML may tag bibliographic citations in any of several ways, including
+          the <tt>element-citation</tt> element, which assumes that rendering of
+          citations, including punctuation, is provided by a stylesheet. Stylesheets in this package
+          are capable of rendering of <tt>element-citation</tt> into two different
+          bibliographic formats.<a href="#d10e886"><span class="generated">[3]</span></a></p><div class="list"><a name="d10e892"><!-- named anchor --></a><ul><li><p id="d10e894"><b>NLM/Pubmed format</b>. The stylesheet provided here is a modified version of
+              a transformation used internally at NCBI.</p></li><li><p id="d10e899"><b>APA-like format</b>. A stylesheet for generating common citation styles
+              conforming to APA guidelines is also provided. We call this format "APA-like" in order
+              to stress that results may not correspond precisely either to local rules regarding
+              details of APA format or in some cases to APA's own guidelines.</p></li></ul></div><p id="d10e903">If your citations follow neither practice, or when your citations do not format properly
+          due to special cases, you have two alternatives:</p><div class="list"><a name="d10e905"><!-- named anchor --></a><ul><li><p id="d10e907">Instead of <tt>element-citation</tt> in bibliographies or reference
+              lists, use <tt>mixed-citation</tt> with explicit formatting. This
+              element allows citations to be formatted and punctuated directly in the XML data.
+              Neither preprocessing stylesheet will override any punctuation within
+                <tt>mixed-citation</tt> elements.</p><p id="d10e918">Even if all citations are given as punctuated <tt>mixed-citation</tt>
+              elements, however, it is still necessary to run one or another citations preprocessor.
+              This is because they may still contain elements with formatting consequences, which
+              the preview stylesheets have no rules to handle. The only citations that are safe to
+              run through the preview stylesheets without any preprocessing whatsoever conform to a
+              profile of <tt>mixed-citation</tt> that includes only elements whose
+              formatting consequences are inherent in their semantics,<a href="#d10e926"><span class="generated">[4]</span></a> and will not vary from one citation formatting style to another. See the
+              Technical documentation on the "Simple citation" element profile for more details.</p></li><li><p id="d10e937">Extend or modify one of the provided citation processors, or develop your own
+              citation preprocessor implementing your own rules for formatting citations.</p></li></ul></div><p id="d10e939">If you have no citations, you can run the stylesheets for either format.</p></div></div><div class="section"><a name="special-purpose"><!-- named anchor --></a><h2 class="main-title">Special-purpose stylesheets</h2><p id="d10e944">There are three types of stylesheets included in this package:<div class="list"><a name="d10e946"><!-- named anchor --></a><ul><li><p id="d10e948">The main Preview stylesheets (found in the <tt>main</tt>
+              subdirectory);</p></li><li><p id="d10e954">Various ancillary stylesheets for pre- or post-processing data in support of special
+              operations (in the <tt>prep</tt>, <tt>citations-prep</tt>
+              and <tt>post</tt> subdirectories);</p></li><li><p id="d10e966">"Shell" or "wrapper" stylesheets (here called "top-level stylesheets") to be used to
+              invoke the others in combination. These are the stylesheets that will typically be
+              applied directly to documents, as described above.</p></li></ul></div>Users wanting a simple approach can acquire a recent version of the Saxon XSLT
+        engine, identify the top-level stylesheet that performs the necessary tasks, and apply it to
+        their data.<a href="#saxon-versions"><span class="generated">[1]</span></a></p><p id="d10e970">The top-level stylesheets depend on the Saxon processor because they use XSLT 2.0 features
+        and Saxon extension functions to perform "pipelining", efficiently executing a sequence of
+        transformations without writing interim results to the file system. All of the stylesheets
+        can also be run on their own, and some of them work also in XSLT 1.0 engines. Due to
+        limitations of the main Preview stylesheets, especially limitations in their handling of
+        citations (which cannot be handled generically), this is recommended only in special cases
+        within controlled environments where citation formatting is otherwise accounted for.</p><p id="d10e972">Nevertheless, publishers and content creators are free to experiment. This model also
+        serves to provide for extensions, in the form either of new processing steps (such as a
+        preprocessor for a new citation format) or modifications to existing steps. Or projects may
+        wish to "unbundle" the processes and apply the stylesheets by different means altogether.
+        The Technical documentation describes these alternatives in more detail.</p><p id="d10e974">Top-level stylesheets included in this package are as follows:<div class="def-list"><a name="d10e976"><!-- named anchor --></a><table class="def-list"><tr id="d10e977"><td class="def-term" id="d10e978"><p>
+              <tt>jpub3-PMCcit-html.xsl</tt>
+            </p></td><td valign="def-def" id="d10e983"><p class="first" id="d10e984">Generates HTML results with formatting of NLM/Pubmed citations supported.</p></td></tr><tr id="d10e986"><td class="def-term" id="d10e987"><p>
+              <tt>jpub3-APAcit-html.xsl</tt>
+            </p></td><td valign="def-def" id="d10e992"><p class="first" id="d10e993">Generates HTML results with formatting of APA citations supported.</p></td></tr><tr id="d10e995"><td class="def-term" id="d10e996"><p>
+              <tt>jpub3-PMCcit-xslfo.xsl</tt>
+            </p></td><td valign="def-def" id="d10e1001"><p class="first" id="d10e1002">Generates XSL-FO results for PDF production, with formatting of NLM/Pubmed
+                citations supported.</p></td></tr><tr id="d10e1004"><td class="def-term" id="d10e1005"><p>
+              <tt>jpub3-APAcit-xslfo.xsl</tt>
+            </p></td><td valign="def-def" id="d10e1010"><p class="first" id="d10e1011">GeneratesXSL-FO results for PDF production, with formatting of APA citations
+                supported.</p></td></tr><tr id="d10e1013"><td class="def-term" id="d10e1014"><p>
+              <tt>jpub3-PMCcit-web-html.xsl</tt>
+            </p></td><td valign="def-def" id="d10e1019"><p class="first" id="d10e1020">This works like <tt>jpub3-PMCcit-html.xsl</tt> except it includes a
+                preprocess that removes all elements marked with a
+                  <tt>specific-use</tt> attribute whose value is "print-only". This
+                stylesheet works by invoking an additional preprocessing step,
+                  <tt>prep/jpub3-webfilter.xsl</tt>. It may be useful mainly as a
+                demonstration, illustrating how processes can be customized to meet local
+                requirements as described in the Technical documentation.</p></td></tr><tr id="d10e1031"><td class="def-term" id="d10e1032"><p>
+              <tt>jpub3-PMCcit-xhtml.xsl</tt>
+            </p></td><td valign="def-def" id="d10e1037"><p class="first" id="d10e1038">This also works like <tt>jpub3-PMCcit-html.xsl</tt>, except it
+                includes a postprocess that converts the HTML results into XHTML, resulting in XHTML
+                results that can be correctly rendered by MathML-capable browsers. The postprocessor
+                called by this stylesheet, <tt>xhtml-ns.xsl</tt>, can be applied as
+                the final step in any pipeline that must generate XHTML, as also described in the
+                Technical docs.</p></td></tr><tr id="d10e1046"><td class="def-term" id="d10e1047"><p>
+              <tt>jpub3-PMCcit-print-fo.xsl</tt>
+            </p></td><td valign="def-def" id="d10e1052"><p class="first" id="d10e1053">This shell is the complement of <tt>jpub3-PMCcit-web-html.xsl</tt>.
+                It formats citations in NLM/Pubmed citation format, removes all elements marked with
+                a <tt>specific-use</tt> attribute whose value is "web-only", and then
+                transforms the document to XSL-FO results, ready for formatting as PDF by an XSL
+                formatter.</p></td></tr></table></div></p></div></div><div id="article1-back" class="back"><div class="back-section"><a name="d10e1"><!-- named anchor --></a><h2 class="main-title">Notes</h2><div class="footnote"><a name="saxon-versions"><!-- named anchor --></a><p id="d10e82"><span class="generated">[1]</span> The stylesheets were developed and tested with Saxon 9.1.0.3 and Saxon 9.1.0.5.
+                  The extension function the shell stylesheets rely on is available in versions of
+                  Saxon back to 8.9.</p></div><div class="footnote"><a name="d10e713"><!-- named anchor --></a><p id="d10e714"><span class="generated">[2]</span> For projects that wish to exploit the potentials of automated processes for
+              systematic numbering, the stylesheet does contain code that can be configured to
+              generate labels, including autonumbering. See the Technical documentation for more
+              information.</p></div><div class="footnote"><a name="d10e886"><!-- named anchor --></a><p id="d10e887"><span class="generated">[3]</span> Note that even in the best of cases, formatting of bibliographic citations according
+              to truly generalized and systematic rules is not entirely possible to specify and
+              therefore to automate. Testing shows that while these stylesheets will handle the
+              majority of common cases properly, adjustments always have to be made. When this
+              occurs with the provided stylesheets, users have the same options as if they were
+              posed with a format that was not implemented: either extend the stylesheet or fall
+              back on explicit formatting using <tt>mixed-citation</tt>.</p></div><div class="footnote"><a name="d10e926"><!-- named anchor --></a><p id="d10e927"><span class="generated">[4]</span> I.e., elements such as <tt>italic</tt> and
+                    <tt>sup</tt> (superscript).</p></div></div></div><div id="article1-footer" class="footer"><hr class="part-rule"><div class="branding"><p>This display is generated from NLM/NCBI Journal Publishing 3.0 XML with <b>jpub3-html.xsl</b>. The XSLT engine is SAXON 9.1.0.5 from Saxonica</p></div></div></body></html>

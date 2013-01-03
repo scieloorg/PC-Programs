@@ -317,7 +317,7 @@ class JSON_Article:
         article = Article(first_page, last_page)
         article.titles = self.format_titles(titles)
         article.authors = self.format_author_names(authors)
-        article.section = Section(return_singleval(self.json_data['f'], '49'))
+        article.section = self.section
         article.json_data = self.json_data
 
 
@@ -364,8 +364,8 @@ class JSON_Article:
         self.json_data['f']['120'] = 'XML_' + return_singleval(self.json_data['f'], '120')
         self.json_data['f']['42'] = '1'
         
-        section = Section(return_singleval(self.json_data['f'], '49'))
-        self.json_data['f']['49'] = section.code
+        self.section = Section(return_singleval(self.json_data['f'], '49'))
+        #self.json_data['f']['49'] = self.section.code
         
         self.normalize_metadata_authors()
         self.normalize_illustrative_materials()
@@ -385,7 +385,40 @@ class JSON_Article:
         
         self.json_data['h'] = self.json_normalizer.format_for_indexing(self.json_data['f'])
         self.json_data['l'] = self.json_normalizer.format_for_indexing(self.json_data['h'])
+
+    def normalize_issue_data(self, issn_id):
+        self.json_data['f']['35'] = issn_id
         
+        #self.section = Section(return_singleval(self.json_data['f'], '49'))
+        #self.json_data['f']['49'] = self.section.code
+        
+        self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '64', '65', '64')
+        self.publication_dateiso = return_singleval(self.json_data['f'], '65')
+
+        
+    def normalize_document_data(self, issue):
+        
+        self.json_data['f']['120'] = 'XML_' + return_singleval(self.json_data['f'], '120')
+        self.json_data['f']['42'] = '1'
+        
+        section = Section(return_singleval(self.json_data['f'], '49'))
+        self.section = issue.toc.return_section(section)
+        if self.section == None:
+            self.section = section
+        self.json_data['f']['49'] = self.section.code
+
+        self.normalize_metadata_authors()
+        self.normalize_illustrative_materials()
+        self.normalize_affiliations()
+        self.normalize_keywords()
+        
+        self.json_data['f'] = self.json_normalizer.convert_value(self.json_data['f'], '71', 'doctopic')
+        
+        self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '112', '111', '112')
+        self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '114', '113', '114')
+
+        self.json_data['h'] = self.json_normalizer.format_for_indexing(self.json_data['f'])
+        self.json_data['l'] = self.json_normalizer.format_for_indexing(self.json_data['h'])                
 
     def normalize_metadata_authors(self):
         authors = return_multval(self.json_data['f'], '10')
@@ -542,6 +575,8 @@ class JSON_Article:
         missing_href = []
         href_list = []
 
+        img_files = [ name[0:name.rfind('.')] for name in img_files ]
+
         if 'body' in self.json_data:
             href_list = list(set(return_multval(self.json_data['body'], 'file')))
 
@@ -634,6 +669,10 @@ class JSON_Article:
         i_record['35'] = issue.journal.issn_id
         i_record['2'] = 'br1.1'        
         i_record['930'] = issue.journal.acron.upper()
+        if issue.number != num:
+            if '31' in i_record.keys():
+                del i_record['31'] 
+            i_record['32'] = issue.number
 
         issue.json_data = i_record
         return  issue
@@ -782,6 +821,10 @@ class JSON_Issue:
         i_record['35'] = issue.journal.issn_id
         i_record['2'] = 'br1.1'        
         i_record['930'] = issue.journal.acron.upper()
+        if issue.number != num:
+            if '31' in i_record.keys():
+                del i_record['31'] 
+            i_record['32'] = issue.number
 
         toc = return_multval(data, '49')
         for item in toc:
@@ -799,6 +842,7 @@ class JSON_Issue:
 
         issue.json_data = i_record
         return  issue
+
     @property   
     def journal_title(self):
         if 'f' in self.json_data.keys():
@@ -862,6 +906,35 @@ class JSON2Article:
     def publication_title(self):
         return self.json_article.journal_title
    
+    def return_folder(self, journal):
+        
+        # normalize
+        self.json_article.normalize_issue_data(journal.issn_id)
+        
+        # issue
+        return self.json_article.return_issue(journal)
+    
+    def return_doc(self, issue, img_files):
+        # normalize
+        self.json_article.normalize_document_data(issue)
+        
+        
+        count_errors, count_warnings, refcount = self.json_article.validate(img_files)
+
+        self.article_report.write(' References found:' + str(refcount), True, False, False)
+        self.article_report.write(' Errors found: ' + str(count_errors), True, True, False)
+        self.article_report.write(' Warnings found: ' + str(count_warnings), True, True, False)
+
+
+        article = self.json_article.return_article()
+        article.issue = issue
+        article.issue.toc.insert(self.json_article.section, True)
+        article.xml_filename = self.xml_filename
+
+
+        return (article, count_errors, count_warnings, refcount)
+
+    # sera eliminado
     def return_document(self, journal, img_files):
         
         # normalize
@@ -870,6 +943,7 @@ class JSON2Article:
         # issue
         issue = self.json_article.return_issue(journal)
         
+
         count_errors, count_warnings, refcount = self.json_article.validate(img_files)
 
         self.article_report.write(' References found:' + str(refcount), True, False, False)

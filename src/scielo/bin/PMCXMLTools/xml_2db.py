@@ -111,6 +111,8 @@ if parameters.check_parameters(sys.argv):
 
         # Tables
         table_entities = TableEntities('reuse/encoding/entities')
+        
+
         #entities = Entities()
         tables = ConversionTables('reuse/tables/tables')
         locations = Locations('reuse/tables/valid_locations.seq')

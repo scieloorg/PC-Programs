@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ============================================================= -->
-<!--  MODULE:    Saxon shell (pipelining) stylesheet               -->
-<!--             HTML Preview with NLM/Pubmed citations            -->
+<!--  MODULE:    Saxon shell (pipelining) utility stylesheet       -->
 <!--  VERSION:   1.0                                               -->
 <!--  DATE:      January 2009                                      -->
 <!--                                                               -->
@@ -10,23 +9,21 @@
 <!-- ============================================================= -->
 <!--  SYSTEM:    NCBI Archiving and Interchange Journal Articles   -->
 <!--                                                               -->
-<!--  PURPOSE:   Pipelines stylesheets to convert                  -->
-<!--             Journal Publishing 3.0 XML as follows:            -->
-<!--             1. format citations in NLM/Pubmed style           -->
-<!--             2. convert to HTML for preview display            -->
+<!--  PURPOSE:   Provide support for pipelining stylesheets        -->
+<!--             directly, using Saxon extensions, in XSLT 2.0     -->
 <!--                                                               -->
 <!--  PROCESSOR DEPENDENCIES:                                      -->
 <!--             Saxon, from Saxonica (www.saxonica.com)           -->
 <!--             Tested using Saxon 9.1.0.3 (B and SA)             -->
 <!--                                                               -->
 <!--  COMPONENTS REQUIRED:                                         -->
-<!--             main/shell-utility.xsl, plus all the stylesheets  -->
-<!--             named in the $processes variable declaration      -->
+<!--             This stylesheet does not stand alone; it is a     -->
+<!--             code module for inclusion into another stylesheet -->
+<!--             that specifies the steps of the pipeline.         -->
 <!--                                                               -->
-<!--  INPUT:     Journal Publishing 3.0 XML with citations         -->
-<!--             in NLM/Pubmed format                              -->
+<!--  INPUT:     Any                                               -->
 <!--                                                               -->
-<!--  OUTPUT:    HTML                                              -->
+<!--  OUTPUT:    Any                                               -->
 <!--                                                               -->
 <!--  CREATED FOR:                                                 -->
 <!--             Digital Archive of Journal Articles               -->
@@ -44,22 +41,34 @@
   version="2.0"
   extension-element-prefixes="saxon">
 
-  <xsl:output method="html" omit-xml-declaration="yes"
-    encoding="utf-8" indent="no"/>
-
-  <!-- <xsl:output method="xml" omit-xml-declaration="no"
-    encoding="utf-8" indent="no"/> -->
+  <!-- This stylesheet does not stand alone! It is a component
+       to be called into XSLT 2.0 shell stylesheets. -->
   
-  <xsl:variable name="processes">
-    <!-- format citations in NLM/PMC format -->
-    <step>jpub/citations-prep/jpub3-PMCcit.xsl</step>
-    <!-- convert into HTML for display
-		Selecionar algum dos arquivos que está na mesma pasta para escolher a saída
-	 -->
-    <step>scielo-html.xsl</step>
-  </xsl:variable>
-
-  <xsl:include href="shell-utility.xsl"/>
+  <xsl:variable name="document" select="/" saxon:assignable="yes"/>
   
+  <xsl:param name="runtime-params">
+    <base-dir>
+      <xsl:value-of
+        select="replace(base-uri(/), '/[^/]+$','')"/>     
+    </base-dir>
+  </xsl:param>
 
+  <xsl:template match="/">
+    <xsl:for-each select="$processes/step/concat('',.)">
+      <xsl:message>
+        <xsl:text>&#xA;... Applying </xsl:text>
+        <xsl:value-of select="."/>
+      </xsl:message>
+      <saxon:assign name="document"
+        select="saxon:transform(
+                  saxon:compile-stylesheet(doc(.)),
+                  $document,
+                  $runtime-params/* )"/>
+      <!-- A third argument to saxon:transform could specify
+           runtime parameters for any (or all) steps -->
+    </xsl:for-each>
+    <xsl:sequence select="$document"/>
+    <xsl:message>&#xA;... Done</xsl:message>
+  </xsl:template>
+  
 </xsl:stylesheet>

@@ -83,10 +83,12 @@ class Reception:
                 self.tracker.register(package.name, 'send report')
                 self.send_report(package)
                 
-                package.report.write('Delete work area ' + package.package_path)
-                for f in os.listdir(package.package_path):
-                    os.unlink(package.package_path + '/' + f)
-                os.rmdir(package.package_path)
+                if len(os.listdir(package.package_path)) == 0:
+                    package.report.write('Delete work area ' + package.package_path)
+                    os.rmdir(package.package_path)
+                #for f in os.listdir(package.package_path):
+                #    os.unlink(package.package_path + '/' + f)
+                
 
                 self.tracker.register(package.name, 'end-open_package')
 
@@ -242,6 +244,51 @@ class DocumentsAnalyst:
             
                          
             if registered != None:
+                document_folder = self.json2model.return_folder(registered)
+
+                selected_folder = self.all_folders.template(document_folder)
+                if selected_folder.status == 'not_registered':
+                    package.report.write("\n" + ' ! WARNING: '  + selected_folder.display()  + ' is not registered in ' + folder_table_name + ', but it will be registered provisionally. After being oficially registered, it must be reprocessed.' + "\n" , True, True, True )
+
+                incoherences = self.all_folders.return_incoherences(selected_folder, document_folder)
+                if len(incoherences) > 0:
+                    package.report.write(' ! ERROR: There are inconsistencies of data ' + xml_filename, True, True, True)
+                    for err in incoherences:
+                        package.report.write(err, True, True, True)
+
+                specific_document, errors, warnings, refcount = self.json2model.return_doc(selected_folder, img_files)
+                if specific_document != None:
+                    generic_document = Document(specific_document)
+                    package.report.write(generic_document.display(), True, False, False)
+
+                    print('selected_folder toc:')
+                    print(selected_folder.toc.return_json())
+                    print('generic_document.folder toc:')
+                    print(generic_document.folder.toc.return_json())
+                    
+                    
+                    if generic_document.folder.documents == None:
+                        generic_document.folder.documents = Documents()
+                    generic_document.folder.documents.insert(generic_document.document, True)
+        return generic_document
+
+
+    def bkp_analyze_document(self, xml_filename, package, folder_table_name):
+        generic_document = None
+        json_data = self.xml2json.convert(xml_filename, package.report)
+        if type(json_data) != type({}):
+            package.report.write(' ! ERROR: Invalid JSON ' + xml_filename, False, False, False, json_data)
+        else:
+            img_files = package.return_matching_files(xml_filename, '.jpg')
+
+            self.json2model.set_data(json_data, xml_filename, package.report)
+
+            publication_title = self.json2model.publication_title
+            
+            registered = self.registered_titles.return_registered(publication_title, package.report)
+            
+                         
+            if registered != None:
                 specific_document, errors, warnings, refcount = self.json2model.return_document(registered, img_files)
                 
 
@@ -254,23 +301,28 @@ class DocumentsAnalyst:
                     if specific_folder.status == 'not_registered':
                         package.report.write("\n" + ' ! WARNING: '  + specific_folder.display()  + ' is not registered in ' + folder_table_name + ', but it will be registered provisionally. After being oficially registered, it must be reprocessed.' + "\n" , True, True, True )
      
-
+                    print('generic_document.folder toc:')
+                    print(generic_document.folder.toc.return_json())
+                    print('specific_folder toc:')
+                    print(specific_folder.toc.return_json())
+                    
                     incoherences = self.all_folders.return_incoherences(specific_folder, generic_document.folder)
 
                     if len(incoherences) > 0:
                         package.report.write(' ! ERROR: There are inconsistencies of data ' + xml_filename, True, True, True)
                         for err in incoherences:
                             package.report.write(err, True, True, True)
-                    else:
-                        generic_document.folder = specific_folder
-                        #print('generic_document.folder = specific_folder')                
-                        generic_document.folder.toc.insert(generic_document.section, False)    
+                   
+                    generic_document.folder = specific_folder
+                    #print('generic_document.folder = specific_folder')                
+                    generic_document.folder.toc.insert(generic_document.section, False)    
+                    print('generic_document.folder toc:')
+                    print(generic_document.folder.toc.return_json())
                     
                     if generic_document.folder.documents == None:
                         generic_document.folder.documents = Documents()
                     generic_document.folder.documents.insert(generic_document.document, True)
         return generic_document
-
 class DocumentsArchiver:
     def __init__(self, db_manager, tracker, folder_table_name):
         self.db_manager = db_manager

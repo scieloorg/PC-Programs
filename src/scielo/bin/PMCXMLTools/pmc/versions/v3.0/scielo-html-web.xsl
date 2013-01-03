@@ -62,7 +62,7 @@
 
 	<xsl:import href="jpub/main/jpub3-html.xsl"/>
 	<xsl:param name="css" select="'css/jpub-preview-scielo-web.css'"/>
-	<xsl:param name="path_img" />
+	<xsl:param name="path_img" select="'img/ag/v48n4/'"/>
 	<xsl:param name="img_format" select="'.jpg'"/>
 
 
@@ -70,7 +70,7 @@
 		<html>
 			<xsl:call-template name="make-html-header"/>
 			<body>
-				<xsl:apply-templates/>
+				<xsl:apply-templates select="article"/>
 			</body>
 		</html>
 	</xsl:template>
@@ -226,8 +226,8 @@
 
       <xsl:for-each select="article-meta | self::front-stub">
 	  
-        
-            <xsl:apply-templates mode="metadata" select="title-group"/>
+	
+		<xsl:apply-templates mode="metadata" select="title-group"/>
         
         <xsl:apply-templates mode="metadata" select="contrib-group"/>
         <!-- back in article-meta or front-stub context -->
@@ -322,7 +322,7 @@
       </xsl:if>
   </xsl:template>
   
-	<xsl:template name="metadata-area">
+  <xsl:template name="metadata-area">
 		<xsl:param name="label"/>
 		<xsl:param name="contents">
 		  <xsl:apply-templates/>
@@ -421,13 +421,13 @@
 		<xsl:apply-templates mode="label-text" select="label | @symbol"/>
 	</xsl:template>
 	
-	
+		<xsl:template name="metadata-labeled-entry"/>
+
 	<!---
 	*************************************************
 	Templates para aplicar o efeito do script TOOLTIP
 	*************************************************
 	-->
-	<xsl:template name="metadata-labeled-entry"/>
 	
 	<xsl:template name="make_miniatures">
 	  <div  id="mystickytooltip" class="stickytooltip">
@@ -562,25 +562,25 @@
 	</xsl:template>
 	
 	<xsl:template name="js">
-	<script type="text/javascript" src="js/jquery.min.js"></script>
-	<script type="text/javascript" src="js/stickytooltip.js">
+	<script type="text/javascript" src="xsl/pmc/v3.0/js/jquery.min.js"></script>
+	<script type="text/javascript" src="xsl/pmc/v3.0/js/stickytooltip.js">
 	/***********************************************
 	* Sticky Tooltip script- (c) Dynamic Drive DHTML code library (www.dynamicdrive.com)
 	* This notice MUST stay intact for legal use
 	* Visit Dynamic Drive at http://www.dynamicdrive.com/ for this script and 100s more
 	***********************************************/
 	</script>
-	<script type="text/javascript" src="js/executartooltip.js"></script>
-	<script type="text/javascript" src="js/jquery.anchor.js"></script>
-	<script type="text/javascript" src="js/thickbox.js"></script>
-	<script type="text/javascript" src="js/ddsmoothmenu.js">
+	<script type="text/javascript" src="xsl/pmc/v3.0/js/executartooltip.js"></script>
+	<script type="text/javascript" src="xsl/pmc/v3.0/js/jquery.anchor.js"></script>
+	<script type="text/javascript" src="xsl/pmc/v3.0/js/thickbox.js"></script>
+	<script type="text/javascript" src="xsl/pmc/v3.0/js/ddsmoothmenu.js">
 	/***********************************************
 	* Smooth Navigational Menu- (c) Dynamic Drive DHTML code library (www.dynamicdrive.com)
 	* This notice MUST stay intact for legal use
 	* Visit Dynamic Drive at http://www.dynamicdrive.com/ for full source code
 	***********************************************/
 	</script>
-	<script type="text/javascript" src="js/ddsmoothmenu-init.js"></script>
+	<script type="text/javascript" src="xsl/pmc/v3.0/js/ddsmoothmenu-init.js"></script>
 	</xsl:template>
 	
 	<xsl:template name="section_nav">

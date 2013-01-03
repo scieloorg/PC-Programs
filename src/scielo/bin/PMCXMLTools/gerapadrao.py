@@ -58,6 +58,13 @@ if parameters.check_parameters(sys.argv):
         proc_title_db = config.parameters['PROC_DB_TITLE_FILENAME']
         proc_issue_db = config.parameters['PROC_DB_ISSUE_FILENAME']
 
+        if not os.path.exists(os.path.dirname(proc_title_db)):
+            os.makedirs(os.path.dirname(proc_title_db ))
+            
+        if not os.path.exists(os.path.dirname(proc_issue_db)):
+            os.makedirs(os.path.dirname(proc_issue_db ))
+                
+
         cisis = CISIS(config.parameters['CISIS_PATH'])
 
         tracker = Tracker(config.parameter('GERAPADRAO_TRACKER_PATH'), config.parameter('GERAPADRAO_TRACKER_NAME'))

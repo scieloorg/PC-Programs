@@ -254,12 +254,13 @@
      There is a note with each template with an @id limitation.
 
   -->
-
+  	<!--Eliminado 'method="xml"' e  indent="yes"
+	*************
+	Gustavo.Silva-->
   <xsl:output
         method="xml"
-        indent="yes"
-        doctype-public="-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN"
-        doctype-system="journalpublishing3.dtd"
+        indent="no"
+        
    />
 
   <xsl:strip-space elements="element-citation nlm-citation"/>
@@ -275,9 +276,9 @@
 <!-- "citation" elements.                                            -->
 <!-- =============================================================== -->
 
-  <xsl:template match="/">
+  <!--xsl:template match="/">
     <xsl:apply-templates select="node()" mode="as-is"/>
-  </xsl:template>
+  </xsl:template-->
 
 
   <!-- =============================================================== -->
