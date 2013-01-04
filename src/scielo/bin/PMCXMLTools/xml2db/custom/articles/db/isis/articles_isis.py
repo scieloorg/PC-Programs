@@ -159,6 +159,7 @@ class Paths:
    
         self.extension_path = {}
         self.extension_path['xml'] = self.web_xml_path
+        self.extension_path['xml~'] = self.web_xml_path
         self.extension_path['jpg'] = self.web_img_path
         self.extension_path['pdf'] = self.web_pdf_path
         self.extension_path['epub'] = self.web_outs_path

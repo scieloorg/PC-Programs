@@ -19,37 +19,62 @@ class TableEntities:
             else:
                 char, number_ent, named_ent, ign2, no_accent = values
 
-                entity_char = named_ent.replace('&','').replace(';','')
-
-                if char != '' and not char in  self.table_char2number.keys():
-                    self.table_char2number[char] = number_ent
-                    self.table_noaccent[char] = no_accent
                 
-                if named_ent != '' and not named_ent in self.table_named2number.keys():
-                    self.table_named2number[named_ent] = number_ent
-                    if char != entity_char:
-                        self.table_named2char[named_ent] = char
-
-                if number_ent != '' and not number_ent in self.table_noaccent.keys():
-                    if char != entity_char:
-                        self.table_number2char[number_ent] = char
-                    self.table_noaccent[number_ent] = no_accent
+                if self.is_valid_char(char) and self.is_valid_named(named_ent):
+                    entity_char = named_ent.replace('&','').replace(';','')
+                    if not char in  self.table_char2number.keys():
+                        self.table_char2number[char] = number_ent
+                        self.table_noaccent[char] = no_accent
                 
+                    if  not named_ent in self.table_named2number.keys():
+                        self.table_named2number[named_ent] = number_ent
+                    
+                        if char != entity_char:
+                            self.table_named2char[named_ent] = char
+
+                    if number_ent != '' and not number_ent in self.table_noaccent.keys():
+                        if char != entity_char:
+                            self.table_number2char[number_ent] = char
+                        self.table_noaccent[number_ent] = no_accent
+
+    def is_valid_char(self, char):
+        r = False
+        if char != '':
+            if not char in [ '>', '<', '&']:
+                r = True
+        return  r
+
+    def is_valid_named(self, named):
+        r = False
+        if named != '':
+            if not named in [ '&gt;', '&lt;', '&amp;']:
+                r = True
+        return  r
+
     def number2char(self, content):
         for k,v in self.table_number2char.items():
+            k2 = k.replace('&', '&amp;')
+            content = content.replace(k2, v)
             content = content.replace(k, v)
+            
+
         return content
 
     def name2number(self, content):
         for k,v in self.table_named2number.items():
-            
+            k2 = k.replace('&', '&amp;')
+            content = content.replace(k2, v)
             content = content.replace(k, v)
+            
+            
         return content
 
     def name2char(self, content):
-        for k,v in self.table_named2char.items():
-            
+        for k,v in self.table_named2char.items():            
+            k2 = k.replace('&', '&amp;')
+            content = content.replace(k2, v)
             content = content.replace(k, v)
+            
         return content
 
     #def find_number_entities(self, content):

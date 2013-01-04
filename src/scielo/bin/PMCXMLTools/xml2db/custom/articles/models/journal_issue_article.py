@@ -165,8 +165,8 @@ class JournalIssue:
         return self.json_data
 
 class Article:
-    def __init__(self, first_page, last_page = ''):
-        self.id = self.generate_id(first_page)
+    def __init__(self, data4id, first_page, last_page):
+        self.id = self.generate_id(data4id)
         self.issue = None
         self.json_data = {}
         self.xml_filename = ''
@@ -188,11 +188,9 @@ class Article:
     def pages(self):
         return self.first_page + '-' + self.last_page
 
-    def generate_id(self, first_page):
-        first_page = '0' * 10 + first_page
-        first_page = first_page[-5:]
+    def generate_id(self, data4id):
         
-        return id_generate( first_page)
+        return id_generate( data4id)
 
     def display(self, display_labels = True):
         label_titles = 'Titles: '

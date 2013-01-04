@@ -297,7 +297,7 @@ class JSON_Article:
         self.json_data = json_data
         self.article_report = article_report
 
-    def return_article(self):
+    def return_article(self, name):
         titles = return_multval(self.json_data['f'], '12')
         authors = return_multval(self.json_data['f'], '10')
         
@@ -313,12 +313,14 @@ class JSON_Article:
             self.article_report.write('\n'+ ' ! ERROR: Missing first and last pages', True, True, False)
             
         
-            
-        article = Article(first_page, last_page)
+        data4id = name
+
+        article = Article(data4id, first_page, last_page)
         article.titles = self.format_titles(titles)
         article.authors = self.format_author_names(authors)
         article.section = self.section
         article.json_data = self.json_data
+
 
 
         return article
@@ -389,18 +391,31 @@ class JSON_Article:
     def normalize_issue_data(self, issn_id):
         self.json_data['f']['35'] = issn_id
         
+        test_vol = self.json_data['f']['31'].replace('0','')
+        test_num = self.json_data['f']['32'].replace('0','')
+
+        if test_vol + test_num == '':
+            if '31' in self.json_data['f'].keys():
+                del self.json_data['f']['31']
+            self.json_data['f']['32'] = 'ahead'
+
+
         #self.section = Section(return_singleval(self.json_data['f'], '49'))
         #self.json_data['f']['49'] = self.section.code
         
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '64', '65', '64')
         self.publication_dateiso = return_singleval(self.json_data['f'], '65')
 
+
         
-    def normalize_document_data(self, issue):
+    def normalize_document_data(self, issue, name):
         
         self.json_data['f']['120'] = 'XML_' + return_singleval(self.json_data['f'], '120')
         self.json_data['f']['42'] = '1'
         
+        if self.json_data['f']['32'] == 'ahead':
+            self.json_data['f']['121'] = name
+
         section = Section(return_singleval(self.json_data['f'], '49'))
         self.section = issue.toc.return_section(section)
         if self.section == None:
@@ -853,6 +868,7 @@ class JSON_Issue:
         if r == '':
             r = return_singleval(json_data, '130')
         return r
+
 class JSON_Journal:
     def __init__(self):
         pass 
@@ -916,7 +932,18 @@ class JSON2Article:
     
     def return_doc(self, issue, img_files):
         # normalize
-        self.json_article.normalize_document_data(issue)
+        name = os.path.basename(self.xml_filename)
+        if '.' in name:
+            name = name[0:name.rfind('.')]
+
+        new = ''
+        for n in name:
+            if n in '0123456789':
+                new += n
+        if new != name and new!='': 
+            name = new
+            
+        self.json_article.normalize_document_data(issue, name)
         
         
         count_errors, count_warnings, refcount = self.json_article.validate(img_files)
@@ -926,7 +953,7 @@ class JSON2Article:
         self.article_report.write(' Warnings found: ' + str(count_warnings), True, True, False)
 
 
-        article = self.json_article.return_article()
+        article = self.json_article.return_article(name)
         article.issue = issue
         article.issue.toc.insert(self.json_article.section, True)
         article.xml_filename = self.xml_filename
@@ -934,28 +961,6 @@ class JSON2Article:
 
         return (article, count_errors, count_warnings, refcount)
 
-    # sera eliminado
-    def return_document(self, journal, img_files):
-        
-        # normalize
-        self.json_article.normalize(journal.issn_id)
-        
-        # issue
-        issue = self.json_article.return_issue(journal)
-        
-
-        count_errors, count_warnings, refcount = self.json_article.validate(img_files)
-
-        self.article_report.write(' References found:' + str(refcount), True, False, False)
-        self.article_report.write(' Errors found: ' + str(count_errors), True, True, False)
-        self.article_report.write(' Warnings found: ' + str(count_warnings), True, True, False)
-
-
-        article = self.json_article.return_article()
-        article.issue = issue
-        article.xml_filename = self.xml_filename
-
-
-        return (article, count_errors, count_warnings, refcount)
+    
 
 
