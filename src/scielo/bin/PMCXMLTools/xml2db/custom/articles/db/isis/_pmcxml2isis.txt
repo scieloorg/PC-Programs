@@ -14,11 +14,12 @@
     .//contrib 10
       name/given-names n
       name/surname s
+      name/suffix z
       @contrib-type r ND
       xref[@ref-type='aff']/@rid 1
     .//article-meta/title-group 12
-      subtitle s
       article-title t
+      subtitle s
       article-title/@xml:lang l en
     .//article-meta//trans-title-group 12
       trans-title t
@@ -36,6 +37,11 @@
       month m
       year y
       day d
+    .//article-meta/pub-date[@pub-type='epub'] epub
+      season s
+      month m
+      year y
+      day d  
     .//article-meta/publisher-loc 66    
     .//article-meta 14
       fpage f
@@ -45,7 +51,6 @@
       label l
       @id i
       . 9
-      institution institution
       country p
       email e
       named-content[@content-type='city'] c
@@ -101,9 +106,11 @@
     .//person-group[1]/name 10
       given-names n
       surname s
+      suffix z
     .//person-group[2]/name 16
       given-names n
       surname s
+      suffix z
     .//person-group[1]/collab 11
     .//person-group[2]/collab 17
     .//volume 31    

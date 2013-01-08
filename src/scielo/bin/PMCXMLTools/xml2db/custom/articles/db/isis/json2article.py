@@ -334,7 +334,10 @@ class JSON_Article:
             author = ''
 
             if 's' in a:
-                author += a['s'] + ', '
+                author += a['s'] 
+                if 'z' in a.keys():
+                    author += ' ' + a['z']
+                author +=  ', '
             if 'n' in a:
                 author += a['n']
             
@@ -377,7 +380,7 @@ class JSON_Article:
         self.json_data['f'] = self.json_normalizer.convert_value(self.json_data['f'], '71', 'doctopic')
         
         
-
+        
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '64', '65', '64')
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '112', '111', '112')
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '114', '113', '114')
@@ -415,7 +418,11 @@ class JSON_Article:
         
         if self.json_data['f']['32'] == 'ahead':
             self.json_data['f']['121'] = name
-
+        if 'epub' in self.json_data['f'].keys():
+            self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
+        if 'epub' in self.json_data['f'].keys():
+            del self.json_data['f']['epub']
+        
         section = Section(return_singleval(self.json_data['f'], '49'))
         self.section = issue.toc.return_section(section)
         if self.section == None:
@@ -440,6 +447,8 @@ class JSON_Article:
         changed = False
         new_authors = []
         for author in authors:
+            if 'z' in author.keys():
+                author['s'] += ' ' + author['z']
             if '1' in author.keys():
                 if type(author['1']) == type([]):
                     #print(self.json_json_data['f']['10'])
@@ -670,8 +679,9 @@ class JSON_Article:
         i_record = {}
         keep_list = [30, 31, 32, 132, 35, 42, 65, 100, 480, ]
         for key, item in data.items():
-            if int(key) in keep_list:
-                i_record[key] = item
+            if key.isdigit():
+                if int(key) in keep_list:
+                    i_record[key] = item
 
         i_record['706'] = 'i'
         i_record['700'] = '0'
@@ -942,7 +952,7 @@ class JSON2Article:
                 new += n
         if new != name and new!='': 
             name = new
-            
+
         self.json_article.normalize_document_data(issue, name)
         
         

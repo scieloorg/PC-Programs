@@ -82,12 +82,15 @@ class Reception:
 
                 self.tracker.register(package.name, 'send report')
                 self.send_report(package)
+
+                q_xml = [ f for f in os.listdir(package.package_path) if f.endswith('.xml') ]
                 
-                if len(os.listdir(package.package_path)) == 0:
+                if len(q_xml) == 0:
+                    for f in os.listdir(package.package_path):
+                        os.unlink(package.package_path + '/' + f)
                     package.report.write('Delete work area ' + package.package_path)
                     os.rmdir(package.package_path)
-                #for f in os.listdir(package.package_path):
-                #    os.unlink(package.package_path + '/' + f)
+                
                 
 
                 self.tracker.register(package.name, 'end-open_package')

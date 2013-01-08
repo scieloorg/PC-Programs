@@ -126,7 +126,10 @@ class JSON2IDFile:
         
     def __tag_it__(self, tag, content):
         tag = '000' + tag
-        return '!v' + tag[-3:] + '!' + content + "\n"
+        r = ''
+        if tag[-3:].isdigit():
+            r = '!v' + tag[-3:] + '!' + content + "\n"
+        return r
             
            
     def __convert_value__(self, value):
