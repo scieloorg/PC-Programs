@@ -183,4 +183,4 @@ if parameters.check_parameters(sys.argv):
             tracker.register('Gerapadrao', 'in progress')
             
             #report_sender.send_report('', '', c, [], [])
-            print(report_sender.send_to_adm(self, template, '\n'.join(scilista_items)))
+            print(report_sender.send_to_adm(template, '\n'.join(scilista_items)))
