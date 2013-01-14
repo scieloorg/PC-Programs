@@ -18,14 +18,17 @@ class FTPService:
         r = self.ftp.login(self.user, self.pswd)
         self.report.write(r, True, False, True)
         
-        self.download_files_of_subdir(local_path, path_in_ftp_server, False)
+        downloaded_files = self.download_files_of_subdir(local_path, path_in_ftp_server, False)
 
         r = self.ftp.close()
         self.report.write('ftp finished', True, False, True)
+
+        print(';\n'.join(downloaded_files))
+        return downloaded_files
     
     def download_files_of_subdir(self, local_path, path_in_ftp_server, delete_path_in_ftp_server = False):
         levels = len(path_in_ftp_server.split('/'))
-        
+        downloaded_files = []
         # go to ftp directory
         self.report.write('go to ' + path_in_ftp_server, True, False, True)
         r = self.ftp.cwd(path_in_ftp_server)
@@ -38,10 +41,12 @@ class FTPService:
         for folder_or_file in files_or_folders:
             if '.' in folder_or_file:
                 # must be a file
-                self.download_and_delete_file(local_path, folder_or_file)
+                downloaded_file = self.download_and_delete_file(local_path, folder_or_file)
+                if len(downloaded_file)>0:
+                    downloaded_files.append(downloaded_file)
             else:
                 # supposed to be a folder
-                self.download_files_of_subdir(local_path, folder_or_file, False)
+                downloaded_files += self.download_files_of_subdir(local_path, folder_or_file, False)
 
         # up level
         for i in range(0,levels):
@@ -51,14 +56,18 @@ class FTPService:
         if delete_path_in_ftp_server:
             r = self.ftp.rmd(path_in_ftp_server)
         self.report.write(r, True, False, True)
+        return downloaded_files
         
         
     def download_and_delete_file(self, local_path, file):
+        downloaded_file = ''
         r = self.ftp.retrbinary('RETR ' + file, open(file, 'wb').write)
         self.report.write(r, True, False, True)
         if os.path.exists(local_path + '/' + file):
+            downloaded_file = file
             r = self.ftp.delete(file)
             self.report.write(r, True, False, True)
+        return downloaded_file
 
     
 

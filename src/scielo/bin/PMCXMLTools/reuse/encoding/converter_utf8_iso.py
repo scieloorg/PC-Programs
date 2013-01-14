@@ -34,7 +34,6 @@ class ConverterUTF8_ISO:
     def utf8_2_iso_by_characters(self, utf8):
         new = []
         for c in utf8:
-            print(c)
             new.append(self.utf8_2_iso_by_character(c))
         return ''.join(new)
 
@@ -44,7 +43,7 @@ class ConverterUTF8_ISO:
             u = utf8.decode('utf-8')
             iso = u.encode('iso-8859-1')
         except:
-            iso = '?'
+            iso = utf8
         return iso
 
     

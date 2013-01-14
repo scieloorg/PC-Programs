@@ -70,12 +70,12 @@
     .//article-meta/trans-abstract 83
       . a
       @xml:lang l
-    .//article-meta//date[@date-type='received'] 112    
+    .//article-meta//date[@date-type='received'] 111    
       year y
       month m
       day d
       season s   
-    .//article-meta//date[@date-type='accepted'] 114    
+    .//article-meta//date[@date-type='accepted'] 113    
       year y
       month m
       day d

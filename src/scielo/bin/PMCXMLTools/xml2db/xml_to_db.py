@@ -5,7 +5,7 @@ from xml2db.box_folder_document import Document, Documents
 from reuse.files.compressed_file import CompressedFile
 
 
-from reuse.files.name_file import path_range_of_10days, filename_now
+from reuse.files.name_file import add_date_to_filename
 
 class QueueOrganizer:
     def __init__(self, report, tracker, queue_path):
@@ -42,14 +42,19 @@ class QueueOrganizer:
             os.makedirs(archive_path)
 
         if os.path.exists(archive_path):
+            name = os.path.basename(filename)
+            if os.path.exists(archive_path + '/' + name):
+                new_name = add_date_to_filename(name, False)
+                shutil.copyfile(filename, archive_path + '/' + new_name)
             shutil.copy(filename, archive_path)
 
 class Reception:
-    def __init__(self, input_path, report_sender, report_path, tracker):
+    def __init__(self, input_path, report_sender, msg_template, report_path, tracker):
         self.input_path = input_path
         self.report_sender = report_sender
         self.report_path  = report_path
         self.tracker = tracker
+        self.msg_template = msg_template
 
     def open_packages(self, document_analyst, document_archiver, img_converter, fulltext_generator):
         for folder in os.listdir(self.input_path):
@@ -81,7 +86,8 @@ class Reception:
 
 
                 self.tracker.register(package.name, 'send report')
-                self.send_report(package)
+                package.report.write(self.report_sender.send_package_evaluation_report(self.msg_template, package.name, [ package.report.summary_filename, package.report.err_filename ], package.package_sender_email))
+        
 
                 q_xml = [ f for f in os.listdir(package.package_path) if f.endswith('.xml') ]
                 
@@ -94,13 +100,8 @@ class Reception:
                 
 
                 self.tracker.register(package.name, 'end-open_package')
-
-
+   
     
-    def send_report(self, package):
-        self.report_sender.send_report(package.name, package.package_sender_email, '', [ package.report.summary_filename, package.report.err_filename ], [] )
-
-
 class Package:
     def __init__(self, package_path, report_path):
         

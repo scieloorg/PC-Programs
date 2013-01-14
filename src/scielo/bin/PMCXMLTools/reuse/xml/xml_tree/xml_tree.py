@@ -49,16 +49,14 @@ class XMLTree:
             r = self._load(xml_filename)
             if not r:
                 shutil.copyfile(xml_filename, xml_filename.replace('.xml', '.xml~'))
-                self.number2char(xml_filename, xml_filename)
                 self.named2char(xml_filename, xml_filename)
-                r = self._load(xml_filename)
-            if not r:
-                shutil.copyfile(xml_filename, xml_filename.replace('.xml', '.xml~~'))
                 self.named2number(xml_filename, xml_filename)
                 self.number2char(xml_filename, xml_filename)
                 r = self._load(xml_filename)                
-            if not r:
-                self.report.write('Unresolved entities: ' + '\n'.join(self.find_entities(xml_filename)), True, True)
+                if not r:
+                    entities = self.find_entities(xml_filename)
+                    if len(entities)>0:
+                        self.report.write('Unresolved entities: ' + '\n'.join(entities), True, True)
         else:
             self.report.write('Missing XML file:' + xml_filename, True, True)
         return r

@@ -53,6 +53,9 @@ class ReportSender:
 
     
     def send_report(self,  package_name, package_sender_email, msg, report_files, attached_files):   
+        return self.report_to_package_sender(package_name, package_sender_email, msg, report_files, attached_files)
+
+    def report_to_package_sender(self,  package_name, package_sender_email, msg, report_files, attached_files):   
         #compressed, '', text, [], attached_files     
         to, bcc, forward_to = self.configure_destinatary(package_sender_email)
         text = self.message_type.forward_alert + '\n' + '='*80 + '\n'

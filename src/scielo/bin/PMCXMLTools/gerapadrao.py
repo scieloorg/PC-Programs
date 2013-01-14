@@ -5,8 +5,8 @@ from datetime import date
     
 from reuse.files.name_file import return_path_based_on_date
 
-from reuse.services.email_service.email_service import EmailService
-from reuse.services.email_service.report_sender import ReportSender, MessageType
+from reuse.services.email_service.email_service import EmailService, EmailMessageTemplate
+from reuse.services.email_service.report_sender_xml_process import ReportSender, ReportSenderConfiguration
 
 from reuse.input_output.configuration import Configuration
 from reuse.input_output.report import Report
@@ -68,11 +68,17 @@ if parameters.check_parameters(sys.argv):
         cisis = CISIS(config.parameters['CISIS_PATH'])
 
         tracker = Tracker(config.parameter('GERAPADRAO_TRACKER_PATH'), config.parameter('GERAPADRAO_TRACKER_NAME'))
-        email_service = EmailService('', config.parameter('SENDER_EMAIL'))
-        message_type = MessageType(config.parameter('EMAIL_SUBJECT_PREFIX_GERAPADRAO'), config.parameter('EMAIL_TEXT_GERAPADRAO'), config.parameter('FLAG_SEND_EMAIL_TO_XML_PROVIDER'), config.parameter('ALERT_FORWARD'), config.parameter('FLAG_ATTACH_REPORTS'))
-        report_sender = ReportSender(report, config.parameter('IS_AVAILABLE_EMAIL_SERVICE'), email_service, config.parameter('BCC_EMAIL').split(','), message_type)
+        
+        #message_type = MessageType(config.parameter('EMAIL_SUBJECT_PREFIX_GERAPADRAO'), config.parameter('EMAIL_TEXT_GERAPADRAO'), config.parameter('FLAG_SEND_EMAIL_TO_XML_PROVIDER'), config.parameter('ALERT_FORWARD'), config.parameter('FLAG_ATTACH_REPORTS'))
+        #report_sender = ReportSender(report, config.parameter('IS_AVAILABLE_EMAIL_SERVICE'), email_service, config.parameter('BCC_EMAIL').split(','), message_type)
 
+        
 
+        email_service = EmailService('', config.parameter('SENDER_EMAIL'), 'localhost', config.parameter('IS_AVAILABLE_EMAIL_SERVICE') == 'yes')
+        report_sender_config = ReportSenderConfiguration(config.parameter('BCC_EMAIL'), config.parameter('FLAG_SEND_EMAIL_TO_XML_PROVIDER') == 'yes', config.parameter('ALERT_FORWARD'), config.parameter('FLAG_ATTACH_REPORTS'))
+        report_sender = ReportSender(email_service, report_sender_config)
+        template = EmailMessageTemplate(config.parameter('EMAIL_SUBJECT_PREFIX_GERAPADRAO'), config.parameter('EMAIL_TEXT_GERAPADRAO'))
+        
 
         tracker.register('GeraPadrao', 'preparation')
         ## -  
@@ -164,15 +170,17 @@ if parameters.check_parameters(sys.argv):
                                 else:
                                     print(issue_base_path + ' has no files')
 
-        f = open(proc_scilista, 'r')
-        c = f.read()
-        f.close()
+        scilista_items = []
+        if os.path.exists(proc_scilista):
+            f = open(proc_scilista, 'r')
+            scilista_items = f.readlines()
+            f.close()
         
-
-        
-        tracker.register('Gerapadrao', c)
-        os.system(config.parameters['RUN_GERAPADRAO_AND_UPDATE_BASES'])
-        os.system(config.parameters['RUN_UPDATE_FILES'])
-        tracker.register('Gerapadrao', 'in progress')
+        if ''.join(scilista_items) != '':
+            tracker.register('Gerapadrao', c)
+            os.system(config.parameters['RUN_GERAPADRAO_AND_UPDATE_BASES'])
+            os.system(config.parameters['RUN_UPDATE_FILES'])
+            tracker.register('Gerapadrao', 'in progress')
             
-        report_sender.send_report('', '', c, [], [])
+            #report_sender.send_report('', '', c, [], [])
+            print(report_sender.send_to_adm(self, template, '\n'.join(scilista_items)))

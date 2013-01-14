@@ -4,9 +4,8 @@ import shutil
 from datetime import date
     
 
-from reuse.services.email_service.email_service import EmailService
-from reuse.services.email_service.report_sender import ReportSender, MessageType
-
+from reuse.services.email_service.email_service import EmailService, EmailMessageTemplate
+from reuse.services.email_service.report_sender_xml_process import ReportSender,ReportSenderConfiguration
 
 from reuse.input_output.configuration import Configuration
 from reuse.input_output.report import Report
@@ -107,8 +106,6 @@ if parameters.check_parameters(sys.argv):
         archive_path = config.parameters['DOWNLOAD_ARCHIVE_PATH'] 
         download_path = config.parameters['DOWNLOAD_PATH'] 
         
-
-
         # Tables
         table_entities = TableEntities('reuse/encoding/entities')
         
@@ -156,10 +153,14 @@ if parameters.check_parameters(sys.argv):
 
         all_boxes = AllFolders(registered_boxes, JournalIssuesList(), AllIssues())
 
-        email_service = EmailService('', config.parameter('SENDER_EMAIL'))
-        message_type = MessageType(config.parameter('EMAIL_SUBJECT_PREFIX'), config.parameter('EMAIL_TEXT'), config.parameter('FLAG_SEND_EMAIL_TO_XML_PROVIDER'), config.parameter('ALERT_FORWARD'), config.parameter('FLAG_ATTACH_REPORTS'))
-        report_sender = ReportSender(report, config.parameter('IS_AVAILABLE_EMAIL_SERVICE'), email_service, config.parameter('BCC_EMAIL').split(','), message_type)
-     
+        
+        email_service = EmailService('', config.parameter('SENDER_EMAIL'), 'localhost', config.parameter('IS_AVAILABLE_EMAIL_SERVICE') == 'yes')
+        report_sender_config = ReportSenderConfiguration(config.parameter('BCC_EMAIL'), config.parameter('FLAG_SEND_EMAIL_TO_XML_PROVIDER') == 'yes', config.parameter('ALERT_FORWARD'), config.parameter('FLAG_ATTACH_REPORTS'))
+        report_sender = ReportSender(email_service, report_sender_config)
+
+        package_eval_msg_template = EmailMessageTemplate(config.parameter('EMAIL_SUBJECT_PREFIX'), config.parameter('EMAIL_TEXT'))
+        adm_msg_template = EmailMessageTemplate(config.parameter('EMAIL_SUBJECT_WORK_PATH'), config.parameter('EMAIL_TEXT_WORK_PATH'))
+        
 
         document_analyst = DocumentsAnalyst(xml2json, json2articlemodel, registered_titles, all_boxes)
 
@@ -177,10 +178,13 @@ if parameters.check_parameters(sys.argv):
             xsl_and_output_list[k] = {'xsl': pair[0], 'output': pair[1]}
         
         fulltext_generator = FullTextGenerator(java_xml_transformer, xsl_and_output_list)
-        
-        reception = Reception(work_path, report_sender, report_path, tracker)
+        if os.path.exists(config.parameter('COL_SCILISTA')):
+            os.unlink(config.parameter('COL_SCILISTA'))
+        reception = Reception(work_path, report_sender, package_eval_msg_template, report_path, tracker)
         reception.open_packages(document_analyst, document_archiver, ImageConverter(), fulltext_generator)
-
+        if len(os.listdir(work_path))>0:
+            print('\n'.join(os.listdir(work_path)))
+            report_sender.send_to_adm(adm_msg_template, '\n'.join(os.listdir(work_path)))
 
         print('-' * 80)
         print('Check report files:  ')

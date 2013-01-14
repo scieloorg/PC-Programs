@@ -1,4 +1,5 @@
 from datetime import date, datetime
+import os
 
 
 def return_path_based_on_date():
@@ -14,3 +15,16 @@ def filename_now():
     
 def filename_today():
 	return date.today().isoformat()
+
+def add_date_to_filename(filename, prefix = True):
+    path = os.path.dirname(filename)
+    name = os.path.basename(filename)
+    now = datetime.now().isoformat().replace(':', '')
+    
+    if prefix:
+        new_name = now + '.' + name
+    else:
+        dot_position = name.rfind('.')
+        ext = name[dot_position:]
+        new_name = name[0:dot_position] + '.' + now + ext
+    return new_name

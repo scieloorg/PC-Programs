@@ -4,8 +4,9 @@ import shutil
 from datetime import date
     
 
-from reuse.services.email_service.email_service import EmailService
-from reuse.services.email_service.report_sender import ReportSender, MessageType
+from reuse.services.email_service.email_service import EmailService, EmailMessageTemplate
+from reuse.services.email_service.report_sender_xml_process import ReportSender, ReportSenderConfiguration
+
 
 from reuse.services.ftp_service.ftp_service import FTPService
 
@@ -74,12 +75,13 @@ if parameters.check_parameters(sys.argv):
 
         fservice = FTPService(report_ftp, server, user, pasw)
         tracker = Tracker(config.parameter('DOWNLOAD_TRACKER_PATH'), config.parameter('DOWNLOAD_TRACKER_NAME'))
-        email_service = EmailService('', config.parameter('SENDER_EMAIL'))
         
-        message_type = MessageType(config.parameter('EMAIL_SUBJECT_PREFIX_DOWNLOAD'), config.parameter('EMAIL_TEXT_DOWNLOAD'), config.parameter('FLAG_SEND_EMAIL_TO_XML_PROVIDER'), config.parameter('ALERT_FORWARD'), config.parameter('FLAG_ATTACH_REPORTS'))
-        report_sender = ReportSender(report_ftp, config.parameter('IS_AVAILABLE_EMAIL_SERVICE'), email_service, config.parameter('BCC_EMAIL').split(','), message_type)
-
+        email_service = EmailService('', config.parameter('SENDER_EMAIL'), 'localhost', config.parameter('IS_AVAILABLE_EMAIL_SERVICE') == 'yes')
+        report_sender_config = ReportSenderConfiguration(config.parameter('BCC_EMAIL'), config.parameter('FLAG_SEND_EMAIL_TO_XML_PROVIDER') == 'yes', config.parameter('ALERT_FORWARD'), config.parameter('FLAG_ATTACH_REPORTS'))
+        report_sender = ReportSender(email_service, report_sender_config)
+        template = EmailMessageTemplate(config.parameter('EMAIL_SUBJECT_PREFIX_DOWNLOAD'), config.parameter('EMAIL_TEXT_DOWNLOAD'))
         
-        downloader = Downloader(report_ftp, tracker, report_sender, download_path)
+        
+        downloader = Downloader(report_ftp, tracker, report_sender, template, download_path)
         downloader.download(fservice, folder,  True)
         

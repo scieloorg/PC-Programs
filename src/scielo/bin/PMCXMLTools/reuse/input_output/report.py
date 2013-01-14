@@ -66,7 +66,12 @@ class Report:
     
 
     
-        
+    def read(self, filename):
+        f = open(filename, 'r')
+        c = f.read()
+        f.close()
+        return c
+
     
     def garante_filename_path(self, filename, delete):
         if os.path.exists(filename):

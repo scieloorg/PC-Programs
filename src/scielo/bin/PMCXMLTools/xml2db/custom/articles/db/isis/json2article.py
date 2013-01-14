@@ -436,8 +436,8 @@ class JSON_Article:
         
         self.json_data['f'] = self.json_normalizer.convert_value(self.json_data['f'], '71', 'doctopic')
         
-        self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '112', '111', '112')
-        self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '114', '113', '114')
+        self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '111', '112', '111')
+        self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '113', '114', '113')
 
         self.json_data['h'] = self.json_normalizer.format_for_indexing(self.json_data['f'])
         self.json_data['l'] = self.json_normalizer.format_for_indexing(self.json_data['h'])                
