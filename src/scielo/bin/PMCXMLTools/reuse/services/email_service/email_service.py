@@ -17,7 +17,7 @@ def strtolist(s):
         if ';' in s:
             l = s.split(';')
         elif ',' in s:
-            l = s.split(';')
+            l = s.split(',')
         else:
             l = [s]
     elif type(s) == type([]):
@@ -61,10 +61,10 @@ class EmailService:
         bcc = strtolist(bcc)
         cc = strtolist(cc)
 
-        assert type(to)==list
-        assert type(attaches)==list
-        assert type(bcc)==list
-        assert type(cc)==list
+        assert type(to)==type([])
+        assert type(attaches)==type([])
+        assert type(bcc)==type([])
+        assert type(cc)==type([])
         
         if len(to) == 0:
             if len(cc) > 0:

@@ -67,7 +67,7 @@ class ReportSender:
             forward_to = self.config.alert_forward_msg +  '  ' + forward_to + '\n' + '-'*80 + '\n'
 
         if self.config.flag_attach_reports == 'yes':
-            attached_files += report_files 
+            attached_files = report_files 
             report_location = 'em anexo' 
             report_content = ''
         else:
