@@ -774,7 +774,10 @@ class AffiliationsHandler:
                     parts = ''
                     for key, value in aff.items():
                         if key in self.aff_labels.keys():
-                            parts += self.aff_labels[key] + ': ' + value +'\n'
+                            if type(value) == type(''):
+                                parts += self.aff_labels[key] + ': ' + value +'\n'
+                            elif type(value) == type([]):
+                                parts += self.aff_labels[key] + ': ' + ','.join(value) +'\n'
                         
                     warnings.append('\nAffiliation: ' + aff['9'] + '\n Its parts were automatically identified: ' + '\n' + parts + '\nPlease, check if they were correctly identified.\n' )
             i += 1

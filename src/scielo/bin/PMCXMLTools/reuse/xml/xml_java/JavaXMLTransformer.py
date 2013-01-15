@@ -3,10 +3,10 @@ import os
 import sys
 
 class JavaXMLTransformer:
-    def __init__(self, java_path, path_jar_transformer, path_jar_validator):
+    def __init__(self, java_path, saxon_jar, validator_jar):
         self.java_path = java_path
-        self.path_jar_transformer = path_jar_transformer
-        self.path_jar_validator = path_jar_validator
+        self.saxon_jar = saxon_jar
+        self.validator_jar = validator_jar
         
     def validate(self, xml_filename, use_dtd, result_filename, err_filename):
         valid = False
@@ -23,7 +23,7 @@ class JavaXMLTransformer:
         
         if use_dtd:
             validation_type = '--validate'
-        cmd = self.java_path + ' -cp ' +  self.path_jar_validator + '/XMLCheck.jar br.bireme.XMLCheck.XMLCheck ' + xml_filename + ' ' +  validation_type +  '>' + temp
+        cmd = self.java_path + ' -cp ' +  self.validator_jar + ' br.bireme.XMLCheck.XMLCheck ' + xml_filename + ' ' +  validation_type +  '>' + temp
         os.system(cmd)
         print cmd
         
@@ -37,16 +37,13 @@ class JavaXMLTransformer:
             f.write(content)
             f.close()
         
-        
+        shutil.copyfile(temp, result_filename)
+
         if 'ERROR' in content.upper():
-            print err_filename
-            os.rename(temp, err_filename)
+            shutil.copyfile(temp, err_filename)
         else:
             valid = True
-            print result_filename
-            
-            os.rename(temp, result_filename)
-            
+        os.unlink(temp)
         
         return valid
         
@@ -70,10 +67,8 @@ class JavaXMLTransformer:
         if os.path.exists(err_filename):
             os.remove(err_filename)
          
-        if os.path.exists(self.path_jar_transformer + '/saxon9.jar'):
-            jar_saxon = self.path_jar_transformer + '/saxon9.jar'
-        else:
-            jar_saxon = self.path_jar_transformer + '/saxon8.jar'
+        if os.path.exists(self.saxon_jar ):
+            jar_saxon = self.saxon_jar 
         cmd = self.java_path + ' -jar ' +  jar_saxon + ' -novw -w0 -o "' + temp_result + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + self.format_parameters(parameters)
         os.system(cmd)
         print cmd
@@ -83,7 +78,7 @@ class JavaXMLTransformer:
             r = True
         else:
             f =open(temp_result, 'w')
-            f.write('ERROR: transformation error.')
+            f.write('ERROR: transformation error.\n')
             f.write(cmd)
             f.close()
             

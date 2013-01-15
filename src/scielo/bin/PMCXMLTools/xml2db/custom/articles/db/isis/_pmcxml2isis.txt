@@ -53,8 +53,8 @@
       . 9
       country p
       email e
-      named-content[@content-type='city'] c
-      named-content[@content-type='state'] s
+      addr-line/named-content[@content-type='city'] c
+      addr-line/named-content[@content-type='state'] s
       institution[@content-type='orgdiv3'] 3
       institution[@content-type='orgdiv2'] 2
       institution[@content-type='orgdiv1'] 1

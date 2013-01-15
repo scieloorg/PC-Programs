@@ -121,7 +121,7 @@ class NormalizedAffiliations:
                 missing.append(item)
         return missing
 
-    def return_identified_data(self, aff):
+    def old_return_identified_data(self, aff):
         unidentified = []
         if '9' in aff.keys():           
             full_affiliation = aff['9']
@@ -132,6 +132,17 @@ class NormalizedAffiliations:
             if '[AFFSEP]' in full_affiliation:
                 unidentified = full_affiliation.split('[AFFSEP]')
             else:
+                unidentified = full_affiliation.split(',')
+            unidentified = [ i.strip() for i in unidentified ]
+        return unidentified
+    def return_identified_data(self, aff):
+        unidentified = []
+        if '9' in aff.keys():           
+            full_affiliation = aff['9']
+            if '</label>' in full_affiliation:
+                full_affiliation = full_affiliation[full_affiliation.find('</label>')+len('</label>'):]
+            
+            if not '</' in full_affiliation:
                 unidentified = full_affiliation.split(',')
             unidentified = [ i.strip() for i in unidentified ]
         return unidentified
@@ -149,10 +160,18 @@ class NormalizedAffiliations:
     def complete_affiliation(self, aff):
         # l,i,9,institution,p,c,s,3,2,1,_
         unidentified = []
+        print('~'*80)
+        print('aff')
+        print(aff)
         missing = self.return_missing_data(aff, 'cspe_1')
         if len(missing) > 0:
             unidentified = self.return_identified_data(aff)
-        
+        print('missing')
+        print(missing)
+
+        print('unidentified')
+        print(unidentified)
+
         for missing_item in missing:
             if missing_item == '_':                   
                 if 'institution' in aff.keys():
@@ -196,10 +215,16 @@ class NormalizedAffiliations:
                         break
             elif missing_item == '1':
                 aff['1'] = ', '.join(unidentified)
+            print('missing_item')
+            print(missing_item)
+            print('aff modificado')
+            print(aff)
 
         if not '_' in aff.keys():
             aff['_'] = aff['1']
             del aff['1']
+        print(aff)
+        print('*'*80)
         return aff 
     
     def complete_affiliations(self, affiliations):
@@ -211,6 +236,10 @@ class NormalizedAffiliations:
         city = ''
         affiliations.reverse()
         for aff in affiliations:
+            for k, v in aff.items():
+                if type(v) != type(''):
+                    if type(v) == type([]):
+                        aff[k] = ', '.join(v)
             if 'p' in aff.keys():
                 country = aff['p']
             else:

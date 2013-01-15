@@ -1,0 +1,705 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "journalpublishing3.dtd">
+<article dtd-version="3.0" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:mml="http://www.w3.org/1998/Math/MathML"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <front>
+    <journal-meta>
+      <journal-id>N/A</journal-id>
+      <issn>N/A</issn>
+    </journal-meta>
+    <article-meta>
+      <title-group><article-title>User's Guide for the Journal Publishing 3.0 Preview
+          Stylesheets</article-title>
+        <alt-title alt-title-type="running-head">Journal Publishing 3.0 Preview Stylesheets: User's
+          Guide</alt-title>
+      </title-group>
+      <contrib-group>
+        <contrib>
+          <collab>Mulberry Technologies, Inc.</collab>
+        </contrib>
+      </contrib-group>
+      <pub-date>
+        <year>2009</year>
+      </pub-date>
+    </article-meta>
+  </front>
+  <body>
+    <sec>
+      <title>Introduction</title>
+      <p>These stylesheets format documents encoded in XML using version 3.0 of the NLM/NCBI Journal
+        Publishing tag set. Previews in both HTML and PDF format (via XSL-FO) are supported. Most
+        generic Journal Publishing structures are supported, with assumptions and limitations as
+        described here.</p>
+      <p>This documentation, including this User Guide, the Quick Start Guide, and Technical
+        documentation, are all included in this package encoded in NLM/NCBI Journal Publishing XML,
+        with HTML and PDF presentation versions generated using the Preview stylesheets.</p>
+      <p>Assuming the user already has valid Journal Publishing 3.0 data, the most important
+        consideration regarding application of these stylesheets regards the bibliographic citation
+        format desired. This distribution provides for semi-automated formatting of citations in two
+        formats: NLM/Pubmed, and APA. Users who have a requirement to display citations in another
+        format, or who do not need any citation processing, should refer to the <xref
+          rid="citations">Citations</xref> section below.</p>
+      <p>For a more precise description of the technical dependencies of these stylesheets, along
+        with documentation of alternative ways to deploy and apply them and how to extend and modify
+        them, users should consult the Technical documentation.</p>
+    </sec>
+    <sec>
+      <title>Getting started</title>
+      <p>To select which stylesheet to use, you will first need to determine the following:<list
+          list-type="order">
+          <list-item>
+            <p>Do you want HTML/CSS, or PDF?</p>
+          </list-item>
+          <list-item>
+            <p>Are your citations in NLM/Pubmed format? APA format? (These are the only formats
+              supported by these stylesheets.)</p>
+          </list-item>
+          <list-item>
+            <p>To make HTML:</p>
+            <list>
+              <list-item>
+                <p>If your citations use NLM/Pubmed style, you will use
+                    <monospace>jpub3-PMCcit-html.xsl</monospace></p>
+              </list-item>
+              <list-item>
+                <p>If your citations use APA style, you will use
+                    <monospace>jpub3-APAcit-html.xsl</monospace></p>
+              </list-item>
+            </list>
+          </list-item>
+          <list-item>
+            <p>To make PDF:</p>
+            <list>
+              <list-item>
+                <p>If your citations use NLM/Pubmed style, you will use
+                    <monospace>jpub3-PMCcit-xslfo.xsl</monospace></p>
+              </list-item>
+              <list-item>
+                <p>If your citations use APA style, you will use
+                    <monospace>jpub3-APAcit-xslfo.xsl</monospace></p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>Then:<list list-type="order">
+          <list-item>
+            <p>Apply the stylesheet to a valid Journal Publishing 3.0 document, or a subdirectory of
+              such documents, using a recent version of Saxon (a freely available XSLT 2.0
+                processor).<fn id="saxon-versions">
+                <p>The stylesheets were developed and tested with Saxon 9.1.0.3 and Saxon 9.1.0.5.
+                  The extension function the shell stylesheets rely on is available in versions of
+                  Saxon back to 8.9.</p>
+              </fn></p>
+            <p>When you run the stylesheet, messages will be echoed to your console reporting on
+              progress. Do not be concerned by warning messages stating that you are running an XSLT
+              1.0 stylesheet with a 2.0 processor, since that is what you are doing. These
+              stylesheets will run in XSLT "backward compatibility mode", and have been designed to
+              work properly with either 1.0 or 2.0 processors.</p>
+          </list-item>
+          <list-item>
+            <p>When the result format is HTML, copy <monospace>jpub-preview.css</monospace> to the
+              file system next to the result file(s).</p>
+          </list-item>
+          <list-item>
+            <p>When the result format is XSL-FO, run the result file in an XSL-FO formatter,
+              according to its instructions.</p>
+            <p>(Many XSL-FO formatters allow running an XSLT transformation directly to apply a
+              stylesheet to a document. If you wish to do this and you are using one of the shell
+              stylesheets provided, see to it that your formatter invokes Saxon as its XSLT
+              component.)</p>
+          </list-item>
+        </list></p>
+      <boxed-text id="InvokingSaxon9" position="anchor">
+        <label>Invoking SaxonB 9 from the command line</label>
+        <p>Saxon is a Java application and requires Java to be installed. Java 1.4 is required; at
+          least Java 1.5 is preferred. Saxon 9 is also available within a number of different
+          toolkits and XML editing environments, which provide their own user interfaces to the
+          tool. If SaxonSA is used, the command line will be different. See the Saxon documentation
+          at <ext-link xlink:href="http://saxonica.com/documentation/index/intro.html"
+            >http://saxonica.com/documentation/index/intro.html</ext-link> for more
+          details.</p><p>From the command line, SaxonB (the free version of the product) may be
+          invoked as follows (on one
+          line):</p><preformat position="anchor">c:\Projects\NLM3\xmlfiles&gt; java -jar c:\path\to\saxon9.jar
+        -o mydocument.html mydocument.xml jpub3-APAcit-html.xsl </preformat><p>Within
+          the <monospace>c:\Projects\NLM3\xmlfiles</monospace> subdirectory, this will generate an
+          output document <monospace>mydocument.html</monospace> from the input
+            <monospace>mydocument.xml</monospace>.</p><p>MS Windows path syntax is used in this
+          example; adjust accordingly for your system.</p></boxed-text>
+    </sec>
+    <sec>
+      <title>Advanced options</title>
+      <p>In addition to the straightforward application of formatting to Journal Publishing content
+        using either of the supported bibliographic citation styles, this suite of stylesheets
+        supports a number of advanced options. Some of these work directly; others are included as
+        demonstrations of how processes may be customized to meet local requirements.</p>
+      <p>In order to learn more, see the section on <xref rid="special-purpose">Special-purpose
+          stylesheets</xref> below, along with the Technical documentation.</p>
+    </sec>
+    <sec id="citations-sec">
+      <title>Assumptions made by the preview processing</title>
+      <p>These stylesheets are designed to handle a broad range of inputs, generally requiring only
+        that input data be XML valid to the NLM/NCBI Journal Publishing 3.0 DTD. Inevitably,
+        however, there are limitations in their handling of structures that are valid but unlikely
+        and/or poorly controlled by a schema, and of variant patterns of tagging.</p>
+      <p>Caution: while these stylesheets do their best to handle "normal" input, they should not be
+        taken as an indicator of a norm. "Variant" does not necessarily mean "incorrect", and where
+        local practice has evolved to meet particular local processing requirements, these
+        stylesheets may and should be altered or extended to accommodate them.</p>
+      <sec>
+        <title>Known limitations of these stylesheets</title>
+        <sec>
+          <title>Running page headers</title>
+          <p>The PDF Preview stylesheet generates running headers using the main article title
+              (<monospace>article-title</monospace> inside
+              <monospace>article-meta/title-group</monospace>). If the main article title is too
+            long, an alternative title can be provided for the page header; if available, an
+              <monospace>alt-title</monospace> with <monospace>alt-title-type</monospace> of
+            'running-head' will be used.</p>
+        </sec>
+        <sec>
+          <title>Super- and subscripting limitations</title>
+          <p>On <monospace>sub</monospace> and <monospace>sup</monospace> elements the
+              <monospace>arrange</monospace> attribute is not supported in either preview. All
+            instances will be treated as <monospace>arrange='stagger'</monospace>.</p>
+        </sec>
+        <sec>
+          <title>Addresses</title>
+          <p>The document model allows addresses (the <monospace>address</monospace> element) both
+            as structured elements, and within inline content such as paragraphs.</p>
+          <p>The preview stylesheets assume that addresses are formatted as blocks broken into
+            separate lines, one for each element in the address, <italic>unless</italic> the address
+            contains no <monospace>address-line</monospace> elements <italic>and</italic> it appears
+            in paragraph content (that is, directly within <monospace>p</monospace>,
+              <monospace>license-p</monospace>, <monospace>collab</monospace>,
+              <monospace>named-content</monospace> and <monospace>styled-content</monospace>
+            elements).</p>
+          <p>Address elements inside <monospace>aff</monospace> (affiliation) are always formatted
+            in line.</p>
+        </sec>
+        <sec>
+          <title>Sub-articles</title>
+          <p>The HTML preview stylesheet includes code for handling sub-articles, including the
+            elements <monospace>sub-article</monospace> and <monospace>response</monospace>. Because
+            the Journal Publishing tag set allows a wide range of ways to deploy and manage such
+            content, particularly with respect to metadata and ancillary materials such as
+            references and footnotes, these features have not been fully tested. If you have
+              <monospace>sub-article</monospace> or <monospace>response</monospace> content,
+            extending one or both stylesheets in view of your particular tagging patterns and
+            requirements will probably be necessary.</p>
+        </sec>
+        <sec>
+          <title>Section metadata</title>
+          <p>The same thing is true of section-level metadata (<monospace>sec-meta</monospace>),
+            particularly with respect to the <monospace>contrib-group</monospace> element inside
+              <monospace>sec-meta</monospace>. </p>
+          <p>Also, within <monospace>sec-meta</monospace> in the PDF preview, only simple keywords
+              (<monospace>kwd</monospace>) within <monospace>kwd-group</monospace> will be rendered;
+              <monospace>compound-kwd</monospace> is ignored by these stylesheets.</p>
+          <p>Test the stylesheets against your content and be prepared to amend the stylesheets, if
+            necessary.</p>
+        </sec>
+        <sec>
+          <title>Special characters</title>
+          <p>These stylesheets do not support the <monospace>private-char</monospace>,
+              <monospace>glyph-data</monospace>, or <monospace>glyph-ref</monospace> elements.</p>
+        </sec>
+        <sec>
+          <title>Graphics</title>
+          <p>Graphics are not resized in the HTML preview, but displayed at native resolution. In
+            the PDF preview, they may be scaled down to fit in available space, but smaller graphics
+            that already fit will not be adjusted.</p>
+          <p>In the HTML preview, graphics are expected to be located as given in the source data
+            relative to the HTML <italic>result</italic> file. So, if source data has a graphic with
+              <monospace>xlink:href='snapshots/babypic.jpg'</monospace>, the result file will link
+            to 'snapshots/babypic.jpg'. If graphic files are maintained relative to the source data,
+            they should either be copied to the same location relative to the result, or an absolute
+            path to the graphic should be given as the value, or (most simply) the HTML result file
+            should be placed next to the XML source file, in order to ensure that graphics will be
+            visible in the browser.</p>
+          <p>In the PDF preview, a runtime parameter, <monospace>base-dir</monospace>, must be given
+            to identify the directory relative to which graphics are located. If the XSL process is
+            initiated using one of the provided XSLT 2.0 shell stylesheets, this parameter will be
+            provided automatically as the base directory of the source file, so graphics should be
+            located relative to the source data. If no parameter is given, either graphics must be
+            designated with absolute path names, or they must be located relative to the
+              <italic>stylesheet</italic>.</p>
+          <p>Alternative text on graphics provided as <monospace>alt-text</monospace> are not
+            rendered in the PDF preview.</p>
+        </sec>
+        <sec>
+          <title>Styled content and the HTML <monospace>style</monospace> attribute</title>
+          <p>The Journal Publishing document model makes provision for styling content directly by
+            using CSS styles, either associated with table elements (HTML table elements in this
+            model) or as the value given the <monospace>style</monospace> attribute of the
+              <monospace>styled-content</monospace> inline element.</p>
+          <p>When this appears, the HTML preview stylesheet will simply pass the values through.
+            Results will depend on the level of CSS conformance both in the code and in the
+            browser.</p>
+          <p>In the PDF preview, <monospace>width</monospace> and
+              <monospace>vertical-align</monospace> values associated with tables are mapped to
+            formatting in the result. On any element with the <monospace>style</monospace>
+            attribute, values of the following properties are mapped: <monospace>color</monospace>;
+              <monospace>background-color</monospace>; <monospace>font-size</monospace>;
+              <monospace>font-weight</monospace>; <monospace>font-style</monospace>;
+              <monospace>font-family</monospace>; <monospace>text-decoration</monospace>. Note that
+            incorrect CSS values may result in errors when XSL-FO stylesheet results are
+            formatted.</p>
+          <p>Note in particular that CSS properties related to borders are not supported in the PDF
+            preview. For table cell borders, some bordering behavior can be specified using
+            attributes on the <monospace>table</monospace> element.</p>
+        </sec>
+        <sec>
+          <title>Floating objects and the <monospace>position</monospace> attribute</title>
+          <p>Floating behavior actually entails two different functionalities: allowing a formatting
+            application to determine (and presumably optimize) the position on the page of objects
+            whose position is not to be anchored in the flow of text; and managing objects out of
+            line (probably but not necessarily so they can be so placed) by gathering them into a
+            group at the end of the document.</p>
+          <p>The first feature in Journal Publishing tagging is controlled through the use of
+              <monospace>position</monospace> attributes on objects that may be placed in this way
+            by the formatter. These elements include <monospace>boxed-text</monospace>,
+              <monospace>chem-struct-wrap</monospace>, <monospace>fig</monospace>,
+              <monospace>fig-group</monospace>, <monospace>graphic</monospace>,
+              <monospace>media</monospace>, <monospace>preformat</monospace>,
+              <monospace>supplementary-material</monospace>, <monospace>table-wrap</monospace>,
+              <monospace>table-wrap-group</monospace>. The second feature is supported by means of
+            the <monospace>floats-group</monospace> element, where such objects may be gathered.</p>
+          <p>Note that <monospace>position='float'</monospace> may be assigned to any of these
+            objects irrespective of whether it is gathered into <monospace>floats-group</monospace>.
+            Similarly, it is possible (although not ordinary) for an object to be placed inside
+              <monospace>floats-group</monospace>, and not in the body of the document, without
+            assigning it <monospace>position='float'</monospace>.</p>
+          <p>In this context, it is especially important to note that by default, on all these
+            objects, <monospace>position</monospace> is assigned a value of 'float' by the Journal
+            Publishing DTD. If the attribute is not set in the data, the formatting stylesheets
+            assume the value should be 'float', both out of respect for the semantics specified by
+            the formal document model, and in order to prevent different formatting when the DTD is
+            used from when it is not.</p>
+          <p>Any object assigned <monospace>position='float'</monospace> will be allowed to float on
+            the page. Exceptions to this rule include the following:<list>
+              <list-item>
+                <p>No object, even one set to float, will float if it appears inside another object
+                  set to float. Note again that objects are set to float implicitly, unless position
+                  is set to 'anchor' or 'margin'.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>graphic</monospace> and <monospace>media</monospace> will not float
+                  when they appear inside any of the other elements that may float. (A
+                    <monospace>graphic</monospace> inside a <monospace>fig</monospace> will not
+                  float, even if its <monospace>position</monospace> is set to float and
+                  irrespective of whether the <monospace>fig</monospace> floats.)</p>
+              </list-item>
+              <list-item>
+                <p><monospace>fig</monospace> will not float inside <monospace>fig-group</monospace>
+                  (though the <monospace>fig-group</monospace> may float).</p>
+              </list-item>
+              <list-item>
+                <p><monospace>table-wrap</monospace> will not float inside
+                    <monospace>table-wrap-group</monospace> (though the group may float).</p>
+              </list-item>
+              <list-item>
+                <p><monospace>preformat</monospace> will not float inside
+                  <monospace>bio</monospace>, <monospace>boxed-text</monospace>,
+                    <monospace>chem-struct</monospace>, <monospace>chem-struct-wrap</monospace>,
+                    <monospace>disp-formula</monospace>, <monospace>disp-quote</monospace>,
+                    <monospace>fig</monospace>, <monospace>glossary</monospace>,
+                    <monospace>supplementary-material</monospace>,
+                    <monospace>disp-formula</monospace>, or <monospace>table-wrap</monospace>. Note,
+                  however, that like other floatable objects, <monospace>preformat</monospace> will
+                  ordinarily float unless its position says not to!</p>
+              </list-item>
+            </list></p>
+          <p>Also, the value 'margin' is not supported; objects with
+              <monospace>position='margin'</monospace> will act as if they have
+              <monospace>position='anchor'</monospace>.</p>
+          <p>In the HTML preview, floating an object will not move it on the page; it will only
+            allow text to flow around it.</p>
+          <p>In the PDF preview, objects with <monospace>position</monospace> = 'float' will be
+            positioned on the page by the formatting engine, typically at the top of the same page
+            where the object would appear if its <monospace>position</monospace> were 'anchor'. The
+            exact placement will depend on the formatting engine.</p>
+          <p>Where floating is not wanted, the easiest solution is to set
+              <monospace>position</monospace> to 'anchor' on the element.</p>
+        </sec>
+        <sec>
+          <title>Gathering objects in <monospace>floats-group</monospace></title>
+          <p>Just like objects elsewhere, the placement of objects tagged inside
+              <monospace>floats-group</monospace> is determined by their
+              <monospace>position</monospace> attribute. The difference is that when assigned
+              <monospace>position='float'</monospace> (and remember this is the value by default),
+            in the PDF preview the object is formatted near its first cross-reference. Otherwise,
+            and when no such cross-reference appears in the document, it is formatted at the end of
+            the document.</p>
+          <p>The HTML preview stylesheet displays all objects inside
+              <monospace>floats-group</monospace> at the end of the document. (In this case,
+            however, cross-references are also hyperlinked.)</p>
+          <p>When articles should be formatted with a "Figures" or "Tables" section at the end, an
+              <monospace>app</monospace> or <monospace>sec</monospace> should be used for this
+            purpose, and the objects anchored in place. The preview stylesheets assume that
+              <monospace>floats-group</monospace> is specifically for collecting objects that are
+            intended to be formatted elsewhere.</p>
+        </sec>
+        <sec>
+          <title>Correct numbering of floating objects</title>
+          <p>As described below, the preview stylesheets do not provide automated numbering for
+            floating objects (distinguished, as a class, from footnotes, which may also "float"). In
+            systems where the stylesheet is extended to provide autonumbering, rules will need to be
+            formulated and followed to govern where floating objects are encoded, whether and where
+            they are cross-referenced, and the relation between settings of
+              <monospace>position</monospace> and appearance (and order) inside
+              <monospace>floats-group</monospace>, with appropriate enforcement of these
+            constraints. Otherwise it can be expected that their numbers will not always be properly
+            sequenced.</p>
+        </sec>
+        <sec>
+          <title>Setting <monospace>orientation</monospace></title>
+          <p>A number of objects also have an <monospace>orientation</monospace> attribute, which is
+            intended to allow specifying that they should be rotated in display, by setting its
+            value to 'landscape'.</p>
+          <p>The HTML preview stylesheet does not support orientation. The PDF stylesheet does
+            rotate the object; however, it assigns (somewhat arbitrarily) a width (i.e., a
+              <italic>vertical</italic> spacing for an object formatted in landscape) of 6 inches
+            for tables and 4 inches for other objects. While this will almost never be optimal, it
+            is the best that can be accomplished without particular formatting specifications for
+            each object, and it is enough to show that the orientation is set. Users may wish to
+            adjust the stylesheet to meet local needs for positioning and sizing tables and
+            figures.</p>
+        </sec>
+        <sec>
+          <title>Sizing tables</title>
+          <p>In HTML, tables are sized dynamically or according to attributes given on the table
+            element.</p>
+          <p>In the PDF Preview, by default, tables are formatted at column width. If the
+              <monospace>width</monospace> attribute on a table is set to "100%" and
+              <monospace>orientation</monospace> is "portrait" (the default), the entire
+              <monospace>table-group</monospace> it appears in will be formatted at page width.</p>
+        </sec>
+        <sec>
+          <title>Footnotes</title>
+          <p>The Journal Publishing model supports either of two general approaches to encoding
+            footnotes in valid data. The <monospace>fn</monospace> element may be used in line where
+            a reference to a footnote (generally the first or only reference) should appear, with
+            the footnote content moved in rendition (typically to the bottom of the page). Or
+            footnotes are encoded together in a structured grouping, the
+              <monospace>fn-group</monospace> element, and footnote references in the text are
+            encoded with <monospace>xref</monospace> elements, like any other cross-reference. The
+            latter style of encoding is said in the Journal Publishing documentation to be
+            appropriate for "end notes" as opposed to footnotes <italic>per se</italic>.
+              <monospace>fn-group</monospace> is permitted in a number of places, including within
+            the article back matter and in several other locations where footnotes are commonly
+            grouped in journal articles.</p>
+          <p>These stylesheets will support either approach to encoding footnotes. In the HTML
+            preview output, all footnotes encoded inline are grouped together in a section called
+            "Notes" appearing at the end of the document. In the PDF, footnotes encoded inline are
+            formatted at the foot of the page. In both cases, footnotes grouped in
+              <monospace>fn-group</monospace> or in <monospace>author-notes</monospace> appear
+            collected together where the <monospace>fn-group</monospace> or
+              <monospace>author-notes</monospace> appears. This will usually be inside the back
+            matter, but it can also occur in other places such as in the front matter,
+              <monospace>boxed-text</monospace> or <monospace>table-wrap-foot</monospace>.</p>
+          <p>Note that the two approaches (loose <monospace>fn</monospace> elements and
+              <monospace>fn</monospace> within <monospace>fn-group</monospace>) may be combined, but
+            this is inadvisable unless footnotes are numbered in the data, since it may result in
+            two distinct sets of footnote numbering. It is best to encode footnotes all one way or
+            all the other. Generally, if you use <monospace>fn</monospace> elements within mixed
+            content, do not also use <monospace>fn-group</monospace>. If you use
+              <monospace>fn-group</monospace>, use it for all footnotes and use
+              <monospace>xref</monospace> to provide references to them.</p>
+          <p>Additionally, in the PDF preview, errors will result if inline footnotes appear inside
+            floating objects (such as boxed text or figures). This is because the XSL-FO formatter
+            cannot position both a footnote and a floating object together (since when a footnote is
+            moved to appear on the same page as a float, the page layout determining where the float
+            can be placed may also be thrown off). This restriction means, in effect, that if you
+            have footnotes in your floating objects, you must locate the footnotes inside an
+              <monospace>fn-group</monospace>, and reference them with <monospace>xref</monospace>,
+            rather than using <monospace>fn</monospace> elements inline.</p>
+          <p>With regard to their numbering, footnotes are described further below.</p>
+        </sec>
+      </sec>
+      <sec>
+        <title>Autonumbering, labels, and cross-references</title>
+        <p>Except for two element types, <monospace>ref</monospace> (reference) and
+            <monospace>fn</monospace> (footnote), these preview stylesheets do not generate numbered
+          labels automatically. If figures, tables and similar structures such as statements,
+          supplementary material, etc. are to be labelled, they must be labelled in the data. Labels
+          provided in the data (<monospace>label</monospace> elements) are displayed with the
+          elements they label; the same label content also appears in cross-references that point to
+          those elements when a cross-reference element (<monospace>xref</monospace> elements) is
+          given as empty. (When <monospace>xref</monospace> elements have text content, it is used
+          as the text of the cross-reference, irrespective of whether a label appears with its
+          target.)</p>
+        <p>The approach to labelling taken by these stylesheets is meant to be as transparent and
+          easy to understand as possible: it assumes that when labels are wanted on content, they
+          will be provided explicitly in the source data (and therefore should not be generated
+          automatically), and that when a cross-reference is made to an object, it will either have
+          content of its own (which can serve as anchoring text), or its target will have an
+          explicit label that can be used unaltered as the text in the cross-reference.<fn>
+            <p>For projects that wish to exploit the potentials of automated processes for
+              systematic numbering, the stylesheet does contain code that can be configured to
+              generate labels, including autonumbering. See the Technical documentation for more
+              information.</p>
+          </fn></p>
+        <p>There are two exceptions to this principle: numbering is be provided for footnotes
+            (<monospace>fn</monospace> elements) and for references (<monospace>ref</monospace>
+          elements) when they do not have explicit labels, as these elements' primary purpose is
+          their systematic cross-referencing. In both cases, explicit labels
+            (<monospace>label</monospace> elements or, in the case of footnotes,
+            <monospace>symbol</monospace> attributes) will override autogenerated labels, allowing
+          for projects to control these values in their data when necessary. In order to protect the
+          consistency of labeling, warning messages may be generated for unlabelled elements where
+          labels were expected. In certain places, such as within the document metadata
+            (<monospace>author-notes</monospace> or <monospace>fn-group</monospace> inside
+            <monospace>title-group</monospace>), unlabelled footnotes are permitted in the PDF
+          preview, and will not generate warning labels even if other footnotes have labels.</p>
+        <p>Automated numbers are assigned based on the order of footnotes in the document, not of
+          first references to them. Similarly, in the PDF output, since footnotes are placed based
+          on the location of the <monospace>fn</monospace> element in the document, a
+          cross-reference can be made to a footnote that will appear on a subsequent page. This also
+          means that if footnote A appears before footnote B in the document, a reference to
+          footnote B will appear out of sequence if it appears before footnote A does. The easiest
+          ways to avoid this are (a) to use footnotes as endnotes (group them in
+            <monospace>fn-group</monospace> in the back matter), or (b) make sure that if inline
+          footnotes are used (resulting in actual footnotes in the PDF), they are not placed before
+          cross-references to the same footnote.</p>
+        <p>These stylesheets do not accommodate a practice of redundant tagging, whereby a footnote
+          encoded inline is also provided with an <monospace>xref</monospace> (cross-reference)
+          element to that footnote. If an <monospace>fn</monospace> element is used in line, a
+          reference will appear for it. Cross-references to footnotes should be used only for end
+          notes (<monospace>fn</monospace> elements in <monospace>fn-group</monospace>) or in cases
+          where more than one reference is made to a single footnote.</p>
+        <sec>
+          <title>Summary of best practice respecting cross-references and labels</title>
+          <p>For correct operation with these stylesheets, the simplest approach to using labels and
+            assuring that cross-references are clear is to follow an "all or nothing" rule:<list>
+              <list-item>
+                <p>As described above, either all footnotes (<monospace>fn</monospace> elements)
+                  should be enclosed in <monospace>fn-group</monospace> elements (effectively, to
+                  present as endnotes), or all should be placed inline at their point of first
+                  reference.</p>
+                <p>Avoid using (empty) <monospace>xref</monospace> elements to refer to footnotes
+                  that have not yet appeared, unless the footnote is inside
+                    <monospace>fn-group</monospace>, as this will result in numbering out of
+                  sequence. Footnote numbers are assigned in the order of the footnotes, not of
+                  first reference to them. (This will not matter if footnotes are labelled in the
+                  source data or if <monospace>xref</monospace> elements have data content, in which
+                  case maintaining correct referencing is an editorial task.)</p>
+              </list-item>
+              <list-item>
+                <p>Either label all footnotes explicitly in the source data (using
+                    <monospace>label</monospace> elements or <monospace>symbol</monospace>
+                  attributes), or let the system number all of them.</p>
+              </list-item>
+              <list-item>
+                <p>Similarly, no reference elements (<monospace>ref</monospace>), whether they are
+                  cross-referenced or not, should be given <monospace>label</monospace> elements, or
+                  all of them should.</p>
+              </list-item>
+              <list-item>
+                <p>Any object type (such as figures or tables) that is cross-referenced should be
+                  given <monospace>label</monospace> elements consistently and throughout,
+                    <italic>or</italic> cross-references (<monospace>xref</monospace> elements)
+                  should never be empty.</p>
+              </list-item>
+            </list></p>
+          <p>As described in the Technical documentation, any of the stylesheet logic regarding
+            generating labels and/or automatic numbering can be modified in the stylesheets.</p>
+        </sec>
+        <sec>
+          <title>Warning messages for missing labels</title>
+          <p>While (apart from the complications of footnotes and references) this logic is fairly
+            simple, an error condition may still arise if an object has no
+              <monospace>label</monospace> element, and a cross-reference
+              (<monospace>xref</monospace>) pointing to it has no content of its own. That is, while
+            either its own content or its target's label can provide text for a cross-reference, a
+            particular cross-reference might have neither (even in a valid document). When this
+            happens, a warning message will be generated in place of a label, both with the object
+            and wherever it is cross-referenced. A summary view of all such warning messages is also
+            provided in a special section entitled <bold>Process Warnings</bold> at the end of the
+            document.</p>
+          <p>This error is corrected either by providing the targeted object with a
+              <monospace>label</monospace> element (or alternatively, for a footnote, a
+              <monospace>symbol</monospace> attribute), by providing its cross-reference(s) with
+            content, or both.</p>
+          <p>When there are no such errors, the <bold>Process Warnings</bold> section does not
+            appear.</p>
+        </sec>
+        <sec>
+          <title>Other limitations on <monospace>xref</monospace> elements</title>
+          <p>The current implementation of the preview stylesheets does not support cross-references
+            to more than one target using a single <monospace>xref</monospace> element. Although
+            according to the DTD, an <monospace>IDREFS</monospace> value is allowed on
+              <monospace>xref/@rid</monospace>, only a single <monospace>IDREF</monospace> will
+            work.</p>
+          <p>In other
+            words,<preformat position="anchor">&lt;xref rid="fig1">See Figure 1&lt;/xref></preformat>will
+            generate a cross-reference in the output,
+            but<preformat position="anchor">&lt;xref rid="fig1 fig2">See Figures 1 and 2&lt;/xref></preformat>will
+            not work correctly (it will attempt to link to an object identified as "fig1 fig2").</p>
+        </sec>
+      </sec>
+      <sec id="citations">
+        <title id="Moreonthebibliographicformats">Citations</title>
+        <p>Journal Publishing XML may tag bibliographic citations in any of several ways, including
+          the <monospace>element-citation</monospace> element, which assumes that rendering of
+          citations, including punctuation, is provided by a stylesheet. Stylesheets in this package
+          are capable of rendering of <monospace>element-citation</monospace> into two different
+          bibliographic formats.<fn>
+            <p>Note that even in the best of cases, formatting of bibliographic citations according
+              to truly generalized and systematic rules is not entirely possible to specify and
+              therefore to automate. Testing shows that while these stylesheets will handle the
+              majority of common cases properly, adjustments always have to be made. When this
+              occurs with the provided stylesheets, users have the same options as if they were
+              posed with a format that was not implemented: either extend the stylesheet or fall
+              back on explicit formatting using <monospace>mixed-citation</monospace>.</p>
+          </fn></p>
+        <list>
+          <list-item>
+            <p><bold>NLM/Pubmed format</bold>. The stylesheet provided here is a modified version of
+              a transformation used internally at NCBI.</p>
+          </list-item>
+          <list-item>
+            <p><bold>APA-like format</bold>. A stylesheet for generating common citation styles
+              conforming to APA guidelines is also provided. We call this format "APA-like" in order
+              to stress that results may not correspond precisely either to local rules regarding
+              details of APA format or in some cases to APA's own guidelines.</p>
+          </list-item>
+        </list>
+        <p>If your citations follow neither practice, or when your citations do not format properly
+          due to special cases, you have two alternatives:</p>
+        <list>
+          <list-item>
+            <p>Instead of <monospace>element-citation</monospace> in bibliographies or reference
+              lists, use <monospace>mixed-citation</monospace> with explicit formatting. This
+              element allows citations to be formatted and punctuated directly in the XML data.
+              Neither preprocessing stylesheet will override any punctuation within
+                <monospace>mixed-citation</monospace> elements.</p>
+            <p>Even if all citations are given as punctuated <monospace>mixed-citation</monospace>
+              elements, however, it is still necessary to run one or another citations preprocessor.
+              This is because they may still contain elements with formatting consequences, which
+              the preview stylesheets have no rules to handle. The only citations that are safe to
+              run through the preview stylesheets without any preprocessing whatsoever conform to a
+              profile of <monospace>mixed-citation</monospace> that includes only elements whose
+              formatting consequences are inherent in their semantics,<fn>
+                <p>I.e., elements such as <monospace>italic</monospace> and
+                    <monospace>sup</monospace> (superscript).</p>
+              </fn> and will not vary from one citation formatting style to another. See the
+              Technical documentation on the "Simple citation" element profile for more details.</p>
+          </list-item>
+          <list-item>
+            <p>Extend or modify one of the provided citation processors, or develop your own
+              citation preprocessor implementing your own rules for formatting citations.</p>
+          </list-item>
+        </list>
+        <p>If you have no citations, you can run the stylesheets for either format.</p>
+      </sec>
+    </sec>
+    <sec id="special-purpose">
+      <title>Special-purpose stylesheets</title>
+      <p>There are three types of stylesheets included in this package:<list>
+          <list-item>
+            <p>The main Preview stylesheets (found in the <monospace>main</monospace>
+              subdirectory);</p>
+          </list-item>
+          <list-item>
+            <p>Various ancillary stylesheets for pre- or post-processing data in support of special
+              operations (in the <monospace>prep</monospace>, <monospace>citations-prep</monospace>
+              and <monospace>post</monospace> subdirectories);</p>
+          </list-item>
+          <list-item>
+            <p>"Shell" or "wrapper" stylesheets (here called "top-level stylesheets") to be used to
+              invoke the others in combination. These are the stylesheets that will typically be
+              applied directly to documents, as described above.</p>
+          </list-item>
+        </list>Users wanting a simple approach can acquire a recent version of the Saxon XSLT
+        engine, identify the top-level stylesheet that performs the necessary tasks, and apply it to
+        their data.<xref rid="saxon-versions"/></p>
+      <p>The top-level stylesheets depend on the Saxon processor because they use XSLT 2.0 features
+        and Saxon extension functions to perform "pipelining", efficiently executing a sequence of
+        transformations without writing interim results to the file system. All of the stylesheets
+        can also be run on their own, and some of them work also in XSLT 1.0 engines. Due to
+        limitations of the main Preview stylesheets, especially limitations in their handling of
+        citations (which cannot be handled generically), this is recommended only in special cases
+        within controlled environments where citation formatting is otherwise accounted for.</p>
+      <p>Nevertheless, publishers and content creators are free to experiment. This model also
+        serves to provide for extensions, in the form either of new processing steps (such as a
+        preprocessor for a new citation format) or modifications to existing steps. Or projects may
+        wish to "unbundle" the processes and apply the stylesheets by different means altogether.
+        The Technical documentation describes these alternatives in more detail.</p>
+      <p>Top-level stylesheets included in this package are as follows:<def-list>
+          <def-item>
+            <term>
+              <monospace>jpub3-PMCcit-html.xsl</monospace>
+            </term>
+            <def>
+              <p>Generates HTML results with formatting of NLM/Pubmed citations supported.</p>
+            </def>
+          </def-item>
+          <def-item>
+            <term>
+              <monospace>jpub3-APAcit-html.xsl</monospace>
+            </term>
+            <def>
+              <p>Generates HTML results with formatting of APA citations supported.</p>
+            </def>
+          </def-item>
+          <def-item>
+            <term>
+              <monospace>jpub3-PMCcit-xslfo.xsl</monospace>
+            </term>
+            <def>
+              <p>Generates XSL-FO results for PDF production, with formatting of NLM/Pubmed
+                citations supported.</p>
+            </def>
+          </def-item>
+          <def-item>
+            <term>
+              <monospace>jpub3-APAcit-xslfo.xsl</monospace>
+            </term>
+            <def>
+              <p>GeneratesXSL-FO results for PDF production, with formatting of APA citations
+                supported.</p>
+            </def>
+          </def-item>
+          <def-item>
+            <term>
+              <monospace>jpub3-PMCcit-web-html.xsl</monospace>
+            </term>
+            <def>
+              <p>This works like <monospace>jpub3-PMCcit-html.xsl</monospace> except it includes a
+                preprocess that removes all elements marked with a
+                  <monospace>specific-use</monospace> attribute whose value is "print-only". This
+                stylesheet works by invoking an additional preprocessing step,
+                  <monospace>prep/jpub3-webfilter.xsl</monospace>. It may be useful mainly as a
+                demonstration, illustrating how processes can be customized to meet local
+                requirements as described in the Technical documentation.</p>
+            </def>
+          </def-item>
+          <def-item>
+            <term>
+              <monospace>jpub3-PMCcit-xhtml.xsl</monospace>
+            </term>
+            <def>
+              <p>This also works like <monospace>jpub3-PMCcit-html.xsl</monospace>, except it
+                includes a postprocess that converts the HTML results into XHTML, resulting in XHTML
+                results that can be correctly rendered by MathML-capable browsers. The postprocessor
+                called by this stylesheet, <monospace>xhtml-ns.xsl</monospace>, can be applied as
+                the final step in any pipeline that must generate XHTML, as also described in the
+                Technical docs.</p>
+            </def>
+          </def-item>
+          <def-item>
+            <term>
+              <monospace>jpub3-PMCcit-print-fo.xsl</monospace>
+            </term>
+            <def>
+              <p>This shell is the complement of <monospace>jpub3-PMCcit-web-html.xsl</monospace>.
+                It formats citations in NLM/Pubmed citation format, removes all elements marked with
+                a <monospace>specific-use</monospace> attribute whose value is "web-only", and then
+                transforms the document to XSL-FO results, ready for formatting as PDF by an XSL
+                formatter.</p>
+            </def>
+          </def-item>
+        </def-list></p>
+    </sec>
+  </body>
+</article>

@@ -1,0 +1,504 @@
+À|&#192;|&Agrave;|capital a, grave accent|a
+Á|&#193;|&Aacute;|capital a, acute accent|a
+Â|&#194;|&Acirc;|capital a, circumflex accent|a
+Ã|&#195;|&Atilde;|capital a, tilde|a
+Ä|&#196;|&Auml;|capital a, umlaut mark|a
+Å|&#197;|&Aring;|capital a, ring|a
+Æ|&#198;|&AElig;|capital ae|ae
+Ç|&#199;|&Ccedil;|capital c, cedilla|c
+È|&#200;|&Egrave;|capital e, grave accent|e
+É|&#201;|&Eacute;|capital e, acute accent|e
+Ê|&#202;|&Ecirc;|capital e, circumflex accent|e
+Ë|&#203;|&Euml;|capital e, umlaut mark|e
+Ì|&#204;|&Igrave;|capital i, grave accent|i
+Í|&#205;|&Iacute;|capital i, acute accent|i
+Î|&#206;|&Icirc;|capital i, circumflex accent|i
+Ï|&#207;|&Iuml;|capital i, umlaut mark|i
+Ð|&#208;|&ETH;|capital eth, Icelandic|eth
+Ñ|&#209;|&Ntilde;|capital n, tilde|n
+Ò|&#210;|&Ograve;|capital o, grave accent|o
+Ó|&#211;|&Oacute;|capital o, acute accent|o
+Ô|&#212;|&Ocirc;|capital o, circumflex accent|o
+Õ|&#213;|&Otilde;|capital o, tilde|o
+Ö|&#214;|&Ouml;|capital o, umlaut mark|o
+Ø|&#216;|&Oslash;|capital o, slash|o
+Ù|&#217;|&Ugrave;|capital u, grave accent|u
+Ú|&#218;|&Uacute;|capital u, acute accent|u
+Û|&#219;|&Ucirc;|capital u, circumflex accent|u
+Ü|&#220;|&Uuml;|capital u, umlaut mark|u
+Ý|&#221;|&Yacute;|capital y, acute accent|y
+Þ|&#222;|&THORN;|capital THORN, Icelandic|THORN
+ß|&#223;|&szlig;|small sharp s, German|sharp s
+à|&#224;|&agrave;|small a, grave accent|a
+á|&#225;|&aacute;|small a, acute accent|a
+â|&#226;|&acirc;|small a, circumflex accent|a
+ã|&#227;|&atilde;|small a, tilde|a
+ä|&#228;|&auml;|small a, umlaut mark|a
+å|&#229;|&aring;|small a, ring|a
+æ|&#230;|&aelig;|small ae|ae
+ç|&#231;|&ccedil;|small c, cedilla|c
+è|&#232;|&egrave;|small e, grave accent|e
+é|&#233;|&eacute;|small e, acute accent|e
+ê|&#234;|&ecirc;|small e, circumflex accent|e
+ë|&#235;|&euml;|small e, umlaut mark|e
+ì|&#236;|&igrave;|small i, grave accent|i
+í|&#237;|&iacute;|small i, acute accent|i
+î|&#238;|&icirc;|small i, circumflex accent|i
+ï|&#239;|&iuml;|small i, umlaut mark|i
+ð|&#240;|&eth;|small eth, Icelandic|eth
+ñ|&#241;|&ntilde;|small n, tilde|n
+ò|&#242;|&ograve;|small o, grave accent|o
+ó|&#243;|&oacute;|small o, acute accent|o
+ô|&#244;|&ocirc;|small o, circumflex accent|o
+õ|&#245;|&otilde;|small o, tilde|o
+ö|&#246;|&ouml;|small o, umlaut mark|o
+ø|&#248;|&oslash;|small o, slash|o
+ù|&#249;|&ugrave;|small u, grave accent|u
+ú|&#250;|&uacute;|small u, acute accent|u
+û|&#251;|&ucirc;|small u, circumflex accent|u
+ü|&#252;|&uuml;|small u, umlaut mark|u
+ý|&#253;|&yacute;|small y, acute accent|y
+þ|&#254;|&thorn;|small thorn, Icelandic|thorn
+ÿ|&#255;|&yuml;|small y, umlaut mark|y
+'|&#x2019;|&rsquo;|RIGHT SINGLE QUOTATION MARK|rsquo
+nbsp|&#160;|&nbsp;| no-break space |nbsp
+iexcl|&#161;|&iexcl;| inverted exclamation mark |iexcl
+cent|&#162;|&cent;| cent sign |cent
+pound|&#163;|&pound;| pound sterling sign |pound
+curren|&#164;|&curren;| general currency sign |curren
+yen|&#165;|&yen;| yen sign |yen
+brvbar|&#166;|&brvbar;| broken (vertical) bar |brvbar
+sect|&#167;|&sect;| section sign |sect
+uml|&#168;|&uml;| umlaut (dieresis) |uml
+copy|&#169;|&copy;| copyright sign |copy
+ordf|&#170;|&ordf;| ordinal indicator, feminine |ordf
+laquo|&#171;|&laquo;| angle quotation mark, left |laquo
+not|&#172;|&not;| not sign |not
+shy|&#173;|&shy;| soft hyphen |shy
+reg|&#174;|&reg;| registered sign |reg
+macr|&#175;|&macr;| macron |macr
+deg|&#176;|&deg;| degree sign |deg
+plusmn|&#177;|&plusmn;| plus-or-minus sign |plusmn
+sup2|&#178;|&sup2;| superscript two |sup2
+sup3|&#179;|&sup3;| superscript three |sup3
+acute|&#180;|&acute;| acute accent |acute
+micro|&#181;|&micro;| micro sign |micro
+para|&#182;|&para;| pilcrow (paragraph sign) |para
+middot|&#183;|&middot;| middle dot |middot
+cedil|&#184;|&cedil;| cedilla |cedil
+sup1|&#185;|&sup1;| superscript one |sup1
+ordm|&#186;|&ordm;| ordinal indicator, masculine |ordm
+raquo|&#187;|&raquo;| angle quotation mark, right |raquo
+frac14|&#188;|&frac14;| fraction one-quarter |frac14
+frac12|&#189;|&frac12;| fraction one-half |frac12
+frac34|&#190;|&frac34;| fraction three-quarters |frac34
+iquest|&#191;|&iquest;| inverted question mark |iquest
+Agrave|&#192;|&Agrave;| capital A, grave accent |Agrave
+Aacute|&#193;|&Aacute;| capital A, acute accent |Aacute
+Acirc|&#194;|&Acirc;| capital A, circumflex accent |Acirc
+Atilde|&#195;|&Atilde;| capital A, tilde |Atilde
+Auml|&#196;|&Auml;| capital A, dieresis or umlaut mark |Auml
+Aring|&#197;|&Aring;| capital A, ring |Aring
+AElig|&#198;|&AElig;| capital AE diphthong (ligature) |AElig
+Ccedil|&#199;|&Ccedil;| capital C, cedilla |Ccedil
+Egrave|&#200;|&Egrave;| capital E, grave accent |Egrave
+Eacute|&#201;|&Eacute;| capital E, acute accent |Eacute
+Ecirc|&#202;|&Ecirc;| capital E, circumflex accent |Ecirc
+Euml|&#203;|&Euml;| capital E, dieresis or umlaut mark |Euml
+Igrave|&#204;|&Igrave;| capital I, grave accent |Igrave
+Iacute|&#205;|&Iacute;| capital I, acute accent |Iacute
+Icirc|&#206;|&Icirc;| capital I, circumflex accent |Icirc
+Iuml|&#207;|&Iuml;| capital I, dieresis or umlaut mark |Iuml
+ETH|&#208;|&ETH;| capital Eth, Icelandic |ETH
+Ntilde|&#209;|&Ntilde;| capital N, tilde |Ntilde
+Ograve|&#210;|&Ograve;| capital O, grave accent |Ograve
+Oacute|&#211;|&Oacute;| capital O, acute accent |Oacute
+Ocirc|&#212;|&Ocirc;| capital O, circumflex accent |Ocirc
+Otilde|&#213;|&Otilde;| capital O, tilde |Otilde
+Ouml|&#214;|&Ouml;| capital O, dieresis or umlaut mark |Ouml
+times|&#215;|&times;| multiply sign |times
+Oslash|&#216;|&Oslash;| capital O, slash |Oslash
+Ugrave|&#217;|&Ugrave;| capital U, grave accent |Ugrave
+Uacute|&#218;|&Uacute;| capital U, acute accent |Uacute
+Ucirc|&#219;|&Ucirc;| capital U, circumflex accent |Ucirc
+Uuml|&#220;|&Uuml;| capital U, dieresis or umlaut mark |Uuml
+Yacute|&#221;|&Yacute;| capital Y, acute accent |Yacute
+THORN|&#222;|&THORN;| capital THORN, Icelandic |THORN
+szlig|&#223;|&szlig;| small sharp s, German (sz ligature) |szlig
+agrave|&#224;|&agrave;| small a, grave accent |agrave
+aacute|&#225;|&aacute;| small a, acute accent |aacute
+acirc|&#226;|&acirc;| small a, circumflex accent |acirc
+atilde|&#227;|&atilde;| small a, tilde |atilde
+auml|&#228;|&auml;| small a, dieresis or umlaut mark |auml
+aring|&#229;|&aring;| small a, ring |aring
+aelig|&#230;|&aelig;| small ae diphthong (ligature) |aelig
+ccedil|&#231;|&ccedil;| small c, cedilla |ccedil
+egrave|&#232;|&egrave;| small e, grave accent |egrave
+eacute|&#233;|&eacute;| small e, acute accent |eacute
+ecirc|&#234;|&ecirc;| small e, circumflex accent |ecirc
+euml|&#235;|&euml;| small e, dieresis or umlaut mark |euml
+igrave|&#236;|&igrave;| small i, grave accent |igrave
+iacute|&#237;|&iacute;| small i, acute accent |iacute
+icirc|&#238;|&icirc;| small i, circumflex accent |icirc
+iuml|&#239;|&iuml;| small i, dieresis or umlaut mark |iuml
+eth|&#240;|&eth;| small eth, Icelandic |eth
+ntilde|&#241;|&ntilde;| small n, tilde |ntilde
+ograve|&#242;|&ograve;| small o, grave accent |ograve
+oacute|&#243;|&oacute;| small o, acute accent |oacute
+ocirc|&#244;|&ocirc;| small o, circumflex accent |ocirc
+otilde|&#245;|&otilde;| small o, tilde |otilde
+ouml|&#246;|&ouml;| small o, dieresis or umlaut mark |ouml
+divide|&#247;|&divide;| divide sign |divide
+oslash|&#248;|&oslash;| small o, slash |oslash
+ugrave|&#249;|&ugrave;| small u, grave accent |ugrave
+uacute|&#250;|&uacute;| small u, acute accent |uacute
+ucirc|&#251;|&ucirc;| small u, circumflex accent |ucirc
+uuml|&#252;|&uuml;| small u, dieresis or umlaut mark |uuml
+yacute|&#253;|&yacute;| small y, acute accent |yacute
+thorn|&#254;|&thorn;| small thorn, Icelandic |thorn
+yuml|&#255;|&yuml;| small y, dieresis or umlaut mark |yuml
+fnof|&#402;|&fnof;| latin small f with hook, =function, =florin, u+0192 ISOtech |fnof
+Alpha|&#913;|&Alpha;| greek capital letter alpha, u+0391 |Alpha
+Beta|&#914;|&Beta;| greek capital letter beta, u+0392 |Beta
+Gamma|&#915;|&Gamma;| greek capital letter gamma, u+0393 ISOgrk3 |Gamma
+Delta|&#916;|&Delta;| greek capital letter delta, u+0394 ISOgrk3 |Delta
+Epsilon|&#917;|&Epsilon;| greek capital letter epsilon, u+0395 |Epsilon
+Zeta|&#918;|&Zeta;| greek capital letter zeta, u+0396 |Zeta
+Eta|&#919;|&Eta;| greek capital letter eta, u+0397 |Eta
+Theta|&#920;|&Theta;| greek capital letter theta, u+0398 ISOgrk3 |Theta
+Iota|&#921;|&Iota;| greek capital letter iota, u+0399 |Iota
+Kappa|&#922;|&Kappa;| greek capital letter kappa, u+039A |Kappa
+Lambda|&#923;|&Lambda;| greek capital letter lambda, u+039B ISOgrk3 |Lambda
+Mu|&#924;|&Mu;| greek capital letter mu, u+039C |Mu
+Nu|&#925;|&Nu;| greek capital letter nu, u+039D |Nu
+Xi|&#926;|&Xi;| greek capital letter xi, u+039E ISOgrk3 |Xi
+Omicron|&#927;|&Omicron;| greek capital letter omicron, u+039F |Omicron
+Pi|&#928;|&Pi;| greek capital letter pi, u+03A0 ISOgrk3 |Pi
+Rho|&#929;|&Rho;| greek capital letter rho, u+03A1 |Rho
+Sigma|&#931;|&Sigma;| greek capital letter sigma, u+03A3 ISOgrk3 |Sigma
+Tau|&#932;|&Tau;| greek capital letter tau, u+03A4 |Tau
+Upsilon|&#933;|&Upsilon;| greek capital letter upsilon, u+03A5 ISOgrk3 |Upsilon
+Phi|&#934;|&Phi;| greek capital letter phi, u+03A6 ISOgrk3 |Phi
+Chi|&#935;|&Chi;| greek capital letter chi, u+03A7 |Chi
+Psi|&#936;|&Psi;| greek capital letter psi, u+03A8 ISOgrk3 |Psi
+Omega|&#937;|&Omega;| greek capital letter omega, u+03A9 ISOgrk3 |Omega
+alpha|&#945;|&alpha;| greek small letter alpha, u+03B1 ISOgrk3 |alpha
+beta|&#946;|&beta;| greek small letter beta, u+03B2 ISOgrk3 |beta
+gamma|&#947;|&gamma;| greek small letter gamma, u+03B3 ISOgrk3 |gamma
+delta|&#948;|&delta;| greek small letter delta, u+03B4 ISOgrk3 |delta
+epsilon|&#949;|&epsilon;| greek small letter epsilon, u+03B5 ISOgrk3 |epsilon
+zeta|&#950;|&zeta;| greek small letter zeta, u+03B6 ISOgrk3 |zeta
+eta|&#951;|&eta;| greek small letter eta, u+03B7 ISOgrk3 |eta
+theta|&#952;|&theta;| greek small letter theta, u+03B8 ISOgrk3 |theta
+iota|&#953;|&iota;| greek small letter iota, u+03B9 ISOgrk3 |iota
+kappa|&#954;|&kappa;| greek small letter kappa, u+03BA ISOgrk3 |kappa
+lambda|&#955;|&lambda;| greek small letter lambda, u+03BB ISOgrk3 |lambda
+mu|&#956;|&mu;| greek small letter mu, u+03BC ISOgrk3 |mu
+nu|&#957;|&nu;| greek small letter nu, u+03BD ISOgrk3 |nu
+xi|&#958;|&xi;| greek small letter xi, u+03BE ISOgrk3 |xi
+omicron|&#959;|&omicron;| greek small letter omicron, u+03BF NEW |omicron
+pi|&#960;|&pi;| greek small letter pi, u+03C0 ISOgrk3 |pi
+rho|&#961;|&rho;| greek small letter rho, u+03C1 ISOgrk3 |rho
+sigmaf|&#962;|&sigmaf;| greek small letter final sigma, u+03C2 ISOgrk3 |sigmaf
+sigma|&#963;|&sigma;| greek small letter sigma, u+03C3 ISOgrk3 |sigma
+tau|&#964;|&tau;| greek small letter tau, u+03C4 ISOgrk3 |tau
+upsilon|&#965;|&upsilon;| greek small letter upsilon, u+03C5 ISOgrk3 |upsilon
+phi|&#966;|&phi;| greek small letter phi, u+03C6 ISOgrk3 |phi
+chi|&#967;|&chi;| greek small letter chi, u+03C7 ISOgrk3 |chi
+psi|&#968;|&psi;| greek small letter psi, u+03C8 ISOgrk3 |psi
+omega|&#969;|&omega;| greek small letter omega, u+03C9 ISOgrk3 |omega
+thetasym|&#977;|&thetasym;| greek small letter theta symbol, u+03D1 NEW |thetasym
+upsih|&#978;|&upsih;| greek upsilon with hook symbol, u+03D2 NEW |upsih
+piv|&#982;|&piv;| greek pi symbol, u+03D6 ISOgrk3 |piv
+bull|&#8226;|&bull;| bullet, =black small circle, u+2022 ISOpub |bull
+hellip|&#8230;|&hellip;| horizontal ellipsis, =three dot leader, u+2026 ISOpub |hellip
+prime|&#8242;|&prime;| prime, =minutes, =feet, u+2032 ISOtech |prime
+Prime|&#8243;|&Prime;| double prime, =seconds, =inches, u+2033 ISOtech |Prime
+oline|&#8254;|&oline;| overline, =spacing overscore, u+203E NEW |oline
+frasl|&#8260;|&frasl;| fraction slash, u+2044 NEW |frasl
+weierp|&#8472;|&weierp;| script capital P, =power set, =Weierstrass p, u+2118 ISOamso |weierp
+image|&#8465;|&image;| blackletter capital I, =imaginary part, u+2111 ISOamso |image
+real|&#8476;|&real;| blackletter capital R, =real part symbol, u+211C ISOamso |real
+trade|&#8482;|&trade;| trade mark sign, u+2122 ISOnum |trade
+alefsym|&#8501;|&alefsym;| alef symbol, =first transfinite cardinal, u+2135 NEW |alefsym
+larr|&#8592;|&larr;| leftwards arrow, u+2190 ISOnum |larr
+uarr|&#8593;|&uarr;| upwards arrow, u+2191 ISOnum|uarr
+rarr|&#8594;|&rarr;| rightwards arrow, u+2192 ISOnum |rarr
+darr|&#8595;|&darr;| downwards arrow, u+2193 ISOnum |darr
+harr|&#8596;|&harr;| left right arrow, u+2194 ISOamsa |harr
+crarr|&#8629;|&crarr;| downwards arrow with corner leftwards, =carriage return, u+21B5 NEW |crarr
+lArr|&#8656;|&lArr;| leftwards double arrow, u+21D0 ISOtech |lArr
+uArr|&#8657;|&uArr;| upwards double arrow, u+21D1 ISOamsa |uArr
+rArr|&#8658;|&rArr;| rightwards double arrow, u+21D2 ISOtech |rArr
+dArr|&#8659;|&dArr;| downwards double arrow, u+21D3 ISOamsa |dArr
+hArr|&#8660;|&hArr;| left right double arrow, u+21D4 ISOamsa |hArr
+forall|&#8704;|&forall;| for all, u+2200 ISOtech |forall
+part|&#8706;|&part;| partial differential, u+2202 ISOtech |part
+exist|&#8707;|&exist;| there exists, u+2203 ISOtech |exist
+empty|&#8709;|&empty;| empty set, =null set, =diameter, u+2205 ISOamso |empty
+nabla|&#8711;|&nabla;| nabla, =backward difference, u+2207 ISOtech |nabla
+isin|&#8712;|&isin;| element of, u+2208 ISOtech |isin
+notin|&#8713;|&notin;| not an element of, u+2209 ISOtech |notin
+ni|&#8715;|&ni;| contains as member, u+220B ISOtech |ni
+prod|&#8719;|&prod;| n-ary product, =product sign, u+220F ISOamsb |prod
+sum|&#8721;|&sum;| n-ary sumation, u+2211 ISOamsb |sum
+minus|&#8722;|&minus;| minus sign, u+2212 ISOtech |minus
+lowast|&#8727;|&lowast;| asterisk operator, u+2217 ISOtech |lowast
+radic|&#8730;|&radic;| square root, =radical sign, u+221A ISOtech |radic
+prop|&#8733;|&prop;| proportional to, u+221D ISOtech |prop
+infin|&#8734;|&infin;| infinity, u+221E ISOtech |infin
+ang|&#8736;|&ang;| angle, u+2220 ISOamso |ang
+and|&#8869;|&and;| logical and, =wedge, u+2227 ISOtech |and
+or|&#8870;|&or;| logical or, =vee, u+2228 ISOtech |or
+cap|&#8745;|&cap;| intersection, =cap, u+2229 ISOtech |cap
+cup|&#8746;|&cup;| union, =cup, u+222A ISOtech |cup
+int|&#8747;|&int;| integral, u+222B ISOtech |int
+there4|&#8756;|&there4;| therefore, u+2234 ISOtech |there4
+sim|&#8764;|&sim;| tilde operator, =varies with, =similar to, u+223C ISOtech |sim
+cong|&#8773;|&cong;| approximately equal to, u+2245 ISOtech |cong
+asymp|&#8776;|&asymp;| almost equal to, =asymptotic to, u+2248 ISOamsr |asymp
+ne|&#8800;|&ne;| not equal to, u+2260 ISOtech |ne
+equiv|&#8801;|&equiv;| identical to, u+2261 ISOtech |equiv
+le|&#8804;|&le;| less-than or equal to, u+2264 ISOtech |le
+ge|&#8805;|&ge;| greater-than or equal to, u+2265 ISOtech |ge
+sub|&#8834;|&sub;| subset of, u+2282 ISOtech |sub
+sup|&#8835;|&sup;| superset of, u+2283 ISOtech |sup
+nsub|&#8836;|&nsub;| not a subset of, u+2284 ISOamsn |nsub
+sube|&#8838;|&sube;| subset of or equal to, u+2286 ISOtech |sube
+supe|&#8839;|&supe;| superset of or equal to, u+2287 ISOtech |supe
+oplus|&#8853;|&oplus;| circled plus, =direct sum, u+2295 ISOamsb |oplus
+otimes|&#8855;|&otimes;| circled times, =vector product, u+2297 ISOamsb |otimes
+perp|&#8869;|&perp;| up tack, =orthogonal to, =perpendicular, u+22A5 ISOtech |perp
+sdot|&#8901;|&sdot;| dot operator, u+22C5 ISOamsb |sdot
+lceil|&#8968;|&lceil;| left ceiling, =apl upstile, u+2308, ISOamsc |lceil
+rceil|&#8969;|&rceil;| right ceiling, u+2309, ISOamsc |rceil
+lfloor|&#8970;|&lfloor;| left floor, =apl downstile, u+230A, ISOamsc |lfloor
+rfloor|&#8971;|&rfloor;| right floor, u+230B, ISOamsc |rfloor
+lang|&#9001;|&lang;| left-pointing angle bracket, =bra, u+2329 ISOtech |lang
+rang|&#9002;|&rang;| right-pointing angle bracket, =ket, u+232A ISOtech |rang
+loz|&#9674;|&loz;| lozenge, u+25CA ISOpub |loz
+spades|&#9824;|&spades;| black spade suit, u+2660 ISOpub |spades
+clubs|&#9827;|&clubs;| black club suit, =shamrock, u+2663 ISOpub |clubs
+hearts|&#9829;|&hearts;| black heart suit, =valentine, u+2665 ISOpub |hearts
+diams|&#9830;|&diams;| black diamond suit, u+2666 ISOpub |diams
+quot|&#34;|&quot;| quotation mark, =apl quote, u+0022 ISOnum |quot
+amp|&#38;|&amp;| ampersand, u+0026 ISOnum |amp
+lt|&#60;|&lt;| less-than sign, u+003C ISOnum |lt
+gt|&#62;|&gt;| greater-than sign, u+003E ISOnum |gt
+OElig|&#338;|&OElig;| latin capital ligature oe, u+0152 ISOlat2 |OElig
+oelig|&#339;|&oelig;| latin small ligature oe, u+0153 ISOlat2 |oelig
+Scaron|&#352;|&Scaron;| latin capital letter s with caron, u+0160 ISOlat2 |Scaron
+scaron|&#353;|&scaron;| latin small letter s with caron, u+0161 ISOlat2 |scaron
+Yuml|&#376;|&Yuml;| latin capital letter y with diaeresis, u+0178 ISOlat2 |Yuml
+circ|&#710;|&circ;| modifier letter circumflex accent, u+02C6 ISOpub |circ
+tilde|&#732;|&tilde;| small tilde, u+02DC ISOdia |tilde
+ensp|&#8194;|&ensp;| en space, u+2002 ISOpub |ensp
+emsp|&#8195;|&emsp;| em space, u+2003 ISOpub |emsp
+thinsp|&#8201;|&thinsp;| thin space, u+2009 ISOpub |thinsp
+zwnj|&#8204;|&zwnj;| zero width non-joiner, u+200C NEW RFC 2070 |zwnj
+zwj|&#8205;|&zwj;| zero width joiner, u+200D NEW RFC 2070 |zwj
+lrm|&#8206;|&lrm;| left-to-right mark, u+200E NEW RFC 2070 |lrm
+rlm|&#8207;|&rlm;| right-to-left mark, u+200F NEW RFC 2070 |rlm
+ndash|&#8211;|&ndash;| en dash, u+2013 ISOpub |ndash
+mdash|&#8212;|&mdash;| em dash, u+2014 ISOpub |mdash
+lsquo|&#8216;|&lsquo;| left single quotation mark, u+2018 ISOnum |lsquo
+rsquo|&#8217;|&rsquo;| right single quotation mark, u+2019 ISOnum |rsquo
+sbquo|&#8218;|&sbquo;| single low-9 quotation mark, u+201A NEW |sbquo
+ldquo|&#8220;|&ldquo;| left double quotation mark, u+201C ISOnum |ldquo
+rdquo|&#8221;|&rdquo;| right double quotation mark, u+201D ISOnum |rdquo
+bdquo|&#8222;|&bdquo;| double low-9 quotation mark, u+201E NEW |bdquo
+dagger|&#8224;|&dagger;| dagger, u+2020 ISOpub |dagger
+Dagger|&#8225;|&Dagger;| double dagger, u+2021 ISOpub |Dagger
+permil|&#8240;|&permil;| per mille sign, u+2030 ISOtech |permil
+lsaquo|&#8249;|&lsaquo;| single left-pointing angle quotation mark, u+2039 ISO proposed |lsaquo
+rsaquo|&#8250;|&rsaquo;| single right-pointing angle quotation mark, u+203A ISO proposed |rsaquo
+hairsp|&#8202;|&hairsp;|hair space|hairsp
++|&#43;|&plus;|plus sign|plus
+€|&#128;|&Eur;|Euro|Eur
+‚|&#130;|&low;|low left rising single quote|low
+ƒ|&#131;|&small;|small italic f, function of,|small
+„|&#132;|&low;|low left rising double quote|low
+…|&#133;|&low;|low horizontal ellipsis|low
+‰|&#137;|&per;|per thousand (mille) sign|per
+Š|&#138;|&capital;|capital S caron or hacek|capital
+‹|&#139;|&left;|left single angle quote mark|left
+Œ|&#140;|&capital;|capital OE ligature|capital
+Ž|&#142;|&;| |
+˜|&#152;|&small;|small spacing tilde accent|small
+š|&#154;|&small;|small s caron or hacek|small
+›|&#155;|&right;|right single angle quote mark|right
+œ|&#156;|&small;|small oe ligature|small
+ž|&#158;|&;| |
+Ÿ|&#159;|&capital;|capital Y dieresis or umlaut|capital
+Ā|&#256;|&Amacr;|Amacr - latin capital letter A with macron|Amacr
+ā|&#257;|&amacr;|amacr - latin small letter a with macron|amacr
+Ă|&#258;|&Acaron;|Acaron - latin capital letter A with caron (breve)|Acaron
+ă|&#259;|&acaron;|acaron - latin small letter a with caron (breve)|acaron
+Ą|&#260;|&Acedil;|Acedil - latin capital letter A with cedilla|Acedil
+ą|&#261;|&acedil;|acedil - latin small letter a with cedilla|acedil
+Ć|&#262;|&Cacute;|Cacute - latin capital letter C with acute|Cacute
+ć|&#263;|&cacute;|cacute - latin small letter c with acute|cacute
+Č|&#268;|&Ccaron;|Ccaron - latin capital letter C with caron|Ccaron
+č|&#269;|&ccaron;|ccaron - latin small letter c with caron|ccaron
+Ď|&#270;|&Dcaron;|Dcaron - latin capital letter D with caron|Dcaron
+Đ|&#272;|&Dstrok;|Dstrok - latin capital letter D with stroke|Dstrok
+đ|&#273;|&dstrok;|dstrok - latin small letter d with stroke|dstrok
+Ē|&#274;|&Emacr;|Emacr - latin capital letter E with macron|Emacr
+Ĕ|&#276;|&emacr;|emacr - latin small letter e with macron|emacr
+Ė|&#278;|&Edot;|Edot - latin capital letter E with dot above|Edot
+ė|&#279;|&edot;|edot - latin small letter e with dot above|edot
+Ę|&#280;|&Ecedil;|Ecedil - latin capital letter E with cedilla|Ecedil
+ę|&#281;|&ecedil;|ecedil - latin small letter e with cedilla|ecedil
+Ě|&#282;|&Ecaron;|Ecaron - latin capital letter E with caron|Ecaron
+ě|&#283;|&ecaron;|ecaron - latin small letter e with caron|ecaron
+Ğ|&#286;|&Gcaron;|Gcaron - latin capital letter G with caron (breve)|Gcaron
+ğ|&#287;|&gcaron;|gcaron - latin small letter e with caron (breve)|gcaron
+Ģ|&#290;|&Gcedil;|Gcedil - latin capital letter G with cedilla|Gcedil
+Ĥ|&#292;|&gapos;|gapos - latin small letter g with cedilla above|gapos
+Ī|&#298;|&Imacr;|Imacr - latin capital letter I with macron|Imacr
+ī|&#299;|&imacr;|imacr - latin small letter i with macron|imacr
+İ|&#304;|&Icedil;|Icedil - latin capital letter I with cedilla|Icedil
+Ķ|&#310;|&Kcedil;|Kcedil - latin capital letter K with cedilla|Kcedil
+ķ|&#311;|&kcedil;|kcedil - latin small letter k with cedilla|kcedil
+Ĺ|&#313;|&Lacute;|Lacute - latin capital letter L with acute|Lacute
+ĺ|&#314;|&lacute;|lacute - latin small letter l with acute|lacute
+Ļ|&#315;|&Lcedil;|Lcedil - latin capital letter L with cedilla|Lcedil
+ļ|&#316;|&lcedil;|lcedil - latin small letter l with cedilla|lcedil
+Ł|&#321;|&Lstrok;|Lstrok - latin capital letter L with stroke|Lstrok
+ł|&#322;|&lstrok;|lstrok - latin small letter l with stroke|lstrok
+Ń|&#323;|&Nacute;|Nacute - latin capital letter N with acute|Nacute
+ń|&#324;|&nacute;|nacute - latin small letter n with acute|nacute
+Ņ|&#325;|&Ncedil;|Ncedil - latin capital letter N with cedilla|Ncedil
+ņ|&#326;|&ncedil;|ncedil - latin small letter n with cedilla|ncedil
+Ň|&#327;|&Ncaron;|Ncaron - latin capital letter N with caron|Ncaron
+ň|&#328;|&ncaron;|ncaron - latin small letter n with caron|ncaron
+Ō|&#332;|&Omacr;|Omacr - latin capital letter O with macron|Omacr
+ō|&#333;|&omacr;|omacr - latin small letter o with macron|omacr
+Ő|&#336;|&Odblac;|Odblac - latin capital letter O with double acute|Odblac
+ő|&#337;|&odblac;|odblac - latin small letter o with double acute|odblac
+Ŗ|&#342;|&Rcedil;|Rcedil - latin capital letter R with cedilla|Rcedil
+ŗ|&#343;|&rcedil;|rcedil - latin small letter r with cedilla|rcedil
+Ř|&#344;|&Rcaron;|Rcaron - latin capital letter R with caron|Rcaron
+ř|&#345;|&rcaron;|rcaron - latin small letter r with caron|rcaron
+Ś|&#346;|&Sacute;|Sacute - latin capital letter S with acute|Sacute
+ś|&#347;|&sacute;|sacute - latin small letter s with acute|sacute
+Ş|&#350;|&Scedil;|Scedil - latin capital letter S with cedilla|Scedil
+ş|&#351;|&scedil;|scedil - latin small letter s with cedilla|scedil
+Š|&#352;|&Scaron;|Scaron - latin capital letter S with caron|Scaron
+š|&#353;|&scaron;|scaron - latin small letter s with caron|scaron
+Ţ|&#354;|&Tcedil;|Tcedil - latin capital letter T with cedilla|Tcedil
+ţ|&#355;|&tcedil;|tcedil - latin small letter t with cedilla|tcedil
+Ť|&#356;|&Tcaron;|Tcaron - latin capital letter T with caron|Tcaron
+ť|&#357;|&tcaron;|tcaron - latin small letter t with caron|tcaron
+Ū|&#362;|&Umacr;|Umacr - latin capital letter U with macron|Umacr
+ū|&#363;|&umacr;|umacr - latin small letter u with macron|umacr
+Ů|&#366;|&Uring;|Uring - latin capital letter U with ring above|Uring
+ů|&#367;|&uring;|uring - latin small letter u with ring above|uring
+Ű|&#368;|&Udblac;|Udblac - latin capital letter U with double acute|Udblac
+ű|&#369;|&udblac;|udblac - latin small letter u with double acute|udblac
+Ų|&#370;|&Ucedil;|Ucedil - latin capital letter U with cedilla|Ucedil
+ų|&#371;|&ucedil;|ucedil - latin small letter u with cedilla|ucedil
+Ź|&#377;|&Zacute;|Zacute - latin capital letter Z with acute|Zacute
+ź|&#378;|&zacute;|zacute - latin small letter z with acute|zacute
+Ż|&#379;|&Zdot;|Zdot - latin capital letter Z with dot above|Zdot
+ż|&#380;|&zdot;|zdot - latin small letter z with dot above|zdot
+Ž|&#381;|&Zcaron;|Zcaron - latin capital letter Z with caron|Zcaron
+ž|&#382;|&zcaron;|zcaron - latin small letter z with caron|zcaron
+%|&#37;|&percnt;|percent sign|%
+~|&#127;|&tilde;|tilde|~
+~|&#127;|&sim;|similar to|~
+~|&#8764;|&sim;|similar to|~
+∀|&#8704;|&forall;|for all|∀
+∂|&#8706;|&part;|part|∂
+∃|&#8707;|&exist;|exists|∃
+∅|&#8709;|&empty;|empty|∅
+∇|&#8711;|&nabla;|nabla|∇
+∈|&#8712;|&isin;|isin|∈
+∉|&#8713;|&notin;|notin|∉
+∋|&#8715;|&ni;|ni|∋
+∏|&#8719;|&prod;|prod|∏
+∑|&#8721;|&sum;|sum|∑
+−|&#8722;|&minus;|minus|−
+∗|&#8727;|&lowast;|lowast|∗
+√|&#8730;|&radic;|square root|√
+∝|&#8733;|&prop;|proportional to|∝
+∞|&#8734;|&infin;|infinity|∞
+∠|&#8736;|&ang;|angle|∠
+∧|&#8743;|&and;|and|∧
+∨|&#8744;|&or;|or|∨
+∩|&#8745;|&cap;|cap|∩
+∪|&#8746;|&cup;|cup|∪
+∫|&#8747;|&int;|integral|∫
+∴|&#8756;|&there4;|therefore|∴
+∼|&#8764;|&sim;|similar to|∼
+≅|&#8773;|&cong;|congruent to|≅
+≈|&#8776;|&asymp;|almost equal|≈
+≠|&#8800;|&ne;|not equal|≠
+≡|&#8801;|&equiv;|equivalent|≡
+≤|&#8804;|&le;|less or equal|≤
+≥|&#8805;|&ge;|greater or equal|≥
+⊂|&#8834;|&sub;|subset of|⊂
+⊃|&#8835;|&sup;|superset of|⊃
+⊄|&#8836;|&nsub;|not subset of|⊄
+⊆|&#8838;|&sube;|subset or equal|⊆
+⊇|&#8839;|&supe;|superset or equal|⊇
+⊕|&#8853;|&oplus;|circled plus|⊕
+⊗|&#8855;|&otimes;|circled times|⊗
+⊥|&#8869;|&perp;|perpendicular|⊥
+⋅|&#8901;|&sdot;|dot operator|⋅
+=||&equals;|equals sign|=
+ |&#x2005;|&emsp14;|FOUR-PER-EM-SPACE| 
+[|&#91;|&lsqb;|[|[
+]|&#93;|&rsqb;|]|]
+*|&#42;|&ast;|*|*
+Α|&#x0391;|&Agr;|Alpha, uppercase|Α
+α|&#x03b1;|&agr;|Alpha, lowercase|α
+Β|&#x0392;|&Bgr;|Beta, uppercase|Β
+β|&#x03b2;|&bgr;|Beta, lowercase|β
+Δ|&#x0394;|&Dgr;|Delta, uppercase|Δ
+δ|&#x03b4;|&dgr;|Delta, lowercase|δ
+Η|&#x0397;|&EEgr;|Eta, uppercase|Η
+η|&#x03b7;|&eegr;|Eta, lowercase|η
+Ε|&#x0395;|&Egr;|Epsilon, uppercase|Ε
+ε|&#x03b5;|&egr;|Epsilon, lowercase|ε
+Γ|&#x0393;|&Ggr;|Gamma, uppercase|Γ
+γ|&#x03b3;|&ggr;|Gamma, lowercase|γ
+Ι|&#x0399;|&Igr;|Iota, uppercase|Ι
+ι|&#x03b9;|&igr;|Iota, lowercase|ι
+Κ|&#x039a;|&Kgr;|Kappa, uppercase|Κ
+κ|&#x3ba;|&kgr;|Kappa, lowercase|κ
+Χ|&#x03a7;|&KHgr;|Chi, uppercase|Χ
+χ|&#x03c7;|&khgr;|Chi, lowercase|χ
+Λ|&#x039b;|&Lgr;|Lambda, uppercase|Λ
+λ|&#x03bb;|&lgr;|Lambda, lowercase|λ
+Μ|&#x039c;|&Mgr;|Mu, uppercase|Μ
+μ|&#x03bc;|&mgr;|Mu, lowercase|μ
+Ν|&#x039d;|&Ngr;|Nu, uppercase|Ν
+ν|&#x03bd;|&ngr;|Nu, lowercase|ν
+Ο|&#x039f;|&Ogr;|Omicron, uppercase|Ο
+ο|&#x03bf;|&ogr;|Omicron, lowercase|ο
+Ω|&#x03a9;|&OHgr;|Omega, uppercase|Ω
+ω|&#x03c9;|&ohgr;|Omega, lowercase|ω
+Π|&#x03a0;|&Pgr;|Pi, uppercase|Π
+π|&#x03c0;|&pgr;|Pi, lowercase|π
+Φ|&#x03a6;|&PHgr;|Phi, uppercase|Φ
+φ|&#x03c6;|&phgr;|Phi, lowercase|φ
+Ψ|&#x03a8;|&PSgr;|Psi, uppercase|Ψ
+ψ|&#x03c8;|&psgr;|Psi, lowercase|ψ
+Ρ|&#x03a1;|&Rgr;|Rho, uppercase|Ρ
+ρ|&#x03c1;|&rgr;|Rho, lowercase|ρ
+Σ|&#x03a3;|&Sgr;|Sigma, uppercase|Σ
+σ|&#x03c3;|&sgr;|Sigma, lowercase|σ
+Τ|&#x03a4;|&Tgr;|Tau, uppercase|Τ
+τ|&#x03c4;|&tgr;|Tau, lowercase|τ
+Θ|&#x0398;|&THgr;|Theta, uppercase|Θ
+θ|&#x03b8;|&thgr;|Theta, lowercase|θ
+Υ|&#x03a5;|&Ugr;|Upsilon, uppercase|Υ
+υ|&#x03c5;|&ugr;|Upsilon, lowercase|υ
+Ξ|&#x039e;|&Xgr;|Xi, uppercase|Ξ
+ξ|&#x03be;|&xgr;|Xi, lowercase|ξ
+Ζ|&#x0396;|&Zgr;|Zeta, uppercase|Ζ
+ζ|&#x03b6;|&zgr;|Zeta, lowercase|ζ
+:||&semi;|;|;
+ă|&#259;|&abreve;|small a, breve|ă
+

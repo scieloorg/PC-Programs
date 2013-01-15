@@ -45,7 +45,7 @@ Function returnSectionsInUse(journal As String) As ClsTOC
     Set returnSectionsInUse = toc
 End Function
 
-Function whereSectionInUse(journal As String, code As String, issues As ClsIssues, resultType As String) As Boolean
+Function whereSectionInUse(journal As String, Code As String, issues As ClsIssues, resultType As String) As Boolean
     Dim mfnQtd As Long
     Dim mfnList() As Long
     Dim i As Long
@@ -58,7 +58,7 @@ Function whereSectionInUse(journal As String, code As String, issues As ClsIssue
     
     If resultType = "" Then resultType = "all"
     
-    format = "(if v49^c='" + code + "' then v31[1],'|',v32[1],'|',v131[1],'|',v132[1],'|',v36[1],'|',v41/,break  fi)"
+    format = "(if v49^c='" + Code + "' then v31[1],'|',v32[1],'|',v131[1],'|',v132[1],'|',v36[1],'|',v41/,break  fi)"
     mfnQtd = isis.MfnFind(journal, mfnList)
     
     Select Case resultType
@@ -76,7 +76,7 @@ Function whereSectionInUse(journal As String, code As String, issues As ClsIssue
     Case "first"
         While i < mfnQtd And Not found
             i = i + 1
-            Set issue = returnIssue(mfnList(i), code)
+            Set issue = returnIssue(mfnList(i), Code)
             If issue Is Nothing Then
             
             Else
@@ -157,19 +157,19 @@ Function returnIssue(Mfn As Long, Optional format As String) As ClsIssue
         Set issue.toc = New ClsTOC
         Set issue.toc = issue_TOC_DAO.getTOC(Mfn, issue.toc)
         Set issue.licenses = New clsCreativeCommons
-        issue.licenses.code = isis.UsePft(Mfn, "v541")
+        issue.licenses.Code = isis.UsePft(Mfn, "v541")
         
         
         For i = 1 To idiomsinfo.count
             Set t = New ClsTextByLang
-            t.lang = idiomsinfo.item(i).code
-            t.text = isis.getFieldContentByLanguage(Mfn, 33, idiomsinfo.item(i).code, "*")
+            t.lang = idiomsinfo.item(i).Code
+            t.text = isis.getFieldContentByLanguage(Mfn, 33, idiomsinfo.item(i).Code, "*")
             issue.issueTitle.add t
             
-            Call issue.licenses.add(isis.getFieldContentByLanguage(Mfn, 540, idiomsinfo.item(i).code, "t"), idiomsinfo.item(i).code)
+            Call issue.licenses.add(isis.getFieldContentByLanguage(Mfn, 540, idiomsinfo.item(i).Code, "t"), idiomsinfo.item(i).Code)
             
             Set obj = New ClsBibStrip
-            Call isis.getSubFieldsContentByLanguage(Mfn, 43, idiomsinfo.item(i).code, subf, content)
+            Call isis.getSubFieldsContentByLanguage(Mfn, 43, idiomsinfo.item(i).Code, subf, content)
             With obj
                 .stitle = content(1)
                 .v = content(2)
@@ -179,7 +179,7 @@ Function returnIssue(Mfn As Long, Optional format As String) As ClsIssue
                 .loc = content(6)
                 .month = content(7)
                 .year = content(8)
-                .lang = idiomsinfo.item(i).code
+                .lang = idiomsinfo.item(i).Code
             End With
             Call issue.bibstrips.add(obj)
             
@@ -267,9 +267,12 @@ Function getIssueMfnByFormat(format As String) As Long
     Dim Mfn As Long
     Dim mfnfound As Long
     Dim r As String
+    Dim limit As Long
+    Mfn = isis.MfnQuantity
+    limit = isis.MfnQuantity - 200
     
-    While (Mfn < isis.MfnQuantity) And (mfnfound = 0)
-        Mfn = Mfn + 1
+    While (Mfn > limit) And (mfnfound = 0)
+        Mfn = Mfn - 1
         r = isis.UsePft(Mfn, format)
         
         If Len(r) > 0 Then
@@ -378,21 +381,21 @@ Function tag(issue As ClsIssue) As String
         Set .bibstrips.nullObject = New ClsBibStrip
         Dim t As String
         For i = 1 To idiomsinfo.count
-            Set bs = .bibstrips.getItemByLang(idiomsinfo(i).code)
+            Set bs = .bibstrips.getItemByLang(idiomsinfo(i).Code)
             With bs
             s = s + TagContent(TagSubf(.lang, "l") + TagSubf(.stitle, "t") + TagSubf(.v, "v") + TagSubf(.vs, "w") + TagSubf(.n, "n") + TagSubf(.s, "s") + TagSubf(.loc, "c") + TagSubf(.month, "m") + TagSubf(.year, "a"), 43)
             End With
         Next
         
         For i = 1 To idiomsinfo.count
-            If Len(Trim(.licenses.getLicense(idiomsinfo(i).code).text)) > 0 Then
-                s = s + TagContent(TagSubf(.licenses.getLicense(idiomsinfo(i).code).text, "t") + TagSubf(idiomsinfo(i).code, "l"), 540)
+            If Len(Trim(.licenses.getLicense(idiomsinfo(i).Code).text)) > 0 Then
+                s = s + TagContent(TagSubf(.licenses.getLicense(idiomsinfo(i).Code).text, "t") + TagSubf(idiomsinfo(i).Code, "l"), 540)
             End If
         Next
-        s = s + TagContent(.licenses.code, 541)
+        s = s + TagContent(.licenses.Code, 541)
         For i = 1 To idiomsinfo.count
             If Len(.issueTitle.getItemByIndex(i).text) > 0 Then
-              s = s + TagContent(.issueTitle.getItemByIndex(i).text + "^l" + idiomsinfo(i).code, 33)
+              s = s + TagContent(.issueTitle.getItemByIndex(i).text + "^l" + idiomsinfo(i).Code, 33)
             End If
         Next
         
