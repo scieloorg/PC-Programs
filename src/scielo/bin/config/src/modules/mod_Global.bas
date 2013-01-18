@@ -2,7 +2,7 @@ Attribute VB_Name = "ModGlobal"
 Option Explicit
 
 Public Const SECTION_SEP = "%"
-
+Public Const LIMIT_MFN = 200
 'Uso de isisdll
 Public AppHandle    As Long
 Public Const delim1 = "<"

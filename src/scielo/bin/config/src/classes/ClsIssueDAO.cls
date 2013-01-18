@@ -269,7 +269,7 @@ Function getIssueMfnByFormat(format As String) As Long
     Dim r As String
     Dim limit As Long
     Mfn = isis.MfnQuantity
-    limit = isis.MfnQuantity - 200
+    limit = isis.MfnQuantity - LIMIT_MFN
     
     While (Mfn > limit) And (mfnfound = 0)
         Mfn = Mfn - 1
@@ -437,7 +437,7 @@ Function UpdateIssueTable(FileName As String, PFTFileName As String) As Boolean
         Next
         Close fn
     Else
-        For j = 1 To isis.MfnQuantity
+        For j = isis.MfnQuantity - LIMIT_MFN To isis.MfnQuantity
             result = isis.UsePft(j, "if v200<>'1' then mfn fi")
             If Len(result) > 0 Then
                 result = isis.UsePft(j, "@" + PFTFileName)
