@@ -4,7 +4,7 @@ from reuse.xml.xml_tree.xml_tree import XMLTree
 from reuse.encoding.table_entities import TableEntities
 
 from markup_pmc.markup_pmc_files import MarkupPMC, XSLFiles
-from markup_pmc.markup_pmc_files imp
+
 from reuse.input_output.configuration import Configuration
 from reuse.input_output.parameters import Parameters 
 from reuse.input_output.report import Report 
