@@ -119,7 +119,7 @@ class MarkupPMC:
             
         else:
             self.acron = ''
-            pmc_path = self.work_path
+            pmc_path = self.work_path + '/'
 
 
         self.pmc_package_path = pmc_path + 'pmc_package' 
@@ -190,8 +190,8 @@ class MarkupPMC:
                     if self.transform(self.xml_report, self.xsl_files.xsl_report, self.html_report):
                         report.write('done')
                     
-                report.write('transform ' + self.xml_pmc_local + ' '+  self.xsl_files.xsl_preview + ' '+  self.html_preview)
-                if self.transform(self.xml_pmc_local, self.xsl_files.xsl_preview, self.html_preview):
+                report.write('transform ' + self.xml_pmc_local + ' '+  self.xsl_files.xsl_preview + ' '+  self.html_preview )
+                if self.transform(self.xml_pmc_local, self.xsl_files.xsl_preview, self.html_preview, [ ' img_path=' + ,]):
                     # Generate xml (final version)
                     report.write('done')
                     self.copy_img_files_to_preview()
