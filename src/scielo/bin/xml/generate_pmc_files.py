@@ -33,7 +33,7 @@ if parameters.check_parameters(sys.argv):
     xsl_sgml2xml = path_xsl + '/sgml2xml/sgml2xml.xsl'
     xsl_xml2pmc = path_xsl + '/sgml2xml/xml2pmc.xsl'
     xsl_pmc = path_xsl + '/sgml2xml/pmc.xsl'
-    xsl_err = path_xsl + '/check/pmcstylechecker.xsl'
+    xsl_err = path_xsl + '/nlm-style-4.6.6/nlm-stylechecker.xsl'
     xsl_report = path_xsl + '/nlm-style-4.6.6/style-reporter.xsl'
     xsl_preview = path_xsl + '/web/caller-scielo-html-previewer.xsl'
     
