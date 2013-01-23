@@ -21,7 +21,9 @@
 
   <!-- <xsl:output method="xml" omit-xml-declaration="no"
     encoding="utf-8" indent="no"/> -->
-  
+  <xsl:param name="css"/>
+  <xsl:param name="img_path"/>
+
   <xsl:variable name="processes">
     <!-- format citations in NLM/PMC format -->
     <step>jpub/citations-prep/jpub3-PMCcit.xsl</step>

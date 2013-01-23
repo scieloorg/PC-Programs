@@ -55,7 +55,7 @@
     doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>-->
 
 	<xsl:import href="jpub/main/jpub3-html.xsl"/>
-	<xsl:param name="css" select="'css/jpub-preview.css'"/>
+	<xsl:param name="css" select="'xsl/pmc/v3.0/css/jpub-preview.css'"/>
 	<xsl:param name="path_img" select="'img/ag/v48n4/'"/>
 	<xsl:param name="img_format" select="'.jpg'"/>
 	
