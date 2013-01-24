@@ -38,7 +38,14 @@
 		</xsl:choose>
 	</xsl:template>
 
-
+    <xsl:template match="aff[text()!='']">
+    	<!-- tem ao mesmo tempo institution and text() contendo institution, 
+             nao repetir
+        -->
+    	<aff>
+            <xsl:apply-templates select="@* | label | email | text()"/>
+    	</aff>
+    </xsl:template>
 	<xsl:template match="aff//institution | aff//addr-line | aff//named-content | aff//country">
 		<xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>

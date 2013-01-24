@@ -130,7 +130,7 @@ def validate(xml_filename, dtd_path, result_filename, err_filename):
         valid = True
     os.unlink(temp)
     if temp_xml_filename != '':
-    #print(open(temp_xml_filename).read()[0:500])
+        #print(open(temp_xml_filename).read()[0:500])
         os.unlink(temp_xml_filename)
     return valid
 
@@ -149,7 +149,7 @@ def transform(xml_filename, xsl_filename, result_filename, err_filename, paramet
     cmd = java + ' -jar ' +  jar_transform + ' -novw -w0 -o "' + temp_result + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
             
     if os.path.exists(jar_transform ):
-        print(cmd)
+        #print(cmd)
         os.system(cmd)
     
     

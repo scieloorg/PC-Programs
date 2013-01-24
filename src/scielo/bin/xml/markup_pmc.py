@@ -2,7 +2,7 @@
 import shutil
 import os
 import sys
-
+import tempfile
 import reuse.xml.xml_java as xml_java
 
 
@@ -13,10 +13,24 @@ xsl_pmc = ''
 xsl_err = ''
 xsl_report = ''
 xsl_preview = ''
-
+css = ''
 
 valid_extensions = [ '.tiff', '.eps', '.tif' ]
 outputs_extensions = [ '.local.xml', '.rep.xml', '.rep.html', '.xml.html', '.xml', '.scielo.xml', '.sgm.xml.res.tmp', '.sgm.xml.err.tmp']
+
+
+def prepare_path(path, startswith = '', endswith = ''):
+    if not os.path.exists(path):
+        os.makedirs(path)
+    for file in os.listdir(path):
+        if len(startswith)>0:
+            if file.startswith(startswith):
+                os.unlink(file)
+        if len(endswith)>0:
+            if file.endswith(endswith) and os.path.exists(file):
+                os.unlink(file)
+        if len(endswith) == 0 and len(startswith) == 0:
+            os.unlink(file)
 
 def fix_xml(xml):
     f = open(xml, 'r')
@@ -85,8 +99,8 @@ def xml_data_images(tags='figgrp | tabwrap | equation'):
 
 
 class MarkupPMC:
-    def __init__(self, xml_filename, dtd, report):
-        self.sgml_xml_filename = xml_filename
+    def __init__(self, sgml_xml_filename, dtd, report):
+        self.sgml_xml_filename = sgml_xml_filename
         self.report = report
         self.dtd = dtd 
 
@@ -175,20 +189,23 @@ class MarkupPMC:
             self.report.write('validate_and_transform ' + self.xml_scielo + ' ' + xsl_xml2pmc + ' ' + self.xml_pmc_local)
             if self.validate_and_transform(self.xml_scielo, xsl_xml2pmc, self.xml_pmc_local, self.dtd):
                 xml_java.replace_dtd_path(self.xml_pmc_local, self.dtd)
-                
+
+                print('\nXML for SciELO: ' + self.xml_scielo)
                 self.report.write('transform ' + self.xml_pmc_local + ' '+  xsl_err + ' '+  self.xml_report)
                 if self.transform(self.xml_pmc_local, xsl_err, self.xml_report):
                     # Generate self.report.html
                     self.report.write('transform ' + self.xml_report + ' '+  xsl_report + ' '+  self.html_report)
                     if self.transform(self.xml_report, xsl_report, self.html_report):
                         self.report.write('done')
+                        print('\nValidation report: ' + self.html_report)
                     
                 self.report.write('transform ' + self.xml_pmc_local + ' '+  xsl_preview + ' '+  self.html_preview )
-                if self.transform(self.xml_pmc_local, xsl_preview, self.html_preview, {'path_img': self.jpg_path}):
+                if self.transform(self.xml_pmc_local, xsl_preview, self.html_preview, {'path_img': self.work_path +'/', 'css':css}):
                     # Generate xml (final version)
                     self.report.write('done')
                     self.copy_img_files_to_preview()
                     self.report.write('copy_img_files_to_preview')
+                    print('\nPreview: ' + self.html_preview)
                 
                 self.report.write('transform ' + self.xml_pmc_local + ' '+  xsl_pmc + ' '+  self.xml_pmc)
                 if self.transform(self.xml_pmc_local, xsl_pmc, self.xml_pmc):
@@ -200,6 +217,7 @@ class MarkupPMC:
                     
                     self.copy_from_work_to_pmc_package()
                     self.report.write('copy_from_work_to_pmc_package')
+                    print('\nXML for PMC: ' + self.xml_pmc)
                             
                                                                 
         if os.path.exists(self.html_preview):
@@ -207,7 +225,7 @@ class MarkupPMC:
             if self.html_preview != param_result_filename:
                 self.report.write('copy ' + self.html_preview + ' ' +  param_result_filename)
                 shutil.copyfile(self.html_preview, param_result_filename)
-                print(self.html_preview)
+                #print(self.html_preview)
         else:
             self.report.write('END - ERROR')
             if not os.path.exists(self.err_filename):
@@ -218,7 +236,7 @@ class MarkupPMC:
             if self.err_filename != param_err_filename:
                 self.report.write('copy ' + self.err_filename + ' ' +  param_err_filename)
                 shutil.copyfile(self.err_filename, param_err_filename)
-            print(self.err_filename)
+            #print(self.err_filename)
     
 
     def clean_work_path(self):
@@ -284,6 +302,4 @@ class MarkupPMC:
                 msg = msg + '   - Missing file: '  +  self.jpg_path + '/' +  old_img_name   + "\n"
         if len(msg)>0:
             self.report.write( msg )
-                            
- 
-                     
+
