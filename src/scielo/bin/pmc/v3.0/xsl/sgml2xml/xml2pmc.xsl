@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util" xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
+<xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util" xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl xlink mml">
 
 	<xsl:include href="local_dtd.xsl"/>
 	
+	<xsl:param name="new_name"/>
 	<xsl:variable name="display_funding"><xsl:choose>
 		<!--
 		Verifica se a seção Agradecimentos contém o número do projeto do funding group
@@ -57,4 +58,28 @@
 	<xsl:template match="funding-group"><xsl:if test="$display_funding='yes'"><xsl:element name="{name()}">
 		<xsl:apply-templates select="@* | * | text()"/></xsl:element></xsl:if></xsl:template>
 
+
+    <xsl:template match="graphic/@href">
+    	<xsl:attribute name="{name()}">
+    		<xsl:choose>
+    			<xsl:when test="$new_name!=''"><xsl:value-of select="$new_name"/>-g<xsl:value-of select="../../@id"/></xsl:when>
+    			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+    		</xsl:choose>
+    	</xsl:attribute>
+    </xsl:template>
+    <xsl:template match="equation/graphic/@href">
+    	<xsl:attribute name="{name()}">
+    		<xsl:choose>
+    			<xsl:when test="$new_name!=''"><xsl:value-of select="$new_name"/>-e<xsl:value-of select="../../@id"/></xsl:when>
+    			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+    		</xsl:choose>
+    	</xsl:attribute>
+    </xsl:template>
+    <xsl:template match="inline-graphic/@href">
+    	<xsl:attribute name="{name()}">
+    		<xsl:if test="$new_name!=''"><xsl:value-of select="$new_name"/>-i<xsl:value-of select="../../@id"/></xsl:if><xsl:value-of select="."/>    		
+    	</xsl:attribute>
+    </xsl:template>
+
+    
 </xsl:stylesheet>

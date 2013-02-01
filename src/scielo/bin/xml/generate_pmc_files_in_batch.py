@@ -43,12 +43,15 @@ if parameters.check_parameters(sys.argv):
     scielo2pmc.xsl_sgml2xml = path_xsl + '/sgml2xml/sgml2xml.xsl'
     scielo2pmc.xsl_xml2pmc = path_xsl + '/sgml2xml/xml2pmc.xsl'
     scielo2pmc.xsl_pmc = path_xsl + '/sgml2xml/pmc.xsl'
-    scielo2pmc.xsl_err = path_xsl + '/nlm-style-4.6.6/nlm-stylechecker.xsl'
-    scielo2pmc.xsl_report = path_xsl + '/scielo-style/style-reporter.xsl'
-    #scielo2pmc.xsl_preview = path_xsl + '/web/scielo-html-previewer.xsl'
+    
+    scielo2pmc.xsl_err = path_xsl + '/scielo-style/stylechecker.xsl'
+    scielo2pmc.xsl_report = path_xsl + '/nlm-style-4.6.6/nlm-stylechecker.xsl'
     scielo2pmc.xsl_preview = path_xsl + '/previewer/preview.xsl'
+    
+    scielo2pmc.xsl_pmc_err = path_xsl + '/nlm-style-4.6.6/nlm-style-reporter.xsl'
+    scielo2pmc.xsl_pmc_report = path_xsl + '/nlm-style-4.6.6/nlm-stylechecker.xsl'
     scielo2pmc.xsl_pmc_preview = path_xsl + '/previewer/jpub-main-jpub3-html.xsl'
-    scielo2pmc.xsl_pmc_report = path_xsl + '/nlm-style-4.6.6/style-reporter.xsl'
+    
     scielo2pmc.xsl_prepare_citations =  path_xsl + '/jpub/citations-prep/jpub3-PMCcit.xsl'
 
     

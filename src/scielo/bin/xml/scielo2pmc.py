@@ -5,15 +5,21 @@ import sys
 import tempfile
 import reuse.xml.xml_java as xml_java
 
+css = ''
+css_pmc = ''
+
 
 xsl_sgml2xml = ''
+
 xsl_xml2pmc = ''
+
 xsl_pmc = ''
+
 xsl_err = ''
 xsl_report = ''
 xsl_preview = ''
-css = ''
-css_pmc = ''
+
+xsl_pmc_err = ''
 xsl_pmc_report = ''
 xsl_pmc_preview = ''
 
@@ -62,13 +68,22 @@ class XMLSciELO:
         prepare_path(self.work_path, self.name)
         prepare_path(self.pmc_package_path, self.name)
 
+        print(self.work_path)
+        print(self.pmc_package_path)
         # XML        
         self.xml_pmc_local = self.work_path + '/' + self.name + '.pmc.tmp.xml'
+        
         self.xml_report = self.work_path + '/' + self.name + '.rep.xml'
-        self.html_report = self.work_path + '/' + self.name + '.scielo.validation.report.html'
-        self.pmc_html_report = self.work_path + '/' + self.name + '.pmc.validation.report.html'
         self.html_preview = self.work_path + '/' + self.name + '.scielo.preview.html'
-        self.html_pmc_preview = self.work_path + '/' + self.name + '.pmc.preview.html'
+        self.html_report = self.work_path + '/' + self.name + '.scielo.validation.report.html'
+        
+
+        
+        self.pmc_xml_report = self.work_path + '/' + self.name + '.pmc.rep.xml'
+        
+        self.pmc_html_preview = self.work_path + '/' + self.name + '.pmc.preview.html'
+        self.pmc_html_report = self.work_path + '/' + self.name + '.pmc.validation.report.html'
+        
         self.xml_pmc = self.pmc_package_path + '/' + self.name + '.xml'
         
         self.xml_pmc_citations = self.work_path + '/' + self.name + '.cit.xml'
@@ -124,9 +139,9 @@ class XMLSciELO:
 
                         self.report.write('Generated xml pmc final')
                 
-                        if self.transform(self.xml_pmc_local, xsl_err, self.xml_report):
+                        if self.transform(self.xml_pmc_local, xsl_pmc_err, self.pmc_xml_report):
                             # Generate self.report.html
-                            self.report.write('transform ' + self.xml_report + ' '+  xsl_pmc_report + ' '+  self.pmc_html_report)
+                            self.report.write('transform ' + self.pmc_xml_report + ' '+  xsl_pmc_report + ' '+  self.pmc_html_report)
                             if self.transform(self.xml_report, xsl_pmc_report, self.pmc_html_report):
                                 self.report.write('done')
                                 print('  XML for PMC: Validation report: ' + self.pmc_html_report)
@@ -134,9 +149,9 @@ class XMLSciELO:
                         self.report.write('transform ' + self.xml_pmc_local + ' '+  xsl_prepare_citations + ' '+  self.xml_pmc_citations )
                         if self.transform(self.xml_pmc_local, xsl_prepare_citations, self.xml_pmc_citations):
                             xml_java.replace_dtd_path(self.xml_pmc_citations, self.dtd)
-                            self.report.write('transform ' + self.xml_pmc_citations + ' '+  xsl_pmc_preview + ' '+  self.html_pmc_preview )
-                            if self.transform(self.xml_pmc_citations, xsl_pmc_preview, self.html_pmc_preview, {'path_img': self.img_path +'/', 'css':css_pmc}):
-                                print('  XML for PMC: Preview: ' + self.html_pmc_preview)
+                            self.report.write('transform ' + self.xml_pmc_citations + ' '+  xsl_pmc_preview + ' '+  self.pmc_html_preview )
+                            if self.transform(self.xml_pmc_citations, xsl_pmc_preview, self.pmc_html_preview, {'path_img': self.img_path +'/', 'css':css_pmc}):
+                                print('  XML for PMC: Preview: ' + self.pmc_html_preview)
                 
         if os.path.exists(self.xml_pmc):
             self.report.write('END - OK')

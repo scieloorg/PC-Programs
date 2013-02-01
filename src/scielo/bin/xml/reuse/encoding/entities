@@ -93,7 +93,9 @@ frac14|&#188;|&frac14;| fraction one-quarter |frac14
 frac12|&#189;|&frac12;| fraction one-half |frac12
 frac34|&#190;|&frac34;| fraction three-quarters |frac34
 iquest|&#191;|&iquest;| inverted question mark |iquest
-Agrave|&#192;|&Agrave;| capital A, grave accent |Agrave
+?|&#191;|&quest;| question mark |quest
+_|&#x005F;|&lowbar;| lowbar | lowbar
+Agrave|&#35;|&Agrave;| capital A, grave accent |Agrave
 Aacute|&#193;|&Aacute;| capital A, acute accent |Aacute
 Acirc|&#194;|&Acirc;| capital A, circumflex accent |Acirc
 Atilde|&#195;|&Atilde;| capital A, tilde |Atilde

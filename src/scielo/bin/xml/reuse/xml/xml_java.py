@@ -34,7 +34,7 @@ def insert_doctype(xml_filename, doctype):
         f.close()
 
 def replace_dtd_path(xml_filename, dtd_path):
-    f = open(xml_filename)
+    f = open(xml_filename, 'r')
     content = f.read()
     f.close()
 
@@ -44,12 +44,14 @@ def replace_dtd_path(xml_filename, dtd_path):
         if not '<!DOCTYPE' in content:
             #print('none')
             start = content[1:]
+            start = start[start.find('<')+1:]
             start = start[0:start.find('>')]
+            
             if ' ' in start:
                 start = start[0:start.find(' ')]
             #print('start:' + start)
-            content = content.replace('<' + start, '<!DOCTYPE ' + start + ' PUBLIC "" "">' + '\n' + '<' + start) 
-            #print('content:' + content)
+            #content = content.replace('<' + start, '<!DOCTYPE ' + start + ' PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "journalpublishing3.dtd">' + '\n' + '<' + start) 
+            content = content[0:content.find('<' + start)] + '<!DOCTYPE ' + start + ' PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "journalpublishing3.dtd">\n' + content[content.find('<' + start):] 
 
         if '<!DOCTYPE' in content:
             doctype = content[content.find('<!DOCTYPE'):]
@@ -88,11 +90,11 @@ def validate(xml_filename, dtd_path, result_filename, err_filename):
 
     temp = xml_filename + '.validation.tmp'        
     if os.path.exists(temp):
-        os.remove(temp)
+        os.unlink(temp)
     if os.path.exists(result_filename):
-        os.remove(result_filename)
+        os.unlink(result_filename)
     if os.path.exists(err_filename):
-        os.remove(err_filename)
+        os.unlink(err_filename)
 
     if dtd_path != '':
         import tempfile
@@ -122,13 +124,12 @@ def validate(xml_filename, dtd_path, result_filename, err_filename):
         f.write(content)
         f.close()
 
-    shutil.copyfile(temp, result_filename)
-
     if 'ERROR' in content.upper():
-        shutil.copyfile(temp, err_filename)
+        shutil.move(temp, err_filename)
     else:
         valid = True
-    os.unlink(temp)
+        os.unlink(temp)
+    
     if temp_xml_filename != '':
         #print(open(temp_xml_filename).read()[0:500])
         os.unlink(temp_xml_filename)
@@ -140,11 +141,11 @@ def transform(xml_filename, xsl_filename, result_filename, err_filename, paramet
     temp_result = result_filename + '.tmp'
 
     if os.path.exists(temp_result):
-       os.remove(temp_result)
+       os.unlink(temp_result)
     if os.path.exists(result_filename):
-        os.remove(result_filename)
+        os.unlink(result_filename)
     if os.path.exists(err_filename):
-        os.remove(err_filename)
+        os.unlink(err_filename)
    
     cmd = java + ' -jar ' +  jar_transform + ' -novw -w0 -o "' + temp_result + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
             

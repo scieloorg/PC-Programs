@@ -1,3 +1,4 @@
+import os
 
 class Parameters:
     def __init__(self, required):
@@ -21,3 +22,13 @@ class Parameters:
                     print('Parameter ' + str(i) +': ' +  param)
                 i += 1
         return r
+
+def get_script_path(script):
+    script = script.replace('\\', '/')
+    if '..' in script:
+        path = os.getcwd() + '/' + os.path.dirname(script)
+    elif script.startswith('/'):
+        path = os.path.dirname(script)
+    else:
+        path = os.getcwd()
+    return path
