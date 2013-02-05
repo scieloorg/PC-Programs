@@ -14,49 +14,57 @@ from reuse.input_output.report import Report
 # para markup somente o nome completo do .sgm.xml
 
 # para cmd line e xml_convert
-# xml_path or xml_filename
+# src_xml_path or xml_filename
 # pmc_package_path
 # scielo_package_path
 # reports_path
 
 
-# xml_path, src_paths_and_exts, src_img_path, scielo_package_path, pmc_packge_path, reports_path, pdf_path
+# src_xml_path, src_paths_and_exts, src_img_path, scielo_package_path, pmc_packge_path, reports_path, pdf_path
 # reports_path, scielo_html_validation_report_ext, scielo_html_preview_ext, pmc_html_validation_report_ext, pmc_html_preview_ext
 
 param_list = [ arg.replace('\\', '/') for arg in sys.argv  ]
 
-xml_path = ''
+src_xml_path = ''
 xml_filename = ''
-acron = ''
+acron = '??????'
 scielo_package_path = ''
 pmc_package_path = ''
 reports_path = ''
+src_paths_and_exts = []
 
-required = ['', 'xml_path or xml_filename', 'scielo_package_path', 'pmc_package_path', 'reports_path' ] 
+required = [ '', 'src_xml_path or xml_filename', 'scielo_package_path', 'pmc_package_path', 'reports_path', 'acronym' ] 
 
 is_valid_first_param = False
 is_valid_paths = False
 err_msg = []
 
-if len(param_list) > 0:
-    
+if not len(param_list) in [2, 6]:
+    print('Usage:')
+    print('python generate_xml_packages.py xml_file_or_src_xml_path scielo_path pmc_path report_path acronym')
+
+else:
     if os.path.isfile(param_list[1]):
         if param_list[1].endswith('.xml'):
             # xml file
             xml_filename = param_list[1]
-            xml_path = os.path.dirname(xml_filename)
+            src_xml_path = os.path.dirname(xml_filename)
             is_valid_first_param = True
 
 
             if xml_filename.endswith('.sgm.xml'):
                 required = [ '', '.sgm.xml file', ]
-                src_img_path = xml_path + '/../../pmc_img'
-                scielo_package_path = xml_path + '/../../xml_package'
-                pmc_package_path = xml_path + '/../../pmc_package'
+                src_img_path = src_xml_path + '/../../pmc_img'
+                scielo_package_path = src_xml_path + '/../../xml_package'
+                pmc_package_path = src_xml_path + '/../../pmc_package'
                 
-                pdf_path = xml_path + '/../../pmc_pdf'
+                pdf_path = src_xml_path + '/../../pmc_pdf'
                 src_paths_and_exts = [(pdf_path, '.pdf')]
-                reports_path = xml_path
+                
+                a = xml_filename.split('/')
+                acron = a[len(a)-6]
+                
+                reports_path = src_xml_path
                 is_valid_paths = True 
         else:
             is_valid_first_param = False
@@ -66,22 +74,22 @@ if len(param_list) > 0:
         # xml path
         xml_files = [ f for f in os.listdir(param_list[1]) if f.endswith('.xml') ]
         if len(xml_files) > 0:
-            xml_path = param_list[1]
+            src_xml_path = param_list[1]
             is_valid_first_param = True
-
         else:
             err_msg.append(param_list[1] + ' has no XML files. ')
     else:
         err_msg.append(param_list[1] + ' is not file and is not folder')
+        
 if is_valid_first_param:
     parameters = Parameters(required)
     if parameters.check_parameters(param_list):
         if len(pmc_package_path) == 0 and len(scielo_package_path) == 0 and len(reports_path) == 0:
-            script, ign, scielo_package_path, pmc_package_path, reports_path = param_list
-            paths = [ scielo_package_path, pmc_package_path, xml_path, reports_path] 
+            script, ign, scielo_package_path, pmc_package_path, reports_path, acron = param_list
+            paths = [ scielo_package_path, pmc_package_path, src_xml_path, reports_path] 
 
-            src_img_path = xml_path
-            src_paths_and_exts = [(xml_path, '.pdf')]
+            src_img_path = src_xml_path
+            src_paths_and_exts = [(src_xml_path, '.pdf')]
             repete = []
             for item in paths:
                 if item in repete:
@@ -92,57 +100,36 @@ if is_valid_first_param:
                 err_msg.append( ', '.join(paths) + ' can not be the same. Choose different folder to them.')
             else: 
                 is_valid_paths = True 
-    else:
-        print('?')
+    
 
 if is_valid_paths:
     script = param_list[0]            
 
+
+
     current_path = get_script_path(script) 
-    path_xsl = current_path + '/../pmc/v3.0/xsl'
 
-    dtd = current_path + '/../pmc/v3.0/dtd/journalpublishing3.dtd' 
-    css = current_path + '/../pmc/v3.0/xsl/web/xml.css'
-    
+    pmc_path = current_path + '/../pmc'
+    if not os.path.exists(pmc_path):
+        pmc_path = current_path + '/../../pmc'
 
-    xsl_sgml2xml = path_xsl + '/sgml2xml/sgml2xml.xsl'
-    
-    xsl_prep_report = path_xsl + '/scielo-style/stylechecker.xsl'
-    xsl_report = path_xsl + '/nlm-style-4.6.6/style-reporter.xsl'
-    xsl_preview = path_xsl + '/previewer/preview.xsl'
-    xsl_output = path_xsl + '/sgml2xml/xml2pmc.xsl'
-   
-    #pmc_xsl_prep_report = path_xsl + '/nlm-style-4.6.6/style-reporter.xsl'
-    #pmc_xsl_report = path_xsl + '/nlm-style-4.6.6/nlm-stylechecker.xsl'
-    pmc_xsl_prep_report = path_xsl + '/nlm-style-4.6.6/nlm-stylechecker.xsl'
-    pmc_xsl_report = path_xsl + '/nlm-style-4.6.6/style-reporter.xsl'
-    pmc_xsl_preview = [ path_xsl + '/jpub/citations-prep/jpub3-PMCcit.xsl', path_xsl + '/previewer/jpub-main-jpub3-html.xsl', ]
-    pmc_xsl_output = path_xsl + '/sgml2xml/pmc.xsl'
-    pmc_css = current_path + '/../pmc/v3.0/xsl/jpub/jpub-preview.css'
-    
+    jar_path = current_path + '/../jar'
+    if not os.path.exists(jar_path):
+        jar_path = current_path+ '/../../jar'
+
+    report = Report(reports_path + '/report.log', reports_path + '/report.err', reports_path + '/report.txt')
     xml_toolbox.xml_tree = XMLTree(TableEntities(current_path + '/reuse/encoding/entities'))
+    xml_packer = xml_toolbox.XMLPacker(pmc_path, jar_path)
 
-    xml_toolbox.xml_java.jar_transform = current_path  + '/../jar/saxonb9-1-0-8j/saxon9.jar' 
-    xml_toolbox.xml_java.jar_validate = current_path + '/../jar/XMLCheck.jar'
-    
-    xml_toolbox.report = Report(reports_path + '/report.log', reports_path + '/report.err', reports_path + '/report.txt')
-
-    validator_scielo = xml_toolbox.Validator(dtd, xsl_prep_report, xsl_report, xsl_preview, xsl_output, xml_toolbox.report, src_img_path, css)
-    validator_pmc = xml_toolbox.Validator(dtd, pmc_xsl_prep_report, pmc_xsl_report, pmc_xsl_preview, pmc_xsl_output, xml_toolbox.report, src_img_path, pmc_css)
-
-    scielo_package = xml_toolbox.SciELOPackage(xml_toolbox.SGML2XML(xsl_sgml2xml), xml_toolbox.report, xml_path, src_paths_and_exts, src_img_path, scielo_package_path)
-    pmc_package = xml_toolbox.PMCPackage(validator_pmc, validator_scielo)
-
+    #xml_packer.generate_one_file(src_xml_path, src_paths_and_exts, src_img_path, scielo_package_path, report, acron, xml_filename, pmc_package_path, reports_path)
+    #xml_packer.generate_one_folder(src_xml_path, src_paths_and_exts, src_img_path, scielo_package_path, report, acron, pmc_package_path, reports_path)
 
     if len(xml_filename) > 0:
-        xml_toolbox.report.write('Generating PMC files to ' + xml_filename, True, False, True)
-        scielo_package.do_for_one(acron, xml_filename)
+        xml_packer.generate_one_file(src_xml_path, src_paths_and_exts, src_img_path, scielo_package_path, report, acron, xml_filename, pmc_package_path, reports_path)
+    else: 
+        xml_packer.generate_one_folder(src_xml_path, src_paths_and_exts, src_img_path, scielo_package_path, report, acron, pmc_package_path, reports_path)
 
-        pmc_package.do_for_one(scielo_package.package_path + '/' + scielo_package.new_name + '.xml', pmc_package_path, reports_path)
 
-    else:
-        scielo_package.do_for_all(acron)
-        pmc_package.do_for_all(scielo_package_path, pmc_package_path, reports_path)
 
     print('Summarized report: '+ reports_path + '/report.txt')
     print('Detailed report: '+ reports_path + '/report.log')
@@ -150,3 +137,5 @@ if is_valid_paths:
 
 else:
     print('\n'.join(err_msg))
+
+

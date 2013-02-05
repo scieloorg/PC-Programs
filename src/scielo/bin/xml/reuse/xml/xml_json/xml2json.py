@@ -3,7 +3,7 @@ import json
 
 class XML2JSON:
 
-    def __init__(self, xml2json_table, xml_tree, debug = False):
+    def __init__(self, xml2json_table, xml_tree, debug = True):
         #self.xml2json_table = XML2JSONTable(xml2json_table_filename)
         #self.debug = debug
         #self.xml_tree = XMLManager(TableEntAndChar())
@@ -34,77 +34,83 @@ class XML2JSON:
         
 
 
-    def __convert__(self, table_node, xml_parent_node, parent_xml_parent_node, num = 1):
+    def __convert__(self, node_rules, xml_parent_node, parent_xml_parent_node, num = 1):
         
         if self.debug:
             self.report.write('__convert__ ')
-            self.report.write('table_node.xpath', False, False, False, table_node.xpath)
+            self.report.write('node_rules.xpath', False, False, False, node_rules.xpath)
         
-        xml_nodes = self.xml_tree.return_nodes(table_node.xpath, xml_parent_node)
+        xml_nodes = self.xml_tree.return_nodes(node_rules.xpath, xml_parent_node)
         if self.debug: 
             self.report.write('xml_nodes', False, False, False, xml_nodes)
         
-        if len(table_node.children) == 0:
+        if len(node_rules.children) == 0:
             if self.debug: 
                 self.report.write('leaf',False, False, False, xml_nodes)  
-            result = self.return_leaf_content(table_node, xml_nodes)            
+            result = self.return_leaf_content(node_rules, xml_nodes)            
         else:
             if self.debug: 
                 self.report.write('branch', False, False, False, xml_nodes) 
-            result = self.return_branch_content(table_node, xml_nodes, xml_parent_node, num)
+            result = self.return_branch_content(node_rules, xml_nodes, xml_parent_node, num)
         
         if self.debug: 
             self.report.write('result before __format__', False, False, False, result)  
         
-        result = self.__format__(table_node, result, num)
+        result = self.mult2single(node_rules, result, num)
         
         if self.debug: 
             self.report.write('result', False, False, False, result)  
         return result
 
-    def return_leaf_content(self, table_node, xml_nodes, debug = False):
+    def return_leaf_content(self, node_rules, xml_nodes, debug = False):
         a = []
         for xml_node in xml_nodes:
             
-            if table_node.attr != '':
-                v = self.xml_tree.return_node_attr_value(xml_node, table_node.attr[1:])
-            elif table_node.xml:
+            if node_rules.attr != '':
+                v = self.xml_tree.return_node_attr_value(xml_node, node_rules.attr[1:])
+            elif node_rules.xml:
                 v = self.xml_tree.return_xml(xml_node)
             else:
                 v = self.xml_tree.return_node_value(xml_node)
             if self.debug: 
                 self.report.write('v', False, False, False, v)  
             if v == '' or v == None:
-                v = table_node.default
+                v = node_rules.default
                 
             if v != '':
                 a.append(self._convert_value_(v))
             
-        a = self.__format__(table_node, a)
+        a = self.mult2single(node_rules, a)
         return a
 
-    def return_branch_content(self, table_node, xml_nodes, xml_parent_node, num, debug = False):
+    def return_branch_content(self, node_rules, xml_nodes, xml_parent_node, num, debug = False):
         occs = []
         number = 0
         for xml_node in xml_nodes:
             # FIXME pode haver mais de uma instancia d{12}
             occ = {}
             number += 1
-            for child in table_node.children:
+            for child in node_rules.children:
                 if self.debug:
-                    self.report.write(table_node.xpath + '=>' + child.xpath)
+                    self.report.write(node_rules.xpath + '=>' + child.xpath)
                 v = self.__convert__(child, xml_node, xml_parent_node, number)
                 if len(v)>0:
                     if child.to == '' or child.to == '_':
                         occ['_'] = v
                     else:
-                        occ[child.to] = v
+                        if child.to in occ.keys():
+                            if type(occ[child.to]) != type([]):
+                                occ[child.to] = [occ[child.to]]
+                            
+                            occ[child.to].append(v)
+                        else:
+                            occ[child.to] = v
             if occ != {}:
                 occs.append(occ)        
         
         return occs  
 
-    def __format__(self, table_node, result, num = None):
+    def mult2single(self, node_rules, result, num = None):
         r = result
         if type(result) == type([]):
 
@@ -113,13 +119,13 @@ class XML2JSON:
             elif len(result) == 0:
                 r = ''
             
-        #r = self.__control_occ__(table_node, num, r)
+        #r = self.__control_occ__(node_rules, num, r)
         return r
 
     
     
-    def __control_occ__(self, table_node, num, result):
-        key = table_node.parent.to + '_' +  str(num) + '_' + table_node.to
+    def __control_occ__(self, node_rules, num, result):
+        key = node_rules.parent.to + '_' +  str(num) + '_' + node_rules.to
         
         if key in self.dict.keys():
             if type(self.dict[key]) != type([]):
@@ -135,18 +141,17 @@ class XML2JSON:
             self.dict[key] = result
         return result
 
-
-    def x_convert_value_(self, value):
-         return value
-         
     def _convert_value_(self, value):
         enc = 'utf-8'
         if value != '':
-            try:
+            try: 
                 test = value.encode(enc)
             except:
                 
                 test = self.convert_chr(value)
+                print( 'xxxxxxx')
+                print(value)
+                print(test)
             if type(test) == type(''):
                 value = test
         return value
@@ -159,13 +164,7 @@ class XML2JSON:
             except:
                 try: 
                     n = ord(c)
-                    
                 except:
-
                     n = 256*ord(c[0]) + ord(c[1])
-                    
-
                 v += '&#' + str(hex(n)) + ';'
         return v
-     
-    

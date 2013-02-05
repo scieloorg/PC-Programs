@@ -4,6 +4,8 @@ java = 'java'
 jar_transform = ''
 jar_validate = ''
 
+
+
 def format_parameters(parameters):
     r = ''
     for k, v in parameters.items():
@@ -109,6 +111,7 @@ def validate(xml_filename, dtd_path, result_filename, err_filename):
     
     if os.path.exists(jar_validate):
         os.system(cmd)
+        #time.sleep(3)
 
     if os.path.exists(temp):
         f = open(temp, 'r')
@@ -131,8 +134,11 @@ def validate(xml_filename, dtd_path, result_filename, err_filename):
         os.unlink(temp)
     
     if temp_xml_filename != '':
-        #print(open(temp_xml_filename).read()[0:500])
-        os.unlink(temp_xml_filename)
+        try:
+            os.unlink(temp_xml_filename)
+        except WindowsError:
+            pass
+        
     return valid
 
 
@@ -144,6 +150,7 @@ def transform(xml_filename, xsl_filename, result_filename, err_filename, paramet
        os.unlink(temp_result)
     if os.path.exists(result_filename):
         os.unlink(result_filename)
+        
     if os.path.exists(err_filename):
         os.unlink(err_filename)
    
@@ -152,6 +159,7 @@ def transform(xml_filename, xsl_filename, result_filename, err_filename, paramet
     if os.path.exists(jar_transform ):
         #print(cmd)
         os.system(cmd)
+        #time.sleep(3)
     
     
     if os.path.exists(temp_result):
@@ -164,11 +172,37 @@ def transform(xml_filename, xsl_filename, result_filename, err_filename, paramet
         f.close()
         
     if r == True:
-        os.rename(temp_result, result_filename)
+        shutil.copyfile(temp_result, result_filename)
         #print(result_filename)
     else:
-        os.rename(temp_result, err_filename)
+        shutil.copyfile(temp_result, err_filename)
         #print(err_filename)
 
-        
+    os.unlink(temp_result)
     return r
+
+
+
+def tranform_in_steps(xml, dtd, xsl_list, result, parameters={}):
+    err = xml + '.err'
+    inputfile = xml + '.in'
+
+    shutil.copyfile(xml, inputfile)
+    if os.path.exists(result):
+        os.unlink(result)
+
+    for xsl in xsl_list:
+        replace_dtd_path(inputfile, dtd)
+        transform(inputfile, xsl, result, err, parameters)
+        
+        if os.path.exists(err):
+            break
+        else:
+            if os.path.exists(result):
+                shutil.copyfile(result, inputfile)
+                
+    if os.path.exists(inputfile):
+        os.unlink(inputfile) 
+    if os.path.exists(err):
+        shutil.copyfile(err, result)
+        

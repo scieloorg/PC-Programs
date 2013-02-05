@@ -119,10 +119,11 @@ class XMLTree:
         if n != None:
             if xpath != '':
                 p = self.ns + xpath
+
                 try:
             	    r = n.findall(p)
-            	except:
-            	    self.report.write('Invalid xpath: ' + p)
+            	except Exception as inst:
+            	    self.report.write(type(inst), False, True, True)
             else:
                 p = '.'
                 r.append(n)
