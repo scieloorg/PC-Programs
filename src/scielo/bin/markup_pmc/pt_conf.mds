@@ -25,7 +25,7 @@ msgDefaultDirectories,Verifique existência de 'html.dot'/'normal.dot'.
 msgExit1,Salvar em TXT e usar o Parser agora.
 msgExit2,Salvar em TXT e usar o Parser depois.
 msgExit3,Sair sem salvar em TXT.
-msgGenerateXML,Generar XML del body
+msgGenerateXML,Gerando arquivos XML. Aguarde.
 msgAutomataFileError, Não foi possível reconhecer a estrutura da referência.
 titleAttribute,Inserindo Atributo
 titleTag,Inserindo tag
@@ -73,9 +73,11 @@ buttonHelp,Ajuda
 bodyHasChildren,no
 doDebug,no
 buttonParser,Verificar a marcação
-buttonParser,Verificar o XML
-buttonGenerateXML,Gerar o XML
-buttonCheckXML,Visualizar texto completo gerado a partir do XML
+buttonGenerateXML,Generar el XML
+buttonXMLValidate,Validar XML para SciELO
+buttonXMLPreview,Visualizar texto completo SciELO
+buttonPMCValidate,Validar XML para PMC
+buttonPMCPreview,Visualizar texto completo PMC
 buttonViewMarkup,Visualizar texto com marcação
 buttonSave,Salvar
 msgNoXML,Não existe o arquivo XML deste artigo ou texto

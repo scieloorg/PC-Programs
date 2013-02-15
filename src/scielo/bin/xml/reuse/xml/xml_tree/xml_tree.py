@@ -121,7 +121,9 @@ class XMLTree:
                 p = self.ns + xpath
 
                 try:
+                    print(p)
             	    r = n.findall(p)
+                    print(r)
             	except Exception as inst:
             	    self.report.write(type(inst), False, True, True)
             else:

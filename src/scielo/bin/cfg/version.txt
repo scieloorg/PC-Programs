@@ -1,3 +1,11 @@
+4.0.057
+=======
+
+Markup
+- [NEW] Validation of the XML for SciELO and Previewer of its HTML
+- [FIXED] APA
+- [FIXED] Replacement of some .bat by .py
+
 4.0.055
 =======
 Milestone7

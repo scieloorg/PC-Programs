@@ -1,7 +1,7 @@
 Document Type: WSE
 item: Global
   Version=7.01
-  Title=SciELO Installation
+  Title=SciELO PC Programs Installation
   Title Portuguese=SciELO Installation
   Title Spanish=SciELO Installation
   Flags=00010100
@@ -28,9 +28,9 @@ item: Global
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=4.0.025
-  Version Description=SciELO
-  Version Copyright=2011
+  Version File=4.0.056
+  Version Description=SciELO PC Programs
+  Version Copyright=2013
   Version Company=SciELO
   Distribute Path=C:\2007\scielo
   Distribute Type=1
@@ -84,7 +84,7 @@ item: End Block
 end
 item: Set Variable
   Variable=APPTITLE
-  Value=SciELO
+  Value=SciELO PC Programs
   Flags=10000000
 end
 item: Set Variable
@@ -893,19 +893,19 @@ item: Custom Dialog Set
       Text=Markup
       Text=Markup - Automata files
       Text=Converter
-      Text=XML SciELO
+      Text=XML SciELO (for PubMed and ISI)
       Text=
       Text French=Title Manager
       Text French=Markup
       Text French=Markup - Automata files
       Text French=Converter
-      Text French=XML SciELO
+      Text French=XML SciELO (for PubMed and ISI)
       Text French=
       Text German=Title Manager
       Text German=Markup
       Text German=Markup - Automata files
       Text German=Converter
-      Text German=XML SciELO
+      Text German=XML SciELO (for PubMed and ISI)
       Text German=
       Text Portuguese=Title Manager
       Text Portuguese=Markup
@@ -917,13 +917,13 @@ item: Custom Dialog Set
       Text Spanish=Markup
       Text Spanish=Markup - Automata files
       Text Spanish=Converter
-      Text Spanish=XML SciELO
+      Text Spanish=XML SciELO (for PubMed and ISI)
       Text Spanish=
       Text Italian=Title Manager
       Text Italian=Markup
       Text Italian=Markup - Automata files
       Text Italian=Converter
-      Text Italian=XML SciELO
+      Text Italian=XML SciELO (for PubMed and ISI)
       Text Italian=
       Text Danish=%1%
       Text Danish=
@@ -1156,159 +1156,1223 @@ item: End Block
 end
 item: End Block
 end
+item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\BIN\XMLTOOLS
+  Flags=00000100
+end
+item: Delete File
+  Pathname=%PROGDIR%\BIN\XMLTOOLS
+  Flags=00001100
+end
+item: End Block
+end
+item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\BIN\PMCXMLTOOLS
+  Flags=00000100
+end
+item: Delete File
+  Pathname=%PROGDIR%\BIN\PMCXMLTOOLS
+  Flags=00001100
+end
+item: End Block
+end
 item: Open/Close INSTALL.LOG
 end
 item: Check Disk Space
   Component=COMPONENTS
 end
+item: Check if File/Dir Exists
+  Pathname=%PROGDIR%\BIN\MARKUP
+  Flags=00000101
+end
+item: Create Directory
+  Pathname=%PROGDIR%\bin\markup
+end
+item: End Block
+end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\PMCXMLGeneratorAndValidator.py
-  Destination=%PROGDIR%\bin\PMCXMLTools\PMCXMLGeneratorAndValidator.py
+  Source=w:\scielo\bin\xml\validate_xml.py
+  Destination=%PROGDIR%\bin\xml\validate_xml.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\PMCFilesManager.py
-  Destination=%PROGDIR%\bin\PMCXMLTools\PMCFilesManager.py
+  Source=w:\scielo\bin\xml\reuse\xml\xml_tree\xml_tree.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\xml\xml_tree\xml_tree.pyc
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\myXML.py
-  Destination=%PROGDIR%\bin\PMCXMLTools\myXML.py
+  Source=w:\scielo\bin\xml\reuse\xml\xml_tree\xml_tree.py
+  Destination=%PROGDIR%\bin\xml\reuse\xml\xml_tree\xml_tree.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\MKPXML.py
-  Destination=%PROGDIR%\bin\PMCXMLTools\MKPXML.py
+  Source=w:\scielo\bin\xml\reuse\xml\xml_tree\__init__.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\xml\xml_tree\__init__.pyc
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\JavaXMLManager.py
-  Destination=%PROGDIR%\bin\PMCXMLTools\JavaXMLManager.py
+  Source=w:\scielo\bin\xml\reuse\xml\xml_tree\__init__.py
+  Destination=%PROGDIR%\bin\xml\reuse\xml\xml_tree\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\core\XMLCheck.jar
-  Destination=%PROGDIR%\bin\PMCXMLTools\core\XMLCheck.jar
+  Source=w:\scielo\bin\xml\reuse\xml\xml_json\xml2json_table.py
+  Destination=%PROGDIR%\bin\xml\reuse\xml\xml_json\xml2json_table.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\core\saxon8.jar
-  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8.jar
+  Source=w:\scielo\bin\xml\reuse\xml\xml_json\xml2json.py
+  Destination=%PROGDIR%\bin\xml\reuse\xml\xml_json\xml2json.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\core\saxon8-xpath.jar
-  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8-xpath.jar
+  Source=w:\scielo\bin\xml\reuse\xml\xml_json\__init__.py
+  Destination=%PROGDIR%\bin\xml\reuse\xml\xml_json\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\core\saxon8-xom.jar
-  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8-xom.jar
+  Source=w:\scielo\bin\xml\reuse\xml\xml_java.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\xml\xml_java.pyc
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\core\saxon8-sql.jar
-  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8-sql.jar
+  Source=w:\scielo\bin\xml\reuse\xml\xml_java.py
+  Destination=%PROGDIR%\bin\xml\reuse\xml\xml_java.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\core\saxon8-jdom.jar
-  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8-jdom.jar
+  Source=w:\scielo\bin\xml\reuse\xml\xml2output\fulltext_generator.py
+  Destination=%PROGDIR%\bin\xml\reuse\xml\xml2output\fulltext_generator.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\core\saxon8-dom4j.jar
-  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8-dom4j.jar
+  Source=w:\scielo\bin\xml\reuse\xml\xml2output\__init__.py
+  Destination=%PROGDIR%\bin\xml\reuse\xml\xml2output\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\PMCXMLTools\core\saxon8-dom.jar
-  Destination=%PROGDIR%\bin\PMCXMLTools\core\saxon8-dom.jar
+  Source=w:\scielo\bin\xml\reuse\xml\__xml_java\JavaXMLTransformer.py
+  Destination=%PROGDIR%\bin\xml\reuse\xml\__xml_java\JavaXMLTransformer.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\core\saxon8.jar
-  Destination=%PROGDIR%\bin\XMLTools\core\saxon8.jar
+  Source=w:\scielo\bin\xml\reuse\xml\__xml_java\__init__.py
+  Destination=%PROGDIR%\bin\xml\reuse\xml\__xml_java\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\core\saxon8-sql.jar
-  Destination=%PROGDIR%\bin\XMLTools\core\saxon8-sql.jar
+  Source=w:\scielo\bin\xml\reuse\xml\__init__.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\xml\__init__.pyc
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\core\saxon8-jdom.jar
-  Destination=%PROGDIR%\bin\XMLTools\core\saxon8-jdom.jar
+  Source=w:\scielo\bin\xml\reuse\xml\__init__.py
+  Destination=%PROGDIR%\bin\xml\reuse\xml\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\core\saxon8-dom.jar
-  Destination=%PROGDIR%\bin\XMLTools\core\saxon8-dom.jar
+  Source=w:\scielo\bin\xml\reuse\xml\___xml_java.py
+  Destination=%PROGDIR%\bin\xml\reuse\xml\___xml_java.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\call_transform.py
-  Destination=%PROGDIR%\bin\XMLTools\call_transform.py
+  Source=w:\scielo\bin\xml\reuse\input_output\tracker.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\input_output\tracker.pyc
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\call_transform.bat
-  Destination=%PROGDIR%\bin\XMLTools\call_transform.bat
+  Source=w:\scielo\bin\xml\reuse\input_output\tracker.py
+  Destination=%PROGDIR%\bin\xml\reuse\input_output\tracker.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\call_validate.bat
-  Destination=%PROGDIR%\bin\XMLTools\call_validate.bat
+  Source=w:\scielo\bin\xml\reuse\input_output\report.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\input_output\report.pyc
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\gen_xml_and_check.bat
-  Destination=%PROGDIR%\bin\XMLTools\gen_xml_and_check.bat
+  Source=w:\scielo\bin\xml\reuse\input_output\report.py
+  Destination=%PROGDIR%\bin\xml\reuse\input_output\report.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\gen_xml_html.bat
-  Destination=%PROGDIR%\bin\XMLTools\gen_xml_html.bat
+  Source=w:\scielo\bin\xml\reuse\input_output\parameters.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\input_output\parameters.pyc
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\rename_article.bat
-  Destination=%PROGDIR%\bin\XMLTools\rename_article.bat
+  Source=w:\scielo\bin\xml\reuse\input_output\parameters.py
+  Destination=%PROGDIR%\bin\xml\reuse\input_output\parameters.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\rename_img.xsl
-  Destination=%PROGDIR%\bin\XMLTools\rename_img.xsl
+  Source=w:\scielo\bin\xml\reuse\input_output\configuration.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\input_output\configuration.pyc
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\rename_img.bat
-  Destination=%PROGDIR%\bin\XMLTools\rename_img.bat
+  Source=w:\scielo\bin\xml\reuse\input_output\configuration.py
+  Destination=%PROGDIR%\bin\xml\reuse\input_output\configuration.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\rename_files.bat
-  Destination=%PROGDIR%\bin\XMLTools\rename_files.bat
+  Source=w:\scielo\bin\xml\reuse\input_output\__init__.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\input_output\__init__.pyc
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\core\saxon8-dom4j.jar
-  Destination=%PROGDIR%\bin\XMLTools\core\saxon8-dom4j.jar
+  Source=w:\scielo\bin\xml\reuse\input_output\__init__.py
+  Destination=%PROGDIR%\bin\xml\reuse\input_output\__init__.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\core\saxon8-xom.jar
-  Destination=%PROGDIR%\bin\XMLTools\core\saxon8-xom.jar
+  Source=w:\scielo\bin\xml\reuse\img_to_jpg.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\img_to_jpg.pyc
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\core\saxon8-xpath.jar
-  Destination=%PROGDIR%\bin\XMLTools\core\saxon8-xpath.jar
+  Source=w:\scielo\bin\xml\reuse\img_to_jpg.py
+  Destination=%PROGDIR%\bin\xml\reuse\img_to_jpg.py
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\XMLTools\core\XMLCheck.jar
-  Destination=%PROGDIR%\bin\XMLTools\core\XMLCheck.jar
+  Source=w:\scielo\bin\xml\reuse\encoding\table_entities.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\encoding\table_entities.pyc
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\reuse\encoding\table_entities.py
+  Destination=%PROGDIR%\bin\xml\reuse\encoding\table_entities.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\reuse\encoding\entities.py
+  Destination=%PROGDIR%\bin\xml\reuse\encoding\entities.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\reuse\encoding\entities
+  Destination=%PROGDIR%\bin\xml\reuse\encoding\entities
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\reuse\encoding\converter_utf8_iso.py
+  Destination=%PROGDIR%\bin\xml\reuse\encoding\converter_utf8_iso.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\reuse\encoding\bkp_converter_utf8_iso.py
+  Destination=%PROGDIR%\bin\xml\reuse\encoding\bkp_converter_utf8_iso.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\reuse\encoding\__init__.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\encoding\__init__.pyc
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\reuse\encoding\__init__.py
+  Destination=%PROGDIR%\bin\xml\reuse\encoding\__init__.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\reuse\__init__.pyc
+  Destination=%PROGDIR%\bin\xml\reuse\__init__.pyc
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\reuse\__init__.py
+  Destination=%PROGDIR%\bin\xml\reuse\__init__.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\xml_toolbox.py
+  Destination=%PROGDIR%\bin\xml\xml_toolbox.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\transform.py
+  Destination=%PROGDIR%\bin\xml\transform.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\generate_xml_packages.py
+  Destination=%PROGDIR%\bin\xml\generate_xml_packages.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\convert_img_to_jpg.py
+  Destination=%PROGDIR%\bin\xml\convert_img_to_jpg.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\web\xml.css
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\web\xml.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\web\site.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\web\site.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\web\screen\styles.css
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\web\screen\styles.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\web\screen\layout.css
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\web\screen\layout.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\web\screen\general.css
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\web\screen\general.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\sgml2xml\xml2pmc.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\xml2pmc.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\sgml2xml\sgml2xml.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\sgml2xml.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\sgml2xml\sgml2generic.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\sgml2generic.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\sgml2xml\sgm2win2.txt
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\sgm2win2.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\sgml2xml\pmc.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\pmc.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\sgml2xml\local_dtd.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\local_dtd.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\sgml2xml\local_dtd.original.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\local_dtd.original.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\sgml2xml\_xml2pmc.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\sgml2xml\_xml2pmc.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\scielo-style\stylechecker.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\scielo-style\stylechecker.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\previewer\preview.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\previewer\preview.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\previewer\preview.css
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\previewer\preview.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\previewer\jpub-main-jpub3-html.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\previewer\jpub-main-jpub3-html.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\nlm-style-4.6.6\stylecheck-named-tests.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\nlm-style-4.6.6\stylecheck-named-tests.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\nlm-style-4.6.6\stylecheck-match-templates.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\nlm-style-4.6.6\stylecheck-match-templates.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\nlm-style-4.6.6\stylecheck-helper-templates.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\nlm-style-4.6.6\stylecheck-helper-templates.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\nlm-style-4.6.6\style-reporter.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\nlm-style-4.6.6\style-reporter.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\nlm-style-4.6.6\nlm-stylechecker.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\nlm-style-4.6.6\nlm-stylechecker.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\user-docs.xml
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\user-docs.xml
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\user-docs.pdf
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\user-docs.pdf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\user-docs.html
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\user-docs.html
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\technical-docs.xml
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\technical-docs.xml
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\technical-docs.pdf
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\technical-docs.pdf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\technical-docs.html
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\technical-docs.html
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\readme.txt
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\readme.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\quickstart.xml
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\quickstart.xml
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\quickstart.pdf
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\quickstart.pdf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\quickstart.html
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\quickstart.html
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\previewer.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\previewer.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\prep\jpub3-webfilter.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\prep\jpub3-webfilter.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\prep\jpub3-printfilter.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\prep\jpub3-printfilter.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\post\xhtml-ns.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\post\xhtml-ns.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\main\xhtml-tables-fo.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\main\xhtml-tables-fo.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\main\shell-utility.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\main\shell-utility.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\main\jpub3-xslfo.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\main\jpub3-xslfo.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\main\jpub3-html.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\main\jpub3-html.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\jpub3-PMCcit-xslfo.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\jpub3-PMCcit-xslfo.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\jpub3-PMCcit-xhtml.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\jpub3-PMCcit-xhtml.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\jpub3-PMCcit-web-html.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\jpub3-PMCcit-web-html.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\jpub3-PMCcit-print-fo.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\jpub3-PMCcit-print-fo.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\jpub3-PMCcit-html.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\jpub3-PMCcit-html.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\jpub3-APAcit-xslfo.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\jpub3-APAcit-xslfo.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\jpub3-APAcit-html.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\jpub3-APAcit-html.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\jpub-preview.css
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\jpub-preview.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\citations-prep\jpub3-PMCcit.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\citations-prep\jpub3-PMCcit.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsl\jpub\citations-prep\jpub3-APAcit.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\jpub\citations-prep\jpub3-APAcit.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\xml.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\xml.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\xlink.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\xlink.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\readme.txt
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\readme.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\tokens.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\tokens.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\table.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\table.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\style.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\style.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\space.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\space.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\scripts.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\scripts.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\layout.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\layout.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\error.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\error.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\Cvs\Root
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\Cvs\Root
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\Cvs\Repository
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\Cvs\Repository
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\Cvs\Entries
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\Cvs\Entries
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\common-types.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\common-types.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\common-attribs.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\common-attribs.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\characters.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\characters.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\action.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\presentation\action.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\mathml2.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\mathml2.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\Cvs\Root
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\Cvs\Root
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\Cvs\Repository
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\Cvs\Repository
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\Cvs\Entries
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\Cvs\Entries
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\vector-calculus.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\vector-calculus.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\tokens.xsd.~1.3.~
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\tokens.xsd.~1.3.~
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\tokens.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\tokens.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\statistics.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\statistics.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\sets.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\sets.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\semantics.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\semantics.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\relations.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\relations.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\logic.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\logic.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\linear-algebra.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\linear-algebra.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\functions.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\functions.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\elementary-functions.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\elementary-functions.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\Cvs\Root
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\Cvs\Root
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\Cvs\Repository
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\Cvs\Repository
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\Cvs\Entries
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\Cvs\Entries
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\constructs.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\constructs.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\constants.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\constants.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\common-attrib.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\common-attrib.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\calculus.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\calculus.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\content\arith.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\content\arith.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\common\xlink-href.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\common\xlink-href.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\common\math.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\common\math.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\common\Cvs\Root
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\common\Cvs\Root
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\common\Cvs\Repository
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\common\Cvs\Repository
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\common\Cvs\Entries
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\common\Cvs\Entries
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\ncbi-mathml2\common\common-attribs.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\ncbi-mathml2\common\common-attribs.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\xsd\journalpublishing3.xsd
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsd\journalpublishing3.xsd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\site.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\site.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\xmlspecchars3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\xmlspecchars3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\xmlchars\isogrk4.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\xmlchars\isogrk4.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\xmlchars\isogrk2.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\xmlchars\isogrk2.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\xmlchars\isogrk1.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\xmlchars\isogrk1.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\XHTMLtablesetup3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\XHTMLtablesetup3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\xhtml-table-1.mod
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\xhtml-table-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\xhtml-inlstyle-1.mod
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\xhtml-inlstyle-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\Smallsamples\samplesmall3-pub.xml
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\Smallsamples\samplesmall3-pub.xml
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\Smallsamples\samplesmall3-base.xml
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\Smallsamples\samplesmall3-base.xml
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\section3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\section3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\related-object3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\related-object3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\references3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\references3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\phrase3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\phrase3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\para3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\para3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\oasis-tablesetup3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\oasis-tablesetup3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\oasis-exchange.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\oasis-exchange.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\notat3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\notat3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\nlmcitation3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\nlmcitation3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\modules3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\modules3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\mathmlsetup3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\mathmlsetup3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\mathml2.dtd
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\mathml2.dtd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\mathml2-qname-1.mod
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\mathml2-qname-1.mod
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\mathml\mmlextra.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\mathml\mmlextra.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\mathml\mmlalias.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\mathml\mmlalias.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\math3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\math3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\list3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\list3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\link3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\link3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\journalpublishing3.dtd
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\journalpublishing3.dtd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\journalpubcustom-modules3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\journalpubcustom-modules3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\journalpubcustom-models3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\journalpubcustom-models3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\journalpubcustom-mixes3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\journalpubcustom-mixes3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\journalpubcustom-classes3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\journalpubcustom-classes3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\journalmeta3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\journalmeta3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso9573-13\isotech.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isotech.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso9573-13\isomscr.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isomscr.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso9573-13\isomopf.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isomopf.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso9573-13\isomfrk.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isomfrk.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso9573-13\isogrk3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isogrk3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso9573-13\isoamsr.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isoamsr.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso9573-13\isoamso.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isoamso.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso9573-13\isoamsn.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isoamsn.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso9573-13\isoamsc.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isoamsc.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso9573-13\isoamsb.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isoamsb.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso9573-13\isoamsa.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso9573-13\isoamsa.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso8879\isopub.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isopub.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso8879\isonum.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isonum.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso8879\isolat2.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isolat2.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso8879\isolat1.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isolat1.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso8879\isodia.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isodia.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso8879\isocyr2.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isocyr2.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso8879\isocyr1.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isocyr1.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\iso8879\isobox.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\iso8879\isobox.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\htmltable.dtd
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\htmltable.dtd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\funding3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\funding3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\format3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\format3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\display3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\display3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\default-mixes3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\default-mixes3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\default-classes3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\default-classes3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\common3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\common3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\chars3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\chars3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\catalog.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\catalog.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\catalog-v3.xml
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\catalog-v3.xml
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\base-test3.dtd
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\base-test3.dtd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\backmatter3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\backmatter3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\articlemeta3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\articlemeta3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\dtd\annotation3.ent
+  Destination=%PROGDIR%\bin\pmc\v3.0\dtd\annotation3.ent
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\css\xml_color.css
+  Destination=%PROGDIR%\bin\pmc\v3.0\css\xml_color.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\css\xml.gs.css
+  Destination=%PROGDIR%\bin\pmc\v3.0\css\xml.gs.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\css\xml.css
+  Destination=%PROGDIR%\bin\pmc\v3.0\css\xml.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\css\jpub-preview.css
+  Destination=%PROGDIR%\bin\pmc\v3.0\css\jpub-preview.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\css\jpub-preview-scielo-web.css
+  Destination=%PROGDIR%\bin\pmc\v3.0\css\jpub-preview-scielo-web.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\v3.0\css\jpub-preview-scielo-default.css
+  Destination=%PROGDIR%\bin\pmc\v3.0\css\jpub-preview-scielo-default.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\saxon9-dom4j.jar
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\saxon9-dom4j.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\saxon9-dom.jar
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\saxon9-dom.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\notices\UNICODE.txt
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\notices\UNICODE.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\notices\THAI.txt
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\notices\THAI.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\notices\LICENSE.txt
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\notices\LICENSE.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\notices\LEGAL.txt
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\notices\LEGAL.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\notices\JAMESCLARK.txt
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\notices\JAMESCLARK.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\notices\GPL+CLASSPATH.txt
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\notices\GPL+CLASSPATH.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\notices\FRIJTERS.txt
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\notices\FRIJTERS.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\notices\CERN.txt
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\notices\CERN.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\notices\APACHE-XERCES.txt
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\notices\APACHE-XERCES.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\notices\APACHE-RESOLVER.txt
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\notices\APACHE-RESOLVER.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\notices\APACHE-ANT.txt
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\notices\APACHE-ANT.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\doc\saxondocs.css
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\doc\saxondocs.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\doc\index.html
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\doc\index.html
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\doc\img\saxonica_logo.gif
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\doc\img\saxonica_logo.gif
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\saxon9-jdom.jar
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\saxon9-jdom.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\saxon9-s9api.jar
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\saxon9-s9api.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\saxon9-sql.jar
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\saxon9-sql.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\saxon9-xom.jar
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\saxon9-xom.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\saxon9-xpath.jar
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\saxon9-xpath.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\saxon9-xqj.jar
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\saxon9-xqj.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\saxonb9-1-0-8j\saxon9.jar
+  Destination=%PROGDIR%\bin\jar\saxonb9-1-0-8j\saxon9.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\jar\XMLCheck.jar
+  Destination=%PROGDIR%\bin\jar\XMLCheck.jar
   Flags=0000000010000010
 end
 item: Install File
@@ -1701,6 +2765,561 @@ item: If/While Statement
   Variable=COMPONENTS
   Value=E
   Flags=00001010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\php\XML.php
+  Destination=%MAINDIR%\xml_scielo\proc\general\php\XML.php
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\php\entities.php
+  Destination=%MAINDIR%\xml_scielo\proc\general\php\entities.php
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\php\class.XSLTransformer41.php
+  Destination=%MAINDIR%\xml_scielo\proc\general\php\class.XSLTransformer41.php
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\php\class.XSLTransformer40.php
+  Destination=%MAINDIR%\xml_scielo\proc\general\php\class.XSLTransformer40.php
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\php\class.XSLTransformer.php
+  Destination=%MAINDIR%\xml_scielo\proc\general\php\class.XSLTransformer.php
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\php\xml_xsl.php
+  Destination=%MAINDIR%\xml_scielo\proc\general\php\xml_xsl.php
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\xsl\ISI_DATA.xsl
+  Destination=%MAINDIR%\xml_scielo\proc\general\xsl\ISI_DATA.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\xsl\ISI.xsl
+  Destination=%MAINDIR%\xml_scielo\proc\general\xsl\ISI.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\xmessage.txt
+  Destination=%MAINDIR%\xml_scielo\proc\general\xmessage.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\xis\xml_scielo_getXSL.xis
+  Destination=%MAINDIR%\xml_scielo\proc\general\xis\xml_scielo_getXSL.xis
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\xis\xml_scielo_articles.xis
+  Destination=%MAINDIR%\xml_scielo\proc\general\xis\xml_scielo_articles.xis
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\temp\donotdelete.txt
+  Destination=%MAINDIR%\xml_scielo\proc\general\temp\donotdelete.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\sep.txt
+  Destination=%MAINDIR%\xml_scielo\proc\general\sep.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\scripts\validateXML.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\validateXML.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\scripts\transformByPHP.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\transformByPHP.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\scripts\transformByJava.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\transformByJava.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\scripts\transform.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\transform.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\scripts\transfer.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\transfer.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\scripts\mainGenerateXML.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\mainGenerateXML.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\scripts\generateXML.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\generateXML.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\scripts\generateCalls.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\generateCalls.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\scripts\displayErrors.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\displayErrors.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\scripts\applyXSL.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\applyXSL.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\schema\Untitled4.dtd
+  Destination=%MAINDIR%\xml_scielo\proc\general\schema\Untitled4.dtd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\schema\Untitled3.dtd
+  Destination=%MAINDIR%\xml_scielo\proc\general\schema\Untitled3.dtd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\schema\ISOlat1.sgm
+  Destination=%MAINDIR%\xml_scielo\proc\general\schema\ISOlat1.sgm
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\schema\isi.dtd
+  Destination=%MAINDIR%\xml_scielo\proc\general\schema\isi.dtd
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\prc\tipo_h_pubmed.prc
+  Destination=%MAINDIR%\xml_scielo\proc\general\prc\tipo_h_pubmed.prc
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\xsl\ISI_validator.xsl
+  Destination=%MAINDIR%\xml_scielo\proc\general\xsl\ISI_validator.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\xsl\PubMed.xsl
+  Destination=%MAINDIR%\xml_scielo\proc\general\xsl\PubMed.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\xsl\PubMed_Link.xsl
+  Destination=%MAINDIR%\xml_scielo\proc\general\xsl\PubMed_Link.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\GenerateXML_all.bat
+  Destination=%MAINDIR%\xml_scielo\proc\GenerateXML_all.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\GenerateXML_ISI.bat
+  Destination=%MAINDIR%\xml_scielo\proc\GenerateXML_ISI.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\GenerateXML_PubMed.bat
+  Destination=%MAINDIR%\xml_scielo\proc\GenerateXML_PubMed.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\message.txt
+  Destination=%MAINDIR%\xml_scielo\proc\general\message.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\log\donotdelete.txt
+  Destination=%MAINDIR%\xml_scielo\proc\general\log\donotdelete.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\line.txt
+  Destination=%MAINDIR%\xml_scielo\proc\general\line.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\java\validador\XMLCheck.jar
+  Destination=%MAINDIR%\xml_scielo\proc\general\java\validador\XMLCheck.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\java\validador\x.xml
+  Destination=%MAINDIR%\xml_scielo\proc\general\java\validador\x.xml
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\java\validador\chama.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\java\validador\chama.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\java\saxon8.jar
+  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\java\saxon8-xpath.jar
+  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8-xpath.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\java\saxon8-xom.jar
+  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8-xom.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\java\saxon8-sql.jar
+  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8-sql.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\java\saxon8-jdom.jar
+  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8-jdom.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\java\saxon8-dom4j.jar
+  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8-dom4j.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\java\saxon8-dom.jar
+  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8-dom.jar
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\i2x\tipo_h.i2x
+  Destination=%MAINDIR%\xml_scielo\proc\general\i2x\tipo_h.i2x
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\utf2lat.xrf
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\utf2lat.xrf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\utf2lat.seq
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\utf2lat.seq
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\utf2lat.mst
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\utf2lat.mst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\gizmoXML.xrf
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\gizmoXML.xrf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\gizmoXML.seq
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\gizmoXML.seq
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\gizmoXML.mst
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\gizmoXML.mst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\gizmoHTML.xrf
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\gizmoHTML.xrf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\gizmoHTML.mst
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\gizmoHTML.mst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\Cópia de ans2lat.xrf
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\Cópia de ans2lat.xrf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\Cópia de ans2lat.seq
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\Cópia de ans2lat.seq
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\Cópia de ans2lat.mst
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\Cópia de ans2lat.mst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\ans2utf.xrf
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\ans2utf.xrf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\ans2utf.seq
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\ans2utf.seq
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\ans2utf.mst
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\ans2utf.mst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\ans2lat.xrf
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\ans2lat.xrf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\ans2lat.seq
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\ans2lat.seq
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\ans2lat.mst
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\ans2lat.mst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\acent2ent.xrf
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\acent2ent.xrf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\acent2ent.mst
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\acent2ent.mst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\Accent.xrf
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\Accent.xrf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\gizmo\Accent.mst
+  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\Accent.mst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\fst\xml_scielo.fst
+  Destination=%MAINDIR%\xml_scielo\proc\general\fst\xml_scielo.fst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\fst\title.fst
+  Destination=%MAINDIR%\xml_scielo\proc\general\fst\title.fst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\error_end.txt
+  Destination=%MAINDIR%\xml_scielo\proc\general\error_end.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\error.txt
+  Destination=%MAINDIR%\xml_scielo\proc\general\error.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\empty.txt
+  Destination=%MAINDIR%\xml_scielo\proc\general\empty.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\batch\VerifPresencaParametro.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\batch\VerifPresencaParametro.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\batch\VerifExisteBase.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\batch\VerifExisteBase.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\batch\VerifExisteArquivo.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\batch\VerifExisteArquivo.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\batch\Seq2Master.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\batch\Seq2Master.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\batch\ReadConfigFile.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\batch\ReadConfigFile.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\batch\InformaLog.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\batch\InformaLog.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\batch\GeraInvertido.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\batch\GeraInvertido.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\batch\Apagatemp.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\batch\Apagatemp.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\general\batch\AchouErro.bat
+  Destination=%MAINDIR%\xml_scielo\proc\general\batch\AchouErro.bat
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\cisis\wxis.exe
+  Destination=%MAINDIR%\xml_scielo\proc\cisis\wxis.exe
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\proc\cisis\Mx.exe
+  Destination=%MAINDIR%\xml_scielo\proc\cisis\Mx.exe
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\scilista.lst
+  Destination=%MAINDIR%\xml_scielo\scilista.lst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\docs\Xml SciELO LinkOut_tec.doc
+  Destination=%MAINDIR%\xml_scielo\docs\Xml SciELO LinkOut_tec.doc
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\docs\UserManual.doc
+  Destination=%MAINDIR%\xml_scielo\docs\UserManual.doc
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\xml_scielo.ini
+  Destination=%MAINDIR%\xml_scielo\config.example\xml_scielo.ini
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.xrf
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.xrf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.seq
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.seq
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.n02
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.n02
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.n01
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.n01
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.mst
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.mst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.l02
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.l02
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.l01
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.l01
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.ifp
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.ifp
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.fst
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.fst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.cnt
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.cnt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\doi_conf.txt
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\doi_conf.txt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.xrf
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.xrf
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.seq
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.seq
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.n02
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.n02
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.n01
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.n01
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.mst
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.mst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.l02
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.l02
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.l01
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.l01
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.ifp
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.ifp
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.fst
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.fst
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.cnt
+  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.cnt
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\xml_scielo\config.example\arquivo.cip
+  Destination=%MAINDIR%\xml_scielo\config.example\arquivo.cip
+  Flags=0000000010000010
 end
 item: Install File
   Source=W:\scielo\xml_scielo\config.example\arquivo.cip
@@ -3629,6 +5248,26 @@ item: If/While Statement
   Flags=00001010
 end
 item: Install File
+  Source=w:\scielo\bin\Cópia de markup_pmc\pmc\v3.0\site\css\ViewScielo.css
+  Destination=%PROGDIR%\markup\pmc\v3.0\site\xml\css\ViewScielo.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\Cópia de markup_pmc\pmc\v3.0\site\css\ViewNLM.css
+  Destination=%PROGDIR%\markup\pmc\v3.0\site\xml\css\ViewNLM.css
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\css_path.xml
+  Destination=%PROGDIR%\markup\pmc\v3.0\site\xml\css_path.xml
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\markup_pmc\pmc\v3.0\sgml2xml\sgm2win2.txt
+  Destination=%PROGDIR%\markup\pmc\v3.0\sgml2xml\sgm2win2.txt
+  Flags=0000000010000010
+end
+item: Install File
   Source=W:\scielo\bin\markup_pmc\temp\donotdelete.txt
   Destination=%PROGDIR%\bin\markup\temp\donotdelete.txt
   Flags=0000000010000010
@@ -3694,461 +5333,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\cache\importexport-EruditExportPlugin-en_US.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\locale\cache\importexport-EruditExportPlugin-en_US.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\cache\es_ES.inc.php
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\locale\cache\es_ES.inc.php
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\cache\en_US.inc.php
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\locale\cache\en_US.inc.php
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\fr\translation.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\fr\translation.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\es\translation.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\es\translation.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\en\translation.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\en\translation.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\en\language.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\en\language.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\de\translation.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\de\translation.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\css\ViewScielo.css
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\css\ViewScielo.css
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\css\ViewNLM.css
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\css\ViewNLM.css
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\css\common.css
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\css\common.css
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\sgml2xml\sgml2xmlscielo.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\sgml2xml\sgml2xmlscielo.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\sgml2xml\sgml2pmc4localvalidation.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\sgml2xml\sgml2pmc4localvalidation.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\sgml2xml\sgml2pmc4local.original.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\sgml2xml\sgml2pmc4local.original.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\sgml2xml\sgml2pmc.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\sgml2xml\sgml2pmc.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\sgml2xml\sgml2generic_pmc.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\sgml2xml\sgml2generic_pmc.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\sgml2xml\sgml2generic.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\sgml2xml\sgml2generic.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\sgml2xml\sgm2win2.txt
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\sgml2xml\sgm2win2.txt
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\xmlspecchars3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\xmlspecchars3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\xmlchars\isogrk4.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\xmlchars\isogrk4.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\xmlchars\isogrk2.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\xmlchars\isogrk2.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\xmlchars\isogrk1.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\xmlchars\isogrk1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\XHTMLtablesetup3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\XHTMLtablesetup3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\xhtml-table-1.mod
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\xhtml-table-1.mod
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\xhtml-inlstyle-1.mod
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\xhtml-inlstyle-1.mod
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\Smallsamples\samplesmall3-pub.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\Smallsamples\samplesmall3-pub.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\Smallsamples\samplesmall3-base.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\Smallsamples\samplesmall3-base.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\section3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\section3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\related-object3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\related-object3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\references3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\references3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\phrase3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\phrase3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\para3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\para3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\oasis-tablesetup3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\oasis-tablesetup3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\oasis-exchange.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\oasis-exchange.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\notat3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\notat3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\nlmcitation3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\nlmcitation3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\modules3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\modules3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\mathmlsetup3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\mathmlsetup3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\mathml2.dtd
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\mathml2.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\mathml2-qname-1.mod
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\mathml2-qname-1.mod
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\mathml\mmlextra.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\mathml\mmlextra.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\mathml\mmlalias.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\mathml\mmlalias.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\math3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\math3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\list3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\list3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\link3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\link3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\journalpublishing3.dtd
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\journalpublishing3.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\journalpubcustom-modules3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\journalpubcustom-modules3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\journalpubcustom-models3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\journalpubcustom-models3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\journalpubcustom-mixes3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\journalpubcustom-mixes3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\journalpubcustom-classes3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\journalpubcustom-classes3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\journalmeta3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\journalmeta3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso9573-13\isotech.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso9573-13\isotech.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso9573-13\isomscr.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso9573-13\isomscr.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso9573-13\isomopf.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso9573-13\isomopf.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso9573-13\isomfrk.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso9573-13\isomfrk.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso9573-13\isogrk3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso9573-13\isogrk3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso9573-13\isoamsr.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso9573-13\isoamsr.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso9573-13\isoamso.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso9573-13\isoamso.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso9573-13\isoamsn.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso9573-13\isoamsn.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso9573-13\isoamsc.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso9573-13\isoamsc.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso9573-13\isoamsb.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso9573-13\isoamsb.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso9573-13\isoamsa.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso9573-13\isoamsa.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso8879\isopub.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso8879\isopub.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso8879\isonum.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso8879\isonum.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso8879\isolat2.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso8879\isolat2.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso8879\isolat1.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso8879\isolat1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso8879\isodia.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso8879\isodia.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso8879\isocyr2.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso8879\isocyr2.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso8879\isocyr1.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso8879\isocyr1.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\iso8879\isobox.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\iso8879\isobox.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\htmltable.dtd
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\htmltable.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\funding3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\funding3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\format3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\format3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\display3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\display3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\default-mixes3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\default-mixes3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\default-classes3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\default-classes3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\common3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\common3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\chars3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\chars3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\catalog.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\catalog.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\catalog-v3.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\catalog-v3.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\base-test3.dtd
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\base-test3.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\backmatter3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\backmatter3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\articlemeta3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\articlemeta3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\dtd\publishing\annotation3.ent
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\dtd\publishing\annotation3.ent
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\check\viewText.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\check\viewText.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\check\pmcstylechecker.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\check\pmcstylechecker.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\check\pmcstylereporter.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\check\pmcstylereporter.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\check\show-xml.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\check\show-xml.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\check\check_xmllang.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\check\check_xmllang.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\check\check_references.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\check\check_references.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\check\check_aff.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\check\check_aff.xsl
-  Flags=0000000010000010
-end
-item: Install File
   Source=W:\scielo\bin\markup_pmc\validfileformat.mds
   Destination=%PROGDIR%\bin\markup\validfileformat.mds
   Flags=0000000010000010
@@ -4169,66 +5353,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\viewnlm-v2.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\viewnlm-v2.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_references_gmb.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_references_gmb.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_main.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_main.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_fig.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_fig.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\mathml\svg.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\mathml\svg.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\mathml\pmathml.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\mathml\pmathml.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\mathml\mathml.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\mathml\mathml.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\mathml\xsldoc.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\mathml\xsldoc.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\pt\translation.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\pt\translation.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\locale.dtd
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\locale\locale.dtd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\cache\importexport-UserImportExportPlugin-en_US.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\locale\cache\importexport-UserImportExportPlugin-en_US.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\en_US\locale.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\locale\en_US\locale.xml
-  Flags=0000000010000010
-end
-item: Install File
   Source=W:\scielo\bin\markup_pmc\test.log
   Destination=%PROGDIR%\bin\markup\test.log
   Flags=0000000010000010
@@ -4236,51 +5360,6 @@ end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\refIdentifier\Readme.txt
   Destination=%PROGDIR%\bin\markup\refIdentifier\Readme.txt
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\cache\importexport-NativeImportExportPlugin-en_US.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\locale\cache\importexport-NativeImportExportPlugin-en_US.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\cache\locales.inc.php
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\locale\cache\locales.inc.php
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\pt_BR\locale.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\locale\pt_BR\locale.xml
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\mathml\ctop.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\mathml\ctop.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\nlm-style-4.5.5\nlm-stylechecker.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\nlm-style-4.5.5\nlm-stylechecker.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\nlm-style-4.5.5\style-reporter.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\nlm-style-4.5.5\style-reporter.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\nlm-style-4.5.5\stylecheck-helper-templates.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\nlm-style-4.5.5\stylecheck-helper-templates.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\nlm-style-4.5.5\stylecheck-match-templates.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\nlm-style-4.5.5\stylecheck-match-templates.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\nlm-style-4.5.5\stylecheck-named-tests.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\nlm-style-4.5.5\stylecheck-named-tests.xsl
   Flags=0000000010000010
 end
 item: Install File
@@ -4489,44 +5568,14 @@ item: Install File
   Flags=0000000010001010
 end
 item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\es_ES\locale.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\locale\es_ES\locale.xml
-  Flags=0000000010000010
-end
-item: Install File
   Source=W:\scielo\bin\markup_pmc\tables\ign.txt
   Destination=%PROGDIR%\bin\markup\tables\ign.txt
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_references.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_references.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\viewnlm-v2_scielo.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\viewnlm-v2_scielo.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc.xsl
   Flags=0000000010000010
 end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\pt_temp.mds
   Destination=%PROGDIR%\bin\markup\pt_temp.mds
   Flags=0000000010001010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\mathml\pmathmlcss.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\mathml\pmathmlcss.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\locale\cache\importexport-SampleImportExportPlugin-en_US.xml
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\locale\cache\importexport-SampleImportExportPlugin-en_US.xml
-  Flags=0000000010000010
 end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\pt_bars.mds
@@ -4571,36 +5620,6 @@ end
 item: Install File
   Source=W:\scielo\bin\markup_pmc\pt_conf.mds
   Destination=%PROGDIR%\bin\markup\pt_conf.mds
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_graphic.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_graphic.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_table.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_table.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_front.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_front.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_body.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_body.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\scielo_pmc_back.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\scielo_pmc_back.xsl
-  Flags=0000000010000010
-end
-item: Install File
-  Source=W:\scielo\bin\markup_pmc\pmc\v3.0\site\xsl\mathml\teste.xsl
-  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xsl\mathml\teste.xsl
   Flags=0000000010000010
 end
 item: Install File

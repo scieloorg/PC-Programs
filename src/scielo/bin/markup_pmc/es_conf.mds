@@ -25,7 +25,7 @@ msgDefaultDirectories,Asegure que existe el archivo 'html.dot'/'normal.dot'.
 msgExit1,Guardar en TXT y usar el Parser.
 msgExit2,Guardar en TXT y usar despues el Parser.
 msgExit3,Salir sin guardar en el formato TXT.
-msgGenerateXML,Generar XML del body
+msgGenerateXML,Generando archivos XML...
 msgAutomataFileError, No fue posible reconocer la estructura de la cita.
 titleAttribute,Inserindo atributo
 titleTag,Inserindo Tag
@@ -73,10 +73,12 @@ buttonHelp,Ayuda
 bodyHasChildren,no
 doDebug,no
 buttonParser,Verificar Marcación
-buttonParser,Verificar el XML
 buttonGenerateXML,Generar el XML
-buttonCheckXML,Ver texto completo generado desde del XML
-buttonViewMarkup,Ver texto con marcas
+buttonXMLValidate,Validar XML para SciELO
+buttonXMLPreview,Visualizar texto completo SciELO
+buttonPMCValidate,Validar XML para PMC
+buttonPMCPreview,Visualizar texto completo PMC
+buttonViewMarkup,Visualizar texto marcado
 buttonSave,Guardar
 msgNoXML,No existe el fichero XML del artículo o texto
 msgXMLWasSuccessfullyGenerated,XML fue generado con éxito

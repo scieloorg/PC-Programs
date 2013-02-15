@@ -135,16 +135,16 @@ Public Function RecordSave(ByVal value As String) As Long
     'Retorna o Mfn do registro
     Dim ctrl As IsisRecControl
     Dim Ret As Long
-    Dim mfn As Long
+    Dim Mfn As Long
     Call tracing("RecordSave " & Mid(value, 1, 10))
 
     If ErroIniciacao = SEM_ERR Then
-        mfn = IsisRecNew(H, 0)
-        If mfn > ZERO Then
-            If RecordUpdate(mfn, value) Then
-                Ret = mfn
+        Mfn = IsisRecNew(H, 0)
+        If Mfn > ZERO Then
+            If RecordUpdate(Mfn, value) Then
+                Ret = Mfn
             Else
-                Msg.GiveRunInformation ("Failure writing Mfn=" + CStr(mfn))
+                Msg.GiveRunInformation ("Failure writing Mfn=" + CStr(Mfn))
             End If
         End If
     End If
@@ -161,16 +161,16 @@ End Function
 'Occ    - ocorrência do campo (opcional, default=1)
 'Retorno    - sucesso ou fracasso
 '-----------------------------------------------------------------------
-Public Function FieldContentUpdate(mfn As Long, Campo As Long, value As String, Optional Occ) As Boolean
+Public Function FieldContentUpdate(Mfn As Long, Campo As Long, value As String, Optional Occ) As Boolean
     Dim ocorrencia As String
     Dim Ret As Boolean
-    Call tracing("FieldContentUpdate " & CStr(mfn) & " " & CStr(Campo) & " " & value & " " & CStr(Occ))
+    Call tracing("FieldContentUpdate " & CStr(Mfn) & " " & CStr(Campo) & " " & value & " " & CStr(Occ))
     If IsMissing(Occ) Then
         ocorrencia = "1"
     Else
         ocorrencia = CStr(Occ)
     End If
-    If IsisRecRead(H, 0, mfn) = ZERO Then
+    If IsisRecRead(H, 0, Mfn) = ZERO Then
         If IsisRecFieldUpdate(H, 0, "d" + CStr(Campo) + "/" + ocorrencia) = ZERO Then
             If IsisRecFieldUpdate(H, 0, "a" + CStr(Campo) + Delim + value + Delim) = ZERO Then
             'Msg.GiveRunInformation ("Mfn=" + CStr(Mfn))
@@ -178,7 +178,7 @@ Public Function FieldContentUpdate(mfn As Long, Campo As Long, value As String, 
             End If
         End If
     End If
-    If Not Ret Then Msg.GiveRunInformation ("Failure updating Mfn=" + CStr(mfn))
+    If Not Ret Then Msg.GiveRunInformation ("Failure updating Mfn=" + CStr(Mfn))
     Call tracing("FieldContentUpdate " & CStr(Ret))
     
     FieldContentUpdate = Ret
@@ -191,23 +191,23 @@ End Function
 'Occ    - ocorrência do campo (opcional, default=1)
 'Retorno    - sucesso ou fracasso
 '-----------------------------------------------------------------------
-Public Function FieldContentDel(mfn As Long, Campo As Long, Optional Occ) As Boolean
+Public Function FieldContentDel(Mfn As Long, Campo As Long, Optional Occ) As Boolean
     Dim ocorrencia As String
     Dim Ret As Boolean
-    Call tracing("FieldContentDel " & CStr(mfn) & " " & CStr(Campo) & " " & CStr(Occ))
+    Call tracing("FieldContentDel " & CStr(Mfn) & " " & CStr(Campo) & " " & CStr(Occ))
     
     If IsMissing(Occ) Then
         ocorrencia = ""
     Else
         ocorrencia = "/" + CStr(Occ)
     End If
-    If IsisRecRead(H, 0, mfn) = ZERO Then
+    If IsisRecRead(H, 0, Mfn) = ZERO Then
         If IsisRecFieldUpdate(H, 0, "d" + CStr(Campo) + ocorrencia) = ZERO Then
             'Msg.GiveRunInformation ("Mfn=" + CStr(Mfn))
             If IsisRecWrite(H, 0) = ZERO Then Ret = True
         End If
     End If
-    If Not Ret Then Msg.GiveRunInformation ("Failure deleting field " + CStr(Campo) + " in Mfn=" + CStr(mfn))
+    If Not Ret Then Msg.GiveRunInformation ("Failure deleting field " + CStr(Campo) + " in Mfn=" + CStr(Mfn))
     Call tracing("FieldContentDel " & CStr(Ret))
     FieldContentDel = Ret
 End Function
@@ -240,7 +240,7 @@ End Function
 'Value  - conteúdo
 'Retorno    - sucesso ou fracasso
 '-----------------------------------------------------------------------
-Function RecordUpdate(mfn As Long, value As String) As Boolean
+Function RecordUpdate(Mfn As Long, value As String) As Boolean
     'Escreve em um registro cujo Mfn= <mfn>, o Value <Value>
     '   <tag1>campo1</tag1>
     '   <tag2>campo2</tag2>
@@ -249,15 +249,15 @@ Function RecordUpdate(mfn As Long, value As String) As Boolean
     '   <tagn>campon</tagn>
     'Retorna sucesso ou fracasso
     Dim Ret As Boolean
-     Call tracing("RecordUpdate " & CStr(mfn) & " " & CStr(value))
+     Call tracing("RecordUpdate " & CStr(Mfn) & " " & CStr(value))
    
-    If IsisRecRead(H, 0, mfn) = ZERO Then
+    If IsisRecRead(H, 0, Mfn) = ZERO Then
         If IsisRecUpdate(H, 0, value) = ZERO Then
         'Msg.GiveRunInformation ("Mfn=" + CStr(Mfn))
             Ret = (IsisRecWrite(H, 0) = ZERO)
         End If
     End If
-    If Not Ret Then Msg.GiveRunInformation ("Failure updating Mfn=" + CStr(mfn))
+    If Not Ret Then Msg.GiveRunInformation ("Failure updating Mfn=" + CStr(Mfn))
     Call tracing("RecordUpdate " & CStr(Ret))
    
     RecordUpdate = Ret
@@ -270,22 +270,22 @@ End Function
 'Value  - conteúdo
 'Retorno    - sucesso ou fracasso
 '-----------------------------------------------------------------------
-Function FieldContentAdd(mfn As Long, Campo As Long, value As String) As Boolean
+Function FieldContentAdd(Mfn As Long, Campo As Long, value As String) As Boolean
     'Escreve em um registro cujo Mfn= <mfn>, o Value <Value>
     Dim Ret As Boolean
     Dim tam As Long
     Dim area As String * MaxTamArea
     Dim v As String
-    Call tracing("FieldContentAdd " & CStr(mfn) & " " & CStr(Campo) & " " & CStr(value))
+    Call tracing("FieldContentAdd " & CStr(Mfn) & " " & CStr(Campo) & " " & CStr(value))
    
-    If IsisRecRead(H, 0, mfn) = ZERO Then
+    If IsisRecRead(H, 0, Mfn) = ZERO Then
         v = "a" + CStr(Campo) + Delim + value + Delim
         If IsisRecFieldUpdate(H, 0, v) = ZERO Then
         'Msg.GiveRunInformation ("Mfn=" + CStr(Mfn))
             Ret = (IsisRecWrite(H, 0) = ZERO)
         End If
     End If
-    If Not Ret Then Msg.GiveRunInformation ("Failure adding field " + CStr(Campo) + " in Mfn=" + CStr(mfn))
+    If Not Ret Then Msg.GiveRunInformation ("Failure adding field " + CStr(Campo) + " in Mfn=" + CStr(Mfn))
     Call tracing("FieldContentAdd " & CStr(Ret))
    
     FieldContentAdd = Ret
@@ -296,11 +296,11 @@ End Function
 'Mfn    - registro
 'Retorno    - sucesso ou fracasso
 '-----------------------------------------------------------------------
-Function RecordDel(mfn As Long) As Boolean
+Function RecordDel(Mfn As Long) As Boolean
     Dim Ret As Boolean
        
-    Call tracing("RecordDel " & CStr(mfn))
-   If IsisRecRead(H, 0, mfn) = ZERO Then
+    Call tracing("RecordDel " & CStr(Mfn))
+   If IsisRecRead(H, 0, Mfn) = ZERO Then
         If IsisRecFieldUpdate(H, 0, "d.") = ZERO Then
         'Msg.GiveRunInformation ("Mfn=" + CStr(Mfn))
             If IsisRecWrite(H, 0) = ZERO Then
@@ -308,7 +308,7 @@ Function RecordDel(mfn As Long) As Boolean
             End If
         End If
     End If
-    If Not Ret Then Msg.GiveRunInformation ("Failure deleting record Mfn=" + CStr(mfn))
+    If Not Ret Then Msg.GiveRunInformation ("Failure deleting record Mfn=" + CStr(Mfn))
 Call tracing("RecordDel " & CStr(Ret))
    
     RecordDel = Ret
@@ -318,12 +318,12 @@ End Function
 'RecordGet  - retorna o conteúdo do registro
 'Mfn    - registro
 '-----------------------------------------------------------------------
-Function RecordGet(mfn As Long) As String
+Function RecordGet(Mfn As Long) As String
     Dim area As String * MaxTamArea
     Dim tam As Long
     Dim Ret As String
-    Call tracing("RecordGet " & CStr(mfn))
-    If IsisRecRead(H, 0, mfn) = ZERO Then
+    Call tracing("RecordGet " & CStr(Mfn))
+    If IsisRecRead(H, 0, Mfn) = ZERO Then
         tam = IsisRecDump(H, 0, area, MaxTamArea)
         If tam > ZERO Then Ret = Left(area, tam)
     End If
@@ -338,13 +338,13 @@ End Function
 'Occ    - ocorrência do campo no registro
 'Retorno    - o conteúdo do campo
 '-----------------------------------------------------------------------
-Public Function FieldContentOccGet(mfn As Long, Campo As Long, Occ As Long) As String
+Public Function FieldContentOccGet(Mfn As Long, Campo As Long, Occ As Long) As String
     Dim area As String * MaxTamArea
     Dim retorno As String
     Dim r As Long
     Dim QtdOcc As Long
-    Call tracing("FieldContentOccGet " & CStr(mfn) & " " & CStr(Campo) & " " & CStr(Occ))
-    r = IsisRecRead(H, 0, mfn)
+    Call tracing("FieldContentOccGet " & CStr(Mfn) & " " & CStr(Campo) & " " & CStr(Occ))
+    r = IsisRecRead(H, 0, Mfn)
     If r = ZERO Then
         QtdOcc = IsisRecFieldOcc(H, 0, Campo)
         If (QtdOcc > 0) And (Occ <= QtdOcc) Then
@@ -368,15 +368,15 @@ End Function
 'Occ    - ocorrência do Field no registro
 'Return - o conteúdo do Field
 '-----------------------------------------------------------------------
-Public Function FieldContentGet(mfn As Long, Field As Long, Contents() As String) As Long
+Public Function FieldContentGet(Mfn As Long, Field As Long, Contents() As String) As Long
     Dim area As String * MaxTamArea
     Dim aux As String
     Dim r As Long
     Dim QtdOcc As Long
     Dim Occ As Long
-    Call tracing("FieldContentGet " & CStr(mfn) & " " & CStr(Field))
+    Call tracing("FieldContentGet " & CStr(Mfn) & " " & CStr(Field))
     
-    r = IsisRecRead(H, 0, mfn)
+    r = IsisRecRead(H, 0, Mfn)
     If r = ZERO Then
         QtdOcc = IsisRecFieldOcc(H, 0, Field)
         ReDim Contents(QtdOcc)
@@ -402,15 +402,15 @@ End Function
 'Occ    - ocorrência do Field no registro
 'Return - o conteúdo do Field
 '-----------------------------------------------------------------------
-Public Function FieldContentGetAll(mfn As Long, Field As Long, Contents() As String) As Long
+Public Function FieldContentGetAll(Mfn As Long, Field As Long, Contents() As String) As Long
     Dim area As String * MaxTamArea
     Dim aux As String
     Dim r As Long
     Dim QtdOcc As Long
     Dim Occ As Long
-    Call tracing("FieldContentGetAll " & CStr(mfn) & " " & CStr(Field))
+    Call tracing("FieldContentGetAll " & CStr(Mfn) & " " & CStr(Field))
     
-    r = IsisRecRead(H, 0, mfn)
+    r = IsisRecRead(H, 0, Mfn)
     If r = ZERO Then
         QtdOcc = IsisRecFieldOcc(H, 0, Field)
         ReDim Contents(QtdOcc)
@@ -432,15 +432,15 @@ End Function
 'Contents   - conteúdo
 'Retorno    - a quantidade de conteúdo
 '-----------------------------------------------------------------------
-Public Function SubfieldContentGet(mfn As Long, Field As Long, SubField As String, Contents() As String) As Long
+Public Function SubfieldContentGet(Mfn As Long, Field As Long, SubField As String, Contents() As String) As Long
     Dim area As String * MaxTamArea
     Dim retorno As String
     Dim r As Long
     Dim QtdOcc As Long
     Dim Occ As Long
-     Call tracing("SubfieldContentGet " & CStr(mfn) & " " & CStr(Field) & " " & CStr(SubField))
+     Call tracing("SubfieldContentGet " & CStr(Mfn) & " " & CStr(Field) & " " & CStr(SubField))
 
-    r = IsisRecRead(H, 0, mfn)
+    r = IsisRecRead(H, 0, Mfn)
     If r = ZERO Then
         QtdOcc = IsisRecFieldOcc(H, 0, Field)
         ReDim Contents(QtdOcc)
@@ -462,14 +462,14 @@ End Function
 'Occ    - ocorrência do campo no registro
 'Retorno    - o conteúdo do campo
 '-----------------------------------------------------------------------
-Public Function FieldContentOccWithSubfieldGet(mfn As Long, Campo As Long, Occ As Long) As String
+Public Function FieldContentOccWithSubfieldGet(Mfn As Long, Campo As Long, Occ As Long) As String
     Dim area As String * MaxTamArea
     Dim retorno As String
     Dim r As Long
     Dim QtdOcc As Long
-    Call tracing("FieldContentOccWithSubfieldGet " & CStr(mfn) & " " & CStr(Campo) & " " & CStr(Occ))
+    Call tracing("FieldContentOccWithSubfieldGet " & CStr(Mfn) & " " & CStr(Campo) & " " & CStr(Occ))
 
-    r = IsisRecRead(H, 0, mfn)
+    r = IsisRecRead(H, 0, Mfn)
     If r = ZERO Then
         QtdOcc = IsisRecFieldOcc(H, 0, Campo)
         If (QtdOcc > 0) And (Occ <= QtdOcc) Then
@@ -490,14 +490,14 @@ End Function
 'Subcampo   - subcampo (uma letra)
 'Retorno    - o conteúdo do subcampo
 '-----------------------------------------------------------------------
-Public Function SubFieldContentOccGet(mfn As Long, Campo As Long, Occ As Long, Subcampo As String) As String
+Public Function SubFieldContentOccGet(Mfn As Long, Campo As Long, Occ As Long, Subcampo As String) As String
     Dim area As String * MaxTamArea
     Dim retorno As String
     Dim r As Long
     Dim QtdOcc As Long
-    Call tracing("SubFieldContentOccGet " & CStr(mfn) & " " & CStr(Campo) & " " & CStr(Occ) & " " & CStr(Subcampo))
+    Call tracing("SubFieldContentOccGet " & CStr(Mfn) & " " & CStr(Campo) & " " & CStr(Occ) & " " & CStr(Subcampo))
 
-    r = IsisRecRead(H, 0, mfn)
+    r = IsisRecRead(H, 0, Mfn)
     If r = ZERO Then
         QtdOcc = IsisRecFieldOcc(H, 0, Campo)
         If (QtdOcc > 0) And (Occ <= QtdOcc) Then
@@ -515,11 +515,11 @@ End Function
 'Mfn    - registro
 'Retorno    - a quantidade de campos
 '-----------------------------------------------------------------------
-Public Function FieldCount(mfn As Long) As Long
+Public Function FieldCount(Mfn As Long) As Long
     Dim Qtd As Long
-    Call tracing("FieldCount " & CStr(mfn))
+    Call tracing("FieldCount " & CStr(Mfn))
 
-    If IsisRecRead(H, 0, mfn) = ZERO Then Qtd = IsisRecNvf(H, 0)
+    If IsisRecRead(H, 0, Mfn) = ZERO Then Qtd = IsisRecNvf(H, 0)
     Call tracing("FieldCount " & CStr(Qtd))
 
     FieldCount = Qtd
@@ -531,14 +531,14 @@ End Function
 'Campos - retorno
 'Retorno    - a quantidade de campos
 '-----------------------------------------------------------------------
-Public Function FieldTagGet(mfn As Long, Campos() As Long) As Long
+Public Function FieldTagGet(Mfn As Long, Campos() As Long) As Long
     Dim Qtd As Long
     Dim i As Long
     Dim pIsisRecDir() As IsisRecDir
-    Call tracing("FieldTagGet " & CStr(mfn))
+    Call tracing("FieldTagGet " & CStr(Mfn))
 
     Erase Campos
-    If IsisRecRead(H, 0, mfn) = ZERO Then
+    If IsisRecRead(H, 0, Mfn) = ZERO Then
         Qtd = IsisRecNvf(H, 0)
         ReDim pIsisRecDir(Qtd)
         ReDim Campos(Qtd)
@@ -559,7 +559,7 @@ End Function
 'Conteudo   - retorno
 'Retorno    - a quantidade de Conteudo
 '-----------------------------------------------------------------------
-Public Function ContentAllGet(mfn As Long, conteudo() As String, ComSubc As Boolean) As Long
+Public Function ContentAllGet(Mfn As Long, conteudo() As String, ComSubc As Boolean) As Long
     Dim Qtd As Long
     Dim i As Long
     Dim j As Long
@@ -569,9 +569,9 @@ Public Function ContentAllGet(mfn As Long, conteudo() As String, ComSubc As Bool
     Dim Occ() As Long
     Dim QtdOcc As Long
     Dim Campo As Long
-    Call tracing("ContentAllGet " & CStr(mfn))
+    Call tracing("ContentAllGet " & CStr(Mfn))
 
-    If IsisRecRead(H, 0, mfn) = ZERO Then
+    If IsisRecRead(H, 0, Mfn) = ZERO Then
         Qtd = IsisRecNvf(H, 0)
         ReDim pIsisRecDir(Qtd)
         ReDim conteudo(Qtd)
@@ -584,7 +584,7 @@ Public Function ContentAllGet(mfn As Long, conteudo() As String, ComSubc As Bool
                         ReDim Preserve Occ(QtdOcc)
                     End If
                     Occ(Campo) = Occ(Campo) + 1
-                    aux = FieldContentOccGet(mfn, Campo, Occ(Campo))
+                    aux = FieldContentOccGet(Mfn, Campo, Occ(Campo))
                     p = InStr(aux, "^")
                     While p > 0
                         j = j + 1
@@ -606,7 +606,7 @@ Public Function ContentAllGet(mfn As Long, conteudo() As String, ComSubc As Bool
                         ReDim Preserve Occ(QtdOcc)
                     End If
                     Occ(Campo) = Occ(Campo) + 1
-                    conteudo(i) = FieldContentOccGet(mfn, Campo, Occ(Campo))
+                    conteudo(i) = FieldContentOccGet(Mfn, Campo, Occ(Campo))
                 Next
             End If
         End If
@@ -622,12 +622,12 @@ End Function
 'Campo  - campo
 'Retorno    - ocorrência
 '-----------------------------------------------------------------------
-Public Function FieldOccCount(mfn As Long, Campo As Long) As Long
+Public Function FieldOccCount(Mfn As Long, Campo As Long) As Long
     Dim QtdOcc As Long
         
-    Call tracing("FieldOccCount " & CStr(mfn) & " " & CStr(Campo))
+    Call tracing("FieldOccCount " & CStr(Mfn) & " " & CStr(Campo))
 
-    If IsisRecRead(H, 0, mfn) = ZERO Then QtdOcc = IsisRecFieldOcc(H, 0, Campo)
+    If IsisRecRead(H, 0, Mfn) = ZERO Then QtdOcc = IsisRecFieldOcc(H, 0, Campo)
     Call tracing("FieldOccCount " & CStr(QtdOcc))
     FieldOccCount = QtdOcc
 End Function
@@ -647,7 +647,7 @@ Private Function getMfnsBySearch(ByVal query As String, ByRef mfns() As Long) As
         r = IsisSrcMfnMap(AppHandle, 0, 0, 1, SearchStru.recs, SrcMfn(0))
         
             For i = 1 To SearchStru.recs
-                mfns(i) = SrcMfn(i - 1).mfn
+                mfns(i) = SrcMfn(i - 1).Mfn
             Next i
         
         End If
@@ -678,7 +678,7 @@ Private Function getMfns(ByVal query As String, ByRef mfns() As Long) As Long
         
         r = IsisTrmMfnMap(H, 0, from_Posting, to_Posting, pIsisTrmMfn(0))
         For i = 0 To r - 1 'loop all mfns
-            mfns(i + 1) = pIsisTrmMfn(i).mfn
+            mfns(i + 1) = pIsisTrmMfn(i).Mfn
         Next i
     Else
         
@@ -686,6 +686,35 @@ Private Function getMfns(ByVal query As String, ByRef mfns() As Long) As Long
     Call tracing("getMfns " & CStr(r))
 
     getMfns = r
+End Function
+ Function search(ByVal query As String, ByRef mfns() As Long) As Long
+    Dim SearchStru As IsisSrcHeader
+    Dim SrcMfn() As IsisSrcMfn
+    Dim i As Long
+    Dim q As Long
+    Dim r As Long
+    
+    
+    Call tracing("search " & CStr(query))
+    
+    r = IsisSrcSearch(H, 0, query, SearchStru)
+    If r > 0 Then
+        ReDim SrcMfn(SearchStru.recs)
+        
+        r = IsisSrcMfnMap(AppHandle, 0, 0, 1, SearchStru.recs, SrcMfn(0))
+        If r > 0 Then
+            q = SearchStru.recs
+            ReDim mfns(SearchStru.recs)
+            For i = 1 To SearchStru.recs
+                mfns(i + 1) = SrcMfn(i - 1).Mfn
+            Next i
+        End If
+    End If
+
+    
+    Call tracing("search " & CStr(r))
+
+    search = q
 End Function
 
 Private Function getMfnsByInv(ByVal Termo As String, ByRef mfns() As Long) As Long
@@ -708,7 +737,7 @@ Call tracing("getMfnsByInv " & CStr(Termo))
         q = IsisTrmMfnMap(H, 0, 1, QtdTrm, pIsisTrmMfn(0))
         If q > 0 Then ReDim mfns(q)
         For i = 1 To q
-            mfns(i) = pIsisTrmMfn(i - 1).mfn
+            mfns(i) = pIsisTrmMfn(i - 1).Mfn
         Next
         
     Else
@@ -878,29 +907,29 @@ End Function
 
 Function MfnFindOne(Chave As String) As Long
     Dim xMfn() As Long
-    Dim mfn As Long
+    Dim Mfn As Long
     Dim i As Long
     
     Call tracing("MfnFindOne " & CStr(Chave))
     i = MfnFind(Chave, xMfn)
-    If i > 0 Then mfn = xMfn(i)
-    Call tracing("MfnFindOne " & CStr(mfn))
+    If i > 0 Then Mfn = xMfn(i)
+    Call tracing("MfnFindOne " & CStr(Mfn))
         
-    MfnFindOne = mfn
+    MfnFindOne = Mfn
 End Function
 
-Function save(Contents As String, mfn As Long) As Boolean
+Function save(Contents As String, Mfn As Long) As Boolean
     Dim Ret As Boolean
-    Call tracing("save " & CStr(Contents) & " " & CStr(mfn))
+    Call tracing("save " & CStr(Contents) & " " & CStr(Mfn))
     
-    If mfn > 0 Then
-        If RecordUpdate(mfn, Contents) Then
-            Ret = IfUpdate(mfn, mfn)
+    If Mfn > 0 Then
+        If RecordUpdate(Mfn, Contents) Then
+            Ret = IfUpdate(Mfn, Mfn)
         End If
     Else
-        mfn = RecordSave(Contents)
-        If mfn > 0 Then
-            Ret = IfUpdate(mfn, mfn)
+        Mfn = RecordSave(Contents)
+        If Mfn > 0 Then
+            Ret = IfUpdate(Mfn, Mfn)
         End If
     End If
     Call tracing("save " & CStr(Ret))
@@ -908,7 +937,7 @@ Function save(Contents As String, mfn As Long) As Boolean
     save = Ret
 End Function
 
-Public Function UsePft(mfn As Long, format As String, Optional proc As String) As String
+Public Function UsePft(Mfn As Long, format As String, Optional proc As String) As String
     Dim area As String * MaxTamArea
     Dim ResultLen As Long
     Dim result As String
@@ -917,7 +946,7 @@ Public Function UsePft(mfn As Long, format As String, Optional proc As String) A
     
     Dim log As String
     
-    log = "UsePft(" & CStr(mfn) & ", " & CStr(format) & ", " & proc & ")"
+    log = "UsePft(" & CStr(Mfn) & ", " & CStr(format) & ", " & proc & ")"
     
     If proc <> "" Then
 
@@ -925,7 +954,7 @@ Public Function UsePft(mfn As Long, format As String, Optional proc As String) A
     End If
     r = IsisSpaPftCisis(H, format)
     If r = ZERO Then
-        r = IsisRecRead(H, 0, mfn)
+        r = IsisRecRead(H, 0, Mfn)
         If r = ZERO Then
             ResultLen = IsisRecFormatCisis(H, 0, area, MaxTamArea)
             If ResultLen > 0 Then
@@ -946,11 +975,11 @@ Public Function UsePft(mfn As Long, format As String, Optional proc As String) A
     UsePft = result
 End Function
 
-Public Function UseProc(mfn As Long, format As String) As Boolean
+Public Function UseProc(Mfn As Long, format As String) As Boolean
     Dim Ret As Boolean
-    Call tracing("UseProc " & CStr(mfn) & " " & format)
+    Call tracing("UseProc " & CStr(Mfn) & " " & format)
     'If IsisSpaMf(H, MSTFULLPATH) = ZERO Then
-        If IsisRecRead(H, 0, mfn) = ZERO Then
+        If IsisRecRead(H, 0, Mfn) = ZERO Then
             If IsisRecFieldUpdate(H, 0, format) = ZERO Then
                 If IsisRecWrite(H, 0) = ZERO Then Ret = True
             End If
@@ -965,7 +994,7 @@ End Function
 'Tags   - retorno
 'Retorno    - a quantidade de Tags
 '-----------------------------------------------------------------------
-Public Function TagOccContentGet(mfn As Long, Tags() As Long, occs() As Long, Contents() As String) As Long
+Public Function TagOccContentGet(Mfn As Long, Tags() As Long, occs() As Long, Contents() As String) As Long
     Dim Qtd As Long
     Dim i As Long
     Dim j As Long
@@ -977,8 +1006,8 @@ Public Function TagOccContentGet(mfn As Long, Tags() As Long, occs() As Long, Co
     Dim Max As Long
     Dim tam As Long
     Dim area As String * MaxTamArea
-    Call tracing("TagOccContentGet " & CStr(mfn))
-    If IsisRecRead(H, 0, mfn) = ZERO Then
+    Call tracing("TagOccContentGet " & CStr(Mfn))
+    If IsisRecRead(H, 0, Mfn) = ZERO Then
         Qtd = IsisRecNvf(H, 0)
         If Qtd > 0 Then
             ReDim pIsisRecDir(Qtd)
@@ -1014,32 +1043,32 @@ End Function
 
 
 
-Function getFieldContentByLanguage(mfn As Long, tag As Long, Optional language As String, Optional subf As String, Optional sep As String) As String
+Function getFieldContentByLanguage(Mfn As Long, tag As Long, Optional language As String, Optional subf As String, Optional sep As String) As String
     
     Dim content As String
-    Call tracing("getFieldContentByLanguage " & CStr(mfn) & " " & CStr(tag) & " " & CStr(language) & " " & CStr(subf) & " " & CStr(sep))
+    Call tracing("getFieldContentByLanguage " & CStr(Mfn) & " " & CStr(tag) & " " & CStr(language) & " " & CStr(subf) & " " & CStr(sep))
     If sep = "" Then
         sep = "%"
     End If
     If Len(language) = 0 Then
-        content = UsePft(mfn, "(v" + CStr(tag) + "+|" + sep + "|)")
+        content = UsePft(Mfn, "(v" + CStr(tag) + "+|" + sep + "|)")
     Else
         If subf <> "" Then subf = "^" + subf
-        content = UsePft(mfn, "(if v" + CStr(tag) + "^l='" + language + "' then v" + CStr(tag) + subf + " fi)")
+        content = UsePft(Mfn, "(if v" + CStr(tag) + "^l='" + language + "' then v" + CStr(tag) + subf + " fi)")
     End If
     content = ReplaceString(content, sep, changelinetextbox)
     Call tracing("getFieldContentByLanguage " & Mid(content, 1, 10))
     
     getFieldContentByLanguage = content
 End Function
-Sub getSubFieldsContentByLanguage(mfn As Long, tag As Long, language As String, subfs() As String, c() As String)
+Sub getSubFieldsContentByLanguage(Mfn As Long, tag As Long, language As String, subfs() As String, c() As String)
     
     Dim content As String
     Dim i As Long
     
-    Call tracing("getSubFieldsContentByLanguage " & CStr(mfn) & " " & CStr(tag) & " " & CStr(language))
+    Call tracing("getSubFieldsContentByLanguage " & CStr(Mfn) & " " & CStr(tag) & " " & CStr(language))
     
-    content = getFieldContentByLanguage(mfn, tag, language)
+    content = getFieldContentByLanguage(Mfn, tag, language)
     For i = 1 To UBound(subfs)
         c(i) = getSubfieldContent(subfs(i), content)
     Next

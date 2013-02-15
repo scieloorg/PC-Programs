@@ -624,19 +624,32 @@ down;corpautpMonog
 date;Identifica a data de publicação;15;#FALSE#;#TRUE#;
 title;Identifica o título do documento;15;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;15;#FALSE#;#FALSE#;
+confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrppcitat
+down;confgrppcitat
 thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;15;#FALSE#;#FALSE#;thesisPmonog
 down;thesisPmonog
 coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;15;#TRUE#;#FALSE#;
 colvolid;Identifica o volume de uma coleção;15;#TRUE#;#FALSE#;
-notes;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
 edition;Identifica o número da edição;15;#TRUE#;#FALSE#;
 city;Identifica a cidade de publicação;15;#TRUE#;#FALSE#;
+state;Identifica o estado (local) de publicação;15;#TRUE#;#FALSE#;
 country;Identifica o país de publicação;15;#TRUE#;#FALSE#;
 pubname;Identifica a casa publicadora;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
+notes;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#TRUE#;#FALSE#;
+
+confgrppcitat;pcitat
+sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;2;#TRUE#;#FALSE#;sponsorConfgrppcitat
+down;sponsorConfgrppcitat
+confname;Identifica o nome de um evento como conferencia, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
+no;Identifica o número do evento;10;#TRUE#;#FALSE#;
+date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
+city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
+state;Identifica o estado (local) do evento;10;#TRUE#;#FALSE#;
+country;Identifica o país do evento;10;#TRUE#;#FALSE#;
 
 thesisPmonog;pmonog
 degree; Identifica o grau de uma dissertação ou tese acadêmica, como mestrado, doutorado, livre-docência etc;2;#FALSE#;#FALSE#;

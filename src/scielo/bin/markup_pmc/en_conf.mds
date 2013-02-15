@@ -25,7 +25,7 @@ msgDefaultDirectories,Verify the 'html.dot' and/or 'normal.dot' files.
 msgExit1,Save on TXT format and use the Parser now.
 msgExit2,Save on TXT format and use the Parser after.
 msgExit3,Exit without to save on TXT format.
-msgGenerateXML,Generate XML of body
+msgGenerateXML,Generating XML files. It takes a couple of minutes.
 msgAutomataFileError, It was not possible to recognize the reference structure.
 titleAttribute,Inserting Attribute
 titleTag,Inserting Tag
@@ -73,10 +73,12 @@ buttonHelp,Help
 bodyHasChildren,no
 doDebug,no
 buttonParser,Check the marks
-buttonParser,Check the XML
-buttonGenerateXML,Generate the XML
-buttonCheckXML,View text generated from XML
-buttonViewMarkup,View text with mark up
+buttonGenerateXML,Generate XML
+buttonXMLValidate,Validate XML for SciELO
+buttonXMLPreview,Preview text at SciELO
+buttonPMCValidate,Validate XML for PMC
+buttonPMCPreview,Preview text at PMC
+buttonViewMarkup,View markup file
 buttonSave,Save
 msgNoXML,There is no XML file of the article or text
 msgXMLWasSuccessfullyGenerated,XML was successfully generated 

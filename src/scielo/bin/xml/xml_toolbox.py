@@ -88,10 +88,10 @@ class XMLData:
 
     def xml_data_new_name_from_xml(self, alternative_page, acron = ''):
         nodes = xml_tree.return_nodes()
-        
-        article_meta_node = xml_tree.return_nodes('front/article-meta', nodes[0])
-        
-        node_issn = xml_tree.return_nodes('front/journal-meta/issn', nodes[0])
+        print(nodes)
+        article_meta_node = xml_tree.return_nodes('.//article-meta', nodes[0])
+        print(article_meta_node)
+        node_issn = xml_tree.return_nodes('.//front/journal-meta/issn', nodes[0])
         
 
         node_volume = xml_tree.return_nodes('volume', article_meta_node[0])
@@ -215,6 +215,8 @@ class XMLData:
         return (new_name, xml_images_list)
 
 
+
+
 class Validator:
     def __init__(self, dtd, xsl_prep_report, xsl_report, xsl_preview, xsl_output, css):
         self.xsl_report = xsl_report
@@ -262,6 +264,7 @@ class Validator:
 
             
     
+
 
     def validate(self, report, img_path, new_name = ''):  
         
@@ -316,226 +319,19 @@ class SGML2XML:
     def __init__(self, xsl_sgml2xml):
         self.xsl_sgml2xml = xsl_sgml2xml
         
-    def generate_xml_from_sgmxml(self, sgml_xml, xml_filename):
-        result_filename = sgml_xml + '.res'
-        err_filename = sgml_xml + '.err'
-        #xml_filename = sgml_xml.replace('.sgm.xml', '.xml')
-        fix_xml(sgml_xml)
-        r = xml_java.transform(sgml_xml, self.xsl_sgml2xml, xml_filename, err_filename)
-        if os.path.exists(err_filename):
-            if not report == None:
-                report.write('Unable to create ' + xml_filename + ' from ' + sgml_xml, True, False, True)
-                report.write(err_filename, True, False, True)
+
+
+    def sgmxml2xml(self, sgmxml_filename, xml_filename, err_filename, report):
         
-class SciELOPackage:
-    def __init__(self, sgmlxml):  
-        self.sgmlxml = sgmlxml
+        fix_xml(sgmxml_filename)
+
         
-
-    def set_parameters(self, report, src_xml_path, src_paths_and_exts, src_img_path, package_path):   
-        self.src_xml_path = src_xml_path
-        self.src_paths_and_exts = src_paths_and_exts
-        self.src_img_path = src_img_path
-        self.package_path = package_path
-        self.new_name = ''
-        self.xml_images_list = []
-        self.name = ''
-        self.report = report
-
-        if not os.path.exists(self.package_path):
-            os.makedirs(self.package_path)
-
-    def prepare_file(self, xml_filename, alternative_id, acron):
-        self.xml_filename = xml_filename
-        data_filename = xml_filename
-        if '.sgm.xml' in self.xml_filename:
-            if os.path.exists(xml_filename):
-                sgml2xml_filename = self.xml_filename
-                self.xml_filename = self.xml_filename.replace('.sgm.xml', '.xml')
-                # generate XML SciELO and rename href img according to pmc naming rules
-                self.report.write('Converting ' + sgml2xml_filename + '->' + self.xml_filename, True, False, True)
-                self.sgmlxml.generate_xml_from_sgmxml(sgml2xml_filename, self.xml_filename)
-                    
-                alternative_id = ''
-        r = False
-        if os.path.exists(self.xml_filename):
-            self.name = os.path.basename(self.xml_filename).replace('.xml', '')
-          
-            is_pmc_valid_name = False
-            if '-' in self.name:
-                if len(self.name.split('-')) > 5:
-                    is_pmc_valid_name = True
-
-            if is_pmc_valid_name:
-                for f in os.listdir(os.path.dirname(self.xml_filename)):
-                    if f.startswith(self.name):
-                        shutil.copyfile(os.path.dirname(self.xml_filename) + '/' + f, self.package_path +'/' +f)
-            else:
-                # filename must contain old img href
-                self.report.write('Rename files and copy them to ' + self.package_path, True, False, True)
-                xml_data = XMLData(data_filename, self.report)
-                self.new_name, self.xml_images_list = xml_data.data_to_rename(acron, alternative_id)
-                self.add_xml_to_package()
-                self.add_file_to_package()
-                self.add_img_to_package(['.jpg', '.tiff', '.tif', '.eps'])
-            r = True
-        else:
-            self.report.write('Missing ' + self.xml_filename, True, True, True)
-            self.report.write('ERROR', True, True, True)
+        r = xml_java.transform(sgmxml_filename, self.xsl_sgml2xml, xml_filename, err_filename)
+        if not r:
+            report.write('Unable to create ' + xml_filename + ' from ' + sgmxml_filename, True, True, True)
+            report.write(err_filename, True, True, True)
         return r
-
-    def add_img_to_package(self, ext_list):
-        if self.name != self.new_name and self.new_name != '':
-            # renaming as copying to package folder
-            for ext in ext_list:
-                self.copy_renamed_img_files(ext)
-        else:
-            # do not rename, only copy the files
-            for ext in ext_list:
-                self.copy_files_which_match_pattern(self.src_img_path, ext)
-
-    def copy_files_which_match_pattern(self, src_path, ext):
-        for f in os.listdir(src_path):
-            if f.startswith(self.name) and f.endswith(ext):
-                shutil.copyfile(f, self.package_path + '/' + os.path.basename(f))
-
-    def copy_renamed_img_files(self, ext = '.jpg'):
-        missing_files = []
-        for old_and_new in self.xml_images_list:
-            old_name = old_and_new[0]
-            new_name = old_and_new[1]
-            #print(old_name)
-            #print(new_name)
-            
-            if not ext in old_name:
-                old_name += ext        
-            if not ext in new_name:
-                new_name += ext
-
-            
-            if os.path.isfile(self.src_img_path  + '/' + old_name ):
-                #print('Copying ' + self.src_img_path  + '/' + old_name + ' -> ' + self.package_path + '/' + self.new_name + '-' + new_name)
-                shutil.copyfile(self.src_img_path  + '/' + old_name, self.package_path + '/' + self.new_name + '-' + new_name)
-            else:
-                missing_files.append(self.src_img_path  + '/' + old_name)
-            if len(missing_files) > 0:
-                self.report.write('Unable to find the files:' + '\n'.join(missing_files), True, True, True)
-        return missing_files    
-
-    def add_file_to_package(self):
-        if self.name != self.new_name and self.new_name != '':
-            for src_path, ext in self.src_paths_and_exts:
-                #print(src_path + '/' + self.name + ext)
-                if os.path.exists(src_path + '/' + self.name + ext):
-                    #print('Copying from ' + src_path + '/' + self.name + ext + ' to ' + self.package_path + '/' + self.new_name + ext)
-                    shutil.copyfile(src_path + '/' + self.name + ext, self.package_path + '/' + self.new_name + ext)
-        else:
-            #print(src_path + '/' + self.name + ext)
-            if os.path.exists(src_path + '/' + self.name + ext):
-                #print('Copying from ' + src_path + '/' + self.name + ext + ' to ' + self.package_path + '/' + self.name + ext)
-                    
-                shutil.copyfile(src_path + '/' + self.name + ext, self.package_path + '/' + self.name + ext)
-
-    def add_xml_to_package(self):
-        if self.name != self.new_name and self.new_name != '':
-            shutil.copyfile(self.xml_filename, self.package_path + '/' + self.new_name + '.xml')
-        else:
-            shutil.copyfile(self.xml_filename, self.package_path + '/' + self.name + '.xml')
-
-    def do_for_all(self, acron):
-        for xml_file in os.listdir(self.src_xml_path):
-            if xml_file.endswith('.xml'):
-                alternative_id = xml_file.replace('.xml', '')
-                self.prepare_file(self.src_xml_path + '/' + xml_file, alternative_id, acron)
-
-    def do_for_one(self, acron, xml_filename):
-        if self.src_xml_path == os.path.dirname(xml_filename) and xml_filename.endswith('.xml'):
-            if os.path.isfile(xml_filename):
-                xml_file = os.path.basename(xml_filename)
-                alternative_id = xml_file.replace('.xml', '')
-                self.prepare_file(xml_filename, alternative_id, acron)
         
-
-class PMCPackage:
-    def __init__(self, validator_pmc, validator_scielo):
-        
-        self.validator_scielo = validator_scielo
-        self.validator_pmc = validator_pmc
-        
-
-    def convert_file(self, report, xml_filename, work_path, scielo_html_validation_report, scielo_html_preview, pmc_html_validation_report, pmc_html_preview, pmc_path):
-        r = False
-        if not os.path.exists(work_path):
-            os.makedirs(work_path)
-        
-        name = os.path.basename(xml_filename)
-        pmc_xml_local = work_path + '/' + name.replace('.xml', '.local.xml')
-        report.write('\nProcess ' + xml_filename, True, False, True)
-        self.validator_scielo.set_output_filenames(xml_filename, work_path, scielo_html_validation_report, scielo_html_preview, pmc_xml_local)
-        if self.validator_scielo.validate(report, os.path.dirname(xml_filename), name.replace('.xml', '.local.xml')):
-            # generate pmc package
-            if not os.path.exists(pmc_path):
-                os.makedirs(pmc_path)
-            self.validator_pmc.set_output_filenames(pmc_xml_local, work_path, pmc_html_validation_report, pmc_html_preview, pmc_path + '/' + name )         
-            if self.validator_pmc.validate(report, os.path.dirname(xml_filename)):
-                if os.path.exists(pmc_xml_local):
-                    os.unlink(pmc_xml_local)
-                if os.path.exists(pmc_path + '/' + name):
-                    report.write('Created ' + pmc_path + '/' + name + '\n', True, False, True)
-
-        
-        return r                
-
-    def do_for_all(self, report, scielo_package_path, pmc_path, validation_path, scielo_html_validation_report_ext = '.rep.html', scielo_html_preview_ext = '.xml.html', pmc_html_validation_report_ext = '.pmc.rep.html', pmc_html_preview_ext = '.pmc.xml.html'):        
-        if not os.path.exists(pmc_path):
-            os.makedirs(pmc_path)
-        for filename in os.listdir(scielo_package_path):
-            if filename.endswith('.xml'):
-                name = filename.replace('.xml', '')
-
-                scielo_html_validation_report = validation_path + '/' + name + scielo_html_validation_report_ext
-                scielo_html_preview = validation_path + '/' + name + scielo_html_preview_ext
-                pmc_html_validation_report = validation_path + '/' + name + pmc_html_validation_report_ext
-                pmc_html_preview = validation_path + '/' + name + pmc_html_preview_ext
-
-                self.convert_file(report, scielo_package_path + '/' + filename, validation_path, scielo_html_validation_report, scielo_html_preview, pmc_html_validation_report, pmc_html_preview, pmc_path)
-            elif not filename.endswith('.jpg'):
-                shutil.copyfile(scielo_package_path + '/' + filename, pmc_path+ '/' + filename)
-
-    def do_for_one(self, report, xml_filename, pmc_package_path, validation_path, scielo_html_validation_report_ext = '.rep.html', scielo_html_preview_ext = '.xml.html', pmc_html_validation_report_ext = '.pmc.rep.html', pmc_html_preview_ext = '.pmc.xml.html'):       
-        if not os.path.exists(pmc_package_path):
-            os.makedirs(pmc_package_path)
-        report.write('Generate PMC from ' + xml_filename, True, False, True) 
-        if os.path.isfile(xml_filename) and xml_filename.endswith('.xml'):
-            report.write('Generate PMC from ' + xml_filename, True, False, True)
-            scielo_package_path = os.path.dirname(xml_filename)
-            name = os.path.basename(xml_filename).replace('.xml', '')
-
-            files = [ f for f in os.listdir(scielo_package_path) if f.startswith(name) ]
-
-            for filename in files:
-                if filename.endswith('.xml'):
-                    report.write('Converting ' + xml_filename)
-                    scielo_html_validation_report = validation_path + '/' + name + scielo_html_validation_report_ext
-                    scielo_html_preview = validation_path + '/' + name + scielo_html_preview_ext
-                    pmc_html_validation_report = validation_path + '/' + name + pmc_html_validation_report_ext
-                    pmc_html_preview = validation_path + '/' + name + pmc_html_preview_ext
-                    
-                    self.convert_file(report, scielo_package_path + '/' + filename, validation_path, scielo_html_validation_report, scielo_html_preview, pmc_html_validation_report, pmc_html_preview, pmc_package_path)
-                    
-                    items = [scielo_html_validation_report, scielo_html_preview, pmc_html_validation_report, pmc_html_preview, pmc_package_path + '/' + filename, ]
-                    for i in items:
-                        if os.path.exists(i ):
-                            report.write('Generated: ' + i, True, False, True)
-                        else:
-                            report.write('Unable to generate: ' + i, True, True, True)
-                        
-
-                elif not filename.endswith('.jpg'):
-                    shutil.copyfile(scielo_package_path + '/' + filename, pmc_package_path + '/' + filename)
-        else:
-            report.write('Missing ' + xml_filename, True, True, True)
-
 
 class XMLPacker:
     def __init__(self, path_pmc, path_jar):
@@ -569,16 +365,170 @@ class XMLPacker:
         validator_pmc = Validator(dtd, pmc_xsl_prep_report, pmc_xsl_report, pmc_xsl_preview, pmc_xsl_output, pmc_css)
 
         
-        self.scielo_package = SciELOPackage(SGML2XML(xsl_sgml2xml))
-        self.pmc_package = PMCPackage(validator_pmc, validator_scielo)
+        self.checker = XMLPackagesChecker(SGML2XML(xsl_sgml2xml), validator_scielo, validator_pmc)
+    
 
-    def generate_one_file(self, src_xml_path, src_paths_and_exts, src_img_path, scielo_package_path, report, acron, xml_filename, pmc_package_path, reports_path):    
-        self.scielo_package.set_parameters(report, src_xml_path, src_paths_and_exts, src_img_path, scielo_package_path)
 
-        self.scielo_package.do_for_one(acron, xml_filename)
-        self.pmc_package.do_for_one(report, self.scielo_package.package_path + '/' + self.scielo_package.new_name + '.xml', pmc_package_path, reports_path)
+    def generate(self, filename, err_filename, acron, alternative_id, report, validation_path, scielo_package_path, pmc_package_path):    
+        
+        self.checker.process(filename, err_filename, acron, alternative_id, report, validation_path, scielo_package_path, pmc_package_path)
 
-    def generate_one_folder(self, src_xml_path, src_paths_and_exts, src_img_path, scielo_package_path, report, acron, pmc_package_path, reports_path):
-        self.scielo_package.set_parameters(report, src_xml_path, src_paths_and_exts, src_img_path, scielo_package_path)
-        self.scielo_package.do_for_all(acron)
-        self.pmc_package.do_for_all(report, scielo_package_path, pmc_package_path, reports_path)
+    
+
+
+    def generate_validation_reports(self, report, xml_path, pmc_package_path, reports_path, jpg_path):
+        for f in os.listdir(xml_path):
+            if f.endswith('.xml'):
+                err_filename = path + '/' + f.replace('.xml', '.err')
+                xml_filename = path + '/' + f
+                self.checker.validate_packages(report, err_filename, xml_filename, reports_path, pmc_package_path, jpg_path, '')
+
+
+class XMLPackagesChecker:
+    def __init__(self, sgmlxml, validator_scielo, validator_pmc):
+        self.validator_scielo = validator_scielo
+        self.validator_pmc = validator_pmc
+        self.sgmlxml = sgmlxml
+        self.scielo_html_validation_report_ext = '.rep.html'
+        self.scielo_html_preview_ext = '.xml.html'
+        self.pmc_html_validation_report_ext = '.pmc.rep.html'
+        self.pmc_html_preview_ext = '.pmc.xml.html'
+                
+
+    
+    def find_new_name(self, filename, acron, alternative_id, report):
+        xml_data = XMLData(filename, report)
+        new_name, img_list = xml_data.data_to_rename(acron, alternative_id)
+
+        return (new_name, img_list)
+
+    def prepare_file(self, filename, err_filename, acron, alternative_id, report):
+        new_name = ''
+        xml_images_list = []
+        xml_filename = ''
+        
+        # if .sgm.xml converts it into xml
+        if filename.endswith('.sgm.xml'):
+            filename2 = filename.replace('.sgm.xml', '.xml')
+            if self.sgmlxml.sgmxml2xml(filename, filename2, err_filename, report):
+                new_name, xml_images_list = self.find_new_name(filename, acron, alternative_id, report)
+            
+                xml_filename = filename2
+        elif filename.endswith('.xml'):
+            xml_filename = filename
+            new_name, xml_images_list = self.find_new_name(filename, acron, alternative_id, report)
+        return (xml_filename, new_name, xml_images_list)
+    
+    def build_scielo_package(self, filename, dest_path, img_list, new_name):
+        if not os.path.isdir(dest_path):
+            os.makedirs(dest_path)
+        for f in os.listdir(dest_path):
+            if f.startswith(new_name):
+                os.unlink(dest_path + '/' + f)
+
+        src_path = os.path.dirname(filename)
+        if os.path.isdir(dest_path):
+            name = os.path.basename(filename).replace('.xml', '')
+            if new_name == name:
+                shutil.copyfile(filename, dest_path + '/' + name + '.xml')
+                for f in os.listdir(src_path):
+                    if f.startswith(name) and not f.endswith('.sgm.xml'):
+                        shutil.copyfile(src_path + '/' + f, dest_path + '/' + f)
+            else:
+                shutil.copyfile(filename, dest_path + '/' + new_name + '.xml')
+                
+                for img_name, new_img_name in img_list:
+                    for ext in ['.jpg', '.tiff', '.tif', '.eps']:
+                        if os.path.isfile(src_path + '/' + img_name + ext):
+                            shutil.copyfile(src_path + '/' + img_name + ext, dest_path + '/' + new_name + '-' + new_img_name + ext )           
+                for f in os.listdir(src_path):
+                    if f.startswith(name):
+                        shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(name, new_name))                        
+                
+    def process(self, filename, err_filename, acron, alternative_id, report, validation_path, scielo_package_path, pmc_package_path):
+        r = False
+        if os.path.isfile(filename):
+            # prepare file
+            name = os.path.basename(filename).replace('.sgm', '').replace('.xml', '')
+            xml_filename, new_name, img_list = self.prepare_file(filename, err_filename, acron, alternative_id, report)
+            
+            if len(xml_filename) > 0:
+                # build scielo package
+                
+                new_xml_filename = scielo_package_path + '/' + new_name + '.xml'
+                self.build_scielo_package(xml_filename, scielo_package_path, img_list, new_name)
+                
+                # build pmc package
+                if os.path.isfile(new_xml_filename):
+                    
+                    jpg_path = scielo_package_path
+                    r = self.validate_packages(report, err_filename, new_xml_filename, validation_path, pmc_package_path, jpg_path, name, new_name)
+
+
+        return r
+
+    def validate_packages(self, report, err_filename, xml_filename, validation_path, pmc_path, jpg_path, name, new_name):
+        r = False
+        
+        scielo_html_validation_report = validation_path + '/' + name + self.scielo_html_validation_report_ext
+        scielo_html_preview = validation_path + '/' + name + self.scielo_html_preview_ext
+        pmc_html_validation_report = validation_path + '/' + name + self.pmc_html_validation_report_ext
+        pmc_html_preview = validation_path + '/' + name + self.pmc_html_preview_ext
+        
+        pmc_xml_local = validation_path + '/' + name + '.local.xml'
+        pmc_xml_filename = pmc_path + '/' + new_name + '.xml'
+
+        scielo_package_path = os.path.dirname(xml_filename)
+
+        ctrl_filename =  err_filename.replace('.err', '.ctrl')
+
+        if not os.path.exists(validation_path):
+            os.makedirs(validation_path)
+        for f in [scielo_html_validation_report, scielo_html_preview, pmc_html_validation_report, pmc_html_preview]:
+            if os.path.isfile(f):
+                os.unlink(f)
+        
+        if not os.path.isdir(pmc_path):
+            os.makedirs(pmc_path)
+        for f in os.listdir(pmc_path):
+            if os.path.isfile(pmc_path + '/' + f):
+                if f.startswith(new_name):
+                    os.unlink(pmc_path + '/' + f)
+
+
+        report.write('\nProcess ' + xml_filename, True, False, True)
+        self.validator_scielo.set_output_filenames(xml_filename, validation_path, scielo_html_validation_report, scielo_html_preview, pmc_xml_local)
+        
+        if name != new_name:
+            xsl_param_newname = new_name
+        else:
+            xsl_param_newname = ''
+
+        if self.validator_scielo.validate(report, jpg_path, xsl_param_newname):
+            # generate pmc package
+            self.validator_pmc.set_output_filenames(pmc_xml_local, validation_path, pmc_html_validation_report, pmc_html_preview, pmc_xml_filename)         
+            
+            if self.validator_pmc.validate(report, jpg_path):
+                if os.path.exists(pmc_xml_filename):
+                    shutil.copyfile(pmc_xml_local, ctrl_filename)
+            
+                    report.write('Created ' + pmc_xml_filename + '\n', True, False, True)
+                    for f in os.listdir(scielo_package_path):
+                        if f.startswith(new_name) and not f.endswith('.xml'):
+                            shutil.copyfile(scielo_package_path + '/' + f, pmc_path + '/' + f)
+                    r = True
+                    if os.path.exists(pmc_xml_local):
+                        os.unlink(pmc_xml_local)
+                    
+            else:
+                shutil.move(self.validator_pmc.err_filename, err_filename)
+                report.write('Unable to validate ' + pmc_xml_filename + '\n', True, False, True)
+        else:
+            shutil.move(self.validator_scielo.err_filename, err_filename)
+            report.write('Unable to validate ' + xml_filename + '\n', True, False, True)
+
+        if os.path.exists(err_filename):
+            shutil.copyfile(err_filename, ctrl_filename)
+        else:
+            shutil.copyfile(pmc_xml_filename, ctrl_filename)
+        return r   

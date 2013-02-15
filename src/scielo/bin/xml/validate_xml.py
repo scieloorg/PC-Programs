@@ -33,10 +33,6 @@ if len(xml_filename)>0:
 
     if os.path.exists(result_filename):
         shutil.copyfile(result_filename, ctrl_filename)
-        f = open(result_filename)
-        print(f.read())
-        f.close()
-        shutil.copyfile(result_filename, ctrl_filename)
         os.unlink(result_filename)
     if os.path.exists(err_filename):
         shutil.copyfile(err_filename, ctrl_filename)

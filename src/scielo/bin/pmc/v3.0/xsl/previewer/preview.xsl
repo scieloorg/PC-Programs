@@ -11,10 +11,8 @@
     <xsl:variable name="xml_display_objects"/>
     <xsl:variable name="PID"/>
 
-    <xsl:output method="xhtml" omit-xml-declaration="no"
-    encoding="utf-8" indent="no"
-    doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
-    doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
+    <xsl:output method="html" omit-xml-declaration="no"
+    encoding="utf-8" indent="no"/>
   
     
 	<xsl:template match="/">

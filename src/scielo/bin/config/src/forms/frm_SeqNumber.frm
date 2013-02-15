@@ -115,12 +115,12 @@ Private SelectedSupplno As String
 Private SelectedIseqno As String
 Private SelectedIdPart As String
 Private OK As Boolean
-Public Sub ViewIseqNo(ISSN As String, volid As String, supplvol As String, issueno As String, Supplno As String, IseqNo As String, idPart As String)
+Public Sub ViewIseqNo(ISSN As String, volid As String, supplvol As String, issueno As String, Supplno As String, iseqno As String, idPart As String)
     Dim item As ListItem
     Dim i As Long
     Dim q As Long
     Dim mfns() As Long
-    Dim mfn As Long
+    Dim Mfn As Long
     Dim MfnIseqNo As Long
     Dim MfnIssueId As Long
     Dim issue As ClsIssue
@@ -132,26 +132,26 @@ Public Sub ViewIseqNo(ISSN As String, volid As String, supplvol As String, issue
     SelectedSupplno = ""
     SelectedIseqno = ""
     
-    q = Issue0.issueDAO.getIssuesMfnByISSN(volid, issueno, ISSN, mfns)
+    q = Issue0.issueDAO.getIssuesMfnByISSN(volid, iseqno, ISSN, mfns)
     
     For i = 1 To q
-        mfn = 0
+        Mfn = 0
         Set issue = Issue0.issueDAO.returnIssue(mfns(i))
         
         If (StrComp(issue.journal.ISSN, ISSN) = 0) Then
             If (Len(volid) > 0) Then
                 If (StrComp(issue.volume, volid) = 0) Then
-                    mfn = mfns(i)
+                    Mfn = mfns(i)
                 End If
             ElseIf Len(issueno) > 0 Then
                 If (StrComp(issue.number, issueno) = 0) Then
-                    mfn = mfns(i)
+                    Mfn = mfns(i)
                 End If
             Else
-                mfn = mfns(i)
+                Mfn = mfns(i)
             End If
         End If
-        If mfn > 0 Then
+        If Mfn > 0 Then
             Set item = ListView1.ListItems.add(, , issue.issueorder)
             item.SubItems(1) = issue.journal.shorttitle
             item.SubItems(2) = issue.volume
@@ -177,12 +177,77 @@ Public Sub ViewIseqNo(ISSN As String, volid As String, supplvol As String, issue
         supplvol = SelectedSupplVol
         issueno = SelectedIssueno
         Supplno = SelectedSupplno
-        IseqNo = SelectedIseqno
+        iseqno = SelectedIseqno
         idPart = SelectedIdPart
     End If
 End Sub
 
-
+Public Sub ViewIseqNo_old(ISSN As String, volid As String, supplvol As String, issueno As String, Supplno As String, iseqno As String, idPart As String)
+    Dim item As ListItem
+    Dim i As Long
+    Dim q As Long
+    Dim mfns() As Long
+    Dim Mfn As Long
+    Dim MfnIseqNo As Long
+    Dim MfnIssueId As Long
+    Dim issue As ClsIssue
+    
+    
+    SelectedVolid = ""
+    SelectedSupplVol = ""
+    SelectedIssueno = ""
+    SelectedSupplno = ""
+    SelectedIseqno = ""
+    
+    q = Issue0.issueDAO.getIssuesMfnByISSN(volid, issueno, ISSN, mfns)
+    
+    For i = 1 To q
+        Mfn = 0
+        Set issue = Issue0.issueDAO.returnIssue(mfns(i))
+        
+        If (StrComp(issue.journal.ISSN, ISSN) = 0) Then
+            If (Len(volid) > 0) Then
+                If (StrComp(issue.volume, volid) = 0) Then
+                    Mfn = mfns(i)
+                End If
+            ElseIf Len(issueno) > 0 Then
+                If (StrComp(issue.number, issueno) = 0) Then
+                    Mfn = mfns(i)
+                End If
+            Else
+                Mfn = mfns(i)
+            End If
+        End If
+        If Mfn > 0 Then
+            Set item = ListView1.ListItems.add(, , issue.issueorder)
+            item.SubItems(1) = issue.journal.shorttitle
+            item.SubItems(2) = issue.volume
+            item.SubItems(3) = issue.vsuppl
+            item.SubItems(4) = issue.number
+            item.SubItems(5) = issue.suppl
+            item.SubItems(6) = issue.idPart
+        End If
+    Next
+    For i = 1 To ListView1.ColumnHeaders.count
+        ListView1.ColumnHeaders(i).Width = ListView1.Width / (ListView1.ColumnHeaders.count * 2)
+    Next
+    
+    ListView1.SortKey = 0
+    ListView1.SortOrder = lvwDescending
+    ListView1.Sorted = True
+    'ListView1.ListItems(item.index).selected = True
+    
+    
+    Show vbModal
+    If OK Then
+        volid = SelectedVolid
+        supplvol = SelectedSupplVol
+        issueno = SelectedIssueno
+        Supplno = SelectedSupplno
+        iseqno = SelectedIseqno
+        idPart = SelectedIdPart
+    End If
+End Sub
 Private Sub CmdClose_Click()
     OK = False
     Unload Me

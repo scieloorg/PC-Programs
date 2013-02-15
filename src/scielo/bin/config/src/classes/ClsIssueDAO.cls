@@ -190,7 +190,7 @@ Function returnIssue(Mfn As Long, Optional format As String) As ClsIssue
     End If
     Set returnIssue = issue
 End Function
-Function getIssueMfnByIseqNo(journalKey As String, IseqNo As String) As Long
+Function getIssueMfnByIseqNo(journalKey As String, iseqno As String) As Long
     Dim MfnIseqNo As Long
     Dim issue As ClsIssue
     Dim i As Long
@@ -201,26 +201,26 @@ Function getIssueMfnByIseqNo(journalKey As String, IseqNo As String) As Long
     Dim IseqNoPFT As String
     
     MfnIseqNo = 0
-    q = isis.MfnFind(journalKey + IseqNo, mfns)
+    q = isis.MfnFind(journalKey + iseqno, mfns)
     i = 0
     While (i < q) And (MfnIseqNo = 0)
         i = i + 1
         xNroSeq = isis.UsePft(mfns(i), "v36")
         xsertitle = isis.UsePft(mfns(i), "v35")
-        If (IseqNo = xNroSeq) And (journalKey = xsertitle) Then
+        If (iseqno = xNroSeq) And (journalKey = xsertitle) Then
             MfnIseqNo = mfns(i)
         End If
     Wend
     If MfnIseqNo = 0 Then
         IseqNoPFT = "if "
         IseqNoPFT = IseqNoPFT + "v35='" + journalKey + "' and "
-        IseqNoPFT = IseqNoPFT + "v36='" + IseqNo + "' then mfn fi"
+        IseqNoPFT = IseqNoPFT + "v36='" + iseqno + "' then mfn fi"
         
         MfnIseqNo = getIssueMfnByFormat(IseqNoPFT)
     End If
     getIssueMfnByIseqNo = MfnIseqNo
 End Function
-Function getIssueMfnByIssueId(journalKey As String, vol As String, SVol As String, No As String, SNo As String, IssueIdPart As String, IseqNo As String) As Long
+Function getIssueMfnByIssueId(journalKey As String, vol As String, SVol As String, No As String, SNo As String, IssueIdPart As String, iseqno As String) As Long
     Dim MfnIssueId As Long
     Dim issue As ClsIssue
     Dim i As Long
@@ -231,7 +231,7 @@ Function getIssueMfnByIssueId(journalKey As String, vol As String, SVol As Strin
     
     MfnIssueId = 0
     If No = "ahead" Or No = "review" Then
-        year = Mid(IseqNo, 1, 4)
+        year = Mid(iseqno, 1, 4)
     End If
     q = isis.MfnFind(journalKey + year + issueId(vol, SVol, No, SNo, IssueIdPart), mfns)
     While (i < q) And (MfnIssueId = 0)
@@ -282,9 +282,9 @@ Function getIssueMfnByFormat(format As String) As Long
     getIssueMfnByFormat = mfnfound
 End Function
 
-Function getIssueMfn(journalKey As String, vol As String, SVol As String, No As String, SNo As String, IseqNo As String, IssueIdPart As String, MfnIseqNo As Long, MfnIssueId As Long) As Boolean
-    MfnIssueId = getIssueMfnByIssueId(journalKey, vol, SVol, No, SNo, IssueIdPart, IseqNo)
-    MfnIseqNo = getIssueMfnByIseqNo(journalKey, IseqNo)
+Function getIssueMfn(journalKey As String, vol As String, SVol As String, No As String, SNo As String, iseqno As String, IssueIdPart As String, MfnIseqNo As Long, MfnIssueId As Long) As Boolean
+    MfnIssueId = getIssueMfnByIssueId(journalKey, vol, SVol, No, SNo, IssueIdPart, iseqno)
+    MfnIseqNo = getIssueMfnByIseqNo(journalKey, iseqno)
     
     getIssueMfn = (MfnIseqNo = MfnIssueId)
 End Function
@@ -320,13 +320,18 @@ End Function
 
 
 
-Function getIssuesMfnByISSN(volid As String, issueno As String, ISSN As String, mfns() As Long) As Long
+Function getIssuesMfnByISSN(volid As String, iseqno As String, ISSN As String, mfns() As Long) As Long
     Dim term As String
     
     Dim q As Long
+    
     term = ISSN
     
+    
+    'q = isis.search(term, mfns)
     q = isis.MfnFind(term, mfns)
+    
+    
     getIssuesMfnByISSN = q
 End Function
 

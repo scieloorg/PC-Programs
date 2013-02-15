@@ -218,7 +218,8 @@
                          ((vancouv | iso690 | abnt6023 | apa | other), bbibcom?)),
 
                          licenses?) -->
-<!ELEMENT back     - - ( ack?, (bbibcom & (vancouv | iso690 | abnt6023 | apa | other) & txtblock? & corresp? & fngrp? )+, licenses?) >
+<!--ELEMENT back     - - ( ack?, (bbibcom & (vancouv | iso690 | abnt6023 | apa | other) & txtblock? & corresp? & fngrp? )+, licenses?) -->
+<!ELEMENT back     - - ( ack?, bbibcom?, (vancouv | iso690 | abnt6023 | apa | other), (corresp? & fngrp? & bbibcom  & txtblock?), licenses?) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Back Bibliographic Complementary Elements                         -->

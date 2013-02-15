@@ -28,6 +28,7 @@ if parameters.check_parameters(sys.argv):
         print(result_filename)
         
     if os.path.exists(err_filename):
+        shutil.copyfile(err_filename, result_filename)
         shutil.copyfile(err_filename, ctrl_filename)
         print(result_filename)
 

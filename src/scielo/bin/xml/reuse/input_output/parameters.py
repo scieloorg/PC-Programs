@@ -25,10 +25,10 @@ class Parameters:
 
 def get_script_path(script):
     script = script.replace('\\', '/')
-    if '..' in script:
-        path = os.getcwd().replace('\\', '/') + '/' + os.path.dirname(script)
-    elif script.startswith('/') or script[1:2] == ':':
+    if script.startswith('/') or script[1:2] == ':':
         path = os.path.dirname(script)
+    elif script.startswith('..'):
+        path = os.getcwd().replace('\\', '/') + '/' + os.path.dirname(script)
     else:
         path = os.getcwd().replace('\\', '/')
     return path

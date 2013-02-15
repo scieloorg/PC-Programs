@@ -86,13 +86,13 @@ def dtd(DTD_path):
 def validate(xml_filename, dtd_path, result_filename, err_filename):
     valid = False
     validation_type = ''
-    temp_xml_filename = ''
+    bkp = ''
     dtd_path = dtd(dtd_path)
-    xml = xml_filename
+    
 
-    temp = xml_filename + '.validation.tmp'        
-    if os.path.exists(temp):
-        os.unlink(temp)
+    validation_result_file = xml_filename + '.validation.tmp'        
+    if os.path.exists(validation_result_file):
+        os.unlink(validation_result_file)
     if os.path.exists(result_filename):
         os.unlink(result_filename)
     if os.path.exists(err_filename):
@@ -101,44 +101,54 @@ def validate(xml_filename, dtd_path, result_filename, err_filename):
     if dtd_path != '':
         import tempfile
 
-        ign, temp_xml_filename = tempfile.mkstemp()
-        shutil.copyfile(xml_filename, temp_xml_filename)
-        replace_dtd_path(temp_xml_filename, dtd_path)
-        xml = temp_xml_filename
+        ign, bkp = tempfile.mkstemp()
+        shutil.copyfile(xml_filename, bkp)
+
+        replace_dtd_path(xml_filename, dtd_path)
+        
         validation_type = '--validate'
 
-    cmd = java + ' -cp ' +  jar_validate + ' br.bireme.XMLCheck.XMLCheck ' + xml + ' ' +  validation_type +  '>' + temp
+    
+    cmd = java + ' -cp ' +  jar_validate + ' br.bireme.XMLCheck.XMLCheck ' + xml_filename + ' ' +  validation_type +  '>' + validation_result_file
     
     if os.path.exists(jar_validate):
         os.system(cmd)
+    else:
+        print('wrong command: ' + cmd)
         #time.sleep(3)
 
-    if os.path.exists(temp):
-        f = open(temp, 'r')
-        content = f.read().replace(xml, xml_filename)
-        f.close()
-        f = open(temp, 'w')
-        f.write(content)
-        f.close()
+    if os.path.exists(validation_result_file):
+        f = open(validation_result_file, 'r')
+        content = f.read()
+        f.close() 
+        if 'ERROR' in content.upper():
+
+            f = open(xml_filename, 'r')
+            xml = f.read()
+            f.close() 
+
+            f = open(validation_result_file, 'w')
+            f.write(content + '\n' + xml)
+            f.close() 
 
     else:
         content = 'ERROR: Not valid. Unknown error.' + "\n" + cmd
-        f = open(temp, 'w')
+        f = open(validation_result_file, 'w')
         f.write(content)
         f.close()
 
     if 'ERROR' in content.upper():
-        shutil.move(temp, err_filename)
+        shutil.move(validation_result_file, err_filename)
     else:
         valid = True
-        os.unlink(temp)
+        os.unlink(validation_result_file)
     
-    if temp_xml_filename != '':
+    if bkp != '':
+        shutil.copyfile(bkp, xml_filename)
         try:
-            os.unlink(temp_xml_filename)
+            os.unlink(bkp)
         except WindowsError:
             pass
-        
     return valid
 
 
@@ -157,7 +167,6 @@ def transform(xml_filename, xsl_filename, result_filename, err_filename, paramet
     cmd = java + ' -jar ' +  jar_transform + ' -novw -w0 -o "' + temp_result + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
             
     if os.path.exists(jar_transform ):
-        #print(cmd)
         os.system(cmd)
         #time.sleep(3)
     

@@ -43,30 +43,38 @@
 <!--    Serial Level                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT piserial - - (sertitle, volid, issueno?, suppl?, 
- ( pages | (cited, url))?, doi? ) >
+<!ELEMENT piserial - - (sertitle, volid, issueno?, suppl?, pages, (cited, url)?, doi? ) >
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Monographic Level                                                 -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT pmonog   - - ( (author* | corpauth*), date?, (%m.title;), 
+<!--ELEMENT pmonog   - - ( (author* | corpauth*), date?, (%m.title;), 
                          ( 
-                           (thesis, extent?, city?, country? )
+                           (confgrp, pages?)
+                         |
+                           (thesis, extent?, (city?, state?, country?) )
                          |  
                            ( 
                              coltitle, colvolid?, 
                              (pages | extent)?, edition?, 
 				     author*,
-                             city, country?, pubname+
+                             ((city, state?, country?) | country), pubname+
                            ) 
                          | 
-                           (edition?, pages?, city, country?, pubname+)
+                           (edition?, pages?, ((city, state?, country?) | country), pubname+)
                          ),  
                          (cited, url)?, doi?, (notes|othinfo)? 
+                      ) -->
+<!ELEMENT pmonog   - - ( (author* | corpauth*)?, date?, (%m.title;), 
+                           
+                           (confgrp | thesis | (coltitle, colvolid?) )?,
+                           
+                           edition?, (pages | extent)?, (((city, state?, country?) | country), pubname+)?,
+                          
+                         (cited, url)?, doi?, (notes|othinfo)? 
                       )>
-
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    VANCOUVER                                                         -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
