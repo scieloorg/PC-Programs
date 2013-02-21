@@ -1195,18 +1195,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\xml\reuse\xml\xml_tree\xml_tree.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\xml\xml_tree\xml_tree.pyc
-  Flags=0000000010000010
-end
-item: Install File
   Source=w:\scielo\bin\xml\reuse\xml\xml_tree\xml_tree.py
   Destination=%PROGDIR%\bin\xml\reuse\xml\xml_tree\xml_tree.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\xml\reuse\xml\xml_tree\__init__.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\xml\xml_tree\__init__.pyc
   Flags=0000000010000010
 end
 item: Install File
@@ -1230,11 +1220,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\xml\reuse\xml\xml_java.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\xml\xml_java.pyc
-  Flags=0000000010000010
-end
-item: Install File
   Source=w:\scielo\bin\xml\reuse\xml\xml_java.py
   Destination=%PROGDIR%\bin\xml\reuse\xml\xml_java.py
   Flags=0000000010000010
@@ -1250,33 +1235,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\xml\reuse\xml\__xml_java\JavaXMLTransformer.py
-  Destination=%PROGDIR%\bin\xml\reuse\xml\__xml_java\JavaXMLTransformer.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\xml\reuse\xml\__xml_java\__init__.py
-  Destination=%PROGDIR%\bin\xml\reuse\xml\__xml_java\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\xml\reuse\xml\__init__.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\xml\__init__.pyc
-  Flags=0000000010000010
-end
-item: Install File
   Source=w:\scielo\bin\xml\reuse\xml\__init__.py
   Destination=%PROGDIR%\bin\xml\reuse\xml\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\xml\reuse\xml\___xml_java.py
-  Destination=%PROGDIR%\bin\xml\reuse\xml\___xml_java.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\xml\reuse\input_output\tracker.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\input_output\tracker.pyc
   Flags=0000000010000010
 end
 item: Install File
@@ -1285,18 +1245,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\xml\reuse\input_output\report.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\input_output\report.pyc
-  Flags=0000000010000010
-end
-item: Install File
   Source=w:\scielo\bin\xml\reuse\input_output\report.py
   Destination=%PROGDIR%\bin\xml\reuse\input_output\report.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\xml\reuse\input_output\parameters.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\input_output\parameters.pyc
   Flags=0000000010000010
 end
 item: Install File
@@ -1305,18 +1255,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\xml\reuse\input_output\configuration.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\input_output\configuration.pyc
-  Flags=0000000010000010
-end
-item: Install File
   Source=w:\scielo\bin\xml\reuse\input_output\configuration.py
   Destination=%PROGDIR%\bin\xml\reuse\input_output\configuration.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\xml\reuse\input_output\__init__.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\input_output\__init__.pyc
   Flags=0000000010000010
 end
 item: Install File
@@ -1325,18 +1265,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\xml\reuse\img_to_jpg.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\img_to_jpg.pyc
-  Flags=0000000010000010
-end
-item: Install File
   Source=w:\scielo\bin\xml\reuse\img_to_jpg.py
   Destination=%PROGDIR%\bin\xml\reuse\img_to_jpg.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\xml\reuse\encoding\table_entities.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\encoding\table_entities.pyc
   Flags=0000000010000010
 end
 item: Install File
@@ -1365,18 +1295,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\xml\reuse\encoding\__init__.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\encoding\__init__.pyc
-  Flags=0000000010000010
-end
-item: Install File
   Source=w:\scielo\bin\xml\reuse\encoding\__init__.py
   Destination=%PROGDIR%\bin\xml\reuse\encoding\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\xml\reuse\__init__.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\__init__.pyc
   Flags=0000000010000010
 end
 item: Install File
@@ -1410,8 +1330,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\pmc\v3.0\xsl\web\site.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\web\site.xsl
+  Source=w:\scielo\bin\pmc\v3.0\xsl\web\scielo-fulltext.xsl
+  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\web\scielo-fulltext.xsl
   Flags=0000000010000010
 end
 item: Install File

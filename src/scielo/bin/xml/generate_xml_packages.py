@@ -45,7 +45,7 @@ if len(sys.argv) == 2:
 
         xml_filename = sys.argv[1]
 
-        err_filename = xml_filename.replace('.sgm.xml', '.err')
+        err_filename = xml_filename.replace('.sgm.xml', '.err.txt')
         
         print(err_filename)
         file_path = os.path.dirname(xml_filename)
@@ -65,20 +65,26 @@ if len(sys.argv) == 2:
 
         scielo_package_path = pmc_path + '/xml_package'
         pmc_package_path = pmc_path + '/pmc_package' 
-        src_path = pmc_path + '/src'
-        
 
+
+        src_path = pmc_path + '/src'
+        if not os.path.isdir(src_path):
+            src_path = pmc_path + '/pmc_src'
+        
+        if not os.path.isdir(src_path):
+            os.makedirs(src_path)
 
         shutil.copy(xml_filename, src_path )
         name = os.path.basename(xml_filename).replace('.sgm.xml', '')
         
         xml_filename = src_path + '/' + os.path.basename(xml_filename)
-
+        ctrl = ''
         
 elif len(sys.argv) == 6:
     
     x = sys.argv[1]
-    print(sys.argv)
+    
+    
     if os.path.isdir(x):
         doit = True
         xml_path = x
@@ -87,7 +93,8 @@ elif len(sys.argv) == 6:
     elif os.path.isfile(x) and x.endswith('.xml'):
         doit = True
         xml_filename = x
-        err_filename = xml_filename.replace('.xml', '.err')
+        err_filename = xml_filename.replace('.xml', '.err.txt')
+        ctrl = xml_filename.replace('.xml', '.ctrl')
         alternative_id = os.path.basename(xml_filename).replace('.xml', '')
         ign, ign2, scielo_package_path, pmc_package_path, validation_path, acron = sys.argv
     else:
@@ -111,7 +118,7 @@ if doit:
     if not os.path.exists(jar_path):
         jar_path = current_path+ '/../../jar'
 
-    report = Report(validation_path + '/report.log', validation_path + '/report.err', validation_path + '/report.txt')
+    report = Report(validation_path + '/report.log', validation_path + '/report.err.txt', validation_path + '/report.txt')
     xml_toolbox.xml_tree = XMLTree(TableEntities(current_path + '/reuse/encoding/entities'))
     xml_packer = xml_toolbox.XMLPacker(pmc_path, jar_path)
 
@@ -124,13 +131,20 @@ if doit:
         xml_packer.generate(xml_filename, err_filename, acron, alternative_id, report, validation_path, scielo_package_path, pmc_package_path)
         if os.path.exists(err_filename):
             print('ERRO:' + err_filename)
+        if len(ctrl)>0:
+            if os.path.isfile(ctrl):
+                os.unlink(ctrl)
+
     else: 
         for f in os.listdir(xml_path):
             if f.endswith('.xml') and not f.endswith('.sgm.xml'):
                 alternative_id = f.replace('.xml', '')
-                err_filename = validation_path + '/' + alternative_id + '.err'
+                err_filename = validation_path + '/' + alternative_id + '.err.txt'
                 xml_packer.generate(xml_path + '/' + f, err_filename, acron, alternative_id, report, validation_path, scielo_package_path, pmc_package_path)
-
+                
+                ctrl = err_filename.replace('.err.txt', '.ctrl')
+                if os.path.isfile(ctrl):
+                    os.unlink(ctrl)
     
 
 

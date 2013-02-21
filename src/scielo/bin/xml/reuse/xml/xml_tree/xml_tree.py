@@ -48,7 +48,7 @@ class XMLTree:
         if os.path.exists(xml_filename):
             r = self._load(xml_filename)
             if not r:
-                shutil.copyfile(xml_filename, xml_filename.replace('.xml', '.xml~'))
+                #shutil.copyfile(xml_filename, xml_filename.replace('.xml', '.xml~'))
                 self.named2char(xml_filename, xml_filename)
                 self.named2number(xml_filename, xml_filename)
                 self.number2char(xml_filename, xml_filename)
@@ -121,9 +121,9 @@ class XMLTree:
                 p = self.ns + xpath
 
                 try:
-                    print(p)
+                    #print(p)
             	    r = n.findall(p)
-                    print(r)
+                    #print(r)
             	except Exception as inst:
             	    self.report.write(type(inst), False, True, True)
             else:

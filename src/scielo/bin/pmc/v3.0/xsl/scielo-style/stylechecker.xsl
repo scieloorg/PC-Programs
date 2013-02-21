@@ -84,9 +84,99 @@
         </xsl:choose>
         <xsl:apply-templates select="." mode="output"/>
     </xsl:template>
-    <xsl:template match="article-id">
-        <xsl:call-template name="empty-element-check"/>
-        
-        <xsl:apply-templates select="." mode="output"/>
+    <xsl:template match="article-id">  
+      <xsl:call-template name="attribute-present-not-empty">
+         <xsl:with-param name="context" select="@pub-id-type"/>
+         <xsl:with-param name="attribute-name" select="'pub-id-type'"/>
+         <xsl:with-param name="test-name" select="'pub-id-type attribute check'"/>
+      </xsl:call-template>
+      <xsl:call-template name="pub-id-type-check"/>
+      <xsl:call-template name="article-id-content-check"/>
+      <xsl:if test="@pub-id-type = 'doi'">
+      <xsl:call-template name="doi-check">
+        <xsl:with-param name="value" select="."/>
+        </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="not(..//article-id[@pub-id-type='doi'])"><xsl:call-template name="make-error">
+                <xsl:with-param name="error-type">DOI check</xsl:with-param>
+                <xsl:with-param name="description">article must have DOI</xsl:with-param>
+
+            </xsl:call-template></xsl:if>
+      <xsl:apply-templates select="." mode="output"/>
     </xsl:template>
+
+       <!-- *********************************************************** -->
+   <!-- Template: journal-meta-check 
+   
+        If article has a journal-meta element, then:
+        1) journal-title is required
+        2) issn is required
+     -->
+   <!-- *********************************************************** -->
+   <xsl:template name="journal-meta-check">
+      <xsl:param name="context" select="."/> <!-- Will be journal-meta -->
+      
+      <!-- journal-title is required  in v1 and v1; journal-title-group is required in v3-->
+        <xsl:choose>
+            <!-- Scanning data does not require a journal-title -->
+            <xsl:when test="//processing-instruction('properties')
+                         [contains(.,'scanned_data')] or ancestor::issue-admin"/>
+            <xsl:otherwise>
+              <xsl:choose>
+                <xsl:when test="journal-title[normalize-space()] or journal-title-group/journal-title[normalize-space()]">
+                  <!-- data is okay -->
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:call-template name="make-error">
+                      <xsl:with-param name="error-type">journal-meta-check</xsl:with-param>
+                      <xsl:with-param name="description">
+                        <xsl:text>journal-title is required</xsl:text>
+                      </xsl:with-param>
+                      <xsl:with-param name="tg-target" select="'tags.html#el-jmeta'"/>
+                    </xsl:call-template>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:otherwise>
+        </xsl:choose>
+        <xsl:if test="not(.//abbrev-journal-title[@abbrev-type='publisher'])"><xsl:call-template name="make-error">
+                <xsl:with-param name="error-type">abbrev title check</xsl:with-param>
+                <xsl:with-param name="description">journal must have abbrev title</xsl:with-param>
+
+            </xsl:call-template></xsl:if>
+      <!-- Check whether issn is present: but only if this is
+           a "domain" that requires an issn -->
+    <xsl:choose>
+      <xsl:when test="//processing-instruction('noissn')"/>
+      <!--  <xsl:when test="contains($domains-no-issn, concat('|',/article/front/journal-meta/journal-id[@journal-id-type='pmc'],'|'))"/>  True if not listed in param -->
+      <!--  <xsl:when test="contains($domains-no-issn, concat('|',//journal-meta/pmc-abbreviation,'|'))"/>  True if not listed in param: issue-admin.xsd doc --> 
+      <!-- manuscripts do not require issn -->
+        <xsl:when test="$stream='manuscript' or contains(//processing-instruction('properties'),'manuscript')"/>
+        <xsl:when test="$stream='rrn' "/>
+      <xsl:otherwise>
+          <!-- Check that issn is present -->
+          <xsl:if test="not(issn[normalize-space()])">
+              <xsl:call-template name="make-error">
+                 <xsl:with-param name="error-type">journal-meta-check</xsl:with-param>
+                   <xsl:with-param name="description">
+                      <xsl:text>issn is required</xsl:text>
+               </xsl:with-param>
+            <xsl:with-param name="tg-target" select="'tags.html#el-jmeta'"/>
+            </xsl:call-template>
+          </xsl:if>
+          <xsl:if test="count(issn) &gt; 1">
+            <xsl:if test="issn[0] = issn[1]">
+                <xsl:call-template name="make-error">
+                   <xsl:with-param name="error-type">journal-meta-check</xsl:with-param>
+                     <xsl:with-param name="description">
+                        <xsl:text>issn can not have the same value</xsl:text>
+                 </xsl:with-param>
+              <xsl:with-param name="tg-target" select="'tags.html#el-jmeta'"/>
+              </xsl:call-template>
+            </xsl:if>
+          </xsl:if>
+          </xsl:otherwise>
+      </xsl:choose>
+      
+   </xsl:template>
+
 </xsl:stylesheet>

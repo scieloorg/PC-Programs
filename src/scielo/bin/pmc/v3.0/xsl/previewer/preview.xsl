@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">
 	<xsl:import href="../jpub/main/jpub3-html.xsl"/>
-    <xsl:import href="../web/site.xsl"/>
+    <xsl:import href="../web/scielo-fulltext.xsl"/>
     
     <xsl:param name="css" select="'../web/xml.css'"/>
 	<xsl:param name="path_img" select="'/'"/>

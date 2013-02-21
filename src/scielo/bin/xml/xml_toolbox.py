@@ -10,30 +10,28 @@ report = None
 
 
 
-def img_to_jpeg(self, img_path, jpg_path):
-    import Image
-    files = os.listdir(img_path)
-    if not os.path.exists(jpg_path):
-        os.makedirs(jpg_path)
+def img_to_jpeg(img_path, jpg_path):
+    
+    try:
+        import Image
 
-    for f in files:
-        new_file = jpg_path + '/'+ f[0:f.rfind('.')] + '.jpg'
-        hd_image_filename = img_path + '/'+ f
+        files = [ f for f in os.listdir(img_path) if not f.endswith('.jpg') ]
         
-        if os.path.exists(jpg_filename):
-            os.unlink(jpg_filename)
-        
-        if f.endswith('.jpg'):
-            shutil.copyfile(hd_image_filename, new_file)
-        else:
-            try:
-                im = Image.open(hd_image_filename)
-                im.thumbnail(im.size)
-                im.save(jpg_filename, "JPEG")
+        for f in files:
+            jpg_filename = jpg_path + '/'+ f[0:f.rfind('.')] + '.jpg'
+            image_filename = img_path + '/'+ f
             
-            except Exception, e:
-                print e
-                print jpg_filename
+            if jpg_filename != image_filename:
+                try:
+                    im = Image.open(image_filename)
+                    im.thumbnail(im.size)
+                    im.save(jpg_filename, "JPEG")
+                
+                except Exception, e:
+                    print e
+                    print jpg_filename
+    except:
+        print('Desirable have installed PIL in order to convert images to jpg')
 
 
 
@@ -62,6 +60,7 @@ def fix_xml(xml):
         f.close()
 
 
+
 class XMLData:
     def __init__(self, xml_filename, report):
         xml_tree.load(xml_filename, report)
@@ -88,9 +87,7 @@ class XMLData:
 
     def xml_data_new_name_from_xml(self, alternative_page, acron = ''):
         nodes = xml_tree.return_nodes()
-        print(nodes)
         article_meta_node = xml_tree.return_nodes('.//article-meta', nodes[0])
-        print(article_meta_node)
         node_issn = xml_tree.return_nodes('.//front/journal-meta/issn', nodes[0])
         
 
@@ -127,81 +124,31 @@ class XMLData:
 
 
 
-    def xml_data_image_names(self, tags='fig | table-wrap | inline-graphic | figgrp | tabwrap | equation'):
-        a = []        
-        names = tags.split(' | ')
-
-        names = [ './/' + n for n in names ]
-
+    def xml_data_image_names(self):
         test_href = ['href', 'xlink:href', '{http://www.w3.org/XML/1998/namespace}href'] 
         root = xml_tree.return_nodes()
-        #print(root)
-        for tag in names:
-            
-            xml_tree.debug = 3
-            nodes = xml_tree.return_nodes(tag, root[0])
-            #print(nodes)
-            if tag == 'inline-graphic':
-                new_name_suffix = 'i'
-                inlines = []
-                for gnode in nodes:
-                    for test in test_href:
-                        if test in gnode.attrib.keys():
-                            current_href = gnode.attrib[test]
-                            break
-                    if len(current_href)>0:
-                        current_href = current_href.replace('.jpg', '')
-                        current_href = current_href.replace('.tiff', '')
-                        current_href = current_href.replace('.tif', '')
-                        inlines.append(current_href)
-                c = ''
-                for i in inlines:
-                    c += '0'
-                j = 0 
-                for i in inlines:
-                    j += 1
-                    k = c + str(j)
-                    k = k[-len(c):]
-                    a.append((i, 'i' + k))
+        r = []
+        nodes = xml_tree.return_nodes('.//*[graphic]', root[0])
+        for n in nodes:
+            id = xml_tree.return_node_attr_value(n, 'id')
+            if '-' in id:
+                id = id[id.rfind('-')+1:]
+            if n.tag == 'equation':
+                id = 'e' + id
+            elif n.tag == 'inline-display':
+                id = 'i' + id 
             else:
-                for node in nodes:
-                                   
-                    current_href = ''
-                    new_name_suffix = None
+                id = 'g' + id
+            graphic_nodes = xml_tree.return_nodes('graphic', n)
+            if len(graphic_nodes) > 0:
+                for test in test_href:
+                    href = xml_tree.return_node_attr_value(graphic_nodes[0], test)
+                    if len(href) > 0:
+                        r.append((href, id))
+                        break
+        return r
 
-                    if 'id' in node.attrib.keys():
-                        new_name_suffix = node.attrib['id']
-                    
-                    if new_name_suffix[0:1] == 'e':
-                        new_name_suffix = 'e' + new_name_suffix
-                    else:
-                        new_name_suffix = 'g' + new_name_suffix
-                    #print(new_name_suffix)
-                    if 'filename' in node.attrib.keys():
-                        current_href = node.attrib['filename']
-
-
-                        if len(current_href)>0:
-                            current_href = current_href.replace('.jpg', '')
-                            current_href = current_href.replace('.tiff', '')
-                            current_href = current_href.replace('.tif', '')
-
-                            a.append( (current_href , new_name_suffix) )
-                    else:
-
-                        graphic_nodes = xml_tree.return_nodes('graphic', node)
-                        #print(graphic_nodes)
-                        for gnode in graphic_nodes:
-                            for test in test_href:
-                                if test in gnode.attrib.keys():
-                                    current_href = gnode.attrib[test]
-                                    break
-                            if len(current_href)>0:
-                                current_href = current_href.replace('.jpg', '')
-                                current_href = current_href.replace('.tiff', '')
-                                current_href = current_href.replace('.tif', '')
-                                a.append( (current_href , new_name_suffix) )
-        return a
+    
 
     def data_to_rename(self, acron, alternative_id = ''):
         
@@ -286,10 +233,10 @@ class Validator:
                 report.write('Unable to generate xml for report: ' + self.xml_report, True, True, True)
 
             if type(self.xsl_preview) == type([]):
-                xml_java.tranform_in_steps(self.xml_filename, self.dtd, self.xsl_preview, self.html_preview, {'path_img': img_path +'/', 'css': self.css, 'new_name': new_name})
+                xml_java.tranform_in_steps(self.xml_filename, self.dtd, self.xsl_preview, self.html_preview, {'path_img': img_path +'/', 'css': 'file:///' + self.css, 'new_name': new_name})
             else:
                 report.write('transform ' + self.xml_filename + ' '+  self.xsl_preview + ' '+  self.html_preview )
-                xml_java.transform(self.xml_filename, self.xsl_preview, self.html_preview, self.err_filename, {'path_img': img_path +'/', 'css': self.css, 'new_name': new_name})
+                xml_java.transform(self.xml_filename, self.xsl_preview, self.html_preview, self.err_filename, {'path_img': img_path +'/', 'css': 'file:///' + self.css, 'new_name': new_name})
             if os.path.exists(self.html_preview):
                 report.write('Preview ' +  self.html_preview, True, False, True)
             else:
@@ -301,7 +248,8 @@ class Validator:
                 report.write('Result ' +  self.xml_ouput_filename)
             else:
                 report.write('Unable to create result: ' + self.xml_ouput_filename, True, True, True)
-                
+        if os.path.isfile(self.result_filename):
+            os.unlink(self.result_filename)
         if os.path.exists(self.xml_ouput_filename):
             report.write('END - OK')
             r = True
@@ -319,14 +267,90 @@ class SGML2XML:
     def __init__(self, xsl_sgml2xml):
         self.xsl_sgml2xml = xsl_sgml2xml
         
-
-
-    def sgmxml2xml(self, sgmxml_filename, xml_filename, err_filename, report):
+    def fix_xml_tags(self, xml):
+        f = open(xml_filename, 'r')
+        content = f.read()
+        f.close()
+        c = self.fix_tags(content)
+        f = open(xml_filename, 'w')
+        f.write(c)
+        f.close()
         
+
+    def fix_tags(self, content):
+        tags = [ 'italic', 'bold', 'sub', 'sup']
+        close_tags = [ '/italic', '/bold', '/sub', '/sup']
+        stack = [] 
+        ignore = []
+      
+        s = content.split( '<')
+        n = 0
+        r = ''
+
+        for item in s:
+            
+            #print('\n' + item)
+            #print('content:' + content)
+            #print('result: ' + r)
+            if n == 1:
+                added = ''
+                tag = item[0:item.find( '>')]
+                if tag in tags:
+                    # tag inicial
+                    #print('empilha ' + tag)
+                    stack.append(tag)
+                    r +=  '<' + item
+                    #print(stack)
+                elif tag in close_tags:
+                    # tag fecha
+                    if tag in ignore:
+                        k = 0 
+                        for ign in ignore:
+                            if ign == tag:
+                                item = item[len(tag)+1:]
+                                del ignore[k]
+                                break
+                            k += 1
+                        r += item
+                    else:
+
+                        while tag[1:] != stack[len(stack)-1]:
+                            added = '</' + stack[len(stack)-1] + '>'
+                            #print('force close tag of the top of the stack ' + added)
+                            #print('antes:')
+                            #print(stack)
+                            ignore.append('/' + stack[len(stack)-1])
+                            del stack[len(stack)-1]
+                        
+                            #print('depois:')
+                            #print(stack)
+
+                            #print('ignore:')
+                            #print(ignore)
+                            r += added 
+                        if tag[1:] == stack[len(stack)-1]:
+                            #print('desempilha ' + stack[len(stack)-1])
+                            del stack[len(stack)-1]
+                            r +=  '<' + item
+                            #print(stack)
+                            
+                else:
+                    r += '<' + item
+                
+            else:
+                r += item
+            n = 1
+        return r
+
+
+    def sgmxml2xml(self, sgmxml_filename, xml_filename, err_filename, report):        
         fix_xml(sgmxml_filename)
 
-        
-        r = xml_java.transform(sgmxml_filename, self.xsl_sgml2xml, xml_filename, err_filename)
+        r = False
+        if not xml_java.validate(sgmxml_filename, '', xml_filename.replace('.sgm.xml', '.res'), err_filename):
+            self.fix_xml_tags(sgmxml_filename)
+        if xml_java.validate(sgmxml_filename, '', xml_filename.replace('.sgm.xml', '.res'), err_filename):
+            r = xml_java.transform(sgmxml_filename, self.xsl_sgml2xml, xml_filename, err_filename)
         if not r:
             report.write('Unable to create ' + xml_filename + ' from ' + sgmxml_filename, True, True, True)
             report.write(err_filename, True, True, True)
@@ -370,7 +394,8 @@ class XMLPacker:
 
 
     def generate(self, filename, err_filename, acron, alternative_id, report, validation_path, scielo_package_path, pmc_package_path):    
-        
+        if os.path.isfile(err_filename):
+            os.unlink(err_filename)
         self.checker.process(filename, err_filename, acron, alternative_id, report, validation_path, scielo_package_path, pmc_package_path)
 
     
@@ -379,7 +404,7 @@ class XMLPacker:
     def generate_validation_reports(self, report, xml_path, pmc_package_path, reports_path, jpg_path):
         for f in os.listdir(xml_path):
             if f.endswith('.xml'):
-                err_filename = path + '/' + f.replace('.xml', '.err')
+                err_filename = path + '/' + f.replace('.xml', '.err.txt')
                 xml_filename = path + '/' + f
                 self.checker.validate_packages(report, err_filename, xml_filename, reports_path, pmc_package_path, jpg_path, '')
 
@@ -397,6 +422,7 @@ class XMLPackagesChecker:
 
     
     def find_new_name(self, filename, acron, alternative_id, report):
+
         xml_data = XMLData(filename, report)
         new_name, img_list = xml_data.data_to_rename(acron, alternative_id)
 
@@ -417,9 +443,11 @@ class XMLPackagesChecker:
         elif filename.endswith('.xml'):
             xml_filename = filename
             new_name, xml_images_list = self.find_new_name(filename, acron, alternative_id, report)
+            
         return (xml_filename, new_name, xml_images_list)
     
     def build_scielo_package(self, filename, dest_path, img_list, new_name):
+        extensions = ['.jpg', '.tiff', '.tif', '.eps']
         if not os.path.isdir(dest_path):
             os.makedirs(dest_path)
         for f in os.listdir(dest_path):
@@ -430,29 +458,62 @@ class XMLPackagesChecker:
         if os.path.isdir(dest_path):
             name = os.path.basename(filename).replace('.xml', '')
             if new_name == name:
+                # nao precisa renomear
                 shutil.copyfile(filename, dest_path + '/' + name + '.xml')
                 for f in os.listdir(src_path):
                     if f.startswith(name) and not f.endswith('.sgm.xml'):
                         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f)
             else:
-                shutil.copyfile(filename, dest_path + '/' + new_name + '.xml')
-                
-                for img_name, new_img_name in img_list:
-                    for ext in ['.jpg', '.tiff', '.tif', '.eps']:
-                        if os.path.isfile(src_path + '/' + img_name + ext):
-                            shutil.copyfile(src_path + '/' + img_name + ext, dest_path + '/' + new_name + '-' + new_img_name + ext )           
+                # renomear
+                self.rename(filename, dest_path + '/' + new_name + '.xml', img_list, new_name)
+
                 for f in os.listdir(src_path):
-                    if f.startswith(name):
+                    if f.startswith(name) and not f.endswith('.xml'):
+                        print('copying ' + dest_path + '/' + f.replace(name, new_name))
                         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(name, new_name))                        
                 
+                for img_name, new_img_name in img_list:
+                    if img_name[img_name.rfind('.'):] in extensions:
+                        img_name = img_name[0:img_name.rfind('.')]
+                    for ext in extensions:
+                        src_img = src_path + '/' + img_name + ext
+                        dest_img = dest_path + '/' + new_name + '-' + new_img_name + ext
+                        if os.path.isfile(src_img):
+                            print('copying '  + dest_img)
+                            shutil.copyfile(src_img, dest_img )  
+
+
+    def rename(self, filename, new_filename, xml_images_list, new_name):
+        f = open(filename, 'r')
+        c = f.read()
+        f.close()
+
+        f = open(new_filename, 'w')
+        for img_ref, img_suffix in xml_images_list:
+            
+            c = c.replace(img_ref, new_name + '-' + img_suffix)
+        f.write(c)
+        f.close()
+        
+
     def process(self, filename, err_filename, acron, alternative_id, report, validation_path, scielo_package_path, pmc_package_path):
         r = False
         if os.path.isfile(filename):
+            path = os.path.dirname(filename)
+
+            jpg  = [ f for f in os.listdir(path) if f.endswith('.jpg')]
+            if len(jpg) == 0:
+                hd  = [ f for f in os.listdir(path) if f.endswith('.tiff') or f.endswith('.tif') or f.endswith('.eps')]
+                if len(hd) > 0:
+                    img_to_jpeg(path, path) 
             # prepare file
             name = os.path.basename(filename).replace('.sgm', '').replace('.xml', '')
             xml_filename, new_name, img_list = self.prepare_file(filename, err_filename, acron, alternative_id, report)
             
-            if len(xml_filename) > 0:
+            if os.path.isfile(err_filename):
+                print(err_filename)
+                shutil.copyfile(err_filename, err_filename.replace('.err.txt', '.ctrl'))
+            else:
                 # build scielo package
                 
                 new_xml_filename = scielo_package_path + '/' + new_name + '.xml'
@@ -463,7 +524,6 @@ class XMLPackagesChecker:
                     
                     jpg_path = scielo_package_path
                     r = self.validate_packages(report, err_filename, new_xml_filename, validation_path, pmc_package_path, jpg_path, name, new_name)
-
 
         return r
 
@@ -480,7 +540,7 @@ class XMLPackagesChecker:
 
         scielo_package_path = os.path.dirname(xml_filename)
 
-        ctrl_filename =  err_filename.replace('.err', '.ctrl')
+        ctrl_filename =  err_filename.replace('.err.txt', '.ctrl')
 
         if not os.path.exists(validation_path):
             os.makedirs(validation_path)
@@ -498,12 +558,12 @@ class XMLPackagesChecker:
 
         report.write('\nProcess ' + xml_filename, True, False, True)
         self.validator_scielo.set_output_filenames(xml_filename, validation_path, scielo_html_validation_report, scielo_html_preview, pmc_xml_local)
-        
         if name != new_name:
             xsl_param_newname = new_name
         else:
             xsl_param_newname = ''
 
+        
         if self.validator_scielo.validate(report, jpg_path, xsl_param_newname):
             # generate pmc package
             self.validator_pmc.set_output_filenames(pmc_xml_local, validation_path, pmc_html_validation_report, pmc_html_preview, pmc_xml_filename)         
@@ -514,7 +574,7 @@ class XMLPackagesChecker:
             
                     report.write('Created ' + pmc_xml_filename + '\n', True, False, True)
                     for f in os.listdir(scielo_package_path):
-                        if f.startswith(new_name) and not f.endswith('.xml'):
+                        if f.startswith(new_name) and not f.endswith('.xml') and not f.endswith('.jpg'):
                             shutil.copyfile(scielo_package_path + '/' + f, pmc_path + '/' + f)
                     r = True
                     if os.path.exists(pmc_xml_local):

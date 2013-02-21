@@ -83,18 +83,16 @@ def dtd(DTD_path):
     return DTD_path
     
 
-def validate(xml_filename, dtd_path, result_filename, err_filename):
+def validate(xml_filename, dtd_path, validation_result_file, err_filename):
     valid = False
     validation_type = ''
     bkp = ''
     dtd_path = dtd(dtd_path)
     
 
-    validation_result_file = xml_filename + '.validation.tmp'        
+    
     if os.path.exists(validation_result_file):
         os.unlink(validation_result_file)
-    if os.path.exists(result_filename):
-        os.unlink(result_filename)
     if os.path.exists(err_filename):
         os.unlink(err_filename)
 
@@ -117,31 +115,43 @@ def validate(xml_filename, dtd_path, result_filename, err_filename):
         print('wrong command: ' + cmd)
         #time.sleep(3)
 
+    error = False
     if os.path.exists(validation_result_file):
         f = open(validation_result_file, 'r')
         content = f.read()
         f.close() 
-        if 'ERROR' in content.upper():
 
+        if 'ERROR' in content.upper():
             f = open(xml_filename, 'r')
             xml = f.read()
             f.close() 
 
             f = open(validation_result_file, 'w')
+            if '<?xml ' in xml:
+                xml = xml[xml.find('?>')+2:]
+            n = 0
+            a = []
+
+            lines = xml.split('\n')
+            xml = ''
+            for line in lines:
+                n += 1
+                xml += str(n) + ':' + line + '\n'
+                
             f.write(content + '\n' + xml)
             f.close() 
+            error = True
 
     else:
         content = 'ERROR: Not valid. Unknown error.' + "\n" + cmd
         f = open(validation_result_file, 'w')
         f.write(content)
         f.close()
+        error = True
 
-    if 'ERROR' in content.upper():
-        shutil.move(validation_result_file, err_filename)
-    else:
-        valid = True
-        os.unlink(validation_result_file)
+    if error:
+        shutil.copyfile(validation_result_file, err_filename)
+    
     
     if bkp != '':
         shutil.copyfile(bkp, xml_filename)
@@ -149,7 +159,7 @@ def validate(xml_filename, dtd_path, result_filename, err_filename):
             os.unlink(bkp)
         except WindowsError:
             pass
-    return valid
+    return not error
 
 
 def transform(xml_filename, xsl_filename, result_filename, err_filename, parameters = {}):
@@ -173,7 +183,7 @@ def transform(xml_filename, xsl_filename, result_filename, err_filename, paramet
     
     if os.path.exists(temp_result):
         r = True
-
+        #print(temp_result)
     else:
         f = open(temp_result, 'w')
         f.write('ERROR: transformation error.\n')
@@ -182,10 +192,10 @@ def transform(xml_filename, xsl_filename, result_filename, err_filename, paramet
         
     if r == True:
         shutil.copyfile(temp_result, result_filename)
-        #print(result_filename)
+        
     else:
         shutil.copyfile(temp_result, err_filename)
-        #print(err_filename)
+        
 
     os.unlink(temp_result)
     return r

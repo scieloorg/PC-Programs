@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"  >
 	
 
     <xsl:variable name="issue_label">
@@ -537,7 +537,7 @@
         <xsl:variable name="src"><xsl:value-of select="$var_IMAGE_PATH"/>/<xsl:choose><xsl:when test="contains(., '.tif')"><xsl:value-of select="substring-before(.,'.tif')"/></xsl:when><xsl:otherwise><xsl:value-of select="."/></xsl:otherwise></xsl:choose></xsl:variable>
         <xsl:attribute name="src"><xsl:value-of select="$src"/>.jpg</xsl:attribute>
 	</xsl:template>
-	<xsl:template match="@href" mode="href">
+	<xsl:template match="@href | @xlink:href" mode="href">
         <xsl:variable name="src"><xsl:value-of select="$var_IMAGE_PATH"/>/<xsl:choose><xsl:when test="contains(., '.tif')"><xsl:value-of select="substring-before(.,'.tif')"/></xsl:when><xsl:otherwise><xsl:value-of select="."/></xsl:otherwise></xsl:choose></xsl:variable>
         <xsl:attribute name="href"><xsl:value-of select="$src"/>.jpg</xsl:attribute>
 	</xsl:template>

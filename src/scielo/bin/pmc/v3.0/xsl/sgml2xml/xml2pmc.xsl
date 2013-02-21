@@ -39,20 +39,39 @@
 		</xsl:choose>
 	</xsl:template>
 
-    <xsl:template match="aff[text()!='']">
-    	<!-- tem ao mesmo tempo institution and text() contendo institution, 
-             nao repetir
-        -->
+    <xsl:template match="aff">
+    	
     	<aff>
-            <xsl:apply-templates select="@* | label | email | text()"/>
-    	</aff>
+    		<xsl:choose>
+    		<xsl:when test="institution">
+    			<xsl:choose>
+		    		<xsl:when test="contains(normalize-space(text()), normalize-space(institution))">
+		    			<xsl:apply-templates select="@* | label | email | text()"/>
+		    		</xsl:when>
+		    		<xsl:otherwise>
+						<xsl:apply-templates select="@* | * | text()"/>
+		    		</xsl:otherwise>
+		    	</xsl:choose>
+    		</xsl:when>
+    		<xsl:otherwise>
+				<xsl:apply-templates select="@* | * | text()"/>
+    		</xsl:otherwise>
+    	</xsl:choose></aff>
     </xsl:template>
-	<xsl:template match="aff//institution | aff//addr-line | aff//named-content | aff//country">
+	<xsl:template match="aff//institution"><xsl:value-of select="normalize-space(.)"/>, </xsl:template>
+	<xsl:template match="aff//addr-line">
+		<xsl:apply-templates select="* | text()"/>
+	</xsl:template>
+	<xsl:template match="aff//country | addr-line/* | addr-line//text()">
 		<xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
 	
-	<xsl:template match="aff/text()">
-		<xsl:value-of select="normalize-space(.)"/>
+	<xsl:template match="aff//text()">
+		<xsl:choose>
+			<xsl:when test="normalize-space(.)=','">, </xsl:when>
+			<xsl:otherwise><xsl:value-of select="normalize-space(.)"/></xsl:otherwise>
+		</xsl:choose>
+		
 	</xsl:template>
 
 	<xsl:template match="funding-group"><xsl:if test="$display_funding='yes'"><xsl:element name="{name()}">
