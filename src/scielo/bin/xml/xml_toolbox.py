@@ -267,7 +267,7 @@ class SGML2XML:
     def __init__(self, xsl_sgml2xml):
         self.xsl_sgml2xml = xsl_sgml2xml
         
-    def fix_xml_tags(self, xml):
+    def fix_xml_tags(self, xml_filename):
         f = open(xml_filename, 'r')
         content = f.read()
         f.close()
@@ -347,9 +347,14 @@ class SGML2XML:
         fix_xml(sgmxml_filename)
 
         r = False
-        if not xml_java.validate(sgmxml_filename, '', xml_filename.replace('.sgm.xml', '.res'), err_filename):
+        temp_err_filename = sgmxml_filename.replace('.sgm.xml', '.res1')
+        res_filename = sgmxml_filename.replace('.sgm.xml', '.res')
+
+        if not xml_java.validate(sgmxml_filename, '', res_filename, temp_err_filename):
             self.fix_xml_tags(sgmxml_filename)
-        if xml_java.validate(sgmxml_filename, '', xml_filename.replace('.sgm.xml', '.res'), err_filename):
+        
+
+        if xml_java.validate(sgmxml_filename, '', res_filename, err_filename):
             r = xml_java.transform(sgmxml_filename, self.xsl_sgml2xml, xml_filename, err_filename)
         if not r:
             report.write('Unable to create ' + xml_filename + ' from ' + sgmxml_filename, True, True, True)
@@ -404,10 +409,11 @@ class XMLPacker:
     def generate_validation_reports(self, report, xml_path, pmc_package_path, reports_path, jpg_path):
         for f in os.listdir(xml_path):
             if f.endswith('.xml'):
-                err_filename = path + '/' + f.replace('.xml', '.err.txt')
-                xml_filename = path + '/' + f
-                self.checker.validate_packages(report, err_filename, xml_filename, reports_path, pmc_package_path, jpg_path, '')
-
+                err_filename = xml_path + '/' + f.replace('.xml', '.err.txt')
+                xml_filename = xml_path + '/' + f
+                name = f.replace('.xml', '')
+                new_name = name
+                self.checker.validate_packages(report, err_filename, xml_filename, reports_path, pmc_package_path, jpg_path, name, new_name)
 
 class XMLPackagesChecker:
     def __init__(self, sgmlxml, validator_scielo, validator_pmc):

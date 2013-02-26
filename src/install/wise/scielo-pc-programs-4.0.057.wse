@@ -2687,557 +2687,557 @@ item: If/While Statement
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\php\XML.php
-  Destination=%MAINDIR%\xml_scielo\proc\general\php\XML.php
+  Destination=%PROGDIR%\xml_scielo\proc\general\php\XML.php
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\php\entities.php
-  Destination=%MAINDIR%\xml_scielo\proc\general\php\entities.php
+  Destination=%PROGDIR%\xml_scielo\proc\general\php\entities.php
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\php\class.XSLTransformer41.php
-  Destination=%MAINDIR%\xml_scielo\proc\general\php\class.XSLTransformer41.php
+  Destination=%PROGDIR%\xml_scielo\proc\general\php\class.XSLTransformer41.php
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\php\class.XSLTransformer40.php
-  Destination=%MAINDIR%\xml_scielo\proc\general\php\class.XSLTransformer40.php
+  Destination=%PROGDIR%\xml_scielo\proc\general\php\class.XSLTransformer40.php
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\php\class.XSLTransformer.php
-  Destination=%MAINDIR%\xml_scielo\proc\general\php\class.XSLTransformer.php
+  Destination=%PROGDIR%\xml_scielo\proc\general\php\class.XSLTransformer.php
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\php\xml_xsl.php
-  Destination=%MAINDIR%\xml_scielo\proc\general\php\xml_xsl.php
+  Destination=%PROGDIR%\xml_scielo\proc\general\php\xml_xsl.php
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\xsl\ISI_DATA.xsl
-  Destination=%MAINDIR%\xml_scielo\proc\general\xsl\ISI_DATA.xsl
+  Destination=%PROGDIR%\xml_scielo\proc\general\xsl\ISI_DATA.xsl
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\xsl\ISI.xsl
-  Destination=%MAINDIR%\xml_scielo\proc\general\xsl\ISI.xsl
+  Destination=%PROGDIR%\xml_scielo\proc\general\xsl\ISI.xsl
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\xmessage.txt
-  Destination=%MAINDIR%\xml_scielo\proc\general\xmessage.txt
+  Destination=%PROGDIR%\xml_scielo\proc\general\xmessage.txt
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\xis\xml_scielo_getXSL.xis
-  Destination=%MAINDIR%\xml_scielo\proc\general\xis\xml_scielo_getXSL.xis
+  Destination=%PROGDIR%\xml_scielo\proc\general\xis\xml_scielo_getXSL.xis
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\xis\xml_scielo_articles.xis
-  Destination=%MAINDIR%\xml_scielo\proc\general\xis\xml_scielo_articles.xis
+  Destination=%PROGDIR%\xml_scielo\proc\general\xis\xml_scielo_articles.xis
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\temp\donotdelete.txt
-  Destination=%MAINDIR%\xml_scielo\proc\general\temp\donotdelete.txt
+  Destination=%PROGDIR%\xml_scielo\proc\general\temp\donotdelete.txt
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\sep.txt
-  Destination=%MAINDIR%\xml_scielo\proc\general\sep.txt
+  Destination=%PROGDIR%\xml_scielo\proc\general\sep.txt
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\scripts\validateXML.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\validateXML.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\scripts\validateXML.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\scripts\transformByPHP.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\transformByPHP.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\scripts\transformByPHP.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\scripts\transformByJava.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\transformByJava.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\scripts\transformByJava.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\scripts\transform.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\transform.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\scripts\transform.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\scripts\transfer.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\transfer.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\scripts\transfer.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\scripts\mainGenerateXML.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\mainGenerateXML.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\scripts\mainGenerateXML.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\scripts\generateXML.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\generateXML.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\scripts\generateXML.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\scripts\generateCalls.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\generateCalls.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\scripts\generateCalls.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\scripts\displayErrors.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\displayErrors.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\scripts\displayErrors.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\scripts\applyXSL.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\scripts\applyXSL.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\scripts\applyXSL.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\schema\Untitled4.dtd
-  Destination=%MAINDIR%\xml_scielo\proc\general\schema\Untitled4.dtd
+  Destination=%PROGDIR%\xml_scielo\proc\general\schema\Untitled4.dtd
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\schema\Untitled3.dtd
-  Destination=%MAINDIR%\xml_scielo\proc\general\schema\Untitled3.dtd
+  Destination=%PROGDIR%\xml_scielo\proc\general\schema\Untitled3.dtd
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\schema\ISOlat1.sgm
-  Destination=%MAINDIR%\xml_scielo\proc\general\schema\ISOlat1.sgm
+  Destination=%PROGDIR%\xml_scielo\proc\general\schema\ISOlat1.sgm
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\schema\isi.dtd
-  Destination=%MAINDIR%\xml_scielo\proc\general\schema\isi.dtd
+  Destination=%PROGDIR%\xml_scielo\proc\general\schema\isi.dtd
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\prc\tipo_h_pubmed.prc
-  Destination=%MAINDIR%\xml_scielo\proc\general\prc\tipo_h_pubmed.prc
+  Destination=%PROGDIR%\xml_scielo\proc\general\prc\tipo_h_pubmed.prc
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\xsl\ISI_validator.xsl
-  Destination=%MAINDIR%\xml_scielo\proc\general\xsl\ISI_validator.xsl
+  Destination=%PROGDIR%\xml_scielo\proc\general\xsl\ISI_validator.xsl
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\xsl\PubMed.xsl
-  Destination=%MAINDIR%\xml_scielo\proc\general\xsl\PubMed.xsl
+  Destination=%PROGDIR%\xml_scielo\proc\general\xsl\PubMed.xsl
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\xsl\PubMed_Link.xsl
-  Destination=%MAINDIR%\xml_scielo\proc\general\xsl\PubMed_Link.xsl
+  Destination=%PROGDIR%\xml_scielo\proc\general\xsl\PubMed_Link.xsl
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\GenerateXML_all.bat
-  Destination=%MAINDIR%\xml_scielo\proc\GenerateXML_all.bat
+  Destination=%PROGDIR%\xml_scielo\proc\GenerateXML_all.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\GenerateXML_ISI.bat
-  Destination=%MAINDIR%\xml_scielo\proc\GenerateXML_ISI.bat
+  Destination=%PROGDIR%\xml_scielo\proc\GenerateXML_ISI.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\GenerateXML_PubMed.bat
-  Destination=%MAINDIR%\xml_scielo\proc\GenerateXML_PubMed.bat
+  Destination=%PROGDIR%\xml_scielo\proc\GenerateXML_PubMed.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\message.txt
-  Destination=%MAINDIR%\xml_scielo\proc\general\message.txt
+  Destination=%PROGDIR%\xml_scielo\proc\general\message.txt
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\log\donotdelete.txt
-  Destination=%MAINDIR%\xml_scielo\proc\general\log\donotdelete.txt
+  Destination=%PROGDIR%\xml_scielo\proc\general\log\donotdelete.txt
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\line.txt
-  Destination=%MAINDIR%\xml_scielo\proc\general\line.txt
+  Destination=%PROGDIR%\xml_scielo\proc\general\line.txt
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\java\validador\XMLCheck.jar
-  Destination=%MAINDIR%\xml_scielo\proc\general\java\validador\XMLCheck.jar
+  Destination=%PROGDIR%\xml_scielo\proc\general\java\validador\XMLCheck.jar
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\java\validador\x.xml
-  Destination=%MAINDIR%\xml_scielo\proc\general\java\validador\x.xml
+  Destination=%PROGDIR%\xml_scielo\proc\general\java\validador\x.xml
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\java\validador\chama.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\java\validador\chama.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\java\validador\chama.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\java\saxon8.jar
-  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8.jar
+  Destination=%PROGDIR%\xml_scielo\proc\general\java\saxon8.jar
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\java\saxon8-xpath.jar
-  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8-xpath.jar
+  Destination=%PROGDIR%\xml_scielo\proc\general\java\saxon8-xpath.jar
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\java\saxon8-xom.jar
-  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8-xom.jar
+  Destination=%PROGDIR%\xml_scielo\proc\general\java\saxon8-xom.jar
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\java\saxon8-sql.jar
-  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8-sql.jar
+  Destination=%PROGDIR%\xml_scielo\proc\general\java\saxon8-sql.jar
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\java\saxon8-jdom.jar
-  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8-jdom.jar
+  Destination=%PROGDIR%\xml_scielo\proc\general\java\saxon8-jdom.jar
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\java\saxon8-dom4j.jar
-  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8-dom4j.jar
+  Destination=%PROGDIR%\xml_scielo\proc\general\java\saxon8-dom4j.jar
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\java\saxon8-dom.jar
-  Destination=%MAINDIR%\xml_scielo\proc\general\java\saxon8-dom.jar
+  Destination=%PROGDIR%\xml_scielo\proc\general\java\saxon8-dom.jar
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\i2x\tipo_h.i2x
-  Destination=%MAINDIR%\xml_scielo\proc\general\i2x\tipo_h.i2x
+  Destination=%PROGDIR%\xml_scielo\proc\general\i2x\tipo_h.i2x
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\utf2lat.xrf
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\utf2lat.xrf
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\utf2lat.xrf
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\utf2lat.seq
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\utf2lat.seq
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\utf2lat.seq
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\utf2lat.mst
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\utf2lat.mst
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\utf2lat.mst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\gizmoXML.xrf
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\gizmoXML.xrf
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\gizmoXML.xrf
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\gizmoXML.seq
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\gizmoXML.seq
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\gizmoXML.seq
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\gizmoXML.mst
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\gizmoXML.mst
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\gizmoXML.mst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\gizmoHTML.xrf
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\gizmoHTML.xrf
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\gizmoHTML.xrf
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\gizmoHTML.mst
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\gizmoHTML.mst
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\gizmoHTML.mst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\Cópia de ans2lat.xrf
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\Cópia de ans2lat.xrf
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\Cópia de ans2lat.xrf
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\Cópia de ans2lat.seq
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\Cópia de ans2lat.seq
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\Cópia de ans2lat.seq
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\Cópia de ans2lat.mst
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\Cópia de ans2lat.mst
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\Cópia de ans2lat.mst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\ans2utf.xrf
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\ans2utf.xrf
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\ans2utf.xrf
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\ans2utf.seq
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\ans2utf.seq
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\ans2utf.seq
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\ans2utf.mst
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\ans2utf.mst
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\ans2utf.mst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\ans2lat.xrf
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\ans2lat.xrf
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\ans2lat.xrf
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\ans2lat.seq
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\ans2lat.seq
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\ans2lat.seq
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\ans2lat.mst
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\ans2lat.mst
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\ans2lat.mst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\acent2ent.xrf
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\acent2ent.xrf
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\acent2ent.xrf
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\acent2ent.mst
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\acent2ent.mst
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\acent2ent.mst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\Accent.xrf
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\Accent.xrf
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\Accent.xrf
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\gizmo\Accent.mst
-  Destination=%MAINDIR%\xml_scielo\proc\general\gizmo\Accent.mst
+  Destination=%PROGDIR%\xml_scielo\proc\general\gizmo\Accent.mst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\fst\xml_scielo.fst
-  Destination=%MAINDIR%\xml_scielo\proc\general\fst\xml_scielo.fst
+  Destination=%PROGDIR%\xml_scielo\proc\general\fst\xml_scielo.fst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\fst\title.fst
-  Destination=%MAINDIR%\xml_scielo\proc\general\fst\title.fst
+  Destination=%PROGDIR%\xml_scielo\proc\general\fst\title.fst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\error_end.txt
-  Destination=%MAINDIR%\xml_scielo\proc\general\error_end.txt
+  Destination=%PROGDIR%\xml_scielo\proc\general\error_end.txt
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\error.txt
-  Destination=%MAINDIR%\xml_scielo\proc\general\error.txt
+  Destination=%PROGDIR%\xml_scielo\proc\general\error.txt
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\empty.txt
-  Destination=%MAINDIR%\xml_scielo\proc\general\empty.txt
+  Destination=%PROGDIR%\xml_scielo\proc\general\empty.txt
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\batch\VerifPresencaParametro.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\batch\VerifPresencaParametro.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\batch\VerifPresencaParametro.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\batch\VerifExisteBase.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\batch\VerifExisteBase.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\batch\VerifExisteBase.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\batch\VerifExisteArquivo.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\batch\VerifExisteArquivo.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\batch\VerifExisteArquivo.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\batch\Seq2Master.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\batch\Seq2Master.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\batch\Seq2Master.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\batch\ReadConfigFile.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\batch\ReadConfigFile.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\batch\ReadConfigFile.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\batch\InformaLog.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\batch\InformaLog.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\batch\InformaLog.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\batch\GeraInvertido.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\batch\GeraInvertido.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\batch\GeraInvertido.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\batch\Apagatemp.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\batch\Apagatemp.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\batch\Apagatemp.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\general\batch\AchouErro.bat
-  Destination=%MAINDIR%\xml_scielo\proc\general\batch\AchouErro.bat
+  Destination=%PROGDIR%\xml_scielo\proc\general\batch\AchouErro.bat
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\cisis\wxis.exe
-  Destination=%MAINDIR%\xml_scielo\proc\cisis\wxis.exe
+  Destination=%PROGDIR%\xml_scielo\proc\cisis\wxis.exe
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\proc\cisis\Mx.exe
-  Destination=%MAINDIR%\xml_scielo\proc\cisis\Mx.exe
+  Destination=%PROGDIR%\xml_scielo\proc\cisis\Mx.exe
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\scilista.lst
-  Destination=%MAINDIR%\xml_scielo\scilista.lst
+  Destination=%PROGDIR%\xml_scielo\scilista.lst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\docs\Xml SciELO LinkOut_tec.doc
-  Destination=%MAINDIR%\xml_scielo\docs\Xml SciELO LinkOut_tec.doc
+  Destination=%PROGDIR%\xml_scielo\docs\Xml SciELO LinkOut_tec.doc
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\docs\UserManual.doc
-  Destination=%MAINDIR%\xml_scielo\docs\UserManual.doc
+  Destination=%PROGDIR%\xml_scielo\docs\UserManual.doc
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\xml_scielo.ini
-  Destination=%MAINDIR%\xml_scielo\config.example\xml_scielo.ini
+  Destination=%PROGDIR%\xml_scielo\config.example\xml_scielo.ini
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.xrf
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.xrf
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\journals\journals.xrf
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.seq
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.seq
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\journals\journals.seq
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.n02
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.n02
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\journals\journals.n02
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.n01
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.n01
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\journals\journals.n01
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.mst
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.mst
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\journals\journals.mst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.l02
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.l02
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\journals\journals.l02
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.l01
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.l01
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\journals\journals.l01
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.ifp
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.ifp
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\journals\journals.ifp
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.fst
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.fst
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\journals\journals.fst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\journals\journals.cnt
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\journals\journals.cnt
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\journals\journals.cnt
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\doi_conf.txt
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\doi_conf.txt
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\doi_conf.txt
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.xrf
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.xrf
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\config\config.xrf
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.seq
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.seq
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\config\config.seq
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.n02
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.n02
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\config\config.n02
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.n01
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.n01
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\config\config.n01
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.mst
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.mst
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\config\config.mst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.l02
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.l02
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\config\config.l02
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.l01
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.l01
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\config\config.l01
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.ifp
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.ifp
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\config\config.ifp
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.fst
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.fst
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\config\config.fst
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\PubMed\config\config.cnt
-  Destination=%MAINDIR%\xml_scielo\config.example\PubMed\config\config.cnt
+  Destination=%PROGDIR%\xml_scielo\config.example\PubMed\config\config.cnt
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\xml_scielo\config.example\arquivo.cip
-  Destination=%MAINDIR%\xml_scielo\config.example\arquivo.cip
+  Destination=%PROGDIR%\xml_scielo\config.example\arquivo.cip
   Flags=0000000010000010
 end
 item: Install File
@@ -5167,23 +5167,13 @@ item: If/While Statement
   Flags=00001010
 end
 item: Install File
-  Source=w:\scielo\bin\Cópia de markup_pmc\pmc\v3.0\site\css\ViewScielo.css
-  Destination=%PROGDIR%\markup\pmc\v3.0\site\xml\css\ViewScielo.css
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\Cópia de markup_pmc\pmc\v3.0\site\css\ViewNLM.css
-  Destination=%PROGDIR%\markup\pmc\v3.0\site\xml\css\ViewNLM.css
-  Flags=0000000010000010
-end
-item: Install File
   Source=w:\scielo\bin\markup_pmc\pmc\v3.0\site\xml\css_path.xml
-  Destination=%PROGDIR%\markup\pmc\v3.0\site\xml\css_path.xml
+  Destination=%PROGDIR%\bin\markup\pmc\v3.0\site\xml\css_path.xml
   Flags=0000000010000010
 end
 item: Install File
   Source=w:\scielo\bin\markup_pmc\pmc\v3.0\sgml2xml\sgm2win2.txt
-  Destination=%PROGDIR%\markup\pmc\v3.0\sgml2xml\sgm2win2.txt
+  Destination=%PROGDIR%\bin\markup\pmc\v3.0\sgml2xml\sgm2win2.txt
   Flags=0000000010000010
 end
 item: Install File

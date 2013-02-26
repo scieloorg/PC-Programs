@@ -198,8 +198,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="article|text" mode="journal-meta">
 		<journal-meta>
 			<xsl:if test=".//nlm-title and .//nlm-title!=''"><journal-id journal-id-type="nlm-ta"><xsl:value-of select=".//nlm-title"/></journal-id></xsl:if>
-			
-			<xsl:if test="string-length($JOURNAL_PID)=23">
+			<xsl:if test="not(.//nlm-title) or .//nlm-title=''">
+				<xsl:comment>Is a NLM journal title? If yes, missing 
+				&lt;journal-id journal-id-type="nlm-ta"&gt;???&lt;/journal-id&gt;
+			</xsl:comment>
+			</xsl:if>
+
+
+			<xsl:if test="string-length($JOURNAL_PID)=9">
 				<journal-id journal-id-type="publisher-id">
 					<xsl:value-of select="$JOURNAL_PID"/>
 				</journal-id>
