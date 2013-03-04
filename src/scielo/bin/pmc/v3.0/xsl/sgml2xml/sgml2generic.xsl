@@ -107,12 +107,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</caption>
 	</xsl:template>
 	
-	<xsl:template match="aff/zipcode | aff/city | aff/state | aff/country ">
-		<!-- addr-line content-type="{name()}">
-			<xsl:value-of select="."/>
-		</addr-line> -->
-		<xsl:value-of select="."/>
-	</xsl:template>
+
 	<xsl:template match="et-al">
 		<etal/>
 	</xsl:template>
@@ -416,10 +411,26 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="aff">
 		<aff>
-			<xsl:apply-templates select="@*"/> 
-			<xsl:apply-templates select="*|text()"/>
+			<xsl:apply-templates select="@id"/>
+			<xsl:apply-templates select="label|sup"/>
+
+			<xsl:apply-templates select="@*[name()!='id']"/>
+			<xsl:apply-templates select="*[name()!='label' and name()!='sup']|text()"/>
+
+			
 		</aff>
 	</xsl:template>
+
+	<xsl:template match="aff/label | aff/country">
+		<xsl:element name="{name()}"><xsl:value-of select="."/></xsl:element>
+	</xsl:template>
+	<xsl:template match="aff/text()">
+	</xsl:template>
+	<xsl:template match="aff/sup">
+		<xsl:if test="not(../label)">
+		<label><xsl:value-of select="."/></label></xsl:if>
+	</xsl:template>
+
 	<xsl:template match="aff/@id">
 		<xsl:attribute name="id">aff<xsl:value-of select="substring(.,3)"/></xsl:attribute>
 	</xsl:template>
@@ -429,13 +440,42 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:attribute name="content-type"><xsl:value-of select="name()"/></xsl:attribute>
 			
 			<xsl:value-of select="."/>
-		</institution>
+		</institution>,
 	</xsl:template> 
+
+	<xsl:template match="aff/city"><addr-line>
+		<named-content content-type="city"><xsl:value-of select="."/></named-content>,
+		<xsl:if test="../state">
+			<named-content content-type="state"><xsl:value-of select="../state"/></named-content>,
+		</xsl:if>
+		<xsl:if test="../zipcode">
+			<named-content content-type="zipcode"><xsl:value-of select="../zipcode"/></named-content>,
+		</xsl:if></addr-line>
+	</xsl:template>
+
+	<xsl:template match="aff/state">
+		<xsl:if test="not(../city)">
+			<addr-line><named-content content-type="state"><xsl:value-of select="."/></named-content>,
+			<xsl:if test="../zipcode">
+				<named-content content-type="zipcode"><xsl:value-of select="../zipcode"/></named-content>,
+			</xsl:if></addr-line>
+		</xsl:if>		
+	</xsl:template>
+
+	<xsl:template match="aff/zipcode">
+		<xsl:if test="not(../city) and not(../state)">
+			<addr-line><named-content content-type="zipcode"><xsl:value-of select="../zipcode"/></named-content>,</addr-line>			
+		</xsl:if>	
+	</xsl:template>
+	
+	
+
 	<xsl:template match="e-mail|email">
 		<email>
 			<xsl:apply-templates/>
 		</email>
 	</xsl:template>
+
 	<xsl:template match="*" mode="author-notes">
 		<xsl:variable name="fnauthors"><xsl:apply-templates select="$fn" mode="fnauthors"/></xsl:variable>
 	<xsl:if test="$corresp or $fnauthors!='' ">

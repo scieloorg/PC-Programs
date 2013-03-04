@@ -3,10 +3,11 @@
 	<xsl:import href="../jpub/main/jpub3-html.xsl"/>
     <xsl:import href="../web/scielo-fulltext.xsl"/>
     
-    <xsl:param name="css" select="'../web/xml.css'"/>
+    <xsl:param name="css" select="'../web/scielo.css'"/>
 	<xsl:param name="path_img" select="'/'"/>
 	<xsl:param name="img_format" select="'.jpg'"/>
 
+    <xsl:variable name="xml_article"></xsl:variable>
     <xsl:variable name="xml_article_lang"><xsl:choose><xsl:when test="./article/@xml:lang"></xsl:when><xsl:otherwise>en</xsl:otherwise></xsl:choose></xsl:variable>
     <xsl:variable name="xml_display_objects"/>
     <xsl:variable name="PID"/>

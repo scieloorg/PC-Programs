@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">
 	 
-    <xsl:variable name="refpos"><xsl:apply-templates select="document($xml_article)//ref" mode="position"/></xsl:variable>
+    <xsl:variable name="refpos"><xsl:choose><xsl:when test="$xml_article"><xsl:apply-templates select="document($xml_article)//ref" mode="position"/></xsl:when><xsl:otherwise><xsl:apply-templates select=".//ref" mode="position"/></xsl:otherwise></xsl:choose></xsl:variable>
+
     <xsl:variable name="issue_label">
 		<xsl:choose>
 			<xsl:when test="//ISSUE/@NUM = 'AHEAD'"><xsl:value-of select="substring(//ISSUE/@PUBDATE,1,4)"/>
@@ -23,6 +24,7 @@
 			<xsl:when test="//PATH_SERIMG and //SIGLUM and //ISSUE">
 				<xsl:value-of select="//PATH_SERIMG"/>
 				<xsl:value-of select="//SIGLUM"/>/<xsl:value-of select="$issue_label"/>/</xsl:when>
+			<xsl:when test="$path_img!=''"><xsl:value-of select="$path_img"/></xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="//image-path"/>
 			</xsl:otherwise>
@@ -512,27 +514,28 @@
 			<xsl:apply-templates/>
 			</a></div>
 	</xsl:template>
-	
+
 	<xsl:template match=" caption/title | caption/title ">
 		<xsl:apply-templates select="*|text()"/>
 	</xsl:template>
+
 	<xsl:template match="fig/label | table-wrap/label | fig/caption | table-wrap/caption">
 		<span class="{name()}"><xsl:apply-templates select="* | text()"/></span>
 	</xsl:template>
-	<xsl:template match="graphic"><a target="_blank"><xsl:apply-templates select="@xlink:href" mode="href"/>
+
+	<xsl:template match="graphic | disp-formula//graphic"><a target="_blank"><xsl:apply-templates select="@xlink:href" mode="href"/>
 		<img class="graphic"><xsl:apply-templates select="@xlink:href" mode="src"/></img></a>		
 	</xsl:template>
-	<xsl:template match="inline-graphic | disp-formula//graphic"><a target="_blank"><xsl:apply-templates select="@xlink:href" mode="href"/>
+	
+	<xsl:template match="inline-graphic"><a target="_blank"><xsl:apply-templates select="@xlink:href" mode="href"/>
 		<img class="thumbnail"><xsl:apply-templates select="@xlink:href" mode="src"/></img></a>		
 	</xsl:template>
+
 	<xsl:template match="inline-graphic | graphic" mode="thumbnail">
 		<img class="thumbnail"><xsl:apply-templates select="@xlink:href" mode="src"/></img>		
 	</xsl:template>
 
-    
-
 	<xsl:template match="fig">
-
 		<div class="figure"><a name="{@id}"></a>
 		    <xsl:apply-templates select="graphic"/>
 			<div class="label_caption">
@@ -542,6 +545,7 @@
 			
 		</div>
 	</xsl:template>
+
 	<!--Tabelas-->
 	<xsl:template match="table-wrap">
 		<div class="xref-tab"><a name="{@id}"/>
@@ -553,16 +557,17 @@
 
 		</div>
 	</xsl:template>
+	
 	<!--Tabela se estiver como imagem-->
 	<xsl:template match="table-wrap/graphic">
 		<img class="graphic"><xsl:apply-templates select="@xlink:href" mode="src"/></img>
 	</xsl:template>
 
-	<xsl:template match="@href" mode="src">
+	<xsl:template match="@href | @xlink:href" mode="src">
         <xsl:variable name="src"><xsl:value-of select="$var_IMAGE_PATH"/>/<xsl:choose><xsl:when test="contains(., '.tif')"><xsl:value-of select="substring-before(.,'.tif')"/></xsl:when><xsl:otherwise><xsl:value-of select="."/></xsl:otherwise></xsl:choose></xsl:variable>
         <xsl:attribute name="src"><xsl:value-of select="$src"/><xsl:if test="not(contains($src,'.jpg'))">.jpg</xsl:if></xsl:attribute>
 	</xsl:template>
-	<xsl:template match="@href" mode="href">
+	<xsl:template match="@href | @xlink:href" mode="href">
         <xsl:variable name="src"><xsl:value-of select="$var_IMAGE_PATH"/>/<xsl:choose><xsl:when test="contains(., '.tif')"><xsl:value-of select="substring-before(.,'.tif')"/></xsl:when><xsl:otherwise><xsl:value-of select="."/></xsl:otherwise></xsl:choose></xsl:variable>
         <xsl:attribute name="href"><xsl:value-of select="$src"/><xsl:if test="not(contains($src,'.jpg'))">.jpg</xsl:if></xsl:attribute>
 	</xsl:template>

@@ -3,7 +3,44 @@
    	
     <xsl:import href="../nlm-style-4.6.6/nlm-stylechecker.xsl"/>
 	<xsl:param name="filename"/>
-	
+	 <xsl:template match="/">
+    <ERR>
+      <xsl:processing-instruction name="SC-DETAILS">
+        <xsl:if test="$stream != $style">
+          <xsl:text>******* ERROR: $style WAS NOT PASSED CORRECTLY *******</xsl:text>
+          </xsl:if>
+        <xsl:text>Style checking applied for document with the root element "</xsl:text>
+        <xsl:value-of select="$document-type"/>
+        <xsl:text>"  with version </xsl:text>
+        <xsl:value-of select="$stylechecker-version"/>
+        <xsl:text> of the SciELO XML StyleChecker. </xsl:text>
+        <xsl:text>||</xsl:text>
+        <xsl:text>The document is being checked against the SciELO Tagging Guidlines rules for "</xsl:text>
+        <xsl:value-of select="$stream"/>
+        <xsl:text>" for content tagged using </xsl:text>
+        <xsl:choose>
+          <xsl:when test="$dtd-version='2'">
+            <xsl:text> version 2.3 or earlier </xsl:text>
+            </xsl:when>
+          <xsl:when test="$dtd-version='3'">
+            <xsl:text> version 3.0 </xsl:text>
+            </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$dtd-version"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        <xsl:text>of the NLM DTD. </xsl:text>
+        <xsl:text>||</xsl:text>
+        <xsl:text>The document was tagged with the language attribute value "</xsl:text>
+        <xsl:value-of select="$art-lang-att"/>
+        <xsl:text>". </xsl:text>
+        </xsl:processing-instruction>
+      <xsl:processing-instruction name="TITLE">
+        <xsl:value-of select="$content-title"/>
+        </xsl:processing-instruction>
+      <xsl:apply-templates/>
+    </ERR>
+    </xsl:template>
     <xsl:variable name="check_funding">
         <xsl:choose>
             <xsl:when test=".//funding-group">funding-group</xsl:when>

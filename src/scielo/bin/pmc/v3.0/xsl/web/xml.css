@@ -17,12 +17,12 @@
 .title{
 	/* font-size: 16pt; */
 	font-weight: bold;
-	font-size: 120%;
+	font-size: 135%;
 }
 
 /*Titulo traduzido do artigo*/
 .trans-title{
-	font-size: 110%;
+	font-size: 120%;
 	margin-top: 80px;
 	margin-bottom: 80px;
 }
@@ -33,13 +33,20 @@
 	font-weight: bold;
 	font-size: 97%;
 }
+.role {
+	
+	font-weight: normal;
+}
+.sig .autores {
+	margin-bottom: 0
+}
 
 .aff{
 	margin: 0px;
 }
 
 .abstract .sec, .trans-abstract .sec {
-	font-size: 97%;
+	
 	text-transform: uppercase;
 	margin-top: 10px;
 }
@@ -77,12 +84,15 @@
 	margin-bottom: 0px;
 }
 .foot-notes {
-	padding-top: 20px
+	padding-top: 20px;
+	padding-bottom: 40px;
+
 }
 /*Licença do artigo*/
 .lic{
+	padding-top: 5%;
 	font-size: 13px;
-	
+	border-top: 1px double #CCC ;
 }
 
 .corresp {
@@ -96,15 +106,20 @@
    
 }
 /*Sig Block*/
-.sig{
+.sig {
 	text-align: right;
+	padding-top: 5%; 
 }
 /* ------------------ */
 
 /* ---- BODY --- */
 /*Título das Seções*/
 
-.body { padding-top: 50px }
+.body { padding-top: 20px }
+
+.sub-article .body { 
+	padding-top: 0%
+}
 
 .sec{
 	/* clear:both; 
@@ -163,7 +178,8 @@
 /*Figura*/
 .thumbnail{
 	width: auto;
-	max-width: 60px;
+	max-height: 50px;
+	text-align: center;
 
 }
 .label_caption {
@@ -252,3 +268,9 @@
 .article-title {
 	font-weight: bold;
 }
+
+.sub-article {
+    border-top: 1px double #CCC ;
+    padding-top: 5%;
+    padding-bottom: 5%;
+	}

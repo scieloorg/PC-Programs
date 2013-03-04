@@ -8,6 +8,11 @@ import reuse.xml.xml_java as xml_java
 xml_tree = None
 report = None
 
+def delete(filename):
+    try:
+        os.unlink(filename)
+    except WindowsError,e:
+        pass
 
 
 def img_to_jpeg(img_path, jpg_path):
@@ -232,6 +237,8 @@ class Validator:
             else:
                 report.write('Unable to generate xml for report: ' + self.xml_report, True, True, True)
 
+            if ':' in img_path:
+                img_path = 'file:///' + img_path 
             if type(self.xsl_preview) == type([]):
                 xml_java.tranform_in_steps(self.xml_filename, self.dtd, self.xsl_preview, self.html_preview, {'path_img': img_path +'/', 'css': 'file:///' + self.css, 'new_name': new_name})
             else:
@@ -359,6 +366,11 @@ class SGML2XML:
         if not r:
             report.write('Unable to create ' + xml_filename + ' from ' + sgmxml_filename, True, True, True)
             report.write(err_filename, True, True, True)
+        
+        if os.path.isfile(temp_err_filename):
+            delete(temp_err_filename)
+        if os.path.isfile(res_filename):
+            delete(res_filename)
         return r
         
 
@@ -369,7 +381,7 @@ class XMLPacker:
         path_xsl = path_pmc + '/v3.0/xsl'
 
         dtd = path_pmc + '/v3.0/dtd/journalpublishing3.dtd' 
-        css = path_pmc + '/v3.0/xsl/web/xml.css'
+        css = path_pmc + '/v3.0/xsl/web/scielo.css'
 
 
         xsl_sgml2xml = path_xsl + '/sgml2xml/sgml2xml.xsl'
@@ -467,7 +479,7 @@ class XMLPackagesChecker:
                 # nao precisa renomear
                 shutil.copyfile(filename, dest_path + '/' + name + '.xml')
                 for f in os.listdir(src_path):
-                    if f.startswith(name) and not f.endswith('.sgm.xml'):
+                    if f.startswith(name) and not f.endswith('.sgm.xml') and not f.endswith('.res') and not f.endswith('.res1'):
                         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f)
             else:
                 # renomear
