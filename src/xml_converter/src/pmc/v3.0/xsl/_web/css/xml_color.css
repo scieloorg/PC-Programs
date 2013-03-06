@@ -1,0 +1,206 @@
+@charset "utf-8";
+
+body{
+	background: #FCFCFC;
+}
+
+p{
+	font-size: 14px;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	clear: both;
+}
+
+/*Separa as Colunas da Página (navegação a esquerda e conteúdo centro-direita)*/
+.nav {
+	float: left;
+	width: 15%;
+	background: #93A5C4;
+	padding-bottom: 10px;
+}
+
+.all {
+	width: 68%;
+	float: left;
+	border-left-style: dashed;
+	padding: 3%;
+}
+
+
+/*Título da REVISTA--->TOPO!*/
+#tit-rev{
+	text-align: center;
+	background: #669;
+	font-size: 36px;
+}
+
+/*Identificação do artigo (Volume, numero, fpage, lpage e DOI)*/
+#journal-id{
+	font-size: 13px;
+	color: #3C6;
+}
+
+
+/*Seção do artigo*/
+/*Talvez seja desnecessário essa informação*/
+.categoria{
+	text-align: right;
+	font-size: 12px;
+	font-family: "Courier New", Courier, monospace;
+}
+
+
+/*Títulos do artigo*/
+.title p{
+	color: #FF3;
+	font-size: 20px;
+	margin-top: 25px;
+}
+
+/*Subtitulos do artigo*/
+#subtitle{
+	color: #0F3;
+	font-size: 15px;
+}
+
+
+/*Formatação do grupo de autores*/
+.autores{
+	background: #0F0;
+	font-family: "Comic Sans MS", cursive;
+	font-size: 12px;
+	color: #FFF;
+}
+
+
+/*Formata as notas do autor*/
+.author-note{
+	background: #000;
+	color: #0F0;
+}
+
+
+/*Licença do artigo*/
+.lic{
+	background:#00F;
+	color: #0F0;	
+}
+
+
+/*Título das Seções*/
+.sec{
+	background-color:#09F;
+	text-align:center;
+	clear:both;
+	font-size: 22px;
+	color: #FFF;
+}
+	
+/*Título das Subseções do artigo*/
+.subsec{
+	font-family:"Comic Sans MS", cursive;
+	font-size: 20px;
+}
+
+/*Título das Subseções do artigo*/
+.sub-subsec{
+	font-family:"Comic Sans MS", cursive;
+	font-size: 16px;
+}
+
+/*Sig Block*/
+.sig{
+	font-family: monotype corsiva;
+	font-size: 16px;
+}
+	
+
+/*DIV da imagem*/
+.xref-img{
+	width: 100%;
+	border: groove;
+	border-color: transparent;
+	padding: 20px;
+}
+
+.xref-img:hover{
+	width: 100%;
+	border: groove;
+	border-color: #09F;
+}
+/*Figura*/
+.fig{
+	width:98%;
+}
+
+/*DIV da tabela*/
+.xref-tab{
+	width: 100%;
+	border: groove;
+	border-color: transparent;
+	padding: 20px
+}
+
+.xref-tab:hover{
+	width: 100%;
+	border: groove;
+	border-color: #09F;
+}
+
+
+/*Label de Tabelas e imagens*/
+.label{
+	font-weight: bold;
+	color: #039;
+	text-decoration: underline;
+	text-align: left;
+}
+
+/*Caption de Tabelas e Imagens*/
+.caption, fn{
+	font-family: Arial, Helvetica, sans-serif;
+	color:  #F00;
+}
+
+
+.xref-div-img{
+	width: 130px;
+	float: left;
+}
+
+
+.ref{
+	font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.ref-label{
+	font-style: italic;
+}
+
+.ref-autor{
+	font-family: Georgia, "Times New Roman", Times, serif;
+	color: #F00;
+	
+}
+
+
+.ref-title{
+	font-family: Georgia, "Times New Roman", Times, serif;
+	color: #F3C;
+}
+
+.ref-title-t{
+	font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+.ref-source{
+	font-family: Georgia, "Times New Roman", Times, serif;
+	color: #000;
+	background:#CCC;
+	font-style: italic;
+}
+
+.data{
+	font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+

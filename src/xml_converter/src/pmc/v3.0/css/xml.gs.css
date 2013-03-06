@@ -1,0 +1,365 @@
+@charset "utf-8";
+
+
+
+body{
+	background: #FCFCFC ;
+	font-size: 10pt;
+	font-family: Verdana, Geneva, sans-serif;
+}
+
+.journal-title {
+	font-size: 150%;
+	color: #000080;
+	
+}
+.bib-strip {
+	
+	color: #800000;
+	
+}
+.issn {
+	
+	color: #000080;
+	
+}
+.doi {
+	color: #800000;
+
+}
+
+
+/*Separa as Colunas da Página (navegação a esquerda e conteúdo centro-direita)*/
+
+.select  li{
+	background: #0F9;
+}
+.nav{
+	position: fixed;
+	text-align: right;
+	width: auto;
+	padding: 0;
+}
+
+.nav-ul{
+	list-style:none;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size:  10pt;
+	padding-right: 5px;
+	background: url(img/logo-Scielo.png) 50px;
+}
+
+.nav-ul-li{
+	border: groove transparent;	
+}
+
+
+
+.nav-ul a:link, .nav-ul-li a:link {
+	text-decoration: none;
+	color: #666;
+}
+
+.nav a:visited{
+	text-decoration: none;
+	color: #666;
+}
+
+.nav-ul-li:hover, .nav-ul-li a:hover{
+	border: groove #CCC;
+	background: #CCC;
+	color: 	#F00;
+}
+/*.nav{
+	position: fixed;
+	text-align: right;
+	width: 170px ;
+	padding: 0;
+}
+
+.nav-ul{
+	list-style:none;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size:  10pt;
+	padding-right: 5px;
+	background: url(img/logo-Scielo.png);
+}
+
+.nav-ul-li{
+	border: groove transparent;	
+}
+
+
+.nav-ul a:link, .nav-sublink:link {
+	text-decoration: none;
+	color: #666;
+}
+
+.nav-ul-li:hover, .nav-sublink:hover{
+	border: groove #CCC;
+	background: #CCC;
+	color: #F00;
+}
+
+
+.nav-ul a:visited, .nav-sublink:hover{
+	text-decoration: none;
+	color: #666;
+}
+
+*/
+
+
+
+.all {
+	/*border-left: groove #CCC;*/
+	padding: 10%;
+	/*margin-left: 20%;  180px FIXED*/
+	width: auto;
+	background: url(img/xml_pmc.png) repeat-y;
+}
+
+.all a:link{
+	color: 	#00F;
+}
+
+.all a:visited{
+	color: 	#00F;
+}
+
+.all a:hover{
+	background: #DCF3F8;
+}
+
+.all a:active{
+	background: #DCF3F8;
+}
+
+
+/*Seção do artigo*/
+/*Talvez seja desnecessário essa informação*/
+.categoria{
+	text-align: right;
+	text-transform: uppercase;
+}
+
+
+/*Títulos do artigo*/
+.title{
+	font-size: 16pt;
+	font-weight: bold;
+}
+
+/*Titulo traduzido do artigo*/
+.title, .trans-title{
+	font-size: 14pt;
+	margin-top: 80px;
+	margin-bottom: 80px;
+}
+
+/*Subtitulos do artigo*/
+#subtitle{
+	font-size: 13pt;
+}
+
+
+/*Formatação do grupo de autores*/
+.autores{
+	margin-bottom: 25px;
+	font-weight: bold;
+}
+
+
+/*Formata as notas do autor*/
+
+.author-note{
+	padding-top: 5px;
+	
+}
+
+/*Notas dos autores*/
+.fn-author, .recebido{
+	margin-top: 50px;
+}
+
+.fn-author-p{
+	padding: 0px;
+	margin-top: 5px;
+	margin-bottom: 0px;
+}
+
+/*.author-note{}*/
+
+
+.aff{
+	margin: 0px;
+}
+
+
+/*Licença do artigo*/
+.lic{
+	font-size: 13px;
+}
+
+
+/*Título das Seções*/
+.sec{
+	/* clear:both; */
+	font-size: 15pt;
+	border-bottom: #CCC double thick;
+	margin-top: 45px;
+	font-weight: bold;
+}
+	
+/*Título das Subseções do artigo*/
+.subsec{
+	font-size: 12pt;
+	margin-bottom: 0px;
+	font-weight: bold;
+}
+
+/*Título das Subseções do artigo*/
+.sub-subsec{
+	font-size: 11pt;
+}
+
+/*Sig Block*/
+.sig{
+	text-align: right;
+}
+
+/*Tirar estilo da lista*/
+.list-none{
+	list-style: none;
+}
+
+
+/*DIV da imagem*/
+.xref-img, .xref-tab{
+	width: 96%;
+	border: groove;
+	border-color: transparent;
+	padding: 20px;
+}
+
+.xref-img:hover, .xref-tab:hover{
+	border: groove;
+	border-color: #09F;
+}
+/*Figura*/
+.fig{
+	width: 98%;
+
+}
+
+.figure{
+	max-width:700px;
+	max-height:500px;
+	height: auto;
+    width: auto;
+
+}
+
+.table{
+	margin: 0 auto;
+}
+
+.tab-tooltip{
+	width:100%;
+	background: #FFF;
+}
+
+
+
+
+/*Label de Tabelas e imagens*/
+.label{
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+/*Caption de Tabelas e Imagens*/
+.fn, .caption {
+	margin: 0;
+}
+
+
+.xref-div-img{
+	width: 130px;
+	float: left;
+}
+
+
+/*.ref{}
+
+.ref-label{
+}
+
+.ref-autor{}
+
+
+.ref-title{}
+
+.ref-title-t{}
+
+.ref-source{}
+
+.data{}*/
+
+
+/*Estilo para os tooltips(vem com o código da biblioteca do jquery)*/
+.stickytooltip{
+	box-shadow: 5px 5px 8px #818181; /*shadow for CSS3 capable browsers.*/
+	-webkit-box-shadow: 5px 5px 8px #818181;
+	-moz-box-shadow: 5px 5px 8px #818181;
+	display:none;
+	position:absolute;
+	display:none;
+	border: 1px double #CCC ; /*Border around tooltip*/
+	background:white;
+	z-index:3000;
+}
+
+
+.stickytooltip .stickystatus{ /*Style for footer bar within tooltip*/
+	background: white;
+	color:  #000;
+	padding-top: 3px;
+	text-align:center;
+	font:bold 8pt Verdana, Geneva, sans-serif;
+}
+
+
+
+/*Classes '.atip' são referentes as miniaturas*/
+.atip{
+	padding: 0;
+	font-size: 9pt;
+	background: 	#9F6;
+}
+
+.xref-img-tooltip, .xref-tab-tooltip{
+	padding: 0px;
+	width: 580px;
+}
+
+.stickytooltip div{
+	background: #E9E9E9;
+}
+
+
+
+.xref-fn{
+	width: 200px;
+}
+
+.xref-autornote{
+	margin: 0px;
+	width: auto;
+	max-width: 330px;
+	padding: 0;
+}
+
+.xref-ref{
+	width: 300px;
+}
