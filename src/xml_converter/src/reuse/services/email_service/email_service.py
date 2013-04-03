@@ -94,7 +94,7 @@ class EmailService:
             smtp = smtplib.SMTP(self.server)
             try:
                 smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
-            except SMTPSenderRefused:
+            except :
                 msg = MIMEMultipart()
                 msg['From'] = self.mail_from
                 msg['To'] = ', '.join(to)
@@ -103,14 +103,14 @@ class EmailService:
                 msg.attach( MIMEText(text, 'plain', 'utf-8') )
                 smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
 
-            except Exception as inst:
-                msg = MIMEMultipart()
-                msg['From'] = self.mail_from
-                msg['To'] = ', '.join(to)
-                msg['Subject'] = Header(subject, 'utf-8')
-                msg['BCC'] = ', '.join(bcc)
-                msg.attach( MIMEText('Problem in mail service ' +  subject, 'plain', 'utf-8') )
-                smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
+            #except Exception as inst:
+            #    msg = MIMEMultipart()
+            #    msg['From'] = self.mail_from
+            #    msg['To'] = ', '.join(to)
+            #    msg['Subject'] = Header(subject, 'utf-8')
+            #    msg['BCC'] = ', '.join(bcc)
+            #    msg.attach( MIMEText('Problem in mail service ' +  subject, 'plain', 'utf-8') )
+            #    smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
             smtp.close()
 
 if __name__ == '__main__':

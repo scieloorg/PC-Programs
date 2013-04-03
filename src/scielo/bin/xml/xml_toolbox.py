@@ -71,60 +71,107 @@ class XMLData:
         xml_tree.load(xml_filename, report)
         
 
-    def xml_data_new_name_from_sgmxml(self, acron = ''):
+    def data_from_sgml(self):
         nodes = xml_tree.return_nodes()
-        r = ''
-        if len(nodes)>0:
-            order = '00' + nodes[0].attrib['order']
-            order = order[-3:]        
-            fpage = '000' + nodes[0].attrib['fpage']
-            fpage = fpage[-4:]
-            if fpage == '0000':
-                page_or_order ='e' + order
-            else:
-                page_or_order = fpage        
-            issueno = '0' + nodes[0].attrib['issueno']
-            issueno = issueno[-2:]            
-            if len(acron)>0:
-                acron += '-'
-            r = nodes[0].attrib['issn'] + '-' + acron  + nodes[0].attrib['volid']+ '-' + issueno + '-' +  page_or_order
+        r = None
+        if len(nodes) > 0:
+            order = nodes[0].attrib['order']
+            fpage = nodes[0].attrib['fpage']
+            if 'issueno' in nodes[0].attrib.keys():
+                issueno = nodes[0].attrib['issueno']
+            if 'supplvol' in nodes[0].attrib.keys():
+                suppl = nodes[0].attrib['supplvol']
+            if 'supplno' in nodes[0].attrib.keys():
+                suppl = nodes[0].attrib['supplno']
+            if suppl == '0':
+                suppl = 'suppl'
+            r = (nodes[0].attrib['issn'], nodes[0].attrib['volid'], issueno, suppl, fpage, order)
         return r
 
-    def xml_data_new_name_from_xml(self, alternative_page, acron = ''):
+    def data_from_xml(self):
         nodes = xml_tree.return_nodes()
-        article_meta_node = xml_tree.return_nodes('.//article-meta', nodes[0])
-        node_issn = xml_tree.return_nodes('.//front/journal-meta/issn', nodes[0])
+        r = None
+
+        if len(nodes) > 0:
+            article_meta_node = xml_tree.return_nodes('.//article-meta', nodes[0])
+
+            issn = ''
+            vol = ''
+            number = ''
+            suppl = ''
+            fpage = ''
+
+            node = xml_tree.return_nodes('.//front/journal-meta/issn', nodes[0])
+            if len(node) > 0:
+                issn = node[0].text
+        
+            node = xml_tree.return_nodes('volume', article_meta_node[0])
+            if len(node) > 0:
+                vol = node[0].text
+        
+            node = xml_tree.return_nodes('issue', article_meta_node[0])
+            if len(node) > 0:
+                issue = node[0].text.lower()
         
 
-        node_volume = xml_tree.return_nodes('volume', article_meta_node[0])
-        node_number = xml_tree.return_nodes('issue', article_meta_node[0])
-        node_fpage = xml_tree.return_nodes('fpage', article_meta_node[0])
+            node = xml_tree.return_nodes('supplement', article_meta_node[0])
+            if len(node) > 0:
+                suppl = node[0].text
         
-        volume = node_volume[0].text
-        number  = node_number[0].text
-        fpage = node_fpage[0].text
 
+            node = xml_tree.return_nodes('fpage', article_meta_node[0])
+            if len(node) > 0:
+                fpage = node[0].text
 
+            
+            if 'suppl' in issue:
+                if issue == 'suppl':
+                    suppl = 'suppl'
+                else:
+                    number, suppl = issue.split('suppl')
+                    number = number.replace(' ', '')
+                    suppl = suppl.replace(' ', '')
+
+                    if suppl == '':
+                        suppl = 'suppl'
+            else:
+                number = issue
         
-        issn = node_issn[0].text
+                
+            r = (issn, vol, number, suppl, fpage, '')        
+        
+        return r
 
-        number = number.lower().replace(' ', '_')
+    def format_data(self, data, param_acron = '', param_order = ''):
+        if data != None:
+            issn, vol, issueno, suppl, fpage, order = data
 
-        if len(nodes)>0:
-            page_or_alternative_page = fpage
-            if fpage.replace('0','') == '':
-                page_or_alternative_page = alternative_page
-            r = ''
-            for l in page_or_alternative_page:
-                if l.isdigit():
-                    r += l
-            page_or_alternative_page = r
+            if order == '':
+                order = param_order
 
-            issueno = '0' + number
-            issueno = issueno[-2:]            
-            if len(acron)>0:
-                acron += '-'
-            r = issn + '-' + acron  + volume + '-' + issueno + '-' +  page_or_alternative_page
+            order = '00000' + order
+            order = order[-5:]   
+
+            fpage = '00000' + fpage
+            fpage = fpage[-5:]
+
+            if fpage == '00000':
+                page_or_order ='e' + order
+            else:
+                page_or_order = fpage     
+
+            issueno = '00' + issueno
+            issueno = issueno[-2:] 
+
+            if suppl == 'suppl':
+                issueno += '-' + suppl
+            else:
+                issueno += '-' + 's' + suppl
+            
+            if len(param_acron) > 0:
+                param_acron += '-'
+
+            r = issn + '-' + param_acron  + vol + '-' + issueno + '-' +  page_or_order
         return r
 
 
@@ -155,14 +202,14 @@ class XMLData:
 
     
 
-    def data_to_rename(self, acron, alternative_id = ''):
-        
+    def data_to_rename(self, acron, alternative_id = ''):        
         if len(alternative_id) == 0:
-            #print(1)
-            new_name = self.xml_data_new_name_from_sgmxml(acron)
-            
+            data = self.data_from_sgml()
+            new_name = self.format_data(data, acron)
+
         else:
-            new_name =  self.xml_data_new_name_from_xml(alternative_id, acron)
+            data = self.data_from_xml()
+            new_name = self.format_data(data, acron, alternative_id)
         xml_images_list =  self.xml_data_image_names() 
         return (new_name, xml_images_list)
 

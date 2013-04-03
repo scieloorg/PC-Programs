@@ -42,7 +42,7 @@ cltrial;Identifica dados de ensaios clínicos;10;#FALSE#;#FALSE#;cltrial
 down;cltrial
 xref;Identifica referencia cruzada de tabelas, figuras, etc;10;#TRUE#;#TRUE#;
 uri;Identifica um link;10;#TRUE#;#TRUE#;
-sciname;Identifica nomes científicos;10;#TRUE#;#TRUE#;
+sciname;Identifica nomes científicos;10;#TRUE#;#FALSE#;
 quote;Identifica citação ou epígrafe;10;#TRUE#;#FALSE#;
 
 corresp;ifloat

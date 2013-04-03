@@ -33,7 +33,7 @@
     .//article-meta//article-id[@pub-id-type='doi'] 237
     .//article-meta/volume 31    
     .//article-meta/issue 32    
-    .//article-meta/suppl 132    
+    .//article-meta/supplement 132    
     .//article-meta//funding-source 58    
     .//article-meta//award-id 60    
     .//article-meta//funding-statement 102

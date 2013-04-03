@@ -139,6 +139,10 @@ class JournalIssue:
             label += 'n' + self.number
         if self.suppl != '':
             label += 's' + self.suppl 
+        print(' ... issue ... ' + label)
+        print(self.volume)
+        print(self.number)
+        print(self.suppl)
 
         self.name = label
         self.json_data = {}
@@ -202,11 +206,12 @@ class Article:
     
 
     def set_previous_id(self, prev_id):
-        self.previous_id = prev_id
-        print('????')
-        self.json_data['f']['881'] = prev_id
-        self.json_data['h']['881'] = prev_id
-        print(self.json_data.keys())
+        if len(prev_id) > 0:
+            self.previous_id = prev_id
+            print('????')
+            self.json_data['f']['881'] = prev_id
+            self.json_data['h']['881'] = prev_id
+            print(self.json_data['f']['881'])
         
 
     @property 

@@ -1251,16 +1251,6 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=w:\scielo\bin\xml\reuse\xml\__xml_java\JavaXMLTransformer.py
-  Destination=%PROGDIR%\bin\xml\reuse\xml\__xml_java\JavaXMLTransformer.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\xml\reuse\xml\__xml_java\__init__.py
-  Destination=%PROGDIR%\bin\xml\reuse\xml\__xml_java\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
   Source=w:\scielo\bin\xml\reuse\xml\__init__.pyc
   Destination=%PROGDIR%\bin\xml\reuse\xml\__init__.pyc
   Flags=0000000010000010
@@ -1268,11 +1258,6 @@ end
 item: Install File
   Source=w:\scielo\bin\xml\reuse\xml\__init__.py
   Destination=%PROGDIR%\bin\xml\reuse\xml\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\xml\reuse\xml\___xml_java.py
-  Destination=%PROGDIR%\bin\xml\reuse\xml\___xml_java.py
   Flags=0000000010000010
 end
 item: Install File
@@ -1323,11 +1308,6 @@ end
 item: Install File
   Source=w:\scielo\bin\xml\reuse\input_output\__init__.py
   Destination=%PROGDIR%\bin\xml\reuse\input_output\__init__.py
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\xml\reuse\img_to_jpg.pyc
-  Destination=%PROGDIR%\bin\xml\reuse\img_to_jpg.pyc
   Flags=0000000010000010
 end
 item: Install File
@@ -1408,11 +1388,6 @@ end
 item: Install File
   Source=w:\scielo\bin\pmc\v3.0\xsl\web\xml.css
   Destination=%PROGDIR%\bin\pmc\v3.0\xsl\web\xml.css
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\pmc\v3.0\xsl\web\site.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\xsl\web\site.xsl
   Flags=0000000010000010
 end
 item: Install File
@@ -1888,11 +1863,6 @@ end
 item: Install File
   Source=w:\scielo\bin\pmc\v3.0\xsd\journalpublishing3.xsd
   Destination=%PROGDIR%\bin\pmc\v3.0\xsd\journalpublishing3.xsd
-  Flags=0000000010000010
-end
-item: Install File
-  Source=w:\scielo\bin\pmc\v3.0\site.xsl
-  Destination=%PROGDIR%\bin\pmc\v3.0\site.xsl
   Flags=0000000010000010
 end
 item: Install File

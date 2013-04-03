@@ -58,9 +58,16 @@ class ISISManager4Articles:
         package.report.write('Saving issue - add issue to scilista')
         self.add_issue_to_scilista(issue) 
         
+        if not 'ahead' in issue_paths.issue_id_path:
+            package.report.write('Deleting')
+            for f in os.listdir(issue_paths.issue_id_path):
+                os.unlink(issue_paths.issue_id_path + '/' + f)
+
+
         package.report.write('Saving issue record')
         self.save_issue_record(package, issue, issue_paths)
 
+        
         package.report.write('Saving article records')
         for article in issue.documents:
             self.save_article_records(package, article, issue_paths)

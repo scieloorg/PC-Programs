@@ -67,14 +67,15 @@ class Reception:
         self.xml_packer = xmlpacker
         
     def report_not_processed_packages(self, template_msg):
-        items = ''
-        for package in os.listdir(self.input_path):
-            #items += package + '\n'
+        items = []
+        for package in os.listdir(self.input_path):            
             for xml in os.listdir(self.input_path + '/' + package):
                 if xml.endswith('.xml'):
-                    items += package + '/' + xml + '\n'
+                    items.append( package + '/' + xml )
         if len(items)>0:
-            self.report_sender.send_to_adm(template_msg, items)
+            self.report_sender.send_to_adm(template_msg, '\n'.join(items))
+            for xml in items:
+                os.unlink(self.input_path + '/' + xml)
 
     def open_packages(self, document_analyst, document_archiver, img_converter, fulltext_generator):
         for folder in os.listdir(self.input_path):
@@ -206,6 +207,8 @@ class Package:
 
         for f in os.listdir(self.reports_path):
             if f.endswith('.html'):
+                if os.path.exists(self.package_path + '/' + f):
+                    os.unlink(self.package_path + '/' + f)
                 shutil.move(self.reports_path + '/' + f, self.package_path + '/' + f)
                 if  f.endswith('.rep.html'):
                     files.append(self.package_path + '/' + f)
@@ -238,7 +241,7 @@ class Package:
     def check_pdf_file(self, xml_filename):
         pdf_filename = xml_filename.replace('.xml', '.pdf')
         if not os.path.exists(pdf_filename):
-            package.report.write(' ! WARNING: Expected ' + os.path.basename(pdf_filename), True, True)
+            self.report.write(' ! WARNING: Expected ' + os.path.basename(pdf_filename), True, True)
 
 
 class PackageAnalyzer:
@@ -261,7 +264,7 @@ class PackageAnalyzer:
             
             xml_filename = package.package_path + '/' + xml_fname
         
-            package.report.write('\n' + '-' * 80 + '\n' + 'File: ' + xml_filename + '\n', True, True, True)
+            package.report.write('\n' + '-' * 80 + '\n' + 'File: ' + xml_fname + '\n', True, True, True)
         
             package.check_pdf_file(xml_filename)
 
@@ -281,6 +284,9 @@ class PackageAnalyzer:
                 
             #print(loaded_folders)
         return loaded_folders.values()
+
+    def analyze_xml(self, xml_filename):
+        return True
 
 
     def analyze_document(self, xml_filename, package, folder_table_name):
@@ -305,7 +311,8 @@ class PackageAnalyzer:
                 selected_folder = self.check_folder(registered, package)
                 specific_document = self.json2model.return_doc(selected_folder)
                 if not 'ahead' in specific_document.issue.name:
-                    specific_document.set_previous_id(self.ahead_articles.return_id(specific_document.doi, specific_document.issue.journal.issn_id, specific_document.titles))
+                    pid, fname = self.ahead_articles.return_id_and_filename(specific_document.doi, specific_document.issue.journal.issn_id, specific_document.titles)
+                    specific_document.set_previous_id(pid)
                     
                 if specific_document != None:
                     generic_document = Document(specific_document)
@@ -315,6 +322,9 @@ class PackageAnalyzer:
                 
                     if generic_document.folder.documents == None:
                         generic_document.folder.documents = Documents()
+
+                    print('-------')
+                    print(generic_document.document.json_data['f'])
                     generic_document.folder.documents.insert(generic_document.document, True)
         return generic_document
 
@@ -392,8 +402,8 @@ class AheadArticles:
                 k += 1
 
 
-    def return_id(self, doi, issn, titles):
-        
+    def return_id_and_filename(self, doi, issn, titles):
+        print(doi)
         if type(titles) == type(''):
             titles = [ titles ]
         
@@ -410,7 +420,8 @@ class AheadArticles:
                     r = self.data[k][0]
                     filename = self.data[k][4]
                     break
-        else:
-            print(self.doi)
+        
+
+        print(r)
 
         return r , filename

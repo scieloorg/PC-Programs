@@ -208,8 +208,9 @@ class NormalizedAffiliations:
             print(aff)
 
         if not '_' in aff.keys():
-            aff['_'] = aff['1']
-            del aff['1']
+            if '1' in aff.keys():
+                aff['_'] = aff['1']
+                del aff['1']
         print(aff)
         print('*'*80)
         return aff 
@@ -253,9 +254,10 @@ class NormalizedAffiliations:
 
 
         if not '_' in aff.keys():
-            aff['_'] = aff['1']
-            del aff['1']
-        
+            if '1' in aff.keys():
+                aff['_'] = aff['1']
+                del aff['1']
+ 
         return aff 
     
     def complete_affiliations(self, affiliations):

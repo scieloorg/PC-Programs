@@ -359,11 +359,33 @@ class JSON_Article:
                 
                 c = test_date
                 if prev > c:
-                    e += c + '(' + label + ') must be a date before ' + prev + ' (' + prev_label + ')'
+                    msg = str(prev) + '(' + prev_label + ') must be a date before ' + str(c) + ' (' + label + ')'
+                    e.append(msg)
                 else:
                     prev = c
                     prev_label = label
         return e
+
+    def issuelabel(self):
+        r = ''
+        v = return_singleval(self.json_data['f'], '31') 
+        if len(v) > 0:
+            r += 'v' + v 
+
+        v = return_singleval(self.json_data['f'], '131') 
+        if len(v) > 0:
+            r += 's' + v
+        
+        v = return_singleval(self.json_data['f'], '32') 
+        if len(v) > 0:
+            r += 'n' + v 
+         
+        v = return_singleval(self.json_data['f'], '132')
+        if len(v) > 0:
+            r += 's' + v 
+        
+        
+        return r 
 
         
     def set_display(self):
@@ -377,7 +399,8 @@ class JSON_Article:
         if len(eloc) > 0:
             r['pages'] = eloc + ' (e-location)'
         
-        r['issue label'] = return_singleval(self.json_data['f'], '31') + ' ' + return_singleval(self.json_data['f'], '32') + ' ' + return_singleval(self.json_data['f'], '131') + ' ' + return_singleval(self.json_data['f'], '131')
+        r['issue label'] = self.issuelabel()
+
         r['nlm-ta'] = return_singleval(self.json_data['f'], '421')
         r['print issn'] = return_singleval(self.json_data['f'], '35')
         r['online issn'] = return_singleval(self.json_data['f'], '935')
@@ -496,13 +519,33 @@ class JSON_Article:
         
         self.json_data['f']['35'] = issn_id
         
-        test_vol = self.json_data['f']['31'].replace('0','')
-        test_num = self.json_data['f']['32'].replace('0','')
+        
+        test_vol = return_singleval(self.json_data['f'], '31')
+        test_num = return_singleval(self.json_data['f'], '32').lower()
+        test_suppl = return_singleval(self.json_data['f'], '132')
 
-        if test_vol + test_num == '':
-            if '31' in self.json_data['f'].keys():
-                del self.json_data['f']['31']
-            self.json_data['f']['32'] = 'ahead'
+        if 'suppl' in test_num:
+            i = test_num.split('suppl')
+            test_num = i[0].replace(' ', '')
+            test_suppl = i[1].replace(' ', '')
+            if test_suppl == '':
+                test_suppl = '0'
+
+            if test_num == '':
+                if '32' in self.json_data['f'].keys():
+                    del self.json_data['f']['32']
+                if '132' in self.json_data['f'].keys():
+                    del self.json_data['f']['132']
+                self.json_data['f']['131'] = test_suppl
+            else:
+                self.json_data['f']['32'] = test_num
+                self.json_data['f']['132'] = test_suppl
+
+        else:
+            if test_num.replace('0', '') == '' and test_vol.replace('0', '') == '':
+                if '31' in self.json_data['f'].keys():
+                    del self.json_data['f']['31']
+                self.json_data['f']['32'] = 'ahead'
 
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '64', '65', '64')
         self.publication_dateiso = return_singleval(self.json_data['f'], '65')
@@ -517,7 +560,7 @@ class JSON_Article:
         self.json_data['f']['120'] = 'XML_' + return_singleval(self.json_data['f'], '120')
         self.json_data['f']['42'] = '1'
         
-        if self.json_data['f']['32'] == 'ahead':
+        if return_singleval(self.json_data['f'], '32') == 'ahead':
             self.json_data['f']['121'] = alternative_id
         
         #if 'epub' in self.json_data['f'].keys():
@@ -767,10 +810,13 @@ class JSON_Article:
         errors = 0
         warnings = 0
         if 'c' in self.json_data.keys():
+            if type(self.json_data['c']) == type({}):
+                self.json_data['c'] = [self.json_data['c']]
+
             refcount = len(self.json_data['c'])
             for citation in self.json_data['c']:
                 # normalize
-                citation = self.json_normalizer.format_for_indexing(citation)
+                #citation = self.json_normalizer.format_for_indexing(citation)
                 citation = self.json_citations.normalize_citation(citation, k, self.publication_dateiso)
                 self.json_data['c'][k] = citation 
 
@@ -853,7 +899,8 @@ class JSON_Article:
             data = self.json_data
 
         suppl = return_singleval(data, '131')
-        suppl = return_singleval(data, '132')
+        if len(suppl) == 0:
+            suppl = return_singleval(data, '132')
         vol = return_singleval(data, '31')
         num = return_singleval(data, '32')
         date = return_singleval(data, '65')
@@ -868,8 +915,10 @@ class JSON_Article:
                 else:
                     suppl = num[num.rfind(' ')+1:]
                 num = num[0:num.find(' ')]
-
+        print('JournalIssue1')
+        print(data)
         issue = JournalIssue(journal, vol, num, date, suppl, compl, order) 
+
 
         issue.journal.publishers = ''
         publishers = return_multval(data, '62')
@@ -1029,7 +1078,9 @@ class JSON_Issue:
         else:
             data = self.json_data
         suppl = return_singleval(data, '131')
-        suppl = return_singleval(data, '132')
+        if len(suppl) == 0:
+            suppl = return_singleval(data, '132')
+        
         vol = return_singleval(data, '31')
         num = return_singleval(data, '32')
         date = return_singleval(data, '65')
@@ -1045,6 +1096,8 @@ class JSON_Issue:
                     suppl = num[num.rfind(' ')+1:]
                 num = num[0:num.find(' ')]
 
+        print('JournalIssue1')
+        print(data)
         issue = JournalIssue(journal, vol, num, date, suppl, compl, order) 
 
 
@@ -1190,8 +1243,6 @@ class JSON2Article:
 
         self.json_article.normalize_document_data(issue, alternative_id)
         
-        
-
         article = self.json_article.return_article(alternative_id)
         article.issue = issue
         article.issue.toc.insert(self.json_article.section, True)
@@ -1208,12 +1259,14 @@ class JSON2Article:
         alternative_id = os.path.basename(self.xml_filename)
         if '.' in alternative_id:
             alternative_id = alternative_id[0:alternative_id.rfind('.')]
+            if '-' in alternative_id:
+                alternative_id = alternative_id[alternative_id.rfind('-'):]
 
         new = ''
         for n in alternative_id:
             if n in '0123456789':
                 new += n
-        if new != alternative_id and new!='': 
+        if new != alternative_id and new != '': 
             alternative_id = new
             alternative_id = alternative_id[-5:]
         return alternative_id
