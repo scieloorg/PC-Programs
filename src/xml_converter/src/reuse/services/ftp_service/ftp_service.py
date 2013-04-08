@@ -77,6 +77,10 @@ class FTPService:
         r = self.ftp.retrbinary('RETR ' + file, open(file, 'wb').write)
         self.report.write(r, True, False, True)
         if os.path.exists(local_path + '/' + file):
+
+            statinfo = os.stat(local_path + '/' + file)
+            self.report.write(str(statinfo.st_size), True, False, True)
+
             downloaded_file = file
             r = self.ftp.delete(file)
             self.report.write(r, True, False, True)

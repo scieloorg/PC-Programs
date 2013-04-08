@@ -7,17 +7,14 @@ class ImageConverter:
         pass
 
     def img_to_jpeg(self, img_path, jpg_path):
+        errors = []
         files = os.listdir(img_path)
-
         if not os.path.exists(jpg_path):
             os.makedirs(jpg_path)
 
         for f in files:
-
             jpg_filename = jpg_path + '/'+ f[0:f.rfind('.')] + '.jpg'
             img_filename = img_path + '/'+ f
-            
-            
             
             if f.endswith('.jpg'):
                 if img_filename != jpg_filename:
@@ -29,5 +26,5 @@ class ImageConverter:
                     im.save(jpg_filename, "JPEG")
                 
                 except Exception, e:
-                    print e
-                    print jpg_filename
+                    errors.append('Unable to convert ' + img_filename)
+        return errors
