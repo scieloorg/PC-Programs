@@ -26,5 +26,5 @@ class ImageConverter:
                     im.save(jpg_filename, "JPEG")
                 
                 except Exception, e:
-                    errors.append('Unable to convert ' + img_filename)
+                    errors.append('Unable to convert ' + os.path.basename(img_filename))
         return errors

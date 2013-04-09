@@ -22,8 +22,6 @@ class QueueOrganizer:
 
     def archive_and_extract_files(self, archive_path, work_path, report_sender):   
 
-        
-
         for zip_filename in os.listdir(self.queue_path):
             self.tracker.register(zip_filename, 'begin-queue')
 
@@ -85,11 +83,11 @@ class Reception:
         for package in os.listdir(self.input_path):            
             for xml in os.listdir(self.input_path + '/' + package):
                 if xml.endswith('.xml'):
-                    items.append( package + '/' + xml )
+                    items.append( self.input_path + '/' + package + '/' + xml )
         if len(items)>0:
             self.report_sender.send_to_adm(template_msg, '\n'.join(items))
             for xml in items:
-                os.unlink(self.input_path + '/' + xml)
+                os.unlink(xml)
 
     def open_packages(self, document_analyst, document_archiver, img_converter, fulltext_generator):
         for folder in os.listdir(self.input_path):
@@ -98,37 +96,34 @@ class Reception:
                 
                 package = Package(package_folder, self.report_path + '/' + folder)
                 
-
                 self.tracker.register(package.name, 'begin-open_package')
                 
+                package.read_package_sender_email()
                 
-                try:
-                    package.read_package_sender_email()
-                    errors = img_converter.img_to_jpeg(package.package_path, package.package_path)
+                self.tracker.register(package.name, 'analyze_package')
 
-                    if len(errors) > 0:
-                        package.report.write('Some files were unable to convert:\n' + '\n'.join(errors), True, True)
-                    
-                    self.tracker.register(package.name, 'analyze_package')
-                    folders = document_analyst.analyze_package(package, document_archiver.folder_table_name)
-                    
-                    self.tracker.register(package.name, 'put_in_the_box')
-                    
-                    for folder in folders:
-                        acron = folder.box.acron
-                        issue_label = folder.name
-                    
-                        if len(acron) > 0:
-                            report_list = package.generate_pmc_folder_and_validation_reports(self.xml_packer, '/img/revistas/' + acron + '/' + issue_label + '/' )
+                document_analyst.img_converter = img_converter
 
-                    document_archiver.put_in_the_box(folders, package)
-                    print('report_list')
-                    print(folders)
-                    report_list = document_archiver.return_validation_report_filenames(folders)
-                    print(report_list)
-                    
-                except:
-                    package.report.write('Unexpected error', True, True)
+                folders = document_analyst.analyze_package(package, document_archiver.folder_table_name)
+                self.tracker.register(package.name, 'put_in_the_box')
+            
+                for folder in folders:
+                    acron = folder.box.acron
+                    issue_label = folder.name
+                
+                    if len(acron) > 0:
+                        report_list = package.generate_pmc_folder_and_validation_reports(self.xml_packer, '/img/revistas/' + acron + '/' + issue_label + '/' )
+
+                document_archiver.put_in_the_box(folders, package)
+                print('report_list')
+                print(folders)
+                report_list = document_archiver.return_validation_report_filenames(folders)
+                print(report_list)
+                
+                #except Exception as e:
+                #    package.report.write('Unexpected error ' + e.strerror, True, True)
+                #    report_list = []
+                #    #package.report.write('Unexpected error', True, True)
                     
                     
                 self.tracker.register(package.name, 'send report')
@@ -276,30 +271,39 @@ class PackageAnalyzer:
         loaded_folders = {}
         
         package_xml_files = package.check_files()
+
+        errors = self.img_converter.img_to_jpeg(package.package_path, package.package_path)
+        if len(errors) > 0:
+            package.report.write('Some files were unable to convert:\n' + '\n'.join(errors), True, True)
+                    
         # load all xml files of the package
         for xml_fname in package_xml_files:
             
             xml_filename = package.package_path + '/' + xml_fname
         
             package.report.write('\n' + '-' * 80 + '\n' + 'File: ' + xml_fname + '\n', True, True, True)
-        
-            package.check_pdf_file(xml_filename)
 
-            document = self.analyze_document(xml_filename, package, folder_table_name)
-
+            try:
         
-            if document != None:
-                
-                loaded_folders[document.folder.box.acron + document.folder.name] = document.folder
-                
-                if document.folder.documents == None:
-                    print('Creating ' + document.folder.box.acron + document.folder.name)
-                else:
-                    print(document.folder.box.acron + document.folder.name + '=' + str(document.folder.documents.count))
-                #document.folder.json_data['122'] = document.folder.documents.count #str(len(document.folder.documents.elements))
-                #document.folder.json_data['49'] = document.folder.toc.return_json()
-                
-            #print(loaded_folders)
+                package.check_pdf_file(xml_filename)
+
+                document = self.analyze_document(xml_filename, package, folder_table_name)
+
+            
+                if document != None:
+                    
+                    loaded_folders[document.folder.box.acron + document.folder.name] = document.folder
+                    
+                    if document.folder.documents == None:
+                        print('Creating ' + document.folder.box.acron + document.folder.name)
+                    else:
+                        print(document.folder.box.acron + document.folder.name + '=' + str(document.folder.documents.count))
+                    #document.folder.json_data['122'] = document.folder.documents.count #str(len(document.folder.documents.elements))
+                    #document.folder.json_data['49'] = document.folder.toc.return_json()
+                    
+                #print(loaded_folders)
+            except Exception as e:
+                package.report.write(xml_fname + ' - Unexpected error ' + e.strerror, True, True)
         return loaded_folders.values()
 
     def analyze_xml(self, xml_filename):
