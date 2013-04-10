@@ -12,6 +12,7 @@ xml_packer = None
 
 
 
+
 class QueueOrganizer:
     def __init__(self, report, tracker, queue_path):
         self.tracker = tracker
@@ -20,24 +21,36 @@ class QueueOrganizer:
         self.compressed_file_manager = CompressedFile(self.report)
 
 
-    def archive_and_extract_files(self, archive_path, extracted_path, report_sender):   
-        for compressed in os.listdir(self.queue_path):
-            self.tracker.register(compressed, 'begin-queue')
+    def archive_and_extract_files(self, archive_path, work_path, report_sender):   
+
+        for zip_filename in os.listdir(self.queue_path):
+            self.tracker.register(zip_filename, 'begin-queue')
+
+            package_filename = self.queue_path + '/' + zip_filename
+            unziped_folder = work_path + '/' + zip_filename
+
+            if os.path.exists(unziped_folder):
+                for f in os.listdir(unziped_folder):
+                    os.unlink(unziped_folder + '/' + f)
+                if len(os.listdir(unziped_folder)) == 0:
+                    os.unlink(unziped_folder)
             
-            self.report.write('Archive ' + self.queue_path + ' in ' + extracted_path + '/' + compressed, True, False, True)
-            self.archive(self.queue_path + '/' + compressed, archive_path)
+            self.report.write('Archive ' + package_filename + ' in ' + archive_path, True, False, True)
+
+            self.report.write(str(os.stat(package_filename).st_size), True, False, True)
+            self.archive(package_filename, archive_path)
             
-            self.report.write('Extract files from ' + self.queue_path + ' to ' + extracted_path + '/' + compressed, True, False, True)
-            self.compressed_file_manager.extract_files(self.queue_path + '/' + compressed, extracted_path + '/' + compressed)
+            self.report.write('Extract files from ' + package_filename + ' to ' + unziped_folder, True, False, True)
+            self.compressed_file_manager.extract_files(package_filename, unziped_folder)
             
-            attached_files = []
-            text =  'Files in the package\n' + '\n'.join(os.listdir(extracted_path + '/' + compressed))
+            
+            text =  'Files in the package\n' + '\n'.join(os.listdir(unziped_folder))
             self.report.write(text, True, False, False)
 
-            if os.path.exists(archive_path + '/' + compressed):
-                self.report.write('Delete ' + self.queue_path + '/' + compressed, True, False, False)
-                os.remove(self.queue_path + '/' + compressed)
-            self.tracker.register(compressed, 'end-queue')
+            if os.path.exists(archive_path + '/' + zip_filename):
+                self.report.write('Delete ' + package_filename, True, False, False)
+                os.remove(package_filename)
+            self.tracker.register(zip_filename, 'end-queue')
 
     def archive(self, filename, archive_path):
         """
@@ -71,30 +84,31 @@ class Reception:
         for package in os.listdir(self.input_path):            
             for xml in os.listdir(self.input_path + '/' + package):
                 if xml.endswith('.xml'):
-                    items.append( package + '/' + xml )
+                    items.append( self.input_path + '/' + package + '/' + xml )
+                os.unlink(self.input_path + '/' + package + '/' + xml)
+            os.unlink(self.input_path + '/' + package)
         if len(items)>0:
             self.report_sender.send_to_adm(template_msg, '\n'.join(items))
-            for xml in items:
-                os.unlink(self.input_path + '/' + xml)
+            
 
     def open_packages(self, document_analyst, document_archiver, img_converter, fulltext_generator):
         for folder in os.listdir(self.input_path):
             package_folder = self.input_path + '/' + folder
             if os.path.isdir(package_folder):
-                print('?????????????????')
-
+                
                 package = Package(package_folder, self.report_path + '/' + folder)
                 
                 self.tracker.register(package.name, 'begin-open_package')
+                
                 package.read_package_sender_email()
                 
-                img_converter.img_to_jpeg(package.package_path, package.package_path)
-                
                 self.tracker.register(package.name, 'analyze_package')
+
+                document_analyst.img_converter = img_converter
+
                 folders = document_analyst.analyze_package(package, document_archiver.folder_table_name)
-                
                 self.tracker.register(package.name, 'put_in_the_box')
-                
+            
                 for folder in folders:
                     acron = folder.box.acron
                     issue_label = folder.name
@@ -108,22 +122,23 @@ class Reception:
                 report_list = document_archiver.return_validation_report_filenames(folders)
                 print(report_list)
                 
-                
-
+                #except Exception as e:
+                #    package.report.write('Unexpected error ' + e.strerror, True, True)
+                #    report_list = []
+                #    #package.report.write('Unexpected error', True, True)
+                    
+                    
                 self.tracker.register(package.name, 'send report')
-                
                 package.report.write(self.report_sender.send_package_evaluation_report(self.msg_template, package.name, [ package.report.summary_filename], report_list, package.package_sender_email))
-        
+            
 
                 q_xml = [ f for f in os.listdir(package.package_path) if f.endswith('.xml') ]
                 
                 if len(q_xml) == 0:
                     for f in os.listdir(package.package_path):
                         os.unlink(package.package_path + '/' + f)
-                    package.report.write('Delete work area ' + package.package_path)
-                    os.rmdir(package.package_path)
-                
-                
+                        os.rmdir(package.package_path)
+
 
                 self.tracker.register(package.name, 'end-open_package')
    
@@ -189,7 +204,7 @@ class Package:
         elif len(startswith) == 0 and len(extension) == 0:
             filenames = os.listdir(self.package_path)
         elif len(extension)> 0 :
-            filenames = [ filename for filename in os.listdir(self.package_path) if  filename.endswith(extension) ]
+            filenames = [ filename for filename in os.listdir(self.package_path) if filename.endswith(extension) ]
         elif len(startswith) > 0:
             filenames = [ filename for filename in os.listdir(self.package_path) if filename.startswith(startswith) ]
         self.report.write(','.join(filenames))
@@ -201,8 +216,6 @@ class Package:
         self.pmc_package_path = self.package_path.replace('/work/', '/4pmc/')
         self.reports_path = self.package_path.replace('/work/', '/4check/')
 
-        
-        
         xml_packer.generate_validation_reports(self.report, self.package_path, self.pmc_package_path, self.reports_path, jpg_path)
 
         for f in os.listdir(self.reports_path):
@@ -259,30 +272,39 @@ class PackageAnalyzer:
         loaded_folders = {}
         
         package_xml_files = package.check_files()
+
+        errors = self.img_converter.img_to_jpeg(package.package_path, package.package_path)
+        if len(errors) > 0:
+            package.report.write('Some files were unable to convert:\n' + '\n'.join(errors), True, True)
+                    
         # load all xml files of the package
         for xml_fname in package_xml_files:
             
             xml_filename = package.package_path + '/' + xml_fname
         
             package.report.write('\n' + '-' * 80 + '\n' + 'File: ' + xml_fname + '\n', True, True, True)
-        
-            package.check_pdf_file(xml_filename)
 
-            document = self.analyze_document(xml_filename, package, folder_table_name)
-
+            try:
         
-            if document != None:
-                
-                loaded_folders[document.folder.box.acron + document.folder.name] = document.folder
-                
-                if document.folder.documents == None:
-                    print('Creating ' + document.folder.box.acron + document.folder.name)
-                else:
-                    print(document.folder.box.acron + document.folder.name + '=' + str(document.folder.documents.count))
-                #document.folder.json_data['122'] = document.folder.documents.count #str(len(document.folder.documents.elements))
-                #document.folder.json_data['49'] = document.folder.toc.return_json()
-                
-            #print(loaded_folders)
+                package.check_pdf_file(xml_filename)
+
+                document = self.analyze_document(xml_filename, package, folder_table_name)
+
+            
+                if document != None:
+                    
+                    loaded_folders[document.folder.box.acron + document.folder.name] = document.folder
+                    
+                    if document.folder.documents == None:
+                        print('Creating ' + document.folder.box.acron + document.folder.name)
+                    else:
+                        print(document.folder.box.acron + document.folder.name + '=' + str(document.folder.documents.count))
+                    #document.folder.json_data['122'] = document.folder.documents.count #str(len(document.folder.documents.elements))
+                    #document.folder.json_data['49'] = document.folder.toc.return_json()
+                    
+                #print(loaded_folders)
+            except Exception as e:
+                package.report.write(xml_fname + ' - Unexpected error ' + e.strerror, True, True)
         return loaded_folders.values()
 
     def analyze_xml(self, xml_filename):

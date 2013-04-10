@@ -524,6 +524,11 @@ class JSON_Article:
         test_num = return_singleval(self.json_data['f'], '32').lower()
         test_suppl = return_singleval(self.json_data['f'], '132')
 
+        if test_suppl != '':
+            if test_num != '':
+                self.json_data['f']['131'] = self.json_data['f']['132']
+                del self.json_data['f']['132']
+
         if 'suppl' in test_num:
             i = test_num.split('suppl')
             test_num = i[0].replace(' ', '')
@@ -898,14 +903,18 @@ class JSON_Article:
         else:
             data = self.json_data
 
-        suppl = return_singleval(data, '131')
-        if len(suppl) == 0:
-            suppl = return_singleval(data, '132')
+        suppl = return_singleval(data, '132')
+        
         vol = return_singleval(data, '31')
         num = return_singleval(data, '32')
         date = return_singleval(data, '65')
         order = return_singleval(data, '36')
         compl = return_singleval(data, '41')
+
+        if num == '' and suppl != '':
+            data['131'] = suppl
+            del data['132']
+            
         
         if 'suppl' in num.lower():
             if ' ' in num:
@@ -929,7 +938,7 @@ class JSON_Article:
 
 
         i_record = {}
-        keep_list = [30, 31, 32, 132, 35, 42, 65, 100, 480, ]
+        keep_list = [30, 31, 32, 41, 131, 132, 35, 42, 65, 100, 480, ]
         for key, item in data.items():
             if key.isdigit():
                 if int(key) in keep_list:
@@ -1077,16 +1086,25 @@ class JSON_Issue:
             data = self.json_data['f']
         else:
             data = self.json_data
-        suppl = return_singleval(data, '131')
-        if len(suppl) == 0:
-            suppl = return_singleval(data, '132')
+        suppl = return_singleval(data, '132')
         
         vol = return_singleval(data, '31')
         num = return_singleval(data, '32')
         date = return_singleval(data, '65')
         order = return_singleval(data, '36')
         compl = return_singleval(data, '41')
-        
+
+        if num == '' and suppl != '':
+            data['131'] = suppl
+            del data['132']
+            
+            if 'f' in self.json_data.keys():
+                if not '131' in self.json_data['f'].keys():
+                    print('MISSING 131' * 20)
+            else:
+                if not '131' in self.json_data.keys():
+                    print('MISSING 131 !!!!' * 20)
+
         if 'suppl' in num.lower():
             if ' ' in num:
                 if '(' in num:
@@ -1102,7 +1120,7 @@ class JSON_Issue:
 
 
         i_record = {}
-        keep_list = [30, 31, 32, 132, 35, 42, 65, 100, 480, ]
+        keep_list = [30, 31, 32, 41, 131, 132, 35, 42, 65, 100, 480, ]
         for key, item in data.items():
             if int(key) in keep_list:
                 i_record[key] = item
