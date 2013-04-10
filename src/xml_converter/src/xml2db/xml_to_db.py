@@ -12,6 +12,7 @@ xml_packer = None
 
 
 
+
 class QueueOrganizer:
     def __init__(self, report, tracker, queue_path):
         self.tracker = tracker
@@ -84,10 +85,11 @@ class Reception:
             for xml in os.listdir(self.input_path + '/' + package):
                 if xml.endswith('.xml'):
                     items.append( self.input_path + '/' + package + '/' + xml )
+                os.unlink(self.input_path + '/' + package + '/' + xml)
+            os.unlink(self.input_path + '/' + package)
         if len(items)>0:
             self.report_sender.send_to_adm(template_msg, '\n'.join(items))
-            for xml in items:
-                os.unlink(xml)
+            
 
     def open_packages(self, document_analyst, document_archiver, img_converter, fulltext_generator):
         for folder in os.listdir(self.input_path):
@@ -135,8 +137,7 @@ class Reception:
                 if len(q_xml) == 0:
                     for f in os.listdir(package.package_path):
                         os.unlink(package.package_path + '/' + f)
-                    package.report.write('Delete work area ' + package.package_path)
-                    os.rmdir(package.package_path)
+                        os.rmdir(package.package_path)
 
 
                 self.tracker.register(package.name, 'end-open_package')
