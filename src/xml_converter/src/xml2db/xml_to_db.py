@@ -81,12 +81,12 @@ class Reception:
         
     def report_not_processed_packages(self, template_msg):
         items = []
-        for package in os.listdir(self.input_path):            
-            for xml in os.listdir(self.input_path + '/' + package):
+        for package_folder in os.listdir(self.input_path):            
+            for xml in os.listdir(self.input_path + '/' + package_folder):
                 if xml.endswith('.xml'):
-                    items.append( self.input_path + '/' + package + '/' + xml )
-                os.unlink(self.input_path + '/' + package + '/' + xml)
-            os.unlink(self.input_path + '/' + package)
+                    items.append( self.input_path + '/' + package_folder + '/' + xml )
+                os.unlink(self.input_path + '/' + package_folder + '/' + xml)
+            os.rmdir(self.input_path + '/' + package_folder)
         if len(items)>0:
             self.report_sender.send_to_adm(template_msg, '\n'.join(items))
             

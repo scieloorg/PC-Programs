@@ -75,6 +75,19 @@ class IDFile:
         c = f.readlines()
         f.close()
 
+        to_fix = []
+
+        for l in c:
+            if not l.startswith('!'): 
+                to_fix.append(l)
+
+
+        if len(to_fix) > 0:
+            c = ''.join(c)
+            for fix in to_fix:
+                c = c.replace('\n' + fix, fix)
+            c = c.split('\n')
+
         a = []
 
         r = []
@@ -88,7 +101,8 @@ class IDFile:
                     r.append(rec)
                 rec = {}
                 
-            else:
+            elif len(l) > 0 and l.startswith('!'):
+
 
                 tag = str(int(l[2:5]))
                 field = l[6:]
@@ -108,7 +122,7 @@ class IDFile:
                     rec[tag] = self.add_content(content, rec[tag])
                 else:      
                     rec[tag] = content
-            
+
         if len(rec) > 0:
             r.append(rec)
         return r

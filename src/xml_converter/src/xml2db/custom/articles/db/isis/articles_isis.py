@@ -1,6 +1,96 @@
 import os
-
 import shutil
+from reuse.db.isis.cisis import IDFile
+
+class AheadManager:
+    def __init__(self, cisis, journal_path):
+        self.cisis = cisis
+        self.journal_path = journal_path
+        self.ahead_filenames = {}
+
+        self.ahead_folders = [ folder for folder in os.listdir(journal_path) if 'ahead' in folder and not 'ex-' in folder ]
+
+        for ahead_folder in self.ahead_folders:
+            # 2013nahead
+            for id_filename in os.listdir(journal_path + '/' + ahead_folder + '/id'):
+                if id_filename != 'i.id':
+                    filename = journal_path + '/' + ahead_folder + '/id/' + id_filename
+                    print(filename)
+                    j = IDFile().id2json(filename)
+                    print(j)
+                    doi = self.doi(j)
+                    if doi != '':
+                        self.ahead_filenames[doi] = filename  
+
+    def doi(self, j):
+        doi = ''
+        #print(j)
+        if type(j) == type([]):
+            if len(j) > 0:
+                if '706' in j[1].keys():
+                    if j[1]['706'] in 'hf':
+                        if '237' in j[1].keys():
+                            doi = j[1]['237']
+        elif type(j) == type({}):
+            if 'h' in j.keys():
+                if '237' in j['h'].keys():
+                    doi = j['h']['237']
+
+        return doi
+        
+    def filename(self, doi):
+        f = ''
+        if doi in self.ahead_filenames.keys():
+            f = self.ahead_filenames[doi]
+        return f 
+
+    def exclude_filename(self, doi):
+
+        excluded = False
+        filename = self.filename(doi)
+
+        if len(filename) > 0:
+            if os.path.exists(filename):
+
+                from datetime import date
+
+                today = date.today().isoformat()
+
+                # <journal>/<ano>nahead/id
+                id_path = os.path.dirname(filename) + '_' + today
+                
+                
+                if not os.path.exists(id_path):
+                    os.makedirs(id_path)
+
+                dest = id_path + '/' + os.path.basename(filename)
+                if os.path.exists(dest):
+                    os.unlink(dest)
+
+
+                shutil.move(filename, dest)
+                excluded = True
+        return excluded
+
+    def update_ahead_issue(self):
+        for ahead_issue_folder in self.ahead_folders:
+            id_path = self.journal_path + '/' + ahead_issue_folder + '/id'
+            db_path = self.journal_path + '/' + ahead_issue_folder + '/base'
+
+            db_name = ahead_issue_folder
+
+            mst_filename = db_path + '/' + db_name
+
+            
+            id_filename = id_path + '/i.id'
+            self.cisis.id2mst(id_filename, mst_filename, True)
+
+            for id_name in os.listdir(id_path):
+                if id_name != 'i.id' and id_name.endswith('.id') :
+                    id_filename = id_path + '/' + id_name 
+                    self.cisis.id2mst(id_filename, mst_filename, False)
+        
+
 
 class ISISManager4Articles:
     def __init__(self, cisis, idfile, paths, records_order, json2idfile, json2idfile_article):
@@ -52,16 +142,23 @@ class ISISManager4Articles:
         return f
     
     def save_issue(self, issue, package):
+
+        ahead_manager = None
+
         package.report.write('Saving issue')
         issue_paths = IssuePath(self.paths, issue)
 
         package.report.write('Saving issue - add issue to scilista')
-        self.add_issue_to_scilista(issue) 
+
+        self.add_issue_to_scilista(issue.journal.acron + ' ' + issue.name)  
         
         if not 'ahead' in issue_paths.issue_id_path:
             package.report.write('Deleting')
             for f in os.listdir(issue_paths.issue_id_path):
                 os.unlink(issue_paths.issue_id_path + '/' + f)
+
+            ahead_manager = AheadManager(self.cisis, issue_paths.journal_path)
+
 
 
         package.report.write('Saving issue record')
@@ -69,8 +166,19 @@ class ISISManager4Articles:
 
         
         package.report.write('Saving article records')
+        excluded = 0
         for article in issue.documents:
             self.save_article_records(package, article, issue_paths)
+            if ahead_manager != None:
+                if article.doi != '':
+                    if ahead_manager.exclude_filename(article.doi):
+                        excluded += 1
+        if excluded > 0:
+            ahead_manager.update_ahead_issue()
+            for folder in ahead_manager.ahead_folders:
+                self.add_issue_to_scilista(issue.journal.acron + ' ' + folder)
+
+
         
         package.report.write('Generate issue db')
         self.generate_issue_db(issue, package, issue_paths)
@@ -109,18 +217,17 @@ class ISISManager4Articles:
             self.cisis.crunchmf(issue_paths.issue_db_filename, win_path + '/' + os.path.basename(issue_paths.issue_db_filename))
 
  
-    def add_issue_to_scilista(self, issue):
-        journal_acron = issue.journal.acron
-        issue_label = issue.name
+    def add_issue_to_scilista(self, scilista_item):
+        
         c = []
         if os.path.exists(self.paths.scilista):
             f = open(self.paths.scilista, 'r')
             c = f.read()
             f.close()
 
-        if not journal_acron + ' ' + issue_label + '\n' in c:
+        if not scilista_item + '\n' in c:
             f = open(self.paths.scilista, 'a+')
-            f.write(journal_acron + ' ' + issue_label + '\n')
+            f.write(scilista_item + '\n')
             f.close()
 
     def generate_issue_db_for_proc(self, table_name):
@@ -247,6 +354,10 @@ class IssuePath:
     @property
     def issue_folder(self):
         return  self.issue.journal.acron + '/' + self.issue.name
+
+    @property
+    def journal_path(self):
+        return self.existing_path(self.paths.serial_path + '/' + self.issue.journal.acron )
 
     @property
     def issue_path(self):
