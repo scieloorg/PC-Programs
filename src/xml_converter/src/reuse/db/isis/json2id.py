@@ -128,11 +128,12 @@ class JSON2IDFile:
         tag = '000' + tag
         r = ''
         if tag[-3:].isdigit():
-            r = '!v' + tag[-3:] + '!' + content + "\n"
+            r = '!v' + tag[-3:] + '!' + content.replace('\n', ' ') + "\n"
         return r
             
            
     def __convert_value__(self, value):
+        value = value.replace('\n', ' ')
         if self.convert2iso:
             r = self.converter_utf8_iso.utf8_2_iso(value)
         else:

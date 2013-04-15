@@ -8,8 +8,6 @@ import reuse.xml.xml_java as xml_java
 from reuse.files.name_file import add_date_to_filename
 
 xml_tree = None
-xml_packer = None
-
 
 
 
@@ -23,33 +21,38 @@ class QueueOrganizer:
 
     def archive_and_extract_files(self, archive_path, work_path, report_sender):   
 
+        for package_folder in os.listdir(work_path):
+            to_delete = work_path + '/' + package_folder
+            if os.path.isfile(to_delete):
+                os.unlink(to_delete)
+            elif os.path.isdir(to_delete):
+                shutil.rmtree(to_delete)
+
         for zip_filename in os.listdir(self.queue_path):
             self.tracker.register(zip_filename, 'begin-queue')
 
             package_filename = self.queue_path + '/' + zip_filename
-            unziped_folder = work_path + '/' + zip_filename
+            package_path = work_path + '/' + zip_filename
 
-            if os.path.exists(unziped_folder):
-                for f in os.listdir(unziped_folder):
-                    os.unlink(unziped_folder + '/' + f)
-                if len(os.listdir(unziped_folder)) == 0:
-                    os.unlink(unziped_folder)
-            
+            if os.path.exists(package_path):
+                for f in os.listdir(package_path):
+                    os.unlink(package_path + '/' + f)
+                
             self.report.write('Archive ' + package_filename + ' in ' + archive_path, True, False, True)
 
             self.report.write(str(os.stat(package_filename).st_size), True, False, True)
             self.archive(package_filename, archive_path)
             
-            self.report.write('Extract files from ' + package_filename + ' to ' + unziped_folder, True, False, True)
-            self.compressed_file_manager.extract_files(package_filename, unziped_folder)
+            self.report.write('Extract files from ' + package_filename + ' to ' + package_path, True, False, True)
+            self.compressed_file_manager.extract_files(package_filename, package_path)
             
             
-            text =  'Files in the package\n' + '\n'.join(os.listdir(unziped_folder))
+            text =  'Files in the package\n' + '\n'.join(os.listdir(package_path))
             self.report.write(text, True, False, False)
 
             if os.path.exists(archive_path + '/' + zip_filename):
                 self.report.write('Delete ' + package_filename, True, False, False)
-                os.remove(package_filename)
+                os.unlink(package_filename)
             self.tracker.register(zip_filename, 'end-queue')
 
     def archive(self, filename, archive_path):
@@ -70,7 +73,7 @@ class QueueOrganizer:
                 shutil.copyfile(archived_file, archive_path2 + '/' + new_name)
             shutil.copy(filename, archive_path)
 
-class Reception:
+class PackagesProcessor:
     def __init__(self, input_path, report_sender, msg_template, report_path, tracker, xmlpacker):
         self.input_path = input_path
         self.report_sender = report_sender
@@ -81,55 +84,48 @@ class Reception:
         
     def report_not_processed_packages(self, template_msg):
         items = []
-        for package in os.listdir(self.input_path):            
-            for xml in os.listdir(self.input_path + '/' + package):
+        for package_folder in os.listdir(self.input_path):            
+            for xml in os.listdir(self.input_path + '/' + package_folder):
                 if xml.endswith('.xml'):
-                    items.append( self.input_path + '/' + package + '/' + xml )
-                os.unlink(self.input_path + '/' + package + '/' + xml)
-            os.unlink(self.input_path + '/' + package)
+                    items.append( self.input_path + '/' + package_folder + '/' + xml )
+                os.unlink(self.input_path + '/' + package_folder + '/' + xml)
+            os.rmdir(self.input_path + '/' + package_folder)
         if len(items)>0:
             self.report_sender.send_to_adm(template_msg, '\n'.join(items))
             
 
-    def open_packages(self, document_analyst, document_archiver, img_converter, fulltext_generator):
+    def open_packages(self, information_analyst, documents_archiver, img_converter, fulltext_generator):
+        information_analyst.xml_packer = self.xml_packer
+        from datetime import datetime
         for folder in os.listdir(self.input_path):
             package_folder = self.input_path + '/' + folder
             if os.path.isdir(package_folder):
                 
                 package = Package(package_folder, self.report_path + '/' + folder)
-                
                 self.tracker.register(package.name, 'begin-open_package')
-                
+
+                now = datetime.now().isoformat()
                 package.read_package_sender_email()
                 
+                self.tracker.register(package.name, 'img to jpg')
+                errors = img_converter.img_to_jpeg(package.package_path, package.package_path)
+                if len(errors) > 0:
+                    package.report.write('Some files were unable to convert:\n' + '\n'.join(errors), True, True)
+        
                 self.tracker.register(package.name, 'analyze_package')
+                folders = information_analyst.analyze_package(package, documents_archiver.folder_table_name)
 
-                document_analyst.img_converter = img_converter
-
-                folders = document_analyst.analyze_package(package, document_archiver.folder_table_name)
+                
                 self.tracker.register(package.name, 'put_in_the_box')
-            
-                for folder in folders:
-                    acron = folder.box.acron
-                    issue_label = folder.name
+                documents_archiver.put_in_the_box(folders, package)
                 
-                    if len(acron) > 0:
-                        report_list = package.generate_pmc_folder_and_validation_reports(self.xml_packer, '/img/revistas/' + acron + '/' + issue_label + '/' )
 
-                document_archiver.put_in_the_box(folders, package)
-                print('report_list')
-                print(folders)
-                report_list = document_archiver.return_validation_report_filenames(folders)
-                print(report_list)
-                
-                #except Exception as e:
-                #    package.report.write('Unexpected error ' + e.strerror, True, True)
-                #    report_list = []
-                #    #package.report.write('Unexpected error', True, True)
+                package.report.write(now + '\n' + datetime.now().isoformat(), True, True)
                     
-                    
+
+
                 self.tracker.register(package.name, 'send report')
-                package.report.write(self.report_sender.send_package_evaluation_report(self.msg_template, package.name, [ package.report.summary_filename], report_list, package.package_sender_email))
+                package.report.write(self.report_sender.send_package_evaluation_report(self.msg_template, package.name, [ package.report.summary_filename], information_analyst.reports_to_attach, package.package_sender_email))
             
 
                 q_xml = [ f for f in os.listdir(package.package_path) if f.endswith('.xml') ]
@@ -137,10 +133,11 @@ class Reception:
                 if len(q_xml) == 0:
                     for f in os.listdir(package.package_path):
                         os.unlink(package.package_path + '/' + f)
-                        os.rmdir(package.package_path)
+                    os.rmdir(package.package_path)
 
 
                 self.tracker.register(package.name, 'end-open_package')
+                
    
     
 class Package:
@@ -160,6 +157,7 @@ class Package:
         log_filename, err_filename, summary_filename = self.report_files
         self.report = Report(log_filename, err_filename, summary_filename, 0, False) 
         self.report_files_to_send = [ summary_filename, err_filename ]
+        self.identify_files()
         
         
     def read_package_sender_email(self):
@@ -185,7 +183,9 @@ class Package:
 
     def return_matching_files(self, startswith, extension = ''):
         #pattern = xml_name.replace('.xml', '-')
-
+        def filename_matches(filename, startswith):
+            return filename.startswith(startswith + '.') or filename.startswith(startswith + '-')
+            
         startswith = startswith.replace('.fixed', '')
         if '/' in startswith:
             startswith = os.path.basename(startswith) 
@@ -200,56 +200,38 @@ class Package:
         self.report.write('\n'.join(os.listdir(self.package_path)))
 
         if len(startswith)>0 and len(extension)>0:
-            filenames = [ filename for filename in os.listdir(self.package_path) if filename.startswith(startswith) and filename.endswith(extension) ]
+            filenames = [ filename for filename in os.listdir(self.package_path) if filename_matches(filename, startswith) and filename.endswith(extension) ]
         elif len(startswith) == 0 and len(extension) == 0:
             filenames = os.listdir(self.package_path)
         elif len(extension)> 0 :
             filenames = [ filename for filename in os.listdir(self.package_path) if filename.endswith(extension) ]
         elif len(startswith) > 0:
-            filenames = [ filename for filename in os.listdir(self.package_path) if filename.startswith(startswith) ]
+            filenames = [ filename for filename in os.listdir(self.package_path) if filename_matches(filename, startswith) ]
         self.report.write(','.join(filenames))
         return filenames
 
-    def generate_pmc_folder_and_validation_reports(self, xml_packer, jpg_path):
-        files = []
 
-        self.pmc_package_path = self.package_path.replace('/work/', '/4pmc/')
-        self.reports_path = self.package_path.replace('/work/', '/4check/')
 
-        xml_packer.generate_validation_reports(self.report, self.package_path, self.pmc_package_path, self.reports_path, jpg_path)
-
-        for f in os.listdir(self.reports_path):
-            if f.endswith('.html'):
-                if os.path.exists(self.package_path + '/' + f):
-                    os.unlink(self.package_path + '/' + f)
-                shutil.move(self.reports_path + '/' + f, self.package_path + '/' + f)
-                if  f.endswith('.rep.html'):
-                    files.append(self.package_path + '/' + f)
-            else:
-                print(self.reports_path + '/' + f)
-        return files
-
-    def check_files(self):
+    def identify_files(self):
         self.fix_extensions()
         
-        package_files = os.listdir(self.package_path)        
-        package_pdf_files = self.return_matching_files('', '.pdf')
-        package_xml_files = self.return_matching_files('', '.xml')
+        self.package_files = os.listdir(self.package_path)        
+        self.package_pdf_files = self.return_matching_files('', '.pdf')
+        self.package_xml_files = self.return_matching_files('', '.xml')
 
-        unmatched_pdf = [ pdf for pdf in package_pdf_files if not pdf.replace('.pdf', '.xml') in package_xml_files ]
+        unmatched_pdf = [ pdf for pdf in self.package_pdf_files if not pdf.replace('.pdf', '.xml') in self.package_xml_files ]
 
-        self.report.write('XML Files: ' + str(len(package_xml_files)), True)
-        self.report.write('PDF Files: ' + str(len(package_pdf_files)), True)
+        self.report.write('XML Files: ' + str(len(self.package_xml_files)), True)
+        self.report.write('PDF Files: ' + str(len(self.package_pdf_files)), True)
 
-        if len(package_xml_files) == 0:
-            self.report.write('All the files in the package: ' + '\n' + '\n'.join(package_files), True, True, False)
+        if len(self.package_xml_files) == 0:
+            self.report.write('All the files in the package: ' + '\n' + '\n'.join(self.package_files), True, True, False)
 
         if len(unmatched_pdf) > 0:
             self.report.write('PDF files which there is no corresponding XML file: ' + '\n' + '\n'.join(unmatched_pdf), True, True, False)
 
-        self.report.write('XML Files: \n' + '\n'.join(package_xml_files), True)
-        return package_xml_files
-    
+        self.report.write('XML Files: \n' + '\n'.join(self.package_xml_files), True)
+        
     
     def check_pdf_file(self, xml_filename):
         pdf_filename = xml_filename.replace('.xml', '.pdf')
@@ -257,7 +239,9 @@ class Package:
             self.report.write(' ! WARNING: Expected ' + os.path.basename(pdf_filename), True, True)
 
 
-class PackageAnalyzer:
+
+
+class InformationAnalyst:
     def __init__(self, xml2json, json2model, registered_titles, all_folders, ahead_articles):
         self.xml2json = xml2json
         self.json2model = json2model
@@ -270,65 +254,79 @@ class PackageAnalyzer:
     def analyze_package(self, package, folder_table_name):
 
         loaded_folders = {}
-        
-        package_xml_files = package.check_files()
 
-        errors = self.img_converter.img_to_jpeg(package.package_path, package.package_path)
-        if len(errors) > 0:
-            package.report.write('Some files were unable to convert:\n' + '\n'.join(errors), True, True)
-                    
-        # load all xml files of the package
-        for xml_fname in package_xml_files:
+       # load all xml files of the package
+        self.reports_to_attach = []
+        for xml_fname in package.package_xml_files:
             
-            xml_filename = package.package_path + '/' + xml_fname
-        
+            xml_filename = package.package_path + '/' + xml_fname        
             package.report.write('\n' + '-' * 80 + '\n' + 'File: ' + xml_fname + '\n', True, True, True)
 
-            try:
-        
-                package.check_pdf_file(xml_filename)
-
-                document = self.analyze_document(xml_filename, package, folder_table_name)
-
             
-                if document != None:
-                    
+            package.check_pdf_file(xml_filename)                
+            if self.check_and_load(xml_filename, package):
+                
+                document = self.process_document(xml_filename, package, folder_table_name)
+                if document != None:                            
                     loaded_folders[document.folder.box.acron + document.folder.name] = document.folder
-                    
-                    if document.folder.documents == None:
-                        print('Creating ' + document.folder.box.acron + document.folder.name)
-                    else:
-                        print(document.folder.box.acron + document.folder.name + '=' + str(document.folder.documents.count))
-                    #document.folder.json_data['122'] = document.folder.documents.count #str(len(document.folder.documents.elements))
-                    #document.folder.json_data['49'] = document.folder.toc.return_json()
-                    
-                #print(loaded_folders)
-            except Exception as e:
-                package.report.write(xml_fname + ' - Unexpected error ' + e.strerror, True, True)
+                         
+        
         return loaded_folders.values()
 
-    def analyze_xml(self, xml_filename):
-        return True
+    def check_and_load(self, xml_filename, package):
+        is_valid_xml = self.check_xml_file(xml_filename, package)
+        
+        is_well_formed = self.extract_data(xml_filename, package.report)
+        
+        if not is_well_formed:
+            package.report.write('XML file was not well formed. Unable to read it', True, True)
+        
+        return is_well_formed
+        
 
+    def check_xml_file(self, xml_filename, package):               
+        validation_path = package.package_path.replace('/work/', '/4check/')
+        
+        scielo_html_validation_report  = validation_path + '/' + os.path.basename(xml_filename).replace('.xml', '.rep.html')
+        scielo_html_preview  =  validation_path + '/' + 'preview.html'
+        pmc_xml_local =  validation_path + '/' + 'pmc.xml'
 
-    def analyze_document(self, xml_filename, package, folder_table_name):
+        self.xml_packer.checker.validator_scielo.set_output_filenames(xml_filename, validation_path, scielo_html_validation_report, scielo_html_preview, pmc_xml_local)
 
+        is_valid_xml, is_valid_style = self.xml_packer.checker.validator_scielo.validate_xml_and_style(package.report)
 
-        generic_document = None
-
-
-        json_data = self.xml2json.convert(xml_filename, package.report)
-        if type(json_data) != type({}):
-            package.report.write(' ! ERROR: Invalid JSON ' + xml_filename, False, False, False, json_data)
+        if is_valid_xml:
+            if not is_valid_style:
+                package.report.write('XML file has style errors. Read the attached file ' + os.path.basename(self.xml_packer.checker.validator_scielo.html_report), True, True)
+        
+                self.reports_to_attach.append(self.xml_packer.checker.validator_scielo.html_report)
         else:
-            img_files = package.return_matching_files(xml_filename, '.jpg')
+            err_filename = self.xml_packer.checker.validator_scielo.err_filename.replace('.err.tmp', '.err.txt')
+            package.report.write('XML file is not according to DTD. Read the attached file ' + os.path.basename(err_filename), True, True)
+            shutil.copyfile(self.xml_packer.checker.validator_scielo.err_filename, err_filename)
+            self.reports_to_attach.append(err_filename)
 
-            self.json2model.set_data(json_data, xml_filename, package.report)
+        return is_valid_xml
 
+
+    def extract_data(self, xml_filename, package_report):
+        r = False
+        json_data = self.xml2json.convert(xml_filename, package_report)
+        if type(json_data) != type({}):
+            package_report.write(' ! ERROR: Invalid JSON ' + xml_filename, False, False, False, json_data)
+        else:            
+            self.json2model.set_data(json_data, xml_filename, package_report)
+
+            r = True
+        return r
+
+
+    def process_document(self, xml_filename, package, folder_table_name):
+        generic_document = None
+        if self.extract_data(xml_filename, package.report):
             publication_title = self.json2model.publication_title
             
             registered = self.registered_titles.return_registered(publication_title, package.report)
-
             if registered != None:
                 selected_folder = self.check_folder(registered, package)
                 specific_document = self.json2model.return_doc(selected_folder)
@@ -340,13 +338,12 @@ class PackageAnalyzer:
                     generic_document = Document(specific_document)
                     package.report.write(generic_document.display(), True, True, False)
 
+                    img_files = package.return_matching_files(xml_filename, '.jpg')
+
                     self.json2model.evaluate_data(img_files)
                 
                     if generic_document.folder.documents == None:
                         generic_document.folder.documents = Documents()
-
-                    print('-------')
-                    print(generic_document.document.json_data['f'])
                     generic_document.folder.documents.insert(generic_document.document, True)
         return generic_document
 

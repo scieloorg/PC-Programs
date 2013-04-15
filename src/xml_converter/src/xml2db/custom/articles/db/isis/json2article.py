@@ -924,8 +924,6 @@ class JSON_Article:
                 else:
                     suppl = num[num.rfind(' ')+1:]
                 num = num[0:num.find(' ')]
-        print('JournalIssue1')
-        print(data)
         issue = JournalIssue(journal, vol, num, date, suppl, compl, order) 
 
 
@@ -1114,8 +1112,6 @@ class JSON_Issue:
                     suppl = num[num.rfind(' ')+1:]
                 num = num[0:num.find(' ')]
 
-        print('JournalIssue1')
-        print(data)
         issue = JournalIssue(journal, vol, num, date, suppl, compl, order) 
 
 
