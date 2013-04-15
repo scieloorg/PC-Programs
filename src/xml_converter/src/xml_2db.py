@@ -41,7 +41,7 @@ from xml2db.custom.articles.db.isis.articles_isis import ISISManager4Articles, P
 from xml2db.custom.articles.db.isis.articles_json2id import JSON2IDFile_Article
 
 
-from xml2db.xml_to_db import Reception, PackageAnalyzer, DocumentsArchiver, QueueOrganizer, AheadArticles
+from xml2db.xml_to_db import PackagesProcessor, InformationAnalyst, DocumentsArchiver, QueueOrganizer, AheadArticles
 
 import xml_toolbox as xml_toolbox
 
@@ -140,15 +140,15 @@ if parameters.check_parameters(sys.argv):
         db_manager = ISISManager4Articles(CISIS(cisis_path), IDFile(), app_paths, 'ohflc', JSON2IDFile(converter_utf8_iso), JSON2IDFile_Article(JSON2IDFile(converter_utf8_iso)))
         
 
-        document_archiver = DocumentsArchiver(db_manager, tracker, 'issue')
-        document_archiver.create_table('title', config.parameter('DB_TITLE_FILENAME'))
-        document_archiver.create_table('issue', config.parameter('DB_ISSUE_FILENAME'))
-        document_archiver.create_table('proc_title', config.parameter('COL_PROC_DB_TITLE_FILENAME'))
-        document_archiver.create_table('proc_issue', config.parameter('COL_PROC_DB_ISSUE_FILENAME'))
+        documents_archiver = DocumentsArchiver(db_manager, tracker, 'issue')
+        documents_archiver.create_table('title', config.parameter('DB_TITLE_FILENAME'))
+        documents_archiver.create_table('issue', config.parameter('DB_ISSUE_FILENAME'))
+        documents_archiver.create_table('proc_title', config.parameter('COL_PROC_DB_TITLE_FILENAME'))
+        documents_archiver.create_table('proc_issue', config.parameter('COL_PROC_DB_ISSUE_FILENAME'))
 
         
-        json_titles = document_archiver.db2json('title')
-        json_boxes = document_archiver.db2json('issue')
+        json_titles = documents_archiver.db2json('title')
+        json_boxes = documents_archiver.db2json('issue')
                 
         #
         registered_titles = return_journals_list(json_titles)
@@ -166,7 +166,7 @@ if parameters.check_parameters(sys.argv):
         adm_msg_template = EmailMessageTemplate(config.parameter('EMAIL_SUBJECT_WORK_PATH'), config.parameter('EMAIL_TEXT_WORK_PATH'))
         
 
-        document_analyst = PackageAnalyzer(xml2json, json2articlemodel, registered_titles, all_boxes, AheadArticles(config.parameter('AHEAD_LIST')))
+        information_analyst = InformationAnalyst(xml2json, json2articlemodel, registered_titles, all_boxes, AheadArticles(config.parameter('AHEAD_LIST')))
 
         queue_organizer = QueueOrganizer(report, tracker, download_path)
         queue_organizer.archive_and_extract_files(archive_path, batch_work_path, report_sender)
@@ -184,8 +184,8 @@ if parameters.check_parameters(sys.argv):
         fulltext_generator = FullTextGenerator(xsl_and_output_list)
         if os.path.exists(config.parameter('COL_SCILISTA')):
             os.unlink(config.parameter('COL_SCILISTA'))
-        reception = Reception(batch_work_path, report_sender, package_eval_msg_template, report_path, tracker, xml_packer)
-        reception.open_packages(document_analyst, document_archiver, ImageConverter(), fulltext_generator)
+        reception = PackagesProcessor(batch_work_path, report_sender, package_eval_msg_template, report_path, tracker, xml_packer)
+        reception.open_packages(information_analyst, documents_archiver, ImageConverter(), fulltext_generator)
         reception.report_not_processed_packages(adm_msg_template)
 
 
