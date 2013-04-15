@@ -8,13 +8,17 @@ import reuse.xml.xml_java as xml_java
 xml_tree = None
 report = None
 
+
+def  filename_matches(f, name):
+    return f.startswith(name + '.') or f.startswith(name + '-')
+
 def delete(filename):
     try:
         os.unlink(filename)
     except WindowsError,e:
         pass
 
-
+   
 def img_to_jpeg(img_path, jpg_path):
     
     try:
@@ -46,7 +50,7 @@ def prepare_path(path, startswith = '', endswith = ''):
     for file in os.listdir(path):
         filename = path + '/' + file
         if len(startswith)>0:
-            if file.startswith(startswith):
+            if filename_matches(file, startswith):
                 os.unlink(filename)
         if len(endswith)>0:
             if file.endswith(endswith) and os.path.exists(file):
@@ -244,7 +248,7 @@ class Validator:
             if os.path.exists(p):
                 for f in os.listdir(p):
                     
-                    if f.startswith(self.name) and not self.basename == f:
+                    if filename_matches(f, self.name) and not self.basename == f:
                         
                         os.unlink(p + '/' + f)
             else:
@@ -316,6 +320,27 @@ class Validator:
             report.write('Errors: read ' + self.err_filename, False, True, True)
             r = False
         return r
+
+    def validate_xml_and_style(self, report):          
+        
+        xml_java.replace_dtd_path(self.xml_filename, self.dtd)        
+        if xml_java.validate(self.xml_filename, self.dtd, self.result_filename, self.err_filename):              
+            if xml_java.transform(self.xml_filename, self.xsl_prep_report, self.xml_report, self.err_filename):
+                # Generate self.report.html
+                if xml_java.transform(self.xml_report, self.xsl_report, self.html_report, self.err_filename):
+                    os.unlink(self.xml_report)
+        
+        if os.path.isfile(self.result_filename):
+            os.unlink(self.result_filename)
+
+        c = ''
+        if os.path.exists(self.html_report):
+            f = open(self.html_report, 'r')
+            c = f.read()
+            f.close()
+            
+
+        return ((not os.path.isfile(self.err_filename)), ('Total of errors = 0' in c))
 
 class SGML2XML:
     def __init__(self, xsl_sgml2xml):
@@ -517,7 +542,7 @@ class XMLPackagesChecker:
         if not os.path.isdir(dest_path):
             os.makedirs(dest_path)
         for f in os.listdir(dest_path):
-            if f.startswith(new_name):
+            if filename_matches(f, new_name):
                 os.unlink(dest_path + '/' + f)
 
         src_path = os.path.dirname(filename)
@@ -527,14 +552,14 @@ class XMLPackagesChecker:
                 # nao precisa renomear
                 shutil.copyfile(filename, dest_path + '/' + name + '.xml')
                 for f in os.listdir(src_path):
-                    if f.startswith(name) and not f.endswith('.sgm.xml') and not f.endswith('.res') and not f.endswith('.res1'):
+                    if filename_matches(f, name) and not f.endswith('.sgm.xml') and not f.endswith('.res') and not f.endswith('.res1'):
                         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f)
             else:
                 # renomear
                 self.rename(filename, dest_path + '/' + new_name + '.xml', img_list, new_name)
 
                 for f in os.listdir(src_path):
-                    if f.startswith(name) and not f.endswith('.xml'):
+                    if filename_matches(f, name) and not f.endswith('.xml'):
                         print('copying ' + dest_path + '/' + f.replace(name, new_name))
                         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(name, new_name))                        
                 
@@ -618,7 +643,7 @@ class XMLPackagesChecker:
             os.makedirs(pmc_path)
         for f in os.listdir(pmc_path):
             if os.path.isfile(pmc_path + '/' + f):
-                if f.startswith(new_name):
+                if filename_matches(f, new_name):
                     os.unlink(pmc_path + '/' + f)
 
 
@@ -640,7 +665,7 @@ class XMLPackagesChecker:
             
                     report.write('Created ' + pmc_xml_filename + '\n', True, False, True)
                     for f in os.listdir(scielo_package_path):
-                        if f.startswith(new_name) and not f.endswith('.xml') and not f.endswith('.jpg'):
+                        if filename_matches(f, new_name) and not f.endswith('.xml') and not f.endswith('.jpg'):
                             shutil.copyfile(scielo_package_path + '/' + f, pmc_path + '/' + f)
                     r = True
                     if os.path.exists(pmc_xml_local):

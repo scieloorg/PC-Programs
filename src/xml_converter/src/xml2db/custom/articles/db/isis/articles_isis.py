@@ -412,7 +412,7 @@ class IssuePath:
 
         if os.path.isdir(dirname):
             for f in os.listdir(dirname):
-                if f.startswith(fname):
+                if f.startswith(fname + '-') or f.startswith(fname + '.'):
 
                     ext = f[f.rfind('.')+1:]
                     
