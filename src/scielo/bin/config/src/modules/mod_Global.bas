@@ -54,6 +54,7 @@ Public CodeTreatLevel As ColCode
 Public CodePubLevel As ColCode
 Public CodeFrequency As ColCode
 Public codeStatus As ColCode
+Public codeHistory As ColCode
 Public CodeTxtLanguage As ColCode
 Public CodeAbstLanguage As ColCode
 Public CodeCountry As ColCode
@@ -265,14 +266,14 @@ Function IssueKey(vol As String, supplvol As String, Num As String, SupplNum As 
     IssueKey = Ret
 End Function
 
-Function MsgIssueId(vol As String, supplvol As String, Num As String, SupplNum As String, IseqNo As String) As String
+Function MsgIssueId(vol As String, supplvol As String, Num As String, SupplNum As String, iseqno As String) As String
     Dim Ret As String
     
     If Len(vol) > 0 Then Ret = Ret + "Volume = " + vol + SepLinha
     If Len(supplvol) > 0 Then Ret = Ret + "Volume Suppl = " + supplvol + SepLinha
     If Len(Num) > 0 Then Ret = Ret + "Number = " + Num + SepLinha
     If Len(SupplNum) > 0 Then Ret = Ret + "Number Suppl = " + SupplNum + SepLinha
-    If Len(IseqNo) > 0 Then Ret = Ret + "Seq. Number = " + IseqNo + SepLinha
+    If Len(iseqno) > 0 Then Ret = Ret + "Seq. Number = " + iseqno + SepLinha
     MsgIssueId = Ret
 End Function
 
@@ -463,6 +464,7 @@ Property Let ChangeInterfaceIdiom(idiom As String)
     Call codedao.getTable(idiom, "publication level", CodePubLevel)
     Call codedao.getTable(idiom, "frequency", CodeFrequency)
     Call codedao.getTable(idiom, "status", codeStatus)
+    Call codedao.getTable(idiom, "history", codeHistory)
     Call codedao.getTable(idiom, "country", CodeCountry)
     Call codedao.getTable(idiom, "state", CodeState)
     
