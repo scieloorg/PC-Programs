@@ -22,6 +22,9 @@ Function getJournalStandardList() As MyCollection
     
     For i = 1 To isis.MfnQuantity
         Set journal = New ClsJournal
+        
+        journal.is_published = isis.FieldContentOccGet(i, 50, 1)
+        
         journal.ISSN = isis.FieldContentOccGet(i, 400, 1)
         journal.shorttitle = isis.FieldContentOccGet(i, 150, 1)
         journal.JournalStandard = isis.FieldContentOccGet(i, 117, 1)

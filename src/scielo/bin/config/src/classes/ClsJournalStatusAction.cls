@@ -13,8 +13,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Private history As New ClsHistory
 Private mvarCodeStatus As ColCode
-Private Const valid = "DSC"
-Private Const visible = "DSC"
+
 
 Function changed(Mfn As Long) As Boolean
     Dim H As ClsHistory
@@ -33,22 +32,11 @@ End Property
 Public Property Get mycodeStatus() As ColCode
     Set mycodeStatus = mvarCodeStatus
 End Property
-Public Property Set mycodeStatus(codeStatus As ColCode)
-    Dim c As ClCode
-    Dim i As Long
+Public Property Set mycodeStatus(codeHistory As ColCode)
     
-    Set mvarCodeStatus = New ColCode
-    For i = 1 To codeStatus.count
-        If InStr(valid, codeStatus(i).Code) > 0 Then
-            Set c = New ClCode
-            c.Code = codeStatus(i).Code
-            c.value = codeStatus(i).value
-            c.unabled = (InStr(visible, codeStatus(i).Code) = 0)
-            
-            Call mvarCodeStatus.add(c, c.Code)
-            
-        End If
-    Next
+    
+    Set mvarCodeStatus = codeHistory
+    
 End Property
 Function validate(prevStatusDate As String, prevStatus As String, statusDate As String, status As String) As Boolean
     
@@ -148,20 +136,22 @@ Function isValidStatusTransition(previousStatus As String, status As String) As 
     s = previousStatus + status
     If previousStatus <> status And Len(status) = 1 And Len(previousStatus) = 1 Then
     Select Case s
-    Case "DC"
-        r = True
-    Case "DS"
-        r = False
-    Case "SC"
-        r = True
-    Case "SD"
-        r = False
-    Case "CS"
+    Case "_C"
         r = True
     Case "CD"
         r = True
-    Case "_C"
+    Case "CS"
         r = True
+    Case "CE"
+        'Embargoed
+        r = True
+    Case "SC"
+        r = True
+    Case "EC"
+        'Embargoed
+        r = True
+    Case Else
+        r = False
     End Select
     End If
     isValidStatusTransition = r

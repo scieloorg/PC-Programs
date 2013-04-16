@@ -386,26 +386,26 @@ Sub MySetLabels()
     
     With Fields
         FrameSciELO.Caption = .getLabel("ser6_journalStatusHistory")
-    LabJournalStatus.Caption = .getLabel("ser6_journalExitStatus")
-    LabJournalEntryDate.Caption = .getLabel("ser6_journalEntryDate")
-    LabJournalExitDate.Caption = .getLabel("ser6_journalExitDate")
-
+        LabJournalStatus.Caption = .getLabel("ser6_journalExitStatus")
+        LabJournalEntryDate.Caption = .getLabel("ser6_journalEntryDate")
+        LabJournalExitDate.Caption = .getLabel("ser6_journalExitDate")
     End With
-    With ConfigLabels
-    LabIndicationMandatoryField.Caption = .getLabel("MandatoryFieldIndication")
-    'CommandJournalStatusAdd.Caption = .ser6_Add
-    'CommandJournalStatusReplace.Caption = .ser6_Replace
-    'CommandJournalStatusModify.Caption = .ser6_Edit
-    'CommandJournalStatusRemove.Caption = .ser6_Remove
     
-    CmdBack.Caption = .getLabel("ButtonBack")
-    CmdClose.Caption = .getLabel("ButtonClose")
-    CmdNext.Caption = .getLabel("ButtonNext")
-    CmdSave.Caption = .getLabel("ButtonSave")
+    With ConfigLabels
+        LabIndicationMandatoryField.Caption = .getLabel("MandatoryFieldIndication")
+        'CommandJournalStatusAdd.Caption = .ser6_Add
+        'CommandJournalStatusReplace.Caption = .ser6_Replace
+        'CommandJournalStatusModify.Caption = .ser6_Edit
+        'CommandJournalStatusRemove.Caption = .ser6_Remove
+        
+        CmdBack.Caption = .getLabel("ButtonBack")
+        CmdClose.Caption = .getLabel("ButtonClose")
+        CmdNext.Caption = .getLabel("ButtonNext")
+        CmdSave.Caption = .getLabel("ButtonSave")
     End With
     
     Dim i As Long
-    Set JournalStatusAction.mycodeStatus = codeStatus
+    Set JournalStatusAction.mycodeStatus = codeHistory
     For i = 0 To MAX_LINES_INDEX
         Call FillCombo(ComboJournalStatus(i), JournalStatusAction.mycodeStatus)
         Call DisplayLine(i, False)
@@ -448,7 +448,7 @@ Sub MyOpen(MfnTitle As Long)
     
     Show
     
-    Set JournalStatusAction.mycodeStatus = codeStatus
+    Set JournalStatusAction.mycodeStatus = codeHistory
     Call FrmInfo.ShowHelpMessage(Fields.getHelp("ser6_journalStatusHistory"))
 End Sub
 
