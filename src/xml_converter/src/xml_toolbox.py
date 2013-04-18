@@ -9,7 +9,8 @@ xml_tree = None
 report = None
 
 
-def  filename_matches(f, name):
+
+def filename_matches(f, name):
     return f.startswith(name + '.') or f.startswith(name + '-')
 
 def delete(filename):
@@ -322,13 +323,37 @@ class Validator:
         return r
 
     def validate_xml_and_style(self, report):          
+        is_valid_xml = False
         
+        import time
+
         xml_java.replace_dtd_path(self.xml_filename, self.dtd)        
-        if xml_java.validate(self.xml_filename, self.dtd, self.result_filename, self.err_filename):              
+        if xml_java.validate(self.xml_filename, self.dtd, self.result_filename, self.err_filename):  
+            is_valid_xml = True    
+
+            report.write('Transform ' + self.xml_filename + ' + ' + self.xsl_prep_report +  ' => ' + self.xml_report + ' ' + self.err_filename)        
+            t = time.time()
+            report.write(str(os.path.exists(self.xml_filename)))        
+            report.write(str(os.path.exists(self.xsl_prep_report))   )     
+            
             if xml_java.transform(self.xml_filename, self.xsl_prep_report, self.xml_report, self.err_filename):
-                # Generate self.report.html
+                t1 = time.time()
+                report.write(str(t1 - t))
+                report.write('Transform ' + self.xml_report + ' + ' + self.xsl_report +  ' => ' + self.html_report + ' ' + self.err_filename)        
+                
+                report.write(str(os.path.exists(self.xml_report)))        
+                report.write(str(os.path.exists(self.xsl_report)))        
                 if xml_java.transform(self.xml_report, self.xsl_report, self.html_report, self.err_filename):
-                    os.unlink(self.xml_report)
+                    t2 = time.time()
+                    report.write(str(t2 - t1))
+                else:
+                    t2 = time.time()
+                    report.write('Unable to generate ' + self.html_report )
+                    report.write(str(t2 - t1))
+            else:
+                t1 = time.time()
+                report.write('Unable to generate ' + self.xml_report)
+                report.write(str(t1 - t))
         
         if os.path.isfile(self.result_filename):
             os.unlink(self.result_filename)
@@ -340,7 +365,7 @@ class Validator:
             f.close()
             
 
-        return ((not os.path.isfile(self.err_filename)), ('Total of errors = 0' in c))
+        return (is_valid_xml, ('Total of errors = 0' in c))
 
 class SGML2XML:
     def __init__(self, xsl_sgml2xml):
@@ -448,7 +473,7 @@ class SGML2XML:
         
 
 class XMLPacker:
-    def __init__(self, path_pmc, path_jar):
+    def __init__(self, path_pmc, path_jar, java_path):
 
 
         path_xsl = path_pmc + '/v3.0/xsl'
@@ -471,7 +496,7 @@ class XMLPacker:
         self.pmc_css = path_pmc + '/v3.0/xsl/jpub/jpub-preview.css'
 
         #xml_toolbox.xml_tree = XMLTree(TableEntities(current_path + '/reuse/encoding/entities'))
-
+        xml_java.java_path = java_path
         xml_java.jar_transform = path_jar + '/saxonb9-1-0-8j/saxon9.jar' 
         xml_java.jar_validate = path_jar + '/XMLCheck.jar'
 
