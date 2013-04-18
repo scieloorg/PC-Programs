@@ -130,7 +130,7 @@ if parameters.check_parameters(sys.argv):
         aff_handler = AffiliationsHandler(normalized_affiliations)
         json2articlemodel = JSON2Article(aff_handler, json_normalizer)
 
-        xml_packer = xml_toolbox.XMLPacker(os.getcwd() + '/pmc', os.getcwd() + '/jar')
+        xml_packer = xml_toolbox.XMLPacker(os.getcwd() + '/pmc', os.getcwd() + '/jar', config.parameters['JAVA_PATH'] + '/java')
 
         #FIXME
         #cisis, idfile, paths, records_order, json2idfile, json2idfile_article

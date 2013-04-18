@@ -635,7 +635,7 @@ Private Sub PresentsData()
             DisplayLine (lineCount)
         End If
     Next
-        DisplayLine (0)
+    DisplayLine (0)
     If lineCount < MAX_LINES_INDEX And lineCount >= 0 Then
         If Len(ComboJournalStatus(lineCount).text) > 0 Then
             If getCode(JournalStatusAction.mycodeStatus, ComboJournalStatus(lineCount).text).Code = "S" Then
