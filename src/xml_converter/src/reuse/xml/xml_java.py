@@ -1,10 +1,21 @@
 import os, shutil
 
-java = 'java'
+java_path = ''
 jar_transform = ''
 jar_validate = ''
 
+def wait_file_creation(filename, MAX_SPENT_TIME = 300):
+    import time
+    start = time.time()
 
+    wait = True
+    while wait:
+        if os.path.exists(filename):
+            wait = False
+        else:
+            spent_time = time.time() - start
+            if spent_time > MAX_SPENT_TIME:
+                wait = False
 
 def format_parameters(parameters):
     r = ''
@@ -107,11 +118,12 @@ def validate(xml_filename, dtd_path, result_filename, err_filename):
         xml = temp_xml_filename
         validation_type = '--validate'
 
-    cmd = java + ' -cp ' +  jar_validate + ' br.bireme.XMLCheck.XMLCheck ' + xml + ' ' +  validation_type +  '>' + temp
+    cmd = java_path + ' -cp ' +  jar_validate + ' br.bireme.XMLCheck.XMLCheck ' + xml + ' ' +  validation_type +  '>' + temp
     
     if os.path.exists(jar_validate):
-        os.system(cmd)
-        #time.sleep(3)
+        teste = os.system(cmd)
+
+
 
     if os.path.exists(temp):
         f = open(temp, 'r')
@@ -154,14 +166,17 @@ def transform(xml_filename, xsl_filename, result_filename, err_filename, paramet
     if os.path.exists(err_filename):
         os.unlink(err_filename)
    
-    cmd = java + ' -jar ' +  jar_transform + ' -novw -w0 -o "' + temp_result + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
-            
+    cmd = java_path + ' -jar ' +  jar_transform + ' -novw -w0 -o "' + temp_result + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
+    
+    
     if os.path.exists(jar_transform ):
         #print(cmd)
-        os.system(cmd)
-        #time.sleep(3)
-    
-    
+        teste = os.system(cmd)
+
+    if not os.path.exists(temp_result):
+        wait_file_creation(temp_result)
+
+
     if os.path.exists(temp_result):
         r = True
 

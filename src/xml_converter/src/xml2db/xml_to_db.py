@@ -4,7 +4,6 @@ from reuse.input_output.report import Report
 from xml2db.box_folder_document import Document, Documents 
 from reuse.files.compressed_file import CompressedFile
 
-import reuse.xml.xml_java as xml_java
 from reuse.files.name_file import add_date_to_filename
 
 xml_tree = None
@@ -291,20 +290,34 @@ class InformationAnalyst:
         scielo_html_preview  =  validation_path + '/' + 'preview.html'
         pmc_xml_local =  validation_path + '/' + 'pmc.xml'
 
+
+        
         self.xml_packer.checker.validator_scielo.set_output_filenames(xml_filename, validation_path, scielo_html_validation_report, scielo_html_preview, pmc_xml_local)
+        err_filename = self.xml_packer.checker.validator_scielo.err_filename.replace('.err.tmp', '.err.txt')
+        if os.path.exists(err_filename):
+            os.unlink(err_filename)
 
         is_valid_xml, is_valid_style = self.xml_packer.checker.validator_scielo.validate_xml_and_style(package.report)
 
         if is_valid_xml:
+            package.report.write('is_valid_xml')
             if not is_valid_style:
-                package.report.write('XML file has style errors. Read the attached file ' + os.path.basename(self.xml_packer.checker.validator_scielo.html_report), True, True)
-        
-                self.reports_to_attach.append(self.xml_packer.checker.validator_scielo.html_report)
+                package.report.write('not is_valid_style')
+                if os.path.exists(self.xml_packer.checker.validator_scielo.html_report):
+                    package.report.write('XML file has style errors. Read the attached file ' + os.path.basename(self.xml_packer.checker.validator_scielo.html_report), True, True)
+                    self.reports_to_attach.append(self.xml_packer.checker.validator_scielo.html_report)
+                else:
+                    package.report.write('Unable to create style report ' + os.path.basename(self.xml_packer.checker.validator_scielo.html_report), True, True)
+                    if os.path.exists(self.xml_packer.checker.validator_scielo.err_filename):
+                        self.reports_to_attach.append(self.xml_packer.checker.validator_scielo.err_filename)
+
         else:
-            err_filename = self.xml_packer.checker.validator_scielo.err_filename.replace('.err.tmp', '.err.txt')
-            package.report.write('XML file is not according to DTD. Read the attached file ' + os.path.basename(err_filename), True, True)
-            shutil.copyfile(self.xml_packer.checker.validator_scielo.err_filename, err_filename)
-            self.reports_to_attach.append(err_filename)
+            package.report.write('not is_valid_xml')
+            if os.path.exists(self.xml_packer.checker.validator_scielo.err_filename):
+                err_filename = self.xml_packer.checker.validator_scielo.err_filename.replace('.err.tmp', '.err.txt')
+                package.report.write('XML file is not according to DTD. Read the attached file ' + os.path.basename(err_filename), True, True)
+                shutil.copyfile(self.xml_packer.checker.validator_scielo.err_filename, err_filename)
+                self.reports_to_attach.append(err_filename)
 
         return is_valid_xml
 
@@ -328,31 +341,38 @@ class InformationAnalyst:
             
             registered = self.registered_titles.return_registered(publication_title, package.report)
             if registered != None:
-                selected_folder = self.check_folder(registered, package)
-                specific_document = self.json2model.return_doc(selected_folder)
-                if not 'ahead' in specific_document.issue.name:
-                    pid, fname = self.ahead_articles.return_id_and_filename(specific_document.doi, specific_document.issue.journal.issn_id, specific_document.titles)
-                    specific_document.set_previous_id(pid)
+                document_folder = self.json2model.return_folder(registered)
+
+                selected_folder = self.check_folder(document_folder, package)
+                if selected_folder.status == 'registered':
+                    specific_document = self.json2model.return_doc(selected_folder)
+                    if not 'ahead' in specific_document.issue.name:
+                        pid, fname = self.ahead_articles.return_id_and_filename(specific_document.doi, specific_document.issue.journal.issn_id, specific_document.titles)
+                        specific_document.set_previous_id(pid)
+                        
+                    if specific_document != None:
+                        generic_document = Document(specific_document)
+                        package.report.write(generic_document.display(), True, True, False)
+
+                        img_files = package.return_matching_files(xml_filename, '.jpg')
+
+                        self.json2model.evaluate_data(img_files)
                     
-                if specific_document != None:
-                    generic_document = Document(specific_document)
-                    package.report.write(generic_document.display(), True, True, False)
+                        if generic_document.folder.documents == None:
+                            generic_document.folder.documents = Documents()
+                        generic_document.folder.documents.insert(generic_document.document, True)
+                else:
+                    package.report.write('', True, True)
+            return generic_document
 
-                    img_files = package.return_matching_files(xml_filename, '.jpg')
-
-                    self.json2model.evaluate_data(img_files)
-                
-                    if generic_document.folder.documents == None:
-                        generic_document.folder.documents = Documents()
-                    generic_document.folder.documents.insert(generic_document.document, True)
-        return generic_document
-
-    def check_folder(self, registered, package, folder_table_name = 'issue'):
-        document_folder = self.json2model.return_folder(registered)
-
+    def check_folder(self, document_folder, package, folder_table_name = 'issue'):
+        
         selected_folder = self.all_folders.template(document_folder)
-        if selected_folder.status == 'not_registered':
-            package.report.write("\n" + ' ! WARNING: '  + selected_folder.display()  + ' is not registered in ' + folder_table_name + '. It must be registered before sending the package to the outsourcing company.' + "\n" , True, True, True )
+        
+        package.report.write(selected_folder.status)
+
+        if selected_folder.status != 'registered':
+            package.report.write("\n" + ' ! ERROR: '  + selected_folder.display()  + ' is not registered in ' + folder_table_name + '. It must be registered before sending the package to the outsourcing company.' + "\n" , True, True, True )
 
         incoherences = self.all_folders.return_incoherences(selected_folder, document_folder)
         if len(incoherences) > 0:
