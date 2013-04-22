@@ -65,7 +65,7 @@ class Journal:
         self.publishers = ''
 
     def generate_id(self, journal_title):
-        return id_generate( journal_title)
+        return id_generate( journal_title.strip())
  
 class JournalIssueOrder:
     def __init__(self):
