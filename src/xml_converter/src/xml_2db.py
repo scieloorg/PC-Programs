@@ -149,10 +149,10 @@ if parameters.check_parameters(sys.argv):
         
         json_titles = documents_archiver.db2json('title')
         json_boxes = documents_archiver.db2json('issue')
-                
         #
         registered_titles = return_journals_list(json_titles)
         registered_boxes = return_issues_list(json_boxes, registered_titles)
+        
         
 
         all_boxes = AllFolders(registered_boxes, JournalIssuesList(), AllIssues())

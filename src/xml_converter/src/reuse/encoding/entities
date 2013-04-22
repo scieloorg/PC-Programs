@@ -507,3 +507,7 @@ hairsp|&#8202;|&hairsp;|hair space|hairsp
 ♀|&#x2640;|&female;|female|female
 ♂|&#9794;|&male;|male|male
 ♂|&#x2642;|&male;|male|male
+/|&#47;|&sol;|solidus|/
+(|&#40;|&lpar;|left parenthesis|(
+)|&#41;|&rpar;|right parenthesis|)
+
