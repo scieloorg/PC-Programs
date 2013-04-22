@@ -23,11 +23,11 @@
       xref[@ref-type='aff']/@rid 1
     .//article-meta//contrib/collab 11
     .//article-meta/title-group 12
-      article-title t
+      article-title _
       subtitle s
       article-title/@xml:lang l en
     .//article-meta//trans-title-group 12
-      trans-title t
+      trans-title _
       trans-subtitle s
       @xml:lang l 
     .//article-meta//article-id[@pub-id-type='doi'] 237
@@ -102,7 +102,7 @@
     .//graphic/@xlink:href file
   .//sub-article[@article-type='translation']/@xml:lang 40
   .//sub-article//article-title 12
-    . t
+    . _
      @xml:lang l
   .//sub-article//abstract 83
     . a
