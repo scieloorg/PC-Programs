@@ -279,7 +279,10 @@ class InformationAnalyst:
         
         if not is_well_formed:
             package.report.write('XML file was not well formed. Unable to read it', True, True)
-        
+            #validation_path = package.package_path.replace('/work/', '/4check/')
+            #shutil.copyfile(xml_filename, validation_path)
+            #self.reports_to_attach.append(validation_path + '/' + os.path.basename(xml_filename))
+            self.reports_to_attach.append(xml_filename)
         return is_well_formed
         
 

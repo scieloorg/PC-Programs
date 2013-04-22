@@ -17,6 +17,7 @@ def return_journals_list(json):
     json_title = JSON_Journal()
     for json_item in json:
         json_title.load(json_item)
+        #print(json_title.journal_title+ '.')
         j = Journal(json_title.journal_title, json_title.journal_issn_id, json_title.journal_acron)
         j.publishers = json_title.publishers
         journal_list.insert(j, False)
@@ -32,6 +33,8 @@ def return_issues_list(json_issues, journals):
         if j != None:
             json_issue.load(json)
             issue = json_issue.return_issue(j)
+            #print(json_issue.journal_title + '.')
+            #print(issue.name + '.')
             issues_list.insert(issue, False)
     return issues_list
 
@@ -1036,7 +1039,14 @@ class AffiliationsHandler:
                     status = ''
                     if required_key in fixed:
                         status = '(automatically identified)'
-                    present.append(required_label +': ' + aff[required_key] + status)
+                    if type(aff[required_key]) == type(''):
+                        present.append(required_label +': ' + aff[required_key] + status)
+                    else:
+                        try:
+                            present.append(required_label+': ' + str(aff[required_key]) + status)
+                        except:
+                            present.append(required_label+': ' + required_key + status)
+                            print(aff[required_key])
                     
                 else:
                     missing_parts.append(required_label)
