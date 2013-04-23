@@ -326,8 +326,8 @@ class JSON_Article:
         titles = return_multval(self.json_data['f'], '12')
         article.titles = []
         for t in titles:
-            if 't' in t.keys():
-                article.titles.append(t['t'])
+            if '_' in t.keys():
+                article.titles.append(t['_'])
 
 
         
@@ -486,8 +486,8 @@ class JSON_Article:
         r = ''
         if 'l' in a.keys():
             r += '[' + a['l'] + '] '
-        if 't' in a.keys():
-            r += a['t']
+        if '_' in a.keys():
+            r += a['_']
         if 's' in a.keys():
             r += ': ' + a['s']
         
@@ -582,6 +582,7 @@ class JSON_Article:
             self.section = section
         self.json_data['f']['49'] = self.section.code
 
+        self.normalize_metadata_subtitles()
         self.normalize_metadata_authors()
         self.normalize_illustrative_materials()
         self.normalize_affiliations()
@@ -629,6 +630,30 @@ class JSON_Article:
             else:
                 self.json_data['f']['10'] = new_authors
         
+    def normalize_metadata_subtitles(self):
+        """
+        Normalize the json structure for article-titles: 12
+        """
+        
+        titles = return_multval(self.json_data['f'], '12')
+        new_titles = []
+        for t in titles:
+            if 's' in t.keys():
+                #print(t)
+                if ':' in t['_']:
+                    t['_'] += ' '
+                else:
+                    t['_'] += ': ' 
+                t['_'] += t['s']
+                del t['s']
+                #print(t)
+            new_titles.append(t)
+
+        if len(new_titles) == 1:
+            self.json_data['f']['12'] = new_titles[0]
+        elif len(new_titles) > 1:
+            self.json_data['f']['12'] = new_titles
+
     def normalize_illustrative_materials(self):
         """
         Normalize the json structure for illustrative_materials: 38
@@ -861,8 +886,14 @@ class JSON_Article:
         e = []
         img_files = [ name[0:name.rfind('.')] for name in img_files ]
 
-        if 'body' in self.json_data:
-            href_list = list(set(return_multval(self.json_data['body'], 'file')))
+        if 'body' in self.json_data.keys():
+            if type(self.json_data['body']) == type({}):
+                href_list = list(set(return_multval(self.json_data['body'], 'file')))
+
+            elif type(self.json_data['body']) == type([]):
+                for occ in self.json_data['body']:
+                    href_list += return_multval(occ, 'file')
+                href_list = list(set(href_list))
 
         for href in href_list:
             if not href in img_files:
