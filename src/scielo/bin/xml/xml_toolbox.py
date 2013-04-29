@@ -419,14 +419,14 @@ class SGML2XML:
                     # close
                     matched = False
                     if len(expected_close_tags) == 0:
-                        parts[k] = parts[k].replace(tag, '')
-                    else:
+                        parts[k] = ''
+                    while not matched and len(expected_close_tags) > 0:
                         matched = (expected_close_tags[-1] == tag)
-                        if matched:     
-                            del expected_close_tags[-1]
-                        else:                       
-                            # ignore close tag
-                            parts[k] = parts[k].replace(tag, '')
+                        if not matched:     
+                            parts[k-1] += expected_close_tags[-1] 
+
+                        del expected_close_tags[-1]
+                    
                 else:
                     # open
                     expected_close_tags.append(tag.replace('<', '</'))
