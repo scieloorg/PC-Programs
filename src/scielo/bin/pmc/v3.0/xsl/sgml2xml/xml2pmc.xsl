@@ -58,7 +58,7 @@
     		</xsl:otherwise>
     	</xsl:choose></aff>
     </xsl:template>
-	<xsl:template match="aff//institution"><xsl:value-of select="normalize-space(.)"/>, </xsl:template>
+	<xsl:template match="aff//institution"><xsl:value-of select="normalize-space(.)"/></xsl:template>
 	<xsl:template match="aff//addr-line">
 		<xsl:apply-templates select="* | text()"/>
 	</xsl:template>

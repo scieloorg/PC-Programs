@@ -8,13 +8,18 @@ import reuse.xml.xml_java as xml_java
 xml_tree = None
 report = None
 
+
+
+def filename_matches(f, name):
+    return f.startswith(name + '.') or f.startswith(name + '-')
+
 def delete(filename):
     try:
         os.unlink(filename)
     except WindowsError,e:
         pass
 
-
+   
 def img_to_jpeg(img_path, jpg_path):
     
     try:
@@ -46,7 +51,7 @@ def prepare_path(path, startswith = '', endswith = ''):
     for file in os.listdir(path):
         filename = path + '/' + file
         if len(startswith)>0:
-            if file.startswith(startswith):
+            if filename_matches(file, startswith):
                 os.unlink(filename)
         if len(endswith)>0:
             if file.endswith(endswith) and os.path.exists(file):
@@ -77,6 +82,14 @@ class XMLData:
         if len(nodes) > 0:
             order = nodes[0].attrib['order']
             fpage = nodes[0].attrib['fpage']
+            suppl = ''
+            issueno = ''
+            volid = ''
+            issn = ''
+            if 'issn' in nodes[0].attrib.keys():
+                issn = nodes[0].attrib['issn']
+            if 'volid' in nodes[0].attrib.keys():
+                volid = nodes[0].attrib['volid']
             if 'issueno' in nodes[0].attrib.keys():
                 issueno = nodes[0].attrib['issueno']
             if 'supplvol' in nodes[0].attrib.keys():
@@ -85,7 +98,7 @@ class XMLData:
                 suppl = nodes[0].attrib['supplno']
             if suppl == '0':
                 suppl = 'suppl'
-            r = (nodes[0].attrib['issn'], nodes[0].attrib['volid'], issueno, suppl, fpage, order)
+            r = (issn, volid, issueno, suppl, fpage, order)
         return r
 
     def data_from_xml(self):
@@ -160,18 +173,26 @@ class XMLData:
             else:
                 page_or_order = fpage     
 
+            if issueno == 'ahead':
+               issueno = '00'
+
             issueno = '00' + issueno
             issueno = issueno[-2:] 
 
             if suppl == 'suppl':
                 issueno += '-' + suppl
-            else:
+            elif suppl != '':
                 issueno += '-' + 's' + suppl
             
             if len(param_acron) > 0:
-                param_acron += '-'
-
-            r = issn + '-' + param_acron  + vol + '-' + issueno + '-' +  page_or_order
+                param_acron = '-' + param_acron
+            if len(vol) > 0:
+                vol = '-' + vol 
+            if len(issueno) > 0:
+                issueno = '-' + issueno 
+            
+            
+            r = issn +  param_acron  + vol + issueno + '-' + page_or_order
         return r
 
 
@@ -244,7 +265,7 @@ class Validator:
             if os.path.exists(p):
                 for f in os.listdir(p):
                     
-                    if f.startswith(self.name) and not self.basename == f:
+                    if filename_matches(f, self.name) and not self.basename == f:
                         
                         os.unlink(p + '/' + f)
             else:
@@ -287,10 +308,10 @@ class Validator:
             if ':' in img_path:
                 img_path = 'file:///' + img_path 
             if type(self.xsl_preview) == type([]):
-                xml_java.tranform_in_steps(self.xml_filename, self.dtd, self.xsl_preview, self.html_preview, {'path_img': img_path +'/', 'css': 'file:///' + self.css, 'new_name': new_name})
+                xml_java.tranform_in_steps(self.xml_filename, self.dtd, self.xsl_preview, self.html_preview, {'path_img': img_path +'/', 'css':  self.css, 'new_name': new_name})
             else:
                 report.write('transform ' + self.xml_filename + ' '+  self.xsl_preview + ' '+  self.html_preview )
-                xml_java.transform(self.xml_filename, self.xsl_preview, self.html_preview, self.err_filename, {'path_img': img_path +'/', 'css': 'file:///' + self.css, 'new_name': new_name})
+                xml_java.transform(self.xml_filename, self.xsl_preview, self.html_preview, self.err_filename, {'path_img': img_path +'/', 'css':  self.css, 'new_name': new_name})
             if os.path.exists(self.html_preview):
                 report.write('Preview ' +  self.html_preview, True, False, True)
             else:
@@ -317,6 +338,51 @@ class Validator:
             r = False
         return r
 
+    def validate_xml_and_style(self, report):          
+        is_valid_xml = False
+        
+        import time
+
+        xml_java.replace_dtd_path(self.xml_filename, self.dtd)        
+        if xml_java.validate(self.xml_filename, self.dtd, self.result_filename, self.err_filename):  
+            is_valid_xml = True    
+
+            report.write('Transform ' + self.xml_filename + ' + ' + self.xsl_prep_report +  ' => ' + self.xml_report + ' ' + self.err_filename)        
+            t = time.time()
+            report.write(str(os.path.exists(self.xml_filename)))        
+            report.write(str(os.path.exists(self.xsl_prep_report))   )     
+            
+            if xml_java.transform(self.xml_filename, self.xsl_prep_report, self.xml_report, self.err_filename):
+                t1 = time.time()
+                report.write(str(t1 - t))
+                report.write('Transform ' + self.xml_report + ' + ' + self.xsl_report +  ' => ' + self.html_report + ' ' + self.err_filename)        
+                
+                report.write(str(os.path.exists(self.xml_report)))        
+                report.write(str(os.path.exists(self.xsl_report)))        
+                if xml_java.transform(self.xml_report, self.xsl_report, self.html_report, self.err_filename):
+                    t2 = time.time()
+                    report.write(str(t2 - t1))
+                else:
+                    t2 = time.time()
+                    report.write('Unable to generate ' + self.html_report )
+                    report.write(str(t2 - t1))
+            else:
+                t1 = time.time()
+                report.write('Unable to generate ' + self.xml_report)
+                report.write(str(t1 - t))
+        
+        if os.path.isfile(self.result_filename):
+            os.unlink(self.result_filename)
+
+        c = ''
+        if os.path.exists(self.html_report):
+            f = open(self.html_report, 'r')
+            c = f.read()
+            f.close()
+            
+
+        return (is_valid_xml, ('Total of errors = 0' in c))
+
 class SGML2XML:
     def __init__(self, xsl_sgml2xml):
         self.xsl_sgml2xml = xsl_sgml2xml
@@ -330,72 +396,44 @@ class SGML2XML:
         f.write(c)
         f.close()
         
-
     def fix_tags(self, content):
         tags = [ 'italic', 'bold', 'sub', 'sup']
-        close_tags = [ '/italic', '/bold', '/sub', '/sup']
-        stack = [] 
-        ignore = []
-      
-        s = content.split( '<')
-        n = 0
-        r = ''
+        
+        tag_list = []
+        for t in tags:
+            tag_list.append('<' + t + '>')
+            tag_list.append('</' + t + '>')
 
-        for item in s:
-            
-            #print('\n' + item)
-            #print('content:' + content)
-            #print('result: ' + r)
-            if n == 1:
-                added = ''
-                tag = item[0:item.find( '>')]
-                if tag in tags:
-                    # tag inicial
-                    #print('empilha ' + tag)
-                    stack.append(tag)
-                    r +=  '<' + item
-                    #print(stack)
-                elif tag in close_tags:
-                    # tag fecha
-                    if tag in ignore:
-                        k = 0 
-                        for ign in ignore:
-                            if ign == tag:
-                                item = item[len(tag)+1:]
-                                del ignore[k]
-                                break
-                            k += 1
-                        r += item
+        expected_close_tags = [] 
+        
+        rcontent = content
+        for tag in tags:
+            rcontent = rcontent.replace('<' + tag + '>',  'BREAKBEGINCONSERTA<' + tag + '>BREAKBEGINCONSERTA').replace('</' + tag + '>', 'BREAKBEGINCONSERTA</' + tag + '>BREAKBEGINCONSERTA')
+
+        parts = rcontent.split('BREAKBEGINCONSERTA')
+        k = 0
+        for part in parts:
+            if part in tag_list:
+                tag = part                
+                if '/' in tag:
+                    # close
+                    matched = False
+                    if len(expected_close_tags) == 0:
+                        parts[k] = parts[k].replace(tag, '')
                     else:
-
-                        while tag[1:] != stack[len(stack)-1]:
-                            added = '</' + stack[len(stack)-1] + '>'
-                            #print('force close tag of the top of the stack ' + added)
-                            #print('antes:')
-                            #print(stack)
-                            ignore.append('/' + stack[len(stack)-1])
-                            del stack[len(stack)-1]
-                        
-                            #print('depois:')
-                            #print(stack)
-
-                            #print('ignore:')
-                            #print(ignore)
-                            r += added 
-                        if tag[1:] == stack[len(stack)-1]:
-                            #print('desempilha ' + stack[len(stack)-1])
-                            del stack[len(stack)-1]
-                            r +=  '<' + item
-                            #print(stack)
-                            
+                        matched = (expected_close_tags[-1] == tag)
+                        if matched:     
+                            del expected_close_tags[-1]
+                        else:                       
+                            # ignore close tag
+                            parts[k] = parts[k].replace(tag, '')
                 else:
-                    r += '<' + item
-                
-            else:
-                r += item
-            n = 1
+                    # open
+                    expected_close_tags.append(tag.replace('<', '</'))
+            k += 1        
+        expected_close_tags.reverse()
+        r = ''.join(parts) + ''.join(expected_close_tags)
         return r
-
 
     def sgmxml2xml(self, sgmxml_filename, xml_filename, err_filename, report):        
         fix_xml(sgmxml_filename)
@@ -405,6 +443,8 @@ class SGML2XML:
         res_filename = sgmxml_filename.replace('.sgm.xml', '.res')
 
         if not xml_java.validate(sgmxml_filename, '', res_filename, temp_err_filename):
+            shutil.copyfile(sgmxml_filename, sgmxml_filename.replace('.sgm.xml', '.sgm.txt'))
+
             self.fix_xml_tags(sgmxml_filename)
         
 
@@ -422,35 +462,35 @@ class SGML2XML:
         
 
 class XMLPacker:
-    def __init__(self, path_pmc, path_jar):
+    def __init__(self, path_pmc, path_jar, java_path):
 
 
         path_xsl = path_pmc + '/v3.0/xsl'
 
         dtd = path_pmc + '/v3.0/dtd/journalpublishing3.dtd' 
-        css = path_pmc + '/v3.0/xsl/web/scielo.css'
+        self.css = path_pmc + '/v3.0/xsl/previewers/scielo.css'
 
 
         xsl_sgml2xml = path_xsl + '/sgml2xml/sgml2xml.xsl'
 
         xsl_prep_report = path_xsl + '/scielo-style/stylechecker.xsl'
         xsl_report = path_xsl + '/nlm-style-4.6.6/style-reporter.xsl'
-        xsl_preview = path_xsl + '/previewer/preview.xsl'
+        xsl_preview = path_xsl + '/previewers/scielo-html.xsl'
         xsl_output = path_xsl + '/sgml2xml/xml2pmc.xsl'
 
         pmc_xsl_prep_report = path_xsl + '/nlm-style-4.6.6/nlm-stylechecker.xsl'
         pmc_xsl_report = path_xsl + '/nlm-style-4.6.6/style-reporter.xsl'
-        pmc_xsl_preview = [ path_xsl + '/jpub/citations-prep/jpub3-PMCcit.xsl', path_xsl + '/previewer/jpub-main-jpub3-html.xsl', ]
+        pmc_xsl_preview = [ path_xsl + '/jpub/citations-prep/jpub3-PMCcit.xsl', path_xsl + '/previewers/jpub-main-jpub3-html.xsl', ]
         pmc_xsl_output = path_xsl + '/sgml2xml/pmc.xsl'
-        pmc_css = path_pmc + '/v3.0/xsl/jpub/jpub-preview.css'
+        self.pmc_css = path_pmc + '/v3.0/xsl/jpub/jpub-preview.css'
 
         #xml_toolbox.xml_tree = XMLTree(TableEntities(current_path + '/reuse/encoding/entities'))
-
+        xml_java.java_path = java_path
         xml_java.jar_transform = path_jar + '/saxonb9-1-0-8j/saxon9.jar' 
         xml_java.jar_validate = path_jar + '/XMLCheck.jar'
 
-        validator_scielo = Validator(dtd, xsl_prep_report, xsl_report, xsl_preview, xsl_output, css)
-        validator_pmc = Validator(dtd, pmc_xsl_prep_report, pmc_xsl_report, pmc_xsl_preview, pmc_xsl_output, pmc_css)
+        validator_scielo = Validator(dtd, xsl_prep_report, xsl_report, xsl_preview, xsl_output, self.css)
+        validator_pmc = Validator(dtd, pmc_xsl_prep_report, pmc_xsl_report, pmc_xsl_preview, pmc_xsl_output, self.pmc_css)
 
         
         self.checker = XMLPackagesChecker(SGML2XML(xsl_sgml2xml), validator_scielo, validator_pmc)
@@ -516,7 +556,7 @@ class XMLPackagesChecker:
         if not os.path.isdir(dest_path):
             os.makedirs(dest_path)
         for f in os.listdir(dest_path):
-            if f.startswith(new_name):
+            if filename_matches(f, new_name):
                 os.unlink(dest_path + '/' + f)
 
         src_path = os.path.dirname(filename)
@@ -526,14 +566,14 @@ class XMLPackagesChecker:
                 # nao precisa renomear
                 shutil.copyfile(filename, dest_path + '/' + name + '.xml')
                 for f in os.listdir(src_path):
-                    if f.startswith(name) and not f.endswith('.sgm.xml') and not f.endswith('.res') and not f.endswith('.res1'):
+                    if filename_matches(f, name) and not f.endswith('.sgm.xml') and not f.endswith('.res') and not f.endswith('.res1'):
                         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f)
             else:
                 # renomear
                 self.rename(filename, dest_path + '/' + new_name + '.xml', img_list, new_name)
 
                 for f in os.listdir(src_path):
-                    if f.startswith(name) and not f.endswith('.xml'):
+                    if filename_matches(f, name) and not f.endswith('.xml'):
                         print('copying ' + dest_path + '/' + f.replace(name, new_name))
                         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(name, new_name))                        
                 
@@ -617,7 +657,7 @@ class XMLPackagesChecker:
             os.makedirs(pmc_path)
         for f in os.listdir(pmc_path):
             if os.path.isfile(pmc_path + '/' + f):
-                if f.startswith(new_name):
+                if filename_matches(f, new_name):
                     os.unlink(pmc_path + '/' + f)
 
 
@@ -639,7 +679,7 @@ class XMLPackagesChecker:
             
                     report.write('Created ' + pmc_xml_filename + '\n', True, False, True)
                     for f in os.listdir(scielo_package_path):
-                        if f.startswith(new_name) and not f.endswith('.xml') and not f.endswith('.jpg'):
+                        if filename_matches(f, new_name) and not f.endswith('.xml') and not f.endswith('.jpg'):
                             shutil.copyfile(scielo_package_path + '/' + f, pmc_path + '/' + f)
                     r = True
                     if os.path.exists(pmc_xml_local):
