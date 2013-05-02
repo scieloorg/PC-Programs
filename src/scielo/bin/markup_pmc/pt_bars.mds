@@ -148,6 +148,7 @@ orgdiv;Identifica a divisão da organização autora do documento;10;#FALSE#;#FALSE
 bibcomFront;front
 abstract;Identifica o resumo do artigo;9;#TRUE#;#TRUE#;
 xmlabstr;Identifica o resumo estruturado de artigo;9;#TRUE#;#TRUE#;xmlabstr
+down;xmlabstr
 keygrp;Agrupa as palavras-chave do artigo;9;#TRUE#;#TRUE#;keygrpBibcom
 down;keygrpBibcom
 confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;9;#FALSE#;#FALSE#;confgrpBibcom

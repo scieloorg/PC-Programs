@@ -96,7 +96,7 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT table - - (tr+)    >
 <!ELEMENT tr - - (td+)    >
-<!ELEMENT td - - (p+)    >
+<!ELEMENT td - - (#PCDATA)   +(%i.float;) >
 
 <!ELEMENT sciname - - (#PCDATA) >
 

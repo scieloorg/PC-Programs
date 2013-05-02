@@ -132,6 +132,10 @@
       given-names n
       surname s
       suffix z
+    name 10
+      given-names n
+      surname s
+      suffix z
     .//person-group[2]/name 16
       given-names n
       surname s

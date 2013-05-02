@@ -341,11 +341,12 @@
 	<xsl:template match="xref">
 		
 		<a href="#{@rid}">
-			<!--FIXME-->
-			<xsl:apply-templates select="label|text()"/>
+			
+			<xsl:apply-templates select="*|text()"/>
 		</a>
 		
 	</xsl:template>
+	
 	
 	
 	
