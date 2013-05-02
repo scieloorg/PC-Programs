@@ -1834,26 +1834,27 @@
 !ID 000125
 !v001!fntype^lpt
 !v002!^cabbr^vAbreviações
-!v002!^ccom^vInformação de comunicado
+!v002!^ccom^vInformação de comunicação
 !v002!^ccon^vInformação de contribuição
 !v002!^cconflict^vDeclaração de conflito de interesse
 !v002!^ccorresp^vInformação de correspondencia
 !v002!^ccurrent-aff^vAfiliação atual do autor
-!v002!^cdeceased^vPessoa morreu desde que o artigo foi escrito
-!v002!^cedited-by^vAutor é o editor
-!v002!^cequal^vContribuiu igualmente na criação do documento
-!v002!^cfinancial-disclosure^vDeclaração de financiamento ou negação do recebido no apoio da pesquisa na qual o artigo é baseado
-!v002!^con-leave^vAutor está ausente (sabático ou outro)
+!v002!^cdeceased^vPessoa faleceu desde que o artigo foi escrito
+!v002!^cedited-by^vAutor exerce papel de editor
+!v002!^cequal^vContribuição igualitária na criação do documento 
+!v002!^cfinancial-disclosure^vDeclaração ou negação de recebimento de financiamento em 
+apoio à pesquisa na qual o artigo é baseado
+!v002!^con-leave^vAutor ausente (sabático ou outro)
 !v002!^cother^vOutro tipo de nota
 !v002!^cauthor^vOutro tipo de nota relacionada ao autor
-!v002!^cparticipating-researchers^vAutor foi um pesquisador para um artigo
+!v002!^cparticipating-researchers^vAutor foi um pesquisador para o artigo 
 !v002!^cpresent-address^vEndereço atual do autor
-!v002!^cpresented-at^vApresentado neste evento
-!v002!^cpresented-by^vApresentador del material
+!v002!^cpresented-at^vApresentado em evento
+!v002!^cpresented-by^vApresentador do material
 !v002!^cpreviously-at^vAfiliação do autor anterior
-!v002!^cstudy-group-members^vAutor foi um membro do grupo de estudo para a pesquisa
+!v002!^cstudy-group-members^vColaborador foi membro do grupo de estudo para a pesquisa
 !v002!^csupplementary-material^vIndica ou descreve o material suplementar para o artigo
-!v002!^csupported-by^vPesquisa na qual um artigo é baseado, foi apoiado por alguma entidade
+!v002!^csupported-by^vPesquisa na qual o artigo é baseado foi apoiado por alguma entidade
 !ID 000126
 !v001!fntype^les
 !v002!^cabbr^vAbreviaciones
@@ -1863,20 +1864,20 @@
 !v002!^ccorresp^vInformación de correspondencia
 !v002!^ccurrent-aff^vAfiliación vigente del autor
 !v002!^cdeceased^vPersona se morrió desde la escritura del artículo
-!v002!^cedited-by^vAutor es el editor
-!v002!^cequal^vContribuyo igualmente en la creación del documento
-!v002!^cfinancial-disclosure^vDeclaración de financiamiento o negación de recebimiento en el apoyo de la investigación en la cual el artículo es basado 
-!v002!^con-leave^vAutor está ausente (sabático o otro)
+!v002!^cedited-by^vAutor ejerce el ról de editor
+!v002!^cequal^vContribución igualitaria en la creación del documento
+!v002!^cfinancial-disclosure^vDeclaración o o negación de recibimiento de financiamiento en el apoyo de la investigación en la cual el artículo es basado 
+!v002!^con-leave^vAutor ausente (sabático o otro)
 !v002!^cother^vOtro tipo de nota
 !v002!^cauthor^vOtro tipo de nota relacionada ao autor
-!v002!^cparticipating-researchers^vAutor fue un investigador para un artículo
+!v002!^cparticipating-researchers^vAutor fue un investigador para el artículo
 !v002!^cpresent-address^vDirección vigente del autor
-!v002!^cpresented-at^vPresentado en este evento
+!v002!^cpresented-at^vPresentado en evento
 !v002!^cpresented-by^vPresentador del material
 !v002!^cpreviously-at^vAfiliación del autor anterior
-!v002!^cstudy-group-members^vAutor fue un miembro del grupo de estudio para la investigación
+!v002!^cstudy-group-members^vColaborador fue un miembro del grupo de estudio para la investigación
 !v002!^csupplementary-material^vIndica o describe el material suplementar para el artículo
-!v002!^csupported-by^vInvestigación en la cual un artículo fue basado fue apoyado por alguna entidad. 
+!v002!^csupported-by^vInvestigación en la cual el artículo fue basado fue apoyado por alguna entidad. 
 !ID 000127
 !v001!fntype^len
 !v002!^cabbr^vAbbreviations
