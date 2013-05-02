@@ -65,7 +65,7 @@
                          | 
                            (edition?, pages?, ((city, state?, country?) | country), pubname+)
                          ),  
-                         (cited, url)?, doi?, (notes|othinfo)? 
+                         (cited, url)?, doi?, ( report | notes | othinfo)? 
                       ) -->
 <!ELEMENT pmonog   - - ( (author* | corpauth*)?, date?, (%m.title;), 
                            
@@ -198,7 +198,7 @@
 			              ( edition  | city | state | country 
                         | pubname | date | update |  volid | pages
                         | extent |  coltitle | notes |  isbn |
-                        patgrp)* ,
+                        patgrp | report)* ,
                            (url & cited)?, doi?
                            )
                            >
@@ -252,7 +252,7 @@
                         state | country
                         | pubname | date | volid | tome | extent | pages | 
                         coltitle | colvolid | notes | isbn | thesis | url | doi |
-                        cited | patgrp)* >
+                        cited | patgrp | report )* >
 
 <!ELEMENT tome     - - (#PCDATA) >
 <!ELEMENT colvolid - - (#PCDATA) >
@@ -295,7 +295,7 @@
                         confgrp? & thesis? & date? & pages? & edition? & 
                         city? & state? & country? & pubname? & extent? &
                         coltitle? & volid? & isbn? & othinfo? & url? & cited?
-                        & patgrp?))+ >
+                        & patgrp? & report? ))+ >
 
 <!ELEMENT othinfo  - - (#PCDATA) >
 

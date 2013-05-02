@@ -360,6 +360,8 @@ extent;Identifica a extensão da obra como o número de páginas ou volumes;2;#TRUE
 coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;2;#TRUE#;#FALSE#;
 volid;Identifica o volume ao qual pertence um documento;2;#TRUE#;#FALSE#;
 isbn;Identifica o Internacional Standard Book Number (ISBN);2;#TRUE#;#FALSE#;
+report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;15;#TRUE#;#FALSE#;reportOmonog
+down;reportOmonog
 othinfo;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;2;#TRUE#;#FALSE#;
 url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
@@ -637,6 +639,8 @@ city;Identifica a cidade de publicação;15;#TRUE#;#FALSE#;
 state;Identifica o estado (local) de publicação;15;#TRUE#;#FALSE#;
 country;Identifica o país de publicação;15;#TRUE#;#FALSE#;
 pubname;Identifica a casa publicadora;15;#TRUE#;#FALSE#;
+report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;15;#TRUE#;#FALSE#;reportPmonog
+down;reportPmonog
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
@@ -739,6 +743,8 @@ extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRU
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
 coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;15;#TRUE#;#FALSE#;
 colvolid;Identifica o volume de uma coleção;15;#TRUE#;#FALSE#;
+report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;15;#TRUE#;#FALSE#;reportAmonog
+down;reportAmonog
 notes;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#TRUE#;#FALSE#;
 isbn;Identifica o Internacional Standard Book Number (ISBN);15;#TRUE#;#FALSE#;
 thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;15;#TRUE#;#FALSE#;thesisAmonog
@@ -894,6 +900,8 @@ volid;Identifica o volume ao qual pertence um documento;15;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
 extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRUE#;#FALSE#; 
 coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;15;#TRUE#;#FALSE#;
+report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;15;#TRUE#;#FALSE#;reportImonog
+down;reportImonog
 notes;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#TRUE#;#FALSE#;
 url;Identifica o endereço eletrônico do documento;15;#FALSE#;#FALSE#;
 doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
@@ -1044,3 +1052,43 @@ down;licenseBar
 
 licenseBar;licensesBar
 licensep;Identifica o parágrafo da licença;2;#FALSE#;#FALSE#;
+
+reportOmonog;omonog
+rsponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;2;#TRUE#;#FALSE#;rsponsorOmonog
+down;rsponsorOmonog
+projname;Identifica o nome do projeto do qual o artigo é produto parcial ou final;2;#TRUE#;#FALSE#;
+
+rsponsorOmonog;reportOmonog
+orgname;Identifica o nome da organização financiadora;12;#FALSE#;#FALSE#;
+orgdiv;Identifica a divisão da organização financiadora;12;#FALSE#;#FALSE#;
+contract;Identifica um código numérico ou alfanumérico fornecido pela organização financiadora de um projeto, do qual o artigo é produto final ou parcial;12;#TRUE#;#FALSE#;
+
+reportPmonog;pmonog
+rsponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;2;#TRUE#;#FALSE#;rsponsorPmonog
+down;rsponsorPmonog
+projname;Identifica o nome do projeto do qual o artigo é produto parcial ou final;2;#TRUE#;#FALSE#;
+
+rsponsorPmonog;reportPmonog
+orgname;Identifica o nome da organização financiadora;12;#FALSE#;#FALSE#;
+orgdiv;Identifica a divisão da organização financiadora;12;#FALSE#;#FALSE#;
+contract;Identifica um código numérico ou alfanumérico fornecido pela organização financiadora de um projeto, do qual o artigo é produto final ou parcial;12;#TRUE#;#FALSE#;
+
+reportImonog;imonog
+rsponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;2;#TRUE#;#FALSE#;rsponsorImonog
+down;rsponsorImonog
+projname;Identifica o nome do projeto do qual o artigo é produto parcial ou final;2;#TRUE#;#FALSE#;
+
+rsponsorImonog;reportImonog
+orgname;Identifica o nome da organização financiadora;12;#FALSE#;#FALSE#;
+orgdiv;Identifica a divisão da organização financiadora;12;#FALSE#;#FALSE#;
+contract;Identifica um código numérico ou alfanumérico fornecido pela organização financiadora de um projeto, do qual o artigo é produto final ou parcial;12;#TRUE#;#FALSE#;
+
+reportAmonog;amonog
+rsponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;2;#TRUE#;#FALSE#;rsponsorAmonog
+down;rsponsorAmonog
+projname;Identifica o nome do projeto do qual o artigo é produto parcial ou final;2;#TRUE#;#FALSE#;
+
+rsponsorAmonog;reportAmonog
+orgname;Identifica o nome da organização financiadora;12;#FALSE#;#FALSE#;
+orgdiv;Identifica a divisão da organização financiadora;12;#FALSE#;#FALSE#;
+contract;Identifica um código numérico ou alfanumérico fornecido pela organização financiadora de um projeto, do qual o artigo é produto final ou parcial;12;#TRUE#;#FALSE#;
