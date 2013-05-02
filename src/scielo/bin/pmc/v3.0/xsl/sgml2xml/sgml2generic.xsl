@@ -243,16 +243,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test=".='le'">letter</xsl:when>
 				<xsl:when test=".='ra'">review-article</xsl:when>
 				<xsl:when test=".='sc'">rapid-communication</xsl:when>
-				<xsl:when test=".='??'">addendum</xsl:when>
-				<xsl:when test=".='??'">book-review</xsl:when>
+				<xsl:when test=".='ax'">addendum</xsl:when>
+				<xsl:when test=".='rc'">book-review</xsl:when>
 				<xsl:when test=".='??'">books-received</xsl:when>
-				<xsl:when test=".='??'">brief-report</xsl:when>
+				<xsl:when test=".='rn'">brief-report</xsl:when>
 				<xsl:when test=".='??'">calendar</xsl:when>
 				<xsl:when test=".='??'">collection</xsl:when>
-				<xsl:when test=".='??'">correction</xsl:when>
+				<xsl:when test=".='er'">correction</xsl:when>
 				<xsl:when test=".='??'">discussion</xsl:when>
 				<xsl:when test=".='??'">dissertation</xsl:when>
-				<xsl:when test=".='??'">in-brief</xsl:when>
+				<xsl:when test=".='pr'">in-brief</xsl:when>
 				<xsl:when test=".='??'">introduction</xsl:when>
 				<xsl:when test=".='??'">meeting-report</xsl:when>
 				<xsl:when test=".='??'">news</xsl:when>
@@ -264,7 +264,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test=".='??'">reprint</xsl:when>
 				<xsl:when test=".='??'">retraction</xsl:when>
 				<xsl:when test=".='??'">translation</xsl:when>
-				<xsl:otherwise>other</xsl:otherwise>
+				<xsl:otherwise>research-article</xsl:otherwise>
 			</xsl:choose>
 		</xsl:attribute>
 	</xsl:template>

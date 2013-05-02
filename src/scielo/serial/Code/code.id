@@ -4,9 +4,10 @@
 !v002!^cax^vannex
 !v002!^can^vannouncements
 !v002!^csc^vbrief communication
-!v002!^cco^vcomments
 !v002!^ccr^vcase report
 !v002!^cct^vclinical trial
+!v002!^cco^vcomments
+!v002!^cer^vcorrection
 !v002!^ced^veditorial
 !v002!^cin^vinterview
 !v002!^cle^vletter
@@ -31,6 +32,7 @@
 !v002!^ced^veditorial
 !v002!^cct^vensayos clínicos
 !v002!^cin^ventrevista
+!v002!^cer^verrata
 !v002!^ccr^vinforme de caso
 !v002!^ctr^vinforme técnico
 !v002!^cmt^vmetodología
@@ -52,6 +54,7 @@
 !v002!^ced^veditorial
 !v002!^cct^vensaios clínicos
 !v002!^cin^ventrevista
+!v002!^cer^verrata
 !v002!^ctr^vinforme técnico
 !v002!^crn^vnota
 !v002!^cmt^vmetodologia
@@ -2019,4 +2022,19 @@
 !ID 000145
 !v001!eqcontr^les
 !v002!^cn^vno
-!v002!^cy^vsí
+!v002!^cy^vs
+!ID 000146
+!v001!history^len
+!v002!^cD^vCeased
+!v002!^vIndexing interrupted by committee^cS
+!v002!^vNot open access^cE
+!ID 000147
+!v001!history^les
+!v002!^vTerminado^cD
+!v002!^vIndización interrumpida por el comité^cS
+!v002!^vNo es acceso abierto^cE
+!ID 000148
+!v001!history^lpt
+!v002!^vEncerrado^cD
+!v002!^vIndexação interrompida pelo Comitê^cS
+!v002!^vNão é acesso aberto^cE
