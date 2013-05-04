@@ -35,6 +35,10 @@
     .//article-meta/issue 32    
     .//article-meta/supplement 132    
     .//article-meta//funding-source 58    
+    .//article-meta//principal-award-recipient 591    
+      . _
+    .//article-meta//principal-investigator 591    
+      . n
     .//article-meta//award-id 60    
     .//article-meta//funding-statement 102
     back//ack 102 XML
@@ -171,10 +175,12 @@
     .//ext-link 37    
     .//date-in-citation[@content-type='access-date'] 109
     .//comment 61    
+    .//comment[@content-type='award-id'] 60    
     .//notes 61    
     .//pub-id[@pub-id-type='doi'] 237    
     .//pub-id[@pub-id-type='pmid'] 238    
     .//pub-id[@pub-id-type='pmcid'] 239    
+    .//pub-id[@pub-id-type='other'] 592    
     .//conf-name 53
     .//conf-loc 56
     .//conf-date 54

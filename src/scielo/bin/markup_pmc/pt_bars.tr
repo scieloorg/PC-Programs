@@ -256,8 +256,8 @@ Identifica o nome da organização financiadora
 rsponsorBibcom;orgdiv
 Identifica a divisão da organização financiadora
 
-rsponsorBibcom;contract
-Identifica um código numérico ou alfanumérico fornecido pela organização financiadora de um projeto, do qual o artigo é produto final ou parcial
+reportBibcom;contract
+Identifica o número do projeto ou contrato fornecido pela instituição financiadora
 
 thesgrpBibcom;city
 Identifica a cidade da tese
@@ -385,8 +385,8 @@ Identifica o nome da organização financiadora
 rsponsorBbibcom;orgdiv
 Identifica a divisão da organização financiadora
 
-rsponsorBbibcom;contract
-Identifica um código numérico ou alfanumérico fornecido pela organização financiadora de um projeto, do qual o artigo é produto final ou parcial
+reportBbibcom;contract
+Identifica o número do projeto ou contrato fornecido pela instituição financiadora
 
 thesgrpBbibcom;city
 Identifica a cidade da tese
@@ -919,8 +919,8 @@ Identifica o nome da organização financiadora
 rsponsorVmonog;orgdiv
 Identifica a divisão da organização financiadora
 
-rsponsorVmonog;contract
-Identifica um código numérico ou alfanumérico fornecido pela organização financiadora de um projeto, do qual o artigo é produto final ou parcial
+reportVmonog;contract
+Identifica o número do projeto ou contrato fornecido pela instituição financiadora
 
 thesisVmonog;city
 Identifica a cidade da tese

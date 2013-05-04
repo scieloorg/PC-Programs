@@ -440,7 +440,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				mode="trans"/>
 			<xsl:apply-templates select=".//keygrp"/>
 			<xsl:apply-templates
-				select=".//front/report | .//front/confgrp | ..//front/thesgrp | .//bibcom/report | .//bibcom/confgrp | ..//bibcom/thesgrp  | .//bbibcom/report | .//bbibcom/confgrp | ..//bbibcom/thesgrp "/>
+				select=".//front/report | .//front/confgrp | ..//front/thesgrp | .//bibcom/report | .//bibcom/confgrp | ..//bibcom/thesgrp  | .//bbibcom/report | .//bbibcom/confgrp | ..//bbibcom/thesgrp | .//back/ack//report"/>
 			<xsl:apply-templates select="." mode="counts"/>
 		</article-meta>
 	</xsl:template>
@@ -581,9 +581,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:variable name="next" select="substring-after($rid_list,' ')"/>
 		<xsl:variable name="rid" select="translate(.,'a','A')"/>
 		<xref ref-type="aff" rid="{$rid}">
-			
-				<xsl:value-of select="$rid"/>
-			
+
+			<xsl:value-of select="$rid"/>
+
 		</xref>
 		<xsl:if test="$next!=''">
 			<xsl:apply-templates select="." mode="mult-rid">
@@ -1111,9 +1111,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:when test="viserial or aiserial or oiserial or iiserial or piserial"
 						>journal</xsl:when>
 					<xsl:when test=".//confgrp">conf-proc</xsl:when>
-					<xsl:when test=".//degree">thesis</xsl:when>
-					<xsl:when test=".//patgrp">patent</xsl:when>
-					<xsl:when test=".//report">report</xsl:when>
+					<xsl:when
+						test=".//degree or contains(.//text(),'Master') or contains(.//text(),'Dissert')"
+						>thesis</xsl:when>
+					<xsl:when test=".//patgrp or contains(.//text(), 'atent')">patent</xsl:when>
+					<xsl:when
+						test=".//report or contains(.//text(), 'Report') or contains(.//text(), 'Informe ') or (contains(.//text(), 'Relat') and contains(.//text(), 'rio '))"
+						>report</xsl:when>
 					<xsl:when test=".//version">software</xsl:when>
 					<xsl:when test=".//url and .//cited and not (.//pages or .//extent)"
 						>web</xsl:when>
@@ -1909,7 +1913,9 @@ Here is a figure group, with three figures inside, each of which contains a grap
 						<xsl:attribute name="rid">AFF<xsl:value-of select="$label"/>
 						</xsl:attribute>
 					</xsl:if>
-					<sup><xsl:value-of select="$label"/></sup>
+					<sup>
+						<xsl:value-of select="$label"/>
+					</sup>
 				</xref>
 
 			</xsl:when>
@@ -2299,9 +2305,42 @@ et al.</copyright-statement>
 
 	<xsl:template match="xref[@rid='']"/>
 	<xsl:template match="thesgrp"/>
-	<xsl:template match="front//report | bbibcom//report">
+	<xsl:template match="ack">
+		<xsl:choose>
+			<xsl:when test=".//report">
+				<ack>
+					<xsl:if test="title">
+						<title>
+							<xsl:value-of select="title"/>
+						</title>
+
+					</xsl:if>
+					<xsl:apply-templates select="p"/>
+				</ack>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:copy-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="ack//p">
+		<p>
+			<xsl:apply-templates select="*[name()!='report']|text()|report//text()"/>
+		</p>
+	</xsl:template>
+	<xsl:template match="front//report | bbibcom//report | ack//report">
 		<funding-group>
-			<xsl:apply-templates select="rsponsor | projname "/>
+			<xsl:if test="rsponsor or .//contract or .//awarded">
+				<award-group>
+					<xsl:attribute name="award-type">
+						<xsl:choose>
+							<xsl:when test=".//contract">contract</xsl:when>
+							<xsl:otherwise>grant</xsl:otherwise>
+						</xsl:choose>
+					</xsl:attribute>
+					<xsl:apply-templates select="*"/>
+				</award-group>
+			</xsl:if>
 			<!--xsl:if test="not($unident_back[contains(.//text,'ACK') or contains(.//text,'Ack') or contains(.//text,'Agrad') or contains(.//text,'AGRAD')])"-->
 			<funding-statement>
 				<xsl:apply-templates select=".//text()"/>
@@ -2309,45 +2348,54 @@ et al.</copyright-statement>
 			<!--/xsl:if-->
 		</funding-group>
 	</xsl:template>
-	<xsl:template match="front//rsponsor | front//projname| bbibcom//rsponsor | bbibcom//projname">
-		<xsl:if test="orgname or contract">
-			<award-group>
-				<xsl:attribute name="award-type">
-					<xsl:choose>
-						<xsl:when test=".//contract">contract</xsl:when>
-						<xsl:otherwise>grant</xsl:otherwise>
-					</xsl:choose>
-				</xsl:attribute>
-				<xsl:apply-templates select="orgname"/>
-				<xsl:apply-templates select="contract"/>
-
-			</award-group>
+	<xsl:template match="report/awarded">
+		<!--xsl:comment>report/awarded</xsl:comment-->
+		<xsl:if test="orgname or orgdiv">
+			<principal-award-recipient>
+				<xsl:apply-templates select="orgname|orgdiv"/>
+			</principal-award-recipient>
+		</xsl:if>
+		<xsl:if test="fname or surname">
+			<principal-investigator>
+				<xsl:apply-templates select="surname|fname"/>
+			</principal-investigator>
 		</xsl:if>
 	</xsl:template>
-	<xsl:template match="front//contract | bbibcom//contract">
+	<xsl:template match="awarded/fname | awarded/surname | awarded/orgname | awarded/orgdiv">
+		<!--xsl:comment>report/awarded/*</xsl:comment-->
+		
+		<xsl:value-of select="."/>
+	</xsl:template>
+
+	<xsl:template match="contract">
 		<award-id>
 			<xsl:apply-templates/>
 		</award-id>
 	</xsl:template>
-	<xsl:template match="front//rsponsor/orgdiv | bbibcom//orgdiv"/>
-	<xsl:template match="front//rsponsor/orgname | bbibcom//orgname">
+	<xsl:template match="rsponsor/orgdiv"/>
+	<xsl:template match="rsponsor/orgname">
 		<funding-source>
 			<xsl:value-of select="."/>
 			<xsl:if test="../orgdiv">, <xsl:value-of select="../orgdiv"/>
 			</xsl:if>
 		</funding-source>
 	</xsl:template>
-	<xsl:template match="*[contains(name(),'citat')]//report">
-		<comment>
-			<xsl:apply-templates select="*|text()"/>
-		</comment>
-	</xsl:template>
-	<xsl:template
-		match="*[contains(name(),'citat')]//report//* | *[contains(name(),'citat')]//report//rsponsor">
+	<xsl:template match="*[contains(name(),'citat')]//report//*[name()!='no']">
+		<!--xsl:comment>*[contains(name(),'citat')]//report//*[name()!='no']</xsl:comment-->
 		<xsl:apply-templates select="*|text()"/>
 	</xsl:template>
-
-	<xsl:template match="*[contains(name(),'citat')]//report//text()">
-		<xsl:value-of select="."/>
+	<xsl:template match="*[contains(name(),'citat')]//report">
+		<!--xsl:comment>report of citation</xsl:comment-->
+		<xsl:if test="no">
+			<pub-id pub-id-type="other">
+				<xsl:value-of select="no"/>
+			</pub-id>
+		</xsl:if>
+		<xsl:if test="*[name()!='no']">
+			<comment>
+				<xsl:apply-templates select="*[name()!='no']|text()"/>
+			</comment>
+		</xsl:if>
 	</xsl:template>
+
 </xsl:stylesheet>
