@@ -523,18 +523,18 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<!-- xsl:if test="contains($corresp,.//fname) and contains($corresp,//surname)"><xsl:attribute name="corresp">yes</xsl:attribute></xsl:if> -->
 			<xsl:apply-templates select="@*[name()!='rid']"/>
 			<xsl:apply-templates select="."/>
-			<xsl:apply-templates select="xref|text()"/>
+			<xsl:apply-templates select="sup|xref|text()"/>
 
-			<xsl:if test="not(xref[@ref-type='aff'])">
+			<xsl:if test="not(xref[@ref-type='aff']) and not(.//sup)">
 				<xsl:comment>not xref</xsl:comment>
 				<xsl:choose>
 					<xsl:when test="../xref[@ref-type='aff' and @rid=$author_rid]">
 						<xsl:apply-templates select="../xref[@ref-type='aff' and @rid=$author_rid]"
 						/>
 					</xsl:when>
-					<xsl:when test=".//sup">
+					<!--xsl:when test=".//sup">
 						<xsl:apply-templates select=".//sup"/>
-					</xsl:when>
+					</xsl:when-->
 					<xsl:otherwise>
 						<xsl:apply-templates select="@rid"/>
 					</xsl:otherwise>
@@ -1323,7 +1323,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</person-group>
 		</xsl:if>
 
-		<xsl:apply-templates select=".//title"/>
+		<xsl:apply-templates select=".//title | .//date| .//pages "/>
 	</xsl:template>
 
 
@@ -1332,9 +1332,37 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="url | uri">
-		<ext-link ext-link-type="uri" xlink:href="{.}">
-			<xsl:apply-templates/>
-		</ext-link>
+		<xsl:choose>
+			<xsl:when test="../cited">
+				<comment>
+					<xsl:variable name="text">
+						<xsl:apply-templates select="../..//text()"/>
+					</xsl:variable>
+					<xsl:choose>
+						<xsl:when test="contains($text,'Available')">
+							<xsl:value-of
+								select="substring-before(substring-after($text, substring-before($text, 'Available')), 'http')"
+							/>
+						</xsl:when>
+						<xsl:when test="contains($text,'Dispon')">
+							<xsl:value-of
+								select="substring-before(substring-after($text, substring-before($text, 'Dispon')), 'http')"
+							/>
+						</xsl:when>
+						<xsl:otherwise>Available from:</xsl:otherwise>
+					</xsl:choose>
+					<ext-link ext-link-type="uri" xlink:href="{.}">
+						<xsl:apply-templates/>
+					</ext-link>
+				</comment>
+			</xsl:when>
+			<xsl:otherwise>
+				<ext-link ext-link-type="uri" xlink:href="{.}">
+					<xsl:apply-templates/>
+				</ext-link>
+			</xsl:otherwise>
+		</xsl:choose>
+
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'citat')]" mode="text-ref">
 		<mixed-citation>
@@ -1904,15 +1932,48 @@ Here is a figure group, with three figures inside, each of which contains a grap
 				</xref>
 
 			</xsl:when>
-			<xsl:when test="@ref-type='aff' or name()='sup'">
-				<xref ref-type="aff">
-					<xsl:variable name="label" select="normalize-space(.)"/>
-
-					<xsl:if
+			<xsl:when test="name()='sup'">
+				<xsl:variable name="label" select="normalize-space(.)"/>
+				<xsl:choose>
+					<xsl:when
 						test="$affs[normalize-space(label)=$label or normalize-space(.//sup//text())=$label]">
-						<xsl:attribute name="rid">AFF<xsl:value-of select="$label"/>
-						</xsl:attribute>
-					</xsl:if>
+						<!-- sup = aff -->
+						<xref ref-type="aff">
+							<xsl:attribute name="rid">AFF<xsl:value-of select="$label"
+								/></xsl:attribute>
+							<sup>
+								<xsl:value-of select="$label"/>
+							</sup>
+						</xref>
+					</xsl:when>
+					<xsl:otherwise>
+						<xref>
+							<sup>
+								<xsl:value-of select="$label"/>
+							</sup>
+						</xref>
+					</xsl:otherwise>
+				</xsl:choose>
+
+			</xsl:when>
+			<xsl:when test="@ref-type='aff'">
+				<xsl:variable name="label" select="normalize-space(.)"/>
+				<xref ref-type="aff">
+
+
+					<xsl:choose>
+						<xsl:when
+							test="$affs[normalize-space(label)=$label or normalize-space(.//sup//text())=$label]">
+							<xsl:attribute name="rid">AFF<xsl:value-of select="$label"
+								/></xsl:attribute>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="rid">
+								<xsl:value-of select="translate(@rid, 'a', 'A')"/>
+							</xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
+
 					<sup>
 						<xsl:value-of select="$label"/>
 					</sup>
@@ -2348,6 +2409,7 @@ et al.</copyright-statement>
 			<!--/xsl:if-->
 		</funding-group>
 	</xsl:template>
+	<xsl:template match="report/projname"> </xsl:template>
 	<xsl:template match="report/awarded">
 		<!--xsl:comment>report/awarded</xsl:comment-->
 		<xsl:if test="orgname or orgdiv">
@@ -2363,7 +2425,7 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="awarded/fname | awarded/surname | awarded/orgname | awarded/orgdiv">
 		<!--xsl:comment>report/awarded/*</xsl:comment-->
-		
+
 		<xsl:value-of select="."/>
 	</xsl:template>
 
@@ -2397,5 +2459,7 @@ et al.</copyright-statement>
 			</comment>
 		</xsl:if>
 	</xsl:template>
-
+	<xsl:template match="sec//title | caption//title">
+		<title><xsl:apply-templates select="*|text()"></xsl:apply-templates></title>
+	</xsl:template>
 </xsl:stylesheet>
