@@ -50,7 +50,7 @@
 <!--    Monographic Level                                                 -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!--ELEMENT pmonog   - - ( (author* | corpauth*), date?, (%m.title;), 
+<!--ELEMENT pmonog   - - ( (author* | corpauth*), date?, (%m.title;), volid?, 
                          ( 
                            (confgrp, pages?)
                          |
@@ -126,10 +126,10 @@
                         version | confgrp | city | state | pubname | inpress | 
                         date | pages | report | thesis | url | doi |  cited | patgrp)*) -->
 
-<!ELEMENT vmonog   - - ( ((author | corpauth)*, et-al?)  & ( edition |
-                        confgrp | vtitle | date | version  | city | state |
+<!ELEMENT vmonog   - - ( ((author | corpauth)*, et-al?)  & ( edition | volid |
+                        confgrp | vtitle | date | version  | city | state | country |
                         pubname | inpress |
-                        pages | report | thesis | url | doi |  cited | patgrp | coltitle)*) >
+                        pages | extent | report | thesis | url | doi |  cited | patgrp | coltitle)*) >
 <!ELEMENT edition  - - (#PCDATA) >
 <!ELEMENT version  - - (#PCDATA) >
 <!ELEMENT pubname  - - (#PCDATA) >

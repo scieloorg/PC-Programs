@@ -180,6 +180,7 @@
 20;extent;spubinfo,isserial,citation,biblist,back,article
 20;extent;spubinfo,oiserial,ocitat,other,back,article
 20;extent;viserial,vcitat,vancouv,back,article
+20;extent;vmonog,vcitat,vancouv,back,article
 22;tome;amonog,acitat,abnt6023,back,article
 25;coltitle;amonog,acitat,abnt6023,back,article
 25;coltitle;imonog,icitat,iso690,back,article
@@ -208,6 +209,7 @@
 31;volid;acontrib,acitat,abnt6023,back,article
 31;volid;aiserial,acitat,abnt6023,back,article
 31;volid;amonog,acitat,abnt6023,back,article
+31;volid;vmonog,vcitat,vancouv,back,article
 31;volid;article
 31;volid;iiserial,icitat,iso690,back,article
 31;volid;imonog,icitat,iso690,back,article
@@ -574,6 +576,7 @@
 67;country;mpubinfo,omonog,ocitat,other,back,article
 67;country;oiserial,ocitat,other,back,article
 67;country;omonog,ocitat,other,back,article
+67;country;vmonog,vcitat,vancouv,back,article
 67;country;spubinfo,isserial,citation,biblist,back,article
 67;country;spubinfo,oiserial,ocitat,other,back,article
 69;isbn;amonog,acitat,abnt6023,back,article
@@ -1004,6 +1007,7 @@
 20;extent;spubinfo,isserial,citation,biblist,back,text
 20;extent;spubinfo,oiserial,ocitat,other,back,text
 20;extent;viserial,vcitat,vancouv,back,text
+20;extent;vmonog,vcitat,vancouv,back,text
 22;tome;amonog,acitat,abnt6023,back,text
 25;coltitle;amonog,acitat,abnt6023,back,text
 25;coltitle;imonog,icitat,iso690,back,text
@@ -1029,6 +1033,7 @@
 31;volid;acontrib,acitat,abnt6023,back,text
 31;volid;aiserial,acitat,abnt6023,back,text
 31;volid;amonog,acitat,abnt6023,back,text
+31;volid;vmonog,vcitat,vancouv,back,text
 31;volid;iiserial,icitat,iso690,back,text
 31;volid;imonog,icitat,iso690,back,text
 31;volid;mpubinfo,monog,citation,biblist,back,text
@@ -1262,6 +1267,7 @@
 67;country;mpubinfo,omonog,ocitat,other,back,text
 67;country;oiserial,ocitat,other,back,text
 67;country;omonog,ocitat,other,back,text
+67;country;vmonog,vcitat,vancouv,back,text
 67;country;spubinfo,isserial,citation,biblist,back,text
 67;country;spubinfo,oiserial,ocitat,other,back,text
 69;isbn;amonog,acitat,abnt6023,back,text
@@ -1567,6 +1573,8 @@
 20;extent;pmonog,pcitat,apa,back,text
 30;sertitle;piserial,pcitat,apa,back,text
 31;volid;piserial,pcitat,apa,back,text
+31;volid;pmonog,pcitat,apa,back,text
+31;volid;pmonog,pcitat,apa,back,article
 37;url;piserial,pcitat,apa,back,text
 62;pubname;pmonog,pcitat,apa,back,text
 63;edition;pmonog,pcitat,apa,back,text

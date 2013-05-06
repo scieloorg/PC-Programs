@@ -484,16 +484,18 @@ et-al;Indica que há autores não mencionados;15;#FALSE#;#FALSE#;
 vtitle;Identifica um grupo de título do documento em uma referencia bibliográfica segundo a norma Vancouver;15;#FALSE#;#TRUE#;vtitleVmonog
 down;vtitleVmonog
 edition;Identifica o número da edição;15;#FALSE#;#FALSE#;
-volume;Volume;15;#FALSE#;#FALSE#;
+volid;Identifica o volume ao qual pertence um documento;2;#TRUE#;#FALSE#;
 version;Identifica se a publicação está em formato eletrônico ou papel;15;#TRUE#;#FALSE#;
 confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;15;#TRUE#;#FALSE#;confgrpVmonog
 down;confgrpVmonog
 city;Identifica a cidade de publicação;15;#TRUE#;#FALSE#;
 state;Identifica o estado (local) de publicação;15;#TRUE#;#FALSE#;
+country;Identifica o país (local) de publicação;15;#TRUE#;#FALSE#;
 pubname;Identifica a casa publicadora;15;#TRUE#;#FALSE#;
 inpress;Identifica que a referencia citada ainda está em processo de publicação;15;#TRUE#;#FALSE#;
 date;Identifica a data de publicação;15;#TRUE#;#TRUE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
+extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRUE#;#FALSE#;
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;15;#TRUE#;#FALSE#;reportVmonog
 down;reportVmonog
 thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;15;#TRUE#;#FALSE#;thesisVmonog
@@ -598,6 +600,7 @@ corpauth;Identifica os autores corporativos responsáveis pelo conteúdo intelectu
 down;corpautpMonog
 date;Identifica a data de publicação;15;#FALSE#;#TRUE#;
 title;Identifica o título do documento;15;#FALSE#;#TRUE#;
+volid;Identifica o volume ao qual pertence um documento;2;#TRUE#;#FALSE#;
 subtitle;Identifica o subtítulo do documento;15;#FALSE#;#FALSE#;
 confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrppcitat
 down;confgrppcitat
