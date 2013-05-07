@@ -175,12 +175,13 @@
     .//ext-link 37    
     .//date-in-citation[@content-type='access-date'] 109
     .//comment 61    
-    .//comment[@content-type='award-id'] 60    
+    .//comment[@content-type='award-id'] 60   
+    .//element-citation[@publication-type='report']//comment 60    
     .//notes 61    
     .//pub-id[@pub-id-type='doi'] 237    
     .//pub-id[@pub-id-type='pmid'] 238    
     .//pub-id[@pub-id-type='pmcid'] 239    
-    .//pub-id[@pub-id-type='other'] 592    
+    .//element-citation[@publication-type='report']//pub-id[@pub-id-type='other'] 592    
     .//conf-name 53
     .//conf-loc 56
     .//conf-date 54

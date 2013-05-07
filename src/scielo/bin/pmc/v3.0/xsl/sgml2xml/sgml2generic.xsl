@@ -1334,7 +1334,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="url | uri">
 		<xsl:choose>
 			<xsl:when test="../cited">
-				<comment>
+				<comment content-type="cited">
 					<xsl:variable name="text">
 						<xsl:apply-templates select="../..//text()"/>
 					</xsl:variable>
@@ -2283,7 +2283,7 @@ et al.</copyright-statement>
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="inpress">
-		<comment>
+		<comment content-type="inpress">
 			<xsl:value-of select="."/>
 		</comment>
 	</xsl:template>
@@ -2454,7 +2454,7 @@ et al.</copyright-statement>
 			</pub-id>
 		</xsl:if>
 		<xsl:if test="*[name()!='no']">
-			<comment>
+			<comment content-type="award-id">
 				<xsl:apply-templates select="*[name()!='no']|text()"/>
 			</comment>
 		</xsl:if>
