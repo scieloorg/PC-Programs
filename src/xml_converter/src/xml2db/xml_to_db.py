@@ -349,24 +349,30 @@ class InformationAnalyst:
                 selected_folder = self.check_folder(document_folder, package)
                 if selected_folder.status == 'registered':
                     specific_document = self.json2model.return_doc(selected_folder)
-                    if not 'ahead' in specific_document.issue.name:
-                        pid, fname = self.ahead_articles.return_id_and_filename(specific_document.doi, specific_document.issue.journal.issn_id, specific_document.titles)
-                        specific_document.set_previous_id(pid)
                         
                     if specific_document != None:
+                        if not specific_document.doi == '':
+                            if not 'ahead' in specific_document.issue.name:
+                                pid, fname = self.ahead_articles.return_id_and_filename(specific_document.doi, specific_document.issue.journal.issn_id, specific_document.titles)
+                                specific_document.set_previous_id(pid)
+
                         generic_document = Document(specific_document)
                         package.report.write(generic_document.display(), True, True, False)
 
                         img_files = package.return_matching_files(xml_filename, '.jpg')
-
                         self.json2model.evaluate_data(img_files)
                     
                         if generic_document.folder.documents == None:
                             generic_document.folder.documents = Documents()
-                        generic_document.folder.documents.insert(generic_document.document, True)
+
+                        if specific_document.doi == '':
+                            package.report.write('Missing DOI, so it will not be loaded.', True, True, False)
+
+                        else:
+                            generic_document.folder.documents.insert(generic_document.document, True)
                 else:
                     package.report.write('', True, True)
-            return generic_document
+        return generic_document
 
     def check_folder(self, document_folder, package, folder_table_name = 'issue'):
         

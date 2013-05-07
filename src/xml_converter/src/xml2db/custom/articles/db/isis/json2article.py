@@ -308,7 +308,10 @@ class JSON_Article:
 
         return first_page, last_page, elocation           
 
-    def return_article(self, alternative_id):
+    def return_article(self):
+        doi = return_singleval(self.json_data['f'], '237')
+
+
         titles = return_multval(self.json_data['f'], '12')
         authors = return_multval(self.json_data['f'], '10')
         
@@ -317,10 +320,9 @@ class JSON_Article:
         if first_page == '':
             first_page = elocation   
         
-        data4id = alternative_id
-
-        article = Article(data4id, first_page, last_page)
-        article.doi = return_singleval(self.json_data['f'], '237')
+        
+        article = Article(doi, first_page, last_page)
+        article.doi = doi
         
 
         titles = return_multval(self.json_data['f'], '12')
@@ -332,6 +334,7 @@ class JSON_Article:
 
         
         #article.authors = self.format_author_names(authors)
+        
         article.section = self.section
         article.json_data = self.json_data
         article.display_data = self.set_display()
@@ -1298,7 +1301,7 @@ class JSON2Article:
 
         self.json_article.normalize_document_data(issue, alternative_id)
         
-        article = self.json_article.return_article(alternative_id)
+        article = self.json_article.return_article()
         article.issue = issue
         article.issue.toc.insert(self.json_article.section, True)
         article.xml_filename = self.xml_filename
