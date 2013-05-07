@@ -340,6 +340,7 @@ pubname;Identifica a casa publicadora;2;#TRUE#;#FALSE#;
 extent;Identifica a extensão da obra como o número de páginas ou volumes;2;#TRUE#;#FALSE#;
 coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;2;#TRUE#;#FALSE#;
 volid;Identifica o volume ao qual pertence um documento;2;#TRUE#;#FALSE#;
+part;Identifica a parte do volume ou fascículo;15;#TRUE#;#FALSE#;
 isbn;Identifica o Internacional Standard Book Number (ISBN);2;#TRUE#;#FALSE#;
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;15;#TRUE#;#FALSE#;reportOmonog
 down;reportOmonog
@@ -485,6 +486,7 @@ vtitle;Identifica um grupo de título do documento em uma referencia bibliográfic
 down;vtitleVmonog
 edition;Identifica o número da edição;15;#FALSE#;#FALSE#;
 volid;Identifica o volume ao qual pertence um documento;2;#TRUE#;#FALSE#;
+part;Identifica a parte do volume ou fascículo;15;#TRUE#;#FALSE#;
 version;Identifica se a publicação está em formato eletrônico ou papel;15;#TRUE#;#FALSE#;
 confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;15;#TRUE#;#FALSE#;confgrpVmonog
 down;confgrpVmonog
@@ -601,6 +603,7 @@ down;corpautpMonog
 date;Identifica a data de publicação;15;#FALSE#;#TRUE#;
 title;Identifica o título do documento;15;#FALSE#;#TRUE#;
 volid;Identifica o volume ao qual pertence um documento;2;#TRUE#;#FALSE#;
+part;Identifica a parte do volume ou fascículo;15;#TRUE#;#FALSE#;
 subtitle;Identifica o subtítulo do documento;15;#FALSE#;#FALSE#;
 confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrppcitat
 down;confgrppcitat
@@ -713,6 +716,7 @@ country;Identifica o país de publicação;15;#TRUE#;#FALSE#;
 pubname;Identifica a casa publicadora;15;#TRUE#;#FALSE#;
 date;Identifica a data de publicação;15;#TRUE#;#TRUE#;
 volid;Identifica o volume ao qual pertence um documento;15;#TRUE#;#FALSE#;
+part;Identifica a parte do volume ou fascículo;15;#TRUE#;#FALSE#;
 tome;Identifica o tomo de uma publicação em uma referencia bibliográfica;15;#TRUE#;#FALSE#;
 extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
@@ -872,6 +876,7 @@ pubname;Identifica a casa publicadora;15;#TRUE#;#FALSE#;
 date;Identifica a data de publicação;15;#TRUE#;#TRUE#;
 update;update;15;#TRUE#;#FALSE#;
 volid;Identifica o volume ao qual pertence um documento;15;#TRUE#;#FALSE#;
+part;Identifica a parte do volume ou fascículo;15;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
 extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRUE#;#FALSE#; 
 coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;15;#TRUE#;#FALSE#;
