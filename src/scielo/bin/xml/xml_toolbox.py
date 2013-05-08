@@ -398,6 +398,54 @@ class SGML2XML:
         
     def fix_tags(self, content):
         tags = [ 'italic', 'bold', 'sub', 'sup']
+        replace = None
+        tag_list = []
+        for t in tags:
+            tag_list.append('<' + t + '>')
+            tag_list.append('</' + t + '>')
+
+        expected_close_tags = [] 
+        
+        rcontent = content
+        for tag in tags:
+            rcontent = rcontent.replace('<' + tag + '>',  'BREAKBEGINCONSERTA<' + tag + '>BREAKBEGINCONSERTA').replace('</' + tag + '>', 'BREAKBEGINCONSERTA</' + tag + '>BREAKBEGINCONSERTA')
+
+        parts = rcontent.split('BREAKBEGINCONSERTA')
+        k = 0
+        for part in parts:
+            if part in tag_list:
+                tag = part                
+                if '/' in tag:
+                    # close
+                    matched = False
+                    if len(expected_close_tags) == 0:
+                        parts[k] = ''
+                    while not matched and len(expected_close_tags) > 0:
+                        matched = (expected_close_tags[-1] == tag)
+                        if not matched:
+                            if replace == None:
+                                replace = (expected_close_tags[-1], tag)
+                                parts[k] = expected_close_tags[-1]
+                                del expected_close_tags[-1]
+
+                            elif tag == replace[0] and expected_close_tags[-1] == replace[1]:
+                                parts[k] = replace[1]
+                                del expected_close_tags[-1]
+                            else:
+                                print(k)
+                                print(tag)
+                                print(expected_close_tags)
+                    
+                else:
+                    # open
+                    expected_close_tags.append(tag.replace('<', '</'))
+            k += 1        
+        expected_close_tags.reverse()
+        r = ''.join(parts) + ''.join(expected_close_tags)
+        return r
+
+    def fix_tags_old(self, content):
+        tags = [ 'italic', 'bold', 'sub', 'sup']
         
         tag_list = []
         for t in tags:
@@ -434,7 +482,6 @@ class SGML2XML:
         expected_close_tags.reverse()
         r = ''.join(parts) + ''.join(expected_close_tags)
         return r
-
     def sgmxml2xml(self, sgmxml_filename, xml_filename, err_filename, report):        
         fix_xml(sgmxml_filename)
 

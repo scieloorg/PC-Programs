@@ -20,6 +20,8 @@ def return_journals_list(json):
         #print(json_title.journal_title+ '.')
         j = Journal(json_title.journal_title, json_title.journal_issn_id, json_title.journal_acron)
         j.publishers = json_title.publishers
+        j.abbrev_title = json_title.journal_abbrev_title
+        
         journal_list.insert(j, False)
     return journal_list
 
@@ -1209,6 +1211,15 @@ class JSON_Issue:
             r = return_singleval(json_data, '130')
         return r
 
+    @property   
+    def journal_abbrev_title(self):
+        if 'f' in self.json_data.keys():
+            json_data = self.json_data['f']
+        else:
+            json_data = self.json_data
+        r = return_singleval(json_data, '421')
+        return r
+
 class JSON_Journal:
     def __init__(self):
         pass 
@@ -1236,6 +1247,15 @@ class JSON_Journal:
             r = return_singleval(json_data, '130')
         return r
    
+    @property   
+    def journal_abbrev_title(self):
+        if 'f' in self.json_data.keys():
+            json_data = self.json_data['f']
+        else:
+            json_data = self.json_data
+        r = return_singleval(json_data, '421')
+        return r
+
     @property
     def journal_acron(self):
         if 'f' in self.json_data.keys():

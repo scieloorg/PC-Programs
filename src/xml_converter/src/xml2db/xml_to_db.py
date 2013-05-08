@@ -341,9 +341,13 @@ class InformationAnalyst:
         generic_document = None
         if self.extract_data(xml_filename, package.report):
             publication_title = self.json2model.publication_title
+            registered = None
+            if len(publication_title) > 0:
+                registered = self.registered_titles.return_registered(publication_title)
             
-            registered = self.registered_titles.return_registered(publication_title, package.report)
-            if registered != None:
+            if registered == None:
+                package.report.write('Invalid publication title:' + publication_title, True, True)
+            else:
                 document_folder = self.json2model.return_folder(registered)
 
                 selected_folder = self.check_folder(document_folder, package)

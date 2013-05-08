@@ -1098,6 +1098,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ref-list>
 	</xsl:template>
 
+	<xsl:template match="xref[@ref-type='bibr']/@rid">
+		<xsl:attribute name="rid">B<xsl:value-of select="substring(.,2)"/></xsl:attribute>
+		
+	</xsl:template>
+
 	<xsl:template match="*[@standard]/*[contains(name(),'citat')]">
 		<xsl:variable name="id">
 			<xsl:if test="position()&lt;10">0</xsl:if>
@@ -1337,8 +1342,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<comment content-type="cited">
 					<xsl:variable name="text">
 						<xsl:apply-templates select="../..//text()"/>
-					</xsl:variable>
-					<xsl:choose>
+					</xsl:variable>a <xsl:choose>
 						<xsl:when test="contains($text,'Available')">
 							<xsl:value-of
 								select="substring-before(substring-after($text, substring-before($text, 'Available')), 'http')"
@@ -2370,9 +2374,9 @@ et al.</copyright-statement>
 		<xsl:choose>
 			<xsl:when test=".//report">
 				<ack>
-					<xsl:if test="title">
+					<xsl:if test=".//sectitle">
 						<title>
-							<xsl:value-of select="title"/>
+							<xsl:value-of select=".//sectitle"/>
 						</title>
 
 					</xsl:if>
@@ -2380,7 +2384,9 @@ et al.</copyright-statement>
 				</ack>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:copy-of select="."/>
+				<ack>
+					<xsl:apply-templates select="*|text()"/>
+				</ack>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -2460,6 +2466,8 @@ et al.</copyright-statement>
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="sec//title | caption//title">
-		<title><xsl:apply-templates select="*|text()"></xsl:apply-templates></title>
+		<title>
+			<xsl:apply-templates select="*|text()"/>
+		</title>
 	</xsl:template>
 </xsl:stylesheet>

@@ -104,7 +104,7 @@
       season s      
   .//body body
     .//graphic/@xlink:href file
-  .//sub-article[@article-type='translation']/@xml:lang 40
+  .//sub-article[@article-type='translation']/@xml:lang 601
   .//sub-article//article-title 12
     . _
      @xml:lang l
