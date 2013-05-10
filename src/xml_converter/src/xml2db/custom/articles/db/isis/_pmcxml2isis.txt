@@ -24,12 +24,21 @@
     .//article-meta//contrib/collab 11
     .//article-meta/title-group 12
       article-title _
+      article-title/xref x
       subtitle s
       article-title/@xml:lang l en
     .//article-meta//trans-title-group 12
       trans-title _
+      trans-title/xref x
       trans-subtitle s
       @xml:lang l 
+    .//sub-article[@article-type='translation'] 601
+      @xml:lang _
+    .//sub-article[@article-type='translation']//front-stub//title-group 12
+      article-title _
+      article-title/xref x
+      subtitle s
+      article-title/@xml:lang l en
     .//article-meta//article-id[@pub-id-type='doi'] 237
     .//article-meta/volume 31    
     .//article-meta/issue 32    
@@ -88,10 +97,13 @@
     .//fig-count/@count 901
     .//article-meta/abstract 83
       . a
-      @xml:lang l en
+      @xml:lang l 
     .//article-meta/trans-abstract 83
       . a
       @xml:lang l
+    .//sub-article[@article-type='translation']//front-stub//abstract 83
+      . a
+      @xml:lang l 
     .//article-meta//date[@date-type='received'] 111    
       year y
       month m
@@ -104,13 +116,6 @@
       season s      
   .//body body
     .//graphic/@xlink:href file
-  .//sub-article[@article-type='translation']/@xml:lang 601
-  .//sub-article//article-title 12
-    . _
-     @xml:lang l
-  .//sub-article//abstract 83
-    . a
-    @xml:lang l 
   .//ref c
     .//source/@xml:lang 40
     .//element-citation/@publication-type 71

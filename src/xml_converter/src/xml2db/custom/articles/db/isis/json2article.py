@@ -328,8 +328,17 @@ class JSON_Article:
         
 
         titles = return_multval(self.json_data['f'], '12')
-        article.titles = []
+        norm_titles = []
         for t in titles:
+            if type(t) == type({}):
+                norm_titles.append(t)
+            elif type(t) == type([]):
+                for t1 in t:
+                    if type(t) == type({}):
+                        norm_titles.append(t1)
+
+        article.titles = []
+        for t in norm_titles:
             if '_' in t.keys():
                 article.titles.append(t['_'])
 
@@ -587,6 +596,7 @@ class JSON_Article:
             self.section = section
         self.json_data['f']['49'] = self.section.code
 
+        self.normalize_metadata_abstracts()
         self.normalize_metadata_subtitles()
         self.normalize_metadata_authors()
         self.normalize_illustrative_materials()
@@ -641,8 +651,23 @@ class JSON_Article:
         """
         
         titles = return_multval(self.json_data['f'], '12')
-        new_titles = []
+        norm_titles = []
         for t in titles:
+            if type(t) == type({}):
+                norm_titles.append(t)
+            elif type(t) == type([]):
+                for t1 in t:
+                    if type(t1) == type({}):
+                        norm_titles.append(t1)
+
+
+        new_titles = []
+        
+        for t in norm_titles:
+
+            if 'x' in t.keys():
+                t['_'] = t['_'][0:t['_'].find('<xref')]
+                print(t['_'])
             if 's' in t.keys():
                 #print(t)
                 if ':' in t['_']:
@@ -658,6 +683,27 @@ class JSON_Article:
             self.json_data['f']['12'] = new_titles[0]
         elif len(new_titles) > 1:
             self.json_data['f']['12'] = new_titles
+
+    def normalize_metadata_abstracts(self):
+        """
+        Normalize the json structure for abstracts: 83
+        """
+        
+        abstracts = return_multval(self.json_data['f'], '83')
+        norm_abstracts = []
+        for t in abstracts:
+            if type(t) == type({}):
+                norm_abstracts.append(t)
+            elif type(t) == type([]):
+                for t1 in t:
+                    if type(t1) == type({}):
+                        norm_abstracts.append(t1)
+
+
+        if len(norm_abstracts) == 1:
+            self.json_data['f']['83'] = norm_abstracts[0]
+        elif len(norm_abstracts) > 1:
+            self.json_data['f']['83'] = norm_abstracts
 
     def normalize_illustrative_materials(self):
         """

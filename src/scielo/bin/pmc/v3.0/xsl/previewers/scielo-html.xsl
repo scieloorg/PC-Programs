@@ -8,6 +8,7 @@
 	<xsl:param name="path_img" select="'/'"/>
 	<xsl:param name="img_format" select="'.jpg'"/>
 
+	<xsl:variable name="TXTLANG"/>
 	<xsl:variable name="xml_article"/>
 	<xsl:variable name="xml_article_lang">
 		<xsl:choose>
