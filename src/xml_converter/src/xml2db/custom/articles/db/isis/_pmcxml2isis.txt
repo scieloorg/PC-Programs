@@ -61,12 +61,12 @@
       month m
       year y
       day d  
-    .//article-meta/pub-date[@pub-type='ppub'] ppub
+    .//article-meta/pub-date[@pub-type='ppub'] 64
       season s
       month m
       year y
       day d  
-    .//article-meta/pub-date[@pub-type='epub-ppub'] epub-ppub
+    .//article-meta/pub-date[@pub-type='epub-ppub'] 64
       season s
       month m
       year y

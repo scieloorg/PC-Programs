@@ -582,7 +582,8 @@ class JSON_Article:
         self.json_data['f']['120'] = 'XML_' + return_singleval(self.json_data['f'], '120')
         self.json_data['f']['42'] = '1'
         
-        if return_singleval(self.json_data['f'], '32') == 'ahead':
+        issueno = return_singleval(self.json_data['f'], '32')
+        if issueno == 'ahead':
             self.json_data['f']['121'] = alternative_id
         
         #if 'epub' in self.json_data['f'].keys():
@@ -591,8 +592,10 @@ class JSON_Article:
         #    del self.json_data['f']['epub']
         
         section = Section(return_singleval(self.json_data['f'], '49'))
+        print(section.title)
         self.section = issue.toc.return_section(section)
         if self.section == None:
+            section.code = section.title + ' (INVALID) '
             self.section = section
         self.json_data['f']['49'] = self.section.code
 
@@ -608,9 +611,8 @@ class JSON_Article:
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '111', '112', '111')
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '113', '114', '113')
 
-        self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
-        
         if 'epub' in self.json_data['f'].keys():
+            self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
             del self.json_data['f']['epub']
         # ja esta normalizada self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '64', '65', '64')
         
@@ -834,6 +836,19 @@ class JSON_Article:
                 errors.append( 'Missing pagination' )
         return errors
 
+    def validate_section(self):
+        """
+        Validate the pages of front
+        """
+        
+        errors = []
+        
+        section_title = return_singleval(self.json_data['f'], '49')
+        if 'INVALID' in section_title:
+            errors.append( 'This section title is not registered: ' + section_title )
+        
+        return errors
+
     def validate_ack_or_funding(self):
         """
         Validate the funding x ack
@@ -864,6 +879,7 @@ class JSON_Article:
         #conditional = { 'page': (14, 32), }
         
         errors += self.validate_required()
+        errors += self.validate_section()
         errors += self.validate_pages()
         errors += self.validate_dates()
         
@@ -1241,7 +1257,9 @@ class JSON_Issue:
                 code = item['c']
 
             section = Section(title, code, lang)
-            issue.toc.insert(section, False)
+            issue.toc.insert(section, True)
+
+            issue.toc.display()
 
         issue.json_data = i_record
         return  issue
@@ -1369,7 +1387,6 @@ class JSON2Article:
         
         article = self.json_article.return_article()
         article.issue = issue
-        article.issue.toc.insert(self.json_article.section, True)
         article.xml_filename = self.xml_filename
         
 
