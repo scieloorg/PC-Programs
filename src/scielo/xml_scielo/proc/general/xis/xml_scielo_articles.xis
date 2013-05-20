@@ -235,7 +235,18 @@
 	<field action="cgi" tag="1031">xml</field>
 
 	<field action="replace" tag="5003"><pft>v1005</pft></field>
-	<!--field action="replace" tag="5001"><pft>',1/12,13/82,83,84,85,70,10,86/999'</pft></field-->
+	
+	<do task="search">
+		<parm name="db"><pft>v1002</pft></parm>
+		<parm name="expression">tipo=h</parm>
+		<parm name="count">1</parm>
+		<loop>
+		<!-- nome do arquivo, se xml, entao nao aplicar gizmo -->
+			<field action="export" tag="list">702</field>
+		</loop>
+	</do>
+
+	<field action="replace" tag="5005"><pft>if v702:'.xml' then  else if v1005='iso-8859-1' then 'gizmo\ans2lat' else 'gizmo\ans2utf' fi fi</pft></field>
 	<field action="replace" tag="5000"><pft>if v1005='iso-8859-1' then 'gizmo\ans2lat' else 'gizmo\ans2utf' fi</pft></field>
 
 	<!-- cipar - inicio -->
@@ -386,7 +397,7 @@
 
 	<!-- trecho (abaixo) seria desnecessario, mas sem isso nao funciona, da erro no gizmo -->
 	<do task="mfnrange">
-		<parm name="db"><pft>v5000</pft></parm>
+		<parm name="db"><pft>v5005</pft></parm>
 		<parm name="from">1</parm>
 		<parm name="count">2</parm>
 
@@ -403,7 +414,7 @@
 		<parm name="db"><pft>v1002</pft></parm>
 		<parm name="from">1</parm>
 		<parm name="count">1</parm>
-		<parm name="gizmo"><pft>v5000,v5001</pft></parm>
+		<parm name="gizmo"><pft>v5005,v5001</pft></parm>
 
 		<loop>
 			<field action="replace" tag="480" split="occ"><pft>(v480/)</pft></field>
@@ -413,7 +424,7 @@
 		<field action="export" tag="list">480,933</field>
 	</do>
 	<file action="close" type="database"><pft>v9002</pft></file>
-	<file action="close" type="database"><pft>v5000</pft></file>
+	<file action="close" type="database"><pft>v5005</pft></file>
 
 <parm name="buffersize">4000000</parm>
 	<do task="search">
@@ -427,8 +438,8 @@
 	para não haver necessidade de usar o batch que converte os acentos em entidades
 				
 	-->						
-		<!--parm name="gizmo"><pft>v5000,v5001</pft></parm-->
-		<parm name="gizmo"><pft>v5000,v5001</pft></parm>
+		<!--parm name="gizmo"><pft>v5005,v5001</pft></parm-->
+		<parm name="gizmo"><pft>v5005,v5001</pft></parm>
 		<parm name="isisxml table">
 			<pft>
 				cat(v9006),
@@ -527,7 +538,7 @@
 		
 		</loop>
 		<file action="close" type="database"><pft>v1002</pft></file>
-		<file action="close" type="database"><pft>v5000</pft></file>
+		<file action="close" type="database"><pft>v5005</pft></file>
 		
 	</do>
 	<!-- do - task search BASE -->
