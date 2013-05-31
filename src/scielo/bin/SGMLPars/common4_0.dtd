@@ -257,4 +257,4 @@ filename       CDATA #IMPLIED>
 <!ELEMENT licensep  - - (#PCDATA)  >
 
 
-<!ELEMENT ack  - - (title?, p)  >
+<!ELEMENT ack  - - (sec)  >

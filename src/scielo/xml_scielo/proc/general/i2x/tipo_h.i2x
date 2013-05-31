@@ -1,6 +1,14 @@
 style=fixed
+702 file_name
+706 class_of_record
 224 rvpdate
 223 ahpdate
+2021 liminf
+2025 limsup
+1234 teste
+049 section_code
+949 ignore
+2013 ignore-sections
 222 aheadOfPrint_newpid
 881 aheadOfPrint_oldpid
 891 former_pids
@@ -41,7 +49,6 @@ style=fixed
 046 thesis_city_state
 047 thesis_country
 050 thesis_author
-049 section_code
 051 degree_of_dissertation
 052 conference_sponsor
 053 conference_name
@@ -92,9 +99,6 @@ style=fixed
 480 publisher_name
 700 id_counter
 701 index_counter
-702 file_name
-705 literature
-706 class_of_record
 708 total_of_class
 880 publisher_item_identifier
 882 volumes
@@ -102,6 +106,5 @@ style=fixed
 930 journal_title
 933 acronimo
 936 issn_ano_order
-949 ignore
-2013 ignore-sections
 9350 text-languages
+705 literature

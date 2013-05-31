@@ -232,8 +232,10 @@
 	<field action="cgi" tag="1011">issueid</field>
 	<field action="cgi" tag="1020">generate_linkout</field>
 	<field action="cgi" tag="2021">ahpdate</field>
+	<field action="cgi" tag="2025">maxdate</field>
 	<field action="cgi" tag="1031">xml</field>
 
+	<display><pft>ALL</pft></display>
 	<field action="replace" tag="5003"><pft>v1005</pft></field>
 	
 	<do task="search">
@@ -246,7 +248,7 @@
 		</loop>
 	</do>
 
-	<field action="replace" tag="5005"><pft>if v702:'.xml' then  else if v1005='iso-8859-1' then 'gizmo\ans2lat' else 'gizmo\ans2utf' fi fi</pft></field>
+	<field action="replace" tag="5005"><pft>if v702:'.xml' then 'gizmo\utf8' else if v1005='iso-8859-1' then 'gizmo\ans2lat' else 'gizmo\ans2utf' fi fi</pft></field>
 	<field action="replace" tag="5000"><pft>if v1005='iso-8859-1' then 'gizmo\ans2lat' else 'gizmo\ans2utf' fi</pft></field>
 
 	<!-- cipar - inicio -->
@@ -310,9 +312,9 @@
 		<parm name="gizmo"><pft>v5000</pft></parm>
 
 		<loop>
-			<field action="export" tag="list">100,400,350</field>
+			<field action="export" tag="list">100,400,350,421</field>
 		</loop>
-		<field action="export" tag="list">100,400,350</field>
+		<field action="export" tag="list">100,400,350,421</field>
 	</do>
 	<file action="close" type="database">TITLE</file>
 	<file action="close" type="database"><pft>v5000</pft></file>
@@ -328,12 +330,13 @@
 		'<xml_scielo>'/,
 		'<xml_scielo_title>'/,
 		'<journal-title><![CDATA['v100']]></journal-title>'/
+		'<nlm-title><![CDATA['v421']]></nlm-title>'/
 		'<pubmed-control>'/,
 		'<provider-id>',v1007,'</provider-id>'/,
 		'<start-date>',v6970,'</start-date>'/,
 		'<scielo-url>',v6971,'</scielo-url>'/,
 		
-		'<replace-issn>',v6972,if v6972='' then v400, fi,'</replace-issn>'/
+		'<issn-for-pubmed>',v6972,if v6972='' then if p(v935) then v935 else v400 fi, fi,'</issn-for-pubmed>'/
 
 		'</pubmed-control>'/,
 		'</xml_scielo_title>'/,
@@ -347,7 +350,7 @@
 		'</doi-configuration>'/,
 	</pft></display>
 
-	<flow action="jump"><pft>if v1011='NONE' then 'DO_ONLY_JOURNAL' fi</pft></flow>
+	<flow action="jump"><pft>if v1011='NONE' then 'FINISH' fi</pft></flow>
 	<!--field action="export" tag="list">1001/1011,2000/1011,6970/6973,7001/7003</field-->
 	<!-- lendo o config - inicio -->
 	<do task="search">
@@ -426,10 +429,61 @@
 	<file action="close" type="database"><pft>v9002</pft></file>
 	<file action="close" type="database"><pft>v5005</pft></file>
 
-<parm name="buffersize">4000000</parm>
+	<parm name="buffersize">4000000</parm>
+	<field action="replace" tag="9234"><pft>v9003,'\',v1010,'\',v1011,'\base\'</pft></field>
 	<do task="search">
 		<parm name="db"><pft>v1002</pft></parm>
-		<!--parm name="expression"><pft>'(tipo=h ',v2003,') or tipo=c'</pft></parm-->
+		<parm name="expression"><pft>'tipo=h'</pft></parm>
+		
+
+		
+		<loop>
+		    <field action="import" tag="list">9234,2021,2025</field>
+			<flow action="skip"><pft>if v702:'.xml' then else 'Quit' fi</pft></flow>
+			<flow action="skip">
+				<pft>
+				,if v32='ahead' then
+					,if p(v223) then
+						,if p(v2021) and a(v2025) then
+							,if val(v223) < val(v2021) then
+								,'Next'
+							,fi
+						,fi
+						,if p(v2021) and p(v2025) then
+							,if val(v223) < val(v2021) or val(v223) > val(v2025) then
+								,'Next'
+								
+							,fi
+						,fi
+
+					,fi
+
+				,fi
+			</pft></flow>
+			<field action="replace" tag="9702"><pft>v702</pft></field>
+			<field action="replace" tag="9702"><pft>mid(v9702,instr(v9702,'/')+1,size(v9702))</pft></field>
+			<field action="replace" tag="9702"><pft>mid(v9702,instr(v9702,'/')+1,size(v9702))</pft></field>
+
+			<field action="add" tag="880">
+				<pft>
+				if v706='h' then ,'S',v35,mid(v65,1,4),s(f(val( ref(1,mid(v36,5,size(v36)))) +10000,2,0))*1.4,s(f(val(v121)+100000,4,0))*1.5 fi
+				</pft>
+			</field>
+			
+			<display><pft>'<reg>'</pft></display>
+			<display><pft>'<xml-filename>file:///',replace(s(v9234,'fixed_',v9702),'\','/'),'</xml-filename>'</pft></display>
+            <display><pft>'<other>'</pft></display>
+<display><pft>|<former-pid>|v881|</former-pid>|,'<pid>',v880,'</pid>'</pft></display>
+            <display><pft>'</other></reg>'</pft></display>
+			<field action="add" tag="9999">FINISH</field>
+			<field action="export" tag="list">9999</field>
+		</loop>
+		<field action="export" tag="list">9999</field>
+	</do>
+	<flow action="jump"><pft>v9999</pft></flow>
+
+	<do task="search">
+		<parm name="db"><pft>v1002</pft></parm>
 		<parm name="expression"><pft>'tipo=h or tipo=c'</pft></parm>
 
 <!-- FIXED 20210504 
@@ -449,15 +503,15 @@
 
 
 		<loop>
-			<field action="import" tag="list">2013,350</field>
-			<field action="replace" tag="949"><pft>if p(v2013) and v706='h' then (if v2013=v49[1] then 'true' break, fi) fi</pft></field>
-			<!-- AHEAD OF PRINT v2.0
-				Em uma das versões v222=new-pid. 
-				Caso p(v222) significa que o registro pode ser desconsiderado, 
-				pois já tem um registro mais atualizado.
-			-->
-			<flow action="skip"><pft>if p(v222) then 'Next' fi</pft></flow>
+			<field action="import" tag="list">2013,350,2021,2025</field>
 
+			<!-- begin: skip reference if reg h was skiped -->
+			<field action="import" tag="list">1234</field>
+			<field action="delete" tag="list"><pft>if v706='h' then '1234' fi</pft></field>
+			<flow action="skip"><pft>v1234</pft></flow>
+			<!-- end: skip reference if reg h was skiped -->
+
+			
 			<field action="import" tag="list">1007,8001,5858,480,933</field>
 			
 			<field action="add" tag="880">
@@ -483,13 +537,32 @@
 				um registro comum, que nunca foi ahead.
 			-->
 			
-			<field action="import" tag="list">2021</field>
+			
 			<call name="migrating_v2_to_v3"><pft>if p(v8001) and (a(v881) or a(v223)) then v880 fi</pft></call>
 
 			<!-- skip se o ahpdate for inferior aa data dada por v2021 -->
-			<flow action="skip"><pft>if v32='ahead' and p(v223) and p(v2021) then if val(v223) < val(v2021) then 'Next' fi, fi</pft></flow>
-            <flow action="skip"><pft>if v32='review' and p(v224) and p(v2021) then if val(v224) < val(v2021) then 'Next' fi, fi</pft></flow>
+			<!-- do for ahpdate (v223) > min_limit (v2021) and ahpdate (v223) < max_limit (v2025) -->
+			<field action="replace" tag="2025"><pft>if a(v2025) then v2021 fi</pft></field>
+			
+			
+			<field action="replace" tag="1234"><pft>,if v32='ahead' and p(v223) and p(v2021) then
+						,if val(v223) >= val(v2021) and val(v223) <= val(v2025) then
 
+						,else
+						,'Next'
+						,fi, 
+					
+				,fi
+				</pft></field>
+			<field action="replace" tag="1234"><pft>if v32='review' and p(v224) and p(v2021) then if val(v224) < val(v2021) then 'Next' fi, fi</pft></field>
+
+			<field action="replace" tag="949"><pft>if p(v2013) and v706='h' then (if v2013=v49[1] then 'true' break, fi) fi</pft></field>
+			
+			
+			<field action="export" tag="list">1234</field>
+			<flow action="skip"><pft>v1234</pft></flow>
+            
+           
 
 			<!-- field action="import" tag="9">1007</field -->
 			<!-- FIXED 20210504 
@@ -542,7 +615,7 @@
 		
 	</do>
 	<!-- do - task search BASE -->
-	<label>DO_ONLY_JOURNAL</label>
+	<label>FINISH</label>
 	<display><pft>'</xml_scielo>'</pft></display>
 	<file action="close" type="output">*</file>
 </section>

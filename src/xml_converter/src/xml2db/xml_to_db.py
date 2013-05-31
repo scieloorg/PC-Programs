@@ -430,7 +430,7 @@ class AheadArticles:
         
         self.issn = {}
         self.data = []
-
+        lines = []
         if os.path.isfile(self.filename):
             f = open(self.filename, 'r')
             lines = f.readlines()

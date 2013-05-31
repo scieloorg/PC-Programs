@@ -391,12 +391,81 @@ class SGML2XML:
         f = open(xml_filename, 'r')
         content = f.read()
         f.close()
-        c = self.fix_tags(content)
+        
         f = open(xml_filename, 'w')
-        f.write(c)
+        f.write(self.fix_tags(self.fix_open_close(content)))
         f.close()
         
+
+    def fix_open_close(self, content):
+        changes = []
+        parts = content.split('>')
+        for s in parts:
+            if '<' in s:
+                if not '</' in s and not '<!--' in s and not '<?' in s:
+
+                    s = s[s.find('<')+1:]
+                    if ' ' in s and not '=' in s:
+                        test = s[s.find('<')+1:]
+                        changes.append(test)
+        for change in changes:
+            print(change)
+            content = content.replace('<' + test + '>', '[' + test + ']')
+        return content
+
     def fix_tags(self, content):
+        tags = [ 'italic', 'bold', 'sub', 'sup']
+        replace = None
+        tag_list = []
+        for t in tags:
+            tag_list.append('<' + t + '>')
+            tag_list.append('</' + t + '>')
+
+        expected_close_tags = [] 
+        
+        rcontent = content
+        for tag in tags:
+            rcontent = rcontent.replace('<' + tag + '>',  'BREAKBEGINCONSERTA<' + tag + '>BREAKBEGINCONSERTA').replace('</' + tag + '>', 'BREAKBEGINCONSERTA</' + tag + '>BREAKBEGINCONSERTA')
+
+        parts = rcontent.split('BREAKBEGINCONSERTA')
+        k = 0
+        for part in parts:
+            tag = part 
+            if part in tag_list:
+                               
+                if '/' in tag:
+                    # close
+                    matched = False
+                    if len(expected_close_tags) == 0:
+                        parts[k] = ''
+                    while not matched and len(expected_close_tags) > 0:
+                        matched = (expected_close_tags[-1] == tag)
+                        if matched:
+                            del expected_close_tags[-1]
+                        else:
+                            if replace == None:
+                                replace = (expected_close_tags[-1], tag)
+                                parts[k] = expected_close_tags[-1]
+                                del expected_close_tags[-1]
+
+                            elif tag == replace[0] and expected_close_tags[-1] == replace[1]:
+                                parts[k] = replace[1]
+                                del expected_close_tags[-1]
+                            else:
+                                print(k)
+                                print(tag)
+                                print(expected_close_tags)
+                    
+                else:
+                    # open
+                    expected_close_tags.append(tag.replace('<', '</'))
+
+            k += 1        
+        expected_close_tags.reverse()
+        r = ''.join(parts) + ''.join(expected_close_tags)
+        return r
+
+    def fix_tags2(self, content):
         tags = [ 'italic', 'bold', 'sub', 'sup']
         replace = None
         tag_list = []

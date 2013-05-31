@@ -527,19 +527,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 			<xsl:if test="not(xref[@ref-type='aff']) and not(.//sup)">
 				<xsl:comment>not xref</xsl:comment>
-				<xsl:choose>
-					<xsl:when test="../xref[@ref-type='aff' and @rid=$author_rid]">
-						<xsl:apply-templates select="../xref[@ref-type='aff' and @rid=$author_rid]"
-						/>
-					</xsl:when>
-					<!--xsl:when test=".//sup">
-						<xsl:apply-templates select=".//sup"/>
-					</xsl:when-->
-					<xsl:otherwise>
-						<xsl:apply-templates select="@rid"/>
-					</xsl:otherwise>
-				</xsl:choose>
-
+				<xsl:apply-templates select="@rid"/>
+				
 			</xsl:if>
 
 
@@ -579,7 +568,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<!-- quando nao existe author/xref -->
 		<xsl:param name="rid_list"/>
 		<xsl:variable name="next" select="substring-after($rid_list,' ')"/>
-		<xsl:variable name="rid" select="translate(.,'a','A')"/>
+		<xsl:variable name="rid" select="translate(substring-before($rid_list,' '),'a','A')"/>
 		<xref ref-type="aff" rid="{$rid}">
 
 			<xsl:value-of select="$rid"/>

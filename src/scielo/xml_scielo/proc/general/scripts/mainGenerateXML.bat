@@ -102,7 +102,9 @@ call batch\GeraInvertido.bat %TITLE% fst\title.fst %TITLE%
 
 echo Generating XML
 
-%MX% "seq=%SCI_LISTA% " lw=9999 "pft=if p(v1) then 'call scripts\generateXML.bat %MX% %DATABASE_DESTINATION% ',v1,' ',v2,' ',v3,' ',v4,' '/ fi" now> temp\generateXML4scilista.bat
+
+
+%MX% "seq=%SCI_LISTA% " lw=9999 "pft=if p(v1) then 'call scripts\generateXML.bat %MX% %DATABASE_DESTINATION% ',v1,' ',v2,' ',v3,' ',v4,' ',v5/ fi" now> temp\generateXML4scilista.bat
 call temp\generateXML4scilista.bat
 
 goto END
