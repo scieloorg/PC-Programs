@@ -568,7 +568,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<!-- quando nao existe author/xref -->
 		<xsl:param name="rid_list"/>
 		<xsl:variable name="next" select="substring-after($rid_list,' ')"/>
-		<xsl:variable name="rid" select="translate(substring-before($rid_list,' '),'a','A')"/>
+		<xsl:variable name="rid" select="substring-before($rid_list,' ')"/>
 		<xref ref-type="aff" rid="{$rid}">
 
 			<xsl:value-of select="$rid"/>
@@ -635,7 +635,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="aff/@id">
 		<!-- quando nao ha aff/label = author/xref enquanto author/@rid = aff/@id -->
 		<xsl:attribute name="id">
-			<xsl:value-of select="translate(.,'a','A')"/>
+			<xsl:value-of select="."/>
 		</xsl:attribute>
 	</xsl:template>
 
@@ -1129,7 +1129,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 		</ref>
 	</xsl:template>
-
 	<xsl:template match="back//no">
 		<label>
 			<xsl:value-of select="."/>
@@ -2459,4 +2458,9 @@ et al.</copyright-statement>
 			<xsl:apply-templates select="*|text()"/>
 		</title>
 	</xsl:template>
+	<xsl:template match="patgrp"><patent>
+		<xsl:apply-templates select="@*|orgname|patent"></xsl:apply-templates>
+	</patent><xsl:if test="date"><year><xsl:value-of select="date"/></year></xsl:if></xsl:template>
+	<xsl:template match="patgrp/orgname"><xsl:value-of select="."/></xsl:template>
+	
 </xsl:stylesheet>

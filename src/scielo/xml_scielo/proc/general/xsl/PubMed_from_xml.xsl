@@ -134,7 +134,19 @@
 		</Issue>
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-publishing_dateiso">
-		<xsl:apply-templates select=".//front//pub-date"/>
+		<xsl:choose>
+			<xsl:when test=".//front//pub-date[@date-type='ppub']">
+				<xsl:apply-templates select=".//front//pub-date[@date-type='ppub']"/>
+			</xsl:when>
+			<xsl:when test=".//front//pub-date[@date-type='epub-ppub']">
+				<xsl:apply-templates select=".//front//pub-date[@date-type='epub-ppub']"/>
+			</xsl:when>
+			<xsl:when test=".//front//pub-date[@date-type='epub']">
+				<xsl:apply-templates select=".//front//pub-date[@date-type='epub']"/>
+			</xsl:when>
+			<xsl:otherwise><xsl:apply-templates select=".//front//pub-date[1]"/></xsl:otherwise>
+		</xsl:choose>
+		
 	</xsl:template>
 	<xsl:template match="pub-date/@pub-type | @date-type" >
 		<xsl:choose>
@@ -197,6 +209,8 @@
 		</Author>
 
 	</xsl:template>
+	<xsl:template match="article-title/text()"><xsl:value-of select="."></xsl:value-of></xsl:template>
+	<xsl:template match="article-title/*"><xsl:value-of select="."></xsl:value-of></xsl:template>
 	<xsl:template match="article-title/xref"></xsl:template>
 	<xsl:template match="collab" mode="scielo-xml-author">
 		<Author>
@@ -239,11 +253,12 @@
 
 	
 	<xsl:template match="aff" mode="scielo-xml-text">
-		<xsl:apply-templates select="*" mode="scielo-xml-text"></xsl:apply-templates>
+		<xsl:apply-templates select="*[name()!='label']" mode="scielo-xml-text"></xsl:apply-templates>
 	</xsl:template>
-	<xsl:template match="aff/*" mode="scielo-xml-text"><xsl:if test="position()!=1">, </xsl:if><xsl:apply-templates select="*|text()"></xsl:apply-templates>
+	<xsl:template match="aff//*" mode="scielo-xml-text"><xsl:if test="position()!=1">, </xsl:if><xsl:apply-templates select="*|text()"></xsl:apply-templates>
 	</xsl:template>
-	<xsl:template match="aff/text()" mode="scielo-xml-text"><xsl:if test="normalize-space(.)=','"></xsl:if></xsl:template>
+	<xsl:template match="aff//label" mode="scielo-xml-text"></xsl:template>
+	<xsl:template match="aff//text()" mode="scielo-xml-text"><xsl:if test="normalize-space(.)=','"></xsl:if></xsl:template>
 	<xsl:template match="@*" mode="scielo-xml-x">
 		<xsl:value-of select="." disable-output-escaping="yes"/>
 		<xsl:value-of select="." disable-output-escaping="no"/>
