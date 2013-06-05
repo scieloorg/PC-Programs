@@ -4,7 +4,7 @@
 	
 	<xsl:template match="occ">
 		<!--xsl:comment>occ</xsl:comment-->
-		<xsl:apply-templates select="*"/>
+		<xsl:apply-templates select="text()"/>
 	</xsl:template>
 	<xsl:template match="@*">
 		<!--xsl:comment>@*</xsl:comment-->
@@ -14,6 +14,7 @@
 		<!--xsl:comment>text()</xsl:comment-->
 		<xsl:value-of select="normalize-space(.)" disable-output-escaping="yes"/>
 	</xsl:template>
+	
 	<!--xsl:template match="@*|text()">
 		<xsl:comment>normal <xsl:value-of select="."/></xsl:comment>
 		<xsl:comment>disable-output-scaping <xsl:value-of select="." disable-output-escaping="yes"/></xsl:comment>
@@ -51,6 +52,7 @@
 		<xsl:comment>
 			<xsl:value-of select="section_code/occ"/>
 		</xsl:comment-->
+		
 		<Article>
 			<Journal>
 				<xsl:apply-templates select="publisher_name"/>
@@ -204,12 +206,12 @@
 	</xsl:template>
 	<xsl:template match="publisher_name">
 		<PublisherName>
-			<xsl:apply-templates/>
+			<xsl:apply-templates select="occ"/>
 		</PublisherName>
 	</xsl:template>
 	<xsl:template match="article_title">
 		<JournalTitle>
-			<xsl:apply-templates/>
+			<xsl:apply-templates select="occ"/>
 		</JournalTitle>
 	</xsl:template>
 	<xsl:template match="issn">
@@ -219,7 +221,7 @@
 					<xsl:value-of select="$replaceISSN"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:apply-templates/>
+					<xsl:apply-templates select="occ"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</Issn>
@@ -327,7 +329,7 @@
 			<CollectiveName>
 				<xsl:if test="@d">
 					<xsl:apply-templates select="@d"/>, </xsl:if>
-				<xsl:apply-templates/>
+				<xsl:apply-templates select="text()"/>
 			</CollectiveName>
 		</Author>
 	</xsl:template>
@@ -343,7 +345,7 @@
 	</xsl:template>
 	<xsl:template match="@suffix | Suffix">
 		<Suffix>
-			<xsl:apply-templates/>
+			<xsl:apply-templates select="occ"/>
 		</Suffix>
 	</xsl:template>
 	<xsl:template match="@affiliation_code | aff-id ">

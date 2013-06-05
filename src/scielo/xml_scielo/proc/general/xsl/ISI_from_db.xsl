@@ -3,7 +3,7 @@
 	
 	<xsl:template match="occ">
 		<!--xsl:comment>occ</xsl:comment-->
-		<xsl:apply-templates/>
+		<xsl:apply-templates select="text()"/>
 	</xsl:template>
 	<xsl:template match="@*">
 		<!--xsl:comment>@*</xsl:comment-->
@@ -164,7 +164,7 @@
 	</xsl:template>
 	<xsl:template match="@suffix">
 		<Suffix>
-			<xsl:apply-templates/>
+			<xsl:apply-templates select="occ"/>
 		</Suffix>
 	</xsl:template>
 	<xsl:template match="occ" mode="year">
@@ -189,28 +189,28 @@
 	</xsl:template>
 	<xsl:template match="publisher_name">
 		<PublisherName>
-			<xsl:apply-templates/>
+			<xsl:apply-templates select="occ"/>
 		</PublisherName>
 	</xsl:template>
 	<xsl:template match="article_title | journal-title">
 		<JournalTitle>
-			<xsl:apply-templates/>
+			<xsl:apply-templates select="*"/>
 		</JournalTitle>
 	</xsl:template>
 	<xsl:template match="issn">
 		<Issn>
-			<xsl:apply-templates/>
+			<xsl:apply-templates select="occ"/>
 		</Issn>
 	</xsl:template>
 	<xsl:template match="volume_id">
 		<Volume>
-			<xsl:apply-templates/>
+			<xsl:apply-templates select="occ"/>
 		</Volume>
 	</xsl:template>
 	<xsl:template match="issue_no">
 		<Issue>
 			<xsl:if test="not(contains(.,'ahead'))">
-				<xsl:apply-templates/>
+				<xsl:apply-templates select="occ"/>
 				<xsl:if test="string-length(.//supl/occ)&gt;0">suppl.<xsl:if test="..//supl!='0'">&#160;
 						<xsl:value-of select="..//supl"/>
 					</xsl:if>

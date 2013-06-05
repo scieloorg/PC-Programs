@@ -1,8 +1,12 @@
 import sys, os
-
 for f in os.listdir(sys.argv[1]):
     
-    if not f.startswith('fixed_'):    
+    if f.startswith('fixed_'):    
+        os.unlink(sys.argv[1] + '/' + f)
+        
+for f in os.listdir(sys.argv[1]):
+    
+    if not f.startswith('fixed_') and f.endswith('.xml'):    
     
         print(sys.argv[1] + '/' + f)
         fp = open(sys.argv[1] + '/' + f, 'r')

@@ -528,7 +528,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:if test="not(xref[@ref-type='aff']) and not(.//sup)">
 				<xsl:comment>not xref</xsl:comment>
 				<xsl:apply-templates select="@rid"/>
-				
+
 			</xsl:if>
 
 
@@ -581,15 +581,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>
 
+
 	<xsl:template match="aff">
 		<xsl:variable name="label">
 			<xsl:value-of select="normalize-space(label)"/>
 			<xsl:if test="not(label)">
-				<xsl:value-of select="normalize-space(.//sup)"/>
+				<xsl:value-of select="normalize-space(sup)"/>
 			</xsl:if>
 		</xsl:variable>
 		<aff>
-
 			<xsl:choose>
 				<xsl:when
 					test="$label!='' and $affs_xrefs[normalize-space(xref//text())=$label or normalize-space(.//sup//text())=$label]">
@@ -601,36 +601,58 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:otherwise>
 			</xsl:choose>
 
-			<xsl:apply-templates select="label|sup|text()"/>
-			<xsl:apply-templates select="@*[name()!='id']"/>
-			<xsl:if test="city or state or zipcode">
-				<addr-line>
-					<xsl:apply-templates select="city|state|zipcode"/>
-				</addr-line>
-			</xsl:if>
-			<xsl:apply-templates select="country|email"/>
+			<xsl:apply-templates select="label|sup"/>
+			<xsl:choose>
+				<xsl:when test="@orgname">
+					<xsl:apply-templates select="@*[name()!='id']"/>
+					<xsl:if test="city or state or zipcode">
+						<addr-line>
+							<xsl:apply-templates select="city|state|zipcode"/>
+						</addr-line>
+					</xsl:if>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="*[contains(name(),'org')]"/>
+					<xsl:if test="@state or @city">
+						<addr-line>
+							<xsl:apply-templates select="@city|@state|@country"/>
+
+						</addr-line>
+					</xsl:if>
+				</xsl:otherwise>
+			</xsl:choose>
+			<!--xsl:apply-templates select="text() | *" mode="full"/-->
 		</aff>
 	</xsl:template>
-
-	<xsl:template match="aff/country"> , <xsl:element name="{name()}">
-			<xsl:value-of select="."/>
-		</xsl:element>
+	<xsl:template match="text() | *[contains(name(),'org')] |city| state | zipcode " mode="full">
+		<xsl:value-of select="."/>
 	</xsl:template>
-	<xsl:template match="aff/label">
-
+	<xsl:template match="label" mode="full"> </xsl:template>
+	<xsl:template match="country | email " mode="full">
 		<xsl:element name="{name()}">
 			<xsl:value-of select="."/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="aff/text()"> </xsl:template>
-	<xsl:template match="aff/sup">
-		<xsl:if test="not(../label)">
-			<label>
-				<xsl:value-of select="."/>
-			</label>
-		</xsl:if>
-	</xsl:template>
 
+	<xsl:template match="aff/country">
+		<xsl:element name="{name()}">
+			<xsl:value-of select="."/>
+		</xsl:element>
+	</xsl:template>
+	<xsl:template match="aff/label | aff/sup">
+		<xsl:choose>
+			<xsl:when test="not(../label) and name()='sup'">
+				<label>
+					<xsl:value-of select="."/>
+				</label>
+			</xsl:when>
+			<xsl:otherwise>
+				<label>
+					<xsl:value-of select="."/>
+				</label>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
 	<xsl:template match="aff/@id">
 		<!-- quando nao ha aff/label = author/xref enquanto author/@rid = aff/@id -->
@@ -639,8 +661,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:attribute>
 	</xsl:template>
 
-	<xsl:template match="aff/@orgdiv1 | aff/@orgdiv2 | aff/@orgdiv3 | aff/@orgname">
-		<xsl:if test="name()!='orgname'">, </xsl:if>
+	<xsl:template match="aff/@*[contains(name(),'org')] | aff/*[contains(name(),'org')]">
 		<institution>
 			<xsl:attribute name="content-type">
 				<xsl:value-of select="name()"/>
@@ -649,13 +670,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</institution>
 	</xsl:template>
 
-	<xsl:template match="aff/city | aff/state | aff/zipcode">, <named-content
-			content-type="{name()}"><xsl:value-of select="."/></named-content>
+	<xsl:template match="aff/@city | aff/@state | aff/@country | aff/city | aff/state | aff/zipcode">
+		<named-content content-type="{name()}">
+			<xsl:value-of select="."/>
+		</named-content>
 	</xsl:template>
 
 
 	<xsl:template match="e-mail|email">
-		<xsl:if test="../aff">, </xsl:if>
 		<email>
 			<xsl:apply-templates/>
 		</email>
@@ -1089,7 +1111,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="xref[@ref-type='bibr']/@rid">
 		<xsl:attribute name="rid">B<xsl:value-of select="substring(.,2)"/></xsl:attribute>
-		
+
 	</xsl:template>
 
 	<xsl:template match="*[@standard]/*[contains(name(),'citat')]">
@@ -1275,19 +1297,31 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 			</xsl:if>
 
-
-
-
 		</name>
 
 	</xsl:template>
 	<xsl:template match="back//*[previous]">
 		<xsl:param name="position"/>
-		<xsl:apply-templates select="$data4previous[$position - 1]//*[contains(name(),'author')]">
+		<xsl:apply-templates select="." mode="try-previous">
 			<xsl:with-param name="position" select="$position - 1"/>
 		</xsl:apply-templates>
 	</xsl:template>
 
+	<xsl:template match="*" mode="try-previous">
+		<xsl:param name="position"/>
+		<xsl:if test="$position&gt;0">
+			<xsl:apply-templates select="$data4previous[$position]//*[surname or (contains(name(),'corpaut') and orgname)]">
+				<xsl:with-param name="position" select="$position"/>
+			</xsl:apply-templates>
+			<xsl:if test="$position&gt;1">
+				<xsl:if test="not($data4previous[$position]//*[surname or (contains(name(),'corpaut') and orgname)])">
+					<xsl:apply-templates select="$data4previous" mode="try-previous">
+						<xsl:with-param name="position" select="$position - 1"/>
+					</xsl:apply-templates>
+				</xsl:if>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 
 	<xsl:template match="back//date">
 		<xsl:call-template name="display_date">
@@ -2458,9 +2492,18 @@ et al.</copyright-statement>
 			<xsl:apply-templates select="*|text()"/>
 		</title>
 	</xsl:template>
-	<xsl:template match="patgrp"><patent>
-		<xsl:apply-templates select="@*|orgname|patent"></xsl:apply-templates>
-	</patent><xsl:if test="date"><year><xsl:value-of select="date"/></year></xsl:if></xsl:template>
-	<xsl:template match="patgrp/orgname"><xsl:value-of select="."/></xsl:template>
-	
+	<xsl:template match="patgrp">
+		<patent>
+			<xsl:apply-templates select="@*|orgname|patent"/>
+		</patent>
+		<xsl:if test="date">
+			<year>
+				<xsl:value-of select="date"/>
+			</year>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="patgrp/orgname">
+		<xsl:value-of select="."/>
+	</xsl:template>
+
 </xsl:stylesheet>
