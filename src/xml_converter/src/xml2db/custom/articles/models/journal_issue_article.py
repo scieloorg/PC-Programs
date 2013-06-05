@@ -12,23 +12,20 @@ class JournalsList(Items):
     
     def find_journal(self, journal_title):
         r = self.get(Journal(journal_title).id)
-        if r == None:
-            for k, r in self.elements.items():
-                if r.title.upper() == journal_title.upper():
-                    break
+        
         return r
 
-    def return_registered(self, box_label, report):
-        if len(box_label) == 0:
-            report.write('Missing label in json', True, True)
-        else:
-            box = self.find_journal(box_label)
-            if box == None:
-                labels = ''
-                for k,t in self.elements.items():
-                    labels += ',' + t.title
-                labels = labels[1:]
-                report.write(box_label + ' is not registered. '+ '\n' + labels , True, True)
+    def return_registered(self, box_label):
+        box = self.find_journal(box_label)
+        if not box == None:
+            if not box.title == box_label:
+                box = None
+        if box == None:
+            
+            for k,t in self.elements.items():
+                if t.abbrev_title == box_label:
+                    box = t
+                    break
         return box
 
 class JournalIssuesList(Items):
@@ -63,6 +60,7 @@ class Journal:
         self.issn_id = issn_id
         self.acron = acron
         self.publishers = ''
+        self.abbrev_title = ''
 
     def generate_id(self, journal_title):
         return id_generate( journal_title.strip())

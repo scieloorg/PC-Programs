@@ -63,10 +63,11 @@ class Folders(Items):
         
 class Section:
     def __init__(self, title, code = '', lang = 'en'):
-        self.id = self.generate_id( title)
+        section_code = self.normalized_title(title)
+        self.id = self.generate_id(section_code)
         self.title = title
         if code == '':
-            self.code = self.title.replace(' ','_').upper()
+            self.code = section_code
         else:
             self.code = code
         self.lang = lang
@@ -74,11 +75,14 @@ class Section:
     def generate_id(self, title):
         return id_generate( title) 
 
-
+    def normalized_title(self, title):
+        return title.replace(' ','').upper()
 
 class TOC(Items):
     def __init__(self):
         Items.__init__(self)
+
+    
 
     def insert(self, item, replace):
 
@@ -98,18 +102,37 @@ class TOC(Items):
         return r
 
     def return_section(self, _section):
+        test = _section.normalized_title(_section.title)
+        print( 'teste secoes: ' + _section.title + ' (' + _section.code + ')')
+        
+        
+        
+        
         section = None
         for key, sec in self.elements.items():
-            if sec.title == _section.title:
+            
+            print(sec.code + ' - '  + sec.title)
+            if sec.normalized_title(sec.title) == test:
                 section = sec
                 break
             elif sec.code == _section.code:
                 section = sec
-                
-                    
                 break
+        if section != None:
+            print(_section.title)
+            print(_section.code)
+            print(section.title)
+            print(section.code)
+            print('matched')
+        else:
+            print('no match')
         return section
 
+    def display(self):
+        
+        for key, sec in self.elements.items():
+            print(sec.code + ' - '  + sec.title)
+            
         
 class Box:
     def __init__(self, box):

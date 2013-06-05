@@ -19,7 +19,12 @@
 <!ENTITY % m.thes   "(city? & state? & country? & date? & degree? & 
                       (%m.org;)?)" >
 
-<!ENTITY % m.rep    "rsponsor+ & projname?" >
+<!-- ENTITY % m.rep    "rsponsor+ & projname?" -->
+<!--ENTITY % m.rep    "(contract+ & rsponsor+ & projname? & awarded* & no?) | (no)" -->
+
+<!ENTITY % m.rep    "(contract* & rsponsor* & no? & awarded* & projname?)+" >
+
+<!ELEMENT awarded - - ( (orgname & orgiv?) & (fname & surname))+ >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--   Floating Elements                                                  -->
@@ -96,7 +101,7 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT table - - (tr+)    >
 <!ELEMENT tr - - (td+)    >
-<!ELEMENT td - - (p+)    >
+<!ELEMENT td - - (#PCDATA)   +(%i.float;) >
 
 <!ELEMENT sciname - - (#PCDATA) >
 
@@ -224,7 +229,11 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT sectitle - - (#PCDATA)  +(%i.float;) >
 <!--ELEMENT p - - ((#PCDATA) | (label,caption) | list )  +(%i.float;) -->
-<!ELEMENT p - - (#PCDATA)   +(%i.float;) >
+
+<!--ELEMENT p - - (#PCDATA)   +(%i.float;) -->
+
+<!ELEMENT p - - ((#PCDATA) & report*)+  +(%i.float;) >
+
 <!ELEMENT list  - - (li)+  >
 <!ATTLIST list
           listtype  CDATA #REQUIRED

@@ -272,13 +272,12 @@ class ISISManager4Articles:
         
         self.json2idfile_article.format_and_save_document_data(article.json_data, self.records_order, issue_paths.issue_db_name, issue_paths.xml_filename(article.xml_filename))
         
+        if not os.path.exists(id_filename):
+            package.report.write('Unable to create ' + id_filename, True, True)
+            package.report.write(article.json_data, True, True)
         # archive files
         
-        package.report.write(package.package_path)
-        package.report.write(','.join(os.listdir(package.package_path)))
-        package.report.write(article.xml_filename)
-        package.report.write(','.join(package.return_matching_files(os.path.basename(article.xml_filename))))
-        
+         
         #if article.issue.status != 'not_registered':
         issue_paths.archive_article_files(article.xml_filename, article.issue, package)
         #FIXME issue_files.archive_article_files(filename)

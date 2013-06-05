@@ -3,8 +3,8 @@ brazilian journal of chemical engineering;brazilian journal of genetics;brazilia
 bjce;bjg;bjmbr;bjp;conicyt;dados;br1.1;infomed;jbchs;jbcos;mioc;rbcs;rbgeo;rimtsp;rsp
 
 doctopic
-anexo;anúncio;artigo original;atualização;cartas;comentários;comunicação breve;editorial;ensaios clínicos;entrevista;informe técnico;nota;metodologia;ponto de vista;press release;relato de caso;resenha;resumos;revisão
-ax;an;oa;up;le;co;sc;ed;ct;in;tr;rn;mt;pv;pr;cr;rc;ab;ra
+anexo;anúncio;artigo original;atualização;cartas;comentários;comunicação breve;editorial;ensaios clínicos;entrevista;errata;informe técnico;nota;metodologia;ponto de vista;press release;relato de caso;resenha;resumos;revisão
+ax;an;oa;up;le;co;sc;ed;ct;in;er;tr;rn;mt;pv;pr;cr;rc;ab;ra
 
 language
 Português;Inglês;Espanhol;Africaner;Alemão;Arabe;Búlgaro;Chinês;Coreano;Dinamarquês;Eslovaco;Esperanto;Francês;Grego;Hebraico;Hindu;Holandês;Húngaro;Indonésio;Interlingua;Interlingue;Italiano;Japonês;Latim;Norueguês;Polonês;Românico;Russo;Sânscrito;Servo-Croata;Slovenian;Sueco;Tcheco;Turco;Ucraniano;Urdu;Outros;Galego;Vasco;Catalão
@@ -159,7 +159,7 @@ Lista ordenada. Caracter do prefixo é um número ou letra dependendo do estilo;Li
 order;bullet;alpha-lower;alpha-upper;roman-lower;roman-upper;simple
 
 fntype
-Abreviações;Informação de comunicado;Informação de contribuição;Declaração de conflito de interesse;Informação de correspondencia;Afiliação atual do autor;Pessoa morreu desde que o artigo foi escrito;Autor é o editor;Contribuiu igualmente na criação do documento;Declaração de financiamento ou negação do recebido no apoio da pesquisa na qual o artigo é baseado;Autor está ausente (sabático ou outro);Outro tipo de nota;Outro tipo de nota relacionada ao autor;Autor foi um pesquisador para um artigo;Endereço atual do autor;Apresentado neste evento;Apresentador del material;Afiliação do autor anterior;Autor foi um membro do grupo de estudo para a pesquisa;Indica ou descreve o material suplementar para o artigo;Pesquisa na qual um artigo é baseado, foi apoiado por alguma entidade
+Abreviações;Informação de comunicação;Informação de contribuição;Declaração de conflito de interesse;Informação de correspondencia;Afiliação atual do autor;Pessoa faleceu desde que o artigo foi escrito;Autor exerce papel de editor;Contribuição igualitária na criação do documento ;Declaração ou negação de recebimento de financiamento em apoio à pesquisa na qual o artigo é baseado;Autor ausente (sabático ou outro);Outro tipo de nota;Outro tipo de nota relacionada ao autor;Autor foi um pesquisador para o artigo ;Endereço atual do autor;Apresentado em evento;Apresentador do material;Afiliação do autor anterior;Colaborador foi membro do grupo de estudo para a pesquisa;Indica ou descreve o material suplementar para o artigo;Pesquisa na qual o artigo é baseado foi apoiado por alguma entidade
 abbr;com;con;conflict;corresp;current-aff;deceased;edited-by;equal;financial-disclosure;on-leave;other;author;participating-researchers;present-address;presented-at;presented-by;previously-at;study-group-members;supplementary-material;supported-by
 
 blcktype
