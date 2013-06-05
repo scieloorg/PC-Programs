@@ -19,7 +19,7 @@
 				<xsl:apply-templates select="." mode="scielo-xml-issue_no"/>
 				<xsl:apply-templates select="." mode="scielo-xml-publishing_dateiso"/>
 			</Journal>
-			<xsl:if test="$other/former_pid">
+			<xsl:if test="$other/former-pid">
 				<Replaces IdType="pii">
 					<xsl:apply-templates select="$other" mode="scielo-xml-pii"/>
 				</Replaces>
