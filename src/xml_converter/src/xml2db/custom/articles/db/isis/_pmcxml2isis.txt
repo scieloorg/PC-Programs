@@ -24,17 +24,30 @@
     .//article-meta//contrib/collab 11
     .//article-meta/title-group 12
       article-title _
+      article-title/xref x
       subtitle s
       article-title/@xml:lang l en
     .//article-meta//trans-title-group 12
       trans-title _
+      trans-title/xref x
       trans-subtitle s
       @xml:lang l 
+    .//sub-article[@article-type='translation'] 601
+      @xml:lang _
+    .//sub-article[@article-type='translation']//front-stub//title-group 12
+      article-title _
+      article-title/xref x
+      subtitle s
+      article-title/@xml:lang l en
     .//article-meta//article-id[@pub-id-type='doi'] 237
     .//article-meta/volume 31    
     .//article-meta/issue 32    
     .//article-meta/supplement 132    
     .//article-meta//funding-source 58    
+    .//article-meta//principal-award-recipient 591    
+      . _
+    .//article-meta//principal-investigator 591    
+      . n
     .//article-meta//award-id 60    
     .//article-meta//funding-statement 102
     back//ack 102 XML
@@ -48,12 +61,12 @@
       month m
       year y
       day d  
-    .//article-meta/pub-date[@pub-type='ppub'] ppub
+    .//article-meta/pub-date[@pub-type='ppub'] 64
       season s
       month m
       year y
       day d  
-    .//article-meta/pub-date[@pub-type='epub-ppub'] epub-ppub
+    .//article-meta/pub-date[@pub-type='epub-ppub'] 64
       season s
       month m
       year y
@@ -84,10 +97,13 @@
     .//fig-count/@count 901
     .//article-meta/abstract 83
       . a
-      @xml:lang l en
+      @xml:lang l 
     .//article-meta/trans-abstract 83
       . a
       @xml:lang l
+    .//sub-article[@article-type='translation']//front-stub//abstract 83
+      . a
+      @xml:lang l 
     .//article-meta//date[@date-type='received'] 111    
       year y
       month m
@@ -100,13 +116,6 @@
       season s      
   .//body body
     .//graphic/@xlink:href file
-  .//sub-article[@article-type='translation']/@xml:lang 40
-  .//sub-article//article-title 12
-    . _
-     @xml:lang l
-  .//sub-article//abstract 83
-    . a
-    @xml:lang l 
   .//ref c
     .//source/@xml:lang 40
     .//element-citation/@publication-type 71
@@ -129,6 +138,10 @@
     .//mixed-citation[@publication-type='journal']//source 30    
     .//person-group/@person-group-type roles
     .//person-group[1]/name 10
+      given-names n
+      surname s
+      suffix z
+    name 10
       given-names n
       surname s
       suffix z
@@ -167,10 +180,13 @@
     .//ext-link 37    
     .//date-in-citation[@content-type='access-date'] 109
     .//comment 61    
+    .//comment[@content-type='award-id'] 60   
+    .//element-citation[@publication-type='report']//comment 60    
     .//notes 61    
     .//pub-id[@pub-id-type='doi'] 237    
     .//pub-id[@pub-id-type='pmid'] 238    
     .//pub-id[@pub-id-type='pmcid'] 239    
+    .//element-citation[@publication-type='report']//pub-id[@pub-id-type='other'] 592    
     .//conf-name 53
     .//conf-loc 56
     .//conf-date 54

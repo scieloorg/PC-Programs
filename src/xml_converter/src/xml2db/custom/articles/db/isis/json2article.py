@@ -20,6 +20,8 @@ def return_journals_list(json):
         #print(json_title.journal_title+ '.')
         j = Journal(json_title.journal_title, json_title.journal_issn_id, json_title.journal_acron)
         j.publishers = json_title.publishers
+        j.abbrev_title = json_title.journal_abbrev_title
+        
         journal_list.insert(j, False)
     return journal_list
 
@@ -308,7 +310,10 @@ class JSON_Article:
 
         return first_page, last_page, elocation           
 
-    def return_article(self, alternative_id):
+    def return_article(self):
+        doi = return_singleval(self.json_data['f'], '237')
+
+
         titles = return_multval(self.json_data['f'], '12')
         authors = return_multval(self.json_data['f'], '10')
         
@@ -317,21 +322,30 @@ class JSON_Article:
         if first_page == '':
             first_page = elocation   
         
-        data4id = alternative_id
-
-        article = Article(data4id, first_page, last_page)
-        article.doi = return_singleval(self.json_data['f'], '237')
+        
+        article = Article(doi, first_page, last_page)
+        article.doi = doi
         
 
         titles = return_multval(self.json_data['f'], '12')
-        article.titles = []
+        norm_titles = []
         for t in titles:
+            if type(t) == type({}):
+                norm_titles.append(t)
+            elif type(t) == type([]):
+                for t1 in t:
+                    if type(t) == type({}):
+                        norm_titles.append(t1)
+
+        article.titles = []
+        for t in norm_titles:
             if '_' in t.keys():
                 article.titles.append(t['_'])
 
 
         
         #article.authors = self.format_author_names(authors)
+        
         article.section = self.section
         article.json_data = self.json_data
         article.display_data = self.set_display()
@@ -568,7 +582,8 @@ class JSON_Article:
         self.json_data['f']['120'] = 'XML_' + return_singleval(self.json_data['f'], '120')
         self.json_data['f']['42'] = '1'
         
-        if return_singleval(self.json_data['f'], '32') == 'ahead':
+        issueno = return_singleval(self.json_data['f'], '32')
+        if issueno == 'ahead':
             self.json_data['f']['121'] = alternative_id
         
         #if 'epub' in self.json_data['f'].keys():
@@ -577,11 +592,14 @@ class JSON_Article:
         #    del self.json_data['f']['epub']
         
         section = Section(return_singleval(self.json_data['f'], '49'))
+        print(section.title)
         self.section = issue.toc.return_section(section)
         if self.section == None:
+            section.code = section.title + ' (INVALID) '
             self.section = section
         self.json_data['f']['49'] = self.section.code
 
+        self.normalize_metadata_abstracts()
         self.normalize_metadata_subtitles()
         self.normalize_metadata_authors()
         self.normalize_illustrative_materials()
@@ -593,9 +611,8 @@ class JSON_Article:
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '111', '112', '111')
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '113', '114', '113')
 
-        self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
-        
         if 'epub' in self.json_data['f'].keys():
+            self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
             del self.json_data['f']['epub']
         # ja esta normalizada self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '64', '65', '64')
         
@@ -636,8 +653,23 @@ class JSON_Article:
         """
         
         titles = return_multval(self.json_data['f'], '12')
-        new_titles = []
+        norm_titles = []
         for t in titles:
+            if type(t) == type({}):
+                norm_titles.append(t)
+            elif type(t) == type([]):
+                for t1 in t:
+                    if type(t1) == type({}):
+                        norm_titles.append(t1)
+
+
+        new_titles = []
+        
+        for t in norm_titles:
+
+            if 'x' in t.keys():
+                t['_'] = t['_'][0:t['_'].find('<xref')]
+                print(t['_'])
             if 's' in t.keys():
                 #print(t)
                 if ':' in t['_']:
@@ -653,6 +685,27 @@ class JSON_Article:
             self.json_data['f']['12'] = new_titles[0]
         elif len(new_titles) > 1:
             self.json_data['f']['12'] = new_titles
+
+    def normalize_metadata_abstracts(self):
+        """
+        Normalize the json structure for abstracts: 83
+        """
+        
+        abstracts = return_multval(self.json_data['f'], '83')
+        norm_abstracts = []
+        for t in abstracts:
+            if type(t) == type({}):
+                norm_abstracts.append(t)
+            elif type(t) == type([]):
+                for t1 in t:
+                    if type(t1) == type({}):
+                        norm_abstracts.append(t1)
+
+
+        if len(norm_abstracts) == 1:
+            self.json_data['f']['83'] = norm_abstracts[0]
+        elif len(norm_abstracts) > 1:
+            self.json_data['f']['83'] = norm_abstracts
 
     def normalize_illustrative_materials(self):
         """
@@ -783,6 +836,19 @@ class JSON_Article:
                 errors.append( 'Missing pagination' )
         return errors
 
+    def validate_section(self):
+        """
+        Validate the pages of front
+        """
+        
+        errors = []
+        
+        section_title = return_singleval(self.json_data['f'], '49')
+        if 'INVALID' in section_title:
+            errors.append( 'This section title is not registered: ' + section_title )
+        
+        return errors
+
     def validate_ack_or_funding(self):
         """
         Validate the funding x ack
@@ -813,6 +879,7 @@ class JSON_Article:
         #conditional = { 'page': (14, 32), }
         
         errors += self.validate_required()
+        errors += self.validate_section()
         errors += self.validate_pages()
         errors += self.validate_dates()
         
@@ -1190,7 +1257,9 @@ class JSON_Issue:
                 code = item['c']
 
             section = Section(title, code, lang)
-            issue.toc.insert(section, False)
+            issue.toc.insert(section, True)
+
+            issue.toc.display()
 
         issue.json_data = i_record
         return  issue
@@ -1204,6 +1273,15 @@ class JSON_Issue:
         r = return_singleval(json_data, '100')
         if r == '':
             r = return_singleval(json_data, '130')
+        return r
+
+    @property   
+    def journal_abbrev_title(self):
+        if 'f' in self.json_data.keys():
+            json_data = self.json_data['f']
+        else:
+            json_data = self.json_data
+        r = return_singleval(json_data, '421')
         return r
 
 class JSON_Journal:
@@ -1233,6 +1311,15 @@ class JSON_Journal:
             r = return_singleval(json_data, '130')
         return r
    
+    @property   
+    def journal_abbrev_title(self):
+        if 'f' in self.json_data.keys():
+            json_data = self.json_data['f']
+        else:
+            json_data = self.json_data
+        r = return_singleval(json_data, '421')
+        return r
+
     @property
     def journal_acron(self):
         if 'f' in self.json_data.keys():
@@ -1298,9 +1385,8 @@ class JSON2Article:
 
         self.json_article.normalize_document_data(issue, alternative_id)
         
-        article = self.json_article.return_article(alternative_id)
+        article = self.json_article.return_article()
         article.issue = issue
-        article.issue.toc.insert(self.json_article.section, True)
         article.xml_filename = self.xml_filename
         
 

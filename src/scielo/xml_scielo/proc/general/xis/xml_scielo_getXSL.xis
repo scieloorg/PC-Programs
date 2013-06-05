@@ -16,6 +16,7 @@
 	<field action="cgi" tag="1012">destination</field>
 	<field action="cgi" tag="1020">generate_linkout</field>
 	<field action="cgi" tag="1021">ahpdate</field>
+	<field action="cgi" tag="1025">maxdate</field>
 	<field action="cgi" tag="1030">xslList</field>
 
 	<parm name="cipar"><pft>cat(v1001)</pft></parm>
@@ -50,7 +51,7 @@
 		(
 			,if v3000='PUBMED' then
 				,if v1011[1]<>'NONE' then
-					,'PUBMED xsl\PubMed.xsl ',v1010[1],v1011[1],v1021[1],if p(v1021[1]) then '_',s(date)*0.8, fi,'.xml utf-8'/
+					,'PUBMED xsl\PubMed.xsl ',v1010[1],v1011[1],v1021[1],if p(v1021[1]) then if p(v1025) then '-',v1025[1], else '_',s(date)*0.8, fi fi,'.xml utf-8',if p(v1021[1]) then ' ',v1021[1] if p(v1025) then ' ',v1025[1] fi fi/
 				fi
 				,if v1020[1]='YES' then
 					,'PUBMED xsl\PubMed_Link.xsl journals_',v1010[1],,'.xml utf-8'/
@@ -58,7 +59,7 @@
 
 			,else
 				,if v3000='ISI' then
-					,'ISI xsl\ISI_validator.xsl ',mpu,v1010[1],mpl,v1011[1],,'.sgml iso-8859-1 xsl\ISI.xsl'/,
+					,'ISI xsl\ISI_validator.xsl ',mpu,v1010[1],mpl,v1011[1],,'.sgml iso-8859-1'/,
 				,fi
 			,fi
 
