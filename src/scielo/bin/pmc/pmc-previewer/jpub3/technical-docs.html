@@ -1,0 +1,195 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><title>Mulberry Technologies, Inc.: NLM/NCBI Journal Publishing 3.0 Preview Stylesheets:Technical
+          documentation</title><link rel="stylesheet" type="text/css" href="jpub-preview.css"></head><body><div id="article1-front" class="front"><table width="100%" class="metadata two-column"><tr><td><h4 class="generated">Journal Information</h4><div class="metadata-group"><p class="metadata-entry"><span class="generated">Journal ID: </span>N/A</p><p class="metadata-entry"><span class="generated">ISSN: </span>N/A</p></div></td><td><h4 class="generated">Article Information</h4><div class="metadata-group"><p class="metadata-entry"><span class="generated">Publication date: </span>2009</p></div></td></tr><tr><td colspan="2"><hr class="part-rule"></td></tr><tr><td colspan="2"><h1 class="document-title">NLM/NCBI Journal Publishing 3.0 Preview Stylesheets:<br class="br">Technical
+          documentation</h1></td></tr><tr><td align="right"><div class="metadata-group"><p class="metadata-entry"><a name="d10e15"><!-- named anchor --></a>Mulberry Technologies, Inc.</p></div></td><td><div class="metadata-group"></div></td></tr><tr><td colspan="2"><hr class="part-rule"></td></tr></table></div><div id="article1-body" class="body"><p class="first" id="d10e22">This document provides technical information regarding the HTML and PDF Preview stylesheets
+      for the NLM/NCBI Journal Publishing 3.0 tag set. (See <a target="xrefwindow" href="http://dtd.nlm.nih.gov/publishing/" id="d10e24">http://dtd.nlm.nih.gov/publishing/</a>.) It is intended for technical users, that
+      is, personnel responsible for installing, configuring, and maintaining or extending these
+      stylesheets. For information intended for general users regarding the scope and application of
+      these stylesheets, see the User's Guide in this distribution. For instructions on how to run
+      these stylesheets on Journal Publishing content using a basic configuration, see the Quick
+      Start Guide.</p><div class="section"><a name="d10e27"><!-- named anchor --></a><h2 class="main-title">General overview</h2><p id="d10e30">The various tasks performed by stylesheets in this distribution have been distinguished so
+        they may be mixed and matched to meet specific local requirements, including:</p><div class="list"><a name="d10e32"><!-- named anchor --></a><ul><li><p id="d10e34">Generating either HTML, PDF or XHTML output.</p></li><li><p id="d10e37">Autoformatting of structured citation elements
+            <tt>(element-citation</tt>) according to different sets of guidelines (we
+            include stylesheets supporting the NLM/Pubmed citation style and an APA-like citation
+            style).</p></li><li><p id="d10e43">Filtering content based on the values of <tt>specific-use</tt> attributes
+            assigned to elements in the source data.</p></li></ul></div><p id="d10e48">These various operations are performed in stages as follows:</p><div class="def-list"><a name="d10e50"><!-- named anchor --></a><table class="def-list"><tr id="d10e51"><td class="def-term" id="d10e52"><p>Preprocesses</p></td><td valign="def-def" id="d10e54"><p class="first" id="d10e55">Preprocesses are all designed to perform operations needed by some processes but not
+              others, so they can be excluded when not needed. Generally speaking it is possible to
+              run more than one preprocess, as long as they do not directly conflict with one
+              another. When they do, it can be expected that the first process in the chain to
+              handle a particular element or structure in the input will be the one to take
+              effect.</p><p id="d10e57">All preprocessing stylesheets accept arbitrary (valid) Journal Publishing 3.0 XML and
+              emit the same format: they are "modified identity transformations", whose operations
+              are limited to a particular subset of elements related to their functional
+              requirements.</p><p id="d10e59">Because some preprocesses perform operations that are not practically achieved in
+              modifiable, maintainable XSLT 1.0, they use XSLT 2.0 and require an XSLT 2.0
+              processor. Others will work in either an XSLT 1.0 or 2.0 processor.</p><p id="d10e61">Brief descriptions of each preprocess appear below. Additionally, all stylesheets in
+              this package are documented internally.</p></td></tr><tr id="d10e63"><td class="def-term" id="d10e64"><p>Main preview processes</p></td><td valign="def-def" id="d10e66"><p class="first" id="d10e67">There are two preview stylesheets in this distribution.
+                <tt>jpub3-html.xsl</tt> formats Journal Publishing 3.0 in HTML for
+              display in web browsers.<a href="#d10e72"><span class="generated">[1]</span></a>
+              <tt>jpub3-xslfo.xsl</tt> converts Journal Publishing 3.0 XML into XSL
+              formatting objects, ready for rendering by an XSL formatting engine into PDF
+              output.</p><p id="d10e79">Both main preview stylesheets accept a filtered form of Journal Publishing 3.0, in
+              which structured citation elements have been replaced with formatted citations. The
+              assumption here is that all processes will need to include some form of citation
+              processing in order to format citations in an appropriate style. For purposes of this
+              documentation, this filtered form can be called "Simple citation" Journal Publishing
+              3.0 (it is specified in more detail below). Some projects may have citations that are
+              already formatted using <tt>mixed-citation</tt> elements, which provides
+              for inline punctuation and hence formatting within the source data. Since all the
+              citation preprocessors respect punctuation that is already in place, any of them may
+              be used as the preprocessor in such cases.</p><p id="d10e84">If input data should happen already to conform to the "Simple citation" format, a
+              citation preprocessor may be dispensed with altogether. Some projects may wish to do
+              this — "unbundling" the citation formatting to manage it up front or by different
+              means altogether — in order to be able to use a wider range of XSLT processors,
+              including XSLT processors in web browsers such as Internet Explorer, Firefox or
+              Safari, to render their previews directly. The main preview stylesheets are
+              implemented in XSLT 1.0 in order to enable this.</p></td></tr><tr id="d10e86"><td class="def-term" id="d10e87"><p>Post-process</p></td><td valign="def-def" id="d10e89"><p class="first" id="d10e90">Because some Journal Publishing 3.0 data may include MathML, the rendering of MathML
+              may be an issue. The PDF preview stylesheet simply passes MathML through to be
+              rendered by the formatter; many commercial FO engines now support MathML. On the HTML
+              side, however, things are more complex since MathML is not supported by generic web
+              browsers displaying HTML.</p><p id="d10e92">Some current browsers now support MathML display in XHTML output. For these purposes,
+              an HTML to XHTML converter has been provided as a post-process. More details are
+              provided below.</p></td></tr></table></div><div class="section"><a name="d10e94"><!-- named anchor --></a><h3 class="section-title">Stylesheets in this package</h3><p id="d10e97">While the preview stylesheets in this distribution are intended as fairly comprehensive
+          solutions, the supporting stylesheets may serve simply as demonstrations of how to achieve
+          common tasks. Projects should feel free to copy, modify or extend any of them in order to
+          support local requirements better.</p><div class="table-wrap panel"><a name="d10e99"><!-- named anchor --></a><h5 class="label">Summary&nbsp;of&nbsp;stylesheets,&nbsp;dependencies,&nbsp;inputs&nbsp;and&nbsp;outputs</h5><table xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" frame="hsides" rules="rows" width="100%"><a name="d10e102"><!-- named anchor --></a><tr style="font-size:110%; background-color:gainsboro"><a name="d10e103"><!-- named anchor --></a><th align="left" rowspan="1" colspan="1"><a name="d10e104"><!-- named anchor --></a>Stylesheet</th><th align="left" rowspan="1" colspan="1"><a name="d10e106"><!-- named anchor --></a>Purpose</th><th align="left" rowspan="1" colspan="1"><a name="d10e108"><!-- named anchor --></a>Requires</th><th align="left" rowspan="1" colspan="1"><a name="d10e110"><!-- named anchor --></a>Input format</th><th align="left" rowspan="1" colspan="1"><a name="d10e112"><!-- named anchor --></a>Output format</th></tr><tr><a name="d10e114"><!-- named anchor --></a><th colspan="5" align="left" rowspan="1"><a name="d10e115"><!-- named anchor --></a>Preprocessors</th></tr><tr><a name="d10e117"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e118"><!-- named anchor --></a><tt>citations-prep/jpub3-PMCcit.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e121"><!-- named anchor --></a>Formats unpunctuated citations according to NLM/Pubmed guidelines</td><td rowspan="1" colspan="1"><a name="d10e123"><!-- named anchor --></a>XSLT 2.0</td><td rowspan="1" colspan="1"><a name="d10e125"><!-- named anchor --></a>Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e127"><!-- named anchor --></a>"Simple citation" Journal Publishing 3.0</td></tr><tr><a name="d10e129"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e130"><!-- named anchor --></a><tt>citations-prep/jpub3-APAcit.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e133"><!-- named anchor --></a>Formats unpunctuated citations according to APA guidelines</td><td rowspan="1" colspan="1"><a name="d10e135"><!-- named anchor --></a>XSLT 2.0</td><td rowspan="1" colspan="1"><a name="d10e137"><!-- named anchor --></a>Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e139"><!-- named anchor --></a>"Simple citation" Journal Publishing 3.0</td></tr><tr><a name="d10e141"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e142"><!-- named anchor --></a><tt>prep/jpub3-webfilter.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e145"><!-- named anchor --></a>Excludes content with <tt>specific-use</tt> = "print-only"</td><td rowspan="1" colspan="1"><a name="d10e150"><!-- named anchor --></a>XSLT 1.0</td><td rowspan="1" colspan="1"><a name="d10e152"><!-- named anchor --></a>Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e154"><!-- named anchor --></a>Journal Publishing 3.0</td></tr><tr><a name="d10e156"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e157"><!-- named anchor --></a><tt>prep/jpub3-printfilter.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e160"><!-- named anchor --></a>Excludes content with <tt>specific-use</tt> = "web-only"</td><td rowspan="1" colspan="1"><a name="d10e165"><!-- named anchor --></a>XSLT 1.0</td><td rowspan="1" colspan="1"><a name="d10e167"><!-- named anchor --></a>Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e169"><!-- named anchor --></a>Journal Publishing 3.0</td></tr><tr><a name="d10e171"><!-- named anchor --></a><th colspan="5" align="left" rowspan="1"><a name="d10e172"><!-- named anchor --></a>Main Journal Publishing 3.0 Preview stylesheets</th></tr><tr><a name="d10e174"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e175"><!-- named anchor --></a><tt>main/jpub3-html.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e178"><!-- named anchor --></a>Formats Journal Publishing data in HTML</td><td rowspan="1" colspan="1"><a name="d10e180"><!-- named anchor --></a>XSLT 1.0</td><td rowspan="1" colspan="1"><a name="d10e182"><!-- named anchor --></a>"Simple citation" Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e184"><!-- named anchor --></a>HTML (or XML-wf HTML)</td></tr><tr><a name="d10e186"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e187"><!-- named anchor --></a><tt>main/jpub3-xslfo.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e190"><!-- named anchor --></a>Formats Journal Publishing data as PDF</td><td rowspan="1" colspan="1"><a name="d10e192"><!-- named anchor --></a>XSLT 1.0, XSL-FO formatter<a href="#XSL-FOnote"><span class="generated">[i]</span></a></td><td rowspan="1" colspan="1"><a name="d10e195"><!-- named anchor --></a>"Simple citation" Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e197"><!-- named anchor --></a>PDF</td></tr><tr><a name="d10e199"><!-- named anchor --></a><th colspan="5" align="left" rowspan="1"><a name="d10e200"><!-- named anchor --></a>Postprocessor</th></tr><tr><a name="d10e202"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e203"><!-- named anchor --></a><tt>post/xhtml-ns.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e206"><!-- named anchor --></a>Converts HTML to XHTML (for support of W3C MathML)</td><td rowspan="1" colspan="1"><a name="d10e208"><!-- named anchor --></a>XSLT 1.0</td><td rowspan="1" colspan="1"><a name="d10e210"><!-- named anchor --></a>HTML</td><td rowspan="1" colspan="1"><a name="d10e212"><!-- named anchor --></a>XHTML</td></tr><tr><a name="d10e215"><!-- named anchor --></a><th colspan="5" align="left" rowspan="1"><a name="d10e216"><!-- named anchor --></a>Shell ("wrapper") stylesheets</th></tr><tr><a name="d10e218"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e219"><!-- named anchor --></a><tt>jpub3-APAcit-html.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e222"><!-- named anchor --></a>Formats Journal Publishing data in HTML with APA-like citations</td><td rowspan="1" colspan="1"><a name="d10e224"><!-- named anchor --></a>XSLT 2.0/Saxon</td><td rowspan="1" colspan="1"><a name="d10e226"><!-- named anchor --></a>Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e228"><!-- named anchor --></a>HTML</td></tr><tr><a name="d10e230"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e231"><!-- named anchor --></a><tt>jpub3-PMCcit-html.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e234"><!-- named anchor --></a>Formats Journal Publishing data in HTML with NLM/Pubmed citations</td><td rowspan="1" colspan="1"><a name="d10e236"><!-- named anchor --></a>XSLT 2.0/Saxon</td><td rowspan="1" colspan="1"><a name="d10e238"><!-- named anchor --></a>Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e240"><!-- named anchor --></a>HTML</td></tr><tr><a name="d10e242"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e243"><!-- named anchor --></a><tt>jpub3-PMCcit-web-html.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e246"><!-- named anchor --></a>Formats Journal Publishing data in HTML with NLM/Pubmed citations, excluding
+                "print-only" content</td><td rowspan="1" colspan="1"><a name="d10e248"><!-- named anchor --></a>XSLT 2.0/Saxon</td><td rowspan="1" colspan="1"><a name="d10e250"><!-- named anchor --></a>Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e252"><!-- named anchor --></a>HTML</td></tr><tr><a name="d10e254"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e255"><!-- named anchor --></a><tt>jpub3-PMCcit-xhtml.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e258"><!-- named anchor --></a>Formats Journal Publishing data with NLM/Pubmed citations in XHTML (allows for
+                MathML)</td><td rowspan="1" colspan="1"><a name="d10e260"><!-- named anchor --></a>XSLT 2.0/Saxon</td><td rowspan="1" colspan="1"><a name="d10e262"><!-- named anchor --></a>Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e264"><!-- named anchor --></a>XHTML</td></tr><tr><a name="d10e266"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e267"><!-- named anchor --></a><tt>jpub3-APAcit-xslfo.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e270"><!-- named anchor --></a>Formats Journal Publishing data as PDF with APA-like citations</td><td rowspan="1" colspan="1"><a name="d10e272"><!-- named anchor --></a>XSLT 2.0/Saxon, XSL-FO formatter <a href="#XSL-FOnote"><span class="generated">[i]</span></a></td><td rowspan="1" colspan="1"><a name="d10e275"><!-- named anchor --></a>Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e277"><!-- named anchor --></a>PDF</td></tr><tr><a name="d10e279"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e280"><!-- named anchor --></a><tt>jpub3-PMCcit-xslfo.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e283"><!-- named anchor --></a>Formats Journal Publishing data as PDF with NLM/Pubmed citations</td><td rowspan="1" colspan="1"><a name="d10e285"><!-- named anchor --></a>XSLT 2.0/Saxon, XSL-FO formatter <a href="#XSL-FOnote"><span class="generated">[i]</span></a></td><td rowspan="1" colspan="1"><a name="d10e288"><!-- named anchor --></a>Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e290"><!-- named anchor --></a>PDF</td></tr><tr><a name="d10e292"><!-- named anchor --></a><td rowspan="1" colspan="1"><a name="d10e293"><!-- named anchor --></a><tt>jpub3-PMCcit-print-fo.xsl</tt></td><td rowspan="1" colspan="1"><a name="d10e296"><!-- named anchor --></a>Formats Journal Publishing data as PDF with NLM/Pubmed citations, excluding
+                "web-only" content</td><td rowspan="1" colspan="1"><a name="d10e298"><!-- named anchor --></a>XSLT 2.0/Saxon, XSL-FO formatter <a href="#XSL-FOnote"><span class="generated">[i]</span></a></td><td rowspan="1" colspan="1"><a name="d10e301"><!-- named anchor --></a>Journal Publishing 3.0</td><td rowspan="1" colspan="1"><a name="d10e303"><!-- named anchor --></a>PDF</td></tr></table><div class="table-wrap-foot"><div class="fn-group"><div class="footnote"><a name="XSL-FOnote"><!-- named anchor --></a><p id="d10e308"><span class="generated">[i]</span> Tested with AntennaHouse 4.3 with MathML support.</p></div></div></div></div></div></div><div class="section"><a name="d10e310"><!-- named anchor --></a><h2 class="main-title">Running the stylesheets</h2><p id="d10e313">Stylesheets included in this distribution make it possible to run processing pipelines
+        easily. For various reasons, users and publishers may wish to modify these methods.</p><div class="section"><a name="d10e315"><!-- named anchor --></a><h3 class="section-title">Using the provided shell stylesheets</h3><p id="d10e318">The easiest way to apply either of the preview stylesheets is to use one of the shell
+          ("wrapper") stylesheets with Saxon, the XSLT 2.0 engine, as described in the Quick Start
+          and User guides. The shell stylesheets use Saxon extensions to apply a set of
+          transformations in sequence quickly, with a minimum of memory or disk overhead. Each one
+          calls one or the other main preview stylesheet, with different pre- or postprocessors
+          depending on its intended application.</p><p id="d10e320">As delivered, each shell stylesheet provided also depends on the module
+            <tt>main/shell-utility.xsl</tt> to function. This module must be in place,
+          and its location in relation to the stylesheets named in the shell must be stable, for
+          things to work.</p><p id="d10e325">Because running the XSL-FO previews stylesheet also entails running an XSL-FO formatter,
+          there are slightly different considerations in setting this up for each type of
+          output:</p><div class="section"><a name="d10e327"><!-- named anchor --></a><h4 class="subsection-title">HTML preview pipeline</h4><p id="d10e330">Either from the command line or using an XML editor or XML/XSLT IDE, invoke Saxon with
+            the shell stylesheet to apply it to a Journal Publishing 3.0 file or to a subdirectory
+            of such files. If a DTD is referenced by the file, make sure it is available. Place the
+            results in the location of your choice. Copy the <tt>jpub-preview.css</tt>
+            file next to the HTML results. You are done.</p></div><div class="section"><a name="d10e335"><!-- named anchor --></a><h4 class="subsection-title">XSL-FO preview pipeline</h4><p id="d10e338">Two alternatives are available:</p><div class="list"><a name="d10e340"><!-- named anchor --></a><ul><li><p id="d10e342">Configure your XSL-FO engine to run a transformation using a recent version of
+                Saxon (the stylesheets have been tested with version 9), and invoke the
+                transformation from the formatter.</p></li><li><p id="d10e345">Run the transformation in the same way as when producing HTML, to generate an XML
+                XSL-FO file that can be processed by the XSL-FO formatting engine.</p></li></ul></div><p id="d10e347">The tradeoff is that while the first method requires a (one-time) configuration, it is
+            easier for the user. It is a common feature of XSL-FO engines to allow configuring them
+            to use the XSLT transformation engine of your choice.<a href="#d10e349"><span class="generated">[3]</span></a></p></div></div><div class="section"><a name="d10e355"><!-- named anchor --></a><h3 class="section-title">Extending or writing your own Saxon shell stylesheet</h3><p id="d10e358">The shell stylesheets included in this package all have the same logic. Stylesheets to be
+          called in and applied to the source data, in sequence, are named in a variable in the
+          stylesheet. Inserting or removing components is as easy as changing this variable.</p><p id="d10e360">For example, the stylesheet <tt>jpub3-PMCcit-xhtml.xsl</tt> has the
+          variable <tt>$processes</tt> declared as
+          follows:<pre class="preformat">&lt;xsl:variable name="processes"&gt;
+  &lt;step&gt;citations-prep/jpub3-PMCcit.xsl&lt;/step&gt;
+  &lt;step&gt;preview/jpub3-html-preview.xsl&lt;/step&gt;
+  &lt;step&gt;post/xhtml-ns.xsl&lt;/step&gt;
+&lt;/xsl:variable&gt;</pre>Add
+          a step to this
+          declaration:<pre class="preformat">&lt;xsl:variable name="processes"&gt;
+  <b>&lt;step&gt;prep/jpub3-webfilter.xsl&lt;/step&gt;</b>
+  &lt;step&gt;citations-prep/jpub3-PMCcit.xsl&lt;/step&gt;
+  &lt;step&gt;main/jpub3-html-preview.xsl&lt;/step&gt;
+  &lt;step&gt;post/xhtml-ns.xsl&lt;/step&gt;
+&lt;/xsl:variable&gt;</pre>Now,
+          an additional preprocess <tt>prep/jpub3-webfilter.xsl</tt> is run before the
+          citation preprocessing step.</p><p id="d10e380">Of course, we recommend copying a shell with a new name and making changes there, in
+          order to preserve the integrity of files in the distribution.</p><p id="d10e382">All paths given are relative to the shell stylesheet at the top level of this
+          distribution.</p><p id="d10e384">Note that configuration of the output serialization using the
+            <tt>xsl:output</tt> instruction is designated by the shell stylesheet.
+          Accordingly, a shell stylesheet intended to generate plain HTML might have
+            <tt>method="html"</tt> indicated in its <tt>xsl:output</tt>,
+          while a shell stylesheet generating XHTML should have
+            <tt>method="xhtml"</tt>.</p></div><div class="section"><a name="d10e398"><!-- named anchor --></a><h3 class="section-title">Designing and running your own pipeline</h3><p id="d10e401">The shell stylesheets are provided for convenience, but they do introduce a dependency on
+          the Saxon XSLT processor. You can remove this dependency by implementing a pipeline in the
+          framework of your choice, including shell scripts or batch files, scripting languages,
+          build tools such as Unix <tt>make</tt> or Apache Ant, or full-blown pipeline
+          processors possibly including XProc implementations.<a href="#d10e406"><span class="generated">[4]</span></a></p><p id="d10e411">The principle is simple: each step in the pipeline generates results that are taken as
+          the input for the next step in the pipeline. Serialization may follow each step (if each
+          pipeline reads its input from the file system) or may be performed only after the last
+          step (if steps are connected using event streams or if intermediate results are held in
+          memory).</p><p id="d10e413">Keep in mind that an XSLT engine will still be required to run the separate steps, and
+          that several of the stylesheets provided do require an XSLT 2.0 processor.</p></div><div class="section"><a name="d10e415"><!-- named anchor --></a><h3 class="section-title">Running without a pipeline</h3><p id="d10e418">Running a single preview stylesheet standalone is not recommended since no support for
+          formatting of citation elements is provided outside the preprocessors designed for that
+          purpose. Nevertheless, if bibliographic citations are not an issue, either the HTML or the
+          XSL-FO preview transformation can be run in an XSLT 1.0 processor, including client-side
+          (in a web browser or other XSLT-capable display engine).</p></div></div><div class="section"><a name="d10e420"><!-- named anchor --></a><h2 class="main-title">Tweaks and extensions to the main Preview stylesheets</h2><p id="d10e423">These stylesheets provide for basic formatting of Journal Publishing data for preview; they
+        are not designed to serve as production stylesheets. Their functionality can be extended or
+        modified, however. It is recommended that modifications make use of the XSLT import
+        mechanism: write your modified templates in a separate stylesheet module that imports the
+        main stylesheet module. The modifications can then be maintained seperately in one
+        place.</p><div class="section"><a name="d10e425"><!-- named anchor --></a><h3 class="section-title">CSS stylesheet</h3><p id="d10e428">HTML results are generated with a link to <tt>jpub-preview.css</tt>, given
+          as a relative path that expects the named file to be in the same subdirectory as the HTML
+          result file (or the XML source file if it is processed directly in a browser).</p><p id="d10e433">This can be altered at runtime by overriding the value of the <tt>css</tt>
+          parameter supplied to the main HTML Preview stylesheet. This allows a CSS stylesheet with
+          another name to be used or a stylesheet to be located elsewhere. If an empty string is
+          provided, the HTML results will have no link to an external CSS.</p><p id="d10e438">Of course, altering <tt>jpub-preview.css</tt> or providing your own CSS
+          stylesheet is an easy way to alter the look and feel of output without editing any XSLT.
+          Many of the basic settings in the HTML presentation, including fonts, rules, colors
+          (including the colors of warnings or generated text) may be customized in this way.</p></div><div class="section"><a name="d10e443"><!-- named anchor --></a><h3 class="section-title">Enabling autonumbering in the XSLT</h3><p id="d10e446">As described in the User's Guide, the Preview stylesheet does not generate labels with
+          automatic numbering for elements in presentation, except the <tt>fn</tt> and
+            <tt>ref</tt> elements as described there. However, the stylesheets are
+          provided with templates that can be modified in order to provide automated numbering. See
+          the templates in mode "label-text" in the stylesheets.</p></div></div><div class="section"><a name="d10e454"><!-- named anchor --></a><h2 class="main-title">Specification of "simple citation" Journal Publishing 3.0</h2><p id="d10e457">Projects that wish to dispense with automated formatting of citations, to extend the
+        automated processing provided, or to develop their own citation formatting logic, will need
+        to know the subset of Journal Publishing 3.0 that can be reliably converted by the preview
+        stylesheets. This profile introduces additional constraints on elements related to
+        bibliographic citations: <tt>element-citation</tt>,
+          <tt>nlm-citation</tt>, <tt>mixed-citation</tt> and their
+        children, along with the related elements <tt>product</tt>,
+          <tt>related-article</tt> and <tt>related-object</tt>.</p><div class="list"><a name="d10e478"><!-- named anchor --></a><ul><li><p id="d10e480"><tt>element-citation</tt> and <tt>nlm-citation</tt> are not
+            recognized as such. A preprocessor should convert them into
+              <tt>mixed-citation</tt>, providing their contents with punctuation in
+            the process. (This is what the packaged citation preprocessors do.) If these elements
+            appear, preview stylesheets will present them without formatting.</p></li><li><p id="d10e491">Along with literal text (including punctuation), these elements are recognized inside
+              <tt>mixed-citation</tt>, <tt>product</tt>,
+              <tt>related-article</tt> and <tt>related-object</tt>:<div class="blockquote"><a name="d10e505"><!-- named anchor --></a><p class="first" id="d10e506"><tt>bold</tt>, <tt>italic</tt>,
+                  <tt>monospace</tt>, <tt>overline</tt>,
+                  <tt>roman</tt>, <tt>sans-serif</tt>,
+                  <tt>sc</tt>, <tt>strike</tt>,
+                  <tt>underline</tt>, <tt>inline-graphic</tt>,
+                  <tt>label</tt>, <tt>email</tt>,
+                  <tt>ext-link</tt>, <tt>uri</tt>,
+                  <tt>sub</tt>, <tt>sup</tt>,
+                  <tt>styled-content</tt></p></div></p></li><li><p id="d10e560">These elements are permitted in citation elements in Journal Publishing 3.0, but are
+              <i>excluded</i> from the simple citation profile. A preprocessor should
+            strip them from content or convert them into presentation-oriented elements (listed
+            above), with appropriate punctuation, according to the rules of the chosen citation
+            format. If they appear, these element can be expected to be processed by a preview
+            stylesheet according to default rules, which generally means their content will appear
+            with no formatting consequences:<div class="blockquote"><a name="d10e565"><!-- named anchor --></a><p class="first" id="d10e566"><tt>abbrev</tt>, <tt>alternatives</tt>,
+                  <tt>annotation</tt>, <tt>article-title</tt>,
+                  <tt>chapter-title</tt>, <tt>chem-struct</tt>,
+                  <tt>collab</tt>, <tt>comment</tt>,
+                  <tt>conf-date</tt>, <tt>conf-loc</tt>,
+                  <tt>conf-name</tt>, <tt>conf-sponsor</tt>,
+                  <tt>date</tt>, <tt>date-in-citation</tt>,
+                  <tt>day</tt>, <tt>edition</tt>,
+                  <tt>elocation-id</tt>, <tt>etal</tt>,
+                  <tt>fpage</tt>, <tt>gov</tt>,
+                  <tt>inline-formula</tt>, <tt>institution</tt>,
+                  <tt>isbn</tt>, <tt>issn</tt>,
+                  <tt>issue</tt>, <tt>issue-id</tt>,
+                  <tt>issue-part</tt>, <tt>issue-title</tt>,
+                  <tt>lpage</tt>, <tt>milestone-end</tt>,
+                  <tt>milestone-start</tt>, <tt>month</tt>,
+                  <tt>name</tt>, <tt>named-content</tt>,
+                  <tt>object-id</tt>, <tt>page-range</tt>,
+                  <tt>part-title</tt>, <tt>patent</tt>,
+                  <tt>person-group</tt>, <tt>private-char</tt>,
+                  <tt>pub-id</tt>, <tt>publisher-loc</tt>,
+                  <tt>publisher-name</tt>, <tt>role</tt>,
+                  <tt>season</tt>, <tt>series</tt>,
+                  <tt>size</tt>, <tt>source</tt>,
+                  <tt>std</tt>, <tt>string-name</tt>,
+                  <tt>supplement</tt>, <tt>trans-source</tt>,
+                  <tt>trans-title</tt>, <tt>volume</tt>,
+                  <tt>volume-id</tt>, <tt>volume-series</tt>,
+                  <tt>year</tt></p></div></p></li></ul></div></div></div><div id="article1-back" class="back"><div class="back-section"><a name="d10e1"><!-- named anchor --></a><h2 class="main-title">Notes</h2><div class="footnote"><a name="d10e72"><!-- named anchor --></a><p id="d10e73"><span class="generated">[1]</span> Unfortunately, due to tradeoffs forced by discrepancies in their modeling of
+                  block vs inline elements in the Journal Publishing tag set and HTML, not all
+                  results of the HTML preview stylesheet can be guaranteed to be valid HTML. But
+                  none of the known issues have hindered correct rendering in browsers.</p></div><div class="footnote"><a name="d10e349"><!-- named anchor --></a><p id="d10e350"><span class="generated">[3]</span> The Journal Publishing 3.0 XSL-FO preview stylesheet was tested with the
+                AntennaHouse XSL formatter, version 4.3. Instructions for configuring AntennaHouse
+                to use an alternative XSLT processor can be found in their user documentation; the
+                settings to change are under the <b>Format / Format Option Setting</b> menu
+                option. A tip: test your invocation of Saxon from the command line first, so you can
+                paste accurate settings into the dialog box.</p></div><div class="footnote"><a name="d10e406"><!-- named anchor --></a><p id="d10e407"><span class="generated">[4]</span> <a target="xrefwindow" href="http://www.w3.org/TR/xproc/" id="d10e408">XProc</a> is the W3C
+              pipelining language standard, not finalized at the time of writing.</p></div></div></div><div id="article1-footer" class="footer"><hr class="part-rule"><div class="branding"><p>This display is generated from NLM/NCBI Journal Publishing 3.0 XML with <b>jpub3-html.xsl</b>. The XSLT engine is SAXON 9.1.0.5 from Saxonica</p></div></div></body></html>
