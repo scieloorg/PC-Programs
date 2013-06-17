@@ -273,8 +273,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="normalize-space(.)"/>
 		</xsl:attribute>
 	</xsl:template>
+	<xsl:template match="article|text" mode="dtd-version">
+		<xsl:attribute name="dtd-version">3.0</xsl:attribute>
+	</xsl:template>
 	<xsl:template match="article|text">
-		<article dtd-version="3.0">
+		<article>
+			<xsl:apply-templates select="." mode="dtd-version"></xsl:apply-templates>
 			<xsl:apply-templates select="@doctopic" mode="type"/>
 			<xsl:apply-templates select="@language"/>
 			<xsl:apply-templates select="." mode="front"/>
@@ -396,41 +400,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="article-title"/>
 			<xsl:apply-templates select=".//authgrp" mode="front"/>
 			<xsl:apply-templates select="." mode="author-notes"/>
-			<xsl:variable name="preprint_date">
-				<xsl:choose>
-					<xsl:when test="@rvpdate">
-						<xsl:value-of select="@rvpdate"/>
-					</xsl:when>
-					<xsl:when test="@ahpdate">
-						<xsl:value-of select="@ahpdate"/>
-					</xsl:when>
-				</xsl:choose>
-			</xsl:variable>
-			<xsl:if test="string-length(normalize-space($preprint_date))&gt;0">
-				<pub-date pub-type="epub">
-					<xsl:call-template name="display_date">
-						<xsl:with-param name="dateiso">
-							<xsl:value-of select="$preprint_date"/>
-						</xsl:with-param>
-					</xsl:call-template>
-				</pub-date>
-			</xsl:if>
-			<xsl:variable name="date_type">
-				<xsl:choose>
-					<xsl:when test="normalize-space($preprint_date)!=''">ppub</xsl:when>
-					<xsl:when test="normalize-space($preprint_date)=''">epub-ppub</xsl:when>
-				</xsl:choose>
-			</xsl:variable>
-			<pub-date pub-type="{$date_type}">
-				<xsl:call-template name="display_date">
-					<xsl:with-param name="dateiso">
-						<xsl:value-of select="@dateiso"/>
-					</xsl:with-param>
-					<xsl:with-param name="date">
-						<xsl:value-of select="//extra-scielo//season"/>
-					</xsl:with-param>
-				</xsl:call-template>
-			</pub-date>
+			
+			<xsl:apply-templates select="." mode="pub-date"></xsl:apply-templates>
 
 			<xsl:apply-templates select="@volid | @issueno  | @fpage | @lpage"/>
 			<xsl:apply-templates select=".//hist" mode="front"/>
@@ -496,6 +467,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test=".='ed'">editor</xsl:when>
 				<xsl:when test=".='tr'">translator</xsl:when>
 				<xsl:when test=".='rev'">rev</xsl:when>
+				<xsl:when test=".='coord'">coordinator</xsl:when>
+				<xsl:when test=".='org'">organizer</xsl:when>
+				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:attribute>
 	</xsl:template>
@@ -523,15 +497,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<!-- xsl:if test="contains($corresp,.//fname) and contains($corresp,//surname)"><xsl:attribute name="corresp">yes</xsl:attribute></xsl:if> -->
 			<xsl:apply-templates select="@*[name()!='rid']"/>
 			<xsl:apply-templates select="."/>
-			<xsl:apply-templates select="sup|xref|text()"/>
-
-			<xsl:if test="not(xref[@ref-type='aff']) and not(.//sup)">
-				<xsl:comment>not xref</xsl:comment>
-				<xsl:apply-templates select="@rid"/>
-
-			</xsl:if>
-
-
+			<xsl:apply-templates select=".//xref|text()"/>			
 		</contrib>
 	</xsl:template>
 
@@ -557,15 +523,17 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="author/@rid">
 		<!-- quando nao existe author/xref -->
-		<xsl:variable name="rid" select="normalize-space(.)"/>
+		<!-- xref deve ser marcado -->
+		<!--xsl:variable name="rid" select="normalize-space(.)"/>
 
 		<xsl:apply-templates select="." mode="mult-rid">
 			<xsl:with-param name="rid_list" select="concat($rid, ' ')"/>
-		</xsl:apply-templates>
+		</xsl:apply-templates-->
 	</xsl:template>
 
 	<xsl:template match="author/@rid" mode="mult-rid">
 		<!-- quando nao existe author/xref -->
+		<!-- xref deve ser marcado -->
 		<xsl:param name="rid_list"/>
 		<xsl:variable name="next" select="substring-after($rid_list,' ')"/>
 		<xsl:variable name="rid" select="substring-before($rid_list,' ')"/>
@@ -590,7 +558,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:if>
 		</xsl:variable>
 		<aff>
-			<xsl:choose>
+			<xsl:apply-templates select="@id"/>
+			<!--xsl:choose>
 				<xsl:when
 					test="$label!='' and $affs_xrefs[normalize-space(xref//text())=$label or normalize-space(.//sup//text())=$label]">
 					<xsl:attribute name="id">AFF<xsl:value-of select="$label"/>
@@ -599,7 +568,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:otherwise>
 					<xsl:apply-templates select="@id"/>
 				</xsl:otherwise>
-			</xsl:choose>
+			</xsl:choose-->
 
 			<xsl:apply-templates select="label|sup"/>
 			<xsl:choose>
@@ -621,14 +590,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
-			<!--xsl:apply-templates select="text() | *" mode="full"/-->
+			<xsl:apply-templates select="text() | *" mode="full"/>
 		</aff>
 	</xsl:template>
-	<xsl:template match="text() | *[contains(name(),'org')] |city| state | zipcode " mode="full">
+	<xsl:template match="text() | *" mode="full">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	<xsl:template match="label" mode="full"> </xsl:template>
-	<xsl:template match="country | email " mode="full">
+	<xsl:template match="email " mode="full">
 		<xsl:element name="{name()}">
 			<xsl:value-of select="."/>
 		</xsl:element>
@@ -679,7 +648,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="e-mail|email">
 		<email>
-			<xsl:apply-templates/>
+			<xsl:value-of select="."/>
 		</email>
 	</xsl:template>
 
@@ -1987,7 +1956,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 				<xref ref-type="aff">
 
 
-					<xsl:choose>
+					<!--xsl:choose>
 						<xsl:when
 							test="$affs[normalize-space(label)=$label or normalize-space(.//sup//text())=$label]">
 							<xsl:attribute name="rid">AFF<xsl:value-of select="$label"
@@ -1998,8 +1967,10 @@ Here is a figure group, with three figures inside, each of which contains a grap
 								<xsl:value-of select="translate(@rid, 'a', 'A')"/>
 							</xsl:attribute>
 						</xsl:otherwise>
-					</xsl:choose>
-
+					</xsl:choose-->
+					<xsl:attribute name="rid">
+						<xsl:value-of select="@rid"/>
+					</xsl:attribute>
 					<sup>
 						<xsl:value-of select="$label"/>
 					</sup>
@@ -2020,8 +1991,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:comment><xsl:value-of select="$rid"/><xsl:apply-templates select="$xref_id" mode="display-id"/></xsl:comment>
-				<xsl:value-of select="."/>
+				<xsl:copy-of select="."/>
 			</xsl:otherwise>
 		</xsl:choose>
 
@@ -2505,5 +2475,41 @@ et al.</copyright-statement>
 	<xsl:template match="patgrp/orgname">
 		<xsl:value-of select="."/>
 	</xsl:template>
-
+	<xsl:template match="article|text" mode="pub-date">
+		<xsl:variable name="preprint_date">
+			<xsl:choose>
+				<xsl:when test="@rvpdate">
+					<xsl:value-of select="@rvpdate"/>
+				</xsl:when>
+				<xsl:when test="@ahpdate">
+					<xsl:value-of select="@ahpdate"/>
+				</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:if test="string-length(normalize-space($preprint_date))&gt;0">
+			<pub-date pub-type="epub">
+				<xsl:call-template name="display_date">
+					<xsl:with-param name="dateiso">
+						<xsl:value-of select="$preprint_date"/>
+					</xsl:with-param>
+				</xsl:call-template>
+			</pub-date>
+		</xsl:if>
+		<xsl:variable name="date_type">
+			<xsl:choose>
+				<xsl:when test="normalize-space($preprint_date)!=''">ppub</xsl:when>
+				<xsl:when test="normalize-space($preprint_date)=''">epub-ppub</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<pub-date pub-type="{$date_type}">
+			<xsl:call-template name="display_date">
+				<xsl:with-param name="dateiso">
+					<xsl:value-of select="@dateiso"/>
+				</xsl:with-param>
+				<xsl:with-param name="date">
+					<xsl:value-of select="//extra-scielo//season"/>
+				</xsl:with-param>
+			</xsl:call-template>
+		</pub-date>
+	</xsl:template>
 </xsl:stylesheet>

@@ -250,7 +250,7 @@
                           not(self::text())])"/>
 
    <!-- Indicate our own version -->
-   <xsl:param name="stylechecker-version"     select="'5.0'"/>
+   <xsl:param name="stylechecker-version"     select="'5.1'"/>
    <xsl:param name="stylechecker-mainline"    select="'nlm-stylechecker5.xsl'"/>
 
    <!-- The 'style' selects the rules that can be applied by the stylechecker.

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">
-	<xsl:import href="../../pmc-previewer/jpub3/main/jpub3-html.xsl"/>
-	<xsl:import href="../../web/v3.0/scielo-fulltext.xsl"/>
+	<xsl:import href="../jpub/main/jpub3-html.xsl"/>
+	<xsl:import href="../scielo-fulltext.xsl"/>
 
-	<xsl:param name="css" select="'../scielo.css'"/>
+	<xsl:param name="css" select="'scielo.css'"/>
 	<xsl:param name="path_img" select="'/'"/>
 	<xsl:param name="img_format" select="'.jpg'"/>
 

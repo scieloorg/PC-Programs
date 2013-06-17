@@ -4,6 +4,7 @@ import os
 import sys
 import tempfile
 import reuse.xml.xml_java as xml_java
+import random
 
 xml_tree = None
 report = None
@@ -117,45 +118,47 @@ class XMLData:
             node = xml_tree.return_nodes('.//front/journal-meta/issn', nodes[0])
             if len(node) > 0:
                 issn = node[0].text
-        
-            node = xml_tree.return_nodes('volume', article_meta_node[0])
-            if len(node) > 0:
-                vol = node[0].text
-        
-            node = xml_tree.return_nodes('issue', article_meta_node[0])
-            if len(node) > 0:
-                issue = node[0].text.lower()
-        
-
-            node = xml_tree.return_nodes('supplement', article_meta_node[0])
-            if len(node) > 0:
-                suppl = node[0].text
-        
-
-            node = xml_tree.return_nodes('fpage', article_meta_node[0])
-            if len(node) > 0:
-                fpage = node[0].text
-
+            if len(article_meta_node) > 0:
+                print(article_meta_node)
+                node = xml_tree.return_nodes('volume', article_meta_node[0])
+                if len(node) > 0:
+                    vol = node[0].text
             
-            if 'suppl' in issue:
-                if issue == 'suppl':
-                    suppl = 'suppl'
-                else:
-                    number, suppl = issue.split('suppl')
-                    number = number.replace(' ', '')
-                    suppl = suppl.replace(' ', '')
+                node = xml_tree.return_nodes('issue', article_meta_node[0])
+                if len(node) > 0:
+                    issue = node[0].text.lower()
+            
 
-                    if suppl == '':
-                        suppl = 'suppl'
-            else:
-                number = issue
-        
+                node = xml_tree.return_nodes('supplement', article_meta_node[0])
+                if len(node) > 0:
+                    suppl = node[0].text
+            
+
+                node = xml_tree.return_nodes('fpage', article_meta_node[0])
+                if len(node) > 0:
+                    fpage = node[0].text
+
                 
+                if 'suppl' in issue:
+                    if issue == 'suppl':
+                        suppl = 'suppl'
+                    else:
+                        number, suppl = issue.split('suppl')
+                        number = number.replace(' ', '')
+                        suppl = suppl.replace(' ', '')
+
+                        if suppl == '':
+                            suppl = 'suppl'
+                else:
+                    number = issue
+            
+                    
             r = (issn, vol, number, suppl, fpage, '')        
         
         return r
 
     def format_data(self, data, param_acron = '', param_order = ''):
+        r = ''
         if data != None:
             issn, vol, issueno, suppl, fpage, order = data
 
@@ -201,24 +204,28 @@ class XMLData:
         test_href = ['href', 'xlink:href', '{http://www.w3.org/XML/1998/namespace}href'] 
         root = xml_tree.return_nodes()
         r = []
-        nodes = xml_tree.return_nodes('.//*[graphic]', root[0])
-        for n in nodes:
-            id = xml_tree.return_node_attr_value(n, 'id')
-            if '-' in id:
-                id = id[id.rfind('-')+1:]
-            if n.tag == 'equation':
-                id = 'e' + id
-            elif n.tag == 'inline-display':
-                id = 'i' + id 
-            else:
-                id = 'g' + id
-            graphic_nodes = xml_tree.return_nodes('graphic', n)
-            if len(graphic_nodes) > 0:
-                for test in test_href:
-                    href = xml_tree.return_node_attr_value(graphic_nodes[0], test)
-                    if len(href) > 0:
-                        r.append((href, id))
-                        break
+        if type(root) == type([]):
+            nodes = []
+            if len(root) > 0:                    
+                nodes = xml_tree.return_nodes('.//*[graphic]', root[0])
+            
+            for n in nodes:
+                id = xml_tree.return_node_attr_value(n, 'id')
+                if '-' in id:
+                    id = id[id.rfind('-')+1:]
+                if n.tag == 'equation':
+                    id = 'e' + id
+                elif n.tag == 'inline-display':
+                    id = 'i' + id 
+                else:
+                    id = 'g' + id
+                graphic_nodes = xml_tree.return_nodes('graphic', n)
+                if len(graphic_nodes) > 0:
+                    for test in test_href:
+                        href = xml_tree.return_node_attr_value(graphic_nodes[0], test)
+                        if len(href) > 0:
+                            r.append((href, id))
+                            break
         return r
 
     
@@ -514,27 +521,33 @@ class SGML2XML:
         
 
 class XMLPacker:
-    def __init__(self, path_pmc, path_jar, java_path):
+    def __init__(self, path_pmc, path_jar, java_path, dtd_version = 'j1.0'):
 
+        if dtd_version == 'v3.0':
+            stylechecker_version = '4.6.6'
+            dtd = path_pmc + '/' + dtd_version + '/dtd/journalpublishing3.dtd' 
+        else:
+            stylechecker_version = '5.1'
+            dtd = path_pmc + '/' + dtd_version + '/dtd/jats1.0/JATS-journalpublishing1.dtd' 
 
-        path_xsl = path_pmc + '/v3.0/xsl'
+        path_xsl = path_pmc + '/' + dtd_version + '/xsl'
 
-        dtd = path_pmc + '/v3.0/dtd/journalpublishing3.dtd' 
-        self.css = path_pmc + '/v3.0/xsl/previewers/scielo.css'
+        
+        self.css = path_pmc + '/' + dtd_version + '/xsl/previewers/scielo.css'
 
 
         xsl_sgml2xml = path_xsl + '/sgml2xml/sgml2xml.xsl'
 
         xsl_prep_report = path_xsl + '/scielo-style/stylechecker.xsl'
-        xsl_report = path_xsl + '/nlm-style-4.6.6/style-reporter.xsl'
+        xsl_report = path_xsl + '/nlm-style-' + stylechecker_version + '/style-reporter.xsl'
         xsl_preview = path_xsl + '/previewers/scielo-html.xsl'
         xsl_output = path_xsl + '/sgml2xml/xml2pmc.xsl'
 
-        pmc_xsl_prep_report = path_xsl + '/nlm-style-4.6.6/nlm-stylechecker.xsl'
-        pmc_xsl_report = path_xsl + '/nlm-style-4.6.6/style-reporter.xsl'
+        pmc_xsl_prep_report = path_xsl + '/nlm-style-' + stylechecker_version + '/nlm-stylechecker.xsl'
+        pmc_xsl_report = path_xsl + '/nlm-style-' + stylechecker_version + '/style-reporter.xsl'
         pmc_xsl_preview = [ path_xsl + '/jpub/citations-prep/jpub3-PMCcit.xsl', path_xsl + '/previewers/jpub-main-jpub3-html.xsl', ]
         pmc_xsl_output = path_xsl + '/sgml2xml/pmc.xsl'
-        self.pmc_css = path_pmc + '/v3.0/xsl/jpub/jpub-preview.css'
+        self.pmc_css = path_pmc + '/' + dtd_version + '/xsl/jpub/jpub-preview.css'
 
         #xml_toolbox.xml_tree = XMLTree(TableEntities(current_path + '/reuse/encoding/entities'))
         xml_java.java_path = java_path
@@ -585,23 +598,110 @@ class XMLPackagesChecker:
 
         return (new_name, img_list)
 
+    def alternative_normalize_entities(self, c):
+
+        def prefix_ent(N=7):
+            return ''.join(random.choice('^({|~_`!QZ[') for x in range(N))
+
+        
+
+        from reuse.encoding.entities_table import EntitiesTable
+
+        PREFIX_ENT = prefix_ent()
+        while PREFIX_ENT in c:
+            PREFIX_ENT = prefix_en()
+
+        ents = {'&gt;': PREFIX_ENT + 'gt;', '&lt;': PREFIX_ENT + 'lt;', '&amp;': PREFIX_ENT + 'amp;', }
+
+        content = c
+        for ent, new_ent in ents.items():
+            content = content.replace(ent, new_ent)
+
+        while '&' in content:
+            ent = content[content.find('&'):]
+            ent = ent[0:ent.find(';')+1]
+
+            replace_by = EntitiesTable().find_character(ent)
+            if replace_by != None:
+                content = content.replace(ent, replace_by)
+            else:
+                content = content.replace(ent, ent.replace('&',  PREFIX_ENT))
+                f = open('unknown_ent.txt', 'a+')
+                f.write(ent+ '\n')
+                f.close()
+
+        if c != content:
+            content = content.replace( PREFIX_ENT, '&')
+
+
+            f = open(filename, 'w')
+            f.write(content)
+            f.close()
+
+    def normalize_entities(self, filename):
+        def prefix_ent(N=7):
+            return ''.join(random.choice('^({|~_`!QZ[') for x in range(N))
+
+        f = open(filename, 'rb')
+        c = f.read()
+        f.close()
+
+        PREFIX_ENT = prefix_ent()
+        while PREFIX_ENT in c:
+            PREFIX_ENT = prefix_en()
+
+        ents = {}
+        for e in [ '&gt;', '&lt;', '&amp;']:
+            ents[e] = e.replace('&', PREFIX_ENT)
+
+        ents = {'&gt;': PREFIX_ENT + 'gt;', '&lt;': PREFIX_ENT + 'lt;', '&amp;': PREFIX_ENT + 'amp;', }
+
+        content = c
+        for ent, new_ent in ents.items():
+            content = content.replace(ent, new_ent)
+
+        import HTMLParser
+        h = HTMLParser.HTMLParser()
+        try:
+            content = h.unescape(content)
+        except:
+            pass 
+
+
+        for ent, new_ent in ents.items():
+            content = content.replace(new_ent, ent)
+
+        if content != c:
+            
+            f = open(filename, 'wb')
+            f.write(content.encode('utf-8'))
+            f.close()
+
+
+
     def prepare_file(self, filename, err_filename, acron, alternative_id, report):
         new_name = ''
         xml_images_list = []
         xml_filename = ''
+
+        r = None
         
+        self.normalize_entities(filename)
         # if .sgm.xml converts it into xml
         if filename.endswith('.sgm.xml'):
             filename2 = filename.replace('.sgm.xml', '.xml')
             if self.sgmlxml.sgmxml2xml(filename, filename2, err_filename, report):
-                new_name, xml_images_list = self.find_new_name(filename, acron, alternative_id, report)
-            
+                
                 xml_filename = filename2
         elif filename.endswith('.xml'):
             xml_filename = filename
-            new_name, xml_images_list = self.find_new_name(filename, acron, alternative_id, report)
             
-        return (xml_filename, new_name, xml_images_list)
+        if xml_tree.load(filename, report):
+            if xml_tree.root != [] and xml_tree.root != None:
+                new_name, xml_images_list = self.find_new_name(filename, acron, alternative_id, report)
+                r = (xml_filename, new_name, xml_images_list)
+        return r
+             
     
     def build_scielo_package(self, filename, dest_path, img_list, new_name):
         extensions = ['.jpg', '.tiff', '.tif', '.eps']
@@ -657,7 +757,7 @@ class XMLPackagesChecker:
         r = False
         if os.path.isfile(filename):
             path = os.path.dirname(filename)
-
+            print(filename)
             jpg  = [ f for f in os.listdir(path) if f.endswith('.jpg')]
             if len(jpg) == 0:
                 hd  = [ f for f in os.listdir(path) if f.endswith('.tiff') or f.endswith('.tif') or f.endswith('.eps')]
@@ -665,22 +765,26 @@ class XMLPackagesChecker:
                     img_to_jpeg(path, path) 
             # prepare file
             name = os.path.basename(filename).replace('.sgm', '').replace('.xml', '')
-            xml_filename, new_name, img_list = self.prepare_file(filename, err_filename, acron, alternative_id, report)
+            prepared = self.prepare_file(filename, err_filename, acron, alternative_id, report)
             
-            if os.path.isfile(err_filename):
-                print(err_filename)
-                shutil.copyfile(err_filename, err_filename.replace('.err.txt', '.ctrl'))
+            if prepared == None:
+                report.write('Unable to load')
             else:
-                # build scielo package
-                
-                new_xml_filename = scielo_package_path + '/' + new_name + '.xml'
-                self.build_scielo_package(xml_filename, scielo_package_path, img_list, new_name)
-                
-                # build pmc package
-                if os.path.isfile(new_xml_filename):
+                xml_filename, new_name, img_list = prepared
+                if os.path.isfile(err_filename):
+                    print(err_filename)
+                    shutil.copyfile(err_filename, err_filename.replace('.err.txt', '.ctrl'))
+                else:
+                    # build scielo package
                     
-                    jpg_path = scielo_package_path
-                    r = self.validate_packages(report, err_filename, new_xml_filename, validation_path, pmc_package_path, jpg_path, name, new_name)
+                    new_xml_filename = scielo_package_path + '/' + new_name + '.xml'
+                    self.build_scielo_package(xml_filename, scielo_package_path, img_list, new_name)
+                    
+                    # build pmc package
+                    if os.path.isfile(new_xml_filename):
+                        
+                        jpg_path = scielo_package_path
+                        r = self.validate_packages(report, err_filename, new_xml_filename, validation_path, pmc_package_path, jpg_path, name, new_name)
 
         return r
 

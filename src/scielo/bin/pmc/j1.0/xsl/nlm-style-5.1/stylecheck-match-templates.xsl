@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsl:stylesheet 
-   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-   xmlns:xlink="http://www.w3.org/1999/xlink" 
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:mml="http://www.w3.org/1998/Math/MathML" 
-   version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:mml="http://www.w3.org/1998/Math/MathML" version="1.0">
 
 
-<!-- ##################### MATCHING ELEMENT TEMPLATES ####################### -->
-<!-- 
+   <!-- ##################### MATCHING ELEMENT TEMPLATES ####################### -->
+   <!-- 
      Templates match elements for which stylistic rules have been defined.
 	 In general, each matching template will apply tests by calling a
 	 named template that implements the logic of the style test. This has
@@ -16,18 +13,18 @@
 	 Once tests have been applied, each template then copies the current
 	 context to the result true by calling a special "output" mode.
   -->
-<!-- ######################################################################## -->
+   <!-- ######################################################################## -->
 
    <!-- *********************************************************** -->
    <!-- Match: abbrev
         1) cannot be empty
         2) check xlink:href content
      -->
-	<xsl:template match="abbrev">
-		<xsl:call-template name="empty-element-check"/>
+   <xsl:template match="abbrev">
+      <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="href-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: abstract
@@ -41,17 +38,17 @@
            "Abstract" 
 		  5) If manuscript, do not allow attributes.
         -->
-	<xsl:template match="abstract">
+   <xsl:template match="abstract">
       <xsl:call-template name="check-abstract-content"/>
       <xsl:call-template name="check-abstract-type"/>
       <xsl:call-template name="empty-element-check"/>
       <!--<xsl:call-template name="abstract-title-test"/>-->
       <xsl:call-template name="article-pi-check"/>
-		<xsl:if test="$stream='manuscript'">
-      	<xsl:call-template name="abstract-attribute-test"/>
-			</xsl:if>
+      <xsl:if test="$stream='manuscript'">
+         <xsl:call-template name="abstract-attribute-test"/>
+      </xsl:if>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: ack
@@ -62,35 +59,35 @@
    <xsl:template match="ack">
       <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="back-element-check"/>
-		<xsl:call-template name="ms-stream-id-test"/>
+      <xsl:call-template name="ms-stream-id-test"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: aff
 		  1) If manuscript, must have appropriate ID
       -->
    <xsl:template match="aff">
-		<xsl:call-template name="ms-stream-id-test"/>
+      <xsl:call-template name="ms-stream-id-test"/>
       <xsl:apply-templates select="." mode="output"/>
-   </xsl:template>	
-	
-	<!-- *********************************************************** -->
-	<!-- Match: aff-alternatives
+   </xsl:template>
+
+   <!-- *********************************************************** -->
+   <!-- Match: aff-alternatives
 		-->
-	<xsl:template match="aff-alternatives">
-		<xsl:call-template name="aff-alternatives-content-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-	</xsl:template>
-	
+   <xsl:template match="aff-alternatives">
+      <xsl:call-template name="aff-alternatives-content-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: address
          1) cannot be empty
      -->
    <xsl:template match="address">
-		<xsl:call-template name="empty-element-check"/>
+      <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: alternatives
@@ -98,10 +95,10 @@
          2) content is based on parent
      -->
    <xsl:template match="alternatives">
-		<xsl:call-template name="alternatives-parent-check"/>
-		<xsl:call-template name="alternatives-content-check"/>
+      <xsl:call-template name="alternatives-parent-check"/>
+      <xsl:call-template name="alternatives-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: app
@@ -110,18 +107,18 @@
      -->
    <xsl:template match="app">
       <xsl:call-template name="empty-element-check"/>
-		<xsl:call-template name="ms-stream-id-test"/>
+      <xsl:call-template name="ms-stream-id-test"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: app-group
         1) cannot be empty
      -->
-	<xsl:template match="app-group">   
-		<xsl:call-template name="empty-element-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   <xsl:template match="app-group">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: article
@@ -143,19 +140,19 @@
          <xsl:with-param name="context" select="@article-type"/>
          <xsl:with-param name="attribute-name" select="'article-type'"/>
          <xsl:with-param name="test-name" select="'article-type attribute check'"/>
-			</xsl:call-template>
-		<!-- <xsl:call-template name="article-language-check"/> -->
+      </xsl:call-template>
+      <!-- <xsl:call-template name="article-language-check"/> -->
       <xsl:call-template name="article-type-content-check"/>
       <xsl:call-template name="product-to-article-type-check"/>
       <xsl:call-template name="article-type-to-product-check"/>
       <xsl:call-template name="article-type-to-related-article-check"/>
-		<xsl:call-template name="article-release-delay-check"/>
-		<xsl:if test="$stream='manuscript'">
-			<xsl:call-template name="manuscript-pi-test"/>
+      <xsl:call-template name="article-release-delay-check"/>
+      <xsl:if test="$stream='manuscript'">
+         <xsl:call-template name="manuscript-pi-test"/>
          <xsl:call-template name="ms-floats-group-test"/>
-		</xsl:if>		  
+      </xsl:if>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: article-categories
@@ -163,13 +160,13 @@
 		  2) for manuscript, only one subj-group is allowed with @subj-group-type
 		     ='heading' and one subject 'Article'
      -->
-   <xsl:template match="article-categories">   
+   <xsl:template match="article-categories">
       <xsl:call-template name="empty-element-check"/>
-		<xsl:if test="$stream='manuscript'">
-			<xsl:call-template name="ms-subj-group-test"/>
-			</xsl:if>
+      <xsl:if test="$stream='manuscript'">
+         <xsl:call-template name="ms-subj-group-test"/>
+      </xsl:if>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: article-id
@@ -179,21 +176,21 @@
 		  4) If pub-id-type is "manuscript" the article must include the <?properties manuscript?> PI
      -->
    <!-- *********************************************************** -->
-   <xsl:template match="article-id">  
+   <xsl:template match="article-id">
       <xsl:call-template name="attribute-present-not-empty">
          <xsl:with-param name="context" select="@pub-id-type"/>
          <xsl:with-param name="attribute-name" select="'pub-id-type'"/>
          <xsl:with-param name="test-name" select="'pub-id-type attribute check'"/>
-			</xsl:call-template>
+      </xsl:call-template>
       <xsl:call-template name="pub-id-type-check"/>
       <xsl:call-template name="article-id-content-check"/>
       <xsl:if test="@pub-id-type = 'doi'">
-			<xsl:call-template name="doi-check">
-				<xsl:with-param name="value" select="."/>
-				</xsl:call-template>
-			</xsl:if>
+         <xsl:call-template name="doi-check">
+            <xsl:with-param name="value" select="."/>
+         </xsl:call-template>
+      </xsl:if>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: article-meta
@@ -204,32 +201,32 @@
 		  5) manuscript may not have most citation info
 		  6) manuscript may not have more than one abstract
      -->
-	<xsl:template match="article-meta">
-		<xsl:call-template name="empty-element-check"/>
-		<!-- xsl:call-template name="child-present">
+   <xsl:template match="article-meta">
+      <xsl:call-template name="empty-element-check"/>
+      <!-- xsl:call-template name="child-present">
 			<xsl:with-param name="child" select="'article-id'"/>
 			</xsl:call-template -->
-		<xsl:if test="not(ancestor::sub-article) and not(ancestor::response)">
-			<xsl:call-template name="child-present">
-				<xsl:with-param name="child" select="'article-categories'"/>
-			</xsl:call-template>
-			<xsl:choose>
-				<xsl:when test="$stream='article'">
-					<xsl:call-template name="fpage-check"/>
-					<xsl:call-template name="pub-date-check"/>
-					<xsl:if test="contains(//processing-instruction('properties'),'manuscript')">
-						<xsl:call-template name="ms-article-id-test"/>
-					</xsl:if>
-				</xsl:when>
-				<xsl:when test="$stream='manuscript'">
-					<xsl:call-template name="ms-article-meta-content-test"/>
-					<xsl:call-template name="ms-article-meta-abstract-test"/>
-					<!--	<xsl:call-template name="ms-article-id-test"/>  -->
-				</xsl:when>
-			</xsl:choose>
-		</xsl:if>
-		<xsl:apply-templates select="." mode="output"/>
-	</xsl:template>
+      <xsl:if test="not(ancestor::sub-article) and not(ancestor::response)">
+         <xsl:call-template name="child-present">
+            <xsl:with-param name="child" select="'article-categories'"/>
+         </xsl:call-template>
+         <xsl:choose>
+            <xsl:when test="$stream='article'">
+               <xsl:call-template name="fpage-check"/>
+               <xsl:call-template name="pub-date-check"/>
+               <xsl:if test="contains(//processing-instruction('properties'),'manuscript')">
+                  <xsl:call-template name="ms-article-id-test"/>
+               </xsl:if>
+            </xsl:when>
+            <xsl:when test="$stream='manuscript'">
+               <xsl:call-template name="ms-article-meta-content-test"/>
+               <xsl:call-template name="ms-article-meta-abstract-test"/>
+               <!--	<xsl:call-template name="ms-article-id-test"/>  -->
+            </xsl:when>
+         </xsl:choose>
+      </xsl:if>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -240,34 +237,35 @@
            then the fn should be set in back/fn-group
         3) outside of citation and product, content should not all be formatted
      -->
-	<xsl:template match="article-title">   
-      <xsl:if test="ancestor::*[not(self::citation) and not(self::element-citation) and 
+   <xsl:template match="article-title">
+      <xsl:if
+         test="ancestor::*[not(self::citation) and not(self::element-citation) and 
       				not(self::mixed-citation) and not(self::nlm-citation) and not(self::product)]">
          <xsl:call-template name="block-formatting-check">
             <xsl:with-param name="context" select="."/>
-				</xsl:call-template>
-			</xsl:if>
+         </xsl:call-template>
+      </xsl:if>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: award-group
 			1) cannot be empty.
 			-->
-   <xsl:template match="award-group">   
+   <xsl:template match="award-group">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: award-id
 			1) cannot be empty.
 			-->
-   <xsl:template match="award-id">   
+   <xsl:template match="award-id">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
 
    <!-- ********************************************* -->
    <!-- Match: back
@@ -276,25 +274,25 @@
            then must have a display-object section 
            in back
 	    -->
-	<xsl:template match="back">
-		<xsl:call-template name="empty-element-check"/>
-       <xsl:if test="$stream='manuscript'">
-			<xsl:call-template name="ms-back-content-test"/>
-			<xsl:call-template name="ms-back-display-object-test"/>
-			</xsl:if>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   <xsl:template match="back">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:if test="$stream='manuscript'">
+         <xsl:call-template name="ms-back-content-test"/>
+         <xsl:call-template name="ms-back-display-object-test"/>
+      </xsl:if>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: bio
         1) check href content
 		  2) cannot be empty
      -->
-   <xsl:template match="bio">   
-		<xsl:call-template name="href-content-check"/>
+   <xsl:template match="bio">
+      <xsl:call-template name="href-content-check"/>
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: body
@@ -303,7 +301,7 @@
    <xsl:template match="body">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: book
@@ -312,7 +310,7 @@
    <xsl:template match="book">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -329,14 +327,14 @@
          <xsl:with-param name="context" select="@book-part-type"/>
          <xsl:with-param name="attribute-name" select="'book-part-type'"/>
          <xsl:with-param name="test-name" select="'book-part-type attribute check'"/>
-			</xsl:call-template>
+      </xsl:call-template>
       <xsl:call-template name="attribute-present-not-empty">
          <xsl:with-param name="context" select="@id"/>
          <xsl:with-param name="attribute-name" select="'id'"/>
          <xsl:with-param name="test-name" select="'book-part id attribute check'"/>
-			</xsl:call-template>
+      </xsl:call-template>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -346,21 +344,21 @@
 		    3) in books, floating boxes must be referenced.
      -->
    <xsl:template match="boxed-text">
-		 <xsl:call-template name="ms-stream-id-test"/>
-     <xsl:call-template name="empty-element-check"/>
-		 <xsl:if test="($document-type='book' or $document-type='book-part') and ancestor::boxed-text">		  
-			<xsl:call-template name="check-for-xref">	
-				<xsl:with-param name="context" select="."/>
-				<xsl:with-param name="inbox" select="'yes'"/>
-				</xsl:call-template>
-		 </xsl:if>
-     <!-- Check for a cross-reference to a floating box. -->
-     <!--<xsl:if test="$stream='book' and @position!='anchor' and not(ancestor::boxed-text)">		  
+      <xsl:call-template name="ms-stream-id-test"/>
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:if test="($document-type='book' or $document-type='book-part') and ancestor::boxed-text">
+         <xsl:call-template name="check-for-xref">
+            <xsl:with-param name="context" select="."/>
+            <xsl:with-param name="inbox" select="'yes'"/>
+         </xsl:call-template>
+      </xsl:if>
+      <!-- Check for a cross-reference to a floating box. -->
+      <!--<xsl:if test="$stream='book' and @position!='anchor' and not(ancestor::boxed-text)">		  
 		   <xsl:call-template name="float-obj-check">	
 				 <xsl:with-param name="context" select="."/>
 			 </xsl:call-template>
 		 </xsl:if>-->
-     <xsl:apply-templates select="." mode="output"/>
+      <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
 
@@ -372,16 +370,16 @@
       <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="caption-format-test"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: chapter-title
 			1) cannot be empty.
 			-->
-   <xsl:template match="chapter-title">   
+   <xsl:template match="chapter-title">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: chem-struct
@@ -390,7 +388,7 @@
    <xsl:template match="chem-struct">
       <xsl:call-template name="href-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -403,15 +401,15 @@
       <xsl:call-template name="href-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-	
-	<!-- *********************************************************** -->
-	<!-- Match: citation-alternatives 
+
+   <!-- *********************************************************** -->
+   <!-- Match: citation-alternatives 
 		citation-alternatives-content-check
 	-->
-	<xsl:template match="citation-alternatives">
-		<xsl:call-template name="citation-alternatives-content-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-	</xsl:template>
+   <xsl:template match="citation-alternatives">
+      <xsl:call-template name="citation-alternatives-content-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: colgroup
@@ -420,7 +418,7 @@
    <xsl:template match="colgroup">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -430,34 +428,34 @@
         3) collab-content-check
      -->
    <!-- *********************************************************** -->
-   <xsl:template match="collab">   
+   <xsl:template match="collab">
       <xsl:call-template name="href-content-check"/>
-   	<xsl:call-template name="empty-element-check"/>
+      <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="collab-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-	
-	
-	<!-- *********************************************************** -->
-	<!-- Match: collab-alternatives
+
+
+   <!-- *********************************************************** -->
+   <!-- Match: collab-alternatives
 		1) cannot be empty
 		2) collab-alternatives-content-check -->
-	<!-- *********************************************************** -->
-	<xsl:template match="collab-alternatives">
-		<xsl:call-template name="href-content-check"/>
-		<xsl:call-template name="collab-alternatives-content-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-	</xsl:template>
+   <!-- *********************************************************** -->
+   <xsl:template match="collab-alternatives">
+      <xsl:call-template name="href-content-check"/>
+      <xsl:call-template name="collab-alternatives-content-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: compound-kwd-part
 			1) cannot be empty.
 			-->
-   <xsl:template match="compound-kwd-part">   
+   <xsl:template match="compound-kwd-part">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: conference
@@ -475,13 +473,13 @@
 
    <!-- *********************************************************** -->
    <xsl:template match="contract-num">
-   
+
       <xsl:call-template name="contract-num-linking"/>
-              
+
       <!-- Test 2 
       <xsl:call-template name="xlink-attribute-check"/>-->
 
-      	<xsl:apply-templates select="." mode="output"/>
+      <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
 
@@ -493,9 +491,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="contract-sponsor">
-   
+
       <xsl:call-template name="contract-sponsor-linking"/>
-		
+
       <xsl:apply-templates select="." mode="output"/>
 
    </xsl:template>
@@ -511,24 +509,24 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="contrib">
-   
+
       <xsl:call-template name="empty-element-check"/>
 
-		<xsl:choose>
-			<xsl:when test="$stream='manuscript'">
-      		<xsl:call-template name="ms-contrib-content-test"/>
- 		     	<xsl:call-template name="ms-contrib-attribute-test"/>
-				</xsl:when>
-			<xsl:otherwise>
-		      <xsl:call-template name="contrib-attribute-checking"/>
-				</xsl:otherwise>
-			</xsl:choose>
-	
+      <xsl:choose>
+         <xsl:when test="$stream='manuscript'">
+            <xsl:call-template name="ms-contrib-content-test"/>
+            <xsl:call-template name="ms-contrib-attribute-test"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:call-template name="contrib-attribute-checking"/>
+         </xsl:otherwise>
+      </xsl:choose>
+
       <xsl:call-template name="contrib-author-notes-test"/>
 
       <xsl:call-template name="contrib-content-test"/>
-	
-     <!--  <xsl:call-template name="xlink-attribute-check"/>  -->
+
+      <!--  <xsl:call-template name="xlink-attribute-check"/>  -->
 
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
@@ -547,36 +545,36 @@
            contribs should contain an aff 
    	   3) If inside collab, can't have descendant collab
    -->
-   <!-- ********************************************* -->   
+   <!-- ********************************************* -->
    <xsl:template match="contrib-group">
-   
+
       <xsl:call-template name="empty-element-check"/>
-  
+
       <xsl:if test="$stream='manuscript'">
-      	<xsl:call-template name="ms-contrib-group-content-test"/>
-      	<xsl:call-template name="ms-contrib-group-aff-test"/>
+         <xsl:call-template name="ms-contrib-group-content-test"/>
+         <xsl:call-template name="ms-contrib-group-aff-test"/>
       </xsl:if>
-   	
-   	<xsl:if test="parent::collab">
-   		<xsl:call-template name="collab-contribgrp-check"/>
-   	</xsl:if>
-      
+
+      <xsl:if test="parent::collab">
+         <xsl:call-template name="collab-contribgrp-check"/>
+      </xsl:if>
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
-   
-	<!-- ********************************************* -->
-	<!-- Match: contrib-id 
+
+
+   <!-- ********************************************* -->
+   <!-- Match: contrib-id 
 		 1) Must not be empty
 		 2) contrib-id-check
 	-->
-	<!-- ********************************************* -->
-	<xsl:template match="contrib-id">
-		<xsl:call-template name="empty-element-check"/>
-		<xsl:call-template name="contrib-id-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-	</xsl:template>
-   
+   <!-- ********************************************* -->
+   <xsl:template match="contrib-id">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:call-template name="contrib-id-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: copyright-year
@@ -584,9 +582,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="copyright-year">
-   
+
       <xsl:call-template name="copyright-year-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -597,9 +595,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="counts">
-   
+
       <xsl:call-template name="empty-element-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -611,13 +609,13 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="date">
-   
+
       <xsl:call-template name="empty-element-check"/>
-      
+
       <xsl:call-template name="history-date-type-attribute-check"/>
-		
-		<xsl:call-template name="date-check"/>
-              
+
+      <xsl:call-template name="date-check"/>
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -625,11 +623,11 @@
    <!-- Match: date-in-citation
 			1) cannot be empty.
 			-->
-   <xsl:template match="date-in-citation">   
+   <xsl:template match="date-in-citation">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: day
@@ -637,9 +635,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="day">
-            <xsl:call-template name="day-check">
-            <xsl:with-param name="context" select="."/>
-         </xsl:call-template>
+      <xsl:call-template name="day-check">
+         <xsl:with-param name="context" select="."/>
+      </xsl:call-template>
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -650,9 +648,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="def-item">
-   
+
       <xsl:call-template name="empty-element-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -663,9 +661,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="def-list">
-   
+
       <xsl:call-template name="empty-element-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -678,14 +676,14 @@
    <!-- *********************************************************** -->
    <xsl:template match="disp-quote">
 
-		<xsl:call-template name="ms-stream-id-test"/>
+      <xsl:call-template name="ms-stream-id-test"/>
 
       <xsl:call-template name="empty-element-check"/>
-              
-		<xsl:if test="$stream='book'">
-			<xsl:call-template name="disp-quote-content-check"/>
-			</xsl:if>		  
-				  
+
+      <xsl:if test="$stream='book'">
+         <xsl:call-template name="disp-quote-content-check"/>
+      </xsl:if>
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -705,18 +703,18 @@
 					If more than one representation of the formula 
 					is included, they must be tagged as alternatives 
 					with the element (3.0+) or @alternate-form-of (2.3).                         -->
-   <!-- ********************************************* -->   
-	<xsl:template match="disp-formula">
+   <!-- ********************************************* -->
+   <xsl:template match="disp-formula">
 
-		<xsl:call-template name="ms-stream-id-test"/>
-      
-		<xsl:if test="$stream='manuscript'">
-			<xsl:call-template name="ms-disp-formula-content-test"/>
-			<xsl:call-template name="id-content-test"/>
-			</xsl:if>
-      
-		<xsl:call-template name="formula-content-test"/>
-		
+      <xsl:call-template name="ms-stream-id-test"/>
+
+      <xsl:if test="$stream='manuscript'">
+         <xsl:call-template name="ms-disp-formula-content-test"/>
+         <xsl:call-template name="id-content-test"/>
+      </xsl:if>
+
+      <xsl:call-template name="formula-content-test"/>
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -725,12 +723,12 @@
 			1) cannot be empty.
 			2) @xlink:href cannot be empty
 			-->
-   <xsl:template match="element-citation">   
+   <xsl:template match="element-citation">
       <xsl:call-template name="empty-element-check"/>
-		<xsl:call-template name="href-content-check"/>
+      <xsl:call-template name="href-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: email
@@ -738,14 +736,14 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="email">
-   
+
       <xsl:call-template name="href-content-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
 
-    <!-- *********************************************************** -->
+   <!-- *********************************************************** -->
    <!-- Match: ext-link
         1) if contains a DOI, must be correct format
         
@@ -759,7 +757,7 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="ext-link">
-   
+
       <xsl:if test="@ext-link-type = 'doi'">
          <xsl:call-template name="doi-check">
             <xsl:with-param name="value" select="@xlink:href"/>
@@ -769,16 +767,16 @@
       <xsl:call-template name="ext-link-attribute-check"/>
 
       <xsl:if test="@ext-link-type='uri' or @ext-link-type='url'">
-	   	<xsl:call-template name="web-ext-link-check"/>
+         <xsl:call-template name="web-ext-link-check"/>
       </xsl:if>
-              
+
       <xsl:call-template name="href-content-check"/>
-   	
-   	<xsl:if test="ancestor::license">
-   		<xsl:call-template name="license-ext-link-content-check">   			
-   			<xsl:with-param name="context" select="."/>
-   		</xsl:call-template>
-   	</xsl:if>
+
+      <xsl:if test="ancestor::license">
+         <xsl:call-template name="license-ext-link-content-check">
+            <xsl:with-param name="context" select="."/>
+         </xsl:call-template>
+      </xsl:if>
 
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
@@ -792,33 +790,33 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="fig">
-   
-      <xsl:call-template name="empty-element-check"/>
-		<xsl:call-template name="ms-stream-id-test"/>
 
-		<xsl:if test="$stream='manuscript'">
-			<xsl:call-template name="id-content-test"/>
-		</xsl:if>
-    
-    <!--
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:call-template name="ms-stream-id-test"/>
+
+      <xsl:if test="$stream='manuscript'">
+         <xsl:call-template name="id-content-test"/>
+      </xsl:if>
+
+      <!--
         In Word books, if the figure is in a box,
         make sure it is not directly referenced
     -->
-		<xsl:if test="$stream='book' and ancestor::boxed-text">		  
-		<!-- Test 2 -->
-			<xsl:call-template name="check-for-xref">	
-				<xsl:with-param name="context" select="."/>
-				<xsl:with-param name="inbox" select="'yes'"/>
-			</xsl:call-template>
-		</xsl:if>
-    <!-- Check for a cross-reference to a floating figure. -->
-    <!--<xsl:if test="$stream='book' and @position='float' and not(ancestor::boxed-text)">		  
+      <xsl:if test="$stream='book' and ancestor::boxed-text">
+         <!-- Test 2 -->
+         <xsl:call-template name="check-for-xref">
+            <xsl:with-param name="context" select="."/>
+            <xsl:with-param name="inbox" select="'yes'"/>
+         </xsl:call-template>
+      </xsl:if>
+      <!-- Check for a cross-reference to a floating figure. -->
+      <!--<xsl:if test="$stream='book' and @position='float' and not(ancestor::boxed-text)">		  
 		  <xsl:call-template name="float-obj-check">	
 				<xsl:with-param name="context" select="."/>
 			</xsl:call-template>
 		</xsl:if>-->
-			
-    <xsl:apply-templates select="." mode="output"/>
+
+      <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
 
@@ -827,57 +825,57 @@
         
         Tests:
         1) Not allowed -->
-   <!-- ********************************************* -->   
+   <!-- ********************************************* -->
    <xsl:template match="fig-group">
 
       <xsl:call-template name="empty-element-check"/>
-   	
-		<xsl:if test="$stream='manuscript'">
-			<xsl:call-template name="make-error">
-				<xsl:with-param name="error-type" select="'element not allowed'"/>
-				<xsl:with-param name="test-result">
-					<xsl:text>&lt;fig-group&gt; not allowed. All figures should be tagged as 
+
+      <xsl:if test="$stream='manuscript'">
+         <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type" select="'element not allowed'"/>
+            <xsl:with-param name="test-result">
+               <xsl:text>&lt;fig-group&gt; not allowed. All figures should be tagged as 
 					individual fig elements without a group.</xsl:text>
-					</xsl:with-param>
-				</xsl:call-template>
-			</xsl:if>
-		<xsl:if test="$stream='book' and ancestor::boxed-text">		  
-		<!-- Test 3 -->
-			<xsl:call-template name="check-for-xref">	
-				<xsl:with-param name="context" select="."/>
-				<xsl:with-param name="inbox" select="'yes'"/>
-				</xsl:call-template>
-			</xsl:if>
+            </xsl:with-param>
+         </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="$stream='book' and ancestor::boxed-text">
+         <!-- Test 3 -->
+         <xsl:call-template name="check-for-xref">
+            <xsl:with-param name="context" select="."/>
+            <xsl:with-param name="inbox" select="'yes'"/>
+         </xsl:call-template>
+      </xsl:if>
 
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-	
-	<!-- *********************************************************** -->
-	<!-- Match: floats-group
+
+   <!-- *********************************************************** -->
+   <!-- Match: floats-group
 		1) children must have position="float"
 		2) cannot be empty 
 		
 		Note: this is a version 2 element
 	-->
-	<!-- *********************************************************** -->
-	<xsl:template match="floats-group">
-		<xsl:call-template name="floats-wrap-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-	
-	<!-- *********************************************************** -->
-	<!-- Match: floats-wrap
+   <!-- *********************************************************** -->
+   <xsl:template match="floats-group">
+      <xsl:call-template name="floats-wrap-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+
+   <!-- *********************************************************** -->
+   <!-- Match: floats-wrap
 		1) children must have position="float"
 		2) cannot be empty 
 		
 		Note: this is a version 2 element
 	-->
-	<!-- *********************************************************** -->
-	<xsl:template match="floats-wrap">
-		<xsl:call-template name="floats-wrap-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-	
+   <!-- *********************************************************** -->
+   <xsl:template match="floats-wrap">
+      <xsl:call-template name="floats-wrap-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: fn
         1) when inside author notes, fn-type cannot be certain values
@@ -890,8 +888,8 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="fn">
-   
-		<xsl:call-template name="ms-stream-id-test"/>
+
+      <xsl:call-template name="ms-stream-id-test"/>
 
       <xsl:if test="parent::author-notes">
          <xsl:call-template name="author-notes-fn-type-check">
@@ -905,7 +903,7 @@
 		<xsl:call-template name="fn-location-check"/> -->
 
       <xsl:call-template name="table-fn-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -916,9 +914,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="fn-group">
-   
+
       <xsl:call-template name="back-element-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -929,9 +927,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="fpage">
-   
+
       <xsl:call-template name="lpage-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -940,17 +938,17 @@
         
         Tests:
         1) Cannot contain notes                       -->
-   <!-- ********************************************* -->   
+   <!-- ********************************************* -->
    <xsl:template match="front">
-   	<xsl:choose>
-      	<xsl:when test="$stream='manuscript'">
-      		<xsl:call-template name="ms-front-content-test"/>
-				</xsl:when>
-			<xsl:otherwise>
-      		<xsl:call-template name="front-content-test"/>  
-				</xsl:otherwise>
-			</xsl:choose>
-         
+      <xsl:choose>
+         <xsl:when test="$stream='manuscript'">
+            <xsl:call-template name="ms-front-content-test"/>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:call-template name="front-content-test"/>
+         </xsl:otherwise>
+      </xsl:choose>
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -959,22 +957,22 @@
 			1) cannot be empty.
 			-->
    <!-- *********************************************************** -->
-   <xsl:template match="funding-group">   
+   <xsl:template match="funding-group">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: funding-source
 			1) cannot be empty.
 			2) @xlink:href cannot be empty.
 			-->
    <!-- *********************************************************** -->
-   <xsl:template match="funding-source">   
+   <xsl:template match="funding-source">
       <xsl:call-template name="empty-element-check"/>
-		<xsl:call-template name="href-content-check"/>
+      <xsl:call-template name="href-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: funding-statement
@@ -982,22 +980,22 @@
 			2) @xlink:href cannot be empty.
 			-->
    <!-- *********************************************************** -->
-   <xsl:template match="funding-statement">   
+   <xsl:template match="funding-statement">
       <xsl:call-template name="empty-element-check"/>
-		<xsl:call-template name="href-content-check"/>
+      <xsl:call-template name="href-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
-			
+   </xsl:template>
+
+
    <!-- *********************************************************** -->
    <!-- Match: gloss-group
         1) cannot be empty 
      -->
    <!-- *********************************************************** -->
    <xsl:template match="gloss-group">
-		<xsl:call-template name="empty-element-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1007,10 +1005,10 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="glossary">
-		<xsl:call-template name="back-element-check"/>
-		<xsl:call-template name="empty-element-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:call-template name="back-element-check"/>
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1021,12 +1019,12 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="graphic">
-		<xsl:call-template name="graphic-alt-version-check"/>
-		<xsl:call-template name="href-content-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:call-template name="graphic-alt-version-check"/>
+      <xsl:call-template name="href-content-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
-  <!-- ********************************************* -->
+   <!-- ********************************************* -->
    <!-- Match: inline-formula
         
         Tests:
@@ -1037,11 +1035,11 @@
 					If more than one representation of the formula 
 					is included, they must be tagged as alternatives 
 					with the element (3.0+) or @alternate-form-of (2.3).                         -->
-   <!-- ********************************************* -->   
-	<xsl:template match="inline-formula">
-     
-		<xsl:call-template name="formula-content-test"/>
-		
+   <!-- ********************************************* -->
+   <xsl:template match="inline-formula">
+
+      <xsl:call-template name="formula-content-test"/>
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -1052,9 +1050,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="inline-graphic">
-		<xsl:call-template name="href-content-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:call-template name="href-content-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1063,14 +1061,14 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="inline-supplementary-material">
-		<xsl:call-template name="href-content-check"/>
-		<xsl:if test="@xlink:href">
-	      <xsl:call-template name="href-ext-check">
- 	        <xsl:with-param name="href" select="@xlink:href"/>
- 	     </xsl:call-template>
-		  </xsl:if> 
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:call-template name="href-content-check"/>
+      <xsl:if test="@xlink:href">
+         <xsl:call-template name="href-ext-check">
+            <xsl:with-param name="href" select="@xlink:href"/>
+         </xsl:call-template>
+      </xsl:if>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1079,9 +1077,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="institution">
-		<xsl:call-template name="href-content-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:call-template name="href-content-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1091,22 +1089,23 @@
         2) restrict pub-type values
      -->
    <!-- *********************************************************** -->
-	<xsl:template match="issn">
-		<xsl:call-template name="journal-meta-issn-check"/>
-		<xsl:choose>
-			<xsl:when test="ancestor::product or ancestor::citation or ancestor::element-citation
+   <xsl:template match="issn">
+      <xsl:call-template name="journal-meta-issn-check"/>
+      <xsl:choose>
+         <xsl:when
+            test="ancestor::product or ancestor::citation or ancestor::element-citation
 				 or ancestor::mixed-citation or ancestor::nlm-citation or $stream='manuscript'">
-				<!-- Don't test these -->
-			</xsl:when>
-			<xsl:otherwise>
-				<!-- Test 2 -->
-				<xsl:call-template name="issn-pub-type-check">
-					<xsl:with-param name="context" select="."/>
-				</xsl:call-template>
-			</xsl:otherwise>
-		</xsl:choose>
-		<xsl:apply-templates select="." mode="output"/>
-	</xsl:template>
+            <!-- Don't test these -->
+         </xsl:when>
+         <xsl:otherwise>
+            <!-- Test 2 -->
+            <xsl:call-template name="issn-pub-type-check">
+               <xsl:with-param name="context" select="."/>
+            </xsl:call-template>
+         </xsl:otherwise>
+      </xsl:choose>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: article-meta/issue|front-stub/issue
@@ -1114,7 +1113,8 @@
    -->
    <!-- *********************************************************** -->
    <xsl:template match="article-meta/supplement|front-stub/supplement">
-      <xsl:if test="(child::text() and string-length(.) &lt; 25)
+      <xsl:if
+         test="(child::text() and string-length(.) &lt; 25)
          or (title[not(preceding-sibling::*) and not(following-sibling::*)] and string-length(title) &lt; 25)
          or (bold[not(preceding-sibling::*) and not(following-sibling::*)] and string-length(bold) &lt; 25)
          or (italic[not(preceding-sibling::*) and not(following-sibling::*)] and string-length(italic) &lt; 25)
@@ -1130,43 +1130,43 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="issue-id">
-		<xsl:if test="@pub-id-type = 'doi'">
-			<xsl:call-template name="doi-check">
-				<xsl:with-param name="value" select="."/>
-				</xsl:call-template>
-			</xsl:if>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:if test="@pub-id-type = 'doi'">
+         <xsl:call-template name="doi-check">
+            <xsl:with-param name="value" select="."/>
+         </xsl:call-template>
+      </xsl:if>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: issue-part
 			1) cannot be empty.
 			-->
    <!-- *********************************************************** -->
-   <xsl:template match="issue-part">   
+   <xsl:template match="issue-part">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: issue-sponsor
 			1) cannot be empty.
 			-->
    <!-- *********************************************************** -->
-   <xsl:template match="issue-sponsor">   
+   <xsl:template match="issue-sponsor">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: journal-id
         1) Can't be empty and must have correct journal-id-type attribute
      -->
    <!-- *********************************************************** -->
-	<xsl:template match="journal-id">
-		<xsl:call-template name="journal-id-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   <xsl:template match="journal-id">
+      <xsl:call-template name="journal-id-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1179,7 +1179,7 @@
       <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="journal-meta-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1200,23 +1200,23 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="license">
-		<xsl:call-template name="href-content-check"/>
-   		<xsl:call-template name="license-integrity-check">   			
-   			<xsl:with-param name="context" select="."/>
-   		</xsl:call-template>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:call-template name="href-content-check"/>
+      <xsl:call-template name="license-integrity-check">
+         <xsl:with-param name="context" select="."/>
+      </xsl:call-template>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: license-p
 			1) cannot be empty.
 			-->
    <!-- *********************************************************** -->
-   <xsl:template match="license-p">   
+   <xsl:template match="license-p">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: list
         1) q-and-a list need to have correct content
@@ -1226,47 +1226,47 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="list">
-    
-		<xsl:call-template name="ms-stream-id-test"/>
-  
+
+      <xsl:call-template name="ms-stream-id-test"/>
+
       <xsl:call-template name="list-q-and-a-check"/>
 
       <xsl:call-template name="list-type-check"/>
-              				
-		<xsl:if test="$stream='book'">		  
-		<!-- Test 4 -->
-			<xsl:call-template name="check-for-xref">	
-				<xsl:with-param name="context" select="."/>
-				</xsl:call-template>
-				<!--
+
+      <xsl:if test="$stream='book'">
+         <!-- Test 4 -->
+         <xsl:call-template name="check-for-xref">
+            <xsl:with-param name="context" select="."/>
+         </xsl:call-template>
+         <!--
 			<xsl:if test="$editstyle='word'">
 				<xsl:call-template name="list-title-check">
 					<xsl:with-param name="context" select="."/>
 					</xsl:call-template>
 				</xsl:if>
 				-->
-			</xsl:if>
-				  
+      </xsl:if>
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
+
 
    <!-- *********************************************************** -->
    <!-- Match: list-item
         1) check content for disallowed children (like label)
 		  2) in books, lists may not be referenced by xref
      -->
-  <!-- ********************************************************************** -->
+   <!-- ********************************************************************** -->
    <xsl:template match="list-item">
-   
+
       <xsl:call-template name="list-item-content-check"/>
-		
-		<xsl:if test="$stream='book'">		  
-			<xsl:call-template name="check-for-xref">	
-				<xsl:with-param name="context" select="."/>
-				</xsl:call-template>
-			</xsl:if>
-              
+
+      <xsl:if test="$stream='book'">
+         <xsl:call-template name="check-for-xref">
+            <xsl:with-param name="context" select="."/>
+         </xsl:call-template>
+      </xsl:if>
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -1276,24 +1276,24 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="media">
-                 
+
       <xsl:call-template name="href-content-check"/>
 
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
+
    <!-- *********************************************************** -->
    <!-- Match: mixed-citation
 			1) cannot be empty.
 			2) @xlink:href cannot be empty
 			-->
    <!-- *********************************************************** -->
-   <xsl:template match="mixed-citation">   
+   <xsl:template match="mixed-citation">
       <xsl:call-template name="empty-element-check"/>
-		<xsl:call-template name="href-content-check"/>
+      <xsl:call-template name="href-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: mml:math
@@ -1309,7 +1309,7 @@
       <xsl:call-template name="mathml-desc-text-check"/>
 
       <xsl:call-template name="mathml-id-check"/>
-              
+
       <xsl:call-template name="mathml-top-level-el-check"/>
 
       <xsl:if test="@display">
@@ -1318,23 +1318,24 @@
             <xsl:with-param name="attr-name" select="'display'"/>
             <xsl:with-param name="attr-value" select="concat('|',@display,'|')"/>
             <xsl:with-param name="attr-enumerated-values" select="
-               '|block|inline|'"/>
+               '|block|inline|'"
+            />
          </xsl:call-template>
       </xsl:if>
 
-	<xsl:apply-templates select="." mode="output"/>
+      <xsl:apply-templates select="." mode="output"/>
 
    </xsl:template>
 
-<!-- *********************************************************** -->
-<!-- Match: mml:math//*
+   <!-- *********************************************************** -->
+   <!-- Match: mml:math//*
    1) check all descendant elements for deprecated attributes and elements
    2) mn should not follow itself. 2 mn elements in a row should be combined into 1 mn
    3) mtext should not follow itself, consecutive mtext should be combined into 1 mtext
    4) sub and superscripts must enclose the entire expression, not just the end fence.
    5) enforce MathML strict rules for child element counts
 -->
-<!-- *********************************************************** -->
+   <!-- *********************************************************** -->
 
    <xsl:template match="mml:math//*">
 
@@ -1347,8 +1348,10 @@
             <xsl:with-param name="element-name" select="local-name(.)"/>
             <xsl:with-param name="attr-name" select="'mathvariant'"/>
             <xsl:with-param name="attr-value" select="concat('|',@mathvariant,'|')"/>
-            <xsl:with-param name="attr-enumerated-values" select="
-               '|normal|bold|italic|bold-italic|double-struck|bold-fraktur|script|bold-script|fraktur|sans-serif|bold-sans-serif|sans-serif-italic|sans-serif-bold-italic|monospace|'"/>
+            <xsl:with-param name="attr-enumerated-values"
+               select="
+               '|normal|bold|italic|bold-italic|double-struck|bold-fraktur|script|bold-script|fraktur|sans-serif|bold-sans-serif|sans-serif-italic|sans-serif-bold-italic|monospace|'"
+            />
          </xsl:call-template>
       </xsl:if>
 
@@ -1357,36 +1360,39 @@
             <xsl:with-param name="element-name" select="local-name(.)"/>
             <xsl:with-param name="attr-name" select="'numalign'"/>
             <xsl:with-param name="attr-value" select="concat('|',@numalign,'|')"/>
-            <xsl:with-param name="attr-enumerated-values" select="
+            <xsl:with-param name="attr-enumerated-values"
+               select="
                '|left|center|right|'"/>
             <xsl:with-param name="mult-values" select="0"/>
          </xsl:call-template>
-      </xsl:if>      
+      </xsl:if>
 
       <xsl:if test="@denomalign">
          <xsl:call-template name="mml-attr-value-check">
             <xsl:with-param name="element-name" select="local-name(.)"/>
             <xsl:with-param name="attr-name" select="'denomalign'"/>
             <xsl:with-param name="attr-value" select="concat('|',@denomalign,'|')"/>
-            <xsl:with-param name="attr-enumerated-values" select="
+            <xsl:with-param name="attr-enumerated-values"
+               select="
                '|left|center|right|'"/>
             <xsl:with-param name="mult-values" select="0"/>
          </xsl:call-template>
-      </xsl:if> 
+      </xsl:if>
 
       <xsl:if test="@rowalign">
          <xsl:call-template name="mml-attr-value-check">
             <xsl:with-param name="element-name" select="local-name(.)"/>
             <xsl:with-param name="attr-name" select="'rowalign'"/>
             <xsl:with-param name="attr-value" select="concat('|',@rowalign,'|')"/>
-            <xsl:with-param name="attr-enumerated-values" select="
+            <xsl:with-param name="attr-enumerated-values"
+               select="
                '|top|bottom|center|baseline|axis|'"/>
             <xsl:with-param name="mult-values" select="1"/>
          </xsl:call-template>
       </xsl:if>
 
       <xsl:if test="@columnalign">
-<!--         <xsl:message>
+         <!--         <xsl:message>
             <xsl:text>&#xA;#########DEBUG#########&#xA;</xsl:text>
             <xsl:text>COLALIGN: </xsl:text>
             <xsl:value-of select="@columnalign"/>
@@ -1396,7 +1402,8 @@
             <xsl:with-param name="element-name" select="local-name(.)"/>
             <xsl:with-param name="attr-name" select="'columnalign'"/>
             <xsl:with-param name="attr-value" select="concat('|',@columnalign,'|')"/>
-            <xsl:with-param name="attr-enumerated-values" select="
+            <xsl:with-param name="attr-enumerated-values"
+               select="
                '|left|right|center|'"/>
             <xsl:with-param name="mult-values" select="1"/>
          </xsl:call-template>
@@ -1407,7 +1414,8 @@
             <xsl:with-param name="element-name" select="local-name(.)"/>
             <xsl:with-param name="attr-name" select="'groupalign'"/>
             <xsl:with-param name="attr-value" select="concat('|',@groupalign,'|')"/>
-            <xsl:with-param name="attr-enumerated-values" select="
+            <xsl:with-param name="attr-enumerated-values"
+               select="
                '|left|right|center|decimalpoint|'"/>
             <xsl:with-param name="mult-values" select="1"/>
          </xsl:call-template>
@@ -1448,20 +1456,22 @@
       <xsl:if test="local-name(.) = 'mn'">
          <xsl:call-template name="mathml-repeated-element-check"/>
       </xsl:if>
-      
+
       <xsl:if test="local-name(.) = 'mtext'">
          <xsl:call-template name="mathml-repeated-element-check">
             <xsl:with-param name="report-level" select="'warning'"/>
          </xsl:call-template>
       </xsl:if>
 
-      <xsl:if test="local-name(.) = 'msup'
+      <xsl:if
+         test="local-name(.) = 'msup'
          or local-name(.) = 'msub'
          or local-name(.) = 'msubsup'">
-         <xsl:call-template name="mathml-subsup-fence-check"/>   
+         <xsl:call-template name="mathml-subsup-fence-check"/>
       </xsl:if>
 
-      <xsl:if test="local-name(.) = 'mfrac'
+      <xsl:if
+         test="local-name(.) = 'mfrac'
          or local-name(.) = 'mroot'
          or local-name(.) = 'msub'
          or local-name(.) = 'msup'
@@ -1472,7 +1482,7 @@
             <xsl:with-param name="child-count" select="2"/>
          </xsl:call-template>
       </xsl:if>
-      
+
       <xsl:if test="local-name(.) = 'munderover'
          or local-name(.) = 'msubsup'">
          <xsl:call-template name="mml-child-count-check">
@@ -1501,7 +1511,7 @@
          </xsl:call-template>
       </xsl:if>
 
-    <!--   <xsl:if test="local-name(.) = 'mrow'">
+      <!--   <xsl:if test="local-name(.) = 'mrow'">
          <xsl:call-template name="mathml-mrow-content-check"/>
        </xsl:if>  -->
 
@@ -1509,15 +1519,15 @@
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
-    <!-- *********************************************************** -->
+   <!-- *********************************************************** -->
    <!-- Match: monospace
         1) cannot be empty 
      -->
    <!-- *********************************************************** -->
    <xsl:template match="monospace">
-   
+
       <xsl:call-template name="empty-element-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -1529,11 +1539,11 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="month">
-   
+
       <xsl:call-template name="empty-element-check"/>
 
       <xsl:call-template name="month-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -1544,26 +1554,26 @@
         2) if only given-names, name-style must be specified
      -->
    <!-- *********************************************************** -->
-   <xsl:template match="name">   
+   <xsl:template match="name">
       <xsl:call-template name="empty-element-check"/>
-   	<xsl:call-template name="name-content-check">
-   		<xsl:with-param name="context" select="."/>
-   	</xsl:call-template>              
+      <xsl:call-template name="name-content-check">
+         <xsl:with-param name="context" select="."/>
+      </xsl:call-template>
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-	
-	<!-- *********************************************************** -->
-	<!-- Match: name-alternatives
+
+   <!-- *********************************************************** -->
+   <!-- Match: name-alternatives
 		1) name-alternatives-content-check
 	-->
-	<!-- *********************************************************** -->
-	<xsl:template match="name-alternatives">
-		<xsl:call-template name="name-alternatives-content-check">
-			<xsl:with-param name="context" select="."/>
-		</xsl:call-template>
-		<xsl:apply-templates select="." mode="output"/>
-	</xsl:template>
-   
+   <!-- *********************************************************** -->
+   <xsl:template match="name-alternatives">
+      <xsl:call-template name="name-alternatives-content-check">
+         <xsl:with-param name="context" select="."/>
+      </xsl:call-template>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: named-content
@@ -1576,17 +1586,17 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="named-content">
-   
+
       <xsl:call-template name="empty-element-check"/>
 
       <xsl:call-template name="href-content-check"/>
-        
-		 <xsl:if test="$stream='book'">
 
-			<xsl:call-template name="named-content-type-check">
-				<xsl:with-param name="context" select="."/>
-				</xsl:call-template>
-			</xsl:if>	 	  
+      <xsl:if test="$stream='book'">
+
+         <xsl:call-template name="named-content-type-check">
+            <xsl:with-param name="context" select="."/>
+         </xsl:call-template>
+      </xsl:if>
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -1597,9 +1607,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="note">
-   
+
       <xsl:call-template name="empty-element-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -1619,7 +1629,7 @@
       <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="notes-in-proof-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1633,10 +1643,10 @@
       <xsl:if test="@pub-id-type = 'doi'">
          <xsl:call-template name="doi-check">
             <xsl:with-param name="value" select="."/>
-         	</xsl:call-template>
-      	</xsl:if>
+         </xsl:call-template>
+      </xsl:if>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: open-access
@@ -1646,12 +1656,12 @@
 			Note: this is a 3.0 test.
 			-->
    <!-- *********************************************************** -->
-   <xsl:template match="open-access">   
+   <xsl:template match="open-access">
       <xsl:call-template name="empty-element-check"/>
-		<xsl:call-template name="oa-license-present"/>
+      <xsl:call-template name="oa-license-present"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: overline
         1) cannot be empty 
@@ -1659,8 +1669,8 @@
    <!-- *********************************************************** -->
    <xsl:template match="overline">
       <xsl:call-template name="empty-element-check"/>
-       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1674,15 +1684,15 @@
    <xsl:template match="p">
 
       <xsl:if test="ancestor::abs or ancestor::body or ancestor::app">
-			<xsl:call-template name="ms-stream-id-test"/>
-			</xsl:if>
-   
+         <xsl:call-template name="ms-stream-id-test"/>
+      </xsl:if>
+
       <xsl:if test="parent::abstract or parent::caption">
          <xsl:call-template name="block-formatting-check">
             <xsl:with-param name="context" select="."/>
-         	</xsl:call-template>
-      	</xsl:if>
-              
+         </xsl:call-template>
+      </xsl:if>
+
       <xsl:call-template name="empty-element-check"/>
 
       <xsl:apply-templates select="." mode="output"/>
@@ -1696,9 +1706,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="page-range">
-		<xsl:call-template name="empty-element-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1709,8 +1719,8 @@
    <xsl:template match="patent">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: person-group
@@ -1720,8 +1730,8 @@
    <xsl:template match="person-group">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: phone
@@ -1731,8 +1741,8 @@
    <xsl:template match="phone">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: prefix
@@ -1742,8 +1752,8 @@
    <xsl:template match="prefix">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: preformat
@@ -1752,38 +1762,38 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="preformat">
-   
+
       <xsl:call-template name="empty-element-check"/>
 
-		<!--<xsl:if test="$editstyle='word' and $stream='book'">      
+      <!--<xsl:if test="$editstyle='word' and $stream='book'">      
 			<xsl:call-template name="preformat-line-length-check">
 				<xsl:with-param name="context" select="."/>
 				</xsl:call-template>
 			</xsl:if>-->
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
+
    <!-- *********************************************************** -->
    <!-- Match: principal-award-recipient
 			1) cannot be empty.
 			-->
    <!-- *********************************************************** -->
-   <xsl:template match="principal-award-recipient">   
+   <xsl:template match="principal-award-recipient">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: principal-investigator
 			1) cannot be empty.
 			-->
    <!-- *********************************************************** -->
-   <xsl:template match="principal-investigator">   
+   <xsl:template match="principal-investigator">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-			
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: private-char
@@ -1793,8 +1803,8 @@
    <xsl:template match="private-char">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: product
@@ -1805,8 +1815,8 @@
    <xsl:template match="product">
       <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="href-content-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: pub-date
@@ -1816,16 +1826,16 @@
         4) restrict pub-type attribute values
      -->
    <!-- *********************************************************** -->
-	<xsl:template match="pub-date">
-		<xsl:call-template name="empty-element-check"/>
-		<xsl:call-template name="dup-pub-date-check">
-			<xsl:with-param name="context" select="."/>			
-		</xsl:call-template>
-		<xsl:call-template name="pub-date-content-check">
-			<xsl:with-param name="context" select="."/>
-		</xsl:call-template>
-		<xsl:apply-templates select="." mode="output"/>
-	</xsl:template>
+   <xsl:template match="pub-date">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:call-template name="dup-pub-date-check">
+         <xsl:with-param name="context" select="."/>
+      </xsl:call-template>
+      <xsl:call-template name="pub-date-content-check">
+         <xsl:with-param name="context" select="."/>
+      </xsl:call-template>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1837,7 +1847,7 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="pub-id">
-   
+
       <xsl:if test="@pub-id-type = 'doi'">
          <xsl:call-template name="doi-check">
             <xsl:with-param name="value" select="."/>
@@ -1859,7 +1869,7 @@
    <xsl:template match="publisher">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1870,8 +1880,8 @@
    <xsl:template match="publisher-loc">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: publisher-name
@@ -1881,7 +1891,7 @@
    <xsl:template match="publisher-name">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1891,14 +1901,14 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="ref">
-		<xsl:call-template name="ms-stream-id-test"/>
+      <xsl:call-template name="ms-stream-id-test"/>
       <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="ref-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
-  <!-- ********************************************************************* -->
+   <!-- ********************************************************************* -->
    <!-- Match: ref-list
         1) cannot be empty 
      -->
@@ -1906,7 +1916,7 @@
    <xsl:template match="ref-list">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -1920,36 +1930,36 @@
        -->
    <!-- *********************************************************** -->
    <xsl:template match="related-article">
-   
+
       <xsl:call-template name="related-article-to-article-type-attribute"/>
-      
+
       <!-- Test 2-->
       <xsl:if test="@ext-link-type = 'doi'">
          <xsl:call-template name="doi-check">
             <xsl:with-param name="value" select="@xlink:href"/>
-         	</xsl:call-template>
-      	</xsl:if>
-      
+         </xsl:call-template>
+      </xsl:if>
+
       <!-- Test 3-->
       <xsl:call-template name="related-article-check"/>
-   	
-   	
-		<!-- Test 4 -->
-		<xsl:if test="$stream='manuscript'">
-			<xsl:call-template name="ms-related-article-check"/>
-		</xsl:if>
-   	
-	<!-- Test 5 -->
+
+
+      <!-- Test 4 -->
+      <xsl:if test="$stream='manuscript'">
+         <xsl:call-template name="ms-related-article-check"/>
+      </xsl:if>
+
+      <!-- Test 5 -->
       <xsl:call-template name="href-content-check"/>
-   	
-   	<!-- Test 6 -->
-   	<xsl:if test="starts-with(@xlink:href,'10.')">
-   		<xsl:call-template name="related-article-xlink-extlinktype-check"/>
-   	</xsl:if>
-              
+
+      <!-- Test 6 -->
+      <xsl:if test="starts-with(@xlink:href,'10.')">
+         <xsl:call-template name="related-article-xlink-extlinktype-check"/>
+      </xsl:if>
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
+
 
    <!-- *********************************************************** -->
    <!-- Match: related-object
@@ -1957,30 +1967,30 @@
         -->
    <!-- *********************************************************** -->
    <xsl:template match="related-object">
-		<xsl:choose>
+      <xsl:choose>
          <xsl:when test="$stream='book'"/>
-			<xsl:otherwise>
-				<xsl:call-template name="related-object-check"/> 
- 				</xsl:otherwise>
-			</xsl:choose>
+         <xsl:otherwise>
+            <xsl:call-template name="related-object-check"/>
+         </xsl:otherwise>
+      </xsl:choose>
       <xsl:if test="@source-id-type = 'doi'">
          <xsl:call-template name="doi-check">
             <xsl:with-param name="value" select="@source-id"/>
-         	</xsl:call-template>
-      	</xsl:if>
+         </xsl:call-template>
+      </xsl:if>
       <xsl:if test="@document-id-type = 'doi'">
          <xsl:call-template name="doi-check">
             <xsl:with-param name="value" select="@document-id"/>
-         	</xsl:call-template>
-      	</xsl:if>
+         </xsl:call-template>
+      </xsl:if>
       <xsl:if test="@object-id-type = 'doi'">
          <xsl:call-template name="doi-check">
             <xsl:with-param name="value" select="@object-id"/>
-         	</xsl:call-template>
-      	</xsl:if>
+         </xsl:call-template>
+      </xsl:if>
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
+
 
 
    <!-- *********************************************************** -->
@@ -1996,45 +2006,46 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="response | sub-article">
-     	<xsl:choose>
-   		<xsl:when test="$stream='manuscript'">
-	      <xsl:call-template name="make-error">
-				<xsl:with-param name="error-type" select="'illegal child'"/>
-   	      	<xsl:with-param name="description">
-      	      <xsl:text>&lt;</xsl:text>
-					<xsl:value-of select="name()"/>
-					<xsl:text>&gt; should not be used in a manuscript</xsl:text>
-         		</xsl:with-param>
-      		</xsl:call-template>
-   		</xsl:when>
-     		<xsl:otherwise>  	
-   			<xsl:call-template name="empty-element-check"/>
-			<xsl:call-template name="id-present-test"/>
-			<xsl:call-template name="attribute-present-not-empty">
-				<xsl:with-param name="attribute-name">
-					<xsl:choose>
-						<xsl:when test="local-name(.)='response'">
-							<xsl:text>response-type</xsl:text>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:text>article-type</xsl:text>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:with-param>
-			</xsl:call-template>
-     			<xsl:if test="front/article-meta/article-id[@pub-id-type='doi'] | front-stub/article-id[@pub-id-type='doi']">
-   				<xsl:call-template name="subarticle-doi-check">
-   					<xsl:with-param name="my-doi" 
-   					select="front/article-meta/article-id[@pub-id-type='doi'] | front-stub/article-id[@pub-id-type='doi']"/>
-   					<xsl:with-param name="parent-doi"
-   						select="/article/front/article-meta/article-id[@pub-id-type='doi']"/>
-   				</xsl:call-template>
-   			</xsl:if>
-   		</xsl:otherwise>
-     	</xsl:choose>   	
+      <xsl:choose>
+         <xsl:when test="$stream='manuscript'">
+            <xsl:call-template name="make-error">
+               <xsl:with-param name="error-type" select="'illegal child'"/>
+               <xsl:with-param name="description">
+                  <xsl:text>&lt;</xsl:text>
+                  <xsl:value-of select="name()"/>
+                  <xsl:text>&gt; should not be used in a manuscript</xsl:text>
+               </xsl:with-param>
+            </xsl:call-template>
+         </xsl:when>
+         <xsl:otherwise>
+            <xsl:call-template name="empty-element-check"/>
+            <xsl:call-template name="id-present-test"/>
+            <xsl:call-template name="attribute-present-not-empty">
+               <xsl:with-param name="attribute-name">
+                  <xsl:choose>
+                     <xsl:when test="local-name(.)='response'">
+                        <xsl:text>response-type</xsl:text>
+                     </xsl:when>
+                     <xsl:otherwise>
+                        <xsl:text>article-type</xsl:text>
+                     </xsl:otherwise>
+                  </xsl:choose>
+               </xsl:with-param>
+            </xsl:call-template>
+            <xsl:if
+               test="front/article-meta/article-id[@pub-id-type='doi'] | front-stub/article-id[@pub-id-type='doi']">
+               <xsl:call-template name="subarticle-doi-check">
+                  <xsl:with-param name="my-doi"
+                     select="front/article-meta/article-id[@pub-id-type='doi'] | front-stub/article-id[@pub-id-type='doi']"/>
+                  <xsl:with-param name="parent-doi"
+                     select="/article/front/article-meta/article-id[@pub-id-type='doi']"/>
+               </xsl:call-template>
+            </xsl:if>
+         </xsl:otherwise>
+      </xsl:choose>
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
+
 
    <!-- *********************************************************** -->
    <!-- Match: role
@@ -2044,8 +2055,8 @@
    <xsl:template match="role">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: roman
         1) cannot be empty 
@@ -2054,8 +2065,8 @@
    <xsl:template match="roman">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: sc
@@ -2063,9 +2074,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="sc">
-		<xsl:call-template name="empty-element-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -2078,7 +2089,7 @@
       <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="season-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -2089,29 +2100,29 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="sec">
-   
-		<xsl:call-template name="ms-stream-id-test"/>
-		
+
+      <xsl:call-template name="ms-stream-id-test"/>
+
       <xsl:call-template name="display-object-sec-check"/>
 
       <xsl:call-template name="empty-element-check"/>
-      
+
       <xsl:if test="$stream='manuscript'">
-			<xsl:call-template name="ms-abstract-sec-type-test"/>
-      	</xsl:if>
-      
+         <xsl:call-template name="ms-abstract-sec-type-test"/>
+      </xsl:if>
+
       <xsl:choose>
          <xsl:when test="$stream='book' or $stream='rrn'"/>
          <xsl:otherwise>
             <xsl:call-template name="sec-type-check"/>
          </xsl:otherwise>
       </xsl:choose>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
 
-  <!-- ********************************************************************* -->
+   <!-- ********************************************************************* -->
    <!-- Match: self-uri
         1) xlink:href cannot be empty
      -->
@@ -2119,7 +2130,7 @@
    <xsl:template match="self-uri">
       <xsl:call-template name="href-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -2130,8 +2141,8 @@
    <xsl:template match="series">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: series-text
@@ -2141,8 +2152,8 @@
    <xsl:template match="series-text">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: series-title
@@ -2152,7 +2163,7 @@
    <xsl:template match="series-title">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -2160,11 +2171,11 @@
         1) cannot be empty 
      -->
    <!-- *********************************************************** -->
-	<xsl:template match="source">
-		<xsl:call-template name="empty-element-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   <xsl:template match="source">
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: speaker
@@ -2172,10 +2183,10 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="speaker">
-		<xsl:call-template name="empty-element-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: speech
@@ -2183,10 +2194,10 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="speech">
-		<xsl:call-template name="empty-element-check"/>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+      <xsl:call-template name="empty-element-check"/>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: statement
@@ -2196,8 +2207,8 @@
    <xsl:template match="statement">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: std
@@ -2207,8 +2218,8 @@
    <xsl:template match="std">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: strike
@@ -2218,8 +2229,8 @@
    <xsl:template match="strike">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: string-conference
         1) may not contain a child string-conference 
@@ -2228,8 +2239,8 @@
    <xsl:template match="string-conf">
       <xsl:call-template name="string-conf-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: string-date
@@ -2240,17 +2251,17 @@
    <!-- *********************************************************** -->
    <xsl:template match="string-date">
       <xsl:call-template name="empty-element-check"/>
-		<xsl:if test="not(preceding-sibling::year)">   
-			<xsl:call-template name="make-error">
-             <xsl:with-param name="error-type">date content check</xsl:with-param>
-             <xsl:with-param name="description">
-                 <xsl:text>All dates must contain parsed content. &lt;string-date&gt; is not allowed.</xsl:text>
-             	</xsl:with-param>
-				</xsl:call-template>
-			</xsl:if>
-		<xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+      <xsl:if test="not(preceding-sibling::year)">
+         <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type">date content check</xsl:with-param>
+            <xsl:with-param name="description">
+               <xsl:text>All dates must contain parsed content. &lt;string-date&gt; is not allowed.</xsl:text>
+            </xsl:with-param>
+         </xsl:call-template>
+      </xsl:if>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: string-name
@@ -2260,8 +2271,8 @@
    <xsl:template match="string-name">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: sub
@@ -2271,8 +2282,8 @@
    <xsl:template match="sub">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: subj-group
@@ -2287,8 +2298,8 @@
       <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="subj-group-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: subject
@@ -2298,35 +2309,36 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="subject">
-   
+
       <xsl:call-template name="empty-element-check"/>
 
-     <xsl:if test="bold
+      <xsl:if
+         test="bold
                 or monospace
                 or overline
                 or sc
                 or strike
                 or underline">
-        <xsl:call-template name="make-error">
-             <xsl:with-param name="error-type">subject content check</xsl:with-param>
+         <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type">subject content check</xsl:with-param>
             <xsl:with-param name="description">
-                <xsl:text>&lt;subject&gt; cannot contain emphasis elements</xsl:text>
+               <xsl:text>&lt;subject&gt; cannot contain emphasis elements</xsl:text>
             </xsl:with-param>
-        </xsl:call-template>
-     </xsl:if>
+         </xsl:call-template>
+      </xsl:if>
 
-     <xsl:if test="xref">
-        <xsl:call-template name="make-error">
-             <xsl:with-param name="error-type">subject content check</xsl:with-param>
+      <xsl:if test="xref">
+         <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type">subject content check</xsl:with-param>
             <xsl:with-param name="description">
-                <xsl:text>subject should not contain xref element</xsl:text>
+               <xsl:text>subject should not contain xref element</xsl:text>
             </xsl:with-param>
-        </xsl:call-template>
-     </xsl:if>
-              
+         </xsl:call-template>
+      </xsl:if>
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
+
 
    <!-- *********************************************************** -->
    <!-- Match: subtitle
@@ -2343,15 +2355,16 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="subtitle">
-		<xsl:if test="ancestor::*[not(self::citation) and not(self::product) 
+      <xsl:if
+         test="ancestor::*[not(self::citation) and not(self::product) 
 			and not(self::element-citation) and not(self::mixed-citation) and not(self::nlm-citation)]">
          <xsl:call-template name="block-formatting-check">
             <xsl:with-param name="context" select="."/>
-         	</xsl:call-template>
-      	</xsl:if>
-		<xsl:call-template name="empty-element-check"/>
+         </xsl:call-template>
+      </xsl:if>
+      <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
    <!-- *********************************************************** -->
    <!-- Match: suffix
@@ -2361,8 +2374,8 @@
    <xsl:template match="suffix">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: sup
@@ -2372,8 +2385,8 @@
    <xsl:template match="sup">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: supplement
@@ -2383,8 +2396,8 @@
    <xsl:template match="supplement">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: supplementary-material
@@ -2393,7 +2406,7 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="supplementary-material">
- 		<xsl:call-template name="ms-stream-id-test"/>
+      <xsl:call-template name="ms-stream-id-test"/>
       <xsl:call-template name="href-content-check"/>
 
       <xsl:choose>
@@ -2413,9 +2426,9 @@
             </xsl:call-template>
          </xsl:when>
       </xsl:choose>
-      
+
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -2426,8 +2439,8 @@
    <xsl:template match="surname">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-	</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: table
@@ -2437,8 +2450,8 @@
    <xsl:template match="table">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: table-wrap
@@ -2448,24 +2461,24 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="table-wrap">
- 
-		<xsl:call-template name="ms-stream-id-test"/>
- 
+
+      <xsl:call-template name="ms-stream-id-test"/>
+
       <xsl:call-template name="empty-element-check"/>
 
-	  <xsl:if test="$stream='book' and ancestor::boxed-text">		  
-			<xsl:call-template name="check-for-xref">	
-				<xsl:with-param name="context" select="."/>
-				<xsl:with-param name="inbox" select="'yes'"/>
-				</xsl:call-template>
-	  </xsl:if>
-    <!-- Check for a cross-reference to a floating table. -->  
-    <!-- <xsl:if test="$stream='book' and @position!='anchor' and not(ancestor::boxed-text)">		  
+      <xsl:if test="$stream='book' and ancestor::boxed-text">
+         <xsl:call-template name="check-for-xref">
+            <xsl:with-param name="context" select="."/>
+            <xsl:with-param name="inbox" select="'yes'"/>
+         </xsl:call-template>
+      </xsl:if>
+      <!-- Check for a cross-reference to a floating table. -->
+      <!-- <xsl:if test="$stream='book' and @position!='anchor' and not(ancestor::boxed-text)">		  
 		   <xsl:call-template name="float-obj-check">	
 				 <xsl:with-param name="context" select="."/>
 			 </xsl:call-template>
 		 </xsl:if>-->
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -2475,12 +2488,12 @@
         1) cannot be empty 
      -->
    <!-- *********************************************************** -->
-   <xsl:template match="table-wrap-foot">   
+   <xsl:template match="table-wrap-foot">
       <xsl:call-template name="empty-element-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
+
 
    <!-- *********************************************************** -->
    <!-- Match: table-wrap-group
@@ -2491,29 +2504,29 @@
    <!-- *********************************************************** -->
    <xsl:template match="table-wrap-group">
       <xsl:call-template name="empty-element-check"/>
-      
-		<xsl:if test="$stream='book' and ancestor::boxed-text">		  
-			<xsl:call-template name="check-for-xref">	
-				<xsl:with-param name="context" select="."/>
-				<xsl:with-param name="inbox" select="'yes'"/>
-				</xsl:call-template>
-			</xsl:if>
-			
-		<xsl:if test="$stream='manuscript'">
-			<xsl:call-template name="make-error">
-				<xsl:with-param name="error-type" select="'element not allowed'"/>
-       	  <xsl:with-param name="description">
-            	<xsl:text>table-wrap-group not allowed. All tables should be tagged as 
+
+      <xsl:if test="$stream='book' and ancestor::boxed-text">
+         <xsl:call-template name="check-for-xref">
+            <xsl:with-param name="context" select="."/>
+            <xsl:with-param name="inbox" select="'yes'"/>
+         </xsl:call-template>
+      </xsl:if>
+
+      <xsl:if test="$stream='manuscript'">
+         <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type" select="'element not allowed'"/>
+            <xsl:with-param name="description">
+               <xsl:text>table-wrap-group not allowed. All tables should be tagged as 
             	individual table-wrap elements without a group.</xsl:text>
-         		</xsl:with-param>
-				</xsl:call-template>
-			</xsl:if>
-			
-		
-              
+            </xsl:with-param>
+         </xsl:call-template>
+      </xsl:if>
+
+
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
+
 
    <!-- *********************************************************** -->
    <!-- Match: target
@@ -2523,8 +2536,8 @@
    <xsl:template match="target">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: tbody
@@ -2534,8 +2547,8 @@
    <xsl:template match="tbody">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: term
@@ -2544,9 +2557,9 @@
    <!-- *********************************************************** -->
    <xsl:template match="term">
       <xsl:call-template name="empty-element-check"/>
-       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: term-head
@@ -2556,8 +2569,8 @@
    <xsl:template match="term-head">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: tex-math
@@ -2565,12 +2578,12 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="tex-math">
-		<xsl:call-template name="empty-element-check"/>
+      <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="tex-math-id-check"/>
-		<xsl:call-template name="tex-math-content-check"/>
+      <xsl:call-template name="tex-math-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: textual-form
         1) cannot be empty 
@@ -2579,8 +2592,8 @@
    <xsl:template match="textual-form">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: tfoot
@@ -2588,12 +2601,12 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="tfoot">
-   
+
       <xsl:call-template name="empty-element-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
+
 
    <!-- *********************************************************** -->
    <!-- Match: thead
@@ -2601,12 +2614,12 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="thead">
-   
+
       <xsl:call-template name="empty-element-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
+
 
    <!-- *********************************************************** -->
    <!-- Match: time-stamp
@@ -2614,9 +2627,9 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="time-stamp">
-   
+
       <xsl:call-template name="empty-element-check"/>
-              
+
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
 
@@ -2636,10 +2649,11 @@
             <xsl:with-param name="context" select="."/>
          </xsl:call-template>
       </xsl:if>
-      
+
       <xsl:call-template name="block-formatting-check"/>
-      
-      <xsl:if test="parent::*[not(self::sec) and not(self::app)] or
+
+      <xsl:if
+         test="parent::*[not(self::sec) and not(self::app)] or
 	                ($document-type='book' and not(parent::sec[@sec-type='figs-and-tables'])) or
                    ($document-type='book-part' and not(parent::sec[@sec-type='figs-and-tables' or @sec-type='link-group']))">
          <xsl:call-template name="empty-element-check">
@@ -2658,14 +2672,14 @@
    <!-- *********************************************************** -->
    <xsl:template match="title-group">
       <xsl:call-template name="empty-element-check"/>
-		<xsl:if test="$stream='manuscript'">
-			<xsl:call-template name="ms-title-group-check"/>
-			</xsl:if>
-		
+      <xsl:if test="$stream='manuscript'">
+         <xsl:call-template name="ms-title-group-check"/>
+      </xsl:if>
+
       <xsl:apply-templates select="." mode="output"/>
 
-		
-		</xsl:template>
+
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -2673,11 +2687,11 @@
         1) cannot be empty 
      -->
    <!-- *********************************************************** -->
-   <xsl:template match="tr">   
+   <xsl:template match="tr">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: trans-abstract
@@ -2688,8 +2702,8 @@
       <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="trans-abstract-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: trans-source
@@ -2699,8 +2713,8 @@
    <xsl:template match="trans-source">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: trans-subtitle
         1) cannot be empty 
@@ -2709,8 +2723,8 @@
    <xsl:template match="trans-subtitle">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: trans-title
@@ -2721,8 +2735,8 @@
       <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="trans-title-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: trans-title-group
@@ -2736,8 +2750,8 @@
    <xsl:template match="trans-title-group">
       <xsl:call-template name="trans-title-group-content-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: underline
@@ -2747,8 +2761,8 @@
    <xsl:template match="underline">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: uri
@@ -2757,8 +2771,8 @@
    <!-- *********************************************************** -->
    <xsl:template match="uri">
       <xsl:call-template name="href-content-check"/>
-       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+      <xsl:apply-templates select="." mode="output"/>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -2770,7 +2784,7 @@
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
    </xsl:template>
-   
+
 
    <!-- *********************************************************** -->
    <!-- Match: verse-line
@@ -2780,8 +2794,8 @@
    <xsl:template match="verse-line">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: volume
@@ -2791,8 +2805,8 @@
    <xsl:template match="volume">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
    <!-- *********************************************************** -->
    <!-- Match: volume-id
         1) cannot be empty 
@@ -2801,8 +2815,8 @@
    <xsl:template match="volume-id">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: volume-series
@@ -2812,8 +2826,8 @@
    <xsl:template match="volume-series">
       <xsl:call-template name="empty-element-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
-   
+   </xsl:template>
+
 
    <!-- *********************************************************** -->
    <!-- Match: x
@@ -2824,9 +2838,9 @@
       <xsl:call-template name="empty-element-check">
          <xsl:with-param name="context" select="."/>
          <xsl:with-param name="mode" select="'loose'"/>
-			</xsl:call-template>
+      </xsl:call-template>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
    <!-- *********************************************************** -->
@@ -2836,29 +2850,29 @@
      -->
    <!-- *********************************************************** -->
    <xsl:template match="xref">
-		<xsl:choose>
-			<xsl:when test="$stream='book'"/>
-			<xsl:otherwise>
-   		   <xsl:call-template name="punctuation-in-xref"/>
-				</xsl:otherwise>
-			</xsl:choose>
+      <xsl:choose>
+         <xsl:when test="$stream='book'"/>
+         <xsl:otherwise>
+            <xsl:call-template name="punctuation-in-xref"/>
+         </xsl:otherwise>
+      </xsl:choose>
       <xsl:call-template name="xref-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
 
-  <!-- ********************************************************************* -->
+   <!-- ********************************************************************* -->
    <!-- Match: year
         1) cannot be empty 
         2) content must be in range
      -->
    <!-- *********************************************************** -->
    <xsl:template match="year">
-		<xsl:call-template name="empty-element-check"/>
+      <xsl:call-template name="empty-element-check"/>
       <xsl:call-template name="year-check"/>
       <xsl:apply-templates select="." mode="output"/>
-		</xsl:template>
+   </xsl:template>
 
 
 

@@ -1,45 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">
    	
-    <xsl:import href="../nlm-style-4.6.6/nlm-stylechecker.xsl"/>
+    <xsl:import href="../nlm-style-5.1/nlm-stylechecker.xsl"/>
 	<xsl:param name="filename"/>
 	 <xsl:template match="/">
-    <ERR>
-      <xsl:processing-instruction name="SC-DETAILS">
-        <xsl:if test="$stream != $style">
-          <xsl:text>******* ERROR: $style WAS NOT PASSED CORRECTLY *******</xsl:text>
-          </xsl:if>
-        <xsl:text>Style checking applied for document with the root element "</xsl:text>
-        <xsl:value-of select="$document-type"/>
-        <xsl:text>"  with version </xsl:text>
-        <xsl:value-of select="$stylechecker-version"/>
-        <xsl:text> of the SciELO XML StyleChecker. </xsl:text>
-        <xsl:text>||</xsl:text>
-        <xsl:text>The document is being checked against the SciELO Tagging Guidlines rules for "</xsl:text>
-        <xsl:value-of select="$stream"/>
-        <xsl:text>" for content tagged using </xsl:text>
-        <xsl:choose>
-          <xsl:when test="$dtd-version='2'">
-            <xsl:text> version 2.3 or earlier </xsl:text>
-            </xsl:when>
-          <xsl:when test="$dtd-version='3'">
-            <xsl:text> version 3.0 </xsl:text>
-            </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$dtd-version"/>
-            </xsl:otherwise>
-          </xsl:choose>
-        <xsl:text>of the NLM DTD. </xsl:text>
-        <xsl:text>||</xsl:text>
-        <xsl:text>The document was tagged with the language attribute value "</xsl:text>
-        <xsl:value-of select="$art-lang-att"/>
-        <xsl:text>". </xsl:text>
-        </xsl:processing-instruction>
-      <xsl:processing-instruction name="TITLE">
-        <xsl:value-of select="$content-title"/>
-        </xsl:processing-instruction>
-      <xsl:apply-templates/>
-    </ERR>
+	   <ERR>
+	     <xsl:processing-instruction name="SC-DETAILS">
+				<xsl:if test="$stream != $style">
+					<xsl:text>******* ERROR: $style WAS NOT PASSED CORRECTLY *******</xsl:text>
+			   	</xsl:if>
+				<xsl:text>Style checking applied for document with the root element "</xsl:text>
+				<xsl:value-of select="$document-type"/>
+				<xsl:text>"  with version </xsl:text>
+				<xsl:value-of select="$stylechecker-version"/>
+				<xsl:text> of the NLM XML StyleChecker. </xsl:text>
+				<xsl:text>||</xsl:text>
+				<xsl:text>The document is being checked against the SciELO Tagging Guidlines rules for "</xsl:text>
+				<xsl:value-of select="$stream"/>
+				<xsl:text>" for content tagged using </xsl:text>
+				<xsl:choose>
+					<xsl:when test="$dtd-version='2'">
+						<xsl:text> version 2.3 or earlier </xsl:text>
+						</xsl:when>
+					<xsl:when test="$dtd-version='3'">
+						<xsl:text> version 3.0 </xsl:text>
+					</xsl:when>
+					<xsl:when test="$dtd-version='j1'">
+						<xsl:text> version 1.0 </xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$dtd-version"/>
+						</xsl:otherwise>
+					</xsl:choose>
+				<xsl:text>of the </xsl:text>
+				<xsl:choose>
+					<xsl:when test="$dtd-version='j1'">
+						<xsl:text>JATS DTD. </xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text>NLM DTD. </xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+				<xsl:text>||</xsl:text>
+				<xsl:text> The document was tagged with the language attribute value "</xsl:text>
+				<xsl:value-of select="$art-lang-att"/>
+				<xsl:text>". </xsl:text>
+				</xsl:processing-instruction>
+	     <xsl:processing-instruction name="TITLE">
+				<xsl:value-of select="$content-title"/>
+				</xsl:processing-instruction>
+	     <xsl:apply-templates/>
+	   </ERR>
     </xsl:template>
     <xsl:variable name="check_funding">
         <xsl:choose>
@@ -47,6 +58,7 @@
             <xsl:when test=".//ack">maybe-has-funding-group</xsl:when>
         </xsl:choose>
     </xsl:variable>
+  
 	<xsl:template match="aff">
 		<!-- overwrite stylecheck-match-templates.xsl -->
 		<xsl:call-template name="ms-stream-id-test"/>
@@ -61,13 +73,14 @@
 			<xsl:call-template name="make-error">
                 <xsl:with-param name="error-type">aff addr-line check</xsl:with-param>
                 <xsl:with-param name="description">aff should have addr-line, including city</xsl:with-param>
-                
+			  <xsl:with-param name="class">warning</xsl:with-param>
             </xsl:call-template>
          </xsl:if>
          <xsl:if test="not(country)">
 			<xsl:call-template name="make-error">
                 <xsl:with-param name="error-type">aff country check</xsl:with-param>
                 <xsl:with-param name="description">aff must have country</xsl:with-param>
+			  <xsl:with-param name="class">warning</xsl:with-param>
             </xsl:call-template>
          </xsl:if>
         <xsl:apply-templates select="." mode="output"/>
@@ -215,5 +228,6 @@
       </xsl:choose>
       
    </xsl:template>
-
+ 
+  
 </xsl:stylesheet>

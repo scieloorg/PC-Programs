@@ -27,7 +27,7 @@ down;backT
 ifloat;nd
 aff;Identifica a organização à qual o autor está vinculado;10;#TRUE#;#TRUE#;aff
 down;aff
-corresp;Identifica os dados de correspondencia;10;#FALSE#;#FALSE#;corresp
+corresp;Identifica os dados de correspondencia;10;#FALSE#;#TRUE#;corresp
 down;corresp
 ign;Texto ignorado pela marcação;10;#TRUE#;#FALSE#;
 tabwrap;Identifica dados de uma tabela;10;#TRUE#;#TRUE#;tabwrap
@@ -105,6 +105,7 @@ authorText;authgrpText
 fname;Identifica os primeiros nomes de um autor individual;9;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;9;#FALSE#;#FALSE#;
 onbehalf;Identifica a instituição representada;9;#FALSE#;#FALSE#;
+contrib-id;Identifica web pages do autor (orcid, lattes, etc);9;#TRUE#;#TRUE#;
 
 corpauthText;authgrpText
 orgname;Identifica o nome da organização autora;10;#FALSE#;#FALSE#;

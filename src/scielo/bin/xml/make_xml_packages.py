@@ -1,3 +1,5 @@
+
+# -*- coding: <utf-8> -*-
 import os, sys, shutil
 import xml_toolbox as xml_toolbox
 
@@ -120,7 +122,7 @@ if doit:
 
     report = Report(validation_path + '/report.log', validation_path + '/report.err.txt', validation_path + '/report.txt')
     xml_toolbox.xml_tree = XMLTree(TableEntities(current_path + '/reuse/encoding/entities'))
-    xml_packer = xml_toolbox.XMLPacker(pmc_path, jar_path, '')
+    xml_packer = xml_toolbox.XMLPacker(pmc_path, jar_path, '', 'j1.0')
 
     
     if len(xml_filename) > 0:
