@@ -418,7 +418,12 @@ class IssuePath:
                     filename = dirname + '/' +  f 
                     if ext in self.paths.extension_path.keys():
                         
-                    
+                        if ext == 'pdf' and f.startswith(fname + '-'):
+                            # lang (pt, es, etc)
+                            rename_to = f[-6:-4] + '_' + fname + '.' + ext
+
+                            shutil.copyfile(filename, dirname + '/' +  rename_to)
+                            filename = dirname + '/' +  rename_to
                         
                         if os.path.isfile(filename):
                             package.report.write( 'Archiving ' + filename + ' in ' + self.paths.extension_path[ext] + '/' + self.issue_folder)
