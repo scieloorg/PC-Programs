@@ -1,3 +1,16 @@
+4.0.065
+=======
+21/6/2003
+ - xml packages maker handle entities and convert them to their corresponding characters
+
+4.0.064
+=======
+14/6/2013
+ - adjustments in id/rid de aff
+ - @id for corresp
+ - contrib-id (ORCID)
+ - JATS 1.0
+
 4.0.063
 =======
 04/Jun/2013
