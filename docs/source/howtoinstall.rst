@@ -5,8 +5,8 @@
 
 Requirements
 ============
-JAVA
-PYTHON 2.7.x
+ - JAVA
+ - PYTHON 2.7.x
 
 How to install
 ==============
