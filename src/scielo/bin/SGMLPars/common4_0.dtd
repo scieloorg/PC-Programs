@@ -9,7 +9,7 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrp | cltrial | xref | uri | sciname | quote" > 
-<!ENTITY % m.name   "(fname? & surname & contrib-id*)" >
+<!ENTITY % m.name   "(fname? & surname & ctrbid*)" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
 
@@ -171,9 +171,9 @@ filename       CDATA #IMPLIED>
           >
 <!ELEMENT corpauth - - ((%m.org;) | previous ) >
 
-<!ELEMENT contrbid    - - (#PCDATA) >
-<!ATTLIST contrbid
-          contrbtp     NAMES  #REQUIRED
+<!ELEMENT ctrbid    - - (#PCDATA) >
+<!ATTLIST ctrbid
+          ctrbidtp     NAMES  #REQUIRED
           
           >
 <!ELEMENT fname    - - (#PCDATA) >

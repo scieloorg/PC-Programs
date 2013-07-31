@@ -9,8 +9,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
 	<xsl:import href="../../../v3.0/xsl/sgml2xml/sgml2generic.xsl"/>
 
-	<xsl:template match="contrib-id">
-		<contrib-id contrib-id-type="{@ contrib-id-type}">
+	<xsl:template match="ctrbid">
+		<contrib-id contrib-id-type="{@ctrbidtp}">
 			<xsl:value-of select="." disable-output-escaping="yes"/>
 		</contrib-id>
 	</xsl:template>

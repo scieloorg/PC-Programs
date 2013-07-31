@@ -2360,9 +2360,19 @@ et al.</copyright-statement>
 						</xsl:choose>
 					</xsl:variable>
 					<xsl:if test="contains($date,$month)">
-						<month>
-							<xsl:value-of
-								select="substring-before(substring-after($date,$month),' ')"/>
+						<xsl:variable name="test" select="substring-after($date,$month)"/>
+						<month><xsl:value-of
+							select="$month"/><xsl:choose>
+								<xsl:when test="contains($test,$y)"><xsl:value-of
+									select="substring-before(substring-after($date,$month),$y)"/>
+								</xsl:when>
+								<xsl:when test="contains($test,' ')"><xsl:value-of
+									select="substring-before(substring-after($date,$month),' ')"/>
+								</xsl:when>
+								<xsl:otherwise><xsl:value-of
+									select="substring-after($date,$month)"/></xsl:otherwise>
+						</xsl:choose>
+						
 						</month>
 					</xsl:if>
 				</xsl:if>

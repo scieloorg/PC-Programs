@@ -84,7 +84,8 @@ class EntitiesTable:
 
 
 
-entities_table = EntitiesTable('reuse/encoding/entities')
+
+entities_table = EntitiesTable(os.path.dirname(os.path.realpath(__file__)) + '/reuse/encoding/entities')
 
 
 def handle_entities(content):

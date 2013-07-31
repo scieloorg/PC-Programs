@@ -40,7 +40,7 @@ equation;Identifica dados de uma fórmula;10;#TRUE#;#TRUE#;equation
 down;equation
 cltrial;Identifica dados de ensaios clínicos;10;#FALSE#;#FALSE#;cltrial
 down;cltrial
-xref;Identifica referencia cruzada de tabelas, figuras, etc;10;#TRUE#;#TRUE#;
+xref;Identifica referência cruzada de tabelas, figuras, etc;10;#TRUE#;#TRUE#;
 uri;Identifica um link;10;#TRUE#;#TRUE#;
 sciname;Identifica nomes científicos;10;#TRUE#;#FALSE#;
 quote;Identifica citação ou epígrafe;10;#TRUE#;#FALSE#;
@@ -105,7 +105,7 @@ authorText;authgrpText
 fname;Identifica os primeiros nomes de um autor individual;9;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;9;#FALSE#;#FALSE#;
 onbehalf;Identifica a instituição representada;9;#FALSE#;#FALSE#;
-contrib-id;Identifica web pages do autor (orcid, lattes, etc);9;#TRUE#;#TRUE#;
+ctrbid;Identifica web pages do autor (orcid, lattes, etc);9;#TRUE#;#TRUE#;
 
 corpauthText;authgrpText
 orgname;Identifica o nome da organização autora;10;#FALSE#;#FALSE#;
@@ -152,11 +152,11 @@ xmlabstr;Identifica o resumo estruturado de artigo;9;#TRUE#;#TRUE#;xmlabstr
 down;xmlabstr
 keygrp;Agrupa as palavras-chave do artigo;9;#TRUE#;#TRUE#;keygrpBibcom
 down;keygrpBibcom
-confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;9;#FALSE#;#FALSE#;confgrpBibcom
+confgrp;Agrupa os dados de um evento como conferência, seminario, congresso, etc. contidas em anais e publicações similares;9;#FALSE#;#FALSE#;confgrpBibcom
 down;confgrpBibcom
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;9;#TRUE#;#FALSE#;reportBibcom
 down;reportBibcom
-thesgrp;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;9;#FALSE#;#FALSE#;thesgrpBibcom
+thesgrp;Agrupa dados de uma dissertação ou tese acadêmica, em uma referência bibliográfica;9;#FALSE#;#FALSE#;thesgrpBibcom
 down;thesgrpBibcom
 hist;Identifica o histórico da publicação de um artigo em um periódico (data de recebimento, de aceitação ou de revisão);9;#FALSE#;#FALSE#;histBibcom
 down;histBibcom
@@ -184,7 +184,7 @@ dperiod;Identifica o período de tempo tratado no conteúdo do documento;10;#TRUE#
 confgrpBibcom;bibcomFront
 sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;10;#TRUE#;#FALSE#;sponsorBibcom
 down;sponsorBibcom
-confname;Identifica o nome de um evento como conferencia, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
+confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
 date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
@@ -236,11 +236,11 @@ bbibcomBar;backBar
 abstract;Identifica o resumo do artigo;9;#TRUE#;#TRUE#;
 keygrp;Agrupa elementos para a descrição temática do documento;9;#TRUE#;#TRUE#;keygrpBbibcom
 down;keygrpBbibcom
-confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;9;#FALSE#;#FALSE#;confgrpBbibcom
+confgrp;Agrupa os dados de um evento como conferência, seminario, congresso, etc. contidas em anais e publicações similares;9;#FALSE#;#FALSE#;confgrpBbibcom
 down;confgrpBbibcom
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;9;#TRUE#;#FALSE#;reportBbibcom
 down;reportBbibcom
-thesgrp;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;9;#FALSE#;#FALSE#;thesgrpBbibcom
+thesgrp;Agrupa dados de uma dissertação ou tese acadêmica, em uma referência bibliográfica;9;#FALSE#;#FALSE#;thesgrpBbibcom
 down;thesgrpBbibcom
 hist;Identifica o histórico da publicação de um artigo em um periódico (data de recebimento, de aceitação ou de revisão);9;#FALSE#;#FALSE#;histBbibcom
 down;histBbibcom
@@ -255,7 +255,7 @@ dperiod;Identifica o período de tempo tratado no conteúdo do documento;10;#TRUE#
 confgrpBbibcom;bbibcomBar
 sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;10;#TRUE#;#FALSE#;sponsorBbibcom
 down;sponsorBbibcom
-confname;Identifica o nome de um evento como conferencia, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
+confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
 date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
@@ -281,18 +281,18 @@ revised;Identifica a data em que inicio-se a revisão do artigo pelo processo de 
 accepted;Identifica a data em que o artigo foi aprovado para a publicação;10;#FALSE#;#TRUE#;
 
 other;backBar
-ocitat;Identifica uma referencia bibliográfica na bibliografia;9;#TRUE#;#FALSE#;ocitat
+ocitat;Identifica uma referência bibliográfica na bibliografia;9;#TRUE#;#FALSE#;ocitat
 down;ocitat
 
 ocitat;other
-no;Identifica o número da referencia bibliográfica;10;#FALSE#;#FALSE#;
+no;Identifica o número da referência bibliográfica;10;#FALSE#;#FALSE#;
 ocontrib;Agrupa elementos, como autor e título, para a descrição bibliográfica de um artigo de periódico ou capítulo de livro;10;#TRUE#;#FALSE#;ocontrib
 down;ocontrib
 omonog;Agrupa os elementos principais para a identificação de uma monografia;10;#FALSE#;#FALSE#;omonog
 down;omonog
 oiserial;Agrupa elementos de identificação específicos de uma publicação seriada ou periódica;10;#FALSE#;#FALSE#;oiserial
 down;oiserial
-confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrpOcitat
+confgrp;Agrupa os dados de um evento como conferência, seminario, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrpOcitat
 down;confgrpOcitat
 
 ocontrib;ocitat
@@ -312,12 +312,12 @@ oauthorOcontrib;ocontrib
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
 anonym;Identifica que a obra é de autoria anônima;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 ocorpautContrib;ocontrib
 orgname;Identifica o nome da organização autora;2;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização autora;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 omonog;ocitat
 oauthor;Agrupa os dados de autores individuais, como nome, sobrenome e papel;15;#TRUE#;#TRUE#;oauthorOmonog
@@ -327,9 +327,9 @@ down;ocorpautOmonog
 et-al;Indica que há autores não mencionados;15;#FALSE#;#FALSE#;
 title;Identifica o título do documento;15;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;15;#FALSE#;#FALSE#;
-confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;15;#FALSE#;#FALSE#;confgrpOmonog
+confgrp;Agrupa os dados de um evento como conferência, seminario, congresso, etc. contidas em anais e publicações similares;15;#FALSE#;#FALSE#;confgrpOmonog
 down;confgrpOmonog
-thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;15;#FALSE#;#FALSE#;thesisOmonog
+thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referência bibliográfica;15;#FALSE#;#FALSE#;thesisOmonog
 down;thesisOmonog
 date;Identifica a data da tese;15;#FALSE#;#TRUE#;
 pages;Identifica a paginação;15;#FALSE#;#FALSE#;
@@ -345,9 +345,9 @@ part;Identifica a parte do volume ou fascículo;15;#TRUE#;#FALSE#;
 isbn;Identifica o Internacional Standard Book Number (ISBN);2;#TRUE#;#FALSE#;
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;15;#TRUE#;#FALSE#;reportOmonog
 down;reportOmonog
-othinfo;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;2;#TRUE#;#FALSE#;
+othinfo;Agrupa dados que não estão identificados pelos demais elementos de uma referência;2;#TRUE#;#FALSE#;
 url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
-doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
+doi;Identifica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 patgrp;Agrupa os dados de patente;15;#FALSE#;#TRUE#;patentOmonog
 down;patentOmonog
@@ -356,17 +356,17 @@ oauthorOmonog;omonog
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
 anonym;Identifica que a obra é de autoria anônima;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 ocorpautOmonog;omonog
 orgname;Identifica o nome da organização autora;2;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização autora;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 confgrpOmonog;omonog
 sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;2;#TRUE#;#FALSE#;sponsorOmonog
 down;sponsorOmonog
-confname;Identifica o nome de um evento como conferencia, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
+confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
 date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
@@ -390,7 +390,7 @@ oiserial;ocitat
 sertitle;Identifica o título de uma publicação seriada ou periódica;15;#FALSE#;#FALSE#;
 stitle;Agrupa a forma abreviada e padronizada do título de um periódico ou publicação seriada;15;#FALSE#;#FALSE#;
 isstitle;Identifica o título de um fascículo de publicação seriada ou periódica;15;#FALSE#;#FALSE#;
-othinfo;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#FALSE#;#FALSE#;
+othinfo;Agrupa dados que não estão identificados pelos demais elementos de uma referência;15;#FALSE#;#FALSE#;
 city;Identifica a cidade de publicação;2;#TRUE#;#FALSE#;
 country;Identifica o país de publicação;2;#TRUE#;#FALSE#;
 pubname;Identifica a casa publicadora;2;#TRUE#;#FALSE#;
@@ -402,13 +402,13 @@ extent;Identifica a extensão da obra como o número de páginas ou volumes;2;#TRUE
 date;Identifica a data de publicação;2;#TRUE#;#TRUE#;
 issn;Identifica o Internacional Standard Serial  Number (ISSN);2;#TRUE#;#FALSE#;
 url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
-doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
+doi;Identifica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 
 confgrpOcitat;ocitat
 sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;2;#TRUE#;#FALSE#;sponsorOcitat
 down;sponsorOcitat
-confname;Identifica o nome de um evento como conferencia, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
+confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
 date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
@@ -420,11 +420,11 @@ orgname;Identifica o nome da organização financiadora;7;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização financiadora;7;#FALSE#;#FALSE#;
 
 vancouv;backBar
-vcitat;Identifica uma referencia bibliográfica na bibliografia;9;#TRUE#;#FALSE#;vcitat
+vcitat;Identifica uma referência bibliográfica na bibliografia;9;#TRUE#;#FALSE#;vcitat
 down;vcitat
 
 vcitat;vancouv
-no;Identifica o número da referencia bibliográfica;10;#FALSE#;#FALSE#;
+no;Identifica o número da referência bibliográfica;10;#FALSE#;#FALSE#;
 vcontrib;Agrupa elementos, como autor e título, para a descrição bibliográfica de um artigo de periódico ou capítulo de livro;10;#FALSE#;#FALSE#;vcontrib
 down;vcontrib
 viserial;Agrupa elementos de identificação específicos de uma publicação seriada ou periódica;10;#FALSE#;#FALSE#;viserial
@@ -438,7 +438,7 @@ down;authorVcontrib
 corpauth;Identifica os autores corporativos responsáveis pelo conteúdo intelectual ou artístico do trabalho;15;#TRUE#;#FALSE#;corpauthVcontrib
 down;corpauthVcontrib
 et-al;Indica que há autores não mencionados;15;#FALSE#;#FALSE#;
-vtitle;Identifica um grupo de título do documento em uma referencia bibliográfica segundo a norma Vancouver;15;#FALSE#;#FALSE#;vtitleVcontrib
+vtitle;Identifica um grupo de título do documento em uma referência bibliográfica segundo a norma Vancouver;15;#FALSE#;#FALSE#;vtitleVcontrib
 down;vtitleVcontrib
 patgrp;Agrupa os dados de patente;15;#FALSE#;#TRUE#;patentVcontrib
 down;patentVcontrib
@@ -446,17 +446,17 @@ down;patentVcontrib
 authorVcontrib;vcontrib
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 corpauthVcontrib;vcontrib
 orgname;Identifica o nome da organização autora;2;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização autora;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor da referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor da referência anterior;2;#FALSE#;#FALSE#;
 
 vtitleVcontrib;vcontrib
 title;Identifica o título do documento;2;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;2;#FALSE#;#FALSE#;
-tp;Identifica o tipo de publicação em uma referencia bibliográfica como, por exemplo, um editorial ou uma revisão de literatura;2;#FALSE#;#FALSE#;
+tp;Identifica o tipo de publicação em uma referência bibliográfica como, por exemplo, um editorial ou uma revisão de literatura;2;#FALSE#;#FALSE#;
 
 viserial;vcitat
 vstitle;Agrupa a forma abreviada e padronizada do título de um periódico ou publicação seriada;15;#FALSE#;#FALSE#;vstitle
@@ -470,12 +470,12 @@ part;Identifica a parte do volume ou fascículo;15;#TRUE#;#FALSE#;
 extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
 url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
-doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
+doi;Identifica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 
 vstitle;viserial
 stitle;Agrupa a forma abreviada e padronizada do título de um periódico ou publicação seriada;2;#FALSE#;#FALSE#;
-tp;Identifica o tipo de publicação em uma referencia bibliográfica como, por exemplo, um editorial ou uma revisão de literatura;2;#FALSE#;#FALSE#;
+tp;Identifica o tipo de publicação em uma referência bibliográfica como, por exemplo, um editorial ou uma revisão de literatura;2;#FALSE#;#FALSE#;
 
 vmonog;vcitat
 author;Agrupa os dados de autores individuais como nome,sobrenome e papel;15;#TRUE#;#TRUE#;authorVmonog
@@ -483,28 +483,28 @@ down;authorVmonog
 corpauth;Identifica os autores corporativos responsáveis pelo conteúdo intelectual ou artístico do trabalho;15;#TRUE#;#FALSE#;corpautVmonog
 down;corpautVmonog
 et-al;Indica que há autores não mencionados;15;#FALSE#;#FALSE#;
-vtitle;Identifica um grupo de título do documento em uma referencia bibliográfica segundo a norma Vancouver;15;#FALSE#;#TRUE#;vtitleVmonog
+vtitle;Identifica um grupo de título do documento em uma referência bibliográfica segundo a norma Vancouver;15;#FALSE#;#TRUE#;vtitleVmonog
 down;vtitleVmonog
 edition;Identifica o número da edição;15;#FALSE#;#FALSE#;
 volid;Identifica o volume ao qual pertence um documento;2;#TRUE#;#FALSE#;
 part;Identifica a parte do volume ou fascículo;15;#TRUE#;#FALSE#;
 version;Identifica se a publicação está em formato eletrônico ou papel;15;#TRUE#;#FALSE#;
-confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;15;#TRUE#;#FALSE#;confgrpVmonog
+confgrp;Agrupa os dados de um evento como conferência, seminario, congresso, etc. contidas em anais e publicações similares;15;#TRUE#;#FALSE#;confgrpVmonog
 down;confgrpVmonog
 city;Identifica a cidade de publicação;15;#TRUE#;#FALSE#;
 state;Identifica o estado (local) de publicação;15;#TRUE#;#FALSE#;
 country;Identifica o país (local) de publicação;15;#TRUE#;#FALSE#;
 pubname;Identifica a casa publicadora;15;#TRUE#;#FALSE#;
-inpress;Identifica que a referencia citada ainda está em processo de publicação;15;#TRUE#;#FALSE#;
+inpress;Identifica que a referência citada ainda está em processo de publicação;15;#TRUE#;#FALSE#;
 date;Identifica a data de publicação;15;#TRUE#;#TRUE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
 extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRUE#;#FALSE#;
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;15;#TRUE#;#FALSE#;reportVmonog
 down;reportVmonog
-thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;15;#TRUE#;#FALSE#;thesisVmonog
+thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referência bibliográfica;15;#TRUE#;#FALSE#;thesisVmonog
 down;thesisVmonog
 url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
-doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
+doi;Identifica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 patgrp;Agrupa os dados de patente;15;#FALSE#;#TRUE#;patentVmonog
 down;patentVmonog
@@ -513,22 +513,22 @@ coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;
 authorVmonog;vmonog
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 corpautVmonog;vmonog
 orgname;Identifica o nome da organização autora;2;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização autora;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 vtitleVmonog;vmonog
 title;Identifica o título do documento;2;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;2;#FALSE#;#FALSE#;
-tp;Identifica o tipo de publicação em uma referencia bibliográfica como, por exemplo, um editorial ou uma revisão de literatura;2;#FALSE#;#FALSE#;
+tp;Identifica o tipo de publicação em uma referência bibliográfica como, por exemplo, um editorial ou uma revisão de literatura;2;#FALSE#;#FALSE#;
 
 confgrpVmonog;vmonog
 sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;2;#TRUE#;#FALSE#;sponsorVmonog
 down;sponsorVmonog
-confname;Identifica o nome de um evento como conferencia, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
+confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
 date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
@@ -549,11 +549,11 @@ orgname;Identifica o nome da organização da tese;10;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização da tese;10;#FALSE#;#FALSE#;
 
 apa;backBar
-pcitat;Identifica uma referencia bibliográfica na bibliografia;9;#TRUE#;#FALSE#;pcitat
+pcitat;Identifica uma referência bibliográfica na bibliografia;9;#TRUE#;#FALSE#;pcitat
 down;pcitat
 
 pcitat;apa
-no;Identifica o número da referencia bibliográfica;10;#FALSE#;#FALSE#;
+no;Identifica o número da referência bibliográfica;10;#FALSE#;#FALSE#;
 pcontrib;Agrupa elementos, como autor e título, para a descrição bibliográfica de um artigo de periódico ou capítulo de livro;10;#FALSE#;#FALSE#;pcontrib
 down;pcontrib
 pmonog;Agrupa os elementos principais para a identificação de uma monografia;10;#FALSE#;#FALSE#;pmonog
@@ -594,7 +594,7 @@ suppl;Identifica o número do suplemento de um periódico;2;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
-doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
+doi;Identifica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 
 pmonog;pcitat
 author;Agrupa os dados de autores individuais como nome,sobrenome e papel;15;#TRUE#;#TRUE#;authorpMonog
@@ -606,9 +606,9 @@ title;Identifica o título do documento;15;#FALSE#;#TRUE#;
 volid;Identifica o volume ao qual pertence um documento;2;#TRUE#;#FALSE#;
 part;Identifica a parte do volume ou fascículo;15;#TRUE#;#FALSE#;
 subtitle;Identifica o subtítulo do documento;15;#FALSE#;#FALSE#;
-confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrppcitat
+confgrp;Agrupa os dados de um evento como conferência, seminario, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrppcitat
 down;confgrppcitat
-thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;15;#FALSE#;#FALSE#;thesisPmonog
+thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referência bibliográfica;15;#FALSE#;#FALSE#;thesisPmonog
 down;thesisPmonog
 coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;15;#TRUE#;#FALSE#;
 colvolid;Identifica o volume de uma coleção;15;#TRUE#;#FALSE#;
@@ -622,13 +622,13 @@ report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial o
 down;reportPmonog
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
-doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
-notes;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#TRUE#;#FALSE#;
+doi;Identifica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
+notes;Agrupa dados que não estão identificados pelos demais elementos de uma referência;15;#TRUE#;#FALSE#;
 
 confgrppcitat;pcitat
 sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;2;#TRUE#;#FALSE#;sponsorConfgrppcitat
 down;sponsorConfgrppcitat
-confname;Identifica o nome de um evento como conferencia, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
+confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
 date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
@@ -641,18 +641,18 @@ orgname;Identifica o nome da organização da tese;2;#FALSE#;#FALSE#;
 city;Identifica a cidade da tese;2;#FALSE#;#FALSE#;
 
 abnt6023;backBar
-acitat;Identifica uma referencia bibliográfica na bibliografia;9;#TRUE#;#FALSE#;acitat
+acitat;Identifica uma referência bibliográfica na bibliografia;9;#TRUE#;#FALSE#;acitat
 down;acitat
 
 acitat;abnt6023
-no;Identifica o número da referencia bibliográfica;10;#FALSE#;#FALSE#;
+no;Identifica o número da referência bibliográfica;10;#FALSE#;#FALSE#;
 acontrib;Agrupa elementos, como autor e título, para a descrição bibliográfica de um artigo de periódico ou capítulo de livro;10;#FALSE#;#FALSE#;acontrib
 down;acontrib
 amonog;Agrupa os elementos principais para a identificação de uma monografia;10;#FALSE#;#FALSE#;amonog
 down;amonog
 aiserial;Agrupa elementos de identificação específicos de uma publicação seriada ou periódica;10;#FALSE#;#FALSE#;aiserial
 down;aiserial
-confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrpAcitat
+confgrp;Agrupa os dados de um evento como conferência, seminario, congresso, etc. contidas em anais e publicações similares;10;#FALSE#;#FALSE#;confgrpAcitat
 down;confgrpAcitat
 
 acontrib;acitat
@@ -671,12 +671,12 @@ down;patentAcontrib
 authorAcontrib;acontrib
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 corpautAContrib;acontrib
 orgname;Identifica o nome da organização autora;2;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização autora;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 aiserial;acitat
 sertitle;Identifica o título de uma publicação seriada ou periódica;15;#FALSE#;#FALSE#;
@@ -692,10 +692,10 @@ issueno;Identifica o número de um fascículo;2;#TRUE#;#FALSE#;
 date;Identifica a data de publicação;15;#TRUE#;#TRUE#;
 extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
-notes;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#TRUE#;#FALSE#;
+notes;Agrupa dados que não estão identificados pelos demais elementos de uma referência;15;#TRUE#;#FALSE#;
 issn;Identifica o Internacional Standard Serial  Number (ISSN);15;#TRUE#;#FALSE#;
 url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
-doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
+doi;Identifica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 
 amonog;acitat
@@ -706,10 +706,10 @@ down;corpautAmonog
 et-al;Indica que há autores não mencionados;15;#FALSE#;#FALSE#;
 title;Identifica o título do documento;15;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;15;#FALSE#;#FALSE#;
-subresp;Identifica as responsabilidades secundarias em uma referencia como, por exemplo, tradutores e revisores;15;#TRUE#;#FALSE#;subrespAmonog
+subresp;Identifica as responsabilidades secundarias em uma referência como, por exemplo, tradutores e revisores;15;#TRUE#;#FALSE#;subrespAmonog
 down;subrespAmonog
 edition;Identifica o número da edição;15;#TRUE#;#FALSE#;
-confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares;15;#TRUE#;#FALSE#;confgrpAmonog
+confgrp;Agrupa os dados de um evento como conferência, seminario, congresso, etc. contidas em anais e publicações similares;15;#TRUE#;#FALSE#;confgrpAmonog
 down;confgrpAmonog
 city;Identifica a cidade de publicação;15;#TRUE#;#FALSE#;
 state;Identifica o estado (local) de publicação;15;#TRUE#;#FALSE#;
@@ -718,19 +718,19 @@ pubname;Identifica a casa publicadora;15;#TRUE#;#FALSE#;
 date;Identifica a data de publicação;15;#TRUE#;#TRUE#;
 volid;Identifica o volume ao qual pertence um documento;15;#TRUE#;#FALSE#;
 part;Identifica a parte do volume ou fascículo;15;#TRUE#;#FALSE#;
-tome;Identifica o tomo de uma publicação em uma referencia bibliográfica;15;#TRUE#;#FALSE#;
+tome;Identifica o tomo de uma publicação em uma referência bibliográfica;15;#TRUE#;#FALSE#;
 extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
 coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;15;#TRUE#;#FALSE#;
 colvolid;Identifica o volume de uma coleção;15;#TRUE#;#FALSE#;
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;15;#TRUE#;#FALSE#;reportAmonog
 down;reportAmonog
-notes;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#TRUE#;#FALSE#;
+notes;Agrupa dados que não estão identificados pelos demais elementos de uma referência;15;#TRUE#;#FALSE#;
 isbn;Identifica o Internacional Standard Book Number (ISBN);15;#TRUE#;#FALSE#;
-thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referencia bibliográfica;15;#TRUE#;#FALSE#;thesisAmonog
+thesis;Agrupa dados de uma dissertação ou tese acadêmica, em uma referência bibliográfica;15;#TRUE#;#FALSE#;thesisAmonog
 down;thesisAmonog
 url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
-doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
+doi;Identifica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 patgrp;Agrupa os dados de patente;15;#FALSE#;#TRUE#;patentAmonog
 down;patentAmonog
@@ -738,17 +738,17 @@ down;patentAmonog
 authorAmonog;amonog
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 corpautAmonog;amonog
 orgname;Identifica o nome da organização autora;2;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização autora;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 confgrpAmonog;amonog
 sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;2;#TRUE#;#FALSE#;sponsorAmonog
 down;sponsorAmonog
-confname;Identifica o nome de um evento como conferencia, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
+confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
 date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
@@ -771,7 +771,7 @@ orgdiv;Identifica a divisão da organização da tese;10;#FALSE#;#FALSE#;
 confgrpAcitat;acitat
 sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento;2;#TRUE#;#FALSE#;sponsorConfgrpAcitat
 down;sponsorConfgrpAcitat
-confname;Identifica o nome de um evento como conferencia, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
+confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
 date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
@@ -783,11 +783,11 @@ orgname;Identifica o nome da organização financiadora;7;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização financiadora;7;#FALSE#;#FALSE#;
 
 iso690;backBar
-icitat;Identifica uma referencia bibliográfica na bibliografia;9;#TRUE#;#FALSE#;icitat
+icitat;Identifica uma referência bibliográfica na bibliografia;9;#TRUE#;#FALSE#;icitat
 down;icitat
 
 icitat;iso690
-no;Identifica o número da referencia bibliográfica;10;#FALSE#;#FALSE#;
+no;Identifica o número da referência bibliográfica;10;#FALSE#;#FALSE#;
 icontrib;Agrupa elementos, como autor e título, para a descrição bibliográfica de um artigo de periódico ou capítulo de livro;10;#FALSE#;#FALSE#;icontrib
 down;icontrib
 imonog;Agrupa os elementos principais para a identificação de uma monografia;10;#FALSE#;#FALSE#;imonog
@@ -801,7 +801,7 @@ down;authorIcontrib
 corpauth;Identifica os autores corporativos responsáveis pelo conteúdo intelectual ou artístico do trabalho;15;#TRUE#;#FALSE#;corpautIcontrib
 down;corpautIcontrib
 et-al;Indica que há autores não mencionados;15;#FALSE#;#FALSE#;
-subresp;Identifica as responsabilidades secundarias em uma referencia como, por exemplo, tradutores e revisores;15;#TRUE#;#TRUE#;subrespIcontrib
+subresp;Identifica as responsabilidades secundarias em uma referência como, por exemplo, tradutores e revisores;15;#TRUE#;#TRUE#;subrespIcontrib
 down;subrespIcontrib
 date;Identifica a data de publicação;15;#TRUE#;#TRUE#;
 title;Identifica o título do documento;15;#FALSE#;#TRUE#;
@@ -810,12 +810,12 @@ subtitle;Identifica o subtítulo do documento;15;#FALSE#;#FALSE#;
 authorIcontrib;icontrib
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 corpautIcontrib;icontrib
 orgname;Identifica o nome da organização autora;2;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização autora;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 subrespIcontrib;icontrib
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
@@ -842,21 +842,21 @@ volid;Identifica o volume ao qual pertence um documento;15;#TRUE#;#FALSE#;
 issueno;Identifica o número de um fascículo;15;#TRUE#;#FALSE#;
 pages;Identifica a paginação;15;#TRUE#;#FALSE#;
 isdesig;Identifica as datas principais de uma coleção como, por exemplo, a data inicial da coleção;15;#TRUE#;#FALSE#;
-notes;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#TRUE#;#FALSE#;
+notes;Agrupa dados que não estão identificados pelos demais elementos de uma referência;15;#TRUE#;#FALSE#;
 issn;Identifica o Internacional Standard Serial  Number (ISSN);15;#TRUE#;#FALSE#;
 url;Identifica o endereço eletrônico do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
-doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
+doi;Identifica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 
 authorIiserial;iiserial
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 corpautIiserial;iiserial
 orgname;Identifica o nome da organização autora;2;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização autora;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 imonog;icitat
 author;Agrupa os dados de autores individuais, como nome, sobrenome e papel;15;#TRUE#;#TRUE#;authorImonog
@@ -864,7 +864,7 @@ down;authorImonog
 corpauth;Identifica os autores corporativos responsáveis pelo conteúdo intelectual ou artístico do trabalho;15;#TRUE#;#FALSE#;corpautImonog
 down;corpautImonog
 et-al;Indica que há autores não mencionados;15;#FALSE#;#FALSE#;
-subresp;Identifica as responsabilidades secundarias em uma referencia como, por exemplo, tradutores e revisores;15;#TRUE#;#TRUE#;subrespImonog
+subresp;Identifica as responsabilidades secundarias em uma referência como, por exemplo, tradutores e revisores;15;#TRUE#;#TRUE#;subrespImonog
 down;subrespImonog
 title;Identifica o título do documento;15;#FALSE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;15;#FALSE#;#FALSE#;
@@ -883,9 +883,9 @@ extent;Identifica a extensão da obra como o número de páginas ou volumes;15;#TRU
 coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte;15;#TRUE#;#FALSE#;
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final;15;#TRUE#;#FALSE#;reportImonog
 down;reportImonog
-notes;Agrupa dados que não estão identificados pelos demais elementos de uma referencia;15;#TRUE#;#FALSE#;
+notes;Agrupa dados que não estão identificados pelos demais elementos de uma referência;15;#TRUE#;#FALSE#;
 url;Identifica o endereço eletrônico do documento;15;#FALSE#;#FALSE#;
-doi;Identifica, em uma referencia bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
+doi;Identifica, em uma referência bibliográfica, doi do documento;15;#TRUE#;#FALSE#;
 cited;Identifica a data em que o artigo eletrônico foi acessado;15;#TRUE#;#TRUE#;
 isbn;Identifica o Internacional Standard Book Number (ISBN);15;#TRUE#;#FALSE#;
 patgrp;Agrupa os dados de patente;15;#FALSE#;#TRUE#;patentImonog
@@ -894,12 +894,12 @@ down;patentImonog
 authorImonog;imonog
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
 surname;Identifica o sobrenome de um autor individual;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 corpautImonog;imonog
 orgname;Identifica o nome da organização autora;2;#FALSE#;#FALSE#;
 orgdiv;Identifica a divisão da organização autora;2;#FALSE#;#FALSE#;
-previous;Identifica que o autor da referencia bibliográfica é o mesmo autor citado na referencia anterior;2;#FALSE#;#FALSE#;
+previous;Identifica que o autor da referência bibliográfica é o mesmo autor citado na referência anterior;2;#FALSE#;#FALSE#;
 
 subrespImonog;imonog
 fname;Identifica os primeiros nomes de um autor individual;2;#FALSE#;#FALSE#;
