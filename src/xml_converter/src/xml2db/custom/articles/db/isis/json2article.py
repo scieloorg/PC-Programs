@@ -619,7 +619,8 @@ class JSON_Article:
 
         self.json_data['h'] = self.json_normalizer.format_for_indexing(self.json_data['f'])
         self.json_data['l'] = self.json_normalizer.format_for_indexing(self.json_data['h'])                
-
+        #self.json_data['h'] = self.json_data['f']
+        #self.json_data['l'] = self.json_data['f']
     
     def normalize_metadata_authors(self):
         """

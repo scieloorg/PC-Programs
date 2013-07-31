@@ -1,3 +1,8 @@
+4.0.066
+=======
+24/6/2013
+ - problem in loading code databases in title maanger (history), because installer has not the updated code database
+
 4.0.065
 =======
 21/6/2003

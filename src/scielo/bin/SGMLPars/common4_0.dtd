@@ -171,9 +171,9 @@ filename       CDATA #IMPLIED>
           >
 <!ELEMENT corpauth - - ((%m.org;) | previous ) >
 
-<!ELEMENT contrib-id    - - (#PCDATA) >
-<!ATTLIST contrib-id
-          contrib-id-type     NAMES  #REQUIRED
+<!ELEMENT contrbid    - - (#PCDATA) >
+<!ATTLIST contrbid
+          contrbtp     NAMES  #REQUIRED
           
           >
 <!ELEMENT fname    - - (#PCDATA) >

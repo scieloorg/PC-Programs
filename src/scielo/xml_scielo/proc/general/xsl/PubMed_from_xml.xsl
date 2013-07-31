@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-
+	<!-- http://www.ncbi.nlm.nih.gov/books/NBK3828/ -->
 	<xsl:template match="reg" mode="scielo-xml-scielo-xml">
 		<xsl:apply-templates select="document(xml-filename)/article" mode="scielo-xml-scielo-xml">
 			<xsl:with-param name="other" select="other"/>
@@ -26,7 +26,7 @@
 			</xsl:if>
 			<xsl:apply-templates select="." mode="scielo-xml-title"/>
 
-			<xsl:apply-templates select="fpage|lpage"/>
+			<xsl:apply-templates select=".//article-meta/fpage|.//article-meta/lpage"/>
 			<ELocationID EIdType="pii">
 				<xsl:apply-templates select="$other" mode="scielo-xml-pii"/>
 			</ELocationID>
@@ -50,46 +50,45 @@
 					<xsl:apply-templates select="$other" mode="scielo-xml-pii"/>
 				</ArticleId>
 				<ArticleId IdType="doi">
-							<xsl:value-of select=".//front//article-id[@pub-id-type='doi']"/>
-						</ArticleId>
-					
+					<xsl:value-of select=".//front//article-id[@pub-id-type='doi']"/>
+				</ArticleId>
 			</ArticleIdList>
-			<xsl:if
-				test=".//front//history">
+			<xsl:if test=".//front//history">
 				<History>
 					<xsl:apply-templates select=".//front//history/*"/>
-					<xsl:apply-templates select=".//front//pub-date[@pub-type='epub']"></xsl:apply-templates>
+					<xsl:apply-templates select=".//front//pub-date[@pub-type='epub']"/>
 				</History>
 			</xsl:if>
 			<xsl:apply-templates select="." mode="scielo-xml-abstract"/>
 		</Article>
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-title">
-		<xsl:choose>
-			<xsl:when test="@xml:lang = 'en'">
-				<xsl:element name="ArticleTitle">
-					<xsl:apply-templates select=".//article-meta//title-group//article-title"/>
-				</xsl:element>
-			</xsl:when>
-			<xsl:otherwise>
+		<!-- http://www.ncbi.nlm.nih.gov/books/NBK3828/#publisherhelp.ArticleTitle_O -->
+		<xsl:element name="ArticleTitle">
+			<xsl:apply-templates select=".//article-meta//title-group/article-title[@xml:lang='en']"/>
+			<xsl:apply-templates select=".//article-meta//title-group/trans-title-group[@xml:lang='en']/trans-title"/>
+		</xsl:element>
+		<xsl:if test="@xml:lang != 'en'">
+				<!-- http://www.ncbi.nlm.nih.gov/books/NBK3828/#publisherhelp.VernacularTitle_O -->
 				<xsl:element name="VernacularTitle">
 					<xsl:apply-templates select=".//article-meta//title-group//article-title"/>
 				</xsl:element>
-			</xsl:otherwise>
+		</xsl:if>
 
-		</xsl:choose>
+		
 	</xsl:template>
 
 	<xsl:template match="@xml:lang" mode="scielo-xml-languages">
 		<Language>
-			<xsl:value-of select="."/>
+			<xsl:value-of select="translate(.,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/>
 		</Language>
 	</xsl:template>
 
 
 	<xsl:template match="*" mode="scielo-xml-abstract">
 		<Abstract>
-			<xsl:apply-templates select=".//*[contains(name(),'abstract') and @xml:lang='en']" mode="scielo-xml-content-abstract"/>
+			<xsl:apply-templates select=".//*[contains(name(),'abstract') and @xml:lang='en']"
+				mode="scielo-xml-content-abstract"/>
 		</Abstract>
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-content-abstract">
@@ -135,6 +134,9 @@
 	</xsl:template>
 	<xsl:template match="*" mode="scielo-xml-publishing_dateiso">
 		<xsl:choose>
+			<xsl:when test=".//front//pub-date[@date-type='collection']">
+				<xsl:apply-templates select=".//front//pub-date[@date-type='collection']"/>
+			</xsl:when>
 			<xsl:when test=".//front//pub-date[@date-type='ppub']">
 				<xsl:apply-templates select=".//front//pub-date[@date-type='ppub']"/>
 			</xsl:when>
@@ -144,11 +146,13 @@
 			<xsl:when test=".//front//pub-date[@date-type='epub']">
 				<xsl:apply-templates select=".//front//pub-date[@date-type='epub']"/>
 			</xsl:when>
-			<xsl:otherwise><xsl:apply-templates select=".//front//pub-date[1]"/></xsl:otherwise>
+			<xsl:otherwise>
+				<xsl:apply-templates select=".//front//pub-date[1]"/>
+			</xsl:otherwise>
 		</xsl:choose>
-		
+
 	</xsl:template>
-	<xsl:template match="pub-date/@pub-type | @date-type" >
+	<xsl:template match="pub-date/@pub-type | @date-type">
 		<xsl:choose>
 			<xsl:when test=".='epub'">aheadofprint</xsl:when>
 			<xsl:when test=".='ppub'">ppublish</xsl:when>
@@ -159,19 +163,18 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="pub-date|date[@date-type='rev-recd']">
-	</xsl:template>
+	<xsl:template match="pub-date|date[@date-type='rev-recd']"> </xsl:template>
 	<xsl:template match="pub-date|date[@date-type!='rev-recd']">
 		<PubDate>
 			<xsl:attribute name="PubStatus">
 				<xsl:apply-templates select="@*"/>
 			</xsl:attribute>
 			<xsl:apply-templates select="year"/>
-			<xsl:apply-templates select="month"/>
+			<xsl:apply-templates select="month|season"/>
 			<xsl:apply-templates select="day"/>
 		</PubDate>
 	</xsl:template>
-	<xsl:template match="month">
+	<xsl:template match="month|season">
 		<Month>
 			<xsl:value-of select="."/>
 		</Month>
@@ -209,9 +212,13 @@
 		</Author>
 
 	</xsl:template>
-	<xsl:template match="article-title/text()"><xsl:value-of select="."></xsl:value-of></xsl:template>
-	<xsl:template match="article-title/*"><xsl:value-of select="."></xsl:value-of></xsl:template>
-	<xsl:template match="article-title/xref"></xsl:template>
+	<xsl:template match="article-title/text()">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	<xsl:template match="article-title/*">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	<xsl:template match="article-title/xref"/>
 	<xsl:template match="collab" mode="scielo-xml-author">
 		<Author>
 			<CollectiveName>
@@ -220,9 +227,9 @@
 		</Author>
 	</xsl:template>
 	<xsl:template match="name">
-		<xsl:apply-templates select="given-names"></xsl:apply-templates>
-		<xsl:apply-templates select="surname"></xsl:apply-templates>
-		<xsl:apply-templates select="suffix"></xsl:apply-templates>
+		<xsl:apply-templates select="given-names"/>
+		<xsl:apply-templates select="surname"/>
+		<xsl:apply-templates select="suffix"/>
 	</xsl:template>
 	<xsl:template match="given-names | FirstName ">
 		<FirstName>
@@ -251,14 +258,18 @@
 		</Affiliation>
 	</xsl:template>
 
-	
+
 	<xsl:template match="aff" mode="scielo-xml-text">
-		<xsl:apply-templates select="*[name()!='label']" mode="scielo-xml-text"></xsl:apply-templates>
+		<xsl:apply-templates select="*[name()!='label']" mode="scielo-xml-text"/>
 	</xsl:template>
-	<xsl:template match="aff//*" mode="scielo-xml-text"><xsl:if test="position()!=1">, </xsl:if><xsl:apply-templates select="*|text()"></xsl:apply-templates>
+	<xsl:template match="aff//*" mode="scielo-xml-text">
+		<xsl:if test="position()!=1">, </xsl:if>
+		<xsl:apply-templates select="*|text()"/>
 	</xsl:template>
-	<xsl:template match="aff//label" mode="scielo-xml-text"></xsl:template>
-	<xsl:template match="aff//text()" mode="scielo-xml-text"><xsl:if test="normalize-space(.)=','"></xsl:if></xsl:template>
+	<xsl:template match="aff//label" mode="scielo-xml-text"/>
+	<xsl:template match="aff//text()" mode="scielo-xml-text">
+		<xsl:if test="normalize-space(.)=','"/>
+	</xsl:template>
 	<xsl:template match="@*" mode="scielo-xml-x">
 		<xsl:value-of select="." disable-output-escaping="yes"/>
 		<xsl:value-of select="." disable-output-escaping="no"/>

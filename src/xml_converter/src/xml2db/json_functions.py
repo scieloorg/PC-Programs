@@ -38,7 +38,7 @@ class JSON_Normalizer:
         else:
             if type(json_record) == type(''):
                 a = self.conversion_tables.remove_formatting(json_record)
-                #json_record_dest = normalize('NFKD', a.decode('utf-8', errors='ignore')).encode(errors='ignore')
+                a = normalize('NFKD', a.decode('utf-8', errors='ignore')).encode(errors='ignore')
                 json_record_dest = a
             else:
                 if type(json_record) == type([]):
