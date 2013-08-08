@@ -78,6 +78,7 @@
       elocation-id f
       elocation-id e
     .//article-meta/fpage 121
+    .//article-meta/fpage/@seq 9121
     .//aff 70
       label l
       @id i

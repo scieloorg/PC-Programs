@@ -11,13 +11,11 @@ def return_multval(json_data, key):
         r = [r]
     return r 
 
-def return_singleval(json_data, key = ''):
-    r = ''
+def return_singleval(json_data, key=''):
+    r = json_data
     if key != '':
-        if key in json_data.keys():
-            r = json_data[key]
-    else:
-        r = json_data
+        r = json_data.get(key, '')
+    
     if type(r) == type([]):
         r = r[0]
     return r 

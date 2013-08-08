@@ -1,7 +1,14 @@
+4.0.067
+=======
+31/7/2013
+ - changing the name of element/attribute for ORCID: contrib-id and @contrib-id-type to ctrbid and @ctrbidtp because of SGML DTD limitation of namelen(8)
+ - bug in generation of XML for PubMed only if the source is a XML file
+ - in citations when there is month in pub-date, use of literal instead of number
+
 4.0.066
 =======
 24/6/2013
- - problem in loading code databases in title maanger (history), because installer has not the updated code database
+ - problem in loading code databases in title manager (history), because installer has not the updated code database
 
 4.0.065
 =======

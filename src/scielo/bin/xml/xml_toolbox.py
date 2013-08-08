@@ -1,22 +1,41 @@
-
+# -*- coding: UTF-8 -*-
 import shutil
 import os
 import sys
+import codecs
 import tempfile
-import reuse.xml.xml_java as xml_java
 import random
 
+import reuse.xml.xml_java as xml_java
+
+#sys.setdefaultencoding('utf-8')
 
 xml_tree = None
 report = None
 
+#s.decode(encoding)
+#<type 'str'> to <type 'unicode'>
+#u.encode(encoding)
+#<type 'unicode'> to <type 'str'>
+
+
+def read_file(filename):
+    f = codecs.open(filename, 'r', encoding='utf-8')
+    c = f.read()
+    f.close()
+    return c
+
+
+def write_file(filename, content, mode='w'):
+    f = open(filename, mode, "utf-8")
+    f.write(content.encode('utf-8'))
+    f.close()
+
 
 class EntitiesTable:
-    def __init__(self, filename = 'entities'):
-        f = open(filename, 'r')
-        lines = f.readlines()
-        f.close()
-        
+    def __init__(self, filename='entities'):
+        lines = read_file(filename)
+
         self.table_number2char = {}
         self.table_named2char = {}
 
@@ -26,129 +45,91 @@ class EntitiesTable:
                 print(line)
             else:
                 char, number_ent, named_ent, ign2, no_accent = values
-                
+
                 if self.is_valid_char(char) and self.is_valid_named(named_ent):
                     #entity_char = named_ent.replace('&','').replace(';','')
-                    if not number_ent in self.table_number2char.keys():
+                    if self.table_number2char.get(number_ent, None) is None:
                         self.table_number2char[number_ent] = char
-                    if not named_ent in self.table_named2char.keys():
+                    if self.table_named2char.get(named_ent, None) is None:
                         self.table_number2char[named_ent] = char
 
-        
-                    
     def is_valid_char(self, char):
-        r = False
-        if char != '':
-            if not char in [ '>', '<', '&']:
-                r = True
-        return  r
+        return (char != '' and not char in ['>', '<', '&'])
 
     def is_valid_named(self, named):
-        r = False
-        if named != '':
-            if not named in [ '&gt;', '&lt;', '&amp;']:
-                r = True
-        return  r
+        return (named != '' and not named in ['&gt;', '&lt;', '&amp;'])
 
-    
     def ent2chr(self, ent):
-        r = ent
-        if ent in self.table_number2char.keys():
-            r = self.table_number2char[ent]
-        elif ent in self.table_named2char.keys():
-            r = self.table_named2char[ent]
+        r = self.table_number2char.get(ent, None)
+        if r is None:
+            r = self.table_named2char.get(ent, None)
+        if r is None:
+            r = ent
         return r
-    #def find_number_entities(self, content):
-    #    l = []
-    #    if '&#' in content and ';' in content:
-    #        p = content.find('&#')
-    #        ent = content[p:]
-    #        ent = ent[0:ent.find(';')+1]
-    #        if ent in self.table_number2char.keys():
-    #            l.append(ent)
-    #    return l
-        
-    #def chr2ent(self, content):
-
-    #    for k,v in self.table_char2number.items():
-    #        content = content.replace(k, v)
-    #    return content
-
-    #def ent2chr(self, content):
-    #    entities = self.find_number_entities(content)
-    #    for ent in entities:
-    #        content = content.replace(ent, self.table_number2char[ent])
-    #    return content
-    
-
-
-
 
 
 entities_table = EntitiesTable(os.path.dirname(os.path.realpath(__file__)) + '/reuse/encoding/entities')
 
 
 def handle_entities(content):
+    #try_to_write('inicio', content)
+
     import HTMLParser
     h = HTMLParser.HTMLParser()
     try:
         content = h.unescape(content)
     except:
         print('Unable to use h.unescape')
-        pass 
+        pass
 
-
+    #try_to_write('HTMLPARSER', content)
     if '&' in content:
         PREFIX_ENT = '#PREFIX_ENT#'
         while '&' in content:
-
             ent = content[content.find('&'):]
             ent = ent[0:ent.find(';')+1]
 
             char = entities_table.ent2chr(ent)
+
             if char == ent:
                 content = content.replace(ent, ent.replace('&',  PREFIX_ENT))
-                f = open('unknown_ent.txt', 'a+')
-                f.write( char + '|' + ent + '|'  + ent + '||' + '\n')
-                f.close()
+                try:
+                    write_file('unknown_ent.txt', char + '|' + ent + '|' + ent + '||' + '\n', 'a+')
+                    
+                except:
+                    pass
             else:
                 content = content.replace(ent, char)
-            
-        content = content.replace(PREFIX_ENT, '&')        
-
-        
+        content = content.replace(PREFIX_ENT, '&')
+        #try_to_write('entities_table', content)
 
     return content
-
 
 
 def filename_matches(f, name):
     return f.startswith(name + '.') or f.startswith(name + '-')
 
+
 def delete(filename):
     try:
         os.unlink(filename)
-    except WindowsError,e:
+    except WindowsError, e:
         pass
 
-   
+
 def img_to_jpeg(img_path, jpg_path):
-    
     try:
         import Image
 
         files = [ f for f in os.listdir(img_path) if not f.endswith('.jpg') ]
-        
         for f in files:
             jpg_filename = jpg_path + '/'+ f[0:f.rfind('.')] + '.jpg'
             image_filename = img_path + '/'+ f
-            
             if jpg_filename != image_filename:
                 try:
                     im = Image.open(image_filename)
                     im.thumbnail(im.size)
                     im.save(jpg_filename, "JPEG")
-                
                 except Exception, e:
                     print e
                     print jpg_filename
@@ -156,8 +137,7 @@ def img_to_jpeg(img_path, jpg_path):
         print('Desirable have installed PIL in order to convert images to jpg')
 
 
-
-def prepare_path(path, startswith = '', endswith = ''):
+def prepare_path(path, startswith='', endswith=''):
     if not os.path.exists(path):
         os.makedirs(path)
     for file in os.listdir(path):
@@ -171,22 +151,17 @@ def prepare_path(path, startswith = '', endswith = ''):
         if len(endswith) == 0 and len(startswith) == 0:
             os.unlink(filename)
 
-def fix_xml(xml):
-    f = open(xml, 'r')
-    c = f.read()
-    f.close()
-    new_c = c[0:c.rfind('>')+1]
-    if new_c != c:            
-        f = open(xml, 'w')
-        f.write(new_c)
-        f.close()
 
+def fix_xml(xml):
+    c = read_file(xml)
+    new_c = c[0:c.rfind('>')+1]
+    if new_c != c:
+        write_file(xml, new_c)
 
 
 class XMLData:
     def __init__(self, xml_filename, report):
         xml_tree.load(xml_filename, report)
-        
 
     def data_from_sgml(self):
         nodes = xml_tree.return_nodes()
@@ -753,16 +728,14 @@ class XMLPackagesChecker:
         def prefix_ent(N=7):
             return ''.join(random.choice('^({|~_`!QZ[') for x in range(N))
 
-        f = open(filename, 'rb')
-        c = f.read()
-        f.close()
+        c = read_file(filename)
 
         PREFIX_ENT = prefix_ent()
         while PREFIX_ENT in c:
             PREFIX_ENT = prefix_en()
 
         ents = {}
-        for e in [ '&gt;', '&lt;', '&amp;']:
+        for e in ['&gt;', '&lt;', '&amp;']:
             ents[e] = e.replace('&', PREFIX_ENT)
 
         ents = {'&gt;': PREFIX_ENT + 'gt;', '&lt;': PREFIX_ENT + 'lt;', '&amp;': PREFIX_ENT + 'amp;', }
@@ -779,7 +752,10 @@ class XMLPackagesChecker:
         if content != c:
             print(len(content))
             f = open(filename, 'wb')
-            f.write(content)
+            try:
+                f.write(content.encode('utf-8'))
+            except:
+                print('ERROR DE CODIFICAO')
             f.close()
 
     
