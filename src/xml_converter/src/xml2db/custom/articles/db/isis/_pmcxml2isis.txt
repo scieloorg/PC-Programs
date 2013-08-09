@@ -40,6 +40,7 @@
       subtitle s
       article-title/@xml:lang l en
     .//article-meta//article-id[@pub-id-type='doi'] 237
+    .//article-meta//article-id[@pub-id-type='PID'] 8121
     .//article-meta/volume 31    
     .//article-meta/issue 32    
     .//article-meta/supplement 132    

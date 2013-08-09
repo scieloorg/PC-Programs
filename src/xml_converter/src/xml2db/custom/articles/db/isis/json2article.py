@@ -47,7 +47,7 @@ def normalized_issue_id(json):
 def reset_issue_id(json_data):
     vol, supplvol, num, supplnum, compl = normalized_issue_id(json_data)
     if supplvol != '':
-        json_data['131'] = supplvol
+        json_data['132'] = supplvol
     if supplnum != '':
         json_data['132'] = supplnum
     if num != '':
@@ -428,10 +428,11 @@ class JSON_Article:
         return e
 
     def issuelabel(self):
-        issue_id = normalized_issue_id(self.json_data['f'])
-        prefix = ['v', 's', 'n', 's', '']
+        #issue_id = normalized_issue_id(self.json_data['f'])
+        issue_id = (self.json_data['f'].get('31', ''), self.json_data['f'].get('32', ''), self.json_data['f'].get('131', self.json_data['f'].get('132', '')), self.json_data['f'].get('41', ''))
+        prefix = ['v', 'n', 's', '']
         r = ''
-        for i in range(1, 5):
+        for i in range(0, 4):
             if issue_id[i] != '':
                 r += prefix[i] + issue_id[i]
         return r
@@ -572,6 +573,27 @@ class JSON_Article:
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '64', '65', '64')
         self.publication_dateiso = return_singleval(self.json_data['f'], '65')
 
+
+    def set_article_pid(self, alternative_id):
+        issueno = return_singleval(self.json_data['f'], '32')
+
+        if issueno == 'ahead':
+            self.json_data['f']['121'] = alternative_id
+        else:
+            # 8121 = article-id[@pub-id-type='PID']
+            #  121 = fpage
+            # 9121 = fpage/@seq
+            article_id_pid = self.json_data['f'].get('8121', self.json_data['f'].get('9121', self.json_data['f'].get('121', '')))
+            if article_id_pid.isdigit():
+                self.json_data['f']['121'] = article_id_pid[-5:]
+            else:
+                self.json_data['f']['121'] = '0'
+            if '8121' in self.json_data['f'].keys():
+                del self.json_data['f']['8121']
+            if '9121' in self.json_data['f'].keys():
+                del self.json_data['f']['9121']
+
+
     def normalize_document_data(self, issue, alternative_id):
         """
         Normalize the json structure of the whole document
@@ -579,13 +601,10 @@ class JSON_Article:
         self.json_data['f']['120'] = 'XML_' + return_singleval(self.json_data['f'], '120')
         self.json_data['f']['42'] = '1'
         
-        issueno = return_singleval(self.json_data['f'], '32')
         #seq = self.json_data.get('f', {}).get('9121', None)
         #if not seq is None:
 
-        if issueno == 'ahead':
-            self.json_data['f']['121'] = alternative_id
-        
+        self.set_article_pid(alternative_id)
         #if 'epub' in self.json_data['f'].keys():
         #    self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
         #if 'epub' in self.json_data['f'].keys():
@@ -995,10 +1014,10 @@ class JSON_Article:
 
         if 'f' in self.json_data.keys():
             data = self.json_data['f']
+            
         else:
             data = self.json_data
-
-        data = reset_issue_id(data)
+           
         date = return_singleval(data, '65')
         order = return_singleval(data, '36')
 
@@ -1029,11 +1048,7 @@ class JSON_Article:
         i_record['35'] = issue.journal.issn_id
         i_record['2'] = 'br1.1'        
         i_record['930'] = issue.journal.acron.upper()
-        if issue.number != num:
-            if '31' in i_record.keys():
-                del i_record['31'] 
-            i_record['32'] = issue.number
-
+        
         issue.json_data = i_record
         return  issue
 
@@ -1168,7 +1183,7 @@ class JSON_Issue:
         else:
             data = self.json_data
         
-        data = reset_issue_id(data)
+        
         date = return_singleval(data, '65')
         order = return_singleval(data, '36')
 
@@ -1191,11 +1206,7 @@ class JSON_Issue:
         i_record['35'] = issue.journal.issn_id
         i_record['2'] = 'br1.1'        
         i_record['930'] = issue.journal.acron.upper()
-        if issue.number != num:
-            if '31' in i_record.keys():
-                del i_record['31'] 
-            i_record['32'] = issue.number
-
+        
         toc = return_multval(data, '49')
         for item in toc:
             lang = 'en'
@@ -1213,7 +1224,7 @@ class JSON_Issue:
             issue.toc.display()
 
         issue.json_data = i_record
-        return  issue
+        return issue
 
     @property   
     def journal_title(self):
@@ -1228,12 +1239,7 @@ class JSON_Issue:
 
     @property   
     def journal_abbrev_title(self):
-        if 'f' in self.json_data.keys():
-            json_data = self.json_data['f']
-        else:
-            json_data = self.json_data
-        r = return_singleval(json_data, '421')
-        return r
+        return return_singleval(json_data.get('f', json_data), '421')
 
 class JSON_Journal:
     def __init__(self):
