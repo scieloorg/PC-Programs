@@ -718,10 +718,27 @@ class XMLPkgMker:
             new_name, img_list = XMLMetadata(content).new_name_and_img_list(acron, alternative_id)
         return content, new_name, img_list
 
+    def _validation_io(self, xml_filename, src_other_files, new_name, work_path, preview_path='', img_path='', pkg_path='', pkg_id=''):
+        dtd_validation_report = self.report_path + '/' + new_name + '.err.txt'
+
+        #.pmc.rep.html ou .rep.html
+        style_checker_report = self.report_path + '/' + new_name + pkg_id + '.rep.html'
+
+        #.pmc.xml.html ou .xml.html
+        html_preview = preview_path + '/' + new_name + pkg_id + '.xml.html'
+
+        output_filename = ''
+        if new_name:
+            output_filename = pkg_path + '/' + new_name + '.xml'
+
+        validation_io = ValidationIO(xml_filename, dtd_validation_report, style_checker_report, html_preview, output_filename, img_path, new_name)
+        return validation_io
+
     def make_packages(self):
         img_to_jpeg(self.src_path, self.work_path)
 
         xml_files = [f for f in os.listdir(self.src_path) if f.endswith('.xml')]
+        non_xml_files = [f for f in os.listdir(self.src_path) if not f.endswith('.xml')]
 
         sci_validations = XMLValidations(_versions_[self.version]['scielo'])
         pmc_validations = XMLValidations(_versions_[self.version]['pmc'])
@@ -730,10 +747,16 @@ class XMLPkgMker:
             content, new_name, img_list = self._normalize_xml(self.src_path + '/' + xml_file)
             if xml_is_well_formed(content):
                 xml_filename = self.work_path + '/' + xml_file.replace('.sgm.xml', '.xml')
+                curr_name = xml_file.replace('.xml', '')
+
                 f = open(xml_filename, 'w')
                 f.write(content)
                 f.close()
 
+                related_files = [f for f in non_xml_files if f.startswith(curr_name + '.') or f.startswith(curr_name + '-')]
+
+                xx
+                if sci_validations.check_list(data):
 
 
             else:
