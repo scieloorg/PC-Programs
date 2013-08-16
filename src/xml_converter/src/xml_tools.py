@@ -4,6 +4,7 @@ import shutil
 
 from StringIO import StringIO
 import xml.etree.ElementTree as etree
+from datetime import datetime
 
 java_path = 'java'
 jar_validate = '/saxonb9-1-0-8j/saxon9.jar'
@@ -53,25 +54,35 @@ _versions_['j1.0']['pmc']['xsl_preview'] = _versions_['3.0']['pmc']['xsl_preview
 _versions_['j1.0']['pmc']['xsl_output'] = '/j1.0/xsl/sgml2xml/pmc.xsl'
 
 
-def img_to_jpeg(img_path, jpg_path, replace=False):
+def img_to_jpeg(image_filename, jpg_path):
+    if image_filename.endswith('.tiff') or image_filename.endswith('.eps') or image_filename.endswith('.tif'):
+        jpg_filename = jpg_path + '/' + image_filename[0:image_filename.rfind('.')] + '.jpg'
+        try:
+            import Image
+            im = Image.open(image_filename)
+            im.thumbnail(im.size)
+            im.save(jpg_filename, "JPEG")
+            r = os.path.exists(jpg_filename)
+        except Exception, e:
+            print e
+            print jpg_filename
+            failures.append(image_filename)
+            r = False
+    return r
+
+
+def images_to_jpeg(img_path, jpg_path, replace=False):
     r = False
     failures = []
     try:
         import Image
 
-        files = [f for f in os.listdir(img_path) if not f.endswith('.jpg')]
-        for f in files:
-            jpg_filename = jpg_path + '/' + f[0:f.rfind('.')] + '.jpg'
+        for f in [f for f in os.listdir(img_path) if f.endswith('.tiff') or f.endswith('.eps') or f.endswith('.tif')]:
+            #jpg_filename = jpg_path + '/' + f[0:f.rfind('.')] + '.jpg'
             image_filename = img_path + '/' + f
-            if replace or not os.path.exists(jpg_filename):
-                try:
-                    im = Image.open(image_filename)
-                    im.thumbnail(im.size)
-                    im.save(jpg_filename, "JPEG")
-                except Exception, e:
-                    print e
-                    print jpg_filename
-                    failures.append(image_filename)
+            if not img_to_jpeg(image_filename, jpg_path):
+                failures.append(image_filename)
+
         ok = len(files)-len(failures)
 
         print('Converted ' + str(ok) + '/' + str(len(files)))
@@ -419,8 +430,7 @@ class SGMLXML:
 
 
 class ValidationIO:
-    def __init__(self, src_xml_filename, work_path, dtd_validation_report, style_checker_report, html_preview='', output_filename='', img_path=''
-        , new_name=''):
+    def __init__(self, src_xml_filename, work_path, dtd_validation_report, style_checker_report, html_preview='', output_filename='', img_path='', new_name=''):
         self.src_xml_filename = src_xml_filename
         self.work_path = work_path
         self.dtd_validation_report = dtd_validation_report
@@ -693,13 +703,8 @@ class XMLPkgMker:
         self.acron = acron
         self.work_path = work_path
         self.version = version
-
-        for d in [scielo_path, pmc_path, report_path, work_path]:
-            if os.path.exists(d):
-                for f in os.listdir(d):
-                    os.unlink(d + '/' + f)
-            else:
-                os.makedirs(d)
+        self.clone_src_path = src_path + '/' + datetime.now().isoformat().replace(':', '_') + '/src'
+        self.clone_work_path = src_path + '/' + datetime.now().isoformat().replace(':', '_') + '/wrk'
 
     def _normalize_xml(self, filename):
         """
@@ -734,8 +739,44 @@ class XMLPkgMker:
         validation_io = ValidationIO(xml_filename, dtd_validation_report, style_checker_report, html_preview, output_filename, img_path, new_name)
         return validation_io
 
+    def _add_files_to_pkg(self, src_path, filenames, destination_path):
+        for f in filenames:
+            if 
+            shutil.copyfile(src_path + '/' + f, destination_path + '/' + f)
+
+    def _clean_folders(self):
+        for d in [self.scielo_path, self.pmc_path, self.report_path, self.work_path, self.clone_src_path, self.clone_work_path]:
+            if os.path.exists(d):
+                for f in os.listdir(d):
+                    os.unlink(d + '/' + f)
+            else:
+                os.makedirs(d)
+
+    def prepare_work(self):
+        xml_names = [f.replace('.sgm.xml', '').replace('.xml', '') for f in os.listdir(self.src_path) if f.endswith('.xml')]
+        for xml_file in xml_names:
+            os.makedirs(self.clone_work_path + '/' xml_file)
+
+        for filename in os.listdir(self.src_path):
+            basename = os.path.basename(filename)
+            xml_name = basename[0:basename.rfind('.')]
+            if xml_name.endswith('.sgm'):
+                xml_name = xml_name.replace('.sgm', '')
+                
+            if xml_name in xml_names:
+                shutil.copyfile(self.src_path + '/' + filename, src.clone_work_path + '/' + xml_name + '/' + filename)
+
+            if f.endswith('.tiff') or f.endswith('.tif') or f.endswith('.eps'):
+                img_to_jpeg(self.src_path + '/' + f, self.clone_src_path)
+            elif f.endswith('.xml'):
+                xml_files.append(f)
+            else:
+                other_files.append(f)
+
     def make_packages(self):
-        img_to_jpeg(self.src_path, self.work_path)
+        self._clean_folders()
+        self.prepare_work()
+        #img_to_jpeg(self.src_path, self.work_path)
 
         xml_files = [f for f in os.listdir(self.src_path) if f.endswith('.xml')]
         non_xml_files = [f for f in os.listdir(self.src_path) if not f.endswith('.xml')]
@@ -755,7 +796,7 @@ class XMLPkgMker:
 
                 related_files = [f for f in non_xml_files if f.startswith(curr_name + '.') or f.startswith(curr_name + '-')]
 
-                xx
+
                 if sci_validations.check_list(data):
 
 
