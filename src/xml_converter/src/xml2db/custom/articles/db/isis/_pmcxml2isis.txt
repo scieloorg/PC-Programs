@@ -14,7 +14,7 @@
     .//kwd-group 85
       kwd k
       @xml:lang l en
-    .//article-meta//contrib 10
+    .//article-meta//contrib[name] 10
       name/given-names n
       name/surname s
       name/suffix z

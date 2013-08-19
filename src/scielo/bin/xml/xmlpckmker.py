@@ -1,100 +1,113 @@
 import random
 import os
+import sys
 import shutil
+import tempfile
 
 from StringIO import StringIO
 import xml.etree.ElementTree as etree
-from datetime import datetime
+#from datetime import datetime
 
-java_path = 'java'
-jar_validate = '/saxonb9-1-0-8j/saxon9.jar'
-jar_transform = '/XMLCheck.jar'
+THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
+
+PMC_PATH = THIS_LOCATION + '/pmc'
+JAR_PATH = THIS_LOCATION + '/jar'
+ENTITIES_TABLE_FILENAME = THIS_LOCATION + '/reuse/encoding/entities'
+
+if os.path.exists('/usr/bin/java'):
+    java_path = '/usr/bin/java'
+else:
+    java_path = 'java'
+
+
+jar_validate = JAR_PATH + '/saxonb9-1-0-8j/saxon9.jar'
+jar_transform = JAR_PATH + '/XMLCheck.jar'
 
 _versions_ = {}
 
 _versions_['3.0'] = {}
-_versions_['3.0']['sgm2xml'] = '/v3.0/xsl/sgml2xml/sgml2xml.xsl'
+_versions_['3.0']['sgm2xml'] = PMC_PATH + '/v3.0/xsl/sgml2xml/sgml2xml.xsl'
 
 _versions_['3.0']['scielo'] = {}
-_versions_['3.0']['scielo']['dtd'] = None
-_versions_['3.0']['scielo']['css'] = '/v3.0/xsl/previewers/scielo.css'
-_versions_['3.0']['scielo']['xsl_prep_report'] = '/v3.0/scielo-style/stylechecker.xsl'
-_versions_['3.0']['scielo']['xsl_report'] = '/v3.0/nlm-style-4.6.6/style-reporter.xsl'
-_versions_['3.0']['scielo']['xsl_preview'] = '/v3.0/previewers/scielo-html.xsl'
-_versions_['3.0']['scielo']['xsl_output'] = '/v3.0/sgml2xml/xml2pmc.xsl'
+_versions_['3.0']['scielo']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_FILENAME}">'
+_versions_['3.0']['scielo']['dtd'] = PMC_PATH + '/v3.0/dtd/journalpublishing3.dtd'
+_versions_['3.0']['scielo']['css'] = PMC_PATH + '/v3.0/xsl/previewers/scielo.css'
+_versions_['3.0']['scielo']['xsl_prep_report'] = PMC_PATH + '/v3.0/scielo-style/stylechecker.xsl'
+_versions_['3.0']['scielo']['xsl_report'] = PMC_PATH + '/v3.0/nlm-style-4.6.6/style-reporter.xsl'
+_versions_['3.0']['scielo']['xsl_preview'] = PMC_PATH + '/v3.0/previewers/scielo-html.xsl'
+_versions_['3.0']['scielo']['xsl_output'] = PMC_PATH + '/v3.0/sgml2xml/xml2pmc.xsl'
 
 _versions_['3.0']['pmc'] = {}
 _versions_['3.0']['pmc']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_FILENAME}">'
-_versions_['3.0']['pmc']['dtd'] = '/v3.0/dtd/journalpublishing3.dtd'
-_versions_['3.0']['pmc']['css'] = '/v3.0/xsl/jpub/jpub-preview.css'
-_versions_['3.0']['pmc']['xsl_prep_report'] = '/v3.0/xsl/nlm-style-4.6.6/nlm-stylechecker.xsl'
-_versions_['3.0']['pmc']['xsl_report'] = '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
-_versions_['3.0']['pmc']['xsl_preview'] = ['/v3.0/xsl/jpub/citations-prep/jpub3-PMCcit.xsl', '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
-_versions_['3.0']['pmc']['xsl_output'] = '/v3.0/xsl/sgml2xml/pmc.xsl'
+_versions_['3.0']['pmc']['dtd'] = PMC_PATH + '/v3.0/dtd/journalpublishing3.dtd'
+_versions_['3.0']['pmc']['css'] = PMC_PATH + '/v3.0/xsl/jpub/jpub-preview.css'
+_versions_['3.0']['pmc']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/nlm-stylechecker.xsl'
+_versions_['3.0']['pmc']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
+_versions_['3.0']['pmc']['xsl_preview'] = [PMC_PATH + '/v3.0/xsl/jpub/citations-prep/jpub3-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
+_versions_['3.0']['pmc']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/pmc.xsl'
 
 _versions_['j1.0'] = {}
-_versions_['j1.0']['sgm2xml'] = '/j1.0/xsl/sgml2xml/sgml2xml.xsl'
+_versions_['j1.0']['sgm2xml'] = PMC_PATH + '/j1.0/xsl/sgml2xml/sgml2xml.xsl'
 
 _versions_['j1.0']['scielo'] = {}
+_versions_['j1.0']['scielo']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_FILENAME}">'
 
-_versions_['j1.0']['scielo']['dtd'] = None
-_versions_['j1.0']['scielo']['css'] = '/j1.0/xsl/previewers/scielo.css'
-_versions_['j1.0']['scielo']['xsl_prep_report'] = '/j1.0/scielo-style/stylechecker.xsl'
-_versions_['j1.0']['scielo']['xsl_report'] = '/j1.0/nlm-style-5.2/style-reporter.xsl'
-_versions_['j1.0']['scielo']['xsl_preview'] = '/j1.0/previewers/scielo-html.xsl'
-_versions_['j1.0']['scielo']['xsl_output'] = '/j1.0/sgml2xml/xml2pmc.xsl'
+_versions_['j1.0']['scielo']['dtd'] = PMC_PATH + '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
+_versions_['j1.0']['scielo']['css'] = PMC_PATH + '/j1.0/xsl/previewers/scielo.css'
+_versions_['j1.0']['scielo']['xsl_prep_report'] = PMC_PATH + '/j1.0/scielo-style/stylechecker.xsl'
+_versions_['j1.0']['scielo']['xsl_report'] = PMC_PATH + '/j1.0/nlm-style-5.2/style-reporter.xsl'
+_versions_['j1.0']['scielo']['xsl_preview'] = PMC_PATH + '/j1.0/previewers/scielo-html.xsl'
+_versions_['j1.0']['scielo']['xsl_output'] = PMC_PATH + '/j1.0/sgml2xml/xml2pmc.xsl'
 
 _versions_['j1.0']['pmc'] = {}
 _versions_['j1.0']['pmc']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_FILENAME}">'
-_versions_['j1.0']['pmc']['dtd'] = '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
+_versions_['j1.0']['pmc']['dtd'] = PMC_PATH + '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
 _versions_['j1.0']['pmc']['css'] = _versions_['3.0']['pmc']['css']
-_versions_['j1.0']['pmc']['xsl_prep_report'] = '/j1.0/xsl/nlm-style-5.2/nlm-stylechecker.xsl'
-_versions_['j1.0']['pmc']['xsl_report'] = '/j1.0/xsl/nlm-style-5.2/style-reporter.xsl'
+_versions_['j1.0']['pmc']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/nlm-stylechecker.xsl'
+_versions_['j1.0']['pmc']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/style-reporter.xsl'
 _versions_['j1.0']['pmc']['xsl_preview'] = _versions_['3.0']['pmc']['xsl_preview']
-_versions_['j1.0']['pmc']['xsl_output'] = '/j1.0/xsl/sgml2xml/pmc.xsl'
+_versions_['j1.0']['pmc']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/pmc.xsl'
 
 
-def img_to_jpeg(image_filename, jpg_path):
+def img_to_jpeg(image_filename, jpg_path, replace=False):
     if image_filename.endswith('.tiff') or image_filename.endswith('.eps') or image_filename.endswith('.tif'):
         jpg_filename = jpg_path + '/' + image_filename[0:image_filename.rfind('.')] + '.jpg'
-        try:
-            import Image
-            im = Image.open(image_filename)
-            im.thumbnail(im.size)
-            im.save(jpg_filename, "JPEG")
-            r = os.path.exists(jpg_filename)
-        except Exception, e:
-            print e
-            print jpg_filename
-            failures.append(image_filename)
-            r = False
+
+        if not os.path.exists(jpg_filename) or replace:
+            try:
+                import Image
+                im = Image.open(image_filename)
+                im.thumbnail(im.size)
+                im.save(jpg_filename, "JPEG")
+            except:
+                print('Desirable have installed PIL in order to convert images to jpg')
+
+        r = os.path.exists(jpg_filename)
     return r
 
 
 def images_to_jpeg(img_path, jpg_path, replace=False):
     r = False
     failures = []
-    try:
-        import Image
+    files = [f for f in os.listdir(img_path) if f.endswith('.tiff') or f.endswith('.eps') or f.endswith('.tif')]
+    for f in files:
+        #jpg_filename = jpg_path + '/' + f[0:f.rfind('.')] + '.jpg'
+        image_filename = img_path + '/' + f
+        if not img_to_jpeg(image_filename, jpg_path):
+            failures.append(image_filename)
 
-        for f in [f for f in os.listdir(img_path) if f.endswith('.tiff') or f.endswith('.eps') or f.endswith('.tif')]:
-            #jpg_filename = jpg_path + '/' + f[0:f.rfind('.')] + '.jpg'
-            image_filename = img_path + '/' + f
-            if not img_to_jpeg(image_filename, jpg_path):
-                failures.append(image_filename)
+    ok = len(files)-len(failures)
 
-        ok = len(files)-len(failures)
-
-        print('Converted ' + str(ok) + '/' + str(len(files)))
-        r = len(files) == ok
-    except:
-        print('Desirable have installed PIL in order to convert images to jpg')
+    print('Converted ' + str(ok) + '/' + str(len(files)))
+    r = len(files) == ok
     return r
 
 
 class EntitiesTable:
     def __init__(self, filename='entities'):
-        lines = read_file(filename)
+        f = open(filename, 'r')
+        lines = f.read()
+        f.close()
 
         self.table_number2char = {}
         self.table_named2char = {}
@@ -127,10 +140,11 @@ class EntitiesTable:
             r = ent
         return r
 
-entities_table = EntitiesTable(os.path.dirname(os.path.realpath(__file__)) + '/reuse/encoding/entities')
+
+entities_table = EntitiesTable(ENTITIES_TABLE_FILENAME)
 
 
-def normalize_entities(content):
+def convert_ent_to_char(content):
     def prefix_ent(N=7):
         return ''.join(random.choice('^({|~_`!QZ[') for x in range(N))
 
@@ -221,9 +235,6 @@ def xml_validate(xml_filename, result_filename, dtd_validation=False):
 
 
 def xml_is_well_formed(content):
-    import xml.etree.ElementTree as etree
-    from StringIO import StringIO
-
     if content[0:1] == '<':
         return etree.parse(StringIO(content))
     else:
@@ -241,7 +252,6 @@ def format_parameters(parameters):
 
 
 def xml_content_transform(content, xsl_filename):
-    import tempfile
     f = tempfile.NamedTemporaryFile(delete=False)
     f.write(content)
     f.close()
@@ -307,50 +317,26 @@ def tranform_in_steps(xml_filename, xsl_list, result_filename, parameters={}):
 
 class XMLFixer:
 
-    def __init__(self, default_dtd_version, xml_filename):
-        self.xml_filename = xml_filename
-        f = open(xml_filename, 'r')
-        self.content = f.read()
-        f.close()
-        self.default_dtd_version = default_dtd_version
-
-    def _fix_dtd_location(self, dtd_filename):
-        if not dtd_filename in self.content:
-            if not '<?xml ' in self.content:
-                self.content = '<?xml version="1.0" encoding="utf-8"?>\n' + self.content
-
-            if ' dtd-version="' in self.content:
-                dtd_version = self.content[self.content.find(' dtd-version="')+len(' dtd-version="'):]
-                dtd_version = dtd_version[0:dtd_version.find('"')]
-            else:
-                dtd_version = self.default_dtd_version
-
-            if '<!DOCTYPE' in self.content:
-                doctype = self.content[self.content.find('<!DOCTYPE'):]
-                doctype = self.content[0:doctype.find('>')+1]
-                self.content = self.content.replace(doctype, '')
-
-            if not '<!DOCTYPE' in self.content:
-                self.content = self.content.replace('<article ', self._doctypes[dtd_version].replace('{DTD_FILENAME}', dtd_filename) + '\n<article ')
-
-    def _fix_entities(self):
-        pass
-
-    def _fix_tags(self):
-        pass
-
-
-class SGMLXML:
     def __init__(self):
         pass
 
-    def fix(self, content):
-        ok = xml_is_well_formed(content)
-        if not ok:
-            content = self._fix_style_tags(content)
+    def fix_dtd_location(self, content, dtd_filename, doctype):
+        if not dtd_filename in content:
+            if not '<?xml ' in content:
+                content = '<?xml version="1.0" encoding="utf-8"?>\n' + content
 
-            ok = xml_is_well_formed(content)
-            if not ok:
+            if '<!DOCTYPE' in content:
+                doctype = content[content.find('<!DOCTYPE'):]
+                doctype = content[0:doctype.find('>')+1]
+                content = content.replace(doctype, '')
+
+            if not '<!DOCTYPE' in content:
+                content = content.replace('<article ', doctype.replace('{DTD_FILENAME}', dtd_filename) + '\n<article ')
+
+    def fix(self, content):
+        if not xml_is_well_formed(content):
+            content = self._fix_style_tags(content)
+            if not xml_is_well_formed(content):
                 content = self._fix_open_close(content)
         return content
 
@@ -429,46 +415,36 @@ class SGMLXML:
         return ''.join(parts)
 
 
-class ValidationIO:
-    def __init__(self, src_xml_filename, work_path, dtd_validation_report, style_checker_report, html_preview='', output_filename='', img_path='', new_name=''):
-        self.src_xml_filename = src_xml_filename
-        self.work_path = work_path
-        self.dtd_validation_report = dtd_validation_report
-        self.html_report = style_checker_report
-        self.html_preview = html_preview
+class ValidationFiles:
+    def __init__(self, pkg_path, report_path, suffix=''):
+        self.pkg_path = pkg_path
+        self.suffix = suffix
+        self.report_path = report_path
 
-        self.img_path = 'file:///' + img_path if ':' in img_path else img_path
-        self.new_name = new_name
-
-        basename = os.path.basename(self.src_xml_filename)
-        filename = self.basename.replace('.xml', '')
-
-        self.work_path += '/' + filename
-        self.xml_filename = self.work_path + '/' + basename
-
-        if os.path.exists(self.work_path):
-            for f in os.listdir(self.work_path):
-                os.unlink(self.work_path + '/' + f)
-        else:
-            os.makedirs(self.work_path)
-        shutil.copyfile(self.src_xml_filename, self.xml_filename)
-
-        self.result_filenames = [dtd_validation_report, style_checker_report, html_preview, output_filename]
-        self.result_filenames = [f for f in self.result_filenames if f != '']
-        for f in self.result_filenames:
-            if os.path.exists(f):
-                os.unlink(f)
+    def name(self, curr_name, new_name):
+        self.err_filename = self.report_path + '/' + curr_name + '.err.txt'
+        self.style_checker_report = self.report_path + '/' + curr_name + self.suffix + '.rep.html'
+        self.html_preview = self.report_path + '/' + curr_name + self.suffix + '.xml.html'
+        self.xml_output = self.pkg_path + '/' + new_name + '.xml'
 
 
 class XMLValidations:
-    def __init__(self, version):
+    def __init__(self, pkg_name):
+        self.pkg_name = pkg_name
         #dtd_filename, xsl_prep_report, xsl_report, xsl_preview, css_filename
-        self.xsl_report = version.get('xsl_report', None)
-        self.xsl_prep_report = version.get('xsl_prep_report', None)
-        self.xsl_preview = version.get('xsl_preview', None)
-        self.dtd_filename = version.get('dtd_filename', None)
-        self.css_filename = version.get('css_filename', None)
-        self.xsl_output = version.get('xsl_output', None)
+
+    def select_version(self, dtd_version):
+        self._selected_version = dtd_version
+        if dtd_version == '1.0':
+            self._selected_version = 'j1.0'
+        version_data = _versions_.get(self._selected_version, {}).get(self.pkg_name)
+        self.xsl_report = version_data.get('xsl_report', None)
+        self.xsl_prep_report = version_data.get('xsl_prep_report', None)
+        self.xsl_preview = version_data.get('xsl_preview', None)
+        self.dtd_filename = version_data.get('dtd', None)
+        self.css_filename = version_data.get('css', None)
+        self.xsl_output = version_data.get('xsl_output', None)
+        self.doctype = version_data.get('doctype', None)
         self._report = []
 
     def log(self, content):
@@ -482,9 +458,15 @@ class XMLValidations:
         # STYLE CHECKER REPORT
         report_ok = False
         xml_report = html_report.replace('.html', '.xml')
+        if os.path.exists(xml_report):
+            os.unlink(xml_report)
+
         if xml_transform(xml_filename, self.xsl_prep_report, xml_report):
             # Generate self.report.html
             #self.log('transform ' + xml_report + ' ' + self.xsl_report + ' ' + html_report)
+            if os.path.exists(html_report):
+                os.unlink(html_report)
+
             if xml_transform(xml_report, self.xsl_report, html_report):
                 os.unlink(xml_report)
 
@@ -504,13 +486,16 @@ class XMLValidations:
             self.report('Unable to generate xml for report: ' + xml_report)
         return report_ok
 
-    def _preview(self, xml_filename, html_preview, img_path, new_name=''):
+    def _preview(self, xml_filename, html_preview, xsl_param_img_path, xsl_param_new_name=''):
         preview_ok = False
+        if os.path.exists(html_preview):
+            os.unlink(html_preview)
+        xsl_params = {'path_img': xsl_param_img_path + '/', 'css':  self.css_filename, 'new_name': xsl_param_new_name}
         if type(self.xsl_preview) == type([]):
-            preview_ok = tranform_in_steps(xml_filename, self.xsl_preview, html_preview, {'path_img': img_path + '/', 'css':  self.css_filename, 'new_name': new_name})
+            preview_ok = tranform_in_steps(xml_filename, self.xsl_preview, html_preview, xsl_params)
         else:
             #self.log('transform ' + xml_filename + ' ' + self.xsl_preview + ' ' + html_preview)
-            preview_ok = xml_transform(xml_filename, self.xsl_preview, html_preview, {'path_img': img_path + '/', 'css':  self.css_filename, 'new_name': new_name})
+            preview_ok = xml_transform(xml_filename, self.xsl_preview, html_preview, xsl_params)
 
         if preview_ok:
             self.report('Preview ' + html_preview)
@@ -520,6 +505,8 @@ class XMLValidations:
 
     def _output(self, xml_filename, xml_output):
         output_ok = False
+        if os.path.exists(xml_output):
+            os.unlink(xml_output)
         output_ok = xml_transform(xml_filename, self.xsl_output, xml_output)
         if output_ok:
             self.report('XML output ' + xml_output)
@@ -527,41 +514,61 @@ class XMLValidations:
             self.report('Unable to create output: ' + xml_output)
         return output_ok
 
-    def check_list(self, data):
+    def check_list(self, xml_filename, pkg_files, img_path, xsl_param_new_name=''):
         #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
 
-        step_results = []
+        err_files = []
+        f = open(xml_filename, 'r')
+        content = f.read()
+        f.close()
 
-        self.report('\nValidating:' + data.xml_filename)
+        xml = xml_is_well_formed(content)
+        if not xml:
+            content = convert_ent_to_char(content)
+            xml = xml_is_well_formed(content)
+            if xml:
+                f = open(xml_filename, 'w')
+                f.write(content)
+                f.close()
 
-        if xml_is_well_formed(data.xml_filename):
-            step_results.append(True)
+        if xml:
+            dtd_version = xml.attrib.get('dtd-version', '1.0')
+            self.select_version(dtd_version)
 
-            # VALIDATION
-            is_dtd_valid = xml_validate(data.xml_filename, data.dtd_validation_report, (self.dtd_filename != ''))
-            if not is_dtd_valid:
-                self.report('Validation errors. Read ' + data.dtd_validation_report)
-            step_results.append(is_dtd_valid)
+            temp_dir = tempfile.mkdtemp()
+            temp_xml_filename = temp_dir + '/' + os.path.basename(xml_filename)
+            shutil.copyfile(xml_filename, temp_xml_filename)
 
-            # STYLE CHECKER REPORT
-            step_results.append(self._style_checker_report(data.xml_filename, data.html_report))
+            if self.dtd_filename:
+                content = XMLFixer().fix_dtd_location(content, self.dtd_filename, self.doctype)
+                f = open(temp_xml_filename, 'w')
+                f.write(content)
+                f.close()
 
-            # PREVIEW
-            if data.html_preview:
-                step_results.append(self._preview(data.xml_filename, data.html_preview))
+            if os.path.exists(temp_xml_filename):
+                is_dtd_valid = xml_validate(temp_xml_filename, pkg_files.err_filename, True)
 
-            if data.output_filename:
-                step_results.append(self._preview(data.xml_filename, data.output_filename))
+                if not is_dtd_valid:
+                    err_files.append(pkg_files.err_filename)
 
+                # STYLE CHECKER REPORT
+                if not self._style_checker_report(temp_xml_filename, pkg_files.html_report):
+                    err_files.append(pkg_files.html_report)
+
+                # PREVIEW
+                if pkg_files.html_preview:
+                    self._preview(temp_xml_filename, pkg_files.html_preview, img_path, xsl_param_new_name)
+
+                if pkg_files.xml_output:
+                    self._output(temp_xml_filename, pkg_files.xml_output)
+
+                os.unlink(temp_xml_filename)
+                shutil.rmtree(temp_dir)
         else:
             # not well formed
-            self.report('Not well formed.')
+            err_files.append(xml_filename)
 
-        for f in data.result_filenames:
-            if os.path.exists(f):
-                print('Check ' + f)
-
-        return all(step_results)
+        return err_files
 
 
 class XMLMetadata:
@@ -638,9 +645,7 @@ class XMLMetadata:
             page_or_order = ''
             seq = ''
             if fpage.isdigit():
-                if int(fpage) == 0:
-                    # use order
-                else:
+                if not int(fpage) == 0:
                     page_or_order = fpage
             elif '-' in fpage:
                 p = fpage.split('-')
@@ -667,7 +672,8 @@ class XMLMetadata:
         test_href = ['href', 'xlink:href', '{http://www.w3.org/XML/1998/namespace}href']
 
         nodes = self.root.findall('.//*[graphic]')
-        r = []
+        r = {}
+
         for n in nodes:
             id = n.attrib.get('id')
             if '-' in id:
@@ -683,11 +689,11 @@ class XMLMetadata:
                 for attrib_name in test_href:
                     href = graphic_node.attrib.get(attrib_name)
                     if href:
-                        r.append(href, id)
+                        r[href] = id
                         break
         return r
 
-    def new_name_and_img_list(self, acron, alternative_id=''):        
+    def new_name_and_img_list(self, acron, alternative_id=''):
         new_name = self.format_name(self._metadata(), acron, alternative_id)
         xml_images_list = self.xml_data_image_names()
         return (new_name, xml_images_list)
@@ -695,113 +701,185 @@ class XMLMetadata:
 
 class XMLPkgMker:
 
-    def __init__(self, src_path, scielo_path, pmc_path, report_path, work_path, acron, version):
-        self.src_path = src_path
-        self.scielo_path = scielo_path
-        self.pmc_path = pmc_path
-        self.report_path = report_path
-        self.acron = acron
-        self.work_path = work_path
-        self.version = version
-        self.clone_src_path = src_path + '/' + datetime.now().isoformat().replace(':', '_') + '/src'
-        self.clone_work_path = src_path + '/' + datetime.now().isoformat().replace(':', '_') + '/wrk'
+    def __init__(self, src, scielo_pkg_files, pmc_pkg_files, acron, version_converter):
+        if os.path.isfile(src) and src.endswith('.xml'):
+            self.src_path = os.path.dirname(src)
+            self.xml_filename = os.path.basename(src)
+            self.xml_name = self.xml_filename.replace('.sgm.xml', '').replace('.xml', '')
+        else:
+            self.src_path = src
+            self.xml_filename = None
+            self.xml_name = None
 
-    def _normalize_xml(self, filename):
+        self.scielo_pkg_files = scielo_pkg_files
+        self.pmc_pkg_files = pmc_pkg_files
+
+        self.acron = acron
+        self.version_converter = version_converter
+        #_versions_[self.version]['sgm2xml']
+
+        self.src_copy_path = tempfile.mkdtemp()
+        self.new_name_path = tempfile.mkdtemp()
+
+        self.sci_validations = XMLValidations('scielo')
+        self.pmc_validations = XMLValidations('pmc')
+
+    def _normalize_xml(self, input_filename, alternative_id):
         """
         Normalize XML content
         """
-        f = open(self.src_path + '/' + xml_file, 'r')
+        f = open(input_filename, 'r')
         content = f.read()
         f.close()
 
-        content = normalize_entities(content)
-        if xml_file.endswith('.sgm.xml'):
-            content = SGMLXML().fix(content)
-            new_name, img_list = XMLMetadata(content).new_name_and_img_list(acron, alternative_id)
-            content = xml_content_transform(content, _versions_[self.version]['sgm2xml'])
+        # convert_ent_to_char
+        content = convert_ent_to_char(content)
+
+        # fix problems of XML format
+        if input_filename.endswith('.sgm.xml'):
+            content = XMLFixer().fix(content)
+
+        # get href of images and new name
+        new_name, img_list = XMLMetadata(content).new_name_and_img_list(self.acron, alternative_id)
+
+        if input_filename.endswith('.sgm.xml'):
+            content = xml_content_transform(content, self.version_converter)
+
+        f = open(self.new_name_path + '/' + new_name + '.xml', 'w')
+        f.write(content)
+        #error_messages.append('Unable to create ' + xml_filename)
+        f.close()
+
+        return [new_name, img_list]
+
+    def _create_src_copy(self, selected_files):
+        for filename in selected_files:
+            shutil.copyfile(self.src_path + '/' + filename, self.src_copy_path)
+            if (filename.endswith('.tiff') or filename.endswith('.eps') or filename.endswith('.tif')):
+                img_to_jpeg(self.src_path + '/' + filename, self.src_copy_path)
+
+    def _add_related_files_to_packages(self, related_files, curr_name, new_name):
+        # copy <xml_file>.???
+        for filename in [f for f in related_files if f.startswith(curr_name + '.')]:
+            related_file = self.src_copy_path + '/' + filename
+            new_filename = filename.replace(curr_name, new_name)
+            shutil.copyfile(related_file, self.scielo_pkg_files.pkg_path + '/' + new_filename)
+            shutil.copyfile(related_file, self.pmc_pkg_files.pkg_path + '/' + new_filename)
+
+    def _add_img_to_packages(self, related_files, img_list, new_name):
+        # copy image files which starts with <href>.
+        for href, suffix in img_list.items():
+            for image_filename in [f for f in related_files if f.startswith(href + '.')]:
+                ext = image_filename[image_filename.rfind('.'):]
+
+                img_filename = self.src_copy_path + '/' + image_filename
+                new_filename = new_name + '-' + suffix + ext
+
+                #shutil.copyfile(img_filename, self.new_name_path + '/' + new_filename)
+                shutil.copyfile(img_filename, self.scielo_pkg_files.pkg_path + '/' + new_filename)
+                if not image_filename.endswith('.jpg'):
+                    shutil.copyfile(img_filename, self.pmc_pkg_files.pkg_path + '/' + new_filename)
+
+    def _make_packages_for_one_file(self, xml_file, curr_name, related_files):
+        reports = []
+        new_name, img_list = self._normalize_xml(self.src_copy_path + '/' + xml_file, curr_name)
+        xml_filename = self.new_name_path + '/' + new_name + '.xml'
+
+        self.scielo_pkg_files.name(curr_name, new_name)
+        self.pmc_pkg_files.name(curr_name, new_name)
+        xsl_new_name = new_name if new_name != curr_name else ''
+
+        if os.path.exists(xml_filename):
+            self._add_related_files_to_packages(related_files, curr_name, new_name)
+            self._add_img_to_packages(related_files, img_list, new_name)
+
+            img_path = self.scielo_pkg_files.pkg_path
+
+            reports = self.sci_validations.check_list(xml_filename, self.scielo_pkg_files, img_path)
+
+            if os.path.exists(self.scielo_pkg_files.xml_output):
+                #dtd_validation_report = self.report_path + '/' + curr_name + '.err.txt'
+                xml_filename = self.scielo_pkg_files.xml_output
+
+                reports += self.pmc_validations.check_list(xml_filename, self.pmc_pkg_files, img_path, xsl_new_name)
+                if not os.path.exists(self.pmc_pkg_files.xml_output):
+                    f = open(self.scielo_pkg_files.err_filename, 'a+')
+                    f.write('\nUnable to create ' + self.scielo_pkg_files.xml_output)
+                    f.close()
+            else:
+                f = open(self.scielo_pkg_files.err_filename, 'a+')
+                f.write('\nUnable to create ' + self.scielo_pkg_files.xml_output)
+                f.close()
         else:
-            new_name, img_list = XMLMetadata(content).new_name_and_img_list(acron, alternative_id)
-        return content, new_name, img_list
+            f = open(self.scielo_pkg_files.err_filename, 'a+')
+            f.write('Unable to create ' + xml_filename)
+            f.close()
+        if os.path.exists(self.scielo_pkg_files.err_filename) and not self.scielo_pkg_files.err_filename in reports:
+            reports.append(self.scielo_pkg_files.err_filename)
 
-    def _validation_io(self, xml_filename, src_other_files, new_name, work_path, preview_path='', img_path='', pkg_path='', pkg_id=''):
-        dtd_validation_report = self.report_path + '/' + new_name + '.err.txt'
-
-        #.pmc.rep.html ou .rep.html
-        style_checker_report = self.report_path + '/' + new_name + pkg_id + '.rep.html'
-
-        #.pmc.xml.html ou .xml.html
-        html_preview = preview_path + '/' + new_name + pkg_id + '.xml.html'
-
-        output_filename = ''
-        if new_name:
-            output_filename = pkg_path + '/' + new_name + '.xml'
-
-        validation_io = ValidationIO(xml_filename, dtd_validation_report, style_checker_report, html_preview, output_filename, img_path, new_name)
-        return validation_io
-
-    def _add_files_to_pkg(self, src_path, filenames, destination_path):
-        for f in filenames:
-            if 
-            shutil.copyfile(src_path + '/' + f, destination_path + '/' + f)
-
-    def _clean_folders(self):
-        for d in [self.scielo_path, self.pmc_path, self.report_path, self.work_path, self.clone_src_path, self.clone_work_path]:
-            if os.path.exists(d):
-                for f in os.listdir(d):
-                    os.unlink(d + '/' + f)
-            else:
-                os.makedirs(d)
-
-    def prepare_work(self):
-        xml_names = [f.replace('.sgm.xml', '').replace('.xml', '') for f in os.listdir(self.src_path) if f.endswith('.xml')]
-        for xml_file in xml_names:
-            os.makedirs(self.clone_work_path + '/' xml_file)
-
-        for filename in os.listdir(self.src_path):
-            basename = os.path.basename(filename)
-            xml_name = basename[0:basename.rfind('.')]
-            if xml_name.endswith('.sgm'):
-                xml_name = xml_name.replace('.sgm', '')
-                
-            if xml_name in xml_names:
-                shutil.copyfile(self.src_path + '/' + filename, src.clone_work_path + '/' + xml_name + '/' + filename)
-
-            if f.endswith('.tiff') or f.endswith('.tif') or f.endswith('.eps'):
-                img_to_jpeg(self.src_path + '/' + f, self.clone_src_path)
-            elif f.endswith('.xml'):
-                xml_files.append(f)
-            else:
-                other_files.append(f)
+        return reports
 
     def make_packages(self):
-        self._clean_folders()
-        self.prepare_work()
-        #img_to_jpeg(self.src_path, self.work_path)
+        if self.xml_filename:
+            # only one file
+            selected_files = [f for f in os.listdir(self.src_path) if f.startswith(self.xml_name)]
+        else:
+            selected_files = os.listdir(self.src_path)
+            #self._clean_folders()
 
-        xml_files = [f for f in os.listdir(self.src_path) if f.endswith('.xml')]
-        non_xml_files = [f for f in os.listdir(self.src_path) if not f.endswith('.xml')]
+        self._create_src_copy(selected_files)
 
-        sci_validations = XMLValidations(_versions_[self.version]['scielo'])
-        pmc_validations = XMLValidations(_versions_[self.version]['pmc'])
+        xml_files = [f for f in selected_files if f.endswith('.xml')]
+        non_xml_files = [f for f in selected_files if not f.endswith('.xml')]
 
+        err_files = []
         for xml_file in xml_files:
-            content, new_name, img_list = self._normalize_xml(self.src_path + '/' + xml_file)
-            if xml_is_well_formed(content):
-                xml_filename = self.work_path + '/' + xml_file.replace('.sgm.xml', '.xml')
-                curr_name = xml_file.replace('.xml', '')
+            curr_name = xml_file.replace('.xml', '').replace('.sgm.xml', '')
+            related_files = [f for f in non_xml_files if f.startswith(curr_name)]
+            #xml_file, selected_files_path, normalized_pck_path, curr_name, related_files
 
-                f = open(xml_filename, 'w')
-                f.write(content)
-                f.close()
+            reports = self._make_packages_for_one_file(xml_file, curr_name, related_files)
 
-                related_files = [f for f in non_xml_files if f.startswith(curr_name + '.') or f.startswith(curr_name + '-')]
+            if reports:
+                print('\n'.join(reports))
+                err_files += reports
 
-
-                if sci_validations.check_list(data):
-
-
-            else:
-                print('Unable to load ' + xml_file)
+        shutil.rmtree(self.src_copy_path)
+        shutil.rmtree(self.new_name_path)
 
 
-        self._xml2pmc()
+def make_packages(src, acron, version='1.0'):
+    doit = False
+    if src.endswith('.sgm.xml'):
+        # src = serial/acron/issue/pmc/pmc_work/article/file.sgm.xml
+        sgmxml_filename = src
+        sgmxml_path = os.path.dirname(src)
+        pmc_path = os.path.dirname(os.path.dirname(sgmxml_path))
+        acron = os.path.basename(os.path.dirname(os.path.dirname(pmc_path)))
+
+        if os.path.exists(pmc_path + '/pmc_src'):
+            pmc_src = pmc_path + '/pmc_src'
+        elif os.path.exists(pmc_path + '/src'):
+            pmc_src = pmc_path + '/src'
+        shutil.copyfile(sgmxml_filename, pmc_src + '/' + os.path.basename(sgmxml_filename))
+        scielo_pkg_path = pmc_path + '/xml_package'
+        pmc_pkg_path = pmc_path + '/pmc_package'
+        report_path = pmc_path + '/reports'
+        doit = True
+    elif src.endswith('.xml') and os.path.isfile(src):
+        path = os.path.dirname(os.path.dirname(src))
+        scielo_pkg_path = path + '/scielo_package'
+        pmc_pkg_path = path + '/pmc_package'
+        report_path = path + '/reports'
+        doit = True
+    elif os.path.isdir(src) and any([True for f in os.listdir(src) if f.endswith('.xml')]):
+        path = os.path.dirname(src)
+        scielo_pkg_path = path + '/scielo_package'
+        pmc_pkg_path = path + '/pmc_package'
+        report_path = path + '/reports'
+        doit = True
+    if doit:
+        scielo_pkg_files = ValidationFiles(scielo_pkg_path, report_path)
+        pmc_pkg_files = ValidationFiles(pmc_pkg_path, report_path, '.pmc')
+        xml_pkg_mker = XMLPkgMker(src, scielo_pkg_files, pmc_pkg_files, acron, _versions_.get(version, {}).get('sgml2xml'))
+        xml_pkg_mker.make_packages()
