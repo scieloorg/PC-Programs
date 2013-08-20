@@ -8,101 +8,84 @@ from StringIO import StringIO
 import xml.etree.ElementTree as etree
 #from datetime import datetime
 
+# global variables
+
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
 
-PMC_PATH = THIS_LOCATION + '/pmc'
-JAR_PATH = THIS_LOCATION + '/jar'
-ENTITIES_TABLE_FILENAME = THIS_LOCATION + '/reuse/encoding/entities'
+CONFIG_JAVA_PATH = 'java'
+CONFIG_JAR_PATH = THIS_LOCATION + '/../jar'
+CONFIG_ENT_TABLE_PATH = THIS_LOCATION
+CONFIG_VERSIONS_PATH = THIS_LOCATION + '/../pmc'
 
-if os.path.exists('/usr/bin/java'):
-    java_path = '/usr/bin/java'
-else:
-    java_path = 'java'
-
-
-jar_validate = JAR_PATH + '/saxonb9-1-0-8j/saxon9.jar'
-jar_transform = JAR_PATH + '/XMLCheck.jar'
-
-_versions_ = {}
-
-_versions_['3.0'] = {}
-_versions_['3.0']['sgm2xml'] = PMC_PATH + '/v3.0/xsl/sgml2xml/sgml2xml.xsl'
-
-_versions_['3.0']['scielo'] = {}
-_versions_['3.0']['scielo']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_FILENAME}">'
-_versions_['3.0']['scielo']['dtd'] = PMC_PATH + '/v3.0/dtd/journalpublishing3.dtd'
-_versions_['3.0']['scielo']['css'] = PMC_PATH + '/v3.0/xsl/previewers/scielo.css'
-_versions_['3.0']['scielo']['xsl_prep_report'] = PMC_PATH + '/v3.0/scielo-style/stylechecker.xsl'
-_versions_['3.0']['scielo']['xsl_report'] = PMC_PATH + '/v3.0/nlm-style-4.6.6/style-reporter.xsl'
-_versions_['3.0']['scielo']['xsl_preview'] = PMC_PATH + '/v3.0/previewers/scielo-html.xsl'
-_versions_['3.0']['scielo']['xsl_output'] = PMC_PATH + '/v3.0/sgml2xml/xml2pmc.xsl'
-
-_versions_['3.0']['pmc'] = {}
-_versions_['3.0']['pmc']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_FILENAME}">'
-_versions_['3.0']['pmc']['dtd'] = PMC_PATH + '/v3.0/dtd/journalpublishing3.dtd'
-_versions_['3.0']['pmc']['css'] = PMC_PATH + '/v3.0/xsl/jpub/jpub-preview.css'
-_versions_['3.0']['pmc']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/nlm-stylechecker.xsl'
-_versions_['3.0']['pmc']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
-_versions_['3.0']['pmc']['xsl_preview'] = [PMC_PATH + '/v3.0/xsl/jpub/citations-prep/jpub3-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
-_versions_['3.0']['pmc']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/pmc.xsl'
-
-_versions_['j1.0'] = {}
-_versions_['j1.0']['sgm2xml'] = PMC_PATH + '/j1.0/xsl/sgml2xml/sgml2xml.xsl'
-
-_versions_['j1.0']['scielo'] = {}
-_versions_['j1.0']['scielo']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_FILENAME}">'
-
-_versions_['j1.0']['scielo']['dtd'] = PMC_PATH + '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
-_versions_['j1.0']['scielo']['css'] = PMC_PATH + '/j1.0/xsl/previewers/scielo.css'
-_versions_['j1.0']['scielo']['xsl_prep_report'] = PMC_PATH + '/j1.0/scielo-style/stylechecker.xsl'
-_versions_['j1.0']['scielo']['xsl_report'] = PMC_PATH + '/j1.0/nlm-style-5.2/style-reporter.xsl'
-_versions_['j1.0']['scielo']['xsl_preview'] = PMC_PATH + '/j1.0/previewers/scielo-html.xsl'
-_versions_['j1.0']['scielo']['xsl_output'] = PMC_PATH + '/j1.0/sgml2xml/xml2pmc.xsl'
-
-_versions_['j1.0']['pmc'] = {}
-_versions_['j1.0']['pmc']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_FILENAME}">'
-_versions_['j1.0']['pmc']['dtd'] = PMC_PATH + '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
-_versions_['j1.0']['pmc']['css'] = _versions_['3.0']['pmc']['css']
-_versions_['j1.0']['pmc']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/nlm-stylechecker.xsl'
-_versions_['j1.0']['pmc']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/style-reporter.xsl'
-_versions_['j1.0']['pmc']['xsl_preview'] = _versions_['3.0']['pmc']['xsl_preview']
-_versions_['j1.0']['pmc']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/pmc.xsl'
+JAR_VALIDATE = CONFIG_JAR_PATH + '/saxonb9-1-0-8j/saxon9.jar'
+JAR_TRANSFORM = CONFIG_JAR_PATH + '/XMLCheck.jar'
+ENTITIES_TABLE_FILENAME = CONFIG_ENT_TABLE_PATH + '/reuse/encoding/entities'
 
 
-def img_to_jpeg(image_filename, jpg_path, replace=False):
-    if image_filename.endswith('.tiff') or image_filename.endswith('.eps') or image_filename.endswith('.tif'):
-        jpg_filename = jpg_path + '/' + image_filename[0:image_filename.rfind('.')] + '.jpg'
+def configure_versions_location():
+    PMC_PATH = CONFIG_VERSIONS_PATH
+    version_configuration = {}
+    version_configuration['3.0'] = {}
+    version_configuration['3.0']['sgm2xml'] = PMC_PATH + '/v3.0/xsl/sgml2xml/sgml2xml.xsl'
 
-        if not os.path.exists(jpg_filename) or replace:
-            try:
-                import Image
-                im = Image.open(image_filename)
-                im.thumbnail(im.size)
-                im.save(jpg_filename, "JPEG")
-            except:
-                print('Desirable have installed PIL in order to convert images to jpg')
+    version_configuration['3.0']['scielo'] = {}
+    version_configuration['3.0']['scielo']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_FILENAME}">'
+    version_configuration['3.0']['scielo']['dtd'] = PMC_PATH + '/v3.0/dtd/journalpublishing3.dtd'
+    version_configuration['3.0']['scielo']['css'] = PMC_PATH + '/v3.0/xsl/previewers/scielo.css'
+    version_configuration['3.0']['scielo']['xsl_prep_report'] = PMC_PATH + '/v3.0/scielo-style/stylechecker.xsl'
+    version_configuration['3.0']['scielo']['xsl_report'] = PMC_PATH + '/v3.0/nlm-style-4.6.6/style-reporter.xsl'
+    version_configuration['3.0']['scielo']['xsl_preview'] = PMC_PATH + '/v3.0/previewers/scielo-html.xsl'
+    version_configuration['3.0']['scielo']['xsl_output'] = PMC_PATH + '/v3.0/sgml2xml/xml2pmc.xsl'
 
-        r = os.path.exists(jpg_filename)
+    version_configuration['3.0']['pmc'] = {}
+    version_configuration['3.0']['pmc']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_FILENAME}">'
+    version_configuration['3.0']['pmc']['dtd'] = PMC_PATH + '/v3.0/dtd/journalpublishing3.dtd'
+    version_configuration['3.0']['pmc']['css'] = PMC_PATH + '/v3.0/xsl/jpub/jpub-preview.css'
+    version_configuration['3.0']['pmc']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/nlm-stylechecker.xsl'
+    version_configuration['3.0']['pmc']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
+    version_configuration['3.0']['pmc']['xsl_preview'] = [PMC_PATH + '/v3.0/xsl/jpub/citations-prep/jpub3-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
+    version_configuration['3.0']['pmc']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/pmc.xsl'
+
+    version_configuration['j1.0'] = {}
+    version_configuration['j1.0']['sgm2xml'] = PMC_PATH + '/j1.0/xsl/sgml2xml/sgml2xml.xsl'
+
+    version_configuration['j1.0']['scielo'] = {}
+    version_configuration['j1.0']['scielo']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_FILENAME}">'
+
+    version_configuration['j1.0']['scielo']['dtd'] = PMC_PATH + '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
+    version_configuration['j1.0']['scielo']['css'] = PMC_PATH + '/j1.0/xsl/previewers/scielo.css'
+    version_configuration['j1.0']['scielo']['xsl_prep_report'] = PMC_PATH + '/j1.0/scielo-style/stylechecker.xsl'
+    version_configuration['j1.0']['scielo']['xsl_report'] = PMC_PATH + '/j1.0/nlm-style-5.2/style-reporter.xsl'
+    version_configuration['j1.0']['scielo']['xsl_preview'] = PMC_PATH + '/j1.0/previewers/scielo-html.xsl'
+    version_configuration['j1.0']['scielo']['xsl_output'] = PMC_PATH + '/j1.0/sgml2xml/xml2pmc.xsl'
+
+    version_configuration['j1.0']['pmc'] = {}
+    version_configuration['j1.0']['pmc']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_FILENAME}">'
+    version_configuration['j1.0']['pmc']['dtd'] = PMC_PATH + '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
+    version_configuration['j1.0']['pmc']['css'] = version_configuration['3.0']['pmc']['css']
+    version_configuration['j1.0']['pmc']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/nlm-stylechecker.xsl'
+    version_configuration['j1.0']['pmc']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/style-reporter.xsl'
+    version_configuration['j1.0']['pmc']['xsl_preview'] = version_configuration['3.0']['pmc']['xsl_preview']
+    version_configuration['j1.0']['pmc']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/pmc.xsl'
+    return version_configuration
+
+
+###
+_versions_ = configure_versions_location()
+
+
+###
+def format_parameters(parameters):
+    r = ''
+    for k, v in parameters.items():
+        if ' ' in v:
+            r += k + '=' + '"' + v + '" '
+        else:
+            r += k + '=' + v + ' '
     return r
 
 
-def images_to_jpeg(img_path, jpg_path, replace=False):
-    r = False
-    failures = []
-    files = [f for f in os.listdir(img_path) if f.endswith('.tiff') or f.endswith('.eps') or f.endswith('.tif')]
-    for f in files:
-        #jpg_filename = jpg_path + '/' + f[0:f.rfind('.')] + '.jpg'
-        image_filename = img_path + '/' + f
-        if not img_to_jpeg(image_filename, jpg_path):
-            failures.append(image_filename)
-
-    ok = len(files)-len(failures)
-
-    print('Converted ' + str(ok) + '/' + str(len(files)))
-    r = len(files) == ok
-    return r
-
-
+### ENTITIES
 class EntitiesTable:
     def __init__(self, filename='entities'):
         f = open(filename, 'r')
@@ -141,10 +124,7 @@ class EntitiesTable:
         return r
 
 
-entities_table = EntitiesTable(ENTITIES_TABLE_FILENAME)
-
-
-def convert_ent_to_char(content):
+def convert_ent_to_char(content, entities_table=None):
     def prefix_ent(N=7):
         return ''.join(random.choice('^({|~_`!QZ[') for x in range(N))
 
@@ -167,17 +147,17 @@ def convert_ent_to_char(content):
                 print('Unable to use h.unescape')
 
         if '&' in content:
-            #PREFIX_ENT = '#PREFIX_ENT#'
-            while '&' in content:
-                ent = content[content.find('&'):]
-                ent = ent[0:ent.find(';')+1]
+            if entities_table:
+                while '&' in content:
+                    ent = content[content.find('&'):]
+                    ent = ent[0:ent.find(';')+1]
 
-                char = entities_table.ent2chr(ent)
-                if char == ent:
-                    content = content.replace(ent, ent.replace('&', PREFIX_ENT))
-                    not_found.append(ent)
-                else:
-                    content = content.replace(ent, char)
+                    char = entities_table.ent2chr(ent)
+                    if char == ent:
+                        content = content.replace(ent, ent.replace('&', PREFIX_ENT))
+                        not_found.append(ent)
+                    else:
+                        content = content.replace(ent, char)
 
         content = content.replace(PREFIX_ENT, '&')
     if not_found:
@@ -187,6 +167,42 @@ def convert_ent_to_char(content):
     return content
 
 
+### IMAGES
+def img_to_jpeg(image_filename, jpg_path, replace=False):
+    if image_filename.endswith('.tiff') or image_filename.endswith('.eps') or image_filename.endswith('.tif'):
+        jpg_filename = jpg_path + '/' + image_filename[0:image_filename.rfind('.')] + '.jpg'
+
+        if not os.path.exists(jpg_filename) or replace:
+            try:
+                import Image
+                im = Image.open(image_filename)
+                im.thumbnail(im.size)
+                im.save(jpg_filename, "JPEG")
+            except:
+                print('Desirable have installed PIL in order to convert images to jpg')
+
+        r = os.path.exists(jpg_filename)
+    return r
+
+
+def images_to_jpeg(img_path, jpg_path, replace=False):
+    r = False
+    failures = []
+    files = [f for f in os.listdir(img_path) if f.endswith('.tiff') or f.endswith('.eps') or f.endswith('.tif')]
+    for f in files:
+        #jpg_filename = jpg_path + '/' + f[0:f.rfind('.')] + '.jpg'
+        image_filename = img_path + '/' + f
+        if not img_to_jpeg(image_filename, jpg_path):
+            failures.append(image_filename)
+
+    ok = len(files)-len(failures)
+
+    print('Converted ' + str(ok) + '/' + str(len(files)))
+    r = len(files) == ok
+    return r
+
+
+### XML
 def xml_validate(xml_filename, result_filename, dtd_validation=False):
     validation_type = ''
 
@@ -199,7 +215,7 @@ def xml_validate(xml_filename, result_filename, dtd_validation=False):
     if os.path.exists(temp_result_filename):
         os.unlink(temp_result_filename)
 
-    cmd = java_path + ' -cp ' + jar_validate + ' br.bireme.XMLCheck.XMLCheck ' + xml_filename + ' ' + validation_type + '>' + temp_result_filename
+    cmd = JAVA_PATH + ' -cp ' + JAR_VALIDATE + ' br.bireme.XMLCheck.XMLCheck ' + xml_filename + ' ' + validation_type + '>' + temp_result_filename
 
     os.system(cmd)
 
@@ -241,16 +257,6 @@ def xml_is_well_formed(content):
         return etree.parse(content)
 
 
-def format_parameters(parameters):
-    r = ''
-    for k, v in parameters.items():
-        if ' ' in v:
-            r += k + '=' + '"' + v + '" '
-        else:
-            r += k + '=' + v + ' '
-    return r
-
-
 def xml_content_transform(content, xsl_filename):
     f = tempfile.NamedTemporaryFile(delete=False)
     f.write(content)
@@ -277,7 +283,7 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     if os.path.exists(temp_result_filename):
         os.unlink(temp_result_filename)
 
-    cmd = java_path + ' -jar ' + jar_transform + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
+    cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
 
     os.system(cmd)
 
@@ -315,6 +321,7 @@ def tranform_in_steps(xml_filename, xsl_list, result_filename, parameters={}):
     return not error
 
 
+###
 class XMLFixer:
 
     def __init__(self):
