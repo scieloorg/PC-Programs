@@ -6,6 +6,7 @@ import tempfile
 import xml.etree.ElementTree as etree
 from StringIO import StringIO
 
+
 try:
     import Image
     IMG_CONVERTER = True
@@ -14,6 +15,7 @@ except:
 
 #from datetime import datetime
 
+DEBUG = 'OFF'
 # global variables
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
 
@@ -26,7 +28,7 @@ CONFIG_VERSIONS_PATH = THIS_LOCATION + '/../pmc'
 JAVA_PATH = CONFIG_JAVA_PATH
 JAR_TRANSFORM = CONFIG_JAR_PATH + '/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = CONFIG_JAR_PATH + '/XMLCheck.jar'
-ENTITIES_TABLE_FILENAME = CONFIG_ENT_TABLE_PATH + '/reuse/encoding/entities'
+ENTITIES_TABLE_FILENAME = CONFIG_ENT_TABLE_PATH + '/entities2char'
 
 
 def configure_versions_location():
@@ -38,10 +40,10 @@ def configure_versions_location():
     version_configuration['3.0']['scielo'] = {}
     version_configuration['3.0']['scielo']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_FILENAME}">'
     version_configuration['3.0']['scielo']['dtd'] = PMC_PATH + '/v3.0/dtd/journalpublishing3.dtd'
-    version_configuration['3.0']['scielo']['css'] = PMC_PATH + '/v3.0/xsl/previewers/scielo.css'
+    version_configuration['3.0']['scielo']['css'] = PMC_PATH + '/v3.0/xsl/web/plus'
     version_configuration['3.0']['scielo']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/scielo-style/stylechecker.xsl'
     version_configuration['3.0']['scielo']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
-    version_configuration['3.0']['scielo']['xsl_preview'] = PMC_PATH + '/v3.0/xsl/previewers/scielo-html.xsl'
+    version_configuration['3.0']['scielo']['xsl_preview'] = PMC_PATH + '/v3.0/xsl/previewers/scielo-html-novo.xsl'
     version_configuration['3.0']['scielo']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/xml2pmc.xsl'
 
     version_configuration['3.0']['pmc'] = {}
@@ -50,7 +52,8 @@ def configure_versions_location():
     version_configuration['3.0']['pmc']['css'] = PMC_PATH + '/v3.0/xsl/jpub/jpub-preview.css'
     version_configuration['3.0']['pmc']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/nlm-stylechecker.xsl'
     version_configuration['3.0']['pmc']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
-    version_configuration['3.0']['pmc']['xsl_preview'] = [PMC_PATH + '/v3.0/xsl/jpub/citations-prep/jpub3-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
+    #version_configuration['3.0']['pmc']['xsl_preview'] = [PMC_PATH + '/v3.0/xsl/jpub/citations-prep/jpub3-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
+    version_configuration['3.0']['pmc']['xsl_preview'] = None
     version_configuration['3.0']['pmc']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/pmc.xsl'
 
     version_configuration['j1.0'] = {}
@@ -63,7 +66,7 @@ def configure_versions_location():
     version_configuration['j1.0']['scielo']['css'] = PMC_PATH + '/j1.0/xsl/previewers/scielo.css'
     version_configuration['j1.0']['scielo']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/scielo-style/stylechecker.xsl'
     version_configuration['j1.0']['scielo']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/style-reporter.xsl'
-    version_configuration['j1.0']['scielo']['xsl_preview'] = PMC_PATH + '/j1.0/xsl/previewers/scielo-html.xsl'
+    version_configuration['j1.0']['scielo']['xsl_preview'] = PMC_PATH + '/j1.0/xsl/previewers/scielo-html-novo.xsl'
     version_configuration['j1.0']['scielo']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/xml2pmc.xsl'
 
     version_configuration['j1.0']['pmc'] = {}
@@ -72,7 +75,8 @@ def configure_versions_location():
     version_configuration['j1.0']['pmc']['css'] = version_configuration['3.0']['pmc']['css']
     version_configuration['j1.0']['pmc']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/nlm-stylechecker.xsl'
     version_configuration['j1.0']['pmc']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/style-reporter.xsl'
-    version_configuration['j1.0']['pmc']['xsl_preview'] = version_configuration['3.0']['pmc']['xsl_preview']
+    #version_configuration['j1.0']['pmc']['xsl_preview'] = version_configuration['3.0']['pmc']['xsl_preview']
+    version_configuration['j1.0']['pmc']['xsl_preview'] = None
     version_configuration['j1.0']['pmc']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/pmc.xsl'
     return version_configuration
 
@@ -105,12 +109,25 @@ class EntitiesTable:
             else:
                 char, number_ent, named_ent, ign2, no_accent = values
 
-                if self.is_valid_char(char) and self.is_valid_named(named_ent):
+                if named_ent in ['&gt;', '&lt;', '&amp;']:
+                    char = named_ent
                     #entity_char = named_ent.replace('&','').replace(';','')
-                    if self.table_number2char.get(number_ent, None) is None:
-                        self.table_number2char[number_ent] = char
-                    if self.table_named2char.get(named_ent, None) is None:
-                        self.table_number2char[named_ent] = char
+                self.table_number2char[number_ent] = char
+                if '&#x' in number_ent:
+                    hex_ent = number_ent[2:-1]
+                    dec_ent = str(int('0' + hex_ent, 16))
+                    self.table_number2char['&#' + dec_ent + ';'] = char
+                elif '&#' in number_ent:
+                    dec_ent = number_ent[2:-1]
+                    hex_ent = hex(int(dec_ent))
+                    self.table_number2char['&#' + hex_ent[hex_ent.find('x'):] + ';'] = char
+                    self.table_number2char['&#x' + hex_ent[hex_ent.find('x')+1:].upper() + ';'] = char
+
+                self.table_named2char[named_ent] = char
+
+        f = open('ent_teste.txt', 'w')
+        f.write('\n'.join(self.table_number2char.keys()))
+        f.close()
 
     def is_valid_char(self, char):
         return (char != '' and not char in ['>', '<', '&'])
@@ -131,7 +148,8 @@ def convert_ent_to_char(content, entities_table=None):
     def prefix_ent(N=7):
         return ''.join(random.choice('^({|~_`!QZ[') for x in range(N))
 
-    not_found = []
+    not_found_named = []
+    not_found_number = []
     if '&' in content:
         PREFIX_ENT = prefix_ent()
         while PREFIX_ENT in content:
@@ -145,9 +163,10 @@ def convert_ent_to_char(content, entities_table=None):
             import HTMLParser
             h = HTMLParser.HTMLParser()
             try:
-                content = h.unescape(content)
+                content = h.unescape(content).decode('utf-8')
             except:
-                print('Unable to use h.unescape')
+                #print('Unable to use h.unescape')
+                pass
 
         if '&' in content:
             if entities_table:
@@ -158,15 +177,23 @@ def convert_ent_to_char(content, entities_table=None):
                     char = entities_table.ent2chr(ent)
                     if char == ent:
                         content = content.replace(ent, ent.replace('&', PREFIX_ENT))
-                        not_found.append(ent)
+                        if '&#' in ent:
+                            not_found_number.append(ent)
+                        else:
+                            not_found_named.append(ent)
                     else:
                         content = content.replace(ent, char)
 
+        if not_found_named:
+            f = open('unknown_ent_named.txt', 'a+')
+            f.write('\n'.join(not_found_named))
+            f.close()
+        if not_found_number:
+            f = open('unknown_ent_number.txt', 'a+')
+            f.write('\n'.join(not_found_number))
+            f.close()
         content = content.replace(PREFIX_ENT, '&')
-    if not_found:
-        f = open('unknown_ent.txt', 'a+')
-        f.write('\n'.join(not_found))
-        f.close()
+
     return content
 
 
@@ -182,8 +209,13 @@ def img_to_jpeg(image_filename, jpg_path, replace=False):
                 im.thumbnail(im.size)
                 im.save(jpg_filename, "JPEG")
             except Exception as inst:
-                print(inst)
-
+                if DEBUG == 'ON':
+                    print('Unable to convert ')
+                    print(image_filename)
+                    print('to')
+                    print(jpg_filename)
+                    print(inst)
+                    print('')
         r = os.path.exists(jpg_filename)
     return r
 
@@ -236,7 +268,7 @@ def xml_validate(xml_filename, result_filename, dtd_validation=False):
             s = ''
             for line in f.readlines():
                 if n > 0:
-                    s += str(n) + ':' + line + '\n'
+                    s += str(n) + ':' + line
                 n += 1
             result_content += '\n' + s
     else:
@@ -438,10 +470,11 @@ class XMLFixer:
 
 
 class ValidationFiles:
-    def __init__(self, pkg_path, report_path, suffix=''):
+    def __init__(self, pkg_path, report_path, preview_path, suffix=''):
         self.pkg_path = pkg_path
         self.suffix = suffix
         self.report_path = report_path
+        self.preview_path = preview_path
         if not os.path.exists(pkg_path):
             os.makedirs(pkg_path)
         if not os.path.exists(report_path):
@@ -450,14 +483,23 @@ class ValidationFiles:
     def name(self, curr_name, new_name):
         self.dtd_validation_report = self.report_path + '/' + curr_name + self.suffix + '.dtd.txt'
         self.style_checker_report = self.report_path + '/' + curr_name + self.suffix + '.rep.html'
-        self.html_preview = self.report_path + '/' + curr_name + self.suffix + '.xml.html'
+
+        if self.preview_path == self.pkg_path:
+            self.html_preview = self.preview_path + '/' + new_name + '.html'
+        elif self.preview_path:
+            self.html_preview = self.preview_path + '/' + curr_name + self.suffix + '.xml.html'
+        else:
+            self.html_preview = None
+
         self.xml_output = self.pkg_path + '/' + new_name + '.xml'
 
 
 class XMLValidations:
-    def __init__(self, pkg_name, entities_table=None):
+    def __init__(self, pkg_name, default_version=None, entities_table=None):
         self.pkg_name = pkg_name
         self.entities_table = entities_table
+        self.default_version = default_version
+        self.select_version(default_version)
         #dtd_filename, xsl_prep_report, xsl_report, xsl_preview, css_filename
 
     def select_version(self, dtd_version):
@@ -523,7 +565,6 @@ class XMLValidations:
         else:
             #self.log('transform ' + xml_filename + ' ' + self.xsl_preview + ' ' + html_preview)
             preview_ok = xml_transform(xml_filename, self.xsl_preview, html_preview, xsl_params)
-
         if preview_ok:
             self.report('Preview ' + html_preview)
         else:
@@ -542,9 +583,19 @@ class XMLValidations:
         return output_ok
 
     def check_list(self, xml_filename, pkg_files, img_path, xsl_param_new_name=''):
-        #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
+        if DEBUG == 'ON':
+            r = self._check_list(xml_filename, pkg_files, img_path, xsl_param_new_name)
+        else:
+            try:
+                r = self._check_list(xml_filename, pkg_files, img_path, xsl_param_new_name)
+            except Exception as inst:
+                r = [False, False]
+                print('\n===== ATTENTION =====\nThere was an unexpected error.\n Please, report it to roberta.takenaka@scielo.org or at https://github.com/scieloorg/PC-Programs/issues')
+                print(inst)
+        return r
 
-        err_files = []
+    def _check_list(self, xml_filename, pkg_files, img_path, xsl_param_new_name=''):
+        #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
         f = open(xml_filename, 'r')
         content = f.read()
         f.close()
@@ -559,8 +610,9 @@ class XMLValidations:
                 f.close()
 
         if xml:
-            dtd_version = xml.find('.').attrib.get('dtd-version', '1.0')
-            self.select_version(dtd_version)
+            if self.default_version is None:
+                dtd_version = xml.find('.').attrib.get('dtd-version', '1.0')
+                self.select_version(dtd_version)
 
             temp_dir = tempfile.mkdtemp()
             temp_xml_filename = temp_dir + '/' + os.path.basename(xml_filename)
@@ -575,14 +627,13 @@ class XMLValidations:
             if os.path.exists(temp_xml_filename):
                 is_dtd_valid = xml_validate(temp_xml_filename, pkg_files.dtd_validation_report, True)
 
-                if not is_dtd_valid:
-                    err_files.append(pkg_files.dtd_validation_report.replace('.dtd.txt', '.err.txt'))
-                    shutil.move(pkg_files.dtd_validation_report, pkg_files.dtd_validation_report.replace('.dtd.txt', '.err.txt'))
+                if is_dtd_valid:
+                    os.unlink(pkg_files.dtd_validation_report)
 
                 # STYLE CHECKER REPORT
-                if not self._style_checker_report(temp_xml_filename, pkg_files.style_checker_report):
-                    err_files.append(pkg_files.style_checker_report.replace('.rep.html', '.rep.err.html'))
-                    shutil.move(pkg_files.style_checker_report, pkg_files.style_checker_report.replace('.rep.html', '.rep.err.html'))
+                is_style_valid = self._style_checker_report(temp_xml_filename, pkg_files.style_checker_report)
+                if is_style_valid:
+                    os.unlink(pkg_files.style_checker_report)
 
                 # PREVIEW
                 if pkg_files.html_preview:
@@ -595,10 +646,8 @@ class XMLValidations:
                 shutil.rmtree(temp_dir)
         else:
             # not well formed
-            err_files.append(xml_filename)
             shutil.copyfile(xml_filename, pkg_files.report_path + '/' + os.path.basename(xml_filename) + '.err.txt')
-
-        return err_files
+        return [is_dtd_valid, is_style_valid]
 
 
 class XMLMetadata:
@@ -687,10 +736,10 @@ class XMLMetadata:
                     page_or_order = p[0]
                     seq = '-' + p[1]
             if page_or_order:
-                page_or_order = '00000' + fpage + seq
+                page_or_order = fpage + seq
             else:
                 page_or_order = '00000' + order
-            page_or_order = page_or_order[-5:]
+                page_or_order = page_or_order[-5:]
 
             if issueno:
                 issueno = '00' + issueno
@@ -710,7 +759,7 @@ class XMLMetadata:
         return r
 
     def xml_data_image_names(self):
-        test_href = ['href', 'xlink:href', '{http://www.w3.org/XML/1998/namespace}href']
+        #test_href = ['href', 'xlink:href', '{http://www.w3.org/XML/1998/namespace}href']
 
         nodes = self.root.findall('.//*[graphic]')
         r = {}
@@ -727,12 +776,12 @@ class XMLMetadata:
                 else:
                     id = 'g' + id
                 graphic_nodes = n.findall('graphic')
+
                 for graphic_node in graphic_nodes:
-                    for attrib_name in test_href:
-                        href = graphic_node.attrib.get(attrib_name)
-                        if href:
+                    for attrib_name in graphic_node.attrib:
+                        if 'href' in attrib_name:
+                            href = graphic_node.attrib.get(attrib_name)
                             r[href] = id
-                            break
         return r
 
     def new_name_and_img_list(self, acron, alternative_id=''):
@@ -743,7 +792,7 @@ class XMLMetadata:
 
 class XMLPkgMker:
 
-    def __init__(self, src, scielo_pkg_files, pmc_pkg_files, acron, version_converter, entities_table=None):
+    def __init__(self, src, scielo_pkg_files, pmc_pkg_files, acron, default_version, entities_table=None):
         if os.path.isfile(src) and src.endswith('.xml'):
             self.src_path = os.path.dirname(src)
             self.xml_filename = os.path.basename(src)
@@ -757,14 +806,14 @@ class XMLPkgMker:
         self.pmc_pkg_files = pmc_pkg_files
 
         self.acron = acron
-        self.version_converter = version_converter
+        self.version_converter = _versions_.get(default_version, {}).get('sgml2xml')
         #_versions_[self.version]['sgm2xml']
 
         self.src_copy_path = tempfile.mkdtemp()
         self.new_name_path = tempfile.mkdtemp()
 
-        self.sci_validations = XMLValidations('scielo', self.entities_table)
-        self.pmc_validations = XMLValidations('pmc')
+        self.sci_validations = XMLValidations('scielo', default_version, self.entities_table)
+        self.pmc_validations = XMLValidations('pmc', default_version)
 
     def _normalize_xml(self, input_filename, alternative_id):
         """
@@ -774,9 +823,8 @@ class XMLPkgMker:
         content = f.read()
         f.close()
 
-        # convert_ent_to_char
+        # convert_ent_to_cha
         content = convert_ent_to_char(content, self.entities_table)
-
         # fix problems of XML format
         if input_filename.endswith('.sgm.xml'):
             content = XMLFixer().fix(content)
@@ -795,11 +843,20 @@ class XMLPkgMker:
         return [new_name, img_list]
 
     def _create_src_copy(self, selected_files):
+        failures = []
         for filename in selected_files:
             shutil.copyfile(self.src_path + '/' + filename, self.src_copy_path + '/' + filename)
-            if IMG_CONVERTER:
-                if (filename.endswith('.tiff') or filename.endswith('.eps') or filename.endswith('.tif')):
-                    img_to_jpeg(self.src_path + '/' + filename, self.src_copy_path)
+            if (filename.endswith('.tiff') or filename.endswith('.eps') or filename.endswith('.tif')):
+                jpeg = filename[0:filename.rfind('.')] + '.jpg'
+                if not os.path.exists(self.src_path + '/' + jpeg):
+                    if IMG_CONVERTER:
+                        if not img_to_jpeg(self.src_path + '/' + filename, self.src_copy_path):
+                            failures.append(self.src_path + '/' + filename)
+
+        if failures:
+            f = open(self.scielo_pkg_files.report_path + '/not_converted_to_jpg.txt', 'w')
+            f.write('\n'.join(failures))
+            f.close()
 
     def _add_related_files_to_packages(self, related_files, curr_name, new_name):
         # copy <xml_file>.???
@@ -817,14 +874,13 @@ class XMLPkgMker:
 
                 img_filename = self.src_copy_path + '/' + image_filename
                 new_filename = new_name + '-' + suffix + ext
-
                 #shutil.copyfile(img_filename, self.new_name_path + '/' + new_filename)
                 shutil.copyfile(img_filename, self.scielo_pkg_files.pkg_path + '/' + new_filename)
                 if not image_filename.endswith('.jpg'):
                     shutil.copyfile(img_filename, self.pmc_pkg_files.pkg_path + '/' + new_filename)
 
     def _make_packages_for_one_file(self, xml_file, curr_name, related_files):
-        reports = []
+        print(curr_name)
         new_name, img_list = self._normalize_xml(self.src_copy_path + '/' + xml_file, curr_name)
         xml_filename = self.new_name_path + '/' + new_name + '.xml'
 
@@ -838,16 +894,16 @@ class XMLPkgMker:
 
             img_path = self.scielo_pkg_files.pkg_path
 
-            reports = self.sci_validations.check_list(xml_filename, self.scielo_pkg_files, img_path)
+            self.sci_validations.check_list(xml_filename, self.scielo_pkg_files, img_path)
 
             if os.path.exists(self.scielo_pkg_files.xml_output):
                 #dtd_validation_report = self.report_path + '/' + curr_name + '.err.txt'
                 xml_filename = self.scielo_pkg_files.xml_output
 
-                reports += self.pmc_validations.check_list(xml_filename, self.pmc_pkg_files, img_path, xsl_new_name)
+                self.pmc_validations.check_list(xml_filename, self.pmc_pkg_files, img_path, xsl_new_name)
                 if not os.path.exists(self.pmc_pkg_files.xml_output):
                     f = open(self.scielo_pkg_files.dtd_validation_report, 'a+')
-                    f.write('\nUnable to create ' + self.scielo_pkg_files.xml_output)
+                    f.write('\nUnable to create ' + self.pmc_pkg_files.xml_output)
                     f.close()
             else:
                 f = open(self.scielo_pkg_files.dtd_validation_report, 'a+')
@@ -857,17 +913,13 @@ class XMLPkgMker:
             f = open(self.scielo_pkg_files.dtd_validation_report, 'a+')
             f.write('Unable to create ' + xml_filename)
             f.close()
-        if os.path.exists(self.scielo_pkg_files.dtd_validation_report) and not self.scielo_pkg_files.dtd_validation_report in reports:
-            reports.append(self.scielo_pkg_files.dtd_validation_report)
-
-        return reports
 
     def make_packages(self):
         if self.xml_filename:
             # only one file
             selected_files = [f for f in os.listdir(self.src_path) if f.startswith(self.xml_name)]
         else:
-            selected_files = [f for f in os.listdir(self.src_path) if os.path.isfile(self.src_path + '/' + f)] 
+            selected_files = [f for f in os.listdir(self.src_path) if os.path.isfile(self.src_path + '/' + f)]
             #self._clean_folders()
 
         self._create_src_copy(selected_files)
@@ -875,19 +927,19 @@ class XMLPkgMker:
         xml_files = [f for f in selected_files if f.endswith('.xml')]
         non_xml_files = [f for f in selected_files if not f.endswith('.xml')]
 
-        err_files = []
         for xml_file in xml_files:
             curr_name = xml_file.replace('.xml', '').replace('.sgm.xml', '')
             related_files = [f for f in non_xml_files if f.startswith(curr_name)]
             #xml_file, selected_files_path, normalized_pck_path, curr_name, related_files
 
-            reports = self._make_packages_for_one_file(xml_file, curr_name, related_files)
+            self._make_packages_for_one_file(xml_file, curr_name, related_files)
 
-            if reports:
-                print('Generated reports:\n' + '\n'.join(reports))
-                err_files += reports
-
-        print('Generated packages in:\n' + '\n'.join([self.scielo_pkg_files.pkg_path, self.pmc_pkg_files.pkg_path, ]))
+        print('\n=======')
+        print('\nGenerated packages in:\n' + '\n'.join([self.scielo_pkg_files.pkg_path, self.pmc_pkg_files.pkg_path, ]))
+        for report_path in set([self.scielo_pkg_files.report_path, self.pmc_pkg_files.report_path, ]):
+            if os.listdir(report_path):
+                print('\nReports in: ' + report_path)
+        print('\n==== END ===\n')
 
         shutil.rmtree(self.src_copy_path)
         shutil.rmtree(self.new_name_path)
@@ -914,25 +966,75 @@ def make_packages(src, acron, version='j1.0'):
         shutil.copyfile(sgmxml_filename, pmc_src + '/' + os.path.basename(sgmxml_filename))
         scielo_pkg_path = pmc_path + '/xml_package'
         pmc_pkg_path = pmc_path + '/pmc_package'
-        report_path = pmc_path + '/reports'
+        report_path = pmc_path + '/errors'
+        pmc_preview_path = sgmxml_path
+        sci_preview_path = sgmxml_path
         doit = True
     elif src.endswith('.xml') and os.path.isfile(src):
+        # xml packages maker
         path = os.path.dirname(src) + '_' + now
         scielo_pkg_path = path + '/scielo_package'
         pmc_pkg_path = path + '/pmc_package'
-        report_path = path + '/reports'
+        report_path = path + '/errors'
+        pmc_preview_path = None
+        sci_preview_path = scielo_pkg_path
         doit = True
     elif os.path.isdir(src) and any([True for f in os.listdir(src) if f.endswith('.xml')]):
+        # xml packages maker
         path = src + '_' + now
         scielo_pkg_path = path + '/scielo_package'
         pmc_pkg_path = path + '/pmc_package'
-        report_path = path + '/reports'
+        report_path = path + '/errors'
+        pmc_preview_path = None
+        sci_preview_path = scielo_pkg_path
         doit = True
     if doit:
-        scielo_pkg_files = ValidationFiles(scielo_pkg_path, report_path)
-        pmc_pkg_files = ValidationFiles(pmc_pkg_path, report_path, '.pmc')
-        xml_pkg_mker = XMLPkgMker(src, scielo_pkg_files, pmc_pkg_files, acron, _versions_.get(version, {}).get('sgml2xml'), entities_table)
+        scielo_pkg_files = ValidationFiles(scielo_pkg_path, report_path, sci_preview_path)
+        pmc_pkg_files = ValidationFiles(pmc_pkg_path, report_path, pmc_preview_path, '.pmc')
+        xml_pkg_mker = XMLPkgMker(src, scielo_pkg_files, pmc_pkg_files, acron, version, entities_table)
         xml_pkg_mker.make_packages()
+
+
+def _call_make_packages(args, version):
+    args = [arg.replace('\\', '/') for arg in args]
+    script_name = args[0]
+
+    if len(args) == 3:
+        ign, src, acron = args
+        if (os.path.isfile(src) and src.endswith('.xml')) or (os.path.isdir(src) and [f for f in os.listdir(src) if f.endswith('.xml')]):
+            make_packages(src, acron, version)
+        else:
+            print('\n===== ATTENTION =====\n')
+            print('ERROR: Incorrect parameters')
+            print('\nUsage:')
+            print('python ' + script_name + ' <src> <acron>')
+            print('where:')
+            print('  <src> = XML filename or path which contains XML files')
+            print('  <acron> = journal acronym')
+
+            print(src + ' is not a folder neither a XML file')
+    elif len(args) == 2:
+        ign, src = args
+        if src.endswith('.sgm.xml'):
+            make_packages(src, '', version)
+    else:
+        print('ERROR: Incorrect parameters')
+        print('\nUsage:')
+        print('python ' + script_name + ' <src> <acron>')
+        print('where:')
+        print('  <src> = XML filename or path which contains XML files')
+        print('  <acron> = journal acronym')
+
+
+def call_make_packages(args, version):
+    if DEBUG == 'ON':
+        _call_make_packages(args, version)
+    else:
+        try:
+            _call_make_packages(args, version)
+        except Exception as inst:
+            print('\n===== ATTENTION =====\nThere was an unexpected error.\n Please, report it to roberta.takenaka@scielo.org or at https://github.com/scieloorg/PC-Programs/issues')
+            print(inst)
 
 
 ###

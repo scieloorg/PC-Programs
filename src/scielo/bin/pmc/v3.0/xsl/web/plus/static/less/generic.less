@@ -1,0 +1,177 @@
+::selection {
+	background: #86f23e;
+}
+input::selection {
+	background: #86f23e;
+}
+html, body {
+	height: 100%;
+}
+sup.xref {
+	display: inline-block;
+	padding: 4px 6px 3px;
+	font-family: @sansFontFamily !important;
+	font-size: 10px;
+	text-align: center;
+	line-height: 100%;
+	color: @white;
+	background: #d9ae30;		
+	border-radius: 12px;
+	vertical-align: top;
+	margin-top: 3px;
+
+	&::selection {
+		background: #d9ae30;
+	}
+	&.big {
+		margin-top: 0px;
+		vertical-align: middle;
+		font-size: 12px;
+	}
+}
+.dropdown {
+	&:hover > ul.dropdown-menu {
+		display: block;
+	}
+
+	.dropdown-menu {
+		font-family: @sansFontFamily;
+
+		& > li > a {
+			padding-top: 7px;
+			padding-bottom: 7px;
+		}
+	}
+}
+.tooltip {
+	font-family: @sansFontFamily;
+	font-size: 1em;
+	font-weight: normal;
+}
+.bIcon {
+	min-height: 25px;
+	padding-left: 30px;
+	background-image: url(../img/glyphicons-blue.png);
+	background-repeat: no-repeat;
+
+	&.link {
+		background-position: 0 0;
+	}
+	&.stats {
+		background-position: 0 -25px;
+	}
+	&.author {
+		background-position: 0 -50px;
+	}
+	&.copyright {
+		background-position: 0 -75px;
+	}
+	&.figref {
+		padding-left: 25px;
+		background-position: 0px -102px;	
+		white-space: nowrap;
+	}
+	&.formularef {
+		padding-left: 25px;
+		background-position: 0px -127px;	
+		white-space: nowrap;
+	}
+	&.miniLink {
+		padding-left: 25px;
+		background-position: 0px -152px;	
+		white-space: nowrap;
+		font-weight: bold;
+	}
+}
+.yIcon {
+	min-height: 40px;
+	padding-left: 40px;
+	background-image: url(../img/glyphicons-yellow.png);
+	background-repeat: no-repeat;
+
+	&.calendar {
+		background-position: 0 0;
+	}
+	&.pdf {
+		background-position: 0 -40px;
+	}
+	&.xml {
+		background-position: 0 -80px;
+	}
+	&.refs {
+		background-position: 0 -120px;
+	}
+	&.translate {
+		background-position: 0 -160px;
+	}
+	&.send {
+		background-position: 0 -200px;
+	}
+	&.social {
+		background-position: 0 -240px;
+	}
+	&.sections {
+		background-position: 0 -280px;
+	}
+	&.related {
+		background-position: 0 -320px;
+	}
+}
+.gIcon {
+	min-height: 40px;
+	padding-left: 40px;
+	background-image: url(../img/glyphicons-gray.png);
+	background-repeat: no-repeat;
+
+	&.calendar {
+		background-position: 0 0;
+	}
+	&.pdf {
+		background-position: 0 -40px;
+	}
+	&.xml {
+		background-position: 0 -80px;
+	}
+	&.refs {
+		background-position: 0 -120px;
+	}
+	&.translate {
+		background-position: 0 -160px;
+	}
+	&.send {
+		background-position: 0 -200px;
+	}
+	&.social {
+		background-position: 0 -240px;
+	}
+	&.sections {
+		background-position: 0 -280px;
+	}
+	&.related {
+		background-position: 0 -320px;
+	}
+	&.soft-contrast {
+		background-position: 0 -400px;
+	}
+	&.high-contrast {
+		background-position: 0 -440px;
+	}
+	&.ihigh-contrast {
+		background-position: 0 -480px;
+	}
+	&.top {
+		background-position: 0 -520px;
+	}
+}
+#gradient {
+  .vertical(@startColor: #555, @endColor: #333) {
+    background-color: mix(@startColor, @endColor, 60%);
+    background-image: -moz-linear-gradient(top, @startColor, @endColor); // FF 3.6+
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@startColor), to(@endColor)); // Safari 4+, Chrome 2+
+    background-image: -webkit-linear-gradient(top, @startColor, @endColor); // Safari 5.1+, Chrome 10+
+    background-image: -o-linear-gradient(top, @startColor, @endColor); // Opera 11.10
+    background-image: linear-gradient(to bottom, @startColor, @endColor); // Standard, IE10
+    background-repeat: repeat-x;
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down
+  }
+}
