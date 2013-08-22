@@ -137,7 +137,7 @@ class JournalIssue:
             label += 'n' + self.number
         if self.suppl != '':
             label += 's' + self.suppl 
-        if self.compl != ''
+        if self.compl != '':
             label += self.compl
         self.name = label
         self.json_data = {}

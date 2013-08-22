@@ -63,10 +63,10 @@ def configure_versions_location():
     version_configuration['j1.0']['scielo']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_FILENAME}">'
 
     version_configuration['j1.0']['scielo']['dtd'] = PMC_PATH + '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
-    version_configuration['j1.0']['scielo']['css'] = PMC_PATH + '/j1.0/xsl/previewers/scielo.css'
+    version_configuration['j1.0']['scielo']['css'] = version_configuration['3.0']['scielo']['css']
     version_configuration['j1.0']['scielo']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/scielo-style/stylechecker.xsl'
     version_configuration['j1.0']['scielo']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/style-reporter.xsl'
-    version_configuration['j1.0']['scielo']['xsl_preview'] = version_configuration['3.0']['pmc']['xsl_preview']
+    version_configuration['j1.0']['scielo']['xsl_preview'] = version_configuration['3.0']['scielo']['xsl_preview']
     version_configuration['j1.0']['scielo']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/xml2pmc.xsl'
 
     version_configuration['j1.0']['pmc'] = {}
@@ -199,10 +199,12 @@ def convert_ent_to_char(content, entities_table=None):
 
 ### IMAGES
 def img_to_jpeg(image_filename, jpg_path, replace=False):
+    r = True
     if image_filename.endswith('.tiff') or image_filename.endswith('.eps') or image_filename.endswith('.tif'):
         image_name = os.path.basename(image_filename)
         jpg_filename = jpg_path + '/' + image_name[0:image_name.rfind('.')] + '.jpg'
-
+        print(image_filename)
+        print(jpg_filename)
         if not os.path.exists(jpg_filename) or replace:
             try:
                 im = Image.open(image_filename)
@@ -657,40 +659,39 @@ class XMLMetadata:
     def __init__(self, content):
         self.root = etree.parse(StringIO(content))
 
+    def _fix_issue_number(self, num, suppl=''):
+        if num != '':
+            if 'pr' in num:
+                num = num.replace(' pr', '')
+            else:
+                parts = num.split()
+                if len(parts) == 3:
+                    num = parts[0]
+                    suppl = parts[2]
+                elif len(parts) == 2:
+                    if 'sup' in parts[1].lower():
+                        num, suppl = parts
+                    elif 'sup' in parts[0].lower():
+                        num = ''
+                        suppl = parts[1]
+
+        return [num, suppl]
+
     def _meta_xml(self, node):
         issn, volid, issueno, suppl, fpage, order = ['', '', '', '', '', '']
         issn = self.root.findtext('.//front/journal-meta/issn[1]')
         volid = node.findtext('./volume')
         issueno = node.findtext('./issue')
         suppl = node.findtext('./supplement')
-        supplnum = ''
-        supplvol = ''
-        if not suppl and 'sup' in issueno.lower():
-            n = issueno.strip().split()
-            if len(n) == 3:
-                # <issue>n suppl s</issue>
-                issueno = n[0]
-                supplnum = n[2]
-            elif len(n) == 2:
 
-                if 'sup' in n[0]:
-                    # <issue>suppl s</issue>
-                    issueno = ''
-                    supplvol = n[1]
-                else:
-                    # <issue>n suppl</issue>
-                    issueno = n[0]
-                    supplnum = '0'
-            elif len(n) == 1:
-                # <issue>suppl</issue>
-                supplvol = '0'
-        if supplnum:
-            suppl = supplnum
-        elif supplvol:
-            suppl = supplvol
-        else:
+        if not volid:
+            volid = ''
+        if not issueno:
+            issueno = ''
+        if not suppl:
             suppl = ''
 
+        issueno, suppl = self._fix_issue_number(issueno, suppl)
         order = node.findtext('.//article-id[@pub-id-type="other"]')
         page = node.find('./fpage')
         if page.attrib.get('seq'):
@@ -853,8 +854,12 @@ class XMLPkgMker:
                 jpeg = filename[0:filename.rfind('.')] + '.jpg'
                 if not os.path.exists(self.src_path + '/' + jpeg):
                     if IMG_CONVERTER:
+                        print(self.src_path + '/' + filename)
+                        print(self.src_copy_path)
                         if not img_to_jpeg(self.src_path + '/' + filename, self.src_copy_path):
                             failures.append(self.src_path + '/' + filename)
+                    else:
+                        failures.append(self.src_path + '/' + filename)
 
         if failures:
             f = open(self.scielo_pkg_files.report_path + '/not_converted_to_jpg.txt', 'w')
@@ -957,7 +962,7 @@ def make_packages(src, acron, version='j1.0'):
         version = 'j1.0'
     doit = False
     from datetime import datetime
-    now = datetime.now().isoformat().replace(':', '_').replace('T', '_')
+    now = datetime.now().isoformat().replace(':', '').replace('T', '').replace('-', '')
     now = now[0:now.find('.')]
     if src.endswith('.sgm.xml'):
         # src = serial/acron/issue/pmc/pmc_work/article/file.sgm.xml
