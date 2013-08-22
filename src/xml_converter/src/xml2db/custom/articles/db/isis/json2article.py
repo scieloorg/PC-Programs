@@ -26,6 +26,9 @@ def normalized_issue_id(json):
     suppl = format(json, '132')
     compl = format(json, '41')
 
+    if ' pr' == num[-3:]:
+        num = num[0:-3]
+        compl = 'pr'
     n = num.lower().replace('(', '').replace(')', '').split('suppl')
     if len(n) == 2:
         # suppl
@@ -55,6 +58,8 @@ def reset_issue_id(json_data):
     else:
         if '32' in json_data.keys():
             del json_data['32']
+    if compl != '':
+        json_data['41'] = compl
     return json_data
 
 
@@ -428,7 +433,6 @@ class JSON_Article:
         return e
 
     def issuelabel(self):
-        #issue_id = normalized_issue_id(self.json_data['f'])
         issue_id = (self.json_data['f'].get('31', ''), self.json_data['f'].get('32', ''), self.json_data['f'].get('131', self.json_data['f'].get('132', '')), self.json_data['f'].get('41', ''))
         prefix = ['v', 'n', 's', '']
         r = ''
