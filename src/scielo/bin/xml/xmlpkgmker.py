@@ -52,8 +52,8 @@ def configure_versions_location():
     version_configuration['3.0']['pmc']['css'] = PMC_PATH + '/v3.0/xsl/jpub/jpub-preview.css'
     version_configuration['3.0']['pmc']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/nlm-stylechecker.xsl'
     version_configuration['3.0']['pmc']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
-    #version_configuration['3.0']['pmc']['xsl_preview'] = [PMC_PATH + '/v3.0/xsl/jpub/citations-prep/jpub3-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
-    version_configuration['3.0']['pmc']['xsl_preview'] = None
+    version_configuration['3.0']['pmc']['xsl_preview'] = [PMC_PATH + '/v3.0/xsl/jpub/citations-prep/jpub3-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
+    #version_configuration['3.0']['pmc']['xsl_preview'] = None
     version_configuration['3.0']['pmc']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/pmc.xsl'
 
     version_configuration['j1.0'] = {}
@@ -66,7 +66,7 @@ def configure_versions_location():
     version_configuration['j1.0']['scielo']['css'] = PMC_PATH + '/j1.0/xsl/previewers/scielo.css'
     version_configuration['j1.0']['scielo']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/scielo-style/stylechecker.xsl'
     version_configuration['j1.0']['scielo']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/style-reporter.xsl'
-    version_configuration['j1.0']['scielo']['xsl_preview'] = PMC_PATH + '/j1.0/xsl/previewers/scielo-html-novo.xsl'
+    version_configuration['j1.0']['scielo']['xsl_preview'] = version_configuration['3.0']['pmc']['xsl_preview']
     version_configuration['j1.0']['scielo']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/xml2pmc.xsl'
 
     version_configuration['j1.0']['pmc'] = {}
@@ -75,8 +75,8 @@ def configure_versions_location():
     version_configuration['j1.0']['pmc']['css'] = version_configuration['3.0']['pmc']['css']
     version_configuration['j1.0']['pmc']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/nlm-stylechecker.xsl'
     version_configuration['j1.0']['pmc']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/style-reporter.xsl'
-    #version_configuration['j1.0']['pmc']['xsl_preview'] = version_configuration['3.0']['pmc']['xsl_preview']
-    version_configuration['j1.0']['pmc']['xsl_preview'] = None
+    version_configuration['j1.0']['pmc']['xsl_preview'] = version_configuration['3.0']['pmc']['xsl_preview']
+    #version_configuration['j1.0']['pmc']['xsl_preview'] = None
     version_configuration['j1.0']['pmc']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/pmc.xsl'
     return version_configuration
 
@@ -479,6 +479,9 @@ class ValidationFiles:
             os.makedirs(pkg_path)
         if not os.path.exists(report_path):
             os.makedirs(report_path)
+        if preview_path:
+            if not os.path.exists(preview_path):
+                os.makedirs(preview_path)
 
     def name(self, curr_name, new_name):
         self.dtd_validation_report = self.report_path + '/' + curr_name + self.suffix + '.dtd.txt'
@@ -868,8 +871,12 @@ class XMLPkgMker:
 
     def _add_img_to_packages(self, related_files, img_list, new_name):
         # copy image files which starts with <href>.
+        #print(related_files)
         for href, suffix in img_list.items():
+            #print('href=' + href)
+            #print([f for f in related_files if f.startswith(href + '.')])
             for image_filename in [f for f in related_files if f.startswith(href + '.')]:
+                #print('  img file: ' + image_filename)
                 ext = image_filename[image_filename.rfind('.'):]
 
                 img_filename = self.src_copy_path + '/' + image_filename
@@ -977,7 +984,7 @@ def make_packages(src, acron, version='j1.0'):
         pmc_pkg_path = path + '/pmc_package'
         report_path = path + '/errors'
         pmc_preview_path = None
-        sci_preview_path = scielo_pkg_path
+        sci_preview_path = path + '/preview'
         doit = True
     elif os.path.isdir(src) and any([True for f in os.listdir(src) if f.endswith('.xml')]):
         # xml packages maker
@@ -986,7 +993,7 @@ def make_packages(src, acron, version='j1.0'):
         pmc_pkg_path = path + '/pmc_package'
         report_path = path + '/errors'
         pmc_preview_path = None
-        sci_preview_path = scielo_pkg_path
+        sci_preview_path = path + '/preview'
         doit = True
     if doit:
         scielo_pkg_files = ValidationFiles(scielo_pkg_path, report_path, sci_preview_path)
