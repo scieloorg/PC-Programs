@@ -375,7 +375,7 @@ class InformationAnalyst:
             publication_title = self.json2model.publication_title
             registered = None
             if len(publication_title) > 0:
-                registered = self.registered_titles.return_registered(Box(publication_title))
+                registered = self.registered_titles.return_registered(publication_title)
             
             if registered == None:
                 package.report.write('Invalid publication title:' + publication_title, True, True)
@@ -385,7 +385,7 @@ class InformationAnalyst:
                 selected_folder = self.check_folder(document_folder, package)
                 if selected_folder.status == 'registered':
                     specific_document = self.json2model.return_doc(selected_folder)
-                        
+
                     if specific_document != None:
                         if not specific_document.doi == '':
                             if not 'ahead' in specific_document.issue.name:

@@ -4,38 +4,32 @@ import os
 from datetime import datetime
 from reuse.items_and_id import Items, id_generate
 
+
 class AllFolders:
     def __init__(self, registered, not_registered, all_folders):
         self.registered = registered
         self.not_registered = not_registered
         self.all_folders = all_folders
-        
-    def template(self, folder):        
-                
-        found = self.registered.get(folder.id)
+
+    def template(self, folder):
+        found = self.registered.find(folder)
         #print('registered')
-        if found == None:
+        if found is None:
             # folder is not registered (in folder db)
-            found = self.not_registered.get(folder.id)
+            found = self.not_registered.find(folder)
             #print('not registered')
-            if found == None:
+            if found is None:
                 # folder is new
                 folder.status = 'new'
-                self.not_registered.insert(folder, False)    
-                found = folder             
+                self.not_registered.insert(folder, False)
+                found = folder
             else:
                 # folder was at least one processed
-                found.status = 'not_registered'        
+                found.status = 'not_registered'
         else:
             found.status = 'registered'
-        #print(found.display())
-        #print(found.json_data)
-        #print(found.toc.return_json())
-        
-        
-        
-        return found
 
+        return found
 
     def return_incoherences(self, registered, in_the_file):
 
@@ -57,10 +51,7 @@ class AllFolders:
                 
         return errors
 
-class Folders(Items):
-    def __init__(self):
-        Items.__init__(self)
-        
+
 class Section:
     def __init__(self, title, code = '', lang = 'en'):
         section_code = self.normalized_title(title)
@@ -76,64 +67,44 @@ class Section:
         return id_generate( title) 
 
     def normalized_title(self, title):
-        return title.replace(' ','').upper()
+        return title.replace(' ', '').upper()
 
-class TOC(Items):
+
+class TOC:
     def __init__(self):
-        Items.__init__(self)
-
-    
+        self.section_by_title = {}
+        self.section_by_code = {}
 
     def insert(self, item, replace):
-
         section = self.return_section(item)
-        if section == None:
-            section = Items.insert(self, item, replace)
-        else:
-            if replace:
-                section = Items.insert(self, item, replace)
-        return section
+        if section is None or replace:
+            test = item.title.upper().replace(' ', '')
+            self.section_by_title[test] = item
 
+            if item.lang != '' and item.code != '':
+                self.section_by_code[item.lang + item.code] = item
+        return section
 
     def return_json(self):
         r = []
-        for key, section in self.elements.items():
-            r.append({'l' : section.lang, 'c': section.code, 't': section.title})
+        for key, section in self.section_by_title.items():
+            r.append({'l': section.lang, 'c': section.code, 't': section.title})
         return r
 
     def return_section(self, _section):
-        test = _section.normalized_title(_section.title)
-        print( 'teste secoes: ' + _section.title + ' (' + _section.code + ')')
-        
-        
-        
-        
         section = None
-        for key, sec in self.elements.items():
-            
-            print(sec.code + ' - '  + sec.title)
-            if sec.normalized_title(sec.title) == test:
-                section = sec
-                break
-            elif sec.code == _section.code:
-                section = sec
-                break
-        if section != None:
-            print(_section.title)
-            print(_section.code)
-            print(section.title)
-            print(section.code)
-            print('matched')
-        else:
-            print('no match')
+        if _section.title:
+            test = _section.title.upper().replace(' ', '')
+            section = self.section_by_title.get(test)
+        if not section and _section.code != '' and _section.lang != '':
+            section = self.section_by_code.get(_section.lang + _section.code)
         return section
 
     def display(self):
-        
-        for key, sec in self.elements.items():
-            print(sec.code + ' - '  + sec.title)
-            
-        
+        for key, sec in self.section_by_title.items():
+            print(sec.code + ' - ' + sec.title)
+
+
 class Box:
     def __init__(self, box):
         self.box = box
@@ -141,16 +112,16 @@ class Box:
         self.acron = box.acron
         self.title = box.title
 
-    
 
 class Document:
     def __init__(self, document):
-        self.document = document 
+        self.document = document
         self.section = document.section
         self.folder = document.folder
 
     def display(self):
         return self.document.display()
+
 
 # abstract of issue
 class Folder:
@@ -162,38 +133,34 @@ class Folder:
         self.id = self.folder.id 
         self.documents = self.folder.documents
         self.json_data = self.folder.json_data
-    
+
+
 class Documents(Items):
     def __init__(self):
-        Items.__init__(self)
-        
-        
-    @property
-    def count(self):
-        return Items.count(self)
-           
+        super(Documents, self).__init__()
+
+    def key(self, item):
+        return item.key.upper().replace(' ', '')
+
+
+class Folders(Items):
+    def __init__(self):
+        super(Folders, self).__init__()
+
 
 # abstraction of Journals
 class Boxes(Items):
     def __init__(self):
-        Items.__init__(self)
+        super(Boxes, self).__init__()
 
-    
-    def find(self, box_label):
-        return self.get(Box(box_label).id)
+    def key(self, item):
+        return item.title.upper().replace(' ', '')
 
-   
-    def return_registered(self, box_label, report):
-        if len(box_label) == 0:
+    def return_registered(self, box, report):
+        if box.title == '':
             report.write('Missing label in json', True, True)
         else:
-            box = self.find(box_label)
-            if box == None:
-                labels = ''
-                for k,t in Items.elements.items():
-                    labels += ',' + t.title
-                labels = labels[1:]
-                report.write(box_label + ' is not registered. '+ '\n' + labels , True, True)
+            box = self.find(box)
+            if box is None:
+                report.write(box.title + ' is not registered.', True, True)
         return box
-
-        

@@ -5,33 +5,27 @@ from reuse.items_and_id import id_generate, Items
 from xml2db.box_folder_document import Documents, TOC
 from datetime import datetime
 
+
 class JournalsList(Items):
     def __init__(self):
-        Items.__init__(self)
+        super(JournalsList, self).__init__()
 
-    
-    def find_journal(self, journal_title):
-        r = self.get(Journal(journal_title).id)
-        
-        return r
+    def key(self, item):
+        return item.title.upper().replace(' ', '')
 
-    def return_registered(self, box_label):
-        box = self.find_journal(box_label)
-        if not box == None:
-            if not box.title == box_label:
-                box = None
-        if box == None:
-            
-            for k,t in self.elements.items():
-                if t.abbrev_title == box_label:
-                    box = t
-                    break
-        return box
+    def return_registered(self, journal_title):
+        return self.find(Journal(journal_title))
+
 
 class JournalIssuesList(Items):
     def __init__(self):
-        Items.__init__(self)
-    
+        super(JournalIssuesList, self).__init__()
+
+    def key(self, item):
+        k = item.journal.title + item.name
+        return k.upper().replace(' ', '')
+
+
 class AllIssues:
     def __init__(self):
         pass
@@ -174,9 +168,10 @@ class JournalIssue:
         self.json_data['65'] = self.dateiso
         return self.json_data
 
+
 class Article:
-    def __init__(self, data4id, first_page, last_page):
-        self.id = self.generate_id(data4id)
+    def __init__(self, doi, order, first_page, last_page):
+        #self.id = self.generate_id(data4id)
         self.issue = None
         self.json_data = {}
         self.xml_filename = ''
@@ -185,10 +180,18 @@ class Article:
         self.first_page = first_page
         self.last_page = last_page
         self.section = None
-        self.doi = ''
+        self.doi = doi
+        self.order = order
         self.display_data = {}
         self.display_order = []
         self.previous_id = ''
+
+    @property
+    def key(self):
+        if self.doi:
+            return self.doi
+        else:
+            return self.issue.journal.title + self.issue.name + self.order
 
     @property
     def folder(self):

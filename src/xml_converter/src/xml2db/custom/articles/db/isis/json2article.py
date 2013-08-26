@@ -84,8 +84,9 @@ def return_issues_list(json_issues, journals):
     json_issue = JSON_Issue()
     for json in json_issues:
         json_issue.load(json)
-        j = journals.find_journal(json_issue.journal_title)
-        if j != None:
+        j = Journal(json_issue.journal_title)
+        j = journals.find(j)
+        if not j is None:
             json_issue.load(json)
             issue = json_issue.return_issue(j)
             #print(json_issue.journal_title + '.')
@@ -364,8 +365,6 @@ class JSON_Article:
 
     def return_article(self):
         doi = return_singleval(self.json_data['f'], '237')
-
-
         titles = return_multval(self.json_data['f'], '12')
         authors = return_multval(self.json_data['f'], '10')
         
@@ -376,7 +375,7 @@ class JSON_Article:
         
         
         #article = Article(doi, first_page, last_page)
-        article = Article(doi, return_singleval(self.json_data['f'], '121'))        
+        article = Article(doi, return_singleval(self.json_data['f'], '121'), first_page, last_page)
 
         titles = return_multval(self.json_data['f'], '12')
         norm_titles = []
