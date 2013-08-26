@@ -171,6 +171,9 @@ border-top: 1px solid;
 	font-size: 90%;
 	
 }
+.fn {
+    font-size: 80%;
+}
 .fn-author {}
 
 .corresp {}

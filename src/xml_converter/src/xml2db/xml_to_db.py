@@ -1,13 +1,17 @@
 import os, shutil, sys
 from reuse.input_output.report import Report 
 
-from xml2db.box_folder_document import Document, Documents 
+from xml2db.box_folder_document import Document, Documents, Box
 from reuse.files.compressed_file import CompressedFile
 
 from reuse.files.name_file import add_date_to_filename
 
 xml_tree = None
 
+import xmlpkgmker
+
+xmlpkgmker.DEBUG = 'ON'
+xml_validations = xmlpkgmker.XMLValidations('scielo', None, xmlpkgmker.entities_table)
 
 
 class QueueOrganizer:
@@ -16,7 +20,6 @@ class QueueOrganizer:
         self.report = report
         self.queue_path = queue_path
         self.compressed_file_manager = CompressedFile(self.report)
-
 
     def archive_and_extract_files(self, archive_path, work_path, report_sender):   
 
@@ -284,9 +287,38 @@ class InformationAnalyst:
             #self.reports_to_attach.append(validation_path + '/' + os.path.basename(xml_filename))
             self.reports_to_attach.append(xml_filename)
         return is_well_formed
-        
 
-    def check_xml_file(self, xml_filename, package):               
+    def check_xml_file(self, xml_filename, package):
+        """
+        """
+        validation_path = package.package_path.replace('/work/', '/4check/')
+        xml_pkg_path = validation_path
+        report_path = validation_path
+        preview_path = validation_path
+
+        curr_name = os.path.basename(xml_filename).replace('.xml', '')
+        pkg_files = xmlpkgmker.ValidationFiles(xml_pkg_path, report_path, preview_path)
+        pkg_files.name(curr_name, new_name=curr_name)
+        pkg_files.html_preview = None
+        pkg_files.xml_output = None
+        img_path = ''
+
+        is_dtd_valid, is_style_valid = xml_validations.check_list(xml_filename, pkg_files, img_path)
+        if is_dtd_valid:
+            package.report.write('is_valid_xml')
+            if not is_style_valid:
+                package.report.write('not is_valid_style')
+                if os.path.exists(pkg_files.style_checker_report):
+                    package.report.write('XML file has style errors. Read the attached file ' + os.path.basename(pkg_files.style_checker_report), True, True)
+                    self.reports_to_attach.append(pkg_files.style_checker_report)
+        else:
+            package.report.write('not is_valid_xml')
+            if os.path.exists(pkg_files.dtd_validation_report):
+                package.report.write('XML file is not according to DTD. Read the attached file ' + os.path.basename(pkg_files.dtd_validation_report), True, True)
+                self.reports_to_attach.append(pkg_files.dtd_validation_report)
+        return is_style_valid
+
+    def old_check_xml_file(self, xml_filename, package):               
         validation_path = package.package_path.replace('/work/', '/4check/')
         
         scielo_html_validation_report  = validation_path + '/' + os.path.basename(xml_filename).replace('.xml', '.rep.html')
@@ -343,7 +375,7 @@ class InformationAnalyst:
             publication_title = self.json2model.publication_title
             registered = None
             if len(publication_title) > 0:
-                registered = self.registered_titles.return_registered(publication_title)
+                registered = self.registered_titles.return_registered(Box(publication_title))
             
             if registered == None:
                 package.report.write('Invalid publication title:' + publication_title, True, True)
@@ -369,7 +401,7 @@ class InformationAnalyst:
                         if generic_document.folder.documents == None:
                             generic_document.folder.documents = Documents()
 
-                        if specific_document.doi == '':
+                        if specific_document.doi == '' and specific_document.issue.name[-2:] != 'pr':
                             package.report.write('Missing DOI, so it will not be loaded.', True, True, False)
 
                         else:

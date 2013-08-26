@@ -4,7 +4,7 @@
     <xsl:import href="../jpub/main/jpub3-html.xsl"/>
     <xsl:param name="path_img" select="'/'"/>
     <xsl:param name="css" select="''"/>
-    
+  <xsl:variable name="TXTLANG"/>
     <xsl:template match="graphic | inline-graphic">
         <xsl:apply-templates/>
         <img src="{$path_img}/{@xlink:href}.jpg">

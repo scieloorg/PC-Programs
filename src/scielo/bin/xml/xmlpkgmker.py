@@ -203,8 +203,7 @@ def img_to_jpeg(image_filename, jpg_path, replace=False):
     if image_filename.endswith('.tiff') or image_filename.endswith('.eps') or image_filename.endswith('.tif'):
         image_name = os.path.basename(image_filename)
         jpg_filename = jpg_path + '/' + image_name[0:image_name.rfind('.')] + '.jpg'
-        print(image_filename)
-        print(jpg_filename)
+
         if not os.path.exists(jpg_filename) or replace:
             try:
                 im = Image.open(image_filename)
@@ -291,9 +290,15 @@ def xml_validate(xml_filename, result_filename, dtd_validation=False):
 
 def xml_is_well_formed(content):
     if content[0:1] == '<':
-        return etree.parse(StringIO(content))
+        try:
+            return etree.parse(StringIO(content))
+        except:
+            return None
     else:
-        return etree.parse(content)
+        try:
+            return etree.parse(content)
+        except:
+            return None
 
 
 def xml_content_transform(content, xsl_filename):
@@ -504,7 +509,8 @@ class XMLValidations:
         self.pkg_name = pkg_name
         self.entities_table = entities_table
         self.default_version = default_version
-        self.select_version(default_version)
+        if default_version:
+            self.select_version(default_version)
         #dtd_filename, xsl_prep_report, xsl_report, xsl_preview, css_filename
 
     def select_version(self, dtd_version):
@@ -601,6 +607,7 @@ class XMLValidations:
 
     def _check_list(self, xml_filename, pkg_files, img_path, xsl_param_new_name=''):
         #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
+        is_dtd_valid, is_style_valid = [False, False]
         f = open(xml_filename, 'r')
         content = f.read()
         f.close()
@@ -854,8 +861,6 @@ class XMLPkgMker:
                 jpeg = filename[0:filename.rfind('.')] + '.jpg'
                 if not os.path.exists(self.src_path + '/' + jpeg):
                     if IMG_CONVERTER:
-                        print(self.src_path + '/' + filename)
-                        print(self.src_copy_path)
                         if not img_to_jpeg(self.src_path + '/' + filename, self.src_copy_path):
                             failures.append(self.src_path + '/' + filename)
                     else:
@@ -879,7 +884,6 @@ class XMLPkgMker:
         #print(related_files)
         for href, suffix in img_list.items():
             #print('href=' + href)
-            #print([f for f in related_files if f.startswith(href + '.')])
             for image_filename in [f for f in related_files if f.startswith(href + '.')]:
                 #print('  img file: ' + image_filename)
                 ext = image_filename[image_filename.rfind('.'):]
@@ -937,7 +941,7 @@ class XMLPkgMker:
         self._create_src_copy(selected_files)
 
         xml_files = [f for f in selected_files if f.endswith('.xml')]
-        non_xml_files = [f for f in selected_files if not f.endswith('.xml')]
+        non_xml_files = [f for f in os.listdir(self.src_copy_path) if not f.endswith('.xml')]
 
         for xml_file in xml_files:
             curr_name = xml_file.replace('.xml', '').replace('.sgm.xml', '')

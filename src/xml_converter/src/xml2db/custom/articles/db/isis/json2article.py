@@ -73,9 +73,10 @@ def return_journals_list(json):
         j = Journal(json_title.journal_title, json_title.journal_issn_id, json_title.journal_acron)
         j.publishers = json_title.publishers
         j.abbrev_title = json_title.journal_abbrev_title
-        
+
         journal_list.insert(j, False)
     return journal_list
+
 
 def return_issues_list(json_issues, journals):
     issues_list = JournalIssuesList()
@@ -374,9 +375,8 @@ class JSON_Article:
             first_page = elocation   
         
         
-        article = Article(doi, first_page, last_page)
-        article.doi = doi
-        
+        #article = Article(doi, first_page, last_page)
+        article = Article(doi, return_singleval(self.json_data['f'], '121'))        
 
         titles = return_multval(self.json_data['f'], '12')
         norm_titles = []
@@ -1225,7 +1225,7 @@ class JSON_Issue:
             section = Section(title, code, lang)
             issue.toc.insert(section, True)
 
-            issue.toc.display()
+            #issue.toc.display()
 
         issue.json_data = i_record
         return issue
