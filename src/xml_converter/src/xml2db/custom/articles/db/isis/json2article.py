@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import json
 from xml2db.json_functions import return_multval, return_singleval
 
 from reuse.items_and_id import id_generate, Items
@@ -637,10 +638,9 @@ class JSON_Article:
             self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
             del self.json_data['f']['epub']
         # ja esta normalizada self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '64', '65', '64')
-        
 
         self.json_data['h'] = self.json_normalizer.format_for_indexing(self.json_data['f'])
-        self.json_data['l'] = self.json_normalizer.format_for_indexing(self.json_data['h'])                
+        self.json_data['l'] = self.json_normalizer.format_for_indexing(self.json_data['h'])     
         #self.json_data['h'] = self.json_data['f']
         #self.json_data['l'] = self.json_data['f']
     
@@ -882,7 +882,9 @@ class JSON_Article:
             ack = return_multval(self.json_data['f'], '102')
             if len(ack) > 0:
                 warnings.append('WARNING: Check if there is funding data in ack \n ' + ack[0] + '\nIf yes, it must be in funding-group tag.')
-
+        else:
+            if self.json_data['f'].get('102', None):
+                del self.json_data['f']['102']
         
         return warnings
 
