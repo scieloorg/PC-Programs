@@ -15,7 +15,7 @@ except:
 
 #from datetime import datetime
 
-DEBUG = 'OFF'
+DEBUG = 'ON'
 # global variables
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
 
@@ -75,7 +75,7 @@ def configure_versions_location():
     version_configuration['j1.0']['pmc']['css'] = version_configuration['3.0']['pmc']['css']
     version_configuration['j1.0']['pmc']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/nlm-stylechecker.xsl'
     version_configuration['j1.0']['pmc']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.2/style-reporter.xsl'
-    version_configuration['j1.0']['pmc']['xsl_preview'] = version_configuration['3.0']['pmc']['xsl_preview']
+    version_configuration['j1.0']['pmc']['xsl_preview'] = [PMC_PATH + '/j1.0/xsl/jpub/citations-prep/jpub1-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
     #version_configuration['j1.0']['pmc']['xsl_preview'] = None
     version_configuration['j1.0']['pmc']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/pmc.xsl'
     return version_configuration
@@ -85,10 +85,11 @@ def configure_versions_location():
 def format_parameters(parameters):
     r = ''
     for k, v in parameters.items():
-        if ' ' in v:
-            r += k + '=' + '"' + v + '" '
-        else:
-            r += k + '=' + v + ' '
+        if v != '':
+            if ' ' in v:
+                r += k + '=' + '"' + v + '" '
+            else:
+                r += k + '=' + v + ' '
     return r
 
 
@@ -289,48 +290,51 @@ def xml_validate(xml_filename, result_filename, dtd_validation=False):
 
 
 def xml_is_well_formed(content):
-    if content[0:1] == '<':
+    if '<' in content:
         try:
-            return etree.parse(StringIO(content))
-        except:
-            return None
+            r = etree.parse(StringIO(content))
+        except Exception as e:
+            print('xml_is_well_formed')
+            print(e)
+            r = None
     else:
         try:
-            return etree.parse(content)
-        except:
-            return None
+            r = etree.parse(content)
+        except Exception as e:
+            print('xml_is_well_formed')
+            print(e)
+            r = None
+    return r
 
 
 def xml_content_transform(content, xsl_filename):
     f = tempfile.NamedTemporaryFile(delete=False)
-    f.write(content)
     f.close()
-
+    fp = open(f.name, 'w')
+    fp.write(content)
+    fp.close()
     f2 = tempfile.NamedTemporaryFile(delete=False)
     f2.close()
-
     if xml_transform(f.name, xsl_filename, f2.name):
         fp = open(f2.name, 'r')
         content = fp.read()
         fp.close()
         os.unlink(f2.name)
-    os.unlink(f.name)
+    if os.path.exists(f.name):
+        os.unlink(f.name)
     return content
 
 
 def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     error = False
-
     if os.path.exists(result_filename):
         os.unlink(result_filename)
     temp_result_filename = result_filename + '.tmp'
     if os.path.exists(temp_result_filename):
         os.unlink(temp_result_filename)
-
     cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
-    #print(cmd)
     os.system(cmd)
-
+    #print(cmd)
     if not os.path.exists(temp_result_filename):
         f = open(temp_result_filename, 'w')
         f.write('ERROR: transformation error.\n')
@@ -396,9 +400,19 @@ class XMLFixer:
 
     def fix(self, content):
         if not xml_is_well_formed(content):
+            f = open('fix1.xml', 'w')
+            f.write(content)
+            f.close()
             content = self._fix_style_tags(content)
             if not xml_is_well_formed(content):
+                f = open('fix2.xml', 'w')
+                f.write(content)
+                f.close()
                 content = self._fix_open_close(content)
+                if not xml_is_well_formed(content):
+                    f = open('fix3.xml', 'w')
+                    f.write(content)
+                    f.close()
         return content
 
     def _fix_open_close(self, content):
@@ -489,6 +503,10 @@ class ValidationFiles:
         if preview_path:
             if not os.path.exists(preview_path):
                 os.makedirs(preview_path)
+        self.html_preview = None
+        self.dtd_validation_report = None
+        self.style_checker_report = None
+        self.xml_output = None
 
     def name(self, curr_name, new_name):
         self.dtd_validation_report = self.report_path + '/' + curr_name + self.suffix + '.dtd.txt'
@@ -522,7 +540,7 @@ class XMLValidations:
         self.xsl_prep_report = version_data.get('xsl_prep_report', None)
         self.xsl_preview = version_data.get('xsl_preview', None)
         self.dtd_filename = version_data.get('dtd', None)
-        self.css_filename = version_data.get('css', None)
+        self.css_filename = 'file:///' + version_data.get('css', None)
         self.xsl_output = version_data.get('xsl_output', None)
         self.doctype = version_data.get('doctype', None)
         self._report = []
@@ -564,13 +582,15 @@ class XMLValidations:
                 self.report('Unable to create validation report: ' + style_checker_report)
         else:
             self.report('Unable to generate xml for report: ' + xml_report)
+        if DEBUG == 'ON':
+            print('\n'.join(self._report))
         return report_ok
 
     def _preview(self, xml_filename, html_preview, xsl_param_img_path, xsl_param_new_name=''):
         preview_ok = False
         if os.path.exists(html_preview):
             os.unlink(html_preview)
-        xsl_params = {'path_img': xsl_param_img_path + '/', 'css':  self.css_filename, 'new_name': xsl_param_new_name}
+        xsl_params = {'xml_article': xml_filename, 'path_img': xsl_param_img_path + '/', 'css':  self.css_filename, 'new_name': xsl_param_new_name}
         if type(self.xsl_preview) == type([]):
             preview_ok = tranform_in_steps(xml_filename, self.xsl_preview, html_preview, xsl_params, self.dtd_filename)
         else:
@@ -607,13 +627,15 @@ class XMLValidations:
 
     def _check_list(self, xml_filename, pkg_files, img_path, xsl_param_new_name=''):
         #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
-        is_dtd_valid, is_style_valid = [False, False]
-        f = open(xml_filename, 'r')
-        content = f.read()
-        f.close()
+        is_well_formed, is_dtd_valid, is_style_valid = [False, False, False]
+        content = None
 
-        xml = xml_is_well_formed(content)
+        xml = xml_is_well_formed(xml_filename)
         if not xml:
+            print('Converting entities...')
+            f = open(xml_filename, 'r')
+            content = f.read()
+            f.close()
             content = convert_ent_to_char(content, self.entities_table)
             xml = xml_is_well_formed(content)
             if xml:
@@ -622,49 +644,53 @@ class XMLValidations:
                 f.close()
 
         if xml:
+            is_well_formed = True
             if self.default_version is None:
                 dtd_version = xml.find('.').attrib.get('dtd-version', '1.0')
                 self.select_version(dtd_version)
-
+                print(dtd_version)
+            else:
+                print(self.default_version)
             temp_dir = tempfile.mkdtemp()
             temp_xml_filename = temp_dir + '/' + os.path.basename(xml_filename)
             shutil.copyfile(xml_filename, temp_xml_filename)
 
             if self.dtd_filename:
+                if content is None:
+                    f = open(xml_filename, 'r')
+                    content = f.read()
+                    f.close()
                 content = XMLFixer().fix_dtd_location(content, self.dtd_filename, self.doctype)
                 f = open(temp_xml_filename, 'w')
                 f.write(content)
                 f.close()
 
             if os.path.exists(temp_xml_filename):
+                print(pkg_files.dtd_validation_report)
                 is_dtd_valid = xml_validate(temp_xml_filename, pkg_files.dtd_validation_report, True)
 
-                if is_dtd_valid:
-                    os.unlink(pkg_files.dtd_validation_report)
-
                 # STYLE CHECKER REPORT
+                print(pkg_files.style_checker_report)
                 is_style_valid = self._style_checker_report(temp_xml_filename, pkg_files.style_checker_report)
-                if is_style_valid:
-                    os.unlink(pkg_files.style_checker_report)
 
                 # PREVIEW
                 if pkg_files.html_preview:
                     self._preview(temp_xml_filename, pkg_files.html_preview, img_path, xsl_param_new_name)
-
                 if pkg_files.xml_output:
                     self._output(temp_xml_filename, pkg_files.xml_output)
-
                 os.unlink(temp_xml_filename)
                 shutil.rmtree(temp_dir)
-        else:
-            # not well formed
-            shutil.copyfile(xml_filename, pkg_files.report_path + '/' + os.path.basename(xml_filename) + '.err.txt')
-        return [is_dtd_valid, is_style_valid]
+
+        #self.manage_output_files(xml_filename, pkg_files, is_well_formed, is_dtd_valid, is_style_valid)
+        return [is_well_formed, is_dtd_valid, is_style_valid]
 
 
 class XMLMetadata:
     def __init__(self, content):
-        self.root = etree.parse(StringIO(content))
+        try:
+            self.root = etree.parse(StringIO(content))
+        except:
+            self.root = None
 
     def _fix_issue_number(self, num, suppl=''):
         if num != '':
@@ -712,11 +738,12 @@ class XMLMetadata:
     def _metadata(self):
         issn, volid, issueno, suppl, fpage, order = ['', '', '', '', '', '']
         if self.root:
+
             node = self.root.find('.//article-meta')
             if node is not None:
                 issn, volid, issueno, suppl, fpage, order = self._meta_xml(node)
             else:
-                attribs = self.root.attrib
+                attribs = self.root.find('.').attrib
                 issn = attribs.get('issn')
                 volid = attribs.get('volid')
                 issueno = attribs.get('issueno')
@@ -728,7 +755,6 @@ class XMLMetadata:
                 if issueno == 'ahead':
                     issueno = '00'
                     volid = '00'
-
         return [issn, volid, issueno, suppl, fpage, order]
 
     def format_name(self, data, param_acron='', param_order=''):
@@ -803,21 +829,23 @@ class XMLMetadata:
 
 class XMLPkgMker:
 
-    def __init__(self, src, scielo_pkg_files, pmc_pkg_files, acron, default_version, entities_table=None):
+    def __init__(self, src, scielo_pkg_files, pmc_pkg_files, acron, default_version, ctrl_filename=None, entities_table=None):
         if os.path.isfile(src) and src.endswith('.xml'):
             self.src_path = os.path.dirname(src)
             self.xml_filename = os.path.basename(src)
             self.xml_name = self.xml_filename.replace('.sgm.xml', '').replace('.xml', '')
+            self.ctrl_filename = ctrl_filename
         else:
             self.src_path = src
             self.xml_filename = None
             self.xml_name = None
+            self.ctrl_filename = None
         self.entities_table = entities_table
         self.scielo_pkg_files = scielo_pkg_files
         self.pmc_pkg_files = pmc_pkg_files
 
         self.acron = acron
-        self.version_converter = _versions_.get(default_version, {}).get('sgml2xml')
+        self.version_converter = _versions_.get(default_version, {}).get('sgm2xml')
         #_versions_[self.version]['sgm2xml']
 
         self.src_copy_path = tempfile.mkdtemp()
@@ -841,16 +869,16 @@ class XMLPkgMker:
             content = XMLFixer().fix(content)
 
         # get href of images and new name
-        new_name, img_list = XMLMetadata(content).new_name_and_img_list(self.acron, alternative_id)
+        new_name = os.path.basename(input_filename).replace('.sgm.xml', '').replace('.xml', '')
+        if xml_is_well_formed(content):
+            new_name, img_list = XMLMetadata(content).new_name_and_img_list(self.acron, alternative_id)
 
-        if input_filename.endswith('.sgm.xml'):
-            content = xml_content_transform(content, self.version_converter)
+            if input_filename.endswith('.sgm.xml'):
+                content = xml_content_transform(content, self.version_converter)
 
         f = open(self.new_name_path + '/' + new_name + '.xml', 'w')
         f.write(content)
-        #error_messages.append('Unable to create ' + xml_filename)
         f.close()
-
         return [new_name, img_list]
 
     def _create_src_copy(self, selected_files):
@@ -895,6 +923,28 @@ class XMLPkgMker:
                 if not image_filename.endswith('.jpg'):
                     shutil.copyfile(img_filename, self.pmc_pkg_files.pkg_path + '/' + new_filename)
 
+    def manage_output_files(self, xml_filename, pkg_files, is_well_formed, is_dtd_valid, is_style_valid):
+        if self.ctrl_filename:
+            err_filename = self.ctrl_filename.replace('.ctrl', '.err')
+            msg = ''
+            if not is_well_formed:
+                msg = 'Not well formed'
+            elif not is_dtd_valid:
+                msg = 'Not according to DTD'
+            elif not is_style_valid:
+                msg = 'Not valid style'
+            if msg:
+                f = open(err_filename, 'w')
+                f.write(msg)
+                f.close()
+        else:
+            if is_dtd_valid:
+                os.unlink(pkg_files.dtd_validation_report)
+            if is_style_valid:
+                os.unlink(pkg_files.style_checker_report)
+            if not is_well_formed:
+                shutil.copyfile(xml_filename, pkg_files.dtd_validation_report)
+
     def _make_packages_for_one_file(self, xml_file, curr_name, related_files):
         print(curr_name)
         new_name, img_list = self._normalize_xml(self.src_copy_path + '/' + xml_file, curr_name)
@@ -907,25 +957,37 @@ class XMLPkgMker:
         if os.path.exists(xml_filename):
             self._add_related_files_to_packages(related_files, curr_name, new_name)
             self._add_img_to_packages(related_files, img_list, new_name)
-
             img_path = self.scielo_pkg_files.pkg_path
 
-            self.sci_validations.check_list(xml_filename, self.scielo_pkg_files, img_path)
+            is_well_formed, is_dtd_valid, is_style_valid = self.sci_validations.check_list(xml_filename, self.scielo_pkg_files, img_path)
+            self.manage_output_files(xml_filename, self.scielo_pkg_files, is_well_formed, is_dtd_valid, is_style_valid)
 
             if os.path.exists(self.scielo_pkg_files.xml_output):
                 #dtd_validation_report = self.report_path + '/' + curr_name + '.err.txt'
                 xml_filename = self.scielo_pkg_files.xml_output
 
-                self.pmc_validations.check_list(xml_filename, self.pmc_pkg_files, img_path, xsl_new_name)
-                if not os.path.exists(self.pmc_pkg_files.xml_output):
+                is_well_formed, is_dtd_valid, is_style_valid = self.pmc_validations.check_list(xml_filename, self.pmc_pkg_files, img_path, xsl_new_name)
+
+                self.manage_output_files(xml_filename, self.pmc_pkg_files, is_well_formed, is_dtd_valid, is_style_valid)
+                if self.ctrl_filename:
+                    f = open(self.ctrl_filename, 'w')
+                    f.write('Finished')
+                    f.close()
+
+                if os.path.exists(self.pmc_pkg_files.xml_output):
+                    print('Finished')
+                else:
+                    print('\nUnable to create ' + self.pmc_pkg_files.xml_output)
                     f = open(self.scielo_pkg_files.dtd_validation_report, 'a+')
                     f.write('\nUnable to create ' + self.pmc_pkg_files.xml_output)
                     f.close()
             else:
+                print('Unable to create ' + self.scielo_pkg_files.xml_output)
                 f = open(self.scielo_pkg_files.dtd_validation_report, 'a+')
                 f.write('\nUnable to create ' + self.scielo_pkg_files.xml_output)
                 f.close()
         else:
+            print('Unable to create ' + xml_filename)
             f = open(self.scielo_pkg_files.dtd_validation_report, 'a+')
             f.write('Unable to create ' + xml_filename)
             f.close()
@@ -937,14 +999,13 @@ class XMLPkgMker:
         else:
             selected_files = [f for f in os.listdir(self.src_path) if os.path.isfile(self.src_path + '/' + f)]
             #self._clean_folders()
-
         self._create_src_copy(selected_files)
 
         xml_files = [f for f in selected_files if f.endswith('.xml')]
         non_xml_files = [f for f in os.listdir(self.src_copy_path) if not f.endswith('.xml')]
 
         for xml_file in xml_files:
-            curr_name = xml_file.replace('.xml', '').replace('.sgm.xml', '')
+            curr_name = xml_file.replace('.sgm.xml', '').replace('.xml', '')
             related_files = [f for f in non_xml_files if f.startswith(curr_name)]
             #xml_file, selected_files_path, normalized_pck_path, curr_name, related_files
 
@@ -952,7 +1013,7 @@ class XMLPkgMker:
 
         print('\n=======')
         print('\nGenerated packages in:\n' + '\n'.join([self.scielo_pkg_files.pkg_path, self.pmc_pkg_files.pkg_path, ]))
-        for report_path in set([self.scielo_pkg_files.report_path, self.pmc_pkg_files.report_path, ]):
+        for report_path in list(set([self.scielo_pkg_files.report_path, self.pmc_pkg_files.report_path, ])):
             if os.listdir(report_path):
                 print('\nReports in: ' + report_path)
         print('\n==== END ===\n')
@@ -965,24 +1026,41 @@ def make_packages(src, acron, version='j1.0'):
     if not version in _versions_.keys():
         version = 'j1.0'
     doit = False
+    ctrl_filename = None
     from datetime import datetime
     now = datetime.now().isoformat().replace(':', '').replace('T', '').replace('-', '')
     now = now[0:now.find('.')]
     if src.endswith('.sgm.xml'):
+        version = 'j1.0'
         # src = serial/acron/issue/pmc/pmc_work/article/file.sgm.xml
         sgmxml_filename = src
+        # sgmxml_path = serial/acron/issue/pmc/pmc_work/article
         sgmxml_path = os.path.dirname(src)
+        # ctrl filename
+        ctrl_filename = sgmxml_filename.replace('.sgm.xml', '.ctrl.txt')
+        if os.path.exists(ctrl_filename):
+            os.unlink(ctrl_filename)
+        err_filename = sgmxml_filename.replace('.sgm.xml', '.err.txt')
+        if os.path.exists(err_filename):
+            os.unlink(err_filename)
+        # pmc_path = serial/acron/issue/pmc
         pmc_path = os.path.dirname(os.path.dirname(sgmxml_path))
+        # acron = acron
         acron = os.path.basename(os.path.dirname(os.path.dirname(pmc_path)))
-
-        if os.path.exists(pmc_path + '/pmc_src'):
+        # other files path = serial/acron/issue/pmc/src or serial/acron/issue/pmc/pmc_src
+        pmc_src = pmc_path + '/pmc_src'
+        if os.path.isdir(pmc_path + '/pmc_src'):
             pmc_src = pmc_path + '/pmc_src'
-        elif os.path.exists(pmc_path + '/src'):
+        elif os.path.isdir(pmc_path + '/src'):
             pmc_src = pmc_path + '/src'
+        else:
+            os.makedirs(pmc_src)
+
         shutil.copyfile(sgmxml_filename, pmc_src + '/' + os.path.basename(sgmxml_filename))
+        src = pmc_src + '/' + os.path.basename(sgmxml_filename)
         scielo_pkg_path = pmc_path + '/xml_package'
         pmc_pkg_path = pmc_path + '/pmc_package'
-        report_path = pmc_path + '/errors'
+        report_path = sgmxml_path
         pmc_preview_path = sgmxml_path
         sci_preview_path = sgmxml_path
         doit = True
@@ -1005,10 +1083,15 @@ def make_packages(src, acron, version='j1.0'):
         sci_preview_path = path + '/preview'
         doit = True
     if doit:
+        finalized_fine = False
         scielo_pkg_files = ValidationFiles(scielo_pkg_path, report_path, sci_preview_path)
         pmc_pkg_files = ValidationFiles(pmc_pkg_path, report_path, pmc_preview_path, '.pmc')
-        xml_pkg_mker = XMLPkgMker(src, scielo_pkg_files, pmc_pkg_files, acron, version, entities_table)
-        xml_pkg_mker.make_packages()
+        xml_pkg_mker = XMLPkgMker(src, scielo_pkg_files, pmc_pkg_files, acron, version, ctrl_filename, entities_table)
+        try:
+            xml_pkg_mker.make_packages()
+            finalized_fine = True
+        except:
+            finalized_fine = False
 
 
 def _call_make_packages(args, version):
@@ -1032,7 +1115,7 @@ def _call_make_packages(args, version):
     elif len(args) == 2:
         ign, src = args
         if src.endswith('.sgm.xml'):
-            make_packages(src, '', version)
+            make_packages(src, '', 'j1.0')
     else:
         print('ERROR: Incorrect parameters')
         print('\nUsage:')

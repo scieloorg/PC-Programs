@@ -25,13 +25,20 @@
 
             <xsl:apply-templates select="." mode="HTML-HEAD-META"/>
 
-            <link rel="shortcut icon" href="{$PATH}/static/img/favicon.ico"/>
+            <xsl:apply-templates select="." mode="HTML-ICO"/>
             <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
-
+            <xsl:apply-templates select="." mode="HTML-CSS"/>
+        </head>
+    </xsl:template>
+    <xsl:template match="*" mode="HTML-ICO">
+        <link rel="shortcut icon" href="{$PATH}/static/img/favicon.ico"/>
+            
+    </xsl:template>
+    <xsl:template match="*" mode="HTML-CSS">
             <link href="{$PATH}/static/css/bootstrap.min.css" rel="stylesheet"/>
             <link href="{$PATH}/static/css/responsive.css" rel="stylesheet"/>
             <link href="{$PATH}/static/css/style.css" rel="stylesheet"/>
-        </head>
+
     </xsl:template>
     <xsl:template match="*" mode="HTML-BODY">
         <body class="skin-soft-contrast">
