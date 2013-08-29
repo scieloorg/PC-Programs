@@ -3,7 +3,7 @@ import os, sys, shutil
 scielo_cfg_filename = sys.argv[1] + '/bin/scielo_paths.ini'
 bkp_scielo_cfg_filename = sys.argv[1] + '/bin/scielo_paths.ini.old'
 template_scielo_cfg_filename = sys.argv[1] + '/bin/scielo_paths.example.ini'
-template_parser_settings_filename = sys.argv[1] + '/bin/cfg/temp.txt'
+template_parser_settings_filename = sys.argv[1] + '/bin/cfg/Settings.cfg.template'
 parser_settings_filename = sys.argv[1] + '/bin/SGMLPars/Settings.cfg'
 
 
