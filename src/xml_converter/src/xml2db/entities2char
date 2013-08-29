@@ -1,0 +1,263 @@
+À|&#192;|&Agrave;|capital a, grave accent|a
+Á|&#193;|&Aacute;|capital a, acute accent|a
+Â|&#194;|&Acirc;|capital a, circumflex accent|a
+Ã|&#195;|&Atilde;|capital a, tilde|a
+Ä|&#196;|&Auml;|capital a, umlaut mark|a
+Å|&#197;|&Aring;|capital a, ring|a
+Æ|&#198;|&AElig;|capital ae|ae
+Ç|&#199;|&Ccedil;|capital c, cedilla|c
+È|&#200;|&Egrave;|capital e, grave accent|e
+É|&#201;|&Eacute;|capital e, acute accent|e
+Ê|&#202;|&Ecirc;|capital e, circumflex accent|e
+Ë|&#203;|&Euml;|capital e, umlaut mark|e
+Ì|&#204;|&Igrave;|capital i, grave accent|i
+Í|&#205;|&Iacute;|capital i, acute accent|i
+Î|&#206;|&Icirc;|capital i, circumflex accent|i
+Ï|&#207;|&Iuml;|capital i, umlaut mark|i
+Ð|&#208;|&ETH;|capital eth, Icelandic|eth
+Ñ|&#209;|&Ntilde;|capital n, tilde|n
+Ò|&#210;|&Ograve;|capital o, grave accent|o
+Ó|&#211;|&Oacute;|capital o, acute accent|o
+Ô|&#212;|&Ocirc;|capital o, circumflex accent|o
+Õ|&#213;|&Otilde;|capital o, tilde|o
+Ö|&#214;|&Ouml;|capital o, umlaut mark|o
+Ø|&#216;|&Oslash;|capital o, slash|o
+Ù|&#217;|&Ugrave;|capital u, grave accent|u
+Ú|&#218;|&Uacute;|capital u, acute accent|u
+Û|&#219;|&Ucirc;|capital u, circumflex accent|u
+Ü|&#220;|&Uuml;|capital u, umlaut mark|u
+Ý|&#221;|&Yacute;|capital y, acute accent|y
+Þ|&#222;|&THORN;|capital THORN, Icelandic|THORN
+ß|&#223;|&szlig;|small sharp s, German|sharp s
+à|&#224;|&agrave;|small a, grave accent|a
+á|&#225;|&aacute;|small a, acute accent|a
+â|&#226;|&acirc;|small a, circumflex accent|a
+ã|&#227;|&atilde;|small a, tilde|a
+ä|&#228;|&auml;|small a, umlaut mark|a
+å|&#229;|&aring;|small a, ring|a
+æ|&#230;|&aelig;|small ae|ae
+ç|&#231;|&ccedil;|small c, cedilla|c
+è|&#232;|&egrave;|small e, grave accent|e
+é|&#233;|&eacute;|small e, acute accent|e
+ê|&#234;|&ecirc;|small e, circumflex accent|e
+ë|&#235;|&euml;|small e, umlaut mark|e
+ì|&#236;|&igrave;|small i, grave accent|i
+í|&#237;|&iacute;|small i, acute accent|i
+î|&#238;|&icirc;|small i, circumflex accent|i
+ï|&#239;|&iuml;|small i, umlaut mark|i
+ð|&#240;|&eth;|small eth, Icelandic|eth
+ñ|&#241;|&ntilde;|small n, tilde|n
+ò|&#242;|&ograve;|small o, grave accent|o
+ó|&#243;|&oacute;|small o, acute accent|o
+ô|&#244;|&ocirc;|small o, circumflex accent|o
+õ|&#245;|&otilde;|small o, tilde|o
+ö|&#246;|&ouml;|small o, umlaut mark|o
+ø|&#248;|&oslash;|small o, slash|o
+ù|&#249;|&ugrave;|small u, grave accent|u
+ú|&#250;|&uacute;|small u, acute accent|u
+û|&#251;|&ucirc;|small u, circumflex accent|u
+ü|&#252;|&uuml;|small u, umlaut mark|u
+ý|&#253;|&yacute;|small y, acute accent|y
+þ|&#254;|&thorn;|small thorn, Icelandic|thorn
+ÿ|&#255;|&yuml;|small y, umlaut mark|y
+'|&#x2019;|&rsquo;|RIGHT SINGLE QUOTATION MARK|rsquo
+?|&#191;|&quest;| question mark |quest
+_|&#x005F;|&lowbar;| lowbar | lowbar
++|&#43;|&plus;|plus sign|plus
+€|&#128;|&Eur;|Euro|Eur
+‚|&#130;|&low;|low left rising single quote|low
+ƒ|&#131;|&small;|small italic f, function of,|small
+„|&#132;|&low;|low left rising double quote|low
+…|&#133;|&low;|low horizontal ellipsis|low
+‰|&#137;|&per;|per thousand (mille) sign|per
+Š|&#138;|&capital;|capital S caron or hacek|capital
+‹|&#139;|&left;|left single angle quote mark|left
+Œ|&#140;|&capital;|capital OE ligature|capital
+Ž|&#142;|&;| |
+˜|&#152;|&small;|small spacing tilde accent|small
+š|&#154;|&small;|small s caron or hacek|small
+›|&#155;|&right;|right single angle quote mark|right
+œ|&#156;|&small;|small oe ligature|small
+ž|&#158;|&;| |
+Ÿ|&#159;|&capital;|capital Y dieresis or umlaut|capital
+Ā|&#256;|&Amacr;|Amacr - latin capital letter A with macron|Amacr
+ā|&#257;|&amacr;|amacr - latin small letter a with macron|amacr
+Ă|&#258;|&Acaron;|Acaron - latin capital letter A with caron (breve)|Acaron
+ă|&#259;|&acaron;|acaron - latin small letter a with caron (breve)|acaron
+Ą|&#260;|&Acedil;|Acedil - latin capital letter A with cedilla|Acedil
+ą|&#261;|&acedil;|acedil - latin small letter a with cedilla|acedil
+Ć|&#262;|&Cacute;|Cacute - latin capital letter C with acute|Cacute
+ć|&#263;|&cacute;|cacute - latin small letter c with acute|cacute
+Č|&#268;|&Ccaron;|Ccaron - latin capital letter C with caron|Ccaron
+č|&#269;|&ccaron;|ccaron - latin small letter c with caron|ccaron
+Ď|&#270;|&Dcaron;|Dcaron - latin capital letter D with caron|Dcaron
+Đ|&#272;|&Dstrok;|Dstrok - latin capital letter D with stroke|Dstrok
+đ|&#273;|&dstrok;|dstrok - latin small letter d with stroke|dstrok
+Ē|&#274;|&Emacr;|Emacr - latin capital letter E with macron|Emacr
+Ĕ|&#276;|&emacr;|emacr - latin small letter e with macron|emacr
+Ė|&#278;|&Edot;|Edot - latin capital letter E with dot above|Edot
+ė|&#279;|&edot;|edot - latin small letter e with dot above|edot
+Ę|&#280;|&Ecedil;|Ecedil - latin capital letter E with cedilla|Ecedil
+ę|&#281;|&ecedil;|ecedil - latin small letter e with cedilla|ecedil
+Ě|&#282;|&Ecaron;|Ecaron - latin capital letter E with caron|Ecaron
+ě|&#283;|&ecaron;|ecaron - latin small letter e with caron|ecaron
+Ğ|&#286;|&Gcaron;|Gcaron - latin capital letter G with caron (breve)|Gcaron
+ğ|&#287;|&gcaron;|gcaron - latin small letter e with caron (breve)|gcaron
+Ģ|&#290;|&Gcedil;|Gcedil - latin capital letter G with cedilla|Gcedil
+Ĥ|&#292;|&gapos;|gapos - latin small letter g with cedilla above|gapos
+Ī|&#298;|&Imacr;|Imacr - latin capital letter I with macron|Imacr
+ī|&#299;|&imacr;|imacr - latin small letter i with macron|imacr
+İ|&#304;|&Icedil;|Icedil - latin capital letter I with cedilla|Icedil
+Ķ|&#310;|&Kcedil;|Kcedil - latin capital letter K with cedilla|Kcedil
+ķ|&#311;|&kcedil;|kcedil - latin small letter k with cedilla|kcedil
+Ĺ|&#313;|&Lacute;|Lacute - latin capital letter L with acute|Lacute
+ĺ|&#314;|&lacute;|lacute - latin small letter l with acute|lacute
+Ļ|&#315;|&Lcedil;|Lcedil - latin capital letter L with cedilla|Lcedil
+ļ|&#316;|&lcedil;|lcedil - latin small letter l with cedilla|lcedil
+Ł|&#321;|&Lstrok;|Lstrok - latin capital letter L with stroke|Lstrok
+ł|&#322;|&lstrok;|lstrok - latin small letter l with stroke|lstrok
+Ń|&#323;|&Nacute;|Nacute - latin capital letter N with acute|Nacute
+ń|&#324;|&nacute;|nacute - latin small letter n with acute|nacute
+Ņ|&#325;|&Ncedil;|Ncedil - latin capital letter N with cedilla|Ncedil
+ņ|&#326;|&ncedil;|ncedil - latin small letter n with cedilla|ncedil
+Ň|&#327;|&Ncaron;|Ncaron - latin capital letter N with caron|Ncaron
+ň|&#328;|&ncaron;|ncaron - latin small letter n with caron|ncaron
+Ō|&#332;|&Omacr;|Omacr - latin capital letter O with macron|Omacr
+ō|&#333;|&omacr;|omacr - latin small letter o with macron|omacr
+Ő|&#336;|&Odblac;|Odblac - latin capital letter O with double acute|Odblac
+ő|&#337;|&odblac;|odblac - latin small letter o with double acute|odblac
+Ŗ|&#342;|&Rcedil;|Rcedil - latin capital letter R with cedilla|Rcedil
+ŗ|&#343;|&rcedil;|rcedil - latin small letter r with cedilla|rcedil
+Ř|&#344;|&Rcaron;|Rcaron - latin capital letter R with caron|Rcaron
+ř|&#345;|&rcaron;|rcaron - latin small letter r with caron|rcaron
+Ś|&#346;|&Sacute;|Sacute - latin capital letter S with acute|Sacute
+ś|&#347;|&sacute;|sacute - latin small letter s with acute|sacute
+Ş|&#350;|&Scedil;|Scedil - latin capital letter S with cedilla|Scedil
+ş|&#351;|&scedil;|scedil - latin small letter s with cedilla|scedil
+Š|&#352;|&Scaron;|Scaron - latin capital letter S with caron|Scaron
+š|&#353;|&scaron;|scaron - latin small letter s with caron|scaron
+Ţ|&#354;|&Tcedil;|Tcedil - latin capital letter T with cedilla|Tcedil
+ţ|&#355;|&tcedil;|tcedil - latin small letter t with cedilla|tcedil
+Ť|&#356;|&Tcaron;|Tcaron - latin capital letter T with caron|Tcaron
+ť|&#357;|&tcaron;|tcaron - latin small letter t with caron|tcaron
+Ū|&#362;|&Umacr;|Umacr - latin capital letter U with macron|Umacr
+ū|&#363;|&umacr;|umacr - latin small letter u with macron|umacr
+Ů|&#366;|&Uring;|Uring - latin capital letter U with ring above|Uring
+ů|&#367;|&uring;|uring - latin small letter u with ring above|uring
+Ű|&#368;|&Udblac;|Udblac - latin capital letter U with double acute|Udblac
+ű|&#369;|&udblac;|udblac - latin small letter u with double acute|udblac
+Ų|&#370;|&Ucedil;|Ucedil - latin capital letter U with cedilla|Ucedil
+ų|&#371;|&ucedil;|ucedil - latin small letter u with cedilla|ucedil
+Ź|&#377;|&Zacute;|Zacute - latin capital letter Z with acute|Zacute
+ź|&#378;|&zacute;|zacute - latin small letter z with acute|zacute
+Ż|&#379;|&Zdot;|Zdot - latin capital letter Z with dot above|Zdot
+ż|&#380;|&zdot;|zdot - latin small letter z with dot above|zdot
+Ž|&#381;|&Zcaron;|Zcaron - latin capital letter Z with caron|Zcaron
+ž|&#382;|&zcaron;|zcaron - latin small letter z with caron|zcaron
+%|&#37;|&percnt;|percent sign|%
+~|&#127;|&tilde;|tilde|~
+~|&#127;|&sim;|similar to|~
+~|&#8764;|&sim;|similar to|~
+∀|&#8704;|&forall;|for all|∀
+∂|&#8706;|&part;|part|∂
+∃|&#8707;|&exist;|exists|∃
+∅|&#8709;|&empty;|empty|∅
+∇|&#8711;|&nabla;|nabla|∇
+∈|&#8712;|&isin;|isin|∈
+∉|&#8713;|&notin;|notin|∉
+∋|&#8715;|&ni;|ni|∋
+∏|&#8719;|&prod;|prod|∏
+∑|&#8721;|&sum;|sum|∑
+−|&#8722;|&minus;|minus|−
+∗|&#8727;|&lowast;|lowast|∗
+√|&#8730;|&radic;|square root|√
+∝|&#8733;|&prop;|proportional to|∝
+∞|&#8734;|&infin;|infinity|∞
+∠|&#8736;|&ang;|angle|∠
+∧|&#8743;|&and;|and|∧
+∨|&#8744;|&or;|or|∨
+∩|&#8745;|&cap;|cap|∩
+∪|&#8746;|&cup;|cup|∪
+∫|&#8747;|&int;|integral|∫
+∴|&#8756;|&there4;|therefore|∴
+∼|&#8764;|&sim;|similar to|∼
+≅|&#8773;|&cong;|congruent to|≅
+≈|&#8776;|&asymp;|almost equal|≈
+≠|&#8800;|&ne;|not equal|≠
+≡|&#8801;|&equiv;|equivalent|≡
+≤|&#8804;|&le;|less or equal|≤
+≥|&#8805;|&ge;|greater or equal|≥
+⊂|&#8834;|&sub;|subset of|⊂
+⊃|&#8835;|&sup;|superset of|⊃
+⊄|&#8836;|&nsub;|not subset of|⊄
+⊆|&#8838;|&sube;|subset or equal|⊆
+⊇|&#8839;|&supe;|superset or equal|⊇
+⊕|&#8853;|&oplus;|circled plus|⊕
+⊗|&#8855;|&otimes;|circled times|⊗
+⊥|&#8869;|&perp;|perpendicular|⊥
+⋅|&#8901;|&sdot;|dot operator|⋅
+=||&equals;|equals sign|=
+ |&#x2005;|&emsp14;|FOUR-PER-EM-SPACE| 
+[|&#91;|&lsqb;|[|[
+]|&#93;|&rsqb;|]|]
+*|&#42;|&ast;|*|*
+Α|&#x0391;|&Agr;|Alpha, uppercase|Α
+α|&#x03b1;|&agr;|Alpha, lowercase|α
+Β|&#x0392;|&Bgr;|Beta, uppercase|Β
+β|&#x03b2;|&bgr;|Beta, lowercase|β
+Δ|&#x0394;|&Dgr;|Delta, uppercase|Δ
+δ|&#x03b4;|&dgr;|Delta, lowercase|δ
+Η|&#x0397;|&EEgr;|Eta, uppercase|Η
+η|&#x03b7;|&eegr;|Eta, lowercase|η
+Ε|&#x0395;|&Egr;|Epsilon, uppercase|Ε
+ε|&#x03b5;|&egr;|Epsilon, lowercase|ε
+Γ|&#x0393;|&Ggr;|Gamma, uppercase|Γ
+γ|&#x03b3;|&ggr;|Gamma, lowercase|γ
+Ι|&#x0399;|&Igr;|Iota, uppercase|Ι
+ι|&#x03b9;|&igr;|Iota, lowercase|ι
+Κ|&#x039a;|&Kgr;|Kappa, uppercase|Κ
+κ|&#x3ba;|&kgr;|Kappa, lowercase|κ
+Χ|&#x03a7;|&KHgr;|Chi, uppercase|Χ
+χ|&#x03c7;|&khgr;|Chi, lowercase|χ
+Λ|&#x039b;|&Lgr;|Lambda, uppercase|Λ
+λ|&#x03bb;|&lgr;|Lambda, lowercase|λ
+Μ|&#x039c;|&Mgr;|Mu, uppercase|Μ
+μ|&#x03bc;|&mgr;|Mu, lowercase|μ
+Ν|&#x039d;|&Ngr;|Nu, uppercase|Ν
+ν|&#x03bd;|&ngr;|Nu, lowercase|ν
+Ο|&#x039f;|&Ogr;|Omicron, uppercase|Ο
+ο|&#x03bf;|&ogr;|Omicron, lowercase|ο
+Ω|&#x03a9;|&OHgr;|Omega, uppercase|Ω
+ω|&#x03c9;|&ohgr;|Omega, lowercase|ω
+Π|&#x03a0;|&Pgr;|Pi, uppercase|Π
+π|&#x03c0;|&pgr;|Pi, lowercase|π
+Φ|&#x03a6;|&PHgr;|Phi, uppercase|Φ
+φ|&#x03c6;|&phgr;|Phi, lowercase|φ
+Ψ|&#x03a8;|&PSgr;|Psi, uppercase|Ψ
+ψ|&#x03c8;|&psgr;|Psi, lowercase|ψ
+Ρ|&#x03a1;|&Rgr;|Rho, uppercase|Ρ
+ρ|&#x03c1;|&rgr;|Rho, lowercase|ρ
+Σ|&#x03a3;|&Sgr;|Sigma, uppercase|Σ
+σ|&#x03c3;|&sgr;|Sigma, lowercase|σ
+Τ|&#x03a4;|&Tgr;|Tau, uppercase|Τ
+τ|&#x03c4;|&tgr;|Tau, lowercase|τ
+Θ|&#x0398;|&THgr;|Theta, uppercase|Θ
+θ|&#x03b8;|&thgr;|Theta, lowercase|θ
+Υ|&#x03a5;|&Ugr;|Upsilon, uppercase|Υ
+υ|&#x03c5;|&ugr;|Upsilon, lowercase|υ
+Ξ|&#x039e;|&Xgr;|Xi, uppercase|Ξ
+ξ|&#x03be;|&xgr;|Xi, lowercase|ξ
+Ζ|&#x0396;|&Zgr;|Zeta, uppercase|Ζ
+ζ|&#x03b6;|&zgr;|Zeta, lowercase|ζ
+:||&semi;|;|;
+ă|&#259;|&abreve;|small a, breve|ă
+"|&#34;|&quot;||
+'|&#39;|||single quote
+ε||&epsi;||
+♀||&female;||
+(||&lpar;||
+♂||&male;||
+...|&#8230;|&mldr;||
+φ||&phiv;||
+)||&rpar;||
+/||&sol;||

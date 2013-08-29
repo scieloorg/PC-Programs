@@ -1,4 +1,10 @@
-4.0.067
+4.0.068
+=======
+9/2013
+ - xml package maker refactored to work with different DTD versions
+ - markup XML - disabled preview of html files
+
+ 4.0.067
 =======
 31/7/2013
  - changing the name of element/attribute for ORCID: contrib-id and @contrib-id-type to ctrbid and @ctrbidtp because of SGML DTD limitation of namelen(8)

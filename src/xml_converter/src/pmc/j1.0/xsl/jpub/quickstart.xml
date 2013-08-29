@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "journalpublishing3.dtd">
+<article dtd-version="3.0" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:mml="http://www.w3.org/1998/Math/MathML"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <front>
+    <journal-meta>
+      <journal-id>N/A</journal-id>
+      <issn>N/A</issn>
+    </journal-meta>
+    <article-meta>
+      <title-group>
+        <article-title>Journal Publishing 3.0 Preview Stylesheets: Quick Start Guide</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib>
+          <collab>Mulberry Technologies, Inc.</collab>
+        </contrib>
+      </contrib-group>
+      <pub-date>
+        <year>2009</year>
+      </pub-date>
+    </article-meta>
+  </front>
+  <body>
+    <sec>
+      <title>Introduction</title>
+      <list>
+        <list-item>
+          <p>For preview display of articles tagged using version 3.0 of the Journal Publishing tag
+            set</p>
+        </list-item>
+        <list-item>
+          <p>Assumes citations follow either NLM/Pubmed or APA style</p>
+        </list-item>
+        <list-item>
+          <p>Additional assumptions and limitations are described in the User's Guide for these
+            stylesheets</p>
+        </list-item>
+        <list-item>
+          <p>Technical details, including a more precise description of technical dependencies,
+            alternative ways to deploy and apply these stylesheets, and how to extend and modify
+            stylesheets, are described in Technical documentation</p>
+        </list-item>
+      </list>
+      <list list-type="numbered">
+        <title>Decisions</title>
+        <list-item>
+          <p>Do you want HTML/CSS, or PDF?</p>
+        </list-item>
+        <list-item>
+          <p>Should unformatted citations be formatted in NLM/Pubmed format or APA format?</p>
+        </list-item>
+      </list>
+    </sec>
+    <sec>
+      <title>Running the stylesheet</title>
+      <list list-type="numbered">
+        <list-item>
+          <p>Identify the XSLT 2.0 stylesheet supporting the citation format of your choice in the
+            table below</p>
+        </list-item>
+        <list-item>
+          <p>Apply the stylesheet to a valid NLM/NCBI Journal Publishing 3.0 document, or a
+            subdirectory of such documents, using a recent version of Saxon (a freely available XSLT
+            2.0 processor).</p>
+          <p>When you run the stylesheet, messages will be echoed to your console reporting on
+            progress. If any warnings are offered stating you are running an XSLT 1.0 stylesheet
+            with a 2.0 processor, have no concern: this is by design.</p>
+        </list-item>
+        <list-item>
+          <p>When the result format is HTML, copy <monospace>jpub-preview.css</monospace> to the
+            file system next to the result file(s)</p>
+        </list-item>
+        <list-item>
+          <p>When the result format is XSL-FO, run the result file(s) in an XSL-FO formatter</p>
+        </list-item>
+      </list>
+      <table-wrap position="anchor">
+        <caption>
+          <title>Stylesheets by format</title>
+          <p>Note: these stylesheets are "wrappers" (or "shells") that call other stylesheets in the
+            distribution. Other wrappers are also included, demonstrating specialized applications,
+            including generating XHTML to support the display of W3C MathML in conformant browsers.
+            See the User's Guide and the Technical documentation for more details.</p>
+        </caption>
+        <table style="text-align:left">
+          <tr>
+            <th>Output format</th>
+            <th>NLM/Pubmed citations</th>
+            <th>APA citations</th>
+          </tr>
+          <tr>
+            <th>HTML</th>
+            <td><monospace>jpub3-PMCcit-html.xsl</monospace></td>
+            <td><monospace>jpub3-APAcit-html.xsl</monospace></td>
+          </tr>
+          <tr>
+            <th>PDF</th>
+            <td><monospace>jpub3-PMCcit-xslfo.xsl</monospace></td>
+            <td><monospace>jpub3-APAcit-xslfo.xsl</monospace></td>
+          </tr>
+        </table>
+      </table-wrap>
+      <list list-type="numbered">
+        <title>Example</title>
+        <list-item>
+          <p>HTML output is desired.</p>
+        </list-item>
+        <list-item>
+          <p>The user determines that the data includes citations in APA format, and wishes citation
+            support according to APA guidelines.</p>
+        </list-item>
+        <list-item>
+          <p>The appropriate stylesheet to use is <monospace>jpub3-APAcit-html.xsl</monospace>
+          </p>
+        </list-item>
+        <list-item>
+          <p>The user invokes Saxon to apply <monospace>jpub3-APAcit-html.xsl</monospace> to the
+            source document or documents (as described in the box, <xref rid="InvokingSaxon"/>)</p>
+        </list-item>
+        <list-item>
+          <p>The user copies <monospace>jpub-preview.css</monospace> into the subdirectory
+            containing the results</p>
+        </list-item>
+        <list-item>
+          <p>HTML file output is now ready to be opened in a browser</p>
+        </list-item>
+      </list>
+      <boxed-text id="InvokingSaxon">
+        <label>Invoking SaxonB 9 from the command line</label>
+        <p>Saxon is a Java application and requires Java to be installed. Java 1.4 is required; at
+          least Java 1.5 is preferred. Saxon 9 is also available within a number of different
+          toolkits and XML editing environments, which provide their own user interfaces to the
+          tool. If SaxonSA is used, the command line will be different. See the Saxon documentation
+          at <ext-link xlink:href="http://saxonica.com/documentation/index/intro.html"
+            >http://saxonica.com/documentation/index/intro.html</ext-link> for more
+          details.</p><p>From the command line, SaxonB (the free version of the product) may be
+          invoked as follows (on one
+          line):</p><preformat>c:\Projects\NLM3\xmlfiles&gt; java -jar "c:\path\to\saxon9.jar"
+        -o mydocument.html mydocument.xml NLM3-APAcit-html.xsl </preformat><p>Within
+          the <monospace>c:\Projects\NLM3\xmlfiles</monospace> subdirectory, this will generate an
+          output document <monospace>mydocument.html</monospace> from the input
+            <monospace>mydocument.xml</monospace>.</p><p>MS Windows path syntax is used in this
+          example; adjust accordingly for your system.</p></boxed-text>
+    </sec>
+  </body>
+</article>

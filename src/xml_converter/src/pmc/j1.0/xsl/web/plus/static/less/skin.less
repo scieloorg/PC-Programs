@@ -1,0 +1,47 @@
+.skin-soft-contrast {
+	background: @bodyBackground;
+
+	.mainHeader {
+		background: #e0dad1;
+	}
+}
+.skin-high-contrast {
+	background: @white;
+
+	.mainHeader {
+		background: @grayLighter;
+	}
+}
+.skin-inversed-high-contrast {
+	background: @black;
+	color: @white;
+
+	.mainHeader {
+		background: @grayDarker;
+		color: @white;
+
+		h1 {
+			color: @white;
+		}
+	}
+	.rMenu div {
+		color: #ccc;
+	}
+	.rMenu a.yIcon {
+		color: @white;
+
+		&:hover {
+			background-color: lighten(@black, 20%);
+		}
+	}
+	.infoContainer {
+		color: @black;
+	}
+	section article .refList {
+		color: #ccc;
+
+		&.full {
+			color: #333;
+		}
+	}
+}

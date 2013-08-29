@@ -15,7 +15,7 @@ except:
 
 #from datetime import datetime
 
-DEBUG = 'ON'
+DEBUG = 'OFF'
 # global variables
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
 
@@ -648,9 +648,9 @@ class XMLValidations:
             if self.default_version is None:
                 dtd_version = xml.find('.').attrib.get('dtd-version', '1.0')
                 self.select_version(dtd_version)
-                print(dtd_version)
-            else:
-                print(self.default_version)
+            #    print('Document version:' + dtd_version)
+            #else:
+            #    #print('Default version:' + self.default_version)
             temp_dir = tempfile.mkdtemp()
             temp_xml_filename = temp_dir + '/' + os.path.basename(xml_filename)
             shutil.copyfile(xml_filename, temp_xml_filename)
@@ -666,16 +666,17 @@ class XMLValidations:
                 f.close()
 
             if os.path.exists(temp_xml_filename):
-                print(pkg_files.dtd_validation_report)
+                #print(pkg_files.dtd_validation_report)
                 is_dtd_valid = xml_validate(temp_xml_filename, pkg_files.dtd_validation_report, True)
 
                 # STYLE CHECKER REPORT
-                print(pkg_files.style_checker_report)
+                #print(pkg_files.style_checker_report)
                 is_style_valid = self._style_checker_report(temp_xml_filename, pkg_files.style_checker_report)
 
                 # PREVIEW
-                if pkg_files.html_preview:
-                    self._preview(temp_xml_filename, pkg_files.html_preview, img_path, xsl_param_new_name)
+                #if pkg_files.html_preview:
+                #    self._preview(temp_xml_filename, pkg_files.html_preview, img_path, xsl_param_new_name)
+
                 if pkg_files.xml_output:
                     self._output(temp_xml_filename, pkg_files.xml_output)
                 os.unlink(temp_xml_filename)
@@ -847,7 +848,7 @@ class XMLPkgMker:
         self.acron = acron
         self.version_converter = _versions_.get(default_version, {}).get('sgm2xml')
         #_versions_[self.version]['sgm2xml']
-
+        self.default_version = default_version
         self.src_copy_path = tempfile.mkdtemp()
         self.new_name_path = tempfile.mkdtemp()
 
@@ -910,9 +911,16 @@ class XMLPkgMker:
     def _add_img_to_packages(self, related_files, img_list, new_name):
         # copy image files which starts with <href>.
         #print(related_files)
+        unmatched = []
+        invalid_href = []
         for href, suffix in img_list.items():
-            #print('href=' + href)
-            for image_filename in [f for f in related_files if f.startswith(href + '.')]:
+            ext = href[href.rfind('.'):]
+            if ext in ['.tif', '.eps', '.tiff', '.jpg']:
+                invalid_href.append(href)
+                href = href[0:href.find(ext)]
+
+            matched_image_names = [f for f in related_files if f.startswith(href + '.')]
+            for image_filename in matched_image_names:
                 #print('  img file: ' + image_filename)
                 ext = image_filename[image_filename.rfind('.'):]
 
@@ -922,6 +930,18 @@ class XMLPkgMker:
                 shutil.copyfile(img_filename, self.scielo_pkg_files.pkg_path + '/' + new_filename)
                 if not image_filename.endswith('.jpg'):
                     shutil.copyfile(img_filename, self.pmc_pkg_files.pkg_path + '/' + new_filename)
+            if not matched_image_names:
+                unmatched.append(href)
+        if unmatched or invalid_href:
+            message = ''
+            if invalid_href:
+                message += 'Do not use extension in href= inside the XML\n' + '\n'.join(invalid_href)
+            if unmatched:
+                message += 'Not found\n' + '\n'.join(unmatched)
+            if self.scielo_pkg_files:
+                f = open(self.scielo_pkg_files.report_path + '/images.err.txt', 'w')
+                f.write(message)
+                f.close()
 
     def manage_output_files(self, xml_filename, pkg_files, is_well_formed, is_dtd_valid, is_style_valid):
         if self.ctrl_filename:
@@ -952,6 +972,7 @@ class XMLPkgMker:
 
         self.scielo_pkg_files.name(curr_name, new_name)
         self.pmc_pkg_files.name(curr_name, new_name)
+
         xsl_new_name = new_name if new_name != curr_name else ''
 
         if os.path.exists(xml_filename):
@@ -975,7 +996,7 @@ class XMLPkgMker:
                     f.close()
 
                 if os.path.exists(self.pmc_pkg_files.xml_output):
-                    print('Finished')
+                    print('  Finished')
                 else:
                     print('\nUnable to create ' + self.pmc_pkg_files.xml_output)
                     f = open(self.scielo_pkg_files.dtd_validation_report, 'a+')
