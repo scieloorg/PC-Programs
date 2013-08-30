@@ -109,7 +109,8 @@ class EntitiesTable:
                 print(line)
             else:
                 char, number_ent, named_ent, ign2, no_accent = values
-
+                if number_ent == '&#124;':
+                    char = '|'
                 if named_ent in ['&gt;', '&lt;', '&amp;']:
                     char = named_ent
                     #entity_char = named_ent.replace('&','').replace(';','')
@@ -294,14 +295,14 @@ def xml_is_well_formed(content):
         try:
             r = etree.parse(StringIO(content))
         except Exception as e:
-            print('xml_is_well_formed')
+            #print('xml_is_well_formed')
             print(e)
             r = None
     else:
         try:
             r = etree.parse(content)
         except Exception as e:
-            print('xml_is_well_formed')
+            #print('xml_is_well_formed')
             print(e)
             r = None
     return r
@@ -629,7 +630,6 @@ class XMLValidations:
         #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
         is_well_formed, is_dtd_valid, is_style_valid = [False, False, False]
         content = None
-
         xml = xml_is_well_formed(xml_filename)
         if not xml:
             print('Converting entities...')
@@ -666,11 +666,9 @@ class XMLValidations:
                 f.close()
 
             if os.path.exists(temp_xml_filename):
-                #print(pkg_files.dtd_validation_report)
                 is_dtd_valid = xml_validate(temp_xml_filename, pkg_files.dtd_validation_report, True)
 
                 # STYLE CHECKER REPORT
-                #print(pkg_files.style_checker_report)
                 is_style_valid = self._style_checker_report(temp_xml_filename, pkg_files.style_checker_report)
 
                 # PREVIEW
@@ -865,21 +863,25 @@ class XMLPkgMker:
 
         # convert_ent_to_cha
         content = convert_ent_to_char(content, self.entities_table)
+
         # fix problems of XML format
         if input_filename.endswith('.sgm.xml'):
             content = XMLFixer().fix(content)
 
         # get href of images and new name
         new_name = os.path.basename(input_filename).replace('.sgm.xml', '').replace('.xml', '')
+        img_list = {}
         if xml_is_well_formed(content):
             new_name, img_list = XMLMetadata(content).new_name_and_img_list(self.acron, alternative_id)
 
             if input_filename.endswith('.sgm.xml'):
                 content = xml_content_transform(content, self.version_converter)
 
-        f = open(self.new_name_path + '/' + new_name + '.xml', 'w')
-        f.write(content)
-        f.close()
+        if xml_is_well_formed(content):
+            f = open(self.new_name_path + '/' + new_name + '.xml', 'w')
+            f.write(content)
+            f.close()
+
         return [new_name, img_list]
 
     def _create_src_copy(self, selected_files):
@@ -968,6 +970,7 @@ class XMLPkgMker:
     def _make_packages_for_one_file(self, xml_file, curr_name, related_files):
         print(curr_name)
         new_name, img_list = self._normalize_xml(self.src_copy_path + '/' + xml_file, curr_name)
+
         xml_filename = self.new_name_path + '/' + new_name + '.xml'
 
         self.scielo_pkg_files.name(curr_name, new_name)
@@ -976,6 +979,7 @@ class XMLPkgMker:
         xsl_new_name = new_name if new_name != curr_name else ''
 
         if os.path.exists(xml_filename):
+
             self._add_related_files_to_packages(related_files, curr_name, new_name)
             self._add_img_to_packages(related_files, img_list, new_name)
             img_path = self.scielo_pkg_files.pkg_path
@@ -1008,9 +1012,9 @@ class XMLPkgMker:
                 f.write('\nUnable to create ' + self.scielo_pkg_files.xml_output)
                 f.close()
         else:
-            print('Unable to create ' + xml_filename)
+            print(curr_name + ' is not a well formed XML')
             f = open(self.scielo_pkg_files.dtd_validation_report, 'a+')
-            f.write('Unable to create ' + xml_filename)
+            f.write(curr_name + ' is not a well formed XML')
             f.close()
 
     def make_packages(self):
