@@ -3,6 +3,12 @@
     @dtd-version 120
     @article-type 71 
     @xml:lang 40 en    
+    .//article-meta/related-article[@ext-link-type='doi'] 241
+      @xlink:href i
+      @ext-link-type t LK_DOI_
+    .//article-meta/related-article[@specific-use='processing-only'] 241
+      @id i
+      . t pr
     .//journal-meta//journal-title 100
     .//journal-meta//abbrev-journal-title 30
     .//journal-meta//publisher-name 62
