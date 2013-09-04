@@ -303,7 +303,7 @@ class InformationAnalyst:
         pkg_files.xml_output = None
         img_path = ''
 
-        is_dtd_valid, is_style_valid = xml_validations.check_list(xml_filename, pkg_files, img_path)
+        is_w, is_dtd_valid, is_style_valid = xml_validations.check_list(xml_filename, pkg_files, img_path)
         if is_dtd_valid:
             package.report.write('is_valid_xml')
             if not is_style_valid:
