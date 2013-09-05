@@ -573,12 +573,12 @@ class XMLValidations:
                 c = f.read()
                 f.close()
 
-                report_ok = ('Total of errors = 0' in c)
+                report_ok = ('Total of errors = 0' in c) and ('Total of warnings = 0')
 
                 if report_ok:
-                    self.report('Validation report. No errors found. Read ' + style_checker_report)
+                    self.report('Validation report. No errors/warnings found. Read ' + style_checker_report)
                 else:
-                    self.report('Validation report. Some errors were found. Read ' + style_checker_report)
+                    self.report('Validation report. Some errors/warnings were found. Read ' + style_checker_report)
             else:
                 self.report('Unable to create validation report: ' + style_checker_report)
         else:
@@ -946,26 +946,26 @@ class XMLPkgMker:
                 f.close()
 
     def manage_output_files(self, xml_filename, pkg_files, is_well_formed, is_dtd_valid, is_style_valid):
-        if self.ctrl_filename:
-            err_filename = self.ctrl_filename.replace('.ctrl', '.err')
-            msg = ''
-            if not is_well_formed:
-                msg = 'Not well formed'
-            elif not is_dtd_valid:
-                msg = 'Not according to DTD'
-            elif not is_style_valid:
-                msg = 'Not valid style'
-            if msg:
-                f = open(err_filename, 'w')
-                f.write(msg)
-                f.close()
+        err_filename = self.ctrl_filename.replace('.ctrl', '.err')
+        print(err_filename)
+        print(is_dtd_valid)
+        print(is_style_valid)
+        print(is_well_formed)
+        print(xml_filename)
+        if is_dtd_valid:
+            os.unlink(pkg_files.dtd_validation_report)
         else:
-            if is_dtd_valid:
-                os.unlink(pkg_files.dtd_validation_report)
-            if is_style_valid:
-                os.unlink(pkg_files.style_checker_report)
-            if not is_well_formed:
-                shutil.copyfile(xml_filename, pkg_files.dtd_validation_report)
+            if self.ctrl_filename:
+                shutil.copyfile(pkg_files.dtd_validation_report, err_filename)
+        if is_style_valid and not self.ctrl_filename:
+            os.unlink(pkg_files.style_checker_report)
+        if not is_well_formed:
+            shutil.copyfile(xml_filename, pkg_files.dtd_validation_report)
+
+            if self.ctrl_filename:
+                f = open(err_filename, 'a+')
+                f.write('XML is not well formed')
+                f.close()
 
     def _make_packages_for_one_file(self, xml_file, curr_name, related_files):
         print(curr_name)

@@ -624,12 +624,26 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-
+	
+	<xsl:template match="xref[@ref-type='aff']/@rid"><xsl:variable name="var_id"><xsl:choose>
+		<xsl:when test="contains(.,' ')">aff<xsl:value-of select="substring-before(.,' ')"/></xsl:when>
+		<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+	</xsl:choose></xsl:variable><xsl:choose>
+			<xsl:when test="contains($var_id,'a0')">aff<xsl:value-of select="substring-after($var_id,'a0')"/></xsl:when>
+			<xsl:otherwise>aff<xsl:value-of select="substring-after($var_id,'a')"/></xsl:otherwise>
+		</xsl:choose></xsl:template>
+	
 	<xsl:template match="aff/@id">
 		<!-- quando nao ha aff/label = author/xref enquanto author/@rid = aff/@id -->
-		<xsl:attribute name="id">
-			<xsl:value-of select="."/>
-		</xsl:attribute>
+		<xsl:variable name="var_id"><xsl:choose>
+			<xsl:when test="contains(.,' ')">aff<xsl:value-of select="substring-before(.,' ')"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose></xsl:variable>
+			
+		<xsl:attribute name="id"><xsl:choose>
+			<xsl:when test="contains($var_id,'a0')">aff<xsl:value-of select="substring-after($var_id,'a0')"/></xsl:when>
+			<xsl:otherwise>aff<xsl:value-of select="substring-after($var_id,'a')"/></xsl:otherwise>
+			</xsl:choose></xsl:attribute>
 	</xsl:template>
 
 	<xsl:template match="aff/@*[contains(name(),'org')] | aff/*[contains(name(),'org')]">
@@ -1959,8 +1973,6 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			<xsl:when test="@ref-type='aff'">
 				<xsl:variable name="label" select="normalize-space(.)"/>
 				<xref ref-type="aff">
-
-
 					<!--xsl:choose>
 						<xsl:when
 							test="$affs[normalize-space(label)=$label or normalize-space(.//sup//text())=$label]">
@@ -1973,9 +1985,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 							</xsl:attribute>
 						</xsl:otherwise>
 					</xsl:choose-->
-					<xsl:attribute name="rid">
-						<xsl:value-of select="@rid"/>
-					</xsl:attribute>
+					<xsl:attribute name="rid"><xsl:apply-templates select="@rid"></xsl:apply-templates></xsl:attribute>
 					<sup>
 						<xsl:value-of select="$label"/>
 					</sup>
