@@ -576,7 +576,7 @@ class XMLValidations:
                 report_ok = ('Total of errors = 0' in c) and ('Total of warnings = 0')
 
                 if report_ok:
-                    self.report('Validation report. No errors/warnings found. Read ' + style_checker_report)
+                    self.report('Validation report. No errors/warnings: found. Read ' + style_checker_report)
                 else:
                     self.report('Validation report. Some errors/warnings were found. Read ' + style_checker_report)
             else:
