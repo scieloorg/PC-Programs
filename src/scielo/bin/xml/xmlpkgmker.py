@@ -402,6 +402,7 @@ class XMLFixer:
 
     def fix(self, content):
         content = content[0:content.rfind('>')+1]
+        content = content[content.find('<'):]
         if not xml_is_well_formed(content):
             f = open('fix1.xml', 'w')
             f.write(content)
