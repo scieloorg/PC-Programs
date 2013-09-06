@@ -327,7 +327,7 @@ def xml_content_transform(content, xsl_filename):
     return content
 
 
-def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
+def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}, debug=False):
     error = False
     if os.path.exists(result_filename):
         os.unlink(result_filename)
@@ -336,7 +336,9 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
         os.unlink(temp_result_filename)
     cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
     os.system(cmd)
-    #print(cmd)
+    if debug:
+        print(cmd)
+        x
     if not os.path.exists(temp_result_filename):
         f = open(temp_result_filename, 'w')
         f.write('ERROR: transformation error.\n')
@@ -512,7 +514,7 @@ class ValidationFiles:
         self.style_checker_report = None
         self.xml_output = None
 
-    def name(self, curr_name, new_name):
+    def name(self, curr_name, new_name, xml_output_path=None):
         self.dtd_validation_report = self.report_path + '/' + curr_name + self.suffix + '.dtd.txt'
         self.style_checker_report = self.report_path + '/' + curr_name + self.suffix + '.rep.html'
 
@@ -522,8 +524,10 @@ class ValidationFiles:
             self.html_preview = self.preview_path + '/' + curr_name + self.suffix + '.xml.html'
         else:
             self.html_preview = None
-
-        self.xml_output = self.pkg_path + '/' + new_name + '.xml'
+        if xml_output_path:
+            self.xml_output = xml_output_path + '/' + new_name + '.xml'
+        else:
+            self.xml_output = self.pkg_path + '/' + new_name + '.xml'
 
 
 class XMLValidations:
@@ -949,24 +953,22 @@ class XMLPkgMker:
                 f.close()
 
     def manage_output_files(self, xml_filename, pkg_files, is_well_formed, is_dtd_valid, is_style_valid):
-        err_filename = self.ctrl_filename.replace('.ctrl', '.err')
-        print(err_filename)
-        print(is_dtd_valid)
-        print(is_style_valid)
-        print(is_well_formed)
-        print(xml_filename)
-        if is_dtd_valid:
-            os.unlink(pkg_files.dtd_validation_report)
-        else:
-            if self.ctrl_filename:
-                shutil.copyfile(pkg_files.dtd_validation_report, err_filename)
-        if is_style_valid and not self.ctrl_filename:
-            os.unlink(pkg_files.style_checker_report)
-        if not is_well_formed:
-            shutil.copyfile(xml_filename, pkg_files.dtd_validation_report)
-
-            if self.ctrl_filename:
+        if self.ctrl_filename:
+            err_filename = self.ctrl_filename.replace('.ctrl', '.err')
+            if not is_well_formed:
+                #shutil.copyfile(xml_filename, err_filename)
                 f = open(err_filename, 'a+')
+                f.write('XML is not well formed')
+                f.close()
+            elif not is_dtd_valid and os.path.exists(pkg_files.dtd_validation_report):
+                shutil.copyfile(pkg_files.dtd_validation_report, err_filename)
+        else:
+            if is_dtd_valid:
+                os.unlink(pkg_files.dtd_validation_report)
+            if is_style_valid:
+                os.unlink(pkg_files.style_checker_report)
+            if not is_well_formed:
+                f = open(pkg_files.dtd_validation_report, 'a+')
                 f.write('XML is not well formed')
                 f.close()
 
@@ -976,13 +978,13 @@ class XMLPkgMker:
 
         xml_filename = self.new_name_path + '/' + new_name + '.xml'
 
-        self.scielo_pkg_files.name(curr_name, new_name)
+        self.scielo_pkg_files.name(curr_name, new_name, self.pmc_pkg_files.pkg_path)
         self.pmc_pkg_files.name(curr_name, new_name)
 
         xsl_new_name = new_name if new_name != curr_name else ''
 
         if os.path.exists(xml_filename):
-
+            shutil.copyfile(xml_filename, self.scielo_pkg_files.pkg_path + '/' + new_name + '.xml')
             self._add_related_files_to_packages(related_files, curr_name, new_name)
             self._add_img_to_packages(related_files, img_list, new_name)
             img_path = self.scielo_pkg_files.pkg_path
@@ -1118,7 +1120,8 @@ def make_packages(src, acron, version='j1.0'):
         try:
             xml_pkg_mker.make_packages()
             finalized_fine = True
-        except:
+        except Exception, e:
+            print(e)
             finalized_fine = False
 
 
