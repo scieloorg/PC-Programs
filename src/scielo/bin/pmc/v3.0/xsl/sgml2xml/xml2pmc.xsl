@@ -59,16 +59,16 @@
 
 			<xsl:variable name="inst"><xsl:value-of select="normalize-space(institution[@content-type='orgname'])"/></xsl:variable>
 			<xsl:variable name="is_full"><xsl:if test="$inst!=''"><xsl:apply-templates select="text()[string-length(normalize-space(.))&gt;=string-length($inst)]" mode="is_full"><xsl:with-param name="inst" select="$inst"></xsl:with-param></xsl:apply-templates></xsl:if></xsl:variable>
-			<!-- xsl:comment>is_full:<xsl:value-of select="$is_full"/> _</xsl:comment -->
+			<xsl:comment>is_full:<xsl:value-of select="$is_full"/> _</xsl:comment>
 			<xsl:choose>
 				<xsl:when test="contains($is_full,'yes')">
-					<!-- xsl:comment>full</xsl:comment -->
+					<xsl:comment>full</xsl:comment>
 					<xsl:apply-templates select="text()[string-length(normalize-space(.))&gt;=string-length($inst)]" mode="full">
 						<xsl:with-param name="inst" select="$inst"></xsl:with-param>
 					</xsl:apply-templates><xsl:apply-templates select="email"></xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
-					<!-- xsl:comment>parts</xsl:comment -->					
+					<xsl:comment>parts</xsl:comment>					
 					<xsl:apply-templates
 						select="text()[normalize-space(.)!='' and normalize-space(.)!=','] | institution | addr-line | country | email"
 						mode="aff-insert-separator"/>					
