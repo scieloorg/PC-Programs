@@ -1,9 +1,10 @@
 import random
 import os
-import sys
 import shutil
 import tempfile
+
 import xml.etree.ElementTree as etree
+
 from StringIO import StringIO
 
 
@@ -400,6 +401,7 @@ class XMLFixer:
         return content
 
     def fix(self, content):
+        content = content[0:content.rfind('>')+1]
         if not xml_is_well_formed(content):
             f = open('fix1.xml', 'w')
             f.write(content)
