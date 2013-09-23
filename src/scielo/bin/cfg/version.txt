@@ -1,10 +1,25 @@
+4.0.070 (not released yet)
+=======
+- fixes generation of xml package for ahead (in standalone version)
+- registration of normal.dot path in markup log file
+
+4.0.069
+=======
+11/Sep/2013
+this version fixes some issues of previous versions (milestone 4.0.069 https://github.com/scieloorg/PC-Programs/issues?milestone=3&page=1&state=closed)
+- title manager: displays in issue form the current creative commons license used by the journal
+- pubmed: fix the search expression for the journal (journal.xml)
+- xml packages maker: fix problems found in v4.0.068
+- markup xml: fix xref of affiliation (4.0.067)
+- journal-id for journals which are not NLM title
+
 4.0.068
 =======
 9/2013
  - xml package maker refactored to work with different DTD versions
  - markup XML - disabled preview of html files
 
- 4.0.067
+4.0.067
 =======
 31/7/2013
  - changing the name of element/attribute for ORCID: contrib-id and @contrib-id-type to ctrbid and @ctrbidtp because of SGML DTD limitation of namelen(8)

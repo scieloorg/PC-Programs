@@ -781,6 +781,8 @@ class XMLMetadata:
             if page_or_order:
                 page_or_order = fpage + seq
             else:
+                if not order:
+                    order = param_order
                 page_or_order = '00000' + order
                 page_or_order = page_or_order[-5:]
 
