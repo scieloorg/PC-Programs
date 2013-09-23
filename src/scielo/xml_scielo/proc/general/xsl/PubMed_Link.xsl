@@ -57,7 +57,7 @@
 									<xsl:value-of select="$replaceISSN"/><xsl:if test="$replaceISSN=''"><xsl:value-of select="//issn/occ"/></xsl:if> [TA] <xsl:apply-templates select="." mode="pubDate"/>:2010 [dp]</Query>
 								-->
 								<Query>
-									<xsl:value-of select="$replaceISSN"/> OR <xsl:value-of select=".//nlm-title"/>
+									<xsl:value-of select="$replaceISSN"/> OR "<xsl:value-of select=".//nlm-title"/>"
 									[ta]</Query>
 							</ObjectList>
 						</ObjectSelector>
