@@ -57,7 +57,7 @@
       . n
     .//article-meta//award-id 60    
     .//article-meta//funding-statement 102
-    back//ack 102 XML
+    .//back//ack 102 XML
     .//article-meta/pub-date 64
       season s
       month m
@@ -86,7 +86,7 @@
       elocation-id e
     .//article-meta/fpage 121
     .//article-meta/fpage/@seq 9121
-    aff 70
+    .//article-meta/aff 70
       label l
       @id i
       . 9
@@ -99,7 +99,7 @@
       institution[@content-type='orgdiv1'] 1
       institution[@content-type='orgname'] _
     .//clinical-trial 770 XML
-    aff 170 XML
+    .//article-meta/aff 170 XML
     .//ref-count/@count 72    
     .//table-count/@count 900
     .//fig-count/@count 901
@@ -183,10 +183,10 @@
       fpage f
       lpage l
       page-range r
-    size 20
+    .//size 20
       . _
       @units u
-    label 118    
+    .//label 118    
     .//et-al 810    
     .//ext-link 37    
     .//date-in-citation[@content-type='access-date'] 109

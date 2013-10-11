@@ -154,6 +154,7 @@ class XML2JSON:
                 print(test)
             if type(test) == type(''):
                 value = test
+                value = ' '.join(value.split())
         return value
 
     def convert_chr(self, value):
