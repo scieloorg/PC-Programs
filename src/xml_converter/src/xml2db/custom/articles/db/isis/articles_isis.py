@@ -153,9 +153,9 @@ class ISISManager4Articles:
         self.add_issue_to_scilista(issue.journal.acron + ' ' + issue.name)  
         
         if not 'ahead' in issue_paths.issue_id_path:
-            package.report.write('Deleting')
-            for f in os.listdir(issue_paths.issue_id_path):
-                os.unlink(issue_paths.issue_id_path + '/' + f)
+            # package.report.write('Deleting')
+            # for f in os.listdir(issue_paths.issue_id_path):
+            #     os.unlink(issue_paths.issue_id_path + '/' + f)
 
             ahead_manager = AheadManager(self.cisis, issue_paths.journal_path)
 
@@ -265,7 +265,9 @@ class ISISManager4Articles:
     def save_article_records(self, package, article, issue_paths):
         
         # identify files and paths
-        id_filename = issue_paths.article_filename(article.xml_filename)
+        id_filename = issue_paths.article_filename(article)
+        if os.path.exists(id_filename):
+            os.unlink(id_filename)
         
         # generate id file for one article
         self.json2idfile_article.set_file_data(id_filename, package.report)
@@ -377,8 +379,16 @@ class IssuePath:
     def i_filename(self):
         return self.issue_id_path + '/i.id'
      
-    def article_filename(self, xml_filename):
-        return self.issue_id_path + '/' + os.path.basename(xml_filename.replace('.xml', '.id')) 
+    def article_filename(self, article):
+        name = article.xml_filename
+        id_filename = self.issue_id_path + '/' + os.path.basename(article.xml_filename.replace('.xml', '.id')) 
+        order = '00000' + article.order
+
+        new_id_filename = self.issue_id_path + '/' + order[-5:] + '.id'
+        if os.path.exists(id_filename):
+            os.unlink(id_filename)
+
+        return new_id_filename
     
     
      
