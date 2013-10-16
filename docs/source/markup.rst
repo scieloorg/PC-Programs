@@ -160,9 +160,10 @@ To save a file, click on the save button.
 
 Automata 1 button
 .................
+
 To mark bibliographic references automatically:
 
-- the journal have to have an `Automata file <automata.html#automata-file>`_, which configures the rules to identify the references elements.
+- the journal have to have an Automata file (read `how to programming an automata <automata.html>`_), which configures the rules to identify the references elements.
 - select one bibliographic reference until its final dot, including, and then click on the Automata 1 button.
 
     .. image:: img/en/markup_main_bar_auto1.JPG

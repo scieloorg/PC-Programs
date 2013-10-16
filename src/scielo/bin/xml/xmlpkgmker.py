@@ -1,9 +1,10 @@
 import random
 import os
-import sys
 import shutil
 import tempfile
+
 import xml.etree.ElementTree as etree
+
 from StringIO import StringIO
 
 
@@ -405,6 +406,8 @@ class XMLFixer:
         return content
 
     def fix(self, content):
+        content = content[0:content.rfind('>')+1]
+        content = content[content.find('<'):]
         if not xml_is_well_formed(content):
             f = open('fix1.xml', 'w')
             f.write(content)
@@ -514,7 +517,7 @@ class ValidationFiles:
         self.style_checker_report = None
         self.xml_output = None
 
-    def name(self, curr_name, new_name):
+    def name(self, curr_name, new_name, xml_output_path=None):
         self.dtd_validation_report = self.report_path + '/' + curr_name + self.suffix + '.dtd.txt'
         self.style_checker_report = self.report_path + '/' + curr_name + self.suffix + '.rep.html'
 
@@ -524,8 +527,10 @@ class ValidationFiles:
             self.html_preview = self.preview_path + '/' + curr_name + self.suffix + '.xml.html'
         else:
             self.html_preview = None
-
-        self.xml_output = self.pkg_path + '/' + new_name + '.xml'
+        if xml_output_path:
+            self.xml_output = xml_output_path + '/' + new_name + '.xml'
+        else:
+            self.xml_output = self.pkg_path + '/' + new_name + '.xml'
 
 
 class XMLValidations:
@@ -581,9 +586,9 @@ class XMLValidations:
                 report_ok = ('Total of errors = 0' in c) and (('Total of warnings = 0' in c) or (not 'Total of warnings =' in c))
 
                 if report_ok:
-                    self.report('Validation report. No errors found. Read ' + style_checker_report)
+                    self.report('Validation report. No errors/warnings: found. Read ' + style_checker_report)
                 else:
-                    self.report('Validation report. Some errors were found. Read ' + style_checker_report)
+                    self.report('Validation report. Some errors/warnings were found. Read ' + style_checker_report)
             else:
                 self.report('Unable to create validation report: ' + style_checker_report)
         else:
@@ -779,6 +784,8 @@ class XMLMetadata:
             if page_or_order:
                 page_or_order = fpage + seq
             else:
+                if not order:
+                    order = param_order
                 page_or_order = '00000' + order
                 page_or_order = page_or_order[-5:]
 
@@ -953,24 +960,22 @@ class XMLPkgMker:
     def manage_output_files(self, xml_filename, pkg_files, is_well_formed, is_dtd_valid, is_style_valid):
         if self.ctrl_filename:
             err_filename = self.ctrl_filename.replace('.ctrl', '.err')
-            msg = ''
             if not is_well_formed:
-                msg = 'Not well formed'
-            elif not is_dtd_valid:
-                msg = 'Not according to DTD'
-            elif not is_style_valid:
-                msg = 'Not valid style'
-            if msg:
-                f = open(err_filename, 'w')
-                f.write(msg)
+                #shutil.copyfile(xml_filename, err_filename)
+                f = open(err_filename, 'a+')
+                f.write('XML is not well formed')
                 f.close()
+            elif not is_dtd_valid and os.path.exists(pkg_files.dtd_validation_report):
+                shutil.copyfile(pkg_files.dtd_validation_report, err_filename)
         else:
             if is_dtd_valid:
                 os.unlink(pkg_files.dtd_validation_report)
             if is_style_valid:
                 os.unlink(pkg_files.style_checker_report)
             if not is_well_formed:
-                shutil.copyfile(xml_filename, pkg_files.dtd_validation_report)
+                f = open(pkg_files.dtd_validation_report, 'a+')
+                f.write('XML is not well formed')
+                f.close()
 
     def _make_packages_for_one_file(self, xml_file, curr_name, related_files):
         print(curr_name)
@@ -978,13 +983,13 @@ class XMLPkgMker:
 
         xml_filename = self.new_name_path + '/' + new_name + '.xml'
 
-        self.scielo_pkg_files.name(curr_name, new_name)
+        self.scielo_pkg_files.name(curr_name, new_name, self.pmc_pkg_files.pkg_path)
         self.pmc_pkg_files.name(curr_name, new_name)
 
         xsl_new_name = new_name if new_name != curr_name else ''
 
         if os.path.exists(xml_filename):
-
+            shutil.copyfile(xml_filename, self.scielo_pkg_files.pkg_path + '/' + new_name + '.xml')
             self._add_related_files_to_packages(related_files, curr_name, new_name)
             self._add_img_to_packages(related_files, img_list, new_name)
             img_path = self.scielo_pkg_files.pkg_path
@@ -1120,7 +1125,8 @@ def make_packages(src, acron, version='j1.0'):
         try:
             xml_pkg_mker.make_packages()
             finalized_fine = True
-        except:
+        except Exception, e:
+            print(e)
             finalized_fine = False
 
 

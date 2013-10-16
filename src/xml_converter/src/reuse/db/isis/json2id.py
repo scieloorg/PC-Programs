@@ -138,6 +138,7 @@ class JSON2IDFile:
             r = self.converter_utf8_iso.utf8_2_iso(value)
         else:
             r = value
+        r = r.replace('& ', '&amp; ')
         return r
 
 
