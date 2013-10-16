@@ -327,7 +327,7 @@ def xml_content_transform(content, xsl_filename):
     return content
 
 
-def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}, debug=False):
+def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     error = False
     if os.path.exists(result_filename):
         os.unlink(result_filename)
@@ -336,12 +336,15 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}, de
         os.unlink(temp_result_filename)
     cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
     os.system(cmd)
-    if debug:
-        print(cmd)
-        x
-    if not os.path.exists(temp_result_filename):
+    #print(cmd)
+    if os.path.exists(temp_result_filename):
+        print(result_filename + ' was created fine.')
+    else:
         f = open(temp_result_filename, 'w')
         f.write('ERROR: transformation error.\n')
+        f.write(xml_filename)
+        f.write(xsl_filename)
+        f.write(result_filename)
         f.write(cmd)
         error = True
 
@@ -580,7 +583,7 @@ class XMLValidations:
                 c = f.read()
                 f.close()
 
-                report_ok = ('Total of errors = 0' in c) and ('Total of warnings = 0')
+                report_ok = ('Total of errors = 0' in c) and (('Total of warnings = 0' in c) or (not 'Total of warnings =' in c))
 
                 if report_ok:
                     self.report('Validation report. No errors/warnings: found. Read ' + style_checker_report)

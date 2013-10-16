@@ -72,7 +72,7 @@ class QueueOrganizer:
             archived_file = archive_path + '/' + name
             if os.path.exists(archived_file):
                 new_name = add_date_to_filename(name, False)
-                shutil.copyfile(archived_file, archive_path2 + '/' + new_name)
+                #shutil.copyfile(archived_file, archive_path2 + '/' + new_name)
             shutil.copy(filename, archive_path)
 
 class PackagesProcessor:
