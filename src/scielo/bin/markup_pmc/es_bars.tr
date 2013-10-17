@@ -128,7 +128,7 @@ aff;email
 Dirección electrónica del autor
 
 authgrpText;author
-Agrupa datos de los autores individuales, como nombre,sobrenombre y papel
+Agrupa datos de los autores individuales, como nombre, apellido y papel
 
 authgrpText;corpauth
 Agrupa datos de los autores corporativos
@@ -137,7 +137,7 @@ authorText;fname
 Identifica los nombres de un autor individual
 
 authorText;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 corpauthText;orgname
 Identifica el nombre del autor corporativo
@@ -161,7 +161,7 @@ front;titlegrp
 Agrupa los títulos del documento
 
 front;authgrp
-Agrupa datos de los autores individuales, como nombre,sobrenombre y papel
+Agrupa datos de los autores individuales, como nombre, apellido y papel
 
 front;bibcom
 Agrupa otros elenentos para la identificación del artículo, como resumen y palabras-clave
@@ -173,7 +173,7 @@ titlegrpFront;subtitle
 Identifica el subtítulo del documento
 
 authgrpFront;author
-Agrupa los datos de autores individuales, como nombre,sobrenombre y papel
+Agrupa los datos de autores individuales, como nombre, apellido y papel
 
 authgrpFront;corpauth
 Identifica los autores corporativos
@@ -182,7 +182,7 @@ authorFront;fname
 Identifica los nombres de un autor individual
 
 authorFront;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 corpauthFront;orgname
 Identifica el nombre del autor corporativo del documento
@@ -437,7 +437,7 @@ ocitat;confgrp
 Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
 
 ocontrib;oauthor
-Agrupa los datos de los autores individuales, como nombre, sobrenombre y papel
+Agrupa los datos de los autores individuales, como nombre, apellido y papel
 
 ocontrib;ocorpaut
 Identifica los autores corporativos
@@ -464,7 +464,7 @@ oauthorOcontrib;fname
 Identifica los nombres de un autor individual
 
 oauthorOcontrib;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 oauthorOcontrib;anonym
 Identifica que la obra  es de autoría desconocida
@@ -482,7 +482,7 @@ ocorpautContrib;previous
 Identifica que el autor de la cita es el mismo autor citado en la cita anterior
 
 omonog;oauthor
-Agrupa los datos de autores individuales, como nombre, sobrenombre y papel
+Agrupa los datos de autores individuales, como nombre, apellido y papel
 
 omonog;ocorpaut
 Identifica los autores corporativos
@@ -554,7 +554,7 @@ oauthorOmonog;fname
 Identifica los nombres de un autor individual
 
 oauthorOmonog;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 oauthorOmonog;anonym
 Identifica que la obra  es de autoría desconocida
@@ -713,7 +713,7 @@ vcitat;vmonog
 Agrupa los elenentos principais para la identificación de una monografia
 
 vcontrib;author
-Agrupa los datos de autores individuales, como nombre,sobrenombre y papel
+Agrupa los datos de autores individuales, como nombre, apellido y papel
 
 vcontrib;corpauth
 Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
@@ -731,7 +731,7 @@ authorVcontrib;fname
 Identifica los nombres de un autor individual
 
 authorVcontrib;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 authorVcontrib;previous
 Identifica que el autor de la cita es el mismo autor citado en la cita anterior
@@ -797,7 +797,7 @@ vstitle;tp
 Identifica el tipo de publicación en una  cita, por ejenplo, un editorial o una revisión de literatura
 
 vmonog;author
-Agrupa los datos de autores individuales, como nombre,sobrenombre y papel
+Agrupa los datos de autores individuales, como nombre, apellido y papel
 
 vmonog;corpauth
 Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
@@ -857,7 +857,7 @@ authorVmonog;fname
 Identifica los nombres de un autor individual
 
 authorVmonog;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 authorVmonog;previous
 Identifica que el autor de la cita es el mismo autor citado en la cita anterior
@@ -959,7 +959,7 @@ pcitat;piserial
 Agrupa elenentos de identificación específicos de una publicación seriada o revista
 
 pcontrib;author
-Agrupa los datos de autores individuales, como nombre, sobrenombre y papel
+Agrupa los datos de autores individuales, como nombre, apellido y papel
 
 pcontrib;corpauth
 Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
@@ -977,7 +977,7 @@ authorpContrib;fname
 Identifica los nombres de un autor individual
 
 authorpContrib;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 corpautpContrib;orgname
 Identifica el nombre del autor corporativo
@@ -989,7 +989,7 @@ authorpMonog;fname
 Identifica los nombres de un autor individual
 
 authorpMonog;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 corpautpMonog;orgname
 Identifica el nombre del autor corporativo
@@ -1022,7 +1022,7 @@ piserial;doi
 Identifica, en una  cita, doi del documento
 
 pmonog;author
-Agrupa los datos de autores individuales, como nombre,sobrenombre y papel
+Agrupa los datos de autores individuales, como nombre, apellido y papel
 
 pmonog;corpauth
 Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
@@ -1100,7 +1100,7 @@ acitat;confgrp
 Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
 
 acontrib;author
-Agrupa los datos de autores individuales, como nombre, sobrenombre y papel
+Agrupa los datos de autores individuales, como nombre, apellido y papel
 
 acontrib;corpauth
 Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
@@ -1127,7 +1127,7 @@ authorAcontrib;fname
 Identifica los nombres de un autor individual
 
 authorAcontrib;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 authorAcontrib;previous
 Identifica que el autor de la cita es el mismo autor citado en la cita anterior
@@ -1196,7 +1196,7 @@ aiserial;cited
 Identifica la fecha en lo cual el artículo electrónico fue accedido
 
 amonog;author
-Agrupa los datos de autores individuales, como nombre,sobrenombre y papel
+Agrupa los datos de autores individuales, como nombre, apellido y papel
 
 amonog;corpauth
 Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
@@ -1277,7 +1277,7 @@ authorAmonog;fname
 Identifica los nombres de un autor individual
 
 authorAmonog;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 authorAmonog;previous
 Identifica que el autor de la cita es el mismo autor citado en la cita anterior
@@ -1382,7 +1382,7 @@ icitat;iiserial
 Agrupa elenentos de identificación específicos de una publicación seriada o revista
 
 icontrib;author
-Agrupa los datos de autores individuales, como nombre, sobrenombre y papel
+Agrupa los datos de autores individuales, como nombre, apellido y papel
 
 icontrib;corpauth
 Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
@@ -1406,7 +1406,7 @@ authorIcontrib;fname
 Identifica los nombres de un autor individual
 
 authorIcontrib;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 authorIcontrib;previous
 Identifica que el autor de la cita es el mismo autor citado en la cita anterior
@@ -1424,13 +1424,13 @@ subrespIcontrib;fname
 Identifica los nombres de un autor individual
 
 subrespIcontrib;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 iiserial;isstitle
 Identifica el título de un fascículo de publicación seriada o revista
 
 iiserial;author
-Agrupa los datos de autores individuales, como nombre, sobrenombre y papel
+Agrupa los datos de autores individuales, como nombre, apellido y papel
 
 iiserial;corpauth
 Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
@@ -1502,7 +1502,7 @@ authorIiserial;fname
 Identifica los nombres de un autor individual
 
 authorIiserial;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 authorIiserial;previous
 Identifica que el autor de la cita es el mismo autor citado en la cita anterior
@@ -1517,7 +1517,7 @@ corpautIiserial;previous
 Identifica que el autor de la cita es el mismo autor citado en la cita anterior
 
 imonog;author
-Agrupa los datos de autores individuales, como nombre, sobrenombre y papel
+Agrupa los datos de autores individuales, como nombre, apellido y papel
 
 imonog;corpauth
 Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
@@ -1595,7 +1595,7 @@ authorImonog;fname
 Identifica los nombres de un autor individual
 
 authorImonog;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 authorImonog;previous
 Identifica que el autor de la cita es el mismo autor citado en la cita anterior
@@ -1613,13 +1613,13 @@ subrespImonog;fname
 Identifica los nombres de un autor individual
 
 subrespImonog;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 subrespAmonog;fname
 Identifica los nombres de un autor individual
 
 subrespAmonog;surname
-Identifica el sobrenombre de un autor individual
+Identifica el apellido de un autor individual
 
 backT;fngrp
 Identifica una nota de rodapé
