@@ -400,7 +400,7 @@ class JSON_Article:
         article.section = self.section
         article.json_data = self.json_data
         article.display_data = self.set_display()
-        article.display_order =  ['nlm-ta', 'print issn',  'online issn', 'publishers', 'issue label', '@article-type', 'doi', 'pages', 'received date', 'accepted date', 'publication date (epub)', 'publication date (ppub)', 'titles', 'authors', 'corporative authors', 'abstracts', 'keywords',  ]
+        article.display_order =  ['nlm-ta', 'print issn',  'online issn', 'publishers', 'issue label', '@article-type', 'doi', 'pages', 'order', 'received date', 'accepted date', 'publication date (epub)', 'publication date (ppub)', 'titles', 'authors', 'corporative authors', 'abstracts', 'keywords',  ]
         return article
 
     def _d(self, r, tag, label):
@@ -453,6 +453,7 @@ class JSON_Article:
             r['pages'] = eloc + ' (e-location)'
 
         r['issue label'] = self.issuelabel()
+        r['order'] = self.json_data['f'].get('121')
 
         r['nlm-ta'] = return_singleval(self.json_data['f'], '421')
         r['print issn'] = return_singleval(self.json_data['f'], '35')
@@ -580,22 +581,22 @@ class JSON_Article:
 
     def set_article_pid(self, alternative_id):
         issueno = return_singleval(self.json_data['f'], '32')
+        f = self.json_data['f']
 
         if issueno == 'ahead':
-            self.json_data['f']['121'] = alternative_id
+            article_id_pid = f.get('8121', alternative_id)
         else:
             # 8121 = article-id[@pub-id-type='PID']
             #  121 = fpage
             # 9121 = fpage/@seq
-            article_id_pid = self.json_data['f'].get('8121', self.json_data['f'].get('9121', self.json_data['f'].get('121', '')))
-            if article_id_pid.isdigit():
-                self.json_data['f']['121'] = article_id_pid[-5:]
-            else:
-                self.json_data['f']['121'] = '0'
-            if '8121' in self.json_data['f'].keys():
-                del self.json_data['f']['8121']
-            if '9121' in self.json_data['f'].keys():
-                del self.json_data['f']['9121']
+            article_id_pid = f.get('8121', f.get('121', alternative_id))
+        if article_id_pid.isdigit():
+            self.json_data['f']['121'] = article_id_pid[-5:]
+        else:
+            self.json_data['f']['121'] = '0'
+
+        if '8121' in self.json_data['f'].keys():
+            del self.json_data['f']['8121']
 
 
     def normalize_document_data(self, issue, alternative_id):
@@ -618,7 +619,7 @@ class JSON_Article:
         print(section.title)
         self.section = issue.toc.return_section(section)
         if self.section == None:
-            section.code = section.title + ' (INVALID) '
+            section.code = section.title + ' (INVALID) ' + 'It should be one of: ' + issue.toc.return_sections()
             self.section = section
         self.json_data['f']['49'] = self.section.code
 

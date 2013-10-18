@@ -284,9 +284,6 @@ clubs|&#9827;|&clubs;| black club suit, =shamrock, u+2663 ISOpub |clubs
 hearts|&#9829;|&hearts;| black heart suit, =valentine, u+2665 ISOpub |hearts
 diams|&#9830;|&diams;| black diamond suit, u+2666 ISOpub |diams
 quot|&#34;|&quot;| quotation mark, =apl quote, u+0022 ISOnum |quot
-amp|&#38;|&amp;| ampersand, u+0026 ISOnum |amp
-lt|&#60;|&lt;| less-than sign, u+003C ISOnum |lt
-gt|&#62;|&gt;| greater-than sign, u+003E ISOnum |gt
 OElig|&#338;|&OElig;| latin capital ligature oe, u+0152 ISOlat2 |OElig
 oelig|&#339;|&oelig;| latin small ligature oe, u+0153 ISOlat2 |oelig
 Scaron|&#352;|&Scaron;| latin capital letter s with caron, u+0160 ISOlat2 |Scaron

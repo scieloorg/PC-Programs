@@ -86,7 +86,7 @@
       elocation-id e
     .//article-meta/fpage 121
     .//article-meta/fpage/@seq 9121
-    .//article-meta/aff 70
+    .//article-meta//aff 70
       label l
       @id i
       . 9
@@ -99,7 +99,7 @@
       institution[@content-type='orgdiv1'] 1
       institution[@content-type='orgname'] _
     .//clinical-trial 770 XML
-    .//article-meta/aff 170 XML
+    .//article-meta//aff 170 XML
     .//ref-count/@count 72    
     .//table-count/@count 900
     .//fig-count/@count 901
