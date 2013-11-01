@@ -2,6 +2,8 @@
 =======
 - fixes generation of xml package for ahead (in standalone version)
 - registration of normal.dot path in markup log file
+- BY-NC-SA
+- alteração na identificação de ref-type, quando o link é formado por nome do autor
 
 4.0.069
 =======

@@ -24,9 +24,9 @@ Sub Main()
     Dim paramProgram As String
     Dim paramParameters As String
     Dim paramDirectory As String
-    Dim test As String
-    Dim retDirExpected As String
-    Dim ret As Long
+    Dim f As String
+    Dim p As String
+    
     
     Open App.path & "\start.mds" For Input As #1
     Input #1, path
@@ -39,38 +39,30 @@ Sub Main()
     Input #1, param, paramDirectory
     Close #1
 
-    'verifica a existência do winword.exe
-    retDirExpected = paramProgram
-    test = Mid(path, InStr(1, path, "\office", vbTextCompare) + Len("\office"))
-    test = Mid(test, 1, InStr(test, "\") - 1)
-    If Len(test) > 0 Then
-        If CLng(test) > 11 Then
-            retDirExpected = ""
-        End If
-    End If
     
-    retDir = Dir(path)
+    path = LCase(path)
+    f = Mid(path, InStrRev(path, "\") + 1)
+    p = Mid(path, 1, InStrRev(path, "\") - 1)
     
     fn = FreeFile
     Open App.path & "\temp\openmarkup.log" For Output As #fn
-    Print #fn, "path=" & path
-    Print #fn, "retDir=" & retDir
-    Print #fn, "paramProgram=" & paramProgram
-    Print #fn, "retDirExpected=" & retDirExpected
+    Print #fn, "path start=" & path
+    Print #fn, "f=" & f
+    Print #fn, "p=" & path
     Close #fn
     
-    If (LCase(retDir) = LCase(paramProgram)) Or (LCase(retDir) = LCase(retDirExpected)) Then
+    If LCase(Dir(path)) = f Then
         'executa o WORD97 com a macro q prepara ambiente de marcação
-        
-        ret = callWord(path, paramOpen, paramProgram, paramParameters, paramDirectory)
-        
+        ret = callWord(path, paramOpen, f, paramParameters, p)
     Else
         DepePath.Text1.Text = path
         DepePath.Show
     End If
     Set conf = Nothing
 End Sub
+Function test_start(path As String) As String
 
+End Function
 Function callWord(WordPath As String, paramOpen As String, paramProgram As String, paramParameters As String, paramDirectory As String) As Long
     Dim fn As Long
     Dim callw As String
@@ -91,4 +83,6 @@ Function callWord(WordPath As String, paramOpen As String, paramProgram As Strin
     
 '    Shell callw, vbMaximizedFocus
 End Function
+
+
 
