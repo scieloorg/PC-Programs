@@ -1092,15 +1092,21 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="xref[@ref-type='bibr']/@rid">
-		<xsl:attribute name="rid">B<xsl:value-of select="substring(.,2)"/></xsl:attribute>
-
+		<xsl:choose>
+			<xsl:when test="contains(., '__ref_')">
+				<xsl:attribute name="rid">B<xsl:value-of select="substring-before(substring-after(.,'__ref_'),'_')"/></xsl:attribute>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:attribute name="rid">B<xsl:value-of select="substring(.,2)"/></xsl:attribute>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="*[@standard]/*[contains(name(),'citat')]">
-		<xsl:variable name="id">
-			<xsl:if test="position()&lt;10">0</xsl:if>
-			<xsl:value-of select="position()"/>
-		</xsl:variable>
+		<xsl:variable name="id"><xsl:choose>
+				<xsl:when test="contains(.,'__ref_')"><xsl:value-of select="substring-before(substring-after(.,'__ref_'),'_')"/></xsl:when>
+				<xsl:otherwise><xsl:if test="position()&lt;10">0</xsl:if>
+					<xsl:value-of select="position()"/></xsl:otherwise></xsl:choose></xsl:variable>
 		<ref id="B{$id}">
 			<xsl:apply-templates select="no"/>
 			<!-- book, communication, letter, review, conf-proc, journal, list, patent, thesis, discussion, report, standard, and working-paper.  -->
