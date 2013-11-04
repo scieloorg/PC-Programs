@@ -767,13 +767,14 @@ class XMLMetadata:
         return [issn, volid, issueno, suppl, fpage, order]
 
     def format_name(self, data, param_acron='', param_order=''):
+
         r = ''
         if data:
             issn, vol, issueno, suppl, fpage, order = data
-
+            print(data)
             page_or_order = ''
             seq = ''
-            if fpage.isdigit():
+            if not fpage.isdigit():
                 if not int(fpage) == 0:
                     page_or_order = fpage
             elif '-' in fpage:
@@ -781,10 +782,11 @@ class XMLMetadata:
                 if p[0].isdigit():
                     page_or_order = p[0]
                     seq = '-' + p[1]
+            print(page_or_order)
             if page_or_order:
                 page_or_order = fpage + seq
             else:
-                if not order:
+                if not order.replace('0', ''):
                     order = param_order
                 page_or_order = '00000' + order
                 page_or_order = page_or_order[-5:]

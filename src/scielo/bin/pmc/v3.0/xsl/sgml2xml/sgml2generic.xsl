@@ -18,6 +18,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="affs_xrefs" select=".//front//author"/>
 	<xsl:variable name="xref_id" select="//*[@id]"/>
 	<xsl:variable name="qtd_ref" select="count(//*[contains(name(),'citat')])"/>
+	<xsl:variable name="reflen"><xsl:value-of select="string-length($qtd_ref)"/></xsl:variable>
 	<xsl:variable name="ref_no" select="//*[contains(name(),'citat')]/no"/>
 
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
@@ -1093,8 +1094,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="xref[@ref-type='bibr']/@rid">
 		<xsl:choose>
-			<xsl:when test="contains(., '__ref_')">
-				<xsl:attribute name="rid">B<xsl:value-of select="substring-before(substring-after(.,'__ref_'),'_')"/></xsl:attribute>
+			<xsl:when test="contains(., 'mkp_ref_')">
+				<xsl:attribute name="rid">B<xsl:value-of select="substring-before(substring-after(.,'mkp_ref_'),'_')"/></xsl:attribute>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:attribute name="rid">B<xsl:value-of select="substring(.,2)"/></xsl:attribute>
@@ -1103,10 +1104,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="*[@standard]/*[contains(name(),'citat')]">
-		<xsl:variable name="id"><xsl:choose>
-				<xsl:when test="contains(.,'__ref_')"><xsl:value-of select="substring-before(substring-after(.,'__ref_'),'_')"/></xsl:when>
-				<xsl:otherwise><xsl:if test="position()&lt;10">0</xsl:if>
-					<xsl:value-of select="position()"/></xsl:otherwise></xsl:choose></xsl:variable>
+		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length(position()))"/></xsl:variable>
+		<xsl:variable name="id"><xsl:value-of select="$zeros"/><xsl:value-of select="position()"/></xsl:variable>
 		<ref id="B{$id}">
 			<xsl:apply-templates select="no"/>
 			<!-- book, communication, letter, review, conf-proc, journal, list, patent, thesis, discussion, report, standard, and working-paper.  -->
