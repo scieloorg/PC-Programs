@@ -67,12 +67,9 @@
                          ),  
                          (cited, url)?, doi?, ( report | notes | othinfo)? 
                       ) -->
-<!ELEMENT pmonog   - - ( (author* | corpauth*)?, date?, (%m.title;), volid?, part?, 
-                           
-                           (confgrp | thesis | (coltitle, colvolid?) )?,
-                           
-                           edition?, (pages | extent)?, (((city, state?, country?) | country), pubname+)?,
-                          
+<!ELEMENT pmonog   - - ( (author* | corpauth*)?, date?, (confgrp | ((%m.title;), volid?, part?, 
+                           (thesis | (coltitle, colvolid?) )?,
+                           edition?), (pages | extent)?, (((city, state?, country?) | country), pubname+)?,
                          (cited, url)?, doi?, (notes|othinfo)? 
                       )>
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
