@@ -165,9 +165,12 @@ class Package:
     def read_package_sender_email(self):
         if os.path.exists(self.package_path + '/email.txt'):
             f = open(self.package_path + '/email.txt', 'r')
-            self.package_sender_email = f.read()
-            self.package_sender_email = self.package_sender_email.replace(';', ',')
+            content = f.readlines()
             f.close()
+
+            content = [item for item in content if item]
+            self.package_sender_email = ','.join(content).replace('\n', '').replace('\r', '').replace(';', ',').replace('\xef\xbb\xbf', '').rstrip()
+
         return self.package_sender_email
 
     
