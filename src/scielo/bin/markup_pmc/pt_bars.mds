@@ -44,6 +44,12 @@ xref;Identifica referência cruzada de tabelas, figuras, etc;10;#TRUE#;#TRUE#;
 uri;Identifica um link;10;#TRUE#;#TRUE#;
 sciname;Identifica nomes científicos;10;#TRUE#;#FALSE#;
 quote;Identifica citação ou epígrafe;10;#TRUE#;#FALSE#;
+element;Identifica qualquer elemento;10;#TRUE#;#TRUE#;elemBar
+down;elemBar
+graphic;Identifica uma imagem;10;#TRUE#;#TRUE#;
+
+elemBar;ifloat
+attrib;identifica qualquer atributo;10;#TRUE#;#TRUE#;
 
 corresp;ifloat
 email;Endereço eletrônico do autor;10;#TRUE#;#FALSE#;

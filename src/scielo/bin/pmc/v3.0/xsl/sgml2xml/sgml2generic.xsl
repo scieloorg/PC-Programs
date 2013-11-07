@@ -2090,10 +2090,16 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		</p>
 	</xsl:template>
 	<xsl:template match="p/equation">
-		<disp-formula>
+		<inline-formula>
 			<xsl:apply-templates select="@*"/>
 			<xsl:apply-templates select="." mode="graphic"/>
-		</disp-formula>
+		</inline-formula>
+	</xsl:template>
+	<xsl:template match="p/graphic">
+		<inline-graphic>
+			<xsl:apply-templates select="@*"/>
+			<xsl:apply-templates select="." mode="graphic"/>
+		</inline-graphic>
 	</xsl:template>
 	<xsl:template match="graphic" mode="p-in-equation"> </xsl:template>
 	<xsl:template match="p" mode="p-in-equation">
