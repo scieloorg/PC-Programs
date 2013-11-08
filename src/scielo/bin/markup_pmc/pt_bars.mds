@@ -47,6 +47,7 @@ quote;Identifica citação ou epígrafe;10;#TRUE#;#FALSE#;
 element;Identifica qualquer elemento;10;#TRUE#;#TRUE#;elemBar
 down;elemBar
 graphic;Identifica uma imagem;10;#TRUE#;#TRUE#;
+supplmat;Material suplementar;10;#TRUE#;#TRUE#;
 
 elemBar;ifloat
 attrib;identifica qualquer atributo;10;#TRUE#;#TRUE#;

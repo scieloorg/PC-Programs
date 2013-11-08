@@ -8,7 +8,7 @@
 <!--   Common Models                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrp | cltrial | xref | uri | sciname | quote" > 
+<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat" > 
 <!ENTITY % m.name   "(fname? & surname & ctrbid*)" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
@@ -79,6 +79,20 @@ filename       CDATA #IMPLIED>
 <!ELEMENT equation - - (  graphic | texmath | mmlmath   )   >
 <!ATTLIST equation
           id       CDATA #REQUIRED>
+<!ELEMENT element - - (attrib*, element*)   >
+<!ATTLIST element
+          name       CDATA #REQUIRED>
+
+<!ELEMENT attrib     - O EMPTY >
+<!ATTLIST attrib
+          name CDATA #REQUIRED 
+          value CDATA #REQUIRED>
+
+<!ELEMENT supplmat - - (#PCDATA)   >
+<!ATTLIST supplmat
+          href       CDATA #REQUIRED
+          >
+
 <!ELEMENT texmath - - CDATA  >
 <!ELEMENT mmlmath - - CDATA  >
       
