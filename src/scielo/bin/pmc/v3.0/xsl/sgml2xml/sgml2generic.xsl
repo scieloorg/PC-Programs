@@ -304,7 +304,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</journal-id>
 			</xsl:if>
 			<xsl:if test="not(.//nlm-title) or .//nlm-title=''">
-				<journal-id journal-id-type="publisher-id">
+				<journal-id journal-id-type="publisher">
 					<xsl:value-of select="$journal_acron"/>
 				</journal-id>
 

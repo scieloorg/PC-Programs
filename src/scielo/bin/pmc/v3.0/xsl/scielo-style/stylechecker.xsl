@@ -72,6 +72,12 @@
         <xsl:with-param name="description">aff must have country</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
+    <xsl:if test="normalize-space(translate(text(),',.;-/', '     '))=''">
+      <xsl:call-template name="make-error">
+        <xsl:with-param name="error-type">full affiliation check</xsl:with-param>
+        <xsl:with-param name="description">aff must have full affiliation</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
     <xsl:apply-templates select="." mode="output"/>
   </xsl:template>
   <xsl:template match="ack">
@@ -111,71 +117,171 @@
   <xsl:template match="element-citation">
     <xsl:choose>
       <xsl:when test="@publication-type='journal'"></xsl:when>
-      <xsl:when test="@publication-type='book'"></xsl:when>
-      
+      <xsl:when test="@publication-type='book'"></xsl:when>      
       <xsl:when test="@publication-type='thesis'"></xsl:when>
       <xsl:when test="@publication-type='conference'"></xsl:when>
       <xsl:when test="@publication-type='patent'"></xsl:when>
       <xsl:when test="@publication-type='report'"></xsl:when>
       <xsl:when test="@publication-type='software'"></xsl:when>
       <xsl:when test="@publication-type='web'"></xsl:when>
-      <xsl:when test="@publication-type='webpage'"></xsl:when>
-      
-      <xsl:when test="@publication-type='book-part'"></xsl:when>
       <xsl:when test="@publication-type='conf-proc'"></xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="make-error">
           <xsl:with-param name="class">warning</xsl:with-param>
-          <xsl:with-param name="error-type">year check</xsl:with-param>
-          <xsl:with-param name="description">citation must have year</xsl:with-param>
+          <xsl:with-param name="error-type">publication type check</xsl:with-param>
+          <xsl:with-param name="description"><xsl:value-of select="@id"/>: invalid <xsl:value-of select="@publication-type"/> 
+            (expected one of journal | book | thesis | conf-proc | patent | report | software | web)</xsl:with-param>
         </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:apply-templates select="." mode="type"></xsl:apply-templates>    
     <xsl:if test="not(year)">
       <xsl:call-template name="make-error">
         <!--xsl:with-param name="class">warning</xsl:with-param-->
         <xsl:with-param name="error-type">year check</xsl:with-param>
-        <xsl:with-param name="description">citation must have year</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have year</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
     <xsl:if test="not(source)">
       <xsl:call-template name="make-error">
         <xsl:with-param name="error-type">source check</xsl:with-param>
-        <xsl:with-param name="description">citation must have source</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have source</xsl:with-param>
       </xsl:call-template>
-    </xsl:if>
-    
+    </xsl:if>    
     <xsl:apply-templates select="." mode="output"/>
   </xsl:template>
-  <xsl:template match="element-citation[@publication-type='journal']">    
+  
+  <xsl:template match="element-citation[@publication-type='journal']" mode="type">    
     <xsl:if test="not(article-title)">
       <xsl:call-template name="make-error">
         <xsl:with-param name="error-type">article-title check</xsl:with-param>
-        <xsl:with-param name="description">citation must have article-title</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have article-title</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:if test="not(article-title/@language)">
+      <xsl:call-template name="make-error">
+        <xsl:with-param name="error-type">article-title/@language check</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have article-title/@language</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
     <xsl:apply-templates select="." mode="output"/>
   </xsl:template>
-  <xsl:template match="element-citation[@publication-type='book']">    
-    <xsl:if test="article-title">
+  <xsl:template match="element-citation[@publication-type='thesis']" mode="type">    
+    <xsl:if test="not(article-title/@language)">
       <xsl:call-template name="make-error">
-        <xsl:with-param name="error-type">article-title check</xsl:with-param>
-        <xsl:with-param name="description">book citation must have chapter-title instead of article-title</xsl:with-param>
+        <xsl:with-param name="error-type">article-title/@language check</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have article-title/@language</xsl:with-param>
       </xsl:call-template>
-    </xsl:if><xsl:if test="not(publisher-name)">
+    </xsl:if>
+    <xsl:if test="not(publisher-name)">
       <xsl:call-template name="make-error">
         <xsl:with-param name="error-type">publisher-name check</xsl:with-param>
-        <xsl:with-param name="description">citation must have publisher-name</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have publisher-name</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
     <xsl:if test="not(publisher-loc)">
       <xsl:call-template name="make-error">
         <xsl:with-param name="error-type">publisher-loc check</xsl:with-param>
-        <xsl:with-param name="description">citation must have publisher-loc</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have publisher-loc</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
     <xsl:apply-templates select="." mode="output"/>
   </xsl:template>
+  <xsl:template match="element-citation[@publication-type='conf-proc']" mode="type">  
+    <xsl:if test="not(article-title/@language)">
+      <xsl:call-template name="make-error">
+        <xsl:with-param name="error-type">article-title/@language check</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have article-title/@language</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:if test="not(conf-name)">
+      <xsl:call-template name="make-error">
+        <xsl:with-param name="error-type">conf-name check</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have conf-name</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:if test="not(conf-num)">
+      <xsl:call-template name="make-error">
+        <xsl:with-param name="error-type">conf-name check</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have conf-num</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:apply-templates select="." mode="output"/>
+  </xsl:template>
+  <xsl:template match="element-citation[@publication-type='web']" mode="type">    
+    <xsl:if test="not(uri) or not(ext-link)">
+      <xsl:call-template name="make-error">
+        <xsl:with-param name="error-type">uri or ext-link check</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have uri or ext-link</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:if test="not(date-in-citation[@content-type='access-date'])">
+      <xsl:call-template name="make-error">
+        <xsl:with-param name="error-type">date-in-citation[@content-type='access-date'] check</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have date-in-citation[@content-type='access-date']</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:apply-templates select="." mode="output"/>
+  </xsl:template>
+  <xsl:template match="element-citation[@publication-type='book']" mode="type"> 
+    <xsl:choose>
+      <xsl:when test="count(person-group) &lt;=1">
+        <!-- book -->
+        <xsl:if test="not(source/@language)">
+          <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type">source/@language check</xsl:with-param>
+            <xsl:with-param name="description"><xsl:value-of select="@id"/>: book citation must have source/@language</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>    
+      </xsl:when>
+      <xsl:otherwise>
+        <!-- book chapter -->
+        <xsl:if test="article-title">
+          <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type">chapter-title check</xsl:with-param>
+            <xsl:with-param name="description"><xsl:value-of select="@id"/>: book citation must have chapter-title instead of article-title</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+        <xsl:if test="not(chapter-title)">
+          <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type">chapter-title check</xsl:with-param>
+            <xsl:with-param name="description"><xsl:value-of select="@id"/>: book citation must have chapter-title</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+        <xsl:if test="chapter-title and not(chapter-title/@language)">
+          <xsl:call-template name="make-error">
+            <xsl:with-param name="error-type">chapter-title/@language check</xsl:with-param>
+            <xsl:with-param name="description"><xsl:value-of select="@id"/>: book citation must have chapter-title/@language</xsl:with-param>
+          </xsl:call-template>
+        </xsl:if>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:if test="not(publisher-name)">
+      <xsl:call-template name="make-error">
+        <xsl:with-param name="error-type">publisher-name check</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have publisher-name</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:if test="not(publisher-loc)">
+      <xsl:call-template name="make-error">
+        <xsl:with-param name="error-type">publisher-loc check</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have publisher-loc</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:apply-templates select="." mode="output"/>
+  </xsl:template> 
+  <xsl:template match="element-citation[@publication-type='patent']" mode="type">    
+    <xsl:if test="not(patent)">
+      <xsl:call-template name="make-error">
+        <xsl:with-param name="error-type">patent check</xsl:with-param>
+        <xsl:with-param name="description"><xsl:value-of select="@id"/>: must have patent</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:apply-templates select="." mode="output"/>
+  </xsl:template>
+  <!--
+    issn
+  -->
   <xsl:template match="issn">
     <xsl:call-template name="journal-meta-issn-check"/>
     <xsl:choose>
