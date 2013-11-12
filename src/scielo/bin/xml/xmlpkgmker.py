@@ -124,7 +124,7 @@ class EntitiesTable:
                     dec_ent = number_ent[2:-1]
                     hex_ent = hex(int(dec_ent))
                     self.table_number2char['&#' + hex_ent[hex_ent.find('x'):] + ';'] = char
-                    self.table_number2char['&#x' + hex_ent[hex_ent.find('x')+1:].upper() + ';'] = char
+                    #self.table_number2char['&#x' + hex_ent[hex_ent.find('x')+1:].upper() + ';'] = char
 
                 self.table_named2char[named_ent] = char
 
@@ -199,6 +199,54 @@ def convert_ent_to_char(content, entities_table=None):
 
     return content
 
+
+def convert_entname(content, entities_table=None):
+    def prefix_ent(N=7):
+        return ''.join(random.choice('^({|~_`!QZ[') for x in range(N))
+
+    not_found_named = []
+    not_found_number = []
+    if '&' in content:
+        PREFIX_ENT = prefix_ent()
+        while PREFIX_ENT in content:
+            PREFIX_ENT = prefix_ent()
+
+        ALLOWED_ENTITIES = {'&gt;': PREFIX_ENT + 'gt;', '&lt;': PREFIX_ENT + 'lt;', '&amp;': PREFIX_ENT + 'amp;', }
+        for ent, new_ent in ALLOWED_ENTITIES.items():
+            content = content.replace(ent, new_ent)
+
+        if '&' in content:
+            import HTMLParser
+            h = HTMLParser.HTMLParser()
+            try:
+                content = h.unescape(content).decode('utf-8')
+            except:
+                #print('Unable to use h.unescape')
+                pass
+
+        content = content.replace('&#', PREFIX_ENT + '#')
+
+        if '&' in content:
+            if entities_table:
+                while '&' in content:
+                    ent = content[content.find('&'):]
+                    ent = ent[0:ent.find(';')+1]
+
+                    char = entities_table.ent2chr(ent)
+                    if char == ent:
+                        content = content.replace(ent, ent.replace('&', PREFIX_ENT))
+                        not_found_named.append(ent)
+                    else:
+                        content = content.replace(ent, char)
+
+        if not_found_named:
+            f = open('unknown_ent_named.txt', 'a+')
+            f.write('\n'.join(not_found_named))
+            f.close()
+
+        content = content.replace(PREFIX_ENT, '&')
+
+    return content
 
 ### IMAGES
 def img_to_jpeg(image_filename, jpg_path, replace=False):
@@ -646,7 +694,7 @@ class XMLValidations:
             f = open(xml_filename, 'r')
             content = f.read()
             f.close()
-            content = convert_ent_to_char(content, self.entities_table)
+            content = convert_entname(content, self.entities_table)
             xml = xml_is_well_formed(content)
             if xml:
                 f = open(xml_filename, 'w')
@@ -690,7 +738,7 @@ class XMLValidations:
                 os.unlink(temp_xml_filename)
                 shutil.rmtree(temp_dir)
 
-        #self.manage_output_files(xml_filename, pkg_files, is_well_formed, is_dtd_valid, is_style_valid)
+        #self.manage_result(xml_filename, pkg_files, is_well_formed, is_dtd_valid, is_style_valid)
         return [is_well_formed, is_dtd_valid, is_style_valid]
 
 
@@ -848,6 +896,8 @@ class XMLPkgMker:
             self.xml_filename = os.path.basename(src)
             self.xml_name = self.xml_filename.replace('.sgm.xml', '').replace('.xml', '')
             self.ctrl_filename = ctrl_filename
+            if os.path.exists(self.ctrl_filename):
+                os.unlink(self.ctrl_filename)
         else:
             self.src_path = src
             self.xml_filename = None
@@ -876,7 +926,7 @@ class XMLPkgMker:
         f.close()
 
         # convert_ent_to_cha
-        content = convert_ent_to_char(content, self.entities_table)
+        content = convert_entname(content, self.entities_table)
 
         # fix problems of XML format
         if input_filename.endswith('.sgm.xml'):
@@ -959,16 +1009,19 @@ class XMLPkgMker:
                 f.write(message)
                 f.close()
 
-    def manage_output_files(self, xml_filename, pkg_files, is_well_formed, is_dtd_valid, is_style_valid):
+    def manage_result(self, xml_filename, pkg_files, is_well_formed, is_dtd_valid, is_style_valid):
         if self.ctrl_filename:
             err_filename = self.ctrl_filename.replace('.ctrl', '.err')
             if not is_well_formed:
                 #shutil.copyfile(xml_filename, err_filename)
                 f = open(err_filename, 'a+')
-                f.write('XML is not well formed')
+                f.write('manage_result1.XML is not well formed')
                 f.close()
             elif not is_dtd_valid and os.path.exists(pkg_files.dtd_validation_report):
                 shutil.copyfile(pkg_files.dtd_validation_report, err_filename)
+            f = open(self.ctrl_filename, 'w')
+            f.write('Finished')
+            f.close()
         else:
             if is_dtd_valid:
                 os.unlink(pkg_files.dtd_validation_report)
@@ -976,7 +1029,7 @@ class XMLPkgMker:
                 os.unlink(pkg_files.style_checker_report)
             if not is_well_formed:
                 f = open(pkg_files.dtd_validation_report, 'a+')
-                f.write('XML is not well formed')
+                f.write('manage_result2.XML is not well formed')
                 f.close()
 
     def _make_packages_for_one_file(self, xml_file, curr_name, related_files):
@@ -997,7 +1050,7 @@ class XMLPkgMker:
             img_path = self.scielo_pkg_files.pkg_path
 
             is_well_formed, is_dtd_valid, is_style_valid = self.sci_validations.check_list(xml_filename, self.scielo_pkg_files, img_path)
-            self.manage_output_files(xml_filename, self.scielo_pkg_files, is_well_formed, is_dtd_valid, is_style_valid)
+            self.manage_result(xml_filename, self.scielo_pkg_files, is_well_formed, is_dtd_valid, is_style_valid)
 
             if os.path.exists(self.scielo_pkg_files.xml_output):
                 #dtd_validation_report = self.report_path + '/' + curr_name + '.err.txt'
@@ -1005,11 +1058,7 @@ class XMLPkgMker:
 
                 is_well_formed, is_dtd_valid, is_style_valid = self.pmc_validations.check_list(xml_filename, self.pmc_pkg_files, img_path, xsl_new_name)
 
-                self.manage_output_files(xml_filename, self.pmc_pkg_files, is_well_formed, is_dtd_valid, is_style_valid)
-                if self.ctrl_filename:
-                    f = open(self.ctrl_filename, 'w')
-                    f.write('Finished')
-                    f.close()
+                self.manage_result(xml_filename, self.pmc_pkg_files, is_well_formed, is_dtd_valid, is_style_valid)
 
                 if os.path.exists(self.pmc_pkg_files.xml_output):
                     print('  Finished')
@@ -1032,7 +1081,7 @@ class XMLPkgMker:
     def make_packages(self):
         if self.xml_filename:
             # only one file
-            selected_files = [f for f in os.listdir(self.src_path) if f.startswith(self.xml_name)]
+            selected_files = [f for f in os.listdir(self.src_path) if f.startswith(self.xml_name + '.')]
         else:
             selected_files = [f for f in os.listdir(self.src_path) if os.path.isfile(self.src_path + '/' + f)]
             #self._clean_folders()
@@ -1098,8 +1147,8 @@ def make_packages(src, acron, version='j1.0'):
         scielo_pkg_path = pmc_path + '/xml_package'
         pmc_pkg_path = pmc_path + '/pmc_package'
         report_path = sgmxml_path
-        pmc_preview_path = sgmxml_path
-        sci_preview_path = sgmxml_path
+        pmc_preview_path = None #sgmxml_path
+        sci_preview_path = None #sgmxml_path
         doit = True
     elif src.endswith('.xml') and os.path.isfile(src):
         # xml packages maker
@@ -1108,7 +1157,7 @@ def make_packages(src, acron, version='j1.0'):
         pmc_pkg_path = path + '/pmc_package'
         report_path = path + '/errors'
         pmc_preview_path = None
-        sci_preview_path = path + '/preview'
+        sci_preview_path = None #path + '/preview'
         doit = True
     elif os.path.isdir(src) and any([True for f in os.listdir(src) if f.endswith('.xml')]):
         # xml packages maker
@@ -1117,7 +1166,7 @@ def make_packages(src, acron, version='j1.0'):
         pmc_pkg_path = path + '/pmc_package'
         report_path = path + '/errors'
         pmc_preview_path = None
-        sci_preview_path = path + '/preview'
+        sci_preview_path = None #path + '/preview'
         doit = True
     if doit:
         finalized_fine = False

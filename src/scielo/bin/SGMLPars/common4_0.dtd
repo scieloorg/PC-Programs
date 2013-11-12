@@ -79,11 +79,12 @@ filename       CDATA #IMPLIED>
 <!ELEMENT equation - - (  graphic | texmath | mmlmath   )   >
 <!ATTLIST equation
           id       CDATA #REQUIRED>
+
 <!ELEMENT element - - (attrib*, element*)   >
 <!ATTLIST element
           name       CDATA #REQUIRED>
 
-<!ELEMENT attrib     - O EMPTY >
+<!ELEMENT attrib  - - (#PCDATA) >
 <!ATTLIST attrib
           name CDATA #REQUIRED 
           value CDATA #REQUIRED>
@@ -133,6 +134,13 @@ filename       CDATA #IMPLIED>
           id       CDATA    #REQUIRED 
 	 >
 <!ELEMENT quote - - (#PCDATA)>
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!--    pubid                                                        -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!ELEMENT pubid    - - CDATA >
+<!ATTLIST pubid
+          idtype CDATA #REQUIRED >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Deposit                                                        -->

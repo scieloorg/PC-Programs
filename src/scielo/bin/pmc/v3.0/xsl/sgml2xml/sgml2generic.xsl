@@ -304,7 +304,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</journal-id>
 			</xsl:if>
 			<xsl:if test="not(.//nlm-title) or .//nlm-title=''">
-				<journal-id journal-id-type="publisher">
+				<journal-id journal-id-type="publisherc">
 					<xsl:value-of select="$journal_acron"/>
 				</journal-id>
 
@@ -583,12 +583,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="*[contains(name(),'org')]"/>
 					<xsl:if test="@state or @city">
 						<addr-line>
-							<xsl:apply-templates select="@city|@state|@country"/>
+							<xsl:apply-templates select="@city|@state"/>
 
 						</addr-line>
 					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
+			<xsl:apply-templates select="country"></xsl:apply-templates>
 			<xsl:apply-templates select="text() | *" mode="full"/>
 		</aff>
 	</xsl:template>
@@ -2698,7 +2699,7 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="element">
 		<xsl:element name="{@name}">
-			<xsl:apply-templates select="attrib|element"/>
+			<xsl:apply-templates select="attrib|element|text()"/>
 		</xsl:element>
 	</xsl:template>
 	<xsl:template match="attrib">
@@ -2716,4 +2717,5 @@ et al.</copyright-statement>
 			<xsl:apply-templates></xsl:apply-templates>
 		</inline-supplementary-material>
 	</xsl:template>
+	<xsl:template match="pubid"><xsl:element name="pub-id"><xsl:attribute name="pub-id-type"><xsl:value-of select="@idtype"/></xsl:attribute><xsl:value-of select="."/></xsl:element></xsl:template>
 </xsl:stylesheet>

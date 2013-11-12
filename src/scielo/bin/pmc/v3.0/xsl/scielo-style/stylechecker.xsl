@@ -51,11 +51,19 @@
   <xsl:template match="aff">
     <!-- overwrite stylecheck-match-templates.xsl -->
     <xsl:call-template name="ms-stream-id-test"/>
-    <xsl:if test="not(institution)">
+    <xsl:if test="not(institution[@content-type='orgname'])">
       <xsl:call-template name="make-error">
+        <xsl:with-param name="class">error</xsl:with-param>
         <xsl:with-param name="error-type">aff institution check</xsl:with-param>
         <xsl:with-param name="description">aff must have institution</xsl:with-param>
 
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:if test="not(institution[@content-type='orgdiv1'])">
+      <xsl:call-template name="make-error">
+        <xsl:with-param name="error-type">aff institution check</xsl:with-param>
+        <xsl:with-param name="description">aff must have institution</xsl:with-param>
+        
       </xsl:call-template>
     </xsl:if>
     <xsl:if test="not(addr-line)">
@@ -119,18 +127,31 @@
       <xsl:when test="@publication-type='journal'"></xsl:when>
       <xsl:when test="@publication-type='book'"></xsl:when>      
       <xsl:when test="@publication-type='thesis'"></xsl:when>
-      <xsl:when test="@publication-type='conference'"></xsl:when>
       <xsl:when test="@publication-type='patent'"></xsl:when>
       <xsl:when test="@publication-type='report'"></xsl:when>
       <xsl:when test="@publication-type='software'"></xsl:when>
       <xsl:when test="@publication-type='web'"></xsl:when>
       <xsl:when test="@publication-type='conf-proc'"></xsl:when>
       <xsl:otherwise>
+        
+       <xsl:variable name="expected">
+          <xsl:choose>
+            <xsl:when test="conf-name">conf-proc</xsl:when>
+            <xsl:when test="version">software</xsl:when>
+            <xsl:when test="patent">patent</xsl:when>
+            <xsl:when test="contains(.//text(),'eport') or contract">report</xsl:when>
+            <xsl:when test="chapter or count(.//person-group)&gt;1">book</xsl:when>
+            <xsl:when test="article-title and publisher-name">thesis</xsl:when>
+            <xsl:when test="article-title">journal</xsl:when>     
+            <xsl:when test="date-in-citation">web</xsl:when>
+            <xsl:otherwise>one of journal | book | thesis | conf-proc | patent | report | software | web</xsl:otherwise>
+          </xsl:choose>  
+        </xsl:variable>
         <xsl:call-template name="make-error">
           <xsl:with-param name="class">warning</xsl:with-param>
           <xsl:with-param name="error-type">publication type check</xsl:with-param>
-          <xsl:with-param name="description"><xsl:value-of select="@id"/>: invalid <xsl:value-of select="@publication-type"/> 
-            (expected one of journal | book | thesis | conf-proc | patent | report | software | web)</xsl:with-param>
+          <xsl:with-param name="description"><xsl:value-of select="@id"/>: invalid <xsl:value-of select="@publication-type"/>. Expected: <xsl:value-of select="$expected"/>" 
+            </xsl:with-param>
         </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
