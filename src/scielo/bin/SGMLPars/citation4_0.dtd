@@ -43,7 +43,7 @@
 <!--    Serial Level                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT piserial - - (sertitle, volid, issueno?, suppl?, pages, (cited, url)?, doi? ) >
+<!ELEMENT piserial - - (sertitle, volid, issueno?, suppl?, pages, (cited, url)?, (doi? & pubid*) ) >
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -72,7 +72,7 @@
                         (confgrp | 
                         ((%m.title;), volid?, part?, (thesis | (coltitle, colvolid?) )?,  edition?)), 
                         (pages | extent)?, (((city, state?, country?) | country), pubname+)?,
-                        (cited, url)?, doi?, pubid?, (notes|othinfo)? 
+                        (cited, url)?, (doi? & pubid*), (notes|othinfo)? 
                       )>
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    VANCOUVER                                                         -->
@@ -100,7 +100,7 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!ELEMENT viserial - - (vstitle & (date | inpress | volid | issueno | suppl |
-                        part | cited | extent | pages | url | doi )*) >
+                        part | cited | extent | pages | url | doi | pubid)*) >
 
 <!ELEMENT vstitle  - - (stitle, tp?) >
 <!ELEMENT stitle   - - (#PCDATA) >
@@ -128,7 +128,7 @@
 <!ELEMENT vmonog   - - ( ((author | corpauth)*, et-al?)  & ( edition | volid | part |
                         confgrp | vtitle | date | version  | city | state | country |
                         pubname | inpress |
-                        pages | extent | report | thesis | url | doi |  cited | patgrp | coltitle)*) >
+                        pages | extent | report | thesis | url | doi | pubid | cited | patgrp | coltitle)*) >
 <!ELEMENT edition  - - (#PCDATA) >
 <!ELEMENT version  - - (#PCDATA) >
 <!ELEMENT pubname  - - (#PCDATA) >
@@ -170,11 +170,11 @@
 <!-- original ELEMENT iiserial - - (isstitle? & ((author | corpauth)*, et-al?) & medium? 
                         & (stitle | sertitle)? & (edition | city | state |
                         country | pubname | date | update | cited | location
-                        | volid | isdesig | issueno | pages | notes | url | doi |
+                        | volid | isdesig | issueno | pages | notes | url | doi | 
                         issn)*) -->
 <!ELEMENT iiserial - - (isstitle? , ((author | corpauth)*, et-al?) , medium? 
                         , (stitle | sertitle)? ,  
-                        (update  | date | city | state | country | pubname | volid | issueno| pages | notes)*, 
+                        (update  | date | city | state | country | pubname | volid | issueno| pages | doi | pubid | notes)*, 
                         (url & cited)? ) >
 
 <!ELEMENT isstitle - - (#PCDATA) >
@@ -190,7 +190,7 @@
 <!-- original ELEMENT imonog   - - (  ((author | corpauth)*, et-al?) & (%m.title;) & medium?
                         & ( edition | subresp | city | state | country 
                         | pubname | date | update | cited | volid | pages
-                        | extent | location | coltitle | notes | url | doi |  isbn |
+                        | extent | location | coltitle | notes | url | doi | isbn |
                         patgrp)*) -->
 
 <!ELEMENT imonog   - -   ( ((author | corpauth)*, et-al?) , (update?, date?), (%m.title;), medium?, subresp?, 
@@ -198,7 +198,7 @@
                         | pubname | date | update |  volid  | part | pages
                         | extent |  coltitle | notes |  isbn |
                         patgrp | report)* ,
-                           (url & cited)?, doi?
+                           (url & cited)?, (doi? & pubid*)
                            )
                            >
 
@@ -237,7 +237,7 @@
 
 <!ELEMENT aiserial - - ((sertitle | stitle)? & isstitle? & (city | state |
                         country | pubname | suppl | volid | issueno | date | 
-                        extent |  pages | notes | issn | url | doi |  cited )*) >
+                        extent |  pages | notes | issn | url | doi | pubid |  cited )*) >
 
 <!ELEMENT sertitle - - (#PCDATA) >
 
@@ -250,7 +250,7 @@
                         (%m.title;) | subresp | edition | confgrp | city |
                         state | country
                         | pubname | date | volid  | part | tome | extent | pages | 
-                        coltitle | colvolid | notes | isbn | thesis | url | doi |
+                        coltitle | colvolid | notes | isbn | thesis | url | doi | pubid |
                         cited | patgrp | report )* >
 
 <!ELEMENT tome     - - (#PCDATA) >
@@ -305,7 +305,7 @@
 
 <!ELEMENT oiserial - - ((sertitle | stitle)? & (isstitle? & othinfo? &
                         city? & country? & pubname? & volid? & issueno? & suppl?
-                        & pages? & extent? & date? & issn? & url? & cited? & doi? )+) >
+                        & pages? & extent? & date? & issn? & url? & cited? & doi? & pubid? )+) >
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
