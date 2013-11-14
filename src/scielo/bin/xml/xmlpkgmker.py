@@ -1175,6 +1175,8 @@ class XMLPkgMker:
 
             self._make_packages_for_one_file(xml_file, curr_name, related_files)
 
+        self.scielo_pkg_files.generate_reports()
+        
         print('\n=======')
         print('\nGenerated packages in:\n' + '\n'.join([self.scielo_pkg_files.pkg_path, self.pmc_pkg_files.pkg_path, ]))
         for report_path in list(set([self.scielo_pkg_files.report_path, self.pmc_pkg_files.report_path, ])):
