@@ -580,6 +580,35 @@ class ValidationFiles:
         else:
             self.xml_output = self.pkg_path + '/' + new_name + '.xml'
 
+    def joined(self):
+        from StringIO import StringIO
+
+        output = etree.ElementTree().parse(StringIO('<articles></articles>'))
+
+        for item in os.listdir(self.pkg_path):
+            try:
+                article = etree.parse(open(self.pkg_path + '/' + item))
+                article.attrib['filename'] = item
+                output.append(article.find('article'))
+            except:
+                output.append(etree.ElementTree().parse(StringIO('<error>%s</error>' % self.pkg_path + '/' + item)))
+            #e_tree = etree.ElementTree(output)
+            #e_tree.write('f.xml')
+            #etree.tostring(ouput)
+        return output
+
+    def generate_reports(self):
+        lists = []
+        lists.append(('authors.html', ['.//name'], ['suffix', 'prefix', 'given-names', 'surname']))
+        lists.append(('publishers.html', ['.//element-citation'], ['publisher-name', 'publisher-loc']))
+        lists.append(('affs.html', ['.//aff'], ['institution[@content-type=orgname"]', 'institution[@content-type="orgdiv1"]', 'institution[@content-type="orgdiv2"]', 'institution[@content-type="orgdiv3"]', 'named-content[@content-type="city"]', 'country']))
+        lists.append(('locations.html', ['.//publisher-loc'], None))
+
+        report = DataReport()
+        for report_filename, xpath_list, children_xpath in lists:
+            data = report._format_list(self.joined(), xpath_list, children_xpath)
+            report.print_list_report(data, children_xpath, self.report_path + '/' + report_filename)
+
 
 class XMLValidations:
     def __init__(self, pkg_name, default_version=None, entities_table=None):
@@ -888,6 +917,55 @@ class XMLMetadata:
         return (new_name, xml_images_list)
 
 
+class DataReport(object):
+
+    def print_report(self, data, columns, report_filename):
+        html = '<html><body><table><tr><td>filename</td><td></td>%s</tr>' % ''.join(['<td>%s</td>' % label for label in columns])
+        for row in data:
+            r = '<td>%s</td><td>%s</td>' % (row['id'], row['label'])
+            r += ''.join(['<td>%s</td>' % row[column_name] for column_name in columns])
+            html += '<tr>%s</tr>' % r
+        html += '</table></body></html>'
+
+        f = open(report_filename, 'w')
+        f.write(html)
+        f.close()
+
+    def _format_list(self, xml, xpath_list, children_xpath):
+        rows = []
+        for doc in xml.findall('article'):
+            filename = doc.attrib.get('filename', '?')
+
+            parts = ['.//journal-meta', './/article-meta', './/ref']
+            for part in parts:
+
+                part_nodes = doc.findall(part)
+
+                for part_node in part_nodes:
+                    label = part[part[3:]]
+                    if part == './/ref':
+                        label = part_node.attrib.get('id', '?')
+                    for xpath in xpath_list:
+                        results = self._get_from_xml(part_node, xpath, children_xpath)
+                        for item in results:
+                            item.update({'id': filename, 'label': label})
+                            rows.append(item)
+        return rows
+
+    def _get_from_xml(self, start_node, xpath, children_xpath):
+        results = []
+        nodes = start_node.findall(xpath)
+        for node in nodes:
+            data = {}
+            if children_xpath:
+                for child_xpath in children_xpath:
+                    child_nodes = node.findall(child_xpath)
+                    data[child_xpath[child_xpath.rfind('/'):]] = child_nodes[0].text
+            else:
+                data[xpath[xpath.rfind('/'):]] = node.text if node else ''
+            results.append(data)
+
+
 class XMLPkgMker:
 
     def __init__(self, src, scielo_pkg_files, pmc_pkg_files, acron, default_version, ctrl_filename=None, entities_table=None):
@@ -916,7 +994,7 @@ class XMLPkgMker:
 
         self.sci_validations = XMLValidations('scielo', default_version, self.entities_table)
         self.pmc_validations = XMLValidations('pmc', default_version)
-
+            
     def _normalize_xml(self, input_filename, alternative_id):
         """
         Normalize XML content
