@@ -34,6 +34,21 @@ JAR_VALIDATE = CONFIG_JAR_PATH + '/XMLCheck.jar'
 ENTITIES_TABLE_FILENAME = CONFIG_ENT_TABLE_PATH + '/entities2char'
 
 
+def log_errors(err_filename, label, files):
+    files = [item for item in files if item is not None]
+    if len(files) > 0:
+        f = open(err_filename, 'a+')
+        f.write('\n\n%s:\n%s\n%s' % (label, '=' * len(label), '\n'.join(files)))
+        f.close()
+
+
+def log_message(filename, message):
+    if message:
+        f = open(filename, 'a+')
+        f.write(message + '\n')
+        f.close()
+
+
 def configure_versions_location():
     PMC_PATH = CONFIG_VERSIONS_PATH
     version_configuration = {}
@@ -347,14 +362,14 @@ def xml_is_well_formed(content):
         try:
             r = etree.parse(StringIO(content))
         except Exception as e:
-            #print('xml_is_well_formed')
+            print('XML is not well formed')
             print(e)
             r = None
     else:
         try:
             r = etree.parse(content)
         except Exception as e:
-            #print('xml_is_well_formed')
+            print('XML is not well formed')
             print(e)
             r = None
     return r
@@ -380,17 +395,21 @@ def xml_content_transform(content, xsl_filename):
 
 def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     error = False
+    name = os.path.basename(result_filename)
+
     if os.path.exists(result_filename):
         os.unlink(result_filename)
     temp_result_filename = result_filename + '.tmp'
     if os.path.exists(temp_result_filename):
         os.unlink(temp_result_filename)
     cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
+
+    print('Creating ' + name)
     os.system(cmd)
     #print(cmd)
-    if os.path.exists(temp_result_filename):
-        print(result_filename + ' was created fine.')
-    else:
+    if not os.path.exists(temp_result_filename):
+        print('  ERROR: Unable to create it.')
+
         f = open(temp_result_filename, 'w')
         f.write('ERROR: transformation error.\n')
         f.write(xml_filename)
@@ -546,51 +565,6 @@ class XMLStr:
         return ''.join(parts)
 
 
-class Report:
-
-    def __init__(self, pkg_path, report_path):
-        self.pkg_path = pkg_path
-        self.report_path = report_path
-
-    def joined(self):
-        from StringIO import StringIO
-
-        output = etree.ElementTree().parse(StringIO('<articles></articles>'))
-
-        for item in [f for f in os.listdir(self.pkg_path) if f.endswith('.xml')]:
-            xml = self.pkg_path + '/' + item
-            print(xml)
-            try:
-                article = etree.parse(open(xml))
-                art = article.getroot().findall('.')
-
-                if art:
-                    art = art[0]
-                    art.attrib['filename'] = item
-                    output.append(art)
-            except Exception as inst:
-                output.append(etree.ElementTree().parse(StringIO('<error>%s</error>' % xml)))
-                print(inst)
-            #e_tree = etree.ElementTree(output)
-            #e_tree.write('f.xml')
-            #etree.tostring(ouput)
-        return output
-
-    def generate_reports(self):
-        lists = []
-        lists.append(('authors.html', ['.//name'], ['suffix', 'prefix', 'given-names', 'surname'], ['suffix', 'prefix', 'given-names', 'surname']))
-        lists.append(('publisher.html', ['.//element-citation'], ['publisher-name', 'publisher-loc'], ['publisher-name', 'publisher-loc']))
-        lists.append(('source.html', ['.//element-citation'], ['source', 'year'], ['source', 'year']))
-        lists.append(('locations.html', ['.//publisher-loc'], None, ['location']))
-        lists.append(('affs.html', ['.//aff'], ['institution[@content-type="orgname"]', 'institution[@content-type="orgdiv1"]', 'institution[@content-type="orgdiv2"]', 'institution[@content-type="orgdiv3"]', 'addr-line/named-content[@content-type="city"]', 'addr-line/named-content[@content-type="state"]', 'country'], ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country']))
-
-        report = DataReport()
-        for report_filename, xpath_list, children_xpath, columns in lists:
-            print(report_filename)
-            data = report._format_list(self.joined(), xpath_list, children_xpath, columns)
-            report.print_report(data, columns, self.report_path + '/' + report_filename)
-
-
 class XMLMetadata:
     def __init__(self, content):
         try:
@@ -668,7 +642,7 @@ class XMLMetadata:
         r = ''
         if data:
             issn, vol, issueno, suppl, fpage, order = data
-            print(data)
+            #print(data)
             page_or_order = ''
             seq = ''
             if not fpage.isdigit():
@@ -679,7 +653,7 @@ class XMLMetadata:
                 if p[0].isdigit():
                     page_or_order = p[0]
                     seq = '-' + p[1]
-            print(page_or_order)
+            #print(page_or_order)
             if page_or_order:
                 page_or_order = fpage + seq
             else:
@@ -763,24 +737,100 @@ class XMLMetadata:
         return (new_name, href_filenames)
 
 
+class Report:
+
+    def __init__(self, pkg_path, report_path):
+        self.pkg_path = pkg_path
+        self.report_path = report_path
+
+    def joined(self):
+        from StringIO import StringIO
+
+        output = etree.ElementTree().parse(StringIO('<articles></articles>'))
+
+        for item in [f for f in os.listdir(self.pkg_path) if f.endswith('.xml')]:
+            xml = self.pkg_path + '/' + item
+            try:
+                article = etree.parse(open(xml))
+                art = article.getroot().findall('.')
+
+                if art:
+                    art = art[0]
+                    art.attrib['filename'] = item
+                    output.append(art)
+            except Exception as inst:
+                output.append(etree.ElementTree().parse(StringIO('<error>%s</error>' % xml)))
+                print(inst)
+            #e_tree = etree.ElementTree(output)
+            #e_tree.write('f.xml')
+            #etree.tostring(ouput)
+        return output
+
+    def generate_reports(self):
+        lists = []
+        lists.append(('list.html', ['.'], ['.//article-id[@pub-id-type="doi"]', './/pub-id[@pub-id-type="doi"]', './/fpage', './/lpage', './/subject'], ['doi', 'doi', 'first page', 'last page', 'subject']))
+        lists.append(('authors.html', ['.//name'], ['suffix', 'prefix', 'given-names', 'surname'], ['suffix', 'prefix', 'given-names', 'surname']))
+        lists.append(('publisher.html', ['.//element-citation'], ['publisher-name', 'publisher-loc'], ['publisher-name', 'publisher-loc']))
+        lists.append(('source.html', ['.//element-citation'], ['source', 'year'], ['source', 'year']))
+        lists.append(('locations.html', ['.//publisher-loc'], None, ['location']))
+        lists.append(('affs.html', ['.//aff'], ['institution[@content-type="orgname"]', 'institution[@content-type="orgdiv1"]', 'institution[@content-type="orgdiv2"]', 'institution[@content-type="orgdiv3"]', 'addr-line/named-content[@content-type="city"]', 'addr-line/named-content[@content-type="state"]', 'country'], ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country']))
+
+        report = DataReport()
+        for report_filename, xpath_list, children_xpath, columns in lists:
+            print(report_filename)
+            xml = self.joined()
+            errors = report._error_list(xml)
+            data = report._format_list(xml, xpath_list, children_xpath, columns)
+            report.print_report(data, errors, columns, self.report_path + '/' + report_filename)
+
+
 class DataReport(object):
     def __init__(self):
         f = open('../pmc/v3.0/xsl/scielo-style/datareport.css')
         self.css_content = f.read()
         f.close()
 
-    def print_report(self, data, columns, report_filename):
+    def _table_(self, table_header, table_rows):
+        return '<div class="CSSTableGenerator"><table>%s%s</table></div>' % (table_header, table_rows)
+
+    def _table_rows(self, columns, data, cols):
+        r = ''
+        if columns:
+            for row in data:
+                r += '<tr>'
+                for c in cols:
+                    r += '<td>%s</td>' % row.get(c, '')
+                for c in columns:
+                    r += '<td>%s</td>' % row.get(c, '')
+                r += '</tr>'
+        else:
+            for row in data:
+                r += '<tr><td>%s</td></tr>' % row
+        return r
+
+    def _table_header(self, columns, colums_default):
+        header = ['<td>%s</td>' % data for data in columns]
+        header = ''.join(header)
+        return '<tr>%s%s</tr>' % (colums_default, header)
+
+    def print_report(self, data, err_list, columns, report_filename):
         if not columns:
             columns = ['value']
 
+        table_header = self._table_header(['invalid XML'], '')
+        table_data = self._table_rows(None, err_list, None)
+        if table_data == '':
+            table1 = ''
+        else:
+            table1 = self._table_(table_header, table_data)
 
-        html = '<html><header><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><style>' + self.css_content + '</style></header><body><div class="CSSTableGenerator"><table><tr><td>filename</td><td></td>%s</tr>' % ''.join(['<td>%s</td>' % label for label in columns])
-        for row in data:
-            r = '<td>%s</td><td>%s</td>' % (row['id'], row['label'])
-            r += ''.join(['<td>%s</td>' % row.get(column_name, '') for column_name in columns])
-            html += '<tr>%s</tr>' % r
-            print(row)
-        html += '</table></div></body></html>'
+        table_header = self._table_header(columns, '<td>id</td><td>label</td>')
+        table_data = self._table_rows(columns, data, ['id', 'label'])
+        table2 = self._table_(table_header, table_data)
+
+        header = '<header><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><style>' + self.css_content + '</style></header>'
+
+        html = '<html>%s<body>%s%s</body></html>' % (header, table1, table2)
 
         import codecs
 
@@ -798,15 +848,22 @@ class DataReport(object):
                 part_nodes = doc.findall(part)
 
                 for part_node in part_nodes:
-                    label = part[3:]
                     if part == './/ref':
                         label = part_node.attrib.get('id', '?')
-                  
+                    label = part[3:]
+                    data = {'id': filename, 'label': label}
+
                     for xpath in xpath_list:
                         results = self._get_from_xml(part_node, xpath, children_xpath, columns)
                         for item in results:
                             item.update({'id': filename, 'label': label})
                             rows.append(item)
+        return rows
+
+    def _error_list(self, xml):
+        rows = []
+        for doc in xml.findall('error'):
+            rows.append(doc.text)
         return rows
 
     def _get_from_xml(self, start_node, xpath, children_xpath, columns):
@@ -815,15 +872,20 @@ class DataReport(object):
         for node in nodes:
             data = {}
             if children_xpath is None:
-                data[columns[0]] = node[0].text if len(node)>0 else ''
+                data[columns[0]] = node.text if node.text is not None else ''
+                results.append(data)
             else:
                 i = 0
                 for child_xpath in children_xpath:
                     child_nodes = node.findall(child_xpath)
-                    data[columns[i]] = child_nodes[0].text if len(child_nodes)>0 else ''
+                    v = []
+                    for child_node in child_nodes:
+                        if child_node.text is not None:
+                            v.append(child_node.text)
+                    data[columns[i]] = ''.join(v)
                     i += 1
-
-            results.append(data)
+                if not ''.join(data.values()) == '':
+                    results.append(data)
         return results
 
 
@@ -985,7 +1047,6 @@ class ValidationResult:
             self.xml_output = self.pkg_path + '/' + new_name + '.xml'
         else:
             self.xml_output = self.xml_output_path + '/' + new_name + '.xml'
-        print(self.xml_output)
         self.xml_name = curr_name
         self.new_name = new_name
 
@@ -1049,11 +1110,13 @@ class XPM(object):
             os.makedirs(wrk_path)
         for f in files:
             shutil.copyfile(src_path + '/' + f, wrk_path + '/' + f)
-            not_jpg.append(self.img_to_jpg(src_path, f, wrk_path))
-        return [n for n in not_jpg if not n is None]
+            r = self.img_to_jpg(src_path, f, wrk_path)
+            if r:
+                not_jpg.append(r)
+        return not_jpg
 
     def img_to_jpg(self, src_path, filename, wrk_path):
-        not_jpeg = ''
+        not_jpeg = None
         if filename.endswith('.tiff') or filename.endswith('.eps') or filename.endswith('.tif'):
             jpeg = filename[0:filename.rfind('.')] + '.jpg'
 
@@ -1068,10 +1131,11 @@ class XPM(object):
     def add_renamed_files_to_packages(self, wrk_path, curr_name, new_name, package_paths):
         # copy <xml_file>.???
         for filename in os.listdir(wrk_path):
-            if not filename.endswith('.xml'):
+            if not filename.endswith('.jpg'):
                 new_filename = filename.replace(curr_name, new_name)
                 for pkg_path in package_paths:
-                    shutil.copyfile(wrk_path + '/' + filename, pkg_path + '/' + new_filename)
+                    if not wrk_path + '/' + filename == pkg_path + '/' + new_filename:
+                        shutil.copyfile(wrk_path + '/' + filename, pkg_path + '/' + new_filename)
 
     def add_href_files_to_packages(self, wrk_path, href_files_list, curr_name, new_name, scielo_pkg_path, pmc_pkg_path):
         missing_files = []
@@ -1082,7 +1146,6 @@ class XPM(object):
         for href, suffix in href_files_list.items():
             matched_files = [f for f in related_files if f.startswith(href + '.')]
             for filename in matched_files:
-                #print('  img file: ' + filename)
                 ext = filename[filename.rfind('.'):]
 
                 matched = wrk_path + '/' + filename
@@ -1107,7 +1170,7 @@ class XPM(object):
         href_files_list = fixed
         return (href_files_list, invalid_href)
 
-    def normalize_xml(self, xml_filename, normalized_xml_path):
+    def normalize_xml(self, xml_filename, normalized_xml_path, err_filename, log_filename):
         """
         Normalize XML content
         """
@@ -1115,79 +1178,105 @@ class XPM(object):
         content = f.read()
         f.close()
 
-        content, new_name, href_files_list = self._normalize_xml(content, xml_filename.endswith('.sgm.xml'), os.path.basename(xml_filename).replace('.sgm.xml', '').replace('.xml', ''))
+        content, new_name, href_files_list, log = self._normalize_xml(content, xml_filename.endswith('.sgm.xml'), os.path.basename(xml_filename).replace('.sgm.xml', '').replace('.xml', ''))
 
         if xml_is_well_formed(content):
             f = open(normalized_xml_path + '/' + new_name + '.xml', 'w')
             f.write(content)
             f.close()
-        return (new_name, href_files_list)
+        log_message(log_filename, '\n'.join(log))
+        return (new_name, href_files_list, log)
 
     def _normalize_xml(self, content, is_sgmxml, xml_name):
         """
         Normalize XML content
         """
+        log = []
         # convert_ent_to_cha
+        test = content
         content = convert_entname(content, self.entities_table)
+        if not test == content:
+            log.append('Convert entities.\n Done.')
 
         # fix problems of XML format
         if is_sgmxml:
+            log.append('Fix SGML')
             xml_fix = XMLStr(content)
             xml_fix.fix()
-            content = xml_fix.content
+            if not xml_fix.content == content:
+                content = xml_fix.content
+                log.append(' Done')
 
         # get href of images and new name
         new_name = xml_name
         href_files_list = {}
+
         if xml_is_well_formed(content):
+            log.append('Metadata')
             new_name, href_files_list = XMLMetadata(content).new_names_and_embedded_files(self.acron, xml_name)
+            log.append(' Done')
             if is_sgmxml:
+                log.append('SGML to XML')
                 content = xml_content_transform(content, self.version_converter)
-        return (content, new_name, href_files_list)
+                log.append(' Done')
+        else:
+            log.append('XML is not well formed')
+        return (content, new_name, href_files_list, log)
 
     def validate_packages(self, xml_name, new_name, scielo_validation_result, pmc_validation_result, err_filename, ctrl_filename):
         xsl_new_name = new_name if new_name != xml_name else ''
         img_path = scielo_validation_result.pkg_path
 
-        scielo_validation_result = self.sci_validator.check_list(scielo_validation_result.pkg_path + '/' + new_name + '.xml', scielo_validation_result, img_path)
-        scielo_validation_result.manage_result(ctrl_filename)
+        if os.path.isfile(scielo_validation_result.pkg_path + '/' + new_name + '.xml'):
+            scielo_validation_result = self.sci_validator.check_list(scielo_validation_result.pkg_path + '/' + new_name + '.xml', scielo_validation_result, img_path)
+            scielo_validation_result.manage_result(ctrl_filename)
 
-        if os.path.exists(pmc_validation_result.pkg_path + '/' + new_name + '.xml'):
-            pmc_validation_result = self.pmc_validator.check_list(pmc_validation_result.pkg_path + '/' + new_name + '.xml', pmc_validation_result, img_path, xsl_new_name)
+            if os.path.exists(pmc_validation_result.pkg_path + '/' + new_name + '.xml'):
+                pmc_validation_result = self.pmc_validator.check_list(pmc_validation_result.pkg_path + '/' + new_name + '.xml', pmc_validation_result, img_path, xsl_new_name)
 
-            pmc_validation_result.manage_result(ctrl_filename)
+                pmc_validation_result.manage_result(ctrl_filename)
 
-            if os.path.exists(pmc_validation_result.xml_output):
-                print('  Finished')
+                if os.path.exists(pmc_validation_result.xml_output):
+                    print('  Finished')
+                else:
+                    print('\nUnable to create ' + pmc_validation_result.xml_output)
+                    f = open(err_filename, 'a+')
+                    f.write('\nUnable to create ' + pmc_validation_result.xml_output)
+                    f.close()
             else:
-                print('\nUnable to create ' + pmc_validation_result.xml_output)
+                print('Unable to create ' + pmc_validation_result.pkg_path + '/' + new_name + '.xml')
+
                 f = open(err_filename, 'a+')
-                f.write('\nUnable to create ' + pmc_validation_result.xml_output)
+                f.write('\nUnable to create ' + pmc_validation_result.pkg_path + '/' + new_name + '.xml')
                 f.close()
         else:
-            print('Unable to create ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
-
             f = open(err_filename, 'a+')
-            f.write('\nUnable to create ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
+            f.write('\nUnable to find ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
             f.close()
 
-    def make_article_packages(self, wrk_path, curr_name, new_name, href_files_list, scielo_pkg_path, pmc_pkg_path, err_filename):
+
+    def make_article_packages(self, wrk_path, curr_name, new_name, href_files_list, scielo_pkg_path, pmc_pkg_path, err_filename, log_filename):
+        
+        log_message(log_filename, scielo_pkg_path + '/' + new_name + '.xml')
 
         if os.path.exists(scielo_pkg_path + '/' + new_name + '.xml'):
+            log_message(log_filename, '_normalize_href_list')
+
             href_files_list, invalid_href = self._normalize_href_list(href_files_list)
 
-            f = open(err_filename, 'a+')
-            f.write('\nInvalid href, which must not have extension:\n ' + '\n'.join(invalid_href))
-            f.close()
+            log_errors(err_filename, 'Invalid href, which must not have extension', invalid_href)
 
             package_paths = [scielo_pkg_path, pmc_pkg_path]
 
+            log_message(log_filename, 'add_renamed_files_to_packages')
             self.add_renamed_files_to_packages(wrk_path, curr_name, new_name, package_paths)
+            
+            log_message(log_filename, 'add_href_files_to_packages')
+
             expected_files = self.add_href_files_to_packages(wrk_path, href_files_list, curr_name, new_name, scielo_pkg_path, pmc_pkg_path)
 
-            f = open(err_filename, 'a+')
-            f.write('\nMissing files:\n ' + '\n'.join(expected_files))
-            f.close()
+            log_errors(err_filename, 'Missing files', expected_files)
+        return (os.path.isfile(pmc_pkg_path + '/' + new_name + '.xml'))
 
     def make_packages(self, xml_filename, ctrl_filename, xml_path, work_path, reports, scielo_val_res, pmc_val_res, err_filename):
 
@@ -1196,26 +1285,34 @@ class XPM(object):
         report_path = scielo_val_res.report_path
 
         for xml_filename in files:
-            print(xml_filename)
+            print('\n== %s ==\n' % xml_filename)
 
             xml_name = xml_filename.replace('.sgm.xml', '').replace('.xml', '')
             matched_files = self.matched_files(xml_path, xml_name)
 
             wrk_path = work_path + '/' + xml_name
 
+            log_filename = scielo_val_res.report_path + '/' + xml_name + '.log'
+            err_filename = scielo_val_res.report_path + '/' + xml_name + '.err.txt'
+
             not_jpg = self.create_wrk_path(xml_path, matched_files, wrk_path)
-            f = open(err_filename, 'a+')
-            f.write('\nJPG were not converted:\n ' + '\n'.join(not_jpg))
-            f.close()
 
-            new_name, href_files_list = self.normalize_xml(wrk_path + '/' + xml_filename, scielo_val_res.pkg_path)
+            log_errors(err_filename, 'JPG were not converted', not_jpg)
 
-            self.make_article_packages(wrk_path, xml_name, new_name, href_files_list, scielo_val_res.pkg_path, pmc_val_res.pkg_path, err_filename)
+            new_name, href_files_list, log = self.normalize_xml(wrk_path + '/' + xml_filename, scielo_val_res.pkg_path, err_filename, log_filename)
 
-            scielo_val_res.name(xml_name, new_name)
-            pmc_val_res.name(xml_name, new_name)
+            if os.path.exists(scielo_val_res.pkg_path + '/' + new_name + '.xml'):
+                if self.make_article_packages(wrk_path, xml_name, new_name, href_files_list, scielo_val_res.pkg_path, pmc_val_res.pkg_path, err_filename, log_filename):
 
-            self.validate_packages(xml_name, new_name, scielo_val_res, pmc_val_res, err_filename, ctrl_filename)
+                    scielo_val_res.name(xml_name, new_name)
+                    pmc_val_res.name(xml_name, new_name)
+
+                    self.validate_packages(xml_name, new_name, scielo_val_res, pmc_val_res, err_filename, ctrl_filename)
+                else:
+                    log.append('Unable to generate the packages')
+            else:
+                log.append('Unable to normalize XML')
+            #log_message(log_filename, '\n'.join(log))
 
         reports.generate_reports()
 
