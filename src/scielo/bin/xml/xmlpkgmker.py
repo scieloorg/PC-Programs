@@ -766,83 +766,11 @@ class Report:
             #etree.tostring(ouput)
         return output
 
-    def generate_reports(self):
-        lists = []
-        lists.append(('list.html', ['.'], ['.//article-id[@pub-id-type="doi"]', './/pub-id[@pub-id-type="doi"]', './/fpage', './/lpage', './/subject'], ['doi', 'doi', 'first page', 'last page', 'subject']))
-        lists.append(('authors.html', ['.//name'], ['suffix', 'prefix', 'given-names', 'surname'], ['suffix', 'prefix', 'given-names', 'surname']))
-        lists.append(('publisher.html', ['.//element-citation'], ['publisher-name', 'publisher-loc'], ['publisher-name', 'publisher-loc']))
-        lists.append(('source.html', ['.//element-citation'], ['source', 'year'], ['source', 'year']))
-        lists.append(('locations.html', ['.//publisher-loc'], None, ['location']))
-        lists.append(('affs.html', ['.//aff'], ['institution[@content-type="orgname"]', 'institution[@content-type="orgdiv1"]', 'institution[@content-type="orgdiv2"]', 'institution[@content-type="orgdiv3"]', 'addr-line/named-content[@content-type="city"]', 'addr-line/named-content[@content-type="state"]', 'country'], ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country']))
-
-        report = DataReport()
-        for report_filename, xpath_list, children_xpath, columns in lists:
-            print(report_filename)
-            xml = self.joined()
-            errors = report._error_list(xml)
-            data = report._format_list(xml, xpath_list, children_xpath, columns)
-            report.print_report(data, errors, columns, self.report_path + '/' + report_filename)
-
-
-class DataReport(object):
-    def __init__(self):
-        f = open('../pmc/v3.0/xsl/scielo-style/datareport.css')
-        self.css_content = f.read()
-        f.close()
-
-    def _table_(self, table_header, table_rows):
-        return '<div class="CSSTableGenerator"><table>%s%s</table></div>' % (table_header, table_rows)
-
-    def _table_rows(self, columns, data, cols):
-        r = ''
-        if columns:
-            for row in data:
-                r += '<tr>'
-                for c in cols:
-                    r += '<td>%s</td>' % row.get(c, '')
-                for c in columns:
-                    r += '<td>%s</td>' % row.get(c, '')
-                r += '</tr>'
-        else:
-            for row in data:
-                r += '<tr><td>%s</td></tr>' % row
-        return r
-
-    def _table_header(self, columns, colums_default):
-        header = ['<td>%s</td>' % data for data in columns]
-        header = ''.join(header)
-        return '<tr>%s%s</tr>' % (colums_default, header)
-
-    def print_report(self, data, err_list, columns, report_filename):
-        if not columns:
-            columns = ['value']
-
-        table_header = self._table_header(['invalid XML'], '')
-        table_data = self._table_rows(None, err_list, None)
-        if table_data == '':
-            table1 = ''
-        else:
-            table1 = self._table_(table_header, table_data)
-
-        table_header = self._table_header(columns, '<td>id</td><td>label</td>')
-        table_data = self._table_rows(columns, data, ['id', 'label'])
-        table2 = self._table_(table_header, table_data)
-
-        header = '<header><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><style>' + self.css_content + '</style></header>'
-
-        html = '<html>%s<body>%s%s</body></html>' % (header, table1, table2)
-
-        import codecs
-
-        f = codecs.open(report_filename, 'w', 'utf-8')
-        f.write(html)
-        f.close()
-
-    def _format_list(self, xml, xpath_list, children_xpath, columns):
+    def data_in_table_format(self, xml, xpath_list, children_xpath, columns, parts):
         rows = []
         for doc in xml.findall('article'):
             filename = doc.attrib.get('filename', '?')
-            parts = ['.//journal-meta', './/article-meta', './/ref']
+            #parts = ['.//journal-meta', './/article-meta', './/ref']
             for part in parts:
 
                 part_nodes = doc.findall(part)
@@ -858,7 +786,7 @@ class DataReport(object):
                             rows.append(item)
         return rows
 
-    def _error_list(self, xml):
+    def format_errors(self, xml):
         rows = []
         for doc in xml.findall('error'):
             rows.append(doc.text)
@@ -885,6 +813,248 @@ class DataReport(object):
                 if not ''.join(data.values()) == '':
                     results.append(data)
         return results
+
+    def data_as_toc(self, xml):
+        rows = []
+        data = {}
+
+        for doc in xml.findall('article'):
+            data = {}
+            translations = {}
+
+            data['filename'] = doc.attrib.get('filename', '?')
+            data['article-type'] = doc.attrib.get('article-type', '?')
+
+            article_meta = doc.find('.//article-meta')
+
+            data['doi'] = article_meta.findtext('.//article-id[@pub-id-type="doi"]')
+            data['other id'] = article_meta.findtext('.//article-id[@pub-id-type="other"]')
+            data['subject'] = '|'.join([node.text for node in article_meta.findall('.//subject')])
+
+            article_title = article_meta.find('.//article-title')
+            data['article-title'] = article_title.text
+
+            abstract = article_meta.find('.//abstract')
+            print(abstract)
+            if abstract:
+                data['abstract'] = etree.tostring(abstract)
+
+            data['lang'] = article_title.attrib.get('xml:lang', '??')
+            data['trans-title'] = {}
+            for trans_title in article_meta.findall('.//trans-title-group'):
+                lang = trans_title.attrib.get('xml:lang', '??')
+                if not lang in translations.keys():
+                    translations[lang] = {}
+                translations[lang]['article-title'] = trans_title.findtext('trans-title')
+                data['trans-title'][lang] = trans_title.findtext('trans-title')
+
+            data['trans-abstract'] = {}
+            for trans_abstract in article_meta.findall('.//trans-abstract'):
+                lang = trans_abstract.attrib.get('xml:lang', '??')
+                if not lang in translations.keys():
+                    translations[lang] = {}
+                translations[lang]['abstract'] = etree.tostring(trans_abstract)
+                data['trans-abstract'][lang] = etree.tostring(trans_abstract)
+
+            data['kwd-group'] = {}
+            for kwd_group in article_meta.findall('.//kwd-group'):
+                lang = kwd_group.attrib.get('xml:lang', '??')
+                if not lang in translations.keys():
+                    translations[lang] = {}
+                translations[lang]['kwd-group'] = [kwd.text for kwd in kwd_group.findall('kwd')]
+                data['kwd-group'][lang] = [kwd.text for kwd in kwd_group.findall('kwd')]
+
+            data['author'] = []
+            for author in article_meta.findall('.//contrib//name'):
+                a = {}
+                a['name'] = author.findtext('.//given-names')
+                a['surname'] = author.findtext('.//surname')
+                a['suffix'] = author.findtext('.//suffix')
+                a['prefix'] = author.findtext('.//prefix')
+                data['author'].append(a)
+
+            data['collab'] = [node.text for node in article_meta.findall('.//contrib//collab')]
+            data['translations'] = translations
+            rows.append(data)
+        return rows
+
+    def generate_reports(self):
+        article_parts = ['.//journal-meta', './/article-meta', './/ref']
+
+        lists = []
+
+        lists.append((['.//article-meta'], 'list.html', ['.'], ['.//article-id[@pub-id-type="doi"]', './/article-id[@pub-id-type="other"]', './/fpage', './/lpage', './/subject'], ['doi', 'other id', 'first page', 'last page', 'subject']))
+        lists.append((article_parts, 'authors.html', ['.//name'], ['suffix', 'prefix', 'given-names', 'surname'], ['suffix', 'prefix', 'given-names', 'surname']))
+        lists.append((article_parts, 'publisher.html', ['.//element-citation'], ['publisher-name', 'publisher-loc'], ['publisher-name', 'publisher-loc']))
+        lists.append((article_parts, 'source.html', ['.//element-citation'], ['source', 'year'], ['source', 'year']))
+        lists.append((article_parts, 'locations.html', ['.//publisher-loc'], None, ['location']))
+        lists.append((article_parts, 'affs.html', ['.//aff'], ['institution[@content-type="orgname"]', 'institution[@content-type="orgdiv1"]', 'institution[@content-type="orgdiv2"]', 'institution[@content-type="orgdiv3"]', 'addr-line/named-content[@content-type="city"]', 'addr-line/named-content[@content-type="state"]', 'country'], ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country']))
+
+        report = ReportGenerator()
+
+        xml = self.joined()
+        errors = self.format_errors(xml)
+        
+        for article_parts, report_filename, xpath_list, children_xpath, columns in lists:
+            print(report_filename)
+            data = self.data_in_table_format(xml, xpath_list, children_xpath, columns, article_parts)
+            report.in_table_format(data, errors, columns, self.report_path + '/' + report_filename)
+
+        data = self.data_as_toc(xml)
+        report.toc_format(data, self.report_path + '/' + 'toc.html')
+
+
+class ReportGenerator(object):
+    def __init__(self):
+        f = open(CONFIG_VERSIONS_PATH + '/v3.0/xsl/scielo-style/datareport.css')
+        self.css_content = f.read()
+        f.close()
+
+    def _css(self, name):
+        f = open(CONFIG_VERSIONS_PATH + '/v3.0/xsl/scielo-style/' + name + '.css')
+        css = f.read()
+        f.close()
+        return css
+
+    def _table_(self, table_header, table_rows):
+        return '<div class="CSSTableGenerator"><table>%s%s</table></div>' % (table_header, table_rows)
+
+    def _table_rows(self, columns, data, cols):
+        r = ''
+        if columns:
+            for row in data:
+                r += '<tr>'
+                for c in cols:
+                    r += '<td>%s</td>' % row.get(c, '')
+                for c in columns:
+                    r += '<td>%s</td>' % row.get(c, '')
+                r += '</tr>'
+        else:
+            for row in data:
+                r += '<tr><td>%s</td></tr>' % row
+        return r
+
+    def _table_header(self, columns, colums_default):
+        header = ['<td>%s</td>' % data for data in columns]
+        header = ''.join(header)
+        return '<tr>%s%s</tr>' % (colums_default, header)
+
+    def _html(self, filename, css_content, body):
+        header = '<header><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><style>' + css_content + '</style></header>'
+
+        html = '<html>%s<body>%s</body></html>' % (header, body)
+
+        import codecs
+
+        f = codecs.open(filename, 'w', 'utf-8')
+        f.write(html)
+        f.close()
+
+    def in_table_format(self, data, err_list, columns, report_filename):
+        if not columns:
+            columns = ['value']
+
+        table_header = self._table_header(['invalid XML'], '')
+        table_data = self._table_rows(None, err_list, None)
+        if table_data == '':
+            table1 = ''
+        else:
+            table1 = self._table_(table_header, table_data)
+
+        table_header = self._table_header(columns, '<td>id</td><td>label</td>')
+        table_data = self._table_rows(columns, data, ['id', 'label'])
+        table2 = self._table_(table_header, table_data)
+
+        self._html(report_filename, self.css_content, table1 + table2)
+
+        #header = '<header><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><style>' + self.css_content + '</style></header>'
+
+        #html = '<html>%s<body>%s%s</body></html>' % (header, table1, table2)
+
+        #import codecs
+
+        #f = codecs.open(report_filename, 'w', 'utf-8')
+        #f.write(html)
+        #f.close()
+
+    def toc_format(self, docs, report_filename):
+        article = ''
+        for doc in docs:
+            article += '<div>'
+            article += '<h1>%s</h1>' % doc.get('subject', '')
+            article += '<p class="article-type">%s</p>' % doc.get('article-type', '')
+            article += '<h2>[%s] %s</h2>' % (doc.get('lang', '(missing language)'), doc.get('article-title', ''))
+            for lang, title in doc.get('trans-title', {}).items():
+                article += '<h3> [%s] %s</h3>' % (lang, title)
+            article += '<p class="filename">%s</p>' % doc.get('filename', '')
+            article += '<p class="doi">%s</p>' % doc.get('doi', '')
+            article += '<p class="other-id">%s</p>' % doc.get('other id', '')
+
+            items = []
+            for author in doc.get('author', []):
+                prefix = '(%s) ' % author['prefix'] if author.get('prefix', None) is not None else ''
+                suffix = ' (%s)' % author['suffix'] if author.get('suffix', None) is not None else ''
+                items.append(author['surname'] + suffix + ', ' + prefix + author['name'])
+
+            article += '<p class="authors">%s</p>' % '; '.join(items)
+
+            article += '<p class="authors">%s</p>' % '; '.join(doc.get('collab', []))
+            if doc.get('abstract', ''):
+                article += '<p class="abstract"> [%s] %s</p>' % (doc.get('lang', '(missing language)'), doc.get('abstract', ''))
+
+            for lang, abstract in doc.get('trans-abstract', {}).items():
+                article += '<p class="trans-abstract"> [%s] %s</p>' % (lang, abstract)
+
+            for lang, kwd_group in doc.get('kwd-group', {}).items():
+                kwd = '; '.join(kwd_group)
+                article += '<p class="kwd-group"> [%s] %s</p>' % (lang, kwd)
+            article += '</div>'
+
+        self._html(report_filename, self._css('toc'), article)
+
+    def xtoc_format(self, docs, report_filename):
+        css = '.filename{font-size:'
+
+        order = ['filename', 'doi', 'lang', 'subject', 'article-title', 'author', 'collab', 'abstract', 'translations']
+        article = ''
+        for doc in docs:
+            r = ''
+            for data_label in order:
+            #for data_label, v in doc.items():
+                print(data_label)
+                data_content = doc.get(data_label, None)
+                if data_content:
+                    r += '<div class="' + data_label + '">'
+                    r += '<em>' + data_label + '</em>' + ': '
+                    if data_label == 'author':
+                        items = []
+                        print(data_content)
+                        for author in data_content:
+                            print(author)
+                            prefix = '(%s) ' % author['prefix'] if author.get('prefix', None) is not None else ''
+                            suffix = ' (%s)' % author['suffix'] if author.get('suffix', None) is not None else ''
+                            items.append(author['surname'] + suffix + ', ' + prefix + author['name'])
+                        r += '; '.join(items)
+                    elif data_label == 'translations':
+                        for lang, translation_data in data_content.items():
+                            r += '<p>Language: %s</p><ul>' % lang
+                            for label, data in translation_data.items():
+                                r += '<li>%s: %s</li>' % (label, data)
+                            r += '</ul>'
+
+                    elif isinstance(data_content, list):
+                        r += ' | '.join(data_content)
+                    elif isinstance(data_content, str):
+                        r += data_content
+                    elif isinstance(data_content, dict):
+                        r += ''
+                    else:
+                        r += ''
+                    r += '</div>'
+
+            article += '<div class="article">%s</div>' % r
+
+        self._html(report_filename, '', article)
 
 
 class CheckList(object):

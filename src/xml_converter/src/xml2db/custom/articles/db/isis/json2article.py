@@ -589,7 +589,11 @@ class JSON_Article:
             # 8121 = article-id[@pub-id-type='PID']
             #  121 = fpage
             # 9121 = fpage/@seq
-            article_id_pid = f.get('8121', f.get('121', alternative_id))
+            #article_id_pid = f.get('8121', f.get('121', alternative_id))
+            article_id_pid = f.get('121', '')
+            if not article_id_pid.isdigit():
+                article_id_pid = f.get('8121', alternative_id)
+
         if article_id_pid.isdigit():
             self.json_data['f']['121'] = article_id_pid[-5:]
         else:
