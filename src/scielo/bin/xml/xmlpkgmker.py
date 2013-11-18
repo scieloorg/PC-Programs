@@ -848,11 +848,9 @@ class DataReport(object):
                 part_nodes = doc.findall(part)
 
                 for part_node in part_nodes:
+                    label = part[3:]
                     if part == './/ref':
                         label = part_node.attrib.get('id', '?')
-                    label = part[3:]
-                    data = {'id': filename, 'label': label}
-
                     for xpath in xpath_list:
                         results = self._get_from_xml(part_node, xpath, children_xpath, columns)
                         for item in results:
