@@ -474,20 +474,21 @@ class AheadArticles:
         k = 0
         for l in lines:
             if '|' in l:
-                pid, issn, doi, title, filename = l.replace('\n', '').split('|')
+                splited = l.split('|')
+                if len(splited) == 5:
+                    pid, issn, doi, title, filename = l.replace('\n', '').split('|')
 
-                self.data.append((pid, issn, doi, title, filename))
-                self.doi[doi] = k
+                    self.data.append((pid, issn, doi, title, filename))
+                    self.doi[doi] = k
                 
 
-                if not issn in self.issn.keys():
-                    self.issn[issn] = {}
+                    if not issn in self.issn.keys():
+                        self.issn[issn] = {}
 
-                if issn in self.issn.keys():
-                    self.issn[issn][title] = k
+                    if issn in self.issn.keys():
+                        self.issn[issn][title] = k
 
-                k += 1
-
+                    k += 1
 
     def return_id_and_filename(self, doi, issn, titles):
         print(doi)

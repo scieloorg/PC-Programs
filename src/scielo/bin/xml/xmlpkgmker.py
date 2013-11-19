@@ -814,35 +814,117 @@ class Report:
                     results.append(data)
         return results
 
+    def _order(self, fpage, fpage_seq, other_id):
+        if fpage.isdigit():
+            order = int(fpage)
+        else:
+            order = 0
+        if order == 0:
+            if fpage_seq.isdigit():
+                order = int(fpage_seq)
+            else:
+                order = 0
+        if order == 0:
+            if other_id.isdigit():
+                order = int(other_id)
+            else:
+                order = 0
+        return order
+
+    def node_text(self, node):
+        xml = etree.tostring(node)
+        if xml[0:1] == '<':
+            xml = xml[xml.find('>') + 1:]
+            xml = xml[0:xml.rfind('</')]
+        return xml
+
     def data_as_toc(self, xml):
-        rows = []
+        
+        rows = {}
         data = {}
+        jm = {}
+
+        order_list = []
+        doi_list = []
+        order_is_zero = []
+        required = ['publisher-name', 'journal-title', 'issue', 'volume', 'issn', 'date']
 
         for doc in xml.findall('article'):
+
             data = {}
             translations = {}
 
-            data['filename'] = doc.attrib.get('filename', '?')
-            data['article-type'] = doc.attrib.get('article-type', '?')
+            # ------
+            journal_meta = doc.find('.//journal-meta')
+
+            data['publisher-name'] = journal_meta.findtext('.//publisher-name')
+            data['nlm-ta'] = journal_meta.findtext('.//journal-id[@journal-id-type="nlm-ta"]')
+            data['eissn'] = journal_meta.findtext('.//issn[@pub-type="epub"]')
+
+            data['pissn'] = journal_meta.findtext('.//issn[@pub-type="epub"]')
+            data['journal-title'] = journal_meta.findtext('.//journal-title')
 
             article_meta = doc.find('.//article-meta')
+
+            data['issue'] = article_meta.findtext('.//issue')
+            data['volume'] = article_meta.findtext('.//volume')
+
+            for k, v in data.items():
+                if not v:
+                    data[k] = ''
+
+            pd = article_meta.find('.//pub-date[@date-type="ppub"]')
+            data['date-ppub'] = '%s-%s%s-%s' % (pd.findtext('year'), pd.findtext('month'), pd.findtext('season'), pd.findtext('day')) if pd else ''
+            pd = article_meta.find('.//pub-date[@date-type="epub"]')
+            data['date-epub'] = '%s-%s%s-%s' % (pd.findtext('year'), pd.findtext('month'), pd.findtext('season'), pd.findtext('day')) if pd else ''
+            pd = article_meta.find('.//pub-date[@date-type="epub-ppub"]')
+            data['date-epub-ppub'] = '%s-%s%s-%s' % (pd.findtext('year'), pd.findtext('month'), pd.findtext('season'), pd.findtext('day')) if pd else ''
+
+            data['issn'] = '%s%s' % (data.get('pissn', ''), data.get('eissn', ''))
+            data['date'] = '%s%s%s' % (data['date-ppub'],  data['date-epub'], data['date-epub-ppub'])
+
+            if jm == {}:
+                for k, v in data.items():
+                    if k in required and not v:
+                        v = 'ERROR: missing required data for ' + k
+                    jm[k] = v
+            else:
+                for k, v in jm.items():
+                    if not data.get(k, None) == v:
+                        data[k] = data.get(k, '') + ' ERROR: Expected ' + v
+
+            # ------
+            data['filename'] = doc.attrib.get('filename', '')
+            data['article-type'] = doc.attrib.get('article-type', '')
 
             data['doi'] = article_meta.findtext('.//article-id[@pub-id-type="doi"]')
             data['other id'] = article_meta.findtext('.//article-id[@pub-id-type="other"]')
             data['subject'] = '|'.join([node.text for node in article_meta.findall('.//subject')])
 
+            data['fpage'] = article_meta.find('.//fpage').text
+            data['fpage_seq'] = article_meta.find('.//fpage').attrib.get('seq', '')
+
+            data['lpage'] = article_meta.find('.//lpage').text
+            data['lpage_seq'] = article_meta.find('.//lpage').attrib.get('seq', '')
+
+            if data['fpage'].isdigit() and data['lpage'].isdigit():
+                r = int(data['lpage']) - int(data['fpage'])
+                if r < 0:
+                    data['lpage'] += '(ERROR: invalid pages range)'
+                if r > 10:
+                    data['lpage'] += '(WARNING: check value of pages)'
+
             article_title = article_meta.find('.//article-title')
-            data['article-title'] = article_title.text
+            data['article-title'] = self.node_text(article_title)
 
             abstract = article_meta.find('.//abstract')
-            print(abstract)
             if abstract:
-                data['abstract'] = etree.tostring(abstract)
+                data['abstract'] = self.node_text(abstract)
 
-            data['lang'] = article_title.attrib.get('xml:lang', '??')
+            data['lang'] = article_title.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', '??')
             data['trans-title'] = {}
             for trans_title in article_meta.findall('.//trans-title-group'):
-                lang = trans_title.attrib.get('xml:lang', '??')
+                lang = trans_title.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', '??')
                 if not lang in translations.keys():
                     translations[lang] = {}
                 translations[lang]['article-title'] = trans_title.findtext('trans-title')
@@ -850,19 +932,20 @@ class Report:
 
             data['trans-abstract'] = {}
             for trans_abstract in article_meta.findall('.//trans-abstract'):
-                lang = trans_abstract.attrib.get('xml:lang', '??')
+                lang = trans_abstract.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', '??')
                 if not lang in translations.keys():
                     translations[lang] = {}
-                translations[lang]['abstract'] = etree.tostring(trans_abstract)
-                data['trans-abstract'][lang] = etree.tostring(trans_abstract)
+                translations[lang]['abstract'] = self.node_text(trans_abstract)
+                data['trans-abstract'][lang] = translations[lang]['abstract']
 
             data['kwd-group'] = {}
             for kwd_group in article_meta.findall('.//kwd-group'):
-                lang = kwd_group.attrib.get('xml:lang', '??')
+                lang = kwd_group.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', kwd_group.attrib.get('lang', '??'))
                 if not lang in translations.keys():
                     translations[lang] = {}
-                translations[lang]['kwd-group'] = [kwd.text for kwd in kwd_group.findall('kwd')]
-                data['kwd-group'][lang] = [kwd.text for kwd in kwd_group.findall('kwd')]
+
+                translations[lang]['kwd-group'] = [self.node_text(kwd) for kwd in kwd_group.findall('kwd')]
+                data['kwd-group'][lang] = translations[lang]['kwd-group']
 
             data['author'] = []
             for author in article_meta.findall('.//contrib//name'):
@@ -875,8 +958,31 @@ class Report:
 
             data['collab'] = [node.text for node in article_meta.findall('.//contrib//collab')]
             data['translations'] = translations
-            rows.append(data)
-        return rows
+
+            order = self._order(data['fpage'], data['fpage_seq'], data['other id'])
+
+            if order == 0:
+                order_is_zero.append(data['filename'])
+                row_idx = data['filename']
+                data['order'] = '0 (ERROR: invalid)'
+            else:
+                if order in order_list:
+                    data['order'] = str(order) + ' (ERROR: duplicated)'
+                    row_idx = data['filename']
+                else:
+                    order_list.append(order)
+                    row_idx = order
+                    data['order'] = str(order)
+
+            if data['doi']:
+                if data['doi'] in doi_list:
+                    data['doi'] += '(ERROR: duplicated)'
+                else:
+                    doi_list.append(data['doi'])
+
+            rows[row_idx] = data
+
+        return (rows, jm)
 
     def generate_reports(self):
         article_parts = ['.//journal-meta', './/article-meta', './/ref']
@@ -894,14 +1000,14 @@ class Report:
 
         xml = self.joined()
         errors = self.format_errors(xml)
-        
+
         for article_parts, report_filename, xpath_list, children_xpath, columns in lists:
             print(report_filename)
             data = self.data_in_table_format(xml, xpath_list, children_xpath, columns, article_parts)
             report.in_table_format(data, errors, columns, self.report_path + '/' + report_filename)
 
-        data = self.data_as_toc(xml)
-        report.toc_format(data, self.report_path + '/' + 'toc.html')
+        data, jm = self.data_as_toc(xml)
+        report.toc_format(data, jm, self.report_path + '/' + 'toc.html')
 
 
 class ReportGenerator(object):
@@ -925,9 +1031,9 @@ class ReportGenerator(object):
             for row in data:
                 r += '<tr>'
                 for c in cols:
-                    r += '<td>%s</td>' % row.get(c, '')
+                    r += '<td>%s</td>' % self.eval_data(row.get(c, ''))
                 for c in columns:
-                    r += '<td>%s</td>' % row.get(c, '')
+                    r += '<td>%s</td>' % self.eval_data(row.get(c, ''))
                 r += '</tr>'
         else:
             for row in data:
@@ -977,37 +1083,71 @@ class ReportGenerator(object):
         #f.write(html)
         #f.close()
 
-    def toc_format(self, docs, report_filename):
+    def eval_data(self, data):
+        cls = 'warning' if 'WARNING' in data else 'error' if 'ERROR' in data else None
+        if cls is None:
+            return data
+        else:
+            return '<span class="%s">%s</span>' % (cls, data)
+
+    def toc_format(self, docs, jm, report_filename):
         article = ''
-        for doc in docs:
+        number = []
+        files = []
+
+        for idx in docs.keys():
+            if isinstance(idx, int):
+                number.append(idx)
+            else:
+                files.append(idx)
+
+        number.sort()
+        files.sort()
+        indexes = number + files
+
+        article = '<div class="issue"><h1>%s, %s (%s), [epub: %s | ppub: %s | epub-ppub: %s]</h1><p class="nlm-ta">%s</p><p class="issn">eissn: %s, pissn: %s</p><p class="publisher-name">%s</p><p class="required">%s</p><p class="required">%s</p></div>' % (self.eval_data(jm['journal-title']), self.eval_data(jm['volume']), self.eval_data(jm['issue']), jm['date-epub'], jm['date-ppub'], jm['date-epub-ppub'], jm.get('nlm-ta', ''), jm['eissn'], jm['pissn'], self.eval_data(jm['publisher-name']), self.eval_data(jm['date']), self.eval_data(jm['issn']))
+
+        for idx in indexes:
+            doc = docs[idx]
             article += '<div>'
             article += '<h1>%s</h1>' % doc.get('subject', '')
             article += '<p class="article-type">%s</p>' % doc.get('article-type', '')
             article += '<h2>[%s] %s</h2>' % (doc.get('lang', '(missing language)'), doc.get('article-title', ''))
             for lang, title in doc.get('trans-title', {}).items():
                 article += '<h3> [%s] %s</h3>' % (lang, title)
+
             article += '<p class="filename">%s</p>' % doc.get('filename', '')
-            article += '<p class="doi">%s</p>' % doc.get('doi', '')
-            article += '<p class="other-id">%s</p>' % doc.get('other id', '')
+            article += '<p class="doi">%s</p>' % self.eval_data(doc.get('doi', ''))
+
+            article += '<p class="id">%s [fpage: <span class="fpage">%s</span> | fpage/@seq: <span class="fpage_seq">%s</span> | .//article-id[@pub-id-type="other"]: <span class="other-id">%s</span>]</p>' % (self.eval_data(doc['order']), doc.get('fpage', ''), doc.get('fpage_seq', ''), doc.get('other id', ''))
+            article += '<p class="fpage">pages: %s</p>' % self.eval_data(doc.get('fpage', '') + '-' + doc.get('lpage', ''))
 
             items = []
             for author in doc.get('author', []):
                 prefix = '(%s) ' % author['prefix'] if author.get('prefix', None) is not None else ''
                 suffix = ' (%s)' % author['suffix'] if author.get('suffix', None) is not None else ''
+
+                if not author['surname']:
+                    author['surname'] = 'ERROR: missing surname'
+                if not author['name']:
+                    author['name'] = 'ERROR: missing name'
+
                 items.append(author['surname'] + suffix + ', ' + prefix + author['name'])
 
             article += '<p class="authors">%s</p>' % '; '.join(items)
 
             article += '<p class="authors">%s</p>' % '; '.join(doc.get('collab', []))
             if doc.get('abstract', ''):
-                article += '<p class="abstract"> [%s] %s</p>' % (doc.get('lang', '(missing language)'), doc.get('abstract', ''))
+                article += '<p class="abstract"> [%s] %s</p>' % (doc.get('lang', '??'), doc.get('abstract', ''))
 
             for lang, abstract in doc.get('trans-abstract', {}).items():
                 article += '<p class="trans-abstract"> [%s] %s</p>' % (lang, abstract)
 
-            for lang, kwd_group in doc.get('kwd-group', {}).items():
-                kwd = '; '.join(kwd_group)
-                article += '<p class="kwd-group"> [%s] %s</p>' % (lang, kwd)
+            kwg = doc.get('kwd-group', {})
+            if not kwg == {}:
+                for lang, kwd_group in kwg.items():
+                    kwd = '; '.join(kwd_group) if kwd_group else ''
+                    article += '<p class="kwd-group"> [%s] %s</p>' % (lang, kwd)
             article += '</div>'
 
         self._html(report_filename, self._css('toc'), article)
@@ -1352,6 +1492,7 @@ class XPM(object):
             f = open(normalized_xml_path + '/' + new_name + '.xml', 'w')
             f.write(content)
             f.close()
+
         log_message(log_filename, '\n'.join(log))
         return (new_name, href_files_list, log)
 
