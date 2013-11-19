@@ -766,7 +766,7 @@ class Report:
             #etree.tostring(ouput)
         return output
 
-    def data_in_table_format(self, xml, xpath_list, children_xpath, columns, parts):
+    def data_in_table_format(self, xml, xpath_list, children_xpath, columns, required, parts):
         rows = []
         for doc in xml.findall('article'):
             filename = doc.attrib.get('filename', '?')
@@ -780,7 +780,8 @@ class Report:
                     if part == './/ref':
                         label = part_node.attrib.get('id', '?')
                     for xpath in xpath_list:
-                        results = self._get_from_xml(part_node, xpath, children_xpath, columns)
+                        results = self._get_from_xml(part_node, xpath, children_xpath, columns, required)
+
                         for item in results:
                             item.update({'id': filename, 'label': label})
                             rows.append(item)
@@ -792,7 +793,7 @@ class Report:
             rows.append(doc.text)
         return rows
 
-    def _get_from_xml(self, start_node, xpath, children_xpath, columns):
+    def _get_from_xml(self, start_node, xpath, children_xpath, columns, required):
         results = []
         nodes = start_node.findall(xpath)
         for node in nodes:
@@ -809,6 +810,9 @@ class Report:
                         if child_node.text is not None:
                             v.append(child_node.text)
                     data[columns[i]] = ''.join(v)
+                    if required:
+                        if columns[i] in required and not data[columns[i]]:
+                            data[columns[i]] = 'ERROR: missing ' + columns[i]
                     i += 1
                 if not ''.join(data.values()) == '':
                     results.append(data)
@@ -989,21 +993,21 @@ class Report:
 
         lists = []
 
-        lists.append((['.//article-meta'], 'list.html', ['.'], ['.//article-id[@pub-id-type="doi"]', './/article-id[@pub-id-type="other"]', './/fpage', './/lpage', './/subject'], ['doi', 'other id', 'first page', 'last page', 'subject']))
-        lists.append((article_parts, 'authors.html', ['.//name'], ['suffix', 'prefix', 'given-names', 'surname'], ['suffix', 'prefix', 'given-names', 'surname']))
-        lists.append((article_parts, 'publisher.html', ['.//element-citation'], ['publisher-name', 'publisher-loc'], ['publisher-name', 'publisher-loc']))
-        lists.append((article_parts, 'source.html', ['.//element-citation'], ['source', 'year'], ['source', 'year']))
-        lists.append((article_parts, 'locations.html', ['.//publisher-loc'], None, ['location']))
-        lists.append((article_parts, 'affs.html', ['.//aff'], ['institution[@content-type="orgname"]', 'institution[@content-type="orgdiv1"]', 'institution[@content-type="orgdiv2"]', 'institution[@content-type="orgdiv3"]', 'addr-line/named-content[@content-type="city"]', 'addr-line/named-content[@content-type="state"]', 'country'], ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country']))
+        #lists.append((['.//article-meta'], 'list.html', ['.'], ['.//article-id[@pub-id-type="doi"]', './/article-id[@pub-id-type="other"]', './/fpage', './/lpage', './/subject'], ['doi', 'other id', 'first page', 'last page', 'subject'], ['doi', 'other id', 'first page', 'last page', 'subject']))
+        lists.append((article_parts, 'authors.html', ['.//name'], ['suffix', 'prefix', 'given-names', 'surname'], ['suffix', 'prefix', 'given-names', 'surname'], ['given-names', 'surname']))
+        lists.append((article_parts, 'publisher.html', ['.//element-citation'], ['publisher-name', 'publisher-loc'], ['publisher-name', 'publisher-loc'], None))
+        lists.append((article_parts, 'source.html', ['.//element-citation'], ['source', 'year'], ['source', 'year'], ['source', 'year']))
+        lists.append((article_parts, 'locations.html', ['.//publisher-loc'], None, ['location'], None))
+        lists.append((article_parts, 'affs.html', ['.//aff'], ['institution[@content-type="orgname"]', 'institution[@content-type="orgdiv1"]', 'institution[@content-type="orgdiv2"]', 'institution[@content-type="orgdiv3"]', 'addr-line/named-content[@content-type="city"]', 'addr-line/named-content[@content-type="state"]', 'country'], ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country'], ['orgname']))
 
         report = ReportGenerator()
 
         xml = self.joined()
         errors = self.format_errors(xml)
 
-        for article_parts, report_filename, xpath_list, children_xpath, columns in lists:
+        for article_parts, report_filename, xpath_list, children_xpath, columns, required in lists:
             print(report_filename)
-            data = self.data_in_table_format(xml, xpath_list, children_xpath, columns, article_parts)
+            data = self.data_in_table_format(xml, xpath_list, children_xpath, columns, required, article_parts)
             report.in_table_format(data, errors, columns, self.report_path + '/' + report_filename)
 
         data, jm = self.data_as_toc(xml)
