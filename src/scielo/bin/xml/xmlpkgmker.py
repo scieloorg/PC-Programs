@@ -217,12 +217,17 @@ def convert_ent_to_char(content, entities_table=None):
     return content
 
 
+def convert_entities(content, entities_table=None):
+    return convert_ent_to_char(content, entities_table)
+    #return convert_entname(content, entities_table)
+
+
 def convert_entname(content, entities_table=None):
     def prefix_ent(N=7):
         return ''.join(random.choice('^({|~_`!QZ[') for x in range(N))
 
     not_found_named = []
-    not_found_number = []
+
     if '&' in content:
         PREFIX_ENT = prefix_ent()
         while PREFIX_ENT in content:
@@ -737,6 +742,92 @@ class XMLMetadata:
         return (new_name, href_filenames)
 
 
+class PkgReport(object):
+
+    def __init__(self, pkg_path, report_path):
+        self.pkg_path = pkg_path
+        self.report_path = report_path
+
+    def report(self):
+        expected_journal_meta = {}
+        order_list = {}
+        doi_list = {}
+        doi_is_duplicated = []
+        order_is_zero = []
+        order_is_duplicated = []
+        order_ok = {}
+        unordered = {}
+        jm = ''
+
+        for filename in [f for f in os.listdir(self.pkg_path) if f.endswith('.xml')]:
+            xml = self.pkg_path + '/' + filename
+            try:
+                print(1)
+                content_validation = ContentValidation(etree.parse(open(xml)))
+                print(2)
+                if expected_journal_meta == {}:
+                    for k, v in content_validation.issue_meta.items():
+                        expected_journal_meta[k] = v
+                expected_files = [f[0:f.rfind('.')] for f in os.listdir(self.pkg_path)]
+
+                order = content_validation.article_meta.get('order', 0)
+                if order == 0:
+                    order_is_zero.append(filename)
+                    row_idx = filename
+                else:
+                    if order in order_list.keys():
+                        order_list[order].append(filename)
+                        row_idx = filename
+                        order_is_duplicated.append(order)
+                    else:
+                        order_list[order] = []
+                        order_list[order].append(filename)
+                        row_idx = '00000' + str(order)
+                        row_idx = row_idx[-5:]
+
+                doi = content_validation.article_meta.get('doi', None)
+                if doi:
+                    if doi in doi_list.keys():
+                        doi_list[doi].append(filename)
+                        doi_is_duplicated.append(doi)
+                    else:
+                        doi_list[doi] = []
+                        doi_list[doi].append(filename)
+
+                content_validation.validations(expected_journal_meta, expected_files)
+
+                if row_idx.isdigit():
+                    order_ok[row_idx] = content_validation._report_journal_meta() + content_validation._report_article_meta() + content_validation._report_article_messages(True)
+                else:
+                    unordered[row_idx] = content_validation._report_journal_meta() + content_validation._report_article_meta() + content_validation._report_article_messages(True)
+                if not jm:
+                    jm = content_validation._report_issue_messages()
+
+            except Exception as inst:
+                print(inst)
+
+        # doi, order, journal, sorted, unsorted.
+        r = jm + '<div class="messages">'
+        for duplicated in doi_is_duplicated:
+            r += '<p class="error">DOI duplicated: %s at %s</p>' % (duplicated, ', '.join(doi_list[duplicated]))
+        for duplicated in order_is_duplicated:
+            r += '<p class="error">order duplicated: %s at %s</p>' % (duplicated, ', '.join(order_list[duplicated]))
+        r += '</div>'
+        keys = order_ok.keys()
+        keys.sort()
+        for key in keys:
+            r += order_ok[key]
+
+        keys = unordered.keys()
+        keys.sort()
+        for key in keys:
+            r += unordered[key]
+        print(r)
+        if r:
+            report_generator = ReportGenerator()
+            report_generator._html(self.report_path + '/toc2.html', report_generator._css('toc'), r)
+
+
 class Report:
 
     def __init__(self, pkg_path, report_path):
@@ -835,7 +926,7 @@ class Report:
                 order = 0
         return order
 
-    def node_text(self, node):
+    def _node_text(self, node):
         xml = etree.tostring(node)
         if xml[0:1] == '<':
             xml = xml[xml.find('>') + 1:]
@@ -919,11 +1010,11 @@ class Report:
                     data['lpage'] += '(WARNING: check value of pages)'
 
             article_title = article_meta.find('.//article-title')
-            data['article-title'] = self.node_text(article_title)
+            data['article-title'] = self._node_text(article_title)
 
             abstract = article_meta.find('.//abstract')
             if abstract:
-                data['abstract'] = self.node_text(abstract)
+                data['abstract'] = self._node_text(abstract)
 
             data['lang'] = article_title.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', '??')
             data['trans-title'] = {}
@@ -939,7 +1030,7 @@ class Report:
                 lang = trans_abstract.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', '??')
                 if not lang in translations.keys():
                     translations[lang] = {}
-                translations[lang]['abstract'] = self.node_text(trans_abstract)
+                translations[lang]['abstract'] = self._node_text(trans_abstract)
                 data['trans-abstract'][lang] = translations[lang]['abstract']
 
             data['kwd-group'] = {}
@@ -948,7 +1039,7 @@ class Report:
                 if not lang in translations.keys():
                     translations[lang] = {}
 
-                translations[lang]['kwd-group'] = [self.node_text(kwd) for kwd in kwd_group.findall('kwd')]
+                translations[lang]['kwd-group'] = [self._node_text(kwd) for kwd in kwd_group.findall('kwd')]
                 data['kwd-group'][lang] = translations[lang]['kwd-group']
 
             data['author'] = []
@@ -987,6 +1078,7 @@ class Report:
             rows[row_idx] = data
 
         return (rows, jm)
+
 
     def generate_reports(self):
         article_parts = ['.//journal-meta', './/article-meta', './/ref']
@@ -1156,49 +1248,6 @@ class ReportGenerator(object):
 
         self._html(report_filename, self._css('toc'), article)
 
-    def xtoc_format(self, docs, report_filename):
-        css = '.filename{font-size:'
-
-        order = ['filename', 'doi', 'lang', 'subject', 'article-title', 'author', 'collab', 'abstract', 'translations']
-        article = ''
-        for doc in docs:
-            r = ''
-            for data_label in order:
-            #for data_label, v in doc.items():
-                print(data_label)
-                data_content = doc.get(data_label, None)
-                if data_content:
-                    r += '<div class="' + data_label + '">'
-                    r += '<em>' + data_label + '</em>' + ': '
-                    if data_label == 'author':
-                        items = []
-                        print(data_content)
-                        for author in data_content:
-                            print(author)
-                            prefix = '(%s) ' % author['prefix'] if author.get('prefix', None) is not None else ''
-                            suffix = ' (%s)' % author['suffix'] if author.get('suffix', None) is not None else ''
-                            items.append(author['surname'] + suffix + ', ' + prefix + author['name'])
-                        r += '; '.join(items)
-                    elif data_label == 'translations':
-                        for lang, translation_data in data_content.items():
-                            r += '<p>Language: %s</p><ul>' % lang
-                            for label, data in translation_data.items():
-                                r += '<li>%s: %s</li>' % (label, data)
-                            r += '</ul>'
-
-                    elif isinstance(data_content, list):
-                        r += ' | '.join(data_content)
-                    elif isinstance(data_content, str):
-                        r += data_content
-                    elif isinstance(data_content, dict):
-                        r += ''
-                    else:
-                        r += ''
-                    r += '</div>'
-
-            article += '<div class="article">%s</div>' % r
-
-        self._html(report_filename, '', article)
 
 
 class CheckList(object):
@@ -1233,7 +1282,7 @@ class CheckList(object):
             content = f.read()
             f.close()
 
-            content = convert_entname(content, self.entities_table)
+            content = convert_entities(content, self.entities_table)
 
             xml = xml_is_well_formed(content)
             if not xml is None:
@@ -1316,7 +1365,7 @@ class CheckList(object):
             temp_xml_filename = self.get_copy(xml_filename)
             pkg_files.is_valid_dtd = self.dtd_validation(temp_xml_filename, pkg_files.dtd_validation_report)
             pkg_files.is_valid_style = self.style_validation(temp_xml_filename, pkg_files.style_checker_report)
-
+            
             if pkg_files.xml_output:
                 self.output(temp_xml_filename, pkg_files.xml_output)
 
@@ -1325,8 +1374,436 @@ class CheckList(object):
 
         return pkg_files
 
+    def content_validation(self, xml_filename, report_filename, expected_journal_meta, expected_files):
+        content_validation = ContentValidation(etree.parse(open(xml_filename)))
+        content_validation.validations(expected_journal_meta, expected_files)
 
-class ValidationResult:
+        report_generator = ReportGenerator()
+        report_generator._html(report_filename, report_generator._css('toc'), content_validation._report_article_messages(True) + content_validation._report_journal_meta(), content_validation._report_article_meta())
+
+
+class ContentValidation(object):
+
+    def __init__(self, xml):
+        self.xml = xml
+        self.issue_meta = {}
+        self.article_meta = {}
+        self.refs = {}
+
+        article_node = self.xml.find('.')
+        journal_meta = self.xml.find('.//journal-meta')
+        print(journal_meta)
+        self.issue_meta['publisher-name'] = journal_meta.findtext('.//publisher-name')
+        self.issue_meta['nlm-ta'] = journal_meta.findtext('.//journal-id[@journal-id-type="nlm-ta"]')
+        self.issue_meta['eissn'] = journal_meta.findtext('.//issn[@pub-type="epub"]')
+
+        self.issue_meta['pissn'] = journal_meta.findtext('.//issn[@pub-type="ppub"]')
+        self.issue_meta['journal-title'] = journal_meta.findtext('.//journal-title')
+        print(self.issue_meta)
+        article_meta = self.xml.find('.//article-meta')
+
+        self.issue_meta['issue'] = article_meta.findtext('.//issue')
+        self.issue_meta['volume'] = article_meta.findtext('.//volume')
+
+        for item in ['.//pub-date[@date-type="ppub"]', './/pub-date[@date-type="epub"]', './/pub-date[@date-type="epub-ppub"]']:
+            pd = article_meta.find(item)
+            if pd:
+                tp = item[item.find('"')+1:]
+                tp = tp[0:tp.find('"')]
+
+                self.article_meta['date-' + tp] = '%s-%s%s-%s' % (pd.findtext('year'), pd.findtext('month'), pd.findtext('season'), pd.findtext('day'))
+        # ------
+        self.article_meta['filename'] = article_node.attrib.get('filename', '')
+        self.article_meta['article-type'] = article_node.attrib.get('article-type', '')
+        self.article_meta['lang'] = article_node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
+
+        self.article_meta['doi'] = article_meta.findtext('.//article-id[@pub-id-type="doi"]')
+        self.article_meta['other id'] = article_meta.findtext('.//article-id[@pub-id-type="other"]')
+
+        print(3)
+        nodes = article_meta.findall('.//subject')
+        if nodes:
+            self.article_meta['subject'] = '|'.join([node.text for node in nodes])
+
+        print(4)
+        self.article_meta['fpage'] = article_meta.find('.//fpage').text
+        self.article_meta['fpage_seq'] = article_meta.find('.//fpage').attrib.get('seq', '')
+
+        self.article_meta['lpage'] = article_meta.find('.//lpage').text
+        self.article_meta['lpage_seq'] = article_meta.find('.//lpage').attrib.get('seq', '')
+
+        article_title = article_meta.find('.//article-title')
+        self.article_meta['article-title'] = self._node_text(article_title)
+        print(5)
+        nodes = article_meta.findall('.//award-id')
+
+        if nodes:
+            print(nodes)
+            self.article_meta['award-id'] = [award.text for award in nodes]
+        print(13)
+        self.article_meta['ack'] = self._node_text(self.xml.find('.//ack'))
+        print(5)
+        
+        affs = article_meta.find('.//aff')
+        if affs:
+            self.article_meta['aff'] = []
+            for aff in affs:
+                a = {'id': aff.attrib.get('id')}
+                for item in ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3']:
+                    a[item] = aff.findtext('institution[@content-type="' + item + '"]')
+                a['email'] = aff.findtext('email')
+                a['country'] = aff.findtext('country')
+                a['city'] = aff.findtext('addr-line/named-content[@content-type="city"]')
+                a['state'] = aff.findtext('addr-line/named-content[@content-type="state"]')
+                a['full'] = aff.text
+                a['xml'] = self._node_text(aff)
+                self.article_meta['aff'].append(a)
+        print(5)
+        
+        abstract = article_meta.find('.//abstract')
+        if abstract:
+            self.article_meta['abstract'] = self._node_text(abstract)
+        print(5)
+        
+        #self.article_meta['lang'] = article_title.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', '??')
+        self.article_meta['trans-title'] = {}
+        nodes = article_meta.findall('.//trans-title-group')
+        if nodes:
+            for trans_title in nodes:
+                lang = trans_title.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', '??')
+                self.article_meta['trans-title'][lang] = trans_title.findtext('trans-title')
+        print(6)
+        self.article_meta['trans-abstract'] = {}
+        nodes = article_meta.findall('.//trans-abstract')
+        if nodes:
+            for trans_abstract in nodes:
+                lang = trans_abstract.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', '??')
+                self.article_meta['trans-abstract'][lang] = self._node_text(trans_abstract)
+
+        self.article_meta['kwd-group'] = {}
+        nodes = article_meta.findall('.//kwd-group')
+        if nodes:
+            for kwd_group in nodes:
+                lang = kwd_group.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', kwd_group.attrib.get('lang', '??'))
+                self.article_meta['kwd-group'][lang] = [self._node_text(kwd) for kwd in kwd_group.findall('kwd')]
+        print(7)
+        self.article_meta['author'] = []
+        nodes = article_meta.findall('.//contrib//name')
+        if nodes:
+            for author in nodes:
+                a = {}
+                a['name'] = author.findtext('.//given-names')
+                a['surname'] = author.findtext('.//surname')
+                a['suffix'] = author.findtext('.//suffix')
+                a['prefix'] = author.findtext('.//prefix')
+                self.article_meta['author'].append(a)
+
+        nodes = article_meta.findall('.//contrib//collab')
+        if nodes:
+            self.article_meta['collab'] = [node.text for node in nodes]
+
+        self.article_meta['order'] = self._order(self.article_meta['fpage'], self.article_meta['fpage_seq'], self.article_meta['other id'])
+
+        nodes = self.xml.findall('.//*[{http://www.w3.org/1999/xlink}href]')
+        if nodes:
+            self.href = [node.attrib.get('{http://www.w3.org/1999/xlink}href', None) for node in nodes]
+            print([node.attrib.keys() for node in nodes])
+        print(8)
+        refs = self.xml.findall('.//ref')
+        if refs:
+            for ref in refs:
+                r = {}
+                r['id'] = ref.attrib.get('id', None)
+
+                e = ref.find('element-citation')
+                r['type'] = e.attrib.get('publication-type')
+                r['mixed'] = self._node_text(ref.find('mixed-citation'))
+
+                r['author'] = []
+                nodes = ref.findall('.//name')
+                if nodes:
+                    for author in nodes:
+                        a = {}
+                        a['name'] = author.findtext('.//given-names')
+                        a['surname'] = author.findtext('.//surname')
+                        a['suffix'] = author.findtext('.//suffix')
+                        a['prefix'] = author.findtext('.//prefix')
+                        r['author'].append(a)
+
+                nodes = ref.findall('.//collab')
+                if nodes:
+                    r['collab'] = [node.text for node in nodes]
+
+                r['year'] = ref.findtext('.//year')
+                r['source'] = ref.findtext('.//source')
+                r['publisher-name'] = ref.findtext('.//publisher-name')
+                r['publisher-loc'] = ref.findtext('.//publisher-loc')
+                r['article-title'] = self._node_text(ref.find('.//article-title'))
+                r['chapter-title'] = self._node_text(ref.find('.//chapter-title'))
+                nodes = ref.findall('element-citation//ext-link')
+                if nodes:
+                    r['ext-link'] = [uri.text for uri in nodes]
+                
+                nodes = ref.findall('element-citation//uri')
+                if nodes:
+                    r['ext-link'] += [uri.text for uri in nodes]
+
+                r['cited'] = ref.findtext('.//date-in-citation[@content-type="access-date"]')
+                r['xml'] = self._node_text(ref)
+                self.refs.append(r)
+
+    def _node_text(self, node):
+        if node:
+            xml = etree.tostring(node)
+            if xml[0:1] == '<':
+                xml = xml[xml.find('>') + 1:]
+                xml = xml[0:xml.rfind('</')]
+            return xml
+        return ''
+
+    def _order(self, fpage, fpage_seq, other_id):
+        if fpage.isdigit():
+            order = int(fpage)
+        else:
+            order = 0
+        if order == 0:
+            if fpage_seq.isdigit():
+                order = int(fpage_seq)
+            else:
+                order = 0
+        if order == 0:
+            if other_id.isdigit():
+                order = int(other_id)
+            else:
+                order = 0
+        return order
+
+    def _validate_data(self, data, expected):
+        if isinstance(data, dict):
+            result = []
+            for key, item in expected.items():
+                if not item == data.get('key', ''):
+                    result.append('ERROR: Invalid value for %s. Expected: %s.' % (data.get('key', ''), item))
+            return result
+        elif isinstance(data, str):
+            if not data == expected:
+                result = 'ERROR: Invalid value for %s. Expected: %s.' % (data, expected)
+            return result
+
+    def _validate_required_data(self, data, required):
+
+        if isinstance(data, dict):
+            result = {}
+            for req in required:
+                if data.get(req, None) is None:
+                    result[req] = 'ERROR: Missing ' + req
+            return result
+        elif isinstance(data, list):
+            result = []
+            for item in data:
+                result.append(self._validate_required_data(item, required))
+            return result
+        elif isinstance(data, str):
+            if not data:
+                return 'ERROR: Missing ' + req
+
+    def _validate_presence_of_at_least_one(self, data, labels):
+        if not any([True for item in data if not item]):
+            return 'ERROR: Missing one of ' + ' | '.join(labels)
+
+    def _validate_previous_and_next(self, previous, next, labels, max_distance):
+        if isinstance(previous, int) and isinstance(next, int):
+            dist = next - previous
+            if previous > next:
+                return 'ERROR: %s %s must come before %s.' % (labels, previous, next)
+            elif max_distance:
+                if dist > max_distance:
+                    return 'WARNING: Check %s: %s and %s.' % (labels, previous, next)
+
+    def validations(self, expected_journal_meta, files):
+        self.article_meta_validations = {}
+        self.files_validations = ''
+        self.issue_meta_validations = None
+        self.refs_validations = []
+
+        if expected_journal_meta:
+            self.issue_meta_validations = self._validate_data(self.issue_meta, expected_journal_meta)
+        else:
+            self.issue_meta_validations = self._validate_required_data(self.issue_meta, ['publisher-name', 'journal-title', 'issue', 'volume'])
+
+        self.article_meta_validations['dates'] = self._validate_presence_of_at_least_one([self.article_meta['data-epub'], self.article_meta['data-ppub'], self.article_meta['data-epub-ppub']], ['epub date', 'ppub date', 'epub-ppub date'])
+        self.article_meta_validations['issns'] = self._validate_presence_of_at_least_one([self.issue_meta['pissn'], self.issue_meta['eissn']], ['print issn', 'e-issn'])
+
+        required_items = ['order', 'article-title', 'subject', 'doi', 'fpage', 'abstract', 'kwd-group']
+        for label in required_items:
+            self.article_meta_validations[label] = self._validate_required_data(self.article_meta[label], label)
+        self.article_meta_validations['order'] = 'ERROR: Invalid value for order. ' if not self.article_meta['order'] else ''
+        self.article_meta_validations['pages'] = self._validate_previous_and_next(self.article_meta['fpage'], self.article_meta['lpage'], 'first page and last page', 20)
+
+        self.article_meta_validations['affs'] = self._validate_required_data(self.article_meta['aff'], ['orgname', 'city', 'state', 'country', 'full'])
+
+        self.article_meta_validations['author'] = self._validate_required_data(self.article_meta['author'], ['name', 'surname'])
+
+        if not self.article_meta.get('award-id'):
+            ack = self.article_meta.get('ack', None)
+            if ack:
+                if '&#' in ack:
+
+                    ack = ack.replace('&#', '_ENT_&#')
+                    ack = ack.split('_ENT_')
+                    new = ''
+                    for item in ack:
+                        if item.startswith('&#'):
+                            new += item[item.find(';'):]
+                        else:
+                            new += item
+                    ack = new
+
+                if any([c.isdigit() for c in ack]):
+                    self.article_meta_validations['ack'] = 'WARNING: ack seems to have contact number. %s' % self.article_meta.get('ack', None)
+        
+        for ref in self.refs:
+            r = {'id': ref['id'], 'xml': ref['xml']}
+            r.update(self._validate_required_data(ref, ['year', 'source']))
+            if not ref['type'] in ['journal', 'book', 'thesis', 'conf-proc', 'patent', 'report', 'software', 'web']:
+                r['type'] = 'ERROR: Invalid value for element-citation/@publication-type: %s. Expected: %s.' % (ref['type'], ' | '.join(['journal', 'book', 'thesis', 'conf-proc', 'patent', 'report', 'software', 'web']))
+
+            if not ref['mixed']:
+                r['mixed'] = 'ERROR: Missing mixed-citation'
+
+            r['author'] = self._validate_required_data(ref['author'], ['name', 'surname'])
+
+            r['authorship'] = self._validate_presence_of_at_least_one([ref['author'], ref['collab']], ['author', 'collab'])
+
+            if ref['type'] == 'book':
+                r.update(self._validate_required_data(ref, ['publisher-name', 'publisher-loc']))
+            if ref['type'] == 'web':
+                r.update(self._validate_required_data(ref, ['ext-link', 'cited']))
+            self.refs_validations.append(r)
+
+        r_files = []
+        for href in self.href:
+            if not href in files:
+                r_files.append(href)
+        self.files_validations = 'ERROR: Missing files %s' % '\n'.join(r_files) if len(r_files) else ''
+
+    def _eval(self, data):
+        cls = 'warning' if 'WARNING' in data else 'error' if 'ERROR' in data else None
+        if cls is None:
+            return data
+        else:
+            return '<p><span class="%s">%s</span></p>' % (cls, data)
+
+    def _format_result(self, result):
+        return [self._eval(v) for k, v in result.items() if not v == self._eval(v)]
+
+    def _format_as_table(self, data, columns):
+        r = '<div class="CSSTableGenerator"><table>'
+        for col in columns:
+            r += '<tr>'
+            r += '<td>%s</td>' % col
+            r += '</tr>'
+        for item in data:
+            r += '<tr>'
+            for col in columns:
+                r += '<td>%s</td>' % item.get(col, '')
+            r += '</tr>'
+        r += '</table></div>'
+        return r
+
+    def _report_journal_meta(self):
+        data = '<div class="issue">'
+        data += '<h1>%s, %s (%s)</h1>' % (self.issue_meta['journal-title'], self.issue_meta['volume'], self.issue_meta['issue'])
+        data += '<h2>%s</h2>' % self.issue_meta['nlm-ta']
+        for item in ['eissn', 'pissn', 'date-epub', 'date-ppub', 'date-epub-ppub', 'publisher-name']:
+            data += '<p>' + item + ': ' + self.issue_meta[item] + '</p>'
+        data += '</div>'
+        return data
+
+    #xxxx
+    def _report_article_meta(self):
+        data = '<div class="article">'
+        data += '<p class="filename">%s</p>' % self.article_meta.get('filename', '')
+        data += '<h1>%s</h1>' % self.article_meta.get('subject', '')
+        data += '<p class="article-type">%s</p>' % self.article_meta.get('article-type', '')
+        data += '<h2>[%s] %s</h2>' % (self.article_meta.get('lang', '(missing language)'), self.article_meta.get('article-title', ''))
+        for lang, title in self.article_meta.get('trans-title', {}).items():
+            data += '<h3> [%s] %s</h3>' % (lang, title)
+
+        data += '<p class="doi">%s</p>' % self.article_meta.get('doi', '')
+
+        data += '<p class="id">%s [fpage: <span class="fpage">%s</span> | fpage/@seq: <span class="fpage_seq">%s</span> | .//article-id[@pub-id-type="other"]: <span class="other-id">%s</span>]</p>' % (self.article_meta['order'], self.article_meta.get('fpage', ''), self.article_meta.get('fpage_seq', ''), self.article_meta.get('other id', ''))
+        data += '<p class="fpage">pages: %s</p>' % self.article_meta.get('fpage', '') + '-' + self.article_meta.get('lpage', '')
+
+        #data += '<p class="authors"></p>' % self._format_as_table(self.article_meta['author'], ['name', 'surname', 'prefix', 'suffix'])
+        items = []
+        for author in self.article_meta.get('author', []):
+            prefix = '(%s) ' % author['prefix'] if author.get('prefix', None) is not None else ''
+            suffix = ' (%s)' % author['suffix'] if author.get('suffix', None) is not None else ''
+
+            if not author['surname']:
+                author['surname'] = 'ERROR: missing surname'
+            if not author['name']:
+                author['name'] = 'ERROR: missing name'
+
+            items.append(author['surname'] + suffix + ', ' + prefix + author['name'])
+        data += '<p class="authors">%s</p>' % '; '.join(items)
+
+        data += '<p class="authors">%s</p>' % '; '.join(self.article_meta.get('collab', []))
+        data += '<p class="authors">%s</p>' % '; '.join(self.article_meta.get('collab', []))
+        data += '<p class="affs">%s</p>' % self._format_as_table(self.article_meta['aff'], ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'contry', 'email'])
+
+        if self.article_meta.get('abstract', ''):
+            data += '<p class="abstract"> [%s] %s</p>' % (self.article_meta.get('lang', '??'), self.article_meta.get('abstract', ''))
+
+        for lang, abstract in self.article_meta.get('trans-abstract', {}).items():
+            data += '<p class="trans-abstract"> [%s] %s</p>' % (lang, abstract)
+
+        kwg = self.article_meta.get('kwd-group', {})
+        if not kwg == {}:
+            for lang, kwd_group in kwg.items():
+                kwd = '; '.join(kwd_group) if kwd_group else ''
+                data += '<p class="kwd-group"> [%s] %s</p>' % (lang, kwd)
+
+        data += '<p class="ack">%s</p><p class="funding">%s</p>' % (self.article_meta['ack'], self.article_meta['award-id'])
+
+        data += '</div>'
+
+        return data
+
+    def _format_messages(self, messages):
+        if isinstance(messages, str):
+            return self._eval(messages)
+        elif isinstance(messages, list):
+            return ''.join([self._format_messages(item) for item in messages])
+        elif isinstance(messages, dict):
+            return ''.join([self._format_messages(item) for item in messages.values()])
+
+    def _report_article_messages(self, issue_msg=False):
+        # self.article_meta_validations = {}
+        # self.files_validations = ''
+        # self.issue_meta_validations = None
+        # self.refs_validations = []
+        messages = []
+        if issue_msg:
+            messages.append(self._format_messages(self.issue_meta_validations))
+        messages.append(self._format_messages(self.article_meta_validations))
+        messages.append(self._format_messages(self.refs_validations))
+        messages.append(self._format_messages(self.files_validations))
+        return '<div class="article-messages">%s</div>' % ''.join(messages)
+
+    def _report_issue_messages(self, more):
+        # self.article_meta_validations = {}
+        # self.files_validations = ''
+        # self.issue_meta_validations = None
+        # self.refs_validations = []
+        messages = []
+        messages.append(self._format_messages(self.issue_meta_validations))
+        messages.append(more)
+        return '<div class="issue-messages">%s</div>' % ''.join(messages)
+
+
+class ValidationResult(object):
 
     def __init__(self, pkg_path, report_path, xml_output_path=None, suffix='', preview_path=None):
         self.pkg_path = pkg_path
@@ -1507,7 +1984,7 @@ class XPM(object):
         log = []
         # convert_ent_to_cha
         test = content
-        content = convert_entname(content, self.entities_table)
+        content = convert_entities(content, self.entities_table)
         if not test == content:
             log.append('Convert entities.\n Done.')
 
@@ -1566,7 +2043,6 @@ class XPM(object):
             f = open(err_filename, 'a+')
             f.write('\nUnable to find ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
             f.close()
-
 
     def make_article_packages(self, wrk_path, curr_name, new_name, href_files_list, scielo_pkg_path, pmc_pkg_path, err_filename, log_filename):
         
@@ -1755,6 +2231,9 @@ def call_make_packages(args, version):
 
         xml_pkg_mker = XPM(sci_validator, pmc_validator, acron, version, entities_table)
         xml_pkg_mker.make_packages(xml_filename, ctrl_filename, xml_path, wrk_path, reports, sci_val_res, pmc_val_res, err_filename)
+
+        report = PkgReport(scielo_pkg_path, report_path)
+        report.report()
     else:
         print(task)
 
