@@ -1,21 +1,22 @@
 html {
-    margin: 5%;
-    padding: 0;
+   
     }
 body { 
     color: #555753; 
-    margin: 0; 
+    margin-left: 10%; 
+    margin-right: 10%; 
     padding: 0;
     font-size: 9pt;
     font-family: Verdana;
     }
 div {
-    margin:5%;
-    background-color: #FFF5EE;
-    padding: 10px;
+    padding: 15px;
+    border-radius: 18px;
+    margin: 1px;
 }
 p { 
     text-align: left;
+    width: 100%
     
     }
 h1 {
@@ -30,8 +31,100 @@ h3 {
 }
 
 .issue {
+    border-style: solid;
     background-color: #DAEED3;
 }
+.article {
+    border-style: solid;
+    /*background-color: #FFF5EE; */
+    background-color: #E6E6FA; 
+}
+
+.article-data {
+    background-color: #F0F0F0;
+}
+/* MESSAGES */
+.duplicated_messages{
+    background-color: white;
+}
+.issue-messages{
+    background-color: white;
+}
+.article-messages{
+    background-color: #D8C2B5;
+    margin: 5px;
+}
+.text-error {
+    color: #B22222;
+    text-align: center;
+    padding-left: 100px;
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 150%;
+}
+.text-warning {
+    color: orange;
+    text-align: center;
+    padding-left: 100px;
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 150%;
+}
+.p-error {
+    border-radius: 14px;
+    border-color: #B22222;
+    border-style: solid;
+    width: 100%;
+    background-color: white;
+    font-size: 100%;
+    font-family: Verdana;
+}
+
+.p-warning {
+    border-radius: 14px;
+    border-color: orange;
+    border-style: solid;
+    width: 100%;
+    background-color: white;
+    font-size: 100%;
+    font-family: Verdana;
+}
+
+.icon-warning {
+    background-color: orange;
+    color: white;
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 200%;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+}
+
+.icon-error {
+    background-color: #B22222;
+    color: white;
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 200%;
+    padding-right: 80px;
+    padding-left: 80px;
+}
+.group {
+    border-style: solid;
+    background-color: #E0E4CC;
+}
+.group-id {
+    font-weight: bold;
+}
+/* DATA */
+.xml {
+    font-family: "Courier New", Courier, monospace;
+    background-color: white;
+    border-style: solid;
+    padding: 5px;
+}
+
 .article-type{
     font-size: 90%;
     color: magenta;
@@ -64,14 +157,4 @@ h3 {
 .kwd-group {
     font-size: 80%;
 }
-.warning {
-    border: 1;
-    background-color: yellow;
-    
-}
 
-.error {
-    border: 1;
-    background-color: red;
-    color: white;
-}
