@@ -30,6 +30,9 @@ h3 {
     font-size: 10pt;
 }
 
+.statistics {
+    font-size: 150%;
+}
 .issue {
     border-style: solid;
     background-color: #DAEED3;

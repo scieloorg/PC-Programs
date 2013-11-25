@@ -825,7 +825,10 @@ class PkgReport(object):
             r += unordered[key]
         if r:
             report_generator = ReportGenerator()
-            report_generator._html(self.report_path + '/toc2.html', report_generator._css('toc') + report_generator._css('datareport'), r)
+            errors = len(r.split('ERROR:')) - 1
+            warnings = len(r.split('WARNING:')) - 1
+            statistics = '<div class="statistics"><p>Total of errors = %s</p><p>Total of warnings = %s</p></div>' % (str(errors), str(warnings))
+            report_generator._html(self.report_path + '/toc2.html', '', report_generator._css('toc') + report_generator._css('datareport'), statistics + r)
 
 
 class Report:
@@ -970,7 +973,7 @@ class Report:
 
             for tp in ['ppub', 'epub', 'epub-ppub']:
                 node = article_meta.find('.//pub-date[@pub-type="' + tp + '"]')
-                if node:
+                if node is not None:
                     d = []
                     for elem in ['day', 'month', 'season', 'year']:
                         d.append(node.findtext(elem) if node.findtext(elem) else '')
@@ -1017,7 +1020,7 @@ class Report:
             data['article-title'] = self._node_text(article_title)
 
             abstract = article_meta.find('.//abstract')
-            if abstract:
+            if abstract is not None:
                 data['abstract'] = self._node_text(abstract)
 
             data['lang'] = article_title.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', '??')
@@ -1144,8 +1147,8 @@ class ReportGenerator(object):
         header = ''.join(header)
         return '<tr>%s%s</tr>' % (colums_default, header)
 
-    def _html(self, filename, css_content, body):
-        header = '<header><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><style>' + css_content + '</style></header>'
+    def _html(self, filename, title, css_content, body):
+        header = '<header><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>' + title + '</title><style>' + css_content + '</style></header>'
 
         html = '<html>%s<body>%s</body></html>' % (header, body)
 
@@ -1170,7 +1173,7 @@ class ReportGenerator(object):
         table_data = self._table_rows(columns, data, ['id', 'label'])
         table2 = self._table_(table_header, table_data)
 
-        self._html(report_filename, self.css_content, table1 + table2)
+        self._html(report_filename, '', self.css_content, table1 + table2)
 
         #header = '<header><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><style>' + self.css_content + '</style></header>'
 
@@ -1251,7 +1254,7 @@ class ReportGenerator(object):
                     article += '<p class="kwd-group"> [%s] %s</p>' % (lang, kwd)
             article += '</div>'
 
-        self._html(report_filename, self._css('toc'), article)
+        self._html(report_filename, '',  self._css('toc'), article)
 
 
 class CheckList(object):
@@ -1382,7 +1385,7 @@ class CheckList(object):
         content_validation.validations(expected_journal_meta, expected_files)
 
         report_generator = ReportGenerator()
-        report_generator._html(report_filename, report_generator._css('toc'), content_validation._report_article_messages(True) + content_validation._report_journal_meta(), content_validation._report_article_meta())
+        report_generator._html(report_filename, '', report_generator._css('toc'), content_validation._report_article_messages(True) + content_validation._report_journal_meta(), content_validation._report_article_meta())
 
 
 class ContentValidation(object):
@@ -1444,7 +1447,7 @@ class ContentValidation(object):
 
         for tp in ['received', 'accepted']:
             node = self.xml.find('.//date[@date-type="' + tp + '"]')
-            if node:
+            if node is not None:
                 d = ''
                 y = node.findtext('year')
                 if y is None:
@@ -1535,17 +1538,17 @@ class ContentValidation(object):
             r['collab'] = [node.text for node in ref.findall('.//collab')]
 
             r['lang'] = None
-            node = ref.find('article-title')
-            if node:
-                ref['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
+            node = ref.find('.//article-title')
+            if node is not None:
+                r['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
             else:
-                node = ref.find('chapter-title')
-                if node:
-                    ref['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
+                node = ref.find('.//chapter-title')
+                if node is not None:
+                    r['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
                 else:
-                    node = ref.find('source')
-                    if node:
-                        ref['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
+                    node = ref.find('.//source')
+                    if node is not None:
+                        r['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
 
             r['year'] = ref.findtext('.//year')
             r['source'] = ref.findtext('.//source')
@@ -1685,15 +1688,14 @@ class ContentValidation(object):
         else:
             self.article_meta_validations['order'] = 'ERROR: Invalid value for order. It must be a number 1-9999'
 
-        required_items = ['article-title', 'subject', 'doi', 'fpage', 'license', 'received date (history)', 'accepted date (history)']
+        required_items = ['article-title', 'subject', 'doi', 'fpage', 'license']
         for label in required_items:
             self.article_meta_validations[label] = self._validate_required_data(self.article_meta.get(label, None), label)
 
-        required_items = ['abstract']
+        required_items = ['abstract', 'received date (history)', 'accepted date (history)']
         for label in required_items:
-            self.article_meta_validations[label] = self._validate_conditional_required_data(self.article_meta[label], label)
+            self.article_meta_validations[label] = self._validate_conditional_required_data(self.article_meta.get(label, None), label)
 
-        
         for trans_type in ['trans-abstract', 'trans-title', 'kwd-group']:
             translations = self.article_meta.get(trans_type, None)
             if translations:
@@ -1707,16 +1709,28 @@ class ContentValidation(object):
 
         self.article_meta_validations['history dates'] = self._validate_previous_and_next(self.article_meta.get('received', None), self.article_meta.get('accepted', None), 'received/accepted dates')
 
-        self.article_meta_validations['affs'] = self._validate_required_data(self.article_meta['aff'], ['orgname', 'city', 'state', 'country', 'full'])
-
+        #self.article_meta_validations['affs'] = self._validate_required_data(self.article_meta['aff'], ['orgname', 'city', 'state', 'country', 'full'])
+        self.article_meta_validations['affs'] = self.validate_content(self.article_meta['aff'], ['orgname', 'full'], ['city', 'state', 'country'], [])
         self.article_meta_validations['author'] = self._validate_required_data(self.article_meta['author'], ['given-names', 'surname'])
 
         if not self.article_meta.get('award-id'):
             ack = self.article_meta.get('ack', None)
             if ack:
+                # PARA IGNORAR <p id="parag28">
+                if '<' in ack:
+                    ack = ack.replace('<', '_BREAK_<')
+                    ack = ack.split('_BREAK_')
+                    new = ''
+                    for item in ack:
+                        if item.startswith('<'):
+                            new += item[item.find('>'):]
+                        else:
+                            new += item
+                    ack = new
+
                 if '&#' in ack:
-                    ack = ack.replace('&#', '_ENT_&#')
-                    ack = ack.split('_ENT_')
+                    ack = ack.replace('&#', '_BREAK_&#')
+                    ack = ack.split('_BREAK_')
                     new = ''
                     for item in ack:
                         if item.startswith('&#'):
@@ -1725,9 +1739,12 @@ class ContentValidation(object):
                             new += item
                     ack = new
 
-                if any([True for c in ack if c.isdigit()]):
+                if any([True for n in range(0, 10) if str(n) in ack]):
                     self.article_meta_validations['ack'] = 'WARNING: Check ack has contact number. %s' % self.article_meta.get('ack', None)
-
+        count = len(self.refs)
+        #print(count)
+        self.article_meta_validations['ref-count'] = 'WARNING: Total of references = 0' if count == 0 else ''
+        #print(self.article_meta_validations)
         for ref in self.refs:
             r = {}
             r = {'id': ref['id'], 'xml': ref['xml']}
@@ -1773,7 +1790,7 @@ class ContentValidation(object):
             return str(data)
         else:
             icon = ' ! ' if cls == 'warning' else ' X '
-            return '<p class="p-%s"><span class="icon-%s"> %s </span><span class="text-%s"> %s</span></p>' % (cls, cls, icon, cls, data[data.find(':')+1:])
+            return '<p class="p-%s"><span class="icon-%s"> %s </span><span class="text-%s"> %s</span></p>' % (cls, cls, icon, cls, data)
 
     def _format_result(self, result):
         return [self._eval(v) for k, v in result.items() if not v == self._eval(v)]
@@ -1868,18 +1885,22 @@ class ContentValidation(object):
         elif isinstance(messages, list):
             return ''.join([self._format_messages(item) for item in messages])
         elif isinstance(messages, dict):
-            r = '<div class="group">'
-            if 'id' in messages.keys():
-                r += '<p class="group-id">%s</p>' % messages['id']
+            ref_messages = ''
             for label, msg in messages.items():
                 if not label in ['id', 'xml']:
                     if isinstance(msg, str):
-                        r += self._eval(msg)
+                        ref_messages += self._eval(msg)
                     elif msg is not None:
-                        r += ''.join([self._format_messages(m) for m in msg])
-            if 'xml' in messages.keys():
-                r += '<p class="xml">%s</p>' % messages['xml'].replace('<', '&lt;').replace('>', '&gt;')
-            r += '</div>'
+                        ref_messages += ''.join([self._format_messages(m) for m in msg])
+            r = ''
+            if not ref_messages == '':
+                r = '<div class="group">'
+                if 'id' in messages.keys():
+                    r += '<p class="group-id">%s</p>' % messages['id']
+                r += ref_messages
+                if 'xml' in messages.keys():
+                    r += '<p class="xml">%s</p>' % messages['xml'].replace('<', '&lt;').replace('>', '&gt;')
+                r += '</div>'
             return r
 
     def _report_article_messages(self, issue_msg=False):
