@@ -37,7 +37,7 @@ h3 {
 .article {
     border-style: solid;
     /*background-color: #FFF5EE; */
-    background-color: #E6E6FA; 
+    background-color: #571A27; 
 }
 
 .article-data {
@@ -60,7 +60,7 @@ h3 {
     padding-left: 100px;
     font-family: Verdana;
     font-weight: bold;
-    font-size: 150%;
+    font-size: 100%;
 }
 .text-warning {
     color: orange;
@@ -68,7 +68,7 @@ h3 {
     padding-left: 100px;
     font-family: Verdana;
     font-weight: bold;
-    font-size: 150%;
+    font-size: 100%;
 }
 .p-error {
     border-radius: 14px;

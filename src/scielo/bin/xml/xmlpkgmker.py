@@ -968,12 +968,16 @@ class Report:
                 if not v:
                     data[k] = ''
 
-            pd = article_meta.find('.//pub-date[@pub-type="ppub"]')
-            data['date-ppub'] = '%s-%s%s-%s' % (pd.findtext('year'), pd.findtext('month'), pd.findtext('season'), pd.findtext('day')) if pd else ''
-            pd = article_meta.find('.//pub-date[@pub-type="epub"]')
-            data['date-epub'] = '%s-%s%s-%s' % (pd.findtext('year'), pd.findtext('month'), pd.findtext('season'), pd.findtext('day')) if pd else ''
-            pd = article_meta.find('.//pub-date[@pub-type="epub-ppub"]')
-            data['date-epub-ppub'] = '%s-%s%s-%s' % (pd.findtext('year'), pd.findtext('month'), pd.findtext('season'), pd.findtext('day')) if pd else ''
+            for tp in ['ppub', 'epub', 'epub-ppub']:
+                node = article_meta.find('.//pub-date[@pub-type="' + tp + '"]')
+                if node:
+                    d = []
+                    for elem in ['day', 'month', 'season', 'year']:
+                        d.append(node.findtext(elem) if node.findtext(elem) else '')
+                else:
+                    d = ['', '', '', '']
+                data['date-' + tp] = '%s/%s%s/%s' % tuple(d)
+
 
             data['issn'] = '%s%s' % (data.get('pissn', ''), data.get('eissn', ''))
             data['date'] = '%s%s%s' % (data['date-ppub'],  data['date-epub'], data['date-epub-ppub'])
@@ -1045,7 +1049,7 @@ class Report:
             data['author'] = []
             for author in article_meta.findall('.//contrib//name'):
                 a = {}
-                a['name'] = author.findtext('.//given-names')
+                a['given-names'] = author.findtext('.//given-names')
                 a['surname'] = author.findtext('.//surname')
                 a['suffix'] = author.findtext('.//suffix')
                 a['prefix'] = author.findtext('.//prefix')
@@ -1056,7 +1060,7 @@ class Report:
 
             order = self._order(data['fpage'], data['fpage_seq'], data['other id'])
 
-            if order == 0:
+            if order == '0':
                 order_is_zero.append(data['filename'])
                 row_idx = data['filename']
                 data['order'] = '0 (ERROR: invalid)'
@@ -1226,10 +1230,10 @@ class ReportGenerator(object):
 
                 if not author['surname']:
                     author['surname'] = 'ERROR: missing surname'
-                if not author['name']:
-                    author['name'] = 'ERROR: missing name'
+                if not author['given-names']:
+                    author['given-names'] = 'ERROR: missing name'
 
-                items.append(author['surname'] + suffix + ', ' + prefix + author['name'])
+                items.append(author['surname'] + suffix + ', ' + prefix + author['given-names'])
 
             article += '<p class="authors">%s</p>' % '; '.join(items)
 
@@ -1404,12 +1408,16 @@ class ContentValidation(object):
         self.issue_meta['issue'] = article_meta.findtext('.//issue')
         self.issue_meta['volume'] = article_meta.findtext('.//volume')
 
-        for item in ['.//pub-date[@pub-type="ppub"]', './/pub-date[@pub-type="epub"]', './/pub-date[@pub-type="epub-ppub"]']:
-            pd = article_meta.find(item)
-            if pd:
-                tp = item[item.find('"')+1:]
-                tp = tp[0:tp.find('"')]
-                self.article_meta['date-' + tp] = '%s-%s%s-%s' % (str(pd.findtext('year')), str(pd.findtext('month')), str(pd.findtext('season')), str(pd.findtext('day')))
+        for tp in ['ppub', 'epub', 'epub-ppub']:
+            node = article_meta.find('.//pub-date[@pub-type="' + tp + '"]')
+            if node is None:
+                d = ['', '', '', '']
+            else:
+                d = []
+                for elem in ['day', 'month', 'season', 'year']:
+                    d.append(node.findtext(elem) if node.findtext(elem) else '')
+            self.article_meta['date-' + tp] = '%s/%s%s/%s' % tuple(d)
+
         # ------
         self.article_meta['filename'] = filename
         self.article_meta['article-type'] = article_node.attrib.get('article-type', '')
@@ -1431,6 +1439,25 @@ class ContentValidation(object):
         
         self.article_meta['award-id'] = ','.join([award.text for award in article_meta.findall('.//award-id')])
         self.article_meta['ack'] = self._node_text(self.xml.find('.//ack'))
+
+        self.article_meta['license'] = etree.tostring(self.xml.find('.//license'))
+
+        for tp in ['received', 'accepted']:
+            node = self.xml.find('.//date[@date-type="' + tp + '"]')
+            if node:
+                d = ''
+                y = node.findtext('year')
+                if y is None:
+                    d += '0000'
+                else:
+                    d += y
+                for item in [node.findtext('month'), node.findtext('day')]:
+                    if item is None:
+                        d += '00'
+                    else:
+                        item = '00' + item
+                        d += item[-2:]
+                self.article_meta[tp + ' date (history)'] = d
         
         self.article_meta['aff'] = []
         for aff in article_meta.findall('.//aff'):
@@ -1467,7 +1494,7 @@ class ContentValidation(object):
         
         for author in article_meta.findall('.//contrib//name'):
             a = {}
-            a['name'] = author.findtext('.//given-names')
+            a['given-names'] = author.findtext('.//given-names')
             a['surname'] = author.findtext('.//surname')
             a['suffix'] = author.findtext('.//suffix')
             a['prefix'] = author.findtext('.//prefix')
@@ -1483,6 +1510,8 @@ class ContentValidation(object):
                 href = node.attrib.get('{http://www.w3.org/1999/xlink}href', None)
                 if href:
                     self.href.append(href)
+                else:
+                    print(node.attrib)
 
         for ref in self.xml.findall('.//ref'):
             r = {}
@@ -1496,7 +1525,7 @@ class ContentValidation(object):
             
             for author in ref.findall('.//name'):
                 a = {}
-                a['name'] = author.findtext('.//given-names')
+                a['given-names'] = author.findtext('.//given-names')
                 a['surname'] = author.findtext('.//surname')
                 a['suffix'] = author.findtext('.//suffix')
                 a['prefix'] = author.findtext('.//prefix')
@@ -1504,6 +1533,19 @@ class ContentValidation(object):
 
             
             r['collab'] = [node.text for node in ref.findall('.//collab')]
+
+            r['lang'] = None
+            node = ref.find('article-title')
+            if node:
+                ref['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
+            else:
+                node = ref.find('chapter-title')
+                if node:
+                    ref['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
+                else:
+                    node = ref.find('source')
+                    if node:
+                        ref['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
 
             r['year'] = ref.findtext('.//year')
             r['source'] = ref.findtext('.//source')
@@ -1547,7 +1589,7 @@ class ContentValidation(object):
                 order = int(other_id)
             else:
                 order = 0
-        return order
+        return str(order)
 
     def _validate_data(self, data, expected):
         if isinstance(data, dict):
@@ -1561,40 +1603,55 @@ class ContentValidation(object):
                 result = 'ERROR: Invalid value for %s. Expected: %s.' % (data, expected)
             return result
 
-    def _validate_required_data(self, data, required, scope=None):
+    def _validate_presence_data(self, msg_type, status, data, label_list, scope=None):
         _scope = scope + ': ' if not scope is None else ''
         if isinstance(data, dict):
             result = []
-            for req in required:
+            for req in label_list:
                 at = '' if not data.get('id', None) else data['id'] + ': '
                 if data.get(req, None) is None:
-                    result.append('ERROR: ' + _scope + at + ' Missing ' + req)
+                    result.append(msg_type + ': ' + _scope + at + ' ' + status + ' ' + req)
                 # if 'id' in data.keys():
                 #     result['id'] = data['id']
                 # if 'xml' in data.keys():
                 #     result['xml'] = data['xml']
 
             #return result if not result == {} else None
-            return result if not result == [] else None
+            return result
         elif isinstance(data, list):
             result = []
             for item in data:
-                result.append(self._validate_required_data(item, required))
+                result.append(self._validate_presence_data(msg_type, status, item, label_list, scope))
             result = [error for error in result if error]
-            return result if not result == [] else None
+            return result
         elif isinstance(data, str):
             if not data:
-                return 'ERROR: ' + _scope + 'Missing ' + required
+                return [msg_type + ': ' + _scope + ' ' + status + ' ' + label_list]
+        else:
+            if data is None:
+                return [msg_type + ': ' + _scope + ' ' + status + ' ' + label_list]
+
+    def _validate_conditional_required_data(self, data, required, scope=None):
+        return self._validate_presence_data('WARNING', 'Required (if exists)', data, required, scope)
+
+    def _validate_required_data(self, data, required, scope=None):
+        return self._validate_presence_data('ERROR', 'Required', data, required, scope)
 
     def _validate_presence_of_at_least_one(self, data, labels):
         if not any([True for item in data if item]):
-            return 'ERROR: Missing one of ' + ' | '.join(labels)
+            return 'ERROR: Required one of ' + ' | '.join(labels)
 
-    def _validate_previous_and_next(self, previous, next, labels, max_distance):
-        if previous.isdigit():
-            previous = int(previous)
-        if next.isdigit():
-            next = int(next)
+    def _validate_previous_and_next(self, previous, next, labels, max_distance=None):
+        if previous is None:
+            previous = 0
+        if next is None:
+            next = 0
+        if isinstance(previous, str):
+            if previous.isdigit():
+                previous = int(previous)
+        if isinstance(next, str):
+            if next.isdigit():
+                next = int(next)
 
         if isinstance(previous, int) and isinstance(next, int):
             dist = next - previous
@@ -1610,30 +1667,54 @@ class ContentValidation(object):
         self.issue_meta_validations = None
         self.refs_validations = []
 
-        self.issue_meta_validations = self._validate_required_data(self.issue_meta, ['publisher-name', 'journal-title', 'issue', 'volume'], 'journal-meta and issue-meta')
-        
+        self.issue_meta_validations = self._validate_required_data(self.issue_meta, ['publisher-name', 'journal-title', 'issue'], 'journal-meta and issue-meta')
+        self.issue_meta_validations += self._validate_conditional_required_data(self.issue_meta, ['issue'], 'journal-meta and issue-meta')
         if expected_journal_meta:
             self.issue_meta_validations += self._validate_data(self.issue_meta, expected_journal_meta)
-        
+
         self.article_meta_validations['dates'] = self._validate_presence_of_at_least_one([self.article_meta.get('date-epub', ''), self.article_meta.get('date-ppub', ''), self.article_meta.get('date-epub-ppub', '')], ['epub date', 'ppub date', 'epub-ppub date'])
 
         self.article_meta_validations['issns'] = self._validate_presence_of_at_least_one([self.issue_meta['pissn'], self.issue_meta['eissn']], ['print issn', 'e-issn'])
 
-        required_items = ['order', 'article-title', 'subject', 'doi', 'fpage', 'abstract']
-        for label in required_items:
-            self.article_meta_validations[label] = self._validate_required_data(self.article_meta[label], label)
+        order = self.article_meta.get('order', '0')
+        if order.isdigit():
+            if 0 < int(order) < 100000:
+                pass
+            else:
+                self.article_meta_validations['order'] = 'ERROR: Invalid value for order. It must be a number 1-9999'
+        else:
+            self.article_meta_validations['order'] = 'ERROR: Invalid value for order. It must be a number 1-9999'
 
+        required_items = ['article-title', 'subject', 'doi', 'fpage', 'license', 'received date (history)', 'accepted date (history)']
+        for label in required_items:
+            self.article_meta_validations[label] = self._validate_required_data(self.article_meta.get(label, None), label)
+
+        required_items = ['abstract']
+        for label in required_items:
+            self.article_meta_validations[label] = self._validate_conditional_required_data(self.article_meta[label], label)
+
+        
+        for trans_type in ['trans-abstract', 'trans-title', 'kwd-group']:
+            translations = self.article_meta.get(trans_type, None)
+            if translations:
+                for lang, t in translations.items():
+                    if lang == '??':
+                        self.article_meta_validations[trans_type] = self._validate_conditional_required_data(None, trans_type + ' lang')
+            else:
+                self.article_meta_validations[trans_type] = self._validate_conditional_required_data(None, trans_type)
+        
         self.article_meta_validations['pages'] = self._validate_previous_and_next(self.article_meta['fpage'], self.article_meta['lpage'], 'first page and last page', 20)
+
+        self.article_meta_validations['history dates'] = self._validate_previous_and_next(self.article_meta.get('received', None), self.article_meta.get('accepted', None), 'received/accepted dates')
 
         self.article_meta_validations['affs'] = self._validate_required_data(self.article_meta['aff'], ['orgname', 'city', 'state', 'country', 'full'])
 
-        self.article_meta_validations['author'] = self._validate_required_data(self.article_meta['author'], ['name', 'surname'])
+        self.article_meta_validations['author'] = self._validate_required_data(self.article_meta['author'], ['given-names', 'surname'])
 
         if not self.article_meta.get('award-id'):
             ack = self.article_meta.get('ack', None)
             if ack:
                 if '&#' in ack:
-
                     ack = ack.replace('&#', '_ENT_&#')
                     ack = ack.split('_ENT_')
                     new = ''
@@ -1644,44 +1725,56 @@ class ContentValidation(object):
                             new += item
                     ack = new
 
-                if any([c.isdigit() for c in ack]):
-                    self.article_meta_validations['ack'] = 'WARNING: ack seems to have contact number. %s' % self.article_meta.get('ack', None)
+                if any([True for c in ack if c.isdigit()]):
+                    self.article_meta_validations['ack'] = 'WARNING: Check ack has contact number. %s' % self.article_meta.get('ack', None)
 
         for ref in self.refs:
             r = {}
             r = {'id': ref['id'], 'xml': ref['xml']}
 
-            r['year-source'] = self._validate_required_data(ref, ['year', 'source'])
+            r['year-source'] = self._validate_required_data(ref, ['year', 'source', 'lang'])
 
             if not ref['type'] in ['journal', 'book', 'thesis', 'conf-proc', 'patent', 'report', 'software', 'web']:
                 r['type'] = 'ERROR: Invalid value for element-citation/@publication-type: %s. Expected: %s.' % (ref['type'], ' | '.join(['journal', 'book', 'thesis', 'conf-proc', 'patent', 'report', 'software', 'web']))
 
             if not ref['mixed']:
-                r['mixed'] = 'ERROR: Missing mixed-citation'
+                r['mixed'] = 'ERROR: Required mixed-citation'
 
-            r['author'] = self._validate_required_data(ref['author'], ['name', 'surname'])
+            r['author'] = self._validate_required_data(ref['author'], ['given-names', 'surname'])
 
             r['authorship'] = self._validate_presence_of_at_least_one([ref.get('author', []), ref.get('collab', [])], ['author', 'collab'])
-
             if ref['type'] == 'book':
                 r['publisher'] = self._validate_required_data(ref, ['publisher-name', 'publisher-loc'])
             if ref['type'] == 'web':
                 r['link'] = self._validate_required_data(ref, ['ext-link', 'cited'])
             self.refs_validations.append(r)
 
-        r_files = []
-        for href in self.href:
-            if not href in files:
-                r_files.append(href)
-        self.files_validations = 'ERROR: Missing files %s' % '\n'.join(r_files) if len(r_files) > 0 else ''
+        r_files = ['<li>' + f + '</li>' for f in self.href if not f in files]
+        
+        self.files_validations = 'ERROR: Required files <ul>%s</ul>' % ''.join(r_files) if len(r_files) > 0 else ''
+
+    def validate_content(self, data, required_items, conditional_required_items, invalid_characteres, scope=None):
+        results = []
+        if required_items:
+            results.append(self._validate_required_data(data, required_items, scope))
+        if conditional_required_items:
+            results.append(self._validate_conditional_required_data(data, conditional_required_items, scope))
+        if invalid_characteres:
+            results.append(self._has_invalid_characteres(data, invalid_characteres))
+        return results
+
+    def _has_invalid_characteres(self, content, invalid_characteres):
+        if any([True for c in invalid_characteres if c in content]):
+            return 'ERROR: Invalid characteres in %s (%s)' % (content, ' | '.join(invalid_characteres))
 
     def _eval(self, data):
         cls = 'warning' if 'WARNING' in data else 'error' if 'ERROR' in data else None
         if cls is None:
             return str(data)
         else:
-            return '<p class="p-%s"><span class="icon-%s"> ! </span><span class="text-%s"> %s</span></p>' % (cls, cls,cls, data[data.find(':')+1:])
-        
+            icon = ' ! ' if cls == 'warning' else ' X '
+            return '<p class="p-%s"><span class="icon-%s"> %s </span><span class="text-%s"> %s</span></p>' % (cls, cls, icon, cls, data[data.find(':')+1:])
+
     def _format_result(self, result):
         return [self._eval(v) for k, v in result.items() if not v == self._eval(v)]
 
@@ -1707,7 +1800,10 @@ class ContentValidation(object):
         data += '<h1>%s, %s (%s)</h1>' % (self.issue_meta.get('journal-title', ''), self.issue_meta.get('volume', ''), self.issue_meta.get('issue', ''))
         data += '<h2>%s</h2>' % self.issue_meta.get('nlm-ta', '')
         for item in ['eissn', 'pissn', 'publisher-name']:
-            data += '<p>' + item + ': ' + str(self.issue_meta.get(item, '')) + '</p>'
+            s = self.issue_meta.get(item, '')
+            if not s:
+                s = ''
+            data += '<p>' + item + ': ' + s + '</p>'
         data += '</div>'
         return data
 
@@ -1728,7 +1824,7 @@ class ContentValidation(object):
         data += '<p class="id">%s [fpage: <span class="fpage">%s</span> | fpage/@seq: <span class="fpage_seq">%s</span> | .//article-id[@pub-id-type="other"]: <span class="other-id">%s</span>]</p>' % (self.article_meta['order'], self.article_meta.get('fpage', ''), self.article_meta.get('fpage_seq', ''), self.article_meta.get('other id', ''))
         data += '<p class="fpage">pages: %s</p>' % (self.article_meta.get('fpage', '') + '-' + self.article_meta.get('lpage', ''))
 
-        #data += '<p class="authors"></p>' % self._format_as_table(self.article_meta['author'], ['name', 'surname', 'prefix', 'suffix'])
+        #data += '<p class="authors"></p>' % self._format_as_table(self.article_meta['author'], ['given-names', 'surname', 'prefix', 'suffix'])
         items = []
         for author in self.article_meta.get('author', []):
             prefix = '(%s) ' % author['prefix'] if author.get('prefix', None) is not None else ''
@@ -1736,10 +1832,10 @@ class ContentValidation(object):
 
             if not author['surname']:
                 author['surname'] = 'ERROR: missing surname'
-            if not author['name']:
-                author['name'] = 'ERROR: missing name'
+            if not author['given-names']:
+                author['given-names'] = 'ERROR: missing name'
 
-            items.append(author['surname'] + suffix + ', ' + prefix + author['name'])
+            items.append(author['surname'] + suffix + ', ' + prefix + author['given-names'])
         data += '<p class="authors">%s</p>' % '; '.join(items)
 
         data += '<p class="authors">%s</p>' % '; '.join(self.article_meta.get('collab', []))
@@ -1775,7 +1871,12 @@ class ContentValidation(object):
             r = '<div class="group">'
             if 'id' in messages.keys():
                 r += '<p class="group-id">%s</p>' % messages['id']
-            r += ''.join([self._format_messages(item) for k, item in messages.items() if not k in ['id', 'xml']])
+            for label, msg in messages.items():
+                if not label in ['id', 'xml']:
+                    if isinstance(msg, str):
+                        r += self._eval(msg)
+                    elif msg is not None:
+                        r += ''.join([self._format_messages(m) for m in msg])
             if 'xml' in messages.keys():
                 r += '<p class="xml">%s</p>' % messages['xml'].replace('<', '&lt;').replace('>', '&gt;')
             r += '</div>'
@@ -1790,8 +1891,8 @@ class ContentValidation(object):
         if issue_msg:
             messages.append(self._format_messages(self.issue_meta_validations))
         messages.append(self._format_messages(self.article_meta_validations))
-        messages.append(self._format_messages(self.refs_validations))
         messages.append(self._format_messages(self.files_validations))
+        messages.append(self._format_messages(self.refs_validations))
         return '<div class="article-messages">%s</div>' % ''.join(messages)
 
     def _report_issue_messages(self):
@@ -2066,7 +2167,7 @@ class XPM(object):
 
             expected_files = self.add_href_files_to_packages(wrk_path, href_files_list, curr_name, new_name, scielo_pkg_path, pmc_pkg_path)
 
-            log_errors(err_filename, 'Missing files', expected_files)
+            log_errors(err_filename, 'Required files', expected_files)
         return (os.path.isfile(pmc_pkg_path + '/' + new_name + '.xml'))
 
     def make_packages(self, xml_filename, ctrl_filename, xml_path, work_path, reports, scielo_val_res, pmc_val_res, err_filename):
