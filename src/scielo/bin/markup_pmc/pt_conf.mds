@@ -75,6 +75,7 @@ doDebug,no
 buttonParser,Verificar a marcação
 buttonGenerateXML,Generar el XML
 buttonXMLValidate,Validar XML para SciELO
+buttonContentXMLValidate,Relatório de contéudo
 buttonXMLPreview,Visualizar texto completo SciELO
 buttonPMCValidate,Validar XML para PMC
 buttonPMCPreview,Visualizar texto completo PMC

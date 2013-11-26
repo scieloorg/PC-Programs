@@ -42,6 +42,9 @@ h3 {
     /*background-color: #FFF5EE; */
     background-color: #571A27; 
 }
+.list {
+    background-color: white;
+}
 
 .article-data {
     background-color: #F0F0F0;
