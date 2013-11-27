@@ -34,7 +34,7 @@ JAR_VALIDATE = CONFIG_JAR_PATH + '/XMLCheck.jar'
 ENTITIES_TABLE_FILENAME = CONFIG_ENT_TABLE_PATH + '/entities2char'
 
 
-def log_errors(err_filename, label, files):
+def log_images_errors(err_filename, label, files):
     files = [item for item in files if item is not None]
     if len(files) > 0:
         f = open(err_filename, 'a+')
@@ -747,15 +747,21 @@ class PkgReport(object):
     def __init__(self, pkg_path, report_path):
         self.pkg_path = pkg_path
         self.report_path = report_path
-        self.content_validations = []
-        for filename in [f for f in os.listdir(self.pkg_path) if f.endswith('.xml')]:
-            self.content_validations.append(ContentValidation(etree.parse(open(self.pkg_path + '/' + filename)), filename))
+        
         self.lists = []
 
-        self.lists.append(('authors.html', ['suffix', 'prefix', 'given-names', 'surname'], ['given-names', 'surname']))
-        self.lists.append(('publisher.html', ['type', 'publisher-name', 'publisher-loc'], []))
-        self.lists.append(('source.html', ['type', 'source', 'year'], ['type', 'source', 'year']))
-        self.lists.append(('affs.html', ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country'], ['orgname']))
+        self.lists.append(('Authors', 'authors.html', ['suffix', 'prefix', 'given-names', 'surname'], ['given-names', 'surname'], []))
+        self.lists.append(('Publishers/Locations', 'publisher.html', ['type', 'publisher-name', 'publisher-loc'], [], []))
+        self.lists.append(('Sources/Years', 'source.html', ['type', 'source', 'year'], ['type', 'source', 'year'], []))
+        self.lists.append(('Affiliations', 'affs.html', ['xml', 'orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country'], ['orgname'], ['city', 'state', 'country']))
+
+    def load_data(self, name=None):
+        self.content_validations = []
+        if name is None:
+            for filename in [f for f in os.listdir(self.pkg_path) if f.endswith('.xml')]:
+                self.content_validations.append(ContentValidation(etree.parse(open(self.pkg_path + '/' + filename)), filename))
+        else:
+            self.content_validations.append(ContentValidation(etree.parse(open(self.pkg_path + '/' + name)), name))
 
     def generate_articles_report(self, include_lists_content=False):
         expected_journal_meta = {}
@@ -803,16 +809,17 @@ class PkgReport(object):
 
             result = self._report_article_meta(content_validation) + self._report_article_messages(content_validation)
 
+            lists = ''
             if include_lists_content:
-                for report_filename, columns, required in self.lists:
+                for title, report_filename, columns, required, desirable in self.lists:
                     items = self.data_for_list(report_filename, content_validation)
-                    rows = self.data_in_table_format(content_validation.article_meta['filename'], items, columns, required)
-                    result += '<div class="list"><h1>' + report_filename.replace('.html', '') + '</h1>' + html_report.in_table_format(rows, columns) + '</div>'
+                    rows = self.data_in_table_format(content_validation.article_meta['filename'], items, columns, required, desirable)
+                    lists += '<div class="list"><h1>' + title + '</h1>' + html_report.in_table_format(rows, columns) + '</div>'
 
             if row_idx.isdigit():
-                order_ok[row_idx] = '<div class="article">' + result + '</div>'
+                order_ok[row_idx] = '<div class="article">' + result + '</div>' + lists
             else:
-                unordered[row_idx] = '<div class="article">' + result + '</div>'
+                unordered[row_idx] = '<div class="article">' + result + '</div>' + lists
             if not jm:
                 jm = self._report_journal_meta(content_validation)
 
@@ -834,8 +841,7 @@ class PkgReport(object):
         for key in keys:
             r += unordered[key]
 
-        if r:
-            
+        if r:            
             errors = len(r.split('ERROR:')) - 1
             warnings = len(r.split('WARNING:')) - 1
             statistics = '<div class="statistics"><p>Total of errors = %s</p><p>Total of warnings = %s</p></div>' % (str(errors), str(warnings))
@@ -846,7 +852,9 @@ class PkgReport(object):
         if report_filename == 'authors.html':
             items = content_validation.article_meta['author']
             for ref in content_validation.refs:
-                items += ref['author']
+                for author in ref['author']:
+                    author.update({'id': ref.get('id', '')})
+                    items.append(author)
         elif report_filename == 'publisher.html':
             items = [content_validation.issue_meta] + content_validation.refs
         elif report_filename == 'source.html':
@@ -858,33 +866,38 @@ class PkgReport(object):
     def generate_lists(self):
         report = HTMLReport()
 
-        for report_filename, columns, required in self.lists:
+        for title, report_filename, columns, required, desirable in self.lists:
             print(report_filename)
             rows = []
             for content_validation in self.content_validations:
                 items = self.data_for_list(report_filename, content_validation)
-                rows += self.data_in_table_format(content_validation.article_meta['filename'], items, columns, required)
+                rows += self.data_in_table_format(content_validation.article_meta['filename'], items, columns, required, desirable)
 
-            report._html(self.report_path + '/' + report_filename, report_filename, report._css('datareport'), report.in_table_format(rows, columns))
+            report._html(self.report_path + '/' + report_filename, title, report._css('datareport') + report._css('toc'), '<h1>' + title + '</h1>' + report.in_table_format(rows, columns))
 
-    def data_in_table_format(self, filename, items, columns, required_items):
+    def data_in_table_format(self, filename, items, columns, required_items, desirable_items):
         rows = []
-        print(items)
+        # FIXME
+        #print(required_items)
+
         for item in items:
-            
+            #print(item)
             row = {'id': filename, 'label': item.get('id', '')}
             for child in columns:
                 row[child] = item.get(child, '')
-                if row[child] == '':
+                if row[child] == '' or row[child] is None:
                     if child in required_items:
                         row[child] = 'ERROR: Required data'
+                    elif child in desirable_items:
+                        row[child] = 'WARNING: Required data, if exists'
+            #print(row)
             rows.append(row)
         return rows
 
     def _report_journal_meta(self, content_validation):
         data = '<div class="issue">'
-        data += '<h1>%s, %s (%s)</h1>' % (content_validation.issue_meta.get('journal-title', ''), content_validation.issue_meta.get('volume', ''), content_validation.issue_meta.get('issue', ''))
-        data += '<h2>%s</h2>' % content_validation.issue_meta.get('nlm-ta', '')
+        data += '<h2>%s, %s (%s)</h2>' % (content_validation.issue_meta.get('journal-title', ''), content_validation.issue_meta.get('volume', ''), content_validation.issue_meta.get('issue', ''))
+        data += '<h3>%s</h3>' % content_validation.issue_meta.get('nlm-ta', '')
         for item in ['eissn', 'pissn', 'publisher-name']:
             s = content_validation.issue_meta.get(item, '')
             if not s:
@@ -897,11 +910,11 @@ class PkgReport(object):
     def _report_article_meta(self, content_validation):
         data = '<div class="article-data">'
         data += '<p class="filename">%s</p>' % content_validation.article_meta.get('filename', '')
-        data += '<h1>%s</h1>' % content_validation.article_meta.get('subject', '')
+        data += '<h2>%s</h2>' % content_validation.article_meta.get('subject', '')
         data += '<p class="article-type">%s</p>' % content_validation.article_meta.get('article-type', '')
-        data += '<h2>[%s] %s</h2>' % (content_validation.article_meta.get('lang', '(missing language)'), content_validation.article_meta.get('article-title', ''))
+        data += '<h3>[%s] %s</h3>' % (content_validation.article_meta.get('lang', '(missing language)'), content_validation.article_meta.get('article-title', ''))
         for lang, title in content_validation.article_meta.get('trans-title', {}).items():
-            data += '<h3> [%s] %s</h3>' % (lang, title)
+            data += '<h4> [%s] %s</h4>' % (lang, title)
 
         data += '<p class="doi">%s</p>' % content_validation.article_meta.get('doi', '')
 
@@ -1007,10 +1020,13 @@ class PkgReport(object):
         for item in data:
             r += '<tr>'
             for col in columns:
+                content = item.get(col, '')
+                if content is None:
+                    content = ''
                 if col == 'xml':
-                    r += '<td>%s</td>' % item.get(col, '').replace('<', '&lt;').replace('>', '&gt;')
+                    r += '<td>%s</td>' % content.replace('<', '&lt;').replace('>', '&gt;')
                 else:
-                    r += '<td>%s</td>' % item.get(col, '')
+                    r += '<td>%s</td>' % content
             r += '</tr>'
         r += '</table></div>'
         return r
@@ -1044,27 +1060,29 @@ class HTMLReport(object):
         if data is None:
             data = []
         if columns:
-
             for row in data:
                 r += '<tr>'
                 for c in cols:
-                    r += '<td>%s</td>' % self.eval_data(row.get(c, ''))
+                    r += '<td>%s</td>' % row.get(c, '')
                 for c in columns:
-                    r += '<td>%s</td>' % self.eval_data(row.get(c, ''))
+
+                    content = row.get(c, '')
+                    if not content:
+                        content = ''
+                    if c == 'xml':
+                        content = content.replace('<', '&lt;').replace('>', '&gt;')
+                    r += '<td>%s</td>' % self._cell_css(content)
                 r += '</tr>'
         else:
             for row in data:
                 r += '<tr><td>%s</td></tr>' % row
         return r
 
-    def eval_data(self, data):
+    def _cell_css(self, data):
         if data is None:
             data = ''
-        cls = 'warning' if 'WARNING' in data else 'error' if 'ERROR' in data else None
-        if cls is None:
-            return data
-        else:
-            return '<span class="text-%s"> %s</span>' % (cls, data)
+        c = 'warning' if 'WARNING' in data else 'error' if 'ERROR' in data else None
+        return data if c is None else '<span class="%s">%s</span>' % (c, data)
 
     def _table_header(self, columns, colums_default):
         header = ['<td>%s</td>' % data for data in columns]
@@ -1633,6 +1651,7 @@ class ValidationResult(object):
 
     def name(self, curr_name, new_name):
         self.dtd_validation_report = self.report_path + '/' + curr_name + self.suffix + '.dtd.txt'
+        self.log_filename = self.report_path + '/' + curr_name + self.suffix + '.log'
         self.style_checker_report = self.report_path + '/' + curr_name + self.suffix + '.rep.html'
 
         if self.preview_path == self.pkg_path:
@@ -1654,12 +1673,16 @@ class ValidationResult(object):
             if self.is_valid_dtd is True:
                 os.unlink(self.dtd_validation_report)
             if self.is_valid_style is True:
-                os.unlink(self.style_checker_report)
-            if not self.is_well_formed:
+                os.unlink(self.style_checker_report)              
+            if self.is_well_formed:
+                if os.path.isfile(self.log_filename):
+                    os.unlink(self.log_filename)
+            else:
                 f = open(self.dtd_validation_report, 'a+')
                 f.write('XML is not well formed')
                 f.close()
         else:
+            print(ctrl_filename)
             err_filename = ctrl_filename.replace('.ctrl', '.err')
             f = open(ctrl_filename, 'w')
             f.write('Finished')
@@ -1667,10 +1690,13 @@ class ValidationResult(object):
 
             os.unlink(err_filename)
             f = open(err_filename, 'a+')
-            if not self.is_well_formed:
+            if self.is_well_formed:
+                if os.path.isfile(self.log_filename):
+                    os.unlink(self.log_filename)
+            else:
                 f.write(self.checking_xml_filename + ': XML is not well formed')
 
-            elif not self.is_valid_dtd:
+            if not self.is_valid_dtd:
                 if os.path.isfile(self.dtd_validation_report):
                     f.write(open(self.dtd_validation_report).read())
                 else:
@@ -1679,6 +1705,7 @@ class ValidationResult(object):
             elif not self.is_valid_style:
                 if not os.path.isfile(self.style_checker_report):
                     f.write('Unable to generate ' + self.style_checker_report)
+
             f.close()
 
 
@@ -1775,9 +1802,12 @@ class XPM(object):
             f = open(normalized_xml_path + '/' + new_name + '.xml', 'w')
             f.write(content)
             f.close()
-
-        log_message(log_filename, '\n'.join(log))
-        return (new_name, href_files_list, log)
+        else:
+            f = open(log_filename, 'w')
+            f.write('\n'.join(log))
+            f.close()
+            
+        return (new_name, href_files_list)
 
     def _normalize_xml(self, content, is_sgmxml, xml_name):
         """
@@ -1813,6 +1843,7 @@ class XPM(object):
                 log.append(' Done')
         else:
             log.append('XML is not well formed')
+            
         return (content, new_name, href_files_list, log)
 
     def validate_packages(self, xml_name, new_name, scielo_validation_result, pmc_validation_result, err_filename, ctrl_filename):
@@ -1843,39 +1874,35 @@ class XPM(object):
                 f.write('\nUnable to create ' + pmc_validation_result.pkg_path + '/' + new_name + '.xml')
                 f.close()
         else:
+            print('Unable to find ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
             f = open(err_filename, 'a+')
             f.write('\nUnable to find ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
             f.close()
 
-    def make_article_packages(self, wrk_path, curr_name, new_name, href_files_list, scielo_pkg_path, pmc_pkg_path, err_filename, log_filename):
-        
-        log_message(log_filename, scielo_pkg_path + '/' + new_name + '.xml')
+    def pack_non_xml_files(self, wrk_path, curr_name, new_name, href_files_list, scielo_pkg_path, pmc_pkg_path, err_filename):
+        #log_message(log_filename, scielo_pkg_path + '/' + new_name + '.xml')
 
-        if os.path.exists(scielo_pkg_path + '/' + new_name + '.xml'):
-            log_message(log_filename, '_normalize_href_list')
+        #log_message(log_filename, '_normalize_href_list')
 
-            href_files_list, invalid_href = self._normalize_href_list(href_files_list)
+        href_files_list, invalid_href = self._normalize_href_list(href_files_list)
+        log_images_errors(err_filename, 'Invalid href, which must not have extension', invalid_href)
 
-            log_errors(err_filename, 'Invalid href, which must not have extension', invalid_href)
+        package_paths = [scielo_pkg_path, pmc_pkg_path]
 
-            package_paths = [scielo_pkg_path, pmc_pkg_path]
+        #log_message(log_filename, 'add_renamed_files_to_packages')
+        self.add_renamed_files_to_packages(wrk_path, curr_name, new_name, package_paths)
 
-            log_message(log_filename, 'add_renamed_files_to_packages')
-            self.add_renamed_files_to_packages(wrk_path, curr_name, new_name, package_paths)
-            
-            log_message(log_filename, 'add_href_files_to_packages')
+        #log_message(log_filename, 'add_href_files_to_packages')
 
-            expected_files = self.add_href_files_to_packages(wrk_path, href_files_list, curr_name, new_name, scielo_pkg_path, pmc_pkg_path)
-
-            log_errors(err_filename, 'Required files', expected_files)
-        return (os.path.isfile(pmc_pkg_path + '/' + new_name + '.xml'))
-
-    def make_packages(self, xml_filename, ctrl_filename, xml_path, work_path, scielo_val_res, pmc_val_res, err_filename):
+        expected_files = self.add_href_files_to_packages(wrk_path, href_files_list, curr_name, new_name, scielo_pkg_path, pmc_pkg_path)
+        log_images_errors(err_filename, 'Required files', expected_files)
+    
+    def make_packages(self, xml_filename, ctrl_filename, xml_path, work_path, scielo_val_res, pmc_val_res):
 
         files = [xml_filename] if xml_filename else [f for f in os.listdir(xml_path) if f.endswith('.xml')]
 
-        report_path = scielo_val_res.report_path
-
+        report = PkgReport(scielo_val_res.pkg_path, scielo_val_res.report_path)
+            
         for xml_filename in files:
             print('\n== %s ==\n' % xml_filename)
 
@@ -1887,24 +1914,36 @@ class XPM(object):
             log_filename = scielo_val_res.report_path + '/' + xml_name + '.log'
             err_filename = scielo_val_res.report_path + '/' + xml_name + '.err.txt'
 
+            for f in [log_filename, err_filename]:
+                if os.path.isfile(f):
+                    os.unlink(f)
+
             not_jpg = self.create_wrk_path(xml_path, matched_files, wrk_path)
 
-            log_errors(err_filename, 'JPG were not converted', not_jpg)
+            log_images_errors(err_filename, 'JPG were not converted', not_jpg)
 
-            new_name, href_files_list, log = self.normalize_xml(wrk_path + '/' + xml_filename, scielo_val_res.pkg_path, err_filename, log_filename)
+            new_name, href_files_list = self.normalize_xml(wrk_path + '/' + xml_filename, scielo_val_res.pkg_path, err_filename, log_filename)
 
             if os.path.exists(scielo_val_res.pkg_path + '/' + new_name + '.xml'):
-                if self.make_article_packages(wrk_path, xml_name, new_name, href_files_list, scielo_val_res.pkg_path, pmc_val_res.pkg_path, err_filename, log_filename):
+                self.pack_non_xml_files(wrk_path, xml_name, new_name, href_files_list, scielo_val_res.pkg_path, pmc_val_res.pkg_path, err_filename)
 
-                    scielo_val_res.name(xml_name, new_name)
-                    pmc_val_res.name(xml_name, new_name)
+                scielo_val_res.name(xml_name, new_name)
+                pmc_val_res.name(xml_name, new_name)
 
-                    self.validate_packages(xml_name, new_name, scielo_val_res, pmc_val_res, err_filename, ctrl_filename)
-                else:
-                    log.append('Unable to generate the packages')
-            else:
-                log.append('Unable to normalize XML')
-            #log_message(log_filename, '\n'.join(log))
+                self.validate_packages(xml_name, new_name, scielo_val_res, pmc_val_res, err_filename, ctrl_filename)
+
+                report.load_data(new_name + '.xml')
+                include_lists_content = (ctrl_filename is not None)
+                print(include_lists_content)
+                report.generate_articles_report(include_lists_content)
+                if not include_lists_content:
+                    report.generate_lists()
+
+        if ctrl_filename is not None:
+            if not os.path.isfile(ctrl_filename):
+                f = open(ctrl_filename, 'w')
+                f.write('Finished')
+                f.close()
 
 
 def setup_for_markup(sgmxml_filename):
@@ -1988,6 +2027,7 @@ def check_inputs(args):
 def call_make_packages(args, version):
     src, acron, task = check_inputs(args)
     if task in ['markup', 'folder', 'file']:
+        
         if task == 'markup':
             version = 'j1.0'
             # ctrl filename
@@ -2014,21 +2054,20 @@ def call_make_packages(args, version):
         if not os.path.exists(report_path):
             os.makedirs(report_path)
 
-        err_filename = report_path + '/errors.txt'
-
         sci_val_res = ValidationResult(scielo_pkg_path, report_path, pmc_pkg_path, '', None)
-        pmc_val_res = ValidationResult(pmc_pkg_path, report_path, None, '', None)
+        pmc_val_res = ValidationResult(pmc_pkg_path, report_path, None, '.pmc', None)
 
         sci_validator = CheckList('scielo', version, entities_table)
         pmc_validator = CheckList('pmc', version)
 
         xml_pkg_mker = XPM(sci_validator, pmc_validator, acron, version, entities_table)
-        xml_pkg_mker.make_packages(xml_filename, ctrl_filename, xml_path, wrk_path, sci_val_res, pmc_val_res, err_filename)
+        xml_pkg_mker.make_packages(xml_filename, ctrl_filename, xml_path, wrk_path, sci_val_res, pmc_val_res)
 
-        report = PkgReport(scielo_pkg_path, report_path)
-        #report.generate_articles_report(ctrl_filename is not None)
-        report.generate_articles_report(True)
-        report.generate_lists()
+        if ctrl_filename is None:
+            report = PkgReport(scielo_pkg_path, report_path)
+            report.load_data()
+            report.generate_articles_report(include_lists_content=False)
+            report.generate_lists()
 
         print('\n=======')
         print('\nGenerated packages in:\n' + '\n'.join([scielo_pkg_path, pmc_pkg_path, ]))

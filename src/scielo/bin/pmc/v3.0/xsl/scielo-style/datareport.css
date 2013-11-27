@@ -95,15 +95,3 @@
 .CSSTableGenerator tr:first-child td:last-child{
     border-width:0px 0px 1px 1px;
 }
-
-.warning {
-    border: 1;
-    background-color: yellow;
-    
-}
-
-.error {
-    border: 1;
-    background-color: red;
-    color: white;
-}
