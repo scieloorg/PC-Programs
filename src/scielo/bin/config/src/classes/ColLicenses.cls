@@ -29,13 +29,13 @@ Sub load(licenses_from_codedb As ColObjByLang)
     
     For i_lictype = 1 To default_licenses.count
         Set license_texts = New clsCreativeCommons
-        license_texts.code = default_licenses.item(i_lictype).code
+        license_texts.Code = default_licenses.item(i_lictype).Code
         
         For i_lang = 1 To licenses_from_codedb.count
         
-            Call license_texts.add(licenses_from_codedb.getItemByIndex(i_lang).item(license_texts.code).value, licenses_from_codedb.getItemByIndex(i_lang).lang)
+            Call license_texts.add(licenses_from_codedb.getItemByIndex(i_lang).item(license_texts.Code).value, licenses_from_codedb.getItemByIndex(i_lang).lang)
         Next
-        Call add(license_texts, license_texts.code)
+        Call add(license_texts, license_texts.Code)
     Next
 
 End Sub
@@ -44,8 +44,8 @@ Function isCustomizedLicense(lic As clsCreativeCommons) As Boolean
     Dim i As Long
     Dim changed As Boolean
     
-    If lic.code <> "" Then
-        Set license = item(lic.code)
+    If lic.Code <> "" Then
+        Set license = item(lic.Code)
         i = 1
         While (i <= license.count) And (Not changed)
             changed = Not (license.getLicenseByIndex(i).text = lic.getLicense(license.getLicenseByIndex(i).lang).text)
@@ -59,7 +59,7 @@ Function isEqual(lic As clsCreativeCommons, license As clsCreativeCommons) As Bo
      Dim i As Long
     Dim is_eq As Boolean
     
-    If lic.code = license.code Then
+    If lic.Code = license.Code Then
         is_eq = True
         i = 1
         While (i <= license.count) And (is_eq)
@@ -114,14 +114,14 @@ Public Property Get count() As Long
 End Property
 
 
-Public Sub Remove(vntIndexKey As Variant)
+Public Sub remove(vntIndexKey As Variant)
     'used when removing an element from the collection
     'vntIndexKey contains either the Index or Key, which is why
     'it is declared as a Variant
     'Syntax: x.Remove(xyz)
 
 
-    mCol.Remove vntIndexKey
+    mCol.remove vntIndexKey
 End Sub
 
 

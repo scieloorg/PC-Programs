@@ -50,30 +50,33 @@
 <!--    Monographic Level                                                 -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!--ELEMENT pmonog   - - ( (author* | corpauth*), date?, (%m.title;), 
-                         ( 
-                           (confgrp, pages?)
-                         |
-                           (thesis, extent?, (city?, state?, country?) )
-                         |  
-                           ( 
-                             coltitle, colvolid?, 
-                             (pages | extent)?, edition?, 
-				     author*,
-                             ((city, state?, country?) | country), pubname+
-                           ) 
-                         | 
-                           (edition?, pages?, ((city, state?, country?) | country), pubname+)
-                         ),  
-                         (cited, url)?, doi?, ( report | notes | othinfo)? 
-                      ) -->
-<!ELEMENT pmonog   - - ( (author* | corpauth*)?, 
+<!-- ELEMENT pmonog   - - ( (author* | corpauth*)?, 
                          date?, 
                         (confgrp | 
-                        ((%m.title;), volid?, part?, (thesis | (coltitle, colvolid?) )?,  edition?)), 
-                        (pages | extent)?, (((city, state?, country?) | country), pubname+)?,
+                         ((%m.title;), volid?, part?, (thesis | (coltitle, colvolid?) )?,  edition?)), 
+                        
+                        (pages | extent)?, (city, state?, country?, pubname+)?,
                         (cited, url)?, (doi? & pubid*), (notes|othinfo)? 
+                      ) -->
+<!ELEMENT pmonog   - - ( (author* | corpauth*)?, 
+                          date?, 
+                          (
+                            (
+                              (%m.title;), 
+                              (
+                                (edition?, pages?, city, state?, (pubname+ | notes))
+                                |
+                                thesis
+                                |
+                                (coltitle, colvolid?)
+                              )?
+                            )
+                            |
+                            confgrp
+                          ),
+                          (cited, url)?, (doi? & pubid*), (notes|othinfo)? 
                       )>
+
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    VANCOUVER                                                         -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->

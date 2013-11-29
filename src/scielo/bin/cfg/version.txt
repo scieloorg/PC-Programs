@@ -1,3 +1,11 @@
+﻿4.0.071 - 29/11/2013
+=======
+- reports of XML files' contents (package maker and Markup)
+- markup xml: fixes bug of absence of aff/country
+- markup xml: new elements inline-graphic, inline-supplementary-material, supplementary-material, inline-formula
+- DTD: fixes APA
+- automata_samples: journal PAB
+
 4.0.070 (not released yet)
 =======
 - fixes generation of xml package for ahead (in standalone version)
