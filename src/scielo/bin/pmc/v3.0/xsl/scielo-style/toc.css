@@ -1,0 +1,189 @@
+html {
+   
+    }
+body { 
+    color: #555753; 
+    margin-left: 10%; 
+    margin-right: 10%; 
+    padding: 0;
+    font-size: 9pt;
+    font-family: Verdana;
+    }
+div {
+    padding: 15px;
+    border-radius: 18px;
+    margin: 1px;
+}
+p { 
+    text-align: left;
+    width: 100%
+    
+    }
+h1 {
+    text-align: center;
+    font-size: 14pt;
+    color: gray;
+}
+h2 {
+    font-size: 12pt;
+}
+h3 {
+    font-size: 11pt;
+    color: #B22222;
+}
+h4 {
+    font-size: 10pt;
+}
+
+.statistics {
+    font-size: 150%;
+}
+.issue {
+    border-style: solid;
+    background-color: #DAEED3;
+}
+.article {
+    border-style: solid;
+    /*background-color: #FFF5EE; */
+    background-color: #571A27; 
+}
+.list {
+    background-color: white;
+}
+
+.article-data {
+    background-color: #F0F0F0;
+}
+/* MESSAGES */
+.duplicated_messages{
+    background-color: white;
+}
+.issue-messages{
+    background-color: white;
+}
+.article-messages{
+    background-color: #D8C2B5;
+    margin: 5px;
+}
+.error {
+    background-color: #B22222;
+    color: white;
+    
+    text-align: center;
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 100%;
+}
+.warning {
+    background-color: orange;
+    color: white;
+
+    text-align: center;
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 100%;
+}
+.text-error {
+    color: #B22222;
+    text-align: center;
+    padding-left: 100px;
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 100%;
+}
+.text-warning {
+    color: orange;
+    text-align: center;
+    padding-left: 100px;
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 100%;
+}
+.p-error {
+    border-radius: 14px;
+    border-color: #B22222;
+    border-style: solid;
+    width: 100%;
+    background-color: white;
+    font-size: 100%;
+    font-family: Verdana;
+}
+
+.p-warning {
+    border-radius: 14px;
+    border-color: orange;
+    border-style: solid;
+    width: 100%;
+    background-color: white;
+    font-size: 100%;
+    font-family: Verdana;
+}
+
+.icon-warning {
+    background-color: orange;
+    color: white;
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 200%;
+    padding-right: 80px;
+    padding-left: 80px;
+    
+}
+
+.icon-error {
+    background-color: #B22222;
+    color: white;
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 200%;
+    padding-right: 80px;
+    padding-left: 80px;
+}
+.group {
+    border-style: solid;
+    background-color: #E0E4CC;
+}
+.group-id {
+    font-weight: bold;
+}
+/* DATA */
+.xml {
+    font-family: "Courier New", Courier, monospace;
+    background-color: white;
+    border-style: solid;
+    padding: 5px;
+}
+
+.article-type{
+    font-size: 90%;
+    color: magenta;
+    
+}
+.doi{
+    color: #B22222;
+    
+}
+.other-id{
+    color: blue;
+    
+}
+.fpage {
+    color: green;
+}
+.filename{
+    color: gray;
+    
+}
+.authors {
+    font-style: italic;
+}
+.abstract {
+    
+}
+.trans-abstract {
+    font-size: 90%;
+}
+.kwd-group {
+    font-size: 80%;
+}
+

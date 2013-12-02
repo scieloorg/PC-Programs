@@ -18,6 +18,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="affs_xrefs" select=".//front//author"/>
 	<xsl:variable name="xref_id" select="//*[@id]"/>
 	<xsl:variable name="qtd_ref" select="count(//*[contains(name(),'citat')])"/>
+	<xsl:variable name="reflen">
+		<xsl:value-of select="string-length($qtd_ref)"/>
+	</xsl:variable>
 	<xsl:variable name="ref_no" select="//*[contains(name(),'citat')]/no"/>
 
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
@@ -301,14 +304,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</journal-id>
 			</xsl:if>
 			<xsl:if test="not(.//nlm-title) or .//nlm-title=''">
-				<journal-id journal-id-type="publisher-id">
+				<journal-id journal-id-type="publisherc">
 					<xsl:value-of select="$journal_acron"/>
 				</journal-id>
-				
+
 			</xsl:if>
-
-
-			
 			<journal-title-group>
 				<xsl:if test=".//journal-title!=''">
 					<xsl:copy-of select=".//journal-title"/>
@@ -583,12 +583,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="*[contains(name(),'org')]"/>
 					<xsl:if test="@state or @city">
 						<addr-line>
-							<xsl:apply-templates select="@city|@state|@country"/>
+							<xsl:apply-templates select="@city|@state"/>
 
 						</addr-line>
 					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
+			<xsl:apply-templates select="country"></xsl:apply-templates>
 			<xsl:apply-templates select="text() | *" mode="full"/>
 		</aff>
 	</xsl:template>
@@ -621,26 +622,44 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
-	<xsl:template match="xref[@ref-type='aff']/@rid"><xsl:variable name="var_id"><xsl:choose>
-		<xsl:when test="contains(.,' ')">aff<xsl:value-of select="substring-before(.,' ')"/></xsl:when>
-		<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
-	</xsl:choose></xsl:variable><xsl:choose>
-			<xsl:when test="contains($var_id,'a0')">aff<xsl:value-of select="substring-after($var_id,'a0')"/></xsl:when>
+
+	<xsl:template match="xref[@ref-type='aff']/@rid">
+		<xsl:variable name="var_id">
+			<xsl:choose>
+				<xsl:when test="contains(.,' ')">aff<xsl:value-of select="substring-before(.,' ')"
+					/></xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="contains($var_id,'a0')">aff<xsl:value-of
+					select="substring-after($var_id,'a0')"/></xsl:when>
 			<xsl:otherwise>aff<xsl:value-of select="substring-after($var_id,'a')"/></xsl:otherwise>
-		</xsl:choose></xsl:template>
-	
+		</xsl:choose>
+	</xsl:template>
+
 	<xsl:template match="aff/@id">
 		<!-- quando nao ha aff/label = author/xref enquanto author/@rid = aff/@id -->
-		<xsl:variable name="var_id"><xsl:choose>
-			<xsl:when test="contains(.,' ')">aff<xsl:value-of select="substring-before(.,' ')"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
-		</xsl:choose></xsl:variable>
-			
-		<xsl:attribute name="id"><xsl:choose>
-			<xsl:when test="contains($var_id,'a0')">aff<xsl:value-of select="substring-after($var_id,'a0')"/></xsl:when>
-			<xsl:otherwise>aff<xsl:value-of select="substring-after($var_id,'a')"/></xsl:otherwise>
-			</xsl:choose></xsl:attribute>
+		<xsl:variable name="var_id">
+			<xsl:choose>
+				<xsl:when test="contains(.,' ')">aff<xsl:value-of select="substring-before(.,' ')"
+					/></xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="."/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<xsl:attribute name="id">
+			<xsl:choose>
+				<xsl:when test="contains($var_id,'a0')">aff<xsl:value-of
+						select="substring-after($var_id,'a0')"/></xsl:when>
+				<xsl:otherwise>aff<xsl:value-of select="substring-after($var_id,'a')"
+					/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:attribute>
 	</xsl:template>
 
 	<xsl:template match="aff/@*[contains(name(),'org')] | aff/*[contains(name(),'org')]">
@@ -1092,13 +1111,24 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="xref[@ref-type='bibr']/@rid">
-		<xsl:attribute name="rid">B<xsl:value-of select="substring(.,2)"/></xsl:attribute>
-
+		<xsl:choose>
+			<xsl:when test="contains(., 'mkp_ref_')">
+				<xsl:attribute name="rid">B<xsl:value-of
+						select="substring-before(substring-after(.,'mkp_ref_'),'_')"
+					/></xsl:attribute>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:attribute name="rid">B<xsl:value-of select="substring(.,2)"/></xsl:attribute>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
 	<xsl:template match="*[@standard]/*[contains(name(),'citat')]">
+		<xsl:variable name="zeros">
+			<xsl:value-of select="substring('0000000000',1, $reflen - string-length(position()))"/>
+		</xsl:variable>
 		<xsl:variable name="id">
-			<xsl:if test="position()&lt;10">0</xsl:if>
+			<xsl:value-of select="$zeros"/>
 			<xsl:value-of select="position()"/>
 		</xsl:variable>
 		<ref id="B{$id}">
@@ -1982,7 +2012,9 @@ Here is a figure group, with three figures inside, each of which contains a grap
 							</xsl:attribute>
 						</xsl:otherwise>
 					</xsl:choose-->
-					<xsl:attribute name="rid"><xsl:apply-templates select="@rid"></xsl:apply-templates></xsl:attribute>
+					<xsl:attribute name="rid">
+						<xsl:apply-templates select="@rid"/>
+					</xsl:attribute>
 					<sup>
 						<xsl:value-of select="$label"/>
 					</sup>
@@ -2085,10 +2117,16 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		</p>
 	</xsl:template>
 	<xsl:template match="p/equation">
-		<disp-formula>
+		<inline-formula>
 			<xsl:apply-templates select="@*"/>
 			<xsl:apply-templates select="." mode="graphic"/>
-		</disp-formula>
+		</inline-formula>
+	</xsl:template>
+	<xsl:template match="p/graphic">
+		<inline-graphic>
+			<xsl:apply-templates select="@*"/>
+			<xsl:apply-templates select="." mode="graphic"/>
+		</inline-graphic>
 	</xsl:template>
 	<xsl:template match="graphic" mode="p-in-equation"> </xsl:template>
 	<xsl:template match="p" mode="p-in-equation">
@@ -2368,18 +2406,24 @@ et al.</copyright-statement>
 					</xsl:variable>
 					<xsl:if test="contains($date,$month)">
 						<xsl:variable name="test" select="substring-after($date,$month)"/>
-						<month><xsl:value-of
-							select="$month"/><xsl:choose>
-								<xsl:when test="contains($test,$y)"><xsl:value-of
-									select="substring-before(substring-after($date,$month),$y)"/>
+						<month>
+							<xsl:value-of select="$month"/>
+							<xsl:choose>
+								<xsl:when test="contains($test,$y)">
+									<xsl:value-of
+										select="substring-before(substring-after($date,$month),$y)"
+									/>
 								</xsl:when>
-								<xsl:when test="contains($test,' ')"><xsl:value-of
-									select="substring-before(substring-after($date,$month),' ')"/>
+								<xsl:when test="contains($test,' ')">
+									<xsl:value-of
+										select="substring-before(substring-after($date,$month),' ')"
+									/>
 								</xsl:when>
-								<xsl:otherwise><xsl:value-of
-									select="substring-after($date,$month)"/></xsl:otherwise>
-						</xsl:choose>
-						
+								<xsl:otherwise>
+									<xsl:value-of select="substring-after($date,$month)"/>
+								</xsl:otherwise>
+							</xsl:choose>
+
 						</month>
 					</xsl:if>
 				</xsl:if>
@@ -2653,4 +2697,25 @@ et al.</copyright-statement>
 			</xsl:call-template>
 		</pub-date>
 	</xsl:template>
+	<xsl:template match="element">
+		<xsl:element name="{@name}">
+			<xsl:apply-templates select="attrib|element|text()"/>
+		</xsl:element>
+	</xsl:template>
+	<xsl:template match="attrib">
+		<xsl:attribute name="{@name}">
+			<xsl:apply-templates select="@value"/>
+		</xsl:attribute>
+	</xsl:template>
+	<xsl:template match="supplmat">
+		<supplementary-material xlink:href="{@href}">
+			<xsl:apply-templates></xsl:apply-templates>
+		</supplementary-material>
+	</xsl:template>
+	<xsl:template match="p/supplmat">
+		<inline-supplementary-material xlink:href="{@href}">
+			<xsl:apply-templates></xsl:apply-templates>
+		</inline-supplementary-material>
+	</xsl:template>
+	<xsl:template match="pubid"><xsl:element name="pub-id"><xsl:attribute name="pub-id-type"><xsl:value-of select="@idtype"/></xsl:attribute><xsl:value-of select="."/></xsl:element></xsl:template>
 </xsl:stylesheet>

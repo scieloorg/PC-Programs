@@ -53,7 +53,7 @@ class AllFolders:
 
 
 class Section:
-    def __init__(self, title, code = '', lang = 'en'):
+    def __init__(self, title, code='', lang='en'):
         section_code = self.normalized_title(title)
         self.id = self.generate_id(section_code)
         self.title = title
@@ -64,26 +64,65 @@ class Section:
         self.lang = lang
 
     def generate_id(self, title):
-        return id_generate( title) 
+        return id_generate(title) 
 
     def normalized_title(self, title):
         return title.replace(' ', '').upper()
 
 
+# class TOC:
+#     def __init__(self):
+#         self.section_by_title = {}
+#         self.section_by_code = {}
+
+#     def insert(self, item, replace):
+#         section = self.return_section(item)
+#         if section is None or replace:
+#             test = item.title.upper().replace(' ', '')
+#             self.section_by_title[test] = item
+
+#             if item.lang != '' and item.code != '':
+#                 self.section_by_code[item.lang + item.code] = item
+#         return section
+
+#     def return_json(self):
+#         r = []
+#         for key, section in self.section_by_title.items():
+#             r.append({'l': section.lang, 'c': section.code, 't': section.title})
+#         return r
+
+#     def return_section(self, _section):
+#         section = None
+#         if _section.title:
+#             test = _section.title.upper().replace(' ', '')
+#             section = self.section_by_title.get(test)
+#         if not section and _section.code != '' and _section.lang != '':
+#             section = self.section_by_code.get(_section.lang + _section.code)
+#         return section
+
+#     def return_sections(self):
+#         return '\n'.join([section.title for section in self.section_by_code.values()])
+
+#     def display(self):
+#         for key, sec in self.section_by_title.items():
+#             print(sec.code + ' - ' + sec.title)
 class TOC:
     def __init__(self):
         self.section_by_title = {}
-        self.section_by_code = {}
+        self.section_by_langcode = {}
+
+    def _normalize(self, s):
+        s = s.upper().replace(' ', '')
+        s = ''.join([c for c in s if c in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'])
+
+        return s
 
     def insert(self, item, replace):
         section = self.return_section(item)
         if section is None or replace:
-            test = item.title.upper().replace(' ', '')
-            self.section_by_title[test] = item
-
-            if item.lang != '' and item.code != '':
-                self.section_by_code[item.lang + item.code] = item
-        return section
+            self.section_by_title[self._normalize(item.title)] = item
+            if item.lang:
+                self.section_by_langcode[self._normalize(item.lang + item.code)] = item
 
     def return_json(self):
         r = []
@@ -92,18 +131,16 @@ class TOC:
         return r
 
     def return_section(self, _section):
-        section = None
-        if _section.title:
-            test = _section.title.upper().replace(' ', '')
-            section = self.section_by_title.get(test)
-        if not section and _section.code != '' and _section.lang != '':
-            section = self.section_by_code.get(_section.lang + _section.code)
-        return section
+        langcode = self._normalize(_section.lang + _section.code)
+        title = self._normalize(_section.title)
+        return self.section_by_title.get(title, self.section_by_langcode.get(langcode, None))
+
+    def return_sections(self):
+        return '\n'.join([section.lang + ' ' + section.code + ' ' + section.title for section in self.section_by_langcode.values()]) + '\n'.join(self.section_by_langcode.keys())+ '\n'.join(self.section_by_title.keys())
 
     def display(self):
         for key, sec in self.section_by_title.items():
             print(sec.code + ' - ' + sec.title)
-
 
 class Box:
     def __init__(self, box):

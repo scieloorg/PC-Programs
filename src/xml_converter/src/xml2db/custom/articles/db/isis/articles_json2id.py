@@ -81,6 +81,7 @@ class JSON2IDFile_Article:
         f = self.json2idfile.filename.replace('.id', '.xml')
 
         data['2'] = os.path.basename(f)
+        data['2'] = xml_filename
         data['702'] = xml_filename
         data['4'] = db_name
         

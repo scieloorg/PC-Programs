@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin VB.Form DepePath 
-   Caption         =   "Finding WORD97"
+   Caption         =   "Finding WORD"
    ClientHeight    =   3195
    ClientLeft      =   60
    ClientTop       =   345

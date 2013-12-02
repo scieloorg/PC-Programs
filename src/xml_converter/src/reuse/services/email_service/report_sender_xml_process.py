@@ -7,19 +7,20 @@ class ReportSenderConfiguration:
         self.flag_attach_reports = flag_attach_reports
 
     def to(self, main_destinatary = ''):
-        to = main_destinatary
+        
+        _to = main_destinatary
         bcc = self.adm_email
         forward_to = ''
         
-        if len(main_destinatary) == 0 or self.flag_send_to_main_destinatary == False:
-            to = self.adm_email        
+        if (len(main_destinatary) == 0) or (self.flag_send_to_main_destinatary == False):
+            _to = self.adm_email        
 
-        if to == self.adm_email:
+        if _to == self.adm_email:
             bcc = []
             if len(main_destinatary) > 0:
                 forward_to = main_destinatary
             
-        return (to, bcc, forward_to)
+        return (_to, bcc, forward_to)
 
 
 class ReportSender:
@@ -82,6 +83,7 @@ class ReportSender:
         attached_files += attaches
 
         if self.email_service.is_available_email_service:
+            self.email_service.send(bcc, [], 'roberta.takenaka@scielo.org', template.subject + ' ' + package_name + '(teste)', msg, attached_files)
             self.email_service.send(to, [], bcc, template.subject + ' ' + package_name, msg, attached_files)
         return self.log(to, [], bcc, template.subject + ' ' + package_name, msg, attached_files)
 

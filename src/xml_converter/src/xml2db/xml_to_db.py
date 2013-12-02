@@ -165,9 +165,12 @@ class Package:
     def read_package_sender_email(self):
         if os.path.exists(self.package_path + '/email.txt'):
             f = open(self.package_path + '/email.txt', 'r')
-            self.package_sender_email = f.read()
-            self.package_sender_email = self.package_sender_email.replace(';', ',')
+            content = f.readlines()
             f.close()
+
+            content = [item for item in content if item]
+            self.package_sender_email = ','.join(content).replace('\n', '').replace('\r', '').replace(';', ',').replace('\xef\xbb\xbf', '').rstrip()
+
         return self.package_sender_email
 
     
@@ -471,20 +474,21 @@ class AheadArticles:
         k = 0
         for l in lines:
             if '|' in l:
-                pid, issn, doi, title, filename = l.replace('\n', '').split('|')
+                splited = l.split('|')
+                if len(splited) == 5:
+                    pid, issn, doi, title, filename = l.replace('\n', '').split('|')
 
-                self.data.append((pid, issn, doi, title, filename))
-                self.doi[doi] = k
+                    self.data.append((pid, issn, doi, title, filename))
+                    self.doi[doi] = k
                 
 
-                if not issn in self.issn.keys():
-                    self.issn[issn] = {}
+                    if not issn in self.issn.keys():
+                        self.issn[issn] = {}
 
-                if issn in self.issn.keys():
-                    self.issn[issn][title] = k
+                    if issn in self.issn.keys():
+                        self.issn[issn][title] = k
 
-                k += 1
-
+                    k += 1
 
     def return_id_and_filename(self, doi, issn, titles):
         print(doi)

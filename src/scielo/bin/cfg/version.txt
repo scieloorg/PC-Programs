@@ -1,7 +1,17 @@
+﻿4.0.071 - 29/11/2013
+=======
+- reports of XML files' contents (package maker and Markup)
+- markup xml: fixes bug of absence of aff/country
+- markup xml: new elements inline-graphic, inline-supplementary-material, supplementary-material, inline-formula
+- DTD: fixes APA
+- automata_samples: journal PAB
+
 4.0.070 (not released yet)
 =======
 - fixes generation of xml package for ahead (in standalone version)
 - registration of normal.dot path in markup log file
+- BY-NC-SA
+- alteração na identificação de ref-type, quando o link é formado por nome do autor
 
 4.0.069
 =======
