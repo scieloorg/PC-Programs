@@ -34,6 +34,14 @@ JAR_VALIDATE = CONFIG_JAR_PATH + '/XMLCheck.jar'
 ENTITIES_TABLE_FILENAME = CONFIG_ENT_TABLE_PATH + '/entities2char'
 
 
+def startswith_invalid_char(content):
+    return content[0:1] in [' ', ',', '.', '-']
+
+
+def endswith_invalid_char(content):
+    return content[-1:] in [' ', ',', '-']
+
+
 def log_images_errors(filename, label, files):
     files = [item for item in files if item is not None]
     if len(files) > 0:
@@ -164,6 +172,30 @@ class EntitiesTable:
         return r
 
 
+def convert_using_htmlparser(content):
+    import HTMLParser
+    entities = []
+
+    h = HTMLParser.HTMLParser()
+    new = content.replace('&', '_BREAK_&')
+    parts = new.split('_BREAK_')
+    for part in parts:
+        if part.startswith('&'):
+            ent = part[0:part.find(';')+1]
+            if not ent in entities:
+                try:
+                    new_ent = h.unescape(ent).encode('utf-8', 'xmlcharrefreplace')
+                except Exception as inst:
+                    new_ent = ent
+                    print('convert_using_htmlparser:')
+                    print(ent)
+                    print(inst)
+                if not new_ent in ['<', '>', '&']:
+                    content = content.replace(ent, new_ent)
+                entities.append(ent)
+    return content
+
+
 def convert_ent_to_char(content, entities_table=None):
     def prefix_ent(N=7):
         return ''.join(random.choice('^({|~_`!QZ[') for x in range(N))
@@ -180,13 +212,7 @@ def convert_ent_to_char(content, entities_table=None):
             content = content.replace(ent, new_ent)
 
         if '&' in content:
-            import HTMLParser
-            h = HTMLParser.HTMLParser()
-            try:
-                content = h.unescape(content).decode('utf-8')
-            except:
-                #print('Unable to use h.unescape')
-                pass
+            content = convert_using_htmlparser(content)
 
         if '&' in content:
             if entities_table:
@@ -928,6 +954,11 @@ class PkgReport(object):
                         row[child] = 'ERROR: Required data'
                     elif child in desirable_items:
                         row[child] = 'WARNING: Required data, if exists'
+                else:
+                    if startswith_invalid_char(row[child]):
+                        row[child] = 'ERROR: "%s" starts with an invalid character' % row[child]
+                    if endswith_invalid_char(row[child]):
+                        row[child] = 'ERROR: "%s" ends with an invalid character' % row[child]
             #print(row)
             rows.append(row)
         return rows
@@ -1007,7 +1038,7 @@ class PkgReport(object):
     def _format_messages(self, messages):
         if messages is None:
             return ''
-        elif isinstance(messages, str):
+        elif isinstance(messages, (str, unicode)):
             return self._eval(messages)
         elif isinstance(messages, list):
             return ''.join([self._format_messages(item) for item in messages])
@@ -1015,7 +1046,7 @@ class PkgReport(object):
             ref_messages = ''
             for label, msg in messages.items():
                 if not label in ['id', 'xml']:
-                    if isinstance(msg, str):
+                    if isinstance(msg, (str, unicode)):
                         ref_messages += self._eval(msg)
                     elif msg is not None:
                         ref_messages += ''.join([self._format_messages(m) for m in msg])
@@ -1080,7 +1111,7 @@ class PkgReport(object):
         return r
 
     def _eval(self, data):
-        cls = 'warning' if 'WARNING' in data else 'error' if 'ERROR' in data else None
+        cls = 'error' if 'ERROR' in data else 'warning' if 'WARNING' in data else None
         if cls is None:
             return str(data)
         else:
@@ -1129,7 +1160,7 @@ class HTMLReport(object):
     def _cell_css(self, data):
         if data is None:
             data = ''
-        c = 'warning' if 'WARNING' in data else 'error' if 'ERROR' in data else None
+        c = 'error' if 'ERROR' in data else 'warning' if 'WARNING' in data else None
         return data if c is None else '<span class="%s">%s</span>' % (c, data)
 
     def _table_header(self, columns, colums_default):
@@ -1441,7 +1472,8 @@ class ContentValidation(object):
                     node = ref.find('.//chapter-title')
                     if node is not None:
                         r['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
-                    else:
+
+                    if r['lang'] is None:
                         node = ref.find('.//source')
                         if node is not None:
                             r['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
@@ -1500,7 +1532,7 @@ class ContentValidation(object):
                 if not item == data.get(key, ''):
                     result.append('ERROR: Invalid value for %s. Expected: %s.' % (data.get(key, ''), item))
             return result
-        elif isinstance(data, str):
+        elif isinstance(data, (str, unicode)):
             if not data == expected:
                 result = 'ERROR: Invalid value for %s. Expected: %s.' % (data, expected)
             return result
@@ -1509,19 +1541,17 @@ class ContentValidation(object):
         _scope = scope + ': ' if not scope is None else ''
         result = []
 
-        if isinstance(data, str):
+        if isinstance(data, (str, unicode)):
             if data.strip() and not '<' in data:
-                if label_list == 'given-names':
-                    print('"' + data + '"')
-                if data[0:1] in [' ', ',', '.', '-']:
+                if startswith_invalid_char(data):
                     result.append('ERROR: ' + _scope + ' ' + label_list + ' starts with an invalid character: "' + data + '"')
-                if data[-1:] in [' ', ',', '-']:
+                if endswith_invalid_char(data):
                     result.append('ERROR: ' + _scope + ' ' + label_list + ' ends with an invalid_character: "' + data + '"')
             else:
                 result.append(msg_type + ': ' + _scope + ' ' + status + ' ' + label_list)
         elif isinstance(data, dict):
             for req in label_list:
-                scope = '' if not data.get('id', None) else data['id'] + ': '
+                scope = '' if data.get('id', None) is None else data['id'] + ': '
                 result += self._validate_presence_data(msg_type, status, data.get(req, None), req, scope)
         elif isinstance(data, list):
             for item in data:

@@ -62,13 +62,12 @@
                           date?, 
                           (
                             (
-                              (%m.title;), 
+                              ((coltitle, colvolid?)? &
+                              (%m.title;)?)+, 
                               (
-                                (edition?, pages?, city, state?, (pubname+ | notes))
+                                (edition?, pages?, (city?, state?, country?, pubname?)+)
                                 |
                                 thesis
-                                |
-                                (coltitle, colvolid?)
                               )?
                             )
                             |
