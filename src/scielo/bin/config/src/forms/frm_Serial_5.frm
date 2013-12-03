@@ -55,10 +55,10 @@ Begin VB.Form SERIAL7
       Width           =   7455
       Begin VB.TextBox Text_PISSN 
          Height          =   285
-         Left            =   5040
+         Left            =   5280
          TabIndex        =   29
          Top             =   480
-         Width           =   1815
+         Width           =   2055
       End
       Begin VB.TextBox Text1 
          Height          =   285
@@ -73,7 +73,7 @@ Begin VB.Form SERIAL7
          Left            =   3120
          TabIndex        =   2
          Top             =   480
-         Width           =   1815
+         Width           =   2055
       End
       Begin VB.TextBox Text_SubmissionOnline 
          Height          =   285
@@ -148,10 +148,10 @@ Begin VB.Form SERIAL7
       Begin VB.Label LabPISSN 
          Caption         =   "Print ISSN"
          Height          =   255
-         Left            =   5040
+         Left            =   5280
          TabIndex        =   28
          Top             =   240
-         Width           =   1455
+         Width           =   2055
       End
       Begin VB.Label LabEISSN 
          Caption         =   "e-ISSN"
@@ -159,7 +159,7 @@ Begin VB.Form SERIAL7
          Left            =   3120
          TabIndex        =   27
          Top             =   240
-         Width           =   1455
+         Width           =   2175
       End
       Begin VB.Label Label1 
          AutoSize        =   -1  'True
@@ -245,7 +245,7 @@ Begin VB.Form SERIAL7
          Left            =   1320
          TabIndex        =   16
          Top             =   240
-         Width           =   1380
+         Width           =   1620
       End
       Begin VB.Label LabSiglum 
          AutoSize        =   -1  'True

@@ -304,7 +304,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</journal-id>
 			</xsl:if>
 			<xsl:if test="not(.//nlm-title) or .//nlm-title=''">
-				<journal-id journal-id-type="publisherc">
+				<journal-id journal-id-type="publisher-id">
 					<xsl:value-of select="$journal_acron"/>
 				</journal-id>
 
@@ -317,9 +317,17 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					</abbrev-journal-title>
 				</xsl:if>
 			</journal-title-group>
-			<issn pub-type="{$PUB_TYPE}">
-				<xsl:value-of select="$CURRENT_ISSN"/>
-			</issn>
+			
+			<xsl:if test="..//extra-scielo/print-issn!=''">
+				<issn pub-type="ppub">
+					<xsl:apply-templates select="..//extra-scielo/print-issn"/>
+				</issn>
+			</xsl:if>
+			<xsl:if test="..//extra-scielo/e-issn!=''">
+				<issn pub-type="epub">
+					<xsl:apply-templates select="..//extra-scielo/e-issn"/>
+				</issn>
+			</xsl:if>
 			<xsl:if test="..//extra-scielo/publisher/publisher-name!=''">
 				<publisher>
 					<publisher-name>
