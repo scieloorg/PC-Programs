@@ -17,6 +17,8 @@ Const changelinetextbox = vbCrLf
 Function getJournalStandardList() As MyCollection
     Dim journals As New MyCollection
     Dim journal As ClsJournal
+    Dim pissn As String
+    Dim eissn As String
     
     Dim i As Long
     
@@ -31,27 +33,11 @@ Function getJournalStandardList() As MyCollection
         journal.MedlineTitle = isis.FieldContentOccGet(i, 421, 1)
         journal.pmid = isis.FieldContentOccGet(i, 420, 1)
         
-        journal.CURRENTISSN = isis.FieldContentOccGet(i, 935, 1)
-        journal.ISSNTYPE = isis.FieldContentOccGet(i, 35, 1)
-        journal.print_issn = isis.FieldContentOccGet(i, 936, 1)
-        journal.online_issn = isis.FieldContentOccGet(i, 937, 1)
         
+        Call serial_issn_get(i, pissn, eissn)
+        journal.print_issn = pissn
+        journal.online_issn = eissn
         
-        If journal.CURRENTISSN = "" Then
-            journal.CURRENTISSN = journal.ISSN
-        End If
-        
-        If journal.ISSNTYPE = "PRINT" Then
-            journal.ISSNTYPE = "ppub"
-            If journal.print_issn = "" Then
-                journal.print_issn = journal.CURRENTISSN
-            End If
-        Else
-            journal.ISSNTYPE = "epub"
-            If journal.online_issn = "" Then
-                journal.online_issn = journal.CURRENTISSN
-            End If
-        End If
         journal.publisherName = isis.UsePft(i, "(v480+|, |)")
         journal.SUBJECT = isis.UsePft(i, "(v441+|/|)")
         journal.fulltitle = isis.FieldContentOccGet(i, 100, 1)
@@ -63,7 +49,7 @@ Function getJournalStandardList() As MyCollection
     Set getJournalStandardList = journals
 End Function
 
-Function getHistory(Mfn As Long) As ClsHistory
+Function getHistory(mfn As Long) As ClsHistory
     Dim q As Long
     Dim occs() As String
     Dim i As Long
@@ -72,7 +58,7 @@ Function getHistory(Mfn As Long) As ClsHistory
     
     
     
-    q = isis.FieldContentGetAll(Mfn, 51, occs)
+    q = isis.FieldContentGetAll(mfn, 51, occs)
     For i = q To 1 Step -1
         Set journalStatus = New ClsJournalStatus
         
@@ -120,16 +106,16 @@ Function tagHistory(history As ClsHistory) As String
     tagHistory = tagged
 End Function
 
-Function getJournalCreativeCommons(Mfn As Long) As clsCreativeCommons
+Function getJournalCreativeCommons(mfn As Long) As clsCreativeCommons
     Dim languages() As String
     Dim texts() As String
     Dim creativeCommons As New clsCreativeCommons
     
     
-    creativeCommons.Code = Serial_TxtContent(Mfn, 541)
+    creativeCommons.Code = Serial_TxtContent(mfn, 541)
     
-    q = isis.SubfieldContentGet(Mfn, 540, "l", languages)
-    q = isis.SubfieldContentGet(Mfn, 540, "t", texts)
+    q = isis.SubfieldContentGet(mfn, 540, "l", languages)
+    q = isis.SubfieldContentGet(mfn, 540, "t", texts)
     
     For i = 1 To q
         Call creativeCommons.add(texts(i), languages(i))
@@ -226,7 +212,7 @@ Function existRecord(key As String, format As String, Optional Prefix As String)
     Dim found As Boolean
     Dim value As String
     Dim ID As String
-    Dim Mfn As Long
+    Dim mfn As Long
     
     ID = key
     If Len(key) > 30 Then key = Mid(Prefix + key, 1, 30)
@@ -237,7 +223,7 @@ Function existRecord(key As String, format As String, Optional Prefix As String)
         i = i + 1
         value = isis.UsePft(mfns(i), format)
         If StrComp(value, ID) = 0 Then
-            Mfn = mfns(i)
+            mfn = mfns(i)
             found = True
         End If
     Wend
@@ -246,14 +232,14 @@ Function existRecord(key As String, format As String, Optional Prefix As String)
         i = 0
         While (i < isis.MfnQuantity) And (Not found)
             i = i + 1
-            value = isis.UsePft(Mfn, format)
+            value = isis.UsePft(mfn, format)
             If StrComp(Trim(value), Trim(ID)) = 0 Then
                 found = True
-                Mfn = i
+                mfn = i
             End If
         Wend
     End If
-    existRecord = Mfn
+    existRecord = mfn
 End Function
 
 Function existJournalTitle(journalTitle As String) As Long
@@ -263,20 +249,20 @@ Function existISSN(journal_ISSN As String) As Long
     existISSN = existRecord(journal_ISSN, "v400", "pbn=")
 End Function
 
-Function getFieldContentByLanguage(Mfn As Long, tag As Long, Optional language As String) As String
+Function getFieldContentByLanguage(mfn As Long, tag As Long, Optional language As String) As String
 'xxx
     Dim subf As String
     If language <> "" Then subf = "*"
     
-    getFieldContentByLanguage = isis.getFieldContentByLanguage(Mfn, tag, language, subf)
+    getFieldContentByLanguage = isis.getFieldContentByLanguage(mfn, tag, language, subf)
 End Function
 
-Function getDecodedValue(Code As ColCode, Mfn As Long, tag As Long, Optional DefaultOption As String) As String
+Function getDecodedValue(Code As ColCode, mfn As Long, tag As Long, Optional DefaultOption As String) As String
     Dim content As String
     Dim exist As Boolean
     Dim itemCode As ClCode
     
-        content = isis.UsePft(Mfn, "v" + CStr(tag))
+        content = isis.UsePft(mfn, "v" + CStr(tag))
         If (Len(content) = 0) And (Len(DefaultOption) > 0) Then content = DefaultOption
         
         If Len(content) > 0 Then
@@ -292,12 +278,12 @@ Function getDecodedValue(Code As ColCode, Mfn As Long, tag As Long, Optional Def
 End Function
 
 
-Function getRepetitiveFieldValue(Mfn As Long, tag As Long, sep As String) As String
-     getRepetitiveFieldValue = isis.UsePft(Mfn, "(v" + CStr(tag) + "|" + sep + "|)")
+Function getRepetitiveFieldValue(mfn As Long, tag As Long, sep As String) As String
+     getRepetitiveFieldValue = isis.UsePft(mfn, "(v" + CStr(tag) + "|" + sep + "|)")
 End Function
 
 Function delete(journal_ISSN As String) As Boolean
-    Dim Mfn As Long
+    Dim mfn As Long
     Dim issueDAO As New ClsIssueDAO
     Dim issueMFNs() As Long
     Dim i As Long
@@ -308,13 +294,13 @@ Function delete(journal_ISSN As String) As Boolean
     Call issueDAO.create(.Path, .FileName, .key)
     End With
     
-    Mfn = existRecord(journal_ISSN, "v400", "pbn=")
-    If Mfn > 0 Then
+    mfn = existRecord(journal_ISSN, "v400", "pbn=")
+    If mfn > 0 Then
         issueMFNs = issueDAO.getIssuesMfnByJournalID(journal_ISSN)
         For i = 1 To UBound(issueMFNs)
             r = issueDAO.deleteRecord(issueMFNs(i))
         Next
-        r = isis.RecordDel(Mfn)
+        r = isis.RecordDel(mfn)
         'r = save(mfn, "d*")
     End If
     delete = r

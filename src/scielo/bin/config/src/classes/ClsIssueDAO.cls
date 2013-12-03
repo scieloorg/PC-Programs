@@ -136,7 +136,8 @@ Function returnIssue(Mfn As Long, Optional format As String) As ClsIssue
         issue.issuePublisher = isis.UsePft(Mfn, " v62")
         issue.issueCover = isis.UsePft(Mfn, " v97")
         issue.markupDone = isis.UsePft(Mfn, " v200")
-        issue.issueISSN = isis.UsePft(Mfn, " v935")
+        
+        Call issn_get(Mfn, issue.pissn, issue.eissn)
         
         
         issue.status = isis.UsePft(Mfn, " v42")
@@ -359,7 +360,15 @@ Function tag(issue As ClsIssue) As String
         s = s + TagContent(.vocabulary, 85)
         End With
         
-        s = s + TagContent(.issueISSN, 935)
+        Dim v435 As String
+        Dim v35 As String
+        Dim v935 As String
+        
+        Call issn_build_field(.pissn, .eissn, v435, v35, v935)
+        
+        s = s + TagContent(v435, 435)
+        s = s + TagContent(v935, 935)
+        
         s = s + TagContent(.volume, 31)
         s = s + TagContent(.vsuppl, 131)
         s = s + TagContent(.number, 32)
@@ -462,3 +471,40 @@ Function getIssuesMfnByJournalID(journalId As String) As Variant
     q = isis.MfnFind(journalId, mfns)
     getIssuesMfnByJournalID = mfns
 End Function
+Sub issn_get(Mfn As Long, ByRef pissn As String, ByRef eissn As String)
+    Dim v435 As String
+    Dim v35 As String
+    Dim v935 As String
+    Dim v400 As String
+    Dim issns() As String
+    Dim issn_type() As String
+    Dim i As Long
+    
+    pissn = ""
+    eissn = ""
+    v435 = isis.UsePft(Mfn, "(v435+|%|)")
+    If Len(v435) > 0 Then
+        issns = Split(v435, "%")
+        For i = 0 To UBound(issns) - 1
+            issn_type = Split(issns(i), "^t")
+            If issn_type(1) = "ONLIN" Then
+                eissn = issn_type(0)
+            Else
+                pissn = issn_type(0)
+            End If
+        Next
+    End If
+End Sub
+Sub issn_build_field(ByRef pissn As String, ByRef eissn As String, ByRef v435 As String, ByRef v35 As String, ByRef v935 As String)
+    v435 = ""
+    If Len(pissn) > 0 Then
+        v435 = pissn + "^tPRINT"
+        v35 = "PRINT"
+        v935 = pissn
+    End If
+    If Len(eissn) > 0 Then
+        v435 = v435 + vbCrLf + eissn + "^tONLIN"
+        v35 = "ONLIN"
+        v935 = eissn
+    End If
+End Sub

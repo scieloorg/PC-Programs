@@ -146,6 +146,30 @@ class EntitiesTable:
         return r
 
 
+def convert_using_htmlparser(content):
+    import HTMLParser
+    entities = []
+
+    h = HTMLParser.HTMLParser()
+    new = content.replace('&', '_BREAK_&')
+    parts = new.split('_BREAK_')
+    for part in parts:
+        if part.startswith('&'):
+            ent = part[0:part.find(';')+1]
+            if not ent in entities:
+                try:
+                    new_ent = h.unescape(ent).encode('utf-8', 'xmlcharrefreplace')
+                except Exception as inst:
+                    new_ent = ent
+                    print('convert_using_htmlparser:')
+                    print(ent)
+                    print(inst)
+                if not new_ent in ['<', '>', '&']:
+                    content = content.replace(ent, new_ent)
+                entities.append(ent)
+    return content
+
+
 def convert_ent_to_char(content, entities_table=None):
     def prefix_ent(N=7):
         return ''.join(random.choice('^({|~_`!QZ[') for x in range(N))
@@ -162,13 +186,7 @@ def convert_ent_to_char(content, entities_table=None):
             content = content.replace(ent, new_ent)
 
         if '&' in content:
-            import HTMLParser
-            h = HTMLParser.HTMLParser()
-            try:
-                content = h.unescape(content).decode('utf-8')
-            except:
-                #print('Unable to use h.unescape')
-                pass
+            content = convert_using_htmlparser(content)
 
         if '&' in content:
             if entities_table:

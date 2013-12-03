@@ -83,7 +83,11 @@ Function isA_mandatoryField(content As String, key As String) As String
         isA_mandatoryField = colLang.item(key).label + vbCrLf
     End If
 End Function
-
+Function is_mandatory_at_least_one(content As String, key As String, content1 As String, key1 As String) As String
+    If Len(content) = 0 And Len(content1) = 0 Then
+        is_mandatory_at_least_one = colLang.item(key).label + " | " + colLang.item(key1).label + vbCrLf
+    End If
+End Function
 Function getLabel(key As String) As String
     getLabel = colLang.item(key).label + colGeneric.item(key).is_mandatory
 End Function

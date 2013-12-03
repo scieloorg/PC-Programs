@@ -1,4 +1,8 @@
-﻿4.0.071 - 29/11/2013
+﻿4.0.072 - 10/12/2013
+=======
+ - Title Manager e Markup XML: print issn e e-issn (#54)
+
+4.0.071 - 29/11/2013
 =======
 - reports of XML files' contents (package maker and Markup)
 - markup xml: fixes bug of absence of aff/country

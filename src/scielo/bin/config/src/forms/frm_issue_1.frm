@@ -348,8 +348,8 @@ Public Title_Scheme As String
 Public Title_Freq As String
 Public year As String
 Public issn_id As String
-Public issn_current As String
-
+Public pissn As String
+Public eissn As String
 
 Private Sub CmdClose_Click()
     Unload Me
@@ -357,7 +357,7 @@ End Sub
 
 Private Sub CmdDelete_Click()
     Dim resp As VbMsgBoxResult
-    Dim mfn As Long
+    Dim Mfn As Long
     
     'If Len(Trim(TxtSuppl.text)) > 0 Then
     '    If Len(Trim(TxtIssueno.text)) > 0 Then
@@ -367,11 +367,11 @@ Private Sub CmdDelete_Click()
     '    End If
     'End If
     If CheckIssueId Then
-        mfn = Issue0.issueDAO.getIssueMfnByIssueId(TxtISSN.Caption, TxtVolid.text, TxtSupplVol.text, TxtIssueno.text, TxtSupplNo.text, ComboIssueIdPart.text, TxtIseqno.text)
-        If mfn > 0 Then
+        Mfn = Issue0.issueDAO.getIssueMfnByIssueId(TxtISSN.Caption, TxtVolid.text, TxtSupplVol.text, TxtIssueno.text, TxtSupplNo.text, ComboIssueIdPart.text, TxtIseqno.text)
+        If Mfn > 0 Then
             resp = MsgBox(ConfigLabels.getLabel("MsgDeleteIssue"), vbYesNo + vbDefaultButton2)
             If resp = vbYes Then
-                If Issue0.issueDAO.deleteRecord(mfn) Then
+                If Issue0.issueDAO.deleteRecord(Mfn) Then
                     
                     TxtVolid.text = ""
                     TxtSupplVol.text = ""
@@ -440,7 +440,7 @@ Private Sub CmdViewIseqNo_Click()
     Dim issueno As String
     Dim supplvol As String
     Dim Supplno As String
-    Dim IseqNo As String
+    Dim iseqno As String
     Dim x As String
     
     MousePointer = vbHourglass
@@ -458,15 +458,15 @@ Private Sub CmdViewIseqNo_Click()
     
     issueno = TxtIssueno.text
     
-    IseqNo = TxtIseqno.text
+    iseqno = TxtIseqno.text
     x = ComboIssueIdPart.text
     
-    Call FrmSeqNumber.ViewIseqNo(TxtISSN.Caption, volid, supplvol, issueno, Supplno, IseqNo, x)
+    Call FrmSeqNumber.ViewIseqNo(TxtISSN.Caption, volid, supplvol, issueno, Supplno, iseqno, x)
     TxtVolid.text = volid
     TxtSupplVol.text = supplvol
     TxtIssueno.text = issueno
     TxtSupplNo.text = Supplno
-    TxtIseqno.text = IseqNo
+    TxtIseqno.text = iseqno
     ComboIssueIdPart.text = x
     
     'TxtSuppl.text = TxtSupplNo.text
@@ -649,8 +649,10 @@ Sub OpenIssue(sertitle As String)
         TxtStitle.Caption = Serial_TxtContent(MyMfnTitle, 150)
         TxtMedlineStitle.Caption = Serial_TxtContent(MyMfnTitle, 421)
         issn_id = Serial_TxtContent(MyMfnTitle, 400)
-        issn_current = Serial_TxtContent(MyMfnTitle, 935)
         
+        Call serial_issn_get(MyMfnTitle, pissn, eissn)
+        
+        '???
         TxtParallel.text = Serial_TxtContent(MyMfnTitle, 230)
         
         TxtISSN.Caption = issn_id
@@ -686,7 +688,7 @@ Sub OpenIssue(sertitle As String)
     End If
 End Sub
 
-Private Function FindIssueToOpen(FoundMfn As Long, journalKey As String, vol As String, SVol As String, No As String, SNo As String, IseqNo As String, IssueIdPart As String) As Boolean
+Private Function FindIssueToOpen(FoundMfn As Long, journalKey As String, vol As String, SVol As String, No As String, SNo As String, iseqno As String, IssueIdPart As String) As Boolean
     Dim resp As Boolean
     Dim resp1 As Boolean
     Dim MfnIseqNo As Long
@@ -694,7 +696,7 @@ Private Function FindIssueToOpen(FoundMfn As Long, journalKey As String, vol As 
     Dim issue As ClsIssue
     
     
-    Call Issue0.issueDAO.getIssueMfn(journalKey, vol, SVol, No, SNo, IseqNo, IssueIdPart, MfnIseqNo, MfnIssueId)
+    Call Issue0.issueDAO.getIssueMfn(journalKey, vol, SVol, No, SNo, iseqno, IssueIdPart, MfnIseqNo, MfnIssueId)
     If MfnIssueId = MfnIseqNo Then
         FoundMfn = MfnIssueId
         resp = True
@@ -709,7 +711,7 @@ Private Function FindIssueToOpen(FoundMfn As Long, journalKey As String, vol As 
             
         resp1 = FormSeqNo.ReplaceSeqNo(ConfigLabels.getLabel("ISEQNO_CHANGEISEQNO"), vol, SVol, No, SNo, issue.issueorder, IssueIdPart)
         If resp1 Then
-            FoundMfn = Issue0.issueDAO.UpdateIssueId(MfnIssueId, vol, SVol, No, SNo, IseqNo, IssueIdPart)
+            FoundMfn = Issue0.issueDAO.UpdateIssueId(MfnIssueId, vol, SVol, No, SNo, iseqno, IssueIdPart)
         Else
             FoundMfn = MfnIssueId
         End If

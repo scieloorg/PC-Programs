@@ -37,14 +37,8 @@ Public licenses As clsCreativeCommons
 
 Public bibstrips As ColObjByLang
 Public toc As ClsTOC
-Private mvarISSN As String
-Public Property Get issueISSN() As Variant
-    issueISSN = mvarISSN
-End Property
-
-Public Property Let issueISSN(ByVal vNewValue As Variant)
-    mvarISSN = vNewValue
-End Property
+Public eissn As String
+Public pissn As String
 
 
          

@@ -74,7 +74,58 @@ Function TagTxtContent(content As String, tag As Long) As String
         Wend
     TagTxtContent = NewContent
 End Function
-
+Sub serial_issn_get(Mfn As Long, ByRef pissn As String, ByRef eissn As String)
+    Dim v435 As String
+    Dim v35 As String
+    Dim v935 As String
+    Dim v400 As String
+    Dim issns() As String
+    Dim issn_type() As String
+    Dim i As Long
+    
+    pissn = ""
+    eissn = ""
+    v435 = journalDAO.getRepetitiveFieldValue(Mfn, 435, "%")
+    If Len(v435) = 0 Then
+        v35 = journalDAO.getRepetitiveFieldValue(Mfn, 35, "")
+        v935 = journalDAO.getRepetitiveFieldValue(Mfn, 935, "")
+        v400 = journalDAO.getRepetitiveFieldValue(Mfn, 400, "")
+        If v35 = "ONLIN" Then
+            eissn = v935
+            If v935 <> v400 Then
+                pissn = v400
+            End If
+        Else
+            pissn = v935
+            If v935 <> v400 Then
+                eissn = v400
+            End If
+        End If
+    Else
+        issns = Split(v435, "%")
+        For i = 0 To UBound(issns) - 1
+            issn_type = Split(issns(i), "^t")
+            If issn_type(1) = "ONLIN" Then
+                eissn = issn_type(0)
+            Else
+                pissn = issn_type(0)
+            End If
+        Next
+    End If
+End Sub
+Sub serial_issn_build_field(ByRef pissn As String, ByRef eissn As String, ByRef v435 As String, ByRef v35 As String, ByRef v935 As String)
+    v435 = ""
+    If Len(pissn) > 0 Then
+        v435 = pissn + "^tPRINT"
+        v35 = "PRINT"
+        v935 = pissn
+    End If
+    If Len(eissn) > 0 Then
+        v435 = v435 + vbCrLf + eissn + "^tONLIN"
+        v35 = "ONLIN"
+        v935 = eissn
+    End If
+End Sub
 Sub Serial_ListContent(list As ListBox, Code As ColCode, Mfn As Long, tag As Long)
     Dim content As String
     Dim exist As Boolean
@@ -206,22 +257,26 @@ Function Serial_Save(MfnTitle As Long) As Long
     reccontent = reccontent + TagTxtContent(JOURNAL5.TxtCprighter.text, 62)
     reccontent = reccontent + TagTxtContent(Serial4.TxtSponsor.text, 140)
         
-        
     reccontent = reccontent + TagTxtContent(Serial3.TxtSECS.text, 37)
     reccontent = reccontent + TagTxtContent(Serial3.TxtMEDLINE.text, 420)
     reccontent = reccontent + TagTxtContent(Serial3.TxtMEDLINEStitle.text, 421)
     reccontent = reccontent + TagTxtContent(SERIAL8.TxtNotes.text, 900)
-    
-    
     
     reccontent = reccontent + TagTxtContent(SERIAL7.TxtSiglum.text, 930)
     reccontent = reccontent + TagTxtContent(SERIAL7.TxtPubId.text, 68)
     reccontent = reccontent + TagTxtContent(SERIAL7.TxtSep.text, 65)
     reccontent = reccontent + TagTxtContent(SERIAL7.TxtSiteLocation.text, 69)
     reccontent = reccontent + TagComboContent(CodeFTP, SERIAL7.ComboFTP.text, 66)
-    reccontent = reccontent + TagComboContent(CodeISSNType, SERIAL7.ComboISSNType.text, 35)
-    'If SERIAL7.Text_CurrentISSN.text = "" Then SERIAL7.Text_CurrentISSN.text = Serial1.TxtISSN.text
-    reccontent = reccontent + TagTxtContent(SERIAL7.Text_CurrentISSN.text, 935)
+    
+    Dim v435 As String
+    Dim v35 As String
+    Dim v935 As String
+    
+    Call serial_issn_build_field(SERIAL7.Text_PISSN.text, SERIAL7.Text_EISSN.text, v435, v35, v935)
+    reccontent = reccontent + TagTxtContent(v435, 435)
+    reccontent = reccontent + TagTxtContent(v935, 935)
+    reccontent = reccontent + TagTxtContent(v35, 35)
+    
     reccontent = reccontent + TagComboContent(CodeUsersubscription, SERIAL7.ComboUserSubscription.text, 67)
     reccontent = reccontent + TagTxtContent(SERIAL7.Text1.text, 690)
     reccontent = reccontent + TagTxtContent(SERIAL7.ScieloNetWrite, 691)
@@ -410,6 +465,9 @@ End Function
 Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     Dim change As Boolean
     Dim i As Long
+    Dim pissn As String
+    Dim eissn As String
+    
     
     change = (StrComp(Serial1.TxtISSN.text, Serial_TxtContent(MfnTitle, 400)) <> 0)
     change = change Or (StrComp(Serial1.TxtSerTitle.text, Serial_TxtContent(MfnTitle, 100)) <> 0)
@@ -484,8 +542,12 @@ Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     change = change Or (StrComp(SERIAL7.TxtSep.text, Serial_TxtContent(MfnTitle, 65)) <> 0)
     change = change Or (StrComp(SERIAL7.TxtSiteLocation.text, Serial_TxtContent(MfnTitle, 69)) <> 0)
     change = change Or (StrComp(SERIAL7.ComboFTP.text, Serial_ComboContent(CodeFTP, MfnTitle, 66)) <> 0)
-    change = change Or (StrComp(SERIAL7.ComboISSNType.text, Serial_ComboContent(CodeISSNType, MfnTitle, 35)) <> 0)
-    change = change Or (StrComp(SERIAL7.Text_CurrentISSN.text, Serial_TxtContent(MfnTitle, 935)) <> 0)
+    
+    Call serial_issn_get(MfnTitle, pissn, eissn)
+    
+    change = change Or (StrComp(SERIAL7.Text_PISSN.text, pissn) <> 0)
+    change = change Or (StrComp(SERIAL7.Text_EISSN.text, eissn) <> 0)
+    
     change = change Or (StrComp(SERIAL7.Text1.text, Serial_TxtContent(MfnTitle, 690)) <> 0)
     change = change Or (StrComp(SERIAL7.ComboUserSubscription.text, Serial_ComboContent(CodeUsersubscription, MfnTitle, 67)) <> 0)
     change = change Or (StrComp(SERIAL7.Text_SubmissionOnline.text, Serial_TxtContent(MfnTitle, 692)) <> 0)
