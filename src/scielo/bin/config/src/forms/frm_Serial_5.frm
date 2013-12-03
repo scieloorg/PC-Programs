@@ -19,7 +19,7 @@ Begin VB.Form SERIAL7
       Caption         =   "Next"
       Height          =   375
       Left            =   3840
-      TabIndex        =   12
+      TabIndex        =   11
       Top             =   5040
       Width           =   975
    End
@@ -27,7 +27,7 @@ Begin VB.Form SERIAL7
       Caption         =   "Back"
       Height          =   375
       Left            =   2760
-      TabIndex        =   11
+      TabIndex        =   10
       Top             =   5040
       Width           =   975
    End
@@ -35,7 +35,7 @@ Begin VB.Form SERIAL7
       Caption         =   "Close"
       Height          =   375
       Left            =   6600
-      TabIndex        =   14
+      TabIndex        =   13
       Top             =   5040
       Width           =   975
    End
@@ -43,53 +43,52 @@ Begin VB.Form SERIAL7
       Caption         =   "Save"
       Height          =   375
       Left            =   5520
-      TabIndex        =   13
+      TabIndex        =   12
       Top             =   5040
       Width           =   975
    End
    Begin VB.Frame FrameSciELO 
       Height          =   4815
       Left            =   120
-      TabIndex        =   15
+      TabIndex        =   14
       Top             =   120
       Width           =   7455
+      Begin VB.TextBox Text_PISSN 
+         Height          =   285
+         Left            =   5040
+         TabIndex        =   29
+         Top             =   480
+         Width           =   1815
+      End
       Begin VB.TextBox Text1 
          Height          =   285
          Left            =   120
-         TabIndex        =   4
+         TabIndex        =   3
          Text            =   "Text4"
          Top             =   1080
          Width           =   3855
       End
-      Begin VB.TextBox Text_CurrentISSN 
+      Begin VB.TextBox Text_EISSN 
          Height          =   285
-         Left            =   5520
-         TabIndex        =   3
+         Left            =   3120
+         TabIndex        =   2
          Top             =   480
          Width           =   1815
       End
       Begin VB.TextBox Text_SubmissionOnline 
          Height          =   285
          Left            =   120
-         TabIndex        =   6
+         TabIndex        =   5
          Text            =   "Text1"
          Top             =   1680
          Width           =   3855
       End
-      Begin VB.ComboBox ComboISSNType 
-         Height          =   315
-         Left            =   3000
-         TabIndex        =   2
-         Text            =   "ComboISSNType"
-         Top             =   480
-         Width           =   2415
-      End
       Begin VB.ListBox ListSciELONet 
-         Height          =   3435
+         Height          =   3210
          Left            =   4080
          Sorted          =   -1  'True
          Style           =   1  'Checkbox
-         TabIndex        =   5
+         TabIndex        =   4
          Top             =   1080
          Width           =   3255
       End
@@ -107,7 +106,7 @@ Begin VB.Form SERIAL7
          Height          =   315
          Left            =   120
          Sorted          =   -1  'True
-         TabIndex        =   9
+         TabIndex        =   8
          Text            =   "Combo1"
          Top             =   3480
          Width           =   3855
@@ -115,7 +114,7 @@ Begin VB.Form SERIAL7
       Begin VB.TextBox TxtSiteLocation 
          Height          =   285
          Left            =   120
-         TabIndex        =   7
+         TabIndex        =   6
          Text            =   "Text4"
          Top             =   2280
          Width           =   3855
@@ -123,7 +122,7 @@ Begin VB.Form SERIAL7
       Begin VB.TextBox TxtSep 
          Height          =   285
          Left            =   120
-         TabIndex        =   10
+         TabIndex        =   9
          Text            =   "Text3"
          Top             =   4320
          Visible         =   0   'False
@@ -133,7 +132,7 @@ Begin VB.Form SERIAL7
          Height          =   315
          Left            =   120
          Sorted          =   -1  'True
-         TabIndex        =   8
+         TabIndex        =   7
          Text            =   "Combo1"
          Top             =   2880
          Width           =   3855
@@ -146,20 +145,35 @@ Begin VB.Form SERIAL7
          Top             =   480
          Width           =   1095
       End
+      Begin VB.Label LabPISSN 
+         Caption         =   "Print ISSN"
+         Height          =   255
+         Left            =   5040
+         TabIndex        =   28
+         Top             =   240
+         Width           =   1455
+      End
+      Begin VB.Label LabEISSN 
+         Caption         =   "e-ISSN"
+         Height          =   255
+         Left            =   3120
+         TabIndex        =   27
+         Top             =   240
+         Width           =   1455
+      End
       Begin VB.Label Label1 
          AutoSize        =   -1  'True
          Caption         =   "Site location"
          Height          =   195
          Left            =   120
-         TabIndex        =   27
+         TabIndex        =   26
          Top             =   840
          Width           =   870
       End
       Begin VB.Label label_currentissue 
-         Caption         =   "LabCurrentISSN"
          Height          =   255
          Left            =   5520
-         TabIndex        =   26
+         TabIndex        =   25
          Top             =   240
          Width           =   1455
       End
@@ -167,15 +181,14 @@ Begin VB.Form SERIAL7
          Caption         =   "URL de SciELO Submission Online"
          Height          =   255
          Left            =   120
-         TabIndex        =   25
+         TabIndex        =   24
          Top             =   1440
          Width           =   2895
       End
       Begin VB.Label LabISSNType 
-         Caption         =   "LabISSNType"
          Height          =   255
          Left            =   3000
-         TabIndex        =   24
+         TabIndex        =   23
          Top             =   240
          Width           =   1455
       End
@@ -184,8 +197,8 @@ Begin VB.Form SERIAL7
          Caption         =   "Scielo net"
          Height          =   195
          Left            =   4080
-         TabIndex        =   22
-         Top             =   840
+         TabIndex        =   21
+         Top             =   2160
          Width           =   705
       End
       Begin VB.Label LabSep 
@@ -193,7 +206,7 @@ Begin VB.Form SERIAL7
          Caption         =   "Separator"
          Height          =   195
          Left            =   120
-         TabIndex        =   21
+         TabIndex        =   20
          Top             =   4080
          Visible         =   0   'False
          Width           =   690
@@ -203,7 +216,7 @@ Begin VB.Form SERIAL7
          Caption         =   "Site location"
          Height          =   195
          Left            =   120
-         TabIndex        =   20
+         TabIndex        =   19
          Top             =   2040
          Width           =   870
       End
@@ -212,7 +225,7 @@ Begin VB.Form SERIAL7
          Caption         =   "User's subscription"
          Height          =   195
          Left            =   120
-         TabIndex        =   19
+         TabIndex        =   18
          Top             =   3240
          Width           =   1320
       End
@@ -221,7 +234,7 @@ Begin VB.Form SERIAL7
          Caption         =   "FTP"
          Height          =   195
          Left            =   120
-         TabIndex        =   18
+         TabIndex        =   17
          Top             =   2640
          Width           =   300
       End
@@ -230,7 +243,7 @@ Begin VB.Form SERIAL7
          Caption         =   "Publisher's identifier"
          Height          =   195
          Left            =   1320
-         TabIndex        =   17
+         TabIndex        =   16
          Top             =   240
          Width           =   1380
       End
@@ -239,7 +252,7 @@ Begin VB.Form SERIAL7
          Caption         =   "Siglum"
          Height          =   195
          Left            =   120
-         TabIndex        =   16
+         TabIndex        =   15
          Top             =   240
          Width           =   465
       End
@@ -249,7 +262,7 @@ Begin VB.Form SERIAL7
       ForeColor       =   &H000000FF&
       Height          =   255
       Left            =   120
-      TabIndex        =   23
+      TabIndex        =   22
       Top             =   5040
       Width           =   2415
    End
@@ -281,9 +294,9 @@ Sub MySetLabels()
     LabSep.Caption = .getLabel("ser5_Sep")
     LabSiteLocation.Caption = .getLabel("ser5_SiteLocation")
     LabFTP.Caption = .getLabel("ser5_FTP")
-    LabISSNType.Caption = .getLabel("ser5_issntype")
     LabUserSubscription.Caption = .getLabel("ser5_UserSubscription")
-    label_currentissue.Caption = .getLabel("currentISSN")
+    LabEISSN.Caption = .getLabel("eISSN")
+    LabPISSN.Caption = .getLabel("pISSN")
     Lab_SubmissionOnline.Caption = .getLabel("ser5_SubmissionOnline")
     End With
     
@@ -301,7 +314,6 @@ Sub MySetLabels()
     Call FillCombo(ComboFTP, CodeFTP)
     Call FillCombo(ComboUserSubscription, CodeUsersubscription)
     
-    Call FillCombo(ComboISSNType, CodeISSNType)
     Call FillList(ListSciELONet, CodeScieloNet)
     
     
@@ -314,12 +326,17 @@ Sub MyGetContentFromBase(MfnTitle As Long)
         TxtSep.text = Serial_TxtContent(MfnTitle, 65)
         TxtSiteLocation.text = Serial_TxtContent(MfnTitle, 69)
         ComboFTP.text = Serial_ComboContent(CodeFTP, MfnTitle, 66)
-        ComboISSNType.text = Serial_ComboContent(CodeISSNType, MfnTitle, 35)
         ComboUserSubscription.text = Serial_ComboContent(CodeUsersubscription, MfnTitle, 67)
         Call ScieloNetRead(MfnTitle)
         Text_SubmissionOnline.text = Serial_TxtContent(MfnTitle, 692)
         Text1.text = Serial_TxtContent(MfnTitle, 690)
-        Text_CurrentISSN.text = Serial_TxtContent(MfnTitle, 935)
+        
+        Dim pissn As String
+        Dim eissn As String
+        Call serial_issn_get(MfnTitle, pissn, eissn)
+        
+        Text_EISSN.text = eissn
+        Text_PISSN.text = pissn
         
 End Sub
 Sub MyClearContent()
@@ -329,10 +346,10 @@ Sub MyClearContent()
         TxtSep.text = ""
         TxtSiteLocation.text = ""
         ComboFTP.text = ""
-        ComboISSNType.text = ""
         Text_SubmissionOnline.text = ""
         ComboUserSubscription.text = ""
-        Text_CurrentISSN.text = ""
+        Text_EISSN.text = ""
+        Text_PISSN.text = ""
         Text1.text = ""
 End Sub
 
@@ -386,6 +403,10 @@ End Sub
 
 
 
+Private Sub Label2_Click()
+
+End Sub
+
 Private Sub listscielonet_gotfocus()
     FrmInfo.ShowHelpMessage Fields.getHelp("ser5_SciELONet")
 End Sub
@@ -418,9 +439,7 @@ Private Sub ComboFTP_gotfocus()
     FrmInfo.ShowHelpMessage Fields.getHelp("ser5_FTP")
 End Sub
 
-Private Sub Comboissntype_gotfocus()
-    FrmInfo.ShowHelpMessage Fields.getHelp("ser5_issntype")
-End Sub
+
 
 Private Sub ComboUserSubscription_gotfocus()
     FrmInfo.ShowHelpMessage Fields.getHelp("ser5_UserSubscription")

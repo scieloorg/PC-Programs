@@ -57,16 +57,19 @@ Begin VB.Form Issue2
       TabPicture(0)   =   "frm_issue_2.frx":030A
       Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "FramFasc2(0)"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "Bibliographic Strip"
       TabPicture(1)   =   "frm_issue_2.frx":0326
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "FramLeg"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Table of Contents"
       TabPicture(2)   =   "frm_issue_2.frx":0342
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "Frame1"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "Settings"
       TabPicture(3)   =   "frm_issue_2.frx":035E
@@ -154,10 +157,16 @@ Begin VB.Form Issue2
          TabIndex        =   74
          Top             =   360
          Width           =   8535
-         Begin VB.ComboBox Text_issueissn 
-            Height          =   315
+         Begin VB.TextBox Text_IssuePISSN 
+            Height          =   285
             Left            =   6360
-            Style           =   2  'Dropdown List
+            TabIndex        =   111
+            Top             =   1680
+            Width           =   2055
+         End
+         Begin VB.TextBox Text_IssueEISSN 
+            Height          =   285
+            Left            =   6360
             TabIndex        =   109
             Top             =   2280
             Width           =   2055
@@ -232,9 +241,10 @@ Begin VB.Form Issue2
          End
          Begin VB.TextBox TxtCover 
             Height          =   285
-            Left            =   6360
+            Left            =   3600
             TabIndex        =   6
-            Top             =   1680
+            Top             =   2280
+            Visible         =   0   'False
             Width           =   1935
          End
          Begin VB.TextBox TxtDateIso 
@@ -260,14 +270,23 @@ Begin VB.Form Issue2
             Top             =   480
             Width           =   3375
          End
-         Begin VB.Label LabelIssueISSN 
+         Begin VB.Label LabIssuePISSN 
             AutoSize        =   -1  'True
-            Caption         =   "Issue ISSN"
+            Caption         =   "Print ISSN"
+            Height          =   195
+            Left            =   6360
+            TabIndex        =   110
+            Top             =   1440
+            Width           =   735
+         End
+         Begin VB.Label LabIssueEISSN 
+            AutoSize        =   -1  'True
+            Caption         =   "e-ISSN"
             Height          =   195
             Left            =   6360
             TabIndex        =   107
             Top             =   2040
-            Width           =   795
+            Width           =   510
          End
          Begin VB.Label LabIdiom2 
             Alignment       =   1  'Right Justify
@@ -360,9 +379,10 @@ Begin VB.Form Issue2
             AutoSize        =   -1  'True
             Caption         =   "Cover picture"
             Height          =   195
-            Left            =   6360
+            Left            =   4320
             TabIndex        =   78
-            Top             =   1440
+            Top             =   3720
+            Visible         =   0   'False
             Width           =   945
          End
          Begin VB.Label LabDataIso 
@@ -1179,10 +1199,10 @@ Private CUSTOMIZED_FOR_JOURNAL As String
 Private CUSTOMIZED_FOR_issue As String
 Private Const MaxLenSectitle = 500
 
-Public Sub LoadIssue(Mfn As Long)
-    mfnIssue = Mfn
-    If Mfn > 0 Then
-        Set myIssue = Issue0.issueDAO.returnIssue(Mfn)
+Public Sub LoadIssue(mfn As Long)
+    mfnIssue = mfn
+    If mfn > 0 Then
+        Set myIssue = Issue0.issueDAO.returnIssue(mfn)
     Else
         Set myIssue = New ClsIssue
         myIssue.volume = Issue1.TxtVolid.text
@@ -1282,15 +1302,6 @@ Private Sub loadFormLayout()
     Call FillCombo(ComboStandard, CodeStandard)
     Call FillList(ListScheme, CodeScheme)
     
-    Text_issueissn.Clear
-    Text_issueissn.AddItem ("")
-    If Len(Issue1.issn_current) > 0 Then
-        Text_issueissn.AddItem (Issue1.issn_current)
-    End If
-    If Len(Issue1.issn_id) > 0 And (Issue1.issn_current <> Issue1.issn_id) Then
-        Text_issueissn.AddItem (Issue1.issn_id)
-    End If
-    
     
     Label9.Caption = Label9.Caption + " " + Caption
     Frame2.Caption = Frame2.Caption + " " + Caption
@@ -1355,15 +1366,12 @@ Private Sub LoadIssueData()
     currDate = myIssue.DateISO
     TxtDateIso.text = currDate
     
-    If InStr("|" + Issue1.issn_current + "|" + Issue1.issn_id + "|", "|" + myIssue.issueISSN + "|") > 0 Then
-        Text_issueissn.text = myIssue.issueISSN
-    Else
-        myIssue.issueISSN = ""
-    End If
+    '???
     
+    Text_IssuePISSN.text = myIssue.pissn
+    Text_IssueEISSN.text = myIssue.eissn
     
     TxtIssuept.text = myIssue.issuepart
-    
     TxtIssSponsor.text = myIssue.issueSponsor
     
     
@@ -1463,12 +1471,7 @@ Private Sub oldLoadIssueData()
     TxtDoccount.text = myIssue.doccount
     currDate = myIssue.DateISO
     TxtDateIso.text = currDate
-    
-    If InStr("|" + Issue1.issn_current + "|" + Issue1.issn_id + "|", "|" + myIssue.issueISSN + "|") > 0 Then
-        Text_issueissn.text = myIssue.issueISSN
-    Else
-        myIssue.issueISSN = ""
-    End If
+    '???
     
     
     TxtIssuept.text = myIssue.issuepart
@@ -1918,7 +1921,7 @@ Private Function WarnMandatoryFields() As Boolean
     
     If Not CheckDateISO(TxtDateIso.text) Then warning = warning + ConfigLabels.getLabel("MsgInvalidDATEISO") + vbCrLf
         
-    warning = warning + .isA_mandatoryField(Text_issueissn.text, "Issue_ISSN")
+    warning = warning + .is_mandatory_at_least_one(Text_IssueEISSN.text, "EISSN", Text_IssuePISSN.text, "PISSN")
     
     warning = warning + .isA_mandatoryField(ComboStatus.text, "Issue_status")
     warning = warning + .isA_mandatoryField(ComboStandard.text, "Issue_Standard")
@@ -2045,7 +2048,10 @@ Private Sub UpdateData()
         Next
         Set .toc = New ClsTOC
         Set .toc = getNewTOC
-        .issueISSN = Issue2.Text_issueissn.text
+        .pissn = Issue2.Text_IssuePISSN.text
+        .eissn = Issue2.Text_IssuePISSN.text
+        
+        
         .DateISO = Issue2.TxtDateIso.text
         .doccount = Issue2.TxtDoccount.text
         .issueCover = Issue2.TxtCover.text

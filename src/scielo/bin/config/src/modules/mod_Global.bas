@@ -69,7 +69,6 @@ Public CodeIssStatus As ColCode
 Public CodeIdiom As ColCode
 Public CodeTOC As ColCode
 Public CodeScieloNet As ColCode
-Public CodeISSNType As ColCode
 Public wok_subjects As ColCode
 
 Public journal As ClsJournal
@@ -282,7 +281,7 @@ End Function
 
 Sub LoadCodes(CodeDB As ClFileInfo, idiom As String, key As String, Code As ColCode, Optional codeEqualValue As Boolean = False)
     Dim isisCode As ClIsisdll
-    Dim Mfn As Long
+    Dim mfn As Long
     Dim mfns() As Long
     Dim q As Long
     Dim i As Long
@@ -306,7 +305,7 @@ Sub LoadCodes(CodeDB As ClFileInfo, idiom As String, key As String, Code As ColC
             MsgBox "Problem with inverted of " + .FileName
         Else
             i = 0
-            Mfn = 0
+            mfn = 0
             
             find = key
             If Len(idiom) > 0 Then
@@ -320,22 +319,22 @@ Sub LoadCodes(CodeDB As ClFileInfo, idiom As String, key As String, Code As ColC
             format = "if s(v1^*)='" + key + "' and (s(v1^l)='" + idiom + "' or a(v1^l))  then (v2^v|;|),'|',(v2^c|;;|) fi"
             
             If q > 0 Then
-                While (i < q) And (Mfn = 0)
+                While (i < q) And (mfn = 0)
                     i = i + 1
                     aux = isisCode.UsePft(mfns(i), format)
-                    If Len(aux) > 0 Then Mfn = mfns(i)
+                    If Len(aux) > 0 Then mfn = mfns(i)
                 Wend
             Else
                 q = isisCode.MfnQuantity
-                While (i < q) And (Mfn = 0)
+                While (i < q) And (mfn = 0)
                     i = i + 1
                     aux = isisCode.UsePft(i, format)
-                    If Len(aux) > 0 Then Mfn = i
+                    If Len(aux) > 0 Then mfn = i
                 Wend
             End If
-            tracing = vbCrLf & "format: " & format & vbCrLf & "result:" & aux & vbCrLf & "mfn: " & CStr(Mfn)
+            tracing = vbCrLf & "format: " & format & vbCrLf & "result:" & aux & vbCrLf & "mfn: " & CStr(mfn)
             
-            If Mfn > 0 Then
+            If mfn > 0 Then
                 a = Split(aux, "|")
                 a_values = Split(a(0), ";")
                 a_codes = Split(a(1), ";;")
@@ -366,7 +365,7 @@ End Sub
 
 Sub LoadCodesMultilingue(CodeDB As ClFileInfo, key As String, tableList As ColObjByLang)
     Dim isisCode As ClIsisdll
-    Dim Mfn As Long
+    Dim mfn As Long
     Dim mfns() As Long
     Dim q As Long
     Dim i As Long
@@ -389,7 +388,7 @@ Sub LoadCodesMultilingue(CodeDB As ClFileInfo, key As String, tableList As ColOb
     If isisCode.Inicia(.Path, .FileName, .key) Then
         If isisCode.IfCreate(.FileName) Then
             
-            Mfn = 0
+            mfn = 0
             Set tableList = New ColObjByLang
             
             find = key
@@ -400,10 +399,10 @@ Sub LoadCodesMultilingue(CodeDB As ClFileInfo, key As String, tableList As ColOb
             For k = 1 To q
                 aux = isisCode.UsePft(mfns(k), format)
                 If Len(aux) > 0 Then
-                    Mfn = mfns(k)
-                    tracing = vbCrLf & "format: " & format & vbCrLf & "result:" & aux & vbCrLf & "mfn: " & CStr(Mfn)
+                    mfn = mfns(k)
+                    tracing = vbCrLf & "format: " & format & vbCrLf & "result:" & aux & vbCrLf & "mfn: " & CStr(mfn)
                     
-                    If Mfn > 0 Then
+                    If mfn > 0 Then
                         a = Split(aux, "|")
                         a_values = Split(a(0), "~")
                         a_codes = Split(a(1), "~~")
@@ -469,7 +468,6 @@ Property Let ChangeInterfaceIdiom(idiom As String)
     Call codedao.getTable(idiom, "state", CodeState)
     
     Call codedao.getTable(idiom, "usersubscription", CodeUsersubscription)
-    Call codedao.getTable(idiom, "issn type", CodeISSNType)
     Call codedao.getTable(idiom, "ftp", CodeFTP)
         
     Call codedao.getTable(idiom, "language", CodeAbstLanguage)

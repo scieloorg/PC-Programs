@@ -44,9 +44,7 @@ Sub generateJournalStandardListForMarkup()
             If Len(j.publisherName) = 0 Then
                 Msg = Msg & vbCrLf & " - Missing publisher name."
             End If
-            If Len(j.ISSNTYPE) = 0 Then
-                Msg = Msg & vbCrLf & " - Missing ISSN TYPE."
-            End If
+            
             If Len(j.JournalStandard) = 0 Then
                 Msg = Msg & vbCrLf & " - Missing journal standard."
             End If
@@ -55,7 +53,7 @@ Sub generateJournalStandardListForMarkup()
                 msg2 = msg2 & vbCrLf & j.fulltitle
                 msg3 = msg3 & vbCrLf & Msg
             Else
-                text = j.ISSN & "#" & j.shorttitle & "#" & j.JournalStandard & "#" & j.ISSNTYPE & "#" & j.CURRENTISSN & "#" & j.SUBJECT & "#" & j.MedlineTitle & "#" & j.pmid
+                text = j.ISSN & "#" & j.shorttitle & "#" & j.JournalStandard & "#" & "#" & "#" & j.SUBJECT & "#" & j.MedlineTitle & "#" & j.pmid
                 text = text & "#" & j.fulltitle & "#" & j.acron & "#" & j.print_issn & "#" & j.online_issn & "#" & j.publisherName
                 Print #fn, text
             End If

@@ -597,8 +597,8 @@ Function WarnMandatoryFields() As Boolean
     warning = warning + .isA_mandatoryField(SERIAL7.TxtPubId.text, "ser5_PubId")
     warning = warning + .isA_mandatoryField(SERIAL7.TxtSiteLocation.text, "ser5_SiteLocation")
     warning = warning + .isA_mandatoryField(SERIAL7.ComboFTP.text, "ser5_FTP")
-    warning = warning + .isA_mandatoryField(SERIAL7.ComboISSNType.text, "ser5_issntype")
-    warning = warning + .isA_mandatoryField(SERIAL7.Text_CurrentISSN.text, "currentISSN")
+    
+    warning = warning + .is_mandatory_at_least_one(SERIAL7.Text_PISSN.text, "print ISSN", SERIAL7.Text_PISSN.text, "e-ISSN")
     
     warning = warning + .isA_mandatoryField(SERIAL7.ComboUserSubscription.text, "ser5_UserSubscription")
     If SERIAL7.ListSciELONet.SelCount = 0 Then warning = warning + .isA_mandatoryField("", "ser5_SciELONet")

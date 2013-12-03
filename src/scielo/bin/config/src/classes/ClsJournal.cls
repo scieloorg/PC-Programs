@@ -29,8 +29,6 @@ Private mvarKey As String
 Private mvarShortTitle As String
 
 Public CollectionURL As String
-Private mvarCURRENTISSN As String
-Private mvarISSNTYPE As String
 Private mvarSUBJECT As String
 Public pmid As String
 
@@ -47,23 +45,12 @@ Public Property Get SUBJECT() As String
     SUBJECT = mvarSUBJECT
 End Property
 
-Public Property Let ISSNTYPE(ByVal vNewValue As String)
-    mvarISSNTYPE = vNewValue
-End Property
 
-Public Property Get ISSNTYPE() As String
-    ISSNTYPE = mvarISSNTYPE
-End Property
-Public Property Get CURRENTISSN() As String
-    CURRENTISSN = mvarCURRENTISSN
-End Property
 Public Property Get pubid() As Variant
     pubid = mvarpubid
 End Property
 
-Public Property Let CURRENTISSN(ByVal vNewValue As String)
-    mvarCURRENTISSN = vNewValue
-End Property
+
 
 Public Property Let pubid(ByVal vNewValue As Variant)
     mvarpubid = vNewValue
