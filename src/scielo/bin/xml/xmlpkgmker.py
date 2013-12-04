@@ -152,10 +152,12 @@ class EntitiesTable:
                     #self.table_number2char['&#x' + hex_ent[hex_ent.find('x')+1:].upper() + ';'] = char
 
                 self.table_named2char[named_ent] = char
-
-        f = open('ent_teste.txt', 'w')
-        f.write('\n'.join(self.table_number2char.keys()))
-        f.close()
+        try:
+            f = open('ent_teste.txt', 'w')
+            f.write('\n'.join(self.table_number2char.keys()))
+            f.close()
+        except:
+            pass
 
     def is_valid_char(self, char):
         return (char != '' and not char in ['>', '<', '&'])
@@ -510,17 +512,17 @@ class XMLStr(object):
         self.content = self.content[0:self.content.rfind('>')+1]
         self.content = self.content[self.content.find('<'):]
         if not xml_is_well_formed(self.content) is None:
-            f = open('fix1.xml', 'w')
+            f = open('./fix1.xml', 'w')
             f.write(self.content)
             f.close()
             self._fix_style_tags()
             if not xml_is_well_formed(self.content) is None:
-                f = open('fix2.xml', 'w')
+                f = open('./fix2.xml', 'w')
                 f.write(self.content)
                 f.close()
                 self._fix_open_close()
                 if not xml_is_well_formed(self.content) is None:
-                    f = open('fix3.xml', 'w')
+                    f = open('./fix3.xml', 'w')
                     f.write(self.content)
                     f.close()
 
@@ -779,7 +781,7 @@ class PkgReport(object):
         self.lists.append(('Authors', 'authors.html', ['suffix', 'prefix', 'given-names', 'surname'], ['given-names', 'surname'], []))
         self.lists.append(('Publishers/Locations', 'publisher.html', ['type', 'publisher-name', 'publisher-loc'], [], []))
         self.lists.append(('Sources/Years', 'source.html', ['type', 'source', 'year'], ['type', 'source', 'year'], []))
-        self.lists.append(('Affiliations', 'affs.html', ['xml', 'full affiliation without tags', 'orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country'], ['orgname', 'full affiliation without tags'], ['city', 'state', 'country']))
+        self.lists.append(('Affiliations', 'affs.html', ['xml', 'original', 'orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country'], ['orgname', 'original'], ['city', 'state', 'country']))
 
     def load_data(self, xml_filename=None):
         self.content_validations = []
@@ -955,10 +957,11 @@ class PkgReport(object):
                     elif child in desirable_items:
                         row[child] = 'WARNING: Required data, if exists'
                 else:
-                    if startswith_invalid_char(row[child]):
-                        row[child] = 'ERROR: "%s" starts with an invalid character' % row[child]
-                    if endswith_invalid_char(row[child]):
-                        row[child] = 'ERROR: "%s" ends with an invalid character' % row[child]
+                    if not '>' in row[child]:
+                        if startswith_invalid_char(row[child]):
+                            row[child] = 'ERROR: "%s" starts with an invalid character' % row[child]
+                        if endswith_invalid_char(row[child]):
+                            row[child] = 'ERROR: "%s" ends with an invalid character' % row[child]
             #print(row)
             rows.append(row)
         return rows
@@ -1029,7 +1032,7 @@ class PkgReport(object):
                     data += '<p class="kwd-group">key words [%s]: %s</p>' % (lang, kwd)
 
             data += '<p class="ack">ack: %s</p><p class="funding">funding award-id: %s</p>' % (content_validation.article_meta['ack'], content_validation.article_meta['award-id'])
-            data += '<p class="affs">%s</p>' % self._format_as_table(content_validation.article_meta['aff'], ['xml', 'full affiliation without tags', 'orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country', 'email'])
+            data += '<p class="affs">%s</p>' % self._format_as_table(content_validation.article_meta['aff'], ['xml', 'original', 'orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country', 'email'])
 
         data += '</div>'
 
@@ -1395,14 +1398,13 @@ class ContentValidation(object):
             self.article_meta['aff'] = []
             for aff in article_meta.findall('.//aff'):
                 a = {'id': aff.attrib.get('id')}
-                for item in ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3']:
+                for item in ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'original', 'aff-pmc']:
                     a[item] = aff.findtext('institution[@content-type="' + item + '"]')
                 a['email'] = aff.findtext('email')
                 a['country'] = aff.findtext('country')
                 a['city'] = aff.findtext('addr-line/named-content[@content-type="city"]')
                 a['state'] = aff.findtext('addr-line/named-content[@content-type="state"]')
 
-                a['full affiliation without tags'] = aff.text if aff.text is None else aff.text.strip()
                 a['xml'] = etree.tostring(aff)
                 self.article_meta['aff'].append(a)
 
@@ -1641,7 +1643,7 @@ class ContentValidation(object):
             self.article_meta_validations['history dates'] = self._validate_previous_and_next(self.article_meta.get('received', None), self.article_meta.get('accepted', None), 'received/accepted dates')
 
             #self.article_meta_validations['affs'] = self._validate_required_data(self.article_meta['aff'], ['orgname', 'city', 'state', 'country', 'full affiliation without tags'])
-            self.article_meta_validations['affs'] = self.validate_content(self.article_meta['aff'], ['orgname', 'full affiliation without tags'], ['city', 'state', 'country'], [])
+            self.article_meta_validations['affs'] = self.validate_content(self.article_meta['aff'], ['orgname', 'original'], ['city', 'state', 'country'], [])
 
             if self.article_meta['author']:
                 self.article_meta_validations['author'] = self._validate_required_data(self.article_meta['author'], ['given-names', 'surname'])

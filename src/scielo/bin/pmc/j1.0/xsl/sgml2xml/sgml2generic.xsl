@@ -61,16 +61,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<pub-date>
 			<!-- pub-type="{$date_type}" -->
 			<xsl:attribute name="date-type">pub</xsl:attribute>
-			<xsl:choose>
-				<xsl:when test="$PUB_TYPE='ppub'">
-					<!-- certeza de que eh both -->
-					<xsl:attribute name="publication-format">electronic-print</xsl:attribute>
-					
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="publication-format">electronic</xsl:attribute>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:attribute name="publication-format">electronic-print</xsl:attribute>
 			<xsl:attribute name="iso-8601-date"><xsl:apply-templates select="@dateiso" mode="dateiso"></xsl:apply-templates></xsl:attribute>
 			
 			<xsl:call-template name="display_date">
