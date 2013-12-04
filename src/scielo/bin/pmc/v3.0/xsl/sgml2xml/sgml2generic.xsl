@@ -36,8 +36,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 
 	</xsl:variable>
-	<xsl:variable name="PUB_TYPE" select=".//extra-scielo/issn-type"/>
-	<xsl:variable name="CURRENT_ISSN" select=".//extra-scielo/current-issn"/>
 	<xsl:variable name="zeros_page">00000<xsl:value-of select="node()/@fpage"/></xsl:variable>
 	<xsl:variable name="zeros_order">00000<xsl:value-of select="node()/@order"/></xsl:variable>
 	<xsl:variable name="normalized_page">
@@ -566,18 +564,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:variable>
 		<aff>
 			<xsl:apply-templates select="@id"/>
-			<!--xsl:choose>
-				<xsl:when
-					test="$label!='' and $affs_xrefs[normalize-space(xref//text())=$label or normalize-space(.//sup//text())=$label]">
-					<xsl:attribute name="id">AFF<xsl:value-of select="$label"/>
-					</xsl:attribute>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="@id"/>
-				</xsl:otherwise>
-			</xsl:choose-->
-
 			<xsl:apply-templates select="label|sup"/>
+			<institution content-type="original"><xsl:apply-templates select="*|text()" mode="original"></xsl:apply-templates></institution>
+			<institution content-type="aff-pmc"><xsl:apply-templates select="*|text()" mode="aff-pmc"/></institution>
+			
 			<xsl:choose>
 				<xsl:when test="@orgname">
 					<xsl:apply-templates select="@*[name()!='id']"/>
@@ -592,26 +582,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:if test="@state or @city">
 						<addr-line>
 							<xsl:apply-templates select="@city|@state"/>
-
 						</addr-line>
 					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
-			<xsl:apply-templates select="country"></xsl:apply-templates>
-			<xsl:apply-templates select="text() | *" mode="full"/>
+			<xsl:apply-templates select="country|email"></xsl:apply-templates>
 		</aff>
 	</xsl:template>
-	<xsl:template match="text() | *" mode="full">
-		<xsl:value-of select="."/>
-	</xsl:template>
-	<xsl:template match="label" mode="full"> </xsl:template>
-	<xsl:template match="email " mode="full">
-		<xsl:element name="{name()}">
-			<xsl:value-of select="."/>
-		</xsl:element>
-	</xsl:template>
-
-	<xsl:template match="aff/country">
+	<xsl:template match="aff/country| aff/email">
 		<xsl:element name="{name()}">
 			<xsl:value-of select="."/>
 		</xsl:element>
@@ -630,7 +608,25 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-
+	<xsl:template match="aff/*" mode="aff-pmc">
+		<xsl:value-of select="text()"/>
+	</xsl:template>
+	<xsl:template match="aff/country| aff/email" mode="aff-pmc">
+		<xsl:element name="{name()}">
+			<xsl:value-of select="."/>
+		</xsl:element>
+	</xsl:template>	
+	<xsl:template match="aff/text()" mode="aff-pmc">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="aff/*" mode="original">
+		<xsl:value-of select="text()"/>
+	</xsl:template>
+	<xsl:template match="aff//text()" mode="original">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
 	<xsl:template match="xref[@ref-type='aff']/@rid">
 		<xsl:variable name="var_id">
 			<xsl:choose>
