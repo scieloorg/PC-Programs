@@ -5,6 +5,15 @@ name
 value
 
 
+
 idtype
 art-access-id;coden;doaj;doi;medline;manuscript;rrn;other;pii;pmcid;pmid;publisher-id;sici
 art-access-id;coden;doaj;doi;medline;manuscript;rrn;other;pii;pmcid;pmid;publisher-id;sici
+
+linktype
+art-access-id;coden;doaj;doi;medline;manuscript;rrn;other;pii;pmcid;pmid;publisher-id;sici
+art-access-id;coden;doaj;doi;medline;manuscript;rrn;other;pii;pmcid;pmid;publisher-id;sici
+
+prodtype
+book;software;article;chapter;website;other
+book;software;article;chapter;website;other

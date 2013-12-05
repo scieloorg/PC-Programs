@@ -86,7 +86,10 @@ deposit
 deposid;entrdate;embdate
 
 related
-doctype;id;source
+doctype;id;linktype;link
+
+product
+prodtype;linktype;link
 
 ctreg
 cturl;ctdbid

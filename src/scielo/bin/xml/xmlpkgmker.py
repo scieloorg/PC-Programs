@@ -1789,7 +1789,7 @@ class ValidationResult(object):
 
             if not self.is_valid_dtd:
                 if os.path.isfile(self.dtd_validation_report):
-                    f.write('DTD errors report\n' + ('='*len('DTD errors report')) + open(self.dtd_validation_report).read())
+                    f.write('\nDTD errors report\n' + ('='*len('DTD errors report')) + '\n' + open(self.dtd_validation_report).read())
                 else:
                     f.write('Unable to generate ' + self.dtd_validation_report)
 

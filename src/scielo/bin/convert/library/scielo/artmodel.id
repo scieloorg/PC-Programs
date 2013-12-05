@@ -684,12 +684,12 @@
 !v008!^p1^rl^i1^st^h0
 !ID 000089
 !v001!241
-!v002!source
+!v002!link
 !v003!1
-!v004!source
-!v008!^p1^rf^i1^ss^h0
-!v008!^p1^rh^i1^ss^h0
-!v008!^p1^rl^i1^ss^h0
+!v004!link
+!v008!^p1^rf^i1^sl^h0
+!v008!^p1^rh^i1^sl^h0
+!v008!^p1^rl^i1^sl^h0
 !ID 000090
 !v001!540
 !v002!language
@@ -761,3 +761,19 @@
 !v008!^p1^rr^i?^h2
 !v008!^p2^rc^i?^h0
 !v008!^p1^rl^i1^h3
+!ID 000098
+!v001!241
+!v002!linktype
+!v003!1
+!v004!linktype
+!v008!^p1^rf^i1^sz^h0
+!v008!^p1^rh^i1^sz^h0
+!v008!^p1^rl^i1^sz^h0
+!ID 000099
+!v001!241
+!v002!prodtype
+!v003!1
+!v004!prodtype
+!v008!^p1^rf^i1^st^h0
+!v008!^p1^rh^i1^st^h0
+!v008!^p1^rl^i1^st^h0

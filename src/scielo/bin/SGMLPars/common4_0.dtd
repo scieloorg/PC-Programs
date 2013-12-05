@@ -8,7 +8,7 @@
 <!--   Common Models                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat" > 
+<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat | related | product" > 
 <!ENTITY % m.name   "(fname? & surname & ctrbid*)" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
@@ -159,9 +159,22 @@ filename       CDATA #IMPLIED>
 <!ELEMENT related     - O EMPTY >
 <!ATTLIST related
           doctype CDATA #REQUIRED 
-	  id CDATA #REQUIRED 
+	     id CDATA #REQUIRED 
+          linktype CDATA #REQUIRED
+          link CDATA #IMPLIED 
           source CDATA #IMPLIED >
 
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!--    Product                                                           -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<!ELEMENT product     - - ((author & corpauth & title & date & sertitle & pubname & city & state & country & isbn)+ ) >
+<!ATTLIST product
+          id CDATA #REQUIRED 
+          prodtype CDATA #REQUIRED
+          linktype CDATA #REQUIRED
+          link CDATA #IMPLIED >
+<!ELEMENT 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Title Group                                                       -->

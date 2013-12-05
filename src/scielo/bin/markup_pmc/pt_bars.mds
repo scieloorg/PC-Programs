@@ -14,7 +14,6 @@ down;backBar
 
 textM;start
 doi;Identifica o DOI do documento;10;#TRUE#;#FALSE#;
-related;Identifica documentos relacionados;10;#TRUE#;#TRUE#;
 titlegrp;Agrupa os títulos do documento;11;#FALSE#;#FALSE#;titlegrpText
 down;titlegrpText
 authgrp;Agrupa os autores individuais ou corporativos do documento;11;#FALSE#;#FALSE#;authgrpText
@@ -48,6 +47,25 @@ element;Identifica qualquer elemento;10;#TRUE#;#TRUE#;elemBar
 down;elemBar
 graphic;Identifica uma imagem;10;#TRUE#;#TRUE#;
 supplmat;Material suplementar;10;#TRUE#;#TRUE#;
+related;Identifica documentos relacionados a este documento;10;#TRUE#;#TRUE#;
+product;Identifica o produto em questão neste documento;10;#TRUE#;#TRUE#;productBar
+
+productBar;ifloat
+author;Agrupa dados dos autores individuais como nome,sobrenome e papel;6;#TRUE#;#TRUE#;authorProdBar
+down;authorProdBar
+corpauth;Agrupa dados dos autores corporativos;6;#TRUE#;#FALSE#;corpauthProdBar
+down;corpauthProdBar
+title;Identifica o título do documento;6;#TRUE#;#TRUE#;
+sertitle;Identifica o título do periódico;6;#TRUE#;#TRUE#;
+pubname;Identifica o publicador;6;#TRUE#;#TRUE#;
+
+authorProdBar;productBar
+fname;Identifica os primeiros nomes de um autor individual;9;#FALSE#;#FALSE#;
+surname;Identifica o sobrenome de um autor individual;9;#FALSE#;#FALSE#;
+
+corpauthProdBar;productBar
+orgname;Identifica o nome da organização autora;10;#FALSE#;#FALSE#;
+orgdiv;Identifica a divisão da organização autorao;10;#FALSE#;#FALSE#;
 
 elemBar;ifloat
 attrib;identifica qualquer atributo;10;#TRUE#;#TRUE#;
@@ -125,7 +143,6 @@ subtitle;Identifica o subtítulo do documento;6;#TRUE#;#FALSE#;
 front;article
 toctitle;Identifica a seção do sumario;10;#FALSE#;#FALSE#;
 doi;Identifica o DOI do documento;10;#TRUE#;#FALSE#;
-related;Identifica dados de documentos relacionados;10;#TRUE#;#TRUE#;
 titlegrp;Agrupa os títulos do documento;6;#FALSE#;#FALSE#;titlegrpFront
 down;titlegrpFront
 authgrp;Agrupa dados dos autores individuais como nome,sobrenome e papel;6;#FALSE#;#FALSE#;authgrpFront
