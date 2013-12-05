@@ -611,11 +611,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="aff/*" mode="aff-pmc">
 		<xsl:value-of select="text()"/>
 	</xsl:template>
-	<xsl:template match="aff/country| aff/email" mode="aff-pmc">
-		<xsl:element name="{name()}">
-			<xsl:value-of select="."/>
-		</xsl:element>
-	</xsl:template>	
+	
+	<xsl:template match="aff/email | aff/country" mode="aff-pmc">
+		<named-content content-type="{name()}"><xsl:value-of select="."/></named-content>
+	</xsl:template>
+		
 	<xsl:template match="aff/text()" mode="aff-pmc">
 		<xsl:value-of select="."/>
 	</xsl:template>

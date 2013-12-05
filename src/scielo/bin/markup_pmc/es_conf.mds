@@ -74,10 +74,11 @@ bodyHasChildren,no
 doDebug,no
 buttonParser,Verificar Marcación
 buttonGenerateXML,Generar el XML
-buttonXMLValidate,Validar XML para SciELO
+buttonFilesAndDTDReport,Informe de errores de archivos/DTD
+buttonXMLValidate,Informe de estilos SciELO
 buttonContentXMLValidate,Informe de errores de contenido
 buttonXMLPreview,Visualizar texto completo SciELO
-buttonPMCValidate,Validar XML para PMC
+buttonPMCValidate,Informe de estilos PMC
 buttonPMCPreview,Visualizar texto completo PMC
 buttonViewMarkup,Visualizar texto marcado
 buttonSave,Guardar

@@ -46,7 +46,7 @@ def log_images_errors(filename, label, files):
     files = [item for item in files if item is not None]
     if len(files) > 0:
         f = open(filename, 'a+')
-        f.write('\n\n%s:\n%s\n%s' % (label, '=' * len(label), '\n'.join(files)))
+        f.write('\n\n%s:\n%s\n%s' % (label, '=' * len(label), '\n'.join(files)) + '\n')
         f.close()
 
 
@@ -878,7 +878,7 @@ class PkgReport(object):
             else:
                 contents_report_filename = param_contents_report_filename
 
-            html_report._html(self.report_path + '/' + contents_report_filename + '.contents.html', 'Contents Report', html_report._css('toc') + html_report._css('datareport'), '<h1>' + contents_report_filename + '</h1>' + stat + issue_header + report_content)
+            html_report._html(self.report_path + '/' + contents_report_filename + '.contents.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport'), '<h1>' + contents_report_filename + '</h1>' + stat + issue_header + report_content)
 
         #issue_header +
         # doi, order, journal, sorted, unsorted.
@@ -905,7 +905,7 @@ class PkgReport(object):
             toc_content += order_ok[key]
 
         if print_toc_report:
-            html_report._html(self.report_path + '/toc.html', 'Contents Report', html_report._css('toc') + html_report._css('datareport'), '<h1>' + issue_label + '</h1>' + toc_content)
+            html_report._html(self.report_path + '/toc.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport'), '<h1>' + issue_label + '</h1>' + toc_content)
 
     def data_for_list(self, report_filename, content_validation):
         items = []
@@ -1789,7 +1789,7 @@ class ValidationResult(object):
 
             if not self.is_valid_dtd:
                 if os.path.isfile(self.dtd_validation_report):
-                    f.write(open(self.dtd_validation_report).read())
+                    f.write('DTD errors report\n' + ('='*len('DTD errors report')) + open(self.dtd_validation_report).read())
                 else:
                     f.write('Unable to generate ' + self.dtd_validation_report)
 
@@ -2006,7 +2006,7 @@ class XPM(object):
                 if os.path.isfile(f):
                     os.unlink(f)
 
-            log_message(err_filename, 'FILES ERRORS REPORT\n' + '-'*len('FILES ERRORS REPORT'))
+            log_message(err_filename, 'Report of files errors / DTD errors\n' + '-'*len('Report of files errors / DTD errors'))
 
             not_jpg = self.create_wrk_path(xml_path, matched_files, wrk_path)
 

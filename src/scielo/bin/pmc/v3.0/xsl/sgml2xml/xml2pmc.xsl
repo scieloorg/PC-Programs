@@ -88,7 +88,6 @@
 					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
-			
 		</aff>
 	</xsl:template>
 	<xsl:template match="institution[@content-type='aff-pmc']">
@@ -97,8 +96,10 @@
 	<xsl:template match="institution[@content-type='aff-pmc']/text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
-	<xsl:template match="institution[@content-type='aff-pmc']/*">
-		<xsl:copy-of select="."/>
+	<xsl:template match="institution[@content-type='aff-pmc']/named-content">
+		<xsl:element name="{@content-type}">
+			<xsl:value-of select="."/>
+		</xsl:element>
 	</xsl:template>
 	<xsl:template match="text()" mode="is_full">
 		<xsl:param name="inst"></xsl:param>
