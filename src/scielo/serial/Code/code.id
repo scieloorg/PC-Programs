@@ -1631,18 +1631,23 @@
 !v002!^cChiCTR^vChiCTR - Chinese Clinical Trial Register
 !ID 000105
 !v001!doctype
-!v002!^cpr^vpress release
+!v002!^cunknown^v- choose one of the options below -
+!v002!^cunknown-object^v-- objects --
 !v002!^cvi^vvideo
 !v002!^cau^vaudio
 !v002!^ctable^vtable
 !v002!^cfigure^vfigure
-!v002!^csuppl material^vsuppl material
+!v002!^cother-object^vother object
+!v002!^cunknown-source^v-- sources --
 !v002!^cbook^vbook
-!v002!^cbook chapter^vbook chapter
+!v002!^cchapter^vchapter
 !v002!^cdatabase^vdatabase
 !v002!^carticle^varticle
+!v002!^cpr^vpress release
+!v002!^cother-source^vother source
+!v002!^cunknown-related-type^v-- related types --
 !v002!^caddended-article^vaddended-article
-!v002!^caddended^vaddended
+!v002!^caddendum^vaddendum
 !v002!^ccommentary-article^vcommentary-article
 !v002!^cobject-of-concern^vobject-of-concern
 !v002!^ccompanion^vcompanion
@@ -1651,7 +1656,7 @@
 !v002!^cretracted-article^vretracted-article
 !v002!^cpeer-reviewed-article^vpeer-reviewed-article
 !v002!^cpeer-review^vpeer-review
-!v002!^cother^vother
+!v002!^cother-related-type^vother related type
 !ID 000106
 !v001!deposid
 !v002!^c1^vUnicamp

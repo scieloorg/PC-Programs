@@ -168,12 +168,10 @@ filename       CDATA #IMPLIED>
 <!--    Product                                                           -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT product     - - ((author & corpauth & title & date & sertitle & pubname & city & state & country & isbn)+ ) >
+<!ELEMENT product     - - ((author & corpauth & title & date & sertitle & pubname & city & state & country & isbn & othinfo)+ ) >
 <!ATTLIST product
-          id CDATA #REQUIRED 
           prodtype CDATA #REQUIRED
-          linktype CDATA #REQUIRED
-          link CDATA #IMPLIED >
+           >
 <!ELEMENT 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->

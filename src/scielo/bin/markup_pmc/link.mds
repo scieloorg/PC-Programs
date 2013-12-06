@@ -89,7 +89,7 @@ related
 doctype;id;linktype;link
 
 product
-prodtype;linktype;link
+prodtype
 
 ctreg
 cturl;ctdbid

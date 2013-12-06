@@ -55,9 +55,15 @@ author;Agrupa dados dos autores individuais como nome,sobrenome e papel;6;#TRUE#
 down;authorProdBar
 corpauth;Agrupa dados dos autores corporativos;6;#TRUE#;#FALSE#;corpauthProdBar
 down;corpauthProdBar
-title;Identifica o título do documento;6;#TRUE#;#TRUE#;
-sertitle;Identifica o título do periódico;6;#TRUE#;#TRUE#;
-pubname;Identifica o publicador;6;#TRUE#;#TRUE#;
+title;Identifica o título do documento or book;6;#TRUE#;#TRUE#;
+sertitle;Identifica o título do periódico;6;#TRUE#;#FALSE#;
+pubname;Identifica o publicador;6;#TRUE#;#FALSE#;
+city;Identifica o publicador;6;#TRUE#;#FALSE#;
+state;Identifica o publicador;6;#TRUE#;#FALSE#;
+country;Identifica o publicador;6;#TRUE#;#FALSE#;
+date;Identifica a data de publicação;15;#FALSE#;#TRUE#;
+isbn;Identifica o ISBN;6;#TRUE#;#FALSE#;
+othinfo;Identifica quaisquer outras informações;6;#TRUE#;#FALSE#;
 
 authorProdBar;productBar
 fname;Identifica os primeiros nomes de um autor individual;9;#FALSE#;#FALSE#;
@@ -141,6 +147,7 @@ title;Identifica o título do documento;6;#TRUE#;#TRUE#;
 subtitle;Identifica o subtítulo do documento;6;#TRUE#;#FALSE#;
 
 front;article
+related;Identifica documentos relacionados a este documento;10;#TRUE#;#TRUE#;
 toctitle;Identifica a seção do sumario;10;#FALSE#;#FALSE#;
 doi;Identifica o DOI do documento;10;#TRUE#;#FALSE#;
 titlegrp;Agrupa os títulos do documento;6;#FALSE#;#FALSE#;titlegrpFront
@@ -210,7 +217,7 @@ sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou 
 down;sponsorBibcom
 confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
-date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
+date;Identifica a data do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
 state;Identifica o estado (local) do evento;10;#TRUE#;#FALSE#;
 country;Identifica o país do evento;10;#TRUE#;#FALSE#;
@@ -281,7 +288,7 @@ sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou 
 down;sponsorBbibcom
 confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
-date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
+date;Identifica a data do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
 state;Identifica o estado (local) do evento;10;#TRUE#;#FALSE#;
 country;Identifica o país do evento;10;#TRUE#;#FALSE#;
@@ -393,7 +400,7 @@ sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou 
 down;sponsorOmonog
 confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
-date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
+date;Identifica a data do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
 state;Identifica o estado (local) do evento;10;#TRUE#;#FALSE#;
 country;Identifica o país do evento;10;#TRUE#;#FALSE#;
@@ -436,7 +443,7 @@ sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou 
 down;sponsorOcitat
 confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
-date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
+date;Identifica a data do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
 state;Identifica o estado (local) do evento;10;#TRUE#;#FALSE#;
 country;Identifica o país do evento;10;#TRUE#;#FALSE#;
@@ -558,7 +565,7 @@ sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou 
 down;sponsorVmonog
 confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
-date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
+date;Identifica a data do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
 state;Identifica o estado (local) do evento;10;#TRUE#;#FALSE#;
 country;Identifica o país do evento;10;#TRUE#;#FALSE#;
@@ -660,7 +667,7 @@ sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou 
 down;sponsorConfgrppcitat
 confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
-date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
+date;Identifica a data do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
 state;Identifica o estado (local) do evento;10;#TRUE#;#FALSE#;
 country;Identifica o país do evento;10;#TRUE#;#FALSE#;
@@ -782,7 +789,7 @@ sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou 
 down;sponsorAmonog
 confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
-date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
+date;Identifica a data do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
 state;Identifica o estado (local) do evento;10;#TRUE#;#FALSE#;
 country;Identifica o país do evento;10;#TRUE#;#FALSE#;
@@ -805,7 +812,7 @@ sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou 
 down;sponsorConfgrpAcitat
 confname;Identifica o nome de um evento como conferência, seminario, congresso, etc.;10;#TRUE#;#FALSE#;
 no;Identifica o número do evento;10;#TRUE#;#FALSE#;
-date;Identifica a data de publicação do evento;10;#TRUE#;#TRUE#;
+date;Identifica a data do evento;10;#TRUE#;#TRUE#;
 city;Identifica a cidade do evento;10;#TRUE#;#FALSE#;
 state;Identifica o estado (local) do evento;10;#TRUE#;#FALSE#;
 country;Identifica o país do evento;10;#TRUE#;#FALSE#;
