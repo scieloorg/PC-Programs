@@ -642,10 +642,10 @@ class XMLMetadata:
         order = node.findtext('.//article-id[@pub-id-type="other"]')
         page = node.find('./fpage')
         if page.attrib.get('seq'):
-            fpage = page.text + '-' + page.attrib.get('seq')
+            fpage = page.attrib.get('seq')
         else:
             fpage = page.text
-        if not order:
+        if order is None:
             order = fpage
         return [issn, volid, issueno, suppl, fpage, order]
 
@@ -768,7 +768,15 @@ class XMLMetadata:
     def new_names_and_embedded_files(self, acron, alternative_id=''):
         new_name = self.format_name(self._metadata(), acron, alternative_id)
         href_filenames = self.xml_data_href_filenames()
-        return (new_name, href_filenames)
+        href_files = self.new_href_list(new_name, href_filenames)
+        return (new_name, href_files)
+
+    def new_href_list(self, new_name, href_filenames):
+        items = []
+        print(href_filenames)
+        for href, suffix in href_filenames.items():
+            items.append((href, new_name + '-' + suffix))
+        return items
 
 
 class PkgReport(object):
@@ -1511,20 +1519,17 @@ class ContentValidation(object):
         return ''
 
     def _order(self, fpage, fpage_seq, other_id):
-        if fpage.isdigit():
-            order = int(fpage)
-        else:
-            order = 0
-        if order == 0:
-            if fpage_seq.isdigit():
+        if other_id is None:
+            if fpage_seq is None:
+                if fpage is None:
+                    order = 0
+                else:
+                    order = int(fpage)
+            else:
                 order = int(fpage_seq)
-            else:
-                order = 0
-        if order == 0:
-            if other_id.isdigit():
-                order = int(other_id)
-            else:
-                order = 0
+        else:
+            order = int(other_id)
+
         return str(order)
 
     def _validate_data(self, data, expected):
@@ -1839,45 +1844,37 @@ class XPM(object):
 
     def add_renamed_files_to_packages(self, wrk_path, curr_name, new_name, package_paths):
         # copy <xml_file>.???
+
+        valid_extensions = ['.pdf', '.epub', ]
         for filename in os.listdir(wrk_path):
-            if not filename.endswith('.jpg') and not filename.endswith('.sgm.xml'):
+
+            ext = filename[filename.rfind('.'):]
+            if ext in valid_extensions and (filename.startswith(curr_name + '.') or filename.startswith(curr_name + '-')):
                 new_filename = filename.replace(curr_name, new_name)
                 for pkg_path in package_paths:
                     if not wrk_path + '/' + filename == pkg_path + '/' + new_filename:
                         shutil.copyfile(wrk_path + '/' + filename, pkg_path + '/' + new_filename)
 
-    def add_href_files_to_packages(self, wrk_path, href_files_list, curr_name, new_name, scielo_pkg_path, pmc_pkg_path):
+    #FIXME
+    def add_href_files_to_packages(self, wrk_path, href_files_list, scielo_pkg_path, pmc_pkg_path):
         missing_files = []
-        #invalid_href = self._normalize_href_list()
 
         related_files = os.listdir(wrk_path)
 
-        for href, suffix in href_files_list.items():
-            matched_files = [f for f in related_files if f.startswith(href + '.')]
+        for current_href, new_href in href_files_list:
+            matched_files = [f for f in related_files if f.startswith(current_href + '.')]
             for filename in matched_files:
                 ext = filename[filename.rfind('.'):]
 
                 matched = wrk_path + '/' + filename
-                new_filename = curr_name + '-' + suffix + ext
+                new_filename = new_href + ext
 
                 shutil.copyfile(matched, scielo_pkg_path + '/' + new_filename)
                 if not filename.endswith('.jpg'):
                     shutil.copyfile(matched, pmc_pkg_path + '/' + new_filename)
             if not matched_files:
-                missing_files.append(href)
+                missing_files.append(current_href)
         return missing_files
-
-    def _normalize_href_list(self, href_files_list):
-        invalid_href = []
-        fixed = {}
-        for href, suffix in href_files_list.items():
-            ext = href[href.rfind('.'):]
-            if ext in ['.tif', '.eps', '.tiff', '.jpg', '.pdf', '.html', '.htm'] or len(ext) == 4:
-                invalid_href.append(href)
-                href = href[0:href.find(ext)]
-            fixed[href] = suffix
-        href_files_list = fixed
-        return (href_files_list, invalid_href)
 
     def normalize_xml(self, xml_filename, normalized_xml_path, log_filename):
         """
@@ -1929,6 +1926,7 @@ class XPM(object):
         if xml_is_well_formed(content) is not None:
             log.append('Metadata')
             new_name, href_files_list = XMLMetadata(content).new_names_and_embedded_files(self.acron, xml_name)
+            content = self.normalize_href(content, href_files_list)
             log.append(' Done')
             if is_sgmxml:
                 log.append('SGML to XML')
@@ -1937,6 +1935,14 @@ class XPM(object):
         else:
             log.append('XML is not well formed')
         return (content, new_name, href_files_list, log)
+
+    def normalize_href(self, content, href_files_list):
+        print(href_files_list)
+        for current, new in href_files_list:
+            print(current)
+            print(new)
+            content = content.replace(current, new)
+        return content
 
     def validate_packages(self, xml_name, new_name, scielo_validation_result, pmc_validation_result, err_filename, ctrl_filename):
         xsl_new_name = new_name if new_name != xml_name else ''
@@ -1969,21 +1975,12 @@ class XPM(object):
             log_message(err_filename, 'Unable to find ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
 
     def pack_non_xml_files(self, wrk_path, curr_name, new_name, href_files_list, scielo_pkg_path, pmc_pkg_path, err_filename):
-        #log_message(log_filename, scielo_pkg_path + '/' + new_name + '.xml')
-
-        #log_message(log_filename, '_normalize_href_list')
-
-        href_files_list, invalid_href = self._normalize_href_list(href_files_list)
-        log_images_errors(err_filename, 'Invalid href, which must not have extension', invalid_href)
 
         package_paths = [scielo_pkg_path, pmc_pkg_path]
 
-        #log_message(log_filename, 'add_renamed_files_to_packages')
         self.add_renamed_files_to_packages(wrk_path, curr_name, new_name, package_paths)
 
-        #log_message(log_filename, 'add_href_files_to_packages')
-
-        expected_files = self.add_href_files_to_packages(wrk_path, href_files_list, curr_name, new_name, scielo_pkg_path, pmc_pkg_path)
+        expected_files = self.add_href_files_to_packages(wrk_path, href_files_list, scielo_pkg_path, pmc_pkg_path)
         log_images_errors(err_filename, 'Required files', expected_files)
 
     def make_packages(self, xml_filename, ctrl_filename, xml_path, work_path, scielo_val_res, pmc_val_res):

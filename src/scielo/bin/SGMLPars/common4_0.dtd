@@ -159,10 +159,9 @@ filename       CDATA #IMPLIED>
 <!ELEMENT related     - O EMPTY >
 <!ATTLIST related
           doctype CDATA #REQUIRED 
-	     id CDATA #REQUIRED 
-          linktype CDATA #REQUIRED
-          link CDATA #IMPLIED 
-          source CDATA #IMPLIED >
+	     relatid CDATA #REQUIRED 
+          idtype CDATA #REQUIRED
+      >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Product                                                           -->

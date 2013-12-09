@@ -185,5 +185,9 @@
 		</xsl:attribute>
 	</xsl:template>
 
+	<xsl:template match="related-object[@specific-use='processing-only']">
+		
+	</xsl:template>
+	
 
 </xsl:stylesheet>

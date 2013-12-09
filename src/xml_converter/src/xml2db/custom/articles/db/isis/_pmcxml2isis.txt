@@ -3,16 +3,17 @@
     @dtd-version 120
     @article-type 71 
     @xml:lang 40 en    
-    .//article-meta/related-object[@ext-link-type='doi'] 241
+    .//article-meta/related-object[@document-type='article'] 241
       @xlink:href i
-      @ext-link-type t
-    .//article-meta/related-object[@object-type='pr'] 241
+      @document-id-type r
+      @link-type t
+    .//article-meta/related-object[@document-type='pr'] 241
       @xlink:href i
-      @object-type t
+      @document-type t
     .//article-meta/related-article[@ext-link-type='doi'] 241
       @xlink:href i
       @ext-link-type t LK_DOI_
-    .//article-meta/related-article[@specific-use='processing-only'] 241
+    .//article-meta/related-article[@related-article-type='press-release'] 241
       @id i
       . t pr
     .//journal-meta//journal-title 100

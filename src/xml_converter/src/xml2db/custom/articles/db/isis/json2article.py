@@ -574,36 +574,32 @@ class JSON_Article:
         self.json_data['f']['35'] = issn_id
 
         self.json_data['f'] = reset_issue_id(self.json_data['f'])
-        
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '64', '65', '64')
         self.publication_dateiso = return_singleval(self.json_data['f'], '65')
-
 
     def set_article_pid(self, alternative_id):
         issueno = return_singleval(self.json_data['f'], '32')
         f = self.json_data['f']
 
         if issueno == 'ahead':
-            article_id_pid = f.get('8121', '')
+            article_id_pid = f.get('8121', None)
         else:
-            # 8121 = article-id[@pub-id-type='PID']
+            # 8121 = article-id[@pub-id-type='other']
             #  121 = fpage
             # 9121 = fpage/@seq
             #article_id_pid = f.get('8121', f.get('121', alternative_id))
-            article_id_pid = f.get('121', '')
-            if not article_id_pid.isdigit():
-                article_id_pid = f.get('9121', '')
-            if not article_id_pid.isdigit():
-                article_id_pid = f.get('8121', '')
+            article_id_pid = f.get('8121', None)
+            if article_id_pid is None:
+                article_id_pid = f.get('9121', None)
+            if article_id_pid is None:
+                article_id_pid = f.get('121', None)
+        if article_id_pid is None:
+            article_id_pid = '0'
 
-        if article_id_pid.isdigit():
-            self.json_data['f']['121'] = article_id_pid[-5:]
-        else:
-            self.json_data['f']['121'] = '0'
+        self.json_data['f']['121'] = article_id_pid[-5:]
 
         if '8121' in self.json_data['f'].keys():
             del self.json_data['f']['8121']
-
 
     def normalize_document_data(self, issue, alternative_id):
         """

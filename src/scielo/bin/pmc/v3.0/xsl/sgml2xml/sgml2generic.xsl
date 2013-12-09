@@ -2728,47 +2728,45 @@ et al.</copyright-statement>
 	<xsl:template match="related">
 		<xsl:variable name="teste"><xsl:value-of select="concat('|',@doctype,'|')"/></xsl:variable>
 		<xsl:variable name="type"><xsl:choose>
+			<xsl:when test="contains('|article|pr|', $teste)">document</xsl:when>
 			<xsl:when test="contains('|other-related-article|unknown-related-article|addended-article|addendum|commentary-article|object-of-concern|companion|corrected-article|letter|retracted-article|peer-reviewed-article|peer-review|', $teste)">related-article</xsl:when>
 			<xsl:when test="contains('|other-object|unknown-object|vi|au|table|figure|', $teste)">object</xsl:when>
 			<xsl:when test="contains('|other-source|unknown-source|book|database|', $teste)">source</xsl:when>
-			<xsl:when test="contains('|other-source|unknown-source|book chapter|article|pr|', $teste)">document</xsl:when>
+			<xsl:when test="contains('|other-document|unknown-source|book chapter|', $teste)">document</xsl:when>			
 			<xsl:otherwise>source</xsl:otherwise>
 		</xsl:choose></xsl:variable>
+		
 		<xsl:variable name="elem_name"><xsl:choose>
-			<xsl:when test="$type='related-article'"><xsl:value-of select="$type"/></xsl:when>
+			<xsl:when test="$type='related-article'">related-article</xsl:when>
 			<xsl:otherwise>related-object</xsl:otherwise></xsl:choose></xsl:variable>
-			
+		
 		<xsl:variable name="attrib_prefix"><xsl:value-of select="$type"/></xsl:variable>
 		<xsl:element name="{$elem_name}">
-			<!-- 
-para press release
-				
-<related-article related-article-type="in-this-issue" id="PR01" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="DOI number do artigo" ext-link-
-type="doi"/>
-
-ou melhor,
-<related-object document-type="article" document-id="DOI number" document-id-type="doi"/>
-
-para artigo com pr
-<related-article related-article-type="press-release" id="03" specific-use="processing-only"/>
-
-ou melhor,
-<related-object document-type="pr" document-id="PID do pr" document-id-type="other"/>
-ou nada
-
-			-->
+			<xsl:attribute name="{$attrib_prefix}-type"><xsl:value-of select="@doctype"/></xsl:attribute>
+			
 			<xsl:choose>
 				<xsl:when test="$type='related-article'">
-					<xsl:attribute name="id"><xsl:value-of select="@id"/></xsl:attribute>
-					<xsl:attribute name="href"><xsl:value-of select="@link"/></xsl:attribute>
-					<xsl:attribute name="ext-link-type"><xsl:value-of select="@linktype"/></xsl:attribute>
+					<xsl:attribute name="href"><xsl:value-of select="@relatid"/></xsl:attribute>
+					<xsl:attribute name="ext-link-type"><xsl:value-of select="@idtype"/></xsl:attribute>
+					<xsl:attribute name="id"><xsl:value-of select="../doi"/></xsl:attribute>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:attribute name="{$attrib_prefix}-id"><xsl:value-of select="@link"/></xsl:attribute>
-					<xsl:attribute name="{$attrib_prefix}-id-type"><xsl:value-of select="@linktype"/></xsl:attribute>
+					<xsl:attribute name="{$attrib_prefix}-id"><xsl:value-of select="@relatid"/></xsl:attribute>
+					<xsl:attribute name="{$attrib_prefix}-id-type"><xsl:value-of select="@idtype"/></xsl:attribute>
+					
+					<xsl:if test="@doctype='pr' or @doctype='article'">
+						<xsl:if test="@doctype='article'">
+							<xsl:attribute name="id"><xsl:choose>
+								<xsl:when test="../doi"><xsl:value-of select="../doi"/></xsl:when>
+								<xsl:otherwise><xsl:value-of select="../../@order"/></xsl:otherwise>
+							</xsl:choose></xsl:attribute>
+							<xsl:attribute name="link-type">article-commentary</xsl:attribute>
+						</xsl:if>
+						<xsl:attribute name="specific-use">processing-only</xsl:attribute>
+					</xsl:if>
 				</xsl:otherwise>
 			</xsl:choose>
-			<xsl:attribute name="{$attrib_prefix}-type"></xsl:attribute>
+			
 		</xsl:element>
 	</xsl:template>
 	
