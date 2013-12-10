@@ -86,7 +86,7 @@ deposit
 deposid;entrdate;embdate
 
 related
-doctype;relatid;idtype
+doctype;link;linktype
 
 product
 prodtype

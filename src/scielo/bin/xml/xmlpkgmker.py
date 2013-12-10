@@ -1519,6 +1519,12 @@ class ContentValidation(object):
         return ''
 
     def _order(self, fpage, fpage_seq, other_id):
+        if other_id == '':
+            other_id = None
+        if fpage_seq == '':
+            fpage_seq = None
+        if fpage == '':
+            fpage = None
         if other_id is None:
             if fpage_seq is None:
                 if fpage is None:
@@ -2153,11 +2159,11 @@ def call_make_packages(args, version):
         xml_pkg_mker = XPM(sci_validator, pmc_validator, acron, version, entities_table)
         xml_pkg_mker.make_packages(xml_filename, ctrl_filename, xml_path, wrk_path, sci_val_res, pmc_val_res)
 
-        if ctrl_filename is None:
-            report = PkgReport(scielo_pkg_path, report_path)
-            report.load_data()
-            report.generate_articles_report()
-            report.generate_lists()
+        #if ctrl_filename is None:
+        #    report = PkgReport(scielo_pkg_path, report_path)
+        #    report.load_data()
+        #    report.generate_articles_report()
+        #    report.generate_lists()
 
         print('\n=======')
         print('\nGenerated packages in:\n' + '\n'.join([scielo_pkg_path, pmc_pkg_path, ]))
