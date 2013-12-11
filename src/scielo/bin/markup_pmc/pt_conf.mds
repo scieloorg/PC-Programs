@@ -20,7 +20,7 @@ msgSure,Deseja continuar?
 msgSureExit,Deseja sair?
 msgMoreLater,Você deseja salvar o documento em formato TXT para utilizar o parser?
 msgAutomatic,Você deseja usar a marcação automática de referências?
-msgAutomaticErr,Esta revista não possui marcação automática.
+msgAutomaticErr,%JOURNAL% não possui marcação automática %LABEL% para as refrerências. %FILE% não encontrado.
 msgDefaultDirectories,Verifique existência de 'html.dot'/'normal.dot'.
 msgExit1,Salvar em TXT e usar o Parser agora.
 msgExit2,Salvar em TXT e usar o Parser depois.
@@ -68,7 +68,7 @@ buttonChange,Editar atributos
 buttonDelete,Apagar a tag
 buttonAutomatic,Marcação Automática
 buttonAutomaticWS,Marcação Automática 2
-buttonAutomaticStyles,Marcação Automática usando estilos
+buttonAutomaticStyles,Marcação Automática 3
 buttonHelp,Ajuda
 bodyHasChildren,no
 doDebug,no
