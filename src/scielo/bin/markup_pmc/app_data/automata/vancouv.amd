@@ -1,21 +1,26 @@
 vcitat
 c1
 c5
-c1;c2;T;no;". "
+c1;c2;T;no;". ";" "
+c1;c3;NT;vcontrib;". "
+c3;c5;NT;viserial;"."
 c2;c3;NT;vcontrib;". "
 c3;c5;NT;viserial;"."
 
 vcontrib
 oc1
 oc5
-oc1;oc2;NT;oauthor;", "
-oc2;oc3;NT;oauthor;", "
-oc2;oc4;NT;oauthor;". "
-oc3;oc4;T;et-al;", "
-oc1;oc4;NT;oauthor;". "
-oc4;oc6;T;title;": "
-oc4;oc5;T;title;". "
-oc6;oc5;T;subtitle;". "
+oc1;oc4;NT;author;". "
+oc1;oc2;NT;author;", ";"et al"
+oc2;oc2;NT;author;", "
+oc2;oc4;NT;author;". "
+oc2;oc4;T;et-al;", et al. "
+oc4;oc5;NT;vtitle;". "
+
+vtitle
+vt1
+vt3
+vt1;vt3;T;title;". "
 
 viserial
 oi1
@@ -25,7 +30,10 @@ oi2;oi3;T;date;";"
 oi3;oi4;T;volid;"("
 oi4;oi6;T;issueno;"):"
 oi3;oi6;T;volid;":"
+oi6;oi8;T;pages;". http://dx.doi.org/"
+oi6;oi8;T;pages;". DOI: "
 oi6;oi7;T;pages;"."
+oi8;oi7;T;doi;".";"/"
 
 vstitle
 vss1
@@ -38,7 +46,7 @@ ss3
 ss1;ss1;T;ign;" "
 ss1;ss3;T;ign;" "
 
-oauthor
+author
 oa1
 oa3
 oa1;oa2;T;surname;" "
