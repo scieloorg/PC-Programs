@@ -168,11 +168,10 @@ filename       CDATA #IMPLIED>
 <!--    Product                                                           -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT product     - - ((author & corpauth & title & date & sertitle & pubname & city & state & country & isbn & othinfo)+ ) >
+<!ELEMENT product     - - ((author | corpauth | title | date | sertitle | pubname | city | state | country | isbn | othinfo)+ ) >
 <!ATTLIST product
           prodtype CDATA #REQUIRED
            >
-<!ELEMENT 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Title Group                                                       -->
