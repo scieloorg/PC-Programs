@@ -1,0 +1,55 @@
+ocitat
+o1
+o4
+o1;o2;T;no;"."
+o2;o4;NT;omonog;"."
+o2;o3;NT;ocontrib;" "
+o3;o4;NT;oiserial;"."
+
+ocontrib
+oc1
+oc2
+oc1;oc1;NT;oauthor;";"
+oc1;oc2;NT;oauthor;" "
+
+oiserial
+oi1
+oi5
+oi1;oi2;NT;stitle;" "
+oi1;oi2;T;sertitle;" "
+oi2;oi3;T;date;","
+oi3;oi4;T;volid;","
+oi4;oi5;T;pages;"."
+
+omonog
+om1
+om7
+om1;om1;NT;oauthor;";"
+om1;om2;NT;oauthor;" "
+om2;om4;T;title;";"
+om2;om3;T;title;":"
+om2;om3;T;title;"-"
+om3;om4;T;subtitle;";"
+om4;om5;T;pubname;";"
+om5;om6;T;city;","
+om6;om7;T;date;"."
+
+oauthor
+oa1
+oa3
+oa1;oa2;T;surname;","
+oa2;oa3;NT;fname;" "
+oa2;oa3;NT;fname;";"
+
+stitle
+st1
+st2
+st1;st1;T;ign;" "
+st1;st2;T;ign;" "
+
+fname
+fn1
+fn2
+fn1;fn1;T;ign;" ";";",","
+fn1;fn2;T;ign;" "
+fn1;fn2;T;ign;";"

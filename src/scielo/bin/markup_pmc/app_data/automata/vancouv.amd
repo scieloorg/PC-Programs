@@ -25,15 +25,22 @@ vt1;vt3;T;title;". "
 viserial
 oi1
 oi7
+oi1;oi2;NT;vstitle;" &#091;Internet&#093;."
 oi1;oi2;NT;vstitle;" "
+oi2;oi10;T;date;" &#091;cited "
+oi10;oi11;T;cited;"&#093;; Available from: "
+oi10;oi3;T;cited;"&#093;;"
 oi2;oi3;T;date;";"
 oi3;oi4;T;volid;"("
 oi4;oi6;T;issueno;"):"
 oi3;oi6;T;volid;":"
+oi6;oi11;T;pages;". Available from: "
 oi6;oi8;T;pages;". http://dx.doi.org/"
 oi6;oi8;T;pages;". DOI: "
+oi6;oi8;T;pages;". doi: "
 oi6;oi7;T;pages;"."
-oi8;oi7;T;doi;".";"/"
+oi8;oi7;NT;doi;"."
+oi11;oi7;NT;url;"."
 
 vstitle
 vss1
@@ -52,3 +59,18 @@ oa3
 oa1;oa2;T;surname;" "
 oa2;oa3;T;fname;", "
 oa2;oa3;T;fname;". "
+
+doi
+d1
+d4
+d1;d2;T;ign;"."
+d2;d3;T;ign;"/"
+d3;d3;T;ign;"."
+d3;d4;T;ign;"."
+
+url
+u1
+u4
+d1;d1;T;ign;"."
+d1;d2;T;ign;"."
+
