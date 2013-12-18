@@ -1,0 +1,7 @@
+01-30-2012 08:53:27 AsXML 1
+01-30-2012 08:53:27 AsXML 1 
+01-30-2012 08:53:27 AsXML 3 
+01-30-2012 08:53:27 procure issueid para article pii="nd" doctopic="oa" language="en" ccode="br1.1" status="1" version="4.0" type="ilus" order="03" seccode="AG190" sponsor="nd" stitle="Arq. Gastroenterol." volid="48" issueno="4" dateiso="20111200" fpage="231" lpage="235" issn="0004-2803"][front]ORIGINAL ARTICLE ARTIGO ORIGINAL [titlegrp][title language="en"]New "introducer" PEG-gastropexy with T fasteners[/title]: [subtitle]a pilot study[/subtitle] [title language="pt"]Gastrostomia endoscópica percutânea pela técnica de introdução
+01-30-2012 08:53:27 issueid=Arq. Gastroenterol. v.48 n.4
+01-30-2012 08:53:27 AsXML 4 
+01-30-2012 08:53:39 AsXML 14 

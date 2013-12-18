@@ -1,0 +1,181 @@
+Agrupa elementos para a descrição temática do documento|Group elements which indicate the subject of the document|Agrupa elementos que indican el tema del documento
+produto parcial ou final|partial or final product|producto parcial ==o== final
+da qual|of the which|de la cual
+à qual|to which|==a== la cual
+em que|in which|en lo cual
+Indica que há autores não mencionados|Indicate non cited authors|Indica autores ==no== citados
+autores individuais ou corporativos|individual or corporative authors|autores individuales ==o== corporativos
+organização financiadora ou patrocinadora|sponsor or financial organization|organización financiera ==o== patrocinadora
+uma lista|a list|un listado
+periódico ou publicação seriada|journal or serial publication|revista o publicación seriada
+publicação seriada ou periódica|serial publication or journal|publicación seriada ==o== revista
+que não seguem as normas adotadas|which are not according to any adopted standard|lo cual ==no== está de acuerdo con las normas adoptadas
+autoria anônima|unknown authorship|autoría anónima
+faz parte|is part of|hace parte
+ um editorial| an editorial| un editorial
+um autor individual|an individual author|un autor individual
+uma obra|a work|un trabajo
+Código de endereçamento postal|ZIP Code|Código postal
+o endereço eletrônico|the electronic address|la dirección electrónica
+a legenda|the caption|el título
+autores corporativos|corporative authors|autores corporativos
+autores individuais|individual authors|autores individuales
+autoria anônima|unknow authorship|autoría desconocida
+da organização autora|of the corporative author|del autor corporativo
+datas principais|main dates|fechas principales
+data inicial|initial date|fecha inicial
+data de registro|registration date|fecha de registro
+data de publicação|publication date|fecha de publicación
+data de recebimento, de aceitação ou de revisão|dates of reception, revision and approval|fechas de recebimento, revisión y aprobación
+dissertação ou tese acadêmica|thesis|tesis
+as normas adotadas|the adopted standard|las normas adoptadas
+elementos complementares|other elements|otros elementos
+documento citado|cited document|documento citado
+documentos relacionados|related documents|documentos relacionados
+em andamento|in progress|en curso
+endereço eletrônico|electronic address|dirección electrónica
+Endereço eletrônico|Electronic address|Dirección electrónica
+formas utilizadas|used forms|formas usadas
+organização autora|corporative author|autor corporativo
+organização financiadora|financial organization|organización financiera
+primeiros nomes|first names|nombres
+processo de publicação|publishing|proceso de publicación
+referencia anterior|previous reference|cita anterior
+sem detalhes|without details|sin detalles
+detalhe|detail|detalle
+ensaios clínicos|clinical trials|ensayos clínicos
+ensaio clínico|clinical trial|ensayo clínico
+figura composta|grouped figure|figura compuesta
+Identifica que|Identify|Identifica que
+ou seja|it means|es decir
+ como, por exemplo|, for instance|, por ejemplo
+ por exemplo| for instance| por ejemplo
+Texto ignorado pela marcação|Ignored text|Texto ignorado
+ao qual pertence|to which belongs|al cual pertenece
+responsáveis pelo|responsible for the|responsables por el
+segundo a norma|according to|de acuerdo con
+referencia cruzada|cross-reference|referencia cruzada
+foi aprovado pelo|was approved by the|fue aprobado por el
+foi submetido ao|was submitted to the|Fue sometido al
+mestrado, doutorado, livre-docência|Master, Doctor|Maestría, Doctorado
+para a descrição bibliográfica|for bibliographic description|para la descrición bibliográfica
+para a identificação|to identify|para la identificación
+para a referenciação|to reference|para citar
+parte anterior ao|previous part of the|parte anterior al
+parte posterior ao|following part of the|parte posterior al
+processo de revisão por pares|peer review process|proceso de revisión por pares
+do qual|of which|de lo cual
+ o | the | el 
+ no | at the | en el 
+  , como |, such as |, como 
+ Figura| Figure| Figura
+ a | the | la 
+ as | the | las 
+ com | with | con 
+ como |, such as |, como 
+ corpo | body | cuerpo 
+ da | of the | de la 
+ das | of the | de las 
+ de | of | de 
+ do | of the | del 
+ documento| document| documento
+ dos | of the | de los 
+ e | and | y 
+ em um | in a | en un 
+ em uma| in a| en una 
+em|in|en
+foi|was|fue
+ figura| figure| figura
+ na | at the | en la 
+ obra| work| obra 
+ os | the | los 
+ ou | or | o 
+ sem | no | sin 
+ um | a | un 
+ uma | a | una 
+ é | is | es 
+Agrupa|Group|Agrupa
+Identifica|Identify|Identifica
+abela|able|abla
+acessado|accessed|accedido
+afiliação|affiliation|afiliación
+artigo|article|artículo
+autores|authors|autores
+autoria|authorship|autoría
+autor|author|autor
+bibliografia|bibliography|bibliografía
+cada|each|cada
+capítulo|chapter|capítulo
+cidade|city|ciudad
+coleção|collection|colección
+coleções|collections|colecciones
+complementares|complementar|complementares
+conferencia|conference|conferencia
+congresso|congress|congreso
+conteúdo|content|contenido
+dados|data|datos
+data|date|fecha
+descritores|descriptors|descriptores
+divisão|division|división
+elementos|elements|elementos
+eletrônico|electronic|electrónico
+estado|state/region|provincia/región
+estão|are|están
+evento|event|evento
+ex.|e.g.|ej.
+extensão|extension|extensión
+formato|format|formato
+fórmula|formule|fórmula
+grau|degree|grado
+grupo|group|grupo
+histórico|history|histórico
+imagem|image|imagen
+itens|items|ítenes
+legenda|caption|título
+licença|license|licencia
+link|link|enlace
+lista |list |listado
+literatura|literature|literatura
+livro|book|libro
+mesmo|same|mismo
+necessario|required|necesario
+nome|name|nombre
+número|number|número
+organização|organization|organización
+palavras-chave|key words|palabras-clave
+papel|role|papel
+parte|part|parte
+patente|patent|patente
+periódico|journal|revista
+projeto|project|proyecto
+parágrafo|paragraph|párrafo
+páginas|pages|páginas
+referencia bibliográfica|citation|cita
+referencia|citation|cita
+registro|registration|registro
+relatorio|report|informe
+repositorio|repository|repositorio
+responsáveis|responsibles|responsables
+resumos|abstracts|resúmenes
+resumo|abstract|resumen
+revisão|revision|revisión
+rótulo|label|etiqueta
+seminario|seminar|seminario
+seção|section|sección
+seções|sections|secciones
+sobrenome|last name|apellido
+suplemento|supplement|suplemento
+série|serial|seriada
+tese|thesis|tesis
+texto|text|texto
+tipo|type|tipo
+título|title|título
+volumes|volumes|volúmenes
+volume|volume|volumen
+equação|equation|ecuación
+ção|tion|ción
+está |is |está 
+vinculado|related|relacionado
+trabalho|work|trabajo
+==||
+,,|,|,

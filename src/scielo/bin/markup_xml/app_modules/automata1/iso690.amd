@@ -1,0 +1,51 @@
+icitat
+c1
+c4
+c1;c4;NT;imonog;"."
+c1;c2;NT;icontrib;". "
+c2;c4;NT;iiserial;"."
+c1;c3;NT;icontrib;". In: "
+c3;c4;NT;imonog;". "
+
+icontrib
+ico1
+ico4
+ico1;ico2;NT;author;". "
+ico2;ico3;T;date;". "
+ico3;ico4;T;title;". In: "
+ico3;ico4;T;title;". "
+
+iiserial
+iser1
+iser8
+iser1;iser3;T;sertitle;". "
+iser3;iser4;T;ign;". "
+iser3;iser4;T;ign;" "
+iser4;iser5;T;volid;", "
+iser5;iser6;T;ign;" ."
+iser5;iser6;T;ign;" "
+iser6;iser7;T;issueno;", p."
+iser7;iser8;T;pages;"."
+
+imonog
+imonog1
+imonog7
+imonog1;imonog10;NT;author;". "
+imonog10;imonog2;T;date;". "
+imonog1;imonog20;NT;author;" ("
+imonog20;imonog2;NT;ign;"). "
+imonog2;imonog13;T;title;". "
+imonog2;imonog3;T;title;". "
+imonog13;imonog3;T;edition;"ed."
+imonog3;imonog4;T;city;": "
+imonog4;imonog8;T;pubname;". p."
+imonog4;imonog5;T;pubname;". "
+imonog4;imonog7;T;pubname;"."
+imonog5;imonog7;T;extent;" p."
+imonog8;imonog7;T;pages;"."
+
+author
+au1
+au3
+au1;au2;T;surname;", "
+au2;au3;T;fname;". "

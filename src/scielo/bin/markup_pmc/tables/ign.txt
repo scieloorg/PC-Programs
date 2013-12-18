@@ -1,7 +1,0 @@
-[/xmlbody],[*]
-[back],[*]
-[/*],[/back]
-[/*],[/bbibcom]
-[/aff],[bibcom]
-[front],[titlegrp]
-

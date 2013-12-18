@@ -1,0 +1,137 @@
+abnt6023;Agrupa los elementos de bibliografía de acuerdo con NBR 6023/89 de la ABNT
+abstract;Identifica el resumen del artículo
+accepted;Identifica la fecha en lo cual el artículo fue aprovado para la publicación
+acitat;Identifica una cita en la bibliografía
+acontrib;Agrupa elementos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+aff;Identifica la organización a la cual el autor está relacionado
+aiserial;Agrupa elementos de identificación específicos de una publicación seriada o revista
+amonog;Agrupa los elementos principais para la identificación de una monografia
+anonym;Identifica que la obra  es de autoría desconocida
+apa;Agrupa los elementos de bibliografía para de acuerdo con APA
+article;Identifica el artículo
+authgrp;Agrupa datos de los autores individuales, como nombre, apellido y papel
+author;Agrupa los datos de autores individuales, como nombre, apellido y papel
+back;Identifica la parte posterior al cuerpo del texto
+bbibcom;Agrupa otros elementos que están en la parte posterior al cuerpo del texto
+bibcom;Agrupa otros elementos para la identificación del artículo, como resumen y palabras-clave
+body;Identifica el cuerpo del texto del artículo sin detalles
+caption;Identifica el título de la figura
+cited;Identifica la fecha en lo cual el artículo electrónico fue accedido
+city;Identifica la ciudad de publicación
+cltrial;Identifica datos de ensayos clínicos
+coltitle;Identifica el título de una colección o seriada de la cual un trabajo hace parte
+colvolid;Identifica el volumen de una colección
+confgrp;Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
+confname;Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
+contract;Identifica un código numérico o alfanumérico fornecido pela organización financiera de un proyecto, de lo cual el artículo es produto final o parcial
+corpauth;Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
+country;Identifica el país de publicación
+ctreg;Identifica el número del registro del ensayo clínico
+date;Identifica la fecha de registro de la patente
+degree; Identifica el grado de una tesis, como Maestría, Doctorado etc
+deposit;Identifica los datos sobre el repositorio de artículos
+doi;Identifica, en una  cita, doi del documento
+dperiod;Identifica el período de tenpo tratado en el contenido del documento
+edition;Identifica el número de la edición
+email;Dirección electrónica del autor
+equation;Identifica datos de una fórmula
+et-al;Indica autores no citados
+extent;Identifica la extensión de la obra , como el número de páginas o volúmenes
+figgrp;Identifica cada parte de la figura compuesta
+figgrps;Identifica figuras compostas (Fig 1A, 1B,...)
+fname;Identifica los nombres de un autor individual
+fngrp;Identifica una nota de rodapé
+front;Identifica la parte anterior al cuerpo del artículo, es decir, títulos, autores, resúmenes, palabras-clave
+graphic;Identifica la imagen de la ecuación
+hist;Identifica el histórico de la publicación de un artículo en un revista (fechas de recebimento, revisión y aprobación)
+icitat;Identifica una cita en la bibliografía
+icontrib;Agrupa elementos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+ign;Texto ignorado
+iiserial;Agrupa elementos de identificación específicos de una publicación seriada o revista
+imonog;Agrupa los elementos principais para la identificación de una monografia
+inpress;Identifica que la cita citada ainda está en proceso de publicación
+isbn;Identifica el Internacional Standard Book Number (ISBN)
+isdesig;Identifica las fechas principales de una colección, por ejenplo, la fecha inicial de la colección
+iso690;Agrupa los elementos de bibliografía de acuerdo con ISO 690/87
+issn;Identifica el Internacional Standard Serial  Number (ISSN)
+isstitle;Identifica el título de un fascículo de publicación seriada o revista
+issueno;Identifica el número de un fascículo
+keygrp;Agrupa elementos que indican el tena del documento
+keyword;Identifica las palabras-clave del documento
+label;Identifica el etiqueta de la figura (ej. Figura 1)
+li;Identifica los ítenes de la lista
+license;Identifica el texto de la licencia
+licensep;Identifica el párrafo de la licencia
+licenses;Agrupa los elementos de licencia
+lilabel;Identifica el etiqueta del iten de la lista
+list;Identifica un listado
+litext;Identifica el texto del iten de la lista
+location;Identifica la dirección electrónica del documento
+medium;Identifica el formato del meio en lo cual el documento está sendo publicado o editado
+mmlmath;Math (MathML 2.0 Tag Set)
+no;Identifica el número de la cita
+notes;Agrupa datos que não están identificados pelos denais elementos de una cita
+oauthor;Agrupa los datos de autores individuales, como nombre, apellido y papel
+ocitat;Identifica una cita en la bibliografía
+ocontrib;Agrupa elementos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+ocorpaut;Identifica los autores corporativos
+oiserial;Agrupa elementos de identificación específicos de una publicación seriada o revista
+omonog;Agrupa los elementos principais para la identificación de una monografia
+orgdiv;Identifica la división del autor corporativo
+orgname;Identifica onde fue registrada la patente
+other;Agrupa los elementos de bibliografía lo cual no está de acuerdo con las normas adoptadas
+othinfo;Agrupa datos que não están identificados pelos denais elementos de una cita
+p;Identifica párrafo
+pages;Identifica la paginación
+part;Identifica la parte del volumen o fascículo
+patent;Identifica el número de la patente
+patgrp;Agrupa los datos de patente
+pcitat;Identifica una cita en la bibliografía
+pcontrib;Agrupa elementos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+piserial;Agrupa elementos de identificación específicos de una publicación seriada o revista
+pmonog;Agrupa los elementos principais para la identificación de una monografia
+previous;Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+projname;Identifica el nombre del proyecto de lo cual el artículo es producto parcial o final
+pubname;Identifica la casa publicadora
+received;Identifica la fecha en lo cual el artículo Fue sometido al proceso de revisión por pares
+related;Identifica datos de documentos relacionados
+report;Agrupa datos del informe o proyecto de lo cual el artículo es producto parcial o final
+revised;Identifica la fecha en lo cual inicio-se la revisión del artículo pelo proceso de revisión por pares
+rsponsor;Identifica la organización financiera o patrocinadora de un proyecto o evento
+sciname;Identifica nombres científicos
+sec;Identifica una sección del texto
+sectitle;Identifica el título de la subsección nível 2
+sertitle;Identifica el título de una publicación seriada o revista
+sponsor;Identifica la organización financiera o patrocinadora de un proyecto o evento
+state;Identifica el provincia/región (local) de publicación
+stitle;Agrupa la forma abreviada y padronizada del título de un revista el publicación seriada
+subkey;Identifica las formas usadas para qualificar las palabras-clave o descriptores
+subresp;Identifica las responsabilidades secundarias en una  cita, por ejenplo, tradutores y revisores
+subsec;Identifica la sub-sección del texto
+subtitle;Identifica el subtítulo del documento
+suppl;Identifica el número del suplenento de un revista
+surname;Identifica el apellido de un autor individual
+tabwrap;Identifica datos de una tabla
+texmath;Tex Math Equation
+text;Identifica el texto
+thesgrp;Agrupa datos de una tesis, en una  cita
+thesis;Agrupa datos de una tesis, en una  cita
+title;Identifica el título del documento
+titlegrp;Agrupa los títulos del documento
+tome;Identifica el tomo de una publicación en una  cita
+tp;Identifica el tipo de publicación en una  cita, por ejenplo, un editorial o una revisión de literatura
+update;update
+uri;Identifica un enlace
+url;Identifica la dirección electrónica del documento
+vancouv;Agrupa los elementos de bibliografía de acuerdo con Vancouver
+vcitat;Identifica una cita en la bibliografía
+vcontrib;Agrupa elementos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+version;Identifica se la publicación está en formato electrónico o papel
+viserial;Agrupa elementos de identificación específicos de una publicación seriada o revista
+vmonog;Agrupa los elementos principais para la identificación de una monografia
+volid;Identifica el volumen al cual pertenece un documento
+vstitle;Agrupa la forma abreviada y padronizada del título de un revista el publicación seriada
+vtitle;Identifica un grupo de título del documento en una  cita de acuerdo con Vancouver
+xmlbody;Identifica el cuerpo del artículo con detalles
+xref;Identifica cita cruzada de tablas, figuras, etc
+zipcode;Código postal de la afiliación

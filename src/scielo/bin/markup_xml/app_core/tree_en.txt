@@ -1,0 +1,137 @@
+abnt6023;Group the elements of bibliography according to NBR 6023/89 of the ABNT
+abstract;Identify the abstract of the article
+accepted;Identify the date in which the article was accepted to publish
+acitat;Identify a citation at the bibliography
+acontrib;Group elements, such as author and title, for bibliographic description of a article of journal or chapter of book
+aff;Identify the organization to which the author is related
+aiserial;Group elements of identification específicos of a serial publication or journal
+amonog;Group the elements principais to identify of a monografia
+anonym;Identify the work is of unknow authorship
+apa;Group the elements of bibliography para according to APA
+article;Identify the article
+authgrp;Group date of the individual authors, such as name,sobrename and role
+author;Group the date of individual authors, such as name, sobrename and role
+back;Identify the following part of the body of the text
+bbibcom;Group other elements que are at the following part of the body of the text
+bibcom;Group other elements to identify of the article, such as abstract and key words
+body;Identify the body of the text of the article without details
+caption;Identify the caption of the figure
+cited;Identify the date in which the article was accessed
+city;Identify the city of publication
+cltrial;Identify date of clinical trials
+coltitle;Identify the title of a collection or serial of the which the work is part of
+colvolid;Identify the volume of a collection
+confgrp;Group the date of a event, such as conference, sininario, congress, etc. contidas in anais and publicações similares
+confname;Identify the name of a event, such as conference, sininario, congress, etc.
+contract;Identify a código numérico or alfanumérico fornecido pela financial organization of a project, of which the article is produto final or parcial
+corpauth;Identify the corporative authors responsible for the content intelectual or artístico of the work
+country;Identify the país of publication
+ctreg;Identify the number of the registration of the clinical trial
+date;Identify the registration date of the patent
+degree; Identify the degree of a thesis, such as Master, Doctor etc
+deposit;Identify the date sobre the repository of articles
+doi;Identify, in a citation, doi of the document
+dperiod;Identify the período of tinpo tratado at the content of the document
+edition;Identify the number of the edition
+email;Electronic address of the author
+equation;Identify date of a formule
+et-al;Indicate non cited authors
+extent;Identify the extension of the work, such as the number of pages or volumes
+figgrp;Identify each part of the grouped figure
+figgrps;Identify figures compostas (Fig 1A, 1B,...)
+fname;Identify the first names of an individual author
+fngrp;Identify a nota of rodapé
+front;Identify the previous part of the body of the article, it means, titles, authors, abstracts, key words
+graphic;Identify the imagin of the equation
+hist;Identify the history of the publication of a article in a journal (dates of reception, revision and approval)
+icitat;Identify a citation at the bibliography
+icontrib;Group elements, such as author and title, for bibliographic description of a article of journal or chapter of book
+ign;Ignored text
+iiserial;Group elements of identification específicos of a serial publication or journal
+imonog;Group the elements principais to identify of a monografia
+inpress;Identify the citation citada ainda is in publishing
+isbn;Identify the Internacional Standard Book Number (ISBN)
+isdesig;Identify the main dates of a collection, for instance, the initial date of the collection
+iso690;Group the elements of bibliography according to ISO 690/87
+issn;Identify the Internacional Standard Serial  Number (ISSN)
+isstitle;Identify the title of a fascículo of serial publication or journal
+issueno;Identify the number of a fascículo
+keygrp;Group elements which indicate the subject of the document
+keyword;Identify the key words of the document
+label;Identify the label of the figure (e.g. Figure 1)
+li;Identify the items of the lista
+license;Identify the text of the license
+licensep;Identify the paragraph of the license
+licenses;Group the elements of license
+lilabel;Identify the label of the itin of the lista
+list;Identify the list
+litext;Identify the text of the itin of the lista
+location;Identify the electronic address of the document
+medium;Identify the format of the meio in which the document is sendo publicado or editado
+mmlmath;Math (MathML 2.0 Tag Set)
+no;Identify the number of the citation
+notes;Group date que não are identificados pelos dinais elements of a citation
+oauthor;Group the date of individual authors, such as name, sobrename and role
+ocitat;Identify a citation at the bibliography
+ocontrib;Group elements, such as author and title, for bibliographic description of a article of journal or chapter of book
+ocorpaut;Identify the corporative authors
+oiserial;Group elements of identification específicos of a serial publication or journal
+omonog;Group the elements principais to identify of a monografia
+orgdiv;Identify the division of the corporative author
+orgname;Identify onde was registrada the patent
+other;Group the elements of bibliography which are not according to any adopted standard
+othinfo;Group date que não are identificados pelos dinais elements of a citation
+p;Identify paragraph
+pages;Identify the pagination
+part;Identify the part of the volume or fascículo
+patent;Identify the number of the patent
+patgrp;Group the date of patent
+pcitat;Identify a citation at the bibliography
+pcontrib;Group elements, such as author and title, for bibliographic description of a article of journal or chapter of book
+piserial;Group elements of identification específicos of a serial publication or journal
+pmonog;Group the elements principais to identify of a monografia
+previous;Identify the author of the citation is the same author citado at the previous reference
+projname;Identify the name of the project of which the article is partial or final product
+pubname;Identify the casa publicadora
+received;Identify the date in which the article was submitted to the peer review process
+related;Identify date of related documents
+report;Group date of the report or project of which the article is partial or final product
+revised;Identify the date in which inicio-se the revision of the article pelo peer review process
+rsponsor;Identify the sponsor or financial organization of a project or event
+sciname;Identify names científicos
+sec;Identify a section of the text
+sectitle;Identify the title of the subsection nível 2
+sertitle;Identify the title of a serial publication or journal
+sponsor;Identify the sponsor or financial organization of a project or event
+state;Identify the state/region (local) of publication
+stitle;Group the forma abreviada and padronizada of the title of a journal or serial publication
+subkey;Identify the used forms para qualificar the key words or descriptors
+subresp;Identify the responsabilidades secundarias in a citation, for instance, tradutores and revisores
+subsec;Identify the sub-section of the text
+subtitle;Identify the subtitle of the document
+suppl;Identify the number of the suplinento of a journal
+surname;Identify the sobrename of an individual author
+tabwrap;Identify date of a table
+texmath;Tex Math Equation
+text;Identify the text
+thesgrp;Group date of a thesis, in a citation
+thesis;Group date of a thesis, in a citation
+title;Identify the title of the document
+titlegrp;Group the titles of the document
+tome;Identify the tomo of a publication in a citation
+tp;Identify the type of publication in a citation, for instance, an editorial or a revision of literature
+update;update
+uri;Identify a link
+url;Identify the electronic address of the document
+vancouv;Group the elements of bibliography according to Vancouver
+vcitat;Identify a citation at the bibliography
+vcontrib;Group elements, such as author and title, for bibliographic description of a article of journal or chapter of book
+version;Identify se the publication is in electronic format
+viserial;Group elements of identification específicos of a serial publication or journal
+vmonog;Group the elements principais to identify of a monografia
+volid;Identify the volume to which belongs a document
+vstitle;Group the forma abreviada and padronizada of the title of a journal or serial publication
+vtitle;Identify a group of title of the document in a citation according to Vancouver
+xmlbody;Identify the body of the article with details
+xref;Identify cross-reference of tables, figures, etc
+zipcode;ZIP Code of the affiliation

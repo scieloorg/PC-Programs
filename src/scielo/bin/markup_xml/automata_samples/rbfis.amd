@@ -1,0 +1,84 @@
+ocitat
+o1
+o5
+o1;o2;T;no;"."
+o2;o4;NT;ocontrib;".";". En:"
+o2;o3;NT;ocontrib;". En:"
+o4;o5;NT;oiserial;"."
+o2;o5;NT;omonog;"."
+o3;o5;NT;omonog;"."
+
+ocontrib
+oc1
+oc4
+oc1;oc5;NT;oauthor;",";"et al."
+oc5;oc5;NT;oauthor;",";"et al."
+oc5;oc2;NT;oauthor;"."
+oc1;oc2;NT;oauthor;"."
+oc1;oc2;NT;ocorpaut;"."
+oc5;oc2;T;et-al;".";","
+oc2;oc3;T;title;":";"."
+oc2;oc4;T;title;".";":";". En:"
+oc3;oc4;T;subtitle;".";". En:"
+oc2;oc4;T;title;". En:"
+oc3;oc4;T;subtitle;". En:"
+
+omonog
+om1
+om11
+om1;om12;NT;oauthor;",";"et al."
+om12;om12;NT;oauthor;",";"et al."
+om12;om2;NT;oauthor;"."
+om12;om2;T;et-al;".";","
+om1;om2;NT;oauthor;"."
+om1;om2;NT;ocorpaut;"."
+om2;om3;T;title;".";":"
+om2;om3;T;title;":";"."
+om2;om4;T;title;".";":"
+om3;om4;T;subtitle;"."
+om4;om5;T;edition;"a ed.";" "
+om4;om5;T;edition;"th ed.";" "
+om4;om5;T;edition;"st ed.";" "
+om4;om5;T;edition;"nd ed.";" "
+om4;om5;T;edition;"rd ed.";" "
+om4;om8;T;city;":";"."
+om5;om8;T;city;":";"."
+om4;om8;T;city;";";"."
+om8;om9;T;pubname;";"
+om9;om11;T;date;"."
+om9;om10;T;date;". pp."
+om10;om11;T;pages;"."
+
+oauthor
+oa1
+oa3
+oa1;oa2;NT;surname;" ";",","."
+oa2;oa3;T;fname;",";"et al.","."," "
+oa2;oa3;T;fname;".";" "
+
+surname
+sur1
+sur2
+sur1;sur1;T;ign;" ";",","." 
+sur1;sur2;T;ign;" ";",","."
+
+ocorpaut
+ocau1
+ocau3
+ocau1;ocau3;T;orgname;"."
+
+oiserial
+oi1
+oi5
+oi1;oi2;NT;stitle;" "
+oi2;oi3;T;date;";";" "
+oi3;oi4;T;volid;":";"("
+oi3;oi6;T;volid;"("
+oi6;oi4;T;issueno;"):"
+oi4;oi5;T;pages;"."
+
+stitle
+s1
+s2
+s1;s1;T;ign;" "
+s1;s2;T;ign;" "

@@ -1,0 +1,27 @@
+ocitat
+o1
+o2
+o1;o2;NT;omonog;"."
+
+omonog
+om1
+om8
+om1;om1;NT;oauthor;";"
+om1;om2;NT;oauthor;" e "
+om2;om3;NT;oauthor;". "
+om1;om3;NT;oauthor;". "
+om3;om5;T;title;". "
+om3;om4;T;title;": "
+om4;om5;T;subtitle;". "
+om5;om6;T;city;": "
+om6;om7;T;pubname;", "
+om7;om8;T;date;"."
+
+oauthor
+oa1
+oa3
+oa1;oa2;T;surname;", "
+oa2;oa3;T;fname;" e "
+oa2;oa3;T;fname;". "
+oa2;oa3;T;fname;";"
+oa1;oa3;T;previous;". "

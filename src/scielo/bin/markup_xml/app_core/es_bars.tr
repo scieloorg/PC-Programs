@@ -1,0 +1,1761 @@
+start;article
+Identifica el artículo
+
+start;text
+Identifica el texto
+
+article;deposit
+Identifica los datos sobre el repositorio de artículos
+
+article;front
+Identifica la parte anterior al cuerpo del artículo, es decir, títulos, autores, resúmenes, palabras-clave
+
+article;xmlbody
+Identifica el cuerpo del artículo con detalles
+
+article;body
+Identifica el cuerpo del texto del artículo sin detalles
+
+article;back
+Identifica la parte posterior al cuerpo del artículo
+
+textM;doi
+Identifica el DOI del documento
+
+textM;related
+Identifica documentos relacionados
+
+textM;titlegrp
+Agrupa los títulos del documento
+
+textM;authgrp
+Agrupa los autores individuales o corporativos del documento
+
+textM;xmlbody
+Identifica el cuerpo del artículo con detalles
+
+textM;back
+Identifica la parte posterior al cuerpo del texto
+
+ifloat;aff
+Identifica la organización a la cual el autor está relacionado
+
+ifloat;ign
+Texto ignorado
+
+ifloat;tabwrap
+Identifica datos de una tabla
+
+ifloat;figgrps
+Identifica figuras compostas (Fig 1A, 1B,...)
+
+ifloat;figgrp
+Identifica datos de una figura
+
+ifloat;equation
+Identifica datos de una fórmula
+
+ifloat;cltrial
+Identifica datos de ensayos clínicos
+
+ifloat;list
+Identifica un listado
+
+ifloat;xref
+Identifica cita cruzada de tablas, figuras, etc
+
+ifloat;uri
+Identifica un enlace
+
+ifloat;sciname
+Identifica nombres científicos
+
+cltrial;ctreg
+Identifica el número del registro del ensayo clínico
+
+tabwrap;label
+Identifica el etiqueta de la tabla (ej. Tabla 1)
+
+tabwrap;caption
+Identifica el título de la tabla
+
+tabwrap;graphic
+Identifica la imagen de la tabla
+
+tabwrap;notes
+Identifica las notas de la tabla
+
+figgrp;label
+Identifica el etiqueta de la figura (ej. Figura 1)
+
+figgrp;caption
+Identifica el título de la figura
+
+figgrp;graphic
+Identifica la imagen de la figura
+
+figgrps;label
+Identifica el etiqueta de la figura (ej. Figura 1)
+
+figgrps;caption
+Identifica el título de la figura
+
+figgrps;figgrp
+Identifica cada parte de la figura compuesta
+
+equation;graphic
+Identifica la imagen de la ecuación
+
+equation;texmath
+Tex Math Equation
+
+equation;mmlmath
+Math (MathML 2.0 Tag Set)
+
+aff;city
+Identifica el nombre de la ciudad de la afiliación
+
+aff;state
+Identifica el provincia/región (local) de la ciudad de la afiliación
+
+aff;country
+Identifica el país de la afiliación
+
+aff;zipcode
+Código postal de la afiliación
+
+aff;email
+Dirección electrónica del autor
+
+authgrpText;author
+Agrupa datos de los autores individuales, como nombre, apellido y papel
+
+authgrpText;corpauth
+Agrupa datos de los autores corporativos
+
+authorText;fname
+Identifica los nombres de un autor individual
+
+authorText;surname
+Identifica el apellido de un autor individual
+
+corpauthText;orgname
+Identifica el nombre del autor corporativo
+
+corpauthText;orgdiv
+Identifica la división del autor corporativoo
+
+titlegrpText;title
+Identifica el título del documento
+
+titlegrpText;subtitle
+Identifica el subtítulo del documento
+
+front;doi
+Identifica el DOI del documento
+
+front;related
+Identifica datos de documentos relacionados
+
+front;titlegrp
+Agrupa los títulos del documento
+
+front;authgrp
+Agrupa datos de los autores individuales, como nombre, apellido y papel
+
+front;bibcom
+Agrupa otros elenentos para la identificación del artículo, como resumen y palabras-clave
+
+titlegrpFront;title
+Identifica el título del documento
+
+titlegrpFront;subtitle
+Identifica el subtítulo del documento
+
+authgrpFront;author
+Agrupa los datos de autores individuales, como nombre, apellido y papel
+
+authgrpFront;corpauth
+Identifica los autores corporativos
+
+authorFront;fname
+Identifica los nombres de un autor individual
+
+authorFront;surname
+Identifica el apellido de un autor individual
+
+corpauthFront;orgname
+Identifica el nombre del autor corporativo del documento
+
+corpauthFront;orgdiv
+Identifica la división del autor corporativo del documento
+
+bibcomFront;abstract
+Identifica el resumen del artículo
+
+bibcomFront;keygrp
+Agrupa las palabras-clave del artículo
+
+bibcomFront;confgrp
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
+
+bibcomFront;report
+Agrupa datos del informe o proyecto de lo cual el artículo es producto parcial o final
+
+bibcomFront;thesgrp
+Agrupa datos de una tesis, en una  cita
+
+bibcomFront;hist
+Identifica el histórico de la publicación de un artículo en un revista (fechas de recebimento, revisión y aprobación)
+
+keygrpBibcom;keyword
+Identifica las palabras-clave del documento
+
+keygrpBibcom;subkey
+Identifica las formas usadas para qualificar las palabras-clave o descriptores
+
+keygrpBibcom;dperiod
+Identifica el período de tenpo tratado en el contenido del documento
+
+confgrpBibcom;sponsor
+Identifica la organización financiera o patrocinadora de un proyecto o evento
+
+confgrpBibcom;confname
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
+
+confgrpBibcom;no
+Identifica el número del evento
+
+confgrpBibcom;date
+Identifica la fecha de publicación del evento
+
+confgrpBibcom;city
+Identifica la ciudad del evento
+
+confgrpBibcom;state
+Identifica el provincia/región (local) del evento
+
+confgrpBibcom;country
+Identifica el país del evento
+
+sponsorBibcom;orgname
+Identifica el nombre de la organización financiera del evento
+
+sponsorBibcom;orgdiv
+Identifica la división de la organización financiera del evento
+
+reportBibcom;rsponsor
+Identifica la organización financiera o patrocinadora de un proyecto o evento
+
+reportBibcom;projname
+Identifica el nombre del proyecto de lo cual el artículo es producto parcial o final
+
+rsponsorBibcom;orgname
+Identifica el nombre de la organización financiera
+
+rsponsorBibcom;orgdiv
+Identifica la división de la organización financiera
+
+rsponsorBibcom;contract
+Identifica un código numérico o alfanumérico fornecido pela organización financiera de un proyecto, de lo cual el artículo es produto final o parcial
+
+thesgrpBibcom;city
+Identifica la ciudad de la tesis
+
+thesgrpBibcom;state
+Identifica el provincia/región (local) de la tesis
+
+thesgrpBibcom;country
+Identifica el país de la tesis
+
+thesgrpBibcom;date
+Identifica la fecha de la tesis
+
+thesgrpBibcom;degree
+ Identifica el grado de una tesis, como Maestría, Doctorado etc
+
+thesgrpBibcom;orgname
+Identifica el nombre de la organización de la tesis
+
+thesgrpBibcom;orgdiv
+Identifica la división de la organización de la tesis
+
+histBibcom;received
+Identifica la fecha en lo cual el artículo Fue sometido al proceso de revisión por pares
+
+histBibcom;revised
+Identifica la fecha en lo cual inicio-se la revisión del artículo pelo proceso de revisión por pares
+
+histBibcom;accepted
+Identifica la fecha en lo cual el artículo fue aprovado para la publicación
+
+backBar;bbibcom
+Agrupa otros elenentos que están en la parte posterior al cuerpo del texto
+
+backBar;vancouv
+Agrupa los elenentos de  bibliografía de acuerdo con Vancouver
+
+backBar;iso690
+Agrupa los elenentos de  bibliografía de acuerdo con ISO 690/87
+
+backBar;abnt6023
+Agrupa los elenentos de  bibliografía  de acuerdo con NBR 6023/89 de la ABNT
+
+backBar;apa
+Agrupa los elenentos de  bibliografía de acuerdo con APA
+
+backBar;other
+Agrupa los elenentos de  bibliografía que não seguen nenhuma de las denais normas
+
+backBar;licenses
+Agrupa los elenentos de licencia
+
+bbibcomBar;abstract
+Identifica el resumen del artículo
+
+bbibcomBar;keygrp
+Agrupa elenentos que indican el tena del documento
+
+bbibcomBar;confgrp
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
+
+bbibcomBar;report
+Agrupa datos del informe o proyecto de lo cual el artículo es producto parcial o final
+
+bbibcomBar;thesgrp
+Agrupa datos de una tesis, en una  cita
+
+bbibcomBar;hist
+Identifica el histórico de la publicación de un artículo en un revista (fechas de recebimento, revisión y aprobación)
+
+bbibcomBar;fngrp
+Identifica una nota de rodapé
+
+bbibcomBar;title
+Identifica el título del documento
+
+bbibcomBar;subtitle
+Identifica el subtítulo del documento
+
+keygrpBbibcom;keyword
+Identifica las palabras-clave del documento
+
+keygrpBbibcom;subkey
+Identifica las formas usadas para qualificar las palabras-clave o descriptores
+
+keygrpBbibcom;dperiod
+Identifica el período de tenpo tratado en el contenido del documento
+
+confgrpBbibcom;sponsor
+Identifica la organización financiera o patrocinadora de un proyecto o evento
+
+confgrpBbibcom;confname
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
+
+confgrpBbibcom;no
+Identifica el número del evento
+
+confgrpBbibcom;date
+Identifica la fecha de publicación del evento
+
+confgrpBbibcom;city
+Identifica la ciudad del evento
+
+confgrpBbibcom;state
+Identifica el provincia/región (local) del evento
+
+confgrpBbibcom;country
+Identifica el país del evento
+
+sponsorBbibcom;orgname
+ Identifica el nombre de la organización financiera
+
+sponsorBbibcom;orgdiv
+Identifica la división de la organización financiera
+
+reportBbibcom;rsponsor
+Identifica la organización financiera o patrocinadora de un proyecto o evento
+
+reportBbibcom;projname
+Identifica el nombre del proyecto de lo cual el artículo es producto parcial o final
+
+rsponsorBbibcom;orgname
+Identifica el nombre de la organización financiera
+
+rsponsorBbibcom;orgdiv
+Identifica la división de la organización financiera
+
+rsponsorBbibcom;contract
+Identifica un código numérico o alfanumérico fornecido pela organización financiera de un proyecto, de lo cual el artículo es produto final o parcial
+
+thesgrpBbibcom;city
+Identifica la ciudad de la tesis
+
+thesgrpBbibcom;state
+Identifica el provincia/región (local) de la tesis
+
+thesgrpBbibcom;country
+Identifica el país de la tesis
+
+thesgrpBbibcom;date
+Identifica la fecha de la tesis
+
+thesgrpBbibcom;degree
+ Identifica el grado de una tesis, como Maestría, Doctorado etc
+
+thesgrpBbibcom;orgname
+Identifica el nombre de la organización de la tesis
+
+thesgrpBbibcom;orgdiv
+Identifica la división de la organización de la tesis
+
+histBbibcom;received
+Identifica la fecha en lo cual el artículo Fue sometido al proceso de revisión por pares
+
+histBbibcom;revised
+Identifica la fecha en lo cual inicio-se la revisión del artículo pelo proceso de revisión por pares
+
+histBbibcom;accepted
+Identifica la fecha en lo cual el artículo fue aprovado para la publicación
+
+other;ocitat
+Identifica una cita en la bibliografía
+
+ocitat;no
+Identifica el número de la cita
+
+ocitat;ocontrib
+Agrupa elenentos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+
+ocitat;omonog
+Agrupa los elenentos principais para la identificación de una monografia
+
+ocitat;oiserial
+Agrupa elenentos de identificación específicos de una publicación seriada o revista
+
+ocitat;confgrp
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
+
+ocontrib;oauthor
+Agrupa los datos de los autores individuales, como nombre, apellido y papel
+
+ocontrib;ocorpaut
+Identifica los autores corporativos
+
+ocontrib;et-al
+Indica autores no citados
+
+ocontrib;title
+Identifica el título del documento
+
+ocontrib;subtitle
+Identifica el subtítulo del documento
+
+ocontrib;date
+Identifica la fecha de publicación
+
+ocontrib;pages
+Identifica la paginación
+
+ocontrib;patgrp
+Agrupa los datos de patente
+
+oauthorOcontrib;fname
+Identifica los nombres de un autor individual
+
+oauthorOcontrib;surname
+Identifica el apellido de un autor individual
+
+oauthorOcontrib;anonym
+Identifica que la obra  es de autoría desconocida
+
+oauthorOcontrib;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+ocorpautContrib;orgname
+Identifica el nombre del autor corporativo
+
+ocorpautContrib;orgdiv
+Identifica la división del autor corporativo
+
+ocorpautContrib;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+omonog;oauthor
+Agrupa los datos de autores individuales, como nombre, apellido y papel
+
+omonog;ocorpaut
+Identifica los autores corporativos
+
+omonog;et-al
+Indica autores no citados
+
+omonog;title
+Identifica el título del documento
+
+omonog;subtitle
+Identifica el subtítulo del documento
+
+omonog;confgrp
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
+
+omonog;thesis
+Agrupa datos de una tesis, en una  cita
+
+omonog;date
+Identifica la fecha de la tesis
+
+omonog;pages
+Identifica la paginación
+
+omonog;edition
+Identifica el número de la edición
+
+omonog;city
+Identifica la ciudad de publicación
+
+omonog;state
+Identifica el provincia/región (local) de publicación
+
+omonog;country
+Identifica el país de publicación
+
+omonog;pubname
+Identifica la casa publicadora
+
+omonog;extent
+Identifica la extensión de la obra , como el número de páginas o volúmenes
+
+omonog;coltitle
+Identifica el título de una colección o seriada de la cual un trabajo hace parte
+
+omonog;volid
+Identifica el volumen al cual pertenece un documento
+
+omonog;isbn
+Identifica el Internacional Standard Book Number (ISBN)
+
+omonog;othinfo
+Agrupa datos que não están identificados pelos denais elenentos de una cita
+
+omonog;url
+Identifica la dirección electrónica del documento
+
+omonog;doi
+Identifica, en una  cita, doi del documento
+
+omonog;cited
+Identifica la fecha en lo cual el artículo electrónico fue accedido
+
+omonog;patgrp
+Agrupa los datos de patente
+
+oauthorOmonog;fname
+Identifica los nombres de un autor individual
+
+oauthorOmonog;surname
+Identifica el apellido de un autor individual
+
+oauthorOmonog;anonym
+Identifica que la obra  es de autoría desconocida
+
+oauthorOmonog;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+ocorpautOmonog;orgname
+Identifica el nombre del autor corporativo
+
+ocorpautOmonog;orgdiv
+Identifica la división del autor corporativo
+
+ocorpautOmonog;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+confgrpOmonog;sponsor
+Identifica la organización financiera o patrocinadora de un proyecto o evento
+
+confgrpOmonog;confname
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
+
+confgrpOmonog;no
+Identifica el número del evento
+
+confgrpOmonog;date
+Identifica la fecha de publicación del evento
+
+confgrpOmonog;city
+Identifica la ciudad del evento
+
+confgrpOmonog;state
+Identifica el provincia/región (local) del evento
+
+confgrpOmonog;country
+Identifica el país del evento
+
+sponsorOmonog;orgname
+Identifica el nombre de la organización financiera
+
+sponsorOmonog;orgdiv
+Identifica la división de la organización financiera
+
+thesisOmonog;city
+Identifica la ciudad de la tesis
+
+thesisOmonog;state
+Identifica el provincia/región (local) de la tesis
+
+thesisOmonog;country
+Identifica el país de la tesis
+
+thesisOmonog;date
+Identifica la fecha de la tesis
+
+thesisOmonog;degree
+ Identifica el grado de una tesis, como Maestría, Doctorado etc
+
+thesisOmonog;orgname
+Identifica el nombre de la organización de la tesis
+
+thesisOmonog;orgdiv
+Identifica la división de la organización de la tesis
+
+oiserial;sertitle
+Identifica el título de una publicación seriada o revista
+
+oiserial;stitle
+Agrupa la forma abreviada y padronizada del título de un revista el publicación seriada
+
+oiserial;isstitle
+Identifica el título de un fascículo de publicación seriada o revista
+
+oiserial;othinfo
+Agrupa datos que não están identificados pelos denais elenentos de una cita
+
+oiserial;city
+Identifica la ciudad de publicación
+
+oiserial;country
+Identifica el país de publicación
+
+oiserial;pubname
+Identifica la casa publicadora
+
+oiserial;volid
+Identifica el volumen al cual pertenece un documento
+
+oiserial;issueno
+Identifica el número de un fascículo
+
+oiserial;suppl
+Identifica el número del suplenento de un revista
+
+oiserial;pages
+Identifica la paginación
+
+oiserial;extent
+Identifica la extensión de la obra , como el número de páginas o volúmenes
+
+oiserial;date
+Identifica la fecha de publicación
+
+oiserial;issn
+Identifica el Internacional Standard Serial  Number (ISSN)
+
+oiserial;url
+Identifica la dirección electrónica del documento
+
+oiserial;doi
+Identifica, en una  cita, doi del documento
+
+oiserial;cited
+Identifica la fecha en lo cual el artículo electrónico fue accedido
+
+confgrpOcitat;sponsor
+Identifica la organización financiera o patrocinadora de un proyecto o evento
+
+confgrpOcitat;confname
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
+
+confgrpOcitat;no
+Identifica el número del evento
+
+confgrpOcitat;date
+Identifica la fecha de publicación del evento
+
+confgrpOcitat;city
+Identifica la ciudad del evento
+
+confgrpOcitat;state
+Identifica el provincia/región (local) del evento
+
+confgrpOcitat;country
+Identifica el país del evento
+
+sponsorOcitat;orgname
+Identifica el nombre de la organización financiera
+
+sponsorOcitat;orgdiv
+Identifica la división de la organización financiera
+
+vancouv;vcitat
+Identifica una cita en la bibliografía
+
+vcitat;no
+Identifica el número de la cita
+
+vcitat;vcontrib
+Agrupa elenentos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+
+vcitat;viserial
+Agrupa elenentos de identificación específicos de una publicación seriada o revista
+
+vcitat;vmonog
+Agrupa los elenentos principais para la identificación de una monografia
+
+vcontrib;author
+Agrupa los datos de autores individuales, como nombre, apellido y papel
+
+vcontrib;corpauth
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
+
+vcontrib;et-al
+Indica autores no citados
+
+vcontrib;vtitle
+Identifica un grupo de título del documento en una  cita de acuerdo con Vancouver
+
+vcontrib;patgrp
+Agrupa los datos de patente
+
+authorVcontrib;fname
+Identifica los nombres de un autor individual
+
+authorVcontrib;surname
+Identifica el apellido de un autor individual
+
+authorVcontrib;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+corpauthVcontrib;orgname
+Identifica el nombre del autor corporativo
+
+corpauthVcontrib;orgdiv
+Identifica la división del autor corporativo
+
+corpauthVcontrib;previous
+Identifica que el autor de la cita es el mismo autor de la cita anterior
+
+vtitleVcontrib;title
+Identifica el título del documento
+
+vtitleVcontrib;subtitle
+Identifica el subtítulo del documento
+
+vtitleVcontrib;tp
+Identifica el tipo de publicación en una  cita, por ejenplo, un editorial o una revisión de literatura
+
+viserial;vstitle
+Agrupa la forma abreviada y padronizada del título de un revista el publicación seriada
+
+viserial;date
+Identifica la fecha de publicación
+
+viserial;inpress
+Identifica que la proceso de publicación del documento está en curso
+
+viserial;volid
+Identifica el volumen al cual pertenece un documento
+
+viserial;issueno
+Identifica el número de un fascículo
+
+viserial;suppl
+Identifica el número del suplenento de un revista
+
+viserial;part
+Identifica la parte del volumen o fascículo
+
+viserial;extent
+Identifica la extensión de la obra , como el número de páginas o volúmenes
+
+viserial;pages
+Identifica la paginación
+
+viserial;url
+Identifica la dirección electrónica del documento
+
+viserial;doi
+Identifica, en una  cita, doi del documento
+
+viserial;cited
+Identifica la fecha en lo cual el artículo electrónico fue accedido
+
+vstitle;stitle
+Agrupa la forma abreviada y padronizada del título de un revista el publicación seriada
+
+vstitle;tp
+Identifica el tipo de publicación en una  cita, por ejenplo, un editorial o una revisión de literatura
+
+vmonog;author
+Agrupa los datos de autores individuales, como nombre, apellido y papel
+
+vmonog;corpauth
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
+
+vmonog;et-al
+Indica autores no citados
+
+vmonog;vtitle
+Identifica un grupo de título del documento en una  cita de acuerdo con Vancouver
+
+vmonog;edition
+Identifica el número de la edición
+
+vmonog;version
+Identifica se la publicación está en formato electrónico o papel
+
+vmonog;confgrp
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
+
+vmonog;city
+Identifica la ciudad de publicación
+
+vmonog;state
+Identifica el provincia/región (local) de publicación
+
+vmonog;pubname
+Identifica la casa publicadora
+
+vmonog;inpress
+Identifica que la cita citada ainda está en proceso de publicación
+
+vmonog;date
+Identifica la fecha de publicación
+
+vmonog;pages
+Identifica la paginación
+
+vmonog;report
+Agrupa datos del informe o proyecto de lo cual el artículo es producto parcial o final
+
+vmonog;thesis
+Agrupa datos de una tesis, en una  cita
+
+vmonog;url
+Identifica la dirección electrónica del documento
+
+vmonog;doi
+Identifica, en una  cita, doi del documento
+
+vmonog;cited
+Identifica la fecha en lo cual el artículo electrónico fue accedido
+
+vmonog;patgrp
+Agrupa los datos de patente
+
+authorVmonog;fname
+Identifica los nombres de un autor individual
+
+authorVmonog;surname
+Identifica el apellido de un autor individual
+
+authorVmonog;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+corpautVmonog;orgname
+Identifica el nombre del autor corporativo
+
+corpautVmonog;orgdiv
+Identifica la división del autor corporativo
+
+corpautVmonog;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+vtitleVmonog;title
+Identifica el título del documento
+
+vtitleVmonog;subtitle
+Identifica el subtítulo del documento
+
+vtitleVmonog;tp
+Identifica el tipo de publicación en una  cita, por ejenplo, un editorial o una revisión de literatura
+
+confgrpVmonog;sponsor
+Identifica la organización financiera o patrocinadora de un proyecto o evento
+
+confgrpVmonog;confname
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
+
+confgrpVmonog;no
+Identifica el número del evento
+
+confgrpVmonog;date
+Identifica la fecha de publicación del evento
+
+confgrpVmonog;city
+Identifica la ciudad del evento
+
+confgrpVmonog;state
+Identifica el provincia/región (local) del evento
+
+confgrpVmonog;country
+Identifica el país del evento
+
+sponsorVmonog;orgname
+Identifica el nombre de la organización financiera
+
+sponsorVmonog;orgdiv
+Identifica la división de la organización financiera
+
+reportVmonog;rsponsor
+Identifica la organización financiera o patrocinadora de un proyecto o evento
+
+reportVmonog;projname
+Identifica el nombre del proyecto de lo cual el artículo es producto parcial o final
+
+rsponsorVmonog;orgname
+Identifica el nombre de la organización financiera
+
+rsponsorVmonog;orgdiv
+Identifica la división de la organización financiera
+
+rsponsorVmonog;contract
+Identifica un código numérico o alfanumérico fornecido pela organización financiera de un proyecto, de lo cual el artículo es produto final o parcial
+
+thesisVmonog;city
+Identifica la ciudad de la tesis
+
+thesisVmonog;state
+Identifica el provincia/región (local) de la tesis
+
+thesisVmonog;country
+Identifica el país de la tesis
+
+thesisVmonog;date
+Identifica la fecha de la tesis
+
+thesisVmonog;degree
+ Identifica el grado de una tesis, como Maestría, Doctorado etc
+
+thesisVmonog;orgname
+Identifica el nombre de la organización de la tesis
+
+thesisVmonog;orgdiv
+Identifica la división de la organización de la tesis
+
+apa;pcitat
+Identifica una cita en la bibliografía
+
+pcitat;no
+Identifica el número de la cita
+
+pcitat;pcontrib
+Agrupa elenentos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+
+pcitat;pmonog
+Agrupa los elenentos principais para la identificación de una monografia
+
+pcitat;piserial
+Agrupa elenentos de identificación específicos de una publicación seriada o revista
+
+pcontrib;author
+Agrupa los datos de autores individuales, como nombre, apellido y papel
+
+pcontrib;corpauth
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
+
+pcontrib;date
+Identifica la fecha de publicación
+
+pcontrib;title
+Identifica el título del documento
+
+pcontrib;subtitle
+Identifica el subtítulo del documento
+
+authorpContrib;fname
+Identifica los nombres de un autor individual
+
+authorpContrib;surname
+Identifica el apellido de un autor individual
+
+corpautpContrib;orgname
+Identifica el nombre del autor corporativo
+
+corpautpContrib;orgdiv
+Identifica la división del autor corporativo
+
+authorpMonog;fname
+Identifica los nombres de un autor individual
+
+authorpMonog;surname
+Identifica el apellido de un autor individual
+
+corpautpMonog;orgname
+Identifica el nombre del autor corporativo
+
+corpautpMonog;orgdiv
+Identifica la división del autor corporativo
+
+piserial;sertitle
+Identifica el título de una publicación seriada o revista
+
+piserial;volid
+Identifica el volumen al cual pertenece un documento
+
+piserial;issueno
+Identifica el número de un fascículo
+
+piserial;suppl
+Identifica el número del suplenento de un revista
+
+piserial;pages
+Identifica la paginación
+
+piserial;cited
+Identifica la fecha en lo cual el artículo electrónico fue accedido
+
+piserial;url
+Identifica la dirección electrónica del documento
+
+piserial;doi
+Identifica, en una  cita, doi del documento
+
+pmonog;author
+Agrupa los datos de autores individuales, como nombre, apellido y papel
+
+pmonog;corpauth
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
+
+pmonog;date
+Identifica la fecha de publicación
+
+pmonog;title
+Identifica el título del documento
+
+pmonog;subtitle
+Identifica el subtítulo del documento
+
+pmonog;thesis
+Agrupa datos de una tesis, en una  cita
+
+pmonog;coltitle
+Identifica el título de una colección o seriada de la cual un trabajo hace parte
+
+pmonog;colvolid
+Identifica el volumen de una colección
+
+pmonog;notes
+Agrupa datos que não están identificados pelos denais elenentos de una cita
+
+pmonog;pages
+Identifica la paginación
+
+pmonog;edition
+Identifica el número de la edición
+
+pmonog;city
+Identifica la ciudad de publicación
+
+pmonog;country
+Identifica el país de publicación
+
+pmonog;pubname
+Identifica la casa publicadora
+
+pmonog;cited
+Identifica la fecha en lo cual el artículo electrónico fue accedido
+
+pmonog;url
+Identifica la dirección electrónica del documento
+
+pmonog;doi
+Identifica, en una  cita, doi del documento
+
+thesisPmonog;degree
+ Identifica el grado de una tesis, como Maestría, Doctorado etc
+
+thesisPmonog;orgname
+Identifica el nombre de la organización de la tesis
+
+thesisPmonog;city
+Identifica la ciudad de la tesis
+
+abnt6023;acitat
+Identifica una cita en la bibliografía
+
+acitat;no
+Identifica el número de la cita
+
+acitat;acontrib
+Agrupa elenentos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+
+acitat;amonog
+Agrupa los elenentos principais para la identificación de una monografia
+
+acitat;aiserial
+Agrupa elenentos de identificación específicos de una publicación seriada o revista
+
+acitat;confgrp
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
+
+acontrib;author
+Agrupa los datos de autores individuales, como nombre, apellido y papel
+
+acontrib;corpauth
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
+
+acontrib;et-al
+Indica autores no citados
+
+acontrib;title
+Identifica el título del documento
+
+acontrib;subtitle
+Identifica el subtítulo del documento
+
+acontrib;volid
+Identifica el volumen al cual pertenece un documento
+
+acontrib;pages
+Identifica la paginación
+
+acontrib;patgrp
+Agrupa los datos de patente
+
+authorAcontrib;fname
+Identifica los nombres de un autor individual
+
+authorAcontrib;surname
+Identifica el apellido de un autor individual
+
+authorAcontrib;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+corpautAContrib;orgname
+Identifica el nombre del autor corporativo
+
+corpautAContrib;orgdiv
+Identifica la división del autor corporativo
+
+corpautAContrib;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+aiserial;sertitle
+Identifica el título de una publicación seriada o revista
+
+aiserial;stitle
+Agrupa la forma abreviada y padronizada del título de un revista el publicación seriada
+
+aiserial;isstitle
+Identifica el título de un fascículo de publicación seriada o revista
+
+aiserial;city
+Identifica la ciudad de publicación
+
+aiserial;state
+Identifica el provincia/región (local) de publicación
+
+aiserial;country
+Identifica el país de publicación
+
+aiserial;pubname
+Identifica la casa publicadora
+
+aiserial;suppl
+Identifica el número del suplenento de un revista
+
+aiserial;volid
+Identifica el volumen al cual pertenece un documento
+
+aiserial;issueno
+Identifica el número de un fascículo
+
+aiserial;date
+Identifica la fecha de publicación
+
+aiserial;extent
+Identifica la extensión de la obra , como el número de páginas o volúmenes
+
+aiserial;pages
+Identifica la paginación
+
+aiserial;notes
+Agrupa datos que não están identificados pelos denais elenentos de una cita
+
+aiserial;issn
+Identifica el Internacional Standard Serial  Number (ISSN)
+
+aiserial;url
+Identifica la dirección electrónica del documento
+
+aiserial;doi
+Identifica, en una  cita, doi del documento
+
+aiserial;cited
+Identifica la fecha en lo cual el artículo electrónico fue accedido
+
+amonog;author
+Agrupa los datos de autores individuales, como nombre, apellido y papel
+
+amonog;corpauth
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
+
+amonog;et-al
+Indica autores no citados
+
+amonog;title
+Identifica el título del documento
+
+amonog;subtitle
+Identifica el subtítulo del documento
+
+amonog;subresp
+Identifica las responsabilidades secundarias en una  cita, por ejenplo, tradutores y revisores
+
+amonog;edition
+Identifica el número de la edición
+
+amonog;confgrp
+Agrupa los datos de un evento, como conferencia, seninario, congreso, etc. contidas en anais y publicações similares
+
+amonog;city
+Identifica la ciudad de publicación
+
+amonog;state
+Identifica el provincia/región (local) de publicación
+
+amonog;country
+Identifica el país de publicación
+
+amonog;pubname
+Identifica la casa publicadora
+
+amonog;date
+Identifica la fecha de publicación
+
+amonog;volid
+Identifica el volumen al cual pertenece un documento
+
+amonog;tome
+Identifica el tomo de una publicación en una  cita
+
+amonog;extent
+Identifica la extensión de la obra , como el número de páginas o volúmenes
+
+amonog;pages
+Identifica la paginación
+
+amonog;coltitle
+Identifica el título de una colección o seriada de la cual un trabajo hace parte
+
+amonog;colvolid
+Identifica el volumen de una colección
+
+amonog;notes
+Agrupa datos que não están identificados pelos denais elenentos de una cita
+
+amonog;isbn
+Identifica el Internacional Standard Book Number (ISBN)
+
+amonog;thesis
+Agrupa datos de una tesis, en una  cita
+
+amonog;url
+Identifica la dirección electrónica del documento
+
+amonog;doi
+Identifica, en una  cita, doi del documento
+
+amonog;cited
+Identifica la fecha en lo cual el artículo electrónico fue accedido
+
+amonog;patgrp
+Agrupa los datos de patente
+
+authorAmonog;fname
+Identifica los nombres de un autor individual
+
+authorAmonog;surname
+Identifica el apellido de un autor individual
+
+authorAmonog;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+corpautAmonog;orgname
+Identifica el nombre del autor corporativo
+
+corpautAmonog;orgdiv
+Identifica la división del autor corporativo
+
+corpautAmonog;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+confgrpAmonog;sponsor
+Identifica la organización financiera o patrocinadora de un proyecto o evento
+
+confgrpAmonog;confname
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
+
+confgrpAmonog;no
+Identifica el número del evento
+
+confgrpAmonog;date
+Identifica la fecha de publicación del evento
+
+confgrpAmonog;city
+Identifica la ciudad del evento
+
+confgrpAmonog;state
+Identifica el provincia/región (local) del evento
+
+confgrpAmonog;country
+Identifica el país del evento
+
+sponsorAmonog;orgname
+Identifica el nombre de la organización financiera
+
+sponsorAmonog;orgdiv
+Identifica la división de la organización financiera
+
+thesisAmonog;city
+Identifica la ciudad de la tesis
+
+thesisAmonog;state
+Identifica el provincia/región (local) de la tesis
+
+thesisAmonog;country
+Identifica el país de la tesis
+
+thesisAmonog;date
+Identifica la fecha de la tesis
+
+thesisAmonog;degree
+ Identifica el grado de una tesis, como Maestría, Doctorado etc
+
+thesisAmonog;orgname
+Identifica el nombre de la organización de la tesis
+
+thesisAmonog;orgdiv
+Identifica la división de la organización de la tesis
+
+confgrpAcitat;sponsor
+Identifica la organización financiera o patrocinadora de un proyecto o evento
+
+confgrpAcitat;confname
+Identifica el nombre de un evento, como conferencia, seninario, congreso, etc.
+
+confgrpAcitat;no
+Identifica el número del evento
+
+confgrpAcitat;date
+Identifica la fecha de publicación del evento
+
+confgrpAcitat;city
+Identifica la ciudad del evento
+
+confgrpAcitat;state
+Identifica el provincia/región (local) del evento
+
+confgrpAcitat;country
+Identifica el país del evento
+
+sponsorConfgrpAcitat;orgname
+Identifica el nombre de la organización financiera
+
+sponsorConfgrpAcitat;orgdiv
+Identifica la división de la organización financiera
+
+iso690;icitat
+Identifica una cita en la bibliografía
+
+icitat;no
+Identifica el número de la cita
+
+icitat;icontrib
+Agrupa elenentos, como autor y título, para la descrición bibliográfica de un artículo de revista o capítulo de libro
+
+icitat;imonog
+Agrupa los elenentos principais para la identificación de una monografia
+
+icitat;iiserial
+Agrupa elenentos de identificación específicos de una publicación seriada o revista
+
+icontrib;author
+Agrupa los datos de autores individuales, como nombre, apellido y papel
+
+icontrib;corpauth
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
+
+icontrib;et-al
+Indica autores no citados
+
+icontrib;subresp
+Identifica las responsabilidades secundarias en una  cita, por ejenplo, tradutores y revisores
+
+icontrib;date
+Identifica la fecha de publicación
+
+icontrib;title
+Identifica el título del documento
+
+icontrib;subtitle
+Identifica el subtítulo del documento
+
+authorIcontrib;fname
+Identifica los nombres de un autor individual
+
+authorIcontrib;surname
+Identifica el apellido de un autor individual
+
+authorIcontrib;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+corpautIcontrib;orgname
+Identifica el nombre del autor corporativo
+
+corpautIcontrib;orgdiv
+Identifica la división del autor corporativo
+
+corpautIcontrib;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+subrespIcontrib;fname
+Identifica los nombres de un autor individual
+
+subrespIcontrib;surname
+Identifica el apellido de un autor individual
+
+iiserial;isstitle
+Identifica el título de un fascículo de publicación seriada o revista
+
+iiserial;author
+Agrupa los datos de autores individuales, como nombre, apellido y papel
+
+iiserial;corpauth
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
+
+iiserial;et-al
+Indica autores no citados
+
+iiserial;medium
+Identifica el formato del meio en lo cual el documento está sendo publicado o editado
+
+iiserial;sertitle
+Identifica el título de una publicación seriada o revista
+
+iiserial;stitle
+Agrupa la forma abreviada y padronizada del título de un revista el publicación seriada
+
+iiserial;edition
+Identifica el número de la edición
+
+iiserial;city
+Identifica la ciudad de publicación
+
+iiserial;state
+Identifica el provincia/región (local) de publicación
+
+iiserial;country
+Identifica el país de publicación
+
+iiserial;pubname
+Identifica la casa publicadora
+
+iiserial;date
+Identifica la fecha de publicación
+
+iiserial;update
+update
+
+iiserial;location
+Identifica la dirección electrónica del documento
+
+iiserial;volid
+Identifica el volumen al cual pertenece un documento
+
+iiserial;isdesig
+Identifica las fechas principales de una colección, por ejenplo, la fecha inicial de la colección
+
+iiserial;issueno
+Identifica el número de un fascículo
+
+iiserial;pages
+Identifica la paginación
+
+iiserial;notes
+Agrupa datos que não están identificados pelos denais elenentos de una cita
+
+iiserial;url
+Identifica la dirección electrónica del documento
+
+iiserial;doi
+Identifica, en una  cita, doi del documento
+
+iiserial;cited
+Identifica la fecha en lo cual el artículo electrónico fue accedido
+
+iiserial;issn
+Identifica el Internacional Standard Serial  Number (ISSN)
+
+authorIiserial;fname
+Identifica los nombres de un autor individual
+
+authorIiserial;surname
+Identifica el apellido de un autor individual
+
+authorIiserial;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+corpautIiserial;orgname
+Identifica el nombre del autor corporativo
+
+corpautIiserial;orgdiv
+Identifica la división del autor corporativo
+
+corpautIiserial;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+imonog;author
+Agrupa los datos de autores individuales, como nombre, apellido y papel
+
+imonog;corpauth
+Identifica los autores corporativos responsables por el contenido intelectual o artístico del trabajo
+
+imonog;et-al
+Indica autores no citados
+
+imonog;subresp
+Identifica las responsabilidades secundarias en una  cita, por ejenplo, tradutores y revisores
+
+imonog;title
+Identifica el título del documento
+
+imonog;subtitle
+Identifica el subtítulo del documento
+
+imonog;medium
+Identifica el formato del meio en lo cual el documento está sendo publicado o editado
+
+imonog;edition
+Identifica el número de la edición
+
+imonog;city
+Identifica la ciudad de publicación
+
+imonog;state
+Identifica el provincia/región (local) de publicación
+
+imonog;country
+Identifica el país de publicación
+
+imonog;pubname
+Identifica la casa publicadora
+
+imonog;date
+Identifica la fecha de publicación
+
+imonog;update
+update
+
+imonog;volid
+Identifica el volumen al cual pertenece un documento
+
+imonog;pages
+Identifica la paginación
+
+imonog;extent
+Identifica la extensión de la obra , como el número de páginas o volúmenes
+
+imonog;location
+Identifica la dirección electrónica del documento
+
+imonog;coltitle
+Identifica el título de una colección o seriada de la cual un trabajo hace parte
+
+imonog;notes
+Agrupa datos que não están identificados pelos denais elenentos de una cita
+
+imonog;url
+Identifica la dirección electrónica del documento
+
+imonog;doi
+Identifica, en una  cita, doi del documento
+
+imonog;cited
+Identifica la fecha en lo cual el artículo electrónico fue accedido
+
+imonog;isbn
+Identifica el Internacional Standard Book Number (ISBN)
+
+imonog;patgrp
+Agrupa los datos de patente
+
+authorImonog;fname
+Identifica los nombres de un autor individual
+
+authorImonog;surname
+Identifica el apellido de un autor individual
+
+authorImonog;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+corpautImonog;orgname
+Identifica el nombre del autor corporativo
+
+corpautImonog;orgdiv
+Identifica la división del autor corporativo
+
+corpautImonog;previous
+Identifica que el autor de la cita es el mismo autor citado en la cita anterior
+
+subrespImonog;fname
+Identifica los nombres de un autor individual
+
+subrespImonog;surname
+Identifica el apellido de un autor individual
+
+subrespAmonog;fname
+Identifica los nombres de un autor individual
+
+subrespAmonog;surname
+Identifica el apellido de un autor individual
+
+backT;fngrp
+Identifica una nota de rodapé
+
+backT;vancouv
+Agrupa los elenentos de bibliografía de acuerdo con Vancouver
+
+backT;iso690
+Agrupa los elenentos de bibliografía de acuerdo con ISO 690/87
+
+backT;abnt6023
+Agrupa los elenentos de bibliografía de acuerdo con NBR 6023/89 de la ABNT
+
+backT;apa
+Agrupa los elenentos de bibliografía para de acuerdo con APA
+
+backT;other
+Agrupa los elenentos de bibliografía lo cual no está de acuerdo con las normas adoptadas
+
+backT;licenses
+Agrupa los elenentos de licencia
+
+patentImonog;orgname
+Identifica onde fue registrada la patente
+
+patentImonog;patent
+Identifica el número de la patente
+
+patentImonog;date
+Identifica la fecha de registro de la patente
+
+patentOmonog;orgname
+Identifica onde fue registrada la patente
+
+patentOmonog;patent
+Identifica el número de la patente
+
+patentOmonog;date
+Identifica la fecha de registro de la patente
+
+patentAmonog;orgname
+Identifica onde fue registrada la patente
+
+patentAmonog;patent
+Identifica el número de la patente
+
+patentAmonog;date
+Identifica la fecha de registro de la patente
+
+patentVmonog;orgname
+Identifica onde fue registrada la patente
+
+patentVmonog;patent
+Identifica el número de la patente
+
+patentVmonog;date
+Identifica la fecha de registro de la patente
+
+patentIcontrib;orgname
+Identifica onde fue registrada la patente
+
+patentIcontrib;patent
+Identifica el número de la patente
+
+patentIcontrib;date
+Identifica la fecha de registro de la patente
+
+patentOcontrib;orgname
+Identifica onde fue registrada la patente
+
+patentOcontrib;patent
+Identifica el número de la patente
+
+patentOcontrib;date
+Identifica la fecha de registro de la patente
+
+patentAcontrib;orgname
+Identifica onde fue registrada la patente
+
+patentAcontrib;patent
+Identifica el número de la patente
+
+patentAcontrib;date
+Identifica la fecha de registro de la patente
+
+patentVcontrib;orgname
+Identifica onde fue registrada la patente
+
+patentVcontrib;patent
+Identifica el número de la patente
+
+patentVcontrib;date
+Identifica la fecha de registro de la patente
+
+xmlbodyBar;sec
+Identifica una sección del texto
+
+xmlbodyBar;p
+Identifica párrafo
+
+secBar;sectitle
+Identifica el título de la sección
+
+secBar;subsec
+Identifica la sub-sección del texto
+
+secBar;p
+Identifica párrafo
+
+subsecBar;sectitle
+Identifica el título de la subsección
+
+subsecBar;subsec
+Identifica la sub-sección del texto
+
+subsecBar;p
+Identifica párrafo
+
+subsec2Bar;sectitle
+Identifica el título de la subsección nível 2
+
+subsec2Bar;p
+Identifica párrafo
+
+list;li
+Identifica los ítenes de la lista
+
+libar;lilabel
+Identifica el etiqueta del iten de la lista
+
+libar;litext
+Identifica el texto del iten de la lista
+
+licensesBar;license
+Identifica el texto de la licencia
+
+licenseBar;licensep
+Identifica el párrafo de la licencia
+
