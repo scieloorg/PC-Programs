@@ -2,7 +2,7 @@ start
 article;#FALSE#
 text;#FALSE#
 
-float
+ifloat
 aff;#TRUE#
 corresp;#FALSE#
 ign;#TRUE#
@@ -143,6 +143,7 @@ surname;#FALSE#
 fname;#FALSE#
 
 back
+ack;#FALSE#
 vancouv;#FALSE#
 iso690;#FALSE#
 abnt6023;#FALSE#
@@ -775,3 +776,5 @@ xref
 
 zipcode
 
+zz
+zzz;#FALSE#

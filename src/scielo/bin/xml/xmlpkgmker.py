@@ -221,7 +221,6 @@ def convert_ent_to_char(content, entities_table=None):
                 while '&' in content:
                     ent = content[content.find('&'):]
                     ent = ent[0:ent.find(';')+1]
-
                     char = entities_table.ent2chr(ent)
                     if char == ent:
                         content = content.replace(ent, ent.replace('&', PREFIX_ENT))
@@ -230,7 +229,12 @@ def convert_ent_to_char(content, entities_table=None):
                         else:
                             not_found_named.append(ent)
                     else:
-                        content = content.replace(ent, char)
+                        try:
+                            content = content.replace(ent, char)
+                        except Exception as e:
+                            print(ent)
+                            print(char)
+                            print(e)
 
         if not_found_named:
             f = open('unknown_ent_named.txt', 'a+')
