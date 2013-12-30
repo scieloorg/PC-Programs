@@ -9,8 +9,8 @@ amonog;Group the elements principais to identify of a monografia
 anonym;Identify the work is of unknow authorship
 apa;Group the elements of bibliography para according to APA
 article;Identify the article
-authgrp;Group date of the individual authors, such as name,sobrename and role
-author;Group the date of individual authors, such as name, sobrename and role
+authgrp;Group date of the individual authors, such as name, surname and role
+author;Group the date of individual authors, such as name,  surname and role
 back;Identify the following part of the body of the text
 bbibcom;Group other elements que are at the following part of the body of the text
 bibcom;Group other elements to identify of the article, such as abstract and key words
@@ -23,7 +23,7 @@ coltitle;Identify the title of a collection or serial of the which the work is p
 colvolid;Identify the volume of a collection
 confgrp;Group the date of a event, such as conference, sininario, congress, etc. contidas in anais and publicações similares
 confname;Identify the name of a event, such as conference, sininario, congress, etc.
-contract;Identify a código numérico or alfanumérico fornecido pela financial organization of a project, of which the article is produto final or parcial
+contract;Identify the contract number provided by the funding institution
 corpauth;Identify the corporative authors responsible for the content intelectual or artístico of the work
 country;Identify the país of publication
 ctreg;Identify the number of the registration of the clinical trial
@@ -71,7 +71,7 @@ medium;Identify the format of the meio in which the document is sendo publicado 
 mmlmath;Math (MathML 2.0 Tag Set)
 no;Identify the number of the citation
 notes;Group date que não are identificados pelos dinais elements of a citation
-oauthor;Group the date of individual authors, such as name, sobrename and role
+oauthor;Group the date of individual authors, such as name,  surname and role
 ocitat;Identify a citation at the bibliography
 ocontrib;Group elements, such as author and title, for bibliographic description of a article of journal or chapter of book
 ocorpaut;Identify the corporative authors
@@ -110,7 +110,7 @@ subresp;Identify the responsabilidades secundarias in a citation, for instance, 
 subsec;Identify the sub-section of the text
 subtitle;Identify the subtitle of the document
 suppl;Identify the number of the suplinento of a journal
-surname;Identify the sobrename of an individual author
+surname;Identify the  surname of an individual author
 tabwrap;Identify date of a table
 texmath;Tex Math Equation
 text;Identify the text

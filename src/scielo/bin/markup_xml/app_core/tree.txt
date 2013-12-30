@@ -61,22 +61,22 @@ aiserial
 sertitle;#FALSE#
 stitle;#FALSE#
 isstitle;#FALSE#
-city;#TRUE#
-state;#TRUE#
-country;#TRUE#
-pubname;#TRUE#
-suppl;#TRUE#
+date;#TRUE#
 volid;#TRUE#
 issueno;#TRUE#
-date;#TRUE#
-extent;#TRUE#
+suppl;#TRUE#
 pages;#TRUE#
-notes;#TRUE#
-issn;#TRUE#
+extent;#TRUE#
 url;#TRUE#
 cited;#TRUE#
 doi;#TRUE#
 pubid;#TRUE#
+issn;#TRUE#
+city;#TRUE#
+state;#TRUE#
+country;#TRUE#
+pubname;#TRUE#
+notes;#TRUE#
 
 amonog
 author;#TRUE#
@@ -84,30 +84,30 @@ corpauth;#TRUE#
 et-al;#FALSE#
 title;#FALSE#
 subtitle;#FALSE#
-subresp;#TRUE#
+date;#TRUE#
 edition;#TRUE#
-confgrp;#TRUE#
+volid;#TRUE#
+part;#TRUE#
+tome;#TRUE#
+coltitle;#TRUE#
+colvolid;#TRUE#
+pages;#TRUE#
+extent;#TRUE#
 city;#TRUE#
 state;#TRUE#
 country;#TRUE#
 pubname;#TRUE#
-date;#TRUE#
-volid;#TRUE#
-part;#TRUE#
-tome;#TRUE#
-extent;#TRUE#
-pages;#TRUE#
-coltitle;#TRUE#
-colvolid;#TRUE#
-report;#TRUE#
-notes;#TRUE#
-isbn;#TRUE#
+patgrp;#FALSE#
+confgrp;#TRUE#
 thesis;#TRUE#
+report;#TRUE#
+isbn;#TRUE#
 url;#TRUE#
 cited;#TRUE#
 doi;#TRUE#
 pubid;#TRUE#
-patgrp;#FALSE#
+subresp;#TRUE#
+notes;#TRUE#
 
 anonym
 
@@ -151,6 +151,7 @@ apa;#FALSE#
 other;#FALSE#
 fngrp;#TRUE#
 licenses;#FALSE#
+bbibcom;#FALSE#
 
 bbibcom
 abstract;#TRUE#
@@ -187,13 +188,13 @@ coltitle
 colvolid
 
 confgrp
-sponsor;#TRUE#
 confname;#TRUE#
 no;#TRUE#
 date;#TRUE#
 city;#TRUE#
 state;#TRUE#
 country;#TRUE#
+sponsor;#TRUE#
 
 confname
 
@@ -426,21 +427,21 @@ oiserial
 sertitle;#FALSE#
 stitle;#FALSE#
 isstitle;#FALSE#
-othinfo;#FALSE#
-city;#TRUE#
-country;#TRUE#
-pubname;#TRUE#
+date;#TRUE#
 volid;#TRUE#
 issueno;#TRUE#
 suppl;#TRUE#
 pages;#TRUE#
 extent;#TRUE#
-date;#TRUE#
 issn;#TRUE#
 url;#TRUE#
 cited;#TRUE#
 doi;#TRUE#
 pubid;#TRUE#
+othinfo;#FALSE#
+city;#TRUE#
+country;#TRUE#
+pubname;#TRUE#
 
 omonog
 oauthor;#TRUE#
@@ -448,27 +449,27 @@ ocorpaut;#TRUE#
 et-al;#FALSE#
 title;#FALSE#
 subtitle;#FALSE#
-confgrp;#FALSE#
-thesis;#FALSE#
 date;#FALSE#
 pages;#FALSE#
+extent;#TRUE#
 edition;#TRUE#
+thesis;#FALSE#
+confgrp;#FALSE#
+report;#TRUE#
+patgrp;#FALSE#
 city;#TRUE#
 state;#TRUE#
 country;#TRUE#
 pubname;#TRUE#
-extent;#TRUE#
 coltitle;#TRUE#
 volid;#TRUE#
 part;#TRUE#
-isbn;#TRUE#
-report;#TRUE#
-othinfo;#TRUE#
 url;#TRUE#
 cited;#TRUE#
 doi;#TRUE#
 pubid;#TRUE#
-patgrp;#FALSE#
+isbn;#TRUE#
+othinfo;#TRUE#
 
 onbehalf
 

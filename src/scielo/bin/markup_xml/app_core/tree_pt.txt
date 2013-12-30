@@ -16,13 +16,13 @@ bbibcom;Agrupa elementos complementares que estão na parte posterior ao corpo do
 bibcom;Agrupa elementos complementares para a identificação do artigo, como resumo e palavras-chave
 body;Identifica o corpo do texto do artigo sem detalhes
 caption;Identifica a legenda da figura
-cited;Identifica a data em que o artigo eletrônico foi acessado
+cited;Identifica a data em que o documento eletrônico foi acessado
 city;Identifica a cidade de publicação
 cltrial;Identifica dados de ensaios clínicos
 coltitle;Identifica o título de uma coleção ou série da qual uma obra faz parte
 colvolid;Identifica o volume de uma coleção
-confgrp;Agrupa os dados de um evento como conferencia, seminario, congresso, etc. contidas em anais e publicações similares
-confname;Identifica o nome de um evento como conferencia, seminario, congresso, etc.
+confgrp;Agrupa os dados de um evento como conferência, seminário, congresso, etc. contidas em anais e publicações similares
+confname;Identifica o nome de um evento como conferência, seminário, congresso, etc.
 contract;Identifica o número do projeto ou contrato fornecido pela instituição financiadora
 corpauth;Identifica os autores corporativos responsáveis pelo conteúdo intelectual ou artístico do trabalho
 country;Identifica o país de publicação
