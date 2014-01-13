@@ -1,4 +1,9 @@
-﻿4.0.072 - 17/12/2013
+﻿4.0.073 - 13/01/2014
+=======
+ - response and sub-article
+ - glossary, def-list, app
+
+4.0.072 - 17/12/2013
 =======
  - Title Manager and Markup XML: print issn e e-issn (#54)
  - Title Manager - subjects categories, mandatory
