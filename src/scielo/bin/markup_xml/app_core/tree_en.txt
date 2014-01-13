@@ -8,6 +8,7 @@ aiserial;Group elements of identification específicos of a serial publication or
 amonog;Group the elements principais to identify of a monografia
 anonym;Identify the work is of unknow authorship
 apa;Group the elements of bibliography para according to APA
+app;Identify an appendix
 article;Identify the article
 authgrp;Group date of the individual authors, such as name, surname and role
 author;Group the date of individual authors, such as name,  surname and role
@@ -137,3 +138,8 @@ vtitle;Identify a group of title of the document in a citation according to Vanc
 xmlbody;Identify the body of the article with details
 xref;Identify cross-reference of tables, figures, etc
 zipcode;ZIP Code of the affiliation
+glossary;Identify a glossary
+deflist;Identify a list of definitions
+defitem;Identify an item of a list of definitions
+term;Identify a text which is being defined
+def;Identify the definition of a term

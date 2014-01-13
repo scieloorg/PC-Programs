@@ -8,6 +8,7 @@ aiserial;Agrupa elementos de identificación específicos de una publicación seria
 amonog;Agrupa los elementos principais para la identificación de una monografía
 anonym;Identifica que la obra  es de autoría desconocida
 apa;Agrupa los elementos de bibliografía para de acuerdo con APA
+app;Identifica un apéndice
 article;Identifica el artículo
 authgrp;Agrupa datos de los autores individuales, como nombre, apellido y papel
 author;Agrupa los datos de autores individuales, como nombre, apellido y papel
@@ -137,3 +138,8 @@ vtitle;Identifica un grupo de título del documento en una  cita de acuerdo con V
 xmlbody;Identifica el cuerpo del artículo con detalles
 xref;Identifica cita cruzada de tablas, figuras, etc
 zipcode;Código postal de la afiliación
+glossary;Identifica glossario
+deflist;Identifica una lista de definiciones
+defitem;Identifica un iten de la lista de definiciones
+term;Identifica un texto que está siendo definido
+def;Identifica la definición de un término
