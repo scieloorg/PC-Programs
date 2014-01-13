@@ -190,7 +190,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="body"/>
 
 	<xsl:template
-		match="sig |  p | sec | bold  | sub | sup |  label | subtitle | edition |  issn | italic | corresp | ack | sig-block">
+		match="app | term | def | response | sig |  p | sec | bold  | sub | sup | label | subtitle | edition |  issn | italic | corresp | ack | sig-block">
 		<xsl:param name="id"/>
 
 		<xsl:element name="{name()}">
@@ -199,7 +199,32 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
-
+	
+	<xsl:template match="@resptp">
+		<xsl:attribute name="response-type"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
+	
+	<xsl:template match="subart">
+		<sub-article>
+			<xsl:apply-templates select="@*"/>
+			<xsl:apply-templates select="*"/>
+		</sub-article>
+	</xsl:template>
+	
+	<xsl:template match="deflist">
+		<def-list>
+			<xsl:apply-templates select="@*"/>
+			<xsl:apply-templates select="*"/>
+		</def-list>
+	</xsl:template>
+	
+	<xsl:template match="defitem">
+		<def-item>
+			<xsl:apply-templates select="@*"/>
+			<xsl:apply-templates select="*"/>
+		</def-item>
+	</xsl:template>
+	
 	<xsl:template match="@corresp | @deceased">
 		<xsl:if test=".='yes'">
 			<xsl:if test="not($fn[@fntype=name()])">
@@ -285,6 +310,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="front"/>
 			<xsl:apply-templates select="." mode="body"/>
 			<xsl:apply-templates select="." mode="back"/>
+			<xsl:apply-templates select="response | subart"/>
 		</article>
 	</xsl:template>
 	<xsl:template match="*" mode="front">
