@@ -3,10 +3,29 @@
     @dtd-version 120
     @article-type 71 
     @xml:lang 40 en    
-    .//article-meta/related-article[@ext-link-type='doi'] 241
+    .//article-meta/related-object 241
+      @id k
+      @document-id i
+      @document-id-type n
+      @document-type t
+      @object-id i
+      @object-id-type n
+      @object-type t
+      @source-id i
+      @source-id-type n
+      @source-type t
+      @link-type r
+    .//article-meta/related-article[not(@specific-use)] 241
+      @id k
       @xlink:href i
-      @ext-link-type t LK_DOI_
-    .//article-meta/related-article[@specific-use='processing-only'] 241
+      @ext-link-type n
+      . t article  
+    .//article-meta/related-article[@ext-link-type='doi'] 241
+      @id k
+      @xlink:href i
+      @ext-link-type n
+      . t article
+    .//article-meta/related-article[@related-article-type='press-release' and @specific-use='processing-only'] 241
       @id i
       . t pr
     .//journal-meta//journal-title 100
@@ -27,6 +46,7 @@
       name/prefix p
       @contrib-type r ND
       xref[@ref-type='aff']/@rid 1
+      contrib-id[@contrib-id-type='orcid'] k
     .//article-meta//contrib/collab 11
     .//article-meta/title-group 12
       article-title _

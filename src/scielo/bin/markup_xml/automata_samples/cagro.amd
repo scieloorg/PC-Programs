@@ -1,0 +1,85 @@
+acitat
+a1
+a4
+a1;a2;NT;acontrib;"."
+a1;a3;NT;acontrib;". In:"
+a1;a4;NT;amonog;"."
+a1;a4;NT;amonog;"p."
+a2;a4;NT;aiserial;"."
+a3;a4;NT;amonog;"."
+
+acontrib
+ac1
+ac6
+ac1;ac1;NT;author;";"
+ac1;ac2;NT;author;" "
+ac1;ac3;NT;author;" "
+ac2;ac3;T;et-al;". " 
+ac3;ac6;T;title;".";":";". In:"
+ac3;ac6;T;title;". In:"
+ac3;ac5;T;title;":";"."
+ac4;ac6;T;title;".";":";". In:"
+ac4;ac6;T;title;". In:"
+ac4;ac5;T;title;":";"."
+ac5;ac6;T;subtitle;".";". In:"
+ac5;ac6;T;subtitle;". In:"
+
+author
+a1
+a3
+a1;a2;T;surname;","
+a2;a3;T;fname;";"
+a2;a3;T;fname;"."
+a2;a3;T;fname;"et al."
+a2;a3;NT;fname;" "
+a2;a3;NT;fname;" "
+
+fname
+f1
+f3
+f1;f2;T;ign;" "
+f2;f3;T;ign;" "
+
+aiserial
+ai1
+ai7
+ai1;ai2;T;sertitle;","
+ai2;ai3;T;city;", v."
+ai3;ai4;T;volid;", n."
+ai3;ai5;T;volid;", p."
+ai4;ai5;T;issueno;", p. "
+ai4;ai6;T;issueno;","
+ai5;ai6;T;pages;","
+ai6;ai7;T;date;"."
+
+amonog
+am1
+am11
+am1;am1;NT;author;";"
+am1;am3;NT;author;" "
+am1;am2;NT;author;" "
+am2;am3;T;et-al;". "
+am3;am5;T;title;"."
+am3;am4;T;title;":"
+am4;am5;T;subtitle;"."
+am5;am6;T;edition;"ed."
+am5;am6;T;edition;".Ed."
+am5;am6;T;edition;".ed."
+am5;am7;T;city;":"
+am6;am7;T;city;":"
+am7;am8;T;pubname;","
+am8;am9;T;date;"."
+am8;am9;T;date;". p."
+am8;am11;T;date;"."
+am9;am10;T;extent;"p."
+am9;am11;T;extent;"p."
+am9;am10;T;pages;"."
+am9;am11;T;pages;"."
+am10;am11;NT;thesis;"."
+
+thesis
+t1
+t4
+t1;t2;T;degree;") - "
+t2;t3;T;orgname;","
+t3;t4;T;date;"."

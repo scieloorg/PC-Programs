@@ -1,0 +1,1761 @@
+start;article
+Identify the article
+
+start;text
+Identify the text
+
+article;deposit
+Identify the date sobre the repository of articles
+
+article;front
+Identify the previous part of the body of the article, it means, titles, authors, abstracts, key words
+
+article;xmlbody
+Identify the body of the article with details
+
+article;body
+Identify the body of the text of the article without details
+
+article;back
+Identify the following part of the body of the article
+
+textM;doi
+Identify the DOI of the document
+
+textM;related
+Identify related documents
+
+textM;titlegrp
+Group the titles of the document
+
+textM;authgrp
+Group the individual or corporative authors of the document
+
+textM;xmlbody
+Identify the body of the article with details
+
+textM;back
+Identify the following part of the body of the text
+
+ifloat;aff
+Identify the organization to which the author is related
+
+ifloat;ign
+Ignored text
+
+ifloat;tabwrap
+Identify date of a table
+
+ifloat;figgrps
+Identify figures compostas (Fig 1A, 1B,...)
+
+ifloat;figgrp
+Identify date of a figure
+
+ifloat;equation
+Identify date of a formule
+
+ifloat;cltrial
+Identify date of clinical trials
+
+ifloat;list
+Identify the list
+
+ifloat;xref
+Identify cross-reference of tables, figures, etc
+
+ifloat;uri
+Identify a link
+
+ifloat;sciname
+Identify names científicos
+
+cltrial;ctreg
+Identify the number of the registration of the clinical trial
+
+tabwrap;label
+Identify the label of the table (e.g. Table 1)
+
+tabwrap;caption
+Identify the caption of the table
+
+tabwrap;graphic
+Identify the imagin of the table
+
+tabwrap;notes
+Identify the notas of the table
+
+figgrp;label
+Identify the label of the figure (e.g. Figure 1)
+
+figgrp;caption
+Identify the caption of the figure
+
+figgrp;graphic
+Identify the imagin of the figure
+
+figgrps;label
+Identify the label of the figure (e.g. Figure 1)
+
+figgrps;caption
+Identify the caption of the figure
+
+figgrps;figgrp
+Identify each part of the grouped figure
+
+equation;graphic
+Identify the imagin of the equation
+
+equation;texmath
+Tex Math Equation
+
+equation;mmlmath
+Math (MathML 2.0 Tag Set)
+
+aff;city
+Identify the name of the city of the affiliation
+
+aff;state
+Identify the state/region (local) of the city of the affiliation
+
+aff;country
+Identify the país of the affiliation
+
+aff;zipcode
+ZIP Code of the affiliation
+
+aff;email
+Electronic address of the author
+
+authgrpText;author
+Group date of the individual authors, such as name,sobrename and role
+
+authgrpText;corpauth
+Group date of the corporative authors
+
+authorText;fname
+Identify the first names of an individual author
+
+authorText;surname
+Identify the sobrename of an individual author
+
+corpauthText;orgname
+Identify the name of the corporative author
+
+corpauthText;orgdiv
+Identify the division of the corporative authoro
+
+titlegrpText;title
+Identify the title of the document
+
+titlegrpText;subtitle
+Identify the subtitle of the document
+
+front;doi
+Identify the DOI of the document
+
+front;related
+Identify date of related documents
+
+front;titlegrp
+Group the titles of the document
+
+front;authgrp
+Group date of the individual authors, such as name,sobrename and role
+
+front;bibcom
+Group other elements to identify of the article, such as abstract and key words
+
+titlegrpFront;title
+Identify the title of the document
+
+titlegrpFront;subtitle
+Identify the subtitle of the document
+
+authgrpFront;author
+Group the date of individual authors, such as name,sobrename and role
+
+authgrpFront;corpauth
+Identify the corporative authors
+
+authorFront;fname
+Identify the first names of an individual author
+
+authorFront;surname
+Identify the sobrename of an individual author
+
+corpauthFront;orgname
+Identify the name of the corporative author of the document
+
+corpauthFront;orgdiv
+Identify the division of the corporative author of the document
+
+bibcomFront;abstract
+Identify the abstract of the article
+
+bibcomFront;keygrp
+Group the key words of the article
+
+bibcomFront;confgrp
+Group the date of a event, such as conference, sininario, congress, etc. contidas in anais and publicações similares
+
+bibcomFront;report
+Group date of the report or project of which the article is partial or final product
+
+bibcomFront;thesgrp
+Group date of a thesis, in a citation
+
+bibcomFront;hist
+Identify the history of the publication of a article in a journal (dates of reception, revision and approval)
+
+keygrpBibcom;keyword
+Identify the key words of the document
+
+keygrpBibcom;subkey
+Identify the used forms para qualificar the key words or descriptors
+
+keygrpBibcom;dperiod
+Identify the período of tinpo tratado at the content of the document
+
+confgrpBibcom;sponsor
+Identify the sponsor or financial organization of a project or event
+
+confgrpBibcom;confname
+Identify the name of a event, such as conference, sininario, congress, etc.
+
+confgrpBibcom;no
+Identify the number of the event
+
+confgrpBibcom;date
+Identify the publication date of the event
+
+confgrpBibcom;city
+Identify the city of the event
+
+confgrpBibcom;state
+Identify the state/region (local) of the event
+
+confgrpBibcom;country
+Identify the país of the event
+
+sponsorBibcom;orgname
+Identify the name of the financial organization of the event
+
+sponsorBibcom;orgdiv
+Identify the division of the financial organization of the event
+
+reportBibcom;rsponsor
+Identify the sponsor or financial organization of a project or event
+
+reportBibcom;projname
+Identify the name of the project of which the article is partial or final product
+
+rsponsorBibcom;orgname
+Identify the name of the financial organization
+
+rsponsorBibcom;orgdiv
+Identify the division of the financial organization
+
+rsponsorBibcom;contract
+Identify a código numérico or alfanumérico fornecido pela financial organization of a project, of which the article is produto final or parcial
+
+thesgrpBibcom;city
+Identify the city of the thesis
+
+thesgrpBibcom;state
+Identify the state/region (local) of the thesis
+
+thesgrpBibcom;country
+Identify the país of the thesis
+
+thesgrpBibcom;date
+Identify the date of the thesis
+
+thesgrpBibcom;degree
+ Identify the degree of a thesis, such as Master, Doctor etc
+
+thesgrpBibcom;orgname
+Identify the name of the organization of the thesis
+
+thesgrpBibcom;orgdiv
+Identify the division of the organization of the thesis
+
+histBibcom;received
+Identify the date in which the article was submitted to the peer review process
+
+histBibcom;revised
+Identify the date in which inicio-se the revision of the article pelo peer review process
+
+histBibcom;accepted
+Identify the date in which the article was aprovado para the publication
+
+backBar;bbibcom
+Group other elements que are at the following part of the body of the text
+
+backBar;vancouv
+Group the elinentos of  bibliography according to Vancouver
+
+backBar;iso690
+Group the elinentos of  bibliography according to ISO 690/87
+
+backBar;abnt6023
+Group the elinentos of  bibliography  according to NBR 6023/89 of the ABNT
+
+backBar;apa
+Group the elinentos of  bibliography according to APA
+
+backBar;other
+Group the elinentos of  bibliography que não seguin nenhuma of the dinais normas
+
+backBar;licenses
+Group the elinentos of license
+
+bbibcomBar;abstract
+Identify the abstract of the article
+
+bbibcomBar;keygrp
+Group elements which indicate the subject of the document
+
+bbibcomBar;confgrp
+Group the date of a event, such as conference, sininario, congress, etc. contidas in anais and publicações similares
+
+bbibcomBar;report
+Group date of the report or project of which the article is partial or final product
+
+bbibcomBar;thesgrp
+Group date of a thesis, in a citation
+
+bbibcomBar;hist
+Identify the history of the publication of a article in a journal (dates of reception, revision and approval)
+
+bbibcomBar;fngrp
+Identify a nota of rodapé
+
+bbibcomBar;title
+Identify the title of the document
+
+bbibcomBar;subtitle
+Identify the subtitle of the document
+
+keygrpBbibcom;keyword
+Identify the key words of the document
+
+keygrpBbibcom;subkey
+Identify the used forms para qualificar the key words or descriptors
+
+keygrpBbibcom;dperiod
+Identify the período of tinpo tratado at the content of the document
+
+confgrpBbibcom;sponsor
+Identify the sponsor or financial organization of a project or event
+
+confgrpBbibcom;confname
+Identify the name of a event, such as conference, sininario, congress, etc.
+
+confgrpBbibcom;no
+Identify the number of the event
+
+confgrpBbibcom;date
+Identify the publication date of the event
+
+confgrpBbibcom;city
+Identify the city of the event
+
+confgrpBbibcom;state
+Identify the state/region (local) of the event
+
+confgrpBbibcom;country
+Identify the país of the event
+
+sponsorBbibcom;orgname
+ Identify the name of the financial organization
+
+sponsorBbibcom;orgdiv
+Identify the division of the financial organization
+
+reportBbibcom;rsponsor
+Identify the sponsor or financial organization of a project or event
+
+reportBbibcom;projname
+Identify the name of the project of which the article is partial or final product
+
+rsponsorBbibcom;orgname
+Identify the name of the financial organization
+
+rsponsorBbibcom;orgdiv
+Identify the division of the financial organization
+
+rsponsorBbibcom;contract
+Identify a código numérico or alfanumérico fornecido pela financial organization of a project, of which the article is produto final or parcial
+
+thesgrpBbibcom;city
+Identify the city of the thesis
+
+thesgrpBbibcom;state
+Identify the state/region (local) of the thesis
+
+thesgrpBbibcom;country
+Identify the país of the thesis
+
+thesgrpBbibcom;date
+Identify the date of the thesis
+
+thesgrpBbibcom;degree
+ Identify the degree of a thesis, such as Master, Doctor etc
+
+thesgrpBbibcom;orgname
+Identify the name of the organization of the thesis
+
+thesgrpBbibcom;orgdiv
+Identify the division of the organization of the thesis
+
+histBbibcom;received
+Identify the date in which the article was submitted to the peer review process
+
+histBbibcom;revised
+Identify the date in which inicio-se the revision of the article pelo peer review process
+
+histBbibcom;accepted
+Identify the date in which the article was aprovado para the publication
+
+other;ocitat
+Identify a citation at the bibliography
+
+ocitat;no
+Identify the number of the citation
+
+ocitat;ocontrib
+Group elinentos, such as author and title, for bibliographic description of a article of journal or chapter of book
+
+ocitat;omonog
+Group the elinentos principais to identify of a monografia
+
+ocitat;oiserial
+Group elinentos of identification específicos of a serial publication or journal
+
+ocitat;confgrp
+Group the date of a event, such as conference, sininario, congress, etc. contidas in anais and publicações similares
+
+ocontrib;oauthor
+Group the date of the individual authors, such as name, sobrename and role
+
+ocontrib;ocorpaut
+Identify the corporative authors
+
+ocontrib;et-al
+Indicate non cited authors
+
+ocontrib;title
+Identify the title of the document
+
+ocontrib;subtitle
+Identify the subtitle of the document
+
+ocontrib;date
+Identify the publication date
+
+ocontrib;pages
+Identify the pagination
+
+ocontrib;patgrp
+Group the date of patent
+
+oauthorOcontrib;fname
+Identify the first names of an individual author
+
+oauthorOcontrib;surname
+Identify the sobrename of an individual author
+
+oauthorOcontrib;anonym
+Identify the work is of unknow authorship
+
+oauthorOcontrib;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+ocorpautContrib;orgname
+Identify the name of the corporative author
+
+ocorpautContrib;orgdiv
+Identify the division of the corporative author
+
+ocorpautContrib;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+omonog;oauthor
+Group the date of individual authors, such as name, sobrename and role
+
+omonog;ocorpaut
+Identify the corporative authors
+
+omonog;et-al
+Indicate non cited authors
+
+omonog;title
+Identify the title of the document
+
+omonog;subtitle
+Identify the subtitle of the document
+
+omonog;confgrp
+Group the date of a event, such as conference, sininario, congress, etc. contidas in anais and publicações similares
+
+omonog;thesis
+Group date of a thesis, in a citation
+
+omonog;date
+Identify the date of the thesis
+
+omonog;pages
+Identify the pagination
+
+omonog;edition
+Identify the number of the edition
+
+omonog;city
+Identify the city of publication
+
+omonog;state
+Identify the state/region (local) of publication
+
+omonog;country
+Identify the país of publication
+
+omonog;pubname
+Identify the casa publicadora
+
+omonog;extent
+Identify the extension of the work, such as the number of pages or volumes
+
+omonog;coltitle
+Identify the title of a collection or serial of the which the work is part of
+
+omonog;volid
+Identify the volume to which belongs a document
+
+omonog;isbn
+Identify the Internacional Standard Book Number (ISBN)
+
+omonog;othinfo
+Group date que não are identificados pelos dinais elinentos of a citation
+
+omonog;url
+Identify the electronic address of the document
+
+omonog;doi
+Identify, in a citation, doi of the document
+
+omonog;cited
+Identify the date in which the article electronic was accessed
+
+omonog;patgrp
+Group the date of patent
+
+oauthorOmonog;fname
+Identify the first names of an individual author
+
+oauthorOmonog;surname
+Identify the sobrename of an individual author
+
+oauthorOmonog;anonym
+Identify the work is of unknow authorship
+
+oauthorOmonog;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+ocorpautOmonog;orgname
+Identify the name of the corporative author
+
+ocorpautOmonog;orgdiv
+Identify the division of the corporative author
+
+ocorpautOmonog;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+confgrpOmonog;sponsor
+Identify the sponsor or financial organization of a project or event
+
+confgrpOmonog;confname
+Identify the name of a event, such as conference, sininario, congress, etc.
+
+confgrpOmonog;no
+Identify the number of the event
+
+confgrpOmonog;date
+Identify the publication date of the event
+
+confgrpOmonog;city
+Identify the city of the event
+
+confgrpOmonog;state
+Identify the state/region (local) of the event
+
+confgrpOmonog;country
+Identify the país of the event
+
+sponsorOmonog;orgname
+Identify the name of the financial organization
+
+sponsorOmonog;orgdiv
+Identify the division of the financial organization
+
+thesisOmonog;city
+Identify the city of the thesis
+
+thesisOmonog;state
+Identify the state/region (local) of the thesis
+
+thesisOmonog;country
+Identify the país of the thesis
+
+thesisOmonog;date
+Identify the date of the thesis
+
+thesisOmonog;degree
+ Identify the degree of a thesis, such as Master, Doctor etc
+
+thesisOmonog;orgname
+Identify the name of the organization of the thesis
+
+thesisOmonog;orgdiv
+Identify the division of the organization of the thesis
+
+oiserial;sertitle
+Identify the title of a serial publication or journal
+
+oiserial;stitle
+Group the forma abreviada and padronizada of the title of a journal or serial publication
+
+oiserial;isstitle
+Identify the title of a fascículo of serial publication or journal
+
+oiserial;othinfo
+Group date que não are identificados pelos dinais elinentos of a citation
+
+oiserial;city
+Identify the city of publication
+
+oiserial;country
+Identify the país of publication
+
+oiserial;pubname
+Identify the casa publicadora
+
+oiserial;volid
+Identify the volume to which belongs a document
+
+oiserial;issueno
+Identify the number of a fascículo
+
+oiserial;suppl
+Identify the number of the suplinento of a journal
+
+oiserial;pages
+Identify the pagination
+
+oiserial;extent
+Identify the extension of the work, such as the number of pages or volumes
+
+oiserial;date
+Identify the publication date
+
+oiserial;issn
+Identify the Internacional Standard Serial  Number (ISSN)
+
+oiserial;url
+Identify the electronic address of the document
+
+oiserial;doi
+Identify, in a citation, doi of the document
+
+oiserial;cited
+Identify the date in which the article electronic was accessed
+
+confgrpOcitat;sponsor
+Identify the sponsor or financial organization of a project or event
+
+confgrpOcitat;confname
+Identify the name of a event, such as conference, sininario, congress, etc.
+
+confgrpOcitat;no
+Identify the number of the event
+
+confgrpOcitat;date
+Identify the publication date of the event
+
+confgrpOcitat;city
+Identify the city of the event
+
+confgrpOcitat;state
+Identify the state/region (local) of the event
+
+confgrpOcitat;country
+Identify the país of the event
+
+sponsorOcitat;orgname
+Identify the name of the financial organization
+
+sponsorOcitat;orgdiv
+Identify the division of the financial organization
+
+vancouv;vcitat
+Identify a citation at the bibliography
+
+vcitat;no
+Identify the number of the citation
+
+vcitat;vcontrib
+Group elinentos, such as author and title, for bibliographic description of a article of journal or chapter of book
+
+vcitat;viserial
+Group elinentos of identification específicos of a serial publication or journal
+
+vcitat;vmonog
+Group the elinentos principais to identify of a monografia
+
+vcontrib;author
+Group the date of individual authors, such as name,sobrename and role
+
+vcontrib;corpauth
+Identify the corporative authors responsible for the content intelectual or artístico of the work
+
+vcontrib;et-al
+Indicate non cited authors
+
+vcontrib;vtitle
+Identify a group of title of the document in a citation according to Vancouver
+
+vcontrib;patgrp
+Group the date of patent
+
+authorVcontrib;fname
+Identify the first names of an individual author
+
+authorVcontrib;surname
+Identify the sobrename of an individual author
+
+authorVcontrib;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+corpauthVcontrib;orgname
+Identify the name of the corporative author
+
+corpauthVcontrib;orgdiv
+Identify the division of the corporative author
+
+corpauthVcontrib;previous
+Identify the author of the citation is the same author of the previous reference
+
+vtitleVcontrib;title
+Identify the title of the document
+
+vtitleVcontrib;subtitle
+Identify the subtitle of the document
+
+vtitleVcontrib;tp
+Identify the type of publication in a citation, for instance, an editorial or a revision of literature
+
+viserial;vstitle
+Group the forma abreviada and padronizada of the title of a journal or serial publication
+
+viserial;date
+Identify the publication date
+
+viserial;inpress
+Identify the publishing of the document is in progress
+
+viserial;volid
+Identify the volume to which belongs a document
+
+viserial;issueno
+Identify the number of a fascículo
+
+viserial;suppl
+Identify the number of the suplinento of a journal
+
+viserial;part
+Identify the part of the volume or fascículo
+
+viserial;extent
+Identify the extension of the work, such as the number of pages or volumes
+
+viserial;pages
+Identify the pagination
+
+viserial;url
+Identify the electronic address of the document
+
+viserial;doi
+Identify, in a citation, doi of the document
+
+viserial;cited
+Identify the date in which the article electronic was accessed
+
+vstitle;stitle
+Group the forma abreviada and padronizada of the title of a journal or serial publication
+
+vstitle;tp
+Identify the type of publication in a citation, for instance, an editorial or a revision of literature
+
+vmonog;author
+Group the date of individual authors, such as name,sobrename and role
+
+vmonog;corpauth
+Identify the corporative authors responsible for the content intelectual or artístico of the work
+
+vmonog;et-al
+Indicate non cited authors
+
+vmonog;vtitle
+Identify a group of title of the document in a citation according to Vancouver
+
+vmonog;edition
+Identify the number of the edition
+
+vmonog;version
+Identify se the publication is in format electronic or role
+
+vmonog;confgrp
+Group the date of a event, such as conference, sininario, congress, etc. contidas in anais and publicações similares
+
+vmonog;city
+Identify the city of publication
+
+vmonog;state
+Identify the state/region (local) of publication
+
+vmonog;pubname
+Identify the casa publicadora
+
+vmonog;inpress
+Identify the citation citada ainda is in publishing
+
+vmonog;date
+Identify the publication date
+
+vmonog;pages
+Identify the pagination
+
+vmonog;report
+Group date of the report or project of which the article is partial or final product
+
+vmonog;thesis
+Group date of a thesis, in a citation
+
+vmonog;url
+Identify the electronic address of the document
+
+vmonog;doi
+Identify, in a citation, doi of the document
+
+vmonog;cited
+Identify the date in which the article electronic was accessed
+
+vmonog;patgrp
+Group the date of patent
+
+authorVmonog;fname
+Identify the first names of an individual author
+
+authorVmonog;surname
+Identify the sobrename of an individual author
+
+authorVmonog;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+corpautVmonog;orgname
+Identify the name of the corporative author
+
+corpautVmonog;orgdiv
+Identify the division of the corporative author
+
+corpautVmonog;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+vtitleVmonog;title
+Identify the title of the document
+
+vtitleVmonog;subtitle
+Identify the subtitle of the document
+
+vtitleVmonog;tp
+Identify the type of publication in a citation, for instance, an editorial or a revision of literature
+
+confgrpVmonog;sponsor
+Identify the sponsor or financial organization of a project or event
+
+confgrpVmonog;confname
+Identify the name of a event, such as conference, sininario, congress, etc.
+
+confgrpVmonog;no
+Identify the number of the event
+
+confgrpVmonog;date
+Identify the publication date of the event
+
+confgrpVmonog;city
+Identify the city of the event
+
+confgrpVmonog;state
+Identify the state/region (local) of the event
+
+confgrpVmonog;country
+Identify the país of the event
+
+sponsorVmonog;orgname
+Identify the name of the financial organization
+
+sponsorVmonog;orgdiv
+Identify the division of the financial organization
+
+reportVmonog;rsponsor
+Identify the sponsor or financial organization of a project or event
+
+reportVmonog;projname
+Identify the name of the project of which the article is partial or final product
+
+rsponsorVmonog;orgname
+Identify the name of the financial organization
+
+rsponsorVmonog;orgdiv
+Identify the division of the financial organization
+
+rsponsorVmonog;contract
+Identify a código numérico or alfanumérico fornecido pela financial organization of a project, of which the article is produto final or parcial
+
+thesisVmonog;city
+Identify the city of the thesis
+
+thesisVmonog;state
+Identify the state/region (local) of the thesis
+
+thesisVmonog;country
+Identify the país of the thesis
+
+thesisVmonog;date
+Identify the date of the thesis
+
+thesisVmonog;degree
+ Identify the degree of a thesis, such as Master, Doctor etc
+
+thesisVmonog;orgname
+Identify the name of the organization of the thesis
+
+thesisVmonog;orgdiv
+Identify the division of the organization of the thesis
+
+apa;pcitat
+Identify a citation at the bibliography
+
+pcitat;no
+Identify the number of the citation
+
+pcitat;pcontrib
+Group elinentos, such as author and title, for bibliographic description of a article of journal or chapter of book
+
+pcitat;pmonog
+Group the elinentos principais to identify of a monografia
+
+pcitat;piserial
+Group elinentos of identification específicos of a serial publication or journal
+
+pcontrib;author
+Group the date of individual authors, such as name, sobrename and role
+
+pcontrib;corpauth
+Identify the corporative authors responsible for the content intelectual or artístico of the work
+
+pcontrib;date
+Identify the publication date
+
+pcontrib;title
+Identify the title of the document
+
+pcontrib;subtitle
+Identify the subtitle of the document
+
+authorpContrib;fname
+Identify the first names of an individual author
+
+authorpContrib;surname
+Identify the sobrename of an individual author
+
+corpautpContrib;orgname
+Identify the name of the corporative author
+
+corpautpContrib;orgdiv
+Identify the division of the corporative author
+
+authorpMonog;fname
+Identify the first names of an individual author
+
+authorpMonog;surname
+Identify the sobrename of an individual author
+
+corpautpMonog;orgname
+Identify the name of the corporative author
+
+corpautpMonog;orgdiv
+Identify the division of the corporative author
+
+piserial;sertitle
+Identify the title of a serial publication or journal
+
+piserial;volid
+Identify the volume to which belongs a document
+
+piserial;issueno
+Identify the number of a fascículo
+
+piserial;suppl
+Identify the number of the suplinento of a journal
+
+piserial;pages
+Identify the pagination
+
+piserial;cited
+Identify the date in which the article electronic was accessed
+
+piserial;url
+Identify the electronic address of the document
+
+piserial;doi
+Identify, in a citation, doi of the document
+
+pmonog;author
+Group the date of individual authors, such as name,sobrename and role
+
+pmonog;corpauth
+Identify the corporative authors responsible for the content intelectual or artístico of the work
+
+pmonog;date
+Identify the publication date
+
+pmonog;title
+Identify the title of the document
+
+pmonog;subtitle
+Identify the subtitle of the document
+
+pmonog;thesis
+Group date of a thesis, in a citation
+
+pmonog;coltitle
+Identify the title of a collection or serial of the which the work is part of
+
+pmonog;colvolid
+Identify the volume of a collection
+
+pmonog;notes
+Group date que não are identificados pelos dinais elinentos of a citation
+
+pmonog;pages
+Identify the pagination
+
+pmonog;edition
+Identify the number of the edition
+
+pmonog;city
+Identify the city of publication
+
+pmonog;country
+Identify the país of publication
+
+pmonog;pubname
+Identify the casa publicadora
+
+pmonog;cited
+Identify the date in which the article electronic was accessed
+
+pmonog;url
+Identify the electronic address of the document
+
+pmonog;doi
+Identify, in a citation, doi of the document
+
+thesisPmonog;degree
+ Identify the degree of a thesis, such as Master, Doctor etc
+
+thesisPmonog;orgname
+Identify the name of the organization of the thesis
+
+thesisPmonog;city
+Identify the city of the thesis
+
+abnt6023;acitat
+Identify a citation at the bibliography
+
+acitat;no
+Identify the number of the citation
+
+acitat;acontrib
+Group elinentos, such as author and title, for bibliographic description of a article of journal or chapter of book
+
+acitat;amonog
+Group the elinentos principais to identify of a monografia
+
+acitat;aiserial
+Group elinentos of identification específicos of a serial publication or journal
+
+acitat;confgrp
+Group the date of a event, such as conference, sininario, congress, etc. contidas in anais and publicações similares
+
+acontrib;author
+Group the date of individual authors, such as name, sobrename and role
+
+acontrib;corpauth
+Identify the corporative authors responsible for the content intelectual or artístico of the work
+
+acontrib;et-al
+Indicate non cited authors
+
+acontrib;title
+Identify the title of the document
+
+acontrib;subtitle
+Identify the subtitle of the document
+
+acontrib;volid
+Identify the volume to which belongs a document
+
+acontrib;pages
+Identify the pagination
+
+acontrib;patgrp
+Group the date of patent
+
+authorAcontrib;fname
+Identify the first names of an individual author
+
+authorAcontrib;surname
+Identify the sobrename of an individual author
+
+authorAcontrib;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+corpautAContrib;orgname
+Identify the name of the corporative author
+
+corpautAContrib;orgdiv
+Identify the division of the corporative author
+
+corpautAContrib;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+aiserial;sertitle
+Identify the title of a serial publication or journal
+
+aiserial;stitle
+Group the forma abreviada and padronizada of the title of a journal or serial publication
+
+aiserial;isstitle
+Identify the title of a fascículo of serial publication or journal
+
+aiserial;city
+Identify the city of publication
+
+aiserial;state
+Identify the state/region (local) of publication
+
+aiserial;country
+Identify the país of publication
+
+aiserial;pubname
+Identify the casa publicadora
+
+aiserial;suppl
+Identify the number of the suplinento of a journal
+
+aiserial;volid
+Identify the volume to which belongs a document
+
+aiserial;issueno
+Identify the number of a fascículo
+
+aiserial;date
+Identify the publication date
+
+aiserial;extent
+Identify the extension of the work, such as the number of pages or volumes
+
+aiserial;pages
+Identify the pagination
+
+aiserial;notes
+Group date que não are identificados pelos dinais elinentos of a citation
+
+aiserial;issn
+Identify the Internacional Standard Serial  Number (ISSN)
+
+aiserial;url
+Identify the electronic address of the document
+
+aiserial;doi
+Identify, in a citation, doi of the document
+
+aiserial;cited
+Identify the date in which the article electronic was accessed
+
+amonog;author
+Group the date of individual authors, such as name,sobrename and role
+
+amonog;corpauth
+Identify the corporative authors responsible for the content intelectual or artístico of the work
+
+amonog;et-al
+Indicate non cited authors
+
+amonog;title
+Identify the title of the document
+
+amonog;subtitle
+Identify the subtitle of the document
+
+amonog;subresp
+Identify the responsabilidades secundarias in a citation, for instance, tradutores and revisores
+
+amonog;edition
+Identify the number of the edition
+
+amonog;confgrp
+Group the date of a event, such as conference, sininario, congress, etc. contidas in anais and publicações similares
+
+amonog;city
+Identify the city of publication
+
+amonog;state
+Identify the state/region (local) of publication
+
+amonog;country
+Identify the país of publication
+
+amonog;pubname
+Identify the casa publicadora
+
+amonog;date
+Identify the publication date
+
+amonog;volid
+Identify the volume to which belongs a document
+
+amonog;tome
+Identify the tomo of a publication in a citation
+
+amonog;extent
+Identify the extension of the work, such as the number of pages or volumes
+
+amonog;pages
+Identify the pagination
+
+amonog;coltitle
+Identify the title of a collection or serial of the which the work is part of
+
+amonog;colvolid
+Identify the volume of a collection
+
+amonog;notes
+Group date que não are identificados pelos dinais elinentos of a citation
+
+amonog;isbn
+Identify the Internacional Standard Book Number (ISBN)
+
+amonog;thesis
+Group date of a thesis, in a citation
+
+amonog;url
+Identify the electronic address of the document
+
+amonog;doi
+Identify, in a citation, doi of the document
+
+amonog;cited
+Identify the date in which the article electronic was accessed
+
+amonog;patgrp
+Group the date of patent
+
+authorAmonog;fname
+Identify the first names of an individual author
+
+authorAmonog;surname
+Identify the sobrename of an individual author
+
+authorAmonog;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+corpautAmonog;orgname
+Identify the name of the corporative author
+
+corpautAmonog;orgdiv
+Identify the division of the corporative author
+
+corpautAmonog;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+confgrpAmonog;sponsor
+Identify the sponsor or financial organization of a project or event
+
+confgrpAmonog;confname
+Identify the name of a event, such as conference, sininario, congress, etc.
+
+confgrpAmonog;no
+Identify the number of the event
+
+confgrpAmonog;date
+Identify the publication date of the event
+
+confgrpAmonog;city
+Identify the city of the event
+
+confgrpAmonog;state
+Identify the state/region (local) of the event
+
+confgrpAmonog;country
+Identify the país of the event
+
+sponsorAmonog;orgname
+Identify the name of the financial organization
+
+sponsorAmonog;orgdiv
+Identify the division of the financial organization
+
+thesisAmonog;city
+Identify the city of the thesis
+
+thesisAmonog;state
+Identify the state/region (local) of the thesis
+
+thesisAmonog;country
+Identify the país of the thesis
+
+thesisAmonog;date
+Identify the date of the thesis
+
+thesisAmonog;degree
+ Identify the degree of a thesis, such as Master, Doctor etc
+
+thesisAmonog;orgname
+Identify the name of the organization of the thesis
+
+thesisAmonog;orgdiv
+Identify the division of the organization of the thesis
+
+confgrpAcitat;sponsor
+Identify the sponsor or financial organization of a project or event
+
+confgrpAcitat;confname
+Identify the name of a event, such as conference, sininario, congress, etc.
+
+confgrpAcitat;no
+Identify the number of the event
+
+confgrpAcitat;date
+Identify the publication date of the event
+
+confgrpAcitat;city
+Identify the city of the event
+
+confgrpAcitat;state
+Identify the state/region (local) of the event
+
+confgrpAcitat;country
+Identify the país of the event
+
+sponsorConfgrpAcitat;orgname
+Identify the name of the financial organization
+
+sponsorConfgrpAcitat;orgdiv
+Identify the division of the financial organization
+
+iso690;icitat
+Identify a citation at the bibliography
+
+icitat;no
+Identify the number of the citation
+
+icitat;icontrib
+Group elinentos, such as author and title, for bibliographic description of a article of journal or chapter of book
+
+icitat;imonog
+Group the elinentos principais to identify of a monografia
+
+icitat;iiserial
+Group elinentos of identification específicos of a serial publication or journal
+
+icontrib;author
+Group the date of individual authors, such as name, sobrename and role
+
+icontrib;corpauth
+Identify the corporative authors responsible for the content intelectual or artístico of the work
+
+icontrib;et-al
+Indicate non cited authors
+
+icontrib;subresp
+Identify the responsabilidades secundarias in a citation, for instance, tradutores and revisores
+
+icontrib;date
+Identify the publication date
+
+icontrib;title
+Identify the title of the document
+
+icontrib;subtitle
+Identify the subtitle of the document
+
+authorIcontrib;fname
+Identify the first names of an individual author
+
+authorIcontrib;surname
+Identify the sobrename of an individual author
+
+authorIcontrib;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+corpautIcontrib;orgname
+Identify the name of the corporative author
+
+corpautIcontrib;orgdiv
+Identify the division of the corporative author
+
+corpautIcontrib;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+subrespIcontrib;fname
+Identify the first names of an individual author
+
+subrespIcontrib;surname
+Identify the sobrename of an individual author
+
+iiserial;isstitle
+Identify the title of a fascículo of serial publication or journal
+
+iiserial;author
+Group the date of individual authors, such as name, sobrename and role
+
+iiserial;corpauth
+Identify the corporative authors responsible for the content intelectual or artístico of the work
+
+iiserial;et-al
+Indicate non cited authors
+
+iiserial;medium
+Identify the format of the meio in which the document is sendo publicado or editado
+
+iiserial;sertitle
+Identify the title of a serial publication or journal
+
+iiserial;stitle
+Group the forma abreviada and padronizada of the title of a journal or serial publication
+
+iiserial;edition
+Identify the number of the edition
+
+iiserial;city
+Identify the city of publication
+
+iiserial;state
+Identify the state/region (local) of publication
+
+iiserial;country
+Identify the país of publication
+
+iiserial;pubname
+Identify the casa publicadora
+
+iiserial;date
+Identify the publication date
+
+iiserial;update
+update
+
+iiserial;location
+Identify the electronic address of the document
+
+iiserial;volid
+Identify the volume to which belongs a document
+
+iiserial;isdesig
+Identify the main dates of a collection, for instance, the initial date of the collection
+
+iiserial;issueno
+Identify the number of a fascículo
+
+iiserial;pages
+Identify the pagination
+
+iiserial;notes
+Group date que não are identificados pelos dinais elinentos of a citation
+
+iiserial;url
+Identify the electronic address of the document
+
+iiserial;doi
+Identify, in a citation, doi of the document
+
+iiserial;cited
+Identify the date in which the article electronic was accessed
+
+iiserial;issn
+Identify the Internacional Standard Serial  Number (ISSN)
+
+authorIiserial;fname
+Identify the first names of an individual author
+
+authorIiserial;surname
+Identify the sobrename of an individual author
+
+authorIiserial;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+corpautIiserial;orgname
+Identify the name of the corporative author
+
+corpautIiserial;orgdiv
+Identify the division of the corporative author
+
+corpautIiserial;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+imonog;author
+Group the date of individual authors, such as name, sobrename and role
+
+imonog;corpauth
+Identify the corporative authors responsible for the content intelectual or artístico of the work
+
+imonog;et-al
+Indicate non cited authors
+
+imonog;subresp
+Identify the responsabilidades secundarias in a citation, for instance, tradutores and revisores
+
+imonog;title
+Identify the title of the document
+
+imonog;subtitle
+Identify the subtitle of the document
+
+imonog;medium
+Identify the format of the meio in which the document is sendo publicado or editado
+
+imonog;edition
+Identify the number of the edition
+
+imonog;city
+Identify the city of publication
+
+imonog;state
+Identify the state/region (local) of publication
+
+imonog;country
+Identify the país of publication
+
+imonog;pubname
+Identify the casa publicadora
+
+imonog;date
+Identify the publication date
+
+imonog;update
+update
+
+imonog;volid
+Identify the volume to which belongs a document
+
+imonog;pages
+Identify the pagination
+
+imonog;extent
+Identify the extension of the work, such as the number of pages or volumes
+
+imonog;location
+Identify the electronic address of the document
+
+imonog;coltitle
+Identify the title of a collection or serial of the which the work is part of
+
+imonog;notes
+Group date que não are identificados pelos dinais elinentos of a citation
+
+imonog;url
+Identify the electronic address of the document
+
+imonog;doi
+Identify, in a citation, doi of the document
+
+imonog;cited
+Identify the date in which the article electronic was accessed
+
+imonog;isbn
+Identify the Internacional Standard Book Number (ISBN)
+
+imonog;patgrp
+Group the date of patent
+
+authorImonog;fname
+Identify the first names of an individual author
+
+authorImonog;surname
+Identify the sobrename of an individual author
+
+authorImonog;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+corpautImonog;orgname
+Identify the name of the corporative author
+
+corpautImonog;orgdiv
+Identify the division of the corporative author
+
+corpautImonog;previous
+Identify the author of the citation is the same author citado at the previous reference
+
+subrespImonog;fname
+Identify the first names of an individual author
+
+subrespImonog;surname
+Identify the sobrename of an individual author
+
+subrespAmonog;fname
+Identify the first names of an individual author
+
+subrespAmonog;surname
+Identify the sobrename of an individual author
+
+backT;fngrp
+Identify a nota of rodapé
+
+backT;vancouv
+Group the elinentos of bibliography according to Vancouver
+
+backT;iso690
+Group the elinentos of bibliography according to ISO 690/87
+
+backT;abnt6023
+Group the elinentos of bibliography according to NBR 6023/89 of the ABNT
+
+backT;apa
+Group the elinentos of bibliography para according to APA
+
+backT;other
+Group the elinentos of bibliography which are not according to any adopted standard
+
+backT;licenses
+Group the elinentos of license
+
+patentImonog;orgname
+Identify onde was registrada the patent
+
+patentImonog;patent
+Identify the number of the patent
+
+patentImonog;date
+Identify the registration date of the patent
+
+patentOmonog;orgname
+Identify onde was registrada the patent
+
+patentOmonog;patent
+Identify the number of the patent
+
+patentOmonog;date
+Identify the registration date of the patent
+
+patentAmonog;orgname
+Identify onde was registrada the patent
+
+patentAmonog;patent
+Identify the number of the patent
+
+patentAmonog;date
+Identify the registration date of the patent
+
+patentVmonog;orgname
+Identify onde was registrada the patent
+
+patentVmonog;patent
+Identify the number of the patent
+
+patentVmonog;date
+Identify the registration date of the patent
+
+patentIcontrib;orgname
+Identify onde was registrada the patent
+
+patentIcontrib;patent
+Identify the number of the patent
+
+patentIcontrib;date
+Identify the registration date of the patent
+
+patentOcontrib;orgname
+Identify onde was registrada the patent
+
+patentOcontrib;patent
+Identify the number of the patent
+
+patentOcontrib;date
+Identify the registration date of the patent
+
+patentAcontrib;orgname
+Identify onde was registrada the patent
+
+patentAcontrib;patent
+Identify the number of the patent
+
+patentAcontrib;date
+Identify the registration date of the patent
+
+patentVcontrib;orgname
+Identify onde was registrada the patent
+
+patentVcontrib;patent
+Identify the number of the patent
+
+patentVcontrib;date
+Identify the registration date of the patent
+
+xmlbodyBar;sec
+Identify a section of the text
+
+xmlbodyBar;p
+Identify paragraph
+
+secBar;sectitle
+Identify the title of the section
+
+secBar;subsec
+Identify the sub-section of the text
+
+secBar;p
+Identify paragraph
+
+subsecBar;sectitle
+Identify the title of the subsection
+
+subsecBar;subsec
+Identify the sub-section of the text
+
+subsecBar;p
+Identify paragraph
+
+subsec2Bar;sectitle
+Identify the title of the subsection nível 2
+
+subsec2Bar;p
+Identify paragraph
+
+list;li
+Identify the items of the lista
+
+libar;lilabel
+Identify the label of the itin of the lista
+
+libar;litext
+Identify the text of the itin of the lista
+
+licensesBar;license
+Identify the text of the license
+
+licenseBar;licensep
+Identify the paragraph of the license
+

@@ -190,7 +190,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="body"/>
 
 	<xsl:template
-		match="sig |  p | sec | bold  | sub | sup |  label | subtitle | edition |  issn | italic | corresp | ack | sig-block">
+		match="app | term | def | response | sig |  p | sec | bold  | sub | sup | label | subtitle | edition |  issn | italic | corresp | ack | sig-block">
 		<xsl:param name="id"/>
 
 		<xsl:element name="{name()}">
@@ -199,7 +199,32 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
-
+	
+	<xsl:template match="@resptp">
+		<xsl:attribute name="response-type"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
+	
+	<xsl:template match="subart">
+		<sub-article>
+			<xsl:apply-templates select="@*"/>
+			<xsl:apply-templates select="*"/>
+		</sub-article>
+	</xsl:template>
+	
+	<xsl:template match="deflist">
+		<def-list>
+			<xsl:apply-templates select="@*"/>
+			<xsl:apply-templates select="*"/>
+		</def-list>
+	</xsl:template>
+	
+	<xsl:template match="defitem">
+		<def-item>
+			<xsl:apply-templates select="@*"/>
+			<xsl:apply-templates select="*"/>
+		</def-item>
+	</xsl:template>
+	
 	<xsl:template match="@corresp | @deceased">
 		<xsl:if test=".='yes'">
 			<xsl:if test="not($fn[@fntype=name()])">
@@ -285,6 +310,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="front"/>
 			<xsl:apply-templates select="." mode="body"/>
 			<xsl:apply-templates select="." mode="back"/>
+			<xsl:apply-templates select="response | subart"/>
 		</article>
 	</xsl:template>
 	<xsl:template match="*" mode="front">
@@ -407,8 +433,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="pub-date"/>
 
 			<xsl:apply-templates select="@volid | @issueno  | @fpage | @lpage"/>
+			<xsl:apply-templates select=".//product" mode="article-meta"></xsl:apply-templates>
 			<xsl:apply-templates select=".//hist" mode="front"/>
 			<xsl:apply-templates select=".//back/licenses"/>
+			<xsl:apply-templates select="front/related"/>
 			<xsl:apply-templates select=".//abstract[@language=$l]|.//xmlabstr[@language=$l]"/>
 			<xsl:apply-templates select=".//abstract[@language!=$l]|.//xmlabstr[@language!=$l]"
 				mode="trans"/>
@@ -416,6 +444,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates
 				select=".//front/report | .//front/confgrp | ..//front/thesgrp | .//bibcom/report | .//bibcom/confgrp | ..//bibcom/thesgrp  | .//bbibcom/report | .//bbibcom/confgrp | ..//bbibcom/thesgrp | .//back/ack//report"/>
 			<xsl:apply-templates select="." mode="counts"/>
+			
+			
 		</article-meta>
 	</xsl:template>
 	<xsl:template match="*" mode="article-title">
@@ -506,7 +536,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</contrib>
 	</xsl:template>
 
-	<xsl:template match="authgrp/corpauth" mode="front">
+	<xsl:template match="corpauth" mode="front">
 		<xsl:variable name="teste">
 			<xsl:apply-templates select="./../../authgrp" mode="text"/>
 		</xsl:variable>
@@ -611,11 +641,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="aff/*" mode="aff-pmc">
 		<xsl:value-of select="text()"/>
 	</xsl:template>
-	<xsl:template match="aff/country| aff/email" mode="aff-pmc">
-		<xsl:element name="{name()}">
-			<xsl:value-of select="."/>
-		</xsl:element>
-	</xsl:template>	
+	
+	<xsl:template match="aff/email | aff/country" mode="aff-pmc">
+		<named-content content-type="{name()}"><xsl:value-of select="."/></named-content>
+	</xsl:template>
+		
 	<xsl:template match="aff/text()" mode="aff-pmc">
 		<xsl:value-of select="."/>
 	</xsl:template>
@@ -2238,7 +2268,7 @@ et al.</copyright-statement>
 	<xsl:template match="edition//italic | edition//bold | edition//sub | edition//sup ">
 		<xsl:value-of select="."/>
 	</xsl:template>
-	<xsl:template match="p[normalize-space(.//text())='']"/>
+	<!--xsl:template match="p[normalize-space(.//text())='']"/-->
 
 	<xsl:template name="display_date">
 		<xsl:param name="dateiso"/>
@@ -2722,4 +2752,133 @@ et al.</copyright-statement>
 		</inline-supplementary-material>
 	</xsl:template>
 	<xsl:template match="pubid"><xsl:element name="pub-id"><xsl:attribute name="pub-id-type"><xsl:value-of select="@idtype"/></xsl:attribute><xsl:value-of select="."/></xsl:element></xsl:template>
+
+	<xsl:template match="related">
+		<xsl:variable name="teste"><xsl:value-of select="concat('|',@doctype,'|')"/></xsl:variable>
+		<xsl:variable name="type"><xsl:choose>
+			<xsl:when test="contains('|article|pr|', $teste)">document</xsl:when>
+			<xsl:when test="contains('|other-related-article|unknown-related-article|addended-article|addendum|commentary-article|object-of-concern|companion|corrected-article|letter|retracted-article|peer-reviewed-article|peer-review|', $teste)">related-article</xsl:when>
+			<xsl:when test="contains('|other-object|unknown-object|vi|au|table|figure|', $teste)">object</xsl:when>
+			<xsl:when test="contains('|other-source|unknown-source|book|database|', $teste)">source</xsl:when>
+			<xsl:when test="contains('|other-document|unknown-source|book chapter|', $teste)">document</xsl:when>			
+			<xsl:otherwise>source</xsl:otherwise>
+		</xsl:choose></xsl:variable>
+		
+		<xsl:variable name="elem_name"><xsl:choose>
+			<xsl:when test="$type='related-article'">related-article</xsl:when>
+			<xsl:otherwise>related-object</xsl:otherwise></xsl:choose></xsl:variable>
+		
+		<xsl:variable name="attrib_prefix"><xsl:value-of select="$type"/></xsl:variable>
+		<xsl:element name="{$elem_name}">
+			<xsl:attribute name="id">rel<xsl:value-of select="../../@order"/></xsl:attribute>
+			<xsl:attribute name="{$attrib_prefix}-type"><xsl:value-of select="@doctype"/></xsl:attribute>
+			
+			<xsl:choose>
+				<xsl:when test="$type='related-article'">
+					<xsl:attribute name="href"><xsl:value-of select="@link"/></xsl:attribute>
+					<xsl:attribute name="ext-link-type"><xsl:value-of select="@linktype"/></xsl:attribute>
+					
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:attribute name="{$attrib_prefix}-id"><xsl:value-of select="@link"/></xsl:attribute>
+					
+					<xsl:choose>
+						<xsl:when test="@doctype='pr'">
+							<xsl:attribute name="{$attrib_prefix}-id-type">press-release</xsl:attribute>
+							<xsl:attribute name="specific-use">processing-only</xsl:attribute>
+						</xsl:when>
+						<xsl:when test="@doctype='article'">
+							<xsl:attribute name="{$attrib_prefix}-id-type"><xsl:value-of select="@linktype"/></xsl:attribute>
+							<xsl:attribute name="link-type">article-has-press-release</xsl:attribute>
+							<xsl:attribute name="specific-use">processing-only</xsl:attribute>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:attribute name="{$attrib_prefix}-id-type"><xsl:value-of select="@linktype"/></xsl:attribute>
+						</xsl:otherwise>
+					</xsl:choose>
+					
+				</xsl:otherwise>
+			</xsl:choose>
+			
+		</xsl:element>
+	</xsl:template>
+	<xsl:template match="author">
+		<contrib><xsl:apply-templates select="*"></xsl:apply-templates></contrib>
+	</xsl:template>
+	<xsl:template match="corpauth">
+		<collab><xsl:apply-templates select="orgname|orgiv|text()"></xsl:apply-templates></collab>
+	</xsl:template>
+	<xsl:template match="product" mode="article-meta">
+		<product product-type="{@prodtype}">
+			<xsl:apply-templates select="*" mode="article-meta"></xsl:apply-templates>
+		</product>
+	</xsl:template>
+	
+	<xsl:template match="product/*"  mode="article-meta"><xsl:element name="{name()}"><xsl:value-of select="."/></xsl:element>
+	</xsl:template>
+	<xsl:template match="product/author|product/corpauth"  mode="article-meta"><xsl:apply-templates select="."></xsl:apply-templates></xsl:template>
+	<xsl:template match="product/othinfo"  mode="article-meta"><comment><xsl:value-of select="."/></comment></xsl:template>
+	<xsl:template match="product/pubname"  mode="article-meta"><publisher-name><xsl:value-of select="."/></publisher-name>
+		</xsl:template>
+	<xsl:template match="product/city | product/state | product/country"  mode="article-meta">
+		<xsl:choose>
+			<xsl:when test="../city">
+				<xsl:if test="../city=.">
+				<publisher-loc><xsl:value-of select="."/>
+					<xsl:if test="../state">, <xsl:value-of select="../state"/>
+					</xsl:if>
+					<xsl:if test="../country">, <xsl:value-of select="../country"/>
+					</xsl:if></publisher-loc>
+				</xsl:if>
+			</xsl:when>
+			<xsl:when test="../state">
+				<xsl:if test="../state=.">
+					<publisher-loc><xsl:value-of select="."/>
+						<xsl:if test="../country">, <xsl:value-of select="../country"/>
+						</xsl:if></publisher-loc>
+				</xsl:if>
+			</xsl:when>
+			<xsl:when test="../country">
+				<publisher-loc><xsl:value-of select="."/></publisher-loc>
+			</xsl:when>
+		</xsl:choose>
+		
+	</xsl:template>
+	<xsl:template match="product/date"  mode="article-meta">
+		<year><xsl:value-of select="substring(@dateiso,1,4)"/></year>
+	</xsl:template>
+	<xsl:template match="product/title"  mode="article-meta">
+		<xsl:choose>
+			<xsl:when test="../sertitle">
+				<article-title><xsl:value-of select="."/></article-title>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="count(..//title)&gt;1">
+						<xsl:choose>
+							<xsl:when test=".=..//title[1]">
+								<chapter-title><xsl:value-of select="."/></chapter-title>
+							</xsl:when>
+							<xsl:otherwise>
+								<source><xsl:value-of select="."/></source>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:when>
+					<xsl:otherwise>
+						<source><xsl:value-of select="."/></source>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="p//product">
+		<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+	</xsl:template>
+	<xsl:template match="p//product//text()">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="p//product//*"><xsl:apply-templates select="*|text()"></xsl:apply-templates></xsl:template>
+	
 </xsl:stylesheet>

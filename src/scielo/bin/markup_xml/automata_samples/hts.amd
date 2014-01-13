@@ -1,0 +1,29 @@
+ocitat
+c1
+c5
+c1;c5;NT;omonog;".";", "
+
+omonog
+om1
+om8
+om1;om1;NT;oauthor;", "
+om1;om2;NT;oauthor;" & "
+om2;om3;NT;oauthor;", "
+om1;om3;NT;oauthor;", "
+om3;om4;T;date;", "
+om4;om9;T;title;": "
+om4;om5;T;title;", "
+om9;om5;T;subtitle;", "
+om5;om6;T;pubname;", "
+om6;om7;T;city;". doi:";", "
+om7;om8;T;doi;".";", "
+om6;om8;T;city;".";", "
+om5;om10;T;cited;", "
+om10;om8;T;url;".";", "
+
+oauthor
+oa1
+oa3
+oa1;oa2;T;surname;", "
+oa2;oa3;T;fname;", "
+oa2;oa3;T;fname;" & "

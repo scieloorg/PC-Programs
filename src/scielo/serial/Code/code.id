@@ -1630,10 +1630,33 @@
 !v002!^cUMIN^vUMIN - University Hospital Medical Information Network
 !v002!^cChiCTR^vChiCTR - Chinese Clinical Trial Register
 !ID 000105
-!v002!^cau^vaudio
-!v002!^cpr^vpress release
-!v002!^cvi^vvideo
 !v001!doctype
+!v002!^cunknown^v- choose one of the options below -
+!v002!^cunknown-object^v-- objects --
+!v002!^cvi^vvideo
+!v002!^cau^vaudio
+!v002!^ctable^vtable
+!v002!^cfigure^vfigure
+!v002!^cother-object^vother object
+!v002!^cunknown-source^v-- sources --
+!v002!^cbook^vbook
+!v002!^cchapter^vchapter
+!v002!^cdatabase^vdatabase
+!v002!^carticle^varticle
+!v002!^cpr^vpress release
+!v002!^cother-source^vother source
+!v002!^cunknown-related-type^v-- related types --
+!v002!^caddended-article^vaddended-article
+!v002!^caddendum^vaddendum
+!v002!^ccommentary-article^vcommentary-article
+!v002!^cobject-of-concern^vobject-of-concern
+!v002!^ccompanion^vcompanion
+!v002!^ccorrected-article^vcorrected-article
+!v002!^cletter^vletter
+!v002!^cretracted-article^vretracted-article
+!v002!^cpeer-reviewed-article^vpeer-reviewed-article
+!v002!^cpeer-review^vpeer-review
+!v002!^cother-related-type^vother related type
 !ID 000106
 !v001!deposid
 !v002!^c1^vUnicamp
@@ -1756,23 +1779,14 @@
 !v003!
 !v002!^cBY^v<a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.es"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/80x15.png" /></a> Todo el contenido de la revista, excepto dónde está identificado, está bajo una <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.es">Licencia Creative Commons</a>
 !v002!^cBY-NC^v<a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/3.0/80x15.png" /></a> Todo el contenido de esta revista, excepto dónde está identificado, est&#225; bajo una <a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/">Licencia Creative Commons</a>
-!v002!^cBY-NC-SA^v<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img
-            alt="Creative Commons License" style="border-width:0"
-            src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png"/></a> Todo el contenido de
-    www.scielo.br, excepto dónde está identificado, est&#225; bajo una <a rel="license"
-        href="http://creativecommons.org/licenses/by-nc-sa/3.0">Licencia Creative Commons</a>
+!v002!^cBY-NC-SA^v<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/"><img            alt="Creative Commons License" style="border-width:0"            src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png"/></a> Todo el contenido de    www.scielo.br, excepto dónde está identificado, est&#225; bajo una <a rel="license"        href="http://creativecommons.org/licenses/by-nc-sa/3.0">Licencia Creative Commons</a>
 !v002!^cnd^v<p> </p>
 !ID 000121
 !v001!license_text^lpt
 !v003!
 !v002!^cBY^v<a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.pt"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/80x15.png" /></a> Todo o conteúdo do periódico, exceto onde está identificado, está licenciado sob uma <a rel="license" href="http://creativecommons.org/licenses/by/3.0/deed.pt">Licença Creative Commons</a>
 !v002!^cBY-NC^v<a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/3.0/80x15.png" /></a> Todo o conteúdo deste periódico, exceto onde est&#225 identificado, est&#225; licenciado sob uma <a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/">Licen&#231;a Creative Commons</a>
-!v002!^cBY-NC-SA^v<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.pt_BR"><img
-            alt="Creative Commons License" style="border-width:0"
-            src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png"/></a> Todo o conteúdo de
-    www.scielo.br, exceto onde est&#225 identificado, est&#225; licenciado sob uma <a rel="license"
-        href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.pt_BR">Licen&#231;a Creative
-        Commons</a>
+!v002!^cBY-NC-SA^v<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.pt_BR"><img            alt="Creative Commons License" style="border-width:0"            src="http://i.creativecommons.org/l/by-nc-sa/3.0/80x15.png"/></a> Todo o conteúdo de    www.scielo.br, exceto onde est&#225 identificado, est&#225; licenciado sob uma <a rel="license"        href="http://creativecommons.org/licenses/by-nc-sa/3.0/deed.pt_BR">Licen&#231;a Creative        Commons</a>
 !v002!^cnd^v<p> </p>
 !ID 000122
 !v001!ref-type^lpt
@@ -1854,8 +1868,7 @@
 !v002!^cdeceased^vPessoa faleceu desde que o artigo foi escrito
 !v002!^cedited-by^vAutor exerce papel de editor
 !v002!^cequal^vContribuição igualitária na criação do documento 
-!v002!^cfinancial-disclosure^vDeclaração ou negação de recebimento de financiamento em 
-apoio à pesquisa na qual o artigo é baseado
+!v002!^cfinancial-disclosure^vDeclaração ou negação de recebimento de financiamento em apoio à pesquisa na qual o artigo é baseado
 !v002!^con-leave^vAutor ausente (sabático ou outro)
 !v002!^cother^vOutro tipo de nota
 !v002!^cauthor^vOutro tipo de nota relacionada ao autor
@@ -2051,3 +2064,6 @@ apoio à pesquisa na qual o artigo é baseado
 !v002!^vEncerrado^cD
 !v002!^vIndexação interrompida pelo Comitê^cS
 !v002!^vNão é acesso aberto^cE
+!ID 000149
+!v001!ctrbidtp
+!v002!^cORCID^vORCID

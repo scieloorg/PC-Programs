@@ -46,7 +46,7 @@ def log_images_errors(filename, label, files):
     files = [item for item in files if item is not None]
     if len(files) > 0:
         f = open(filename, 'a+')
-        f.write('\n\n%s:\n%s\n%s' % (label, '=' * len(label), '\n'.join(files)))
+        f.write('\n\n%s:\n%s\n%s' % (label, '=' * len(label), '\n'.join(files)) + '\n')
         f.close()
 
 
@@ -221,7 +221,6 @@ def convert_ent_to_char(content, entities_table=None):
                 while '&' in content:
                     ent = content[content.find('&'):]
                     ent = ent[0:ent.find(';')+1]
-
                     char = entities_table.ent2chr(ent)
                     if char == ent:
                         content = content.replace(ent, ent.replace('&', PREFIX_ENT))
@@ -230,7 +229,12 @@ def convert_ent_to_char(content, entities_table=None):
                         else:
                             not_found_named.append(ent)
                     else:
-                        content = content.replace(ent, char)
+                        try:
+                            content = content.replace(ent, char)
+                        except Exception as e:
+                            print(ent)
+                            print(char)
+                            print(e)
 
         if not_found_named:
             f = open('unknown_ent_named.txt', 'a+')
@@ -642,10 +646,10 @@ class XMLMetadata:
         order = node.findtext('.//article-id[@pub-id-type="other"]')
         page = node.find('./fpage')
         if page.attrib.get('seq'):
-            fpage = page.text + '-' + page.attrib.get('seq')
+            fpage = page.attrib.get('seq')
         else:
             fpage = page.text
-        if not order:
+        if order is None:
             order = fpage
         return [issn, volid, issueno, suppl, fpage, order]
 
@@ -768,7 +772,15 @@ class XMLMetadata:
     def new_names_and_embedded_files(self, acron, alternative_id=''):
         new_name = self.format_name(self._metadata(), acron, alternative_id)
         href_filenames = self.xml_data_href_filenames()
-        return (new_name, href_filenames)
+        href_files = self.new_href_list(new_name, href_filenames)
+        return (new_name, href_files)
+
+    def new_href_list(self, new_name, href_filenames):
+        items = []
+        print(href_filenames)
+        for href, suffix in href_filenames.items():
+            items.append((href, new_name + '-' + suffix))
+        return items
 
 
 class PkgReport(object):
@@ -878,7 +890,7 @@ class PkgReport(object):
             else:
                 contents_report_filename = param_contents_report_filename
 
-            html_report._html(self.report_path + '/' + contents_report_filename + '.contents.html', 'Contents Report', html_report._css('toc') + html_report._css('datareport'), '<h1>' + contents_report_filename + '</h1>' + stat + issue_header + report_content)
+            html_report._html(self.report_path + '/' + contents_report_filename + '.contents.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport'), '<h1>' + contents_report_filename + '</h1>' + stat + issue_header + report_content)
 
         #issue_header +
         # doi, order, journal, sorted, unsorted.
@@ -905,7 +917,7 @@ class PkgReport(object):
             toc_content += order_ok[key]
 
         if print_toc_report:
-            html_report._html(self.report_path + '/toc.html', 'Contents Report', html_report._css('toc') + html_report._css('datareport'), '<h1>' + issue_label + '</h1>' + toc_content)
+            html_report._html(self.report_path + '/toc.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport'), '<h1>' + issue_label + '</h1>' + toc_content)
 
     def data_for_list(self, report_filename, content_validation):
         items = []
@@ -1511,20 +1523,23 @@ class ContentValidation(object):
         return ''
 
     def _order(self, fpage, fpage_seq, other_id):
-        if fpage.isdigit():
-            order = int(fpage)
-        else:
-            order = 0
-        if order == 0:
-            if fpage_seq.isdigit():
+        if other_id == '':
+            other_id = None
+        if fpage_seq == '':
+            fpage_seq = None
+        if fpage == '':
+            fpage = None
+        if other_id is None:
+            if fpage_seq is None:
+                if fpage is None:
+                    order = 0
+                else:
+                    order = int(fpage)
+            else:
                 order = int(fpage_seq)
-            else:
-                order = 0
-        if order == 0:
-            if other_id.isdigit():
-                order = int(other_id)
-            else:
-                order = 0
+        else:
+            order = int(other_id)
+
         return str(order)
 
     def _validate_data(self, data, expected):
@@ -1789,7 +1804,7 @@ class ValidationResult(object):
 
             if not self.is_valid_dtd:
                 if os.path.isfile(self.dtd_validation_report):
-                    f.write(open(self.dtd_validation_report).read())
+                    f.write('\nDTD errors report\n' + ('='*len('DTD errors report')) + '\n' + open(self.dtd_validation_report).read())
                 else:
                     f.write('Unable to generate ' + self.dtd_validation_report)
 
@@ -1839,45 +1854,37 @@ class XPM(object):
 
     def add_renamed_files_to_packages(self, wrk_path, curr_name, new_name, package_paths):
         # copy <xml_file>.???
+
+        valid_extensions = ['.pdf', '.epub', ]
         for filename in os.listdir(wrk_path):
-            if not filename.endswith('.jpg') and not filename.endswith('.sgm.xml'):
+
+            ext = filename[filename.rfind('.'):]
+            if ext in valid_extensions and (filename.startswith(curr_name + '.') or filename.startswith(curr_name + '-')):
                 new_filename = filename.replace(curr_name, new_name)
                 for pkg_path in package_paths:
                     if not wrk_path + '/' + filename == pkg_path + '/' + new_filename:
                         shutil.copyfile(wrk_path + '/' + filename, pkg_path + '/' + new_filename)
 
-    def add_href_files_to_packages(self, wrk_path, href_files_list, curr_name, new_name, scielo_pkg_path, pmc_pkg_path):
+    #FIXME
+    def add_href_files_to_packages(self, wrk_path, href_files_list, scielo_pkg_path, pmc_pkg_path):
         missing_files = []
-        #invalid_href = self._normalize_href_list()
 
         related_files = os.listdir(wrk_path)
 
-        for href, suffix in href_files_list.items():
-            matched_files = [f for f in related_files if f.startswith(href + '.')]
+        for current_href, new_href in href_files_list:
+            matched_files = [f for f in related_files if f.startswith(current_href + '.')]
             for filename in matched_files:
                 ext = filename[filename.rfind('.'):]
 
                 matched = wrk_path + '/' + filename
-                new_filename = curr_name + '-' + suffix + ext
+                new_filename = new_href + ext
 
                 shutil.copyfile(matched, scielo_pkg_path + '/' + new_filename)
                 if not filename.endswith('.jpg'):
                     shutil.copyfile(matched, pmc_pkg_path + '/' + new_filename)
             if not matched_files:
-                missing_files.append(href)
+                missing_files.append(current_href)
         return missing_files
-
-    def _normalize_href_list(self, href_files_list):
-        invalid_href = []
-        fixed = {}
-        for href, suffix in href_files_list.items():
-            ext = href[href.rfind('.'):]
-            if ext in ['.tif', '.eps', '.tiff', '.jpg', '.pdf', '.html', '.htm'] or len(ext) == 4:
-                invalid_href.append(href)
-                href = href[0:href.find(ext)]
-            fixed[href] = suffix
-        href_files_list = fixed
-        return (href_files_list, invalid_href)
 
     def normalize_xml(self, xml_filename, normalized_xml_path, log_filename):
         """
@@ -1929,6 +1936,7 @@ class XPM(object):
         if xml_is_well_formed(content) is not None:
             log.append('Metadata')
             new_name, href_files_list = XMLMetadata(content).new_names_and_embedded_files(self.acron, xml_name)
+            content = self.normalize_href(content, href_files_list)
             log.append(' Done')
             if is_sgmxml:
                 log.append('SGML to XML')
@@ -1937,6 +1945,14 @@ class XPM(object):
         else:
             log.append('XML is not well formed')
         return (content, new_name, href_files_list, log)
+
+    def normalize_href(self, content, href_files_list):
+        print(href_files_list)
+        for current, new in href_files_list:
+            print(current)
+            print(new)
+            content = content.replace(current, new)
+        return content
 
     def validate_packages(self, xml_name, new_name, scielo_validation_result, pmc_validation_result, err_filename, ctrl_filename):
         xsl_new_name = new_name if new_name != xml_name else ''
@@ -1969,21 +1985,12 @@ class XPM(object):
             log_message(err_filename, 'Unable to find ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
 
     def pack_non_xml_files(self, wrk_path, curr_name, new_name, href_files_list, scielo_pkg_path, pmc_pkg_path, err_filename):
-        #log_message(log_filename, scielo_pkg_path + '/' + new_name + '.xml')
-
-        #log_message(log_filename, '_normalize_href_list')
-
-        href_files_list, invalid_href = self._normalize_href_list(href_files_list)
-        log_images_errors(err_filename, 'Invalid href, which must not have extension', invalid_href)
 
         package_paths = [scielo_pkg_path, pmc_pkg_path]
 
-        #log_message(log_filename, 'add_renamed_files_to_packages')
         self.add_renamed_files_to_packages(wrk_path, curr_name, new_name, package_paths)
 
-        #log_message(log_filename, 'add_href_files_to_packages')
-
-        expected_files = self.add_href_files_to_packages(wrk_path, href_files_list, curr_name, new_name, scielo_pkg_path, pmc_pkg_path)
+        expected_files = self.add_href_files_to_packages(wrk_path, href_files_list, scielo_pkg_path, pmc_pkg_path)
         log_images_errors(err_filename, 'Required files', expected_files)
 
     def make_packages(self, xml_filename, ctrl_filename, xml_path, work_path, scielo_val_res, pmc_val_res):
@@ -2006,7 +2013,7 @@ class XPM(object):
                 if os.path.isfile(f):
                     os.unlink(f)
 
-            log_message(err_filename, 'FILES ERRORS REPORT\n' + '-'*len('FILES ERRORS REPORT'))
+            log_message(err_filename, 'Report of files errors / DTD errors\n' + '-'*len('Report of files errors / DTD errors'))
 
             not_jpg = self.create_wrk_path(xml_path, matched_files, wrk_path)
 
@@ -2156,11 +2163,11 @@ def call_make_packages(args, version):
         xml_pkg_mker = XPM(sci_validator, pmc_validator, acron, version, entities_table)
         xml_pkg_mker.make_packages(xml_filename, ctrl_filename, xml_path, wrk_path, sci_val_res, pmc_val_res)
 
-        if ctrl_filename is None:
-            report = PkgReport(scielo_pkg_path, report_path)
-            report.load_data()
-            report.generate_articles_report()
-            report.generate_lists()
+        #if ctrl_filename is None:
+        #    report = PkgReport(scielo_pkg_path, report_path)
+        #    report.load_data()
+        #    report.generate_articles_report()
+        #    report.generate_lists()
 
         print('\n=======')
         print('\nGenerated packages in:\n' + '\n'.join([scielo_pkg_path, pmc_pkg_path, ]))

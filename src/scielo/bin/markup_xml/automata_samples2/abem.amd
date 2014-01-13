@@ -1,0 +1,39 @@
+ocitat
+o1
+o4
+o1;o2;T;no;"."
+o2;o3;NT;ocontrib;". "
+o3;o4;NT;oiserial;"."
+
+ocontrib
+oc1
+oc4
+oc1;oc1;NT;oauthor;", "
+oc1;oc2;NT;oauthor;". "
+oc2;oc4;T;title;". "
+oc2;oc3;T;title;": "
+oc3;oc4;T;subtitle;". "
+
+oauthor
+oa1
+oa3
+oa1;oa2;T;surname;" "
+oa2;oa3;T;fname;", "
+oa2;oa3;T;fname;". "
+
+oiserial
+oi1
+oi7
+oi1;oi2;NT;stitle;" "
+oi2;oi3;T;date;";"
+oi3;oi4;T;volid;":"
+oi4;oi7;T;pages;"."
+oi3;oi5;T;volid;"("
+oi5;oi6;T;issueno;"):"
+oi6;oi7;T;pages;"."
+
+stitle
+s1
+s2
+s1;s1;T;ign;" "
+s1;s2;T;ign;" "

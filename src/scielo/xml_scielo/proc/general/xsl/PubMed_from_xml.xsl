@@ -67,15 +67,13 @@
 		<xsl:element name="ArticleTitle">
 			<xsl:apply-templates select=".//article-meta//title-group/article-title[@xml:lang='en']"/>
 			<xsl:apply-templates select=".//article-meta//title-group/trans-title-group[@xml:lang='en']/trans-title"/>
-		</xsl:element>
-		<xsl:if test="@xml:lang != 'en'">
+			<xsl:apply-templates select=".//sub-article//article-title[@xml:lang='en']"/></xsl:element>
+			<xsl:if test="@xml:lang != 'en'">
 				<!-- http://www.ncbi.nlm.nih.gov/books/NBK3828/#publisherhelp.VernacularTitle_O -->
 				<xsl:element name="VernacularTitle">
 					<xsl:apply-templates select=".//article-meta//title-group//article-title"/>
 				</xsl:element>
 		</xsl:if>
-
-		
 	</xsl:template>
 
 	<xsl:template match="@xml:lang" mode="scielo-xml-languages">

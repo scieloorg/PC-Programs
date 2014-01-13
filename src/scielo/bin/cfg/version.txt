@@ -1,6 +1,18 @@
-﻿4.0.072 - 10/12/2013
+﻿4.0.073 - 13/01/2014
 =======
- - Title Manager e Markup XML: print issn e e-issn (#54)
+ - response and sub-article
+ - glossary, def-list, app
+
+4.0.072 - 17/12/2013
+=======
+ - Title Manager and Markup XML: print issn e e-issn (#54)
+ - Title Manager - subjects categories, mandatory
+ - Markup XML: identification for relationship between articles, documents, and objects (#168, #171, #172)
+ - Automata 3: use same method as automata 1, but the file is related to a standard: abnt, apa, vancouver (#169)
+ - Markup XML: For SciELO, new tags: <institution content-type="original"> and <institution content-type="aff-pmc"> (#145)
+ - Markup XML: product (#28)
+ - Markup: some small automations: unnecessary select all the element name to delete and edit, and the references to identify them. It is enough to put the cursor over the word. 
+ - Markup: reorganization of the place of the program files
 
 4.0.071 - 29/11/2013
 =======

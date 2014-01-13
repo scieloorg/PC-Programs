@@ -8,7 +8,7 @@
 <!--   Common Models                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat" > 
+<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat | related | product" > 
 <!ENTITY % m.name   "(fname? & surname & ctrbid*)" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
@@ -158,10 +158,20 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT related     - O EMPTY >
 <!ATTLIST related
+          id CDATA #IMPLIED
           doctype CDATA #REQUIRED 
-	  id CDATA #REQUIRED 
-          source CDATA #IMPLIED >
+	     link CDATA #REQUIRED 
+          linktype CDATA #REQUIRED
+      >
 
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!--    Product                                                           -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<!ELEMENT product     - - ((author | corpauth | title | date | sertitle | pubname | city | state | country | isbn | othinfo)+ ) >
+<!ATTLIST product
+          prodtype CDATA #REQUIRED
+           >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Title Group                                                       -->
@@ -251,7 +261,7 @@ filename       CDATA #IMPLIED>
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 
-<!ELEMENT xmlbody  - - (sec | p | txtblock | sigblock )+  >
+<!ELEMENT xmlbody  - - (sec | p | txtblock | sigblock | deflist)+  >
 <!ELEMENT sec  - - (sectitle, (subsec | p | list )+ )  >
 <!ATTLIST sec
           sec-type  CDATA #IMPLIED>
