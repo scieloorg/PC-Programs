@@ -97,6 +97,7 @@ received;Identifica a data em que o artigo foi submetido ao processo de revisão 
 related;Identifica dados de documentos relacionados
 report;Agrupa dados do relatorio ou projeto do qual o artigo é produto parcial ou final
 revised;Identifica a data em que inicio-se a revisão do artigo pelo processo de revisão por pares
+response;Identifica um texto que é a resposta ou comentário relacionado ao artigo
 rsponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento
 sciname;Identifica nomes científicos
 sec;Identifica uma seção do texto
@@ -105,6 +106,7 @@ sertitle;Identifica o título de uma publicação seriada ou periódica
 sponsor;Identifica a organização financiadora ou patrocinadora de um projeto ou evento
 state;Identifica o estado (local) de publicação
 stitle;Agrupa a forma abreviada e padronizada do título de um periódico ou publicação seriada
+subart;Identifica o texto que é uma tradução do artigo ou um texto relacionado ao artigo
 subkey;Identifica as formas utilizadas para qualificar as palavras-chave ou descritores
 subresp;Identifica as responsabilidades secundarias em uma referencia como, por exemplo, tradutores e revisores
 subsec;Identifica a sub-seção do texto

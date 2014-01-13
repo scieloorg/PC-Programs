@@ -4,22 +4,22 @@ text;#FALSE#
 
 ifloat
 aff;#TRUE#
+cltrial;#FALSE#
 corresp;#FALSE#
+related;#TRUE#
+product;#TRUE#
 ign;#TRUE#
-tabwrap;#TRUE#
+equation;#TRUE#
 figgrps;#TRUE#
 figgrp;#TRUE#
-equation;#TRUE#
-cltrial;#FALSE#
+graphic;#TRUE#
+tabwrap;#TRUE#
+supplmat;#TRUE#
 xref;#TRUE#
 uri;#TRUE#
 sciname;#TRUE#
 quote;#TRUE#
 element;#TRUE#
-graphic;#TRUE#
-supplmat;#TRUE#
-related;#TRUE#
-product;#TRUE#
 
 abnt6023
 acitat;#TRUE#
@@ -120,8 +120,14 @@ front;#FALSE#
 xmlbody;#FALSE#
 body;#FALSE#
 back;#FALSE#
+response;#TRUE#
 
 attrib
+
+app
+title;#FALSE#
+sec;#TRUE#
+p;#TRUE#
 
 authgrp
 author+;#FALSE#
@@ -152,6 +158,8 @@ other;#FALSE#
 fngrp;#TRUE#
 licenses;#FALSE#
 bbibcom;#FALSE#
+glossary;#FALSE#
+app;#TRUE#
 
 bbibcom
 abstract;#TRUE#
@@ -264,6 +272,20 @@ doi;#TRUE#
 titlegrp;#FALSE#
 authgrp;#FALSE#
 bibcom;#FALSE#
+
+glossary
+label;#FALSE#
+title;#FALSE#
+glossary;#TRUE#
+deflist;#FALSE#
+
+deflist
+title;#FALSE#
+defitem;#TRUE#
+
+defitem
+term;#FALSE#
+def;#FALSE#
 
 graphic
 
@@ -579,6 +601,11 @@ awarded;#TRUE#
 projname;#TRUE#
 contract;#TRUE#
 
+response
+front;#FALSE#
+body;#FALSE#
+back;#FALSE#
+
 revised
 
 rsponsor
@@ -609,6 +636,13 @@ orgdiv;#FALSE#
 state
 
 stitle
+
+subart
+front;#FALSE#
+xmlbody;#FALSE#
+body;#FALSE#
+back;#FALSE#
+response;#TRUE#
 
 subkey
 
@@ -771,6 +805,7 @@ xmlbody
 sec;#TRUE#
 p;#TRUE#
 list;#TRUE#
+deflist;#TRUE#
 sigblock;#FALSE#
 
 xref

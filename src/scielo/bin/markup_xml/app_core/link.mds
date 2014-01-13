@@ -129,3 +129,19 @@ href
 
 pubid
 idtype
+
+response
+id;resptp;language
+
+subart
+id;doctype;language
+
+glossary
+id
+
+deflist
+id
+
+app
+id
+

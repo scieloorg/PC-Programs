@@ -97,6 +97,7 @@ received;Identify the date in which the article was submitted to the peer review
 related;Identify date of related documents
 report;Group date of the report or project of which the article is partial or final product
 revised;Identify the date in which inicio-se the revision of the article pelo peer review process
+response;Identify the text which is a response or commentary related to the article
 rsponsor;Identify the sponsor or financial organization of a project or event
 sciname;Identify names científicos
 sec;Identify a section of the text
@@ -105,6 +106,7 @@ sertitle;Identify the title of a serial publication or journal
 sponsor;Identify the sponsor or financial organization of a project or event
 state;Identify the state/region (local) of publication
 stitle;Group the forma abreviada and padronizada of the title of a journal or serial publication
+subart;Identify the text which is the article translation or any text related to the article
 subkey;Identify the used forms para qualificar the key words or descriptors
 subresp;Identify the responsabilidades secundarias in a citation, for instance, tradutores and revisores
 subsec;Identify the sub-section of the text

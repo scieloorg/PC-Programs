@@ -96,6 +96,7 @@ pubname;Identifica la casa publicadora
 received;Identifica la fecha en lo cual el artículo Fue sometido al proceso de revisión por pares
 related;Identifica datos de documentos relacionados
 report;Agrupa datos del informe o proyecto de lo cual el artículo es producto parcial o final
+response;Identifica un texto que es la respuesta o comentario relacionado al artículo
 revised;Identifica la fecha en lo cual inicio-se la revisión del artículo pelo proceso de revisión por pares
 rsponsor;Identifica la organización financiera o patrocinadora de un proyecto o evento
 sciname;Identifica nombres científicos
@@ -105,6 +106,7 @@ sertitle;Identifica el título de una publicación seriada o revista
 sponsor;Identifica la organización financiera o patrocinadora de un proyecto o evento
 state;Identifica el provincia/región (local) de publicación
 stitle;Agrupa la forma abreviada y padronizada del título de un revista el publicación seriada
+subart;Identifica el texto que es una traducción del artículo o un texto relacionado al artículo
 subkey;Identifica las formas usadas para qualificar las palabras-clave o descriptores
 subresp;Identifica las responsabilidades secundarias en una  cita, por ejemplo, traductores y revisores
 subsec;Identifica la sub-sección del texto
