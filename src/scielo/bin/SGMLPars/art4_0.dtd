@@ -121,7 +121,7 @@
 <!--    Article                                                           -->   
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT article  - - (deposit?, front, (body | xmlbody), back?) +(%i.float;)>
+<!ELEMENT article  - - (deposit?, front, (body | xmlbody), back?, subart*, response*) +(%i.float;)>
 <!ATTLIST article
           pii      CDATA #REQUIRED
           doctopic CDATA #REQUIRED
@@ -213,7 +213,7 @@
 <!--    Back Matter                                                       -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ELEMENT back     - - ( ack | bbibcom | glossary | deflist | app | subart | response | (vancouv | iso690 | abnt6023 | apa | other) | corresp | fngrp | licenses )* >
+<!ELEMENT back     - - ( ack | bbibcom | glossary | deflist | app | (vancouv | iso690 | abnt6023 | apa | other) | corresp | fngrp | licenses )* >
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->

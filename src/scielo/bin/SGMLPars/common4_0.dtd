@@ -261,7 +261,7 @@ filename       CDATA #IMPLIED>
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 
-<!ELEMENT xmlbody  - - (sec | p | txtblock | sigblock )+  >
+<!ELEMENT xmlbody  - - (sec | p | txtblock | sigblock | deflist)+  >
 <!ELEMENT sec  - - (sectitle, (subsec | p | list )+ )  >
 <!ATTLIST sec
           sec-type  CDATA #IMPLIED>
