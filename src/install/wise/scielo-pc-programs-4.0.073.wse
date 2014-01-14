@@ -2401,7 +2401,7 @@ end
 item: Install File
   Source=W:\scielo\Bin\SGMLPars\parser.exe
   Destination=%PROGDIR%\bin\SGMLPars\parser.exe
-  Flags=0000000010000011
+  Flags=0000000010000010
 end
 item: Install File
   Source=W:\scielo\Bin\SGMLPars\Olepro32.dll
@@ -4855,7 +4855,7 @@ end
 item: Install File
   Source=W:\scielo\bin\config\Tabctl32.ocx
   Destination=%PROGDIR%\bin\config\Tabctl32.ocx
-  Flags=0001000010000011
+  Flags=0001000010000010
 end
 item: Install File
   Source=W:\scielo\bin\config\TABCTL32.oca
@@ -4865,7 +4865,7 @@ end
 item: Install File
   Source=W:\scielo\bin\config\Sysinfo.ocx
   Destination=%PROGDIR%\bin\config\Sysinfo.ocx
-  Flags=0001000010000011
+  Flags=0001000010000010
 end
 item: Install File
   Source=W:\scielo\bin\config\Sysinfo.oca
@@ -4885,7 +4885,7 @@ end
 item: Install File
   Source=W:\scielo\bin\config\Comctl32.ocx
   Destination=%PROGDIR%\bin\config\Comctl32.ocx
-  Flags=0001000010000011
+  Flags=0001000010000010
 end
 item: Install File
   Source=W:\scielo\bin\config\config.DEP
@@ -4990,7 +4990,7 @@ end
 item: Install File
   Source=W:\scielo\bin\config\config.exe
   Destination=%PROGDIR%\bin\config\config.exe
-  Flags=0000000010000011
+  Flags=0000000010000010
 end
 item: Install File
   Source=W:\scielo\bin\config\en_labels.ini
@@ -5000,17 +5000,17 @@ end
 item: Install File
   Source=W:\scielo\bin\codes\Mscomctl.ocx
   Destination=%PROGDIR%\bin\codes\Mscomctl.ocx
-  Flags=0001000010000011
+  Flags=0001000010000010
 end
 item: Install File
   Source=W:\scielo\bin\codes\Comdlg32.ocx
   Destination=%PROGDIR%\bin\codes\Comdlg32.ocx
-  Flags=0001000010000011
+  Flags=0001000010000010
 end
 item: Install File
   Source=W:\scielo\bin\codes\Comctl32.ocx
   Destination=%PROGDIR%\bin\codes\Comctl32.ocx
-  Flags=0001000010000011
+  Flags=0001000010000010
 end
 item: Install File
   Source=W:\scielo\Bin\codes\importClinicalTrialDataFromLilacs.bat
@@ -5300,8 +5300,8 @@ item: Install File
   Flags=0000000010001010
 end
 item: Install File
-  Source=W:\scielo\bin\markup_xml\app_core\en_bars.tr
-  Destination=%PROGDIR%\bin\markup\app_core\en_bars.tr
+  Source=W:\scielo\bin\markup_xml\app_core\tree_en.txt
+  Destination=%PROGDIR%\bin\markup\app_core\tree_en.txt
   Flags=0000000010000010
 end
 item: Install File
@@ -5360,8 +5360,8 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\markup_xml\app_core\es_bars.tr
-  Destination=%PROGDIR%\bin\markup\app_core\es_bars.tr
+  Source=W:\scielo\bin\markup_xml\app_core\tree_es.txt
+  Destination=%PROGDIR%\bin\markup\app_core\tree_es.txt
   Flags=0000000010000010
 end
 item: Install File
@@ -5475,13 +5475,13 @@ item: Install File
   Flags=0000000010001010
 end
 item: Install File
-  Source=W:\scielo\bin\markup_xml\app_core\pt_bars.mds
-  Destination=%PROGDIR%\bin\markup\app_core\pt_bars.mds
+  Source=W:\scielo\bin\markup_xml\app_core\tree.txt
+  Destination=%PROGDIR%\bin\markup\app_core\tree.txt
   Flags=0000000010000010
 end
 item: Install File
-  Source=W:\scielo\bin\markup_xml\app_core\pt_bars.tr
-  Destination=%PROGDIR%\bin\markup\app_core\pt_bars.tr
+  Source=W:\scielo\bin\markup_xml\app_core\tree_pt.txt
+  Destination=%PROGDIR%\bin\markup\app_core\tree_pt.txt
   Flags=0000000010000010
 end
 item: Install File
