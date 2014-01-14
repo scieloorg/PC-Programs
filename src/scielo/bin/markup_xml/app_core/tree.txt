@@ -287,6 +287,10 @@ defitem
 term;#FALSE#
 def;#FALSE#
 
+term
+
+def
+
 graphic
 
 hist
