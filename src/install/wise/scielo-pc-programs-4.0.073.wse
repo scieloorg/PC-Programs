@@ -5650,13 +5650,6 @@ item: Create Shortcut
   Icon Pathname Spanish=%PATH_SGMLPARS%\Bin\SGMLPars\Parser.ico
   Flags=00000001
 end
-item: Create Shortcut
-  Source=%PATH_SGMLPARS%\Bin\SGMLPars\parser.exe
-  Destination=%GROUP%\SGML Parser.lnk
-  Working Directory=%PATH_SGMLPARS%\Bin\SGMLPars
-  Icon Number=0
-  Icon Pathname=%PATH_SGMLPARS%\Bin\SGMLPars\PARSER.EXE
-end
 item: If/While Statement
   Variable=COMPONENTS
   Value=A

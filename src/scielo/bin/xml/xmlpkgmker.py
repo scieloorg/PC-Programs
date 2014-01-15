@@ -1389,7 +1389,7 @@ class ContentValidation(object):
             self.article_meta['ack'] = self._node_xml_content(self.xml.find('.//ack'))
 
             self.article_meta['license'] = self._node_xml(self.xml.find('.//license'))
-
+            print(self.article_meta['license'])
             self.article_meta['text body sections'] = []
             for node in self.xml.findall('.//body/sec'):
                 title = node.findtext('.//title')
@@ -1559,7 +1559,8 @@ class ContentValidation(object):
         result = []
 
         if isinstance(data, (str, unicode)):
-            if data.strip() and not '<' in data:
+            #if data.strip() and not '<' in data:
+            if data.strip():
                 if startswith_invalid_char(data):
                     result.append('ERROR: ' + _scope + ' ' + label_list + ' starts with an invalid character: "' + data + '"')
                 if endswith_invalid_char(data):
@@ -1639,7 +1640,7 @@ class ContentValidation(object):
             required_items = ['article-title', 'subject', 'doi', 'fpage', 'license']
             for label in required_items:
                 self.article_meta_validations[label] = self._validate_required_data(self.article_meta.get(label, None), label)
-
+            print(self.article_meta_validations['license'])
             required_items = ['abstract', 'received date (history)', 'accepted date (history)', 'text body sections']
             for label in required_items:
                 self.article_meta_validations[label] = self._validate_conditional_required_data(self.article_meta.get(label, None), label)
