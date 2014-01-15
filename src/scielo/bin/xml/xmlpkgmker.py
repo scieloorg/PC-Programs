@@ -941,10 +941,9 @@ class PkgReport(object):
         report = HTMLReport()
         issue_label = ''
         for title, report_filename, columns, required, desirable in self.lists:
-            print(report_filename)
             rows = []
             for content_validation in self.content_validations:
-                print(content_validation.filename)
+                print(report_filename + ' (' + content_validation.filename + ')')
                 items = self.data_for_list(report_filename, content_validation)
                 rows += self.data_in_table_format(content_validation.filename, items, columns, required, desirable)
                 if not issue_label:
@@ -1389,7 +1388,6 @@ class ContentValidation(object):
             self.article_meta['ack'] = self._node_xml_content(self.xml.find('.//ack'))
 
             self.article_meta['license'] = self._node_xml(self.xml.find('.//license'))
-            print(self.article_meta['license'])
             self.article_meta['text body sections'] = []
             for node in self.xml.findall('.//body/sec'):
                 title = node.findtext('.//title')
@@ -1640,7 +1638,6 @@ class ContentValidation(object):
             required_items = ['article-title', 'subject', 'doi', 'fpage', 'license']
             for label in required_items:
                 self.article_meta_validations[label] = self._validate_required_data(self.article_meta.get(label, None), label)
-            print(self.article_meta_validations['license'])
             required_items = ['abstract', 'received date (history)', 'accepted date (history)', 'text body sections']
             for label in required_items:
                 self.article_meta_validations[label] = self._validate_conditional_required_data(self.article_meta.get(label, None), label)
@@ -1954,6 +1951,20 @@ class XPM(object):
             content = content.replace(current, new)
         return content
 
+    def add_href_extensions(self, xml_filename):
+        name = os.path.basename(xml_filename).replace('.xml', '')
+        path = os.path.dirname(xml_filename)
+        fp = open(xml_filename, 'r')
+        xml = fp.read()
+        fp.close()
+        for f in os.listdir(path):
+            if f.startswith(name + '.') or f.startswith(name + '-'):
+                f_without_ext = f[0:f.rfind('.')]
+                xml = xml.replace('href="' + f_without_ext + '"', 'href="' + f + '"')
+        fp = open(xml_filename, 'w')
+        fp.write(xml)
+        fp.close()
+
     def validate_packages(self, xml_name, new_name, scielo_validation_result, pmc_validation_result, err_filename, ctrl_filename):
         xsl_new_name = new_name if new_name != xml_name else ''
         img_path = scielo_validation_result.pkg_path
@@ -1970,6 +1981,7 @@ class XPM(object):
                         pmc_validation_result.manage_result(None)
 
                     if os.path.exists(pmc_validation_result.xml_output):
+                        self.add_href_extensions(pmc_validation_result.xml_output)
                         print('  Finished')
                     else:
                         print('\nUnable to create ' + pmc_validation_result.xml_output)
