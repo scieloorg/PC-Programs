@@ -644,11 +644,9 @@ class XMLMetadata:
 
         issueno, suppl = self._fix_issue_number(issueno, suppl)
         order = node.findtext('.//article-id[@pub-id-type="other"]')
-        page = node.find('./fpage')
-        if page.attrib.get('seq'):
-            fpage = page.attrib.get('seq')
-        else:
-            fpage = page.text
+        fpage = node.findtext('./fpage')
+        if fpage is None:
+            fpage = '0'
         if order is None:
             order = fpage
         return [issn, volid, issueno, suppl, fpage, order]
@@ -684,8 +682,9 @@ class XMLMetadata:
             page_or_order = ''
             seq = ''
             if not fpage.isdigit():
-                if not int(fpage) == 0:
-                    page_or_order = fpage
+                #if not int(fpage) == 0:
+                #    page_or_order = fpage
+                page_or_order = order
             elif '-' in fpage:
                 p = fpage.split('-')
                 if p[0].isdigit():
@@ -1371,11 +1370,17 @@ class ContentValidation(object):
 
             self.article_meta['subject'] = '|'.join([node.text for node in article_meta.findall('.//subject')])
 
-            self.article_meta['fpage'] = article_meta.find('.//fpage').text
-            self.article_meta['fpage_seq'] = article_meta.find('.//fpage').attrib.get('seq', '')
+            if article_meta.findtext('.//fpage') is None:
+                self.article_meta['fpage'] = ''
+            else:
+                self.article_meta['fpage'] = article_meta.findtext('.//fpage')
+                self.article_meta['fpage_seq'] = article_meta.find('.//fpage').attrib.get('seq', '')
 
-            self.article_meta['lpage'] = article_meta.find('.//lpage').text
-            self.article_meta['lpage_seq'] = article_meta.find('.//lpage').attrib.get('seq', '')
+            if article_meta.findtext('.//lpage') is None:
+                self.article_meta['lpage'] = ''
+            else:
+                self.article_meta['lpage'] = article_meta.findtext('.//lpage')
+                self.article_meta['lpage_seq'] = article_meta.find('.//lpage').attrib.get('seq', '')
 
             article_title = article_meta.find('.//article-title')
             self.article_meta['article-title'] = self._node_xml_content(article_title)
@@ -1384,7 +1389,7 @@ class ContentValidation(object):
             self.article_meta['ack'] = self._node_xml_content(self.xml.find('.//ack'))
 
             self.article_meta['license'] = self._node_xml(self.xml.find('.//license'))
-
+            print(self.article_meta['license'])
             self.article_meta['text body sections'] = []
             for node in self.xml.findall('.//body/sec'):
                 title = node.findtext('.//title')
@@ -1525,18 +1530,13 @@ class ContentValidation(object):
     def _order(self, fpage, fpage_seq, other_id):
         if other_id == '':
             other_id = None
-        if fpage_seq == '':
-            fpage_seq = None
         if fpage == '':
             fpage = None
         if other_id is None:
-            if fpage_seq is None:
-                if fpage is None:
-                    order = 0
-                else:
-                    order = int(fpage)
+            if fpage.isdigit():
+                order = int(fpage)
             else:
-                order = int(fpage_seq)
+                order = 0
         else:
             order = int(other_id)
 
@@ -1559,7 +1559,8 @@ class ContentValidation(object):
         result = []
 
         if isinstance(data, (str, unicode)):
-            if data.strip() and not '<' in data:
+            #if data.strip() and not '<' in data:
+            if data.strip():
                 if startswith_invalid_char(data):
                     result.append('ERROR: ' + _scope + ' ' + label_list + ' starts with an invalid character: "' + data + '"')
                 if endswith_invalid_char(data):
@@ -1639,7 +1640,7 @@ class ContentValidation(object):
             required_items = ['article-title', 'subject', 'doi', 'fpage', 'license']
             for label in required_items:
                 self.article_meta_validations[label] = self._validate_required_data(self.article_meta.get(label, None), label)
-
+            print(self.article_meta_validations['license'])
             required_items = ['abstract', 'received date (history)', 'accepted date (history)', 'text body sections']
             for label in required_items:
                 self.article_meta_validations[label] = self._validate_conditional_required_data(self.article_meta.get(label, None), label)
@@ -1872,7 +1873,7 @@ class XPM(object):
         related_files = os.listdir(wrk_path)
 
         for current_href, new_href in href_files_list:
-            matched_files = [f for f in related_files if f.startswith(current_href + '.')]
+            matched_files = [f for f in related_files if f.startswith(current_href + '.') or current_href == f]
             for filename in matched_files:
                 ext = filename[filename.rfind('.'):]
 
@@ -1947,10 +1948,9 @@ class XPM(object):
         return (content, new_name, href_files_list, log)
 
     def normalize_href(self, content, href_files_list):
-        print(href_files_list)
+        #print(href_files_list)
         for current, new in href_files_list:
-            print(current)
-            print(new)
+            print(current + ' => ' + new)
             content = content.replace(current, new)
         return content
 
