@@ -1381,6 +1381,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:with-param name="date">
 				<xsl:value-of select="."/>
 			</xsl:with-param>
+			<xsl:with-param name="specyear"><xsl:value-of select="@specyear"/></xsl:with-param>
 			<xsl:with-param name="format">textual</xsl:with-param>
 		</xsl:call-template>
 	</xsl:template>
@@ -2276,6 +2277,7 @@ et al.</copyright-statement>
 		<xsl:param name="dateiso"/>
 		<xsl:param name="date" select="''"/>
 		<xsl:param name="format">number</xsl:param>
+		<xsl:param name="specyear"></xsl:param>
 		<xsl:variable name="y">
 			<xsl:value-of select="substring($dateiso,1,4)"/>
 		</xsl:variable>
@@ -2477,9 +2479,10 @@ et al.</copyright-statement>
 				</xsl:if>
 			</xsl:otherwise>
 		</xsl:choose>
-		<year>
-			<xsl:value-of select="substring($dateiso,1,4)"/>
-		</year>
+		<year><xsl:choose>
+				<xsl:when test="$specyear!=''"><xsl:value-of select="$specyear"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="substring($dateiso,1,4)"/></xsl:otherwise>
+			</xsl:choose></year>
 	</xsl:template>
 	<xsl:template match="season">
 		<xsl:apply-templates select="." mode="fix_season">
