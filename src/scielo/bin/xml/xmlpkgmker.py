@@ -681,13 +681,16 @@ class XMLMetadata:
         r = ''
         if data:
             issn, vol, issueno, suppl, fpage, seq, order = data
-            page_or_order = '00000' + fpage
-            page_or_order = page_or_order[:-5]
+            page_or_order = fpage
+            if page_or_order.isdigit():
+                page_or_order = '00000' + page_or_order
+                page_or_order = page_or_order[-5:]
             if seq:
                 page_or_order += '-' + seq
             if page_or_order.isdigit():
                 if int(page_or_order) == 0:
                     page_or_order = '00000' + order
+                    page_or_order = page_or_order[-5:]
 
             if issueno:
                 issueno = '00' + issueno
