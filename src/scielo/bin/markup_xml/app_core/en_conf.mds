@@ -101,7 +101,7 @@ msgAutomaticStyles,The elements will be marked according to the styles. Do you w
 pmcVersion,v3.0
 timer,99999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
-buttonApply,Apply
+msgFormXMLBody,"Check the identification of the parts of the text. Fix if necessary, selecting the list items, selecting the tag and clicking on Change button."
 buttonChange2,Change
 msgMissingImportantInformation,"Be sure the data of ISSUEID are in \bin\markup\issue.mds and \bin\markup\journal-standard.txt"
 pmcfolder,pmc\pmc_package

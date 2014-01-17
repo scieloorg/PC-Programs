@@ -90,7 +90,7 @@ msgPMCHTMLCouldNotBeCreated,Não foi possível gerar o texto a partir do XML.
 XML_TOOL_TYPE,java
 msgQuestionCheckingMarkedTablesAndImages,"Antes de gerar o XML, certifique-se que foi feita a marcação de todas as tabelas, imagens e suas referencias: vbCrlf%PARM1% vbcrlf Gerar o XML agora?"
 msgInfoXMLError,Erro no arquivo XML: %PARM1% vbCrLf código de erro: %PARM2% vbCrLf caracter: %PARM3% vbCrLf %PARM4% vbCrLf
-msgCriticalMissingXMLBODY,Necessario marcar xmlbody antes de gerar o arquivo XML
+msgCriticalMissingXMLBODY,Necessário marcar xmlbody antes de gerar o arquivo XML
 msgBeforExiting1,Salvar e usar o parser
 msgBeforExiting2,Salvar e gerar XML
 msgBeforExiting3,Salvar e sair
@@ -101,8 +101,8 @@ msgAutomaticMarkup,Os elementos serão marcados de acordo com os estilos. Continu
 pmcVersion,v3.0
 timer,999999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
-buttonApply,Aplicar
-buttonChange2,Modificar
+msgFormXMLBody,"Verifique a identificação das partes no texto completo. Corrija se necessário, selecionando os itens da lista, escolhendo a etiqueta que o identifica e clicando no botão Corrigir."
+buttonChange2,Corrigir
 msgMissingImportantInformation,"Garanta que há dados de ISSUEID em \bin\markup\issue.mds e em \bin\markup\journal-standard.txt"
 pmcfolder,pmc\pmc_package
 tifsrcffolder,pmc\pmc_img

@@ -101,8 +101,8 @@ msgAutomaticStyles,Serán marcados los elementos de acuerdo con los estilos. Segu
 pmcVersion,v3.0
 timer,99999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
-buttonApply,Aplicar
-buttonChange2,Cambiar
+msgFormXMLBody,"Verifique la identificación de las partes del texto completo. Corrija si necesario, seleccionando los itens de la lista, seleccionando la etiqueta que los identifica y  el botón Corregir."
+buttonChange2,Corregir
 msgMissingImportantInformation,"Esté seguro que los datos de ISSUEID estén en \bin\markup\issue.mds y en \bin\markup\journal-standard.txt"
 pmcfolder,pmc\pmc_package
 tifsrcffolder,pmc\pmc_img
