@@ -1,4 +1,18 @@
-﻿4.0.073 - 13/01/2014
+﻿4.0.074 - 17/01/2014
+=======
+ - Mileston 4.0.074
+ - markup:
+   - dateiso with space in the beginning
+   - failure as inserting bookmarks
+   - @specyear for special year (2000a, c1990)
+   - automatic idenfication of hyperlinks to references
+ - xml package maker:
+   - license present, but report indicated it was missing
+   - unexpected errors when fpage was absent or literal
+   - keep extension in XML for graphics (.tif, etc) 
+   - email inside institution[@content-type='original']
+ 
+ 4.0.073 - 13/01/2014
 =======
  - response and sub-article
  - glossary, def-list, app
