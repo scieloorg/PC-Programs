@@ -644,20 +644,21 @@ class XMLMetadata:
 
         issueno, suppl = self._fix_issue_number(issueno, suppl)
         order = node.findtext('.//article-id[@pub-id-type="other"]')
-        fpage = node.findtext('./fpage')
-        if fpage is None:
-            fpage = '0'
+        fpage_node = node.find('./fpage')
+
+        fpage = fpage.text if fpage is not None else '0'
+        seq = fpage_node.attrib.get('seq', '')
         if order is None:
-            order = fpage
-        return [issn, volid, issueno, suppl, fpage, order]
+            order = ''
+        return [issn, volid, issueno, suppl, fpage, seq, order]
 
     def _metadata(self):
-        issn, volid, issueno, suppl, fpage, order = ['', '', '', '', '', '']
+        issn, volid, issueno, suppl, fpage, seq, order = ['', '', '', '', '', '', '']
         if self.root:
 
             node = self.root.find('.//article-meta')
             if node is not None:
-                issn, volid, issueno, suppl, fpage, order = self._meta_xml(node)
+                issn, volid, issueno, suppl, fpage, seq, order = self._meta_xml(node)
             else:
                 attribs = self.root.find('.').attrib
                 issn = attribs.get('issn')
@@ -667,37 +668,26 @@ class XMLMetadata:
                 supplno = attribs.get('supplno', '')
                 suppl = supplno if supplno else supplvol
                 fpage = attribs.get('fpage')
+                seq = ''
+                #seq = attribs.get('order')
                 order = attribs.get('order')
                 if issueno == 'ahead':
                     issueno = '00'
                     volid = '00'
-        return [issn, volid, issueno, suppl, fpage, order]
+        return [issn, volid, issueno, suppl, fpage, seq, order]
 
     def format_name(self, data, param_acron='', param_order=''):
 
         r = ''
         if data:
-            issn, vol, issueno, suppl, fpage, order = data
-            #print(data)
-            page_or_order = ''
-            seq = ''
-            if not fpage.isdigit():
-                #if not int(fpage) == 0:
-                #    page_or_order = fpage
-                page_or_order = order
-            elif '-' in fpage:
-                p = fpage.split('-')
-                if p[0].isdigit():
-                    page_or_order = p[0]
-                    seq = '-' + p[1]
-            #print(page_or_order)
-            if page_or_order:
-                page_or_order = fpage + seq
-            else:
-                if not order.replace('0', ''):
-                    order = param_order
-                page_or_order = '00000' + order
-                page_or_order = page_or_order[-5:]
+            issn, vol, issueno, suppl, fpage, seq, order = data
+            page_or_order = '00000' + fpage
+            page_or_order = page_or_order[:-5]
+            if seq:
+                page_or_order += '-' + seq
+            if page_or_order.isdigit():
+                if int(page_or_order) == 0:
+                    page_or_order = '00000' + order
 
             if issueno:
                 issueno = '00' + issueno
