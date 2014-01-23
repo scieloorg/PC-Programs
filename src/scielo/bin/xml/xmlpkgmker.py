@@ -818,6 +818,8 @@ class PkgReport(object):
         html_report = HTMLReport()
         issue_label = ''
 
+        errors_block = ''
+        
         for content_validation in self.content_validations:
             if expected_journal_meta == {}:
                 for k, v in content_validation.issue_meta.items():
