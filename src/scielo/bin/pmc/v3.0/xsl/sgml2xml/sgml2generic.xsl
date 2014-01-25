@@ -1566,7 +1566,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 	</xsl:template>
 	<xsl:template match="tabwrap//fntable" mode="table">
 		<xsl:param name="table_id"/>
-		<fn id="TFN{substring(@id,4)}{$table_id}">
+		<fn id="{$table_id}TFN{substring(@id,4)}">
 			<xsl:apply-templates select="label"/>
 			<p>
 				<xsl:apply-templates select="text()|*[name()!='label']"/>
