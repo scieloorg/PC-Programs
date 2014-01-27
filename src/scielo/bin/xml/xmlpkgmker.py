@@ -1943,7 +1943,7 @@ class XPM(object):
         #print(href_files_list)
         for current, new in href_files_list:
             print(current + ' => ' + new)
-            content = content.replace(current, new)
+            content = content.replace('href="' + current, 'href="' + new)
         return content
 
     def add_href_extensions(self, xml_filename):
