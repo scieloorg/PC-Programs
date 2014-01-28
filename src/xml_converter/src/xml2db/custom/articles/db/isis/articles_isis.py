@@ -86,7 +86,7 @@ class AheadManager:
             self.cisis.id2mst(id_filename, mst_filename, True)
 
             for id_name in os.listdir(id_path):
-                if id_name != 'i.id' and id_name.endswith('.id') :
+                if id_name != 'i.id' and id_name != '00000.id' and id_name.endswith('.id'):
                     id_filename = id_path + '/' + id_name 
                     self.cisis.id2mst(id_filename, mst_filename, False)
         

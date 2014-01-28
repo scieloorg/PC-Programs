@@ -121,6 +121,7 @@ xmlbody;#FALSE#
 body;#FALSE#
 back;#FALSE#
 response;#TRUE#
+subart;#TRUE#
 
 attrib
 

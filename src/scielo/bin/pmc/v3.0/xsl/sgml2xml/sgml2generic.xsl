@@ -1566,7 +1566,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 	</xsl:template>
 	<xsl:template match="tabwrap//fntable" mode="table">
 		<xsl:param name="table_id"/>
-		<fn id="TFN{substring(@id,4)}{$table_id}">
+		<fn id="{$table_id}TFN{substring(@id,4)}">
 			<xsl:apply-templates select="label"/>
 			<p>
 				<xsl:apply-templates select="text()|*[name()!='label']"/>
@@ -2137,8 +2137,14 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			</xsl:choose>
 			<xsl:value-of select="@id"/>
 		</xsl:variable>
-		<xsl:if test=".//graphic">
+		<xsl:if test="not(.//graphic) and not(.//table)">
 			<graphic xlink:href="{$standardname}"/>
+		</xsl:if>
+		<xsl:if test=".//graphic">
+			<xsl:choose>
+				<xsl:when test=".//graphic/@filename"><graphic xlink:href="{.//graphic/@filename}"></graphic></xsl:when>
+				<xsl:when test=".//graphic/@xlink:href"><graphic xlink:href="{.//graphic/@xlink:href}"></graphic></xsl:when>	
+			</xsl:choose>
 		</xsl:if>
 		<xsl:if test=".//table">
 			<xsl:copy-of select=".//table"/>

@@ -394,7 +394,7 @@ class InformationAnalyst:
                             if not 'ahead' in specific_document.issue.name:
                                 pid, fname = self.ahead_articles.return_id_and_filename(specific_document.doi, specific_document.issue.journal.issn_id, specific_document.titles)
                                 specific_document.set_previous_id(pid)
-
+                        
                         generic_document = Document(specific_document)
                         package.report.write(generic_document.display(), True, True, False)
 
