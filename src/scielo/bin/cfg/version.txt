@@ -1,4 +1,16 @@
-﻿4.0.074 - 17/01/2014
+﻿4.0.075 - 28/01/2014
+=======
+ - Mileston 4.0.075
+ - markup:
+   - automatic markup of tables
+   - fixes automatic markup of bookmarks
+   - insertion of xml:lang to chapter-title
+   - automatic markup of internal hyperlinks in the text
+   - fixes missing publisher-name in journal-meta
+   - adjustments of interface
+   - refactored automatic markup of ack 
+   
+4.0.074 - 17/01/2014
 =======
  - Mileston 4.0.074
  - markup:
