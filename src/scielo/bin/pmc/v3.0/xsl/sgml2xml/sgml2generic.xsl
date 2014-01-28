@@ -295,9 +295,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="@language">
-		<xsl:attribute name="xml:lang">
-			<xsl:value-of select="normalize-space(.)"/>
-		</xsl:attribute>
+		<xsl:attribute name="xml:lang"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 	</xsl:template>
 	<xsl:template match="article|text" mode="dtd-version">
 		<xsl:attribute name="dtd-version">3.0</xsl:attribute>
@@ -1611,6 +1609,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		<xsl:choose>
 			<xsl:when test="../../node()[contains(name(),'monog')] or ../../vmonog">
 				<chapter-title>
+					<xsl:apply-templates select="@language"></xsl:apply-templates>
 					<xsl:apply-templates select="*|text()"/>
 					<xsl:apply-templates select="../subtitle" mode="title"/>
 				</chapter-title>
