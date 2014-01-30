@@ -295,7 +295,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="@language">
-		<xsl:attribute name="xml:lang"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
+		<xsl:attribute name="xml:lang"><xsl:value-of select="normalize-space(.)"/>
+		</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="article|text" mode="dtd-version">
 		<xsl:attribute name="dtd-version">3.0</xsl:attribute>
@@ -1588,13 +1589,6 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			<xsl:apply-templates select=".//caption"/>
 			<xsl:apply-templates select="." mode="graphic"/>
 			<xsl:apply-templates select="." mode="notes"/>
-			<!-- xsl:if test=".//notes">
-				<table-wrap-foot>
-					
-					<fn><p><xsl:value-of select=".//notes"/></p></fn>
-					
-				</table-wrap-foot>
-				</xsl:if> -->
 		</table-wrap>
 	</xsl:template>
 
@@ -2141,14 +2135,29 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		</xsl:if>
 		<xsl:if test=".//graphic">
 			<xsl:choose>
-				<xsl:when test=".//graphic/@filename"><graphic xlink:href="{.//graphic/@filename}"></graphic></xsl:when>
 				<xsl:when test=".//graphic/@xlink:href"><graphic xlink:href="{.//graphic/@xlink:href}"></graphic></xsl:when>	
+				<xsl:when test="@filename"><graphic xlink:href="{@filename}"></graphic></xsl:when>
+				
 			</xsl:choose>
 		</xsl:if>
 		<xsl:if test=".//table">
-			<xsl:copy-of select=".//table"/>
+			<xsl:apply-templates select=".//table" mode="pmc-table"></xsl:apply-templates>
 		</xsl:if>
 
+	</xsl:template>
+	<xsl:template match="tr/*" mode="pmc-table-cols">
+		<col>
+			<xsl:apply-templates select="@colspan"></xsl:apply-templates>
+		</col>
+	</xsl:template>
+	<xsl:template match="table" mode="pmc-table">
+		<table>
+				<colgroup>
+					<xsl:apply-templates select="*[1]/tr/*" mode="pmc-table-cols"/>
+				</colgroup>
+			<xsl:copy-of select="thead"/>
+			<xsl:copy-of select="tbody"/>
+		</table>
 	</xsl:template>
 	<xsl:template match="equation">
 		<p>
