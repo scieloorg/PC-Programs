@@ -646,7 +646,7 @@ class XMLMetadata:
         order = node.findtext('.//article-id[@pub-id-type="other"]')
         fpage_node = node.find('./fpage')
 
-        fpage = fpage.text if fpage is not None else '0'
+        fpage = fpage_node.text if fpage_node is not None else '0'
         seq = fpage_node.attrib.get('seq', '')
         if order is None:
             order = ''
@@ -711,28 +711,33 @@ class XMLMetadata:
 
     def xml_data_href_filenames(self):
         #test_href = ['href', 'xlink:href', '{http://www.w3.org/XML/1998/namespace}href']
-
-        nodes = self.root.findall('.//*[graphic]')
         r = {}
 
-        for n in nodes:
-            if n.attrib.get('id') is not None:
-                id = n.attrib.get('id', '')
-                if '-' in id:
-                    id = id[id.rfind('-')+1:]
-                if n.tag == 'equation':
-                    id = 'e' + id
-                elif n.tag == 'inline-display':
-                    id = 'i' + id
-                else:
-                    id = 'g' + id
-                graphic_nodes = n.findall('graphic')
+        for tag in ['fig', 'figgrp', 'tabwrap', 'equation', 'inline-display']:
 
-                for graphic_node in graphic_nodes:
-                    for attrib_name in graphic_node.attrib:
-                        if 'href' in attrib_name:
-                            href = graphic_node.attrib.get(attrib_name)
-                            r[href] = id
+            nodes = self.root.findall('.//' + tag)
+
+            for n in nodes:
+                if n.attrib.get('id') is not None:
+                    id = n.attrib.get('id', '')
+                    if '-' in id:
+                        id = id[id.rfind('-')+1:]
+                    if n.tag == 'equation':
+                        id = 'e' + id
+                    elif n.tag == 'inline-display':
+                        id = 'i' + id
+                    else:
+                        id = 'g' + id
+                    graphic_nodes = n.findall('graphic')
+
+                    for graphic_node in graphic_nodes:
+                        for attrib_name in graphic_node.attrib:
+                            if 'href' in attrib_name:
+                                href = graphic_node.attrib.get(attrib_name)
+                                r[href] = id
+                if n.attrib.get('filename') is not None:
+                    r[n.attrib.get('filename')] = id
+
         return r
 
     def xml_data_href_names(self):
@@ -769,7 +774,6 @@ class XMLMetadata:
 
     def new_href_list(self, new_name, href_filenames):
         items = []
-        print(href_filenames)
         for href, suffix in href_filenames.items():
             items.append((href, new_name + '-' + suffix))
         return items
@@ -1825,6 +1829,9 @@ class XPM(object):
         not_jpg = []
         if not os.path.exists(wrk_path):
             os.makedirs(wrk_path)
+
+        files += [f for f in os.listdir(src_path) if not f.endswith('.xml') and os.path.isfile(src_path + '/' + f)]
+        files = list(set(files))
         for f in files:
             shutil.copyfile(src_path + '/' + f, wrk_path + '/' + f)
             r = self.img_to_jpg(src_path, f, wrk_path)
@@ -1863,15 +1870,20 @@ class XPM(object):
         missing_files = []
 
         related_files = os.listdir(wrk_path)
+        print('add href files to packages')
+        print(href_files_list)
+        print(wrk_path)
+        print(related_files)
 
         for current_href, new_href in href_files_list:
             matched_files = [f for f in related_files if f.startswith(current_href + '.') or current_href == f]
+            print(matched_files)
             for filename in matched_files:
                 ext = filename[filename.rfind('.'):]
 
                 matched = wrk_path + '/' + filename
                 new_filename = new_href + ext
-
+                print('copy ' + matched + ' -> ' + scielo_pkg_path + '/' + new_filename)
                 shutil.copyfile(matched, scielo_pkg_path + '/' + new_filename)
                 if not filename.endswith('.jpg'):
                     shutil.copyfile(matched, pmc_pkg_path + '/' + new_filename)
@@ -1944,6 +1956,7 @@ class XPM(object):
         for current, new in href_files_list:
             print(current + ' => ' + new)
             content = content.replace('href="' + current, 'href="' + new)
+            content = content.replace(' filename="' + current, ' filename="' + new)
         return content
 
     def add_href_extensions(self, xml_filename):
