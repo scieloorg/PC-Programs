@@ -11,3 +11,9 @@ Download by FTP
 - user: produtos-scielo
 - password: produtos@scielo
 
+There are:
+
+- version.txt
+- trial_versions
+- current_versions
+- previous_versions
