@@ -5,125 +5,151 @@
 Markup
 ======
 
-
-- single-user program, built in Visual Basic Application for Word, to descentralized use in any workstation. 
-
-- Its installation can be done in several computers, others than `local server <concepts.html#local-server>`_.
-
-- tool to identify bibliographic elements in the articles and texts, according to SciELO DTD for `article <dtd.html#article>`_ and for `text <dtd.html#text>`_, based on standard ISO 8879-1986 (SGML - Standard Generalized Markup Language) and ISO 12083-1994 (Electronic Manuscript Preparation and Markup).
-
-With this program, the user can:
-
-- open the articles or text files
-- identify the bibliographic elements in the file, by select them with the mouse or keyboard and then tagging them, according DTD
-- markup bibliographics references semiautomatically
-- validate the identification according to article `<dtd.html#article>`_ and for `text <dtd.html#text>`_
-- generate PMC XML (under development) `http://dtd.nlm.nih.gov/publishing/3.0/`. Read the instructions given by `Markup PMC <markup_pmc.html>`_.
-- validate PMC XML 
-- preview the text generated from XML PMC
-
-Before using the Markup
------------------------
-
-- you must have one article or text by file
-- check if the file contents is same of printed version or PDF file
-- check if the file format is HTML, .doc, .rtf
-- check if the number which the articles belong is recorded in title and issue databases
-- If the markup will be done in a different machine than `local server <concepts.html#local-server>`_, copy  the files bellow from (local server)\bin\markup :
-    - ??_issue.mds - it is updated when a new issue data is input on or modified in the database 
-    - issue.mds - it is updated when a new issue data is input on or modified in the database 
-    - ??_attb.mds - it is updated when a new code table data is input on or modified in the database
-    - automata.mds - it is updated when a new title data is input on or modified in the database 
-    - journal-standard.txt - it is updated when a new issue data is input on or modified in the database 
-
-Open the program
-----------------
-
-Go to the menu, select **SciELO** and **Markup**
-
-    .. image:: img/en/markup_abrir_programa.jpg
-
-The program will try to open the Microsoft Word Program which is set in the file bin\\markup\\start.mds.
-
-If the path is not valid, the program will ask for the right path of Microsoft Word Program.
-
-Other option is to change this path by editing the bin\\markup\\start.mds file.
-
-    .. image:: img/en/markup_word_path.jpg
+Markup program is a desktop Application (macro in Microsoft Office Word), to identify bibliographic elements in the articles and texts, according to SciELO DTD for `article <dtd.html#article>`_ and for `text <dtd.html#text>`_, based on standard ISO 8879-1986 (SGML - Standard Generalized Markup Language) and ISO 12083-1994 (Electronic Manuscript Preparation and Markup).
 
 
-Just in case it doesn't appear the message about macro execution, you need to drop the macro's security level down. 
+Functionalities
+---------------
 
-In Word 2003, it appears as following:
+- identify the bibliographic elements in a .doc or .html file
+- identify the elements of references semiautomatically
+- validate the identification according to `article <dtd.html#article>`_ and for `text <dtd.html#text>`_
+- generate XML files according to `http://dtd.nlm.nih.gov/publishing/3.0/`.
+- validate XML files according to `http://dtd.nlm.nih.gov/publishing/3.0/`.
 
-    .. image:: img/en/markup_2007_habilitar_macros.jpg
+
+Before starting
+---------------
+
+File specification
+..................
+
+- one article/text by file
+- .doc or .html
+- same name of the corresponding PDF file
+- location of .doc or .html file: /scielo/serial/<acron>/<issue_identification>/pmc/pmc_markup
+- location of the other files: /scielo/serial/<acron>/<issue_identification>/pmc/src (images, PDF, etc)
+
+.. image:: img/markup_file_system.png
 
 
-If Word program opens correctly, the Markup bar will appear at the inferior part of the screen.
+Input files
+...........
 
-    .. image:: img/en/markup_botao_markup.jpg
+Title Manager  and Code Manager programs generate, in the `local server <concepts.html#local-server>`_, at /scielo/bin/markup/, the following files:
+
+- ??_attb.mds - updated when code database is updated
+- ??_issue.mds - updated when any issue number's data is updated/created
+- issue.mds - updated when any issue number's data is updated/created
+- journal-standard.txt - updated when any journal's data is updated/created
+
+Opening the program
+-------------------
+
+By the menu, selecting **SciELO** > **Markup**:
+
+.. image:: img/markup_open.jpg
+
+By the path of the program, clicking on markup.exe: 
+
+  c:\\scielo\\bin\\markup\\markup.exe
+
+
+Setting the Word path
+.....................
+
+Markup will try to open the Microsoft Office Word Program. If it is not in the correct path, Markup program will ask for the right path of Microsoft Office Word Program.
+
+.. image:: img/markup_word_path.jpg
+
+Or edit, c:\\scielo\\bin\\markup\\start.mds, inserting the Microsoft Office Word path:
+
+  "c:\\arquivos de programas\\microsoft office\\office11\\winword.exe"
+
+
+Enabling macro execution
+........................
+
+Possibly an warning about enable macro will be displayed.
+
+.. image:: img/markup_2007_habilitar_macros.jpg
+
+
+Markup button
+.............
+
+If Word program opens properly, Markup bar will appear at the bottom of the screen.
+
+.. image:: img/markup_botao_markup.jpg
 
 
 In Word 2007, it is different. The Markup bar will appear inside the Supplement group.
 
-    .. image:: img/en/markup_2007_botao_suplementos.jpg
+.. image:: img/markup_2007_botao_suplementos.jpg
 
 
-Open an article or a text file.
+Loading macro manually
+......................
 
-As clicking on Markup button, two options will be shown: configuration and Markup DTD-SciELO.
+If there is no Markup button. You can try to load the macro manually.
 
-In Word 2007:
+Select the  Tools->Supplements and Models option of the menu.
 
-    .. image:: img/en/markup_2007_botao_abrir_markup.jpg
-
-If the macro was not loaded normally, the message bellow will appear:
-
-    .. image:: img/en/markup_loadproblem.jpg
-
-To solve it, select the  Tools->Supplements and Models option of the menu.
-
-    .. image:: img/en/markup_habilitarmacro.jpg
+.. image:: img/markup_habilitarmacro.jpg
 
 
-So, remove the incorrect item, and put on the right path file corresponding of c:\\scielo\\bin\\markup\\markup.prg.
+Remove the incorrect item and inform the right path corresponding to c:\\scielo\\bin\\markup\\markup.prg.
 
-    .. image:: img/en/markup_habilitarmacro2.jpg
+.. image:: img/markup_habilitarmacro2.jpg
 
 
 Using the program
 -----------------
 
-Open a .html or .doc file.
+Markup button
+.............
 
-Click on Markup DTD-SciELO to start the markup.
+If Word program opens properly, the Markup bar will appear at the bottom of the screen.
+
+.. image:: img/markup_botao_markup.jpg
+
+
+In Word 2007, it is different. The Markup bar will appear inside the Supplement group.
+
+.. image:: img/markup_2007_botao_suplementos.jpg
+
+
+Opening a file
+..............
+
+#. Open an article or a text file (.doc or .html).
+
+#. Click on Markup button
+
+#. Click on Markup DTD-SciELO.
+
 
 
 The Word bars will disappear, remaining only the Markup bars:
 
 - white: files operations, edit or eraser a tag, automatic markup
-- orange: floating tags, can be used in any document part
-- green: tags that have a specific hierarchy of DTD
+- orange: floating tags, can be used in any part of the document
+- green: tags in a hierarchical structure
 
-    .. image:: img/en/markup_barras.jpg
+.. image:: img/markup_barras.jpg
+
 
 In Word 2007, all these tags bars are agrouped in Supplements.
 
-    .. image:: img/en/markup_2007_posicao_das_barras.jpg
+.. image:: img/markup_2007_posicao_das_barras.jpg
 
-
-The markup starts when you click on document type button:
-    Article
-        specifies scientific articles. They must have key-words, abstracts and bibliographic references. It is accounted in bibliometric module as scientific production.
-    Text
-        specifies texts that are part of a journal, but don't have scientific worth. Ex.: Editorial, interview, review, etc.
 
 The bars
 --------
 General bar
 ...........
 
-    .. image:: img/en/markup_main_bar.png
+    .. image:: img/markup_main_bar.png
 
 Exit button
 ...........
