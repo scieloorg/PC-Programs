@@ -301,7 +301,7 @@ This bar groups the elements which must be in an hierarchical level.
 
 The highest level is article or text (other text than articles). But use article to generate XML files.
 
-    .. image:: img/markup_inicial.jpg
+.. image:: img/markup_inicial.jpg
 
 
 Navigation
@@ -313,7 +313,7 @@ The down and up arrows button are used to navigate between the levels.
 
 As the user clicks on the tags button of new level will be displayed.
 
-   .. image:: img/markup_barra_hierarquica2.jpg
+.. image:: img/markup_barra_hierarquica2.jpg
 
 For example: 
 
@@ -321,23 +321,23 @@ Down
 ....
 Bar of **front** element
 
-    .. image:: img/markup_barra_front.jpg
+.. image:: img/markup_barra_front.jpg
 
 Bar of **front** element's children
 
-    .. image:: img/markup_barra_titlegrp.jpg
+.. image:: img/markup_barra_titlegrp.jpg
 
 Bar of **titlegrp** element's chidren
 
-    .. image:: img/markup_barra_title.jpg
+.. image:: img/markup_barra_title.jpg
 
 Up
 ..
-    .. image:: img/markup_barra_title_sobe.jpg
+.. image:: img/markup_barra_title_sobe.jpg
 
-    .. image:: img/markup_barra_titlegrp_paracima.jpg
+.. image:: img/markup_barra_titlegrp_paracima.jpg
 
-    .. image:: img/markup_barra_front_0.jpg
+.. image:: img/markup_barra_front_0.jpg
 
 
 Identifying the elements
