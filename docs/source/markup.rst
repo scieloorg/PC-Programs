@@ -70,7 +70,7 @@ Or edit, c:\\scielo\\bin\\markup\\start.mds, inserting the Microsoft Office Word
 Enabling macro execution
 ........................
 
-Possibly an warning about enable macro will be displayed.
+Possibly a warning about enable macro will be displayed.
 
 .. image:: img/markup_2007_habilitar_macros.jpg
 
@@ -103,185 +103,217 @@ Remove the incorrect item and inform the right path corresponding to c:\\scielo\
 .. image:: img/markup_habilitarmacro2.jpg
 
 
-Using the program
------------------
+Starting the markup of a file
+-----------------------------
 
-Markup button
-.............
+#. Open only one file of article or a text file (.doc or .html).
 
-If Word program opens properly, the Markup bar will appear at the bottom of the screen.
-
-.. image:: img/markup_botao_markup.jpg
-
-
-In Word 2007, it is different. The Markup bar will appear inside the Supplement group.
-
-.. image:: img/markup_2007_botao_suplementos.jpg
-
-
-Opening a file
-..............
-
-#. Open an article or a text file (.doc or .html).
-
-#. Click on Markup button
+#. Click on Markup button.
 
 #. Click on Markup DTD-SciELO.
 
 
+The Microsof Office Word bars will disappear, remaining only the Markup bars:
 
-The Word bars will disappear, remaining only the Markup bars:
-
-- white: files operations, edit or eraser a tag, automatic markup
-- orange: floating tags, can be used in any part of the document
-- green: tags in a hierarchical structure
+- white: files operations: edit or eraser a tag and automatic markup
+- orange: floating tags, which can be used in any part of the document
+- green: tags which requires an hierarchical structure
 
 .. image:: img/markup_barras.jpg
 
 
-In Word 2007, all these tags bars are agrouped in Supplements.
+In Word 2007, all these tags bars are grouped in Supplements.
 
 .. image:: img/markup_2007_posicao_das_barras.jpg
 
 
-The bars
---------
-General bar
-...........
+Operations bar
+--------------
 
-    .. image:: img/markup_main_bar.png
+.. image:: img/markup_operations_bar.png
+
 
 Exit button
 ...........
+
 To exit the program, click on Exit button.
 
-    .. image:: img/en/markup_main_bar_exit.jpg
+.. image:: img/markup_operations_bar.png
 
 Choose one of the options bellow.
 
-    .. image:: img/en/markup_exit_message.png
-
-Element's attribute edition button
-..................................
-
-To edit attributes of an element, select the name element, then click on the edit (pencil) button. The program will ask for changing the values of the attributes.
-
-   .. image:: img/en/markup_main_bar_edit_attr.jpg
+.. image:: img/markup_exit_message.png
 
 
-Delete element button
-.....................
+Edition tag's attribute button
+..............................
 
-To delete one element and its attributes, select the element name, then click on the delete button. The program will ask to confirm this action.
+To edit attributes of an element, click on the element name, then click on the edit button (pencil). The program will ask for changing the values of the attributes.
 
-    .. image:: img/en/markup_main_bar_del.JPG
+.. image:: img/markup_operations_bar_edit.png
+
+
+Delete tag button
+.................
+
+To delete one element and its attributes, click on the element name, then click on the delete button. The program will ask to confirm this action.
+
+.. image:: img/markup_operations_bar_del.png
 
 
 Save file button
 ................
-To save a file, click on the save button.
 
-    .. image:: img/en/markup_main_bar_save.JPG
+To save the file, click on the save button.
+
+.. image:: img/markup_operations_bar_save.png
 
 
 Automata 1 button
 .................
 
-To mark bibliographic references automatically:
+To identify automatically the elements of the bibliographic references:
 
-- the journal have to have an Automata file (read `how to programming an automata <automata.html>`_), which configures the rules to identify the references elements.
-- select one bibliographic reference until its final dot, including, and then click on the Automata 1 button.
+- the journal has to have an automata file (read `how to programming an automata <automata.html>`_), which configures the rules to identify the references elements.
+- click on the paragraph of one bibliographic reference, then click on the Automata 1 button.
 
-    .. image:: img/en/markup_main_bar_auto1.JPG
+.. image:: img/automata1.png
 
-This action will activate a tool which will try to identify the bibliographic reference elements automatically. The tool will present the several possibilities of identification. So the user have to select the correct one. 
+This action will activate a tool which will try to identify automatically the bibliographic reference elements. The tool will present the several possibilities of identification. So the user have to choose the correct one. 
 
-
-    .. image:: img/en/automata1b.jpg
-
+.. image:: img/automata1b.jpg
 
 
 Automata 2 Button
 .................
 
-To mark a set of bibliographical references automatically (available only for Vancouver standard).
-Select one or more bibliographic references and then click on the Automata 2 button. 
+.. image:: img/automata2.png
 
-    .. image:: img/en/markup_automata2_select.jpg
+To identify automatically a set of bibliographic references (available only for Vancouver standard).
+Select one or more bibliographic references, then click on the Automata 2 button. 
 
-    .. image:: img/en/markup_main_bar_auto2.JPG
+.. image:: img/markup_automata2_select.jpg
 
-
-The program will mark all references it can identify and will also keep the original reference, marked as [text-ref]. Thus the user can compare them in order to check if the reference was correctly identified and proceed the correction, if it is necessary.
-
-    .. image:: img/en/markup_automata2_marcado.jpg
+.. image:: img/markup_main_bar_auto2.JPG
 
 
+The program will try to identify all the references, keeping the original reference identified as [text-ref]. Thus the user can compare the original to the detailed identification in order to check if the reference was properly identified, and correct it, if necessary.
 
-Validate markup button
-......................
-
-To validate the markup, click on the **Validate markup** button. 
-It will run the `SGML Parser <parser.html>`_.
+.. image:: img/markup_automata2_marcado.jpg
 
 
-    .. image:: img/en/markup_main_bar_parser.JPG
+Automata 3 button
+.................
+
+.. image:: img/automata3.png
+
+To identify automatically the elements of the bibliographic references:
+
+- the journal has to adopt a standard (APA, Vancouver, ABNT, ISO)
+- click on the paragraph of one bibliographic reference, then click on the Automata 3 button.
+
+.. image:: img/automata3.png
+
+This action will activate a tool which will try to identify automatically the bibliographic reference elements. The tool will present the several possibilities of identification. So the user have to choose the correct one. 
+
+.. image:: img/automata1b.jpg
 
 
+Save button
+...........
 
-Floating tag bar
-----------------
+.. image:: img/markup_operations_bar.png
 
-    .. image:: img/en/markup_bar_floating.png
 
-The floating elements are the ones which can appear in any part of the text.
+SGML Parser button
+..................
 
-aff  
-    identifies an author affiliation
-ign 
-    identifies a text which can be ignored
-tabwrap 
-    (only valid for XML PMC)
-figgrps 
-    (only valid for XML PMC)
-figgrp 
-    (only valid for XML PMC)
-equation 
-    (only valid for XML PMC)
-cltrial 
-    identifies clinical trials data
-list
-    (only valid for XML PMC)
-xref 
-    (only valid for XML PMC)
-uri 
-    (only valid for XML PMC)
-sciname
-    (only valid for XML PMC)
+Click on this button to validate the SGML Markup.
+It will convert the file to .txt and will run the `SGML Parser program<parser.html>`_.
+
+.. image:: img/markup_operations_parser.png
+
+
+.. image:: img/markup_main_bar_parser.JPG
+
+
+Generate XML button
+....................
+
+Click on this button to generate the XML file.
+
+.. image:: img/markup_operations_xml.png
+
+
+Report of files and DTD errors button
+.....................................
+
+Click on this button to view the report of files and DTD errors.
+This report will show errors, such as missing mandatory elements, bad location of elements, missing files, etc.
+
+
+Report of SciELO style button
+.............................
+
+Click on this button to generate or display the report of SciELO style.
+This report shows the errors related to unmatched id and rid and problems of identification of  mandatory elements to SciELO database, etc.
+
+.. image:: img/markup_operations_xml_style_report.png
+
+
+Report of contents validations button
+.....................................
+
+Click on this button to generate or display the report of contents validations. 
+This report indicates the metadata and problems in their identification.
+
+.. image:: img/markup_operations_data_val_report.png
+
+
+Report of PMC style button
+..........................
+
+Click on this button to generate or display the report of PMC style.
+This report shows the errors related to unmatched id and rid and problems of identification of  mandatory elements to PMC database.
+
+.. image:: img/markup_operations_pmc_style_report.png
+
+
+View Markup file button
+.......................
+
+Click on this button to view the SGML Markup. 
+It is visible only when the program displays the reports.
+
+
+Floating tags bar
+-----------------
+
+The floating tags are for the elements which appear in any part of the text.
+
+.. image:: img/markup_bar_floating.png
+
 
 Hierarchical tags bar
 ---------------------
 
-This bar groups the elements according to the DTD. This bar will present the elements of one hierarchical level each time. As the user goes to a down or up level, the bar presents respectively, only the down or up level. The user goes to a down level, when clicks on an element or on a down arrow, and goes to an up level, clicking on the up arrow.
+This bar groups the elements which must be in an hierarchical level. 
 
-If there is no element marked in the text, then the initial elements buttons (article and text) are presented.
+The highest level is article or text (other text than articles). But use article to generate XML files.
 
-    .. image:: img/en/markup_inicial.jpg
+    .. image:: img/markup_inicial.jpg
 
-If there are any element marked in the text, the level just below the article or text are presented.
 
-    .. image:: img/en/markup_barra_hierarquica.jpg
+Navigation
+----------
 
-Navegation
-..........
+As the user identify an element which has elements in a lower level, the bars show the tags of the lower level. 
 
-The down and up arrows  are to navegate between hierachical elements levels. The user should find the elements to mark in the bars.
+The down and up arrows button are used to navigate between the levels. 
 
-Clicking on the down arrow next to bibcom, its children (hierarchical related) will appear.
+As the user clicks on the tags button of new level will be displayed.
 
-Clicking on the up arrow, at the right side of the bar, the elements of the superior level will appear.
-
-   .. image:: img/en/markup_barra_hierarquica2.jpg
+   .. image:: img/markup_barra_hierarquica2.jpg
 
 For example: 
 
@@ -289,44 +321,58 @@ Down
 ....
 Bar of **front** element
 
-    .. image:: img/en/markup_barra_front.jpg
+    .. image:: img/markup_barra_front.jpg
 
 Bar of **front** element's children
 
-    .. image:: img/en/markup_barra_titlegrp.jpg
+    .. image:: img/markup_barra_titlegrp.jpg
 
 Bar of **titlegrp** element's chidren
 
-    .. image:: img/en/markup_barra_title.jpg
+    .. image:: img/markup_barra_title.jpg
 
 Up
 ..
-    .. image:: img/en/markup_barra_title_sobe.jpg
+    .. image:: img/markup_barra_title_sobe.jpg
 
-    .. image:: img/en/markup_barra_titlegrp_paracima.jpg
+    .. image:: img/markup_barra_titlegrp_paracima.jpg
 
-    .. image:: img/en/markup_barra_front_0.jpg
+    .. image:: img/markup_barra_front_0.jpg
+
+
+Identifying the elements
+------------------------
+
+#. Select the text to identify
+#. Click on the tag button which identify the text. For example: to identify the whole document, select the whole document, then click on article or text.
+#. article and text tags have attributes. Fill in the form with the data which are the attributes values of article/text tags.
+#. The new level, lower than article or text, will be displayed.
+#. Again select the next part, which is front, that groups metadata of the article or text (authors, title, it means, part before the text body)
+#. Click on front tag.
+
 
 Error messages
 --------------
 
-To avoid errors and to guide the user during the markup, the program presents some messages in case the procedures described previously have not been correctly done. For example:
+1. The user has not filled the attribute field with a valid value
 
-- If the user has clicked on an element button and no text was selected.
-- If a mandatory atribute value wasn't filled in.
-- If the user try to insert a tag in an incorrect place, disaccording to DTD.
-
-    .. image:: img/en/markup_msg_01.jpg
-
-    Bad value to a mandatory attribute
+.. image:: img/markup_msg_invalid_value_for_attribute.jpg
 
 
-    .. image:: img/en/markup_msg_02.jpg
+2. The user clicked on a tag which is not allowed in a incorrect place (it is not according to the DTD). 
+.. image:: img/markup_msg_inserting_tag.png
 
-    The user tried to identify an element which is not according to the hierarchical structure / DTD
+The selected text is inside title and the user clicks on authgrp, which is not allowed inside title.
+
+.. image:: img/markup_msg_inserting_tag.jpg
+
+This message is also displayed if the selected text contains tags or part of tags.
+
+.. image:: img/markup_msg_inserting_tag_03.png
 
 
-    .. image:: img/en/markup_msg_03.jpg
+3. If the user does not select any text and clicks on a tag, the program inform that the user must select a text.
 
-    the user has clicked on an element button and no text was selected
+.. image:: img/markup_msg_select_text.jpg
+
 
