@@ -28,6 +28,6 @@ Programs for Markup computers
    :maxdepth: 2
 
    markup.rst
-   markup_pmc.rst
+   markup_xml.rst
    parser.rst
 

@@ -2,8 +2,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Markup
-======
+Markup Program
+==============
 
 Markup program is a desktop Application (macro in Microsoft Office Word), to identify bibliographic elements in the articles and texts, according to SciELO DTD for `article <dtd.html#article>`_ and for `text <dtd.html#text>`_, based on standard ISO 8879-1986 (SGML - Standard Generalized Markup Language) and ISO 12083-1994 (Electronic Manuscript Preparation and Markup).
 
@@ -11,8 +11,8 @@ Markup program is a desktop Application (macro in Microsoft Office Word), to ide
 Functionalities
 ---------------
 
-- identify the bibliographic elements in a .doc or .html file
-- identify the elements of references semiautomatically
+- identify the elements of articles and texts, in a .doc or .html format file
+- identify semiautomatically the elements of references.
 - validate the identification according to `article <dtd.html#article>`_ and for `text <dtd.html#text>`_
 - generate XML files according to `http://dtd.nlm.nih.gov/publishing/3.0/`.
 - validate XML files according to `http://dtd.nlm.nih.gov/publishing/3.0/`.
@@ -36,7 +36,7 @@ File specification
 Input files
 ...........
 
-Title Manager  and Code Manager programs generate, in the `local server <concepts.html#local-server>`_, at /scielo/bin/markup/, the following files:
+Title Manager and Code Manager programs generate, in the `local server <concepts.html#local-server>`_, at /scielo/bin/markup/, the following files:
 
 - ??_attb.mds - updated when code database is updated
 - ??_issue.mds - updated when any issue number's data is updated/created
@@ -234,56 +234,7 @@ It will convert the file to .txt and will run the `SGML Parser program<parser.ht
 .. image:: img/markup_operations_parser.png
 
 
-.. image:: img/markup_main_bar_parser.JPG
-
-
-Generate XML button
-....................
-
-Click on this button to generate the XML file.
-
-.. image:: img/markup_operations_xml.png
-
-
-Report of files and DTD errors button
-.....................................
-
-Click on this button to view the report of files and DTD errors.
-This report will show errors, such as missing mandatory elements, bad location of elements, missing files, etc.
-
-
-Report of SciELO style button
-.............................
-
-Click on this button to generate or display the report of SciELO style.
-This report shows the errors related to unmatched id and rid and problems of identification of  mandatory elements to SciELO database, etc.
-
-.. image:: img/markup_operations_xml_style_report.png
-
-
-Report of contents validations button
-.....................................
-
-Click on this button to generate or display the report of contents validations. 
-This report indicates the metadata and problems in their identification.
-
-.. image:: img/markup_operations_data_val_report.png
-
-
-Report of PMC style button
-..........................
-
-Click on this button to generate or display the report of PMC style.
-This report shows the errors related to unmatched id and rid and problems of identification of  mandatory elements to PMC database.
-
-.. image:: img/markup_operations_pmc_style_report.png
-
-
-View Markup file button
-.......................
-
-Click on this button to view the SGML Markup. 
-It is visible only when the program displays the reports.
+markup_operations_bar_xml.rst
 
 
 Floating tags bar

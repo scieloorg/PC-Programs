@@ -21,6 +21,6 @@ Run on Windows
 
     tutorials.rst
 
-Support
--------
-How to get `support <http://docs.scielo.org/en/latest/index.html#support>`_ 
+
+support.rst
+
