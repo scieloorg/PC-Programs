@@ -1,5 +1,5 @@
-Concepts of the SciELO Methodology
-==================================
+Glossary
+========
 
 - `Local server`_
 - `SciELO collection or instance`_

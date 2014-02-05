@@ -51,3 +51,7 @@ How to install
 So, copy the SciELO folder to All Users folder
 
   C:\\Documents and Settings\\All Users\\Menu Iniciar\\Programas
+
+
+last_update.rst
+

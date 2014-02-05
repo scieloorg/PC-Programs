@@ -13,7 +13,10 @@ Download by FTP
 
 There are:
 
-- version.txt
-- trial_versions
-- current_versions
-- previous_versions
+- version.txt: list of corrections and new functionalities by version
+- trial_versions: not largely tested 
+- current_versions: approved versions
+- previous_versions: previous approved versions
+
+
+last_update.rst

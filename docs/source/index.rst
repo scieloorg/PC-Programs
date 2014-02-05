@@ -24,3 +24,4 @@ Run on Windows
 
 support.rst
 
+last_update.rst

@@ -46,9 +46,9 @@ Title Manager and Code Manager programs generate, in the `local server <concepts
 Opening the program
 -------------------
 
-By the menu, selecting **SciELO** > **Markup**:
+Use the Windows menu to open the program.
 
-.. image:: img/markup_open.jpg
+.. image:: img/scielo_menu.jpg
 
 By the path of the program, clicking on markup.exe: 
 
@@ -174,8 +174,10 @@ Automata 1 button
 
 To identify automatically the elements of the bibliographic references:
 
-- the journal has to have an automata file (read `how to programming an automata <automata.html>`_), which configures the rules to identify the references elements.
-- click on the paragraph of one bibliographic reference, then click on the Automata 1 button.
+It requires that the journal has to have an automata file (read `how to programming an automata <automata.html>`_), which configures the rules to identify the references elements.
+
+1. Click on a paragraph of one bibliographic reference
+2. Click on the Automata 1 button.
 
 .. image:: img/automata1.png
 
@@ -190,7 +192,10 @@ Automata 2 Button
 .. image:: img/automata2.png
 
 To identify automatically a set of bibliographic references (available only for Vancouver standard).
-Select one or more bibliographic references, then click on the Automata 2 button. 
+
+1. Select one or more bibliographic references
+
+2. Click on the Automata 2 button. 
 
 .. image:: img/markup_automata2_select.jpg
 
@@ -209,8 +214,10 @@ Automata 3 button
 
 To identify automatically the elements of the bibliographic references:
 
-- the journal has to adopt a standard (APA, Vancouver, ABNT, ISO)
-- click on the paragraph of one bibliographic reference, then click on the Automata 3 button.
+It requires that the journal has to adopt a standard (APA, Vancouver, ABNT, ISO)
+
+1. Click on a paragraph of one bibliographic reference
+2. Click on the Automata 3 button.
 
 .. image:: img/automata3.png
 
@@ -302,6 +309,9 @@ Identifying the elements
 #. Click on front tag.
 
 
+markup_tags.rst
+
+
 Error messages
 --------------
 
@@ -327,3 +337,4 @@ This message is also displayed if the selected text contains tags or part of tag
 .. image:: img/markup_msg_select_text.jpg
 
 
+last_update.rst

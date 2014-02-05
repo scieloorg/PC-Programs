@@ -60,7 +60,10 @@ Access the Menu and select Configuration option.
 
 .. image:: img/parser_config.jpg
 
-The options **Add ignore markup to document** and **Add SGML declaration to document** must be selected.
+The options below must be checked:
+
+- Add ignore markup to document
+- Add SGML declaration to document
 
 The other fields, for:
     
@@ -93,4 +96,7 @@ If there are errors, the SGML Parser will indicate the line and the error type o
 In this case, the user must go back to Markup program, make corrections, then repeat the procedure of using SGML Parser until there is no error.
 
 .. image:: img/parser_error1.jpg
+
+
+last_update.rst
 

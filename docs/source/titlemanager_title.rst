@@ -5,11 +5,6 @@
    contain the root `toctree` directive.
 
 
-
-    titlemanager_open.rst
-
-
-
 Journal
 =======
 
@@ -20,99 +15,59 @@ Journal
 Creating a new record  
 ---------------------
 
+1. Select File-> Open-> Journals-> New.
+2. Write the title of the journal and click on Open button.
 
+.. image:: img/en/titlemanager_new_title.png
 
-#. Select File-> Open-> Journals-> New.
-
-#. Write the title of the journal and click on Open button.
-
-    .. image:: img/en/titlemanager_new_title.png
-
-#. Register the journal data. Read `Journal form`_.   
-
-#. Click on Save button
-
+3. Register the journal data. Read `Journal form`_.   
+4. Click on Save button
 
 
 Opening a record to edit the journal data 
 -----------------------------------------
 
+1. Select File-> Open-> Journals-> Open 
+2. Select the journal you want to edit
 
+.. image:: img/en/01_menu_title_abrir.jpg
 
-#. Select File-> Open-> Journals-> Open 
-
-#. Select the title you want to open
-
-  
-
-   .. image:: img/en/01_menu_title_abrir.jpg
-
-
-
-#. Register the journal data. Read `Journal form`_.   
-
-#. Click on Save button
-
+3. Register the journal data. Read `Journal form`_.   
+4. Click on Save button
 
 
 Deleting records of journals and their issues
 ---------------------------------------------
-
-
-
 It is used to remove records of one or more titles.
-
-
-
 Use it **only** if you are sure the journal **HAS NEVER BEEN PUBLISHED**.
 
 
-
-**IT Is MANDATORY** to keep all the titles registered, although ceased or removed off the collection, they must keep published.
-
+.. attention:: **IT Is MANDATORY** to keep all the titles registered, although ceased or removed off the collection, they must keep published.
 
 
 If the journal has to be disabled, read `Journal history`_.
+It deletes the records of the databases title and issue locally. So, only after `GeraPadrao`_, the title will be deleted from the website.
 
+1. Select File-> Open-> Journals-> Delete
 
+.. image:: img/en/01_menu_title_remover.jpg
 
-It deletes the records of the databases title and issue locally. So, only after GeraPadrao, the title will be deleted from the website.
-
-
-
-#. Select File-> Open-> Journals-> Delete
-
-
-
-    .. image:: img/en/01_menu_title_remover.jpg
-
-
-
-#. Select the titles to be removed.
-
-#. Click on Remove button.
-
-
-
+2. Select the titles to be removed.
+3. Click on Remove button.
 
 
 Journal form
 ------------
 
-
-
 .. image:: img/en/01_tit_01.jpg
 
 
-
-
-
-ISSN
-....
+ISSN ID
+.......
 
 Field: 400
 
-ISSN – print or electronic – which can not be changed because it is used as a key
+ISSN – print or electronic – which can not be changed because it is used as an ID.
 
 
 Publication Title
@@ -265,7 +220,7 @@ Registering the subject areas
 -----------------------------
 
 
-.. image:: img/en/01_tit_02.jpg
+.. image:: img/titlemanager_journal_form_02.jpg
 
 
 
@@ -756,7 +711,7 @@ Registering data for the website
 --------------------------------
 
 
-.. image:: img/en/01_tit_07.jpg
+.. image:: img/titlemanager_journal_form_07.jpg
 
 
 

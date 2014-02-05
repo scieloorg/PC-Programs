@@ -3,7 +3,7 @@ SciELO XML Forum
 
 http://groups.google.com/group/scielo-xml
 
-It is the forum to discuss questions about SciELO XML.
+It is the forum to discuss questions and make suggestions related to SciELO XML.
 
 **How to subscribe:**
 
