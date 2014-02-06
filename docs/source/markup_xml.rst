@@ -18,7 +18,7 @@ Reports
 
 
 
-.. include:: xml_support.rst
+`SciELO XML Forum <xml_support.html>`_
 
 
 .. include:: draft_version.rst
