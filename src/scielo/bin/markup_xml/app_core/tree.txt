@@ -20,6 +20,7 @@ uri;#TRUE#
 sciname;#TRUE#
 quote;#TRUE#
 element;#TRUE#
+list;#TRUE#
 
 abnt6023
 acitat;#TRUE#
@@ -623,7 +624,6 @@ sec
 sectitle;#FALSE#
 subsec;#TRUE#
 p;#TRUE#
-list;#TRUE#
 
 sectitle
 
@@ -804,12 +804,10 @@ tp;#FALSE#
 xmlabstr
 sec;#TRUE#
 p;#TRUE#
-list;#TRUE#
 
 xmlbody
 sec;#TRUE#
 p;#TRUE#
-list;#TRUE#
 deflist;#TRUE#
 sigblock;#FALSE#
 
