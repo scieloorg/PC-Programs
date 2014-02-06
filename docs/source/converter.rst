@@ -13,7 +13,7 @@ Opening the program
 
 Use the Windows menu to open the program.
 
-.. image:: img/scielo_menu.jpg
+.. image:: img/scielo_menu.png
 
 Or by the path of the program:
 
@@ -33,7 +33,7 @@ To change the language of the program's  interface, see `Change the language of 
 Running the program
 -------------------
 
-#. Select Files.
+#. Select Files > Open.
 
     .. image:: img/en/converter_open_files.png
 
