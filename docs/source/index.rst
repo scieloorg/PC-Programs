@@ -11,7 +11,7 @@ Welcome to SciELO PC Programs' documentation!
 Run on Windows
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 5
 
     download.rst
 
@@ -22,6 +22,8 @@ Run on Windows
     tutorials.rst
 
     support.rst
-
+ 
+    xml_support.rst
+    
 
 .. include:: last_update.rst
