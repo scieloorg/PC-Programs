@@ -5,7 +5,7 @@
 Newcode Database
 ================
 
-Its content is customized and it is managed by `Code Manager` program.
+Its content is customized and it is managed by `Code Manager`_ program.
 
 ccode
 =====

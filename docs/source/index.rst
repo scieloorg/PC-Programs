@@ -21,7 +21,7 @@ Run on Windows
 
     tutorials.rst
 
+    support.rst
 
-support.rst
 
-last_update.rst
+.. include:: last_update.rst
