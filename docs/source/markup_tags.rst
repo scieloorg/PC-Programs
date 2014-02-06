@@ -1,4 +1,5 @@
 Markup Tags
 ===========
 
-draft_version.rst
+
+.. include:: draft_version.rst

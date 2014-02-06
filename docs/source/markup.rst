@@ -14,9 +14,8 @@ Functionalities
 - identify the elements of articles and texts, in a .doc or .html format file
 - identify semiautomatically the elements of references.
 - validate the identification according to `article <dtd.html#article>`_ and for `text <dtd.html#text>`_
-- generate XML files according to `http://dtd.nlm.nih.gov/publishing/3.0/`_.
-- validate XML files according to `http://dtd.nlm.nih.gov/publishing/3.0/`_.
-
+- generate XML files according to `SciELO DTD <http://scieloorg.github.io/scielo_publishing_schema/>`_ and `PMC DTD <http://dtd.nlm.nih.gov/publishing/3.0/>`_.
+- validate XML files according to `SciELO DTD <http://scieloorg.github.io/scielo_publishing_schema/>`_ and `PMC DTD <http://dtd.nlm.nih.gov/publishing/3.0/>`_.
 
 Before starting
 ---------------
@@ -321,6 +320,7 @@ Error messages
 
 
 2. The user clicked on a tag which is not allowed in a incorrect place (it is not according to the DTD). 
+
 .. image:: img/markup_msg_inserting_tag.png
 
 The selected text is inside title and the user clicks on authgrp, which is not allowed inside title.
