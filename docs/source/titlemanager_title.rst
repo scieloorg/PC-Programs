@@ -5,8 +5,8 @@
    contain the root `toctree` directive.
 
 
-Journal
-=======
+Journals
+========
 
 .. image:: img/en/titlemanager_open_journals.png
 
@@ -54,7 +54,10 @@ It deletes the records of the databases title and issue locally. So, only after 
 
 
 Journal form
-------------
+============
+
+Journal form: Titles
+--------------------
 
 .. image:: img/en/01_tit_01.jpg
 
@@ -207,10 +210,10 @@ Field: 550
 Link note: Note which acts as a link between the main title or title proper and its supplements/inserts (titles generally published in separate form, with its own numbering, which complements the main title
 Enter in this field the title of the supplement/insert.
 
-Registering the subject areas
------------------------------
+Journal Form: Subject areas
+---------------------------
 
-.. image:: img/titlemanager_journal_form_02.jpg
+.. image:: img/titlemanager_journal_form_02.png
 
 Mission
 .......
@@ -281,8 +284,8 @@ Field: 851
 Select all the categories which the journal is related to.
 
 
-Registering formal information
-------------------------------
+Journal form: formal information
+--------------------------------
 
 .. image:: img/en/01_tit_03.jpg
 
@@ -489,8 +492,8 @@ Field: 421
 Short title registered in MEDLINE
 
 
-Registering publisher and sponsor
----------------------------------
+Journal form: publishers and sponsors
+-------------------------------------
 
 .. image:: img/en/01_tit_04.jpg
 
@@ -579,8 +582,8 @@ Field: 140
 Enter the name of the financial sponsors
 
 
-Registering license or copyright
---------------------------------
+Journal form: license or copyright
+----------------------------------
 
 .. image:: img/en/01_tit_05.jpg
 
@@ -608,8 +611,8 @@ Examples:
 - Revista Brasileira de Ciências Sociais    
 
 
-Registering the history of journal's status in the collection 
--------------------------------------------------------------
+Journal form: history of journal's status in the collection 
+-----------------------------------------------------------
 
 .. image:: img/en/01_tit_06.jpg
 
@@ -641,10 +644,10 @@ Repetitive.
 .. image:: img/en/01_tit_06b.jpg
 
 
-Registering data for the website
---------------------------------
+Journal form: website
+---------------------
 
-.. image:: img/titlemanager_journal_form_07.jpg
+.. image:: img/titlemanager_journal_form_07.png
 
 
 Acronym (Lowercase and/or Uppercase letters)
@@ -757,8 +760,8 @@ Field: 691
 Select the collections to which the journal belong to.
 
 
-Registering the record data
----------------------------
+Journal form: other information
+-------------------------------
 
 
 .. image:: img/en/01_tit_08.jpg

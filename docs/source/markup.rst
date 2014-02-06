@@ -14,8 +14,8 @@ Functionalities
 - identify the elements of articles and texts, in a .doc or .html format file
 - identify semiautomatically the elements of references.
 - validate the identification according to `article <dtd.html#article>`_ and for `text <dtd.html#text>`_
-- generate XML files according to `http://dtd.nlm.nih.gov/publishing/3.0/`.
-- validate XML files according to `http://dtd.nlm.nih.gov/publishing/3.0/`.
+- generate XML files according to `http://dtd.nlm.nih.gov/publishing/3.0/`_.
+- validate XML files according to `http://dtd.nlm.nih.gov/publishing/3.0/`_.
 
 
 Before starting
@@ -48,7 +48,7 @@ Opening the program
 
 Use the Windows menu to open the program.
 
-.. image:: img/scielo_menu.jpg
+.. image:: img/scielo_menu.png
 
 By the path of the program, clicking on markup.exe: 
 
@@ -138,7 +138,7 @@ Exit button
 
 To exit the program, click on Exit button.
 
-.. image:: img/markup_operations_bar.png
+.. image:: img/markup_operations_bar_exit.jpg
 
 Choose one of the options bellow.
 
@@ -150,7 +150,7 @@ Edition tag's attribute button
 
 To edit attributes of an element, click on the element name, then click on the edit button (pencil). The program will ask for changing the values of the attributes.
 
-.. image:: img/markup_operations_bar_edit.png
+.. image:: img/markup_operations_bar_edit.jpg
 
 
 Delete tag button
@@ -158,7 +158,7 @@ Delete tag button
 
 To delete one element and its attributes, click on the element name, then click on the delete button. The program will ask to confirm this action.
 
-.. image:: img/markup_operations_bar_del.png
+.. image:: img/markup_operations_bar_del.jpg
 
 
 Save file button
@@ -166,7 +166,7 @@ Save file button
 
 To save the file, click on the save button.
 
-.. image:: img/markup_operations_bar_save.png
+.. image:: img/markup_operations_bar_save.jpg
 
 
 Automata 1 button
@@ -179,7 +179,7 @@ It requires that the journal has to have an automata file (read `how to programm
 1. Click on a paragraph of one bibliographic reference
 2. Click on the Automata 1 button.
 
-.. image:: img/automata1.png
+.. image:: img/automata1.jpg
 
 This action will activate a tool which will try to identify automatically the bibliographic reference elements. The tool will present the several possibilities of identification. So the user have to choose the correct one. 
 
@@ -189,18 +189,17 @@ This action will activate a tool which will try to identify automatically the bi
 Automata 2 Button
 .................
 
-.. image:: img/automata2.png
+.. image:: img/automata2.jpg
 
 To identify automatically a set of bibliographic references (available only for Vancouver standard).
 
 1. Select one or more bibliographic references
 
-2. Click on the Automata 2 button. 
-
 .. image:: img/markup_automata2_select.jpg
 
-.. image:: img/markup_main_bar_auto2.JPG
+2. Click on the Automata 2 button. 
 
+.. image:: img/automata2.jpg
 
 The program will try to identify all the references, keeping the original reference identified as [text-ref]. Thus the user can compare the original to the detailed identification in order to check if the reference was properly identified, and correct it, if necessary.
 
@@ -210,7 +209,7 @@ The program will try to identify all the references, keeping the original refere
 Automata 3 button
 .................
 
-.. image:: img/automata3.png
+.. image:: img/automata3.jpg
 
 To identify automatically the elements of the bibliographic references:
 
@@ -229,19 +228,17 @@ This action will activate a tool which will try to identify automatically the bi
 Save button
 ...........
 
-.. image:: img/markup_operations_bar.png
+.. image:: img/markup_operations_bar_save.jpg
 
 
 SGML Parser button
 ..................
 
 Click on this button to validate the SGML Markup.
-It will convert the file to .txt and will run the `SGML Parser program<parser.html>`_.
+It will convert the file to .txt and will run the `SGML Parser program <parser.html>`_.
 
-.. image:: img/markup_operations_parser.png
+.. image:: img/markup_operations_parser.jpg
 
-
-markup_operations_bar_xml.rst
 
 
 Floating tags bar
@@ -309,7 +306,7 @@ Identifying the elements
 #. Click on front tag.
 
 
-markup_tags.rst
+.. include:: markup_tags.rst
 
 
 Error messages
@@ -337,4 +334,4 @@ This message is also displayed if the selected text contains tags or part of tag
 .. image:: img/markup_msg_select_text.jpg
 
 
-last_update.rst
+.. include:: last_update.rst
