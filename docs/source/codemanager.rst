@@ -61,7 +61,7 @@ Removing a row of the table
 .. image:: img/codemanager_select_row.png
 
 2. Click on Remove button. 
-3. Click on Save button
+3. Click on Save button.
 
 
 Updating a row of the table

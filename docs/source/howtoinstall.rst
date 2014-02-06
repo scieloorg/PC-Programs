@@ -5,10 +5,12 @@
 
 Requirements
 ============
+
 - JAVA
 - PYTHON 2.7.x
 
 .. note:: Add the Java and Python path to PATH (environment variable)
+
 
 How to install
 ==============
