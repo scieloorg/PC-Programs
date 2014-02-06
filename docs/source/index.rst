@@ -17,13 +17,13 @@ Run on Windows
 
     howtoinstall.rst
 
-    concepts.rst
-
     tutorials.rst
+
+    databases.rst
 
     markup_tags.rst
 
-    databases.rst
+    concepts.rst
 
     support.rst
  
