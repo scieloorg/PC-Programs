@@ -21,7 +21,7 @@ Reports
 
 
 
-xml_support.rst
+    xml_support.rst
 
 
-draft_version.rst
+.. include:: draft_version.rst

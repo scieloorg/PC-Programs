@@ -15,7 +15,7 @@ Requirements
 How to install
 ==============
 
-1. Download the `installer</download.html>`_
+1. Download the `installer<download.html>`_
 2. Run the installer
 3. Follow the instructions given in each screen
 

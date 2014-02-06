@@ -98,5 +98,5 @@ In this case, the user must go back to Markup program, make corrections, then re
 .. image:: img/parser_error1.jpg
 
 
-last_update.rst
+.. include:: last_update.rst
 

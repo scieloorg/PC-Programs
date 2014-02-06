@@ -7,9 +7,9 @@ Code Manager
 
 Desktop application (Visual Basic, CDS/ISIS database) to manage the tables of codes/values used by SciELO Methodology.
 
-Used in `Local Server` 
+Used in `Local Server<glossary.html#Local Server>`_ 
 
-This program is only used if it is necessary to change data of the customizable tables. (`Newcode database`)
+This program is only used if it is necessary to change data of the customizable tables. (`Newcode database<newcode_database>`_)
 
 
 Opening the program
@@ -17,7 +17,7 @@ Opening the program
 
 Use the Windows menu to open the program.
 
-.. image:: img/scielo_menu.jpg
+.. image:: img/scielo_menu.png
 
 Or use the Windows Explorer:
 
@@ -29,7 +29,7 @@ Or use the Windows Explorer:
 Managing the tables 
 -------------------
 
-#. Select **Files** 
+#. Select File > Open: 
 
 .. image:: img/codemanager_file_open.png
 
@@ -50,7 +50,7 @@ The program will display the selected table:
 .. image:: img/codemanager_table.png
 
 The data of the table will be presented as: code | label in Portuguese | Spanish | English.
-But if there is no dependence to language, only one column is displayed.
+But if there is no dependence on any language, only one column is displayed.
     
 
 Removing a row of the table
@@ -72,10 +72,7 @@ Updating a row of the table
 .. image:: img/codemanager_select_row.png
 
 2. Change the data.
-3. Click on Update button. 
-The updated row will be displayed in the list. 
-
-
+3. Click on Update button. The updated row will be displayed in the list. 
 4. Click on Save button
 
 
@@ -84,11 +81,11 @@ Creating a new row
 
 1. Fill in the fields: code and label of each language or only one if it is not depending on a language.
  
-.. image:: img/codemanager_adding_new_line.jpg
+.. image:: img/codemanager_adding_new_line.png
 
 2. Click on Add button.
 
-.. image:: img/codemanager_added_new_line.jpg
+.. image:: img/codemanager_added_new_line.png
 
 The new row will be displayed at the end of the list. 
 
@@ -96,4 +93,4 @@ The new row will be displayed at the end of the list.
 
 
 
-last_update.rst
+.. include:: last_update.rst
