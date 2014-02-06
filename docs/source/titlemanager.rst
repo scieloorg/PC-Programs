@@ -21,4 +21,4 @@ titlemanager_section.rst
 titlemanager_issue.rst
 
 
-last_update.rst
+.. include:: last_update.rst

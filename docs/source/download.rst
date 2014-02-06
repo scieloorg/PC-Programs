@@ -18,5 +18,6 @@ There are:
 - current_versions: approved versions
 - previous_versions: previous approved versions
 
+-----
 
-last_update.rst
+Last update of this page: Feb 6, 2014
