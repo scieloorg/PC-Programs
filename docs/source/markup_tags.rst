@@ -1,6 +1,15 @@
 SGML Markup Tags
 ================
 
+article
+-------
+Identify the article
+children: `deposit`_, `front`_, `xmlbody`_, `body`_, `back`_, `response`_, `subart`_
+
+text
+----
+Identify a text
+children: `doi`_, `titlegrp`_, `authgrp`_, `xmlbody`_, `back`_
 
 abnt6023
 --------
@@ -53,11 +62,6 @@ app
 ---
 Identify the appendix
 children: `title`_, `sec`_, `p`_
-
-article
--------
-Identify the article
-children: `deposit`_, `front`_, `xmlbody`_, `body`_, `back`_, `response`_, `subart`_
 
 authgrp
 -------
@@ -550,11 +554,6 @@ Identify a term
 texmath
 -------
 Identify a formula using Tex Math Equation
-
-text
-----
-Identify a text
-children: `doi`_, `titlegrp`_, `authgrp`_, `xmlbody`_, `back`_
 
 thesgrp
 -------
