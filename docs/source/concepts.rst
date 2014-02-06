@@ -44,7 +44,9 @@ The sequential number is a number formed by year (YYYY), followed by a number th
 This number has two purposes: 
 
 - order of the issue within a year in the "all issues" page of the website
-- forming PID. It is strongly recommendable DO NOT MODIFY THIS ITEM if the issue has already been published on the website.
+- forming PID. 
+
+.. attention:: DO NOT MODIFY THIS ITEM if the issue has already been published on the website.
 
 By convention, the sequential number is:
 

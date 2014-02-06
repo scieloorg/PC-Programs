@@ -5,10 +5,10 @@
 Newcode Database
 ================
 
-Its content is customized and it is managed by `Code Manager <codemanager>`_ program.
+Its content is customized and it is managed by `Code Manager <codemanager.html>`_ program.
 
 ccode
-=====
+-----
 
 Institution where the Markup processing is done.
 
@@ -45,7 +45,7 @@ Institution where the Markup processing is done.
 +-------+-----------------------------------------------------------+
 
 sponsor
-=======
+-------
 
 Institutions which can sponsor the articles
 
