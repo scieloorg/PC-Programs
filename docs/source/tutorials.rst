@@ -3,12 +3,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Local website
--------------
-
-`SciELO Website for Windows <http://docs.scielo.org/projects/scielo-web-windows/en/latest/>`_.
-
-
 Programs for local server
 -------------------------
 
@@ -28,6 +22,12 @@ Programs for Markup computers
    :maxdepth: 2
 
    markup.rst
-   markup_pmc.rst
+   markup_xml.rst
    parser.rst
+
+
+Local website
+-------------
+
+`SciELO Website for Windows <http://docs.scielo.org/projects/scielo-web-windows/en/latest/>`_.
 

@@ -5281,6 +5281,11 @@ item: Install File
 end
 item: Install File
   Source=W:\scielo\bin\markup_xml\automata.dll
+  Destination=%SYS32%\automata.dll
+  Flags=0001000010000010
+end
+item: Install File
+  Source=W:\scielo\bin\markup_xml\automata.dll
   Destination=%PROGDIR%\bin\markup\automata.dll
   Flags=0001000010000010
 end

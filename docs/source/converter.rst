@@ -11,7 +11,14 @@ Converter
 Opening the program
 -------------------
 
-    .. image:: img/en/converter_menu.jpg
+Use the Windows menu to open the program.
+
+.. image:: img/scielo_menu.jpg
+
+Or by the path of the program:
+
+  c:\\scielo\\bin\\convert\\convert.exe
+
 
 Checking the program version
 ----------------------------

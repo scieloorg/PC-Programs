@@ -5,81 +5,55 @@
 
 Requirements
 ============
- - JAVA
- - PYTHON 2.7.x
+
+- JAVA
+- PYTHON 2.7.x
+
+.. note:: Add the Java and Python path to PATH (environment variable)
+
 
 How to install
 ==============
 
-1. Download the last version
-2. Run the program
+1. Download the `installer </download>`_
+2. Run the installer
 3. Follow the instructions given in each screen
 4. Configure
 
-  **application's name**
-    Examples: SciELO Brazil, SciELO Chile, SciELO v4.0, etc., or just SciELO.
+.. attention:: Use a drive in which the user can have full access 
 
-  URL
-    production website address
-    Example: www.scielo.br
+.. image:: img/00_setup.jpg
 
-  destination data folder
-    folder which have serial folder
+5. Select the programs you want to install in your computer, according to the purpose of the computer:
 
-  .. image:: img/en/00_setup.jpg
+- Local server (only one computer)
 
+  - Title Manager: program to manage journal and issues data
+  - Markup: program to identify the bibliographic elements in the articles/texts
+  - Markup - Automata files (optional): examples of files for automatic markup
+  - Converter: program to load the marked documents in the database
+  - XML SciELO: (optional) program to create XML format for PubMed and ISI
 
-5. Select the programs you want to install in your computer, considering if it is the local server or the markup computer.
+- Markup Computer (one or more computers)
 
-Programs for local server 
--------------------------
-
-- Code Manager: program to manager tables of codes/labels. For example, countries table: BR (code) and Brazil (label) 
-- Title Manager: program to manager journal data that are part of the collection, their issues and sections of table of contents
-- Converter: program responsible for loading the CDS / ISIS databaseusing complete text documents previously marked 
-- Markup: program to identify each bibliographic element on articles and texts
-- SGML Parser: program to identify possible markup errors on the marked files. It is always installed.
-- XML SciELO: program (optional) to create XML format accepted byPubMed and ISI
-
-Programs for Markup Computer
-----------------------------
-
-- Markup: program to identify each bibliographic element on articles and texts
-- SGML Parser: program to identify possible markup errors on the marked files. It is always installed.
-
-Note: Markup - automata files are examples of automatas. Its installation is optional. 
-
-  .. image:: img/en/00_selecao.jpg
+  - Markup: program to identify the bibliographic elements in the articles/texts
+  - Markup - Automata files (optional): examples of files for automatic markup
 
 
-6. For local server installation, set the environment variable BAP as OS23470a.
+6. For local server installation, set the environment variable BAP as OS23470a, by accessing the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
+  Check if the variable already exists. 
+  If it does not, click New and enter the data.
 
-7. By Windows menu go to: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
-8. Check if the variable already exists. 
-9. If it does not, click New and enter the data.
+  .. image:: img/00_bap.jpg
 
-   .. image:: img/en/00_bap.jpg
+7. If you install as administrator, the menu of the application will be created only for the Administrator user. 
 
-10. Install Java and set its location in PATH.
-11. The shortcurts are created to administrator user, so copy the shortcuts for all the users.
-12. Give the write permission to non-admin users on C: (for Parser usage) and all the folders below the bin folder, because the programs generate files in these folders.
-13. Select the C: drive and click on Properties option.
+  C:\\Documents and Settings\\Administrador\\Menu Iniciar\\Programas
 
-  .. image:: img/en/permissao001.png
+So, copy the SciELO folder to All Users folder
 
-14. Open the security tab
+  C:\\Documents and Settings\\All Users\\Menu Iniciar\\Programas
 
-  .. image:: img/en/permissao002.png
 
-15. Select **users** (common users)
-
-  .. image:: img/en/permissao003.png
-
-16. Click on Edit button
-
-  .. image:: img/en/permissao004.png
-
-17. Check all the permissions. Then click on Apply to set the permissions.
-
-  .. image:: img/en/permissao005.png
+last_update.rst
 

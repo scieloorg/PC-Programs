@@ -8,22 +8,26 @@ Issues
 Opening the program
 -------------------
 
-#. Select File-> Open-> Issues
+1. Select File-> Open-> Issues
 
-    .. image:: img/en/01_menu_issue.jpg
+.. image:: img/en/01_menu_issue.jpg
 
-#. Select a title and click on Open button
+2. Select a title and click on Open button
+
 
 Important concepts
 ------------------
+
 Read:
 
-* `type of issues <concepts.html#type-of-issues>`_
-* `sequential number <concepts.html#sequential-number>`_
-* `folders structure <concepts.html#folders-structure>`_ 
+- `type of issues <concepts.html#type-of-issues>`_
+- `sequential number <concepts.html#sequential-number>`_
+- `folders structure <concepts.html#folders-structure>`_ 
+
 
 Issues form
 -----------
+
 From this screen, you have the following options:
 
 - List the issues
@@ -114,6 +118,7 @@ Eg: If there are 4 regular numbers in the year, then the sequential number for t
 
 .. image:: img/en/01_iss_4_supl.jpg
 
+
 Identifying ahead or review / provisional issues
 ................................................
 
@@ -127,7 +132,8 @@ The sequential number is the year followed by the order of the issue within year
 
 .. image:: img/en/01_iss_04_ahead.jpg
 
-Indentifying press release issues
+
+Identifying press release issues
 .................................
 
 Populate the same fields in accordance with the rules above, plus **pr** in the complement.
@@ -183,7 +189,7 @@ Creating/editing an issue
 General data
 ............
 
-    .. image:: img/en/01_iss_07.jpg
+    .. image:: img/en/titlemanager_issue_form_01.jpg
 
 Status
 ......
@@ -224,12 +230,31 @@ Part
 Field: 34
 Into disuse.
 
-ISSUE ISSN
+Issue ISSN
 ..........
+
+Removed from Title Manager since 4.0.072. Replaced by Print ISSN and Electronic ISSN.
 
 Field: 35
 
 Fill it with the ISSN used by the journal at the time this issue was published.
+
+
+Print ISSN
+..........
+
+Field: 435, subfield ^t = 'PRINT'
+
+Enter the Print ISSN if it is a current ISSN.
+
+
+Electronic ISSN
+...............
+
+Field: 435, subfield ^t = 'ONLIN'
+
+Enter the Electronic ISSN if it is a current ISSN.
+
 
 Editor issue
 ............
