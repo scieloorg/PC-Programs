@@ -9,10 +9,7 @@ Use the Markup Program to identify all the elements of the document, but instead
 
 xmlbody contains a complex hierarchical structure. It contains xref, uri, url, p, sec, title, label, and other tags to identify elements inside the body.
 
-markup_tags.rst
-
-
-markup_operations_bar_xml.rst
+Read about `Markup Tags <markup_tags.html>`_.
 
 
 Reports
@@ -21,7 +18,7 @@ Reports
 
 
 
-    xml_support.rst
+.. include:: xml_support.rst
 
 
 .. include:: draft_version.rst

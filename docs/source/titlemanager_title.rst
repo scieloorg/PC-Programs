@@ -171,10 +171,9 @@ Other forms of the title which appear in the serial such as: cover title which d
 Examples:
 
 - Publication Title:    Obstetrics and Gynecology Clinics of North America
-  Other Forms of Title: Obstetrics and Gynecology
-                         Clinics    
+   Other Forms of Title: Obstetrics and Gynecology Clinics    
 - Publication Title:    Journal of the National Cancer Institute
-  Other Forms of Title: JNCI: Journal of the National Cancer Institute
+   Other Forms of Title: JNCI: Journal of the National Cancer Institute
 
 
 Old Title
@@ -207,7 +206,7 @@ Has Supplement
 
 Field: 550
 
-Link note: Note which acts as a link between the main title or title proper and its supplements/inserts (titles generally published in separate form, with its own numbering, which complements the main title
+Link note: Note which acts as a link between the main title or title proper and its supplements/inserts (titles generally published in separate form, with its own numbering, which complements the main title.
 Enter in this field the title of the supplement/insert.
 
 Journal Form: Subject areas
@@ -298,9 +297,12 @@ Field: 301
 Enter the date of the first issue of the journal in ISO format (year in 4 digits, month 2 digits, day in 2 digits).    
 Examples:
      
-- Initial date: Jan./Mar. 1974  19740100         
-- Initial date: 1987  19870000         
-- Initial date: Sept. 1988  19880900
+- Initial date: Jan./Mar. 1974  
+   19740100         
+- Initial date: 1987
+   19870000         
+- Initial date: Sept. 1988
+   19880900
 
 
 Initial Volume
