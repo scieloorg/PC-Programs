@@ -9,18 +9,19 @@ Requirements
 - JAVA
 - PYTHON 2.7.x
 
-.. note:: Add the Java and Python path to PATH (environment variable)
+.. note:: Add the Java and Python paths to PATH (environment variable)
 
 
 How to install
 ==============
 
-1. Download the `installer </download>`_
+1. Download the `installer</download.html>`_
 2. Run the installer
 3. Follow the instructions given in each screen
-4. Configure
 
 .. attention:: Use a drive in which the user can have full access 
+
+4. Complete the data of the installation
 
 .. image:: img/00_setup.jpg
 
@@ -40,9 +41,9 @@ How to install
   - Markup - Automata files (optional): examples of files for automatic markup
 
 
-6. For local server installation, set the environment variable BAP as OS23470a, by accessing the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
+6. For local server installation, set OS23470a to the environment variable BAP, by accessing the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
   Check if the variable already exists. 
-  If it does not, click New and enter the data.
+  If it does not, click New and enter the value.
 
   .. image:: img/00_bap.jpg
 
@@ -55,5 +56,8 @@ So, copy the SciELO folder to All Users folder
   C:\\Documents and Settings\\All Users\\Menu Iniciar\\Programas
 
 
-last_update.rst
+
+----------------
+
+Last update of this page: Feb 6, 2014
 
