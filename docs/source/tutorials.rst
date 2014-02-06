@@ -13,7 +13,7 @@ Programs for local server
    titlemanager.rst
    converter.rst
    xmlscielo.rst   
-
+   `SciELO Website for Windows <http://docs.scielo.org/projects/scielo-web-windows/en/latest/>`_.
 
 Programs for Markup computers
 -----------------------------
@@ -26,8 +26,5 @@ Programs for Markup computers
    parser.rst
 
 
-Local website
--------------
 
-`SciELO Website for Windows <http://docs.scielo.org/projects/scielo-web-windows/en/latest/>`_.
 
