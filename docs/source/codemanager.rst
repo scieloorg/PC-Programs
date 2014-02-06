@@ -7,9 +7,9 @@ Code Manager
 
 Desktop application (Visual Basic, CDS/ISIS database) to manage the tables of codes/values used by SciELO Methodology.
 
-Used in `Local Server<glossary.html#Local Server>`_ 
+Used in the `Local Server<concepts.html#local-server>`_ 
 
-This program is only used if it is necessary to change data of the customizable tables. (`Newcode database<newcode_database>`_)
+This program is only used if it is necessary to change data of the `customizable tables (newcode database) <newcode_database.html>`_)
 
 
 Opening the program
@@ -33,8 +33,8 @@ Managing the tables
 
 .. image:: img/codemanager_file_open.png
 
-- **Restricted Area** is used only by SciELO Methodology team. It is password protected. (`Code database`)
-- **Customizing Tables** is to manage the customizable tables. (`Newcode database`)
+- **Restricted Area** is used only by SciELO Methodology team. It is password protected. (`Code database <code_database.html>`_)
+- **Customizing Tables** is to manage the customizable tables. (`Newcode database <newcode_database.html>`_)
 
 
 Accessing a table
