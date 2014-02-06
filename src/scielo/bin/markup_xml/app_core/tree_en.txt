@@ -2,7 +2,7 @@ abnt6023;Group the elements of references which are according to NBR 6023/89 of 
 abstract;Identify the abstract of the article
 accepted;Identify the date in which the article was accepted to publish
 acitat;Identify a bibliography reference
-acontrib;Group the elements of a contribution of an article or book chapter, such as author and title
+acontrib;Group the elements of a contribution
 aff;Identify the organization to which the author is affiliated
 aiserial;Group the elements of a serial publication
 amonog;Group the elements of a monograph
@@ -91,7 +91,7 @@ pcitat;Identify a bibliography reference
 pcontrib;Group the elements of contribution
 piserial;Group the elements of serial
 pmonog;Group the elements of monograph
-previous;Identify the author of the previous reference
+previous;Identify the author is the same author of the previous reference
 projname;Identify the name of the project
 pubname;Identify the publisher
 received;Identify the date in which the article was received by peer review system
