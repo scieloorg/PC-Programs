@@ -21,9 +21,13 @@ Run on Windows
 
     tutorials.rst
 
+    markup_tags.rst
+
+    databases.rst
+
     support.rst
  
     xml_support.rst
-    
+
 
 .. include:: last_update.rst

@@ -5,7 +5,7 @@
 Newcode Database
 ================
 
-Its content is customized and it is managed by `Code Manager`_ program.
+Its content is customized and it is managed by `Code Manager <codemanager>`_ program.
 
 ccode
 =====
@@ -54,4 +54,4 @@ Institutions which can sponsor the articles
 +--+------------+
 
 
-last_update.rst
+.. include:: last_update.rst

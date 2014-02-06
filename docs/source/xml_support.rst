@@ -1,7 +1,7 @@
 SciELO XML Forum
 ----------------
 
-`http://groups.google.com/group/scielo-xml`_
+`http://groups.google.com/group/scielo-xml <http://groups.google.com/group/scielo-xml>`_
 
 It is the forum to discuss questions and make suggestions related to SciELO XML.
 

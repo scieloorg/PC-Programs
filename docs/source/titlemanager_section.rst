@@ -103,22 +103,4 @@ Deleting a section
     Figure 8 - Buttons: Save, Close, Help
 
 
-Section database
-----------------
-
-ISIS Base. A record by title. Each record contains the following tags:
-
-================  =====================================================================================================
-tag
-----------------  -----------------------------------------------------------------------------------------------------
-035               ISSN. Corresponds to the field of 400 of TITLE
-048  subfield l   Language of table of contents' header 
-048  subfield h   title for table of contents' header  (Table of contents (en), Sumario (pt), Tabla de Contenido (es))
-049  subfield c   code of the section
-049  subfield l   language of the section
-049  subfield t   title of the section
-091               Date ISO to register the update date
-100               Journal's title. Corresponds to the same field of TITLE.
-930               Journal's acronym in uppercase
-================  =====================================================================================================
 

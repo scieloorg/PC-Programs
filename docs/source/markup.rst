@@ -136,9 +136,9 @@ Operations bar
 Exit button
 ...........
 
-To exit the program, click on Exit button.
-
 .. image:: img/markup_operations_bar_exit.jpg
+
+To exit the program, click on Exit button.
 
 Choose one of the options bellow.
 
@@ -148,29 +148,31 @@ Choose one of the options bellow.
 Edition tag's attribute button
 ..............................
 
-To edit attributes of an element, click on the element name, then click on the edit button (pencil). The program will ask for changing the values of the attributes.
-
 .. image:: img/markup_operations_bar_edit.jpg
+
+To edit attributes of an element, click on the element name, then click on the edit button (pencil). The program will ask for changing the values of the attributes.
 
 
 Delete tag button
 .................
 
-To delete one element and its attributes, click on the element name, then click on the delete button. The program will ask to confirm this action.
-
 .. image:: img/markup_operations_bar_del.jpg
+
+To delete one element and its attributes, click on the element name, then click on the delete button. The program will ask to confirm this action.
 
 
 Save file button
 ................
 
-To save the file, click on the save button.
-
 .. image:: img/markup_operations_bar_save.jpg
+
+To save the file, click on the save button.
 
 
 Automata 1 button
 .................
+
+.. image:: img/automata1.jpg
 
 To identify automatically the elements of the bibliographic references:
 
@@ -178,8 +180,6 @@ It requires that the journal has to have an automata file (read `how to programm
 
 1. Click on a paragraph of one bibliographic reference
 2. Click on the Automata 1 button.
-
-.. image:: img/automata1.jpg
 
 This action will activate a tool which will try to identify automatically the bibliographic reference elements. The tool will present the several possibilities of identification. So the user have to choose the correct one. 
 
@@ -199,7 +199,6 @@ To identify automatically a set of bibliographic references (available only for 
 
 2. Click on the Automata 2 button. 
 
-.. image:: img/automata2.jpg
 
 The program will try to identify all the references, keeping the original reference identified as [text-ref]. Thus the user can compare the original to the detailed identification in order to check if the reference was properly identified, and correct it, if necessary.
 
@@ -218,8 +217,6 @@ It requires that the journal has to adopt a standard (APA, Vancouver, ABNT, ISO)
 1. Click on a paragraph of one bibliographic reference
 2. Click on the Automata 3 button.
 
-.. image:: img/automata3.png
-
 This action will activate a tool which will try to identify automatically the bibliographic reference elements. The tool will present the several possibilities of identification. So the user have to choose the correct one. 
 
 .. image:: img/automata1b.jpg
@@ -230,14 +227,17 @@ Save button
 
 .. image:: img/markup_operations_bar_save.jpg
 
+Click on this button to save the document.
+
 
 SGML Parser button
 ..................
 
+.. image:: img/markup_operations_bar_parser.jpg
+
 Click on this button to validate the SGML Markup.
 It will convert the file to .txt and will run the `SGML Parser program <parser.html>`_.
 
-.. image:: img/markup_operations_parser.jpg
 
 
 
@@ -260,7 +260,7 @@ The highest level is article or text (other text than articles). But use article
 
 
 Navigation
-----------
+...........
 
 As the user identify an element which has elements in a lower level, the bars show the tags of the lower level. 
 
@@ -272,8 +272,10 @@ As the user clicks on the tags button of new level will be displayed.
 
 For example: 
 
+
 Down
-....
+++++
+
 Bar of **front** element
 
 .. image:: img/markup_barra_front.jpg
@@ -286,8 +288,10 @@ Bar of **titlegrp** element's chidren
 
 .. image:: img/markup_barra_title.jpg
 
+
 Up
-..
+++
+
 .. image:: img/markup_barra_title_sobe.jpg
 
 .. image:: img/markup_barra_titlegrp_paracima.jpg
@@ -306,8 +310,7 @@ Identifying the elements
 #. Click on front tag.
 
 
-.. include:: markup_tags.rst
-
+Read the `Markup Tags <markup_tags.html>`_
 
 Error messages
 --------------

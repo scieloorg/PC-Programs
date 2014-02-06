@@ -5,7 +5,7 @@
 Code Database
 =============
 
-Its content is not customized and it is managed by `Code Manager` program by SciELO IT Team.
+Its content is not customized and it is managed by `Code Manager <codemanager.html>`_ program by SciELO IT Team.
 
 
 acquisition priority
