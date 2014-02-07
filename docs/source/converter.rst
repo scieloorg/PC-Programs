@@ -5,11 +5,11 @@
 Converter
 =========
 
-- single-user program built in Visual Basic, to use only by a centralized server, denominated `local server <concepts.html#local-server>`_. It is mandatory only one installation by `SciELO collection or instance <concepts.html#scielo-collection-or-instance>`_.
-- Converter reads the files from markup and body folders, and the databases in title and issue folders, then generates a ISIS database in base folder of the corresponding journal issue.
+Desktop Application (Visual Basic), installed in the `local server <concepts.html#local-server>`_, to generate the database of the documents, by reading the files from `markup and body folders <concepts.html#folders-structure>`_ and the databases in `title and issue folders <concepts.html#folders-structure>`_.
 
-Opening the program
--------------------
+
+How to open the program
+-----------------------
 
 Use the Windows menu to open the program.
 
@@ -20,47 +20,53 @@ Or by the path of the program:
   c:\\scielo\\bin\\convert\\convert.exe
 
 
-Checking the program version
-----------------------------
+How to change the language of the program
+-----------------------------------------
 
-To check the version of the program, see `How to check the program version <common.html#how-to-check-program-version>`_.
+The programs are available in Portuguese, Spanish and English.
 
-Changing the language of the program
-------------------------------------
+Use the program menu: Options > Configurations.
 
-To change the language of the program's  interface, see `Change the language of the program <common.html#how-to-change-the-langauge-of-the-program>`_.
-
-Running the program
--------------------
-
-#. Select Files > Open.
-
-    .. image:: img/en/converter_open_files.png
+.. image:: img/scielo_menu_language.jpg
 
 
-#. Fill the fields:
+How to use the program
+----------------------
 
-    .. image:: img/en/converter_01.png
+1. Select Files > Open.
 
-
-
-    - journal's title: select the title of the journal.
-    - year: FILL ONLY if it is AHEAD or REVIEW number
-    - volume: fill it in with the volume
-    - supplement of volume: fill it in with the supplement of volume, if it exists
-    - number: fill it in with the number. If it is an ahead or review/provisional number, use **ahead** or **review**, respectively
-    - supplement of number: fill it in with the supplement of number, if it exists
-    - part: fill it in, if it exists. Recently it is used to **press release**, fill it in with **pr**.
+.. image:: img/converter_open_files.png
 
 
-    .. image:: img/en/converter_issue_selected.png
+2. Fill the fields:
+
+.. image:: img/converter_01.png
+
+
+- journal's title: 
+    select the title of the journal.
+- year: 
+    FILL ONLY if it is **ahead** number
+- volume: 
+    fill it in with the volume
+- supplement of volume:
+    fill it in with the supplement of volume, if it is applicable
+- number:
+    fill it in with the number. If it is an ahead of print, use **ahead**, respectively
+- supplement of number: 
+    fill it in with the supplement of number, if it is applicable
+- complement: 
+    fill it in, if it exists. Recently it is used to **press release**, fill it in with **pr**.
+
+
+.. image:: img/converter_issue_selected.png
 
 
 3. Click on **OK** button.
 
-4. Converter uses these data to identify the issue's, `markup and body folders <concepts.html#folders-structure>`_. If the data are correct, the program will list the markup files. 
+4. Converter uses these data to identify the issue, `markup and body folders <concepts.html#folders-structure>`_. If the data are correct, the program will list the markup files. 
 
-   .. image:: img/en/converter_files_selected.png
+.. image:: img/converter_files_selected.png
 
 5. Click on **Convert** button.
 
@@ -68,46 +74,51 @@ Running the program
 
     For each file, the program:
 
-        - extracts the marked data
-        - compares the issue's data in the markup file and in the issue database, managed by Title Manager->Issues. 
+        - extracts the identified data
+        - compares the data in the document and the data in the issue database
 
-    If there is some conflicting data, the data are not converted to the database. It is a fatal error. The user must check and correct the data in the markup document (using Markup program) and/or in issue database (using Title Manager).
 
-    If the issue's data is correct, the files are converted to the database and the result will be shown on the screen.
+        .. attention:: If there are any unmatched data related to the issue, the program will not create the database. It will be necessary to correct the data in Markup or in `Title Manager <titlemanager.html>`_
 
-        .. image:: img/en/converter_resultado.jpg
+    If the database is generated, the result will be shown on the screen.
+
+    .. image:: img/converter_resultado.jpg
 
     Results:
 
-       - successfully converted: [], in red.
-       - converted, with errors: [X], in blue before its name. They have some markup errors, but not fatal enough to avoid conversion. For example, markup error, probably identified by Parser, but not corrected by the user.   
-       - not converted: at the inferior part, in green. It is usually related to issue's data, such as ISSN, abbreviated title, volume and number, which do not match in the markup file and in the issue database.
+    - successfully converted: [ ] (in red)
+    - converted, with errors: [X] (in blue) 
+        There are some not fatal markup errors, which could have been corrected at SGML Parser stage.
+    - not converted: (in green)
+        It is related to unmatched data of the issue database and the data in the markup file. For instance:
+        - The issue's volume is 30, and the volume in the document is 3. The program will indicates an error. In this case, the correction is in the markup file.
+        
 
-7. Clicking on each file in the result area and then on **Result** button, the user can see how the conversion run.
+7. Click on each file in the result area, then on **Result** button, to view the result of the convertion.
 
 **Successfully converted**
 
-        .. image:: img/en/converter_view_report.png
+.. image:: img/converter_view_report.png
 
-**Converted, but no fatal error: markup error**
+**Converted, but no fatal errors: markup error**
 
-        .. image:: img/en/converter_resultado2.jpg
+.. image:: img/converter_resultado2.jpg
 
-**Converted, but no fatal error: some bibliographic references not identified**
+**Converted, but no fatal error: some bibliography references not identified**
 
-    Converter locates each bibliographic reference of the markup file in the body file, identifying the points where **[Links]** must be inserted at the article page, in the website.
+    Converter also marks, in the body file, the end of the paragraph of each  bibliography reference found in markup file. It is used by the website to create [ Links ] at the end of the paragraph of each reference.
 
-        .. image:: img/en/converter_resultado6.jpg
+    .. image:: img/converter_resultado6.jpg
 
-    Clicking on **[Links]**, a window is open to display a list of links to the referenced fulltext. 
+    .. image:: img/converter_resultado6b.jpg
 
-        .. image:: img/en/converter_resultado6b.jpg
+    If Converter was not able to find the markup references in body references:
 
-    If there are bibliographic reference location errors, Converter will present the result bellow:
+    .. image:: img/converter_resultado5.jpg
 
-        .. image:: img/en/converter_resultado5.jpg
+    It is necessary to evaluate the references in markup and in body. There must be some different character that causes the error.
 
 **Not converted, because of fatal errors**
 
-        .. image:: img/en/converter_resultado3.jpg
+    .. image:: img/converter_resultado3.jpg
 

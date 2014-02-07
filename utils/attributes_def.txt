@@ -1,0 +1,65 @@
+doctopic
+role
+standard
+ccode
+literature type
+treatment level
+status
+month
+date
+country
+publication level
+alphabet of title
+language
+frequency
+indexing coverage
+acquisition priority
+state
+article status
+stitle
+illustrative material type
+version
+from
+to
+keyword priority level
+toccode
+scheme
+ftp
+usersubscription
+id
+study area
+rid
+dateiso
+count
+pii
+pages
+issue status
+idiom interface
+table of contents
+sponsor
+orgname
+no
+scielonet
+issn type
+orgdiv1
+orgdiv2
+orgdiv3
+orgdiv
+ctdbid
+doctype
+deposid
+ftype
+lictype
+pubtype
+hcomment
+license_text
+ref-type
+fntype
+listtype
+sec-type
+blcktype
+corresp
+deceased
+eqcontr
+history
+ctrbidtp

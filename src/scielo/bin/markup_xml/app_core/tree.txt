@@ -685,7 +685,7 @@ text
 doi;#TRUE#
 titlegrp;#FALSE#
 authgrp;#FALSE#
-xmlbody;#FALSE#
+body;#FALSE#
 back;#FALSE#
 
 th
