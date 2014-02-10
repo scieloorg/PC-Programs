@@ -59,8 +59,8 @@ def print_attribute_values(attribute_values, attribute_codes):
         n_c = c - len(code)
         n_v = v - len(value)
 
-        print('\n|' + code + ' '*n_c + '|' + value + ' '*n_v + '|')
-        print('\n+' + '-'*c + '+' + '-'*v + '+')
+        print('|' + code + ' '*n_c + '|' + value + ' '*n_v + '|')
+        print('+' + '-'*c + '+' + '-'*v + '+')
         i += 1
     print('\n')
 
