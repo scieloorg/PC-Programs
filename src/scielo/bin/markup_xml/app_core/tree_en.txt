@@ -3,6 +3,7 @@ abstract;Identify the abstract of the article
 accepted;Identify the date in which the article was accepted to publish
 acitat;Identify a bibliography reference
 acontrib;Group the elements of a contribution
+ack;Group the elements of acknowledgment
 aff;Identify the organization to which the author is affiliated
 aiserial;Group the elements of a serial publication
 amonog;Group the elements of a monograph
@@ -67,7 +68,6 @@ licenses;Group the elements of a license
 lilabel;Identify the label of a item of a list
 list;Identify the list
 litext;Identify the text of a item of a list
-location;Identify the electronic address of the document
 medium;Identify the format of the media in which the document is published
 mmlmath;Math (MathML 2.0 Tag Set)
 no;Identify the number
@@ -143,3 +143,7 @@ deflist;Identify a list of definitions
 defitem;Identify an item of a list of definitions
 term;Identify a term
 def;Identify the definition of a term
+pubid;Identify an id of any external database, such as DOI, pmid (PubMed), pmcid (PMC), etc
+onbehalf;Identify the institution which the contributor represents. Example: John Smith on behalf of Instituition ABCD
+xmlabstr;Identify the abstract with sections
+toctitle;Identify the TOC section title. It is mandatory to the generation of XML files.

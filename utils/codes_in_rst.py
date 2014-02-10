@@ -5,6 +5,24 @@ f = open('code.txt', 'r')
 items = f.readlines()
 f.close()
 
+
+f = open('attributes_def.txt', 'r')
+definitions = f.readlines()
+f.close()
+
+def_list = {}
+for item in definitions:
+    k, v = item.replace('\n', '').replace('\r', '').split('|')
+    def_list[k] = v
+
+f = open('attributes_data.txt', 'r')
+attributes_data = f.readlines()
+f.close()
+
+attribute_data = {}
+for item in attributes_data:
+    attribute_data[k] = item.replace('\n', '').replace('\r', '').split('|')
+    
 dimension_code = {}
 dimension_value = {}
 
@@ -28,6 +46,7 @@ for i in items:
 for table_name, table_content in sorted(d.items()):
     print(table_name)
     print('='*len(table_name))
+    print(def_list.get(table_name, '{missing description}'))
     print('+' + '-'*dimension_code[table_name] + '+' + '-'*dimension_value[table_name] + '+')
     for code, value in sorted(table_content.items()):
         n_c = dimension_code[table_name] - len(code)
@@ -36,4 +55,4 @@ for table_name, table_content in sorted(d.items()):
         print('|' + code + ' '*n_c + '|' + value + ' '*n_v + '|')
         print('+' + '-'*dimension_code[table_name] + '+' + '-'*dimension_value[table_name] + '+')
     print('')
-    
+

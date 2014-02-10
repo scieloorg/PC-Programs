@@ -1,7 +1,3 @@
-SGML Markup Tags
-================
-
-
 ----
 abnt6023
 --------
@@ -330,7 +326,7 @@ Attributes: none
 dperiod
 -------
 Element
-Identify the perÃ­odo of time tratado at the content of the document
+Identify the período of time tratado at the content of the document
 Contained in: `keygrp`_
 Attributes: `from`_, `to`_
 
@@ -1293,9 +1289,9 @@ Is attribute of:
 +-------+-----------------------------------------------------------+
 |bjp    |brazilian journal of physics                               |
 +-------+-----------------------------------------------------------+
-|conicyt|ComisiÃ³n Nacional de InvestigaciÃ³n CientÃ­fica y TecnolÃ³gica|
+|conicyt|Comisión Nacional de Investigación Científica y Tecnológica|
 +-------+-----------------------------------------------------------+
-|dados  |dados - revista de ciÃªncias sociais                        |
+|dados  |dados - revista de ciências sociais                        |
 +-------+-----------------------------------------------------------+
 |br1.1  |scielo/bireme                                              |
 +-------+-----------------------------------------------------------+
@@ -1305,15 +1301,15 @@ Is attribute of:
 +-------+-----------------------------------------------------------+
 |jbcos  |journal of the brazilian computer society                  |
 +-------+-----------------------------------------------------------+
-|mioc   |memÃ³rias do instituto oswaldo cruz                         |
+|mioc   |memórias do instituto oswaldo cruz                         |
 +-------+-----------------------------------------------------------+
-|rbcs   |revista brasileira de ciÃªncia do solo                      |
+|rbcs   |revista brasileira de ciência do solo                      |
 +-------+-----------------------------------------------------------+
-|rbgeo  |revista brasileira de geociÃªncias                          |
+|rbgeo  |revista brasileira de geociências                          |
 +-------+-----------------------------------------------------------+
-|rimtsp |revista do instituto de medicina tropical de sÃ£o paulo     |
+|rimtsp |revista do instituto de medicina tropical de são paulo     |
 +-------+-----------------------------------------------------------+
-|rsp    |revista de saÃºde pÃºblica                                   |
+|rsp    |revista de saúde pública                                   |
 +-------+-----------------------------------------------------------+
 
 
@@ -1534,7 +1530,7 @@ Is attribute of: `patgrp`_
 +--+----------------------------+
 |PN|Islas Pitcairn              |
 +--+----------------------------+
-|SB|Islas SalomÃ³n BritÃ¡nico     |
+|SB|Islas Salomón Británico     |
 +--+----------------------------+
 |SJ|Islas Svalbard y Jan Mayen  |
 +--+----------------------------+
@@ -1558,7 +1554,7 @@ Is attribute of: `patgrp`_
 +--+----------------------------+
 |KM|Kamoras Islands             |
 +--+----------------------------+
-|KH|Kampuchea DemocrÃ¡tica       |
+|KH|Kampuchea Democrática       |
 +--+----------------------------+
 |KY|Kayman Islands              |
 +--+----------------------------+
@@ -1642,7 +1638,7 @@ Is attribute of: `patgrp`_
 +--+----------------------------+
 |NO|Norway                      |
 +--+----------------------------+
-|NH|Nuevas HÃ©bridas             |
+|NH|Nuevas Hébridas             |
 +--+----------------------------+
 |OM|Oman                        |
 +--+----------------------------+
@@ -1670,13 +1666,13 @@ Is attribute of: `patgrp`_
 +--+----------------------------+
 |LA|Republic                    |
 +--+----------------------------+
-|RE|RÃ©union                     |
+|RE|Réunion                     |
 +--+----------------------------+
 |RO|Romania                     |
 +--+----------------------------+
 |RW|Rwanda                      |
 +--+----------------------------+
-|PM|S. Pedro y MiguelÃ³n         |
+|PM|S. Pedro y Miguelón         |
 +--+----------------------------+
 |LC|Saint Lucia                 |
 +--+----------------------------+
@@ -1684,7 +1680,7 @@ Is attribute of: `patgrp`_
 +--+----------------------------+
 |WS|Samoa                       |
 +--+----------------------------+
-|KN|San CristÃ³bal-Nieves-Anguila|
+|KN|San Cristóbal-Nieves-Anguila|
 +--+----------------------------+
 |SM|San Marino                  |
 +--+----------------------------+
@@ -2685,7 +2681,7 @@ Is attribute of: `vancouv`_, `iso690`_, `abnt6023`_, `apa`_, `other`_
 +-------+-------------------------------------------------------------------------------------------+
 |iso690 |iso 690/87 - international standard organization                                           |
 +-------+-------------------------------------------------------------------------------------------+
-|nbr6023|nbr 6023/89 - associaÃ§Ã£o nacional de normas tÃ©cnicas                                       |
+|nbr6023|nbr 6023/89 - associação nacional de normas técnicas                                       |
 +-------+-------------------------------------------------------------------------------------------+
 |other  |other standard                                                                             |
 +-------+-------------------------------------------------------------------------------------------+
@@ -2744,7 +2740,3 @@ Is attribute of:
 
 
 []
-
-
-
-.. include:: draft_version.rst

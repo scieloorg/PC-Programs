@@ -3,6 +3,7 @@ abstract;Identifica o resumo do artigo
 accepted;Identifica a data de aceitação do artigo
 acitat;Identifica uma referência bibliográfica
 acontrib;Agrupa elementos de contribuição
+ack;Agrupa os elementos de agradecimentos
 aff;Identifica a afiliação do autor
 aiserial;Agrupa elementos de série
 amonog;Agrupa os elementos de monografia
@@ -143,3 +144,8 @@ deflist;Identifica uma lista de definições
 defitem;Identifica um item da lista de definições
 term;Identifica um termo
 def;Identifica a definição do termo
+pubid;Identifica um id de qualquer tipo de base de dados externa, tal como DOI, pmid (PubMed), pmcid (PMC), etc
+onbehalf;Identifica a instituição que o autor representa. Example: John Smith on behalf of Instituition ABCD
+xmlabstr;Identifica um resumo com seções
+toctitle;Identifica o título da seção do sumário. Este item é obrigatório para a geração do XML.
+
