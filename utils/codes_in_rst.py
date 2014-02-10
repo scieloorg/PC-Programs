@@ -15,6 +15,14 @@ for item in definitions:
     k, v = item.replace('\n', '').replace('\r', '').split('|')
     def_list[k] = v
 
+f = open('attributes_data.txt', 'r')
+attributes_data = f.readlines()
+f.close()
+
+attribute_data = {}
+for item in attributes_data:
+    attribute_data[k] = item.replace('\n', '').replace('\r', '').split('|')
+    
 dimension_code = {}
 dimension_value = {}
 

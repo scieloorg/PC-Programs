@@ -5,6 +5,8 @@ f = open('../src/scielo/bin/markup_xml/en_attb.mds', 'r')
 definitions += f.readlines()
 f.close()
 
+f = open('attributes_data.txt', 'w')
+f2 = open('attributes_def0.txt', 'w')
 
 i = 0
 
@@ -15,9 +17,13 @@ for item in definitions:
         tag = a
     elif i == 2:
         if a == '':
-            attr = 'no'
+            attr = ''
         else:
-            attr = 'yes'
+            attr = a
     elif i == 3:
-        print(tag + '|' + attr + '|')
+        f.write(tag + '|' + attr + '|' + a + '\n')
+        f2.write(tag + '|' + '\n')
+    elif i == 4:
         i = 0
+f.close()
+f2.close()
