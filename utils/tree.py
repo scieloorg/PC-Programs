@@ -21,9 +21,9 @@ def navigate(tree, definition, contains, attributes, tag):
     
     print(tag)
     print('-'*len(tag))
-    print('Element')
-    print(definition[tag])
-    print('Contained in: ' + links(contains[tag]))
+    print('\nElement')
+    print('\n' + definition[tag])
+    print('\nContained in: ' + links(contains[tag]))
 
     if tag in tree:
         if len(tree[tag]) > 0:
@@ -32,13 +32,13 @@ def navigate(tree, definition, contains, attributes, tag):
             for item in tree[tag]:
                 children += sep + '`' + item[0] + '`_'
                 sep = ', '
-            print(children)
+            print('\n' + children)
     else:
         error.append(tag)
     if tag in attributes.keys():
-        print('Attributes: ' + links(attributes[tag]))
+        print('\nAttributes: ' + links_to_attr(attributes[tag]))
     else:
-        print('Attributes: none')
+        print('\nAttributes: none')
     print('')
 
 
@@ -53,26 +53,26 @@ def print_attribute_values(attribute_values, attribute_codes):
             c = len(item)
 
     i = 0
-    print('+' + '-'*c + '+' + '-'*v + '+')
+    print('\n\n+' + '-'*c + '+' + '-'*v + '+')
     for code in attribute_codes:
         value = attribute_values[i]
         n_c = c - len(code)
         n_v = v - len(value)
 
-        print('|' + code + ' '*n_c + '|' + value + ' '*n_v + '|')
-        print('+' + '-'*c + '+' + '-'*v + '+')
+        print('\n|' + code + ' '*n_c + '|' + value + ' '*n_v + '|')
+        print('\n+' + '-'*c + '+' + '-'*v + '+')
         i += 1
-    print('')
+    print('\n')
 
 
 def print_attribute(attributes_data, attribute_in, attribute_name):
     print('Attribute ' + attribute_name)
     print('-'*len('Attribute ' + attribute_name))
-    print('Attribute')
-    print(attributes_data[attribute_name][0])
-    print('Is attribute of: ' + links(attribute_in[attribute_name]))
+    print('\nAttribute')
+    print('\n' + attributes_data[attribute_name][0])
+    print('\nIs attribute of: ' + links(attribute_in[attribute_name]))
     print_attribute_values(attributes_data[attribute_name][1], attributes_data[attribute_name][2])
-    print('')
+    print('\n')
 
 f = open('../src/scielo/bin/markup_xml/app_core/tree.txt', 'r')
 lines = f.readlines()
