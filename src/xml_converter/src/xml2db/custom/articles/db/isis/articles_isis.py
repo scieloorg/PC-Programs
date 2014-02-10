@@ -200,7 +200,7 @@ class ISISManager4Articles:
 
         self.cisis.id2mst(issue_paths.issue_i_record_filename , issue_paths.issue_db_filename, False)
         for id_file in os.listdir(issue_paths.issue_id_path):
-            if id_file != 'i.id':
+            if id_file != 'i.id' and id_file != '00000.id':
                 self.cisis.id2mst(issue_paths.issue_id_path + '/' + id_file, issue_paths.issue_db_filename, False)
         if issue.documents.count != count_id:
             package.report.write(' ! WARNING: Check total of xml files and id files', True, True, True )            
@@ -299,6 +299,7 @@ class Paths:
         self.extension_path = {}
         self.extension_path['xml'] = self.web_xml_path
         
+        self.extension_path['avi'] = self.web_img_path
         self.extension_path['jpg'] = self.web_img_path
         self.extension_path['pdf'] = self.web_pdf_path
         self.extension_path['epub'] = self.web_outs_path
@@ -309,10 +310,7 @@ class Paths:
      
 
     def extension_path(self, ext):
-        r = ''
-        if ext in self.extension_path.keys():
-            r = self.extension_path[ext]
-        return r
+        return self.extension_path.get(ext, self.web_img_path)
 
     def move_file_to_path(self, filename, dest_path):
         f = os.path.basename(filename)
