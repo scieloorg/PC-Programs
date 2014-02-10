@@ -18,7 +18,7 @@ def links_other_page(a_list, other_page):
 
 def navigate(tree, definition, contains, attributes, tag):
     children = ''
-    print('----')
+    
     print(tag)
     print('-'*len(tag))
     print('Element')
@@ -66,7 +66,6 @@ def print_attribute_values(attribute_values, attribute_codes):
 
 
 def print_attribute(attributes_data, attribute_in, attribute_name):
-    print('----')
     print('Attribute ' + attribute_name)
     print('-'*len('Attribute ' + attribute_name))
     print('Attribute')
@@ -152,9 +151,14 @@ for item in lines:
                 contains[parts[0]] = []
             contains[parts[0]].append(key)
 
+print('Elements')
+print('========')
+
 for item in sorted(trans.keys()):
     navigate(d, trans, contains, tag_attributes, item)
 
+print('Attributes')
+print('==========')
 for item in sorted(attributes_list.keys()):
     print_attribute(attributes_list, attribute_in, item)
 print(error)
