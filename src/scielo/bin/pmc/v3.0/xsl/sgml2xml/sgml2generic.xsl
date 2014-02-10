@@ -1012,7 +1012,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="element-counts">
 				<xsl:with-param name="element_name" select="'page-count'"/>
-				<xsl:with-param name="count" select="@lpage - @fpage + 1"/>
+				<xsl:with-param name="count"><xsl:choose>
+					<xsl:when test="@pagcount"><xsl:value-of select="@pagcount"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="@lpage - @fpage + 1"/></xsl:otherwise>
+				</xsl:choose></xsl:with-param>
 			</xsl:apply-templates>
 
 		</counts>
