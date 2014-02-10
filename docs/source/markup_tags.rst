@@ -1,8 +1,5 @@
-SGML Markup Tags
-================
-
-
-----
+Elements
+========
 abnt6023
 --------
 Element
@@ -11,7 +8,6 @@ Contained in: `back`_
 Contains: `acitat`_
 Attributes: `standard`_, `count`_
 
-----
 abstract
 --------
 Element
@@ -19,7 +15,6 @@ Identify the abstract of the article
 Contained in: `bbibcom`_, `bibcom`_
 Attributes: `language`_
 
-----
 accepted
 --------
 Element
@@ -27,7 +22,6 @@ Identify the date in which the article was accepted to publish
 Contained in: `hist`_
 Attributes: `dateiso`_
 
-----
 acitat
 ------
 Element
@@ -36,7 +30,6 @@ Contained in: `abnt6023`_
 Contains: `no`_, `acontrib`_, `amonog`_, `aiserial`_, `confgrp`_
 Attributes: none
 
-----
 ack
 ---
 Element
@@ -45,7 +38,6 @@ Contained in: `back`_
 Contains: `title`_, `p`_
 Attributes: none
 
-----
 acontrib
 --------
 Element
@@ -54,7 +46,6 @@ Contained in: `acitat`_
 Contains: `author`_, `corpauth`_, `et-al`_, `title`_, `subtitle`_, `volid`_, `pages`_, `patgrp`_
 Attributes: none
 
-----
 aff
 ---
 Element
@@ -63,7 +54,6 @@ Contained in: `ifloat`_
 Contains: `label`_, `city`_, `state`_, `country`_, `zipcode`_, `email`_
 Attributes: `id`_, `orgname`_, `orgdiv1`_, `orgdiv2`_, `orgdiv3`_
 
-----
 aiserial
 --------
 Element
@@ -72,7 +62,6 @@ Contained in: `acitat`_
 Contains: `sertitle`_, `stitle`_, `isstitle`_, `date`_, `volid`_, `issueno`_, `suppl`_, `pages`_, `extent`_, `url`_, `cited`_, `doi`_, `pubid`_, `issn`_, `city`_, `state`_, `country`_, `pubname`_, `notes`_
 Attributes: none
 
-----
 amonog
 ------
 Element
@@ -81,7 +70,6 @@ Contained in: `acitat`_
 Contains: `author`_, `corpauth`_, `et-al`_, `title`_, `subtitle`_, `date`_, `edition`_, `volid`_, `part`_, `tome`_, `coltitle`_, `colvolid`_, `pages`_, `extent`_, `city`_, `state`_, `country`_, `pubname`_, `patgrp`_, `confgrp`_, `thesis`_, `report`_, `isbn`_, `url`_, `cited`_, `doi`_, `pubid`_, `subresp`_, `notes`_
 Attributes: none
 
-----
 anonym
 ------
 Element
@@ -89,7 +77,6 @@ Identify anonymous authorship
 Contained in: `oauthor`_
 Attributes: none
 
-----
 apa
 ---
 Element
@@ -98,7 +85,6 @@ Contained in: `back`_
 Contains: `pcitat`_
 Attributes: `standard`_, `count`_
 
-----
 app
 ---
 Element
@@ -107,7 +93,6 @@ Contained in: `back`_
 Contains: `title`_, `sec`_, `p`_
 Attributes: `id`_
 
-----
 article
 -------
 Element
@@ -116,7 +101,6 @@ Contained in: `start`_
 Contains: `deposit`_, `front`_, `xmlbody`_, `body`_, `back`_, `response`_, `subart`_
 Attributes: none
 
-----
 authgrp
 -------
 Element
@@ -125,7 +109,6 @@ Contained in: `front`_, `text`_
 Contains: `author+`_, `author`_, `onbehalf`_, `corpauth`_
 Attributes: none
 
-----
 author
 ------
 Element
@@ -134,7 +117,6 @@ Contained in: `acontrib`_, `amonog`_, `authgrp`_, `icontrib`_, `iiserial`_, `imo
 Contains: `fname`_, `surname`_, `previous`_
 Attributes: `role`_, `rid`_, `corresp`_, `deceased`_, `eqcontr`_
 
-----
 back
 ----
 Element
@@ -143,7 +125,6 @@ Contained in: `article`_, `response`_, `subart`_, `text`_
 Contains: `ack`_, `vancouv`_, `iso690`_, `abnt6023`_, `apa`_, `other`_, `fngrp`_, `licenses`_, `bbibcom`_, `glossary`_, `app`_
 Attributes: none
 
-----
 bbibcom
 -------
 Element
@@ -152,7 +133,6 @@ Contained in: `back`_
 Contains: `abstract`_, `keygrp`_, `confgrp`_, `report`_, `thesgrp`_, `hist`_, `title`_, `subtitle`_
 Attributes: none
 
-----
 bibcom
 ------
 Element
@@ -161,7 +141,6 @@ Contained in: `front`_
 Contains: `abstract`_, `xmlabstr`_, `keygrp`_, `confgrp`_, `report`_, `thesgrp`_, `hist`_
 Attributes: none
 
-----
 body
 ----
 Element
@@ -169,7 +148,6 @@ Identify the body of the document, without details
 Contained in: `article`_, `response`_, `subart`_, `text`_
 Attributes: none
 
-----
 caption
 -------
 Element
@@ -177,7 +155,6 @@ Identify the caption
 Contained in: `figgrp`_, `figgrps`_, `tabwrap`_
 Attributes: none
 
-----
 cited
 -----
 Element
@@ -185,7 +162,6 @@ Identify the date in which the article was accessed
 Contained in: `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `viserial`_, `vmonog`_
 Attributes: `dateiso`_
 
-----
 city
 ----
 Element
@@ -193,7 +169,6 @@ Identify the city
 Contained in: `aff`_, `aiserial`_, `amonog`_, `confgrp`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `pmonog`_, `product`_, `thesgrp`_, `thesis`_, `vmonog`_
 Attributes: none
 
-----
 cltrial
 -------
 Element
@@ -202,7 +177,6 @@ Contained in: `ifloat`_
 Contains: `ctreg`_
 Attributes: none
 
-----
 coltitle
 --------
 Element
@@ -210,7 +184,6 @@ Identify the title of a collection
 Contained in: `amonog`_, `imonog`_, `omonog`_, `pmonog`_, `vmonog`_
 Attributes: none
 
-----
 colvolid
 --------
 Element
@@ -218,7 +191,6 @@ Identify the volume of a collection
 Contained in: `amonog`_, `pmonog`_
 Attributes: none
 
-----
 confgrp
 -------
 Element
@@ -227,7 +199,6 @@ Contained in: `acitat`_, `amonog`_, `bbibcom`_, `bibcom`_, `ocitat`_, `omonog`_,
 Contains: `confname`_, `no`_, `date`_, `city`_, `state`_, `country`_, `sponsor`_
 Attributes: none
 
-----
 confname
 --------
 Element
@@ -235,7 +206,6 @@ Identify the conference name
 Contained in: `confgrp`_
 Attributes: none
 
-----
 contract
 --------
 Element
@@ -243,7 +213,6 @@ Identify the contract/project number given by the sponsor
 Contained in: `report`_
 Attributes: none
 
-----
 corpauth
 --------
 Element
@@ -252,7 +221,6 @@ Contained in: `acontrib`_, `amonog`_, `authgrp`_, `icontrib`_, `iiserial`_, `imo
 Contains: `orgname`_, `orgdiv`_, `previous`_
 Attributes: none
 
-----
 country
 -------
 Element
@@ -260,7 +228,6 @@ Identify the country
 Contained in: `aff`_, `aiserial`_, `amonog`_, `confgrp`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `pmonog`_, `product`_, `thesgrp`_, `thesis`_, `vmonog`_
 Attributes: none
 
-----
 ctreg
 -----
 Element
@@ -268,7 +235,6 @@ Identify the clinical trial number
 Contained in: `cltrial`_
 Attributes: `cturl`_, `ctdbid`_
 
-----
 date
 ----
 Element
@@ -276,7 +242,6 @@ Identify the date of registration of the patent
 Contained in: `aiserial`_, `amonog`_, `confgrp`_, `icontrib`_, `iiserial`_, `imonog`_, `ocontrib`_, `oiserial`_, `omonog`_, `patgrp`_, `pcontrib`_, `pmonog`_, `product`_, `thesgrp`_, `thesis`_, `viserial`_, `vmonog`_
 Attributes: `dateiso`_, `specyear`_
 
-----
 def
 ---
 Element
@@ -284,7 +249,6 @@ Identify the definition of a term
 Contained in: `defitem`_
 Attributes: none
 
-----
 defitem
 -------
 Element
@@ -293,7 +257,6 @@ Contained in: `deflist`_
 Contains: `term`_, `def`_
 Attributes: none
 
-----
 deflist
 -------
 Element
@@ -302,7 +265,6 @@ Contained in: `glossary`_, `xmlbody`_
 Contains: `title`_, `defitem`_
 Attributes: `id`_
 
-----
 degree
 ------
 Element
@@ -310,7 +272,6 @@ Element
 Contained in: `thesgrp`_, `thesis`_
 Attributes: none
 
-----
 deposit
 -------
 Element
@@ -318,7 +279,6 @@ Identify the date of deposit in the repository
 Contained in: `article`_
 Attributes: `deposid`_, `entrdate`_, `embdate`_
 
-----
 doi
 ---
 Element
@@ -326,15 +286,13 @@ Identify the DOI
 Contained in: `aiserial`_, `amonog`_, `front`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `text`_, `viserial`_, `vmonog`_
 Attributes: none
 
-----
 dperiod
 -------
 Element
-Identify the perÃ­odo of time tratado at the content of the document
+Identify the período of time tratado at the content of the document
 Contained in: `keygrp`_
 Attributes: `from`_, `to`_
 
-----
 edition
 -------
 Element
@@ -342,7 +300,6 @@ Identify the edition number
 Contained in: `amonog`_, `iiserial`_, `imonog`_, `omonog`_, `pmonog`_, `vmonog`_
 Attributes: none
 
-----
 email
 -----
 Element
@@ -350,7 +307,6 @@ Electronic address of the author
 Contained in: `aff`_, `corresp`_
 Attributes: none
 
-----
 equation
 --------
 Element
@@ -359,7 +315,6 @@ Contained in: `ifloat`_
 Contains: `graphic`_, `texmath`_, `mmlmath`_
 Attributes: `id`_, `filename`_
 
-----
 et-al
 -----
 Element
@@ -367,7 +322,6 @@ Indicate non cited authors
 Contained in: `acontrib`_, `amonog`_, `icontrib`_, `iiserial`_, `imonog`_, `ocontrib`_, `omonog`_, `vcontrib`_, `vmonog`_
 Attributes: none
 
-----
 extent
 ------
 Element
@@ -375,7 +329,6 @@ Identify the extension of the document (number of pages)
 Contained in: `aiserial`_, `amonog`_, `imonog`_, `oiserial`_, `omonog`_, `viserial`_, `vmonog`_
 Attributes: none
 
-----
 figgrp
 ------
 Element
@@ -384,7 +337,6 @@ Contained in: `ifloat`_, `figgrps`_
 Contains: `label`_, `caption`_, `graphic`_
 Attributes: `id`_, `ftype`_, `filename`_
 
-----
 figgrps
 -------
 Element
@@ -393,7 +345,6 @@ Contained in: `ifloat`_
 Contains: `label`_, `caption`_, `figgrp`_
 Attributes: `id`_
 
-----
 fname
 -----
 Element
@@ -401,7 +352,6 @@ Identify the first names of an individual author
 Contained in: `author`_, `awarded`_, `oauthor`_, `subresp`_
 Attributes: none
 
-----
 fngrp
 -----
 Element
@@ -409,7 +359,6 @@ Group the elements of a footnote
 Contained in: `back`_
 Attributes: `id`_, `fntype`_
 
-----
 front
 -----
 Element
@@ -418,7 +367,6 @@ Contained in: `article`_, `response`_, `subart`_
 Contains: `related`_, `toctitle`_, `doi`_, `titlegrp`_, `authgrp`_, `bibcom`_
 Attributes: none
 
-----
 glossary
 --------
 Element
@@ -427,7 +375,6 @@ Contained in: `back`_, `glossary`_
 Contains: `label`_, `title`_, `glossary`_, `deflist`_
 Attributes: `id`_
 
-----
 graphic
 -------
 Element
@@ -435,7 +382,6 @@ Identify an image
 Contained in: `ifloat`_, `equation`_, `figgrp`_, `tabwrap`_
 Attributes: `href`_
 
-----
 hist
 ----
 Element
@@ -444,7 +390,6 @@ Contained in: `bbibcom`_, `bibcom`_
 Contains: `received`_, `revised`_, `accepted`_
 Attributes: none
 
-----
 icitat
 ------
 Element
@@ -453,7 +398,6 @@ Contained in: `iso690`_
 Contains: `no`_, `icontrib`_, `imonog`_, `iiserial`_
 Attributes: none
 
-----
 icontrib
 --------
 Element
@@ -462,7 +406,6 @@ Contained in: `icitat`_
 Contains: `author`_, `corpauth`_, `et-al`_, `subresp`_, `date`_, `title`_, `subtitle`_
 Attributes: none
 
-----
 ign
 ---
 Element
@@ -470,7 +413,6 @@ Ignored text
 Contained in: `ifloat`_
 Attributes: none
 
-----
 iiserial
 --------
 Element
@@ -479,7 +421,6 @@ Contained in: `icitat`_
 Contains: `isstitle`_, `author`_, `corpauth`_, `et-al`_, `medium`_, `sertitle`_, `stitle`_, `city`_, `state`_, `country`_, `edition`_, `pubname`_, `date`_, `update`_, `volid`_, `issueno`_, `pages`_, `isdesig`_, `notes`_, `issn`_, `url`_, `cited`_, `doi`_, `pubid`_
 Attributes: none
 
-----
 imonog
 ------
 Element
@@ -488,7 +429,6 @@ Contained in: `icitat`_
 Contains: `author`_, `corpauth`_, `et-al`_, `subresp`_, `title`_, `subtitle`_, `medium`_, `edition`_, `city`_, `state`_, `country`_, `pubname`_, `date`_, `update`_, `volid`_, `part`_, `pages`_, `extent`_, `coltitle`_, `report`_, `notes`_, `url`_, `cited`_, `doi`_, `pubid`_, `isbn`_, `patgrp`_
 Attributes: none
 
-----
 inpress
 -------
 Element
@@ -496,7 +436,6 @@ Identify the document is in press status
 Contained in: `viserial`_, `vmonog`_
 Attributes: none
 
-----
 isbn
 ----
 Element
@@ -504,7 +443,6 @@ Identify the Internacional Standard Book Number (ISBN)
 Contained in: `amonog`_, `imonog`_, `omonog`_, `product`_
 Attributes: none
 
-----
 isdesig
 -------
 Element
@@ -512,7 +450,6 @@ Identify the main dates of a collection, for instance, the initial date of the c
 Contained in: `iiserial`_
 Attributes: none
 
-----
 iso690
 ------
 Element
@@ -521,7 +458,6 @@ Contained in: `back`_
 Contains: `icitat`_
 Attributes: `standard`_, `count`_
 
-----
 issn
 ----
 Element
@@ -529,7 +465,6 @@ Identify the Internacional Standard Serial  Number (ISSN)
 Contained in: `aiserial`_, `iiserial`_, `oiserial`_
 Attributes: none
 
-----
 isstitle
 --------
 Element
@@ -537,7 +472,6 @@ Identify the title of an issue number
 Contained in: `aiserial`_, `iiserial`_, `oiserial`_
 Attributes: none
 
-----
 issueno
 -------
 Element
@@ -545,7 +479,6 @@ Identify the issue number
 Contained in: `aiserial`_, `iiserial`_, `oiserial`_, `piserial`_, `viserial`_
 Attributes: none
 
-----
 keygrp
 ------
 Element
@@ -554,7 +487,6 @@ Contained in: `bbibcom`_, `bibcom`_
 Contains: `keyword`_, `subkey`_, `dperiod`_
 Attributes: `scheme`_
 
-----
 keyword
 -------
 Element
@@ -562,7 +494,6 @@ Identify a key word of the document
 Contained in: `keygrp`_
 Attributes: `keyword priority level`_, `language`_, `id`_
 
-----
 label
 -----
 Element
@@ -570,7 +501,6 @@ Identify a label
 Contained in: `aff`_, `figgrp`_, `figgrps`_, `fntable`_, `glossary`_, `tabwrap`_
 Attributes: none
 
-----
 li
 --
 Element
@@ -579,7 +509,6 @@ Contained in: `list`_
 Contains: `lilabel`_, `litext`_
 Attributes: none
 
-----
 license
 -------
 Element
@@ -588,7 +517,6 @@ Contained in: `licenses`_
 Contains: `licensep`_
 Attributes: `language`_, `lictype`_, `href`_
 
-----
 licensep
 --------
 Element
@@ -596,7 +524,6 @@ Identify the paragraph of a license
 Contained in: `license`_
 Attributes: none
 
-----
 licenses
 --------
 Element
@@ -605,7 +532,6 @@ Contained in: `back`_
 Contains: `license`_
 Attributes: none
 
-----
 lilabel
 -------
 Element
@@ -613,7 +539,6 @@ Identify the label of a item of a list
 Contained in: `li`_
 Attributes: none
 
-----
 list
 ----
 Element
@@ -622,7 +547,6 @@ Contained in: `ifloat`_
 Contains: `li`_
 Attributes: `listtype`_
 
-----
 litext
 ------
 Element
@@ -630,7 +554,6 @@ Identify the text of a item of a list
 Contained in: `li`_
 Attributes: none
 
-----
 medium
 ------
 Element
@@ -638,7 +561,6 @@ Identify the format of the media in which the document is published
 Contained in: `iiserial`_, `imonog`_
 Attributes: none
 
-----
 mmlmath
 -------
 Element
@@ -646,7 +568,6 @@ Math (MathML 2.0 Tag Set)
 Contained in: `equation`_
 Attributes: none
 
-----
 no
 --
 Element
@@ -654,7 +575,6 @@ Identify the number
 Contained in: `acitat`_, `confgrp`_, `icitat`_, `ocitat`_, `pcitat`_, `report`_, `vcitat`_
 Attributes: none
 
-----
 notes
 -----
 Element
@@ -662,7 +582,6 @@ Identify notes
 Contained in: `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `pmonog`_
 Attributes: none
 
-----
 oauthor
 -------
 Element
@@ -671,7 +590,6 @@ Contained in: `ocontrib`_, `omonog`_
 Contains: `fname`_, `surname`_, `anonym`_, `previous`_
 Attributes: `role`_, `rid`_
 
-----
 ocitat
 ------
 Element
@@ -680,7 +598,6 @@ Contained in: `other`_
 Contains: `no`_, `ocontrib`_, `omonog`_, `oiserial`_, `confgrp`_
 Attributes: none
 
-----
 ocontrib
 --------
 Element
@@ -689,7 +606,6 @@ Contained in: `ocitat`_
 Contains: `oauthor`_, `ocorpaut`_, `et-al`_, `title`_, `subtitle`_, `date`_, `pages`_, `patgrp`_
 Attributes: none
 
-----
 ocorpaut
 --------
 Element
@@ -698,7 +614,6 @@ Contained in: `ocontrib`_, `omonog`_
 Contains: `orgname`_, `orgdiv`_, `previous`_
 Attributes: none
 
-----
 oiserial
 --------
 Element
@@ -707,7 +622,6 @@ Contained in: `ocitat`_
 Contains: `sertitle`_, `stitle`_, `isstitle`_, `date`_, `volid`_, `issueno`_, `suppl`_, `pages`_, `extent`_, `issn`_, `url`_, `cited`_, `doi`_, `pubid`_, `othinfo`_, `city`_, `country`_, `pubname`_
 Attributes: none
 
-----
 omonog
 ------
 Element
@@ -716,7 +630,6 @@ Contained in: `ocitat`_
 Contains: `oauthor`_, `ocorpaut`_, `et-al`_, `title`_, `subtitle`_, `date`_, `pages`_, `extent`_, `edition`_, `thesis`_, `confgrp`_, `report`_, `patgrp`_, `city`_, `state`_, `country`_, `pubname`_, `coltitle`_, `volid`_, `part`_, `url`_, `cited`_, `doi`_, `pubid`_, `isbn`_, `othinfo`_
 Attributes: none
 
-----
 onbehalf
 --------
 Element
@@ -724,7 +637,6 @@ Identify the institution which the contributor represents. Example: John Smith o
 Contained in: `authgrp`_
 Attributes: none
 
-----
 orgdiv
 ------
 Element
@@ -732,7 +644,6 @@ Identify the division of an institution
 Contained in: `awarded`_, `corpauth`_, `ocorpaut`_, `rsponsor`_, `sponsor`_, `thesgrp`_, `thesis`_
 Attributes: none
 
-----
 orgname
 -------
 Element
@@ -740,7 +651,6 @@ Identify the name of an institution
 Contained in: `awarded`_, `corpauth`_, `ocorpaut`_, `patgrp`_, `rsponsor`_, `sponsor`_, `thesgrp`_, `thesis`_
 Attributes: none
 
-----
 other
 -----
 Element
@@ -749,7 +659,6 @@ Contained in: `back`_
 Contains: `ocitat`_
 Attributes: `standard`_, `count`_
 
-----
 othinfo
 -------
 Element
@@ -757,7 +666,6 @@ Group any other information
 Contained in: `oiserial`_, `omonog`_, `product`_
 Attributes: none
 
-----
 p
 -
 Element
@@ -766,7 +674,6 @@ Contained in: `ack`_, `app`_, `sec`_, `subsec`_, `xmlabstr`_, `xmlbody`_
 Contains: `report`_
 Attributes: none
 
-----
 pages
 -----
 Element
@@ -774,7 +681,6 @@ Identify the pagination
 Contained in: `acontrib`_, `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `ocontrib`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `viserial`_, `vmonog`_
 Attributes: none
 
-----
 part
 ----
 Element
@@ -782,7 +688,6 @@ Identify the part of the volume/issue number
 Contained in: `amonog`_, `imonog`_, `omonog`_, `pmonog`_, `viserial`_, `vmonog`_
 Attributes: none
 
-----
 patent
 ------
 Element
@@ -790,7 +695,6 @@ Identify the number of the patent
 Contained in: `patgrp`_
 Attributes: none
 
-----
 patgrp
 ------
 Element
@@ -799,7 +703,6 @@ Contained in: `acontrib`_, `amonog`_, `imonog`_, `ocontrib`_, `omonog`_, `vcontr
 Contains: `orgname`_, `patent`_, `date`_
 Attributes: `country`_
 
-----
 pcitat
 ------
 Element
@@ -808,7 +711,6 @@ Contained in: `apa`_
 Contains: `no`_, `pcontrib`_, `pmonog`_, `piserial`_
 Attributes: none
 
-----
 pcontrib
 --------
 Element
@@ -817,7 +719,6 @@ Contained in: `pcitat`_
 Contains: `author`_, `corpauth`_, `date`_, `title`_, `subtitle`_
 Attributes: none
 
-----
 piserial
 --------
 Element
@@ -826,7 +727,6 @@ Contained in: `pcitat`_
 Contains: `sertitle`_, `volid`_, `issueno`_, `suppl`_, `pages`_, `url`_, `cited`_, `doi`_, `pubid`_
 Attributes: none
 
-----
 pmonog
 ------
 Element
@@ -835,7 +735,6 @@ Contained in: `pcitat`_
 Contains: `author`_, `corpauth`_, `date`_, `title`_, `volid`_, `part`_, `subtitle`_, `confgrp`_, `thesis`_, `coltitle`_, `colvolid`_, `pages`_, `edition`_, `city`_, `state`_, `country`_, `pubname`_, `report`_, `url`_, `cited`_, `doi`_, `pubid`_, `notes`_
 Attributes: none
 
-----
 previous
 --------
 Element
@@ -843,7 +742,6 @@ Identify the author is the same author of the previous reference
 Contained in: `author`_, `corpauth`_, `oauthor`_, `ocorpaut`_
 Attributes: none
 
-----
 projname
 --------
 Element
@@ -851,7 +749,6 @@ Identify the name of the project
 Contained in: `report`_
 Attributes: none
 
-----
 pubid
 -----
 Element
@@ -859,7 +756,6 @@ Identify an id of any external database, such as DOI, pmid (PubMed), pmcid (PMC)
 Contained in: `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `viserial`_, `vmonog`_
 Attributes: `idtype`_
 
-----
 pubname
 -------
 Element
@@ -867,7 +763,6 @@ Identify the publisher
 Contained in: `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `pmonog`_, `product`_, `vmonog`_
 Attributes: none
 
-----
 received
 --------
 Element
@@ -875,7 +770,6 @@ Identify the date in which the article was received by peer review system
 Contained in: `hist`_
 Attributes: `dateiso`_
 
-----
 related
 -------
 Element
@@ -883,7 +777,6 @@ Identify related documents
 Contained in: `ifloat`_, `front`_
 Attributes: `doctype`_, `link`_, `linktype`_
 
-----
 report
 ------
 Element
@@ -892,7 +785,6 @@ Contained in: `amonog`_, `bbibcom`_, `bibcom`_, `imonog`_, `omonog`_, `p`_, `pmo
 Contains: `no`_, `rsponsor`_, `awarded`_, `projname`_, `contract`_
 Attributes: none
 
-----
 response
 --------
 Element
@@ -901,7 +793,6 @@ Contained in: `article`_, `subart`_
 Contains: `front`_, `body`_, `back`_
 Attributes: `id`_, `resptp`_, `language`_
 
-----
 revised
 -------
 Element
@@ -909,7 +800,6 @@ Identify the date in which the article was revised by peer review system
 Contained in: `hist`_
 Attributes: `dateiso`_
 
-----
 rsponsor
 --------
 Element
@@ -918,7 +808,6 @@ Contained in: `report`_
 Contains: `orgname`_, `orgdiv`_
 Attributes: none
 
-----
 sciname
 -------
 Element
@@ -926,7 +815,6 @@ Identify scientific names
 Contained in: `ifloat`_
 Attributes: none
 
-----
 sec
 ---
 Element
@@ -935,7 +823,6 @@ Contained in: `app`_, `xmlabstr`_, `xmlbody`_
 Contains: `sectitle`_, `subsec`_, `p`_
 Attributes: `sec-type`_
 
-----
 sectitle
 --------
 Element
@@ -943,7 +830,6 @@ Identify a section title
 Contained in: `sec`_, `subsec`_
 Attributes: none
 
-----
 sertitle
 --------
 Element
@@ -951,7 +837,6 @@ Identify the journal title
 Contained in: `aiserial`_, `iiserial`_, `oiserial`_, `piserial`_, `product`_
 Attributes: none
 
-----
 sponsor
 -------
 Element
@@ -960,7 +845,6 @@ Contained in: `confgrp`_
 Contains: `orgname`_, `orgdiv`_
 Attributes: none
 
-----
 state
 -----
 Element
@@ -968,7 +852,6 @@ Identify the state/region
 Contained in: `aff`_, `aiserial`_, `amonog`_, `confgrp`_, `iiserial`_, `imonog`_, `omonog`_, `pmonog`_, `product`_, `thesgrp`_, `thesis`_, `vmonog`_
 Attributes: none
 
-----
 stitle
 ------
 Element
@@ -976,7 +859,6 @@ Identify the short title of a journal
 Contained in: `aiserial`_, `iiserial`_, `oiserial`_, `vstitle`_
 Attributes: none
 
-----
 subart
 ------
 Element
@@ -985,7 +867,6 @@ Contained in: `article`_
 Contains: `front`_, `xmlbody`_, `body`_, `back`_, `response`_
 Attributes: `id`_, `doctype`_, `language`_
 
-----
 subkey
 ------
 Element
@@ -993,7 +874,6 @@ Identify the subkey of a key word
 Contained in: `keygrp`_
 Attributes: `rid`_
 
-----
 subresp
 -------
 Element
@@ -1002,7 +882,6 @@ Contained in: `amonog`_, `icontrib`_, `imonog`_
 Contains: `fname`_, `surname`_
 Attributes: `role`_
 
-----
 subsec
 ------
 Element
@@ -1011,7 +890,6 @@ Contained in: `sec`_
 Contains: `sectitle`_, `p`_
 Attributes: none
 
-----
 subtitle
 --------
 Element
@@ -1019,7 +897,6 @@ Identify the subtitle
 Contained in: `acontrib`_, `amonog`_, `bbibcom`_, `icontrib`_, `imonog`_, `ocontrib`_, `omonog`_, `pcontrib`_, `pmonog`_, `titlegrp`_, `vtitle`_
 Attributes: none
 
-----
 suppl
 -----
 Element
@@ -1027,7 +904,6 @@ Identify the supplement
 Contained in: `aiserial`_, `oiserial`_, `piserial`_, `viserial`_
 Attributes: none
 
-----
 surname
 -------
 Element
@@ -1035,7 +911,6 @@ Identify the last name
 Contained in: `author`_, `awarded`_, `oauthor`_, `subresp`_
 Attributes: none
 
-----
 tabwrap
 -------
 Element
@@ -1044,7 +919,6 @@ Contained in: `ifloat`_
 Contains: `label`_, `caption`_, `graphic`_, `table`_, `fntable`_
 Attributes: `id`_, `filename`_
 
-----
 term
 ----
 Element
@@ -1052,7 +926,6 @@ Identify a term
 Contained in: `defitem`_
 Attributes: none
 
-----
 texmath
 -------
 Element
@@ -1060,7 +933,6 @@ Identify a formula using Tex Math Equation
 Contained in: `equation`_
 Attributes: none
 
-----
 text
 ----
 Element
@@ -1069,7 +941,6 @@ Contained in: `start`_
 Contains: `doi`_, `titlegrp`_, `authgrp`_, `body`_, `back`_
 Attributes: none
 
-----
 thesgrp
 -------
 Element
@@ -1078,7 +949,6 @@ Contained in: `bbibcom`_, `bibcom`_
 Contains: `city`_, `state`_, `country`_, `date`_, `degree`_, `orgname`_, `orgdiv`_
 Attributes: none
 
-----
 thesis
 ------
 Element
@@ -1087,7 +957,6 @@ Contained in: `amonog`_, `omonog`_, `pmonog`_, `vmonog`_
 Contains: `city`_, `state`_, `country`_, `date`_, `degree`_, `orgname`_, `orgdiv`_
 Attributes: none
 
-----
 title
 -----
 Element
@@ -1095,7 +964,6 @@ Identify the title of the document
 Contained in: `ack`_, `acontrib`_, `amonog`_, `app`_, `bbibcom`_, `glossary`_, `deflist`_, `icontrib`_, `imonog`_, `ocontrib`_, `omonog`_, `pcontrib`_, `pmonog`_, `product`_, `titlegrp`_, `vtitle`_
 Attributes: `language`_
 
-----
 titlegrp
 --------
 Element
@@ -1104,7 +972,6 @@ Contained in: `front`_, `text`_
 Contains: `title`_, `subtitle`_
 Attributes: none
 
-----
 toctitle
 --------
 Element
@@ -1112,7 +979,6 @@ Identify the TOC section title. It is mandatory to the generation of XML files.
 Contained in: `front`_
 Attributes: none
 
-----
 tome
 ----
 Element
@@ -1120,7 +986,6 @@ Identify the tome of a publication
 Contained in: `amonog`_
 Attributes: none
 
-----
 tp
 --
 Element
@@ -1128,7 +993,6 @@ Identify the type of publication
 Contained in: `vstitle`_, `vtitle`_
 Attributes: none
 
-----
 update
 ------
 Element
@@ -1136,7 +1000,6 @@ Identify the information of update
 Contained in: `iiserial`_, `imonog`_
 Attributes: none
 
-----
 uri
 ---
 Element
@@ -1144,7 +1007,6 @@ Identify an uri
 Contained in: `ifloat`_
 Attributes: none
 
-----
 url
 ---
 Element
@@ -1152,7 +1014,6 @@ Identify the electronic address of the document
 Contained in: `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `viserial`_, `vmonog`_
 Attributes: none
 
-----
 vancouv
 -------
 Element
@@ -1161,7 +1022,6 @@ Contained in: `back`_
 Contains: `vcitat`_
 Attributes: `standard`_, `count`_
 
-----
 vcitat
 ------
 Element
@@ -1170,7 +1030,6 @@ Contained in: `vancouv`_
 Contains: `no`_, `vcontrib`_, `viserial`_, `vmonog`_
 Attributes: none
 
-----
 vcontrib
 --------
 Element
@@ -1179,7 +1038,6 @@ Contained in: `vcitat`_
 Contains: `author`_, `corpauth`_, `et-al`_, `vtitle`_, `patgrp`_
 Attributes: none
 
-----
 version
 -------
 Element
@@ -1187,7 +1045,6 @@ Identify the version
 Contained in: `vmonog`_
 Attributes: none
 
-----
 viserial
 --------
 Element
@@ -1196,7 +1053,6 @@ Contained in: `vcitat`_
 Contains: `vstitle`_, `date`_, `inpress`_, `volid`_, `issueno`_, `suppl`_, `part`_, `extent`_, `pages`_, `url`_, `cited`_, `doi`_, `pubid`_
 Attributes: none
 
-----
 vmonog
 ------
 Element
@@ -1205,7 +1061,6 @@ Contained in: `vcitat`_
 Contains: `author`_, `corpauth`_, `et-al`_, `vtitle`_, `edition`_, `volid`_, `part`_, `version`_, `confgrp`_, `city`_, `state`_, `country`_, `pubname`_, `inpress`_, `date`_, `pages`_, `extent`_, `report`_, `thesis`_, `url`_, `cited`_, `doi`_, `pubid`_, `patgrp`_, `coltitle`_
 Attributes: none
 
-----
 volid
 -----
 Element
@@ -1213,7 +1068,6 @@ Identify the volume
 Contained in: `acontrib`_, `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `viserial`_, `vmonog`_
 Attributes: none
 
-----
 vstitle
 -------
 Element
@@ -1222,7 +1076,6 @@ Contained in: `viserial`_
 Contains: `stitle`_, `tp`_
 Attributes: none
 
-----
 vtitle
 ------
 Element
@@ -1231,7 +1084,6 @@ Contained in: `vcontrib`_, `vmonog`_
 Contains: `title`_, `subtitle`_, `tp`_
 Attributes: none
 
-----
 xmlabstr
 --------
 Element
@@ -1240,7 +1092,6 @@ Contained in: `bibcom`_
 Contains: `sec`_, `p`_
 Attributes: `language`_
 
-----
 xmlbody
 -------
 Element
@@ -1249,7 +1100,6 @@ Contained in: `article`_, `subart`_
 Contains: `sec`_, `p`_, `deflist`_, `sigblock`_
 Attributes: none
 
-----
 xref
 ----
 Element
@@ -1257,7 +1107,6 @@ Identify a cross-reference
 Contained in: `ifloat`_
 Attributes: `ref-type`_, `rid`_
 
-----
 zipcode
 -------
 Element
@@ -1265,7 +1114,8 @@ Identify a ZIP Code
 Contained in: `aff`_
 Attributes: none
 
-----
+Attributes
+==========
 Attribute blcktype
 ------------------
 Attribute
@@ -1278,7 +1128,6 @@ Is attribute of: `txtblock`_
 +---+-----------+
 
 
-----
 Attribute ccode
 ---------------
 Attribute
@@ -1293,9 +1142,9 @@ Is attribute of:
 +-------+-----------------------------------------------------------+
 |bjp    |brazilian journal of physics                               |
 +-------+-----------------------------------------------------------+
-|conicyt|ComisiÃ³n Nacional de InvestigaciÃ³n CientÃ­fica y TecnolÃ³gica|
+|conicyt|Comisión Nacional de Investigación Científica y Tecnológica|
 +-------+-----------------------------------------------------------+
-|dados  |dados - revista de ciÃªncias sociais                        |
+|dados  |dados - revista de ciências sociais                        |
 +-------+-----------------------------------------------------------+
 |br1.1  |scielo/bireme                                              |
 +-------+-----------------------------------------------------------+
@@ -1305,19 +1154,18 @@ Is attribute of:
 +-------+-----------------------------------------------------------+
 |jbcos  |journal of the brazilian computer society                  |
 +-------+-----------------------------------------------------------+
-|mioc   |memÃ³rias do instituto oswaldo cruz                         |
+|mioc   |memórias do instituto oswaldo cruz                         |
 +-------+-----------------------------------------------------------+
-|rbcs   |revista brasileira de ciÃªncia do solo                      |
+|rbcs   |revista brasileira de ciência do solo                      |
 +-------+-----------------------------------------------------------+
-|rbgeo  |revista brasileira de geociÃªncias                          |
+|rbgeo  |revista brasileira de geociências                          |
 +-------+-----------------------------------------------------------+
-|rimtsp |revista do instituto de medicina tropical de sÃ£o paulo     |
+|rimtsp |revista do instituto de medicina tropical de são paulo     |
 +-------+-----------------------------------------------------------+
-|rsp    |revista de saÃºde pÃºblica                                   |
+|rsp    |revista de saúde pública                                   |
 +-------+-----------------------------------------------------------+
 
 
-----
 Attribute corresp
 -----------------
 Attribute
@@ -1330,7 +1178,6 @@ Is attribute of: `author`_
 +-+---+
 
 
-----
 Attribute count
 ---------------
 Attribute
@@ -1341,7 +1188,6 @@ Is attribute of: `vancouv`_, `iso690`_, `abnt6023`_, `apa`_, `other`_
 +-+-+
 
 
-----
 Attribute country
 -----------------
 Attribute
@@ -1534,7 +1380,7 @@ Is attribute of: `patgrp`_
 +--+----------------------------+
 |PN|Islas Pitcairn              |
 +--+----------------------------+
-|SB|Islas SalomÃ³n BritÃ¡nico     |
+|SB|Islas Salomón Británico     |
 +--+----------------------------+
 |SJ|Islas Svalbard y Jan Mayen  |
 +--+----------------------------+
@@ -1558,7 +1404,7 @@ Is attribute of: `patgrp`_
 +--+----------------------------+
 |KM|Kamoras Islands             |
 +--+----------------------------+
-|KH|Kampuchea DemocrÃ¡tica       |
+|KH|Kampuchea Democrática       |
 +--+----------------------------+
 |KY|Kayman Islands              |
 +--+----------------------------+
@@ -1642,7 +1488,7 @@ Is attribute of: `patgrp`_
 +--+----------------------------+
 |NO|Norway                      |
 +--+----------------------------+
-|NH|Nuevas HÃ©bridas             |
+|NH|Nuevas Hébridas             |
 +--+----------------------------+
 |OM|Oman                        |
 +--+----------------------------+
@@ -1670,13 +1516,13 @@ Is attribute of: `patgrp`_
 +--+----------------------------+
 |LA|Republic                    |
 +--+----------------------------+
-|RE|RÃ©union                     |
+|RE|Réunion                     |
 +--+----------------------------+
 |RO|Romania                     |
 +--+----------------------------+
 |RW|Rwanda                      |
 +--+----------------------------+
-|PM|S. Pedro y MiguelÃ³n         |
+|PM|S. Pedro y Miguelón         |
 +--+----------------------------+
 |LC|Saint Lucia                 |
 +--+----------------------------+
@@ -1684,7 +1530,7 @@ Is attribute of: `patgrp`_
 +--+----------------------------+
 |WS|Samoa                       |
 +--+----------------------------+
-|KN|San CristÃ³bal-Nieves-Anguila|
+|KN|San Cristóbal-Nieves-Anguila|
 +--+----------------------------+
 |SM|San Marino                  |
 +--+----------------------------+
@@ -1782,7 +1628,6 @@ Is attribute of: `patgrp`_
 +--+----------------------------+
 
 
-----
 Attribute ctdbid
 ----------------
 Attribute
@@ -1803,7 +1648,6 @@ Is attribute of: `ctreg`_
 +------+---------------------------------------------------------------------------+
 
 
-----
 Attribute cturl
 ---------------
 Attribute
@@ -1814,7 +1658,6 @@ Is attribute of: `ctreg`_
 +++
 
 
-----
 Attribute dateiso
 -----------------
 Attribute
@@ -1825,7 +1668,6 @@ Is attribute of: `date`_, `received`_, `accepted`_, `revised`_, `cited`_
 +--------+--------+
 
 
-----
 Attribute deceased
 ------------------
 Attribute
@@ -1838,7 +1680,6 @@ Is attribute of: `author`_
 +-+---+
 
 
-----
 Attribute deposid
 -----------------
 Attribute
@@ -1859,7 +1700,6 @@ Is attribute of: `deposit`_
 +-+-------+
 
 
-----
 Attribute doctopic
 ------------------
 Attribute
@@ -1908,7 +1748,6 @@ Is attribute of:
 +--+-------------------+
 
 
-----
 Attribute doctype
 -----------------
 Attribute
@@ -1969,7 +1808,6 @@ Is attribute of: `related`_, `subart`_
 +---------------------+-----------------------------------+
 
 
-----
 Attribute embdate
 -----------------
 Attribute
@@ -1980,7 +1818,6 @@ Is attribute of: `deposit`_
 +++
 
 
-----
 Attribute entrdate
 ------------------
 Attribute
@@ -1991,7 +1828,6 @@ Is attribute of: `deposit`_
 +++
 
 
-----
 Attribute eqcontr
 -----------------
 Attribute
@@ -2004,7 +1840,6 @@ Is attribute of: `author`_
 +-+---+
 
 
-----
 Attribute filename
 ------------------
 Attribute
@@ -2015,7 +1850,6 @@ Is attribute of: `tabwrap`_, `figgrp`_, `equation`_
 +++
 
 
-----
 Attribute fntype
 ----------------
 Attribute
@@ -2066,7 +1900,6 @@ Is attribute of: `fngrp`_
 +-------------------------+--------------------------------------------------------------------------------------------------------+
 
 
-----
 Attribute from
 --------------
 Attribute
@@ -2077,7 +1910,6 @@ Is attribute of: `dperiod`_
 +--------+--------+
 
 
-----
 Attribute ftype
 ---------------
 Attribute
@@ -2126,7 +1958,6 @@ Is attribute of: `figgrp`_
 +------------------+------------------+
 
 
-----
 Attribute hcomment
 ------------------
 Attribute
@@ -2139,7 +1970,6 @@ Is attribute of:
 +-+----------------------+
 
 
-----
 Attribute href
 --------------
 Attribute
@@ -2150,7 +1980,6 @@ Is attribute of: `license`_, `graphic`_, `supplmat`_
 +++
 
 
-----
 Attribute id
 ------------
 Attribute
@@ -2161,7 +1990,6 @@ Is attribute of: `aff`_, `keyword`_, `tabwrap`_, `figgrp`_, `figgrps`_, `equatio
 +--+-----------+
 
 
-----
 Attribute idtype
 ----------------
 Attribute
@@ -2196,7 +2024,6 @@ Is attribute of: `pubid`_
 +-------------+-------------+
 
 
-----
 Attribute illustrative material type
 ------------------------------------
 Attribute
@@ -2215,7 +2042,6 @@ Is attribute of:
 +----+------------------------+
 
 
-----
 Attribute keyword priority level
 --------------------------------
 Attribute
@@ -2228,7 +2054,6 @@ Is attribute of: `keyword`_
 +-+---------+
 
 
-----
 Attribute language
 ------------------
 Attribute
@@ -2317,7 +2142,6 @@ Is attribute of: `title`_, `abstract`_, `xmlabstr`_, `keyword`_, `license`_, `re
 +--+-----------+
 
 
-----
 Attribute lictype
 -----------------
 Attribute
@@ -2330,7 +2154,6 @@ Is attribute of: `license`_
 +-----------+-----------+
 
 
-----
 Attribute link
 --------------
 Attribute
@@ -2341,7 +2164,6 @@ Is attribute of: `related`_
 +++
 
 
-----
 Attribute linktype
 ------------------
 Attribute
@@ -2376,7 +2198,6 @@ Is attribute of: `related`_
 +-------------+-------------+
 
 
-----
 Attribute listtype
 ------------------
 Attribute
@@ -2399,7 +2220,6 @@ Is attribute of: `list`_
 +-----------+-------------------------------------------------------------------------------+
 
 
-----
 Attribute name
 --------------
 Attribute
@@ -2410,7 +2230,6 @@ Is attribute of: `element`_, `attrib`_
 +++
 
 
-----
 Attribute no
 ------------
 Attribute
@@ -2421,7 +2240,6 @@ Is attribute of:
 +-+-+
 
 
-----
 Attribute orgdiv1
 -----------------
 Attribute
@@ -2432,7 +2250,6 @@ Is attribute of: `aff`_
 +--+--+
 
 
-----
 Attribute orgdiv2
 -----------------
 Attribute
@@ -2443,7 +2260,6 @@ Is attribute of: `aff`_
 +--+--+
 
 
-----
 Attribute orgdiv3
 -----------------
 Attribute
@@ -2454,7 +2270,6 @@ Is attribute of: `aff`_
 +--+--+
 
 
-----
 Attribute orgname
 -----------------
 Attribute
@@ -2465,7 +2280,6 @@ Is attribute of: `aff`_
 +--+--+
 
 
-----
 Attribute pages
 ---------------
 Attribute
@@ -2476,7 +2290,6 @@ Is attribute of:
 +---+---+
 
 
-----
 Attribute prodtype
 ------------------
 Attribute
@@ -2497,7 +2310,6 @@ Is attribute of: `product`_
 +--------+--------+
 
 
-----
 Attribute pubtype
 -----------------
 Attribute
@@ -2510,7 +2322,6 @@ Is attribute of:
 +----+----------------------+
 
 
-----
 Attribute ref-type
 ------------------
 Attribute
@@ -2559,7 +2370,6 @@ Is attribute of: `xref`_
 +----------------------+--------------------------+
 
 
-----
 Attribute resptp
 ----------------
 Attribute
@@ -2574,7 +2384,6 @@ Is attribute of: `response`_
 +----------+----------+
 
 
-----
 Attribute rid
 -------------
 Attribute
@@ -2585,7 +2394,6 @@ Is attribute of: `author`_, `oauthor`_, `subkey`_, `xref`_
 +--+-----------+
 
 
-----
 Attribute role
 --------------
 Attribute
@@ -2604,7 +2412,6 @@ Is attribute of: `author`_, `oauthor`_, `subresp`_
 +-----+-----------+
 
 
-----
 Attribute scheme
 ----------------
 Attribute
@@ -2617,7 +2424,6 @@ Is attribute of: `keygrp`_
 +----+--------------------------+
 
 
-----
 Attribute sec-type
 ------------------
 Attribute
@@ -2654,7 +2460,6 @@ Is attribute of: `sec`_
 +------------------------------+----------------------------------+
 
 
-----
 Attribute specyear
 ------------------
 Attribute
@@ -2665,7 +2470,6 @@ Is attribute of: `date`_
 +++
 
 
-----
 Attribute sponsor
 -----------------
 Attribute
@@ -2676,7 +2480,6 @@ Is attribute of:
 +--+------------+
 
 
-----
 Attribute standard
 ------------------
 Attribute
@@ -2685,7 +2488,7 @@ Is attribute of: `vancouv`_, `iso690`_, `abnt6023`_, `apa`_, `other`_
 +-------+-------------------------------------------------------------------------------------------+
 |iso690 |iso 690/87 - international standard organization                                           |
 +-------+-------------------------------------------------------------------------------------------+
-|nbr6023|nbr 6023/89 - associaÃ§Ã£o nacional de normas tÃ©cnicas                                       |
+|nbr6023|nbr 6023/89 - associação nacional de normas técnicas                                       |
 +-------+-------------------------------------------------------------------------------------------+
 |other  |other standard                                                                             |
 +-------+-------------------------------------------------------------------------------------------+
@@ -2695,7 +2498,6 @@ Is attribute of: `vancouv`_, `iso690`_, `abnt6023`_, `apa`_, `other`_
 +-------+-------------------------------------------------------------------------------------------+
 
 
-----
 Attribute to
 ------------
 Attribute
@@ -2706,7 +2508,6 @@ Is attribute of: `dperiod`_
 +--------+--------+
 
 
-----
 Attribute toccode
 -----------------
 Attribute
@@ -2719,7 +2520,6 @@ Is attribute of:
 +-+--------+
 
 
-----
 Attribute value
 ---------------
 Attribute
@@ -2730,7 +2530,6 @@ Is attribute of: `attrib`_
 +++
 
 
-----
 Attribute version
 -----------------
 Attribute
@@ -2744,7 +2543,3 @@ Is attribute of:
 
 
 []
-
-
-
-.. include:: draft_version.rst
