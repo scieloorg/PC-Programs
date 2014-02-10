@@ -142,6 +142,7 @@
 	  dateiso  CDATA #REQUIRED
 	  fpage    CDATA #REQUIRED
           lpage    CDATA #REQUIRED
+          pagcount CDATA #REQUIRED
           issn     CDATA #REQUIRED
 		  old-pid CDATA #IMPLIED 
 		  rvpdate CDATA #IMPLIED
