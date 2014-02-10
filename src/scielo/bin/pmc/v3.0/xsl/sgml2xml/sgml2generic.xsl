@@ -2143,15 +2143,22 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		</xsl:if>
 
 	</xsl:template>
-	<xsl:template match="tr/*" mode="pmc-table-cols">
+	<xsl:template match="tr/td | tr/th" mode="pmc-table-cols">
 		<col>
-			<xsl:apply-templates select="@colspan"></xsl:apply-templates>
+			<xsl:if test="@colspan"><xsl:attribute name="span"><xsl:value-of select="@colspan"/></xsl:attribute></xsl:if>
 		</col>
 	</xsl:template>
 	<xsl:template match="table" mode="pmc-table">
 		<table>
 				<colgroup>
-					<xsl:apply-templates select="*[1]/tr/*" mode="pmc-table-cols"/>
+					<xsl:choose>
+						<xsl:when test="thead">
+							<xsl:apply-templates select="thead/tr[1]/th" mode="pmc-table-cols"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:apply-templates select="tbody/tr[1]/td" mode="pmc-table-cols"/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</colgroup>
 			<xsl:copy-of select="thead"/>
 			<xsl:copy-of select="tbody"/>
