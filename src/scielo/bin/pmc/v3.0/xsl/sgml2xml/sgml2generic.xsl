@@ -17,10 +17,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="affs" select=".//aff"/>
 	<xsl:variable name="affs_xrefs" select=".//front//author"/>
 	<xsl:variable name="xref_id" select="//*[@id]"/>
-	<xsl:variable name="qtd_ref" select="count(//*[contains(name(),'citat')])"/>
-	<xsl:variable name="reflen">
-		<xsl:value-of select="string-length($qtd_ref)"/>
-	</xsl:variable>
+	<xsl:variable name="qtd_ref" select="//*[@standard]/@count"/>
+	<xsl:variable name="reflen"><xsl:value-of select="string-length($qtd_ref)"/></xsl:variable>
 	<xsl:variable name="ref_no" select="//*[contains(name(),'citat')]/no"/>
 
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
@@ -1159,13 +1157,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="*[@standard]/*[contains(name(),'citat')]">
-		<xsl:variable name="zeros">
-			<xsl:value-of select="substring('0000000000',1, $reflen - string-length(position()))"/>
-		</xsl:variable>
-		<xsl:variable name="id">
-			<xsl:value-of select="$zeros"/>
-			<xsl:value-of select="position()"/>
-		</xsl:variable>
+		<xsl:comment>reflen:<xsl:value-of select="$reflen"/></xsl:comment>
+		<xsl:comment>len position:<xsl:value-of select="string-length(position())"/></xsl:comment>
+		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length(position()))"/></xsl:variable>
+		<xsl:variable name="id"><xsl:value-of select="$zeros"/><xsl:value-of select="position()"/></xsl:variable>
 		<ref id="B{$id}">
 			<xsl:apply-templates select="no"/>
 			<!-- book, communication, letter, review, conf-proc, journal, list, patent, thesis, discussion, report, standard, and working-paper.  -->
