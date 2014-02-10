@@ -11,9 +11,9 @@ doctopic|Identify the type of the document
 language|Identify the language
 illustrative material type|Identify the illustrative material type existing in the document
 version|Identify the version of the document
-toccode|Identify the indicates whether the title is the text title or section title
+toccode|Identify the indicates whether the text title is present on the table of contents (title) or not (sectitle)
 role|Identify the Role of the author
-scheme|Identify the indicates the controlled vocabulary
+scheme|Identify the controlled vocabulary
 keyword priority level|Identify the indicates the
 standard|Identify the standard adopted by the journal
 id|Identify an ID
