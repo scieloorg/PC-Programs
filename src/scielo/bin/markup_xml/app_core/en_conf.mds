@@ -15,7 +15,7 @@ msgSelection,Select the text to markup
 msgInserting,Error inserting the tag
 msgEditingAttr,Tag has no attributes to edit
 msgDeleting,Error deleting the tag. Select the text
-msgOpenFile,Open one .doc or HTM/HTML file only
+msgOpenFile,Open only one file
 msgSure,Are you sure?
 msgSureExit,Do you want to exit?
 msgMoreLater,Do you wish to save the document in TXT format to use the parser?
