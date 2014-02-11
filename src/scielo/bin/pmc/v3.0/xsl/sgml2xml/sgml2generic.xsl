@@ -2135,7 +2135,6 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			<xsl:choose>
 				<xsl:when test=".//graphic/@xlink:href"><graphic xlink:href="{.//graphic/@xlink:href}"></graphic></xsl:when>	
 				<xsl:when test="@filename"><graphic xlink:href="{@filename}"></graphic></xsl:when>
-				
 			</xsl:choose>
 		</xsl:if>
 		<xsl:if test=".//table">
