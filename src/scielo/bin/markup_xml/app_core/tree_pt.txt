@@ -68,7 +68,6 @@ licenses;Agrupa os elementos de licença
 lilabel;Identifica o rótulo do item da lista
 list;Identifica uma lista
 litext;Identifica o texto do item da lista
-location;Identifica o endereço eletrônico do documento
 medium;Identifica o formato da mídia em que o documento está sendo publicado ou editado
 mmlmath;Idetifica Math (MathML 2.0 Tag Set)
 no;Identifica um número
@@ -148,4 +147,3 @@ pubid;Identifica um id de qualquer tipo de base de dados externa, tal como DOI, 
 onbehalf;Identifica a instituição que o autor representa. Example: John Smith on behalf of Instituition ABCD
 xmlabstr;Identifica um resumo com seções
 toctitle;Identifica o título da seção do sumário. Este item é obrigatório para a geração do XML.
-

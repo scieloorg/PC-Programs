@@ -15,7 +15,7 @@ msgSelection,Selecione o texto para marcação
 msgInserting,Erro inserindo a tag
 msgEditingAttr,Tag não tem atributos para editar
 msgDeleting,Erro apagando a tag. Selecione o texto
-msgOpenFile,Abra somente um arquivo em htm/html ou .doc
+msgOpenFile,Abra somente um arquivo
 msgSure,Deseja continuar?
 msgSureExit,Deseja sair?
 msgMoreLater,Você deseja salvar o documento em formato TXT para utilizar o parser?

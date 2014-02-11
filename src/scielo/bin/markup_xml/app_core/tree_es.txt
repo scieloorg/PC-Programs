@@ -68,7 +68,6 @@ licenses;Agrupa los elementos de licencia
 lilabel;Identifica la etiqueta del item de la lista
 list;Identifica una lista
 litext;Identifica el texto del item de la lista
-location;Identifica la dirección electrónica del documento
 medium;Identifica el formato del medio en lo cual el documento está siendo publicado
 mmlmath;Idetifica Math (MathML 2.0 Tag Set)
 no;Identifica un número
@@ -136,7 +135,7 @@ vmonog;Agrupa los elementos de monografía
 volid;Identifica el volume
 vstitle;Identifica el título abreviado en el estándar Vancouver
 vtitle;Agrupa los elementos de título en el estándar Vancouver
-xmlbody;Identifica el cuerpo del documento com detalles
+xmlbody;Identifica el cuerpo del documento con detalles
 xref;Identifica una referencia cruzada
 zipcode;Código de dirección postal
 glossary;Identifica un glossario
@@ -148,4 +147,3 @@ pubid;Identifica un id de cualquier tipo de base de datos externa, tal como DOI,
 onbehalf;Identifica la institución que el autor representa. Ejemplo: John Smith on behalf of Instituition ABCD
 xmlabstr;Identifica un resumen con secciones
 toctitle;Identifica el título de la sección del sumario. Este item es obligatorio para la generación del XML.
-
