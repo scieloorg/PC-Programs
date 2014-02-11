@@ -1160,8 +1160,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="*[@standard]/*[contains(name(),'citat')]">
-		<xsl:comment>reflen:<xsl:value-of select="$reflen"/></xsl:comment>
-		<xsl:comment>len position:<xsl:value-of select="string-length(position())"/></xsl:comment>
 		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length(position()))"/></xsl:variable>
 		<xsl:variable name="id"><xsl:value-of select="$zeros"/><xsl:value-of select="position()"/></xsl:variable>
 		<ref id="B{$id}">
@@ -2631,25 +2629,78 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="front//report | bbibcom//report | ack//report">
 		<funding-group>
-			<xsl:if test="rsponsor or .//contract or .//awarded">
-				<award-group>
-					<xsl:attribute name="award-type">
-						<xsl:choose>
-							<xsl:when test=".//contract">contract</xsl:when>
-							<xsl:otherwise>grant</xsl:otherwise>
-						</xsl:choose>
-					</xsl:attribute>
-					<xsl:apply-templates select="*"/>
-				</award-group>
-			</xsl:if>
+			<xsl:choose>
+				<xsl:when test="count(.//rsponsor)&gt;0 and count(.//rsponsor)=count(.//contract)">
+					<xsl:apply-templates select=".//rsponsor" mode="award-group">
+						<xsl:with-param name="contracts" select=".//contract"/>
+					</xsl:apply-templates>
+				</xsl:when>
+				<xsl:when test="count(.//rsponsor)&gt;count(.//contract) and count(.//rsponsor)=1">
+					<xsl:apply-templates select=".//contract" mode="award-group">
+						<xsl:with-param name="rsponsors" select=".//rsponsor"/>
+					</xsl:apply-templates>
+				</xsl:when>
+				<xsl:when test="count(.//rsponsor)&lt;count(.//contract) and count(.//contract)=1">
+					<xsl:apply-templates select=".//rsponsor" mode="award-group">
+						<xsl:with-param name="contract" select=".//contract"/>
+					</xsl:apply-templates>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="." mode="award-group"/>
+				</xsl:otherwise>
+			</xsl:choose>
+			
 			<!--xsl:if test="not($unident_back[contains(.//text,'ACK') or contains(.//text,'Ack') or contains(.//text,'Agrad') or contains(.//text,'AGRAD')])"-->
-			<funding-statement>
-				<xsl:apply-templates select=".//text()"/>
-			</funding-statement>
+			<xsl:apply-templates select="." mode="funding-statement"></xsl:apply-templates>
 			<!--/xsl:if-->
 		</funding-group>
 	</xsl:template>
-	<xsl:template match="report/projname"> </xsl:template>
+	<xsl:template match="report" mode="award-group">
+		<award-group>
+			<xsl:attribute name="award-type"><xsl:choose>
+				<xsl:when test=".//contract">contract</xsl:when><xsl:otherwise>grant</xsl:otherwise>
+			</xsl:choose></xsl:attribute>
+			<xsl:apply-templates select="*"></xsl:apply-templates>
+		</award-group>
+	</xsl:template>
+	<xsl:template match="rsponsor" mode="award-group">
+		<xsl:param name="contracts"/>
+		<xsl:param name="contract"/>
+		<xsl:variable name="pos" select="position()"/>
+		<award-group>
+			<xsl:attribute name="award-type">contract</xsl:attribute>
+			<xsl:apply-templates select="."/>
+			<xsl:choose>
+				<xsl:when test="$contracts">
+					<xsl:apply-templates select="$contracts[$pos]"/>
+				</xsl:when>
+				<xsl:when test="$contract">
+					<xsl:apply-templates select="$contract"/>
+				</xsl:when>
+			</xsl:choose>
+			<xsl:apply-templates select="../awarded"></xsl:apply-templates>
+		</award-group>
+	</xsl:template>
+	<xsl:template match="contract" mode="award-group">
+		<xsl:param name="rsponsor"/>
+		<award-group>
+			<xsl:attribute name="award-type">contract</xsl:attribute>
+			<xsl:apply-templates select="$rsponsor"/>
+			<xsl:apply-templates select="."/>
+			<xsl:apply-templates select="../awarded"></xsl:apply-templates>
+		</award-group>
+	</xsl:template>
+	<xsl:template match="front//report | bbibcom//report" mode="funding-statement">
+		<!-- gerar funding-statement -->
+		<funding-statement>
+			<xsl:apply-templates select=".//text()"/>
+		</funding-statement>
+	</xsl:template>
+	<xsl:template match="ack//report" mode="funding-statement">
+		<!-- não gerar funding-statement -->
+		
+	</xsl:template>
+	<xsl:template match="report/projname"></xsl:template>
 	<xsl:template match="report/awarded">
 		<!--xsl:comment>report/awarded</xsl:comment-->
 		<xsl:if test="orgname or orgdiv">
