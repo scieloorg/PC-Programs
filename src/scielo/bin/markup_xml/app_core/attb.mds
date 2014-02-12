@@ -14,11 +14,11 @@ prodtype
 book;software;article;chapter;website;other
 book;software;article;chapter;website;other
 
-linktype
-art-access-id;coden;doaj;doi;medline;manuscript;rrn;other;pii;pmcid;pmid;publisher-id;sici
-art-access-id;coden;doaj;doi;medline;manuscript;rrn;other;pii;pmcid;pmid;publisher-id;sici
+relidtp
+press-release-id;doi;art-access-id;coden;doaj;medline;manuscript;rrn;pii;pmcid;pmid;publisher-id;sici
+press-release-id;doi;art-access-id;coden;doaj;medline;manuscript;rrn;pii;pmcid;pmid;publisher-id;sici
 
-link
+relid
 
 
 

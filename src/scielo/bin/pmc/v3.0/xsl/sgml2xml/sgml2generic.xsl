@@ -20,7 +20,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="qtd_ref" select="//*[@standard]/@count"/>
 	<xsl:variable name="reflen"><xsl:value-of select="string-length($qtd_ref)"/></xsl:variable>
 	<xsl:variable name="ref_no" select="//*[contains(name(),'citat')]/no"/>
-
+	<xsl:variable name="this_doi"><xsl:value-of select="./front/doi"/></xsl:variable>
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
 	<xsl:variable name="JOURNAL_PID" select="node()/@issn"/>
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
@@ -2828,7 +2828,7 @@ et al.</copyright-statement>
 	<xsl:template match="pubid"><xsl:element name="pub-id"><xsl:attribute name="pub-id-type"><xsl:value-of select="@idtype"/></xsl:attribute><xsl:value-of select="."/></xsl:element></xsl:template>
 
 	<xsl:template match="related">
-		<xsl:variable name="teste"><xsl:value-of select="concat('|',@doctype,'|')"/></xsl:variable>
+		<xsl:variable name="teste"><xsl:value-of select="concat('|',@reltype,'|')"/></xsl:variable>
 		<xsl:variable name="type"><xsl:choose>
 			<xsl:when test="contains('|article|pr|', $teste)">document</xsl:when>
 			<xsl:when test="contains('|other-related-article|unknown-related-article|addended-article|addendum|commentary-article|object-of-concern|companion|corrected-article|letter|retracted-article|peer-reviewed-article|peer-review|', $teste)">related-article</xsl:when>
@@ -2844,30 +2844,29 @@ et al.</copyright-statement>
 		
 		<xsl:variable name="attrib_prefix"><xsl:value-of select="$type"/></xsl:variable>
 		<xsl:element name="{$elem_name}">
-			<xsl:attribute name="id">rel<xsl:value-of select="../../@order"/></xsl:attribute>
-			<xsl:attribute name="{$attrib_prefix}-type"><xsl:value-of select="@doctype"/></xsl:attribute>
-			
 			<xsl:choose>
 				<xsl:when test="$type='related-article'">
-					<xsl:attribute name="href"><xsl:value-of select="@link"/></xsl:attribute>
-					<xsl:attribute name="ext-link-type"><xsl:value-of select="@linktype"/></xsl:attribute>
-					
+					<xsl:attribute name="id"><xsl:value-of select="$this_doi"/></xsl:attribute>
+					<xsl:attribute name="{$attrib_prefix}-type"><xsl:value-of select="@reltype"/></xsl:attribute>
+					<xsl:attribute name="href"><xsl:value-of select="@relid"/></xsl:attribute>
+					<xsl:attribute name="ext-link-type"><xsl:value-of select="@relidtp"/></xsl:attribute>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:attribute name="{$attrib_prefix}-id"><xsl:value-of select="@link"/></xsl:attribute>
+					<xsl:attribute name="{$attrib_prefix}-type"><xsl:value-of select="@reltype"/></xsl:attribute>
+					<xsl:attribute name="{$attrib_prefix}-id"><xsl:value-of select="@relid"/></xsl:attribute>
 					
 					<xsl:choose>
-						<xsl:when test="@doctype='pr'">
+						<xsl:when test="@reltype='pr'">
 							<xsl:attribute name="{$attrib_prefix}-id-type">press-release</xsl:attribute>
 							<xsl:attribute name="specific-use">processing-only</xsl:attribute>
 						</xsl:when>
-						<xsl:when test="@doctype='article'">
-							<xsl:attribute name="{$attrib_prefix}-id-type"><xsl:value-of select="@linktype"/></xsl:attribute>
+						<xsl:when test="@reltype='article'">
+							<xsl:attribute name="{$attrib_prefix}-id-type"><xsl:value-of select="@relidtp"/></xsl:attribute>
 							<xsl:attribute name="link-type">article-has-press-release</xsl:attribute>
 							<xsl:attribute name="specific-use">processing-only</xsl:attribute>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:attribute name="{$attrib_prefix}-id-type"><xsl:value-of select="@linktype"/></xsl:attribute>
+							<xsl:attribute name="{$attrib_prefix}-id-type"><xsl:value-of select="@relidtp"/></xsl:attribute>
 						</xsl:otherwise>
 					</xsl:choose>
 					

@@ -27,7 +27,7 @@ curr,deposid,
 curr,entrdate,
 curr,embdate,
 curr,source,
-curr,doctype,
+curr,reltype,
 curr,cturl,
 curr,ftype,yes
 curr,lictype,yes
