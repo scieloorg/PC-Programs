@@ -645,9 +645,9 @@ stitle
 subart
 front;#FALSE#
 xmlbody;#FALSE#
-body;#FALSE#
 back;#FALSE#
 response;#TRUE#
+subart;#TRUE#
 
 subkey
 

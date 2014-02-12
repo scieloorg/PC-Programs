@@ -86,7 +86,7 @@ deposit
 deposid;entrdate;embdate
 
 related
-doctype;link;linktype
+reltype;relid;relidtp
 
 product
 prodtype
@@ -134,7 +134,7 @@ response
 id;resptp;language
 
 subart
-id;doctype;language
+id;subarttp;language
 
 glossary
 id

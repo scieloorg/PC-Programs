@@ -150,6 +150,15 @@
 		  ahpdate CDATA #IMPLIED		  
 		  >
 
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+<!--    Subarticle                                                        -->
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+
+<!ELEMENT subart    - - (front, xmlbody, back, response*, subart*) >
+<!ATTLIST subart
+          id CDATA #REQUIRED 
+          subarttp CDATA #REQUIRED 
+          language CDATA #REQUIRED >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    Front Matter                                                      -->
