@@ -21,6 +21,7 @@ sciname;#TRUE#
 quote;#TRUE#
 element;#TRUE#
 list;#TRUE#
+deflist;#TRUE#
 
 abnt6023
 acitat;#TRUE#
