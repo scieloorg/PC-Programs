@@ -205,8 +205,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="subart">
 		<sub-article>
 			<xsl:apply-templates select="@*"/>
-			<xsl:apply-templates select="*"/>
+			<xsl:apply-templates select="." mode="front"/>
+			<xsl:apply-templates select="." mode="body"/>
+			<xsl:apply-templates select="." mode="back"/>
+			<xsl:apply-templates select="response | subart"/>
 		</sub-article>
+	</xsl:template>
+	
+	<xsl:template match="@subarttp">
+		<xsl:attribute name="article-type"><xsl:value-of select="."/></xsl:attribute>
 	</xsl:template>
 	
 	<xsl:template match="deflist">
@@ -311,11 +318,26 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</article>
 	</xsl:template>
 	<xsl:template match="*" mode="front">
-		<front>
-			<xsl:apply-templates select="." mode="journal-meta"/>
-			<xsl:apply-templates select="." mode="article-meta"/>
-
-		</front>
+		<xsl:choose>
+			<xsl:when test="name()='sub-article'">
+				<front-stub>
+					<xsl:apply-templates select="." mode="article-meta"/>					
+				</front-stub>
+			</xsl:when>
+			<xsl:when test="name()='article'">
+				<front>
+					<xsl:apply-templates select="." mode="journal-meta"/>
+					<xsl:apply-templates select="." mode="article-meta"/>					
+				</front>
+			</xsl:when>
+			<xsl:otherwise>
+				<front>
+					<xsl:apply-templates select="." mode="journal-meta"/>
+					<xsl:apply-templates select="." mode="article-meta"/>					
+				</front>
+			</xsl:otherwise>
+		</xsl:choose>
+		
 	</xsl:template>
 	<xsl:template match="article|text" mode="journal-meta">
 		<journal-meta>
@@ -2160,6 +2182,8 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			<xsl:copy-of select="thead"/>
 			<xsl:copy-of select="tbody"/>
 		</table>
+	</xsl:template>
+	<xsl:template match="@filename">
 	</xsl:template>
 	<xsl:template match="equation">
 		<p>

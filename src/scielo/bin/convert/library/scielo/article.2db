@@ -351,6 +351,12 @@
 241;link;related,text
 241;linktype;related,front,article
 241;linktype;related,text
+241;reltype;related,front,article
+241;reltyp;related,text
+241;relid;related,front,article
+241;relid;related,text
+241;relidtp;related,front,article
+241;relidtp;related,text
 241;prodtype;product,front,article
 241;prodtype;product,text
 241;link;product,front,article
