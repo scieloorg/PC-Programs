@@ -219,15 +219,23 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="deflist">
 		<def-list>
 			<xsl:apply-templates select="@*"/>
-			<xsl:apply-templates select="*"/>
+			<xsl:apply-templates select="sectitle|defitem|deflist"/>
 		</def-list>
 	</xsl:template>
 	
 	<xsl:template match="defitem">
 		<def-item>
 			<xsl:apply-templates select="@*"/>
-			<xsl:apply-templates select="*"/>
+			<xsl:apply-templates select="term | def"/>
 		</def-item>
+	</xsl:template>
+	<xsl:template match="def">
+		<def>
+			<p>
+				<xsl:apply-templates select="*|text()"/>
+			</p>
+			
+		</def>
 	</xsl:template>
 	
 	<xsl:template match="@corresp | @deceased">
