@@ -265,6 +265,14 @@ filename       CDATA #IMPLIED>
 <!ELEMENT sec  - - (sectitle, (subsec | p | list )+ )  >
 <!ATTLIST sec
           sec-type  CDATA #IMPLIED>
+
+<!ELEMENT glossary  - - (label?, sectitle?, glossary?, deflist)  >
+
+<!ELEMENT deflist  - - (sectitle?, defitem+)  >
+<!ELEMENT defitem  - - (term, def+)  >
+<!ELEMENT term     - - (#PCDATA) >
+<!ELEMENT def     - - (#PCDATA) >
+
 <!ELEMENT subsec  - - (sectitle, (subsec | p | list )+ )  >
 
 <!ELEMENT sectitle - - (#PCDATA)  +(%i.float;) >
@@ -297,4 +305,4 @@ filename       CDATA #IMPLIED>
 <!ELEMENT licensep  - - (#PCDATA)  >
 
 
-<!ELEMENT ack  - - (sec)  >
+<!ELEMENT ack  - - (sectitle, p)  >

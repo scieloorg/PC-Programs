@@ -37,7 +37,7 @@ aiserial;#FALSE#
 confgrp;#FALSE#
 
 ack
-title;#FALSE#
+sectitle;#FALSE#
 p;#FALSE#
 
 acontrib
@@ -127,7 +127,7 @@ subart;#TRUE#
 attrib
 
 app
-title;#FALSE#
+sectitle;#FALSE#
 sec;#TRUE#
 p;#TRUE#
 
@@ -170,8 +170,6 @@ confgrp;#FALSE#
 report;#TRUE#
 thesgrp;#FALSE#
 hist;#FALSE#
-title;#TRUE#
-subtitle;#TRUE#
 
 bibcom
 abstract;#TRUE#
@@ -277,13 +275,14 @@ bibcom;#FALSE#
 
 glossary
 label;#FALSE#
-title;#FALSE#
+sectitle;#FALSE#
 glossary;#TRUE#
 deflist;#FALSE#
 
 deflist
-title;#FALSE#
+sectitle;#FALSE#
 defitem;#TRUE#
+deflist;#TRUE#
 
 defitem
 term;#FALSE#
