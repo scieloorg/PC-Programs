@@ -794,14 +794,9 @@ class IDsReport(object):
             content += self.warning_totals(totals, elem_name)
 
             for k in range(0, min(totals)):
-                content += '<h3>' + elem_name + str(k) + '/' + str(min(totals)) + '</h3>'
+                content += '<h3>' + elem_name + str(k+1) + '/' + str(min(totals)) + '</h3>'
 
-                nodes = article[k]
-                print(nodes)
-                print(type(nodes))
-                nodes += [node[k] for key, node in subarticles.items()]
-                print([node[k] for key, node in subarticles.items()])
-                print(type([node[k] for key, node in subarticles.items()]))
+                nodes = [article[k]] + [node[k] for key, node in subarticles.items()]
                 
                 content += self.display_data(nodes)
         return content
