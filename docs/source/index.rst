@@ -20,11 +20,10 @@ Run on Windows
     tutorials.rst
 
     issue_and_section_databases.rst
-
-    markup_tags.rst
-
     code_database.rst
     newcode_database.rst
+
+    markup_tags.rst
 
     concepts.rst
 
