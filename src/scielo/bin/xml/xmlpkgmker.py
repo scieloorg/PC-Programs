@@ -779,6 +779,61 @@ class XMLMetadata:
         return items
 
 
+class IDsReport(object):
+    def __init__(self, node):
+        self.root = node
+
+    def generate_report(self):
+        content = ''
+        subarticles = {}
+
+        elements = ['aff', 'fig', 'tabwrap', 'equation'] + list(set([elem.tag for elem in self.root.findall('.//*[@id]')]))
+        elements = list(set(elements))
+        for elem_name in elements:
+            totals, article, subarticles = self.get_matched_nodes(elem_name)
+            content += self.warning_totals(totals, elem_name)
+
+            for k in range(0, min(totals)):
+                content += '<h3>' + elem_name + str(k) + '/' + str(min(totals)) + '</h3>'
+
+                nodes = article[k]
+                print(nodes)
+                print(type(nodes))
+                nodes += [node[k] for key, node in subarticles.items()]
+                print([node[k] for key, node in subarticles.items()])
+                print(type([node[k] for key, node in subarticles.items()]))
+                
+                content += self.display_data(nodes)
+        return content
+
+    def warning_totals(self, totals, element_name):
+        content = ''
+        if len(list(set(totals))) > 1:
+            content += '<p class="warning">Article and sub-articles has not the same number of ' + element_name + ': ' + ' '.join(str(totals)) + '</p>'
+        return content
+
+    def get_matched_nodes(self, element_name):
+        totals = []
+
+        article_elements = self.root.findall('./front//' + element_name) + self.root.findall('./body//' + element_name) + self.root.findall('./back//' + element_name)
+        totals.append(len(article_elements))
+        k = 1
+        subarticles_elements = {}
+        for subart_node in self.root.findall('.//sub-article'):
+            subart_id = subart_node.attrib.get('id', k)
+            k += 1
+            subarticles_elements[subart_id] = subart_node.findall('.//' + element_name)
+            totals.append(len(subarticles_elements[subart_id]))
+
+        return (totals, article_elements, subarticles_elements)
+
+    def display_data(self, nodes):
+        r = ''
+        for node in nodes:
+            r += '<p>' + etree.tostring(node).replace('<', '&lt;').replace('>', '&gt;') + '</p>'
+        return r
+
+
 class PkgReport(object):
 
     def __init__(self, pkg_path, report_path):
@@ -792,7 +847,11 @@ class PkgReport(object):
         self.lists.append(('Affiliations', 'affs.html', ['xml', 'original', 'orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'city', 'state', 'country'], ['orgname', 'original'], ['city', 'state', 'country']))
 
     def load_data(self, xml_filename=None):
-        self.content_validations = []
+        self.filename_list = []
+
+        self.content_validations = {}
+        self.xml_content = {}
+
         if xml_filename is None:
             for filename in [f for f in os.listdir(self.pkg_path) if f.endswith('.xml')]:
                 self._load_file(filename)
@@ -805,13 +864,14 @@ class PkgReport(object):
             node = etree.parse(open(self.pkg_path + '/' + filename))
         except:
             node = None
-
-        self.content_validations.append(ContentValidation(node, filename))
+        self.filename_list.append(filename)
+        self.xml_content[filename] = node
+        self.content_validations[filename] = ContentValidation(node, filename)
 
     def statistics(self, messages):
         return '<div class="statistics"><p>Total of errors = %s</p><p>Total of warnings = %s</p></div>' % (str(len(messages.split('ERROR:')) - 1), str(len(messages.split('WARNING:')) - 1))
 
-    def generate_articles_report(self, print_toc_report=True, param_contents_report_filename=None):
+    def generate_articles_report(self, print_toc_report=True, param_report_filename_prefix=None):
         expected_journal_meta = {}
         order_list = {}
         doi_list = {}
@@ -823,8 +883,16 @@ class PkgReport(object):
         issue_label = ''
 
         errors_block = ''
-        
-        for content_validation in self.content_validations:
+
+        for filename in self.filename_list:
+            if param_report_filename_prefix is None:
+                report_filename_prefix = content_validation.filename.replace('.xml', '')
+            else:
+                report_filename_prefix = param_report_filename_prefix
+
+            html_report._html(self.report_path + '/' + report_filename_prefix + '_ids.html', 'Report of IDs validations', html_report._css('toc') + html_report._css('datareport'), '<h1>IDs report</h1>' + IDsReport(self.xml_content[filename]).generate_report())
+
+            content_validation = self.content_validations[filename]
             if expected_journal_meta == {}:
                 for k, v in content_validation.issue_meta.items():
                     expected_journal_meta[k] = v
@@ -883,12 +951,7 @@ class PkgReport(object):
             if not issue_label:
                 issue_label = content_validation.issue_label
 
-            if param_contents_report_filename is None:
-                contents_report_filename = content_validation.filename.replace('.xml', '')
-            else:
-                contents_report_filename = param_contents_report_filename
-
-            html_report._html(self.report_path + '/' + contents_report_filename + '.contents.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport'), '<h1>' + contents_report_filename + '</h1>' + stat + issue_header + report_content)
+            html_report._html(self.report_path + '/' + report_filename_prefix + '.contents.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport'), '<h1>' + report_filename_prefix + '</h1>' + stat + issue_header + report_content)
 
         #issue_header +
         # doi, order, journal, sorted, unsorted.
@@ -941,7 +1004,8 @@ class PkgReport(object):
         issue_label = ''
         for title, report_filename, columns, required, desirable in self.lists:
             rows = []
-            for content_validation in self.content_validations:
+            for filename in self.filename_list:
+                content_validation = self.content_validations[filename]
                 print(report_filename + ' (' + content_validation.filename + ')')
                 items = self.data_for_list(report_filename, content_validation)
                 rows += self.data_in_table_format(content_validation.filename, items, columns, required, desirable)
