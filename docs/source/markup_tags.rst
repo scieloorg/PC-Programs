@@ -11,7 +11,7 @@ Contained in: `back`_
 
 Contains: `acitat`_
 
-Attributes: `standard <attribute-standard>`_, `count <attribute-count>`_
+Attributes: `standard <markup_tags.html#attribute-standard>`_, `count <markup_tags.html#attribute-count>`_
 
 abstract
 --------
@@ -22,7 +22,7 @@ Identify the abstract of the article
 
 Contained in: `bbibcom`_, `bibcom`_
 
-Attributes: `language <attribute-language>`_
+Attributes: `language <markup_tags.html#attribute-language>`_
 
 accepted
 --------
@@ -33,7 +33,7 @@ Identify the date in which the article was accepted to publish
 
 Contained in: `hist`_
 
-Attributes: `dateiso <attribute-dateiso>`_
+Attributes: `dateiso <markup_tags.html#attribute-dateiso>`_
 
 acitat
 ------
@@ -85,7 +85,7 @@ Contained in: `ifloat`_
 
 Contains: `label`_, `city`_, `state`_, `country`_, `zipcode`_, `email`_
 
-Attributes: `id <attribute-id>`_, `orgname <attribute-orgname>`_, `orgdiv1 <attribute-orgdiv1>`_, `orgdiv2 <attribute-orgdiv2>`_, `orgdiv3 <attribute-orgdiv3>`_
+Attributes: `id <markup_tags.html#attribute-id>`_, `orgname <markup_tags.html#attribute-orgname>`_, `orgdiv1 <markup_tags.html#attribute-orgdiv1>`_, `orgdiv2 <markup_tags.html#attribute-orgdiv2>`_, `orgdiv3 <markup_tags.html#attribute-orgdiv3>`_
 
 aiserial
 --------
@@ -135,7 +135,7 @@ Contained in: `back`_
 
 Contains: `pcitat`_
 
-Attributes: `standard <attribute-standard>`_, `count <attribute-count>`_
+Attributes: `standard <markup_tags.html#attribute-standard>`_, `count <markup_tags.html#attribute-count>`_
 
 app
 ---
@@ -148,7 +148,7 @@ Contained in: `back`_
 
 Contains: `sectitle`_, `sec`_, `p`_
 
-Attributes: `id <attribute-id>`_
+Attributes: `id <markup_tags.html#attribute-id>`_
 
 article
 -------
@@ -187,7 +187,7 @@ Contained in: `acontrib`_, `amonog`_, `authgrp`_, `icontrib`_, `iiserial`_, `imo
 
 Contains: `fname`_, `surname`_, `previous`_
 
-Attributes: `role <attribute-role>`_, `rid <attribute-rid>`_, `corresp <attribute-corresp>`_, `deceased <attribute-deceased>`_, `eqcontr <attribute-eqcontr>`_
+Attributes: `role <markup_tags.html#attribute-role>`_, `rid <markup_tags.html#attribute-rid>`_, `corresp <markup_tags.html#attribute-corresp>`_, `deceased <markup_tags.html#attribute-deceased>`_, `eqcontr <markup_tags.html#attribute-eqcontr>`_
 
 back
 ----
@@ -259,7 +259,7 @@ Identify the date in which the article was accessed
 
 Contained in: `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `viserial`_, `vmonog`_
 
-Attributes: `dateiso <attribute-dateiso>`_
+Attributes: `dateiso <markup_tags.html#attribute-dateiso>`_
 
 city
 ----
@@ -375,7 +375,7 @@ Identify the clinical trial number
 
 Contained in: `cltrial`_
 
-Attributes: `cturl <attribute-cturl>`_, `ctdbid <attribute-ctdbid>`_
+Attributes: `cturl <markup_tags.html#attribute-cturl>`_, `ctdbid <markup_tags.html#attribute-ctdbid>`_
 
 date
 ----
@@ -386,7 +386,7 @@ Identify the date of registration of the patent
 
 Contained in: `aiserial`_, `amonog`_, `confgrp`_, `icontrib`_, `iiserial`_, `imonog`_, `ocontrib`_, `oiserial`_, `omonog`_, `patgrp`_, `pcontrib`_, `pmonog`_, `product`_, `thesgrp`_, `thesis`_, `viserial`_, `vmonog`_
 
-Attributes: `dateiso <attribute-dateiso>`_, `specyear <attribute-specyear>`_
+Attributes: `dateiso <markup_tags.html#attribute-dateiso>`_, `specyear <markup_tags.html#attribute-specyear>`_
 
 def
 ---
@@ -423,7 +423,7 @@ Contained in: `ifloat`_, `glossary`_, `deflist`_, `xmlbody`_
 
 Contains: `sectitle`_, `defitem`_, `deflist`_
 
-Attributes: `id <attribute-id>`_
+Attributes: `id <markup_tags.html#attribute-id>`_
 
 degree
 ------
@@ -445,7 +445,7 @@ Identify the date of deposit in the repository
 
 Contained in: `article`_
 
-Attributes: `deposid <attribute-deposid>`_, `entrdate <attribute-entrdate>`_, `embdate <attribute-embdate>`_
+Attributes: `deposid <markup_tags.html#attribute-deposid>`_, `entrdate <markup_tags.html#attribute-entrdate>`_, `embdate <markup_tags.html#attribute-embdate>`_
 
 doi
 ---
@@ -467,7 +467,7 @@ Identify the período of time tratado at the content of the document
 
 Contained in: `keygrp`_
 
-Attributes: `from <attribute-from>`_, `to <attribute-to>`_
+Attributes: `from <markup_tags.html#attribute-from>`_, `to <markup_tags.html#attribute-to>`_
 
 edition
 -------
@@ -502,7 +502,7 @@ Contained in: `ifloat`_
 
 Contains: `graphic`_, `texmath`_, `mmlmath`_
 
-Attributes: `id <attribute-id>`_, `filename <attribute-filename>`_
+Attributes: `id <markup_tags.html#attribute-id>`_, `filename <markup_tags.html#attribute-filename>`_
 
 et-al
 -----
@@ -537,7 +537,7 @@ Contained in: `ifloat`_, `figgrps`_
 
 Contains: `label`_, `caption`_, `graphic`_
 
-Attributes: `id <attribute-id>`_, `ftype <attribute-ftype>`_, `filename <attribute-filename>`_
+Attributes: `id <markup_tags.html#attribute-id>`_, `ftype <markup_tags.html#attribute-ftype>`_, `filename <markup_tags.html#attribute-filename>`_
 
 figgrps
 -------
@@ -550,7 +550,7 @@ Contained in: `ifloat`_
 
 Contains: `label`_, `caption`_, `figgrp`_
 
-Attributes: `id <attribute-id>`_
+Attributes: `id <markup_tags.html#attribute-id>`_
 
 fname
 -----
@@ -572,7 +572,7 @@ Group the elements of a footnote
 
 Contained in: `back`_
 
-Attributes: `id <attribute-id>`_, `fntype <attribute-fntype>`_
+Attributes: `id <markup_tags.html#attribute-id>`_, `fntype <markup_tags.html#attribute-fntype>`_
 
 front
 -----
@@ -598,7 +598,7 @@ Contained in: `back`_, `glossary`_
 
 Contains: `label`_, `sectitle`_, `glossary`_, `deflist`_
 
-Attributes: `id <attribute-id>`_
+Attributes: `id <markup_tags.html#attribute-id>`_
 
 graphic
 -------
@@ -609,7 +609,7 @@ Identify an image
 
 Contained in: `ifloat`_, `equation`_, `figgrp`_, `tabwrap`_
 
-Attributes: `href <attribute-href>`_
+Attributes: `href <markup_tags.html#attribute-href>`_
 
 hist
 ----
@@ -731,7 +731,7 @@ Contained in: `back`_
 
 Contains: `icitat`_
 
-Attributes: `standard <attribute-standard>`_, `count <attribute-count>`_
+Attributes: `standard <markup_tags.html#attribute-standard>`_, `count <markup_tags.html#attribute-count>`_
 
 issn
 ----
@@ -777,7 +777,7 @@ Contained in: `bbibcom`_, `bibcom`_
 
 Contains: `keyword`_, `subkey`_, `dperiod`_
 
-Attributes: `scheme <attribute-scheme>`_
+Attributes: `scheme <markup_tags.html#attribute-scheme>`_
 
 keyword
 -------
@@ -788,7 +788,7 @@ Identify a key word of the document
 
 Contained in: `keygrp`_
 
-Attributes: `keyword priority level <attribute-keyword-priority-level>`_, `language <attribute-language>`_, `id <attribute-id>`_
+Attributes: `keyword priority level <markup_tags.html#attribute-keyword-priority-level>`_, `language <markup_tags.html#attribute-language>`_, `id <markup_tags.html#attribute-id>`_
 
 label
 -----
@@ -825,7 +825,7 @@ Contained in: `licenses`_
 
 Contains: `licensep`_
 
-Attributes: `language <attribute-language>`_, `lictype <attribute-lictype>`_, `href <attribute-href>`_
+Attributes: `language <markup_tags.html#attribute-language>`_, `lictype <markup_tags.html#attribute-lictype>`_, `href <markup_tags.html#attribute-href>`_
 
 licensep
 --------
@@ -873,7 +873,7 @@ Contained in: `ifloat`_
 
 Contains: `li`_
 
-Attributes: `listtype <attribute-listtype>`_
+Attributes: `listtype <markup_tags.html#attribute-listtype>`_
 
 litext
 ------
@@ -941,7 +941,7 @@ Contained in: `ocontrib`_, `omonog`_
 
 Contains: `fname`_, `surname`_, `anonym`_, `previous`_
 
-Attributes: `role <attribute-role>`_, `rid <attribute-rid>`_
+Attributes: `role <markup_tags.html#attribute-role>`_, `rid <markup_tags.html#attribute-rid>`_
 
 ocitat
 ------
@@ -1052,7 +1052,7 @@ Contained in: `back`_
 
 Contains: `ocitat`_
 
-Attributes: `standard <attribute-standard>`_, `count <attribute-count>`_
+Attributes: `standard <markup_tags.html#attribute-standard>`_, `count <markup_tags.html#attribute-count>`_
 
 othinfo
 -------
@@ -1122,7 +1122,7 @@ Contained in: `acontrib`_, `amonog`_, `imonog`_, `ocontrib`_, `omonog`_, `vcontr
 
 Contains: `orgname`_, `patent`_, `date`_
 
-Attributes: `country <attribute-country>`_
+Attributes: `country <markup_tags.html#attribute-country>`_
 
 pcitat
 ------
@@ -1207,7 +1207,7 @@ Identify an id of any external database, such as DOI, pmid (PubMed), pmcid (PMC)
 
 Contained in: `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `viserial`_, `vmonog`_
 
-Attributes: `idtype <attribute-idtype>`_
+Attributes: `idtype <markup_tags.html#attribute-idtype>`_
 
 pubname
 -------
@@ -1229,7 +1229,7 @@ Identify the date in which the article was received by peer review system
 
 Contained in: `hist`_
 
-Attributes: `dateiso <attribute-dateiso>`_
+Attributes: `dateiso <markup_tags.html#attribute-dateiso>`_
 
 related
 -------
@@ -1240,7 +1240,7 @@ Identify related documents
 
 Contained in: `ifloat`_, `front`_
 
-Attributes: `reltype <attribute-reltype>`_, `relid <attribute-relid>`_, `relidtp <attribute-relidtp>`_
+Attributes: `reltype <markup_tags.html#attribute-reltype>`_, `relid <markup_tags.html#attribute-relid>`_, `relidtp <markup_tags.html#attribute-relidtp>`_
 
 report
 ------
@@ -1266,7 +1266,7 @@ Contained in: `article`_, `subart`_
 
 Contains: `front`_, `body`_, `back`_
 
-Attributes: `id <attribute-id>`_, `resptp <attribute-resptp>`_, `language <attribute-language>`_
+Attributes: `id <markup_tags.html#attribute-id>`_, `resptp <markup_tags.html#attribute-resptp>`_, `language <markup_tags.html#attribute-language>`_
 
 revised
 -------
@@ -1277,7 +1277,7 @@ Identify the date in which the article was revised by peer review system
 
 Contained in: `hist`_
 
-Attributes: `dateiso <attribute-dateiso>`_
+Attributes: `dateiso <markup_tags.html#attribute-dateiso>`_
 
 rsponsor
 --------
@@ -1314,7 +1314,7 @@ Contained in: `app`_, `xmlabstr`_, `xmlbody`_
 
 Contains: `sectitle`_, `subsec`_, `p`_
 
-Attributes: `sec-type <attribute-sec-type>`_
+Attributes: `sec-type <markup_tags.html#attribute-sec-type>`_
 
 sectitle
 --------
@@ -1384,7 +1384,7 @@ Contained in: `article`_, `subart`_
 
 Contains: `front`_, `xmlbody`_, `back`_, `response`_, `subart`_
 
-Attributes: `id <attribute-id>`_, `subarttp <attribute-subarttp>`_, `language <attribute-language>`_
+Attributes: `id <markup_tags.html#attribute-id>`_, `subarttp <markup_tags.html#attribute-subarttp>`_, `language <markup_tags.html#attribute-language>`_
 
 subkey
 ------
@@ -1395,7 +1395,7 @@ Identify the subkey of a key word
 
 Contained in: `keygrp`_
 
-Attributes: `rid <attribute-rid>`_
+Attributes: `rid <markup_tags.html#attribute-rid>`_
 
 subresp
 -------
@@ -1408,7 +1408,7 @@ Contained in: `amonog`_, `icontrib`_, `imonog`_
 
 Contains: `fname`_, `surname`_
 
-Attributes: `role <attribute-role>`_
+Attributes: `role <markup_tags.html#attribute-role>`_
 
 subsec
 ------
@@ -1467,7 +1467,7 @@ Contained in: `ifloat`_
 
 Contains: `label`_, `caption`_, `graphic`_, `table`_, `fntable`_
 
-Attributes: `id <attribute-id>`_, `filename <attribute-filename>`_
+Attributes: `id <markup_tags.html#attribute-id>`_, `filename <markup_tags.html#attribute-filename>`_
 
 term
 ----
@@ -1539,7 +1539,7 @@ Identify the title of the document
 
 Contained in: `acontrib`_, `amonog`_, `icontrib`_, `imonog`_, `ocontrib`_, `omonog`_, `pcontrib`_, `pmonog`_, `product`_, `titlegrp`_, `vtitle`_
 
-Attributes: `language <attribute-language>`_
+Attributes: `language <markup_tags.html#attribute-language>`_
 
 titlegrp
 --------
@@ -1631,7 +1631,7 @@ Contained in: `back`_
 
 Contains: `vcitat`_
 
-Attributes: `standard <attribute-standard>`_, `count <attribute-count>`_
+Attributes: `standard <markup_tags.html#attribute-standard>`_, `count <markup_tags.html#attribute-count>`_
 
 vcitat
 ------
@@ -1744,7 +1744,7 @@ Contained in: `bibcom`_
 
 Contains: `sec`_, `p`_
 
-Attributes: `language <attribute-language>`_
+Attributes: `language <markup_tags.html#attribute-language>`_
 
 xmlbody
 -------
@@ -1768,7 +1768,7 @@ Identify a cross-reference
 
 Contained in: `ifloat`_
 
-Attributes: `ref-type <attribute-ref-type>`_, `rid <attribute-rid>`_
+Attributes: `ref-type <markup_tags.html#attribute-ref-type>`_, `rid <markup_tags.html#attribute-rid>`_
 
 zipcode
 -------
@@ -3603,6 +3603,6 @@ Is attribute of:
 
 
 
-----
+-----
 
-Last update: Feb 13, 2014
+Last update Feb 13, 2014
