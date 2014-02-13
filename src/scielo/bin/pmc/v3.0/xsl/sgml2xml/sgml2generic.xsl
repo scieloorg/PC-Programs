@@ -1435,7 +1435,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:apply-templates/>
 	</xsl:template>
 
-	<xsl:template match="url | uri">
+	<xsl:template match="url">
 		<xsl:choose>
 			<xsl:when test="../cited">
 				<comment content-type="cited">
@@ -1454,18 +1454,29 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						</xsl:when>
 						<xsl:otherwise>Available from:</xsl:otherwise>
 					</xsl:choose>
-					<ext-link ext-link-type="uri" xlink:href="{.}">
+					<ext-link ext-link-type="uri">
+						<xsl:attribute name="xlink:href"><xsl:choose>
+							<xsl:when test="@href"><xsl:value-of select="@href"/></xsl:when>
+							<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+						</xsl:choose>
+						</xsl:attribute>
 						<xsl:apply-templates/>
 					</ext-link>
 				</comment>
 			</xsl:when>
 			<xsl:otherwise>
-				<ext-link ext-link-type="uri" xlink:href="{.}">
+				<ext-link ext-link-type="uri">
+					<xsl:attribute name="xlink:href"><xsl:value-of select="."/></xsl:attribute>
 					<xsl:apply-templates/>
 				</ext-link>
 			</xsl:otherwise>
 		</xsl:choose>
-
+	</xsl:template>
+	<xsl:template match="uri">
+		<ext-link ext-link-type="uri">
+			<xsl:attribute name="xlink:href"><xsl:value-of select="@href"/></xsl:attribute>
+			<xsl:apply-templates/>
+		</ext-link>
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'citat')]" mode="text-ref">
 		<mixed-citation>
