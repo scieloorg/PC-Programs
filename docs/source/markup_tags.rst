@@ -57,7 +57,7 @@ Group the elements of acknowledgment
 
 Contained in: `back`_
 
-Contains: `title`_, `p`_
+Contains: `sectitle`_, `p`_
 
 Attributes: none
 
@@ -146,7 +146,7 @@ Identify the appendix
 
 Contained in: `back`_
 
-Contains: `title`_, `sec`_, `p`_
+Contains: `sectitle`_, `sec`_, `p`_
 
 Attributes: `id <attribute-id>`_
 
@@ -211,7 +211,7 @@ Group other elements that are in the back
 
 Contained in: `back`_
 
-Contains: `abstract`_, `keygrp`_, `confgrp`_, `report`_, `thesgrp`_, `hist`_, `title`_, `subtitle`_
+Contains: `abstract`_, `keygrp`_, `confgrp`_, `report`_, `thesgrp`_, `hist`_
 
 Attributes: none
 
@@ -235,7 +235,7 @@ Element
 
 Identify the body of the document, without details
 
-Contained in: `article`_, `response`_, `subart`_, `text`_
+Contained in: `article`_, `response`_, `text`_
 
 Attributes: none
 
@@ -419,9 +419,9 @@ Element
 
 Identify a list of definitions
 
-Contained in: `glossary`_, `xmlbody`_
+Contained in: `ifloat`_, `glossary`_, `deflist`_, `xmlbody`_
 
-Contains: `title`_, `defitem`_
+Contains: `sectitle`_, `defitem`_, `deflist`_
 
 Attributes: `id <attribute-id>`_
 
@@ -596,7 +596,7 @@ Identify a glossary
 
 Contained in: `back`_, `glossary`_
 
-Contains: `label`_, `title`_, `glossary`_, `deflist`_
+Contains: `label`_, `sectitle`_, `glossary`_, `deflist`_
 
 Attributes: `id <attribute-id>`_
 
@@ -1240,7 +1240,7 @@ Identify related documents
 
 Contained in: `ifloat`_, `front`_
 
-Attributes: `doctype <attribute-doctype>`_, `link <attribute-link>`_, `linktype <attribute-linktype>`_
+Attributes: `reltype <attribute-reltype>`_, `relid <attribute-relid>`_, `relidtp <attribute-relidtp>`_
 
 report
 ------
@@ -1323,7 +1323,7 @@ Element
 
 Identify a section title
 
-Contained in: `sec`_, `subsec`_
+Contained in: `ack`_, `app`_, `glossary`_, `deflist`_, `sec`_, `subsec`_
 
 Attributes: none
 
@@ -1380,11 +1380,11 @@ Element
 
 Identify the text which is related to the article
 
-Contained in: `article`_
+Contained in: `article`_, `subart`_
 
-Contains: `front`_, `xmlbody`_, `body`_, `back`_, `response`_
+Contains: `front`_, `xmlbody`_, `back`_, `response`_, `subart`_
 
-Attributes: `id <attribute-id>`_, `doctype <attribute-doctype>`_, `language <attribute-language>`_
+Attributes: `id <attribute-id>`_, `subarttp <attribute-subarttp>`_, `language <attribute-language>`_
 
 subkey
 ------
@@ -1430,7 +1430,7 @@ Element
 
 Identify the subtitle
 
-Contained in: `acontrib`_, `amonog`_, `bbibcom`_, `icontrib`_, `imonog`_, `ocontrib`_, `omonog`_, `pcontrib`_, `pmonog`_, `titlegrp`_, `vtitle`_
+Contained in: `acontrib`_, `amonog`_, `icontrib`_, `imonog`_, `ocontrib`_, `omonog`_, `pcontrib`_, `pmonog`_, `titlegrp`_, `vtitle`_
 
 Attributes: none
 
@@ -1537,7 +1537,7 @@ Element
 
 Identify the title of the document
 
-Contained in: `ack`_, `acontrib`_, `amonog`_, `app`_, `bbibcom`_, `glossary`_, `deflist`_, `icontrib`_, `imonog`_, `ocontrib`_, `omonog`_, `pcontrib`_, `pmonog`_, `product`_, `titlegrp`_, `vtitle`_
+Contained in: `acontrib`_, `amonog`_, `icontrib`_, `imonog`_, `ocontrib`_, `omonog`_, `pcontrib`_, `pmonog`_, `product`_, `titlegrp`_, `vtitle`_
 
 Attributes: `language <attribute-language>`_
 
@@ -2367,11 +2367,6 @@ Identify the clinical trial database's URL
 Is attribute of: `ctreg`_
 
 
-+++
-|||
-+++
-
-
 
 
 Attribute dateiso
@@ -2492,73 +2487,6 @@ Is attribute of:
 
 
 
-Attribute doctype
------------------
-
-Attribute
-
-Identify the type of the document
-
-Is attribute of: `related`_, `subart`_
-
-
-+---------------------+-----------------------------------+
-|unknown              |- choose one of the options below -|
-+---------------------+-----------------------------------+
-|unknown-object       |-- objects --                      |
-+---------------------+-----------------------------------+
-|vi                   |video                              |
-+---------------------+-----------------------------------+
-|au                   |audio                              |
-+---------------------+-----------------------------------+
-|table                |table                              |
-+---------------------+-----------------------------------+
-|figure               |figure                             |
-+---------------------+-----------------------------------+
-|other-object         |other object                       |
-+---------------------+-----------------------------------+
-|unknown-source       |-- sources --                      |
-+---------------------+-----------------------------------+
-|book                 |book                               |
-+---------------------+-----------------------------------+
-|book chapter         |book chapter                       |
-+---------------------+-----------------------------------+
-|database             |database                           |
-+---------------------+-----------------------------------+
-|article              |article                            |
-+---------------------+-----------------------------------+
-|pr                   |press release                      |
-+---------------------+-----------------------------------+
-|other-source         |other source                       |
-+---------------------+-----------------------------------+
-|unknown-related-type |-- related types --                |
-+---------------------+-----------------------------------+
-|addended-article     |addended-article                   |
-+---------------------+-----------------------------------+
-|addendum             |addendum                           |
-+---------------------+-----------------------------------+
-|commentary-article   |commentary-article                 |
-+---------------------+-----------------------------------+
-|object-of-concern    |object-of-concern                  |
-+---------------------+-----------------------------------+
-|companion            |companion                          |
-+---------------------+-----------------------------------+
-|corrected-article    |corrected-article                  |
-+---------------------+-----------------------------------+
-|letter               |letter                             |
-+---------------------+-----------------------------------+
-|retracted-article    |retracted-article                  |
-+---------------------+-----------------------------------+
-|peer-reviewed-article|peer-reviewed-article              |
-+---------------------+-----------------------------------+
-|peer-review          |peer-review                        |
-+---------------------+-----------------------------------+
-|other-related-type   |other related type                 |
-+---------------------+-----------------------------------+
-
-
-
-
 Attribute embdate
 -----------------
 
@@ -2567,11 +2495,6 @@ Attribute
 Identify the embargo date
 
 Is attribute of: `deposit`_
-
-
-+++
-|||
-+++
 
 
 
@@ -2584,11 +2507,6 @@ Attribute
 Identify the entrance date
 
 Is attribute of: `deposit`_
-
-
-+++
-|||
-+++
 
 
 
@@ -2620,11 +2538,6 @@ Attribute
 Identify the filename of a figure or table or equation
 
 Is attribute of: `tabwrap`_, `figgrp`_, `equation`_
-
-
-+++
-|||
-+++
 
 
 
@@ -2785,11 +2698,6 @@ Attribute
 Identify the href of a file
 
 Is attribute of: `license`_, `graphic`_, `supplmat`_
-
-
-+++
-|||
-+++
 
 
 
@@ -3010,64 +2918,6 @@ Is attribute of: `license`_
 
 
 
-Attribute link
---------------
-
-Attribute
-
-Identify the relation between the documents
-
-Is attribute of: `related`_
-
-
-+++
-|||
-+++
-
-
-
-
-Attribute linktype
-------------------
-
-Attribute
-
-Identify the type of relation between documents
-
-Is attribute of: `related`_
-
-
-+-------------+-------------+
-|art-access-id|art-access-id|
-+-------------+-------------+
-|coden        |coden        |
-+-------------+-------------+
-|doaj         |doaj         |
-+-------------+-------------+
-|doi          |doi          |
-+-------------+-------------+
-|medline      |medline      |
-+-------------+-------------+
-|manuscript   |manuscript   |
-+-------------+-------------+
-|rrn          |rrn          |
-+-------------+-------------+
-|other        |other        |
-+-------------+-------------+
-|pii          |pii          |
-+-------------+-------------+
-|pmcid        |pmcid        |
-+-------------+-------------+
-|pmid         |pmid         |
-+-------------+-------------+
-|publisher-id |publisher-id |
-+-------------+-------------+
-|sici         |sici         |
-+-------------+-------------+
-
-
-
-
 Attribute listtype
 ------------------
 
@@ -3105,11 +2955,6 @@ Attribute
 Identify the name of the element or attribute
 
 Is attribute of: `element`_, `attrib`_
-
-
-+++
-|||
-+++
 
 
 
@@ -3317,6 +3162,126 @@ Is attribute of: `xref`_
 
 
 
+Attribute relid
+---------------
+
+Attribute
+
+Identify the relation between the documents
+
+Is attribute of: `related`_
+
+
+
+
+Attribute relidtp
+-----------------
+
+Attribute
+
+Identify the type of relation between documents
+
+Is attribute of: `related`_
+
+
++-------------+-------------+
+|art-access-id|art-access-id|
++-------------+-------------+
+|coden        |coden        |
++-------------+-------------+
+|doaj         |doaj         |
++-------------+-------------+
+|doi          |doi          |
++-------------+-------------+
+|medline      |medline      |
++-------------+-------------+
+|manuscript   |manuscript   |
++-------------+-------------+
+|rrn          |rrn          |
++-------------+-------------+
+|other        |other        |
++-------------+-------------+
+|pii          |pii          |
++-------------+-------------+
+|pmcid        |pmcid        |
++-------------+-------------+
+|pmid         |pmid         |
++-------------+-------------+
+|publisher-id |publisher-id |
++-------------+-------------+
+|sici         |sici         |
++-------------+-------------+
+
+
+
+
+Attribute reltype
+-----------------
+
+Attribute
+
+Identify the type of the related document
+
+Is attribute of: `related`_
+
+
++---------------------+-----------------------------------+
+|unknown              |- choose one of the options below -|
++---------------------+-----------------------------------+
+|unknown-object       |-- objects --                      |
++---------------------+-----------------------------------+
+|vi                   |video                              |
++---------------------+-----------------------------------+
+|au                   |audio                              |
++---------------------+-----------------------------------+
+|table                |table                              |
++---------------------+-----------------------------------+
+|figure               |figure                             |
++---------------------+-----------------------------------+
+|other-object         |other object                       |
++---------------------+-----------------------------------+
+|unknown-source       |-- sources --                      |
++---------------------+-----------------------------------+
+|book                 |book                               |
++---------------------+-----------------------------------+
+|book chapter         |book chapter                       |
++---------------------+-----------------------------------+
+|database             |database                           |
++---------------------+-----------------------------------+
+|article              |article                            |
++---------------------+-----------------------------------+
+|pr                   |press release                      |
++---------------------+-----------------------------------+
+|other-source         |other source                       |
++---------------------+-----------------------------------+
+|unknown-related-type |-- related types --                |
++---------------------+-----------------------------------+
+|addended-article     |addended-article                   |
++---------------------+-----------------------------------+
+|addendum             |addendum                           |
++---------------------+-----------------------------------+
+|commentary-article   |commentary-article                 |
++---------------------+-----------------------------------+
+|object-of-concern    |object-of-concern                  |
++---------------------+-----------------------------------+
+|companion            |companion                          |
++---------------------+-----------------------------------+
+|corrected-article    |corrected-article                  |
++---------------------+-----------------------------------+
+|letter               |letter                             |
++---------------------+-----------------------------------+
+|retracted-article    |retracted-article                  |
++---------------------+-----------------------------------+
+|peer-reviewed-article|peer-reviewed-article              |
++---------------------+-----------------------------------+
+|peer-review          |peer-review                        |
++---------------------+-----------------------------------+
+|other-related-type   |other related type                 |
++---------------------+-----------------------------------+
+
+
+
+
 Attribute resptp
 ----------------
 
@@ -3385,7 +3350,7 @@ Attribute scheme
 
 Attribute
 
-Identify the indicates the controlled vocabulary
+Identify the controlled vocabulary
 
 Is attribute of: `keygrp`_
 
@@ -3452,11 +3417,6 @@ Identify the year as presented in the reference. E.g.: 2005, c1900 (about 1900),
 Is attribute of: `date`_
 
 
-+++
-|||
-+++
-
-
 
 
 Attribute sponsor
@@ -3501,6 +3461,81 @@ Is attribute of: `vancouv`_, `iso690`_, `abnt6023`_, `apa`_, `other`_
 
 
 
+Attribute subarttp
+------------------
+
+Attribute
+
+Identify the type of the sub-article
+
+Is attribute of: `subart`_
+
+
++-------------------+-------------------+
+|translation        |translation        |
++-------------------+-------------------+
+|abstract           |abstract           |
++-------------------+-------------------+
+|addendum           |addendum           |
++-------------------+-------------------+
+|announcement       |announcement       |
++-------------------+-------------------+
+|article-commentary |article-commentary |
++-------------------+-------------------+
+|book-review        |book-review        |
++-------------------+-------------------+
+|books-received     |books-received     |
++-------------------+-------------------+
+|brief-report       |brief-report       |
++-------------------+-------------------+
+|calendar           |calendar           |
++-------------------+-------------------+
+|case-report        |case-report        |
++-------------------+-------------------+
+|collection         |collection         |
++-------------------+-------------------+
+|correction         |correction         |
++-------------------+-------------------+
+|discussion         |discussion         |
++-------------------+-------------------+
+|dissertation       |dissertation       |
++-------------------+-------------------+
+|editorial          |editorial          |
++-------------------+-------------------+
+|in-brief           |in-brief           |
++-------------------+-------------------+
+|introduction       |introduction       |
++-------------------+-------------------+
+|letter             |letter             |
++-------------------+-------------------+
+|meeting-report     |meeting-report     |
++-------------------+-------------------+
+|news               |news               |
++-------------------+-------------------+
+|obituary           |obituary           |
++-------------------+-------------------+
+|oration            |oration            |
++-------------------+-------------------+
+|partial-retraction |partial-retraction |
++-------------------+-------------------+
+|procut-review      |procut-review      |
++-------------------+-------------------+
+|rapid-communication|rapid-communication|
++-------------------+-------------------+
+|reply              |reply              |
++-------------------+-------------------+
+|reprint            |reprint            |
++-------------------+-------------------+
+|research-article   |research-article   |
++-------------------+-------------------+
+|retraction         |retraction         |
++-------------------+-------------------+
+|review-article     |review-article     |
++-------------------+-------------------+
+
+
+
+
 Attribute to
 ------------
 
@@ -3523,7 +3558,7 @@ Attribute toccode
 
 Attribute
 
-Identify the indicates whether the title is the text title or section title
+Identify the indicates whether the text title is present on the table of contents (title) or not (sectitle)
 
 Is attribute of: 
 
@@ -3547,11 +3582,6 @@ Identify the value of the element or attribute
 Is attribute of: `attrib`_
 
 
-+++
-|||
-+++
-
-
 
 
 Attribute version
@@ -3573,4 +3603,6 @@ Is attribute of:
 
 
 
-[]
+----
+
+Last update: Feb 13, 2014

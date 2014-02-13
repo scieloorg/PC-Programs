@@ -2,8 +2,8 @@ name|Identify the name of the element or attribute
 value|Identify the value of the element or attribute
 idtype|Identify the Identify type of the ID
 prodtype|Identify the product type
-linktype|Identify the type of relation between documents
-link|Identify the relation between the documents
+relidtp|Identify the type of relation between documents
+relid|Identify the relation between the documents
 resptp|Identify the response type
 specyear|Identify the year as presented in the reference. E.g.: 2005, c1900 (about 1900), 1800a, etc.
 ccode|Identify the Identify where the markup is done
@@ -34,7 +34,8 @@ country|Identify the country
 deposid|Identify the repository ID
 entrdate|Identify the entrance date
 embdate|Identify the embargo date
-doctype|Identify the type of the document
+reltype|Identify the type of the related document
+subarttp|Identify the type of the sub-article
 cturl|Identify the clinical trial database's URL
 ftype|Identify the type of the figure
 lictype|Identify the license type
