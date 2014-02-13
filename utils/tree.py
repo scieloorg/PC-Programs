@@ -52,16 +52,17 @@ def print_attribute_values(attribute_values, attribute_codes):
         if len(item) > c:
             c = len(item)
 
-    i = 0
-    print('\n\n+' + '-'*c + '+' + '-'*v + '+')
-    for code in attribute_codes:
-        value = attribute_values[i]
-        n_c = c - len(code)
-        n_v = v - len(value)
+    if c > 0:
+        i = 0
+        print('\n\n+' + '-'*c + '+' + '-'*v + '+')
+        for code in attribute_codes:
+            value = attribute_values[i]
+            n_c = c - len(code)
+            n_v = v - len(value)
 
-        print('|' + code + ' '*n_c + '|' + value + ' '*n_v + '|')
-        print('+' + '-'*c + '+' + '-'*v + '+')
-        i += 1
+            print('|' + code + ' '*n_c + '|' + value + ' '*n_v + '|')
+            print('+' + '-'*c + '+' + '-'*v + '+')
+            i += 1
     print('\n')
 
 

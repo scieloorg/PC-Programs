@@ -2,8 +2,8 @@ name||
 value||
 idtype|art-access-id;coden;doaj;doi;medline;manuscript;rrn;other;pii;pmcid;pmid;publisher-id;sici|art-access-id;coden;doaj;doi;medline;manuscript;rrn;other;pii;pmcid;pmid;publisher-id;sici
 prodtype|book;software;article;chapter;website;other|book;software;article;chapter;website;other
-linktype|art-access-id;coden;doaj;doi;medline;manuscript;rrn;other;pii;pmcid;pmid;publisher-id;sici|art-access-id;coden;doaj;doi;medline;manuscript;rrn;other;pii;pmcid;pmid;publisher-id;sici
-link||
+relidtp|art-access-id;coden;doaj;doi;medline;manuscript;rrn;other;pii;pmcid;pmid;publisher-id;sici|art-access-id;coden;doaj;doi;medline;manuscript;rrn;other;pii;pmcid;pmid;publisher-id;sici
+relid||
 resptp|addendum;discussion;reply|addendum;discussion;reply
 specyear||
 ccode|brazilian journal of chemical engineering;brazilian journal of genetics;brazilian journal of medical and biological research;brazilian journal of physics;Comisión Nacional de Investigación Científica y Tecnológica;dados - revista de ciências sociais;scielo/bireme;InfoMed;journal of the brazilian chemical society;journal of the brazilian computer society;memórias do instituto oswaldo cruz;revista brasileira de ciência do solo;revista brasileira de geociências;revista do instituto de medicina tropical de são paulo;revista de saúde pública|bjce;bjg;bjmbr;bjp;conicyt;dados;br1.1;infomed;jbchs;jbcos;mioc;rbcs;rbgeo;rimtsp;rsp
@@ -34,7 +34,7 @@ country|Afghanistan;Albania;Algeria;American Samoa;Andorra;Angola;Antarctica;Ant
 deposid|Unicamp;Unifesp;Unesp;USP;ITA;UFSCar|1;2;3;4;5;6
 entrdate||
 embdate||
-doctype|- choose one of the options below -;-- objects --;video;audio;table;figure;other object;-- sources --;book;book chapter;database;article;press release;other source;-- related types --;addended-article;addendum;commentary-article;object-of-concern;companion;corrected-article;letter;retracted-article;peer-reviewed-article;peer-review;other related type|unknown;unknown-object;vi;au;table;figure;other-object;unknown-source;book;book chapter;database;article;pr;other-source;unknown-related-type;addended-article;addendum;commentary-article;object-of-concern;companion;corrected-article;letter;retracted-article;peer-reviewed-article;peer-review;other-related-type
+reltype|- choose one of the options below -;-- objects --;video;audio;table;figure;other object;-- sources --;book;book chapter;database;article;press release;other source;-- related types --;addended-article;addendum;commentary-article;object-of-concern;companion;corrected-article;letter;retracted-article;peer-reviewed-article;peer-review;other related type|unknown;unknown-object;vi;au;table;figure;other-object;unknown-source;book;book chapter;database;article;pr;other-source;unknown-related-type;addended-article;addendum;commentary-article;object-of-concern;companion;corrected-article;letter;retracted-article;peer-reviewed-article;peer-review;other-related-type
 cturl||
 ftype|audiogram;cardiogram;cartoon;chart;chemical structure;dendrogram;diagram;drawing;exihibit;graphic;illustration;map;medical image;other;photo;photomicrograph;plate;polysomnogram;schema;workflow|audiogram;cardiogram;cartoon;chart;chemical structure;dendrogram;diagram;drawing;exihibit;graphic;illustration;map;medical image;other;photo;photomicrograph;plate;polysomnogram;schema;workflow
 lictype|open access;not defined|open-access;nd
@@ -50,3 +50,4 @@ blcktype|undefined;Acknowledge|nd;ack
 corresp|yes;no|y;n
 eqcontr|yes;no|y;n
 deceased|yes;no|y;n
+subarttp|translation;abstract;addendum;announcement;article-commentary;book-review;books-received;brief-report;calendar;case-report;collection;correction;discussion;dissertation;editorial;in-brief;introduction;letter;meeting-report;news;obituary;oration;partial-retraction;procut-review;rapid-communication;reply;reprint;research-article;retraction;review-article|translation;abstract;addendum;announcement;article-commentary;book-review;books-received;brief-report;calendar;case-report;collection;correction;discussion;dissertation;editorial;in-brief;introduction;letter;meeting-report;news;obituary;oration;partial-retraction;procut-review;rapid-communication;reply;reprint;research-article;retraction;review-article
