@@ -794,7 +794,7 @@ class IDsReport(object):
             content += self.warning_totals(totals, elem_name)
 
             for k in range(0, min(totals)):
-                content += '<h3>' + elem_name + str(k+1) + '/' + str(min(totals)) + '</h3>'
+                content += '<h3>' + elem_name + str(k+1) + '/' + str(totals) + '</h3>'
 
                 nodes = [article[k]] + [node[k] for key, node in subarticles.items()]
                 
@@ -825,7 +825,7 @@ class IDsReport(object):
     def display_data(self, nodes):
         r = ''
         for node in nodes:
-            r += '<p>' + etree.tostring(node).replace('<', '&lt;').replace('>', '&gt;') + '</p>'
+            r += '<p><pre>' + etree.tostring(node).replace('<', '&lt;').replace('>', '&gt;') + '</pre></p>'
         return r
 
 
