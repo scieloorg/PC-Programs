@@ -7,7 +7,7 @@ def links(a_list, address=''):
 
 
 def links_to_attr(a_list, address=''):
-    a = ['`' + item + ' <attribute-' + item.replace(' ', '-') + '>`_' for item in a_list]
+    a = ['`' + item + ' <markup_tags.html#attribute-' + item.replace(' ', '-') + '>`_' for item in a_list]
     return ', '.join(a)
 
 
