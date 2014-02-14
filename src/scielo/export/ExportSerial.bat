@@ -7,6 +7,7 @@ echo   Tecle CONTROL-C para sair ou ENTER para continuar...
 
 pause > nul
 
+if not exist temp md temp
 call notepad temp\title.lst
 cls
 echo -----------------------
