@@ -787,45 +787,55 @@ class IDsReport(object):
         content = ''
         subarticles = {}
 
-        elements = ['aff', 'fig', 'tabwrap', 'equation'] + list(set([elem.tag for elem in self.root.findall('.//*[@id]')]))
+        elements = ['aff', 'fig', 'table-wrap', 'equation', 'fn'] + list(set([elem.tag for elem in self.root.findall('.//*[@id]')]))
         elements = list(set(elements))
+        
         for elem_name in elements:
             totals, article, subarticles = self.get_matched_nodes(elem_name)
-            content += self.warning_totals(totals, elem_name)
+            if max(totals.values()) > 0:
+                content += '<div class="CSS_Table_bicolor"><table>'
+                content += '<tr><td>position/total</td><td>ID</td><td>article or subarticle</td><td>' + elem_name + '. Quantity found: ' + self.warning_totals(totals, elem_name) + '</td></tr>'
 
-            for k in range(0, min(totals)):
-                content += '<h3>' + elem_name + str(k+1) + '/' + str(totals) + '</h3>'
-
-                nodes = [article[k]] + [node[k] for key, node in subarticles.items()]
-                
-                content += self.display_data(nodes)
+                for k in range(0, max(totals.values())):
+                    art = article[k] if len(article) > k else None
+                    content += self.display_data(art, subarticles, k, str(k+1) + '/' + str(max(totals.values())))
+                    content += '<tr><td colspan="4"></td></tr>'
+    
+                content += '</table></div>'
         return content
 
     def warning_totals(self, totals, element_name):
         content = ''
-        if len(list(set(totals))) > 1:
-            content += '<p class="warning">Article and sub-articles has not the same number of ' + element_name + ': ' + ' '.join(str(totals)) + '</p>'
+        if len(list(set(totals.values()))) > 1:
+            content += ', '.join([str(v) + '(in ' + k + ')' for k, v in totals.items()]) 
         return content
 
     def get_matched_nodes(self, element_name):
-        totals = []
+        totals = {}
 
         article_elements = self.root.findall('./front//' + element_name) + self.root.findall('./body//' + element_name) + self.root.findall('./back//' + element_name)
-        totals.append(len(article_elements))
+        totals['article'] = len(article_elements)
         k = 1
         subarticles_elements = {}
         for subart_node in self.root.findall('.//sub-article'):
             subart_id = subart_node.attrib.get('id', k)
             k += 1
             subarticles_elements[subart_id] = subart_node.findall('.//' + element_name)
-            totals.append(len(subarticles_elements[subart_id]))
+            totals[subart_id] = len(subarticles_elements[subart_id])
 
         return (totals, article_elements, subarticles_elements)
 
-    def display_data(self, nodes):
+    def display_data(self, article, subarticles, position, position_label):
         r = ''
-        for node in nodes:
-            r += '<p><pre>' + etree.tostring(node).replace('<', '&lt;').replace('>', '&gt;') + '</pre></p>'
+        if article is None:
+            r += '<tr><td>' + position_label + '</td><td>not found</td><td>article</td><td>not found</td></tr>'
+        else:
+            r += '<tr><td>' + position_label + '</td><td>' + article.attrib.get('id') + '</td><td>article</td><td><pre>' + etree.tostring(article).replace('<', '&lt;').replace('>', '&gt;') + '</pre>' + '</td></tr>'
+        for subartid, subartdata in subarticles.items():
+            if position < len(subartdata):
+                r += '<tr><td>' + position_label + '</td><td>' + subartdata[position].attrib.get('id') + '</td><td>' + subartid + '</td><td><pre>' + etree.tostring(subartdata[position]).replace('<', '&lt;').replace('>', '&gt;') + '</pre>' + '</td></tr>'
+            else:
+                r += '<tr><td>' + position_label + '</td><td>not found</td><td>' + subartid + '</td><td>not found</td></tr>'
         return r
 
 
@@ -881,11 +891,11 @@ class PkgReport(object):
 
         for filename in self.filename_list:
             if param_report_filename_prefix is None:
-                report_filename_prefix = content_validation.filename.replace('.xml', '')
+                report_filename_prefix = filename.replace('.xml', '')
             else:
                 report_filename_prefix = param_report_filename_prefix
 
-            html_report._html(self.report_path + '/' + report_filename_prefix + '_ids.html', 'Report of IDs validations', html_report._css('toc') + html_report._css('datareport'), '<h1>IDs report</h1>' + IDsReport(self.xml_content[filename]).generate_report())
+            html_report._html(self.report_path + '/' + report_filename_prefix + '_ids.html', 'Report of IDs found in the XML file', html_report._css('toc') + html_report._css('bicolortable'), IDsReport(self.xml_content[filename]).generate_report())
 
             content_validation = self.content_validations[filename]
             if expected_journal_meta == {}:
