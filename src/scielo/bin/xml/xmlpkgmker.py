@@ -9,6 +9,7 @@ import xml.etree.ElementTree as etree
 
 from StringIO import StringIO
 
+elements_which_has_href = ['graphic', 'inline-graphic', 'media', 'abbrev', 'award-group', 'bio', 'chem-struct', 'collab', 'conference', 'contrib', 'custom-meta', 'element-citation', 'email', 'ext-link', 'funding-source', 'inline-supplementary-material', 'institution', 'license', 'long-desc', 'mixed-citation', 'named-content', 'nlm-citation', 'product', 'related-article', 'related-object', 'self-uri', 'supplementary-material', 'uri']
 
 try:
     import Image
@@ -32,6 +33,10 @@ JAVA_PATH = CONFIG_JAVA_PATH
 JAR_TRANSFORM = CONFIG_JAR_PATH + '/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = CONFIG_JAR_PATH + '/XMLCheck.jar'
 ENTITIES_TABLE_FILENAME = CONFIG_ENT_TABLE_PATH + '/entities2char'
+
+
+def display_xml_in_html(node):
+    return '<pre>' + etree.tostring(node).replace('<', '&lt;').replace('>', '&gt;') + '</pre>'
 
 
 def startswith_invalid_char(content):
@@ -710,7 +715,35 @@ class XMLMetadata:
         return r
 
     def xml_data_href_filenames(self):
-        #test_href = ['href', 'xlink:href', '{http://www.w3.org/XML/1998/namespace}href']
+        elems_has_href = self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]')
+        tags_has_href = list(set([elem.tag for elem in elems_has_href]))
+
+        for tag in tags_has_href:
+            nodes = self.root.findall('.//' + tag)
+            for node in nodes:
+                attr_id = n.attrib.get('id', '')
+                if len(attr_id) xxxxxsss
+                if '-' in id:
+                    id = id[id.rfind('-')+1:]
+                if n.tag == 'equation':
+                    id = 'e' + id
+                elif n.tag == 'inline-display':
+                    id = 'i' + id
+                else:
+                    id = 'g' + id
+                graphic_nodes = n.findall('graphic')
+
+                for graphic_node in graphic_nodes:
+                    for attrib_name in graphic_node.attrib:
+                        if 'href' in attrib_name:
+                            href = graphic_node.attrib.get(attrib_name)
+                            r[href] = id
+            if n.attrib.get('filename') is not None:
+                r[n.attrib.get('filename')] = id
+
+        return r
+
+    def old_xml_data_href_filenames(self):
         r = {}
 
         for tag in ['fig', 'figgrp', 'tabwrap', 'equation', 'inline-display']:
@@ -738,32 +771,6 @@ class XMLMetadata:
                 if n.attrib.get('filename') is not None:
                     r[n.attrib.get('filename')] = id
 
-        return r
-
-    def xml_data_href_names(self):
-        #test_href = ['href', 'xlink:href', '{http://www.w3.org/XML/1998/namespace}href']
-
-        nodes = self.root.findall('.//supplementary[@xlink:href]')
-        r = {}
-
-        for n in nodes:
-            if n.attrib.get('id') is not None:
-                id = n.attrib.get('id', '')
-                if '-' in id:
-                    id = id[id.rfind('-')+1:]
-                if n.tag == 'equation':
-                    id = 'e' + id
-                elif n.tag == 'inline-display':
-                    id = 'i' + id
-                else:
-                    id = 'g' + id
-                graphic_nodes = n.findall('graphic')
-
-                for graphic_node in graphic_nodes:
-                    for attrib_name in graphic_node.attrib:
-                        if 'href' in attrib_name:
-                            href = graphic_node.attrib.get(attrib_name)
-                            r[href] = id
         return r
 
     def new_names_and_embedded_files(self, acron, alternative_id=''):
@@ -830,10 +837,80 @@ class IDsReport(object):
         if article is None:
             r += '<tr><td>' + position_label + '</td><td>not found</td><td>article</td><td>not found</td></tr>'
         else:
-            r += '<tr><td>' + position_label + '</td><td>' + article.attrib.get('id') + '</td><td>article</td><td><pre>' + etree.tostring(article).replace('<', '&lt;').replace('>', '&gt;') + '</pre>' + '</td></tr>'
+            r += '<tr><td>' + position_label + '</td><td>' + article.attrib.get('id') + '</td><td>article</td><td>' + display_xml_in_html(article) + '</td></tr>'
         for subartid, subartdata in subarticles.items():
             if position < len(subartdata):
-                r += '<tr><td>' + position_label + '</td><td>' + subartdata[position].attrib.get('id') + '</td><td>' + subartid + '</td><td><pre>' + etree.tostring(subartdata[position]).replace('<', '&lt;').replace('>', '&gt;') + '</pre>' + '</td></tr>'
+                r += '<tr><td>' + position_label + '</td><td>' + subartdata[position].attrib.get('id') + '</td><td>' + subartid + '</td><td>' + display_xml_in_html(subartdata[position]) + '</td></tr>'
+            else:
+                r += '<tr><td>' + position_label + '</td><td>not found</td><td>' + subartid + '</td><td>not found</td></tr>'
+        return r
+
+
+class HRefReport(object):
+    def __init__(self, node, files):
+        self.root = node
+        self.files = files
+        self.files_without_extensions = list(set([f[0:f.rfind('.')] for f in self.files]))
+
+    def generate_report(self):
+        content = ''
+        href_dict = {}
+        
+        for elem in self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
+            attr_name = elem.attrib.get('{http://www.w3.org/1999/xlink}href', None)
+            if attr_name is None:
+                attr_name = [attr for attr in elem.attrib if attr.endswith('href')]
+            if len(attr_name) == 1:
+                attr_name = attr_name[0]
+                if href_dict.get(attr_name, None) is None:
+                    href_dict[attr_name] = []
+                href_dict[attr_name].append(elem)
+
+        content = '<div class="CSS_Table_bicolor"><table>'
+        content += '<tr><td>@href content</td><td>file exists</td><td>elements</td></tr>'
+
+        for href_key in sorted(href_dict.keys()):
+            if len(href_dict[href_key]) > 1:
+                content += '<tr><td colspan="2">' + href_key + ' ocurres ' + str(len(href_dict[href_key])) + ' times</td></tr>'
+            found = href_key in self.files
+            if not found:
+                found = href_key in self.files_without_extensions
+            found = 'found' if found else 'not found'
+            for item in href_dict[href_key]:
+                content += '<tr><td>' + href_key + '</td><td>' + found + '</td><td>' + display_xml_in_html(item) + '</td></tr>'
+        content += '</table></div>'
+        return content
+
+    def warning_totals(self, totals, element_name):
+        content = ''
+        if len(list(set(totals.values()))) > 1:
+            content += ', '.join([str(v) + '(in ' + k + ')' for k, v in totals.items()])
+        return content
+
+    def get_matched_nodes(self, element_name):
+        totals = {}
+
+        article_elements = self.root.findall('./front//' + element_name) + self.root.findall('./body//' + element_name) + self.root.findall('./back//' + element_name)
+        totals['article'] = len(article_elements)
+        k = 1
+        subarticles_elements = {}
+        for subart_node in self.root.findall('.//sub-article'):
+            subart_id = subart_node.attrib.get('id', k)
+            k += 1
+            subarticles_elements[subart_id] = subart_node.findall('.//' + element_name)
+            totals[subart_id] = len(subarticles_elements[subart_id])
+
+        return (totals, article_elements, subarticles_elements)
+
+    def display_data(self, article, subarticles, position, position_label):
+        r = ''
+        if article is None:
+            r += '<tr><td>' + position_label + '</td><td>not found</td><td>article</td><td>not found</td></tr>'
+        else:
+            r += '<tr><td>' + position_label + '</td><td>' + article.attrib.get('id') + '</td><td>article</td><td><pre>' + display_xml_in_html(article) + '</td></tr>'
+        for subartid, subartdata in subarticles.items():
+            if position < len(subartdata):
+                r += '<tr><td>' + position_label + '</td><td>' + subartdata[position].attrib.get('id') + '</td><td>' + subartid + '</td><td>' + display_xml_in_html(subartdata[position]) + '</td></tr>'
             else:
                 r += '<tr><td>' + position_label + '</td><td>not found</td><td>' + subartid + '</td><td>not found</td></tr>'
         return r
@@ -894,8 +971,11 @@ class PkgReport(object):
                 report_filename_prefix = filename.replace('.xml', '')
             else:
                 report_filename_prefix = param_report_filename_prefix
+            id_report_content = IDsReport(self.xml_content[filename]).generate_report()
+            html_report._html(self.report_path + '/' + report_filename_prefix + '_ids.html', 'Report of IDs found in the XML file', html_report._css('toc') + html_report._css('bicolortable'), id_report_content)
 
-            html_report._html(self.report_path + '/' + report_filename_prefix + '_ids.html', 'Report of IDs found in the XML file', html_report._css('toc') + html_report._css('bicolortable'), IDsReport(self.xml_content[filename]).generate_report())
+            href_report_content = HRefReport(self.xml_content[filename], os.listdir(self.pkg_path)).generate_report()
+            html_report._html(self.report_path + '/' + report_filename_prefix + '_href.html', 'Report of @href found in the XML file', html_report._css('toc') + html_report._css('bicolortable'), href_report_content)
 
             content_validation = self.content_validations[filename]
             if expected_journal_meta == {}:
@@ -956,7 +1036,7 @@ class PkgReport(object):
             if not issue_label:
                 issue_label = content_validation.issue_label
 
-            html_report._html(self.report_path + '/' + report_filename_prefix + '.contents.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport'), '<h1>' + report_filename_prefix + '</h1>' + stat + issue_header + report_content)
+            html_report._html(self.report_path + '/' + report_filename_prefix + '.contents.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport') + html_report._css('bicolortable'), '<h1>' + report_filename_prefix + '</h1>' + stat + issue_header + report_content + id_report_content + href_report_content)
 
         #issue_header +
         # doi, order, journal, sorted, unsorted.
@@ -1488,7 +1568,7 @@ class ContentValidation(object):
                 a['city'] = aff.findtext('addr-line/named-content[@content-type="city"]')
                 a['state'] = aff.findtext('addr-line/named-content[@content-type="state"]')
 
-                a['xml'] = etree.tostring(aff)
+                a['xml'] = display_xml_in_html(aff)
                 self.article_meta['aff'].append(a)
 
             self.article_meta['abstract'] = self._node_xml_content(article_meta.find('.//abstract'))
@@ -1522,14 +1602,12 @@ class ContentValidation(object):
 
             self.article_meta['order'] = self._order(self.article_meta['fpage'], self.article_meta['fpage_seq'], self.article_meta['other id'])
 
-            self.href = []
-            for item in ['graphic', 'inline-graphic', 'media', 'inline-supplementary-material', 'supplementary-material']:
-                for node in self.xml.findall('.//' + item):
-                    href = node.attrib.get('{http://www.w3.org/1999/xlink}href', None)
-                    if href:
-                        self.href.append(href)
-                    else:
-                        print(node.attrib)
+            for node in self.xml.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
+                href = node.attrib.get('{http://www.w3.org/1999/xlink}href', None)
+                if href:
+                    self.href.append(href)
+                else:
+                    print(node.attrib)
 
             for ref in self.xml.findall('.//ref'):
                 r = {}
@@ -1577,7 +1655,7 @@ class ContentValidation(object):
                     r['ext-link'] += [uri.text for uri in nodes]
 
                 r['cited'] = ref.findtext('.//date-in-citation[@content-type="access-date"]')
-                r['xml'] = etree.tostring(ref)
+                r['xml'] = display_xml_in_html(ref)
                 self.refs.append(r)
 
     def _node_xml(self, node):
