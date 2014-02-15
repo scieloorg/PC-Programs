@@ -9,7 +9,10 @@ import xml.etree.ElementTree as etree
 
 from StringIO import StringIO
 
-elements_which_has_href = ['graphic', 'inline-graphic', 'media', 'abbrev', 'award-group', 'bio', 'chem-struct', 'collab', 'conference', 'contrib', 'custom-meta', 'element-citation', 'email', 'ext-link', 'funding-source', 'inline-supplementary-material', 'institution', 'license', 'long-desc', 'mixed-citation', 'named-content', 'nlm-citation', 'product', 'related-article', 'related-object', 'self-uri', 'supplementary-material', 'uri']
+#xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'abbrev', 'award-group', 'bio', 'chem-struct', 'collab', 'conference', 'contrib', 'element-citation', 'email', 'ext-link', 'funding-source', 'inline-supplementary-material', 'institution', 'license', 'long-desc', 'mixed-citation', 'named-content', 'nlm-citation', 'product', 'related-article', 'related-object', 'self-uri', 'supplementary-material', 'uri']
+
+xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'chem-struct', 'inline-supplementary-material', 'supplementary-material', ]
+sgml_tags_which_has_href = ['graphic', 'supplmat', ]
 
 try:
     import Image
@@ -715,33 +718,41 @@ class XMLMetadata:
         return r
 
     def xml_data_href_filenames(self):
-        elems_has_href = self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]')
-        tags_has_href = list(set([elem.tag for elem in elems_has_href]))
-
+        # g for graphics
+        # i for inline
+        # e for equation
+        # s for supplementary
+        #xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'chem-struct', 'inline-supplementary-material', 'supplementary-material', ]
+        #sgml  = ['graphic', 'supplmat']
+        tags_has_href = list(set(xml_tags_which_has_href + sgml_tags_which_has_href))
+        href_list = {}
         for tag in tags_has_href:
-            nodes = self.root.findall('.//' + tag)
+            # find parent of nodes which has @href
+            nodes = self.root.findall('.//*[' + tag + ']')
             for node in nodes:
-                attr_id = n.attrib.get('id', '')
-                if len(attr_id) xxxxxsss
-                if '-' in id:
-                    id = id[id.rfind('-')+1:]
-                if n.tag == 'equation':
-                    id = 'e' + id
-                elif n.tag == 'inline-display':
-                    id = 'i' + id
+                attrib_id = node.attrib.get('id', '')
+                filename = node.attrib.get('filename', None)
+                if attrib_id == '':
+                    attrib_id = node.find(tag).attrib.get('id', '')
+                if attrib_id != '':
+                    href = node.find(tag).attrib.get('{http://www.w3.org/1999/xlink}href', None)
+                    if href is None:
+                        href = node.find(tag).attrib.get('href', None)
+                    if href is None or href == '':
+                        href = filename
+                    if not href is None:
+                        if 'suppl' in tag or 'media' == tag:
+                            suffix = 's'
+                        elif 'inline' in tag:
+                            suffix = 'i'
+                        elif 'equation' == node.tag:
+                            suffix = 'e'
+                        else:
+                            suffix = 'g'
+                        href_list[href] = suffix + attrib_id
                 else:
-                    id = 'g' + id
-                graphic_nodes = n.findall('graphic')
-
-                for graphic_node in graphic_nodes:
-                    for attrib_name in graphic_node.attrib:
-                        if 'href' in attrib_name:
-                            href = graphic_node.attrib.get(attrib_name)
-                            r[href] = id
-            if n.attrib.get('filename') is not None:
-                r[n.attrib.get('filename')] = id
-
-        return r
+                    href_list[href] = href
+        return href_list
 
     def old_xml_data_href_filenames(self):
         r = {}
@@ -796,7 +807,7 @@ class IDsReport(object):
 
         elements = ['aff', 'fig', 'table-wrap', 'equation', 'fn'] + list(set([elem.tag for elem in self.root.findall('.//*[@id]')]))
         elements = list(set(elements))
-        
+
         for elem_name in elements:
             totals, article, subarticles = self.get_matched_nodes(elem_name)
             if max(totals.values()) > 0:
@@ -807,16 +818,12 @@ class IDsReport(object):
                     art = article[k] if len(article) > k else None
                     content += self.display_data(art, subarticles, k, str(k+1) + '/' + str(max(totals.values())))
                     content += '<tr><td colspan="4"></td></tr>'
-    
                 content += '</table></div>'
         return content
 
     def warning_totals(self, totals, element_name):
-        content = ''
-        if len(list(set(totals.values()))) > 1:
-            content += ', '.join([str(v) + '(in ' + k + ')' for k, v in totals.items()]) 
-        return content
-
+        return ', '.join([str(v) + ' (in ' + k + ')' for k, v in totals.items()])
+        
     def get_matched_nodes(self, element_name):
         totals = {}
 
@@ -855,23 +862,25 @@ class HRefReport(object):
     def generate_report(self):
         content = ''
         href_dict = {}
-        
+
         for elem in self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
-            attr_name = elem.attrib.get('{http://www.w3.org/1999/xlink}href', None)
-            if attr_name is None:
-                attr_name = [attr for attr in elem.attrib if attr.endswith('href')]
-            if len(attr_name) == 1:
-                attr_name = attr_name[0]
-                if href_dict.get(attr_name, None) is None:
-                    href_dict[attr_name] = []
-                href_dict[attr_name].append(elem)
+            print(elem)
+            href_value = elem.attrib.get('{http://www.w3.org/1999/xlink}href', None)
+            if href_value is None:
+                href_value = [a_value for a_name, a_value in elem.attrib.items() if a_name.endswith('href')]
+
+                if len(href_value) > 0:
+                    href_value = href_value[0]
+            if href_dict.get(href_value, None) is None:
+                href_dict[href_value] = []
+            href_dict[href_value].append(elem)
 
         content = '<div class="CSS_Table_bicolor"><table>'
         content += '<tr><td>@href content</td><td>file exists</td><td>elements</td></tr>'
-
+        print(href_dict)
         for href_key in sorted(href_dict.keys()):
             if len(href_dict[href_key]) > 1:
-                content += '<tr><td colspan="2">' + href_key + ' ocurres ' + str(len(href_dict[href_key])) + ' times</td></tr>'
+                content += '<tr><td colspan="2">' + href_key + ' occures ' + str(len(href_dict[href_key])) + ' times</td></tr>'
             found = href_key in self.files
             if not found:
                 found = href_key in self.files_without_extensions
