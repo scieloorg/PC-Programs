@@ -203,13 +203,28 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="subart">
+		<xsl:param name="parentid"/>
 		<sub-article>
-			<xsl:apply-templates select="@*"/>
-			<xsl:apply-templates select="." mode="front"/>
-			<xsl:apply-templates select="." mode="body"/>
-			<xsl:apply-templates select="." mode="back"/>
-			<xsl:apply-templates select="response | subart"/>
+			<xsl:apply-templates select="@*">
+				<xsl:with-param name="parentid" select="$parentid"></xsl:with-param>
+			</xsl:apply-templates>
+			<xsl:apply-templates select="." mode="front">
+				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
+			</xsl:apply-templates>
+			<xsl:apply-templates select="." mode="body">
+				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
+			</xsl:apply-templates>
+			<xsl:apply-templates select="." mode="back">
+				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
+			</xsl:apply-templates>
+			<xsl:apply-templates select="response | subart">
+				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
+			</xsl:apply-templates>
 		</sub-article>
+	</xsl:template>
+	
+	<xsl:template match="subart/@id">
+		<xsl:attribute name="id"><xsl:value-of select="."/></xsl:attribute>
 	</xsl:template>
 	
 	<xsl:template match="@subarttp">
@@ -613,6 +628,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 
 	<xsl:template match="aff">
+		<xsl:variable name="parentid"></xsl:variable>
 		<xsl:variable name="label">
 			<xsl:value-of select="normalize-space(label)"/>
 			<xsl:if test="not(label)">
@@ -704,6 +720,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="aff/@id">
+		<!-- FIXMEID -->
 		<!-- quando nao ha aff/label = author/xref enquanto author/@rid = aff/@id -->
 		<xsl:variable name="var_id">
 			<xsl:choose>
@@ -715,7 +732,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:choose>
 		</xsl:variable>
 
-		<xsl:attribute name="id">
+		<xsl:attribute name="id"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if>
 			<xsl:choose>
 				<xsl:when test="contains($var_id,'a0')">aff<xsl:value-of
 						select="substring-after($var_id,'a0')"/></xsl:when>
@@ -1540,13 +1557,18 @@ Here is a figure group, with three figures inside, each of which contains a grap
 </fig-group>
 	 -->
 	<xsl:template match="figgrps[not(label)]">
-		<fig-group id="{@id}">
+		<!-- FIXMEID -->
+		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+		<fig-group id="{concat($parentid,@id)}">
 			<xsl:apply-templates select="caption"/>
 			<xsl:apply-templates select=".//figgrp"/>
 		</fig-group>
 	</xsl:template>
 	<xsl:template match="figgrps[label]">
-		<fig id="{@id}">
+		<!-- FIXMEID -->
+		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+	
+	<fig id="{concat($parentid,@id)}">
 			<xsl:apply-templates select="label"/>
 			<xsl:apply-templates select="caption"/>
 			<xsl:apply-templates select=".//figgrp"/>
@@ -1554,7 +1576,10 @@ Here is a figure group, with three figures inside, each of which contains a grap
 	</xsl:template>
 	<xsl:template match="figgrp">
 		<p>
-			<fig id="{@id}">
+			<!-- FIXMEID -->
+			<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+			
+			<fig id="{concat($parentid,@id)}">
 				<xsl:if test="@ftype!='other'">
 					<xsl:attribute name="fig-type">
 						<xsl:value-of select="@ftype"/>
@@ -1572,7 +1597,10 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		</p>
 	</xsl:template>
 	<xsl:template match="p/figgrp|figgrps/figgrp">
-		<fig id="{@id}">
+		<!-- FIXMEID -->
+		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+		
+		<fig id="{concat($parentid,@id)}">
 			<xsl:if test="@ftype!='other'">
 				<xsl:attribute name="fig-type">
 					<xsl:value-of select="@ftype"/>
@@ -1584,8 +1612,10 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		</fig>
 	</xsl:template>
 	<xsl:template match="tabwrap">
-		<p>
-			<table-wrap id="{@id}">
+		<p><!-- FIXMEID -->
+			<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+			
+			<table-wrap id="{concat($parentid,@id)}">
 				<xsl:apply-templates select="label"/>
 				<xsl:apply-templates select=".//caption"/>
 				<xsl:apply-templates select="." mode="graphic"/>
@@ -1602,7 +1632,10 @@ Here is a figure group, with three figures inside, each of which contains a grap
 	</xsl:template>
 	<xsl:template match="tabwrap//fntable" mode="table">
 		<xsl:param name="table_id"/>
-		<fn id="{$table_id}TFN{substring(@id,4)}">
+		<!-- FIXMEID -->
+		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+		
+		<fn id="{$parentid}{$table_id}TFN{substring(@id,4)}">
 			<xsl:apply-templates select="label"/>
 			<p>
 				<xsl:apply-templates select="text()|*[name()!='label']"/>
@@ -1621,7 +1654,10 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="p/tabwrap">
-		<table-wrap id="{@id}">
+		<!-- FIXMEID -->
+		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+		
+		<table-wrap id="{$parentid}{@id}">
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
 			<xsl:apply-templates select="." mode="graphic"/>
@@ -2167,15 +2203,15 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			</xsl:choose>
 			<xsl:value-of select="@id"/>
 		</xsl:variable>
-		<xsl:if test="not(.//graphic) and not(.//table)">
-			<graphic xlink:href="{$standardname}"/>
-		</xsl:if>
-		<xsl:if test=".//graphic">
-			<xsl:choose>
-				<xsl:when test=".//graphic/@xlink:href"><graphic xlink:href="{.//graphic/@xlink:href}"></graphic></xsl:when>	
-				<xsl:when test="@filename"><graphic xlink:href="{@filename}"></graphic></xsl:when>
-			</xsl:choose>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test=".//graphic"><graphic xlink:href="{.//graphic/@href}"></graphic></xsl:when>	
+			<xsl:when test="@filename">
+				<graphic xlink:href="{@filename}"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<graphic xlink:href="{@id}"/><!-- @id -->
+			</xsl:otherwise>
+		</xsl:choose>
 		<xsl:if test=".//table">
 			<xsl:apply-templates select=".//table" mode="pmc-table"></xsl:apply-templates>
 		</xsl:if>

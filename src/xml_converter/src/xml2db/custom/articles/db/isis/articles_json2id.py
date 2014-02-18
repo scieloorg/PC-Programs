@@ -45,7 +45,11 @@ class JSON2IDFile_Article:
                 data = json_data[record_name]
             else:
                 data = None
-            
+            if record_name == 'f':
+                try:
+                    del data['170']
+                except:
+                    pass
             if data == None:
                 record_index += 1
                 record_number += 1
@@ -80,8 +84,8 @@ class JSON2IDFile_Article:
     def add_file_data(self, xml_filename, db_name, data):
         f = self.json2idfile.filename.replace('.id', '.xml')
 
-        data['2'] = os.path.basename(f)
-        data['2'] = xml_filename
+        #data['2'] = os.path.basename(f)
+        data['2'] = os.path.basename(xml_filename)
         data['702'] = xml_filename
         data['4'] = db_name
         

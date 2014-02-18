@@ -503,7 +503,7 @@ def tranform_in_steps(xml_filename, xsl_list, result_filename, parameters={}, fi
 
 
 ###
-class XMLStr(object):
+class XMLString(object):
 
     def __init__(self, content):
         self.content = content
@@ -609,6 +609,14 @@ class XMLStr(object):
                     expected_close_tags.append(tag.replace('<', '</'))
             k += 1
         return ''.join(parts)
+
+
+class Article(object):
+    def __init__(self, content):
+        try:
+            self.root = etree.parse(StringIO(content))
+        except:
+            self.root = None
 
 
 class XMLMetadata:
@@ -725,7 +733,9 @@ class XMLMetadata:
         #xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'chem-struct', 'inline-supplementary-material', 'supplementary-material', ]
         #sgml  = ['graphic', 'supplmat']
         tags_has_href = list(set(xml_tags_which_has_href + sgml_tags_which_has_href))
+        
         href_list = {}
+        invalid_attrib_id = []
         for tag in tags_has_href:
             # find parent of nodes which has @href
             nodes = self.root.findall('.//*[' + tag + ']')
@@ -734,24 +744,25 @@ class XMLMetadata:
                 filename = node.attrib.get('filename', None)
                 if attrib_id == '':
                     attrib_id = node.find(tag).attrib.get('id', '')
-                if attrib_id != '':
-                    href = node.find(tag).attrib.get('{http://www.w3.org/1999/xlink}href', None)
-                    if href is None:
-                        href = node.find(tag).attrib.get('href', None)
-                    if href is None or href == '':
-                        href = filename
-                    if not href is None:
-                        if 'suppl' in tag or 'media' == tag:
-                            suffix = 's'
-                        elif 'inline' in tag:
-                            suffix = 'i'
-                        elif 'equation' == node.tag:
-                            suffix = 'e'
-                        else:
-                            suffix = 'g'
-                        href_list[href] = suffix + attrib_id
-                else:
-                    href_list[href] = href
+                href = node.find(tag).attrib.get('{http://www.w3.org/1999/xlink}href', None)
+                if href is None or href == '':
+                    href = filename
+                if not href is None:
+                    if 'suppl' in tag or 'media' == tag:
+                        suffix = 's'
+                    elif 'inline' in tag:
+                        suffix = 'i'
+                    elif node.tag in ['equation', 'disp-formula']:
+                        suffix = 'e'
+                    else:
+                        suffix = 'g'
+
+                    if attrib_id == '':
+                        attrib_id = '_' + str(len(invalid_attrib_id) + 1)
+                        invalid_attrib_id.append(attrib_id)
+                        suffix = 'g'
+                    href_list[href] = suffix + attrib_id
+                    
         return href_list
 
     def old_xml_data_href_filenames(self):
@@ -796,6 +807,51 @@ class XMLMetadata:
             items.append((href, new_name + '-' + suffix))
         return items
 
+    def new_name_and_href_list(self, acron, alternative_id=''):
+        #usado pela versao XPM5
+        new_name = self.format_name(self._metadata(), acron, alternative_id)
+        href_filenames = self.xml_data_href_list()
+        return (new_name, href_filenames)
+
+    def xml_data_href_list(self):
+        #usado pela versao XPM5
+        # g for graphics
+        # i for inline
+        # e for equation
+        # s for supplementary
+        #xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'chem-struct', 'inline-supplementary-material', 'supplementary-material', ]
+        #sgml  = ['graphic', 'supplmat']
+        tags_has_href = list(set(xml_tags_which_has_href + sgml_tags_which_has_href))
+        href_list = []
+        invalid_attrib_id = []
+        for tag in tags_has_href:
+            # find parent of nodes which has @href
+            nodes = self.root.findall('.//*[' + tag + ']')
+            for node in nodes:
+                attrib_id = node.attrib.get('id', '')
+                filename = node.attrib.get('filename', None)
+                if attrib_id == '':
+                    attrib_id = node.find(tag).attrib.get('id', '')
+                href = node.find(tag).attrib.get('{http://www.w3.org/1999/xlink}href', None)
+                if href is None or href == '':
+                    href = filename
+                if not href is None:
+                    if 'suppl' in tag or 'media' == tag:
+                        suffix = 's'
+                    elif 'inline' in tag:
+                        suffix = 'i'
+                    elif node.tag in ['equation', 'disp-formula']:
+                        suffix = 'e'
+                    else:
+                        suffix = 'g'
+
+                    if attrib_id == '':
+                        attrib_id = '_' + str(len(invalid_attrib_id) + 1)
+                        invalid_attrib_id.append(attrib_id)
+                        suffix = 'g'
+                    href_list.append((href, suffix + attrib_id))
+                    
+        return href_list    
 
 class IDsReport(object):
     def __init__(self, node):
@@ -844,10 +900,10 @@ class IDsReport(object):
         if article is None:
             r += '<tr><td>' + position_label + '</td><td>not found</td><td>article</td><td>not found</td></tr>'
         else:
-            r += '<tr><td>' + position_label + '</td><td>' + article.attrib.get('id') + '</td><td>article</td><td>' + display_xml_in_html(article) + '</td></tr>'
+            r += '<tr><td>' + position_label + '</td><td>' + article.attrib.get('id', '') + '</td><td>article</td><td>' + display_xml_in_html(article) + '</td></tr>'
         for subartid, subartdata in subarticles.items():
             if position < len(subartdata):
-                r += '<tr><td>' + position_label + '</td><td>' + subartdata[position].attrib.get('id') + '</td><td>' + subartid + '</td><td>' + display_xml_in_html(subartdata[position]) + '</td></tr>'
+                r += '<tr><td>' + position_label + '</td><td>' + subartdata[position].attrib.get('id', '') + '</td><td>' + subartid + '</td><td>' + display_xml_in_html(subartdata[position]) + '</td></tr>'
             else:
                 r += '<tr><td>' + position_label + '</td><td>not found</td><td>' + subartid + '</td><td>not found</td></tr>'
         return r
@@ -859,34 +915,45 @@ class HRefReport(object):
         self.files = files
         self.files_without_extensions = list(set([f[0:f.rfind('.')] for f in self.files]))
 
-    def generate_report(self):
+    def generate_report(self, xml_name):
         content = ''
         href_dict = {}
+        xml_name = xml_name.replace('.xml', '')
+        
+        files = [f for f in self.files if f.startswith(xml_name + '-') or f.startswith(xml_name + '.')]
+        
+        elem_names = list(set([elem.tag for elem in self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]')]))
+        for elem_name in elem_names:
+            for parent in self.root.findall('.//*[' + elem_name + ']'):
+                href_value = parent.find(elem_name).attrib.get('{http://www.w3.org/1999/xlink}href', None)
+                if not href_value is None and not href_value.startswith('http'):
+                    if href_dict.get(href_value, None) is None:
+                        href_dict[href_value] = []
+                    href_dict[href_value].append(parent)
 
-        for elem in self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
-            print(elem)
-            href_value = elem.attrib.get('{http://www.w3.org/1999/xlink}href', None)
-            if href_value is None:
-                href_value = [a_value for a_name, a_value in elem.attrib.items() if a_name.endswith('href')]
+        content += '<div class="CSS_Table_bicolor"><table>'
+        content += '<tr><td></td><td>files in the package</td><td>href?</td></tr>'
+        k = 0
+        for f in files:
+            k += 1
+            test = 'yes' if (f in href_dict.keys() or f[0:f.rfind('.')] in href_dict.keys()) else 'no'
+            content += '<tr><td>' + str(k) + '</td><td>' + f + '</td><td>' + test + '</td></tr>'
+        content += '</table></div>'
 
-                if len(href_value) > 0:
-                    href_value = href_value[0]
-            if href_dict.get(href_value, None) is None:
-                href_dict[href_value] = []
-            href_dict[href_value].append(elem)
-
-        content = '<div class="CSS_Table_bicolor"><table>'
-        content += '<tr><td>@href content</td><td>file exists</td><td>elements</td></tr>'
-        print(href_dict)
+        content += '<div class="CSS_Table_bicolor"><table>'
+        content += '<tr><td></td><td>@href content</td><td>file exists?</td><td>href location</td></tr>'
+        
+        k = 0
         for href_key in sorted(href_dict.keys()):
+            k += 1
             if len(href_dict[href_key]) > 1:
-                content += '<tr><td colspan="2">' + href_key + ' occures ' + str(len(href_dict[href_key])) + ' times</td></tr>'
+                content += '<tr><td colspan="4">' + href_key + ' occures ' + str(len(href_dict[href_key])) + ' times</td></tr>'
             found = href_key in self.files
             if not found:
                 found = href_key in self.files_without_extensions
             found = 'found' if found else 'not found'
             for item in href_dict[href_key]:
-                content += '<tr><td>' + href_key + '</td><td>' + found + '</td><td>' + display_xml_in_html(item) + '</td></tr>'
+                content += '<tr><td>' + str(k) + '</td><td>' + href_key + '</td><td>' + found + '</td><td>' + display_xml_in_html(item) + '</td></tr>'
         content += '</table></div>'
         return content
 
@@ -976,17 +1043,17 @@ class PkgReport(object):
         errors_block = ''
 
         for filename in self.filename_list:
+            content_validation = self.content_validations[filename]
             if param_report_filename_prefix is None:
                 report_filename_prefix = filename.replace('.xml', '')
             else:
                 report_filename_prefix = param_report_filename_prefix
-            id_report_content = IDsReport(self.xml_content[filename]).generate_report()
-            html_report._html(self.report_path + '/' + report_filename_prefix + '_ids.html', 'Report of IDs found in the XML file', html_report._css('toc') + html_report._css('bicolortable'), id_report_content)
+            id_report_content = '<h1>Report of @id</h1>' + IDsReport(self.xml_content[filename]).generate_report()
+            html_report._html(self.report_path + '/' + report_filename_prefix + '_ids.html', '', html_report._css('toc') + html_report._css('bicolortable'), id_report_content)
 
-            href_report_content = HRefReport(self.xml_content[filename], os.listdir(self.pkg_path)).generate_report()
-            html_report._html(self.report_path + '/' + report_filename_prefix + '_href.html', 'Report of @href found in the XML file', html_report._css('toc') + html_report._css('bicolortable'), href_report_content)
-
-            content_validation = self.content_validations[filename]
+            href_report_content = '<h1>Report of @href and files</h1>' + HRefReport(self.xml_content[filename], os.listdir(self.pkg_path)).generate_report(content_validation.filename)
+            html_report._html(self.report_path + '/' + report_filename_prefix + '_href.html', '', html_report._css('toc') + html_report._css('bicolortable'), href_report_content)
+            
             if expected_journal_meta == {}:
                 for k, v in content_validation.issue_meta.items():
                     expected_journal_meta[k] = v
@@ -1413,7 +1480,7 @@ class CheckList(object):
             content = f.read()
             f.close()
 
-            xml_str = XMLStr(content)
+            xml_str = XMLString(content)
             xml_str.fix_dtd_location(self.dtd_filename, self.doctype)
 
             if not content == xml_str.content:
@@ -1446,8 +1513,10 @@ class CheckList(object):
                     f.close()
 
                     is_valid_style = ('Total of errors = 0' in c) and (('Total of warnings = 0' in c) or (not 'Total of warnings =' in c))
-                    print(is_valid_style)
-                    print(style_checker_report)
+
+                    if not is_valid_style:
+                        print('\nThere are ERRORS or WARNINGS')
+                        print(style_checker_report)
 
         return is_valid_style
 
@@ -1613,10 +1682,11 @@ class ContentValidation(object):
 
             for node in self.xml.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
                 href = node.attrib.get('{http://www.w3.org/1999/xlink}href', None)
-                if href:
-                    self.href.append(href)
+                if href is None:
+                    print('href not found???')
+                    print(etree.tostring(node))
                 else:
-                    print(node.attrib)
+                    self.href.append(href)
 
             for ref in self.xml.findall('.//ref'):
                 r = {}
@@ -1968,8 +2038,141 @@ class ValidationResult(object):
             f.close()
 
 
-class XPM(object):
+class Normalizer(object):
 
+    def __init__(self, entities_table, version_converter):
+        self.entities_table = entities_table
+        self.version_converter = version_converter
+
+    def normalize_content(self, xml_filename, src_path, dest_path, acron):
+        log = []
+
+        is_sgmxml = xml_filename.endswith('.sgm.xml')
+
+        f = open(xml_filename)
+        content = f.read()
+        f.close()
+
+        test = content
+        content = convert_entities(content, self.entities_table)
+        if not test == content:
+            log.append('Convert entities.\n Done.')
+
+        # fix problems of XML format
+        if is_sgmxml:
+            xml_fix = XMLString(content)
+            xml_fix.fix()
+            if not xml_fix.content == content:
+                content = xml_fix.content
+                #log.append(' Fixed SGML')
+
+        # get href of images and new name
+        xml_name = os.path.basename(xml_filename)
+        xml_name = xml_name.replace('.sgm.xml', '').replace('.xml', '')
+        new_name = xml_name
+
+        log.append('xml name:' + xml_name)
+
+        if xml_is_well_formed(content) is not None:
+            if is_sgmxml:
+                content = xml_content_transform(content, self.version_converter)
+
+            new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, xml_name)
+            
+            curr_and_new_href_list = self.generate_curr_and_new_href_list(xml_name, new_name, href_list)
+            log.append('new name:' + new_name)
+
+            if len(curr_and_new_href_list) > 0:
+                log.append('\nReplace href values:')
+
+                log.append('\n'.join([c + ' => ' + n for c, n in curr_and_new_href_list]))
+
+            content = self.normalize_href(content, curr_and_new_href_list)
+
+            errors, related_files_list, href_files_list = self.matched_files(xml_name, new_name, curr_and_new_href_list, src_path)
+
+            if len(errors) > 0:
+                log.append('\n'.join(errors))
+
+            message = self.rename_files(related_files_list, href_files_list, src_path, dest_path)
+            log.append('\n'.join(message))
+
+            f = open(dest_path + '/' + new_name + '.xml', 'w')
+            f.write(content)
+            f.close()
+        else:
+            log.append('XML is not well formed')
+        return (new_name, log)
+
+    def generate_curr_and_new_href_list(self, xml_name, new_name, href_list):
+        r = []
+        for href, suffix_and_id in href_list:
+            if xml_name in href:
+                s = href.replace(xml_name + '-', '')
+                if s[0:1] != suffix_and_id[0:1]:
+                    r.append((href, href.replace(xml_name + '-', new_name + '-' + suffix_and_id[0:1])))
+                else:
+                    r.append((href, href.replace(xml_name, new_name)))
+            else:
+                r.append((href, new_name + '-' + suffix_and_id[0:1] + href))
+        return r
+
+    def matched_files(self, xml_name, new_name, curr_and_new_href_list, src_path):
+        href_files_list = []
+        related_files_list = []
+        errors = []
+
+        curr_and_new_href_list = {k:v for k, v in curr_and_new_href_list}
+        xml_name = xml_name.replace('.xml', '')
+
+        alternative = {f[0:f.rfind('.')]:v for f, v in curr_and_new_href_list.items()}
+
+        for f in os.listdir(src_path):
+            if os.path.isfile(src_path + '/' + f):
+                ext = f[f.rfind('.'):]
+                filename = f[0:f.rfind('.')]
+                if filename == xml_name:
+                    related_files_list.append((filename + ext, new_name + ext))
+                else:
+                    if filename in curr_and_new_href_list.keys():
+                        href_files_list.append((filename + ext, curr_and_new_href_list[filename] + ext))
+                    elif f in curr_and_new_href_list.keys():
+                        href_files_list.append((f, curr_and_new_href_list[f] + ext))
+                    elif filename in alternative.keys():
+                        href_files_list.append((f, alternative[filename]))
+                        
+        return (errors, related_files_list, href_files_list)
+
+    def normalize_href(self, content, curr_and_new_href_list):
+        #print(curr_and_new_href_list)
+        for current, new in curr_and_new_href_list:
+            print(current + ' => ' + new)
+            content = content.replace('href="' + current, 'href="' + new)
+            content = content.replace(' filename="' + current, ' filename="' + new)
+        return content
+
+    def rename_files(self, related_files_list, href_files_list, src_path, dest_path):
+        result = []
+        result.append('\nRename files: from ' + src_path + ' to ' + dest_path)
+
+        for curr, new in related_files_list:
+            shutil.copyfile(src_path + '/' + curr, dest_path + '/' + new)
+            result.append(curr + ' => ' + new)
+        for curr, new in href_files_list:
+            shutil.copyfile(src_path + '/' + curr, dest_path + '/' + new)
+            result.append(curr + ' => ' + new)
+            if IMG_CONVERTER:
+                ext = curr[curr.rfind('.'):]
+                if ext in ['.tiff', '.tif', '.eps']:
+                    name = curr[0:curr.rfind('.')]
+                    if not os.path.isfile(src_path + '/' + name + '.jpg'):
+                        # converter para .jpg
+                        if img_to_jpeg(dest_path + '/' + new, dest_path):
+                            result.append('created ' + new.replace(ext, '.jpg'))
+        return result
+
+
+class XPM(object):
     def __init__(self, sci_validator, pmc_validator, acron, default_version, entities_table):
         self.version_converter = _versions_.get(default_version, {}).get('sgm2xml')
         self.entities_table = entities_table
@@ -2084,7 +2287,7 @@ class XPM(object):
         # fix problems of XML format
         if is_sgmxml:
             log.append('Fix SGML')
-            xml_fix = XMLStr(content)
+            xml_fix = XMLString(content)
             xml_fix.fix()
             if not xml_fix.content == content:
                 content = xml_fix.content
@@ -2198,6 +2401,126 @@ class XPM(object):
             new_name, href_files_list = self.normalize_xml(wrk_path + '/' + xml_filename, scielo_val_res.pkg_path, log_filename)
 
             self.pack_non_xml_files(wrk_path, xml_name, new_name, href_files_list, scielo_val_res.pkg_path, pmc_val_res.pkg_path, err_filename)
+
+            scielo_val_res.name(xml_name, new_name)
+            pmc_val_res.name(xml_name, new_name)
+
+            self.validate_packages(xml_name, new_name, scielo_val_res, pmc_val_res, err_filename, ctrl_filename)
+
+            report.load_data(new_name + '.xml')
+
+            more_than_one_article = (ctrl_filename is None)
+
+            if new_name == xml_name:
+                report.generate_articles_report(more_than_one_article)
+            else:
+                report.generate_articles_report(more_than_one_article, xml_name)
+            if more_than_one_article:
+                report.generate_lists()
+
+        if ctrl_filename is not None:
+            if not os.path.isfile(ctrl_filename):
+                f = open(ctrl_filename, 'w')
+                f.write('Finished')
+                f.close()
+
+
+class XPM5(object):
+    def __init__(self, sci_validator, pmc_validator, acron, default_version, entities_table):
+        version_converter = _versions_.get(default_version, {}).get('sgm2xml')
+        self.normalizer = Normalizer(entities_table, version_converter)
+        
+        self.acron = acron
+        self.sci_validator = sci_validator
+        self.pmc_validator = pmc_validator
+
+    def add_href_extensions(self, xml_filename):
+        name = os.path.basename(xml_filename).replace('.xml', '')
+        path = os.path.dirname(xml_filename)
+        fp = open(xml_filename, 'r')
+        xml = fp.read()
+        fp.close()
+        for f in os.listdir(path):
+            if f.startswith(name + '.') or f.startswith(name + '-'):
+                f_without_ext = f[0:f.rfind('.')]
+                xml = xml.replace('href="' + f_without_ext + '"', 'href="' + f + '"')
+        fp = open(xml_filename, 'w')
+        fp.write(xml)
+        fp.close()
+
+    def validate_packages(self, xml_name, new_name, scielo_validation_result, pmc_validation_result, err_filename, ctrl_filename):
+        xsl_new_name = new_name if new_name != xml_name else ''
+        img_path = scielo_validation_result.pkg_path
+
+        if os.path.isfile(scielo_validation_result.pkg_path + '/' + new_name + '.xml'):
+            if xml_is_well_formed(scielo_validation_result.pkg_path + '/' + new_name + '.xml'):
+                scielo_validation_result = self.sci_validator.check_list(scielo_validation_result.pkg_path + '/' + new_name + '.xml', scielo_validation_result, img_path)
+                scielo_validation_result.manage_result(ctrl_filename)
+
+                if os.path.exists(pmc_validation_result.pkg_path + '/' + new_name + '.xml'):
+                    self.add_href_extensions(pmc_validation_result.pkg_path + '/' + new_name + '.xml')
+                    pmc_validation_result = self.pmc_validator.check_list(pmc_validation_result.pkg_path + '/' + new_name + '.xml', pmc_validation_result, img_path, xsl_new_name)
+
+                    if ctrl_filename is None:
+                        pmc_validation_result.manage_result(None)
+
+                    if os.path.exists(pmc_validation_result.xml_output):
+                        #self.add_href_extensions(pmc_validation_result.xml_output)
+                        print('  Finished')
+                    else:
+                        print('\nUnable to create ' + pmc_validation_result.xml_output)
+                        log_message(err_filename, 'Unable to create ' + pmc_validation_result.xml_output)
+                else:
+                    print('Unable to create ' + pmc_validation_result.pkg_path + '/' + new_name + '.xml')
+                    log_message(err_filename, 'Unable to create ' + pmc_validation_result.pkg_path + '/' + new_name + '.xml')
+            else:
+                print('XML is not well formed: ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
+                log_message(err_filename, 'XML is not well formed: ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
+        else:
+            print('Unable to find ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
+            log_message(err_filename, 'Unable to find ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
+
+    def make_packages(self, xml_filename, ctrl_filename, xml_path, work_path, scielo_val_res, pmc_val_res):
+        report = PkgReport(scielo_val_res.pkg_path, scielo_val_res.report_path)
+
+        files = [xml_filename] if xml_filename else [f for f in os.listdir(xml_path) if f.endswith('.xml')]
+
+        for xml_filename in files:
+            print('\n== %s ==\n' % xml_filename)
+
+            xml_name = xml_filename.replace('.sgm.xml', '').replace('.xml', '')
+
+            wrk_path = work_path + '/' + xml_name
+
+            for path in [wrk_path, scielo_val_res.pkg_path, pmc_val_res.pkg_path]:
+                if os.path.isdir(path):
+                    for f in os.listdir(path):
+                        if os.path.isfile(path + '/' + f):
+                            os.unlink(path + '/' + f)
+                else:
+                    os.makedirs(path)
+
+            log_filename = scielo_val_res.report_path + '/' + xml_name + '.log'
+            err_filename = scielo_val_res.report_path + '/' + xml_name + '.err.txt'
+
+            for f in [log_filename, err_filename]:
+                if os.path.isfile(f):
+                    os.unlink(f)
+
+            log_message(err_filename, 'Report of files errors / DTD errors\n' + '-'*len('Report of files errors / DTD errors'))
+
+            new_name, log = self.normalizer.normalize_content(xml_path + '/' + xml_filename, xml_path, wrk_path, self.acron)
+            
+            log.append('\ncopy work folder files to package folders')
+            
+            for f in os.listdir(wrk_path):
+                shutil.copyfile(wrk_path + '/' + f, scielo_val_res.pkg_path + '/' + f)
+                log.append('copy to scielo: ' + f)
+                if not f.endswith('.jpg'):
+                    shutil.copyfile(wrk_path + '/' + f, pmc_val_res.pkg_path + '/' + f)
+                    log.append('copy to pmc   : ' + f)
+            
+            log_message(err_filename, '\n'.join(log))
 
             scielo_val_res.name(xml_name, new_name)
             pmc_val_res.name(xml_name, new_name)
@@ -2336,7 +2659,7 @@ def call_make_packages(args, version):
         sci_validator = CheckList('scielo', version, entities_table)
         pmc_validator = CheckList('pmc', version)
 
-        xml_pkg_mker = XPM(sci_validator, pmc_validator, acron, version, entities_table)
+        xml_pkg_mker = XPM5(sci_validator, pmc_validator, acron, version, entities_table)
         xml_pkg_mker.make_packages(xml_filename, ctrl_filename, xml_path, wrk_path, sci_val_res, pmc_val_res)
 
         #if ctrl_filename is None:
