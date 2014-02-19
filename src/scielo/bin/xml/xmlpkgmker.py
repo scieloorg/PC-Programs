@@ -1838,6 +1838,17 @@ class ContentValidation(object):
                 if dist > max_distance:
                     return 'WARNING: Check %s: %s and %s.' % (labels, previous, next)
 
+    def surname_validation(self, authors):
+        validation = []
+        for a in authors:
+            if ' ' in a.get('surname', ''):
+                validation.append(a.get('surname', ''))
+        if len(validation) > 0:
+            validation = 'WARNING: Invalid surnames: ' + ', '.join(validation)
+        else:
+            validation = ''
+        return validation
+
     def validations(self, expected_journal_meta, files):
         self.article_meta_validations = {}
         self.files_validations = ''
@@ -1888,6 +1899,9 @@ class ContentValidation(object):
 
             if self.article_meta['author']:
                 self.article_meta_validations['author'] = self._validate_required_data(self.article_meta['author'], ['given-names', 'surname'])
+                invalid_surname = self.surname_validation(self.article_meta['author'])
+                if len(invalid_surname) > 0:
+                    self.article_meta_validations['surnames'] = invalid_surname
 
             if not self.article_meta.get('award-id'):
                 ack = self.article_meta.get('ack', None)
@@ -1935,6 +1949,9 @@ class ContentValidation(object):
 
                 if ref['author']:
                     r['author'] = self._validate_required_data(ref['author'], ['given-names', 'surname'])
+                    invalid_surname = self.surname_validation(ref['author'])
+                    if len(invalid_surname) > 0:
+                        r['surnames'] = invalid_surname
 
                 r['authorship'] = self._validate_presence_of_at_least_one([ref.get('author', []), ref.get('collab', [])], ['author', 'collab'])
                 if ref['type'] == 'book':

@@ -1,4 +1,29 @@
-﻿4.0.075 - 28/01/2014
+﻿4.0.076 - 19/02/2014
+=======
+ - Milestone 4.0.076
+ - markup:
+   - (bug) generation of glossary
+   - (bug) fix problem as identifying automatically the table which has no footnote
+   - (bug) problem as loading the bars in Spanish
+   - (bug) too much col created when identifying table 
+   - (bug) adjustments in funding-group 
+   - (bug) adjustments in funding-statement
+   - (bug) values for article-type of sub-article
+   - (bug) urls were not automatically identified
+   - (bug) problem as deleting vancouv tag
+   - (bug) ref/@id were created with one digit
+   - deflist as floating
+   - list as floating
+   - .docx as a valid format
+   - new attribute in article: pagcount, in order, to generate page-count for roman numerals
+ - xml package maker:
+   - warning for surname with more than one word
+   - validate supplement in XML
+   - validations for sub-article (@id and @href)
+ - export
+   - bug when selecting the records using acronym which was not UPPER CASE
+
+4.0.075 - 28/01/2014
 =======
  - Mileston 4.0.075
  - markup:
