@@ -1720,21 +1720,20 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			</xsl:choose>
 		</xsl:variable>
 		<source xml:lang="{$lang}">
-			<xsl:apply-templates select="*|text()"/>
+			<xsl:apply-templates select="*|text()" mode="ignore-style"/>
 		</source>
 	</xsl:template>
-
 	<xsl:template match="sertitle | stitle | vstitle/stitle">
 		<source>
 			<xsl:choose>
 				<xsl:when test="normalize-space(text())!=''">
 					<xsl:apply-templates select="*|text()"/>
 				</xsl:when>
-				<xsl:when test="*[name()!='bold'] or *[name()!='italic']">
-					<xsl:apply-templates select="*|text()"/>
-				</xsl:when>
+				<xsl:when test="bold or italic">
+					<xsl:apply-templates select="*|text()" mode="ignore-style"/></xsl:when>
 				<xsl:otherwise>
-					<xsl:apply-templates select="*|text()" mode="ignore-style"/>
+					<xsl:apply-templates select="*|text()"/>
+					
 				</xsl:otherwise>
 			</xsl:choose>
 		</source>

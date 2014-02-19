@@ -1030,7 +1030,7 @@ class PkgReport(object):
         self.content_validations[filename] = ContentValidation(node, filename)
 
     def statistics(self, messages):
-        return '<div class="statistics"><p>Total of errors = %s</p><p>Total of warnings = %s</p></div>' % (str(len(messages.split('ERROR:')) - 1), str(len(messages.split('WARNING:')) - 1))
+        return '<div class="statistics"><p>Total of fatal errors = %s</p><p>Total of errors = %s</p><p>Total of warnings = %s</p></div>' % (str(len(messages.split('FATAL ERROR:')) - 1), str(len(messages.split('ERROR:')) - 1), str(len(messages.split('WARNING:')) - 1))
 
     def generate_articles_report(self, print_toc_report=True, param_report_filename_prefix=None):
         expected_journal_meta = {}
@@ -1090,7 +1090,7 @@ class PkgReport(object):
             content_validation.validations(expected_journal_meta, expected_files)
 
             toc = self._report_article_meta(content_validation)
-            errors_block = self._report_article_messages(content_validation)
+            errors_block = self._report_article_messages(content_validation, True)
 
             lists = ''
             for title, report_filename, columns, required, desirable in self.lists:
@@ -1194,11 +1194,11 @@ class PkgReport(object):
                     elif child in desirable_items:
                         row[child] = 'WARNING: Required data, if exists'
                 else:
-                    if not '>' in row[child]:
+                    if not(row[child].strip()[0:1] == '<' and row[child].strip()[-1:] == '>'):
                         if startswith_invalid_char(row[child]):
-                            row[child] = 'ERROR: "%s" starts with an invalid character' % row[child]
+                            row[child] = 'ERROR: %s starts with an invalid character (%s).' % (child, row[child][0:1])
                         if endswith_invalid_char(row[child]):
-                            row[child] = 'ERROR: "%s" ends with an invalid character' % row[child]
+                            row[child] = 'ERROR: %s ends with an invalid character (%s).' % (child, row[child][-1:])
             #print(row)
             rows.append(row)
         return rows
@@ -1208,7 +1208,7 @@ class PkgReport(object):
 
         if content_validation.xml is not None:
             data += '<h2>%s, %s (%s)</h2>' % (content_validation.issue_meta.get('journal-title', ''), content_validation.issue_meta.get('volume', ''), content_validation.issue_meta.get('issue', ''))
-            data += '<h3>%s</h3>' % content_validation.issue_meta.get('nlm-ta', '')
+            data += '<h3>nlm-ta: %s</h3>' % content_validation.issue_meta.get('nlm-ta', '')
             for item in ['eissn', 'pissn', 'publisher-name']:
                 s = content_validation.issue_meta.get(item, '')
                 if not s:
@@ -1574,8 +1574,9 @@ class ContentValidation(object):
 
             article_meta = self.xml.find('.//article-meta')
 
-            self.issue_meta['issue'] = article_meta.findtext('.//issue')
-            self.issue_meta['volume'] = article_meta.findtext('.//volume')
+            self.issue_meta['suppl'] = article_meta.findtext('./supplement')
+            self.issue_meta['issue'] = article_meta.findtext('./issue')
+            self.issue_meta['volume'] = article_meta.findtext('./volume')
             self.issue_label = '%s, %s (%s)' % (self.issue_meta.get('journal-title', ''), self.issue_meta.get('volume', ''), self.issue_meta.get('issue', ''))
 
             for tp in ['ppub', 'epub', 'epub-ppub']:
@@ -1642,8 +1643,11 @@ class ContentValidation(object):
             self.article_meta['aff'] = []
             for aff in article_meta.findall('.//aff'):
                 a = {'id': aff.attrib.get('id')}
-                for item in ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'original', 'aff-pmc']:
+                for item in ['orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3']:
                     a[item] = aff.findtext('institution[@content-type="' + item + '"]')
+                
+                for item in ['original', 'aff-pmc']:
+                    a[item] = etree.tostring(aff.find('institution[@content-type="' + item + '"]'))
                 a['email'] = aff.findtext('email')
                 a['country'] = aff.findtext('country')
                 a['city'] = aff.findtext('addr-line/named-content[@content-type="city"]')
@@ -1787,10 +1791,15 @@ class ContentValidation(object):
         if isinstance(data, (str, unicode)):
             #if data.strip() and not '<' in data:
             if data.strip():
-                if startswith_invalid_char(data):
-                    result.append('ERROR: ' + _scope + ' ' + label_list + ' starts with an invalid character: "' + data + '"')
-                if endswith_invalid_char(data):
-                    result.append('ERROR: ' + _scope + ' ' + label_list + ' ends with an invalid_character: "' + data + '"')
+                if not(data.strip()[0:1] == '<' and data.strip()[-1:] == '>'):
+                    
+                    if startswith_invalid_char(data):
+                        result.append('ERROR: ' + _scope + ' ' + label_list + ' starts with an invalid character (' + data[0:1] + ')')
+                    if endswith_invalid_char(data):
+                        print('.' + data + '.')
+                        print('.' + data.strip() + '.')
+
+                        result.append('ERROR: ' + _scope + ' ' + label_list + ' ends with an invalid character (' + data[-1:] + ')')
             else:
                 result.append(msg_type + ': ' + _scope + ' ' + status + ' ' + label_list)
         elif isinstance(data, dict):
@@ -1861,6 +1870,12 @@ class ContentValidation(object):
             if expected_journal_meta:
                 self.issue_meta_validations += self._validate_data(self.issue_meta, expected_journal_meta)
 
+            if not self.issue_meta['suppl'] is None:
+                self.issue_meta_validations += ['FATAL ERROR: do not use <supplement>, use <issue> to label supplement. E.g.: <issue>1 Suppl</issue>, <issue>1 Suppl 2</issue>, <issue>Suppl</issue>', '<issue>Suppl 1</issue>']
+            if not self._has_only_letter_number_space(self.issue_meta['issue']):
+                self.issue_meta_validations += ['FATAL ERROR: invalid characteres in issue tag: ' + self.issue_meta['issue']]
+            print(self.issue_meta_validations)
+            # cleanit
             self.article_meta_validations['dates'] = self._validate_presence_of_at_least_one([self.article_meta.get('date-epub', ''), self.article_meta.get('date-ppub', ''), self.article_meta.get('date-epub-ppub', '')], ['epub date', 'ppub date', 'epub-ppub date'])
 
             self.article_meta_validations['issns'] = self._validate_presence_of_at_least_one([self.issue_meta['pissn'], self.issue_meta['eissn']], ['print issn', 'e-issn'])
@@ -1870,9 +1885,9 @@ class ContentValidation(object):
                 if 0 < int(order) < 100000:
                     pass
                 else:
-                    self.article_meta_validations['order'] = 'ERROR: Invalid value for order. It must be a number 1-9999'
+                    self.article_meta_validations['order'] = 'FATAL ERROR: Invalid value for order. It must be a number 1-9999'
             else:
-                self.article_meta_validations['order'] = 'ERROR: Invalid value for order. It must be a number 1-9999'
+                self.article_meta_validations['order'] = 'FATAL ERROR: Invalid value for order. It must be a number 1-9999'
 
             required_items = ['article-title', 'subject', 'doi', 'fpage', 'license']
             for label in required_items:
@@ -1978,6 +1993,16 @@ class ContentValidation(object):
         if any([True for c in invalid_characteres if c in content]):
             return 'ERROR: Invalid characteres in %s (%s)' % (content, ' | '.join(invalid_characteres))
 
+    def _has_only_letter_number_space(self, content):
+        r = False
+        if len(content) > 0:
+            valid = 'abcdefghijklmnopqrstuvwxyz'
+            valid += valid.upper() + '1234567890 '
+            for item in valid:
+                content = content.replace(item, '')
+            r = (len(content) == 0)
+        return r
+
 
 class ValidationResult(object):
 
@@ -2072,8 +2097,8 @@ class Normalizer(object):
         f = open(xml_filename)
         content = f.read()
         f.close()
-
         test = content
+        content = content.replace(' '*2, ' '*1)
         content = convert_entities(content, self.entities_table)
         if not test == content:
             log.append('Convert entities.\n Done.')
