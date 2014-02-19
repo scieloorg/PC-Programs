@@ -809,6 +809,9 @@ class XMLMetadata:
 
     def new_name_and_href_list(self, acron, alternative_id=''):
         #usado pela versao XPM5
+        """
+        return (new name, [(@href, suffix + parent id)])
+        """
         new_name = self.format_name(self._metadata(), acron, alternative_id)
         href_filenames = self.xml_data_href_list()
         return (new_name, href_filenames)
@@ -947,7 +950,7 @@ class HRefReport(object):
         for href_key in sorted(href_dict.keys()):
             k += 1
             if len(href_dict[href_key]) > 1:
-                content += '<tr><td colspan="4">' + href_key + ' occures ' + str(len(href_dict[href_key])) + ' times</td></tr>'
+                content += '<tr><td colspan="4">' + href_key + ' occurres ' + str(len(href_dict[href_key])) + ' times</td></tr>'
             found = href_key in self.files
             if not found:
                 found = href_key in self.files_without_extensions
@@ -1646,7 +1649,7 @@ class ContentValidation(object):
                 a['city'] = aff.findtext('addr-line/named-content[@content-type="city"]')
                 a['state'] = aff.findtext('addr-line/named-content[@content-type="state"]')
 
-                a['xml'] = display_xml_in_html(aff)
+                a['xml'] = etree.tostring(aff)
                 self.article_meta['aff'].append(a)
 
             self.article_meta['abstract'] = self._node_xml_content(article_meta.find('.//abstract'))
@@ -1734,7 +1737,7 @@ class ContentValidation(object):
                     r['ext-link'] += [uri.text for uri in nodes]
 
                 r['cited'] = ref.findtext('.//date-in-citation[@content-type="access-date"]')
-                r['xml'] = display_xml_in_html(ref)
+                r['xml'] = etree.tostring(ref)
                 self.refs.append(r)
 
     def _node_xml(self, node):
@@ -2077,25 +2080,36 @@ class Normalizer(object):
             if is_sgmxml:
                 content = xml_content_transform(content, self.version_converter)
 
+            #new name and href list
             new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, xml_name)
-            
+
+            #href and new href list
             curr_and_new_href_list = self.generate_curr_and_new_href_list(xml_name, new_name, href_list)
+
+            # related files and href files list
+            not_found, related_files_list, href_files_list = self.matched_files(xml_name, new_name, curr_and_new_href_list, src_path)
+
             log.append('new name:' + new_name)
+            log.append('Total of related files: ' + str(len(related_files_list)))
+            log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(related_files_list)]))
+
+            log.append('Total of @href: ' + str(len(href_list)))
+            log.append('\n'.join(['   ' + c for c, n in sorted(href_list)]))
+
+            log.append('Total of @href files: ' + str(len(curr_and_new_href_list)))
+            log.append('\n'.join(['   ' + c + ' => ' + n for c, n in curr_and_new_href_list]))
+
+            log.append('Total of @href files found: ' + str(len(href_files_list)))
+            log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(href_files_list)]))
+
+            if len(not_found) > 0:
+                log.append('\nTotal of @href files not found:\n   ' + '\n  '.join(not_found))
 
             if len(curr_and_new_href_list) > 0:
-                log.append('\nReplace href values:')
-
-                log.append('\n'.join([c + ' => ' + n for c, n in curr_and_new_href_list]))
-
-            content = self.normalize_href(content, curr_and_new_href_list)
-
-            errors, related_files_list, href_files_list = self.matched_files(xml_name, new_name, curr_and_new_href_list, src_path)
-
-            if len(errors) > 0:
-                log.append('\n'.join(errors))
-
-            message = self.rename_files(related_files_list, href_files_list, src_path, dest_path)
-            log.append('\n'.join(message))
+                content = self.normalize_href(content, curr_and_new_href_list)
+                
+            jpg_created = self.rename_files(related_files_list, href_files_list, src_path, dest_path)
+            log.append('\n'.join(jpg_created))
 
             f = open(dest_path + '/' + new_name + '.xml', 'w')
             f.write(content)
@@ -2110,38 +2124,39 @@ class Normalizer(object):
             if xml_name in href:
                 s = href.replace(xml_name + '-', '')
                 if s[0:1] != suffix_and_id[0:1]:
-                    r.append((href, href.replace(xml_name + '-', new_name + '-' + suffix_and_id[0:1])))
+                    new = href.replace(xml_name + '-', new_name + '-' + suffix_and_id[0:1])
                 else:
-                    r.append((href, href.replace(xml_name, new_name)))
+                    new = href.replace(xml_name, new_name)
             else:
-                r.append((href, new_name + '-' + suffix_and_id[0:1] + href))
-        return r
+                new = new_name + '-' + suffix_and_id[0:1] + href
+
+            if new[new.rfind('.'):] in ['.jpg', '.tiff', '.eps', '.tiff']:
+                new = new[0:new.rfind('.')]
+            r.append((href, new))
+        return list(set(r))
 
     def matched_files(self, xml_name, new_name, curr_and_new_href_list, src_path):
+        """
+        return [(src file, new name)]
+        """
         href_files_list = []
-        related_files_list = []
-        errors = []
-
-        curr_and_new_href_list = {k:v for k, v in curr_and_new_href_list}
-        xml_name = xml_name.replace('.xml', '')
-
-        alternative = {f[0:f.rfind('.')]:v for f, v in curr_and_new_href_list.items()}
-
-        for f in os.listdir(src_path):
-            if os.path.isfile(src_path + '/' + f):
-                ext = f[f.rfind('.'):]
-                filename = f[0:f.rfind('.')]
-                if filename == xml_name:
-                    related_files_list.append((filename + ext, new_name + ext))
+        not_found = []
+        related_files_list = [(f, new_name + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(xml_name + '.')]
+        for curr, new in curr_and_new_href_list:
+            if os.path.isfile(src_path + '/' + curr):
+                href_files_list.append(curr, new)
+            else:
+                # curr and new has no extension
+                found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr + '.')]
+                if len(found) == 0:
+                    curr_noext = curr[0:curr.rfind('.')]
+                    found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr_noext + '.')]
+                if len(found) == 0:
+                    not_found.append(curr)
                 else:
-                    if filename in curr_and_new_href_list.keys():
-                        href_files_list.append((filename + ext, curr_and_new_href_list[filename] + ext))
-                    elif f in curr_and_new_href_list.keys():
-                        href_files_list.append((f, curr_and_new_href_list[f] + ext))
-                    elif filename in alternative.keys():
-                        href_files_list.append((f, alternative[filename]))
-                        
-        return (errors, related_files_list, href_files_list)
+                    href_files_list += found
+        href_files_list = sorted(list(set(href_files_list)))
+        return (not_found, related_files_list, href_files_list)
 
     def normalize_href(self, content, curr_and_new_href_list):
         #print(curr_and_new_href_list)
@@ -2152,15 +2167,13 @@ class Normalizer(object):
         return content
 
     def rename_files(self, related_files_list, href_files_list, src_path, dest_path):
-        result = []
-        result.append('\nRename files: from ' + src_path + ' to ' + dest_path)
-
+        jpg_created = []
         for curr, new in related_files_list:
             shutil.copyfile(src_path + '/' + curr, dest_path + '/' + new)
-            result.append(curr + ' => ' + new)
+            
         for curr, new in href_files_list:
             shutil.copyfile(src_path + '/' + curr, dest_path + '/' + new)
-            result.append(curr + ' => ' + new)
+            
             if IMG_CONVERTER:
                 ext = curr[curr.rfind('.'):]
                 if ext in ['.tiff', '.tif', '.eps']:
@@ -2168,8 +2181,8 @@ class Normalizer(object):
                     if not os.path.isfile(src_path + '/' + name + '.jpg'):
                         # converter para .jpg
                         if img_to_jpeg(dest_path + '/' + new, dest_path):
-                            result.append('created ' + new.replace(ext, '.jpg'))
-        return result
+                            jpg_created.append('created ' + new.replace(ext, '.jpg'))
+        return jpg_created
 
 
 class XPM(object):
@@ -2392,7 +2405,7 @@ class XPM(object):
                 if os.path.isfile(f):
                     os.unlink(f)
 
-            log_message(err_filename, 'Report of files errors / DTD errors\n' + '-'*len('Report of files errors / DTD errors'))
+            log_message(err_filename, 'Report of files and DTD errors\n' + '-'*len('Report of files and DTD errors'))
 
             not_jpg = self.create_wrk_path(xml_path, matched_files, wrk_path)
 
@@ -2510,16 +2523,11 @@ class XPM5(object):
             log_message(err_filename, 'Report of files errors / DTD errors\n' + '-'*len('Report of files errors / DTD errors'))
 
             new_name, log = self.normalizer.normalize_content(xml_path + '/' + xml_filename, xml_path, wrk_path, self.acron)
-            
-            log.append('\ncopy work folder files to package folders')
-            
             for f in os.listdir(wrk_path):
                 shutil.copyfile(wrk_path + '/' + f, scielo_val_res.pkg_path + '/' + f)
-                log.append('copy to scielo: ' + f)
                 if not f.endswith('.jpg'):
                     shutil.copyfile(wrk_path + '/' + f, pmc_val_res.pkg_path + '/' + f)
-                    log.append('copy to pmc   : ' + f)
-            
+
             log_message(err_filename, '\n'.join(log))
 
             scielo_val_res.name(xml_name, new_name)
