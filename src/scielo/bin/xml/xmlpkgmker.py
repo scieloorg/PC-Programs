@@ -14,6 +14,10 @@ from StringIO import StringIO
 xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'chem-struct', 'inline-supplementary-material', 'supplementary-material', ]
 sgml_tags_which_has_href = ['graphic', 'supplmat', ]
 
+NAMESPACES = {'mml': 'http://www.w3.org/TR/MathML3/'}
+for prefix, uri in NAMESPACES.items():
+    etree.register_namespace(prefix, uri)
+
 try:
     import Image
     IMG_CONVERTER = True
@@ -403,21 +407,45 @@ def xml_validate(xml_filename, result_filename, dtd_validation=False):
 
 
 def xml_is_well_formed(content):
+    return load_xml(content)
+
+
+def load_xml(content):
+    def handle_mml_entities(content):
+        if '<mml:' in content:
+            temp = content.replace('<mml:math', 'BREAKBEGINCONSERTA<mml:math')
+            temp = temp.replace('</mml:math>', '</mml:math>BREAKBEGINCONSERTA')
+            replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<mml:math' in item and '&' in item]
+            for repl in replaces:
+                content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
+        if '<math' in content:
+            temp = content.replace('<math', 'BREAKBEGINCONSERTA<math')
+            temp = temp.replace('</math>', '</math>BREAKBEGINCONSERTA')
+            replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<math' in item and '&' in item]
+            for repl in replaces:
+                content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
+        return content
+
+    NAMESPACES = {'mml': 'http://www.w3.org/TR/MathML3/'}
+    for prefix, uri in NAMESPACES.items():
+        etree.register_namespace(prefix, uri)
+
+    if not '<' in content:
+        # is a file
+        try:
+            r = etree.parse(content)
+        except Exception as e:
+            content = open(content, 'r').read()
+
     if '<' in content:
+        content = handle_mml_entities(content)
+
         try:
             r = etree.parse(StringIO(content))
         except Exception as e:
             print('XML is not well formed')
             print(e)
             r = None
-    else:
-        try:
-            r = etree.parse(content)
-        except Exception as e:
-            print('XML is not well formed')
-            print(e)
-            r = None
-    
     return r
 
 
@@ -523,20 +551,24 @@ class XMLString(object):
     def fix(self):
         self.content = self.content[0:self.content.rfind('>')+1]
         self.content = self.content[self.content.find('<'):]
+        self.content = self.content.replace(' '*2, ' '*1)
         if not xml_is_well_formed(self.content) is None:
-            f = open('./fix1.xml', 'w')
-            f.write(self.content)
-            f.close()
             self._fix_style_tags()
             if not xml_is_well_formed(self.content) is None:
-                f = open('./fix2.xml', 'w')
-                f.write(self.content)
-                f.close()
                 self._fix_open_close()
-                if not xml_is_well_formed(self.content) is None:
-                    f = open('./fix3.xml', 'w')
-                    f.write(self.content)
-                    f.close()
+                xml_is_well_formed(self.content)
+
+    def insert_mml_namespace(self):
+        if '</math>' in self.content:
+            temp = self.content.replace('<math', 'BREAKBEGINCONSERTA<math')
+            temp = temp.replace('</math>', '</math>BREAKBEGINCONSERTA')
+            replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<math' in item]
+            for repl in replaces:
+                new = repl
+                new = new.replace('<', '&LT;')
+                new = new.replace('&LT;/', '</mml:')
+                new = new.replace('&LT;', '<mml:')
+                self.content = self.content.replace(repl, new)
 
     def _fix_open_close(self):
         changes = []
@@ -611,20 +643,9 @@ class XMLString(object):
         return ''.join(parts)
 
 
-class Article(object):
-    def __init__(self, content):
-        try:
-            self.root = etree.parse(StringIO(content))
-        except:
-            self.root = None
-
-
 class XMLMetadata:
     def __init__(self, content):
-        try:
-            self.root = etree.parse(StringIO(content))
-        except:
-            self.root = None
+        self.root = load_xml(content)
 
     def _fix_issue_number(self, num, suppl=''):
         if num != '':
@@ -856,6 +877,7 @@ class XMLMetadata:
                     
         return href_list    
 
+
 class IDsReport(object):
     def __init__(self, node):
         self.root = node
@@ -1021,10 +1043,9 @@ class PkgReport(object):
                 self._load_file(xml_filename)
 
     def _load_file(self, filename):
-        try:
-            node = etree.parse(open(self.pkg_path + '/' + filename))
-        except:
-            node = None
+        node = load_xml(self.pkg_path + '/' + filename)
+        if node is None:
+            node = load_xml('<root></root>')
         self.filename_list.append(filename)
         self.xml_content[filename] = node
         self.content_validations[filename] = ContentValidation(node, filename)
@@ -2093,15 +2114,15 @@ class Normalizer(object):
         log = []
 
         is_sgmxml = xml_filename.endswith('.sgm.xml')
+        xml_name = os.path.basename(xml_filename)
+        xml_name = xml_name.replace('.sgm.xml', '').replace('.xml', '')
+        new_name = xml_name
+
+        log.append('xml name:' + xml_name)
 
         f = open(xml_filename)
         content = f.read()
         f.close()
-        test = content
-        content = content.replace(' '*2, ' '*1)
-        content = convert_entities(content, self.entities_table)
-        if not test == content:
-            log.append('Convert entities.\n Done.')
 
         # fix problems of XML format
         if is_sgmxml:
@@ -2109,19 +2130,28 @@ class Normalizer(object):
             xml_fix.fix()
             if not xml_fix.content == content:
                 content = xml_fix.content
-                #log.append(' Fixed SGML')
 
-        # get href of images and new name
-        xml_name = os.path.basename(xml_filename)
-        xml_name = xml_name.replace('.sgm.xml', '').replace('.xml', '')
-        new_name = xml_name
+            f = open(dest_path + '/_' + xml_name, 'w')
+            f.write(content)
+            f.close()
 
-        log.append('xml name:' + xml_name)
+            content = xml_content_transform(content, self.version_converter)
+            
+            f = open(dest_path + '/__' + xml_name, 'w')
+            f.write(content)
+            f.close()
+            
+            xml_fix = XMLString(content)
+            xml_fix.insert_mml_namespace()
+            if not xml_fix.content == content:
+                content = xml_fix.content
+                f = open(dest_path + '/___' + xml_name, 'w')
+                f.write(content)
+                f.close()
+
+        content = convert_entities(content, self.entities_table)
 
         if xml_is_well_formed(content) is not None:
-            if is_sgmxml:
-                content = xml_content_transform(content, self.version_converter)
-
             #new name and href list
             new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, xml_name)
 
@@ -2149,7 +2179,7 @@ class Normalizer(object):
 
             if len(curr_and_new_href_list) > 0:
                 content = self.normalize_href(content, curr_and_new_href_list)
-                
+
             jpg_created = self.rename_files(related_files_list, href_files_list, src_path, dest_path)
             log.append('\n'.join(jpg_created))
 
@@ -2158,6 +2188,10 @@ class Normalizer(object):
             f.close()
         else:
             log.append('XML is not well formed')
+
+            f = open(dest_path + '/incorrect_' + new_name + '.xml', 'w')
+            f.write(content)
+            f.close()
         return (new_name, log)
 
     def generate_curr_and_new_href_list(self, xml_name, new_name, href_list):
@@ -2415,8 +2449,8 @@ class XPM(object):
                 print('XML is not well formed: ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
                 log_message(err_filename, 'XML is not well formed: ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
         else:
-            print('Unable to find ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
-            log_message(err_filename, 'Unable to find ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
+            print('Problem to load XML file. See ' + scielo_validation_result.pkg_path + '/incorrect_' + new_name + '.xml')
+            log_message(err_filename, 'Problem to load XML file. See ' + scielo_validation_result.pkg_path + '/incorrect_' + new_name + '.xml')
 
     def pack_non_xml_files(self, wrk_path, curr_name, new_name, href_files_list, scielo_pkg_path, pmc_pkg_path, err_filename):
 
@@ -2532,8 +2566,8 @@ class XPM5(object):
                 print('XML is not well formed: ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
                 log_message(err_filename, 'XML is not well formed: ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
         else:
-            print('Unable to find ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
-            log_message(err_filename, 'Unable to find ' + scielo_validation_result.pkg_path + '/' + new_name + '.xml')
+            print('Problem to load XML file. See ' + scielo_validation_result.pkg_path + '/incorrect_' + new_name + '.xml')
+            log_message(err_filename, 'Problem to load XML file. See ' + scielo_validation_result.pkg_path + '/incorrect_' + new_name + '.xml')
 
     def make_packages(self, xml_filename, ctrl_filename, xml_path, work_path, scielo_val_res, pmc_val_res):
         report = PkgReport(scielo_val_res.pkg_path, scielo_val_res.report_path)

@@ -639,7 +639,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="@id"/>
 			<xsl:apply-templates select="label|sup"/>
 			<institution content-type="original"><xsl:apply-templates select="*|text()" mode="original"></xsl:apply-templates></institution>
-			<institution content-type="aff-pmc"><xsl:apply-templates select="*|text()" mode="aff-pmc"/></institution>
+			<institution content-type="aff-pmc"><xsl:apply-templates select="*[name()!='label' and name()!='sup']|text()" mode="aff-pmc"/></institution>
 			
 			<xsl:choose>
 				<xsl:when test="@orgname">
@@ -2207,14 +2207,14 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			<xsl:when test="@filename">
 				<graphic xlink:href="{@filename}"/>
 			</xsl:when>
-			<xsl:otherwise>
+			<xsl:when test="not(mmlmath) and not(texmath)">
 				<graphic xlink:href="{@id}"/><!-- @id -->
-			</xsl:otherwise>
+			</xsl:when>
 		</xsl:choose>
 		<xsl:if test=".//table">
 			<xsl:apply-templates select=".//table" mode="pmc-table"></xsl:apply-templates>
 		</xsl:if>
-
+		<xsl:apply-templates select="mmlmath|texmath"></xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="tr/td | tr/th" mode="pmc-table-cols">
 		<col>
@@ -2293,9 +2293,14 @@ et al.</copyright-statement>
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="mmlmath">
-		<mml:math>
-			<xsl:copy-of select="*"/>
-		</mml:math>
+		<xsl:choose>
+			<xsl:when test="*">
+				<xsl:copy-of select="*"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="." disable-output-escaping="yes"/>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="texmath">
 		<tex-math>
