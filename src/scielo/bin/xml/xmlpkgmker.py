@@ -2198,11 +2198,13 @@ class Normalizer(object):
         r = []
         for href, suffix_and_id in href_list:
             if xml_name in href:
-                s = href.replace(xml_name + '-', '')
-                if s[0:1] != suffix_and_id[0:1]:
-                    new = href.replace(xml_name + '-', new_name + '-' + suffix_and_id[0:1])
+                file_suffix = href.replace(xml_name, '')
+                if file_suffix[0:1] == '-':
+                    file_suffix = file_suffix[1:]
+                if file_suffix[0:1] != suffix_and_id[0:1]:
+                    new = new_name + '-' + suffix_and_id[0:1] + file_suffix
                 else:
-                    new = href.replace(xml_name, new_name)
+                    new = new_name + '-' + file_suffix
             else:
                 new = new_name + '-' + suffix_and_id[0:1] + href
 
