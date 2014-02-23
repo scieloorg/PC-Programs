@@ -88,12 +88,27 @@
       month m
       year y
       day d  
+    .//article-meta/pub-date[@pub-type='collection'] 64
+      season s
+      month m
+      year y
+      day d  
     .//article-meta/pub-date[@pub-type='ppub'] 64
       season s
       month m
       year y
       day d  
     .//article-meta/pub-date[@pub-type='epub-ppub'] 64
+      season s
+      month m
+      year y
+      day d  
+    .//article-meta/pub-date[@date-type='preprint'] epub
+      season s
+      month m
+      year y
+      day d  
+    .//article-meta/pub-date[@date-type='pub'] 64
       season s
       month m
       year y
