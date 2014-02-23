@@ -113,6 +113,8 @@ class ArticleRecords(object):
             new['l'] = item['language']
             self.records['f']['12'].append(new)
 
+        self.records['f']['601'] = self.trans_languages
+
         self.records['f']['70'] = []
 
         for item in article.affiliations:
@@ -305,17 +307,30 @@ class Article(object):
                     item['language'] = item['trans-title'].attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
 
                 k.append(item)
+
+            for subart in self.subarticles:
+                if subart.get('article-type') == 'translation':
+                    for node in subart.find('.//title-group'):
+                        item = {}
+                        item['article-title'] = node.findtext('article-title')
+                        item['subtitle'] = node.findtext('subtitle')
+                        if item['article-title'] is not None:
+                            item['language'] = item['article-title'].attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+
+                        k.append(item)
             self._trans_title = k
         return self._trans_title
 
+    @property
+    def trans_languages(self):
+        if self._trans_languages is None:
+            k = []
+            for node in self.subarticles:
+                k.append(node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang'))
+            self._trans_languages = k
+        return self._trans_languages
 
-    .//sub-article[@article-type='translation'] 601
-      @xml:lang _
-    .//sub-article[@article-type='translation']//front-stub//title-group 12
-      article-title _
-      article-title/xref x
-      subtitle s
-      article-title/@xml:lang l en
+
     .//article-meta//article-id[@pub-id-type='doi'] 237
     .//article-meta//article-id[@pub-id-type='other'] 8121
     .//article-meta/volume 31    
