@@ -43,7 +43,9 @@ ENTITIES_TABLE_FILENAME = CONFIG_ENT_TABLE_PATH + '/entities2char'
 
 
 def display_xml_in_html(node):
-    return '<pre>' + etree.tostring(node).replace('<', '&lt;').replace('>', '&gt;') + '</pre>'
+    if node is not None:
+        return '<pre>' + etree.tostring(node).replace('<', '&lt;').replace('>', '&gt;') + '</pre>'
+    return ''
 
 
 def startswith_invalid_char(content):
@@ -1668,13 +1670,13 @@ class ContentValidation(object):
                     a[item] = aff.findtext('institution[@content-type="' + item + '"]')
                 
                 for item in ['original', 'aff-pmc']:
-                    a[item] = etree.tostring(aff.find('institution[@content-type="' + item + '"]'))
+                    a[item] = self._node_xml(aff.find('institution[@content-type="' + item + '"]'))
                 a['email'] = aff.findtext('email')
                 a['country'] = aff.findtext('country')
                 a['city'] = aff.findtext('addr-line/named-content[@content-type="city"]')
                 a['state'] = aff.findtext('addr-line/named-content[@content-type="state"]')
 
-                a['xml'] = etree.tostring(aff)
+                a['xml'] = self._node_xml(aff)
                 self.article_meta['aff'].append(a)
 
             self.article_meta['abstract'] = self._node_xml_content(article_meta.find('.//abstract'))
@@ -1712,7 +1714,7 @@ class ContentValidation(object):
                 href = node.attrib.get('{http://www.w3.org/1999/xlink}href', None)
                 if href is None:
                     print('href not found???')
-                    print(etree.tostring(node))
+                    print(self._node_xml(node))
                 else:
                     self.href.append(href)
 
@@ -1762,7 +1764,7 @@ class ContentValidation(object):
                     r['ext-link'] += [uri.text for uri in nodes]
 
                 r['cited'] = ref.findtext('.//date-in-citation[@content-type="access-date"]')
-                r['xml'] = etree.tostring(ref)
+                r['xml'] = self._node_xml(ref)
                 self.refs.append(r)
 
     def _node_xml(self, node):
@@ -2576,6 +2578,14 @@ class XPM5(object):
 
         files = [xml_filename] if xml_filename else [f for f in os.listdir(xml_path) if f.endswith('.xml')]
 
+        for path in [scielo_val_res.pkg_path, pmc_val_res.pkg_path]:
+            if os.path.isdir(path):
+                for f in os.listdir(path):
+                    if os.path.isfile(path + '/' + f):
+                        os.unlink(path + '/' + f)
+            else:
+                os.makedirs(path)
+
         for xml_filename in files:
             print('\n== %s ==\n' % xml_filename)
 
@@ -2583,7 +2593,7 @@ class XPM5(object):
 
             wrk_path = work_path + '/' + xml_name
 
-            for path in [wrk_path, scielo_val_res.pkg_path, pmc_val_res.pkg_path]:
+            for path in [wrk_path]:
                 if os.path.isdir(path):
                     for f in os.listdir(path):
                         if os.path.isfile(path + '/' + f):
