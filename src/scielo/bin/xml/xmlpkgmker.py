@@ -1071,8 +1071,6 @@ class PkgReport(object):
                     order_list[order] = []
                     row_idx = '00000' + str(order)
                     row_idx = row_idx[-5:]
-            print('row_idx')
-            print(row_idx)
             # doi checking
             doi = content_validation.article_meta.get('doi', None)
             if doi:
@@ -1117,23 +1115,24 @@ class PkgReport(object):
 
         #issue_header +
         # doi, order, journal, sorted, unsorted.
+        print(pubdates)
         if print_toc_report:
             issue_errors = '<div class="duplicated_messages">'
             for k, v in doi_list.items():
-                if len(v) > 0:
-                    issue_errors += '<p class="error">ERROR: %s is duplicated: %s</p>' % (k, ', '.join(v))
+                if len(v) > 1:
+                    issue_errors += '<p class="error">ERROR: %s is duplicated in %s</p>' % (k, ', '.join(v))
             for k, v in order_list.items():
-                if len(v) > 0:
-                    issue_errors += '<p class="error">ERROR: %s is duplicated: %s</p>' % (k, ', '.join(v))
+                if len(v) > 1:
+                    issue_errors += '<p class="error">ERROR: %s is duplicated in %s</p>' % (k, ', '.join(v))
                 if k == 0:
                     issue_errors += '<p class="error">ERROR: %s is invalid value for %s</p>' % (k, ', '.join(v))
-            if len(pubdates) > 1:
-                issue_errors += '<p class="error">ERROR: All the articles must have the same value for issue pub-date, which is one of the type: pub, ppub, epub-ppub, collection.</p>' % (k, ', '.join(v))
+            if len(pubdates.items()) > 1:
+                issue_errors += '<p class="error">ERROR: All the articles must have the same value for issue pub-date, which is one of the type: pub, ppub, epub-ppub, collection.</p>'
                 for k, v in pubdates.items():
                     issue_errors += '<p class="error"> %s is a date in %s </p>' % (k, ', '.join(v))
             issue_errors += '</div>'
 
-            toc_content = self.statistics(all_articles_errors + issue_errors) + issue_header + issue_errors
+            toc_content = self.statistics(all_articles_errors + issue_errors) + issue_errors + issue_header
 
             keys = unordered.keys()
             keys.sort()
@@ -1594,7 +1593,7 @@ class ContentValidation(object):
                     d = [item if item is not None else '' for item in d]
                     if any(d):
                         self.article_meta['date-' + tp] = '%s/%s%s/%s' % tuple(d)
-
+            print(self.article_meta)
             # ------
             self.article_meta['filename'] = filename
             self.article_meta['article-type'] = article_node.attrib.get('article-type', '')
@@ -1751,11 +1750,14 @@ class ContentValidation(object):
                 self.refs.append(r)
 
     def issue_date(self):
+        print(self.article_meta)
         r = [self.article_meta.get('date-' + item) for item in ['ppub', 'epub-ppub', 'collection', 'pub']]
+        r = [item for item in r if item is not None]
         return r[0] if r is not None else ''
 
     def article_date(self):
         r = [self.article_meta.get('date-' + item) for item in ['epub', 'preprint']]
+        r = [item for item in r if item is not None]
         return r[0] if r is not None else ''
 
     def _node_xml(self, node):
