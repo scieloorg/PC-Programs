@@ -1019,7 +1019,7 @@ class PkgReport(object):
     def statistics(self, messages):
         return '<div class="statistics"><p>Total of fatal errors = %s</p><p>Total of errors = %s</p><p>Total of warnings = %s</p></div>' % (str(len(messages.split('FATAL ERROR:')) - 1), str(len(messages.split('ERROR:')) - 1), str(len(messages.split('WARNING:')) - 1))
 
-    def generate_articles_report(self, print_toc_report=True, param_report_filename_prefix=None):
+    def generate_articles_report(self, print_toc_report=True, old_names=None):
         expected_journal_meta = {}
         order_list = {}
         doi_list = {}
@@ -1029,46 +1029,55 @@ class PkgReport(object):
         issue_header = ''
         html_report = HTMLReport()
         issue_label = ''
-
-        errors_block = ''
+        pubdates = {}
+        individual_errors = ''
+        all_articles_errors = ''
 
         for filename in self.filename_list:
             content_validation = self.content_validations[filename]
-            if param_report_filename_prefix is None:
-                report_filename_prefix = filename.replace('.xml', '')
-            else:
-                report_filename_prefix = param_report_filename_prefix
+
+            report_filename_prefix = filename.replace('.xml', '')
+            if old_names is not None:
+                report_filename_prefix = old_names[filename]
+
             id_report_content = '<h1>Report of @id</h1>' + IDsReport(self.xml_content[filename]).generate_report()
             html_report._html(self.report_path + '/' + report_filename_prefix + '_ids.html', '', html_report._css('toc') + html_report._css('bicolortable'), id_report_content)
 
             href_report_content = '<h1>Report of @href and files</h1>' + HRefReport(self.xml_content[filename], os.listdir(self.pkg_path)).generate_report(content_validation.filename)
             html_report._html(self.report_path + '/' + report_filename_prefix + '_href.html', '', html_report._css('toc') + html_report._css('bicolortable'), href_report_content)
-            
+
             if expected_journal_meta == {}:
                 for k, v in content_validation.issue_meta.items():
                     expected_journal_meta[k] = v
             expected_files = [f[0:f.rfind('.')] for f in os.listdir(self.pkg_path)]
 
-            issue_errors = []
+            individual_fatal_errors = []
+            #pubdate checking
+            pubdate = content_validation.issue_date()
+            if not pubdate in pubdates.keys():
+                pubdates[pubdate] = []
+            pubdates[pubdate].append(filename)
             # order checking
             order = content_validation.article_meta.get('order', 0)
             if order == 0:
                 order_is_zero.append(content_validation.filename)
                 row_idx = content_validation.filename
-                issue_errors.append('<p class="error">ERROR: order must not be zero.</p>')
+                individual_fatal_errors.append('<p class="error">ERROR: order must not be zero.</p>')
             else:
                 if order in order_list.keys():
                     row_idx = content_validation.filename
-                    issue_errors.append('<p class="error">ERROR: order is duplicated.</p>')
+                    individual_fatal_errors.append('<p class="error">ERROR: order is duplicated.</p>')
                 else:
                     order_list[order] = []
                     row_idx = '00000' + str(order)
                     row_idx = row_idx[-5:]
+            print('row_idx')
+            print(row_idx)
             # doi checking
             doi = content_validation.article_meta.get('doi', None)
             if doi:
                 if doi in doi_list.keys():
-                    issue_errors.append('<p class="error">ERROR: doi is duplicated.</p>')
+                    individual_fatal_errors.append('<p class="error">ERROR: doi is duplicated.</p>')
                 else:
                     doi_list[doi] = []
                 doi_list[doi].append(content_validation.filename)
@@ -1076,59 +1085,64 @@ class PkgReport(object):
             # validations
             content_validation.validations(expected_journal_meta, expected_files)
 
-            toc = self._report_article_meta(content_validation)
-            errors_block = self._report_article_messages(content_validation, True)
+            individual_metadata = self._report_article_meta(content_validation)
+            individual_errors = self._report_article_messages(content_validation, True)
 
-            lists = ''
+            individual_lists = ''
             for title, report_filename, columns, required, desirable in self.lists:
                 items = self.data_for_list(report_filename, content_validation)
                 rows = self.data_in_table_format(content_validation.filename, items, columns, required, desirable)
-                lists += '<div class="list"><h1>' + title + '</h1>' + html_report.in_table_format(rows, columns) + '</div>'
+                individual_lists += '<div class="list"><h1>' + title + '</h1>' + html_report.in_table_format(rows, columns) + '</div>'
 
-            report_content = '<div class="article">' + toc + errors_block + '</div>' + lists
+            individual_header = ''.join(individual_fatal_errors) + individual_metadata
+            individual_stat = self.statistics(individual_errors + ''.join(individual_fatal_errors))
 
-            stat = self.statistics(errors_block)
+            individual_report_content = '<h1>' + report_filename_prefix + '</h1>' + individual_stat + issue_header + '<div class="article">' + individual_header + individual_errors + '</div>' + individual_lists + id_report_content + href_report_content
+
             if row_idx.isdigit():
-                order_ok[row_idx] = '<div class="article">' + toc + '</div>'
+                order_ok[row_idx] = '<div class="article">' + individual_header + '</div>'
             else:
-                issue_errors = ''
-                if len(issue_errors) > 0:
-                    stat = self.statistics(errors_block + ''.join(issue_errors))
-                unordered[row_idx] = '<div class="article">' + ''.join(issue_errors) + toc + '</div>'
+                unordered[row_idx] = '<div class="article">' + individual_header + '</div>'
 
             if not issue_header:
+                # only once
                 issue_header = self._report_journal_meta(content_validation)
 
             if not issue_label:
+                # only once
                 issue_label = content_validation.issue_label
 
-            html_report._html(self.report_path + '/' + report_filename_prefix + '.contents.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport') + html_report._css('bicolortable'), '<h1>' + report_filename_prefix + '</h1>' + stat + issue_header + report_content + id_report_content + href_report_content)
+            html_report._html(self.report_path + '/' + report_filename_prefix + '.contents.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport') + html_report._css('bicolortable'), individual_report_content)
+            all_articles_errors += individual_errors
 
         #issue_header +
         # doi, order, journal, sorted, unsorted.
-        issue_errors = '<div class="duplicated_messages">'
-        for k, v in doi_list.items():
-            if len(v) > 0:
-                issue_errors += '<p class="error">ERROR: %s is duplicated: %s</p>' % (k, ', '.join(v))
-        for k, v in order_list.items():
-            if len(v) > 0:
-                issue_errors += '<p class="error">ERROR: %s is duplicated: %s</p>' % (k, ', '.join(v))
-            if k == 0:
-                issue_errors += '<p class="error">ERROR: %s is invalid error</p>' % (k, ', '.join(v))
-        issue_errors += '</div>'
-
-        toc_content = self.statistics(errors_block + issue_errors) + issue_header
-
-        keys = unordered.keys()
-        keys.sort()
-        for key in keys:
-            toc_content += unordered[key]
-        keys = order_ok.keys()
-        keys.sort()
-        for key in keys:
-            toc_content += order_ok[key]
-
         if print_toc_report:
+            issue_errors = '<div class="duplicated_messages">'
+            for k, v in doi_list.items():
+                if len(v) > 0:
+                    issue_errors += '<p class="error">ERROR: %s is duplicated: %s</p>' % (k, ', '.join(v))
+            for k, v in order_list.items():
+                if len(v) > 0:
+                    issue_errors += '<p class="error">ERROR: %s is duplicated: %s</p>' % (k, ', '.join(v))
+                if k == 0:
+                    issue_errors += '<p class="error">ERROR: %s is invalid value for %s</p>' % (k, ', '.join(v))
+            if len(pubdates) > 1:
+                issue_errors += '<p class="error">ERROR: All the articles must have the same value for issue pub-date, which is one of the type: pub, ppub, epub-ppub, collection.</p>' % (k, ', '.join(v))
+                for k, v in pubdates.items():
+                    issue_errors += '<p class="error"> %s is a date in %s </p>' % (k, ', '.join(v))
+            issue_errors += '</div>'
+
+            toc_content = self.statistics(all_articles_errors + issue_errors) + issue_header + issue_errors
+
+            keys = unordered.keys()
+            keys.sort()
+            for key in keys:
+                toc_content += unordered[key]
+            keys = order_ok.keys()
+            keys.sort()
+            for key in keys:
+                toc_content += order_ok[key]
             html_report._html(self.report_path + '/toc.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport'), '<h1>' + issue_label + '</h1>' + toc_content)
 
     def data_for_list(self, report_filename, content_validation):
@@ -1220,7 +1234,7 @@ class PkgReport(object):
 
             data += '<p class="doi">%s</p>' % content_validation.article_meta.get('doi', '')
 
-            for item in ['date-epub', 'date-ppub', 'date-epub-ppub']:
+            for item in ['date-epub', 'date-ppub', 'date-epub-ppub', 'date-collection', 'date-pub', 'date-preprint']:
                 data += '<p>' + item + ': ' + str(content_validation.article_meta.get(item, '')) + '</p>'
             data += '<p class="id">%s [fpage: <span class="fpage">%s</span> | fpage/@seq: <span class="fpage_seq">%s</span> | .//article-id[@pub-id-type="other"]: <span class="other-id">%s</span>]</p>' % (content_validation.article_meta['order'], content_validation.article_meta.get('fpage', ''), content_validation.article_meta.get('fpage_seq', ''), content_validation.article_meta.get('other id', ''))
             data += '<p class="fpage">pages: %s</p>' % (content_validation.article_meta.get('fpage', '') + '-' + content_validation.article_meta.get('lpage', ''))
@@ -1566,15 +1580,20 @@ class ContentValidation(object):
             self.issue_meta['volume'] = article_meta.findtext('./volume')
             self.issue_label = '%s, %s (%s)' % (self.issue_meta.get('journal-title', ''), self.issue_meta.get('volume', ''), self.issue_meta.get('issue', ''))
 
-            for tp in ['ppub', 'epub', 'epub-ppub']:
+            for tp in ['ppub', 'epub', 'epub-ppub', 'collection']:
                 node = article_meta.find('.//pub-date[@pub-type="' + tp + '"]')
-                if node is None:
-                    d = ['', '', '', '']
-                else:
-                    d = []
-                    for elem in ['day', 'month', 'season', 'year']:
-                        d.append(node.findtext(elem) if node.findtext(elem) else '')
-                self.article_meta['date-' + tp] = '%s/%s%s/%s' % tuple(d)
+                if not node is None:
+                    d = [node.findtext(elem) for elem in ['day', 'month', 'season', 'year']]
+                    d = [item if item is not None else '' for item in d]
+                    if any(d):
+                        self.article_meta['date-' + tp] = '%s/%s%s/%s' % tuple(d)
+            for tp in ['pub', 'preprint']:
+                node = article_meta.find('.//pub-date[@date-type="' + tp + '"]')
+                if not node is None:
+                    d = [node.findtext(elem) for elem in ['day', 'month', 'season', 'year']]
+                    d = [item if item is not None else '' for item in d]
+                    if any(d):
+                        self.article_meta['date-' + tp] = '%s/%s%s/%s' % tuple(d)
 
             # ------
             self.article_meta['filename'] = filename
@@ -1731,6 +1750,14 @@ class ContentValidation(object):
                 r['xml'] = self._node_xml(ref)
                 self.refs.append(r)
 
+    def issue_date(self):
+        r = [self.article_meta.get('date-' + item) for item in ['ppub', 'epub-ppub', 'collection', 'pub']]
+        return r[0] if r is not None else ''
+
+    def article_date(self):
+        r = [self.article_meta.get('date-' + item) for item in ['epub', 'preprint']]
+        return r[0] if r is not None else ''
+
     def _node_xml(self, node):
         if not node is None:
             return etree.tostring(node)
@@ -1811,9 +1838,9 @@ class ContentValidation(object):
         return self._validate_presence_data('ERROR', 'Required', data, required, scope)
 
     def _validate_presence_of_at_least_one(self, data, labels):
-        if not any([True for item in data if item]):
+        if not any(data):
             return 'ERROR: Required one of ' + ' | '.join(labels)
-
+        
     def _validate_previous_and_next(self, previous, next, labels, max_distance=None):
         if previous is None:
             previous = 0
@@ -1861,10 +1888,9 @@ class ContentValidation(object):
                 self.issue_meta_validations += ['FATAL ERROR: do not use <supplement>, use <issue> to label supplement. E.g.: <issue>1 Suppl</issue>, <issue>1 Suppl 2</issue>, <issue>Suppl</issue>', '<issue>Suppl 1</issue>']
             if not self._has_only_letter_number_space(self.issue_meta['issue']):
                 self.issue_meta_validations += ['FATAL ERROR: invalid characteres in issue tag: ' + self.issue_meta['issue']]
-            print(self.issue_meta_validations)
+            #print(self.issue_meta_validations)
             # cleanit
-            self.article_meta_validations['dates'] = self._validate_presence_of_at_least_one([self.article_meta.get('date-epub', ''), self.article_meta.get('date-ppub', ''), self.article_meta.get('date-epub-ppub', '')], ['epub date', 'ppub date', 'epub-ppub date'])
-
+            self.article_meta_validations['dates'] = self._validate_presence_of_at_least_one([self.article_meta.get('date-epub'), self.article_meta.get('date-ppub'), self.article_meta.get('date-epub-ppub'), self.article_meta.get('date-collection'), self.article_meta.get('date-pub'), self.article_meta.get('date-preprint')], ['epub date', 'ppub date', 'epub-ppub date', 'collection date', 'pub date', 'preprint date'])
             self.article_meta_validations['issns'] = self._validate_presence_of_at_least_one([self.issue_meta['pissn'], self.issue_meta['eissn']], ['print issn', 'e-issn'])
 
             order = self.article_meta.get('order', '0')
@@ -1955,7 +1981,7 @@ class ContentValidation(object):
                     if len(invalid_surname) > 0:
                         r['surnames'] = invalid_surname
 
-                r['authorship'] = self._validate_presence_of_at_least_one([ref.get('author', []), ref.get('collab', [])], ['author', 'collab'])
+                r['authorship'] = self._validate_presence_of_at_least_one([ref.get('author'), ref.get('collab')], ['author', 'collab'])
                 if ref['type'] == 'book':
                     r['publisher'] = self._validate_required_data(ref, ['publisher-name', 'publisher-loc'])
                 if ref['type'] == 'web':
@@ -2418,10 +2444,9 @@ class XPM(object):
         log_images_errors(err_filename, 'Required files', expected_files)
 
     def make_packages(self, xml_filename, ctrl_filename, xml_path, work_path, scielo_val_res, pmc_val_res):
-
+        old_names = {}
         files = [xml_filename] if xml_filename else [f for f in os.listdir(xml_path) if f.endswith('.xml')]
-
-        report = PkgReport(scielo_val_res.pkg_path, scielo_val_res.report_path)
+        new_name = None
         for xml_filename in files:
             print('\n== %s ==\n' % xml_filename)
 
@@ -2444,7 +2469,7 @@ class XPM(object):
             log_images_errors(err_filename, 'JPG were not converted', not_jpg)
 
             new_name, href_files_list = self.normalize_xml(wrk_path + '/' + xml_filename, scielo_val_res.pkg_path, log_filename)
-
+            old_names[new_name + '.xml'] = xml_name
             self.pack_non_xml_files(wrk_path, xml_name, new_name, href_files_list, scielo_val_res.pkg_path, pmc_val_res.pkg_path, err_filename)
 
             scielo_val_res.name(xml_name, new_name)
@@ -2452,22 +2477,21 @@ class XPM(object):
 
             self.validate_packages(xml_name, new_name, scielo_val_res, pmc_val_res, err_filename, ctrl_filename)
 
-            report.load_data(new_name + '.xml')
+        report = PkgReport(scielo_val_res.pkg_path, scielo_val_res.report_path)
 
-            more_than_one_article = (ctrl_filename is None)
-
-            if new_name == xml_name:
-                report.generate_articles_report(more_than_one_article)
-            else:
-                report.generate_articles_report(more_than_one_article, xml_name)
-            if more_than_one_article:
-                report.generate_lists()
-
-        if ctrl_filename is not None:
+        if ctrl_filename is None:
+            report.load_data()
+            report.generate_articles_report(True, old_names)
+            report.generate_lists()
+        else:
             if not os.path.isfile(ctrl_filename):
                 f = open(ctrl_filename, 'w')
                 f.write('Finished')
                 f.close()
+
+            if new_name is not None:
+                report.load_data(new_name + '.xml')
+                report.generate_articles_report(False, old_names)
 
 
 class XPM5(object):
@@ -2526,7 +2550,7 @@ class XPM5(object):
             log_message(err_filename, 'Problem to load XML file. See ' + scielo_validation_result.pkg_path + '/incorrect_' + new_name + '.xml')
 
     def make_packages(self, xml_filename, ctrl_filename, xml_path, work_path, scielo_val_res, pmc_val_res):
-        report = PkgReport(scielo_val_res.pkg_path, scielo_val_res.report_path)
+        old_names = {}
 
         files = [xml_filename] if xml_filename else [f for f in os.listdir(xml_path) if f.endswith('.xml')]
 
@@ -2568,6 +2592,8 @@ class XPM5(object):
                 if not f.endswith('.jpg'):
                     shutil.copyfile(wrk_path + '/' + f, pmc_val_res.pkg_path + '/' + f)
 
+            old_names[new_name + '.xml'] = xml_name
+
             log_message(err_filename, '\n'.join(log))
 
             scielo_val_res.name(xml_name, new_name)
@@ -2575,22 +2601,21 @@ class XPM5(object):
 
             self.validate_packages(xml_name, new_name, scielo_val_res, pmc_val_res, err_filename, ctrl_filename)
 
-            report.load_data(new_name + '.xml')
-
-            more_than_one_article = (ctrl_filename is None)
-
-            if new_name == xml_name:
-                report.generate_articles_report(more_than_one_article)
-            else:
-                report.generate_articles_report(more_than_one_article, xml_name)
-            if more_than_one_article:
-                report.generate_lists()
-
-        if ctrl_filename is not None:
+        report = PkgReport(scielo_val_res.pkg_path, scielo_val_res.report_path)
+        if ctrl_filename is None:
+            # o prefixo dos nomes do arquivos dos relatorios devem ser igual ao nome do xml do pacote
+            report.load_data()
+            report.generate_articles_report(True, old_names)
+            report.generate_lists()
+        else:
             if not os.path.isfile(ctrl_filename):
                 f = open(ctrl_filename, 'w')
                 f.write('Finished')
                 f.close()
+            # o prefixo dos nomes do arquivos dos relatorios devem ser igual ao nome do xml original (old_names)
+            if new_name is not None:
+                report.load_data(new_name + '.xml')
+                report.generate_articles_report(False, old_names)
 
 
 def setup_for_markup(sgmxml_filename):
