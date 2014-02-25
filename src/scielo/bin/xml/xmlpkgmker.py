@@ -14,10 +14,6 @@ from StringIO import StringIO
 xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'chem-struct', 'inline-supplementary-material', 'supplementary-material', ]
 sgml_tags_which_has_href = ['graphic', 'supplmat', ]
 
-NAMESPACES = {'mml': 'http://www.w3.org/TR/MathML3/'}
-for prefix, uri in NAMESPACES.items():
-    etree.register_namespace(prefix, uri)
-
 try:
     import Image
     IMG_CONVERTER = True
@@ -413,25 +409,7 @@ def xml_is_well_formed(content):
 
 
 def load_xml(content):
-    def handle_mml_entities(content):
-        if '<mml:' in content:
-            temp = content.replace('<mml:math', 'BREAKBEGINCONSERTA<mml:math')
-            temp = temp.replace('</mml:math>', '</mml:math>BREAKBEGINCONSERTA')
-            replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<mml:math' in item and '&' in item]
-            for repl in replaces:
-                content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
-        if '<math' in content:
-            temp = content.replace('<math', 'BREAKBEGINCONSERTA<math')
-            temp = temp.replace('</math>', '</math>BREAKBEGINCONSERTA')
-            replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<math' in item and '&' in item]
-            for repl in replaces:
-                content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
-        return content
-
-    NAMESPACES = {'mml': 'http://www.w3.org/TR/MathML3/'}
-    for prefix, uri in NAMESPACES.items():
-        etree.register_namespace(prefix, uri)
-
+    
     if not '<' in content:
         # is a file
         try:
@@ -440,8 +418,6 @@ def load_xml(content):
             content = open(content, 'r').read()
 
     if '<' in content:
-        content = handle_mml_entities(content)
-
         try:
             r = etree.parse(StringIO(content))
         except Exception as e:
@@ -559,18 +535,6 @@ class XMLString(object):
             if not xml_is_well_formed(self.content) is None:
                 self._fix_open_close()
                 xml_is_well_formed(self.content)
-
-    def insert_mml_namespace(self):
-        if '</math>' in self.content:
-            temp = self.content.replace('<math', 'BREAKBEGINCONSERTA<math')
-            temp = temp.replace('</math>', '</math>BREAKBEGINCONSERTA')
-            replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<math' in item]
-            for repl in replaces:
-                new = repl
-                new = new.replace('<', '&LT;')
-                new = new.replace('&LT;/', '</mml:')
-                new = new.replace('&LT;', '<mml:')
-                self.content = self.content.replace(repl, new)
 
     def _fix_open_close(self):
         changes = []
@@ -2124,6 +2088,7 @@ class Normalizer(object):
 
         f = open(xml_filename)
         content = f.read()
+        content = content.replace('mml:', '')
         f.close()
 
         # fix problems of XML format
@@ -2133,24 +2098,11 @@ class Normalizer(object):
             if not xml_fix.content == content:
                 content = xml_fix.content
 
-            f = open(dest_path + '/_' + xml_name, 'w')
-            f.write(content)
-            f.close()
-
             content = xml_content_transform(content, self.version_converter)
-            
-            f = open(dest_path + '/__' + xml_name, 'w')
-            f.write(content)
-            f.close()
-            
+
             xml_fix = XMLString(content)
-            xml_fix.insert_mml_namespace()
             if not xml_fix.content == content:
                 content = xml_fix.content
-                f = open(dest_path + '/___' + xml_name, 'w')
-                f.write(content)
-                f.close()
-
         content = convert_entities(content, self.entities_table)
 
         if xml_is_well_formed(content) is not None:
