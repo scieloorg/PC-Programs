@@ -1,4 +1,4 @@
-﻿4.0.076 - 19/02/2014
+﻿4.0.076 - 26/02/2014
 =======
  - Milestone 4.0.076
  - markup:
@@ -17,6 +17,7 @@
    - .docx as a valid format
    - new attribute in article: pagcount, in order, to generate page-count for roman numerals
  - xml package maker:
+   - (bug) display the all the identified pub-dates
    - warning for surname with more than one word
    - validate supplement in XML
    - validations for sub-article (@id and @href)

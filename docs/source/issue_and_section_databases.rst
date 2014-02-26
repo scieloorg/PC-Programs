@@ -1,5 +1,3 @@
-SciELO PC Programs' documentation
-=================================
 
 Databases
 =========

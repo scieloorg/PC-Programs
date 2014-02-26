@@ -4,7 +4,7 @@ import random
 import os
 import shutil
 import tempfile
-
+from datetime import datetime
 import xml.etree.ElementTree as etree
 
 from StringIO import StringIO
@@ -409,14 +409,21 @@ def xml_is_well_formed(content):
 
 
 def load_xml(content):
-    
+    def ignore_entities_in_math(content):
+        if '<math' in content:
+            temp = content.replace('<math', 'BREAKBEGINCONSERTA<math').replace('</math>', '</math>BREAKBEGINCONSERTA')
+            splited = temp.split('BREAKBEGINCONSERTA')
+            replaces = [(repl, repl.replace('&', '_MATHENT_')) for repl in splited if '</math>' in repl]
+            for find, replace in replaces:
+                content = content.replace(find, replace)
+        return content
     if not '<' in content:
         # is a file
         try:
             r = etree.parse(content)
         except Exception as e:
             content = open(content, 'r').read()
-
+    content = ignore_entities_in_math(content)
     if '<' in content:
         try:
             r = etree.parse(StringIO(content))
@@ -1110,26 +1117,25 @@ class PkgReport(object):
                 # only once
                 issue_label = content_validation.issue_label
 
-            html_report._html(self.report_path + '/' + report_filename_prefix + '.contents.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport') + html_report._css('bicolortable'), individual_report_content)
+            html_report._html(self.report_path + '/' + report_filename_prefix + '.contents.html', 'Report of contents validations required by SciELO', html_report._css('toc') + html_report._css('datareport') + html_report._css('bicolortable'), individual_report_content)
             all_articles_errors += individual_errors
 
         #issue_header +
         # doi, order, journal, sorted, unsorted.
-        print(pubdates)
         if print_toc_report:
-            issue_errors = '<div class="duplicated_messages">'
+            issue_errors = '<div class="issue-messages">'
             for k, v in doi_list.items():
                 if len(v) > 1:
-                    issue_errors += '<p class="error">ERROR: %s is duplicated in %s</p>' % (k, ', '.join(v))
+                    issue_errors += '<p>ERROR: %s is duplicated in %s</p>' % (k, ', '.join(v))
             for k, v in order_list.items():
                 if len(v) > 1:
-                    issue_errors += '<p class="error">ERROR: %s is duplicated in %s</p>' % (k, ', '.join(v))
+                    issue_errors += '<p>ERROR: %s is duplicated in %s</p>' % (k, ', '.join(v))
                 if k == 0:
-                    issue_errors += '<p class="error">ERROR: %s is invalid value for %s</p>' % (k, ', '.join(v))
+                    issue_errors += '<p>ERROR: %s is invalid value for %s</p>' % (k, ', '.join(v))
             if len(pubdates.items()) > 1:
-                issue_errors += '<p class="error">ERROR: All the articles must have the same value for issue pub-date, which is one of the type: pub, ppub, epub-ppub, collection.</p>'
+                issue_errors += '<p>FATAL ERROR: All the articles must have the same value for pub-date/@date-type=pub or pub-date/@pub-type= ppub | epub-ppub | collection.</p>'
                 for k, v in pubdates.items():
-                    issue_errors += '<p class="error"> %s is a date in %s </p>' % (k, ', '.join(v))
+                    issue_errors += '<p> %s is a date in %s </p>' % (k, ', '.join(v))
             issue_errors += '</div>'
 
             toc_content = self.statistics(all_articles_errors + issue_errors) + issue_errors + issue_header
@@ -1142,7 +1148,7 @@ class PkgReport(object):
             keys.sort()
             for key in keys:
                 toc_content += order_ok[key]
-            html_report._html(self.report_path + '/toc.html', 'Report of contents validations', html_report._css('toc') + html_report._css('datareport'), '<h1>' + issue_label + '</h1>' + toc_content)
+            html_report._html(self.report_path + '/toc.html', 'Report of contents validations required by SciELO', html_report._css('toc') + html_report._css('datareport'), '<h1>' + issue_label + '</h1>' + toc_content)
 
     def data_for_list(self, report_filename, content_validation):
         items = []
@@ -1410,8 +1416,8 @@ class HTMLReport(object):
 
     def _html(self, filename, title, css_content, body):
         header = '<header><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>' + title + '</title><style>' + css_content + '</style></header>'
-
-        html = '<html>%s<body><h1>%s</h1>%s</body></html>' % (header, title, body)
+        procdate = datetime.now().isoformat()
+        html = '<html>%s<body><p>%s %s</p><h1>%s</h1>%s</body></html>' % (header, procdate[0:10], procdate[11:19], title, body)
 
         import codecs
 
@@ -1585,15 +1591,14 @@ class ContentValidation(object):
                     d = [node.findtext(elem) for elem in ['day', 'month', 'season', 'year']]
                     d = [item if item is not None else '' for item in d]
                     if any(d):
-                        self.article_meta['date-' + tp] = '%s/%s%s/%s' % tuple(d)
+                        self.article_meta['date-' + tp] = '%s / %s%s / %s' % tuple(d)
             for tp in ['pub', 'preprint']:
                 node = article_meta.find('.//pub-date[@date-type="' + tp + '"]')
                 if not node is None:
                     d = [node.findtext(elem) for elem in ['day', 'month', 'season', 'year']]
                     d = [item if item is not None else '' for item in d]
                     if any(d):
-                        self.article_meta['date-' + tp] = '%s/%s%s/%s' % tuple(d)
-            print(self.article_meta)
+                        self.article_meta['date-' + tp] = '%s / %s%s / %s' % tuple(d)
             # ------
             self.article_meta['filename'] = filename
             self.article_meta['article-type'] = article_node.attrib.get('article-type', '')
@@ -1750,7 +1755,6 @@ class ContentValidation(object):
                 self.refs.append(r)
 
     def issue_date(self):
-        print(self.article_meta)
         r = [self.article_meta.get('date-' + item) for item in ['ppub', 'epub-ppub', 'collection', 'pub']]
         r = [item for item in r if item is not None]
         return r[0] if r is not None else ''
