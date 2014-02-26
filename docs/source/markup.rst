@@ -102,8 +102,8 @@ Remove the incorrect item and inform the right path corresponding to c:\\scielo\
 .. image:: img/markup_habilitarmacro2.jpg
 
 
-Starting the markup of a file
------------------------------
+Opening a file
+--------------
 
 #. Open only one file of article or a text file (.doc or .html).
 
