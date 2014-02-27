@@ -27,13 +27,13 @@ The code of sections are formed by the `Journal acronym <titlemanager_title.html
 
 The title of the sections may or not be in all the languages of the interface.
 
-.. image:: img/01_sec_lista.jpg
+.. image:: img/titlemanager_section_list.jpg
 
 
 The list can be sorted, by clicking on any column (seccode and languages: English, Portuguese, Spanish). 
 Example: click on the English column.
 
-.. image:: img/01_sec_ordem.jpg
+.. image:: img/titlemanager_section_sort_list.jpg
 
 
 Creating a section
@@ -42,12 +42,12 @@ Creating a section
 1. Register the section code according to the `acronym format <titlemanager_title.html#acronym>`_,
 followed by 3 digits number, in any order. The only rule is it can not be repeated.
 
-.. image:: img/01_sec_code.jpg
+.. image:: img/titlemanager_section_seccode.jpg
 
 
 2. Register the sections title in the languages, if applicable.
 
-.. image:: img/01_sec_titles.jpg
+.. image:: img/titlemanager_section_sectitles.jpg
 
 
 3. Click on Insert button
@@ -59,12 +59,12 @@ Editing the section
 
 1. Click on the row of the section to edit. The seccoode and the section titles are displayed in the fields.
 
-.. image:: img/01_sec_edition.jpg
+.. image:: img/titlemanager_section_edit.jpg
 
 2. Edit the section titles
 3. Click on Insert button
 
-.. image:: img/01_sec_insert.jpg
+.. image:: img/titlemanager_section_insert.jpg
 
 4. Click on Save button
 
@@ -74,12 +74,9 @@ Deleting a section
 
 1. Click on the row of the section to edit. The seccoode and the section titles are displayed in the fields.
 
-.. image:: img/01_sec_edition.jpg
+.. image:: img/titlemanager_section_remove.jpg
 
 2. Click on Remove button
-
-    Figure 7 - Remove button
-
 3. Click on Save button
 
 

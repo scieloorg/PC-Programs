@@ -41,7 +41,7 @@ It contains the data of the Publisher and the prefix given by CrossRef, accordin
    INSTITUTION SPACE E-MAIL SPACE PREFIX
 
 
-   .. image:: img/en/xml_scielo_doiconf.jpg
+   .. image:: img/xml_scielo_doiconf.jpg
  
 File config\\config.seq
 .......................
@@ -51,7 +51,7 @@ The file config\config.seq is to inform to the program which articles or text mu
    Acronym space sectionId
 
  
-   .. image:: img/en/xml_scielo_scilista.jpg
+   .. image:: img/xml_scielo_scilista.jpg
 
 
 File journals\\journals.seq
@@ -69,7 +69,7 @@ Its format is:
 One line for each journal.
 
 
-    .. image:: img/en/xml_scielo_journal.jpg
+    .. image:: img/xml_scielo_journal.jpg
 
  
 Executing
@@ -77,12 +77,12 @@ Executing
 
 It has to be executed using the command line in DOS. 
 
-    .. image:: img/en/xml_scielo_doscommand.jpg
+    .. image:: img/xml_scielo_doscommand.jpg
 
  
 Go to the folder where this program is installed. E.g.: c:\\scielo\\xml_scielo\\proc\\.
 
-    .. image:: img/en/xml_scielo_doscommand2.jpg
+    .. image:: img/xml_scielo_doscommand2.jpg
 
  
 In proc you will find three scripts:
@@ -92,7 +92,7 @@ In proc you will find three scripts:
 - GenerateXML_PubMed.bat: generates XML to PubMed
 
 
-    .. image:: img/en/xml_scielo_doscommand3.jpg
+    .. image:: img/xml_scielo_doscommand3.jpg
 
 
 Provide a list similar to scilist, to execute any of them.
@@ -100,7 +100,7 @@ Provide a list similar to scilist, to execute any of them.
 The program will open the scilist file and you have to check it, and include or remove lines, according to what you want to generate.
 
 
-    .. image:: img/en/xml_scielo_doscommand4.jpg
+    .. image:: img/xml_scielo_doscommand4.jpg
 
 
 To generate also the XML file which contains journal data, journals_<acronimo>.xml, add one more parameter “YES”: 

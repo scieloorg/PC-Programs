@@ -19,11 +19,15 @@ Executed from Markup Program
 
 .. image:: img/markup_operations_bar.png
 
-.. image:: img/markup_operations_parser.png
+
+To execute the SGML Parser from Markup, click on the button:
+
+.. image:: img/markup_operations_bar_parser.jpg
+
 
 The file, which is open in the Markup program, is saved as .txt and is open in SGML Parser program.
 
-.. image:: img/parser_01.jpg
+.. image:: img/parser_open_file.jpg
 
 
 Executed embedded in Converter
@@ -33,6 +37,7 @@ Converter uses SGML Parser to validate the files but also to get the identified 
 
 During this process, some markup errors can be found.
 To view the errors:
+
 1. open the SGML Parser program as stand-alone application
 2. open the \*.sci file
 3. execute the program
@@ -42,7 +47,7 @@ Executed as stand-alone application
 
 Open the SGML Parser program using the Windows menu.
 
-.. image:: img/markup_abrir_programa.jpg
+.. image:: img/scielo_menu.png
 
 .. image:: img/parser_openFile.jpg
 
@@ -68,14 +73,16 @@ The options below must be checked:
 The other fields, for:
     
 - article:
+
   - **File Containing the DTD** = C:\\SCIELO\\BIN\\SGMLPARS\\article4_0.dtd 
   - **Document Type Name** = article
 
 - text:
+
   - **File Containing the DTD** = C:\\SCIELO\\BIN\\SGMLPARS\\text4_0.dtd 
   - **Document Type Name** = text
 
-.. image:: img/parser_config1.jpg
+.. image:: img/parser_configuration.jpg
 
 
 Document analysis
