@@ -47,7 +47,7 @@ It deletes the records of the databases title and issue locally. So, only after 
 
 1. Select File-> Open-> Journals-> Delete
 
-.. image:: img/en/01_menu_title_remover.jpg
+.. image:: img/titlemanager_title_menu_remover.jpg
 
 2. Select the titles to be removed.
 3. Click on Remove button.
