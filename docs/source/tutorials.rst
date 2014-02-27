@@ -23,8 +23,8 @@ Programs for Markup computers
    :maxdepth: 5
 
    markup.rst
-   markup_xml.rst
    parser.rst
+   markup_xml.rst
 
 
 
