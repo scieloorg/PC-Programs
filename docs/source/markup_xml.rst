@@ -93,10 +93,11 @@ new name
 
 total of related files
   total of related files of the article. They are PDF, epub, other formats, versions, of the article.
+
   They are renamed to new name.
 
-  article-v48n6p060.sgm.xml => 0100-204X-pab-48-06-00060.xml
-  article-v48n6p060.pdf => 0100-204X-pab-48-06-00060.pdf
+  -  article-v48n6p060.sgm.xml => 0100-204X-pab-48-06-00060.xml
+  -  article-v48n6p060.pdf => 0100-204X-pab-48-06-00060.pdf
 
 total of @href
   total of the attribute href found in the XML file and which indicate the files included in the article, such as equations, tables, videos, images, etc.
@@ -133,13 +134,17 @@ Messages
 ........
 
 1. The content of element type "front" must match "(journal-meta,article-meta,notes?)"
+
    It means, the element front, must have journal-meta, article-meta, and can or not have notes.
+
    It is possible, some of journal-meta or article-meta is missing or an unexpected element were found inside front.
 
 2. Attribute value "e01" of type ID must be unique within the document.
+
    The attributes id must not have same value.
 
 3. An element with the identifier "B5" must appear in the document.
+
    There is at least a rid=B5, but there is not id="B5"
 
 If you can not understand the messages, use our support: `SciELO XML Forum`_
@@ -155,6 +160,7 @@ Report of SciELO Style Checker
 The document is being checked against the `SciELO Tagging Guidlines rules`_.
 
 Report file name: <article filename>.rep.html
+
 Example: article-v48n6p060.rep.html
 
 
@@ -172,10 +178,12 @@ It is a set of reports:
   validations of the contents
 
 Report file name: <article filename>
+
 Example: 
-  article-v48n6p060_href.html
-  article-v48n6p060_id.html
-  article-v48n6p060.contents.html
+
+  - article-v48n6p060_href.html
+  - article-v48n6p060_id.html
+  - article-v48n6p060.contents.html
 
 
 Report of PMC Style Checker
