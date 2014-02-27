@@ -8,7 +8,7 @@ Opening the journal sections form
 
 1. Select File > Open > Sections
 
-.. image:: img/en/01_menu_section.jpg
+.. image:: img/titlemanager_section_menu.jpg
 
 2. Select a title and click on Open button
 
