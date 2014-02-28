@@ -2,10 +2,28 @@
 
 import os
 import shutil
-
+from datetime import datetime
 import xml.etree.ElementTree as etree
 
 from StringIO import StringIO
+
+
+MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
+
+
+def format_dateiso(self, adate):
+    month = adate.get('season', adate.get('month', '00'))
+    if not month.isdigit():
+        if '-' in month:
+            month = month[0:month.find('-')]
+        month = MONTHS.get(month, '00')
+    if month == '':
+        month = '00'
+    return adate.get('year', '0000') + month + adate.get('day', '00')
+
+
+def xml_string(node):
+    return etree.tostring(node) if node is not None else ''
 
 
 def load_xml(content):
@@ -106,7 +124,7 @@ class ArticleRecords(object):
             new['s'] = item['subtitle']
             new['l'] = item['language']
             self.records['f']['12'].append(new)
-        for item in article.trans_title:
+        for item in article.trans_titles:
             new = {}
             new['_'] = item['trans-title']
             new['s'] = item['trans-subtitle']
@@ -116,7 +134,7 @@ class ArticleRecords(object):
         self.records['f']['601'] = article.trans_languages
         self.records['f']['237'] = article.doi
 
-        self.records['f']['121'] = article.order if article.order is not None else article.first_page
+        self.records['f']['121'] = article.order if article.order is not None else article.fpage
 
         self.records['f']['31'] = article.volume
         self.records['f']['32'] = article.number
@@ -129,25 +147,150 @@ class ArticleRecords(object):
         self.records['f']['60'] = article.award_id
         self.records['f']['102'] = article.funding_statement
 
-        self.records['f']['64'] = {}
-        self.records['f']['64']['s'] = article.issue_pub_date['season']
-        self.records['f']['64']['d'] = article.issue_pub_date['day']
-        self.records['f']['64']['m'] = article.issue_pub_date['month']
-        self.records['f']['64']['y'] = article.issue_pub_date['year']
+        self.records['f']['65'] = format_dateiso(article.issue_pub_date)
+        self.records['f']['223'] = format_dateiso(article.article_pub_date)
 
-        self.records['f']['64'] = {}
-        self.records['f']['64']['s'] = article.issue_pub_date['season']
-        self.records['f']['64']['d'] = article.issue_pub_date['day']
-        self.records['f']['64']['m'] = article.issue_pub_date['month']
-        self.records['f']['64']['y'] = article.issue_pub_date['year']
-        # FIXME
-        
+        self.records['f']['14'] = {}
+        self.records['f']['14']['f'] = article.fpage
+        self.records['f']['14']['l'] = article.lpage
+        self.records['f']['14']['e'] = article.elocation_id
+
         self.records['f']['70'] = []
-
         for item in article.affiliations:
-            self.records['f']['70'].append({'o': item.get('orgname', ''), 'd': item.get('orgdiv', ''), 'c': item.get('country', ''), })
-        for item in article.authors:
-            self.records['f']['10'].append({'n': item.get('given-names', ''), 's': item.get('surname', ''), 'c': item.get('country', ''), })
+            a = {}
+            a['l'] = item['label']
+            a['i'] = item['id']
+            a['p'] = item['country']
+            a['e'] = item['email']
+            a['c'] = item['city']
+            a['s'] = item['state']
+            a['3'] = item['orgdiv3']
+            a['2'] = item['orgdiv2']
+            a['1'] = item['orgdiv1']
+            a['_'] = item['orgname']
+            #a['9'] = item['original']
+            #self.records['f']['170'].append(item['xml'])
+            self.records['f']['70'].append(item)
+        #FIXME nao existe clinical trial
+        self.records['f']['770'] = article.clinical_trial
+        self.records['f']['72'] = article.total_of_references
+        self.records['f']['901'] = article.total_of_tables
+        self.records['f']['902'] = article.total_of_figures
+
+        self.records['f']['83'] = []
+        for item in article.abstracts:
+            self.records['f']['83'].append({'l': item['language'], '_': item['text']})
+
+        self.records['f']['111'] = format_dateiso(article.history['received'])
+        self.records['f']['113'] = format_dateiso(article.history['accepted'])
+
+        self.records['c'] = []
+        for item in article.references:
+            rec_c = {}
+            rec_c['71'] = item.publication_type
+
+            if item.article_title or item.chapter_title:
+                rec_c['12'] = {'_': item.article_title if item.article_title else item.chapter_title, 'l': item.language}
+            if item.article_title:
+                rec_c['30'] = item.source
+            else:
+                rec_c['18'] = item.source
+            rec_c['71'] = item.publication_type
+
+            rec_c['10'] = []
+            rec_c['11'] = []
+            rec_c['16'] = []
+            rec_c['17'] = []
+            for person_group_id, person_group in item.person_groups.items():
+
+                for person in person_group:
+                    field = self.author_tag(person_group_id, 'given-names' in person)
+                    if 'collab' in person:
+                        a = person['collab']
+                    else:
+                        a = {}
+                        a['n'] = person['given-names']
+                        a['s'] = person['surname']
+                        a['z'] = person['suffix']
+                        a['r'] = self.author_role(person_group_id)
+
+                    rec_c[field].append(a)
+            rec_c['31'] = item.volume
+            rec_c['32'] = {}
+            rec_c['32']['_'] = item.issue
+            rec_c['32']['s'] = item.supplement
+            rec_c['63'] = item.edition
+            rec_c['65'] = item.year + '0000'
+            rec_c['66'] = item.publisher_loc
+            rec_c['62'] = item.publisher_name
+            rec_c['514'] = {'f': item.fpage, 'l': item.lpage, 'r': item.page_range}
+            rec_c['14'] = item.fpage + '-' + item.lpage
+            if item.size:
+                rec_c['20']['_'] = item.size['size']
+                rec_c['20']['u'] = item.size['units']
+            rec_c['118'] = item.label
+            rec_c['810'] = item.etal
+            rec_c['109'] = item.cited_date
+            rec_c['61'] = item.notes if item.notes else item.comment
+            rec_c['237'] = item.doi
+            rec_c['238'] = item.pmid
+            rec_c['239'] = item.pmcid
+            rec_c['53'] = item.conference_name
+            rec_c['56'] = item.conference_location
+            rec_c['54'] = item.conference_date
+        self.records['c'].append(rec_c)
+
+    def author_role(self, person_group_id):
+        if person_group_id == 'editor':
+            return 'ed'
+        if person_group_id == 'author':
+            return 'nd'
+        if person_group_id == 'translator':
+            return 'tr'
+        if person_group_id == 'compiler':
+            return 'org'
+        return person_group_id
+
+    def author_tag(self, person_group_id, is_person):
+        other = ['transed', 'translator']
+        monographic = ['compiler', 'director', 'editor', 'guest-editor', ]
+        analytical = ['allauthors', 'assignee', 'author', 'inventor', ]
+        if person_group_id in analytical:
+            return '10' if is_person else '11'
+        if person_group_id in monographic:
+            return '16' if is_person else '17'
+        return '10' if is_person else '11'
+
+    @property
+    def record_o(self, article):
+        r = {}
+        self.records['91'] = datetime.now().isoformat()[0:10].replace('-', '')
+        self.records['92'] = datetime.now().isoformat()[11:19].replace(':', '')
+        self.records['703'] = total_of_all_records
+        return r
+
+    def save_records(self):
+        self.records['o'] = self.record_o
+        self.records['h'] = self.records['f']
+        self.records['l'] = self.records['f']
+
+    def common(self, xml_filename, text_or_article, issue_label, id_filename):
+        r = {}
+        r['2'] = id_filename
+        r['4'] = issue_label
+        r['702'] = xml_filename
+        r['705'] = 'S'
+        r['709'] = text_or_article
+        return r
+
+    def record_info(self, record_name, record_index, record_name_index, record_name_total):
+        r = {}
+        r['706'] = record_name
+        r['700'] = record_index # starts with 0
+        r['701'] = record_name_index # starts with 1
+        r['708'] = record_name_total
+        # r.update(dict)
+        return r
 
 
 class Issue(object):
@@ -175,11 +318,11 @@ class Article(object):
     @property
     def article_type(self):
         return self.tree.attrib.get('article-type')
-        
+
     @property
     def language(self):
         return self.tree.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-        
+
     @property
     def related_objects(self):
         """
@@ -225,11 +368,11 @@ class Article(object):
     @property
     def journal_title(self):
         return self.journal_meta.findtext('journal-title')
-        
+
     @property
     def abbrev_journal_title(self):
         return self.journal_meta.findtext('abbrev-journal-title')
-        
+
     @property
     def publisher_name(self):
         return self.journal_meta.findtext('publisher-name')
@@ -268,16 +411,17 @@ class Article(object):
         k = []
         for contrib in self.article_meta.findall('.//contrib'):
             item = {}
-            if contrib.find('name'):
+            if contrib.findall('name'):
                 item['given-names'] = contrib.find('name/given-names')
                 item['surname'] = contrib.find('name/surname')
                 item['suffix'] = contrib.find('name/suffix')
                 item['prefix'] = contrib.find('name/prefix')
                 item['contrib-id'] = contrib.contrib.findtext('contrib-id[@contrib-id-type="orcid"]')
                 item['contrib-type'] = contrib.attrib.get('contrib-type')
-                item['xref'] = contrib.find('xref[@ref-type="aff"]')
-                if item['xref'] is not None:
-                    item['xref'] = item['xref'].attrib.get('rid')
+                item['xref'] = []
+                for xref_item in contrib.findall('xref[@ref-type="aff"]'):
+                    item['xref'].append(xref_item.attrib.get('rid'))
+                item['xref'] = ' '.join(item['xref'])
                 k.append(item)
         return k
 
@@ -302,7 +446,7 @@ class Article(object):
         return k
 
     @property
-    def trans_title(self):
+    def trans_titles(self):
         k = []
         for node in self.article_meta.findall('.//trans-title-group'):
             item = {}
@@ -331,27 +475,27 @@ class Article(object):
         for node in self.subarticles:
             k.append(node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang'))
         return k
-        
+
     @property
     def doi(self):
         return self.article_meta.findtext('article-id[@pub-id-type="doi"]')
-        
+
     @property
     def order(self):
         return self.article_meta.findtext('article-id[@pub-id-type="other"]')
-        
+
     @property
     def volume(self):
         return self.article_meta.findtext('volume')
-        
+
     @property
     def issue(self):
         return self.article_meta.findtext('issue')
-        
+
     @property
     def supplement(self):
         return self.article_meta.findtext('supplement')
-        
+
     def _issue_parts(self):
         self.number = None
         self.number_suppl = None
@@ -380,40 +524,39 @@ class Article(object):
 
     @property
     def funding_source(self):
-        return [item.text for item in self.article_meta.find('.//funding-source')]
+        return [item.text for item in self.article_meta.findall('.//funding-source')]
 
     @property
     def principal_award_recipient(self):
-        return [item.text for item in self.article_meta.find('.//principal-award-recipient')]
+        return [item.text for item in self.article_meta.findall('.//principal-award-recipient')]
 
     @property
     def principal_investigator(self):
-        return [item.text for item in self.article_meta.find('.//principal-investigator')]
+        return [item.text for item in self.article_meta.findall('.//principal-investigator')]
 
     @property
     def award_id(self):
-        return [item.text for item in self.article_meta.find('.//award-id')]
+        return [item.text for item in self.article_meta.findall('.//award-id')]
 
     @property
     def funding_statement(self):
-        return [item.text for item in self.article_meta.find('.//funding-statement')]
+        return [item.text for item in self.article_meta.findall('.//funding-statement')]
 
     @property
     def ack_xml(self):
         #107
-        return etree.tostring(self.back.find('.//ack'))
+        return xml_string(self.back.find('.//ack'))
 
     @property
     def issue_pub_date(self):
         _issue_pub_date = None
-        date = self.article_meta.find('[@date-type="pub"]')
+        date = self.article_meta.find('pub-date[@date-type="pub"]')
         if date is None:
-            date = self.article_meta.find('[@pub-type="epub-ppub"]')
+            date = self.article_meta.find('pub-date[@pub-type="epub-ppub"]')
         if date is None:
-            date = self.article_meta.find('[@pub-type="ppub"]')
+            date = self.article_meta.find('pub-date[@pub-type="ppub"]')
         if date is None:
-            date = self.article_meta.find('[@pub-type="collection"]')
-        
+            date = self.article_meta.find('pub-date[@pub-type="collection"]')
         if date is not None:
             _issue_pub_date = {}
             _issue_pub_date['season'] = date.findtext('season')
@@ -425,10 +568,9 @@ class Article(object):
     @property
     def article_pub_date(self):
         _article_pub_date = None
-        date = self.article_meta.find('[@date-type="preprint"]')
+        date = self.article_meta.find('pub-date[@date-type="preprint"]')
         if date is None:
-            date = self.article_meta.find('[@pub-type="epub"]')
-        
+            date = self.article_meta.find('pub-date[@pub-type="epub"]')
         if date is not None:
             _article_pub_date = {}
             _article_pub_date['season'] = date.findtext('season')
@@ -436,131 +578,254 @@ class Article(object):
             _article_pub_date['year'] = date.findtext('year')
             _article_pub_date['day'] = date.findtext('day')
         return _article_pub_date
-        
 
-    .//article-meta/publisher-loc 66    
-    .//article-meta 14
-      fpage f
-      lpage l
-      elocation-id f
-      elocation-id e
-    .//article-meta/fpage 121
-    .//article-meta/fpage/@seq 9121
-    .//article-meta//aff 70
-      label l
-      @id i
-      . 9
-      country p
-      email e
-      addr-line/named-content[@content-type='city'] c
-      addr-line/named-content[@content-type='state'] s
-      institution[@content-type='orgdiv3'] 3
-      institution[@content-type='orgdiv2'] 2
-      institution[@content-type='orgdiv1'] 1
-      institution[@content-type='orgname'] _
-    .//clinical-trial 770 XML
-    .//article-meta//aff 170 XML
-    .//ref-count/@count 72    
-    .//table-count/@count 900
-    .//fig-count/@count 901
-    .//article-meta/abstract 83
-      . a
-      @xml:lang l 
-    .//article-meta/trans-abstract[1] 83
-      . a
-      @xml:lang l
-    .//article-meta/trans-abstract[2] 83
-      . a
-      @xml:lang l
-    .//sub-article[@article-type='translation']//front-stub//abstract 83
-      . a
-      @xml:lang l 
-    .//article-meta//date[@date-type='received'] 111    
-      year y
-      month m
-      day d
-      season s   
-    .//article-meta//date[@date-type='accepted'] 113    
-      year y
-      month m
-      day d
-      season s      
-  .//body body
-    .//graphic/@xlink:href file
-  .//ref c
-    .//source/@xml:lang 40
-    .//element-citation/@publication-type 71
-    .//mixed-citation/@publication-type 71
-    .//citation/@citation-type 71
-    .//article-title 12
-      . _
-      @xml:lang l en
-    .//trans-title 12
-      . _
-      @xml:lang l
-    .//chapter-title 12
-      . _
-      @xml:lang l en
-    .//source 18    
-    . 9704 XML
-    .//mixed-citation 704 XML
-    .//citation[@citation-type='journal']//source 30 
-    .//element-citation[@publication-type='journal']//source 30    
-    .//mixed-citation[@publication-type='journal']//source 30    
-    .//person-group/@person-group-type roles
-    .//person-group[1]/name 10
-      given-names n
-      surname s
-      suffix z
-    name 10
-      given-names n
-      surname s
-      suffix z
-    .//person-group[2]/name 16
-      given-names n
-      surname s
-      suffix z
-    .//collab[1] 11
-    .//collab[2] 17
-    .//person-group[1]/collab 11
-    .//person-group[2]/collab 17
-    .//volume 31    
-    .//issue 32  
-    .//supplement 132
-      . s
-    .//edition 63    
-    .//year 964    
-    .//month 964m
-    .//day 964d
-    .//season 964s
-    .//publisher-loc 66
-    .//publisher-name 62
-    .//element-citation 514
-      fpage f
-      lpage l
-      page-range r
-    .//mixed-citation 514
-      fpage f
-      lpage l
-      page-range r
-    .//size 20
-      . _
-      @units u
-    .//label 118    
-    .//et-al 810    
-    .//ext-link 37    
-    .//date-in-citation[@content-type='access-date'] 109
-    .//comment 61    
-    .//comment[@content-type='award-id'] 60   
-    .//element-citation[@publication-type='report']//comment 60    
-    .//notes 61    
-    .//pub-id[@pub-id-type='doi'] 237    
-    .//pub-id[@pub-id-type='pmid'] 238    
-    .//pub-id[@pub-id-type='pmcid'] 239    
-    .//element-citation[@publication-type='report']//pub-id[@pub-id-type='other'] 592    
-    .//conf-name 53
-    .//conf-loc 56
-    .//conf-date 54
+    @property
+    def fpage(self):
+        return self.article_meta.find('fpage')
+
+    @property
+    def fpage_seq(self):
+        return self.article_meta.find('fpage').attrib.get('seq') if self.article_meta.find('fpage') is not None else None
+
+    @property
+    def lpage(self):
+        return self.article_meta.find('lpage')
+
+    @property
+    def elocation_id(self):
+        return self.article_meta.find('elocation-id')
+
+    @property
+    def affiliations(self):
+        affs = []
+        for aff in self.article_meta.findall('aff'):
+            a = {}
+            a['xml'] = xml_string(aff)
+            a['id'] = aff.get('id')
+            for tag in ['label', 'country', 'email']:
+                a[tag] = aff.findtext(tag)
+            for inst in aff.findall('institution'):
+                # institution[@content-type='orgdiv3']
+                tag = inst.get('content-type')
+                if tag is not None:
+                    a[tag] = inst.text
+            for named_content in aff.findall('addr-line/named-content'):
+                tag = named_content.get('content-type')
+                if tag is not None:
+                    a[tag] = named_content.text
+            affs.append(a)
+        return affs
+
+    @property
+    def clinical_trial(self):
+        #FIXME nao existe clinical-trial 
+        return xml_string(self.article_meta.find('clinical-trial'))
+
+    @property
+    def total_of_references(self):
+        return self.article_meta.find('.//ref-count').attrib.get('count') if self.article_meta.find('.//ref-count') is not None else None
+
+    @property
+    def total_of_tables(self):
+        return self.article_meta.find('.//table-count').attrib.get('count') if self.article_meta.find('.//table-count') is not None else None
+
+    @property
+    def total_of_figures(self):
+        return self.article_meta.find('.//fig-count').attrib.get('count') if self.article_meta.find('.//fig-count') is not None else None
+
+    @property
+    def abstracts(self):
+        r = []
+        _abstract = {}
+        for a in self.tree.findall('.//abstract'):
+            _abstract['language'] = a.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+            _abstract['text'] = xml_string(a) if a.find('.//*') else a.text
+            r.append(_abstract)
+        for a in self.tree.findall('.//trans-abstract'):
+            _abstract['language'] = a.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+            _abstract['text'] = xml_string(a) if a.find('.//*') else a.text
+            r.append(_abstract)
+        return r
+
+    @property
+    def history(self):
+        _hist = {}
+        for item in self.article_meta.findall('.//date'):
+            _id = item.attrib.get('date-type')
+            _hist[_id] = {}
+            for tag in ['year', 'month', 'day', 'season']:
+                _hist[_id][tag] = item.findtext(tag)
+        return _hist
+
+    @property
+    def references(self):
+        refs = []
+        for ref in self.back.findall('.//ref'):
+            refs.append(Reference(ref))
+        return refs
+
+
+class Reference(object):
+
+    def __init__(self, root):
+        self.root = root
+
+    @property
+    def source(self):
+        return self.root.findtext('.//source')
+
+    @property
+    def language(self):
+        lang = self.root.find('.//source').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//source') else None
+        if lang is None:
+            lang = self.root.find('.//article-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//article-title') else None
+        if lang is None:
+            lang = self.root.find('.//chapter-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//chapter-title') else None
+        return lang
+
+    @property
+    def article_title(self):
+        return self.root.findtext('.//article-title')
+
+    @property
+    def chapter_title(self):
+        return self.root.findtext('.//chapter-title')
+
+    @property
+    def trans_title(self):
+        return self.root.findtext('.//trans-title')
+
+    @property
+    def trans_title_language(self):
+        return self.root.find('.//trans-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//trans-title') else None
+
+    @property
+    def publication_type(self):
+        return self.root.find('.//element-citation').attrib.get('publication-type') if self.root.find('.//element-citation') else None
+
+    @property
+    def xml(self):
+        return xml_string(self.root)
+
+    @property
+    def mixed_citation(self):
+        return xml_string(self.root.find('.//mixed-citation'))
+
+    @property
+    def person_groups(self):
+        r = {}
+        k = 0
+        for person_group in self.root.findall('.//person-group'):
+            k += 1
+            person_group_id = person_group.attrib.get('person-group-type', k)
+            r[person_group_id] = []
+            for person in person_group.findall('.//name'):
+                p = {}
+                for tag in ['given-names', 'surname', 'suffix']:
+                    p[tag] = person.findtext(tag)
+
+                r[person_group_id].append(p)
+            for collab in person_group.findall('.//collab'):
+                r[person_group_id].append(collab.text)
+        return r
+
+    @property
+    def volume(self):
+        return self.root.findtext('.//volume')
+
+    @property
+    def issue(self):
+        return self.root.findtext('.//issue')
+
+    @property
+    def supplement(self):
+        return self.root.findtext('.//supplement')
+
+    @property
+    def edition(self):
+        return self.root.findtext('.//edition')
+
+    @property
+    def year(self):
+        return self.root.findtext('.//year')
+
+    @property
+    def publisher_name(self):
+        return self.root.findtext('.//publisher-name')
+
+    @property
+    def publisher_loc(self):
+        return self.root.findtext('.//publisher-loc')
+
+    @property
+    def fpage(self):
+        return self.root.findtext('.//fpage')
+
+    @property
+    def lpage(self):
+        return self.root.findtext('.//lpage')
+
+    @property
+    def page_range(self):
+        return self.root.findtext('.//page-range')
+
+    @property
+    def size(self):
+        node = self.root.find('size')
+        if node is not None:
+            return {'size': node.text, 'units': node.attrib.get('units')} 
+
+    @property
+    def label(self):
+        return self.root.findtext('.//label')
+
+    @property
+    def etal(self):
+        return self.root.findtext('.//etal')
+
+    @property
+    def cited_date(self):
+        return self.root.findtext('.//date-in-citation[@content-type="access-date"]')
+
+    @property
+    def ext_link(self):
+        return self.root.findtext('.//ext-link')
+
+    @property
+    def comments(self):
+        return self.root.findtext('.//comment')
+
+    @property
+    def notes(self):
+        return self.root.findtext('.//notes')
+
+    @property
+    def contract_number(self):
+        return self.root.findtext('.//comment[@content-type="award-id"]')
+
+    @property
+    def doi(self):
+        return self.root.findtext('.//pub-id[@pub-id-type="doi"]')
+
+    @property
+    def pmid(self):
+        return self.root.findtext('.//pub-id[@pub-id-type="pmid"]')
+
+    @property
+    def pmcid(self):
+        return self.root.findtext('.//pub-id[@pub-id-type="pmcid"]')
+
+    @property
+    def conference_name(self):
+        return self.root.findtext('.//conf-name')
+
+    @property
+    def conference_location(self):
+        return self.root.findtext('.//conf-loc')
+
+    @property
+    def conference_date(self):
+        return self.root.findtext('.//conf-date')
 
 
 class XMLConverter(object):
