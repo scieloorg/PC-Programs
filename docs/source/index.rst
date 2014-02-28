@@ -16,6 +16,7 @@ Run on Windows
     download.rst
 
     howtoinstall.rst
+    howtoupdate.rst
 
     tutorials.rst
 

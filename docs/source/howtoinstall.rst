@@ -23,6 +23,9 @@ How to install
 
 .. attention:: Use a drive in which the user can have full access 
 
+.. warning:: DO NOT use names with spaces
+
+
 5. Complete the data of the installation
 
 .. image:: img/installation_setup.jpg
