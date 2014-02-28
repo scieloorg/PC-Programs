@@ -65,47 +65,53 @@ def load_xml(content):
     return r
 
 
-class ArticleRecords(object):
+class ArticleISIS(object):
 
-    def __init__(self):
-        self.records = {}
+    def __init__(self, xml_filename, text_or_article, issue_label, id_filename, article, section_code):
+        self.xml_filename = xml_filename
+        self.text_or_article = text_or_article
+        self.issue_label = issue_label
+        self.id_filename = id_filename
+        self.article = article
+        self.section_code = section_code
 
-    def load(self, article):
-        self.records['f'] = {}
-        self.records['f']['120'] = article.dtd_version
-        self.records['f']['71'] = article.article_type
-        self.records['f']['40'] = article.language
+    def metadata(self):
+        rec_f = {}
+        rec_f['120'] = self.article.dtd_version
+        rec_f['71'] = self.article.article_type
+        rec_f['40'] = self.article.language
 
-        self.records['f']['241'] = []
-        for item in article.related_objects:
+        rec_f['241'] = []
+        for item in self.article.related_objects:
             new = {}
             new['k'] = item['id']
             new['r'] = item.get('link-type')
             new['i'] = item.get('document-id', item.get('object-id', item.get('source-id')))
             new['n'] = item.get('document-id-type', item.get('object-id-type', item.get('source-id-type')))
             new['t'] = item.get('document-type', item.get('object-type', item.get('source-type')))
-            self.records['f']['241'].append(new)
+            rec_f['241'].append(new)
 
-        for item in article.related_objects:
+        for item in self.article.related_objects:
             new = {}
             new['k'] = item['id']
             new['i'] = item.get('{http://www.w3.org/1999/xlink}href')
             new['n'] = item.get('ext-link-type')
             new['t'] = 'pr' if item.get('related-article-type') == 'press-release' else 'article'
-            self.records['f']['241'].append(new)
+            rec_f['241'].append(new)
 
-        #self.records['f']['100'] = article.journal_title
-        self.records['f']['30'] = article.abbrev_journal_title
-        #self.records['f']['62'] = article.publisher_name
-        #self.records['f']['421'] = article.journal_id_nlm_ta
-        #self.records['f']['930'] = article.journal_id_nlm_ta
-        #self.records['f']['935'] = article.journal_issns
+        #rec_f['100'] = self.article.journal_title
+        rec_f['30'] = self.article.abbrev_journal_title
+        #rec_f['62'] = self.article.publisher_name
+        #rec_f['421'] = self.article.journal_id_nlm_ta
+        #rec_f['930'] = self.article.journal_id_nlm_ta
+        #rec_f['935'] = self.article.journal_issns
 
-        self.records['f']['85'] = article.keywords
-        self.records['f']['49'] = issue.section_code(article.toc_section)
+        rec_f['85'] = self.article.keywords
+        #rec_f['49'] = issue.section_code(self.article.toc_section)
+        rec_f['49'] = self.section_code
 
-        self.records['f']['10'] = []
-        for item in article.contrib_names:
+        rec_f['10'] = []
+        for item in self.article.contrib_names:
             new = {}
             new['n'] = item['given-names']
             new['s'] = item['surname']
@@ -114,49 +120,49 @@ class ArticleRecords(object):
             new['r'] = item['contrib-type']
             new['1'] = item['xref']
             new['k'] = item['contrib-id']
-            self.records['f']['10'].append(new)
+            rec_f['10'].append(new)
 
-        self.records['f']['11'] = self.contrib_collab
-        self.records['f']['12'] = []
-        for item in article.title:
+        rec_f['11'] = self.contrib_collab
+        rec_f['12'] = []
+        for item in self.article.title:
             new = {}
             new['_'] = item['article-title']
             new['s'] = item['subtitle']
             new['l'] = item['language']
-            self.records['f']['12'].append(new)
-        for item in article.trans_titles:
+            rec_f['12'].append(new)
+        for item in self.article.trans_titles:
             new = {}
             new['_'] = item['trans-title']
             new['s'] = item['trans-subtitle']
             new['l'] = item['language']
-            self.records['f']['12'].append(new)
+            rec_f['12'].append(new)
 
-        self.records['f']['601'] = article.trans_languages
-        self.records['f']['237'] = article.doi
+        rec_f['601'] = self.article.trans_languages
+        rec_f['237'] = self.article.doi
 
-        self.records['f']['121'] = article.order if article.order is not None else article.fpage
+        rec_f['121'] = self.article.order if self.article.order is not None else self.article.fpage
 
-        self.records['f']['31'] = article.volume
-        self.records['f']['32'] = article.number
-        self.records['f']['131'] = article.volume_suppl
-        self.records['f']['132'] = article.number_suppl
+        rec_f['31'] = self.article.volume
+        rec_f['32'] = self.article.number
+        rec_f['131'] = self.article.volume_suppl
+        rec_f['132'] = self.article.number_suppl
 
-        self.records['f']['58'] = article.funding_source
-        self.records['f']['591'] = [{'_': item for item in article.principal_award_recipient}]
-        self.records['f']['591'] = [{'n': item for item in article.principal_investigator}]
-        self.records['f']['60'] = article.award_id
-        self.records['f']['102'] = article.funding_statement
+        rec_f['58'] = self.article.funding_source
+        rec_f['591'] = [{'_': item for item in self.article.principal_award_recipient}]
+        rec_f['591'] = [{'n': item for item in self.article.principal_investigator}]
+        rec_f['60'] = self.article.award_id
+        rec_f['102'] = self.article.funding_statement
 
-        self.records['f']['65'] = format_dateiso(article.issue_pub_date)
-        self.records['f']['223'] = format_dateiso(article.article_pub_date)
+        rec_f['65'] = format_dateiso(self.article.issue_pub_date)
+        rec_f['223'] = format_dateiso(self.article.article_pub_date)
 
-        self.records['f']['14'] = {}
-        self.records['f']['14']['f'] = article.fpage
-        self.records['f']['14']['l'] = article.lpage
-        self.records['f']['14']['e'] = article.elocation_id
+        rec_f['14'] = {}
+        rec_f['14']['f'] = self.article.fpage
+        rec_f['14']['l'] = self.article.lpage
+        rec_f['14']['e'] = self.article.elocation_id
 
-        self.records['f']['70'] = []
-        for item in article.affiliations:
+        rec_f['70'] = []
+        for item in self.article.affiliations:
             a = {}
             a['l'] = item['label']
             a['i'] = item['id']
@@ -169,23 +175,28 @@ class ArticleRecords(object):
             a['1'] = item['orgdiv1']
             a['_'] = item['orgname']
             #a['9'] = item['original']
-            #self.records['f']['170'].append(item['xml'])
-            self.records['f']['70'].append(item)
+            #rec_f['170'].append(item['xml'])
+            rec_f['70'].append(item)
         #FIXME nao existe clinical trial
-        self.records['f']['770'] = article.clinical_trial
-        self.records['f']['72'] = article.total_of_references
-        self.records['f']['901'] = article.total_of_tables
-        self.records['f']['902'] = article.total_of_figures
+        rec_f['770'] = self.article.clinical_trial
+        rec_f['72'] = self.article.total_of_references
+        rec_f['901'] = self.article.total_of_tables
+        rec_f['902'] = self.article.total_of_figures
 
-        self.records['f']['83'] = []
-        for item in article.abstracts:
-            self.records['f']['83'].append({'l': item['language'], '_': item['text']})
+        rec_f['83'] = []
+        for item in self.article.abstracts:
+            rec_f['83'].append({'l': item['language'], '_': item['text']})
 
-        self.records['f']['111'] = format_dateiso(article.history['received'])
-        self.records['f']['113'] = format_dateiso(article.history['accepted'])
+        _h = self.article.history
+        rec_f['111'] = format_dateiso(_h['received'])
+        rec_f['113'] = format_dateiso(_h['accepted'])
 
-        self.records['c'] = []
-        for item in article.references:
+        return rec_f
+
+    def references(self):
+
+        records_c = []
+        for item in self.article.references:
             rec_c = {}
             rec_c['71'] = item.publication_type
 
@@ -238,7 +249,8 @@ class ArticleRecords(object):
             rec_c['53'] = item.conference_name
             rec_c['56'] = item.conference_location
             rec_c['54'] = item.conference_date
-        self.records['c'].append(rec_c)
+        records_c.append(rec_c)
+        return records_c
 
     def author_role(self, person_group_id):
         if person_group_id == 'editor':
@@ -261,29 +273,60 @@ class ArticleRecords(object):
             return '16' if is_person else '17'
         return '10' if is_person else '11'
 
+    def outline(self, total_of_records):
+        rec_o = {}
+        rec_o['91'] = datetime.now().isoformat()[0:10].replace('-', '')
+        rec_o['92'] = datetime.now().isoformat()[11:19].replace(':', '')
+        rec_o['703'] = total_of_records
+        return rec_o
+
     @property
-    def record_o(self, article):
-        r = {}
-        self.records['91'] = datetime.now().isoformat()[0:10].replace('-', '')
-        self.records['92'] = datetime.now().isoformat()[11:19].replace(':', '')
-        self.records['703'] = total_of_all_records
+    def records(self):
+        r = []
+
+        rec = self.outline(str(4 + len(self.references)))
+        rec.update(self.common_data)
+        rec.update(self.record_info('1', 'o', '1', '1'))
+        r.append(rec)
+
+        rec = self.metadata(article)
+        rec.update(self.common_data)
+        rec.update(self.record_info('2', 'h', '1', '1'))
+        r.append(rec)
+
+        #metadata = self.metadata(article)
+        rec = self.metadata(article)
+        rec.update(self.common_data)
+        rec.update(self.record_info('3', 'f', '1', '1'))
+        r.append(rec)
+
+        rec = self.metadata(article)
+        rec.update(self.common_data)
+        rec.update(self.record_info('4', 'l', '1', '1'))
+        r.append(rec)
+
+        c_total = str(len(self.references))
+        c_index = 0
+        k = 4
+        for rec in self.references:
+            c_index += 1
+            k += 1
+            rec.update(self.common_data)
+            rec.update(self.record_info(str(k), 'c', str(c_index), c_total))
+            r.append(rec)
         return r
 
-    def save_records(self):
-        self.records['o'] = self.record_o
-        self.records['h'] = self.records['f']
-        self.records['l'] = self.records['f']
-
-    def common(self, xml_filename, text_or_article, issue_label, id_filename):
+    @property
+    def common_data(self):
         r = {}
-        r['2'] = id_filename
-        r['4'] = issue_label
-        r['702'] = xml_filename
+        r['2'] = self.id_filename
+        r['4'] = self.issue_label
+        r['702'] = self.xml_filename
         r['705'] = 'S'
-        r['709'] = text_or_article
+        r['709'] = self.text_or_article
         return r
 
-    def record_info(self, record_name, record_index, record_name_index, record_name_total):
+    def record_info(self, record_index, record_name, record_name_index, record_name_total):
         r = {}
         r['706'] = record_name
         r['700'] = record_index # starts with 0
@@ -294,6 +337,9 @@ class ArticleRecords(object):
 
 
 class Issue(object):
+
+    def __init__(self, sections):
+        self.sections = [{'title': 'nd'}]
 
     def section_code(self, section_title):
         r = [section.get('code') for section in self.sections if section.get('title') == section_title]
@@ -830,27 +876,64 @@ class Reference(object):
 
 class XMLConverter(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, cisis):
+        self.cisis = cisis
 
-    def convert(self, xml_files_path):
+    def create_id_files(self, xml_files_path, issue, id_path):
         records = ''
         for xml_file in os.listdir(xml_files_path):
-            records += self.format_records(xml_file)
-        return records
+            article = Article(load_xml(xml_files_path + '/' + xml_file))
 
-    def format_records(self):
-        return ''
+            section_code = issue.section_code(article.toc_section)
+            #FIXME
+            xml_filename = 'xml/acron/' + issue_label + '/' + xml_file
+            text_or_article = 'article'
+            id_filename = '0'*5 + article.order
+            id_filename = id_filename[-5:]
+
+            isis = ArticleISIS(xml_filename, text_or_article, issue_label, id_filename, article, section_code)
+            id_file = IDFile(isis.records)
+            id_file.save(id_path + '/' + id_filename + '.id')
+
+    def id2mst(self, id_path, base_path, base_name):
+        base_filename = base_path + '/' + base_name
+        if os.path.exists(base_filename + '.mst'):
+            os.unlink(base_filename + '.mst')
+            os.unlink(base_filename + '.xrf')
+        #FIXME
+        if os.path.isfile(id_path + '/i.id'):
+            self.cisis.id2mst(id_path + '/i.id', base_filename, False)
+        for id_file in os.listdir(id_path):
+            if id_file != 'i.id' and id_file != '00000.id':
+                self.cisis.id2mst(id_path + '/' + id_file, base_filename, False)
 
 
-class Record(object):
+class IDFile(object):
 
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, records):
+        self.records = records
 
-    def record(self):
+    def save(self, id_filename):
+        path = os.path.dirname(id_filename)
+        if not os.path.isdir(path):
+            os.makedirs(path)
+
+        f = open(id_filename, 'w')
+        f.write(self.format_file())
+        f.close()
+
+    def format_file(self):
         r = ''
-        for tag, occs in self.data.items():
+        index = 0
+        for item in self.records:
+            index += 1
+            r += self.format_record(index, item)
+        return r
+
+    def format_record(self, index, record):
+        i = '000000' + str(index)
+        r = '!ID ' + i[-6:] + '\n'
+        for tag, occs in record.items():
             if occs is str:
                 r += self.tagged(tag, occs)
             elif occs is list:
@@ -875,6 +958,70 @@ class Record(object):
             tag = tag[-3:]
             return '!v' + tag + '!' + value + '\n'
         return ''
+
+
+class CISIS:
+    def __init__(self, cisis_path):
+        cisis_path = cisis_path.replace('\\', '/')
+
+        if os.path.exists(cisis_path):
+            self.cisis_path = cisis_path
+        else:
+            print('Invalid cisis path: ' + cisis_path)
+
+    def crunchmf(self, mst_filename, wmst_filename):
+        cmd = self.cisis_path + '/crunchmf ' + mst_filename + ' ' + wmst_filename
+        os.system(cmd)
+
+    def id2i(self, id_filename, mst_filename):
+        cmd = self.cisis_path + '/id2i ' + id_filename + ' create=' + mst_filename
+        os.system(cmd)
+
+    def append(self, src, dest):
+        cmd = self.cisis_path + '/mx ' + src + '  append=' + dest + ' now -all'
+        os.system(cmd)
+
+    def create(self, src, dest):
+        cmd = self.cisis_path + '/mx ' + src + '  create=' + dest + ' now -all'
+        os.system(cmd)
+
+    def id2mst(self, id_filename, mst_filename, reset):
+        from tempfile import mkstemp
+
+        _, temp = mkstemp()
+        self.id2i(id_filename, temp)
+
+        if reset:
+            self.create('null count=0', mst_filename)
+        self.append(temp, mst_filename)
+        os.remove(temp)
+
+    def i2id(self, mst_filename, id_filename):
+        cmd = self.cisis_path + '/i2id ' + mst_filename + ' > ' + id_filename 
+        os.system(cmd)
+
+    def mst2iso(self, mst_filename, iso_filename):
+        cmd = self.cisis_path + '/mx ' + mst_filename + ' iso=' + iso_filename + ' now -all' 
+        os.system(cmd)
+
+    def copy_record(self, src_mst_filename, mfn, dest_mst_filename):
+        cmd = self.cisis_path + '/mx ' + src_mst_filename + ' from=' + mfn + ' count=1 ' + ' append=' + dest_mst_filename + ' now -all'
+        os.system(cmd)
+
+    def find_record(self, mst_filename, expression):
+        r = mst_filename + expression
+        cmd = self.cisis_path + '/mx ' + mst_filename + ' bool="' + expression + '"  lw=999 "pft=mfn/" now > ' + r
+
+        os.system(cmd)
+        f = open(r, 'r')
+        c = f.readlines()
+        f.close()
+
+        a = []
+        for l in c:
+            a.append(l.replace('\n', ''))
+
+        return a
 
 
 class FilesLocation(object):
