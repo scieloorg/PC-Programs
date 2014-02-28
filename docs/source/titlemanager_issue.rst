@@ -41,7 +41,7 @@ Fill in the volume and number fields.
 The sequential number is the year followed by the order of the issue within the year. 
 E.g.: 20101 (first issue within the year).
 
-.. image:: img/en/01_iss_04.jpg
+.. image:: img/titlemanager_issue_seq_number.jpg
 
 
 Identifying supplements
@@ -55,7 +55,7 @@ On the website, in the "All issues" pages, if it is required the supplements be 
 
 E.g.: If there are 4 regular numbers in the year, then the order of the sequential number for the supplements starts from 5.
 
-.. image:: img/en/01_iss_4_supl.jpg
+.. image:: img/titlemanager_issue_seq_number_for_supplement.jpg
 
 
 Identifying ahead issues
@@ -63,7 +63,7 @@ Identifying ahead issues
 
 Fill in the **number** field the word ahead, for ahead issue. By convention the order of the sequential number is 50.
 
-.. image:: img/en/01_iss_04_ahead.jpg
+.. image:: img/titlemanager_issue_seq_number_for_ahead.jpg
 
 
 Identifying press release issues
@@ -72,18 +72,18 @@ Identifying press release issues
 Fill in the same fields according to the rules above, plus **pr** in the complement field.
 The sequential number is the year followed by the order of the issue within the year, but by **convention** starts in 100.
 
-.. image:: img/en/01_iss_pr.jpg
+.. image:: img/titlemanager_issue_press_release.jpg
 
 
-Problems on filling in the sequential number
---------------------------------------------
+Problems with filling in the sequential number
+----------------------------------------------
 
 If the sequential number and the issue identification do not match, the program presents two situations:
 
 
 1. Sequential number belongs to another issue
 
-.. image:: img/en/01_iss_05.jpg
+.. image:: img/titlemanager_issue_sequential_number_belongs_to_another_issue.jpg
 
 Solution: 
     List the issues and select the issue
@@ -91,7 +91,7 @@ Solution:
 
 2. Mistake or replacement?
 
-.. image:: img/en/01_iss_06.jpg
+.. image:: img/titlemanager_issue_mistake_or_replacement.jpg
 
 If the sequential number and the issue identification do not match, but the `sequential number <concepts.html#sequential-number>`_ **DOES NOT BELONG TO** another issue, the program will ask to:
 
@@ -112,19 +112,23 @@ How to list the issue numbers of a volume
 .........................................
 
 1. Fill in the volume field.
-2. Click on the .. image:: img/titlemanager_list_button.jpg button.
+2. Click on the 
+.. image:: img/titlemanager_list_button.jpg 
+button.
 
 
 How to list all
 ...............
 
-1. Click on the .. image:: img/titlemanager_list_button.jpg button.
+1. Click on the 
+.. image:: img/titlemanager_list_button.jpg 
+button.
 
 
 List of the issues
 ..................
 
-.. image:: img/en/titlemanager_issues.jpg
+.. image:: img/titlemanager_issues.jpg
 
 
 The first, highlighted line  in orange, is an example of ahead numbers of the year 2009.
@@ -266,7 +270,7 @@ Controlled vocabulary used by the journal.
 Bibliographic strip
 -------------------
 
-.. image:: img/en/01_iss_08.jpg
+.. image:: img/titlemanager_issue_bibligraphic_strip.jpg
 
 Field 43, one occurrence for each language (es, en, pt).
 
@@ -284,7 +288,7 @@ Field 43, one occurrence for each language (es, en, pt).
 Table of contents
 -----------------
    
-.. image:: img/en/01_iss_09.jpg
+.. image:: img/titlemanager_issue_toc.jpg
 
 On this screen, the table of contents.
 
@@ -317,7 +321,7 @@ Field: 49
 Creative Commons License
 ------------------------
 
-.. image:: img/en/01_iss_10.jpg
+.. image:: img/titlemanager_issue_licenses.jpg
 
 Text provided by the Creative Commons website according to the adopted license 
 

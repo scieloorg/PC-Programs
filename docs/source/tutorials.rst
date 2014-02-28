@@ -3,8 +3,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-SciELO PC Programs' documentation
-=================================
 
 Programs for local server
 -------------------------
@@ -25,8 +23,8 @@ Programs for Markup computers
    :maxdepth: 5
 
    markup.rst
-   markup_xml.rst
    parser.rst
+   markup_xml.rst
 
 
 

@@ -3,8 +3,6 @@
  You can adapt this file completely to your liking, but it should at least
  contain the root `toctree` directive.
 
-SciELO PC Programs' documentation
-=================================
 
 Requirements
 ============
@@ -25,9 +23,12 @@ How to install
 
 .. attention:: Use a drive in which the user can have full access 
 
+.. warning:: DO NOT use names with spaces
+
+
 5. Complete the data of the installation
 
-.. image:: img/00_setup.jpg
+.. image:: img/installation_setup.jpg
 
 6. Select the programs you want to install in your computer, according to the purpose of the computer:
 
@@ -49,7 +50,7 @@ How to install
   Check if the variable already exists. 
   If it does not, click New and enter the value.
 
-  .. image:: img/00_bap.jpg
+  .. image:: img/installation_setup_bap.jpg
 
 8. If you install as administrator, the menu of the application will be created only for the Administrator user. 
 

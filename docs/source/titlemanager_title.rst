@@ -8,7 +8,7 @@
 Journals
 ========
 
-.. image:: img/en/titlemanager_open_journals.png
+.. image:: img/titlemanager_title_menu.png
 
 
 Creating a new record  
@@ -17,7 +17,7 @@ Creating a new record
 1. Select File-> Open-> Journals-> New.
 2. Write the title of the journal and click on Open button.
 
-.. image:: img/en/titlemanager_new_title.png
+.. image:: img/titlemanager_title_new.png
 
 3. Register the journal data. Read `Journal form`_.   
 4. Click on Save button
@@ -29,7 +29,7 @@ Opening a record to edit the journal data
 1. Select File-> Open-> Journals-> Open 
 2. Select the journal you want to edit
 
-.. image:: img/en/01_menu_title_abrir.jpg
+.. image:: img/titlemanager_title_edit.jpg
 
 3. Register the journal data. Read `Journal form`_.   
 4. Click on Save button
@@ -47,7 +47,7 @@ It deletes the records of the databases title and issue locally. So, only after 
 
 1. Select File-> Open-> Journals-> Delete
 
-.. image:: img/en/01_menu_title_remover.jpg
+.. image:: img/titlemanager_title_menu_remover.jpg
 
 2. Select the titles to be removed.
 3. Click on Remove button.
@@ -59,7 +59,7 @@ Journal form
 Journal form: Titles
 --------------------
 
-.. image:: img/en/01_tit_01.jpg
+.. image:: img/titlemanager_title_form_01_titles.jpg
 
 
 ISSN ID
@@ -212,7 +212,7 @@ Enter in this field the title of the supplement/insert.
 Journal Form: Subject areas
 ---------------------------
 
-.. image:: img/titlemanager_journal_form_02.png
+.. image:: img/titlemanager_title_form_02.png
 
 Mission
 .......
@@ -286,7 +286,7 @@ Select all the categories which the journal is related to.
 Journal form: formal information
 --------------------------------
 
-.. image:: img/en/01_tit_03.jpg
+.. image:: img/titlemanager_title_form_03.jpg
 
 
 Initial Date 
@@ -497,7 +497,7 @@ Short title registered in MEDLINE
 Journal form: publishers and sponsors
 -------------------------------------
 
-.. image:: img/en/01_tit_04.jpg
+.. image:: img/titlemanager_title_form_04.jpg
 
 
 Publisher 
@@ -587,7 +587,7 @@ Enter the name of the financial sponsors
 Journal form: license or copyright
 ----------------------------------
 
-.. image:: img/en/01_tit_05.jpg
+.. image:: img/titlemanager_title_form_05.jpg
 
 
 Text provided by Creative Commons site according to the license choice
@@ -616,7 +616,7 @@ Examples:
 Journal form: history of journal's status in the collection 
 -----------------------------------------------------------
 
-.. image:: img/en/01_tit_06.jpg
+.. image:: img/titlemanager_title_form_06.jpg
 
 
 Journal history
@@ -643,13 +643,13 @@ Repetitive.
 - subfield c: final date, ISO format
 - subfield d: status which value is D or S
 
-.. image:: img/en/01_tit_06b.jpg
+.. image:: img/titlemanager_title_form_06_history.jpg
 
 
 Journal form: website
 ---------------------
 
-.. image:: img/titlemanager_journal_form_07.png
+.. image:: img/titlemanager_title_form_07.png
 
 
 Acronym (Lowercase and/or Uppercase letters)
@@ -766,7 +766,7 @@ Journal form: other information
 -------------------------------
 
 
-.. image:: img/en/01_tit_08.jpg
+.. image:: img/titlemanager_title_form_08.jpg
 
 
 Notes 
