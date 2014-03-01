@@ -874,40 +874,6 @@ class Reference(object):
         return self.root.findtext('.//conf-date')
 
 
-class XMLConverter(object):
-
-    def __init__(self, cisis):
-        self.cisis = cisis
-
-    def create_id_files(self, xml_files_path, issue, id_path):
-        records = ''
-        for xml_file in os.listdir(xml_files_path):
-            article = Article(load_xml(xml_files_path + '/' + xml_file))
-
-            section_code = issue.section_code(article.toc_section)
-            #FIXME
-            xml_filename = 'xml/acron/' + issue_label + '/' + xml_file
-            text_or_article = 'article'
-            id_filename = '0'*5 + article.order
-            id_filename = id_filename[-5:]
-
-            isis = ArticleISIS(xml_filename, text_or_article, issue_label, id_filename, article, section_code)
-            id_file = IDFile(isis.records)
-            id_file.save(id_path + '/' + id_filename + '.id')
-
-    def id2mst(self, id_path, base_path, base_name):
-        base_filename = base_path + '/' + base_name
-        if os.path.exists(base_filename + '.mst'):
-            os.unlink(base_filename + '.mst')
-            os.unlink(base_filename + '.xrf')
-        #FIXME
-        if os.path.isfile(id_path + '/i.id'):
-            self.cisis.id2mst(id_path + '/i.id', base_filename, False)
-        for id_file in os.listdir(id_path):
-            if id_file != 'i.id' and id_file != '00000.id':
-                self.cisis.id2mst(id_path + '/' + id_file, base_filename, False)
-
-
 class IDFile(object):
 
     def __init__(self, records):
@@ -1024,10 +990,39 @@ class CISIS:
         return a
 
 
-class FilesLocation(object):
+class XMLConverter(object):
 
-    def __init__(self, acron, issue_label):
-        self.acron = acron
-        self.issue_label = issue_label
+    def __init__(self, cisis):
+        self.cisis = cisis
+
+    def create_id_files(self, xml_files_path, issue, id_path):
+        records = ''
+        for xml_file in os.listdir(xml_files_path):
+            article = Article(load_xml(xml_files_path + '/' + xml_file))
+
+            section_code = issue.section_code(article.toc_section)
+            #FIXME
+            xml_filename = 'xml/acron/' + issue_label + '/' + xml_file
+            text_or_article = 'article'
+            id_filename = '0'*5 + article.order
+            id_filename = id_filename[-5:]
+
+            isis = ArticleISIS(xml_filename, text_or_article, issue_label, id_filename, article, section_code)
+            id_file = IDFile(isis.records)
+            id_file.save(id_path + '/' + id_filename + '.id')
+
+    def id2mst(self, id_path, base_path, base_name):
+        base_filename = base_path + '/' + base_name
+        if os.path.exists(base_filename + '.mst'):
+            os.unlink(base_filename + '.mst')
+            os.unlink(base_filename + '.xrf')
+        #FIXME
+        if os.path.isfile(id_path + '/i.id'):
+            self.cisis.id2mst(id_path + '/i.id', base_filename, False)
+        for id_file in os.listdir(id_path):
+            if id_file != 'i.id' and id_file != '00000.id':
+                self.cisis.id2mst(id_path + '/' + id_file, base_filename, False)
+
+
 
     
