@@ -98,6 +98,11 @@ class ArticleISIS(object):
             new['n'] = item.get('ext-link-type')
             new['t'] = 'pr' if item.get('related-article-type') == 'press-release' else 'article'
             rec_f['241'].append(new)
+        if self.article.is_article_press_release or self.article.is_issue_press_release:
+            rec_f['41'] = 'pr'
+
+        if self.article.is_article_press_release or self.article.is_issue_press_release:
+            rec_f['241'] = 'pr'
 
         #rec_f['100'] = self.article.journal_title
         rec_f['30'] = self.article.abbrev_journal_title
@@ -142,10 +147,15 @@ class ArticleISIS(object):
 
         rec_f['121'] = self.article.order if self.article.order is not None else self.article.fpage
 
-        rec_f['31'] = self.article.volume
-        rec_f['32'] = self.article.number
-        rec_f['131'] = self.article.volume_suppl
-        rec_f['132'] = self.article.number_suppl
+        if self.article.is_ahead:
+            rec_f['32'] = 'ahead'
+            rec_f['223'] = self.article.ahpdate
+        else:
+            rec_f['31'] = self.article.volume
+            rec_f['32'] = self.article.number
+            rec_f['131'] = self.article.volume_suppl
+            rec_f['132'] = self.article.number_suppl
+            rec_f['223'] = self.article.article_pub_date
 
         rec_f['58'] = self.article.funding_source
         rec_f['591'] = [{'_': item for item in self.article.principal_award_recipient}]
@@ -412,6 +422,12 @@ class Article(object):
         return r
 
     @property
+    def press_release_id(self):
+        related = self.article_meta.find('related-object[@document-type="pr"]')
+        if related is not None:
+            return related.attrib.get('document-id')
+
+    @property
     def journal_title(self):
         return self.journal_meta.findtext('journal-title')
 
@@ -542,12 +558,33 @@ class Article(object):
     def supplement(self):
         return self.article_meta.findtext('supplement')
 
+    @property
+    def is_ahead(self):
+        if self.volume.replace('0', '') == '' and self.number.replace('0', '') == '':
+            return True
+        return False
+
+    @property
+    def ahpdate(self):
+        return self.article_pub_date if self.is_ahead else None
+
+    @property
+    def is_article_press_release(self):
+        return = (self.article_meta.find('.//related-document[@link-type="]article-has-press-release"]') is not None)
+
+
+    @property
+    def is_issue_press_release(self):
+        if self.tree.attrib.get('article-type') == 'press-release':
+            return not self.is_article_press_release
+        return False
+
     def _issue_parts(self):
         self.number = None
         self.number_suppl = None
         self.volume_suppl = None
         suppl = None
-        parts = issue.split(' ')
+        parts = self.issue.split(' ')
         if len(parts) == 1:
             if 'sup' in parts[0].lower():
                 suppl = parts[0]
@@ -992,17 +1029,15 @@ class CISIS:
 
 class XMLConverter(object):
 
-    def __init__(self, cisis):
-        self.cisis = cisis
-
     def create_id_files(self, xml_files_path, issue, id_path):
-        records = ''
+        acron = 'acron'
+
         for xml_file in os.listdir(xml_files_path):
             article = Article(load_xml(xml_files_path + '/' + xml_file))
 
             section_code = issue.section_code(article.toc_section)
             #FIXME
-            xml_filename = 'xml/acron/' + issue_label + '/' + xml_file
+            xml_filename = 'xml/' + acron + '/' + issue_label + '/' + xml_file
             text_or_article = 'article'
             id_filename = '0'*5 + article.order
             id_filename = id_filename[-5:]
@@ -1010,6 +1045,12 @@ class XMLConverter(object):
             isis = ArticleISIS(xml_filename, text_or_article, issue_label, id_filename, article, section_code)
             id_file = IDFile(isis.records)
             id_file.save(id_path + '/' + id_filename + '.id')
+
+
+class DBManager(object):
+
+    def __init__(self, cisis):
+        self.cisis = cisis
 
     def id2mst(self, id_path, base_path, base_name):
         base_filename = base_path + '/' + base_name
@@ -1023,6 +1064,41 @@ class XMLConverter(object):
             if id_file != 'i.id' and id_file != '00000.id':
                 self.cisis.id2mst(id_path + '/' + id_file, base_filename, False)
 
+    def replace_ahead(self, article):
+        if article.ahpdate and article.number != 'ahead':
+            # ex-ahead?
 
 
-    
+class FilesLocator(object):
+
+    def __init__(self, serial_path, article, acron):
+        self.article = article
+        self.acron = acron
+        self.serial_path = serial_path
+
+    @property
+    def issue_folder(self):
+        s = ''
+        if self.article.volume is not None:
+            s += 'v' + self.article.volume
+        if self.article.volume_suppl is not None:
+            s += 's' + self.article.volume_suppl
+        if self.article.number is not None:
+            s += 'n' + self.article.number
+        if self.article.number_suppl is not None:
+            s += 's' + self.article.number_suppl
+        return s
+
+    def ahead_base(self, year):
+        return self.serial_path + '/' + self.acron + '/' + year + 'nahead' + '/base/' + self.issue_folder
+
+    @property
+    def base(self):
+        return self.serial_path + '/' + self.acron + '/' + self.issue_folder + '/base/' + self.issue_folder
+
+    @property
+    def idfile(self):
+        return self.serial_path + '/' + self.acron + '/' + self.issue_folder + '/id/' + self.issue_folder
+
+
+
