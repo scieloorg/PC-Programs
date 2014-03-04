@@ -1,29 +1,23 @@
 # coding=utf-8
 
 
+import os
+
+
 class IDFile(object):
 
-    def __init__(self, records):
-        self.records = records
+    def __init__(self):
+        pass
 
-    def save(self, id_filename):
-        path = os.path.dirname(id_filename)
-        if not os.path.isdir(path):
-            os.makedirs(path)
-
-        f = open(id_filename, 'w')
-        f.write(self.format_file())
-        f.close()
-
-    def format_file(self):
+    def _format_file(self, records):
         r = ''
         index = 0
-        for item in self.records:
+        for item in records:
             index += 1
-            r += self.format_record(index, item)
+            r += self._format_record(index, item)
         return r
 
-    def format_record(self, index, record):
+    def _format_record(self, index, record):
         i = '000000' + str(index)
         r = '!ID ' + i[-6:] + '\n'
         for tag, occs in record.items():
@@ -42,18 +36,60 @@ class IDFile(object):
                                     first = k + v
                                 else:
                                     value += '^' + k + v
-                        r += self.tagged(tag, first + value)
+                        r += self._tagged(tag, first + value)
         return r
 
-    def tagged(self, tag, value):
-        if value is not None':
+    def _tagged(self, tag, value):
+        if value is not None:
             tag = '000' + tag
             tag = tag[-3:]
             return '!v' + tag + '!' + value + '\n'
         return ''
 
+    def read(self, filename):
+        f = open(filename, 'r')
+        r = f.readlines()
+        f.close()
 
-class CISIS:
+        records = []
+        record = {}
+        for line in r:
+            s = line.replace('\n', '').replace('\r', '')
+            if '!ID ' in s:
+                if len(record) > 0:
+                    records.append(record)
+                record = {}
+            else:
+                ign, tag, content = s.split('!')
+                if not tag in record.keys():
+                    record[tag] = []
+                content = content.replace('^', 'BREAKSUBF^')
+                subfields = content.split('BREAKSUBF')
+                content = {}
+                for subf in subfields:
+                    if subf.startswith('^'):
+                        c = subf[1:2]
+                        v = subf[2:]
+                    else:
+                        c = '_'
+                        v = subf
+                    content[c] = v
+                record[tag].append(content)
+        if len(record) > 0:
+            records.append(record)
+        return records
+
+    def save(self, filename, records):
+        path = os.path.dirname(filename)
+        if not os.path.isdir(path):
+            os.makedirs(path)
+
+        f = open(filename, 'w')
+        f.write(self._format_file(records))
+        f.close()
+
+
+class CISIS(object):
     def __init__(self, cisis_path):
         cisis_path = cisis_path.replace('\\', '/')
 

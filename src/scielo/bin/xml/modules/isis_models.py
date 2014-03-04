@@ -3,14 +3,12 @@
 
 class ArticleISIS(object):
 
-    def __init__(self, xml_filename, text_or_article, issue_label, id_filename, article, section_code):
-        self.xml_filename = xml_filename
+    def __init__(self, article, section_code, text_or_article, files_info):
         self.text_or_article = text_or_article
-        self.issue_label = issue_label
-        self.id_filename = id_filename
         self.article = article
         self.section_code = section_code
-
+        self.files_info = files_info
+        
     def metadata(self):
         rec_f = {}
         rec_f['120'] = self.article.dtd_version
@@ -265,9 +263,9 @@ class ArticleISIS(object):
     @property
     def common_data(self):
         r = {}
-        r['2'] = self.id_filename
-        r['4'] = self.issue_label
-        r['702'] = self.xml_filename
+        r['2'] = self.files_locator.id_filename
+        r['4'] = self.files_locator.issue_label
+        r['702'] = self.files_locator.xml_filename
         r['705'] = 'S'
         r['709'] = self.text_or_article
         return r

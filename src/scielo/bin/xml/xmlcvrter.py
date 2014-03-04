@@ -1,7 +1,9 @@
 # coding=utf-8
 
-import utils
-from article import Article
+from modules import utils
+from modules import isis
+from modules.article import Article
+from modules.isis_models import ArticleISIS
 
 
 class Issue(object):
@@ -14,41 +16,40 @@ class Issue(object):
         return r[0] if len(r) > 0 else None
 
 
-
-
-
 class XMLConverter(object):
 
     def __init__(self, dbmanager, serial_path):
         self.dbmanager = dbmanager
         self.serial_path = serial_path
 
-    def convert(self, xml_files_path, issue, acron):
+    def convert(self, xml_files_path, acron):
 
         for xml_file in os.listdir(xml_files_path):
             article = Article(load_xml(xml_files_path + '/' + xml_file))
 
+            issue = IssueISISDB(article)
             section_code = issue.section_code(article.toc_section)
 
-            files_locator = FilesLocator(self.serial_path, article, acron, xml_file)
-            issue_folder = files_locator.issue_folder
-            relative_xml_filename = files_locator.relative_xml_filename
-            id_filename = files_locator.id_filename
+            files_info = FilesInfo(self.serial_path, article, acron, xml_file)
 
             text_or_article = 'article'
 
-            isis = ArticleISIS(relative_xml_filename, text_or_article, issue_folder, id_filename, article, section_code)
-
-            id_file = IDFile(isis.records)
-            id_file.save(id_filename)
-
-        self.dbmanager.id2mst(os.path.dirname(id_filename), files_locator.base)
+            self.dbmanager.save(article, section_code, text_or_article, files_info)
+            self.dbmanager.exclude_ahead(article)
 
 
 class DBManager(object):
 
     def __init__(self, cisis):
         self.cisis = cisis
+
+    def save(self, article, section_code, text_or_article, files_info):
+        article_isis = ArticleISIS(article, section_code, text_or_article, files_info)
+
+        id_file = IDFile()
+        id_file.save(id_filename, article_isis.records)
+        self.exclude_ahead(article)
+        self.id2mst(os.path.dirname(id_filename), files_info.base)
 
     def id2mst(self, id_path, base_filename):
         if os.path.exists(base_filename + '.mst'):
@@ -61,7 +62,7 @@ class DBManager(object):
             if id_file != 'i.id' and id_file != '00000.id':
                 self.cisis.id2mst(id_path + '/' + id_file, base_filename, False)
 
-    def replace_ahead(self, article):
+    def exclude_ahead(self, article):
         if article.ahpdate and article.number != 'ahead':
             # ex-ahead?
 
@@ -82,7 +83,7 @@ class Base(object):
         return ''
 
 
-class FilesLocator(object):
+class FilesInfo(object):
 
     def __init__(self, serial_path, article, acron, xml_name):
         self.article = article
