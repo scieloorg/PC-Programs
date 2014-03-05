@@ -18,25 +18,28 @@ class IDFile(object):
         return r
 
     def _format_record(self, index, record):
+
         i = '000000' + str(index)
         r = '!ID ' + i[-6:] + '\n'
-        for tag, occs in record.items():
-            if occs is str:
-                r += self.tagged(tag, occs)
-            elif occs is list:
-                for occ in occs:
-                    if occ is str:
-                        r += self.format(tag, occ)
-                    elif occ is dict:
-                        value = ''
-                        first = ''
-                        for k, v in occ.items():
-                            if v != '':
-                                if k == '_':
-                                    first = k + v
-                                else:
-                                    value += '^' + k + v
-                        r += self._tagged(tag, first + value)
+        if record is not None:
+            for tag, occs in record.items():
+
+                if occs is str:
+                    r += self.tagged(tag, occs)
+                elif occs is list:
+                    for occ in occs:
+                        if occ is str:
+                            r += self.format(tag, occ)
+                        elif occ is dict:
+                            value = ''
+                            first = ''
+                            for k, v in occ.items():
+                                if v != '':
+                                    if k == '_':
+                                        first = k + v
+                                    else:
+                                        value += '^' + k + v
+                            r += self._tagged(tag, first + value)
         return r
 
     def _tagged(self, tag, value):
