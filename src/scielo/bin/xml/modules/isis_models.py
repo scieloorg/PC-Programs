@@ -8,7 +8,7 @@ class ArticleISIS(object):
         self.article = article
         self.section_code = section_code
         self.files_info = files_info
-        
+
     def metadata(self):
         rec_f = {}
         rec_f['120'] = self.article.dtd_version
@@ -278,3 +278,15 @@ class ArticleISIS(object):
         r['708'] = record_name_total
         # r.update(dict)
         return r
+
+
+class IssueISIS(object):
+    def __init__(self, record):
+        self.record = record
+
+    def section_code(self, section_title):
+        seccode = None
+        for sec in self.record.get('49', []):
+            if sec.get('t') == section_title:
+                seccode = sec.get('c')
+        return seccode

@@ -5,7 +5,7 @@ import xml.etree.ElementTree as etree
 
 class ArticleXML(object):
 
-    def __init__(self, tree, xml_filename):
+    def __init__(self, tree):
         self.tree = tree
         self.journal_meta = self.tree.find('./front/journal-meta')
         self.article_meta = self.tree.find('./front/article-meta')
@@ -94,7 +94,7 @@ class ArticleXML(object):
 
     @property
     def toc_section(self):
-        node = self.article_meta.find('subj-group[@subj-group-type="heading"]')    
+        node = self.article_meta.find('subj-group[@subj-group-type="heading"]')
         if node is not None:
             return node.findtext('subject')
         return None
@@ -312,14 +312,15 @@ class ArticleXML(object):
     def references(self):
         refs = []
         for ref in self.back.findall('.//ref'):
-            refs.append(Reference(ref))
+            refs.append(ReferenceXML(ref))
         return refs
 
 
-class Article(object):
+class Article(ArticleXML):
 
     def __init__(self, tree):
         ArticleXML.__init__(self, tree)
+        self._issue_parts()
 
     def _issue_parts(self):
         self.number = None
@@ -397,10 +398,10 @@ class Article(object):
 
     @property
     def is_article_press_release(self):
-        return = (self.article_meta.find('.//related-document[@link-type="]article-has-press-release"]') is not None)
+        return (self.article_meta.find('.//related-document[@link-type="article-has-press-release"]') is not None)
 
 
-class Reference(object):
+class ReferenceXML(object):
 
     def __init__(self, root):
         self.root = root
@@ -561,4 +562,3 @@ class Reference(object):
     @property
     def conference_date(self):
         return self.root.findtext('.//conf-date')
-

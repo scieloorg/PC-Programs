@@ -51,36 +51,51 @@ class IDFile(object):
 
     def read(self, filename):
         f = open(filename, 'r')
-        r = f.readlines()
-        f.close()
 
         records = []
         record = {}
-        for line in r:
+        for line in f.readlines():
             s = line.replace('\n', '').replace('\r', '')
             if '!ID ' in s:
+                print(s)
                 if len(record) > 0:
-                    records.append(record)
+                    records.append(self.simplify_record(record))
+
                 record = {}
             else:
                 ign, tag, content = s.split('!')
+                tag = str(int(tag[1:]))
                 if not tag in record.keys():
                     record[tag] = []
                 content = content.replace('^', 'BREAKSUBF^')
                 subfields = content.split('BREAKSUBF')
-                content = {}
-                for subf in subfields:
-                    if subf.startswith('^'):
-                        c = subf[1:2]
-                        v = subf[2:]
-                    else:
-                        c = '_'
-                        v = subf
-                    content[c] = v
+                if len(subfields) == 1:
+                    content = subfields[0]
+                else:
+                    content = {}
+                    for subf in subfields:
+                        if subf.startswith('^'):
+                            c = subf[1:2]
+                            v = subf[2:]
+                        else:
+                            c = '_'
+                            v = subf
+                        content[c] = v
                 record[tag].append(content)
+
+        # last record
         if len(record) > 0:
-            records.append(record)
+            records.append(self.simplify_record(record))
+
+        print('Loaded ' + str(len(records))) + ' issue records.'
+        f.close()
         return records
+
+    def simplify_record(self, record):
+        for tag, content in record.items():
+            if len(content) == 1:
+                record[tag] = content[0]
+        return record
 
     def save(self, filename, records):
         path = os.path.dirname(filename)
@@ -133,7 +148,7 @@ class CISIS(object):
         os.system(cmd)
 
     def mst2iso(self, mst_filename, iso_filename):
-        cmd = self.cisis_path + '/mx ' + mst_filename + ' iso=' + iso_filename + ' now -all' 
+        cmd = self.cisis_path + '/mx ' + mst_filename + ' iso=' + iso_filename + ' now -all'
         os.system(cmd)
 
     def copy_record(self, src_mst_filename, mfn, dest_mst_filename):
@@ -154,3 +169,12 @@ class CISIS(object):
             a.append(l.replace('\n', ''))
 
         return a
+
+    def new(self, mst_filename):
+        cmd = self.cisis_path + '/mx null count=0 create="' + mst_filename + '" now -all'
+        os.system(cmd)
+
+    def search(self, mst_filename, expression, result_filename):
+        self.new(result_filename)
+        cmd = self.cisis_path + '/mx ' + mst_filename + ' bool="' + expression + '"  lw=999 append=' + result_filename + ' now -all'
+        os.system(cmd)
