@@ -2,6 +2,8 @@
 
 import xml.etree.ElementTree as etree
 
+from modules.utils import xml_string
+
 
 class ArticleXML(object):
 
@@ -16,15 +18,15 @@ class ArticleXML(object):
 
     @property
     def dtd_version(self):
-        return self.tree.attrib.get('dtd-version')
+        return self.tree.find('.').attrib.get('dtd-version')
 
     @property
     def article_type(self):
-        return self.tree.attrib.get('article-type')
+        return self.tree.find('.').attrib.get('article-type')
 
     @property
     def language(self):
-        return self.tree.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+        return self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
 
     @property
     def related_objects(self):
@@ -101,13 +103,12 @@ class ArticleXML(object):
 
     @property
     def keywords(self):
-        if self._keywords is None:
-            k = []
-            for node in self.article_meta.findall('kwd-group'):
-                language = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-                for kw in node.findall('kwd'):
-                    k.append({'l': language, 'k': kw.text})
-        return self._keywords
+        k = []
+        for node in self.article_meta.findall('kwd-group'):
+            language = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+            for kw in node.findall('kwd'):
+                k.append({'l': language, 'k': kw.text})
+        return k
 
     @property
     def contrib_names(self):
@@ -115,11 +116,11 @@ class ArticleXML(object):
         for contrib in self.article_meta.findall('.//contrib'):
             item = {}
             if contrib.findall('name'):
-                item['given-names'] = contrib.find('name/given-names')
-                item['surname'] = contrib.find('name/surname')
-                item['suffix'] = contrib.find('name/suffix')
-                item['prefix'] = contrib.find('name/prefix')
-                item['contrib-id'] = contrib.contrib.findtext('contrib-id[@contrib-id-type="orcid"]')
+                item['given-names'] = contrib.findtext('name/given-names')
+                item['surname'] = contrib.findtext('name/surname')
+                item['suffix'] = contrib.findtext('name/suffix')
+                item['prefix'] = contrib.findtext('name/prefix')
+                item['contrib-id'] = contrib.findtext('contrib-id[@contrib-id-type="orcid"]')
                 item['contrib-type'] = contrib.attrib.get('contrib-type')
                 item['xref'] = []
                 for xref_item in contrib.findall('xref[@ref-type="aff"]'):
@@ -143,7 +144,7 @@ class ArticleXML(object):
             item['article-title'] = node.findtext('article-title')
             item['subtitle'] = node.findtext('subtitle')
             if item['article-title'] is not None:
-                item['language'] = item['article-title'].attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                item['language'] = node.find('article-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
 
             k.append(item)
         return k
@@ -201,7 +202,7 @@ class ArticleXML(object):
 
     @property
     def is_issue_press_release(self):
-        if self.tree.attrib.get('article-type') == 'press-release':
+        if self.tree.find('.').attrib.get('article-type') == 'press-release':
             return not self.is_article_press_release
         return False
 
@@ -232,7 +233,7 @@ class ArticleXML(object):
 
     @property
     def fpage(self):
-        return self.article_meta.find('fpage')
+        return self.article_meta.findtext('fpage')
 
     @property
     def fpage_seq(self):
@@ -240,7 +241,7 @@ class ArticleXML(object):
 
     @property
     def lpage(self):
-        return self.article_meta.find('lpage')
+        return self.article_meta.findtext('lpage')
 
     @property
     def elocation_id(self):
@@ -412,11 +413,11 @@ class ReferenceXML(object):
 
     @property
     def language(self):
-        lang = self.root.find('.//source').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//source') else None
+        lang = self.root.find('.//source').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//source') is not None else None
         if lang is None:
-            lang = self.root.find('.//article-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//article-title') else None
+            lang = self.root.find('.//article-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//article-title') is not None else None
         if lang is None:
-            lang = self.root.find('.//chapter-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//chapter-title') else None
+            lang = self.root.find('.//chapter-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//chapter-title') is not None else None
         return lang
 
     @property
@@ -462,7 +463,7 @@ class ReferenceXML(object):
 
                 r[person_group_id].append(p)
             for collab in person_group.findall('.//collab'):
-                r[person_group_id].append(collab.text)
+                r[person_group_id].append({'collab': collab.text})
         return r
 
     @property

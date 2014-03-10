@@ -1,14 +1,19 @@
 # coding=utf-8
 
+from datetime import datetime
+
+from modules.utils import doi_pid, display_pages, format_dateiso
+
 
 class ArticleISIS(object):
 
-    def __init__(self, article, section_code, text_or_article, files_info):
+    def __init__(self, article_files, article, section_code, text_or_article):
         self.text_or_article = text_or_article
         self.article = article
         self.section_code = section_code
-        self.files_info = files_info
+        self.article_files = article_files
 
+    @property
     def metadata(self):
         rec_f = {}
         rec_f['120'] = self.article.dtd_version
@@ -61,7 +66,7 @@ class ArticleISIS(object):
             new['k'] = item['contrib-id']
             rec_f['10'].append(new)
 
-        rec_f['11'] = self.contrib_collab
+        rec_f['11'] = self.article.contrib_collab
         rec_f['12'] = []
         for item in self.article.title:
             new = {}
@@ -80,6 +85,7 @@ class ArticleISIS(object):
         rec_f['237'] = self.article.doi
 
         rec_f['121'] = self.article.order if self.article.order is not None else self.article.fpage
+        rec_f['881'] = doi_pid(self.article.doi)
 
         if self.article.is_ahead:
             rec_f['32'] = 'ahead'
@@ -93,7 +99,7 @@ class ArticleISIS(object):
 
         rec_f['58'] = self.article.funding_source
         rec_f['591'] = [{'_': item for item in self.article.principal_award_recipient}]
-        rec_f['591'] = [{'n': item for item in self.article.principal_investigator}]
+        rec_f['591'] += [{'n': item for item in self.article.principal_investigator}]
         rec_f['60'] = self.article.award_id
         rec_f['102'] = self.article.funding_statement
 
@@ -137,6 +143,7 @@ class ArticleISIS(object):
 
         return rec_f
 
+    @property
     def references(self):
 
         records_c = []
@@ -179,14 +186,14 @@ class ArticleISIS(object):
             rec_c['66'] = item.publisher_loc
             rec_c['62'] = item.publisher_name
             rec_c['514'] = {'f': item.fpage, 'l': item.lpage, 'r': item.page_range}
-            rec_c['14'] = item.fpage + '-' + item.lpage
+            rec_c['14'] = display_pages(item.fpage, item.lpage)
             if item.size:
                 rec_c['20']['_'] = item.size['size']
                 rec_c['20']['u'] = item.size['units']
             rec_c['118'] = item.label
             rec_c['810'] = item.etal
             rec_c['109'] = item.cited_date
-            rec_c['61'] = item.notes if item.notes else item.comment
+            rec_c['61'] = item.notes if item.notes else item.comments
             rec_c['237'] = item.doi
             rec_c['238'] = item.pmid
             rec_c['239'] = item.pmcid
@@ -233,18 +240,18 @@ class ArticleISIS(object):
         rec.update(self.record_info('1', 'o', '1', '1'))
         r.append(rec)
 
-        rec = self.metadata(article)
+        rec = self.metadata
         rec.update(self.common_data)
         rec.update(self.record_info('2', 'h', '1', '1'))
         r.append(rec)
 
-        #metadata = self.metadata(article)
-        rec = self.metadata(article)
+        #metadata = self.metadata
+        rec = self.metadata
         rec.update(self.common_data)
         rec.update(self.record_info('3', 'f', '1', '1'))
         r.append(rec)
 
-        rec = self.metadata(article)
+        rec = self.metadata
         rec.update(self.common_data)
         rec.update(self.record_info('4', 'l', '1', '1'))
         r.append(rec)
@@ -263,9 +270,9 @@ class ArticleISIS(object):
     @property
     def common_data(self):
         r = {}
-        r['2'] = self.files_locator.id_filename
-        r['4'] = self.files_locator.issue_label
-        r['702'] = self.files_locator.xml_filename
+        r['2'] = self.article_files.id_filename
+        r['4'] = self.article_files.issue_folder
+        r['702'] = self.article_files.relative_xml_filename
         r['705'] = 'S'
         r['709'] = self.text_or_article
         return r
@@ -285,8 +292,12 @@ class IssueISIS(object):
         self.record = record
 
     def section_code(self, section_title):
+        print(self.record)
         seccode = None
+        print(section_title)
+        print(self.record.get('49', []))
         for sec in self.record.get('49', []):
+            print(sec.get('t'))
             if sec.get('t') == section_title:
                 seccode = sec.get('c')
         return seccode

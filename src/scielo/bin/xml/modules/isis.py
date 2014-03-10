@@ -23,23 +23,31 @@ class IDFile(object):
         r = '!ID ' + i[-6:] + '\n'
         if record is not None:
             for tag, occs in record.items():
-
-                if occs is str:
-                    r += self.tagged(tag, occs)
-                elif occs is list:
+                print(tag)
+                print(occs)
+                s = ''
+                if type(occs) is str:
+                    s = self._tagged(tag, occs)
+                elif type(occs) is list:
+                        
+                    s = ''
                     for occ in occs:
-                        if occ is str:
-                            r += self.format(tag, occ)
-                        elif occ is dict:
-                            value = ''
-                            first = ''
+                        value = ''
+                        first = ''
+                        if type(occ) is str:
+                            s += self._tagged(tag, occ)
+                        elif type(occ) is dict:
+                            
                             for k, v in occ.items():
-                                if v != '':
+                                if v is not None:
                                     if k == '_':
-                                        first = k + v
+                                        first = v
                                     else:
                                         value += '^' + k + v
-                            r += self._tagged(tag, first + value)
+                            s += self._tagged(tag, first + value)
+                print('s:')
+                print(s)
+                r += s
         return r
 
     def _tagged(self, tag, value):
@@ -103,8 +111,36 @@ class IDFile(object):
             os.makedirs(path)
 
         f = open(filename, 'w')
-        f.write(self._format_file(records))
+        content = self._format_file(records)
+        try:
+            f.write(self._iso(content))
+        except Exception as e:
+            print(e)
+            for line in content.split('\n'):
+                try:
+                    f.write(line + '\n')
+                except:
+                    for c in line:
+                        try:
+                            f.write(self._iso(c))
+                        except:
+                            f.write(' ')
+                            print('Unable to write ' + c + ' of ' + line)
+                    f.write('\n')
         f.close()
+
+    def _iso(self, content):
+        try:
+            u = content.decode('utf-8', 'ignore')
+            iso = u.encode('iso-8859-1')
+        except:
+            try:
+                u = content.decode('ascii', 'ignore')
+                iso = u.encode('iso-8859-1')
+            except:
+                iso = content
+        return iso
+        return iso
 
 
 class CISIS(object):
@@ -133,18 +169,19 @@ class CISIS(object):
         os.system(cmd)
 
     def id2mst(self, id_filename, mst_filename, reset):
-        from tempfile import mkstemp
-
-        _, temp = mkstemp()
-        self.id2i(id_filename, temp)
-
         if reset:
-            self.create('null count=0', mst_filename)
+            self.new(mst_filename)
+        from tempfile import mkdtemp
+        temp = mkdtemp() + '/f'
+        self.id2i(id_filename, temp)
         self.append(temp, mst_filename)
-        os.remove(temp)
+        try:
+            os.unlink(temp)
+        except:
+            pass
 
     def i2id(self, mst_filename, id_filename):
-        cmd = self.cisis_path + '/i2id ' + mst_filename + ' > ' + id_filename 
+        cmd = self.cisis_path + '/i2id ' + mst_filename + ' > ' + id_filename
         os.system(cmd)
 
     def mst2iso(self, mst_filename, iso_filename):
@@ -155,9 +192,16 @@ class CISIS(object):
         cmd = self.cisis_path + '/mx ' + src_mst_filename + ' from=' + mfn + ' count=1 ' + ' append=' + dest_mst_filename + ' now -all'
         os.system(cmd)
 
+    def modify_records(self, mst_filename, proc):
+        import tempfile
+        temp = tempfile.mkdtemp() + '/f'
+        cmd = self.cisis_path + '/mx ' + mst_filename + ' "proc=' + proc + '" append=' + temp + ' now -all'
+        os.system(cmd)
+        self.create(temp, mst_filename)
+
     def find_record(self, mst_filename, expression):
         r = mst_filename + expression
-        cmd = self.cisis_path + '/mx ' + mst_filename + ' bool="' + expression + '"  lw=999 "pft=mfn/" now > ' + r
+        cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 "pft=mfn/" now > ' + r
 
         os.system(cmd)
         f = open(r, 'r')
@@ -176,5 +220,9 @@ class CISIS(object):
 
     def search(self, mst_filename, expression, result_filename):
         self.new(result_filename)
-        cmd = self.cisis_path + '/mx ' + mst_filename + ' bool="' + expression + '"  lw=999 append=' + result_filename + ' now -all'
+        cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 append=' + result_filename + ' now -all'
+        os.system(cmd)
+
+    def generate_index(self, mst_filename, fst_filename, inverted_filename):
+        cmd = self.cisis_path + '/mx ' + mst_filename + ' fst=@' + fst_filename + '" fullinv=' + inverted_filename
         os.system(cmd)
