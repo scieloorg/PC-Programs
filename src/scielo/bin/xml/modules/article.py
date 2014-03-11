@@ -186,6 +186,14 @@ class ArticleXML(object):
 
     @property
     def order(self):
+        _order = self.article_id_other
+        if _order is None:
+            _order = self.fpage
+        _order = '00000' + _order
+        return _order[-5:]
+
+    @property
+    def article_id_other(self):
         return self.article_meta.findtext('article-id[@pub-id-type="other"]')
 
     @property

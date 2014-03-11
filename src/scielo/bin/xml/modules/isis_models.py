@@ -84,7 +84,7 @@ class ArticleISIS(object):
         rec_f['601'] = self.article.trans_languages
         rec_f['237'] = self.article.doi
 
-        rec_f['121'] = self.article.order if self.article.order is not None else self.article.fpage
+        rec_f['121'] = self.article.order
         rec_f['881'] = doi_pid(self.article.doi)
 
         if self.article.is_ahead:
@@ -270,7 +270,7 @@ class ArticleISIS(object):
     @property
     def common_data(self):
         r = {}
-        r['2'] = self.article_files.id_filename
+        r['2'] = self.article_files.xml_name
         r['4'] = self.article_files.issue_folder
         r['702'] = self.article_files.relative_xml_filename
         r['705'] = 'S'

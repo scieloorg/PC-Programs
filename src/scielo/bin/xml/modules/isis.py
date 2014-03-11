@@ -22,14 +22,15 @@ class IDFile(object):
         i = '000000' + str(index)
         r = '!ID ' + i[-6:] + '\n'
         if record is not None:
-            for tag, occs in record.items():
+            for tag_i in sorted([int(s) for s in record.keys()]):
+                tag = str(tag_i)
+                occs = record[tag]
                 print(tag)
                 print(occs)
                 s = ''
                 if type(occs) is str:
                     s = self._tagged(tag, occs)
                 elif type(occs) is list:
-                        
                     s = ''
                     for occ in occs:
                         value = ''
@@ -37,7 +38,6 @@ class IDFile(object):
                         if type(occ) is str:
                             s += self._tagged(tag, occ)
                         elif type(occ) is dict:
-                            
                             for k, v in occ.items():
                                 if v is not None:
                                     if k == '_':
@@ -130,16 +130,19 @@ class IDFile(object):
         f.close()
 
     def _iso(self, content):
-        try:
-            u = content.decode('utf-8', 'ignore')
-            iso = u.encode('iso-8859-1')
-        except:
+        if type(content) is unicode:
+            iso = content.encode('iso-8859-1')
+        else:
             try:
-                u = content.decode('ascii', 'ignore')
+                u = content.decode('utf-8', 'ignore')
                 iso = u.encode('iso-8859-1')
             except:
-                iso = content
-        return iso
+                try:
+                    u = content.decode('ascii', 'ignore')
+                    iso = u.encode('iso-8859-1')
+                except:
+                    iso = content
+            return iso
         return iso
 
 

@@ -28,7 +28,7 @@ class XMLConverter(object):
         create_i_id = True
 
         for xml_file in os.listdir(xml_files_path):
-            if os.path.isfile(xml_files_path + '/' + xml_file):
+            if os.path.isfile(xml_files_path + '/' + xml_file) and xml_file.endswith('.xml'):
                 print(xml_files_path + '/' + xml_file)
                 text_or_article = 'article'
 
@@ -49,7 +49,7 @@ class XMLConverter(object):
                     print(section_code)
 
                     print(article_files.base)
-                    if create_i_id:
+                    if create_i_id and article.number != 'ahead':
                         i_record = issue.record
                     else:
                         i_record = None
@@ -176,27 +176,30 @@ class ArticleDB(object):
         self.cisis = cisis
 
     def save_article(self, article_files, article, section_code, text_or_article, i_record=None):
-        if i_record is not None:
-            print(article_files.id_path)
-            if not os.path.isdir(article_files.id_path):
+        if not os.path.isdir(article_files.id_path):
                 os.makedirs(article_files.id_path)
+        if not os.path.isdir(os.path.dirname(article_files.base)):
+            os.makedirs(os.path.dirname(article_files.base))
 
+        if i_record is not None:
             for item in os.listdir(article_files.id_path):
                 os.unlink(article_files.id_path + '/' + item)
+
             id_file = IDFile()
             id_file.save(article_files.id_path + '/i.id', [i_record])
 
-            if not os.path.isdir(os.path.dirname(article_files.base)):
-                os.makedirs(os.path.dirname(article_files.base))
-            self.cisis.id2mst(article_files.id_path + '/i.id', article_files.base, True)
+            self.cisis.id2i(article_files.id_path + '/i.id', article_files.base)
 
-        article_isis = ArticleISIS(article_files, article, section_code, text_or_article)
+        if article.order != '00000':
+            article_isis = ArticleISIS(article_files, article, section_code, text_or_article)
 
-        id_file = IDFile()
-        id_file.save(article_files.id_filename, article_isis.records)
-        print(article_files.id_filename)
-        print(article_files.base)
-        self.cisis.id2mst(article_files.id_filename, article_files.base, False)
+            id_file = IDFile()
+            id_file.save(article_files.id_filename, article_isis.records)
+            print(article_files.id_filename)
+            print(article_files.base)
+            self.cisis.id2mst(article_files.id_filename, article_files.base, False)
+        else:
+            print('Invalid value for order.')
 
 
 class ArticleFiles(object):
@@ -225,7 +228,7 @@ class ArticleFiles(object):
 
     @property
     def id_filename(self):
-        return self.id_path + self.xml_name + '.id'
+        return self.id_path + self.article.order + '.id'
 
     @property
     def id_path(self):
@@ -281,11 +284,16 @@ def check_inputs(args):
     return (r, src, acron, message)
 
 
-def convert(args, cisis_path, serial_path):
-    
+def convert(args):
+    def curr_path():
+        return os.getcwd().replace('\\', '/')
+
     r, xml_path, acron, message = check_inputs(args)
     if r:
-        xml_converter = XMLConverter(CISIS(cisis_path), serial_path)
+        config = Configuration()
+        print(curr_path() + '/./../cfg/')
+        config.read(curr_path() + '/./../scielo_paths.ini')
+        xml_converter = XMLConverter(CISIS(curr_path() + '/./../cfg/'), config.data['Serial Directory'])
         xml_converter.convert(xml_path, acron)
     else:
         print(message)
