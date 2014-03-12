@@ -36,7 +36,7 @@ class XMLConverter(object):
                 article_files = ArticleFiles(journal_files, article, xml_file)
 
                 # load issues record
-                self.issue_manager.load_selected_issues(article.journal_issns.get('epub', article.journal_issns.get('ppub', '')), acron, article_files.issue_folder)
+                self.issue_manager.load_selected_issues(article.journal_issns.get('epub'), article.journal_issns.get('ppub'), acron, article_files.issue_folder)
 
                 issue_record = self.issue_manager.record(acron, article.volume, article.number, article.volume_suppl, article.number_suppl)
                 if issue_record is None:
@@ -66,6 +66,9 @@ class IssuesManager(object):
         self.cisis = cisis
         self.records = {}
 
+        import tempfile
+        self.temp_dir = tempfile.mkdtemp()
+
     def load_all(self):
         id_filename = self.issue_filename + '.id'
         base = self.issue_filename
@@ -76,9 +79,16 @@ class IssuesManager(object):
             key = self._key(rec.get('930'), rec.get('31'), rec.get('32'), rec.get('131'), rec.get('132'))
             self.records[key] = rec
 
-    def load_selected_issues(self, issn, acron, issue_folder):
-        self.selected_issue_db = self.issue_filename + '_' + acron + issue_folder
-        self.cisis.search(self.issue_filename, issn + issue_folder + ' OR ' + acron, self.selected_issue_db)
+    def load_selected_issues(self, pissn, eissn, acron, issue_folder):
+        self.selected_issue_db = self.temp_dir + '/' + acron + issue_folder
+        expr = acron
+
+        if pissn is not None:
+            expr += ' OR ' + pissn + issue_folder
+        if eissn is not None:
+            expr += ' OR ' + eissn + issue_folder
+
+        self.cisis.search(self.issue_filename, expr, self.selected_issue_db)
         self.selected_issue_id_file = self.selected_issue_db + '.id'
         self.cisis.i2id(self.selected_issue_db, self.selected_issue_id_file)
 

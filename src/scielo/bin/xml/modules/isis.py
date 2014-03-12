@@ -25,8 +25,6 @@ class IDFile(object):
             for tag_i in sorted([int(s) for s in record.keys()]):
                 tag = str(tag_i)
                 occs = record[tag]
-                print(tag)
-                print(occs)
                 s = ''
                 if type(occs) is str:
                     s = self._tagged(tag, occs)
@@ -39,14 +37,12 @@ class IDFile(object):
                             s += self._tagged(tag, occ)
                         elif type(occ) is dict:
                             for k, v in occ.items():
-                                if v is not None:
+                                if v is not None and len(k) == 1:
                                     if k == '_':
                                         first = v
                                     else:
                                         value += '^' + k + v
                             s += self._tagged(tag, first + value)
-                print('s:')
-                print(s)
                 r += s
         return r
 
@@ -65,7 +61,6 @@ class IDFile(object):
         for line in f.readlines():
             s = line.replace('\n', '').replace('\r', '')
             if '!ID ' in s:
-                print(s)
                 if len(record) > 0:
                     records.append(self.simplify_record(record))
 
@@ -120,29 +115,26 @@ class IDFile(object):
                 try:
                     f.write(line + '\n')
                 except:
+                    r = ''
                     for c in line:
                         try:
                             f.write(self._iso(c))
                         except:
-                            f.write(' ')
-                            print('Unable to write ' + c + ' of ' + line)
+                            f.write('??')
+                            print(type(c))
+
+                            print('Unable to write ')
+                            print(r)
+                            #print(content)
+                        r += c
                     f.write('\n')
         f.close()
 
     def _iso(self, content):
         if type(content) is unicode:
-            iso = content.encode('iso-8859-1')
+            iso = content.encode('utf-8', 'xmlcharrefreplace')
         else:
-            try:
-                u = content.decode('utf-8', 'ignore')
-                iso = u.encode('iso-8859-1')
-            except:
-                try:
-                    u = content.decode('ascii', 'ignore')
-                    iso = u.encode('iso-8859-1')
-                except:
-                    iso = content
-            return iso
+            iso = content
         return iso
 
 

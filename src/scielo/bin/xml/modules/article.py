@@ -143,6 +143,8 @@ class ArticleXML(object):
             item = {}
             item['article-title'] = node.findtext('article-title')
             item['subtitle'] = node.findtext('subtitle')
+            item['language'] = self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+            
             if item['article-title'] is not None:
                 item['language'] = node.find('article-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
 
@@ -156,19 +158,21 @@ class ArticleXML(object):
             item = {}
             item['trans-title'] = node.findtext('trans-title')
             item['trans-subtitle'] = node.findtext('trans-subtitle')
+            item['language'] = self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
             if item['trans-title'] is not None:
-                item['language'] = item['trans-title'].attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                item['language'] = node.find('trans-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
 
             k.append(item)
 
         for subart in self.subarticles:
-            if subart.get('article-type') == 'translation':
+            if subart.attrib.get('article-type') == 'translation':
                 for node in subart.find('.//title-group'):
                     item = {}
-                    item['article-title'] = node.findtext('article-title')
-                    item['subtitle'] = node.findtext('subtitle')
-                    if item['article-title'] is not None:
-                        item['language'] = item['article-title'].attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                    item['trans-title'] = node.findtext('article-title')
+                    item['trans-subtitle'] = node.findtext('subtitle')
+                    item['language'] = subart.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                    if item['trans-title'] is not None:
+                        item['language'] = node.find('article-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
 
                     k.append(item)
         return k
@@ -198,7 +202,8 @@ class ArticleXML(object):
 
     @property
     def volume(self):
-        return self.article_meta.findtext('volume')
+        v = self.article_meta.findtext('volume')
+        return str(int(v)) if v is not None else None
 
     @property
     def issue(self):
@@ -237,7 +242,8 @@ class ArticleXML(object):
     @property
     def ack_xml(self):
         #107
-        return xml_string(self.back.find('.//ack'))
+        if self.back is not None:
+            return xml_string(self.back.find('.//ack'))
 
     @property
     def fpage(self):
@@ -262,6 +268,10 @@ class ArticleXML(object):
             a = {}
             a['xml'] = xml_string(aff)
             a['id'] = aff.get('id')
+
+            for tag in ['city', 'state', 'orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3']:
+                a[tag] = None
+
             for tag in ['label', 'country', 'email']:
                 a[tag] = aff.findtext(tag)
             for inst in aff.findall('institution'):
@@ -299,11 +309,11 @@ class ArticleXML(object):
         _abstract = {}
         for a in self.tree.findall('.//abstract'):
             _abstract['language'] = a.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-            _abstract['text'] = xml_string(a) if a.find('.//*') else a.text
+            _abstract['text'] = xml_string(a) if len(a.findall('*')) > 0 else a.text
             r.append(_abstract)
         for a in self.tree.findall('.//trans-abstract'):
             _abstract['language'] = a.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-            _abstract['text'] = xml_string(a) if a.find('.//*') else a.text
+            _abstract['text'] = xml_string(a) if len(a.findall('*')) > 0 else a.text
             r.append(_abstract)
         return r
 
@@ -320,8 +330,9 @@ class ArticleXML(object):
     @property
     def references(self):
         refs = []
-        for ref in self.back.findall('.//ref'):
-            refs.append(ReferenceXML(ref))
+        if self.back is not None:
+            for ref in self.back.findall('.//ref'):
+                refs.append(ReferenceXML(ref))
         return refs
 
 
@@ -336,26 +347,34 @@ class Article(ArticleXML):
         self.number_suppl = None
         self.volume_suppl = None
         suppl = None
-        parts = self.issue.split(' ')
-        if len(parts) == 1:
-            if 'sup' in parts[0].lower():
-                suppl = parts[0]
-            else:
-                self.number = parts[0]
-        elif len(parts) == 2:
-            #n suppl or suppl s
-            if 'sup' in parts[0].lower():
-                suppl = parts[1]
-            else:
-                self.number, suppl = parts
-        elif len(parts) == 3:
-            # n suppl s
-            self.number, ign, suppl = parts
-        if suppl is not None:
-            if self.number is None:
-                self.number_suppl = suppl
-            else:
-                self.volume_suppl = suppl
+        if self.issue is not None:
+            parts = self.issue.split(' ')
+            if len(parts) == 1:
+                if 'sup' in parts[0].lower():
+                    suppl = parts[0]
+                else:
+                    self.number = parts[0]
+            elif len(parts) == 2:
+                #n suppl or suppl s
+                if 'sup' in parts[0].lower():
+                    suppl = parts[1]
+                else:
+                    self.number, suppl = parts
+            elif len(parts) == 3:
+                # n suppl s
+                self.number, ign, suppl = parts
+            if self.number is not None:
+                if self.number.isdigit():
+                    self.number = str(int(self.number))
+            if suppl is not None:
+                if self.number is None:
+                    self.number_suppl = suppl
+                    if self.number_suppl.isdigit():
+                        self.number_suppl = str(int(self.number_suppl))
+                else:
+                    self.volume_suppl = suppl
+                    if self.volume_suppl.isdigit():
+                        self.volume_suppl = str(int(self.volume_suppl))
 
     @property
     def press_release_id(self):
@@ -442,11 +461,11 @@ class ReferenceXML(object):
 
     @property
     def trans_title_language(self):
-        return self.root.find('.//trans-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//trans-title') else None
+        return self.root.find('.//trans-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//trans-title') is not None else None
 
     @property
     def publication_type(self):
-        return self.root.find('.//element-citation').attrib.get('publication-type') if self.root.find('.//element-citation') else None
+        return self.root.find('.//element-citation').attrib.get('publication-type') if self.root.find('.//element-citation') is not None else None
 
     @property
     def xml(self):
@@ -462,7 +481,7 @@ class ReferenceXML(object):
         k = 0
         for person_group in self.root.findall('.//person-group'):
             k += 1
-            person_group_id = person_group.attrib.get('person-group-type', k)
+            person_group_id = person_group.attrib.get('person-group-type', 'author')
             r[person_group_id] = []
             for person in person_group.findall('.//name'):
                 p = {}

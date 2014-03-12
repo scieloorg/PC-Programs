@@ -5,6 +5,62 @@ from datetime import datetime
 from modules.utils import doi_pid, display_pages, format_dateiso
 
 
+DOCTOPIC = {
+                'research-article': 'oa',
+                'editorial': 'ed',
+                'abstract': 'ab',
+                'announcement': 'an',
+                'article-commentary': 'co',
+                'case-report': 'cr',
+                'letter': 'le',
+                'review-article': 'ra',
+                'rapid-communication': 'sc',
+                'addendum': 'ax',
+                'book-review': 'rc',
+                'books-received': '??',
+                'brief-report': 'rn',
+                'calendar': '??',
+                'collection': '??',
+                'correction': 'er',
+                'discussion': '??',
+                'dissertation': '??',
+                'in-brief': 'pr',
+                'introduction': '??',
+                'meeting-report': '??',
+                'news': '??',
+                'obituary': '??',
+                'oration': '??',
+                'partial-retraction': '??',
+                'product-review': '??',
+                'reply': '??',
+                'reprint': '??',
+                'retraction': '??',
+                'translation': '??',
+}
+
+ROLE = {
+    'author': 'ND',
+    'editor': 'ED',
+    'assignee': 'assignee',
+    'compiler': 'compiler',
+    'director': 'director',
+    'guest-editor': 'guest-editor',
+    'inventor': 'inventor',
+    'transed': 'transed',
+    'translator': 'TR',    
+}
+
+
+def normalize_role(_role):
+    r = ROLE.get(_role)
+    return _role if r == '??' else r
+
+
+def normalize_doctopic(_doctopic):
+    r = DOCTOPIC.get(_doctopic)
+    return _doctopic if r == '??' else r
+
+
 class ArticleISIS(object):
 
     def __init__(self, article_files, article, section_code, text_or_article):
@@ -17,7 +73,7 @@ class ArticleISIS(object):
     def metadata(self):
         rec_f = {}
         rec_f['120'] = self.article.dtd_version
-        rec_f['71'] = self.article.article_type
+        rec_f['71'] = normalize_doctopic(self.article.article_type)
         rec_f['40'] = self.article.language
 
         rec_f['241'] = []
@@ -61,7 +117,7 @@ class ArticleISIS(object):
             new['s'] = item['surname']
             new['z'] = item['suffix']
             new['p'] = item['prefix']
-            new['r'] = item['contrib-type']
+            new['r'] = normalize_role(item['contrib-type'])
             new['1'] = item['xref']
             new['k'] = item['contrib-id']
             rec_f['10'].append(new)
@@ -126,7 +182,7 @@ class ArticleISIS(object):
             a['_'] = item['orgname']
             #a['9'] = item['original']
             #rec_f['170'].append(item['xml'])
-            rec_f['70'].append(item)
+            rec_f['70'].append(a)
         #FIXME nao existe clinical trial
         rec_f['770'] = self.article.clinical_trial
         rec_f['72'] = self.article.total_of_references
@@ -138,8 +194,8 @@ class ArticleISIS(object):
             rec_f['83'].append({'l': item['language'], '_': item['text']})
 
         _h = self.article.history
-        rec_f['111'] = format_dateiso(_h['received'])
-        rec_f['113'] = format_dateiso(_h['accepted'])
+        rec_f['111'] = format_dateiso(_h.get('received'))
+        rec_f['113'] = format_dateiso(_h.get('accepted'))
 
         return rec_f
 
@@ -157,14 +213,11 @@ class ArticleISIS(object):
                 rec_c['30'] = item.source
             else:
                 rec_c['18'] = item.source
-            rec_c['71'] = item.publication_type
-
             rec_c['10'] = []
             rec_c['11'] = []
             rec_c['16'] = []
             rec_c['17'] = []
             for person_group_id, person_group in item.person_groups.items():
-
                 for person in person_group:
                     field = self.author_tag(person_group_id, 'given-names' in person)
                     if 'collab' in person:
@@ -174,15 +227,14 @@ class ArticleISIS(object):
                         a['n'] = person['given-names']
                         a['s'] = person['surname']
                         a['z'] = person['suffix']
-                        a['r'] = self.author_role(person_group_id)
-
+                        a['r'] = normalize_role(self.author_role(person_group_id))
                     rec_c[field].append(a)
             rec_c['31'] = item.volume
             rec_c['32'] = {}
             rec_c['32']['_'] = item.issue
             rec_c['32']['s'] = item.supplement
             rec_c['63'] = item.edition
-            rec_c['65'] = item.year + '0000'
+            rec_c['65'] = item.year + '0000' if item.year is not None else None
             rec_c['66'] = item.publisher_loc
             rec_c['62'] = item.publisher_name
             rec_c['514'] = {'f': item.fpage, 'l': item.lpage, 'r': item.page_range}
@@ -200,7 +252,7 @@ class ArticleISIS(object):
             rec_c['53'] = item.conference_name
             rec_c['56'] = item.conference_location
             rec_c['54'] = item.conference_date
-        records_c.append(rec_c)
+            records_c.append(rec_c)
         return records_c
 
     def author_role(self, person_group_id):
