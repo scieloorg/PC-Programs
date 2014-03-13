@@ -25,38 +25,44 @@ class XMLConverter(object):
         ahead_manager = AheadManager(self.cisis, journal_files)
         ahead_manager.generate_indexes()
 
-        create_i_id = True
+        issue_folder = None
+        issue_record = None
+
+        create_db = True
 
         for xml_file in os.listdir(xml_files_path):
             if os.path.isfile(xml_files_path + '/' + xml_file) and xml_file.endswith('.xml'):
-                print(xml_files_path + '/' + xml_file)
                 text_or_article = 'article'
 
                 article = Article(load_xml(xml_files_path + '/' + xml_file))
                 article_files = ArticleFiles(journal_files, article, xml_file)
 
-                # load issues record
-                self.issue_manager.load_selected_issues(article.journal_issns.get('epub'), article.journal_issns.get('ppub'), acron, article_files.issue_folder)
+                if issue_folder is None:
+                    print('issue: ' + article_files.issue_folder)
+                    issue_folder = article_files.issue_folder
+                    # load issues record
+                    self.issue_manager.load_selected_issues(article.journal_issns.get('epub'), article.journal_issns.get('ppub'), acron, article_files.issue_folder)
 
-                issue_record = self.issue_manager.record(acron, article.volume, article.number, article.volume_suppl, article.number_suppl)
+                    issue_record = self.issue_manager.record(acron, article.volume, article.number, article.volume_suppl, article.number_suppl)
+
+                print(xml_file)
+
                 if issue_record is None:
-                    print(self.issue_manager._key(acron, article.volume, article.number, article.volume_suppl, article.number_suppl))
-                    print(sorted(self.issue_manager.records.keys()))
+                    print(article_files.issue_folder + ' is not registered in issue database.')
                 else:
-                    issue = IssueISIS(issue_record)
-                    section_code = issue.section_code(article.toc_section)
-                    print('section code: ')
-                    print(section_code)
+                    if issue_folder == article_files.issue_folder:
+                        issue = IssueISIS(issue_record)
+                        section_code = issue.section_code(article.toc_section)
 
-                    print(article_files.base)
-                    if create_i_id and article.number != 'ahead':
-                        i_record = issue.record
+                        create_db = (create_db and article.number != 'ahead')
+
+                        self.article_db.save_article(article_files, article, section_code, text_or_article, issue.record, create_db)
+
+                        if article.number != 'ahead' and article.ahpdate is not None:
+                            ahead_manager.exclude_ahead_record(article.doi)
+                        create_db = False
                     else:
-                        i_record = None
-
-                    self.article_db.save_article(article_files, article, section_code, text_or_article, i_record)
-                    ahead_manager.exclude_ahead_record(article.doi)
-                    create_i_id = False
+                        print('This article do not belongs to ' + issue_folder + '.\n It belongs to ' + article_files.issue_folder)
 
 
 class IssuesManager(object):
@@ -79,26 +85,32 @@ class IssuesManager(object):
             key = self._key(rec.get('930'), rec.get('31'), rec.get('32'), rec.get('131'), rec.get('132'))
             self.records[key] = rec
 
+    def search(self, expr, issue_folder):
+        temp_issue_db = self.temp_dir + '/' + issue_folder
+        self.cisis.search(self.issue_filename, expr, temp_issue_db)
+        temp_issue_id_file = temp_issue_db + '.id'
+        self.cisis.i2id(temp_issue_db, temp_issue_id_file)
+
+        return IDFile().read(temp_issue_id_file)
+
     def load_selected_issues(self, pissn, eissn, acron, issue_folder):
-        self.selected_issue_db = self.temp_dir + '/' + acron + issue_folder
-        expr = acron
+        expr = []
 
         if pissn is not None:
-            expr += ' OR ' + pissn + issue_folder
+            expr.append(pissn + issue_folder)
         if eissn is not None:
-            expr += ' OR ' + eissn + issue_folder
+            expr.append(eissn + issue_folder)
 
-        self.cisis.search(self.issue_filename, expr, self.selected_issue_db)
-        self.selected_issue_id_file = self.selected_issue_db + '.id'
-        self.cisis.i2id(self.selected_issue_db, self.selected_issue_id_file)
+        records = self.search(' OR '.join(expr), issue_folder)
+        if len(records) == 0:
+            records = self.search(acron, issue_folder)
 
-        records = IDFile().read(self.selected_issue_id_file)
         for rec in records:
             key = self._key(rec.get('930'), rec.get('31'), rec.get('32'), rec.get('131'), rec.get('132'))
             self.records[key] = rec
 
     def _key(self, acron, volume, number, volume_suppl, number_suppl):
-        i = [acron, volume, volume_suppl, number, number_suppl]
+        i = [acron, volume, number, volume_suppl, number_suppl]
         i = [item if item is not None else '' for item in i]
         s = '-'.join(i)
         return s.lower()
@@ -152,7 +164,7 @@ class AheadManager(object):
         xml_file = None
         year = None
 
-        if os.path.isfile(self._all_aheads + '.mst'):
+        if len(self.journal_files.ahead_bases) > 0:
             self.cisis.search(self._all_aheads, doi, self._selected_record)
             self.cisis.i2id(self._selected_record, self._id_filename)
             records = IDFile().read(self._id_filename)
@@ -162,22 +174,24 @@ class AheadManager(object):
                 if year is not None:
                     year = year[0:4]
 
-        else:
-            print('This journal has no ahead articles.')
-
         return (xml_file, year)
 
     def exclude_ahead_record(self, doi):
         """
         Exclude ISIS record of ahead database (serial)
         """
-        filename, year = self.find_ahead_record(doi)
-        if filename is not None:
-            if year is not None:
-                print('Exclude ahead record of ' + filename)
-                base = self.journal_files.ahead_base(year)
-                self.cisis.modify_record(base, "if v702='" + filename + "' then 'd*' fi")
-                self.cisis.generate_indexes(base, base + '.fst', base)
+        if len(self.journal_files.ahead_bases) > 0:
+            filename, year = self.find_ahead_record(doi)
+            if filename is not None:
+                if year is not None:
+                    print('Exclude ahead record of ' + filename)
+                    base = self.journal_files.ahead_base(year)
+                    self.cisis.modify_record(base, "if v702='" + filename + "' then 'd*' fi")
+                    self.cisis.generate_indexes(base, base + '.fst', base)
+                else:
+                    print('Unable to exclude ahead: ' + doi)
+            else:
+                print('Unable to exclude ahead: ' + doi)
 
 
 class ArticleDB(object):
@@ -185,13 +199,13 @@ class ArticleDB(object):
     def __init__(self, cisis):
         self.cisis = cisis
 
-    def save_article(self, article_files, article, section_code, text_or_article, i_record=None):
+    def save_article(self, article_files, article, section_code, text_or_article, i_record, create_db=False):
         if not os.path.isdir(article_files.id_path):
                 os.makedirs(article_files.id_path)
         if not os.path.isdir(os.path.dirname(article_files.base)):
             os.makedirs(os.path.dirname(article_files.base))
 
-        if i_record is not None:
+        if create_db is True:
             for item in os.listdir(article_files.id_path):
                 os.unlink(article_files.id_path + '/' + item)
 
@@ -201,13 +215,12 @@ class ArticleDB(object):
             self.cisis.id2i(article_files.id_path + '/i.id', article_files.base)
 
         if article.order != '00000':
-            article_isis = ArticleISIS(article_files, article, section_code, text_or_article)
+            article_isis = ArticleISIS(article_files, article, i_record, section_code, text_or_article)
 
             id_file = IDFile()
             id_file.save(article_files.id_filename, article_isis.records)
-            print(article_files.id_filename)
-            print(article_files.base)
             self.cisis.id2mst(article_files.id_filename, article_files.base, False)
+
         else:
             print('Invalid value for order.')
 
@@ -246,7 +259,7 @@ class ArticleFiles(object):
 
     @property
     def relative_xml_filename(self):
-        return 'xml/' + self.journal_files.acron + '/' + self.issue_folder + '/' + self.xml_name
+        return self.journal_files.acron + '/' + self.issue_folder + '/' + self.xml_name
 
 
 class JournalFiles(object):

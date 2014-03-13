@@ -2,7 +2,7 @@
 
 import xml.etree.ElementTree as etree
 
-from modules.utils import xml_string
+from modules.utils import xml_string, normalize_space
 
 
 class ArticleXML(object):
@@ -80,7 +80,7 @@ class ArticleXML(object):
 
     @property
     def publisher_name(self):
-        return self.journal_meta.findtext('publisher-name')
+        return self.journal_meta.findtext('.//publisher-name')
 
     @property
     def journal_id(self):
@@ -96,7 +96,7 @@ class ArticleXML(object):
 
     @property
     def toc_section(self):
-        node = self.article_meta.find('subj-group[@subj-group-type="heading"]')
+        node = self.article_meta.find('.//subj-group[@subj-group-type="heading"]')
         if node is not None:
             return node.findtext('subject')
         return None
@@ -144,7 +144,7 @@ class ArticleXML(object):
             item['article-title'] = node.findtext('article-title')
             item['subtitle'] = node.findtext('subtitle')
             item['language'] = self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-            
+
             if item['article-title'] is not None:
                 item['language'] = node.find('article-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
 
@@ -166,14 +166,13 @@ class ArticleXML(object):
 
         for subart in self.subarticles:
             if subart.attrib.get('article-type') == 'translation':
-                for node in subart.find('.//title-group'):
+                for node in subart.findall('.//title-group'):
                     item = {}
                     item['trans-title'] = node.findtext('article-title')
                     item['trans-subtitle'] = node.findtext('subtitle')
                     item['language'] = subart.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
                     if item['trans-title'] is not None:
                         item['language'] = node.find('article-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-
                     k.append(item)
         return k
 
@@ -259,7 +258,7 @@ class ArticleXML(object):
 
     @property
     def elocation_id(self):
-        return self.article_meta.find('elocation-id')
+        return self.article_meta.findtext('elocation-id')
 
     @property
     def affiliations(self):
@@ -428,6 +427,34 @@ class Article(ArticleXML):
     def is_article_press_release(self):
         return (self.article_meta.find('.//related-document[@link-type="article-has-press-release"]') is not None)
 
+    @property
+    def illustrative_materials(self):
+        _illustrative_materials = []
+        if len(self.tree.findall('.//table-wrap')) > 0:
+            _illustrative_materials.append('TAB')
+        figs = len(self.tree.findall('.//fig'))
+        if figs > 0:
+
+            maps = len(self.tree.findall('.//fig[@fig-type="map"]'))
+            gras = len(self.tree.findall('.//fig[@fig-type="graphic"]'))
+            if maps > 0:
+                _illustrative_materials.append('MAP')
+            if gras > 0:
+                _illustrative_materials.append('GRA')
+            if figs - gras - maps > 0:
+                _illustrative_materials.append('ILUS')
+
+        if len(self.tree.findall('.//table-wrap')) > 0:
+            _illustrative_materials.append('TAB')
+        if len(_illustrative_materials) > 0:
+            return ' '.join(_illustrative_materials)
+        else:
+            return 'ND'
+
+    @property
+    def is_text(self):
+        return self.tree.findall('.//kwd') is None
+
 
 class ReferenceXML(object):
 
@@ -449,11 +476,15 @@ class ReferenceXML(object):
 
     @property
     def article_title(self):
-        return self.root.findtext('.//article-title')
+        text = self.root.findtext('.//article-title')
+        if text is not None:
+            return normalize_space(text)
 
     @property
     def chapter_title(self):
-        return self.root.findtext('.//chapter-title')
+        text = self.root.findtext('.//chapter-title')
+        if text is not None:
+            return normalize_space(text)
 
     @property
     def trans_title(self):

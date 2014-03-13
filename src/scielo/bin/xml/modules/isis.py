@@ -18,7 +18,6 @@ class IDFile(object):
         return r
 
     def _format_record(self, index, record):
-
         i = '000000' + str(index)
         r = '!ID ' + i[-6:] + '\n'
         if record is not None:
@@ -26,32 +25,41 @@ class IDFile(object):
                 tag = str(tag_i)
                 occs = record[tag]
                 s = ''
-                if type(occs) is str:
+                if type(occs) is unicode:
                     s = self._tagged(tag, occs)
+                elif type(occs) is str:
+                    s = self._tagged(tag, occs)
+                elif type(occs) is dict:
+                    s = self._tagged(tag, self._format_subfields(occs))
                 elif type(occs) is list:
-                    s = ''
                     for occ in occs:
-                        value = ''
-                        first = ''
                         if type(occ) is str:
                             s += self._tagged(tag, occ)
                         elif type(occ) is dict:
-                            for k, v in occ.items():
-                                if v is not None and len(k) == 1:
-                                    if k == '_':
-                                        first = v
-                                    else:
-                                        value += '^' + k + v
-                            s += self._tagged(tag, first + value)
+                            s += self._tagged(tag, self._format_subfields(occ))
                 r += s
+
         return r
 
+    def _format_subfields(self, subfields_and_values):
+        first = ''
+        value = ''
+        for k, v in subfields_and_values.items():
+            if v is not None:
+                if k == '_':
+                    first = v
+                else:
+                    if len(k) == 1 and k in 'abcdefghijklmnopqrstuvwxyz123456789':
+                        value += '^' + k + v
+        return first + value
+
     def _tagged(self, tag, value):
-        if value is not None:
+        if value is not None and value != '':
             tag = '000' + tag
             tag = tag[-3:]
             return '!v' + tag + '!' + value + '\n'
-        return ''
+        else:
+            return ''
 
     def read(self, filename):
         f = open(filename, 'r')
@@ -60,6 +68,9 @@ class IDFile(object):
         record = {}
         for line in f.readlines():
             s = line.replace('\n', '').replace('\r', '')
+            if type(s) is type(''):
+                s = s.decode('iso-8859-1')
+
             if '!ID ' in s:
                 if len(record) > 0:
                     records.append(self.simplify_record(record))

@@ -8,6 +8,14 @@ from StringIO import StringIO
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 
 
+def normalize_space(s):
+    while '\n' in s:
+        s = s.replace('\n', ' ')
+    while '  ' in s:
+        s = s.replace('  ', ' ')
+    return s
+    
+
 def doi_pid(doi):
     pid = None
 
@@ -38,7 +46,6 @@ def doi_pid(doi):
 
 
 def format_dateiso(adate):
-    print(adate)
     if adate is not None:
         month = adate.get('season')
         if month is None:
@@ -59,12 +66,22 @@ def format_dateiso(adate):
 
 
 def display_pages(fpage, lpage):
+    if fpage is not None and lpage is not None:
+        n = lpage
+        if len(fpage) == len(lpage):
+            i = 0
+            n = ''
+            for i in range(0, len(fpage)):
+                if fpage[i:i+1] != lpage[i:i+1]:
+                    n = lpage[i:]
+                    break
+                i += 1
+        lpage = n if n != '' else None
     r = []
     if fpage is not None:
         r.append(fpage)
     if lpage is not None:
         r.append(lpage)
-
     return '-'.join(r)
 
 
