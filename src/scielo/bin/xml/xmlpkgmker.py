@@ -2560,14 +2560,6 @@ class XPM5(object):
 
         files = [xml_filename] if xml_filename else [f for f in os.listdir(xml_path) if f.endswith('.xml')]
 
-        for path in [scielo_val_res.pkg_path, pmc_val_res.pkg_path]:
-            if os.path.isdir(path):
-                for f in os.listdir(path):
-                    if os.path.isfile(path + '/' + f):
-                        os.unlink(path + '/' + f)
-            else:
-                os.makedirs(path)
-
         for xml_filename in files:
             print('\n== %s ==\n' % xml_filename)
 
@@ -2590,13 +2582,11 @@ class XPM5(object):
                 if os.path.isfile(f):
                     os.unlink(f)
 
-            log_message(err_filename, 'Report of files errors / DTD errors\n' + '-'*len('Report of files errors / DTD errors'))
+            log_message(err_filename, 'Report of files / DTD errors\n' + '-'*len('Report of files / DTD errors'))
 
             new_name, log = self.normalizer.normalize_content(xml_path + '/' + xml_filename, xml_path, wrk_path, self.acron)
-            for f in os.listdir(wrk_path):
-                shutil.copyfile(wrk_path + '/' + f, scielo_val_res.pkg_path + '/' + f)
-                if not f.endswith('.jpg'):
-                    shutil.copyfile(wrk_path + '/' + f, pmc_val_res.pkg_path + '/' + f)
+
+            self.copy_files_to_packages_folder(wrk_path, scielo_val_res.pkg_path, pmc_val_res.pkg_path, new_name)
 
             old_names[new_name + '.xml'] = xml_name
 
@@ -2622,6 +2612,19 @@ class XPM5(object):
             if new_name is not None:
                 report.load_data(new_name + '.xml')
                 report.generate_articles_report(False, old_names)
+
+    def copy_files_to_packages_folder(self, wrk_path, scielo_pkg_path, pmc_pkg_path, new_name):
+        for f in os.listdir(scielo_pkg_path):
+            if f.startswith(new_name + '.') or f.startswith(new_name + '-'):
+                os.unlink(scielo_pkg_path + '/' + f)
+        for f in os.listdir(pmc_pkg_path):
+            if f.startswith(new_name + '.') or f.startswith(new_name + '-'):
+                os.unlink(pmc_pkg_path + '/' + f)
+
+        for f in os.listdir(wrk_path):
+            shutil.copyfile(wrk_path + '/' + f, scielo_pkg_path + '/' + f)
+            if not f.endswith('.jpg'):
+                shutil.copyfile(wrk_path + '/' + f, pmc_pkg_path + '/' + f)
 
 
 def setup_for_markup(sgmxml_filename):
