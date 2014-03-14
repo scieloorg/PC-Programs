@@ -9,12 +9,13 @@ MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '
 
 
 def normalize_space(s):
-    while '\n' in s:
-        s = s.replace('\n', ' ')
-    while '  ' in s:
-        s = s.replace('  ', ' ')
+    if s is not None:
+        while '\n' in s:
+            s = s.replace('\n', ' ')
+        while '  ' in s:
+            s = s.replace('  ', ' ')
     return s
-    
+
 
 def doi_pid(doi):
     pid = None
@@ -85,8 +86,15 @@ def display_pages(fpage, lpage):
     return '-'.join(r)
 
 
-def xml_string(node):
-    return etree.tostring(node) if node is not None else ''
+def node_text(node, exclude_root_tag=True):
+    text = node
+    if not node is None:
+        text = etree.tostring(node)
+        if exclude_root_tag:
+            if '>' in text:
+                text = text[text.find('>')+1:]
+                text = text[0:text.rfind('</')]
+    return text
 
 
 def load_xml(content):
@@ -117,7 +125,7 @@ def load_xml(content):
             content = open(content, 'r').read()
 
     if '<' in content:
-        content = handle_mml_entities(content)
+        content = normalize_space(handle_mml_entities(content))
 
         try:
             r = etree.parse(StringIO(content))

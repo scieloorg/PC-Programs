@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import os
+import shutil
 from datetime import datetime
 
 from configuration import Configuration
@@ -27,7 +28,8 @@ class XMLConverter(object):
 
         issue_folder = None
         issue_record = None
-
+        issue_files = None
+        issue = None
         create_db = True
 
         for xml_file in os.listdir(xml_files_path):
@@ -39,6 +41,8 @@ class XMLConverter(object):
 
                 if issue_folder is None:
                     print('issue: ' + article_files.issue_folder)
+                    issue_files = ArticleFiles(journal_files, article, xml_file)
+
                     issue_folder = article_files.issue_folder
                     # load issues record
                     self.issue_manager.load_selected_issues(article.journal_issns.get('epub'), article.journal_issns.get('ppub'), acron, article_files.issue_folder)
@@ -54,15 +58,22 @@ class XMLConverter(object):
                         issue = IssueISIS(issue_record)
                         section_code = issue.section_code(article.toc_section)
 
-                        create_db = (create_db and article.number != 'ahead')
-
-                        self.article_db.save_article(article_files, article, section_code, text_or_article, issue.record, create_db)
+                        #create_db = (create_db and article.number != 'ahead')
+                        self.article_db.create_id_file(article_files, article, section_code, text_or_article, issue.record, create_db)
 
                         if article.number != 'ahead' and article.ahpdate is not None:
-                            ahead_manager.exclude_ahead_record(article.doi)
+                            ahead_manager.exclude_ahead_record(article, xml_file)
                         create_db = False
                     else:
                         print('This article do not belongs to ' + issue_folder + '.\n It belongs to ' + article_files.issue_folder)
+
+        if issue is not None:
+            id_file = IDFile()
+            id_file.save(issue_files.id_path + '/i.id', [issue.record])
+            self.cisis.id2i(issue_files.id_path + '/i.id', issue_files.base)
+            for f in os.listdir(issue_files.id_path):
+                if f.endswith('.id') and f != '00000.id' and f != 'i.id':
+                    self.cisis.id2mst(issue_files.id_path + '/' + f, issue_files.base, False)
 
 
 class IssuesManager(object):
@@ -134,7 +145,7 @@ class AheadManager(object):
     @property
     def fst_filename(self):
         f = open(self.temp_dir + '/ahead.fst', 'w')
-        f.write("1 0 if v706='h' then v237/ fi")
+        f.write("1 0 if v706='h' then v237/,v702/, fi")
         f.close()
         return self.temp_dir + '/ahead.fst'
 
@@ -157,41 +168,67 @@ class AheadManager(object):
                 self.cisis.append(base, self._all_aheads)
             self.cisis.generate_indexes(self._all_aheads, self.fst_filename, self._all_aheads)
 
-    def find_ahead_record(self, doi):
+    def find_ahead_record(self, article_key):
         """
         Find ahead records, given a DOI
         """
-        xml_file = None
+        filename = None
         year = None
-
+        rec = None
+        order = None
         if len(self.journal_files.ahead_bases) > 0:
-            self.cisis.search(self._all_aheads, doi, self._selected_record)
+            self.cisis.search(self._all_aheads, article_key, self._selected_record)
             self.cisis.i2id(self._selected_record, self._id_filename)
             records = IDFile().read(self._id_filename)
-            for rec in records:
-                xml_file = rec.get('702')
+            if len(records) > 4:
+                rec = records[1]
+                order = rec.get('121')
+                filename = rec.get('702')
                 year = rec.get('223')
                 if year is not None:
                     year = year[0:4]
+        return (rec, filename, order, year)
 
-        return (xml_file, year)
-
-    def exclude_ahead_record(self, doi):
+    def exclude_ahead_record(self, article, filename):
         """
         Exclude ISIS record of ahead database (serial)
         """
         if len(self.journal_files.ahead_bases) > 0:
-            filename, year = self.find_ahead_record(doi)
-            if filename is not None:
-                if year is not None:
-                    print('Exclude ahead record of ' + filename)
-                    base = self.journal_files.ahead_base(year)
-                    self.cisis.modify_record(base, "if v702='" + filename + "' then 'd*' fi")
-                    self.cisis.generate_indexes(base, base + '.fst', base)
-                else:
-                    print('Unable to exclude ahead: ' + doi)
+            if filename.endswith('.xml'):
+                rec, filename, order, year = self.find_ahead_record(article.doi)
             else:
-                print('Unable to exclude ahead: ' + doi)
+                rec, filename, order, year = self.find_ahead_record(filename)
+            if rec is not None:
+                if year is not None and filename is not None:
+                    print('Exclude ahead record of ' + filename)
+                    self.exclude_records_by_filename(year, filename)
+
+                    ex_ahead_markup_path, ex_ahead_body_path, ex_ahead_base_path = self.journal_files.ex_ahead_paths(year)
+                    for path in [ex_ahead_markup_path, ex_ahead_body_path, ex_ahead_base_path]:
+                        if not os.path.isdir(path):
+                            os.makedirs(path)
+
+                    # move files to ex-ahead folder
+                    xml_file, markup_file, body_file = self.journal_files.ahead_xml_markup_body(year, filename)
+                    if os.path.isfile(markup_file):
+                        shutil.move(markup_file, ex_ahead_markup_path)
+                    if os.path.isfile(body_file):
+                        shutil.move(body_file, ex_ahead_body_path)
+                    if os.path.isfile(xml_file):
+                        shutil.move(xml_file, ex_ahead_markup_path)
+                    if os.path.isfile(self.journal_files.ahead_id_filename(year, order)):
+                        os.unlink(self.journal_files.ahead_id_filename(year, order))
+
+                    # update ex-ahead base with the h record of ahead version
+                    id_temp = self.temp_dir + '/exahead.id'
+                    IDFile().save(id_temp, [rec])
+                    self.cisis.id2mst(id_temp, self.journal_files.ahead_base('ex-' + year))
+
+    def exclude_records_by_filename(self, year, filename):
+        print('Exclude ahead record of ' + filename)
+        base = self.journal_files.ahead_base(year)
+        self.cisis.modify_record(base, "if v702='" + filename + "' then 'd*' fi")
+        self.cisis.generate_indexes(base, base + '.fst', base)
 
 
 class ArticleDB(object):
@@ -199,28 +236,18 @@ class ArticleDB(object):
     def __init__(self, cisis):
         self.cisis = cisis
 
-    def save_article(self, article_files, article, section_code, text_or_article, i_record, create_db=False):
+    def create_id_file(self, article_files, article, section_code, text_or_article, i_record, create_db=False):
         if not os.path.isdir(article_files.id_path):
                 os.makedirs(article_files.id_path)
         if not os.path.isdir(os.path.dirname(article_files.base)):
             os.makedirs(os.path.dirname(article_files.base))
-
-        if create_db is True:
-            for item in os.listdir(article_files.id_path):
-                os.unlink(article_files.id_path + '/' + item)
-
-            id_file = IDFile()
-            id_file.save(article_files.id_path + '/i.id', [i_record])
-
-            self.cisis.id2i(article_files.id_path + '/i.id', article_files.base)
 
         if article.order != '00000':
             article_isis = ArticleISIS(article_files, article, i_record, section_code, text_or_article)
 
             id_file = IDFile()
             id_file.save(article_files.id_filename, article_isis.records)
-            self.cisis.id2mst(article_files.id_filename, article_files.base, False)
-
+        
         else:
             print('Invalid value for order.')
 
@@ -247,7 +274,7 @@ class ArticleFiles(object):
 
     @property
     def base(self):
-        return self.journal_files.serial_path + '/' + self.journal_files.acron + '/' + self.issue_folder + '/base/' + self.issue_folder
+        return self.journal_files.journal_path + '/' + self.issue_folder + '/base/' + self.issue_folder
 
     @property
     def id_filename(self):
@@ -255,7 +282,7 @@ class ArticleFiles(object):
 
     @property
     def id_path(self):
-        return self.journal_files.serial_path + '/' + self.journal_files.acron + '/' + self.issue_folder + '/id/'
+        return self.journal_files.journal_path + '/' + self.issue_folder + '/id/'
 
     @property
     def relative_xml_filename(self):
@@ -266,11 +293,28 @@ class JournalFiles(object):
 
     def __init__(self, serial_path, acron):
         self.acron = acron
-        self.serial_path = serial_path
+        self.journal_path = serial_path + '/' + acron
         self.years = [str(int(datetime.now().isoformat()[0:4])+1 - y) for y in range(0, 5)]
 
     def ahead_base(self, year):
-        return self.serial_path + '/' + self.acron + '/' + year + 'nahead' + '/base/' + year + 'nahead'
+        return self.journal_path + '/' + year + 'nahead' + '/base/' + year + 'nahead'
+
+    def ahead_xml_markup_body(self, year, filename):
+        m = self.journal_path + '/' + year + 'nahead' + '/markup/' + filename
+        b = self.journal_path + '/' + year + 'nahead' + '/body/' + filename
+        return (self.journal_path + '/' + year + 'nahead' + '/xml/' + filename, m, b)
+
+    def ahead_id_filename(self, year, order):
+        order = '00000' + order
+        order = order[-5:]
+        return self.journal_path + '/' + year + 'nahead' + '/id/' + order + '.id'
+
+    def ex_ahead_paths(self, year):
+        path = self.journal_path + '/ex-' + year + 'nahead'
+        m = path + '/markup/'
+        b = path + '/body/'
+        base = path + '/base/'
+        return (m, b, base)
 
     @property
     def ahead_bases(self):

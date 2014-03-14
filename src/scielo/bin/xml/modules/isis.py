@@ -3,6 +3,8 @@
 
 import os
 
+from utils import normalize_space
+
 
 class IDFile(object):
 
@@ -25,18 +27,16 @@ class IDFile(object):
                 tag = str(tag_i)
                 occs = record[tag]
                 s = ''
-                if type(occs) is unicode:
-                    s = self._tagged(tag, occs)
-                elif type(occs) is str:
-                    s = self._tagged(tag, occs)
-                elif type(occs) is dict:
+                if type(occs) is dict:
                     s = self._tagged(tag, self._format_subfields(occs))
                 elif type(occs) is list:
                     for occ in occs:
-                        if type(occ) is str:
-                            s += self._tagged(tag, occ)
-                        elif type(occ) is dict:
+                        if type(occ) is dict:
                             s += self._tagged(tag, self._format_subfields(occ))
+                        else:
+                            s += self._tagged(tag, occ)
+                else:
+                    s = self._tagged(tag, occs)
                 r += s
 
         return r
@@ -57,7 +57,7 @@ class IDFile(object):
         if value is not None and value != '':
             tag = '000' + tag
             tag = tag[-3:]
-            return '!v' + tag + '!' + value + '\n'
+            return '!v' + tag + '!' + normalize_space(value) + '\n'
         else:
             return ''
 
@@ -143,7 +143,13 @@ class IDFile(object):
 
     def _iso(self, content):
         if type(content) is unicode:
-            iso = content.encode('utf-8', 'xmlcharrefreplace')
+            try:
+                iso = content.encode('iso-8859-1', 'replace')
+            except:
+                try:
+                    iso = content.encode('iso-8859-1', 'xmlcharrefreplace')
+                except:
+                    iso = content.encode('iso-8859-1', 'ignore')
         else:
             iso = content
         return iso
