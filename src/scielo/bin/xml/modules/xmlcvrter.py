@@ -66,7 +66,10 @@ class XMLConverter(object):
                         create_db = False
                     else:
                         print('This article do not belongs to ' + issue_folder + '.\n It belongs to ' + article_files.issue_folder)
-
+                if xml_files_path != issue_files.xml_path:
+                    if not os.path.isdir(issue_files.xml_path):
+                        os.makedirs(issue_files.xml_path)
+                    shutil.copy(xml_files_path + '/' + xml_file, issue_files.xml_path)
         if issue is not None:
             id_file = IDFile()
             id_file.save(issue_files.id_path + '/i.id', [issue.record])
@@ -288,6 +291,9 @@ class ArticleFiles(object):
     def relative_xml_filename(self):
         return self.journal_files.acron + '/' + self.issue_folder + '/' + self.xml_name
 
+    @property
+    def xml_path(self):
+        return self.journal_files.journal_path + '/' + self.issue_folder + '/xml_markup'
 
 class JournalFiles(object):
 
