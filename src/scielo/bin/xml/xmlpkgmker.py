@@ -656,8 +656,11 @@ class XMLMetadata:
         order = node.findtext('.//article-id[@pub-id-type="other"]')
         fpage_node = node.find('./fpage')
 
-        fpage = fpage_node.text if fpage_node is not None else '0'
-        seq = fpage_node.attrib.get('seq', '')
+        fpage = '0'
+        seq = ''
+        if fpage_node is not None:
+            fpage = fpage_node.text
+            seq = fpage_node.attrib.get('seq', '')
         if order is None:
             order = ''
         return [issn, volid, issueno, suppl, fpage, seq, order]
@@ -2208,7 +2211,7 @@ class Normalizer(object):
         related_files_list = [(f, new_name + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(xml_name + '.')]
         for curr, new in curr_and_new_href_list:
             if os.path.isfile(src_path + '/' + curr):
-                href_files_list.append(curr, new)
+                href_files_list.append((curr, new))
             else:
                 # curr and new has no extension
                 found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr + '.')]
@@ -2555,10 +2558,8 @@ class XPM5(object):
             print('Problem to load XML file. See ' + scielo_validation_result.pkg_path + '/incorrect_' + new_name + '.xml')
             log_message(err_filename, 'Problem to load XML file. See ' + scielo_validation_result.pkg_path + '/incorrect_' + new_name + '.xml')
 
-    def make_packages(self, xml_filename, ctrl_filename, xml_path, work_path, scielo_val_res, pmc_val_res):
+    def make_packages(self, files, ctrl_filename, work_path, scielo_val_res, pmc_val_res):
         old_names = {}
-
-        files = [xml_filename] if xml_filename else [f for f in os.listdir(xml_path) if f.endswith('.xml')]
 
         for path in [scielo_val_res.pkg_path, pmc_val_res.pkg_path]:
             if os.path.isdir(path):
@@ -2569,6 +2570,8 @@ class XPM5(object):
                 os.makedirs(path)
 
         for xml_filename in files:
+            xml_path = os.path.dirname(xml_filename)
+            xml_filename = os.path.basename(xml_filename)
             print('\n== %s ==\n' % xml_filename)
 
             xml_name = xml_filename.replace('.sgm.xml', '').replace('.xml', '')
@@ -2756,6 +2759,155 @@ def call_make_packages(args, version):
 
     else:
         print(task)
+
+
+def validated_packages(args, version):
+    src, acron, v, error_message = cxpmker_read_inputs(args)
+    scielo_pkg_path = None
+    if v is not None:
+        version = v
+    if error_message == '':
+        ctrl_filename, r_xml_source, scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path = cxpmker_files_and_paths(src)
+
+        cxpmker_make_packages(report_path, scielo_pkg_path, pmc_pkg_path, acron, version, r_xml_source, wrk_path, ctrl_filename)
+    else:
+        print(error_message)
+    return [scielo_pkg_path, acron]
+
+
+def cxpmker_read_inputs(args):
+    args = [arg.replace('\\', '/') for arg in args]
+
+    script_name = args[0]
+    src = ''
+    acron = None
+    xml_src = None
+    version = None
+    if len(args) == 2:
+        ign, src = args
+    elif len(args) == 3:
+        ign, src, acron = args
+
+    if os.path.isfile(src):
+        if src.endswith('.sgm.xml'):
+            xml_src = src
+            temp = xml_src.split('/')
+            acron = temp[len(temp)-4]
+            version = 'j1.0'
+            print(acron)
+        elif src.endswith('.xml'):
+            xml_src = src
+    elif os.path.isdir(src):
+        if len([f for f in os.listdir(src) if f.endswith('.xml')]) > 0:
+            xml_src = src
+
+    messages = []
+    if xml_src is None or acron is None:
+        messages.append('\n===== ATTENTION =====\n')
+        messages.append('ERROR: Incorrect parameters')
+        messages.append('\nUsage:')
+        messages.append('python xml_package_maker <xml_src> <acron>')
+        messages.append('where:')
+        messages.append('  <xml_src> = XML filename or path which contains XML files')
+        messages.append('  <acron> = journal acronym')
+        print(args)
+    return (xml_src, acron, version, '\n'.join(messages))
+
+
+def cxpmker_files_and_paths(xml_source):
+    if xml_source.endswith('.sgm.xml'):
+        f = xml_source
+        ctrl_filename = f.replace('.sgm.xml', '.ctrl.txt')
+        r_xml_source = [cxpmker_markup_src_path(f) + '/' + os.path.basename(f)]
+        scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path = cxpmker_markup_paths(xml_source, f)
+        #version = 'j1.0'
+    else:
+        if os.path.isfile(xml_source):
+            r_xml_source = [xml_source]
+        else:
+            r_xml_source = [xml_source + '/' + f for f in os.listdir(xml_source) if f.endswith('.xml')]
+
+        now = datetime.now().isoformat().replace(':', '').replace('T', '').replace('-', '')
+        now = now[0:now.find('.')]
+
+        ctrl_filename = None
+        scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path = cxpmker_xpm_paths(xml_source, now)
+
+    return (ctrl_filename, r_xml_source, scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path)
+
+
+def cxpmker_markup_src_path(sgmxml_filename):
+    # sgmxml_path = serial/acron/issue/pmc/pmc_work/article
+    xml_name = os.path.basename(sgmxml_filename)
+    sgmxml_path = os.path.dirname(sgmxml_filename)
+
+    # pmc_path = serial/acron/issue/pmc
+    pmc_path = os.path.dirname(os.path.dirname(sgmxml_path))
+
+    # other files path = serial/acron/issue/pmc/src or serial/acron/issue/pmc/pmc_src
+    pmc_src = pmc_path + '/src'
+    if not os.path.isdir(pmc_src):
+        pmc_src = pmc_path + '/pmc_src'
+    if not os.path.isdir(pmc_src):
+        os.makedirs(pmc_src)
+
+    shutil.copyfile(sgmxml_filename, pmc_src + '/' + xml_name)
+    return pmc_src
+
+
+def cxpmker_markup_paths(pmc_src, sgmxml_filename):
+    sgmxml_path = os.path.dirname(sgmxml_filename)
+    pmc_path = os.path.dirname(pmc_src)
+
+    scielo_pkg_path = pmc_path + '/xml_package'
+    pmc_pkg_path = pmc_path + '/pmc_package'
+    report_path = sgmxml_path
+    preview_path = None
+    wrk_path = sgmxml_path
+    return (scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path)
+
+
+def cxpmker_xpm_paths(src, now):
+    if os.path.isfile(src):
+        path = os.path.dirname(src) + '_' + now
+    else:
+        path = src + '_' + now
+
+    scielo_pkg_path = path + '/scielo_package'
+    pmc_pkg_path = path + '/pmc_package'
+    report_path = path + '/errors'
+    wrk_path = path + '/wrk'
+    preview_path = None
+    return (scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path)
+
+
+def cxpmker_make_packages(report_path, scielo_pkg_path, pmc_pkg_path, acron, version, xml_source, wrk_path, ctrl_filename):
+
+    if not os.path.exists(report_path):
+        os.makedirs(report_path)
+
+    sci_val_res = ValidationResult(scielo_pkg_path, report_path, pmc_pkg_path, '', None)
+    pmc_val_res = ValidationResult(pmc_pkg_path, report_path, None, '.pmc', None)
+
+    sci_validator = CheckList('scielo', version, entities_table)
+    pmc_validator = CheckList('pmc', version)
+
+    xml_pkg_mker = XPM5(sci_validator, pmc_validator, acron, version, entities_table)
+    xml_pkg_mker.make_packages(xml_source, ctrl_filename, wrk_path, sci_val_res, pmc_val_res)
+
+    #if ctrl_filename is None:
+    #    report = PkgReport(scielo_pkg_path, report_path)
+    #    report.load_data()
+    #    report.generate_articles_report()
+    #    report.generate_lists()
+
+    print('\n=======')
+    print('\nGenerated packages in:\n' + '\n'.join([scielo_pkg_path, pmc_pkg_path, ]))
+    for report_path in list(set([report_path, report_path, ])):
+        if os.listdir(report_path):
+            print('\nReports in: ' + report_path)
+    print('\n==== END ===\n')
+
 
 ###
 _versions_ = configure_versions_location()

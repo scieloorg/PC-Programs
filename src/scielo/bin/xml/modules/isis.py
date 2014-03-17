@@ -235,6 +235,6 @@ class CISIS(object):
         cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 append=' + result_filename + ' now -all'
         os.system(cmd)
 
-    def generate_index(self, mst_filename, fst_filename, inverted_filename):
+    def generate_indexes(self, mst_filename, fst_filename, inverted_filename):
         cmd = self.cisis_path + '/mx ' + mst_filename + ' fst=@' + fst_filename + '" fullinv=' + inverted_filename
         os.system(cmd)

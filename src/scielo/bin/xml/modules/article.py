@@ -9,12 +9,19 @@ class ArticleXML(object):
 
     def __init__(self, tree):
         self.tree = tree
-        self.journal_meta = self.tree.find('./front/journal-meta')
-        self.article_meta = self.tree.find('./front/article-meta')
-        self.body = self.tree.find('./body')
-        self.back = self.tree.find('./back')
-        self.subarticles = self.tree.findall('./sub-article')
-        self.responses = self.tree.findall('./response')
+        self.journal_meta = None
+        self.article_meta = None
+        self.body = None
+        self.back = None
+        self.subarticles = None
+        self.responses = None
+        if tree is not None:
+            self.journal_meta = self.tree.find('./front/journal-meta')
+            self.article_meta = self.tree.find('./front/article-meta')
+            self.body = self.tree.find('./body')
+            self.back = self.tree.find('./back')
+            self.subarticles = self.tree.findall('./sub-article')
+            self.responses = self.tree.findall('./response')
 
     @property
     def dtd_version(self):
@@ -340,7 +347,8 @@ class Article(ArticleXML):
 
     def __init__(self, tree):
         ArticleXML.__init__(self, tree)
-        self._issue_parts()
+        if self.tree is not None:
+            self._issue_parts()
 
     def _issue_parts(self):
         self.number = None

@@ -37,39 +37,43 @@ class XMLConverter(object):
                 text_or_article = 'article'
 
                 article = Article(load_xml(xml_files_path + '/' + xml_file))
-                article_files = ArticleFiles(journal_files, article, xml_file)
 
-                if issue_folder is None:
-                    print('issue: ' + article_files.issue_folder)
-                    issue_files = ArticleFiles(journal_files, article, xml_file)
-
-                    issue_folder = article_files.issue_folder
-                    # load issues record
-                    self.issue_manager.load_selected_issues(article.journal_issns.get('epub'), article.journal_issns.get('ppub'), acron, article_files.issue_folder)
-
-                    issue_record = self.issue_manager.record(acron, article.volume, article.number, article.volume_suppl, article.number_suppl)
-
-                print(xml_file)
-
-                if issue_record is None:
-                    print(article_files.issue_folder + ' is not registered in issue database.')
+                if article.tree is None:
+                    print('Unable to load ' + xml_file)
                 else:
-                    if issue_folder == article_files.issue_folder:
-                        issue = IssueISIS(issue_record)
-                        section_code = issue.section_code(article.toc_section)
+                    article_files = ArticleFiles(journal_files, article, xml_file)
 
-                        #create_db = (create_db and article.number != 'ahead')
-                        self.article_db.create_id_file(article_files, article, section_code, text_or_article, issue.record, create_db)
+                    if issue_folder is None:
+                        print('issue: ' + article_files.issue_folder)
+                        issue_files = ArticleFiles(journal_files, article, xml_file)
 
-                        if article.number != 'ahead' and article.ahpdate is not None:
-                            ahead_manager.exclude_ahead_record(article, xml_file)
-                        create_db = False
+                        issue_folder = article_files.issue_folder
+                        # load issues record
+                        self.issue_manager.load_selected_issues(article.journal_issns.get('epub'), article.journal_issns.get('ppub'), acron, article_files.issue_folder)
+
+                        issue_record = self.issue_manager.record(acron, article.volume, article.number, article.volume_suppl, article.number_suppl)
+
+                    print(xml_file)
+
+                    if issue_record is None:
+                        print(article_files.issue_folder + ' is not registered in issue database.')
                     else:
-                        print('This article do not belongs to ' + issue_folder + '.\n It belongs to ' + article_files.issue_folder)
-                if xml_files_path != issue_files.xml_path:
-                    if not os.path.isdir(issue_files.xml_path):
-                        os.makedirs(issue_files.xml_path)
-                    shutil.copy(xml_files_path + '/' + xml_file, issue_files.xml_path)
+                        if issue_folder == article_files.issue_folder:
+                            issue = IssueISIS(issue_record)
+                            section_code = issue.section_code(article.toc_section)
+
+                            #create_db = (create_db and article.number != 'ahead')
+                            self.article_db.create_id_file(article_files, article, section_code, text_or_article, issue.record, create_db)
+
+                            if article.number != 'ahead' and article.ahpdate is not None:
+                                ahead_manager.exclude_ahead_record(article, xml_file)
+                            create_db = False
+                        else:
+                            print('This article do not belongs to ' + issue_folder + '.\n It belongs to ' + article_files.issue_folder)
+                    if xml_files_path != issue_files.xml_path:
+                        if not os.path.isdir(issue_files.xml_path):
+                            os.makedirs(issue_files.xml_path)
+                        shutil.copy(xml_files_path + '/' + xml_file, issue_files.xml_path)
         if issue is not None:
             id_file = IDFile()
             id_file.save(issue_files.id_path + '/i.id', [issue.record])
@@ -349,11 +353,12 @@ def check_inputs(args):
         messages.append('\n===== ATTENTION =====\n')
         messages.append('ERROR: Incorrect parameters')
         messages.append('\nUsage:')
-        messages.append('python ' + script_name + ' <src> <acron>')
+        messages.append('python converter <src> <acron>')
         messages.append('where:')
         messages.append('  <src> = path which contains XML files')
         messages.append('  <acron> = journal acronym')
         message = '\n'.join(messages)
+        print(args)
     return (r, src, acron, message)
 
 
