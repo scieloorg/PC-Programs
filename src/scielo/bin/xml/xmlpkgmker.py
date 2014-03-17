@@ -1786,10 +1786,13 @@ class ContentValidation(object):
         if fpage == '':
             fpage = None
         if other_id is None:
-            if fpage.isdigit():
-                order = int(fpage)
-            else:
+            if fpage is None:
                 order = 0
+            else:
+                if fpage.isdigit():
+                    order = int(fpage)
+                else:
+                    order = 0
         else:
             order = int(other_id)
 

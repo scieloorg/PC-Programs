@@ -441,31 +441,43 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:variable name="l" select="@language"/>
 		<article-meta>
 			<xsl:if test="..//extra-scielo/issue-order">
+				<xsl:variable name="n"><xsl:value-of select="number(substring(..//extra-scielo/issue-order,5))"/></xsl:variable>
 				<article-id pub-id-type="publisher-id">S<xsl:value-of select="$JOURNAL_PID"/>
-					<xsl:value-of select="substring(@dateiso,1,4)"/>
-					<xsl:value-of
-						select="substring(10000 + substring(..//extra-scielo/issue-order,5),2)"/>
-					<xsl:value-of select="substring-after(100000 + @order,'1')"/>
+					<xsl:value-of select="substring(@dateiso,1,4)"/>	
+					<xsl:value-of select="substring(string(10000 + $n),2)"/>
+					<xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/>
 				</article-id>
-				<xsl:apply-templates select="front/doi|doi"/>
-
+			</xsl:if>
+			
+			<xsl:apply-templates select="front/doi|doi"/>
+			
+			<xsl:variable name="fpage"><xsl:choose>
+				<xsl:when test="contains(@fpage,'-')">
+					<xsl:value-of select="substring-before(@fpage,'-')"/>
+				</xsl:when>
+				<xsl:when test="string(number(@fpage))=@fpage"><xsl:value-of select="@fpage"/></xsl:when>
+				<xsl:otherwise>0</xsl:otherwise>
+			</xsl:choose></xsl:variable>
+			<xsl:if test="number($fpage)&lt;number(@order) or contains(@fpage,'-')">
+					<!-- criar article-id (other), regra quando  -->
+					<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>
 			</xsl:if>
 
 			<article-categories>
 				<subj-group subj-group-type="heading">
-					<xsl:if test=".//toctitle">
-						<xsl:variable name="t" select="normalize-space(.//toctitle)"/>
-
-						<subject>
-							<xsl:apply-templates select="." mode="format-subject">
-								<xsl:with-param name="t" select="$t"/>
-							</xsl:apply-templates>
-						</subject>
-					</xsl:if>
-					<xsl:if test="not(.//toctitle)">
-
-						<subject>Article</subject>
-					</xsl:if>
+					<xsl:choose>
+						<xsl:when test=".//toctitle">
+							<xsl:variable name="t" select="normalize-space(.//toctitle)"/>
+							<subject>
+								<xsl:apply-templates select="." mode="format-subject">
+									<xsl:with-param name="t" select="$t"/>
+								</xsl:apply-templates>
+							</subject>
+						</xsl:when>
+						<xsl:otherwise>
+							<subject>Article</subject>
+						</xsl:otherwise>
+					</xsl:choose>
 				</subj-group>
 			</article-categories>
 			<xsl:apply-templates select="." mode="article-title"/>
@@ -845,12 +857,34 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="."/>
 		</supplement>
 	</xsl:template>
-	<xsl:template match="@fpage | fpage">
+	<xsl:template match="@fpage">
+		<fpage>
+			<xsl:choose>
+				<xsl:when test="contains(.,'-')">
+					<xsl:attribute name="seq"><xsl:value-of select="substring-after(.,'-')"/></xsl:attribute>
+					<xsl:value-of select="substring-before(.,'-')"/>
+				</xsl:when>
+				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+			</xsl:choose>
+		</fpage>
+	</xsl:template>
+	<xsl:template match="@lpage">
+		<lpage>
+			<xsl:choose>
+				<xsl:when test="contains(.,'-')">
+					<xsl:attribute name="seq"><xsl:value-of select="substring-after(.,'-')"/></xsl:attribute>
+					<xsl:value-of select="substring-before(.,'-')"/>
+				</xsl:when>
+				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+			</xsl:choose>
+		</lpage>
+	</xsl:template>
+	<xsl:template match="fpage">
 		<fpage>
 			<xsl:value-of select="."/>
 		</fpage>
 	</xsl:template>
-	<xsl:template match="@lpage | lpage">
+	<xsl:template match="lpage">
 		<lpage>
 			<xsl:value-of select="."/>
 		</lpage>
@@ -1061,7 +1095,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:with-param name="element_name" select="'page-count'"/>
 				<xsl:with-param name="count"><xsl:choose>
 					<xsl:when test="@pagcount"><xsl:value-of select="@pagcount"/></xsl:when>
-					<xsl:otherwise><xsl:value-of select="@lpage - @fpage + 1"/></xsl:otherwise>
+					<xsl:when test="string(number(@fpage))=@fpage and string(number(@lpage))=@lpage"><xsl:value-of select="@lpage - @fpage + 1"/></xsl:when>
+					<xsl:otherwise></xsl:otherwise>
 				</xsl:choose></xsl:with-param>
 			</xsl:apply-templates>
 
