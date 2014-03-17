@@ -409,22 +409,35 @@ def xml_is_well_formed(content):
 
 
 def load_xml(content):
-    def ignore_entities_in_math(content):
+    def handle_mml_entities(content):
+        if '<mml:' in content:
+            temp = content.replace('<mml:math', 'BREAKBEGINCONSERTA<mml:math')
+            temp = temp.replace('</mml:math>', '</mml:math>BREAKBEGINCONSERTA')
+            replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<mml:math' in item and '&' in item]
+            for repl in replaces:
+                content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
         if '<math' in content:
-            temp = content.replace('<math', 'BREAKBEGINCONSERTA<math').replace('</math>', '</math>BREAKBEGINCONSERTA')
-            splited = temp.split('BREAKBEGINCONSERTA')
-            replaces = [(repl, repl.replace('&', '_MATHENT_')) for repl in splited if '</math>' in repl]
-            for find, replace in replaces:
-                content = content.replace(find, replace)
+            temp = content.replace('<math', 'BREAKBEGINCONSERTA<math')
+            temp = temp.replace('</math>', '</math>BREAKBEGINCONSERTA')
+            replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<math' in item and '&' in item]
+            for repl in replaces:
+                content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
         return content
+
+    NAMESPACES = {'mml': 'http://www.w3.org/TR/MathML3/'}
+    for prefix, uri in NAMESPACES.items():
+        etree.register_namespace(prefix, uri)
+
     if not '<' in content:
         # is a file
         try:
             r = etree.parse(content)
         except Exception as e:
             content = open(content, 'r').read()
-    content = ignore_entities_in_math(content)
+
     if '<' in content:
+        content = handle_mml_entities(content)
+
         try:
             r = etree.parse(StringIO(content))
         except Exception as e:
@@ -625,7 +638,7 @@ class XMLMetadata:
             if 'pr' in num:
                 num = num.replace(' pr', '')
             else:
-                parts = num.split()
+                parts = num.split(' ')
                 if len(parts) == 3:
                     num = parts[0]
                     suppl = parts[2]
@@ -651,8 +664,8 @@ class XMLMetadata:
             issueno = ''
         if suppl is None:
             suppl = ''
-
         issueno, suppl = self._fix_issue_number(issueno, suppl)
+
         order = node.findtext('.//article-id[@pub-id-type="other"]')
         fpage_node = node.find('./fpage')
         elocation_id = node.findtext('./elocation-id')
@@ -819,6 +832,7 @@ class XMLMetadata:
         return (new name, [(@href, suffix + parent id)])
         """
         new_name = self.format_name(self._metadata(), acron, alternative_id)
+        print(new_name)
         href_filenames = self.xml_data_href_list()
         return (new_name, href_filenames)
 
@@ -1901,16 +1915,18 @@ class ContentValidation(object):
         self.refs_validations = []
 
         if self.xml is not None:
-            self.issue_meta_validations = self._validate_required_data(self.issue_meta, ['publisher-name', 'journal-title', 'issue'], 'journal-meta and issue-meta')
-            self.issue_meta_validations += self._validate_conditional_required_data(self.issue_meta, ['issue'], 'journal-meta and issue-meta')
+            self.issue_meta_validations = self._validate_required_data(self.issue_meta, ['publisher-name', 'journal-title'], 'journal-meta and issue-meta')
+            self.issue_meta_validations += self._validate_conditional_required_data(self.issue_meta, ['volume', 'issue'], 'journal-meta and issue-meta')
             if expected_journal_meta:
                 self.issue_meta_validations += self._validate_data(self.issue_meta, expected_journal_meta)
 
+
             if not self.issue_meta['suppl'] is None:
                 self.issue_meta_validations += ['FATAL ERROR: do not use <supplement>, use <issue> to label supplement. E.g.: <issue>1 Suppl</issue>, <issue>1 Suppl 2</issue>, <issue>Suppl</issue>', '<issue>Suppl 1</issue>']
-            if not self._has_only_letter_number_space(self.issue_meta['issue']):
-                self.issue_meta_validations += ['FATAL ERROR: invalid characteres in issue tag: ' + self.issue_meta['issue']]
-            #print(self.issue_meta_validations)
+            if self.issue_meta.get('issue') is not None:
+                if not self._has_only_letter_number_space(self.issue_meta['issue']):
+                    self.issue_meta_validations += ['FATAL ERROR: invalid characteres in issue tag: ' + self.issue_meta['issue']]
+                
             # cleanit
             self.article_meta_validations['dates'] = self._validate_presence_of_at_least_one([self.article_meta.get('date-epub'), self.article_meta.get('date-ppub'), self.article_meta.get('date-epub-ppub'), self.article_meta.get('date-collection'), self.article_meta.get('date-pub'), self.article_meta.get('date-preprint')], ['epub date', 'ppub date', 'epub-ppub date', 'collection date', 'pub date', 'preprint date'])
             self.article_meta_validations['issns'] = self._validate_presence_of_at_least_one([self.issue_meta['pissn'], self.issue_meta['eissn']], ['print issn', 'e-issn'])
@@ -2030,6 +2046,8 @@ class ContentValidation(object):
 
     def _has_only_letter_number_space(self, content):
         r = False
+        if content is None:
+            r = False
         if len(content) > 0:
             valid = 'abcdefghijklmnopqrstuvwxyz'
             valid += valid.upper() + '1234567890 '
@@ -2136,7 +2154,6 @@ class Normalizer(object):
 
         f = open(xml_filename)
         content = f.read()
-        content = content.replace('mml:', '')
         f.close()
 
         # fix problems of XML format
@@ -2156,7 +2173,7 @@ class Normalizer(object):
         if xml_is_well_formed(content) is not None:
             #new name and href list
             new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, xml_name)
-
+            
             #href and new href list
             curr_and_new_href_list = self.generate_curr_and_new_href_list(xml_name, new_name, href_list)
 

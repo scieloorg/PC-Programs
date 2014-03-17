@@ -807,7 +807,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="@volid | volid">
+	<xsl:template match="@volid">
+		<volume>
+			<xsl:value-of select="."/>
+		</volume>
+		<xsl:if test="not(../@issueno) and ../@supplvol"><issue>Suppl<xsl:if test="../@supplvol!='0'"> <xsl:value-of select="concat(' ',../@supplvol)"/></xsl:if>
+		</issue></xsl:if>
+	</xsl:template>
+	<xsl:template match="volid">
 		<volume>
 			<xsl:value-of select="."/>
 		</volume>
@@ -827,9 +834,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:when>
 			<xsl:otherwise>
 				<issue>
-					<xsl:value-of select="$journal_issue"/>
-					<xsl:if test="../@supplvol or ../@supplno"> Suppl <xsl:value-of
-							select="../@supplvol"/><xsl:value-of select="../@supplno"/></xsl:if>
+					<xsl:value-of select="."/>
+					<xsl:if test="../@supplno"> Suppl<xsl:if test="../@supplno!='0'"> <xsl:value-of select="concat(' ',../@supplno)"/></xsl:if></xsl:if>
+					<xsl:if test="../@supplvol"> Suppl<xsl:if test="../@supplvol!='0'"> <xsl:value-of select="concat(' ',../@supplvol)"/></xsl:if></xsl:if>
 				</issue>
 			</xsl:otherwise>
 		</xsl:choose>
