@@ -821,8 +821,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:otherwise>
 				<issue>
 					<xsl:value-of select="$journal_issue"/>
-					<xsl:if test="../@supplno"> Suppl<xsl:if test="../@supplno!='0'"> <xsl:value-of
-							<xsl:value-of select="../@supplno"/></xsl:if></xsl:if>
+					<xsl:if test="../@supplno"> Suppl<xsl:if test="../@supplno!='0'"> <xsl:value-of select="../@supplno"/></xsl:if></xsl:if>
 				</issue>
 			</xsl:otherwise>
 		</xsl:choose>
