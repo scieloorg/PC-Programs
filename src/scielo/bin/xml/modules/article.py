@@ -199,7 +199,10 @@ class ArticleXML(object):
         _order = self.article_id_other
         if _order is None:
             _order = self.fpage
-        _order = '00000' + _order
+        if _order is None:
+            _order = '00000'
+        else:
+            _order = '00000' + _order
         return _order[-5:]
 
     @property

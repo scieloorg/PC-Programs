@@ -91,7 +91,7 @@ class IssuesManager(object):
         self.records = {}
 
         import tempfile
-        self.temp_dir = tempfile.mkdtemp()
+        self.temp_dir = tempfile.mkdtemp().replace('\\', '/')
 
     def load_all(self):
         id_filename = self.issue_filename + '.id'
@@ -143,7 +143,7 @@ class AheadManager(object):
         import tempfile
         self.journal_files = journal_files
         self.cisis = cisis
-        self.temp_dir = tempfile.mkdtemp()
+        self.temp_dir = tempfile.mkdtemp().replace('\\', '/')
 
     @property
     def _all_aheads(self):

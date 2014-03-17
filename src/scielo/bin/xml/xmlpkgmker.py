@@ -645,33 +645,39 @@ class XMLMetadata:
         issueno = node.findtext('./issue')
         suppl = node.findtext('./supplement')
 
-        if not volid:
+        if volid is None:
             volid = ''
-        if not issueno:
+        if issueno is None:
             issueno = ''
-        if not suppl:
+        if suppl is None:
             suppl = ''
 
         issueno, suppl = self._fix_issue_number(issueno, suppl)
         order = node.findtext('.//article-id[@pub-id-type="other"]')
         fpage_node = node.find('./fpage')
+        elocation_id = node.findtext('./elocation-id')
 
-        fpage = '0'
-        seq = ''
         if fpage_node is not None:
             fpage = fpage_node.text
-            seq = fpage_node.attrib.get('seq', '')
-        if order is None:
-            order = ''
-        return [issn, volid, issueno, suppl, fpage, seq, order]
+            seq = fpage_node.attrib.get('seq')
+        else:
+            fpage = None
+            seq = None
+        if fpage is not None:
+            if fpage.isdigit():
+                fpage = str(int(fpage))
+        if fpage is not None:
+            if fpage == '0':
+                fpage = None
+        return [issn, volid, issueno, suppl, fpage, seq, elocation_id, order]
 
     def _metadata(self):
-        issn, volid, issueno, suppl, fpage, seq, order = ['', '', '', '', '', '', '']
+        issn, volid, issueno, suppl, fpage, seq, elocation_id, order = ['', '', '', '', '', '', '', '']
         if self.root:
 
             node = self.root.find('.//article-meta')
             if node is not None:
-                issn, volid, issueno, suppl, fpage, seq, order = self._meta_xml(node)
+                issn, volid, issueno, suppl, fpage, seq, elocation_id, order = self._meta_xml(node)
             else:
                 attribs = self.root.find('.').attrib
                 issn = attribs.get('issn')
@@ -687,23 +693,26 @@ class XMLMetadata:
                 if issueno == 'ahead':
                     issueno = '00'
                     volid = '00'
-        return [issn, volid, issueno, suppl, fpage, seq, order]
+        return [issn, volid, issueno, suppl, fpage, seq, elocation_id, order]
 
     def format_name(self, data, param_acron='', param_order=''):
 
         r = ''
         if data:
-            issn, vol, issueno, suppl, fpage, seq, order = data
-            page_or_order = fpage
-            if page_or_order.isdigit():
+            issn, vol, issueno, suppl, fpage, seq, elocation_id, order = data
+
+            if elocation_id is not None:
+                page_or_order = elocation_id
+            else:
+                if fpage is not None:
+                    page_or_order = fpage
+                    if seq is not None:
+                        page_or_order += '-' + seq
+                elif order is not None:
+                    page_or_order = order
+
                 page_or_order = '00000' + page_or_order
                 page_or_order = page_or_order[-5:]
-            if seq:
-                page_or_order += '-' + seq
-            if page_or_order.isdigit():
-                if int(page_or_order) == 0:
-                    page_or_order = '00000' + order
-                    page_or_order = page_or_order[-5:]
 
             if issueno:
                 issueno = '00' + issueno
@@ -1612,6 +1621,7 @@ class ContentValidation(object):
 
             self.article_meta['subject'] = '|'.join([node.text for node in article_meta.findall('.//subject')])
 
+            self.article_meta['fpage_seq'] = ''
             if article_meta.findtext('.//fpage') is None:
                 self.article_meta['fpage'] = ''
             else:
