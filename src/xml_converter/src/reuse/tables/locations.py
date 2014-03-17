@@ -99,6 +99,11 @@ class Locations:
     def return_country(self, city, state):
         r = ''
         if len(state) > 0 and len(city) > 0:
+            if type(city) is list:
+                city = city[0]
+            if type(state) is list:
+                state = state[0]
+                
             k = city + state
         
             if k in self.city_state.keys():

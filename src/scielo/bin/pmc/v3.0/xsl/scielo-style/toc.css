@@ -55,11 +55,11 @@ h4 {
     background-color: #F0F0F0;
 }
 /* MESSAGES */
-.duplicated_messages{
-    background-color: white;
-}
+
 .issue-messages{
     background-color: white;
+    border-style: solid;
+    color: #B22222;
 }
 .article-messages{
     background-color: #D8C2B5;

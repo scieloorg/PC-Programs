@@ -102,8 +102,8 @@ Remove the incorrect item and inform the right path corresponding to c:\\scielo\
 .. image:: img/markup_habilitarmacro2.jpg
 
 
-Starting the markup of a file
------------------------------
+Opening a file
+--------------
 
 #. Open only one file of article or a text file (.doc or .html).
 
@@ -331,10 +331,6 @@ This message is also displayed if the selected text contains tags or part of tag
 
 .. image:: img/markup_msg_inserting_tag_03.png
 
-
-3. If the user does not select any text and clicks on a tag, the program inform that the user must select a text.
-
-.. image:: img/markup_msg_select_text.jpg
 
 
 .. include:: last_update.rst

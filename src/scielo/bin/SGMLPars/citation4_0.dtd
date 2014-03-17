@@ -296,7 +296,7 @@
                         confgrp? & thesis? & date? & pages? & edition? & 
                         city? & state? & country? & pubname? & extent? &
                         coltitle? & volid? & part? & isbn? & othinfo? & url? & cited?
-                        & patgrp? & report? ))+ >
+                        & patgrp? & report? & doi?))+ >
 
 <!ELEMENT othinfo  - - (#PCDATA) >
 
