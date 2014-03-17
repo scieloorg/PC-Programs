@@ -654,7 +654,7 @@ class XMLMetadata:
             if 'pr' in num:
                 num = num.replace(' pr', '')
             else:
-                parts = num.split()
+                parts = num.split(' ')
                 if len(parts) == 3:
                     num = parts[0]
                     suppl = parts[2]
@@ -680,8 +680,8 @@ class XMLMetadata:
             issueno = ''
         if not suppl:
             suppl = ''
-
         issueno, suppl = self._fix_issue_number(issueno, suppl)
+
         order = node.findtext('.//article-id[@pub-id-type="other"]')
         fpage_node = node.find('./fpage')
 
@@ -698,6 +698,7 @@ class XMLMetadata:
             node = self.root.find('.//article-meta')
             if node is not None:
                 issn, volid, issueno, suppl, fpage, seq, order = self._meta_xml(node)
+
             else:
                 attribs = self.root.find('.').attrib
                 issn = attribs.get('issn')
@@ -836,6 +837,7 @@ class XMLMetadata:
         return (new name, [(@href, suffix + parent id)])
         """
         new_name = self.format_name(self._metadata(), acron, alternative_id)
+        print(new_name)
         href_filenames = self.xml_data_href_list()
         return (new_name, href_filenames)
 
@@ -1888,16 +1890,18 @@ class ContentValidation(object):
         self.refs_validations = []
 
         if self.xml is not None:
-            self.issue_meta_validations = self._validate_required_data(self.issue_meta, ['publisher-name', 'journal-title', 'issue'], 'journal-meta and issue-meta')
-            self.issue_meta_validations += self._validate_conditional_required_data(self.issue_meta, ['issue'], 'journal-meta and issue-meta')
+            self.issue_meta_validations = self._validate_required_data(self.issue_meta, ['publisher-name', 'journal-title'], 'journal-meta and issue-meta')
+            self.issue_meta_validations += self._validate_conditional_required_data(self.issue_meta, ['volume', 'issue'], 'journal-meta and issue-meta')
             if expected_journal_meta:
                 self.issue_meta_validations += self._validate_data(self.issue_meta, expected_journal_meta)
 
+
             if not self.issue_meta['suppl'] is None:
                 self.issue_meta_validations += ['FATAL ERROR: do not use <supplement>, use <issue> to label supplement. E.g.: <issue>1 Suppl</issue>, <issue>1 Suppl 2</issue>, <issue>Suppl</issue>', '<issue>Suppl 1</issue>']
-            if not self._has_only_letter_number_space(self.issue_meta['issue']):
-                self.issue_meta_validations += ['FATAL ERROR: invalid characteres in issue tag: ' + self.issue_meta['issue']]
-            print(self.issue_meta_validations)
+            if self.issue_meta.get('issue') is not None:
+                if not self._has_only_letter_number_space(self.issue_meta['issue']):
+                    self.issue_meta_validations += ['FATAL ERROR: invalid characteres in issue tag: ' + self.issue_meta['issue']]
+                
             # cleanit
             self.article_meta_validations['dates'] = self._validate_presence_of_at_least_one([self.article_meta.get('date-epub', ''), self.article_meta.get('date-ppub', ''), self.article_meta.get('date-epub-ppub', '')], ['epub date', 'ppub date', 'epub-ppub date'])
 
@@ -2018,6 +2022,8 @@ class ContentValidation(object):
 
     def _has_only_letter_number_space(self, content):
         r = False
+        if content is None:
+            r = False
         if len(content) > 0:
             valid = 'abcdefghijklmnopqrstuvwxyz'
             valid += valid.upper() + '1234567890 '
@@ -2156,7 +2162,7 @@ class Normalizer(object):
         if xml_is_well_formed(content) is not None:
             #new name and href list
             new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, xml_name)
-
+            
             #href and new href list
             curr_and_new_href_list = self.generate_curr_and_new_href_list(xml_name, new_name, href_list)
 

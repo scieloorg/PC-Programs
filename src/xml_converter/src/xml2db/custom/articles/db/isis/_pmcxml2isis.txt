@@ -199,10 +199,6 @@
       fpage f
       lpage l
       page-range r
-    .//mixed-citation 514
-      fpage f
-      lpage l
-      page-range r
     .//size 20
       . _
       @units u
