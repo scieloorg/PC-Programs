@@ -493,7 +493,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>
 			</xsl:if>
 
-			<xsl:apply-templates select=".//toctitle"></xsl:apply-templates>
+			<xsl:apply-templates select="./front/toctitle"></xsl:apply-templates>
 			<xsl:if test="not(.//toctitle)">
 				<xsl:apply-templates select="." mode="toctitle"></xsl:apply-templates>
 			</xsl:if>
