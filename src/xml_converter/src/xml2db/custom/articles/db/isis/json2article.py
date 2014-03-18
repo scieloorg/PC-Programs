@@ -2,6 +2,8 @@
 
 import os
 import json
+from datetime import datetime
+
 from xml2db.json_functions import return_multval, return_singleval
 
 from reuse.items_and_id import id_generate, Items
@@ -417,10 +419,14 @@ class JSON_Article:
         e = []
         dates = []
 
+        issue_date = return_singleval(self.json_data['f'], '65')
+
         dates = self._d(dates, '112', 'received date')
         dates = self._d(dates, '114', 'accepted date')
         dates = self._d(dates, '223', 'epub date')
-        dates = self._d(dates, '65', 'ppub date')
+
+        if not issue_date.endswith('0000'):
+            dates = self._d(dates, '65', 'ppub date')
 
         prev = 0
         prev_label = ''
