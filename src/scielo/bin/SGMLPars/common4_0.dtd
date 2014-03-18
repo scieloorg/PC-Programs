@@ -44,7 +44,7 @@
 <!ATTLIST corresp
           id CDATA    #REQUIRED >
 
-<!ELEMENT aff - - (label? & city? & state? & country? & zipcode? & email? & (#PCDATA)?)>
+<!ELEMENT aff - - (label? & role? & city? & state? & country? & zipcode? & email? & (#PCDATA)?)>
 <!ATTLIST aff
           id       ID    #REQUIRED
           orgname  CDATA #REQUIRED
@@ -290,8 +290,9 @@ filename       CDATA #IMPLIED>
 <!ELEMENT lilabel  - - (#PCDATA) >
 <!ELEMENT litext  - - (#PCDATA) +(%i.float;) >
 
-<!ELEMENT sigblock - - (sig)+ >
+<!ELEMENT sigblock - - (sig, role)+ >
 <!ELEMENT sig - - (#PCDATA)   +(%i.float;) >
+<!ELEMENT role - - (#PCDATA) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    license                                                           -->

@@ -494,14 +494,17 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:with-param name="sig" select="."/>
 		</xsl:apply-templates></xsl:variable>
 		<xsl:variable name="contrib_type">
-			<xsl:choose><xsl:when test="contains(../text(),'ditor')">editor</xsl:when><xsl:otherwise>author</xsl:otherwise></xsl:choose>
+			<xsl:choose><xsl:when test="contains(../text(),'ditor')">editor</xsl:when><xsl:when test="contains(../role,'ditor')">editor</xsl:when><xsl:otherwise>author</xsl:otherwise></xsl:choose>
 		</xsl:variable>
+		<xsl:variable name="position"><xsl:value-of select="position()"/></xsl:variable>
 		<contrib contrib-type="{$contrib_type}">
 			<name>
-				<given-names><xsl:value-of select="$given-names"/></given-names>
 				<surname><xsl:value-of select="substring-after(.,concat($given-names, ' '))"/></surname>
+				<given-names><xsl:value-of select="$given-names"/></given-names>
+				
 			</name>
 		</contrib>
+		<xsl:copy-of select="..//role[$position]"/>
 	</xsl:template>
 	
 	<xsl:template match="article|text" mode="article-meta">
@@ -644,6 +647,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="."/>
 			<xsl:apply-templates select=".//xref|text()"/>
 		</contrib>
+		<xsl:copy-of select="../..//aff[@id=$author_rid]/role"/>
 	</xsl:template>
 
 	<xsl:template match="corpauth" mode="front">

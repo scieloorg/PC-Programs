@@ -147,3 +147,4 @@ pubid;Identify an id of any external database, such as DOI, pmid (PubMed), pmcid
 onbehalf;Identify the institution which the contributor represents. Example: John Smith on behalf of Instituition ABCD
 xmlabstr;Identify the abstract with sections
 toctitle;Identify the TOC section title. It is mandatory to the generation of XML files.
+role;Identify the role of the author
