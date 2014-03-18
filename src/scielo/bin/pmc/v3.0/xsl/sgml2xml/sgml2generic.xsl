@@ -464,9 +464,46 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//titlegrp/title"/>
 		</title-group>
 		<xsl:apply-templates select=".//authgrp" mode="front"/>
+		<xsl:apply-templates select="../xmlbody/sigblock" mode="author"></xsl:apply-templates>
 		<xsl:apply-templates select=".//abstract|.//xmlabstr"/>
 		<xsl:apply-templates select=".//keygrp"/>
 	</xsl:template>
+	<xsl:template match="*" mode="given-names">
+		<xsl:param name="sig"></xsl:param>
+		<xsl:param name="prefix"></xsl:param>
+		<xsl:choose>
+			<xsl:when test="contains($sig, ' ')">
+				<xsl:value-of select="concat($prefix,substring-before($sig,' '))"/>
+				<xsl:apply-templates select="." mode="given-names">
+					<xsl:with-param name="sig"><xsl:value-of select="substring-after($sig,' ')"/></xsl:with-param>
+					<xsl:with-param name="prefix"><xsl:value-of select="concat(' ','')"/></xsl:with-param>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise>
+				
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="sigblock" mode="author">
+		<contrib-group>
+			<xsl:apply-templates select="sig" mode="author"></xsl:apply-templates>
+		</contrib-group>
+	</xsl:template>
+	<xsl:template match="sig" mode="author">
+		<xsl:variable name="given-names"><xsl:apply-templates select="." mode="given-names">
+			<xsl:with-param name="sig" select="."/>
+		</xsl:apply-templates></xsl:variable>
+		<xsl:variable name="contrib_type">
+			<xsl:choose><xsl:when test="contains(../text(),'ditor')">editor</xsl:when><xsl:otherwise>author</xsl:otherwise></xsl:choose>
+		</xsl:variable>
+		<contrib contrib-type="{$contrib_type}">
+			<name>
+				<given-names><xsl:value-of select="$given-names"/></given-names>
+				<surname><xsl:value-of select="substring-after(.,concat($given-names, ' '))"/></surname>
+			</name>
+		</contrib>
+	</xsl:template>
+	
 	<xsl:template match="article|text" mode="article-meta">
 		<xsl:variable name="l" select="@language"/>
 		<article-meta>
@@ -499,6 +536,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:if>
 			
 			<xsl:apply-templates select="." mode="article-title"/>
+			<xsl:apply-templates select="xmlbody/sigblock" mode="author"></xsl:apply-templates>
 			<xsl:apply-templates select=".//authgrp" mode="front"/>
 			<xsl:apply-templates select="." mode="author-notes"/>
 
