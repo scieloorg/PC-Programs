@@ -20,6 +20,8 @@ Run on Windows
 
     tutorials.rst
 
+    procedures.rst
+    
     issue_and_section_databases.rst
     code_database.rst
     newcode_database.rst
