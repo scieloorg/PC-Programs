@@ -147,3 +147,4 @@ pubid;Identifica um id de qualquer tipo de base de dados externa, tal como DOI, 
 onbehalf;Identifica a instituição que o autor representa. Example: John Smith on behalf of Instituition ABCD
 xmlabstr;Identifica um resumo com seções
 toctitle;Identifica o título da seção do sumário. Este item é obrigatório para a geração do XML.
+role;Identifica o papel do autor

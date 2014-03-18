@@ -53,6 +53,7 @@ patgrp;#FALSE#
 
 aff
 label;#FALSE#
+role;#FALSE#
 city;#FALSE#
 state;#FALSE#
 country;#FALSE#
@@ -614,6 +615,8 @@ back;#FALSE#
 
 revised
 
+role
+
 rsponsor
 orgname;#FALSE#
 orgdiv;#FALSE#
@@ -633,6 +636,7 @@ sig
 
 sigblock
 sig;#TRUE#
+role;#FALSE#
 
 sponsor
 orgname;#FALSE#
