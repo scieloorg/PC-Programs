@@ -342,7 +342,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="*" mode="front">
 		<xsl:choose>
-			<xsl:when test="name()='sub-article'">
+			<xsl:when test="name()='subart'">
 				<front-stub>
 					<xsl:apply-templates select="." mode="article-meta"/>					
 				</front-stub>
@@ -791,7 +791,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="fngrp" mode="fnauthors">
 		<xsl:choose>
 			<xsl:when
-				test="contains('abbr|finanacial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)"/>
+				test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)"/>
 			<xsl:otherwise>
 				<xsl:apply-templates select="."/>
 			</xsl:otherwise>
@@ -800,7 +800,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="fngrp" mode="notfnauthors">
 		<xsl:choose>
 			<xsl:when
-				test="contains('abbr|finanacial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)">
+				test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)">
 				<xsl:apply-templates select="."/>
 			</xsl:when>
 			<xsl:otherwise> </xsl:otherwise>
@@ -1152,7 +1152,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:attribute name="xlink:href"><xsl:value-of select="."/></xsl:attribute>
 	</xsl:template-->
 	<!-- BACK -->
-	<xsl:template match="article|text" mode="back">
+	<xsl:template match="article|text|subart|response" mode="back">
 		<xsl:variable name="test">
 			<xsl:apply-templates select=".//fngrp[@fntype]" mode="notfnauthors"/>
 		</xsl:variable>
