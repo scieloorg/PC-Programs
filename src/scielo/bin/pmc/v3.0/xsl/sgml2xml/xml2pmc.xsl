@@ -41,7 +41,7 @@
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
-	<xsl:template match="sub-article//@xml:lang"></xsl:template>
+	<xsl:template match="sub-article[@article-type='translation']//front-stub//@xml:lang|sub-article[@article-type='translation']//front//@xml:lang"></xsl:template>
 	<xsl:template match="mixed-citation">
 		<xsl:choose>
 			<xsl:when test="$xml_type='scielo'"/>
