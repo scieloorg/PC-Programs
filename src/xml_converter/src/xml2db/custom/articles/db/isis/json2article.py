@@ -460,8 +460,9 @@ class JSON_Article:
         r['order'] = self.json_data['f'].get('121')
 
         r['nlm-ta'] = return_singleval(self.json_data['f'], '421')
-        r['print issn'] = return_singleval(self.json_data['f'], '35')
-        r['online issn'] = return_singleval(self.json_data['f'], '935')
+
+        r['print issn'] = self.issns('ppub')
+        r['online issn'] = self.issns('epub')
         r['@article-type'] = return_singleval(self.json_data['f'], '71')
         r['doi'] = return_singleval(self.json_data['f'], '237')
         r['received date'] = return_singleval(self.json_data['f'], '112')
@@ -569,6 +570,24 @@ class JSON_Article:
         r += '\n'
         return r
 
+    def validate_issn(self):
+        issns = self.issns()
+        errors = []
+        if not self.json_data['f']['35'] in issns.values():
+            errors.append('ISSN in issue: ' + self.json_data['f']['35'] + '. ISSN in article:' + ' and '.join([k + ': ' + v for k, v in issns.items()]))
+        val = issns.values()
+        if len(val) == 2:
+            if val[0] == val[1]:
+                errors.append('Print ISSN and E-ISSN must be different:' + ' x '.join(val))
+        return errors
+
+    def issns(self, issn_type=None):
+        issns = return_multval(self.json_data['f'], '435')
+        issns = {issn.get('t'): issn.get('_') for issn in issns}
+        if issn_type is None:
+            return issns
+        else:
+            return issns.get(issn_type, '')
 
     def normalize_issue_data(self, issn_id):
         """
@@ -832,7 +851,7 @@ class JSON_Article:
         """
         Validate the required data of front
         """
-        required = { 'doi': [237], 'issn': [35, 935], 'publisher-name': [62],  'journal-id (nlm-ta)': [421] }
+        required = { 'doi': [237], 'publisher-name': [62],  'journal-id (nlm-ta)': [421] }
         errors = []
         for label, tags in required.items():
             value = ''
@@ -912,6 +931,7 @@ class JSON_Article:
         # aff, authors (prefix and suffix), pub-dates, funding (58,60) x ack
         #conditional = { 'page': (14, 32), }
         
+        errors += self.validate_issn()
         errors += self.validate_required()
         errors += self.validate_section()
         errors += self.validate_pages()

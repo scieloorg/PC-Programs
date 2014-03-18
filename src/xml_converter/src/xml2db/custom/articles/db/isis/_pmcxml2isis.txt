@@ -32,8 +32,9 @@
     .//journal-meta//abbrev-journal-title 30
     .//journal-meta//publisher-name 62
     .//journal-meta//journal-id[@journal-id-type='nlm-ta'] 421
-    .//issn[@pub-type='ppub'] 35 
-    .//issn[@pub-type='epub'] 935 
+    .//issn 435
+       @pub-type t
+       . _
     .//subj-group[1]/subject 49
     .//subj-group[@subj-group-type='heading']/subject 49
     .//kwd-group 85
