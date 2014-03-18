@@ -342,9 +342,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="*" mode="front">
 		<xsl:choose>
-			<xsl:when test="name()='sub-article'">
+			<xsl:when test="name()='subart'">
 				<front-stub>
-					<xsl:apply-templates select="." mode="article-meta"/>					
+					<xsl:apply-templates select="front" mode="article-meta"/>					
 				</front-stub>
 			</xsl:when>
 			<xsl:when test="name()='article'">
@@ -359,8 +359,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="." mode="article-meta"/>					
 				</front>
 			</xsl:otherwise>
-		</xsl:choose>
-		
+		</xsl:choose>		
 	</xsl:template>
 	<xsl:template match="article|text" mode="journal-meta">
 		<journal-meta>
@@ -437,6 +436,37 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	<xsl:template match="toctitle">
+		<article-categories>
+			<subj-group subj-group-type="heading">
+				<xsl:variable name="t" select="normalize-space(.)"/>
+				<subject>
+					<xsl:apply-templates select="." mode="format-subject">
+						<xsl:with-param name="t" select="$t"/>
+					</xsl:apply-templates>
+				</subject>
+			</subj-group>
+		</article-categories>
+	</xsl:template>
+	<xsl:template match="*" mode="toctitle">
+		<article-categories>
+			<subj-group subj-group-type="heading">
+				<subject>Articles</subject>
+			</subj-group>
+		</article-categories>
+	</xsl:template>
+	<xsl:template match="subart/front" mode="article-meta">
+		<xsl:if test="not(.//toctitle)">
+			<xsl:apply-templates select="." mode="toctitle"></xsl:apply-templates>
+		</xsl:if>
+		<xsl:apply-templates select=".//toctitle"></xsl:apply-templates>
+		<title-group>
+			<xsl:apply-templates select=".//titlegrp/title"/>
+		</title-group>
+		<xsl:apply-templates select=".//authgrp" mode="front"/>
+		<xsl:apply-templates select=".//abstract|.//xmlabstr"/>
+		<xsl:apply-templates select=".//keygrp"/>
+	</xsl:template>
 	<xsl:template match="article|text" mode="article-meta">
 		<xsl:variable name="l" select="@language"/>
 		<article-meta>
@@ -463,23 +493,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>
 			</xsl:if>
 
-			<article-categories>
-				<subj-group subj-group-type="heading">
-					<xsl:choose>
-						<xsl:when test=".//toctitle">
-							<xsl:variable name="t" select="normalize-space(.//toctitle)"/>
-							<subject>
-								<xsl:apply-templates select="." mode="format-subject">
-									<xsl:with-param name="t" select="$t"/>
-								</xsl:apply-templates>
-							</subject>
-						</xsl:when>
-						<xsl:otherwise>
-							<subject>Article</subject>
-						</xsl:otherwise>
-					</xsl:choose>
-				</subj-group>
-			</article-categories>
+			<xsl:apply-templates select=".//toctitle"></xsl:apply-templates>
+			<xsl:if test="not(.//toctitle)">
+				<xsl:apply-templates select="." mode="toctitle"></xsl:apply-templates>
+			</xsl:if>
+			
 			<xsl:apply-templates select="." mode="article-title"/>
 			<xsl:apply-templates select=".//authgrp" mode="front"/>
 			<xsl:apply-templates select="." mode="author-notes"/>
@@ -503,7 +521,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</article-meta>
 	</xsl:template>
 	<xsl:template match="*" mode="article-title">
-		<xsl:variable name="l" select="//*[name()='article' or name()='text']/@language"/>
+		<xsl:variable name="l" select="@language"/>
 		<title-group>
 			<xsl:apply-templates select=".//titlegrp/title[@language=$l] "/>
 			<xsl:apply-templates select=".//titlegrp/title[@language!=$l]" mode="trans-title-group">
@@ -791,7 +809,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="fngrp" mode="fnauthors">
 		<xsl:choose>
 			<xsl:when
-				test="contains('abbr|finanacial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)"/>
+				test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)"/>
 			<xsl:otherwise>
 				<xsl:apply-templates select="."/>
 			</xsl:otherwise>
@@ -800,7 +818,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="fngrp" mode="notfnauthors">
 		<xsl:choose>
 			<xsl:when
-				test="contains('abbr|finanacial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)">
+				test="contains('abbr|financial-disclosure|other|presented-at|supplementary-material|supported-by',@fntype)">
 				<xsl:apply-templates select="."/>
 			</xsl:when>
 			<xsl:otherwise> </xsl:otherwise>
@@ -1152,7 +1170,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:attribute name="xlink:href"><xsl:value-of select="."/></xsl:attribute>
 	</xsl:template-->
 	<!-- BACK -->
-	<xsl:template match="article|text" mode="back">
+	<xsl:template match="article|text|subart|response" mode="back">
 		<xsl:variable name="test">
 			<xsl:apply-templates select=".//fngrp[@fntype]" mode="notfnauthors"/>
 		</xsl:variable>
