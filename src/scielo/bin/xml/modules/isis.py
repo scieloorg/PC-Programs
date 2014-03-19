@@ -2,6 +2,7 @@
 
 
 import os
+from tempfile import mkdtemp
 
 from utils import normalize_space
 
@@ -156,9 +157,10 @@ class IDFile(object):
 
 
 class CISIS(object):
+
     def __init__(self, cisis_path):
         cisis_path = cisis_path.replace('\\', '/')
-
+        self.temp_dir = mkdtemp()
         if os.path.exists(cisis_path):
             self.cisis_path = cisis_path
         else:
@@ -183,7 +185,7 @@ class CISIS(object):
     def id2mst(self, id_filename, mst_filename, reset):
         if reset:
             self.new(mst_filename)
-        from tempfile import mkdtemp
+        
         temp = mkdtemp() + '/f'
         self.id2i(id_filename, temp)
         self.append(temp, mst_filename)
@@ -200,13 +202,16 @@ class CISIS(object):
         cmd = self.cisis_path + '/mx ' + mst_filename + ' iso=' + iso_filename + ' now -all'
         os.system(cmd)
 
+    def iso2mst(self, iso_filename, mst_filename):
+        cmd = self.cisis_path + '/mx iso=' + iso_filename + 'create=' + mst_filename + ' now -all'
+        os.system(cmd)
+
     def copy_record(self, src_mst_filename, mfn, dest_mst_filename):
         cmd = self.cisis_path + '/mx ' + src_mst_filename + ' from=' + mfn + ' count=1 ' + ' append=' + dest_mst_filename + ' now -all'
         os.system(cmd)
 
     def modify_records(self, mst_filename, proc):
-        import tempfile
-        temp = tempfile.mkdtemp() + '/f'
+        temp = self.temp_dir + '/f'
         cmd = self.cisis_path + '/mx ' + mst_filename + ' "proc=' + proc + '" append=' + temp + ' now -all'
         os.system(cmd)
         self.create(temp, mst_filename)
@@ -231,10 +236,96 @@ class CISIS(object):
         os.system(cmd)
 
     def search(self, mst_filename, expression, result_filename):
-        self.new(result_filename)
+        if os.path.isfile(result_filename + '.mst'):
+            os.unlink(result_filename + '.mst')
+            os.unlink(result_filename + '.xrf')
+        
         cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 append=' + result_filename + ' now -all'
         os.system(cmd)
 
     def generate_indexes(self, mst_filename, fst_filename, inverted_filename):
         cmd = self.cisis_path + '/mx ' + mst_filename + ' fst=@' + fst_filename + '" fullinv=' + inverted_filename
         os.system(cmd)
+
+    def is_readable(self, mst_filename):
+        s = ''
+        if os.path.isfile(mst_filename + '.mst'):
+            temp = self.temp_dir + '/readable'
+            cmd = self.cisis_path + '/mx ' + mst_filename + ' +control now > ' + temp
+            os.system(cmd)
+            if os.path.isfile(temp):
+                s = open(temp, 'r').read()
+        return len(s) > 0
+
+
+class UCISIS(object):
+
+    def __init__(self, cisis1030, cisis1660):
+        self.cisis1030 = cisis1030
+        self.cisis1660 = cisis1660
+        self.temp_dir = mkdtemp()
+
+    def cisis(self, mst_filename):
+        if os.path.isfile(mst_filename + '.mst'):
+            if self.cisis1030.is_readable(mst_filename):
+                return self.cisis1030
+            elif self.cisis1660.is_readable(mst_filename):
+                return self.cisis1660
+        else:
+            return self.cisis1030
+
+    def version(self, mst_filename):
+        if self.cisis1030.is_readable(mst_filename):
+            return '1030'
+        elif self.cisis1660.is_readable(mst_filename):
+            return '1660'
+
+    def convert1660to1030(self, mst_filename):
+        if os.path.isfile(mst_filename + '.mst'):
+            self.cisis1660.mst2iso(mst_filename, self.temp_dir + '/' + mst_filename)
+            self.cisis1030.iso2mst(self.temp_dir + '/' + mst_filename, mst_filename)
+
+    def crunchmf(self, mst_filename, wmst_filename):
+        self.cisis(mst_filename).crunchmf(mst_filename, wmst_filename)
+
+    def id2i(self, id_filename, mst_filename):
+        self.cisis(mst_filename).id2i(id_filename, mst_filename)
+
+    def append(self, src, dest):
+        self.cisis(src).append(src, dest)
+
+    def create(self, src, dest):
+        self.cisis(src).append(src, dest)
+
+    def id2mst(self, id_filename, mst_filename, reset):
+        if reset:
+            self.cisis1030.id2mst(id_filename, mst_filename, reset)
+        else:
+            self.cisis(mst_filename).id2mst(id_filename, mst_filename, reset)
+
+    def i2id(self, mst_filename, id_filename):
+        self.cisis(mst_filename).i2id(mst_filename, id_filename)
+
+    def mst2iso(self, mst_filename, iso_filename):
+        self.cisis(mst_filename).mst2iso(mst_filename, iso_filename)
+
+    def iso2mst(self, iso_filename, mst_filename):
+        self.cisis(mst_filename).iso2mst(iso_filename, mst_filename)
+
+    def copy_record(self, src_mst_filename, mfn, dest_mst_filename):
+        self.cisis(src_mst_filename).copy_record(src_mst_filename, mfn, dest_mst_filename)
+
+    def modify_records(self, mst_filename, proc):
+        self.cisis(mst_filename).copy_record(mst_filename, proc)
+
+    def find_record(self, mst_filename, expression):
+        return self.cisis(mst_filename).find_record(mst_filename, expression)
+
+    def new(self, mst_filename):
+        self.cisis1030.new(mst_filename)
+
+    def search(self, mst_filename, expression, result_filename):
+        self.cisis(mst_filename).search(mst_filename, expression, result_filename)
+
+    def generate_indexes(self, mst_filename, fst_filename, inverted_filename):
+        self.cisis(mst_filename).generate_indexes(mst_filename, fst_filename, inverted_filename)
