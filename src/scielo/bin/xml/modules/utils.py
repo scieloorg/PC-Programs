@@ -97,21 +97,51 @@ def node_text(node, exclude_root_tag=True):
     return text
 
 
+def convert_using_htmlparser(content):
+    import HTMLParser
+    entities = []
+
+    h = HTMLParser.HTMLParser()
+    new = content.replace('&', '_BREAK_&')
+    parts = new.split('_BREAK_')
+    for part in parts:
+        if part.startswith('&'):
+            ent = part[0:part.find(';')+1]
+            if not ent in entities:
+                try:
+                    new_ent = h.unescape(ent).encode('utf-8', 'xmlcharrefreplace')
+                except Exception as inst:
+                    new_ent = ent
+                    print('convert_using_htmlparser:')
+                    print(ent)
+                    print(inst)
+                if not new_ent in ['<', '>', '&']:
+                    content = content.replace(ent, new_ent)
+                entities.append(ent)
+    return content
+
+
+def handle_mml_entities(content):
+    if '<mml:' in content:
+        temp = content.replace('<mml:math', 'BREAKBEGINCONSERTA<mml:math')
+        temp = temp.replace('</mml:math>', '</mml:math>BREAKBEGINCONSERTA')
+        replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<mml:math' in item and '&' in item]
+        for repl in replaces:
+            content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
+    if '<math' in content:
+        temp = content.replace('<math', 'BREAKBEGINCONSERTA<math')
+        temp = temp.replace('</math>', '</math>BREAKBEGINCONSERTA')
+        replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<math' in item and '&' in item]
+        for repl in replaces:
+            content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
+    return content
+
+
+def handle_entities(content):
+    return handle_mml_entities(convert_using_htmlparser(content))
+
+
 def load_xml(content):
-    def handle_mml_entities(content):
-        if '<mml:' in content:
-            temp = content.replace('<mml:math', 'BREAKBEGINCONSERTA<mml:math')
-            temp = temp.replace('</mml:math>', '</mml:math>BREAKBEGINCONSERTA')
-            replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<mml:math' in item and '&' in item]
-            for repl in replaces:
-                content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
-        if '<math' in content:
-            temp = content.replace('<math', 'BREAKBEGINCONSERTA<math')
-            temp = temp.replace('</math>', '</math>BREAKBEGINCONSERTA')
-            replaces = [item for item in temp.split('BREAKBEGINCONSERTA') if '<math' in item and '&' in item]
-            for repl in replaces:
-                content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
-        return content
 
     NAMESPACES = {'mml': 'http://www.w3.org/TR/MathML3/'}
     for prefix, uri in NAMESPACES.items():
@@ -125,11 +155,12 @@ def load_xml(content):
             content = open(content, 'r').read()
 
     if '<' in content:
-        content = normalize_space(handle_mml_entities(content))
+        content = normalize_space(handle_entities(content))
 
         try:
             r = etree.parse(StringIO(content))
         except Exception as e:
+
             print('XML is not well formed')
             print(e)
             r = None

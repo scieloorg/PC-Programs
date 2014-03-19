@@ -160,7 +160,7 @@ class CISIS(object):
 
     def __init__(self, cisis_path):
         cisis_path = cisis_path.replace('\\', '/')
-        self.temp_dir = mkdtemp()
+        self.temp_dir = mkdtemp().replace('\\', '/')
         if os.path.exists(cisis_path):
             self.cisis_path = cisis_path
         else:
@@ -179,14 +179,14 @@ class CISIS(object):
         os.system(cmd)
 
     def create(self, src, dest):
-        cmd = self.cisis_path + '/mx ' + src + '  create=' + dest + ' now -all'
+        cmd = self.cisis_path + '/mx ' + src + ' create=' + dest + ' now -all'
         os.system(cmd)
 
     def id2mst(self, id_filename, mst_filename, reset):
         if reset:
             self.new(mst_filename)
         
-        temp = mkdtemp() + '/f'
+        temp = mkdtemp().replace('\\', '/') + '/f'
         self.id2i(id_filename, temp)
         self.append(temp, mst_filename)
         try:
@@ -203,7 +203,7 @@ class CISIS(object):
         os.system(cmd)
 
     def iso2mst(self, iso_filename, mst_filename):
-        cmd = self.cisis_path + '/mx iso=' + iso_filename + 'create=' + mst_filename + ' now -all'
+        cmd = self.cisis_path + '/mx iso=' + iso_filename + ' create=' + mst_filename + ' now -all'
         os.system(cmd)
 
     def copy_record(self, src_mst_filename, mfn, dest_mst_filename):
@@ -244,7 +244,8 @@ class CISIS(object):
         os.system(cmd)
 
     def generate_indexes(self, mst_filename, fst_filename, inverted_filename):
-        cmd = self.cisis_path + '/mx ' + mst_filename + ' fst=@' + fst_filename + '" fullinv=' + inverted_filename
+        cmd = self.cisis_path + '/mx ' + mst_filename + ' fst=@' + fst_filename + ' fullinv=' + inverted_filename
+        print(cmd)
         os.system(cmd)
 
     def is_readable(self, mst_filename):
@@ -263,7 +264,7 @@ class UCISIS(object):
     def __init__(self, cisis1030, cisis1660):
         self.cisis1030 = cisis1030
         self.cisis1660 = cisis1660
-        self.temp_dir = mkdtemp()
+        self.temp_dir = mkdtemp().replace('\\', '/')
 
     def cisis(self, mst_filename):
         if os.path.isfile(mst_filename + '.mst'):
@@ -282,8 +283,9 @@ class UCISIS(object):
 
     def convert1660to1030(self, mst_filename):
         if os.path.isfile(mst_filename + '.mst'):
-            self.cisis1660.mst2iso(mst_filename, self.temp_dir + '/' + mst_filename)
-            self.cisis1030.iso2mst(self.temp_dir + '/' + mst_filename, mst_filename)
+            name = self.temp_dir + '/' + os.path.basename(mst_filename)
+            self.cisis1660.mst2iso(mst_filename, name)
+            self.cisis1030.iso2mst(name, mst_filename)
 
     def crunchmf(self, mst_filename, wmst_filename):
         self.cisis(mst_filename).crunchmf(mst_filename, wmst_filename)
