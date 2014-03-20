@@ -55,14 +55,19 @@ def format_dateiso(adate):
             if '-' in month:
                 month = month[0:month.find('-')]
             month = MONTHS.get(month, '00')
+
         if month == '' or month is None:
             month = '00'
+        month = '00' + month
+        month = month[-2:]
         y = adate.get('year', '0000')
         if y is None:
             y = '0000'
         d = adate.get('day', '00')
         if d is None:
             d = '00'
+        d = '00' + d
+        d = d[-2:]
         return y + month + d
 
 
