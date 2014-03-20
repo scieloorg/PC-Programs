@@ -102,7 +102,7 @@ class IDFile(object):
         if len(record) > 0:
             records.append(self.simplify_record(record))
 
-        print('Loaded ' + str(len(records))) + ' issue records.'
+        #print('Loaded ' + str(len(records))) + ' issue records.'
         f.close()
         return records
 

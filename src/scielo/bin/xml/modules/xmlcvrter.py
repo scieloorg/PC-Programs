@@ -5,7 +5,7 @@ import shutil
 from datetime import datetime
 
 from configuration import Configuration
-from utils import load_xml
+from utils import load_xml, doi_pid
 from isis import IDFile, UCISIS, CISIS
 from article import Article
 from isis_models import ArticleISIS, IssueISIS
@@ -63,15 +63,13 @@ class XMLConverter(object):
                         print(article_files.issue_folder + ' is not registered in issue database.')
                     else:
                         if issue_folder == article_files.issue_folder:
-                            print(article.title)
-                            print(article.previous_pid)
                             issue = IssueISIS(issue_record)
                             section_code = issue.section_code(article.toc_section)
 
                             #create_db = (create_db and article.number != 'ahead')
                             self.article_db.create_id_file(article_files, article, section_code, text_or_article, issue.record, create_db)
 
-                            if article.number != 'ahead' and article.ahpdate is not None:
+                            if article.number != 'ahead':
                                 print('Ex-ahead?')
                                 ahead_manager.exclude_ahead_record(article, xml_file)
                             create_db = False
@@ -154,7 +152,7 @@ class IssuesManager(object):
         records = self.search(' OR '.join(expr), issue_folder)
         if len(records) == 0:
             records = self.search(acron, issue_folder)
-
+        print('Loaded ' + str(len(records)) + ' issue records.')
         for rec in records:
             key = self._key(rec.get('930'), rec.get('31'), rec.get('32'), rec.get('131'), rec.get('132'))
             self.records[key] = rec
@@ -179,8 +177,6 @@ class AheadManager(object):
 
         if len(self.journal_files.ahead_bases) > 0:
             for base in self.journal_files.ahead_bases:
-                print(base)
-                print(self.cisis.version(base))
                 if self.cisis.version(base) == '1660':
                     self.cisis.convert1660to1030(base)
                     if not os.path.isfile(base + '.fst'):
@@ -229,13 +225,18 @@ class AheadManager(object):
             self.cisis.search(self._all_aheads, article_key, self._selected_record)
             self.cisis.i2id(self._selected_record, self._id_filename)
             records = IDFile().read(self._id_filename)
-            if len(records) > 4:
-                rec = records[1]
+            for rec in records:
                 order = rec.get('121')
                 filename = rec.get('702')
                 year = rec.get('223')
                 if year is not None:
                     year = year[0:4]
+                if order is not None and filename is not None and year is not None:
+                    break
+                else:
+                    filename = None
+                    year = None
+                    order = None
         return (rec, filename, order, year)
 
     def exclude_ahead_record(self, article, filename):
@@ -247,13 +248,11 @@ class AheadManager(object):
             expr = []
             if article.doi is not None:
                 expr.append(article.doi)
-            expr.append(filename)
-            if len(article.title) > 0:
-                expr.append('"' + article.title[1].get('article-title') + '"')
-            print(expr)
-            rec, filename, order, year = self.find_ahead_record(' OR '.join(expr))
+            expr = ' OR '.join(expr)
+            rec, filename, order, year = self.find_ahead_record(expr)
             if rec is None:
-                print('Warning: Unable to find ex-ahead record for ' + filename)
+                print('Warning: Unable to find ex-ahead record. Expression: \n  ' + expr)
+                print(article.title[0].get('article-title', ''))
             else:
                 if year is not None and filename is not None:
                     print('Exclude ahead record of ' + filename)
@@ -386,7 +385,6 @@ class JournalFiles(object):
         for y in self.years:
             if os.path.isfile(self.ahead_base(y) + '.mst'):
                 bases.append(self.ahead_base(y))
-        print(bases)
         return bases
 
 

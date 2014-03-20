@@ -10,8 +10,12 @@ MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '
 
 def normalize_space(s):
     if s is not None:
+        while '\t' in s:
+            s = s.replace('\t', ' ')
         while '\n' in s:
             s = s.replace('\n', ' ')
+        while '\r' in s:
+            s = s.replace('\r', ' ')
         while '  ' in s:
             s = s.replace('  ', ' ')
     return s

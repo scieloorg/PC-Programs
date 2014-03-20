@@ -2,7 +2,7 @@
 
 import xml.etree.ElementTree as etree
 
-from modules.utils import node_text
+from modules.utils import node_text, doi_pid
 
 
 class ArticleXML(object):
@@ -195,7 +195,7 @@ class ArticleXML(object):
         return self.article_meta.findtext('article-id[@pub-id-type="doi"]')
 
     @property
-    def previous_pid(self):
+    def article_id_publisher_id(self):
         return self.article_meta.findtext('article-id[@pub-id-type="publisher-id"]')
 
     @property
@@ -471,7 +471,7 @@ class Article(ArticleXML):
 
     @property
     def previous_pid(self):
-        d = ArticleXML.previous_pid
+        d = self.article_id_publisher_id
         if d is None:
             if self.doi is not None:
                 d = doi_pid(self.doi)
