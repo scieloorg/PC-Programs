@@ -147,7 +147,7 @@ class ArticleISIS(object):
         self._metadata['237'] = self.article.doi
 
         self._metadata['121'] = self.article.order
-        self._metadata['881'] = doi_pid(self.article.doi)
+        self._metadata['881'] = self.article.previous_pid
 
         if self.article.is_ahead:
             self._metadata['32'] = 'ahead'
