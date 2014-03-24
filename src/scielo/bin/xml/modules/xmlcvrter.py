@@ -6,26 +6,32 @@ from datetime import datetime
 
 from configuration import Configuration
 from utils import load_xml
-from isis import IDFile, CISIS
+from isis import IDFile, UCISIS, CISIS
 from article import Article
 from isis_models import ArticleISIS, IssueISIS
 
 
 class XMLConverter(object):
 
-    def __init__(self, cisis, serial_path):
+    def __init__(self, cisis, serial_path, fst_filename):
         self.cisis = cisis
         self.serial_path = serial_path
         self.issue_manager = IssuesManager(self.cisis, self.serial_path + '/issue/issue')
         #self.issue_manager.load_data()
+        self.fst_filename = fst_filename
         self.article_db = ArticleDB(self.cisis)
 
-    def convert(self, xml_files_path, acron):
+    def convert(self, xml_files_path, acron, web_path):
         journal_files = JournalFiles(self.serial_path, acron)
 
-        ahead_manager = AheadManager(self.cisis, journal_files)
+        ahead_manager = AheadManager(self.cisis, journal_files, self.fst_filename)
         ahead_manager.generate_indexes()
 
+        issue, issue_files = self.create_article_id_files(xml_files_path, journal_files, ahead_manager)
+        self.create_db(issue, issue_files)
+        self.copy_files_to_web(xml_files_path, issue_files, web_path)
+
+    def create_article_id_files(self, xml_files_path, journal_files, ahead_manager):
         issue_folder = None
         issue_record = None
         issue_files = None
@@ -43,15 +49,13 @@ class XMLConverter(object):
                 else:
                     article_files = ArticleFiles(journal_files, article, xml_file)
 
+                    # dados do fasciculo
                     if issue_folder is None:
                         print('issue: ' + article_files.issue_folder)
                         issue_files = ArticleFiles(journal_files, article, xml_file)
-
                         issue_folder = article_files.issue_folder
-                        # load issues record
-                        self.issue_manager.load_selected_issues(article.journal_issns.get('epub'), article.journal_issns.get('ppub'), acron, article_files.issue_folder)
-
-                        issue_record = self.issue_manager.record(acron, article.volume, article.number, article.volume_suppl, article.number_suppl)
+                        self.issue_manager.load_selected_issues(article.journal_issns.get('epub'), article.journal_issns.get('ppub'), journal_files.acron, article_files.issue_folder)
+                        issue_record = self.issue_manager.record(journal_files.acron, article.volume, article.number, article.volume_suppl, article.number_suppl)
 
                     print(xml_file)
 
@@ -59,6 +63,8 @@ class XMLConverter(object):
                         print(article_files.issue_folder + ' is not registered in issue database.')
                     else:
                         if issue_folder == article_files.issue_folder:
+                            print(article.title)
+                            print(article.previous_pid)
                             issue = IssueISIS(issue_record)
                             section_code = issue.section_code(article.toc_section)
 
@@ -66,14 +72,19 @@ class XMLConverter(object):
                             self.article_db.create_id_file(article_files, article, section_code, text_or_article, issue.record, create_db)
 
                             if article.number != 'ahead' and article.ahpdate is not None:
+                                print('Ex-ahead?')
                                 ahead_manager.exclude_ahead_record(article, xml_file)
                             create_db = False
                         else:
                             print('This article do not belongs to ' + issue_folder + '.\n It belongs to ' + article_files.issue_folder)
+
                     if xml_files_path != issue_files.xml_path:
                         if not os.path.isdir(issue_files.xml_path):
                             os.makedirs(issue_files.xml_path)
                         shutil.copy(xml_files_path + '/' + xml_file, issue_files.xml_path)
+        return (issue, issue_files)
+
+    def create_db(self, issue, issue_files):
         if issue is not None:
             id_file = IDFile()
             id_file.save(issue_files.id_path + '/i.id', [issue.record])
@@ -81,6 +92,27 @@ class XMLConverter(object):
             for f in os.listdir(issue_files.id_path):
                 if f.endswith('.id') and f != '00000.id' and f != 'i.id':
                     self.cisis.id2mst(issue_files.id_path + '/' + f, issue_files.base, False)
+
+    def copy_files_to_web(self, xml_files_path, issue_files, web_path):
+        if os.path.isdir(web_path):
+            path = {}
+            path['pdf'] = web_path + '/bases/pdf/' + issue_files.acron_and_issue_folder
+            path['html'] = web_path + '/htdocs/img/revistas/' + issue_files.acron_and_issue_folder + '/html/'
+            path['xml'] = web_path + '/bases/xml/' + issue_files.acron_and_issue_folder
+            path['img'] = web_path + '/htdocs/img/revistas/' + issue_files.acron_and_issue_folder
+            for p in path.values():
+                if not os.path.isdir(p):
+                    os.makedirs(p)
+            for f in os.listdir(xml_files_path):
+                if os.path.isfile(xml_files_path + '/' + f):
+                    ext = f[f.rfind('.'):]
+                    if path.get(ext) is not None:
+                        shutil.copy(xml_files_path + '/' + f, path[ext])
+                    else:
+                        shutil.copy(xml_files_path + '/' + f, path['img'])
+        else:
+            print('Invalid value for Web path. ')
+            print(web_path)
 
 
 class IssuesManager(object):
@@ -139,20 +171,30 @@ class IssuesManager(object):
 
 class AheadManager(object):
 
-    def __init__(self, cisis, journal_files):
+    def __init__(self, cisis, journal_files, fst_filename):
         import tempfile
         self.journal_files = journal_files
         self.cisis = cisis
         self.temp_dir = tempfile.mkdtemp().replace('\\', '/')
 
+        if len(self.journal_files.ahead_bases) > 0:
+            for base in self.journal_files.ahead_bases:
+                print(base)
+                print(self.cisis.version(base))
+                if self.cisis.version(base) == '1660':
+                    self.cisis.convert1660to1030(base)
+                    if not os.path.isfile(base + '.fst'):
+                        shutil.copy(fst_filename, base + '.fst')
+                    self.cisis.generate_indexes(base, base + '.fst', base)
+
     @property
     def _all_aheads(self):
-        return self.temp_dir + '/ahead'
+        return self.journal_files.journal_path + '/all_aheads'
 
     @property
     def fst_filename(self):
         f = open(self.temp_dir + '/ahead.fst', 'w')
-        f.write("1 0 if v706='h' then v237/,v702/, fi")
+        f.write("1 0 if v706='h' then v237/,v2/,(v10/), fi")
         f.close()
         return self.temp_dir + '/ahead.fst'
 
@@ -201,11 +243,18 @@ class AheadManager(object):
         Exclude ISIS record of ahead database (serial)
         """
         if len(self.journal_files.ahead_bases) > 0:
-            if filename.endswith('.xml'):
-                rec, filename, order, year = self.find_ahead_record(article.doi)
+
+            expr = []
+            if article.doi is not None:
+                expr.append(article.doi)
+            expr.append(filename)
+            if len(article.title) > 0:
+                expr.append('"' + article.title[1].get('article-title') + '"')
+            print(expr)
+            rec, filename, order, year = self.find_ahead_record(' OR '.join(expr))
+            if rec is None:
+                print('Warning: Unable to find ex-ahead record for ' + filename)
             else:
-                rec, filename, order, year = self.find_ahead_record(filename)
-            if rec is not None:
                 if year is not None and filename is not None:
                     print('Exclude ahead record of ' + filename)
                     self.exclude_records_by_filename(year, filename)
@@ -299,6 +348,11 @@ class ArticleFiles(object):
     def xml_path(self):
         return self.journal_files.journal_path + '/' + self.issue_folder + '/xml_markup'
 
+    @property
+    def acron_and_issue_folder(self):
+        return self.journal_files.acron + '/' + self.issue_folder
+
+
 class JournalFiles(object):
 
     def __init__(self, serial_path, acron):
@@ -332,6 +386,7 @@ class JournalFiles(object):
         for y in self.years:
             if os.path.isfile(self.ahead_base(y) + '.mst'):
                 bases.append(self.ahead_base(y))
+        print(bases)
         return bases
 
 
@@ -369,9 +424,20 @@ def convert(args):
     r, xml_path, acron, message = check_inputs(args)
     if r:
         config = Configuration()
-        print(curr_path() + '/./../cfg/')
-        config.read(curr_path() + '/./../scielo_paths.ini')
-        xml_converter = XMLConverter(CISIS(curr_path() + '/./../cfg/'), config.data['Serial Directory'])
-        xml_converter.convert(xml_path, acron)
+        if os.path.isfile(curr_path() + '/./../scielo_paths.ini'):
+            config.read(curr_path() + '/./../scielo_paths.ini')
+
+            cisis = UCISIS(CISIS(curr_path() + '/./../cfg/'), CISIS(curr_path() + '/./../cfg/cisis1660/'))
+            fst_filename = curr_path() + '/./../convert/library/scielo/scielo.fst'
+            xml_converter = XMLConverter(cisis, config.data['Serial Directory'], fst_filename)
+            web_path = config.data.get('SCI_LISTA_SITE')
+            print(web_path)
+            if web_path is not None:
+                web_path = web_path.replace('\\', '/')
+                web_path = web_path[0:web_path.find('/proc/')]
+            print(web_path)
+            xml_converter.convert(xml_path, acron, web_path)
+        else:
+            print('Configuration file was not found.')
     else:
         print(message)
