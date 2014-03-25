@@ -371,6 +371,7 @@ class JSON_Article:
         return first_page, last_page, elocation           
 
     def return_article(self):
+        
         doi = return_singleval(self.json_data['f'], '237')
         titles = return_multval(self.json_data['f'], '12')
         authors = return_multval(self.json_data['f'], '10')
@@ -633,6 +634,38 @@ class JSON_Article:
         if '8121' in self.json_data['f'].keys():
             del self.json_data['f']['8121']
 
+    def normalize_article_titles(self):
+        langs = []
+        langs.append(self.json_data['f']['40'])
+        trans_langs = self.json_data.get('f', {}).get('601', [])
+
+        if len(trans_langs) > 0:
+            if type(trans_langs) is not list:
+                trans_langs = [trans_langs]
+            for lang in trans_langs:
+                langs.append(lang['_'])
+
+        titles = self.json_data.get('f', {}).get('12', [])
+        new_titles = []
+        for title in titles:
+            if type(title) is dict:
+                new_titles.append(title)
+            elif type(title) is list:
+                for t in title:
+                    new_titles.append(t)
+        print(langs)
+        print(new_titles)
+        i = 0
+        k = 0
+        for title in new_titles:
+            if title.get('t') is not None:
+                if len(langs) > k:
+                    new_titles[i]['l'] = langs[k]
+                    k += 1
+            i += 1
+        print(new_titles)
+        self.json_data['f']['12'] = new_titles
+
     def normalize_document_data(self, issue, alternative_id):
         """
         Normalize the json structure of the whole document
@@ -640,6 +673,7 @@ class JSON_Article:
         self.json_data['f']['120'] = 'XML_' + return_singleval(self.json_data['f'], '120')
         self.json_data['f']['42'] = '1'
         
+        self.normalize_article_titles()
         #seq = self.json_data.get('f', {}).get('9121', None)
         #if not seq is None:
 
