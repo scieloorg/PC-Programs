@@ -646,13 +646,17 @@ class JSON_Article:
                 langs.append(lang['_'])
 
         titles = self.json_data.get('f', {}).get('12', [])
+        if type(titles) is dict:
+            titles = [titles]
         new_titles = []
         for title in titles:
+            print(title)
             if type(title) is dict:
                 new_titles.append(title)
             elif type(title) is list:
                 for t in title:
                     new_titles.append(t)
+
         print(langs)
         print(new_titles)
         i = 0
