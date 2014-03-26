@@ -20,6 +20,20 @@ def return_singleval(json_data, key=''):
         r = r[0]
     return r 
 
+def remove_formatting(self, text):
+    new_value = text
+    if '>' in text and '<' in text:        
+        text = text.replace('>', '>-BREAK-')
+        text = text.replace('<', '-BREAK-<')
+        parts = text.split('-BREAK-')
+        new_value = ''
+        for part in parts:
+            if '<' in part and '>' in part:
+                pass
+            else:
+                new_value += part                    
+    return new_value
+
 class JSON_Normalizer:
     def __init__(self, conversion_tables):
         #self.general_report = general_report
@@ -27,7 +41,7 @@ class JSON_Normalizer:
         
         
 
-    def format_for_indexing(self, json_record):
+    def old_format_for_indexing(self, json_record):
         # FIXME
         if type(json_record) == type({}):
             json_record_dest = {}
@@ -35,7 +49,7 @@ class JSON_Normalizer:
                 json_record_dest[key] = self.format_for_indexing(json_data)
         else:
             if type(json_record) == type(''):
-                a = self.conversion_tables.remove_formatting(json_record)
+                a = remove_html_tags(json_record)
                 a = normalize('NFKD', a.decode('utf-8', errors='ignore')).encode(errors='ignore')
                 json_record_dest = a
             else:
@@ -44,7 +58,22 @@ class JSON_Normalizer:
                     for json_data in json_record:
                         r = self.format_for_indexing(json_data)
                         a.append(r)
-                    json_record_dest = a
+                    json_record_dest = a   
+        return json_record_dest
+
+    def format_for_indexing(self, json_record):
+        if type(json_record) is type({}):
+            json_record_dest = {}
+            for key, json_data in json_record.items():
+                json_record_dest[key] = self.format_for_indexing(json_data)
+        elif type(json_record) is type([]):
+            a = []
+            for json_data in json_record:
+                r = self.format_for_indexing(json_data)
+                a.append(r)
+            json_record_dest = a
+        else:
+            json_record_dest = remove_html_tags(json_record)
         
         return json_record_dest
 

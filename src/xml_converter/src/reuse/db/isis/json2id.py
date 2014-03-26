@@ -158,7 +158,7 @@ class JSON2IDFile:
                 except:
                     iso = content.encode('iso-8859-1', 'ignore')
         return iso
-                        
+
     def __write__(self, content):
         f = open(self.filename, 'a+')
         try:

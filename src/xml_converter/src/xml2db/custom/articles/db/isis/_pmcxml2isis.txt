@@ -25,7 +25,7 @@
       @xlink:href i
       @ext-link-type n
       . t article
-    .//article-meta/related-article[@related-article-type='press-release'] 241
+    .//article-meta/related-article[@related-article-type='press-release' and @specific-use='processing-only'] 241
       @id i
       . t pr
     .//journal-meta//journal-title 100
