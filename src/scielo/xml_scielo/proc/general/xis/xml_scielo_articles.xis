@@ -445,6 +445,7 @@
 				</pft>
 			</field>
 
+            <field action="delete" tag="list"><pft>if p(v881) and (v881=v880 or size(v881) < size(v880)) then '881' fi</pft></field>
 			<field action="import" tag="list"><pft>if v706='c' then '880' fi</pft></field>
 			<field action="export" tag="list"><pft>if v706='h' then '880' fi</pft></field>
 
