@@ -51,6 +51,7 @@
     .//article-meta//contrib/collab 11
     .//article-meta/title-group 12
       article-title _
+      article-title t
       article-title/xref x
       subtitle s
       article-title/@xml:lang l en
@@ -63,6 +64,7 @@
       @xml:lang _
     .//sub-article[@article-type='translation']//front-stub//title-group 12
       article-title _
+      article-title t
       article-title/xref x
       subtitle s
       article-title/@xml:lang l en

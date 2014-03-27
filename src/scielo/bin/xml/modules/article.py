@@ -195,6 +195,10 @@ class ArticleXML(object):
         return self.article_meta.findtext('article-id[@pub-id-type="doi"]')
 
     @property
+    def previous_pid(self):
+        return self.article_meta.findtext('article-id[@pub-id-type="publisher-id"]')
+
+    @property
     def order(self):
         _order = self.article_id_other
         if _order is None:
@@ -464,6 +468,14 @@ class Article(ArticleXML):
     @property
     def is_text(self):
         return self.tree.findall('.//kwd') is None
+
+    @property
+    def previous_pid(self):
+        d = ArticleXML.previous_pid
+        if d is None:
+            if self.doi is not None:
+                d = doi_pid(self.doi)
+        return d
 
 
 class ReferenceXML(object):
