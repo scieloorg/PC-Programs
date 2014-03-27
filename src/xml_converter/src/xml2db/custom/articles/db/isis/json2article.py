@@ -665,6 +665,7 @@ class JSON_Article:
             if title.get('t') is not None:
                 if len(langs) > k:
                     new_titles[i]['l'] = langs[k]
+                    del new_titles[i]['t']
                     k += 1
             i += 1
         print(new_titles)
