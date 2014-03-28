@@ -5,7 +5,8 @@ import shutil
 from datetime import datetime
 
 from configuration import Configuration
-from utils import load_xml, doi_pid
+from utils import doi_pid
+from xml_utils import load_xml
 from isis import IDFile, UCISIS, CISIS
 from article import Article
 from isis_models import ArticleISIS, IssueISIS

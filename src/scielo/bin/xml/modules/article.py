@@ -2,7 +2,8 @@
 
 import xml.etree.ElementTree as etree
 
-from modules.utils import node_text, doi_pid
+from modules.utils import doi_pid
+from modules.xml_utils import node_text
 
 
 class ArticleXML(object):
