@@ -1,6 +1,9 @@
 import xml.etree.ElementTree as etree
 import os, shutil
 
+import xml_utils as xml_utils
+
+
 class XMLTree:
 
     root = {}
@@ -16,53 +19,22 @@ class XMLTree:
             self.parser = etree.XMLParser(recover=True, remove_blank_text=True, resolve_entities=False) #recovers from bad characters.
         except:
             self.parser = None
-    
-        
 
     def _load(self, xml_filename, show_message=False):
         self.ns = ''
-        self.root = None
         self.report.write('_load ' + xml_filename)
-        try:
-            if self.parser != None:
-                self.report.write('_load self.parser != None')
-                self.root = etree.parse(xml_filename, self.parser).getroot()
-            else:
-                self.report.write('_load self.parser == None')
-                self.root = etree.parse(xml_filename).getroot()
-            
-            if '{' in self.root.tag:
-                self.ns = self.root.tag[0:self.root.tag.find('}')+1]
-            else:
-                self.ns = ''
-            r = True
-        except Exception as inst:
-            if show_message:
-                if type(inst) == type(''):
-                    self.report.write('Unable to load ' + xml_filename + '\n' + inst, True, True, False)
-                else:
-                    self.report.write('Unable to load ' + xml_filename, True, True, False, inst)
+        self.root = xml_utils.load_xml(xml_filename)
 
-            r = False
-        return r
+        return (self.root is not None)
 
     def load(self, xml_filename, report):
         self.report = report
 
         r = False
         if os.path.exists(xml_filename):
-            self.named2char(xml_filename, xml_filename)
-            self.number2char(xml_filename, xml_filename)
-                
             r = self._load(xml_filename)
             if not r:
-                #shutil.copyfile(xml_filename, xml_filename.replace('.xml', '.xml~'))
-                self.named2number(xml_filename, xml_filename)
-                r = self._load(xml_filename, True)                
-                if not r:
-                    entities = self.find_entities(xml_filename)
-                    if len(entities)>0:
-                        self.report.write('Unresolved entities: ' + '\n'.join(entities), True, True)
+                self.report.write('Unable to load XML', True, True)
         else:
             self.report.write('Missing XML file:' + xml_filename, True, True)
         return r
@@ -73,16 +45,9 @@ class XMLTree:
         original = f.read()
         f.close()
         original = original.replace('&#', '#NUMBERENT#')
-        e = original.split('&')
-        ents = []
-        if len(e) > 1:            
-            for i in e:
-                if ';' in i:
-                    ent = '&' + i[0:i.find(';')+1]
-                    if not ent in ents and not ' ' in ent:
-                        ents.append(ent)
-        return ents
-
+        original = original.replace('&', '-BREAK-&')
+        return list(set([e[0:e.find(';')+1] for e in original.split('-BREAK-') if e.startswith('&')]))
+        
     def named2char(self, xml_filename, new_xml_filename):
         self.report.write('named2char:' + xml_filename)
         f = open(xml_filename, 'r')
@@ -110,31 +75,28 @@ class XMLTree:
         f = open(xml_filename, 'r')
         original = f.read()
         f.close()
-        
+
         self.report.write('named2number:' + new_xml_filename)
         f = open(new_xml_filename, 'w')
-        f.write(self.table_ent.name2number(original.replace('\ufeff','')))
+        f.write(self.table_ent.name2number(original.replace('\ufeff', '')))
         f.close()
-    
-    def return_nodes(self, xpath = '', current_node = None):
+
+    def return_nodes(self, xpath='', current_node=None):
         r = []
         n = current_node
-        if n == None:
-            n = self.root
+        if n is None:
+            n = self.root.find('.')
 
-        if n != None:
+        if n is not None:
             if xpath != '':
                 p = self.ns + xpath
                 try:
-            	    r = n.findall(p)
-            	except:
-            	    self.report.write('Invalid xpath: ' + p, False, True, True)
+                    r = n.findall(p)
+                except:
+                    self.report.write('Invalid xpath: ' + p, False, True, True)
             else:
                 p = '.'
                 r.append(n)
-            n_str = ''
-            if len(n)>0:
-                n_str = etree.tostring(n)
         return r
 
     def return_node_value(self, node):

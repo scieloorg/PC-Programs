@@ -649,13 +649,17 @@ class JSON_Article:
                 langs.append(lang['_'])
 
         titles = self.json_data.get('f', {}).get('12', [])
+        if type(titles) is dict:
+            titles = [titles]
         new_titles = []
         for title in titles:
+            print(title)
             if type(title) is dict:
                 new_titles.append(title)
             elif type(title) is list:
                 for t in title:
                     new_titles.append(t)
+
         print(langs)
         print(new_titles)
         i = 0
@@ -664,6 +668,7 @@ class JSON_Article:
             if title.get('t') is not None:
                 if len(langs) > k:
                     new_titles[i]['l'] = langs[k]
+                    del new_titles[i]['t']
                     k += 1
             i += 1
         print(new_titles)
@@ -700,9 +705,8 @@ class JSON_Article:
         self.normalize_illustrative_materials()
         self.normalize_affiliations()
         self.normalize_keywords()
-        
+
         self.json_data['f'] = self.json_normalizer.convert_value(self.json_data['f'], '71', 'doctopic')
-        
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '111', '112', '111')
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '113', '114', '113')
 
@@ -712,7 +716,7 @@ class JSON_Article:
         # ja esta normalizada self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '64', '65', '64')
 
         self.json_data['h'] = self.json_normalizer.format_for_indexing(self.json_data['f'])
-        self.json_data['l'] = self.json_normalizer.format_for_indexing(self.json_data['h'])     
+        self.json_data['l'] = self.json_normalizer.format_for_indexing(self.json_data['h'])
         #self.json_data['h'] = self.json_data['f']
         #self.json_data['l'] = self.json_data['f']
     

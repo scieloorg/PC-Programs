@@ -139,9 +139,16 @@ class JSON2IDFile:
         else:
             r = value
         r = r.replace('& ', '&amp; ')
+        r = r.replace('<italic>', '<em>')
+        r = r.replace('</italic>', '</em>')
+        r = r.replace('<bold>', '<strong>')
+        r = r.replace('</bold>', '</strong>')
         return r
 
     def _iso(self, content):
+        iso = content
+        if type(content) is str:
+            content = content.decode('utf-8')
         if type(content) is unicode:
             try:
                 iso = content.encode('iso-8859-1', 'replace')
@@ -150,10 +157,8 @@ class JSON2IDFile:
                     iso = content.encode('iso-8859-1', 'xmlcharrefreplace')
                 except:
                     iso = content.encode('iso-8859-1', 'ignore')
-        else:
-            iso = content
         return iso
-                        
+
     def __write__(self, content):
         f = open(self.filename, 'a+')
         try:
