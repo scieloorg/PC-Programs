@@ -256,7 +256,7 @@
 		</Affiliation>
 	</xsl:template>
 
-
+	<xsl:template match="institution[@content-type='original']" mode="scielo-xml-text"></xsl:template>
 	<xsl:template match="aff" mode="scielo-xml-text">
 		<xsl:apply-templates select="*[name()!='label']" mode="scielo-xml-text"/>
 	</xsl:template>

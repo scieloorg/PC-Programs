@@ -236,7 +236,8 @@
 	<field action="cgi" tag="1031">xml</field>
 
 	<display><pft>ALL</pft></display>
-	<field action="replace" tag="5003"><pft>v1005</pft></field>
+	<!--field action="replace" tag="5003"><pft>v1005</pft></field-->
+	<field action="replace" tag="5003">iso-8859-1</field>
 	
 	<do task="search">
 		<parm name="db"><pft>v1002</pft></parm>
@@ -248,8 +249,9 @@
 		</loop>
 	</do>
 
-	<field action="replace" tag="5005"><pft>if v702:'.xml' then 'gizmo\utf8' else if v1005='iso-8859-1' then 'gizmo\ans2lat' else 'gizmo\ans2utf' fi fi</pft></field>
-	<field action="replace" tag="5000"><pft>if v1005='iso-8859-1' then 'gizmo\ans2lat' else 'gizmo\ans2utf' fi</pft></field>
+	<!--field action="replace" tag="5005"><pft>if v1005='iso-8859-1' then 'gizmo\ans2lat' else 'gizmo\ans2utf' fi</pft></field-->
+	<field action="replace" tag="5005"><pft>'gizmo\ans2lat'</pft></field>
+	<field action="replace" tag="5000"><pft>'gizmo\ans2lat'</pft></field>
 
 	<!-- cipar - inicio -->
 	<parm name="cipar"><pft>cat(v1001)</pft></parm>
@@ -312,21 +314,15 @@
 		<parm name="gizmo"><pft>v5000</pft></parm>
 
 		<loop>
-			<field action="export" tag="list">100,400,350,421</field>
+			<field action="replace" tag="933"><pft>v68</pft></field>
+			<field action="export" tag="list">100,400,350,421,480,933</field>
 		</loop>
-		<field action="export" tag="list">100,400,350,421</field>
+		<field action="export" tag="list">100,400,350,421,480,933</field>
 	</do>
 	<file action="close" type="database">TITLE</file>
 	<file action="close" type="database"><pft>v5000</pft></file>
 	<display><pft>		
 		'<?xml version="1.0" encoding="',v5003,'"?>'/
-		if v5003='iso-8859-1' then
-			'<!DOCTYPE xml_scielo ['/
-
-			'<!ENTITY % ISOlat1 PUBLIC "ISO 8879:1986//ENTITIES Added Latin 1//EN"       "http://www.w3.org/2003/entities/iso8879/isolat1.ent">  %ISOlat1; '/
-			']>'/
-		fi
-
 		'<xml_scielo>'/,
 		'<xml_scielo_title>'/,
 		'<journal-title><![CDATA['v100']]></journal-title>'/
@@ -411,77 +407,6 @@
 	<!-- trecho (acima) seria desnecessario, mas sem isso nao funciona, da erro no gizmo -->
 
 
-
-
-	<do task="mfnrange">
-		<parm name="db"><pft>v1002</pft></parm>
-		<parm name="from">1</parm>
-		<parm name="count">1</parm>
-		<parm name="gizmo"><pft>v5005,v5001</pft></parm>
-
-		<loop>
-			<field action="replace" tag="480" split="occ"><pft>(v480/)</pft></field>
-			<field action="replace" tag="933" split="occ"><pft>(v930/)</pft></field>
-			<field action="export" tag="list">480,933</field>
-		</loop>
-		<field action="export" tag="list">480,933</field>
-	</do>
-	<file action="close" type="database"><pft>v9002</pft></file>
-	<file action="close" type="database"><pft>v5005</pft></file>
-
-	<parm name="buffersize">4000000</parm>
-	<field action="replace" tag="9234"><pft>v9003,'\',v1010,'\',v1011,'\base\'</pft></field>
-	<do task="search">
-		<parm name="db"><pft>v1002</pft></parm>
-		<parm name="expression"><pft>'tipo=h'</pft></parm>
-		
-
-		
-		<loop>
-		    <field action="import" tag="list">9234,2021,2025</field>
-			<flow action="skip"><pft>if v702:'.xml' then else 'Quit' fi</pft></flow>
-			<flow action="skip">
-				<pft>
-				,if v32='ahead' then
-					,if p(v223) then
-						,if p(v2021) and a(v2025) then
-							,if val(v223) < val(v2021) then
-								,'Next'
-							,fi
-						,fi
-						,if p(v2021) and p(v2025) then
-							,if val(v223) < val(v2021) or val(v223) > val(v2025) then
-								,'Next'
-								
-							,fi
-						,fi
-
-					,fi
-
-				,fi
-			</pft></flow>
-			<field action="replace" tag="9702"><pft>v702</pft></field>
-			<field action="replace" tag="9702"><pft>mid(v9702,instr(v9702,'/')+1,size(v9702))</pft></field>
-			<field action="replace" tag="9702"><pft>mid(v9702,instr(v9702,'/')+1,size(v9702))</pft></field>
-
-			<field action="add" tag="880">
-				<pft>
-				if v706='h' then ,'S',v35,mid(v65,1,4),s(f(val( ref(1,mid(v36,5,size(v36)))) +10000,2,0))*1.4,s(f(val(v121)+100000,4,0))*1.5 fi
-				</pft>
-			</field>
-			
-			<display><pft>'<reg>'</pft></display>
-			<display><pft>'<xml-filename>file:///',replace(s(v9234,'fixed_',v9702),'\','/'),'</xml-filename>'</pft></display>
-            <display><pft>'<other>'</pft></display>
-<display><pft>|<former-pid>|v881|</former-pid>|,'<pid>',v880,'</pid>'</pft></display>
-            <display><pft>'</other></reg>'</pft></display>
-			<field action="add" tag="9999">FINISH</field>
-			<field action="export" tag="list">9999</field>
-		</loop>
-		<field action="export" tag="list">9999</field>
-	</do>
-	<flow action="jump"><pft>v9999</pft></flow>
-
 	<do task="search">
 		<parm name="db"><pft>v1002</pft></parm>
 		<parm name="expression"><pft>'tipo=h or tipo=c'</pft></parm>
@@ -520,6 +445,7 @@
 				</pft>
 			</field>
 
+            <field action="delete" tag="list"><pft>if p(v881) and (v881=v880 or size(v881) < size(v880)) then '881' fi</pft></field>
 			<field action="import" tag="list"><pft>if v706='c' then '880' fi</pft></field>
 			<field action="export" tag="list"><pft>if v706='h' then '880' fi</pft></field>
 

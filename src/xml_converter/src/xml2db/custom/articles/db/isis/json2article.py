@@ -633,6 +633,9 @@ class JSON_Article:
 
         if '8121' in self.json_data['f'].keys():
             del self.json_data['f']['8121']
+        if '881' in self.json_data['f'].keys():
+            if len(self.json_data['f']['881']) < 23:
+                del self.json_data['f']['881']
 
     def normalize_article_titles(self):
         langs = []
