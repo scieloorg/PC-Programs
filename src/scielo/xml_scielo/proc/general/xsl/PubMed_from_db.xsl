@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	
 	
@@ -349,7 +349,11 @@
 		</Suffix>
 	</xsl:template>
 	<xsl:template match="@affiliation_code | aff-id ">
-		<xsl:variable name="code" select="substring(.,1,3)"/>
+		<xsl:variable name="code">
+		<xsl:choose>
+			<xsl:when test="contains(.,' ')"><xsl:value-of select="substring-before(.,' ')"></xsl:value-of></xsl:when>
+			<xsl:otherwise><xsl:value-of select="."></xsl:value-of></xsl:otherwise>
+		</xsl:choose></xsl:variable>
 		<Affiliation>
 			<xsl:apply-templates select="ancestor::record/affiliation/occ[@code = $code]"/>
 		</Affiliation>
