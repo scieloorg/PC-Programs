@@ -5,7 +5,6 @@ import shutil
 from datetime import datetime
 
 from configuration import Configuration
-from utils import doi_pid
 from xml_utils import load_xml
 from isis import IDFile, UCISIS, CISIS
 from article import Article
@@ -278,12 +277,12 @@ class AheadManager(object):
                     # update ex-ahead base with the h record of ahead version
                     id_temp = self.temp_dir + '/exahead.id'
                     IDFile().save(id_temp, [rec])
-                    self.cisis.id2mst(id_temp, self.journal_files.ahead_base('ex-' + year))
+                    self.cisis.id2i(id_temp, self.journal_files.ahead_base('ex-' + year))
 
     def exclude_records_by_filename(self, year, filename):
         print('Exclude ahead record of ' + filename)
         base = self.journal_files.ahead_base(year)
-        self.cisis.modify_record(base, "if v702='" + filename + "' then 'd*' fi")
+        self.cisis.modify_records(base, "if v702='" + filename + "' then 'd*' fi")
         self.cisis.generate_indexes(base, base + '.fst', base)
 
 

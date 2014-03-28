@@ -4,7 +4,7 @@
 import os
 from tempfile import mkdtemp
 
-from utils import normalize_space
+from xml_utils import normalize_space
 
 
 class IDFile(object):
@@ -131,12 +131,13 @@ class IDFile(object):
                     for c in line:
                         try:
                             f.write(self._iso(c))
-                        except:
+                        except Exception as e:
                             f.write('??')
                             print(type(c))
 
                             print('Unable to write ')
                             print(r)
+                            print(e)
                             #print(content)
                         r += c
                     f.write('\n')
@@ -318,7 +319,7 @@ class UCISIS(object):
         self.cisis(src_mst_filename).copy_record(src_mst_filename, mfn, dest_mst_filename)
 
     def modify_records(self, mst_filename, proc):
-        self.cisis(mst_filename).copy_record(mst_filename, proc)
+        self.cisis(mst_filename).modify_records(mst_filename, proc)
 
     def find_record(self, mst_filename, expression):
         return self.cisis(mst_filename).find_record(mst_filename, expression)
