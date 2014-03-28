@@ -25,7 +25,7 @@
       @xlink:href i
       @ext-link-type n
       . t article
-    .//article-meta/related-article[@related-article-type='press-release' and @specific-use='processing-only'] 241
+    .//article-meta/related-article[@related-article-type='press-release'] 241
       @id i
       . t pr
     .//journal-meta//journal-title 100
@@ -51,6 +51,7 @@
     .//article-meta//contrib/collab 11
     .//article-meta/title-group 12
       article-title _
+      article-title t
       article-title/xref x
       subtitle s
       article-title/@xml:lang l en
@@ -63,12 +64,13 @@
       @xml:lang _
     .//sub-article[@article-type='translation']//front-stub//title-group 12
       article-title _
+      article-title t
       article-title/xref x
       subtitle s
       article-title/@xml:lang l en
     .//article-meta//article-id[@pub-id-type='doi'] 237
     .//article-meta//article-id[@pub-id-type='other'] 8121
-    .//article-meta//article-id[@pub-id-type='publisher-id'] 881
+    .//article-meta//article-id[@specific-use='previous-pid'] 881
     .//article-meta/volume 31    
     .//article-meta/issue 32    
     .//article-meta/supplement 132    

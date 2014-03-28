@@ -20,10 +20,11 @@ SET GENERIC_XML_FILENAME=temp\%dest%_%acron%%issueid%.xml
 set TEMP_SPEC_XML_FILENAME=temp\%xml_filename%
 
 echo Generating generic XML  %GENERIC_XML_FILENAME% >> %LOG%
-echo %WXIS% IsisScript=xis\xml_scielo_articles.xis path_db=%PATH_DB% pm_provider_id=%ID% mydb=%mydbinv% acron=%acron% issueid=%issueid% ahpdate=%ahpdate% maxdate=%maxdate% encoding=%encoding%  cipar=%CIPAR_FILE% xml=%GENERIC_XML_FILENAME%  debug=%debug% >> %LOG%
-%WXIS% IsisScript=xis\xml_scielo_articles.xis path_db=%PATH_DB% pm_provider_id=%ID% mydb=%mydbinv% acron=%acron% issueid=%issueid% ahpdate=%ahpdate% maxdate=%maxdate%  encoding=%encoding%  cipar=%CIPAR_FILE% xml=%GENERIC_XML_FILENAME%  debug=%debug% >> %LOG%
+echo %WXIS% IsisScript=xis\xml_scielo_articles.xis path_db=%PATH_DB% pm_provider_id=%ID% mydb=%mydbinv% acron=%acron% issueid=%issueid% ahpdate=%ahpdate% maxdate=%maxdate% encoding=%encoding%  cipar=%CIPAR_FILE% xml=%GENERIC_XML_FILENAME%  debug=On >> %LOG%
+%WXIS% IsisScript=xis\xml_scielo_articles.xis path_db=%PATH_DB% pm_provider_id=%ID% mydb=%mydbinv% acron=%acron% issueid=%issueid% ahpdate=%ahpdate% maxdate=%maxdate% encoding=%encoding%  cipar=%CIPAR_FILE% xml=%GENERIC_XML_FILENAME%  debug=On >> %LOG%
+%WXIS% IsisScript=xis\xml_scielo_articles.xis path_db=%PATH_DB% pm_provider_id=%ID% mydb=%mydbinv% acron=%acron% issueid=%issueid% ahpdate=%ahpdate% maxdate=%maxdate%  encoding=%encoding%  cipar=%CIPAR_FILE% xml=%GENERIC_XML_FILENAME% >> %LOG%
 
-if exist scripts/fix.py python scripts/fix.py %PATH_DB%/%acron%/%issueid%/base
+echo debug  %LOG%
 
 echo Validating generic XML  %GENERIC_XML_FILENAME% >> %LOG%
 call scripts\validateXML.bat %4 %5 %GENERIC_XML_FILENAME% CAPTURA_ERRO %ERROR_FILENAME% %WARN_FILENAME%
