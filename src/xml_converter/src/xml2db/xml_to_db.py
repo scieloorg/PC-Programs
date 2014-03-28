@@ -509,7 +509,8 @@ class AheadArticles:
                     filename = self.data[k][4]
                     break
         
-
+        if not len(r) == 23:
+            r = ''
         print(r)
 
         return r , filename

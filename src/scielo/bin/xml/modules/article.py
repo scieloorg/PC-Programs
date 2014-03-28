@@ -197,7 +197,7 @@ class ArticleXML(object):
 
     @property
     def article_id_publisher_id(self):
-        return self.article_meta.findtext('article-id[@pub-id-type="publisher-id"]')
+        return self.article_meta.findtext('article-id[@specific-use="previous-pid"]')
 
     @property
     def order(self):

@@ -25,9 +25,9 @@ class XMLConverter(object):
         journal_files = JournalFiles(self.serial_path, acron)
 
         ahead_manager = AheadManager(self.cisis, journal_files, self.fst_filename)
-        ahead_manager.generate_indexes()
 
         issue, issue_files = self.create_article_id_files(xml_files_path, journal_files, ahead_manager)
+        ahead_manager.update_db()
         self.create_db(issue, issue_files)
         self.copy_files_to_web(xml_files_path, issue_files, web_path)
 
@@ -37,6 +37,8 @@ class XMLConverter(object):
         issue_files = None
         issue = None
         create_db = True
+        ex_aheads = []
+        not_ex_aheads = []
 
         for xml_file in os.listdir(xml_files_path):
             if os.path.isfile(xml_files_path + '/' + xml_file) and xml_file.endswith('.xml'):
@@ -70,16 +72,28 @@ class XMLConverter(object):
                             self.article_db.create_id_file(article_files, article, section_code, text_or_article, issue.record, create_db)
 
                             if article.number != 'ahead':
-                                print('Ex-ahead?')
-                                ahead_manager.exclude_ahead_record(article, xml_file)
+                                deleted = ahead_manager.exclude_ahead_record(article, xml_file)
+                                article_title = article.title[0].get('article-title', '')
+
+                                if deleted is None:
+                                    ex_aheads.append(article_title)
+                                else:
+                                    not_ex_aheads.append(article_title)
+
                             create_db = False
                         else:
-                            print('This article do not belongs to ' + issue_folder + '.\n It belongs to ' + article_files.issue_folder)
+                            print('This article does not belong to ' + issue_folder + '.\n It belongs to ' + article_files.issue_folder)
 
                     if xml_files_path != issue_files.xml_path:
                         if not os.path.isdir(issue_files.xml_path):
                             os.makedirs(issue_files.xml_path)
                         shutil.copy(xml_files_path + '/' + xml_file, issue_files.xml_path)
+
+        print('ex-aheads')
+        print('\n'.join(not_ex_aheads))
+        print('aheads')
+        print('\n'.join(ex_aheads))
+
         return (issue, issue_files)
 
     def create_db(self, issue, issue_files):
@@ -174,116 +188,107 @@ class AheadManager(object):
         self.journal_files = journal_files
         self.cisis = cisis
         self.temp_dir = tempfile.mkdtemp().replace('\\', '/')
+        self.ahead_db_records = {}
+        self.changed = []
+        self.fst_filename = fst_filename
 
-        if len(self.journal_files.ahead_bases) > 0:
-            for base in self.journal_files.ahead_bases:
-                if self.cisis.version(base) == '1660':
-                    self.cisis.convert1660to1030(base)
-                    if not os.path.isfile(base + '.fst'):
-                        shutil.copy(fst_filename, base + '.fst')
-                    self.cisis.generate_indexes(base, base + '.fst', base)
+        for db_filename in self.journal_files.ahead_bases:
+            self.cisis.i2id(db_filename, self.temp_dir + '/ahead.id')
+            self.ahead_db_records[self.name(db_filename)] = IDFile().read(self.temp_dir + '/ahead.id')
 
-    @property
-    def _all_aheads(self):
-        return self.journal_files.journal_path + '/all_aheads'
+    def name(self, db_filename):
+        return os.path.basename(db_filename)
 
-    @property
-    def fst_filename(self):
-        f = open(self.temp_dir + '/ahead.fst', 'w')
-        f.write("1 0 if v706='h' then v237/,v2/,(v10/), fi")
-        f.close()
-        return self.temp_dir + '/ahead.fst'
-
-    @property
-    def _selected_record(self):
-        return self.temp_dir + '/selected'
-
-    @property
-    def _id_filename(self):
-        return self.temp_dir + '/selected.id'
-
-    def generate_indexes(self):
-        """
-        Join all the journal ahead db which are in serial
-        and generate the indexes
-        """
-        if len(self.journal_files.ahead_bases) > 0:
-            self.cisis.new(self._all_aheads)
-            for base in self.journal_files.ahead_bases:
-                self.cisis.append(base, self._all_aheads)
-            self.cisis.generate_indexes(self._all_aheads, self.fst_filename, self._all_aheads)
-
-    def find_ahead_record(self, article_key):
+    def find_ahead_record(self, doi, filename):
         """
         Find ahead records, given a DOI
         """
-        filename = None
-        year = None
-        rec = None
+        if doi is None:
+            doi = '-'
+        if filename is None:
+            filename = '-'
+        fname = None
+        db = None
         order = None
-        if len(self.journal_files.ahead_bases) > 0:
-            self.cisis.search(self._all_aheads, article_key, self._selected_record)
-            self.cisis.i2id(self._selected_record, self._id_filename)
-            records = IDFile().read(self._id_filename)
+        for ahead_db_name, records in self.ahead_db_records.items():
             for rec in records:
-                order = rec.get('121')
-                filename = rec.get('702')
-                year = rec.get('223')
-                if year is not None:
-                    year = year[0:4]
-                if order is not None and filename is not None and year is not None:
+                if rec.get('706') == 'h' and (doi == rec.get('237') or filename == rec.get('2')):
+                    fname = rec.get('2')
+                    db = ahead_db_name
+                    order = rec.get('121')
                     break
-                else:
-                    filename = None
-                    year = None
-                    order = None
-        return (rec, filename, order, year)
+        return (db, fname, order)
+
+    def mark_records_as_deleted(self, ahead_db_name, filename):
+        """
+        Mark as deleted
+        """
+        deleted = None
+        current_records = []
+        deleted_records = []
+        records = self.ahead_db_records[ahead_db_name]
+        for rec in records:
+            if rec.get('2') == filename:
+                deleted_records.append(rec)
+            else:
+                current_records.append(rec)
+        if len(deleted_records) > 1:
+            deleted = deleted_records[1]
+            self.ahead_databases[ahead_db_name] = current_records
+        return deleted
 
     def exclude_ahead_record(self, article, filename):
         """
         Exclude ISIS record of ahead database (serial)
         """
-        if len(self.journal_files.ahead_bases) > 0:
+        deleted = None
 
-            expr = []
-            if article.doi is not None:
-                expr.append(article.doi)
-            expr = ' OR '.join(expr)
-            rec, filename, order, year = self.find_ahead_record(expr)
-            if rec is None:
-                print('Warning: Unable to find ex-ahead record. Expression: \n  ' + expr)
-                print(article.title[0].get('article-title', ''))
-            else:
-                if year is not None and filename is not None:
-                    print('Exclude ahead record of ' + filename)
-                    self.exclude_records_by_filename(year, filename)
+        ahead_db_name, fname, order = self.find_ahead_record(article.doi, filename)
+        if ahead_db_name is not None:
+            if fname is not None:
+                deleted = self.mark_records_as_deleted(ahead_db_name, fname)
 
-                    ex_ahead_markup_path, ex_ahead_body_path, ex_ahead_base_path = self.journal_files.ex_ahead_paths(year)
-                    for path in [ex_ahead_markup_path, ex_ahead_body_path, ex_ahead_base_path]:
-                        if not os.path.isdir(path):
-                            os.makedirs(path)
+        if not deleted is None:
+            print('Exclude ahead record of ' + fname)
+            year = ahead_db_name[0:4]
+            if not ahead_db_name in self.changed:
+                self.changed.append(ahead_db_name)
 
-                    # move files to ex-ahead folder
-                    xml_file, markup_file, body_file = self.journal_files.ahead_xml_markup_body(year, filename)
-                    if os.path.isfile(markup_file):
-                        shutil.move(markup_file, ex_ahead_markup_path)
-                    if os.path.isfile(body_file):
-                        shutil.move(body_file, ex_ahead_body_path)
-                    if os.path.isfile(xml_file):
-                        shutil.move(xml_file, ex_ahead_markup_path)
-                    if os.path.isfile(self.journal_files.ahead_id_filename(year, order)):
-                        os.unlink(self.journal_files.ahead_id_filename(year, order))
+            ex_ahead_markup_path, ex_ahead_body_path, ex_ahead_base_path = self.journal_files.ex_ahead_paths(year)
+            for path in [ex_ahead_markup_path, ex_ahead_body_path, ex_ahead_base_path]:
+                if not os.path.isdir(path):
+                    os.makedirs(path)
 
-                    # update ex-ahead base with the h record of ahead version
-                    id_temp = self.temp_dir + '/exahead.id'
-                    IDFile().save(id_temp, [rec])
-                    self.cisis.id2i(id_temp, self.journal_files.ahead_base('ex-' + year))
+            # move files to ex-ahead folder
+            xml_file, markup_file, body_file = self.journal_files.ahead_xml_markup_body(year, filename)
+            if os.path.isfile(markup_file):
+                shutil.move(markup_file, ex_ahead_markup_path)
+            if os.path.isfile(body_file):
+                shutil.move(body_file, ex_ahead_body_path)
+            if os.path.isfile(xml_file):
+                shutil.move(xml_file, ex_ahead_markup_path)
+            if os.path.isfile(self.journal_files.ahead_id_filename(year, order)):
+                os.unlink(self.journal_files.ahead_id_filename(year, order))
 
-    def exclude_records_by_filename(self, year, filename):
-        print('Exclude ahead record of ' + filename)
-        base = self.journal_files.ahead_base(year)
-        self.cisis.modify_records(base, "if v702='" + filename + "' then 'd*' fi")
-        self.cisis.generate_indexes(base, base + '.fst', base)
+            # update ex-ahead base with the h record of ahead version
+            id_temp = self.temp_dir + '/exahead.id'
+            IDFile().save(id_temp, [deleted])
+            self.cisis.id2mst(id_temp, self.journal_files.ahead_base('ex-' + year), False)
+        return deleted
+
+    def update_db(self):
+        for db_filename in self.journal_files.ahead_bases:
+            name = self.name(db_filename)
+            if name in self.changed:
+                id_file = self.temp_dir + '/ahead.id'
+                IDFile().save(id_file, self.ahead_db_records[name])
+                self.cisis.i2id(id_file, db_filename)
+                if not os.path.isfile(db_filename + '.fst'):
+                    shutil.copy(self.fst_filename, db_filename + '.fst')
+                self.cisis.generate_indexes(db_filename, db_filename + '.fst', db_filename)
+
+                ex_db_filename = self.journal_files.ahead_base('ex-' + name[0:4])
+                self.cisis.generate_indexes(ex_db_filename, ex_db_filename + '.fst', ex_db_filename)
 
 
 class ArticleDB(object):
@@ -293,7 +298,7 @@ class ArticleDB(object):
 
     def create_id_file(self, article_files, article, section_code, text_or_article, i_record, create_db=False):
         if not os.path.isdir(article_files.id_path):
-                os.makedirs(article_files.id_path)
+            os.makedirs(article_files.id_path)
         if not os.path.isdir(os.path.dirname(article_files.base)):
             os.makedirs(os.path.dirname(article_files.base))
 
