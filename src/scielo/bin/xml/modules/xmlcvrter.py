@@ -47,52 +47,53 @@ class XMLConverter(object):
                 article = Article(load_xml(xml_files_path + '/' + xml_file))
 
                 if article.tree is None:
-                    print('Unable to load ' + xml_file)
+                    print('ERROR: Unable to load ' + xml_file)
                 else:
                     article_files = ArticleFiles(journal_files, article, xml_file)
 
                     # dados do fasciculo
                     if issue_folder is None:
+                        print('=' * 10)
                         print('issue: ' + article_files.issue_folder)
+                        print('=' * 10)
                         issue_files = ArticleFiles(journal_files, article, xml_file)
                         issue_folder = article_files.issue_folder
                         self.issue_manager.load_selected_issues(article.journal_issns.get('epub'), article.journal_issns.get('ppub'), journal_files.acron, article_files.issue_folder)
                         issue_record = self.issue_manager.record(journal_files.acron, article.volume, article.number, article.volume_suppl, article.number_suppl)
 
-                    print(xml_file)
+                    print('-' * 10)
+                    print(xml_file + '\n')
 
                     if issue_record is None:
-                        print(article_files.issue_folder + ' is not registered in issue database.')
+                        print('ERROR: ' + article_files.issue_folder + ' is not registered in issue database.')
                     else:
                         if issue_folder == article_files.issue_folder:
                             issue = IssueISIS(issue_record)
                             section_code = issue.section_code(article.toc_section)
 
+                            article_title = article.title[0].get('article-title', '')
+                            print(article_title)
                             #create_db = (create_db and article.number != 'ahead')
                             self.article_db.create_id_file(article_files, article, section_code, text_or_article, issue.record, create_db)
-
                             if article.number != 'ahead':
                                 deleted = ahead_manager.exclude_ahead_record(article, xml_file)
-                                article_title = article.title[0].get('article-title', '')
-
                                 if deleted is None:
-                                    ex_aheads.append(article_title)
-                                else:
                                     not_ex_aheads.append(article_title)
+                                else:
+                                    ex_aheads.append(article_title)
 
                             create_db = False
                         else:
-                            print('This article does not belong to ' + issue_folder + '.\n It belongs to ' + article_files.issue_folder)
+                            print('ERROR: This article does not belong to ' + issue_folder + '.\n It belongs to ' + article_files.issue_folder)
 
                     if xml_files_path != issue_files.xml_path:
                         if not os.path.isdir(issue_files.xml_path):
                             os.makedirs(issue_files.xml_path)
                         shutil.copy(xml_files_path + '/' + xml_file, issue_files.xml_path)
 
-        print('ex-aheads')
-        print('\n'.join(not_ex_aheads))
-        print('aheads')
-        print('\n'.join(ex_aheads))
+        if len(ex_aheads) > 0:
+            print('ex-aheads')
+            print('\n'.join(ex_aheads))
 
         return (issue, issue_files)
 
@@ -234,7 +235,7 @@ class AheadManager(object):
                 current_records.append(rec)
         if len(deleted_records) > 1:
             deleted = deleted_records[1]
-            self.ahead_databases[ahead_db_name] = current_records
+            self.ahead_db_records[ahead_db_name] = current_records
         return deleted
 
     def exclude_ahead_record(self, article, filename):
@@ -282,7 +283,8 @@ class AheadManager(object):
             if name in self.changed:
                 id_file = self.temp_dir + '/ahead.id'
                 IDFile().save(id_file, self.ahead_db_records[name])
-                self.cisis.i2id(id_file, db_filename)
+                self.cisis.id2i(id_file, db_filename)
+                print('Updating ' + db_filename)
                 if not os.path.isfile(db_filename + '.fst'):
                     shutil.copy(self.fst_filename, db_filename + '.fst')
                 self.cisis.generate_indexes(db_filename, db_filename + '.fst', db_filename)
@@ -322,6 +324,9 @@ class ArticleFiles(object):
     @property
     def issue_folder(self):
         s = ''
+        if self.article.number == 'ahead':
+            pub_date = self.article.issue_pub_date
+            s += pub_date.get('year', '0000') if pub_date is not None else '0000'
         if self.article.volume is not None:
             s += 'v' + self.article.volume
         if self.article.volume_suppl is not None:

@@ -217,7 +217,11 @@ class ArticleXML(object):
     @property
     def volume(self):
         v = self.article_meta.findtext('volume')
-        return str(int(v)) if v is not None else None
+        if v is not None:
+            v = str(int(v))
+            if v == '0':
+                v = None
+        return v
 
     @property
     def issue(self):
@@ -391,6 +395,11 @@ class Article(ArticleXML):
                     self.volume_suppl = suppl
                     if self.volume_suppl.isdigit():
                         self.volume_suppl = str(int(self.volume_suppl))
+            if self.number == '0':
+                self.number = None
+
+        if self.volume is None and self.number is None:
+            self.number = 'ahead'
 
     @property
     def press_release_id(self):
@@ -408,6 +417,8 @@ class Article(ArticleXML):
             date = self.article_meta.find('pub-date[@pub-type="ppub"]')
         if date is None:
             date = self.article_meta.find('pub-date[@pub-type="collection"]')
+        if date is None:
+            date = self.article_meta.find('pub-date[@pub-type="epub"]')
         if date is not None:
             _issue_pub_date = {}
             _issue_pub_date['season'] = date.findtext('season')
@@ -432,7 +443,7 @@ class Article(ArticleXML):
 
     @property
     def is_ahead(self):
-        if self.volume.replace('0', '') == '' and self.number.replace('0', '') == '':
+        if self.volume is None and self.number is None:
             return True
         return False
 

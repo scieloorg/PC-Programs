@@ -26,7 +26,6 @@ def node_text(node, exclude_root_tag=True):
 
 
 def convert_using_htmlparser(content):
-    print('conver ....')
     import HTMLParser
     s = content
 
@@ -89,14 +88,11 @@ def load_xml(content):
     if not '<' in content:
         # is a file
         try:
-            print('parse ' + content)
             r = etree.parse(content)
         except Exception as e:
-            print('read ' + content)
             content = open(content, 'r').read()
 
     if '<' in content:
-        print('normalize xml')
         content = normalize_space(handle_entities(content))
 
         try:

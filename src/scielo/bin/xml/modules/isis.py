@@ -4,7 +4,7 @@
 import os
 from tempfile import mkdtemp
 
-from xml_utils import normalize_space
+from xml_utils import normalize_space, convert_using_htmlparser
 
 
 class IDFile(object):
@@ -58,7 +58,7 @@ class IDFile(object):
         if value is not None and value != '':
             tag = '000' + tag
             tag = tag[-3:]
-            return '!v' + tag + '!' + normalize_space(value) + '\n'
+            return '!v' + tag + '!' + convert_using_htmlparser(normalize_space(value)) + '\n'
         else:
             return ''
 
