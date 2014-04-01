@@ -3,6 +3,19 @@
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 
 
+def u_encode(u, encoding):
+    r = u
+    if type(u) is unicode:
+        try:
+            r = u.encode(encoding, 'replace')
+        except Exception as e:
+            try:
+                r = u.encode(encoding, 'xmlcharrefreplace')
+            except Exception as e:
+                r = u.encode(encoding, 'ignore')
+    return r
+
+
 def doi_pid(doi):
     pid = None
 

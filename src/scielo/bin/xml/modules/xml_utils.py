@@ -4,11 +4,17 @@ import xml.etree.ElementTree as etree
 
 from StringIO import StringIO
 
+from utils import u_encode
+
 
 def normalize_space(s):
     if s is not None:
         while '\n' in s:
             s = s.replace('\n', ' ')
+        while '\t' in s:
+            s = s.replace('\t', ' ')
+        while '\r' in s:
+            s = s.replace('\r', ' ')
         while '  ' in s:
             s = s.replace('  ', ' ')
     return s
@@ -25,37 +31,39 @@ def node_text(node, exclude_root_tag=True):
     return text
 
 
+def normalize_xml_ent(content):
+    content = content.replace('&#x3C;', '&lt;')
+    content = content.replace('&#x3E;', '&gt;')
+    content = content.replace('&#x26;', '&amp;')
+    content = content.replace('&#60;', '&lt;')
+    content = content.replace('&#62;', '&gt;')
+    content = content.replace('&#38;', '&amp;')
+    return content
+
+
 def convert_using_htmlparser(content):
     import HTMLParser
     s = content
 
-    content = content.replace('&#x3C;', 'REPLACE_LT')
-    content = content.replace('&#x3E;', 'REPLACE_GT')
-    content = content.replace('&#x26;', 'REPLACE_AMP')
-    content = content.replace('&lt;', 'REPLACE_LT')
-    content = content.replace('&gt;', 'REPLACE_GT')
-    content = content.replace('&amp;', 'REPLACE_AMP')
-
-    h = HTMLParser.HTMLParser()
-    if type(content) is str:
-        content = content.decode('utf-8')
-    if type(content) is unicode:
-        content = h.unescape(content)
-        try:
-            content = content.encode('utf-8')
-        except:
-            try:
-                content = content.encode('utf-8', 'xmlcharrefreplace')
-            except:
-                content = content.encode('utf-8', 'ignore')
     if '&' in content:
-        content = content.replace('&', 'REPLACEamp')
-        content = content.replace('REPLACEamp' + '#', '&#')
-        content = content.replace('REPLACEamp', '&amp;')
 
-    content = content.replace('REPLACE_GT;', '&gt;')
-    content = content.replace('REPLACE_LT;', '&lt;')
-    content = content.replace('REPLACE_AMP', '&amp;')
+
+        content = content.replace('&lt;', '<REPLACEENT>lt</REPLACEENT>')
+        content = content.replace('&gt;', '<REPLACEENT>gt</REPLACEENT>')
+        content = content.replace('&amp;', '<REPLACEENT>amp</REPLACEENT>')
+
+        h = HTMLParser.HTMLParser()
+        if type(content) is str:
+            content = content.decode('utf-8')
+        content = u_encode(content, 'utf-8')
+        if '&' in content:
+            content = content.replace('&', 'REPLACEamp')
+            content = content.replace('REPLACEamp' + '#', '&#')
+            content = content.replace('REPLACEamp', '&amp;')
+
+        content = content.replace('REPLACE_GT;', '&gt;')
+        content = content.replace('REPLACE_LT;', '&lt;')
+        content = content.replace('REPLACE_AMP', '&amp;')
 
     return content
 

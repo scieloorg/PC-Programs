@@ -4,6 +4,7 @@
 import os
 from tempfile import mkdtemp
 
+from utils import u_encode
 from xml_utils import normalize_space, convert_using_htmlparser
 
 
@@ -38,6 +39,8 @@ class IDFile(object):
                             s += self._tagged(tag, occ)
                 else:
                     s = self._tagged(tag, occs)
+                print(s)
+                print(type(s))
                 r += s
 
         return r
@@ -58,7 +61,11 @@ class IDFile(object):
         if value is not None and value != '':
             tag = '000' + tag
             tag = tag[-3:]
-            return '!v' + tag + '!' + convert_using_htmlparser(normalize_space(value)) + '\n'
+
+            t1 = value
+            t2 = convert_using_htmlparser(t1)
+
+            return '!v' + tag + '!' + normalize_space(t2) + '\n'
         else:
             return ''
 
@@ -112,17 +119,19 @@ class IDFile(object):
                 record[tag] = content[0]
         return record
 
-    def save(self, filename, records):
+    def save(self, filename, records, data_encoding):
         path = os.path.dirname(filename)
         if not os.path.isdir(path):
             os.makedirs(path)
 
         f = open(filename, 'w')
         content = self._format_file(records)
+        content = self._iso(content, data_encoding)
         try:
-            f.write(self._iso(content))
+            f.write(content)
         except Exception as e:
             print(e)
+            print(type(content))
             for line in content.split('\n'):
                 try:
                     f.write(line + '\n')
@@ -130,7 +139,7 @@ class IDFile(object):
                     r = ''
                     for c in line:
                         try:
-                            f.write(self._iso(c))
+                            f.write(c)
                         except Exception as e:
                             f.write('??')
                             print(type(c))
@@ -143,17 +152,11 @@ class IDFile(object):
                     f.write('\n')
         f.close()
 
-    def _iso(self, content):
-        if type(content) is unicode:
-            try:
-                iso = content.encode('iso-8859-1', 'replace')
-            except:
-                try:
-                    iso = content.encode('iso-8859-1', 'xmlcharrefreplace')
-                except:
-                    iso = content.encode('iso-8859-1', 'ignore')
-        else:
-            iso = content
+    def _iso(self, content, encoding):
+        if type(content) is str:
+            content = content.decode(encoding)
+        iso = u_encode(content, 'iso-8859-1')
+
         return iso
 
 

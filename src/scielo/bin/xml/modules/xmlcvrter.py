@@ -100,7 +100,7 @@ class XMLConverter(object):
     def create_db(self, issue, issue_files):
         if issue is not None:
             id_file = IDFile()
-            id_file.save(issue_files.id_path + '/i.id', [issue.record])
+            id_file.save(issue_files.id_path + '/i.id', [issue.record], 'iso-8859-1')
             self.cisis.id2i(issue_files.id_path + '/i.id', issue_files.base)
             for f in os.listdir(issue_files.id_path):
                 if f.endswith('.id') and f != '00000.id' and f != 'i.id':
@@ -273,7 +273,7 @@ class AheadManager(object):
 
             # update ex-ahead base with the h record of ahead version
             id_temp = self.temp_dir + '/exahead.id'
-            IDFile().save(id_temp, [deleted])
+            IDFile().save(id_temp, [deleted], 'iso-8859-1')
             self.cisis.id2mst(id_temp, self.journal_files.ahead_base('ex-' + year), False)
         return deleted
 
@@ -282,7 +282,7 @@ class AheadManager(object):
             name = self.name(db_filename)
             if name in self.changed:
                 id_file = self.temp_dir + '/ahead.id'
-                IDFile().save(id_file, self.ahead_db_records[name])
+                IDFile().save(id_file, self.ahead_db_records[name], 'iso-8859-1')
                 self.cisis.id2i(id_file, db_filename)
                 print('Updating ' + db_filename)
                 if not os.path.isfile(db_filename + '.fst'):
@@ -308,7 +308,7 @@ class ArticleDB(object):
             article_isis = ArticleISIS(article_files, article, i_record, section_code, text_or_article)
 
             id_file = IDFile()
-            id_file.save(article_files.id_filename, article_isis.records)
+            id_file.save(article_files.id_filename, article_isis.records, 'utf-8')
         
         else:
             print('Invalid value for order.')
