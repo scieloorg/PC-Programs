@@ -282,7 +282,7 @@ class ArticleXML(object):
     @property
     def affiliations(self):
         affs = []
-        for aff in self.article_meta.findall('aff'):
+        for aff in self.article_meta.findall('.//aff'):
             a = {}
             a['xml'] = node_text(aff, False)
             a['id'] = aff.get('id')
@@ -302,6 +302,7 @@ class ArticleXML(object):
                 if tag is not None:
                     a[tag] = node_text(named_content)
             affs.append(a)
+
         return affs
 
     @property

@@ -41,30 +41,39 @@ def normalize_xml_ent(content):
     return content
 
 
-def convert_using_htmlparser(content):
+def convert_using_htmlparser(content, debug=False):
     import HTMLParser
     s = content
 
+    content = normalize_xml_ent(content)
+
     if '&' in content:
-
-
         content = content.replace('&lt;', '<REPLACEENT>lt</REPLACEENT>')
         content = content.replace('&gt;', '<REPLACEENT>gt</REPLACEENT>')
         content = content.replace('&amp;', '<REPLACEENT>amp</REPLACEENT>')
 
+    if '&' in content:
         h = HTMLParser.HTMLParser()
         if type(content) is str:
             content = content.decode('utf-8')
-        content = u_encode(content, 'utf-8')
+        content = h.unescape(content)
+
         if '&' in content:
             content = content.replace('&', 'REPLACEamp')
             content = content.replace('REPLACEamp' + '#', '&#')
             content = content.replace('REPLACEamp', '&amp;')
 
-        content = content.replace('REPLACE_GT;', '&gt;')
-        content = content.replace('REPLACE_LT;', '&lt;')
-        content = content.replace('REPLACE_AMP', '&amp;')
+        content = u_encode(content, 'utf-8')
 
+    if '<REPLACEENT>' in content:
+        content = content.replace('<REPLACEENT>gt</REPLACEENT>', '&gt;')
+        content = content.replace('<REPLACEENT>lt</REPLACEENT>', '&lt;')
+        content = content.replace('<REPLACEENT>amp</REPLACEENT>', '&amp;')
+    if debug:
+        if s != content:
+            print(s)
+            print(content)
+    
     return content
 
 

@@ -23,12 +23,14 @@ class IDFile(object):
 
     def _format_record(self, index, record):
         i = '000000' + str(index)
-        r = '!ID ' + i[-6:] + '\n'
+        r = u'!ID ' + i[-6:] + '\n'
+
         if record is not None:
             for tag_i in sorted([int(s) for s in record.keys()]):
                 tag = str(tag_i)
                 occs = record[tag]
-                s = ''
+
+                s = u''
                 if type(occs) is dict:
                     s = self._tagged(tag, self._format_subfields(occs))
                 elif type(occs) is list:
@@ -39,8 +41,7 @@ class IDFile(object):
                             s += self._tagged(tag, occ)
                 else:
                     s = self._tagged(tag, occs)
-                print(s)
-                print(type(s))
+
                 r += s
 
         return r
@@ -65,9 +66,12 @@ class IDFile(object):
             t1 = value
             t2 = convert_using_htmlparser(t1)
 
-            return '!v' + tag + '!' + normalize_space(t2) + '\n'
+            s = '!v' + tag + '!' + normalize_space(t2) + '\n'
+            if type(s) is str:
+                s = s.decode('utf-8')
+            return s
         else:
-            return ''
+            return u''
 
     def read(self, filename):
         f = open(filename, 'r')

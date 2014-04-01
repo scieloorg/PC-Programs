@@ -73,6 +73,7 @@ class XMLConverter(object):
 
                             article_title = article.title[0].get('article-title', '')
                             print(article_title)
+
                             #create_db = (create_db and article.number != 'ahead')
                             self.article_db.create_id_file(article_files, article, section_code, text_or_article, issue.record, create_db)
                             if article.number != 'ahead':
