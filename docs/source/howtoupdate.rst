@@ -52,25 +52,19 @@ How to update
 
 
 FAQ about update
-================
+----------------
 
 Does updating changes any databases (title, section, issue)?
-------------------------------------------------------------
+............................................................
 
 No. If you use the Title Manager after the updating and you can not see the list of journals, it is possible there was an error in the step 3, or the requirements were not installed.
 
 
 After updating, I tried to open Title Manager and I got an error message.
--------------------------------------------------------------------------
+..........................................................................
 
 It usually happens because after updating, the serial folder from "other installation" is copied on the "new installation".
 If you want to update, using a copy of serial folder, do the copy first, then the update, because updating does not delete or overwrite the databases: title, section, issue, newcode, but it can update their indexes, and update other databases which are not related to the journals, issues and articles.
-
-
-
-
-
-
 
 
 ----------------

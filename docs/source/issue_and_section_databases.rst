@@ -1,7 +1,4 @@
 
-Databases
-=========
-
 Issue database
 --------------
 

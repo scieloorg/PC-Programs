@@ -8,24 +8,23 @@ Programs for local server
 -------------------------
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 2
 
    codemanager.rst
    titlemanager.rst
    converter.rst
-   xmlscielo.rst   
-   `SciELO Website for Windows <http://docs.scielo.org/projects/scielo-web-windows/en/latest/>`_.
+   export_xml.rst   
+   
+   * `SciELO Website for Windows <http://docs.scielo.org/projects/scielo-web-windows/en/latest/>`_.
 
-Programs for Markup computers
------------------------------
+Programs for desktop
+--------------------
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 2
 
    markup.rst
    parser.rst
    markup_xml.rst
-
-
-
-
+   xml_package_maker.rst
+   xml_converter_local.rst
