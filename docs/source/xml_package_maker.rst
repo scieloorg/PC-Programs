@@ -1,84 +1,55 @@
-.. pcprograms documentation master file, created by
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
 
-XML Markup
-==========
+=================
+XML Package Maker
+=================
 
-The Markup program provides tools to identify the elements of the document and generates XML files and reports.
+Script to generate XML packages for SciELO and PMC.
 
-Read about `Markup Tags <markup_tags.html>`_.
+It is embedded in Markup Program in order to generate XML files.
 
+Usage:
 
-The XML files generated are according to
+1. Use a DOS session, and go to the script location
 
-- http://scieloorg.github.io/scielo_publishing_schema/
-- SciELO Tagging Guidelines (under construction)
-- `File Submission Specifications`_ 
+.. code::
 
-
-Operations bar
---------------
-
-.. image:: img/markup_operations_bar.png
+    cd \scielo\bin\xml
 
 
-Generate XML button
-...................
+2. Use the command below to generate XML files according to JATS 1.0
 
-.. image:: img/markup_operations_bar_xml.jpg
+.. code::
 
-After identifying all the elements of the text, click on this button to generate the XML file.
-
-
-Files/DTD errors report button
-..............................
-
-.. image:: img/markup_operations_bar_err_report.jpg
-
-Click on this button to view the `report of files and DTD errors`_.
+    python make_j1.0.py <parameter_1> <parameter_2>
 
 
-SciELO Style Checker report button
-..................................
+where
 
-.. image:: img/markup_operations_bar_xml_style_report.jpg
-
-Click on this button to view the `report of SciELO Style Checker`_.
+    <parameter_1>: path of the folder where there are the XML files and related files, such as PDF, ePub, etc.
+    <parameter_2>: acronym
 
 
-Contents Validations report button
-..................................
-
-.. image:: img/markup_operations_bar_data_val_report.jpg
-
-Click on this button to view the `report of Contents Validations`_.
+.. image:: img/xml_package_maker.png
 
 
-PMC Style Checker report button
-...............................
+This command will generate:
 
-.. image:: img/markup_operations_bar_pmc_style_report.jpg
+* XML files for SciELO (scielo_package)
+* XML files for PMC (pmc_package)
+* report files (errors)
 
-Click on this button to view the `report of PMC Style Checker`_.
+in the folder informed as **<parameter 1>** plus the current time.
+
+.. image:: img/xml_package_maker_generated_folder.png
 
 
-View Markup button
-...................
-
-The operations bar would be presented with some buttons unavailable when any report is displayed.
-
-.. image:: img/markup_operations_bar_reports.png
-
-Click on this button to view the SGML file.
-
-.. image:: img/markup_operations_bar_view_markup.jpg
-
+Reports
+=======
 
 Report of files and DTD errors
 ------------------------------
 
-It reports the all the related files and DTD errors.
+It reports all the related files and DTD errors.
 
 Report file name: <article filename>.err.txt
 Example: article-v48n6p060.err.txt
@@ -147,7 +118,7 @@ Messages
 
    There is at least a rid=B5, but there is not id="B5"
 
-If you can not understand the messages, use our support: `SciELO XML Forum`_
+If you can not understand the messages, use our support: `SciELO XML Forum <support.html>`_
 
 Messages to ignore
 ..................
@@ -157,7 +128,7 @@ Messages to ignore
 
 Report of SciELO Style Checker
 ------------------------------
-The document is being checked against the `SciELO Tagging Guidlines rules`_.
+The document is checked against the `SciELO Tagging Guidelines rules <guidelines_xml.html>`_.
 
 Report file name: <article filename>.rep.html
 
@@ -189,10 +160,11 @@ Example:
 Report of PMC Style Checker
 ---------------------------
 
-The document is being checked against the PMC Tagging Guidlines rules
+The document is checked against the PMC Tagging Guidelines rules
 (http://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/article/dobs.html).
 
-`SciELO XML Forum <xml_support.html>`_
 
 
-.. include:: draft_version.rst
+----------------
+
+Last update of this page: Abril 1, 2014

@@ -2,10 +2,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-XML SciELO
-==========
+XML Exporter (for PubMed and ISI)
+=================================
 
-DOS Batch program to export XML and SGML files to PubMed and ISI.
+DOS Batch program to export XML and SGML files to PubMed and ISI. Located in c:\\scielo\\xml_scielo.
 
 For PubMed, there are two types of files:
 

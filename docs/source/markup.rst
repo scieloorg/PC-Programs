@@ -25,9 +25,30 @@ File specification
 
 - one article/text by file
 - .doc or .html
-- same name of the corresponding PDF file
-- location of .doc or .html file: /scielo/serial/<acron>/<issue_identification>/pmc/pmc_markup
-- location of the other files: /scielo/serial/<acron>/<issue_identification>/pmc/src (images, PDF, etc)
+- all the files related to the article must have the same name or start with. For instance, a01.pdf, a01.html (body file), a01f01.jpg (image of the figure 1)
+
+
+Files location for SGML Markup
+.............................
+
+- .doc or .html file: 
+    /scielo/serial/<acron>/<issue_identification>/markup
+- body: 
+    /scielo/serial/<acron>/<issue_identification>/body
+- images: 
+    /scielo/serial/<acron>/<issue_identification>/img
+- pdf: 
+    /scielo/serial/<acron>/<issue_identification>/pdf
+
+
+.. image:: img/concepts_serial_abc.jpg
+
+
+Files location for XML Markup
+..............................
+
+- .doc or .html file: /scielo/serial/<acron>/<issue_identification>/pmc/pmc_markup
+- other files: /scielo/serial/<acron>/<issue_identification>/pmc/src (images, PDF, etc)
 
 .. image:: img/markup_file_system.png
 
@@ -54,8 +75,8 @@ By the path of the program, clicking on markup.exe:
   c:\\scielo\\bin\\markup\\markup.exe
 
 
-Setting the Word path
-.....................
+Informing the Word Program location
+...................................
 
 Markup will try to open the Microsoft Office Word Program. If it is not in the correct path, Markup program will ask for the right path of Microsoft Office Word Program.
 
@@ -238,6 +259,56 @@ Click on this button to validate the SGML Markup.
 It will convert the file to .txt and will run the `SGML Parser program <parser.html>`_.
 
 
+Generate XML button
+...................
+
+.. image:: img/markup_operations_bar_xml.jpg
+
+After identifying all the elements of the text, click on this button to generate the XML file.
+
+
+Files/DTD errors report button
+..............................
+
+.. image:: img/markup_operations_bar_err_report.jpg
+
+Click on this button to view the `report of files and DTD errors  <xml_package_maker.html#report-of-files-and-dtd-errors>`_.
+
+
+SciELO Style Checker report button
+..................................
+
+.. image:: img/markup_operations_bar_xml_style_report.jpg
+
+Click on this button to view the `report of SciELO Style Checker <xml_package_maker.html#report-of-scielo-style-checker>`_.
+
+
+Contents Validations report button
+..................................
+
+.. image:: img/markup_operations_bar_data_val_report.jpg
+
+Click on this button to view the `report of Contents Validations <xml_package_maker.html#report-of-contents-validations>`_.
+
+
+PMC Style Checker report button
+...............................
+
+.. image:: img/markup_operations_bar_pmc_style_report.jpg
+
+Click on this button to view the `report of PMC Style Checker <xml_package_maker.html#report-of-pmc-style-checker>`_.
+
+
+View Markup button
+...................
+
+The operations bar would be presented with some buttons unavailable when any report is displayed.
+
+.. image:: img/markup_operations_bar_reports.png
+
+Click on this button to view the SGML file.
+
+.. image:: img/markup_operations_bar_view_markup.jpg
 
 
 Floating tags bar
@@ -333,4 +404,9 @@ This message is also displayed if the selected text contains tags or part of tag
 
 
 
-.. include:: last_update.rst
+
+
+----------------
+
+Last update of this page: Abril 2, 2014
+
