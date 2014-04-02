@@ -1209,23 +1209,24 @@ Public Sub LoadIssue(Mfn As Long)
         myIssue.number = Issue1.TxtIssueno.text
         myIssue.suppl = Issue1.TxtSupplNo.text
         myIssue.vsuppl = Issue1.TxtSupplVol.text
-        myIssue.issueorder = Issue1.TxtIseqno.text
+        myIssue.issueorder = Issue1.TxtIseqNo.text
         myIssue.idPart = Issue1.ComboIssueIdPart.text
         
         With myIssue.journal
         .JournalStandard = Issue1.Title_Standard
         .vocabulary = Issue1.Title_Scheme
+        .ISSN = Issue1.issn_id
         End With
     End If
     Set journal_license = journalDAO.getJournalCreativeCommons(journalDAO.existISSN(myIssue.journal.ISSN))
     
     With myIssue.journal
         .shorttitle = Issue1.TxtStitle.Caption
-        .Title = Issue1.TxtSertitle.Caption
+        .Title = Issue1.TxtSerTitle.Caption
         .pubid = Issue1.SiglaPeriodico
         .ISSN = Issue1.TxtISSN.Caption
         .ISOTitle = Issue1.TxtISOStitle.Caption
-        .MedlineTitle = Issue1.TxtMedlineStitle.Caption
+        .MedlineTitle = Issue1.TxtMEDLINEStitle.Caption
         .parallelTitles = Issue1.TxtParallel.text
         .publisherName = Issue1.TxtPubl.text
     End With
@@ -1403,7 +1404,7 @@ Private Sub LoadIssueData()
                 TxtSupplVol(i).text = addBSPrefix(TxtSupplVol(i).text, Issue1.TxtSupplVol.text, .lang, "suppl.", "supl.")
                 TxtSupplNro(i).text = addBSPrefix(TxtSupplNro(i).text, Issue1.TxtSupplNo.text, .lang, "suppl.", "supl.")
                 If TxtLoc(i).text = "" Then TxtLoc(i).text = Issue1.Cidade
-                If TxtAno(i).text = "" Then TxtAno(i) = Mid(Issue1.TxtIseqno.text, 1, 4)
+                If TxtAno(i).text = "" Then TxtAno(i) = Mid(Issue1.TxtIseqNo.text, 1, 4)
                 
             End With
         
@@ -1507,7 +1508,7 @@ Private Sub oldLoadIssueData()
                 TxtSupplVol(i).text = addBSPrefix(TxtSupplVol(i).text, Issue1.TxtSupplVol.text, .lang, "suppl.", "supl.")
                 TxtSupplNro(i).text = addBSPrefix(TxtSupplNro(i).text, Issue1.TxtSupplNo.text, .lang, "suppl.", "supl.")
                 If TxtLoc(i).text = "" Then TxtLoc(i).text = Issue1.Cidade
-                If TxtAno(i).text = "" Then TxtAno(i) = Mid(Issue1.TxtIseqno.text, 1, 4)
+                If TxtAno(i).text = "" Then TxtAno(i) = Mid(Issue1.TxtIseqNo.text, 1, 4)
                 
             End With
         
@@ -1581,7 +1582,7 @@ Private Sub LoadDispoSections()
     DispoSecCode.Clear
     DispoSecCode.visible = False
     
-    Set journalSections = sectionDAO.getTOC(Issue1.TxtSertitle.Caption, Issue1.TxtISSN.Caption, Issue1.SiglaPeriodico, mfnSection)
+    Set journalSections = sectionDAO.getTOC(Issue1.TxtSerTitle.Caption, Issue1.TxtISSN.Caption, Issue1.SiglaPeriodico, mfnSection)
         
     For i = 1 To idiomsinfo.count
         lang = idiomsinfo(i).Code
@@ -1632,7 +1633,7 @@ Private Sub CmdClose_Click()
 End Sub
 
 Private Sub CmdNewSections_Click()
-    Call New_Section2.OpenSection(Issue1.TxtSertitle.Caption, False)
+    Call New_Section2.OpenSection(Issue1.TxtSerTitle.Caption, False)
     
     LoadDispoSections
 End Sub
@@ -1977,7 +1978,7 @@ Private Function CheckYears() As Boolean
         yearOK = yearOK And (TxtAno(i).text = year)
     Next
     
-    yearOK = yearOK And (Mid(Issue1.TxtIseqno.text, 1, 4) = year)
+    yearOK = yearOK And (Mid(Issue1.TxtIseqNo.text, 1, 4) = year)
     
     
     
