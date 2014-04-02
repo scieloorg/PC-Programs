@@ -2,7 +2,8 @@
 
 import xml.etree.ElementTree as etree
 
-from modules.utils import node_text
+from modules.utils import doi_pid
+from modules.xml_utils import node_text
 
 
 class ArticleXML(object):
@@ -195,8 +196,8 @@ class ArticleXML(object):
         return self.article_meta.findtext('article-id[@pub-id-type="doi"]')
 
     @property
-    def previous_pid(self):
-        return self.article_meta.findtext('article-id[@pub-id-type="publisher-id"]')
+    def article_id_publisher_id(self):
+        return self.article_meta.findtext('article-id[@specific-use="previous-pid"]')
 
     @property
     def order(self):
@@ -216,7 +217,11 @@ class ArticleXML(object):
     @property
     def volume(self):
         v = self.article_meta.findtext('volume')
-        return str(int(v)) if v is not None else None
+        if v is not None:
+            v = str(int(v))
+            if v == '0':
+                v = None
+        return v
 
     @property
     def issue(self):
@@ -277,7 +282,7 @@ class ArticleXML(object):
     @property
     def affiliations(self):
         affs = []
-        for aff in self.article_meta.findall('aff'):
+        for aff in self.article_meta.findall('.//aff'):
             a = {}
             a['xml'] = node_text(aff, False)
             a['id'] = aff.get('id')
@@ -297,6 +302,7 @@ class ArticleXML(object):
                 if tag is not None:
                     a[tag] = node_text(named_content)
             affs.append(a)
+
         return affs
 
     @property
@@ -390,6 +396,11 @@ class Article(ArticleXML):
                     self.volume_suppl = suppl
                     if self.volume_suppl.isdigit():
                         self.volume_suppl = str(int(self.volume_suppl))
+            if self.number == '0':
+                self.number = None
+
+        if self.volume is None and self.number is None:
+            self.number = 'ahead'
 
     @property
     def press_release_id(self):
@@ -407,6 +418,8 @@ class Article(ArticleXML):
             date = self.article_meta.find('pub-date[@pub-type="ppub"]')
         if date is None:
             date = self.article_meta.find('pub-date[@pub-type="collection"]')
+        if date is None:
+            date = self.article_meta.find('pub-date[@pub-type="epub"]')
         if date is not None:
             _issue_pub_date = {}
             _issue_pub_date['season'] = date.findtext('season')
@@ -431,7 +444,7 @@ class Article(ArticleXML):
 
     @property
     def is_ahead(self):
-        if self.volume.replace('0', '') == '' and self.number.replace('0', '') == '':
+        if self.volume is None and self.number is None:
             return True
         return False
 
@@ -471,7 +484,7 @@ class Article(ArticleXML):
 
     @property
     def previous_pid(self):
-        d = ArticleXML.previous_pid
+        d = self.article_id_publisher_id
         if d is None:
             if self.doi is not None:
                 d = doi_pid(self.doi)

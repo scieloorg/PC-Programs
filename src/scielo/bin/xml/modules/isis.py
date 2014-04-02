@@ -4,7 +4,8 @@
 import os
 from tempfile import mkdtemp
 
-from utils import normalize_space
+from utils import u_encode
+from xml_utils import normalize_space, convert_using_htmlparser
 
 
 class IDFile(object):
@@ -22,12 +23,14 @@ class IDFile(object):
 
     def _format_record(self, index, record):
         i = '000000' + str(index)
-        r = '!ID ' + i[-6:] + '\n'
+        r = u'!ID ' + i[-6:] + '\n'
+
         if record is not None:
             for tag_i in sorted([int(s) for s in record.keys()]):
                 tag = str(tag_i)
                 occs = record[tag]
-                s = ''
+
+                s = u''
                 if type(occs) is dict:
                     s = self._tagged(tag, self._format_subfields(occs))
                 elif type(occs) is list:
@@ -38,6 +41,7 @@ class IDFile(object):
                             s += self._tagged(tag, occ)
                 else:
                     s = self._tagged(tag, occs)
+
                 r += s
 
         return r
@@ -58,9 +62,16 @@ class IDFile(object):
         if value is not None and value != '':
             tag = '000' + tag
             tag = tag[-3:]
-            return '!v' + tag + '!' + normalize_space(value) + '\n'
+
+            t1 = value
+            t2 = convert_using_htmlparser(t1)
+
+            s = '!v' + tag + '!' + normalize_space(t2) + '\n'
+            if type(s) is str:
+                s = s.decode('utf-8')
+            return s
         else:
-            return ''
+            return u''
 
     def read(self, filename):
         f = open(filename, 'r')
@@ -102,7 +113,7 @@ class IDFile(object):
         if len(record) > 0:
             records.append(self.simplify_record(record))
 
-        print('Loaded ' + str(len(records))) + ' issue records.'
+        #print('Loaded ' + str(len(records))) + ' issue records.'
         f.close()
         return records
 
@@ -112,17 +123,19 @@ class IDFile(object):
                 record[tag] = content[0]
         return record
 
-    def save(self, filename, records):
+    def save(self, filename, records, data_encoding):
         path = os.path.dirname(filename)
         if not os.path.isdir(path):
             os.makedirs(path)
 
         f = open(filename, 'w')
         content = self._format_file(records)
+        content = self._iso(content, data_encoding)
         try:
-            f.write(self._iso(content))
+            f.write(content)
         except Exception as e:
             print(e)
+            print(type(content))
             for line in content.split('\n'):
                 try:
                     f.write(line + '\n')
@@ -130,29 +143,24 @@ class IDFile(object):
                     r = ''
                     for c in line:
                         try:
-                            f.write(self._iso(c))
-                        except:
+                            f.write(c)
+                        except Exception as e:
                             f.write('??')
                             print(type(c))
 
                             print('Unable to write ')
                             print(r)
+                            print(e)
                             #print(content)
                         r += c
                     f.write('\n')
         f.close()
 
-    def _iso(self, content):
-        if type(content) is unicode:
-            try:
-                iso = content.encode('iso-8859-1', 'replace')
-            except:
-                try:
-                    iso = content.encode('iso-8859-1', 'xmlcharrefreplace')
-                except:
-                    iso = content.encode('iso-8859-1', 'ignore')
-        else:
-            iso = content
+    def _iso(self, content, encoding):
+        if type(content) is str:
+            content = content.decode(encoding)
+        iso = u_encode(content, 'iso-8859-1')
+
         return iso
 
 
@@ -318,7 +326,7 @@ class UCISIS(object):
         self.cisis(src_mst_filename).copy_record(src_mst_filename, mfn, dest_mst_filename)
 
     def modify_records(self, mst_filename, proc):
-        self.cisis(mst_filename).copy_record(mst_filename, proc)
+        self.cisis(mst_filename).modify_records(mst_filename, proc)
 
     def find_record(self, mst_filename, expression):
         return self.cisis(mst_filename).find_record(mst_filename, expression)
