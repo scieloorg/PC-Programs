@@ -25,9 +25,30 @@ File specification
 
 - one article/text by file
 - .doc or .html
-- same name of the corresponding PDF file
-- location of .doc or .html file: /scielo/serial/<acron>/<issue_identification>/pmc/pmc_markup
-- location of the other files: /scielo/serial/<acron>/<issue_identification>/pmc/src (images, PDF, etc)
+- all the files related to the article must have the same name or start with. For instance, a01.pdf, a01.html (body file), a01f01.jpg (image of the figure 1)
+
+
+Files location for SGML Markup
+.............................
+
+- .doc or .html file: 
+    /scielo/serial/<acron>/<issue_identification>/markup
+- body: 
+    /scielo/serial/<acron>/<issue_identification>/body
+- images: 
+    /scielo/serial/<acron>/<issue_identification>/img
+- pdf: 
+    /scielo/serial/<acron>/<issue_identification>/pdf
+
+
+.. image:: img/concepts_serial_abc.jpg
+
+
+Files location for XML Markup
+..............................
+
+- .doc or .html file: /scielo/serial/<acron>/<issue_identification>/pmc/pmc_markup
+- other files: /scielo/serial/<acron>/<issue_identification>/pmc/src (images, PDF, etc)
 
 .. image:: img/markup_file_system.png
 
@@ -54,8 +75,8 @@ By the path of the program, clicking on markup.exe:
   c:\\scielo\\bin\\markup\\markup.exe
 
 
-Setting the Word path
-.....................
+Informing the Word Program location
+...................................
 
 Markup will try to open the Microsoft Office Word Program. If it is not in the correct path, Markup program will ask for the right path of Microsoft Office Word Program.
 
@@ -236,12 +257,6 @@ SGML Parser button
 
 Click on this button to validate the SGML Markup.
 It will convert the file to .txt and will run the `SGML Parser program <parser.html>`_.
-
-
-Operations bar
---------------
-
-.. image:: img/markup_operations_bar.png
 
 
 Generate XML button
