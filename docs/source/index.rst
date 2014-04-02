@@ -12,10 +12,7 @@ Welcome to SciELO PC Programs' documentation!
 .. toctree::
     :maxdepth: 2
 
-    download.rst
-
-    howtoinstall.rst
-    howtoupdate.rst
+    installation.rst
 
     tutorials.rst
 
@@ -30,4 +27,8 @@ Welcome to SciELO PC Programs' documentation!
  
 
 
-.. include:: last_update.rst
+
+
+----------------
+
+Last update of this page: Abril 2, 2014

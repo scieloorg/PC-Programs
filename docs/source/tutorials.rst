@@ -13,7 +13,7 @@ Programs for local server
    codemanager.rst
    titlemanager.rst
    converter.rst
-   export_xml.rst   
+   xml_exporter.rst   
    
    * `SciELO Website for Windows <http://docs.scielo.org/projects/scielo-web-windows/en/latest/>`_.
 
@@ -25,6 +25,10 @@ Programs for desktop
 
    markup.rst
    parser.rst
-   markup_xml.rst
    xml_package_maker.rst
    xml_converter_local.rst
+
+
+----------------
+
+Last update of this page: Abril 2, 2014

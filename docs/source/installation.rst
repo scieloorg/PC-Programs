@@ -3,16 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-
-Methodology for XML
---------------------
+============
+Installation
+============
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 2
 
-   guidelines_xml.rst
-
+    download.rst
+    howtoinstall.rst
+    howtoupdate.rst
 
 ----------------
 
-Last update of this page: Abril 1, 2014
+Last update of this page: Abril 2, 2014
