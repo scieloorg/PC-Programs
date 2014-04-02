@@ -2156,6 +2156,7 @@ class Normalizer(object):
         content = f.read()
         f.close()
 
+        content = convert_entities(content, self.entities_table)
         # fix problems of XML format
         if is_sgmxml:
             xml_fix = XMLString(content)
@@ -2163,12 +2164,8 @@ class Normalizer(object):
             if not xml_fix.content == content:
                 content = xml_fix.content
 
-            content = xml_content_transform(content, self.version_converter)
-
-            xml_fix = XMLString(content)
-            if not xml_fix.content == content:
-                content = xml_fix.content
-        content = convert_entities(content, self.entities_table)
+            if xml_is_well_formed(content) is not None:
+                content = xml_content_transform(content, self.version_converter)
 
         if xml_is_well_formed(content) is not None:
             #new name and href list
@@ -2207,6 +2204,7 @@ class Normalizer(object):
             f.close()
         else:
             log.append('XML is not well formed')
+            log.append(dest_path + '/incorrect_' + new_name + '.xml')
 
             f = open(dest_path + '/incorrect_' + new_name + '.xml', 'w')
             f.write(content)
