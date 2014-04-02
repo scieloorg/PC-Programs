@@ -13,3 +13,8 @@ Methodology for SGML
    markup_tags.rst
    procedures.rst
    
+
+
+----------------
+
+Last update of this page: Abril 1, 2014

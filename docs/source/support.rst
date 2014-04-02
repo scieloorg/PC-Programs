@@ -25,3 +25,10 @@ To unsubscribe, send an e-mail to this list: **scielo-xml+unsubscribe@googlegrou
 To send an e-mail to this list: **scielo-xml@googlegroups.com**
 
 The archives for this list can also be browsed online.
+
+
+
+
+----------------
+
+Last update of this page: Abril 1, 2014

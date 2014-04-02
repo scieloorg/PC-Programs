@@ -35,3 +35,6 @@ This command will generate the folder **base** which is in the issue folder and 
 .. image:: img/xml_converter_serial_folder.png
 
 
+----------------
+
+Last update of this page: Abril 1, 2014

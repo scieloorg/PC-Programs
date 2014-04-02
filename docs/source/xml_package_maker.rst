@@ -5,7 +5,7 @@ XML Package Maker
 
 Script to generate XML packages for SciELO and PMC.
 
-It is embedded in Markup Program in order to generate XML files and in XML Converter.
+It is embedded in Markup Program in order to generate XML files.
 
 Usage:
 
@@ -165,3 +165,6 @@ The document is checked against the PMC Tagging Guidelines rules
 
 
 
+----------------
+
+Last update of this page: Abril 1, 2014

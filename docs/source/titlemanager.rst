@@ -26,4 +26,9 @@ Use the Windows menu to open the program.
    titlemanager_issue.rst
 
 
-.. include:: last_update.rst
+
+
+----------------
+
+Last update of this page: Feb 6, 2014
+
