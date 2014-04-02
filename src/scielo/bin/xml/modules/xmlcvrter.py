@@ -87,10 +87,10 @@ class XMLConverter(object):
                         else:
                             print('ERROR: This article does not belong to ' + issue_folder + '.\n It belongs to ' + article_files.issue_folder)
 
-                    if xml_files_path != issue_files.xml_path:
-                        if not os.path.isdir(issue_files.xml_path):
-                            os.makedirs(issue_files.xml_path)
-                        shutil.copy(xml_files_path + '/' + xml_file, issue_files.xml_path)
+                    #if xml_files_path != issue_files.xml_path:
+                    #    if not os.path.isdir(issue_files.xml_path):
+                    #        os.makedirs(issue_files.xml_path)
+                    #    shutil.copy(xml_files_path + '/' + xml_file, issue_files.xml_path)
 
         if len(ex_aheads) > 0:
             print('ex-aheads')
