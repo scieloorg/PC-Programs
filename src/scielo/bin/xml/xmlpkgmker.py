@@ -9,6 +9,7 @@ import xml.etree.ElementTree as etree
 
 from StringIO import StringIO
 
+from modules.xml_utils import convert_using_htmlparser
 #xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'abbrev', 'award-group', 'bio', 'chem-struct', 'collab', 'conference', 'contrib', 'element-citation', 'email', 'ext-link', 'funding-source', 'inline-supplementary-material', 'institution', 'license', 'long-desc', 'mixed-citation', 'named-content', 'nlm-citation', 'product', 'related-article', 'related-object', 'self-uri', 'supplementary-material', 'uri']
 
 xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'chem-struct', 'inline-supplementary-material', 'supplementary-material', ]
@@ -184,30 +185,6 @@ class EntitiesTable:
         return r
 
 
-def convert_using_htmlparser(content):
-    import HTMLParser
-    entities = []
-
-    h = HTMLParser.HTMLParser()
-    new = content.replace('&', '_BREAK_&')
-    parts = new.split('_BREAK_')
-    for part in parts:
-        if part.startswith('&'):
-            ent = part[0:part.find(';')+1]
-            if not ent in entities:
-                try:
-                    new_ent = h.unescape(ent).encode('utf-8', 'xmlcharrefreplace')
-                except Exception as inst:
-                    new_ent = ent
-                    print('convert_using_htmlparser:')
-                    print(ent)
-                    print(inst)
-                if not new_ent in ['<', '>', '&']:
-                    content = content.replace(ent, new_ent)
-                entities.append(ent)
-    return content
-
-
 def convert_ent_to_char(content, entities_table=None):
     def prefix_ent(N=7):
         return ''.join(random.choice('^({|~_`!QZ[') for x in range(N))
@@ -260,8 +237,9 @@ def convert_ent_to_char(content, entities_table=None):
 
 
 def convert_entities(content, entities_table=None):
-    return convert_ent_to_char(content, entities_table)
+    #return convert_ent_to_char(content, entities_table)
     #return convert_entname(content, entities_table)
+    return convert_using_htmlparser(content)
 
 
 def convert_entname(content, entities_table=None):
@@ -550,12 +528,11 @@ class XMLString(object):
         self.content = self.content[0:self.content.rfind('>')+1]
         self.content = self.content[self.content.find('<'):]
         self.content = self.content.replace(' '*2, ' '*1)
-        if not xml_is_well_formed(self.content) is None:
+        if xml_is_well_formed(self.content) is None:
             self._fix_style_tags()
-            if not xml_is_well_formed(self.content) is None:
-                self._fix_open_close()
-                xml_is_well_formed(self.content)
-
+        if xml_is_well_formed(self.content) is None:
+            self._fix_open_close()
+        
     def _fix_open_close(self):
         changes = []
         parts = self.content.split('>')
@@ -576,6 +553,8 @@ class XMLString(object):
         tags = ['italic', 'bold', 'sub', 'sup']
         tag_list = []
         for tag in tags:
+            rcontent = rcontent.replace('<' + tag.upper() + '>', '<' + tag + '>')
+            rcontent = rcontent.replace('</' + tag.upper() + '>', '</' + tag + '>')
             tag_list.append('<' + tag + '>')
             tag_list.append('</' + tag + '>')
             rcontent = rcontent.replace('<' + tag + '>',  'BREAKBEGINCONSERTA<' + tag + '>BREAKBEGINCONSERTA').replace('</' + tag + '>', 'BREAKBEGINCONSERTA</' + tag + '>BREAKBEGINCONSERTA')
@@ -2155,10 +2134,12 @@ class Normalizer(object):
         f = open(xml_filename)
         content = f.read()
         f.close()
-
+        print('normalize_content: convert_entities')
         content = convert_entities(content, self.entities_table)
         # fix problems of XML format
         if is_sgmxml:
+            print('normalize_content: xml_fix.fix()')
+        
             xml_fix = XMLString(content)
             xml_fix.fix()
             if not xml_fix.content == content:
