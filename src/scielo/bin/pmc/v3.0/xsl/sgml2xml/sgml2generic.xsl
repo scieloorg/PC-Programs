@@ -165,8 +165,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</fpage>
 	</xsl:template>
 	<xsl:template match="body"/>
+	<xsl:template match="bold | italic | sup" mode="formatted-text"/>
 	<xsl:template match="*[bold or italic or sup]" mode="formatted-text">
-		<xsl:apply-templates select="text()" mode="formatted-text"></xsl:apply-templates>
+			<xsl:apply-templates select="text()" mode="formatted-text"></xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="*[bold or italic or sup]/text()" mode="formatted-text">
 		<xsl:value-of select="."/>
@@ -1825,9 +1826,10 @@ Here is a figure group, with three figures inside, each of which contains a grap
 		<source xml:lang="{$lang}"><xsl:value-of select="normalize-space($source)"/></source>
 	</xsl:template>
 	<xsl:template match="sertitle | stitle | vstitle/stitle">
-		<xsl:variable name="text"><xsl:apply-templates select="." mode="text-only"></xsl:apply-templates></xsl:variable>
-		<xsl:variable name="source"><xsl:choose>
-			<xsl:when test="*/text()=$text">
+		<xsl:variable name="first_level_texts"><xsl:apply-templates select="." mode="formatted-text"></xsl:apply-templates></xsl:variable>
+		
+		<source><xsl:choose>
+			<xsl:when test="normalize-space($first_level_texts)=''">1
 				<xsl:apply-templates select="*"></xsl:apply-templates>
 			</xsl:when>
 			<xsl:when test="not(*)">
@@ -1835,8 +1837,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			<xsl:otherwise>
 				<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 			</xsl:otherwise>
-		</xsl:choose></xsl:variable>
-		<source><xsl:value-of select="$source"></xsl:value-of></source>
+		</xsl:choose></source>
 	</xsl:template>
 	<xsl:template match="sertitle/text() | stitle/text()">
 		<xsl:value-of select="normalize-space(.)"/>
@@ -2296,7 +2297,7 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			<xsl:when test="@filename">
 				<graphic xlink:href="{@filename}"/>
 			</xsl:when>
-			<xsl:when test="not(mmlmath) and not(texmath)">
+			<xsl:when test="not(mmlmath) and not(texmath) and not(table)">
 				<graphic xlink:href="{@id}"/><!-- @id -->
 			</xsl:when>
 		</xsl:choose>
