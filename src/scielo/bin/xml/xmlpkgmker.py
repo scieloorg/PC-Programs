@@ -1744,7 +1744,7 @@ class ContentValidation(object):
                             r['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
 
                 r['year'] = ref.findtext('.//year')
-                r['source'] = ref.findtext('.//source')
+                r['source'] = self._node_xml_content(ref.find('.//source'))
                 r['publisher-name'] = ref.findtext('.//publisher-name')
                 r['publisher-loc'] = ref.findtext('.//publisher-loc')
                 r['article-title'] = self._node_xml_content(ref.find('.//article-title'))
