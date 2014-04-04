@@ -561,6 +561,8 @@ class XMLString(object):
         if self.content != rcontent:
             parts = rcontent.split('BREAKBEGINCONSERTA')
             self.content = self._fix_problem(tag_list, parts)
+        for tag in tags:
+            self.content = self.content.replace('</' + tag + '><' + tag + '>', '')
 
     def _fix_problem(self, tag_list, parts):
         expected_close_tags = []
