@@ -60,7 +60,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="data4previous" select="//back//*[contains(name(),'citat')]"/>
 	
 	<!-- text -->
-	<xsl:template match="text()">
+	<xsl:template match="*/text()">
 		<xsl:value-of select="." disable-output-escaping="no"/>
 	</xsl:template>
 	<!-- nodes -->
@@ -165,32 +165,42 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</fpage>
 	</xsl:template>
 	<xsl:template match="body"/>
-
-	<xsl:template
-		match="bold | italic">
+	<xsl:template match="*[bold or italic or sup]" mode="formatted-text">
+		<xsl:apply-templates select="text()" mode="formatted-text"></xsl:apply-templates>
+	</xsl:template>
+	<xsl:template match="*[bold or italic or sup]/text()" mode="formatted-text">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	<xsl:template match="bold | italic | sup">
 		<xsl:param name="id"/>
-		<xsl:variable name="parent_text"><xsl:apply-templates select="parent::node()" mode="text-only"></xsl:apply-templates></xsl:variable>
+		<xsl:variable name="all_levels_texts"><xsl:apply-templates select="parent::node()" mode="text-only"></xsl:apply-templates></xsl:variable>
+		<xsl:variable name="first_level_texts"><xsl:apply-templates select="parent::node()" mode="formatted-text"></xsl:apply-templates></xsl:variable>
 		<xsl:choose>
-			<xsl:when test="normalize-space($parent_text)=normalize-space(.)">
+			<xsl:when test="normalize-space($first_level_texts)=''">
+				<xsl:apply-templates select="*|text()">
+					<xsl:with-param name="id" select="$id"/>
+				</xsl:apply-templates>
+			</xsl:when>
+			<xsl:when test="normalize-space($all_levels_texts)=normalize-space(.)">
 				<xsl:apply-templates select="*|text()">
 					<xsl:with-param name="id" select="$id"/>
 				</xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:element name="{name()}">
-					<xsl:apply-templates select="@*| * | text()">
+					<xsl:apply-templates select="@* | * | text()">
 						<xsl:with-param name="id" select="$id"/>
 					</xsl:apply-templates>
 				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template
-		match="app | term | def | response | sig |  p | sec | sub | sup | label | subtitle | edition |  issn | corresp | ack | sig-block">
+	
+	<xsl:template match="app | term | def | response | sig |  p | sec | sub | label | subtitle | edition |  issn | corresp | ack | sig-block">
 		<xsl:param name="id"/>
 		
 		<xsl:element name="{name()}">
-			<xsl:apply-templates select="@*| * | text()">
+			<xsl:apply-templates select="@* | * | text()">
 				<xsl:with-param name="id" select="$id"/>
 			</xsl:apply-templates>
 		</xsl:element>
@@ -3087,4 +3097,5 @@ et al.</copyright-statement>
 	
 	<xsl:template match="p//product//*"><xsl:apply-templates select="*|text()"></xsl:apply-templates></xsl:template>
 	
+
 </xsl:stylesheet>
