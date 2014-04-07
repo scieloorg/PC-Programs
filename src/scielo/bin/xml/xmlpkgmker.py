@@ -1725,7 +1725,8 @@ class ContentValidation(object):
                     print('href not found???')
                     print(self._node_xml(node))
                 else:
-                    self.href.append(href)
+                    if not 'http' in href and not node.tag == 'ext-link':
+                        self.href.append(href)
 
             for ref in self.xml.findall('.//ref'):
                 r = {}
@@ -1908,7 +1909,6 @@ class ContentValidation(object):
             self.issue_meta_validations += self._validate_conditional_required_data(self.issue_meta, ['volume', 'issue'], 'journal-meta and issue-meta')
             if expected_journal_meta:
                 self.issue_meta_validations += self._validate_data(self.issue_meta, expected_journal_meta)
-
 
             if not self.issue_meta['suppl'] is None:
                 self.issue_meta_validations += ['FATAL ERROR: do not use <supplement>, use <issue> to label supplement. E.g.: <issue>1 Suppl</issue>, <issue>1 Suppl 2</issue>, <issue>Suppl</issue>', '<issue>Suppl 1</issue>']
