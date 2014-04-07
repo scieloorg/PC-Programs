@@ -166,34 +166,23 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="body"/>
 	<xsl:template match="bold | italic | sup" mode="formatted-text"/>
-	<xsl:template match="*[bold or italic or sup]" mode="formatted-text">
-			<xsl:apply-templates select="text()" mode="formatted-text"></xsl:apply-templates>
-	</xsl:template>
-	<xsl:template match="*[bold or italic or sup]/text()" mode="formatted-text">
-		<xsl:value-of select="."/>
-	</xsl:template>
+	<xsl:template match="*[bold or italic or sup]" mode="formatted-text"><xsl:apply-templates select="text()" mode="formatted-text"></xsl:apply-templates></xsl:template>
+	<xsl:template match="*[bold or italic or sup]/text()" mode="formatted-text"><xsl:value-of select="."/></xsl:template>
 	<xsl:template match="bold | italic | sup">
 		<xsl:param name="id"/>
 		<xsl:variable name="all_levels_texts"><xsl:apply-templates select="parent::node()" mode="text-only"></xsl:apply-templates></xsl:variable>
 		<xsl:variable name="first_level_texts"><xsl:apply-templates select="parent::node()" mode="formatted-text"></xsl:apply-templates></xsl:variable>
 		<xsl:choose>
-			<xsl:when test="normalize-space($first_level_texts)=''">
-				<xsl:apply-templates select="*|text()">
+			<xsl:when test="normalize-space($first_level_texts)=''"><xsl:apply-templates select="*|text()">
 					<xsl:with-param name="id" select="$id"/>
-				</xsl:apply-templates>
-			</xsl:when>
-			<xsl:when test="normalize-space($all_levels_texts)=normalize-space(.)">
-				<xsl:apply-templates select="*|text()">
+				</xsl:apply-templates></xsl:when>
+			<xsl:when test="normalize-space($all_levels_texts)=normalize-space(.)"><xsl:apply-templates select="*|text()">
 					<xsl:with-param name="id" select="$id"/>
-				</xsl:apply-templates>
-			</xsl:when>
+				</xsl:apply-templates></xsl:when>
 			<xsl:otherwise>
-				<xsl:element name="{name()}">
-					<xsl:apply-templates select="@* | * | text()">
+				<xsl:element name="{name()}"><xsl:apply-templates select="@* | * | text()">
 						<xsl:with-param name="id" select="$id"/>
-					</xsl:apply-templates>
-				</xsl:element>
-			</xsl:otherwise>
+					</xsl:apply-templates></xsl:element></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	
@@ -1822,26 +1811,18 @@ Here is a figure group, with three figures inside, each of which contains a grap
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:variable name="source"><xsl:apply-templates select="*|text()"/></xsl:variable>
-		<source xml:lang="{$lang}"><xsl:value-of select="normalize-space($source)"/></source>
+		<source xml:lang="{$lang}"><xsl:apply-templates select="*|text()"/></source>
 	</xsl:template>
 	<xsl:template match="sertitle | stitle | vstitle/stitle">
 		<xsl:variable name="first_level_texts"><xsl:apply-templates select="." mode="formatted-text"></xsl:apply-templates></xsl:variable>
 		
 		<source><xsl:choose>
-			<xsl:when test="normalize-space($first_level_texts)=''">1
-				<xsl:apply-templates select="*"></xsl:apply-templates>
-			</xsl:when>
-			<xsl:when test="not(*)">
-				<xsl:value-of select="normalize-space(.)"/></xsl:when>
-			<xsl:otherwise>
-				<xsl:apply-templates select="*|text()"></xsl:apply-templates>
-			</xsl:otherwise>
+			<xsl:when test="normalize-space($first_level_texts)=''"><xsl:apply-templates select="*"></xsl:apply-templates></xsl:when>
+			<xsl:when test="not(*)"><xsl:value-of select="normalize-space(.)"/></xsl:when>
+			<xsl:otherwise><xsl:apply-templates select="*|text()"></xsl:apply-templates></xsl:otherwise>
 		</xsl:choose></source>
 	</xsl:template>
-	<xsl:template match="sertitle/text() | stitle/text()">
-		<xsl:value-of select="normalize-space(.)"/>
-	</xsl:template>
+	<xsl:template match="sertitle/text() | stitle/text()"><xsl:value-of select="."/></xsl:template>
 	
 	<xsl:template match="back//*[contains(name(),'monog') or contains(name(),'contrib')]//subtitle"/>
 	<xsl:template match="back//*[contains(name(),'monog') or contains(name(),'contrib')]//subtitle"
