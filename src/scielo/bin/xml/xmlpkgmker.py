@@ -39,6 +39,22 @@ JAR_VALIDATE = CONFIG_JAR_PATH + '/XMLCheck.jar'
 ENTITIES_TABLE_FILENAME = CONFIG_ENT_TABLE_PATH + '/entities2char'
 
 
+def has_invalid_char(content, label):
+    result = []
+    stripped = content.strip()
+    if not stripped.startswith('<'):
+        if startswith_invalid_char(content):
+            result.append('ERROR: %s starts with an invalid character (%s).\n%s' % (label, content[0:1], '&gt;' + display_str_xml_in_html(content[0:10]) + '...'))
+    if not stripped.endswith('>'):
+        if endswith_invalid_char(content):
+            result.append('ERROR: %s ends with an invalid character (%s).\n%s' % (label, content[-1:], '...' + display_str_xml_in_html(content[0:10]) + '&lt;'))
+    return result
+
+
+def display_str_xml_in_html(s):
+    return s.replace('<', '&lt;').replace('>', '&gt;')
+
+
 def display_xml_in_html(node):
     if node is not None:
         return '<pre>' + etree.tostring(node).replace('<', '&lt;').replace('>', '&gt;') + '</pre>'
@@ -1207,11 +1223,9 @@ class PkgReport(object):
                     elif child in desirable_items:
                         row[child] = 'WARNING: Required data, if exists'
                 else:
-                    if not(row[child].strip()[0:1] == '<' and row[child].strip()[-1:] == '>'):
-                        if startswith_invalid_char(row[child]):
-                            row[child] = 'ERROR: %s starts with an invalid character (%s).' % (child, row[child][0:1])
-                        if endswith_invalid_char(row[child]):
-                            row[child] = 'ERROR: %s ends with an invalid character (%s).' % (child, row[child][-1:])
+                    result = has_invalid_char(row[child], child)
+                    if len(result) > 0:
+                        row[child] = '\n'.join(result)
             #print(row)
             rows.append(row)
         return rows
@@ -1777,13 +1791,14 @@ class ContentValidation(object):
             return etree.tostring(node)
 
     def _node_xml_content(self, node):
+        xml = ''
         if not node is None:
-            xml = etree.tostring(node)
+            xml = etree.tostring(node).strip()
             if xml[0:1] == '<':
                 xml = xml[xml.find('>') + 1:]
+            if xml[-1:] == '>':
                 xml = xml[0:xml.rfind('</')]
-            return xml
-        return ''
+        return xml
 
     def _order(self, fpage, fpage_seq, other_id):
         if other_id == '':
@@ -1822,15 +1837,8 @@ class ContentValidation(object):
         if isinstance(data, (str, unicode)):
             #if data.strip() and not '<' in data:
             if data.strip():
-                if not(data.strip()[0:1] == '<' and data.strip()[-1:] == '>'):
-                    
-                    if startswith_invalid_char(data):
-                        result.append('ERROR: ' + _scope + ' ' + label_list + ' starts with an invalid character (' + data[0:1] + ')')
-                    if endswith_invalid_char(data):
-                        print('.' + data + '.')
-                        print('.' + data.strip() + '.')
+                result = has_invalid_char(data, _scope + ' ' + label_list)
 
-                        result.append('ERROR: ' + _scope + ' ' + label_list + ' ends with an invalid character (' + data[-1:] + ')')
             else:
                 result.append(msg_type + ': ' + _scope + ' ' + status + ' ' + label_list)
         elif isinstance(data, dict):
