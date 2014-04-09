@@ -2467,8 +2467,9 @@ def cxpmker_files_and_paths(xml_source):
     if xml_source.endswith('.sgm.xml'):
         f = xml_source
         ctrl_filename = f.replace('.sgm.xml', '.ctrl.txt')
-        r_xml_source = [cxpmker_markup_src_path(f) + '/' + os.path.basename(f)]
-        scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path = cxpmker_markup_paths(xml_source, f)
+        pmc_src = cxpmker_markup_src_path(f)
+        r_xml_source = [pmc_src + '/' + os.path.basename(f)]
+        scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path = cxpmker_markup_paths(pmc_src, f)
         #version = 'j1.0'
     else:
         if os.path.isfile(xml_source):
