@@ -2441,7 +2441,8 @@ def cxpmker_read_inputs(args):
         if src.endswith('.sgm.xml'):
             xml_src = src
             temp = xml_src.split('/')
-            acron = temp[len(temp)-4]
+            print(temp)
+            acron = temp[-6]
             version = 'j1.0'
             print(acron)
         elif src.endswith('.xml'):
