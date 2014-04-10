@@ -712,7 +712,7 @@ class XMLMetadata:
             issn, vol, issueno, suppl, fpage, seq, elocation_id, order = data
 
             if xml_name != '':
-                issn = xml_name[0:10]
+                issn = xml_name[0:9]
 
             if elocation_id is not None:
                 page_or_order = elocation_id
