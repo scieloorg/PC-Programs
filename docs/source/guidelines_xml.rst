@@ -1,9 +1,7 @@
-================================================================
-SciELO Publishing Schema - Guia de uso dos elementos e atributos
-================================================================
+========================================================
+SciELO Publishing Schema - Guidelines for XML production
+========================================================
 
 
-Versão 1.1, Fevereiro 2014
+`Portuguese <pt_guidelines_xml.html>`_
 
-
-...
