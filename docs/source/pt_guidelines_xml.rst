@@ -14,7 +14,7 @@ A declaração de codificação (encoding) identifica a codificação usada para
 
 doctype
 =======
-DOCTYPE é a abreviação de “Document Type”. No doctype informa-se quais regras devem ser seguidas e o que é ou não permitido dentro da estrutura de um determinado XML e de um (X)HTML. A estrutura utilizada como guia para o XML SciELO é a JATS (Z39.96) Journal Publishing DTD v1.0 ou .. _SciELO Publishing Schema v1.0 <http://scieloorg.github.io/scielo_publishing_schema/>`_. Quando XML é criado dentro da estrutura prevista no DOCTYPE o documento é validado. Se há algo divergente, o problema é identificado a partir do confronto entre a estrutura do doctype de referência e do XML criado.
+DOCTYPE é a abreviação de “Document Type”. No doctype informa-se quais regras devem ser seguidas e o que é ou não permitido dentro da estrutura de um determinado XML e de um (X)HTML. A estrutura utilizada como guia para o XML SciELO é a JATS (Z39.96) Journal Publishing DTD v1.0 ou `SciELO Publishing Schema v1.0 <http://scieloorg.github.io/scielo_publishing_schema/>`_. Quando XML é criado dentro da estrutura prevista no DOCTYPE o documento é validado. Se há algo divergente, o problema é identificado a partir do confronto entre a estrutura do doctype de referência e do XML criado.
 
 
 **Nota:** o Doctype valida a estrutura do documento XML e não seu conteúdo.
