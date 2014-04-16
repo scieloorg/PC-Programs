@@ -2,7 +2,7 @@
 SciELO Publishing Schema - Guia de uso dos elementos e atributos
 ================================================================
 
-Versão Draft 1.0,Abril 2014
+Versão preliminar do documento sujeita a modificações, Abril 2014
 
 encoding
 ========
@@ -14,7 +14,7 @@ A declaração de codificação (encoding) identifica a codificação usada para
 
 doctype
 =======
-DOCTYPE é a abreviação de “Document Type”. No doctype informa-se quais regras devem ser seguidas e o que é ou não permitido dentro da estrutura de um determinado XML e de um (X)HTML. A estrutura utilizada como guia para o XML SciELO é a JATS (Z39.96) Journal Publishing DTD v1.0 ou `SciELO Publishing Schema v1.0 <http://scieloorg.github.io/scielo_publishing_schema/>`_. Quando XML é criado dentro da estrutura prevista no DOCTYPE o documento é validado. Se há algo divergente, o problema é identificado a partir do confronto entre a estrutura do doctype de referência e do XML criado.
+DOCTYPE é a abreviação de "Document Type". No doctype informa-se quais regras devem ser seguidas e o que é ou não permitido dentro da estrutura de um determinado XML e de um (X)HTML. A estrutura utilizada como guia para o XML SciELO é a JATS (Z39.96) Journal Publishing DTD v1.0 ou `SciELO Publishing Schema v1.0 <http://scieloorg.github.io/scielo_publishing_schema/>`_. Quando XML é criado dentro da estrutura prevista no DOCTYPE o documento é validado. Se há algo divergente, o problema é identificado a partir do confronto entre a estrutura do doctype de referência e do XML criado.
 
 
 **Nota:** o Doctype valida a estrutura do documento XML e não seu conteúdo.
@@ -34,65 +34,69 @@ a versão utilizada de DOCTYPE. O SciELO PS está na versão 1.0 mas também ace
 -------------
 define-se a tipologia de artigos aceita na estrutura do SciELO PS  1.0. Os tipos de artigos são:
 
-**- research-article (artigo original):** abrange pesquisas, experiências clínicas ou cirúrgicas ou outras contribuições originais.
+- **research-article (artigo original):** abrange pesquisas, experiências clínicas ou cirúrgicas ou outras contribuições originais.
 
-**- letter (cartas):** comunicação entre pessoas ou instituições e organizações por intercâmbio de cartas
+- **letter (cartas):** comunicação entre pessoas ou instituições e organizações por intercâmbio de cartas
 
-**- article-commentary (comentários):** uma nota crítica ou esclarecedora escrita para discutir, apoiar ou debater um artigo ou outra apresentação anteriormente publicada. Pode ser um artigo, carta, editorial, etc. Estas publicações podem aparecer como comentário, comentário editorial, ponto de vista, etc.
+- **article-commentary (comentários):** uma nota crítica ou esclarecedora escrita para discutir, apoiar ou debater um artigo ou outra apresentação anteriormente publicada. Pode ser um artigo, carta, editorial, etc. Estas publicações podem aparecer como comentário, comentário editorial, ponto de vista, etc.
 
-**- brief-communication (comunicação breve):** compreende breves relatos de experiências, trabalhos ou projetos de investigação em andamento.
+- **brief-communication (comunicação breve):** compreende breves relatos de experiências, trabalhos ou projetos de investigação em andamento.
 
-**- editorial (editorial):** uma declaração de opiniões, crenças e políticas do editor de uma revista, geralmente sobre assuntos de significado científico de interesse da comunidade científica ou da sociedade.
+- **editorial (editorial):** uma declaração de opiniões, crenças e políticas do editor de uma revista, geralmente sobre assuntos de significado científico de interesse da comunidade científica ou da sociedade.
 
-**- in-brief (press release):** comunicação breve de linguagem jornalística sobre um artigo ou tema.
+- **in-brief (press release):** comunicação breve de linguagem jornalística sobre um artigo ou tema.
 
-**- case-report (informe/relato de caso):** descrição sumária de casos especiais, que, por sua raridade despertam interesse informativo para a coletividade.
+- **case-report (informe/relato de caso):** descrição sumária de casos especiais, que, por sua raridade despertam interesse informativo para a coletividade.
 
-**- report (informe/relatório técnico):** um informe que dá detalhes de uma investigação ou resultado de um problema científico. Pode também relatar um artigo científico, o estado e posição atual de uma investigação científica e o desenvolvimento da mesma.
+- **report (informe/relatório técnico):** um informe que dá detalhes de uma investigação ou resultado de um problema científico. Pode também relatar um artigo científico, o estado e posição atual de uma investigação científica e o desenvolvimento da mesma.
 
-**- note (nota):** relata resultados parciais ou preliminares de investigação empírica.
+- **note (nota):** relata resultados parciais ou preliminares de investigação empírica.
 
-**- correction (errata):** corrige erros apresentados em artigos após sua publicação online/impressa.
+- **correction (errata):** corrige erros apresentados em artigos após sua publicação online/impressa.
 
-**- obituary (obituário):** anúncio de morte normalmente de pesquisadores de notório saber de uma determinada área para conhecimento de seus pares.
+- **obituary (obituário):** anúncio de morte normalmente de pesquisadores de notório saber de uma determinada área para conhecimento de seus pares.
 
-**- abstract (resumo):** uma apresentação precisa e resumida de uma obra sem agregar interpretação ou crítica, acompanhado de uma referência bibliográfica da obra original.
+- **abstract (resumo):** uma apresentação precisa e resumida de uma obra sem agregar interpretação ou crítica, acompanhado de uma referência bibliográfica da obra original.
 
-**- review (revisão):** um artigo que se refere a um material já publicado sobre um tema. Pode ser extenso quanto à complexidade e ao intervalo de tempo do material investigado.
+- **review (revisão):** um artigo que se refere a um material já publicado sobre um tema. Pode ser extenso quanto à complexidade e ao intervalo de tempo do material investigado.
 
-**- book-review (resenha):** análise críticas de livros e outras monografias.
+- **book-review (resenha):** análise críticas de livros e outras monografias.
 
-**- clinical-trial (ensaio clínico):** ensaio clínico que segue um plano ou protocolo pré-definido e registrado.
+- **clinical-trial (ensaio clínico):** ensaio clínico que segue um plano ou protocolo pré-definido e registrado.
 
-**- retraction (retratação):** a retratação de um artigo científico é um instrumento para corrigir o registro acadêmico publicado equivocadamente, por plágio, por exemplo.
+- **retraction (retratação):** a retratação de um artigo científico é um instrumento para corrigir o registro acadêmico publicado equivocadamente, por plágio, por exemplo.
 
-**- collection (coleção):** utilizada quando há um conjunto de cartas, respostas, resenhas etc. O tipo collection é utilizado em “article” do artigo principal e em <sub-article> ou <response> é identificado cada carta, resenha, resposta etc.
+- **collection (coleção):** utilizada quando há um conjunto de cartas, respostas, resenhas etc. O tipo collection é utilizado em "article" do artigo principal e em <sub-article> ou <response> é identificado cada carta, resenha, resposta etc.
 
 @xml:lang
 ---------
 Identica idioma e pode estar presente em praticamente todos os elementos. É mais frequente nos elementos <article>, <article-title>, <name>, <abstract> e <element-citation>. 
 Deve-se informar o idioma do elemento utilizando código de duas letras conforme norma ISO 639. Em alguns casos, pode-se usar um classificador quando a língua apresenta variações, como zh-Hant para chinês tradicional e zh-Hans para Chinês simplificado. Abaixo lista de códigos mais comuns:
 
-**- en:** inglês
-**- fr:** francês
-**- pt:** português
-**- es:** espanhol
-**- ge:** alemão
-**- af:** africano
+- **en:** inglês
+- **fr:** francês
+- **pt:** português
+- **es:** espanhol
+- **ge:** alemão
+- **af:** africâner
 
- Demais códigos podem ser consultados em <http://www-01.sil.org/iso639-3/codes.asp?order=639_1&letter=e>
+ Demais códigos podem ser consultados em http://www-01.sil.org/iso639-3/codes.asp?order=639_1&letter=e
 
   .. code-block:: xml
 
-    <article xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML"
-   dtd-version="1.0" article-type="research-article" xml:lang="en">
+    <article 
+      xmlns:xlink="http://www.w3.org/1999/xlink" 
+      xmlns:mml="http://www.w3.org/1998/Math/MathML" 
+      dtd-version="1.0" 
+      article-type="research-article" 
+      xml:lang="en">
 
 
 Front
 =====
 O Front de cada artigo contém os dados principais do documento que compõe a sua referência bibliográfica e que serão também utilizados para a criação do sumário do respetivo número do periódico recuperação de autoria, recuperação do documento e especificação de afiliação. Esses dados alimentam a base e possibilitam a indexação, interoperabilidade na Web, geração de indicadores bibliométricos e interface com os demais serviços oferecidos pelo SciELO.
 
-No Front devem estar apresentados os seguintes dados: metadados do periódico, título(s),autoria, afiliação, resumo(s), palavras-chave, DOI, registro de ensaio clínico (quando houver), paginação, indicação da licença Creative Commons, seção temática ou de tipo de documento a que o documento pertence, histórico (datas de submissão, de aceite e publicação em ahead of print, se houver), dados de correspondência, nota de autor (quando houver).
+No Front devem estar apresentados os seguintes dados: metadados do periódico, título(s), autoria, afiliação, resumo(s), palavras-chave, DOI, registro de ensaio clínico (quando houver), paginação, indicação da licença Creative Commons, seção temática ou de tipo de documento a que o documento pertence, histórico (datas de submissão, de aceite e publicação em ahead of print, se houver), dados de correspondência, nota de autor (quando houver).
 
 
   .. code-block:: xml
@@ -105,17 +109,17 @@ Em journal-meta faz-se a identificação do periódico como um todo. Este item c
 
 journal-id
 ^^^^^^^^^^
-Especifica o tipo de identificação do periódico. No caso do SciELO PS, temos dois tipos: “nlm-ta” onde usa-se a forma abreviada do título do periódico registrada no Pubmed, caso o mesmo seja indexado nesta base de dados ou “publisher-id” onde usa-se o acrônimo do periódico no SciELO.
+Especifica o tipo de identificação do periódico. No caso do SciELO PS, temos dois tipos: "nlm-ta" onde usa-se a forma abreviada do título do periódico registrada no Pubmed, caso o mesmo seja indexado nesta base de dados ou "publisher-id" onde usa-se o acrônimo do periódico no SciELO.
 
-Para especificação de periódico do tipo “nlm-ta”
+Para especificação de periódico do tipo "nlm-ta"
 
 
   .. code-block:: xml
 
     <journal-meta>
-         <journal-id journal-id-type="nlm-ta">Título do Periódico no Pubmed/Medline</journal-id> 
+      <journal-id journal-id-type="nlm-ta">Título do Periódico no Pubmed/Medline</journal-id> 
 
-Para especificação de periódico do tipo “publisher-id”
+Para especificação de periódico do tipo "publisher-id"
 
 
   .. code-block:: xml
@@ -124,7 +128,7 @@ Para especificação de periódico do tipo “publisher-id”
 
 journal-title-group
 ^^^^^^^^^^^^^^^^^^^
-Neste item são incluídas a forma curta (abreviada) e longa do título do periódico de acordo com seu registro no ISSN. O título abreviado sempre Terá como atributo o tipo “publisher”.
+Neste item são incluídas a forma curta (abreviada) e longa do título do periódico de acordo com seu registro no ISSN. O título abreviado sempre Terá como atributo o tipo "publisher".
 
 
   .. code-block:: xml
@@ -138,14 +142,14 @@ ISSN
 ^^^^
 O ISSN é um código numérico, único, que identifica uma publicação seriada a qual é definida pela norma ISO 3297:2007. Normalmente cada tipo de suporte utilizado pelo periódico possui um número específico. Os tipos de ISSN previstos no SciELO PS  são:
 
-*@pub-type=”ppub”* para a versão impressa
+*@pub-type="ppub"* para a versão impressa
 
 
   .. code-block:: xml
 
     <issn pub-type="ppub">ISSN impresso</issn>
 
-*@pub-type=”epub”* para a versão digital
+*@pub-type="epub"* para a versão digital
 
 
   .. code-block:: xml
@@ -193,7 +197,7 @@ Para ahead-of-print também inclui-se outra identificação que será utilizada 
 subject 
 -------
 Em subject classifica-se o artigo de acordo com a seção em que ele aparece no sumário do periódico. É a partir da identificação dessa informação que pode-se agrupar artigos que possuem uma mesma característica e/ou tratam do mesmo assunto. Esta classificação pode ser temática ou por tipologia. 
-Por padrão adota-se para grupo de assuntos o tipo “heading” (cabeçalho) e, em assunto atribui-se a seção em que o artigo foi classificado.
+Por padrão adota-se para grupo de assuntos o tipo "heading" (cabeçalho) e, em assunto atribui-se a seção em que o artigo foi classificado.
 
 **Exemplo:**
 
@@ -254,7 +258,9 @@ Também pode ser utilizada para representar o título paralelo de um periódico 
      </trans-title-group>
      </title-group>
  
-Freqüentemente são inseridas notas ao título que devem ser identificadas com a tag <xref ref-type=”fn”>. Ver item “notas de rodapé”. **Exemplo:**
+Freqüentemente são inseridas notas ao título que devem ser identificadas com a tag <xref ref-type="fn">. Ver item "notas de rodapé".
+
+**Exemplo:**
 
  
   .. code-block:: xml
@@ -271,32 +277,32 @@ autores individuais e institucionais
 
 contrib-group
 ^^^^^^^^^^^^^
-Os que contribuiram (contribuintes) para a elaboração do artigo são identificados em <contrib-group> e podem ser encontradas em <front> ou <front-stub>. Os tipos de contribuintes mais frequentes são de autores, instituições e grupos de pesquisa. A tag pode ou não envolver a informação de afiliação, sendo obrigatória na identificação do contribuidor do tipo “autores” sejam institucionais ou não. Os principais elementos de <contrib-group> são: <contrib>, <xref>, <collab>, <aff>, <role> e <address>.
+Os que contribuiram (contribuintes) para a elaboração do artigo são identificados em <contrib-group> e podem ser encontradas em <front> ou <front-stub>. Os tipos de contribuintes mais frequentes são de autores, instituições e grupos de pesquisa. A tag pode ou não envolver a informação de afiliação, sendo obrigatória na identificação do contribuidor do tipo "autores" sejam institucionais ou não. Os principais elementos de <contrib-group> são: <contrib>, <xref>, <collab>, <aff>, <role> e <address>.
 
 contrib
 ^^^^^^^
 Em <contrib> especifica-se quem contribuiu para o artigo. Pode ser anônimo ou  ter um ou vários autores, inclusive autores institucionais. Tags como <name>, <contrib-id>, <collab>, <on-behalf-of>, <xref>, <role>, <ext-link>, <email>, <anonymous> podem ser encontradas neste elemento. Alguns atributos podem ser inseridos nesta tag. São eles:
 
-**- @contrib-type:** utilizado para especificar o tipo do contribuinte. O tipo mais comum é “author”, mas também pode ser “editor”, “organizer”, “illustrator”, “translator” entre outros, se assim for indicado no artigo.
+- **@contrib-type:** utilizado para especificar o tipo do contribuinte. O tipo mais comum é "author", mas também pode ser "editor", "organizer", "illustrator", "translator" entre outros, se assim for indicado no artigo.
 
-**- @corresp:** especifica se o autor é ou não o indicado para correspondência. Os valores para esse atributo devem ser “yes” ou “no”.
-
-  .. code-block:: xml
-
-    <contrib contrib-type=“author” corresp=“yes”>
-
-**- @equal-contrib:** informa se todos os autores contribuíram igualmente para a pesquisa. Os valores para esse atributo devem ser “yes” ou “no”.
-
+- **@corresp:** especifica se o autor é ou não o indicado para correspondência. Os valores para esse atributo devem ser "yes" ou "no".
 
   .. code-block:: xml
 
-    <contrib contrib-type=“author” equal-contrib=“no”>
+    <contrib contrib-type="author" corresp="yes">
 
-**- @deceased:** especifica se o contribuinte faleceu quando uma parte do documento ou o documento foi publicado. Os valores para esse atributo devem ser “yes” ou “no”.
+- **@equal-contrib:** informa se todos os autores contribuíram igualmente para a pesquisa. Os valores para esse atributo devem ser "yes" ou "no".
+
 
   .. code-block:: xml
 
-    <contrib contrib-type=“author” deceased=“yes”>
+    <contrib contrib-type="author" equal-contrib="no">
+
+- **@deceased:** especifica se o contribuinte faleceu quando uma parte do documento ou o documento foi publicado. Os valores para esse atributo devem ser "yes" ou "no".
+
+  .. code-block:: xml
+
+    <contrib contrib-type="author" deceased="yes">
 
 **Exemplo:**
 
@@ -319,9 +325,11 @@ collab
 ^^^^^^
 Utilizado para especificar um grupo de colaboradores (autores, editores, pesquisadores, instituição, laboratório etc que atuaram como colaboradores do trabalho). Pode ser identificada em <contrib>, <element-citation>, <mixed-citation>, <person-group>, <product>, <related-article> e <related-object>. Collab possui atributos e os mais utilizados são @collab-type e @id:
 
-**- @collab-type**: utilizado para definir o tipo de colaborador. **Exemplo:** committee, assignee, authors, editors, compilers, guest-editors, inventors e translators.
+- **@collab-type**: utilizado para definir o tipo de colaborador.
 
-**- @id:** identificador da tag. Esse atributo deve ter valor único no arquivo e é possível fazer link relacionado a um “rid”.”    
+**Exemplo:** committee, assignee, authors, editors, compilers, guest-editors, inventors e translators.
+
+- **@id:** identificador da tag. Esse atributo deve ter valor único no arquivo e é possível fazer link relacionado a um "rid"."    
 
 
 on-behalf-of
@@ -346,52 +354,56 @@ xref
 ^^^^
 Tag de Referência Cruzada usada para relacionar e/ou fazer link com alguma informação no texto. Essa tag pode ser encontrada em: <aff>, <article-title>,  <bold>, <collab>, <comment>, <contrib>, <contrib-group>, <italic>, <license-p>, <named-content>, <on-behalf-of>, <p>, <product>, <sub>, <sup>, <td>, <term>, <term-head>, <th>, <title>, <trans-subtitle>, <trans-title> entre outros. Atributos mais frequentes para xref são:
  
-**- @alt:** atributo de acessibilidade, é utilizado para descrever o conteúdo referenciado. A descrição deve ser feita no campo de valor do atributo. **Exemplo:**
+- **@alt:** atributo de acessibilidade, é utilizado para descrever o conteúdo referenciado. A descrição deve ser feita no campo de valor do atributo.
+
+**Exemplo:**
  
   .. code-block:: xml
 
-    <xref alt=”imagem de uma microfotografia” rid=”” …>
+    <xref alt="imagem de uma microfotografia" rid=" …>
 
-**- @rid:** significa “referente ao id” e é utilizado para fazer a ligação de elementos que possuem @id no arquivo. É imprescindível que haja um “id” para cada “rid” e ambos deverão ter o mesmo valor. **Exemplo:**
+- **@rid:** significa "referente ao id" e é utilizado para fazer a ligação de elementos que possuem @id no arquivo. É imprescindível que haja um "id" para cada "rid" e ambos deverão ter o mesmo valor.
+
+**Exemplo:**
  
 
   .. code-block:: xml
 
-    <xref ref-type=”aff” rid=”aff1”>xx</xref>
-         <aff id=”aff1”>xx</aff>
+    <xref ref-type="aff" rid="aff1">xx</xref>
+         <aff id="aff1">xx</aff>
        <...>
-      <p>xxxxxx<xref ref-type=”birb” rid=”B01”>xx</xref>
+      <p>xxxxxx<xref ref-type="birb" rid="B01">xx</xref>
        <...>
     <back>
-      <ref id=”B01”>xx</ref>
+      <ref id="B01">xx</ref>
     </back>
 
 
-**- @ref-type:** especifica o tipo de referência cruzada. Os tipos mais comuns são:
+- **@ref-type:** especifica o tipo de referência cruzada. Os tipos mais comuns são:
 
-- **aff**: afiliação
-- **app**: apêndice
-- **author-notes**: notas de autor (ou relacionado a autor)
-- **bibr**: referência bibliográfica
-- **boxed-text**: caixa de texto
-- **contrib**: contribuint
-- **corresp**: autor correspondente
-- **disp-formula**: fórmula
-- **fig**: figura ou grupos de figuras
-- **fn**: nota de rodapé
-- **kwd**: palavra-chave
-- **list**: lista
-- **other**: nenhum dos tipos listados
-- **sec**: seção
-- **statement**: declaração
-- **supplementary-material**: material suplementar
-- **table**: tabela ou grupo de tabelas
-- **table-fn**: nota de rodapé de tabelas
+  - **aff**: afiliação
+  - **app**: apêndice
+  - **author-notes**: notas de autor (ou relacionado a autor)
+  - **bibr**: referência bibliográfica
+  - **boxed-text**: caixa de texto
+  - **contrib**: contribuint
+  - **corresp**: autor correspondente
+  - **disp-formula**: fórmula
+  - **fig**: figura ou grupos de figuras
+  - **fn**: nota de rodapé
+  - **kwd**: palavra-chave
+  - **list**: lista
+  - **other**: nenhum dos tipos listados
+  - **sec**: seção
+  - **statement**: declaração
+  - **supplementary-material**: material suplementar
+  - **table**: tabela ou grupo de tabelas
+  - **table-fn**: nota de rodapé de tabelas
 
 role
 ^^^^
-A tag “role” (rol ou papel) é usada para especificar o papel (ou função) do contribuinte do documento. Essa tag pode ser encontrada nos seguintes elementos: <collab>, <contrib>, <contrib-group>, <element-citation>, <mixed-citation>, <person-group>, <product>, <related-article>, <related-object>.
-Contudo, a tag “role” aparece com maior frequência em <contrib>, <element-citation> e em <person-group>. **Exemplos:**
+A tag "role" (rol ou papel) é usada para especificar o papel (ou função) do contribuinte do documento. Essa tag pode ser encontrada nos seguintes elementos: <collab>, <contrib>, <contrib-group>, <element-citation>, <mixed-citation>, <person-group>, <product>, <related-article>, <related-object>.
+Contudo, a tag "role" aparece com maior frequência em <contrib>, <element-citation> e em <person-group>. **Exemplos:**
 
 *Em contrib:*
 
@@ -443,14 +455,14 @@ Name
 A tag <name> (nome) é utilizada para especificar o nome pessoal do contribuinte e pode ser encontrada em: <contrib>, <element-citation>, <mixed-citation>, <name-alternatives>, <person-group>, <principal-award-recipient>, <principal-investigator>, <product>, <related-article>, <related-object>. Em <name> é possível inserir alguns atributos como @content-type, @id, @name-style, @specific-use, @xml:base e @xml:lang, porém os atributos mais utilizados são: @name-style e @xml:lang. Essa tag identifica prenomes, sobrenomes prefixos e sufixos.
  
 
-**- @name-style:** atributo opcional, @name-style indica o tipo de nome, por exemplo, se ocidental ou oriental.
+- **@name-style:** atributo opcional, @name-style indica o tipo de nome, por exemplo, se ocidental ou oriental.
 
 *Ocidental:*
 
 
   .. code-block:: xml
 
-    <name **name-style=“western”**>
+    <name name-style="western">
       <surname>Baker</surname>
       <given-names>John M.</given-names>
     </name>
@@ -460,17 +472,17 @@ A tag <name> (nome) é utilizada para especificar o nome pessoal do contribuinte
 
   .. code-block:: xml
 
-    <name name-style=“eastern” xml:lang=”ja-Jpan”>
+    <name name-style="eastern" xml:lang="ja-Jpan">
    <surname>園田</surname>
    <given-names>直子</given-names>
    </name>
 
-**- @xml:lang:** atributo opcional utilizado para especificar o idioma em que o nome está escrito. Geralmente é utilizado para nomes orientais. Exmeplo:
+- **@xml:lang:** atributo opcional utilizado para especificar o idioma em que o nome está escrito. Geralmente é utilizado para nomes orientais. Exmeplo:
 
 
   .. code-block:: xml
 
-    <name name-style=“eastern” **xml:lang=”ja-Jpan”**>
+    <name name-style="eastern" xml:lang="ja-Jpan">
     <surname>園田</surname>
       <given-names>直子</given-names>
     </name>
@@ -491,16 +503,16 @@ Given-names identifica o prenome do autor, ou seja, o primeiro nome e também o 
 
 prefix
 ^^^^^^
-Especifica o qualificador que precede o prenome do autor. Geralmente é utilizado quando há qualificadores como “Prof. Dr., “Dr.”,“Sr”,“Presidente”, “Embaixador” etc.
+Especifica o qualificador que precede o prenome do autor. Geralmente é utilizado quando há qualificadores como "Prof. Dr., "Dr.","Sr","Presidente", "Embaixador" etc.
 
 suffix
 ^^^^^^
-Especifica sufixos do nome como as partículas “Neto”, “Júnior”, “Jr.”, “Filho”, “Sobrinho” etc.
+Especifica sufixos do nome como as partículas "Neto", "Júnior", "Jr.", "Filho", "Sobrinho" etc.
 
 
   .. code-block:: xml
 
-    <contrib contrib-type=”author”>
+    <contrib contrib-type="author">
     <name>
           <surname>Santos</surname>
           <given-names>João da Silva</given-names>
@@ -556,7 +568,7 @@ institution
  
 addr-line
 ^^^^^^^^^
-Em <addr-line>, literalmente “linha de endereço”, especifica-se o estado e cidade da instituição vinculada ao autor / contribuinte. 
+Em <addr-line>, literalmente "linha de endereço", especifica-se o estado e cidade da instituição vinculada ao autor / contribuinte. 
 
 
   .. code-block:: xml
@@ -601,7 +613,7 @@ Após identificar todos os itens acima, deve-se especificar a afiliação como a
 author-notes
 ------------         
 Em alguns artigos existem informações extras sobre os autores(contribuintes), como correspondência, contribuição igualitária entre outros. Para especificar esses dados utiliza-se a tag <author-notes>.
-Todas as notas presentes no rodapé do texto que possuem ligação direta com o(s) autor(es)também devem ser marcadas. Para consultar os tipos de nota de rodapé disponíveis, ver item “notas de rodapé”.
+Todas as notas presentes no rodapé do texto que possuem ligação direta com o(s) autor(es)também devem ser marcadas. Para consultar os tipos de nota de rodapé disponíveis, ver item "notas de rodapé".
  
 
   .. code-block:: xml
@@ -625,8 +637,8 @@ Todas as notas presentes no rodapé do texto que possuem ligação direta com o(
 pub-date
 --------
 Para a marcação da data de publicação do artigo/fascículo utiliza-se a tag <pub-date> a qual pode conter os elementos <day>, <month>, <season> e obrigatoriamente <year>. Esta tag deve estar acompanhada do atributo @pub-type. 
-A data de publicação pode ser do tipo “epub-ppub” se houver uma versão impressa do fascículo, apenas “epub” para publicação digital ou em ahead-of-print ou “collection” quando trata-se de um fascículo composto de artigos publicados anteriormente em ahead-of-print. 
-Neste último caso, serão apresentadas duas datas de publicação, uma para designar a data de publicação do artigo em ahead-of-print e outra para indicar a data que o artigo foi movido para o fascículo (“collection”).
+A data de publicação pode ser do tipo "epub-ppub" se houver uma versão impressa do fascículo, apenas "epub" para publicação digital ou em ahead-of-print ou "collection" quando trata-se de um fascículo composto de artigos publicados anteriormente em ahead-of-print. 
+Neste último caso, serão apresentadas duas datas de publicação, uma para designar a data de publicação do artigo em ahead-of-print e outra para indicar a data que o artigo foi movido para o fascículo ("collection").
 
 **Exemplo de identificação de data de publicação de artigo publicado em ahead-of-print e movido para fascículo:**
 
@@ -755,7 +767,7 @@ A Licença é um conjunto de condições sob as quais o conteúdo pode ser usado
 
 @license-type
 ^^^^^^^^^^^^^
-Especifica-se o tipo de licença adotada pelo artigo. Os mais comuns no SciELO são:”CC-BY-NC”, “CC-BY”, CC-BY-NC-SA e CC-BY-SA. Cada licença regula o uso, distribuição e adaptação da obra. Para mais informações consultar: http://creativecommons.org/ 
+Especifica-se o tipo de licença adotada pelo artigo. Os mais comuns no SciELO são:"CC-BY-NC", "CC-BY", CC-BY-NC-SA e CC-BY-SA. Cada licença regula o uso, distribuição e adaptação da obra. Para mais informações consultar: http://creativecommons.org/ 
 
 license-p
 ^^^^^^^^^ 
@@ -837,7 +849,7 @@ Identificadas em grupos de palavras-chave <kwd-group>, terá sempre o atributo d
 
 funding-group 
 -------------
-Normalmente presente em “agradecimentos” <ack> ou em notas de rodapé <fn>, os dados de financiamento são especificados em <funding-group> e apresentam os dados de financiamento/apoio à pesquisa por pessoas jurídicas, ong's, oscip's (em alguns casos de pessoa física) e órgãos de fomento em geral. Esta tag só será utilizada quando houver a informação de número de contrato explicitado no artigo. 
+Normalmente presente em "agradecimentos" <ack> ou em notas de rodapé <fn>, os dados de financiamento são especificados em <funding-group> e apresentam os dados de financiamento/apoio à pesquisa por pessoas jurídicas, ong's, oscip's (em alguns casos de pessoa física) e órgãos de fomento em geral. Esta tag só será utilizada quando houver a informação de número de contrato explicitado no artigo. 
 Um artigo pode ter diversos financiadores. Cada grupo de dados de financiamento será identificado pela tag <award-group> e nela serão especificados o órgão financiador <funding-source> e o número de contrato <award-id>. O grupo de financiamento deve ser inserido logo após as palavras-chave.
 
 Quando está presente em agradecimentos <ack> o dado de financiamento será identificado como segue:
@@ -875,13 +887,13 @@ Quando está presente em agradecimentos <ack> o dado de financiamento será iden
      <back>
     <...>
         <fn-group>
-            <fn fn-type=”financial-disclosure”>
+            <fn fn-type="financial-disclosure">
         <p>CNPQ contract 00001</p>
     </fn>
         </fn-group>
     </back>
 
-**IMPORTANTE:** No caso da nota de rodapé com informação de financiamento, sempre mantê-la dentro de <back> em <fn-group> com o tipo @fn-type “financial-disclosure” e em <front>. Notas SEM NÚMERO DE CONTRATO, ficam apenas em <back> mas com tipo @fn-type "supported-by".
+**IMPORTANTE:** No caso da nota de rodapé com informação de financiamento, sempre mantê-la dentro de <back> em <fn-group> com o tipo @fn-type "financial-disclosure" e em <front>. Notas SEM NÚMERO DE CONTRATO, ficam apenas em <back> mas com tipo @fn-type "supported-by".
 
 Quando houver para uma instituição mais de um número de contrato:
 
@@ -931,14 +943,14 @@ Elemento usualmente presente em artigos científicos, as seções <sec> organiza
 Os elementos mais comuns de uma seção são: <sec> neste caso usada para representar uma subseção, <p>, <title>, <fig>, <table-wrap>, <disp-formula>, <list> e <disp-quote>.
 Os tipos mais comuns de seção devem ser identificados utilizando o atributo @sec-type.
 
-**-cases:** relatos/estudos de caso
-**-conclusions:** conclusões/comentários
-**-discussion:** discussões
-**-intro:** introdução/Sipnose
-**-materials:** materiais
-**-methods:** metodologia/método
-**-results:** resultados
-**-supplementary-material:** material suplementar
+- **cases:** relatos/estudos de caso
+- **conclusions:** conclusões/comentários
+- **discussion:** discussões
+- **intro:** introdução/Sipnose
+- **materials:** materiais
+- **methods:** metodologia/método
+- **results:** resultados
+- **supplementary-material:** material suplementar
 
  
   .. code-block:: xml
@@ -951,9 +963,9 @@ Os tipos mais comuns de seção devem ser identificados utilizando o atributo @s
 
 As seções podem ser combinadas:
 
-**- materials|methods:** materiais e métodos
-**- results|discussion:** discussão e resultados
-**- results|discussion|conclusions:** conclusões, discussões e resultados                             
+- **materials|methods:** materiais e métodos
+- **results|discussion:** discussão e resultados
+- **results|discussion|conclusions:** conclusões, discussões e resultados                             
 
  
   .. code-block:: xml
@@ -986,7 +998,7 @@ As equações podem ser apresentadas como imagem ou codificadas e serão identif
 
   .. code-block:: xml
 
-    <p>xxxxxxxxx<xref ref-type=”disp-formula” rid=”e01”>equação 1</xref>
+    <p>xxxxxxxxx<xref ref-type="disp-formula" rid="e01">equação 1</xref>
     </p>
     <disp-formula id="e01">
            <graphic xlink:href="nome da equação em imagem"/>
@@ -1022,7 +1034,7 @@ Table-wrap
 ^^^^^^^^^^
 <table-wrap> é utilizada para especificar uma tabela, incluindo labels, caption e footnotes. Essa tag pode estar inserida em: <app>, <app-group>, <body>, <boxed-text>, <disp-quote>, <fig>, <floats-group>, <glossary>, <named-content>, <notes>, <p>, <sec>, <supplementary-material> e  <table-wrap-group>. Possuem atributos opcionais utilizados principalmente para determinar a forma de apresentação da tabela, tais como:  @content-type; @orientation; @position; @specific-use; @xml:base; @xml:lang. Apenas o atributo de @id é obrigatório e deve seguir a estrutura abaixo: 
 
-**- @id:** tabelas = “t” + o número de ordem da tabela = t01, t02... t10.
+- **@id:** tabelas = "t" + o número de ordem da tabela = t01, t02... t10.
 
 **Exemplo:**
 
@@ -1036,7 +1048,7 @@ table-wrap-foot
 ^^^^^^^^^^^^^^^
 Em table-wrap-foot é possível fazer a identificação de nota de rodapé de tabela(<fn>). A tag <fn> deve apresentar o atributo de @id com a seguinte estrutura:
 
-Notas de rodapé de tabelas = “tfn” + o número de ordem da nota + o número da tabela que esta sendo trabalhada = TFN01t01, TFN02t01;
+Notas de rodapé de tabelas = "tfn" + o número de ordem da nota + o número da tabela que esta sendo trabalhada = TFN01t01, TFN02t01;
 
 A nota de rodapé poderá ser relacionado com alguma informação no corpo da tabela.
 
@@ -1068,35 +1080,38 @@ A tabela é dividida  em cabeçalho/títulos <thead> e corpo/dados da tabela <tb
 
 São elementos de <table>:
 
-**- col:** identifica uma coluna (possui atributos);
-**- colgroup:** identifica o total de colunas da tabela (possui atributos);
-**- thead:** identifica o cabeçalho;
-**- tfoot:** identifica a nota de rodapé da tabela;
-**- tbody:** identifica o corpo da tabela;
-**- tr:** identifica uma linha da tabela.
+- **col:** identifica uma coluna (possui atributos);
+- **colgroup:** identifica o total de colunas da tabela (possui atributos);
+- **thead:** identifica o cabeçalho;
+- **tfoot:** identifica a nota de rodapé da tabela;
+- **tbody:** identifica o corpo da tabela;
+- **tr:** identifica uma linha da tabela.
 
 
-Alguns atributos podem ser acrescentados, tais como: @border, @cellpadding, @cellspacing, @content-type, @frame, @id, @rules e @width. ** Exemplo:**
+Alguns atributos podem ser acrescentados, tais como: @border, @cellpadding, @cellspacing, @content-type, @frame, @id, @rules e @width.
 
-**- @border:** especifica a espessura da borda em pixels para a tabela. O valor “0” é utilizado para indicar que a tabela não possui borda e se não acrescentar o atributo @border a tabela irá apresentar uma borda de espessura padrão.
-**- @cellpadding:** define uma quantidade de espaços (em pixels)entre o dado (conteúdo) e a borda de uma célula.
-**- @cellspacing:** define a largura de espaços (em pixels) entre células de uma tabela.
-**- @content-type:** identifica o assunto ou o tipo de conteúdo que está sendo apresentado.
-**- @id: identificador da tag. Esse atributo deve ter valor único
-**- @rules** define as regras para o desenho entre linhas e colunas (all - todas as linhas e colunas, cols - apenas entre colunas, groups - entre grupos, none- nenhuma regra para a tabela, rows - apenas em linhas)
-**- @width:** define a largura total da tabela em pixels.
-**- @frame:** indica qual dos lados da tabela deve seguir determinada regra. 
+
+**Exemplo:**
+
+- **@border:** especifica a espessura da borda em pixels para a tabela. O valor "0" é utilizado para indicar que a tabela não possui borda e se não acrescentar o atributo @border a tabela irá apresentar uma borda de espessura padrão.
+- **@cellpadding:** define uma quantidade de espaços (em pixels)entre o dado (conteúdo) e a borda de uma célula.
+- **@cellspacing:** define a largura de espaços (em pixels) entre células de uma tabela.
+- **@content-type:** identifica o assunto ou o tipo de conteúdo que está sendo apresentado.
+- **@id**: identificador da tag. Esse atributo deve ter valor único
+- **@rules** define as regras para o desenho entre linhas e colunas (all - todas as linhas e colunas, cols - apenas entre colunas, groups - entre grupos, none- nenhuma regra para a tabela, rows - apenas em linhas)
+- **@width:** define a largura total da tabela em pixels.
+- **@frame:** indica qual dos lados da tabela deve seguir determinada regra. 
 
 Os valores para este atributo são:
 
-**|| above:** em cima, apenas. (top)
-**|| below:** em baixo, apenas. (bottom)
-**|| border:** regra para a borda, (todos os lados)
-**|| hsides:** apenas para lados horizontais (topbot)
-**|| lhs:** apenas para o lado esquerdo
-**|| rhs:** apenas para o lado direito
-**|| void:** sem linha, nenhuma borda
-**|| vsides:** regra para os lados verticais, apenas lados (sides)
+**above:** em cima, apenas. (top)
+**below:** em baixo, apenas. (bottom)
+**border:** regra para a borda, (todos os lados)
+**hsides:** apenas para lados horizontais (topbot)
+**lhs:** apenas para o lado esquerdo
+**rhs:** apenas para o lado direito
+**void:** sem linha, nenhuma borda
+**vsides:** regra para os lados verticais, apenas lados (sides)
 
 **Nota:** Todos esses atributos são opcionais.
 
@@ -1126,7 +1141,7 @@ A tag <tbody> é utilizada para identificar do corpo da tabela. A tag <tr> em <t
 
 Para a especificação de dados em <tr> para o corpo da tabela, é necessário utilizar a tag <td>. Essa tag é utilizada para identificar a células/dados que ficam no corpo da tabela. <td> possui alguns atributos que são opcionais, como: @abrr, @align, @axis, @char, @charoff, @colspan, @content-type, @headers, @id, @rowspan, @scote, @style, @valign e xml:base.
 
-A tag <td> pode conter uma série de informações tais como: email, hr, break, italic, underline, bold, roman, sub, sup, inline-formula, list, mml:math, p, graphic, media, sc, inline-suplementary-material, disp-formula-group, disp-formula, inline-graphic, fn, xref etc.
+A tag <td> pode conter uma série de informações tais como: email, hr, break, italic, underline, bold, roman, sub, sup, inline-formula, list, mml:math, p, graphic, media, sc, inline-supplementary-material, disp-formula-group, disp-formula, inline-graphic, fn, xref etc.
 
 **Exemplo:**
 
@@ -1145,7 +1160,7 @@ A tag <td> pode conter uma série de informações tais como: email, hr, break, 
      <td align="center">célula</td>
       </tr>
       <tr>
-     <td align="center">célula<xref ref-type=”table-fn” rid=”TFN01t01”>*</xref></td>
+     <td align="center">célula<xref ref-type="table-fn" rid="TFN01t01">*</xref></td>
      <td align="center">célula</td>
      <td align="center">célula</td>
       </tr>
@@ -1249,7 +1264,7 @@ http://jats.nlm.nih.gov/publishing/tag-library/1.0/n-xi60.html
                </table>
                <table-wrap-foot>
                <fn id="TFN01t02">
-              <label>(1)</label> <!-- o label pode fazer relação com algum símbolo dentro da tabela, que será identificado com xref do tipo “fn” com rid seguindo o da sua nota correspondente (TFN01t02) -->
+              <label>(1)</label> <!-- o label pode fazer relação com algum símbolo dentro da tabela, que será identificado com xref do tipo "fn" com rid seguindo o da sua nota correspondente (TFN01t02) -->
               <p> xxxxxx</p>
                </fn>
                </table-wrap-foot>
@@ -1262,32 +1277,35 @@ Em <supplementary-material> é possível especificar tabelas, figuras, dados bru
 O material suplementar pode estar em dois blocos: em **front**, dentro de <article-meta> e em **body** como seção ou entre parágrafos. O <supplementary-material> só poderá ser identificado em <back> caso esteja identificado dentro do grupo de apêndices <app-group> ou do apêndice <app>.
 Seus atributos mais frequentes são:
 
-**- @content-type:** indica-se o tipo de conteúdo que será apresentado como material suplementar. **Exemplo:**
+- **@content-type:** indica-se o tipo de conteúdo que será apresentado como material suplementar. 
 
+**Exemplo:**
 
   .. code-block:: xml
 
     <supplementary-material content-type="gene">
 
-**- @id:** utilizado como um identificador único no documento e ganha maior importância quando há mais que um material suplementar e/ou quando o material suplementar é referenciado no corpo do texto. Nesse caso é necessário relacionar a chamada no texto com o "id" do material suplementar.
-**- @mime-type:** utilizado para especificar o tipo de mídia como "vídeo" ou "aplicação".
-**- @mime-subtype:** utilizado para especificar o formato da mídia. **Exemplo:**
+- **@id:** utilizado como um identificador único no documento e ganha maior importância quando há mais que um material suplementar e/ou quando o material suplementar é referenciado no corpo do texto. Nesse caso é necessário relacionar a chamada no texto com o "id" do material suplementar.
+- **@mime-type:** utilizado para especificar o tipo de mídia como "vídeo" ou "aplicação".
+- **@mime-subtype:** utilizado para especificar o formato da mídia.
+
+**Exemplo:**
 
   .. code-block:: xml
 
     <supplementary-material xlink:href="nomedoarquivo.mp3" **mime-subtype="mp3"** mimetype="video">
 
-**- @xlink:href:** utilizado para indicar do nome completo do arquivo, tais como: pdf, vídeo, zip etc.
+- **@xlink:href:** utilizado para indicar do nome completo do arquivo, tais como: pdf, vídeo, zip etc.
 
-**- @position:** utilizado quando é necessário indicar a posição de tabelas e figuras no documento. Para isso é atribuído os seguintes valores:
+- **@position:** utilizado quando é necessário indicar a posição de tabelas e figuras no documento. Para isso é atribuído os seguintes valores:
 
-**||float:** a tabela/figura não está fixa, pode abrir em qualquer parte do texto e fora dele.
-**||anchor:** Tab e Fig devem ser apresentadas na posição em que está indicada no texto, não podendo ser removida.
-**||background:** com o valor “background” a imagem deve ser apresentada como plano de fundo no texto.
-**||margin:** indica que imagem deve estar na margem do documento.
+  - **float:** a tabela/figura não está fixa, pode abrir em qualquer parte do texto e fora dele.
+  - **anchor:** Tab e Fig devem ser apresentadas na posição em que está indicada no texto, não podendo ser removida.
+  - **background:** com o valor "background" a imagem deve ser apresentada como plano de fundo no texto.
+  - **margin:** indica que imagem deve estar na margem do documento.
 
 
-**- @xml:lang:** usado para indicar o idioma do material suplementar apresentado. Os valores mais frequentes para esse documento são: “en” (inglês), “pt” (português), “es” (espanhol).
+- **@xml:lang:** usado para indicar o idioma do material suplementar apresentado. Os valores mais frequentes para esse documento são: "en" (inglês), "pt" (português), "es" (espanhol).
 
 **Exemplo de material suplementar em <front>:**
 
@@ -1298,7 +1316,7 @@ Seus atributos mais frequentes são:
 
     <fpage>xx</fpage>
    <lpagexx</lpage>
-    <supplementary-material mime-type=”application” mime-sub-type=”pdf” xlink:href=”nomedoarquivo.pdf”/>
+    <supplementary-material mime-type="application" mime-sub-type="pdf" xlink:href="nomedoarquivo.pdf"/>
 
 **Exemplo de material suplementar em <body>:**
 
@@ -1308,16 +1326,20 @@ Seus atributos mais frequentes são:
   .. code-block:: xml
 
     <p>xxxx</p>
-    <supplementary-material id=”suppl01”>
+    <supplementary-material id="suppl01">
        <label>Fig 1.</label>
           <caption>
              <p>descrição da figura</p>
           </caption>
-       <graphic mimetype=”image” xlink:href=”nomedoarquivo.tif”/>
+       <graphic mimetype="image" xlink:href="nomedoarquivo.tif"/>
     </supplementary-material>
- <p>xxxxxxxxxx<xref ref-type=”suplementary-material” rid=”sp01”>Material Suplementar</xref>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+    <p>xxxxxxxxxx<xref ref-type="supplementary-material" rid="sp01">Material Suplementar</xref>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
 
-**Nota: xref do tipo “suplementary-material” é utilizado para fazer link com a informação de material suplementar no artigo.
+
+.. note::
+
+  xref do tipo "supplementary-material" é utilizado para fazer link com a informação de material suplementar no artigo.
+
 
 disp-quote 
 ----------
@@ -1359,9 +1381,9 @@ Utilizada para especificar URLs, links ativos. Ao fazer a identificação da URL
 
   .. code-block:: xml
 
-    <p>xxx <ext-link ext-link-type=”uri” xlink:href=”http://www.scielo.org”>www.scielo.org</ext-link> xxxxx</p>
+    <p>xxx <ext-link ext-link-type="uri" xlink:href="http://www.scielo.org">www.scielo.org</ext-link> xxxxx</p>
 
-**IMPORTANTE:** O prefixo “http://” deve estar sempre presente. Caso não venha no texto se deve acrescentar dentro da tag de ext-link, para assegurar que o link funcione corretamente.
+**IMPORTANTE:** O prefixo "http://" deve estar sempre presente. Caso não venha no texto se deve acrescentar dentro da tag de ext-link, para assegurar que o link funcione corretamente.
 
 list 
 ----
@@ -1369,17 +1391,17 @@ Para uma sequência de dois ou mais itens, possuindo ou não uma determinada ord
 
 **@list-type:** indica o tipo de lista apresentada. Abaixo as mais comuns:
 
-**|order:** lista ordenada, cujo prefixo utilizado é um número;
-**|bullet:**     lista com marcadores, prefixo utilizado é um ícone de “bola”;
-**|alpha-lower:** lista ordenada, cujo prefixo é um caractere alfabético minúsculo;
-**|alpha-upper:** lista ordenada, cujo prefixo é um caractere alfabético maiúsculo;
-**|roman-lower:** lista ordenada, cujo prefixo é um numeral romano minúsculo;
-**|roman-upper:** lista ordenada, cujo prefixo é um numeral romano maiúsculo;
-**|simple: simples ou lista simples, sem prefixo antes de cada item ou com um traço.
+  - **order:** lista ordenada, cujo prefixo utilizado é um número;
+  - **bullet:**     lista com marcadores, prefixo utilizado é um ícone de "bola";
+  - **alpha-lower:** lista ordenada, cujo prefixo é um caractere alfabético minúsculo;
+  - **alpha-upper:** lista ordenada, cujo prefixo é um caractere alfabético maiúsculo;
+  - **roman-lower:** lista ordenada, cujo prefixo é um numeral romano minúsculo;
+  - **roman-upper:** lista ordenada, cujo prefixo é um numeral romano maiúsculo;
+  - **simple: simples ou lista simples, sem prefixo antes de cada item ou com um traço.
 
-**@prefix-word:** palavra ou frase a ser adicionada ao início de cada item em uma lista, por exemplo, “Step”, “Procedure”, etc.
+**@prefix-word:** palavra ou frase a ser adicionada ao início de cada item em uma lista, por exemplo, "Step", "Procedure", etc.
 
-A tag <list-item> e a tag <p> sãou tilizadas para cada item na lista de itens, dentro da tag <list list-type=”xxx”>.
+A tag <list-item> e a tag <p> sãou tilizadas para cada item na lista de itens, dentro da tag <list list-type="xxx">.
 
 Obs: Se a lista possuir um título, poderá ter uma tag <title> ou <label> antes de <list-item>.
 
@@ -1406,9 +1428,10 @@ Figuras
 -------
 As figuras de um artigo são identificadas por meio da tag <fig>. Com essa tag é possível especificar label, caption, graphic, links, listas, diálogo, citações e objetos multimídia como vídeo, áudio e filme.
 
-As imagens podem ter ou não legendas. Para imagens sem legendas é necessário marcá-la como <fig> e identificá-la com a tag <graphic>. ** Exemplo:**
+As imagens podem ter ou não legendas. Para imagens sem legendas é necessário marcá-la como <fig> e identificá-la com a tag <graphic>.
 
 
+**Exemplo:**
 
   .. code-block:: xml
 
@@ -1419,18 +1442,22 @@ As imagens podem ter ou não legendas. Para imagens sem legendas é necessário 
 A tag <graphic> é utilizada para idenfiticar alguns tipos de arquivos. Seus atributos mais frequentes são:
 
 
-**- @xlink:href:** utilizado para especificar um endereço ou links externos. Portanto o @xlink:href deve conter nomes de imagens/arquivos e também o nome completo de uma URL.
+- **@xlink:href:** utilizado para especificar um endereço ou links externos. Portanto o @xlink:href deve conter nomes de imagens/arquivos e também o nome completo de uma URL.
 
-**- @mimetype:** utilizado para especificar o tipo de mídia como "vídeo" ou "aplicação".
+- **@mimetype:** utilizado para especificar o tipo de mídia como "vídeo" ou "aplicação".
 
-**- @mime-subtype:** utilizado para especificar o formato da mídia. **Exemplo:**
+- **@mime-subtype:** utilizado para especificar o formato da mídia.
+
+**Exemplo:**
 
 
   .. code-block:: xml
 
     <graphic xlink:href="nomedoarquivo.avi" **mime-subtype="avi"** mimetype="video"/>
 
-Para figuras com legendas a marcação deve envolver toda a informação de imagem, inclusive sua descrição, com a tag <fig>. Dentro de <fig> serão identificados o rótulo da figura <label> e sua descrição através da tag <caption>. **Exemplo:**
+Para figuras com legendas a marcação deve envolver toda a informação de imagem, inclusive sua descrição, com a tag <fig>. Dentro de <fig> serão identificados o rótulo da figura <label> e sua descrição através da tag <caption>.
+
+**Exemplo:**
 
 
   .. code-block:: xml
@@ -1444,24 +1471,26 @@ Para figuras com legendas a marcação deve envolver toda a informação de imag
 Essa tag pode ter os seguintes atributos: @fig-type, @id, @orientatoin, @position, @xml:lang, @xml:base, @specific-use. Os atributos mais frequentes são:
 
 
-**- @fig-type:** utilizado para especificar o tipo de imagem. Os tipos podem ser muitos como: Graphic, Cartoon, Chart, Diagram, Drawing, Exihibit, Illustration, Map etc. Contudo o tipo só será definido caso o label da figura apresente um tipo diferente de “fig.” “figure”. 
+- **@fig-type:** utilizado para especificar o tipo de imagem. Os tipos podem ser muitos como: Graphic, Cartoon, Chart, Diagram, Drawing, Exihibit, Illustration, Map etc. Contudo o tipo só será definido caso o label da figura apresente um tipo diferente de "fig." "figure". 
 **Exemplo:**
 
 
   .. code-block:: xml
 
-    <figfig-type=”map” id=”f01”>
+    <figfig-type="map" id="f01">
       <label>Map 1</label>
         <caption>
            <p>xxxx</p>
         </caption>
 
-Se a figura apresentar o label como “fig.” ou “figure” atribuir o valor “other” para fig-type, ou não especificar o type. **Exemplo:**
+Se a figura apresentar o label como "fig." ou "figure" atribuir o valor "other" para fig-type, ou não especificar o type.
+
+**Exemplo:**
 
 
   .. code-block:: xml
 
-    <figfig-type=”other” id=”f01”>
+    <figfig-type="other" id="f01">
       <label>Fig 1</label>
         <caption>
              <p>xxxx</p>
@@ -1471,15 +1500,17 @@ ou
 
   .. code-block:: xml
 
-    <fig id=”f01”>
+    <fig id="f01">
       <label>Fig 1</label>
         <caption>
              <p>xxxx</p>
         </caption>
 
-**- @id:** identificador da tag. É possível fazer referência cruzada no documento; esse atributo deve ter valor único no arquivo e é possível fazer link relacionado a um “rid”. 
-Para composição do “ID” de **figuras** utiliza-se o seguinte padrão:
-“f” + o número de ordem da figura – **Exemplo:** f01... f10, f11;
+- **@id:** identificador da tag. É possível fazer referência cruzada no documento; esse atributo deve ter valor único no arquivo e é possível fazer link relacionado a um "rid". 
+Para composição do "ID" de **figuras** utiliza-se o seguinte padrão:
+"f" + o número de ordem da figura –
+
+**Exemplo:** f01... f10, f11;
 
 
   .. code-block:: xml
@@ -1497,7 +1528,9 @@ Media
 A tag <media> é utilizada para especificar arquivos multimídia como vídeo, áudio, filmes, animações etc.
 Essa tag possui os seguintes atributos: @content-type, @id, @mime-subtype, @mimetype, @orientation, @position, @specific-use, @xlink:actuate, @xlink:href, @xlink:role, @xlink:show, @xlink:title, @xmlns:xlink, @xml:base, @xml:lang. Os atributos mais frequentes são:
 
-**- @content-type:** define-se o tipo de conteúdo que será apresentado em <media>. **Exemplo:**
+- **@content-type:** define-se o tipo de conteúdo que será apresentado em <media>.
+
+**Exemplo:**
 
 
   .. code-block:: xml
@@ -1505,10 +1538,12 @@ Essa tag possui os seguintes atributos: @content-type, @id, @mime-subtype, @mime
     <media content-type="video">
 
 
-**- @id:** identificador da tag. Esse atributo deve ter valor único no arquivo e é possível fazer link relacionado a um “rid”.
+- **@id:** identificador da tag. Esse atributo deve ter valor único no arquivo e é possível fazer link relacionado a um "rid".
 
 
-**- @mime-subtype:** utilizado para especificar o formato de mídia apresentado. **Exemplo:**
+- **@mime-subtype:** utilizado para especificar o formato de mídia apresentado.
+
+**Exemplo:**
 
 
   .. code-block:: xml
@@ -1516,30 +1551,37 @@ Essa tag possui os seguintes atributos: @content-type, @id, @mime-subtype, @mime
     <media mimetype="video"  **mime-subtype="mp4"** xlink:href="nomedoarquivo.mp4"/>
 
 
-**- @mimetype:** utilizado para especificar o tipo de mídia como "vídeo" ou "aplicação". **Exemplo:**
+- **@mimetype:** utilizado para especificar o tipo de mídia como "vídeo" ou "aplicação".
+
+**Exemplo:**
 
 
   .. code-block:: xml
 
-    <media **mimetype=”video”** mime-subtype=”mp4” xlink:href=”nomedoarquivo.mp4”/>
+    <media **mimetype="video"** mime-subtype="mp4" xlink:href="nomedoarquivo.mp4"/>
 
 
-**- @position: ** utilizado quando é necessário especificar a posição de tabelas e figuras no documento. Para isso é atribuído os seguintes valores:
+- **@position: ** utilizado quando é necessário especificar a posição de tabelas e figuras no documento. Para isso é atribuído os seguintes valores:
 
-**|float:** a tabela/figura não está fixa, pode abrir em qualquer parte do texto e fora dele.
-**|anchor:** Tab e Fig devem ser apresentadas na posição em que está indicada no texto, não podendo ser removida.
-**|background:** com o valor “background” a imagem deve ser apresentada como plano de fundo no texto.
-**|margin::** indica que imagem deve estar na margem do documento.
+  - **float:** a tabela/figura não está fixa, pode abrir em qualquer parte do texto e fora dele.
+  - **anchor:** Tab e Fig devem ser apresentadas na posição em que está indicada no texto, não podendo ser removida.
+  - **background:** com o valor "background" a imagem deve ser apresentada como plano de fundo no texto.
+  - **margin::** indica que imagem deve estar na margem do documento.
 
 
-**- @xlink:href:** indica a direção de um arquivo multimídia. **Exemplo:**
+- **@xlink:href:** indica a direção de um arquivo multimídia.
+
+**Exemplo:**
 
 
   .. code-block:: xml
 
     <media mimetype="video"  mime-subtype="mp4" xlink:href="nomedoarquivo.mp4"/>
 
-A tag <media> pode ser encontrada em: <app>, <app-group>, <body>, <boxed-text>, <disp-formula>, <disp-quote>, <fig>, <fig-group>, <floats-group>, <p>, <sec>, <supplementary-material> etc. Contudo, <media> aparece com frequência entre parágrafos, em material suplementar e em figuras. ** Exemplo:**
+A tag <media> pode ser encontrada em: <app>, <app-group>, <body>, <boxed-text>, <disp-formula>, <disp-quote>, <fig>, <fig-group>, <floats-group>, <p>, <sec>, <supplementary-material> etc. Contudo, <media> aparece com frequência entre parágrafos, em material suplementar e em figuras.
+
+
+**Exemplo:**
 
 *Em parágrafo:*
 
@@ -1620,7 +1662,9 @@ A seção de agradecimentos (acknowledgment) quando aparece no artigo deve ser m
 
 É nesta seção que frequentemente os dados financiamento da pesquisa são indicados, como descrito anteriormente em <funding-group> em <front>.
 
-Todo o conteúdo de agradecimentos deverá ser identificado com a tag <ack>, caso haja o título “Agradecimentos” ou “Acknowledgment” identifique-o com a tag <title>. Em <ack> é possível especificar um ou mais parágrafos <p>, dependendo da estrutura do texto. **Exemplo:**
+Todo o conteúdo de agradecimentos deverá ser identificado com a tag <ack>, caso haja o título "Agradecimentos" ou "Acknowledgment" identifique-o com a tag <title>. Em <ack> é possível especificar um ou mais parágrafos <p>, dependendo da estrutura do texto.
+
+**Exemplo:**
 
  
   .. code-block:: xml
@@ -1657,18 +1701,20 @@ A estrutura geral que abarca a lista de referências deve conter quatro tags pri
        </ref>
     <ref-list>
 
--** @publication-type:** indica o tipo de referência citada. As mais comuns são:
+- **@publication-type:** indica o tipo de referência citada. As mais comuns são:
 
-**|journal:** utilizada para referenciar publicações seriadas, editadas em unidades sucessivas, com designações numéricas e/ou cronológicas e destinada a ser continuada indefinidamente.   
-**|book:** utilizada para referenciar monografia/livro. Pode também representar somente uma parte ou capítulo de um livro.
-**|webpage:** utilizada para referencias um relatório técnico,  normalmente de autoria institucional.
-**|thesis:** utilizada para referenciar trabalho de finais de curso para obtenção de um grau acadêmico, tais como livre-docência, doutorado, mestrado, bacharelado, licenciatura, etc.
-**|confproc (evento):** utilizada para referenciar documentos relacionados com eventos científicos: atas, anais, resultados, proceedings, convenção, conferência entre outras denominações.
-**|patent:** utilizada para referenciar patentes. 
-**|software:** utilizada para referenciar um software que pode estar em vários suportes, como CDs, DVDs, em suporte online, dispositivos usb e etc. 
-**|database:** utilizada para referenciar bases de dados.
+  - **journal:** utilizada para referenciar publicações seriadas, editadas em unidades sucessivas, com designações numéricas e/ou cronológicas e destinada a ser continuada indefinidamente.   
+  - **book:** utilizada para referenciar monografia/livro. Pode também representar somente uma parte ou capítulo de um livro.
+  - **webpage:** utilizada para referencias um relatório técnico,  normalmente de autoria institucional.
+  - **thesis:** utilizada para referenciar trabalho de finais de curso para obtenção de um grau acadêmico, tais como livre-docência, doutorado, mestrado, bacharelado, licenciatura, etc.
+  - **confproc (evento):** utilizada para referenciar documentos relacionados com eventos científicos: atas, anais, resultados, proceedings, convenção, conferência entre outras denominações.
+  - **patent:** utilizada para referenciar patentes. 
+  - **software:** utilizada para referenciar um software que pode estar em vários suportes, como CDs, DVDs, em suporte online, dispositivos usb e etc. 
+  - **database:** utilizada para referenciar bases de dados.
+
 
 **IMPORTANTE:**
+
 - Nunca manter uma informação toda com formatação <italic>, <bold> etc, dentro de alguma tag. (mais informação sobre a regra: http://www.ncbi.nlm.nih.gov/pmc/pmcdoc/tagging-guidelines/article/genprac.html#formatting);
 - Especificar na marcação os elementos de uma referência na sequência que aparece no documento original;
 - Todas as referências devem conter informação de fonte principal <source>;
@@ -1771,7 +1817,7 @@ A estrutura geral que abarca a lista de referências deve conter quatro tags pri
              <publisher-loc>Lugar de publicação</publisher-loc>
               <publisher-name>Nome da mantenedoura/instituição</publisher-name>
               <year>ano</year>
-             <date-in-citation content-type=”access-date”>data de acesso ao link</date-in-citation>
+             <date-in-citation content-type="access-date">data de acesso ao link</date-in-citation>
     <date-in-citation content-type="updated">data de uptated</date-in-citation>
          <comment>Available from:<ext-link ext-link-type="uri" xlink:href="http://www.scielo.org">www.scielo.org
         </ext-link></comment>
@@ -1869,7 +1915,7 @@ A estrutura geral que abarca a lista de referências deve conter quatro tags pri
               <collab>autor institucional (se houver)</collab>
              <article-title>título do documento de patente</article-title>
         <source>identificado o nome do país autorizou a patente. Ex.: United States patent</source>
-        <patent country="inserir a informação padronizada do país , ex.:”US” = United States">US Número da Patente</patent>
+        <patent country="inserir a informação padronizada do país , ex.:"US" = United States">US Número da Patente</patent>
              <year>ano do documento da patente</year>
               <month>mês (se houver)</month>
             <day>dia (se houver)</day>
@@ -1936,49 +1982,53 @@ A construção geral das notas de rodapé de back estão sempre representadas po
   .. code-block:: xml
 
     <fn-group> 
-       <fn fn-type=”???” id=”fn01”>
+       <fn fn-type="???" id="fn01">
      <label>*</label>
              <p>Texto...</p>
        </fn>
     </fn-group>
 
 
-É possível ter quantas notas forem necessárias dentro de uma única tag de grupo de notas <fn-group>. **Exemplo:**
+É possível ter quantas notas forem necessárias dentro de uma única tag de grupo de notas <fn-group>.
+
+**Exemplo:**
 
  
   .. code-block:: xml
 
     <fn-group> 
-       <fn fn-type=”???” id=”fn01”>
+       <fn fn-type="???" id="fn01">
      <label>1</label>
              <p>Texto...</p>
        </fn>
-       <fn fn-type=”???” id=”fn02”>
+       <fn fn-type="???" id="fn02">
      <label>**</label>
              <p>Texto...</p>
        </fn>
     </fn-group>
 
-Também é possível ver notas de rodapé mais simples sem etiqueta <label> ou identificação @id ou ambos. **Exemplo:**
+Também é possível ver notas de rodapé mais simples sem etiqueta <label> ou identificação @id ou ambos.
+
+**Exemplo:**
 
  
   .. code-block:: xml
 
     <fn-group> 
-       <fn fn-type=”???”>    
+       <fn fn-type="???">    
              <p>Texto...</p>
        </fn>
     </fn-group>
 
 Os tipos mais comuns de <fn> são:
 
-**- abbr:** representa abreviaturas de termos e nomes próprios utilizadas ao longo do texto. Caso esteja falando de abreviaturas de nomes dos autores, inserir nota em <author-notes> em <front>.
-**- com:** representa nota de algum tipo de comunicado relevante para a realização do artigo.
-**- financial-disclosure:** declaração de financiamento ou negação e aceitação de recursos recebidos em apoio à pesquisa em que um artigo é baseado. Normalmente serve para informações de financiamento que possuem um número de contrato ou que só informam se “SIM” ou “N O” houve financiamento.
-**- supported-by:** indica que a pesquisa sobre a qual o artigo é baseado foi apoiada por alguma entidade, instituição ou pessoa física. Considerar também informação de financiamento que NÃO possuem números de contrato.
-**- presented-at:** indica que o artigo foi apresentado em algum evento científico.
-**- supplementary-material:** indica ou descreve o material suplementar do artigo.
-**- other:** especifica aquelas notas diferentes das relacionados acim. É possível também ter este tipo de nota em <author-notes> em <front>.
+- **abbr:** representa abreviaturas de termos e nomes próprios utilizadas ao longo do texto. Caso esteja falando de abreviaturas de nomes dos autores, inserir nota em <author-notes> em <front>.
+- **com:** representa nota de algum tipo de comunicado relevante para a realização do artigo.
+- **financial-disclosure:** declaração de financiamento ou negação e aceitação de recursos recebidos em apoio à pesquisa em que um artigo é baseado. Normalmente serve para informações de financiamento que possuem um número de contrato ou que só informam se "SIM" ou "N O" houve financiamento.
+- **supported-by:** indica que a pesquisa sobre a qual o artigo é baseado foi apoiada por alguma entidade, instituição ou pessoa física. Considerar também informação de financiamento que NÃO possuem números de contrato.
+- **presented-at:** indica que o artigo foi apresentado em algum evento científico.
+- **supplementary-material:** indica ou descreve o material suplementar do artigo.
+- **other:** especifica aquelas notas diferentes das relacionados acim. É possível também ter este tipo de nota em <author-notes> em <front>.
 
 Para mais detalhes sobre as tipologias, consultar link: http://jats.nlm.nih.gov/publishing/tag-library/1.1d1/index.html
 
@@ -1988,15 +2038,15 @@ Para mais detalhes sobre as tipologias, consultar link: http://jats.nlm.nih.gov/
   .. code-block:: xml
 
     <fn-group> 
-       <fn fn-type=”presented-at”>
+       <fn fn-type="presented-at">
      <label>1</label>
              <p>Artigo apresentado na primeira conferência SciELO 15 anos, realizada dia 25 de outubro de 2013.</p>
        </fn>
-       <fn fn-type=”financial-disclosure”>
+       <fn fn-type="financial-disclosure">
      <label>2</label>
              <p>Trabalho foi financiado pelo CNPq / Contract: 012345X.</p>
        </fn>
-      <fn fn-type=”supported-by”>
+      <fn fn-type="supported-by">
      <label>*</label>
              <p>Este artigo teve apoio e parceria da Instituição, SciELO - Scientific Eletronic Library Online e da FAP/UNIFESP.</p>
        </fn>
@@ -2085,7 +2135,7 @@ Utilizado para indicar a presença de um apêndice ao documento. Para a marcaç�
     </app>
     </app-group>
 
-**Exemplo de Apêndice misto (figura mais tabela) com dois “ids” individuais:**
+**Exemplo de Apêndice misto (figura mais tabela) com dois "ids" individuais:**
 
 
   .. code-block:: xml
@@ -2127,7 +2177,7 @@ Utilizado para indicar a presença de um apêndice ao documento. Para a marcaç�
     </app>
     </app-group>
 
-**Exemplo de Apêndice misto (texto mais figura) com um “id” de referência ao grupo:**
+**Exemplo de Apêndice misto (texto mais figura) com um "id" de referência ao grupo:**
 
 
   .. code-block:: xml
@@ -2143,8 +2193,6 @@ Utilizado para indicar a presença de um apêndice ao documento. Para a marcaç�
 
 **Exemplo de Apêndice com vídeo:**
  
-
-
   .. code-block:: xml
 
     <app-group id="S01">
@@ -2163,7 +2211,10 @@ Ainda é possível encontrar o material suplementar inserido em notas (footnote)
 
 glossary 
 --------
-Utilizada quando há uma lista de termos e respectivas  definições. O glossário pode ser apresentado como imagem ou como texto com as identificações de <term>, <def-list> e <def>. O glossário pode estar identificado em: app, back, bio, boxed-text, glossary, notes e sec. Frequentemente o glossário aparece em <app> e em <back>. ** Exemplo:**
+Utilizada quando há uma lista de termos e respectivas  definições. O glossário pode ser apresentado como imagem ou como texto com as identificações de <term>, <def-list> e <def>. O glossário pode estar identificado em: app, back, bio, boxed-text, glossary, notes e sec. Frequentemente o glossário aparece em <app> e em <back>.
+
+
+**Exemplo:**
 
 *Em apêndices:*
 
@@ -2220,8 +2271,10 @@ Utilizada quando há uma lista de termos e respectivas  definições. O glossár
 
 A tag <glossary> possui os seguintes atributos: @content-type, @id, @specific-use e @xml:lang. Porém o atributo mais frequente é o @id.
 
-**- @id:** identificador da tag. É possível fazer referência cruzada no documento; esse atributo deve ter valor único no arquivo e é possível fazer link relacionado a um “rid”.
-   Para composição do “ID” de **glossários** utilizar o seguinte **padrão:** “d” + o número de ordem da figura – **Exemplo:** d01... d10, d11;
+- **@id:** identificador da tag. É possível fazer referência cruzada no documento; esse atributo deve ter valor único no arquivo e é possível fazer link relacionado a um "rid".
+   Para composição do "ID" de **glossários** utilizar o seguinte **padrão:** "d" + o número de ordem da figura –
+
+   **Exemplo:** d01... d10, d11;
 
 O glossário pode ser apresentado como imagem, utilizando a tag <graphic>, ou como texto. Veja os exemplos abaixo:
 
@@ -2312,13 +2365,13 @@ O glossário pode ser apresentado como imagem, utilizando a tag <graphic>, ou co
 **Nota:** regra de atribuição de @id para Afiliações, Notas, Tabelas, Notas de Tabela, Figuras e Equações. 
 Para a composição do @id para os elementos que demandam esse atributo, combine uma raiz com uma numeração sequencial, como segue:
 
-**- Afiliações, raiz “aff”:** aff01, aff02,....;
-**- Equações, raiz “e”:** e01, e02, ….;
-**- Figuras, raiz “f”:** f01,f02, ….;
-**- Tabelas, raiz “t”**: t01, t02..;
-**- Notas de rodapé de tabelas, raiz “tfn”:** tfn01, tfn02, ...;
-**- Notas de rodapé do artigo, raiz “fn”:** fn01, fn02…;
-**- Glossário, raiz “d”:** d01, d02, ...;
+- **Afiliações, raiz "aff":** aff01, aff02,....;
+- **Equações, raiz "e":** e01, e02, ….;
+- **Figuras, raiz "f":** f01,f02, ….;
+- **Tabelas, raiz "t"**: t01, t02..;
+- **Notas de rodapé de tabelas, raiz "tfn":** tfn01, tfn02, ...;
+- **Notas de rodapé do artigo, raiz "fn":** fn01, fn02…;
+- **Glossário, raiz "d":** d01, d02, ...;
 
 Referências bibliográficas:
 ==========================
