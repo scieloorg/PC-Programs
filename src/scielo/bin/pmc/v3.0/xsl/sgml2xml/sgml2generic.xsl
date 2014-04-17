@@ -7,6 +7,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 <xsl:stylesheet version="1.0" xmlns:xlink="http://www.w3.org/1999/xlink"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util"
 	xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
+	<xsl:variable name="pub_type"><xsl:choose>
+		<xsl:when test="node()/@issueno='ahead'">preprint</xsl:when>
+		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">eletronic-print</xsl:when>
+		<xsl:when test=".//extra-scielo/print-issn!=''">print</xsl:when>
+		<xsl:when test=".//extra-scielo/e-issn!=''">eletronic</xsl:when>
+	</xsl:choose></xsl:variable>
 	<xsl:variable name="unident" select="//unidentified"/>
 	<xsl:variable name="corresp" select="//corresp"/>
 	<xsl:variable name="deceased" select="//fngrp[@fntype='deceased']"/>
@@ -32,7 +38,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:value-of select="node()/@issueno"/>
 			</xsl:otherwise>
 		</xsl:choose>
-
 	</xsl:variable>
 	<xsl:variable name="zeros_page">00000<xsl:value-of select="node()/@fpage"/></xsl:variable>
 	<xsl:variable name="zeros_order">00000<xsl:value-of select="node()/@order"/></xsl:variable>
