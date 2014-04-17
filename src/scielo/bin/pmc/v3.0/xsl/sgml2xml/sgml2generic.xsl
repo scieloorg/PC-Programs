@@ -9,9 +9,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
 	<xsl:variable name="pub_type"><xsl:choose>
 		<xsl:when test="node()/@issueno='ahead'">preprint</xsl:when>
-		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">eletronic-print</xsl:when>
+		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">electronic-print</xsl:when>
 		<xsl:when test=".//extra-scielo/print-issn!=''">print</xsl:when>
-		<xsl:when test=".//extra-scielo/e-issn!=''">eletronic</xsl:when>
+		<xsl:when test=".//extra-scielo/e-issn!=''">electronic</xsl:when>
 	</xsl:choose></xsl:variable>
 	<xsl:variable name="unident" select="//unidentified"/>
 	<xsl:variable name="corresp" select="//corresp"/>
