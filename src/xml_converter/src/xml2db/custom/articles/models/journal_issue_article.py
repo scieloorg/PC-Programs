@@ -204,7 +204,7 @@ class Article:
     
 
     def set_previous_id(self, prev_id):
-        if len(prev_id) > 0:
+        if len(prev_id) == 23 and not '.' in prev_id:
             self.previous_id = prev_id
             self.json_data['f']['881'] = prev_id
             self.json_data['h']['881'] = prev_id

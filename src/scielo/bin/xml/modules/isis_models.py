@@ -363,12 +363,21 @@ class IssueISIS(object):
 
     def section_code(self, section_title):
         seccode = None
+        if section_title is not None:
+            for sec in self.record.get('49', []):
+                if sec.get('t').lower() == section_title.lower():
+                    seccode = sec.get('c')
+                    break
+        return seccode
 
-        for sec in self.record.get('49', []):
-            if sec.get('t').lower() == section_title.lower():
-                seccode = sec.get('c')
-                break
+    def check_section(self, section_title):
+        seccode = self.section_code(section_title)
         if seccode is None:
-            print(section_title.lower())
-            print(self.record.get('49', []))
+            print('Section in XML:')
+            print('  ' + section_title)
+            print('Sections in the issue:')
+            if len(self.record.get('49', [])) == 0:
+                print('  None')
+            else:
+                print('\n  '.join(self.record.get('49', [])))
         return seccode

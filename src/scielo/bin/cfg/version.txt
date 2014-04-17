@@ -1,4 +1,16 @@
-﻿4.0.076 - 26/02/2014
+﻿4.0.077 - 07/04/2014
+=======
+ - Milestone 4.0.077
+ - markup xml:
+   - article/@order generates article-id (other)
+   - do not generate @xml:lang for article-title which gets it from article or sub-article
+   - (bug) generation of sub-article/front-stub
+   - inclusion of the role tag inside aff, which generates the tag role in contrib.
+ - XML Exporter for PubMed
+   - Affiliation tag had repeated information
+ - (new) XML Converter to generate the base folder
+
+4.0.076 - 26/02/2014
 =======
  - Milestone 4.0.076
  - markup:

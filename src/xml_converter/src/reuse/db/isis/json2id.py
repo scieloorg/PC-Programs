@@ -148,7 +148,13 @@ class JSON2IDFile:
     def _iso(self, content):
         iso = content
         if type(content) is str:
-            content = content.decode('utf-8')
+            try:
+                content = content.decode('utf-8', 'replace')
+            except:
+                try:
+                    content = content.decode('utf-8', 'xmlcharrefreplace')
+                except:
+                    content = content.decode('utf-8', 'ignore')
         if type(content) is unicode:
             try:
                 iso = content.encode('iso-8859-1', 'replace')

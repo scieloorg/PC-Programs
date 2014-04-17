@@ -9,6 +9,7 @@ import xml.etree.ElementTree as etree
 
 from StringIO import StringIO
 
+from modules.xml_utils import convert_using_htmlparser
 #xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'abbrev', 'award-group', 'bio', 'chem-struct', 'collab', 'conference', 'contrib', 'element-citation', 'email', 'ext-link', 'funding-source', 'inline-supplementary-material', 'institution', 'license', 'long-desc', 'mixed-citation', 'named-content', 'nlm-citation', 'product', 'related-article', 'related-object', 'self-uri', 'supplementary-material', 'uri']
 
 xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'chem-struct', 'inline-supplementary-material', 'supplementary-material', ]
@@ -36,6 +37,22 @@ JAVA_PATH = CONFIG_JAVA_PATH
 JAR_TRANSFORM = CONFIG_JAR_PATH + '/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = CONFIG_JAR_PATH + '/XMLCheck.jar'
 ENTITIES_TABLE_FILENAME = CONFIG_ENT_TABLE_PATH + '/entities2char'
+
+
+def has_invalid_char(content, label):
+    result = []
+    stripped = content.strip()
+    if not stripped.startswith('<'):
+        if startswith_invalid_char(content):
+            result.append('ERROR: %s starts with an invalid character (%s).\n%s' % (label, content[0:1], '&gt;' + display_str_xml_in_html(content[0:10]) + '...'))
+    if not stripped.endswith('>'):
+        if endswith_invalid_char(content):
+            result.append('ERROR: %s ends with an invalid character (%s).\n%s' % (label, content[-1:], '...' + display_str_xml_in_html(content[0:10]) + '&lt;'))
+    return result
+
+
+def display_str_xml_in_html(s):
+    return s.replace('<', '&lt;').replace('>', '&gt;')
 
 
 def display_xml_in_html(node):
@@ -184,30 +201,6 @@ class EntitiesTable:
         return r
 
 
-def convert_using_htmlparser(content):
-    import HTMLParser
-    entities = []
-
-    h = HTMLParser.HTMLParser()
-    new = content.replace('&', '_BREAK_&')
-    parts = new.split('_BREAK_')
-    for part in parts:
-        if part.startswith('&'):
-            ent = part[0:part.find(';')+1]
-            if not ent in entities:
-                try:
-                    new_ent = h.unescape(ent).encode('utf-8', 'xmlcharrefreplace')
-                except Exception as inst:
-                    new_ent = ent
-                    print('convert_using_htmlparser:')
-                    print(ent)
-                    print(inst)
-                if not new_ent in ['<', '>', '&']:
-                    content = content.replace(ent, new_ent)
-                entities.append(ent)
-    return content
-
-
 def convert_ent_to_char(content, entities_table=None):
     def prefix_ent(N=7):
         return ''.join(random.choice('^({|~_`!QZ[') for x in range(N))
@@ -260,8 +253,9 @@ def convert_ent_to_char(content, entities_table=None):
 
 
 def convert_entities(content, entities_table=None):
-    return convert_ent_to_char(content, entities_table)
+    #return convert_ent_to_char(content, entities_table)
     #return convert_entname(content, entities_table)
+    return convert_using_htmlparser(content)
 
 
 def convert_entname(content, entities_table=None):
@@ -550,12 +544,11 @@ class XMLString(object):
         self.content = self.content[0:self.content.rfind('>')+1]
         self.content = self.content[self.content.find('<'):]
         self.content = self.content.replace(' '*2, ' '*1)
-        if not xml_is_well_formed(self.content) is None:
+        if xml_is_well_formed(self.content) is None:
             self._fix_style_tags()
-            if not xml_is_well_formed(self.content) is None:
-                self._fix_open_close()
-                xml_is_well_formed(self.content)
-
+        if xml_is_well_formed(self.content) is None:
+            self._fix_open_close()
+        
     def _fix_open_close(self):
         changes = []
         parts = self.content.split('>')
@@ -576,12 +569,16 @@ class XMLString(object):
         tags = ['italic', 'bold', 'sub', 'sup']
         tag_list = []
         for tag in tags:
+            rcontent = rcontent.replace('<' + tag.upper() + '>', '<' + tag + '>')
+            rcontent = rcontent.replace('</' + tag.upper() + '>', '</' + tag + '>')
             tag_list.append('<' + tag + '>')
             tag_list.append('</' + tag + '>')
             rcontent = rcontent.replace('<' + tag + '>',  'BREAKBEGINCONSERTA<' + tag + '>BREAKBEGINCONSERTA').replace('</' + tag + '>', 'BREAKBEGINCONSERTA</' + tag + '>BREAKBEGINCONSERTA')
         if self.content != rcontent:
             parts = rcontent.split('BREAKBEGINCONSERTA')
             self.content = self._fix_problem(tag_list, parts)
+        for tag in tags:
+            self.content = self.content.replace('</' + tag + '><' + tag + '>', '')
 
     def _fix_problem(self, tag_list, parts):
         expected_close_tags = []
@@ -708,11 +705,14 @@ class XMLMetadata:
                     volid = '00'
         return [issn, volid, issueno, suppl, fpage, seq, elocation_id, order]
 
-    def format_name(self, data, param_acron='', param_order=''):
+    def format_name(self, data, param_acron='', xml_name=''):
 
         r = ''
         if data:
             issn, vol, issueno, suppl, fpage, seq, elocation_id, order = data
+
+            if xml_name != '':
+                issn = xml_name[0:9]
 
             if elocation_id is not None:
                 page_or_order = elocation_id
@@ -826,12 +826,12 @@ class XMLMetadata:
             items.append((href, new_name + '-' + suffix))
         return items
 
-    def new_name_and_href_list(self, acron, alternative_id=''):
+    def new_name_and_href_list(self, acron, xml_name=''):
         #usado pela versao XPM5
         """
         return (new name, [(@href, suffix + parent id)])
         """
-        new_name = self.format_name(self._metadata(), acron, alternative_id)
+        new_name = self.format_name(self._metadata(), acron, xml_name)
         print(new_name)
         href_filenames = self.xml_data_href_list()
         return (new_name, href_filenames)
@@ -1226,11 +1226,9 @@ class PkgReport(object):
                     elif child in desirable_items:
                         row[child] = 'WARNING: Required data, if exists'
                 else:
-                    if not(row[child].strip()[0:1] == '<' and row[child].strip()[-1:] == '>'):
-                        if startswith_invalid_char(row[child]):
-                            row[child] = 'ERROR: %s starts with an invalid character (%s).' % (child, row[child][0:1])
-                        if endswith_invalid_char(row[child]):
-                            row[child] = 'ERROR: %s ends with an invalid character (%s).' % (child, row[child][-1:])
+                    result = has_invalid_char(row[child], child)
+                    if len(result) > 0:
+                        row[child] = '\n'.join(result)
             #print(row)
             rows.append(row)
         return rows
@@ -1730,7 +1728,8 @@ class ContentValidation(object):
                     print('href not found???')
                     print(self._node_xml(node))
                 else:
-                    self.href.append(href)
+                    if not 'http' in href and not node.tag == 'ext-link':
+                        self.href.append(href)
 
             for ref in self.xml.findall('.//ref'):
                 r = {}
@@ -1765,7 +1764,7 @@ class ContentValidation(object):
                             r['lang'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang', None)
 
                 r['year'] = ref.findtext('.//year')
-                r['source'] = ref.findtext('.//source')
+                r['source'] = self._node_xml_content(ref.find('.//source'))
                 r['publisher-name'] = ref.findtext('.//publisher-name')
                 r['publisher-loc'] = ref.findtext('.//publisher-loc')
                 r['article-title'] = self._node_xml_content(ref.find('.//article-title'))
@@ -1796,13 +1795,14 @@ class ContentValidation(object):
             return etree.tostring(node)
 
     def _node_xml_content(self, node):
+        xml = ''
         if not node is None:
-            xml = etree.tostring(node)
+            xml = etree.tostring(node).strip()
             if xml[0:1] == '<':
                 xml = xml[xml.find('>') + 1:]
+            if xml[-1:] == '>':
                 xml = xml[0:xml.rfind('</')]
-            return xml
-        return ''
+        return xml
 
     def _order(self, fpage, fpage_seq, other_id):
         if other_id == '':
@@ -1841,15 +1841,8 @@ class ContentValidation(object):
         if isinstance(data, (str, unicode)):
             #if data.strip() and not '<' in data:
             if data.strip():
-                if not(data.strip()[0:1] == '<' and data.strip()[-1:] == '>'):
-                    
-                    if startswith_invalid_char(data):
-                        result.append('ERROR: ' + _scope + ' ' + label_list + ' starts with an invalid character (' + data[0:1] + ')')
-                    if endswith_invalid_char(data):
-                        print('.' + data + '.')
-                        print('.' + data.strip() + '.')
+                result = has_invalid_char(data, _scope + ' ' + label_list)
 
-                        result.append('ERROR: ' + _scope + ' ' + label_list + ' ends with an invalid character (' + data[-1:] + ')')
             else:
                 result.append(msg_type + ': ' + _scope + ' ' + status + ' ' + label_list)
         elif isinstance(data, dict):
@@ -1919,7 +1912,6 @@ class ContentValidation(object):
             self.issue_meta_validations += self._validate_conditional_required_data(self.issue_meta, ['volume', 'issue'], 'journal-meta and issue-meta')
             if expected_journal_meta:
                 self.issue_meta_validations += self._validate_data(self.issue_meta, expected_journal_meta)
-
 
             if not self.issue_meta['suppl'] is None:
                 self.issue_meta_validations += ['FATAL ERROR: do not use <supplement>, use <issue> to label supplement. E.g.: <issue>1 Suppl</issue>, <issue>1 Suppl 2</issue>, <issue>Suppl</issue>', '<issue>Suppl 1</issue>']
@@ -2155,21 +2147,22 @@ class Normalizer(object):
         f = open(xml_filename)
         content = f.read()
         f.close()
-
+        print('normalize_content: convert_entities')
+        content = convert_entities(content, self.entities_table)
         # fix problems of XML format
         if is_sgmxml:
+            alternative_id = ''
+            print('normalize_content: xml_fix.fix()')
+        
             xml_fix = XMLString(content)
             xml_fix.fix()
             if not xml_fix.content == content:
                 content = xml_fix.content
 
-            content = xml_content_transform(content, self.version_converter)
-
-            xml_fix = XMLString(content)
-            if not xml_fix.content == content:
-                content = xml_fix.content
-        content = convert_entities(content, self.entities_table)
-
+            if xml_is_well_formed(content) is not None:
+                content = xml_content_transform(content, self.version_converter)
+        else:
+            alternative_id = xml_name
         if xml_is_well_formed(content) is not None:
             #new name and href list
             new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, xml_name)
@@ -2207,6 +2200,7 @@ class Normalizer(object):
             f.close()
         else:
             log.append('XML is not well formed')
+            log.append(dest_path + '/incorrect_' + new_name + '.xml')
 
             f = open(dest_path + '/incorrect_' + new_name + '.xml', 'w')
             f.write(content)
@@ -2340,13 +2334,15 @@ class XPM5(object):
     def make_packages(self, files, ctrl_filename, work_path, scielo_val_res, pmc_val_res):
         old_names = {}
 
-        for path in [scielo_val_res.pkg_path, pmc_val_res.pkg_path]:
-            if os.path.isdir(path):
-                for f in os.listdir(path):
-                    if os.path.isfile(path + '/' + f):
-                        os.unlink(path + '/' + f)
-            else:
-                os.makedirs(path)
+        if len(files) == 1:
+            if not files[0].endswith('.sgm.xml'):
+                for path in [scielo_val_res.pkg_path, pmc_val_res.pkg_path]:
+                    if os.path.isdir(path):
+                        for f in os.listdir(path):
+                            if os.path.isfile(path + '/' + f):
+                                os.unlink(path + '/' + f)
+                    else:
+                        os.makedirs(path)
 
         for xml_filename in files:
             xml_path = os.path.dirname(xml_filename)
@@ -2452,7 +2448,8 @@ def cxpmker_read_inputs(args):
         if src.endswith('.sgm.xml'):
             xml_src = src
             temp = xml_src.split('/')
-            acron = temp[len(temp)-4]
+            print(temp)
+            acron = temp[-6]
             version = 'j1.0'
             print(acron)
         elif src.endswith('.xml'):
@@ -2478,8 +2475,9 @@ def cxpmker_files_and_paths(xml_source):
     if xml_source.endswith('.sgm.xml'):
         f = xml_source
         ctrl_filename = f.replace('.sgm.xml', '.ctrl.txt')
-        r_xml_source = [cxpmker_markup_src_path(f) + '/' + os.path.basename(f)]
-        scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path = cxpmker_markup_paths(xml_source, f)
+        pmc_src = cxpmker_markup_src_path(f)
+        r_xml_source = [pmc_src + '/' + os.path.basename(f)]
+        scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path = cxpmker_markup_paths(pmc_src, f)
         #version = 'j1.0'
     else:
         if os.path.isfile(xml_source):
