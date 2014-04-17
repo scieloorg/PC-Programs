@@ -52,27 +52,48 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:call-template>
 			</pub-date>
 		</xsl:if>
-		<xsl:variable name="date_type">
-			<xsl:choose>
-				<xsl:when test="normalize-space($preprint_date)!=''">ppub</xsl:when>
-				<xsl:when test="normalize-space($preprint_date)=''">epub-ppub</xsl:when>
-			</xsl:choose>
-		</xsl:variable>
+		<xsl:variable name="dateiso"><xsl:choose>
+					<xsl:when test="@artdate!=''"><xsl:value-of select="@artdate"/></xsl:when>
+						<xsl:otherwise><xsl:value-of select="@dateiso"/></xsl:otherwise>
+		</xsl:choose></xsl:variable>
+		<xsl:variable name="date"><xsl:choose>
+			<xsl:when test="@artdate!=''"><xsl:value-of select="@artdate"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="//extra-scielo//season"/></xsl:otherwise>
+				</xsl:choose></xsl:variable>
+		<xsl:comment><xsl:value-of select="$dateiso"/></xsl:comment>
+		<xsl:comment><xsl:value-of select="$date"/></xsl:comment>
 		<pub-date>
 			<!-- pub-type="{$date_type}" -->
 			<xsl:attribute name="date-type">pub</xsl:attribute>
-			<xsl:attribute name="publication-format">electronic-print</xsl:attribute>
-			<xsl:attribute name="iso-8601-date"><xsl:apply-templates select="@dateiso" mode="dateiso"></xsl:apply-templates></xsl:attribute>
+			<xsl:attribute name="publication-format"><xsl:value-of select="$pub_type"/></xsl:attribute>
+			<xsl:attribute name="iso-8601-date"><xsl:choose>
+				<xsl:when test="@artdate!=''"><xsl:apply-templates select="@artdate" mode="dateiso"/></xsl:when>
+				<xsl:otherwise><xsl:apply-templates select="@dateiso" mode="dateiso"/></xsl:otherwise>
+			</xsl:choose></xsl:attribute>
 			
 			<xsl:call-template name="display_date">
-				<xsl:with-param name="dateiso">
-					<xsl:value-of select="@dateiso"/>
-				</xsl:with-param>
-				<xsl:with-param name="date">
-					<xsl:value-of select="//extra-scielo//season"/>
-				</xsl:with-param>
+				<xsl:with-param name="dateiso" select="$dateiso"/>
+				<xsl:with-param name="date" select="$date"/>
 			</xsl:call-template>
 		</pub-date>
+		
+		<xsl:if test="$pub_type='eletronic'">
+			<pub-date>
+				<!-- pub-type="{$date_type}" -->
+				<xsl:attribute name="date-type">collection</xsl:attribute>
+				<xsl:attribute name="publication-format"><xsl:value-of select="$pub_type"/></xsl:attribute>
+				<xsl:attribute name="iso-8601-date"><xsl:apply-templates select="@dateiso" mode="dateiso"></xsl:apply-templates></xsl:attribute>
+				
+				<xsl:call-template name="display_date">
+					<xsl:with-param name="dateiso">
+						<xsl:value-of select="@dateiso"/>
+					</xsl:with-param>
+					<xsl:with-param name="date">
+						<xsl:value-of select="//extra-scielo//season"/>
+					</xsl:with-param>
+				</xsl:call-template>
+			</pub-date>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template match="back//cited">
 		<date-in-citation content-type="access-date">
@@ -81,8 +102,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="."/>
 		</date-in-citation>
 	</xsl:template>
-	<xsl:template match="@dateiso | * | text()" mode="dateiso">
+	<xsl:template match="@* | * | text()" mode="dateiso">
+		<xsl:if test=".!=''">
 		<xsl:value-of select="substring(.,1,4)"/>-<xsl:value-of select="substring(.,5,2)"/>-<xsl:value-of select="substring(.,7)"/>
+		</xsl:if>
 	</xsl:template>
 	
 </xsl:stylesheet>
