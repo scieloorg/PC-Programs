@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mml="http://www.w3.org/1998/Math/MathML">
    	
-    <xsl:import href="../nlm-style-5.2/nlm-stylechecker.xsl"/>
+    <xsl:import href="../nlm-style-5.4/nlm-stylechecker.xsl"/>
 	<xsl:param name="filename"/>
 	 <xsl:template match="/">
 	   <ERR>
@@ -13,7 +13,7 @@
 				<xsl:value-of select="$document-type"/>
 				<xsl:text>"  with version </xsl:text>
 				<xsl:value-of select="$stylechecker-version"/>
-				<xsl:text> of the NLM XML StyleChecker. </xsl:text>
+				<xsl:text> of the SciELO XML StyleChecker. </xsl:text>
 				<xsl:text>||</xsl:text>
 				<xsl:text>The document is being checked against the SciELO Tagging Guidlines rules for "</xsl:text>
 				<xsl:value-of select="$stream"/>
