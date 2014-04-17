@@ -13,7 +13,7 @@
 				<xsl:value-of select="$document-type"/>
 				<xsl:text>"  with version </xsl:text>
 				<xsl:value-of select="$stylechecker-version"/>
-				<xsl:text> of the NLM XML StyleChecker. </xsl:text>
+				<xsl:text> of the SciELO XML StyleChecker. </xsl:text>
 				<xsl:text>||</xsl:text>
 				<xsl:text>The document is being checked against the SciELO Tagging Guidlines rules for "</xsl:text>
 				<xsl:value-of select="$stream"/>
