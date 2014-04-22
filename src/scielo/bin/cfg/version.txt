@@ -1,4 +1,20 @@
-﻿4.0.077 - 07/04/2014
+﻿4.0.078.rc - 22/04/2014
+=======
+ - Milestone 4.0.078
+   - markup xml
+      - (update) nlm style checker 5.4
+      - (new) attribute article/@artdate for article date (rolling in pass)
+      - create pub-date/@date-type=collection for online issues
+      - automatic identification of label and caption of figure
+      - (bug) missing href as attribute of uri
+      - (bug) fix the name of the files
+      - (bug) problem to mark xmlbody when there are texts formated as AllCaps=True
+      - (bug) wrong location of xml_package and pmc_package
+      - (bug) adjustments in DTD because of the absence of the definition of some elements and attributes
+   - export database
+      - (bug) could not export issue and section records
+
+4.0.077 - 07/04/2014
 =======
  - Milestone 4.0.077
  - markup xml:
