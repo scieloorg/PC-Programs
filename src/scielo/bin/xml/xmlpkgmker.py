@@ -705,14 +705,14 @@ class XMLMetadata:
                     volid = '00'
         return [issn, volid, issueno, suppl, fpage, seq, elocation_id, order]
 
-    def format_name(self, data, param_acron='', xml_name=''):
+    def format_name(self, data, param_acron='', original_xml_name=''):
 
         r = ''
         if data:
             issn, vol, issueno, suppl, fpage, seq, elocation_id, order = data
 
-            if xml_name != '':
-                issn = xml_name[0:9]
+            if original_xml_name != '':
+                issn = original_xml_name[0:9]
 
             if elocation_id is not None:
                 page_or_order = elocation_id
@@ -814,11 +814,11 @@ class XMLMetadata:
 
         return r
 
-    def new_names_and_embedded_files(self, acron, alternative_id=''):
-        new_name = self.format_name(self._metadata(), acron, alternative_id)
-        href_filenames = self.xml_data_href_filenames()
-        href_files = self.new_href_list(new_name, href_filenames)
-        return (new_name, href_files)
+    #def new_names_and_embedded_files(self, acron, original_xml_name=''):
+    #    new_name = self.format_name(self._metadata(), acron, original_xml_name)
+    #    href_filenames = self.xml_data_href_filenames()
+    #    href_files = self.new_href_list(new_name, href_filenames)
+    #    return (new_name, href_files)
 
     def new_href_list(self, new_name, href_filenames):
         items = []
@@ -826,12 +826,11 @@ class XMLMetadata:
             items.append((href, new_name + '-' + suffix))
         return items
 
-    def new_name_and_href_list(self, acron, xml_name=''):
-        #usado pela versao XPM5
+    def new_name_and_href_list(self, acron, original_xml_name=''):
         """
         return (new name, [(@href, suffix + parent id)])
         """
-        new_name = self.format_name(self._metadata(), acron, xml_name)
+        new_name = self.format_name(self._metadata(), acron, original_xml_name)
         print(new_name)
         href_filenames = self.xml_data_href_list()
         return (new_name, href_filenames)
@@ -2151,7 +2150,7 @@ class Normalizer(object):
         content = convert_entities(content, self.entities_table)
         # fix problems of XML format
         if is_sgmxml:
-            alternative_id = ''
+            original_xml_name = ''
             print('normalize_content: xml_fix.fix()')
         
             xml_fix = XMLString(content)
@@ -2162,10 +2161,10 @@ class Normalizer(object):
             if xml_is_well_formed(content) is not None:
                 content = xml_content_transform(content, self.version_converter)
         else:
-            alternative_id = xml_name
+            original_xml_name = xml_name
         if xml_is_well_formed(content) is not None:
             #new name and href list
-            new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, xml_name)
+            new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, original_xml_name)
             
             #href and new href list
             curr_and_new_href_list = self.generate_curr_and_new_href_list(xml_name, new_name, href_list)
