@@ -146,6 +146,7 @@
           issn     CDATA #REQUIRED
 		  old-pid CDATA #IMPLIED 
 		  rvpdate CDATA #IMPLIED
+      artdate CDATA #IMPLIED
           hcomment CDATA #IMPLIED
 		  ahpdate CDATA #IMPLIED		  
 		  >
