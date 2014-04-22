@@ -8,13 +8,13 @@
 <!--   Common Models                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat | related | product" > 
+<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat | related | product | sup " > 
 <!ENTITY % m.name   "(fname? & surname & ctrbid*)" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
 
 <!--ENTITY % m.conf   "(sponsor | confname | no | date | city | state | country)*" -->
-<!ENTITY % m.conf   "(sponsor* & (confname & no?)+ & date & (city, state?, country?))" >
+<!ENTITY % m.conf   "(sponsor* & (confname & no?)+ & date? & (city?, state?, country?))" >
 
 <!ENTITY % m.thes   "(city? & state? & country? & date? & degree? & 
                       (%m.org;)?)" >
@@ -44,7 +44,7 @@
 <!ATTLIST corresp
           id CDATA    #REQUIRED >
 
-<!ELEMENT aff - - (label? & role? & city? & state? & country? & zipcode? & email? & (#PCDATA)?)>
+<!ELEMENT aff - - (label? & role? & city? & state? & country? & zipcode? & email* & (#PCDATA)?)>
 <!ATTLIST aff
           id       ID    #REQUIRED
           orgname  CDATA #REQUIRED
@@ -63,14 +63,14 @@
           id       CDATA #REQUIRED
 filename       CDATA #IMPLIED>
 
-<!ELEMENT label - - (#PCDATA) >
+<!ELEMENT label - - (#PCDATA | sup) >
 <!ELEMENT caption - - (#PCDATA) >
 
 <!ELEMENT figgrps - - ( label?,caption?, figgrp+   )   >
 <!ATTLIST figgrps
           id       CDATA #REQUIRED
           >
-<!ELEMENT figgrp - - (  graphic , ( label?, caption), notes?   )   >
+<!ELEMENT figgrp - - (  graphic? , ( label?, caption), notes?   )   >
 <!ATTLIST figgrp
           id       CDATA #REQUIRED
           ftype       CDATA #REQUIRED 
@@ -134,7 +134,7 @@ filename       CDATA #IMPLIED>
           id       CDATA    #REQUIRED 
 	 >
 <!ELEMENT quote - - (#PCDATA)>
-
+<!ELEMENT sup - - (#PCDATA)>
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--    pubid                                                        -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -251,7 +251,8 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT date     - - (#PCDATA) >
 <!ATTLIST date
-          dateiso  CDATA #IMPLIED >
+          dateiso  CDATA #IMPLIED 
+          specyear  CDATA #IMPLIED>
 
 
 <!ELEMENT doi     - - (#PCDATA) >
