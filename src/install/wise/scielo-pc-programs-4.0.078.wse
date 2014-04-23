@@ -1,7 +1,7 @@
 Document Type: WSE
 item: Global
   Version=7.01
-  Title=SciELO InstallationSciELO Installation
+  Title=SciELO Installation
   Title Portuguese=SciELO Installation
   Title Spanish=SciELO Installation
   Flags=00010100
@@ -126,7 +126,7 @@ item: Set Variable
 end
 item: Set Variable
   Variable=PATH_SGMLPARS
-  Value=%PROGDIR%
+  Value=%MAINDIR%
   Flags=10000000
 end
 item: Check Configuration
@@ -5632,17 +5632,32 @@ item: Set Variable
   Variable=GROUP
   Value=%GROUPDIR%\%GROUP%
 end
-item: Create Shortcut
-  Source=%PATH_SGMLPARS%\Bin\SGMLPars\parser.exe
+remarked item: Create Shortcut
+  Source=%PROGDIR%\Unwise.exe
   Source Spanish=%PATH_SGMLPARS%\Bin\SGMLPars\parser.exe
-  Destination=%GROUP%\SGML Parser.lnk
+  Destination=%GROUP%\Uninstall.lnk
   Destination Spanish=%GROUP%\Uninstall.lnk
-  Working Directory=%PATH_SGMLPARS%\Bin\SGMLPars
+  Working Directory=%PROGDIR%\Unwise.exe
   Working Directory Spanish=%PATH_SGMLPARS%\Bin\SGMLPars
   Icon Number=0
   Icon Number Spanish=0
-  Icon Pathname=%PATH_SGMLPARS%\Bin\SGMLPars\Parser.ico
+  Icon Pathname=%PROGDIR%\bin\CONFIG\CONFIG.EXE
   Icon Pathname Spanish=%PATH_SGMLPARS%\Bin\SGMLPars\Parser.ico
+  Key Type=1536
+  Flags=00000001
+end
+item: Create Shortcut
+  Source=%PROGDIR%\Bin\SGMLPars\parser.exe
+  Source Spanish=%PATH_SGMLPARS%\Bin\SGMLPars\parser.exe
+  Destination=%GROUP%\SGML Parser.lnk
+  Destination Spanish=%GROUP%\Uninstall.lnk
+  Working Directory=%PROGDIR%\Bin\SGMLPars
+  Working Directory Spanish=%PATH_SGMLPARS%\Bin\SGMLPars
+  Icon Number=0
+  Icon Number Spanish=0
+  Icon Pathname=%PROGDIR%\bin\CONFIG\CONFIG.EXE
+  Icon Pathname Spanish=%PATH_SGMLPARS%\Bin\SGMLPars\Parser.ico
+  Key Type=1536
   Flags=00000001
 end
 item: If/While Statement
@@ -5707,20 +5722,10 @@ item: Add ProgMan Icon
   Group=%GROUP%
   Icon Name=SGML Parser
   Icon Name Portuguese=SGML Parser
-  Icon Name Spanish=Uninstall
-  Command Line=%PATH_SGMLPARS%\Bin\SGMLPars\parser.exe
-  Icon Pathname=%PATH_SGMLPARS%\Bin\SGMLPars\Parser.ico
-  Default Directory=%PATH_SGMLPARS%\Bin\SGMLPars
-  Flags=01000000
-end
-item: Add ProgMan Icon
-  Group=%GROUP%
-  Icon Name=SGML Parser
-  Icon Name Portuguese=SGML Parser
   Icon Name Spanish=SGML Parser
-  Command Line=%PATH_SGMLPARS%\Bin\SGMLPars\parser.exe
-  Icon Pathname=%PATH_SGMLPARS%\Bin\SGMLPars\PARSER.EXE
-  Default Directory=%PATH_SGMLPARS%\Bin\SGMLPars
+  Command Line=%PROGDIR%\Bin\SGMLPars\parser.exe
+  Icon Pathname=%PROGDIR%\Bin\SGMLPars\PARSER.EXE
+  Default Directory=%PROGDIR%\Bin\SGMLPars
   Flags=01000000
 end
 item: If/While Statement
@@ -5809,6 +5814,15 @@ remarked item: Add to AUTOEXEC.BAT
   Search Text=SET BAP=OS23470a
   Line Number=0
   Flags=00101000
+end
+item: Add Text to INSTALL.LOG
+  Text=Delete in-use files: On
+end
+item: Edit INI File
+  Pathname=%UNINSTALL_LANG%
+  Settings=[Settings]
+  Settings=No Background=0
+  Settings=
 end
 item: Wizard Block
   Direction Variable=DIRECTION
