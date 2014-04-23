@@ -1384,6 +1384,31 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=w:\scielo\bin\pmc\j1.0\xsl\nlm-style-5.4\nlm-stylechecker.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.4\nlm-stylechecker.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\j1.0\xsl\nlm-style-5.4\stylecheck-named-tests.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.4\stylecheck-named-tests.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\j1.0\xsl\nlm-style-5.4\stylecheck-match-templates.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.4\stylecheck-match-templates.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\j1.0\xsl\nlm-style-5.4\stylecheck-helper-templates.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.4\stylecheck-helper-templates.xsl
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\pmc\j1.0\xsl\nlm-style-5.4\style-reporter.xsl
+  Destination=%PROGDIR%\bin\pmc\j1.0\xsl\nlm-style-5.4\style-reporter.xsl
+  Flags=0000000010000010
+end
+item: Install File
   Source=w:\scielo\bin\pmc\j1.0\dtd\jats1.0\xmlchars\isogrk4.ent
   Destination=%PROGDIR%\bin\pmc\j1.0\dtd\jats1.0\xmlchars\isogrk4.ent
   Flags=0000000010000010
