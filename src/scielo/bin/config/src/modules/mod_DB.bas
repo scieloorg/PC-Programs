@@ -294,13 +294,9 @@ Function Serial_Save(MfnTitle As Long) As Long
     
     reccontent = reccontent + SERIAL6.getDataToSave
     
-    JOURNAL5.receiveData
-    reccontent = reccontent + journalDAO.tagCreativeCommons(JOURNAL5.getCreativeCommons)
-    If InStr(JOURNAL5.ComboLicText.text, "*") > 0 Then
-        reccontent = reccontent + TagTxtContent(Mid(JOURNAL5.ComboLicText.text, 1, InStr(JOURNAL5.ComboLicText.text, "*") - 1), 541)
-    Else
-        reccontent = reccontent + TagTxtContent(JOURNAL5.ComboLicText.text, 541)
-    End If
+    'reccontent = reccontent + journalDAO.tagCreativeCommons(JOURNAL5.getCreativeCommons)
+    reccontent = reccontent + TagTxtContent(JOURNAL5.ComboLicText.text, 541)
+    reccontent = reccontent + TagTxtContent(JOURNAL5.ComboLicVersion.text, 542)
     
     If MfnTitle = 0 Then
         If journalDAO.existISSN(Serial1.TxtISSN.text) > 0 Then

@@ -591,6 +591,8 @@ Function WarnMandatoryFields() As Boolean
     warning = warning + .isA_mandatoryField(Serial4.TxtAddress.text, "ser4_Address")
     warning = warning + .isA_mandatoryField(Serial4.TxtEmail.text, "ser4_email")
     warning = warning + .isA_mandatoryField(JOURNAL5.TxtCprighter.text, "ser4_cprighter")
+    warning = warning + .isA_mandatoryField(JOURNAL5.ComboLicText.text, "title_license")
+    warning = warning + .isA_mandatoryField(JOURNAL5.ComboLicVersion.text, "title_licversion")
     
     
     warning = warning + .isA_mandatoryField(SERIAL7.TxtSiglum.text, "ser5_siglum")

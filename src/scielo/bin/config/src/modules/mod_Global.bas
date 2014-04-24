@@ -46,6 +46,7 @@ Public Counter As Long
 Public LicensesList As ColLicenses
 Public LicensesListByLang As ColObjByLang
 Public CodeLicText As ColCode
+Public CodeLicversion As ColCode
 
 Public CodeStudyArea As ColCode
 Public CodeAlphabet As ColCode
@@ -281,7 +282,7 @@ End Function
 
 Sub LoadCodes(CodeDB As ClFileInfo, idiom As String, key As String, Code As ColCode, Optional codeEqualValue As Boolean = False)
     Dim isisCode As ClIsisdll
-    Dim mfn As Long
+    Dim Mfn As Long
     Dim mfns() As Long
     Dim q As Long
     Dim i As Long
@@ -305,7 +306,7 @@ Sub LoadCodes(CodeDB As ClFileInfo, idiom As String, key As String, Code As ColC
             MsgBox "Problem with inverted of " + .FileName
         Else
             i = 0
-            mfn = 0
+            Mfn = 0
             
             find = key
             If Len(idiom) > 0 Then
@@ -319,22 +320,22 @@ Sub LoadCodes(CodeDB As ClFileInfo, idiom As String, key As String, Code As ColC
             format = "if s(v1^*)='" + key + "' and (s(v1^l)='" + idiom + "' or a(v1^l))  then (v2^v|;|),'|',(v2^c|;;|) fi"
             
             If q > 0 Then
-                While (i < q) And (mfn = 0)
+                While (i < q) And (Mfn = 0)
                     i = i + 1
                     aux = isisCode.UsePft(mfns(i), format)
-                    If Len(aux) > 0 Then mfn = mfns(i)
+                    If Len(aux) > 0 Then Mfn = mfns(i)
                 Wend
             Else
                 q = isisCode.MfnQuantity
-                While (i < q) And (mfn = 0)
+                While (i < q) And (Mfn = 0)
                     i = i + 1
                     aux = isisCode.UsePft(i, format)
-                    If Len(aux) > 0 Then mfn = i
+                    If Len(aux) > 0 Then Mfn = i
                 Wend
             End If
-            tracing = vbCrLf & "format: " & format & vbCrLf & "result:" & aux & vbCrLf & "mfn: " & CStr(mfn)
+            tracing = vbCrLf & "format: " & format & vbCrLf & "result:" & aux & vbCrLf & "mfn: " & CStr(Mfn)
             
-            If mfn > 0 Then
+            If Mfn > 0 Then
                 a = Split(aux, "|")
                 a_values = Split(a(0), ";")
                 a_codes = Split(a(1), ";;")
@@ -365,7 +366,7 @@ End Sub
 
 Sub LoadCodesMultilingue(CodeDB As ClFileInfo, key As String, tableList As ColObjByLang)
     Dim isisCode As ClIsisdll
-    Dim mfn As Long
+    Dim Mfn As Long
     Dim mfns() As Long
     Dim q As Long
     Dim i As Long
@@ -388,7 +389,7 @@ Sub LoadCodesMultilingue(CodeDB As ClFileInfo, key As String, tableList As ColOb
     If isisCode.Inicia(.Path, .FileName, .key) Then
         If isisCode.IfCreate(.FileName) Then
             
-            mfn = 0
+            Mfn = 0
             Set tableList = New ColObjByLang
             
             find = key
@@ -399,10 +400,10 @@ Sub LoadCodesMultilingue(CodeDB As ClFileInfo, key As String, tableList As ColOb
             For k = 1 To q
                 aux = isisCode.UsePft(mfns(k), format)
                 If Len(aux) > 0 Then
-                    mfn = mfns(k)
-                    tracing = vbCrLf & "format: " & format & vbCrLf & "result:" & aux & vbCrLf & "mfn: " & CStr(mfn)
+                    Mfn = mfns(k)
+                    tracing = vbCrLf & "format: " & format & vbCrLf & "result:" & aux & vbCrLf & "mfn: " & CStr(Mfn)
                     
-                    If mfn > 0 Then
+                    If Mfn > 0 Then
                         a = Split(aux, "|")
                         a_values = Split(a(0), "~")
                         a_codes = Split(a(1), "~~")
@@ -446,14 +447,15 @@ Property Let ChangeInterfaceIdiom(idiom As String)
 
     Set CodeDB = Paths("Code Database")
     Call codedao.create(CodeDB.Path, CodeDB.FileName, CodeDB.key)
-    If LicensesList Is Nothing Then
-        Set LicensesList = New ColLicenses
-        Call codedao.getMultilingueTable("license_text", LicensesListByLang)
-        Call LicensesList.load(LicensesListByLang)
-    End If
-    Set CodeLicText = LicensesListByLang.getItemByLang(idiom)
+    'If LicensesList Is Nothing Then
+    '    Set LicensesList = New ColLicenses
+    '    Call codedao.getMultilingueTable("license_text", LicensesListByLang)
+    '    Call LicensesList.load(LicensesListByLang)
+    'End If
+    'Set CodeLicText = LicensesListByLang.getItemByLang(idiom)
     
-    'Call codedao.getTable(idiom, "license_text", ComboLicText)
+    Call codedao.getTable("", "license", CodeLicText)
+    Call codedao.getTable("", "licversion", CodeLicversion)
     
     Call codedao.getTable(idiom, "idiom interface", CodeIdiom)
     
