@@ -1,4 +1,9 @@
-﻿4.0.078.rc - 22/04/2014
+﻿4.0.079.rc - 24/04/2014
+=======
+ - Milestone 4.0.079
+   - inclusão da licença IGO
+
+4.0.078.rc - 22/04/2014
 =======
  - Milestone 4.0.078
    - markup xml
