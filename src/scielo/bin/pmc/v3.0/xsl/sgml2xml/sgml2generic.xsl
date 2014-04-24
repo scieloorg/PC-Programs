@@ -23,8 +23,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="affs" select=".//aff"/>
 	<xsl:variable name="affs_xrefs" select=".//front//author"/>
 	<xsl:variable name="xref_id" select="//*[@id]"/>
-	<xsl:variable name="qtd_ref" select="//*[@standard]/@count"/>
-	<xsl:variable name="reflen"><xsl:value-of select="string-length($qtd_ref)"/></xsl:variable>
+	<xsl:variable name="qtd_ref" select="count(//*[@standard]/*)"/>
+	<xsl:variable name="reflen"><xsl:choose>
+		<xsl:when test="string-length($qtd_ref)&gt;2"><xsl:value-of select="string-length($qtd_ref)"/></xsl:when>
+		<xsl:otherwise>2</xsl:otherwise>
+	</xsl:choose></xsl:variable>
+	
 	<xsl:variable name="ref_no" select="//*[contains(name(),'citat')]/no"/>
 	<xsl:variable name="this_doi"><xsl:value-of select="./front/doi"/></xsl:variable>
 	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
