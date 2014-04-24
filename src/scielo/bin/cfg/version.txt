@@ -1,9 +1,4 @@
-﻿4.0.079.rc - 24/04/2014
-=======
- - Milestone 4.0.079
-   - inclusão da licença IGO
-
-4.0.078.rc - 22/04/2014
+﻿4.0.078.r2 - 24/04/2014
 =======
  - Milestone 4.0.078
    - markup xml
@@ -16,8 +11,10 @@
       - (bug) problem to mark xmlbody when there are texts formated as AllCaps=True
       - (bug) wrong location of xml_package and pmc_package
       - (bug) adjustments in DTD because of the absence of the definition of some elements and attributes
+      - (bug) fix generation of ID of reference, when quantity is lower than 10
    - export database
       - (bug) could not export issue and section records
+   - inclusão da licença IGO
 
 4.0.077 - 07/04/2014
 =======
