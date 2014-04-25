@@ -2283,15 +2283,16 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			</xsl:choose>
 			<xsl:value-of select="@id"/>
 		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test=".//graphic"><graphic xlink:href="{.//graphic/@href}"></graphic></xsl:when>	
-			<xsl:when test="@filename">
-				<graphic xlink:href="{@filename}"/>
-			</xsl:when>
-			<xsl:when test="not(mmlmath) and not(texmath) and not(table)">
-				<graphic xlink:href="{@id}"/><!-- @id -->
-			</xsl:when>
-		</xsl:choose>
+		<xsl:if test=".//graphic">
+			<xsl:choose>
+				<xsl:when test="substring(.//graphic/@href,1,1)='?'">
+					<graphic xlink:href="{substring(.//graphic/@href,2)}{@id}"></graphic>
+				</xsl:when>
+				<xsl:otherwise>
+					<graphic xlink:href="{.//graphic/@href}"></graphic>	
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:if>
 		<xsl:if test=".//table">
 			<xsl:apply-templates select=".//table" mode="pmc-table"></xsl:apply-templates>
 		</xsl:if>
