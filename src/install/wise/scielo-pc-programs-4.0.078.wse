@@ -28,7 +28,7 @@ item: Global
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=4.0.078
+  Version File=4.0.078.r2
   Version Description=SciELO PC Programs
   Version Copyright=2014
   Version Company=SciELO
@@ -5817,12 +5817,6 @@ remarked item: Add to AUTOEXEC.BAT
 end
 item: Add Text to INSTALL.LOG
   Text=Delete in-use files: On
-end
-item: Edit INI File
-  Pathname=%UNINSTALL_LANG%
-  Settings=[Settings]
-  Settings=No Background=0
-  Settings=
 end
 item: Wizard Block
   Direction Variable=DIRECTION
