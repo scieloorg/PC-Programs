@@ -2157,7 +2157,10 @@ class Normalizer(object):
             xml_fix.fix()
             if not xml_fix.content == content:
                 content = xml_fix.content
-
+                print('fixed ' + xml_filename)
+                f = open(xml_filename, 'w')
+                f.write(content)
+                f.close()
             if xml_is_well_formed(content) is not None:
                 content = xml_content_transform(content, self.version_converter)
         else:
