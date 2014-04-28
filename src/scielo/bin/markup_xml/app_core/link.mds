@@ -62,16 +62,16 @@ dperiod
 from;to
 
 tabwrap
-id;filename
+id
 
 figgrp
-id;ftype;filename
+id;ftype
 
 figgrps
 id
 
 equation
-id;filename
+id
 
 subresp
 role
