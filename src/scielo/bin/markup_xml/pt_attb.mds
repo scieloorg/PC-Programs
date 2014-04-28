@@ -115,8 +115,8 @@ source
 
 
 reltype
-- choose one of the options below -;-- objects --;video;audio;table;figure;other object;-- sources --;book;book chapter;database;article;press release;other source;-- related types --;addended-article;addendum;commentary-article;object-of-concern;companion;corrected-article;letter;retracted-article;peer-reviewed-article;peer-review;other related type
-unknown;unknown-object;vi;au;table;figure;other-object;unknown-source;book;book chapter;database;article;pr;other-source;unknown-related-type;addended-article;addendum;commentary-article;object-of-concern;companion;corrected-article;letter;retracted-article;peer-reviewed-article;peer-review;other-related-type
+- choose one of the options below -;-- objects --;video;audio;table;figure;other object;-- sources --;book;chapter;database;article;press release;other source;-- related types --;addended-article;addendum;commentary-article;object-of-concern;companion;corrected-article;letter;retracted-article;peer-reviewed-article;peer-review;other related type
+unknown;unknown-object;vi;au;table;figure;other-object;unknown-source;book;chapter;database;article;pr;other-source;unknown-related-type;addended-article;addendum;commentary-article;object-of-concern;companion;corrected-article;letter;retracted-article;peer-reviewed-article;peer-review;other-related-type
 
 cturl
 
@@ -167,14 +167,18 @@ indefinido;Agradecimentos
 nd;ack
 
 corresp
-sim;não
-y;n
+não;sim
+n;y
 
 eqcontr
-sim;não
-y;n
+não informado;não;sim
+nd;n;y
 
 deceased
-sim;não
-y;n
+não;sim
+n;y
+
+ctrbidtp
+ORCID
+ORCID
 

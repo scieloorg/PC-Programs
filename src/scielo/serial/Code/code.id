@@ -2021,40 +2021,43 @@
 !v002!^cack^vAgradecimientos
 !ID 000137
 !v001!corresp^len
-!v002!^cy^vyes
 !v002!^cn^vno
+!v002!^cy^vyes
 !ID 000138
 !v001!corresp^lpt
-!v002!^cy^vsim
 !v002!^cn^vnão
+!v002!^cy^vsim
 !ID 000139
 !v001!corresp^les
 !v002!^cn^vno
 !v002!^cy^vsí
 !ID 000140
 !v001!deceased^len
-!v002!^cy^vyes
 !v002!^cn^vno
+!v002!^cy^vyes
 !ID 000141
 !v001!deceased^lpt
-!v002!^cy^vsim
 !v002!^cn^vnão
+!v002!^cy^vsim
 !ID 000142
 !v001!deceased^les
 !v002!^cn^vno
 !v002!^cy^vsí
 !ID 000143
 !v001!eqcontr^len
-!v002!^cy^vyes
+!v002!^cnd^vnot informed
 !v002!^cn^vno
+!v002!^cy^vyes
 !ID 000144
 !v001!eqcontr^lpt
-!v002!^cy^vsim
+!v002!^cnd^vnão informado
 !v002!^cn^vnão
+!v002!^cy^vsim
 !ID 000145
 !v001!eqcontr^les
+!v002!^cnd^vnão informado
 !v002!^cn^vno
-!v002!^cy^vs
+!v002!^cy^vsí
 !ID 000146
 !v001!history^len
 !v002!^cD^vCeased
@@ -2075,12 +2078,12 @@
 !v002!^cORCID^vORCID
 !ID 000150
 !v001!licversion
-!v002!^c1.0^v1.0
-!v002!^c2.0^v2.0
-!v002!^c2.5^v2.5
-!v002!^c3.0^v3.0
-!v002!^c4.0^v4.0
 !v002!^cnd^vnd
+!v002!^c4.0^v4.0
+!v002!^c3.0^v3.0
+!v002!^c2.5^v2.5
+!v002!^c2.0^v2.0
+!v002!^c1.0^v1.0
 !ID 000151
 !v001!license
 !v002!^cBY^vBY
