@@ -522,6 +522,75 @@ def tranform_in_steps(xml_filename, xsl_list, result_filename, parameters={}, fi
     return not error
 
 
+class GraphicHrefFixer(object):
+    def __init__(self, content):
+        self.content = content
+
+    def find_range(self, s, startswith, endswith):
+        r = s
+        p1 = r.find(startswith)
+        if p1 > 0:
+            r = r[p1 + len(startswith):]
+            p2 = r.find(endswith)
+            if p2 > 0:
+                p2 = p1 + len(startswith) + p2 + len(endswith)
+        if 0 < p1 < p2:
+            return (p1, p2, s[p1:p2])
+        else:
+            return (0, 0, None)
+
+    def fix_graphic_href(self, src_path, xml_name, html_filename):
+        html_content = open(html_filename, 'r').read()
+        xml_content = self.content
+        new_xml = ''
+        img_path = os.path.dirname(html_filename)
+        doit = True
+        while doit:
+            xml_p1, xml_p2, new, html_p2, img_filename = self.get_data(xml_content, html_content)
+            if xml_p1 == 0:
+                doit = False
+                new_xml += xml_content
+            else:
+                new_xml += xml_content[0:xml_p1] + new
+                xml_content = xml_content[xml_p2:]
+                html_content = html_content[html_p2:]
+                if len(img_filename) > 0:
+                    img_filename = img_path + '/' + img_filename
+                    if os.path.isfile(img_filename):
+                        shutil.copyfile(img_filename, src_path + '/' + xml_name + os.path.basename(img_filename))
+
+        self.content = new_xml
+
+    def get_attr_value(self, content):
+        result = ''
+        if content is not None:
+            p1, p2, res = self.find_range(content, '"', '"')
+            if p1 > 0:
+                result = res[1:-1]
+        return result
+
+    def get_data(self, xml_content, html_content):
+        xml_p1, xml_p2, new, html_p2, img_filename = (0, 0, '', 0, '')
+
+        xml_p1, xml_p2, replace = self.find_range(xml_content, '<graphic', '</graphic>')
+        if replace is not None:
+            p1, p2, xml_href = self.find_range(replace, 'href="', '"')
+            xml_href = self.get_attr_value(xml_href)
+            html_p1, html_p2, img_info = self.find_range(html_content, '[graphic', '[/graphic]')
+
+            new_href = xml_href
+            if xml_href[0:1] == '?':
+                if img_info is not None:
+                    p1, p2, img_filename = self.find_range(img_info, 'src="', '"')
+                    img_filename = self.get_attr_value(img_filename)
+                    if img_filename is not None:
+                        img_href = img_filename[img_filename.find('/')+1:]
+                        new_href = xml_href[1:] + img_href
+
+            new = replace.replace(xml_href, new_href)
+        return (xml_p1, xml_p2, new, html_p2, img_filename)
+
+            
 ###
 class XMLString(object):
 
@@ -548,7 +617,7 @@ class XMLString(object):
             self._fix_style_tags()
         if xml_is_well_formed(self.content) is None:
             self._fix_open_close()
-        
+
     def _fix_open_close(self):
         changes = []
         parts = self.content.split('>')
@@ -583,18 +652,19 @@ class XMLString(object):
     def _fix_problem(self, tag_list, parts):
         expected_close_tags = []
         ign_list = []
+        debug = False
         k = 0
         for part in parts:
             if part in tag_list:
                 tag = part
-                print('\ncurrent:' + tag)
+                if debug: print('\ncurrent:' + tag)
                 if tag.startswith('</'):
-                    print('expected')
-                    print(expected_close_tags)
-                    print('ign_list')
-                    print(ign_list)
+                    if debug: print('expected')
+                    if debug: print(expected_close_tags)
+                    if debug: print('ign_list')
+                    if debug: print(ign_list)
                     if tag in ign_list:
-                        print('remove from ignore')
+                        if debug: print('remove from ignore')
                         ign_list.remove(tag)
                         parts[k] = ''
                     else:
@@ -603,7 +673,7 @@ class XMLString(object):
                             matched = (expected_close_tags[-1] == tag)
 
                             if not matched:
-                                print('not matched')
+                                if debug: print('not matched')
 
                                 while not matched and len(expected_close_tags) > 0:
 
@@ -613,10 +683,10 @@ class XMLString(object):
 
                                     matched = (expected_close_tags[-1] == tag)
 
-                                print('...expected')
-                                print(expected_close_tags)
-                                print('...ign_list')
-                                print(ign_list)
+                                if debug: print('...expected')
+                                if debug: print(expected_close_tags)
+                                if debug: print('...ign_list')
+                                if debug: print(ign_list)
 
                             if matched:
                                 del expected_close_tags[-1]
@@ -752,7 +822,8 @@ class XMLMetadata:
         #xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'chem-struct', 'inline-supplementary-material', 'supplementary-material', ]
         #sgml  = ['graphic', 'supplmat']
         tags_has_href = list(set(xml_tags_which_has_href + sgml_tags_which_has_href))
-        
+        print(self.root.findall('.//*[@href]'))
+        print(self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href'))
         href_list = {}
         invalid_attrib_id = []
         for tag in tags_has_href:
@@ -784,42 +855,6 @@ class XMLMetadata:
                     
         return href_list
 
-    def old_xml_data_href_filenames(self):
-        r = {}
-
-        for tag in ['fig', 'figgrp', 'tabwrap', 'equation', 'inline-display']:
-
-            nodes = self.root.findall('.//' + tag)
-
-            for n in nodes:
-                if n.attrib.get('id') is not None:
-                    id = n.attrib.get('id', '')
-                    if '-' in id:
-                        id = id[id.rfind('-')+1:]
-                    if n.tag == 'equation':
-                        id = 'e' + id
-                    elif n.tag == 'inline-display':
-                        id = 'i' + id
-                    else:
-                        id = 'g' + id
-                    graphic_nodes = n.findall('graphic')
-
-                    for graphic_node in graphic_nodes:
-                        for attrib_name in graphic_node.attrib:
-                            if 'href' in attrib_name:
-                                href = graphic_node.attrib.get(attrib_name)
-                                r[href] = id
-                if n.attrib.get('filename') is not None:
-                    r[n.attrib.get('filename')] = id
-
-        return r
-
-    #def new_names_and_embedded_files(self, acron, original_xml_name=''):
-    #    new_name = self.format_name(self._metadata(), acron, original_xml_name)
-    #    href_filenames = self.xml_data_href_filenames()
-    #    href_files = self.new_href_list(new_name, href_filenames)
-    #    return (new_name, href_files)
-
     def new_href_list(self, new_name, href_filenames):
         items = []
         for href, suffix in href_filenames.items():
@@ -843,37 +878,33 @@ class XMLMetadata:
         # s for supplementary
         #xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'chem-struct', 'inline-supplementary-material', 'supplementary-material', ]
         #sgml  = ['graphic', 'supplmat']
-        tags_has_href = list(set(xml_tags_which_has_href + sgml_tags_which_has_href))
         href_list = []
         invalid_attrib_id = []
-        for tag in tags_has_href:
-            # find parent of nodes which has @href
-            nodes = self.root.findall('.//*[' + tag + ']')
-            for node in nodes:
-                attrib_id = node.attrib.get('id', '')
-                filename = node.attrib.get('filename', None)
-                if attrib_id == '':
-                    attrib_id = node.find(tag).attrib.get('id', '')
-                href = node.find(tag).attrib.get('{http://www.w3.org/1999/xlink}href', None)
-                if href is None or href == '':
-                    href = filename
-                if not href is None:
+        nodes = self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..')
+        for node in nodes:
+            parent_tag = node.tag
+            parent_id = node.attrib.get('id')
+            href_nodes = node.findall('.//*[@{http://www.w3.org/1999/xlink}href]')
+            for href_node in href_nodes:
+                tag = href_node.tag
+                href = href_node.attrib.get('{http://www.w3.org/1999/xlink}href')
+                suffix = ''
+                if not '//' in href:
                     if 'suppl' in tag or 'media' == tag:
                         suffix = 's'
                     elif 'inline' in tag:
                         suffix = 'i'
-                    elif node.tag in ['equation', 'disp-formula']:
+                    elif parent_tag in ['equation', 'disp-formula']:
                         suffix = 'e'
                     else:
                         suffix = 'g'
-
-                    if attrib_id == '':
-                        attrib_id = '_' + str(len(invalid_attrib_id) + 1)
-                        invalid_attrib_id.append(attrib_id)
-                        suffix = 'g'
+                    if parent_id is None:
+                        attrib_id = href
+                    else:
+                        attrib_id = parent_id
                     href_list.append((href, suffix + attrib_id))
                     
-        return href_list    
+        return href_list
 
 
 class IDsReport(object):
@@ -2135,12 +2166,16 @@ class Normalizer(object):
 
     def normalize_content(self, xml_filename, src_path, dest_path, acron):
         log = []
-
+        fixed = False
         is_sgmxml = xml_filename.endswith('.sgm.xml')
         xml_name = os.path.basename(xml_filename)
         xml_name = xml_name.replace('.sgm.xml', '').replace('.xml', '')
         new_name = xml_name
 
+        html_filename = os.path.dirname(dest_path) + '/' + xml_name + '.temp.htm'
+        if not os.path.isfile(html_filename):
+            html_filename += 'l'
+        
         log.append('xml name:' + xml_name)
 
         f = open(xml_filename)
@@ -2152,11 +2187,25 @@ class Normalizer(object):
         if is_sgmxml:
             original_xml_name = ''
             print('normalize_content: xml_fix.fix()')
-        
+
+            if content.find('</graphic>'):
+                if os.path.isfile(html_filename):
+                    ghf = GraphicHrefFixer(content)
+                    ghf.fix_graphic_href(src_path, xml_name, html_filename)
+                    if not ghf.content == content:
+                        content = ghf.content
+                        fixed = True
+
             xml_fix = XMLString(content)
             xml_fix.fix()
             if not xml_fix.content == content:
                 content = xml_fix.content
+                fixed = True
+
+            if fixed:
+                f = open(xml_filename, 'w')
+                f.write(content)
+                f.close()
 
             if xml_is_well_formed(content) is not None:
                 content = xml_content_transform(content, self.version_converter)
@@ -2204,6 +2253,8 @@ class Normalizer(object):
             f = open(dest_path + '/incorrect_' + new_name + '.xml', 'w')
             f.write(content)
             f.close()
+        print(html_filename)
+
         return (new_name, log)
 
     def generate_curr_and_new_href_list(self, xml_name, new_name, href_list):
@@ -2231,16 +2282,22 @@ class Normalizer(object):
         """
         href_files_list = []
         not_found = []
-        related_files_list = [(f, new_name + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(xml_name + '.')]
+        related_files_list = [(f, new_name + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(xml_name)]
         for curr, new in curr_and_new_href_list:
+
             if os.path.isfile(src_path + '/' + curr):
-                href_files_list.append((curr, new))
+                ext = curr[curr.rfind('.'):]
+                if new.endswith(ext):
+                    href_files_list.append((curr, new))
+                else:
+                    href_files_list.append((curr, new + ext))
             else:
                 # curr and new has no extension
-                found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr + '.')]
+                found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr + '.') and not curr == xml_name]
                 if len(found) == 0:
-                    curr_noext = curr[0:curr.rfind('.')]
-                    found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr_noext + '.')]
+                    if '.' in curr:
+                        curr_noext = curr[0:curr.rfind('.')]
+                        found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr_noext + '.') and not curr_noext == xml_name]
                 if len(found) == 0:
                     not_found.append(curr)
                 else:
@@ -2260,10 +2317,8 @@ class Normalizer(object):
         jpg_created = []
         for curr, new in related_files_list:
             shutil.copyfile(src_path + '/' + curr, dest_path + '/' + new)
-            
         for curr, new in href_files_list:
             shutil.copyfile(src_path + '/' + curr, dest_path + '/' + new)
-            
             if IMG_CONVERTER:
                 ext = curr[curr.rfind('.'):]
                 if ext in ['.tiff', '.tif', '.eps']:
@@ -2405,7 +2460,6 @@ class XPM5(object):
         for f in os.listdir(pmc_pkg_path):
             if f.startswith(new_name + '.') or f.startswith(new_name + '-'):
                 os.unlink(pmc_pkg_path + '/' + f)
-
         for f in os.listdir(wrk_path):
             shutil.copyfile(wrk_path + '/' + f, scielo_pkg_path + '/' + f)
             if not f.endswith('.jpg'):
