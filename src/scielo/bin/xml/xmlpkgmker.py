@@ -557,7 +557,9 @@ class GraphicHrefFixer(object):
                 if len(img_filename) > 0:
                     img_filename = img_path + '/' + img_filename
                     if os.path.isfile(img_filename):
-                        shutil.copyfile(img_filename, src_path + '/' + xml_name + os.path.basename(img_filename))
+                        new_img_filename = src_path + '/' + xml_name + os.path.basename(img_filename)
+                        if not os.path.isfile(new_img_filename):
+                            shutil.copyfile(img_filename, new_img_filename)
 
         self.content = new_xml
 
@@ -2279,7 +2281,7 @@ class Normalizer(object):
         """
         href_files_list = []
         not_found = []
-        related_files_list = [(f, new_name + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(xml_name)]
+        related_files_list = [(f, new_name + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(xml_name + '.')]
         for curr, new in curr_and_new_href_list:
 
             if os.path.isfile(src_path + '/' + curr):
@@ -2342,10 +2344,14 @@ class XPM5(object):
         fp = open(xml_filename, 'r')
         xml = fp.read()
         fp.close()
-        for f in os.listdir(path):
-            if f.startswith(name + '.') or f.startswith(name + '-'):
-                f_without_ext = f[0:f.rfind('.')]
-                xml = xml.replace('href="' + f_without_ext + '"', 'href="' + f + '"')
+        matched_files = [f for f in os.listdir(path) if f.startswith(name + '-')]
+        img_files = [f for f in matched_files if f.endswith('.tiff') or f.endswith('.tif') or f.endswith('.eps')]
+        if len(img_files) == 0:
+            img_files = [f for f in matched_files if f.endswith('.jpg')]
+        not_img_files = [f for f in matched_files if not f in img_files]
+        for f in list(set(img_files + not_img_files)):
+            f_without_ext = f[0:f.rfind('.')]
+            xml = xml.replace('href="' + f_without_ext + '"', 'href="' + f + '"')
         fp = open(xml_filename, 'w')
         fp.write(xml)
         fp.close()
