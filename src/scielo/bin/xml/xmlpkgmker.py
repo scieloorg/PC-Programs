@@ -822,8 +822,7 @@ class XMLMetadata:
         #xml_tags_which_has_href = ['graphic', 'inline-graphic', 'media', 'chem-struct', 'inline-supplementary-material', 'supplementary-material', ]
         #sgml  = ['graphic', 'supplmat']
         tags_has_href = list(set(xml_tags_which_has_href + sgml_tags_which_has_href))
-        print(self.root.findall('.//*[@href]'))
-        print(self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href'))
+        
         href_list = {}
         invalid_attrib_id = []
         for tag in tags_has_href:
@@ -2253,8 +2252,6 @@ class Normalizer(object):
             f = open(dest_path + '/incorrect_' + new_name + '.xml', 'w')
             f.write(content)
             f.close()
-        print(html_filename)
-
         return (new_name, log)
 
     def generate_curr_and_new_href_list(self, xml_name, new_name, href_list):

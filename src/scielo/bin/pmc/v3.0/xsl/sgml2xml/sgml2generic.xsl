@@ -205,7 +205,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
-	
+	<xsl:template match="sec/graphic"><p>
+		<xsl:choose>
+			<xsl:when test="substring(@href,1,1)='?'">
+				<graphic xlink:href="{substring(@href,2)}"></graphic>
+			</xsl:when>
+			<xsl:otherwise>
+				<graphic xlink:href="{@href}"></graphic>	
+			</xsl:otherwise>
+		</xsl:choose></p>
+	</xsl:template>
 	<xsl:template match="@resptp">
 		<xsl:attribute name="response-type"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 	</xsl:template>
@@ -2287,6 +2296,9 @@ Here is a figure group, with three figures inside, each of which contains a grap
 			<xsl:choose>
 				<xsl:when test="substring(.//graphic/@href,1,1)='?'">
 					<graphic xlink:href="{substring(.//graphic/@href,2)}{@id}"></graphic>
+				</xsl:when>
+				<xsl:when test="@filename">
+					<graphic xlink:href="{@filename}"></graphic>
 				</xsl:when>
 				<xsl:otherwise>
 					<graphic xlink:href="{.//graphic/@href}"></graphic>	
