@@ -5818,12 +5818,6 @@ end
 item: Add Text to INSTALL.LOG
   Text=Delete in-use files: On
 end
-item: Edit INI File
-  Pathname=%UNINSTALL_LANG%
-  Settings=[Settings]
-  Settings=No Background=0
-  Settings=
-end
 item: Wizard Block
   Direction Variable=DIRECTION
   Display Variable=DISPLAY
