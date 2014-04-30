@@ -205,6 +205,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
+	<xsl:template match="graphic">
+		<xsl:choose>
+			<xsl:when test="substring(@href,1,1)='?'">
+				<graphic xlink:href="{substring(@href,2)}"></graphic>
+			</xsl:when>
+			<xsl:otherwise>
+				<graphic xlink:href="{@href}"></graphic>	
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	<xsl:template match="sec/graphic"><p>
 		<xsl:choose>
 			<xsl:when test="substring(@href,1,1)='?'">
