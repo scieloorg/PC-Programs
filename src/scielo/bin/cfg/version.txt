@@ -1,4 +1,15 @@
-﻿4.0.078.r3 - 29/04/2014
+﻿4.0.078.r4 - 05/05/2014
+=======
+ - Milestone 4.0.078.r4
+   - markup xml
+      - (new) identify quote, by indentation
+      - (new) extract embedded files from .doc
+      - (bug) incorrect identification of label and caption, where there is none. (#459)
+      - (bug) fix label position (#465)
+      - (bug) do not identify blank footnotes (#473)
+      - (bug) problem as identifying xmlbody, at the moment of identifying xref of citations. (#458) 
+
+4.0.078.r3 - 29/04/2014
 =======
  - Milestone 4.0.078
    - markup xml
