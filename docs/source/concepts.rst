@@ -116,12 +116,12 @@ e.g.: \\scielo\\serial\\<acronym>
 
 It contains several folders, each one for each issue of the journal.
     
-    .. image:: img/concepts_serial.jpg
+    .. image:: img/en/dir_serial.jpg
 
 Issue folder
 ............
   
-    .. image:: img/concepts_serial_abc.jpg
+    .. image:: img/en/dir_serial_abc.jpg
 
 
 
