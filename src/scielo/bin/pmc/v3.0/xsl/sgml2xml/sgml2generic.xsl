@@ -539,11 +539,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<article-meta>
 			<xsl:if test="..//extra-scielo/issue-order">
 				<xsl:variable name="n"><xsl:value-of select="number(substring(..//extra-scielo/issue-order,5))"/></xsl:variable>
-				<article-id pub-id-type="publisher-id">S<xsl:value-of select="$JOURNAL_PID"/>
+				<!--article-id pub-id-type="publisher-id">S<xsl:value-of select="$JOURNAL_PID"/>
 					<xsl:value-of select="substring(@dateiso,1,4)"/>	
 					<xsl:value-of select="substring(string(10000 + $n),2)"/>
 					<xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/>
-				</article-id>
+				</article-id-->
 			</xsl:if>
 			
 			<xsl:apply-templates select="front/doi|doi"/>
@@ -552,12 +552,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test="contains(@fpage,'-')">
 					<xsl:value-of select="substring-before(@fpage,'-')"/>
 				</xsl:when>
-				<xsl:when test="string(number(@fpage))=@fpage"><xsl:value-of select="@fpage"/></xsl:when>
+				<xsl:when test="contains(@fpage,string(number(@fpage)))"><xsl:value-of select="@fpage"/></xsl:when>
 				<xsl:otherwise>0</xsl:otherwise>
 			</xsl:choose></xsl:variable>
 			<xsl:if test="number($fpage)&lt;number(@order) or contains(@fpage,'-')">
 					<!-- criar article-id (other), regra quando  -->
-					<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>
+				<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>
 			</xsl:if>
 
 			<xsl:apply-templates select="./front/toctitle"></xsl:apply-templates>
