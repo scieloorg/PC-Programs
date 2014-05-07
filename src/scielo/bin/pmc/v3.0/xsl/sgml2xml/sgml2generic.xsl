@@ -1321,16 +1321,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="xref[@ref-type='bibr']/@rid">
+		<xsl:variable name="rid">
 		<xsl:choose>
-			<xsl:when test="contains(., 'mkp_ref_')">
-				<xsl:attribute name="rid">B<xsl:value-of
+			<xsl:when test="contains(., 'mkp_ref_')"><xsl:value-of
 						select="substring-before(substring-after(.,'mkp_ref_'),'_')"
-					/></xsl:attribute>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:attribute name="rid">B<xsl:value-of select="substring(.,2)"/></xsl:attribute>
-			</xsl:otherwise>
-		</xsl:choose>
+					/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="substring(.,2)"/></xsl:otherwise>
+		</xsl:choose></xsl:variable>
+		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length($rid))"/></xsl:variable>
+		<xsl:variable name="id">B<xsl:value-of select="$zeros"/><xsl:value-of select="$rid"/></xsl:variable>
+		<xsl:attribute name="rid"><xsl:value-of select="$id"/></xsl:attribute>
 	</xsl:template>
 
 	<xsl:template match="*[@standard]/*[contains(name(),'citat')]">
