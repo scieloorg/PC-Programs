@@ -2,6 +2,6 @@
 Automata 1
 ==========
 
-`Español <es_automata.html>`_
+`En español <http://docs.scielo.org/projects/scielo-pc-programs/en/latest/es_automata.html>`_
 
 

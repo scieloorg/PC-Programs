@@ -40,7 +40,7 @@ How to use the program
 
 2. Fill the fields:
 
-.. image:: img/converter_01.png
+.. image:: img/converter_form.png
 
 
 - journal's title: 
