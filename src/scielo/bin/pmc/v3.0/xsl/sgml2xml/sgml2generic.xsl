@@ -784,6 +784,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="text()"/>
 	</xsl:template>
 	
+	<xsl:template match="aff/label" mode="aff-pmc">
+	</xsl:template>
+	
 	<xsl:template match="aff/email | aff/country" mode="aff-pmc">
 		<named-content content-type="{name()}"><xsl:value-of select="normalize-space(.)"/></named-content>
 	</xsl:template>
@@ -795,6 +798,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="aff/*" mode="original">
 		<xsl:value-of select="text()"/>
 	</xsl:template>
+	<xsl:template match="aff/label" mode="aff-pmc">
+	</xsl:template>
+	
 	<xsl:template match="aff/email" mode="original"><named-content content-type="email"><xsl:value-of select="text()"/></named-content>
 	</xsl:template>
 	<xsl:template match="aff//text()" mode="original">
