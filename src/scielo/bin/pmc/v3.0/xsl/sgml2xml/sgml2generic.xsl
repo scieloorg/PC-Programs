@@ -797,9 +797,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="aff/*" mode="original">
 		<xsl:value-of select="text()"/>
 	</xsl:template>
-	<xsl:template match="aff/email" mode="original"><named-content content-type="email"><xsl:value-of select="text()"/></named-content>
-	</xsl:template>
 	<xsl:template match="aff/label" mode="original">
+	</xsl:template>
+	<xsl:template match="aff/email" mode="original"><named-content content-type="email"><xsl:value-of select="text()"/></named-content>
 	</xsl:template>
 	<xsl:template match="aff//text()" mode="original">
 		<xsl:value-of select="."/>
