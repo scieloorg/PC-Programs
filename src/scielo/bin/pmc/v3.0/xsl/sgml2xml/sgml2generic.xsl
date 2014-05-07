@@ -784,7 +784,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="text()"/>
 	</xsl:template>
 	<xsl:template match="aff/label" mode="aff-pmc">
-		
 	</xsl:template>
 	
 	<xsl:template match="aff/email | aff/country" mode="aff-pmc">
