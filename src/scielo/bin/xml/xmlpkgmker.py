@@ -417,27 +417,28 @@ def load_xml(content):
             for repl in replaces:
                 content = content.replace(repl, repl.replace('&', 'MYMATHMLENT'))
         return content
+    r = None
+    if len(content) > 0:
+        NAMESPACES = {'mml': 'http://www.w3.org/TR/MathML3/'}
+        for prefix, uri in NAMESPACES.items():
+            etree.register_namespace(prefix, uri)
 
-    NAMESPACES = {'mml': 'http://www.w3.org/TR/MathML3/'}
-    for prefix, uri in NAMESPACES.items():
-        etree.register_namespace(prefix, uri)
+        if not '<' in content:
+            # is a file
+            try:
+                r = etree.parse(content)
+            except Exception as e:
+                content = open(content, 'r').read()
 
-    if not '<' in content:
-        # is a file
-        try:
-            r = etree.parse(content)
-        except Exception as e:
-            content = open(content, 'r').read()
+        if '<' in content:
+            content = handle_mml_entities(content)
 
-    if '<' in content:
-        content = handle_mml_entities(content)
-
-        try:
-            r = etree.parse(StringIO(content))
-        except Exception as e:
-            print('XML is not well formed')
-            print(e)
-            r = None
+            try:
+                r = etree.parse(StringIO(content))
+            except Exception as e:
+                print('XML is not well formed')
+                print(e)
+                r = None
     return r
 
 
@@ -913,23 +914,26 @@ class IDsReport(object):
         self.root = node
 
     def generate_report(self):
-        content = ''
-        subarticles = {}
+        if self.root is None:
+            content = '<p>Invalid XML</p>'
+        else:
+            content = ''
+            subarticles = {}
 
-        elements = ['aff', 'fig', 'table-wrap', 'equation', 'fn'] + list(set([elem.tag for elem in self.root.findall('.//*[@id]')]))
-        elements = list(set(elements))
+            elements = ['aff', 'fig', 'table-wrap', 'equation', 'fn'] + list(set([elem.tag for elem in self.root.findall('.//*[@id]')]))
+            elements = list(set(elements))
 
-        for elem_name in elements:
-            totals, article, subarticles = self.get_matched_nodes(elem_name)
-            if max(totals.values()) > 0:
-                content += '<div class="CSS_Table_bicolor"><table>'
-                content += '<tr><td>position/total</td><td>ID</td><td>article or subarticle</td><td>' + elem_name + '. Quantity found: ' + self.warning_totals(totals, elem_name) + '</td></tr>'
+            for elem_name in elements:
+                totals, article, subarticles = self.get_matched_nodes(elem_name)
+                if max(totals.values()) > 0:
+                    content += '<div class="CSS_Table_bicolor"><table>'
+                    content += '<tr><td>position/total</td><td>ID</td><td>article or subarticle</td><td>' + elem_name + '. Quantity found: ' + self.warning_totals(totals, elem_name) + '</td></tr>'
 
-                for k in range(0, max(totals.values())):
-                    art = article[k] if len(article) > k else None
-                    content += self.display_data(art, subarticles, k, str(k+1) + '/' + str(max(totals.values())))
-                    content += '<tr><td colspan="4"></td></tr>'
-                content += '</table></div>'
+                    for k in range(0, max(totals.values())):
+                        art = article[k] if len(article) > k else None
+                        content += self.display_data(art, subarticles, k, str(k+1) + '/' + str(max(totals.values())))
+                        content += '<tr><td colspan="4"></td></tr>'
+                    content += '</table></div>'
         return content
 
     def warning_totals(self, totals, element_name):
@@ -971,45 +975,48 @@ class HRefReport(object):
         self.files_without_extensions = list(set([f[0:f.rfind('.')] for f in self.files]))
 
     def generate_report(self, xml_name):
-        content = ''
-        href_dict = {}
-        xml_name = xml_name.replace('.xml', '')
-        
-        files = [f for f in self.files if f.startswith(xml_name + '-') or f.startswith(xml_name + '.')]
-        
-        elem_names = list(set([elem.tag for elem in self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]')]))
-        for elem_name in elem_names:
-            for parent in self.root.findall('.//*[' + elem_name + ']'):
-                href_value = parent.find(elem_name).attrib.get('{http://www.w3.org/1999/xlink}href', None)
-                if not href_value is None and not href_value.startswith('http'):
-                    if href_dict.get(href_value, None) is None:
-                        href_dict[href_value] = []
-                    href_dict[href_value].append(parent)
+        if self.root is None:
+            content = '<p>Invalid XML</p>'
+        else:
+            content = ''
+            href_dict = {}
+            xml_name = xml_name.replace('.xml', '')
+            
+            files = [f for f in self.files if f.startswith(xml_name + '-') or f.startswith(xml_name + '.')]
+            
+            elem_names = list(set([elem.tag for elem in self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]')]))
+            for elem_name in elem_names:
+                for parent in self.root.findall('.//*[' + elem_name + ']'):
+                    href_value = parent.find(elem_name).attrib.get('{http://www.w3.org/1999/xlink}href', None)
+                    if not href_value is None and not href_value.startswith('http'):
+                        if href_dict.get(href_value, None) is None:
+                            href_dict[href_value] = []
+                        href_dict[href_value].append(parent)
 
-        content += '<div class="CSS_Table_bicolor"><table>'
-        content += '<tr><td></td><td>files in the package</td><td>href?</td></tr>'
-        k = 0
-        for f in files:
-            k += 1
-            test = 'yes' if (f in href_dict.keys() or f[0:f.rfind('.')] in href_dict.keys()) else 'no'
-            content += '<tr><td>' + str(k) + '</td><td>' + f + '</td><td>' + test + '</td></tr>'
-        content += '</table></div>'
+            content += '<div class="CSS_Table_bicolor"><table>'
+            content += '<tr><td></td><td>files in the package</td><td>href?</td></tr>'
+            k = 0
+            for f in files:
+                k += 1
+                test = 'yes' if (f in href_dict.keys() or f[0:f.rfind('.')] in href_dict.keys()) else 'no'
+                content += '<tr><td>' + str(k) + '</td><td>' + f + '</td><td>' + test + '</td></tr>'
+            content += '</table></div>'
 
-        content += '<div class="CSS_Table_bicolor"><table>'
-        content += '<tr><td></td><td>@href content</td><td>file exists?</td><td>href location</td></tr>'
-        
-        k = 0
-        for href_key in sorted(href_dict.keys()):
-            k += 1
-            if len(href_dict[href_key]) > 1:
-                content += '<tr><td colspan="4">' + href_key + ' occurres ' + str(len(href_dict[href_key])) + ' times</td></tr>'
-            found = href_key in self.files
-            if not found:
-                found = href_key in self.files_without_extensions
-            found = 'found' if found else 'not found'
-            for item in href_dict[href_key]:
-                content += '<tr><td>' + str(k) + '</td><td>' + href_key + '</td><td>' + found + '</td><td>' + display_xml_in_html(item) + '</td></tr>'
-        content += '</table></div>'
+            content += '<div class="CSS_Table_bicolor"><table>'
+            content += '<tr><td></td><td>@href content</td><td>file exists?</td><td>href location</td></tr>'
+            
+            k = 0
+            for href_key in sorted(href_dict.keys()):
+                k += 1
+                if len(href_dict[href_key]) > 1:
+                    content += '<tr><td colspan="4">' + href_key + ' occurres ' + str(len(href_dict[href_key])) + ' times</td></tr>'
+                found = href_key in self.files
+                if not found:
+                    found = href_key in self.files_without_extensions
+                found = 'found' if found else 'not found'
+                for item in href_dict[href_key]:
+                    content += '<tr><td>' + str(k) + '</td><td>' + href_key + '</td><td>' + found + '</td><td>' + display_xml_in_html(item) + '</td></tr>'
+            content += '</table></div>'
         return content
 
     def warning_totals(self, totals, element_name):
@@ -1074,8 +1081,6 @@ class PkgReport(object):
 
     def _load_file(self, filename):
         node = load_xml(self.pkg_path + '/' + filename)
-        if node is None:
-            node = load_xml('<root></root>')
         self.filename_list.append(filename)
         self.xml_content[filename] = node
         self.content_validations[filename] = ContentValidation(node, filename)
@@ -1096,13 +1101,17 @@ class PkgReport(object):
         pubdates = {}
         individual_errors = ''
         all_articles_errors = ''
+        invalid = []
 
         for filename in self.filename_list:
             content_validation = self.content_validations[filename]
 
             report_filename_prefix = filename.replace('.xml', '')
             if old_names is not None:
-                report_filename_prefix = old_names[filename]
+                old_name = filename
+                if 'incorrect_' in filename:
+                    old_name = filename[filename.find('_')+1:]
+                report_filename_prefix = old_names[old_name]
 
             id_report_content = '<h1>Report of @id</h1>' + IDsReport(self.xml_content[filename]).generate_report()
             html_report._html(self.report_path + '/' + report_filename_prefix + '_ids.html', '', html_report._css('toc') + html_report._css('bicolortable'), id_report_content)
@@ -1110,72 +1119,75 @@ class PkgReport(object):
             href_report_content = '<h1>Report of @href and files</h1>' + HRefReport(self.xml_content[filename], os.listdir(self.pkg_path)).generate_report(content_validation.filename)
             html_report._html(self.report_path + '/' + report_filename_prefix + '_href.html', '', html_report._css('toc') + html_report._css('bicolortable'), href_report_content)
 
-            if expected_journal_meta == {}:
-                for k, v in content_validation.issue_meta.items():
-                    expected_journal_meta[k] = v
-            expected_files = [f[0:f.rfind('.')] for f in os.listdir(self.pkg_path)]
-
-            individual_fatal_errors = []
-            #pubdate checking
-            pubdate = content_validation.issue_date()
-            if not pubdate in pubdates.keys():
-                pubdates[pubdate] = []
-            pubdates[pubdate].append(filename)
-            # order checking
-            order = content_validation.article_meta.get('order', 0)
-            if order == 0:
-                order_is_zero.append(content_validation.filename)
-                row_idx = content_validation.filename
-                individual_fatal_errors.append('<p class="error">ERROR: order must not be zero.</p>')
+            if self.xml_content[filename] is None:
+                invalid.append(filename)
             else:
-                if order in order_list.keys():
+                if expected_journal_meta == {}:
+                    for k, v in content_validation.issue_meta.items():
+                        expected_journal_meta[k] = v
+                expected_files = [f[0:f.rfind('.')] for f in os.listdir(self.pkg_path)]
+
+                individual_fatal_errors = []
+                #pubdate checking
+                pubdate = content_validation.issue_date()
+                if not pubdate in pubdates.keys():
+                    pubdates[pubdate] = []
+                pubdates[pubdate].append(filename)
+                # order checking
+                order = content_validation.article_meta.get('order', 0)
+                if order == 0:
+                    order_is_zero.append(content_validation.filename)
                     row_idx = content_validation.filename
-                    individual_fatal_errors.append('<p class="error">ERROR: order is duplicated.</p>')
+                    individual_fatal_errors.append('<p class="error">ERROR: order must not be zero.</p>')
                 else:
-                    order_list[order] = []
-                    row_idx = '00000' + str(order)
-                    row_idx = row_idx[-5:]
-            # doi checking
-            doi = content_validation.article_meta.get('doi', None)
-            if doi:
-                if doi in doi_list.keys():
-                    individual_fatal_errors.append('<p class="error">ERROR: doi is duplicated.</p>')
+                    if order in order_list.keys():
+                        row_idx = content_validation.filename
+                        individual_fatal_errors.append('<p class="error">ERROR: order is duplicated.</p>')
+                    else:
+                        order_list[order] = []
+                        row_idx = '00000' + str(order)
+                        row_idx = row_idx[-5:]
+                # doi checking
+                doi = content_validation.article_meta.get('doi', None)
+                if doi:
+                    if doi in doi_list.keys():
+                        individual_fatal_errors.append('<p class="error">ERROR: doi is duplicated.</p>')
+                    else:
+                        doi_list[doi] = []
+                    doi_list[doi].append(content_validation.filename)
+
+                # validations
+                content_validation.validations(expected_journal_meta, expected_files)
+
+                individual_metadata = self._report_article_meta(content_validation)
+                individual_errors = self._report_article_messages(content_validation, True)
+
+                individual_lists = ''
+                for title, report_filename, columns, required, desirable in self.lists:
+                    items = self.data_for_list(report_filename, content_validation)
+                    rows = self.data_in_table_format(content_validation.filename, items, columns, required, desirable)
+                    individual_lists += '<div class="list"><h1>' + title + '</h1>' + html_report.in_table_format(rows, columns) + '</div>'
+
+                individual_header = ''.join(individual_fatal_errors) + individual_metadata
+                individual_stat = self.statistics(individual_errors + ''.join(individual_fatal_errors))
+
+                individual_report_content = '<h1>' + report_filename_prefix + '</h1>' + individual_stat + issue_header + '<div class="article">' + individual_header + individual_errors + '</div>' + individual_lists + id_report_content + href_report_content
+
+                if row_idx.isdigit():
+                    order_ok[row_idx] = '<div class="article">' + individual_header + '</div>'
                 else:
-                    doi_list[doi] = []
-                doi_list[doi].append(content_validation.filename)
+                    unordered[row_idx] = '<div class="article">' + individual_header + '</div>'
 
-            # validations
-            content_validation.validations(expected_journal_meta, expected_files)
+                if not issue_header:
+                    # only once
+                    issue_header = self._report_journal_meta(content_validation)
 
-            individual_metadata = self._report_article_meta(content_validation)
-            individual_errors = self._report_article_messages(content_validation, True)
+                if not issue_label:
+                    # only once
+                    issue_label = content_validation.issue_label
 
-            individual_lists = ''
-            for title, report_filename, columns, required, desirable in self.lists:
-                items = self.data_for_list(report_filename, content_validation)
-                rows = self.data_in_table_format(content_validation.filename, items, columns, required, desirable)
-                individual_lists += '<div class="list"><h1>' + title + '</h1>' + html_report.in_table_format(rows, columns) + '</div>'
-
-            individual_header = ''.join(individual_fatal_errors) + individual_metadata
-            individual_stat = self.statistics(individual_errors + ''.join(individual_fatal_errors))
-
-            individual_report_content = '<h1>' + report_filename_prefix + '</h1>' + individual_stat + issue_header + '<div class="article">' + individual_header + individual_errors + '</div>' + individual_lists + id_report_content + href_report_content
-
-            if row_idx.isdigit():
-                order_ok[row_idx] = '<div class="article">' + individual_header + '</div>'
-            else:
-                unordered[row_idx] = '<div class="article">' + individual_header + '</div>'
-
-            if not issue_header:
-                # only once
-                issue_header = self._report_journal_meta(content_validation)
-
-            if not issue_label:
-                # only once
-                issue_label = content_validation.issue_label
-
-            html_report._html(self.report_path + '/' + report_filename_prefix + '.contents.html', 'Report of contents validations required by SciELO', html_report._css('toc') + html_report._css('datareport') + html_report._css('bicolortable'), individual_report_content)
-            all_articles_errors += individual_errors
+                html_report._html(self.report_path + '/' + report_filename_prefix + '.contents.html', 'Report of contents validations required by SciELO', html_report._css('toc') + html_report._css('datareport') + html_report._css('bicolortable'), individual_report_content)
+                all_articles_errors += individual_errors
 
         #issue_header +
         # doi, order, journal, sorted, unsorted.
@@ -1189,6 +1201,9 @@ class PkgReport(object):
                     issue_errors += '<p>ERROR: %s is duplicated in %s</p>' % (k, ', '.join(v))
                 if k == 0:
                     issue_errors += '<p>ERROR: %s is invalid value for %s</p>' % (k, ', '.join(v))
+            if len(invalid) > 0:
+                issue_errors += '<p>FATAL  ERROR: %s are invalid files.</p>' % ', '.join(invalid)
+
             if len(pubdates.items()) > 1:
                 issue_errors += '<p>FATAL ERROR: All the articles must have the same value for pub-date/@date-type=pub or pub-date/@pub-type= ppub | epub-ppub | collection.</p>'
                 for k, v in pubdates.items():
@@ -1680,7 +1695,7 @@ class ContentValidation(object):
             article_title = article_meta.find('.//article-title')
             self.article_meta['article-title'] = self._node_xml_content(article_title)
 
-            self.article_meta['award-id'] = ','.join([award.text for award in article_meta.findall('.//award-id')])
+            self.article_meta['award-id'] = ','.join([award.text if award.text is not None else '' for award in article_meta.findall('.//award-id')])
             self.article_meta['ack'] = self._node_xml_content(self.xml.find('.//ack'))
 
             self.article_meta['license'] = self._node_xml(self.xml.find('.//license'))
