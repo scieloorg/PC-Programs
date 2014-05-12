@@ -737,6 +737,7 @@ class XMLMetadata:
         issueno, suppl = self._fix_issue_number(issueno, suppl)
 
         order = node.findtext('.//article-id[@pub-id-type="other"]')
+        doi = node.findtext('.//article-id[@pub-id-type="doi"]')
         fpage_node = node.find('./fpage')
         elocation_id = node.findtext('./elocation-id')
 
@@ -752,7 +753,7 @@ class XMLMetadata:
         if fpage is not None:
             if fpage == '0':
                 fpage = None
-        return [issn, volid, issueno, suppl, fpage, seq, elocation_id, order]
+        return [issn, volid, issueno, suppl, fpage, seq, elocation_id, order, doi]
 
     def _metadata(self):
         issn, volid, issueno, suppl, fpage, seq, elocation_id, order = ['', '', '', '', '', '', '', '']
@@ -760,7 +761,8 @@ class XMLMetadata:
 
             node = self.root.find('.//article-meta')
             if node is not None:
-                issn, volid, issueno, suppl, fpage, seq, elocation_id, order = self._meta_xml(node)
+                print('_meta_xml')
+                issn, volid, issueno, suppl, fpage, seq, elocation_id, order, doi = self._meta_xml(node)
             else:
                 attribs = self.root.find('.').attrib
                 issn = attribs.get('issn')
@@ -776,44 +778,59 @@ class XMLMetadata:
                 if issueno == 'ahead':
                     issueno = '00'
                     volid = '00'
-        return [issn, volid, issueno, suppl, fpage, seq, elocation_id, order]
+
+        return [issn, volid, issueno, suppl, fpage, seq, elocation_id, order, doi]
 
     def format_name(self, data, param_acron='', original_xml_name=''):
 
+        def format_last_part(fpage, seq, elocation_id, order, doi, issn):
+            def normalize_len(fpage):
+                fpage = '00000' + fpage
+                return fpage[-5:]
+            print((fpage, seq, elocation_id, order, doi, issn))
+            r = None
+            if r is None:
+                if fpage is not None:
+                    r = normalize_len(fpage)
+                    if seq is not None:
+                        r += '-' + seq
+            if r is None:
+                if elocation_id is not None:
+                    r = elocation_id
+            if r is None:
+                if doi is not None:
+                    doi = doi[doi.find('/')+1:]
+                    if issn in doi:
+                        doi = doi[doi.find(issn) + len(issn):]
+                    doi = doi.replace('.', '_').replace('-', '_')
+                    r = doi
+            if r is None:
+                if order is not None:
+                    r = normalize_len(order)
+            return r
+
         r = ''
         if data:
-            issn, vol, issueno, suppl, fpage, seq, elocation_id, order = data
+            issn, vol, issueno, suppl, fpage, seq, elocation_id, order, doi = data
 
             if original_xml_name != '':
                 issn = original_xml_name[0:9]
 
-            if elocation_id is not None:
-                page_or_order = elocation_id
-            else:
-                if fpage is not None:
-                    page_or_order = fpage
-                    if seq is not None:
-                        page_or_order += '-' + seq
-                elif order is not None:
-                    page_or_order = order
-
-                page_or_order = '00000' + page_or_order
-                page_or_order = page_or_order[-5:]
+            last = format_last_part(fpage, seq, elocation_id, order, doi, issn)
 
             if issueno:
-                issueno = '00' + issueno
-                issueno = issueno[-2:]
+                if issueno == 'ahead' or issueno == '00':
+                    issueno = None
+                else:
+                    issueno = '00' + issueno
+                    issueno = issueno[-2:]
 
             if suppl:
                 suppl = 's' + suppl if suppl != '0' else 'suppl'
 
-            issueid = []
-            for item in [vol, issueno, suppl]:
-                if item != '' and item is not None:
-                    issueid.append(item)
-            issueid = '-'.join(issueid)
+            parts = [issn, param_acron, vol, issueno, suppl, last]
 
-            r = '-'.join([issn, param_acron, issueid, page_or_order])
+            r = '-'.join([part for part in parts if part is not None and not part == ''])
 
         return r
 
@@ -1915,7 +1932,7 @@ class ContentValidation(object):
     def _validate_presence_of_at_least_one(self, data, labels):
         if not any(data):
             return 'ERROR: Required one of ' + ' | '.join(labels)
-        
+
     def _validate_previous_and_next(self, previous, next, labels, max_distance=None):
         if previous is None:
             previous = 0
