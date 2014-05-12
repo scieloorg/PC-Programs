@@ -1,4 +1,17 @@
-﻿4.0.078.r4 - 05/05/2014
+﻿4.0.078.r5 - 12/05/2014
+=======
+ - Milestone 4.0.078.r5
+   - xml package maker
+      - (new) new rule for naming aop articles
+      - (bug) xml package maker finishes unexpectable if there is any not well formed XML.
+   - Markup XML
+      - (bug) fix generation of RID of reference in body. (It happened when there are less than 10 references)
+      - (bug) some graphics were not being identified
+      - (bug) article-id (other) was inserted always. It had to be generated only in special cases, such as, fpage is literal, or has @seq, etc
+      - (bug) removed label from inside of institution (original/aff-pmc)
+      - (bug) fix position of [/xmlbody] inside of [/subart]
+
+4.0.078.r4 - 05/05/2014
 =======
  - Milestone 4.0.078.r4
    - markup xml
