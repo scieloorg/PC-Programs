@@ -539,11 +539,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<article-meta>
 			<xsl:if test="..//extra-scielo/issue-order">
 				<xsl:variable name="n"><xsl:value-of select="number(substring(..//extra-scielo/issue-order,5))"/></xsl:variable>
-				<article-id pub-id-type="publisher-id">S<xsl:value-of select="$JOURNAL_PID"/>
+				<!--article-id pub-id-type="publisher-id">S<xsl:value-of select="$JOURNAL_PID"/>
 					<xsl:value-of select="substring(@dateiso,1,4)"/>	
 					<xsl:value-of select="substring(string(10000 + $n),2)"/>
 					<xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/>
-				</article-id>
+				</article-id-->
 			</xsl:if>
 			
 			<xsl:apply-templates select="front/doi|doi"/>
@@ -552,12 +552,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test="contains(@fpage,'-')">
 					<xsl:value-of select="substring-before(@fpage,'-')"/>
 				</xsl:when>
-				<xsl:when test="string(number(@fpage))=@fpage"><xsl:value-of select="@fpage"/></xsl:when>
+				<xsl:when test="contains(@fpage,string(number(@fpage)))"><xsl:value-of select="@fpage"/></xsl:when>
 				<xsl:otherwise>0</xsl:otherwise>
 			</xsl:choose></xsl:variable>
 			<xsl:if test="number($fpage)&lt;number(@order) or contains(@fpage,'-')">
 					<!-- criar article-id (other), regra quando  -->
-					<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>
+				<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>
 			</xsl:if>
 
 			<xsl:apply-templates select="./front/toctitle"></xsl:apply-templates>
@@ -784,6 +784,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="text()"/>
 	</xsl:template>
 	
+	<xsl:template match="aff/label" mode="aff-pmc">
+	</xsl:template>
+	
 	<xsl:template match="aff/email | aff/country" mode="aff-pmc">
 		<named-content content-type="{name()}"><xsl:value-of select="normalize-space(.)"/></named-content>
 	</xsl:template>
@@ -795,6 +798,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="aff/*" mode="original">
 		<xsl:value-of select="text()"/>
 	</xsl:template>
+	<xsl:template match="aff/label" mode="aff-pmc">
+	</xsl:template>
+	
 	<xsl:template match="aff/email" mode="original"><named-content content-type="email"><xsl:value-of select="text()"/></named-content>
 	</xsl:template>
 	<xsl:template match="aff//text()" mode="original">
@@ -1315,16 +1321,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="xref[@ref-type='bibr']/@rid">
+		<xsl:variable name="rid">
 		<xsl:choose>
-			<xsl:when test="contains(., 'mkp_ref_')">
-				<xsl:attribute name="rid">B<xsl:value-of
+			<xsl:when test="contains(., 'mkp_ref_')"><xsl:value-of
 						select="substring-before(substring-after(.,'mkp_ref_'),'_')"
-					/></xsl:attribute>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:attribute name="rid">B<xsl:value-of select="substring(.,2)"/></xsl:attribute>
-			</xsl:otherwise>
-		</xsl:choose>
+					/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="substring(.,2)"/></xsl:otherwise>
+		</xsl:choose></xsl:variable>
+		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length($rid))"/></xsl:variable>
+		<xsl:variable name="id">B<xsl:value-of select="$zeros"/><xsl:value-of select="$rid"/></xsl:variable>
+		<xsl:attribute name="rid"><xsl:value-of select="$id"/></xsl:attribute>
 	</xsl:template>
 
 	<xsl:template match="*[@standard]/*[contains(name(),'citat')]">
