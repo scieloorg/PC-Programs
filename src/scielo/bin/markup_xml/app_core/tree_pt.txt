@@ -148,4 +148,6 @@ onbehalf;Identifica a instituição que o autor representa. Example: John Smith on
 xmlabstr;Identifica um resumo com seções
 toctitle;Identifica o título da seção do sumário. Este item é obrigatório para a geração do XML.
 role;Identifica o papel do autor
-author-names;Identifica surname e fname de um autor
+surname-fname;Identifica surname e fname de um autor (surname separador fname ou fname separador surname)
+*oauthor;Identifica automaticamente apenas um oauthor
+*author;Identifica automaticamente apenas um author
