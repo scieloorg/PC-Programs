@@ -16,7 +16,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="unident" select="//unidentified"/>
 	<xsl:variable name="corresp" select="//corresp"/>
 	<xsl:variable name="deceased" select="//fngrp[@fntype='deceased']"/>
-	<xsl:variable name="eqcontrib" select="//fngrp[@fntype='esgml2generic.xslqual']"/>
+	<xsl:variable name="eqcontrib" select="//fngrp[@fntype='equal']"/>
 	<xsl:variable name="unident_back" select="//back//unidentified"/>
 	<xsl:variable name="fn_author" select=".//fngrp[@fntype='author']"/>
 	<xsl:variable name="fn" select=".//fngrp"/>
