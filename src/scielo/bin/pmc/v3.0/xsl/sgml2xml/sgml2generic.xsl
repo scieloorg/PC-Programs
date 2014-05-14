@@ -925,6 +925,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</issue>
 				<issue-part>Pt <xsl:value-of select="substring-after(.,' Pt ')"/></issue-part>
 			</xsl:when>
+			<xsl:when test=".='ahead'">
+				<volume>00</volume>
+				<issue>00</issue>
+			</xsl:when>
 			<xsl:otherwise>
 				<issue>
 					<xsl:value-of select="normalize-space(.)"/>
