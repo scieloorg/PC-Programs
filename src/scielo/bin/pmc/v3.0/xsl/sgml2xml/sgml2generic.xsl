@@ -1300,7 +1300,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ack>
 	</xsl:template>
 
-
+	<xsl:template match="*[contains(name(),'citat')]//bold[string-length(normalize-space(text()))=1]"></xsl:template>
+	<xsl:template match="*[contains(name(),'citat')]//italic[string-length(normalize-space(text()))=1]"></xsl:template>
 	<xsl:template
 		match="*[contains(name(),'citat')]/text()"/>
 	<xsl:template
