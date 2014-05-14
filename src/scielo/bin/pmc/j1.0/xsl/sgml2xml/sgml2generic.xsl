@@ -60,8 +60,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="@artdate!=''"><xsl:value-of select="@artdate"/></xsl:when>
 					<xsl:otherwise><xsl:value-of select="//extra-scielo//season"/></xsl:otherwise>
 				</xsl:choose></xsl:variable>
-		<xsl:comment><xsl:value-of select="$dateiso"/></xsl:comment>
-		<xsl:comment><xsl:value-of select="$date"/></xsl:comment>
 		<pub-date>
 			<!-- pub-type="{$date_type}" -->
 			<xsl:attribute name="date-type">pub</xsl:attribute>
