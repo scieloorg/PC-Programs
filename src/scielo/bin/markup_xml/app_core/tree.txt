@@ -22,7 +22,9 @@ quote;#TRUE#
 element;#TRUE#
 list;#TRUE#
 deflist;#TRUE#
-author-names;#FALSE#
+surname-fname;#FALSE#
+*oauthor;#TRUE#
+*author;#TRUE#
 
 abnt6023
 acitat;#TRUE#
@@ -820,5 +822,9 @@ xref
 
 zipcode
 
-author-names
+surname-fname
+
+*oauthor
+
+*author
 

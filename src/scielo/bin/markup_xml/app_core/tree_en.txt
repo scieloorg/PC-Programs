@@ -148,4 +148,6 @@ onbehalf;Identify the institution which the contributor represents. Example: Joh
 xmlabstr;Identify the abstract with sections
 toctitle;Identify the TOC section title. It is mandatory to the generation of XML files.
 role;Identify the role of the author
-author-names;Identify surname and fname of one author
+surname-fname;Identify surname and fname of one author (surname separator fname or fname separator surname)
+*oauthor;Identify automatically one oauthor
+*author;Identify automatically one author
