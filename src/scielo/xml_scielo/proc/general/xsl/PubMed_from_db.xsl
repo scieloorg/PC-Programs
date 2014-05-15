@@ -152,7 +152,7 @@
 		<xsl:apply-templates select="occ"/>
 	</xsl:template>
 	<xsl:template match="text-languages/occ">
-		<Language><xsl:value-of select="."/></Language>
+		<Language><xsl:value-of select="translate(.,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/></Language>
 	</xsl:template>
 	<xsl:template match="record" mode="pii">
 		<xsl:choose>
