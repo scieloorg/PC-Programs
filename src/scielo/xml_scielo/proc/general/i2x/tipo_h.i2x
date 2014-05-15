@@ -97,6 +97,7 @@ style=fixed
 158 sponsor_of_publication
 237 doi
 480 publisher_name
+601 text-languages
 700 id_counter
 701 index_counter
 708 total_of_class
