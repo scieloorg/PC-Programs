@@ -887,6 +887,7 @@ class XMLMetadata:
         new_name = self.format_name(self._metadata(), acron, original_xml_name)
         print(new_name)
         href_filenames = self.xml_data_href_list()
+        print(new_name)
         return (new_name, href_filenames)
 
     def xml_data_href_list(self):
@@ -900,16 +901,21 @@ class XMLMetadata:
         href_list = []
         invalid_attrib_id = []
         nodes = self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..')
+        # parent node de graphic ou de *[@href]
         for node in nodes:
             parent_tag = node.tag
             parent_id = node.attrib.get('id')
+            print(parent_tag)
+            print(parent_id)
             href_nodes = node.findall('.//*[@{http://www.w3.org/1999/xlink}href]')
             for href_node in href_nodes:
                 tag = href_node.tag
                 href = href_node.attrib.get('{http://www.w3.org/1999/xlink}href')
+                print(tag)
+                print(href)
                 suffix = ''
                 if not '//' in href:
-                    if 'suppl' in tag or 'media' == tag:
+                    if 'suppl' in parent_tag or 'media' == tag:
                         suffix = 's'
                     elif 'inline' in tag:
                         suffix = 'i'
@@ -2250,7 +2256,7 @@ class Normalizer(object):
             
             #href and new href list
             curr_and_new_href_list = self.generate_curr_and_new_href_list(xml_name, new_name, href_list)
-
+            print(curr_and_new_href_list)
             # related files and href files list
             not_found, related_files_list, href_files_list = self.matched_files(xml_name, new_name, curr_and_new_href_list, src_path)
 
@@ -2290,21 +2296,25 @@ class Normalizer(object):
 
     def generate_curr_and_new_href_list(self, xml_name, new_name, href_list):
         r = []
-        for href, suffix_and_id in href_list:
+        letra = ''
+        print(href_list)
+        for href, elem_id in href_list:
+            if href in elem_id:
+                letra = elem_id.replace(href, '')
             if xml_name in href:
-                file_suffix = href.replace(xml_name, '')
-                if file_suffix[0:1] == '-':
-                    file_suffix = file_suffix[1:]
-                if file_suffix[0:1] != suffix_and_id[0:1]:
-                    new = new_name + '-' + suffix_and_id[0:1] + file_suffix
+                if xml_name in elem_id:
+                    alt_elem_id = href.replace(xml_name, '')
+                    if alt_elem_id.startswith('-' + letra):
+                        alt_elem_id = alt_elem_id[2:]
+                    elif alt_elem_id.startswith('-'):
+                        alt_elem_id = alt_elem_id[1:]
+                    new = new_name + '-' + letra + alt_elem_id
                 else:
-                    new = new_name + '-' + file_suffix
-            else:
-                new = new_name + '-' + suffix_and_id[0:1] + href
+                    new = new_name + '-' + elem_id
 
-            if new[new.rfind('.'):] in ['.jpg', '.tiff', '.eps', '.tiff']:
-                new = new[0:new.rfind('.')]
-            r.append((href, new))
+                if new[new.rfind('.'):] in ['.jpg', '.tiff', '.eps', '.tiff']:
+                    new = new[0:new.rfind('.')]
+                r.append((href, new))
         return list(set(r))
 
     def matched_files(self, xml_name, new_name, curr_and_new_href_list, src_path):
