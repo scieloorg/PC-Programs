@@ -22,9 +22,6 @@ quote;#TRUE#
 element;#TRUE#
 list;#TRUE#
 deflist;#TRUE#
-surname-fname;#FALSE#
-*oauthor;#TRUE#
-*author;#TRUE#
 
 abnt6023
 acitat;#TRUE#
@@ -45,6 +42,7 @@ sectitle;#FALSE#
 p;#FALSE#
 
 acontrib
+*author;#TRUE#
 author;#TRUE#
 corpauth;#TRUE#
 et-al;#FALSE#
@@ -85,6 +83,7 @@ pubname;#TRUE#
 notes;#TRUE#
 
 amonog
+*author;#TRUE#
 author;#TRUE#
 corpauth;#TRUE#
 et-al;#FALSE#
@@ -137,21 +136,21 @@ sec;#TRUE#
 p;#TRUE#
 
 authgrp
-author+;#FALSE#
+*author;#TRUE#
 author;#TRUE#
 onbehalf;#FALSE#
 corpauth;#TRUE#
 
 author
+surname-fname;#FALSE#
 fname;#FALSE#
 surname;#FALSE#
 previous;#FALSE#
 
-author+
-
 awarded
 orgname;#FALSE#
 orgdiv;#FALSE#
+surname-fname;#FALSE#
 surname;#FALSE#
 fname;#FALSE#
 
@@ -311,6 +310,7 @@ imonog;#FALSE#
 iiserial;#FALSE#
 
 icontrib
+*author;#TRUE#
 author;#TRUE#
 corpauth;#TRUE#
 et-al;#FALSE#
@@ -323,6 +323,7 @@ ign
 
 iiserial
 isstitle;#FALSE#
+*author;#TRUE#
 author;#TRUE#
 corpauth;#TRUE#
 et-al;#FALSE#
@@ -348,6 +349,7 @@ doi;#TRUE#
 pubid;#TRUE#
 
 imonog
+*author;#TRUE#
 author;#TRUE#
 corpauth;#TRUE#
 et-al;#FALSE#
@@ -428,6 +430,7 @@ no
 notes
 
 oauthor
+surname-fname;#FALSE#
 fname;#FALSE#
 surname;#FALSE#
 anonym;#FALSE#
@@ -441,6 +444,7 @@ oiserial;#FALSE#
 confgrp;#FALSE#
 
 ocontrib
+*oauthor;#TRUE#
 oauthor;#TRUE#
 ocorpaut;#TRUE#
 et-al;#FALSE#
@@ -476,6 +480,7 @@ country;#TRUE#
 pubname;#TRUE#
 
 omonog
+*oauthor;#TRUE#
 oauthor;#TRUE#
 ocorpaut;#TRUE#
 et-al;#FALSE#
@@ -535,6 +540,7 @@ pmonog;#FALSE#
 piserial;#FALSE#
 
 pcontrib
+*author;#TRUE#
 author;#TRUE#
 corpauth;#TRUE#
 date;#FALSE#
@@ -553,6 +559,7 @@ doi;#TRUE#
 pubid;#TRUE#
 
 pmonog
+*author;#TRUE#
 author;#TRUE#
 corpauth;#TRUE#
 date;#FALSE#
@@ -580,6 +587,7 @@ notes;#TRUE#
 previous
 
 product
+*author;#TRUE#
 author;#TRUE#
 corpauth;#TRUE#
 title;#TRUE#
@@ -660,6 +668,7 @@ subart;#TRUE#
 subkey
 
 subresp
+surname-fname;#FALSE#
 fname;#FALSE#
 surname;#FALSE#
 
@@ -748,6 +757,7 @@ viserial;#FALSE#
 vmonog;#FALSE#
 
 vcontrib
+*author;#TRUE#
 author;#TRUE#
 corpauth;#TRUE#
 et-al;#FALSE#
@@ -772,6 +782,7 @@ doi;#TRUE#
 pubid;#TRUE#
 
 vmonog
+*author;#TRUE#
 author;#TRUE#
 corpauth;#TRUE#
 et-al;#FALSE#
