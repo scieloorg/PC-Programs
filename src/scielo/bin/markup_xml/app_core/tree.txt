@@ -62,7 +62,9 @@ zipcode;#FALSE#
 email;#FALSE#
 
 aiserial
+*sertitle;#FALSE#
 sertitle;#FALSE#
+*stitle;#FALSE#
 stitle;#FALSE#
 isstitle;#FALSE#
 date;#TRUE#
@@ -328,7 +330,9 @@ author;#TRUE#
 corpauth;#TRUE#
 et-al;#FALSE#
 medium;#FALSE#
+*sertitle;#FALSE#
 sertitle;#FALSE#
+*stitle;#FALSE#
 stitle;#FALSE#
 city;#TRUE#
 state;#TRUE#
@@ -460,7 +464,9 @@ orgdiv;#FALSE#
 previous;#FALSE#
 
 oiserial
+*sertitle;#FALSE#
 sertitle;#FALSE#
+*stitle;#FALSE#
 stitle;#FALSE#
 isstitle;#FALSE#
 date;#TRUE#
@@ -548,6 +554,7 @@ title;#FALSE#
 subtitle;#FALSE#
 
 piserial
+*sertitle;#FALSE#
 sertitle;#FALSE#
 volid;#TRUE#
 issueno;#TRUE#
@@ -839,4 +846,8 @@ surname-fname
 *oauthor
 
 *author
+
+*sertitle
+
+*stitle
 

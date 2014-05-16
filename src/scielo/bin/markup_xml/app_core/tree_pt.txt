@@ -151,3 +151,5 @@ role;Identifica o papel do autor
 surname-fname;Identifica surname e fname de um autor (surname separador fname ou fname separador surname)
 *oauthor;Identifica automaticamente apenas um oauthor
 *author;Identifica automaticamente apenas um author
+*sertitle;Identifica todos os títulos abreviados de periódico, a partir do texto selecionado.
+*stitle;Identifica todos os títulos do periódico, a partir do texto selecionado.
