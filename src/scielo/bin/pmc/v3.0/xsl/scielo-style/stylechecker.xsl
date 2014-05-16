@@ -45,7 +45,22 @@
   <xsl:variable name="check_funding">
     <xsl:choose>
       <xsl:when test=".//funding-group">funding-group</xsl:when>
-      <xsl:when test=".//ack">maybe-has-funding-group</xsl:when>
+      <xsl:when test=".//ack">
+        <xsl:choose>
+          <xsl:when test="contains(.//ack,'0')">maybe-has-funding-group</xsl:when>
+          <xsl:when test="contains(.//ack,'1')">maybe-has-funding-group</xsl:when>
+          <xsl:when test="contains(.//ack,'2')">maybe-has-funding-group</xsl:when>
+          <xsl:when test="contains(.//ack,'3')">maybe-has-funding-group</xsl:when>
+          <xsl:when test="contains(.//ack,'4')">maybe-has-funding-group</xsl:when>
+          <xsl:when test="contains(.//ack,'5')">maybe-has-funding-group</xsl:when>
+          <xsl:when test="contains(.//ack,'6')">maybe-has-funding-group</xsl:when>
+          <xsl:when test="contains(.//ack,'7')">maybe-has-funding-group</xsl:when>
+          <xsl:when test="contains(.//ack,'8')">maybe-has-funding-group</xsl:when>
+          <xsl:when test="contains(.//ack,'9')">maybe-has-funding-group</xsl:when>
+          <xsl:otherwise></xsl:otherwise>
+        </xsl:choose>
+        
+        </xsl:when>
     </xsl:choose>
   </xsl:variable>
   <xsl:template match="aff">
@@ -95,8 +110,7 @@
     <xsl:if test="$check_funding='maybe-has-funding-group'">
       <xsl:call-template name="make-error">
         <xsl:with-param name="error-type">funding group check</xsl:with-param>
-        <xsl:with-param name="description">if there is funding information in acknowledgement,
-          create funding-group in article-meta</xsl:with-param>
+        <xsl:with-param name="description">It seems there is funding information (contract number) in acknowledgement. Create funding-group in article-meta</xsl:with-param>
         <xsl:with-param name="class">warning</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
