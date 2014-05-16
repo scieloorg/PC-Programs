@@ -2856,7 +2856,7 @@ et al.</copyright-statement>
 			<xsl:attribute name="award-type">contract</xsl:attribute>
 			<xsl:apply-templates select="$rsponsor"/>
 			<xsl:apply-templates select="."/>
-			<xsl:apply-templates select="../awarded"></xsl:apply-templates>
+			<xsl:apply-templates select="../..//awarded"></xsl:apply-templates>
 		</award-group>
 	</xsl:template>
 	<xsl:template match="front//report | bbibcom//report" mode="funding-statement">
