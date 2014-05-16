@@ -1,4 +1,23 @@
-﻿4.0.078.r5 - 12/05/2014
+﻿4.0.079 - 16/05/2014
+=======
+ - Milestone 4.0.079
+   - Markup XML
+     - (new) automation of stitle/sertitle
+     - (new) automation of author/oauthor
+     - (new) automation of surname-fname
+     - (new) removed author+
+     - (bug) fix incompatibility to Office 2013
+     - (bug) fix value for rid of footnote
+     - (bug) fix naming of embedded images
+     - (bug) fix volume/issue of ahead 
+     - (bug) remove commentaries (XML)
+     - (bug) remove punctuation marked as italic or bold in element-citation
+   - Converter
+      - (bug) fix missing funding data in database
+   - XML Exporter (PubMed)
+      - (bug) Language for multilanguage articles (XML)
+
+4.0.078.r5 - 12/05/2014
 =======
  - Milestone 4.0.078.r5
    - xml package maker
