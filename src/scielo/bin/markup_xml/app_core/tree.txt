@@ -606,10 +606,10 @@ related
 
 report
 no;#FALSE#
+contract;#TRUE#
 rsponsor;#TRUE#
 awarded;#TRUE#
 projname;#TRUE#
-contract;#TRUE#
 
 response
 front;#FALSE#
@@ -623,6 +623,7 @@ role
 rsponsor
 orgname;#FALSE#
 orgdiv;#FALSE#
+contract;#TRUE#
 
 sciname
 
