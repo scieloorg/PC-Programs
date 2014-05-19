@@ -2547,7 +2547,8 @@ def cxpmker_read_inputs(args):
             xml_src = src
             temp = xml_src.split('/')
             print(temp)
-            acron = temp[-6]
+            if acron is None:
+                acron = temp[-6]
             version = 'j1.0'
             print(acron)
         elif src.endswith('.xml'):
@@ -2594,29 +2595,32 @@ def cxpmker_files_and_paths(xml_source):
 
 def cxpmker_markup_src_path(sgmxml_filename):
     # sgmxml_path = serial/acron/issue/pmc/pmc_work/article
+    # sgmxml_path = serial/acron/issue/markup_xml/work/article
     xml_name = os.path.basename(sgmxml_filename)
     sgmxml_path = os.path.dirname(sgmxml_filename)
 
-    # pmc_path = serial/acron/issue/pmc
-    pmc_path = os.path.dirname(os.path.dirname(sgmxml_path))
+    # markup_xml_path = serial/acron/issue/pmc
+    # markup_xml_path = serial/acron/issue/markup_xml
+    markup_xml_path = os.path.dirname(os.path.dirname(sgmxml_path))
 
     # other files path = serial/acron/issue/pmc/src or serial/acron/issue/pmc/pmc_src
-    pmc_src = pmc_path + '/src'
-    if not os.path.isdir(pmc_src):
-        pmc_src = pmc_path + '/pmc_src'
-    if not os.path.isdir(pmc_src):
-        os.makedirs(pmc_src)
+    # other files path = serial/acron/issue/markup_xml/src
+    source_path = markup_xml_path + '/src'
+    if not os.path.isdir(source_path):
+        source_path = markup_xml_path + '/pmc_src'
+    if not os.path.isdir(source_path):
+        os.makedirs(source_path)
 
-    shutil.copyfile(sgmxml_filename, pmc_src + '/' + xml_name)
-    return pmc_src
+    shutil.copyfile(sgmxml_filename, source_path + '/' + xml_name)
+    return source_path
 
 
-def cxpmker_markup_paths(pmc_src, sgmxml_filename):
+def cxpmker_markup_paths(source_path, sgmxml_filename):
     sgmxml_path = os.path.dirname(sgmxml_filename)
-    pmc_path = os.path.dirname(pmc_src)
+    markup_xml_path = os.path.dirname(source_path)
 
-    scielo_pkg_path = pmc_path + '/xml_package'
-    pmc_pkg_path = pmc_path + '/pmc_package'
+    scielo_pkg_path = markup_xml_path + '/scielo_package'
+    pmc_pkg_path = markup_xml_path + '/pmc_package'
     report_path = sgmxml_path
     preview_path = None
     wrk_path = sgmxml_path
