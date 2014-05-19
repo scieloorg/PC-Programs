@@ -104,8 +104,5 @@ DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
 msgFormXMLBody,"Verifique a identificação das partes no texto completo. Corrija se necessário, selecionando os itens da lista, escolhendo a etiqueta que o identifica e clicando no botão Corrigir."
 buttonChange2,Corrigir
 msgMissingImportantInformation,"Garanta que há dados de ISSUEID em \bin\markup\issue.mds e em \bin\markup\journal-standard.txt"
-pmcfolder,pmc\pmc_package
-tifsrcffolder,pmc\pmc_img
-pmctempfolder,pmc\pmc_work
-pmcmarkupfolder,pmc\pmc_markup
 msgMissingFile,não encontrado.
+msg_new_structure,"Markup usa uma nova estrutura. vbCrlfColoque os arquivos marcados ou para marcar em \markup_xml\scielo_markup (antigo \pmc\pmc_markup). vbCrlfColoque os demais arquivos em \markup_xml\src (antigo \pmc\src)"
