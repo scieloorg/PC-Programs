@@ -47,8 +47,8 @@ Files location for SGML Markup
 Files location for XML Markup
 ..............................
 
-- .doc or .html file: /scielo/serial/<acron>/<issue_identification>/pmc/pmc_markup
-- other files: /scielo/serial/<acron>/<issue_identification>/pmc/src (images, PDF, etc)
+- .doc or .html file: /scielo/serial/<acron>/<issue_identification>/markup_xml/scielo_markup
+- other files: /scielo/serial/<acron>/<issue_identification>/markup_xml/src (images, PDF, etc)
 
 .. image:: img/markup_file_system.png
 
