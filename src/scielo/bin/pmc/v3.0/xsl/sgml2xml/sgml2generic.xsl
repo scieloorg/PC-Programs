@@ -492,8 +492,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</title-group>
 		<xsl:apply-templates select=".//authgrp" mode="front"/>
 		<xsl:apply-templates select="../xmlbody/sigblock" mode="author"></xsl:apply-templates>
+		<xsl:apply-templates select=".//cltrial"></xsl:apply-templates>
 		<xsl:apply-templates select=".//abstract|.//xmlabstr"/>
 		<xsl:apply-templates select=".//keygrp"/>
+		
+	</xsl:template>
+	<xsl:template match="cltrial">
+		<uri>
+			<xsl:attribute name="xlink:href"><xsl:value-of select="ctreg/@cturl"/></xsl:attribute>
+			<xsl:apply-templates select=".//text()"></xsl:apply-templates>
+		</uri>
 	</xsl:template>
 	<xsl:template match="*" mode="given-names">
 		<xsl:param name="sig"></xsl:param>
@@ -574,6 +582,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 			<xsl:apply-templates select="@volid | @issueno  | @fpage | @lpage"/>
 			<xsl:apply-templates select=".//product" mode="article-meta"></xsl:apply-templates>
+			<xsl:apply-templates select=".//cltrial"></xsl:apply-templates>
 			<xsl:apply-templates select=".//hist" mode="front"/>
 			<xsl:apply-templates select=".//back/licenses"/>
 			<xsl:apply-templates select="front/related"/>
