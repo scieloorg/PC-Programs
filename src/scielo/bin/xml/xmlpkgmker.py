@@ -546,8 +546,11 @@ class GraphicHrefFixer(object):
         new_xml = ''
         img_path = os.path.dirname(html_filename)
         doit = True
+        print(html_filename)
+
         while doit:
             xml_p1, xml_p2, new, html_p2, img_filename = self.get_data(xml_content, html_content)
+            
             if xml_p1 == 0:
                 doit = False
                 new_xml += xml_content
@@ -997,6 +1000,60 @@ class HRefReport(object):
         self.files = files
         self.files_without_extensions = list(set([f[0:f.rfind('.')] for f in self.files]))
 
+    def generate_report(self, xml_name, package_path):
+        path = package_path + '/'
+        
+        if self.root is None:
+            content = '<p>Invalid XML</p>'
+        else:
+            content = ''
+            href_dict = {}
+            xml_name = xml_name.replace('.xml', '')
+
+            content += '<h4>Files in the package</h4><p><ol>' + '\n'.join(['<li>' + f + '</li>' for f in self.files if f.startswith(xml_name)]) + '</ol></p>'
+
+            package_href_files = [f for f in self.files if f[0:f.rfind('.')] != xml_name if f.startswith(xml_name + '-') or f.startswith(xml_name)]
+
+            href_parent_nodes = self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..')
+            for parent in href_parent_nodes:
+                href_nodes = parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]')
+                for href_node in href_nodes:
+                    href_value = href_node.attrib.get('{http://www.w3.org/1999/xlink}href')
+                    if not href_value is None and not href_value.startswith('http'):
+                        if href_dict.get(href_value, None) is None:
+                            href_dict[href_value] = []
+                        href_dict[href_value].append(parent)
+            content += '<h4>Files in @href</h4>'
+            if len(href_dict.keys()) == 0:
+                content += 'None'
+            else:
+                content += '<p><ol>'
+                content += '\n'.join(['<li>' + href + '</li>' for href in href_dict.keys()])
+                content += '</ol></p>'
+                for href, nodes in href_dict.items():
+                    content += '<h5>' + href + '</h5>'
+                    for node in nodes:
+                        content += '<p>' + display_xml_in_html(node) + '</p>'
+                        for href_node in node.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
+                            if href_node.tag == 'graphic':
+                                _href = href_node.attrib.get('{http://www.w3.org/1999/xlink}href', '')
+                                if _href in package_href_files:
+                                    content += '<p><img src="' + path + _href + '"/></p>'
+                                elif href + '.jpg' in package_href_files:
+                                    content += '<p><img src="' + path + _href + '.jpg"/></p>'
+                                else:
+                                    content += '<p>ERROR: not found ' + _href + ' in the package</p>'
+                            else:
+                                content += '<p><a href="' + path + href_node.attrib.get('{http://www.w3.org/1999/xlink}href', '') + '">' + href + '</a></p>'
+        return content
+
+
+class OldHRefReport(object):
+    def __init__(self, node, files):
+        self.root = node
+        self.files = files
+        self.files_without_extensions = list(set([f[0:f.rfind('.')] for f in self.files]))
+
     def generate_report(self, xml_name):
         if self.root is None:
             content = '<p>Invalid XML</p>'
@@ -1139,7 +1196,7 @@ class PkgReport(object):
             id_report_content = '<h1>Report of @id</h1>' + IDsReport(self.xml_content[filename]).generate_report()
             html_report._html(self.report_path + '/' + report_filename_prefix + '_ids.html', '', html_report._css('toc') + html_report._css('bicolortable'), id_report_content)
 
-            href_report_content = '<h1>Report of @href and files</h1>' + HRefReport(self.xml_content[filename], os.listdir(self.pkg_path)).generate_report(content_validation.filename)
+            href_report_content = '<h1>Report of @href and files</h1>' + HRefReport(self.xml_content[filename], os.listdir(self.pkg_path)).generate_report(content_validation.filename, self.pkg_path)
             html_report._html(self.report_path + '/' + report_filename_prefix + '_href.html', '', html_report._css('toc') + html_report._css('bicolortable'), href_report_content)
 
             if self.xml_content[filename] is None:
@@ -1194,7 +1251,7 @@ class PkgReport(object):
                 individual_header = ''.join(individual_fatal_errors) + individual_metadata
                 individual_stat = self.statistics(individual_errors + ''.join(individual_fatal_errors))
 
-                individual_report_content = '<h1>' + report_filename_prefix + '</h1>' + individual_stat + issue_header + '<div class="article">' + individual_header + individual_errors + '</div>' + individual_lists + id_report_content + href_report_content
+                individual_report_content = '<h1>' + report_filename_prefix + '</h1>' + individual_stat + issue_header + '<div class="article">' + individual_header + individual_errors + '</div>' + href_report_content + id_report_content + individual_lists
 
                 if row_idx.isdigit():
                     order_ok[row_idx] = '<div class="article">' + individual_header + '</div>'
