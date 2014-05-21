@@ -994,7 +994,7 @@ class IDsReport(object):
         return r
 
 
-class HRefReport(object):
+class Tables_and_HrefReport(object):
     def __init__(self, node, files):
         self.root = node
         self.files = files
@@ -1045,6 +1045,14 @@ class HRefReport(object):
                                     content += '<p>ERROR: not found ' + _href + ' in the package</p>'
                             else:
                                 content += '<p><a href="' + path + href_node.attrib.get('{http://www.w3.org/1999/xlink}href', '') + '">' + href + '</a></p>'
+
+            table_wrap_nodes = self.root.findall('.//table-wrap')
+            for table_wrap_node in table_wrap_nodes:
+                table = table_wrap_node.find('table')
+                if table is not None:
+                    content += '<p>' + display_xml_in_html(table_wrap_node) + '</p>'
+                    content += '<p>' + etree.tostring(table) + '</p>'
+
         return content
 
 
@@ -1196,7 +1204,7 @@ class PkgReport(object):
             id_report_content = '<h1>Report of @id</h1>' + IDsReport(self.xml_content[filename]).generate_report()
             html_report._html(self.report_path + '/' + report_filename_prefix + '_ids.html', '', html_report._css('toc') + html_report._css('bicolortable'), id_report_content)
 
-            href_report_content = '<h1>Report of @href and files</h1>' + HRefReport(self.xml_content[filename], os.listdir(self.pkg_path)).generate_report(content_validation.filename, self.pkg_path)
+            href_report_content = '<h1>Report of @href and files and tables</h1>' + Tables_and_HrefReport(self.xml_content[filename], os.listdir(self.pkg_path)).generate_report(content_validation.filename, self.pkg_path)
             html_report._html(self.report_path + '/' + report_filename_prefix + '_href.html', '', html_report._css('toc') + html_report._css('bicolortable'), href_report_content)
 
             if self.xml_content[filename] is None:
