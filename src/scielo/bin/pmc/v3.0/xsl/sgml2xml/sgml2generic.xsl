@@ -2357,9 +2357,17 @@ Here is a figure group, with three figures inside, each of which contains a grap
 						</xsl:otherwise>
 					</xsl:choose>
 				</colgroup>
-			<xsl:copy-of select="thead"/>
+			<xsl:apply-templates select="thead"></xsl:apply-templates>
 			<xsl:copy-of select="tbody"/>
 		</table>
+	</xsl:template>
+	<xsl:template match="th/bold">
+		<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+	</xsl:template>
+	<xsl:template match="thead | thead/tr | thead//th">
+		<xsl:element name="{name()}">
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</xsl:element>
 	</xsl:template>
 	<xsl:template match="@filename">
 	</xsl:template>
