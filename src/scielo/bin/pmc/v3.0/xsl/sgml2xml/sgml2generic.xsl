@@ -157,7 +157,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:when>
 				<xsl:otherwise>
 					<p>
-						<xsl:apply-templates select="*|text()"/>
+						<xsl:apply-templates select="*[name()!='label'] |text()"/>
 					</p>
 				</xsl:otherwise>
 			</xsl:choose>
