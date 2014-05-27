@@ -287,10 +287,7 @@ filename       CDATA #IMPLIED>
 <!ATTLIST list
           listtype  CDATA #REQUIRED
            >
-<!ELEMENT li  - - (lilabel?, litext) >
-<!ELEMENT lilabel  - - (#PCDATA) >
-<!ELEMENT litext  - - (#PCDATA) +(%i.float;) >
-
+<!ELEMENT li  - - (label?, #PCDATA) +(%i.float;)>
 <!ELEMENT sigblock - - (sig, role)+ >
 <!ELEMENT sig - - (#PCDATA)   +(%i.float;) >
 <!ELEMENT role - - (#PCDATA) >

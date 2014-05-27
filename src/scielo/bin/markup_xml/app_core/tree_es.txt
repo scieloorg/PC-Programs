@@ -65,9 +65,7 @@ li;Identifica un item de la lista
 license;Identifica el texto de la licencia
 licensep;Identifica un parágrafo de la licencia
 licenses;Agrupa los elementos de licencia
-lilabel;Identifica la etiqueta del item de la lista
 list;Identifica una lista
-litext;Identifica el texto del item de la lista
 medium;Identifica el formato del medio en lo cual el documento está siendo publicado
 mmlmath;Idetifica Math (MathML 2.0 Tag Set)
 no;Identifica un número
@@ -78,7 +76,7 @@ ocontrib;Agrupa los elementos de contribución
 ocorpaut;Identifica um autor corporativo
 oiserial;Agrupa los elementos de seriada
 omonog;Agrupa los elementos de monografía
-orgdiv;Identifica la divisão de la institución
+orgdiv;Identifica la división de la institución
 orgname;Identifica donde fue registrada la patente
 other;Agrupa los elementos de bibliografía que no siguen los estándares adoptados
 othinfo;Agrupa los elementos que no están identificados por los otros elementos de una referencia

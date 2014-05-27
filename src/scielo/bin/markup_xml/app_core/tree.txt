@@ -407,8 +407,7 @@ keyword
 label
 
 li
-lilabel;#FALSE#
-litext;#FALSE#
+label;#FALSE#
 
 license
 licensep;#FALSE#
@@ -418,12 +417,8 @@ licensep
 licenses
 license;#TRUE#
 
-lilabel
-
 list
 li;#TRUE#
-
-litext
 
 medium
 

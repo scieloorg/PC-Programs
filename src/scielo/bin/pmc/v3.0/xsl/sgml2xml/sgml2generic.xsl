@@ -150,7 +150,17 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="li">
 		<list-item>
-			<xsl:apply-templates select="*"/>
+			<xsl:apply-templates select="lilabel|label"/>
+			<xsl:choose>
+				<xsl:when test="litext">
+					<xsl:apply-templates select="litext"></xsl:apply-templates>
+				</xsl:when>
+				<xsl:otherwise>
+					<p>
+						<xsl:apply-templates select="*|text()"/>
+					</p>
+				</xsl:otherwise>
+			</xsl:choose>
 		</list-item>
 	</xsl:template>
 	<xsl:template match="lilabel">
@@ -158,6 +168,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="normalize-space(.)"/>
 		</label>
 	</xsl:template>
+	
 	<xsl:template match="litext">
 		<p>
 			<xsl:apply-templates select="* | text()"/>
