@@ -187,3 +187,21 @@ h4 {
     font-size: 80%;
 }
 
+.table p
+{
+    width: 100%
+}
+.table table
+{
+    border: 1px solid black;
+}
+
+.table td
+{
+    border: 1px solid black;
+}
+.table th
+{
+border: 1px solid black;
+font-weight: bold;
+}
