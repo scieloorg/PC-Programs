@@ -1,4 +1,19 @@
-﻿4.0.079 - 16/05/2014
+﻿4.0.080 - 27/05/2014
+=======
+ - Milestone 4.0.080
+   - Markup XML
+     - (new) redefinition of the folders structure
+     - (new) presentation of the tables in the report
+     - (new) presentation of the images in the report
+     - (new) checking the value of count elements and the elements they count (page-count, table-count, etc)
+     - (new) adjustment in the ack warning in the style check report 
+     - (new) fix characters such as inconditional hiphen
+     - (new) markup of clinical trial
+     - (bug) fix incompatibility to Office 2013
+     - (bug) fix automatic markup of tables (colspan, rowspan, thead)
+     - (bug) accept .docx 
+
+4.0.079 - 16/05/2014
 =======
  - Milestone 4.0.079
    - Markup XML
