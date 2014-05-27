@@ -1050,8 +1050,8 @@ class Tables_and_HrefReport(object):
             for table_wrap_node in table_wrap_nodes:
                 table = table_wrap_node.find('table')
                 if table is not None:
-                    content += '<p>' + display_xml_in_html(table_wrap_node) + '</p>'
-                    content += '<p>' + etree.tostring(table) + '</p>'
+                    content += '<p><textarea rows="30" cols="60">' + display_xml_in_html(table_wrap_node) + '</textarea></p>'
+                    content += '<p class="table">' + etree.tostring(table) + '</p>'
 
         return content
 
