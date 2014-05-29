@@ -1751,8 +1751,8 @@ A estrutura geral que abarca a lista de referências deve conter quatro tags pri
                    <fpage>página inicial</fpage>
                    <lpage>página final</lpage>        
       <pub-id pub-id-type="pmid">somente números</pub-id>
-      <pub-id pub-id-type="pcmid">somente números</pub-id>
-      <pub-id pub-id-type="doi">somente números</pub-id>
+      <pub-id pub-id-type="pmcid">somente números</pub-id>
+      <pub-id pub-id-type="doi">somente o identificador</pub-id>
       <pub-id pub-id-type="pii">somente números</pub-id>
      <elocation-id>representa um número de página eletrônica</elocation-id>
        </element-citation>
