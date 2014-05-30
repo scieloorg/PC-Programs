@@ -363,7 +363,7 @@ def xml_validate(xml_filename, result_filename, dtd_validation=False):
     if os.path.exists(temp_result_filename):
         os.unlink(temp_result_filename)
 
-    cmd = JAVA_PATH + ' -cp ' + JAR_VALIDATE + ' br.bireme.XMLCheck.XMLCheck ' + xml_filename + ' ' + validation_type + '>' + temp_result_filename
+    cmd = JAVA_PATH + ' -cp ' + JAR_VALIDATE + ' br.bireme.XMLCheck.XMLCheck ' + xml_filename + ' ' + validation_type + '>"' + temp_result_filename +'"'
     #print(cmd)
     os.system(cmd)
 
