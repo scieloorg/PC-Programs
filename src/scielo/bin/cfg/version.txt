@@ -1,4 +1,15 @@
-﻿4.0.080 - 27/05/2014
+﻿4.0.081 - 30/05/2014
+=======
+ - Milestone 4.0.081
+   - Markup
+     - (bug) fix dateiso identification for day/month/year format
+   - Markup (SGML)
+     - (bug) allow to open a document located any place
+   - Markup XML
+     - (bug) ignore italic and bold inside of citat elements
+     - (new) automation for lists
+
+4.0.080 - 27/05/2014
 =======
  - Milestone 4.0.080
    - Markup XML
@@ -7,7 +18,7 @@
      - (new) presentation of the images in the report
      - (new) checking the value of count elements and the elements they count (page-count, table-count, etc)
      - (new) adjustment in the ack warning in the style check report 
-     - (new) fix characters such as inconditional hiphen
+     - (new) fix characters such as inconditional hyphen
      - (new) markup of clinical trial
      - (bug) fix incompatibility to Office 2013
      - (bug) fix automatic markup of tables (colspan, rowspan, thead)
