@@ -151,3 +151,13 @@ surname-fname;Identify surname and fname of one author (surname separator fname 
 *author;Identify automatically one author
 *sertitle;Identify all the journal titles which match with the selected text.
 *stitle;Identify all the journal titles which match with the selected text.
+kwdgrp;Group the keywords related to one language
+kwd;Identify a keyword
+funding;Group the data related to funding
+award;Group the contract and funding sources
+fundsrc;Identify the funding source
+doctitle;Identify the title of the document
+cc;Group the data of Creative Commons license
+docresp;Group the response data
+subdoc;Group the sub-document data
+doc;Group the data of a document (for XML generation)

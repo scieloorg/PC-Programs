@@ -254,7 +254,6 @@ filename       CDATA #IMPLIED>
           dateiso  CDATA #IMPLIED 
           specyear  CDATA #IMPLIED>
 
-
 <!ELEMENT doi     - - (#PCDATA) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
