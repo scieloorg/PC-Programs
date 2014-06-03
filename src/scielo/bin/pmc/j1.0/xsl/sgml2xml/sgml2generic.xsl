@@ -14,10 +14,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="." disable-output-escaping="yes"/>
 		</contrib-id>
 	</xsl:template>
-	<xsl:template match="article|text" mode="dtd-version">
+	<xsl:template match="article|text|doc" mode="dtd-version">
 		<xsl:attribute name="dtd-version">1.0</xsl:attribute>
 	</xsl:template>
-	<xsl:template match="article | text" mode="pub-date">
+	<xsl:template match="article | text|doc" mode="pub-date">
 		<!-- anteriormente somente @pub-type -->
 		
 		<!-- 
@@ -75,7 +75,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:call-template>
 		</pub-date>
 		
-		<xsl:if test="$pub_type='eletronic'">
+		<xsl:if test="$pub_type='electronic'">
 			<pub-date>
 				<!-- pub-type="{$date_type}" -->
 				<xsl:attribute name="date-type">collection</xsl:attribute>
@@ -93,7 +93,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</pub-date>
 		</xsl:if>
 	</xsl:template>
-	<xsl:template match="back//cited">
+	<xsl:template match="back//cited | doc//cited">
 		<date-in-citation content-type="access-date">
 			<xsl:attribute name="iso-8601-date"><xsl:apply-templates select="@dateiso" mode="dateiso"></xsl:apply-templates></xsl:attribute>
 			
