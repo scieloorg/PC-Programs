@@ -117,9 +117,21 @@ filename       CDATA #IMPLIED>
           ref-type  CDATA #IMPLIED 
           rid       CDATA #REQUIRED>
 
-<!ELEMENT table - - (tr+)    >
-<!ELEMENT tr - - (td+)    >
+<!ELEMENT table - - (thead?, tbody)    >
+<!ELEMENT thead - - (tr+)    >
+<!ELEMENT tbody - - (tr+)    >
+
+<!ELEMENT tr - - (td+ | th+)    >
 <!ELEMENT td - - (#PCDATA)   +(%i.float;) >
+<!ATTLIST td
+          align         CDATA #IMPLIED
+          rowspan       CDATA #IMPLIED
+          colspan       CDATA #IMPLIED>
+<!ELEMENT th - - (#PCDATA)   +(%i.float;) >
+<!ATTLIST th
+          align         CDATA #IMPLIED
+          rowspan       CDATA #IMPLIED
+          colspan       CDATA #IMPLIED>
 
 <!ELEMENT sciname - - (#PCDATA) >
 
