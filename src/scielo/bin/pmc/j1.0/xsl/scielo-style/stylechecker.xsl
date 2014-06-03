@@ -264,11 +264,7 @@
               </xsl:choose>
             </xsl:otherwise>
         </xsl:choose>
-        <xsl:if test="not(.//abbrev-journal-title[@abbrev-type='publisher'])"><xsl:call-template name="make-error">
-                <xsl:with-param name="error-type">abbrev title check</xsl:with-param>
-                <xsl:with-param name="description">journal must have abbrev title</xsl:with-param>
-
-            </xsl:call-template></xsl:if>
+        
       <!-- Check whether issn is present: but only if this is
            a "domain" that requires an issn -->
     <xsl:choose>
