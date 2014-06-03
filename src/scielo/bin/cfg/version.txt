@@ -1,4 +1,11 @@
-﻿4.0.081 - 30/05/2014
+﻿4.0.082 - 03/06/2014
+=======
+ - Milestone 4.0.082
+   - Markup XML
+     - (new) do not consider abbrev-journal-title as required
+     - (new) new DTD: doc, which has less levels and it is only to generate XML
+
+4.0.081 - 30/05/2014
 =======
  - Milestone 4.0.081
    - Markup
