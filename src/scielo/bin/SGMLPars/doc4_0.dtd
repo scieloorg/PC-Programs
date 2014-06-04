@@ -236,7 +236,7 @@
 
 <!ELEMENT cc   - - (#PCDATA)  >
 <!ATTLIST cc
-          id CDATA #REQUIRED 
+          cccode CDATA #REQUIRED 
           cversion CDATA #REQUIRED 
           compl CDATA #IMPLIED 
           >
