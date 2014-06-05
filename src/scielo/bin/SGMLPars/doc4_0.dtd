@@ -236,9 +236,9 @@
 
 <!ELEMENT cc   - - (#PCDATA)  >
 <!ATTLIST cc
-          id CDATA #REQUIRED 
+          ccid CDATA #REQUIRED 
           cversion CDATA #REQUIRED 
-          compl CDATA #IMPLIED 
+          cccompl CDATA #IMPLIED 
           >
 
 <!ELEMENT hist     - - (received, revised*, accepted?) >
