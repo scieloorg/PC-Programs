@@ -2951,8 +2951,8 @@ et al.</copyright-statement>
 		<!-- não gerar funding-statement -->
 		
 	</xsl:template>
-	<xsl:template match="report/projname"></xsl:template>
-	<xsl:template match="report/awarded">
+	<xsl:template match="projname"></xsl:template>
+	<xsl:template match="awarded">
 		<!--xsl:comment>report/awarded</xsl:comment-->
 		<xsl:if test="orgname or orgdiv">
 			<principal-award-recipient>
@@ -2967,7 +2967,6 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="awarded/fname | awarded/surname | awarded/orgname | awarded/orgdiv">
 		<!--xsl:comment>report/awarded/*</xsl:comment-->
-
 		<xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
 
@@ -3221,5 +3220,34 @@ et al.</copyright-statement>
 				</license-p>
 			</license>
 		</permissions>
+	</xsl:template>
+	
+	<xsl:template match="funding">
+		<funding-group>
+			<xsl:apply-templates select="award"></xsl:apply-templates>
+			<xsl:if test="not(../../ack)">
+			<funding-statement>
+				<xsl:apply-templates select=".//text()"/>
+			</funding-statement>
+			</xsl:if>
+		</funding-group>
+	</xsl:template>
+	<xsl:template match="award">
+		<xsl:if test=".//contract">
+			<award-group>
+				<xsl:attribute name="award-type"><xsl:choose>
+					<xsl:when test=".//contract">contract</xsl:when><xsl:otherwise>grant</xsl:otherwise>
+				</xsl:choose></xsl:attribute>
+				<xsl:apply-templates select="*"></xsl:apply-templates>
+				<xsl:if test="not(awarded) and ../awarded">
+					<xsl:apply-templates select="../awarded"></xsl:apply-templates>
+				</xsl:if>
+			</award-group>
+		</xsl:if>
+	</xsl:template>
+	<xsl:template match="fundsrc">
+		<funding-source>
+			<xsl:value-of select="normalize-space(.)"/>
+		</funding-source>
 	</xsl:template>
 </xsl:stylesheet>
