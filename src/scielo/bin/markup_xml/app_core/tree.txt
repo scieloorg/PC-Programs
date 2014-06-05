@@ -5,24 +5,26 @@ text;#FALSE#
 
 ifloat
 aff;#TRUE#
-cltrial;#FALSE#
+funding;#FALSE#
+report;#FALSE#
 corresp;#FALSE#
-related;#TRUE#
-product;#TRUE#
-ign;#TRUE#
+xref;#TRUE#
 equation;#TRUE#
 figgrps;#TRUE#
 figgrp;#TRUE#
 graphic;#TRUE#
 tabwrap;#TRUE#
 supplmat;#TRUE#
-xref;#TRUE#
-uri;#TRUE#
-sciname;#TRUE#
 quote;#TRUE#
-element;#TRUE#
 list;#TRUE#
 deflist;#TRUE#
+uri;#TRUE#
+ign;#TRUE#
+related;#TRUE#
+cltrial;#FALSE#
+product;#TRUE#
+sciname;#TRUE#
+element;#TRUE#
 
 abnt6023
 acitat;#TRUE#
@@ -174,7 +176,6 @@ bbibcom
 abstract;#TRUE#
 keygrp;#TRUE#
 confgrp;#FALSE#
-report;#TRUE#
 thesgrp;#FALSE#
 hist;#FALSE#
 
@@ -183,7 +184,6 @@ abstract;#TRUE#
 xmlabstr;#TRUE#
 keygrp;#TRUE#
 confgrp;#FALSE#
-report;#TRUE#
 thesgrp;#FALSE#
 hist;#FALSE#
 
@@ -522,7 +522,6 @@ ocitat;#TRUE#
 othinfo
 
 p
-report;#TRUE#
 
 pages
 
@@ -859,7 +858,6 @@ corpauth;#TRUE#
 abstract;#TRUE#
 xmlabstr;#TRUE#
 kwdgrp;#TRUE#
-funding;#TRUE#
 hist;#FALSE#
 xmlbody;#FALSE#
 ack;#FALSE#
@@ -883,12 +881,13 @@ subtitle;#FALSE#
 
 funding
 award;#TRUE#
-awarded;#TRUE#
 projname;#TRUE#
+awarded;#TRUE#
 
 award
 contract;#FALSE#
 fundsrc;#TRUE#
+awarded;#TRUE#
 
 docresp
 related;#TRUE#

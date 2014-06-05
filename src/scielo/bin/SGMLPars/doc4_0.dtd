@@ -224,10 +224,6 @@
 <!ATTLIST kwdgrp
           language CDATA #REQUIRED >
           
-<!ELEMENT funding   - - (award+ & awarded? & projname?)  >
-<!ELEMENT award   - - (contract & fundsrc+)  >
-<!ELEMENT fundsrc   - - (#PCDATA)  >
-
 <!ELEMENT kwd  - - (#PCDATA) >
 
 <!ELEMENT doctitle   - - (subtitle | (#PCDATA))  >
