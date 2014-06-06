@@ -206,7 +206,7 @@
                     ((abstract | xmlabstr), kwdgrp)*,
 
                     (ack | glossary | deflist | app |
-                    (vancouv | iso690 | abnt6023 | apa | other) |
+                    (vancouv | iso690 | abnt6023 | apa | other | refs) |
                     fngrp | cc)*
                     )
                     +(%i.float;)>
@@ -230,6 +230,8 @@
 <!ATTLIST doctitle
           language CDATA #REQUIRED >
 
+<!ELEMENT rdoctitl   - - (#PCDATA)  >
+
 <!ELEMENT cc   - - (#PCDATA)  >
 <!ATTLIST cc
           ccid CDATA #REQUIRED 
@@ -248,4 +250,32 @@
 <!ELEMENT accepted - - (#PCDATA) >
 <!ATTLIST accepted
           dateiso  CDATA #REQUIRED >
+
+<!ELEMENT refs     - - (ref+) >
+<!ELEMENT ref     - - ((author | cauthor)+, et-al?)* 
+                        | rdoctitl | source
+                        | date | pages
+                        | volid | issueno | suppl | part | coltitle | colvolid 
+                        | isbn | extent | edition | city | state | country | pubname
+                        | confgrp | reportid | contract | letterto | found-at 
+                        | thesgrp | patentno 
+                        | url | cited | doi | pubid 
+                        | moreinfo)+
+            >
+<!ATTLIST ref     
+          reftype CDATA #REQUIRED >
+<!ELEMENT cauthor - - (#PCDATA) > 
+<!ATTLIST cauthor 
+          role  CDATA #REQUIRED >
+<!ELEMENT moreinfo - - (#PCDATA) > 
+<!ATTLIST moreinfo 
+          descript  CDATA #REQUIRED >
+
+<!ELEMENT rdoctitl - - (#PCDATA) > 
+<!ELEMENT source - - (#PCDATA) > 
+<!ELEMENT reportid - - (#PCDATA) > 
+<!ELEMENT letterto - - (#PCDATA) > 
+<!ELEMENT found-at - - (#PCDATA) > 
+<!ELEMENT patentno - - (#PCDATA) > 
+
 

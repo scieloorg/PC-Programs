@@ -46,3 +46,7 @@ ccid
 BY;BY-NC;BY-SA;BY-NC-SA
 BY;BY-NC;BY-SA;BY-NC-SA
 
+reftype
+journal;book;conference proceedings;scientific and technical report;thesis;patent;newspaper article;legal document;in press;poster;manuscript;database or retrieval system;software;web site;standard;guidelines;letter;email;forum;other
+journal;book;confproc;scientific-technical-report;thesis;patent;newspaper;legal-doc;in-press;poster;manuscript;database;software;web-site;standard;guidelines;letter;email;forum;other
+
