@@ -960,7 +960,7 @@ ref
 author;#FALSE#;#TRUE#
 cauthor;#FALSE#;#TRUE#
 et-al;#FALSE#;#FALSE#
-rdoctitl;#TRUE#;#FALSE#
+doctit;#TRUE#;#FALSE#
 *source;#FALSE#;#FALSE#
 source;#FALSE#;#FALSE#
 date;#TRUE#;#TRUE#
@@ -993,7 +993,7 @@ moreinfo;#TRUE#;#TRUE#
 
 cauthor
 
-rdoctitl
+doctit
 
 source
 

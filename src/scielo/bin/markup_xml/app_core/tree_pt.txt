@@ -164,7 +164,7 @@ doc;Agrupa os dados de um documento (geração de XML)
 refs;Group the references
 ref;Group the reference elements
 cauthor;Identify corporative author
-rdoctitl;Identify the document title in a reference
+doctit;Identify the document title in a reference
 *source;Identify automatically the document source (book title, journal title, etc)
 source;Identify the document source (book title, journal title, etc)
 reportid;Identify the number or name of the report
