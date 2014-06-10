@@ -23,8 +23,8 @@ title;sectitle
 1;2
 
 role
-No definido;coordinador;editor;organizador;traductor
-nd;coord;ed;org;tr
+No definido;coordinador;inventor;editor;organizador;traductor
+nd;coord;inventor;ed;org;tr
 
 scheme
 Ningun Descriptor;Descriptores en Ciencia de la Salud

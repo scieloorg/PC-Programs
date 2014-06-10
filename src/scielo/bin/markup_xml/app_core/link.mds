@@ -32,7 +32,7 @@ author
 role;rid;corresp;deceased;eqcontr
 
 oauthor
-role;rid
+role
 
 keyword
 keyword priority level;language;id
@@ -156,4 +156,14 @@ language
 
 cc
 ccid;cversion;cccompl
+
+ref
+reftype
+
+authors
+role
+
+patentno
+country
+
 

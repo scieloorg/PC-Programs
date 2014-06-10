@@ -23,8 +23,8 @@ title;sectitle
 1;2
 
 role
-Not defined;coordinator;publisher;organizer;translator
-nd;coord;ed;org;tr
+Not defined;coordinator;inventor;publisher;organizer;translator
+nd;coord;inventor;ed;org;tr
 
 scheme
 No Descriptor;Health Science Descriptors
