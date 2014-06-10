@@ -960,6 +960,8 @@ authors;#TRUE#;#FALSE#
 doctit;#TRUE#;#FALSE#
 *source;#FALSE#;#FALSE#
 source;#FALSE#;#FALSE#
+letterto;#FALSE#;#FALSE#
+found-at;#FALSE#;#FALSE#
 date;#TRUE#;#TRUE#
 pages;#FALSE#;#TRUE#
 url;#TRUE#;#TRUE#
@@ -982,8 +984,6 @@ pubname;#FALSE#;#TRUE#
 confgrp;#TRUE#;#FALSE#
 reportid;#FALSE#;#FALSE#
 contract;#FALSE#;#FALSE#
-letterto;#FALSE#;#FALSE#
-found-at;#FALSE#;#FALSE#
 thesgrp;#FALSE#;#FALSE#
 patentno;#FALSE#;#FALSE#
 moreinfo;#TRUE#;#TRUE#

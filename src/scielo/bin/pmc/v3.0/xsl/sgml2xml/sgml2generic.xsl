@@ -210,6 +210,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template>
 	
+	<xsl:template match="source">
+		<xsl:param name="id"/>
+		
+		<xsl:element name="{name()}">
+			<xsl:apply-templates select=".//text()">
+				<xsl:with-param name="id" select="$id"/>
+			</xsl:apply-templates>
+		</xsl:element>
+	</xsl:template>
+	
 	<xsl:template match="anonym | isbn | glossary | term | def | response | sig |  p | sec | sub | label | subtitle | edition |  issn | corresp | ack | sig-block">
 		<xsl:param name="id"/>
 		
@@ -662,9 +672,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				mode="trans"/>
 			<xsl:apply-templates select=".//keygrp|.//kwdgrp"/>
 			<xsl:apply-templates
-				select=".//front/report | .//front/confgrp | ..//front/thesgrp | .//bibcom/report | .//bibcom/confgrp | ..//bibcom/thesgrp  | .//bbibcom/report | .//bbibcom/confgrp | ..//bbibcom/thesgrp | .//back/ack//report"/>
+				select=".//front/report  | .//bibcom/report |  .//bbibcom/report | .//back/ack//report"/>
 			<xsl:apply-templates
-				select="funding | confgrp | thesgrp"/>
+				select="ack//funding | fngrp//funding"/>
+			<xsl:apply-templates
+				select=".//front/confgrp | ..//front/thesgrp | .//bibcom/confgrp | ..//bibcom/thesgrp  
+				| .//bbibcom/confgrp | ..//bbibcom/thesgrp "/>
+			<xsl:apply-templates
+				select="confgrp | thesgrp"/>
 			<xsl:apply-templates select="." mode="counts"/>
 		</article-meta>
 	</xsl:template>
@@ -1301,7 +1316,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="element-counts">
 				<xsl:with-param name="element_name" select="'ref-count'"/>
-				<xsl:with-param name="count" select="count(.//back//*[contains(name(),'citat')])"/>
+				<xsl:with-param name="count"><xsl:choose>
+					<xsl:when test=".//back">
+						<xsl:value-of select="count(.//back//*[contains(name(),'citat')])"/>
+					</xsl:when><xsl:otherwise><xsl:value-of select="count(.//ref)"/></xsl:otherwise>
+				</xsl:choose></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="element-counts">
 				<xsl:with-param name="element_name" select="'page-count'"/>
@@ -1359,10 +1378,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="doc|subdoc|docresp" mode="back">
-		<xsl:if test="ack or fngrp or other or vancouv or iso690 or abnt6023 or apa or glossary or app">
+		<xsl:if test="ack or fngrp  or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or app">
 			<back>
 				<xsl:apply-templates select="ack"/>
-				<xsl:apply-templates select="other | vancouv | iso690 | abnt6023 | apa"/>
+				<xsl:apply-templates select="other | vancouv | iso690 | abnt6023 | apa | refs"/>
 				<xsl:variable name="test">
 					<xsl:apply-templates select=".//fngrp[@fntype]" mode="notfnauthors"/>
 				</xsl:variable>
@@ -1417,7 +1436,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ack>
 	</xsl:template>
 
-	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic">
+	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic | ref/italic | ref/bold">
 		<xsl:apply-templates select="text()"></xsl:apply-templates>
 	</xsl:template>
 	<xsl:template
@@ -1425,7 +1444,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template
 		match="*[contains(name(),'citat')]//*[*]/text()"/>
 	
-	<xsl:template match="*[@standard]">
+	<xsl:template match="*[@standard] | refs">
 		<ref-list>
 			<xsl:choose>
 				<xsl:when test="contains(text(),'Ref')">
@@ -1439,7 +1458,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					</title>
 				</xsl:when>
 			</xsl:choose>
-			<xsl:apply-templates select="*[contains(name(),'citat')]"/>
+			<xsl:apply-templates select="*[contains(name(),'citat')]|ref"/>
 		</ref-list>
 	</xsl:template>
 
@@ -1489,12 +1508,69 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</element-citation>
 		</ref>
 	</xsl:template>
+	<xsl:template match="ref">
+		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length(position()))"/></xsl:variable>
+		<xsl:variable name="id"><xsl:value-of select="$zeros"/><xsl:value-of select="position()"/></xsl:variable>
+		<ref id="B{$id}">
+			<xsl:apply-templates select="no"/>
+			
+			<xsl:apply-templates select="." mode="text-ref"/>
+			<element-citation publication-type="{@reftype}">
+				<xsl:apply-templates select="*[name()!='no' and name()!='text-ref']">
+					<xsl:with-param name="position" select="position()"/>
+				</xsl:apply-templates>
+			</element-citation>
+		</ref>
+	</xsl:template>
+	<xsl:template match="authors">
+		<xsl:variable name="type">
+			<xsl:choose>
+				<xsl:when test="@role='org'">compiler</xsl:when>
+				<xsl:when test="@role='ed'">editor</xsl:when>
+				<xsl:when test="@role='nd'">author</xsl:when>
+				<xsl:when test="@role='tr'">translator</xsl:when>
+				<xsl:otherwise>author</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<person-group person-group-type="{$type}">
+			<xsl:apply-templates select=".//pauthor|.//cauthor|et-al"></xsl:apply-templates>
+		</person-group>
+	</xsl:template>
+	<xsl:template match="cauthor">
+		<collab>
+			<xsl:value-of select="."/>
+		</collab>
+	</xsl:template>
+	<xsl:template match="doctit">
+		<xsl:choose>
+			<xsl:when test="../@reftype='book'"><chapter-title><xsl:apply-templates/></chapter-title></xsl:when>
+			<xsl:when test="not(../source)"><source><xsl:apply-templates/></source></xsl:when>
+			<xsl:otherwise><article-title><xsl:value-of select="."/></article-title></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="reportid">
+		<!-- <pub-id pub-id-type="other">Report No.: HETA2000-0139-2824</pub-id> -->
+		<pub-id pub-id-type="other"><xsl:value-of select="."/></pub-id>
+	</xsl:template>
+	<xsl:template match="patentno">
+		<patent country="{@country}"><xsl:value-of select="."/></patent>
+	</xsl:template>
+	<xsl:template match="letterto">
+		<source><xsl:value-of select="."/></source>
+	</xsl:template>
+	<xsl:template match="found-at|moreinfo">
+		<comment><xsl:value-of select="."/></comment>
+	</xsl:template>
+	<xsl:template match="ref/contract">
+		<comment content-type="award-id"><xsl:value-of select="."/></comment>
+	</xsl:template>
+	<xsl:template match="ref/date"></xsl:template>
 	<xsl:template match="back//no">
 		<label>
 			<xsl:value-of select="normalize-space(.)"/>
 		</label>
 	</xsl:template>
-	<xsl:template match="*[contains(name(),'citat')]//country">
+	<xsl:template match="*[contains(name(),'citat')]//country | ref/country">
 		<xsl:choose>
 			<xsl:when test="../city"> </xsl:when>
 			<xsl:when test="../state"> </xsl:when>
@@ -1505,14 +1581,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="*[contains(name(),'citat')]//city">
+	<xsl:template match="*[contains(name(),'citat')]//city | ref/city">
 		<publisher-loc>
 			<xsl:value-of select="normalize-space(.)"/>
 			<xsl:if test="../state">, <xsl:value-of select="../state"/></xsl:if>
 			<xsl:if test="../country">, <xsl:value-of select="../country"/></xsl:if>
 		</publisher-loc>
 	</xsl:template>
-	<xsl:template match="*[contains(name(),'citat')]//state">
+	<xsl:template match="*[contains(name(),'citat')]//state | ref/state">
 		<xsl:choose>
 			<xsl:when test="../city"> </xsl:when>
 			<xsl:otherwise>
@@ -1547,7 +1623,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="orgname|orgdiv|text()"/>
 		</collab>
 	</xsl:template>
-	<xsl:template match="*[contains(name(),'citat')]//pubname">
+	<xsl:template match="*[contains(name(),'citat')]//pubname | ref/pubname">
 		<publisher-name>
 			<xsl:value-of select="normalize-space(.)"/>
 		</publisher-name>
@@ -1676,7 +1752,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:call-template>
 	</xsl:template>
 
-	<xsl:template match="*[contains(name(),'citat')]//cited">
+	<xsl:template match="*[contains(name(),'citat')]//cited | ref/cited">
 		<date-in-citation content-type="access-date">
 			<xsl:value-of select="normalize-space(.)"/>
 		</date-in-citation>
@@ -1743,7 +1819,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ext-link>
 	</xsl:template>
 
-	<xsl:template match="*[contains(name(),'citat')]" mode="text-ref">
+	<xsl:template match="*[contains(name(),'citat')]| ref" mode="text-ref">
 		<mixed-citation>
 			<xsl:choose>
 				<xsl:when test="text-ref">
@@ -2509,14 +2585,14 @@ et al.</copyright-statement>
 			<xsl:value-of select="$doi"/>
 		</ext-link>
 	</xsl:template>
-	<xsl:template match="*[contains(name(),'citat')]//doi">
+	<xsl:template match="*[contains(name(),'citat')]//doi | ref/doi">
 		<!-- ext-link ext-link-type="doi" xlink:href="{.}"><xsl:value-of select="normalize-space(.)"/></ext-link> -->
 		<pub-id pub-id-type="doi">
 			<xsl:value-of select="normalize-space(.)"/>
 		</pub-id>
 	</xsl:template>
 	<xsl:template match="sec/text() | subsec/text()"/>
-	<xsl:template match="thesis">
+	<xsl:template match="thesis | thesgrp">
 		<xsl:apply-templates select="@* | * | text()"> </xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="degree "> </xsl:template>
@@ -2793,7 +2869,7 @@ et al.</copyright-statement>
 			<xsl:apply-templates select="*|text()"/>
 		</conference>
 	</xsl:template>
-	<xsl:template match="*[contains(name(),'citat')]//confgrp">
+	<xsl:template match="*[contains(name(),'citat')]//confgrp | ref/confgrp">
 		<xsl:apply-templates select="*|text()"/>
 	</xsl:template>
 	<xsl:template match="confgrp/date">
@@ -2844,8 +2920,9 @@ et al.</copyright-statement>
 	<xsl:template match="confgrp/confname | confgrp/no" mode="fulltitle"><xsl:value-of select="normalize-space(.)"/>
 		&#160; </xsl:template>
 
+	<xsl:template match="colvolid"><volume><xsl:value-of select="."/></volume></xsl:template>
 	<xsl:template match="coltitle">
-		<series>
+			<series>
 			<xsl:value-of select="normalize-space(.)"/>
 		</series>
 	</xsl:template>
@@ -2874,7 +2951,7 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="ack//p">
 		<p>
-			<xsl:apply-templates select="*[name()!='report']|text()|report//text()"/>
+			<xsl:apply-templates select="*[name()!='report' and name()!='funding']|text()|report//text()|funding//text()"/>
 		</p>
 	</xsl:template>
 	<xsl:template match="front//report | bbibcom//report | ack//report">

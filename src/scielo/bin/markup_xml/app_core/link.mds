@@ -1,5 +1,5 @@
 aff
-id;orgname;orgdiv1;orgdiv2;orgdiv3
+id;orgname;orgdiv1;orgdiv2;orgdiv3;country
 
 title
 language
@@ -32,7 +32,7 @@ author
 role;rid;corresp;deceased;eqcontr
 
 oauthor
-role;rid
+role
 
 keyword
 keyword priority level;language;id
@@ -162,4 +162,8 @@ reftype
 
 authors
 role
+
+patentno
+country
+
 

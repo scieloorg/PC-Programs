@@ -27,7 +27,7 @@
 <!ELEMENT funding   - - (award+ & awarded? & projname?)  >
 <!ELEMENT award   - - (contract & fundsrc+ & awarded?)  >
 <!ELEMENT fundsrc   - - (#PCDATA)  >
-<!ELEMENT awarded - - ( (orgname & orgiv?) & (fname & surname))+ >
+<!ELEMENT awarded - - ( (orgname & orgiv?) & (fname & surname) & (#PCDATA))+ >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--   Floating Elements                                                  -->

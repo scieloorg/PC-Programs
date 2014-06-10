@@ -282,5 +282,7 @@
 <!ELEMENT letterto - - (#PCDATA) > 
 <!ELEMENT found-at - - (#PCDATA) > 
 <!ELEMENT patentno - - (#PCDATA) > 
+<!ATTLIST patentno
+          country  CDATA #REQUIRED >
 
 
