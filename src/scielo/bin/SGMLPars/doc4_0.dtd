@@ -252,7 +252,7 @@
           dateiso  CDATA #REQUIRED >
 
 <!ELEMENT refs     - - (ref+) >
-<!ELEMENT ref     - - ((author | cauthor)+, et-al?)* 
+<!ELEMENT ref     - - ( authors* 
                         | rdoctitl | source
                         | date | pages
                         | volid | issueno | suppl | part | coltitle | colvolid 
@@ -264,14 +264,19 @@
             >
 <!ATTLIST ref     
           reftype CDATA #REQUIRED >
+
+<!ELEMENT authors     - - ((pauthor | cauthor)+, et-al?)* 
+<!ATTLIST authors     
+          role CDATA #REQUIRED >
+
 <!ELEMENT cauthor - - (#PCDATA) > 
-<!ATTLIST cauthor 
-          role  CDATA #REQUIRED >
+<!ELEMENT pauthor - - (fname & surname) > 
+
 <!ELEMENT moreinfo - - (#PCDATA) > 
 <!ATTLIST moreinfo 
           descript  CDATA #REQUIRED >
 
-<!ELEMENT rdoctitl - - (#PCDATA) > 
+<!ELEMENT doctit - - (#PCDATA) > 
 <!ELEMENT source - - (#PCDATA) > 
 <!ELEMENT reportid - - (#PCDATA) > 
 <!ELEMENT letterto - - (#PCDATA) > 

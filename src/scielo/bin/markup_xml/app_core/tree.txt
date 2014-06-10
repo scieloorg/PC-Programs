@@ -956,15 +956,16 @@ refs
 ref;#FALSE#;#TRUE#
 
 ref
-*author;#FALSE#;#TRUE#
-author;#FALSE#;#TRUE#
-cauthor;#FALSE#;#TRUE#
-et-al;#FALSE#;#FALSE#
+authors;#TRUE#;#FALSE#
 doctit;#TRUE#;#FALSE#
 *source;#FALSE#;#FALSE#
 source;#FALSE#;#FALSE#
 date;#TRUE#;#TRUE#
 pages;#FALSE#;#TRUE#
+url;#TRUE#;#TRUE#
+cited;#FALSE#;#TRUE#
+doi;#FALSE#;#TRUE#
+pubid;#FALSE#;#TRUE#
 volid;#TRUE#;#TRUE#
 issueno;#FALSE#;#TRUE#
 suppl;#FALSE#;#TRUE#
@@ -985,11 +986,17 @@ letterto;#FALSE#;#FALSE#
 found-at;#FALSE#;#FALSE#
 thesgrp;#FALSE#;#FALSE#
 patentno;#FALSE#;#FALSE#
-url;#TRUE#;#TRUE#
-cited;#FALSE#;#TRUE#
-doi;#FALSE#;#TRUE#
-pubid;#FALSE#;#TRUE#
 moreinfo;#TRUE#;#TRUE#
+
+authors
+*pauthor;#FALSE#;#TRUE#
+pauthor;#FALSE#;#TRUE#
+cauthor;#FALSE#;#TRUE#
+et-al;#FALSE#;#TRUE#
+
+pauthor
+
+*pauthor
 
 cauthor
 
