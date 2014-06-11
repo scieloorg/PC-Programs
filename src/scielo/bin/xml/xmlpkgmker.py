@@ -2686,7 +2686,7 @@ def cxpmker_markup_paths(source_path, sgmxml_filename):
 
     scielo_pkg_path = markup_xml_path + '/scielo_package'
     pmc_pkg_path = markup_xml_path + '/pmc_package'
-    report_path = sgmxml_path
+    report_path = markup_xml_path + '/errors'
     preview_path = None
     wrk_path = sgmxml_path
     return (scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path)
