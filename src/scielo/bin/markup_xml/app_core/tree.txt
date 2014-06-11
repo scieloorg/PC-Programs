@@ -5,26 +5,25 @@ text;#FALSE#;#FALSE#
 
 ifloat
 aff;#FALSE#;#TRUE#
+cltrial;#TRUE#;#FALSE#
+related;#TRUE#;#TRUE#
 funding;#FALSE#;#FALSE#
 report;#FALSE#;#FALSE#
 corresp;#FALSE#;#FALSE#
-xref;#FALSE#;#TRUE#
-equation;#FALSE#;#TRUE#
+product;#TRUE#;#TRUE#
+xref;#TRUE#;#TRUE#
+uri;#FALSE#;#TRUE#
+equation;#TRUE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 graphic;#FALSE#;#TRUE#
 tabwrap;#FALSE#;#TRUE#
 supplmat;#FALSE#;#TRUE#
-quote;#FALSE#;#TRUE#
+quote;#TRUE#;#TRUE#
 list;#FALSE#;#TRUE#
 deflist;#FALSE#;#TRUE#
-uri;#FALSE#;#TRUE#
-ign;#FALSE#;#TRUE#
-related;#FALSE#;#TRUE#
-cltrial;#FALSE#;#FALSE#
-product;#FALSE#;#TRUE#
-sciname;#FALSE#;#TRUE#
-element;#FALSE#;#TRUE#
+element;#TRUE#;#TRUE#
+ign;#TRUE#;#TRUE#
 
 abnt6023
 acitat;#FALSE#;#TRUE#
