@@ -30,10 +30,6 @@ specyear
 
 
 
-subarttp
-translation;abstract;addendum;announcement;article-commentary;book-review;books-received;brief-report;calendar;case-report;collection;correction;discussion;dissertation;editorial;in-brief;introduction;letter;meeting-report;news;obituary;oration;partial-retraction;procut-review;rapid-communication;reply;reprint;research-article;retraction;review-article
-translation;abstract;addendum;announcement;article-commentary;book-review;books-received;brief-report;calendar;case-report;collection;correction;discussion;dissertation;editorial;in-brief;introduction;letter;meeting-report;news;obituary;oration;partial-retraction;procut-review;rapid-communication;reply;reprint;research-article;retraction;review-article
-
 cversion
 4.0;3.0;2.5
 4.0;3.0;2.5
@@ -53,10 +49,16 @@ journal;book;confproc;scientific-technical-report;thesis;patent;newspaper;legal-
 colspan
 
 
+
 rowspan
+
 
 
 align
 left;center;right;justify
 left;center;right;justify
+
+subarttp
+translation;abstract;addendum;announcement;article-commentary;book-review;books-received;brief-report;calendar;case-report;collection;correction;discussion;dissertation;editorial;in-brief;introduction;letter;meeting-report;news;obituary;oration;partial-retraction;procut-review;rapid-communication;reply;reprint;research-article;retraction;review-article
+translation;abstract;addendum;announcement;article-commentary;book-review;books-received;brief-report;calendar;case-report;collection;correction;discussion;dissertation;editorial;in-brief;introduction;letter;meeting-report;news;obituary;oration;partial-retraction;procut-review;rapid-communication;reply;reprint;research-article;retraction;review-article
 
