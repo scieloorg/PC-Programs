@@ -427,7 +427,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:attribute name="xml:lang"><xsl:value-of select="normalize-space(.)"/>
 		</xsl:attribute>
 	</xsl:template>
-	<xsl:template match="article|text" mode="dtd-version">
+	<xsl:template match="article|text|doc" mode="dtd-version">
 		<xsl:attribute name="dtd-version">3.0</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="article|text|doc">
@@ -2505,6 +2505,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="th/bold">
 		<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+	</xsl:template>
+	<xsl:template match="th/@*">
+		<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
 	</xsl:template>
 	<xsl:template match="thead | thead/tr | thead//th">
 		<xsl:element name="{name()}">
