@@ -2131,7 +2131,7 @@ class ContentValidation(object):
                 r = {}
                 r = {'id': ref['id'], 'xml': ref['xml']}
 
-                r['year-source'] = self._validate_required_data(ref, ['year', 'source', 'lang'])
+                r['year-source'] = self._validate_required_data(ref, ['year', 'source', ])
 
                 if not ref['type'] in ['journal', 'book', 'thesis', 'conf-proc', 'patent', 'report', 'software', 'web']:
                     r['type'] = 'ERROR: Invalid value for element-citation/@publication-type: %s. Expected: %s.' % (ref['type'], ' | '.join(['journal', 'book', 'thesis', 'conf-proc', 'patent', 'report', 'software', 'web']))
