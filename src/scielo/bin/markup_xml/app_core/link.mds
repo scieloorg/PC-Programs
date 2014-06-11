@@ -166,4 +166,9 @@ role
 patentno
 country
 
+td
+align;colspan;rowspan
+
+th
+align;colspan;rowspan
 
