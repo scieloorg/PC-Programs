@@ -1,4 +1,23 @@
-﻿4.0.082 - 03/06/2014
+﻿4.0.083 - 13/06/2014
+=======
+ - Milestone 4.0.083
+   - Markup XML
+     - (bug) fix cc tag of doc DTD
+     - (bug) fix renaming images
+     - (bug) fix th identification, which was identified as td after first cell
+     - (bug) force a font name to tags, in order to tag not get the content styles (uppercase, invalid characters, etc)
+     - (bug) fix the table identification, when the user has selected the end of the table in the table range
+     - (bug) missing the XML generation of funding-group and license from doc
+     - (new) removed sciname tag
+     - (new) allow edition of the attributes of th and td tags
+     - (new) new DTD: doc, which has less levels and it is only to generate XML
+     - (new) the reports are now created in errors folder, instead of work folder
+     - (new) new tags to identify references
+     - (new)
+   - XML Package Maker
+     - (new) do not warn if there is no @lang to references
+
+4.0.082 - 03/06/2014
 =======
  - Milestone 4.0.082
    - Markup XML
