@@ -28,6 +28,8 @@ om5;om9;T;subtitle;". Retirado em "
 om4;om9;T;title;". Retirado em "
 om5;om6;T;subtitle;". "
 om4;om6;T;title;". "
+om4;om14;T;title;" ("
+om14;om6;T;edition;"). "
 om5;om11;T;subtitle;"(pp."
 om4;om11;T;title;"(pp."
 om6;om7;T;city;": "
@@ -45,6 +47,8 @@ oc1
 oc6
 oc1;oc99;NT;author;", ";"&"
 oc1;oc2;NT;author;", & "
+oc1;oc98;NT;author;" et "
+oc98;oc3;T;et-al;" ("
 oc2;oc3;NT;author;" ("
 oc99;oc99;NT;author;", "
 oc99;oc2;NT;author;", & "
@@ -64,11 +68,13 @@ piserial
 oi1
 oi5
 oi1;oi2;T;sertitle;", "
-oi2;oi4;T;volid;", "
 oi2;oi3;T;volid;"("
 oi3;oi4;T;issueno;"), "
+oi2;oi4;T;volid;", "
+oi2;oi4;T;issueno;", "
 oi4;oi5;T;pages;"."
 oi4;oi6;T;pages;". doi:"
+oi4;oi6;T;pages;". DOI:"
 oi6;oi5;T;doi;"."
 
 author
