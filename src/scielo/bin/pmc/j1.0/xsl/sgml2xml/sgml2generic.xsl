@@ -105,5 +105,5 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="substring(.,1,4)"/>-<xsl:value-of select="substring(.,5,2)"/>-<xsl:value-of select="substring(.,7)"/>
 		</xsl:if>
 	</xsl:template>
-	
+	<xsl:template match="ref/text()"></xsl:template>
 </xsl:stylesheet>

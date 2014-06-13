@@ -1,191 +1,190 @@
 start
-doc;#FALSE#
-article;#FALSE#
-text;#FALSE#
+doc;#FALSE#;#FALSE#
+article;#FALSE#;#FALSE#
+text;#FALSE#;#FALSE#
 
 ifloat
-aff;#TRUE#
-cltrial;#FALSE#
-corresp;#FALSE#
-related;#TRUE#
-product;#TRUE#
-ign;#TRUE#
-equation;#TRUE#
-figgrps;#TRUE#
-figgrp;#TRUE#
-graphic;#TRUE#
-tabwrap;#TRUE#
-supplmat;#TRUE#
-xref;#TRUE#
-uri;#TRUE#
-sciname;#TRUE#
-quote;#TRUE#
-element;#TRUE#
-list;#TRUE#
-deflist;#TRUE#
+aff;#FALSE#;#TRUE#
+cltrial;#TRUE#;#FALSE#
+related;#TRUE#;#TRUE#
+funding;#FALSE#;#FALSE#
+report;#FALSE#;#FALSE#
+corresp;#FALSE#;#FALSE#
+product;#TRUE#;#TRUE#
+xref;#TRUE#;#TRUE#
+uri;#FALSE#;#TRUE#
+equation;#TRUE#;#TRUE#
+figgrps;#FALSE#;#TRUE#
+figgrp;#FALSE#;#TRUE#
+graphic;#FALSE#;#TRUE#
+tabwrap;#FALSE#;#TRUE#
+supplmat;#FALSE#;#TRUE#
+quote;#TRUE#;#TRUE#
+list;#FALSE#;#TRUE#
+deflist;#FALSE#;#TRUE#
+element;#TRUE#;#TRUE#
+ign;#TRUE#;#TRUE#
 
 abnt6023
-acitat;#TRUE#
+acitat;#FALSE#;#TRUE#
 
 abstract
 
 accepted
 
 acitat
-no;#FALSE#
-acontrib;#FALSE#
-amonog;#FALSE#
-aiserial;#FALSE#
-confgrp;#FALSE#
+no;#FALSE#;#FALSE#
+acontrib;#FALSE#;#FALSE#
+amonog;#FALSE#;#FALSE#
+aiserial;#FALSE#;#FALSE#
+confgrp;#FALSE#;#FALSE#
 
 ack
-sectitle;#FALSE#
-p;#FALSE#
+sectitle;#FALSE#;#FALSE#
+p;#FALSE#;#FALSE#
 
 acontrib
-*author;#TRUE#
-author;#TRUE#
-corpauth;#TRUE#
-et-al;#FALSE#
-title;#FALSE#
-subtitle;#FALSE#
-volid;#FALSE#
-pages;#FALSE#
-patgrp;#FALSE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+corpauth;#FALSE#;#TRUE#
+et-al;#FALSE#;#FALSE#
+title;#FALSE#;#FALSE#
+subtitle;#FALSE#;#FALSE#
+volid;#FALSE#;#FALSE#
+pages;#FALSE#;#FALSE#
+patgrp;#FALSE#;#FALSE#
 
 aff
-label;#FALSE#
-role;#FALSE#
-city;#FALSE#
-state;#FALSE#
-country;#FALSE#
-zipcode;#FALSE#
-email;#FALSE#
+label;#FALSE#;#FALSE#
+role;#FALSE#;#FALSE#
+city;#FALSE#;#FALSE#
+state;#FALSE#;#FALSE#
+country;#FALSE#;#FALSE#
+zipcode;#FALSE#;#FALSE#
+email;#FALSE#;#FALSE#
 
 aiserial
-*sertitle;#FALSE#
-sertitle;#FALSE#
-*stitle;#FALSE#
-stitle;#FALSE#
-isstitle;#FALSE#
-date;#TRUE#
-volid;#TRUE#
-issueno;#TRUE#
-suppl;#TRUE#
-pages;#TRUE#
-extent;#TRUE#
-url;#TRUE#
-cited;#TRUE#
-doi;#TRUE#
-pubid;#TRUE#
-issn;#TRUE#
-city;#TRUE#
-state;#TRUE#
-country;#TRUE#
-pubname;#TRUE#
-notes;#TRUE#
+*sertitle;#FALSE#;#FALSE#
+sertitle;#FALSE#;#FALSE#
+*stitle;#FALSE#;#FALSE#
+stitle;#FALSE#;#FALSE#
+isstitle;#FALSE#;#FALSE#
+date;#FALSE#;#TRUE#
+volid;#FALSE#;#TRUE#
+issueno;#FALSE#;#TRUE#
+suppl;#FALSE#;#TRUE#
+pages;#FALSE#;#TRUE#
+extent;#FALSE#;#TRUE#
+url;#FALSE#;#TRUE#
+cited;#FALSE#;#TRUE#
+doi;#FALSE#;#TRUE#
+pubid;#FALSE#;#TRUE#
+issn;#FALSE#;#TRUE#
+city;#FALSE#;#TRUE#
+state;#FALSE#;#TRUE#
+country;#FALSE#;#TRUE#
+pubname;#FALSE#;#TRUE#
+notes;#FALSE#;#TRUE#
 
 amonog
-*author;#TRUE#
-author;#TRUE#
-corpauth;#TRUE#
-et-al;#FALSE#
-title;#FALSE#
-subtitle;#FALSE#
-date;#TRUE#
-edition;#TRUE#
-volid;#TRUE#
-part;#TRUE#
-tome;#TRUE#
-coltitle;#TRUE#
-colvolid;#TRUE#
-pages;#TRUE#
-extent;#TRUE#
-city;#TRUE#
-state;#TRUE#
-country;#TRUE#
-pubname;#TRUE#
-patgrp;#FALSE#
-confgrp;#TRUE#
-thesis;#TRUE#
-report;#TRUE#
-isbn;#TRUE#
-url;#TRUE#
-cited;#TRUE#
-doi;#TRUE#
-pubid;#TRUE#
-subresp;#TRUE#
-notes;#TRUE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+corpauth;#FALSE#;#TRUE#
+et-al;#FALSE#;#FALSE#
+title;#FALSE#;#FALSE#
+subtitle;#FALSE#;#FALSE#
+date;#FALSE#;#TRUE#
+edition;#FALSE#;#TRUE#
+volid;#FALSE#;#TRUE#
+part;#FALSE#;#TRUE#
+tome;#FALSE#;#TRUE#
+coltitle;#FALSE#;#TRUE#
+colvolid;#FALSE#;#TRUE#
+pages;#FALSE#;#TRUE#
+extent;#FALSE#;#TRUE#
+city;#FALSE#;#TRUE#
+state;#FALSE#;#TRUE#
+country;#FALSE#;#TRUE#
+pubname;#FALSE#;#TRUE#
+patgrp;#FALSE#;#FALSE#
+confgrp;#FALSE#;#TRUE#
+thesis;#FALSE#;#TRUE#
+report;#FALSE#;#TRUE#
+isbn;#FALSE#;#TRUE#
+url;#FALSE#;#TRUE#
+cited;#FALSE#;#TRUE#
+doi;#FALSE#;#TRUE#
+pubid;#FALSE#;#TRUE#
+subresp;#FALSE#;#TRUE#
+notes;#FALSE#;#TRUE#
 
 anonym
 
 apa
-pcitat;#TRUE#
+pcitat;#FALSE#;#TRUE#
 
 article
-deposit;#FALSE#
-front;#FALSE#
-xmlbody;#FALSE#
-body;#FALSE#
-back;#FALSE#
-response;#TRUE#
-subart;#TxmlRUE#
+deposit;#FALSE#;#FALSE#
+front;#FALSE#;#FALSE#
+xmlbody;#FALSE#;#FALSE#
+body;#FALSE#;#FALSE#
+back;#FALSE#;#FALSE#
+response;#FALSE#;#TRUE#
+subart;#FALSE#;#TxmlRUE#
 
 attrib
 
 app
-sectitle;#FALSE#
-sec;#TRUE#
-p;#TRUE#
+sectitle;#FALSE#;#FALSE#
+sec;#FALSE#;#TRUE#
+p;#FALSE#;#TRUE#
 
 authgrp
-*author;#TRUE#
-author;#TRUE#
-onbehalf;#FALSE#
-corpauth;#TRUE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+onbehalf;#FALSE#;#FALSE#
+corpauth;#FALSE#;#TRUE#
 
 author
-surname-fname;#FALSE#
-fname;#FALSE#
-surname;#FALSE#
-previous;#FALSE#
+surname-fname;#FALSE#;#FALSE#
+fname;#FALSE#;#FALSE#
+surname;#FALSE#;#FALSE#
+previous;#FALSE#;#FALSE#
 
 awarded
-orgname;#FALSE#
-orgdiv;#FALSE#
-surname-fname;#FALSE#
-surname;#FALSE#
-fname;#FALSE#
+orgname;#FALSE#;#FALSE#
+orgdiv;#FALSE#;#FALSE#
+surname-fname;#FALSE#;#FALSE#
+surname;#FALSE#;#FALSE#
+fname;#FALSE#;#FALSE#
 
 back
-ack;#FALSE#
-vancouv;#FALSE#
-iso690;#FALSE#
-abnt6023;#FALSE#
-apa;#FALSE#
-other;#FALSE#
-fngrp;#TRUE#
-licenses;#FALSE#
-bbibcom;#FALSE#
-glossary;#FALSE#
-app;#TRUE#
+ack;#FALSE#;#FALSE#
+vancouv;#FALSE#;#FALSE#
+iso690;#FALSE#;#FALSE#
+abnt6023;#FALSE#;#FALSE#
+apa;#FALSE#;#FALSE#
+other;#FALSE#;#FALSE#
+fngrp;#FALSE#;#TRUE#
+licenses;#FALSE#;#FALSE#
+bbibcom;#FALSE#;#FALSE#
+glossary;#FALSE#;#FALSE#
+app;#FALSE#;#TRUE#
 
 bbibcom
-abstract;#TRUE#
-keygrp;#TRUE#
-confgrp;#FALSE#
-report;#TRUE#
-thesgrp;#FALSE#
-hist;#FALSE#
+abstract;#FALSE#;#TRUE#
+keygrp;#FALSE#;#TRUE#
+confgrp;#FALSE#;#FALSE#
+thesgrp;#FALSE#;#FALSE#
+hist;#FALSE#;#FALSE#
 
 bibcom
-abstract;#TRUE#
-xmlabstr;#TRUE#
-keygrp;#TRUE#
-confgrp;#FALSE#
-report;#TRUE#
-thesgrp;#FALSE#
-hist;#FALSE#
+abstract;#FALSE#;#TRUE#
+xmlabstr;#FALSE#;#TRUE#
+keygrp;#FALSE#;#TRUE#
+confgrp;#FALSE#;#FALSE#
+thesgrp;#FALSE#;#FALSE#
+hist;#FALSE#;#FALSE#
 
 body
 
@@ -196,32 +195,32 @@ cited
 city
 
 cltrial
-ctreg;#TRUE#
+ctreg;#FALSE#;#TRUE#
 
 coltitle
 
 colvolid
 
 confgrp
-confname;#TRUE#
-no;#TRUE#
-date;#TRUE#
-city;#TRUE#
-state;#TRUE#
-country;#TRUE#
-sponsor;#TRUE#
+confname;#FALSE#;#TRUE#
+no;#FALSE#;#TRUE#
+date;#FALSE#;#TRUE#
+city;#FALSE#;#TRUE#
+state;#FALSE#;#TRUE#
+country;#FALSE#;#TRUE#
+sponsor;#FALSE#;#TRUE#
 
 confname
 
 contract
 
 corpauth
-orgname;#FALSE#
-orgdiv;#FALSE#
-previous;#FALSE#
+orgname;#FALSE#;#FALSE#
+orgdiv;#FALSE#;#FALSE#
+previous;#FALSE#;#FALSE#
 
 corresp
-email;#TRUE#
+email;#FALSE#;#TRUE#
 
 country
 
@@ -242,58 +241,58 @@ dperiod
 edition
 
 element
-attrib;#TRUE#
+attrib;#FALSE#;#TRUE#
 
 email
 
 equation
-graphic;#FALSE#
-texmath;#FALSE#
-mmlmath;#FALSE#
+graphic;#FALSE#;#FALSE#
+texmath;#FALSE#;#FALSE#
+mmlmath;#FALSE#;#FALSE#
 
 et-al
 
 extent
 
 figgrp
-label;#FALSE#
-caption;#FALSE#
-graphic;#FALSE#
+label;#FALSE#;#FALSE#
+caption;#FALSE#;#FALSE#
+graphic;#FALSE#;#FALSE#
 
 figgrps
-label;#FALSE#
-caption;#FALSE#
-figgrp;#TRUE#
+label;#FALSE#;#FALSE#
+caption;#FALSE#;#FALSE#
+figgrp;#FALSE#;#TRUE#
 
 fname
 
 fngrp
 
 fntable
-label;#FALSE#
+label;#FALSE#;#FALSE#
 
 front
-related;#TRUE#
-toctitle;#FALSE#
-doi;#TRUE#
-titlegrp;#FALSE#
-authgrp;#FALSE#
-bibcom;#FALSE#
+related;#FALSE#;#TRUE#
+toctitle;#FALSE#;#FALSE#
+doi;#FALSE#;#TRUE#
+titlegrp;#FALSE#;#FALSE#
+authgrp;#FALSE#;#FALSE#
+bibcom;#FALSE#;#FALSE#
 
 glossary
-label;#FALSE#
-sectitle;#FALSE#
-glossary;#TRUE#
-deflist;#FALSE#
+label;#FALSE#;#FALSE#
+sectitle;#FALSE#;#FALSE#
+glossary;#FALSE#;#TRUE#
+deflist;#FALSE#;#FALSE#
 
 deflist
-sectitle;#FALSE#
-defitem;#TRUE#
-deflist;#TRUE#
+sectitle;#FALSE#;#FALSE#
+defitem;#FALSE#;#TRUE#
+deflist;#FALSE#;#TRUE#
 
 defitem
-term;#FALSE#
-def;#FALSE#
+term;#FALSE#;#FALSE#
+def;#FALSE#;#FALSE#
 
 term
 
@@ -302,86 +301,86 @@ def
 graphic
 
 hist
-received;#FALSE#
-revised;#TRUE#
-accepted;#FALSE#
+received;#FALSE#;#FALSE#
+revised;#FALSE#;#TRUE#
+accepted;#FALSE#;#FALSE#
 
 icitat
-no;#FALSE#
-icontrib;#FALSE#
-imonog;#FALSE#
-iiserial;#FALSE#
+no;#FALSE#;#FALSE#
+icontrib;#FALSE#;#FALSE#
+imonog;#FALSE#;#FALSE#
+iiserial;#FALSE#;#FALSE#
 
 icontrib
-*author;#TRUE#
-author;#TRUE#
-corpauth;#TRUE#
-et-al;#FALSE#
-subresp;#TRUE#
-date;#TRUE#
-title;#FALSE#
-subtitle;#FALSE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+corpauth;#FALSE#;#TRUE#
+et-al;#FALSE#;#FALSE#
+subresp;#FALSE#;#TRUE#
+date;#FALSE#;#TRUE#
+title;#FALSE#;#FALSE#
+subtitle;#FALSE#;#FALSE#
 
 ign
 
 iiserial
-isstitle;#FALSE#
-*author;#TRUE#
-author;#TRUE#
-corpauth;#TRUE#
-et-al;#FALSE#
-medium;#FALSE#
-*sertitle;#FALSE#
-sertitle;#FALSE#
-*stitle;#FALSE#
-stitle;#FALSE#
-city;#TRUE#
-state;#TRUE#
-country;#TRUE#
-edition;#TRUE#
-pubname;#TRUE#
-date;#TRUE#
-update;#TRUE#
-volid;#TRUE#
-issueno;#TRUE#
-pages;#TRUE#
-isdesig;#TRUE#
-notes;#TRUE#
-issn;#TRUE#
-url;#TRUE#
-cited;#TRUE#
-doi;#TRUE#
-pubid;#TRUE#
+isstitle;#FALSE#;#FALSE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+corpauth;#FALSE#;#TRUE#
+et-al;#FALSE#;#FALSE#
+medium;#FALSE#;#FALSE#
+*sertitle;#FALSE#;#FALSE#
+sertitle;#FALSE#;#FALSE#
+*stitle;#FALSE#;#FALSE#
+stitle;#FALSE#;#FALSE#
+city;#FALSE#;#TRUE#
+state;#FALSE#;#TRUE#
+country;#FALSE#;#TRUE#
+edition;#FALSE#;#TRUE#
+pubname;#FALSE#;#TRUE#
+date;#FALSE#;#TRUE#
+update;#FALSE#;#TRUE#
+volid;#FALSE#;#TRUE#
+issueno;#FALSE#;#TRUE#
+pages;#FALSE#;#TRUE#
+isdesig;#FALSE#;#TRUE#
+notes;#FALSE#;#TRUE#
+issn;#FALSE#;#TRUE#
+url;#FALSE#;#TRUE#
+cited;#FALSE#;#TRUE#
+doi;#FALSE#;#TRUE#
+pubid;#FALSE#;#TRUE#
 
 imonog
-*author;#TRUE#
-author;#TRUE#
-corpauth;#TRUE#
-et-al;#FALSE#
-subresp;#TRUE#
-title;#FALSE#
-subtitle;#FALSE#
-medium;#FALSE#
-edition;#TRUE#
-city;#TRUE#
-state;#TRUE#
-country;#TRUE#
-pubname;#TRUE#
-date;#TRUE#
-update;#TRUE#
-volid;#TRUE#
-part;#TRUE#
-pages;#TRUE#
-extent;#TRUE#
-coltitle;#TRUE#
-report;#TRUE#
-notes;#TRUE#
-url;#FALSE#
-cited;#TRUE#
-doi;#TRUE#
-pubid;#TRUE#
-isbn;#TRUE#
-patgrp;#FALSE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+corpauth;#FALSE#;#TRUE#
+et-al;#FALSE#;#FALSE#
+subresp;#FALSE#;#TRUE#
+title;#FALSE#;#FALSE#
+subtitle;#FALSE#;#FALSE#
+medium;#FALSE#;#FALSE#
+edition;#FALSE#;#TRUE#
+city;#FALSE#;#TRUE#
+state;#FALSE#;#TRUE#
+country;#FALSE#;#TRUE#
+pubname;#FALSE#;#TRUE#
+date;#FALSE#;#TRUE#
+update;#FALSE#;#TRUE#
+volid;#FALSE#;#TRUE#
+part;#FALSE#;#TRUE#
+pages;#FALSE#;#TRUE#
+extent;#FALSE#;#TRUE#
+coltitle;#FALSE#;#TRUE#
+report;#FALSE#;#TRUE#
+notes;#FALSE#;#TRUE#
+url;#FALSE#;#FALSE#
+cited;#FALSE#;#TRUE#
+doi;#FALSE#;#TRUE#
+pubid;#FALSE#;#TRUE#
+isbn;#FALSE#;#TRUE#
+patgrp;#FALSE#;#FALSE#
 
 inpress
 
@@ -390,7 +389,7 @@ isbn
 isdesig
 
 iso690
-icitat;#TRUE#
+icitat;#FALSE#;#TRUE#
 
 issn
 
@@ -399,27 +398,27 @@ isstitle
 issueno
 
 keygrp
-keyword;#TRUE#
-subkey;#TRUE#
-dperiod;#TRUE#
+keyword;#FALSE#;#TRUE#
+subkey;#FALSE#;#TRUE#
+dperiod;#FALSE#;#TRUE#
 
 keyword
 
 label
 
 li
-label;#FALSE#
+label;#FALSE#;#FALSE#
 
 license
-licensep;#FALSE#
+licensep;#FALSE#;#FALSE#
 
 licensep
 
 licenses
-license;#TRUE#
+license;#FALSE#;#TRUE#
 
 list
-li;#TRUE#
+li;#FALSE#;#TRUE#
 
 medium
 
@@ -430,85 +429,85 @@ no
 notes
 
 oauthor
-surname-fname;#FALSE#
-fname;#FALSE#
-surname;#FALSE#
-anonym;#FALSE#
-previous;#FALSE#
+surname-fname;#FALSE#;#FALSE#
+fname;#FALSE#;#FALSE#
+surname;#FALSE#;#FALSE#
+anonym;#FALSE#;#FALSE#
+previous;#FALSE#;#FALSE#
 
 ocitat
-no;#FALSE#
-ocontrib;#TRUE#
-omonog;#FALSE#
-oiserial;#FALSE#
-confgrp;#FALSE#
+no;#FALSE#;#FALSE#
+ocontrib;#FALSE#;#TRUE#
+omonog;#FALSE#;#FALSE#
+oiserial;#FALSE#;#FALSE#
+confgrp;#FALSE#;#FALSE#
 
 ocontrib
-*oauthor;#TRUE#
-oauthor;#TRUE#
-ocorpaut;#TRUE#
-et-al;#FALSE#
-title;#FALSE#
-subtitle;#FALSE#
-date;#FALSE#
-pages;#FALSE#
-patgrp;#FALSE#
+*oauthor;#FALSE#;#TRUE#
+oauthor;#FALSE#;#TRUE#
+ocorpaut;#FALSE#;#TRUE#
+et-al;#FALSE#;#FALSE#
+title;#FALSE#;#FALSE#
+subtitle;#FALSE#;#FALSE#
+date;#FALSE#;#FALSE#
+pages;#FALSE#;#FALSE#
+patgrp;#FALSE#;#FALSE#
 
 ocorpaut
-orgname;#FALSE#
-orgdiv;#FALSE#
-previous;#FALSE#
+orgname;#FALSE#;#FALSE#
+orgdiv;#FALSE#;#FALSE#
+previous;#FALSE#;#FALSE#
 
 oiserial
-*sertitle;#FALSE#
-sertitle;#FALSE#
-*stitle;#FALSE#
-stitle;#FALSE#
-isstitle;#FALSE#
-date;#TRUE#
-volid;#TRUE#
-issueno;#TRUE#
-suppl;#TRUE#
-pages;#TRUE#
-extent;#TRUE#
-issn;#TRUE#
-url;#TRUE#
-cited;#TRUE#
-doi;#TRUE#
-pubid;#TRUE#
-othinfo;#FALSE#
-city;#TRUE#
-country;#TRUE#
-pubname;#TRUE#
+*sertitle;#FALSE#;#FALSE#
+sertitle;#FALSE#;#FALSE#
+*stitle;#FALSE#;#FALSE#
+stitle;#FALSE#;#FALSE#
+isstitle;#FALSE#;#FALSE#
+date;#FALSE#;#TRUE#
+volid;#FALSE#;#TRUE#
+issueno;#FALSE#;#TRUE#
+suppl;#FALSE#;#TRUE#
+pages;#FALSE#;#TRUE#
+extent;#FALSE#;#TRUE#
+issn;#FALSE#;#TRUE#
+url;#FALSE#;#TRUE#
+cited;#FALSE#;#TRUE#
+doi;#FALSE#;#TRUE#
+pubid;#FALSE#;#TRUE#
+othinfo;#FALSE#;#FALSE#
+city;#FALSE#;#TRUE#
+country;#FALSE#;#TRUE#
+pubname;#FALSE#;#TRUE#
 
 omonog
-*oauthor;#TRUE#
-oauthor;#TRUE#
-ocorpaut;#TRUE#
-et-al;#FALSE#
-title;#FALSE#
-subtitle;#FALSE#
-date;#FALSE#
-pages;#FALSE#
-extent;#TRUE#
-edition;#TRUE#
-thesis;#FALSE#
-confgrp;#FALSE#
-report;#TRUE#
-patgrp;#FALSE#
-city;#TRUE#
-state;#TRUE#
-country;#TRUE#
-pubname;#TRUE#
-coltitle;#TRUE#
-volid;#TRUE#
-part;#TRUE#
-url;#TRUE#
-cited;#TRUE#
-doi;#TRUE#
-pubid;#TRUE#
-isbn;#TRUE#
-othinfo;#TRUE#
+*oauthor;#FALSE#;#TRUE#
+oauthor;#FALSE#;#TRUE#
+ocorpaut;#FALSE#;#TRUE#
+et-al;#FALSE#;#FALSE#
+title;#FALSE#;#FALSE#
+subtitle;#FALSE#;#FALSE#
+date;#FALSE#;#FALSE#
+pages;#FALSE#;#FALSE#
+extent;#FALSE#;#TRUE#
+edition;#FALSE#;#TRUE#
+thesis;#FALSE#;#FALSE#
+confgrp;#FALSE#;#FALSE#
+report;#FALSE#;#TRUE#
+patgrp;#FALSE#;#FALSE#
+city;#FALSE#;#TRUE#
+state;#FALSE#;#TRUE#
+country;#FALSE#;#TRUE#
+pubname;#FALSE#;#TRUE#
+coltitle;#FALSE#;#TRUE#
+volid;#FALSE#;#TRUE#
+part;#FALSE#;#TRUE#
+url;#FALSE#;#TRUE#
+cited;#FALSE#;#TRUE#
+doi;#FALSE#;#TRUE#
+pubid;#FALSE#;#TRUE#
+isbn;#FALSE#;#TRUE#
+othinfo;#FALSE#;#TRUE#
 
 onbehalf
 
@@ -517,12 +516,11 @@ orgdiv
 orgname
 
 other
-ocitat;#TRUE#
+ocitat;#FALSE#;#TRUE#
 
 othinfo
 
 p
-report;#TRUE#
 
 pages
 
@@ -531,77 +529,77 @@ part
 patent
 
 patgrp
-orgname;#FALSE#
-patent;#FALSE#
-date;#FALSE#
+orgname;#FALSE#;#FALSE#
+patent;#FALSE#;#FALSE#
+date;#FALSE#;#FALSE#
 
 pcitat
-no;#FALSE#
-pcontrib;#FALSE#
-pmonog;#FALSE#
-piserial;#FALSE#
+no;#FALSE#;#FALSE#
+pcontrib;#FALSE#;#FALSE#
+pmonog;#FALSE#;#FALSE#
+piserial;#FALSE#;#FALSE#
 
 pcontrib
-*author;#TRUE#
-author;#TRUE#
-corpauth;#TRUE#
-date;#FALSE#
-title;#FALSE#
-subtitle;#FALSE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+corpauth;#FALSE#;#TRUE#
+date;#FALSE#;#FALSE#
+title;#FALSE#;#FALSE#
+subtitle;#FALSE#;#FALSE#
 
 piserial
-*sertitle;#FALSE#
-sertitle;#FALSE#
-volid;#TRUE#
-issueno;#TRUE#
-suppl;#TRUE#
-pages;#TRUE#
-url;#TRUE#
-cited;#TRUE#
-doi;#TRUE#
-pubid;#TRUE#
+*sertitle;#FALSE#;#FALSE#
+sertitle;#FALSE#;#FALSE#
+volid;#FALSE#;#TRUE#
+issueno;#FALSE#;#TRUE#
+suppl;#FALSE#;#TRUE#
+pages;#FALSE#;#TRUE#
+url;#FALSE#;#TRUE#
+cited;#FALSE#;#TRUE#
+doi;#FALSE#;#TRUE#
+pubid;#FALSE#;#TRUE#
 
 pmonog
-*author;#TRUE#
-author;#TRUE#
-corpauth;#TRUE#
-date;#FALSE#
-title;#FALSE#
-volid;#TRUE#
-part;#TRUE#
-subtitle;#FALSE#
-confgrp;#FALSE#
-thesis;#FALSE#
-coltitle;#TRUE#
-colvolid;#TRUE#
-pages;#TRUE#
-edition;#TRUE#
-city;#TRUE#
-state;#TRUE#
-country;#TRUE#
-pubname;#TRUE#
-report;#TRUE#
-url;#TRUE#
-cited;#TRUE#
-doi;#TRUE#
-pubid;#TRUE#
-notes;#TRUE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+corpauth;#FALSE#;#TRUE#
+date;#FALSE#;#FALSE#
+title;#FALSE#;#FALSE#
+volid;#FALSE#;#TRUE#
+part;#FALSE#;#TRUE#
+subtitle;#FALSE#;#FALSE#
+confgrp;#FALSE#;#FALSE#
+thesis;#FALSE#;#FALSE#
+coltitle;#FALSE#;#TRUE#
+colvolid;#FALSE#;#TRUE#
+pages;#FALSE#;#TRUE#
+edition;#FALSE#;#TRUE#
+city;#FALSE#;#TRUE#
+state;#FALSE#;#TRUE#
+country;#FALSE#;#TRUE#
+pubname;#FALSE#;#TRUE#
+report;#FALSE#;#TRUE#
+url;#FALSE#;#TRUE#
+cited;#FALSE#;#TRUE#
+doi;#FALSE#;#TRUE#
+pubid;#FALSE#;#TRUE#
+notes;#FALSE#;#TRUE#
 
 previous
 
 product
-*author;#TRUE#
-author;#TRUE#
-corpauth;#TRUE#
-title;#TRUE#
-sertitle;#TRUE#
-pubname;#TRUE#
-city;#TRUE#
-state;#TRUE#
-country;#TRUE#
-date;#FALSE#
-isbn;#TRUE#
-othinfo;#TRUE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+corpauth;#FALSE#;#TRUE#
+title;#FALSE#;#TRUE#
+sertitle;#FALSE#;#TRUE#
+pubname;#FALSE#;#TRUE#
+city;#FALSE#;#TRUE#
+state;#FALSE#;#TRUE#
+country;#FALSE#;#TRUE#
+date;#FALSE#;#FALSE#
+isbn;#FALSE#;#TRUE#
+othinfo;#FALSE#;#TRUE#
 
 projname
 
@@ -616,32 +614,32 @@ received
 related
 
 report
-no;#FALSE#
-contract;#TRUE#
-rsponsor;#TRUE#
-awarded;#TRUE#
-projname;#TRUE#
+no;#FALSE#;#FALSE#
+contract;#FALSE#;#TRUE#
+rsponsor;#FALSE#;#TRUE#
+awarded;#FALSE#;#TRUE#
+projname;#FALSE#;#TRUE#
 
 response
-front;#FALSE#
-xmlbody;#FALSE#
-back;#FALSE#
+front;#FALSE#;#FALSE#
+xmlbody;#FALSE#;#FALSE#
+back;#FALSE#;#FALSE#
 
 revised
 
 role
 
 rsponsor
-orgname;#FALSE#
-orgdiv;#FALSE#
-contract;#TRUE#
+orgname;#FALSE#;#FALSE#
+orgdiv;#FALSE#;#FALSE#
+contract;#FALSE#;#TRUE#
 
 sciname
 
 sec
-sectitle;#FALSE#
-subsec;#TRUE#
-p;#TRUE#
+sectitle;#FALSE#;#FALSE#
+subsec;#FALSE#;#TRUE#
+p;#FALSE#;#TRUE#
 
 sectitle
 
@@ -650,34 +648,34 @@ sertitle
 sig
 
 sigblock
-sig;#TRUE#
-role;#FALSE#
+sig;#FALSE#;#TRUE#
+role;#FALSE#;#FALSE#
 
 sponsor
-orgname;#FALSE#
-orgdiv;#FALSE#
+orgname;#FALSE#;#FALSE#
+orgdiv;#FALSE#;#FALSE#
 
 state
 
 stitle
 
 subart
-front;#FALSE#
-xmlbody;#FALSE#
-back;#FALSE#
-response;#TRUE#
-subart;#TRUE#
+front;#FALSE#;#FALSE#
+xmlbody;#FALSE#;#FALSE#
+back;#FALSE#;#FALSE#
+response;#FALSE#;#TRUE#
+subart;#FALSE#;#TRUE#
 
 subkey
 
 subresp
-surname-fname;#FALSE#
-fname;#FALSE#
-surname;#FALSE#
+surname-fname;#FALSE#;#FALSE#
+fname;#FALSE#;#FALSE#
+surname;#FALSE#;#FALSE#
 
 subsec
-sectitle;#TRUE#
-p;#TRUE#
+sectitle;#FALSE#;#TRUE#
+p;#FALSE#;#TRUE#
 
 subtitle
 
@@ -688,51 +686,51 @@ supplmat
 surname
 
 table
-tr;#TRUE#
+tr;#FALSE#;#TRUE#
 
 tabwrap
-label;#FALSE#
-caption;#FALSE#
-graphic;#FALSE#
-table;#FALSE#
-fntable;#TRUE#
+label;#FALSE#;#FALSE#
+caption;#FALSE#;#FALSE#
+graphic;#FALSE#;#FALSE#
+table;#FALSE#;#FALSE#
+fntable;#FALSE#;#TRUE#
 
 td
 
 texmath
 
 text
-doi;#TRUE#
-titlegrp;#FALSE#
-authgrp;#FALSE#
-body;#FALSE#
-back;#FALSE#
+doi;#FALSE#;#TRUE#
+titlegrp;#FALSE#;#FALSE#
+authgrp;#FALSE#;#FALSE#
+body;#FALSE#;#FALSE#
+back;#FALSE#;#FALSE#
 
 th
 
 thesgrp
-city;#FALSE#
-state;#FALSE#
-country;#FALSE#
-date;#FALSE#
-degree;#FALSE#
-orgname;#FALSE#
-orgdiv;#FALSE#
+city;#FALSE#;#FALSE#
+state;#FALSE#;#FALSE#
+country;#FALSE#;#FALSE#
+date;#FALSE#;#FALSE#
+degree;#FALSE#;#FALSE#
+orgname;#FALSE#;#FALSE#
+orgdiv;#FALSE#;#FALSE#
 
 thesis
-city;#FALSE#
-state;#FALSE#
-country;#FALSE#
-date;#FALSE#
-degree;#FALSE#
-orgname;#FALSE#
-orgdiv;#FALSE#
+city;#FALSE#;#FALSE#
+state;#FALSE#;#FALSE#
+country;#FALSE#;#FALSE#
+date;#FALSE#;#FALSE#
+degree;#FALSE#;#FALSE#
+orgname;#FALSE#;#FALSE#
+orgdiv;#FALSE#;#FALSE#
 
 title
 
 titlegrp
-title;#TRUE#
-subtitle;#TRUE#
+title;#FALSE#;#TRUE#
+subtitle;#FALSE#;#TRUE#
 
 toctitle
 
@@ -741,8 +739,8 @@ tome
 tp
 
 tr
-th;#TRUE#
-td;#TRUE#
+th;#FALSE#;#TRUE#
+td;#FALSE#;#TRUE#
 
 update
 
@@ -751,87 +749,87 @@ uri
 url
 
 vancouv
-vcitat;#TRUE#
+vcitat;#FALSE#;#TRUE#
 
 vcitat
-no;#FALSE#
-vcontrib;#FALSE#
-viserial;#FALSE#
-vmonog;#FALSE#
+no;#FALSE#;#FALSE#
+vcontrib;#FALSE#;#FALSE#
+viserial;#FALSE#;#FALSE#
+vmonog;#FALSE#;#FALSE#
 
 vcontrib
-*author;#TRUE#
-author;#TRUE#
-corpauth;#TRUE#
-et-al;#FALSE#
-vtitle;#FALSE#
-patgrp;#FALSE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+corpauth;#FALSE#;#TRUE#
+et-al;#FALSE#;#FALSE#
+vtitle;#FALSE#;#FALSE#
+patgrp;#FALSE#;#FALSE#
 
 version
 
 viserial
-vstitle;#FALSE#
-date;#TRUE#
-inpress;#TRUE#
-volid;#TRUE#
-issueno;#TRUE#
-suppl;#TRUE#
-part;#TRUE#
-extent;#TRUE#
-pages;#TRUE#
-url;#TRUE#
-cited;#TRUE#
-doi;#TRUE#
-pubid;#TRUE#
+vstitle;#FALSE#;#FALSE#
+date;#FALSE#;#TRUE#
+inpress;#FALSE#;#TRUE#
+volid;#FALSE#;#TRUE#
+issueno;#FALSE#;#TRUE#
+suppl;#FALSE#;#TRUE#
+part;#FALSE#;#TRUE#
+extent;#FALSE#;#TRUE#
+pages;#FALSE#;#TRUE#
+url;#FALSE#;#TRUE#
+cited;#FALSE#;#TRUE#
+doi;#FALSE#;#TRUE#
+pubid;#FALSE#;#TRUE#
 
 vmonog
-*author;#TRUE#
-author;#TRUE#
-corpauth;#TRUE#
-et-al;#FALSE#
-vtitle;#FALSE#
-edition;#FALSE#
-volid;#TRUE#
-part;#TRUE#
-version;#TRUE#
-confgrp;#TRUE#
-city;#TRUE#
-state;#TRUE#
-country;#TRUE#
-pubname;#TRUE#
-inpress;#TRUE#
-date;#TRUE#
-pages;#TRUE#
-extent;#TRUE#
-report;#TRUE#
-thesis;#TRUE#
-url;#TRUE#
-cited;#TRUE#
-doi;#TRUE#
-pubid;#TRUE#
-patgrp;#FALSE#
-coltitle;#TRUE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+corpauth;#FALSE#;#TRUE#
+et-al;#FALSE#;#FALSE#
+vtitle;#FALSE#;#FALSE#
+edition;#FALSE#;#FALSE#
+volid;#FALSE#;#TRUE#
+part;#FALSE#;#TRUE#
+version;#FALSE#;#TRUE#
+confgrp;#FALSE#;#TRUE#
+city;#FALSE#;#TRUE#
+state;#FALSE#;#TRUE#
+country;#FALSE#;#TRUE#
+pubname;#FALSE#;#TRUE#
+inpress;#FALSE#;#TRUE#
+date;#FALSE#;#TRUE#
+pages;#FALSE#;#TRUE#
+extent;#FALSE#;#TRUE#
+report;#FALSE#;#TRUE#
+thesis;#FALSE#;#TRUE#
+url;#FALSE#;#TRUE#
+cited;#FALSE#;#TRUE#
+doi;#FALSE#;#TRUE#
+pubid;#FALSE#;#TRUE#
+patgrp;#FALSE#;#FALSE#
+coltitle;#FALSE#;#TRUE#
 
 volid
 
 vstitle
-stitle;#FALSE#
-tp;#FALSE#
+stitle;#FALSE#;#FALSE#
+tp;#FALSE#;#FALSE#
 
 vtitle
-title;#FALSE#
-subtitle;#FALSE#
-tp;#FALSE#
+title;#FALSE#;#FALSE#
+subtitle;#FALSE#;#FALSE#
+tp;#FALSE#;#FALSE#
 
 xmlabstr
-sec;#TRUE#
-p;#TRUE#
+sec;#FALSE#;#TRUE#
+p;#FALSE#;#TRUE#
 
 xmlbody
-sec;#TRUE#
-p;#TRUE#
-deflist;#TRUE#
-sigblock;#FALSE#
+sec;#FALSE#;#TRUE#
+p;#FALSE#;#TRUE#
+deflist;#FALSE#;#TRUE#
+sigblock;#FALSE#;#FALSE#
 
 xref
 
@@ -848,105 +846,172 @@ surname-fname
 *stitle
 
 doc
-related;#TRUE#
-toctitle;#FALSE#
-doi;#FALSE#
-doctitle;#TRUE#
-*author;#TRUE#
-author;#TRUE#
-onbehalf;#FALSE#
-corpauth;#TRUE#
-abstract;#TRUE#
-xmlabstr;#TRUE#
-kwdgrp;#TRUE#
-funding;#TRUE#
-hist;#FALSE#
-xmlbody;#FALSE#
-ack;#FALSE#
-vancouv;#FALSE#
-iso690;#FALSE#
-abnt6023;#FALSE#
-apa;#FALSE#
-other;#FALSE#
-fngrp;#TRUE#
-cc;#FALSE#
-glossary;#FALSE#
-app;#TRUE#
-docresp;#TRUE#
-subdoc;#TRUE#
+related;#FALSE#;#TRUE#
+toctitle;#FALSE#;#FALSE#
+doi;#FALSE#;#FALSE#
+doctitle;#FALSE#;#TRUE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+onbehalf;#FALSE#;#FALSE#
+corpauth;#FALSE#;#TRUE#
+abstract;#FALSE#;#TRUE#
+xmlabstr;#FALSE#;#TRUE#
+kwdgrp;#FALSE#;#TRUE#
+hist;#FALSE#;#FALSE#
+xmlbody;#FALSE#;#FALSE#
+ack;#FALSE#;#FALSE#
+refs;#FALSE#;#FALSE#
+vancouv;#FALSE#;#FALSE#
+iso690;#FALSE#;#FALSE#
+abnt6023;#FALSE#;#FALSE#
+apa;#FALSE#;#FALSE#
+other;#FALSE#;#FALSE#
+fngrp;#FALSE#;#TRUE#
+cc;#FALSE#;#FALSE#
+glossary;#FALSE#;#FALSE#
+app;#FALSE#;#TRUE#
+docresp;#FALSE#;#TRUE#
+subdoc;#FALSE#;#TRUE#
 
 kwdgrp
-kwd;#TRUE#
+kwd;#FALSE#;#TRUE#
 
 doctitle
-subtitle;#FALSE#
+subtitle;#FALSE#;#FALSE#
 
 funding
-award;#TRUE#
-awarded;#TRUE#
-projname;#TRUE#
+award;#FALSE#;#TRUE#
+projname;#FALSE#;#TRUE#
+awarded;#FALSE#;#TRUE#
 
 award
-contract;#FALSE#
-fundsrc;#TRUE#
+contract;#FALSE#;#FALSE#
+fundsrc;#FALSE#;#TRUE#
+awarded;#FALSE#;#TRUE#
 
 docresp
-related;#TRUE#
-toctitle;#FALSE#
-doi;#FALSE#
-doctitle;#TRUE#
-*author;#TRUE#
-author;#TRUE#
-onbehalf;#FALSE#
-corpauth;#TRUE#
-abstract;#TRUE#
-xmlabstr;#TRUE#
-kwdgrp;#TRUE#
-funding;#TRUE#
-hist;#FALSE#
-xmlbody;#FALSE#
-ack;#FALSE#
-vancouv;#FALSE#
-iso690;#FALSE#
-abnt6023;#FALSE#
-apa;#FALSE#
-other;#FALSE#
-fngrp;#TRUE#
-cc;#FALSE#
-glossary;#FALSE#
-app;#TRUE#
+related;#FALSE#;#TRUE#
+toctitle;#FALSE#;#FALSE#
+doi;#FALSE#;#FALSE#
+doctitle;#FALSE#;#TRUE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+onbehalf;#FALSE#;#FALSE#
+corpauth;#FALSE#;#TRUE#
+abstract;#FALSE#;#TRUE#
+xmlabstr;#FALSE#;#TRUE#
+kwdgrp;#FALSE#;#TRUE#
+funding;#FALSE#;#TRUE#
+hist;#FALSE#;#FALSE#
+xmlbody;#FALSE#;#FALSE#
+ack;#FALSE#;#FALSE#
+refs;#FALSE#;#FALSE#
+vancouv;#FALSE#;#FALSE#
+iso690;#FALSE#;#FALSE#
+abnt6023;#FALSE#;#FALSE#
+apa;#FALSE#;#FALSE#
+other;#FALSE#;#FALSE#
+fngrp;#FALSE#;#TRUE#
+cc;#FALSE#;#FALSE#
+glossary;#FALSE#;#FALSE#
+app;#FALSE#;#TRUE#
 
 subdoc
-related;#TRUE#
-toctitle;#FALSE#
-doi;#FALSE#
-doctitle;#TRUE#
-*author;#TRUE#
-author;#TRUE#
-onbehalf;#FALSE#
-corpauth;#TRUE#
-abstract;#TRUE#
-xmlabstr;#TRUE#
-kwdgrp;#TRUE#
-funding;#TRUE#
-hist;#FALSE#
-xmlbody;#FALSE#
-ack;#FALSE#
-vancouv;#FALSE#
-iso690;#FALSE#
-abnt6023;#FALSE#
-apa;#FALSE#
-other;#FALSE#
-fngrp;#TRUE#
-cc;#FALSE#
-glossary;#FALSE#
-app;#TRUE#
-docresp;#TRUE#
-subdoc;#TRUE#
+related;#FALSE#;#TRUE#
+toctitle;#FALSE#;#FALSE#
+doi;#FALSE#;#FALSE#
+doctitle;#FALSE#;#TRUE#
+*author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
+onbehalf;#FALSE#;#FALSE#
+corpauth;#FALSE#;#TRUE#
+abstract;#FALSE#;#TRUE#
+xmlabstr;#FALSE#;#TRUE#
+kwdgrp;#FALSE#;#TRUE#
+funding;#FALSE#;#TRUE#
+hist;#FALSE#;#FALSE#
+xmlbody;#FALSE#;#FALSE#
+refs;#FALSE#;#FALSE#
+ack;#FALSE#;#FALSE#
+vancouv;#FALSE#;#FALSE#
+iso690;#FALSE#;#FALSE#
+abnt6023;#FALSE#;#FALSE#
+apa;#FALSE#;#FALSE#
+other;#FALSE#;#FALSE#
+fngrp;#FALSE#;#TRUE#
+cc;#FALSE#;#FALSE#
+glossary;#FALSE#;#FALSE#
+app;#FALSE#;#TRUE#
+docresp;#FALSE#;#TRUE#
+subdoc;#FALSE#;#TRUE#
 
 cc
 
 kwd
 
 fundsrc
+
+refs
+ref;#FALSE#;#TRUE#
+
+ref
+authors;#TRUE#;#FALSE#
+doctit;#TRUE#;#FALSE#
+*source;#FALSE#;#FALSE#
+source;#FALSE#;#FALSE#
+letterto;#FALSE#;#FALSE#
+found-at;#FALSE#;#FALSE#
+date;#TRUE#;#TRUE#
+pages;#FALSE#;#TRUE#
+url;#TRUE#;#TRUE#
+cited;#FALSE#;#TRUE#
+doi;#FALSE#;#TRUE#
+pubid;#FALSE#;#TRUE#
+volid;#TRUE#;#TRUE#
+issueno;#FALSE#;#TRUE#
+suppl;#FALSE#;#TRUE#
+part;#FALSE#;#TRUE#
+coltitle;#FALSE#;#TRUE#
+colvolid;#FALSE#;#TRUE#
+isbn;#TRUE#;#TRUE#
+extent;#FALSE#;#TRUE#
+edition;#FALSE#;#TRUE#
+city;#FALSE#;#TRUE#
+state;#FALSE#;#TRUE#
+country;#FALSE#;#TRUE#
+pubname;#FALSE#;#TRUE#
+confgrp;#TRUE#;#FALSE#
+reportid;#FALSE#;#FALSE#
+contract;#FALSE#;#FALSE#
+thesgrp;#FALSE#;#FALSE#
+patentno;#FALSE#;#FALSE#
+moreinfo;#TRUE#;#TRUE#
+
+authors
+*pauthor;#FALSE#;#TRUE#
+pauthor;#FALSE#;#TRUE#
+cauthor;#FALSE#;#TRUE#
+et-al;#FALSE#;#TRUE#
+
+pauthor
+
+*pauthor
+
+cauthor
+
+doctit
+
+source
+
+*source
+
+reportid
+
+letterto
+
+found-at
+
+patentno
+
+moreinfo
 

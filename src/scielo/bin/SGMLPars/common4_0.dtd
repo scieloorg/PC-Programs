@@ -8,7 +8,7 @@
 <!--   Common Models                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat | related | product | sup " > 
+<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat | related | product | sup | funding | report" > 
 <!ENTITY % m.name   "(fname? & surname & ctrbid*)" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
@@ -24,7 +24,10 @@
 
 <!ENTITY % m.rep    "(contract* & rsponsor* & no? & awarded* & projname?)+" >
 
-<!ELEMENT awarded - - ( (orgname & orgiv?) & (fname & surname))+ >
+<!ELEMENT funding   - - (award+ & awarded? & projname?)  >
+<!ELEMENT award   - - (contract & fundsrc+ & awarded?)  >
+<!ELEMENT fundsrc   - - (#PCDATA)  >
+<!ELEMENT awarded - - ( (orgname & orgiv?) & (fname & surname) & (#PCDATA))+ >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--   Floating Elements                                                  -->

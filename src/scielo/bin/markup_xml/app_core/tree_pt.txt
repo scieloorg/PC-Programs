@@ -29,7 +29,7 @@ contract;Identifica o número do projeto ou contrato fornecido pela instituição f
 corpauth;Identifica autor corporativo
 country;Identifica o país
 ctreg;Identifica o número do registro do ensaio clínico
-date;Identifica uma data
+date;Identifica a data relacionada ao contexto (publicação, conferência, registro de patente, etc)
 degree; Identifica o grau de uma dissertação ou tese acadêmica, como mestrado, doutorado, livre-docência etc
 deposit;Agrupa os elementos de um repositório
 doi;Identifica o DOI
@@ -161,3 +161,17 @@ cc;Agrupa os dados da licença Creative Commons
 docresp;Agrupa os dados de resposta
 subdoc;Agrupa os dados dos sub-documentos
 doc;Agrupa os dados de um documento (geração de XML)
+refs;Group the references
+ref;Group the reference elements
+cauthor;Identify corporative author
+doctit;Identify the document title in a reference
+*source;Identify automatically the document source (book title, journal title, etc)
+source;Identify the document source (book title, journal title, etc)
+reportid;Identify the number or name of the report
+letterto;Identify the recipient of the letter
+found-at;Identify the location of the letter
+patentno;Identify the number of the patent
+moreinfo;Identify any other information to which there is no tag to identify it. Use the descript attribute to describe the data
+authors;Group of authors in the references
+pauthor;Identify a (person) author
+*pauthor;Identify automatically a (person) author: surname and fname

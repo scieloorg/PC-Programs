@@ -32,7 +32,7 @@ author
 role;rid;corresp;deceased;eqcontr
 
 oauthor
-role;rid
+role
 
 keyword
 keyword priority level;language;id
@@ -155,5 +155,20 @@ doctitle
 language
 
 cc
-id;cversion;compl
+ccid;cversion;cccompl
+
+ref
+reftype
+
+authors
+role
+
+patentno
+country
+
+td
+align;colspan;rowspan
+
+th
+align;colspan;rowspan
 

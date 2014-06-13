@@ -30,15 +30,35 @@ specyear
 
 
 
+cversion
+4.0;3.0;2.5
+4.0;3.0;2.5
+
+cccompl
+IGO;nd
+IGO;nd
+
+ccid
+BY;BY-NC;BY-SA;BY-NC-SA
+BY;BY-NC;BY-SA;BY-NC-SA
+
+reftype
+journal;book;conference proceedings;scientific and technical report;thesis;patent;newspaper article;legal document;in press;poster;manuscript;database or retrieval system;software;web site;standard;guidelines;letter;email;forum;other
+journal;book;confproc;scientific-technical-report;thesis;patent;newspaper;legal-doc;in-press;poster;manuscript;database;software;web-site;standard;guidelines;letter;email;forum;other
+
+colspan
+
+
+
+rowspan
+
+
+
+align
+left;center;right;justify
+left;center;right;justify
+
 subarttp
 translation;abstract;addendum;announcement;article-commentary;book-review;books-received;brief-report;calendar;case-report;collection;correction;discussion;dissertation;editorial;in-brief;introduction;letter;meeting-report;news;obituary;oration;partial-retraction;procut-review;rapid-communication;reply;reprint;research-article;retraction;review-article
 translation;abstract;addendum;announcement;article-commentary;book-review;books-received;brief-report;calendar;case-report;collection;correction;discussion;dissertation;editorial;in-brief;introduction;letter;meeting-report;news;obituary;oration;partial-retraction;procut-review;rapid-communication;reply;reprint;research-article;retraction;review-article
-
-cversion
-2.5;3.0;4.0
-2.5;3.0;4.0
-
-compl
-igo;
-igo;
 

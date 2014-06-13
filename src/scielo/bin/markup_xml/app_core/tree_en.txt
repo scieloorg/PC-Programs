@@ -29,7 +29,7 @@ contract;Identify the contract/project number given by the sponsor
 corpauth;Identify the corporative author
 country;Identify the country
 ctreg;Identify the clinical trial number
-date;Identify the date of registration of the patent
+date;Identify the date related to the context (publication, conference, patent registration, etc)
 degree; Identify the degree of the thesis, such as Master, Doctor etc
 deposit;Identify the date of deposit in the repository
 doi;Identify the DOI
@@ -161,3 +161,18 @@ cc;Group the data of Creative Commons license
 docresp;Group the response data
 subdoc;Group the sub-document data
 doc;Group the data of a document (for XML generation)
+refs;Group the references
+ref;Group the reference elements
+cauthor;Identify corporative author
+doctit;Identify the document title in a reference
+*source;Identify automatically the document source (book title, journal title, etc)
+source;Identify the document source (book title, journal title, etc)
+reportid;Identify the number or name of the report
+letterto;Identify the recipient of the letter
+found-at;Identify the location of the letter
+patentno;Identify the number of the patent
+moreinfo;Identify any other information to which there is no tag to identify it. Use the descript attribute to describe the data
+authors;Group of authors in the references
+pauthor;Identify a (person) author
+*pauthor;Identify automatically a (person) author: surname and fname
+
