@@ -908,9 +908,11 @@ class XMLMetadata:
         for node in nodes:
             parent_tag = node.tag
             parent_id = node.attrib.get('id')
+            print('parent_tag')
             print(parent_tag)
+            print('parent_id')
             print(parent_id)
-            href_nodes = node.findall('.//*[@{http://www.w3.org/1999/xlink}href]')
+            href_nodes = node.findall('*[@{http://www.w3.org/1999/xlink}href]')
             for href_node in href_nodes:
                 tag = href_node.tag
                 href = href_node.attrib.get('{http://www.w3.org/1999/xlink}href')
@@ -2318,10 +2320,15 @@ class Normalizer(object):
         if xml_is_well_formed(content) is not None:
             #new name and href list
             new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, original_xml_name)
-            
+            print('href_list')
+            print(href_list)
+
             #href and new href list
             curr_and_new_href_list = self.generate_curr_and_new_href_list(xml_name, new_name, href_list)
+
+            print('curr_and_new_href_list')
             print(curr_and_new_href_list)
+
             # related files and href files list
             not_found, related_files_list, href_files_list = self.matched_files(xml_name, new_name, curr_and_new_href_list, src_path)
 
@@ -2329,17 +2336,17 @@ class Normalizer(object):
             log.append('Total of related files: ' + str(len(related_files_list)))
             log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(related_files_list)]))
 
-            log.append('Total of @href: ' + str(len(href_list)))
+            log.append('Total of @href in XML: ' + str(len(href_list)))
             log.append('\n'.join(['   ' + c for c, n in sorted(href_list)]))
 
-            log.append('Total of @href files: ' + str(len(curr_and_new_href_list)))
-            log.append('\n'.join(['   ' + c + ' => ' + n for c, n in curr_and_new_href_list]))
+            log.append('Renaming @href files in XML: ' + str(len(curr_and_new_href_list)))
+            log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(curr_and_new_href_list)]))
 
-            log.append('Total of @href files found: ' + str(len(href_files_list)))
+            log.append('Renaming and packing @href files \n' + src_path + ' => ' + dest_path + ': ' + str(len(href_files_list)))
             log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(href_files_list)]))
 
             if len(not_found) > 0:
-                log.append('\nTotal of @href files not found:\n   ' + '\n  '.join(not_found))
+                log.append('\nTotal of @href files not found in ' + src_path + ': \n' + '\n'.join(sorted(not_found)))
 
             if len(curr_and_new_href_list) > 0:
                 content = self.normalize_href(content, curr_and_new_href_list)
@@ -2362,8 +2369,10 @@ class Normalizer(object):
     def generate_curr_and_new_href_list(self, xml_name, new_name, href_list):
         r = []
         letra = ''
+        print('generate_curr_and_new_href_list')
         print(href_list)
         for href, elem_id in href_list:
+            ext = href[href.rfind('.'):]
             if href in elem_id:
                 letra = elem_id.replace(href, '')
             if xml_name in href:
@@ -2375,11 +2384,12 @@ class Normalizer(object):
                         alt_elem_id = alt_elem_id[1:]
                     new = new_name + '-' + letra + alt_elem_id
                 else:
-                    new = new_name + '-' + elem_id
-
-                if new[new.rfind('.'):] in ['.jpg', '.tiff', '.eps', '.tiff']:
-                    new = new[0:new.rfind('.')]
-                r.append((href, new))
+                    new = new_name + '-' + elem_id + ext
+            else:
+                new = new_name + '-' + elem_id + ext
+            if new[new.rfind('.'):] in ['.jpg', '.tiff', '.eps', '.tiff']:
+                new = new[0:new.rfind('.')]
+            r.append((href, new))
         return list(set(r))
 
     def matched_files(self, xml_name, new_name, curr_and_new_href_list, src_path):
@@ -2389,9 +2399,20 @@ class Normalizer(object):
         href_files_list = []
         not_found = []
         related_files_list = [(f, new_name + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(xml_name + '.')]
-        for curr, new in curr_and_new_href_list:
+        print('def matched_files')
+        print('related_files_list')
+        print(related_files_list)
+        print('curr_and_new_href_list')
+        print(curr_and_new_href_list)
 
+        for curr, new in curr_and_new_href_list:
+            print('curr')
+            print(curr)
+            print('new')
+            print(new)
+            print('is file:' + src_path + '/' + curr)
             if os.path.isfile(src_path + '/' + curr):
+                print('yes')
                 ext = curr[curr.rfind('.'):]
                 if new.endswith(ext):
                     href_files_list.append((curr, new))
@@ -2399,16 +2420,29 @@ class Normalizer(object):
                     href_files_list.append((curr, new + ext))
             else:
                 # curr and new has no extension
+                print('no')
                 found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr + '.') and not curr == xml_name]
+                print('found')
+                print(found)
                 if len(found) == 0:
                     if '.' in curr:
                         curr_noext = curr[0:curr.rfind('.')]
                         found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr_noext + '.') and not curr_noext == xml_name]
+                print('found')
+                print(found)
                 if len(found) == 0:
                     not_found.append(curr)
                 else:
                     href_files_list += found
+                print('found')
+                print(found)
         href_files_list = sorted(list(set(href_files_list)))
+        print('not_found')
+        print(not_found)
+        print('related_files_list')
+        print(related_files_list)
+        print('href_files_list')
+        print(href_files_list)
         return (not_found, related_files_list, href_files_list)
 
     def normalize_href(self, content, curr_and_new_href_list):
