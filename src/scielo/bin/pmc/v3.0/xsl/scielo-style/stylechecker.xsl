@@ -68,6 +68,12 @@
     <xsl:call-template name="ms-stream-id-test"/>
     <xsl:if test="not(institution[@content-type='orgname'])">
       <xsl:call-template name="make-error">
+        <xsl:with-param name="error-type">original affiliation check</xsl:with-param>
+        <xsl:with-param name="description">identify original affiliation</xsl:with-param>
+      </xsl:call-template>
+    </xsl:if>
+    <xsl:if test="not(institution[@content-type='orgname'])">
+      <xsl:call-template name="make-error">
         <xsl:with-param name="class">error</xsl:with-param>
         <xsl:with-param name="error-type">aff institution check</xsl:with-param>
         <xsl:with-param name="description">aff must have institution</xsl:with-param>
@@ -86,19 +92,12 @@
         <xsl:with-param name="error-type">aff addr-line check</xsl:with-param>
         <xsl:with-param name="description">aff should have addr-line, including
           city</xsl:with-param>
-
       </xsl:call-template>
     </xsl:if>
     <xsl:if test="not(country)">
       <xsl:call-template name="make-error">
         <xsl:with-param name="error-type">aff country check</xsl:with-param>
         <xsl:with-param name="description">aff must have country</xsl:with-param>
-      </xsl:call-template>
-    </xsl:if>
-    <xsl:if test="normalize-space(translate(text(),',.;-/', '     '))=''">
-      <xsl:call-template name="make-error">
-        <xsl:with-param name="error-type">full affiliation check</xsl:with-param>
-        <xsl:with-param name="description">aff must have full affiliation</xsl:with-param>
       </xsl:call-template>
     </xsl:if>
     <xsl:apply-templates select="." mode="output"/>
