@@ -21,6 +21,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="fn_author" select=".//fngrp[@fntype='author']"/>
 	<xsl:variable name="fn" select=".//fngrp"/>
 	<xsl:variable name="affs" select=".//aff"/>
+	<xsl:variable name="normalized_affs" select=".//normaff"/>
+	
 	<xsl:variable name="affs_xrefs" select=".//front//author"/>
 	<xsl:variable name="xref_id" select="//*[@id]"/>
 	<xsl:variable name="qtd_ref" select="count(//*[@standard]/*)"/>
@@ -574,9 +576,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="*" mode="front-author">
 		<xsl:apply-templates select=".//authgrp" mode="front"></xsl:apply-templates>
-		<xsl:if test="name()='subdoc'">
-			<xsl:apply-templates select="."></xsl:apply-templates>
-		</xsl:if>
 	</xsl:template>
 	<xsl:template match="cltrial">
 		<uri>
@@ -752,6 +751,22 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="..//aff"/>
 		</xsl:if>
 	</xsl:template>
+	<xsl:template match="doc | subdoc | docresp" mode="front-author">
+		<contrib-group>
+			<xsl:apply-templates select="author|corpauth" mode="front"/>
+			<xsl:if test="onbehalf">
+				<on-behalf-of>
+					<xsl:value-of select="onbehalf"/>
+				</on-behalf-of>
+			</xsl:if>
+			<xsl:if test="count(normaff)=1">
+				<xsl:apply-templates select="normaff"/>
+			</xsl:if>
+		</contrib-group>
+		<xsl:if test="count(normaff)&gt;1">
+			<xsl:apply-templates select="normaff"/>
+		</xsl:if>
+	</xsl:template>
 	<xsl:template match="@role">
 		<xsl:attribute name="contrib-type">
 			<xsl:choose>
@@ -799,6 +814,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="corpauth" mode="front">
 		<xsl:variable name="teste">
 			<xsl:apply-templates select="./../../authgrp//text()"/>
+			<xsl:apply-templates select="../text()"/>
 		</xsl:variable>
 		<xsl:choose>
 			<xsl:when test="contains($teste,'behalf')">
@@ -845,7 +861,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 
-	<xsl:template match="aff">
+	<xsl:template match="aff | normaff">
 		<xsl:variable name="parentid"></xsl:variable>
 		<xsl:variable name="label">
 			<xsl:value-of select="normalize-space(label)"/>
@@ -868,24 +884,34 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						</addr-line>
 					</xsl:if>
 				</xsl:when>
-				<xsl:otherwise>
+				<xsl:when test="@norgname">
 					<xsl:apply-templates select="*[contains(name(),'org')]"/>
-					<xsl:if test="@state or @city">
+					<xsl:if test="city or state or zipcode">
 						<addr-line>
-							<xsl:apply-templates select="@city|@state"/>
+							<xsl:apply-templates select="city|state|zipcode"/>
 						</addr-line>
 					</xsl:if>
-				</xsl:otherwise>
+				</xsl:when>
+				
 			</xsl:choose>
-			<xsl:apply-templates select="country|email"></xsl:apply-templates>
+			<xsl:choose>
+				<xsl:when test="@ncountry">
+					<xsl:apply-templates select="@ncountry"></xsl:apply-templates>
+				</xsl:when>
+				<xsl:otherwise><xsl:apply-templates select="country"></xsl:apply-templates></xsl:otherwise>
+			</xsl:choose>
+			<xsl:apply-templates select="email"></xsl:apply-templates>
 		</aff>
 	</xsl:template>
-	<xsl:template match="aff/country| aff/email">
+	<xsl:template match="@ncountry">
+		<country><xsl:value-of select="."/></country>
+	</xsl:template>
+	<xsl:template match="aff/country| aff/email | normaff/country| normaff/email">
 		<xsl:element name="{name()}">
 			<xsl:value-of select="normalize-space(.)"/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="aff/label | aff/sup">
+	<xsl:template match="aff/label | aff/sup | normaff/label | normaff/sup">
 		<xsl:choose>
 			<xsl:when test="not(../label) and name()='sup'">
 				<label>
@@ -899,30 +925,30 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="aff/*" mode="aff-pmc">
+	<xsl:template match="aff/* | normaff/*" mode="aff-pmc">
 		<xsl:value-of select="text()"/>
 	</xsl:template>
 	
-	<xsl:template match="aff/label" mode="aff-pmc">
+	<xsl:template match="aff/label | normaff/label" mode="aff-pmc">
 	</xsl:template>
 	
-	<xsl:template match="aff/email | aff/country" mode="aff-pmc">
+	<xsl:template match="aff/email | aff/country | normaff/email | normaff/country" mode="aff-pmc">
 		<named-content content-type="{name()}"><xsl:value-of select="normalize-space(.)"/></named-content>
 	</xsl:template>
 		
-	<xsl:template match="aff/text()" mode="aff-pmc">
+	<xsl:template match="aff/text() | normaff/text()" mode="aff-pmc">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="aff/*" mode="original">
+	<xsl:template match="aff/* | normaff/*" mode="original">
 		<xsl:value-of select="text()"/>
 	</xsl:template>
 	<xsl:template match="aff/label" mode="aff-pmc">
 	</xsl:template>
 	
-	<xsl:template match="aff/email" mode="original"><named-content content-type="email"><xsl:value-of select="text()"/></named-content>
+	<xsl:template match="aff/email | normaff/email" mode="original"><named-content content-type="email"><xsl:value-of select="text()"/></named-content>
 	</xsl:template>
-	<xsl:template match="aff//text()" mode="original">
+	<xsl:template match="aff//text() | normaff//text()" mode="original">
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
@@ -943,7 +969,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="aff/@id">
+	<xsl:template match="aff/@id | normaff/@id">
 		<!-- FIXMEID -->
 		<!-- quando nao ha aff/label = author/xref enquanto author/@rid = aff/@id -->
 		<xsl:variable name="var_id">
@@ -965,7 +991,19 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:choose>
 		</xsl:attribute>
 	</xsl:template>
-
+	<xsl:template match="normaff/orgname">
+		<institution content-type="orgname"><xsl:choose>
+			<xsl:when test="../@norgname!='Not normalized'">
+				<xsl:value-of select="@norgname"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="."/>
+			</xsl:otherwise>
+		</xsl:choose></institution>
+	</xsl:template>
+	<xsl:template match="normaff/*[contains(name(),'orgdiv')]">
+		<institution content-type="{name()}"><xsl:value-of select="."/></institution>
+	</xsl:template>
 	<xsl:template match="aff/@*[contains(name(),'org')] | aff/*[contains(name(),'org')]">
 		<institution>
 			<xsl:attribute name="content-type">
