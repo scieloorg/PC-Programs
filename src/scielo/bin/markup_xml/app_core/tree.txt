@@ -1022,18 +1022,13 @@ role;#FALSE#;#FALSE#
 orgname;#FALSE#;#FALSE#
 orgdiv1;#FALSE#;#FALSE#
 orgdiv2;#FALSE#;#FALSE#
-orgdiv3;#FALSE#;#FALSE#
 city;#FALSE#;#FALSE#
 state;#FALSE#;#FALSE#
 country;#FALSE#;#FALSE#
 zipcode;#FALSE#;#FALSE#
 email;#FALSE#;#FALSE#
 
-orgname
-
 orgdiv1
 
 orgdiv2
-
-orgdiv3
 
