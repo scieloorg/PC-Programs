@@ -892,7 +892,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						</addr-line>
 					</xsl:if>
 				</xsl:when>
-				
 			</xsl:choose>
 			<xsl:choose>
 				<xsl:when test="@ncountry">
@@ -981,7 +980,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-
 		<xsl:attribute name="id"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if>
 			<xsl:choose>
 				<xsl:when test="contains($var_id,'a0')">aff<xsl:value-of
@@ -992,14 +990,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="normaff/orgname">
-		<institution content-type="orgname"><xsl:choose>
-			<xsl:when test="../@norgname!='Not normalized'">
-				<xsl:value-of select="@norgname"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:value-of select="."/>
-			</xsl:otherwise>
-		</xsl:choose></institution>
+		<xsl:if test="../@norgname!='Not normalized'">
+			<institution content-type="normalized"><xsl:value-of select="../@norgname"/></institution>
+		</xsl:if>
+		<institution content-type="orgname"><xsl:value-of select="."/></institution>
 	</xsl:template>
 	<xsl:template match="normaff/*[contains(name(),'orgdiv')]">
 		<institution content-type="{name()}"><xsl:value-of select="."/></institution>
@@ -1013,7 +1007,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</institution>
 	</xsl:template>
 
-	<xsl:template match="aff/@city | aff/@state | aff/@country | aff/city | aff/state | aff/zipcode">
+	<xsl:template match="aff/@city | aff/@state | aff/@country | aff/city | aff/state | aff/zipcode | normaff/city | normaff/state | normaff/zipcode">
 		<named-content content-type="{name()}">
 			<xsl:value-of select="normalize-space(.)"/>
 		</named-content>
