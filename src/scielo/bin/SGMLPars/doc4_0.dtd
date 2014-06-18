@@ -130,7 +130,7 @@
                     ((abstract | xmlabstr), kwdgrp)*,
 
                     (ack | glossary | deflist | app |
-                    (vancouv | iso690 | abnt6023 | apa | other) |
+                    (vancouv | iso690 | abnt6023 | apa | other | refs) |
                     fngrp | cc)*,
 
                     docresp*, subdoc*
@@ -180,7 +180,7 @@
                     ((abstract | xmlabstr), kwdgrp)*,
 
                     (ack | glossary | deflist | app |
-                    (vancouv | iso690 | abnt6023 | apa | other) |
+                    (vancouv | iso690 | abnt6023 | apa | other | refs) |
                     fngrp | cc)*,
 
                     docresp*, subdoc*
@@ -253,7 +253,7 @@
 
 <!ELEMENT refs     - - (ref+) >
 <!ELEMENT ref     - - ( authors* 
-                        | rdoctitl | source
+                        | doctit | source
                         | date | pages
                         | volid | issueno | suppl | part | coltitle | colvolid 
                         | isbn | extent | edition | city | state | country | pubname
@@ -265,7 +265,7 @@
 <!ATTLIST ref     
           reftype CDATA #REQUIRED >
 
-<!ELEMENT authors     - - ((pauthor | cauthor)+, et-al?)* 
+<!ELEMENT authors     - - ((pauthor | cauthor)+, et-al?)* >
 <!ATTLIST authors     
           role CDATA #REQUIRED >
 
@@ -274,7 +274,7 @@
 
 <!ELEMENT moreinfo - - (#PCDATA) > 
 <!ATTLIST moreinfo 
-          descript  CDATA #REQUIRED >
+          descript  CDATA #IMPLIED >
 
 <!ELEMENT doctit - - (#PCDATA) > 
 <!ELEMENT source - - (#PCDATA) > 
