@@ -134,10 +134,12 @@
           dateiso  CDATA #REQUIRED
 	  fpage    CDATA #REQUIRED
           lpage    CDATA #REQUIRED
+          pagcount CDATA #REQUIRED
           issn     CDATA #REQUIRED
 		  old-pid CDATA #IMPLIED
 		  ahpdate CDATA #IMPLIED
 		  rvpdate CDATA #IMPLIED
+      artdate CDATA #IMPLIED
           hcomment CDATA #IMPLIED
           toccode  CDATA #REQUIRED >
 
