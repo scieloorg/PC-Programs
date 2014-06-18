@@ -122,7 +122,7 @@
 <!ELEMENT doc  - - (
                     toctitle?, doi?, related?,
                     doctitle+,  
-                    ((author+, onbehalf?) | corpauth)+,
+                    ((author+, onbehalf?) | corpauth)+, normaff*,
                     ((abstract | xmlabstr), kwdgrp)*,
                     (confgrp | funding | hist)*, 
                     xmlbody,
@@ -172,7 +172,7 @@
 <!ELEMENT subdoc    - - (
                     toctitle?, doi?, related?,
                     doctitle+,  
-                    ((author+, onbehalf?) | corpauth)+,
+                    ((author+, onbehalf?) | corpauth)+,  normaff*,
                     ((abstract | xmlabstr), kwdgrp)*,
                     (confgrp | funding | hist)*, 
                     xmlbody,
@@ -198,7 +198,7 @@
 <!ELEMENT docresp    - - (
                     toctitle?, doi?, related?,
                     doctitle+,  
-                    ((author+, onbehalf?) | corpauth)+,
+                    ((author+, onbehalf?) | corpauth)+, normaff*,
                     ((abstract | xmlabstr), kwdgrp)*,
                     (confgrp | funding | hist)*, 
                     xmlbody,

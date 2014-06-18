@@ -55,6 +55,13 @@
 	  orgdiv2  CDATA #IMPLIED
 	  orgdiv3  CDATA #IMPLIED >
 
+<!ELEMENT normaff - - (label? & role? & orgname & orgdiv1? & orgdiv2? & city? & state? & country? & zipcode? & email* & (#PCDATA)?)>
+<!ATTLIST normaff
+          id       ID    #REQUIRED
+          ncountry CDATA #REQUIRED
+          norgname  CDATA #REQUIRED
+          >
+
 <!ELEMENT zipcode - - (#PCDATA)>
 <!ELEMENT email   - - (#PCDATA)>
 <!ELEMENT city   - - (#PCDATA)>
