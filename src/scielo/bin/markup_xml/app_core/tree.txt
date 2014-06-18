@@ -995,6 +995,9 @@ cauthor;#FALSE#;#TRUE#
 et-al;#FALSE#;#TRUE#
 
 pauthor
+surname-fname;#FALSE#;#FALSE#
+fname;#FALSE#;#FALSE#
+surname;#FALSE#;#FALSE#
 
 *pauthor
 
