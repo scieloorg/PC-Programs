@@ -175,4 +175,7 @@ moreinfo;Identify any other information to which there is no tag to identify it.
 authors;Group of authors in the references
 pauthor;Identify a (person) author
 *pauthor;Identify automatically a (person) author: surname and fname
-
+normaff;Identify normalized affiliation
+orgdiv1;Identify organization division 1
+orgdiv2;Identify organization division 2
+orgdiv3;Identify organization division 3

@@ -137,6 +137,7 @@
       institution[@content-type='orgdiv2'] 2
       institution[@content-type='orgdiv1'] 1
       institution[@content-type='orgname'] _
+      institution[@content-type='normalized'] 4
     .//clinical-trial 770 XML
     .//article-meta//aff 170 XML
     .//ref-count/@count 72    

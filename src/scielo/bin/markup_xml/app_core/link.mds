@@ -1,6 +1,9 @@
 aff
 id;orgname;orgdiv1;orgdiv2;orgdiv3
 
+normaff
+id;ncountry;norgname
+
 title
 language
 
@@ -171,4 +174,7 @@ align;colspan;rowspan
 
 th
 align;colspan;rowspan
+
+moreinfo
+descript
 

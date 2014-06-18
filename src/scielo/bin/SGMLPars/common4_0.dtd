@@ -54,12 +54,21 @@
 	  orgdiv1  CDATA #IMPLIED
 	  orgdiv2  CDATA #IMPLIED
 	  orgdiv3  CDATA #IMPLIED >
-
 <!ELEMENT zipcode - - (#PCDATA)>
 <!ELEMENT email   - - (#PCDATA)>
 <!ELEMENT city   - - (#PCDATA)>
 <!ELEMENT state   - - (#PCDATA)>
 <!ELEMENT country   - - (#PCDATA)>
+
+<!ELEMENT normaff - - (label? & role? & orgname & orgdiv1? & orgdiv2? & city? & state? & country? & zipcode? & email* & (#PCDATA)?)>
+<!ATTLIST normaff
+          id       ID    #REQUIRED
+          ncountry CDATA #REQUIRED
+          norgname  CDATA #REQUIRED
+          >
+<!ELEMENT orgdiv1   - - (#PCDATA)>
+<!ELEMENT orgdiv2   - - (#PCDATA)>
+
 
 <!ELEMENT tabwrap - - ( ((label?, caption,(table | graphic)) | ((table | graphic), label?, caption)), fntable*  )  >
 <!ATTLIST tabwrap
