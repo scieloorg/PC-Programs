@@ -2319,44 +2319,48 @@ class Normalizer(object):
             original_xml_name = xml_name
         if xml_is_well_formed(content) is not None:
             #new name and href list
-            new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, original_xml_name)
+
+            new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, original_xml_name)    
             print('href_list')
             print(href_list)
-
-            #href and new href list
-            curr_and_new_href_list = self.generate_curr_and_new_href_list(xml_name, new_name, href_list)
-
-            print('curr_and_new_href_list')
+            print(self.generate_curr_and_new_href_list(xml_name, new_name, href_list))
+            if is_sgmxml:
+                #href and new href list
+                curr_and_new_href_list = self.generate_curr_and_new_href_list(xml_name, new_name, href_list)
+                content = self.normalize_href(content, curr_and_new_href_list)
+            else:
+                new_name = xml_name
+                curr_and_new_href_list = [(href, href) for href, item_id in href_list]
             print(curr_and_new_href_list)
-
             # related files and href files list
             not_found, related_files_list, href_files_list = self.matched_files(xml_name, new_name, curr_and_new_href_list, src_path)
 
-            log.append('new name:' + new_name)
+            jpg_created = self.pack_files(related_files_list, href_files_list, src_path, dest_path)
+
+            f = open(dest_path + '/' + new_name + '.xml', 'w')
+            f.write(content)
+            f.close()
+
+            log.append('XML name:' + new_name)
             log.append('Total of related files: ' + str(len(related_files_list)))
             log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(related_files_list)]))
 
             log.append('Total of @href in XML: ' + str(len(href_list)))
             log.append('\n'.join(['   ' + c for c, n in sorted(href_list)]))
 
-            log.append('Renaming @href files in XML: ' + str(len(curr_and_new_href_list)))
-            log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(curr_and_new_href_list)]))
+            if is_sgmxml:
+                log.append('Renaming @href files in XML: ' + str(len(curr_and_new_href_list)))
+                log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(curr_and_new_href_list)]))
 
-            log.append('Renaming and packing @href files \n' + src_path + ' => ' + dest_path + ': ' + str(len(href_files_list)))
-            log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(href_files_list)]))
+                log.append('Renaming and packing @href files \n' + src_path + ' => ' + dest_path + ': ' + str(len(href_files_list)))
+                log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(href_files_list)]))
+                log.append('\n'.join(jpg_created))
+            else:
+                log.append('Packing @href files \n' + src_path + ' => ' + dest_path + ': ' + str(len(href_files_list)))
+                log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(href_files_list)]))
 
             if len(not_found) > 0:
                 log.append('\nTotal of @href files not found in ' + src_path + ': \n' + '\n'.join(sorted(not_found)))
-
-            if len(curr_and_new_href_list) > 0:
-                content = self.normalize_href(content, curr_and_new_href_list)
-
-            jpg_created = self.rename_files(related_files_list, href_files_list, src_path, dest_path)
-            log.append('\n'.join(jpg_created))
-
-            f = open(dest_path + '/' + new_name + '.xml', 'w')
-            f.write(content)
-            f.close()
         else:
             log.append('XML is not well formed')
             log.append(dest_path + '/incorrect_' + new_name + '.xml')
@@ -2369,8 +2373,6 @@ class Normalizer(object):
     def generate_curr_and_new_href_list(self, xml_name, new_name, href_list):
         r = []
         letra = ''
-        print('generate_curr_and_new_href_list')
-        print(href_list)
         for href, elem_id in href_list:
             ext = href[href.rfind('.'):]
             if href in elem_id:
@@ -2399,18 +2401,8 @@ class Normalizer(object):
         href_files_list = []
         not_found = []
         related_files_list = [(f, new_name + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(xml_name + '.')]
-        print('def matched_files')
-        print('related_files_list')
-        print(related_files_list)
-        print('curr_and_new_href_list')
-        print(curr_and_new_href_list)
 
         for curr, new in curr_and_new_href_list:
-            print('curr')
-            print(curr)
-            print('new')
-            print(new)
-            print('is file:' + src_path + '/' + curr)
             if os.path.isfile(src_path + '/' + curr):
                 print('yes')
                 ext = curr[curr.rfind('.'):]
@@ -2420,29 +2412,17 @@ class Normalizer(object):
                     href_files_list.append((curr, new + ext))
             else:
                 # curr and new has no extension
-                print('no')
                 found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr + '.') and not curr == xml_name]
-                print('found')
-                print(found)
                 if len(found) == 0:
                     if '.' in curr:
                         curr_noext = curr[0:curr.rfind('.')]
                         found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr_noext + '.') and not curr_noext == xml_name]
-                print('found')
-                print(found)
                 if len(found) == 0:
                     not_found.append(curr)
                 else:
                     href_files_list += found
-                print('found')
-                print(found)
+   
         href_files_list = sorted(list(set(href_files_list)))
-        print('not_found')
-        print(not_found)
-        print('related_files_list')
-        print(related_files_list)
-        print('href_files_list')
-        print(href_files_list)
         return (not_found, related_files_list, href_files_list)
 
     def normalize_href(self, content, curr_and_new_href_list):
@@ -2453,7 +2433,7 @@ class Normalizer(object):
             content = content.replace(' filename="' + current, ' filename="' + new)
         return content
 
-    def rename_files(self, related_files_list, href_files_list, src_path, dest_path):
+    def pack_files(self, related_files_list, href_files_list, src_path, dest_path):
         jpg_created = []
         for curr, new in related_files_list:
             shutil.copyfile(src_path + '/' + curr, dest_path + '/' + new)
