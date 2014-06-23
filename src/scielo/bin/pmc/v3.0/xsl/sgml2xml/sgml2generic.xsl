@@ -1431,16 +1431,16 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:apply-templates select="fxmlbody[@type='ack']|ack"/>
 		<xsl:apply-templates select="*[@standard]"/>
 		<xsl:variable name="test">
-			<xsl:apply-templates select=".//fngrp[@fntype]" mode="notfnauthors"/>
+			<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
 		</xsl:variable>
 		<xsl:if test="$test!=''">
 			<fn-group>
-				<xsl:apply-templates select=".//fngrp[@fntype]" mode="notfnauthors"/>
+				<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
 			</fn-group>
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="back//fngrp[@fntype] | doc/fngrp">
+	<xsl:template match="back/fngrp[@fntype] | doc/fngrp">
 		<fn>
 			<xsl:apply-templates select="@*|label"/>
 			<p>
