@@ -1,4 +1,21 @@
-﻿4.0.083 - 13/06/2014
+﻿4.0.084 - 13/06/2014
+=======
+ - Milestone 4.0.084
+   - Markup XML (doc DTD)
+     - (new) identify et-al automatically
+     - (new) normaff tag to identify normalized affiliation
+     - (bug) surname and fname were unable for pauthor
+     - (bug) pauthor was maked as PAUTHOR
+     - (bug) misplaced [/subdoc] (before [/xmlbody])
+   - Markup XML (article DTD)
+     - (bug) fix apa for automata 3
+   - Package Maker
+     - (bug) fix renaming filenames
+     - (bug) remove message indicating missing original institution
+   - SGML Parser
+     - (bug) missing definition of pagcount attribute for text DTD
+
+4.0.083 - 13/06/2014
 =======
  - Milestone 4.0.083
    - Markup XML
