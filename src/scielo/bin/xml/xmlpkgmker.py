@@ -2352,11 +2352,11 @@ class Normalizer(object):
                 log.append('Renaming @href files in XML: ' + str(len(curr_and_new_href_list)))
                 log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(curr_and_new_href_list)]))
 
-                log.append('Renaming and packing @href files \n' + src_path + ' => ' + dest_path + ': ' + str(len(href_files_list)))
+                log.append('Renaming and packing @href files \n' + src_path + ' => packages: ' + str(len(href_files_list)))
                 log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(href_files_list)]))
                 log.append('\n'.join(jpg_created))
             else:
-                log.append('Packing @href files \n' + src_path + ' => ' + dest_path + ': ' + str(len(href_files_list)))
+                log.append('Packing @href files \n' + src_path + ' => packages: ' + str(len(href_files_list)))
                 log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(href_files_list)]))
 
             if len(not_found) > 0:
