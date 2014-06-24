@@ -138,7 +138,7 @@ class ArticleXML(object):
         return k
 
     @property
-    def contrib_collab(self):
+    def contrib_collabs(self):
         k = []
         for contrib in self.article_meta.findall('.//contrib/collab'):
             k.append(contrib.text)

@@ -128,9 +128,9 @@ class ArticleISIS(object):
             new['k'] = item['contrib-id']
             self._metadata['10'].append(new)
 
-        self._metadata['11'] = self.article.contrib_collab
+        self._metadata['11'] = self.article.contrib_collabs
         self._metadata['12'] = []
-        for item in self.article.title:
+        for item in self.article.titles:
             new = {}
             new['_'] = item['article-title']
             new['s'] = item['subtitle']
