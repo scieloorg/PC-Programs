@@ -88,3 +88,70 @@ def display_pages(fpage, lpage):
     if lpage is not None:
         r.append(lpage)
     return '-'.join(r)
+
+
+def display_value(label, value):
+    return label + ': ' + value if value is None else 'None'
+
+
+def display_values(label, values):
+    return label + ': ' + '\n'.join(values)
+
+
+def display_attributes(label, attributes):
+    r = []
+    for key, value in attributes.items():
+        if value is list:
+            value = '; '.join(value)
+        r.append('@' + key + ': ' + value)
+    return label + '\n' + '\n'.join(r)
+
+
+def display_items_with_attributes(label, items_with_attributes):
+    r = label + ': ' + '\n'
+    for item_name, item_values in items_with_attributes.items():
+        r += display_values_with_attributes(item_name, item_values)
+    return r
+
+
+def display_values_with_attributes(label, values_with_attributes):
+    return label + ': ' + '\n' + '\n'.join([display_attributes('=>', item) for item in values_with_attributes])
+
+
+def conditional_required(label, value):
+    return display_value(label, value) if value is not None else 'WARNING: Required ' + label + ', if exists. '
+
+
+def required(label, value):
+    return display_value(label, value) if value is not None else 'ERROR: Required ' + label + '. '
+
+
+def required_one(label, value):
+    return display_attributes(label, value) if value is not None else 'ERROR: Required ' + label + '. '
+
+
+def expected_values(label, value, expected):
+    return display_value(label, value) if value in expected else 'ERROR: ' + value + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected)
+
+
+def update_values(filename, values, value):
+    if not value in values.keys():
+        values[value] = []
+    values[value].append(filename)
+    return values
+
+
+def article_data(article):
+    data = {}
+    data['journal-title'] = article.journal_title
+    data['journal_id_nlm_ta'] = article.journal_id_nlm_ta
+    data['journal_issns'] = article.journal_issns
+    data['publisher_name'] = article.publisher_name
+    data['issue_label'] = article.issue_label
+    data['issue_date'] = article.issue_date
+    data['order'] = article.order
+    data['doi'] = article.doi
+    data['fpage'] = article.fpage
+    data['fpage_seq'] = article.fpage_seq
+    data['elocation_id'] = article.elocation_id
+    return data

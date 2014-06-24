@@ -363,6 +363,15 @@ class Article(ArticleXML):
         if self.tree is not None:
             self._issue_parts()
 
+    @property
+    def article_titles(self):
+        titles = {}
+        for title in self.title:
+            titles[title['language']] = title['article-title']
+        for title in self.trans_titles:
+            titles[title['language']] = title['trans-title']
+        return titles
+
     def _issue_parts(self):
         self.number = None
         self.number_suppl = None
@@ -489,6 +498,19 @@ class Article(ArticleXML):
             if self.doi is not None:
                 d = doi_pid(self.doi)
         return d
+
+    @property
+    def license(self):
+        return node_text(self.article_meta.find('license'))
+
+    @property
+    def issue_label(self):
+        v = 'v' + self.volume if self.volume is not None else None
+        vs = 's' + self.volume_suppl if self.volume_suppl is not None else None
+        n = 'n' + self.number if self.number is not None else None
+        ns = 's' + self.number_suppl if self.number_suppl is not None else None
+
+        return ''.join([i for i in [v, vs, n, ns]] if i is not None)
 
 
 class ReferenceXML(object):
