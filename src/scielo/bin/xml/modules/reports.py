@@ -103,4 +103,5 @@ class ArticleSheets(object):
     def __init__(self, article):
         self.article = article
 
-    def 
+    def authors(self):
+        
