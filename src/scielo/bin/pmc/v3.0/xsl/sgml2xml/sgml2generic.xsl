@@ -710,7 +710,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="doctitle">
 		<article-title>
-			<xsl:apply-templates select="@language|*[name()!='subtitle'] |text()"/>
+			<xsl:apply-templates select="*[name()!='subtitle'] |text()"/>
 		</article-title>
 		<xsl:apply-templates select="subtitle"/>
 	</xsl:template>
