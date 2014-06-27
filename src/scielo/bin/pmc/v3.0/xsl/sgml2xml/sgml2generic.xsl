@@ -754,7 +754,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="doc | subdoc | docresp" mode="front-author">
 		<xsl:choose>
 			<xsl:when test=".//aff">
-				<aff><xsl:comment>USE normaff instead of aff</xsl:comment></aff>
+				<aff content-type="USE normaff instead of aff"></aff>
 			</xsl:when>
 			<xsl:otherwise>
 				<contrib-group>
