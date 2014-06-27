@@ -434,19 +434,19 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="article|text|doc">
 		<article>
-			<xsl:apply-templates select="." mode="dtd-version"/>
-			<xsl:apply-templates select="@doctopic" mode="type"/>
-			<xsl:apply-templates select="@language"/>
-			<xsl:apply-templates select="." mode="front"/>
-			<xsl:apply-templates select="." mode="body"/>
-			<xsl:apply-templates select="." mode="back"/>
-			<xsl:apply-templates select="response | subart"/>
-			<xsl:apply-templates select="docresp | subdoc"/>
+					<xsl:apply-templates select="." mode="dtd-version"/>
+					<xsl:apply-templates select="@doctopic" mode="type"/>
+					<xsl:apply-templates select="@language"/>
+					<xsl:apply-templates select="." mode="front"/>
+					<xsl:apply-templates select="." mode="body"/>
+					<xsl:apply-templates select="." mode="back"/>
+					<xsl:apply-templates select="response | subart"/>
+					<xsl:apply-templates select="docresp | subdoc"/>
 		</article>
 	</xsl:template>
 	<xsl:template match="*" mode="front">
 		<xsl:choose>
-			<xsl:when test="name()='article' or name()='doc'">
+			<xsl:when test="name()='doc' or name()='article'">
 				<front>
 					<xsl:apply-templates select="." mode="journal-meta"/>
 					<xsl:apply-templates select="." mode="article-meta"/>					
@@ -752,20 +752,27 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="doc | subdoc | docresp" mode="front-author">
-		<contrib-group>
-			<xsl:apply-templates select="author|corpauth" mode="front"/>
-			<xsl:if test="onbehalf">
-				<on-behalf-of>
-					<xsl:value-of select="onbehalf"/>
-				</on-behalf-of>
-			</xsl:if>
-			<xsl:if test="count(normaff)=1">
-				<xsl:apply-templates select="normaff"/>
-			</xsl:if>
-		</contrib-group>
-		<xsl:if test="count(normaff)&gt;1">
-			<xsl:apply-templates select="normaff"/>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test=".//aff">
+				<aff><xsl:comment>USE normaff instead of aff</xsl:comment></aff>
+			</xsl:when>
+			<xsl:otherwise>
+				<contrib-group>
+					<xsl:apply-templates select="author|corpauth" mode="front"/>
+					<xsl:if test="onbehalf">
+						<on-behalf-of>
+							<xsl:value-of select="onbehalf"/>
+						</on-behalf-of>
+					</xsl:if>
+					<xsl:if test="count(normaff)=1">
+						<xsl:apply-templates select="normaff"/>
+					</xsl:if>
+				</contrib-group>
+				<xsl:if test="count(normaff)&gt;1">
+					<xsl:apply-templates select="normaff"/>
+				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="@role">
 		<xsl:attribute name="contrib-type">
