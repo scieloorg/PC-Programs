@@ -1475,11 +1475,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ack>
 	</xsl:template>
 
-	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic | ref/italic | ref/bold">
-		<xsl:apply-templates select="text()"></xsl:apply-templates>
+	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic | ref//italic | ref//bold">
+		<xsl:if test="not(contains(',. :;',text()))"><xsl:apply-templates select="text()"></xsl:apply-templates>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template
-		match="*[contains(name(),'citat')]/text()"/>
+		match="*[contains(name(),'citat')]/text() | ref/text()"/>
 	<xsl:template
 		match="*[contains(name(),'citat')]//*[*]/text()"/>
 	
@@ -1812,14 +1813,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="*[contains(name(),'serial')]">
 		<xsl:apply-templates/>
 	</xsl:template>
-
-	<xsl:template match="url">
+    <xsl:template match="url">
 		<xsl:choose>
 			<xsl:when test="../cited">
 				<comment content-type="cited">
 					<xsl:variable name="text">
-						<xsl:apply-templates select="../..//text()"/>
-					</xsl:variable>a <xsl:choose>
+						<xsl:apply-templates select="..//text()" mode="text-only"/>
+					</xsl:variable><xsl:choose>
 						<xsl:when test="contains($text,'Available')">
 							<xsl:value-of
 								select="substring-before(substring-after($text, substring-before($text, 'Available')), 'http')"
