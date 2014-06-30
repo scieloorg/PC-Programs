@@ -1475,11 +1475,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ack>
 	</xsl:template>
 
-	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic | ref/italic | ref/bold">
-		<xsl:apply-templates select="text()"></xsl:apply-templates>
+	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic | ref//italic | ref//bold">
+		<xsl:if test="not(contains(',. :;',text()))"><xsl:apply-templates select="text()"></xsl:apply-templates>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template
-		match="*[contains(name(),'citat')]/text()"/>
+		match="*[contains(name(),'citat')]/text() | ref/text()"/>
 	<xsl:template
 		match="*[contains(name(),'citat')]//*[*]/text()"/>
 	
@@ -1812,25 +1813,25 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="*[contains(name(),'serial')]">
 		<xsl:apply-templates/>
 	</xsl:template>
-
-	<xsl:template match="url">
+    <xsl:template match="url">
+    	
 		<xsl:choose>
 			<xsl:when test="../cited">
+				<xsl:variable name="text">
+					<xsl:apply-templates select="..//text()" mode="text-only"/>
+				</xsl:variable>
+				<xsl:variable name="term"><xsl:choose>
+					<xsl:when test="contains($text,'Dispon')">Dispon</xsl:when><xsl:otherwise>Available</xsl:otherwise>
+				</xsl:choose></xsl:variable>
+				<xsl:variable name="comment">
+					<xsl:value-of select="substring-before(substring-after($text, substring-before($text, $term)),.)"/>
+				</xsl:variable>
+				
 				<comment content-type="cited">
-					<xsl:variable name="text">
-						<xsl:apply-templates select="../..//text()"/>
-					</xsl:variable>a <xsl:choose>
-						<xsl:when test="contains($text,'Available')">
-							<xsl:value-of
-								select="substring-before(substring-after($text, substring-before($text, 'Available')), 'http')"
-							/>
-						</xsl:when>
-						<xsl:when test="contains($text,'Dispon')">
-							<xsl:value-of
-								select="substring-before(substring-after($text, substring-before($text, 'Dispon')), 'http')"
-							/>
-						</xsl:when>
-						<xsl:otherwise>Available from:</xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="contains($comment, '&lt;')"><xsl:value-of select="substring-before($comment,'&lt;')"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="$comment"/></xsl:otherwise>
+			
 					</xsl:choose>
 					<ext-link ext-link-type="uri">
 						<xsl:attribute name="xlink:href"><xsl:choose>
