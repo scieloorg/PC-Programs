@@ -2436,7 +2436,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xref>
 					<xsl:apply-templates select="@*"/>
 					<xsl:apply-templates select="*[name()!='graphic']|text()" mode="ignore-style"/>
-					(<xsl:value-of select="text()"/>)
 				</xref>
 				<xsl:if test="graphic">
 					<graphic>
