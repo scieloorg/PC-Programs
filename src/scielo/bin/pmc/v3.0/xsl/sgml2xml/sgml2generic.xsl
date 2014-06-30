@@ -89,7 +89,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="normalize-space(.)"/>
 		</xsl:attribute>
 		<!--xsl:value-of select="name()"/>="<xsl:value-of select="normalize-space(.)"/>" -->
-	</xsl:template>
+	</xsl:template><!-- attributes -->
 	
 	<!--
     	mode=text
@@ -1872,7 +1872,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="*" mode="create-text-ref">
-		<xsl:apply-templates select="@* | * | text() " mode="create-text-ref"/>
+		<xsl:apply-templates select=" * | text() " mode="create-text-ref"/>
 	</xsl:template>
 
 	<xsl:template match="@*" mode="create-text-ref"/>
@@ -2436,6 +2436,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xref>
 					<xsl:apply-templates select="@*"/>
 					<xsl:apply-templates select="*[name()!='graphic']|text()" mode="ignore-style"/>
+					(<xsl:value-of select="text()"/>)
 				</xref>
 				<xsl:if test="graphic">
 					<graphic>
