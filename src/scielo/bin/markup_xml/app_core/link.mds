@@ -139,6 +139,12 @@ id;resptp;language
 subart
 id;subarttp;language
 
+docresp
+id;resptp;language
+
+subdoc
+id;subarttp;language
+
 glossary
 id
 
