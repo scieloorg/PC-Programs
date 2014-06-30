@@ -1288,12 +1288,12 @@ item: Install File
   Destination=%PROGDIR%\bin\xml\modules\__init__.py
   Flags=0000000010000010
 end
-item: Install File
+remarked item: Install File
   Source=w:\scielo\bin\xml\modules\content_validation.py
   Destination=%PROGDIR%\bin\xml\modules\content_validation.py
   Flags=0000000010000010
 end
-item: Install File
+remarked item: Install File
   Source=w:\scielo\bin\xml\modules\attributes.py
   Destination=%PROGDIR%\bin\xml\modules\attributes.py
   Flags=0000000010000010
