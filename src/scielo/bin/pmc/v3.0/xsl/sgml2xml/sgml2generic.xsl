@@ -1447,7 +1447,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="back/fngrp[@fntype] | doc/fngrp">
+	<xsl:template match="*/fngrp[@fntype]">
 		<fn>
 			<xsl:apply-templates select="@*|label"/>
 			<p>
