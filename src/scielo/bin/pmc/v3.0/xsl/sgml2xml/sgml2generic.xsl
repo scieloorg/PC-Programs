@@ -1583,9 +1583,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="doctit">
 		<xsl:choose>
-			<xsl:when test="../@reftype='book'"><chapter-title><xsl:apply-templates/></chapter-title></xsl:when>
-			<xsl:when test="not(../source)"><source><xsl:apply-templates/></source></xsl:when>
-			<xsl:otherwise><article-title><xsl:value-of select="."/></article-title></xsl:otherwise>
+			<xsl:when test="not(../source)">
+				<source><xsl:apply-templates select=".//text()"/></source>
+			</xsl:when>
+			<xsl:when test="../@reftype='book'">
+				<chapter-title><xsl:apply-templates select=".//text()"/></chapter-title>
+			</xsl:when>
+			<xsl:otherwise><article-title><xsl:apply-templates select=".//text()"/></article-title></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="reportid">
