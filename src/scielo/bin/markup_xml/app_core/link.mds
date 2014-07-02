@@ -38,10 +38,7 @@ oauthor
 role
 
 keyword
-keyword priority level;language;id
-
-subkey
-rid
+keyword priority level;language
 
 keygrp
 scheme

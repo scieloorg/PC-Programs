@@ -6,24 +6,24 @@ text;#FALSE#;#FALSE#
 ifloat
 aff;#FALSE#;#TRUE#
 cltrial;#TRUE#;#FALSE#
-related;#TRUE#;#TRUE#
-funding;#FALSE#;#FALSE#
-report;#FALSE#;#FALSE#
 corresp;#FALSE#;#FALSE#
-product;#TRUE#;#TRUE#
-xref;#TRUE#;#TRUE#
-uri;#FALSE#;#TRUE#
-equation;#TRUE#;#TRUE#
-figgrps;#FALSE#;#TRUE#
-figgrp;#FALSE#;#TRUE#
-graphic;#FALSE#;#TRUE#
-tabwrap;#FALSE#;#TRUE#
-supplmat;#FALSE#;#TRUE#
-quote;#TRUE#;#TRUE#
-list;#FALSE#;#TRUE#
 deflist;#FALSE#;#TRUE#
 element;#TRUE#;#TRUE#
+equation;#TRUE#;#TRUE#
+figgrp;#FALSE#;#TRUE#
+figgrps;#FALSE#;#TRUE#
+funding;#FALSE#;#FALSE#
+graphic;#FALSE#;#TRUE#
 ign;#TRUE#;#TRUE#
+list;#FALSE#;#TRUE#
+product;#TRUE#;#TRUE#
+quote;#TRUE#;#TRUE#
+related;#TRUE#;#TRUE#
+report;#FALSE#;#FALSE#
+supplmat;#FALSE#;#TRUE#
+tabwrap;#FALSE#;#TRUE#
+uri;#FALSE#;#TRUE#
+xref;#TRUE#;#TRUE#
 
 abnt6023
 acitat;#FALSE#;#TRUE#
@@ -399,8 +399,6 @@ issueno
 
 keygrp
 keyword;#FALSE#;#TRUE#
-subkey;#FALSE#;#TRUE#
-dperiod;#FALSE#;#TRUE#
 
 keyword
 
