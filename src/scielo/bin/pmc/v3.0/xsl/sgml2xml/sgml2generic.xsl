@@ -89,7 +89,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="normalize-space(.)"/>
 		</xsl:attribute>
 		<!--xsl:value-of select="name()"/>="<xsl:value-of select="normalize-space(.)"/>" -->
-	</xsl:template>
+	</xsl:template><!-- attributes -->
 	
 	<!--
     	mode=text
@@ -434,19 +434,19 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="article|text|doc">
 		<article>
-			<xsl:apply-templates select="." mode="dtd-version"/>
-			<xsl:apply-templates select="@doctopic" mode="type"/>
-			<xsl:apply-templates select="@language"/>
-			<xsl:apply-templates select="." mode="front"/>
-			<xsl:apply-templates select="." mode="body"/>
-			<xsl:apply-templates select="." mode="back"/>
-			<xsl:apply-templates select="response | subart"/>
-			<xsl:apply-templates select="docresp | subdoc"/>
+					<xsl:apply-templates select="." mode="dtd-version"/>
+					<xsl:apply-templates select="@doctopic" mode="type"/>
+					<xsl:apply-templates select="@language"/>
+					<xsl:apply-templates select="." mode="front"/>
+					<xsl:apply-templates select="." mode="body"/>
+					<xsl:apply-templates select="." mode="back"/>
+					<xsl:apply-templates select="response | subart"/>
+					<xsl:apply-templates select="docresp | subdoc"/>
 		</article>
 	</xsl:template>
 	<xsl:template match="*" mode="front">
 		<xsl:choose>
-			<xsl:when test="name()='article' or name()='doc'">
+			<xsl:when test="name()='doc' or name()='article'">
 				<front>
 					<xsl:apply-templates select="." mode="journal-meta"/>
 					<xsl:apply-templates select="." mode="article-meta"/>					
@@ -710,7 +710,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="doctitle">
 		<article-title>
-			<xsl:apply-templates select="@language|*[name()!='subtitle'] |text()"/>
+			<xsl:apply-templates select="*[name()!='subtitle'] |text()"/>
 		</article-title>
 		<xsl:apply-templates select="subtitle"/>
 	</xsl:template>
@@ -752,20 +752,27 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="doc | subdoc | docresp" mode="front-author">
-		<contrib-group>
-			<xsl:apply-templates select="author|corpauth" mode="front"/>
-			<xsl:if test="onbehalf">
-				<on-behalf-of>
-					<xsl:value-of select="onbehalf"/>
-				</on-behalf-of>
-			</xsl:if>
-			<xsl:if test="count(normaff)=1">
-				<xsl:apply-templates select="normaff"/>
-			</xsl:if>
-		</contrib-group>
-		<xsl:if test="count(normaff)&gt;1">
-			<xsl:apply-templates select="normaff"/>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test=".//aff">
+				<aff content-type="USE normaff instead of aff"></aff>
+			</xsl:when>
+			<xsl:otherwise>
+				<contrib-group>
+					<xsl:apply-templates select="author|corpauth" mode="front"/>
+					<xsl:if test="onbehalf">
+						<on-behalf-of>
+							<xsl:value-of select="onbehalf"/>
+						</on-behalf-of>
+					</xsl:if>
+					<xsl:if test="count(normaff)=1">
+						<xsl:apply-templates select="normaff"/>
+					</xsl:if>
+				</contrib-group>
+				<xsl:if test="count(normaff)&gt;1">
+					<xsl:apply-templates select="normaff"/>
+				</xsl:if>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="@role">
 		<xsl:attribute name="contrib-type">
@@ -1440,7 +1447,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="back/fngrp[@fntype] | doc/fngrp">
+	<xsl:template match="*/fngrp[@fntype]">
 		<fn>
 			<xsl:apply-templates select="@*|label"/>
 			<p>
@@ -1468,11 +1475,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ack>
 	</xsl:template>
 
-	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic | ref/italic | ref/bold">
-		<xsl:apply-templates select="text()"></xsl:apply-templates>
+	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic | ref//italic | ref//bold">
+		<xsl:if test="not(contains(',. :;',text()))"><xsl:apply-templates select="text()"></xsl:apply-templates>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template
-		match="*[contains(name(),'citat')]/text()"/>
+		match="*[contains(name(),'citat')]/text() | ref/text()"/>
 	<xsl:template
 		match="*[contains(name(),'citat')]//*[*]/text()"/>
 	
@@ -1575,9 +1583,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="doctit">
 		<xsl:choose>
-			<xsl:when test="../@reftype='book'"><chapter-title><xsl:apply-templates/></chapter-title></xsl:when>
-			<xsl:when test="not(../source)"><source><xsl:apply-templates/></source></xsl:when>
-			<xsl:otherwise><article-title><xsl:value-of select="."/></article-title></xsl:otherwise>
+			<xsl:when test="not(../source)">
+				<source><xsl:apply-templates select=".//text()"/></source>
+			</xsl:when>
+			<xsl:when test="../@reftype='book'">
+				<chapter-title><xsl:apply-templates select=".//text()"/></chapter-title>
+			</xsl:when>
+			<xsl:otherwise><article-title><xsl:apply-templates select=".//text()"/></article-title></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="reportid">
@@ -1805,25 +1817,25 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="*[contains(name(),'serial')]">
 		<xsl:apply-templates/>
 	</xsl:template>
-
-	<xsl:template match="url">
+    <xsl:template match="url">
+    	
 		<xsl:choose>
 			<xsl:when test="../cited">
+				<xsl:variable name="text">
+					<xsl:apply-templates select="..//text()" mode="text-only"/>
+				</xsl:variable>
+				<xsl:variable name="term"><xsl:choose>
+					<xsl:when test="contains($text,'Dispon')">Dispon</xsl:when><xsl:otherwise>Available</xsl:otherwise>
+				</xsl:choose></xsl:variable>
+				<xsl:variable name="comment">
+					<xsl:value-of select="substring-before(substring-after($text, substring-before($text, $term)),.)"/>
+				</xsl:variable>
+				
 				<comment content-type="cited">
-					<xsl:variable name="text">
-						<xsl:apply-templates select="../..//text()"/>
-					</xsl:variable>a <xsl:choose>
-						<xsl:when test="contains($text,'Available')">
-							<xsl:value-of
-								select="substring-before(substring-after($text, substring-before($text, 'Available')), 'http')"
-							/>
-						</xsl:when>
-						<xsl:when test="contains($text,'Dispon')">
-							<xsl:value-of
-								select="substring-before(substring-after($text, substring-before($text, 'Dispon')), 'http')"
-							/>
-						</xsl:when>
-						<xsl:otherwise>Available from:</xsl:otherwise>
+					<xsl:choose>
+						<xsl:when test="contains($comment, '&lt;')"><xsl:value-of select="substring-before($comment,'&lt;')"/></xsl:when>
+					<xsl:otherwise><xsl:value-of select="$comment"/></xsl:otherwise>
+			
 					</xsl:choose>
 					<ext-link ext-link-type="uri">
 						<xsl:attribute name="xlink:href"><xsl:choose>
@@ -1865,7 +1877,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="*" mode="create-text-ref">
-		<xsl:apply-templates select="@* | * | text() " mode="create-text-ref"/>
+		<xsl:apply-templates select=" * | text() " mode="create-text-ref"/>
 	</xsl:template>
 
 	<xsl:template match="@*" mode="create-text-ref"/>

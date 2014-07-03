@@ -38,10 +38,7 @@ oauthor
 role
 
 keyword
-keyword priority level;language;id
-
-subkey
-rid
+keyword priority level;language
 
 keygrp
 scheme
@@ -68,7 +65,7 @@ tabwrap
 id
 
 figgrp
-id;ftype
+id
 
 figgrps
 id
@@ -139,6 +136,12 @@ id;resptp;language
 subart
 id;subarttp;language
 
+docresp
+id;resptp;language
+
+subdoc
+id;subarttp;language
+
 glossary
 id
 
@@ -174,7 +177,4 @@ align;colspan;rowspan
 
 th
 align;colspan;rowspan
-
-moreinfo
-descript
 

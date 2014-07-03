@@ -1,4 +1,27 @@
-﻿4.0.084 - 13/06/2014
+﻿4.0.085 - 30/06/2014
+=======
+ - Milestone 4.0.085
+   - Markup XML (doc DTD)
+     - (bug) fix pauthor upper case
+     - (new) automatic identification of ref for abnt
+     - (new) remove descript attribute from moreinfo tag
+     - (bug) improve xref (bibr) identification
+     - (new) remove ftype attribute from figgrp type
+     - (bug) fix automatic identification of label and caption of table and figure
+     - (new) inform message of missing affiliation, if it was identified with aff instead of normaff
+     - (bug) remove xml:lang attribute of article-title
+     - (new) display buttons of doc DTD sorted by name 
+     - (bug) fix normaff form
+     - (new) include normalized affilitions
+     - (bug) display the part of screen where the cursor is located
+     - (bug) display xref (fn) text
+     - (bug) remove text between element-citation tags
+     - (bug) fix automatic complete for dateiso attribute in attributes form
+     - (bug) fix XML generation for subdoc which contains fngrp
+     - (bug) include id, type and language for subdoc and docresp
+     - (new) automatic identification of label for normaff
+
+4.0.084 - 23/06/2014
 =======
  - Milestone 4.0.084
    - Markup XML (doc DTD)
