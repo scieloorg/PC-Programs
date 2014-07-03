@@ -129,7 +129,7 @@ xmlbody;#FALSE#;#FALSE#
 body;#FALSE#;#FALSE#
 back;#FALSE#;#FALSE#
 response;#FALSE#;#TRUE#
-subart;#FALSE#;#TxmlRUE#
+subart;#FALSE#;#TRUE#
 
 attrib
 
@@ -276,7 +276,6 @@ doi;#FALSE#;#TRUE#
 titlegrp;#FALSE#;#FALSE#
 authgrp;#FALSE#;#FALSE#
 aff;#FALSE#;#TRUE#
-
 bibcom;#FALSE#;#FALSE#
 
 glossary
