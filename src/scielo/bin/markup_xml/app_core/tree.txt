@@ -140,7 +140,6 @@ sec;#FALSE#;#TRUE#
 p;#FALSE#;#TRUE#
 
 authgrp
-*author;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
 corpauth;#FALSE#;#TRUE#
@@ -888,7 +887,6 @@ fundsrc;#FALSE#;#TRUE#
 awarded;#FALSE#;#TRUE#
 
 docresp
-*author;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 abnt6023;#FALSE#;#FALSE#
 abstract;#FALSE#;#TRUE#
@@ -915,7 +913,6 @@ xmlabstr;#FALSE#;#TRUE#
 xmlbody;#FALSE#;#FALSE#
 
 subdoc
-*author;#FALSE#;#TRUE#
 abnt6023;#FALSE#;#FALSE#
 abstract;#FALSE#;#TRUE#
 ack;#FALSE#;#FALSE#
