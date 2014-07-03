@@ -844,13 +844,12 @@ surname-fname
 *stitle
 
 doc
-*author;#TRUE#;#TRUE#
+author;#FALSE#;#TRUE#
 abnt6023;#FALSE#;#FALSE#
 abstract;#FALSE#;#TRUE#
 ack;#TRUE#;#FALSE#
 apa;#FALSE#;#FALSE#
 app;#FALSE#;#TRUE#
-author;#FALSE#;#TRUE#
 cc;#TRUE#;#FALSE#
 corpauth;#FALSE#;#TRUE#
 docresp;#TRUE#;#TRUE#
@@ -890,12 +889,12 @@ awarded;#FALSE#;#TRUE#
 
 docresp
 *author;#FALSE#;#TRUE#
+author;#FALSE#;#TRUE#
 abnt6023;#FALSE#;#FALSE#
 abstract;#FALSE#;#TRUE#
 ack;#FALSE#;#FALSE#
 apa;#FALSE#;#FALSE#
 app;#FALSE#;#TRUE#
-author;#FALSE#;#TRUE#
 cc;#FALSE#;#FALSE#
 corpauth;#FALSE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
