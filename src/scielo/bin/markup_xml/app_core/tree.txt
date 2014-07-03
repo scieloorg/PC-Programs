@@ -930,6 +930,7 @@ glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
 iso690;#FALSE#;#FALSE#
 kwdgrp;#FALSE#;#TRUE#
+normaff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
 other;#FALSE#;#FALSE#
 refs;#FALSE#;#FALSE#
