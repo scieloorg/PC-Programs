@@ -1445,6 +1445,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
 			</fn-group>
 		</xsl:if>
+		<xsl:apply-templates select="glossary | app"></xsl:apply-templates>				
+		
 	</xsl:template>
 
 	<xsl:template match="*/fngrp[@fntype]">
