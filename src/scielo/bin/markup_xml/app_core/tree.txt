@@ -858,6 +858,7 @@ fngrp;#TRUE#;#TRUE#
 glossary;#TRUE#;#FALSE#
 hist;#TRUE#;#FALSE#
 iso690;#FALSE#;#FALSE#
+*kwdgrp;#FALSE#;#TRUE#
 kwdgrp;#FALSE#;#TRUE#
 normaff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#

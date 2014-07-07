@@ -147,11 +147,12 @@ xmlabstr;Identifica un resumen con secciones
 toctitle;Identifica el título de la sección del sumario. Este item es obligatorio para la generación del XML.
 role;Identifica el rol del autor
 surname-fname;Identifica surname y fname de un autor (surname separador fname o fname separador surname)
-*oauthor;Identifica automaticamente apenas un oauthor
-*author;Identifica automaticamente apenas un author
+*oauthor;Identifica automáticamente apenas un oauthor
+*author;Identifica automáticamente apenas un author
 *sertitle;Identifica todos los títulos abreviados da revista, a partir del texto seleccionado.
 *stitle;Identifica todos los títulos de la revista, a partir del texto seleccionado.
 kwdgrp;Agrupa las palabras claves de una lengua
+*kwdgrp;Identifica automáticamente todas las palavras claves de una lengua
 kwd;Identifica una palabra clave
 funding;Agrupa los datos de un financiamiento
 award;Agrupa número de contrato y fuentes de financiamiento
@@ -161,21 +162,21 @@ cc;Agrupa los datos de la licencia Creative Commons
 docresp;Agrupa los datos de respuesta
 subdoc;Agrupa los datos de los sub-documentos
 doc;Agrupa los datos de un documento (para generación de XML)
-refs;Group the references
-ref;Group the reference elements
-cauthor;Identify corporative author
-doctit;Identify the document title in a reference
-*source;Identify automatically the document source (book title, journal title, etc)
-source;Identify the document source (book title, journal title, etc)
-reportid;Identify the number or name of the report
-letterto;Identify the recipient of the letter
-found-at;Identify the location of the letter
-patentno;Identify the number of the patent
-moreinfo;Identify any other information to which there is no tag to identify it. Use the descript attribute to describe the data
-authors;Group of authors in the references
-pauthor;Identify a (person) author
-*pauthor;Identify automatically a (person) author: surname and fname
-normaff;Identify normalized affiliation
-orgdiv1;Identify organization division 1
-orgdiv2;Identify organization division 2
-orgdiv3;Identify organization division 3
+refs;Agrupa las citas
+ref;Agrupa los elementos de una cita
+cauthor;Identifica autor corporativo
+doctit;Identifica el título del artículo o capítulo en una cita
+*source;Identifica automáticamente la fuente de la cita (libro, revista, etc)
+source;Identifica la fuente de la cita (libro, revista, etc)
+reportid;Identifica o nombre o número de un informe
+letterto;Identifica el destinatario de la carta
+found-at;Identifica donde está localizado el documento
+patentno;Identifica el número de la patente
+moreinfo;Identifica cualquier otra información
+authors;Agrupa autores de una cita
+pauthor;Identifica autor persona
+*pauthor;Identifica automáticamente el autor persona: surname y fname
+normaff;Identifica afiliación normalizada
+orgdiv1;Identifica la primera división abajo de la organización
+orgdiv2;Identifica la segunda división abajo de la organización
+orgdiv3;Identifica la tercera división abajdo de la organización
