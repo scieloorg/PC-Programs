@@ -717,7 +717,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="doctitle" mode="trans-title-group">
 		<trans-title-group>
 			<xsl:apply-templates select="@language"/>
+			<trans-title>
 			<xsl:apply-templates select="*[name()!='subtitle'] |text()"></xsl:apply-templates>
+			</trans-title>
 			<xsl:apply-templates select="subtitle" mode="trans-title"/>
 		</trans-title-group>
 	</xsl:template>
