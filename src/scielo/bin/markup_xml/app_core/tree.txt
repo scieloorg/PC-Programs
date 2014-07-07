@@ -871,6 +871,8 @@ vancouv;#FALSE#;#FALSE#
 xmlabstr;#FALSE#;#TRUE#
 xmlbody;#TRUE#;#FALSE#
 
+*kwdgrp
+
 kwdgrp
 kwd;#FALSE#;#TRUE#
 
