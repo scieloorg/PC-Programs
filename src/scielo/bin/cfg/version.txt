@@ -1,4 +1,30 @@
-﻿4.0.085 - 30/06/2014
+﻿4.0.086 - 08/09/2014
+====================
+  - Milestone 4.0.086
+    - Markup
+      - general
+        - (bug) fix DTD elements and attributes
+        - (bug) fix identification of list which was identified as quote
+        - (bug) fix checking of ID (allows app01)
+        - (bug) fix position of the next selection
+        - (bug) fix generation of graphic and table
+        - (bug) fix the tags font styles
+        - (bug) dateiso attribute must be completed only with numbers
+        - (bug) fix the checking of the permission to insert a tag
+        - (bug) fix identification of irregular tables
+      - doc DTD
+        - (new) include dot as separator for key words
+        - (new) *kwdgrp to identify all the key words at once instead of kwdgrp
+        - (bug) fix bookmark for previous author
+        - (bug) fix the list of normalized institutions (normaff)
+        - (bug) include normaff for subdoc
+      - article/text DTD
+        - (new) aff tag can not be floating, must be inside of front
+        - (new) remove ID of keyword and remove subkey
+        - (new) generate source or article-title or chapter-title according to the presence of doctit or source 
+        - (bug) include app for article
+
+4.0.085 - 30/06/2014
 =======
  - Milestone 4.0.085
    - Markup XML (doc DTD)
