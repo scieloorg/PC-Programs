@@ -151,7 +151,8 @@ surname-fname;Identifica surname e fname de um autor (surname separador fname ou
 *author;Identifica automaticamente apenas um author
 *sertitle;Identifica todos os títulos abreviados de periódico, a partir do texto selecionado.
 *stitle;Identifica todos os títulos do periódico, a partir do texto selecionado.
-kwdgrp;Agrupa las palabras claves de una lengua
+kwdgrp;Agrupa as palavras chaves de um idioma
+*kwdgrp;Identifica automaticamente todas as palavras chaves
 kwd;Identifica una palabra clave
 funding;Agrupa os dados de um financiamento
 award;Agrupa número de contrato e fontes de financiamento
