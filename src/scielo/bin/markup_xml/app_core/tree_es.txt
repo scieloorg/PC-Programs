@@ -180,3 +180,4 @@ normaff;Identifica afiliación normalizada
 orgdiv1;Identifica la primera división abajo de la organización
 orgdiv2;Identifica la segunda división abajo de la organización
 orgdiv3;Identifica la tercera división abajdo de la organización
+text-ref;Identify the original form of the reference

@@ -953,6 +953,7 @@ refs
 ref;#FALSE#;#TRUE#
 
 ref
+text-ref;#FALSE#;#FALSE#
 authors;#TRUE#;#FALSE#
 cited;#FALSE#;#TRUE#
 city;#FALSE#;#TRUE#
@@ -984,6 +985,8 @@ suppl;#FALSE#;#TRUE#
 thesgrp;#FALSE#;#FALSE#
 url;#TRUE#;#TRUE#
 volid;#TRUE#;#TRUE#
+
+text-ref
 
 authors
 *pauthor;#FALSE#;#TRUE#
