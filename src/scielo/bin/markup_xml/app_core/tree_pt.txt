@@ -180,3 +180,4 @@ normaff;Identify normalized affiliation
 orgdiv1;Identify organization division 1
 orgdiv2;Identify organization division 2
 orgdiv3;Identify organization division 3
+text-ref;Identify the original form of the reference
