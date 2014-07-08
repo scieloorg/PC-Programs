@@ -2374,7 +2374,10 @@ class Normalizer(object):
         r = []
         letra = ''
         for href, elem_id in href_list:
-            ext = href[href.rfind('.'):]
+            ext = ''
+            if '.' in href:
+                ext = href[href.rfind('.'):]
+
             if href in elem_id:
                 letra = elem_id.replace(href, '')
             if xml_name in href:
