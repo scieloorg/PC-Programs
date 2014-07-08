@@ -1871,7 +1871,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<mixed-citation>
 			<xsl:choose>
 				<xsl:when test="text-ref">
-					<xsl:value-of select="text-ref" disable-output-escaping="yes"/>
+					<xsl:apply-templates select="text-ref"></xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates select="." mode="create-text-ref"/>
