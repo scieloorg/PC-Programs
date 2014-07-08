@@ -426,8 +426,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="@language">
-		<xsl:attribute name="xml:lang"><xsl:value-of select="normalize-space(.)"/>
-		</xsl:attribute>
+		<xsl:if test="not(.='unknown')">
+			<xsl:attribute name="xml:lang"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template match="article|text|doc" mode="dtd-version">
 		<xsl:attribute name="dtd-version">3.0</xsl:attribute>
