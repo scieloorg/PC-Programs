@@ -242,7 +242,7 @@
           dateiso  CDATA #REQUIRED >
 
 <!ELEMENT refs     - - (ref+) >
-<!ELEMENT ref     - - ( authors* 
+<!ELEMENT ref     - - ( text-ref| authors* 
                         | doctit | source
                         | date | pages
                         | volid | issueno | suppl | part | coltitle | colvolid 
