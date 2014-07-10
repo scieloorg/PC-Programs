@@ -825,8 +825,9 @@ class XMLMetadata:
                 if issueno == 'ahead' or issueno == '00':
                     issueno = None
                 else:
-                    issueno = '00' + issueno
-                    issueno = issueno[-2:]
+                    if len(issueno) <= 2:
+                        issueno = '00' + issueno
+                        issueno = issueno[-2:]
 
             if suppl:
                 suppl = 's' + suppl if suppl != '0' else 'suppl'
