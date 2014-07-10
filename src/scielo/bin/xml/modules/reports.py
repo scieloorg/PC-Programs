@@ -3,7 +3,7 @@
 import modules.utils as utils
 import modules.xml_utils
 import modules.article
-
+import modules.content_validation
 
 class TOCValidation(object):
 
@@ -80,31 +80,41 @@ class DisplayData(object):
         return r
 
 
-class Sheet(object):
+class Report(object):
 
-    def __init__(self, table_header, table_data):
-        self.table_header = table_header
-        self.table_data = table_data
+    def __init__(self):
+        pass
 
-    def report(self):
+    def report(self, style, title, content):
+        return '<' + style + '>' + title + '</' + style + '>' + content
+
+    def sheet(self, table_header, table_data, filename=None):
         r = '<table>'
         r += '<tr>'
-        for label in self.table_header:
+        if filename is not None:
+            r += '<th></th>'
+        for label in table_header:
             r += '<th>' + label + '</th>'
         r += '</tr>'
-        for row in self.table_data:
+        for row in table_data:
             r += '<tr>'
-            for label in self.table_header:
-                r += '<td>|' + self.format(row.get(label)) + '|</td>'
+            if filename is not None:
+                r += '<td>' + filename + '</td>'
+
+            for label in table_header:
+                r += '<td>' + self.format_cell(row.get(label)) + '</td>'
             r += '</tr>'
         r += '</table>'
 
-    def format(self, value):
+    def format_html(self, value):
+        return '\n'.join(['<p>' + c + '</p>' for c in value.split('\n')])
+
+    def format_cell(self, value):
         r = ''
         if value is None:
             r = ''
         elif isinstance(value, str):
-            r = value
+            r = '|' + value + '|'
         elif isinstance(value, dict):
             r += '<ul>'
             for k, v in value:
@@ -153,7 +163,7 @@ class ArticleData(object):
                     r.append(row)
         return (t_header, r)
 
-    def source(self):
+    def sources(self):
         r = []
         t_header = ['ID', 'type', 'year', 'source', 'publisher name', 'location', ]
         for ref in self.article.references:
@@ -244,3 +254,19 @@ class ArticleData(object):
             row['data'] = data
             r.append(row)
         return (t_header, r)
+
+
+def generate_article_reports(article, filename):
+    data = ArticleData(article)
+    report = Report()
+    display_data = DisplayData(article)
+
+    content = ''
+    content += report.format_html(display_data.issue_header)
+    content += report.format_html(display_data.article_data)
+    content += report.format_html(modules.content_validation.ArticleContentValidation(article).report())
+    content += report.report('h1', 'Authors', report.sheet(data.authors()), filename)
+    content += report.report('h1', 'Affiliations', report.sheet(data.affiliations()), filename)
+    content += report.report('h1', 'Sources', report.sheet(data.sources()), filename)
+
+    sheet.report('title', 'Article')
