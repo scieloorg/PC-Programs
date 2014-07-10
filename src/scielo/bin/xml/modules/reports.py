@@ -203,19 +203,44 @@ class ArticleData(object):
             r.append(row)
         return (t_header, r)
 
-    def hrefs(self):
+    def hrefs(self, path=''):
         t_header = ['ID', 'Parent', 'Element', 'href', 'label', 'caption', ]
         r = []
-        for parent in self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
+        for parent in self.article.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
             for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
-                row = {}
-                row['Parent'] = parent.tag
-                row['Parent ID'] = parent.attrib.get('id', '')
-                row['label'] = parent.findtext('label')
-                row['caption'] = parent.findtext('caption')
-                row['Element'] = elem.tag
-                row['href'] = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                r.append(row)
+                href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
+                if ':' in href:
+                    row = {}
+                    row['Parent'] = parent.tag
+                    row['Parent ID'] = parent.attrib.get('id', '')
+                    row['label'] = parent.findtext('label')
+                    row['caption'] = parent.findtext('caption')
+                    row['Element'] = elem.tag
+                    if elem.tag == 'graphic':
+                        row['href'] = '<img src="' + path + href + '"/>'
+                    else:
+                        row['href'] = href
+                    r.append(row)
         return (t_header, r)
 
-    
+    def affiliations(self):
+        t_header = ['ID', 'data']
+        r = []
+        for a in self.affiliations:
+            row = {}
+            row['ID'] = a.id
+            data = {}
+            data['ordered'] = ['original', 'orgname', 'norgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'orgdiv2', 'city', 'state', 'country', 'xml']
+            data['original'] = a.original
+            data['norgname'] = a.norgname
+            data['orgname'] = a.orgname
+            data['orgdiv1'] = a.orgdiv1
+            data['orgdiv2'] = a.orgdiv2
+            data['orgdiv3'] = a.orgdiv3
+            data['city'] = a.city
+            data['state'] = a.state
+            data['country'] = a.country
+            data['xml'] = a.xml
+            row['data'] = data
+            r.append(row)
+        return (t_header, r)
