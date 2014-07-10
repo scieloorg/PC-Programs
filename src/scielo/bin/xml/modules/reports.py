@@ -1,9 +1,12 @@
 
+import os
+from datetime import datetime
 
 import modules.utils as utils
 import modules.xml_utils
 import modules.article
 import modules.content_validation
+
 
 class TOCValidation(object):
 
@@ -80,10 +83,16 @@ class DisplayData(object):
         return r
 
 
-class Report(object):
+class HTMLReport(object):
 
     def __init__(self):
         pass
+
+    def html(self, css_content, content):
+        return '<html>' + self.header(css_content) + '<body>' + content + '</body>' + '</html>'
+
+    def header(self, css_content):
+        return '<head></head>'
 
     def report(self, style, title, content):
         return '<' + style + '>' + title + '</' + style + '>' + content
@@ -123,6 +132,10 @@ class Report(object):
         else:
             r = ''
         return r
+
+    def report_date():
+        procdate = datetime.now().isoformat()
+        return procdate[0:10] + ' ' + procdate[11:19]
 
 
 class ArticleData(object):
@@ -256,17 +269,26 @@ class ArticleData(object):
         return (t_header, r)
 
 
-def generate_article_reports(article, filename):
-    data = ArticleData(article)
-    report = Report()
-    display_data = DisplayData(article)
+def generate_package_reports(xml_path, report_path, report_names):
+    report = HTMLReport()
 
-    content = ''
-    content += report.format_html(display_data.issue_header)
-    content += report.format_html(display_data.article_data)
-    content += report.format_html(modules.content_validation.ArticleContentValidation(article).report())
-    content += report.report('h1', 'Authors', report.sheet(data.authors()), filename)
-    content += report.report('h1', 'Affiliations', report.sheet(data.affiliations()), filename)
-    content += report.report('h1', 'Sources', report.sheet(data.sources()), filename)
+    for xml_name in os.listdir(xml_path):
+        tree = modules.xml_utils.load_xml(xml_path + '/' + xml_name)
+        article = modules.article.Article(tree)
+        report_name = report_names[xml_name] + '.contents.html'
 
-    sheet.report('title', 'Article')
+        data = ArticleData(article)
+        display_data = DisplayData(article)
+
+        content = ''
+        content += report.format_html(display_data.issue_header)
+        content += report.format_html(display_data.article_data)
+        content += report.format_html(modules.content_validation.ArticleContentValidation(article).report())
+        content += report.report('h1', 'Authors', report.sheet(data.authors(), xml_name))
+        content += report.report('h1', 'Affiliations', report.sheet(data.affiliations(), xml_name))
+        content += report.report('h1', 'Sources', report.sheet(data.sources(), xml_name))
+        content += report.report('h1', 'IDs', report.sheet(data.ids(), xml_name))
+        content += report.report('h1', 'href', report.sheet(data.hrefs(), xml_name))
+        content += report.report('h1', 'Tables', report.sheet(data.tables(), xml_name))
+
+        r = report.report('title', xml_name, '<p>' + report.report_date() + '</p>' + content)
