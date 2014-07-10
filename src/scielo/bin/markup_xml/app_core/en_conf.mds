@@ -106,3 +106,4 @@ buttonChange2,Change
 msgMissingImportantInformation,"Be sure the data of ISSUEID are in \bin\markup\issue.mds and \bin\markup\journal-standard.txt"
 msgMissingFile,not found.
 msg_new_structure,"Markup uses a new structure. vbCrlfThe marked files must to be in \markup_xml\scielo_markup (previously \pmc\pmc_markup). vbCrlfThe other files must be in \markup_xml\src (previously \pmc\src)"
+msg_ref_as_journal,The reftype attribute  of ref element will automatically be completed with "journal". Fix the value if it is not a journal reference.

@@ -120,21 +120,17 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!ELEMENT doc  - - (
-                    toctitle?, doi?, related?,
-                    doctitle+,  
-                    ((author+, onbehalf?) | corpauth)+, normaff*,
-                    ((abstract | xmlabstr), kwdgrp)*,
-                    (confgrp | funding | hist)*, 
-                    xmlbody,
-                    doctitle*,
-                    ((abstract | xmlabstr), kwdgrp)*,
-
-                    (ack | glossary | deflist | app |
+                    toctitle | doi | related |
+                    doctitle |  
+                    (((author+, onbehalf?) | corpauth)+, normaff*) |
+                    ((abstract | xmlabstr), kwdgrp) |
+                    confgrp | funding | hist | 
+                    xmlbody |
+                    ack | glossary | deflist | app |
                     (vancouv | iso690 | abnt6023 | apa | other | refs) |
-                    fngrp | cc)*,
-
-                    docresp*, subdoc*
-                    )
+                    fngrp | cc |
+                    docresp | subdoc 
+                    )+
                     +(%i.float;)>
 <!ATTLIST doc
           pii      CDATA #REQUIRED
@@ -170,21 +166,17 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!ELEMENT subdoc    - - (
-                    toctitle?, doi?, related?,
-                    doctitle+,  
-                    ((author+, onbehalf?) | corpauth)+,  normaff*,
-                    ((abstract | xmlabstr), kwdgrp)*,
-                    (confgrp | funding | hist)*, 
-                    xmlbody,
-                    doctitle*,
-                    ((abstract | xmlabstr), kwdgrp)*,
-
-                    (ack | glossary | deflist | app |
+                    toctitle | doi | related |
+                    doctitle |  
+                    (((author+, onbehalf?) | corpauth)+, normaff*) |
+                    ((abstract | xmlabstr), kwdgrp) |
+                    confgrp | funding | hist | 
+                    xmlbody |
+                    ack | glossary | deflist | app |
                     (vancouv | iso690 | abnt6023 | apa | other | refs) |
-                    fngrp | cc)*,
-
-                    docresp*, subdoc*
-                    )
+                    fngrp | cc |
+                    docresp | subdoc 
+                    )+
                     +(%i.float;)>
 <!ATTLIST subdoc
           id CDATA #REQUIRED 
@@ -196,19 +188,17 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!ELEMENT docresp    - - (
-                    toctitle?, doi?, related?,
-                    doctitle+,  
-                    ((author+, onbehalf?) | corpauth)+, normaff*,
-                    ((abstract | xmlabstr), kwdgrp)*,
-                    (confgrp | funding | hist)*, 
-                    xmlbody,
-                    doctitle+,
-                    ((abstract | xmlabstr), kwdgrp)*,
-
-                    (ack | glossary | deflist | app |
+                    toctitle | doi | related |
+                    doctitle |  
+                    (((author+, onbehalf?) | corpauth)+, normaff*) |
+                    ((abstract | xmlabstr), kwdgrp) |
+                    confgrp | funding | hist | 
+                    xmlbody |
+                    ack | glossary | deflist | app |
                     (vancouv | iso690 | abnt6023 | apa | other | refs) |
-                    fngrp | cc)*
-                    )
+                    fngrp | cc |
+                    docresp | subdoc 
+                    )+
                     +(%i.float;)>
 <!ATTLIST docresp
           id CDATA #REQUIRED 
@@ -252,7 +242,7 @@
           dateiso  CDATA #REQUIRED >
 
 <!ELEMENT refs     - - (ref+) >
-<!ELEMENT ref     - - ( authors* 
+<!ELEMENT ref     - - ( text-ref| authors* 
                         | doctit | source
                         | date | pages
                         | volid | issueno | suppl | part | coltitle | colvolid 

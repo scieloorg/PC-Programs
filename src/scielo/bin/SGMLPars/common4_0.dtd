@@ -70,7 +70,7 @@
 <!ELEMENT orgdiv2   - - (#PCDATA)>
 
 
-<!ELEMENT tabwrap - - ( ((label?, caption,(table | graphic)) | ((table | graphic), label?, caption)), fntable*  )  >
+<!ELEMENT tabwrap - - ((label?, caption)? & (table | graphic)+ & fntable*  )  >
 <!ATTLIST tabwrap
           id       CDATA #REQUIRED
 filename       CDATA #IMPLIED>
@@ -82,10 +82,10 @@ filename       CDATA #IMPLIED>
 <!ATTLIST figgrps
           id       CDATA #REQUIRED
           >
-<!ELEMENT figgrp - - (  graphic? , ( label?, caption), notes?   )   >
+<!ELEMENT figgrp - - (  graphic, notes?, ( label?, caption)?   )   >
 <!ATTLIST figgrp
           id       CDATA #REQUIRED
-          ftype       CDATA #REQUIRED 
+          ftype       CDATA #IMPLIED 
   filename       CDATA #IMPLIED>
 
 <!ELEMENT equation - - (  graphic | texmath | mmlmath   )   >
@@ -291,6 +291,12 @@ filename       CDATA #IMPLIED>
           sec-type  CDATA #IMPLIED>
 
 <!ELEMENT glossary  - - (label?, sectitle?, glossary?, deflist)  >
+<!ATTLIST glossary 
+          id CDATA #REQUIRED >
+
+<!ELEMENT app  - - (label?, sectitle?, (sec | p)+) >
+<!ATTLIST app 
+          id CDATA #REQUIRED >
 
 <!ELEMENT deflist  - - (sectitle?, defitem+)  >
 <!ELEMENT defitem  - - (term, def+)  >

@@ -858,6 +858,7 @@ fngrp;#TRUE#;#TRUE#
 glossary;#TRUE#;#FALSE#
 hist;#TRUE#;#FALSE#
 iso690;#FALSE#;#FALSE#
+*kwdgrp;#FALSE#;#TRUE#
 kwdgrp;#FALSE#;#TRUE#
 normaff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
@@ -869,6 +870,8 @@ toctitle;#FALSE#;#FALSE#
 vancouv;#FALSE#;#FALSE#
 xmlabstr;#FALSE#;#TRUE#
 xmlbody;#TRUE#;#FALSE#
+
+*kwdgrp
 
 kwdgrp
 kwd;#FALSE#;#TRUE#
@@ -950,6 +953,7 @@ refs
 ref;#FALSE#;#TRUE#
 
 ref
+text-ref;#FALSE#;#FALSE#
 authors;#TRUE#;#FALSE#
 cited;#FALSE#;#TRUE#
 city;#FALSE#;#TRUE#
@@ -981,6 +985,8 @@ suppl;#FALSE#;#TRUE#
 thesgrp;#FALSE#;#FALSE#
 url;#TRUE#;#TRUE#
 volid;#TRUE#;#TRUE#
+
+text-ref
 
 authors
 *pauthor;#FALSE#;#TRUE#
@@ -1022,7 +1028,6 @@ orgdiv2;#FALSE#;#FALSE#
 city;#FALSE#;#FALSE#
 state;#FALSE#;#FALSE#
 country;#FALSE#;#FALSE#
-zipcode;#FALSE#;#FALSE#
 email;#FALSE#;#FALSE#
 
 orgdiv1
