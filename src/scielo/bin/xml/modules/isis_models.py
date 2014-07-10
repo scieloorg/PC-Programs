@@ -119,28 +119,28 @@ class ArticleISIS(object):
         self._metadata['10'] = []
         for item in self.article.contrib_names:
             new = {}
-            new['n'] = item['given-names']
-            new['s'] = item['surname']
-            new['z'] = item['suffix']
-            new['p'] = item['prefix']
-            new['r'] = normalize_role(item['contrib-type'])
-            new['1'] = item['xref']
-            new['k'] = item['contrib-id']
+            new['n'] = item.fname
+            new['s'] = item.surname
+            new['z'] = item.suffix
+            new['p'] = item.prefix
+            new['r'] = normalize_role(item.role)
+            new['1'] = ' '.join(item.xref)
+            new['k'] = item.contrib_id
             self._metadata['10'].append(new)
 
-        self._metadata['11'] = self.article.contrib_collabs
+        self._metadata['11'] = [c.collab for c in self.article.contrib_collabs]
         self._metadata['12'] = []
         for item in self.article.titles:
             new = {}
-            new['_'] = item['article-title']
-            new['s'] = item['subtitle']
-            new['l'] = item['language']
+            new['_'] = item.title
+            new['s'] = item.subtitle
+            new['l'] = item.language
             self._metadata['12'].append(new)
         for item in self.article.trans_titles:
             new = {}
-            new['_'] = item['trans-title']
-            new['s'] = item['trans-subtitle']
-            new['l'] = item['language']
+            new['_'] = item.title
+            new['s'] = item.subtitle
+            new['l'] = item.language
             self._metadata['12'].append(new)
 
         self._metadata['601'] = self.article.trans_languages
@@ -177,16 +177,17 @@ class ArticleISIS(object):
         self._metadata['70'] = []
         for item in self.article.affiliations:
             a = {}
-            a['l'] = item['label']
-            a['i'] = item['id']
-            a['p'] = item['country']
-            a['e'] = item['email']
-            a['c'] = item['city']
-            a['s'] = item['state']
-            a['3'] = item['orgdiv3']
-            a['2'] = item['orgdiv2']
-            a['1'] = item['orgdiv1']
-            a['_'] = item['orgname']
+            a['l'] = item.label
+            a['i'] = item.id
+            a['p'] = item.country
+            a['e'] = item.email
+            a['c'] = item.city
+            a['s'] = item.state
+            a['4'] = item.norgname
+            a['3'] = item.orgdiv3
+            a['2'] = item.orgdiv2
+            a['1'] = item.orgdiv1
+            a['_'] = item.orgname
             #a['9'] = item['original']
             #self._metadata['170'].append(item['xml'])
             self._metadata['70'].append(a)
@@ -198,7 +199,7 @@ class ArticleISIS(object):
 
         self._metadata['83'] = []
         for item in self.article.abstracts:
-            self._metadata['83'].append({'l': item['language'], '_': item['text']})
+            self._metadata['83'].append({'l': item.language, '_': item.text})
 
         _h = self.article.history
         self._metadata['111'] = format_dateiso(_h.get('received'))
@@ -226,17 +227,18 @@ class ArticleISIS(object):
             rec_c['11'] = []
             rec_c['16'] = []
             rec_c['17'] = []
-            for person_group_id, person_group in item.person_groups.items():
+            for person_group in item.person_groups.items():
                 for person in person_group:
-                    field = self.author_tag(person_group_id, 'given-names' in person, item.article_title or item.chapter_title)
-                    if 'collab' in person:
-                        a = person['collab']
-                    else:
+                    field = self.author_tag(person.role, not isinstance(person, str), item.article_title or item.chapter_title)
+                    if isinstance(person, PersonAuthor):
                         a = {}
-                        a['n'] = person['given-names']
-                        a['s'] = person['surname']
-                        a['z'] = person['suffix']
-                        a['r'] = normalize_role(self.author_role(person_group_id))
+                        a['n'] = person.fname
+                        a['s'] = person.surname
+                        a['z'] = person.suffix
+                        a['r'] = normalize_role(self.author_role(person.role))
+                    else:
+                        # collab
+                        a = person.collab
                     rec_c[field].append(a)
             rec_c['31'] = item.volume
             rec_c['32'] = {}

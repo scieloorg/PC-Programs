@@ -1,6 +1,8 @@
 
 
 import modules.utils as utils
+import modules.xml_utils
+import modules.article
 
 
 class TOCValidation(object):
@@ -93,15 +95,127 @@ class Sheet(object):
         for row in self.table_data:
             r += '<tr>'
             for label in self.table_header:
-                r += '<td>|' + row.get(label, '') + '|</td>'
+                r += '<td>|' + self.format(row.get(label)) + '|</td>'
             r += '</tr>'
         r += '</table>'
 
+    def format(self, value):
+        r = ''
+        if value is None:
+            r = ''
+        elif isinstance(value, str):
+            r = value
+        elif isinstance(value, dict):
+            r += '<ul>'
+            for k, v in value:
+                r += '<li>' + k + ': ' + v + ';</li>'
+            r += '</ul>'
+        else:
+            r = ''
+        return r
 
-class ArticleSheets(object):
+
+class ArticleData(object):
 
     def __init__(self, article):
         self.article = article
 
     def authors(self):
-        
+        r = []
+        t_header = ['location', 'collab', 'given-names', 'surname', 'suffix', 'prefix', ]
+        for a in self.article.contrib_names:
+            row = {}
+            row['location'] = ' '.join(a.xref)
+            row['given-names'] = a.fname
+            row['surname'] = a.surname
+            row['suffix'] = a.suffix
+            row['prefix'] = a.prefix
+            r.append(row)
+
+        for a in self.article.contrib_collabs:
+            row = {}
+            row['location'] = ''
+            row['collab'] = a.collab
+            r.append(row)
+
+        for ref in self.article.references:
+            for grp in ref.person_groups:
+                for item in grp:
+                    row = {}
+                    row['location'] = ref.id
+                    if isinstance(item, modules.article.PersonAuthor):
+                        row['given-names'] = a.fname
+                        row['surname'] = a.surname
+                        row['suffix'] = a.suffix
+                        row['prefix'] = a.prefix
+                    else:
+                        row['collab'] = a.collab
+                    r.append(row)
+        return (t_header, r)
+
+    def source(self):
+        r = []
+        t_header = ['ID', 'type', 'year', 'source', 'publisher name', 'location', ]
+        for ref in self.article.references:
+            row = {}
+            row['ID'] = ref.id
+            row['type'] = ref.publication_type
+            row['year'] = ref.year
+            row['source'] = ref.source
+            row['publisher name'] = ref.publisher_name
+            row['location'] = ref.publisher_loc
+            r.append(row)
+        return (t_header, r)
+
+    def ids(self):
+        def _ids(node, escope):
+            res = []
+            for n in node.findall('.//*[@id]'):
+                r = {}
+                r['escope'] = escope
+                r['element'] = n.tag
+                r['ID'] = n.attrib.get('id')
+                res.append(r)
+            return res
+
+        r = []
+        t_header = ['escope', 'ID', 'element']
+        r += _ids(self.article_meta, 'article')
+        r += _ids(self.body, 'article')
+        r += _ids(self.back, 'article')
+
+        for item in self.subarticles:
+            r += _ids(item, 'sub-article ' + item.find('.').attrib.get('id'))
+        for item in self.responses:
+            r += _ids(item, 'response ' + item.find('.').attrib.get('id'))
+
+        return (t_header, r)
+
+    def tables(self):
+        t_header = ['ID', 'label', 'caption', 'table', ]
+        r = []
+        for t in self.article.tree.findall('.//*[table]'):
+            row = {}
+            row['ID'] = t.attrib.get('id')
+            row['label'] = t.findtext('.//label')
+            row['caption'] = t.findtext('.//caption')
+            row['table'] = modules.xml_utils.node_text(t.find('./table')) + modules.xml_utils.node_text(t.find('./graphic'))
+            r.append(row)
+        return (t_header, r)
+
+    def hrefs(self):
+        t_header = ['ID', 'Parent', 'Element', 'href', 'label', 'caption', ]
+        r = []
+        for parent in self.root.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
+            for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
+                row = {}
+                row['Parent'] = parent.tag
+                row['Parent ID'] = parent.attrib.get('id', '')
+                row['label'] = parent.findtext('label')
+                row['caption'] = parent.findtext('caption')
+                row['Element'] = elem.tag
+                row['href'] = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
+                r.append(row)
+        return (t_header, r)
+
+    

@@ -6,6 +6,58 @@ from modules.utils import doi_pid
 from modules.xml_utils import node_text
 
 
+class PersonAuthor(object):
+
+    def __init__(self):
+        self.fname = ''
+        self.surname = ''
+        self.suffix = ''
+        self.prefix = ''
+        self.contrib_id = ''
+        self.role = ''
+        self.xref = []
+
+
+class CorpAuthor(object):
+
+    def __init__(self):
+        self.role = ''
+        self.collab = ''
+
+
+class Affiliation(object):
+
+    def __init__(self):
+        self.xml = ''
+        self.id = ''
+        self.city = ''
+        self.state = ''
+        self.country = ''
+        self.orgname = ''
+        self.norgname = ''
+        self.orgdiv1 = ''
+        self.orgdiv2 = ''
+        self.orgdiv3 = ''
+        self.label = ''
+        self.email = ''
+        self.original = ''
+
+
+class Title(object):
+
+    def __init__(self):
+        self.title = ''
+        self.subtitle = ''
+        self.language = ''
+
+
+class Text(object):
+
+    def __init__(self):
+        self.text = ''
+        self.language = ''
+
+
 class ArticleXML(object):
 
     def __init__(self, tree):
@@ -64,8 +116,7 @@ class ArticleXML(object):
         @id k
         @xlink:href i
         @ext-link-type n
-        . t article  
-
+        . t article
         .//article-meta/related-article[@related-article-type='press-release' and @specific-use='processing-only'] 241
         @id k
         . t pr  
@@ -122,66 +173,57 @@ class ArticleXML(object):
     def contrib_names(self):
         k = []
         for contrib in self.article_meta.findall('.//contrib'):
-            item = {}
             if contrib.findall('name'):
-                item['given-names'] = contrib.findtext('name/given-names')
-                item['surname'] = contrib.findtext('name/surname')
-                item['suffix'] = contrib.findtext('name/suffix')
-                item['prefix'] = contrib.findtext('name/prefix')
-                item['contrib-id'] = contrib.findtext('contrib-id[@contrib-id-type="orcid"]')
-                item['contrib-type'] = contrib.attrib.get('contrib-type')
-                item['xref'] = []
+                p = PersonAuthor()
+                p.fname = contrib.findtext('name/given-names')
+                p.surname = contrib.findtext('name/surname')
+                p.suffix = contrib.findtext('name/suffix')
+                p.prefix = contrib.findtext('name/prefix')
+                p.contrib_id = contrib.findtext('contrib-id[@contrib-id-type="orcid"]')
+                p.role = contrib.attrib.get('contrib-type')
                 for xref_item in contrib.findall('xref[@ref-type="aff"]'):
-                    item['xref'].append(xref_item.attrib.get('rid'))
-                item['xref'] = ' '.join(item['xref'])
-                k.append(item)
+                    p.xref.append(xref_item.attrib.get('rid'))
+                k.append(p)
         return k
 
     @property
     def contrib_collabs(self):
         k = []
+        collab = CorpAuthor()
         for contrib in self.article_meta.findall('.//contrib/collab'):
-            k.append(contrib.text)
+            collab.collab = contrib.text
+
         return k
 
     @property
     def title(self):
         k = []
         for node in self.article_meta.findall('.//title-group'):
-            item = {}
-            item['article-title'] = node_text(node.find('article-title'))
-            item['subtitle'] = node_text(node.find('subtitle'))
-            item['language'] = self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-
-            if item['article-title'] is not None:
-                item['language'] = node.find('article-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-
-            k.append(item)
+            t = Title()
+            t.title = node_text(node.find('article-title'))
+            t.subtitle = node_text(node.find('subtitle'))
+            t.language = self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+            k.append(t)
         return k
 
     @property
     def trans_titles(self):
         k = []
         for node in self.article_meta.findall('.//trans-title-group'):
-            item = {}
-            item['trans-title'] = node_text(node.find('trans-title'))
-            item['trans-subtitle'] = node_text(node.find('trans-subtitle'))
-            item['language'] = self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-            if item['trans-title'] is not None:
-                item['language'] = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-
-            k.append(item)
+            t = Title()
+            t.title = node_text(node.find('trans-title'))
+            t.subtitle = node_text(node.find('trans-subtitle'))
+            t.language = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+            k.append(t)
 
         for subart in self.subarticles:
             if subart.attrib.get('article-type') == 'translation':
                 for node in subart.findall('.//title-group'):
-                    item = {}
-                    item['trans-title'] = node_text(node.find('article-title'))
-                    item['trans-subtitle'] = node_text(node.find('subtitle'))
-                    item['language'] = subart.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-                    if item['trans-title'] is not None:
-                        item['language'] = node.find('article-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-                    k.append(item)
+                    t = Title()
+                    t.title = node_text(node.find('article-title'))
+                    t.subtitle = node_text(node.find('subtitle'))
+                    t.language = subart.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                    k.append(t)
         return k
 
     @property
@@ -283,24 +325,21 @@ class ArticleXML(object):
     def affiliations(self):
         affs = []
         for aff in self.article_meta.findall('.//aff'):
-            a = {}
-            a['xml'] = node_text(aff, False)
-            a['id'] = aff.get('id')
+            a = Affiliation()
 
-            for tag in ['city', 'state', 'orgname', 'orgdiv1', 'orgdiv2', 'orgdiv3']:
-                a[tag] = None
+            a.xml = node_text(aff, False)
+            a.id = aff.get('id')
+            a.label = aff.findtext('label')
+            a.country = aff.findtext('country')
+            a.email = aff.findtext('email')
+            a.original = aff.findtext('institution[@content-type="original"]')
+            a.orgname = aff.findtext('institution[@content-type="orgname"]')
+            a.orgdiv1 = aff.findtext('institution[@content-type="orgdiv1"]')
+            a.orgdiv2 = aff.findtext('institution[@content-type="orgdiv2"]')
+            a.orgdiv3 = aff.findtext('institution[@content-type="orgdiv3"]')
+            a.city = aff.findtext('addr-line/named-content[@content-type="city"]')
+            a.state = aff.findtext('addr-line/named-content[@content-type="state"]')
 
-            for tag in ['label', 'country', 'email']:
-                a[tag] = aff.findtext(tag)
-            for inst in aff.findall('institution'):
-                # institution[@content-type='orgdiv3']
-                tag = inst.get('content-type')
-                if tag is not None:
-                    a[tag] = node_text(inst)
-            for named_content in aff.findall('addr-line/named-content'):
-                tag = named_content.get('content-type')
-                if tag is not None:
-                    a[tag] = node_text(named_content)
             affs.append(a)
 
         return affs
@@ -326,14 +365,14 @@ class ArticleXML(object):
     def abstracts(self):
         r = []
         for a in self.tree.findall('.//abstract'):
-            _abstract = {}
-            _abstract['language'] = a.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-            _abstract['text'] = node_text(a)
+            _abstract = Text()
+            _abstract.language = self.language
+            _abstract.text = node_text(a)
             r.append(_abstract)
         for a in self.tree.findall('.//trans-abstract'):
-            _abstract = {}
-            _abstract['language'] = a.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-            _abstract['text'] = node_text(a)
+            _abstract = Text()
+            _abstract.language = a.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+            _abstract.text = node_text(a)
             r.append(_abstract)
         return r
 
@@ -523,6 +562,10 @@ class ReferenceXML(object):
         return node_text(self.root.find('.//source'))
 
     @property
+    def id(self):
+        return self.root.find('.').attrib.get('id')
+
+    @property
     def language(self):
         lang = self.root.find('.//source').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//source') is not None else None
         if lang is None:
@@ -561,20 +604,24 @@ class ReferenceXML(object):
 
     @property
     def person_groups(self):
-        r = {}
-        k = 0
-        for person_group in self.root.findall('.//person-group'):
-            k += 1
-            person_group_id = person_group.attrib.get('person-group-type', 'author')
-            r[person_group_id] = []
-            for person in person_group.findall('.//name'):
-                p = {}
-                for tag in ['given-names', 'surname', 'suffix']:
-                    p[tag] = person.findtext(tag)
+        r = []
 
-                r[person_group_id].append(p)
+        for person_group in self.root.findall('.//person-group'):
+            person_group_id = person_group.attrib.get('person-group-type', 'author')
+            k = []
+            for person in person_group.findall('.//name'):
+                p = PersonAuthor()
+                p.fname = person.findtext('given-names')
+                p.surname = person.findtext('surname')
+                p.suffix = person.findtext('suffix')
+                p.role = person_group_id
+                k.append(p)
             for collab in person_group.findall('.//collab'):
-                r[person_group_id].append({'collab': node_text(collab)})
+                c = CorpAuthor()
+                c.collab = node_text(collab)
+                c.role = person_group_id
+                k.append(c)
+            r.append(k)
         return r
 
     @property
