@@ -426,8 +426,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="@language">
-		<xsl:attribute name="xml:lang"><xsl:value-of select="normalize-space(.)"/>
-		</xsl:attribute>
+		<xsl:if test="not(.='unknown')">
+			<xsl:attribute name="xml:lang"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template match="article|text|doc" mode="dtd-version">
 		<xsl:attribute name="dtd-version">3.0</xsl:attribute>
@@ -717,7 +718,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="doctitle" mode="trans-title-group">
 		<trans-title-group>
 			<xsl:apply-templates select="@language"/>
+			<trans-title>
 			<xsl:apply-templates select="*[name()!='subtitle'] |text()"></xsl:apply-templates>
+			</trans-title>
 			<xsl:apply-templates select="subtitle" mode="trans-title"/>
 		</trans-title-group>
 	</xsl:template>
@@ -1445,6 +1448,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
 			</fn-group>
 		</xsl:if>
+		<xsl:apply-templates select="glossary | app"></xsl:apply-templates>				
+		
 	</xsl:template>
 
 	<xsl:template match="*/fngrp[@fntype]">
@@ -1583,9 +1588,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="doctit">
 		<xsl:choose>
-			<xsl:when test="../@reftype='book'"><chapter-title><xsl:apply-templates/></chapter-title></xsl:when>
-			<xsl:when test="not(../source)"><source><xsl:apply-templates/></source></xsl:when>
-			<xsl:otherwise><article-title><xsl:value-of select="."/></article-title></xsl:otherwise>
+			<xsl:when test="not(../source)">
+				<source><xsl:apply-templates select=".//text()"/></source>
+			</xsl:when>
+			<xsl:when test="../@reftype='book'">
+				<chapter-title><xsl:apply-templates select=".//text()"/></chapter-title>
+			</xsl:when>
+			<xsl:otherwise><article-title><xsl:apply-templates select=".//text()"/></article-title></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="reportid">
@@ -1863,7 +1872,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<mixed-citation>
 			<xsl:choose>
 				<xsl:when test="text-ref">
-					<xsl:value-of select="text-ref" disable-output-escaping="yes"/>
+					<xsl:apply-templates select="text-ref"></xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:apply-templates select="." mode="create-text-ref"/>
