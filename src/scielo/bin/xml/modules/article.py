@@ -2,8 +2,8 @@
 
 import xml.etree.ElementTree as etree
 
-from modules.utils import doi_pid
-from modules.xml_utils import node_text
+from utils import doi_pid
+from xml_utils import node_text
 
 
 class PersonAuthor(object):
@@ -402,6 +402,21 @@ class Article(ArticleXML):
         if self.tree is not None:
             self._issue_parts()
 
+    def summary(self):
+        data = {}
+        data['journal-title'] = self.journal_title
+        data['journal_id_nlm_ta'] = self.journal_id_nlm_ta
+        data['journal_issns'] = ' '.join(self.journal_issns.values())
+        data['publisher_name'] = self.publisher_name
+        data['issue_label'] = self.issue_label
+        data['issue_pub_date'] = self.issue_pub_date
+        data['order'] = self.order
+        data['doi'] = self.doi
+        data['fpage'] = self.fpage
+        data['fpage_seq'] = self.fpage_seq
+        data['elocation_id'] = self.elocation_id
+        return data
+
     @property
     def article_titles(self):
         titles = {}
@@ -549,7 +564,7 @@ class Article(ArticleXML):
         n = 'n' + self.number if self.number is not None else None
         ns = 's' + self.number_suppl if self.number_suppl is not None else None
 
-        return ''.join([i for i in [v, vs, n, ns]] if i is not None)
+        return ''.join([i for i in [v, vs, n, ns] if i is not None])
 
 
 class ReferenceXML(object):

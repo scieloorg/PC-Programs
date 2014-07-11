@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from modules.utils import doi_pid, display_pages, format_dateiso
+from utils import doi_pid, display_pages, format_dateiso
 
 
 DOCTOPIC = {

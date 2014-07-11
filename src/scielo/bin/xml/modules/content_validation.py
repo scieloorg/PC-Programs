@@ -1,9 +1,9 @@
 # coding=utf-8
 
-from modules.isis_models import DOCTOPIC
+from isis_models import DOCTOPIC
 
-import modules.attributes as attributes
-import modules.utils as utils
+import attributes as attributes
+import utils as utils
 
 
 class ArticleContentValidation(object):

@@ -2,10 +2,11 @@
 import os
 from datetime import datetime
 
-import modules.utils as utils
-import modules.xml_utils
-import modules.article
-import modules.content_validation
+import utils
+import xml_utils
+import content_validation
+
+from article import Article
 
 
 class TOCValidation(object):
@@ -15,7 +16,7 @@ class TOCValidation(object):
 
     def report(self):
         invalid = []
-        equal_data = ['journal-title', 'journal_id_nlm_ta', 'journal_issns', 'publisher_name', 'issue_label', 'issue_date', ]
+        equal_data = ['journal-title', 'journal_id_nlm_ta', 'journal_issns', 'publisher_name', 'issue_label', 'issue_pub_date', ]
         unique_data = ['order', 'doi', 'fpage', 'fpage_seq', 'elocation_id']
 
         toc_data = {}
@@ -26,9 +27,9 @@ class TOCValidation(object):
             if article is None:
                 invalid.append(filename)
             else:
-                art_data = utils.article_data(article)
+                art_data = article.summary()
                 for label in toc_data.keys():
-                    toc_data[label] = utils.update_values(filename, toc_data[label], art_data[label])
+                    toc_data[label] = utils.update_dict(toc_data[label], art_data[label], filename)
 
         r = ''
         if len(invalid) > 0:
@@ -79,7 +80,7 @@ class DisplayData(object):
         r += self.article.journal_title
         r += self.article.journal_id_nlm_ta
         r += self.article.issue_label
-        r += self.article.issue_date
+        r += self.article.issue_pub_date
         return r
 
 
@@ -181,7 +182,7 @@ class ArticleData(object):
                 for item in grp:
                     row = {}
                     row['location'] = ref.id
-                    if isinstance(item, modules.article.PersonAuthor):
+                    if isinstance(item, article.PersonAuthor):
                         row['given-names'] = a.fname
                         row['surname'] = a.surname
                         row['suffix'] = a.suffix
@@ -241,7 +242,7 @@ class ArticleData(object):
             row['ID'] = t.attrib.get('id')
             row['label'] = t.findtext('.//label')
             row['caption'] = t.findtext('.//caption')
-            row['table'] = modules.xml_utils.node_text(t.find('./table')) + modules.xml_utils.node_text(t.find('./graphic'))
+            row['table'] = xml_utils.node_text(t.find('./table')) + xml_utils.node_text(t.find('./graphic'))
             r.append(row)
         return (t_header, r)
 
@@ -294,8 +295,8 @@ def generate_package_reports(xml_path, report_path, report_filenames):
     articles_and_filenames = []
     for xml_name in os.listdir(xml_path):
         if not 'incorrect' in xml_name and xml_name.endswith('.xml'):
-            tree = modules.xml_utils.load_xml(xml_path + '/' + xml_name)
-            article = modules.article.Article(tree)
+            tree = xml_utils.load_xml(xml_path + '/' + xml_name)
+            article = Article(tree)
             articles_and_filenames.append((xml_name, article))
 
     toc_report = TOCValidation(articles_and_filenames).report()
@@ -328,7 +329,7 @@ def generate_package_reports(xml_path, report_path, report_filenames):
         content += report.format_html(display_data.issue_header)
         content += report.format_html(display_data.article_data)
         content += toc_report
-        content += report.format_html(modules.content_validation.ArticleContentValidation(article).report())
+        content += report.format_html(content_validation.ArticleContentValidation(article).report())
 
         content += report.body_section('h1', 'Authors', report.sheet(authors_data))
         content += report.body_section('h1', 'Affiliations', report.sheet(data.affiliations()))
@@ -355,3 +356,8 @@ def generate_package_reports(xml_path, report_path, report_filenames):
     report.body = report.body_section('title', 'Sources', report.sheet(sources_sheet_data))
     f.write(report.html())
     f.close()
+
+xml_path = '/Users/robertatakenaka/Documents/vm_dados/scielo_data/serial/pab/v48n7/markup_xml/scielo_package'
+report_path = '/Users/robertatakenaka/Documents/_xpm_reports_'
+report_filenames = {v:v.replace('.xml', '') for v in os.listdir(xml_path) if v.endswith('.xml') and not 'incorre' in v }
+generate_package_reports(xml_path, report_path, report_filenames)

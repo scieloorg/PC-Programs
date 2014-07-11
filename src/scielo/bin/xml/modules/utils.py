@@ -134,24 +134,10 @@ def expected_values(label, value, expected):
     return display_value(label, value) if value in expected else 'ERROR: ' + value + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected)
 
 
-def update_values(filename, values, value):
-    if not value in values.keys():
-        values[value] = []
-    values[value].append(filename)
-    return values
-
-
-def article_data(article):
-    data = {}
-    data['journal-title'] = article.journal_title
-    data['journal_id_nlm_ta'] = article.journal_id_nlm_ta
-    data['journal_issns'] = article.journal_issns
-    data['publisher_name'] = article.publisher_name
-    data['issue_label'] = article.issue_label
-    data['issue_date'] = article.issue_date
-    data['order'] = article.order
-    data['doi'] = article.doi
-    data['fpage'] = article.fpage
-    data['fpage_seq'] = article.fpage_seq
-    data['elocation_id'] = article.elocation_id
-    return data
+def update_dict(dict_key_and_values, key, value):
+    print(key)
+    if key is not None:
+        if not key in dict_key_and_values.keys():
+            dict_key_and_values[key] = []
+        dict_key_and_values[key].append(value)
+    return dict_key_and_values
