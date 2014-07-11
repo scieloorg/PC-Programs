@@ -10,8 +10,8 @@ import modules.content_validation
 
 class TOCValidation(object):
 
-    def __init__(self, articles):
-        self.articles = articles
+    def __init__(self, filename_and_article_list):
+        self.articles = filename_and_article_list
 
     def report(self):
         invalid = []
@@ -22,7 +22,7 @@ class TOCValidation(object):
         for label in equal_data + unique_data:
             toc_data[label] = {}
 
-        for filename, article in self.articles.items():
+        for filename, article in self.articles:
             if article is None:
                 invalid.append(filename)
             else:
@@ -86,15 +86,27 @@ class DisplayData(object):
 class HTMLReport(object):
 
     def __init__(self):
-        pass
+        self.title = ''
+        self.body = ''
 
-    def html(self, css_content, content):
-        return '<html>' + self.header(css_content) + '<body>' + content + '</body>' + '</html>'
+    def html(self):
+        s = ''
+        s += '<html>'
+        s += '<head>'
+        s += '<meta charset="utf-8"/><title>' + self.title + '</title>'
+        s += self.styles()
+        s += '</head>'
+        s += '<body>'
+        s += self.body
+        s += '</body>'
+        s += '</html>'
 
-    def header(self, css_content):
-        return '<head></head>'
+        return s
 
-    def report(self, style, title, content):
+    def styles(self):
+        return '<style>' + open('./report.css', 'r').read() + '</style>'
+
+    def body_section(self, style, title, content):
         return '<' + style + '>' + title + '</' + style + '>' + content
 
     def sheet(self, table_header, table_data, filename=None):
@@ -143,11 +155,14 @@ class ArticleData(object):
     def __init__(self, article):
         self.article = article
 
-    def authors(self):
+    def authors(self, filename=None):
         r = []
         t_header = ['location', 'collab', 'given-names', 'surname', 'suffix', 'prefix', ]
+        if not filename is None:
+            t_header = ['filename'] + t_header
         for a in self.article.contrib_names:
             row = {}
+            row['filename'] = filename
             row['location'] = ' '.join(a.xref)
             row['given-names'] = a.fname
             row['surname'] = a.surname
@@ -176,12 +191,16 @@ class ArticleData(object):
                     r.append(row)
         return (t_header, r)
 
-    def sources(self):
+    def sources(self, filename=None):
         r = []
         t_header = ['ID', 'type', 'year', 'source', 'publisher name', 'location', ]
+        if not filename is None:
+            t_header = ['filename'] + t_header
+
         for ref in self.article.references:
             row = {}
             row['ID'] = ref.id
+            row['filename'] = filename
             row['type'] = ref.publication_type
             row['year'] = ref.year
             row['source'] = ref.source
@@ -269,26 +288,70 @@ class ArticleData(object):
         return (t_header, r)
 
 
-def generate_package_reports(xml_path, report_path, report_names):
+def generate_package_reports(xml_path, report_path, report_filenames):
     report = HTMLReport()
 
+    articles_and_filenames = []
     for xml_name in os.listdir(xml_path):
-        tree = modules.xml_utils.load_xml(xml_path + '/' + xml_name)
-        article = modules.article.Article(tree)
-        report_name = report_names[xml_name] + '.contents.html'
+        if not 'incorrect' in xml_name and xml_name.endswith('.xml'):
+            tree = modules.xml_utils.load_xml(xml_path + '/' + xml_name)
+            article = modules.article.Article(tree)
+            articles_and_filenames.append((xml_name, article))
+
+    toc_report = TOCValidation(articles_and_filenames).report()
+    toc_report = report.report('h1', 'TOC Report', toc_report)
+    toc_report = report.format_html(toc_report)
+
+    authors_sheet_data = ''
+    sources_sheet_data = ''
+
+    f = open(report_path + '/toc.html', 'w')
+    report.title = 'TOC Validation'
+    report.body = toc_report
+    f.write(report.html())
+    f.close()
+
+    for xml_name, article in articles_and_filenames:
+
+        report_name = report_filenames[xml_name] + '.contents.html'
 
         data = ArticleData(article)
         display_data = DisplayData(article)
 
+        authors_data = data.authors(xml_name)
+        sources_data = data.sources(xml_name)
+
+        authors_sheet_data += authors_data
+        sources_sheet_data += sources_data
+
         content = ''
         content += report.format_html(display_data.issue_header)
         content += report.format_html(display_data.article_data)
+        content += toc_report
         content += report.format_html(modules.content_validation.ArticleContentValidation(article).report())
-        content += report.report('h1', 'Authors', report.sheet(data.authors(), xml_name))
-        content += report.report('h1', 'Affiliations', report.sheet(data.affiliations(), xml_name))
-        content += report.report('h1', 'Sources', report.sheet(data.sources(), xml_name))
-        content += report.report('h1', 'IDs', report.sheet(data.ids(), xml_name))
-        content += report.report('h1', 'href', report.sheet(data.hrefs(), xml_name))
-        content += report.report('h1', 'Tables', report.sheet(data.tables(), xml_name))
 
-        r = report.report('title', xml_name, '<p>' + report.report_date() + '</p>' + content)
+        content += report.body_section('h1', 'Authors', report.sheet(authors_data))
+        content += report.body_section('h1', 'Affiliations', report.sheet(data.affiliations()))
+        content += report.body_section('h1', 'IDs', report.sheet(data.ids()))
+        content += report.body_section('h1', 'href', report.sheet(data.hrefs()))
+        content += report.body_section('h1', 'Tables', report.sheet(data.tables()))
+        content += report.body_section('h1', 'Sources', report.sheet(sources_data))
+
+        report.title = xml_name + ' - ' + report.report_date()
+        report.body = report.body_section('title', report.title, content)
+
+        f = open(report_path + '/' + report_name, 'w')
+        f.write(report.html())
+        f.close()
+
+    f = open(report_path + '/authors.html', 'w')
+    report.title = 'Authors'
+    report.body = report.body_section('title', 'Authors', report.sheet(authors_sheet_data))
+    f.write(report.html())
+    f.close()
+
+    f = open(report_path + '/sources.html', 'w')
+    report.title = 'Sources'
+    report.body = report.body_section('title', 'Sources', report.sheet(sources_sheet_data))
+    f.write(report.html())
+    f.close()
