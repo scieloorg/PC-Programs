@@ -201,9 +201,8 @@ class ArticleISIS(object):
         for item in self.article.abstracts:
             self._metadata['83'].append({'l': item.language, '_': item.text})
 
-        _h = self.article.history
-        self._metadata['111'] = format_dateiso(_h.get('received'))
-        self._metadata['113'] = format_dateiso(_h.get('accepted'))
+        self._metadata['111'] = format_dateiso(self.article.received)
+        self._metadata['113'] = format_dateiso(self.article.accepted)
 
     @property
     def references(self):

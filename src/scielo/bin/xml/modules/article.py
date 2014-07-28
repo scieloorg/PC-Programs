@@ -2,7 +2,7 @@
 
 import xml.etree.ElementTree as etree
 
-from utils import doi_pid
+from utils import doi_pid, format_date
 from xml_utils import node_text
 
 
@@ -131,7 +131,7 @@ class ArticleXML(object):
 
     @property
     def journal_title(self):
-        return self.journal_meta.findtext('journal-title')
+        return self.journal_meta.findtext('.//journal-title')
 
     @property
     def abbrev_journal_title(self):
@@ -333,6 +333,7 @@ class ArticleXML(object):
             a.country = aff.findtext('country')
             a.email = aff.findtext('email')
             a.original = aff.findtext('institution[@content-type="original"]')
+            a.norgname = aff.findtext('institution[@content-type="normalized"]')
             a.orgname = aff.findtext('institution[@content-type="orgname"]')
             a.orgdiv1 = aff.findtext('institution[@content-type="orgdiv1"]')
             a.orgdiv2 = aff.findtext('institution[@content-type="orgdiv2"]')
@@ -377,13 +378,23 @@ class ArticleXML(object):
         return r
 
     @property
-    def history(self):
-        _hist = {}
-        for item in self.article_meta.findall('.//date'):
-            _id = item.attrib.get('date-type')
-            _hist[_id] = {}
+    def received(self):
+        item = self.article_meta.find('.//date[@date-type="received"]')
+        _hist = None
+        if item is not None:
+            _hist = {}
             for tag in ['year', 'month', 'day', 'season']:
-                _hist[_id][tag] = item.findtext(tag)
+                _hist[tag] = item.findtext(tag)
+        return _hist
+
+    @property
+    def accepted(self):
+        item = self.article_meta.find('.//date[@date-type="accepted"]')
+        _hist = None
+        if item is not None:
+            _hist = {}
+            for tag in ['year', 'month', 'day', 'season']:
+                _hist[tag] = item.findtext(tag)
         return _hist
 
     @property
@@ -405,25 +416,25 @@ class Article(ArticleXML):
     def summary(self):
         data = {}
         data['journal-title'] = self.journal_title
-        data['journal_id_nlm_ta'] = self.journal_id_nlm_ta
-        data['journal_issns'] = ' '.join(self.journal_issns.values())
-        data['publisher_name'] = self.publisher_name
-        data['issue_label'] = self.issue_label
-        data['issue_pub_date'] = self.issue_pub_date
+        data['journal id NLM'] = self.journal_id_nlm_ta
+        data['journal ISSN'] = ' '.join(self.journal_issns.values())
+        data['publisher name'] = self.publisher_name
+        data['issue label'] = self.issue_label
+        data['issue pub date'] = format_date(self.issue_pub_date)
         data['order'] = self.order
         data['doi'] = self.doi
         data['fpage'] = self.fpage
-        data['fpage_seq'] = self.fpage_seq
-        data['elocation_id'] = self.elocation_id
+        data['fpage seq'] = self.fpage_seq
+        data['elocation id'] = self.elocation_id
         return data
 
     @property
     def article_titles(self):
         titles = {}
         for title in self.title:
-            titles[title['language']] = title['article-title']
+            titles[title.language] = title.title
         for title in self.trans_titles:
-            titles[title['language']] = title['trans-title']
+            titles[title.language] = title.title
         return titles
 
     def _issue_parts(self):

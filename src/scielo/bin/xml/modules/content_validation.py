@@ -27,7 +27,8 @@ class ArticleContentValidation(object):
         r += self.fpage
         r += self.article_type
         r += self.language
-
+        r += self.titles
+        r += self.trans_titles
         r += self.contrib_names
         r += self.contrib_collabs
 
@@ -41,6 +42,7 @@ class ArticleContentValidation(object):
         # body sections
         # history
         # authors
+        return r
 
     @property
     def dtd_version(self):
@@ -114,7 +116,22 @@ class ArticleContentValidation(object):
 
     @property
     def contrib_names(self):
-        return utils.display_values_with_attributes('contrib_names', self.article.contrib_names)
+        r = ''
+        r += 'authors: '
+        for item in self.article.contrib_names:
+            if item.prefix is not None:
+                r += '(' + item.prefix + ') '
+            r += item.surname + ', ' + item.fname
+            if item.suffix is not None:
+                r += ' ' + item.suffix
+            if item.role is not None:
+                r += '(role:' + item.role + ') '
+            if item.xref:
+                r += '(xref:' + ' '.join(item.xref) + ') '
+            if item.contrib_id is not None:
+                r += ' [orcid:' + item.contrib_id + '] '
+            r += '; '
+        return r
 
     @property
     def contrib_collabs(self):
@@ -122,11 +139,17 @@ class ArticleContentValidation(object):
 
     @property
     def titles(self):
-        return utils.display_values_with_attributes('titles', self.article.titles)
+        r = ''
+        for item in self.article.title:
+            r += item.language + ': ' + item.title
+        return r
 
     @property
     def trans_titles(self):
-        return utils.display_values_with_attributes('trans_titles', self.article.trans_titles)
+        r = ''
+        for item in self.article.trans_titles:
+            r += utils.display_value(item.language, item.title)
+        return r
 
     @property
     def trans_languages(self):
@@ -142,9 +165,9 @@ class ArticleContentValidation(object):
 
     @property
     def order(self):
-        if self.order is not None:
-            if self.order.isdigit():
-                if len(self.order) != 5:
+        if self.article.order is not None:
+            if self.article.order.isdigit():
+                if len(self.article.order) != 5:
                     return 'ERROR: Invalid format of order. Expected 99999.'
                 else:
                     return 'order: ' + self.article.order
@@ -237,7 +260,22 @@ class ArticleContentValidation(object):
 
     @property
     def affiliations(self):
-        return utils.display_values_with_attributes('affiliations', self.article.affiliations)
+        r = ''
+        for a in self.article.affiliations:
+            r += utils.display_value('xml', a.xml)
+            r += utils.display_value('id', a.id)
+            r += utils.display_value('label', a.label)
+            r += utils.display_value('original', a.original)
+            r += utils.display_value('normalized', a.norgname)
+            r += utils.display_value('orgname', a.orgname)
+            r += utils.display_value('orgdiv1', a.orgdiv1)
+            r += utils.display_value('orgdiv2', a.orgdiv2)
+            r += utils.display_value('orgdiv3', a.orgdiv3)
+            r += utils.display_value('city', a.city)
+            r += utils.display_value('state', a.state)
+            r += utils.display_value('country', a.country)
+            r += utils.display_value('email', a.email)
+        return r
 
     @property
     def clinical_trial(self):
@@ -257,11 +295,29 @@ class ArticleContentValidation(object):
 
     @property
     def abstracts(self):
-        return utils.display_values_with_attributes('abstracts', self.article.abstracts)
+        r = ''
+        for item in self.article.abstracts:
+            r += item.language + ': ' + item.text + '\n'
+        return r
 
     @property
     def history(self):
-        return utils.display_items_with_attributes('history', self.article.history)
+        received = utils.format_dateiso(self.article.received)
+        accepted = utils.format_dateiso(self.article.accepted)
+
+        r = ''
+        if received is not None and accepted is not None:
+            if received > accepted:
+                r = 'Invalid value for received (' + received + ') and accepted (' + accepted + '). Received date must be previous than accepted date.'
+        return r
+
+    @property
+    def received(self):
+        return utils.display_attributes('received', self.article.received)
+
+    @property
+    def accepted(self):
+        return utils.display_attributes('accepted', self.article.accepted)
 
     @property
     def license(self):
