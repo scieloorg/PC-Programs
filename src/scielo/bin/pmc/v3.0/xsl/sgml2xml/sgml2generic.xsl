@@ -1412,7 +1412,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//fngrp[@fntype]" mode="notfnauthors"/>
 		</xsl:variable>
 
-		<xsl:if test="$test!='' or back/ack or back/fxmlbody or back/*[@standard] or back/bbibcom">
+		<xsl:if test="$test!='' or back/ack or back/fxmlbody or back/*[@standard]">
 			<back>
 				<xsl:apply-templates select="back"/>
 			</back>
@@ -3311,12 +3311,12 @@ et al.</copyright-statement>
 							<xsl:when test=".=..//title[1]">
 								<chapter-title><xsl:value-of select="normalize-space(.)"/></chapter-title>
 							</xsl:when>
-							<xsl:otherwise><xsl:comment>source1</xsl:comment>
+							<xsl:otherwise>
 								<source><xsl:value-of select="normalize-space(.)"/></source>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:when>
-					<xsl:otherwise><xsl:comment>source2</xsl:comment>
+					<xsl:otherwise>
 						<source><xsl:value-of select="normalize-space(.)"/></source>
 					</xsl:otherwise>
 				</xsl:choose>
