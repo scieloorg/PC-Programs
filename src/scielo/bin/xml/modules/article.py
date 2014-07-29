@@ -6,6 +6,20 @@ from utils import doi_pid, format_date
 from xml_utils import node_text
 
 
+def format_author(author):
+    r = author.surname
+    if author.suffix:
+        r += author.suffix
+    r += ', '
+    if author.prefix:
+        r += author.prefix + ' '
+    r += author.fname
+    if author.role:
+        r += '(' + author.role + ')'
+    r += '(' + ','.join(author.xref) + ')'
+    return r
+
+
 class PersonAuthor(object):
 
     def __init__(self):
@@ -192,7 +206,7 @@ class ArticleXML(object):
         collab = CorpAuthor()
         for contrib in self.article_meta.findall('.//contrib/collab'):
             collab.collab = contrib.text
-
+            k.append(collab)
         return k
 
     @property

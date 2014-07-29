@@ -5,44 +5,35 @@ from isis_models import DOCTOPIC
 import attributes as attributes
 import utils as utils
 
+import article
+
+
+def invalid_characters_in_value(label, value, invalid_characters):
+    r = True
+    for c in value:
+        if c in invalid_characters:
+            r = False
+            break
+    if not r:
+        return 'ERROR: Invalid characteres (' + ';'.join(invalid_characters) + ') in ' + label + ': ' + value
+    else:
+        return value
+
+
+def validate_author(author):
+    r = utils.required('surname', author.surname)
+    if r == author.surname:
+        author.surname = invalid_characters_in_value('surname', author.surname, [' '])
+    else:
+        author.surname = r
+    author.fname = utils.required('given-names', author.fname)
+    return author
+
 
 class ArticleContentValidation(object):
 
     def __init__(self, article):
         self.article = article
-
-    def report(self):
-        r = ''
-        r += self.journal_title
-        r += self.publisher_name
-        r += self.journal_id
-        r += self.journal_id_nlm_ta
-        r += self.journal_issns
-
-        r += self.issue_label
-
-        r += self.toc_section
-        r += self.order
-        r += self.doi
-        r += self.fpage
-        r += self.article_type
-        r += self.language
-        r += self.titles
-        r += self.trans_titles
-        r += self.contrib_names
-        r += self.contrib_collabs
-
-        r += self.affiliations
-        r += self.funding
-        r += self.license
-        r += self.history
-        r += self.abstracts
-        r += self.keywords
-        r += self.references
-        # body sections
-        # history
-        # authors
-        return r
 
     @property
     def dtd_version(self):
@@ -112,43 +103,35 @@ class ArticleContentValidation(object):
 
     @property
     def keywords(self):
-        return utils.display_values_with_attributes('keywords', self.article.keywords)
+        r = []
+        for item in self.article.keywords:
+            r.append(item['l'] + ': ' + item['k'])
+        return r
 
     @property
     def contrib_names(self):
-        r = ''
-        r += 'authors: '
+        r = []
         for item in self.article.contrib_names:
-            if item.prefix is not None:
-                r += '(' + item.prefix + ') '
-            r += item.surname + ', ' + item.fname
-            if item.suffix is not None:
-                r += ' ' + item.suffix
-            if item.role is not None:
-                r += '(role:' + item.role + ') '
-            if item.xref:
-                r += '(xref:' + ' '.join(item.xref) + ') '
-            if item.contrib_id is not None:
-                r += ' [orcid:' + item.contrib_id + '] '
-            r += '; '
+            item = validate_author(item)
+            r.append(item)
         return r
 
     @property
     def contrib_collabs(self):
-        return utils.display_values_with_attributes('contrib_collabs', self.article.contrib_collabs)
+        return self.article.contrib_collabs
 
     @property
     def titles(self):
-        r = ''
+        r = []
         for item in self.article.title:
-            r += item.language + ': ' + item.title
+            r.append(item.language + ': ' + item.title)
         return r
 
     @property
     def trans_titles(self):
-        r = ''
+        r = []
         for item in self.article.trans_titles:
-            r += utils.display_value(item.language, item.title)
+            r.append(item.language + ': ' + item.title)
         return r
 
     @property
@@ -260,21 +243,14 @@ class ArticleContentValidation(object):
 
     @property
     def affiliations(self):
-        r = ''
+        r = []
         for a in self.article.affiliations:
-            r += utils.display_value('xml', a.xml)
-            r += utils.display_value('id', a.id)
-            r += utils.display_value('label', a.label)
-            r += utils.display_value('original', a.original)
-            r += utils.display_value('normalized', a.norgname)
-            r += utils.display_value('orgname', a.orgname)
-            r += utils.display_value('orgdiv1', a.orgdiv1)
-            r += utils.display_value('orgdiv2', a.orgdiv2)
-            r += utils.display_value('orgdiv3', a.orgdiv3)
-            r += utils.display_value('city', a.city)
-            r += utils.display_value('state', a.state)
-            r += utils.display_value('country', a.country)
-            r += utils.display_value('email', a.email)
+            a.id = utils.required('id', a.id)
+            a.original = utils.required('original', a.original)
+            a.norgname = utils.required('normalized', a.norgname)
+            a.orgname = utils.required('orgname', a.orgname)
+            a.country = utils.required('country', a.country)
+            r.append(a)
         return r
 
     @property
@@ -295,9 +271,9 @@ class ArticleContentValidation(object):
 
     @property
     def abstracts(self):
-        r = ''
+        r = []
         for item in self.article.abstracts:
-            r += item.language + ': ' + item.text + '\n'
+            r.append(item.language + ': ' + item.text)
         return r
 
     @property
@@ -325,9 +301,9 @@ class ArticleContentValidation(object):
 
     @property
     def references(self):
-        r = ''
+        r = []
         for ref in self.article.references:
-            r += ReferenceContentValidation(ref).report
+            r.append(ReferenceContentValidation(ref))
         return r
 
     @property
@@ -371,15 +347,10 @@ class ReferenceContentValidation(object):
 
     def __init__(self, reference):
         self.reference = reference
-
+        
     @property
-    def report(self):
-        r = self.xml
-        r += self.publication_type
-        r += self.mixed_citation
-        r += self.source
-        r += self.year
-        return r
+    def id(self):
+        return self.reference.id
 
     @property
     def source(self):
@@ -431,7 +402,13 @@ class ReferenceContentValidation(object):
 
     @property
     def person_groups(self):
-        return utils.display_items_with_attributes('person_groups', self.reference.person_groups)
+        r = []
+        for person in self.reference.person_groups:
+            if isinstance(person, article.PersonAuthor):
+                r.append(validate_author(person))
+            else:
+                r.append(person)
+        return r
 
     @property
     def issue(self):
