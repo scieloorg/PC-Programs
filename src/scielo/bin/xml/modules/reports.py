@@ -56,7 +56,7 @@ class TOCReport(object):
                     if len(v) > 1:
                         part += self.html_page.format_list(k, 'ul', v)
                 r += self.html_page.format_div(part)
-        return r
+        return self.html_page.format_div(r, 'issue-messages')
 
 
 class ArticleDisplay(object):
@@ -78,23 +78,24 @@ class ArticleDisplay(object):
         r += self.fpage
         r += self.fpage_seq
         r += self.elocation_id
-        return r
+
+        return self.html_page.format_div(r, 'article-data')
 
     def display_p(self, label, value):
-        return self.html_page.format_p(self.html_page.display_label_value(label, value))
+        return self.html_page.format_p_label_value(label, value)
 
     def display_titles(self):
-        r = ''
+        r = self.html_page.format_label('titles:')
         for t in self.article.title:
-            r += self.display_p(t.language, t.title)
+            r += self.display_p(t.language + ': ', t.title)
         for t in self.article.trans_titles:
-            r += self.display_p(t.language, t.title)
+            r += self.display_p(t.language + ': ', t.title)
         return r
 
     def display_text(self, label, items):
         r = self.html_page.format_label(label)
         for item in items:
-            r += self.display_p(item.language, item.text)
+            r += self.display_p(item.language + ': ', item.text)
         return r
 
     @property
@@ -103,11 +104,15 @@ class ArticleDisplay(object):
 
     @property
     def contrib_names(self):
-        return self.display_p('pers authors:', '; '.join([format_author(a) for a in self.article.contrib_names]))
+        r = self.html_page.format_label('pers authors:')
+        r += '<ol>' + ''.join(['<li>' + format_author(a) + '</li>' for a in self.article.contrib_names]) + '</ul>'
+        return r
 
     @property
     def contrib_collabs(self):
-        return self.display_p('corp authors:', '; '.join([a for a in self.article.contrib_collabs]))
+        r = self.html_page.format_label('corp authors:')
+        r += '<ul>' + ''.join(['<li>' + a + '</li>' for a in self.article.contrib_collabs]) + '</ul>'
+        return r
 
     @property
     def abstracts(self):
@@ -115,7 +120,7 @@ class ArticleDisplay(object):
 
     @property
     def keywords(self):
-        return self.html_page.format_list('keywords:', 'ul', self.article.keywords)
+        return self.html_page.format_p(self.html_page.format_list('keywords:', 'ol', ['(' + k['l'] + ') ' + k['k'] for k in self.article.keywords]))
 
     @property
     def order(self):
@@ -139,7 +144,7 @@ class ArticleDisplay(object):
 
     def issue_header(self):
         r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, utils.format_date(self.article.issue_pub_date)]
-        return '\n'.join([self.display_p('', item) for item in r if item is not None])
+        return '\n'.join(['<h2>' + self.html_page.format_label(item) + '</h2>' for item in r if item is not None])
 
 
 class ArticleReport(object):
@@ -148,9 +153,18 @@ class ArticleReport(object):
         self.article_validation = article_validation
         self.html_page = html_page
 
+    def display_items(self, items):
+        r = ''
+        for item in items:
+            r += self.display_item(item)
+        return r
+
+    def display_item(self, item):
+        return self.html_page.format_message(item)
+
     def report(self):
         r = ''
-        items = [self.article_validation.journal_title, 
+        items = [self.article_validation.journal_title,
                     self.article_validation.publisher_name,
                     self.article_validation.journal_id,
                     self.article_validation.journal_id_nlm_ta,
@@ -164,12 +178,11 @@ class ArticleReport(object):
                     self.article_validation.language
                     ]
 
-        for item in items:
-            r += self.html_page.format_message(item)
+        r += self.display_items(items)
 
         r += self.titles
         r += self.contrib_names
-        r += '; '.join([a.collab for a in self.contrib_collabs])
+        r += '; '.join([a.collab for a in self.article_validation.contrib_collabs])
 
         r += self.affiliations
 
@@ -178,42 +191,55 @@ class ArticleReport(object):
                     self.article_validation.history,
                     ]
 
-        for item in items:
-            r += self.html_page.format_message(item)
+        r += self.display_items(items)
 
-        items = [self.abstracts,
-                 self.keywords]
+        items = [self.article_validation.abstracts,
+                 self.article_validation.keywords]
         for item in items:
-            r += self.report_items(item)
+            r += self.display_items(item)
 
         r += self.references
+        return self.html_page.format_div(r, 'article')
 
-    def report_items(self, items):
+    def _contrib_name(self, author):
         r = ''
-        for item in items:
-            r += self.html_page.format_message(item)
+        r += self.html_page.format_message(author.surname)
+        r += self.html_page.format_message(author.fname)
+        return r
+
+    def _contrib_names(self, authors):
+        r = ''
+        for item in authors:
+            r += self._contrib_name(item)
+        return r
+
+    def ref_person_groups(self, person_groups):
+        r = ''
+        for p in person_groups:
+            if isinstance(p, PersonAuthor):
+                r += self._contrib_name(p)
+            elif isinstance(p, CorpAuthor):
+                r += self.display_item(p.collab)
+            else:
+                print(type(p))
         return r
 
     @property
     def titles(self):
         r = ''
-        r += self.report_items(self.article_validation.titles)
-        r += self.report_items(self.article_validation.trans_titles)
+        r += self.display_items(self.article_validation.titles)
+        r += self.display_items(self.article_validation.trans_titles)
         return r
 
     @property
     def contrib_names(self):
-        r = ''
-        for item in self.article_validation.contrib_names:
-            r += self.html_page.format_message(item.surname)
-            r += self.html_page.format_message(item.fname)
-        return r
+        return self._contrib_names(self.article_validation.contrib_names)
 
     @property
     def affiliations(self):
         r = ''
         for item in self.article_validation.affiliations:
-            r += self.html_page.format_xml(item.xml)
+            r += self.html_page.format_p(self.html_page.format_xml(item.xml))
             r += self.html_page.format_message(item.original)
             r += self.html_page.format_message(item.norgname)
             r += self.html_page.format_message(item.orgname)
@@ -221,28 +247,21 @@ class ArticleReport(object):
         return r
 
     @property
-    def funding(self):
-        return self.report_item(self.article_validation.funding)
-
-    @property
-    def license(self):
-        return self.report_item(self.article_validation.license)
-
-    @property
-    def history(self):
-        return self.report_item(self.article_validation.history)
-
-    @property
-    def abstracts(self):
-        return self.report_item(self.article_validation.abstracts)
-
-    @property
-    def keywords(self):
-        return self.report_item(self.article_validation.keywords)
-
-    @property
     def references(self):
-        return self.report_item(self.article_validation.references)
+        r = ''
+        for ref in self.article_validation.references:
+            r += self.html_page.format_xml(ref.xml)
+            items = [                        
+                        ref.mixed_citation,
+                        ref.publication_type,
+                        ref.year,
+                        ref.source,
+                        ref.article_title,
+                        ref.chapter_title,
+                    ]
+            r += self.display_items(items)
+            r += self.ref_person_groups(ref.person_groups)
+        return r
 
 
 class HTMLPage(object):
@@ -259,8 +278,8 @@ class HTMLPage(object):
         s += self.styles()
         s += '</head>'
         s += '<body>'
-        s += '<p class="time">' + report_date() + '</p>'
-        s += self.body_section('h1', self.title, self.body)
+        s += '<p class="label">' + report_date() + '</p>'
+        s += self.body_section('h1', '', self.title, self.body)
         s += '</body>'
         s += '</html>'
 
@@ -269,8 +288,10 @@ class HTMLPage(object):
     def styles(self):
         return '<style>' + open('./report.css', 'r').read() + '</style>'
 
-    def body_section(self, style, title, content):
-        return '<' + style + '>' + title + '</' + style + '>' + content
+    def body_section(self, style, anchor_name, title, content, sections=[]):
+        anchor = anchor_name if anchor_name == '' else '<a name="' + anchor_name + '"/><a href="#top">^</a>'
+        sections = '<ul class="sections">' + ''.join(['<li> [<a href="#' + s + '">' + t + '</a>] </li>' for s, t, d in sections]) + '</ul>'
+        return anchor + '<' + style + '>' + title + '</' + style + '>' + sections + content
 
     def sheet(self, table_header_and_data, filename=None):
         table_header, table_data = table_header_and_data
@@ -322,8 +343,10 @@ class HTMLPage(object):
             r = ' class="' + r + '"'
         return r
 
-    def format_div(self, content):
-        return '<div>' + content + '</div>'
+    def format_div(self, content, css_class=''):
+        if css_class != '':
+            css_class = ' class="' + css_class + '"'
+        return '<div' + css_class + '>' + content + '</div>'
 
     def format_list(self, label, list_type, list_items):
         r = self.format_label(label)
@@ -353,7 +376,7 @@ class HTMLPage(object):
                 if isinstance(v, list):
                     r += '<li>' + k + ': ' + ', '.join(v) + ';</li>'
                 else:
-                    r += '<li>' + utils.display_label_value(k, v) + ';</li>'
+                    r += '<li>' + self.display_label_value(k, v) + ';</li>'
             r += '</ul>'
         if is_data:
             style = self.css_class(r)
@@ -367,6 +390,7 @@ class HTMLPage(object):
             self.title = title
         if body is not None:
             self.body = body
+
         f = open(filename, 'w')
         r = self.html()
         if isinstance(r, unicode):
@@ -378,7 +402,11 @@ class HTMLPage(object):
         return '<span class="label">' + label + '</span>'
 
     def display_label_value(self, label, value):
-        return self.format_label(label) + value + '\n' if value is not None else 'None\n'
+        r = value if value is not None else 'None'
+        return self.format_label(label) + ' ' + r
+
+    def format_p_label_value(self, label, value):
+        return self.format_p(self.display_label_value(label, value))
 
     def display_attributes(self, label, attributes):
         r = []
@@ -420,15 +448,16 @@ class HTMLPage(object):
 
 class ArticleSheetData(object):
 
-    def __init__(self, article):
+    def __init__(self, article, article_validation):
         self.article = article
+        self.article_validation = article_validation
 
     def authors(self, filename=None):
         r = []
         t_header = ['xref', 'given-names', 'surname', 'suffix', 'prefix', 'collab', ]
         if not filename is None:
             t_header = ['filename', 'scope'] + t_header
-        for a in self.article.contrib_names:
+        for a in self.article_validation.contrib_names:
             row = {}
             row['scope'] = 'article meta'
             row['filename'] = filename
@@ -439,14 +468,14 @@ class ArticleSheetData(object):
             row['prefix'] = a.prefix
             r.append(row)
 
-        for a in self.article.contrib_collabs:
+        for a in self.article_validation.contrib_collabs:
             row = {}
             row['scope'] = 'article meta'
             row['filename'] = filename
             row['collab'] = a.collab
             r.append(row)
 
-        for ref in self.article.references:
+        for ref in self.article_validation.references:
             for grp in ref.person_groups:
                 for item in grp:
                     row = {}
@@ -470,7 +499,7 @@ class ArticleSheetData(object):
         if not filename is None:
             t_header = ['filename', 'scope'] + t_header
 
-        for ref in self.article.references:
+        for ref in self.article_validation.references:
             row = {}
             row['scope'] = ref.id
             row['ID'] = ref.id
@@ -551,7 +580,7 @@ class ArticleSheetData(object):
     def affiliations(self):
         t_header = ['ID', 'data']
         r = []
-        for a in self.article.affiliations:
+        for a in self.article_validation.affiliations:
             row = {}
             row['ID'] = a.id
             data = {}
@@ -569,6 +598,16 @@ class ArticleSheetData(object):
             row['data'] = data
             r.append(row)
         return (t_header, r)
+
+
+def statistics(content, word):
+    return len(content.split(word)) - 1
+
+
+def statistics_messages(e, f, w):
+    s = [('Total of errors:', e), ('Total of fatal errors:', f), ('Total of fatal warnings:', w)]
+    s = ''.join([HTMLPage().format_p_label_value(l, v) for l, v in s])
+    return HTMLPage().format_div(s, 'statistics')
 
 
 def generate_package_reports(xml_path, report_path, report_filenames):
@@ -590,11 +629,14 @@ def generate_package_reports(xml_path, report_path, report_filenames):
     if not os.path.isdir(report_path):
         os.makedirs(report_path)
 
+    toc_e = 0
+    toc_f = 0
+    toc_w = 0
     for xml_name, article in articles_and_filenames:
 
         report_name = report_filenames[xml_name] + '.contents.html'
         article_validation = content_validation.ArticleContentValidation(article)
-        data = ArticleSheetData(article_validation)
+        data = ArticleSheetData(article, article_validation)
         display_data = ArticleDisplay(article, report)
         article_report = ArticleReport(article_validation, report)
 
@@ -613,15 +655,28 @@ def generate_package_reports(xml_path, report_path, report_filenames):
         content += toc_validation
         content += article_report.report()
 
-        content += report.body_section('h1', 'Authors', authors_data)
-        content += report.body_section('h1', 'Affiliations', report.sheet(data.affiliations()))
-        content += report.body_section('h1', 'IDs', report.sheet(data.ids()))
-        content += report.body_section('h1', 'href', report.sheet(data.hrefs()))
-        content += report.body_section('h1', 'Tables', report.sheet(data.tables()))
-        content += report.body_section('h1', 'Sources', sources_data)
+        toc_sections = []
+        toc_sections.append(('sec_affs', 'Affiliations', report.sheet(data.affiliations())))
+        toc_sections.append(('sec_hrefs', 'href', report.sheet(data.hrefs())))
+        toc_sections.append(('sec_tables', 'Tables', report.sheet(data.tables())))
+        toc_sections.append(('sec_ids', 'IDs', report.sheet(data.ids())))
+        toc_sections.append(('sec_authors', 'Authors', authors_data))
+        toc_sections.append(('sec_sources', 'Sources', sources_data))
 
-        report.title = xml_name + ' - ' + report_date()
-        report.body = report.body_section('title', report.title, content)
+        for toc_sec in toc_sections:
+            anchor, sec_title, sec_data = toc_sec
+            content += report.body_section('h2', anchor, sec_title, sec_data)
+
+        e = statistics('ERROR:')
+        f = statistics('FATAL ERROR:')
+        e = e - f
+        w = statistics('WARNING:')
+
+        toc_e += e
+        toc_f += f
+        toc_w += w
+
+        report.body = report.body_section('h1', '', report.title, statistics_messages(e, f, w) + content, toc_sections)
         report.save(report_path + '/' + report_name)
 
     report.title = 'Authors'
@@ -632,7 +687,7 @@ def generate_package_reports(xml_path, report_path, report_filenames):
     report.body = sources_sheet_data
     report.save(report_path + '/sources.html')
 
-    report.save(report_path + '/toc.html', 'TOC Report', toc_report_content)
+    report.save(report_path + '/toc.html', 'TOC Report', statistics_messages(toc_e, toc_f, toc_w) + toc_report_content)
 
 xml_path = '/Users/robertatakenaka/Documents/vm_dados/scielo_data/serial/pab/v48n7/markup_xml/scielo_package'
 report_path = '/Users/robertatakenaka/Documents/_xpm_reports_'

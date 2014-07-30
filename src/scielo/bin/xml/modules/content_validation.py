@@ -131,6 +131,10 @@ class ArticleContentValidation(object):
     def trans_titles(self):
         r = []
         for item in self.article.trans_titles:
+            if item.language is None:
+                item.language = 'None'
+            if item.title is None:
+                item.title = 'None'
             r.append(item.language + ': ' + item.title)
         return r
 
@@ -347,7 +351,7 @@ class ReferenceContentValidation(object):
 
     def __init__(self, reference):
         self.reference = reference
-        
+
     @property
     def id(self):
         return self.reference.id
@@ -360,7 +364,6 @@ class ReferenceContentValidation(object):
     def language(self):
         return utils.display_value('language', self.reference.language)
 
-    @property
     def data_related_to_publication_type(self, label, value, status):
         status = attributes.article_title_status()
         if self.reference.publication_type in status['required']:
@@ -406,7 +409,7 @@ class ReferenceContentValidation(object):
         for person in self.reference.person_groups:
             if isinstance(person, article.PersonAuthor):
                 r.append(validate_author(person))
-            else:
+            elif isinstance(person, article.CorpAuthor):
                 r.append(person)
         return r
 
