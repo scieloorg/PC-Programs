@@ -366,7 +366,7 @@ class ArticleXML(object):
 
     @property
     def fn_financial_disclosure(self):
-        return node_text(self.tree.find('.//fn[@fn-type="financial-disclosure"]'))
+        return node_text(self.tree.find('.//fn[@fn-type="financial-disclosure"]'), False)
 
     @property
     def fpage(self):

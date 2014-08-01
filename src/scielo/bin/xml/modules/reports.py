@@ -421,12 +421,14 @@ class HTMLPage(object):
         elif isinstance(value, str):
             r = value
         elif isinstance(value, dict):
+            r = ''
             r += '<ul>'
             for k, v in value.items():
-                if isinstance(v, list):
-                    r += '<li>' + k + ': ' + ', '.join(v) + ';</li>'
-                else:
-                    r += '<li>' + self.display_label_value(k, v) + ';</li>'
+                if k != 'ordered':
+                    if isinstance(v, list):
+                        r += '<li>' + k + ': ' + ', '.join(v) + ';</li>'
+                    else:
+                        r += '<li>' + self.display_label_value(k, v) + ';</li>'
             r += '</ul>'
         if is_data:
             r = '<span' + self.message_css_class(r) + '>' + r + '</span>'
@@ -482,7 +484,6 @@ class HTMLPage(object):
         return display_label_value(label, value) if value in expected else 'ERROR: ' + value + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected)
 
     def add_new_value_to_index(self, dict_key_and_values, key, value):
-        print(key)
         if key is not None:
             if not key in dict_key_and_values.keys():
                 dict_key_and_values[key] = []
@@ -495,6 +496,7 @@ class ArticleSheetData(object):
     def __init__(self, article, article_validation):
         self.article = article
         self.article_validation = article_validation
+        self.html_page = HTMLPage()
 
     def authors(self, filename=None):
         r = []
@@ -594,13 +596,14 @@ class ArticleSheetData(object):
             row['label'] = t.findtext('.//label')
             row['caption'] = t.findtext('.//caption')
 
-            table = xml_utils.node_text(t.find('./table'))
+            table = self.html_page.format_xml(xml_utils.node_text(t.find('./table'), False))
             if table is None:
                 table = ''
 
-            graphic = xml_utils.node_text(t.find('./graphic'))
+            graphic = xml_utils.node_text(t.find('./graphic'), False)
             if graphic is None:
                 graphic = ''
+
             row['table'] = table + graphic
             r.append(row)
         return (t_header, r)
@@ -708,9 +711,9 @@ def generate_package_reports(xml_path, report_path, report_filenames):
 
         toc_sections = []
         #toc_sections.append(('sec_affs', 'Affiliations', report.sheet(data.affiliations())))
-        #toc_sections.append(('sec_hrefs', 'href', report.sheet(data.hrefs())))
-        #toc_sections.append(('sec_tables', 'Tables', report.sheet(data.tables())))
-        #toc_sections.append(('sec_ids', 'IDs', report.sheet(data.ids())))
+        toc_sections.append(('sec_hrefs', 'href', report.sheet(data.hrefs())))
+        toc_sections.append(('sec_tables', 'Tables', report.sheet(data.tables())))
+        toc_sections.append(('sec_ids', 'IDs', report.sheet(data.ids())))
         #toc_sections.append(('sec_authors', 'Authors', authors_data))
         #toc_sections.append(('sec_sources', 'Sources', sources_data))
 
