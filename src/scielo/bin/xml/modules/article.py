@@ -90,6 +90,51 @@ class ArticleXML(object):
             self.subarticles = self.tree.findall('./sub-article')
             self.responses = self.tree.findall('./response')
 
+    def sections(self, node, scope):
+        r = []
+        for sec in node.findall('./sec'):
+            r.append((scope + '/sec', sec.attrib.get('sec-type', ''), sec.findtext('title')))
+            for subsec in sec.findall('sec'):
+                r.append((scope + '/sec/sec', subsec.attrib.get('sec-type', 'None'), subsec.findtext('title')))
+                for subsubsec in subsec.findall('sec'):
+                    r.append((scope + '/sec/sec/sec', subsubsec.attrib.get('sec-type', 'None'), subsubsec.findtext('title')))
+        return r
+
+    @property
+    def article_sections(self):
+        r = []
+        r = self.sections(self.body, 'article')
+        for item in self.subarticles:
+            for sec in self.sections(item.find('.//body'), 'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]'):
+                r.append(sec)
+        return r
+
+    def fn_list(self, node, scope):
+        r = []
+        if node is not None:
+            for fn in node.findall('.//fn'):
+                r.append((scope + '//fn', fn.attrib.get('id', ''), fn.attrib.get('fn-type', ''), node_text(fn)))
+        return r
+
+    @property
+    def article_fn_list(self):
+        r = []
+        r = self.fn_list(self.back, 'article')
+        for item in self.subarticles:
+            for item in self.fn_list(item.find('.//back'), 'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]'):
+                r.append(item)
+        return r
+
+    @property
+    def xref_list(self):
+        _xref_list = {}
+        for xref in self.tree.find('.').findall('.//xref'):
+            rid = xref.attrib.get('rid')
+            if not rid in _xref_list.keys():
+                _xref_list[rid] = []
+            _xref_list[rid].append((rid, xref.attrib.get('ref-type', 'None'), xref.text))
+        return _xref_list
+
     @property
     def dtd_version(self):
         return self.tree.find('.').attrib.get('dtd-version')
@@ -320,6 +365,10 @@ class ArticleXML(object):
             return node_text(self.back.find('.//ack'), False)
 
     @property
+    def fn_financial_disclosure(self):
+        return node_text(self.tree.find('.//fn[@fn-type="financial-disclosure"]'))
+
+    @property
     def fpage(self):
         return self.article_meta.findtext('fpage')
 
@@ -365,16 +414,61 @@ class ArticleXML(object):
         return node_text(self.article_meta.find('clinical-trial'))
 
     @property
+    def page_count(self):
+        return self.article_meta.find('.//page-count').attrib.get('count') if self.article_meta.find('.//page-count') is not None else 'None'
+
+    @property
+    def ref_count(self):
+        return self.article_meta.find('.//ref-count').attrib.get('count') if self.article_meta.find('.//ref-count') is not None else 'None'
+
+    @property
+    def table_count(self):
+        return self.article_meta.find('.//table-count').attrib.get('count') if self.article_meta.find('.//table-count') is not None else 'None'
+
+    @property
+    def fig_count(self):
+        return self.article_meta.find('.//fig-count').attrib.get('count') if self.article_meta.find('.//fig-count') is not None else 'None'
+
+    @property
+    def equation_count(self):
+        return self.article_meta.find('.//equation-count').attrib.get('count') if self.article_meta.find('.//equation-count') is not None else 'None'
+
+    @property
+    def total_of_pages(self):
+        r = 'unknown'
+        if self.fpage.isdigit() and self.lpage.isdigit():
+            r = str(int(self.lpage) - int(self.fpage) + 1)
+        return r
+
+    def total(self, node, xpath):
+        return '0' if node is None else str(len(node.findall(xpath)))
+
+    @property
     def total_of_references(self):
-        return self.article_meta.find('.//ref-count').attrib.get('count') if self.article_meta.find('.//ref-count') is not None else None
+        return self.total(self.back, './/ref')
 
     @property
     def total_of_tables(self):
-        return self.article_meta.find('.//table-count').attrib.get('count') if self.article_meta.find('.//table-count') is not None else None
+        return self.total(self.body, './/table-wrap')
+
+    @property
+    def total_of_equations(self):
+        return self.total(self.body, './/disp-formula')
 
     @property
     def total_of_figures(self):
-        return self.article_meta.find('.//fig-count').attrib.get('count') if self.article_meta.find('.//fig-count') is not None else None
+        return self.total(self.body, './/fig')
+
+    @property
+    def formulas(self):
+        r = []
+        if self.tree.findall('.//disp-formula') is not None:
+            for item in self.tree.findall('.//disp-formula'):
+                r.append(node_text(item))
+        if self.tree.findall('.//inline-formula') is not None:
+            for item in self.tree.findall('.//inline-formula'):
+                r.append(node_text(item))
+        return r
 
     @property
     def abstracts(self):
@@ -580,7 +674,12 @@ class Article(ArticleXML):
 
     @property
     def license(self):
-        return node_text(self.article_meta.find('license'))
+        r = self.tree.find('.//license')
+        if r is not None:
+            r = r.attrib.get('license-type')
+        else:
+            r = None
+        return r
 
     @property
     def issue_label(self):
@@ -588,7 +687,6 @@ class Article(ArticleXML):
         vs = 's' + self.volume_suppl if self.volume_suppl is not None else None
         n = 'n' + self.number if self.number is not None else None
         ns = 's' + self.number_suppl if self.number_suppl is not None else None
-
         return ''.join([i for i in [v, vs, n, ns] if i is not None])
 
 

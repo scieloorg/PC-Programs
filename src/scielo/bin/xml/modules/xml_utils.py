@@ -22,7 +22,9 @@ def normalize_space(s):
 
 def node_text(node, exclude_root_tag=True):
     text = node
-    if not node is None:
+    if node is None:
+        text = ''
+    else:
         text = etree.tostring(node)
         if exclude_root_tag:
             if '>' in text:

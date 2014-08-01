@@ -8,26 +8,63 @@ import utils as utils
 import article
 
 
-def invalid_characters_in_value(label, value, invalid_characters):
+def format_xml_in_html(xml):
+    return '<pre>' + xml.replace('<', '&lt;').replace('>', '&gt;') + '</pre>'
+
+
+def format_value(value):
+    return 'None' if value is None else value
+
+
+def display_value(label, value):
+    return (label, 'OK', format_value(value))
+
+
+def conditional_required(label, value):
+    return (label, 'OK', format_value(value)) if value is not None else (label, 'WARNING', 'Required, if exists.')
+
+
+def required_one(label, value):
+    return (label, 'OK', display_attributes(value)) if value is not None else (label, 'ERROR', 'Required at least one ' + label + '.')
+
+
+def required(label, value):
+    return (label, 'OK', format_value(value)) if not (value is None or value == '') else (label, 'ERROR', 'Required.')
+
+
+def expected_values(label, value, expected):
+    return (label, 'OK', format_value(value)) if value in expected else (label, 'ERROR', format_value(value) + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected))
+
+
+def display_attributes(attributes):
+    r = []
+    for key, value in attributes.items():
+        if value is list:
+            value = '; '.join(value)
+        r.append(key + ': ' + format_value(value))
+    return '; '.join(r)
+
+
+def invalid_characters_in_value(label, value, invalid_characters, error_or_warning):
     r = True
     for c in value:
         if c in invalid_characters:
             r = False
             break
     if not r:
-        return 'ERROR: Invalid characteres (' + ';'.join(invalid_characters) + ') in ' + label + ': ' + value
+        return (label, error_or_warning, 'Invalid characteres (' + ';'.join(invalid_characters) + ') in ' + label + ': ' + value)
     else:
-        return value
+        return (label, 'OK', value)
 
 
-def validate_author(author):
-    r = utils.required('surname', author.surname)
-    if r == author.surname:
-        author.surname = invalid_characters_in_value('surname', author.surname, [' '])
-    else:
-        author.surname = r
-    author.fname = utils.required('given-names', author.fname)
-    return author
+def validate_contrib_names(author):
+    r = []
+    result = required('surname', author.surname)
+    if result[1] == 'OK':
+        result = invalid_characters_in_value('surname', author.surname, [' '], 'WARNING')
+    r.append(result)
+    r.append(required('given-names', author.fname))
+    return r
 
 
 class ArticleContentValidation(object):
@@ -37,15 +74,15 @@ class ArticleContentValidation(object):
 
     @property
     def dtd_version(self):
-        return utils.expected_values('@dtd-version', self.article.dtd_version, ['3.0', '1.0', 'j1.0'])
+        return expected_values('@dtd-version', self.article.dtd_version, ['3.0', '1.0', 'j1.0'])
 
     @property
     def article_type(self):
-        return utils.expected_values('@article-type', self.article.article_type, DOCTOPIC.keys())
+        return expected_values('@article-type', self.article.article_type, DOCTOPIC.keys())
 
     @property
     def language(self):
-        return utils.expected_values('@xml:lang', self.article.language, ['en', 'es', 'pt', 'de', 'fr'])
+        return expected_values('@xml:lang', self.article.language, ['en', 'es', 'pt', 'de', 'fr'])
 
     @property
     def related_objects(self):
@@ -79,52 +116,52 @@ class ArticleContentValidation(object):
 
     @property
     def journal_title(self):
-        return utils.required('journal title', self.article.journal_title)
+        return required('journal title', self.article.journal_title)
 
     @property
     def publisher_name(self):
-        return utils.required('publisher name', self.article.publisher_name)
+        return required('publisher name', self.article.publisher_name)
 
     @property
     def journal_id(self):
-        return utils.required('journal-id', self.article.journal_id)
+        return required('journal-id', self.article.journal_id)
 
     @property
     def journal_id_nlm_ta(self):
-        return utils.conditional_required('journal-id (nlm-ta)', self.article.journal_id_nlm_ta)
+        return conditional_required('journal-id (nlm-ta)', self.article.journal_id_nlm_ta)
 
     @property
     def journal_issns(self):
-        return utils.required_one('ISSN', self.article.journal_issns)
+        return required_one('ISSN', self.article.journal_issns)
 
     @property
     def toc_section(self):
-        return utils.required('subject', self.article.toc_section)
+        return required('subject', self.article.toc_section)
 
     @property
     def keywords(self):
         r = []
         for item in self.article.keywords:
-            r.append(item['l'] + ': ' + item['k'])
+            r.append(('keyword: ' + item['l'], 'OK', item['k']))
         return r
 
     @property
     def contrib_names(self):
         r = []
         for item in self.article.contrib_names:
-            item = validate_author(item)
-            r.append(item)
+            for result in validate_contrib_names(item):
+                r.append(result)
         return r
 
     @property
     def contrib_collabs(self):
-        return self.article.contrib_collabs
+        return [('collab', 'OK', collab) for collab in self.article.contrib_collabs]
 
     @property
     def titles(self):
         r = []
         for item in self.article.title:
-            r.append(item.language + ': ' + item.title)
+            r.append(('title', 'OK', item.language + ': ' + item.title))
         return r
 
     @property
@@ -135,7 +172,7 @@ class ArticleContentValidation(object):
                 item.language = 'None'
             if item.title is None:
                 item.title = 'None'
-            r.append(item.language + ': ' + item.title)
+            r.append(('title', 'OK', item.language + ': ' + item.title))
         return r
 
     @property
@@ -144,28 +181,35 @@ class ArticleContentValidation(object):
 
     @property
     def doi(self):
-        return utils.required('doi', self.article.doi)
+        return required('doi', self.article.doi)
 
     @property
     def article_id_publisher_id(self):
-        return utils.display_value('article id (previous pid)', self.article.article_id_publisher_id)
+        return display_value('article id (previous pid)', self.article.article_id_publisher_id)
 
     @property
     def order(self):
-        if self.article.order is not None:
-            if self.article.order.isdigit():
-                if len(self.article.order) != 5:
-                    return 'ERROR: Invalid format of order. Expected 99999.'
+        def valid(order):
+            r = ('?', order)     
+            if order is not None:
+                if order.isdigit():
+                    if len(order) != 5:
+                        r = ('ERROR', 'Invalid format of order. Expected 99999.')
                 else:
-                    return 'order: ' + self.article.order
-            else:
-                return 'ERROR: Invalid format of order. Expected 99999.'
+                    r = ('ERROR', 'Invalid format of order. Expected 99999.')
+            return r
+        r = valid(self.article.order)
+        if r[0] == '?':
+            r = required('order', self.article.order)
+        elif r[0] == 'ERROR':
+            r = ('order', 'ERROR', r[1])
         else:
-            return utils.required('order', self.article.order)
+            r = ('order', 'OK', self.article.order)
+        return r
 
     @property
     def article_id_other(self):
-        return utils.display_value('article-id (other)', self.article.article_id_other)
+        return display_value('article-id (other)', self.article.article_id_other)
 
     @property
     def issue_label(self):
@@ -176,19 +220,19 @@ class ArticleContentValidation(object):
 
     @property
     def volume(self):
-        return utils.display_value('volume', self.article.volume)
+        return display_value('volume', self.article.volume)
 
     @property
     def number(self):
-        return utils.display_value('number', self.article.number)
+        return display_value('number', self.article.number)
 
     @property
     def supplement(self):
-        return utils.display_value('supplement', self.article.supplement)
+        return display_value('supplement', self.article.supplement)
 
     @property
     def is_issue_press_release(self):
-        return utils.display_value('is_issue_press_release', self.article.is_issue_press_release)
+        return display_value('is_issue_press_release', self.article.is_issue_press_release)
 
     @property
     def funding_source(self):
@@ -204,17 +248,25 @@ class ArticleContentValidation(object):
 
     @property
     def funding(self):
-        r = ''
-        if self.article.award_id is None:
+        def has_number(content):
             found = False
-            for c in self.article.ack_xml:
-                if c in '0123456789':
+            if content is None:
+                content = ''
+            for c in '0123456789':
+                if c in content:
                     found = True
                     break
-            if found:
-                r = 'WARNING: ack has contract number.' + self.article.ack_xml
+            return found
+
+        r = []
+        if len(self.article.award_id) == 0:
+            if has_number(self.article.ack_xml):
+                r.append(('award-id', 'WARNING', 'ack has contract number.'))
+            if has_number(self.article.fn_financial_disclosure):
+                r.append(('award-id', 'WARNING', 'fn[@fn-type="financial_disclosure"] has contract number.'))
         else:
-            r = utils.display_values('Funding number', self.article.award_id)
+            for item in self.article.award_id:
+                r.append(('award-id', 'OK', item))
         return r
 
     @property
@@ -227,57 +279,74 @@ class ArticleContentValidation(object):
 
     @property
     def ack_xml(self):
-        return utils.display_value('ack_xml', self.article.ack_xml)
+        return display_value('ack_xml', self.article.ack_xml)
 
     @property
     def fpage(self):
-        return utils.required('fpage', self.article.fpage)
+        return required('fpage', self.article.fpage)
 
     @property
     def fpage_seq(self):
-        return utils.display_value('fpage_seq', self.article.fpage_seq)
+        return display_value('fpage_seq', self.article.fpage_seq)
 
     @property
     def lpage(self):
-        return utils.display_value('lpage', self.article.lpage)
+        return display_value('lpage', self.article.lpage)
 
     @property
     def elocation_id(self):
-        return utils.display_value('elocation_id', self.article.elocation_id)
+        return display_value('elocation_id', self.article.elocation_id)
 
     @property
     def affiliations(self):
         r = []
         for a in self.article.affiliations:
-            a.id = utils.required('id', a.id)
-            a.original = utils.required('original', a.original)
-            a.norgname = utils.required('normalized', a.norgname)
-            a.orgname = utils.required('orgname', a.orgname)
-            a.country = utils.required('country', a.country)
-            r.append(a)
+            r.append(('xml', 'OK', a.xml))
+            r.append(required('id', a.id))
+            r.append(required('original', a.original))
+            r.append(required('normalized', a.norgname))
+            r.append(required('orgname', a.orgname))
+            r.append(required('country', a.country))
         return r
 
     @property
     def clinical_trial(self):
-        return utils.display_value('clinical_trial', self.article.clinical_trial)
+        return display_value('clinical_trial', self.article.clinical_trial)
+
+    def _total(self, total, count, label_total, label_count):
+        if total == '0' and count == 'None':
+            r = (label_total, 'OK', total)
+        elif total == count:
+            r = (label_total, 'OK', total)
+        else:
+            r = (label_count + ' (' + count + ') x ' + label_total + ' (' + total + ')', 'ERROR', 'They must have the same value')
+        return r
+
+    @property
+    def total_of_pages(self):
+        return self._total(self.article.total_of_pages, self.article.page_count, 'total of pages', 'page-count')
 
     @property
     def total_of_references(self):
-        return utils.display_value('total_of_references', self.article.total_of_references)
+        return self._total(self.article.total_of_references, self.article.ref_count, 'total of references', 'ref-count')
 
     @property
     def total_of_tables(self):
-        return utils.display_value('total_of_tables', self.article.total_of_tables)
+        return self._total(self.article.total_of_tables, self.article.table_count, 'total of tables', 'table-count')
+
+    @property
+    def total_of_equations(self):
+        return self._total(self.article.total_of_equations, self.article.equation_count, 'total of equations', 'equation-count')
 
     @property
     def total_of_figures(self):
-        return utils.display_value('total_of_figures', self.article.total_of_figures)
+        return self._total(self.article.total_of_figures, self.article.fig_count, 'total of figures', 'fig-count')
 
     @property
     def abstracts(self):
         r = []
         for item in self.article.abstracts:
-            r.append(item.language + ': ' + item.text)
+            r.append(('abstract: ' + item.language, 'OK', item.text))
         return r
 
     @property
@@ -285,23 +354,28 @@ class ArticleContentValidation(object):
         received = utils.format_dateiso(self.article.received)
         accepted = utils.format_dateiso(self.article.accepted)
 
-        r = ''
         if received is not None and accepted is not None:
+            r = [('history', 'OK', received + ' - ' + accepted)]
             if received > accepted:
-                r = 'Invalid value for received (' + received + ') and accepted (' + accepted + '). Received date must be previous than accepted date.'
+                r = 'received (' + received + ')  must be a previous date than accepted (' + accepted + ').'
+                r = [('history', 'ERROR', r)]
+        else:
+            r = []
+            r.append(conditional_required('history: received', received))
+            r.append(conditional_required('history: accepted', accepted))
         return r
 
     @property
     def received(self):
-        return utils.display_attributes('received', self.article.received)
+        return display_attributes('received', self.article.received)
 
     @property
     def accepted(self):
-        return utils.display_attributes('accepted', self.article.accepted)
+        return display_attributes('accepted', self.article.accepted)
 
     @property
     def license(self):
-        return utils.required('license', self.article.license)
+        return required('license', self.article.license)
 
     @property
     def references(self):
@@ -312,27 +386,27 @@ class ArticleContentValidation(object):
 
     @property
     def press_release_id(self):
-        return utils.display_value('press_release_id', self.article.press_release_id)
+        return display_value('press_release_id', self.article.press_release_id)
 
     @property
     def issue_pub_date(self):
-        return utils.required_one('issue_pub_date', self.article.issue_pub_date)
+        return required_one('issue_pub_date', self.article.issue_pub_date)
 
     @property
     def article_pub_date(self):
-        return utils.display_attributes('article_pub_date', self.article.article_pub_date)
+        return display_attributes('article_pub_date', self.article.article_pub_date)
 
     @property
     def is_ahead(self):
-        return utils.display_value('is_ahead', self.article.is_ahead)
+        return display_value('is_ahead', self.article.is_ahead)
 
     @property
     def ahpdate(self):
-        return utils.display_value('ahpdate', self.article.ahpdate)
+        return display_value('ahpdate', self.article.ahpdate)
 
     @property
     def is_article_press_release(self):
-        return utils.display_value('is_article_press_release', self.article.is_article_press_release)
+        return display_value('is_article_press_release', self.article.is_article_press_release)
 
     @property
     def illustrative_materials(self):
@@ -340,11 +414,11 @@ class ArticleContentValidation(object):
 
     @property
     def is_text(self):
-        return utils.display_value('is_text', self.article.is_text)
+        return display_value('is_text', self.article.is_text)
 
     @property
     def previous_pid(self):
-        return utils.display_value('previous_pid', self.article.previous_pid)
+        return display_value('previous_pid', self.article.previous_pid)
 
 
 class ReferenceContentValidation(object):
@@ -352,28 +426,37 @@ class ReferenceContentValidation(object):
     def __init__(self, reference):
         self.reference = reference
 
+    def evaluate(self):
+        r = []
+        r.append(self.xml)
+        r.append(self.mixed_citation)
+        r.append(self.publication_type)
+        r.append(self.year)
+        r.append(self.source)
+        r.append(self.article_title)
+        r.append(self.chapter_title)
+        for item in self.person_groups:
+            r.append(item)
+        return r
+
     @property
     def id(self):
         return self.reference.id
 
     @property
     def source(self):
-        return utils.required('source', self.reference.source)
-
-    @property
-    def language(self):
-        return utils.display_value('language', self.reference.language)
+        return required('source', self.reference.source)
 
     def data_related_to_publication_type(self, label, value, status):
         status = attributes.article_title_status()
         if self.reference.publication_type in status['required']:
-            return utils.required(label, value)
+            return required(label, value)
         elif self.reference.publication_type in status['not_allowed']:
-            return 'ERROR: ' + label + ' is not allowed in ' + self.reference.publication_type
+            return (label, 'ERROR', label + ' is not allowed in ' + self.reference.publication_type)
         elif self.reference.publication_type in status['allowed']:
-            return utils.display_value(label, value)
+            return display_value(label, value)
         else:
-            return 'WARNING: ' + label + ' is not expected in ' + self.reference.publication_type
+            return (label, 'WARNING', label + ' is not expected in ' + self.reference.publication_type)
 
     @property
     def article_title(self):
@@ -384,127 +467,40 @@ class ReferenceContentValidation(object):
         return self.data_related_to_publication_type('chapter_title', self.reference.chapter_title, attributes.chapter_title_status())
 
     @property
-    def trans_title(self):
-        return utils.display_value('trans_title', self.reference.trans_title)
-
-    @property
-    def trans_title_language(self):
-        return utils.display_value('trans_title_language', self.reference.trans_title_language)
-
-    @property
     def publication_type(self):
-        return utils.expected_values('publication_type', self.reference.publication_type, attributes.PUBLICATION_TYPE)
+        return expected_values('publication_type', self.reference.publication_type, attributes.PUBLICATION_TYPE)
 
     @property
     def xml(self):
-        return utils.display_value('xml', self.reference.xml)
+        return display_value('xml', format_xml_in_html(self.reference.xml))
 
     @property
     def mixed_citation(self):
-        return utils.required('mixed_citation', self.reference.mixed_citation)
+        return required('mixed_citation', format_xml_in_html(self.reference.mixed_citation))
 
     @property
     def person_groups(self):
         r = []
         for person in self.reference.person_groups:
             if isinstance(person, article.PersonAuthor):
-                r.append(validate_author(person))
+                for item in validate_contrib_names(person):
+                    r.append(item)
             elif isinstance(person, article.CorpAuthor):
-                r.append(person)
+                r.append('collab', 'OK', item)
         return r
 
     @property
-    def issue(self):
-        return utils.display_value('issue', self.reference.issue)
-
-    @property
-    def volume(self):
-        return utils.display_value('volume', self.reference.volume)
-
-    @property
-    def supplement(self):
-        return utils.display_value('supplement', self.reference.supplement)
-
-    @property
-    def edition(self):
-        return utils.display_value('edition', self.reference.edition)
-
-    @property
     def year(self):
-        return utils.required('year', self.reference.year)
+        return required('year', self.reference.year)
 
     @property
     def publisher_name(self):
-        return utils.display_value('publisher_name', self.reference.publisher_name)
+        return display_value('publisher_name', self.reference.publisher_name)
 
     @property
     def publisher_loc(self):
-        return utils.display_value('publisher_loc', self.reference.publisher_loc)
+        return display_value('publisher_loc', self.reference.publisher_loc)
 
     @property
     def fpage(self):
-        return utils.display_value('fpage', self.reference.fpage)
-
-    @property
-    def lpage(self):
-        return utils.display_value('lpage', self.reference.lpage)
-
-    @property
-    def page_range(self):
-        return utils.display_value('page_range', self.reference.page_range)
-
-    @property
-    def size(self):
-        return utils.display_attributes('size', self.reference.size)
-
-    @property
-    def label(self):
-        return utils.display_value('label', self.reference.label)
-
-    @property
-    def etal(self):
-        return utils.display_value('etal', self.reference.etal)
-
-    @property
-    def cited_date(self):
-        return utils.display_value('cited_date', self.reference.cited_date)
-
-    @property
-    def ext_link(self):
-        return utils.display_value('ext_link', self.reference.ext_link)
-
-    @property
-    def comments(self):
-        return utils.display_value('comments', self.reference.comments)
-
-    @property
-    def notes(self):
-        return utils.display_value('notes', self.reference.notes)
-
-    @property
-    def contract_number(self):
-        return utils.display_value('contract_number', self.reference.contract_number)
-
-    @property
-    def doi(self):
-        return utils.display_value('doi', self.reference.doi)
-
-    @property
-    def pmid(self):
-        return utils.display_value('pmid', self.reference.pmid)
-
-    @property
-    def pmcid(self):
-        return utils.display_value('pmcid', self.reference.pmcid)
-
-    @property
-    def conference_name(self):
-        return utils.display_value('conference_name', self.reference.conference_name)
-
-    @property
-    def conference_location(self):
-        return utils.display_value('conference_location', self.reference.conference_location)
-
-    @property
-    def conference_date(self):
-        return utils.display_value('conference_date', self.reference.conference_date)
+        return conditional_required('fpage', self.reference.fpage)

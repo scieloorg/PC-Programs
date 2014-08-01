@@ -30,8 +30,8 @@ PUBLICATION_TYPE.append('other')
 
 def article_title_status():
     status = {}
-    status['required'] = ['']
-    status['allowed'] = ['journal', 'confproc', 'conf-proc', 'newspaper', 'in-press', 'manuscript']
+    status['required'] = ['journal', ]
+    status['allowed'] = ['confproc', 'conf-proc', 'newspaper', 'in-press', 'manuscript']
     status['not_allowed'] = ['book', 'book-part', 'thesis', 'software']
     return status
 
