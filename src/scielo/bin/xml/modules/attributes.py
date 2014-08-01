@@ -28,17 +28,39 @@ PUBLICATION_TYPE.append('forum')
 PUBLICATION_TYPE.append('other')
 
 
-def article_title_status():
-    status = {}
-    status['required'] = ['journal', ]
-    status['allowed'] = ['confproc', 'conf-proc', 'newspaper', 'in-press', 'manuscript']
-    status['not_allowed'] = ['book', 'book-part', 'thesis', 'software']
-    return status
+REFERENCE_REQUIRED_SUBELEMENTS = {}
+REFERENCE_REQUIRED_SUBELEMENTS['journal'] = ['article-title']
+REFERENCE_REQUIRED_SUBELEMENTS['book-part'] = ['chapter-title']
+REFERENCE_REQUIRED_SUBELEMENTS['confproc'] = ['conf-name']
+REFERENCE_REQUIRED_SUBELEMENTS['conf-proc'] = ['conf-name']
+REFERENCE_REQUIRED_SUBELEMENTS['web'] = ['ext-link', 'date-in-citation[@content-type="access-date"]']
+REFERENCE_REQUIRED_SUBELEMENTS['web-site'] = ['ext-link', 'date-in-citation[@content-type="access-date"]']
 
 
-def chapter_title_status():
-    status = {}
-    status['required'] = ['book-part']
-    status['not_allowed'] = ['journal', 'confproc', 'conf-proc', 'newspaper', 'in-press', 'manuscript', 'book']
-    status['allowed'] = ['book-part']
-    return status
+REFERENCE_NOT_ALLOWED_SUBELEMENTS = {}
+REFERENCE_NOT_ALLOWED_SUBELEMENTS['journal'] = ['chapter-title']
+REFERENCE_NOT_ALLOWED_SUBELEMENTS['book'] = ['article-title']
+REFERENCE_NOT_ALLOWED_SUBELEMENTS['book-part'] = ['article-title']
+
+
+def is_required(publication_type, label):
+    return label in REFERENCE_REQUIRED_SUBELEMENTS.get(publication_type, [])
+
+
+def is_allowed_element(publication_type, label):
+    if is_required(publication_type, label):
+        r = True
+    else:
+        r = not label in REFERENCE_NOT_ALLOWED_SUBELEMENTS.get(publication_type, [])
+    return r
+
+
+def validate_element(publication_type, label, value):
+    problem = ''
+    if value is None or value == '':
+        if is_required(publication_type, label):
+            problem = label + ' is required for @publication-type=' + publication_type
+    else:
+        if not is_allowed_element(publication_type, label):
+            problem = label + ' is not allowed for @publication-type=' + publication_type
+    return problem

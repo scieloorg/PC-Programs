@@ -433,8 +433,8 @@ class ReferenceContentValidation(object):
         r.append(self.publication_type)
         r.append(self.year)
         r.append(self.source)
-        r.append(self.article_title)
-        r.append(self.chapter_title)
+        for item in self.publication_type_dependence:
+            r.append(item)
         for item in self.person_groups:
             r.append(item)
         return r
@@ -447,28 +447,32 @@ class ReferenceContentValidation(object):
     def source(self):
         return required('source', self.reference.source)
 
-    def data_related_to_publication_type(self, label, value, status):
-        status = attributes.article_title_status()
-        if self.reference.publication_type in status['required']:
-            return required(label, value)
-        elif self.reference.publication_type in status['not_allowed']:
-            return (label, 'ERROR', label + ' is not allowed in ' + self.reference.publication_type)
-        elif self.reference.publication_type in status['allowed']:
-            return display_value(label, value)
+    def validate_element(self, label, value):
+        res = attributes.validate_element(self.reference.publication_type, label, value)
+        if res != '':
+            return (label, 'ERROR', res)
         else:
-            return (label, 'WARNING', label + ' is not expected in ' + self.reference.publication_type)
+            if not value is None and value != '':
+                return (label, 'OK', value)
 
     @property
-    def article_title(self):
-        return self.data_related_to_publication_type('article_title', self.reference.article_title, attributes.article_title_status())
-
-    @property
-    def chapter_title(self):
-        return self.data_related_to_publication_type('chapter_title', self.reference.chapter_title, attributes.chapter_title_status())
+    def publication_type_dependence(self):
+        r = []
+        items = [
+                self.validate_element('article-title', self.reference.article_title), 
+                self.validate_element('chapter-title', self.reference.chapter_title), 
+                self.validate_element('conf-name', self.reference.conference_name), 
+                self.validate_element('date-in-citation[@content-type="access-date"]', self.reference.cited_date), 
+                self.validate_element('ext-link', self.reference.ext_link), 
+            ]
+        for item in items:
+            if item is not None:
+                r.append(item)
+        return r
 
     @property
     def publication_type(self):
-        return expected_values('publication_type', self.reference.publication_type, attributes.PUBLICATION_TYPE)
+        return expected_values('@publication-type', self.reference.publication_type, attributes.PUBLICATION_TYPE)
 
     @property
     def xml(self):
@@ -476,7 +480,7 @@ class ReferenceContentValidation(object):
 
     @property
     def mixed_citation(self):
-        return required('mixed_citation', format_xml_in_html(self.reference.mixed_citation))
+        return required('mixed-citation', format_xml_in_html(self.reference.mixed_citation))
 
     @property
     def person_groups(self):
@@ -486,7 +490,9 @@ class ReferenceContentValidation(object):
                 for item in validate_contrib_names(person):
                     r.append(item)
             elif isinstance(person, article.CorpAuthor):
-                r.append('collab', 'OK', item)
+                r.append(('collab', 'OK', person.collab))
+            else:
+                print(type(person))
         return r
 
     @property

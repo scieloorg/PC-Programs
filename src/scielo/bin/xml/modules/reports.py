@@ -177,8 +177,12 @@ class ArticleDisplay(object):
 
     @property
     def footnotes(self):
-        _fn_list = ['[' + scope + ' id=' + fn_id + ' type=' + str(fn_type) + '] ' + self.html_page.format_xml(fn_xml) for scope, fn_id, fn_type, fn_xml in self.article.article_fn_list]
-        return self.html_page.format_list('foot notes:', 'ul', _fn_list)
+        r = ''
+        for item in self.article.article_fn_list:
+            scope, fn_id, fn_type, fn_xml = item
+            r += self.html_page.tag('p', scope + '[@id="' + fn_id + '" fn-type="' + fn_type + '"] ', 'label')
+            r += self.html_page.tag('p', self.html_page.format_xml(fn_xml))
+        return r
 
     def issue_header(self):
         r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, utils.format_date(self.article.issue_pub_date)]
@@ -367,7 +371,9 @@ class HTMLPage(object):
         return '<' + tag_name + self.css_class(style) + '>' + content + '</' + tag_name + '>'
 
     def format_xml(self, value):
-        return '<pre>' + value.replace('<', '&lt;').replace('>', '&gt;') + '</pre>'
+        value = value.replace('<', '&lt;')
+        value = value.replace('>', '&gt;')
+        return '<pre>' + value + '</pre>'
 
     def format_message(self, value):
         if '<p' in value:

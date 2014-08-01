@@ -696,6 +696,10 @@ class ReferenceXML(object):
         self.root = root
 
     @property
+    def element_citation(self):
+        return self.root.find('.//element-citation')
+
+    @property
     def source(self):
         return node_text(self.root.find('.//source'))
 
@@ -746,20 +750,18 @@ class ReferenceXML(object):
 
         for person_group in self.root.findall('.//person-group'):
             person_group_id = person_group.attrib.get('person-group-type', 'author')
-            k = []
             for person in person_group.findall('.//name'):
                 p = PersonAuthor()
                 p.fname = person.findtext('given-names')
                 p.surname = person.findtext('surname')
                 p.suffix = person.findtext('suffix')
                 p.role = person_group_id
-                k.append(p)
+                r.append(p)
             for collab in person_group.findall('.//collab'):
                 c = CorpAuthor()
                 c.collab = node_text(collab)
                 c.role = person_group_id
-                k.append(c)
-            r.append(k)
+                r.append(c)
         return r
 
     @property
