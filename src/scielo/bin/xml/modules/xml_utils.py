@@ -21,15 +21,19 @@ def normalize_space(s):
 
 
 def node_text(node, exclude_root_tag=True):
-    text = node
-    if node is None:
-        text = ''
-    else:
+    text = ''
+    if not node is None:
         text = etree.tostring(node)
-        if exclude_root_tag:
-            if '>' in text:
-                text = text[text.find('>')+1:]
-                text = text[0:text.rfind('</')]
+        if '<' in text[0:1]:
+            text = text[text.find('>')+1:]
+            text = text[0:text.rfind('</')]
+    return text
+
+
+def node_xml(node):
+    text = ''
+    if not node is None:
+        text = etree.tostring(node)
     return text
 
 

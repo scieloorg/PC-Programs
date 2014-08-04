@@ -57,14 +57,17 @@ def invalid_characters_in_value(label, value, invalid_characters, error_or_warni
         return (label, 'OK', value)
 
 
-def validate_contrib_names(author):
+def validate_name(label, value, invalid_characters):
     r = []
-    result = required('surname', author.surname)
+    result = required(label, value)
     if result[1] == 'OK':
-        result = invalid_characters_in_value('surname', author.surname, [' '], 'WARNING')
+        result = invalid_characters_in_value(label, value, invalid_characters, 'WARNING')
     r.append(result)
-    r.append(required('given-names', author.fname))
     return r
+
+
+def validate_contrib_names(author):
+    return validate_name('surname', author.surname, [' ', '_']) + validate_name('given-names', author.fname, ['_'])
 
 
 class ArticleContentValidation(object):
@@ -261,9 +264,9 @@ class ArticleContentValidation(object):
         r = []
         if len(self.article.award_id) == 0:
             if has_number(self.article.ack_xml):
-                r.append(('award-id', 'WARNING', 'ack has contract number.'))
+                r.append(('award-id', 'WARNING', 'ack has contract number.' + self.article.ack_xml))
             if has_number(self.article.fn_financial_disclosure):
-                r.append(('award-id', 'WARNING', 'fn[@fn-type="financial_disclosure"] has contract number.'))
+                r.append(('award-id', 'WARNING', 'fn[@fn-type="financial_disclosure"] has contract number.' + self.article.fn_financial_disclosure))
         else:
             for item in self.article.award_id:
                 r.append(('award-id', 'OK', item))

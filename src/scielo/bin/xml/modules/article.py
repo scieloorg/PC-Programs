@@ -3,21 +3,58 @@
 import xml.etree.ElementTree as etree
 
 from utils import doi_pid, format_date
-from xml_utils import node_text
+from xml_utils import node_text, node_xml
 
 
 def format_author(author):
     r = author.surname
     if author.suffix:
-        r += author.suffix
+        r += ' (' + author.suffix + ')'
     r += ', '
     if author.prefix:
-        r += author.prefix + ' '
+        r += '(' + author.prefix + ') '
     r += author.fname
     if author.role:
-        r += '(' + author.role + ')'
-    r += '(' + ','.join(author.xref) + ')'
+        r += '(role: ' + author.role + ')'
+    r += '(xref: ' + ','.join(author.xref) + ')'
     return r
+
+
+class Table(object):
+
+    def __init__(self, graphic_parent, table):
+        self.table = table
+        self.graphic_parent = graphic_parent
+
+
+class GraphicParent(object):
+
+    def __init__(self, name, id, label, caption, graphic):
+        self.name = name
+        self.id = id
+        self.label = label if label is not None else ''
+        self.caption = caption if caption is not None else ''
+        self.graphic = graphic
+
+
+class HRef(object):
+
+    def __init__(self, src, element_name, xml):
+        self.src = src
+        self.element_name = element_name
+        self.xml = xml
+
+    def display(self, path):
+        if self.src is not None and self.src != '':
+            if ':' in self.src:
+                return '<a href="' + self.src + '">' + self.src + '</a>'
+            elif self.element_name == 'graphic':
+                ext = '.jpg' if not self.src.endswith('.jpg') and not self.src.endswith('.gif') else ''
+                return '<img src="' + path + '/' + self.src + ext + '"/>'
+            else:
+                return '<a href="' + path + '/' + self.src + '">' + self.src + '</a>'
+        else:
+            return 'None'
 
 
 class PersonAuthor(object):
@@ -113,7 +150,7 @@ class ArticleXML(object):
         r = []
         if node is not None:
             for fn in node.findall('.//fn'):
-                r.append((scope + '//fn', fn.attrib.get('id', ''), fn.attrib.get('fn-type', ''), node_text(fn)))
+                r.append((scope, node_xml(fn)))
         return r
 
     @property
@@ -121,8 +158,9 @@ class ArticleXML(object):
         r = []
         r = self.fn_list(self.back, 'article')
         for item in self.subarticles:
-            for item in self.fn_list(item.find('.//back'), 'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]'):
-                r.append(item)
+            scope = 'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]'
+            for fn in self.fn_list(item.find('.//back'), scope):
+                r.append(fn)
         return r
 
     @property
@@ -132,7 +170,7 @@ class ArticleXML(object):
             rid = xref.attrib.get('rid')
             if not rid in _xref_list.keys():
                 _xref_list[rid] = []
-            _xref_list[rid].append((rid, xref.attrib.get('ref-type', 'None'), xref.text))
+            _xref_list[rid].append(node_xml(xref))
         return _xref_list
 
     @property
@@ -362,11 +400,11 @@ class ArticleXML(object):
     def ack_xml(self):
         #107
         if self.back is not None:
-            return node_text(self.back.find('.//ack'), False)
+            return node_xml(self.back.find('.//ack'))
 
     @property
     def fn_financial_disclosure(self):
-        return node_text(self.tree.find('.//fn[@fn-type="financial-disclosure"]'), False)
+        return node_xml(self.tree.find('.//fn[@fn-type="financial-disclosure"]'))
 
     @property
     def fpage(self):
@@ -390,7 +428,7 @@ class ArticleXML(object):
         for aff in self.article_meta.findall('.//aff'):
             a = Affiliation()
 
-            a.xml = node_text(aff, False)
+            a.xml = node_xml(aff)
             a.id = aff.get('id')
             a.label = aff.findtext('label')
             a.country = aff.findtext('country')
@@ -689,6 +727,35 @@ class Article(ArticleXML):
         ns = 's' + self.number_suppl if self.number_suppl is not None else None
         return ''.join([i for i in [v, vs, n, ns] if i is not None])
 
+    @property
+    def hrefs(self):
+        r = []
+        for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
+            for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
+                href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
+                _href = HRef(href, elem.tag, node_xml(parent))
+                r.append(_href)
+        return r
+
+    @property
+    def tables(self):
+        r = []
+        for t in self.tree.findall('.//*[table]'):
+            graphic = t.find('./graphic')
+            element_name = ''
+            src = ''
+            xml = ''
+            if graphic is not None:
+                element_name = 'graphic'
+                src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
+                xml = node_xml(graphic)
+
+            _href = HRef(src, element_name, xml)
+            _table = GraphicParent(t.tag, t.attrib.get('id'), t.findtext('.//label'), node_text(t.find('.//caption')), _href)
+            _table = Table(_table, node_xml(t.find('./table')))
+            r.append(_table)
+        return r
+
 
 class ReferenceXML(object):
 
@@ -738,11 +805,11 @@ class ReferenceXML(object):
 
     @property
     def xml(self):
-        return node_text(self.root, False)
+        return node_xml(self.root)
 
     @property
     def mixed_citation(self):
-        return node_text(self.root.find('.//mixed-citation'))
+        return node_xml(self.root.find('.//mixed-citation'))
 
     @property
     def person_groups(self):

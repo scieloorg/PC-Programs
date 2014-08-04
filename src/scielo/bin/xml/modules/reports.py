@@ -39,19 +39,19 @@ class TOCReport(object):
 
         r = ''
         if len(invalid) > 0:
-            r += self.html_page.format_div(self.html_page.format_message('ERROR: Invalid XML files'))
+            r += self.html_page.format_div(self.html_page.format_message('FATAL ERROR: Invalid XML files'))
             r += self.html_page.format_div(self.html_page.format_list('', 'ol', invalid))
 
         for label in equal_data:
             if len(toc_data[label]) != 1:
-                part = self.html_page.format_message('ERROR: equal value of ' + label + ' is required for all the articles of the package')
+                part = self.html_page.format_message('FATAL ERROR: equal value of ' + label + ' is required for all the articles of the package')
                 for k, v in toc_data[label].items():
                     part += self.html_page.format_list('found ' + label + ' "' + k + '" in:', 'ul', v, 'issue-problem')
                 r += part
 
         for label in unique_data:
             if len(toc_data[label]) > 0 and len(toc_data[label]) != len(self.articles):
-                part = self.html_page.format_message('ERROR: unique value of ' + label + ' is required for all the articles of the package')
+                part = self.html_page.format_message('FATAL ERROR: unique value of ' + label + ' is required for all the articles of the package')
                 for k, v in toc_data[label].items():
                     if len(v) > 1:
                         part += self.html_page.format_list('found ' + label + ' "' + k + ' in:', 'ul', v, 'issue-problem')
@@ -87,36 +87,36 @@ class ArticleDisplay(object):
 
         return self.html_page.format_div(r, 'article-data')
 
-    def display_p(self, label, value, style=''):
+    def display_value_with_discrete_label(self, label, value, style='', tag='p'):
         if value is None:
             value = 'None'
-        return self.html_page.tag('p', self.html_page.tag('span', '[' + label + '] ', 'discret') + value, style)
+        return self.html_page.display_value_with_discrete_label(label, value, style, tag)
 
     def display_titles(self):
         r = ''
         for t in self.article.title:
-            r += self.html_page.tag('p', self.html_page.tag('span', '[' + t.language + ']', 'discret') + t.title, 'article-title')
+            r += self.html_page.display_value_with_discrete_label(t.language, t.title)
         for t in self.article.trans_titles:
-            r += self.html_page.tag('p', self.html_page.tag('span', '[' + t.language + ']', 'discret') + t.title, 'trans-title')
+            r += self.html_page.display_value_with_discrete_label(t.language, t.title)
         return r
 
     def display_text(self, label, items):
         r = self.html_page.tag('p', label, 'label')
         for item in items:
-            r += self.display_p(item.language, item.text)
+            r += self.display_value_with_discrete_label(item.language, item.text)
         return self.html_page.tag('div', r)
 
     @property
     def toc_section(self):
-        return self.display_p('toc section', self.article.toc_section, 'toc-section')
+        return self.display_value_with_discrete_label('toc section', self.article.toc_section, 'toc-section')
 
     @property
     def article_type(self):
-        return self.display_p('@article-type', self.article.article_type, 'article-type')
+        return self.display_value_with_discrete_label('@article-type', self.article.article_type, 'article-type')
 
     @property
     def article_date(self):
-        return self.display_p('@article-date', self.article.article_pub_date)
+        return self.display_value_with_discrete_label('@article-date', self.article.article_pub_date)
 
     @property
     def contrib_names(self):
@@ -126,9 +126,9 @@ class ArticleDisplay(object):
     def contrib_collabs(self):
         r = [format_author(a) for a in self.article.contrib_collabs]
         if len(r) > 0:
-            r = self.html_page.format_list('collabs:', 'ul', r)
+            r = self.html_page.format_list('collabs', 'ul', r)
         else:
-            r = self.display_p('collabs:', 'None')
+            r = self.display_value_with_discrete_label('collabs', 'None')
         return r
 
     @property
@@ -141,27 +141,27 @@ class ArticleDisplay(object):
 
     @property
     def order(self):
-        return self.display_p('order', self.article.order, 'order')
+        return self.display_value_with_discrete_label('order', self.article.order, 'order')
 
     @property
     def doi(self):
-        return self.display_p('doi', self.article.doi, 'doi')
+        return self.display_value_with_discrete_label('doi', self.article.doi, 'doi')
 
     @property
     def fpage(self):
-        return self.display_p('pages', self.article.fpage + '-' + self.article.lpage, 'fpage')
+        return self.display_value_with_discrete_label('pages', self.article.fpage + '-' + self.article.lpage, 'fpage')
 
     @property
     def fpage_seq(self):
-        return self.display_p('fpage/@seq', self.article.fpage_seq, 'fpage')
+        return self.display_value_with_discrete_label('fpage/@seq', self.article.fpage_seq, 'fpage')
 
     @property
     def elocation_id(self):
-        return self.display_p('elocation-id', self.article.elocation_id, 'fpage')
+        return self.display_value_with_discrete_label('elocation-id', self.article.elocation_id, 'fpage')
 
     @property
     def article_id_other(self):
-        return self.display_p('.//article-id[@pub-id-type="other"]', self.article.article_id_other, 'fpage')
+        return self.display_value_with_discrete_label('.//article-id[@pub-id-type="other"]', self.article.article_id_other, 'fpage')
 
     @property
     def sections(self):
@@ -179,14 +179,29 @@ class ArticleDisplay(object):
     def footnotes(self):
         r = ''
         for item in self.article.article_fn_list:
-            scope, fn_id, fn_type, fn_xml = item
-            r += self.html_page.tag('p', scope + '[@id="' + fn_id + '" fn-type="' + fn_type + '"] ', 'label')
+            scope, fn_xml = item
+            r += self.html_page.tag('p', scope, 'label')
             r += self.html_page.tag('p', self.html_page.format_xml(fn_xml))
         return r
 
     def issue_header(self):
         r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, utils.format_date(self.article.issue_pub_date)]
         return self.html_page.tag('div', '\n'.join([self.html_page.tag('h5', item) for item in r if item is not None]), 'issue-data')
+
+    def tables(self, path):
+        r = ''
+        for t in self.article.tables:
+            r += self.html_page.display_value_with_discrete_label('id', t.graphic_parent.id, 'label', 'h4')
+            r += self.html_page.display_value_with_discrete_label('label', t.graphic_parent.label, 'label')
+            r += self.html_page.display_value_with_discrete_label('caption',  self.html_page.format_xml(t.graphic_parent.caption), 'label')
+            r += self.html_page.display_value_with_discrete_label('xml', self.html_page.tag('div', self.html_page.format_xml(t.table), 'value'))
+            if t.table:
+                r += self.html_page.tag('p', 'Table HTML', 'label')
+                r += self.html_page.tag('p', t.table, 'value')
+            if t.graphic_parent.graphic:
+                r += self.html_page.tag('p', 'Table IMG', 'label')
+                r += self.html_page.tag('p', t.graphic_parent.graphic.display(path), 'value')
+        return r
 
 
 class ArticleReport(object):
@@ -220,8 +235,8 @@ class ArticleReport(object):
 
         for row in table_data:
             cell = ''
-            cell += self.html_page.tag('td', row[0], 'label')
-            cell += self.html_page.tag('td', row[1], '')
+            cell += self.html_page.tag('td', row[0], 'td_label')
+            cell += self.html_page.tag('td', row[1], 'td_label')
 
             style = self.html_page.message_style(row[1] + ':')
             value = row[2]
@@ -332,6 +347,11 @@ class HTMLPage(object):
 
         return s
 
+    def display_value_with_discrete_label(self, label, value, style='', tag='p'):
+        if value is None:
+            value = 'None'
+        return self.tag(tag, self.tag('span', '[' + label + '] ', 'discrete') + value, style)
+
     def styles(self):
         return '<style>' + open('./report.css', 'r').read() + '</style>'
 
@@ -341,7 +361,11 @@ class HTMLPage(object):
         return anchor + '<' + style + '>' + title + '</' + style + '>' + sections + content
 
     def sheet(self, table_header_and_data, filename=None):
-        table_header, table_data = table_header_and_data
+
+        def td_class(wider, label):
+            return ' class="td_data"' if label in wider else ' class="td_label"'
+
+        table_header, wider, table_data = table_header_and_data
         r = '<div>'
         r += '<table>'
         r += '<tr>'
@@ -353,10 +377,10 @@ class HTMLPage(object):
         for row in table_data:
             r += '<tr>'
             if filename is not None:
-                r += '<td>' + filename + '</td>'
+                r += '<td ' + td_class(wider, 'filename') + '>' + filename + '</td>'
 
             for label in table_header:
-                r += '<td>' + self.format_cell(row.get(label), not label in ['filename', 'scope']) + '</td>'
+                r += '<td ' + td_class(wider, label) + '>' + self.format_cell(row.get(label, ''), not label in ['filename', 'scope']) + '</td>'
             r += '</tr>'
         r += '</table>'
         r += '</div>'
@@ -415,23 +439,32 @@ class HTMLPage(object):
         return r
 
     def format_cell(self, value, is_data=True):
+        def format_data(data, is_data):
+            if is_data:
+                return self.tag('span', data, 'value')
+            else:
+                return data
+
         r = '-'
-        if value is None:
-            r = '-'
-        elif isinstance(value, str):
-            r = value
+        if isinstance(value, list):
+            r = ''
+            r += '<ul>'
+            for item in value:
+                r += '<li>' + format_data(item, is_data) + '</li>'
+            r += '</ul>'
         elif isinstance(value, dict):
             r = ''
             r += '<ul>'
             for k, v in value.items():
                 if k != 'ordered':
                     if isinstance(v, list):
-                        r += '<li>' + k + ': ' + ', '.join(v) + ';</li>'
+                        r += '<li>' + k + ': ' + ', '.join(format_data(v, is_data)) + '</li>'
                     else:
-                        r += '<li>' + self.display_label_value(k, v) + ';</li>'
+                        r += '<li>' + self.display_label_value(k, format_data(v, is_data)) + '</li>'
             r += '</ul>'
-        if is_data:
-            r = '<span' + self.message_css_class(r) + '>' + r + '</span>'
+        elif value is not None:
+            # str or unicode
+            r = format_data(value, is_data)
         return r
 
     def save(self, filename, title=None, body=None):
@@ -500,10 +533,10 @@ class ArticleSheetData(object):
 
     def authors(self, filename=None):
         r = []
-        t_header = ['xref', 'given-names', 'surname', 'suffix', 'prefix', 'collab', ]
+        t_header = ['xref', 'given-names', 'surname', 'suffix', 'prefix', 'collab', 'role']
         if not filename is None:
             t_header = ['filename', 'scope'] + t_header
-        for a in self.article_validation.contrib_names:
+        for a in self.article.contrib_names:
             row = {}
             row['scope'] = 'article meta'
             row['filename'] = filename
@@ -512,32 +545,35 @@ class ArticleSheetData(object):
             row['surname'] = a.surname
             row['suffix'] = a.suffix
             row['prefix'] = a.prefix
+            row['role'] = a.role
             r.append(row)
 
-        for a in self.article_validation.contrib_collabs:
+        for a in self.article.contrib_collabs:
             row = {}
             row['scope'] = 'article meta'
             row['filename'] = filename
             row['collab'] = a.collab
+            row['role'] = a.role
             r.append(row)
 
-        for ref in self.article_validation.references:
-            for grp in ref.person_groups:
-                for item in grp:
-                    row = {}
-                    row['scope'] = ref.id
-                    row['filename'] = filename
-                    if isinstance(item, PersonAuthor):
-                        row['given-names'] = item.fname
-                        row['surname'] = item.surname
-                        row['suffix'] = item.suffix
-                        row['prefix'] = item.prefix
-                    elif isinstance(item, CorpAuthor):
-                        row['collab'] = item.collab
-                    else:
-                        print(type(item))
-                    r.append(row)
-        return (t_header, r)
+        for ref in self.article.references:
+            for item in ref.person_groups:
+                row = {}
+                row['scope'] = ref.id
+                row['filename'] = filename
+                if isinstance(item, PersonAuthor):
+                    row['given-names'] = item.fname
+                    row['surname'] = item.surname
+                    row['suffix'] = item.suffix
+                    row['prefix'] = item.prefix
+                    row['role'] = item.role
+                elif isinstance(item, CorpAuthor):
+                    row['collab'] = item.collab
+                    row['role'] = item.role
+                else:
+                    print(type(item))
+                r.append(row)
+        return (t_header, [], r)
 
     def sources(self, filename=None):
         r = []
@@ -545,7 +581,7 @@ class ArticleSheetData(object):
         if not filename is None:
             t_header = ['filename', 'scope'] + t_header
 
-        for ref in self.article_validation.references:
+        for ref in self.article.references:
             row = {}
             row['scope'] = ref.id
             row['ID'] = ref.id
@@ -556,13 +592,10 @@ class ArticleSheetData(object):
             row['publisher name'] = ref.publisher_name
             row['location'] = ref.publisher_loc
             r.append(row)
-        return (t_header, r)
+        return (t_header, [], r)
 
     def ids(self):
         def _ids(node, scope):
-            def _xref(xref_list):
-                return '; '.join(['(' + xref_type + ') ' + xref_text for xref_rid, xref_type, xref_text in xref_list])
-
             res = []
             if node is not None:
                 for n in node.findall('.//*[@id]'):
@@ -570,7 +603,7 @@ class ArticleSheetData(object):
                     r['scope'] = scope
                     r['element'] = n.tag
                     r['ID'] = n.attrib.get('id')
-                    r['xref list'] = _xref(self.article.xref_list.get(n.attrib.get('id'), []))
+                    r['xref list'] = [self.html_page.format_xml(item) for item in self.article.xref_list.get(n.attrib.get('id'), [])]
                     res.append(r)
             return res
 
@@ -585,80 +618,101 @@ class ArticleSheetData(object):
         for item in self.article.responses:
             r += _ids(item, 'response ' + item.find('.').attrib.get('id', ''))
 
-        return (t_header, r)
+        return (t_header, ['xref list'], r)
 
-    def tables(self):
-        t_header = ['ID', 'label', 'caption', 'table', ]
+    def tables(self, path):
+        t_header = ['ID', 'label/caption', 'table/graphic']
         r = []
-        for t in self.article.tree.findall('.//*[table]'):
+        for t in self.article.tables:
             row = {}
-            row['ID'] = t.attrib.get('id')
-            row['label'] = t.findtext('.//label')
-            row['caption'] = t.findtext('.//caption')
-
-            table = self.html_page.format_xml(xml_utils.node_text(t.find('./table'), False))
-            if table is None:
-                table = ''
-
-            graphic = xml_utils.node_text(t.find('./graphic'), False)
-            if graphic is None:
-                graphic = ''
-
-            row['table'] = table + graphic
+            row['ID'] = t.graphic_parent.id
+            row['label/caption'] = t.graphic_parent.label + '/' + t.graphic_parent.caption
+            row['table/graphic'] = self.html_page.format_xml(t.table + t.graphic_parent.graphic.display(path))
             r.append(row)
-        return (t_header, r)
+        return (t_header, ['label/caption', 'table/graphic'], r)
 
-    def hrefs(self, path=''):
-        t_header = ['ID', 'Parent', 'Element', 'href', 'label', 'caption', ]
+    def hrefs(self, path):
+        t_header = ['href', 'display', 'xml']
         r = []
-        for parent in self.article.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
-            for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
-                href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                if ':' in href:
-                    row = {}
-                    row['Parent'] = parent.tag
-                    row['Parent ID'] = parent.attrib.get('id', '')
-                    row['label'] = parent.findtext('label')
-                    row['caption'] = parent.findtext('caption')
-                    row['Element'] = elem.tag
-                    if elem.tag == 'graphic':
-                        row['href'] = '<img src="' + path + href + '"/>'
+
+        for item in self.article.hrefs:
+            row = {}
+            row['href'] = item.src
+            row['display'] = item.display(path)
+            row['xml'] = self.html_page.format_xml(item.xml)
+            r.append(row)
+        return (t_header, ['display', 'xml'], r)
+
+    def package_files(self, files):
+        t_header = ['files', 'status']
+        r = []
+        inxml = [item.src for item in self.article.hrefs]
+
+        for item in files:
+            row = {}
+            row['files'] = item
+            if item in inxml:
+                status = 'found in XML'
+            else:
+                if item.endswith('.jpg'):
+                    if item[:-4] in inxml:
+                        status = 'found in XML'
                     else:
-                        row['href'] = href
-                    r.append(row)
-        return (t_header, r)
+                        status = 'not found in XML'
+                else:
+                    status = 'not found in XML'
+            row['status'] = status
+            r.append(row)
+        return (t_header, ['files', 'status'], r)
 
     def affiliations(self):
-        t_header = ['ID', 'data']
+        t_header = ['ID', 'orgname', 'norgname', 'orgdiv1', 'orgdiv2', 'country', 'city', 'state', 'xml']
         r = []
-        for a in self.article_validation.affiliations:
+        for a in self.article.affiliations:
             row = {}
             row['ID'] = a.id
-            data = {}
-            data['ordered'] = ['original', 'orgname', 'norgname', 'orgdiv1', 'orgdiv2', 'orgdiv3', 'orgdiv2', 'city', 'state', 'country', 'xml']
-            data['original'] = a.original
-            data['norgname'] = a.norgname
-            data['orgname'] = a.orgname
-            data['orgdiv1'] = a.orgdiv1
-            data['orgdiv2'] = a.orgdiv2
-            data['orgdiv3'] = a.orgdiv3
-            data['city'] = a.city
-            data['state'] = a.state
-            data['country'] = a.country
-            data['xml'] = a.xml
-            row['data'] = data
+            row['norgname'] = a.norgname
+            row['orgname'] = a.orgname
+            row['orgdiv1'] = a.orgdiv1
+            row['orgdiv2'] = a.orgdiv2
+            row['city'] = a.city
+            row['state'] = a.state
+            row['country'] = a.country
+            row['xml'] = a.xml
             r.append(row)
-        return (t_header, r)
+        return (t_header, ['xml'], r)
 
 
 def statistics(content, word):
     return len(content.split(word)) - 1
 
 
+def statistics_numbers(content):
+    e = statistics(content, 'ERROR')
+    f = statistics(content, 'FATAL ERROR')
+    e = e - f
+    w = statistics(content, 'WARNING')
+    return (e, f, w)
+
+
 def statistics_messages(e, f, w):
-    s = [('Total of errors:', e), ('Total of fatal errors:', f), ('Total of fatal warnings:', w)]
+    s = [('Total of errors:', e), ('Total of fatal errors:', f), ('Total of warnings:', w)]
     s = ''.join([HTMLPage().format_p_label_value(l, str(v)) for l, v in s])
-    return HTMLPage().format_div(s, 'statistics')
+    _html_page = HTMLPage()
+    style = _html_page.message_style('ERROR' if e + f > 0 else 'WARNING' if w > 0 else '')
+    if style == '':
+        style = 'success'
+    return _html_page.format_div(s, 'statistics-' + style)
+
+
+def package_files(path, xml_name):
+    r = []
+    for item in os.listdir(path):
+        if not item.endswith('.xml'):
+            prefix = xml_name.replace('.xml', '')
+            if item.startswith(prefix + '.') or item.startswith(prefix + '-') or item.startswith(prefix + '_'):
+                r.append(item)
+    return r
 
 
 def generate_package_reports(xml_path, report_path, report_filenames):
@@ -680,9 +734,8 @@ def generate_package_reports(xml_path, report_path, report_filenames):
     if not os.path.isdir(report_path):
         os.makedirs(report_path)
 
-    toc_e = 0
-    toc_f = 0
-    toc_w = 0
+    toc_e, toc_f, toc_w = statistics_numbers(toc_validation)
+
     for xml_name, article in articles_and_filenames:
 
         report_name = report_filenames[xml_name] + '.contents.html'
@@ -691,11 +744,11 @@ def generate_package_reports(xml_path, report_path, report_filenames):
         display_data = ArticleDisplay(article, report)
         article_report = ArticleReport(article_validation, report)
 
-        #authors_data = report.sheet(data.authors(xml_name))
-        #sources_data = report.sheet(data.sources(xml_name))
+        authors_data = report.sheet(data.authors(xml_name))
+        sources_data = report.sheet(data.sources(xml_name))
 
-        #authors_sheet_data += authors_data
-        #sources_sheet_data += sources_data
+        authors_sheet_data += authors_data
+        sources_sheet_data += sources_data
 
         content = ''
 
@@ -710,21 +763,19 @@ def generate_package_reports(xml_path, report_path, report_filenames):
         content += article_report.report()
 
         toc_sections = []
-        #toc_sections.append(('sec_affs', 'Affiliations', report.sheet(data.affiliations())))
-        toc_sections.append(('sec_hrefs', 'href', report.sheet(data.hrefs())))
-        toc_sections.append(('sec_tables', 'Tables', report.sheet(data.tables())))
+        toc_sections.append(('sec_affs', 'Affiliations', report.sheet(data.affiliations())))
+        toc_sections.append(('sec_files', 'package files', report.sheet(data.package_files(package_files(xml_path, xml_name)))))
+        toc_sections.append(('sec_hrefs', 'href', report.sheet(data.hrefs(xml_path))))
+        toc_sections.append(('sec_tables', 'Tables', display_data.tables(xml_path)))
         toc_sections.append(('sec_ids', 'IDs', report.sheet(data.ids())))
-        #toc_sections.append(('sec_authors', 'Authors', authors_data))
-        #toc_sections.append(('sec_sources', 'Sources', sources_data))
+        toc_sections.append(('sec_authors', 'Authors', authors_data))
+        toc_sections.append(('sec_sources', 'Sources', sources_data))
 
         for toc_sec in toc_sections:
             anchor, sec_title, sec_data = toc_sec
             content += report.body_section('h2', anchor, sec_title, sec_data)
 
-        e = statistics(content, 'ERROR:')
-        f = statistics(content, 'FATAL ERROR:')
-        e = e - f
-        w = statistics(content, 'WARNING:')
+        e, f, w = statistics_numbers(content)
 
         toc_e += e
         toc_f += f
