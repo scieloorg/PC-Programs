@@ -13,7 +13,18 @@ def format_xml_in_html(xml):
 
 
 def format_value(value):
-    return 'None' if value is None else value
+    value = ''
+    if value is None:
+        value = 'None'
+    else:
+        if value.endswith(' '):
+            value += 'WARNING: ' + value + ' ends with "space"'
+        if value.startswith('.'):
+            value += 'WARNING: ' + value + ' starts with "."'
+        if value.startswith(' '):
+            value += 'WARNING: ' + value + ' starts with "space"'
+
+    return value
 
 
 def display_value(label, value):
@@ -164,18 +175,20 @@ class ArticleContentValidation(object):
     def titles(self):
         r = []
         for item in self.article.title:
-            r.append(('title', 'OK', item.language + ': ' + item.title))
+            if item.title and item.language:
+                r.append(('title', 'OK', item.language + ': ' + item.title))
+            else:
+                r.append(('title', 'ERROR', item.language + ': ' + item.title))
         return r
 
     @property
     def trans_titles(self):
         r = []
         for item in self.article.trans_titles:
-            if item.language is None:
-                item.language = 'None'
-            if item.title is None:
-                item.title = 'None'
-            r.append(('title', 'OK', item.language + ': ' + item.title))
+            if item.title and item.language:
+                r.append(('title', 'OK', item.language + ': ' + item.title))
+            else:
+                r.append(('title', 'ERROR', item.language + ': ' + item.title))
         return r
 
     @property
@@ -253,20 +266,30 @@ class ArticleContentValidation(object):
     def funding(self):
         def has_number(content):
             found = False
+            r = ''
             if content is None:
                 content = ''
+
+            if '&#' in content:
+                content = content.replace('&#', '_BREAK_AMPNUM').replace(';', '_BREAK_PONT-VIRG')
+                s = content.split('_BREAK_')
+                content = ''.join([a for a in s if not 'AMPNUM' in a])
+
             for c in '0123456789':
                 if c in content:
                     found = True
+                    r = c
                     break
-            return found
+            return (found, r)
 
         r = []
         if len(self.article.award_id) == 0:
-            if has_number(self.article.ack_xml):
-                r.append(('award-id', 'WARNING', 'ack has contract number.' + self.article.ack_xml))
-            if has_number(self.article.fn_financial_disclosure):
-                r.append(('award-id', 'WARNING', 'fn[@fn-type="financial_disclosure"] has contract number.' + self.article.fn_financial_disclosure))
+            found, c = has_number(self.article.ack_xml)
+            if found is True:
+                r.append(('award-id', 'WARNING', 'ack has number: ' + c + '. ' + self.article.ack_xml))
+            found, c = has_number(self.article.fn_financial_disclosure)
+            if found is True:
+                r.append(('award-id', 'WARNING', 'fn[@fn-type="financial_disclosure"] has number: ' + c + '. ' + self.article.fn_financial_disclosure))
         else:
             for item in self.article.award_id:
                 r.append(('award-id', 'OK', item))

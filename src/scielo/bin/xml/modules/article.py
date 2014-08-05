@@ -502,10 +502,10 @@ class ArticleXML(object):
         r = []
         if self.tree.findall('.//disp-formula') is not None:
             for item in self.tree.findall('.//disp-formula'):
-                r.append(node_text(item))
+                r.append(node_xml(item))
         if self.tree.findall('.//inline-formula') is not None:
             for item in self.tree.findall('.//inline-formula'):
-                r.append(node_text(item))
+                r.append(node_xml(item))
         return r
 
     @property
