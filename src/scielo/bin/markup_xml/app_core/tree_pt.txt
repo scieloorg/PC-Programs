@@ -166,6 +166,8 @@ refs;Group the references
 ref;Group the reference elements
 cauthor;Identify corporative author
 doctit;Identify the document title in a reference
+arttitle;Identifica o título do artigo em uma referência
+chptitle;Identifica o capítulo em uma referência
 *source;Identify automatically the document source (book title, journal title, etc)
 source;Identify the document source (book title, journal title, etc)
 reportid;Identify the number or name of the report

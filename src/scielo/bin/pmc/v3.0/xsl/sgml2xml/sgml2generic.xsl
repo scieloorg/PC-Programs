@@ -1597,6 +1597,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:otherwise><article-title><xsl:apply-templates select=".//text()"/></article-title></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	<xsl:template match="arttitle">
+		<article-title><xsl:apply-templates select=".//text()"/></article-title>
+	</xsl:template>
+	<xsl:template match="chptitle">
+		<chapter-title><xsl:apply-templates select=".//text()"/></chapter-title>
+	</xsl:template>
 	<xsl:template match="reportid">
 		<!-- <pub-id pub-id-type="other">Report No.: HETA2000-0139-2824</pub-id> -->
 		<pub-id pub-id-type="other"><xsl:value-of select="."/></pub-id>

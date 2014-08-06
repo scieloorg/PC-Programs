@@ -127,7 +127,7 @@
                     confgrp | funding | hist | 
                     xmlbody |
                     ack | glossary | deflist | app |
-                    (vancouv | iso690 | abnt6023 | apa | other | refs) |
+                    refs |
                     fngrp | cc |
                     docresp | subdoc 
                     )+
@@ -173,7 +173,7 @@
                     confgrp | funding | hist | 
                     xmlbody |
                     ack | glossary | deflist | app |
-                    (vancouv | iso690 | abnt6023 | apa | other | refs) |
+                    refs |
                     fngrp | cc |
                     docresp | subdoc 
                     )+
@@ -195,7 +195,7 @@
                     confgrp | funding | hist | 
                     xmlbody |
                     ack | glossary | deflist | app |
-                    (vancouv | iso690 | abnt6023 | apa | other | refs) |
+                    refs |
                     fngrp | cc |
                     docresp | subdoc 
                     )+
@@ -243,7 +243,7 @@
 
 <!ELEMENT refs     - - (ref+) >
 <!ELEMENT ref     - - ( text-ref| authors* 
-                        | doctit | source
+                        | arttitle | chptitle | source
                         | date | pages
                         | volid | issueno | suppl | part | coltitle | colvolid 
                         | isbn | extent | edition | city | state | country | pubname
@@ -266,7 +266,8 @@
 <!ATTLIST moreinfo 
           descript  CDATA #IMPLIED >
 
-<!ELEMENT doctit - - (#PCDATA) > 
+<!ELEMENT arttitle - - (#PCDATA) > 
+<!ELEMENT chptitle - - (#PCDATA) > 
 <!ELEMENT source - - (#PCDATA) > 
 <!ELEMENT reportid - - (#PCDATA) > 
 <!ELEMENT letterto - - (#PCDATA) > 
