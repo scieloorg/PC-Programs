@@ -166,6 +166,8 @@ refs;Agrupa las citas
 ref;Agrupa los elementos de una cita
 cauthor;Identifica autor corporativo
 doctit;Identifica el título del artículo o capítulo en una cita
+arttitle;Identifica el título del artículo en una cita
+chptitle;Identifica el capítulo en una cita
 *source;Identifica automáticamente la fuente de la cita (libro, revista, etc)
 source;Identifica la fuente de la cita (libro, revista, etc)
 reportid;Identifica o nombre o número de un informe

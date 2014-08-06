@@ -939,6 +939,8 @@ ref;#FALSE#;#TRUE#
 ref
 text-ref;#FALSE#;#FALSE#
 authors;#TRUE#;#FALSE#
+arttitle;#TRUE#;#FALSE#
+chptitle;#TRUE#;#FALSE#
 cited;#FALSE#;#TRUE#
 city;#FALSE#;#TRUE#
 coltitle;#FALSE#;#TRUE#
@@ -947,7 +949,6 @@ confgrp;#TRUE#;#FALSE#
 contract;#FALSE#;#FALSE#
 country;#FALSE#;#TRUE#
 date;#TRUE#;#TRUE#
-doctit;#TRUE#;#FALSE#
 doi;#FALSE#;#TRUE#
 edition;#FALSE#;#TRUE#
 extent;#FALSE#;#TRUE#
