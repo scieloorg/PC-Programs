@@ -1019,3 +1019,7 @@ orgdiv1
 
 orgdiv2
 
+arttitle
+
+chptitle
+
