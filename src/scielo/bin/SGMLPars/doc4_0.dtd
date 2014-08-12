@@ -133,32 +133,33 @@
                     )+
                     +(%i.float;)>
 <!ATTLIST doc
-          pii      CDATA #REQUIRED
           doctopic CDATA #REQUIRED
           language CDATA #REQUIRED
-          ccode    CDATA #REQUIRED
-          status   CDATA #REQUIRED
           version  CDATA #REQUIRED
-          type     NAMES #REQUIRED
           order    CDATA #REQUIRED
-          seccode  CDATA #REQUIRED
-          sponsor  CDATA #REQUIRED
-          stitle   CDATA #REQUIRED
+          jtitle   CDATA #REQUIRED
+          nlmtitle   CDATA #IMPLIED
+          jacron CDATA #REQUIRED
           volid    CDATA #IMPLIED
-	  supplvol CDATA #IMPLIED
+          supplvol CDATA #IMPLIED
           issueno  CDATA #IMPLIED
-	  supplno  CDATA #IMPLIED 
-	  isidpart CDATA #IMPLIED 
-	  dateiso  CDATA #REQUIRED
-	  fpage    CDATA #REQUIRED
+	        supplno  CDATA #IMPLIED 
+	        isidpart CDATA #IMPLIED 
+	        dateiso  CDATA #REQUIRED
+	        fpage    CDATA #REQUIRED
           lpage    CDATA #REQUIRED
           pagcount CDATA #REQUIRED
+          qref CDATA #REQUIRED
+          qtab CDATA #REQUIRED
+          qfig CDATA #REQUIRED
+          qeq CDATA #REQUIRED
           issn     CDATA #REQUIRED
-		  old-pid CDATA #IMPLIED 
-		  rvpdate CDATA #IMPLIED
-      artdate CDATA #IMPLIED
-          hcomment CDATA #IMPLIED
-		  ahpdate CDATA #IMPLIED		  
+		      pissn CDATA #IMPLIED 
+          eissn CDATA #IMPLIED
+		      artdate CDATA #IMPLIED
+          ahpdate CDATA #IMPLIED	
+          pubname CDATA #REQUIRED
+          aoppid CDATA #IMPLIED	  
 		  >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
