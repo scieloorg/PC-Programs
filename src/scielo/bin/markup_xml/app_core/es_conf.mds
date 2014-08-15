@@ -82,7 +82,7 @@ buttonPMCValidate,Informe de estilos PMC
 buttonPMCPreview,Visualizar texto completo PMC
 buttonViewMarkup,Visualizar texto marcado
 buttonSave,Guardar
-msgNoXML,No existe el fichero XML del artículo o texto
+buttonCleanForm,Limpiar formulario
 msgXMLWasSuccessfullyGenerated,XML fue generado con éxito
 msgXMLWasNotGenerated,XML no fue generado. Ver errores en: 
 msgPMCDirectoryCouldNotBeCreated,No fue posible crear la carpeta XXX

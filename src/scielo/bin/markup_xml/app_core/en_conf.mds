@@ -82,7 +82,7 @@ buttonPMCValidate,Report of PMC style
 buttonPMCPreview,Preview text at PMC
 buttonViewMarkup,View markup file
 buttonSave,Save
-msgNoXML,There is no XML file of the article or text
+buttonCleanForm,Clean form
 msgXMLWasSuccessfullyGenerated,XML was successfully generated 
 msgXMLWasNotGenerated,XML was not generated. See errors in: 
 msgPMCDirectoryCouldNotBeCreated,The directory XXX could not be created.

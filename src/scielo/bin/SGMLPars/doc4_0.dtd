@@ -147,6 +147,7 @@
           supplno  CDATA #IMPLIED 
           isidpart CDATA #IMPLIED 
           dateiso  CDATA #REQUIRED
+          order CDATA #REQUIRED
           fpage    CDATA #REQUIRED
           fpageseq    CDATA #REQUIRED
           lpage    CDATA #REQUIRED
