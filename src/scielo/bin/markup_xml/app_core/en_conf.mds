@@ -18,7 +18,7 @@ msgDeleting,Error deleting the tag. Select the text
 msgOpenFile,Open only one file
 msgSure,Are you sure?
 msgSureExit,Do you want to exit?
-msgMoreLater,Do you wish to save the document in TXT format to use the parser?
+msgQuestionApplyAutomaticMarkupToTheTemplate,Apply automatic markup to the template?
 msgAutomatic,Do you wish to use the automatic markup of references?
 msgAutomaticErr,%JOURNAL% has no automatic markup %LABEL% for references. %FILE% not found.
 msgDefaultDirectories,Verify the 'html.dot' and/or 'normal.dot' files.

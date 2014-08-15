@@ -18,7 +18,7 @@ msgDeleting,Erro para borrar la tag. Seleccione el texto
 msgOpenFile,Abre solamente un archivo
 msgSure,Usted esta seguro?
 msgSureExit,Usted quiere salir?
-msgMoreLater,Usted quiere guardar el documento en el formato TXT para usar el parser?
+msgQuestionApplyAutomaticMarkupToTheTemplate,Aplicar marcación automática al modelo?
 msgAutomatic,Usted desea usar la marcación automática de citas?
 msgAutomaticErr,%JOURNAL% no tiene marcación automática %LABEL% para las citas. %FILE% no fue encontrado.
 msgDefaultDirectories,Asegure que existe el archivo 'html.dot'/'normal.dot'.
