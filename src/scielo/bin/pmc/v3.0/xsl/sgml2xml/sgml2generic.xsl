@@ -36,7 +36,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:when test="./front/doi"><xsl:value-of select="./front/doi"/></xsl:when>
 		<xsl:otherwise><xsl:value-of select="doi"/></xsl:otherwise>
 	</xsl:choose></xsl:variable>
-	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
+	<xsl:variable name="journal_acron">
+		<xsl:choose>
+			<xsl:when test="//extra-scielo/journal-acron"><xsl:value-of select="//extra-scielo/journal-acron"/></xsl:when>
+			<xsl:when test="node()/@acron"><xsl:value-of select="node()/@acron"/></xsl:when>
+		</xsl:choose>
+	</xsl:variable>
 	<xsl:variable name="JOURNAL_PID" select="node()/@issn"/>
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
 	<xsl:variable name="journal_issue">
@@ -617,7 +622,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<name>
 				<surname><xsl:value-of select="substring-after(.,concat($given-names, ' '))"/></surname>
 				<given-names><xsl:value-of select="$given-names"/></given-names>
-				
 			</name>
 		</contrib>
 		<xsl:copy-of select="..//role[$position]"/>
@@ -626,15 +630,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="article|text|doc" mode="article-meta">
 		<xsl:variable name="l" select="@language"/>
 		<article-meta>
-			<xsl:if test="..//extra-scielo/issue-order">
-				<xsl:variable name="n"><xsl:value-of select="number(substring(..//extra-scielo/issue-order,5))"/></xsl:variable>
-				<!--article-id pub-id-type="publisher-id">S<xsl:value-of select="$JOURNAL_PID"/>
-					<xsl:value-of select="substring(@dateiso,1,4)"/>	
-					<xsl:value-of select="substring(string(10000 + $n),2)"/>
-					<xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/>
-				</article-id-->
-			</xsl:if>
-			
 			<xsl:apply-templates select="front/doi|doi"/>
 			
 			<xsl:variable name="fpage"><xsl:choose>
@@ -648,6 +643,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<!-- criar article-id (other), regra quando  -->
 				<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>
 			</xsl:if>
+			<xsl:if test="@ahppid!=''"><article-id specific-use="previous-pid"><xsl:value-of select="@ahppid"/></article-id></xsl:if>
 
 			<xsl:apply-templates select=".//toctitle"></xsl:apply-templates>
 			<xsl:if test="not(.//toctitle)">
@@ -661,11 +657,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 			<xsl:apply-templates select="." mode="pub-date"/>
 
-			<xsl:apply-templates select="@volid | @issueno  | @fpage | @lpage"/>
+			<xsl:apply-templates select="@volid | @issueno  | @fpage | @lpage | @elocatid"/>
 			<xsl:apply-templates select=".//product" mode="article-meta"></xsl:apply-templates>
 			<xsl:apply-templates select=".//cltrial"></xsl:apply-templates>
 			<xsl:apply-templates select=".//hist" mode="front"/>
-			<xsl:apply-templates select=".//back/licenses| cc"/>
+			<xsl:apply-templates select=".//back/licenses| cc | .//extra-scielo/license"/>
 			<xsl:apply-templates select="front/related|related"/>
 			<xsl:apply-templates select=".//abstract[@language=$l]|.//xmlabstr[@language=$l]"/>
 			<xsl:apply-templates select=".//abstract[@language!=$l]|.//xmlabstr[@language!=$l]"
@@ -1129,6 +1125,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:attribute name="seq"><xsl:value-of select="substring-after(.,'-')"/></xsl:attribute>
 					<xsl:value-of select="substring-before(.,'-')"/>
 				</xsl:when>
+				<xsl:when test="../@fpageseq"><xsl:attribute name="seq"><xsl:value-of select="../@fpageseq"/></xsl:attribute>
+				</xsl:when>
 				<xsl:otherwise><xsl:value-of select="normalize-space(.)"/></xsl:otherwise>
 			</xsl:choose>
 		</fpage>
@@ -1144,6 +1142,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:choose>
 		</lpage>
 	</xsl:template>
+	<xsl:template match="@elocatid"><elocation-id><xsl:value-of select="."/></elocation-id></xsl:template>
 	<xsl:template match="fpage">
 		<fpage>
 			<xsl:value-of select="normalize-space(.)"/>
@@ -1344,34 +1343,61 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="*" mode="counts">
 		<counts>
-			<xsl:apply-templates select="." mode="element-counts">
-				<xsl:with-param name="element_name" select="'fig-count'"/>
-				<xsl:with-param name="count" select="count(.//figgrp)"/>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="." mode="element-counts">
-				<xsl:with-param name="element_name" select="'table-count'"/>
-				<xsl:with-param name="count" select="count(.//tabwrap)"/>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="." mode="element-counts">
-				<xsl:with-param name="element_name" select="'equation-count'"/>
-				<xsl:with-param name="count" select="count(.//equation)"/>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="." mode="element-counts">
-				<xsl:with-param name="element_name" select="'ref-count'"/>
-				<xsl:with-param name="count"><xsl:choose>
-					<xsl:when test=".//back">
-						<xsl:value-of select="count(.//back//*[contains(name(),'citat')])"/>
-					</xsl:when><xsl:otherwise><xsl:value-of select="count(.//ref)"/></xsl:otherwise>
-				</xsl:choose></xsl:with-param>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="." mode="element-counts">
-				<xsl:with-param name="element_name" select="'page-count'"/>
-				<xsl:with-param name="count"><xsl:choose>
-					<xsl:when test="@pagcount"><xsl:value-of select="@pagcount"/></xsl:when>
-					<xsl:when test="string(number(@fpage))=@fpage and string(number(@lpage))=@lpage"><xsl:value-of select="@lpage - @fpage + 1"/></xsl:when>
-					<xsl:otherwise></xsl:otherwise>
-				</xsl:choose></xsl:with-param>
-			</xsl:apply-templates>
+			<xsl:choose>
+				<xsl:when test="not(@figcount)">
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'fig-count'"/>
+						<xsl:with-param name="count" select="count(.//figgrp)"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'table-count'"/>
+						<xsl:with-param name="count" select="count(.//tabwrap)"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'equation-count'"/>
+						<xsl:with-param name="count" select="count(.//equation)"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'ref-count'"/>
+						<xsl:with-param name="count"><xsl:choose>
+							<xsl:when test=".//back">
+								<xsl:value-of select="count(.//back//*[contains(name(),'citat')])"/>
+							</xsl:when><xsl:otherwise><xsl:value-of select="count(.//ref)"/></xsl:otherwise>
+						</xsl:choose></xsl:with-param>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'page-count'"/>
+						<xsl:with-param name="count"><xsl:choose>
+							<xsl:when test="@pagcount"><xsl:value-of select="@pagcount"/></xsl:when>
+							<xsl:when test="string(number(@fpage))=@fpage and string(number(@lpage))=@lpage"><xsl:value-of select="@lpage - @fpage + 1"/></xsl:when>
+							<xsl:otherwise></xsl:otherwise>
+						</xsl:choose></xsl:with-param>
+					</xsl:apply-templates>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'fig-count'"/>
+						<xsl:with-param name="count" select="@figcount"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'table-count'"/>
+						<xsl:with-param name="count" select="@tabcount"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'equation-count'"/>
+						<xsl:with-param name="count" select="@eqcount"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'ref-count'"/>
+						<xsl:with-param name="count" select="@refcount"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'page-count'"/>
+						<xsl:with-param name="count" select="@pagcount"/>
+					</xsl:apply-templates>
+				</xsl:otherwise>
+			</xsl:choose>
+			
 		</counts>
 	</xsl:template>
 	<xsl:template match="*" mode="element-counts">
@@ -3352,6 +3378,24 @@ et al.</copyright-statement>
 						<xsl:attribute name="xlink:href">http://i.creativecommons.org/l/<xsl:value-of select="$licid"/>88x31.png</xsl:attribute>
 					</graphic>
 					CC <xsl:value-of select="concat(@ccid,' ',@cversion,' ',@cccompl)"/>
+				</license-p>
+			</license>
+		</permissions>
+	</xsl:template>
+	
+	<xsl:template match="extra-scielo/license">
+		<xsl:variable name="href"><xsl:value-of select="."/></xsl:variable>
+		<xsl:variable name="ccid"><xsl:value-of select="../license-type"/></xsl:variable>
+		<xsl:variable name="cversion"><xsl:value-of select="../license-version"/></xsl:variable>
+		<xsl:variable name="cccompl"><xsl:value-of select="../license-complement"/></xsl:variable>
+		<xsl:variable name="licid"><xsl:value-of select="concat($ccid,'/',$cversion,'/',$cccompl)"/></xsl:variable>
+		<permissions>
+			<license license-type="{substring-before(../license-label,' ')}" xlink:href="{$href}">
+				<license-p>
+					<graphic>
+						<xsl:attribute name="xlink:href">http://i.creativecommons.org/l/<xsl:value-of select="$licid"/>88x31.png</xsl:attribute>
+					</graphic>
+					CC <xsl:value-of select="../license-label"/>
 				</license-p>
 			</license>
 		</permissions>

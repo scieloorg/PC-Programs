@@ -133,32 +133,36 @@
                     )+
                     +(%i.float;)>
 <!ATTLIST doc
-          pii      CDATA #REQUIRED
+          acron CDATA #REQUIRED
+          jtitle   CDATA #REQUIRED
+          nlmtitle   CDATA #IMPLIED
+          issn     CDATA #REQUIRED
+          pissn CDATA #IMPLIED 
+          eissn CDATA #IMPLIED
+          pubname CDATA #REQUIRED
+          license CDATA #REQUIRED
+          volid    CDATA #IMPLIED
+          supplvol CDATA #IMPLIED
+          issueno  CDATA #IMPLIED
+          supplno  CDATA #IMPLIED 
+          isidpart CDATA #IMPLIED 
+          dateiso  CDATA #REQUIRED
+          order CDATA #REQUIRED
+          fpage    CDATA #REQUIRED
+          fpageseq    CDATA #REQUIRED
+          lpage    CDATA #REQUIRED
+          elocatid CDATA #IMPLIED 
+          artdate CDATA #IMPLIED
+          ahpdate CDATA #IMPLIED  
+          ahppid CDATA #IMPLIED
+          pagcount CDATA #REQUIRED
+          refcount CDATA #REQUIRED
+          tabcount CDATA #REQUIRED
+          figcount CDATA #REQUIRED
+          eqcount CDATA #REQUIRED
           doctopic CDATA #REQUIRED
           language CDATA #REQUIRED
-          ccode    CDATA #REQUIRED
-          status   CDATA #REQUIRED
-          version  CDATA #REQUIRED
-          type     NAMES #REQUIRED
-          order    CDATA #REQUIRED
-          seccode  CDATA #REQUIRED
-          sponsor  CDATA #REQUIRED
-          stitle   CDATA #REQUIRED
-          volid    CDATA #IMPLIED
-	  supplvol CDATA #IMPLIED
-          issueno  CDATA #IMPLIED
-	  supplno  CDATA #IMPLIED 
-	  isidpart CDATA #IMPLIED 
-	  dateiso  CDATA #REQUIRED
-	  fpage    CDATA #REQUIRED
-          lpage    CDATA #REQUIRED
-          pagcount CDATA #REQUIRED
-          issn     CDATA #REQUIRED
-		  old-pid CDATA #IMPLIED 
-		  rvpdate CDATA #IMPLIED
-      artdate CDATA #IMPLIED
-          hcomment CDATA #IMPLIED
-		  ahpdate CDATA #IMPLIED		  
+          version  CDATA #REQUIRED	  
 		  >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->

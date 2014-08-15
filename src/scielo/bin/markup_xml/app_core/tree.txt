@@ -846,7 +846,6 @@ author;#FALSE#;#TRUE#
 abstract;#FALSE#;#TRUE#
 ack;#TRUE#;#FALSE#
 app;#FALSE#;#TRUE#
-cc;#TRUE#;#FALSE#
 corpauth;#FALSE#;#TRUE#
 docresp;#TRUE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
@@ -888,7 +887,6 @@ abstract;#FALSE#;#TRUE#
 ack;#FALSE#;#FALSE#
 app;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
-cc;#FALSE#;#FALSE#
 corpauth;#FALSE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
@@ -926,8 +924,6 @@ subdoc;#FALSE#;#TRUE#
 toctitle;#FALSE#;#FALSE#
 xmlabstr;#FALSE#;#TRUE#
 xmlbody;#FALSE#;#FALSE#
-
-cc
 
 kwd
 
