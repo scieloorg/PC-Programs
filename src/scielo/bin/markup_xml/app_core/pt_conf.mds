@@ -70,7 +70,6 @@ buttonAutomatic,Marcação Automática
 buttonAutomaticWS,Marcação Automática 2
 buttonAutomaticStyles,Marcação Automática 3
 buttonHelp,Ajuda
-bodyHasChildren,no
 doDebug,no
 buttonParser,Verificar a marcação
 buttonGenerateXML,Gerar o XML
@@ -83,27 +82,28 @@ buttonPMCPreview,Visualizar texto completo PMC
 buttonViewMarkup,Visualizar texto com marcação
 buttonSave,Salvar
 buttonCleanForm,Limpar formulário
-msgXMLWasSuccessfullyGenerated,XML foi gerado com sucesso
-msgXMLWasNotGenerated,XML não foi gerado. Ver erros em: 
-msgPMCDirectoryCouldNotBeCreated,Não foi possível criar o diretório XXX
-msgPMCHTMLCouldNotBeCreated,Não foi possível gerar o texto a partir do XML.
-XML_TOOL_TYPE,java
-msgQuestionCheckingMarkedTablesAndImages,"Antes de gerar o XML, certifique-se que foi feita a marcação de todas as tabelas, imagens e suas referencias: vbCrlf%PARM1% vbcrlf Gerar o XML agora?"
-msgInfoXMLError,Erro no arquivo XML: %PARM1% vbCrLf código de erro: %PARM2% vbCrLf caracter: %PARM3% vbCrLf %PARM4% vbCrLf
-msgCriticalMissingXMLBODY,Necessário marcar xmlbody antes de gerar o arquivo XML
 msgBeforExiting1,Salvar e usar o parser
 msgBeforExiting2,Salvar e gerar XML
 msgBeforExiting3,Salvar e sair
 msgBeforExiting4,Sair sem salvar
-msgQuestionGenerate2PMC,Gerar XML para PubMed Central?
-msgWarningIssueHasMarkupFinishedInTitleManager,"Saia do Markup, abra o programa Title Manager, modifique para este fascículo o campo Marcação feita e tente novamente o programa Markup."
-msgAutomaticMarkup,Os elementos serão marcados de acordo com os estilos. Continuar?
+msgAutomaticStyles,Os elementos serão marcados de acordo com os estilos. Continuar?
 pmcVersion,v3.0
 timer,999999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
-msgFormXMLBody,"Verifique a identificação das partes no texto completo. Corrija se necessário, selecionando os itens da lista, escolhendo a etiqueta que o identifica e clicando no botão Corrigir."
+msgFormXMLBody,"Verifique a identificação das partes no texto completo. Corrija se necessário, selecionando os itens da lista, escolhendo o rótulo que o identifica e clicando no botão Corrigir."
 buttonChange2,Corrigir
-msgMissingImportantInformation,"Garanta que há dados de ISSUEID em \bin\markup\issue.mds e em \bin\markup\journal-standard.txt"
-msgMissingFile,não encontrado.
 msg_new_structure,"Markup usa uma nova estrutura. vbCrlfColoque os arquivos marcados ou para marcar em \markup_xml\scielo_markup (antigo \pmc\pmc_markup). vbCrlfColoque os demais arquivos em \markup_xml\src (antigo \pmc\src)"
 msg_ref_as_journal,O atributo reftype de ref será automaticamente preenchido com "journal". Ajuste o valor de reftype caso a referência não for de periódico.
+msg_help_doc_license,"URL de Licença Creative Commons, ex.: http://creativecommons.org/licenses/by/2.0/ "
+msg_help_doc_issueno,"Entre com o número do fascículo. Entre ahead para identificar fascículo ahead of print"
+msg_help_doc_supplvol,"Quando há somente o volume e é um suplemento, entre com o rótulo do suplemento. Ex.: para Suplemento A, entrar com A, para Suplemento 1, entrar 1. Use 0 para identificar um suplemento que não tem um rótulo."
+msg_help_doc_supplno,"Quando há o número do fascículo e é um suplemento, entre com o rótulo do suplemento. Ex.: para Suplemento A, entrar com A, para Suplemento 1, entrar 1. Use 0 para identificar um suplemento que não tem um rótulo."
+msg_help_doc_idpart,"Quando há alguna identificação além de volume, número e suplementos, usa-se este campo para identificar, por exemplo, press release com o valor pr."
+msg_help_doc_order,"Obrigatório completar com número de 5 dígitos quando fpage não é número com no máximo 5 dígitos, ou o valor de fpage é igual para outro documento. No sumário os documentos são apresentados ordenados por fpage ou por order."
+msg_help_doc_season,"Entre o mes ou mes inicial hífen final, em inglês (tres letras). Ex.: Mar-Apr"
+msg_help_doc_dateiso,"Data de publicação formada por YYYYMMDD. Use 00 para mes e dia não identificados."
+msg_help_doc_elocatid,"Quando não há a página do impreso, usar a página eletrônica"
+msg_help_doc_fpage_seq,"Obrigatório completar quando há um mesmo valor de fpage para mais de um documento, usando uma letra a, b, c, ..."
+msg_help_doc_ahpdate,"Obrigatório completar quando é um artigo ahead of print e quando este artigo foi um ahead of print. Usar data em formato YYYYMMDD."
+msg_help_doc_ahppid,"Obrigatório completar quando é um artigo que foi ahead of print com PID do ahead of print"
+msg_help_doc_artdate,"Obrigatório completar com a data do artigo YYYYMMDD quando é um artigo rolling pass"
