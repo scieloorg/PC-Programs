@@ -2014,7 +2014,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<!-- FIXMEID -->
 		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
 		
-		<fn id="{$parentid}{$table_id}TFN{substring(@id,4)}">
+		<fn id="{$parentid}{@id}">
 			<xsl:apply-templates select="label"/>
 			<p>
 				<xsl:apply-templates select="text()|*[name()!='label']"/>
