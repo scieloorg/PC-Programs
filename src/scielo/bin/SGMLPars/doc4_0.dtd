@@ -135,6 +135,7 @@
 <!ATTLIST doc
           acron CDATA #REQUIRED
           jtitle   CDATA #REQUIRED
+          stitle   CDATA #IMPLIED
           nlmtitle   CDATA #IMPLIED
           issn     CDATA #REQUIRED
           pissn CDATA #IMPLIED 
@@ -154,12 +155,7 @@
           elocatid CDATA #IMPLIED 
           artdate CDATA #IMPLIED
           ahpdate CDATA #IMPLIED  
-          ahppid CDATA #IMPLIED
           pagcount CDATA #REQUIRED
-          refcount CDATA #REQUIRED
-          tabcount CDATA #REQUIRED
-          figcount CDATA #REQUIRED
-          eqcount CDATA #REQUIRED
           doctopic CDATA #REQUIRED
           language CDATA #REQUIRED
           version  CDATA #REQUIRED	  
