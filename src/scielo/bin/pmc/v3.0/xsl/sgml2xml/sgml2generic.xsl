@@ -481,7 +481,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<journal-id journal-id-type="publisher-id">
 					<xsl:value-of select="$journal_acron"/>
 				</journal-id>
-
 			</xsl:if>
 			<journal-title-group>
 				<xsl:if test=".//journal-title!=''">
@@ -3179,7 +3178,7 @@ et al.</copyright-statement>
 	<xsl:template match="patgrp/orgname">
 		<xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
-	<xsl:template match="article|text" mode="pub-date">
+	<xsl:template match="article|text|doc" mode="pub-date">
 		<xsl:variable name="preprint_date">
 			<xsl:choose>
 				<xsl:when test="@rvpdate">

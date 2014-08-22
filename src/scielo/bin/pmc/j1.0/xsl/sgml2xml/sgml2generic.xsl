@@ -17,7 +17,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="article|text|doc" mode="dtd-version">
 		<xsl:attribute name="dtd-version">1.0</xsl:attribute>
 	</xsl:template>
-	<xsl:template match="article | text|doc" mode="pub-date">
+	<xsl:template match="article | text|doc" mode="new-pub-date">
 		<!-- anteriormente somente @pub-type -->
 		
 		<!-- 
