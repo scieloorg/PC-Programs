@@ -11,14 +11,12 @@ element;#TRUE#;#TRUE#
 equation;#TRUE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
-funding;#FALSE#;#FALSE#
 graphic;#FALSE#;#TRUE#
 ign;#TRUE#;#TRUE#
 list;#FALSE#;#TRUE#
 product;#TRUE#;#TRUE#
 quote;#TRUE#;#TRUE#
 related;#TRUE#;#TRUE#
-report;#FALSE#;#FALSE#
 supplmat;#FALSE#;#TRUE#
 tabwrap;#FALSE#;#TRUE#
 uri;#FALSE#;#TRUE#
@@ -265,6 +263,7 @@ figgrp;#FALSE#;#TRUE#
 fname
 
 fngrp
+funding;#FALSE#;#FALSE#
 
 fntable
 label;#FALSE#;#FALSE#
@@ -518,6 +517,7 @@ ocitat;#FALSE#;#TRUE#
 othinfo
 
 p
+funding;#TRUE;#TRUE#
 
 pages
 
@@ -614,7 +614,6 @@ report
 no;#FALSE#;#FALSE#
 contract;#FALSE#;#TRUE#
 rsponsor;#FALSE#;#TRUE#
-awarded;#FALSE#;#TRUE#
 projname;#FALSE#;#TRUE#
 
 response
@@ -874,13 +873,10 @@ subtitle;#FALSE#;#FALSE#
 
 funding
 award;#FALSE#;#TRUE#
-projname;#FALSE#;#TRUE#
-awarded;#FALSE#;#TRUE#
 
 award
 contract;#FALSE#;#FALSE#
 fundsrc;#FALSE#;#TRUE#
-awarded;#FALSE#;#TRUE#
 
 docresp
 abstract;#FALSE#;#TRUE#
@@ -891,7 +887,6 @@ corpauth;#FALSE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
 fngrp;#FALSE#;#TRUE#
-funding;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
 kwdgrp;#FALSE#;#TRUE#
@@ -912,7 +907,6 @@ docresp;#FALSE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
 fngrp;#FALSE#;#TRUE#
-funding;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
 kwdgrp;#FALSE#;#TRUE#
