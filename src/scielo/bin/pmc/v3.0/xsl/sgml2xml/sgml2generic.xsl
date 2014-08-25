@@ -8,6 +8,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util"
 	xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
 	<xsl:variable name="pub_type"><xsl:choose>
+		<xsl:when test="node()/@ahpdate!='' and node()/@issueno='ahead'"></xsl:when>
 		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">epub-ppub</xsl:when>
 		<xsl:when test=".//extra-scielo/print-issn!=''">ppub</xsl:when>
 		<xsl:when test=".//extra-scielo/e-issn!=''">epub</xsl:when>
@@ -3060,16 +3061,18 @@ et al.</copyright-statement>
 				<xsl:otherwise><xsl:value-of select="$pub_type"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<pub-date pub-type="{$date_type}">
-			<xsl:call-template name="display_date">
-				<xsl:with-param name="dateiso">
-					<xsl:value-of select="@dateiso"/>
-				</xsl:with-param>
-				<xsl:with-param name="date">
-					<xsl:value-of select="//extra-scielo//season"/>
-				</xsl:with-param>
-			</xsl:call-template>
-		</pub-date>
+		<xsl:if test="$date_type!=''">
+			<pub-date pub-type="{$date_type}">
+				<xsl:call-template name="display_date">
+					<xsl:with-param name="dateiso">
+						<xsl:value-of select="@dateiso"/>
+					</xsl:with-param>
+					<xsl:with-param name="date">
+						<xsl:value-of select="//extra-scielo//season"/>
+					</xsl:with-param>
+				</xsl:call-template>
+			</pub-date>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template match="element">
 		<xsl:element name="{@name}">
