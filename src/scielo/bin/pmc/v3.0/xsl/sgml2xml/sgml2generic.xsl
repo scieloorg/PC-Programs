@@ -903,7 +903,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="label|sup"/>
 			<institution content-type="original"><xsl:apply-templates select="*|text()" mode="original"></xsl:apply-templates></institution>
 			<institution content-type="aff-pmc"><xsl:apply-templates select="*[name()!='label' and name()!='sup']|text()" mode="aff-pmc"/></institution>
-			
 			<xsl:choose>
 				<xsl:when test="@orgname">
 					<xsl:apply-templates select="@*[name()!='id']"/>
@@ -1612,7 +1611,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length(position()))"/></xsl:variable>
 		<xsl:variable name="id"><xsl:value-of select="$zeros"/><xsl:value-of select="position()"/></xsl:variable>
 		<ref id="B{$id}">
-			<xsl:apply-templates select="no"/>
+			<xsl:apply-templates select="label"/>
 			
 			<xsl:apply-templates select="." mode="text-ref"/>
 			<element-citation publication-type="{@reftype}">
