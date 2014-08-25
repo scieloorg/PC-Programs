@@ -1364,8 +1364,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:param name="language"/>
 		<kwd-group>
 			<xsl:choose>
-				<xsl:when test="@language"><xsl:attribute name="xml:lang"></xsl:attribute><xsl:value-of select="@language"/></xsl:when></xsl:when>
-				<xsl:when test="$language!=''"><xsl:attribute name="xml:lang"></xsl:attribute><xsl:value-of select="$language"/></xsl:when></xsl:when>
+				<xsl:when test="@language"><xsl:attribute name="xml:lang"><xsl:value-of select="@language"/></xsl:attribute></xsl:when>
+				<xsl:when test="$language!=''"><xsl:attribute name="xml:lang"><xsl:value-of select="$language"/></xsl:attribute></xsl:when>
 			</xsl:choose>
 			<xsl:apply-templates select="kwd"/>
 		</kwd-group>
@@ -3022,7 +3022,7 @@ et al.</copyright-statement>
 	<xsl:template match="confgrp/no"/>
 	<xsl:template match="confgrp/confname">
 		<conf-name>
-			<xsl:apply-templates select="../..//confgrp" mode="fulltitle"/>
+			<xsl:apply-templates select="../confgrp" mode="fulltitle"/>
 		</conf-name>
 	</xsl:template>
 
@@ -3030,8 +3030,7 @@ et al.</copyright-statement>
 		<xsl:apply-templates select="no|confname" mode="fulltitle"/>
 	</xsl:template>
 
-	<xsl:template match="confgrp/confname | confgrp/no" mode="fulltitle"><xsl:value-of select="normalize-space(.)"/>
-		&#160; </xsl:template>
+	<xsl:template match="confgrp/confname | confgrp/no" mode="fulltitle"><xsl:value-of select="normalize-space(.)"/>&#160;</xsl:template>
 
 	<xsl:template match="colvolid"><volume><xsl:value-of select="."/></volume></xsl:template>
 	<xsl:template match="coltitle">
