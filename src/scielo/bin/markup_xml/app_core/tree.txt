@@ -937,13 +937,16 @@ city;#FALSE#;#TRUE#
 coltitle;#FALSE#;#TRUE#
 colvolid;#FALSE#;#TRUE#
 confgrp;#TRUE#;#FALSE#
+contract;#FALSE#;#FALSE#
 country;#FALSE#;#TRUE#
 date;#TRUE#;#TRUE#
+doi;#FALSE#;#TRUE#
 edition;#FALSE#;#TRUE#
 extent;#FALSE#;#TRUE#
+found-at;#FALSE#;#FALSE#
 isbn;#TRUE#;#TRUE#
-issn;#TRUE#;#TRUE#
 issueno;#FALSE#;#TRUE#
+letterto;#FALSE#;#FALSE#
 moreinfo;#TRUE#;#TRUE#
 pages;#FALSE#;#TRUE#
 part;#FALSE#;#TRUE#
@@ -983,6 +986,8 @@ source
 *source
 
 reportid
+
+letterto
 
 found-at
 
