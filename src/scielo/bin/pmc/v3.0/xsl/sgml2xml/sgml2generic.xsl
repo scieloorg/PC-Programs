@@ -278,6 +278,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:with-param name="parentid" select="$parentid"></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="front">
+				<xsl:with-param name="language" select="@language"/>
 				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="body">
@@ -286,7 +287,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="back">
 				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
 			</xsl:apply-templates>
-			<xsl:apply-templates select="response | subart">
+			<xsl:apply-templates select="docresp | response | subart">
 				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
 			</xsl:apply-templates>
 		</sub-article>
@@ -299,6 +300,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:with-param name="parentid" select="$parentid"></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="front">
+				<xsl:with-param name="language" select="@language"/>
 				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="body">
@@ -317,6 +319,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:with-param name="parentid" select="$parentid"></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="front">
+				<xsl:with-param name="language" select="@language"/>
 				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="body">
@@ -443,29 +446,38 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="." mode="dtd-version"/>
 					<xsl:apply-templates select="@doctopic" mode="type"/>
 					<xsl:apply-templates select="@language"/>
-					<xsl:apply-templates select="." mode="front"/>
+					<xsl:apply-templates select="." mode="front">
+						<xsl:with-param name="language" select="@language"/>
+					</xsl:apply-templates>
 					<xsl:apply-templates select="." mode="body"/>
 					<xsl:apply-templates select="." mode="back"/>
 					<xsl:apply-templates select="response | subart"/>
 					<xsl:apply-templates select="docresp | subdoc"/>
 		</article>
 	</xsl:template>
-	<xsl:template match="*" mode="front">
+	<xsl:template match="article|text|response|subart|doc|subdoc|docresp" mode="front">
+		<xsl:param name="language"/>
 		<xsl:choose>
 			<xsl:when test="name()='doc' or name()='article'">
 				<front>
 					<xsl:apply-templates select="." mode="journal-meta"/>
-					<xsl:apply-templates select="." mode="article-meta"/>					
+					<xsl:apply-templates select="." mode="article-meta">
+						<xsl:with-param name="language" select="$language"/>
+					</xsl:apply-templates>					
 				</front>
 			</xsl:when>
 			<xsl:when test="name()='subdoc' or name()='docresp'">
 				<front-stub>
-					<xsl:apply-templates select="." mode="article-meta"/>					
+					<xsl:apply-templates select="." mode="article-meta">
+						<xsl:with-param name="language" select="$language"/>
+					</xsl:apply-templates>										
 				</front-stub>
 			</xsl:when>
 			<xsl:otherwise>
 				<front-stub>
-					<xsl:apply-templates select="front" mode="article-meta"/>					
+					<xsl:apply-templates select="front" mode="article-meta">
+						<xsl:with-param name="language" select="$language"/>
+					</xsl:apply-templates>										
 				</front-stub>
 			</xsl:otherwise>
 		</xsl:choose>		
@@ -564,19 +576,26 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</article-categories>
 	</xsl:template>
 	<xsl:template match="subart/front | subdoc | docresp" mode="article-meta">
+		<xsl:param name="language"/>
 		<xsl:if test="not(.//toctitle)">
 			<xsl:apply-templates select="." mode="toctitle"></xsl:apply-templates>
 		</xsl:if>
 		<xsl:apply-templates select=".//toctitle"></xsl:apply-templates>
 		<title-group>
-			<xsl:apply-templates select=".//titlegrp/title|doctitle"/>
+			<xsl:apply-templates select=".//titlegrp/title|doctitle">
+				<xsl:with-param name="language" select="$language"/>
+			</xsl:apply-templates>
 		</title-group>
 		<xsl:apply-templates select="." mode="front-author"/>
 		
 		<xsl:apply-templates select="../xmlbody/sigblock" mode="author"></xsl:apply-templates>
 		<xsl:apply-templates select=".//cltrial"></xsl:apply-templates>
-		<xsl:apply-templates select=".//abstract|.//xmlabstr"/>
-		<xsl:apply-templates select=".//keygrp|.//kwdgrp"/>
+		<xsl:apply-templates select=".//abstract|.//xmlabstr">
+			<xsl:with-param name="language" select="$language"/>
+		</xsl:apply-templates>
+		<xsl:apply-templates select=".//keygrp|.//kwdgrp">
+			<xsl:with-param name="language" select="$language"/>
+		</xsl:apply-templates>
 		
 	</xsl:template>
 	<xsl:template match="*" mode="front-author">
@@ -627,7 +646,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="article|text|doc" mode="article-meta">
-		<xsl:variable name="l" select="@language"/>
+		<xsl:param name="language"/>
 		<article-meta>
 			<xsl:apply-templates select="front/doi|doi"/>
 			
@@ -649,7 +668,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="." mode="toctitle"></xsl:apply-templates>
 			</xsl:if>
 			
-			<xsl:apply-templates select="." mode="article-title"/>
+			<xsl:apply-templates select="." mode="article-title">
+				<xsl:with-param name="language" select="$language"/>
+			</xsl:apply-templates>
 			<xsl:apply-templates select="xmlbody/sigblock" mode="author"></xsl:apply-templates>
 			<xsl:apply-templates select="." mode="front-author"/>
 			<xsl:apply-templates select="." mode="author-notes"/>
@@ -662,10 +683,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//hist" mode="front"/>
 			<xsl:apply-templates select=".//back/licenses| cc | .//extra-scielo/license"/>
 			<xsl:apply-templates select="front/related|related"/>
-			<xsl:apply-templates select=".//abstract[@language=$l]|.//xmlabstr[@language=$l]"/>
-			<xsl:apply-templates select=".//abstract[@language!=$l]|.//xmlabstr[@language!=$l]"
+			<xsl:apply-templates select=".//abstract[@language=$language or not(@language)]|.//xmlabstr[@language=$language or not(@language)]"/>
+			<xsl:apply-templates select=".//abstract[@language!=$language]|.//xmlabstr[@language!=$language]"
 				mode="trans"/>
-			<xsl:apply-templates select=".//keygrp|.//kwdgrp"/>
+			<xsl:apply-templates select=".//keygrp|.//kwdgrp">
+				<xsl:with-param name="language" select="$language"/>
+			</xsl:apply-templates>
 			<xsl:apply-templates
 				select=".//front/report  | .//bibcom/report |  .//bbibcom/report | .//back/ack//report | .//ack//funding" mode="front"/>
 			<xsl:apply-templates
@@ -681,24 +704,23 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</article-meta>
 	</xsl:template>
 	<xsl:template match="*" mode="article-title">
-		<xsl:variable name="l" select="@language"/>
+		<xsl:param name="language"/>
 		<xsl:choose>
 			<xsl:when test="doctitle">
 				<title-group>
-					<xsl:apply-templates select="doctitle[@language=$l] "/>
-					<xsl:apply-templates select="doctitle[@language!=$l]" mode="trans-title-group"/>
+					<xsl:apply-templates select="doctitle[@language=$language or not(@language)] "/>
+					<xsl:apply-templates select="doctitle[@language!=$language]" mode="trans-title-group"/>
 				</title-group>
 			</xsl:when>
 			<xsl:otherwise>
 				<title-group>
-					<xsl:apply-templates select=".//titlegrp/title[@language=$l] "/>
-					<xsl:apply-templates select=".//titlegrp/title[@language!=$l]" mode="trans-title-group">
+					<xsl:apply-templates select=".//titlegrp/title[@language=$language or not(@language)] "/>
+					<xsl:apply-templates select=".//titlegrp/title[@language!=$language]" mode="trans-title-group">
 						<xsl:with-param name="subtitles" select=".//titlegrp/subtitle[position()!=1]"/>
 					</xsl:apply-templates>
 				</title-group>
 			</xsl:otherwise>
 		</xsl:choose>
-		
 	</xsl:template>
 	<xsl:template match="titlegrp/title">
 		<article-title>
@@ -1310,7 +1332,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</trans-abstract>
 	</xsl:template>
 	<xsl:template match="abstract">
-		<abstract xml:lang="{@language}">
+		<xsl:param name="language"/>
+		<abstract xml:lang="{$language}">
 			<p>
 				<xsl:apply-templates/>
 			</p>
@@ -1322,7 +1345,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</trans-abstract>
 	</xsl:template>
 	<xsl:template match="xmlabstr">
-		<abstract xml:lang="{@language}">
+		<xsl:param name="language"/>
+		<abstract xml:lang="{$language}">
 			<xsl:apply-templates select="*"/>
 		</abstract>
 	</xsl:template>
@@ -1337,7 +1361,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</kwd>
 	</xsl:template>
 	<xsl:template match="kwdgrp">
-		<kwd-group xml:lang="{@language}">
+		<xsl:param name="language"/>
+		<kwd-group>
+			<xsl:choose>
+				<xsl:when test="@language"><xsl:attribute name="xml:lang"></xsl:attribute><xsl:value-of select="@language"/></xsl:when></xsl:when>
+				<xsl:when test="$language!=''"><xsl:attribute name="xml:lang"></xsl:attribute><xsl:value-of select="$language"/></xsl:when></xsl:when>
+			</xsl:choose>
 			<xsl:apply-templates select="kwd"/>
 		</kwd-group>
 	</xsl:template>
