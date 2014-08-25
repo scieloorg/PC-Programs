@@ -3264,7 +3264,9 @@ et al.</copyright-statement>
 			<xsl:apply-templates select="*"/>
 		</ack>
 	</xsl:template>
-	
+	<xsl:template match="funding | funding//*">
+		<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+	</xsl:template>
 	<xsl:template match="*[contains(name(),'citat')]//report//*[name()!='no']">
 		<!--xsl:comment>*[contains(name(),'citat')]//report//*[name()!='no']</xsl:comment-->
 		<xsl:apply-templates select="*|text()"/>
@@ -3283,13 +3285,13 @@ et al.</copyright-statement>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="contract">
+	<xsl:template match="contract" mode="front">
 		<award-id>
 			<xsl:apply-templates/>
 		</award-id>
 	</xsl:template>
 	
-	<xsl:template match="rsponsor | fundsrc">
+	<xsl:template match="rsponsor | fundsrc" mode="front">
 		<funding-source>
 			<xsl:choose>
 				<xsl:when test="orgname">
@@ -3330,7 +3332,7 @@ et al.</copyright-statement>
 		<xsl:param name="statement"/>
 		<xsl:if test=".//contract">
 			<funding-group>
-				<xsl:apply-templates select="award[contract]"></xsl:apply-templates>
+				<xsl:apply-templates select="award[contract]" mode="front"></xsl:apply-templates>
 				<xsl:if test="$statement='true'">
 					<funding-statement><xsl:apply-templates select=".//text()"/></funding-statement>
 				</xsl:if>
@@ -3338,7 +3340,7 @@ et al.</copyright-statement>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="award">
+	<xsl:template match="award" mode="front">
 		<xsl:apply-templates select=".//fundsrc" mode="award-group">
 			<xsl:with-param name="contract" select=".//contract"/>
 		</xsl:apply-templates>
@@ -3346,26 +3348,22 @@ et al.</copyright-statement>
 	
 	<xsl:template match="report//rsponsor | funding//fundsrc" mode="award-group">
 		<xsl:param name="contract"/>
-		
 		<xsl:if test="$contract">
 				<xsl:apply-templates select="$contract" mode="award-group">
 					<xsl:with-param name="fundsrc" select="."/>
 				</xsl:apply-templates>
-		</xsl:if>
-	
+		</xsl:if>	
 		<xsl:apply-templates select=".//contract" mode="award-group">
 			<xsl:with-param name="fundsrc" select="."/>
 		</xsl:apply-templates>
-	
-		
 	</xsl:template>
 	
 	<xsl:template match="contract" mode="award-group">
 		<xsl:param name="fundsrc"/>
 		<award-group>
 			<xsl:attribute name="award-type">contract</xsl:attribute>
-			<xsl:apply-templates select="."/>
-			<xsl:apply-templates select="$fundsrc"/>
+			<xsl:apply-templates select="." mode="front"/>
+			<xsl:apply-templates select="$fundsrc" mode="front"/>
 		</award-group>
 	</xsl:template>
 </xsl:stylesheet>
