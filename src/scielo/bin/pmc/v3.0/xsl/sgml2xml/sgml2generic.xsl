@@ -8,10 +8,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util"
 	xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
 	<xsl:variable name="pub_type"><xsl:choose>
-		<xsl:when test="node()/@issueno='ahead'">preprint</xsl:when>
-		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">electronic-print</xsl:when>
-		<xsl:when test=".//extra-scielo/print-issn!=''">print</xsl:when>
-		<xsl:when test=".//extra-scielo/e-issn!=''">electronic</xsl:when>
+		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">epub-ppub</xsl:when>
+		<xsl:when test=".//extra-scielo/print-issn!=''">ppub</xsl:when>
+		<xsl:when test=".//extra-scielo/e-issn!=''">epub</xsl:when>
 	</xsl:choose></xsl:variable>
 	<xsl:variable name="unident" select="//unidentified"/>
 	<xsl:variable name="corresp" select="//corresp"/>
@@ -3038,6 +3037,9 @@ et al.</copyright-statement>
 				<xsl:when test="@rvpdate">
 					<xsl:value-of select="@rvpdate"/>
 				</xsl:when>
+				<xsl:when test="@artdate">
+					<xsl:value-of select="@artdate"/>
+				</xsl:when>
 				<xsl:when test="@ahpdate">
 					<xsl:value-of select="@ahpdate"/>
 				</xsl:when>
@@ -3055,7 +3057,7 @@ et al.</copyright-statement>
 		<xsl:variable name="date_type">
 			<xsl:choose>
 				<xsl:when test="normalize-space($preprint_date)!=''">ppub</xsl:when>
-				<xsl:when test="normalize-space($preprint_date)=''">epub-ppub</xsl:when>
+				<xsl:otherwise><xsl:value-of select="$pub_type"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<pub-date pub-type="{$date_type}">
