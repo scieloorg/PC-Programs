@@ -1404,13 +1404,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="*" mode="element-counts">
 		<xsl:param name="element_name"/>
 		<xsl:param name="count"/>
-		<xsl:if test="$count&gt;0">
 			<xsl:element name="{$element_name}">
-				<xsl:attribute name="count">
-					<xsl:value-of select="$count"/>
-				</xsl:attribute>
+				<xsl:attribute name="count"><xsl:choose>
+					<xsl:when test="$count=''">0</xsl:when>
+					<xsl:otherwise><xsl:value-of select="$count"/></xsl:otherwise>
+				</xsl:choose></xsl:attribute>
 			</xsl:element>
-		</xsl:if>
 	</xsl:template>
 	<xsl:template match="@sec-type[.='nd']"> </xsl:template>
 	<xsl:template match="*" mode="body">
