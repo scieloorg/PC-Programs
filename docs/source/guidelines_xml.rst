@@ -3,5 +3,4 @@ SciELO Publishing Schema - Guidelines for XML production
 ========================================================
 
 
-`Portuguese <pt_guidelines_xml.html>`_
-
+ - `SciELO Publishing Schema - Guia de uso dos elementos e atributos <http://docs.scielo.org/projects/scielo-publishing-schema/en/>`_

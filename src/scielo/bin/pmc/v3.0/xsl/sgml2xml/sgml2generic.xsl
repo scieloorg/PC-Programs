@@ -8,10 +8,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:util="http://dtd.nlm.nih.gov/xsl/util"
 	xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl">
 	<xsl:variable name="pub_type"><xsl:choose>
-		<xsl:when test="node()/@issueno='ahead'">preprint</xsl:when>
-		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">electronic-print</xsl:when>
-		<xsl:when test=".//extra-scielo/print-issn!=''">print</xsl:when>
-		<xsl:when test=".//extra-scielo/e-issn!=''">electronic</xsl:when>
+		<xsl:when test="node()/@ahpdate!='' and node()/@issueno='ahead'"></xsl:when>
+		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">epub-ppub</xsl:when>
+		<xsl:when test=".//extra-scielo/print-issn!=''">ppub</xsl:when>
+		<xsl:when test=".//extra-scielo/e-issn!=''">epub</xsl:when>
 	</xsl:choose></xsl:variable>
 	<xsl:variable name="unident" select="//unidentified"/>
 	<xsl:variable name="corresp" select="//corresp"/>
@@ -36,7 +36,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:when test="./front/doi"><xsl:value-of select="./front/doi"/></xsl:when>
 		<xsl:otherwise><xsl:value-of select="doi"/></xsl:otherwise>
 	</xsl:choose></xsl:variable>
-	<xsl:variable name="journal_acron" select="//extra-scielo/journal-acron"/>
+	<xsl:variable name="journal_acron">
+		<xsl:choose>
+			<xsl:when test="//extra-scielo/journal-acron"><xsl:value-of select="//extra-scielo/journal-acron"/></xsl:when>
+			<xsl:when test="node()/@acron"><xsl:value-of select="node()/@acron"/></xsl:when>
+		</xsl:choose>
+	</xsl:variable>
 	<xsl:variable name="JOURNAL_PID" select="node()/@issn"/>
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
 	<xsl:variable name="journal_issue">
@@ -273,6 +278,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:with-param name="parentid" select="$parentid"></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="front">
+				<xsl:with-param name="language" select="@language"/>
 				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="body">
@@ -281,7 +287,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="back">
 				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
 			</xsl:apply-templates>
-			<xsl:apply-templates select="response | subart">
+			<xsl:apply-templates select="docresp | response | subart">
 				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
 			</xsl:apply-templates>
 		</sub-article>
@@ -294,6 +300,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:with-param name="parentid" select="$parentid"></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="front">
+				<xsl:with-param name="language" select="@language"/>
 				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="body">
@@ -312,6 +319,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:with-param name="parentid" select="$parentid"></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="front">
+				<xsl:with-param name="language" select="@language"/>
 				<xsl:with-param name="parentid" select="@id"></xsl:with-param>
 			</xsl:apply-templates>
 			<xsl:apply-templates select="." mode="body">
@@ -438,29 +446,38 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="." mode="dtd-version"/>
 					<xsl:apply-templates select="@doctopic" mode="type"/>
 					<xsl:apply-templates select="@language"/>
-					<xsl:apply-templates select="." mode="front"/>
+					<xsl:apply-templates select="." mode="front">
+						<xsl:with-param name="language" select="@language"/>
+					</xsl:apply-templates>
 					<xsl:apply-templates select="." mode="body"/>
 					<xsl:apply-templates select="." mode="back"/>
 					<xsl:apply-templates select="response | subart"/>
 					<xsl:apply-templates select="docresp | subdoc"/>
 		</article>
 	</xsl:template>
-	<xsl:template match="*" mode="front">
+	<xsl:template match="article|text|response|subart|doc|subdoc|docresp" mode="front">
+		<xsl:param name="language"/>
 		<xsl:choose>
 			<xsl:when test="name()='doc' or name()='article'">
 				<front>
 					<xsl:apply-templates select="." mode="journal-meta"/>
-					<xsl:apply-templates select="." mode="article-meta"/>					
+					<xsl:apply-templates select="." mode="article-meta">
+						<xsl:with-param name="language" select="$language"/>
+					</xsl:apply-templates>					
 				</front>
 			</xsl:when>
 			<xsl:when test="name()='subdoc' or name()='docresp'">
 				<front-stub>
-					<xsl:apply-templates select="." mode="article-meta"/>					
+					<xsl:apply-templates select="." mode="article-meta">
+						<xsl:with-param name="language" select="$language"/>
+					</xsl:apply-templates>										
 				</front-stub>
 			</xsl:when>
 			<xsl:otherwise>
 				<front-stub>
-					<xsl:apply-templates select="front" mode="article-meta"/>					
+					<xsl:apply-templates select="front" mode="article-meta">
+						<xsl:with-param name="language" select="$language"/>
+					</xsl:apply-templates>										
 				</front-stub>
 			</xsl:otherwise>
 		</xsl:choose>		
@@ -476,7 +493,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<journal-id journal-id-type="publisher-id">
 					<xsl:value-of select="$journal_acron"/>
 				</journal-id>
-
 			</xsl:if>
 			<journal-title-group>
 				<xsl:if test=".//journal-title!=''">
@@ -560,19 +576,26 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</article-categories>
 	</xsl:template>
 	<xsl:template match="subart/front | subdoc | docresp" mode="article-meta">
+		<xsl:param name="language"/>
 		<xsl:if test="not(.//toctitle)">
 			<xsl:apply-templates select="." mode="toctitle"></xsl:apply-templates>
 		</xsl:if>
 		<xsl:apply-templates select=".//toctitle"></xsl:apply-templates>
 		<title-group>
-			<xsl:apply-templates select=".//titlegrp/title|doctitle"/>
+			<xsl:apply-templates select=".//titlegrp/title|doctitle">
+				<xsl:with-param name="language" select="$language"/>
+			</xsl:apply-templates>
 		</title-group>
 		<xsl:apply-templates select="." mode="front-author"/>
 		
 		<xsl:apply-templates select="../xmlbody/sigblock" mode="author"></xsl:apply-templates>
 		<xsl:apply-templates select=".//cltrial"></xsl:apply-templates>
-		<xsl:apply-templates select=".//abstract|.//xmlabstr"/>
-		<xsl:apply-templates select=".//keygrp|.//kwdgrp"/>
+		<xsl:apply-templates select=".//abstract|.//xmlabstr">
+			<xsl:with-param name="language" select="$language"/>
+		</xsl:apply-templates>
+		<xsl:apply-templates select=".//keygrp|.//kwdgrp">
+			<xsl:with-param name="language" select="$language"/>
+		</xsl:apply-templates>
 		
 	</xsl:template>
 	<xsl:template match="*" mode="front-author">
@@ -617,24 +640,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<name>
 				<surname><xsl:value-of select="substring-after(.,concat($given-names, ' '))"/></surname>
 				<given-names><xsl:value-of select="$given-names"/></given-names>
-				
 			</name>
 		</contrib>
 		<xsl:copy-of select="..//role[$position]"/>
 	</xsl:template>
 	
 	<xsl:template match="article|text|doc" mode="article-meta">
-		<xsl:variable name="l" select="@language"/>
+		<xsl:param name="language"/>
 		<article-meta>
-			<xsl:if test="..//extra-scielo/issue-order">
-				<xsl:variable name="n"><xsl:value-of select="number(substring(..//extra-scielo/issue-order,5))"/></xsl:variable>
-				<!--article-id pub-id-type="publisher-id">S<xsl:value-of select="$JOURNAL_PID"/>
-					<xsl:value-of select="substring(@dateiso,1,4)"/>	
-					<xsl:value-of select="substring(string(10000 + $n),2)"/>
-					<xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/>
-				</article-id-->
-			</xsl:if>
-			
 			<xsl:apply-templates select="front/doi|doi"/>
 			
 			<xsl:variable name="fpage"><xsl:choose>
@@ -648,33 +661,40 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<!-- criar article-id (other), regra quando  -->
 				<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>
 			</xsl:if>
+			<xsl:if test="@ahppid!=''"><article-id specific-use="previous-pid"><xsl:value-of select="@ahppid"/></article-id></xsl:if>
 
 			<xsl:apply-templates select=".//toctitle"></xsl:apply-templates>
 			<xsl:if test="not(.//toctitle)">
 				<xsl:apply-templates select="." mode="toctitle"></xsl:apply-templates>
 			</xsl:if>
 			
-			<xsl:apply-templates select="." mode="article-title"/>
+			<xsl:apply-templates select="." mode="article-title">
+				<xsl:with-param name="language" select="$language"/>
+			</xsl:apply-templates>
 			<xsl:apply-templates select="xmlbody/sigblock" mode="author"></xsl:apply-templates>
 			<xsl:apply-templates select="." mode="front-author"/>
 			<xsl:apply-templates select="." mode="author-notes"/>
 
 			<xsl:apply-templates select="." mode="pub-date"/>
 
-			<xsl:apply-templates select="@volid | @issueno  | @fpage | @lpage"/>
+			<xsl:apply-templates select="@volid | @issueno  | @fpage | @lpage | @elocatid"/>
 			<xsl:apply-templates select=".//product" mode="article-meta"></xsl:apply-templates>
 			<xsl:apply-templates select=".//cltrial"></xsl:apply-templates>
 			<xsl:apply-templates select=".//hist" mode="front"/>
-			<xsl:apply-templates select=".//back/licenses| cc"/>
+			<xsl:apply-templates select=".//back/licenses| cc | .//extra-scielo/license"/>
 			<xsl:apply-templates select="front/related|related"/>
-			<xsl:apply-templates select=".//abstract[@language=$l]|.//xmlabstr[@language=$l]"/>
-			<xsl:apply-templates select=".//abstract[@language!=$l]|.//xmlabstr[@language!=$l]"
+			<xsl:apply-templates select=".//abstract[@language=$language or not(@language)]|.//xmlabstr[@language=$language or not(@language)]"/>
+			<xsl:apply-templates select=".//abstract[@language!=$language]|.//xmlabstr[@language!=$language]"
 				mode="trans"/>
-			<xsl:apply-templates select=".//keygrp|.//kwdgrp"/>
+			<xsl:apply-templates select=".//keygrp|.//kwdgrp">
+				<xsl:with-param name="language" select="$language"/>
+			</xsl:apply-templates>
 			<xsl:apply-templates
-				select=".//front/report  | .//bibcom/report |  .//bbibcom/report | .//back/ack//report"/>
+				select=".//front/report  | .//bibcom/report |  .//bbibcom/report | .//back/ack//report | .//ack//funding" mode="front"/>
 			<xsl:apply-templates
-				select="ack//funding | fngrp//funding"/>
+				select=".//fngrp//report|.//fngrp//funding" mode="front">
+				<xsl:with-param name="statement" select="'true'"/>
+			</xsl:apply-templates>
 			<xsl:apply-templates
 				select=".//front/confgrp | ..//front/thesgrp | .//bibcom/confgrp | ..//bibcom/thesgrp  
 				| .//bbibcom/confgrp | ..//bbibcom/thesgrp "/>
@@ -684,24 +704,23 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</article-meta>
 	</xsl:template>
 	<xsl:template match="*" mode="article-title">
-		<xsl:variable name="l" select="@language"/>
+		<xsl:param name="language"/>
 		<xsl:choose>
 			<xsl:when test="doctitle">
 				<title-group>
-					<xsl:apply-templates select="doctitle[@language=$l] "/>
-					<xsl:apply-templates select="doctitle[@language!=$l]" mode="trans-title-group"/>
+					<xsl:apply-templates select="doctitle[@language=$language or not(@language)] "/>
+					<xsl:apply-templates select="doctitle[@language!=$language]" mode="trans-title-group"/>
 				</title-group>
 			</xsl:when>
 			<xsl:otherwise>
 				<title-group>
-					<xsl:apply-templates select=".//titlegrp/title[@language=$l] "/>
-					<xsl:apply-templates select=".//titlegrp/title[@language!=$l]" mode="trans-title-group">
+					<xsl:apply-templates select=".//titlegrp/title[@language=$language or not(@language)] "/>
+					<xsl:apply-templates select=".//titlegrp/title[@language!=$language]" mode="trans-title-group">
 						<xsl:with-param name="subtitles" select=".//titlegrp/subtitle[position()!=1]"/>
 					</xsl:apply-templates>
 				</title-group>
 			</xsl:otherwise>
 		</xsl:choose>
-		
 	</xsl:template>
 	<xsl:template match="titlegrp/title">
 		<article-title>
@@ -884,7 +903,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="label|sup"/>
 			<institution content-type="original"><xsl:apply-templates select="*|text()" mode="original"></xsl:apply-templates></institution>
 			<institution content-type="aff-pmc"><xsl:apply-templates select="*[name()!='label' and name()!='sup']|text()" mode="aff-pmc"/></institution>
-			
 			<xsl:choose>
 				<xsl:when test="@orgname">
 					<xsl:apply-templates select="@*[name()!='id']"/>
@@ -1129,6 +1147,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:attribute name="seq"><xsl:value-of select="substring-after(.,'-')"/></xsl:attribute>
 					<xsl:value-of select="substring-before(.,'-')"/>
 				</xsl:when>
+				<xsl:when test="../@fpageseq"><xsl:attribute name="seq"><xsl:value-of select="../@fpageseq"/></xsl:attribute>
+				</xsl:when>
 				<xsl:otherwise><xsl:value-of select="normalize-space(.)"/></xsl:otherwise>
 			</xsl:choose>
 		</fpage>
@@ -1144,6 +1164,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:choose>
 		</lpage>
 	</xsl:template>
+	<xsl:template match="@elocatid"><elocation-id><xsl:value-of select="."/></elocation-id></xsl:template>
 	<xsl:template match="fpage">
 		<fpage>
 			<xsl:value-of select="normalize-space(.)"/>
@@ -1310,7 +1331,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</trans-abstract>
 	</xsl:template>
 	<xsl:template match="abstract">
-		<abstract xml:lang="{@language}">
+		<xsl:param name="language"/>
+		<abstract xml:lang="{$language}">
 			<p>
 				<xsl:apply-templates/>
 			</p>
@@ -1322,7 +1344,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</trans-abstract>
 	</xsl:template>
 	<xsl:template match="xmlabstr">
-		<abstract xml:lang="{@language}">
+		<xsl:param name="language"/>
+		<abstract xml:lang="{$language}">
 			<xsl:apply-templates select="*"/>
 		</abstract>
 	</xsl:template>
@@ -1337,53 +1360,84 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</kwd>
 	</xsl:template>
 	<xsl:template match="kwdgrp">
-		<kwd-group xml:lang="{@language}">
+		<xsl:param name="language"/>
+		<kwd-group>
+			<xsl:choose>
+				<xsl:when test="@language"><xsl:attribute name="xml:lang"><xsl:value-of select="@language"/></xsl:attribute></xsl:when>
+				<xsl:when test="$language!=''"><xsl:attribute name="xml:lang"><xsl:value-of select="$language"/></xsl:attribute></xsl:when>
+			</xsl:choose>
 			<xsl:apply-templates select="kwd"/>
 		</kwd-group>
 	</xsl:template>
 	
 	<xsl:template match="*" mode="counts">
 		<counts>
-			<xsl:apply-templates select="." mode="element-counts">
-				<xsl:with-param name="element_name" select="'fig-count'"/>
-				<xsl:with-param name="count" select="count(.//figgrp)"/>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="." mode="element-counts">
-				<xsl:with-param name="element_name" select="'table-count'"/>
-				<xsl:with-param name="count" select="count(.//tabwrap)"/>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="." mode="element-counts">
-				<xsl:with-param name="element_name" select="'equation-count'"/>
-				<xsl:with-param name="count" select="count(.//equation)"/>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="." mode="element-counts">
-				<xsl:with-param name="element_name" select="'ref-count'"/>
-				<xsl:with-param name="count"><xsl:choose>
-					<xsl:when test=".//back">
-						<xsl:value-of select="count(.//back//*[contains(name(),'citat')])"/>
-					</xsl:when><xsl:otherwise><xsl:value-of select="count(.//ref)"/></xsl:otherwise>
-				</xsl:choose></xsl:with-param>
-			</xsl:apply-templates>
-			<xsl:apply-templates select="." mode="element-counts">
-				<xsl:with-param name="element_name" select="'page-count'"/>
-				<xsl:with-param name="count"><xsl:choose>
-					<xsl:when test="@pagcount"><xsl:value-of select="@pagcount"/></xsl:when>
-					<xsl:when test="string(number(@fpage))=@fpage and string(number(@lpage))=@lpage"><xsl:value-of select="@lpage - @fpage + 1"/></xsl:when>
-					<xsl:otherwise></xsl:otherwise>
-				</xsl:choose></xsl:with-param>
-			</xsl:apply-templates>
+			<xsl:choose>
+				<xsl:when test="not(@figcount)">
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'fig-count'"/>
+						<xsl:with-param name="count" select="count(.//figgrp)"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'table-count'"/>
+						<xsl:with-param name="count" select="count(.//tabwrap)"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'equation-count'"/>
+						<xsl:with-param name="count" select="count(.//equation)"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'ref-count'"/>
+						<xsl:with-param name="count"><xsl:choose>
+							<xsl:when test=".//back">
+								<xsl:value-of select="count(.//back//*[contains(name(),'citat')])"/>
+							</xsl:when><xsl:otherwise><xsl:value-of select="count(.//ref)"/></xsl:otherwise>
+						</xsl:choose></xsl:with-param>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'page-count'"/>
+						<xsl:with-param name="count"><xsl:choose>
+							<xsl:when test="@pagcount"><xsl:value-of select="@pagcount"/></xsl:when>
+							<xsl:when test="string(number(@fpage))=@fpage and string(number(@lpage))=@lpage"><xsl:value-of select="@lpage - @fpage + 1"/></xsl:when>
+							<xsl:otherwise></xsl:otherwise>
+						</xsl:choose></xsl:with-param>
+					</xsl:apply-templates>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'fig-count'"/>
+						<xsl:with-param name="count" select="@figcount"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'table-count'"/>
+						<xsl:with-param name="count" select="@tabcount"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'equation-count'"/>
+						<xsl:with-param name="count" select="@eqcount"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'ref-count'"/>
+						<xsl:with-param name="count" select="@refcount"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="." mode="element-counts">
+						<xsl:with-param name="element_name" select="'page-count'"/>
+						<xsl:with-param name="count" select="@pagcount"/>
+					</xsl:apply-templates>
+				</xsl:otherwise>
+			</xsl:choose>
+			
 		</counts>
 	</xsl:template>
 	<xsl:template match="*" mode="element-counts">
 		<xsl:param name="element_name"/>
 		<xsl:param name="count"/>
-		<xsl:if test="$count&gt;0">
 			<xsl:element name="{$element_name}">
-				<xsl:attribute name="count">
-					<xsl:value-of select="$count"/>
-				</xsl:attribute>
+				<xsl:attribute name="count"><xsl:choose>
+					<xsl:when test="$count=''">0</xsl:when>
+					<xsl:otherwise><xsl:value-of select="$count"/></xsl:otherwise>
+				</xsl:choose></xsl:attribute>
 			</xsl:element>
-		</xsl:if>
 	</xsl:template>
 	<xsl:template match="@sec-type[.='nd']"> </xsl:template>
 	<xsl:template match="*" mode="body">
@@ -1557,7 +1611,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length(position()))"/></xsl:variable>
 		<xsl:variable name="id"><xsl:value-of select="$zeros"/><xsl:value-of select="position()"/></xsl:variable>
 		<ref id="B{$id}">
-			<xsl:apply-templates select="no"/>
+			<xsl:apply-templates select="label"/>
 			
 			<xsl:apply-templates select="." mode="text-ref"/>
 			<element-citation publication-type="{@reftype}">
@@ -1596,6 +1650,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:when>
 			<xsl:otherwise><article-title><xsl:apply-templates select=".//text()"/></article-title></xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="arttitle">
+		<article-title><xsl:apply-templates select=".//text()"/></article-title>
+	</xsl:template>
+	<xsl:template match="chptitle">
+		<chapter-title><xsl:apply-templates select=".//text()"/></chapter-title>
 	</xsl:template>
 	<xsl:template match="reportid">
 		<!-- <pub-id pub-id-type="other">Report No.: HETA2000-0139-2824</pub-id> -->
@@ -1983,7 +2043,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<!-- FIXMEID -->
 		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
 		
-		<fn id="{$parentid}{$table_id}TFN{substring(@id,4)}">
+		<fn id="{$parentid}{translate(@id,'tfn','TFN')}">
 			<xsl:apply-templates select="label"/>
 			<p>
 				<xsl:apply-templates select="text()|*[name()!='label']"/>
@@ -2961,7 +3021,7 @@ et al.</copyright-statement>
 	<xsl:template match="confgrp/no"/>
 	<xsl:template match="confgrp/confname">
 		<conf-name>
-			<xsl:apply-templates select="../..//confgrp" mode="fulltitle"/>
+			<xsl:apply-templates select="../confgrp" mode="fulltitle"/>
 		</conf-name>
 	</xsl:template>
 
@@ -2969,8 +3029,7 @@ et al.</copyright-statement>
 		<xsl:apply-templates select="no|confname" mode="fulltitle"/>
 	</xsl:template>
 
-	<xsl:template match="confgrp/confname | confgrp/no" mode="fulltitle"><xsl:value-of select="normalize-space(.)"/>
-		&#160; </xsl:template>
+	<xsl:template match="confgrp/confname | confgrp/no" mode="fulltitle"><xsl:value-of select="normalize-space(.)"/>&#160;</xsl:template>
 
 	<xsl:template match="colvolid"><volume><xsl:value-of select="."/></volume></xsl:template>
 	<xsl:template match="coltitle">
@@ -2981,154 +3040,7 @@ et al.</copyright-statement>
 
 	<xsl:template match="xref[@rid='']"/>
 	<xsl:template match="thesgrp"/>
-	<xsl:template match="ack">
-		<xsl:choose>
-			<xsl:when test=".//report">
-				<ack>
-					<xsl:if test=".//sectitle">
-						<title>
-							<xsl:value-of select=".//sectitle"/>
-						</title>
-
-					</xsl:if>
-					<xsl:apply-templates select="p"/>
-				</ack>
-			</xsl:when>
-			<xsl:otherwise>
-				<ack>
-					<xsl:apply-templates select="*|text()"/>
-				</ack>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	<xsl:template match="ack//p">
-		<p>
-			<xsl:apply-templates select="*[name()!='report' and name()!='funding']|text()|report//text()|funding//text()"/>
-		</p>
-	</xsl:template>
-	<xsl:template match="front//report | bbibcom//report | ack//report">
-		<funding-group>
-			<xsl:choose>
-				<xsl:when test="count(.//rsponsor)&gt;0 and count(.//rsponsor)=count(.//contract)">
-					<xsl:apply-templates select=".//rsponsor" mode="award-group">
-						<xsl:with-param name="contracts" select=".//contract"/>
-					</xsl:apply-templates>
-				</xsl:when>
-				<xsl:when test="count(.//rsponsor)&gt;count(.//contract) and count(.//rsponsor)=1">
-					<xsl:apply-templates select=".//contract" mode="award-group">
-						<xsl:with-param name="rsponsors" select=".//rsponsor"/>
-					</xsl:apply-templates>
-				</xsl:when>
-				<xsl:when test="count(.//rsponsor)&lt;count(.//contract) and count(.//contract)=1">
-					<xsl:apply-templates select=".//rsponsor" mode="award-group">
-						<xsl:with-param name="contract" select=".//contract"/>
-					</xsl:apply-templates>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="." mode="award-group"/>
-				</xsl:otherwise>
-			</xsl:choose>
-			
-			<!--xsl:if test="not($unident_back[contains(.//text,'ACK') or contains(.//text,'Ack') or contains(.//text,'Agrad') or contains(.//text,'AGRAD')])"-->
-			<xsl:apply-templates select="." mode="funding-statement"></xsl:apply-templates>
-			<!--/xsl:if-->
-		</funding-group>
-	</xsl:template>
 	
-	<xsl:template match="report" mode="award-group">
-		<award-group>
-			<xsl:attribute name="award-type"><xsl:choose>
-				<xsl:when test=".//contract">contract</xsl:when><xsl:otherwise>grant</xsl:otherwise>
-			</xsl:choose></xsl:attribute>
-			<xsl:apply-templates select="*"></xsl:apply-templates>
-		</award-group>
-	</xsl:template>
-	<xsl:template match="rsponsor" mode="award-group">
-		<xsl:param name="contracts"/>
-		<xsl:param name="contract"/>
-		<xsl:variable name="pos" select="position()"/>
-		<award-group>
-			<xsl:attribute name="award-type">contract</xsl:attribute>
-			<xsl:apply-templates select="."/>
-			<xsl:choose>
-				<xsl:when test="$contracts">
-					<xsl:apply-templates select="$contracts[$pos]"/>
-				</xsl:when>
-				<xsl:when test="$contract">
-					<xsl:apply-templates select="$contract"/>
-				</xsl:when>
-			</xsl:choose>
-			<xsl:apply-templates select="../awarded"></xsl:apply-templates>
-		</award-group>
-	</xsl:template>
-	<xsl:template match="contract" mode="award-group">
-		<xsl:param name="rsponsor"/>
-		<award-group>
-			<xsl:attribute name="award-type">contract</xsl:attribute>
-			<xsl:apply-templates select="$rsponsor"/>
-			<xsl:apply-templates select="."/>
-			<xsl:apply-templates select="../..//awarded"></xsl:apply-templates>
-		</award-group>
-	</xsl:template>
-	<xsl:template match="front//report | bbibcom//report" mode="funding-statement">
-		<!-- gerar funding-statement -->
-		<funding-statement>
-			<xsl:apply-templates select=".//text()"/>
-		</funding-statement>
-	</xsl:template>
-	<xsl:template match="ack//report" mode="funding-statement">
-		<!-- não gerar funding-statement -->
-		
-	</xsl:template>
-	<xsl:template match="projname"></xsl:template>
-	<xsl:template match="awarded">
-		<!--xsl:comment>report/awarded</xsl:comment-->
-		<xsl:if test="orgname or orgdiv">
-			<principal-award-recipient>
-				<xsl:apply-templates select="orgname|orgdiv"/>
-			</principal-award-recipient>
-		</xsl:if>
-		<xsl:if test="fname or surname">
-			<principal-investigator>
-				<xsl:apply-templates select="surname|fname"/>
-			</principal-investigator>
-		</xsl:if>
-	</xsl:template>
-	<xsl:template match="awarded/fname | awarded/surname | awarded/orgname | awarded/orgdiv">
-		<!--xsl:comment>report/awarded/*</xsl:comment-->
-		<xsl:value-of select="normalize-space(.)"/>
-	</xsl:template>
-
-	<xsl:template match="contract">
-		<award-id>
-			<xsl:apply-templates/>
-		</award-id>
-	</xsl:template>
-	<xsl:template match="rsponsor/orgdiv"/>
-	<xsl:template match="rsponsor/orgname">
-		<funding-source>
-			<xsl:value-of select="normalize-space(.)"/>
-			<xsl:if test="../orgdiv">, <xsl:value-of select="../orgdiv"/>
-			</xsl:if>
-		</funding-source>
-	</xsl:template>
-	<xsl:template match="*[contains(name(),'citat')]//report//*[name()!='no']">
-		<!--xsl:comment>*[contains(name(),'citat')]//report//*[name()!='no']</xsl:comment-->
-		<xsl:apply-templates select="*|text()"/>
-	</xsl:template>
-	<xsl:template match="*[contains(name(),'citat')]//report">
-		<!--xsl:comment>report of citation</xsl:comment-->
-		<xsl:if test="no">
-			<pub-id pub-id-type="other">
-				<xsl:value-of select="no"/>
-			</pub-id>
-		</xsl:if>
-		<xsl:if test="*[name()!='no']">
-			<comment content-type="award-id">
-				<xsl:apply-templates select="*[name()!='no']|text()"/>
-			</comment>
-		</xsl:if>
-	</xsl:template>
 	<xsl:template match="sec//title | caption//title">
 		<title>
 			<xsl:apply-templates select="*|text()"/>
@@ -3147,11 +3059,14 @@ et al.</copyright-statement>
 	<xsl:template match="patgrp/orgname">
 		<xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
-	<xsl:template match="article|text" mode="pub-date">
+	<xsl:template match="article|text|doc" mode="pub-date">
 		<xsl:variable name="preprint_date">
 			<xsl:choose>
 				<xsl:when test="@rvpdate">
 					<xsl:value-of select="@rvpdate"/>
+				</xsl:when>
+				<xsl:when test="@artdate">
+					<xsl:value-of select="@artdate"/>
 				</xsl:when>
 				<xsl:when test="@ahpdate">
 					<xsl:value-of select="@ahpdate"/>
@@ -3170,19 +3085,21 @@ et al.</copyright-statement>
 		<xsl:variable name="date_type">
 			<xsl:choose>
 				<xsl:when test="normalize-space($preprint_date)!=''">ppub</xsl:when>
-				<xsl:when test="normalize-space($preprint_date)=''">epub-ppub</xsl:when>
+				<xsl:otherwise><xsl:value-of select="$pub_type"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<pub-date pub-type="{$date_type}">
-			<xsl:call-template name="display_date">
-				<xsl:with-param name="dateiso">
-					<xsl:value-of select="@dateiso"/>
-				</xsl:with-param>
-				<xsl:with-param name="date">
-					<xsl:value-of select="//extra-scielo//season"/>
-				</xsl:with-param>
-			</xsl:call-template>
-		</pub-date>
+		<xsl:if test="$date_type!=''">
+			<pub-date pub-type="{$date_type}">
+				<xsl:call-template name="display_date">
+					<xsl:with-param name="dateiso">
+						<xsl:value-of select="@dateiso"/>
+					</xsl:with-param>
+					<xsl:with-param name="date">
+						<xsl:value-of select="//extra-scielo//season"/>
+					</xsl:with-param>
+				</xsl:call-template>
+			</pub-date>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template match="element">
 		<xsl:element name="{@name}">
@@ -3195,12 +3112,12 @@ et al.</copyright-statement>
 		</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="supplmat">
-		<supplementary-material xlink:href="{@href}">
+		<supplementary-material id="{@id}" xlink:href="{@href}" mimetype="{@mimetype}" mime-subtype="{@mimesubt}">
 			<xsl:apply-templates></xsl:apply-templates>
 		</supplementary-material>
 	</xsl:template>
 	<xsl:template match="p/supplmat">
-		<inline-supplementary-material xlink:href="{@href}">
+		<inline-supplementary-material xlink:href="{@href}" mimetype="{@mimetype}" mime-subtype="{@mimesubt}">
 			<xsl:apply-templates></xsl:apply-templates>
 		</inline-supplementary-material>
 	</xsl:template>
@@ -3351,32 +3268,129 @@ et al.</copyright-statement>
 		</permissions>
 	</xsl:template>
 	
-	<xsl:template match="funding">
-		<funding-group>
-			<xsl:apply-templates select="award"></xsl:apply-templates>
-			<xsl:if test="not(../../ack)">
-			<funding-statement>
-				<xsl:apply-templates select=".//text()"/>
-			</funding-statement>
-			</xsl:if>
-		</funding-group>
+	<xsl:template match="extra-scielo/license">
+		<xsl:variable name="href"><xsl:value-of select="."/></xsl:variable>
+		<xsl:variable name="ccid"><xsl:value-of select="../license-type"/></xsl:variable>
+		<xsl:variable name="cversion"><xsl:value-of select="../license-version"/></xsl:variable>
+		<xsl:variable name="cccompl"><xsl:value-of select="../license-complement"/></xsl:variable>
+		<xsl:variable name="licid"><xsl:value-of select="concat($ccid,'/',$cversion,'/',$cccompl)"/></xsl:variable>
+		<permissions>
+			<license license-type="{substring-before(../license-label,' ')}" xlink:href="{$href}">
+				<license-p>
+					<graphic>
+						<xsl:attribute name="xlink:href">http://i.creativecommons.org/l/<xsl:value-of select="$licid"/>88x31.png</xsl:attribute>
+					</graphic>
+					CC <xsl:value-of select="../license-label"/>
+				</license-p>
+			</license>
+		</permissions>
 	</xsl:template>
-	<xsl:template match="award">
-		<xsl:if test=".//contract">
-			<award-group>
-				<xsl:attribute name="award-type"><xsl:choose>
-					<xsl:when test=".//contract">contract</xsl:when><xsl:otherwise>grant</xsl:otherwise>
-				</xsl:choose></xsl:attribute>
-				<xsl:apply-templates select="*"></xsl:apply-templates>
-				<xsl:if test="not(awarded) and ../awarded">
-					<xsl:apply-templates select="../awarded"></xsl:apply-templates>
-				</xsl:if>
-			</award-group>
+	
+	<xsl:template match="ack">
+		<ack>
+			<xsl:apply-templates select="*"/>
+		</ack>
+	</xsl:template>
+	<xsl:template match="funding | funding//*">
+		<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+	</xsl:template>
+	<xsl:template match="*[contains(name(),'citat')]//report//*[name()!='no']">
+		<!--xsl:comment>*[contains(name(),'citat')]//report//*[name()!='no']</xsl:comment-->
+		<xsl:apply-templates select="*|text()"/>
+	</xsl:template>
+	<xsl:template match="*[contains(name(),'citat')]//report">
+		<!--xsl:comment>report of citation</xsl:comment-->
+		<xsl:if test="no">
+			<pub-id pub-id-type="other">
+				<xsl:value-of select="no"/>
+			</pub-id>
+		</xsl:if>
+		<xsl:if test="*[name()!='no']">
+			<comment content-type="award-id">
+				<xsl:apply-templates select="*[name()!='no']|text()"/>
+			</comment>
 		</xsl:if>
 	</xsl:template>
-	<xsl:template match="fundsrc">
+	
+	<xsl:template match="contract" mode="front">
+		<award-id>
+			<xsl:apply-templates/>
+		</award-id>
+	</xsl:template>
+	
+	<xsl:template match="rsponsor | fundsrc" mode="front">
 		<funding-source>
-			<xsl:value-of select="normalize-space(.)"/>
+			<xsl:choose>
+				<xsl:when test="orgname">
+					<xsl:value-of select="normalize-space(orgname)"/><xsl:if test="orgdiv">, <xsl:value-of select="orgdiv"/></xsl:if>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select=".//text()"></xsl:apply-templates>
+				</xsl:otherwise>
+			</xsl:choose>
 		</funding-source>
+	</xsl:template>
+	
+	<xsl:template match="report" mode="front">
+		<xsl:param name="statement"/>
+		<xsl:if test=".//contract">
+			<funding-group>
+				<xsl:choose>
+					<xsl:when test="rsponsor and contract">
+						<xsl:apply-templates select=".//rsponsor" mode="award-group">
+							<xsl:with-param name="contract" select=".//contract"/>
+						</xsl:apply-templates>
+					</xsl:when>
+					<xsl:when test="rsponsor">
+						<xsl:apply-templates select=".//rsponsor" mode="award-group"/>
+					</xsl:when>
+					<xsl:when test="contract">
+						<xsl:apply-templates select=".//contract" mode="award-group"/>
+					</xsl:when>
+				</xsl:choose>
+				<xsl:if test="$statement='true'">
+					<funding-statement><xsl:apply-templates select=".//text()"/></funding-statement>
+				</xsl:if>
+			</funding-group>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="ack//funding | fn//funding" mode="front">
+		<xsl:param name="statement"/>
+		<xsl:if test=".//contract">
+			<funding-group>
+				<xsl:apply-templates select="award[contract]" mode="front"></xsl:apply-templates>
+				<xsl:if test="$statement='true'">
+					<funding-statement><xsl:apply-templates select=".//text()"/></funding-statement>
+				</xsl:if>
+			</funding-group>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="award" mode="front">
+		<xsl:apply-templates select=".//fundsrc" mode="award-group">
+			<xsl:with-param name="contract" select=".//contract"/>
+		</xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template match="report//rsponsor | funding//fundsrc" mode="award-group">
+		<xsl:param name="contract"/>
+		<xsl:if test="$contract">
+				<xsl:apply-templates select="$contract" mode="award-group">
+					<xsl:with-param name="fundsrc" select="."/>
+				</xsl:apply-templates>
+		</xsl:if>	
+		<xsl:apply-templates select=".//contract" mode="award-group">
+			<xsl:with-param name="fundsrc" select="."/>
+		</xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template match="contract" mode="award-group">
+		<xsl:param name="fundsrc"/>
+		<award-group>
+			<xsl:attribute name="award-type">contract</xsl:attribute>
+			<xsl:apply-templates select="." mode="front"/>
+			<xsl:apply-templates select="$fundsrc" mode="front"/>
+		</award-group>
 	</xsl:template>
 </xsl:stylesheet>

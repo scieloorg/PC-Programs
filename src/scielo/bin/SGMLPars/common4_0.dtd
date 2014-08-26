@@ -8,7 +8,7 @@
 <!--   Common Models                                                      -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
-<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat | related | product | sup | funding | report" > 
+<!ENTITY % i.float  "aff | corresp | ign | tabwrap | figgrps |  figgrp | equation | cltrial | xref | uri | sciname | quote | element | graphic | supplmat | related | product | sup " > 
 <!ENTITY % m.name   "(fname? & surname & ctrbid*)" >
 <!ENTITY % m.org    "(orgname? & orgdiv?)" >
 <!ENTITY % m.title  "title, subtitle?" >
@@ -22,12 +22,12 @@
 <!-- ENTITY % m.rep    "rsponsor+ & projname?" -->
 <!--ENTITY % m.rep    "(contract+ & rsponsor+ & projname? & awarded* & no?) | (no)" -->
 
-<!ENTITY % m.rep    "(contract* & rsponsor* & no? & awarded* & projname?)+" >
+<!ENTITY % m.rep    "(contract* & rsponsor* & no? & projname?)+" >
 
-<!ELEMENT funding   - - (award+ & awarded? & projname?)  >
-<!ELEMENT award   - - (contract & fundsrc+ & awarded?)  >
+<!ELEMENT funding   - - (award+)  >
+<!ELEMENT award   - - (contract+ & fundsrc+)  >
 <!ELEMENT fundsrc   - - (#PCDATA)  >
-<!ELEMENT awarded - - ( (orgname & orgiv?) & (fname & surname) & (#PCDATA))+ >
+<!--ELEMENT awarded - - ( (orgname & orgiv?) & (fname & surname) & (#PCDATA))+ -->
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <!--   Floating Elements                                                  -->
@@ -103,7 +103,10 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT supplmat - - (#PCDATA)   >
 <!ATTLIST supplmat
+          id       CDATA #REQUIRED
           href       CDATA #REQUIRED
+          mimetype   CDATA #REQUIRED
+          mimesubt   CDATA #REQUIRED
           >
 
 <!ELEMENT texmath - - CDATA  >
@@ -147,7 +150,7 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT sciname - - (#PCDATA) >
 
-<!ELEMENT fngrp - - (label?, (#PCDATA)) +(%i.float;) >
+<!ELEMENT fngrp - - (label?, ((#PCDATA) & funding?)) +(%i.float;) >
 <!ATTLIST fngrp
           id       CDATA    #REQUIRED
           fntype       CDATA    #REQUIRED 
@@ -306,11 +309,8 @@ filename       CDATA #IMPLIED>
 <!ELEMENT subsec  - - (sectitle, (subsec | p | list )+ )  >
 
 <!ELEMENT sectitle - - (#PCDATA)  +(%i.float;) >
-<!--ELEMENT p - - ((#PCDATA) | (label,caption) | list )  +(%i.float;) -->
 
-<!--ELEMENT p - - (#PCDATA)   +(%i.float;) -->
-
-<!ELEMENT p - - ((#PCDATA) & report*)+  +(%i.float;) >
+<!ELEMENT p - - ((#PCDATA) & (report*|funding))+  +(%i.float;) >
 
 <!ELEMENT list  - - (li)+  >
 <!ATTLIST list

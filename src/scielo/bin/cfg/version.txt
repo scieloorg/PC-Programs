@@ -1,4 +1,36 @@
-﻿4.0.086 - 14/09/2014
+﻿4.0.087 - 27/08/2014
+====================
+- Milestone 4.0.087
+  - Markup 
+    - article and doc DTD/doc template
+      - (new) identify automatically sections/subsections according to the template
+      - (new) identify automatically (number) superscript as xref[@ref-type='bibr'] according to the template
+      - (new) new attributes for supplmat (@mimetype, @mime-subtype, @id)
+      - (bug) replace smat prefix by suppl
+      - (bug) fix problem as marking *pauthor
+      - (bug) fix problem as identifying source, sertitle, author in text-ref
+      - ()
+    - doc DTD/doc template
+      - (new) new form for doc tag
+      - (new) identify automatically doi (front) according to the template
+      - (new) identify automatically toctitle (front) according to the template
+      - (new) identify automatically doctitle (front) according to the template
+      - (new) identify automatically authors (front) according to the template
+      - (new) identify automatically normaff (front) according to the template
+      - (new) remove the dependence on Markup and Title Manager files
+      - (new) replace doctit by arttitle and chptitle
+      - (new) remove the elements vancouv, iso690, apa, abnt6023, other
+      - (new) semi-automatic identification of ref/@ref-type (element-citation/@publication-type)
+      - (new) fundig tag only for doc DTD and report tag only for article DTD
+      - (bug) do not generate pub-date/@pub-type='ppub' for aop articles
+      - (bug) fix the generation of funding-group structure 
+      - (bug) remove some of the ref/@ref-type values
+  - Markup/XML generation
+    - (new) create all the counts elements: page-count, ref-count, eq-count, fig-count, tab-count 
+    - (new) generate pub-date only with @pub-type attribute
+    - (bug) new table footnote id format (TFN01), instead of t01TFN01
+
+4.0.086 - 14/07/2014
 ====================
   - Milestone 4.0.086
     - SGMLPars

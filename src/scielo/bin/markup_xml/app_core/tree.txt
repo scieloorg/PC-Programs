@@ -11,14 +11,12 @@ element;#TRUE#;#TRUE#
 equation;#TRUE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
-funding;#FALSE#;#FALSE#
 graphic;#FALSE#;#TRUE#
 ign;#TRUE#;#TRUE#
 list;#FALSE#;#TRUE#
 product;#TRUE#;#TRUE#
 quote;#TRUE#;#TRUE#
 related;#TRUE#;#TRUE#
-report;#FALSE#;#FALSE#
 supplmat;#FALSE#;#TRUE#
 tabwrap;#FALSE#;#TRUE#
 uri;#FALSE#;#TRUE#
@@ -265,6 +263,7 @@ figgrp;#FALSE#;#TRUE#
 fname
 
 fngrp
+funding;#FALSE#;#FALSE#
 
 fntable
 label;#FALSE#;#FALSE#
@@ -518,6 +517,7 @@ ocitat;#FALSE#;#TRUE#
 othinfo
 
 p
+funding;#TRUE;#TRUE#
 
 pages
 
@@ -614,7 +614,6 @@ report
 no;#FALSE#;#FALSE#
 contract;#FALSE#;#TRUE#
 rsponsor;#FALSE#;#TRUE#
-awarded;#FALSE#;#TRUE#
 projname;#FALSE#;#TRUE#
 
 response
@@ -700,7 +699,6 @@ text
 doi;#FALSE#;#TRUE#
 titlegrp;#FALSE#;#FALSE#
 authgrp;#FALSE#;#FALSE#
-body;#FALSE#;#FALSE#
 back;#FALSE#;#FALSE#
 
 th
@@ -844,12 +842,9 @@ surname-fname
 
 doc
 author;#FALSE#;#TRUE#
-abnt6023;#FALSE#;#FALSE#
 abstract;#FALSE#;#TRUE#
 ack;#TRUE#;#FALSE#
-apa;#FALSE#;#FALSE#
 app;#FALSE#;#TRUE#
-cc;#TRUE#;#FALSE#
 corpauth;#FALSE#;#TRUE#
 docresp;#TRUE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
@@ -857,17 +852,14 @@ doi;#FALSE#;#FALSE#
 fngrp;#TRUE#;#TRUE#
 glossary;#TRUE#;#FALSE#
 hist;#TRUE#;#FALSE#
-iso690;#FALSE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
 kwdgrp;#FALSE#;#TRUE#
 normaff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
-other;#FALSE#;#FALSE#
 refs;#TRUE#;#FALSE#
 related;#FALSE#;#TRUE#
 subdoc;#FALSE#;#TRUE#
 toctitle;#FALSE#;#FALSE#
-vancouv;#FALSE#;#FALSE#
 xmlabstr;#FALSE#;#TRUE#
 xmlbody;#TRUE#;#FALSE#
 
@@ -881,45 +873,33 @@ subtitle;#FALSE#;#FALSE#
 
 funding
 award;#FALSE#;#TRUE#
-projname;#FALSE#;#TRUE#
-awarded;#FALSE#;#TRUE#
 
 award
 contract;#FALSE#;#FALSE#
 fundsrc;#FALSE#;#TRUE#
-awarded;#FALSE#;#TRUE#
 
 docresp
-abnt6023;#FALSE#;#FALSE#
 abstract;#FALSE#;#TRUE#
 ack;#FALSE#;#FALSE#
-apa;#FALSE#;#FALSE#
 app;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
-cc;#FALSE#;#FALSE#
 corpauth;#FALSE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
 fngrp;#FALSE#;#TRUE#
-funding;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
-iso690;#FALSE#;#FALSE#
 kwdgrp;#FALSE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
-other;#FALSE#;#FALSE#
 refs;#FALSE#;#FALSE#
 related;#FALSE#;#TRUE#
 toctitle;#FALSE#;#FALSE#
-vancouv;#FALSE#;#FALSE#
 xmlabstr;#FALSE#;#TRUE#
 xmlbody;#FALSE#;#FALSE#
 
 subdoc
-abnt6023;#FALSE#;#FALSE#
 abstract;#FALSE#;#TRUE#
 ack;#FALSE#;#FALSE#
-apa;#FALSE#;#FALSE#
 app;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
@@ -927,23 +907,17 @@ docresp;#FALSE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
 doi;#FALSE#;#FALSE#
 fngrp;#FALSE#;#TRUE#
-funding;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
-iso690;#FALSE#;#FALSE#
 kwdgrp;#FALSE#;#TRUE#
 normaff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
-other;#FALSE#;#FALSE#
 refs;#FALSE#;#FALSE#
 related;#FALSE#;#TRUE#
 subdoc;#FALSE#;#TRUE#
 toctitle;#FALSE#;#FALSE#
-vancouv;#FALSE#;#FALSE#
 xmlabstr;#FALSE#;#TRUE#
 xmlbody;#FALSE#;#FALSE#
-
-cc
 
 kwd
 
@@ -954,7 +928,10 @@ ref;#FALSE#;#TRUE#
 
 ref
 text-ref;#FALSE#;#FALSE#
+label;#FALSE#;#FALSE#
 authors;#TRUE#;#FALSE#
+arttitle;#TRUE#;#FALSE#
+chptitle;#TRUE#;#FALSE#
 cited;#FALSE#;#TRUE#
 city;#FALSE#;#TRUE#
 coltitle;#FALSE#;#TRUE#
@@ -963,7 +940,6 @@ confgrp;#TRUE#;#FALSE#
 contract;#FALSE#;#FALSE#
 country;#FALSE#;#TRUE#
 date;#TRUE#;#TRUE#
-doctit;#TRUE#;#FALSE#
 doi;#FALSE#;#TRUE#
 edition;#FALSE#;#TRUE#
 extent;#FALSE#;#TRUE#
@@ -1033,4 +1009,8 @@ email;#FALSE#;#FALSE#
 orgdiv1
 
 orgdiv2
+
+arttitle
+
+chptitle
 

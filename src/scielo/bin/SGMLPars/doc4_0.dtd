@@ -127,38 +127,38 @@
                     confgrp | funding | hist | 
                     xmlbody |
                     ack | glossary | deflist | app |
-                    (vancouv | iso690 | abnt6023 | apa | other | refs) |
+                    refs |
                     fngrp | cc |
                     docresp | subdoc 
                     )+
                     +(%i.float;)>
 <!ATTLIST doc
-          pii      CDATA #REQUIRED
+          acron CDATA #REQUIRED
+          jtitle   CDATA #REQUIRED
+          stitle   CDATA #IMPLIED
+          nlmtitle   CDATA #IMPLIED
+          issn     CDATA #REQUIRED
+          pissn CDATA #IMPLIED 
+          eissn CDATA #IMPLIED
+          pubname CDATA #REQUIRED
+          license CDATA #REQUIRED
+          volid    CDATA #IMPLIED
+          supplvol CDATA #IMPLIED
+          issueno  CDATA #IMPLIED
+          supplno  CDATA #IMPLIED 
+          isidpart CDATA #IMPLIED 
+          dateiso  CDATA #REQUIRED
+          order CDATA #REQUIRED
+          fpage    CDATA #REQUIRED
+          fpageseq    CDATA #REQUIRED
+          lpage    CDATA #REQUIRED
+          elocatid CDATA #IMPLIED 
+          artdate CDATA #IMPLIED
+          ahpdate CDATA #IMPLIED  
+          pagcount CDATA #REQUIRED
           doctopic CDATA #REQUIRED
           language CDATA #REQUIRED
-          ccode    CDATA #REQUIRED
-          status   CDATA #REQUIRED
-          version  CDATA #REQUIRED
-          type     NAMES #REQUIRED
-          order    CDATA #REQUIRED
-          seccode  CDATA #REQUIRED
-          sponsor  CDATA #REQUIRED
-          stitle   CDATA #REQUIRED
-          volid    CDATA #IMPLIED
-	  supplvol CDATA #IMPLIED
-          issueno  CDATA #IMPLIED
-	  supplno  CDATA #IMPLIED 
-	  isidpart CDATA #IMPLIED 
-	  dateiso  CDATA #REQUIRED
-	  fpage    CDATA #REQUIRED
-          lpage    CDATA #REQUIRED
-          pagcount CDATA #REQUIRED
-          issn     CDATA #REQUIRED
-		  old-pid CDATA #IMPLIED 
-		  rvpdate CDATA #IMPLIED
-      artdate CDATA #IMPLIED
-          hcomment CDATA #IMPLIED
-		  ahpdate CDATA #IMPLIED		  
+          version  CDATA #REQUIRED	  
 		  >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -173,7 +173,7 @@
                     confgrp | funding | hist | 
                     xmlbody |
                     ack | glossary | deflist | app |
-                    (vancouv | iso690 | abnt6023 | apa | other | refs) |
+                    refs |
                     fngrp | cc |
                     docresp | subdoc 
                     )+
@@ -195,7 +195,7 @@
                     confgrp | funding | hist | 
                     xmlbody |
                     ack | glossary | deflist | app |
-                    (vancouv | iso690 | abnt6023 | apa | other | refs) |
+                    refs |
                     fngrp | cc |
                     docresp | subdoc 
                     )+
@@ -242,8 +242,8 @@
           dateiso  CDATA #REQUIRED >
 
 <!ELEMENT refs     - - (ref+) >
-<!ELEMENT ref     - - ( text-ref| authors* 
-                        | doctit | source
+<!ELEMENT ref     - - ( text-ref | label? | authors* 
+                        | arttitle | chptitle | source
                         | date | pages
                         | volid | issueno | suppl | part | coltitle | colvolid 
                         | isbn | extent | edition | city | state | country | pubname
@@ -266,7 +266,8 @@
 <!ATTLIST moreinfo 
           descript  CDATA #IMPLIED >
 
-<!ELEMENT doctit - - (#PCDATA) > 
+<!ELEMENT arttitle - - (#PCDATA) > 
+<!ELEMENT chptitle - - (#PCDATA) > 
 <!ELEMENT source - - (#PCDATA) > 
 <!ELEMENT reportid - - (#PCDATA) > 
 <!ELEMENT letterto - - (#PCDATA) > 
