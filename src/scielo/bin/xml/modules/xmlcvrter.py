@@ -71,7 +71,7 @@ class XMLConverter(object):
                             issue = IssueISIS(issue_record)
                             section_code = issue.section_code(article.toc_section)
 
-                            article_title = article.title[0].get('article-title', '')
+                            article_title = article.titles[0].get('article-title', '')
                             print(article_title)
 
                             #create_db = (create_db and article.number != 'ahead')
