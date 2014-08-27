@@ -39,17 +39,18 @@ class GraphicParent(object):
 
 class HRef(object):
 
-    def __init__(self, src, element_name, xml, id):
+    def __init__(self, src, element, parent, xml):
         self.src = src
-        self.element_name = element_name
+        self.element = element
         self.xml = xml
-        self.id = id
+        self.id = element.attrib.get('id', parent.attrib.get('id'))
+        self.parent = parent
 
     def display(self, path):
         if self.src is not None and self.src != '':
             if ':' in self.src:
                 return '<a href="' + self.src + '">' + self.src + '</a>'
-            elif self.element_name == 'graphic':
+            elif self.element.tag == 'graphic':
                 ext = '.jpg' if not self.src.endswith('.jpg') and not self.src.endswith('.gif') else ''
                 return '<img src="' + path + '/' + self.src + ext + '"/>'
             else:
@@ -742,7 +743,8 @@ class Article(ArticleXML):
         for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
             for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
                 href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                _href = HRef(href, elem.tag, node_xml(parent), parent.attrib.get('id'))
+                
+                _href = HRef(href, elem, parent, node_xml(parent))
                 r.append(_href)
         return r
 
@@ -759,7 +761,7 @@ class Article(ArticleXML):
                 src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
                 xml = node_xml(graphic)
 
-            _href = HRef(src, element_name, xml, t.attrib.get('id'))
+            _href = HRef(src, graphic, t, xml)
             _table = GraphicParent(t.tag, t.attrib.get('id'), t.findtext('.//label'), node_text(t.find('.//caption')), _href)
             _table = Table(_table, node_xml(t.find('./table')))
             r.append(_table)

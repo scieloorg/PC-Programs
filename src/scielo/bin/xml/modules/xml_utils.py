@@ -79,7 +79,6 @@ def convert_using_htmlparser(content, debug=False):
         if s != content:
             print(s)
             print(content)
-    
     return content
 
 
@@ -108,6 +107,26 @@ def load_xml(content):
     for prefix, uri in NAMESPACES.items():
         etree.register_namespace(prefix, uri)
 
+    if not '<' in content:
+        # is a file
+        try:
+            r = etree.parse(content)
+        except Exception as e:
+            content = open(content, 'r').read()
+
+    if '<' in content:
+        content = normalize_space(handle_entities(content))
+
+        try:
+            r = etree.parse(StringIO(content))
+        except Exception as e:
+            print('XML is not well formed')
+            print(e)
+            r = None
+    return r
+
+
+def is_xml_well_formed(content):
     if not '<' in content:
         # is a file
         try:

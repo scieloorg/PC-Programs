@@ -1,6 +1,7 @@
 import os
 import shutil
 
+import tempfile
 
 JAVA_PATH = 'java'
 JAR_TRANSFORM = './../../jar/saxonb9-1-0-8j/saxon9.jar'

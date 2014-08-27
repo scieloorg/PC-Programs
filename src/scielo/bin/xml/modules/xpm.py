@@ -164,26 +164,69 @@ def format_new_name(doc, param_acron='', original_xml_name=''):
     return r
 
 
-def href_list(doc):
+def href_attach_type(parent_tag, tag):
+    if 'suppl' in tag or 'media' == tag:
+        attach_type = 's'
+    elif 'inline' in tag:
+        attach_type = 'i'
+    elif parent_tag in ['equation', 'disp-formula']:
+        attach_type = 'e'
+    else:
+        attach_type = 'g'
+    return attach_type
+
+
+def get_curr_and_new_href_list(xml_name, new_name, href_list):
+    r = []
+    attach_type = ''
+    for href, attach_name in href_list:
+        if href in attach_name:
+            # attach_name = attach_typeo + href (no caso de graphic sem parent/@id)
+            attach_type = attach_name[0:1]
+        if xml_name in href:
+            if xml_name in attach_name:
+                alt_attach_name = href.replace(xml_name, '')
+                if alt_attach_name.startswith('-' + attach_type):
+                    alt_attach_name = alt_attach_name[2:]
+                elif alt_attach_name.startswith('-'):
+                    alt_attach_name = alt_attach_name[1:]
+                new = new_name + '-' + attach_type + alt_attach_name
+            else:
+                new = new_name + '-' + attach_name + ext
+        else:
+            new = new_name + '-' + attach_name + ext
+        if new[new.rfind('.'):] in ['.jpg', '.tiff', '.eps', '.tiff']:
+            new = new[0:new.rfind('.')]
+        r.append((href, new))
+    return list(set(r))
+
+
+def get_href_and_attach_type_and_id(doc, new_name):
+    items = []
+    for href_info in doc.hrefs:
+        attach_type = href_attach_type(href_info.parent.tag, href_info.element_name)
+        attach_id = href_info.parent.attrib.get('id', '')
+        if attach_id == '':
+            attach_id = href_info
+        items.append((href_info.src, new_name + '-' + attach_type + attach_id))
+    return items
 
 
 def normalize_file_names(content, acron, xml_name):
-    
     if xml_utils.is_xml_well_formed(content) is not None:
         doc = Article(content)
         new_name = format_new_name(doc, acron, xml_name)
-        href_list = 
-        new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, original_xml_name)    
+        new_href_list = get_href_and_attach_type_and_id(doc, new_name)
         print('href_list')
-        print(href_list)
-        print(self.generate_curr_and_new_href_list(xml_name, new_name, href_list))
+        print(new_href_list)
+        print(self.get_curr_and_new_href_list(xml_name, new_name, new_href_list))
         if is_sgmxml:
             #href and new href list
-            curr_and_new_href_list = self.generate_curr_and_new_href_list(xml_name, new_name, href_list)
+            curr_and_new_href_list = self.get_curr_and_new_href_list(xml_name, new_name, new_href_list)
             content = self.normalize_href(content, curr_and_new_href_list)
         else:
             new_name = xml_name
-            curr_and_new_href_list = [(href, href) for href, item_id in href_list]
+            curr_and_new_href_list = [(href, href) for href, item_id in new_href_list]
         print(curr_and_new_href_list)
         # related files and href files list
         not_found, related_files_list, href_files_list = self.matched_files(xml_name, new_name, curr_and_new_href_list, src_path)
