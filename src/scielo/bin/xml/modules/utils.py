@@ -45,6 +45,10 @@ def doi_pid(doi):
     return pid
 
 
+def format_dateiso_from_date(year, month, day):
+    return year + month + day
+
+
 def format_dateiso(adate):
     if adate is not None:
         month = adate.get('season')
@@ -87,4 +91,60 @@ def display_pages(fpage, lpage):
         r.append(fpage)
     if lpage is not None:
         r.append(lpage)
-    return '-'.join(r)
+    return '-'.join(r) + '\n'
+
+
+def display_value(label, value):
+    return label + ': ' + value + '\n' if value is not None else 'None\n'
+
+
+def display_values(label, values):
+    return label + ': ' + '\n'.join(values) + '\n'
+
+
+def display_attributes(label, attributes):
+    r = []
+    for key, value in attributes.items():
+        if value is list:
+            value = '; '.join(value)
+        r.append(display_value(key, value))
+    return label + '\n' + '\n'.join(r) + '\n'
+
+
+def display_items_with_attributes(label, items_with_attributes):
+    r = label + ': ' + '\n'
+    for item_name, item_values in items_with_attributes.items():
+        r += display_values_with_attributes(item_name, item_values)
+    return r + '\n'
+
+
+def display_values_with_attributes(label, values_with_attributes):
+    return label + ': ' + '\n' + '\n'.join([display_attributes('=>', item) for item in values_with_attributes]) + '\n'
+
+
+def conditional_required(label, value):
+    return display_value(label, value) if value is not None else 'WARNING: Required ' + label + ', if exists. '
+
+
+def required(label, value):
+    return display_value(label, value) if value is not None else 'ERROR: Required ' + label + '. '
+
+
+def required_one(label, value):
+    return display_attributes(label, value) if value is not None else 'ERROR: Required ' + label + '. '
+
+
+def expected_values(label, value, expected):
+    return display_value(label, value) if value in expected else 'ERROR: ' + value + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected)
+
+
+def add_new_value_to_index(dict_key_and_values, key, value):
+    if key is not None:
+        if not key in dict_key_and_values.keys():
+            dict_key_and_values[key] = []
+        dict_key_and_values[key].append(value)
+    return dict_key_and_values
+
+
+def format_date(dates):
+    return ' '.join([k + ': ' + v for k, v in dates.items() if v is not None])

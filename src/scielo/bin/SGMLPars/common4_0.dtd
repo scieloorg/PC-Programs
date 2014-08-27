@@ -103,7 +103,10 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT supplmat - - (#PCDATA)   >
 <!ATTLIST supplmat
+          id       CDATA #REQUIRED
           href       CDATA #REQUIRED
+          mimetype   CDATA #REQUIRED
+          mimesubt   CDATA #REQUIRED
           >
 
 <!ELEMENT texmath - - CDATA  >
