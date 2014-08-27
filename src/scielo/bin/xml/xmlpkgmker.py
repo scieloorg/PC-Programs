@@ -1918,7 +1918,7 @@ class ContentValidation(object):
                 self.refs.append(r)
 
     def issue_date(self):
-        r = [self.article_meta.get('date-' + item) for item in ['ppub', 'epub-ppub', 'collection', 'pub']]
+        r = [self.article_meta.get('date-' + item) for item in ['ppub', 'epub-ppub', 'collection', 'pub', 'epub']]
         r = [item for item in r if item is not None]
         return r[0] if r is not None else ''
 

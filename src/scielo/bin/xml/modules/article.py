@@ -43,7 +43,7 @@ class HRef(object):
         self.src = src
         self.element = element
         self.xml = xml
-        self.id = element.attrib.get('id', parent.attrib.get('id'))
+        self.id = element.attrib.get('id', parent.attrib.get('id', None))
         self.parent = parent
 
     def display(self, path):
@@ -743,7 +743,6 @@ class Article(ArticleXML):
         for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
             for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
                 href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                
                 _href = HRef(href, elem, parent, node_xml(parent))
                 r.append(_href)
         return r
@@ -760,7 +759,6 @@ class Article(ArticleXML):
                 element_name = 'graphic'
                 src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
                 xml = node_xml(graphic)
-
             _href = HRef(src, graphic, t, xml)
             _table = GraphicParent(t.tag, t.attrib.get('id'), t.findtext('.//label'), node_text(t.find('.//caption')), _href)
             _table = Table(_table, node_xml(t.find('./table')))
