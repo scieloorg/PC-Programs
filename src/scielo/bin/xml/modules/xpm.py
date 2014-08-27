@@ -3,6 +3,7 @@ import shutil
 from datetime import datetime
 
 from modules import article
+from modules import xml_utils
 
 
 def hdimages_to_jpeg(source_path, jpg_path, replace=False):
@@ -164,26 +165,82 @@ def format_new_name(doc, param_acron='', original_xml_name=''):
     return r
 
 
-def href_list(doc):
+def href_attach_type(parent_tag, tag):
+    if 'suppl' in tag or 'media' == tag:
+        attach_type = 's'
+    elif 'inline' in tag:
+        attach_type = 'i'
+    elif parent_tag in ['equation', 'disp-formula']:
+        attach_type = 'e'
+    else:
+        attach_type = 'g'
+    return attach_type
 
 
-def normalize_file_names(content, acron, xml_name):
-    
+def get_curr_and_new_href_list(xml_name, new_name, href_list):
+    r = []
+    attach_type = ''
+    for href, attach_type, attach_id in href_list:
+        if attach_id is None:
+            attach_name = href.replace(xml_name, '')
+        else:
+            attach_name = attach_id + href[href.rfind('.'):]
+        new = new_name + '-' + attach_type + attach_name
+        r.append((href, new))
+    return list(set(r))
+
+
+def get_attach_info(doc):
+    items = []
+    for href_info in doc.hrefs:
+        attach_type = href_attach_type(href_info.parent.tag, href_info.element_name)
+        attach_id = href_info.id
+        items.append((href_info.src, attach_type, attach_id))
+    return items
+
+
+def replace_hrefs(content, curr_and_new_href_list):
+    #print(curr_and_new_href_list)
+    for current, new in curr_and_new_href_list:
+        print(current + ' => ' + new)
+        content = content.replace('href="' + current, 'href="' + new)
+    return content
+
+
+def normalize_hrefs(content, acron, xml_name):
+    curr_and_new_href_list = []
+    if xml_utils.is_xml_well_formed(content) is not None:
+        doc = article.Article(content)
+        new_name = format_new_name(doc, acron, xml_name)
+        attach_info = get_attach_info(doc)
+        print('href_list')
+        print(attach_info)
+        curr_and_new_href_list = get_curr_and_new_href_list(xml_name, new_name, attach_info)
+        print(curr_and_new_href_list)
+        content = replace_hrefs(content, curr_and_new_href_list)
+    return (new_name, curr_and_new_href_list, content)
+
+
+def pack_files(src_path, dest_path, curr_and_new_href_list):
+    for curr, new in curr_and_new_href_list:
+        shutil.copyfile(src_path + '/' + curr, dest_path + '/' + new)
+    return jpg_created
+
+def x(content, acron, xml_name):
     if xml_utils.is_xml_well_formed(content) is not None:
         doc = Article(content)
         new_name = format_new_name(doc, acron, xml_name)
-        href_list = 
-        new_name, href_list = XMLMetadata(content).new_name_and_href_list(acron, original_xml_name)    
+        attach_info = get_attach_info(doc)
         print('href_list')
-        print(href_list)
-        print(self.generate_curr_and_new_href_list(xml_name, new_name, href_list))
+        print(attach_info)
+        print(get_curr_and_new_href_list(xml_name, new_name, attach_info))
         if is_sgmxml:
             #href and new href list
-            curr_and_new_href_list = self.generate_curr_and_new_href_list(xml_name, new_name, href_list)
-            content = self.normalize_href(content, curr_and_new_href_list)
+            curr_and_new_href_list = get_curr_and_new_href_list(xml_name, new_name, attach_info)
+            content = normalize_href(content, curr_and_new_href_list)
         else:
             new_name = xml_name
-            curr_and_new_href_list = [(href, href) for href, item_id in href_list]
+            curr_and_new_href_list = [(href, href) for href, item_id in new_href_list]
         print(curr_and_new_href_list)
         # related files and href files list
         not_found, related_files_list, href_files_list = self.matched_files(xml_name, new_name, curr_and_new_href_list, src_path)
