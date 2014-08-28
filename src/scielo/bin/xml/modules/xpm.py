@@ -221,10 +221,16 @@ def normalize_hrefs(content, acron, xml_name):
     return (new_name, curr_and_new_href_list, content)
 
 
-def pack_files(src_path, dest_path, curr_and_new_href_list):
+def pack_related_files(src_path, dest_path, curr_and_new_href_list):
+    not_found = []
     for curr, new in curr_and_new_href_list:
-        shutil.copyfile(src_path + '/' + curr, dest_path + '/' + new)
-    return jpg_created
+        f = src_path + '/' + curr
+        if os.path.isfile(f):
+            shutil.copyfile(f, dest_path + '/' + new)
+        else:
+            not_found.append(f)
+    return not_found
+
 
 def x(content, acron, xml_name):
     if xml_utils.is_xml_well_formed(content) is not None:
@@ -245,7 +251,7 @@ def x(content, acron, xml_name):
         # related files and href files list
         not_found, related_files_list, href_files_list = self.matched_files(xml_name, new_name, curr_and_new_href_list, src_path)
 
-        jpg_created = self.pack_files(related_files_list, href_files_list, src_path, dest_path)
+        jpg_created = self.pack_related_files(related_files_list, href_files_list, src_path, dest_path)
 
         f = open(dest_path + '/' + new_name + '.xml', 'w')
         f.write(content)
@@ -281,17 +287,22 @@ def x(content, acron, xml_name):
     return (new_name, log)
 
 
+def process_files(xml_filename, scielo_pkg_path, report_path, wrk_path):
+    xml_path = os.path.dirname(xml_filename)
+    xml_file = os.path.basename(xml_filename)
+
+    xml_name = xml_file.replace('.sgm.xml', '').replace('.xml', '')
+    xml_wrk_path = wrk_path + '/' + xml_name
+
+    log_filename = report_path + '/' + xml_name + '.log'
+    err_filename = report_path + '/' + xml_name + '.err.txt'
+
+    clean_folder(xml_wrk_path)
+    delete_files([log_filename, err_filename])
+
+
 def process(xml_files, scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path):
-    hdimages_to_jpeg(os.path.dirname(xml_files[0]), os.path.dirname(xml_files[0]), False)
     for xml_filename in xml_files:
-        xml_path = os.path.dirname(xml_filename)
-        xml_file = os.path.basename(xml_filename)
-
-        xml_name = xml_file.replace('.sgm.xml', '').replace('.xml', '')
-        xml_wrk_path = work_path + '/' + xml_name
-
-        log_filename = report_path + '/' + xml_name + '.log'
-        err_filename = report_path + '/' + xml_name + '.err.txt'
-
-        clean_folder(xml_wrk_path)
-        delete_files([log_filename, err_filename])
+        process_file(xml_filename, scielo_pkg_path, report_path, wrk_path)
+    hdimages_to_jpeg(scielo_pkg_path, scielo_pkg_path, True)
+    
