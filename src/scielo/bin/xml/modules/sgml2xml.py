@@ -171,18 +171,9 @@ def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
     return content
 
 
-def normalize_xml_content(xml_name, content, src_path, version, html_filename=''):
-    content = xml_utils.convert_entities_to_chars(content)
-    if html_filename:
-        content = normalize_sgmlxml(xml_name, content, src_path, version, html_filename)
-    return content
-
-
 def fix_xml(content):
     xml_fix = XMLContent(content)
     xml_fix.fix()
     if not xml_fix.content == content:
         content = xml_fix.content
     return content
-
-
