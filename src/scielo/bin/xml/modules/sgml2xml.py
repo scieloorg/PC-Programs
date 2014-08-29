@@ -4,6 +4,16 @@ import shutil
 from modules import xml_utils
 from modules import java_xml_utils
 
+PMC_PATH = './../../pmc'
+XSL_SGML2XML = {}
+XSL_SGML2XML['v3.0'] = PMC_PATH + '/v3.0/xsl/sgml2xml/sgml2xml.xsl'
+XSL_SGML2XML['j1.0'] = PMC_PATH + '/j1.0/xsl/sgml2xml/sgml2xml.xsl'
+XSL_SGML2XML_default = XSL_SGML2XML['j1.0']
+
+
+def xsl_sgml2xml(version):
+    return XSL_SGML2XML.get(version, XSL_SGML2XML_default)
+
 
 class XMLContent(object):
 
@@ -109,30 +119,30 @@ class XMLContent(object):
         return ''.join(parts)
 
 
-def fix_href(content, xml_name, new_href_list):
-    content = content.replace('<graphic href="?' + xml_name + '"', '-FIXHREF-' + 'FIXHREF<graphic href="?' + xml_name + '"-FIXHREF-')
-    items = content.split('-FIXHREF-')
+def rename_embedded_img_href(content, xml_name, new_href_list):
+    content = content.replace('<graphic href="?', '--FIXHREF--<graphic href="?')
+    items = content.split('--FIXHREF--')
     new = ''
     i = 0
     for item in items:
-        if item.startswith('FIXHREF'):
-            new += '<graphic href="' + new_href_list[i] + '"'
+        if item.startswith('<graphic href="?'):
+            s = item[item.find('?'):]
+            new += '<graphic href="' + xml_name + new_href_list[i] + s[s.find('"'):]
             i += 1
         else:
             new += item
     return new
 
 
-def html_img_src(html_content, xml_name):
+def html_img_src(html_content):
     #[graphic href=&quot;?a20_115&quot;]</span><img border=0 width=508 height=314
     #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
-    html_content = html_content.replace('[graphic href="?' + xml_name + '"', '[graphic href="?' + xml_name + '"-FIXHREF-FIXHREF')
-    items = [item for item in html_content.split('-FIXHREF-') if item.startswith('FIXHREF')]
+    html_content = html_content.replace('[graphic href="?', '[graphic href="?' + '"--FIXHREF--FIXHREF')
+    items = [item for item in html_content.split('--FIXHREF--') if item.startswith('FIXHREF')]
     img_src = []
     for item in items:
-        p = item.find(' src="')
-        if p > 0:
-            item = item[p + len(' src="')]
+        if ' src="' in item:
+            item = item[item.find(' src="') + len(' src="')]
             item = item[0:item.find('"')]
             item = item[item.find('/') + 1:]
             if len(item) > 0:
@@ -140,31 +150,24 @@ def html_img_src(html_content, xml_name):
     return img_src
 
 
-def copy_img_files(source_path, filenames, dest_path):
-    for filename in filenames:
-        if os.path.isfile(source_path + '/' + filename):
-            shutil.copyfile(source_path + '/' + filename, dest_path + '/' + filename)
-
-
-def fix_graphic_href(xml_name, content, html_filename, dest_path):
+def extract_embedded_images(xml_name, content, html_filename, dest_path):
     if content.find('href="?' + xml_name):
         html_content = open(html_filename, 'r').read()
-
-        new_href_list = html_img_src(html_content, xml_name)
-
-        content = fix_href(content, xml_name, new_href_list)
-
-        img_path = os.path.dirname(html_filename)
-        copy_img_files(img_path, new_href_list, dest_path)
+        embedded_img_files = html_img_src(html_content)
+        embedded_img_path = os.path.dirname(html_filename)
+        content = rename_embedded_img_href(content, xml_name, embedded_img_files)
+        for item in embedded_img_files:
+            if os.path.isfile(embedded_img_path + '/' + item):
+                shutil.copyfile(embedded_img_path + '/' + item, dest_path + '/' + xml_name + item)
     return content
 
 
 def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
-    content = fix_graphic_href(xml_name, content, html_filename, src_path)
+    content = extract_embedded_images(xml_name, content, html_filename, src_path)
     if not xml_utils.is_xml_well_formed(content):
         content = fix_xml(content)
     if xml_utils.is_xml_well_formed(content) is not None:
-        content = java_xml_utils.xml_content_transform(content, version)
+        content = java_xml_utils.xml_content_transform(content, xsl_sgml2xml(version))
     return content
 
 
