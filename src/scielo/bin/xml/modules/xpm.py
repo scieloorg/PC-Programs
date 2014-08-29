@@ -224,57 +224,67 @@ def normalize_hrefs(content, acron, xml_name):
 
 def pack_related_files(src_path, xml_name, new_name, dest_path, curr_and_new_href_list):
     not_found = []
+    related_files_list = []
+    href_files_list = []
+    href_list = []
     for f in os.listdir(src_path):
         if f.startswith(xml_name + '.') and not f.endswith(xml_name + '.sgm.xml'):
-            shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(xml_name, new_name))
+            new = f.replace(xml_name, new_name)
+            related_files_list.append((f, new))
+            shutil.copyfile(src_path + '/' + f, dest_path + '/' + new)
     for curr, new in curr_and_new_href_list:
+        href_list.append((curr, new))
         f = src_path + '/' + curr
         if os.path.isfile(f):
-            if f.rfind('.') > 0:
-                filename = f[0:f.rfind('.')]
+            if curr.rfind('.') > 0:
+                curr_name = curr[0:curr.rfind('.')]
+                new_name = new[0:new.rfind('.')]
             else:
-                filename = f
-            for f in [f for f in os.listdir(src_path) if f.startswith(filename + '.')]:
-                shutil.copy(src_path + '/' + f, dest_path + '/' + f)
+                curr_name = curr
+                new_name = new
+            for f in [f for f in os.listdir(src_path) if f.startswith(curr_name + '.')]:
+                ext = f[f.rfind('.'):] if f.rfind('.') > 0 else ''
+                href_files_list.append((f, new_name + ext))
+                shutil.copy(src_path + '/' + f, dest_path + '/' + new_name + ext)
         else:
-            not_found.append(f)
-    return not_found
+            not_found.append(curr)
+    return (not_found, related_files_list, href_files_list, href_list)
 
 
-def files_report(xml_name, new_name, related_files_list, href_list, curr_and_new_href_list, src_path, href_files_list, dest_path, not_found):
+def files_report(xml_name, new_name, src_path, dest_path, related_files_list, href_files_list, href_list, not_found):
+    def display_sorted(pair):
+        r = sorted(['   ' + c + ' => ' + n for c, n in pair])
+        return '\n'.join(r)
+
     log = []
 
+    log.append('Source path:   ' + src_path)
+    log.append('Package path:  ' + dest_path)
     log.append('Source XML name:   ' + xml_name)
     log.append('Generated XML name:' + new_name)
-    log.append('Total of related files: ' + str(len(related_files_list)))
-    log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(related_files_list)]))
 
-    log.append('Total of @href in XML: ' + str(len(href_list)))
-    log.append('\n'.join(['   ' + c for c, n in sorted(href_list)]))
+    log.append('\nTotal of related files: ' + str(len(related_files_list)))
+    log.append(display_sorted(related_files_list))
 
-    if xml_name != new_name:
-        log.append('Renaming @href files in XML: ' + str(len(curr_and_new_href_list)))
-        log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(curr_and_new_href_list)]))
+    log.append('\nTotal of @href in XML: ' + str(len(href_list)))
+    log.append(display_sorted(href_list))
 
-        log.append('Renaming and packing @href files \n' + src_path + ' => packages: ' + str(len(href_files_list)))
-        log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(href_files_list)]))
-    else:
-        log.append('Packing @href files \n' + src_path + ' => packages: ' + str(len(href_files_list)))
-        log.append('\n'.join(['   ' + c + ' => ' + n for c, n in sorted(href_files_list)]))
+    log.append('\nPacking @href files: ' + str(len(href_files_list)))
+    log.append(display_sorted(href_files_list))
 
     if len(not_found) > 0:
-        log.append('\nTotal of @href files not found in ' + src_path + ': \n' + '\n'.join(sorted(not_found)))
-    return (new_name, log)
+        log.append('\nERROR: Total of @href files not found in ' + src_path + ':')
+        log.append(display_sorted(not_found))
+    return '\n'.join(log)
 
 
-def process_files(xml_filename, scielo_pkg_path, report_path, wrk_path, version, acron):
+def generate_article_xml_package(xml_filename, scielo_pkg_path, report_path, wrk_path, version, acron):
     xml_path = os.path.dirname(xml_filename)
     xml_file = os.path.basename(xml_filename)
 
     xml_name = xml_file.replace('.sgm.xml', '').replace('.xml', '')
     xml_wrk_path = wrk_path + '/' + xml_name
 
-    log_filename = report_path + '/' + xml_name + '.log'
     err_filename = report_path + '/' + xml_name + '.err.txt'
 
     clean_folder(xml_wrk_path)
@@ -293,12 +303,14 @@ def process_files(xml_filename, scielo_pkg_path, report_path, wrk_path, version,
         content = sgml2xml.normalize_sgmlxml(xml_name, content, xml_path, version, html_filename)
 
     if xml_utils.is_xml_well_formed(content) is None:
-        print(xml_file + ' is not well formed')
-        open(scielo_pkg_path + '/incorrect_' + xml_name + '.xml', 'w').write(content)
+        new_xml_filename = scielo_pkg_path + '/incorrect_' + xml_name + '.xml'
+        report_content = xml_file + ' is not well formed\nOpen ' + new_xml_filename + ' using an XML Editor.'
+        r = False
     else:
         new_name = xml_name
         doc = article.Article(content)
         attach_info = get_attach_info(doc)
+
         print('attach_info')
         print(attach_info)
 
@@ -311,11 +323,29 @@ def process_files(xml_filename, scielo_pkg_path, report_path, wrk_path, version,
         print(curr_and_new_href_list)
 
         # pack files
-        not_found = pack_related_files(xml_path, xml_name, new_name, scielo_pkg_path, curr_and_new_href_list)
-        open(scielo_pkg_path + '/' + new_name + '.xml', 'w').write(content)
+        not_found, related_files_list, href_files_list, href_list = pack_related_files(xml_path, xml_name, new_name, scielo_pkg_path, curr_and_new_href_list)
+        r = True
+        new_xml_filename = scielo_pkg_path + '/' + new_name + '.xml'
+        report_content = files_report(xml_name, new_name, xml_path, scielo_pkg_path, related_files_list, href_files_list, href_list, not_found)
+    try:
+        open(new_xml_filename, 'w').write(content)
+    except:
+        print('ERROR: Unable to create ' + new_xml_filename)
+    try:
+        open(err_filename, 'w').write(report_content)
+    except:
+        print('ERROR: Unable to create ' + err_filename)
+
+    return (r, new_xml_filename, err_filename)
 
 
-def process(xml_files, scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path, version='1.0'):
-    for xml_filename in xml_files:
-        process_file(xml_filename, scielo_pkg_path, report_path, wrk_path, version)
+def generate_issue_xml_package(xml_files, scielo_pkg_path, report_path, wrk_path, acron, version='1.0'):
+    reports = {}
     hdimages_to_jpeg(scielo_pkg_path, scielo_pkg_path, False)
+    for xml_filename in xml_files:
+        r, new_xml_filename, err_filename = generate_article_xml_package(xml_filename, scielo_pkg_path, report_path, wrk_path, version, acron)
+        reports[xml_filename] = (r, new_xml_filename, err_filename)
+    return reports
+
+
+def evaluate_article_xml_package():

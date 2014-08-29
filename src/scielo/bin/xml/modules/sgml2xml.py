@@ -1,9 +1,6 @@
 import os
 import shutil
 
-import xml.etree.ElementTree as etree
-from StringIO import StringIO
-
 from modules import xml_utils
 from modules import java_xml_utils
 
@@ -73,36 +70,36 @@ class XMLContent(object):
         for part in parts:
             if part in tag_list:
                 tag = part
-                if debug: print('\ncurrent:' + tag)
+                if debug:
+                    print('\ncurrent:' + tag)
                 if tag.startswith('</'):
-                    if debug: print('expected')
-                    if debug: print(expected_close_tags)
-                    if debug: print('ign_list')
-                    if debug: print(ign_list)
+                    if debug:
+                        print('expected')
+                        print(expected_close_tags)
+                        print('ign_list')
+                        print(ign_list)
                     if tag in ign_list:
-                        if debug: print('remove from ignore')
+                        if debug:
+                            print('remove from ignore')
                         ign_list.remove(tag)
                         parts[k] = ''
                     else:
                         matched = False
                         if len(expected_close_tags) > 0:
                             matched = (expected_close_tags[-1] == tag)
-
                             if not matched:
-                                if debug: print('not matched')
-
+                                if debug:
+                                    print('not matched')
                                 while not matched and len(expected_close_tags) > 0:
-
                                     ign_list.append(expected_close_tags[-1])
                                     parts[k-1] += expected_close_tags[-1]
                                     del expected_close_tags[-1]
-
                                     matched = (expected_close_tags[-1] == tag)
-
-                                if debug: print('...expected')
-                                if debug: print(expected_close_tags)
-                                if debug: print('...ign_list')
-                                if debug: print(ign_list)
+                                if debug:
+                                    print('...expected')
+                                    print(expected_close_tags)
+                                    print('...ign_list')
+                                    print(ign_list)
 
                             if matched:
                                 del expected_close_tags[-1]
