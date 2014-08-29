@@ -549,7 +549,7 @@ class GraphicHrefFixer(object):
         print(html_filename)
 
         while doit:
-            xml_p1, xml_p2, new, html_p2, img_filename = self.get_data(xml_content, html_content)
+            xml_p1, xml_p2, new, html_p2, img_filename = self.get_data(xml_content, html_content, xml_name)
             
             if xml_p1 == 0:
                 doit = False
@@ -575,7 +575,7 @@ class GraphicHrefFixer(object):
                 result = res[1:-1]
         return result
 
-    def get_data(self, xml_content, html_content):
+    def get_data(self, xml_content, html_content, xml_name):
         xml_p1, xml_p2, new, html_p2, img_filename = (0, 0, '', 0, '')
 
         xml_p1, xml_p2, replace = self.find_range(xml_content, '<graphic', '</graphic>')
@@ -591,7 +591,7 @@ class GraphicHrefFixer(object):
                     img_filename = self.get_attr_value(img_filename)
                     if img_filename is not None:
                         img_href = img_filename[img_filename.find('/')+1:]
-                        new_href = xml_href[1:] + img_href
+                        new_href = xml_name + img_href
 
             new = replace.replace(xml_href, new_href)
         return (xml_p1, xml_p2, new, html_p2, img_filename)
@@ -2407,26 +2407,31 @@ class Normalizer(object):
         related_files_list = [(f, new_name + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(xml_name + '.')]
 
         for curr, new in curr_and_new_href_list:
-            if os.path.isfile(src_path + '/' + curr):
-                print('yes')
+            if '.' in curr:
+                curr_name = curr[0:curr.rfind('.')]
                 ext = curr[curr.rfind('.'):]
-                if new.endswith(ext):
-                    href_files_list.append((curr, new))
-                else:
-                    href_files_list.append((curr, new + ext))
             else:
-                # curr and new has no extension
-                found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr + '.') and not curr == xml_name]
-                if len(found) == 0:
-                    if '.' in curr:
-                        curr_noext = curr[0:curr.rfind('.')]
-                        found = [(f, new + f[f.rfind('.'):]) for f in os.listdir(src_path) if f.startswith(curr_noext + '.') and not curr_noext == xml_name]
-                if len(found) == 0:
-                    not_found.append(curr)
+                curr_name = curr
+                ext = ''
+            print(curr)
+            print(curr_name)
+            files = [f for f in os.listdir(src_path) if f.startswith(curr_name + '.')]
+            new_name = new if not '.' in new else new[0:new.rfind('.')]
+            found = []
+            for f in files:
+                if '.' in f:
+                    ext = f[f.rfind('.'):]
                 else:
-                    href_files_list += found
-   
+                    ext = ''
+                found.append((f, new_name + ext))
+                href_files_list.append((f, new_name + ext))
+            if len(found) == 0:
+                not_found.append(curr)
+        print(' ===>>>>')
+        print(href_files_list)
         href_files_list = sorted(list(set(href_files_list)))
+        print(' ===>>>>')
+        print(href_files_list)
         return (not_found, related_files_list, href_files_list)
 
     def normalize_href(self, content, curr_and_new_href_list):
