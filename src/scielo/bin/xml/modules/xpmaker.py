@@ -9,47 +9,72 @@ from modules import java_xml_utils
 from modules import xpchecker
 
 
+THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
+
+
 DEFAULT_VERSION = '1.0'
-PMC_PATH = './../../pmc'
+PMC_PATH = THIS_LOCATION + './../../pmc'
+
 XSL_SGML2XML = {}
 XSL_SGML2XML['3.0'] = PMC_PATH + '/v3.0/xsl/sgml2xml/sgml2xml.xsl'
 XSL_SGML2XML['1.0'] = PMC_PATH + '/j1.0/xsl/sgml2xml/sgml2xml.xsl'
 
-DTD_FILENAME = {}
-DTD_FILENAME['3.0'] = PMC_PATH + '/v3.0/dtd/journalpublishing3.dtd'
-DTD_FILENAME['1.0'] = PMC_PATH + '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
+XPM_FILES = {}
+XPM_FILES['scielo3.0'] = {}
+XPM_FILES['scielo3.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_FILENAME}">'
+XPM_FILES['scielo3.0']['dtd'] = PMC_PATH + '/v3.0/dtd/journalpublishing3.dtd'
+XPM_FILES['scielo3.0']['css'] = PMC_PATH + '/v3.0/xsl/web/plus'
+XPM_FILES['scielo3.0']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/scielo-style/stylechecker.xsl'
+XPM_FILES['scielo3.0']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
+XPM_FILES['scielo3.0']['xsl_preview'] = PMC_PATH + '/v3.0/xsl/previewers/scielo-html-novo.xsl'
+XPM_FILES['scielo3.0']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/xml2pmc.xsl'
 
-DOCTYPE = {}
-DOCTYPE['3.0'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_FILENAME}">'
-DOCTYPE['1.0'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_FILENAME}">'
+XPM_FILES['pmc3.0'] = {}
+XPM_FILES['pmc3.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_FILENAME}">'
+XPM_FILES['pmc3.0']['dtd'] = PMC_PATH + '/v3.0/dtd/journalpublishing3.dtd'
+XPM_FILES['pmc3.0']['css'] = PMC_PATH + '/v3.0/xsl/jpub/jpub-preview.css'
+XPM_FILES['pmc3.0']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/nlm-stylechecker.xsl'
+XPM_FILES['pmc3.0']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
+XPM_FILES['pmc3.0']['xsl_preview'] = [PMC_PATH + '/v3.0/xsl/jpub/citations-prep/jpub3-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
+XPM_FILES['pmc3.0']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/pmc.xsl'
 
-XSL_REPORT = {}
-XSL_REPORT['3.0'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
-XSL_REPORT['1.0'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.4/style-reporter.xsl'
+XPM_FILES['scielo1.0'] = {}
+XPM_FILES['scielo1.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_FILENAME}">'
+XPM_FILES['scielo1.0']['dtd'] = PMC_PATH + '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
+XPM_FILES['scielo1.0']['css'] = XPM_FILES['scielo3.0']['css']
+XPM_FILES['scielo1.0']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/scielo-style/stylechecker.xsl'
+XPM_FILES['scielo1.0']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.4/style-reporter.xsl'
+XPM_FILES['scielo1.0']['xsl_preview'] = XPM_FILES['scielo3.0']['xsl_preview']
+XPM_FILES['scielo1.0']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/xml2pmc.xsl'
 
-XSL_REPORT_PREP = {}
-XSL_REPORT_PREP['3.0'] = PMC_PATH + '/v3.0/xsl/scielo-style/stylechecker.xsl'
-XSL_REPORT_PREP['1.0'] = PMC_PATH + '/j1.0/xsl/scielo-style/stylechecker.xsl'
+XPM_FILES['pmc1.0'] = {}
+XPM_FILES['pmc1.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_FILENAME}">'
+XPM_FILES['pmc1.0']['dtd'] = PMC_PATH + '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
+XPM_FILES['pmc1.0']['css'] = XPM_FILES['pmc3.0']['css']
+XPM_FILES['pmc1.0']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.4/nlm-stylechecker.xsl'
+XPM_FILES['pmc1.0']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.4/style-reporter.xsl'
+XPM_FILES['pmc1.0']['xsl_preview'] = [PMC_PATH + '/j1.0/xsl/jpub/citations-prep/jpub1-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
+XPM_FILES['pmc1.0']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/pmc.xsl'
 
 
-def doctype(version):
-    return DTD_FILENAME.get(version, DOCTYPE[DEFAULT_VERSION])
+def doctype(database_name, version):
+    return XPM_FILES.get(database_name + version, XPM_FILES.get(database_name + DEFAULT_VERSION, {})).get('doctype')
 
 
-def dtd_filename(version):
-    return DTD_FILENAME.get(version, DTD_FILENAME[DEFAULT_VERSION])
+def dtd_filename(database_name, version):
+    return XPM_FILES.get(database_name + version, XPM_FILES.get(database_name + DEFAULT_VERSION, {})).get('dtd')
 
 
-def xsl_sgml2xml(version):
+def xsl_sgml2xml(database_name, version):
     return XSL_SGML2XML.get(version, XSL_SGML2XML[DEFAULT_VERSION])
 
 
-def xsl_prep_report(version):
-    return XSL_REPORT_PREP.get(version, XSL_REPORT_PREP)
+def xsl_prep_report(database_name, version):
+    return XPM_FILES.get(database_name + version, XPM_FILES.get(database_name + DEFAULT_VERSION, {})).get('xsl_prep_report')
 
 
-def xsl_report(version):
-    return XSL_REPORT.get(version, XSL_REPORT)
+def xsl_report(database_name, version):
+    return XPM_FILES.get(database_name + version, XPM_FILES.get(database_name + DEFAULT_VERSION, {})).get('xsl_report')
 
 
 class XMLContent(object):
@@ -156,6 +181,36 @@ class XMLContent(object):
         return ''.join(parts)
 
 
+class DocFilesInfo(object):
+
+    def __init__(self, xml_filename, report_path, wrk_path):
+        self.xml_filename = xml_filename
+        self.xml_path = os.path.dirname(xml_filename)
+
+        xml_file = os.path.basename(xml_filename)
+        self.xml_name = xml_file.replace('.sgm.xml', '').replace('.xml', '')
+
+        self.xml_wrk_path = wrk_path + '/' + self.xml_name
+
+        self.dtd_validation_report_filename = report_path + '/' + self.xml_name + '.dtd.txt'
+        self.style_checker_report_filename = report_path + '/' + self.xml_name + '.rep.html'
+
+        self.pmc_dtd_validation_report_filename = report_path + '/' + self.xml_name + '.pmc.dtd.txt'
+        self.pmc_style_checker_report_filename = report_path + '/' + self.xml_name + '.pmc.rep.html'
+
+        self.err_filename = report_path + '/' + self.xml_name + '.err.txt'
+        self.html_filename = self.xml_wrk_path + '/' + self.xml_name + '.temp.htm'
+        if not os.path.isfile(self.html_filename):
+            self.html_filename += 'l'
+
+        self.is_sgmxml = xml_filename.endswith('.sgm.xml')
+        self.ctrl_filename = self.err_filename.replace('.err', '.ctrl') if self.is_sgmxml else ''
+
+    def clean(self):
+        clean_folder(self.xml_wrk_path)
+        delete_files([self.err_filename, self.dtd_validation_report_filename, self.style_checker_report_filename, self.pmc_dtd_validation_report_filename, self.pmc_style_checker_report_filename, self.ctrl_filename])
+
+
 def rename_embedded_img_href(content, xml_name, new_href_list):
     content = content.replace('<graphic href="?', '--FIXHREF--<graphic href="?')
     items = content.split('--FIXHREF--')
@@ -255,7 +310,7 @@ def clean_folder(path):
 
 def delete_files(files):
     for f in files:
-        if os.path.isfile(f):
+        if os.path.isfile(f) and f != '':
             os.unlink(f)
 
 
@@ -487,74 +542,45 @@ def files_report(xml_name, new_name, src_path, dest_path, related_files_list, hr
     return '\n'.join(log)
 
 
-def generate_article_xml_package(xml_filename, scielo_pkg_path, report_path, wrk_path, version, acron):
-    xml_path = os.path.dirname(xml_filename)
-    xml_file = os.path.basename(xml_filename)
+def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron):
+    report_content = ''
 
-    xml_name = xml_file.replace('.sgm.xml', '').replace('.xml', '')
-    xml_wrk_path = wrk_path + '/' + xml_name
-
-    err_filename = report_path + '/' + xml_name + '.err.txt'
-
-    clean_folder(xml_wrk_path)
-    delete_files([err_filename])
-
-    is_sgmxml = xml_filename.endswith('.sgm.xml')
-    html_filename = ''
-
-    content = open(xml_filename, 'r').read()
-
+    content = open(doc_files_info.xml_filename, 'r').read()
     content = xml_utils.convert_entities_to_chars(content)
-    if is_sgmxml:
-        html_filename = xml_wrk_path + '/' + xml_name + '.temp.htm'
-        if not os.path.isfile(html_filename):
-            html_filename += 'l'
-        content = normalize_sgmlxml(xml_name, content, xml_path, version, html_filename)
+    if doc_files_info.is_sgmxml:
+        content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
 
     if xml_utils.is_xml_well_formed(content) is None:
-        new_xml_filename = scielo_pkg_path + '/incorrect_' + xml_name + '.xml'
-        report_content = xml_file + ' is not well formed\nOpen ' + new_xml_filename + ' using an XML Editor.'
+        new_xml_filename = scielo_pkg_path + '/incorrect_' + doc_files_info.xml_name + '.xml'
+        report_content = doc_files_info.xml_name + ' is not well formed\nOpen ' + new_xml_filename + ' using an XML Editor.'
         r = False
     else:
-        new_name = xml_name
+        new_name = doc_files_info.xml_name
         doc = article.Article(content)
         attach_info = get_attach_info(doc)
 
         print('attach_info')
         print(attach_info)
 
-        if is_sgmxml:
-            new_name = format_new_name(doc, acron, xml_name)
-            curr_and_new_href_list = get_curr_and_new_href_list(xml_name, new_name, attach_info)
+        if doc_files_info.is_sgmxml:
+            new_name = format_new_name(doc, acron, doc_files_info.xml_name)
+            curr_and_new_href_list = get_curr_and_new_href_list(doc_files_info.xml_name, new_name, attach_info)
             content = normalize_hrefs(content, curr_and_new_href_list)
         else:
             curr_and_new_href_list = [(href, href) for href, attach_type, attach_id in attach_info]
         print(curr_and_new_href_list)
 
         # pack files
-        not_found, related_files_list, href_files_list, href_list = pack_related_files(xml_path, xml_name, new_name, scielo_pkg_path, curr_and_new_href_list)
+        not_found, related_files_list, href_files_list, href_list = pack_related_files(doc_files_info.xml_path, doc_files_info.xml_name, new_name, scielo_pkg_path, curr_and_new_href_list)
         r = True
         new_xml_filename = scielo_pkg_path + '/' + new_name + '.xml'
-        report_content = files_report(xml_name, new_name, xml_path, scielo_pkg_path, related_files_list, href_files_list, href_list, not_found)
+        report_content = files_report(doc_files_info.xml_name, new_name, doc_files_info.xml_path, scielo_pkg_path, related_files_list, href_files_list, href_list, not_found)
     try:
         open(new_xml_filename, 'w').write(content)
     except:
-        print('ERROR: Unable to create ' + new_xml_filename)
-    try:
-        open(err_filename, 'w').write(report_content)
-    except:
-        print('ERROR: Unable to create ' + err_filename)
+        report_content += 'ERROR: Unable to create ' + new_xml_filename
 
-    return (r, new_xml_filename, err_filename)
-
-
-def generate_issue_xml_package(xml_files, scielo_pkg_path, report_path, wrk_path, acron, version='1.0'):
-    reports = {}
-    hdimages_to_jpeg(scielo_pkg_path, scielo_pkg_path, False)
-    for xml_filename in xml_files:
-        r, new_xml_filename, err_filename = generate_article_xml_package(xml_filename, scielo_pkg_path, report_path, wrk_path, version, acron)
-        reports[xml_filename] = (r, new_xml_filename, err_filename)
-    return reports
+    return (r, new_name, new_xml_filename, report_content)
 
 
 def apply_dtd(content, dtd_filename, doctype):
@@ -563,7 +589,7 @@ def apply_dtd(content, dtd_filename, doctype):
     return xml_str.content
 
 
-def apply_check_list(xml_filename, dtd_validation_report_filename, style_checker_report_filename):
+def apply_check_list(xml_filename, database_name, dtd_validation_report_filename, style_checker_report_filename):
     def get_temp_filename(xml_filename):
         temp_dir = tempfile.mkdtemp()
         return temp_dir + '/' + os.path.basename(xml_filename)
@@ -574,13 +600,13 @@ def apply_check_list(xml_filename, dtd_validation_report_filename, style_checker
         version = xml.find('.').attrib.get('dtd-version', DEFAULT_VERSION)
 
         content = open(xml_filename, 'r').read()
-        content = apply_dtd(dtd_filename(version), doctype(version))
+        content = apply_dtd(dtd_filename(database_name, version), doctype(database_name, version))
 
         temp_filename = get_temp_filename(xml_filename)
         open(temp_filename, 'w').write(content)
 
         is_valid_dtd = xpchecker.dtd_validation(temp_filename, dtd_validation_report_filename)
-        is_valid_style = xpchecker.style_validation(temp_filename, style_checker_report_filename, xsl_prep_report(version), xsl_report(version))
+        is_valid_style = xpchecker.style_validation(temp_filename, style_checker_report_filename, xsl_prep_report(database_name, version), xsl_report(database_name, version))
 
         os.unlink(temp_filename)
         shutil.rmtree(os.path.dirname(temp_filename))
@@ -588,29 +614,49 @@ def apply_check_list(xml_filename, dtd_validation_report_filename, style_checker
     return (xml, is_valid_dtd, is_valid_style)
 
 
-def evaluate_article_xml_package(xml_name, new_name, scielo_pkg_path, report_path):
-    xml_filename = scielo_pkg_path + '/' + new_name + '.xml'
+def evaluate_article_xml_package(xml_filename, database_name, dtd_validation_report_filename, style_checker_report_filename):
     report_content = ''
-    dtd_validation_report_filename = report_path + '/' + xml_name + '.dtd.txt'
-    style_checker_report_filename = report_path + '/' + xml_name + '.rep.html'
-    delete_files([dtd_validation_report_filename, style_checker_report_filename])
 
     if os.path.isfile(xml_filename):
-        xml, is_valid_dtd, is_valid_style = apply_check_list(xml_filename, dtd_validation_report_filename, style_checker_report_filename)
+        xml, is_valid_dtd, is_valid_style = apply_check_list(xml_filename, database_name, dtd_validation_report_filename, style_checker_report_filename)
         if xml is None:
-            report_content = 'XML is not well formed: ' + xml_filename + '\nProblem to load XML file. See ' + scielo_pkg_path + '/incorrect_' + xml_name + '.xml'
-            open(dtd_validation_report_filename, 'w').write(report_content)
+            report_content = 'XML is not well formed: ' + xml_filename
+    else:
+        report_content = 'XML is not well formed: ' + xml_filename
+    if len(report_content) > 0:
+        open(dtd_validation_report_filename, 'w').write(report_content)
+    return (is_valid_dtd, is_valid_style)
 
 
-def responde_to_markup(ctrl_filename, dtd_validation_report_filename):
-    if ctrl_filename:
-        import time
-        stop_after = 60 * 5
-        start = time.time()
-        doit = True
-        while doit and not os.path.isfile(dtd_validation_report_filename):
-            doit = ((time.time() - start) < stop_after)
-        if os.path.isfile(dtd_validation_report_filename):
-            open(ctrl_filename, 'w').write('done')
-        else:
-            open(ctrl_filename, 'w').write('interrupted')
+def manage_result(ctrl_filename, is_well_formed, is_valid_dtd, is_valid_style, dtd_validation_report, style_checker_report):
+    if ctrl_filename is None:
+        if is_valid_dtd is True:
+            os.unlink(dtd_validation_report)
+        if is_valid_style is True:
+            os.unlink(style_checker_report)
+    else:
+        open(ctrl_filename, 'w').write('Finished')
+
+
+def xml_output(xml_filename, xsl_filename, result_filename):
+    if os.path.exists(result_filename):
+        os.unlink(result_filename)
+    return java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)
+
+
+def process_articles(xml_files, scielo_pkg_path, pmc_pkg_path, report_path, wrk_path, acron, version='1.0'):
+    reports = {}
+    hdimages_to_jpeg(scielo_pkg_path, scielo_pkg_path, False)
+    for xml_filename in xml_files:
+        doc_files_info = DocFilesInfo(xml_filename, report_path, wrk_path)
+        doc_files_info.clean()
+
+        r, new_name, new_xml_filename, report_content = generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron)
+        doc_files_info.new_name = new_name
+        doc_files_info.new_xml_filename = new_xml_filename
+
+        evaluate_article_xml_package(doc_files_info, 'scielo', scielo_pkg_path)
+    return reports
+
+
+generate_article_xml_package(xml_filename, scielo_pkg_path, report_path, wrk_path, version, acron)
