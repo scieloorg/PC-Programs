@@ -132,32 +132,13 @@ if doit:
             report.write('collection serial folder:' + collection_serial_path, True, False, True)
             
             
-            ## TITLE
-            report.write('collection title:' + collection_config.parameter('COL_PROC_DB_TITLE_FILENAME') , True, False, True)
-            if not os.path.exists(collection_config.parameter('COL_PROC_DB_TITLE_FILENAME') + '.mst'):
-                if not os.path.exists(os.path.dirname(collection_config.parameter('COL_PROC_DB_TITLE_FILENAME') )):
-                    os.makedirs(os.path.dirname(collection_config.parameter('COL_PROC_DB_TITLE_FILENAME') ))
-                shutil.copyfile(collection_config.parameter('DB_TITLE_FILENAME') + '.mst', collection_config.parameter('COL_PROC_DB_TITLE_FILENAME') + '.mst')
-                shutil.copyfile(collection_config.parameter('DB_TITLE_FILENAME') + '.xrf', collection_config.parameter('COL_PROC_DB_TITLE_FILENAME') + '.xrf')
-            if os.path.exists(collection_config.parameter('COL_PROC_DB_TITLE_FILENAME') + '.mst'):
-                report.write('append ' + collection_config.parameter('COL_PROC_DB_TITLE_FILENAME') + ' to ' + proc_title_db, True, False, True)
-                cisis.append(collection_config.parameter('COL_PROC_DB_TITLE_FILENAME'), proc_title_db)
+            shutil.copyfile(collection_config.parameter('DB_TITLE_FILENAME') + '.mst', proc_title_db + '.mst')
+            shutil.copyfile(collection_config.parameter('DB_TITLE_FILENAME') + '.xrf', proc_title_db + '.xrf')
                 
-            ##
-
             ## ISSUE
-            report.write('collection issue:' + collection_config.parameter('COL_PROC_DB_ISSUE_FILENAME') , True, False, True)
-            cisis.create('null count=0', collection_config.parameter('COL_PROC_DB_ISSUE_FILENAME'))
-            if os.path.exists(collection_serial_path + '/i'):
-                if not os.path.exists(os.path.dirname(collection_config.parameter('COL_PROC_DB_ISSUE_FILENAME'))):
-                    os.makedirs(os.path.dirname(collection_config.parameter('COL_PROC_DB_ISSUE_FILENAME')))
-                for idfile in os.listdir(collection_serial_path + '/i'):
-                    if idfile.endswith('.id'):
-                        cisis.id2mst(collection_serial_path + '/i/' + idfile, collection_config.parameter('COL_PROC_DB_ISSUE_FILENAME'), False )
-            if os.path.exists(collection_config.parameter('COL_PROC_DB_ISSUE_FILENAME') + '.mst'):
-                cisis.append(collection_config.parameter('COL_PROC_DB_ISSUE_FILENAME'), proc_issue_db)
-                os.system('ls ' + proc_issue_db + '*')
-            ##
+            shutil.copyfile(collection_config.parameter('DB_ISSUE_FILENAME') + '.mst', proc_issue_db + '.mst')
+            shutil.copyfile(collection_config.parameter('DB_ISSUE_FILENAME') + '.xrf', proc_issue_db + '.xrf')
+
 
             ## SCILISTA
             report.write('collection scilista:' + collection_config.parameter('COL_SCILISTA') , True, False, True)
