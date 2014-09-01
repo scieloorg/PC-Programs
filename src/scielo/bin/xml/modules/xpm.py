@@ -348,4 +348,36 @@ def generate_issue_xml_package(xml_files, scielo_pkg_path, report_path, wrk_path
     return reports
 
 
-def evaluate_article_xml_package():
+def evaluate_article_xml_package(xml_name, new_name, scielo_pkg_path, pmc_validation_result, err_filename, ctrl_filename):
+    xsl_new_name = new_name if new_name != xml_name else ''
+    img_path = scielo_pkg_path
+    xml_filename = scielo_pkg_path + '/' + new_name + '.xml'
+
+    if os.path.isfile(xml_filename):
+        if xml_utils.is_xml_well_formed(xml_filename) is not None:
+            scielo_validation_result = self.sci_validator.check_list(xml_filename, scielo_validation_result, img_path)
+            scielo_validation_result.manage_result(ctrl_filename)
+
+            if os.path.exists(pmc_validation_result.pkg_path + '/' + new_name + '.xml'):
+                self.add_href_extensions(pmc_validation_result.pkg_path + '/' + new_name + '.xml')
+                pmc_validation_result = self.pmc_validator.check_list(pmc_validation_result.pkg_path + '/' + new_name + '.xml', pmc_validation_result, img_path, xsl_new_name)
+
+                if ctrl_filename is None:
+                    pmc_validation_result.manage_result(None)
+
+                if os.path.exists(pmc_validation_result.xml_output):
+                    #self.add_href_extensions(pmc_validation_result.xml_output)
+                    print('  Finished')
+                else:
+                    print('\nUnable to create ' + pmc_validation_result.xml_output)
+                    log_message(err_filename, 'Unable to create ' + pmc_validation_result.xml_output)
+            else:
+                print('Unable to create ' + pmc_validation_result.pkg_path + '/' + new_name + '.xml')
+                log_message(err_filename, 'Unable to create ' + pmc_validation_result.pkg_path + '/' + new_name + '.xml')
+        else:
+            print('XML is not well formed: ' + xml_filename)
+            log_message(err_filename, 'XML is not well formed: ' + xml_filename)
+    else:
+        print('Problem to load XML file. See ' + scielo_pkg_path + '/incorrect_' + new_name + '.xml')
+        log_message(err_filename, 'Problem to load XML file. See ' + scielo_pkg_path + '/incorrect_' + new_name + '.xml')
+
