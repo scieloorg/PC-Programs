@@ -2696,12 +2696,12 @@ end
 item: Install File
   Source=W:\scielo\Bin\SGMLPars\Comdlg32.ocx
   Destination=%PROGDIR%\bin\SGMLPars\Comdlg32.ocx
-  Flags=0001010010010011
+  Flags=0001000010010010
 end
 item: Install File
   Source=W:\scielo\Bin\SGMLPars\Comctl32.ocx
   Destination=%PROGDIR%\bin\SGMLPars\Comctl32.ocx
-  Flags=0000010010010011
+  Flags=0000000010010010
 end
 item: Install File
   Source=W:\scielo\Bin\SGMLPars\Comcat.dll
