@@ -57,24 +57,32 @@ XPM_FILES['pmc1.0']['xsl_preview'] = [PMC_PATH + '/j1.0/xsl/jpub/citations-prep/
 XPM_FILES['pmc1.0']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/pmc.xsl'
 
 
-def doctype(database_name, version):
-    return XPM_FILES.get(database_name + version, XPM_FILES.get(database_name + DEFAULT_VERSION, {})).get('doctype')
+class DTDFiles(object):
 
+    def __init__(self, database_name, version):
+        self.database_name = database_name
+        self.version = version
+        self.data = XPM_FILES.get(database_name + DEFAULT_VERSION, {})
 
-def dtd_filename(database_name, version):
-    return XPM_FILES.get(database_name + version, XPM_FILES.get(database_name + DEFAULT_VERSION, {})).get('dtd')
+    @property
+    def doctype(self):
+        return self.data['doctype']
 
+    @property
+    def dtd_filename(self):
+        return self.data['dtd']
 
-def xsl_sgml2xml(database_name, version):
-    return XSL_SGML2XML.get(version, XSL_SGML2XML[DEFAULT_VERSION])
+    @property
+    def xsl_prep_report(self):
+        return self.data['xsl_prep_report']
 
+    @property
+    def xsl_report(self):
+        return self.data['xsl_report']
 
-def xsl_prep_report(database_name, version):
-    return XPM_FILES.get(database_name + version, XPM_FILES.get(database_name + DEFAULT_VERSION, {})).get('xsl_prep_report')
-
-
-def xsl_report(database_name, version):
-    return XPM_FILES.get(database_name + version, XPM_FILES.get(database_name + DEFAULT_VERSION, {})).get('xsl_report')
+    @property
+    def xsl_output(self):
+        return self.data['xsl_output']
 
 
 class XMLContent(object):
@@ -522,6 +530,7 @@ def files_report(xml_name, new_name, src_path, dest_path, related_files_list, hr
 
     log = []
 
+    log.append('Report of files / DTD errors\n' + '-'*len('Report of files / DTD errors') + '\n')
     log.append('Source path:   ' + src_path)
     log.append('Package path:  ' + dest_path)
     log.append('Source XML name:   ' + xml_name)
@@ -589,7 +598,7 @@ def apply_dtd(content, dtd_filename, doctype):
     return xml_str.content
 
 
-def apply_check_list(xml_filename, database_name, dtd_validation_report_filename, style_checker_report_filename):
+def apply_check_list(xml_filename, dtd_files, dtd_validation_report_filename, style_checker_report_filename):
     def get_temp_filename(xml_filename):
         temp_dir = tempfile.mkdtemp()
         return temp_dir + '/' + os.path.basename(xml_filename)
@@ -597,16 +606,15 @@ def apply_check_list(xml_filename, database_name, dtd_validation_report_filename
     #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
     xml = xml_utils.is_xml_well_formed(xml_filename)
     if xml:
-        version = xml.find('.').attrib.get('dtd-version', DEFAULT_VERSION)
 
         content = open(xml_filename, 'r').read()
-        content = apply_dtd(dtd_filename(database_name, version), doctype(database_name, version))
+        content = apply_dtd(dtd_files.dtd_filename, dtd_files.doctype)
 
         temp_filename = get_temp_filename(xml_filename)
         open(temp_filename, 'w').write(content)
 
         is_valid_dtd = xpchecker.dtd_validation(temp_filename, dtd_validation_report_filename)
-        is_valid_style = xpchecker.style_validation(temp_filename, style_checker_report_filename, xsl_prep_report(database_name, version), xsl_report(database_name, version))
+        is_valid_style = xpchecker.style_validation(temp_filename, style_checker_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report)
 
         os.unlink(temp_filename)
         shutil.rmtree(os.path.dirname(temp_filename))
@@ -614,21 +622,20 @@ def apply_check_list(xml_filename, database_name, dtd_validation_report_filename
     return (xml, is_valid_dtd, is_valid_style)
 
 
-def evaluate_article_xml_package(xml_filename, database_name, dtd_validation_report_filename, style_checker_report_filename):
+def evaluate_article_xml_package(xml_filename, dtd_files, dtd_validation_report_filename, style_checker_report_filename):
     report_content = ''
-
     if os.path.isfile(xml_filename):
-        xml, is_valid_dtd, is_valid_style = apply_check_list(xml_filename, database_name, dtd_validation_report_filename, style_checker_report_filename)
+        xml, is_valid_dtd, is_valid_style = apply_check_list(xml_filename, dtd_files, dtd_validation_report_filename, style_checker_report_filename)
         if xml is None:
             report_content = 'XML is not well formed: ' + xml_filename
     else:
         report_content = 'XML is not well formed: ' + xml_filename
     if len(report_content) > 0:
         open(dtd_validation_report_filename, 'w').write(report_content)
-    return (is_valid_dtd, is_valid_style)
+    return (xml, is_valid_dtd, is_valid_style)
 
 
-def manage_result(ctrl_filename, is_well_formed, is_valid_dtd, is_valid_style, dtd_validation_report, style_checker_report):
+def manage_result_files(ctrl_filename, is_well_formed, is_valid_dtd, is_valid_style, dtd_validation_report, style_checker_report):
     if ctrl_filename is None:
         if is_valid_dtd is True:
             os.unlink(dtd_validation_report)
@@ -636,6 +643,8 @@ def manage_result(ctrl_filename, is_well_formed, is_valid_dtd, is_valid_style, d
             os.unlink(style_checker_report)
     else:
         open(ctrl_filename, 'w').write('Finished')
+        if os.path.isfile(dtd_validation_report):
+            os.unlink(dtd_validation_report)
 
 
 def xml_output(xml_filename, xsl_filename, result_filename):
@@ -645,7 +654,6 @@ def xml_output(xml_filename, xsl_filename, result_filename):
 
 
 def process_articles(xml_files, scielo_pkg_path, pmc_pkg_path, report_path, wrk_path, acron, version='1.0'):
-    reports = {}
     hdimages_to_jpeg(scielo_pkg_path, scielo_pkg_path, False)
     for xml_filename in xml_files:
         doc_files_info = DocFilesInfo(xml_filename, report_path, wrk_path)
@@ -655,8 +663,22 @@ def process_articles(xml_files, scielo_pkg_path, pmc_pkg_path, report_path, wrk_
         doc_files_info.new_name = new_name
         doc_files_info.new_xml_filename = new_xml_filename
 
-        evaluate_article_xml_package(doc_files_info, 'scielo', scielo_pkg_path)
-    return reports
+        # validation of scielo.xml
+        dtd_files = DTDFiles('scielo', version)
+        is_xml_well_formed, is_valid_dtd, is_valid_style = evaluate_article_xml_package(xml_filename, dtd_files, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report_filename)
+        if not is_valid_dtd:
+            report_content += '\n' + open(doc_files_info.dtd_validation_report_filename, 'r').read()
+        open(doc_files_info.err_filename, 'w').write(report_content)
+        manage_result_files(doc_files_info.ctrl_filename, is_xml_well_formed, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report)
 
+        #generation of pmc.xml
+        xml_output(doc_files_info.new_xml_filename, dtd_files.xml_output, pmc_pkg_path + '/' + doc_files_info.new_name + '.xml')
 
-generate_article_xml_package(xml_filename, scielo_pkg_path, report_path, wrk_path, version, acron)
+        #validation of pmc.xml
+        dtd_files = DTDFiles('pmc', version)
+        is_xml_well_formed, is_valid_dtd, is_valid_style = evaluate_article_xml_package(pmc_pkg_path + '/' + doc_files_info.new_name + '.xml', dtd_files, doc_files_info.pmc_dtd_validation_report_filename, doc_files_info.pmc_style_checker_report_filename)
+        manage_result_files(doc_files_info.ctrl_filename, is_xml_well_formed, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report)
+
+    for f in os.listdir(scielo_pkg_path):
+        if not f.endswith('.xml') and not f.endswith('.jpg'):
+            shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)
