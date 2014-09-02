@@ -637,6 +637,20 @@ class JSON_Article:
             if not len(self.json_data['f']['881']) == 23:
                 del self.json_data['f']['881']
 
+    def remove_xref_from_article_title(self, text):
+        new_value = text
+        if '<xref' in text and '</xref>' in text:
+            text = text.replace('<xref', '-BREAK-<xref')
+            text = text.replace('</xref>', '</xref>-BREAK-')
+            parts = text.split('-BREAK-')
+            new_value = ''
+            for part in parts:
+                if '<xref' in part and '</xref>' in part:
+                    pass
+                else:
+                    new_value += part
+        return new_value
+
     def normalize_article_titles(self):
         langs = []
         langs.append(self.json_data['f']['40'])
@@ -665,6 +679,8 @@ class JSON_Article:
         i = 0
         k = 0
         for title in new_titles:
+            if title.get('_') is not None:
+                new_titles[i]['_'] = self.remove_xref_from_article_title(title.get('_'))
             if title.get('t') is not None:
                 if len(langs) > k:
                     new_titles[i]['l'] = langs[k]
