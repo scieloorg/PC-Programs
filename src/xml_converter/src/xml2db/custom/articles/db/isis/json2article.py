@@ -686,7 +686,12 @@ class JSON_Article:
                     new_titles[i]['l'] = langs[k]
                     del new_titles[i]['t']
                     k += 1
+            if title.get('s'):
+                sep = ': ' if not ':' in new_titles[i]['_'] else ' '
+                new_titles[i]['_'] += sep + title.get('s')
+                del new_titles[i]['s']
             i += 1
+        print('=========normalized=======')
         print(new_titles)
         self.json_data['f']['12'] = new_titles
 
@@ -716,7 +721,7 @@ class JSON_Article:
         self.json_data['f']['49'] = self.section.code
 
         self.normalize_metadata_abstracts()
-        self.normalize_metadata_subtitles()
+        #self.normalize_metadata_subtitles()
         self.normalize_metadata_authors()
         self.normalize_illustrative_materials()
         self.normalize_affiliations()
