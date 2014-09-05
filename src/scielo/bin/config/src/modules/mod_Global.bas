@@ -42,11 +42,7 @@ Public NodeInfo() As String
 Public FileNotRequired() As Boolean
 Public Counter As Long
 
-
-Public LicensesList As ColLicenses
-Public LicensesListByLang As ColObjByLang
-Public CodeLicText As ColCode
-
+Public codeLIcense As ColCode
 Public CodeStudyArea As ColCode
 Public CodeAlphabet As ColCode
 Public CodeLiteratureType As ColCode
@@ -446,14 +442,8 @@ Property Let ChangeInterfaceIdiom(idiom As String)
 
     Set CodeDB = Paths("Code Database")
     Call codedao.create(CodeDB.Path, CodeDB.FileName, CodeDB.key)
-    If LicensesList Is Nothing Then
-        Set LicensesList = New ColLicenses
-        Call codedao.getMultilingueTable("license_text", LicensesListByLang)
-        Call LicensesList.load(LicensesListByLang)
-    End If
-    Set CodeLicText = LicensesListByLang.getItemByLang(idiom)
     
-    'Call codedao.getTable(idiom, "license_text", ComboLicText)
+    Call codedao.getTable(idiom, "license", codeLIcense)
     
     Call codedao.getTable(idiom, "idiom interface", CodeIdiom)
     

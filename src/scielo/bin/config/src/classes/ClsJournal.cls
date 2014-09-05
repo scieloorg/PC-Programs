@@ -23,7 +23,6 @@ Private mvarpubid As String
 Private mvarJournalStatusHistory As ClsHistory
 Private mvarJournalStandard As String
 Private mvarISSN As String
-Private mvarCreativeCommons As clsCreativeCommons
 Private mvarTitle As String
 Private mvarKey As String
 Private mvarShortTitle As String
@@ -36,6 +35,7 @@ Public fulltitle As String
 Public acron As String
 Public print_issn As String
 Public online_issn As String
+Public license_code As String
 
 Public Property Let SUBJECT(ByVal vNewValue As String)
     mvarSUBJECT = vNewValue
@@ -44,14 +44,9 @@ End Property
 Public Property Get SUBJECT() As String
     SUBJECT = mvarSUBJECT
 End Property
-
-
 Public Property Get pubid() As Variant
     pubid = mvarpubid
 End Property
-
-
-
 Public Property Let pubid(ByVal vNewValue As Variant)
     mvarpubid = vNewValue
 End Property
@@ -65,7 +60,6 @@ End Property
 Public Property Get key() As Variant
     key = mvarKey
 End Property
-
 Public Property Let key(ByVal vNewValue As Variant)
     mvarKey = vNewValue
 End Property
@@ -77,14 +71,6 @@ Public Property Let Title(ByVal vNewValue As Variant)
     mvarTitle = vNewValue
 End Property
 
-Public Property Get creativeCommons() As clsCreativeCommons
-    Set creativeCommons = mvarCreativeCommons
-End Property
-
-Public Property Set creativeCommons(ByVal vNewValue As clsCreativeCommons)
-    Set mvarCreativeCommons = vNewValue
-End Property
-
 Public Property Get ISSN() As Variant
     ISSN = mvarISSN
 End Property
@@ -92,8 +78,6 @@ End Property
 Public Property Let ISSN(ByVal vNewValue As Variant)
     mvarISSN = vNewValue
 End Property
-
-
 Public Property Get JournalStandard() As Variant
     JournalStandard = mvarJournalStandard
 End Property
