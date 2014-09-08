@@ -1,5 +1,5 @@
 !ID 000001
-!v001!doctopic^len
+!v001!olddoctopic^len
 !v002!^cab^vabstracts
 !v002!^cax^vannex
 !v002!^can^vannouncements
@@ -21,7 +21,7 @@
 !v002!^ctr^vtechnical report
 !v002!^cup^vupdate
 !ID 000002
-!v001!doctopic^les
+!v001!olddoctopic^les
 !v002!^cax^vanexo
 !v002!^can^vanuncio
 !v002!^cup^vactualización
@@ -43,7 +43,7 @@
 !v002!^cab^vresumen
 !v002!^cra^vrevisión
 !ID 000003
-!v001!doctopic^lpt
+!v001!olddoctopic^lpt
 !v002!^cax^vanexo
 !v002!^can^vanúncio
 !v002!^coa^vartigo original
@@ -2094,3 +2094,57 @@
 !v002!^cBY-SA^vBY-SA
 !v002!^cBY-NC-SA^vBY-NC-SA
 !v002!^cnd^vnd
+!ID 000152
+!v001!doctopic^len
+!v002!^cab^vabstracts
+!v002!^csc^vbrief communication
+!v002!^ccr^vcase report
+!v002!^cct^vclinical trial
+!v002!^cco^vcomments
+!v002!^cer^vcorrection
+!v002!^ced^veditorial
+!v002!^cle^vletter
+!v002!^coa^voriginal article
+!v002!^cpr^vpress release
+!v002!^crc^vrecount
+!v002!^crn^vresearch note
+!v002!^cre^vretraction
+!v002!^cra^vreview article
+!v002!^ctr^vtechnical report
+!v002!^cother^vother
+!ID 000153
+!v001!doctopic^les
+!v002!^coa^vartículo original
+!v002!^cra^vartículo de revisión
+!v002!^cle^vcartas
+!v002!^cco^vcomentarios
+!v002!^csc^vcomunicación breve
+!v002!^ced^veditorial
+!v002!^cct^vensayos clínicos
+!v002!^cer^verrata
+!v002!^ccr^vinforme de caso
+!v002!^ctr^vinforme técnico
+!v002!^crn^vresultados de investigación
+!v002!^cre^vretratación
+!v002!^cpr^vpress release
+!v002!^crc^vreseña
+!v002!^cab^vresumen
+!v002!^cother^votros
+!ID 000154
+!v001!doctopic^lpt
+!v002!^cra^vartigo de revisão
+!v002!^coa^vartigo original
+!v002!^cle^vcartas
+!v002!^cco^vcomentários
+!v002!^csc^vcomunicação breve
+!v002!^ced^veditorial
+!v002!^cct^vensaios clínicos
+!v002!^cer^verrata
+!v002!^ctr^vinforme técnico
+!v002!^crn^vnota de pesquisa
+!v002!^cpr^vpress release
+!v002!^ccr^vrelato de caso
+!v002!^crc^vresenha
+!v002!^cab^vresumos
+!v002!^cre^vretratação
+!v002!^cother^voutro
