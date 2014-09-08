@@ -428,10 +428,7 @@ class IssuePath:
                         
                         if ext == 'pdf' and f.startswith(fname + '-'):
                             # lang (pt, es, etc)
-                            if '="' + f + '" ' in xml_content:
-                                shutil.copyfile(filename, dirname + '/' + f)
-                                filename = dirname + '/' + f
-                            else:
+                            if not '="' + f + '"' in xml_content:
                                 rename_to = f[-6:-4] + '_' + fname + '.' + ext
                                 shutil.copyfile(filename, dirname + '/' +  rename_to)
                                 filename = dirname + '/' +  rename_to
