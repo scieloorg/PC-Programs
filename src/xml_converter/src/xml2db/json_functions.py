@@ -11,43 +11,49 @@ def return_multval(json_data, key):
         r = [r]
     return r 
 
-def return_singleval(json_data, key = ''):
-    r = ''
+def return_singleval(json_data, key=''):
+    r = json_data
     if key != '':
-        if key in json_data.keys():
-            r = json_data[key]
-    else:
-        r = json_data
+        r = json_data.get(key, '')
+    
     if type(r) == type([]):
         r = r[0]
     return r 
+
+
+def remove_html_tags(text):
+    new_value = text
+    if '>' in text and '<' in text:
+        text = text.replace('>', '>-BREAK-')
+        text = text.replace('<', '-BREAK-<')
+        parts = text.split('-BREAK-')
+        new_value = ''
+        for part in parts:
+            if '<' in part and '>' in part:
+                pass
+            else:
+                new_value += part    
+    return new_value
+
 
 class JSON_Normalizer:
     def __init__(self, conversion_tables):
         #self.general_report = general_report
         self.conversion_tables = conversion_tables
-        
-        
 
     def format_for_indexing(self, json_record):
-        # FIXME
-        if type(json_record) == type({}):
+        if type(json_record) is type({}):
             json_record_dest = {}
             for key, json_data in json_record.items():
                 json_record_dest[key] = self.format_for_indexing(json_data)
+        elif type(json_record) is type([]):
+            a = []
+            for json_data in json_record:
+                r = self.format_for_indexing(json_data)
+                a.append(r)
+            json_record_dest = a
         else:
-            if type(json_record) == type(''):
-                a = self.conversion_tables.remove_formatting(json_record)
-                #json_record_dest = normalize('NFKD', a.decode('utf-8', errors='ignore')).encode(errors='ignore')
-                json_record_dest = a
-            else:
-                if type(json_record) == type([]):
-                    a = []
-                    for json_data in json_record:
-                        r = self.format_for_indexing(json_data)
-                        a.append(r)
-                    json_record_dest = a
-        
+            json_record_dest = remove_html_tags(json_record)
         return json_record_dest
 
     def convert_value(self, json_data, tag, table_name):
@@ -77,7 +83,9 @@ class JSON_Normalizer:
 
         publication_dates = return_multval(json_data, tag)
         #print('dates')
+        #print(tag)
         #print(publication_dates)
+
 
         r = ''
         s = ''
