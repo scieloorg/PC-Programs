@@ -123,12 +123,13 @@ class ISISManager4Articles:
 
     def update(self, issues, package):
         #print(issues)
-        for issue in issues:
-            self.save_issue(issue, package)
-        if len(issues) > 1:
-            package.report.write(' ! ERROR: This package contains data of more than one issue:' , True, True, True)
+        if len(issues) == 1:
             for issue in issues:
-                package.report.write(issue.journal.acron + '  ' + issue.name, True, True, True)
+                self.save_issue(issue, package)
+        else:
+            package.report.result += ' ! FATAL ERROR: This package does not contains one issue:'
+            for issue in issues:
+                package.report.result += issue.journal.acron + '  ' + issue.name + '\n'
             
     def return_validation_report_filenames(self, issues):
         print('2')
@@ -188,29 +189,31 @@ class ISISManager4Articles:
 
         
     def generate_issue_db(self, issue, package, issue_paths):
-        count_id = len(os.listdir(issue_paths.issue_id_path) ) - 1
+        count_id = len(os.listdir(issue_paths.issue_id_path)) - 1
         #print(type(issue.documents))
-        package.report.write(' Total of xml files: ' + str(issue.documents.count), True, False, False )
-        package.report.write(' Total of id files: ' + str(count_id) , True, False, False  )
-        package.report.write(' Status of ' + issue.journal.acron +  ' ' + issue.name  + ': ' + issue.status, True, False, False  )
+        package.report.write(' Total of xml files: ' + str(issue.documents.count), True, False, False)
+        package.report.write(' Total of id files: ' + str(count_id), True, False, False)
+        package.report.write(' Status of ' + issue.journal.acron + ' ' + issue.name + ': ' + issue.status, True, False, False)
 
         if os.path.exists(issue_paths.issue_db_filename + '.mst'):
             os.unlink(issue_paths.issue_db_filename + '.mst')
             os.unlink(issue_paths.issue_db_filename + '.xrf')
 
-        self.cisis.id2mst(issue_paths.issue_i_record_filename , issue_paths.issue_db_filename, False)
-        for id_file in os.listdir(issue_paths.issue_id_path):
-            if id_file != 'i.id' and id_file != '00000.id':
-                self.cisis.id2mst(issue_paths.issue_id_path + '/' + id_file, issue_paths.issue_db_filename, False)
-        if issue.documents.count != count_id:
-            package.report.write(' ! WARNING: Check total of xml files and id files', True, True, True )            
+        self.cisis.id2mst(issue_paths.issue_i_record_filename, issue_paths.issue_db_filename, False)
+        id_files = [f for f in os.listdir(issue_paths.issue_id_path) if f != 'i.id' and f != '00000.id']
+        for id_file in id_files:
+            self.cisis.id2mst(issue_paths.issue_id_path + '/' + id_file, issue_paths.issue_db_filename, False)
+
+        if issue.documents.count > count_id:
+            package.report.result += ' ! FATAL ERROR: Some articles are not published.'
+
+        package.report.result += 'Published/updated articles: ' + str(len(id_files)) + '\n' + '\n'.join(sorted([f.replace('.id', '.xml') for f in id_files]))
+
         self.cisis.mst2iso(issue_paths.issue_db_filename, issue_paths.issue_db_filename + '.iso')
 
         win_path = os.path.dirname(issue_paths.issue_db_filename)
         win_path = os.path.dirname(win_path)
         win_path += '/windows'
-        
-        
         if not os.path.exists(win_path):
             os.makedirs(win_path)
         if os.path.exists(win_path):

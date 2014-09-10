@@ -904,8 +904,12 @@ class JSON_Article:
         if len(new) > 0:
             self.json_data['f']['85'] = new   
 
-    def report_messages(self, errors, warnings, header_errors, header_warnings):
+    def report_messages(self, errors, warnings, header_errors, header_warnings, fatal_errors, header_fatal_errors):
         
+        if len(fatal_errors) > 0:
+            #self.article_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' +  '\n' + '\n'.join(errors), False, True, False)
+            #self.general_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
+            self.article_report.write('\n'+ ' ! FATAL ERROR: ' + header_fatal_errors +  ':\n' + '\n'.join(fatal_errors), True, True, False)
         if len(errors) > 0:
             #self.article_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' +  '\n' + '\n'.join(errors), False, True, False)
             #self.general_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
@@ -919,7 +923,7 @@ class JSON_Article:
         """
         Validate the required data of front
         """
-        required = { 'doi': [237], 'publisher-name': [62],  'journal-id (nlm-ta)': [421] }
+        required = { 'doi': [237], 'publisher-name': [62], }
         errors = []
         for label, tags in required.items():
             value = ''
@@ -968,6 +972,16 @@ class JSON_Article:
         
         return errors
 
+    def validate_doctopic(self):
+        """
+        Validate the doctopic
+        """
+        errors = []
+        doctopic = return_singleval(self.json_data['f'], '71')
+        if not doctopic in self.json_normalizer.conversion_tables.table('doctopic').values():
+            errors.append('Invalid value for doctopic: ' + doctopic)
+        return errors
+
     def validate_ack_or_funding(self):
         """
         Validate the funding x ack
@@ -992,6 +1006,8 @@ class JSON_Article:
 
         count_errors = 0
         count_warnings = 0
+
+        fatal_errors = []
         errors = [] 
         warnings = [] 
         
@@ -999,12 +1015,12 @@ class JSON_Article:
         # aff, authors (prefix and suffix), pub-dates, funding (58,60) x ack
         #conditional = { 'page': (14, 32), }
         
-        errors += self.validate_issn()
-        errors += self.validate_required()
-        errors += self.validate_section()
-        errors += self.validate_pages()
+        fatal_errors += self.validate_issn()
+        warnings += self.validate_required()
+        fatal_errors += self.validate_section()
+        warnings += self.validate_pages()
         errors += self.validate_dates()
-        
+        fatal_errors += self.validate_doctopic()
         e, w = self.validate_affiliations()
         errors += e 
         warnings += w
@@ -1013,10 +1029,10 @@ class JSON_Article:
         count_warnings += len(warnings)
         count_errors += len(errors)
 
-        self.report_messages(errors, warnings, 'Required data in article front', 'Desirable data in article front')
+        self.report_messages(errors, warnings, 'Required data in article front', 'Desirable data in article front', fatal_errors, '')
 
         e, w = self.validate_href(img_files)
-        self.report_messages(e, w, 'Checking image files and their references inside of XML file', '')
+        self.report_messages(e, w, 'Checking image files and their references inside of XML file', '', [], '')
         count_errors += len(e)
         count_warnings += len(w)
 
@@ -1024,7 +1040,7 @@ class JSON_Article:
         count_warnings += w_count
         count_errors += e_count
 
-        return (count_errors, count_warnings, refcount)
+        return (fatal_errors, count_errors, count_warnings, refcount)
         
     def normalize_and_validate_citations(self):
         k = 0
@@ -1428,7 +1444,7 @@ class JSON2Article:
 
 
     def evaluate_data(self, img_files):
-        count_errors, count_warnings, refcount = self.json_article.validate(img_files)
+        return self.json_article.validate(img_files)
 
         #self.article_report.write(' References found:' + str(refcount), True, False, False)
         #self.article_report.write(' Errors found: ' + str(count_errors), True, True, False)

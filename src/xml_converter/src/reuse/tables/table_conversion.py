@@ -31,18 +31,17 @@ class ConversionTables:
                 v = t[key]
         return v
 
-    def remove_formatting(self, text):
-        new_value = text
-        if '>' in text and '<' in text:        
-            text = text.replace('>', '>-BREAK-')
-            text = text.replace('<', '-BREAK-<')
-            parts = text.split('-BREAK-')
-            new_value = ''
-            for part in parts:
-                if '<' in part and '>' in part:
-                    pass
-                else:
-                    new_value += part                    
+    def remove_formatting(self, value):
+        new_value = value
+        if '<' in value and '>' in value:
+            for k, v in self.tables['formatting'].items():
+                new_value = new_value.replace(k, v).strip()
+                if not '<' in new_value:
+                    break
+                if not '>' in new_value:
+                    break
+                    
         return new_value
 
-    
+    def table(self, table_name):
+        return self.tables.get(table_name, {}) 
