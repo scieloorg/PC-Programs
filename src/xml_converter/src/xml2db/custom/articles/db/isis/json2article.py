@@ -711,12 +711,16 @@ class JSON_Article:
         #    self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
         #if 'epub' in self.json_data['f'].keys():
         #    del self.json_data['f']['epub']
-        
+
         section = Section(return_singleval(self.json_data['f'], '49'))
         print(section.title)
+        print(issue.name)
         self.section = issue.toc.return_section(section)
-        if self.section == None:
-            section.code = section.title + ' (INVALID) ' + 'It should be one of: ' + issue.toc.return_sections()
+        if self.section is None:
+            if section.title == 'Article' and '' == issue.toc.return_sections() and 'ahead' in issue.name:
+                section.code = 'nd'
+            else:
+                section.code = section.title + ' (INVALID) ' + 'It should be one of: ' + issue.toc.return_sections() + ' (' + issue.name + ')'
             self.section = section
         self.json_data['f']['49'] = self.section.code
 
