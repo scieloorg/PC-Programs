@@ -41,6 +41,7 @@
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
+	<xsl:template match="@article-type[.='clinical-trial']"><xsl:attribute name="{name()}">research-article</xsl:attribute></xsl:template>
 	<xsl:template match="sub-article[@article-type='translation']//front-stub//@xml:lang|sub-article[@article-type='translation']//front//@xml:lang"></xsl:template>
 	<xsl:template match="mixed-citation">
 		<xsl:choose>
