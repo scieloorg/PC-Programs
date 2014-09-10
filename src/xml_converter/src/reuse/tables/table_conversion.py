@@ -45,4 +45,5 @@ class ConversionTables:
                     new_value += part                    
         return new_value
 
-    
+    def table(self, table_name):
+        return self.tables.get(table_name, {}) 

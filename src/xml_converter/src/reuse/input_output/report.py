@@ -9,6 +9,7 @@ class Report:
         self.summary_filename = summary_filename
         self.display_output = display_output
         self.log_filename = log_filename
+        self.result = ''
         if not self.garante_filename_path(log_filename, True):
             print('ERROR: there is no path for ' + log_filename)
         self.err_filename = err_filename
@@ -16,7 +17,6 @@ class Report:
             print('ERROR: there is no path for ' + err_filename)
         if not self.garante_filename_path(summary_filename, True):
             print('ERROR: there is no path for ' + summary_filename)
-        
 
     def write(self, message, is_summary = False, is_error = False, display_on_screen = False, data = None):
         if is_error:

@@ -136,7 +136,7 @@ class TOC:
         return self.section_by_title.get(title, self.section_by_langcode.get(langcode, None))
 
     def return_sections(self):
-        return '\n'.join([section.lang + ' ' + section.code + ' ' + section.title for section in self.section_by_langcode.values()]) + '\n'.join(self.section_by_langcode.keys())+ '\n'.join(self.section_by_title.keys())
+        return '; '.join([section.title for section in self.section_by_langcode.values()])
 
     def display(self):
         for key, sec in self.section_by_title.items():
