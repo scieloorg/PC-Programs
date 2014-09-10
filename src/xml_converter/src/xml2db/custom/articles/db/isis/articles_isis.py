@@ -419,7 +419,7 @@ class IssuePath:
         
         dirname = os.path.dirname(xml_filename)
         fname = os.path.basename(xml_filename).replace('.xml', '')
-
+        xml_content = open(xml_filename).read()
         if os.path.isdir(dirname):
             for f in os.listdir(dirname):
                 if f.startswith(fname + '-') or f.startswith(fname + '.'):
@@ -431,10 +431,10 @@ class IssuePath:
                         
                         if ext == 'pdf' and f.startswith(fname + '-'):
                             # lang (pt, es, etc)
-                            rename_to = f[-6:-4] + '_' + fname + '.' + ext
-
-                            shutil.copyfile(filename, dirname + '/' +  rename_to)
-                            filename = dirname + '/' +  rename_to
+                            if not '="' + f + '"' in xml_content:
+                                rename_to = f[-6:-4] + '_' + fname + '.' + ext
+                                shutil.copyfile(filename, dirname + '/' +  rename_to)
+                                filename = dirname + '/' +  rename_to
                         
                         if os.path.isfile(filename):
                             package.report.write( 'Archiving ' + filename + ' in ' + self.paths.extension_path[ext] + '/' + self.issue_folder)
