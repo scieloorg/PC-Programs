@@ -717,11 +717,10 @@ class JSON_Article:
         print(issue.name)
         self.section = issue.toc.return_section(section)
         if self.section is None:
-            if section.title == 'Article' and '' == issue.toc.return_sections() and 'ahead' in issue.name:
+            if 'Article' in section.title and '' == issue.toc.return_sections() and 'ahead' in issue.name:
                 section.code = 'nd'
             else:
-                section.code = section.title + ' (INVALID) ' + 'It should be one of: ' + issue.toc.return_sections() + ' (' + issue.name + ')'
-            self.section = section
+                section.code = section.title + ' (INVALID) ' + 'The sections of ' + issue.name + ': ' + issue.toc.return_sections()            self.section = section
         self.json_data['f']['49'] = self.section.code
 
         self.normalize_metadata_abstracts()
