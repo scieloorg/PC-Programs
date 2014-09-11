@@ -389,8 +389,12 @@ class InformationAnalyst:
 
                         if specific_document.doi == '' and specific_document.issue.name[-2:] != 'pr':
                             fatal_errors.append('FATAL ERROR: Missing DOI')
+                            package.report.write('FATAL ERROR: Missing DOI', True, True)
                         else:
-                            generic_document.folder.documents.insert(generic_document.document, True)
+                            if not generic_document.folder.documents.insert(generic_document.document, False):
+                                package.report.write('FATAL ERROR: This document has doi (' + generic_document.document.doi + ') or order(' + generic_document.document.order + ') of another document.', True, True)
+                                fatal_errors.append('FATAL ERROR: This document has doi (' + generic_document.document.doi + ') or order(' + generic_document.document.order + ') of another document.')
+
                 else:
                     package.report.write('', True, True)
         return (fatal_errors, generic_document)

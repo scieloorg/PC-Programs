@@ -17,10 +17,13 @@ class Items(object):
         return self.elements.get(self.key(item), None)
 
     def insert(self, item, replace):
+        result = False
         r = self.find(item)
         if r is None or replace:
             if self.key(item):
                 self.elements[self.key(item)] = item
+                result = True
+        return result
 
     def key(self, item):
         return ''
