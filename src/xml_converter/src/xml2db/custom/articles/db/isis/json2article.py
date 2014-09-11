@@ -1019,7 +1019,7 @@ class JSON_Article:
         # aff, authors (prefix and suffix), pub-dates, funding (58,60) x ack
         #conditional = { 'page': (14, 32), }
         
-        fatal_errors += self.validate_issn()
+        warnings += self.validate_issn()
         warnings += self.validate_required()
         fatal_errors += self.validate_section()
         warnings += self.validate_pages()
