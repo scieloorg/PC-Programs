@@ -7,6 +7,7 @@ from modules import article
 from modules import xml_utils
 from modules import java_xml_utils
 from modules import xpchecker
+from modules import reports
 
 
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
@@ -653,8 +654,19 @@ def xml_output(xml_filename, xsl_filename, result_filename):
     return java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)
 
 
+def validate_content(xml_filename, report_path, report_name):
+    xml_path = os.path.dirname(xml_filename)
+    xml_name = os.path.basename(xml_filename)
+
+    toc_article_summary, authors_sheet_data, sources_sheet_data, e, f, w = reports.generate_article_report(xml_path, report_path, xml_name, report_name)
+
+
 def process_articles(xml_files, scielo_pkg_path, pmc_pkg_path, report_path, wrk_path, acron, version='1.0'):
-    hdimages_to_jpeg(scielo_pkg_path, scielo_pkg_path, False)
+    if len(xml_files) > 0:
+        path = xml_files[0]
+        path = os.path.dirname(path)
+    hdimages_to_jpeg(path, path, False)
+
     for xml_filename in xml_files:
         doc_files_info = DocFilesInfo(xml_filename, report_path, wrk_path)
         doc_files_info.clean()
@@ -669,7 +681,10 @@ def process_articles(xml_files, scielo_pkg_path, pmc_pkg_path, report_path, wrk_
         if not is_valid_dtd:
             report_content += '\n' + open(doc_files_info.dtd_validation_report_filename, 'r').read()
         open(doc_files_info.err_filename, 'w').write(report_content)
+
         manage_result_files(doc_files_info.ctrl_filename, is_xml_well_formed, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report)
+
+        validate_content(doc_files_info.new_xml_filename, report_path, doc_files_info.xml_name)
 
         #generation of pmc.xml
         xml_output(doc_files_info.new_xml_filename, dtd_files.xml_output, pmc_pkg_path + '/' + doc_files_info.new_name + '.xml')
@@ -677,6 +692,7 @@ def process_articles(xml_files, scielo_pkg_path, pmc_pkg_path, report_path, wrk_
         #validation of pmc.xml
         dtd_files = DTDFiles('pmc', version)
         is_xml_well_formed, is_valid_dtd, is_valid_style = evaluate_article_xml_package(pmc_pkg_path + '/' + doc_files_info.new_name + '.xml', dtd_files, doc_files_info.pmc_dtd_validation_report_filename, doc_files_info.pmc_style_checker_report_filename)
+
         manage_result_files(doc_files_info.ctrl_filename, is_xml_well_formed, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report)
 
     for f in os.listdir(scielo_pkg_path):
