@@ -554,7 +554,6 @@ def files_report(xml_name, new_name, src_path, dest_path, related_files_list, hr
 
 def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron):
     report_content = ''
-
     content = open(doc_files_info.xml_filename, 'r').read()
     content = xml_utils.convert_entities_to_chars(content)
     if doc_files_info.is_sgmxml:
@@ -562,8 +561,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
 
     if xml_utils.is_xml_well_formed(content) is None:
         new_xml_filename = scielo_pkg_path + '/incorrect_' + doc_files_info.xml_name + '.xml'
-        report_content = doc_files_info.xml_name + ' is not well formed\nOpen ' + new_xml_filename + ' using an XML Editor.'
-        r = False
+        new_name = 'incorrect_' + doc_files_info.xml_name
     else:
         new_name = doc_files_info.xml_name
         doc = article.Article(content)
@@ -578,15 +576,14 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
 
         # pack files
         not_found, related_files_list, href_files_list, href_list = pack_related_files(doc_files_info.xml_path, doc_files_info.xml_name, new_name, scielo_pkg_path, curr_and_new_href_list)
-        r = True
         new_xml_filename = scielo_pkg_path + '/' + new_name + '.xml'
         report_content = files_report(doc_files_info.xml_name, new_name, doc_files_info.xml_path, scielo_pkg_path, related_files_list, href_files_list, href_list, not_found)
     try:
         open(new_xml_filename, 'w').write(content)
     except:
-        report_content += 'ERROR: Unable to create ' + new_xml_filename
+        pass
 
-    return (r, new_name, new_xml_filename, report_content)
+    return (new_name, report_content)
 
 
 def apply_dtd(content, dtd_filename, doctype):
@@ -595,44 +592,39 @@ def apply_dtd(content, dtd_filename, doctype):
     return xml_str.content
 
 
-def apply_check_list(xml_filename, dtd_files, dtd_validation_report_filename, style_checker_report_filename):
+def evaluate_article_xml(xml_filename, dtd_files, dtd_validation_report_filename, style_checker_report_filename):
+
     def get_temp_filename(xml_filename):
         temp_dir = tempfile.mkdtemp()
         return temp_dir + '/' + os.path.basename(xml_filename)
 
-    #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
-    xml = xml_utils.is_xml_well_formed(xml_filename)
-    if xml:
+    xml = None
+    is_valid_dtd = False
+    is_valid_style = False
 
-        content = open(xml_filename, 'r').read()
-        content = apply_dtd(dtd_files.dtd_filename, dtd_files.doctype)
-
-        temp_filename = get_temp_filename(xml_filename)
-        open(temp_filename, 'w').write(content)
-
-        is_valid_dtd = xpchecker.dtd_validation(temp_filename, dtd_validation_report_filename)
-        is_valid_style = xpchecker.style_validation(temp_filename, style_checker_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report)
-
-        os.unlink(temp_filename)
-        shutil.rmtree(os.path.dirname(temp_filename))
-
-    return (xml, is_valid_dtd, is_valid_style)
-
-
-def evaluate_article_xml_package(xml_filename, dtd_files, dtd_validation_report_filename, style_checker_report_filename):
-    report_content = ''
     if os.path.isfile(xml_filename):
-        xml, is_valid_dtd, is_valid_style = apply_check_list(xml_filename, dtd_files, dtd_validation_report_filename, style_checker_report_filename)
-        if xml is None:
-            report_content = 'XML is not well formed: ' + xml_filename
-    else:
-        report_content = 'XML is not well formed: ' + xml_filename
-    if len(report_content) > 0:
-        open(dtd_validation_report_filename, 'w').write(report_content)
+        #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
+        xml = xml_utils.is_xml_well_formed(xml_filename)
+        if xml:
+            content = open(xml_filename, 'r').read()
+            content = apply_dtd(dtd_files.dtd_filename, dtd_files.doctype)
+
+            temp_filename = get_temp_filename(xml_filename)
+            open(temp_filename, 'w').write(content)
+
+            is_valid_dtd = xpchecker.dtd_validation(temp_filename, dtd_validation_report_filename)
+            is_valid_style = xpchecker.style_validation(temp_filename, style_checker_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report)
+
+            os.unlink(temp_filename)
+            shutil.rmtree(os.path.dirname(temp_filename))
+        else:
+            report_content = 'XML is not well formed.'
+            open(dtd_validation_report_filename, 'w').write(report_content)
+
     return (xml, is_valid_dtd, is_valid_style)
 
 
-def manage_result_files(ctrl_filename, is_well_formed, is_valid_dtd, is_valid_style, dtd_validation_report, style_checker_report):
+def manage_result_files(ctrl_filename, is_valid_dtd, is_valid_style, dtd_validation_report, style_checker_report):
     if ctrl_filename is None:
         if is_valid_dtd is True:
             os.unlink(dtd_validation_report)
@@ -659,46 +651,55 @@ def validate_content(xml_filename, report_path, report_name):
 
 def process_articles(xml_files, scielo_pkg_path, pmc_pkg_path, report_path, wrk_path, acron, version='1.0'):
     do_pmc = False
+    do_toc_report = False
+
+    xml_names = {}
     if len(xml_files) > 0:
         path = xml_files[0]
         path = os.path.dirname(path)
-    hdimages_to_jpeg(path, path, False)
+        hdimages_to_jpeg(path, path, False)
 
     for xml_filename in xml_files:
         doc_files_info = DocFilesInfo(xml_filename, report_path, wrk_path)
         doc_files_info.clean()
 
-        r, new_name, new_xml_filename, report_content = generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron)
+        do_toc_report = not doc_files_info.is_sgmxml
+
+        new_name, report_content = generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron)
         doc_files_info.new_name = new_name
-        doc_files_info.new_xml_filename = new_xml_filename
+        doc_files_info.new_xml_filename = scielo_pkg_path + '/' + new_name + '.xml'
+
+        xml_names[new_name] = doc_files_info.xml_name
 
         # validation of scielo.xml
         dtd_files = DTDFiles('scielo', version)
-        is_xml_well_formed, is_valid_dtd, is_valid_style = evaluate_article_xml_package(xml_filename, dtd_files, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report_filename)
-        if not is_valid_dtd:
+        loaded_xml, is_valid_dtd, is_valid_style = evaluate_article_xml(doc_files_info.new_xml_filename, dtd_files, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report_filename)
+
+        if os.path.isfile(doc_files_info.dtd_validation_report_filename):
             report_content += '\n' + open(doc_files_info.dtd_validation_report_filename, 'r').read()
         open(doc_files_info.err_filename, 'w').write(report_content)
 
-        manage_result_files(doc_files_info.ctrl_filename, is_xml_well_formed, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report)
+        # manage result
+        manage_result_files(doc_files_info.ctrl_filename, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report)
 
-        doc = article.Article(xml_utils.load_xml(doc_files_info.new_xml_filename))
+        if loaded_xml is not None:
+            doc = article.Article(loaded_xml)
+            if doc.journal_id_nlm_ta is not None:
+                #generation of pmc.xml
+                do_pmc = True
+                xml_output(doc_files_info.new_xml_filename, dtd_files.xml_output, pmc_pkg_path + '/' + doc_files_info.new_name + '.xml')
 
-        validate_content(doc_files_info.new_xml_filename, report_path, doc_files_info.xml_name)
+                #validation of pmc.xml
+                dtd_files = DTDFiles('pmc', version)
+                loaded_xml, is_valid_dtd, is_valid_style = evaluate_article_xml(pmc_pkg_path + '/' + doc_files_info.new_name + '.xml', dtd_files, doc_files_info.pmc_dtd_validation_report_filename, doc_files_info.pmc_style_checker_report_filename)
 
-        if doc.journal_id_nlm_ta is not None:
-            #generation of pmc.xml
-            do_pmc = True
-            xml_output(doc_files_info.new_xml_filename, dtd_files.xml_output, pmc_pkg_path + '/' + doc_files_info.new_name + '.xml')
-
-            #validation of pmc.xml
-            dtd_files = DTDFiles('pmc', version)
-            is_xml_well_formed, is_valid_dtd, is_valid_style = evaluate_article_xml_package(pmc_pkg_path + '/' + doc_files_info.new_name + '.xml', dtd_files, doc_files_info.pmc_dtd_validation_report_filename, doc_files_info.pmc_style_checker_report_filename)
-
-            # manage result
-            manage_result_files(doc_files_info.ctrl_filename, is_xml_well_formed, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report)
+                # manage result
+                manage_result_files(doc_files_info.ctrl_filename, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report)
 
     if do_pmc:
         # termina de montar o pacote inteiro do pmc
         for f in os.listdir(scielo_pkg_path):
             if not f.endswith('.xml') and not f.endswith('.jpg'):
                 shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)
+
+    reports.generate_package_reports(scielo_pkg_path, xml_names, do_toc_report)

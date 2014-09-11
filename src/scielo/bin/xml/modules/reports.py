@@ -785,55 +785,55 @@ def package_files(path, xml_name):
     return r
 
 
-def generate_package_report(xml_path, report_names):
+def generate_package_reports(package_path, xml_names, create_toc_report=True):
     html_page = HTMLPage()
 
     articles_and_filenames = []
-    for xml_name in os.listdir(xml_path):
-        if not 'incorrect' in xml_name and xml_name.endswith('.xml'):
-            tree = xml_utils.load_xml(xml_path + '/' + xml_name)
-            article = Article(tree)
-            articles_and_filenames.append((xml_name, article))
+    for new_name, xml_name in xml_names.items():
+        xml = xml_utils.load_xml(xml_file)
+        article = None if xml is None else Article(xml)
+        articles_and_filenames.append((new_name, article))
 
-    toc_validation = TOCReport(articles_and_filenames).report()
-    toc_report_content = toc_validation
-
-    toc_authors_sheet_data = []
-    toc_sources_sheet_data = []
-
-    toc_e, toc_f, toc_w = statistics_numbers(toc_validation)
+    if create_toc_report:
+        toc_validation = TOCReport(articles_and_filenames).report()
+        toc_report_content = toc_validation
+        toc_authors_sheet_data = []
+        toc_sources_sheet_data = []
+        toc_e, toc_f, toc_w = statistics_numbers(toc_validation)
 
     for xml_name, article in articles_and_filenames:
-        name = report_names[xml_name]
+        name = xml_names[xml_name]
         article_validation = content_validation.ArticleContentValidation(article)
         sheet_data = ArticleSheetData(article, article_validation)
-        display_data = ArticleDisplay(article, html_page, sheet_data, xml_path, xml_name, package_files(xml_path, xml_name))
+        display_data = ArticleDisplay(article, html_page, sheet_data, package_path, xml_name, package_files(package_path, xml_name))
         article_report = ArticleReport(article_validation, html_page)
         content = article_report_content(display_data, article_report)
         e, f, w = statistics_numbers(content)
 
-        generate_article_report(html_page, report_path, report_name, statistics_messages(e, f, w) + content)
+        write_article_report(html_page, report_path, report_name, statistics_messages(e, f, w) + content)
 
-        toc_e += e
-        toc_f += f
-        toc_w += w
-        toc_report_content += report.tag('h2', xml_name) + display_data.summary
+        if create_toc_report:
+            toc_e += e
+            toc_f += f
+            toc_w += w
+            toc_report_content += report.tag('h2', xml_name) + display_data.summary
 
-        authors_h, authors_w, authors_data = sheet_data.authors(xml_name)
-        sources_h, sources_w, sources_data = sheet_data.sources(xml_name)
+            authors_h, authors_w, authors_data = sheet_data.authors(xml_name)
+            sources_h, sources_w, sources_data = sheet_data.sources(xml_name)
 
-        toc_authors_sheet_data.append(authors_data)
-        toc_sources_sheet_data.append(sources_data)
+            toc_authors_sheet_data.append(authors_data)
+            toc_sources_sheet_data.append(sources_data)
 
-    html_page.title = 'Authors'
-    html_page.body = html_page.sheet((authors_h, authors_w, toc_authors_sheet_data))
-    html_page.save(report_path + '/authors.html')
+    if create_toc_report:
+        html_page.title = 'Authors'
+        html_page.body = html_page.sheet((authors_h, authors_w, toc_authors_sheet_data))
+        html_page.save(report_path + '/authors.html')
 
-    html_page.title = 'Sources'
-    html_page.body = html_page.sheet((sources_h, sources_w, toc_sources_sheet_data))
-    html_page.save(report_path + '/sources.html')
+        html_page.title = 'Sources'
+        html_page.body = html_page.sheet((sources_h, sources_w, toc_sources_sheet_data))
+        html_page.save(report_path + '/sources.html')
 
-    html_page.save(report_path + '/toc.html', 'TOC Report', statistics_messages(toc_e, toc_f, toc_w) + toc_report_content)
+        html_page.save(report_path + '/toc.html', 'TOC Report', statistics_messages(toc_e, toc_f, toc_w) + toc_report_content)
 
 
 def write_article_report(html_page, report_path, xml_name, content):
