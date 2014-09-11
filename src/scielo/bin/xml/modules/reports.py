@@ -886,8 +886,9 @@ def generate_article_report(xml_path, report_path, xml_name, report_name):
     return (toc_article_summary, authors_sheet_data, sources_sheet_data, e, f, w)
 
 
-xml_path = '/Users/robertatakenaka/Documents/vm_dados/scielo_data/serial/pab/v48n7/markup_xml/scielo_package'
-report_path = '/Users/robertatakenaka/Documents/vm_dados/scielo_data/_xpm_reports_'
-report_filenames = {v:v.replace('.xml', '') for v in os.listdir(xml_path) if v.endswith('.xml') and not 'incorre' in v }
-generate_package_reports(xml_path, report_path, report_filenames)
-print('Reports in ' + report_path)
+def example():
+    xml_path = '/Users/robertatakenaka/Documents/vm_dados/scielo_data/serial/pab/v48n7/markup_xml/scielo_package'
+    report_path = '/Users/robertatakenaka/Documents/vm_dados/scielo_data/_xpm_reports_'
+    report_filenames = {v:v.replace('.xml', '') for v in os.listdir(xml_path) if v.endswith('.xml') and not 'incorre' in v }
+    generate_package_reports(xml_path, report_path, report_filenames)
+    print('Reports in ' + report_path)
