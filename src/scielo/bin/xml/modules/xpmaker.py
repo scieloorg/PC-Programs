@@ -501,7 +501,7 @@ def pack_related_files(src_path, xml_name, new_name, dest_path, curr_and_new_hre
     href_files_list = []
     href_list = []
     for f in os.listdir(src_path):
-        if f.startswith(xml_name + '.') and not f.endswith(xml_name + '.sgm.xml'):
+        if (f.startswith(xml_name + '.') or f.startswith(xml_name + '-')) and not f.endswith(xml_name + '.sgm.xml'):
             new = f.replace(xml_name, new_name)
             related_files_list.append((f, new))
             shutil.copyfile(src_path + '/' + f, dest_path + '/' + new)
@@ -569,16 +569,12 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
         doc = article.Article(content)
         attach_info = get_attach_info(doc)
 
-        print('attach_info')
-        print(attach_info)
-
         if doc_files_info.is_sgmxml:
             new_name = format_new_name(doc, acron, doc_files_info.xml_name)
             curr_and_new_href_list = get_curr_and_new_href_list(doc_files_info.xml_name, new_name, attach_info)
             content = normalize_hrefs(content, curr_and_new_href_list)
         else:
             curr_and_new_href_list = [(href, href) for href, attach_type, attach_id in attach_info]
-        print(curr_and_new_href_list)
 
         # pack files
         not_found, related_files_list, href_files_list, href_list = pack_related_files(doc_files_info.xml_path, doc_files_info.xml_name, new_name, scielo_pkg_path, curr_and_new_href_list)
@@ -662,6 +658,7 @@ def validate_content(xml_filename, report_path, report_name):
 
 
 def process_articles(xml_files, scielo_pkg_path, pmc_pkg_path, report_path, wrk_path, acron, version='1.0'):
+    do_pmc = False
     if len(xml_files) > 0:
         path = xml_files[0]
         path = os.path.dirname(path)
@@ -684,17 +681,24 @@ def process_articles(xml_files, scielo_pkg_path, pmc_pkg_path, report_path, wrk_
 
         manage_result_files(doc_files_info.ctrl_filename, is_xml_well_formed, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report)
 
+        doc = article.Article(xml_utils.load_xml(doc_files_info.new_xml_filename))
+
         validate_content(doc_files_info.new_xml_filename, report_path, doc_files_info.xml_name)
 
-        #generation of pmc.xml
-        xml_output(doc_files_info.new_xml_filename, dtd_files.xml_output, pmc_pkg_path + '/' + doc_files_info.new_name + '.xml')
+        if doc.journal_id_nlm_ta is not None:
+            #generation of pmc.xml
+            do_pmc = True
+            xml_output(doc_files_info.new_xml_filename, dtd_files.xml_output, pmc_pkg_path + '/' + doc_files_info.new_name + '.xml')
 
-        #validation of pmc.xml
-        dtd_files = DTDFiles('pmc', version)
-        is_xml_well_formed, is_valid_dtd, is_valid_style = evaluate_article_xml_package(pmc_pkg_path + '/' + doc_files_info.new_name + '.xml', dtd_files, doc_files_info.pmc_dtd_validation_report_filename, doc_files_info.pmc_style_checker_report_filename)
+            #validation of pmc.xml
+            dtd_files = DTDFiles('pmc', version)
+            is_xml_well_formed, is_valid_dtd, is_valid_style = evaluate_article_xml_package(pmc_pkg_path + '/' + doc_files_info.new_name + '.xml', dtd_files, doc_files_info.pmc_dtd_validation_report_filename, doc_files_info.pmc_style_checker_report_filename)
 
-        manage_result_files(doc_files_info.ctrl_filename, is_xml_well_formed, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report)
+            # manage result
+            manage_result_files(doc_files_info.ctrl_filename, is_xml_well_formed, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report)
 
-    for f in os.listdir(scielo_pkg_path):
-        if not f.endswith('.xml') and not f.endswith('.jpg'):
-            shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)
+    if do_pmc:
+        # termina de montar o pacote inteiro do pmc
+        for f in os.listdir(scielo_pkg_path):
+            if not f.endswith('.xml') and not f.endswith('.jpg'):
+                shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)

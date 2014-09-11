@@ -70,6 +70,10 @@ class ArticleDisplay(object):
         self.sheet_data = sheet_data
 
     @property
+    def summary(self):
+        return self.issue_header + self.article_front
+
+    @property
     def article_front(self):
         r = ''
         r += self.toc_section
@@ -781,23 +785,8 @@ def package_files(path, xml_name):
     return r
 
 
-def generate_package_reports(xml_path, report_path, report_filenames):
-    def toc_sheet_data(articles_sheet_data):
-        r = []
-        for item in articles_sheet_data:
-            h = item[0]
-            w = item[1]
-            r += item[2]
-        return (h, w, r)
-
-    report = HTMLPage()
-
-    if os.path.isdir(report_path):
-        for item in os.listdir(report_path):
-            if os.path.isfile(report_path + '/' + item):
-                os.unlink(report_path + '/' + item)
-    else:
-        os.makedirs(report_path)
+def generate_package_report(xml_path, report_names):
+    html_page = HTMLPage()
 
     articles_and_filenames = []
     for xml_name in os.listdir(xml_path):
@@ -815,75 +804,62 @@ def generate_package_reports(xml_path, report_path, report_filenames):
     toc_e, toc_f, toc_w = statistics_numbers(toc_validation)
 
     for xml_name, article in articles_and_filenames:
-        report_name = report_filenames[xml_name]
-        toc_article_summary, authors_sheet_data, sources_sheet_data, e, f, w = generate_article_report(xml_path, report_path, xml_name, report_name)
-        toc_authors_sheet_data.append(authors_sheet_data)
-        toc_sources_sheet_data.append(sources_sheet_data)
+        name = report_names[xml_name]
+        article_validation = content_validation.ArticleContentValidation(article)
+        sheet_data = ArticleSheetData(article, article_validation)
+        display_data = ArticleDisplay(article, html_page, sheet_data, xml_path, xml_name, package_files(xml_path, xml_name))
+        article_report = ArticleReport(article_validation, html_page)
+        content = article_report_content(display_data, article_report)
+        e, f, w = statistics_numbers(content)
+
+        generate_article_report(html_page, report_path, report_name, statistics_messages(e, f, w) + content)
+
         toc_e += e
         toc_f += f
         toc_w += w
-        toc_report_content += toc_article_summary
+        toc_report_content += report.tag('h2', xml_name) + display_data.summary
 
-    report.title = 'Authors'
-    report.body = report.sheet(toc_sheet_data(toc_authors_sheet_data))
-    report.save(report_path + '/authors.html')
+        authors_h, authors_w, authors_data = sheet_data.authors(xml_name)
+        sources_h, sources_w, sources_data = sheet_data.sources(xml_name)
 
-    report.title = 'Sources'
-    report.body = report.sheet(toc_sheet_data(toc_sources_sheet_data))
-    report.save(report_path + '/sources.html')
+        toc_authors_sheet_data.append(authors_data)
+        toc_sources_sheet_data.append(sources_data)
 
-    report.save(report_path + '/toc.html', 'TOC Report', statistics_messages(toc_e, toc_f, toc_w) + toc_report_content)
+    html_page.title = 'Authors'
+    html_page.body = html_page.sheet((authors_h, authors_w, toc_authors_sheet_data))
+    html_page.save(report_path + '/authors.html')
+
+    html_page.title = 'Sources'
+    html_page.body = html_page.sheet((sources_h, sources_w, toc_sources_sheet_data))
+    html_page.save(report_path + '/sources.html')
+
+    html_page.save(report_path + '/toc.html', 'TOC Report', statistics_messages(toc_e, toc_f, toc_w) + toc_report_content)
 
 
-def generate_article_report(xml_path, report_path, xml_name, report_name):
-    if os.path.isdir(report_path):
-        for item in os.listdir(report_path):
-            if item.startswith(report_name):
-                if os.path.isfile(report_path + '/' + item):
-                    os.unlink(report_path + '/' + item)
-    else:
+def write_article_report(html_page, report_path, xml_name, content):
+    if not os.path.isdir(report_path):
         os.makedirs(report_path)
+    for item in os.listdir(report_path):
+        if item.startswith(xml_name):
+            if os.path.isfile(report_path + '/' + item):
+                os.unlink(report_path + '/' + item)
+    report_name = xml_name + '.contents.html'
 
-    tree = xml_utils.load_xml(xml_path + '/' + xml_name)
-    article = Article(tree)
+    html_page.title = ['Report of contents validations required by SciELO', xml_name]
+    html_page.body = statistics_messages(e, f, w) + content
+    html_page.save(report_path + '/' + report_name)
 
-    report = HTMLPage()
 
-    report_name = report_name + '.contents.html'
-
-    article_validation = content_validation.ArticleContentValidation(article)
-    sheet_data = ArticleSheetData(article, article_validation)
-    display_data = ArticleDisplay(article, report, sheet_data, xml_path, xml_name, package_files(xml_path, xml_name))
-    article_report = ArticleReport(article_validation, report)
-
-    authors_sheet_data = sheet_data.authors(xml_name)
-    sources_sheet_data = sheet_data.sources(xml_name)
-
-    article_summary = ''
-    article_summary += display_data.issue_header
-    article_summary += display_data.article_front
-
-    # adiciona o sumario do artigo no toc report
-    toc_article_summary = report.tag('h2', xml_name) + article_summary
-
+def article_report_content(display_data, article_report):
     content = ''
-    content += article_summary
+    content += display_data.summary
     content += display_data.article_back
     content += display_data.files_and_href
     content += display_data.article_body
-
     content += article_report.report()
-
-    e, f, w = statistics_numbers(content)
-
     content += display_data.authors_sheet
     content += display_data.sources_sheet
-
-    report.title = ['Report of contents validations required by SciELO', xml_name]
-    report.body = statistics_messages(e, f, w) + content
-    report.save(report_path + '/' + report_name)
-
-    return (toc_article_summary, authors_sheet_data, sources_sheet_data, e, f, w)
+    return content
 
 
 def example():
