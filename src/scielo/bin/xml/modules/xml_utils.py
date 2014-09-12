@@ -47,7 +47,7 @@ def normalize_xml_ent(content):
     return content
 
 
-def convert_using_htmlparser(content, debug=False):
+def convert_entities_to_chars(content, debug=False):
     import HTMLParser
     s = content
 
@@ -99,7 +99,7 @@ def handle_mml_entities(content):
 
 
 def handle_entities(content):
-    return handle_mml_entities(convert_using_htmlparser(content))
+    return handle_mml_entities(convert_entities_to_chars(content))
 
 
 def load_xml(content):

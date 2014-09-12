@@ -8,6 +8,17 @@ JAR_TRANSFORM = './../../jar/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = './../../jar/XMLCheck.jar'
 
 
+def format_parameters(parameters):
+    r = ''
+    for k, v in parameters.items():
+        if v != '':
+            if ' ' in v:
+                r += k + '=' + '"' + v + '" '
+            else:
+                r += k + '=' + v + ' '
+    return r
+
+
 def xml_content_transform(content, xsl_filename):
     f = tempfile.NamedTemporaryFile(delete=False)
     f.close()
@@ -95,6 +106,8 @@ def xml_validate(xml_filename, result_filename, dtd_validation=False):
     if dtd_validation:
         validation_type = '--validate'
 
+    if not os.path.isdir(os.path.dirname(result_filename)):
+        os.makedirs(os.path.dirname(result_filename))
     if os.path.exists(result_filename):
         os.unlink(result_filename)
     temp_result_filename = result_filename + '.tmp'

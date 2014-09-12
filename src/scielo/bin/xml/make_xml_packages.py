@@ -1,4 +1,5 @@
 import sys
-import xmlpkgmker
 
-xmlpkgmker.call_make_packages(sys.argv, 'j1.0')
+from modules import xpmaker
+
+xpmaker.call_make_packages(sys.argv, '1.0')

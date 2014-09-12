@@ -790,16 +790,20 @@ def generate_package_reports(package_path, xml_names, create_toc_report=True):
 
     articles_and_filenames = []
     for new_name, xml_name in xml_names.items():
-        xml = xml_utils.load_xml(xml_file)
+        xml = xml_utils.load_xml(package_path + '/' + new_name)
         article = None if xml is None else Article(xml)
         articles_and_filenames.append((new_name, article))
 
+    toc_authors_sheet_data = []
+    toc_sources_sheet_data = []
+    toc_report_content = ''
+    authors_h, authors_w = [''], ['']
+    sources_h, sources_w = [''], ['']
+
     if create_toc_report:
-        toc_validation = TOCReport(articles_and_filenames).report()
-        toc_report_content = toc_validation
-        toc_authors_sheet_data = []
-        toc_sources_sheet_data = []
-        toc_e, toc_f, toc_w = statistics_numbers(toc_validation)
+        toc_report_content = TOCReport(articles_and_filenames).report()
+
+    toc_e, toc_f, toc_w = statistics_numbers(toc_report_content)
 
     for xml_name, article in articles_and_filenames:
         name = xml_names[xml_name]
@@ -816,7 +820,6 @@ def generate_package_reports(package_path, xml_names, create_toc_report=True):
             toc_e += e
             toc_f += f
             toc_w += w
-            toc_report_content += report.tag('h2', xml_name) + display_data.summary
 
             authors_h, authors_w, authors_data = sheet_data.authors(xml_name)
             sources_h, sources_w, sources_data = sheet_data.sources(xml_name)
