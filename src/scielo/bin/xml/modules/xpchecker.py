@@ -19,4 +19,6 @@ def style_validation(xml_filename, report_filename, xsl_prep_report, xsl_report)
                 if os.path.isfile(report_filename):
                     c = open(report_filename, 'r').read()
                     is_valid_style = ('Total of errors = 0' in c) and (('Total of warnings = 0' in c) or (not 'Total of warnings =' in c))
+                    if os.path.isfile(xml_report):
+                        os.unlink(xml_report)
     return is_valid_style

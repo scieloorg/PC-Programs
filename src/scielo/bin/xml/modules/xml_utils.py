@@ -38,6 +38,9 @@ def node_xml(node):
 
 
 def normalize_xml_ent(content):
+    content = content.replace('&#x000', '&#x')
+    content = content.replace('&#x00', '&#x')
+    content = content.replace('&#x0', '&#x')
     content = content.replace('&#x3C;', '&lt;')
     content = content.replace('&#x3E;', '&gt;')
     content = content.replace('&#x26;', '&amp;')
@@ -103,10 +106,6 @@ def handle_entities(content):
 
 
 def load_xml(content):
-    NAMESPACES = {'mml': 'http://www.w3.org/TR/MathML3/'}
-    for prefix, uri in NAMESPACES.items():
-        etree.register_namespace(prefix, uri)
-
     if not '<' in content:
         # is a file
         try:
@@ -115,32 +114,17 @@ def load_xml(content):
             content = open(content, 'r').read()
 
     if '<' in content:
-        content = normalize_space(handle_entities(content))
+        content = convert_entities_to_chars(content)
 
         try:
             r = etree.parse(StringIO(content))
         except Exception as e:
             print('XML is not well formed')
             print(e)
+            open('./teste.xml', 'w').write(content)
             r = None
     return r
 
 
 def is_xml_well_formed(content):
-    if not '<' in content:
-        # is a file
-        try:
-            r = etree.parse(content)
-        except Exception as e:
-            content = open(content, 'r').read()
-
-    if '<' in content:
-        content = normalize_space(handle_entities(content))
-
-        try:
-            r = etree.parse(StringIO(content))
-        except Exception as e:
-            print('XML is not well formed')
-            print(e)
-            r = None
-    return r
+    return load_xml(content)

@@ -14,11 +14,13 @@ THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
 
 
 DEFAULT_VERSION = '1.0'
-PMC_PATH = THIS_LOCATION + './../../pmc'
+PMC_PATH = THIS_LOCATION + '/../../pmc'
 
 XSL_SGML2XML = {}
 XSL_SGML2XML['3.0'] = PMC_PATH + '/v3.0/xsl/sgml2xml/sgml2xml.xsl'
 XSL_SGML2XML['1.0'] = PMC_PATH + '/j1.0/xsl/sgml2xml/sgml2xml.xsl'
+
+DOCTYPE = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "JATS-journalpublishing1.dtd">'
 
 XPM_FILES = {}
 XPM_FILES['scielo3.0'] = {}
@@ -217,7 +219,7 @@ class DocFilesInfo(object):
             self.html_filename += 'l'
 
         self.is_sgmxml = xml_filename.endswith('.sgm.xml')
-        self.ctrl_filename = self.err_filename.replace('.err', '.ctrl') if self.is_sgmxml else ''
+        self.ctrl_filename = self.err_filename.replace('.err', '.ctrl') if self.is_sgmxml else None
 
     def clean(self):
         clean_folder(self.xml_wrk_path)
@@ -270,13 +272,13 @@ def extract_embedded_images(xml_name, content, html_filename, dest_path):
 def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
     content = extract_embedded_images(xml_name, content, html_filename, src_path)
     if not xml_utils.is_xml_well_formed(content):
-        content = fix_xml(content)
+        content = fix_sgml_xml(content)
     if xml_utils.is_xml_well_formed(content) is not None:
         content = java_xml_utils.xml_content_transform(content, xsl_sgml2xml(version))
     return content
 
 
-def fix_xml(content):
+def fix_sgml_xml(content):
     xml_fix = XMLContent(content)
     xml_fix.fix()
     if not xml_fix.content == content:
@@ -323,77 +325,9 @@ def clean_folder(path):
 
 def delete_files(files):
     for f in files:
-        if os.path.isfile(f) and f != '':
-            os.unlink(f)
-
-
-def xml_paths(src):
-    now = datetime.now().isoformat().replace(':', '').replace('T', '').replace('-', '')
-    now = now[0:now.find('.')]
-
-    if os.path.isfile(src):
-        path = os.path.dirname(src) + '_' + now
-    else:
-        path = src + '_' + now
-
-    scielo_pkg_path = path + '/scielo_package'
-    pmc_pkg_path = path + '/pmc_package'
-    report_path = path + '/errors'
-    wrk_path = path + '/wrk'
-    preview_path = None
-    return (scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path)
-
-
-def markup_paths(source_path, sgmxml_filename):
-    sgmxml_path = os.path.dirname(sgmxml_filename)
-    markup_xml_path = os.path.dirname(source_path)
-
-    scielo_pkg_path = markup_xml_path + '/scielo_package'
-    pmc_pkg_path = markup_xml_path + '/pmc_package'
-    report_path = markup_xml_path + '/errors'
-    preview_path = None
-    wrk_path = sgmxml_path
-    return (scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path)
-
-
-def markup_src_path(sgmxml_filename):
-    # sgmxml_path = serial/acron/issue/pmc/pmc_work/article
-    # sgmxml_path = serial/acron/issue/markup_xml/work/article
-    xml_name = os.path.basename(sgmxml_filename)
-    sgmxml_path = os.path.dirname(sgmxml_filename)
-
-    # markup_xml_path = serial/acron/issue/pmc
-    # markup_xml_path = serial/acron/issue/markup_xml
-    markup_xml_path = os.path.dirname(os.path.dirname(sgmxml_path))
-
-    # other files path = serial/acron/issue/pmc/src or serial/acron/issue/pmc/pmc_src
-    # other files path = serial/acron/issue/markup_xml/src
-    source_path = markup_xml_path + '/src'
-    if not os.path.isdir(source_path):
-        source_path = markup_xml_path + '/pmc_src'
-    if not os.path.isdir(source_path):
-        os.makedirs(source_path)
-    shutil.copyfile(sgmxml_filename, source_path + '/' + xml_name)
-    return source_path
-
-
-def files_and_paths(xml_source):
-    if xml_source.endswith('.sgm.xml'):
-        f = xml_source
-        ctrl_filename = f.replace('.sgm.xml', '.ctrl.txt')
-        source_path = markup_src_path(f)
-        xml_files = [source_path + '/' + os.path.basename(f)]
-        scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path = markup_paths(source_path, f)
-        #version = 'j1.0'
-    else:
-        if os.path.isfile(xml_source):
-            xml_files = [xml_source]
-        else:
-            xml_files = [xml_source + '/' + f for f in os.listdir(xml_source) if f.endswith('.xml')]
-        ctrl_filename = None
-        scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path = xml_paths(xml_source)
-
-    return (ctrl_filename, xml_files, scielo_pkg_path, pmc_pkg_path, report_path, preview_path, wrk_path)
+        if f is not None:
+            if os.path.isfile(f):
+                os.unlink(f)
 
 
 def format_new_name(doc, param_acron='', original_xml_name=''):
@@ -473,9 +407,10 @@ def get_curr_and_new_href_list(xml_name, new_name, href_list):
 def get_attach_info(doc):
     items = []
     for href_info in doc.hrefs:
-        attach_type = href_attach_type(href_info.parent.tag, href_info.element.tag)
-        attach_id = href_info.id
-        items.append((href_info.src, attach_type, attach_id))
+        if href_info.isfile:
+            attach_type = href_attach_type(href_info.parent.tag, href_info.element.tag)
+            attach_id = href_info.id
+            items.append((href_info.src, attach_type, attach_id))
     return items
 
 
@@ -507,10 +442,10 @@ def pack_file_extended(src_path, dest_path, curr, new):
     r = []
     c = curr if not '.' in curr else curr[0:curr.rfind('.')]
     n = new if not '.' in new else new[0:new.rfind('.')]
-    found = [f for f in os.listdir(src_path) if f.startswith(c)]
+    found = [f for f in os.listdir(src_path) if f.startswith(c + '.') or f.startswith('-')]
     for f in found:
         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(c, n))
-        r.append((src_path + '/' + f, dest_path + '/' + f.replace(c, n)))
+        r.append((f, f.replace(c, n)))
     return r
 
 
@@ -518,14 +453,14 @@ def packed_files_report(xml_name, new_name, src_path, dest_path, related_files_l
 
     log = []
 
-    log.append('Report of files / DTD errors\n' + '-'*len('Report of files / DTD errors') + '\n')
+    log.append('Report of files\n' + '-'*len('Report of files') + '\n')
 
     if src_path != dest_path:
         log.append('Source path:   ' + src_path)
     log.append('Package path:  ' + dest_path)
     if src_path != dest_path:
-        log.append('Source XML name:   ' + xml_name)
-    log.append('Package XML name:' + new_name)
+        log.append('Source XML name: ' + xml_name)
+    log.append('Package XML name: ' + new_name)
 
     log.append(message_file_list('Total of related files', related_files_list))
     log.append(message_file_list('Total of @href in XML', href_list))
@@ -536,20 +471,29 @@ def packed_files_report(xml_name, new_name, src_path, dest_path, related_files_l
 
 
 def message_file_list(label, file_list):
-    return '\n' + label + ': ' + str(len(file_list)) + '\n'.join(sorted(file_list))
+    return '\n' + label + ': ' + str(len(file_list)) + '\n' + '\n'.join(sorted(file_list))
 
 
 def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron):
+    print('.....')
+    print(doc_files_info.xml_name)
+    print('-'*len(doc_files_info.xml_name))
+
+    report_content = ''
+
     content = open(doc_files_info.xml_filename, 'r').read()
+    if '\n<!DOCTYPE' in content:
+        temp = content[content.find('\n<!DOCTYPE'):]
+        temp = temp[0:temp.find('>')+1]
+        content = content.replace(temp, '')
+
     content = xml_utils.convert_entities_to_chars(content)
     if doc_files_info.is_sgmxml:
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
 
-    xml = xml_utils.is_xml_well_formed(content)
-    if xml is None:
-        new_name = 'incorrect_' + doc_files_info.xml_name
-    else:
-        new_name = doc_files_info.xml_name
+    new_name = doc_files_info.xml_name
+    xml = xml_utils.load_xml(content)
+    if not xml is None:
         doc = article.Article(xml)
         attach_info = get_attach_info(doc)
         if doc_files_info.is_sgmxml:
@@ -570,6 +514,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
 
     new_xml_filename = scielo_pkg_path + '/' + new_name + '.xml'
     open(new_xml_filename, 'w').write(content)
+    print(' ... created')
 
     return (new_name, new_xml_filename, report_content)
 
@@ -628,36 +573,36 @@ def evaluate_article_xml(xml_filename, dtd_files, dtd_validation_report_filename
 
     if os.path.isfile(xml_filename):
         #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
-        xml = xml_utils.is_xml_well_formed(xml_filename)
-        if xml:
-            content = open(xml_filename, 'r').read()
-            content = apply_dtd(content, dtd_files.dtd_filename, dtd_files.doctype)
 
-            temp_filename = get_temp_filename(xml_filename)
-            open(temp_filename, 'w').write(content)
+        content = open(xml_filename, 'r').read()
 
-            is_valid_dtd = xpchecker.dtd_validation(temp_filename, dtd_validation_report_filename)
+        xml = xml_utils.load_xml(content)
+
+        content = apply_dtd(content, dtd_files.dtd_filename, dtd_files.doctype)
+        temp_filename = get_temp_filename(xml_filename)
+        open(temp_filename, 'w').write(content)
+
+        is_valid_dtd = xpchecker.dtd_validation(temp_filename, dtd_validation_report_filename)
+
+        if xml is not None:
             is_valid_style = xpchecker.style_validation(temp_filename, style_checker_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report)
-
-            os.unlink(temp_filename)
-            shutil.rmtree(os.path.dirname(temp_filename))
         else:
-            report_content = 'XML is not well formed.'
-            open(dtd_validation_report_filename, 'w').write(report_content)
+            is_valid_style = False
 
+        os.unlink(temp_filename)
+        shutil.rmtree(os.path.dirname(temp_filename))
+        
     return (xml, is_valid_dtd, is_valid_style)
 
 
 def manage_result_files(ctrl_filename, is_valid_dtd, is_valid_style, dtd_validation_report, style_checker_report):
     if ctrl_filename is None:
-        if is_valid_dtd is True:
-            os.unlink(dtd_validation_report)
         if is_valid_style is True:
             os.unlink(style_checker_report)
     else:
         open(ctrl_filename, 'w').write('Finished')
-        if os.path.isfile(dtd_validation_report):
-            os.unlink(dtd_validation_report)
+    if os.path.isfile(dtd_validation_report):
+        os.unlink(dtd_validation_report)
 
 
 def xml_output(xml_filename, xsl_filename, result_filename):
@@ -674,12 +619,17 @@ def process_articles(xml_files, markup_xml_path, acron, version='1.0'):
     report_path = markup_xml_path + '/errors'
     wrk_path = markup_xml_path + '/work'
 
+    for d in [scielo_pkg_path, pmc_pkg_path, report_path]:
+        if not os.path.isdir(d):
+            os.makedirs(d)
+
     xml_names = {}
     if len(xml_files) > 0:
         path = xml_files[0]
         path = os.path.dirname(path)
         hdimages_to_jpeg(path, path, False)
 
+    print('Generate packages (' + str(len(xml_files)) + '):')
     for xml_filename in xml_files:
         doc_files_info = DocFilesInfo(xml_filename, report_path, wrk_path)
         doc_files_info.clean()
@@ -695,26 +645,30 @@ def process_articles(xml_files, markup_xml_path, acron, version='1.0'):
         # validation of scielo.xml
         dtd_files = DTDFiles('scielo', version)
         loaded_xml, is_valid_dtd, is_valid_style = evaluate_article_xml(doc_files_info.new_xml_filename, dtd_files, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report_filename)
-
+        print(' ... validated')
         if os.path.isfile(doc_files_info.dtd_validation_report_filename):
-            report_content += '\n' + open(doc_files_info.dtd_validation_report_filename, 'r').read()
+            report_content += '\n\n\n' + '.........\n\n\n' + 'DTD errors\n' + '-'*len('DTD errors') + '\n' + open(doc_files_info.dtd_validation_report_filename, 'r').read()
         open(doc_files_info.err_filename, 'w').write(report_content)
 
         # manage result
         manage_result_files(doc_files_info.ctrl_filename, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report_filename)
 
-        #generation of pmc.xml
-        xml_output(doc_files_info.new_xml_filename, dtd_files.xml_output, pmc_pkg_path + '/' + doc_files_info.new_name + '.xml')
+        if loaded_xml is not None:
+            #generation of pmc.xml
+            xml_output(doc_files_info.new_xml_filename, dtd_files.xsl_output, pmc_pkg_path + '/' + doc_files_info.new_name + '.xml')
 
-        #validation of pmc.xml
-        dtd_files = DTDFiles('pmc', version)
-        loaded_xml, is_valid_dtd, is_valid_style = evaluate_article_xml(pmc_pkg_path + '/' + doc_files_info.new_name + '.xml', dtd_files, doc_files_info.pmc_dtd_validation_report_filename, doc_files_info.pmc_style_checker_report_filename)
+            #validation of pmc.xml
+            dtd_files = DTDFiles('pmc', version)
+            loaded_xml, is_valid_dtd, is_valid_style = evaluate_article_xml(pmc_pkg_path + '/' + doc_files_info.new_name + '.xml', dtd_files, doc_files_info.pmc_dtd_validation_report_filename, doc_files_info.pmc_style_checker_report_filename)
 
-        # manage result
-        manage_result_files(doc_files_info.ctrl_filename, is_valid_dtd, is_valid_style, doc_files_info.pmc_dtd_validation_report_filename, doc_files_info.pmc_style_checker_report_filename)
+            # manage result
+            manage_result_files(doc_files_info.ctrl_filename, is_valid_dtd, is_valid_style, doc_files_info.pmc_dtd_validation_report_filename, doc_files_info.pmc_style_checker_report_filename)
 
-    reports.generate_package_reports(scielo_pkg_path, xml_names, do_toc_report)
+    print('Generate contents validation reports...')
+    reports.generate_package_reports(scielo_pkg_path, xml_names, report_path, do_toc_report)
 
+    print('Reports')
+    print(report_path)
     # termina de montar o pacote inteiro do pmc
     for f in os.listdir(scielo_pkg_path):
         if not f.endswith('.xml') and not f.endswith('.jpg'):
@@ -771,8 +725,9 @@ def make_packages(path, acron, version):
         print(' must be an XML file or a folder which contains XML files.')
     else:
         process_articles(xml_files, markup_xml_path, acron, version)
+        print('Result of the processing:')
         print(markup_xml_path)
-        print('-- end --')
+        print(' -- the end -- ')
 
 
 def read_inputs(args):

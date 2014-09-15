@@ -3,9 +3,15 @@ import shutil
 
 import tempfile
 
+
+THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
+
 JAVA_PATH = 'java'
-JAR_TRANSFORM = './../../jar/saxonb9-1-0-8j/saxon9.jar'
-JAR_VALIDATE = './../../jar/XMLCheck.jar'
+JAR_TRANSFORM = THIS_LOCATION + '/../../jar/saxonb9-1-0-8j/saxon9.jar'
+JAR_VALIDATE = THIS_LOCATION + '/../../jar/XMLCheck.jar'
+
+
+print(JAR_TRANSFORM)
 
 
 def format_parameters(parameters):
@@ -39,18 +45,16 @@ def xml_content_transform(content, xsl_filename):
 
 def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     error = False
-    name = os.path.basename(result_filename)
-
     if os.path.exists(result_filename):
         os.unlink(result_filename)
     temp_result_filename = result_filename + '.tmp'
     if os.path.exists(temp_result_filename):
         os.unlink(temp_result_filename)
     cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
-
-    print('Creating ' + name)
-    os.system(cmd)
     #print(cmd)
+
+    #print('Creating ' + os.path.basename(result_filename))
+    os.system(cmd)
     if not os.path.exists(temp_result_filename):
         print('  ERROR: Unable to create it.')
 

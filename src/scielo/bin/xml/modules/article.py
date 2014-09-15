@@ -22,14 +22,8 @@ def format_author(author):
 
 class Table(object):
 
-    def __init__(self, graphic_parent, table):
+    def __init__(self, name, id, label, caption, graphic, table):
         self.table = table
-        self.graphic_parent = graphic_parent
-
-
-class GraphicParent(object):
-
-    def __init__(self, name, id, label, caption, graphic):
         self.name = name
         self.id = id
         self.label = label if label is not None else ''
@@ -43,8 +37,13 @@ class HRef(object):
         self.src = src
         self.element = element
         self.xml = xml
-        self.id = element.attrib.get('id', parent.attrib.get('id', None))
+
+        self.id = element.attrib.get('id', None)
+        if self.id is None and parent is not None:
+            self.id = parent.attrib.get('id', None)
+
         self.parent = parent
+        self.isfile = (not element.tag == 'ext-link') and (not ':' in src) and (not '/' in src)
 
     def display(self, path):
         if self.src is not None and self.src != '':
@@ -748,20 +747,21 @@ class Article(ArticleXML):
         return r
 
     @property
+    def href_files(self):
+        return [href for href in self.hrefs if href.isfile]
+
+    @property
     def tables(self):
         r = []
         for t in self.tree.findall('.//*[table]'):
             graphic = t.find('./graphic')
-            element_name = ''
-            src = ''
-            xml = ''
+            _href = None
             if graphic is not None:
-                element_name = 'graphic'
                 src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
                 xml = node_xml(graphic)
-            _href = HRef(src, graphic, t, xml)
-            _table = GraphicParent(t.tag, t.attrib.get('id'), t.findtext('.//label'), node_text(t.find('.//caption')), _href)
-            _table = Table(_table, node_xml(t.find('./table')))
+
+                _href = HRef(src, graphic, t, xml)
+            _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), node_text(t.find('.//caption')), _href, node_xml(t.find('./table')))
             r.append(_table)
         return r
 

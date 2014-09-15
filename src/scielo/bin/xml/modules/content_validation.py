@@ -13,7 +13,6 @@ def format_xml_in_html(xml):
 
 
 def format_value(value):
-    value = ''
     if value is None:
         value = 'None'
     else:

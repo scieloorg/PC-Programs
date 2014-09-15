@@ -59,7 +59,7 @@ class TOCReport(object):
         return self.html_page.format_div(r, 'issue-messages')
 
 
-class ArticleDisplay(object):
+class ArticleDisplayReport(object):
 
     def __init__(self, article, html_page, sheet_data, xml_path, xml_name, files):
         self.article = article
@@ -75,22 +75,24 @@ class ArticleDisplay(object):
 
     @property
     def article_front(self):
-        r = ''
-        r += self.toc_section
-        r += self.article_type
-        r += self.display_titles()
-        r += self.doi
-        r += self.article_id_other
-        r += self.order
-        r += self.fpage
-        r += self.fpage_seq
-        r += self.elocation_id
-        r += self.article_date
-        r += self.contrib_names
-        r += self.contrib_collabs
-        r += self.affiliations
-        r += self.abstracts
-        r += self.keywords
+        r = self.xml_name + ' is invalid.'
+        if self.article is not None:
+            r = ''
+            r += self.toc_section
+            r += self.article_type
+            r += self.display_titles()
+            r += self.doi
+            r += self.article_id_other
+            r += self.order
+            r += self.fpage
+            r += self.fpage_seq
+            r += self.elocation_id
+            r += self.article_date
+            r += self.contrib_names
+            r += self.contrib_collabs
+            r += self.affiliations
+            r += self.abstracts
+            r += self.keywords
 
         return self.html_page.tag('h2', 'Article front') + self.html_page.format_div(r, 'article-data')
 
@@ -229,24 +231,27 @@ class ArticleDisplay(object):
 
     @property
     def issue_header(self):
-        r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, utils.format_date(self.article.issue_pub_date)]
-        return self.html_page.tag('div', '\n'.join([self.html_page.tag('h5', item) for item in r if item is not None]), 'issue-data')
+        if self.article is not None:
+            r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, utils.format_date(self.article.issue_pub_date)]
+            return self.html_page.tag('div', '\n'.join([self.html_page.tag('h5', item) for item in r if item is not None]), 'issue-data')
+        else:
+            return ''
 
     @property
     def tables(self):
         r = self.html_page.tag('p', 'Tables:', 'label')
         for t in self.article.tables:
-            header = self.html_page.tag('h3', t.graphic_parent.id)
+            header = self.html_page.tag('h3', t.id)
             table_data = ''
-            table_data += self.html_page.display_value_with_discrete_label('label', t.graphic_parent.label, 'label')
-            table_data += self.html_page.display_value_with_discrete_label('caption',  self.html_page.display_xml(t.graphic_parent.caption), 'label')
+            table_data += self.html_page.display_value_with_discrete_label('label', t.label, 'label')
+            table_data += self.html_page.display_value_with_discrete_label('caption',  self.html_page.display_xml(t.caption), 'label')
             table_data += self.html_page.tag('p', 'table-wrap/table (xml)', 'label')
             table_data += self.html_page.tag('div', self.html_page.display_xml(t.table), 'xml')
             if t.table:
                 table_data += self.html_page.tag('p', 'table-wrap/table', 'label')
                 table_data += self.html_page.tag('div', t.table, 'element-table')
-            if t.graphic_parent.graphic:
-                table_data += self.html_page.display_value_with_discrete_label('table-wrap/graphic', t.graphic_parent.graphic.display(self.xml_path), 'value')
+            if t.graphic:
+                table_data += self.html_page.display_value_with_discrete_label('table-wrap/graphic', t.graphic.display(self.xml_path), 'value')
             r += header + self.html_page.tag('div', table_data, 'block')
         return r
 
@@ -259,7 +264,7 @@ class ArticleDisplay(object):
         return r
 
 
-class ArticleReport(object):
+class ArticleValidationReport(object):
 
     def __init__(self, article_validation, html_page):
         self.article_validation = article_validation
@@ -409,7 +414,7 @@ class HTMLPage(object):
         return self.tag(tag, self.tag('span', '[' + label + '] ', 'discrete') + value, style)
 
     def styles(self):
-        return '<style>' + open('./report.css', 'r').read() + '</style>'
+        return '<style>' + open(os.path.dirname(os.path.realpath(__file__)) + '/report.css', 'r').read() + '</style>'
 
     def body_section(self, style, anchor_name, title, content, sections=[]):
         anchor = anchor_name if anchor_name == '' else '<a name="' + anchor_name + '"/><a href="#top">^</a>'
@@ -701,7 +706,7 @@ class ArticleSheetData(object):
         t_header = ['href', 'display', 'xml']
         r = []
 
-        for item in self.article.hrefs:
+        for item in self.article.href_files:
             row = {}
             row['href'] = item.src
             msg = ''
@@ -785,12 +790,15 @@ def package_files(path, xml_name):
     return r
 
 
-def generate_package_reports(package_path, xml_names, create_toc_report=True):
+def generate_package_reports(package_path, xml_names, report_path, create_toc_report=True):
     html_page = HTMLPage()
 
     articles_and_filenames = []
     for new_name, xml_name in xml_names.items():
-        xml = xml_utils.load_xml(package_path + '/' + new_name)
+        if os.path.isfile(package_path + '/' + new_name + '.xml'):
+            xml = xml_utils.load_xml(package_path + '/' + new_name + '.xml')
+        else:
+            xml = None
         article = None if xml is None else Article(xml)
         articles_and_filenames.append((new_name, article))
 
@@ -805,27 +813,32 @@ def generate_package_reports(package_path, xml_names, create_toc_report=True):
 
     toc_e, toc_f, toc_w = statistics_numbers(toc_report_content)
 
-    for xml_name, article in articles_and_filenames:
-        name = xml_names[xml_name]
-        article_validation = content_validation.ArticleContentValidation(article)
-        sheet_data = ArticleSheetData(article, article_validation)
-        display_data = ArticleDisplay(article, html_page, sheet_data, package_path, xml_name, package_files(package_path, xml_name))
-        article_report = ArticleReport(article_validation, html_page)
-        content = article_report_content(display_data, article_report)
-        e, f, w = statistics_numbers(content)
+    for new_name, article in articles_and_filenames:
+        report_name = xml_names[new_name]
+        if article is None:
+            content = 'FATAL ERROR: ' + new_name + ' is not valid.'
+            e, f, w = statistics_numbers(content)
+            write_article_report(html_page, report_path, report_name, statistics_messages(e, f, w) + content)
+        else:
+            article_validation = content_validation.ArticleContentValidation(article)
+            sheet_data = ArticleSheetData(article, article_validation)
+            article_display_report = ArticleDisplayReport(article, html_page, sheet_data, package_path, new_name, package_files(package_path, new_name))
+            article_validation_report = ArticleValidationReport(article_validation, html_page)
+            content = article_report_content(article_display_report, article_validation_report)
+            e, f, w = statistics_numbers(content)
 
-        write_article_report(html_page, report_path, report_name, statistics_messages(e, f, w) + content)
+            write_article_report(html_page, report_path, report_name, statistics_messages(e, f, w) + content)
 
-        if create_toc_report:
-            toc_e += e
-            toc_f += f
-            toc_w += w
+            if create_toc_report:
+                toc_e += e
+                toc_f += f
+                toc_w += w
 
-            authors_h, authors_w, authors_data = sheet_data.authors(xml_name)
-            sources_h, sources_w, sources_data = sheet_data.sources(xml_name)
+                authors_h, authors_w, authors_data = sheet_data.authors(new_name)
+                sources_h, sources_w, sources_data = sheet_data.sources(new_name)
 
-            toc_authors_sheet_data.append(authors_data)
-            toc_sources_sheet_data.append(sources_data)
+                toc_authors_sheet_data += authors_data
+                toc_sources_sheet_data += sources_data
 
     if create_toc_report:
         html_page.title = 'Authors'
@@ -840,28 +853,23 @@ def generate_package_reports(package_path, xml_names, create_toc_report=True):
 
 
 def write_article_report(html_page, report_path, xml_name, content):
-    if not os.path.isdir(report_path):
-        os.makedirs(report_path)
-    for item in os.listdir(report_path):
-        if item.startswith(xml_name):
-            if os.path.isfile(report_path + '/' + item):
-                os.unlink(report_path + '/' + item)
     report_name = xml_name + '.contents.html'
-
+    if os.path.isfile(report_path + '/' + report_name):
+        os.unlink(report_path + '/' + report_name)
     html_page.title = ['Report of contents validations required by SciELO', xml_name]
-    html_page.body = statistics_messages(e, f, w) + content
+    html_page.body = content
     html_page.save(report_path + '/' + report_name)
 
 
-def article_report_content(display_data, article_report):
+def article_report_content(data_display, data_validation):
     content = ''
-    content += display_data.summary
-    content += display_data.article_back
-    content += display_data.files_and_href
-    content += display_data.article_body
-    content += article_report.report()
-    content += display_data.authors_sheet
-    content += display_data.sources_sheet
+    content += data_display.summary
+    content += data_display.article_back
+    content += data_display.files_and_href
+    content += data_display.article_body
+    content += data_validation.report()
+    content += data_display.authors_sheet
+    content += data_display.sources_sheet
     return content
 
 
