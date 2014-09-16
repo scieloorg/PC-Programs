@@ -135,17 +135,6 @@ def configure_versions_location():
 
 
 ###
-def format_parameters(parameters):
-    r = ''
-    for k, v in parameters.items():
-        if v != '':
-            if ' ' in v:
-                r += k + '=' + '"' + v + '" '
-            else:
-                r += k + '=' + v + ' '
-    return r
-
-
 ### ENTITIES
 class EntitiesTable:
     def __init__(self, filename='entities'):
