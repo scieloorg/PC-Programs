@@ -11,7 +11,7 @@ JAR_TRANSFORM = THIS_LOCATION + '/../../jar/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = THIS_LOCATION + '/../../jar/XMLCheck.jar'
 
 
-def remove_doctopic(content):
+def remove_doctype(content):
     if '\n<!DOCTYPE' in content:
         temp = content[content.find('\n<!DOCTYPE'):]
         temp = temp[0:temp.find('>')+1]
@@ -54,7 +54,7 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     for f in [xml_filename + '.tmp', result_filename, temp_result_filename]:
         if os.path.isfile(f):
             os.unlink(f)
-    open(xml_filename + '.tmp', 'w').write(remove_doctopic(open(xml_filename, 'r').read()))
+    open(xml_filename + '.tmp', 'w').write(remove_doctype(open(xml_filename, 'r').read()))
 
     cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '.tmp' + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
     #print(cmd)

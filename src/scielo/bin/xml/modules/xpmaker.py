@@ -501,7 +501,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     report_content = ''
 
     content = open(doc_files_info.xml_filename, 'r').read()
-    content = xml_utils.remove_doctopic(content)
+    content = xml_utils.remove_doctype(content)
     content = xml_utils.convert_entities_to_chars(content)
     if doc_files_info.is_sgmxml:
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
@@ -577,6 +577,11 @@ def apply_dtd(content, dtd_filename, doctype):
     return xml_str.content
 
 
+def apply_doctype(xml_filename, doctype):
+    r = xml_utils.replace_doctype(open(xml_filename, 'r').read(), doctype)
+    open(xml_filename, 'w').write(r)
+
+
 def evaluate_article_xml(xml_filename, dtd_files, dtd_validation_report_filename, style_checker_report_filename):
 
     def get_temp_filename(xml_filename):
@@ -605,6 +610,7 @@ def evaluate_article_xml(xml_filename, dtd_files, dtd_validation_report_filename
         else:
             is_valid_style = False
 
+        apply_doctype(xml_filename, dtd_files.doctype)
         os.unlink(temp_filename)
         shutil.rmtree(os.path.dirname(temp_filename))
     return (xml, is_valid_dtd, is_valid_style)
@@ -669,6 +675,7 @@ def process_articles(xml_files, markup_xml_path, acron, version='1.0'):
         manage_result_files(doc_files_info.ctrl_filename, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report_filename)
 
         if loaded_xml is not None:
+
             #generation of pmc.xml
             xml_output(doc_files_info.new_xml_filename, dtd_files.xsl_output, pmc_pkg_path + '/' + doc_files_info.new_name + '.xml')
 
