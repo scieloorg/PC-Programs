@@ -11,7 +11,12 @@ JAR_TRANSFORM = THIS_LOCATION + '/../../jar/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = THIS_LOCATION + '/../../jar/XMLCheck.jar'
 
 
-print(JAR_TRANSFORM)
+def remove_doctopic(content):
+    if '\n<!DOCTYPE' in content:
+        temp = content[content.find('\n<!DOCTYPE'):]
+        temp = temp[0:temp.find('>')+1]
+        content = content.replace(temp, '')
+    return content
 
 
 def format_parameters(parameters):
@@ -45,18 +50,17 @@ def xml_content_transform(content, xsl_filename):
 
 def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     error = False
-    if os.path.exists(result_filename):
-        os.unlink(result_filename)
     temp_result_filename = result_filename + '.tmp'
-    if os.path.exists(temp_result_filename):
-        os.unlink(temp_result_filename)
-    cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
-    #print(cmd)
+    for f in [xml_filename + '.tmp', result_filename, temp_result_filename]:
+        if os.path.isfile(f):
+            os.unlink(f)
+    open(xml_filename + '.tmp', 'w').write(remove_doctopic(open(xml_filename, 'r').read()))
 
-    #print('Creating ' + os.path.basename(result_filename))
+    cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '.tmp' + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
+    #print(cmd)
     os.system(cmd)
     if not os.path.exists(temp_result_filename):
-        print('  ERROR: Unable to create it.')
+        print('  ERROR: Unable to create ' + os.path.basename(result_filename))
 
         f = open(temp_result_filename, 'w')
         f.write('ERROR: transformation error.\n')
@@ -67,6 +71,8 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
         error = True
 
     shutil.move(temp_result_filename, result_filename)
+    if os.path.isfile(xml_filename + '.tmp'):
+        os.unlink(xml_filename + '.tmp')
 
     return (not error)
 

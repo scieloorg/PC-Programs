@@ -219,10 +219,10 @@ class DocFilesInfo(object):
             self.html_filename += 'l'
 
         self.is_sgmxml = xml_filename.endswith('.sgm.xml')
-        self.ctrl_filename = self.err_filename.replace('.err', '.ctrl') if self.is_sgmxml else None
+        self.ctrl_filename = self.xml_wrk_path + '/' + self.xml_name + '.ctrl.txt' if self.is_sgmxml else None
 
     def clean(self):
-        clean_folder(self.xml_wrk_path)
+        #clean_folder(self.xml_wrk_path)
         delete_files([self.err_filename, self.dtd_validation_report_filename, self.style_checker_report_filename, self.pmc_dtd_validation_report_filename, self.pmc_style_checker_report_filename, self.ctrl_filename])
 
 
@@ -358,10 +358,15 @@ def format_new_name(doc, param_acron='', original_xml_name=''):
         return r
     r = ''
     vol, issueno, fpage, seq, elocation_id, order, doi = doc.volume, doc.number, doc.fpage, doc.fpage_seq, doc.elocation_id, doc.order, doc.doi
-    issn = doc.e_issn if doc.e_issn else doc.print_issn
-    suppl = doc.volume_suppl if doc.volume_suppl else doc.number_suppl
-    if original_xml_name != '':
+
+    issns = [issn for issn in [doc.e_issn, doc.print_issn] if issn is not None]
+    if original_xml_name[0:9] in issns:
         issn = original_xml_name[0:9]
+    else:
+        issn = doc.e_issn if doc.e_issn else doc.print_issn
+
+    suppl = doc.volume_suppl if doc.volume_suppl else doc.number_suppl
+
     last = format_last_part(fpage, seq, elocation_id, order, doi, issn)
     if issueno:
         if issueno == 'ahead' or issueno == '00':
@@ -404,6 +409,19 @@ def get_curr_and_new_href_list(xml_name, new_name, href_list):
     return list(set(r))
 
 
+def add_extension(curr_and_new_href_list, xml_path):
+    r = []
+    for href, new_href in curr_and_new_href_list:
+        if not '.' in new_href:
+            extensions = [f[f.rfind('.'):] for f in os.listdir(xml_path) if f.startswith(href + '.')]
+            if len(extensions) > 1:
+                extensions = [e for e in extensions if '.tif' in e or '.eps' in e] + extensions
+            if len(extensions) > 0:
+                new_href += extensions[0]
+        r.append((href, new_href))
+    return r
+
+
 def get_attach_info(doc):
     items = []
     for href_info in doc.hrefs:
@@ -435,6 +453,7 @@ def pack_files(src_path, dest_path, xml_name, new_name, href_files_list):
             not_found.append((curr, new))
         else:
             href_files_list += s
+    delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
     return (related_files_list, href_files_list, not_found)
 
 
@@ -442,7 +461,7 @@ def pack_file_extended(src_path, dest_path, curr, new):
     r = []
     c = curr if not '.' in curr else curr[0:curr.rfind('.')]
     n = new if not '.' in new else new[0:new.rfind('.')]
-    found = [f for f in os.listdir(src_path) if f.startswith(c + '.') or f.startswith('-')]
+    found = [f for f in os.listdir(src_path) if (f.startswith(c + '.') or f.startswith('-')) and not f.startswith('.sgm.xml')]
     for f in found:
         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(c, n))
         r.append((f, f.replace(c, n)))
@@ -482,11 +501,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     report_content = ''
 
     content = open(doc_files_info.xml_filename, 'r').read()
-    if '\n<!DOCTYPE' in content:
-        temp = content[content.find('\n<!DOCTYPE'):]
-        temp = temp[0:temp.find('>')+1]
-        content = content.replace(temp, '')
-
+    content = xml_utils.remove_doctopic(content)
     content = xml_utils.convert_entities_to_chars(content)
     if doc_files_info.is_sgmxml:
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
@@ -499,10 +514,11 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
         if doc_files_info.is_sgmxml:
             new_name = format_new_name(doc, acron, doc_files_info.xml_name)
             curr_and_new_href_list = get_curr_and_new_href_list(doc_files_info.xml_name, new_name, attach_info)
+            curr_and_new_href_list = add_extension(curr_and_new_href_list, doc_files_info.xml_path)
             content = normalize_hrefs(content, curr_and_new_href_list)
         else:
             curr_and_new_href_list = [(href, href) for href, ign1, ign2 in attach_info]
-
+            curr_and_new_href_list = add_extension(curr_and_new_href_list, doc_files_info.xml_path)
         related_packed, href_packed, not_found = pack_files(doc_files_info.xml_path, scielo_pkg_path, doc_files_info.xml_name, new_name, curr_and_new_href_list)
 
         param_related_packed = ['   ' + c + ' => ' + n for c, n in related_packed]
@@ -520,7 +536,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
 
 
 def get_related_files(path, name):
-    return [f for f in os.listdir(path) if f.startswith(name + '.') or f.startswith(name + '-')]
+    return [f for f in os.listdir(path) if (f.startswith(name + '.') or f.startswith(name + '-')) and not f.startswith('.sgm.xml')]
 
 
 def get_not_found(path, href_list):
@@ -591,7 +607,6 @@ def evaluate_article_xml(xml_filename, dtd_files, dtd_validation_report_filename
 
         os.unlink(temp_filename)
         shutil.rmtree(os.path.dirname(temp_filename))
-        
     return (xml, is_valid_dtd, is_valid_style)
 
 
@@ -733,9 +748,9 @@ def make_packages(path, acron, version):
 def read_inputs(args):
     path = None
     acron = ''
-
     if len(args) == 3:
         script, path, acron = args
+        path = path.replace('\\', '/')
         if not os.path.isfile(path) and not os.path.isdir(path):
             path = None
 
@@ -744,7 +759,7 @@ def read_inputs(args):
         messages.append('\n===== ATTENTION =====\n')
         messages.append('ERROR: Incorrect parameters')
         messages.append('\nUsage:')
-        messages.append('python xml_package_maker <xml_src> <acron>')
+        messages.append('python ' + script + ' <xml_src> <acron>')
         messages.append('where:')
         messages.append('  <xml_src> = XML filename or path which contains XML files')
         messages.append('  <acron> = journal acronym')

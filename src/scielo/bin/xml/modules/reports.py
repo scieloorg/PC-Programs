@@ -279,30 +279,32 @@ class ArticleValidationReport(object):
     def display_item(self, item):
         return self.html_page.format_message(item)
 
-    def sheet(self, content):
+    def validation_table(self, content):
         r = '<p>'
-        r += '<table class="sheet">'
+        r += '<table class="validation">'
+
+        r += '<thead>'
         r += '<tr>'
         for label in ['label', 'status', 'message/value']:
             r += '<th class="th">' + label + '</th>'
-        r += '</tr>'
-        r += content
+        r += '</tr></thead>'
+        r += '<tbody>' + content + '</tbody>'
         r += '</table></p>'
         return r
 
-    def sheet_rows(self, table_data):
+    def format_validation_data(self, table_data):
         r = ''
         for row in table_data:
             cell = ''
             cell += self.html_page.tag('td', row[0], 'td_label')
-            cell += self.html_page.tag('td', row[1], 'td_label')
+            cell += self.html_page.tag('td', row[1], 'td_status')
             style = self.html_page.message_style(row[1] + ':')
             value = row[2]
             if style == 'ok':
                 if '<pre>' in value and '</pre>' in value:
                     value = self.html_page.display_xml(value)
                 value = self.html_page.tag('span', value, 'value')
-            cell += self.html_page.tag('td', value, 'td_data')
+            cell += self.html_page.tag('td', value, 'td_message')
             r += self.html_page.tag('tr', cell, style)
         return r
 
@@ -327,21 +329,21 @@ class ArticleValidationReport(object):
                     self.article_validation.total_of_figures,
                     self.article_validation.total_of_references,
                     ]
-        rows += self.sheet_rows(items)
-        rows += self.sheet_rows(self.article_validation.titles)
-        rows += self.sheet_rows(self.article_validation.trans_titles)
-        rows += self.sheet_rows(self.article_validation.contrib_names)
-        rows += self.sheet_rows(self.article_validation.contrib_collabs)
-        rows += self.sheet_rows(self.affiliations)
-        rows += self.sheet_rows(self.article_validation.funding)
+        rows += self.format_validation_data(items)
+        rows += self.format_validation_data(self.article_validation.titles)
+        rows += self.format_validation_data(self.article_validation.trans_titles)
+        rows += self.format_validation_data(self.article_validation.contrib_names)
+        rows += self.format_validation_data(self.article_validation.contrib_collabs)
+        rows += self.format_validation_data(self.affiliations)
+        rows += self.format_validation_data(self.article_validation.funding)
         items = [
                     self.article_validation.license,
                     ]
-        rows += self.sheet_rows(items)
-        rows += self.sheet_rows(self.article_validation.history)
-        rows += self.sheet_rows(self.article_validation.abstracts)
-        rows += self.sheet_rows(self.article_validation.keywords)
-        rows = self.sheet(rows)
+        rows += self.format_validation_data(items)
+        rows += self.format_validation_data(self.article_validation.history)
+        rows += self.format_validation_data(self.article_validation.abstracts)
+        rows += self.format_validation_data(self.article_validation.keywords)
+        rows = self.validation_table(rows)
         rows += self.references
         return self.html_page.format_div(self.html_page.tag('h2', 'Validations') + rows, 'article-messages')
 
@@ -375,7 +377,7 @@ class ArticleValidationReport(object):
             r = []
             for item in ref.evaluate():
                 r.append(item)
-            rows += self.sheet(self.sheet_rows(r))
+            rows += self.validation_table(self.format_validation_data(r))
         return rows
 
 
@@ -423,26 +425,31 @@ class HTMLPage(object):
 
     def sheet(self, table_header_and_data, filename=None):
 
-        def td_class(wider, label):
-            return ' class="td_data"' if label in wider else ' class="td_label"'
-
         table_header, wider, table_data = table_header_and_data
         r = '<p>'
         r += '<table class="sheet">'
-        r += '<tr>'
+        r += '<thead><tr>'
         if filename is not None:
             r += '<th class="th"></th>'
         for label in table_header:
             r += '<th class="th">' + label + '</th>'
-        r += '</tr>'
-        for row in table_data:
-            r += '<tr>'
-            if filename is not None:
-                r += '<td ' + td_class(wider, 'filename') + '>' + filename + '</td>'
-
+        r += '</tr></thead>'
+        if len(table_data) == 0:
+            r += '<tbody><tr>'
             for label in table_header:
-                r += '<td ' + td_class(wider, label) + '>' + self.format_cell(row.get(label, ''), not label in ['filename', 'scope']) + '</td>'
-            r += '</tr>'
+                r += '<td>-</td>'
+            r += '</tr></tbody>'
+        else:
+            r += '<tbody>'
+            for row in table_data:
+                r += '<tr>'
+                if filename is not None:
+                    r += '<td>' + filename + '</td>'
+
+                for label in table_header:
+                    r += '<td>' + self.format_cell(row.get(label, ''), not label in ['filename', 'scope']) + '</td>'
+                r += '</tr>'
+            r += '</tbody>'
         r += '</table>'
         r += '</p>'
         return r
@@ -777,7 +784,7 @@ def statistics_messages(e, f, w):
     style = _html_page.message_style('ERROR' if e + f > 0 else 'WARNING' if w > 0 else '')
     if style == '':
         style = 'success'
-    return _html_page.format_div(s, 'statistics-' + style)
+    return _html_page.format_div(_html_page.format_div(s, style), 'statistics')
 
 
 def package_files(path, xml_name):

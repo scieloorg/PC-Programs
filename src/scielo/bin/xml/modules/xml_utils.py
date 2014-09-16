@@ -7,6 +7,14 @@ from StringIO import StringIO
 from utils import u_encode
 
 
+def remove_doctopic(content):
+    if '\n<!DOCTYPE' in content:
+        temp = content[content.find('\n<!DOCTYPE'):]
+        temp = temp[0:temp.find('>')+1]
+        content = content.replace(temp, '')
+    return content
+
+
 def normalize_space(s):
     if s is not None:
         while '\n' in s:

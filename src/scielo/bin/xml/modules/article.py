@@ -253,11 +253,11 @@ class ArticleXML(object):
 
     @property
     def print_issn(self):
-        return self.journal_meta.find('issn[@pub-type="ppub"]')
+        return self.journal_meta.findtext('issn[@pub-type="ppub"]')
 
     @property
     def e_issn(self):
-        return self.journal_meta.find('issn[@pub-type="epub"]')
+        return self.journal_meta.findtext('issn[@pub-type="epub"]')
 
     @property
     def toc_section(self):
