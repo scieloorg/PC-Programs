@@ -1,18 +1,37 @@
 # coding=utf-8
-
+import os
+import shutil
+import tempfile
 import xml.etree.ElementTree as etree
-
 from StringIO import StringIO
 
 from utils import u_encode
 
 
-def remove_doctopic(content):
+def remove_doctype(content):
+    return replace_doctype(content, '')
+
+
+def replace_doctype(content, new_doctype):
     if '\n<!DOCTYPE' in content:
         temp = content[content.find('\n<!DOCTYPE'):]
         temp = temp[0:temp.find('>')+1]
-        content = content.replace(temp, '')
+        if len(temp) > 0:
+            content = content.replace(temp, new_doctype)
+    elif content.startswith('<?xml '):
+        temp = content
+        temp = temp[0:temp.find('?>')+2]
+        if len(new_doctype) > 0:
+            content = content.replace(temp, temp + '\n' + new_doctype)
     return content
+
+
+def apply_dtd(xml_filename, doctype):
+    temp_filename = tempfile.mkdtemp() + '/' + os.path.basename(xml_filename)
+    shutil.copyfile(xml_filename, temp_filename)
+    content = replace_doctype(open(xml_filename, 'r').read(), doctype)
+    open(xml_filename, 'w').write(content)
+    return temp_filename
 
 
 def normalize_space(s):
