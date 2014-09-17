@@ -24,8 +24,8 @@ DOCTYPE = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishin
 
 XPM_FILES = {}
 XPM_FILES['scielo3.0'] = {}
-XPM_FILES['scielo3.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_FILENAME}">'
-XPM_FILES['scielo3.0']['dtd'] = PMC_PATH + '/v3.0/dtd/journalpublishing3.dtd'
+XPM_FILES['scielo3.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_LOCAL_PATH}journalpublishing3.dtd">'
+XPM_FILES['scielo3.0']['dtd_path'] = PMC_PATH + '/v3.0/dtd/'
 XPM_FILES['scielo3.0']['css'] = PMC_PATH + '/v3.0/xsl/web/plus'
 XPM_FILES['scielo3.0']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/scielo-style/stylechecker.xsl'
 XPM_FILES['scielo3.0']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
@@ -33,8 +33,8 @@ XPM_FILES['scielo3.0']['xsl_preview'] = PMC_PATH + '/v3.0/xsl/previewers/scielo-
 XPM_FILES['scielo3.0']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/xml2pmc.xsl'
 
 XPM_FILES['pmc3.0'] = {}
-XPM_FILES['pmc3.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_FILENAME}">'
-XPM_FILES['pmc3.0']['dtd'] = PMC_PATH + '/v3.0/dtd/journalpublishing3.dtd'
+XPM_FILES['pmc3.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_LOCAL_PATH}journalpublishing3.dtd">'
+XPM_FILES['pmc3.0']['dtd_path'] = PMC_PATH + '/v3.0/dtd'
 XPM_FILES['pmc3.0']['css'] = PMC_PATH + '/v3.0/xsl/jpub/jpub-preview.css'
 XPM_FILES['pmc3.0']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/nlm-stylechecker.xsl'
 XPM_FILES['pmc3.0']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
@@ -42,8 +42,8 @@ XPM_FILES['pmc3.0']['xsl_preview'] = [PMC_PATH + '/v3.0/xsl/jpub/citations-prep/
 XPM_FILES['pmc3.0']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/pmc.xsl'
 
 XPM_FILES['scielo1.0'] = {}
-XPM_FILES['scielo1.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_FILENAME}">'
-XPM_FILES['scielo1.0']['dtd'] = PMC_PATH + '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
+XPM_FILES['scielo1.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_LOCAL_PATH}JATS-journalpublishing1.dtd">'
+XPM_FILES['scielo1.0']['dtd_path'] = PMC_PATH + '/j1.0/dtd/jats1.0'
 XPM_FILES['scielo1.0']['css'] = XPM_FILES['scielo3.0']['css']
 XPM_FILES['scielo1.0']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/scielo-style/stylechecker.xsl'
 XPM_FILES['scielo1.0']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.4/style-reporter.xsl'
@@ -51,8 +51,8 @@ XPM_FILES['scielo1.0']['xsl_preview'] = XPM_FILES['scielo3.0']['xsl_preview']
 XPM_FILES['scielo1.0']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/xml2pmc.xsl'
 
 XPM_FILES['pmc1.0'] = {}
-XPM_FILES['pmc1.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_FILENAME}">'
-XPM_FILES['pmc1.0']['dtd'] = PMC_PATH + '/j1.0/dtd/jats1.0/JATS-journalpublishing1.dtd'
+XPM_FILES['pmc1.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_LOCAL_PATH}JATS-journalpublishing1.dtd">'
+XPM_FILES['pmc1.0']['dtd_path'] = PMC_PATH + '/j1.0/dtd/jats1.0'
 XPM_FILES['pmc1.0']['css'] = XPM_FILES['pmc3.0']['css']
 XPM_FILES['pmc1.0']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.4/nlm-stylechecker.xsl'
 XPM_FILES['pmc1.0']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.4/style-reporter.xsl'
@@ -72,12 +72,16 @@ class DTDFiles(object):
         self.data = XPM_FILES.get(database_name + DEFAULT_VERSION, {})
 
     @property
-    def doctype(self):
-        return self.data['doctype']
+    def doctype_with_local_path(self):
+        return self.data['doctype'].replace('{DTD_LOCAL_PATH}', self.dtd_path + '/')
 
     @property
-    def dtd_filename(self):
-        return self.data['dtd']
+    def doctype(self):
+        return self.data['doctype'].replace('{DTD_LOCAL_PATH}', '')
+
+    @property
+    def dtd_path(self):
+        return self.data['dtd_path']
 
     @property
     def xsl_prep_report(self):
@@ -96,18 +100,6 @@ class XMLContent(object):
 
     def __init__(self, content):
         self.content = content
-
-    def fix_dtd_location(self, dtd_filename, doctype):
-        if not dtd_filename in self.content:
-            if not '<?xml ' in self.content:
-                self.content = '<?xml version="1.0" encoding="utf-8"?>\n' + self.content
-
-            if '<!DOCTYPE' in self.content:
-                old_doctype = self.content[self.content.find('<!DOCTYPE'):]
-                old_doctype = old_doctype[0:old_doctype.find('>')+1]
-                self.content = self.content.replace(old_doctype, '')
-            if not '<!DOCTYPE' in self.content:
-                self.content = self.content.replace('\n<article ', doctype.replace('{DTD_FILENAME}', dtd_filename) + '\n<article ')
 
     def fix(self):
         self.content = self.content[0:self.content.rfind('>')+1]
@@ -529,6 +521,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
         report_content = packed_files_report(doc_files_info.xml_name, new_name, doc_files_info.xml_path, scielo_pkg_path, param_related_packed, param_href_packed, param_curr_and_new_href_list, param_not_found)
 
     new_xml_filename = scielo_pkg_path + '/' + new_name + '.xml'
+
     open(new_xml_filename, 'w').write(content)
     print(' ... created')
 
@@ -571,48 +564,22 @@ def get_href_list(xml_filename):
     return href_list
 
 
-def apply_dtd(content, dtd_filename, doctype):
-    xml_str = XMLContent(content)
-    xml_str.fix_dtd_location(dtd_filename, doctype)
-    return xml_str.content
-
-
-def apply_doctype(xml_filename, doctype):
-    r = xml_utils.replace_doctype(open(xml_filename, 'r').read(), doctype)
-    open(xml_filename, 'w').write(r)
-
-
 def evaluate_article_xml(xml_filename, dtd_files, dtd_validation_report_filename, style_checker_report_filename):
-
-    def get_temp_filename(xml_filename):
-        temp_dir = tempfile.mkdtemp()
-        return temp_dir + '/' + os.path.basename(xml_filename)
-
     xml = None
     is_valid_dtd = False
     is_valid_style = False
 
+    xml_utils.apply_dtd(xml_filename, dtd_files.doctype)
     if os.path.isfile(xml_filename):
         #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
+        xml = xml_utils.load_xml(xml_filename)
+        is_valid_dtd = xpchecker.dtd_validation(xml_filename, dtd_validation_report_filename, dtd_files.doctype_with_local_path)
+        is_valid_style = xpchecker.style_validation(xml_filename, style_checker_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report)
+        #xpchecker.apply_doctype(xml_filename, dtd_files.doctype)
+    else:
+        open(dtd_validation_report_filename, 'w').write('Unable to find ' + xml_filename)
+        open(style_checker_report_filename, 'w').write('Unable to find ' + xml_filename)
 
-        content = open(xml_filename, 'r').read()
-
-        xml = xml_utils.load_xml(content)
-
-        content = apply_dtd(content, dtd_files.dtd_filename, dtd_files.doctype)
-        temp_filename = get_temp_filename(xml_filename)
-        open(temp_filename, 'w').write(content)
-
-        is_valid_dtd = xpchecker.dtd_validation(temp_filename, dtd_validation_report_filename)
-
-        if xml is not None:
-            is_valid_style = xpchecker.style_validation(temp_filename, style_checker_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report)
-        else:
-            is_valid_style = False
-
-        apply_doctype(xml_filename, dtd_files.doctype)
-        os.unlink(temp_filename)
-        shutil.rmtree(os.path.dirname(temp_filename))
     return (xml, is_valid_dtd, is_valid_style)
 
 

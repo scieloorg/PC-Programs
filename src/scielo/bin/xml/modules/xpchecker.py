@@ -1,7 +1,13 @@
 import os
 
+from packtools.catalogs import XML_CATALOG
 
 from modules import java_xml_utils
+
+
+os.environ['XML_CATALOG_FILES'] = XML_CATALOG
+
+print(os.environ['XML_CATALOG_FILES'])
 
 
 def packtools_dtd_validation(xml_filename, report_filename):
@@ -26,8 +32,8 @@ def packtools_style_validation(xml_filename, report_filename):
     return is_valid
 
 
-def java_xml_utils_dtd_validation(xml_filename, report_filename):
-    return java_xml_utils.xml_validate(xml_filename, report_filename, True)
+def java_xml_utils_dtd_validation(xml_filename, report_filename, doctype):
+    return java_xml_utils.xml_validate(xml_filename, report_filename, doctype)
 
 
 def java_xml_utils_style_validation(xml_filename, report_filename, xsl_prep_report, xsl_report):
@@ -49,9 +55,20 @@ def java_xml_utils_style_validation(xml_filename, report_filename, xsl_prep_repo
     return is_valid_style
 
 
-def dtd_validation(xml_filename, report_filename):
-    return packtools_dtd_validation(xml_filename, report_filename)
+def dtd_validation(xml_filename, report_filename, doctype):
+    #return packtools_dtd_validation(xml_filename, report_filename)
+    return java_xml_utils_dtd_validation(xml_filename, report_filename, doctype)
+    #try:
+    #    return packtools_dtd_validation(xml_filename, report_filename)
+    #except:
+    #    return java_xml_utils_dtd_validation(xml_filename, report_filename, doctype)
 
 
 def style_validation(xml_filename, report_filename, xsl_prep_report, xsl_report):
-    return packtools_style_validation(xml_filename, report_filename)
+    #return packtools_style_validation(xml_filename, report_filename)
+    return java_xml_utils_style_validation(xml_filename, report_filename, xsl_prep_report, xsl_report)
+
+    #try:
+    #    return packtools_style_validation(xml_filename, report_filename)
+    #except:
+    #    return java_xml_utils_dtd_validation(xml_filename, report_filename, xsl_prep_report, xsl_report)

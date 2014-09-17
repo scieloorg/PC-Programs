@@ -1,6 +1,5 @@
 import os
 import shutil
-
 import tempfile
 
 
@@ -12,11 +11,35 @@ JAR_VALIDATE = THIS_LOCATION + '/../../jar/XMLCheck.jar'
 
 
 def remove_doctype(content):
+    return replace_doctype(content, '')
+
+
+def replace_doctype(content, new_doctype):
     if '\n<!DOCTYPE' in content:
         temp = content[content.find('\n<!DOCTYPE'):]
         temp = temp[0:temp.find('>')+1]
-        content = content.replace(temp, '')
+        if len(temp) > 0:
+            content = content.replace(temp, new_doctype)
+    elif content.startswith('<?xml '):
+        temp = content
+        temp = temp[0:temp.find('?>')+2]
+        if len(new_doctype) > 0:
+            content = content.replace(temp, temp + '\n' + new_doctype)
     return content
+
+
+def apply_dtd(xml_filename, doctype):
+    temp_filename = tempfile.mkdtemp() + '/' + os.path.basename(xml_filename)
+    shutil.copyfile(xml_filename, temp_filename)
+    content = replace_doctype(open(xml_filename, 'r').read(), doctype)
+    open(xml_filename, 'w').write(content)
+    return temp_filename
+
+
+def restore_xml_file(xml_filename, temp_filename):
+    shutil.copyfile(temp_filename, xml_filename)
+    os.unlink(temp_filename)
+    shutil.rmtree(os.path.dirname(temp_filename))
 
 
 def format_parameters(parameters):
@@ -50,111 +73,64 @@ def xml_content_transform(content, xsl_filename):
 
 def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     error = False
-    temp_result_filename = result_filename + '.tmp'
-    for f in [xml_filename + '.tmp', result_filename, temp_result_filename]:
+
+    temp_result_filename = tempfile.mkdtemp() + '/' + os.path.basename(result_filename)
+    if not os.path.isdir(os.path.dirname(result_filename)):
+        os.makedirs(os.path.dirname(result_filename))
+    for f in [result_filename, temp_result_filename]:
         if os.path.isfile(f):
             os.unlink(f)
-    open(xml_filename + '.tmp', 'w').write(remove_doctype(open(xml_filename, 'r').read()))
 
-    cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '.tmp' + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
+    temp_xml_filename = apply_dtd(xml_filename, '')
+
+    cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
     #print(cmd)
     os.system(cmd)
     if not os.path.exists(temp_result_filename):
         print('  ERROR: Unable to create ' + os.path.basename(result_filename))
-
-        f = open(temp_result_filename, 'w')
-        f.write('ERROR: transformation error.\n')
-        f.write(xml_filename)
-        f.write(xsl_filename)
-        f.write(result_filename)
-        f.write(cmd)
+        open(temp_result_filename, 'w').write('ERROR: transformation error.\n' + cmd)
         error = True
-
     shutil.move(temp_result_filename, result_filename)
-    if os.path.isfile(xml_filename + '.tmp'):
-        os.unlink(xml_filename + '.tmp')
+    restore_xml_file(xml_filename, temp_xml_filename)
 
     return (not error)
 
 
-def tranform_in_steps(xml_filename, xsl_list, result_filename, parameters={}, fix_dtd_location=''):
-    input_filename = xml_filename + '.in'
-    output_filename = xml_filename + '.out'
-    error = False
-
-    shutil.copyfile(xml_filename, input_filename)
-    if os.path.exists(result_filename):
-        os.unlink(result_filename)
-
-    for xsl in xsl_list:
-        r = xml_transform(input_filename, xsl, output_filename, parameters)
-        if r:
-            if fix_dtd_location:
-                f = open(output_filename, 'r')
-                c = f.read()
-                f.close()
-                find = '"' + os.path.basename(fix_dtd_location) + '"'
-                if find in c:
-                    c = c.replace(find, '"' + fix_dtd_location + '"')
-                    f = open(output_filename, 'w')
-                    f.write(c)
-                    f.close()
-            shutil.copyfile(output_filename, input_filename)
-        else:
-            error = True
-            break
-
-    if os.path.exists(input_filename):
-        os.unlink(input_filename)
-    shutil.move(output_filename, result_filename)
-    return not error
-
-
-def xml_validate(xml_filename, result_filename, dtd_validation=False):
+def xml_validate(xml_filename, result_filename, doctype=None):
     validation_type = ''
-
-    if dtd_validation:
+    temp_xml_filename = ''
+    if doctype is not None:
         validation_type = '--validate'
+        temp_xml_filename = apply_dtd(xml_filename, doctype)
 
+    temp_result_filename = tempfile.mkdtemp() + '/' + os.path.basename(result_filename)
+    if os.path.isfile(result_filename):
+        os.unlink(result_filename)
     if not os.path.isdir(os.path.dirname(result_filename)):
         os.makedirs(os.path.dirname(result_filename))
-    if os.path.exists(result_filename):
-        os.unlink(result_filename)
-    temp_result_filename = result_filename + '.tmp'
-    if os.path.exists(temp_result_filename):
-        os.unlink(temp_result_filename)
 
     cmd = JAVA_PATH + ' -cp ' + JAR_VALIDATE + ' br.bireme.XMLCheck.XMLCheck ' + xml_filename + ' ' + validation_type + '>"' + temp_result_filename + '"'
-    #print(cmd)
     os.system(cmd)
 
+    result = ''
     if os.path.exists(temp_result_filename):
-        f = open(temp_result_filename, 'r')
-        result_content = f.read().replace(xml_filename, os.path.basename(xml_filename))
-        f.close()
-
-        if 'ERROR' in result_content.upper():
-            f = open(xml_filename, 'r')
-
+        if 'ERROR' in result.upper():
             n = 0
             s = ''
-            for line in f.readlines():
+            for line in open(xml_filename, 'r').readlines():
                 if n > 0:
                     s += str(n) + ':' + line
                 n += 1
-            result_content += '\n' + s
+            result += '\n' + s
     else:
-        result_content = 'ERROR: Not valid. Unknown error.' + "\n" + cmd
+        result = 'ERROR: Not valid. Unknown error.\n' + cmd
 
-    if 'ERROR' in result_content.upper():
-        f = open(temp_result_filename, 'w')
-        f.write(result_content)
-        f.close()
+    if 'ERROR' in result.upper():
+        open(temp_result_filename, 'a+').write(result)
         valid = False
     else:
         valid = True
 
     shutil.move(temp_result_filename, result_filename)
-
+    shutil.move(temp_xml_filename, xml_filename)
     return valid
-
