@@ -63,14 +63,18 @@ def normalize_doctopic(_doctopic):
 
 class ArticleISIS(object):
 
-    def __init__(self, article_files, article, i_record, section_code, text_or_article):
-        self.text_or_article = text_or_article
+    def __init__(self, article, i_record, section_code, article_files):
         self.article = article
         self.section_code = section_code
         self.article_files = article_files
-        self.i_record = i_record
+        self.add_issue_data(i_record)
+        self.set_common_data(article_files.xml_name, article_files.issue_files.issue_folder, article_files.relative_xml_filename)
+
+    def add_issue_data(self, i_record):
         self._metadata = {}
-        self.metadata = {}
+        for k in ['30', '42', '62', '100', '35', '935', '421']:
+            if k in i_record.keys():
+                self._metadata[k] = self.i_record[k]
 
     @property
     def metadata(self):
@@ -78,11 +82,6 @@ class ArticleISIS(object):
 
     @metadata.setter
     def metadata(self, value):
-        self._metadata = {}
-
-        for k in ['30', '42', '62', '100', '35', '935', '421']:
-            if k in self.i_record.keys():
-                self._metadata[k] = self.i_record[k]
         self._metadata['120'] = 'XML_' + self.article.dtd_version
         self._metadata['71'] = normalize_doctopic(self.article.article_type)
         self._metadata['40'] = self.article.language
@@ -339,14 +338,13 @@ class ArticleISIS(object):
             r.append(rec)
         return r
 
-    @property
-    def common_data(self):
+    def set_common_data(self, xml_name, issue_folder, relative_xml_filename):
         r = {}
-        r['2'] = self.article_files.xml_name
-        r['4'] = self.article_files.issue_folder
-        r['702'] = self.article_files.relative_xml_filename
+        r['2'] = xml_name
+        r['4'] = issue_folder
+        r['702'] = relative_xml_filename
         r['705'] = 'S'
-        return r
+        self.common_data = r
 
     def record_info(self, record_index, record_name, record_name_index, record_name_total):
         r = {}
@@ -369,16 +367,4 @@ class IssueISIS(object):
                 if sec.get('t').lower() == section_title.lower():
                     seccode = sec.get('c')
                     break
-        return seccode
-
-    def check_section(self, section_title):
-        seccode = self.section_code(section_title)
-        if seccode is None:
-            print('Section in XML:')
-            print('  ' + section_title)
-            print('Sections in the issue:')
-            if len(self.record.get('49', [])) == 0:
-                print('  None')
-            else:
-                print('\n  '.join(self.record.get('49', [])))
         return seccode

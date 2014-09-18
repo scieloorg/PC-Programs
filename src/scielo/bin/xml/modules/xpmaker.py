@@ -1,221 +1,14 @@
 import os
 import shutil
-import tempfile
 from datetime import datetime
 
 from modules import article
-from modules import xml_utils
+from modules import files_manager
 from modules import java_xml_utils
-from modules import xpchecker
 from modules import reports
-
-
-THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
-
-
-DEFAULT_VERSION = '1.0'
-PMC_PATH = THIS_LOCATION + '/../../pmc'
-
-XSL_SGML2XML = {}
-XSL_SGML2XML['3.0'] = PMC_PATH + '/v3.0/xsl/sgml2xml/sgml2xml.xsl'
-XSL_SGML2XML['1.0'] = PMC_PATH + '/j1.0/xsl/sgml2xml/sgml2xml.xsl'
-
-DOCTYPE = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "JATS-journalpublishing1.dtd">'
-
-XPM_FILES = {}
-XPM_FILES['scielo3.0'] = {}
-XPM_FILES['scielo3.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_LOCAL_PATH}journalpublishing3.dtd">'
-XPM_FILES['scielo3.0']['dtd_path'] = PMC_PATH + '/v3.0/dtd/'
-XPM_FILES['scielo3.0']['css'] = PMC_PATH + '/v3.0/xsl/web/plus'
-XPM_FILES['scielo3.0']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/scielo-style/stylechecker.xsl'
-XPM_FILES['scielo3.0']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
-XPM_FILES['scielo3.0']['xsl_preview'] = PMC_PATH + '/v3.0/xsl/previewers/scielo-html-novo.xsl'
-XPM_FILES['scielo3.0']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/xml2pmc.xsl'
-
-XPM_FILES['pmc3.0'] = {}
-XPM_FILES['pmc3.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD Journal Publishing DTD v3.0 20080202//EN" "{DTD_LOCAL_PATH}journalpublishing3.dtd">'
-XPM_FILES['pmc3.0']['dtd_path'] = PMC_PATH + '/v3.0/dtd'
-XPM_FILES['pmc3.0']['css'] = PMC_PATH + '/v3.0/xsl/jpub/jpub-preview.css'
-XPM_FILES['pmc3.0']['xsl_prep_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/nlm-stylechecker.xsl'
-XPM_FILES['pmc3.0']['xsl_report'] = PMC_PATH + '/v3.0/xsl/nlm-style-4.6.6/style-reporter.xsl'
-XPM_FILES['pmc3.0']['xsl_preview'] = [PMC_PATH + '/v3.0/xsl/jpub/citations-prep/jpub3-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
-XPM_FILES['pmc3.0']['xsl_output'] = PMC_PATH + '/v3.0/xsl/sgml2xml/pmc.xsl'
-
-XPM_FILES['scielo1.0'] = {}
-XPM_FILES['scielo1.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_LOCAL_PATH}JATS-journalpublishing1.dtd">'
-XPM_FILES['scielo1.0']['dtd_path'] = PMC_PATH + '/j1.0/dtd/jats1.0'
-XPM_FILES['scielo1.0']['css'] = XPM_FILES['scielo3.0']['css']
-XPM_FILES['scielo1.0']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/scielo-style/stylechecker.xsl'
-XPM_FILES['scielo1.0']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.4/style-reporter.xsl'
-XPM_FILES['scielo1.0']['xsl_preview'] = XPM_FILES['scielo3.0']['xsl_preview']
-XPM_FILES['scielo1.0']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/xml2pmc.xsl'
-
-XPM_FILES['pmc1.0'] = {}
-XPM_FILES['pmc1.0']['doctype'] = '<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.0 20120330//EN" "{DTD_LOCAL_PATH}JATS-journalpublishing1.dtd">'
-XPM_FILES['pmc1.0']['dtd_path'] = PMC_PATH + '/j1.0/dtd/jats1.0'
-XPM_FILES['pmc1.0']['css'] = XPM_FILES['pmc3.0']['css']
-XPM_FILES['pmc1.0']['xsl_prep_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.4/nlm-stylechecker.xsl'
-XPM_FILES['pmc1.0']['xsl_report'] = PMC_PATH + '/j1.0/xsl/nlm-style-5.4/style-reporter.xsl'
-XPM_FILES['pmc1.0']['xsl_preview'] = [PMC_PATH + '/j1.0/xsl/jpub/citations-prep/jpub1-PMCcit.xsl', PMC_PATH + '/v3.0/xsl/previewers/jpub-main-jpub3-html.xsl', ]
-XPM_FILES['pmc1.0']['xsl_output'] = PMC_PATH + '/j1.0/xsl/sgml2xml/pmc.xsl'
-
-
-def xsl_sgml2xml(version):
-    return XSL_SGML2XML.get(version, DEFAULT_VERSION)
-
-
-class DTDFiles(object):
-
-    def __init__(self, database_name, version):
-        self.database_name = database_name
-        self.version = version
-        self.data = XPM_FILES.get(database_name + DEFAULT_VERSION, {})
-
-    @property
-    def doctype_with_local_path(self):
-        return self.data['doctype'].replace('{DTD_LOCAL_PATH}', self.dtd_path + '/')
-
-    @property
-    def doctype(self):
-        return self.data['doctype'].replace('{DTD_LOCAL_PATH}', '')
-
-    @property
-    def dtd_path(self):
-        return self.data['dtd_path']
-
-    @property
-    def xsl_prep_report(self):
-        return self.data['xsl_prep_report']
-
-    @property
-    def xsl_report(self):
-        return self.data['xsl_report']
-
-    @property
-    def xsl_output(self):
-        return self.data['xsl_output']
-
-
-class XMLContent(object):
-
-    def __init__(self, content):
-        self.content = content
-
-    def fix(self):
-        self.content = self.content[0:self.content.rfind('>')+1]
-        self.content = self.content[self.content.find('<'):]
-        self.content = self.content.replace(' '*2, ' '*1)
-        if xml_utils.is_xml_well_formed(self.content) is None:
-            self._fix_style_tags()
-        if xml_utils.is_xml_well_formed(self.content) is None:
-            self._fix_open_close()
-
-    def _fix_open_close(self):
-        changes = []
-        parts = self.content.split('>')
-        for s in parts:
-            if '<' in s:
-                if not '</' in s and not '<!--' in s and not '<?' in s:
-
-                    s = s[s.find('<')+1:]
-                    if ' ' in s and not '=' in s:
-                        test = s[s.find('<')+1:]
-                        changes.append(test)
-        for change in changes:
-            print(change)
-            self.content = self.content.replace('<' + test + '>', '[' + test + ']')
-
-    def _fix_style_tags(self):
-        rcontent = self.content
-        tags = ['italic', 'bold', 'sub', 'sup']
-        tag_list = []
-        for tag in tags:
-            rcontent = rcontent.replace('<' + tag.upper() + '>', '<' + tag + '>')
-            rcontent = rcontent.replace('</' + tag.upper() + '>', '</' + tag + '>')
-            tag_list.append('<' + tag + '>')
-            tag_list.append('</' + tag + '>')
-            rcontent = rcontent.replace('<' + tag + '>',  'BREAKBEGINCONSERTA<' + tag + '>BREAKBEGINCONSERTA').replace('</' + tag + '>', 'BREAKBEGINCONSERTA</' + tag + '>BREAKBEGINCONSERTA')
-        if self.content != rcontent:
-            parts = rcontent.split('BREAKBEGINCONSERTA')
-            self.content = self._fix_problem(tag_list, parts)
-        for tag in tags:
-            self.content = self.content.replace('</' + tag + '><' + tag + '>', '')
-
-    def _fix_problem(self, tag_list, parts):
-        expected_close_tags = []
-        ign_list = []
-        debug = False
-        k = 0
-        for part in parts:
-            if part in tag_list:
-                tag = part
-                if debug:
-                    print('\ncurrent:' + tag)
-                if tag.startswith('</'):
-                    if debug:
-                        print('expected')
-                        print(expected_close_tags)
-                        print('ign_list')
-                        print(ign_list)
-                    if tag in ign_list:
-                        if debug:
-                            print('remove from ignore')
-                        ign_list.remove(tag)
-                        parts[k] = ''
-                    else:
-                        matched = False
-                        if len(expected_close_tags) > 0:
-                            matched = (expected_close_tags[-1] == tag)
-                            if not matched:
-                                if debug:
-                                    print('not matched')
-                                while not matched and len(expected_close_tags) > 0:
-                                    ign_list.append(expected_close_tags[-1])
-                                    parts[k-1] += expected_close_tags[-1]
-                                    del expected_close_tags[-1]
-                                    matched = (expected_close_tags[-1] == tag)
-                                if debug:
-                                    print('...expected')
-                                    print(expected_close_tags)
-                                    print('...ign_list')
-                                    print(ign_list)
-
-                            if matched:
-                                del expected_close_tags[-1]
-                else:
-                    expected_close_tags.append(tag.replace('<', '</'))
-            k += 1
-        return ''.join(parts)
-
-
-class DocFilesInfo(object):
-
-    def __init__(self, xml_filename, report_path, wrk_path):
-        self.xml_filename = xml_filename
-        self.xml_path = os.path.dirname(xml_filename)
-
-        xml_file = os.path.basename(xml_filename)
-        self.xml_name = xml_file.replace('.sgm.xml', '').replace('.xml', '')
-
-        self.xml_wrk_path = wrk_path + '/' + self.xml_name
-
-        self.dtd_validation_report_filename = report_path + '/' + self.xml_name + '.dtd.txt'
-        self.style_checker_report_filename = report_path + '/' + self.xml_name + '.rep.html'
-
-        self.pmc_dtd_validation_report_filename = report_path + '/' + self.xml_name + '.pmc.dtd.txt'
-        self.pmc_style_checker_report_filename = report_path + '/' + self.xml_name + '.pmc.rep.html'
-
-        self.err_filename = report_path + '/' + self.xml_name + '.err.txt'
-        self.html_filename = self.xml_wrk_path + '/' + self.xml_name + '.temp.htm'
-        if not os.path.isfile(self.html_filename):
-            self.html_filename += 'l'
-
-        self.is_sgmxml = xml_filename.endswith('.sgm.xml')
-        self.ctrl_filename = self.xml_wrk_path + '/' + self.xml_name + '.ctrl.txt' if self.is_sgmxml else None
-
-    def clean(self):
-        #clean_folder(self.xml_wrk_path)
-        delete_files([self.err_filename, self.dtd_validation_report_filename, self.style_checker_report_filename, self.pmc_dtd_validation_report_filename, self.pmc_style_checker_report_filename, self.ctrl_filename])
+from modules import xml_utils
+from modules import xml_versions
+from modules import xpchecker
 
 
 def rename_embedded_img_href(content, xml_name, new_href_list):
@@ -266,12 +59,12 @@ def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
     if not xml_utils.is_xml_well_formed(content):
         content = fix_sgml_xml(content)
     if xml_utils.is_xml_well_formed(content) is not None:
-        content = java_xml_utils.xml_content_transform(content, xsl_sgml2xml(version))
+        content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
     return content
 
 
 def fix_sgml_xml(content):
-    xml_fix = XMLContent(content)
+    xml_fix = xml_utils.XMLContent(content)
     xml_fix.fix()
     if not xml_fix.content == content:
         content = xml_fix.content
@@ -304,22 +97,6 @@ def hdimages_to_jpeg(source_path, jpg_path, replace=False):
                     except Exception as inst:
                         print('Unable to generate ' + jpg_filename)
                         print(inst)
-
-
-def clean_folder(path):
-    if os.path.isdir(path):
-        for f in os.listdir(path):
-            if os.path.isfile(path + '/' + f):
-                os.unlink(path + '/' + f)
-    else:
-        os.makedirs(path)
-
-
-def delete_files(files):
-    for f in files:
-        if f is not None:
-            if os.path.isfile(f):
-                os.unlink(f)
 
 
 def format_new_name(doc, param_acron='', original_xml_name=''):
@@ -445,7 +222,7 @@ def pack_files(src_path, dest_path, xml_name, new_name, href_files_list):
             not_found.append((curr, new))
         else:
             href_files_list += s
-    delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
+    files_manager.delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
     return (related_files_list, href_files_list, not_found)
 
 
@@ -519,13 +296,14 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
         param_not_found = ['   ' + c + ' => ' + n for c, n in not_found]
 
         report_content = packed_files_report(doc_files_info.xml_name, new_name, doc_files_info.xml_path, scielo_pkg_path, param_related_packed, param_href_packed, param_curr_and_new_href_list, param_not_found)
+        open(doc_files_info.err_filename, 'w').write(report_content)
 
     new_xml_filename = scielo_pkg_path + '/' + new_name + '.xml'
 
     open(new_xml_filename, 'w').write(content)
     print(' ... created')
 
-    return (new_name, new_xml_filename, report_content)
+    return (new_name, new_xml_filename)
 
 
 def get_related_files(path, name):
@@ -564,42 +342,13 @@ def get_href_list(xml_filename):
     return href_list
 
 
-def evaluate_article_xml(xml_filename, dtd_files, dtd_validation_report_filename, style_checker_report_filename):
-    xml = None
-    is_valid_dtd = False
-    is_valid_style = False
-
-    xml_utils.apply_dtd(xml_filename, dtd_files.doctype)
-    if os.path.isfile(xml_filename):
-        #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
-        xml = xml_utils.load_xml(xml_filename)
-        is_valid_dtd = xpchecker.dtd_validation(xml_filename, dtd_validation_report_filename, dtd_files.doctype_with_local_path)
-        is_valid_style = xpchecker.style_validation(xml_filename, style_checker_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report)
-        #xpchecker.apply_doctype(xml_filename, dtd_files.doctype)
-    else:
-        open(dtd_validation_report_filename, 'w').write('Unable to find ' + xml_filename)
-        open(style_checker_report_filename, 'w').write('Unable to find ' + xml_filename)
-
-    return (xml, is_valid_dtd, is_valid_style)
-
-
-def manage_result_files(ctrl_filename, is_valid_dtd, is_valid_style, dtd_validation_report, style_checker_report):
-    if ctrl_filename is None:
-        if is_valid_style is True:
-            os.unlink(style_checker_report)
-    else:
-        open(ctrl_filename, 'w').write('Finished')
-    if os.path.isfile(dtd_validation_report):
-        os.unlink(dtd_validation_report)
-
-
 def xml_output(xml_filename, xsl_filename, result_filename):
     if os.path.exists(result_filename):
         os.unlink(result_filename)
     return java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)
 
 
-def process_articles(xml_files, markup_xml_path, acron, version='1.0'):
+def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.0'):
     do_toc_report = False
 
     scielo_pkg_path = markup_xml_path + '/scielo_package'
@@ -619,39 +368,27 @@ def process_articles(xml_files, markup_xml_path, acron, version='1.0'):
 
     print('Generate packages (' + str(len(xml_files)) + '):')
     for xml_filename in xml_files:
-        doc_files_info = DocFilesInfo(xml_filename, report_path, wrk_path)
+        doc_files_info = files_manager.DocFilesInfo(xml_filename, report_path, wrk_path)
         doc_files_info.clean()
 
         do_toc_report = not doc_files_info.is_sgmxml
 
-        new_name, new_xml_filename, report_content = generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron)
+        new_name, new_xml_filename = generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron)
         doc_files_info.new_name = new_name
         doc_files_info.new_xml_filename = new_xml_filename
 
         xml_names[new_name] = doc_files_info.xml_name
+        dtd_files = xml_versions.DTDFiles('scielo', version)
+        loaded_xml, is_valid_dtd, is_valid_style = xpchecker.validate_article_package(doc_files_info.new_xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
 
-        # validation of scielo.xml
-        dtd_files = DTDFiles('scielo', version)
-        loaded_xml, is_valid_dtd, is_valid_style = evaluate_article_xml(doc_files_info.new_xml_filename, dtd_files, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report_filename)
         print(' ... validated')
-        if os.path.isfile(doc_files_info.dtd_validation_report_filename):
-            report_content += '\n\n\n' + '.........\n\n\n' + 'DTD errors\n' + '-'*len('DTD errors') + '\n' + open(doc_files_info.dtd_validation_report_filename, 'r').read()
-        open(doc_files_info.err_filename, 'w').write(report_content)
-
-        # manage result
-        manage_result_files(doc_files_info.ctrl_filename, is_valid_dtd, is_valid_style, doc_files_info.dtd_validation_report_filename, doc_files_info.style_checker_report_filename)
 
         if loaded_xml is not None:
-
             #generation of pmc.xml
             xml_output(doc_files_info.new_xml_filename, dtd_files.xsl_output, pmc_pkg_path + '/' + doc_files_info.new_name + '.xml')
 
             #validation of pmc.xml
-            dtd_files = DTDFiles('pmc', version)
-            loaded_xml, is_valid_dtd, is_valid_style = evaluate_article_xml(pmc_pkg_path + '/' + doc_files_info.new_name + '.xml', dtd_files, doc_files_info.pmc_dtd_validation_report_filename, doc_files_info.pmc_style_checker_report_filename)
-
-            # manage result
-            manage_result_files(doc_files_info.ctrl_filename, is_valid_dtd, is_valid_style, doc_files_info.pmc_dtd_validation_report_filename, doc_files_info.pmc_style_checker_report_filename)
+            loaded_xml, is_valid_dtd, is_valid_style = xpchecker.validate_article_package(doc_files_info.new_xml_filename, xml_versions.DTDFiles('pmc', version), doc_files_info.pmc_dtd_report_filename, doc_files_info.pmc_style_report_filename, doc_files_info.ctrl_filename)
 
     print('Generate contents validation reports...')
     reports.generate_package_reports(scielo_pkg_path, xml_names, report_path, do_toc_report)
@@ -713,7 +450,7 @@ def make_packages(path, acron, version):
         print(path)
         print(' must be an XML file or a folder which contains XML files.')
     else:
-        process_articles(xml_files, markup_xml_path, acron, version)
+        generate_and_validate_package(xml_files, markup_xml_path, acron, version)
         print('Result of the processing:')
         print(markup_xml_path)
         print(' -- the end -- ')

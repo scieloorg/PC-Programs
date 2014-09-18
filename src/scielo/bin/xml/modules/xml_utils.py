@@ -8,6 +8,98 @@ from StringIO import StringIO
 from utils import u_encode
 
 
+class XMLContent(object):
+
+    def __init__(self, content):
+        self.content = content
+
+    def fix(self):
+        self.content = self.content[0:self.content.rfind('>')+1]
+        self.content = self.content[self.content.find('<'):]
+        self.content = self.content.replace(' '*2, ' '*1)
+        if xml_utils.is_xml_well_formed(self.content) is None:
+            self._fix_style_tags()
+        if xml_utils.is_xml_well_formed(self.content) is None:
+            self._fix_open_close()
+
+    def _fix_open_close(self):
+        changes = []
+        parts = self.content.split('>')
+        for s in parts:
+            if '<' in s:
+                if not '</' in s and not '<!--' in s and not '<?' in s:
+
+                    s = s[s.find('<')+1:]
+                    if ' ' in s and not '=' in s:
+                        test = s[s.find('<')+1:]
+                        changes.append(test)
+        for change in changes:
+            print(change)
+            self.content = self.content.replace('<' + test + '>', '[' + test + ']')
+
+    def _fix_style_tags(self):
+        rcontent = self.content
+        tags = ['italic', 'bold', 'sub', 'sup']
+        tag_list = []
+        for tag in tags:
+            rcontent = rcontent.replace('<' + tag.upper() + '>', '<' + tag + '>')
+            rcontent = rcontent.replace('</' + tag.upper() + '>', '</' + tag + '>')
+            tag_list.append('<' + tag + '>')
+            tag_list.append('</' + tag + '>')
+            rcontent = rcontent.replace('<' + tag + '>',  'BREAKBEGINCONSERTA<' + tag + '>BREAKBEGINCONSERTA').replace('</' + tag + '>', 'BREAKBEGINCONSERTA</' + tag + '>BREAKBEGINCONSERTA')
+        if self.content != rcontent:
+            parts = rcontent.split('BREAKBEGINCONSERTA')
+            self.content = self._fix_problem(tag_list, parts)
+        for tag in tags:
+            self.content = self.content.replace('</' + tag + '><' + tag + '>', '')
+
+    def _fix_problem(self, tag_list, parts):
+        expected_close_tags = []
+        ign_list = []
+        debug = False
+        k = 0
+        for part in parts:
+            if part in tag_list:
+                tag = part
+                if debug:
+                    print('\ncurrent:' + tag)
+                if tag.startswith('</'):
+                    if debug:
+                        print('expected')
+                        print(expected_close_tags)
+                        print('ign_list')
+                        print(ign_list)
+                    if tag in ign_list:
+                        if debug:
+                            print('remove from ignore')
+                        ign_list.remove(tag)
+                        parts[k] = ''
+                    else:
+                        matched = False
+                        if len(expected_close_tags) > 0:
+                            matched = (expected_close_tags[-1] == tag)
+                            if not matched:
+                                if debug:
+                                    print('not matched')
+                                while not matched and len(expected_close_tags) > 0:
+                                    ign_list.append(expected_close_tags[-1])
+                                    parts[k-1] += expected_close_tags[-1]
+                                    del expected_close_tags[-1]
+                                    matched = (expected_close_tags[-1] == tag)
+                                if debug:
+                                    print('...expected')
+                                    print(expected_close_tags)
+                                    print('...ign_list')
+                                    print(ign_list)
+
+                            if matched:
+                                del expected_close_tags[-1]
+                else:
+                    expected_close_tags.append(tag.replace('<', '</'))
+            k += 1
+        return ''.join(parts)
+
+
 def remove_doctype(content):
     return replace_doctype(content, '')
 

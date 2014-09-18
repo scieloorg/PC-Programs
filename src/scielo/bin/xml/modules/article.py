@@ -730,11 +730,12 @@ class Article(ArticleXML):
 
     @property
     def issue_label(self):
+        year = self.issue_pub_date.get('year', '') if self.number == 'ahead' else ''
         v = 'v' + self.volume if self.volume is not None else None
         vs = 's' + self.volume_suppl if self.volume_suppl is not None else None
         n = 'n' + self.number if self.number is not None else None
         ns = 's' + self.number_suppl if self.number_suppl is not None else None
-        return ''.join([i for i in [v, vs, n, ns] if i is not None])
+        return ''.join([i for i in [year, v, vs, n, ns] if i is not None])
 
     @property
     def hrefs(self):
