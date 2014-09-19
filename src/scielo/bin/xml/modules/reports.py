@@ -815,62 +815,6 @@ def toc_report(articles_and_filenames):
     return (toc_f, toc_e, toc_w, toc_report_content)
 
 
-def old_generate_package_reports(package_path, xml_names, report_path, create_toc_report=True):
-    html_page = HTMLPage()
-
-    articles_and_filenames = get_articles_and_filenames(package_path, xml_names)
-
-    toc_authors_sheet_data = []
-    toc_sources_sheet_data = []
-    authors_h, authors_w = [''], ['']
-    sources_h, sources_w = [''], ['']
-
-    toc_report_content = ''
-    toc_f, toc_e, toc_w = (0, 0, 0)
-
-    if create_toc_report:
-        toc_report_content = TOCReport(articles_and_filenames).report()
-        toc_f, toc_e, toc_w = statistics_numbers(toc_report_content)
-
-    for new_name, article in articles_and_filenames:
-        report_name = xml_names[new_name]
-        if article is None:
-            content = 'FATAL ERROR: ' + new_name + ' is not valid.'
-            f, e, w = statistics_numbers(content)
-            write_article_report(html_page, report_path, report_name, statistics_messages(f, e, w) + content)
-        else:
-            article_validation = content_validation.ArticleContentValidation(article)
-            sheet_data = ArticleSheetData(article, article_validation)
-            article_display_report = ArticleDisplayReport(article, html_page, sheet_data, package_path, new_name, package_files(package_path, new_name))
-            article_validation_report = ArticleValidationReport(article_validation, html_page)
-            content = article_report_content(article_display_report, article_validation_report)
-            f, e, w = statistics_numbers(content)
-
-            write_article_report(html_page, report_path, report_name, statistics_messages(f, e, w) + content)
-
-            if create_toc_report:
-                toc_e += e
-                toc_f += f
-                toc_w += w
-
-                authors_h, authors_w, authors_data = sheet_data.authors(new_name)
-                sources_h, sources_w, sources_data = sheet_data.sources(new_name)
-
-                toc_authors_sheet_data += authors_data
-                toc_sources_sheet_data += sources_data
-
-    if create_toc_report:
-        html_page.title = 'Authors'
-        html_page.body = html_page.sheet((authors_h, authors_w, toc_authors_sheet_data))
-        html_page.save(report_path + '/authors.html')
-
-        html_page.title = 'Sources'
-        html_page.body = html_page.sheet((sources_h, sources_w, toc_sources_sheet_data))
-        html_page.save(report_path + '/sources.html')
-
-        html_page.save(report_path + '/toc.html', 'TOC Report', statistics_messages(toc_f, toc_e, toc_w) + toc_report_content)
-
-
 def generate_package_reports(package_path, xml_names, report_path, create_toc_report=True):
     html_page = HTMLPage()
 
@@ -887,7 +831,7 @@ def generate_package_reports(package_path, xml_names, report_path, create_toc_re
         toc_f, toc_e, toc_w, toc_report_content = toc_report(articles_and_filenames)
     else:
         toc_f, toc_e, toc_w, toc_report_content = (0, 0, 0, '')
-
+    package_f, package_e, package_w = (0, 0, 0)
     for new_name, article in articles_and_filenames:
         report_name = xml_names[new_name]
         if article is None:
@@ -912,9 +856,9 @@ def generate_package_reports(package_path, xml_names, report_path, create_toc_re
                 issues.append(article.issue_label)
 
             if create_toc_report:
-                toc_e += e
-                toc_f += f
-                toc_w += w
+                package_e += e
+                package_f += f
+                package_w += w
                 toc_authors_sheet_data += authors_data
                 toc_sources_sheet_data += sources_data
 
@@ -929,8 +873,8 @@ def generate_package_reports(package_path, xml_names, report_path, create_toc_re
         html_page.body = html_page.sheet((sources_h, sources_w, toc_sources_sheet_data))
         html_page.save(report_path + '/sources.html')
 
-        html_page.save(report_path + '/toc.html', 'TOC Report', statistics_messages(toc_f, toc_e, toc_w) + toc_report_content)
-    return ((toc_f, toc_e, toc_w), article_reports, issues)
+        html_page.save(report_path + '/toc.html', 'TOC Report', statistics_messages(toc_f, toc_e, toc_w) + statistics_messages(package_f, package_e, package_w) + toc_report_content)
+    return ((toc_f, toc_e, toc_w), (package_f, package_e, package_w), article_reports, issues)
 
 
 def write_article_report(html_page, report_path, xml_name, content):

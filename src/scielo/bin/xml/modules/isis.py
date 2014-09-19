@@ -2,8 +2,9 @@
 
 
 import os
-from tempfile import mkdtemp
+from tempfile import mkdtemp, NamedTemporaryFile
 
+import isis
 from utils import u_encode
 from xml_utils import normalize_space, convert_using_htmlparser
 
@@ -339,3 +340,42 @@ class UCISIS(object):
 
     def generate_indexes(self, mst_filename, fst_filename, inverted_filename):
         self.cisis(mst_filename).generate_indexes(mst_filename, fst_filename, inverted_filename)
+
+
+class DAO(object):
+
+    def __init__(self, cisis):
+        self.cisis = cisis
+
+    def save_records(self, records, db_filename, fst_filename=None):
+        id_file = mkdtemp().replace('\\', '/') + '/' + os.path.basename(db_filename) + '.id'
+        isis.IDFile().save(id_file, records, 'iso-8859-1')
+        self.cisis.id2i(id_file, db_filename)
+        os.unlink(id_file)
+        self.update_indexes(db_filename, fst_filename)
+
+    def update_indexes(self, db_filename, fst_filename):
+        if fst_filename is not None:
+            self.cisis.generate_indexes(db_filename, fst_filename, db_filename)
+
+    def append_records(self, records, db_filename, fst_filename=None):
+        id_temp = mkdtemp().replace('\\', '/') + '/' + os.path.basename(db_filename) + '.id'
+        isis.IDFile().save(id_temp, records, 'iso-8859-1')
+        self.cisis.id2mst(id_temp, db_filename, False)
+        os.unlink(id_temp)
+        self.update_indexes(db_filename, fst_filename)
+
+    def get_records(self, db_filename, expr=None):
+        temp_filename = None
+        if expr is None:
+            base = db_filename
+        else:
+            temp_filename = NamedTemporaryFile(delete=False)
+            base = temp_filename
+            self.cisis.search(db_filename, expr, base)
+        id_filename = base + '.id'
+        self.cisis.i2id(base, id_filename)
+        r = isis.IDFile().read(base)
+        if temp_filename is not None:
+            os.unlink(temp_filename)
+        return r

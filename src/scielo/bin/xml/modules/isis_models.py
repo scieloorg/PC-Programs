@@ -3,6 +3,7 @@
 from datetime import datetime
 
 from utils import doi_pid, display_pages, format_dateiso
+from article import Issue
 
 
 DOCTOPIC = {
@@ -357,6 +358,7 @@ class ArticleISIS(object):
 
 
 class IssueISIS(object):
+
     def __init__(self, record):
         self.record = record
 
@@ -368,3 +370,14 @@ class IssueISIS(object):
                     seccode = sec.get('c')
                     break
         return seccode
+
+    @property
+    def issue(self):
+        acron = self.record.get('930').lower()
+        year = self.record.get('65', '')[0:4]
+        volume = self.record.get('31')
+        volume_suppl = self.record.get('131')
+        number = self.record.get('32')
+        number_suppl = self.record.get('132')
+        return Issue(acron, volume, number, year, volume_suppl, number_suppl)
+

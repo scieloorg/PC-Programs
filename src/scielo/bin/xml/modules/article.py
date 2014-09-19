@@ -938,3 +938,15 @@ class ReferenceXML(object):
     @property
     def conference_date(self):
         return self.root.findtext('.//conf-date')
+
+
+class Issue(object):
+
+    def __init__(self, acron, volume, number, year, volume_suppl, number_suppl):
+        self.volume = volume
+        self.number = number
+        self.year = year
+        self.volume_suppl = volume_suppl
+        self.number_suppl = number_suppl
+        self.acron = acron
+
