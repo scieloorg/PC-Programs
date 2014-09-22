@@ -4,12 +4,133 @@
 import os
 from tempfile import mkdtemp, NamedTemporaryFile
 
-import isis
 from utils import u_encode
-from xml_utils import normalize_space, convert_using_htmlparser
+from xml_utils import normalize_space, convert_entities_to_chars
 
 
 class IDFile(object):
+
+    def __init__(self):
+        pass
+
+    def _format_file(self, records):
+        r = ''
+        index = 0
+        for item in records:
+            index += 1
+            r += self._format_id(index) + self._format_record(item)
+        return r
+
+    def _format_id(self, index):
+        i = '000000' + str(index)
+        return '!ID ' + i[-6:] + '\n'
+
+    def _format_record(self, record):
+        if record is not None:
+            r = ''
+            for tag_i in sorted([int(s) for s in record.keys()]):
+                tag = str(tag_i)
+                items = record[tag]
+                r += self.tag_items(tag, items)
+        return r
+
+    def tag_items(self, tag, items):
+        s = ''
+        if type(items) is dict:
+            s = self._tagged(tag, self._format_subfields(items))
+        elif type(items) is list:
+            for item in items:
+                s += self.tag_items(tag, item)
+        else:
+            s = self._tagged(tag, items)
+        return s
+
+    def _format_subfields(self, subfields_and_values):
+        first = ''
+        value = ''
+        for k, v in subfields_and_values.items():
+            if v is not None:
+                if k == '_':
+                    first = v
+                else:
+                    if len(k) == 1 and k in 'abcdefghijklmnopqrstuvwxyz123456789':
+                        value += '^' + k + v
+        return first + value
+
+    def _tagged(self, tag, value):
+        if value is not None and value != '':
+            tag = '000' + tag
+            tag = tag[-3:]
+
+            t1 = value
+            t2 = convert_using_htmlparser(t1)
+
+            return '!v' + tag + '!' + normalize_space(t2) + '\n'
+        else:
+            return ''
+
+    def read(self, filename):
+        rec_list = []
+        record = {}
+        for line in open(filename, 'r').readlines():
+            s = line.replace('\n', '').replace('\r', '')
+            if '!ID ' in s:
+                if len(record) > 0:
+                    rec_list.append(self.simplify_record(record))
+                record = {}
+            else:
+                ign, tag, content = s.split('!')
+                tag = str(int(tag[1:]))
+                if not tag in record.keys():
+                    record[tag] = []
+                content = content.replace('^', 'BREAKSUBF^')
+                subfields = content.split('BREAKSUBF')
+                if len(subfields) == 1:
+                    content = subfields[0]
+                else:
+                    content = {}
+                    for subf in subfields:
+                        if subf.startswith('^'):
+                            c = subf[1:2]
+                            v = subf[2:]
+                        else:
+                            c = '_'
+                            v = subf
+                        content[c] = v
+                record[tag].append(content)
+
+        # last record
+        if len(record) > 0:
+            rec_list.append(self.simplify_record(record))
+
+        #print('Loaded ' + str(len(rec_list))) + ' issue rec_list.'
+        return rec_list
+
+    def simplify_record(self, record):
+        for tag, content in record.items():
+            if len(content) == 1:
+                record[tag] = content[0]
+        return record
+
+    def save(self, filename, records, data_encoding):
+        path = os.path.dirname(filename)
+        if not os.path.isdir(path):
+            os.makedirs(path)
+
+        content = self._format_file(records)
+        if isinstance(content, unicode):
+            unicode_content = content
+        else:
+            unicode_content = content.decode('utf-8')
+
+        iso = u_encode(unicode_content, 'iso-8859-1')
+        try:
+            open(filename, 'w').write(iso)
+        except Exception as e:
+            print(e)
+
+
+class OLDIDFile(object):
 
     def __init__(self):
         pass
@@ -342,14 +463,14 @@ class UCISIS(object):
         self.cisis(mst_filename).generate_indexes(mst_filename, fst_filename, inverted_filename)
 
 
-class DAO(object):
+class IsisDAO(object):
 
     def __init__(self, cisis):
         self.cisis = cisis
 
     def save_records(self, records, db_filename, fst_filename=None):
         id_file = mkdtemp().replace('\\', '/') + '/' + os.path.basename(db_filename) + '.id'
-        isis.IDFile().save(id_file, records, 'iso-8859-1')
+        IDFile().save(id_file, records, 'iso-8859-1')
         self.cisis.id2i(id_file, db_filename)
         os.unlink(id_file)
         self.update_indexes(db_filename, fst_filename)
@@ -360,22 +481,37 @@ class DAO(object):
 
     def append_records(self, records, db_filename, fst_filename=None):
         id_temp = mkdtemp().replace('\\', '/') + '/' + os.path.basename(db_filename) + '.id'
-        isis.IDFile().save(id_temp, records, 'iso-8859-1')
+        IDFile().save(id_temp, records, 'iso-8859-1')
         self.cisis.id2mst(id_temp, db_filename, False)
         os.unlink(id_temp)
         self.update_indexes(db_filename, fst_filename)
 
+    def save_id_records(self, id_filename, db_filename, fst_filename=None):
+        self.cisis.id2i(id_filename, db_filename)
+        self.update_indexes(db_filename, fst_filename)
+
+    def append_id_records(self, id_filename, db_filename, fst_filename=None):
+        self.cisis.id2mst(id_filename, db_filename, False)
+        self.update_indexes(db_filename, fst_filename)
+
     def get_records(self, db_filename, expr=None):
-        temp_filename = None
+        temp_file = None
         if expr is None:
             base = db_filename
         else:
-            temp_filename = NamedTemporaryFile(delete=False)
-            base = temp_filename
+            temp_file = NamedTemporaryFile(delete=False)
+            base = temp_file.name
             self.cisis.search(db_filename, expr, base)
         id_filename = base + '.id'
         self.cisis.i2id(base, id_filename)
-        r = isis.IDFile().read(base)
-        if temp_filename is not None:
-            os.unlink(temp_filename)
+        r = IDFile().read(base)
+        if temp_file is not None:
+            try:
+                os.unlink(temp_file.name)
+            except:
+                print(temp_file.name)
         return r
+
+    def save_id(self, id_filename, records):
+        IDFile().save(id_filename, records)
+

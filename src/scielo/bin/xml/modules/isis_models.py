@@ -380,4 +380,3 @@ class IssueISIS(object):
         number = self.record.get('32')
         number_suppl = self.record.get('132')
         return Issue(acron, volume, number, year, volume_suppl, number_suppl)
-

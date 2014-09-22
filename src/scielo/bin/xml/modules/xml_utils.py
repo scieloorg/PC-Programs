@@ -105,8 +105,8 @@ def remove_doctype(content):
 
 
 def replace_doctype(content, new_doctype):
-    if '\n<!DOCTYPE' in content:
-        temp = content[content.find('\n<!DOCTYPE'):]
+    if '<!DOCTYPE' in content:
+        temp = content[content.find('<!DOCTYPE'):]
         temp = temp[0:temp.find('>')+1]
         if len(temp) > 0:
             content = content.replace(temp, new_doctype)

@@ -6,6 +6,15 @@ from utils import doi_pid, format_date
 from xml_utils import node_text, node_xml
 
 
+def format_issue_label(year, volume, number, volume_suppl, number_suppl):
+    year = year if number == 'ahead' else ''
+    v = 'v' + volume if volume is not None else None
+    vs = 's' + volume_suppl if volume_suppl is not None else None
+    n = 'n' + number if number is not None else None
+    ns = 's' + number_suppl if number_suppl is not None else None
+    return ''.join([i for i in [year, v, vs, n, ns] if i is not None])
+
+
 def format_author(author):
     r = author.surname
     if author.suffix:
@@ -730,12 +739,7 @@ class Article(ArticleXML):
 
     @property
     def issue_label(self):
-        year = self.issue_pub_date.get('year', '') if self.number == 'ahead' else ''
-        v = 'v' + self.volume if self.volume is not None else None
-        vs = 's' + self.volume_suppl if self.volume_suppl is not None else None
-        n = 'n' + self.number if self.number is not None else None
-        ns = 's' + self.number_suppl if self.number_suppl is not None else None
-        return ''.join([i for i in [year, v, vs, n, ns] if i is not None])
+        return format_issue_label(self.issue_pub_date.get('year', ''), self.volume, self.number, self.volume_suppl, self.number_suppl)
 
     @property
     def hrefs(self):
@@ -950,3 +954,6 @@ class Issue(object):
         self.number_suppl = number_suppl
         self.acron = acron
 
+    @property
+    def issue_label(self):
+        return format_issue_label(self.year, self.volume, self.number, self.volume_suppl, self.number_suppl)

@@ -5,7 +5,7 @@ MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '
 
 def u_encode(u, encoding):
     r = u
-    if type(u) is unicode:
+    if isinstance(u, unicode):
         try:
             r = u.encode(encoding, 'replace')
         except Exception as e:

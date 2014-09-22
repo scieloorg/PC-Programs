@@ -15,8 +15,8 @@ def remove_doctype(content):
 
 
 def replace_doctype(content, new_doctype):
-    if '\n<!DOCTYPE' in content:
-        temp = content[content.find('\n<!DOCTYPE'):]
+    if '<!DOCTYPE' in content:
+        temp = content[content.find('<!DOCTYPE'):]
         temp = temp[0:temp.find('>')+1]
         if len(temp) > 0:
             content = content.replace(temp, new_doctype)
@@ -99,7 +99,9 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
 def xml_validate(xml_filename, result_filename, doctype=None):
     validation_type = ''
     temp_xml_filename = ''
-    if doctype is not None:
+    if doctype is None:
+        temp_xml_filename = apply_dtd(xml_filename, '')
+    else:
         validation_type = '--validate'
         temp_xml_filename = apply_dtd(xml_filename, doctype)
 

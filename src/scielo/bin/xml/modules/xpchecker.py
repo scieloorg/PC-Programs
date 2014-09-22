@@ -1,19 +1,17 @@
 import os
 
-from packtools.catalogs import XML_CATALOG
+try:
+    from packtools.catalogs import XML_CATALOG
+    os.environ['XML_CATALOG_FILES'] = XML_CATALOG
+except:
+    os.environ['XML_CATALOG_FILES'] = ''
 
 from modules import java_xml_utils
 from modules import xml_utils
 
 
-os.environ['XML_CATALOG_FILES'] = XML_CATALOG
-
-print(os.environ['XML_CATALOG_FILES'])
-
-
 def packtools_dtd_validation(xml_filename, report_filename):
     from packtools import stylechecker
-    print(xml_filename)
     xml_validator = stylechecker.XMLValidator(xml_filename)
     is_valid, errors = xml_validator.validate()
     r = '\n'.join([err.message for err in errors])
