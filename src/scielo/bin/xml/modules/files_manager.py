@@ -177,6 +177,7 @@ class AheadManager(object):
         """
         Exclude ISIS record of ahead database (serial)
         """
+        msg = ''
         ahead = self.find_ahead_data(doi, filename)
         if ahead is not None:
             self.mark_ahead_as_deleted(ahead)
@@ -347,14 +348,14 @@ class ArticleDAO(object):
         self.dao = dao
 
     def create_id_file(self, i_record, article, section_code, article_files):
-        if not os.path.isdir(article_files.id_path):
-            os.makedirs(article_files.id_path)
+        if not os.path.isdir(article_files.issue_files.id_path):
+            os.makedirs(article_files.issue_files.id_path)
         if not os.path.isdir(os.path.dirname(article_files.issue_files.base)):
             os.makedirs(os.path.dirname(article_files.issue_files.base))
 
         if article.order != '00000':
-            from isis import ArticleISIS
-            article_isis = ArticleISIS(article, i_record, section_code, article_files)
+            from isis_models import ArticleRecords
+            article_isis = ArticleRecords(article, i_record, section_code, article_files)
             self.dao.save_id(article_files.id_filename, article_isis.records)
         else:
             print('Invalid value for order.')

@@ -3,7 +3,7 @@
 from datetime import datetime
 
 from utils import doi_pid, display_pages, format_dateiso
-from article import Issue
+from article import Issue, PersonAuthor
 
 
 DOCTOPIC = {
@@ -62,19 +62,20 @@ def normalize_doctopic(_doctopic):
     return _doctopic if r == '??' else r
 
 
-class ArticleISIS(object):
+class ArticleRecords(object):
 
     def __init__(self, article, i_record, section_code, article_files):
         self.article = article
         self.section_code = section_code
         self.article_files = article_files
-        self.add_issue_data(i_record)
+        self.i_record = i_record
+        self.add_issue_data()
         self.set_common_data(article_files.xml_name, article_files.issue_files.issue_folder, article_files.relative_xml_filename)
 
-    def add_issue_data(self, i_record):
+    def add_issue_data(self):
         self._metadata = {}
         for k in ['30', '42', '62', '100', '35', '935', '421']:
-            if k in i_record.keys():
+            if k in self.i_record.keys():
                 self._metadata[k] = self.i_record[k]
 
     @property
@@ -226,19 +227,18 @@ class ArticleISIS(object):
             rec_c['11'] = []
             rec_c['16'] = []
             rec_c['17'] = []
-            for person_group in item.person_groups.items():
-                for person in person_group:
-                    field = self.author_tag(person.role, not isinstance(person, str), item.article_title or item.chapter_title)
-                    if isinstance(person, PersonAuthor):
-                        a = {}
-                        a['n'] = person.fname
-                        a['s'] = person.surname
-                        a['z'] = person.suffix
-                        a['r'] = normalize_role(self.author_role(person.role))
-                    else:
-                        # collab
-                        a = person.collab
-                    rec_c[field].append(a)
+            for person in item.authors_list:
+                field = self.author_tag(person.role, isinstance(person, PersonAuthor), item.article_title or item.chapter_title)
+                if isinstance(person, PersonAuthor):
+                    a = {}
+                    a['n'] = person.fname
+                    a['s'] = person.surname
+                    a['z'] = person.suffix
+                    a['r'] = normalize_role(self.author_role(person.role))
+                else:
+                    # collab
+                    a = person.collab
+                rec_c[field].append(a)
             rec_c['31'] = item.volume
             rec_c['32'] = {}
             rec_c['32']['_'] = item.issue
@@ -268,30 +268,31 @@ class ArticleISIS(object):
             records_c.append(rec_c)
         return records_c
 
-    def author_role(self, person_group_id):
-        if person_group_id == 'editor':
+    def author_role(self, role):
+        if role == 'editor':
             return 'ed'
-        if person_group_id == 'author':
+        if role == 'author':
             return 'nd'
-        if person_group_id == 'translator':
+        if role == 'translator':
             return 'tr'
-        if person_group_id == 'compiler':
+        if role == 'compiler':
             return 'org'
-        return person_group_id
+        return role
 
-    def author_tag(self, person_group_id, is_person, has_part_title):
+    def author_tag(self, role, is_person, is_analytic_author):
         other = ['transed', 'translator']
         monographic = ['compiler', 'director', 'editor', 'guest-editor', ]
         analytical = ['allauthors', 'assignee', 'author', 'inventor', ]
-        if person_group_id in analytical:
-            return '10' if is_person else '11'
-        if person_group_id in monographic:
-            return '16' if is_person else '17'
-
-        if has_part_title:
-            return '10' if is_person else '11'
+        r = {}
+        r[True] = {True: '10', False: '16'}
+        r[False] = {True: '11', False: '17'}
+        if role in analytical:
+            is_analytic = True
+        elif role in monographic:
+            is_analytic = False
         else:
-            return '16' if is_person else '17'
+            is_analytic = is_analytic_author
+        return r[is_analytic][is_person]
 
     def outline(self, total_of_records):
         rec_o = {}
@@ -357,7 +358,7 @@ class ArticleISIS(object):
         return r
 
 
-class IssueISIS(object):
+class IssueRecord(object):
 
     def __init__(self, record):
         self.record = record

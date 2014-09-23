@@ -4,7 +4,7 @@ import os
 import shutil
 
 from configuration import Configuration
-from isis_models import IssueISIS
+from isis_models import IssueRecord
 
 import files_manager
 import reports
@@ -50,9 +50,9 @@ def evaluate_package(xml_path, report_path):
     msg = []
     msg.append('Validations reports in ' + report_path)
     msg.append('\nTable of Contents Validations')
-    msg += display_statistic(toc_f, toc_e, toc_w)
+    msg.append(display_statistic(toc_f, toc_e, toc_w))
     msg.append('\nArticles validations')
-    msg += display_statistic(package_f, package_e, package_w)
+    msg.append(display_statistic(package_f, package_e, package_w))
 
     return (toc_f == 0, validation_results, '\n'.join(msg))
 
@@ -70,7 +70,8 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
         if issue_record is None:
             msg_list.append('\nFATAL ERROR: ' + article.issue_label + ' is not registered.')
         else:
-            issue = IssueISIS(issue_record).issue
+            issue_isis = IssueRecord(issue_record)
+            issue = issue_isis.issue
             journal_files = files_manager.JournalFiles(serial_path, issue.acron)
             ahead_manager = files_manager.AheadManager(db_ahead, journal_files)
             issue_files = files_manager.IssueFiles(journal_files, article.issue_label, xml_path, web_path)
@@ -88,6 +89,7 @@ def convert_articles(ahead_manager, db_article, validation_results, issue_record
     total_new_articles = []
     total_ex_aheads = []
     not_loaded = []
+    loaded = []
     msg_list = []
     msg_list.append('\nTotal of articles in the package: ' + str(len(validation_results)))
 
@@ -96,6 +98,7 @@ def convert_articles(ahead_manager, db_article, validation_results, issue_record
         converted, msg = convert_article(db_article, issue_record, issue_files, xml_name, article, results)
         msg_list.append(msg)
         if converted:
+            loaded.append(xml_name)
             article_title = xml_name if article.title is None else xml_name + ' ' + article.title
             if article.number != 'ahead':
                 xml_filename = xml_name + '.xml'
@@ -118,15 +121,15 @@ def convert_articles(ahead_manager, db_article, validation_results, issue_record
     msg_list.append(display_list('not converted', not_loaded))
 
     if len(total_ex_aheads) > 0:
-        msg_list += ahead_manager.finish_manage_ex_ahead()
+        msg_list.append(ahead_manager.finish_manage_ex_ahead())
 
-    msg_list += issue_files.copy_files_to_web()
+    msg_list.append(issue_files.copy_files_to_web())
     return '\n'.join(msg_list)
 
 
 def display_list(title, items):
     msg_list = []
-    msg_list.append(title + ': ' + str(len(items)))
+    msg_list.append('\n' + title + ': ' + str(len(items)))
     msg_list.append('\n'.join(items))
     return '\n'.join(msg_list)
 
@@ -142,7 +145,7 @@ def convert_article(db_article, issue_record, issue_files, xml_name, article, re
     else:
         f, e, w = results
 
-        section_code = issue_record.section_code(article.toc_section)
+        section_code = IssueRecord(issue_record).section_code(article.toc_section)
         if section_code is None:
             f += 1
             msg_list.append('FATAL ERROR: ' + article.toc_section + ' is not a valid section.')

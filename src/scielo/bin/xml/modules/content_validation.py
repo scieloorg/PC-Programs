@@ -460,7 +460,7 @@ class ReferenceContentValidation(object):
         r.append(self.source)
         for item in self.publication_type_dependence:
             r.append(item)
-        for item in self.person_groups:
+        for item in self.authors_list:
             r.append(item)
         return r
 
@@ -508,16 +508,16 @@ class ReferenceContentValidation(object):
         return required('mixed-citation', format_xml_in_html(self.reference.mixed_citation))
 
     @property
-    def person_groups(self):
+    def authors_list(self):
         r = []
-        for person in self.reference.person_groups:
+        for person in self.reference.authors_list:
             if isinstance(person, article.PersonAuthor):
                 for item in validate_contrib_names(person):
                     r.append(item)
             elif isinstance(person, article.CorpAuthor):
                 r.append(('collab', 'OK', person.collab))
             else:
-                print(type(person))
+                r.append(('invalid person', 'WARNING', type(person)))
         return r
 
     @property

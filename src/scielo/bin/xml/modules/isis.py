@@ -36,9 +36,9 @@ class IDFile(object):
 
     def tag_items(self, tag, items):
         s = ''
-        if type(items) is dict:
+        if isinstance(items, dict):
             s = self._tagged(tag, self._format_subfields(items))
-        elif type(items) is list:
+        elif isinstance(items, list):
             for item in items:
                 s += self.tag_items(tag, item)
         else:
@@ -63,7 +63,7 @@ class IDFile(object):
             tag = tag[-3:]
 
             t1 = value
-            t2 = convert_using_htmlparser(t1)
+            t2 = convert_entities_to_chars(t1)
 
             return '!v' + tag + '!' + normalize_space(t2) + '\n'
         else:
@@ -74,6 +74,9 @@ class IDFile(object):
         record = {}
         for line in open(filename, 'r').readlines():
             s = line.replace('\n', '').replace('\r', '')
+            if not isinstance(s, unicode):
+                s = s.decode('iso-8859-1')
+            s = u_encode(s, 'utf-8')
             if '!ID ' in s:
                 if len(record) > 0:
                     rec_list.append(self.simplify_record(record))
@@ -112,7 +115,7 @@ class IDFile(object):
                 record[tag] = content[0]
         return record
 
-    def save(self, filename, records, data_encoding):
+    def save(self, filename, records):
         path = os.path.dirname(filename)
         if not os.path.isdir(path):
             os.makedirs(path)
@@ -128,162 +131,6 @@ class IDFile(object):
             open(filename, 'w').write(iso)
         except Exception as e:
             print(e)
-
-
-class OLDIDFile(object):
-
-    def __init__(self):
-        pass
-
-    def _format_file(self, records):
-        r = ''
-        index = 0
-        for item in records:
-            index += 1
-            r += self._format_record(index, item)
-        return r
-
-    def _format_record(self, index, record):
-        i = '000000' + str(index)
-        r = u'!ID ' + i[-6:] + '\n'
-
-        if record is not None:
-            for tag_i in sorted([int(s) for s in record.keys()]):
-                tag = str(tag_i)
-                occs = record[tag]
-
-                s = u''
-                if type(occs) is dict:
-                    s = self._tagged(tag, self._format_subfields(occs))
-                elif type(occs) is list:
-                    for occ in occs:
-                        if type(occ) is dict:
-                            s += self._tagged(tag, self._format_subfields(occ))
-                        else:
-                            s += self._tagged(tag, occ)
-                else:
-                    s = self._tagged(tag, occs)
-
-                r += s
-
-        return r
-
-    def _format_subfields(self, subfields_and_values):
-        first = ''
-        value = ''
-        for k, v in subfields_and_values.items():
-            if v is not None:
-                if k == '_':
-                    first = v
-                else:
-                    if len(k) == 1 and k in 'abcdefghijklmnopqrstuvwxyz123456789':
-                        value += '^' + k + v
-        return first + value
-
-    def _tagged(self, tag, value):
-        if value is not None and value != '':
-            tag = '000' + tag
-            tag = tag[-3:]
-
-            t1 = value
-            t2 = convert_using_htmlparser(t1)
-
-            s = '!v' + tag + '!' + normalize_space(t2) + '\n'
-            if type(s) is str:
-                s = s.decode('utf-8')
-            return s
-        else:
-            return u''
-
-    def read(self, filename):
-        f = open(filename, 'r')
-
-        records = []
-        record = {}
-        for line in f.readlines():
-            s = line.replace('\n', '').replace('\r', '')
-            if type(s) is type(''):
-                s = s.decode('iso-8859-1')
-
-            if '!ID ' in s:
-                if len(record) > 0:
-                    records.append(self.simplify_record(record))
-
-                record = {}
-            else:
-                ign, tag, content = s.split('!')
-                tag = str(int(tag[1:]))
-                if not tag in record.keys():
-                    record[tag] = []
-                content = content.replace('^', 'BREAKSUBF^')
-                subfields = content.split('BREAKSUBF')
-                if len(subfields) == 1:
-                    content = subfields[0]
-                else:
-                    content = {}
-                    for subf in subfields:
-                        if subf.startswith('^'):
-                            c = subf[1:2]
-                            v = subf[2:]
-                        else:
-                            c = '_'
-                            v = subf
-                        content[c] = v
-                record[tag].append(content)
-
-        # last record
-        if len(record) > 0:
-            records.append(self.simplify_record(record))
-
-        #print('Loaded ' + str(len(records))) + ' issue records.'
-        f.close()
-        return records
-
-    def simplify_record(self, record):
-        for tag, content in record.items():
-            if len(content) == 1:
-                record[tag] = content[0]
-        return record
-
-    def save(self, filename, records, data_encoding):
-        path = os.path.dirname(filename)
-        if not os.path.isdir(path):
-            os.makedirs(path)
-
-        f = open(filename, 'w')
-        content = self._format_file(records)
-        content = self._iso(content, data_encoding)
-        try:
-            f.write(content)
-        except Exception as e:
-            print(e)
-            print(type(content))
-            for line in content.split('\n'):
-                try:
-                    f.write(line + '\n')
-                except:
-                    r = ''
-                    for c in line:
-                        try:
-                            f.write(c)
-                        except Exception as e:
-                            f.write('??')
-                            print(type(c))
-
-                            print('Unable to write ')
-                            print(r)
-                            print(e)
-                            #print(content)
-                        r += c
-                    f.write('\n')
-        f.close()
-
-    def _iso(self, content, encoding):
-        if type(content) is str:
-            content = content.decode(encoding)
-        iso = u_encode(content, 'iso-8859-1')
-
-        return iso
 
 
 class CISIS(object):

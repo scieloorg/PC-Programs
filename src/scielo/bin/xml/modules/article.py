@@ -830,7 +830,7 @@ class ReferenceXML(object):
         return node_xml(self.root.find('.//mixed-citation'))
 
     @property
-    def person_groups(self):
+    def authors_list(self):
         r = []
 
         for person_group in self.root.findall('.//person-group'):

@@ -182,7 +182,7 @@ def convert_entities_to_chars(content, debug=False):
 
     if '&' in content:
         h = HTMLParser.HTMLParser()
-        if type(content) is str:
+        if not isinstance(content, unicode):
             content = content.decode('utf-8')
         content = h.unescape(content)
 

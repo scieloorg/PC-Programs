@@ -133,7 +133,7 @@ class ArticleDisplayReport(object):
 
     def display_titles(self):
         r = ''
-        for t in self.article.title:
+        for t in self.article.titles:
             r += self.html_page.display_value_with_discrete_label(t.language, t.title)
         for t in self.article.trans_titles:
             r += self.html_page.display_value_with_discrete_label(t.language, t.title)
@@ -346,17 +346,6 @@ class ArticleValidationReport(object):
         rows = self.validation_table(rows)
         rows += self.references
         return self.html_page.format_div(self.html_page.tag('h2', 'Validations') + rows, 'article-messages')
-
-    def ref_person_groups(self, person_groups):
-        r = ''
-        for p in person_groups:
-            if isinstance(p, PersonAuthor):
-                r += self._contrib_name(p)
-            elif isinstance(p, CorpAuthor):
-                r += self.display_item(p.collab)
-            else:
-                print(type(p))
-        return r
 
     @property
     def affiliations(self):
@@ -635,7 +624,7 @@ class ArticleSheetData(object):
             r.append(row)
 
         for ref in self.article.references:
-            for item in ref.person_groups:
+            for item in ref.authors_list:
                 row = {}
                 row['scope'] = ref.id
                 row['filename'] = filename
@@ -649,7 +638,11 @@ class ArticleSheetData(object):
                     row['collab'] = item.collab
                     row['role'] = item.role
                 else:
-                    print(type(item))
+                    row['given-names'] = '?'
+                    row['surname'] = '?'
+                    row['suffix'] = '?'
+                    row['prefix'] = '?'
+                    row['role'] = '?'
                 r.append(row)
         return (t_header, [], r)
 
@@ -782,7 +775,7 @@ def statistics_messages(f, e, w, title=''):
     s = ''.join([HTMLPage().format_p_label_value(l, str(v)) for l, v in s])
     _html_page = HTMLPage()
     style = _html_page.message_style('ERROR' if e + f > 0 else 'WARNING' if w > 0 else '')
-    if style == '':
+    if style == '' or style == 'ok':
         style = 'success'
     return _html_page.tag('h3', title) + _html_page.format_div(_html_page.format_div(s, style), 'statistics')
 
