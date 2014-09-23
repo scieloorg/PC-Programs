@@ -103,7 +103,7 @@ class IDFile(object):
         if len(record) > 0:
             rec_list.append(self.simplify_record(record))
 
-        #print('Loaded ' + str(len(rec_list))) + ' issue rec_list.'
+        print('Loaded ' + str(len(rec_list))) + ' issue rec_list.'
         return rec_list
 
     def simplify_record(self, record):
@@ -504,12 +504,16 @@ class IsisDAO(object):
             self.cisis.search(db_filename, expr, base)
         id_filename = base + '.id'
         self.cisis.i2id(base, id_filename)
-        r = IDFile().read(base)
+        r = IDFile().read(id_filename)
         if temp_file is not None:
             try:
                 os.unlink(temp_file.name)
             except:
                 print(temp_file.name)
+        try:
+            os.unlink(id_filename)
+        except:
+            print(id_filename)
         return r
 
     def save_id(self, id_filename, records):

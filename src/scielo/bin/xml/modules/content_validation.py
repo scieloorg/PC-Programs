@@ -173,7 +173,7 @@ class ArticleContentValidation(object):
     @property
     def titles(self):
         r = []
-        for item in self.article.title:
+        for item in self.article.titles:
             if item.title and item.language:
                 r.append(('title', 'OK', item.language + ': ' + item.title))
             else:

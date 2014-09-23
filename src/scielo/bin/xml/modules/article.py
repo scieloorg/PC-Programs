@@ -312,6 +312,10 @@ class ArticleXML(object):
 
     @property
     def title(self):
+        return self.titles[0].title if len(self.titles) > 0 else None
+
+    @property
+    def titles(self):
         k = []
         for node in self.article_meta.findall('.//title-group'):
             t = Title()

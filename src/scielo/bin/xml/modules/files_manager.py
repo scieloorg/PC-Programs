@@ -168,7 +168,7 @@ class AheadManager(object):
         if os.path.isfile(self.journal_files.ahead_id_filename(year, ahead.order)):
             os.unlink(self.journal_files.ahead_id_filename(year, ahead.order))
             msg.append('delete ' + self.journal_files.ahead_id_filename(year, ahead.order))
-        return msg
+        return '\n'.join(msg)
 
     def save_ex_ahead_record(self, ahead):
         self.dao.append_records([ahead.record], self.journal_files.ahead_base('ex-' + ahead.ahead_db_name[0:4]))
@@ -181,9 +181,8 @@ class AheadManager(object):
         if ahead is not None:
             self.mark_ahead_as_deleted(ahead)
             msg = self.manage_ex_ahead_files(ahead)
-            print('\n'.join(msg))
             self.save_ex_ahead_record(ahead)
-        return ahead
+        return (ahead, msg)
 
     def finish_manage_ex_ahead(self):
         loaded = []
@@ -196,7 +195,7 @@ class AheadManager(object):
                 if f.endswith('.id') and f != '00000.id' and f != 'i.id':
                     self.dao.append_id_records(id_path + '/' + f, base)
                     loaded.append(ahead_db_name + ' ' + f)
-        return loaded
+        return '\n'.join(loaded)
 
 
 class ArticleFiles(object):
@@ -212,63 +211,73 @@ class ArticleFiles(object):
 
     @property
     def relative_xml_filename(self):
-        return self.issue_files.acron_and_issue_folder + '/' + self.xml_name + '.xml'
+        return self.issue_files.relative_issue_path + '/' + self.xml_name + '.xml'
 
 
 class IssueFiles(object):
 
-    def __init__(self, xml_path, journal_files, issue_folder, web_path):
+    def __init__(self, journal_files, issue_folder, xml_path, web_path):
         self.journal_files = journal_files
         self.issue_folder = issue_folder
         self.xml_path = xml_path
         self.web_path = web_path
 
     @property
-    def id_filename(self):
-        return self.issue_path + '/id/i.id'
+    def issue_path(self):
+        return self.journal_files.journal_path + '/' + self.issue_folder
+
+    @property
+    def relative_issue_path(self):
+        return self.journal_files.acron + '/' + self.issue_folder
 
     @property
     def id_path(self):
         return self.issue_path + '/id/'
 
     @property
-    def issue_path(self):
-        return self.journal_files.journal_path + '/' + self.issue_folder
+    def id_filename(self):
+        return self.issue_path + '/id/i.id'
+
+    @property
+    def base_path(self):
+        return self.issue_path + '/base'
+
+    @property
+    def base_reports_path(self):
+        return self.issue_path + '/base_reports'
 
     @property
     def base(self):
-        return self.issue_path + '/base/' + self.issue_folder
-
-    @property
-    def acron_and_issue_folder(self):
-        return self.journal_files.acron + '/' + self.issue_folder
-
-    @property
-    def xml_path(self):
-        return self.issue_path + '/xml_markup'
+        return self.base_path + '/' + self.issue_folder
 
     def copy_files_to_web(self):
         msg = []
-        if os.path.isdir(self.web_path):
-            path = {}
-            path['pdf'] = self.web_path + '/bases/pdf/' + self.acron_and_issue_folder
-            path['html'] = self.web_path + '/htdocs/img/revistas/' + self.acron_and_issue_folder + '/html/'
-            path['xml'] = self.web_path + '/bases/xml/' + self.acron_and_issue_folder
-            path['img'] = self.web_path + '/htdocs/img/revistas/' + self.acron_and_issue_folder
-            for p in path.values():
-                if not os.path.isdir(p):
-                    os.makedirs(p)
-            for f in os.listdir(self.xml_path):
-                if os.path.isfile(self.xml_path + '/' + f):
-                    ext = f[f.rfind('.'):]
-                    if path.get(ext) is not None:
-                        shutil.copy(self.xml_path + '/' + f, path[ext])
-                    else:
-                        shutil.copy(self.xml_path + '/' + f, path['img'])
-        else:
-            msg.append('Invalid value for Web path. ')
-            msg.append(self.web_path)
-        return msg
+        path = {}
+        path['pdf'] = self.web_path + '/bases/pdf/' + self.relative_issue_path
+        path['html'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
+        path['xml'] = self.web_path + '/bases/xml/' + self.relative_issue_path
+        path['img'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path
+        for p in path.values():
+            if not os.path.isdir(p):
+                os.makedirs(p)
+        for f in os.listdir(self.xml_path):
+            if os.path.isfile(self.xml_path + '/' + f):
+                ext = f[f.rfind('.'):]
+                if path.get(ext) is not None:
+                    shutil.copy(self.xml_path + '/' + f, path[ext])
+                    msg.append('copying ' + self.xml_path + '/' + f + ' to ' + path[ext])
+                else:
+                    shutil.copy(self.xml_path + '/' + f, path['img'])
+                    msg.append('copying ' + self.xml_path + '/' + f + ' to ' + path['img'])
+        return '\n'.join(msg)
+
+    def move_reports(self, report_path):
+        if not self.base_reports_path == report_path:
+            if not os.path.isdir(self.base_reports_path):
+                os.makedirs(self.base_reports_path)
+            for report_file in os.listdir(report_path):
+                shutil.copy(report_path + '/' + report_file, self.base_reports_path)
+                os.unlink(report_path + '/' + report_file)
 
 
 class JournalFiles(object):

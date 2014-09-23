@@ -4,151 +4,165 @@ import os
 import shutil
 
 from configuration import Configuration
-from xml_utils import load_xml
-from isis import IDFile, UCISIS, CISIS, IsisDAO
-from article import Article
-from isis_models import ArticleISIS, IssueISIS
+from isis_models import IssueISIS
 
 import files_manager
-import xpmaker
 import reports
 
 
-class XMLConverter(object):
+def get_valid_article(validation_results):
+    a = None
+    for xml_name, data in validation_results.items():
+        results, article = data
+        if article is not None:
+            issue_label = article.issue_label
+            if issue_label is not None:
+                a = article
+                break
+    return a
 
-    def __init__(self, serial_path, db_issue, db_ahead, db_article):
-        self.db_issue = db_issue
-        self.db_ahead = db_ahead
-        self.db_article = db_article
-        self.serial_path = serial_path
-        self.msg = []
 
-    def get_issue_record(self, validation_results):
-        issue_record = None
-        issue_label = ''
-        for xml_name, data in validation_results.items():
-            results, article = data
-            if article is not None:
-                issue_label = article.issue_label
-                if issue_label is not None:
-                    issues_records = self.db_issue.search(article.issue_label, article.print_issn, article.e_issn)
-                    if len(issues_records) > 0:
-                        issue_record = issues_records[0]
-                    break
-        return (issue_label, issue_record)
+def get_issue_record(db_issue, article):
+    issue_record = None
+    issues_records = db_issue.search(article.issue_label, article.print_issn, article.e_issn)
+    if len(issues_records) > 0:
+        issue_record = issues_records[0]
+    return issue_record
 
-    def display_statistic(self, f, e, w):
-        self.msg.append('fatal errors: ' + str(f))
-        self.msg.append('errors: ' + str(e))
-        self.msg.append('warnings: ' + str(w))
 
-    def evaluate_package(self, xml_path, report_path):
-        if not os.path.isdir(report_path):
-            os.makedirs(report_path)
-        xml_names = {f.replace('.xml', ''):f.replace('.xml', '') for f in os.listdir(xml_path) if f.endswith('.xml')}
+def display_statistic(f, e, w):
+    msg = []
+    msg.append('fatal errors: ' + str(f))
+    msg.append('errors: ' + str(e))
+    msg.append('warnings: ' + str(w))
+    return '\n'.join(msg)
 
-        toc_statistic, package_statistic, validation_results, issues = reports.generate_package_reports(xml_path, xml_names, report_path)
-        toc_f, toc_e, toc_w = toc_statistic
-        package_f, package_e, package_w = package_statistic
 
-        self.msg.append('Validations reports in ' + report_path)
-        self.msg.append('\nTOC Validations')
-        self.display_statistic(toc_f, toc_e, toc_w)
-        self.msg.append('\nArticles validations')
-        self.display_statistic(package_f, package_e, package_w)
+def evaluate_package(xml_path, report_path):
+    if not os.path.isdir(report_path):
+        os.makedirs(report_path)
+    xml_names = {f.replace('.xml', ''):f.replace('.xml', '') for f in os.listdir(xml_path) if f.endswith('.xml')}
 
-        return (toc_f == 0, validation_results)
+    toc_statistic, package_statistic, validation_results, issues = reports.generate_package_reports(xml_path, xml_names, report_path)
+    toc_f, toc_e, toc_w = toc_statistic
+    package_f, package_e, package_w = package_statistic
 
-    def convert_package(self, xml_path, report_path, base_path, id_path, web_path):
-        is_valid_package, validation_results = self.evaluate_package(xml_path, report_path)
+    msg = []
+    msg.append('Validations reports in ' + report_path)
+    msg.append('\nTable of Contents Validations')
+    msg += display_statistic(toc_f, toc_e, toc_w)
+    msg.append('\nArticles validations')
+    msg += display_statistic(package_f, package_e, package_w)
 
-        if not is_valid_package:
-            self.msg.append('\nFATAL ERROR: Unable to generate base because of fatal errors in TOC report.')
+    return (toc_f == 0, validation_results, '\n'.join(msg))
+
+
+def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_ahead, db_article):
+    msg_list = []
+    is_valid_package, validation_results, msg = evaluate_package(xml_path, report_path)
+
+    msg_list.append(msg)
+    if not is_valid_package:
+        msg_list.append('\nFATAL ERROR: Unable to generate base because of fatal errors in the Table of Contents.')
+    else:
+        article = get_valid_article(validation_results)
+        issue_record = get_issue_record(db_issue, article)
+        if issue_record is None:
+            msg_list.append('\nFATAL ERROR: ' + article.issue_label + ' is not registered.')
         else:
-            issue_label, issue_record = self.get_issue_record(validation_results)
-            if issue_record is None:
-                self.msg.append('\nFATAL ERROR: ' + issue_label + ' is not registered.')
+            issue = IssueISIS(issue_record).issue
+            journal_files = files_manager.JournalFiles(serial_path, issue.acron)
+            ahead_manager = files_manager.AheadManager(db_ahead, journal_files)
+            issue_files = files_manager.IssueFiles(journal_files, article.issue_label, xml_path, web_path)
+            issue_files.move_reports(report_path)
+            report_path = issue_files.base_reports_path
+            msg = convert_articles(ahead_manager, db_article, validation_results, issue_record, issue_files)
+            msg_list.append(msg)
+    msg_list.append('Check all the reports: ' + report_path)
+    open(report_path + '/conversion.log', 'w').write('\n'.join(msg_list))
+    print('Check the report: ' + report_path + '/conversion.log')
+    print('-- end --')
+
+
+def convert_articles(ahead_manager, db_article, validation_results, issue_record, issue_files):
+    total_new_articles = []
+    total_ex_aheads = []
+    not_loaded = []
+    msg_list = []
+    msg_list.append('\nTotal of articles in the package: ' + str(len(validation_results)))
+
+    for xml_name, data in validation_results.items():
+        results, article = data
+        converted, msg = convert_article(db_article, issue_record, issue_files, xml_name, article, results)
+        msg_list.append(msg)
+        if converted:
+            article_title = xml_name if article.title is None else xml_name + ' ' + article.title
+            if article.number != 'ahead':
+                xml_filename = xml_name + '.xml'
+                ex_ahead, msg = ahead_manager.manage_ex_ahead(article.doi, xml_filename)
+                msg_list.append(msg)
             else:
-                issue = IssueISIS(issue_record).issue
-                journal_files = JournalFiles(self.serial_path, issue.acron)
-                issue_files = IssueFiles(journal_files, issue.issue_label)
-                ahead_manager = AheadManager(self.db_ahead, journal_files)
-
-                self.msg.append('\nTotal of articles in package: ' + str(len(validation_results)))
-                total_new_articles, total_ex_aheads = self.convert_articles(issue_record, issue_files, validation_results)
-
-                self.msg.append('.'*80)
-
-                self.msg.append('\nTotal of articles in package: ' + str(len(validation_results)))
-                self.msg.append('\nnew articles: ' + str(len(total_new_articles)))
-                self.msg.append('\n'.join(total_new_articles))
-                self.msg.append('\nex-aheads: ' + str(len(total_ex_aheads)))
-                self.msg.append('\n'.join(total_ex_aheads))
-
-                loaded = self.db_article.finish_conversion(issue_record, issue_files)
-                q = len(validation_results) - len(loaded)
-                if q > 0:
-                    self.msg.append('\nFATAL ERROR: ' + str(q) + ' were not loaded.')
-                self.msg.append('\nLoaded: ' + str(len(loaded)))
-                self.msg.append('\n'.join(loaded))
-
-                if len(total_ex_aheads) > 0:
-                    self.msg += ahead_manager.finish_manage_ex_ahead()
-
-                self.msg += issue_files.copy_files_to_web()
-        open(report_path + '/conversion.log', 'w').write('\n'.join(self.msg))
-        print(report_path + '/conversion.log')
-        print('-- end --')
-
-    def convert_articles(self, issue_record, issue_files, validation_results):
-        total_new_articles = []
-        total_ex_aheads = []
-
-        for xml_name, data in validation_results.items():
-            results, article = data
-            f, e, w = results
-
-            article_title = article.title[0] if len(article.title) > 0 else xml_name
-            self.msg.append('.'*80)
-            self.msg.append(xml_name)
-            if article_title != xml_name:
-                self.msg.append(article_title)
-            self.display_statistic(fatal_errors, errors, warnings)
-
-            if fatal_errors > 0:
-                self.msg.append('FATAL ERROR: XML file has fatal errors.')
+                ex_ahead = None
+            if ex_ahead is None:
+                total_new_articles.append(article_title)
             else:
-                article_files = ArticleFiles(issue_files, article.order, xml_name)
-                if self.convert_article(issue_record, article, article_files):
-                    new_articles, ex_aheads = self.manage_ex_ahead(ahead_manager, article, xml_name)
-                    total_new_articles += new_articles
-                    total_ex_aheads += ex_aheads
-                else:
-                    self.msg.append('FATAL ERROR: Unable to generate ' + article_files.id_filename)
+                total_ex_aheads.append(article_title)
+        else:
+            not_loaded.append(xml_name)
 
-    def convert_article(self, issue_record, article, article_files):
-        r = False
-        section_code = issue_record.check_section(article.toc_section)
+    msg_list.append('.'*80)
+
+    msg_list.append(display_list('ex-aheads', total_ex_aheads))
+    msg_list.append(display_list('new articles', total_new_articles))
+    msg_list.append(display_list('converted', loaded))
+    msg_list.append(display_list('not converted', not_loaded))
+
+    if len(total_ex_aheads) > 0:
+        msg_list += ahead_manager.finish_manage_ex_ahead()
+
+    msg_list += issue_files.copy_files_to_web()
+    return '\n'.join(msg_list)
+
+
+def display_list(title, items):
+    msg_list = []
+    msg_list.append(title + ': ' + str(len(items)))
+    msg_list.append('\n'.join(items))
+    return '\n'.join(msg_list)
+
+
+def convert_article(db_article, issue_record, issue_files, xml_name, article, results):
+    r = False
+    msg_list = []
+    msg_list.append('.'*80)
+    msg_list.append(xml_name)
+
+    if article is None:
+        msg.append('FATAL ERROR: Unable to load XML')
+    else:
+        f, e, w = results
+
+        section_code = issue_record.section_code(article.toc_section)
         if section_code is None:
-            self.msg.append('FATAL ERROR: ' + article.toc_section + ' is not a valid section.')
-        else:
-            r = db_article.create_id_file(issue_record, article, section_code, article_files)
-        return r
+            f += 1
+            msg_list.append('FATAL ERROR: ' + article.toc_section + ' is not a valid section.')
 
-    def manage_ex_ahead(self, ahead_manager, article, xml_name):
-        if article.number != 'ahead':
-            is_ex_ahead = ahead_manager.manage_ex_ahead(article.doi, xml_name)
-            if is_ex_ahead is None:
-                new_articles.append(xml_name + ' ' + article.title)
+        display_statistic(f, e, w)
+
+        if f > 0:
+            msg_list.append('FATAL ERROR: Unable to generate its base because of fatal errors in XML.')
+        else:
+            article_files = files_manager.ArticleFiles(issue_files, article.order, xml_name)
+            if db_article.create_id_file(issue_record, article, section_code, article_files):
+                msg_list.append('converted')
+                r = True
             else:
-                ex_aheads.append(xml_name + ' ' + article.title)
-        return (new_articles, ex_aheads)
+                msg_list.append('FATAL ERROR: Unable to generate ' + article_files.id_filename)
+    return (r, '\n'.join(msg_list))
 
 
 def validate_path(path):
     xml_path = None
-    base_path = ''
-    id_path = ''
     if path is not None:
         path = path.replace('\\', '/')
         if path.endswith('/'):
@@ -158,54 +172,35 @@ def validate_path(path):
                 xml_files = [path + '/' + f for f in os.listdir(path) if f.endswith('.xml')]
                 if len(xml_files) > 0:
                     xml_path = path
-                    name = os.path.basename(path)
-                    parent_path = os.path.dirname(path)
-                    if name == 'scielo_package' and os.path.basename(parent_path) == 'markup_xml':
-                        issue_path = os.path.dirname(parent_path)
-                    else:
-                        issue_path = parent_path
-                    base_path = issue_path + '/base'
-                    if not os.path.isdir(base_path):
-                        os.makedirs(base_path)
-                    id_path = issue_path + '/id'
-                    if not os.path.isdir(id_path):
-                        os.makedirs(id_path)
-                    report_path = issue_path + '/base_reports'
-                    if not os.path.isdir(id_path):
-                        os.makedirs(id_path)
-    return (xml_path, report_path, base_path, id_path)
+    return xml_path
 
 
-def convert(path, acron):
+def convert(path, acron, config):
     #FIXME
-    xml_path, report_path, base_path, id_path = validate_path(path)
+    xml_path = validate_path(path)
     if xml_path is None:
         print('There is nothing to convert.\n')
         print(' must be an XML file or a folder which contains XML files.')
     else:
-        config = Configuration()
-        curr_path = os.getcwd().replace('\\', '/')
-        if os.path.isfile(curr_path + '/./../scielo_paths.ini'):
-            config.read(curr_path + '/./../scielo_paths.ini')
+        web_path = config.serial_path.replace('serial', '4web') if config.web_path is None else config.web_path
+        report_path = os.path.dirname(xml_path) + '/base_reports'
+        serial_path = config.serial_path
+        issue_dao = files_manager.IssueDAO(config.isis_dao, config.issue_db)
+        article_dao = files_manager.ArticleDAO(config.isis_dao)
+        convert_package(serial_path, xml_path, report_path, web_path, issue_dao, config.isis_dao, article_dao)
 
-            cisis = UCISIS(CISIS(curr_path + '/./../cfg/'), CISIS(curr_path + '/./../cfg/cisis1660/'))
-            dao = IsisDAO(cisis)
 
-            fst_filename = curr_path + '/./../convert/library/scielo/scielo.fst'
-
-            serial_path = config.data.get('Serial Directory')
-            db_issue_filename = config.data.get('Issue Database')
-            xml_converter = XMLConverter(serial_path, files_manager.IssueDAO(dao, db_issue_filename), dao, files_manager.ArticleDAO(dao))
-
-            web_path = config.data.get('SCI_LISTA_SITE')
-            if web_path is not None:
-                web_path = web_path.replace('\\', '/')
-                web_path = web_path[0:web_path.find('/proc/')]
-                if not os.path.isdir(web_path):
-                    web_path = base_path.replace('/base', '/4web')
-            xml_converter.convert_package(xml_path, report_path, base_path, id_path, web_path)
-        else:
-            print('Configuration file was not found.')
+def read_configuration():
+    curr_path = os.getcwd().replace('\\', '/')
+    filename = curr_path + '/./../scielo_paths.ini'
+    if os.path.isfile(filename):
+        r = Configuration(filename)
+        if r is not None:
+            if not r.valid():
+                r = None
+    else:
+        r = None
+    return r
 
 
 def read_inputs(args):
@@ -232,8 +227,12 @@ def read_inputs(args):
 
 
 def call_converter(args):
-    path, acron = read_inputs(args)
-    if path is None:
-        print(acron)
+    config = read_configuration()
+    if config is None:
+        print('ERROR: Unable to configure XML Converter.')
     else:
-        convert(path, acron)
+        path, acron = read_inputs(args)
+        if path is None:
+            print(acron)
+        else:
+            convert(path, acron, config)
