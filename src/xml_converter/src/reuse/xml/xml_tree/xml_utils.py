@@ -38,17 +38,13 @@ def convert_using_htmlparser(content):
     content = content.replace('&amp;', 'REPLACE_AMP')
 
     h = HTMLParser.HTMLParser()
-    if type(content) is str:
-        content = content.decode('utf-8')
-    if type(content) is unicode:
-        content = h.unescape(content)
+    if not isinstance(content, unicode):
         try:
-            content = content.encode('utf-8')
+            content = content.decode('utf-8')
         except:
-            try:
-                content = content.encode('utf-8', 'xmlcharrefreplace')
-            except:
-                content = content.encode('utf-8', 'ignore')
+            pass
+    content = h.unescape(content)
+
     if '&' in content:
         content = content.replace('&', 'REPLACEamp')
         content = content.replace('REPLACEamp' + '#', '&#')
