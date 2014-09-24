@@ -70,6 +70,7 @@ class ArticleRecords(object):
         self.article_files = article_files
         self.i_record = i_record
         self.add_issue_data()
+        self.add_article_data()
         self.set_common_data(article_files.xml_name, article_files.issue_files.issue_folder, article_files.relative_xml_filename)
 
     def add_issue_data(self):
@@ -82,8 +83,7 @@ class ArticleRecords(object):
     def metadata(self):
         return self._metadata
 
-    @metadata.setter
-    def metadata(self, value):
+    def add_article_data(self):
         self._metadata['120'] = 'XML_' + self.article.dtd_version
         self._metadata['71'] = normalize_doctopic(self.article.article_type)
         self._metadata['40'] = self.article.language
@@ -363,14 +363,39 @@ class IssueRecord(object):
     def __init__(self, record):
         self.record = record
 
+    @property
+    def sections(self):
+        v49 = self.record.get('49', [])
+        if isinstance(v49, dict):
+            v49 = [v49]
+        return v49
+
+    @property
+    def section_titles(self):
+        return [sec.get('t') for sec in self.sections]
+
     def section_code(self, section_title):
+        best_result = 0
         seccode = None
+        similar = ''
         if section_title is not None:
-            for sec in self.record.get('49', []):
+            for sec in self.sections:
                 if sec.get('t').lower() == section_title.lower():
                     seccode = sec.get('c')
+                    best_result = 1
                     break
-        return seccode
+            if seccode is None:
+                import difflib
+                best_result = 0
+                acceptable_result = 0.80
+                for sec in self.sections:
+                    r = difflib.SequenceMatcher(None, section_title.lower(), sec.get('t', '').lower()).ratio()
+                    if r > acceptable_result:
+                        if r > best_result:
+                            seccode = sec.get('c')
+                            similar = sec.get('t')
+                            best_result = r
+        return (seccode, best_result, similar)
 
     @property
     def issue(self):

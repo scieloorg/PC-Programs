@@ -76,10 +76,13 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
             ahead_manager = files_manager.AheadManager(db_ahead, journal_files)
             issue_files = files_manager.IssueFiles(journal_files, article.issue_label, xml_path, web_path)
             issue_files.move_reports(report_path)
+            issue_files.save_source_files(xml_path)
             report_path = issue_files.base_reports_path
             msg = convert_articles(ahead_manager, db_article, validation_results, issue_record, issue_files)
             msg_list.append(msg)
-    msg_list.append('Check all the reports: ' + report_path)
+    msg_list.append('\nCheck all the reports: ' + report_path)
+    msg_list.append('\n'.join(sorted(os.listdir(report_path))))
+
     open(report_path + '/conversion.log', 'w').write('\n'.join(msg_list))
     print('Check the report: ' + report_path + '/conversion.log')
     print('-- end --')
@@ -94,24 +97,36 @@ def convert_articles(ahead_manager, db_article, validation_results, issue_record
     msg_list.append('\nTotal of articles in the package: ' + str(len(validation_results)))
 
     for xml_name, data in validation_results.items():
+        loaded.append('\n' + xml_name + '\n')
         results, article = data
-        converted, msg = convert_article(db_article, issue_record, issue_files, xml_name, article, results)
+
+        article_title = xml_name if article.title is None else xml_name + ' ' + article.title
+        ahead = None
+        if article.number != 'ahead':
+            xml_filename = xml_name + '.xml'
+            ahead = ahead_manager.find_ahead(article.doi, xml_filename)
+
+        if ahead is not None:
+            total_ex_aheads.append(article_title)
+        else:
+            total_new_articles.append(article_title)
+
+        converted, msg = convert_article(db_article, issue_record, issue_files, xml_name, article, results, ahead)
         msg_list.append(msg)
-        if converted:
-            loaded.append(xml_name)
-            article_title = xml_name if article.title is None else xml_name + ' ' + article.title
-            if article.number != 'ahead':
-                xml_filename = xml_name + '.xml'
-                ex_ahead, msg = ahead_manager.manage_ex_ahead(article.doi, xml_filename)
+
+        if converted and ahead is not None:
+            msg_list.append('ahead was found')
+            if ahead.ahead_pid is None:
+                msg_list.append('ERROR: ahead has no PID. They will be DUPLICATED.')
+            else:
+                (done, msg) = ahead_manager.manage_ex_ahead(ahead)
                 msg_list.append(msg)
-            else:
-                ex_ahead = None
-            if ex_ahead is None:
-                total_new_articles.append(article_title)
-            else:
-                total_ex_aheads.append(article_title)
+
+        if converted:
+            msg_list.append('RESULT: converted')
         else:
             not_loaded.append(xml_name)
+            msg_list.append('RESULT: not converted')
 
     msg_list.append('.'*80)
 
@@ -134,7 +149,7 @@ def display_list(title, items):
     return '\n'.join(msg_list)
 
 
-def convert_article(db_article, issue_record, issue_files, xml_name, article, results):
+def convert_article(db_article, issue_record, issue_files, xml_name, article, results, ahead):
     r = False
     msg_list = []
     msg_list.append('.'*80)
@@ -145,22 +160,24 @@ def convert_article(db_article, issue_record, issue_files, xml_name, article, re
     else:
         f, e, w = results
 
-        section_code = IssueRecord(issue_record).section_code(article.toc_section)
+        section_code, match_rate, similar_section_title = IssueRecord(issue_record).section_code(article.toc_section)
         if section_code is None:
             f += 1
-            msg_list.append('FATAL ERROR: ' + article.toc_section + ' is not a valid section.')
+            msg_list.append('FATAL ERROR: ' + article.toc_section + ' is not a registered section.')
+            msg_list.append('Registered sections:\n' + '\n'.join(IssueRecord(issue_record).section_titles))
+        else:
+            if match_rate != 1:
+                msg_list.append('WARNING: "' + article.toc_section + '" is not a registered section, but it is similar to "' + similar_section_title + '", so the document will be published in this section.')
 
-        display_statistic(f, e, w)
+        msg_list.append(display_statistic(f, e, w))
 
         if f > 0:
-            msg_list.append('FATAL ERROR: Unable to generate its base because of fatal errors in XML.')
+            msg_list.append('FATAL ERROR: Unable to generate base. Fix all the fatal errors.')
         else:
+            if ahead is not None:
+                article._ahead_pid = ahead.ahead_pid
             article_files = files_manager.ArticleFiles(issue_files, article.order, xml_name)
-            if db_article.create_id_file(issue_record, article, section_code, article_files):
-                msg_list.append('converted')
-                r = True
-            else:
-                msg_list.append('FATAL ERROR: Unable to generate ' + article_files.id_filename)
+            r = db_article.create_id_file(issue_record, article, section_code, article_files)
     return (r, '\n'.join(msg_list))
 
 

@@ -122,6 +122,7 @@ class Text(object):
 class ArticleXML(object):
 
     def __init__(self, tree):
+        self._ahead_pid = None
         self.tree = tree
         self.journal_meta = None
         self.article_meta = None
@@ -726,10 +727,20 @@ class Article(ArticleXML):
 
     @property
     def previous_pid(self):
+        def is_valid(pid):
+            r = False
+            if not d is None:
+                r = (len(d) == 23)
+            return r
+
         d = self.article_id_publisher_id
-        if d is None:
+        if not is_valid(d):
             if self.doi is not None:
                 d = doi_pid(self.doi)
+        if not is_valid(d):
+            d = self._ahead_pid
+        if not is_valid(d):
+            d = None
         return d
 
     @property

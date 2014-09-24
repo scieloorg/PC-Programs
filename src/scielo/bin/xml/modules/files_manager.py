@@ -68,6 +68,12 @@ class Ahead(object):
     def order(self):
         return self.record.get('121')
 
+    @property
+    def ahead_pid(self):
+        _order = '00000' + self.order
+        r = 'S' + self.record.get('35') + self.ahead_db_name[0:4] + '0050' + _order[-5:]
+        return r if len(r) == 23 else None
+
 
 class AheadManager(object):
 
@@ -127,7 +133,7 @@ class AheadManager(object):
     def name(self, db_filename):
         return os.path.basename(db_filename)
 
-    def find_ahead_data(self, doi, filename):
+    def find_ahead(self, doi, filename):
         data = None
         i = self.ahead_doi.get(doi, None)
         if i is None:
@@ -173,17 +179,16 @@ class AheadManager(object):
     def save_ex_ahead_record(self, ahead):
         self.dao.append_records([ahead.record], self.journal_files.ahead_base('ex-' + ahead.ahead_db_name[0:4]))
 
-    def manage_ex_ahead(self, doi, filename):
-        """
-        Exclude ISIS record of ahead database (serial)
-        """
-        msg = ''
-        ahead = self.find_ahead_data(doi, filename)
+    def manage_ex_ahead(self, ahead):
+        done = False
+        msg = []
         if ahead is not None:
-            self.mark_ahead_as_deleted(ahead)
-            msg = self.manage_ex_ahead_files(ahead)
-            self.save_ex_ahead_record(ahead)
-        return (ahead, msg)
+            if ahead.ahead_pid is not None:
+                self.mark_ahead_as_deleted(ahead)
+                msg.append(self.manage_ex_ahead_files(ahead))
+                self.save_ex_ahead_record(ahead)
+                done = True
+        return (done, '\n'.join(msg))
 
     def finish_manage_ex_ahead(self):
         loaded = []
@@ -248,11 +253,15 @@ class IssueFiles(object):
         return self.issue_path + '/base_reports'
 
     @property
+    def base_source_path(self):
+        return self.issue_path + '/base_source'
+
+    @property
     def base(self):
         return self.base_path + '/' + self.issue_folder
 
     def copy_files_to_web(self):
-        msg = []
+        msg = ['\n']
         path = {}
         path['pdf'] = self.web_path + '/bases/pdf/' + self.relative_issue_path
         path['html'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
@@ -263,7 +272,7 @@ class IssueFiles(object):
                 os.makedirs(p)
         for f in os.listdir(self.xml_path):
             if os.path.isfile(self.xml_path + '/' + f):
-                ext = f[f.rfind('.'):]
+                ext = f[f.rfind('.')+1:]
                 if path.get(ext) is not None:
                     shutil.copy(self.xml_path + '/' + f, path[ext])
                     msg.append('copying ' + self.xml_path + '/' + f + ' to ' + path[ext])
@@ -279,6 +288,13 @@ class IssueFiles(object):
             for report_file in os.listdir(report_path):
                 shutil.copy(report_path + '/' + report_file, self.base_reports_path)
                 os.unlink(report_path + '/' + report_file)
+
+    def save_source_files(self, xml_path):
+        if not self.base_source_path == xml_path:
+            if not os.path.isdir(self.base_source_path):
+                os.makedirs(self.base_source_path)
+            for f in os.listdir(xml_path):
+                shutil.copy(xml_path + '/' + f, self.base_source_path)
 
 
 class JournalFiles(object):
@@ -348,6 +364,8 @@ class ArticleDAO(object):
         self.dao = dao
 
     def create_id_file(self, i_record, article, section_code, article_files):
+        done = False
+        saved = False
         if not os.path.isdir(article_files.issue_files.id_path):
             os.makedirs(article_files.issue_files.id_path)
         if not os.path.isdir(os.path.dirname(article_files.issue_files.base)):
@@ -357,15 +375,26 @@ class ArticleDAO(object):
             from isis_models import ArticleRecords
             article_isis = ArticleRecords(article, i_record, section_code, article_files)
             self.dao.save_id(article_files.id_filename, article_isis.records)
+            print(article_files.id_filename)
+            done = os.path.isfile(article_files.id_filename)
+            if done:
+                saved_records = self.dao.get_id_records(article_files.id_filename)
+                print(len(article_isis.records))
+                print(len(saved_records))
+                saved = (len(saved_records) == len(article_isis.records))
         else:
             print('Invalid value for order.')
-        return os.path.isfile(article_files.id_filename)
+        return done
 
     def finish_conversion(self, issue_record, issue_files):
         loaded = []
         self.dao.save_records([issue_record], issue_files.base)
+        print('finish_conversion')
+        print((issue_files.id_path))
         for f in os.listdir(issue_files.id_path):
+            print(f)
             if f.endswith('.id') and f != '00000.id' and f != 'i.id':
+                print(issue_files.id_path + '/' + f)
                 self.dao.append_id_records(issue_files.id_path + '/' + f, issue_files.base)
                 loaded.append(f)
         return loaded

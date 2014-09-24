@@ -5,7 +5,7 @@ import tempfile
 import xml.etree.ElementTree as etree
 from StringIO import StringIO
 
-from utils import u_encode
+import xml_utils
 
 
 class XMLContent(object):
@@ -156,7 +156,7 @@ def node_xml(node):
     return text
 
 
-def normalize_xml_ent(content):
+def normalize_xml_numeric_entities(content):
     content = content.replace('&#x000', '&#x')
     content = content.replace('&#x00', '&#x')
     content = content.replace('&#x0', '&#x')
@@ -169,38 +169,86 @@ def normalize_xml_ent(content):
     return content
 
 
-def convert_entities_to_chars(content, debug=False):
-    import HTMLParser
-    s = content
-
-    content = normalize_xml_ent(content)
-
+def replace_xml_entities(content):
     if '&' in content:
         content = content.replace('&lt;', '<REPLACEENT>lt</REPLACEENT>')
         content = content.replace('&gt;', '<REPLACEENT>gt</REPLACEENT>')
         content = content.replace('&amp;', '<REPLACEENT>amp</REPLACEENT>')
+    return content
 
+
+def html_ent2char(content):
     if '&' in content:
+        import HTMLParser
         h = HTMLParser.HTMLParser()
         if not isinstance(content, unicode):
             content = content.decode('utf-8')
         content = h.unescape(content)
+    return content
 
-        if '&' in content:
-            content = content.replace('&', 'REPLACEamp')
-            content = content.replace('REPLACEamp' + '#', '&#')
-            content = content.replace('REPLACEamp', '&amp;')
 
-        content = u_encode(content, 'utf-8')
+def fix_amp(content):
+    if '&' in content:
+        content = content.replace('&', 'REPLACEamp')
+        content = content.replace('REPLACEamp' + '#', '&#')
+        content = content.replace('REPLACEamp', '&amp;')
+    return content
 
+
+def restore_xml_entities(content):
     if '<REPLACEENT>' in content:
         content = content.replace('<REPLACEENT>gt</REPLACEENT>', '&gt;')
         content = content.replace('<REPLACEENT>lt</REPLACEENT>', '&lt;')
         content = content.replace('<REPLACEENT>amp</REPLACEENT>', '&amp;')
-    if debug:
-        if s != content:
-            print(s)
-            print(content)
+    return content
+
+
+def convert_entities_to_chars(content, debug=False):
+    entnum = []
+    ent = []
+    values = []
+
+    if '&' in content:
+        s = content
+
+        entnum.append(len(content.split('&#')))
+        ent.append(len(content.split('&')))
+        values.append(content)
+
+        content = normalize_xml_numeric_entities(content)
+        content = replace_xml_entities(content)
+        content = fix_amp(content)
+        entnum.append(len(content.split('&#')))
+        ent.append(len(content.split('&')))
+        values.append(content)
+
+        content = html_ent2char(content)
+        entnum.append(len(content.split('&#')))
+        ent.append(len(content.split('&')))
+        values.append(content)
+
+        content = restore_xml_entities(content)
+
+        if debug is True:
+            if ('&' in s or '&' in content) or (s != content):
+                print('-'*10)
+                print('convert_entities_to_chars:')
+                try:
+                    print(s)
+                    print(content)
+                    print(type(s))
+                    print(type(content))
+                    for i in range(0, len(entnum)):
+                        print('-')
+                        print(i)
+                        print(entnum[i])
+                        print(ent[i])
+                        print(values[i])
+                        print(type(values[i]))
+                except:
+                    pass
+                print('-fim-')
+
     return content
 
 

@@ -475,9 +475,11 @@ class HTMLPage(object):
 
     def message_style(self, value, default='ok'):
         r = default
-        if 'ERROR' in value:
+        if 'FATAL ERROR' in value:
+            r = 'fatalerror'
+        elif 'ERROR' in value:
             r = 'error'
-        if 'WARNING' in value:
+        elif 'WARNING' in value:
             r = 'warning'
         return r
 
@@ -771,7 +773,7 @@ def statistics_numbers(content):
 
 
 def statistics_messages(f, e, w, title=''):
-    s = [('Total of errors:', e), ('Total of fatal errors:', f), ('Total of warnings:', w)]
+    s = [('Total of fatal errors:', f), ('Total of errors:', e), ('Total of warnings:', w)]
     s = ''.join([HTMLPage().format_p_label_value(l, str(v)) for l, v in s])
     _html_page = HTMLPage()
     style = _html_page.message_style('ERROR' if e + f > 0 else 'WARNING' if w > 0 else '')
@@ -840,6 +842,8 @@ def generate_package_reports(package_path, xml_names, report_path, create_toc_re
             content = article_report_content(article_display_report, article_validation_report)
 
             f, e, w = statistics_numbers(content)
+
+            toc_report_content += statistics_messages(f, e, w, report_name)
             write_article_report(html_page, report_path, report_name, statistics_messages(f, e, w) + content)
 
             authors_h, authors_w, authors_data = sheet_data.authors(new_name)
@@ -866,7 +870,7 @@ def generate_package_reports(package_path, xml_names, report_path, create_toc_re
         html_page.body = html_page.sheet((sources_h, sources_w, toc_sources_sheet_data))
         html_page.save(report_path + '/sources.html')
 
-        html_page.save(report_path + '/toc.html', 'TOC Report', statistics_messages(toc_f, toc_e, toc_w, 'TOC validations') + statistics_messages(package_f, package_e, package_w, 'Package validations') + toc_report_content)
+        html_page.save(report_path + '/toc.html', 'TOC Report', statistics_messages(toc_f, toc_e, toc_w, 'Table of Contents statistics') + statistics_messages(package_f, package_e, package_w, 'All the files statistics') + toc_report_content)
     return ((toc_f, toc_e, toc_w), (package_f, package_e, package_w), validation_results, issues)
 
 

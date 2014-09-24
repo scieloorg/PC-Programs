@@ -76,8 +76,17 @@ def validate_name(label, value, invalid_characters):
     return r
 
 
-def validate_contrib_names(author):
-    return validate_name('surname', author.surname, [' ', '_']) + validate_name('given-names', author.fname, ['_'])
+def validate_contrib_names(author, affiliations=[]):
+    results = validate_name('surname', author.surname, [' ', '_']) + validate_name('given-names', author.fname, ['_'])
+    if len(affiliations) > 0:
+        aff_ids = [aff.id for aff in affiliations]
+        if len(author.xref) == 0:
+            results.append(('xref', 'WARNING', 'Author has no xref. Expected values: ' + '|'.join(aff_ids)))
+        else:
+            for xref in author.xref:
+                if not xref in aff_ids:
+                    results.append(('xref', 'ERROR', 'Invalid value of xref/@rid. Valid values: ' + '|'.join(aff_ids)))
+    return results
 
 
 class ArticleContentValidation(object):
@@ -162,7 +171,7 @@ class ArticleContentValidation(object):
     def contrib_names(self):
         r = []
         for item in self.article.contrib_names:
-            for result in validate_contrib_names(item):
+            for result in validate_contrib_names(item, self.article.affiliations):
                 r.append(result)
         return r
 

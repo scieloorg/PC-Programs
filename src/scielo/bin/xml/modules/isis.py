@@ -8,6 +8,21 @@ from utils import u_encode
 from xml_utils import normalize_space, convert_entities_to_chars
 
 
+def fix_encode(value):
+    r = value
+    if not isinstance(value, unicode):
+        r = value.decode('utf-8')
+        if value != r:
+            print('.'*10)
+            print('fix_encode:')
+            print('value=')
+            print(value)
+            print('r=')
+            print(r)
+            print('.'*10)
+    return r
+
+
 class IDFile(object):
 
     def __init__(self):
@@ -26,48 +41,92 @@ class IDFile(object):
         return '!ID ' + i[-6:] + '\n'
 
     def _format_record(self, record):
+        r = []
         if record is not None:
-            r = ''
-            for tag_i in sorted([int(s) for s in record.keys()]):
+            for tag_i in sorted([int(s) for s in record.keys() if s.isdigit()]):
                 tag = str(tag_i)
-                items = record[tag]
-                r += self.tag_items(tag, items)
-        return r
+                items = record.get(tag)
+                r.append(self.tag_items(tag, items))
+        return ''.join(r)
 
     def tag_items(self, tag, items):
         s = ''
-        if isinstance(items, dict):
-            s = self._tagged(tag, self._format_subfields(items))
-        elif isinstance(items, list):
-            for item in items:
-                s += self.tag_items(tag, item)
-        else:
-            s = self._tagged(tag, items)
+        try:
+            if isinstance(items, dict):
+                s = self._tagged(tag, self._format_subfields(items))
+            elif isinstance(items, list):
+                s = ''
+                for item in items:
+                    s += self.tag_items(tag, item)
+            else:
+                s = self._tagged(tag, items)
+        except Exception as e:
+            print('-'*80)
+            print('tag_items')
+            print(tag)
+            print(items)
+            print(e)
+            print('-'*80)
         return s
 
     def _format_subfields(self, subfields_and_values):
         first = ''
         value = ''
-        for k, v in subfields_and_values.items():
-            if v is not None:
-                if k == '_':
-                    first = v
-                else:
-                    if len(k) == 1 and k in 'abcdefghijklmnopqrstuvwxyz123456789':
-                        value += '^' + k + v
+        try:
+            for k, v in subfields_and_values.items():
+                if v is not None:
+                    if k == '_':
+                        first = v
+                    else:
+                        if len(k) == 1 and k in 'abcdefghijklmnopqrstuvwxyz123456789':
+                            value += '^' + k + v
+        except Exception as e:
+            print('-'*80)
+            print('_format_subfields')
+            print(subfields_and_values)
+            print(e)
+            print(value)
+            print('-'*80)
         return first + value
 
     def _tagged(self, tag, value):
+        r = ''
+        s = value
         if value is not None and value != '':
-            tag = '000' + tag
-            tag = tag[-3:]
-
-            t1 = value
-            t2 = convert_entities_to_chars(t1)
-
-            return '!v' + tag + '!' + normalize_space(t2) + '\n'
-        else:
-            return ''
+            try:
+                value = convert_entities_to_chars(value)
+            except Exception as e:
+                value = None
+                print('_tagged: convert_entities_to_chars')
+                print(e)
+                print(s)
+                print(value)
+                print(type(s))
+                print(type(value))
+            if value is not None:
+                try:
+                    value = normalize_space(value)
+                except Exception as e:
+                    value = None
+                    print('_tagged: normalize_space')
+                    print(e)
+                    print(s)
+                    print(value)
+                    print(type(s))
+                    print(type(value))
+            if value is not None:
+                try:
+                    tag = '000' + tag
+                    tag = tag[-3:]
+                    r = '!v' + tag + '!' + value + '\n'
+                except Exception as e:
+                    print('_tagged: ')
+                    print(e)
+                    print(s)
+                    print(value)
+                    print(type(s))
+                    print(type(value))
+        return r
 
     def read(self, filename):
         rec_list = []
@@ -76,7 +135,6 @@ class IDFile(object):
             s = line.replace('\n', '').replace('\r', '')
             if not isinstance(s, unicode):
                 s = s.decode('iso-8859-1')
-            s = u_encode(s, 'utf-8')
             if '!ID ' in s:
                 if len(record) > 0:
                     rec_list.append(self.simplify_record(record))
@@ -106,7 +164,7 @@ class IDFile(object):
         if len(record) > 0:
             rec_list.append(self.simplify_record(record))
 
-        print('Loaded ' + str(len(rec_list))) + ' issue rec_list.'
+        print('Loaded ' + str(len(rec_list))) + ' issue(s).'
         return rec_list
 
     def simplify_record(self, record):
@@ -119,17 +177,17 @@ class IDFile(object):
         path = os.path.dirname(filename)
         if not os.path.isdir(path):
             os.makedirs(path)
-
+        print(filename)
+        print(len(records))
         content = self._format_file(records)
-        if isinstance(content, unicode):
-            unicode_content = content
-        else:
-            unicode_content = content.decode('utf-8')
+        if not isinstance(content, unicode):
+            content = content.decode('utf-8')
 
-        iso = u_encode(unicode_content, 'iso-8859-1')
+        iso = u_encode(content, 'iso-8859-1')
         try:
             open(filename, 'w').write(iso)
         except Exception as e:
+            print('saving...')
             print(e)
 
 
@@ -150,6 +208,7 @@ class CISIS(object):
     def id2i(self, id_filename, mst_filename):
         cmd = self.cisis_path + '/id2i ' + id_filename + ' create=' + mst_filename
         os.system(cmd)
+        print(cmd)
 
     def append(self, src, dest):
         cmd = self.cisis_path + '/mx ' + src + '  append=' + dest + ' now -all'
@@ -159,17 +218,14 @@ class CISIS(object):
         cmd = self.cisis_path + '/mx ' + src + ' create=' + dest + ' now -all'
         os.system(cmd)
 
-    def id2mst(self, id_filename, mst_filename, reset):
+    def append_id_to_master(self, id_filename, mst_filename, reset):
         if reset:
-            self.new(mst_filename)
-        
-        temp = mkdtemp().replace('\\', '/') + '/f'
-        self.id2i(id_filename, temp)
-        self.append(temp, mst_filename)
-        try:
-            os.unlink(temp)
-        except:
-            pass
+            self.id2i(id_filename, mst_filename)
+        else:            
+            temp = id_filename.replace('.id', '')
+            print(temp)
+            self.id2i(id_filename, temp)
+            self.append(temp, mst_filename)
 
     def i2id(self, mst_filename, id_filename):
         cmd = self.cisis_path + '/i2id ' + mst_filename + ' > ' + id_filename
@@ -276,11 +332,8 @@ class UCISIS(object):
     def create(self, src, dest):
         self.cisis(src).append(src, dest)
 
-    def id2mst(self, id_filename, mst_filename, reset):
-        if reset:
-            self.cisis1030.id2mst(id_filename, mst_filename, reset)
-        else:
-            self.cisis(mst_filename).id2mst(id_filename, mst_filename, reset)
+    def append_id_to_master(self, id_filename, mst_filename, reset):
+        self.cisis(mst_filename).append_id_to_master(id_filename, mst_filename, reset)
 
     def i2id(self, mst_filename, id_filename):
         self.cisis(mst_filename).i2id(mst_filename, id_filename)
@@ -317,7 +370,7 @@ class IsisDAO(object):
 
     def save_records(self, records, db_filename, fst_filename=None):
         id_file = mkdtemp().replace('\\', '/') + '/' + os.path.basename(db_filename) + '.id'
-        IDFile().save(id_file, records, 'iso-8859-1')
+        IDFile().save(id_file, records)
         self.cisis.id2i(id_file, db_filename)
         os.unlink(id_file)
         self.update_indexes(db_filename, fst_filename)
@@ -328,8 +381,8 @@ class IsisDAO(object):
 
     def append_records(self, records, db_filename, fst_filename=None):
         id_temp = mkdtemp().replace('\\', '/') + '/' + os.path.basename(db_filename) + '.id'
-        IDFile().save(id_temp, records, 'iso-8859-1')
-        self.cisis.id2mst(id_temp, db_filename, False)
+        IDFile().save(id_temp, records)
+        self.cisis.append_id_to_master(id_temp, db_filename, False)
         os.unlink(id_temp)
         self.update_indexes(db_filename, fst_filename)
 
@@ -338,7 +391,7 @@ class IsisDAO(object):
         self.update_indexes(db_filename, fst_filename)
 
     def append_id_records(self, id_filename, db_filename, fst_filename=None):
-        self.cisis.id2mst(id_filename, db_filename, False)
+        self.cisis.append_id_to_master(id_filename, db_filename, False)
         self.update_indexes(db_filename, fst_filename)
 
     def get_records(self, db_filename, expr=None):
@@ -362,6 +415,9 @@ class IsisDAO(object):
         except:
             print(id_filename)
         return r
+
+    def get_id_records(self, id_filename):
+        return IDFile().read(id_filename)
 
     def save_id(self, id_filename, records):
         IDFile().save(id_filename, records)
