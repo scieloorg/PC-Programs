@@ -2,6 +2,8 @@ import os
 import shutil
 from datetime import datetime
 
+from utils import how_similar
+
 
 class DocFilesInfo(object):
 
@@ -74,6 +76,28 @@ class Ahead(object):
         r = 'S' + self.record.get('35') + self.ahead_db_name[0:4] + '0050' + _order[-5:]
         return r if len(r) == 23 else None
 
+    @property
+    def article_title(self):
+        title = self.record.get('12')
+        if isinstance(title, dict):
+            t = title.get('t')
+        elif isinstance(title, []):
+            t = title[0].get('t')
+        else:
+            t = None
+        return t
+
+    @property
+    def first_author_surname(self):
+        author = self.record.get('10')
+        if isinstance(author, dict):
+            a = author.get('s')
+        elif isinstance(author, []):
+            a = author[0].get('s')
+        else:
+            a = None
+        return a
+
 
 class AheadManager(object):
 
@@ -133,6 +157,29 @@ class AheadManager(object):
     def name(self, db_filename):
         return os.path.basename(db_filename)
 
+    def is_valid(self, ahead):
+        r = False
+        if ahead is not None:
+            r = (ahead.ahead_pid is not None)
+        return r
+
+    def score(self, article, ahead, min_score):
+        rate = self.matched_rate(article, ahead)
+        if rate >= min_score:
+            r = rate
+        else:
+            r = 0
+        return r
+
+    def matched_rate(self, article, ahead):
+        if ahead is None:
+            r = 0
+        else:
+            r += how_similar(article.title, ahead.article_title)
+            r += how_similar(article.first_author_surname, ahead.first_author_surname)
+            r = (r * 100) / 2
+        return r
+
     def find_ahead(self, doi, filename):
         data = None
         i = self.ahead_doi.get(doi, None)
@@ -141,6 +188,46 @@ class AheadManager(object):
         if i is not None:
             data = self.ahead_list[i]
         return data
+
+    def get_valid_ahead(self, article, xml_name):
+        msg_list = []
+        ahead = None
+        valid_ahead = None
+        status = None
+
+        if article.number != 'ahead':
+            xml_filename = xml_name + '.xml'
+            msg_list.append('Find ahead for ' + article.doi + ' and ' + xml_filename)
+            ahead = self.find_ahead(article.doi, xml_filename)
+
+        if ahead is None:
+            status = 'new'
+            msg_list.append('No ahead was found.')
+        else:
+            msg_list.append('ahead was found')
+            matched_rate = self.score(article, ahead, 90)
+            if matched_rate > 0:
+                is_valid_ahead = self.is_valid(ahead)
+                if is_valid_ahead:
+                    status = 'valid'
+                    valid_ahead = ahead
+                    if matched_rate != 100:
+                        msg = 'WARNING: article and ahead are partially matched.'
+                        status = 'partially matched'
+                else:
+                    status = 'not valid'
+                    msg = 'WARNING: ahead has no PID'
+            else:
+                status = 'unmatched'
+                msg = 'WARNING: article and ahead are unmatched'
+
+            msg_list.append(msg)
+            msg_list.append(article.title)
+            msg_list.append(article.first_author_surname)
+            msg_list.append(ahead.title)
+            msg_list.append(ahead.first_author_surname)
+
+        return (valid_ahead, status, '\n'.join(msg_list))
 
     def mark_ahead_as_deleted(self, ahead):
         """
@@ -164,13 +251,13 @@ class AheadManager(object):
         xml_file, markup_file, body_file = self.journal_files.ahead_xml_markup_body(year, ahead.filename)
         if os.path.isfile(markup_file):
             shutil.move(markup_file, ex_ahead_markup_path)
-            msg.append('move ' + markup_file + ' to ' + ex_ahead_markup_path)
+            msg.append('move ' + markup_file + '\n    to ' + ex_ahead_markup_path)
         if os.path.isfile(body_file):
             shutil.move(body_file, ex_ahead_body_path)
-            msg.append('move ' + body_file + ' to ' + ex_ahead_body_path)
+            msg.append('move ' + body_file + '\n    to ' + ex_ahead_body_path)
         if os.path.isfile(xml_file):
             shutil.move(xml_file, ex_ahead_markup_path)
-            msg.append('move ' + xml_file + ' to ' + ex_ahead_markup_path)
+            msg.append('move ' + xml_file + '\n    to ' + ex_ahead_markup_path)
         if os.path.isfile(self.journal_files.ahead_id_filename(year, ahead.order)):
             os.unlink(self.journal_files.ahead_id_filename(year, ahead.order))
             msg.append('delete ' + self.journal_files.ahead_id_filename(year, ahead.order))
@@ -227,6 +314,12 @@ class IssueFiles(object):
         self.issue_folder = issue_folder
         self.xml_path = xml_path
         self.web_path = web_path
+        self.create_folders()
+
+    def create_folders(self):
+        for path in [self.id_path, self.base_path, self.base_reports_path, self.base_source_path]:
+            if not os.path.isdir(path):
+                os.makedirs(path)
 
     @property
     def issue_path(self):
@@ -238,7 +331,7 @@ class IssueFiles(object):
 
     @property
     def id_path(self):
-        return self.issue_path + '/id/'
+        return self.issue_path + '/id'
 
     @property
     def id_filename(self):
@@ -275,10 +368,10 @@ class IssueFiles(object):
                 ext = f[f.rfind('.')+1:]
                 if path.get(ext) is not None:
                     shutil.copy(self.xml_path + '/' + f, path[ext])
-                    msg.append('copying ' + self.xml_path + '/' + f + ' to ' + path[ext])
+                    msg.append('copying ' + self.xml_path + '/' + f + '\n    to ' + path[ext])
                 else:
                     shutil.copy(self.xml_path + '/' + f, path['img'])
-                    msg.append('copying ' + self.xml_path + '/' + f + ' to ' + path['img'])
+                    msg.append('copying ' + self.xml_path + '/' + f + '\n    to ' + path['img'])
         return '\n'.join(msg)
 
     def move_reports(self, report_path):
@@ -297,6 +390,11 @@ class IssueFiles(object):
                 shutil.copy(xml_path + '/' + f, self.base_source_path)
 
 
+def create_path(path):
+    if not os.path.isdir(path):
+        os.makedirs(path)
+
+
 class JournalFiles(object):
 
     def __init__(self, serial_path, acron):
@@ -305,20 +403,28 @@ class JournalFiles(object):
         self.years = [str(int(datetime.now().isoformat()[0:4])+1 - y) for y in range(0, 5)]
 
     def ahead_base(self, year):
-        return self.journal_path + '/' + year + 'nahead' + '/base/' + year + 'nahead'
+        path = self.journal_path + '/' + year + 'nahead' + '/base/' + year + 'nahead'
+        create_path(os.path.dirname(path))
+        return path
 
     def ahead_xml_markup_body(self, year, filename):
-        m = self.journal_path + '/' + year + 'nahead' + '/markup/' + filename
-        b = self.journal_path + '/' + year + 'nahead' + '/body/' + filename
-        return (self.journal_path + '/' + year + 'nahead' + '/xml/' + filename, m, b)
+        m = self.journal_path + '/' + year + 'nahead' + '/markup'
+        b = self.journal_path + '/' + year + 'nahead' + '/body'
+        x = self.journal_path + '/' + year + 'nahead' + '/xml'
+        create_path(m)
+        create_path(b)
+        create_path(x)
+        return (x + '/' + filename, m + '/' + filename, b + '/' + filename)
 
     def ahead_id_filename(self, year, order):
         order = '00000' + order
         order = order[-5:]
-        return self.journal_path + '/' + year + 'nahead' + '/id/' + order + '.id'
+        return self.ahead_id_path + '/' + order + '.id'
 
     def ahead_id_path(self, year):
-        return self.journal_path + '/' + year + 'nahead' + '/id/'
+        path = self.journal_path + '/' + year + 'nahead' + '/id'
+        create_path(path)
+        return path
 
     def ex_ahead_paths(self, year):
         path = self.journal_path + '/ex-' + year + 'nahead'
@@ -364,7 +470,6 @@ class ArticleDAO(object):
         self.dao = dao
 
     def create_id_file(self, i_record, article, section_code, article_files):
-        done = False
         saved = False
         if not os.path.isdir(article_files.issue_files.id_path):
             os.makedirs(article_files.issue_files.id_path)
@@ -375,26 +480,18 @@ class ArticleDAO(object):
             from isis_models import ArticleRecords
             article_isis = ArticleRecords(article, i_record, section_code, article_files)
             self.dao.save_id(article_files.id_filename, article_isis.records)
-            print(article_files.id_filename)
-            done = os.path.isfile(article_files.id_filename)
-            if done:
+            if os.path.isfile(article_files.id_filename):
                 saved_records = self.dao.get_id_records(article_files.id_filename)
-                print(len(article_isis.records))
-                print(len(saved_records))
                 saved = (len(saved_records) == len(article_isis.records))
         else:
             print('Invalid value for order.')
-        return done
+        return saved
 
     def finish_conversion(self, issue_record, issue_files):
         loaded = []
         self.dao.save_records([issue_record], issue_files.base)
-        print('finish_conversion')
-        print((issue_files.id_path))
         for f in os.listdir(issue_files.id_path):
-            print(f)
             if f.endswith('.id') and f != '00000.id' and f != 'i.id':
-                print(issue_files.id_path + '/' + f)
                 self.dao.append_id_records(issue_files.id_path + '/' + f, issue_files.base)
                 loaded.append(f)
         return loaded

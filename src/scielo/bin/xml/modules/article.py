@@ -140,21 +140,22 @@ class ArticleXML(object):
 
     def sections(self, node, scope):
         r = []
-        for sec in node.findall('./sec'):
-            r.append((scope + '/sec', sec.attrib.get('sec-type', ''), sec.findtext('title')))
-            for subsec in sec.findall('sec'):
-                r.append((scope + '/sec/sec', subsec.attrib.get('sec-type', 'None'), subsec.findtext('title')))
-                for subsubsec in subsec.findall('sec'):
-                    r.append((scope + '/sec/sec/sec', subsubsec.attrib.get('sec-type', 'None'), subsubsec.findtext('title')))
+        if node is not None:
+            for sec in node.findall('./sec'):
+                r.append((scope + '/sec', sec.attrib.get('sec-type', ''), sec.findtext('title')))
+                for subsec in sec.findall('sec'):
+                    r.append((scope + '/sec/sec', subsec.attrib.get('sec-type', 'None'), subsec.findtext('title')))
+                    for subsubsec in subsec.findall('sec'):
+                        r.append((scope + '/sec/sec/sec', subsubsec.attrib.get('sec-type', 'None'), subsubsec.findtext('title')))
         return r
 
     @property
     def article_sections(self):
-        r = []
         r = self.sections(self.body, 'article')
-        for item in self.subarticles:
-            for sec in self.sections(item.find('.//body'), 'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]'):
-                r.append(sec)
+        if self.subarticles is not None:
+            for item in self.subarticles:
+                for sec in self.sections(item.find('.//body'), 'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]'):
+                    r.append(sec)
         return r
 
     def fn_list(self, node, scope):
@@ -166,35 +167,42 @@ class ArticleXML(object):
 
     @property
     def article_fn_list(self):
-        r = []
         r = self.fn_list(self.back, 'article')
-        for item in self.subarticles:
-            scope = 'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]'
-            for fn in self.fn_list(item.find('.//back'), scope):
-                r.append(fn)
+        if self.subarticles is not None:
+            for item in self.subarticles:
+                scope = 'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]'
+                for fn in self.fn_list(item.find('.//back'), scope):
+                    r.append(fn)
         return r
 
     @property
     def xref_list(self):
         _xref_list = {}
-        for xref in self.tree.find('.').findall('.//xref'):
-            rid = xref.attrib.get('rid')
-            if not rid in _xref_list.keys():
-                _xref_list[rid] = []
-            _xref_list[rid].append(node_xml(xref))
+        if self.tree is not None:
+            for xref in self.tree.findall('.//xref'):
+                rid = xref.attrib.get('rid')
+                if not rid in _xref_list.keys():
+                    _xref_list[rid] = []
+                _xref_list[rid].append(node_xml(xref))
         return _xref_list
 
     @property
     def dtd_version(self):
-        return self.tree.find('.').attrib.get('dtd-version')
+        if self.tree is not None:
+            if self.tree.find('.') is not None:
+                return self.tree.find('.').attrib.get('dtd-version')
 
     @property
     def article_type(self):
-        return self.tree.find('.').attrib.get('article-type')
-
+        if self.tree is not None:
+            if self.tree.find('.') is not None:
+                return self.tree.find('.').attrib.get('article-type')
+    
     @property
     def language(self):
-        return self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+        if self.tree is not None:
+            if self.tree.find('.') is not None:
+                return self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
 
     @property
     def related_objects(self):
@@ -212,10 +220,11 @@ class ArticleXML(object):
         @link-type r
         """
         r = []
-        related = self.article_meta.findall('related-object')
-        for rel in related:
-            item = {k: v for k, v in rel.attrib.items()}
-            r.append(item)
+        if self.article_meta is not None:
+            related = self.article_meta.findall('related-object')
+            for rel in related:
+                item = {k: v for k, v in rel.attrib.items()}
+                r.append(item)
         return r
 
     @property
@@ -231,84 +240,105 @@ class ArticleXML(object):
 
         """
         r = []
-        related = self.article_meta.findall('related-article')
-        for rel in related:
-            item = {k: v for k, v in rel.attrib.items()}
-            r.append(item)
+        if self.article_meta is not None:
+            related = self.article_meta.findall('related-article')
+            for rel in related:
+                item = {k: v for k, v in rel.attrib.items()}
+                r.append(item)
         return r
 
     @property
     def journal_title(self):
-        return self.journal_meta.findtext('.//journal-title')
+        if self.journal_meta is not None:
+            return self.journal_meta.findtext('.//journal-title')
 
     @property
     def abbrev_journal_title(self):
-        return self.journal_meta.findtext('abbrev-journal-title')
+        if self.journal_meta is not None:
+            return self.journal_meta.findtext('abbrev-journal-title')
 
     @property
     def publisher_name(self):
-        return self.journal_meta.findtext('.//publisher-name')
+        if self.journal_meta is not None:
+            return self.journal_meta.findtext('.//publisher-name')
 
     @property
     def journal_id(self):
-        return self.journal_meta.findtext('journal-id')
+        if self.journal_meta is not None:
+            return self.journal_meta.findtext('journal-id')
 
     @property
     def journal_id_nlm_ta(self):
-        return self.journal_meta.findtext('journal-id[@journal-id-type="nlm-ta"]')
+        if self.journal_meta is not None:
+            return self.journal_meta.findtext('journal-id[@journal-id-type="nlm-ta"]')
 
     @property
     def journal_issns(self):
-        return {item.attrib.get('pub-type', 'epub'):item.text for item in self.journal_meta.findall('issn')}
+        if self.journal_meta is not None:
+            return {item.attrib.get('pub-type', 'epub'):item.text for item in self.journal_meta.findall('issn')}
 
     @property
     def print_issn(self):
-        return self.journal_meta.findtext('issn[@pub-type="ppub"]')
+        if self.journal_meta is not None:
+            return self.journal_meta.findtext('issn[@pub-type="ppub"]')
 
     @property
     def e_issn(self):
-        return self.journal_meta.findtext('issn[@pub-type="epub"]')
+        if self.journal_meta is not None:
+            return self.journal_meta.findtext('issn[@pub-type="epub"]')
 
     @property
     def toc_section(self):
+        r = None
         node = self.article_meta.find('.//subj-group[@subj-group-type="heading"]')
         if node is not None:
-            return node.findtext('subject')
-        return None
+            r = node.findtext('subject')
+        return r
 
     @property
     def keywords(self):
         k = []
-        for node in self.article_meta.findall('kwd-group'):
-            language = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-            for kw in node.findall('kwd'):
-                k.append({'l': language, 'k': node_text(kw)})
+        if not self.article_meta is None:
+            for node in self.article_meta.findall('kwd-group'):
+                language = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                for kw in node.findall('kwd'):
+                    k.append({'l': language, 'k': node_text(kw)})
         return k
 
     @property
     def contrib_names(self):
         k = []
-        for contrib in self.article_meta.findall('.//contrib'):
-            if contrib.findall('name'):
-                p = PersonAuthor()
-                p.fname = contrib.findtext('name/given-names')
-                p.surname = contrib.findtext('name/surname')
-                p.suffix = contrib.findtext('name/suffix')
-                p.prefix = contrib.findtext('name/prefix')
-                p.contrib_id = contrib.findtext('contrib-id[@contrib-id-type="orcid"]')
-                p.role = contrib.attrib.get('contrib-type')
-                for xref_item in contrib.findall('xref[@ref-type="aff"]'):
-                    p.xref.append(xref_item.attrib.get('rid'))
-                k.append(p)
+        if self.article_meta is not None:
+            for contrib in self.article_meta.findall('.//contrib'):
+                if contrib.findall('name'):
+                    p = PersonAuthor()
+                    p.fname = contrib.findtext('name/given-names')
+                    p.surname = contrib.findtext('name/surname')
+                    p.suffix = contrib.findtext('name/suffix')
+                    p.prefix = contrib.findtext('name/prefix')
+                    p.contrib_id = contrib.findtext('contrib-id[@contrib-id-type="orcid"]')
+                    p.role = contrib.attrib.get('contrib-type')
+                    for xref_item in contrib.findall('xref[@ref-type="aff"]'):
+                        p.xref.append(xref_item.attrib.get('rid'))
+                    k.append(p)
         return k
+
+    @property
+    def first_author_surname(self):
+        surname = None
+        authors = self.contrib_names
+        if len(authors) > 0:
+            surname = authors[0].surname
+        return surname
 
     @property
     def contrib_collabs(self):
         k = []
-        collab = CorpAuthor()
-        for contrib in self.article_meta.findall('.//contrib/collab'):
-            collab.collab = contrib.text
-            k.append(collab)
+        if self.article_meta is not None:
+            for contrib in self.article_meta.findall('.//contrib/collab'):
+                collab = CorpAuthor()
+                collab.collab = contrib.text
+                k.append(collab)
         return k
 
     @property
@@ -318,48 +348,53 @@ class ArticleXML(object):
     @property
     def titles(self):
         k = []
-        for node in self.article_meta.findall('.//title-group'):
-            t = Title()
-            t.title = node_text(node.find('article-title'))
-            t.subtitle = node_text(node.find('subtitle'))
-            t.language = self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-            k.append(t)
+        if self.article_meta is not None:
+            for node in self.article_meta.findall('.//title-group'):
+                t = Title()
+                t.title = node_text(node.find('article-title'))
+                t.subtitle = node_text(node.find('subtitle'))
+                t.language = self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                k.append(t)
         return k
 
     @property
     def trans_titles(self):
         k = []
-        for node in self.article_meta.findall('.//trans-title-group'):
-            t = Title()
-            t.title = node_text(node.find('trans-title'))
-            t.subtitle = node_text(node.find('trans-subtitle'))
-            t.language = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-            k.append(t)
-
-        for subart in self.subarticles:
-            if subart.attrib.get('article-type') == 'translation':
-                for node in subart.findall('.//title-group'):
-                    t = Title()
-                    t.title = node_text(node.find('article-title'))
-                    t.subtitle = node_text(node.find('subtitle'))
-                    t.language = subart.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-                    k.append(t)
+        if self.article_meta is not None:
+            for node in self.article_meta.findall('.//trans-title-group'):
+                t = Title()
+                t.title = node_text(node.find('trans-title'))
+                t.subtitle = node_text(node.find('trans-subtitle'))
+                t.language = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                k.append(t)
+        if self.subarticles is not None:
+            for subart in self.subarticles:
+                if subart.attrib.get('article-type') == 'translation':
+                    for node in subart.findall('.//title-group'):
+                        t = Title()
+                        t.title = node_text(node.find('article-title'))
+                        t.subtitle = node_text(node.find('subtitle'))
+                        t.language = subart.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                        k.append(t)
         return k
 
     @property
     def trans_languages(self):
         k = []
-        for node in self.subarticles:
-            k.append(node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang'))
+        if self.subarticles is not None:
+            for node in self.subarticles:
+                k.append(node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang'))
         return k
 
     @property
     def doi(self):
-        return self.article_meta.findtext('article-id[@pub-id-type="doi"]')
+        if self.article_meta is not None:
+            return self.article_meta.findtext('article-id[@pub-id-type="doi"]')
 
     @property
     def article_id_publisher_id(self):
-        return self.article_meta.findtext('article-id[@specific-use="previous-pid"]')
+        if self.article_meta is not None:
+            return self.article_meta.findtext('article-id[@specific-use="previous-pid"]')
 
     @property
     def order(self):
@@ -374,7 +409,8 @@ class ArticleXML(object):
 
     @property
     def article_id_other(self):
-        return self.article_meta.findtext('article-id[@pub-id-type="other"]')
+        if self.article_meta is not None:
+            return self.article_meta.findtext('article-id[@pub-id-type="other"]')
 
     @property
     def volume(self):
@@ -387,17 +423,20 @@ class ArticleXML(object):
 
     @property
     def issue(self):
-        return self.article_meta.findtext('issue')
+        if self.article_meta is not None:
+            return self.article_meta.findtext('issue')
 
     @property
     def supplement(self):
-        return self.article_meta.findtext('supplement')
+        if self.article_meta is not None:
+            return self.article_meta.findtext('supplement')
 
     @property
     def is_issue_press_release(self):
         if self.tree.find('.').attrib.get('article-type') == 'press-release':
             return not self.is_article_press_release
-        return False
+        else:
+            return False
 
     @property
     def funding_source(self):
@@ -427,23 +466,28 @@ class ArticleXML(object):
 
     @property
     def fn_financial_disclosure(self):
-        return node_xml(self.tree.find('.//fn[@fn-type="financial-disclosure"]'))
+        if self.tree is not None:
+            return node_xml(self.tree.find('.//fn[@fn-type="financial-disclosure"]'))
 
     @property
     def fpage(self):
-        return self.article_meta.findtext('fpage')
+        if self.article_meta is not None:
+            return self.article_meta.findtext('fpage')
 
     @property
     def fpage_seq(self):
-        return self.article_meta.find('fpage').attrib.get('seq') if self.article_meta.find('fpage') is not None else None
+        if self.article_meta is not None:
+            return self.article_meta.find('fpage').attrib.get('seq') if self.article_meta.find('fpage') is not None else None
 
     @property
     def lpage(self):
-        return self.article_meta.findtext('lpage')
+        if self.article_meta is not None:
+            return self.article_meta.findtext('lpage')
 
     @property
     def elocation_id(self):
-        return self.article_meta.findtext('elocation-id')
+        if self.article_meta is not None:
+            return self.article_meta.findtext('elocation-id')
 
     @property
     def affiliations(self):
@@ -476,33 +520,42 @@ class ArticleXML(object):
 
     @property
     def page_count(self):
-        return self.article_meta.find('.//page-count').attrib.get('count') if self.article_meta.find('.//page-count') is not None else 'None'
+        if self.article_meta is not None:
+            if self.article_meta.find('.//page-count') is not None:
+                return self.article_meta.find('.//page-count').attrib.get('count')
 
     @property
     def ref_count(self):
-        return self.article_meta.find('.//ref-count').attrib.get('count') if self.article_meta.find('.//ref-count') is not None else 'None'
+        if self.article_meta is not None:
+            if self.article_meta.find('.//ref-count') is not None:
+                return self.article_meta.find('.//ref-count').attrib.get('count')
 
     @property
     def table_count(self):
-        return self.article_meta.find('.//table-count').attrib.get('count') if self.article_meta.find('.//table-count') is not None else 'None'
+        if self.article_meta is not None:
+            if self.article_meta.find('.//table-count') is not None:
+                return self.article_meta.find('.//table-count').attrib.get('count')
 
     @property
     def fig_count(self):
-        return self.article_meta.find('.//fig-count').attrib.get('count') if self.article_meta.find('.//fig-count') is not None else 'None'
+        if self.article_meta is not None:
+            if self.article_meta.find('.//fig-count') is not None:
+                return self.article_meta.find('.//fig-count').attrib.get('count')
 
     @property
     def equation_count(self):
-        return self.article_meta.find('.//equation-count').attrib.get('count') if self.article_meta.find('.//equation-count') is not None else 'None'
+        if self.article_meta is not None:
+            if self.article_meta.find('.//equation-count') is not None:
+                return self.article_meta.find('.//equation-count').attrib.get('count')
 
     @property
     def total_of_pages(self):
-        r = 'unknown'
         if self.fpage.isdigit() and self.lpage.isdigit():
-            r = str(int(self.lpage) - int(self.fpage) + 1)
-        return r
+            return int(self.lpage) - int(self.fpage) + 1
 
     def total(self, node, xpath):
-        return '0' if node is None else str(len(node.findall(xpath)))
+        if node is not None:
+            return len(node.findall(xpath))
 
     @property
     def total_of_references(self):
@@ -586,7 +639,7 @@ class Article(ArticleXML):
         data = {}
         data['journal-title'] = self.journal_title
         data['journal id NLM'] = self.journal_id_nlm_ta
-        data['journal ISSN'] = ' '.join(self.journal_issns.values())
+        data['journal ISSN'] = ' '.join(self.journal_issns.values()) if self.journal_issns is not None else None
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_label
         data['issue pub date'] = format_date(self.issue_pub_date)
@@ -600,7 +653,7 @@ class Article(ArticleXML):
     @property
     def article_titles(self):
         titles = {}
-        for title in self.title:
+        for title in self.titles:
             titles[title.language] = title.title
         for title in self.trans_titles:
             titles[title.language] = title.title
@@ -647,36 +700,40 @@ class Article(ArticleXML):
 
     @property
     def press_release_id(self):
-        related = self.article_meta.find('related-object[@document-type="pr"]')
-        if related is not None:
-            return related.attrib.get('document-id')
+        if self.article_meta is not None:
+            related = self.article_meta.find('related-object[@document-type="pr"]')
+            if related is not None:
+                return related.attrib.get('document-id')
 
     @property
     def issue_pub_date(self):
         _issue_pub_date = None
-        date = self.article_meta.find('pub-date[@date-type="pub"]')
-        if date is None:
-            date = self.article_meta.find('pub-date[@pub-type="epub-ppub"]')
-        if date is None:
-            date = self.article_meta.find('pub-date[@pub-type="ppub"]')
-        if date is None:
-            date = self.article_meta.find('pub-date[@pub-type="collection"]')
-        if date is None:
-            date = self.article_meta.find('pub-date[@pub-type="epub"]')
-        if date is not None:
-            _issue_pub_date = {}
-            _issue_pub_date['season'] = date.findtext('season')
-            _issue_pub_date['month'] = date.findtext('month')
-            _issue_pub_date['year'] = date.findtext('year')
-            _issue_pub_date['day'] = date.findtext('day')
+        if self.article_meta is not None:
+            date = self.article_meta.find('pub-date[@date-type="pub"]')
+            if date is None:
+                date = self.article_meta.find('pub-date[@pub-type="epub-ppub"]')
+            if date is None:
+                date = self.article_meta.find('pub-date[@pub-type="ppub"]')
+            if date is None:
+                date = self.article_meta.find('pub-date[@pub-type="collection"]')
+            if date is None:
+                date = self.article_meta.find('pub-date[@pub-type="epub"]')
+            if date is not None:
+                _issue_pub_date = {}
+                _issue_pub_date['season'] = date.findtext('season')
+                _issue_pub_date['month'] = date.findtext('month')
+                _issue_pub_date['year'] = date.findtext('year')
+                _issue_pub_date['day'] = date.findtext('day')
         return _issue_pub_date
 
     @property
     def article_pub_date(self):
         _article_pub_date = None
-        date = self.article_meta.find('pub-date[@date-type="preprint"]')
-        if date is None:
-            date = self.article_meta.find('pub-date[@pub-type="epub"]')
+        date = None
+        if self.article_meta is not None:
+            date = self.article_meta.find('pub-date[@date-type="preprint"]')
+            if date is None:
+                date = self.article_meta.find('pub-date[@pub-type="epub"]')
         if date is not None:
             _article_pub_date = {}
             _article_pub_date['season'] = date.findtext('season')
@@ -687,9 +744,7 @@ class Article(ArticleXML):
 
     @property
     def is_ahead(self):
-        if self.volume is None and self.number is None:
-            return True
-        return False
+        return (self.volume is None) and (self.number is None)
 
     @property
     def ahpdate(self):
@@ -697,24 +752,27 @@ class Article(ArticleXML):
 
     @property
     def is_article_press_release(self):
-        return (self.article_meta.find('.//related-document[@link-type="article-has-press-release"]') is not None)
+        if self.article_meta is not None:
+            return (self.article_meta.find('.//related-document[@link-type="article-has-press-release"]') is not None)
+        else:
+            return False
 
     @property
     def illustrative_materials(self):
         _illustrative_materials = []
-        if len(self.tree.findall('.//table-wrap')) > 0:
-            _illustrative_materials.append('TAB')
-        figs = len(self.tree.findall('.//fig'))
-        if figs > 0:
-
-            maps = len(self.tree.findall('.//fig[@fig-type="map"]'))
-            gras = len(self.tree.findall('.//fig[@fig-type="graphic"]'))
-            if maps > 0:
-                _illustrative_materials.append('MAP')
-            if gras > 0:
-                _illustrative_materials.append('GRA')
-            if figs - gras - maps > 0:
-                _illustrative_materials.append('ILUS')
+        if self.tree is not None:
+            if len(self.tree.findall('.//table-wrap')) > 0:
+                _illustrative_materials.append('TAB')
+            figs = len(self.tree.findall('.//fig'))
+            if figs > 0:
+                maps = len(self.tree.findall('.//fig[@fig-type="map"]'))
+                gras = len(self.tree.findall('.//fig[@fig-type="graphic"]'))
+                if maps > 0:
+                    _illustrative_materials.append('MAP')
+                if gras > 0:
+                    _illustrative_materials.append('GRA')
+                if figs - gras - maps > 0:
+                    _illustrative_materials.append('ILUS')
 
         if len(_illustrative_materials) > 0:
             return _illustrative_materials
@@ -723,7 +781,7 @@ class Article(ArticleXML):
 
     @property
     def is_text(self):
-        return self.tree.findall('.//kwd') is None
+        return len(self.keywords) == 0
 
     @property
     def previous_pid(self):
@@ -745,11 +803,11 @@ class Article(ArticleXML):
 
     @property
     def license(self):
-        r = self.tree.find('.//license')
-        if r is not None:
-            r = r.attrib.get('license-type')
-        else:
-            r = None
+        r = None
+        if self.tree is not None:
+            r = self.tree.find('.//license')
+            if r is not None:
+                r = r.attrib.get('license-type')
         return r
 
     @property
@@ -759,11 +817,12 @@ class Article(ArticleXML):
     @property
     def hrefs(self):
         r = []
-        for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
-            for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
-                href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                _href = HRef(href, elem, parent, node_xml(parent))
-                r.append(_href)
+        if self.tree is not None:
+            for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
+                for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
+                    href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
+                    _href = HRef(href, elem, parent, node_xml(parent))
+                    r.append(_href)
         return r
 
     @property
@@ -773,16 +832,17 @@ class Article(ArticleXML):
     @property
     def tables(self):
         r = []
-        for t in self.tree.findall('.//*[table]'):
-            graphic = t.find('./graphic')
-            _href = None
-            if graphic is not None:
-                src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
-                xml = node_xml(graphic)
+        if self.tree is not None:
+            for t in self.tree.findall('.//*[table]'):
+                graphic = t.find('./graphic')
+                _href = None
+                if graphic is not None:
+                    src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
+                    xml = node_xml(graphic)
 
-                _href = HRef(src, graphic, t, xml)
-            _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), node_text(t.find('.//caption')), _href, node_xml(t.find('./table')))
-            r.append(_table)
+                    _href = HRef(src, graphic, t, xml)
+                _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), node_text(t.find('.//caption')), _href, node_xml(t.find('./table')))
+                r.append(_table)
         return r
 
 
@@ -805,32 +865,39 @@ class ReferenceXML(object):
 
     @property
     def language(self):
-        lang = self.root.find('.//source').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//source') is not None else None
-        if lang is None:
-            lang = self.root.find('.//article-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//article-title') is not None else None
-        if lang is None:
-            lang = self.root.find('.//chapter-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//chapter-title') is not None else None
+        lang = None
+        for elem in ['.//source', './/article-title', './/chapter-title']:
+            if self.root.find(elem) is not None:
+                lang = self.root.find(elem).attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+            if lang is not None:
+                break
         return lang
 
     @property
     def article_title(self):
-        return node_text(self.root.find('.//article-title'))
+        if self.root is not None:
+            return node_text(self.root.find('.//article-title'))
 
     @property
     def chapter_title(self):
-        return node_text(self.root.find('.//chapter-title'))
+        if self.root is not None:
+            return node_text(self.root.find('.//chapter-title'))
 
     @property
     def trans_title(self):
-        return node_text(self.root.find('.//trans-title'))
+        if self.root is not None:
+            return node_text(self.root.find('.//trans-title'))
 
     @property
     def trans_title_language(self):
-        return self.root.find('.//trans-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang') if self.root.find('.//trans-title') is not None else None
+        if self.root is not None:
+            if self.root.find('.//trans-title') is not None:
+                return self.root.find('.//trans-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
 
     @property
     def publication_type(self):
-        return self.root.find('.//element-citation').attrib.get('publication-type') if self.root.find('.//element-citation') is not None else None
+        if self.root.find('.//element-citation') is not None:
+            return self.root.find('.//element-citation').attrib.get('publication-type')
 
     @property
     def xml(self):
@@ -838,7 +905,7 @@ class ReferenceXML(object):
 
     @property
     def mixed_citation(self):
-        return node_xml(self.root.find('.//mixed-citation'))
+        return node_text(self.root.find('.//mixed-citation'))
 
     @property
     def authors_list(self):

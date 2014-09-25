@@ -348,12 +348,15 @@ class ArticleContentValidation(object):
         return display_value('clinical_trial', self.article.clinical_trial)
 
     def _total(self, total, count, label_total, label_count):
-        if total == '0' and count == 'None':
-            r = (label_total, 'OK', total)
-        elif total == count:
-            r = (label_total, 'OK', total)
+        if count is None:
+            count = 0
+        elif count.isdigit():
+            count = int(count)
+
+        if total == count:
+            r = (label_total, 'OK', str(total))
         else:
-            r = (label_count + ' (' + count + ') x ' + label_total + ' (' + total + ')', 'ERROR', 'They must have the same value')
+            r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', 'ERROR', 'They must have the same value')
         return r
 
     @property

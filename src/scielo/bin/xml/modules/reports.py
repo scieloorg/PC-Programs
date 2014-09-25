@@ -155,7 +155,7 @@ class ArticleDisplayReport(object):
 
     @property
     def article_date(self):
-        return self.display_value_with_discrete_label('@article-date', self.article.article_pub_date)
+        return self.display_value_with_discrete_label('@article-date', utils.format_date(self.article.article_pub_date))
 
     @property
     def contrib_names(self):
@@ -416,30 +416,33 @@ class HTMLPage(object):
 
         table_header, wider, table_data = table_header_and_data
         r = '<p>'
-        r += '<table class="sheet">'
-        r += '<thead><tr>'
-        if filename is not None:
-            r += '<th class="th"></th>'
-        for label in table_header:
-            r += '<th class="th">' + label + '</th>'
-        r += '</tr></thead>'
-        if len(table_data) == 0:
-            r += '<tbody><tr>'
-            for label in table_header:
-                r += '<td>-</td>'
-            r += '</tr></tbody>'
+        if table_header is None:
+            r += '<!-- no data to create sheet -->'
         else:
-            r += '<tbody>'
-            for row in table_data:
-                r += '<tr>'
-                if filename is not None:
-                    r += '<td>' + filename + '</td>'
-
+            r += '<table class="sheet">'
+            r += '<thead><tr>'
+            if filename is not None:
+                r += '<th class="th"></th>'
+            for label in table_header:
+                r += '<th class="th">' + label + '</th>'
+            r += '</tr></thead>'
+            if len(table_data) == 0:
+                r += '<tbody><tr>'
                 for label in table_header:
-                    r += '<td>' + self.format_cell(row.get(label, ''), not label in ['filename', 'scope']) + '</td>'
-                r += '</tr>'
-            r += '</tbody>'
-        r += '</table>'
+                    r += '<td>-</td>'
+                r += '</tr></tbody>'
+            else:
+                r += '<tbody>'
+                for row in table_data:
+                    r += '<tr>'
+                    if filename is not None:
+                        r += '<td>' + filename + '</td>'
+
+                    for label in table_header:
+                        r += '<td>' + self.format_cell(row.get(label, ''), not label in ['filename', 'scope']) + '</td>'
+                    r += '</tr>'
+                r += '</tbody>'
+            r += '</table>'
         r += '</p>'
         return r
 
@@ -449,6 +452,10 @@ class HTMLPage(object):
     def tag(self, tag_name, content, style=''):
         if tag_name == 'p' and '</p>' in content:
             tag_name = 'div'
+        if content is None:
+            content = 'None'
+        elif content.isdigit():
+            content = str(content)
         return '<' + tag_name + self.css_class(style) + '>' + content + '</' + tag_name + '>'
 
     def display_xml(self, value):
@@ -776,7 +783,8 @@ def statistics_messages(f, e, w, title=''):
     s = [('Total of fatal errors:', f), ('Total of errors:', e), ('Total of warnings:', w)]
     s = ''.join([HTMLPage().format_p_label_value(l, str(v)) for l, v in s])
     _html_page = HTMLPage()
-    style = _html_page.message_style('ERROR' if e + f > 0 else 'WARNING' if w > 0 else '')
+    text = 'FATAL ERROR' if f > 0 else 'ERROR' if e > 0 else 'WARNING' if w > 0 else ''
+    style = _html_page.message_style(text)
     if style == '' or style == 'ok':
         style = 'success'
     return _html_page.tag('h3', title) + _html_page.format_div(_html_page.format_div(s, style), 'statistics')

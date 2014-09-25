@@ -164,7 +164,7 @@ class IDFile(object):
         if len(record) > 0:
             rec_list.append(self.simplify_record(record))
 
-        print('Loaded ' + str(len(rec_list))) + ' issue(s).'
+        #print('Loaded ' + str(len(rec_list))) + ' issue(s).'
         return rec_list
 
     def simplify_record(self, record):
@@ -177,8 +177,6 @@ class IDFile(object):
         path = os.path.dirname(filename)
         if not os.path.isdir(path):
             os.makedirs(path)
-        print(filename)
-        print(len(records))
         content = self._format_file(records)
         if not isinstance(content, unicode):
             content = content.decode('utf-8')
@@ -208,7 +206,6 @@ class CISIS(object):
     def id2i(self, id_filename, mst_filename):
         cmd = self.cisis_path + '/id2i ' + id_filename + ' create=' + mst_filename
         os.system(cmd)
-        print(cmd)
 
     def append(self, src, dest):
         cmd = self.cisis_path + '/mx ' + src + '  append=' + dest + ' now -all'
@@ -221,9 +218,8 @@ class CISIS(object):
     def append_id_to_master(self, id_filename, mst_filename, reset):
         if reset:
             self.id2i(id_filename, mst_filename)
-        else:            
+        else:
             temp = id_filename.replace('.id', '')
-            print(temp)
             self.id2i(id_filename, temp)
             self.append(temp, mst_filename)
 
@@ -252,17 +248,8 @@ class CISIS(object):
     def find_record(self, mst_filename, expression):
         r = mst_filename + expression
         cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 "pft=mfn/" now > ' + r
-
         os.system(cmd)
-        f = open(r, 'r')
-        c = f.readlines()
-        f.close()
-
-        a = []
-        for l in c:
-            a.append(l.replace('\n', ''))
-
-        return a
+        return [l.replace('\n', '') for l in open(r, 'r').readlines()]
 
     def new(self, mst_filename):
         cmd = self.cisis_path + '/mx null count=0 create="' + mst_filename + '" now -all'
@@ -272,13 +259,11 @@ class CISIS(object):
         if os.path.isfile(result_filename + '.mst'):
             os.unlink(result_filename + '.mst')
             os.unlink(result_filename + '.xrf')
-        
-        cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 append=' + result_filename + ' now -all'
+        cmd = self.cisis_path + '/mx btell=0 ' + mst_filename + ' "bool=' + expression + '"  lw=999 append=' + result_filename + ' now -all'
         os.system(cmd)
 
     def generate_indexes(self, mst_filename, fst_filename, inverted_filename):
         cmd = self.cisis_path + '/mx ' + mst_filename + ' fst=@' + fst_filename + ' fullinv=' + inverted_filename
-        print(cmd)
         os.system(cmd)
 
     def is_readable(self, mst_filename):
@@ -409,11 +394,11 @@ class IsisDAO(object):
             try:
                 os.unlink(temp_file.name)
             except:
-                print(temp_file.name)
+                pass
         try:
             os.unlink(id_filename)
         except:
-            print(id_filename)
+            pass
         return r
 
     def get_id_records(self, id_filename):
@@ -421,4 +406,3 @@ class IsisDAO(object):
 
     def save_id(self, id_filename, records):
         IDFile().save(id_filename, records)
-

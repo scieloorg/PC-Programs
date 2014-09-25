@@ -140,7 +140,7 @@ def normalize_space(s):
 
 
 def node_text(node, exclude_root_tag=True):
-    text = ''
+    text = None
     if not node is None:
         text = etree.tostring(node)
         if '<' in text[0:1]:
@@ -150,7 +150,7 @@ def node_text(node, exclude_root_tag=True):
 
 
 def node_xml(node):
-    text = ''
+    text = None
     if not node is None:
         text = etree.tostring(node)
     return text
@@ -288,7 +288,6 @@ def load_xml(content):
         except Exception as e:
             print('XML is not well formed')
             print(e)
-            open('./teste.xml', 'w').write(content)
             r = None
     return r
 

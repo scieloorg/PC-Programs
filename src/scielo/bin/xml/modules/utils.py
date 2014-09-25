@@ -3,6 +3,15 @@
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 
 
+def how_similar(this, that):
+    import difflib
+    if this is None:
+        this = ''
+    if that is None:
+        that = ''
+    return difflib.SequenceMatcher(None, this.lower(), that.lower()).ratio()
+
+
 def u_encode(u, encoding):
     r = u
     if isinstance(u, unicode):
