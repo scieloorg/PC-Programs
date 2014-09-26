@@ -111,16 +111,10 @@ if doit:
     report.write('delete scilista:' + proc_scilista, True, False, True)
     proc_scilista_del = config.parameters['PROC_SERIAL_PATH'] + '/scilista_del.lst'
     
-    if os.path.exists(proc_scilista):
-        os.unlink(proc_scilista)
-    ## - 
-    if os.path.isfile(proc_scilista_del):
-        shutil.copyfile(proc_scilista_del, proc_scilista)
-
-    
     path = config.parameters['COLLECTIONS_PATH']
     report.write('path of collections:' + path, True, False, True)
 
+    all_scilista_content = ''
     for collection_folder in os.listdir(path):
         print(collection_folder)
         report.write('collection folder:' + collection_folder, True, False, True)
@@ -145,37 +139,39 @@ if doit:
         
             if os.path.exists(collection_config.parameter('COL_SCILISTA')):
                 f = open(collection_config.parameter('COL_SCILISTA'), 'r')
-                c = f.read()
+                col_scilista_content = f.read()
                 f.close()
-                f = open(proc_scilista, 'a+')
-                f.write(c)
-                f.close()
-            
+                
+                all_scilista_content += col_scilista_content
+
             if collection_serial_path != config.parameters['PROC_SERIAL_PATH']:
                 # copy col_serial to serial
                 report.write('issues folders:' + collection_serial_path, True, False, True)
-                for folder_in_serial in os.listdir(collection_serial_path):
-                    if not folder_in_serial in [ 'title', 'issue', 'i' ] and os.path.isdir(collection_serial_path + '/' + folder_in_serial):
-                        # journal folder
-                        report.write('journal:' + folder_in_serial, True, False, True)
+            
+                scilista_items = col_scilista_content.split('\n')
+                for scilista_item in scilista_items:
+                    acron, issue_folder = scilista_item.split(' ')
+                    # issue folder 
+                    proc_issue_base_path = config.parameters['PROC_SERIAL_PATH'] + '/' + acron + '/' + issue_folder + '/base'
+                    issue_base_path = collection_serial_path + '/' + acron + '/' + issue_folder + '/base'
+                    report.write(scilista_item, True, False, True) 
 
-                        for issue_folder in os.listdir(collection_serial_path+ '/' + folder_in_serial):
-                            # issue folder 
-                            issue_base_path = folder_in_serial + '/' + issue_folder + '/base'
-                            report.write(issue_folder, True, False, True) 
+                    dbfiles = []
+                    if os.path.exists(issue_base_path):
+                        dbfiles = os.listdir(issue_base_path)
+                    
+                    if len(dbfiles)>0:
+                        if not os.path.exists(proc_issue_base_path):
+                            os.makedirs(proc_issue_base_path)
+                        for dbfile in dbfiles:
+                            shutil.copyfile(issue_base_path + '/' + dbfile, proc_issue_base_path + '/' + dbfile)
+                        print(acron + ' ' + issue_folder + ' has ' + str(len(dbfiles)) + ' files')
+                    else:
+                        print(acron + ' ' + issue_folder + ' has no files')
 
-                            dbfiles = []
-                            if os.path.exists(collection_serial_path + '/' + issue_base_path):
-                                dbfiles = os.listdir(collection_serial_path + '/' + issue_base_path)
-                            
-                            if len(dbfiles)>0:
-                                if not os.path.exists(config.parameters['PROC_SERIAL_PATH'] + '/' + issue_base_path):
-                                    os.makedirs(config.parameters['PROC_SERIAL_PATH'] + '/' + issue_base_path)
-                                for dbfile in dbfiles:
-                                    shutil.copyfile(collection_serial_path + '/' + issue_base_path + '/' + dbfile, config.parameters['PROC_SERIAL_PATH'] + '/' + issue_base_path + '/' + dbfile)
-                                print(issue_base_path + ' has ' + str(len(dbfiles)) + ' files')
-                            else:
-                                print(issue_base_path + ' has no files')
+    if os.path.isfile(proc_scilista_del):
+        scilista_del = open(proc_scilista_del, 'r').read()
+    
 
     scilista_items = []
     if os.path.exists(proc_scilista):

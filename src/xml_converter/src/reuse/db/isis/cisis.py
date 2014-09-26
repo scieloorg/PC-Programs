@@ -36,7 +36,10 @@ class CISIS:
         if reset:
             self.create('null count=0', mst_filename)
         self.append(temp, mst_filename)
-        os.remove(temp)
+        if os.path.isfile(temp + '.mst'):
+            os.unlink(temp + '.mst')
+        if os.path.isfile(temp + '.xrf'):
+            os.unlink(temp + '.xrf')
 
     def i2id(self, mst_filename, id_filename):
         cmd = self.cisis_path + '/i2id ' + mst_filename + ' > ' + id_filename 
