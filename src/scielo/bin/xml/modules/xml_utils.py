@@ -157,20 +157,21 @@ def node_xml(node):
 
 
 def normalize_xml_numeric_entities(content):
-    content = content.replace('&#x000', '&#x')
-    content = content.replace('&#x00', '&#x')
-    content = content.replace('&#x0', '&#x')
-    content = content.replace('&#x3C;', '&lt;')
-    content = content.replace('&#x3E;', '&gt;')
-    content = content.replace('&#x26;', '&amp;')
-    content = content.replace('&#60;', '&lt;')
-    content = content.replace('&#62;', '&gt;')
-    content = content.replace('&#38;', '&amp;')
+    if '&#x' in content:
+        content = content.replace('&#x000', '&#x')
+        content = content.replace('&#x00', '&#x')
+        content = content.replace('&#x0', '&#x')
     return content
 
 
-def replace_xml_entities(content):
+def preserve_xml_entities(content):
     if '&' in content:
+        content = content.replace('&#x3C;', '<REPLACEENT>lt</REPLACEENT>')
+        content = content.replace('&#x3E;', '<REPLACEENT>gt</REPLACEENT>')
+        content = content.replace('&#x26;', '<REPLACEENT>amp</REPLACEENT>')
+        content = content.replace('&#60;', '<REPLACEENT>lt</REPLACEENT>')
+        content = content.replace('&#62;', '<REPLACEENT>gt</REPLACEENT>')
+        content = content.replace('&#38;', '<REPLACEENT>amp</REPLACEENT>')
         content = content.replace('&lt;', '<REPLACEENT>lt</REPLACEENT>')
         content = content.replace('&gt;', '<REPLACEENT>gt</REPLACEENT>')
         content = content.replace('&amp;', '<REPLACEENT>amp</REPLACEENT>')
@@ -181,17 +182,11 @@ def html_ent2char(content):
     if '&' in content:
         import HTMLParser
         h = HTMLParser.HTMLParser()
+        content = preserve_xml_entities(content)
         if not isinstance(content, unicode):
             content = content.decode('utf-8')
         content = h.unescape(content)
-    return content
-
-
-def fix_amp(content):
-    if '&' in content:
-        content = content.replace('&', 'REPLACEamp')
-        content = content.replace('REPLACEamp' + '#', '&#')
-        content = content.replace('REPLACEamp', '&amp;')
+        content = restore_xml_entities(content)
     return content
 
 
@@ -211,24 +206,15 @@ def convert_entities_to_chars(content, debug=False):
     if '&' in content:
         s = content
 
-        entnum.append(len(content.split('&#')))
-        ent.append(len(content.split('&')))
-        values.append(content)
-
         content = normalize_xml_numeric_entities(content)
-        content = replace_xml_entities(content)
-        content = fix_amp(content)
-        entnum.append(len(content.split('&#')))
-        ent.append(len(content.split('&')))
-        values.append(content)
-
+        #print('fix_amp done')
         content = html_ent2char(content)
-        entnum.append(len(content.split('&#')))
-        ent.append(len(content.split('&')))
-        values.append(content)
-
-        content = restore_xml_entities(content)
-
+        #print('html_ent2char done')
+        if isinstance(content, unicode):
+            content = content.encode('utf-8')
+            if '&' in content:
+                print(content[content.find('&'):content.find('&')+100])
+        #print('restore_xml_entities done')
         if debug is True:
             if ('&' in s or '&' in content) or (s != content):
                 print('-'*10)
@@ -273,6 +259,7 @@ def handle_entities(content):
 
 
 def load_xml(content):
+    msg = None
     if not '<' in content:
         # is a file
         try:
@@ -287,10 +274,29 @@ def load_xml(content):
             r = etree.parse(StringIO(content))
         except Exception as e:
             print('XML is not well formed')
-            print(e)
+            msg = str(e)
+            if 'position ' in msg:
+                pos = msg.split('position ')
+                pos = pos[1]
+                pos = pos[0:pos.find(': ')]
+                if '-' in pos:
+                    pos = pos[0:pos.find('-')]
+                if pos.isdigit():
+                    pos = int(pos)
+                msg += '\n'
+                text = content[0:pos]
+                text = text[text.rfind('<'):]
+                msg += text + '[[['
+                msg += content[pos:pos+1]
+                text = content[pos+1:]
+                msg += ']]]' + text[0:text.find('>')+1]
+                print(msg)
             r = None
-    return r
+    return (r, msg)
 
 
 def is_xml_well_formed(content):
-    return load_xml(content)
+    node, e = load_xml(content)
+    if e is None:
+        return node
+

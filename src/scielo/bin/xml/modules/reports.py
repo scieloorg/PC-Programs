@@ -43,7 +43,7 @@ class TOCReport(object):
             r += self.html_page.format_div(self.html_page.format_list('', 'ol', invalid))
 
         for label in equal_data:
-            if len(toc_data[label]) != 1:
+            if len(toc_data[label]) > 1:
                 part = self.html_page.format_message('FATAL ERROR: equal value of ' + label + ' is required for all the articles of the package')
                 for k, v in toc_data[label].items():
                     part += self.html_page.format_list('found ' + label + ' "' + k + '" in:', 'ul', v, 'issue-problem')
@@ -804,7 +804,7 @@ def get_articles_and_filenames(package_path, xml_names):
     articles_and_filenames = []
     for new_name, xml_name in xml_names.items():
         if os.path.isfile(package_path + '/' + new_name + '.xml'):
-            xml = xml_utils.load_xml(package_path + '/' + new_name + '.xml')
+            xml, e = xml_utils.load_xml(package_path + '/' + new_name + '.xml')
         else:
             xml = None
         article = None if xml is None else Article(xml)

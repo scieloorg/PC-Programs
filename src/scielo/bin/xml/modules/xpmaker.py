@@ -276,7 +276,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
 
     new_name = doc_files_info.xml_name
-    xml = xml_utils.load_xml(content)
+    xml, e = xml_utils.load_xml(content)
     if not xml is None:
         doc = article.Article(xml)
         attach_info = get_attach_info(doc)
@@ -334,7 +334,7 @@ def get_not_found_extended(path, href_list):
 
 def get_href_list(xml_filename):
     href_list = []
-    xml = xml_utils.load_xml(xml_filename)
+    xml, e = xml_utils.load_xml(xml_filename)
     if not xml is None:
         doc = article.Article(xml)
         attach_info = get_attach_info(doc)

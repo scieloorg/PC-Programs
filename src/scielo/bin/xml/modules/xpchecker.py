@@ -77,17 +77,20 @@ def generate_validations_reports(xml_filename, dtd_files, dtd_validation_report_
     xml = None
     is_valid_dtd = False
     is_valid_style = False
-
+    e = None
     java_xml_utils.apply_dtd(xml_filename, dtd_files.doctype)
     if os.path.isfile(xml_filename):
         #well_formed, is_dtd_valid, report_ok, preview_ok, output_ok = (False, False, False, False, False)
-        xml = xml_utils.load_xml(xml_filename)
-        is_valid_dtd = dtd_validation(xml_filename, dtd_validation_report_filename, dtd_files.doctype_with_local_path)
-        is_valid_style = style_validation(xml_filename, style_checker_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report)
-        #xpchecker.apply_doctype(xml_filename, dtd_files.doctype)
-    else:
-        open(dtd_validation_report_filename, 'w').write('Unable to find ' + xml_filename)
-        open(style_checker_report_filename, 'w').write('Unable to find ' + xml_filename)
+        xml, e = xml_utils.load_xml(xml_filename)
+        if e is None:
+            is_valid_dtd = dtd_validation(xml_filename, dtd_validation_report_filename, dtd_files.doctype_with_local_path)
+            is_valid_style = style_validation(xml_filename, style_checker_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report)
+
+    if xml is None:
+        if e is None:
+            e = ''
+        open(dtd_validation_report_filename, 'w').write('Unable to load ' + xml_filename + '\n' + e)
+        open(style_checker_report_filename, 'w').write('Unable to load ' + xml_filename + '\n' + e)
 
     return (xml, is_valid_dtd, is_valid_style)
 
