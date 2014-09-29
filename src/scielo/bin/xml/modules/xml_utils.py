@@ -187,13 +187,15 @@ def preserve_xml_entities(content):
     return content
 
 
-def convert_remaining_named_entities(content):
+def named_ent_to_char(content):
+    replaced_named_ent = []
     if ENTITIES_TABLE is not None:
         if '&' in content:
             for find, replace in ENTITIES_TABLE.items():
-                if '&' in content:
+                if find in content:
+                    replaced_named_ent.append(find + '=>' + replace)
                     content = content.replace(find, replace)
-    return content
+    return (content, replaced_named_ent)
 
 
 def register_remaining_named_entities(content):
@@ -212,7 +214,7 @@ def register_remaining_named_entities(content):
             open('./named_entities.txt', 'w').write('\n'.join(entities))
 
 
-def html_ent2char(content):
+def number_ent_to_char(content):
     if '&' in content:
         h = HTMLParser.HTMLParser()
         if not isinstance(content, unicode):
@@ -233,46 +235,19 @@ def restore_xml_entities(content):
 
 
 def convert_entities_to_chars(content, debug=False):
-    entnum = []
-    ent = []
-    values = []
 
     if '&' in content:
-        s = content
 
         content = normalize_xml_numeric_entities(content)
         #print('fix_amp done')
         content = preserve_xml_entities(content)
-        
-        content = html_ent2char(content)
+        content = number_ent_to_char(content)
 
-        content = convert_remaining_named_entities(content)
+        content, replaced_named_ent = named_ent_to_char(content)
         register_remaining_named_entities(content)
 
         content = restore_xml_entities(content)
-        #print('html_ent2char done')
-        #print('restore_xml_entities done')
-        if debug is True:
-            if ('&' in s or '&' in content) or (s != content):
-                print('-'*10)
-                print('convert_entities_to_chars:')
-                try:
-                    print(s)
-                    print(content)
-                    print(type(s))
-                    print(type(content))
-                    for i in range(0, len(entnum)):
-                        print('-')
-                        print(i)
-                        print(entnum[i])
-                        print(ent[i])
-                        print(values[i])
-                        print(type(values[i]))
-                except:
-                    pass
-                print('-fim-')
-
-    return content
+    return content, replaced_named_ent
 
 
 def handle_mml_entities(content):
@@ -292,11 +267,12 @@ def handle_mml_entities(content):
 
 
 def handle_entities(content):
-    return handle_mml_entities(convert_entities_to_chars(content))
+    content, replaced_named_ent = convert_entities_to_chars(content)
+    return handle_mml_entities(content)
 
 
 def load_xml(content):
-    msg = None
+    message = None
     if not '<' in content:
         # is a file
         try:
@@ -305,12 +281,11 @@ def load_xml(content):
             content = open(content, 'r').read()
 
     if '<' in content:
-        content = convert_entities_to_chars(content)
-
         try:
             r = etree.parse(StringIO(content))
         except Exception as e:
             print('XML is not well formed')
+            message = 'XML is not well formed\n'
             msg = str(e)
             if 'position ' in msg:
                 pos = msg.split('position ')
@@ -327,15 +302,13 @@ def load_xml(content):
                 msg += content[pos:pos+1]
                 text = content[pos+1:]
                 msg += ']]]' + text[0:text.find('>')+1]
-                print(msg)
-            else:
-                print(e)
+            message += msg
+            print(message)
             r = None
-    return (r, msg)
+    return (r, message)
 
 
 def is_xml_well_formed(content):
     node, e = load_xml(content)
     if e is None:
         return node
-

@@ -218,15 +218,17 @@ class ArticleContentValidation(object):
             if order is not None:
                 if order.isdigit():
                     if len(order) != 5:
-                        r = ('ERROR', 'Invalid format of order. Expected 99999.')
+                        r = ('FATAL ERROR', 'Invalid format of order. Expected 99999.')
+                    if int(order) < 1 or int(order) > 99999:
+                        r = ('FATAL ERROR', 'Invalid format of order. Expected number 1 to 99999.')
                 else:
-                    r = ('ERROR', 'Invalid format of order. Expected 99999.')
+                    r = ('FATAL ERROR', 'Invalid format of order. Expected 99999.')
             return r
         r = valid(self.article.order)
         if r[0] == '?':
             r = required('order', self.article.order)
-        elif r[0] == 'ERROR':
-            r = ('order', 'ERROR', r[1])
+        elif r[0] == 'FATAL ERROR':
+            r = ('order', 'FATAL ERROR', r[1])
         else:
             r = ('order', 'OK', self.article.order)
         return r

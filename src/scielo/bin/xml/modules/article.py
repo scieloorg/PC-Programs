@@ -744,7 +744,7 @@ class Article(ArticleXML):
 
     @property
     def is_ahead(self):
-        return (self.volume is None) and (self.number is None)
+        return (self.volume is None) and (self.number == 'ahead')
 
     @property
     def ahpdate(self):

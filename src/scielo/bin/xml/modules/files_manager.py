@@ -483,8 +483,6 @@ class ArticleDAO(object):
             if os.path.isfile(article_files.id_filename):
                 saved_records = self.dao.get_id_records(article_files.id_filename)
                 saved = (len(saved_records) == len(article_isis.records))
-        else:
-            print('Invalid value for order.')
         return saved
 
     def finish_conversion(self, issue_record, issue_files):

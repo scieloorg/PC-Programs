@@ -1,5 +1,6 @@
 
 import os
+import shutil
 from datetime import datetime
 
 import utils
@@ -742,9 +743,9 @@ class ArticleSheetData(object):
                     if item[:-4] in inxml:
                         status = 'found in XML'
                     else:
-                        status = 'FATAL ERROR: not found in XML'
+                        status = 'ERROR: not found in XML'
                 else:
-                    status = 'FATAL ERROR: not found in XML'
+                    status = 'ERROR: not found in XML'
             row['status'] = status
             r.append(row)
         return (t_header, ['files', 'status'], r)
@@ -803,8 +804,17 @@ def package_files(path, xml_name):
 def get_articles_and_filenames(package_path, xml_names):
     articles_and_filenames = []
     for new_name, xml_name in xml_names.items():
-        if os.path.isfile(package_path + '/' + new_name + '.xml'):
+        xml_filename = package_path + '/' + new_name + '.xml'
+        if os.path.isfile(xml_filename):
             xml, e = xml_utils.load_xml(package_path + '/' + new_name + '.xml')
+            if xml is None:
+                shutil.copyfile(xml_filename, xml_filename + '.bkp')
+                xml_content = open(xml_filename, 'r').read()
+                xml_content, replaced_named_ent = xml_utils.convert_entities_to_chars(xml_content)
+                open(xml_filename, 'w').write(xml_content)
+                open(xml_filename + '.replaced.txt', 'w').write('\n'.join(replaced_named_ent))
+                xml, e = xml_utils.load_xml(xml_content)
+
         else:
             xml = None
         article = None if xml is None else Article(xml)

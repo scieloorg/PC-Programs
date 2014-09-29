@@ -271,7 +271,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
 
     content = open(doc_files_info.xml_filename, 'r').read()
     content = xml_utils.remove_doctype(content)
-    content = xml_utils.convert_entities_to_chars(content)
+    content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
     if doc_files_info.is_sgmxml:
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
 
@@ -295,7 +295,11 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
         param_curr_and_new_href_list = ['   ' + c + ' => ' + n for c, n in curr_and_new_href_list]
         param_not_found = ['   ' + c + ' => ' + n for c, n in not_found]
 
-        report_content = packed_files_report(doc_files_info.xml_name, new_name, doc_files_info.xml_path, scielo_pkg_path, param_related_packed, param_href_packed, param_curr_and_new_href_list, param_not_found)
+        if len(replaced_named_ent) > 0:
+            entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
+        else:
+            entities_report = ''
+        report_content = entities_report + packed_files_report(doc_files_info.xml_name, new_name, doc_files_info.xml_path, scielo_pkg_path, param_related_packed, param_href_packed, param_curr_and_new_href_list, param_not_found)
         open(doc_files_info.err_filename, 'w').write(report_content)
 
     new_xml_filename = scielo_pkg_path + '/' + new_name + '.xml'

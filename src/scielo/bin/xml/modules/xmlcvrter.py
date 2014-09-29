@@ -118,7 +118,7 @@ def convert_articles(ahead_manager, db_article, validation_results, issue_record
     register_log('Total of documents in the package: ' + str(len(validation_results)))
 
     for xml_name, data in validation_results.items():
-        loaded.append(xml_name)
+        
         results, article = data
 
         register_log('.'*80)
@@ -147,6 +147,7 @@ def convert_articles(ahead_manager, db_article, validation_results, issue_record
             if valid_ahead is not None:
                 done, msg = ahead_manager.manage_ex_ahead(valid_ahead)
                 register_log(msg)
+            loaded.append(xml_name)
             register_log('RESULT: converted')
         else:
             not_loaded.append(xml_name)
@@ -190,9 +191,10 @@ def convert_article(db_article, issue_record, issue_files, xml_name, article, re
 
         section_code, matched_rate, similar_section_title = IssueRecord(issue_record).section_code(article.toc_section)
         if section_code is None:
-            f += 1
-            register_log('FATAL ERROR: ' + article.toc_section + ' is not a registered section.')
-            register_log('Registered sections:\n' + '\n'.join(IssueRecord(issue_record).section_titles))
+            if not article.is_ahead:
+                f += 1
+                register_log('FATAL ERROR: ' + article.toc_section + ' is not a registered section.')
+                register_log('Registered sections:\n' + '\n'.join(IssueRecord(issue_record).section_titles))
         else:
             if matched_rate != 1:
                 register_log('WARNING: section replaced: "' + similar_section_title + '" (instead of "' + article.toc_section + '")')
