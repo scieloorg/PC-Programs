@@ -29,9 +29,10 @@ def normalized_issue_id(json):
     suppl = format(json, '132')
     compl = format(json, '41')
 
-    if ' pr' == num[-3:]:
-        num = num[0:-3]
-        compl = 'pr'
+    if ' pr' == num:
+        _i = num.split(' ')
+        num = _i[0]
+        compl = _i[1]
     n = num.lower().replace('(', '').replace(')', '').split('suppl')
     if len(n) == 2:
         # suppl

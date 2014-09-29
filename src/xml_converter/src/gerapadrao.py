@@ -16,6 +16,31 @@ from reuse.input_output.tracker import Tracker
 from reuse.db.isis.cisis import CISIS
 
 
+def update_files_content(scilista_items, source, user_and_host, destination):
+    # 'rsync -CrvK xmldata/col/scl/4web/htdocs/img/* roberta.takenaka@poseidon:/var/www/xml_scielo_br/htdocs/img/revistas'
+    # source = xmldata/col/scl/4web
+    # user_and_host = user@host
+    # destination = /var/www/xml_scielo_br
+    commands = []
+    for item in scilista_items:
+        issue_id_path = item.replace(' ', '/').replace('\n', '').replace('\r', '')
+        dest_path = destination + '/htdocs/img/revistas/' + issue_id_path
+        commands.append('ssh ' + user_and_host + ' "mkdir -p ' + dest_path + '"')
+        commands.append('rsync -CrvK ' + source + '/htdocs/img/' + issue_id_path + '/* ' + user_and_host + ':' + dest_path)
+        commands.append('rm -rf ' + source + '/htdocs/img/' + issue_id_path)
+
+        dest_path = destination + '/bases/pdf/' + issue_id_path
+        commands.append('ssh ' + user_and_host + ' "mkdir -p ' + dest_path + '"')
+        commands.append('rsync -CrvK ' + source + '/bases/pdf/' + issue_id_path + '/* ' + user_and_host + ':' + dest_path)
+        commands.append('rm -rf ' + source + '/bases/pdf/' + issue_id_path)
+
+        dest_path = destination + '/bases/xml/' + issue_id_path
+        commands.append('ssh ' + user_and_host + ' "mkdir -p ' + dest_path + '"')
+        commands.append('rsync -CrvK ' + source + '/bases/xml/' + issue_id_path + '/* ' + user_and_host + ':' + dest_path)
+        commands.append('rm -rf ' + source + '/bases/xml/' + issue_id_path)
+
+    return '\n'.join(commands)
+
 
 # read parameters of execution 
 parameter_list = ['script' ]         
@@ -108,19 +133,13 @@ if doit:
     report.write('Reset ' + proc_issue_db, True, False, True)
     cisis.create('null count=0', proc_issue_db)
     proc_scilista = config.parameters['PROC_SERIAL_PATH'] + '/scilista.lst'
-    report.write('delete scilista:' + proc_scilista, True, False, True)
     proc_scilista_del = config.parameters['PROC_SERIAL_PATH'] + '/scilista_del.lst'
-    
-    if os.path.exists(proc_scilista):
-        os.unlink(proc_scilista)
-    ## - 
-    if os.path.isfile(proc_scilista_del):
-        shutil.copyfile(proc_scilista_del, proc_scilista)
-
     
     path = config.parameters['COLLECTIONS_PATH']
     report.write('path of collections:' + path, True, False, True)
 
+    all_the_scilista_items = []
+    scilista_files = []
     for collection_folder in os.listdir(path):
         print(collection_folder)
         report.write('collection folder:' + collection_folder, True, False, True)
@@ -145,55 +164,57 @@ if doit:
         
             if os.path.exists(collection_config.parameter('COL_SCILISTA')):
                 f = open(collection_config.parameter('COL_SCILISTA'), 'r')
-                c = f.read()
+                col_scilista_items = f.readlines()
                 f.close()
-                f = open(proc_scilista, 'a+')
-                f.write(c)
-                f.close()
-            
+                scilista_files.append(collection_config.parameter('COL_SCILISTA'))
+                all_the_scilista_items += col_scilista_items
+
             if collection_serial_path != config.parameters['PROC_SERIAL_PATH']:
                 # copy col_serial to serial
                 report.write('issues folders:' + collection_serial_path, True, False, True)
-                for folder_in_serial in os.listdir(collection_serial_path):
-                    if not folder_in_serial in [ 'title', 'issue', 'i' ] and os.path.isdir(collection_serial_path + '/' + folder_in_serial):
-                        # journal folder
-                        report.write('journal:' + folder_in_serial, True, False, True)
-
-                        for issue_folder in os.listdir(collection_serial_path+ '/' + folder_in_serial):
-                            # issue folder 
-                            issue_base_path = folder_in_serial + '/' + issue_folder + '/base'
-                            report.write(issue_folder, True, False, True) 
-
-                            dbfiles = []
-                            if os.path.exists(collection_serial_path + '/' + issue_base_path):
-                                dbfiles = os.listdir(collection_serial_path + '/' + issue_base_path)
-                            
-                            if len(dbfiles)>0:
-                                if not os.path.exists(config.parameters['PROC_SERIAL_PATH'] + '/' + issue_base_path):
-                                    os.makedirs(config.parameters['PROC_SERIAL_PATH'] + '/' + issue_base_path)
-                                for dbfile in dbfiles:
-                                    shutil.copyfile(collection_serial_path + '/' + issue_base_path + '/' + dbfile, config.parameters['PROC_SERIAL_PATH'] + '/' + issue_base_path + '/' + dbfile)
-                                print(issue_base_path + ' has ' + str(len(dbfiles)) + ' files')
-                            else:
-                                print(issue_base_path + ' has no files')
-
-    scilista_items = []
-    if os.path.exists(proc_scilista):
-        f = open(proc_scilista, 'r')
-        scilista_items = f.readlines()
-        f.close()
-    
-    if ''.join(scilista_items) != '':
-        tracker.register('Gerapadrao', 'inicio')
-        
             
-        os.system(config.parameters['RUN_GERAPADRAO_AND_UPDATE_BASES'])
-        os.system(config.parameters['RUN_UPDATE_FILES'])
+                for scilista_item in col_scilista_items:
+                    acron, issue_folder = scilista_item.split(' ')
+                    # issue folder 
+                    proc_issue_base_path = config.parameters['PROC_SERIAL_PATH'] + '/' + acron + '/' + issue_folder + '/base'
+                    issue_base_path = collection_serial_path + '/' + acron + '/' + issue_folder + '/base'
+                    report.write(scilista_item, True, False, True) 
+
+                    dbfiles = []
+                    if os.path.exists(issue_base_path):
+                        dbfiles = os.listdir(issue_base_path)
+                    
+                    if len(dbfiles)>0:
+                        if not os.path.exists(proc_issue_base_path):
+                            os.makedirs(proc_issue_base_path)
+                        for dbfile in dbfiles:
+                            shutil.copyfile(issue_base_path + '/' + dbfile, proc_issue_base_path + '/' + dbfile)
+                        print(acron + ' ' + issue_folder + ' has ' + str(len(dbfiles)) + ' files')
+                    else:
+                        print(acron + ' ' + issue_folder + ' has no files')
+
+    if os.path.isfile(proc_scilista_del):
+        all_the_scilista_items = open(proc_scilista_del, 'r').readlines() + all_the_scilista_items
+        scilista_files.append(proc_scilista_del)
+
+    all_the_scilista_items = list(set([f for f in all_the_scilista_items if ' ' in f]))
+
+    if len(all_the_scilista_items) > 0:
+        for scilista_file in scilista_files:
+            if os.path.isfile(scilista_file):
+                os.unlink(scilista_file)
+
+        open('./transf_files.sh', 'w').write(update_files_content(all_the_scilista_items, config.parameters['TRANSF_SOURCE'], config.parameters['USERATHOST'], config.parameters['TRANSF_DEST']))
         tracker.register('Gerapadrao', 'fim')
-        
+        os.system('chmod 775 ./transf_files.sh')
+        os.system('nohup ./transf_files.sh&')
+
+        open(proc_scilista, 'w').write('\n'.join(all_the_scilista_items))
+        tracker.register('Gerapadrao', 'inicio')
+        os.system(config.parameters['RUN_GERAPADRAO_AND_UPDATE_BASES'])
+        #os.system(config.parameters['RUN_UPDATE_FILES'])
         #report_sender.send_report('', '', c, [], [])
-        
-        print(report_sender.send_to_adm(template, '\n'.join(scilista_items)))
+        print(report_sender.send_to_adm(template, '\n'.join(all_the_scilista_items)))
     else:
         f = open(config.parameters['CTRL_FILE'], 'w')
         f.write('off')
