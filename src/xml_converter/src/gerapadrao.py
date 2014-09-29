@@ -27,14 +27,17 @@ def update_files_content(scilista_items, source, user_and_host, destination):
         dest_path = destination + '/htdocs/img/revistas/' + issue_id_path
         commands.append('ssh ' + user_and_host + ' "mkdir -p ' + dest_path + '"')
         commands.append('rsync -CrvK ' + source + '/htdocs/img/' + issue_id_path + '/* ' + user_and_host + ':' + dest_path)
+        commands.append('rm -rf ' + source + '/htdocs/img/' + issue_id_path)
 
         dest_path = destination + '/bases/pdf/' + issue_id_path
         commands.append('ssh ' + user_and_host + ' "mkdir -p ' + dest_path + '"')
         commands.append('rsync -CrvK ' + source + '/bases/pdf/' + issue_id_path + '/* ' + user_and_host + ':' + dest_path)
+        commands.append('rm -rf ' + source + '/bases/pdf/' + issue_id_path)
 
         dest_path = destination + '/bases/xml/' + issue_id_path
         commands.append('ssh ' + user_and_host + ' "mkdir -p ' + dest_path + '"')
         commands.append('rsync -CrvK ' + source + '/bases/xml/' + issue_id_path + '/* ' + user_and_host + ':' + dest_path)
+        commands.append('rm -rf ' + source + '/bases/xml/' + issue_id_path)
 
     return '\n'.join(commands)
 
@@ -136,6 +139,7 @@ if doit:
     report.write('path of collections:' + path, True, False, True)
 
     all_the_scilista_items = []
+    scilista_files = []
     for collection_folder in os.listdir(path):
         print(collection_folder)
         report.write('collection folder:' + collection_folder, True, False, True)
@@ -162,7 +166,7 @@ if doit:
                 f = open(collection_config.parameter('COL_SCILISTA'), 'r')
                 col_scilista_items = f.readlines()
                 f.close()
-                
+                scilista_files.append(collection_config.parameter('COL_SCILISTA'))
                 all_the_scilista_items += col_scilista_items
 
             if collection_serial_path != config.parameters['PROC_SERIAL_PATH']:
@@ -191,21 +195,24 @@ if doit:
 
     if os.path.isfile(proc_scilista_del):
         all_the_scilista_items = open(proc_scilista_del, 'r').readlines() + all_the_scilista_items
+        scilista_files.append(proc_scilista_del)
 
-    all_the_scilista_items = [f for f in all_the_scilista_items if ' ' in f]
+    all_the_scilista_items = list(set([f for f in all_the_scilista_items if ' ' in f]))
 
     if len(all_the_scilista_items) > 0:
+        for scilista_file in scilista_files:
+            if os.path.isfile(scilista_file):
+                os.unlink(scilista_file)
+
         open('./transf_files.sh', 'w').write(update_files_content(all_the_scilista_items, config.parameters['TRANSF_SOURCE'], config.parameters['USERATHOST'], config.parameters['TRANSF_DEST']))
         tracker.register('Gerapadrao', 'fim')
         os.system('chmod 775 ./transf_files.sh')
         os.system('nohup ./transf_files.sh&')
 
         open(proc_scilista, 'w').write('\n'.join(all_the_scilista_items))
-        tracker.register('Gerapadrao', 'inicio')            
+        tracker.register('Gerapadrao', 'inicio')
         os.system(config.parameters['RUN_GERAPADRAO_AND_UPDATE_BASES'])
         #os.system(config.parameters['RUN_UPDATE_FILES'])
-
-
         #report_sender.send_report('', '', c, [], [])
         print(report_sender.send_to_adm(template, '\n'.join(all_the_scilista_items)))
     else:
