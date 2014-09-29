@@ -93,16 +93,6 @@ class IDFile(object):
         r = ''
         s = value
         if value is not None and value != '':
-            try:
-                value = convert_entities_to_chars(value)
-            except Exception as e:
-                value = None
-                print('_tagged: convert_entities_to_chars')
-                print(e)
-                print(s)
-                print(value)
-                print(type(s))
-                print(type(value))
             if value is not None:
                 try:
                     value = normalize_space(value)

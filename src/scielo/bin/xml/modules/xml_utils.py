@@ -3,9 +3,18 @@ import os
 import shutil
 import tempfile
 import xml.etree.ElementTree as etree
+import HTMLParser
 from StringIO import StringIO
 
 import xml_utils
+
+
+ENTITIES_TABLE = {}
+if len(ENTITIES_TABLE) == 0:
+    if os.path.isfile('./tables/entities.csv'):
+        for item in open('./tables/entities.csv', 'r').readlines():
+            symbol, number_ent, named_ent, descr, representation = item.split('|')
+            ENTITIES_TABLE[named_ent] = symbol
 
 
 class XMLContent(object):
@@ -178,15 +187,40 @@ def preserve_xml_entities(content):
     return content
 
 
+def convert_remaining_named_entities(content):
+    if ENTITIES_TABLE is not None:
+        if '&' in content:
+            for find, replace in ENTITIES_TABLE.items():
+                if '&' in content:
+                    content = content.replace(find, replace)
+    return content
+
+
+def register_remaining_named_entities(content):
+    if '&' in content:
+        entities = []
+        if os.path.isfile('./named_entities.txt'):
+            entities = open('./named_entities.txt', 'r').readlines()
+        content = content[content.find('&'):]
+        l = content.split('&')
+        for item in l:
+            if not item.startswith('#') and ';' in item:
+                ent = item[0:item.find(';')]
+                entities.append('&' + ent + ';')
+        entities = sorted(list(set(entities)))
+        if len(entities) > 0:
+            open('./named_entities.txt', 'w').write('\n'.join(entities))
+
+
 def html_ent2char(content):
     if '&' in content:
-        import HTMLParser
         h = HTMLParser.HTMLParser()
-        content = preserve_xml_entities(content)
         if not isinstance(content, unicode):
             content = content.decode('utf-8')
         content = h.unescape(content)
-        content = restore_xml_entities(content)
+        if isinstance(content, unicode):
+            content = content.encode('utf-8')
+
     return content
 
 
@@ -208,12 +242,15 @@ def convert_entities_to_chars(content, debug=False):
 
         content = normalize_xml_numeric_entities(content)
         #print('fix_amp done')
+        content = preserve_xml_entities(content)
+        
         content = html_ent2char(content)
+
+        content = convert_remaining_named_entities(content)
+        register_remaining_named_entities(content)
+
+        content = restore_xml_entities(content)
         #print('html_ent2char done')
-        if isinstance(content, unicode):
-            content = content.encode('utf-8')
-            if '&' in content:
-                print(content[content.find('&'):content.find('&')+100])
         #print('restore_xml_entities done')
         if debug is True:
             if ('&' in s or '&' in content) or (s != content):
@@ -291,6 +328,8 @@ def load_xml(content):
                 text = content[pos+1:]
                 msg += ']]]' + text[0:text.find('>')+1]
                 print(msg)
+            else:
+                print(e)
             r = None
     return (r, msg)
 
