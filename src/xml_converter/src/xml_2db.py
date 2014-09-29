@@ -182,8 +182,6 @@ if parameters.check_parameters(sys.argv):
             xsl_and_output_list[k] = {'xsl': pair[0], 'output': pair[1]}
         
         fulltext_generator = FullTextGenerator(xsl_and_output_list)
-        if os.path.exists(config.parameter('COL_SCILISTA')):
-            os.unlink(config.parameter('COL_SCILISTA'))
         reception = PackagesProcessor(batch_work_path, report_sender, package_eval_msg_template, report_path, tracker, xml_packer)
         reception.open_packages(information_analyst, documents_archiver, ImageConverter(), fulltext_generator)
         reception.report_not_processed_packages(adm_msg_template)
