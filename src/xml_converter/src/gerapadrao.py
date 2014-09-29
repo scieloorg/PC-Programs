@@ -163,9 +163,7 @@ if doit:
             report.write('collection scilista:' + collection_config.parameter('COL_SCILISTA') , True, False, True)
         
             if os.path.exists(collection_config.parameter('COL_SCILISTA')):
-                f = open(collection_config.parameter('COL_SCILISTA'), 'r')
-                col_scilista_items = f.readlines()
-                f.close()
+                col_scilista_items = [f.replace('\n', '').replace('\r', '') for f in open(collection_config.parameter('COL_SCILISTA'), 'r').readlines() if ' ' in f]
                 scilista_files.append(collection_config.parameter('COL_SCILISTA'))
                 all_the_scilista_items += col_scilista_items
 
@@ -183,7 +181,7 @@ if doit:
                     dbfiles = []
                     if os.path.exists(issue_base_path):
                         dbfiles = os.listdir(issue_base_path)
-                    
+                        print(dbfiles)
                     if len(dbfiles)>0:
                         if not os.path.exists(proc_issue_base_path):
                             os.makedirs(proc_issue_base_path)
@@ -197,7 +195,7 @@ if doit:
         all_the_scilista_items = open(proc_scilista_del, 'r').readlines() + all_the_scilista_items
         scilista_files.append(proc_scilista_del)
 
-    all_the_scilista_items = list(set([f for f in all_the_scilista_items if ' ' in f]))
+    all_the_scilista_items = list(set([f.replace('\n', '').replace('\r', '') for f in all_the_scilista_items if ' ' in f]))
 
     if len(all_the_scilista_items) > 0:
         for scilista_file in scilista_files:
