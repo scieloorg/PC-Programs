@@ -80,16 +80,13 @@ class AheadManager:
             db_name = ahead_issue_folder
 
             mst_filename = db_path + '/' + db_name
-
-            
             id_filename = id_path + '/i.id'
             self.cisis.id2mst(id_filename, mst_filename, True)
 
             for id_name in os.listdir(id_path):
                 if id_name != 'i.id' and id_name != '00000.id' and id_name.endswith('.id'):
-                    id_filename = id_path + '/' + id_name 
-                    self.cisis.id2mst(id_filename, mst_filename, False)
-        
+                    self.cisis.id2mst(id_path + '/' + id_name, mst_filename, False)
+                    
 
 
 class ISISManager4Articles:
@@ -200,8 +197,9 @@ class ISISManager4Articles:
             os.unlink(issue_paths.issue_db_filename + '.xrf')
 
         self.cisis.id2mst(issue_paths.issue_i_record_filename, issue_paths.issue_db_filename, False)
-        id_files = [f for f in os.listdir(issue_paths.issue_id_path) if f != 'i.id' and f != '00000.id']
+        id_files = [f for f in os.listdir(issue_paths.issue_id_path) if f != 'i.id' and f != '00000.id' and f.endswith('.id')]
         for id_file in id_files:
+            package.report.write(id_file, True, False, False)
             self.cisis.id2mst(issue_paths.issue_id_path + '/' + id_file, issue_paths.issue_db_filename, False)
 
         if issue.documents.count > count_id:
