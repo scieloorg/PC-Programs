@@ -193,11 +193,8 @@ if parameters.check_parameters(sys.argv):
             all_the_scilista_items = list(set([f.replace('\n', '').replace('\r', '') for f in all_the_scilista_items if ' ' in f]))
 
             if len(all_the_scilista_items) > 0:
-                for scilista_file in scilista_files:
-                    if os.path.isfile(scilista_file):
-                        os.unlink(scilista_file)
 
-                open(proc_scilista, 'w').write('\n'.join(all_the_scilista_items + '\n'))
+                open(proc_scilista, 'w').write('\n'.join(all_the_scilista_items) + '\n')
 
                 report.write('scilista content:', True, False, False)
                 report.write('.' + '\n'.join(all_the_scilista_items) + '\n.', True, False, False)
@@ -227,6 +224,11 @@ if parameters.check_parameters(sys.argv):
                 report.write('envia email', True, False, False)
                 print(report_sender.send_to_adm(template, '\n'.join(all_the_scilista_items)))
                 report.write('fim', True, False, False)
+
+                for scilista_file in scilista_files:
+                    if os.path.isfile(scilista_file):
+                        os.unlink(scilista_file)
+
             else:
                 report.write('set status as finished. No item in scilista.', True, False, False)
                 set_status(config.parameters['CTRL_FILE'], 'finished')
