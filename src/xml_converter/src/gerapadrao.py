@@ -163,28 +163,28 @@ if parameters.check_parameters(sys.argv):
                         all_the_scilista_items += col_scilista_items
                         report.write('collection scilista:' + '\n'.join(col_scilista_items), True, False, False)
 
-                    if collection_serial_path != config.parameters['PROC_SERIAL_PATH']:
-                        report.write(collection_serial_path, True, False, False)
-                        report.write(config.parameters['PROC_SERIAL_PATH'], True, False, False)
+                        if collection_serial_path != config.parameters['PROC_SERIAL_PATH']:
+                            report.write(collection_serial_path, True, False, False)
+                            report.write(config.parameters['PROC_SERIAL_PATH'], True, False, False)
 
-                        for scilista_item in col_scilista_items:
-                            acron, issue_folder = scilista_item.split(' ')
+                            for scilista_item in col_scilista_items:
+                                acron, issue_folder = scilista_item.split(' ')
 
-                            proc_issue_base_path = config.parameters['PROC_SERIAL_PATH'] + '/' + acron + '/' + issue_folder + '/base'
-                            issue_base_path = collection_serial_path + '/' + acron + '/' + issue_folder + '/base'
-                            report.write(scilista_item, True, False, False)
+                                proc_issue_base_path = config.parameters['PROC_SERIAL_PATH'] + '/' + acron + '/' + issue_folder + '/base'
+                                issue_base_path = collection_serial_path + '/' + acron + '/' + issue_folder + '/base'
+                                report.write(scilista_item, True, False, False)
 
-                            dbfiles = []
-                            if os.path.exists(issue_base_path):
-                                dbfiles = os.listdir(issue_base_path)
-                            if len(dbfiles) > 0:
-                                if not os.path.exists(proc_issue_base_path):
-                                    os.makedirs(proc_issue_base_path)
-                                for dbfile in dbfiles:
-                                    shutil.copyfile(issue_base_path + '/' + dbfile, proc_issue_base_path + '/' + dbfile)
-                                report.write(acron + ' ' + issue_folder + ' has ' + str(len(dbfiles)) + ' files', True, False, False)
-                            else:
-                                report.write(acron + ' ' + issue_folder + ' has no files', True, False, False)
+                                dbfiles = []
+                                if os.path.exists(issue_base_path):
+                                    dbfiles = os.listdir(issue_base_path)
+                                if len(dbfiles) > 0:
+                                    if not os.path.exists(proc_issue_base_path):
+                                        os.makedirs(proc_issue_base_path)
+                                    for dbfile in dbfiles:
+                                        shutil.copyfile(issue_base_path + '/' + dbfile, proc_issue_base_path + '/' + dbfile)
+                                    report.write(acron + ' ' + issue_folder + ' has ' + str(len(dbfiles)) + ' files', True, False, False)
+                                else:
+                                    report.write(acron + ' ' + issue_folder + ' has no files', True, False, False)
 
             if os.path.isfile(proc_scilista_del):
                 all_the_scilista_items = open(proc_scilista_del, 'r').readlines() + all_the_scilista_items
