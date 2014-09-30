@@ -197,8 +197,15 @@ if parameters.check_parameters(sys.argv):
                     if os.path.isfile(scilista_file):
                         os.unlink(scilista_file)
 
-                open(proc_scilista, 'w').write('\n'.join(all_the_scilista_items))
+                open(proc_scilista, 'w').write('\n'.join(all_the_scilista_items + '\n'))
+
+                report.write('scilista content:', True, False, False)
+                report.write('.' + '\n'.join(all_the_scilista_items) + '\n.', True, False, False)
+                report.write('---', True, False, False)
+                report.write(open(proc_scilista, 'r').read(), True, False, False)
+                report.write('---', True, False, False)
                 report.write(config.parameters['RUN_GERAPADRAO_AND_UPDATE_BASES'], True, False, False)
+
                 os.system(config.parameters['RUN_GERAPADRAO_AND_UPDATE_BASES'])
 
                 try:
