@@ -208,8 +208,8 @@ class ArticleContentValidation(object):
         return required('doi', self.article.doi)
 
     @property
-    def article_id_publisher_id(self):
-        return display_value('article id (previous pid)', self.article.article_id_publisher_id)
+    def article_previous_id(self):
+        return display_value('article id (previous pid)', self.article.article_previous_id)
 
     @property
     def order(self):

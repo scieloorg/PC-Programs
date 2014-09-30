@@ -392,7 +392,7 @@ class ArticleXML(object):
             return self.article_meta.findtext('article-id[@pub-id-type="doi"]')
 
     @property
-    def article_id_publisher_id(self):
+    def article_previous_id(self):
         if self.article_meta is not None:
             return self.article_meta.findtext('article-id[@specific-use="previous-pid"]')
 
@@ -791,12 +791,14 @@ class Article(ArticleXML):
                 r = (len(d) == 23)
             return r
 
-        d = self.article_id_publisher_id
+        d = self.article_previous_id
         if not is_valid(d):
             if self.doi is not None:
                 d = doi_pid(self.doi)
         if not is_valid(d):
             d = self._ahead_pid
+        if not is_valid(d):
+            d = self.article_id_other
         if not is_valid(d):
             d = None
         return d
