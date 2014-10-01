@@ -5,7 +5,7 @@ from datetime import datetime
 from modules import article
 from modules import files_manager
 from modules import java_xml_utils
-from modules import reports
+from modules import contents_reports
 from modules import xml_utils
 from modules import xml_versions
 from modules import xpchecker
@@ -353,7 +353,8 @@ def xml_output(xml_filename, xsl_filename, result_filename):
 
 
 def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.0'):
-    do_toc_report = False
+    do_toc_report = True
+    do_pmc_package = True
 
     scielo_pkg_path = markup_xml_path + '/scielo_package'
     pmc_pkg_path = markup_xml_path + '/pmc_package'
@@ -364,38 +365,44 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         if not os.path.isdir(d):
             os.makedirs(d)
 
-    xml_names = {}
+    source_xml_names = {}
     if len(xml_files) > 0:
         path = xml_files[0]
         path = os.path.dirname(path)
         hdimages_to_jpeg(path, path, False)
 
-    print('Generate packages (' + str(len(xml_files)) + '):')
+    print('Generate packages ' + str(len(xml_files)) + ' files.')
     for xml_filename in xml_files:
-        doc_files_info = files_manager.DocFilesInfo(xml_filename, report_path, wrk_path)
+        doc_files_info = files_manager.DocumentFiles(xml_filename, report_path, wrk_path)
         doc_files_info.clean()
 
-        do_toc_report = not doc_files_info.is_sgmxml
+        if doc_files_info.is_sgmxml:
+            do_toc_report = False
 
         new_name, new_xml_filename = generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron)
         doc_files_info.new_name = new_name
         doc_files_info.new_xml_filename = new_xml_filename
 
-        xml_names[new_name] = doc_files_info.xml_name
+        source_xml_names[new_name] = doc_files_info.xml_name
         dtd_files = xml_versions.DTDFiles('scielo', version)
-        loaded_xml, is_valid_dtd, is_valid_style = xpchecker.validate_article_package(doc_files_info.new_xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
+        loaded_xml, is_valid_dtd, is_valid_style = xpchecker.validate_article_xml(doc_files_info.new_xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
 
         print(' ... validated')
+        if not doc_files_info.is_sgmxml:
+            if do_pmc_package:
+                if loaded_xml is not None:
+                    doc = article.Article(loaded_xml)
+                    do_pmc_package = (doc.journal_id_nlm_ta is not None)
 
-        if loaded_xml is not None:
-            #generation of pmc.xml
-            xml_output(doc_files_info.new_xml_filename, dtd_files.xsl_output, pmc_pkg_path + '/' + doc_files_info.new_name + '.xml')
+    if do_pmc_package:
+        for xml_filename in [scielo_pkg_path + '/' + f for f in os.listdir(scielo_pkg_path) if f.endswith('.xml')]:
+            xml_output(xml_filename, dtd_files.xsl_output, pmc_pkg_path + '/' + os.path.basename(xml_filename))
 
             #validation of pmc.xml
-            loaded_xml, is_valid_dtd, is_valid_style = xpchecker.validate_article_package(doc_files_info.new_xml_filename, xml_versions.DTDFiles('pmc', version), doc_files_info.pmc_dtd_report_filename, doc_files_info.pmc_style_report_filename, doc_files_info.ctrl_filename)
+            loaded_xml, is_valid_dtd, is_valid_style = xpchecker.validate_article_xml(xml_filename, xml_versions.DTDFiles('pmc', version), doc_files_info.pmc_dtd_report_filename, doc_files_info.pmc_style_report_filename, doc_files_info.ctrl_filename)
 
     print('Generate contents validation reports...')
-    reports.generate_package_reports(scielo_pkg_path, xml_names, report_path, do_toc_report)
+    contents_reports.generate_contents_reports(scielo_pkg_path, source_xml_names, report_path, do_toc_report)
 
     print('Reports')
     print(report_path)

@@ -194,9 +194,9 @@ class ArticleRecords(object):
             self._metadata['70'].append(a)
         #FIXME nao existe clinical trial
         self._metadata['770'] = self.article.clinical_trial
-        self._metadata['72'] = self.article.total_of_references
-        self._metadata['901'] = self.article.total_of_tables
-        self._metadata['902'] = self.article.total_of_figures
+        self._metadata['72'] = str(self.article.total_of_references)
+        self._metadata['901'] = str(self.article.total_of_tables)
+        self._metadata['902'] = str(self.article.total_of_figures)
 
         self._metadata['83'] = []
         for item in self.article.abstracts:

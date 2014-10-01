@@ -8,7 +8,8 @@ from configuration import Configuration
 from isis_models import IssueRecord
 
 import files_manager
-import reports
+import xpchecker
+import contents_reports
 
 
 msg_list = []
@@ -47,32 +48,39 @@ def display_statistic(f, e, w):
     return '\n'.join(msg)
 
 
-def evaluate_package(xml_path, report_path):
-    register_log('Validating the package...')
+def evaluate_package(xml_path, report_path, wrk_path, version):
+    register_log('Validating the XML Files...')
 
     if not os.path.isdir(report_path):
         os.makedirs(report_path)
+
+    xml_files = [xml_path + '/' + f for f in os.listdir(xml_path) if f.endswith('.xml')]
     xml_names = {f.replace('.xml', ''):f.replace('.xml', '') for f in os.listdir(xml_path) if f.endswith('.xml')}
 
-    toc_statistic, package_statistic, validation_results, issues = reports.generate_package_reports(xml_path, xml_names, report_path)
+    xpchecker.validate_issue_package(xml_files, report_path, wrk_path, version)
+
+    toc_statistic, package_statistic, validation_results, issues = contents_reports.generate_contents_reports(xml_path, xml_names, report_path)
     toc_f, toc_e, toc_w = toc_statistic
     package_f, package_e, package_w = package_statistic
 
-    register_log('Table of Contents Validations')
+    register_log('-'*80)
+    register_log('Results of Table of Contents data validations')
     register_log(display_statistic(toc_f, toc_e, toc_w))
-    register_log('Articles validations')
+    register_log('.'*80)
+    register_log('Results of Articles data validations')
     register_log(display_statistic(package_f, package_e, package_w))
+    register_log('-'*80)
 
     return (toc_f == 0, validation_results)
 
 
-def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_ahead, db_article):
-    register_log('XML Converter')
+def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_ahead, db_article, version='1.0'):
+    register_log('Executing XML Conversion (XML to Database)')
 
-    register_log('XML files: ' + xml_path)
-    register_log('serial path: ' + serial_path)
+    register_log('XML Files: ' + xml_path)
+    register_log('Results: ' + serial_path)
 
-    is_valid_package, validation_results = evaluate_package(xml_path, report_path)
+    is_valid_package, validation_results = evaluate_package(xml_path, report_path, None, version)
 
     if not is_valid_package:
         register_log('FATAL ERROR: Unable to create "base" because of fatal errors in the Table of Contents data. Check toc.html report.')
@@ -93,16 +101,19 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
             report_path = issue_files.base_reports_path
             convert_articles(ahead_manager, db_article, validation_results, issue_record, issue_files)
 
-    register_log('XML Converter reports of each document: ' + report_path)
+    register_log('Reports for each XML file: ' + report_path)
     register_log('\n'.join(sorted(os.listdir(report_path))))
 
     content = '\n'.join(msg_list)
 
-    f, e, w = reports.statistics_numbers(content)
+    f, e, w = contents_reports.statistics_numbers(content)
+    register_log('-'*80)
+    register_log('Results of XML Conversion (XML to Database)')
     register_log(display_statistic(f, e, w))
+    register_log('-'*80)
 
-    open(report_path + '/xml_converter.log', 'w').write(content)
-    print('\n\nXML Converter report: ' + report_path + '/xml_converter.log')
+    open(report_path + '/xml_converter_result.log', 'w').write(content)
+    print('\n\nXML Converter report: ' + report_path + '/xml_converter_result.log')
     print('\n\n-- end --')
 
 
@@ -118,7 +129,6 @@ def convert_articles(ahead_manager, db_article, validation_results, issue_record
     register_log('Total of documents in the package: ' + str(len(validation_results)))
 
     for xml_name, data in validation_results.items():
-        
         results, article = data
 
         register_log('.'*80)
@@ -158,15 +168,15 @@ def convert_articles(ahead_manager, db_article, validation_results, issue_record
     register_log(display_list('converted', loaded))
     register_log(display_list('not converted', not_loaded))
     register_log(display_list('new documents', total_new_doc))
-    register_log(display_list('ex-aheads', total_ex_aop))
-    register_log(display_list('ex-aheads partially matched', total_ex_aop_partially))
-    register_log(display_list('ex-aheads without PID', total_ex_aop_invalid))
-    register_log(display_list('ex-aheads unmatched', total_ex_aop_unmatched))
+    register_log(display_list('previous version as aop', total_ex_aop))
+    register_log(display_list('previous version as aop partially matched', total_ex_aop_partially))
+    register_log(display_list('previous version as aop without PID', total_ex_aop_invalid))
+    register_log(display_list('previous version as aop unmatched', total_ex_aop_unmatched))
 
     if len(loaded) > 0:
         _loaded = db_article.finish_conversion(issue_record, issue_files)
         register_log('Created database: ' + issue_files.base_path)
-        register_log('Other products: ' + issue_files.base_path)
+        register_log('Other files created: ' + issue_files.base_path)
 
     if len(total_ex_aop) > 0:
         register_log(ahead_manager.finish_manage_ex_ahead())
@@ -230,7 +240,7 @@ def find_xml_paths(path):
     return r
 
 
-def convert(path, config):
+def convert(path, config, version):
     #FIXME
     xml_paths = find_xml_paths(path)
     if len(xml_paths) == 0:
@@ -245,13 +255,14 @@ def convert(path, config):
             print('*'*80)
             print(xml_path + '\n')
             report_path = xml_path + '_base_reports'
-            convert_package(serial_path, xml_path, report_path, web_path, issue_dao, config.isis_dao, article_dao)
+            convert_package(serial_path, xml_path, report_path, web_path, issue_dao, config.isis_dao, article_dao, version)
             print('*'*80)
 
 
 def read_configuration():
     curr_path = os.getcwd().replace('\\', '/')
     filename = curr_path + '/./../scielo_paths.ini'
+
     if os.path.isfile(filename):
         r = Configuration(filename)
         if r is not None:
@@ -259,6 +270,8 @@ def read_configuration():
                 r = None
     else:
         r = None
+    if r is None:
+        print(filename)
     return r
 
 
@@ -276,7 +289,7 @@ def read_inputs(args):
         messages.append('\n===== ATTENTION =====\n')
         messages.append('ERROR: Incorrect parameters')
         messages.append('\nUsage:')
-        messages.append('python ' + script + ' <xml_src>')
+        messages.append('python xml_converter.py <xml_src>')
         messages.append('where:')
         messages.append('  <xml_src> = XML filenames folder')
         error_messages = '\n'.join(messages)
@@ -284,7 +297,7 @@ def read_inputs(args):
     return (path, error_messages)
 
 
-def call_converter(args):
+def call_converter(args, version='1.0'):
     config = read_configuration()
     if config is None:
         print('ERROR: Unable to configure XML Converter.')
@@ -293,4 +306,4 @@ def call_converter(args):
         if path is None:
             print(error_messages)
         else:
-            convert(path, config)
+            convert(path, config, version)

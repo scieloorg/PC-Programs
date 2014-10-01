@@ -5,17 +5,28 @@ from datetime import datetime
 from utils import how_similar
 
 
-class DocFilesInfo(object):
+class DocumentFiles(object):
 
     def __init__(self, xml_filename, report_path, wrk_path):
+        self.is_sgmxml = xml_filename.endswith('.sgm.xml')
+        self.ctrl_filename = None
+        self.html_filename = None
+
         self.xml_filename = xml_filename
         self.xml_path = os.path.dirname(xml_filename)
 
-        xml_file = os.path.basename(xml_filename)
-        self.xml_name = xml_file.replace('.sgm.xml', '').replace('.xml', '')
+        basename = os.path.basename(xml_filename)
+
+        self.xml_name = basename.replace('.sgm.xml', '').replace('.xml', '')
         self.new_name = self.xml_name
 
-        self.xml_wrk_path = wrk_path + '/' + self.xml_name
+        if self.is_sgmxml:
+            wrk_path = wrk_path + '/' + self.xml_name
+
+            self.html_filename = wrk_path + '/' + self.xml_name + '.temp.htm'
+            if not os.path.isfile(self.html_filename):
+                self.html_filename += 'l'
+            self.ctrl_filename = wrk_path + '/' + self.xml_name + '.ctrl.txt'
 
         self.dtd_report_filename = report_path + '/' + self.xml_name + '.dtd.txt'
         self.style_report_filename = report_path + '/' + self.xml_name + '.rep.html'
@@ -24,15 +35,8 @@ class DocFilesInfo(object):
         self.pmc_style_report_filename = report_path + '/' + self.xml_name + '.pmc.rep.html'
 
         self.err_filename = report_path + '/' + self.xml_name + '.err.txt'
-        self.html_filename = self.xml_wrk_path + '/' + self.xml_name + '.temp.htm'
-        if not os.path.isfile(self.html_filename):
-            self.html_filename += 'l'
-
-        self.is_sgmxml = xml_filename.endswith('.sgm.xml')
-        self.ctrl_filename = self.xml_wrk_path + '/' + self.xml_name + '.ctrl.txt' if self.is_sgmxml else None
 
     def clean(self):
-        #clean_folder(self.xml_wrk_path)
         delete_files([self.err_filename, self.dtd_report_filename, self.style_report_filename, self.pmc_dtd_report_filename, self.pmc_style_report_filename, self.ctrl_filename])
 
 
@@ -355,6 +359,7 @@ class IssueFiles(object):
 
     def copy_files_to_web(self):
         msg = ['\n']
+        msg.append('copying files from ' + self.xml_path)
         path = {}
         path['pdf'] = self.web_path + '/bases/pdf/' + self.relative_issue_path
         path['html'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
@@ -364,14 +369,16 @@ class IssueFiles(object):
             if not os.path.isdir(p):
                 os.makedirs(p)
         for f in os.listdir(self.xml_path):
-            if os.path.isfile(self.xml_path + '/' + f):
+            if f.endswith('.xml.bkp') or f.endswith('.xml.replaced.txt'):
+                pass
+            elif os.path.isfile(self.xml_path + '/' + f):
                 ext = f[f.rfind('.')+1:]
                 if path.get(ext) is not None:
                     shutil.copy(self.xml_path + '/' + f, path[ext])
-                    msg.append('copying ' + self.xml_path + '/' + f + '\n    to ' + path[ext])
+                    msg.append('  ' + f + ' => ' + path[ext])
                 else:
                     shutil.copy(self.xml_path + '/' + f, path['img'])
-                    msg.append('copying ' + self.xml_path + '/' + f + '\n    to ' + path['img'])
+                    msg.append('  ' + f + ' => ' + path['img'])
         return '\n'.join(msg)
 
     def move_reports(self, report_path):
@@ -381,13 +388,20 @@ class IssueFiles(object):
             for report_file in os.listdir(report_path):
                 shutil.copy(report_path + '/' + report_file, self.base_reports_path)
                 os.unlink(report_path + '/' + report_file)
+        try:
+            shutil.rmtree(report_path)
+        except:
+            pass
 
     def save_source_files(self, xml_path):
         if not self.base_source_path == xml_path:
             if not os.path.isdir(self.base_source_path):
                 os.makedirs(self.base_source_path)
             for f in os.listdir(xml_path):
-                shutil.copy(xml_path + '/' + f, self.base_source_path)
+                try:
+                    shutil.copy(xml_path + '/' + f, self.base_source_path)
+                except:
+                    pass
 
 
 def create_path(path):
@@ -403,14 +417,14 @@ class JournalFiles(object):
         self.years = [str(int(datetime.now().isoformat()[0:4])+1 - y) for y in range(0, 5)]
 
     def ahead_base(self, year):
-        path = self.journal_path + '/' + year + 'nahead' + '/base/' + year + 'nahead'
+        path = self.journal_path + '/' + year + 'nahead/base/' + year + 'nahead'
         create_path(os.path.dirname(path))
         return path
 
     def ahead_xml_markup_body(self, year, filename):
-        m = self.journal_path + '/' + year + 'nahead' + '/markup'
-        b = self.journal_path + '/' + year + 'nahead' + '/body'
-        x = self.journal_path + '/' + year + 'nahead' + '/xml'
+        m = self.journal_path + '/' + year + 'nahead/markup'
+        b = self.journal_path + '/' + year + 'nahead/body'
+        x = self.journal_path + '/' + year + 'nahead/xml'
         create_path(m)
         create_path(b)
         create_path(x)
@@ -422,7 +436,7 @@ class JournalFiles(object):
         return self.ahead_id_path + '/' + order + '.id'
 
     def ahead_id_path(self, year):
-        path = self.journal_path + '/' + year + 'nahead' + '/id'
+        path = self.journal_path + '/' + year + 'nahead/id'
         create_path(path)
         return path
 

@@ -645,8 +645,8 @@ class Article(ArticleXML):
         data['issue pub date'] = format_date(self.issue_pub_date)
         data['order'] = self.order
         data['doi'] = self.doi
-        data['fpage'] = self.fpage
-        data['fpage seq'] = self.fpage_seq
+        seq = '' if self.fpage_seq is None else self.fpage_seq
+        data['fpage-and-seq'] = self.fpage + seq
         data['elocation id'] = self.elocation_id
         return data
 
@@ -992,8 +992,13 @@ class ReferenceXML(object):
         return self.root.findtext('.//ext-link')
 
     @property
+    def _comments(self):
+        return self.root.findall('.//comment')
+
+    @property
     def comments(self):
-        return self.root.findtext('.//comment')
+        c = [c.text for c in self._comments]
+        return '; '.join(c)
 
     @property
     def notes(self):
@@ -1005,7 +1010,12 @@ class ReferenceXML(object):
 
     @property
     def doi(self):
-        return self.root.findtext('.//pub-id[@pub-id-type="doi"]')
+        _doi = self.root.findtext('.//pub-id[@pub-id-type="doi"]')
+        if not _doi:
+            for c in self._comments:
+                if 'doi:' in c.text:
+                    _doi = c.text
+        return _doi
 
     @property
     def pmid(self):

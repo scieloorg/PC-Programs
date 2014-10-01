@@ -137,14 +137,10 @@ def apply_dtd(xml_filename, doctype):
 
 def normalize_space(s):
     if s is not None:
-        while '\n' in s:
-            s = s.replace('\n', ' ')
-        while '\t' in s:
-            s = s.replace('\t', ' ')
-        while '\r' in s:
-            s = s.replace('\r', ' ')
-        while '  ' in s:
-            s = s.replace('  ', ' ')
+        s = s.replace('\n', ' ')
+        s = s.replace('\t', ' ')
+        s = s.replace('\r', ' ')
+        s = s.replace('  ', ' ')
     return s
 
 
