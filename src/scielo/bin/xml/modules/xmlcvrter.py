@@ -80,7 +80,7 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
         article = get_valid_article(validation_results)
         issue_record = get_issue_record(db_issue, article)
         if issue_record is None:
-            register_log('FATAL ERROR: ' + article.issue_label + ' is not registered.')
+            register_log('FATAL ERROR: ' + article.issue_label + ' is not registered. (' + '/'.join([i for i in [article.print_issn, article.e_issn] if i is not None]) + ')')
         else:
             register_log('Issue: ' + article.issue_label + '.')
             issue_isis = IssueRecord(issue_record)

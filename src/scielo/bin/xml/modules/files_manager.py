@@ -300,7 +300,7 @@ class ArticleFiles(object):
 
     @property
     def id_filename(self):
-        return self.issue_files.id_path + self.order + '.id'
+        return self.issue_files.id_path + '/' + self.order + '.id'
 
     @property
     def relative_xml_filename(self):
