@@ -740,6 +740,8 @@ class JSON_Article:
             self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
             del self.json_data['f']['epub']
         # ja esta normalizada self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '64', '65', '64')
+        if self.json_data['f'].get('65') != issue.json_data.get('65'):
+            self.json_data['f']['65'] = issue.json_data.get('65')
 
         self.json_data['h'] = self.json_normalizer.format_for_indexing(self.json_data['f'])
         self.json_data['l'] = self.json_normalizer.format_for_indexing(self.json_data['h'])
