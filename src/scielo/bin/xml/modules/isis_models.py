@@ -3,6 +3,7 @@
 from datetime import datetime
 
 from utils import doi_pid, display_pages, format_dateiso
+from article import Issue, PersonAuthor
 
 
 DOCTOPIC = {
@@ -61,28 +62,28 @@ def normalize_doctopic(_doctopic):
     return _doctopic if r == '??' else r
 
 
-class ArticleISIS(object):
+class ArticleRecords(object):
 
-    def __init__(self, article_files, article, i_record, section_code, text_or_article):
-        self.text_or_article = text_or_article
+    def __init__(self, article, i_record, section_code, article_files):
         self.article = article
         self.section_code = section_code
         self.article_files = article_files
         self.i_record = i_record
+        self.add_issue_data()
+        self.add_article_data()
+        self.set_common_data(article_files.xml_name, article_files.issue_files.issue_folder, article_files.relative_xml_filename)
+
+    def add_issue_data(self):
         self._metadata = {}
-        self.metadata = {}
+        for k in ['30', '42', '62', '100', '35', '935', '421']:
+            if k in self.i_record.keys():
+                self._metadata[k] = self.i_record[k]
 
     @property
     def metadata(self):
         return self._metadata
 
-    @metadata.setter
-    def metadata(self, value):
-        self._metadata = {}
-
-        for k in ['30', '42', '62', '100', '35', '935', '421']:
-            if k in self.i_record.keys():
-                self._metadata[k] = self.i_record[k]
+    def add_article_data(self):
         self._metadata['120'] = 'XML_' + self.article.dtd_version
         self._metadata['71'] = normalize_doctopic(self.article.article_type)
         self._metadata['40'] = self.article.language
@@ -193,9 +194,9 @@ class ArticleISIS(object):
             self._metadata['70'].append(a)
         #FIXME nao existe clinical trial
         self._metadata['770'] = self.article.clinical_trial
-        self._metadata['72'] = self.article.total_of_references
-        self._metadata['901'] = self.article.total_of_tables
-        self._metadata['902'] = self.article.total_of_figures
+        self._metadata['72'] = str(self.article.total_of_references)
+        self._metadata['901'] = str(self.article.total_of_tables)
+        self._metadata['902'] = str(self.article.total_of_figures)
 
         self._metadata['83'] = []
         for item in self.article.abstracts:
@@ -226,19 +227,18 @@ class ArticleISIS(object):
             rec_c['11'] = []
             rec_c['16'] = []
             rec_c['17'] = []
-            for person_group in item.person_groups.items():
-                for person in person_group:
-                    field = self.author_tag(person.role, not isinstance(person, str), item.article_title or item.chapter_title)
-                    if isinstance(person, PersonAuthor):
-                        a = {}
-                        a['n'] = person.fname
-                        a['s'] = person.surname
-                        a['z'] = person.suffix
-                        a['r'] = normalize_role(self.author_role(person.role))
-                    else:
-                        # collab
-                        a = person.collab
-                    rec_c[field].append(a)
+            for person in item.authors_list:
+                field = self.author_tag(person.role, isinstance(person, PersonAuthor), item.article_title or item.chapter_title)
+                if isinstance(person, PersonAuthor):
+                    a = {}
+                    a['n'] = person.fname
+                    a['s'] = person.surname
+                    a['z'] = person.suffix
+                    a['r'] = normalize_role(self.author_role(person.role))
+                else:
+                    # collab
+                    a = person.collab
+                rec_c[field].append(a)
             rec_c['31'] = item.volume
             rec_c['32'] = {}
             rec_c['32']['_'] = item.issue
@@ -268,30 +268,31 @@ class ArticleISIS(object):
             records_c.append(rec_c)
         return records_c
 
-    def author_role(self, person_group_id):
-        if person_group_id == 'editor':
+    def author_role(self, role):
+        if role == 'editor':
             return 'ed'
-        if person_group_id == 'author':
+        if role == 'author':
             return 'nd'
-        if person_group_id == 'translator':
+        if role == 'translator':
             return 'tr'
-        if person_group_id == 'compiler':
+        if role == 'compiler':
             return 'org'
-        return person_group_id
+        return role
 
-    def author_tag(self, person_group_id, is_person, has_part_title):
+    def author_tag(self, role, is_person, is_analytic_author):
         other = ['transed', 'translator']
         monographic = ['compiler', 'director', 'editor', 'guest-editor', ]
         analytical = ['allauthors', 'assignee', 'author', 'inventor', ]
-        if person_group_id in analytical:
-            return '10' if is_person else '11'
-        if person_group_id in monographic:
-            return '16' if is_person else '17'
-
-        if has_part_title:
-            return '10' if is_person else '11'
+        r = {}
+        r[True] = {True: '10', False: '16'}
+        r[False] = {True: '11', False: '17'}
+        if role in analytical:
+            is_analytic = True
+        elif role in monographic:
+            is_analytic = False
         else:
-            return '16' if is_person else '17'
+            is_analytic = is_analytic_author
+        return r[is_analytic][is_person]
 
     def outline(self, total_of_records):
         rec_o = {}
@@ -339,14 +340,13 @@ class ArticleISIS(object):
             r.append(rec)
         return r
 
-    @property
-    def common_data(self):
+    def set_common_data(self, xml_name, issue_folder, relative_xml_filename):
         r = {}
-        r['2'] = self.article_files.xml_name
-        r['4'] = self.article_files.issue_folder
-        r['702'] = self.article_files.relative_xml_filename
+        r['2'] = xml_name
+        r['4'] = issue_folder
+        r['702'] = relative_xml_filename
         r['705'] = 'S'
-        return r
+        self.common_data = r
 
     def record_info(self, record_index, record_name, record_name_index, record_name_total):
         r = {}
@@ -358,27 +358,51 @@ class ArticleISIS(object):
         return r
 
 
-class IssueISIS(object):
+class IssueRecord(object):
+
     def __init__(self, record):
         self.record = record
 
+    @property
+    def sections(self):
+        v49 = self.record.get('49', [])
+        if isinstance(v49, dict):
+            v49 = [v49]
+        return v49
+
+    @property
+    def section_titles(self):
+        return [sec.get('t') for sec in self.sections]
+
     def section_code(self, section_title):
+        best_result = 0
         seccode = None
+        similar = ''
         if section_title is not None:
-            for sec in self.record.get('49', []):
+            for sec in self.sections:
                 if sec.get('t').lower() == section_title.lower():
                     seccode = sec.get('c')
+                    best_result = 1
                     break
-        return seccode
+            if seccode is None:
+                import difflib
+                best_result = 0
+                acceptable_result = 0.80
+                for sec in self.sections:
+                    r = difflib.SequenceMatcher(None, section_title.lower(), sec.get('t', '').lower()).ratio()
+                    if r > acceptable_result:
+                        if r > best_result:
+                            seccode = sec.get('c')
+                            similar = sec.get('t')
+                            best_result = r
+        return (seccode, best_result, similar)
 
-    def check_section(self, section_title):
-        seccode = self.section_code(section_title)
-        if seccode is None:
-            print('Section in XML:')
-            print('  ' + section_title)
-            print('Sections in the issue:')
-            if len(self.record.get('49', [])) == 0:
-                print('  None')
-            else:
-                print('\n  '.join(self.record.get('49', [])))
-        return seccode
+    @property
+    def issue(self):
+        acron = self.record.get('930').lower()
+        year = self.record.get('65', '')[0:4]
+        volume = self.record.get('31')
+        volume_suppl = self.record.get('131')
+        number = self.record.get('32')
+        number_suppl = self.record.get('132')
+        return Issue(acron, volume, number, year, volume_suppl, number_suppl)

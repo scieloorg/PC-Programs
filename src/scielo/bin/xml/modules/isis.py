@@ -2,10 +2,25 @@
 
 
 import os
-from tempfile import mkdtemp
+from tempfile import mkdtemp, NamedTemporaryFile
 
 from utils import u_encode
-from xml_utils import normalize_space, convert_using_htmlparser
+from xml_utils import normalize_space, convert_entities_to_chars
+
+
+def fix_encode(value):
+    r = value
+    if not isinstance(value, unicode):
+        r = value.decode('utf-8')
+        if value != r:
+            print('.'*10)
+            print('fix_encode:')
+            print('value=')
+            print(value)
+            print('r=')
+            print(r)
+            print('.'*10)
+    return r
 
 
 class IDFile(object):
@@ -18,75 +33,101 @@ class IDFile(object):
         index = 0
         for item in records:
             index += 1
-            r += self._format_record(index, item)
+            r += self._format_id(index) + self._format_record(item)
         return r
 
-    def _format_record(self, index, record):
+    def _format_id(self, index):
         i = '000000' + str(index)
-        r = u'!ID ' + i[-6:] + '\n'
+        return '!ID ' + i[-6:] + '\n'
 
+    def _format_record(self, record):
+        r = []
         if record is not None:
-            for tag_i in sorted([int(s) for s in record.keys()]):
+            for tag_i in sorted([int(s) for s in record.keys() if s.isdigit()]):
                 tag = str(tag_i)
-                occs = record[tag]
+                items = record.get(tag)
+                r.append(self.tag_items(tag, items))
+        return ''.join(r)
 
-                s = u''
-                if type(occs) is dict:
-                    s = self._tagged(tag, self._format_subfields(occs))
-                elif type(occs) is list:
-                    for occ in occs:
-                        if type(occ) is dict:
-                            s += self._tagged(tag, self._format_subfields(occ))
-                        else:
-                            s += self._tagged(tag, occ)
-                else:
-                    s = self._tagged(tag, occs)
-
-                r += s
-
-        return r
+    def tag_items(self, tag, items):
+        s = ''
+        try:
+            if isinstance(items, dict):
+                s = self._tagged(tag, self._format_subfields(items))
+            elif isinstance(items, list):
+                s = ''
+                for item in items:
+                    s += self.tag_items(tag, item)
+            else:
+                s = self._tagged(tag, items)
+        except Exception as e:
+            print('-'*80)
+            print('tag_items')
+            print(tag)
+            print(items)
+            print(e)
+            print('-'*80)
+        return s
 
     def _format_subfields(self, subfields_and_values):
         first = ''
         value = ''
-        for k, v in subfields_and_values.items():
-            if v is not None:
-                if k == '_':
-                    first = v
-                else:
-                    if len(k) == 1 and k in 'abcdefghijklmnopqrstuvwxyz123456789':
-                        value += '^' + k + v
+        try:
+            for k, v in subfields_and_values.items():
+                if v is not None:
+                    if k == '_':
+                        first = v
+                    else:
+                        if len(k) == 1 and k in 'abcdefghijklmnopqrstuvwxyz123456789':
+                            value += '^' + k + v
+        except Exception as e:
+            print('-'*80)
+            print('_format_subfields')
+            print(subfields_and_values)
+            print(e)
+            print(value)
+            print('-'*80)
         return first + value
 
     def _tagged(self, tag, value):
+        r = ''
+        s = value
         if value is not None and value != '':
-            tag = '000' + tag
-            tag = tag[-3:]
-
-            t1 = value
-            t2 = convert_using_htmlparser(t1)
-
-            s = '!v' + tag + '!' + normalize_space(t2) + '\n'
-            if type(s) is str:
-                s = s.decode('utf-8')
-            return s
-        else:
-            return u''
+            if value is not None:
+                try:
+                    value = normalize_space(value)
+                except Exception as e:
+                    value = None
+                    print('_tagged: normalize_space')
+                    print(e)
+                    print(s)
+                    print(value)
+                    print(type(s))
+                    print(type(value))
+            if value is not None:
+                try:
+                    tag = '000' + tag
+                    tag = tag[-3:]
+                    r = '!v' + tag + '!' + value + '\n'
+                except Exception as e:
+                    print('_tagged: ')
+                    print(e)
+                    print(s)
+                    print(value)
+                    print(type(s))
+                    print(type(value))
+        return r
 
     def read(self, filename):
-        f = open(filename, 'r')
-
-        records = []
+        rec_list = []
         record = {}
-        for line in f.readlines():
+        for line in open(filename, 'r').readlines():
             s = line.replace('\n', '').replace('\r', '')
-            if type(s) is type(''):
+            if not isinstance(s, unicode):
                 s = s.decode('iso-8859-1')
-
             if '!ID ' in s:
                 if len(record) > 0:
-                    records.append(self.simplify_record(record))
-
+                    rec_list.append(self.simplify_record(record))
                 record = {}
             else:
                 ign, tag, content = s.split('!')
@@ -111,11 +152,10 @@ class IDFile(object):
 
         # last record
         if len(record) > 0:
-            records.append(self.simplify_record(record))
+            rec_list.append(self.simplify_record(record))
 
-        #print('Loaded ' + str(len(records))) + ' issue records.'
-        f.close()
-        return records
+        #print('Loaded ' + str(len(rec_list))) + ' issue(s).'
+        return rec_list
 
     def simplify_record(self, record):
         for tag, content in record.items():
@@ -123,45 +163,20 @@ class IDFile(object):
                 record[tag] = content[0]
         return record
 
-    def save(self, filename, records, data_encoding):
+    def save(self, filename, records):
         path = os.path.dirname(filename)
         if not os.path.isdir(path):
             os.makedirs(path)
-
-        f = open(filename, 'w')
         content = self._format_file(records)
-        content = self._iso(content, data_encoding)
-        try:
-            f.write(content)
-        except Exception as e:
-            print(e)
-            print(type(content))
-            for line in content.split('\n'):
-                try:
-                    f.write(line + '\n')
-                except:
-                    r = ''
-                    for c in line:
-                        try:
-                            f.write(c)
-                        except Exception as e:
-                            f.write('??')
-                            print(type(c))
+        if not isinstance(content, unicode):
+            content = content.decode('utf-8')
 
-                            print('Unable to write ')
-                            print(r)
-                            print(e)
-                            #print(content)
-                        r += c
-                    f.write('\n')
-        f.close()
-
-    def _iso(self, content, encoding):
-        if type(content) is str:
-            content = content.decode(encoding)
         iso = u_encode(content, 'iso-8859-1')
-
-        return iso
+        try:
+            open(filename, 'w').write(iso)
+        except Exception as e:
+            print('saving...')
+            print(e)
 
 
 class CISIS(object):
@@ -190,17 +205,13 @@ class CISIS(object):
         cmd = self.cisis_path + '/mx ' + src + ' create=' + dest + ' now -all'
         os.system(cmd)
 
-    def id2mst(self, id_filename, mst_filename, reset):
+    def append_id_to_master(self, id_filename, mst_filename, reset):
         if reset:
-            self.new(mst_filename)
-        
-        temp = mkdtemp().replace('\\', '/') + '/f'
-        self.id2i(id_filename, temp)
-        self.append(temp, mst_filename)
-        try:
-            os.unlink(temp)
-        except:
-            pass
+            self.id2i(id_filename, mst_filename)
+        else:
+            temp = id_filename.replace('.id', '')
+            self.id2i(id_filename, temp)
+            self.append(temp, mst_filename)
 
     def i2id(self, mst_filename, id_filename):
         cmd = self.cisis_path + '/i2id ' + mst_filename + ' > ' + id_filename
@@ -227,17 +238,8 @@ class CISIS(object):
     def find_record(self, mst_filename, expression):
         r = mst_filename + expression
         cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 "pft=mfn/" now > ' + r
-
         os.system(cmd)
-        f = open(r, 'r')
-        c = f.readlines()
-        f.close()
-
-        a = []
-        for l in c:
-            a.append(l.replace('\n', ''))
-
-        return a
+        return [l.replace('\n', '') for l in open(r, 'r').readlines()]
 
     def new(self, mst_filename):
         cmd = self.cisis_path + '/mx null count=0 create="' + mst_filename + '" now -all'
@@ -247,13 +249,11 @@ class CISIS(object):
         if os.path.isfile(result_filename + '.mst'):
             os.unlink(result_filename + '.mst')
             os.unlink(result_filename + '.xrf')
-        
-        cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 append=' + result_filename + ' now -all'
+        cmd = self.cisis_path + '/mx btell=0 ' + mst_filename + ' "bool=' + expression + '"  lw=999 append=' + result_filename + ' now -all'
         os.system(cmd)
 
     def generate_indexes(self, mst_filename, fst_filename, inverted_filename):
         cmd = self.cisis_path + '/mx ' + mst_filename + ' fst=@' + fst_filename + ' fullinv=' + inverted_filename
-        print(cmd)
         os.system(cmd)
 
     def is_readable(self, mst_filename):
@@ -307,11 +307,8 @@ class UCISIS(object):
     def create(self, src, dest):
         self.cisis(src).append(src, dest)
 
-    def id2mst(self, id_filename, mst_filename, reset):
-        if reset:
-            self.cisis1030.id2mst(id_filename, mst_filename, reset)
-        else:
-            self.cisis(mst_filename).id2mst(id_filename, mst_filename, reset)
+    def append_id_to_master(self, id_filename, mst_filename, reset):
+        self.cisis(mst_filename).append_id_to_master(id_filename, mst_filename, reset)
 
     def i2id(self, mst_filename, id_filename):
         self.cisis(mst_filename).i2id(mst_filename, id_filename)
@@ -339,3 +336,63 @@ class UCISIS(object):
 
     def generate_indexes(self, mst_filename, fst_filename, inverted_filename):
         self.cisis(mst_filename).generate_indexes(mst_filename, fst_filename, inverted_filename)
+
+
+class IsisDAO(object):
+
+    def __init__(self, cisis):
+        self.cisis = cisis
+
+    def save_records(self, records, db_filename, fst_filename=None):
+        id_file = mkdtemp().replace('\\', '/') + '/' + os.path.basename(db_filename) + '.id'
+        IDFile().save(id_file, records)
+        self.cisis.id2i(id_file, db_filename)
+        os.unlink(id_file)
+        self.update_indexes(db_filename, fst_filename)
+
+    def update_indexes(self, db_filename, fst_filename):
+        if fst_filename is not None:
+            self.cisis.generate_indexes(db_filename, fst_filename, db_filename)
+
+    def append_records(self, records, db_filename, fst_filename=None):
+        id_temp = mkdtemp().replace('\\', '/') + '/' + os.path.basename(db_filename) + '.id'
+        IDFile().save(id_temp, records)
+        self.cisis.append_id_to_master(id_temp, db_filename, False)
+        os.unlink(id_temp)
+        self.update_indexes(db_filename, fst_filename)
+
+    def save_id_records(self, id_filename, db_filename, fst_filename=None):
+        self.cisis.id2i(id_filename, db_filename)
+        self.update_indexes(db_filename, fst_filename)
+
+    def append_id_records(self, id_filename, db_filename, fst_filename=None):
+        self.cisis.append_id_to_master(id_filename, db_filename, False)
+        self.update_indexes(db_filename, fst_filename)
+
+    def get_records(self, db_filename, expr=None):
+        temp_file = None
+        if expr is None:
+            base = db_filename
+        else:
+            temp_file = NamedTemporaryFile(delete=False)
+            base = temp_file.name
+            self.cisis.search(db_filename, expr, base)
+        id_filename = base + '.id'
+        self.cisis.i2id(base, id_filename)
+        r = IDFile().read(id_filename)
+        if temp_file is not None:
+            try:
+                os.unlink(temp_file.name)
+            except:
+                pass
+        try:
+            os.unlink(id_filename)
+        except:
+            pass
+        return r
+
+    def get_id_records(self, id_filename):
+        return IDFile().read(id_filename)
+
+    def save_id(self, id_filename, records):
+        IDFile().save(id_filename, records)

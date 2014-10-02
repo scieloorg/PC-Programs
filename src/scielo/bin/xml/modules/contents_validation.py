@@ -76,8 +76,17 @@ def validate_name(label, value, invalid_characters):
     return r
 
 
-def validate_contrib_names(author):
-    return validate_name('surname', author.surname, [' ', '_']) + validate_name('given-names', author.fname, ['_'])
+def validate_contrib_names(author, affiliations=[]):
+    results = validate_name('surname', author.surname, [' ', '_']) + validate_name('given-names', author.fname, ['_'])
+    if len(affiliations) > 0:
+        aff_ids = [aff.id for aff in affiliations]
+        if len(author.xref) == 0:
+            results.append(('xref', 'WARNING', 'Author has no xref. Expected values: ' + '|'.join(aff_ids)))
+        else:
+            for xref in author.xref:
+                if not xref in aff_ids:
+                    results.append(('xref', 'ERROR', 'Invalid value of xref/@rid. Valid values: ' + '|'.join(aff_ids)))
+    return results
 
 
 class ArticleContentValidation(object):
@@ -162,7 +171,7 @@ class ArticleContentValidation(object):
     def contrib_names(self):
         r = []
         for item in self.article.contrib_names:
-            for result in validate_contrib_names(item):
+            for result in validate_contrib_names(item, self.article.affiliations):
                 r.append(result)
         return r
 
@@ -173,7 +182,7 @@ class ArticleContentValidation(object):
     @property
     def titles(self):
         r = []
-        for item in self.article.title:
+        for item in self.article.titles:
             if item.title and item.language:
                 r.append(('title', 'OK', item.language + ': ' + item.title))
             else:
@@ -199,8 +208,8 @@ class ArticleContentValidation(object):
         return required('doi', self.article.doi)
 
     @property
-    def article_id_publisher_id(self):
-        return display_value('article id (previous pid)', self.article.article_id_publisher_id)
+    def article_previous_id(self):
+        return display_value('article id (previous pid)', self.article.article_previous_id)
 
     @property
     def order(self):
@@ -209,15 +218,17 @@ class ArticleContentValidation(object):
             if order is not None:
                 if order.isdigit():
                     if len(order) != 5:
-                        r = ('ERROR', 'Invalid format of order. Expected 99999.')
+                        r = ('FATAL ERROR', 'Invalid format of order. Expected 99999.')
+                    if int(order) < 1 or int(order) > 99999:
+                        r = ('FATAL ERROR', 'Invalid format of order. Expected number 1 to 99999.')
                 else:
-                    r = ('ERROR', 'Invalid format of order. Expected 99999.')
+                    r = ('FATAL ERROR', 'Invalid format of order. Expected 99999.')
             return r
         r = valid(self.article.order)
         if r[0] == '?':
             r = required('order', self.article.order)
-        elif r[0] == 'ERROR':
-            r = ('order', 'ERROR', r[1])
+        elif r[0] == 'FATAL ERROR':
+            r = ('order', 'FATAL ERROR', r[1])
         else:
             r = ('order', 'OK', self.article.order)
         return r
@@ -339,12 +350,15 @@ class ArticleContentValidation(object):
         return display_value('clinical_trial', self.article.clinical_trial)
 
     def _total(self, total, count, label_total, label_count):
-        if total == '0' and count == 'None':
-            r = (label_total, 'OK', total)
-        elif total == count:
-            r = (label_total, 'OK', total)
+        if count is None:
+            count = 0
+        elif count.isdigit():
+            count = int(count)
+
+        if total == count:
+            r = (label_total, 'OK', str(total))
         else:
-            r = (label_count + ' (' + count + ') x ' + label_total + ' (' + total + ')', 'ERROR', 'They must have the same value')
+            r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', 'ERROR', 'They must have the same value')
         return r
 
     @property
@@ -460,7 +474,7 @@ class ReferenceContentValidation(object):
         r.append(self.source)
         for item in self.publication_type_dependence:
             r.append(item)
-        for item in self.person_groups:
+        for item in self.authors_list:
             r.append(item)
         return r
 
@@ -508,16 +522,16 @@ class ReferenceContentValidation(object):
         return required('mixed-citation', format_xml_in_html(self.reference.mixed_citation))
 
     @property
-    def person_groups(self):
+    def authors_list(self):
         r = []
-        for person in self.reference.person_groups:
+        for person in self.reference.authors_list:
             if isinstance(person, article.PersonAuthor):
                 for item in validate_contrib_names(person):
                     r.append(item)
             elif isinstance(person, article.CorpAuthor):
                 r.append(('collab', 'OK', person.collab))
             else:
-                print(type(person))
+                r.append(('invalid person', 'WARNING', type(person)))
         return r
 
     @property
