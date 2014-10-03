@@ -36,6 +36,8 @@ class DocumentFiles(object):
 
         self.err_filename = report_path + '/' + self.xml_name + '.err.txt'
 
+        self.data_report_filename = report_path + '/' + self.xml_name + '.contents.html'
+
     def clean(self):
         delete_files([self.err_filename, self.dtd_report_filename, self.style_report_filename, self.pmc_dtd_report_filename, self.pmc_style_report_filename, self.ctrl_filename])
 
@@ -199,37 +201,39 @@ class AheadManager(object):
         valid_ahead = None
         status = None
 
-        if article.number != 'ahead':
+        if article.number == 'ahead':
+            status = 'new'
+        else:
             xml_filename = xml_name + '.xml'
             msg_list.append('Find ahead for ' + article.doi + ' and ' + xml_filename)
             ahead = self.find_ahead(article.doi, xml_filename)
 
-        if ahead is None:
-            status = 'new'
-            msg_list.append('No ahead was found.')
-        else:
-            msg_list.append('ahead was found')
-            matched_rate = self.score(article, ahead, 90)
-            if matched_rate > 0:
-                is_valid_ahead = self.is_valid(ahead)
-                if is_valid_ahead:
-                    status = 'valid'
-                    valid_ahead = ahead
-                    if matched_rate != 100:
-                        msg = 'WARNING: article and ahead are partially matched.'
-                        status = 'partially matched'
-                else:
-                    status = 'not valid'
-                    msg = 'WARNING: ahead has no PID'
+            if ahead is None:
+                status = 'new'
+                msg_list.append('No ahead was found.')
             else:
-                status = 'unmatched'
-                msg = 'WARNING: article and ahead are unmatched'
+                msg_list.append('ahead was found')
+                matched_rate = self.score(article, ahead, 90)
+                if matched_rate > 0:
+                    is_valid_ahead = self.is_valid(ahead)
+                    if is_valid_ahead:
+                        status = 'valid'
+                        valid_ahead = ahead
+                        if matched_rate != 100:
+                            msg = 'WARNING: article and ahead are partially matched.'
+                            status = 'partially matched'
+                    else:
+                        status = 'not valid'
+                        msg = 'WARNING: ahead has no PID'
+                else:
+                    status = 'unmatched'
+                    msg = 'WARNING: article and ahead are unmatched'
 
-            msg_list.append(msg)
-            msg_list.append(article.title)
-            msg_list.append(article.first_author_surname)
-            msg_list.append(ahead.title)
-            msg_list.append(ahead.first_author_surname)
+                msg_list.append(msg)
+                msg_list.append(article.title)
+                msg_list.append(article.first_author_surname)
+                msg_list.append(ahead.title)
+                msg_list.append(ahead.first_author_surname)
 
         return (valid_ahead, status, '\n'.join(msg_list))
 
@@ -483,7 +487,7 @@ class ArticleDAO(object):
     def __init__(self, dao):
         self.dao = dao
 
-    def create_id_file(self, i_record, article, section_code, article_files):
+    def create_id_file(self, i_record, article, article_files):
         saved = False
         if not os.path.isdir(article_files.issue_files.id_path):
             os.makedirs(article_files.issue_files.id_path)
@@ -492,7 +496,7 @@ class ArticleDAO(object):
 
         if article.order != '00000':
             from isis_models import ArticleRecords
-            article_isis = ArticleRecords(article, i_record, section_code, article_files)
+            article_isis = ArticleRecords(article, i_record, article_files)
             self.dao.save_id(article_files.id_filename, article_isis.records)
             if os.path.isfile(article_files.id_filename):
                 saved_records = self.dao.get_id_records(article_files.id_filename)

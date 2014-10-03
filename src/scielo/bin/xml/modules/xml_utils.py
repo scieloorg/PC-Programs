@@ -151,6 +151,7 @@ def node_text(node, exclude_root_tag=True):
         if '<' in text[0:1]:
             text = text[text.find('>')+1:]
             text = text[0:text.rfind('</')]
+        text = text.strip()
     return text
 
 

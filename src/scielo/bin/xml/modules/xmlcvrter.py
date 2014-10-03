@@ -1,29 +1,29 @@
 # coding=utf-8
 
 import os
-import shutil
-from datetime import datetime
 
 from configuration import Configuration
 from isis_models import IssueRecord
 
 import files_manager
-import xpchecker
-import contents_reports
+import reports
+import pkg_checker
+import xml_versions
 
 
-msg_list = []
+html_report = reports.ReportHTML()
+converter_report_lines = []
 
 
-def register_log(text):
-    msg_list.append('\n' + text)
-    print('\n' + text)
+def register_log(message):
+    if not '<' in message:
+        message = html_report.format_message(message)
+    converter_report_lines.append(message)
 
 
-def get_valid_article(validation_results):
+def get_valid_article(articles):
     a = None
-    for xml_name, data in validation_results.items():
-        results, article = data
+    for xml_name, article in articles.items():
         if article is not None:
             issue_label = article.issue_label
             if issue_label is not None:
@@ -40,84 +40,62 @@ def get_issue_record(db_issue, article):
     return issue_record
 
 
-def display_statistic(f, e, w):
-    msg = []
-    msg.append('fatal errors: ' + str(f))
-    msg.append('errors: ' + str(e))
-    msg.append('warnings: ' + str(w))
-    return '\n'.join(msg)
-
-
-def evaluate_package(xml_path, report_path, wrk_path, version):
-    register_log('Validating the XML Files...')
-
-    if not os.path.isdir(report_path):
-        os.makedirs(report_path)
-
-    xml_files = [xml_path + '/' + f for f in os.listdir(xml_path) if f.endswith('.xml')]
-    xml_names = {f.replace('.xml', ''):f.replace('.xml', '') for f in os.listdir(xml_path) if f.endswith('.xml')}
-
-    xpchecker.validate_issue_package(xml_files, report_path, wrk_path, version)
-
-    toc_statistic, package_statistic, validation_results, issues = contents_reports.generate_contents_reports(xml_path, xml_names, report_path)
-    toc_f, toc_e, toc_w = toc_statistic
-    package_f, package_e, package_w = package_statistic
-
-    register_log('-'*80)
-    register_log('Results of Table of Contents data validations')
-    register_log(display_statistic(toc_f, toc_e, toc_w))
-    register_log('.'*80)
-    register_log('Results of Articles data validations')
-    register_log(display_statistic(package_f, package_e, package_w))
-    register_log('-'*80)
-
-    return (toc_f == 0, validation_results)
-
-
 def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_ahead, db_article, version='1.0'):
-    register_log('Executing XML Conversion (XML to Database)')
 
     register_log('XML Files: ' + xml_path)
     register_log('Results: ' + serial_path)
 
-    is_valid_package, validation_results = evaluate_package(xml_path, report_path, None, version)
+    issue_record = None
+    issue_label = ''
 
-    if not is_valid_package:
+    xml_filenames = [xml_path + '/' + f for f in os.listdir(xml_path) if f.endswith('.xml')]
+    xml_names = {f.replace('.xml', ''):f.replace('.xml', '') for f in os.listdir(xml_path) if f.endswith('.xml')}
+    dtd_files = xml_versions.DTDFiles('scielo', version)
+    issues, articles, toc_results, article_results = pkg_checker.validate_package(xml_path, xml_filenames, xml_names, dtd_files, report_path, None, create_toc_report=True)
+
+    toc_stats, toc_report = toc_results
+    toc_f, toc_e, toc_w = toc_stats
+
+    register_log(toc_report)
+
+    if toc_f > 0:
         register_log('FATAL ERROR: Unable to create "base" because of fatal errors in the Table of Contents data. Check toc.html report.')
     else:
-        article = get_valid_article(validation_results)
-        issue_record = get_issue_record(db_issue, article)
+        article = get_valid_article(articles)
+
+        if article is not None:
+            issue_label = article.issue_label
+            issue_record = get_issue_record(db_issue, article)
+
         if issue_record is None:
-            register_log('FATAL ERROR: ' + article.issue_label + ' is not registered. (' + '/'.join([i for i in [article.print_issn, article.e_issn] if i is not None]) + ')')
+            register_log('FATAL ERROR: Issue ' + issue_label + ' is not registered. (' + '/'.join([i for i in [article.print_issn, article.e_issn] if i is not None]) + ')')
         else:
-            register_log('Issue: ' + article.issue_label + '.')
+            register_log('Issue: ' + issue_label + '.')
             issue_isis = IssueRecord(issue_record)
             issue = issue_isis.issue
             journal_files = files_manager.JournalFiles(serial_path, issue.acron)
             ahead_manager = files_manager.AheadManager(db_ahead, journal_files)
-            issue_files = files_manager.IssueFiles(journal_files, article.issue_label, xml_path, web_path)
+            issue_files = files_manager.IssueFiles(journal_files, issue_label, xml_path, web_path)
             issue_files.move_reports(report_path)
             issue_files.save_source_files(xml_path)
             report_path = issue_files.base_reports_path
-            convert_articles(ahead_manager, db_article, validation_results, issue_record, issue_files)
+            convert_articles(ahead_manager, db_article, articles, article_results, issue_record, issue_files)
 
-    register_log('Reports for each XML file: ' + report_path)
-    register_log('\n'.join(sorted(os.listdir(report_path))))
+    content = '\n'.join(converter_report_lines)
 
-    content = '\n'.join(msg_list)
-
-    f, e, w = contents_reports.statistics_numbers(content)
+    f, e, w = reports.statistics_numbers(content)
     register_log('-'*80)
-    register_log('Results of XML Conversion (XML to Database)')
-    register_log(display_statistic(f, e, w))
+    register_log(html_report.statistics_messages(f, e, w, 'Results of XML Conversion (XML to Database)'))
     register_log('-'*80)
 
-    open(report_path + '/xml_converter_result.log', 'w').write(content)
-    print('\n\nXML Converter report: ' + report_path + '/xml_converter_result.log')
+    html_report.title = 'XML Conversion (XML to Database) - ' + issue_label
+    html_report.body = content
+    html_report.save(report_path + '/xml_converter_result.html')
+    print('\n\nXML Converter report:\n ' + report_path + '/xml_converter_result.html')
     print('\n\n-- end --')
 
 
-def convert_articles(ahead_manager, db_article, validation_results, issue_record, issue_files):
+def convert_articles(ahead_manager, db_article, articles, article_results, issue_record, issue_files):
     total_new_doc = []
     total_ex_aop = []
     total_ex_aop_unmatched = []
@@ -126,32 +104,41 @@ def convert_articles(ahead_manager, db_article, validation_results, issue_record
     not_loaded = []
     loaded = []
 
-    register_log('Total of documents in the package: ' + str(len(validation_results)))
+    register_log('Total of documents in the package: ' + str(len(articles)))
 
-    for xml_name, data in validation_results.items():
-        results, article = data
+    for xml_name, article in articles.items():
+        #(xml_stats, data_stats, result)
+        xml_stats, data_stats, result = article_results[xml_name]
 
         register_log('.'*80)
-        register_log('' + xml_name + '\n')
-
-        label = xml_name
+        register_log(result)
 
         valid_ahead, ahead_status, ahead_msg = ahead_manager.get_valid_ahead(article, xml_name)
         if valid_ahead is None:
             if ahead_status == 'new':
-                total_new_doc.append(label)
+                total_new_doc.append(xml_name)
             elif ahead_status == 'unmatched':
-                total_ex_aop_unmatched.append(label)
+                total_ex_aop_unmatched.append(xml_name)
             elif ahead_status == 'not valid':
-                total_ex_aop_invalid.append(label)
+                total_ex_aop_invalid.append(xml_name)
         else:
-            total_ex_aop.append(label)
+            total_ex_aop.append(xml_name)
             if ahead_status == 'partially matched':
-                total_ex_aop_partially.append(label)
+                total_ex_aop_partially.append(xml_name)
 
+        f, e, w, issue_validations, section_code = validate_issue_data(issue_record, article)
+        article.section_code = section_code
+
+        register_log(html_report.statistics_messages(f, e, w, '<h4>Converter validations</h4>'))
+        register_log('.'*80)
         register_log(ahead_msg)
+        register_log(issue_validations)
 
-        converted = convert_article(db_article, issue_record, issue_files, xml_name, article, results, valid_ahead)
+        if f == 0:
+            article.section_code = section_code
+            converted = convert_article(db_article, issue_record, issue_files, xml_name, article, valid_ahead)
+        else:
+            register_log('FATAL ERROR: Unable to create "base". Fix all the fatal errors.')
 
         if converted:
             if valid_ahead is not None:
@@ -180,46 +167,47 @@ def convert_articles(ahead_manager, db_article, validation_results, issue_record
 
     if len(total_ex_aop) > 0:
         register_log(ahead_manager.finish_manage_ex_ahead())
+
     if len(loaded) > 0:
         register_log(issue_files.copy_files_to_web())
 
 
 def display_list(title, items):
     messages = []
-    messages.append('\n' + title + ': ' + str(len(items)))
-    messages.append('\n'.join(items))
+    messages.append('\n<p>' + title + ': ' + str(len(items)) + '</p>')
+    messages.append('<ul>' + '\n'.join(['<li>' + item + '</li>' for item in items]) + '</ul>')
     return '\n'.join(messages)
 
 
-def convert_article(db_article, issue_record, issue_files, xml_name, article, results, ahead):
-    r = False
-
-    if article is None:
-        register_log('FATAL ERROR: Unable to load XML')
-    else:
-        f, e, w = results
-
+def validate_issue_data(issue_record, article):
+    f = 0
+    e = 0
+    w = 0
+    msg = []
+    if article is not None:
         section_code, matched_rate, similar_section_title = IssueRecord(issue_record).section_code(article.toc_section)
         if section_code is None:
             if not article.is_ahead:
                 f += 1
-                register_log('FATAL ERROR: ' + article.toc_section + ' is not a registered section.')
-                register_log('Registered sections:\n' + '\n'.join(IssueRecord(issue_record).section_titles))
+                msg.append('FATAL ERROR: ' + article.toc_section + ' is not a registered section.')
+                msg.append('Registered sections:\n' + '\n'.join(IssueRecord(issue_record).section_titles))
         else:
             if matched_rate != 1:
-                register_log('WARNING: section replaced: "' + similar_section_title + '" (instead of "' + article.toc_section + '")')
+                w += 1
+                msg.append('WARNING: section replaced: "' + similar_section_title + '" (instead of "' + article.toc_section + '")')
             else:
-                register_log('section: ' + article.toc_section + '.')
-        register_log('@article-type: ' + article.article_type)
-        register_log(display_statistic(f, e, w))
+                msg.append('section: ' + article.toc_section + '.')
+        msg.append('@article-type: ' + article.article_type)
+    return (f, e, w, '\n'.join(msg), section_code)
 
-        if f > 0:
-            register_log('FATAL ERROR: Unable to create "base". Fix all the fatal errors.')
-        else:
-            if ahead is not None:
-                article._ahead_pid = ahead.ahead_pid
-            article_files = files_manager.ArticleFiles(issue_files, article.order, xml_name)
-            r = db_article.create_id_file(issue_record, article, section_code, article_files)
+
+def convert_article(db_article, issue_record, issue_files, xml_name, article, ahead):
+    r = False
+    if article is not None:
+        if ahead is not None:
+            article._ahead_pid = ahead.ahead_pid
+        article_files = files_manager.ArticleFiles(issue_files, article.order, xml_name)
+        r = db_article.create_id_file(issue_record, article, article_files)
     return r
 
 
