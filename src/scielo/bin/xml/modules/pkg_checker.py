@@ -48,7 +48,7 @@ def validate_all(xml_filename, new_name, report_name, doc_files_info, dtd_files)
     result = html_report.tag('h3', report_name)
     result += html_report.statistics_messages(xml_f, xml_e, xml_w, 'xml validations')
     result += html_report.format_message(xml_c)
-    for item in [doc_files_info.dtd_report_filename, doc_files_info.style_report_filename]:
+    for item in [doc_files_info.err_filename, doc_files_info.style_report_filename]:
         result += html_report.tag('p', html_report.link('file:///' + item, os.path.basename(item)))
 
     result += html_report.format_message(xml_c)

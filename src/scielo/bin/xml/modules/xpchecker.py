@@ -136,7 +136,7 @@ def validate_all(xml_filename, dtd_files, dtd_report_filename, style_report_file
     if e is None:
         is_valid_style = style_validation(xml_filename, style_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report, dtd_files.database_name)
     else:
-        open(style_report_filename, 'w').write('Unable to load ' + xml_filename + '\n' + str(e))
+        open(style_report_filename, 'w').write('FATAL ERROR: Unable to load ' + xml_filename + '\n' + str(e))
     return (xml, is_valid_dtd, is_valid_style)
 
 

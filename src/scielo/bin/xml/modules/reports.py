@@ -59,7 +59,7 @@ class ReportHTML(object):
         style = self.message_style(text)
         if style == '' or style == 'ok':
             style = 'success'
-        return self.tag('h3', title) + self.format_div(self.format_div(s, style), 'statistics')
+        return self.tag('h4', title) + self.format_div(self.format_div(s, style), 'statistics')
 
     def body_section(self, style, anchor_name, title, content, sections=[]):
         anchor = anchor_name if anchor_name == '' else '<a name="' + anchor_name + '"/><a href="#top">^</a>'
