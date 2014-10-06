@@ -84,8 +84,8 @@ class IDFile(object):
             print('-'*80)
             print('_format_subfields')
             print(subfields_and_values)
-            print(e)
             print(value)
+            print(e)
             print('-'*80)
         return first + value
 

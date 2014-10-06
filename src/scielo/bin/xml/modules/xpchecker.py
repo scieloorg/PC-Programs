@@ -1,3 +1,4 @@
+# coding=utf-8
 import os
 
 try:
@@ -26,7 +27,7 @@ def save_packtools_style_report(content, report_filename):
     if q > 0:
         msg = html_report.tag('div', 'Total of errors = ' + str(q), 'error')
 
-    html_report.body = msg + html_report.display_xml(content)
+    html_report.body = msg + '\n'.join([html_report.format_message(html_report.display_xml(item)) for item in content.split('\n')])
     html_report.save(report_filename)
 
 

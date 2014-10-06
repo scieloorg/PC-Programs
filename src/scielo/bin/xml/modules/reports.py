@@ -1,3 +1,5 @@
+# code = utf-8
+
 import os
 
 from datetime import datetime
@@ -65,7 +67,6 @@ class ReportHTML(object):
         return anchor + '<' + style + '>' + title + '</' + style + '>' + sections + content
 
     def sheet(self, table_header_and_data, filename=None):
-
         table_header, wider, table_data = table_header_and_data
         r = '<p>'
         if table_header is None:
@@ -114,12 +115,16 @@ class ReportHTML(object):
         return '<' + tag_name + self.css_class(style) + '>' + content + '</' + tag_name + '>'
 
     def display_xml(self, value):
+        if value is None:
+            value = ''
         value = value.replace('<pre>', '').replace('</pre>', '')
         value = value.replace('<', '&lt;')
         value = value.replace('>', '&gt;')
         return '<pre>' + value + '</pre>'
 
     def display_xml_in_small_space(self, value, width='100'):
+        if value is None:
+            value = ''
         value = value.replace('<pre>', '').replace('</pre>', '')
         value = value.replace('<', '&lt;')
         value = value.replace('>', '&gt;')
