@@ -64,9 +64,8 @@ def normalize_doctopic(_doctopic):
 
 class ArticleRecords(object):
 
-    def __init__(self, article, i_record, section_code, article_files):
+    def __init__(self, article, i_record, article_files):
         self.article = article
-        self.section_code = section_code
         self.article_files = article_files
         self.i_record = i_record
         self.add_issue_data()
@@ -115,7 +114,7 @@ class ArticleRecords(object):
             self._metadata['241'] = 'pr'
 
         self._metadata['85'] = self.article.keywords
-        self._metadata['49'] = self.section_code
+        self._metadata['49'] = 'nd' if self.article.section_code is None else self.article.section_code
 
         self._metadata['10'] = []
         for item in self.article.contrib_names:

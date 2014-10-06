@@ -2,8 +2,8 @@
 
 from isis_models import DOCTOPIC
 
-import attributes as attributes
-import utils as utils
+import attributes
+import data_utils
 
 import article
 
@@ -121,7 +121,7 @@ class ArticleContentValidation(object):
         @source-type t
         @link-type r
         """
-        return utils.display_values_with_attributes('related objects', self.article.related_objects)
+        return data_utils.display_values_with_attributes('related objects', self.article.related_objects)
 
     @property
     def related_articles(self):
@@ -134,7 +134,7 @@ class ArticleContentValidation(object):
         @id k
         . t pr
         """
-        return utils.display_values_with_attributes('related articles', self.article.related_objects)
+        return data_utils.display_values_with_attributes('related articles', self.article.related_objects)
 
     @property
     def journal_title(self):
@@ -201,7 +201,7 @@ class ArticleContentValidation(object):
 
     @property
     def trans_languages(self):
-        return utils.display_values('trans languages', self.article.trans_languages)
+        return data_utils.display_values('trans languages', self.article.trans_languages)
 
     @property
     def doi(self):
@@ -262,15 +262,15 @@ class ArticleContentValidation(object):
 
     @property
     def funding_source(self):
-        return utils.display_values('funding_source', self.article.funding_source)
+        return data_utils.display_values('funding_source', self.article.funding_source)
 
     @property
     def principal_award_recipient(self):
-        return utils.display_values('principal_award_recipient', self.article.principal_award_recipient)
+        return data_utils.display_values('principal_award_recipient', self.article.principal_award_recipient)
 
     @property
     def principal_investigator(self):
-        return utils.display_values('principal_investigator', self.article.principal_investigator)
+        return data_utils.display_values('principal_investigator', self.article.principal_investigator)
 
     @property
     def funding(self):
@@ -307,11 +307,11 @@ class ArticleContentValidation(object):
 
     @property
     def award_id(self):
-        return utils.display_values('award_id', self.article.award_id)
+        return data_utils.display_values('award_id', self.article.award_id)
 
     @property
     def funding_statement(self):
-        return utils.display_values('funding_statement', self.article.funding_statement)
+        return data_utils.display_values('funding_statement', self.article.funding_statement)
 
     @property
     def ack_xml(self):
@@ -390,8 +390,8 @@ class ArticleContentValidation(object):
 
     @property
     def history(self):
-        received = utils.format_dateiso(self.article.received)
-        accepted = utils.format_dateiso(self.article.accepted)
+        received = data_utils.format_dateiso(self.article.received)
+        accepted = data_utils.format_dateiso(self.article.accepted)
 
         if received is not None and accepted is not None:
             r = [('history', 'OK', received + ' - ' + accepted)]
@@ -449,7 +449,7 @@ class ArticleContentValidation(object):
 
     @property
     def illustrative_materials(self):
-        return utils.display_values('illustrative_materials', self.article.illustrative_materials)
+        return data_utils.display_values('illustrative_materials', self.article.illustrative_materials)
 
     @property
     def is_text(self):
