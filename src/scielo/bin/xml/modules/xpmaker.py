@@ -1,3 +1,4 @@
+# coding=utf-8
 import os
 import shutil
 from datetime import datetime
@@ -9,6 +10,13 @@ from modules import xml_utils
 from modules import xml_versions
 from modules import pkg_checker
 from modules import xpchecker
+
+
+log_items = []
+
+
+def register_log(text):
+    log_items.append(datetime.now().isoformat() + ' ' + text)
 
 
 def rename_embedded_img_href(content, xml_name, new_href_list):
@@ -267,29 +275,41 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     print(doc_files_info.xml_name)
     print('-'*len(doc_files_info.xml_name))
 
+    register_log(doc_files_info.xml_name)
+    register_log('start')
     report_content = ''
-
     content = open(doc_files_info.xml_filename, 'r').read()
+    register_log('remove_doctype')
     content = xml_utils.remove_doctype(content)
+    register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
     if doc_files_info.is_sgmxml:
+        register_log('normalize_sgmlxml')
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
 
     new_name = doc_files_info.xml_name
+    register_log('load_xml')
     xml, e = xml_utils.load_xml(content)
     if not xml is None:
         doc = article.Article(xml)
+        register_log('get_attach_info')
         attach_info = get_attach_info(doc)
         if doc_files_info.is_sgmxml:
+            register_log('format_new_name')
             new_name = format_new_name(doc, acron, doc_files_info.xml_name)
+            register_log('get_curr_and_new_href_list')
             curr_and_new_href_list = get_curr_and_new_href_list(doc_files_info.xml_name, new_name, attach_info)
+            register_log('add_extension')
             curr_and_new_href_list = add_extension(curr_and_new_href_list, doc_files_info.xml_path)
+            register_log('normalize_hrefs')
             content = normalize_hrefs(content, curr_and_new_href_list)
         else:
             curr_and_new_href_list = [(href, href) for href, ign1, ign2 in attach_info]
+            register_log('add_extension')
             curr_and_new_href_list = add_extension(curr_and_new_href_list, doc_files_info.xml_path)
+        register_log('pack_files')
         related_packed, href_packed, not_found = pack_files(doc_files_info.xml_path, scielo_pkg_path, doc_files_info.xml_name, new_name, curr_and_new_href_list)
-
+        register_log('pack_files_report')
         param_related_packed = ['   ' + c + ' => ' + n for c, n in related_packed]
         param_href_packed = ['   ' + c + ' => ' + n for c, n in href_packed]
         param_curr_and_new_href_list = ['   ' + c + ' => ' + n for c, n in curr_and_new_href_list]
@@ -304,9 +324,12 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
 
     new_xml_filename = scielo_pkg_path + '/' + new_name + '.xml'
 
+    register_log('new_xml_filename')
+    if isinstance(content, unicode):
+        content = content.encode('utf-8')
     open(new_xml_filename, 'w').write(content)
     print(' ... created')
-
+    register_log('end')
     return (new_name, new_xml_filename)
 
 
@@ -386,21 +409,26 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         doc_files_info.new_xml_filename = new_xml_filename
 
         report_names[new_name] = os.path.basename(xml_filename).replace('.sgm.xml', '').replace('.xml', '')
-        loaded_xml, e = xml_utils.load_xml(new_xml_filename)
 
         if not doc_files_info.is_sgmxml:
             if do_pmc_package:
+                loaded_xml, e = xml_utils.load_xml(new_xml_filename)
+
                 if loaded_xml is not None:
                     doc = article.Article(loaded_xml)
                     do_pmc_package = (doc.journal_id_nlm_ta is not None)
 
         if do_pmc_package:
+            register_log('xml_output')
             xml_output(doc_files_info.new_xml_filename, dtd_files.xsl_output, pmc_pkg_path + '/' + os.path.basename(xml_filename))
 
             #validation of pmc.xml
+            register_log('validate_article_xml pmc')
             loaded_xml, is_valid_dtd, is_valid_style = xpchecker.validate_article_xml(xml_filename, xml_versions.DTDFiles('pmc', version), doc_files_info.pmc_dtd_report_filename, doc_files_info.pmc_style_report_filename, doc_files_info.ctrl_filename)
+            register_log('...')
 
     print('Generate validation reports...')
+    register_log('generate validations reports')
     dtd_files = xml_versions.DTDFiles('scielo', version)
     pkg_checker.validate_package(scielo_pkg_path, xml_files, report_names, dtd_files, report_path, wrk_path, do_toc_report)
 
@@ -411,6 +439,8 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         for f in os.listdir(scielo_pkg_path):
             if not f.endswith('.xml') and not f.endswith('.jpg'):
                 shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)
+
+    open(report_path + '/log.txt', 'w').write('\n'.join(log_items))
 
 
 def validate_path(path):

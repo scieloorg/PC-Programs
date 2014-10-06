@@ -1,3 +1,4 @@
+# coding=utf-8
 import os
 
 import files_manager
@@ -97,8 +98,8 @@ def validate_package(package_path, xml_filenames, xml_names, dtd_files, report_p
             articles[new_name] = article
 
         if sheet_data is not None:
-            authors_h, authors_w, authors_data = sheet_data.authors(new_name)
-            sources_h, sources_w, sources_data = sheet_data.sources(new_name)
+            authors_h, authors_w, authors_data = sheet_data.authors_sheet_data(new_name)
+            sources_h, sources_w, sources_data = sheet_data.sources_sheet_data(new_name)
 
             if create_toc_report:
                 toc_authors_sheet_data += authors_data

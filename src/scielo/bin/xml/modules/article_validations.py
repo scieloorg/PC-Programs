@@ -15,23 +15,37 @@ def format_xml_in_html(xml):
 def format_value(value):
     if value is None:
         value = 'None'
-    else:
-        if value.endswith(' '):
-            value += 'WARNING: ' + value + ' ends with "space"'
-        if value.startswith('.'):
-            value += 'WARNING: ' + value + ' starts with "."'
-        if value.startswith(' '):
-            value += 'WARNING: ' + value + ' starts with "space"'
-
     return value
 
 
+def validate_value(value):
+    result = []
+    status = 'OK'
+    if value is not None:
+        if value.endswith(' '):
+            status = 'WARNING'
+            result.append(value + ' ends with "space"')
+        if value.startswith('.'):
+            status = 'WARNING'
+            result.append(value + ' starts with "."')
+        if value.startswith(' '):
+            status = 'WARNING'
+            result.append(value + ' starts with "space"')
+    if status == 'OK':
+        message = format_value(value)
+    else:
+        message = ';\n'.join(result)
+    return (status, message)
+
+
 def display_value(label, value):
-    return (label, 'OK', format_value(value))
+    status, message = validate_value(value)
+    return (label, status, message)
 
 
 def conditional_required(label, value):
-    return (label, 'OK', format_value(value)) if value is not None else (label, 'WARNING', 'Required, if exists.')
+    status, message = validate_value(value)
+    return (label, status, message) if value is not None else (label, 'WARNING', 'Required, if exists.')
 
 
 def required_one(label, value):
@@ -39,11 +53,12 @@ def required_one(label, value):
 
 
 def required(label, value):
-    return (label, 'OK', format_value(value)) if not (value is None or value == '') else (label, 'ERROR', 'Required.')
+    status, message = validate_value(value)
+    return (label, status, message) if not (value is None or value == '') else (label, 'ERROR', 'Required.')
 
 
 def expected_values(label, value, expected):
-    return (label, 'OK', format_value(value)) if value in expected else (label, 'ERROR', format_value(value) + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected))
+    return (label, 'OK', value) if value in expected else (label, 'ERROR', format_value(value) + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected))
 
 
 def display_attributes(attributes):
@@ -51,7 +66,8 @@ def display_attributes(attributes):
     for key, value in attributes.items():
         if value is list:
             value = '; '.join(value)
-        r.append(key + ': ' + format_value(value))
+        status, message = validate_value(value)
+        r.append(key + ' (' + status + '): ' + message)
     return '; '.join(r)
 
 
@@ -79,7 +95,7 @@ def validate_name(label, value, invalid_characters):
 def validate_contrib_names(author, affiliations=[]):
     results = validate_name('surname', author.surname, [' ', '_']) + validate_name('given-names', author.fname, ['_'])
     if len(affiliations) > 0:
-        aff_ids = [aff.id for aff in affiliations]
+        aff_ids = [aff.id for aff in affiliations if aff.id is not None]
         if len(author.xref) == 0:
             results.append(('xref', 'WARNING', 'Author has no xref. Expected values: ' + '|'.join(aff_ids)))
         else:
@@ -296,10 +312,10 @@ class ArticleContentValidation(object):
         if len(self.article.award_id) == 0:
             found, c = has_number(self.article.ack_xml)
             if found is True:
-                r.append(('award-id', 'WARNING', 'ack has number: ' + c + '. ' + self.article.ack_xml))
-            found, c = has_number(self.article.fn_financial_disclosure)
+                r.append(('award-id', 'WARNING', 'Found number ' + c + ' in ack. ' + format_xml_in_html(self.article.ack_xml)))
+            found, c = has_number(self.article.financial_disclosure)
             if found is True:
-                r.append(('award-id', 'WARNING', 'fn[@fn-type="financial_disclosure"] has number: ' + c + '. ' + self.article.fn_financial_disclosure))
+                r.append(('award-id', 'WARNING', 'Found number ' + c + ' in fn[@fn-type="financial-disclosure"]. ' + format_xml_in_html(self.article.fn_financial_disclosure)))
         else:
             for item in self.article.award_id:
                 r.append(('award-id', 'OK', item))
@@ -315,7 +331,7 @@ class ArticleContentValidation(object):
 
     @property
     def ack_xml(self):
-        return display_value('ack_xml', self.article.ack_xml)
+        return display_value('ack_xml', format_xml_in_html(self.article.ack_xml))
 
     @property
     def fpage(self):
@@ -336,13 +352,15 @@ class ArticleContentValidation(object):
     @property
     def affiliations(self):
         r = []
-        for a in self.article.affiliations:
-            r.append(('xml', 'OK', a.xml))
-            r.append(required('id', a.id))
-            r.append(required('original', a.original))
-            r.append(required('normalized', a.norgname))
-            r.append(required('orgname', a.orgname))
-            r.append(required('country', a.country))
+        for aff in self.article.affiliations:
+            r.append(('aff xml', 'OK', format_xml_in_html(aff.xml)))
+            a, b, c = required('aff id', aff.id)
+            b = 'FATAL ERROR' if 'ERROR' in b else b
+            r.append((a, b, c))
+            r.append(required('aff original', aff.original))
+            r.append(required('aff normalized', aff.norgname))
+            r.append(required('aff orgname', aff.orgname))
+            r.append(required('aff country', aff.country))
         return r
 
     @property

@@ -1,4 +1,4 @@
-
+# coding=utf-8
 
 PUBLICATION_TYPE = []
 PUBLICATION_TYPE.append('journal')

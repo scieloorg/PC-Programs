@@ -1,4 +1,4 @@
-
+# coding=utf-8
 import os
 import shutil
 from datetime import datetime
@@ -140,16 +140,16 @@ class ArticleDisplayReport(object):
     def files_and_href(self):
         r = ''
         r += html_report.tag('h2', 'Files in the package') + html_report.sheet(self.sheet_data.package_files(self.files))
-        r += html_report.tag('h2', 'Files in @href') + html_report.sheet(self.sheet_data.hrefs(self.xml_path))
+        r += html_report.tag('h2', 'Files in @href') + html_report.sheet(self.sheet_data.hrefs_sheet_data(self.xml_path))
         return r
 
     @property
     def authors_sheet(self):
-        return html_report.tag('h2', 'Authors') + html_report.sheet(self.sheet_data.authors())
+        return html_report.tag('h2', 'Authors') + html_report.sheet(self.sheet_data.authors_sheet_data())
 
     @property
     def sources_sheet(self):
-        return html_report.tag('h2', 'Sources') + html_report.sheet(self.sheet_data.sources())
+        return html_report.tag('h2', 'Sources') + html_report.sheet(self.sheet_data.sources_sheet_data())
 
     def display_value_with_discret_label(self, label, value, style='', tag='p'):
         if value is None:
@@ -158,10 +158,10 @@ class ArticleDisplayReport(object):
 
     def display_titles(self):
         r = ''
-        for t in self.article.titles:
-            r += html_report.display_value_with_discret_label(t.language, t.title)
-        for t in self.article.trans_titles:
-            r += html_report.display_value_with_discret_label(t.language, t.title)
+        for title in self.article.titles:
+            r += html_report.display_value_with_discret_label(title.language, title.title)
+        for title in self.article.trans_titles:
+            r += html_report.display_value_with_discret_label(title.language, title.title)
         return r
 
     def display_text(self, label, items):
@@ -225,13 +225,13 @@ class ArticleDisplayReport(object):
 
     @property
     def funding(self):
-        r = self.display_value_with_discret_label('ack', self.article.ack_xml)
-        r += self.display_value_with_discret_label('fn[@fn-type="funding-disclosure"]', self.article.elocation_id, 'fpage')
+        r = self.display_value_with_discret_label('ack', html_report.display_xml(self.article.ack_xml))
+        r += self.display_value_with_discret_label('fn[@fn-type="financial-disclosure"]', self.article.financial_disclosure, 'fpage')
         return r
 
     @property
     def article_id_other(self):
-        return self.display_value_with_discret_label('.//article-id[@pub-id-type="other"]', self.article.fn_financial_disclosure)
+        return self.display_value_with_discret_label('.//article-id[@pub-id-type="other"]', self.article.article_id_other)
 
     @property
     def sections(self):
@@ -285,7 +285,7 @@ class ArticleDisplayReport(object):
         r = html_report.tag('p', 'Affiliations:', 'label')
         for item in self.article.affiliations:
             r += html_report.tag('p', html_report.display_xml(item.xml))
-        r += html_report.sheet(self.sheet_data.affiliations())
+        r += html_report.sheet(self.sheet_data.affiliations_sheet_data())
         return r
 
 
@@ -400,7 +400,7 @@ class ArticleSheetData(object):
         self.article = article
         self.article_validation = article_validation
 
-    def authors(self, filename=None):
+    def authors_sheet_data(self, filename=None):
         r = []
         t_header = ['xref', 'given-names', 'surname', 'suffix', 'prefix', 'collab', 'role']
         if not filename is None:
@@ -448,7 +448,7 @@ class ArticleSheetData(object):
                 r.append(row)
         return (t_header, [], r)
 
-    def sources(self, filename=None):
+    def sources_sheet_data(self, filename=None):
         r = []
         t_header = ['ID', 'type', 'year', 'source', 'publisher name', 'location', ]
         if not filename is None:
@@ -467,7 +467,7 @@ class ArticleSheetData(object):
             r.append(row)
         return (t_header, [], r)
 
-    def ids(self):
+    def ids_sheet_data(self):
         def _ids(node, scope):
             res = []
             if node is not None:
@@ -493,7 +493,7 @@ class ArticleSheetData(object):
 
         return (t_header, ['xref list'], r)
 
-    def tables(self, path):
+    def tables_sheet_data(self, path):
         t_header = ['ID', 'label/caption', 'table/graphic']
         r = []
         for t in self.article.tables:
@@ -504,7 +504,7 @@ class ArticleSheetData(object):
             r.append(row)
         return (t_header, ['label/caption', 'table/graphic'], r)
 
-    def hrefs(self, path):
+    def hrefs_sheet_data(self, path):
         t_header = ['href', 'display', 'xml']
         r = []
 
@@ -542,22 +542,22 @@ class ArticleSheetData(object):
             r.append(row)
         return (t_header, ['files', 'status'], r)
 
-    def affiliations(self):
-        t_header = ['ID', 'orgname', 'norgname', 'orgdiv1', 'orgdiv2', 'country', 'city', 'state', 'xml']
+    def affiliations_sheet_data(self):
+        t_header = ['aff id', 'aff orgname', 'aff norgname', 'aff orgdiv1', 'aff orgdiv2', 'aff country', 'aff city', 'aff state', 'aff xml']
         r = []
         for a in self.article.affiliations:
             row = {}
-            row['ID'] = a.id
-            row['norgname'] = a.norgname
-            row['orgname'] = a.orgname
-            row['orgdiv1'] = a.orgdiv1
-            row['orgdiv2'] = a.orgdiv2
-            row['city'] = a.city
-            row['state'] = a.state
-            row['country'] = a.country
-            row['xml'] = a.xml
+            row['aff id'] = a.id
+            row['aff norgname'] = a.norgname
+            row['aff orgname'] = a.orgname
+            row['aff orgdiv1'] = a.orgdiv1
+            row['aff orgdiv2'] = a.orgdiv2
+            row['aff city'] = a.city
+            row['aff state'] = a.state
+            row['aff country'] = a.country
+            row['aff xml'] = a.xml
             r.append(row)
-        return (t_header, ['xml'], r)
+        return (t_header, ['aff xml'], r)
 
 
 def package_files(path, xml_name):

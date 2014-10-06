@@ -43,7 +43,6 @@ class XMLContent(object):
                         test = s[s.find('<')+1:]
                         changes.append(test)
         for change in changes:
-            print(change)
             self.content = self.content.replace('<' + test + '>', '[' + test + ']')
 
     def _fix_style_tags(self):
@@ -144,22 +143,29 @@ def normalize_space(s):
     return s
 
 
-def node_text(node, exclude_root_tag=True):
+def nodexmltostring(node):
     text = None
     if not node is None:
         text = etree.tostring(node)
+        if '<' in text:
+            text = number_ent_to_char(text)
+        else:
+            text = node.text
+    return text
+
+
+def node_text(node):
+    text = nodexmltostring(node)
+    if not text is None:
         if '<' in text[0:1]:
             text = text[text.find('>')+1:]
             text = text[0:text.rfind('</')]
-        text = text.strip()
+            text = text.strip()
     return text
 
 
 def node_xml(node):
-    text = None
-    if not node is None:
-        text = etree.tostring(node)
-    return text
+    return nodexmltostring(node)
 
 
 def normalize_xml_numeric_entities(content):
@@ -217,9 +223,8 @@ def number_ent_to_char(content):
         if not isinstance(content, unicode):
             content = content.decode('utf-8')
         content = h.unescape(content)
-        if isinstance(content, unicode):
-            content = content.encode('utf-8')
-
+        #if isinstance(content, unicode):
+        #    content = content.encode('utf-8')
     return content
 
 
@@ -232,9 +237,8 @@ def restore_xml_entities(content):
 
 
 def convert_entities_to_chars(content, debug=False):
-
+    replaced_named_ent = []
     if '&' in content:
-
         content = normalize_xml_numeric_entities(content)
         #print('fix_amp done')
         content = preserve_xml_entities(content)
@@ -300,7 +304,6 @@ def load_xml(content):
                 text = content[pos+1:]
                 msg += ']]]' + text[0:text.find('>')+1]
             message += msg
-            print(message)
             r = None
     return (r, message)
 

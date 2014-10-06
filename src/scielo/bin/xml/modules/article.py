@@ -197,7 +197,7 @@ class ArticleXML(object):
         if self.tree is not None:
             if self.tree.find('.') is not None:
                 return self.tree.find('.').attrib.get('article-type')
-    
+
     @property
     def language(self):
         if self.tree is not None:
@@ -463,6 +463,11 @@ class ArticleXML(object):
         #107
         if self.back is not None:
             return node_xml(self.back.find('.//ack'))
+
+    @property
+    def financial_disclosure(self):
+        if self.tree is not None:
+            return node_text(self.tree.find('.//fn[@fn-type="financial-disclosure"]'))
 
     @property
     def fn_financial_disclosure(self):
