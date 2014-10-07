@@ -59,7 +59,7 @@ class ReportHTML(object):
         style = self.message_style(text)
         if style == '' or style == 'ok':
             style = 'success'
-        return self.tag('h4', title) + self.format_div(self.format_div(s, style), 'statistics')
+        return self.format_div(self.tag('h4', title) + self.format_div(s, style), 'statistics')
 
     def body_section(self, style, anchor_name, title, content, sections=[]):
         anchor = anchor_name if anchor_name == '' else '<a name="' + anchor_name + '"/><a href="#top">^</a>'
@@ -131,7 +131,7 @@ class ReportHTML(object):
         return '<textarea cols="' + width + '" rows="10" readonly>' + value + '</textarea>'
 
     def format_message(self, value):
-        if '<p' in value:
+        if '</p>' in value:
             tag = 'div'
         else:
             tag = 'p'

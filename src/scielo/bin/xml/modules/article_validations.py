@@ -3,7 +3,7 @@
 from isis_models import DOCTOPIC
 
 import attributes
-import data_utils
+import article_utils
 
 import article
 
@@ -107,8 +107,9 @@ def validate_contrib_names(author, affiliations=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, article):
+    def __init__(self, article, validate_order):
         self.article = article
+        self.validate_order = validate_order
 
     @property
     def dtd_version(self):
@@ -137,7 +138,7 @@ class ArticleContentValidation(object):
         @source-type t
         @link-type r
         """
-        return data_utils.display_values_with_attributes('related objects', self.article.related_objects)
+        return article_utils.display_values_with_attributes('related objects', self.article.related_objects)
 
     @property
     def related_articles(self):
@@ -150,7 +151,7 @@ class ArticleContentValidation(object):
         @id k
         . t pr
         """
-        return data_utils.display_values_with_attributes('related articles', self.article.related_objects)
+        return article_utils.display_values_with_attributes('related articles', self.article.related_objects)
 
     @property
     def journal_title(self):
@@ -217,7 +218,7 @@ class ArticleContentValidation(object):
 
     @property
     def trans_languages(self):
-        return data_utils.display_values('trans languages', self.article.trans_languages)
+        return article_utils.display_values('trans languages', self.article.trans_languages)
 
     @property
     def doi(self):
@@ -230,7 +231,7 @@ class ArticleContentValidation(object):
     @property
     def order(self):
         def valid(order):
-            r = ('?', order)     
+            r = ('?', order)
             if order is not None:
                 if order.isdigit():
                     if len(order) != 5:
@@ -240,13 +241,15 @@ class ArticleContentValidation(object):
                 else:
                     r = ('FATAL ERROR', 'Invalid format of order. Expected 99999.')
             return r
-        r = valid(self.article.order)
-        if r[0] == '?':
-            r = required('order', self.article.order)
-        elif r[0] == 'FATAL ERROR':
-            r = ('order', 'FATAL ERROR', r[1])
-        else:
-            r = ('order', 'OK', self.article.order)
+        r = ('order', 'OK', self.article.order)
+        if self.validate_order:
+            r = valid(self.article.order)
+            if r[0] == '?':
+                r = required('order', self.article.order)
+            elif r[0] == 'FATAL ERROR':
+                r = ('order', 'FATAL ERROR', r[1])
+            else:
+                r = ('order', 'OK', self.article.order)
         return r
 
     @property
@@ -278,15 +281,15 @@ class ArticleContentValidation(object):
 
     @property
     def funding_source(self):
-        return data_utils.display_values('funding_source', self.article.funding_source)
+        return article_utils.display_values('funding_source', self.article.funding_source)
 
     @property
     def principal_award_recipient(self):
-        return data_utils.display_values('principal_award_recipient', self.article.principal_award_recipient)
+        return article_utils.display_values('principal_award_recipient', self.article.principal_award_recipient)
 
     @property
     def principal_investigator(self):
-        return data_utils.display_values('principal_investigator', self.article.principal_investigator)
+        return article_utils.display_values('principal_investigator', self.article.principal_investigator)
 
     @property
     def funding(self):
@@ -295,6 +298,16 @@ class ArticleContentValidation(object):
             r = ''
             if content is None:
                 content = ''
+
+            s = content
+            if '<' in s:
+                content = ''
+                s = s.replace('<', 'BREAK<').replace('>', '>BREAK')
+                for item in s.split('BREAK'):
+                    if '<' in item and '>' in item:
+                        pass
+                    else:
+                        content += item
 
             if '&#' in content:
                 content = content.replace('&#', '_BREAK_AMPNUM').replace(';', '_BREAK_PONT-VIRG')
@@ -323,15 +336,15 @@ class ArticleContentValidation(object):
 
     @property
     def award_id(self):
-        return data_utils.display_values('award_id', self.article.award_id)
+        return article_utils.display_values('award-id', self.article.award_id)
 
     @property
     def funding_statement(self):
-        return data_utils.display_values('funding_statement', self.article.funding_statement)
+        return article_utils.display_values('funding statement', self.article.funding_statement)
 
     @property
     def ack_xml(self):
-        return display_value('ack_xml', format_xml_in_html(self.article.ack_xml))
+        return display_value('ack xml', format_xml_in_html(self.article.ack_xml))
 
     @property
     def fpage(self):
@@ -339,7 +352,7 @@ class ArticleContentValidation(object):
 
     @property
     def fpage_seq(self):
-        return display_value('fpage_seq', self.article.fpage_seq)
+        return display_value('fpage/@seq', self.article.fpage_seq)
 
     @property
     def lpage(self):
@@ -347,7 +360,7 @@ class ArticleContentValidation(object):
 
     @property
     def elocation_id(self):
-        return display_value('elocation_id', self.article.elocation_id)
+        return display_value('elocation-id', self.article.elocation_id)
 
     @property
     def affiliations(self):
@@ -358,7 +371,9 @@ class ArticleContentValidation(object):
             b = 'FATAL ERROR' if 'ERROR' in b else b
             r.append((a, b, c))
             r.append(required('aff original', aff.original))
-            r.append(required('aff normalized', aff.norgname))
+            a, b, c = required('aff normalized', aff.norgname)
+            b = 'WARNING' if 'ERROR' in b else b
+            r.append((a, b, c))
             r.append(required('aff orgname', aff.orgname))
             r.append(required('aff country', aff.country))
         return r
@@ -408,8 +423,8 @@ class ArticleContentValidation(object):
 
     @property
     def history(self):
-        received = data_utils.format_dateiso(self.article.received)
-        accepted = data_utils.format_dateiso(self.article.accepted)
+        received = article_utils.format_dateiso(self.article.received)
+        accepted = article_utils.format_dateiso(self.article.accepted)
 
         if received is not None and accepted is not None:
             r = [('history', 'OK', received + ' - ' + accepted)]
@@ -467,7 +482,7 @@ class ArticleContentValidation(object):
 
     @property
     def illustrative_materials(self):
-        return data_utils.display_values('illustrative_materials', self.article.illustrative_materials)
+        return article_utils.display_values('illustrative_materials', self.article.illustrative_materials)
 
     @property
     def is_text(self):

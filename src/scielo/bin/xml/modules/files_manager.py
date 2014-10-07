@@ -3,7 +3,7 @@ import os
 import shutil
 from datetime import datetime
 
-from utils import how_similar
+from article_utils import how_similar
 
 
 class DocumentFiles(object):
@@ -206,14 +206,14 @@ class AheadManager(object):
             status = 'new'
         else:
             xml_filename = xml_name + '.xml'
-            msg_list.append('Find ahead for ' + article.doi + ' and ' + xml_filename)
+            msg_list.append('Find an "ahead of print version" for ' + article.doi + ' and ' + xml_filename)
             ahead = self.find_ahead(article.doi, xml_filename)
 
             if ahead is None:
                 status = 'new'
-                msg_list.append('No ahead was found.')
+                msg_list.append('This article has not an "ahead of print version".')
             else:
-                msg_list.append('ahead was found')
+                msg_list.append('Found: "ahead of print version"')
                 matched_rate = self.score(article, ahead, 90)
                 if matched_rate > 0:
                     is_valid_ahead = self.is_valid(ahead)
@@ -221,14 +221,14 @@ class AheadManager(object):
                         status = 'valid'
                         valid_ahead = ahead
                         if matched_rate != 100:
-                            msg = 'WARNING: article and ahead are partially matched.'
+                            msg = 'WARNING: article and its "ahead of print version" are partially matched.'
                             status = 'partially matched'
                     else:
                         status = 'not valid'
-                        msg = 'WARNING: ahead has no PID'
+                        msg = 'WARNING: "ahead of print version" has no PID'
                 else:
                     status = 'unmatched'
-                    msg = 'WARNING: article and ahead are unmatched'
+                    msg = 'WARNING: article and "ahead of print version" are unmatched'
 
                 msg_list.append(msg)
                 msg_list.append(article.title)
@@ -236,7 +236,7 @@ class AheadManager(object):
                 msg_list.append(ahead.title)
                 msg_list.append(ahead.first_author_surname)
 
-        return (valid_ahead, status, '\n'.join(msg_list))
+        return (valid_ahead, status, '\n'.join(['<p>' + item + '</p>' for item in msg_list]))
 
     def mark_ahead_as_deleted(self, ahead):
         """
@@ -384,7 +384,8 @@ class IssueFiles(object):
                 else:
                     shutil.copy(self.xml_path + '/' + f, path['img'])
                     msg.append('  ' + f + ' => ' + path['img'])
-        return '\n'.join(msg)
+        #return '\n'.join(['<p>' + item + '</p>' for item in msg])
+        return ''
 
     def move_reports(self, report_path):
         if not self.base_reports_path == report_path:
@@ -417,6 +418,8 @@ def create_path(path):
 class JournalFiles(object):
 
     def __init__(self, serial_path, acron):
+        if serial_path.endswith('/'):
+            serial_path = serial_path[0:-1]
         self.acron = acron
         self.journal_path = serial_path + '/' + acron
         self.years = [str(int(datetime.now().isoformat()[0:4])+1 - y) for y in range(0, 5)]

@@ -114,15 +114,20 @@ def remove_doctype(content):
 
 def replace_doctype(content, new_doctype):
     if '<!DOCTYPE' in content:
-        temp = content[content.find('<!DOCTYPE'):]
-        temp = temp[0:temp.find('>')+1]
-        if len(temp) > 0:
-            content = content.replace(temp, new_doctype)
+        find_text = content[content.find('<!DOCTYPE'):]
+        find_text = find_text[0:find_text.find('>')+1]
+        if len(find_text) > 0:
+            if len(new_doctype) > 0:
+                content = content.replace(find_text, new_doctype)
+            else:
+                content = content.replace(find_text + '\n', new_doctype)
     elif content.startswith('<?xml '):
-        temp = content
-        temp = temp[0:temp.find('?>')+2]
         if len(new_doctype) > 0:
-            content = content.replace(temp, temp + '\n' + new_doctype)
+            find_text = content
+            find_text = find_text[find_text.find('?>')+2:]
+            find_text = find_text[find_text.find('<'):]
+            content = content.replace(find_text, new_doctype + '\n' + find_text)
+
     return content
 
 
@@ -285,7 +290,7 @@ def load_xml(content):
         try:
             r = etree.parse(StringIO(content))
         except Exception as e:
-            print('XML is not well formed')
+            #print('XML is not well formed')
             message = 'XML is not well formed\n'
             msg = str(e)
             if 'position ' in msg:

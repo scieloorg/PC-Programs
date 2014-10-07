@@ -117,6 +117,7 @@ def xml_validate(xml_filename, result_filename, doctype=None):
 
     result = ''
     if os.path.exists(temp_result_filename):
+        result = open(temp_result_filename, 'r').read()
         if 'ERROR' in result.upper():
             n = 0
             s = ''

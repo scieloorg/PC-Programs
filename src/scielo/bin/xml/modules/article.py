@@ -2,7 +2,7 @@
 
 import xml.etree.ElementTree as etree
 
-from utils import doi_pid, format_date
+from article_utils import doi_pid, format_date
 from xml_utils import node_text, node_xml
 
 

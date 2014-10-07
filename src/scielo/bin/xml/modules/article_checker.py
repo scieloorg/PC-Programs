@@ -4,7 +4,7 @@ import shutil
 from datetime import datetime
 
 import xml_utils
-import data_utils
+import article_utils
 import article_validations
 import reports
 
@@ -28,13 +28,17 @@ def get_valid_xml(xml_filename):
 
 class TOCReport(object):
 
-    def __init__(self, articles):
+    def __init__(self, articles, validate_order):
         self.articles = articles
+        self.validate_order = validate_order
 
     def report(self):
         invalid = []
         equal_data = ['journal-title', 'journal id NLM', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        unique_data = ['order', 'doi', 'elocation id']
+        if self.validate_order:
+            unique_data = ['order', 'doi', 'elocation id']
+        else:
+            unique_data = ['doi', 'elocation id']
         conditional_unique_data = ['fpage-and-seq']
 
         toc_data = {}
@@ -47,7 +51,7 @@ class TOCReport(object):
             else:
                 art_data = article.summary()
                 for label in toc_data.keys():
-                    toc_data[label] = data_utils.add_new_value_to_index(toc_data[label], art_data[label], xml_name)
+                    toc_data[label] = article_utils.add_new_value_to_index(toc_data[label], art_data[label], xml_name)
 
         r = ''
         if len(invalid) > 0:
@@ -180,7 +184,7 @@ class ArticleDisplayReport(object):
 
     @property
     def article_date(self):
-        return self.display_value_with_discret_label('@article-date', data_utils.format_date(self.article.article_pub_date))
+        return self.display_value_with_discret_label('@article-date', article_utils.format_date(self.article.article_pub_date))
 
     @property
     def contrib_names(self):
@@ -257,7 +261,7 @@ class ArticleDisplayReport(object):
     @property
     def issue_header(self):
         if self.article is not None:
-            r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, data_utils.format_date(self.article.issue_pub_date)]
+            r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, article_utils.format_date(self.article.issue_pub_date)]
             return html_report.tag('div', '\n'.join([html_report.tag('h5', item) for item in r if item is not None]), 'issue-data')
         else:
             return ''
@@ -535,9 +539,9 @@ class ArticleSheetData(object):
                     if item[:-4] in inxml:
                         status = 'found in XML'
                     else:
-                        status = 'ERROR: not found in XML'
+                        status = 'WARNING: not found in XML'
                 else:
-                    status = 'ERROR: not found in XML'
+                    status = 'WARNING: not found in XML'
             row['status'] = status
             r.append(row)
         return (t_header, ['files', 'status'], r)
@@ -570,18 +574,18 @@ def package_files(path, xml_name):
     return r
 
 
-def toc_report(articles_and_filenames):
-    toc_report_content = TOCReport(articles_and_filenames).report()
+def toc_report(articles_and_filenames, validate_order):
+    toc_report_content = TOCReport(articles_and_filenames, validate_order).report()
     toc_f, toc_e, toc_w = reports.statistics_numbers(toc_report_content)
     return (toc_f, toc_e, toc_w, toc_report_content)
 
 
-def _validate_article_data(article, new_name, package_path):
+def _validate_article_data(article, new_name, package_path, validate_order):
     if article is None:
-        content = 'FATAL ERROR: ' + new_name + ' is not valid.'
+        content = 'FATAL ERROR: Unable to get data of ' + new_name + '.'
         sheet_data = None
     else:
-        article_validation = article_validations.ArticleContentValidation(article)
+        article_validation = article_validations.ArticleContentValidation(article, validate_order)
         sheet_data = ArticleSheetData(article, article_validation)
         article_display_report = ArticleDisplayReport(article, sheet_data, package_path, new_name)
         article_validation_report = ArticleValidationReport(article_validation)
@@ -590,12 +594,12 @@ def _validate_article_data(article, new_name, package_path):
     return (content, sheet_data)
 
 
-def validate_article_data(article, new_name, package_path, report_filename):
-    content, sheet_data = _validate_article_data(article, new_name, package_path)
+def validate_article_data(article, new_name, package_path, report_filename, validate_order):
+    content, sheet_data = _validate_article_data(article, new_name, package_path, validate_order)
     f, e, w = reports.statistics_numbers(content)
     stats = html_report.statistics_messages(f, e, w, '')
 
-    html_report.title = 'Report of data validations required by SciELO ' + new_name
+    html_report.title = ['Report of data validations required by SciELO ', new_name]
     html_report.body = stats + content
     html_report.save(report_filename)
     return (f, e, w, sheet_data)
@@ -605,8 +609,8 @@ def article_report_content(data_display, data_validation):
     content = ''
     content += data_display.summary
     content += data_display.article_back
-    content += data_display.files_and_href
     content += data_display.article_body
+    content += data_display.files_and_href
     content += data_validation.report()
     content += data_display.authors_sheet
     content += data_display.sources_sheet

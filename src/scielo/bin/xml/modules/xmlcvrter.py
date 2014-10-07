@@ -41,25 +41,30 @@ def get_issue_record(db_issue, article):
 
 
 def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_ahead, db_article, version='1.0'):
-
-    register_log('XML Files: ' + xml_path)
-    register_log('Results: ' + serial_path)
+    old_report_path = report_path
 
     issue_record = None
     issue_label = ''
 
-    xml_filenames = [xml_path + '/' + f for f in os.listdir(xml_path) if f.endswith('.xml')]
+    xml_filenames = sorted([xml_path + '/' + f for f in os.listdir(xml_path) if f.endswith('.xml')])
     xml_names = {f.replace('.xml', ''):f.replace('.xml', '') for f in os.listdir(xml_path) if f.endswith('.xml')}
     dtd_files = xml_versions.DTDFiles('scielo', version)
-    issues, articles, toc_results, article_results = pkg_checker.validate_package(xml_path, xml_filenames, xml_names, dtd_files, report_path, None, create_toc_report=True)
+    issues, toc_results, articles, articles_stats, article_results = pkg_checker.validate_package(xml_path, xml_filenames, xml_names, dtd_files, report_path, None, validate_order=True, create_toc_report=True)
 
-    toc_stats, toc_report = toc_results
-    toc_f, toc_e, toc_w = toc_stats
+    register_log('XML path: ' + xml_path)
+    register_log('Total of XML files: ' + str(len(articles)))
+    register_log(html_report.format_list('', 'ol', xml_names.keys()))
 
-    register_log(toc_report)
+    toc_stats_numbers, toc_stats_report = toc_results
+    toc_f, toc_e, toc_w = toc_stats_numbers
+
+    register_log(articles_stats)
+    register_log(toc_stats_report)
+    if toc_f + toc_e + toc_w > 0:
+        register_log(html_report.link('file:///' + report_path + '/toc.html', 'toc.html'))
 
     if toc_f > 0:
-        register_log('FATAL ERROR: Unable to create "base" because of fatal errors in the Table of Contents data. Check toc.html report.')
+        register_log('FATAL ERROR: Unable to create "base" because of fatal errors in the Table of Contents data.')
     else:
         article = get_valid_article(articles)
 
@@ -70,7 +75,7 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
         if issue_record is None:
             register_log('FATAL ERROR: Issue ' + issue_label + ' is not registered. (' + '/'.join([i for i in [article.print_issn, article.e_issn] if i is not None]) + ')')
         else:
-            register_log('Issue: ' + issue_label + '.')
+            #register_log('Issue: ' + issue_label + '.')
             issue_isis = IssueRecord(issue_record)
             issue = issue_isis.issue
             journal_files = files_manager.JournalFiles(serial_path, issue.acron)
@@ -89,9 +94,12 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
     register_log('-'*80)
 
     html_report.title = 'XML Conversion (XML to Database) - ' + issue_label
+    content = content.replace(old_report_path, report_path)
     html_report.body = content
-    html_report.save(report_path + '/xml_converter_result.html')
-    print('\n\nXML Converter report:\n ' + report_path + '/xml_converter_result.html')
+    converter_report_filename = report_path + '/xml_converter_result.html'
+    html_report.save(converter_report_filename)
+    print('\n\nXML Converter report:\n ' + converter_report_filename)
+    pkg_checker.display_report(converter_report_filename)
     print('\n\n-- end --')
 
 
@@ -103,8 +111,6 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
     total_ex_aop_partially = []
     not_loaded = []
     loaded = []
-
-    register_log('Total of documents in the package: ' + str(len(articles)))
 
     for xml_name, article in articles.items():
         #(xml_stats, data_stats, result)
@@ -129,7 +135,7 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
         f, e, w, issue_validations, section_code = validate_issue_data(issue_record, article)
         article.section_code = section_code
 
-        register_log(html_report.statistics_messages(f, e, w, '<h4>Converter validations</h4>'))
+        register_log(html_report.statistics_messages(f, e, w, '<h4>converter validations</h4>'))
         register_log('.'*80)
         register_log(ahead_msg)
         register_log(issue_validations)
@@ -155,21 +161,21 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
     register_log(display_list('converted', loaded))
     register_log(display_list('not converted', not_loaded))
     register_log(display_list('new documents', total_new_doc))
-    register_log(display_list('previous version as aop', total_ex_aop))
-    register_log(display_list('previous version as aop partially matched', total_ex_aop_partially))
-    register_log(display_list('previous version as aop without PID', total_ex_aop_invalid))
-    register_log(display_list('previous version as aop unmatched', total_ex_aop_unmatched))
+    register_log(display_list('previous version (ahead of print)', total_ex_aop))
+    register_log(display_list('previous version (ahead of print) partially matched', total_ex_aop_partially))
+    register_log(display_list('previous version (ahead of print) without PID', total_ex_aop_invalid))
+    register_log(display_list('previous version (ahead of print) unmatched', total_ex_aop_unmatched))
 
     if len(loaded) > 0:
         _loaded = db_article.finish_conversion(issue_record, issue_files)
-        register_log('Created database: ' + issue_files.base_path)
-        register_log('Other files created: ' + issue_files.base_path)
+        register_log('Processing results: ' + html_report.link('file:///' + issue_files.issue_path, issue_files.issue_path))
 
     if len(total_ex_aop) > 0:
         register_log(ahead_manager.finish_manage_ex_ahead())
 
     if len(loaded) > 0:
         register_log(issue_files.copy_files_to_web())
+    register_log('end')
 
 
 def display_list(title, items):
@@ -198,7 +204,9 @@ def validate_issue_data(issue_record, article):
             else:
                 msg.append('section: ' + article.toc_section + '.')
         msg.append('@article-type: ' + article.article_type)
-    return (f, e, w, '\n'.join(msg), section_code)
+
+    msg = ''.join([html_report.format_message(item) for item in msg])
+    return (f, e, w, msg, section_code)
 
 
 def convert_article(db_article, issue_record, issue_files, xml_name, article, ahead):
