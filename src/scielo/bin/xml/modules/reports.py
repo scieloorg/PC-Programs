@@ -51,7 +51,7 @@ class ReportHTML(object):
 
         return s
 
-    def statistics_messages(self, f, e, w, title):
+    def statistics_messages(self, f, e, w, title='', files_list=[]):
         s = [('Total of fatal errors:', f), ('Total of errors:', e), ('Total of warnings:', w)]
         s = ''.join([self.format_p_label_value(l, str(v)) for l, v in s])
 
@@ -59,7 +59,15 @@ class ReportHTML(object):
         style = self.message_style(text)
         if style == '' or style == 'ok':
             style = 'success'
-        return self.format_div(self.tag('h4', title) + self.format_div(s, style), 'statistics')
+
+        files = ''
+        if len(files_list) > 0:
+            self.tag('p', 'Check the errors/warnings:')
+        for item in files_list:
+            if os.path.isfile(item):
+                files += self.tag('p', self.link('file:///' + item, os.path.basename(item)))
+        title = self.tag('h4', title) if title != '' else ''
+        return self.tag('div', title + self.tag('div', s, style) + files, 'statistics')
 
     def body_section(self, style, anchor_name, title, content, sections=[]):
         anchor = anchor_name if anchor_name == '' else '<a name="' + anchor_name + '"/><a href="#top">^</a>'
@@ -101,9 +109,6 @@ class ReportHTML(object):
 
     def link(self, href, label):
         return '<a href="' + href + '">' + label + '</a>'
-
-    def format_div(self, content, style=''):
-        return self.tag('div', content, style)
 
     def tag(self, tag_name, content, style=''):
         if tag_name == 'p' and '</p>' in content:

@@ -9,35 +9,37 @@ from article_utils import how_similar
 class DocumentFiles(object):
 
     def __init__(self, xml_filename, report_path, wrk_path):
-        self.is_sgmxml = xml_filename.endswith('.sgm.xml')
         self.ctrl_filename = None
         self.html_filename = None
 
+        self.is_sgmxml = xml_filename.endswith('.sgm.xml')
         self.xml_filename = xml_filename
         self.xml_path = os.path.dirname(xml_filename)
 
-        basename = os.path.basename(xml_filename)
-
-        self.xml_name = basename.replace('.sgm.xml', '').replace('.xml', '')
+        basename = os.path.basename(xml_filename).replace('.sgm.xml', '')
+        self.xml_name = basename.replace('.xml', '')
         self.new_name = self.xml_name
+
+        report_name = self.xml_name
 
         if self.is_sgmxml:
             wrk_path = wrk_path + '/' + self.xml_name
-
+            if not os.path.isdir(wrk_path):
+                os.makedirs(wrk_path)
             self.html_filename = wrk_path + '/' + self.xml_name + '.temp.htm'
             if not os.path.isfile(self.html_filename):
                 self.html_filename += 'l'
             self.ctrl_filename = wrk_path + '/' + self.xml_name + '.ctrl.txt'
 
-        self.dtd_report_filename = report_path + '/' + self.xml_name + '.dtd.txt'
-        self.style_report_filename = report_path + '/' + self.xml_name + '.rep.html'
+        self.dtd_report_filename = report_path + '/' + report_name + '.dtd.txt'
+        self.style_report_filename = report_path + '/' + report_name + '.rep.html'
 
-        self.pmc_dtd_report_filename = report_path + '/' + self.xml_name + '.pmc.dtd.txt'
-        self.pmc_style_report_filename = report_path + '/' + self.xml_name + '.pmc.rep.html'
+        self.pmc_dtd_report_filename = report_path + '/' + report_name + '.pmc.dtd.txt'
+        self.pmc_style_report_filename = report_path + '/' + report_name + '.pmc.rep.html'
 
-        self.err_filename = report_path + '/' + self.xml_name + '.err.txt'
+        self.err_filename = report_path + '/' + report_name + '.err.txt'
 
-        self.data_report_filename = report_path + '/' + self.xml_name + '.contents.html'
+        self.data_report_filename = report_path + '/' + report_name + '.contents.html'
 
     def clean(self):
         delete_files([self.err_filename, self.dtd_report_filename, self.style_report_filename, self.pmc_dtd_report_filename, self.pmc_style_report_filename, self.ctrl_filename])

@@ -61,16 +61,20 @@ def java_xml_utils_style_validation(xml_filename, report_filename, xsl_prep_repo
     xml_report = report_filename.replace('.html', '.xml')
     if os.path.exists(xml_report):
         os.unlink(xml_report)
-    if java_xml_utils.xml_transform(xml_filename, xsl_prep_report, xml_report):
-        java_xml_utils.xml_transform(xml_report, xsl_report, report_filename)
+    if os.path.exists(report_filename):
+        os.unlink(report_filename)
+    parameters = {'filename': xml_filename}
+    if java_xml_utils.xml_transform(xml_filename, xsl_prep_report, xml_report, parameters):
+        parameters = {'filename': xml_report}
+        java_xml_utils.xml_transform(xml_report, xsl_report, report_filename, parameters)
     else:
         open(report_filename, 'w').write('FATAL ERROR: Unable to create ' + report_filename)
     if os.path.isfile(report_filename):
         c = open(report_filename, 'r').read()
         is_valid_style = ('Total of errors = 0' in c) and (('Total of warnings = 0' in c) or (not 'Total of warnings =' in c))
 
-    if os.path.isfile(xml_report):
-        os.unlink(xml_report)
+    #if os.path.isfile(xml_report):
+    #    os.unlink(xml_report)
     return is_valid_style
 
 
@@ -130,9 +134,8 @@ def style_validation(xml_filename, report_filename, xsl_prep_report, xsl_report,
 def _validate_xml_and_style(xml_filename, dtd_files, dtd_report_filename, style_report_filename):
     is_valid_style = False
 
-    java_xml_utils.apply_dtd(xml_filename, dtd_files.doctype)
-    is_valid_dtd = dtd_validation(xml_filename, dtd_report_filename, dtd_files.doctype_with_local_path, dtd_files.database_name)
     xml, e = xml_utils.load_xml(xml_filename)
+    is_valid_dtd = dtd_validation(xml_filename, dtd_report_filename, dtd_files.doctype_with_local_path, dtd_files.database_name)
     if e is None:
         is_valid_style = style_validation(xml_filename, style_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report, dtd_files.database_name)
     else:
@@ -150,15 +153,19 @@ def delete_unrequired_reports(ctrl_filename, is_valid_dtd, is_valid_style, dtd_v
         os.unlink(dtd_validation_report)
 
 
-def join_reports(err_filename, is_valid_dtd, dtd_report):
-    if not is_valid_dtd and err_filename is not None and os.path.isfile(dtd_report):
-        open(err_filename, 'a+').write('\n\n\n' + '.........\n\n\n' + 'DTD errors\n' + '-'*len('DTD errors') + '\n' + open(dtd_report, 'r').read())
+def append_dtd_errors(err_filename, dtd_report):
+    if os.path.isfile(dtd_report):
+        separator = ''
+        if os.path.isfile(err_filename):
+            separator = '\n\n\n' + '.........\n\n\n'
+        open(err_filename, 'a+').write(separator + 'DTD errors\n' + '-'*len('DTD errors') + '\n' + open(dtd_report, 'r').read())
 
 
-def validate_article_xml(xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename=None):
+def validate_article_xml(xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename):
     loaded_xml, is_valid_dtd, is_valid_style = _validate_xml_and_style(xml_filename, dtd_files, dtd_report, style_report)
 
-    join_reports(err_filename, is_valid_dtd, dtd_report)
+    if not is_valid_dtd and err_filename is not None:
+        append_dtd_errors(err_filename, dtd_report)
     f, e, w = style_checker_statistics(style_report)
 
     delete_unrequired_reports(ctrl_filename, is_valid_dtd, is_valid_style, dtd_report, style_report)

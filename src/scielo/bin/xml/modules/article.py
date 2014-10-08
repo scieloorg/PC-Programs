@@ -564,19 +564,19 @@ class ArticleXML(object):
 
     @property
     def total_of_references(self):
-        return self.total(self.back, './/ref')
+        return self.total(self.tree, './/ref')
 
     @property
     def total_of_tables(self):
-        return self.total(self.body, './/table-wrap')
+        return self.total(self.tree, './/table-wrap')
 
     @property
     def total_of_equations(self):
-        return self.total(self.body, './/disp-formula')
+        return self.total(self.tree, './/disp-formula')
 
     @property
     def total_of_figures(self):
-        return self.total(self.body, './/fig')
+        return self.total(self.tree, './/fig')
 
     @property
     def formulas(self):

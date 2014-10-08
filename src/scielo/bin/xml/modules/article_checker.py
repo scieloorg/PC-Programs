@@ -55,8 +55,8 @@ class TOCReport(object):
 
         r = ''
         if len(invalid) > 0:
-            r += html_report.format_div(html_report.format_message('FATAL ERROR: Invalid XML files'))
-            r += html_report.format_div(html_report.format_list('', 'ol', invalid))
+            r += html_report.tag('div', html_report.format_message('FATAL ERROR: Invalid XML files'))
+            r += html_report.tag('div', html_report.format_list('', 'ol', invalid))
 
         for label in equal_data:
             if len(toc_data[label]) > 1:
@@ -86,7 +86,7 @@ class TOCReport(object):
                     if len(xml_files) > 1:
                         part += html_report.format_list('found fpage/seq "' + found_value + ' in:', 'ul', xml_files, 'issue-problem')
                 r += part
-        return html_report.format_div(r, 'issue-messages')
+        return html_report.tag('div', r, 'issue-messages')
 
 
 class ArticleDisplayReport(object):
@@ -123,7 +123,7 @@ class ArticleDisplayReport(object):
             r += self.abstracts
             r += self.keywords
 
-        return html_report.tag('h2', 'Article front') + html_report.format_div(r, 'article-data')
+        return html_report.tag('h2', 'Article front') + html_report.tag('div', r, 'article-data')
 
     @property
     def article_body(self):
@@ -131,14 +131,14 @@ class ArticleDisplayReport(object):
         r += self.sections
         r += self.formulas
         r += self.tables
-        return html_report.tag('h2', 'Article body') + html_report.format_div(r, 'article-data')
+        return html_report.tag('h2', 'Article body') + html_report.tag('div', r, 'article-data')
 
     @property
     def article_back(self):
         r = ''
         r += self.funding
         r += self.footnotes
-        return html_report.tag('h2', 'Article back') + html_report.format_div(r, 'article-data')
+        return html_report.tag('h2', 'Article back') + html_report.tag('div', r, 'article-data')
 
     @property
     def files_and_href(self):
@@ -310,7 +310,6 @@ class ArticleValidationReport(object):
     def validation_table(self, content):
         r = '<p>'
         r += '<table class="validation">'
-
         r += '<thead>'
         r += '<tr>'
         for label in ['label', 'status', 'message/value']:
@@ -373,7 +372,7 @@ class ArticleValidationReport(object):
         rows += self.format_validation_data(self.article_validation.keywords)
         rows = self.validation_table(rows)
         rows += self.references
-        return html_report.format_div(html_report.tag('h2', 'Validations') + rows, 'article-messages')
+        return html_report.tag('div', html_report.tag('h2', 'Validations') + rows, 'article-messages')
 
     @property
     def affiliations(self):

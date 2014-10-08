@@ -30,8 +30,6 @@ def validate_article_data(article, new_name, package_path, report_filename, vali
 def validate_article(xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order):
     xml = article_checker.get_valid_xml(xml_filename)
 
-    doc_files_info.clean()
-
     xml_f, xml_e, xml_w = validate_article_xml(new_name, xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
 
     if xml is None:
@@ -42,18 +40,13 @@ def validate_article(xml_filename, new_name, report_name, doc_files_info, dtd_fi
     data_f, data_e, data_w, sheet_data = validate_article_data(article, new_name, os.path.dirname(xml_filename), doc_files_info.data_report_filename, validate_order)
 
     result = html_report.tag('h3', report_name)
-    result += html_report.statistics_messages(xml_f, xml_e, xml_w, 'xml validations')
-    for item in [doc_files_info.err_filename, doc_files_info.style_report_filename]:
-        print(item)
-        if os.path.isfile(item):
-            result += html_report.tag('p', html_report.link('file:///' + item, os.path.basename(item)))
+    result += html_report.statistics_messages(xml_f, xml_e, xml_w, 'xml validations', [doc_files_info.err_filename, doc_files_info.style_report_filename])
 
-    result += html_report.statistics_messages(data_f, data_e, data_w, 'data validations')
-    result += html_report.tag('p', html_report.link('file:///' + doc_files_info.data_report_filename, os.path.basename(doc_files_info.data_report_filename)))
+    result += html_report.statistics_messages(data_f, data_e, data_w, 'data validations', [doc_files_info.data_report_filename])
     return (article, sheet_data, result, (xml_f, xml_e, xml_w), (data_f, data_e, data_w))
 
 
-def validate_package(package_path, xml_filenames, xml_names, dtd_files, report_path, wrk_path, validate_order=False, create_toc_report=True):
+def validate_package(doc_files_info_list, dtd_files, report_path, validate_order, create_toc_report):
 
     toc_authors_sheet_data = []
     toc_sources_sheet_data = []
@@ -69,11 +62,11 @@ def validate_package(package_path, xml_filenames, xml_names, dtd_files, report_p
     xml_f, xml_e, xml_w = (0, 0, 0)
     data_f, data_e, data_w = (0, 0, 0)
 
-    for xml_filename in xml_filenames:
-        new_name = os.path.basename(xml_filename).replace('.xml', '')
-        report_name = xml_names[new_name]
+    for doc_files_info in doc_files_info_list:
+        new_name = doc_files_info.new_name
+        report_name = doc_files_info.xml_name
+        xml_filename = doc_files_info.new_xml_filename
 
-        doc_files_info = files_manager.DocumentFiles(xml_filename, report_path, wrk_path)
         article, sheet_data, result, xml_stats, data_stats = validate_article(xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order)
 
         f, e, w = xml_stats

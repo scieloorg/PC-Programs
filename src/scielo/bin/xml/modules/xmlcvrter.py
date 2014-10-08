@@ -45,15 +45,19 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
 
     issue_record = None
     issue_label = ''
-
+    doc_files_info_list = []
     xml_filenames = sorted([xml_path + '/' + f for f in os.listdir(xml_path) if f.endswith('.xml')])
-    xml_names = {f.replace('.xml', ''):f.replace('.xml', '') for f in os.listdir(xml_path) if f.endswith('.xml')}
-    dtd_files = xml_versions.DTDFiles('scielo', version)
-    issues, toc_results, articles, articles_stats, article_results = pkg_checker.validate_package(xml_path, xml_filenames, xml_names, dtd_files, report_path, None, validate_order=True, create_toc_report=True)
 
     register_log('XML path: ' + xml_path)
-    register_log('Total of XML files: ' + str(len(articles)))
-    register_log(html_report.format_list('', 'ol', xml_names.keys()))
+    register_log('Total of XML files: ' + str(len(xml_filenames)))
+    register_log(html_report.format_list('', 'ol', [os.path.basename(f) for f in xml_filenames]))
+
+    for xml_filename in xml_filenames:
+        doc_files_info = files_manager.DocumentFiles(xml_filename, report_path, None)
+        doc_files_info_list.append(doc_files_info)
+
+    dtd_files = xml_versions.DTDFiles('scielo', version)
+    issues, toc_results, articles, articles_stats, article_results = pkg_checker.validate_package(doc_files_info_list, dtd_files, report_path, True, True)
 
     toc_stats_numbers, toc_stats_report = toc_results
     toc_f, toc_e, toc_w = toc_stats_numbers

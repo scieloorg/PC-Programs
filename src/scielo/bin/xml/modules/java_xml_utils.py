@@ -3,38 +3,14 @@ import os
 import shutil
 import tempfile
 
+import xml_utils
+
 
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
 
 JAVA_PATH = 'java'
 JAR_TRANSFORM = THIS_LOCATION + '/../../jar/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = THIS_LOCATION + '/../../jar/XMLCheck.jar'
-
-
-def remove_doctype(content):
-    return replace_doctype(content, '')
-
-
-def replace_doctype(content, new_doctype):
-    if '<!DOCTYPE' in content:
-        temp = content[content.find('<!DOCTYPE'):]
-        temp = temp[0:temp.find('>')+1]
-        if len(temp) > 0:
-            content = content.replace(temp, new_doctype)
-    elif content.startswith('<?xml '):
-        temp = content
-        temp = temp[0:temp.find('?>')+2]
-        if len(new_doctype) > 0:
-            content = content.replace(temp, temp + '\n' + new_doctype)
-    return content
-
-
-def apply_dtd(xml_filename, doctype):
-    temp_filename = tempfile.mkdtemp() + '/' + os.path.basename(xml_filename)
-    shutil.copyfile(xml_filename, temp_filename)
-    content = replace_doctype(open(xml_filename, 'r').read(), doctype)
-    open(xml_filename, 'w').write(content)
-    return temp_filename
 
 
 def restore_xml_file(xml_filename, temp_filename):
@@ -82,10 +58,9 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
         if os.path.isfile(f):
             os.unlink(f)
 
-    temp_xml_filename = apply_dtd(xml_filename, '')
-
+    temp_xml_filename = xml_utils.apply_dtd(xml_filename, '')
     cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
-    #print(cmd)
+    print(cmd)
     os.system(cmd)
     if not os.path.exists(temp_result_filename):
         print('  ERROR: Unable to create ' + os.path.basename(result_filename))
@@ -101,10 +76,10 @@ def xml_validate(xml_filename, result_filename, doctype=None):
     validation_type = ''
     temp_xml_filename = ''
     if doctype is None:
-        temp_xml_filename = apply_dtd(xml_filename, '')
+        temp_xml_filename = xml_utils.apply_dtd(xml_filename, '')
     else:
         validation_type = '--validate'
-        temp_xml_filename = apply_dtd(xml_filename, doctype)
+        temp_xml_filename = xml_utils.apply_dtd(xml_filename, doctype)
 
     temp_result_filename = tempfile.mkdtemp() + '/' + os.path.basename(result_filename)
     if os.path.isfile(result_filename):

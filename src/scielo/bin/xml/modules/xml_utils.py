@@ -113,6 +113,7 @@ def remove_doctype(content):
 
 
 def replace_doctype(content, new_doctype):
+    content = content.replace('\r\n', '\n')
     if '<!DOCTYPE' in content:
         find_text = content[content.find('<!DOCTYPE'):]
         find_text = find_text[0:find_text.find('>')+1]
@@ -120,14 +121,16 @@ def replace_doctype(content, new_doctype):
             if len(new_doctype) > 0:
                 content = content.replace(find_text, new_doctype)
             else:
-                content = content.replace(find_text + '\n', new_doctype)
+                if find_text + '\n' in content:
+                    content = content.replace(find_text + '\n', new_doctype)
     elif content.startswith('<?xml '):
+        xml_proc = content[0:content.find('?>')+2]
+        xml = content[1:]
+        xml = xml[xml.find('<'):]
         if len(new_doctype) > 0:
-            find_text = content
-            find_text = find_text[find_text.find('?>')+2:]
-            find_text = find_text[find_text.find('<'):]
-            content = content.replace(find_text, new_doctype + '\n' + find_text)
-
+            content = xml_proc + '\n' + new_doctype + '\n' + xml
+        else:
+            content = xml_proc + '\n' + xml
     return content
 
 
