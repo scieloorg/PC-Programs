@@ -200,20 +200,13 @@ class ArticleContentValidation(object):
     def titles(self):
         r = []
         for item in self.article.titles:
-            if item.title and item.language:
+            if item.title is not None and item.language is not None:
                 r.append(('title', 'OK', item.language + ': ' + item.title))
             else:
-                r.append(('title', 'ERROR', item.language + ': ' + item.title))
-        return r
-
-    @property
-    def trans_titles(self):
-        r = []
-        for item in self.article.trans_titles:
-            if item.title and item.language:
-                r.append(('title', 'OK', item.language + ': ' + item.title))
-            else:
-                r.append(('title', 'ERROR', item.language + ': ' + item.title))
+                if item.language is None:
+                    r.append(('title language', 'ERROR', 'Missing language for ' + item.title))
+                if item.title is None:
+                    r.append(('title', 'ERROR', 'Missing title for ' + item.title))
         return r
 
     @property
@@ -418,7 +411,13 @@ class ArticleContentValidation(object):
     def abstracts(self):
         r = []
         for item in self.article.abstracts:
-            r.append(('abstract: ' + item.language, 'OK', item.text))
+            if item.language is not None and item.text is not None:
+                r.append(('abstract: ', 'OK', item.language + ':' + item.text))
+            else:
+                if item.language is None:
+                    r.append(('abstract: ', 'ERROR', 'Missing language for ' + item.text))
+                if item.text is None:
+                    r.append(('abstract: ', 'ERROR', 'Missing text for ' + item.language))
         return r
 
     @property

@@ -142,6 +142,12 @@ def apply_dtd(xml_filename, doctype):
     return temp_filename
 
 
+def restore_xml_file(xml_filename, temp_filename):
+    shutil.copyfile(temp_filename, xml_filename)
+    os.unlink(temp_filename)
+    shutil.rmtree(os.path.dirname(temp_filename))
+
+
 def normalize_space(s):
     if s is not None:
         s = s.replace('\n', ' ')
@@ -156,7 +162,7 @@ def nodexmltostring(node):
     if not node is None:
         text = etree.tostring(node)
         if '<' in text:
-            text = number_ent_to_char(text)
+            text, e = convert_entities_to_chars(text)
         else:
             text = node.text
     return text
@@ -165,7 +171,7 @@ def nodexmltostring(node):
 def node_text(node):
     text = nodexmltostring(node)
     if not text is None:
-        if '<' in text[0:1]:
+        if text.startswith('<'):
             text = text[text.find('>')+1:]
             text = text[0:text.rfind('</')]
             text = text.strip()
@@ -176,19 +182,21 @@ def node_xml(node):
     return nodexmltostring(node)
 
 
-def normalize_xml_numeric_entities(content):
-    if '&#x' in content:
-        content = content.replace('&#x000', '&#x')
-        content = content.replace('&#x00', '&#x')
-        content = content.replace('&#x0', '&#x')
-    return content
-
-
 def preserve_xml_entities(content):
     if '&' in content:
+        content = content.replace('&#x0003C;', '<REPLACEENT>lt</REPLACEENT>')
+        content = content.replace('&#x0003E;', '<REPLACEENT>gt</REPLACEENT>')
+        content = content.replace('&#x00026;', '<REPLACEENT>amp</REPLACEENT>')
+        content = content.replace('&#x003C;', '<REPLACEENT>lt</REPLACEENT>')
+        content = content.replace('&#x003E;', '<REPLACEENT>gt</REPLACEENT>')
+        content = content.replace('&#x0026;', '<REPLACEENT>amp</REPLACEENT>')
+        content = content.replace('&#x03C;', '<REPLACEENT>lt</REPLACEENT>')
+        content = content.replace('&#x03E;', '<REPLACEENT>gt</REPLACEENT>')
+        content = content.replace('&#x026;', '<REPLACEENT>amp</REPLACEENT>')
         content = content.replace('&#x3C;', '<REPLACEENT>lt</REPLACEENT>')
         content = content.replace('&#x3E;', '<REPLACEENT>gt</REPLACEENT>')
         content = content.replace('&#x26;', '<REPLACEENT>amp</REPLACEENT>')
+
         content = content.replace('&#60;', '<REPLACEENT>lt</REPLACEENT>')
         content = content.replace('&#62;', '<REPLACEENT>gt</REPLACEENT>')
         content = content.replace('&#38;', '<REPLACEENT>amp</REPLACEENT>')
@@ -247,12 +255,9 @@ def restore_xml_entities(content):
 def convert_entities_to_chars(content, debug=False):
     replaced_named_ent = []
     if '&' in content:
-        content = normalize_xml_numeric_entities(content)
-        #print('fix_amp done')
         content = preserve_xml_entities(content)
-        content = number_ent_to_char(content)
-
-        content, replaced_named_ent = named_ent_to_char(content)
+        content = named_ent_to_char(content)
+        content, replaced_named_ent = number_ent_to_char(content)
         register_remaining_named_entities(content)
 
         content = restore_xml_entities(content)

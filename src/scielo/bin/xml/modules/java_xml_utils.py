@@ -13,12 +13,6 @@ JAR_TRANSFORM = THIS_LOCATION + '/../../jar/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = THIS_LOCATION + '/../../jar/XMLCheck.jar'
 
 
-def restore_xml_file(xml_filename, temp_filename):
-    shutil.copyfile(temp_filename, xml_filename)
-    os.unlink(temp_filename)
-    shutil.rmtree(os.path.dirname(temp_filename))
-
-
 def format_parameters(parameters):
     r = ''
     for k, v in parameters.items():
@@ -58,16 +52,16 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
         if os.path.isfile(f):
             os.unlink(f)
 
-    temp_xml_filename = xml_utils.apply_dtd(xml_filename, '')
+    #temp_xml_filename = xml_utils.apply_dtd(xml_filename, '')
     cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
-    print(cmd)
     os.system(cmd)
+    
     if not os.path.exists(temp_result_filename):
         print('  ERROR: Unable to create ' + os.path.basename(result_filename))
         open(temp_result_filename, 'w').write('ERROR: transformation error.\n' + cmd)
         error = True
     shutil.move(temp_result_filename, result_filename)
-    restore_xml_file(xml_filename, temp_xml_filename)
+    #restore_xml_file(xml_filename, temp_xml_filename)
 
     return (not error)
 
@@ -89,7 +83,6 @@ def xml_validate(xml_filename, result_filename, doctype=None):
 
     cmd = JAVA_PATH + ' -cp ' + JAR_VALIDATE + ' br.bireme.XMLCheck.XMLCheck ' + xml_filename + ' ' + validation_type + '>"' + temp_result_filename + '"'
     os.system(cmd)
-
     result = ''
     if os.path.exists(temp_result_filename):
         result = open(temp_result_filename, 'r').read()

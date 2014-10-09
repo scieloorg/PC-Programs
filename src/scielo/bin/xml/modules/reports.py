@@ -215,6 +215,8 @@ class ReportHTML(object):
     def display_value_with_discret_label(self, label, value, style='', tag='p'):
         if value is None:
             value = 'None'
+        if label is None:
+            label = 'None'
         return self.tag(tag, self.tag('span', '[' + label + '] ', 'discret') + value, style)
 
     def styles(self):

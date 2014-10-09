@@ -128,8 +128,8 @@ class ArticleXML(object):
         self.article_meta = None
         self.body = None
         self.back = None
-        self.subarticles = None
-        self.responses = None
+        self.subarticles = []
+        self.responses = []
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
             self.article_meta = self.tree.find('./front/article-meta')
@@ -303,6 +303,11 @@ class ArticleXML(object):
                 language = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
                 for kw in node.findall('kwd'):
                     k.append({'l': language, 'k': node_text(kw)})
+        for subart in self.subarticles:
+            for node in subart.findall('kwd-group'):
+                language = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                for kw in node.findall('kwd'):
+                    k.append({'l': language, 'k': node_text(kw)})
         return k
 
     @property
@@ -353,14 +358,8 @@ class ArticleXML(object):
                 t = Title()
                 t.title = node_text(node.find('article-title'))
                 t.subtitle = node_text(node.find('subtitle'))
-                t.language = self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                t.language = self.language
                 k.append(t)
-        return k
-
-    @property
-    def trans_titles(self):
-        k = []
-        if self.article_meta is not None:
             for node in self.article_meta.findall('.//trans-title-group'):
                 t = Title()
                 t.title = node_text(node.find('trans-title'))
@@ -555,8 +554,9 @@ class ArticleXML(object):
 
     @property
     def total_of_pages(self):
-        if self.fpage.isdigit() and self.lpage.isdigit():
-            return int(self.lpage) - int(self.fpage) + 1
+        if self.fpage is not None and self.lpage is not None:
+            if self.fpage.isdigit() and self.lpage.isdigit():
+                return int(self.lpage) - int(self.fpage) + 1
 
     def total(self, node, xpath):
         if node is not None:
@@ -592,16 +592,28 @@ class ArticleXML(object):
     @property
     def abstracts(self):
         r = []
-        for a in self.tree.findall('.//abstract'):
-            _abstract = Text()
-            _abstract.language = self.language
-            _abstract.text = node_text(a)
-            r.append(_abstract)
-        for a in self.tree.findall('.//trans-abstract'):
-            _abstract = Text()
-            _abstract.language = a.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
-            _abstract.text = node_text(a)
-            r.append(_abstract)
+        if self.article_meta is not None:
+            for a in self.article_meta.findall('.//abstract'):
+                _abstract = Text()
+                _abstract.language = self.language
+                _abstract.text = node_text(a)
+                r.append(_abstract)
+            for a in self.article_meta.findall('.//trans-abstract'):
+                _abstract = Text()
+                _abstract.language = a.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                _abstract.text = node_text(a)
+                r.append(_abstract)
+        for subart in self.subarticles:
+            for a in subart.findall('.//abstract'):
+                _abstract = Text()
+                _abstract.language = subart.language
+                _abstract.text = node_text(a)
+                r.append(_abstract)
+            for a in subart.findall('.//trans-abstract'):
+                _abstract = Text()
+                _abstract.language = a.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                _abstract.text = node_text(a)
+                r.append(_abstract)
         return r
 
     @property
@@ -651,7 +663,8 @@ class Article(ArticleXML):
         data['order'] = self.order
         data['doi'] = self.doi
         seq = '' if self.fpage_seq is None else self.fpage_seq
-        data['fpage-and-seq'] = self.fpage + seq
+        fpage = '' if self.fpage is None else self.fpage
+        data['fpage-and-seq'] = fpage + seq
         data['elocation id'] = self.elocation_id
         return data
 
@@ -659,8 +672,6 @@ class Article(ArticleXML):
     def article_titles(self):
         titles = {}
         for title in self.titles:
-            titles[title.language] = title.title
-        for title in self.trans_titles:
             titles[title.language] = title.title
         return titles
 

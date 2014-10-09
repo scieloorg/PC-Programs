@@ -296,18 +296,24 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     register_log('start')
     report_content = ''
     content = open(doc_files_info.xml_filename, 'r').read()
+    #register_log(content)
     register_log('remove_doctype')
     content = xml_utils.remove_doctype(content)
+    #register_log(content)
+
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
+    #register_log(content)
 
     if doc_files_info.is_sgmxml:
         register_log('normalize_sgmlxml')
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
+        #register_log(content)
 
     new_name = doc_files_info.xml_name
     register_log('load_xml')
     xml, e = xml_utils.load_xml(content)
+    
     if not xml is None:
         doc = article.Article(xml)
         register_log('get_attach_info')
@@ -468,7 +474,10 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
     print('Result of the processing:')
     print(markup_xml_path)
 
-    open(report_path + '/log.txt', 'w').write('\n'.join(log_items))
+    s = '\n'.join(log_items)
+    if isinstance(s, unicode):
+        s = s.encode('utf-8')
+    open(report_path + '/log.txt', 'w').write(s)
 
 
 def validate_created_package(scielo_pkg_path, doc_files_info_list, dtd_files, report_path, do_toc_report, display_report):

@@ -107,6 +107,7 @@ class ArticleDisplayReport(object):
         r = self.xml_name + ' is invalid.'
         if self.article is not None:
             r = ''
+            r += self.language
             r += self.toc_section
             r += self.article_type
             r += self.display_titles()
@@ -164,8 +165,6 @@ class ArticleDisplayReport(object):
         r = ''
         for title in self.article.titles:
             r += html_report.display_value_with_discret_label(title.language, title.title)
-        for title in self.article.trans_titles:
-            r += html_report.display_value_with_discret_label(title.language, title.title)
         return r
 
     def display_text(self, label, items):
@@ -173,6 +172,10 @@ class ArticleDisplayReport(object):
         for item in items:
             r += self.display_value_with_discret_label(item.language, item.text)
         return html_report.tag('div', r)
+
+    @property
+    def language(self):
+        return self.display_value_with_discret_label('@xml:lang', self.article.language)
 
     @property
     def toc_section(self):
@@ -217,7 +220,9 @@ class ArticleDisplayReport(object):
 
     @property
     def fpage(self):
-        return self.display_value_with_discret_label('pages', self.article.fpage + '-' + self.article.lpage, 'fpage')
+        r = self.display_value_with_discret_label('fpage', self.article.fpage, 'fpage')
+        r += self.display_value_with_discret_label('lpage', self.article.fpage, 'lpage')
+        return r
 
     @property
     def fpage_seq(self):
@@ -344,6 +349,7 @@ class ArticleValidationReport(object):
                     self.article_validation.journal_id_nlm_ta,
                     self.article_validation.journal_issns,
                     self.article_validation.issue_label,
+                    self.article_validation.language,
                     self.article_validation.article_type,
                     self.article_validation.toc_section,
                     self.article_validation.order,
@@ -358,7 +364,6 @@ class ArticleValidationReport(object):
                     ]
         rows += self.format_validation_data(items)
         rows += self.format_validation_data(self.article_validation.titles)
-        rows += self.format_validation_data(self.article_validation.trans_titles)
         rows += self.format_validation_data(self.article_validation.contrib_names)
         rows += self.format_validation_data(self.article_validation.contrib_collabs)
         rows += self.format_validation_data(self.affiliations)
