@@ -10,11 +10,17 @@ import xml_utils
 
 
 ENTITIES_TABLE = {}
-if len(ENTITIES_TABLE) == 0:
-    if os.path.isfile('./tables/entities.csv'):
-        for item in open('./tables/entities.csv', 'r').readlines():
-            symbol, number_ent, named_ent, descr, representation = item.split('|')
-            ENTITIES_TABLE[named_ent] = symbol
+
+
+def load_entities_table():
+    if len(ENTITIES_TABLE) == 0:
+        curr_path = os.path.dirname(__file__).replace('\\', '/')
+        if os.path.isfile(curr_path + '/../tables/entities.csv'):
+            for item in open(curr_path + '/../tables/entities.csv', 'r').readlines():
+                symbol, number_ent, named_ent, descr, representation = item.split('|')
+                ENTITIES_TABLE[named_ent] = symbol
+        else:
+            print('NOT FOUND ' + curr_path + '/../tables/entities.csv')
 
 
 class XMLContent(object):
@@ -113,16 +119,24 @@ def remove_doctype(content):
 
 
 def replace_doctype(content, new_doctype):
+    content = content.replace('\r\n', '\n')
     if '<!DOCTYPE' in content:
-        temp = content[content.find('<!DOCTYPE'):]
-        temp = temp[0:temp.find('>')+1]
-        if len(temp) > 0:
-            content = content.replace(temp, new_doctype)
+        find_text = content[content.find('<!DOCTYPE'):]
+        find_text = find_text[0:find_text.find('>')+1]
+        if len(find_text) > 0:
+            if len(new_doctype) > 0:
+                content = content.replace(find_text, new_doctype)
+            else:
+                if find_text + '\n' in content:
+                    content = content.replace(find_text + '\n', new_doctype)
     elif content.startswith('<?xml '):
-        temp = content
-        temp = temp[0:temp.find('?>')+2]
+        xml_proc = content[0:content.find('?>')+2]
+        xml = content[1:]
+        xml = xml[xml.find('<'):]
         if len(new_doctype) > 0:
-            content = content.replace(temp, temp + '\n' + new_doctype)
+            content = xml_proc + '\n' + new_doctype + '\n' + xml
+        else:
+            content = xml_proc + '\n' + xml
     return content
 
 
@@ -132,6 +146,12 @@ def apply_dtd(xml_filename, doctype):
     content = replace_doctype(open(xml_filename, 'r').read(), doctype)
     open(xml_filename, 'w').write(content)
     return temp_filename
+
+
+def restore_xml_file(xml_filename, temp_filename):
+    shutil.copyfile(temp_filename, xml_filename)
+    os.unlink(temp_filename)
+    shutil.rmtree(os.path.dirname(temp_filename))
 
 
 def normalize_space(s):
@@ -148,7 +168,7 @@ def nodexmltostring(node):
     if not node is None:
         text = etree.tostring(node)
         if '<' in text:
-            text = number_ent_to_char(text)
+            text, e = convert_entities_to_chars(text)
         else:
             text = node.text
     return text
@@ -157,7 +177,7 @@ def nodexmltostring(node):
 def node_text(node):
     text = nodexmltostring(node)
     if not text is None:
-        if '<' in text[0:1]:
+        if text.startswith('<'):
             text = text[text.find('>')+1:]
             text = text[0:text.rfind('</')]
             text = text.strip()
@@ -168,19 +188,21 @@ def node_xml(node):
     return nodexmltostring(node)
 
 
-def normalize_xml_numeric_entities(content):
-    if '&#x' in content:
-        content = content.replace('&#x000', '&#x')
-        content = content.replace('&#x00', '&#x')
-        content = content.replace('&#x0', '&#x')
-    return content
-
-
 def preserve_xml_entities(content):
     if '&' in content:
+        content = content.replace('&#x0003C;', '<REPLACEENT>lt</REPLACEENT>')
+        content = content.replace('&#x0003E;', '<REPLACEENT>gt</REPLACEENT>')
+        content = content.replace('&#x00026;', '<REPLACEENT>amp</REPLACEENT>')
+        content = content.replace('&#x003C;', '<REPLACEENT>lt</REPLACEENT>')
+        content = content.replace('&#x003E;', '<REPLACEENT>gt</REPLACEENT>')
+        content = content.replace('&#x0026;', '<REPLACEENT>amp</REPLACEENT>')
+        content = content.replace('&#x03C;', '<REPLACEENT>lt</REPLACEENT>')
+        content = content.replace('&#x03E;', '<REPLACEENT>gt</REPLACEENT>')
+        content = content.replace('&#x026;', '<REPLACEENT>amp</REPLACEENT>')
         content = content.replace('&#x3C;', '<REPLACEENT>lt</REPLACEENT>')
         content = content.replace('&#x3E;', '<REPLACEENT>gt</REPLACEENT>')
         content = content.replace('&#x26;', '<REPLACEENT>amp</REPLACEENT>')
+
         content = content.replace('&#60;', '<REPLACEENT>lt</REPLACEENT>')
         content = content.replace('&#62;', '<REPLACEENT>gt</REPLACEENT>')
         content = content.replace('&#38;', '<REPLACEENT>amp</REPLACEENT>')
@@ -192,12 +214,12 @@ def preserve_xml_entities(content):
 
 def named_ent_to_char(content):
     replaced_named_ent = []
-    if ENTITIES_TABLE is not None:
-        if '&' in content:
-            for find, replace in ENTITIES_TABLE.items():
-                if find in content:
-                    replaced_named_ent.append(find + '=>' + replace)
-                    content = content.replace(find, replace)
+    load_entities_table()
+    if '&' in content:
+        for find, replace in ENTITIES_TABLE.items():
+            if find in content:
+                replaced_named_ent.append(find + '=>' + replace)
+                content = content.replace(find, replace)
     return (content, replaced_named_ent)
 
 
@@ -239,12 +261,9 @@ def restore_xml_entities(content):
 def convert_entities_to_chars(content, debug=False):
     replaced_named_ent = []
     if '&' in content:
-        content = normalize_xml_numeric_entities(content)
-        #print('fix_amp done')
         content = preserve_xml_entities(content)
-        content = number_ent_to_char(content)
-
-        content, replaced_named_ent = named_ent_to_char(content)
+        content = named_ent_to_char(content)
+        content, replaced_named_ent = number_ent_to_char(content)
         register_remaining_named_entities(content)
 
         content = restore_xml_entities(content)
@@ -274,6 +293,7 @@ def handle_entities(content):
 
 def load_xml(content):
     message = None
+    r = None
     if not '<' in content:
         # is a file
         try:
@@ -285,7 +305,7 @@ def load_xml(content):
         try:
             r = etree.parse(StringIO(content))
         except Exception as e:
-            print('XML is not well formed')
+            #print('XML is not well formed')
             message = 'XML is not well formed\n'
             msg = str(e)
             if 'position ' in msg:

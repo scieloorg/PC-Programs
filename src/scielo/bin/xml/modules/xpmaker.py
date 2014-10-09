@@ -10,9 +10,18 @@ from modules import xml_utils
 from modules import xml_versions
 from modules import pkg_checker
 from modules import xpchecker
+from modules import reports
 
 
+html_report = reports.ReportHTML()
+messages = []
 log_items = []
+
+
+def register_message(message):
+    if not '<' in message:
+        message = html_report.format_message(message)
+    messages.append(message)
 
 
 def register_log(text):
@@ -64,10 +73,18 @@ def extract_embedded_images(xml_name, content, html_filename, dest_path):
 
 def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
     content = extract_embedded_images(xml_name, content, html_filename, src_path)
-    if not xml_utils.is_xml_well_formed(content):
+    if isinstance(content, unicode):
+        content = content.encode('utf-8')
+    xml, e = xml_utils.load_xml(content)
+    if xml is None:
         content = fix_sgml_xml(content)
-    if xml_utils.is_xml_well_formed(content) is not None:
+        xml, e = xml_utils.load_xml(content)
+    if e is None:
         content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
+    else:
+        print(e)
+    if isinstance(content, unicode):
+        content = content.encode('utf-8')
     return content
 
 
@@ -279,18 +296,27 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     register_log('start')
     report_content = ''
     content = open(doc_files_info.xml_filename, 'r').read()
+    #register_log(content)
     register_log('remove_doctype')
     content = xml_utils.remove_doctype(content)
+    #register_log(content)
+
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
+    #register_log(content)
+
     if doc_files_info.is_sgmxml:
         register_log('normalize_sgmlxml')
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
+        #register_log(content)
 
     new_name = doc_files_info.xml_name
     register_log('load_xml')
     xml, e = xml_utils.load_xml(content)
-    if not xml is None:
+    
+    if xml is None:
+        xml
+    else:
         doc = article.Article(xml)
         register_log('get_attach_info')
         attach_info = get_attach_info(doc)
@@ -325,6 +351,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     new_xml_filename = scielo_pkg_path + '/' + new_name + '.xml'
 
     register_log('new_xml_filename')
+    content = xml_utils.replace_doctype(content, xml_versions.DTDFiles('scielo', version).doctype)
     if isinstance(content, unicode):
         content = content.encode('utf-8')
     open(new_xml_filename, 'w').write(content)
@@ -369,22 +396,36 @@ def get_href_list(xml_filename):
     return href_list
 
 
-def xml_output(xml_filename, xsl_filename, result_filename):
+def xml_output(xml_filename, doctype, xsl_filename, result_filename):
+    if result_filename == xml_filename:
+        shutil.copyfile(xml_filename, xml_filename + '.bkp')
+        xml_filename = xml_filename + '.bkp'
     if os.path.exists(result_filename):
         os.unlink(result_filename)
-    return java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)
+    temp = xml_utils.apply_dtd(xml_filename, doctype)
+    r = java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)
+    xml_utils.restore_xml_file(xml_filename, temp)
+    return r
 
 
 def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.0'):
-    do_toc_report = True
-    do_pmc_package = True
+    from_markup = any([f.endswith('.sgm.xml') for f in xml_files])
+
+    do_toc_report = not from_markup
+    do_pmc_package = from_markup
 
     scielo_pkg_path = markup_xml_path + '/scielo_package'
     pmc_pkg_path = markup_xml_path + '/pmc_package'
     report_path = markup_xml_path + '/errors'
     wrk_path = markup_xml_path + '/work'
 
-    for d in [scielo_pkg_path, pmc_pkg_path, report_path]:
+    report_names = {}
+    xml_to_validate = []
+
+    pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
+    scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
+
+    for d in [scielo_pkg_path, pmc_pkg_path, report_path, wrk_path]:
         if not os.path.isdir(d):
             os.makedirs(d)
 
@@ -393,10 +434,7 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         path = os.path.dirname(path)
         hdimages_to_jpeg(path, path, False)
 
-    report_names = {}
-
-    dtd_files = xml_versions.DTDFiles('pmc', version)
-    print('Generate packages ' + str(len(xml_files)) + ' files.')
+    print('Generate packages for ' + str(len(xml_files)) + ' files.')
     for xml_filename in xml_files:
 
         doc_files_info = files_manager.DocumentFiles(xml_filename, report_path, wrk_path)
@@ -407,40 +445,73 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         new_name, new_xml_filename = generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron)
         doc_files_info.new_name = new_name
         doc_files_info.new_xml_filename = new_xml_filename
+        doc_files_info.new_xml_path = os.path.dirname(new_xml_filename)
 
-        report_names[new_name] = os.path.basename(xml_filename).replace('.sgm.xml', '').replace('.xml', '')
+        report_names[new_name] = doc_files_info.xml_name
+        xml_to_validate.append(doc_files_info)
 
         if not doc_files_info.is_sgmxml:
-            if do_pmc_package:
-                loaded_xml, e = xml_utils.load_xml(new_xml_filename)
-
-                if loaded_xml is not None:
-                    doc = article.Article(loaded_xml)
-                    do_pmc_package = (doc.journal_id_nlm_ta is not None)
+            loaded_xml, e = xml_utils.load_xml(new_xml_filename)
+            if loaded_xml is not None:
+                doc = article.Article(loaded_xml)
+                do_pmc_package = (doc.journal_id_nlm_ta is not None)
 
         if do_pmc_package:
             register_log('xml_output')
-            xml_output(doc_files_info.new_xml_filename, dtd_files.xsl_output, pmc_pkg_path + '/' + os.path.basename(xml_filename))
+            pmc_xml_filename = pmc_pkg_path + '/' + new_name + '.xml'
+            xml_output(doc_files_info.new_xml_filename, scielo_dtd_files.doctype_with_local_path, scielo_dtd_files.xsl_output, pmc_xml_filename)
 
+            print(' ... created pmc')
+            register_log(' ... created pmc')
             #validation of pmc.xml
             register_log('validate_article_xml pmc')
-            loaded_xml, is_valid_dtd, is_valid_style = xpchecker.validate_article_xml(xml_filename, xml_versions.DTDFiles('pmc', version), doc_files_info.pmc_dtd_report_filename, doc_files_info.pmc_style_report_filename, doc_files_info.ctrl_filename)
-            register_log('...')
+            xpchecker.style_validation(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, doc_files_info.pmc_style_report_filename, pmc_dtd_files.xsl_prep_report, pmc_dtd_files.xsl_report, pmc_dtd_files.database_name)
+            xml_output(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
 
     print('Generate validation reports...')
-    register_log('generate validations reports')
-    dtd_files = xml_versions.DTDFiles('scielo', version)
-    pkg_checker.validate_package(scielo_pkg_path, xml_files, report_names, dtd_files, report_path, wrk_path, do_toc_report)
+    validate_created_package(scielo_pkg_path, xml_to_validate, scielo_dtd_files, report_path, do_toc_report, not from_markup)
 
-    print('Reports')
-    print(report_path)
     # termina de montar o pacote inteiro do pmc
     if do_pmc_package:
         for f in os.listdir(scielo_pkg_path):
             if not f.endswith('.xml') and not f.endswith('.jpg'):
                 shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)
 
-    open(report_path + '/log.txt', 'w').write('\n'.join(log_items))
+    print('Result of the processing:')
+    print(markup_xml_path)
+
+    s = '\n'.join(log_items)
+    if isinstance(s, unicode):
+        s = s.encode('utf-8')
+    open(report_path + '/log.txt', 'w').write(s)
+
+
+def validate_created_package(scielo_pkg_path, doc_files_info_list, dtd_files, report_path, do_toc_report, display_report):
+
+    register_log('generate validations reports')
+
+    issues, toc_results, articles, articles_stats, article_results = pkg_checker.validate_package(doc_files_info_list, dtd_files, report_path, False, do_toc_report)
+
+    register_message(articles_stats)
+
+    if do_toc_report:
+        toc_stats_numbers, toc_stats_report = toc_results
+        toc_f, toc_e, toc_w = toc_stats_numbers
+
+        register_message(toc_stats_report)
+        if toc_f + toc_e + toc_w > 0:
+            register_message(html_report.link('file:///' + report_path + '/toc.html', 'toc.html'))
+        register_message(html_report.link('file:///' + report_path + '/authors.html', 'authors.html'))
+        register_message(html_report.link('file:///' + report_path + '/sources.html', 'sources.html'))
+
+    register_message('\n'.join([item[2] for item in article_results.values()]))
+    register_message('Result of the processing: ' + html_report.link('file:///' + os.path.dirname(scielo_pkg_path), os.path.dirname(scielo_pkg_path)))
+    html_report.title = ['Validations report', scielo_pkg_path]
+    html_report.body = '\n'.join(messages)
+    html_report.save(report_path + '/xml_package_maker.html')
+    print('\n\nXML Package Maker reports:\n ' + report_path + '/xml_package_maker.html')
+    if display_report:
+        pkg_checker.display_report(report_path + '/xml_package_maker.html')
 
 
 def validate_path(path):
@@ -452,7 +523,7 @@ def validate_path(path):
             path = path[0:-1]
         if len(path) > 0:
             if os.path.isdir(path):
-                xml_files = [path + '/' + f for f in os.listdir(path) if f.endswith('.xml')]
+                xml_files = sorted([path + '/' + f for f in os.listdir(path) if f.endswith('.xml')])
                 now = datetime.now().isoformat().replace(':', '').replace('T', '').replace('-', '')
                 now = now[0:now.find('.')]
                 markup_xml_path = os.path.dirname(path) + '/' + now
@@ -493,12 +564,11 @@ def make_packages(path, acron, version):
         print(' must be an XML file or a folder which contains XML files.')
     else:
         generate_and_validate_package(xml_files, markup_xml_path, acron, version)
-        print('Result of the processing:')
-        print(markup_xml_path)
-        print(' -- the end -- ')
+        print('finished')
 
 
 def read_inputs(args):
+    script = args[0]
     path = None
     acron = ''
     if len(args) == 3:

@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from utils import doi_pid, display_pages, format_dateiso
+from article_utils import doi_pid, display_pages, format_dateiso
 from article import Issue, PersonAuthor
 
 
