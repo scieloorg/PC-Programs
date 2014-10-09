@@ -64,6 +64,7 @@ def java_xml_utils_style_validation(xml_filename, doctype, report_filename, xsl_
         os.unlink(xml_report)
     if os.path.exists(report_filename):
         os.unlink(report_filename)
+
     parameters = {}
     temp_filename = xml_utils.apply_dtd(xml_filename, doctype)
     if java_xml_utils.xml_transform(xml_filename, xsl_prep_report, xml_report, parameters):
@@ -74,6 +75,7 @@ def java_xml_utils_style_validation(xml_filename, doctype, report_filename, xsl_
     if os.path.isfile(report_filename):
         c = open(report_filename, 'r').read()
         is_valid_style = ('Total of errors = 0' in c) and (('Total of warnings = 0' in c) or (not 'Total of warnings =' in c))
+
     if os.path.isfile(temp_filename):
         xml_utils.restore_xml_file(xml_filename, temp_filename)
 

@@ -287,6 +287,7 @@ def handle_entities(content):
 
 def load_xml(content):
     message = None
+    r = None
     if not '<' in content:
         # is a file
         try:

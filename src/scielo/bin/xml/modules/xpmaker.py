@@ -394,10 +394,16 @@ def get_href_list(xml_filename):
     return href_list
 
 
-def xml_output(xml_filename, xsl_filename, result_filename):
+def xml_output(xml_filename, doctype, xsl_filename, result_filename):
+    if result_filename == xml_filename:
+        shutil.copyfile(xml_filename, xml_filename + '.bkp')
+        xml_filename = xml_filename + '.bkp'
     if os.path.exists(result_filename):
         os.unlink(result_filename)
-    return java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)
+    temp = xml_utils.apply_dtd(xml_filename, doctype)
+    r = java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)
+    xml_utils.restore_xml_file(xml_filename, temp)
+    return r
 
 
 def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.0'):
@@ -452,15 +458,14 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         if do_pmc_package:
             register_log('xml_output')
             pmc_xml_filename = pmc_pkg_path + '/' + new_name + '.xml'
-            xml_output(doc_files_info.new_xml_filename, scielo_dtd_files.xsl_output, pmc_xml_filename)
+            xml_output(doc_files_info.new_xml_filename, scielo_dtd_files.doctype_with_local_path, scielo_dtd_files.xsl_output, pmc_xml_filename)
 
             print(' ... created pmc')
             register_log(' ... created pmc')
             #validation of pmc.xml
             register_log('validate_article_xml pmc')
-            loaded_xml, is_valid_dtd, is_valid_style = xpchecker.validate_article_xml(pmc_xml_filename, pmc_dtd_files, doc_files_info.pmc_dtd_report_filename, doc_files_info.pmc_style_report_filename, doc_files_info.ctrl_filename, None)
-            if loaded_xml is not None:
-                xml_output(pmc_xml_filename, pmc_dtd_files.xsl_output, pmc_xml_filename)
+            xpchecker.style_validation(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, doc_files_info.pmc_style_report_filename, pmc_dtd_files.xsl_prep_report, pmc_dtd_files.xsl_report, pmc_dtd_files.database_name)
+            xml_output(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
 
     print('Generate validation reports...')
     validate_created_package(scielo_pkg_path, xml_to_validate, scielo_dtd_files, report_path, do_toc_report, not from_markup)
