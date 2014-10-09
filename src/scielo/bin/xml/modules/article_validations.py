@@ -86,7 +86,10 @@ def invalid_characters_in_value(label, value, invalid_characters, error_or_warni
 def validate_name(label, value, invalid_characters):
     r = []
     result = required(label, value)
-    if result[1] == 'OK':
+    label, status, msg = result
+    if status == 'ERROR':
+        result = (label, 'WARNING', 'Missing ' + label)
+    if status == 'OK':
         result = invalid_characters_in_value(label, value, invalid_characters, 'WARNING')
     r.append(result)
     return r

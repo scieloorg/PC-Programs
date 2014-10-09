@@ -10,11 +10,17 @@ import xml_utils
 
 
 ENTITIES_TABLE = {}
-if len(ENTITIES_TABLE) == 0:
-    if os.path.isfile('./tables/entities.csv'):
-        for item in open('./tables/entities.csv', 'r').readlines():
-            symbol, number_ent, named_ent, descr, representation = item.split('|')
-            ENTITIES_TABLE[named_ent] = symbol
+
+
+def load_entities_table():
+    if len(ENTITIES_TABLE) == 0:
+        curr_path = os.path.dirname(__file__).replace('\\', '/')
+        if os.path.isfile(curr_path + '/../tables/entities.csv'):
+            for item in open(curr_path + '/../tables/entities.csv', 'r').readlines():
+                symbol, number_ent, named_ent, descr, representation = item.split('|')
+                ENTITIES_TABLE[named_ent] = symbol
+        else:
+            print('NOT FOUND ' + curr_path + '/../tables/entities.csv')
 
 
 class XMLContent(object):
@@ -208,12 +214,12 @@ def preserve_xml_entities(content):
 
 def named_ent_to_char(content):
     replaced_named_ent = []
-    if ENTITIES_TABLE is not None:
-        if '&' in content:
-            for find, replace in ENTITIES_TABLE.items():
-                if find in content:
-                    replaced_named_ent.append(find + '=>' + replace)
-                    content = content.replace(find, replace)
+    load_entities_table()
+    if '&' in content:
+        for find, replace in ENTITIES_TABLE.items():
+            if find in content:
+                replaced_named_ent.append(find + '=>' + replace)
+                content = content.replace(find, replace)
     return (content, replaced_named_ent)
 
 

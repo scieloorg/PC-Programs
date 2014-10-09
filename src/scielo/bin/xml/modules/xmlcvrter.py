@@ -260,7 +260,7 @@ def convert(path, config, version):
 
 
 def read_configuration():
-    curr_path = os.getcwd().replace('\\', '/')
+    curr_path = os.path.dirname(__file__).replace('\\', '/')
     filename = curr_path + '/./../scielo_paths.ini'
 
     if os.path.isfile(filename):

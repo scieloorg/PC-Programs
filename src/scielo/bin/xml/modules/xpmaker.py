@@ -314,7 +314,9 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     register_log('load_xml')
     xml, e = xml_utils.load_xml(content)
     
-    if not xml is None:
+    if xml is None:
+        xml
+    else:
         doc = article.Article(xml)
         register_log('get_attach_info')
         attach_info = get_attach_info(doc)
@@ -449,11 +451,10 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         xml_to_validate.append(doc_files_info)
 
         if not doc_files_info.is_sgmxml:
-            if do_pmc_package:
-                loaded_xml, e = xml_utils.load_xml(new_xml_filename)
-                if loaded_xml is not None:
-                    doc = article.Article(loaded_xml)
-                    do_pmc_package = (doc.journal_id_nlm_ta is not None)
+            loaded_xml, e = xml_utils.load_xml(new_xml_filename)
+            if loaded_xml is not None:
+                doc = article.Article(loaded_xml)
+                do_pmc_package = (doc.journal_id_nlm_ta is not None)
 
         if do_pmc_package:
             register_log('xml_output')
