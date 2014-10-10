@@ -1,4 +1,12 @@
-﻿4.0.087 - 27/08/2014
+﻿4.0.088 - 10/10/2014
+====================
+- Milestone 4.0.088
+  - Refactoring of Validations reports
+  - Refactoring of XML Package Maker
+    - Use of packtools, considering if it is already installed
+  - XML Converter 
+
+4.0.087 - 27/08/2014
 ====================
 - Milestone 4.0.087
   - Markup 
