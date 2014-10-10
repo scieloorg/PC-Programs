@@ -156,38 +156,36 @@ class ArticleDisplayReport(object):
     def sources_sheet(self):
         return html_report.tag('h2', 'Sources') + html_report.sheet(self.sheet_data.sources_sheet_data())
 
-    def display_value_with_discret_label(self, label, value, style='', tag='p'):
-        if value is None:
-            value = 'None'
-        return html_report.display_value_with_discret_label(label, value, style, tag)
+    def display_labeled_value(self, label, value, style=''):
+        return html_report.display_labeled_value(label, value, style)
 
     def display_titles(self):
         r = ''
         for title in self.article.titles:
-            r += html_report.display_value_with_discret_label(title.language, title.title)
+            r += html_report.display_labeled_value(title.language, title.title)
         return r
 
     def display_text(self, label, items):
         r = html_report.tag('p', label, 'label')
         for item in items:
-            r += self.display_value_with_discret_label(item.language, item.text)
+            r += self.display_labeled_value(item.language, item.text)
         return html_report.tag('div', r)
 
     @property
     def language(self):
-        return self.display_value_with_discret_label('@xml:lang', self.article.language)
+        return self.display_labeled_value('@xml:lang', self.article.language)
 
     @property
     def toc_section(self):
-        return self.display_value_with_discret_label('toc section', self.article.toc_section, 'toc-section')
+        return self.display_labeled_value('toc section', self.article.toc_section, 'toc-section')
 
     @property
     def article_type(self):
-        return self.display_value_with_discret_label('@article-type', self.article.article_type, 'article-type')
+        return self.display_labeled_value('@article-type', self.article.article_type, 'article-type')
 
     @property
     def article_date(self):
-        return self.display_value_with_discret_label('@article-date', article_utils.format_date(self.article.article_pub_date))
+        return self.display_labeled_value('@article-date', article_utils.format_date(self.article.article_pub_date))
 
     @property
     def contrib_names(self):
@@ -199,7 +197,7 @@ class ArticleDisplayReport(object):
         if len(r) > 0:
             r = html_report.format_list('collabs', 'ul', r)
         else:
-            r = self.display_value_with_discret_label('collabs', 'None')
+            r = self.display_labeled_value('collabs', 'None')
         return r
 
     @property
@@ -212,35 +210,35 @@ class ArticleDisplayReport(object):
 
     @property
     def order(self):
-        return self.display_value_with_discret_label('order', self.article.order, 'order')
+        return self.display_labeled_value('order', self.article.order, 'order')
 
     @property
     def doi(self):
-        return self.display_value_with_discret_label('doi', self.article.doi, 'doi')
+        return self.display_labeled_value('doi', self.article.doi, 'doi')
 
     @property
     def fpage(self):
-        r = self.display_value_with_discret_label('fpage', self.article.fpage, 'fpage')
-        r += self.display_value_with_discret_label('lpage', self.article.fpage, 'lpage')
+        r = self.display_labeled_value('fpage', self.article.fpage, 'fpage')
+        r += self.display_labeled_value('lpage', self.article.fpage, 'lpage')
         return r
 
     @property
     def fpage_seq(self):
-        return self.display_value_with_discret_label('fpage/@seq', self.article.fpage_seq, 'fpage')
+        return self.display_labeled_value('fpage/@seq', self.article.fpage_seq, 'fpage')
 
     @property
     def elocation_id(self):
-        return self.display_value_with_discret_label('elocation-id', self.article.elocation_id, 'fpage')
+        return self.display_labeled_value('elocation-id', self.article.elocation_id, 'fpage')
 
     @property
     def funding(self):
-        r = self.display_value_with_discret_label('ack', html_report.display_xml(self.article.ack_xml))
-        r += self.display_value_with_discret_label('fn[@fn-type="financial-disclosure"]', self.article.financial_disclosure, 'fpage')
+        r = self.display_labeled_value('ack', self.article.ack_xml)
+        r += self.display_labeled_value('fn[@fn-type="financial-disclosure"]', self.article.financial_disclosure, 'fpage')
         return r
 
     @property
     def article_id_other(self):
-        return self.display_value_with_discret_label('.//article-id[@pub-id-type="other"]', self.article.article_id_other)
+        return self.display_labeled_value('.//article-id[@pub-id-type="other"]', self.article.article_id_other)
 
     @property
     def sections(self):
@@ -260,7 +258,7 @@ class ArticleDisplayReport(object):
         for item in self.article.article_fn_list:
             scope, fn_xml = item
             r += html_report.tag('p', scope, 'label')
-            r += html_report.tag('p', html_report.display_xml(fn_xml))
+            r += html_report.tag('p', fn_xml)
         return r
 
     @property
@@ -277,15 +275,15 @@ class ArticleDisplayReport(object):
         for t in self.article.tables:
             header = html_report.tag('h3', t.id)
             table_data = ''
-            table_data += html_report.display_value_with_discret_label('label', t.label, 'label')
-            table_data += html_report.display_value_with_discret_label('caption',  html_report.display_xml(t.caption), 'label')
+            table_data += html_report.display_labeled_value('label', t.label, 'label')
+            table_data += html_report.display_labeled_value('caption',  t.caption, 'label')
             table_data += html_report.tag('p', 'table-wrap/table (xml)', 'label')
-            table_data += html_report.tag('div', html_report.display_xml(t.table), 'xml')
+            table_data += html_report.tag('div', html_report.html_value(t.table), 'xml')
             if t.table:
                 table_data += html_report.tag('p', 'table-wrap/table', 'label')
                 table_data += html_report.tag('div', t.table, 'element-table')
             if t.graphic:
-                table_data += html_report.display_value_with_discret_label('table-wrap/graphic', t.graphic.display(self.xml_path), 'value')
+                table_data += html_report.display_labeled_value('table-wrap/graphic', t.graphic.display(self.xml_path), 'value')
             r += header + html_report.tag('div', table_data, 'block')
         return r
 
@@ -293,8 +291,21 @@ class ArticleDisplayReport(object):
     def affiliations(self):
         r = html_report.tag('p', 'Affiliations:', 'label')
         for item in self.article.affiliations:
-            r += html_report.tag('p', html_report.display_xml(item.xml))
+            r += html_report.tag('p', html_report.html_value(item.xml))
         r += html_report.sheet(self.sheet_data.affiliations_sheet_data())
+        return r
+
+    @property
+    def ids(self):
+        sheet_data = []
+        t_header = ['@id', 'xml']
+        for item in self.article.elements_which_has_id_attribute:
+            row = {}
+            row['@id'] = item.attrib.get('id')
+            row['xml'] = xml_utils.node_xml(item)
+            sheet_data.append(row)
+        r = html_report.tag('h2', 'elements and @id:')
+        r += html_report.sheet((t_header, [], sheet_data))
         return r
 
 
@@ -332,9 +343,9 @@ class ArticleValidationReport(object):
             cell += html_report.tag('td', row[1], 'td_status')
             style = html_report.message_style(row[1] + ':')
             value = row[2]
+            if '<' in value and '>' in value:
+                value = html_report.display_xml(value)
             if style == 'ok':
-                if '<pre>' in value and '</pre>' in value:
-                    value = html_report.display_xml(value)
                 value = html_report.tag('span', value, 'value')
             cell += html_report.tag('td', value, 'td_message')
             r += html_report.tag('tr', cell, style)
@@ -355,7 +366,7 @@ class ArticleValidationReport(object):
                     self.article_validation.order,
                     self.article_validation.doi,
                     self.article_validation.fpage,
-                    self.article_validation.language,
+                    self.article_validation.elocation_id,
                     self.article_validation.total_of_pages,
                     self.article_validation.total_of_equations,
                     self.article_validation.total_of_tables,
@@ -384,10 +395,6 @@ class ArticleValidationReport(object):
         r = []
         for a in self.article_validation.affiliations:
             label, status, xml = a
-            if label == 'xml':
-                r.append((label, status, html_report.display_xml(xml)))
-            else:
-                r.append(a)
         return r
 
     @property
@@ -475,32 +482,6 @@ class ArticleSheetData(object):
             r.append(row)
         return (t_header, [], r)
 
-    def ids_sheet_data(self):
-        def _ids(node, scope):
-            res = []
-            if node is not None:
-                for n in node.findall('.//*[@id]'):
-                    r = {}
-                    r['scope'] = scope
-                    r['element'] = n.tag
-                    r['ID'] = n.attrib.get('id')
-                    r['xref list'] = [html_report.display_xml(item) for item in self.article.xref_list.get(n.attrib.get('id'), [])]
-                    res.append(r)
-            return res
-
-        r = []
-        t_header = ['scope', 'ID', 'element', 'xref list']
-        r += _ids(self.article.article_meta, 'article')
-        r += _ids(self.article.body, 'article')
-        r += _ids(self.article.back, 'article')
-
-        for item in self.article.subarticles:
-            r += _ids(item, 'sub-article ' + item.find('.').attrib.get('id', ''))
-        for item in self.article.responses:
-            r += _ids(item, 'response ' + item.find('.').attrib.get('id', ''))
-
-        return (t_header, ['xref list'], r)
-
     def tables_sheet_data(self, path):
         t_header = ['ID', 'label/caption', 'table/graphic']
         r = []
@@ -508,7 +489,7 @@ class ArticleSheetData(object):
             row = {}
             row['ID'] = t.graphic_parent.id
             row['label/caption'] = t.graphic_parent.label + '/' + t.graphic_parent.caption
-            row['table/graphic'] = html_report.display_xml(t.table + t.graphic_parent.graphic.display(path))
+            row['table/graphic'] = t.table + t.graphic_parent.graphic.display(path)
             r.append(row)
         return (t_header, ['label/caption', 'table/graphic'], r)
 
@@ -524,7 +505,7 @@ class ArticleSheetData(object):
                 if not os.path.isfile(path + '/' + item.src) and not os.path.isfile(path + '/' + item.src + '.jpg'):
                     msg = 'ERROR: ' + item.src + ' not found in package'
             row['display'] = item.display(path) + msg
-            row['xml'] = html_report.display_xml(item.xml)
+            row['xml'] = item.xml
             r.append(row)
         return (t_header, ['display', 'xml'], r)
 
@@ -551,7 +532,7 @@ class ArticleSheetData(object):
         return (t_header, ['files', 'status'], r)
 
     def affiliations_sheet_data(self):
-        t_header = ['aff id', 'aff orgname', 'aff norgname', 'aff orgdiv1', 'aff orgdiv2', 'aff country', 'aff city', 'aff state', 'aff xml']
+        t_header = ['aff id', 'aff orgname', 'aff norgname', 'aff orgdiv1', 'aff orgdiv2', 'aff country', 'aff city', 'aff state', ]
         r = []
         for a in self.article.affiliations:
             row = {}
@@ -563,7 +544,6 @@ class ArticleSheetData(object):
             row['aff city'] = a.city
             row['aff state'] = a.state
             row['aff country'] = a.country
-            row['aff xml'] = a.xml
             r.append(row)
         return (t_header, ['aff xml'], r)
 
@@ -612,10 +592,11 @@ def validate_article_data(article, new_name, package_path, report_filename, vali
 def article_report_content(data_display, data_validation):
     content = ''
     content += data_display.summary
+    content += data_validation.report()
     content += data_display.article_back
     content += data_display.article_body
     content += data_display.files_and_href
-    content += data_validation.report()
+    content += data_display.ids
     content += data_display.authors_sheet
     content += data_display.sources_sheet
     return content

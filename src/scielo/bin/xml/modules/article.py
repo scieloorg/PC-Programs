@@ -644,6 +644,123 @@ class ArticleXML(object):
                 refs.append(ReferenceXML(ref))
         return refs
 
+    @property
+    def press_release_id(self):
+        if self.article_meta is not None:
+            related = self.article_meta.find('related-object[@document-type="pr"]')
+            if related is not None:
+                return related.attrib.get('document-id')
+
+    @property
+    def issue_pub_date(self):
+        _issue_pub_date = None
+        if self.article_meta is not None:
+            date = self.article_meta.find('pub-date[@date-type="pub"]')
+            if date is None:
+                date = self.article_meta.find('pub-date[@pub-type="epub-ppub"]')
+            if date is None:
+                date = self.article_meta.find('pub-date[@pub-type="ppub"]')
+            if date is None:
+                date = self.article_meta.find('pub-date[@pub-type="collection"]')
+            if date is None:
+                date = self.article_meta.find('pub-date[@pub-type="epub"]')
+            if date is not None:
+                _issue_pub_date = {}
+                _issue_pub_date['season'] = date.findtext('season')
+                _issue_pub_date['month'] = date.findtext('month')
+                _issue_pub_date['year'] = date.findtext('year')
+                _issue_pub_date['day'] = date.findtext('day')
+        return _issue_pub_date
+
+    @property
+    def article_pub_date(self):
+        _article_pub_date = None
+        date = None
+        if self.article_meta is not None:
+            date = self.article_meta.find('pub-date[@date-type="preprint"]')
+            if date is None:
+                date = self.article_meta.find('pub-date[@pub-type="epub"]')
+        if date is not None:
+            _article_pub_date = {}
+            _article_pub_date['season'] = date.findtext('season')
+            _article_pub_date['month'] = date.findtext('month')
+            _article_pub_date['year'] = date.findtext('year')
+            _article_pub_date['day'] = date.findtext('day')
+        return _article_pub_date
+
+    @property
+    def is_article_press_release(self):
+        if self.article_meta is not None:
+            return (self.article_meta.find('.//related-document[@link-type="article-has-press-release"]') is not None)
+        else:
+            return False
+
+    @property
+    def illustrative_materials(self):
+        _illustrative_materials = []
+        if self.tree is not None:
+            if len(self.tree.findall('.//table-wrap')) > 0:
+                _illustrative_materials.append('TAB')
+            figs = len(self.tree.findall('.//fig'))
+            if figs > 0:
+                maps = len(self.tree.findall('.//fig[@fig-type="map"]'))
+                gras = len(self.tree.findall('.//fig[@fig-type="graphic"]'))
+                if maps > 0:
+                    _illustrative_materials.append('MAP')
+                if gras > 0:
+                    _illustrative_materials.append('GRA')
+                if figs - gras - maps > 0:
+                    _illustrative_materials.append('ILUS')
+
+        if len(_illustrative_materials) > 0:
+            return _illustrative_materials
+        else:
+            return 'ND'
+
+    @property
+    def license(self):
+        r = None
+        if self.tree is not None:
+            r = self.tree.find('.//license')
+            if r is not None:
+                r = r.attrib.get('license-type')
+        return r
+
+    @property
+    def hrefs(self):
+        r = []
+        if self.tree is not None:
+            for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
+                for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
+                    href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
+                    _href = HRef(href, elem, parent, node_xml(parent))
+                    r.append(_href)
+        return r
+
+    @property
+    def elements_which_has_id_attribute(self):
+        return self.tree.findall('.//*[@id]')
+
+    @property
+    def href_files(self):
+        return [href for href in self.hrefs if href.isfile]
+
+    @property
+    def tables(self):
+        r = []
+        if self.tree is not None:
+            for t in self.tree.findall('.//*[table]'):
+                graphic = t.find('./graphic')
+                _href = None
+                if graphic is not None:
+                    src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
+                    xml = node_xml(graphic)
+
+                    _href = HRef(src, graphic, t, xml)
+                _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), node_text(t.find('.//caption')), _href, node_xml(t.find('./table')))
+                r.append(_table)
+        return r
+
 
 class Article(ArticleXML):
 
@@ -714,49 +831,6 @@ class Article(ArticleXML):
         if self.volume is None and self.number is None:
             self.number = 'ahead'
 
-    @property
-    def press_release_id(self):
-        if self.article_meta is not None:
-            related = self.article_meta.find('related-object[@document-type="pr"]')
-            if related is not None:
-                return related.attrib.get('document-id')
-
-    @property
-    def issue_pub_date(self):
-        _issue_pub_date = None
-        if self.article_meta is not None:
-            date = self.article_meta.find('pub-date[@date-type="pub"]')
-            if date is None:
-                date = self.article_meta.find('pub-date[@pub-type="epub-ppub"]')
-            if date is None:
-                date = self.article_meta.find('pub-date[@pub-type="ppub"]')
-            if date is None:
-                date = self.article_meta.find('pub-date[@pub-type="collection"]')
-            if date is None:
-                date = self.article_meta.find('pub-date[@pub-type="epub"]')
-            if date is not None:
-                _issue_pub_date = {}
-                _issue_pub_date['season'] = date.findtext('season')
-                _issue_pub_date['month'] = date.findtext('month')
-                _issue_pub_date['year'] = date.findtext('year')
-                _issue_pub_date['day'] = date.findtext('day')
-        return _issue_pub_date
-
-    @property
-    def article_pub_date(self):
-        _article_pub_date = None
-        date = None
-        if self.article_meta is not None:
-            date = self.article_meta.find('pub-date[@date-type="preprint"]')
-            if date is None:
-                date = self.article_meta.find('pub-date[@pub-type="epub"]')
-        if date is not None:
-            _article_pub_date = {}
-            _article_pub_date['season'] = date.findtext('season')
-            _article_pub_date['month'] = date.findtext('month')
-            _article_pub_date['year'] = date.findtext('year')
-            _article_pub_date['day'] = date.findtext('day')
-        return _article_pub_date
 
     @property
     def is_ahead(self):
@@ -765,35 +839,6 @@ class Article(ArticleXML):
     @property
     def ahpdate(self):
         return self.article_pub_date if self.is_ahead else None
-
-    @property
-    def is_article_press_release(self):
-        if self.article_meta is not None:
-            return (self.article_meta.find('.//related-document[@link-type="article-has-press-release"]') is not None)
-        else:
-            return False
-
-    @property
-    def illustrative_materials(self):
-        _illustrative_materials = []
-        if self.tree is not None:
-            if len(self.tree.findall('.//table-wrap')) > 0:
-                _illustrative_materials.append('TAB')
-            figs = len(self.tree.findall('.//fig'))
-            if figs > 0:
-                maps = len(self.tree.findall('.//fig[@fig-type="map"]'))
-                gras = len(self.tree.findall('.//fig[@fig-type="graphic"]'))
-                if maps > 0:
-                    _illustrative_materials.append('MAP')
-                if gras > 0:
-                    _illustrative_materials.append('GRA')
-                if figs - gras - maps > 0:
-                    _illustrative_materials.append('ILUS')
-
-        if len(_illustrative_materials) > 0:
-            return _illustrative_materials
-        else:
-            return 'ND'
 
     @property
     def is_text(self):
@@ -820,48 +865,8 @@ class Article(ArticleXML):
         return d
 
     @property
-    def license(self):
-        r = None
-        if self.tree is not None:
-            r = self.tree.find('.//license')
-            if r is not None:
-                r = r.attrib.get('license-type')
-        return r
-
-    @property
     def issue_label(self):
         return format_issue_label(self.issue_pub_date.get('year', ''), self.volume, self.number, self.volume_suppl, self.number_suppl)
-
-    @property
-    def hrefs(self):
-        r = []
-        if self.tree is not None:
-            for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
-                for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
-                    href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                    _href = HRef(href, elem, parent, node_xml(parent))
-                    r.append(_href)
-        return r
-
-    @property
-    def href_files(self):
-        return [href for href in self.hrefs if href.isfile]
-
-    @property
-    def tables(self):
-        r = []
-        if self.tree is not None:
-            for t in self.tree.findall('.//*[table]'):
-                graphic = t.find('./graphic')
-                _href = None
-                if graphic is not None:
-                    src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
-                    xml = node_xml(graphic)
-
-                    _href = HRef(src, graphic, t, xml)
-                _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), node_text(t.find('.//caption')), _href, node_xml(t.find('./table')))
-                r.append(_table)
-        return r
 
 
 class ReferenceXML(object):

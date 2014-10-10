@@ -76,6 +76,12 @@ class ReportHTML(object):
 
     def sheet(self, table_header_and_data, filename=None):
         table_header, wider, table_data = table_header_and_data
+
+        width = None
+        if len(table_header) > 2:
+            width = 100
+            width = 100 / len(table_header)
+            width = str(width)
         r = '<p>'
         if table_header is None:
             r += '<!-- no data to create sheet -->'
@@ -100,7 +106,11 @@ class ReportHTML(object):
                         r += '<td>' + filename + '</td>'
 
                     for label in table_header:
-                        r += '<td>' + self.format_cell(row.get(label, ''), not label in ['filename', 'scope']) + '</td>'
+                        r += '<td'
+                        if label == '@id':
+                            r += ' class="td_status"'
+                        r += '>'
+                        r += self.format_cell_data(row.get(label, ''), not label in ['filename', 'scope'], width) + '</td>'
                     r += '</tr>'
                 r += '</tbody>'
             r += '</table>'
@@ -111,29 +121,20 @@ class ReportHTML(object):
         return '<a href="' + href + '">' + label + '</a>'
 
     def tag(self, tag_name, content, style=''):
+        if content is None:
+            content = ''
         if tag_name == 'p' and '</p>' in content:
             tag_name = 'div'
-        if content is None:
-            content = 'None'
-        elif content.isdigit():
-            content = str(content)
         return '<' + tag_name + self.css_class(style) + '>' + content + '</' + tag_name + '>'
 
-    def display_xml(self, value):
-        if value is None:
-            value = ''
-        value = value.replace('<pre>', '').replace('</pre>', '')
+    def display_xml(self, value, width=None):
         value = value.replace('<', '&lt;')
         value = value.replace('>', '&gt;')
-        return '<pre>' + value + '</pre>'
-
-    def display_xml_in_small_space(self, value, width='100'):
-        if value is None:
-            value = ''
-        value = value.replace('<pre>', '').replace('</pre>', '')
-        value = value.replace('<', '&lt;')
-        value = value.replace('>', '&gt;')
-        return '<textarea cols="' + width + '" rows="10" readonly>' + value + '</textarea>'
+        if width is not None:
+            value = '<textarea cols="' + width + '" rows="10" readonly>' + value + '</textarea>'
+        else:
+            value = '<pre>' + value + '</pre>'
+        return value
 
     def format_message(self, value):
         if '</p>' in value:
@@ -163,22 +164,13 @@ class ReportHTML(object):
         r += '</div>'
         return r
 
-    def format_cell(self, value, is_data=True):
-        def format_data(data, is_data):
-            if is_data:
-                if '<pre>' in data and '</pre>' in data:
-                    data = self.display_xml(data)
-                style = self.message_style(data, 'value')
-                return self.tag('span', data, style)
-            else:
-                return data
-
+    def format_cell_data(self, value, is_data, width=None):
         r = '-'
         if isinstance(value, list):
             r = ''
             r += '<ul>'
             for item in value:
-                r += '<li>' + format_data(item, is_data) + '</li>'
+                r += '<li>' + self.html_value(item) + '</li>'
             r += '</ul>'
         elif isinstance(value, dict):
             r = ''
@@ -186,13 +178,15 @@ class ReportHTML(object):
             for k, v in value.items():
                 if k != 'ordered':
                     if isinstance(v, list):
-                        r += '<li>' + k + ': ' + ', '.join(format_data(v, is_data)) + '</li>'
+                        r += '<li>' + k + ': ' + ', '.join(self.html_value(v)) + '</li>'
                     else:
-                        r += '<li>' + self.display_label_value(k, format_data(v, is_data)) + '</li>'
+                        r += '<li>' + self.display_label_value(k, v) + '</li>'
             r += '</ul>'
         elif value is not None:
             # str or unicode
-            r = format_data(value, is_data)
+            r = self.html_value(value, width)
+        if is_data:
+            r = self.format_message(r)
         return r
 
     def save(self, filename, title=None, body=None):
@@ -212,12 +206,22 @@ class ReportHTML(object):
     def report_date(self):
         return self.tag('h3', report_date())
 
-    def display_value_with_discret_label(self, label, value, style='', tag='p'):
-        if value is None:
-            value = 'None'
+    def display_labeled_value(self, label, value, style='', tag='p'):
         if label is None:
             label = 'None'
-        return self.tag(tag, self.tag('span', '[' + label + '] ', 'discret') + value, style)
+        return self.tag(tag, self.tag('span', '[' + label + '] ', 'discret') + self.html_value(value), style)
+
+    def html_value(self, value, width=None):
+        if value is None:
+            value = 'None'
+        if isinstance(value, int):
+            value = str(value)
+        if '<img' in value or '</a>' in value:
+            pass
+        else:
+            if '<' in value and '>' in value:
+                value = self.display_xml(value, width)
+        return value
 
     def styles(self):
         return '<style>' + open(os.path.dirname(os.path.realpath(__file__)) + '/report.css', 'r').read() + '</style>'
@@ -236,44 +240,8 @@ class ReportHTML(object):
         return ' class="' + self.message_style(style) + '"'
 
     def display_label_value(self, label, value):
-        r = value if value is not None else 'None'
-        return self.tag('span', label) + ' ' + r
+        return self.tag('span', label) + ' ' + self.html_value(value)
 
     def format_p_label_value(self, label, value):
         return self.tag('p', self.display_label_value(label, value))
 
-    def display_attributes(self, label, attributes):
-        r = []
-        for key, value in attributes.items():
-            if value is list:
-                value = '; '.join(value)
-            r.append(self.display_label_value(key, value))
-        return label + '\n' + '\n'.join(r) + '\n'
-
-    def display_items_with_attributes(self, label, items_with_attributes):
-        r = label + ': ' + '\n'
-        for item_name, item_values in items_with_attributes.items():
-            r += self.display_label_values_with_attributes(item_name, item_values)
-        return r + '\n'
-
-    def display_label_values_with_attributes(self, label, values_with_attributes):
-        return label + ': ' + '\n' + '\n'.join([self.display_attributes('=>', item) for item in values_with_attributes]) + '\n'
-
-    def conditional_required(self, label, value):
-        return self.display_label_value(label, value) if value is not None else 'WARNING: Required ' + label + ', if exists. '
-
-    def required(self, label, value):
-        return self.display_label_value(label, value) if value is not None else 'ERROR: Required ' + label + '. '
-
-    def required_one(self, label, value):
-        return self.display_attributes(label, value) if value is not None else 'ERROR: Required ' + label + '. '
-
-    def expected_values(self, label, value, expected):
-        return self.display_label_value(label, value) if value in expected else 'ERROR: ' + value + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected)
-
-    def add_new_value_to_index(self, dict_key_and_values, key, value):
-        if key is not None:
-            if not key in dict_key_and_values.keys():
-                dict_key_and_values[key] = []
-            dict_key_and_values[key].append(value)
-        return dict_key_and_values
