@@ -3118,14 +3118,19 @@ et al.</copyright-statement>
 		</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="supplmat">
-		<supplementary-material id="{@id}" xlink:href="{@href}" mimetype="{@mimetype}" mime-subtype="{@mimesubt}">
-			<xsl:apply-templates></xsl:apply-templates>
+		<supplementary-material id="{@id}" xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">			
+			<xsl:apply-templates select="*|text()"/>
 		</supplementary-material>
 	</xsl:template>
 	<xsl:template match="p/supplmat">
-		<inline-supplementary-material xlink:href="{@href}" mimetype="{@mimetype}" mime-subtype="{@mimesubt}">
-			<xsl:apply-templates></xsl:apply-templates>
+		<inline-supplementary-material xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">	
+			<xsl:apply-templates select="*|text()"/>
 		</inline-supplementary-material>
+	</xsl:template>
+	<xsl:template match="media">
+		<media xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">	
+			<xsl:apply-templates select="*|text()"/>
+		</media>
 	</xsl:template>
 	<xsl:template match="pubid"><xsl:element name="pub-id"><xsl:attribute name="pub-id-type"><xsl:value-of select="@idtype"/></xsl:attribute><xsl:value-of select="normalize-space(.)"/></xsl:element></xsl:template>
 

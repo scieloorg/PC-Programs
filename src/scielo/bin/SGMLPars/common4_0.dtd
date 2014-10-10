@@ -101,7 +101,7 @@ filename       CDATA #IMPLIED>
           name CDATA #REQUIRED 
           value CDATA #REQUIRED>
 
-<!ELEMENT supplmat - - (#PCDATA)   >
+<!ELEMENT supplmat - - ( label?, caption)?, (#PCDATA)   >
 <!ATTLIST supplmat
           id       CDATA #REQUIRED
           href       CDATA #REQUIRED

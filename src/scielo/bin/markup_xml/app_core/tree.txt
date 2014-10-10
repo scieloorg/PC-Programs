@@ -18,6 +18,7 @@ product;#TRUE#;#TRUE#
 quote;#TRUE#;#TRUE#
 related;#TRUE#;#TRUE#
 supplmat;#FALSE#;#TRUE#
+media;#FALSE#;#TRUE#
 tabwrap;#FALSE#;#TRUE#
 uri;#FALSE#;#TRUE#
 xref;#TRUE#;#TRUE#
@@ -681,6 +682,10 @@ subtitle
 suppl
 
 supplmat
+label;#FALSE#;#FALSE#
+caption;#FALSE#;#FALSE#
+
+media
 
 surname
 
