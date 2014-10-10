@@ -170,6 +170,7 @@ app;#FALSE#;#TRUE#
 bbibcom
 abstract;#FALSE#;#TRUE#
 keygrp;#FALSE#;#TRUE#
+report;#FALSE#;#TRUE#
 confgrp;#FALSE#;#FALSE#
 thesgrp;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
@@ -178,6 +179,7 @@ bibcom
 abstract;#FALSE#;#TRUE#
 xmlabstr;#FALSE#;#TRUE#
 keygrp;#FALSE#;#TRUE#
+report;#FALSE#;#TRUE#
 confgrp;#FALSE#;#FALSE#
 thesgrp;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#

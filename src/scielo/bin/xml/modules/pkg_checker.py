@@ -40,6 +40,8 @@ def validate_article(xml_filename, new_name, report_name, doc_files_info, dtd_fi
     data_f, data_e, data_w, sheet_data = validate_article_data(article, new_name, os.path.dirname(xml_filename), doc_files_info.data_report_filename, validate_order)
 
     result = html_report.tag('h3', report_name)
+
+    result += html_report.tag('p', html_report.link('file:///' + xml_filename, os.path.basename(xml_filename)))
     result += html_report.statistics_messages(xml_f, xml_e, xml_w, 'xml validations', [doc_files_info.err_filename, doc_files_info.style_report_filename])
 
     result += html_report.statistics_messages(data_f, data_e, data_w, 'data validations', [doc_files_info.data_report_filename])

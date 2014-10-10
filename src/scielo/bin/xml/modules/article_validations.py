@@ -8,10 +8,6 @@ import article_utils
 import article
 
 
-def format_xml_in_html(xml):
-    return '<pre>' + xml.replace('<', '&lt;').replace('>', '&gt;') + '</pre>'
-
-
 def format_value(value):
     if value is None:
         value = 'None'
@@ -57,8 +53,8 @@ def required(label, value):
     return (label, status, message) if not (value is None or value == '') else (label, 'ERROR', 'Required.')
 
 
-def expected_values(label, value, expected):
-    return (label, 'OK', value) if value in expected else (label, 'ERROR', format_value(value) + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected))
+def expected_values(label, value, expected, fatal=''):
+    return (label, 'OK', value) if value in expected else (label, fatal + 'ERROR', format_value(value) + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected))
 
 
 def display_attributes(attributes):
@@ -124,7 +120,7 @@ class ArticleContentValidation(object):
 
     @property
     def language(self):
-        return expected_values('@xml:lang', self.article.language, ['en', 'es', 'pt', 'de', 'fr'])
+        return expected_values('@xml:lang', self.article.language, ['en', 'es', 'pt', 'de', 'fr'], 'FATAL ')
 
     @property
     def related_objects(self):
@@ -321,10 +317,10 @@ class ArticleContentValidation(object):
         if len(self.article.award_id) == 0:
             found, c = has_number(self.article.ack_xml)
             if found is True:
-                r.append(('award-id', 'WARNING', 'Found number ' + c + ' in ack. ' + format_xml_in_html(self.article.ack_xml)))
+                r.append(('award-id', 'WARNING', 'Found number ' + c + ' in ack. ' + self.article.ack_xml))
             found, c = has_number(self.article.financial_disclosure)
             if found is True:
-                r.append(('award-id', 'WARNING', 'Found number ' + c + ' in fn[@fn-type="financial-disclosure"]. ' + format_xml_in_html(self.article.fn_financial_disclosure)))
+                r.append(('award-id', 'WARNING', 'Found number ' + c + ' in fn[@fn-type="financial-disclosure"]. ' + self.article.fn_financial_disclosure))
         else:
             for item in self.article.award_id:
                 r.append(('award-id', 'OK', item))
@@ -340,15 +336,15 @@ class ArticleContentValidation(object):
 
     @property
     def ack_xml(self):
-        return display_value('ack xml', format_xml_in_html(self.article.ack_xml))
+        return display_value('ack xml', self.article.ack_xml)
 
     @property
     def fpage(self):
-        return required('fpage', self.article.fpage)
+        return conditional_required('fpage', self.article.fpage)
 
     @property
     def fpage_seq(self):
-        return display_value('fpage/@seq', self.article.fpage_seq)
+        return conditional_required('fpage/@seq', self.article.fpage_seq)
 
     @property
     def lpage(self):
@@ -356,13 +352,13 @@ class ArticleContentValidation(object):
 
     @property
     def elocation_id(self):
-        return display_value('elocation-id', self.article.elocation_id)
+        return conditional_required('elocation-id', self.article.elocation_id)
 
     @property
     def affiliations(self):
         r = []
         for aff in self.article.affiliations:
-            r.append(('aff xml', 'OK', format_xml_in_html(aff.xml)))
+            r.append(('aff xml', 'OK', aff.xml))
             a, b, c = required('aff id', aff.id)
             b = 'FATAL ERROR' if 'ERROR' in b else b
             r.append((a, b, c))
@@ -418,7 +414,7 @@ class ArticleContentValidation(object):
                 r.append(('abstract: ', 'OK', item.language + ':' + item.text))
             else:
                 if item.language is None:
-                    r.append(('abstract: ', 'ERROR', 'Missing language for ' + item.text))
+                    r.append(('abstract: ', 'WARNING', 'Missing language for ' + item.text))
                 if item.text is None:
                     r.append(('abstract: ', 'ERROR', 'Missing text for ' + item.language))
         return r
@@ -550,11 +546,11 @@ class ReferenceContentValidation(object):
 
     @property
     def xml(self):
-        return display_value('xml', format_xml_in_html(self.reference.xml))
+        return ('xml', 'OK', self.reference.xml)
 
     @property
     def mixed_citation(self):
-        return required('mixed-citation', format_xml_in_html(self.reference.mixed_citation))
+        return required('mixed-citation', self.reference.mixed_citation)
 
     @property
     def authors_list(self):
