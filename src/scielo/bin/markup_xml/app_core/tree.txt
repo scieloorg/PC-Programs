@@ -265,6 +265,7 @@ figgrp;#FALSE#;#TRUE#
 fname
 
 fngrp
+label;#FALSE#;#FALSE#
 funding;#FALSE#;#FALSE#
 
 fntable
