@@ -1,7 +1,9 @@
 # coding=utf-8
 import os
 import shutil
+import urllib 
 from datetime import datetime
+from mimetypes import MimeTypes
 
 from modules import article
 from modules import files_manager
@@ -12,7 +14,7 @@ from modules import pkg_checker
 from modules import xpchecker
 from modules import reports
 
-
+mime = MimeTypes()
 html_report = reports.ReportHTML()
 messages = []
 log_items = []
@@ -26,6 +28,39 @@ def register_message(message):
 
 def register_log(text):
     log_items.append(datetime.now().isoformat() + ' ' + text)
+
+
+def replace_mimetypes(content, path):
+    r = content
+    if 'mimetype="replace' in content:
+        content = content.replace('mimetype="replace', '_BREAKMIME_MIME:')
+        content = content.replace('mime-subtype="replace"', '_BREAKMIME_')
+        r = ''
+        for item in content.split('_BREAKMIME_'):
+            if item.startswith('MIME:'):
+                f = item[5:]
+                f = f[0:f.rfind('"')]
+                result = ''
+                if os.path.isfile(path + '/' + f):
+                    result = mime.guess_type(path + '/' + f)
+                else:
+                    url = urllib.pathname2url(f)
+                    result = mime.guess_type(url)
+                try:
+                    result = result[0]
+                    if '/' in result:
+                        m, ms = result.split('/')
+                        r += 'mimetype="' + m + '" mime-subtype="' + ms + '"'
+                    else:
+                        pass
+                except:
+                    pass
+            else:
+                r += item
+    else:
+        print('.............')
+    print('end mimetype')
+    return r
 
 
 def rename_embedded_img_href(content, xml_name, new_href_list):
@@ -81,8 +116,10 @@ def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
         xml, e = xml_utils.load_xml(content)
     if e is None:
         content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
+        content = replace_mimetypes(content, src_path)
     else:
-        print(e)
+        pass
+        #print(e[0:500])
     if isinstance(content, unicode):
         content = content.encode('utf-8')
     return content
@@ -300,11 +337,10 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     register_log('remove_doctype')
     content = xml_utils.remove_doctype(content)
     #register_log(content)
-
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
     #register_log(content)
-
+    
     if doc_files_info.is_sgmxml:
         register_log('normalize_sgmlxml')
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
@@ -313,7 +349,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     new_name = doc_files_info.xml_name
     register_log('load_xml')
     xml, e = xml_utils.load_xml(content)
-    
+
     if xml is None:
         xml
     else:

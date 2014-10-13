@@ -125,7 +125,10 @@ attrib
 name;value
 
 supplmat
-id;href;mimetype;mimesubt
+id;href
+
+media
+id;href
 
 pubid
 idtype
