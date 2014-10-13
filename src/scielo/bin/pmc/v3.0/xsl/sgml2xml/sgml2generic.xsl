@@ -1767,75 +1767,40 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
 	<xsl:template match="*[fname or surname]">
-		<name>
-			<xsl:choose>
-				<xsl:when test="contains(surname,' ')">
-					<xsl:choose>
-						<xsl:when
-							test="contains(surname,' Jr') or contains(surname,' Sr') or contains(surname,'nior')">
-							<surname>
-								<xsl:value-of select="substring-before(surname,' ')"/>
-							</surname>
-
-						</xsl:when>
-						<xsl:when test="contains(surname,' Neto')">
-							<surname>
-								<xsl:value-of select="substring-before(surname,' Neto')"/>
-							</surname>
-
-						</xsl:when>
-						<xsl:when test="contains(surname,' Filho')">
-							<surname>
-								<xsl:value-of select="substring-before(surname,' Filho')"/>
-							</surname>
-
-						</xsl:when>
-						<xsl:when test="contains(surname,' Sobrinho')">
-							<surname>
-								<xsl:value-of select="substring-before(surname,' Sobrinho')"/>
-							</surname>
-
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:apply-templates select="surname"/>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:apply-templates select="surname"/>
-				</xsl:otherwise>
-			</xsl:choose>
-
-			<xsl:apply-templates select="fname"/>
-
-			<xsl:if test="contains(surname,' ')">
+		<xsl:variable name="f"><xsl:value-of select="normalize-space(fname)"/></xsl:variable>
+		<xsl:variable name="s"><xsl:value-of select="normalize-space(surname)"/></xsl:variable>
+		<xsl:variable name="suffix"><xsl:choose>
+			<xsl:when test="contains($s,',')"><xsl:value-of select="substring-after($s, ',')"/></xsl:when>
+			<xsl:when test="contains($s,' ')"><xsl:value-of select="substring-after($s, ' ')"/></xsl:when>
+			<xsl:otherwise></xsl:otherwise>
+		</xsl:choose></xsl:variable>
+		<xsl:variable name="surname"><xsl:choose>
+			<xsl:when test="contains($s,',')"><xsl:value-of select="substring-before($s, ',')"/></xsl:when>
+			<xsl:when test="contains($s,' ')"><xsl:value-of select="substring-before($s, ' ')"/></xsl:when>
+			<xsl:otherwise></xsl:otherwise>
+		</xsl:choose></xsl:variable>
+		<xsl:variable name="ok">
+			<xsl:if test="$suffix!=''">
 				<xsl:choose>
-					<xsl:when
-						test="contains(surname,' Jr') or contains(surname,' Sr') or contains(surname,'nior')">
-
-						<suffix>
-							<xsl:value-of select="substring-after(surname,' ')"/>
-						</suffix>
-					</xsl:when>
-					<xsl:when test="contains(surname,' Neto')">
-
-						<suffix>Neto</suffix>
-					</xsl:when>
-					<xsl:when test="contains(surname,' Filho')">
-
-						<suffix>Filho</suffix>
-					</xsl:when>
-					<xsl:when test="contains(surname,' Sobrinho')">
-
-						<suffix>Sobrinho</suffix>
-					</xsl:when>
-					<xsl:otherwise> </xsl:otherwise>
+					<xsl:when test="contains($suffix, 'nior') or contains($suffix, 'NIOR')">true</xsl:when>
+					<xsl:when test="$suffix='Sr' or $suffix='Jr' or $suffix='Sr.' or $suffix='Jr.'">true</xsl:when>
+					<xsl:when test="$suffix='Neto' or $suffix='NETO'">true</xsl:when>
+					<xsl:when test="$suffix='Filho' or $suffix='FILHO'">true</xsl:when>
+					<xsl:when test="$suffix='Sobrinho' or $suffix='SOBRINHO'">true</xsl:when>
 				</xsl:choose>
-
 			</xsl:if>
-
-		</name>
-
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="$ok='true'">
+				<surname><xsl:value-of select="$surname"/></surname>
+				<given-names><xsl:value-of select="$f"/></given-names>
+				<suffix><xsl:value-of select="$suffix"/></suffix>
+			</xsl:when>
+			<xsl:otherwise>
+				<surname><xsl:value-of select="$s"/></surname>
+				<given-names><xsl:value-of select="$f"/></given-names>						
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'citat')]//*[previous]">
 		<xsl:param name="position"/>
