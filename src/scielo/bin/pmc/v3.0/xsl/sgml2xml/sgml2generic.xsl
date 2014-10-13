@@ -1346,7 +1346,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="abstract">
 		<xsl:param name="language"/>
-		<abstract xml:lang="{$language}">
+		<abstract>
 			<p>
 				<xsl:apply-templates/>
 			</p>
@@ -1359,7 +1359,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="xmlabstr">
 		<xsl:param name="language"/>
-		<abstract xml:lang="{$language}">
+		<abstract>
 			<xsl:apply-templates select="*"/>
 		</abstract>
 	</xsl:template>
