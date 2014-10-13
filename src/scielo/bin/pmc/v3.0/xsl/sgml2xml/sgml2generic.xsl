@@ -3375,8 +3375,8 @@ et al.</copyright-statement>
 		<xsl:param name="fundsrc"/>
 		<award-group>
 			<xsl:attribute name="award-type">contract</xsl:attribute>
-			<xsl:apply-templates select="." mode="front"/>
 			<xsl:apply-templates select="$fundsrc" mode="front"/>
+			<xsl:apply-templates select="." mode="front"/>
 		</award-group>
 	</xsl:template>
 </xsl:stylesheet>
