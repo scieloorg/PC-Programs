@@ -3063,15 +3063,19 @@ et al.</copyright-statement>
 				</xsl:call-template>
 			</pub-date>
 		</xsl:if>
-		<xsl:variable name="date_type">
+		<xsl:variable name="other_date_type">
 			<xsl:choose>
 				<xsl:when test="@issueno='ahead'"></xsl:when>
-				<xsl:when test="normalize-space($preprint_date)!=''">ppub</xsl:when>
+				<xsl:when test="normalize-space($preprint_date)!=''">
+					<xsl:choose>
+						<xsl:when test="not(@issueno) and not(@supplvol) and not(@supplno)"></xsl:when>
+						<xsl:otherwise>collection</xsl:otherwise>
+					</xsl:choose></xsl:when>
 				<xsl:otherwise><xsl:value-of select="$pub_type"/></xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:if test="$date_type!=''">
-			<pub-date pub-type="{$date_type}">
+		<xsl:if test="$other_date_type!=''">
+			<pub-date pub-type="{$other_date_type}">
 				<xsl:call-template name="display_date">
 					<xsl:with-param name="dateiso">
 						<xsl:value-of select="@dateiso"/>
