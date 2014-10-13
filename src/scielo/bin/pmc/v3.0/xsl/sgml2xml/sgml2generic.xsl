@@ -1838,7 +1838,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:value-of select="normalize-space(.)"/>
 			</xsl:with-param>
 			<xsl:with-param name="specyear"><xsl:value-of select="@specyear"/></xsl:with-param>
-			<xsl:with-param name="format">textual</xsl:with-param>
+			<!--xsl:with-param name="format">textual</xsl:with-param-->
 		</xsl:call-template>
 	</xsl:template>
 
