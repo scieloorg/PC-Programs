@@ -948,13 +948,11 @@ confgrp;#TRUE#;#FALSE#
 contract;#FALSE#;#FALSE#
 country;#FALSE#;#TRUE#
 date;#TRUE#;#TRUE#
-doi;#FALSE#;#TRUE#
 edition;#FALSE#;#TRUE#
 extent;#FALSE#;#TRUE#
-found-at;#FALSE#;#FALSE#
+issn;#TRUE#;#TRUE#
 isbn;#TRUE#;#TRUE#
 issueno;#FALSE#;#TRUE#
-letterto;#FALSE#;#FALSE#
 moreinfo;#TRUE#;#TRUE#
 pages;#FALSE#;#TRUE#
 part;#FALSE#;#TRUE#
