@@ -1790,6 +1790,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:choose>
 			</xsl:if>
 		</xsl:variable>
+		<name>
 		<xsl:choose>
 			<xsl:when test="$ok='true'">
 				<surname><xsl:value-of select="$surname"/></surname>
@@ -1801,6 +1802,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<given-names><xsl:value-of select="$f"/></given-names>						
 			</xsl:otherwise>
 		</xsl:choose>
+		</name>
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'citat')]//*[previous]">
 		<xsl:param name="position"/>
