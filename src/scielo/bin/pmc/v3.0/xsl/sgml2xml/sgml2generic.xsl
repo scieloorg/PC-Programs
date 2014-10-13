@@ -391,10 +391,18 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="normalize-space(.)"/>
 		</edition>
 	</xsl:template>
-	<xsl:template match="issn[contains(.,'PMID:')]">
-		<pub-id pub-id-type="pmid">
-			<xsl:value-of select="substring-after(., 'PMID:')"/>
-		</pub-id>
+	<xsl:template match="issn">
+		<xsl:choose>
+			<xsl:when test="string-length(.)=9 and substring(.,5,1)='-'">
+				<issn><xsl:value-of select="."/></issn>
+			</xsl:when>
+			<xsl:when test="contains(.,'PMID:')">
+				<pub-id pub-id-type="pmid">
+					<xsl:value-of select="substring-after(., 'PMID:')"/>
+				</pub-id>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="@doctopic" mode="type">
 		<xsl:attribute name="article-type">
