@@ -3065,6 +3065,7 @@ et al.</copyright-statement>
 		</xsl:if>
 		<xsl:variable name="date_type">
 			<xsl:choose>
+				<xsl:when test="@issueno='ahead'"></xsl:when>
 				<xsl:when test="normalize-space($preprint_date)!=''">ppub</xsl:when>
 				<xsl:otherwise><xsl:value-of select="$pub_type"/></xsl:otherwise>
 			</xsl:choose>
