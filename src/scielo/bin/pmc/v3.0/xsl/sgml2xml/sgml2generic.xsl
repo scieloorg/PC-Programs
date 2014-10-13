@@ -1523,6 +1523,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="*/fngrp[@fntype]">
 		<fn>
 			<xsl:apply-templates select="@*|label"/>
+			<xsl:if test="not(label) and @fntype='other'">
+				<label><xsl:value-of select="string(number(substring-after(@id,'fn')))"/></label>
+			</xsl:if>
 			<p>
 				<xsl:apply-templates select="*[name()!='label']|text()"/>
 			</p>
