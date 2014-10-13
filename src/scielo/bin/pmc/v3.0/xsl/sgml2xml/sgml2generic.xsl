@@ -3118,7 +3118,7 @@ et al.</copyright-statement>
 		</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="supplmat">
-		<supplementary-material id="{@id}" xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">			
+		<supplementary-material id="suppl{string(number(substring-after(@id,'smat')))}" xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">			
 			<xsl:apply-templates select="*|text()"/>
 		</supplementary-material>
 	</xsl:template>
@@ -3128,7 +3128,7 @@ et al.</copyright-statement>
 		</inline-supplementary-material>
 	</xsl:template>
 	<xsl:template match="media">
-		<media xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">	
+		<media  id="m{string(number(substring-after(@id,'m')))}" xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">	
 			<xsl:apply-templates select="*|text()"/>
 		</media>
 	</xsl:template>
