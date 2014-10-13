@@ -1615,7 +1615,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:variable>
 			<xsl:apply-templates select="." mode="text-ref"/>
 			<element-citation publication-type="{$type}">
-				<xsl:apply-templates select="*[name()!='no' and name()!='text-ref']">
+				<xsl:apply-templates select="*[name()!='no' and name()!='label' and name()!='text-ref']">
 					<xsl:with-param name="position" select="position()"/>
 				</xsl:apply-templates>
 			</element-citation>
@@ -1629,7 +1629,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			
 			<xsl:apply-templates select="." mode="text-ref"/>
 			<element-citation publication-type="{@reftype}">
-				<xsl:apply-templates select="*[name()!='no' and name()!='text-ref']">
+				<xsl:apply-templates select="*[name()!='no' and name()!='label' and name()!='text-ref']">
 					<xsl:with-param name="position" select="position()"/>
 				</xsl:apply-templates>
 			</element-citation>
