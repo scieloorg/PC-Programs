@@ -48,9 +48,13 @@ def required_one(label, value):
     return (label, 'OK', display_attributes(value)) if value is not None else (label, 'ERROR', 'Required at least one ' + label + '.')
 
 
-def required(label, value):
+def required(label, value, default_status='ERROR'):
     status, message = validate_value(value)
-    return (label, status, message) if not (value is None or value == '') else (label, 'ERROR', 'Required.')
+    if not (value is None or value == ''):
+        result = (label, status, message)
+    else:
+        result = (label, default_status, 'Required')
+    return result
 
 
 def expected_values(label, value, expected, fatal=''):
@@ -359,15 +363,11 @@ class ArticleContentValidation(object):
         r = []
         for aff in self.article.affiliations:
             r.append(('aff xml', 'OK', aff.xml))
-            a, b, c = required('aff id', aff.id)
-            b = 'FATAL ERROR' if 'ERROR' in b else b
-            r.append((a, b, c))
+            r.append(required('aff id', aff.id, 'FATAL ERROR'))
             r.append(required('aff original', aff.original))
-            a, b, c = required('aff normalized', aff.norgname)
-            b = 'WARNING' if 'ERROR' in b else b
-            r.append((a, b, c))
+            r.append(required('aff normalized', aff.norgname, 'WARNING'))
             r.append(required('aff orgname', aff.orgname))
-            r.append(required('aff country', aff.country))
+            r.append(required('aff country', aff.country, 'FATAL ERROR'))
         return r
 
     @property
