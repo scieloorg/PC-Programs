@@ -430,13 +430,6 @@ class ArticleXML(object):
             return self.article_meta.findtext('supplement')
 
     @property
-    def is_issue_press_release(self):
-        if self.tree.find('.').attrib.get('article-type') == 'press-release':
-            return not self.is_article_press_release
-        else:
-            return False
-
-    @property
     def funding_source(self):
         return [node_text(item) for item in self.article_meta.findall('.//funding-source')]
 
@@ -796,6 +789,7 @@ class Article(ArticleXML):
         self.number = None
         self.number_suppl = None
         self.volume_suppl = None
+        self.compl = None
         suppl = None
         if self.issue is not None:
             parts = self.issue.split(' ')
@@ -808,8 +802,10 @@ class Article(ArticleXML):
                 #n suppl or suppl s
                 if 'sup' in parts[0].lower():
                     suppl = parts[1]
-                else:
+                elif 'sup' in parts[1].lower():
                     self.number, suppl = parts
+                else:
+                    self.number, self.compl = parts
             elif len(parts) == 3:
                 # n suppl s
                 self.number, ign, suppl = parts
@@ -831,6 +827,9 @@ class Article(ArticleXML):
         if self.volume is None and self.number is None:
             self.number = 'ahead'
 
+    @property
+    def is_issue_press_release(self):
+        return self.compl == 'pr'
 
     @property
     def is_ahead(self):

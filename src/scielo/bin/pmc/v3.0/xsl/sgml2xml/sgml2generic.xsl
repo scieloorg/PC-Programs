@@ -1110,6 +1110,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:value-of select="normalize-space(.)"/>
 					<xsl:if test="../@supplno"> Suppl<xsl:if test="../@supplno!='0'"> <xsl:value-of select="concat(' ',../@supplno)"/></xsl:if></xsl:if>
 					<xsl:if test="../@supplvol"> Suppl<xsl:if test="../@supplvol!='0'"> <xsl:value-of select="concat(' ',../@supplvol)"/></xsl:if></xsl:if>
+					<xsl:if test="../@isidpart"><xsl:value-of select="concat(' ',../@isidpart)"/></xsl:if>
 				</issue>
 			</xsl:otherwise>
 		</xsl:choose>
