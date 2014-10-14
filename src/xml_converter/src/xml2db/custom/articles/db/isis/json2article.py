@@ -718,7 +718,7 @@ class JSON_Article:
         print(issue.name)
         self.section = issue.toc.return_section(section)
         if self.section is None:
-            if 'Article' in section.title and '' == issue.toc.return_sections() and 'ahead' in issue.name:
+            if 'ahead' in issue.name:
                 section.code = 'nd'
             else:
                 section.code = section.title + ' (INVALID) ' + 'The sections of ' + issue.name + ': ' + issue.toc.return_sections()
@@ -817,15 +817,19 @@ class JSON_Article:
         """
         Normalize the json structure for abstracts: 83
         """
-        
+        _lang = self.json_data['f']['40']
         abstracts = return_multval(self.json_data['f'], '83')
         norm_abstracts = []
         for t in abstracts:
             if type(t) == type({}):
+                if not 'l' in t.keys():
+                    t['l'] = _lang
                 norm_abstracts.append(t)
             elif type(t) == type([]):
                 for t1 in t:
                     if type(t1) == type({}):
+                        if not 'l' in t1.keys():
+                            t1['l'] = _lang
                         norm_abstracts.append(t1)
 
 
