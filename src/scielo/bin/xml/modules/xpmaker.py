@@ -250,8 +250,6 @@ def get_curr_and_new_href_list(xml_name, new_name, href_list):
 
 def add_extension(curr_and_new_href_list, xml_path):
     r = []
-    print('add_extension')
-    print(curr_and_new_href_list)
     for href, new_href in curr_and_new_href_list:
         if not '.' in new_href:
             extensions = [f[f.rfind('.'):] for f in os.listdir(xml_path) if f.startswith(href + '.')]
@@ -260,7 +258,6 @@ def add_extension(curr_and_new_href_list, xml_path):
             if len(extensions) > 0:
                 new_href += extensions[0]
         r.append((href, new_href))
-    print(r)
     
     return r
 
@@ -297,6 +294,7 @@ def pack_files(src_path, dest_path, xml_name, new_name, href_files_list):
         else:
             r_href_files_list += s
     files_manager.delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
+
     return (r_related_files_list, r_href_files_list, r_not_found)
 
 
@@ -308,7 +306,6 @@ def pack_file_extended(src_path, dest_path, curr, new):
     for f in found:
         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(c, n))
         r.append((f, f.replace(c, n)))
-    print(r)
     return r
 
 
