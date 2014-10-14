@@ -3,7 +3,7 @@
 import xml.etree.ElementTree as etree
 
 from article_utils import doi_pid, format_date
-from xml_utils import node_text, node_xml
+from xml_utils import node_text, node_xml, element_lang
 
 
 def format_issue_label(year, volume, number, volume_suppl, number_suppl):
@@ -201,8 +201,7 @@ class ArticleXML(object):
     @property
     def language(self):
         if self.tree is not None:
-            if self.tree.find('.') is not None:
-                return self.tree.find('.').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+            return element_lang(self.tree.find('.'))
 
     @property
     def related_objects(self):
@@ -300,12 +299,12 @@ class ArticleXML(object):
         k = []
         if not self.article_meta is None:
             for node in self.article_meta.findall('kwd-group'):
-                language = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                language = element_lang(node)
                 for kw in node.findall('kwd'):
                     k.append({'l': language, 'k': node_text(kw)})
         for subart in self.subarticles:
             for node in subart.findall('kwd-group'):
-                language = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                language = element_lang(node)
                 for kw in node.findall('kwd'):
                     k.append({'l': language, 'k': node_text(kw)})
         return k
@@ -364,7 +363,7 @@ class ArticleXML(object):
                 t = Title()
                 t.title = node_text(node.find('trans-title'))
                 t.subtitle = node_text(node.find('trans-subtitle'))
-                t.language = node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                t.language = element_lang(node)
                 k.append(t)
         if self.subarticles is not None:
             for subart in self.subarticles:
@@ -373,7 +372,7 @@ class ArticleXML(object):
                         t = Title()
                         t.title = node_text(node.find('article-title'))
                         t.subtitle = node_text(node.find('subtitle'))
-                        t.language = subart.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                        t.language = element_lang(subart)
                         k.append(t)
         return k
 
@@ -382,7 +381,7 @@ class ArticleXML(object):
         k = []
         if self.subarticles is not None:
             for node in self.subarticles:
-                k.append(node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang'))
+                k.append(element_lang(node))
         return k
 
     @property
@@ -600,18 +599,19 @@ class ArticleXML(object):
                 r.append(_abstract)
             for a in self.article_meta.findall('.//trans-abstract'):
                 _abstract = Text()
-                _abstract.language = a.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                _abstract.language = element_lang(a)
                 _abstract.text = node_text(a)
                 r.append(_abstract)
         for subart in self.subarticles:
+            subart_lang = element_lang(subart)
             for a in subart.findall('.//abstract'):
                 _abstract = Text()
-                _abstract.language = subart.language
+                _abstract.language = subart_lang
                 _abstract.text = node_text(a)
                 r.append(_abstract)
             for a in subart.findall('.//trans-abstract'):
                 _abstract = Text()
-                _abstract.language = a.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                _abstract.language = element_lang(a)
                 _abstract.text = node_text(a)
                 r.append(_abstract)
         return r
@@ -891,7 +891,7 @@ class ReferenceXML(object):
         lang = None
         for elem in ['.//source', './/article-title', './/chapter-title']:
             if self.root.find(elem) is not None:
-                lang = self.root.find(elem).attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                lang = element_lang(self.root.find(elem))
             if lang is not None:
                 break
         return lang
@@ -915,7 +915,7 @@ class ReferenceXML(object):
     def trans_title_language(self):
         if self.root is not None:
             if self.root.find('.//trans-title') is not None:
-                return self.root.find('.//trans-title').attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+                return element_lang(self.root.find('.//trans-title'))
 
     @property
     def publication_type(self):

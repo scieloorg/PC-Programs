@@ -12,6 +12,11 @@ import xml_utils
 ENTITIES_TABLE = {}
 
 
+def element_lang(node):
+    if node is not None:
+        return node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
+
+
 def load_entities_table():
     if len(ENTITIES_TABLE) == 0:
         curr_path = os.path.dirname(__file__).replace('\\', '/')

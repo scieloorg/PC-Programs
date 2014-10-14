@@ -462,15 +462,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:param name="language"/>
 		<front-stub>
 			<xsl:if test="not(.//toctitle)">
-				<xsl:apply-templates select="." mode="toctitle"></xsl:apply-templates>
+				<xsl:apply-templates select="." mode="toctitle"/>
 			</xsl:if>
-			<xsl:apply-templates select=".//toctitle"></xsl:apply-templates>
-			<title-group>
-				<xsl:apply-templates select=".//titlegrp/title|doctitle">
-					<xsl:with-param name="language" select="$language"/>
-				</xsl:apply-templates>
-			</title-group>
-			<xsl:apply-templates select="." mode="contrib-group"/>
+			<xsl:apply-templates select=".//toctitle"/>
+			<xsl:apply-templates select="." mode="title-group">
+				<xsl:with-param name="language" select="$language"/>
+			</xsl:apply-templates>
+		
+			<xsl:apply-templates select="." mode="front-contrib-group"/>
 			
 			<xsl:apply-templates select="../xmlbody/sigblock" mode="author"></xsl:apply-templates>
 			<xsl:apply-templates select=".//cltrial"/>
@@ -1461,7 +1460,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<!-- BACK -->
 	<xsl:template match="article|text|subart|response" mode="back">
 		<xsl:variable name="test">
-			<xsl:apply-templates select=".//fngrp[@fntype]" mode="notfnauthors"/>
+			<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
 		</xsl:variable>
 
 		<xsl:if test="$test!='' or back/ack or back/fxmlbody or back/*[@standard]">
@@ -1477,11 +1476,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="ack"/>
 				<xsl:apply-templates select="other | vancouv | iso690 | abnt6023 | apa | refs"/>
 				<xsl:variable name="test">
-					<xsl:apply-templates select=".//fngrp[@fntype]" mode="notfnauthors"/>
+					<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
 				</xsl:variable>
 				<xsl:if test="$test!=''">
 					<fn-group>
-						<xsl:apply-templates select=".//fngrp[@fntype]" mode="notfnauthors"/>
+						<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
 					</fn-group>
 				</xsl:if>
 				<xsl:apply-templates select="glossary | app"></xsl:apply-templates>				
