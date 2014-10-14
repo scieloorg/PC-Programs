@@ -1601,7 +1601,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:choose>
 					<xsl:when test="viserial or aiserial or oiserial or iiserial or piserial"
 						>journal</xsl:when>
-					<xsl:when test=".//confgrp">conf-proc</xsl:when>
+					<xsl:when test=".//confgrp">confproc</xsl:when>
 					<xsl:when
 						test=".//degree or contains(.//text(),'Master') or contains(.//text(),'Dissert')"
 						>thesis</xsl:when>
@@ -2689,12 +2689,42 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="sec/text() | subsec/text()"/>
 	<xsl:template match="thesis | thesgrp">
-		<xsl:apply-templates select="@* | * | text()"> </xsl:apply-templates>
+		<xsl:apply-templates select="*"/>	
 	</xsl:template>
-	<xsl:template match="degree "> </xsl:template>
-
-
-
+	<xsl:template match="ref/thesis | ref/thesgrp">
+		<xsl:choose>
+			<xsl:when test="parent::node()[date]">
+				<xsl:apply-templates select="*[name()!='date']"></xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="*"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="degree"><comment content-type="degree"><xsl:value-of select="."/></comment></xsl:template>
+	<xsl:template match="thesis/date | thesgrp/date">
+	</xsl:template>
+	<xsl:template match="thesis/orgdiv | thesgrp/orgdiv"/>
+	<xsl:template match="thesis/orgname | thesgrp/orgname">
+		<publisher-name><xsl:apply-templates select="parent::node()" mode="org"/></publisher-name>
+	</xsl:template>
+	<xsl:template match="*[orgname or orgdiv]" mode="org">
+		<xsl:apply-templates select="orgname|orgdiv" mode="org"/>
+	</xsl:template>
+	<xsl:template match="orgname|orgdiv" mode="org">
+		<xsl:if test="position()!=1">, </xsl:if><xsl:value-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="thesis/city | thesgrp/city | thesis/state | thesgrp/state | thesis/country | thesgrp/country">
+		<xsl:apply-templates select="parent::node()" mode="location"></xsl:apply-templates>
+	</xsl:template>
+	
+	<xsl:template match="thesis|thesgrp" mode="location">
+		<publisher-loc><xsl:apply-templates select="city|state|country" mode="location"/></publisher-loc>
+	</xsl:template>
+	<xsl:template match="city|state|country" mode="location">
+		<xsl:if test="position()!=1">, </xsl:if><xsl:value-of select="."/>
+	</xsl:template>
 	<!--xsl:template match=" *[contains(name(),'contrib')]//bold |  *[contains(name(),'monog')]//bold"/-->
 	<xsl:template match="subsec/xref | sec/xref"> </xsl:template>
 	<xsl:template match="*[*]" mode="next">
@@ -2966,7 +2996,7 @@ et al.</copyright-statement>
 		</conference>
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'citat')]//confgrp | ref/confgrp">
-		<xsl:apply-templates select="*|text()"/>
+		<xsl:apply-templates select="*"/>
 	</xsl:template>
 	<xsl:template match="confgrp/date">
 		<conf-date>
@@ -3003,17 +3033,17 @@ et al.</copyright-statement>
 		</xsl:if>
 	</xsl:template>
 	<xsl:template match="confgrp/no"/>
-	<xsl:template match="confgrp/confname">
-		<conf-name>
-			<xsl:apply-templates select="../confgrp" mode="fulltitle"/>
-		</conf-name>
+	<xsl:template match="confgrp/confname">		
+		<xsl:apply-templates select="parent::node()" mode="fulltitle"/>
 	</xsl:template>
 
 	<xsl:template match="confgrp" mode="fulltitle">
-		<xsl:apply-templates select="no|confname" mode="fulltitle"/>
+		<conf-name><xsl:apply-templates select="no|confname" mode="fulltitle"/></conf-name>
 	</xsl:template>
 
-	<xsl:template match="confgrp/confname | confgrp/no" mode="fulltitle"><xsl:value-of select="normalize-space(.)"/>&#160;</xsl:template>
+	<xsl:template match="confgrp/confname | confgrp/no" mode="fulltitle">
+		<xsl:if test="position()=2 and name()='no'">, </xsl:if><xsl:value-of select="normalize-space(.)"/>
+	</xsl:template>
 
 	<xsl:template match="colvolid"><volume><xsl:value-of select="."/></volume></xsl:template>
 	<xsl:template match="coltitle">
