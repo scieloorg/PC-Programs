@@ -208,7 +208,7 @@ def format_new_name(doc, param_acron='', original_xml_name=''):
                 issueno = issueno[-2:]
     if suppl:
         suppl = 's' + suppl if suppl != '0' else 'suppl'
-    parts = [issn, param_acron, vol, issueno, suppl, last]
+    parts = [issn, param_acron, vol, issueno, suppl, last, doc.compl]
     r = '-'.join([part for part in parts if part is not None and not part == ''])
     return r
 
