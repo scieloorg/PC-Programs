@@ -192,6 +192,7 @@ class ArticleRecords(object):
             #self._metadata['170'].append(item['xml'])
             self._metadata['70'].append(a)
         #FIXME nao existe clinical trial
+        #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = self.article.clinical_trial
         self._metadata['72'] = str(0 if self.article.total_of_references is None else self.article.total_of_references)
         self._metadata['901'] = str(0 if self.article.total_of_tables is None else self.article.total_of_tables)
