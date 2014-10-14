@@ -258,6 +258,7 @@ def add_extension(curr_and_new_href_list, xml_path):
             if len(extensions) > 0:
                 new_href += extensions[0]
         r.append((href, new_href))
+    
     return r
 
 
@@ -279,28 +280,29 @@ def normalize_hrefs(content, curr_and_new_href_list):
 
 
 def pack_files(src_path, dest_path, xml_name, new_name, href_files_list):
-    related_files_list = []
-    href_files_list = []
-    not_found = []
+    r_related_files_list = []
+    r_href_files_list = []
+    r_not_found = []
     if not os.path.isdir(dest_path):
         os.makedirs(dest_path)
     for f in get_related_files(src_path, xml_name):
-        related_files_list += pack_file_extended(src_path, dest_path, f, f.replace(xml_name, new_name))
+        r_related_files_list += pack_file_extended(src_path, dest_path, f, f.replace(xml_name, new_name))
     for curr, new in href_files_list:
         s = pack_file_extended(src_path, dest_path, curr, new)
         if len(s) == 0:
-            not_found.append((curr, new))
+            r_not_found.append((curr, new))
         else:
-            href_files_list += s
+            r_href_files_list += s
     files_manager.delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
-    return (related_files_list, href_files_list, not_found)
+
+    return (r_related_files_list, r_href_files_list, r_not_found)
 
 
 def pack_file_extended(src_path, dest_path, curr, new):
     r = []
     c = curr if not '.' in curr else curr[0:curr.rfind('.')]
     n = new if not '.' in new else new[0:new.rfind('.')]
-    found = [f for f in os.listdir(src_path) if (f.startswith(c + '.') or f.startswith('-')) and not f.startswith('.sgm.xml')]
+    found = [f for f in os.listdir(src_path) if (f == c or f.startswith(c + '.') or f.startswith(c + '-')) and not f.endswith('.sgm.xml') and not f.endswith('.replaced.txt') and not f.endswith('.xml.bkp')]
     for f in found:
         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(c, n))
         r.append((f, f.replace(c, n)))
@@ -377,6 +379,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
             curr_and_new_href_list = [(href, href) for href, ign1, ign2 in attach_info]
             register_log('add_extension')
             curr_and_new_href_list = add_extension(curr_and_new_href_list, doc_files_info.xml_path)
+
         register_log('pack_files')
         related_packed, href_packed, not_found = pack_files(doc_files_info.xml_path, scielo_pkg_path, doc_files_info.xml_name, new_name, curr_and_new_href_list)
         register_log('pack_files_report')

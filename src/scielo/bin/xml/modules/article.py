@@ -59,8 +59,7 @@ class HRef(object):
             if ':' in self.src:
                 return '<a href="' + self.src + '">' + self.src + '</a>'
             elif self.element.tag == 'graphic':
-                ext = '.jpg' if not self.src.endswith('.jpg') and not self.src.endswith('.gif') else ''
-                return '<img src="' + path + '/' + self.src + ext + '"/>'
+                return '<img src="' + path + '/' + self.src + '"/>'
             else:
                 return '<a href="' + path + '/' + self.src + '">' + self.src + '</a>'
         else:
