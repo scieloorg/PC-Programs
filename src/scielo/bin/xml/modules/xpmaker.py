@@ -65,32 +65,40 @@ def replace_mimetypes(content, path):
 
 def rename_embedded_img_href(content, xml_name, new_href_list):
     content = content.replace('<graphic href="?', '--FIXHREF--<graphic href="?')
-    items = content.split('--FIXHREF--')
-    new = ''
-    i = 0
-    for item in items:
-        if item.startswith('<graphic href="?'):
-            s = item[item.find('?'):]
-            new += '<graphic href="' + xml_name + new_href_list[i] + s[s.find('"'):]
-            i += 1
-        else:
-            new += item
+    _items = content.split('--FIXHREF--')
+    new = content
+
+    if len(new_href_list) == (len(_items) - 1):
+        new = ''
+        i = 0
+        for item in _items:
+            if item.startswith('<graphic href="?'):
+                s = item[item.find('?'):]
+                s = s[s.find('"'):]
+                new += '<graphic href="' + xml_name + new_href_list[i] + s
+                i += 1
+            else:
+                new += item
     return new
 
 
 def html_img_src(html_content):
     #[graphic href=&quot;?a20_115&quot;]</span><img border=0 width=508 height=314
     #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
-    html_content = html_content.replace('[graphic href="?', '[graphic href="?' + '"--FIXHREF--FIXHREF')
-    items = [item for item in html_content.split('--FIXHREF--') if item.startswith('FIXHREF')]
+    if 'href=&quot;?' in html_content:
+        html_content = html_content.replace('href=&quot;?', '--BREAKFIXHREF--FIXHREF')
+    html_content = html_content.replace('href="?', 'href="?--BREAKFIXHREF--FIXHREF')
+    _items = html_content.split('--BREAKFIXHREF--')
+    items = [item for item in _items if item.startswith('FIXHREF')]
     img_src = []
     for item in items:
-        if ' src="' in item:
-            item = item[item.find(' src="') + len(' src="')]
-            item = item[0:item.find('"')]
-            item = item[item.find('/') + 1:]
-            if len(item) > 0:
-                img_src.append(item)
+        if 'src="' in item:
+            src = item[item.find('src="') + len('src="'):]
+            src = src[0:src.find('"')]
+            if '/' in src:
+                src = src[src.find('/') + 1:]
+            if len(src) > 0:
+                img_src.append(src)
     return img_src
 
 
@@ -166,7 +174,7 @@ def format_new_name(doc, param_acron='', original_xml_name=''):
         def normalize_len(fpage):
             fpage = '00000' + fpage
             return fpage[-5:]
-        print((fpage, seq, elocation_id, order, doi, issn))
+        #print((fpage, seq, elocation_id, order, doi, issn))
         r = None
         if r is None:
             if fpage is not None:
