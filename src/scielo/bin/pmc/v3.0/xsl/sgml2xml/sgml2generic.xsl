@@ -10,7 +10,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="pub_type"><xsl:choose>
 		<xsl:when test="node()/@ahpdate!='' and node()/@issueno='ahead'"></xsl:when>
 		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">epub-ppub</xsl:when>
-		<xsl:when test=".//extra-scielo/print-issn!=''">ppub</xsl:when>
+		<xsl:when test=".//extra-scielo/print-issn!=''">epub-ppub</xsl:when>
 		<xsl:when test=".//extra-scielo/e-issn!=''">epub</xsl:when>
 	</xsl:choose></xsl:variable>
 	<xsl:variable name="unident" select="//unidentified"/>
@@ -90,15 +90,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<!-- attributes -->
 	<xsl:template match="@*">
-		<xsl:attribute name="{name()}">
-			<xsl:value-of select="normalize-space(.)"/>
-		</xsl:attribute>
+		<xsl:attribute name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 		<!--xsl:value-of select="name()"/>="<xsl:value-of select="normalize-space(.)"/>" -->
 	</xsl:template><!-- attributes -->
 	<xsl:template match="fngrp/@id">
-		<xsl:attribute name="{name()}">
-			fn<xsl:value-of select="string(number(substring(.,3)))"/>
-		</xsl:attribute>
+		<xsl:attribute name="{name()}">fn<xsl:value-of select="string(number(substring(.,3)))"/></xsl:attribute>
 	</xsl:template>
 	
 	<!--
@@ -3140,6 +3136,12 @@ et al.</copyright-statement>
 			</xsl:choose>
 			
 		</xsl:element>
+	</xsl:template>
+	<xsl:template match="related[@reltype='pr']">
+		<!-- ﻿[related reltype="pr" relid="pr01" relidtp="press-release-id"] -->
+		<!-- <related-article related-article-type="press-release" id="01" specific-use="processing-only"/>
+ -->
+		<related-article related-article-type="press-release" id="{substring(@relid,3)}" specific-use="processing-only"/></related-article>
 	</xsl:template>
 	<xsl:template match="author">
 		<contrib><xsl:apply-templates select="*"></xsl:apply-templates></contrib>

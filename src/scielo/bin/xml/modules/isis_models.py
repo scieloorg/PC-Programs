@@ -90,6 +90,17 @@ class ArticleRecords(object):
 
         self._metadata['709'] = 'text' if self.article.is_text else 'article'
 
+        #registro de artigo, link para pr
+        #<related-article related-article-type="press-release" id="01" specific-use="processing-only"/>
+        # ^i<PID>^tpr^rfrom-article-to-press-release
+        #
+        #registro de pr, link para artigo
+        #<related-article related-article-type="in-this-issue" id="pr01" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="10.1590/S0102-311X2013000500014 " ext-link-type="doi"/>
+        # ^i<doi>^tdoi^rfrom-press-release-to-article
+        #
+        #registro de errata, link para artigo
+        #<related-article related-article-type="corrected-article" vol="29" page="970" id="RA1" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="10.1590/S0102-311X2013000500014" ext-link-type="doi"/>
+        # ^i<doi>^tdoi^rfrom-corrected-article-to-article
         self._metadata['241'] = []
         for item in self.article.related_objects:
             new = {}
