@@ -95,6 +95,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:attribute>
 		<!--xsl:value-of select="name()"/>="<xsl:value-of select="normalize-space(.)"/>" -->
 	</xsl:template><!-- attributes -->
+	<xsl:template match="fngrp/@id">
+		<xsl:attribute name="{name()}">
+			fn<xsl:value-of select="string(number(substring(.,3)))"/>
+		</xsl:attribute>
+	</xsl:template>
 	
 	<!--
     	mode=text
@@ -835,6 +840,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//xref|text()"/>
 		</contrib>
 		<xsl:copy-of select="../..//aff[@id=$author_rid]/role"/>
+		<xsl:copy-of select="../..//normaff[@id=$author_rid]/role"/>
 	</xsl:template>
 
 	<xsl:template match="corpauth" mode="front-contrib">
@@ -976,44 +982,32 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
+	<xsl:template match="xref/@rid">
+		<xsl:attribute name="rid"><xsl:choose>
+			<xsl:when test="substring(.,string-length(.)-1,1)='0'">
+				<xsl:value-of select="substring(.,1,1)"/><xsl:value-of select="string(number(substring(.,2)))"/>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose></xsl:attribute>
+	</xsl:template>
 	<xsl:template match="xref[@ref-type='aff']/@rid">
-		<xsl:variable name="var_id">
-			<xsl:choose>
-				<xsl:when test="contains(.,' ')">aff<xsl:value-of select="substring-before(.,' ')"
-					/></xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="normalize-space(.)"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="contains($var_id,'a0')">aff<xsl:value-of
-					select="substring-after($var_id,'a0')"/></xsl:when>
-			<xsl:otherwise>aff<xsl:value-of select="substring-after($var_id,'a')"/></xsl:otherwise>
+			<xsl:when test="contains(.,'aff')"><xsl:value-of select="."/></xsl:when>
+			<xsl:otherwise>aff<xsl:value-of select="string(number(substring(.,2)))"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-
+	
 	<xsl:template match="aff/@id | normaff/@id">
 		<!-- FIXMEID -->
 		<!-- quando nao ha aff/label = author/xref enquanto author/@rid = aff/@id -->
-		<xsl:variable name="var_id">
-			<xsl:choose>
-				<xsl:when test="contains(.,' ')">aff<xsl:value-of select="substring-before(.,' ')"
-					/></xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="normalize-space(.)"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:attribute name="id"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if>
-			<xsl:choose>
-				<xsl:when test="contains($var_id,'a0')">aff<xsl:value-of
-						select="substring-after($var_id,'a0')"/></xsl:when>
-				<xsl:otherwise>aff<xsl:value-of select="substring-after($var_id,'a')"
-					/></xsl:otherwise>
-			</xsl:choose>
-		</xsl:attribute>
+		<xsl:choose>
+			<xsl:when test="contains(.,'aff')"><xsl:attribute name="id"><xsl:value-of select="."/></xsl:attribute></xsl:when>
+			<xsl:otherwise>
+				<xsl:attribute name="id">aff<xsl:value-of select="string(number(substring(.,2)))"/></xsl:attribute>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
+
 	<xsl:template match="normaff/orgname">
 		<xsl:if test="../@norgname!='Not normalized'">
 			<institution content-type="normalized"><xsl:value-of select="../@norgname"/></institution>
@@ -1563,21 +1557,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="xref[@ref-type='bibr']/@rid">
-		<xsl:variable name="rid">
-		<xsl:choose>
-			<xsl:when test="contains(., 'mkp_ref_')"><xsl:value-of
-						select="substring-before(substring-after(.,'mkp_ref_'),'_')"
-					/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="substring(.,2)"/></xsl:otherwise>
-		</xsl:choose></xsl:variable>
-		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length($rid))"/></xsl:variable>
-		<xsl:variable name="id">B<xsl:value-of select="$zeros"/><xsl:value-of select="$rid"/></xsl:variable>
-		<xsl:attribute name="rid"><xsl:value-of select="$id"/></xsl:attribute>
+		<xsl:attribute name="rid">B<xsl:value-of select="string(number(substring(.,2)))"/></xsl:attribute>
 	</xsl:template>
 
 	<xsl:template match="*[@standard]/*[contains(name(),'citat')]">
-		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length(position()))"/></xsl:variable>
-		<xsl:variable name="id"><xsl:value-of select="$zeros"/><xsl:value-of select="position()"/></xsl:variable>
+		<xsl:variable name="id"><xsl:value-of select="position()"/></xsl:variable>
 		<ref id="B{$id}">
 			<xsl:apply-templates select="no"/>
 			<!-- book, communication, letter, review, conf-proc, journal, list, patent, thesis, discussion, report, standard, and working-paper.  -->
@@ -1609,8 +1593,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ref>
 	</xsl:template>
 	<xsl:template match="ref">
-		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length(position()))"/></xsl:variable>
-		<xsl:variable name="id"><xsl:value-of select="$zeros"/><xsl:value-of select="position()"/></xsl:variable>
+		<xsl:variable name="id"><xsl:value-of select="position()"/></xsl:variable>
 		<ref id="B{$id}">
 			<xsl:apply-templates select="label"/>
 			
@@ -1928,8 +1911,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="figgrps[not(label)]">
 		<!-- FIXMEID -->
-		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
-		<fig-group id="{concat($parentid,@id)}">
+		<fig-group id="{@id}">
 			<xsl:apply-templates select="caption"/>
 			<xsl:apply-templates select=".//figgrp"/>
 		</fig-group>
@@ -1937,9 +1919,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="figgrps[label]">
 		<!-- FIXMEID -->
-		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
-	
-	<fig id="{concat($parentid,@id)}">
+		<fig id="{@id}">
 			<xsl:apply-templates select="label"/>
 			<xsl:apply-templates select="caption"/>
 			<xsl:apply-templates select=".//figgrp"/>
@@ -1947,11 +1927,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="figgrp">
+		<xsl:variable name="id">f<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
 		<p>
-			<!-- FIXMEID -->
-			<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
-			
-			<fig id="{concat($parentid,@id)}">
+			<fig id="{$id}">
 				<xsl:if test="@ftype!='other'">
 					<xsl:attribute name="fig-type">
 						<xsl:value-of select="@ftype"/>
@@ -1972,9 +1950,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="p/figgrp|figgrps/figgrp">
 		<!-- FIXMEID -->
-		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+		<xsl:variable name="id">f<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
 		
-		<fig id="{concat($parentid,@id)}">
+		<fig id="{$id}">
 			<xsl:if test="@ftype!='other'">
 				<xsl:attribute name="fig-type">
 					<xsl:value-of select="@ftype"/>
@@ -1987,21 +1965,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="tabwrap">
+		<xsl:variable name="id">t<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
+		
 		<p><!-- FIXMEID -->
-			<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
-			
-			<table-wrap id="{concat($parentid,@id)}">
+			<table-wrap id="{$id}">
 				<xsl:apply-templates select="label"/>
 				<xsl:apply-templates select=".//caption"/>
 				<xsl:apply-templates select="." mode="graphic"/>
 				<xsl:apply-templates select="." mode="notes"/>
-
-				<!-- xsl:if test=".//notes">
-				<table-wrap-foot>
-					<fn><p><xsl:value-of select=".//notes"/></p></fn>
-					
-				</table-wrap-foot>
-				</xsl:if> -->
 			</table-wrap>
 		</p>
 	</xsl:template>
@@ -2009,9 +1980,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="tabwrap//fntable" mode="table">
 		<xsl:param name="table_id"/>
 		<!-- FIXMEID -->
-		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+		<xsl:variable name="id">
+		<xsl:choose>
+			<xsl:when test="contains(@id,'TFN')"><xsl:value-of select="@id"/></xsl:when>
+			<xsl:otherwise>TFN<xsl:value-of select="string(number(substring(@id,4)))"/></xsl:otherwise>
+		</xsl:choose></xsl:variable>
 		
-		<fn id="{$parentid}{translate(@id,'tfn','TFN')}">
+		<fn id="{$id}">
 			<xsl:apply-templates select="label"/>
 			<p>
 				<xsl:apply-templates select="text()|*[name()!='label']"/>
@@ -2030,10 +2005,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="p/tabwrap">
-		<!-- FIXMEID -->
-		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+		<xsl:variable name="id">t<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
 		
-		<table-wrap id="{$parentid}{@id}">
+		<table-wrap id="{$id}">
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
 			<xsl:apply-templates select="." mode="graphic"/>
@@ -2422,7 +2396,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="@*"/>
 					<xsl:apply-templates select="*|text()"/>
 				</xref>
-
 			</xsl:when>
 			<xsl:when test="name()='sup'">
 				<xsl:variable name="label" select="normalize-space(.)"/>
@@ -2431,7 +2404,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						test="$affs[normalize-space(label)=$label or normalize-space(.//sup//text())=$label]">
 						<!-- sup = aff -->
 						<xref ref-type="aff">
-							<xsl:attribute name="rid">AFF<xsl:value-of select="$label"
+							<xsl:attribute name="rid">aff<xsl:value-of select="$label"
 								/></xsl:attribute>
 							<sup>
 								<xsl:value-of select="$label"/>
@@ -2450,21 +2423,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="@ref-type='aff'">
 				<xsl:variable name="label" select="normalize-space(.)"/>
 				<xref ref-type="aff">
-					<!--xsl:choose>
-						<xsl:when
-							test="$affs[normalize-space(label)=$label or normalize-space(.//sup//text())=$label]">
-							<xsl:attribute name="rid">AFF<xsl:value-of select="$label"
-								/></xsl:attribute>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:attribute name="rid">
-								<xsl:value-of select="translate(@rid, 'a', 'A')"/>
-							</xsl:attribute>
-						</xsl:otherwise>
-					</xsl:choose-->
-					<xsl:attribute name="rid">
-						<xsl:apply-templates select="@rid"/>
-					</xsl:attribute>
+					<xsl:attribute name="rid"><xsl:apply-templates select="@rid"/></xsl:attribute>
 					<sup>
 						<xsl:value-of select="$label"/>
 					</sup>
@@ -3112,7 +3071,11 @@ et al.</copyright-statement>
 		</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="supplmat">
-		<supplementary-material id="suppl{string(number(substring-after(@id,'smat')))}" xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">			
+		<xsl:variable name="id"><xsl:choose>
+			<xsl:when test="contains(@id,'smat')">suppl<xsl:value-of select="string(number(substring-after(@id,'smat')))"/></xsl:when>
+			<xsl:otherwise>suppl<xsl:value-of select="string(number(substring(@id,6)))"/></xsl:otherwise>
+		</xsl:choose></xsl:variable>
+		<supplementary-material id="{$id}" xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">			
 			<xsl:apply-templates select="*|text()"/>
 		</supplementary-material>
 	</xsl:template>
@@ -3122,7 +3085,9 @@ et al.</copyright-statement>
 		</inline-supplementary-material>
 	</xsl:template>
 	<xsl:template match="media">
-		<media  id="m{string(number(substring-after(@id,'m')))}" xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">	
+		<xsl:variable name="id">m<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
+		
+		<media  id="{$id}" xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">	
 			<xsl:apply-templates select="*|text()"/>
 		</media>
 	</xsl:template>
