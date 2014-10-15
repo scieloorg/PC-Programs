@@ -4,8 +4,8 @@
 import os
 from tempfile import mkdtemp, NamedTemporaryFile
 
-from utils import u_encode
-from xml_utils import normalize_space, convert_entities_to_chars
+from article_utils import u_encode
+from xml_utils import normalize_space
 
 
 def fix_encode(value):

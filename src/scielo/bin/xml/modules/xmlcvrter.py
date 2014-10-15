@@ -54,6 +54,7 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
 
     for xml_filename in xml_filenames:
         doc_files_info = files_manager.DocumentFiles(xml_filename, report_path, None)
+        doc_files_info.new_xml_filename = xml_filename
         doc_files_info_list.append(doc_files_info)
 
     dtd_files = xml_versions.DTDFiles('scielo', version)
@@ -261,7 +262,7 @@ def convert(path, config, version):
 
 def read_configuration():
     curr_path = os.path.dirname(__file__).replace('\\', '/')
-    filename = curr_path + '/./../scielo_paths.ini'
+    filename = curr_path + '/../../scielo_paths.ini'
 
     if os.path.isfile(filename):
         r = Configuration(filename)
