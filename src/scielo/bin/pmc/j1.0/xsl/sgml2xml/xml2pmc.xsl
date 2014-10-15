@@ -4,4 +4,5 @@
 	xmlns:mml="http://www.w3.org/1998/Math/MathML" exclude-result-prefixes="util xsl xlink mml">
 	
 	<xsl:include href="../../../v3.0/xsl/sgml2xml/xml2pmc.xsl"/>
+	<xsl:template match="article/@specific-use"/>
 </xsl:stylesheet>

@@ -136,12 +136,6 @@ class ArticleRecords(object):
             new['s'] = item.subtitle
             new['l'] = item.language
             self._metadata['12'].append(new)
-        for item in self.article.trans_titles:
-            new = {}
-            new['_'] = item.title
-            new['s'] = item.subtitle
-            new['l'] = item.language
-            self._metadata['12'].append(new)
 
         self._metadata['601'] = self.article.trans_languages
         self._metadata['237'] = self.article.doi

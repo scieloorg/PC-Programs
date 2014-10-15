@@ -63,18 +63,29 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<xsl:template match="aff/institution[@content-type='original']/text()">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="aff/institution[@content-type='original']/*">
+		<xsl:copy-of select="."/>
+	</xsl:template>
+	
 	<xsl:template match="aff/institution[@content-type='aff-pmc']/text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
-
+	
 	<xsl:template match="aff/institution[@content-type='aff-pmc']/*">
 		<xsl:copy-of select="."/>
 	</xsl:template>
-
+	
 	<xsl:template match="aff">
 		<aff>
 			<xsl:apply-templates select="@id | label"/>
 			<xsl:choose>
+				<xsl:when test="institution[@content-type='original']">
+					<xsl:apply-templates select="institution[@content-type='original']"/>
+				</xsl:when>
 				<xsl:when test="institution[@content-type='aff-pmc']">
 					<xsl:apply-templates select="institution[@content-type='aff-pmc']"/>
 				</xsl:when>
@@ -110,6 +121,15 @@
 		<xsl:element name="{@content-type}">
 			<xsl:value-of select="."/>
 		</xsl:element>
+	</xsl:template>
+	<xsl:template match="institution[@content-type='original']">
+		<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+	</xsl:template>
+	<xsl:template match="institution[@content-type='original']/text()">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	<xsl:template match="institution[@content-type='original']/named-content">
+		<xsl:value-of select="."/>
 	</xsl:template>
 	<xsl:template match="text()" mode="is_full">
 		<xsl:param name="inst"></xsl:param>
