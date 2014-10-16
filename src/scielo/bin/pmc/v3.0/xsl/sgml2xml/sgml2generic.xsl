@@ -3407,4 +3407,8 @@ et al.</copyright-statement>
 			<xsl:apply-templates select="." mode="front-funding-group"/>
 		</award-group>
 	</xsl:template>
+	
+	<xsl:template match="edition/sup">
+		<xsl:apply-templates select="text()"/>
+	</xsl:template>
 </xsl:stylesheet>
