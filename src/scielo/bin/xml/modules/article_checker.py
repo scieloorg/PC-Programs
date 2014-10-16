@@ -380,7 +380,9 @@ class ArticleValidationReport(object):
         rows += self.format_validation_data(self.affiliations)
         rows += self.format_validation_data(self.article_validation.funding)
         items = [
-                    self.article_validation.license,
+                    self.article_validation.license_text,
+                    self.article_validation.license_url,
+                    self.article_validation.license_type,
                     ]
         rows += self.format_validation_data(items)
         rows += self.format_validation_data(self.article_validation.history)

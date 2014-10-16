@@ -710,12 +710,41 @@ class ArticleXML(object):
             return 'ND'
 
     @property
-    def license(self):
+    def license_text(self):
         r = None
         if self.tree is not None:
-            r = self.tree.find('.//license')
-            if r is not None:
-                r = r.attrib.get('license-type')
+            node = self.tree.find('.//license-p')
+            if node is not None:
+                r = node_text(node)
+                if '>' in r:
+                    r = r[r.rfind('>')+1:]
+        return r
+
+    @property
+    def license_type(self):
+        r = None
+        if self.tree is not None:
+            node = self.tree.find('.//license')
+            if node is not None:
+                r = node.attrib.get('license-type')
+        return r
+
+    @property
+    def license_url(self):
+        r = None
+        if self.tree is not None:
+            node = self.tree.find('.//license')
+            if node is not None:
+                r = node.attrib.get('{http://www.w3.org/1999/xlink}href')
+        return r
+
+    @property
+    def license_graphic(self):
+        r = None
+        if self.tree is not None:
+            node = self.tree.find('.//license//graphic')
+            if node is not None:
+                r = node.attrib.get('{http://www.w3.org/1999/xlink}href')
         return r
 
     @property

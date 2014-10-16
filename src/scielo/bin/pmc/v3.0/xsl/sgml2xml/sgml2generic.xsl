@@ -78,7 +78,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<!--xsl:variable name="g" select="//*[name()!='equation' and .//graphic]"/>
 	<xsl:variable name="e" select="//equation[.//graphic]"/-->
 	<xsl:variable name="data4previous" select="//back//*[contains(name(),'citat')]"/>
-	
+	<xsl:variable name="lang"><xsl:value-of select="node()/@xml:lang"/></xsl:variable>
+	<xsl:template match="*" mode="license-text">
+		<xsl:choose>
+			<xsl:when test="$lang='pt'">Este é um artigo publicado em acesso aberto sob uma licença Creative Commons</xsl:when>
+			<xsl:when test="$lang='es'">Este es un artículo publicado en acceso abierto bajo una licencia Creative Commons</xsl:when>
+			<xsl:otherwise>This is an open-access article distributed under the terms of the Creative Commons Attribution License</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	<!-- text -->
 	<xsl:template match="*/text()">
 		<xsl:value-of select="." disable-output-escaping="no"/>
@@ -3250,12 +3257,12 @@ et al.</copyright-statement>
 		<xsl:variable name="cccompl"><xsl:if test="@cccompl!='nd'"><xsl:value-of select="translate(@cccompl,'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>/</xsl:if></xsl:variable>
 		<xsl:variable name="licid"><xsl:value-of select="concat($ccid,$cversion,$cccompl)"/></xsl:variable>
 		<permissions>
-			<license license-type="{@ccid}" xlink:href="{$href}{$licid}">
+			<license license-type="open-access" xlink:href="{$href}{$licid}">
 				<license-p>
 					<graphic>
 						<xsl:attribute name="xlink:href">http://i.creativecommons.org/l/<xsl:value-of select="$licid"/>88x31.png</xsl:attribute>
 					</graphic>
-					CC <xsl:value-of select="concat(@ccid,' ',@cversion,' ',@cccompl)"/>
+					<xsl:apply-templates select="." mode="license-text"></xsl:apply-templates>
 				</license-p>
 			</license>
 		</permissions>
@@ -3268,12 +3275,13 @@ et al.</copyright-statement>
 		<xsl:variable name="cccompl"><xsl:value-of select="../license-complement"/></xsl:variable>
 		<xsl:variable name="licid"><xsl:value-of select="concat($ccid,'/',$cversion,'/',$cccompl)"/></xsl:variable>
 		<permissions>
-			<license license-type="{substring-before(../license-label,' ')}" xlink:href="{$href}">
+			<license license-type="open-access" xlink:href="{$href}">
 				<license-p>
 					<graphic>
 						<xsl:attribute name="xlink:href">http://i.creativecommons.org/l/<xsl:value-of select="$licid"/>88x31.png</xsl:attribute>
 					</graphic>
-					CC <xsl:value-of select="../license-label"/>
+					<!-- CC <xsl:value-of select="../license-label"/>-->
+					<xsl:apply-templates select="." mode="license-text"></xsl:apply-templates>
 				</license-p>
 			</license>
 		</permissions>
