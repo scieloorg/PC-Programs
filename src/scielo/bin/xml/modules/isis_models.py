@@ -102,27 +102,18 @@ class ArticleRecords(object):
         #<related-article related-article-type="corrected-article" vol="29" page="970" id="RA1" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="10.1590/S0102-311X2013000500014" ext-link-type="doi"/>
         # ^i<doi>^tdoi^rfrom-corrected-article-to-article
         self._metadata['241'] = []
-        for item in self.article.related_objects:
+
+        for item in self.article.related_articles:
             new = {}
+            new['i'] = item.get('{http://www.w3.org/1999/xlink}href')
+            new['t'] = 'pr' if item.get('related-article-type') == 'press-release' else 'article'
+            new['n'] = item.get('ext-link-type')
+            new['r'] = item.get('related-article-type')
             new['k'] = item['id']
-            new['r'] = item.get('link-type')
-            new['i'] = item.get('document-id', item.get('object-id', item.get('source-id')))
-            new['n'] = item.get('document-id-type', item.get('object-id-type', item.get('source-id-type')))
-            new['t'] = item.get('document-type', item.get('object-type', item.get('source-type')))
             self._metadata['241'].append(new)
 
-        for item in self.article.related_objects:
-            new = {}
-            new['k'] = item['id']
-            new['i'] = item.get('{http://www.w3.org/1999/xlink}href')
-            new['n'] = item.get('ext-link-type')
-            new['t'] = 'pr' if item.get('related-article-type') == 'press-release' else 'article'
-            self._metadata['241'].append(new)
         if self.article.is_article_press_release or self.article.is_issue_press_release:
             self._metadata['41'] = 'pr'
-
-        if self.article.is_article_press_release or self.article.is_issue_press_release:
-            self._metadata['241'] = 'pr'
 
         self._metadata['85'] = self.article.keywords
         self._metadata['49'] = 'nd' if self.article.section_code is None else self.article.section_code
