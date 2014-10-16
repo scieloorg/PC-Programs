@@ -509,9 +509,13 @@ class ArticleXML(object):
         return affs
 
     @property
-    def clinical_trial(self):
+    def clinical_trial_url(self):
         #FIXME nao existe clinical-trial 
-        return node_text(self.article_meta.find('clinical-trial'))
+        #<uri content-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
+        if self.tree is not None:
+            node = self.tree.find('.//uri[@content-type="clinical-trial"]')
+            if node is not None:
+                return node.attrib.get('{http://www.w3.org/1999/xlink}href')
 
     @property
     def page_count(self):
