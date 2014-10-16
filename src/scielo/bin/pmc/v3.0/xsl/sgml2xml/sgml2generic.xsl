@@ -480,7 +480,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="front-contrib-group"/>
 			
 			<xsl:apply-templates select="../xmlbody/sigblock" mode="author"></xsl:apply-templates>
-			<xsl:apply-templates select=".//cltrial"/>
+			<xsl:apply-templates select=".//cltrial" mode="front-clinical-trial"/>
 			<xsl:apply-templates select=".//abstract|.//xmlabstr">
 				<xsl:with-param name="language" select="$language"/>
 			</xsl:apply-templates>
@@ -625,6 +625,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	<xsl:template match="cltrial" mode="front-clinical-trial">
+		<uri>
+			<xsl:attribute name="content-type">clinical-trial</xsl:attribute>
+			<xsl:attribute name="xlink:href"><xsl:value-of select="ctreg/@cturl"/></xsl:attribute>
+			<xsl:apply-templates select=".//text()"></xsl:apply-templates>
+		</uri>
+	</xsl:template>
 	<xsl:template match="cltrial">
 		<uri>
 			<xsl:attribute name="xlink:href"><xsl:value-of select="ctreg/@cturl"/></xsl:attribute>
@@ -703,11 +710,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 			<xsl:apply-templates select="@volid | @issueno  | @fpage | @lpage | @elocatid"/>
 			<xsl:apply-templates select="product|front/product|xmlbody/product|back/product" mode="product-in-article-meta"/>
-			<xsl:apply-templates select="cltrial|front/cltrial|back/cltrial"/>
+			<xsl:apply-templates select="cltrial|front/cltrial|back//cltrial|xmlbody//cltrial" mode="front-clinical-trial"/>
 			<xsl:apply-templates select="hist|front//hist|back//hist"/>
 			<xsl:apply-templates select="back/licenses| cc | .//extra-scielo/license"/>
 			<xsl:apply-templates select="front/related|related" mode="front-related"/>
-			<xsl:apply-templates select="back/related|xmlbody//related" mode="front-related"/>
+			<xsl:apply-templates select="back//related|xmlbody//related" mode="front-related"/>
 			
 			<xsl:apply-templates select="abstract[@language=$language or not(@language)]|xmlabstr[@language=$language or not(@language)]"/>
 			<xsl:apply-templates select="front//abstract[@language=$language or not(@language)]|front//xmlabstr[@language=$language or not(@language)]"/>
