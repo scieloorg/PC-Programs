@@ -10,7 +10,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="pub_type"><xsl:choose>
 		<xsl:when test="node()/@ahpdate!='' and node()/@issueno='ahead'"></xsl:when>
 		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">epub-ppub</xsl:when>
-		<xsl:when test=".//extra-scielo/print-issn!=''">ppub</xsl:when>
+		<xsl:when test=".//extra-scielo/print-issn!=''">epub-ppub</xsl:when>
 		<xsl:when test=".//extra-scielo/e-issn!=''">epub</xsl:when>
 	</xsl:choose></xsl:variable>
 	<xsl:variable name="unident" select="//unidentified"/>
@@ -90,15 +90,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<!-- attributes -->
 	<xsl:template match="@*">
-		<xsl:attribute name="{name()}">
-			<xsl:value-of select="normalize-space(.)"/>
-		</xsl:attribute>
+		<xsl:attribute name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 		<!--xsl:value-of select="name()"/>="<xsl:value-of select="normalize-space(.)"/>" -->
 	</xsl:template><!-- attributes -->
 	<xsl:template match="fngrp/@id">
-		<xsl:attribute name="{name()}">
-			fn<xsl:value-of select="string(number(substring(.,3)))"/>
-		</xsl:attribute>
+		<xsl:attribute name="{name()}">fn<xsl:value-of select="string(number(substring(.,3)))"/></xsl:attribute>
 	</xsl:template>
 	
 	<!--
@@ -3141,6 +3137,33 @@ et al.</copyright-statement>
 			
 		</xsl:element>
 	</xsl:template>
+	<xsl:template match="related">
+		<!-- link de ? para ?? -->
+		<!-- ﻿[related reltype="???" relid="????" relidtp="?????"] -->
+		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>
+	-->
+		<related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}">
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</related-article>
+	</xsl:template>
+	<xsl:template match="related[@reltype='pr']">
+		<!-- link de article para press release -->
+		<!-- ﻿[related reltype="pr" relid="pr01" relidtp="press-release-id"] -->
+		<!-- <related-article related-article-type="press-release" id="01" specific-use="processing-only"/>
+ -->
+		<xsl:variable name="id"><xsl:choose><xsl:when test="contains(@relid,'pr')"><xsl:value-of select="substring-after(@relid,'pr')"/></xsl:when><xsl:otherwise><xsl:value-of select="@relid"/></xsl:otherwise></xsl:choose></xsl:variable>
+		<related-article related-article-type="press-release" id="{$id}" specific-use="processing-only"/>
+	</xsl:template>
+	<xsl:template match="related[@reltype='article']">
+		<!-- link de press release para article -->
+		<!-- ﻿[related reltype="article" relid="<doi>" relidtp="doi"] -->
+		<!-- <related-article related-article-type="in-this-issue" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="doi"/>
+	 -->
+		<related-article related-article-type="in-this-issue" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="doi">
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</related-article>
+	</xsl:template>
+	
 	<xsl:template match="author">
 		<contrib><xsl:apply-templates select="*"></xsl:apply-templates></contrib>
 	</xsl:template>
