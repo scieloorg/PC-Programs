@@ -33,8 +33,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:variable name="ref_no" select="//*[contains(name(),'citat')]/no"/>
 	<xsl:variable name="this_doi"><xsl:choose>
-		<xsl:when test="./front/doi"><xsl:value-of select="./front/doi"/></xsl:when>
-		<xsl:otherwise><xsl:value-of select="doi"/></xsl:otherwise>
+		<xsl:when test="node()/front/doi"><xsl:value-of select="node()/front/doi"/></xsl:when>
+		<xsl:otherwise><xsl:value-of select="node()/doi"/></xsl:otherwise>
 	</xsl:choose></xsl:variable>
 	<xsl:variable name="journal_acron">
 		<xsl:choose>
@@ -702,11 +702,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="pub-date"/>
 
 			<xsl:apply-templates select="@volid | @issueno  | @fpage | @lpage | @elocatid"/>
-			<xsl:apply-templates select="product|front/product|body/product|back/product" mode="product-in-article-meta"/>
+			<xsl:apply-templates select="product|front/product|xmlbody/product|back/product" mode="product-in-article-meta"/>
 			<xsl:apply-templates select="cltrial|front/cltrial|back/cltrial"/>
 			<xsl:apply-templates select="hist|front//hist|back//hist"/>
 			<xsl:apply-templates select="back/licenses| cc | .//extra-scielo/license"/>
-			<xsl:apply-templates select="front/related|related"/>
+			<xsl:apply-templates select="front/related|related" mode="front-related"/>
+			<xsl:apply-templates select="back/related|xmlbody//related" mode="front-related"/>
 			
 			<xsl:apply-templates select="abstract[@language=$language or not(@language)]|xmlabstr[@language=$language or not(@language)]"/>
 			<xsl:apply-templates select="front//abstract[@language=$language or not(@language)]|front//xmlabstr[@language=$language or not(@language)]"/>
@@ -799,8 +800,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="*|text()"/>
 		</xsl:element>
 	</xsl:template>
-	
-	
 	<xsl:template match="@role">
 		<xsl:attribute name="contrib-type">
 			<xsl:choose>
@@ -1802,7 +1801,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="back//date | doc//date">
+	<xsl:template match="back//date | ref//date">
 		<xsl:call-template name="display_date">
 			<xsl:with-param name="dateiso">
 				<xsl:value-of select="@dateiso"/>
@@ -3109,7 +3108,8 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="pubid"><xsl:element name="pub-id"><xsl:attribute name="pub-id-type"><xsl:value-of select="@idtype"/></xsl:attribute><xsl:value-of select="normalize-space(.)"/></xsl:element></xsl:template>
 
-	<xsl:template match="related">
+	<xsl:template match="related"><xsl:apply-templates select="*|text()"></xsl:apply-templates></xsl:template>
+	<xsl:template match="related" mode="front-related">
 		<xsl:variable name="teste"><xsl:value-of select="concat('|',@reltype,'|')"/></xsl:variable>
 		<xsl:variable name="type"><xsl:choose>
 			<xsl:when test="contains('|article|pr|', $teste)">document</xsl:when>
@@ -3157,7 +3157,7 @@ et al.</copyright-statement>
 			
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="related">
+	<xsl:template match="related[@reltype='corrected-article']" mode="front-related">
 		<!-- link de ? para ?? -->
 		<!-- ﻿[related reltype="???" relid="????" relidtp="?????"] -->
 		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>
@@ -3166,7 +3166,7 @@ et al.</copyright-statement>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
-	<xsl:template match="related[@reltype='pr']">
+	<xsl:template match="related[@reltype='pr']" mode="front-related">
 		<!-- link de article para press release -->
 		<!-- ﻿[related reltype="pr" relid="pr01" relidtp="press-release-id"] -->
 		<!-- <related-article related-article-type="press-release" id="01" specific-use="processing-only"/>
@@ -3174,7 +3174,7 @@ et al.</copyright-statement>
 		<xsl:variable name="id"><xsl:choose><xsl:when test="contains(@relid,'pr')"><xsl:value-of select="substring-after(@relid,'pr')"/></xsl:when><xsl:otherwise><xsl:value-of select="@relid"/></xsl:otherwise></xsl:choose></xsl:variable>
 		<related-article related-article-type="press-release" id="{$id}" specific-use="processing-only"/>
 	</xsl:template>
-	<xsl:template match="related[@reltype='article']">
+	<xsl:template match="related[@reltype='article']" mode="front-related">
 		<!-- link de press release para article -->
 		<!-- ﻿[related reltype="article" relid="<doi>" relidtp="doi"] -->
 		<!-- <related-article related-article-type="in-this-issue" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="doi"/>
