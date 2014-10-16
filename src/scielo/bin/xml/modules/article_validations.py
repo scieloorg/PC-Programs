@@ -444,8 +444,16 @@ class ArticleContentValidation(object):
         return display_attributes('accepted', self.article.accepted)
 
     @property
-    def license(self):
-        return required('license', self.article.license)
+    def license_text(self):
+        return required('license-p', self.article.license_text)
+
+    @property
+    def license_url(self):
+        return required('license/@href', self.article.license_url)
+
+    @property
+    def license_type(self):
+        return expected_values('@license-type', self.article.license_type, ['open-access'])
 
     @property
     def references(self):

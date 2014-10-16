@@ -283,7 +283,7 @@ class ArticleDisplayReport(object):
                 table_data += html_report.tag('p', 'table-wrap/table', 'label')
                 table_data += html_report.tag('div', t.table, 'element-table')
             if t.graphic:
-                table_data += html_report.display_labeled_value('table-wrap/graphic', t.graphic.display(self.xml_path), 'value')
+                table_data += html_report.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value')
             r += header + html_report.tag('div', table_data, 'block')
         return r
 
@@ -380,7 +380,9 @@ class ArticleValidationReport(object):
         rows += self.format_validation_data(self.affiliations)
         rows += self.format_validation_data(self.article_validation.funding)
         items = [
-                    self.article_validation.license,
+                    self.article_validation.license_text,
+                    self.article_validation.license_url,
+                    self.article_validation.license_type,
                     ]
         rows += self.format_validation_data(items)
         rows += self.format_validation_data(self.article_validation.history)
@@ -489,7 +491,7 @@ class ArticleSheetData(object):
             row = {}
             row['ID'] = t.graphic_parent.id
             row['label/caption'] = t.graphic_parent.label + '/' + t.graphic_parent.caption
-            row['table/graphic'] = t.table + t.graphic_parent.graphic.display(path)
+            row['table/graphic'] = t.table + t.graphic_parent.graphic.display('file:///' + path)
             r.append(row)
         return (t_header, ['label/caption', 'table/graphic'], r)
 
@@ -504,7 +506,7 @@ class ArticleSheetData(object):
             if not ':' in item.src:
                 if not os.path.isfile(path + '/' + item.src) and not os.path.isfile(path + '/' + item.src + '.jpg'):
                     msg = 'ERROR: ' + item.src + ' not found in package'
-            row['display'] = item.display(path) + msg
+            row['display'] = item.display('file:///' + path) + msg
             row['xml'] = item.xml
             r.append(row)
         return (t_header, ['display', 'xml'], r)

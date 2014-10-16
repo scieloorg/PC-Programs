@@ -35,8 +35,8 @@ class Configuration(object):
     def isis_dao(self):
         r = None
         curr_path = os.path.dirname(__file__).replace('\\', '/')
-        if os.path.isdir(curr_path + '/./../cfg/') and os.path.isdir(curr_path + '/./../cfg/cisis1660/'):
-            r = isis.IsisDAO(isis.UCISIS(isis.CISIS(curr_path + '/./../cfg/'), isis.CISIS(curr_path + '/./../cfg/cisis1660/')))
+        if os.path.isdir(curr_path + '/../../cfg/') and os.path.isdir(curr_path + '/../../cfg/cisis1660/'):
+            r = isis.IsisDAO(isis.UCISIS(isis.CISIS(curr_path + '/../../cfg/'), isis.CISIS(curr_path + '/../../cfg/cisis1660/')))
         return r
 
     def valid(self):

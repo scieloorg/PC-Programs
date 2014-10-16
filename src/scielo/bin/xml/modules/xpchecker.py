@@ -116,6 +116,8 @@ def style_checker_statistics(report_filename):
 
 
 def dtd_validation(xml_filename, report_filename, doctype, database_name):
+    if os.path.isfile(report_filename):
+        os.unlink(report_filename)
     if database_name == 'scielo':
         try:
             return packtools_dtd_validation(xml_filename, report_filename)
@@ -127,6 +129,8 @@ def dtd_validation(xml_filename, report_filename, doctype, database_name):
 
 
 def style_validation(xml_filename, doctype, report_filename, xsl_prep_report, xsl_report, database_name):
+    if os.path.isfile(report_filename):
+        os.unlink(report_filename)
     if database_name == 'scielo':
         try:
             return packtools_style_validation(xml_filename, report_filename)

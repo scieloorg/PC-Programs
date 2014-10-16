@@ -10,7 +10,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="pub_type"><xsl:choose>
 		<xsl:when test="node()/@ahpdate!='' and node()/@issueno='ahead'"></xsl:when>
 		<xsl:when test=".//extra-scielo/print-issn!='' and .//extra-scielo/e-issn!=''">epub-ppub</xsl:when>
-		<xsl:when test=".//extra-scielo/print-issn!=''">ppub</xsl:when>
+		<xsl:when test=".//extra-scielo/print-issn!=''">epub-ppub</xsl:when>
 		<xsl:when test=".//extra-scielo/e-issn!=''">epub</xsl:when>
 	</xsl:choose></xsl:variable>
 	<xsl:variable name="unident" select="//unidentified"/>
@@ -33,8 +33,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:variable name="ref_no" select="//*[contains(name(),'citat')]/no"/>
 	<xsl:variable name="this_doi"><xsl:choose>
-		<xsl:when test="./front/doi"><xsl:value-of select="./front/doi"/></xsl:when>
-		<xsl:otherwise><xsl:value-of select="doi"/></xsl:otherwise>
+		<xsl:when test="node()/front/doi"><xsl:value-of select="node()/front/doi"/></xsl:when>
+		<xsl:otherwise><xsl:value-of select="node()/doi"/></xsl:otherwise>
 	</xsl:choose></xsl:variable>
 	<xsl:variable name="journal_acron">
 		<xsl:choose>
@@ -78,7 +78,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<!--xsl:variable name="g" select="//*[name()!='equation' and .//graphic]"/>
 	<xsl:variable name="e" select="//equation[.//graphic]"/-->
 	<xsl:variable name="data4previous" select="//back//*[contains(name(),'citat')]"/>
-	
+	<xsl:variable name="lang"><xsl:value-of select="node()/@xml:lang"/></xsl:variable>
+	<xsl:template match="*" mode="license-text">
+		<xsl:choose>
+			<xsl:when test="$lang='pt'">Este é um artigo publicado em acesso aberto sob uma licença Creative Commons</xsl:when>
+			<xsl:when test="$lang='es'">Este es un artículo publicado en acceso abierto bajo una licencia Creative Commons</xsl:when>
+			<xsl:otherwise>This is an open-access article distributed under the terms of the Creative Commons Attribution License</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	<!-- text -->
 	<xsl:template match="*/text()">
 		<xsl:value-of select="." disable-output-escaping="no"/>
@@ -90,11 +97,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<!-- attributes -->
 	<xsl:template match="@*">
-		<xsl:attribute name="{name()}">
-			<xsl:value-of select="normalize-space(.)"/>
-		</xsl:attribute>
+		<xsl:attribute name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 		<!--xsl:value-of select="name()"/>="<xsl:value-of select="normalize-space(.)"/>" -->
 	</xsl:template><!-- attributes -->
+	<xsl:template match="fngrp/@id">
+		<xsl:attribute name="{name()}">fn<xsl:value-of select="string(number(substring(.,3)))"/></xsl:attribute>
+	</xsl:template>
 	
 	<!--
     	mode=text
@@ -694,11 +702,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="pub-date"/>
 
 			<xsl:apply-templates select="@volid | @issueno  | @fpage | @lpage | @elocatid"/>
-			<xsl:apply-templates select="product|front/product|body/product|back/product" mode="product-in-article-meta"/>
+			<xsl:apply-templates select="product|front/product|xmlbody/product|back/product" mode="product-in-article-meta"/>
 			<xsl:apply-templates select="cltrial|front/cltrial|back/cltrial"/>
 			<xsl:apply-templates select="hist|front//hist|back//hist"/>
 			<xsl:apply-templates select="back/licenses| cc | .//extra-scielo/license"/>
-			<xsl:apply-templates select="front/related|related"/>
+			<xsl:apply-templates select="front/related|related" mode="front-related"/>
+			<xsl:apply-templates select="back/related|xmlbody//related" mode="front-related"/>
 			
 			<xsl:apply-templates select="abstract[@language=$language or not(@language)]|xmlabstr[@language=$language or not(@language)]"/>
 			<xsl:apply-templates select="front//abstract[@language=$language or not(@language)]|front//xmlabstr[@language=$language or not(@language)]"/>
@@ -791,8 +800,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="*|text()"/>
 		</xsl:element>
 	</xsl:template>
-	
-	
 	<xsl:template match="@role">
 		<xsl:attribute name="contrib-type">
 			<xsl:choose>
@@ -835,6 +842,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select=".//xref|text()"/>
 		</contrib>
 		<xsl:copy-of select="../..//aff[@id=$author_rid]/role"/>
+		<xsl:copy-of select="../..//normaff[@id=$author_rid]/role"/>
 	</xsl:template>
 
 	<xsl:template match="corpauth" mode="front-contrib">
@@ -899,7 +907,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="@id"/>
 			<xsl:apply-templates select="label|sup"/>
 			<institution content-type="original"><xsl:apply-templates select="*|text()" mode="original"></xsl:apply-templates></institution>
-			<institution content-type="aff-pmc"><xsl:apply-templates select="*[name()!='label' and name()!='sup']|text()" mode="aff-pmc"/></institution>
+			<!--institution content-type="aff-pmc"><xsl:apply-templates select="*[name()!='label' and name()!='sup']|text()" mode="aff-pmc"/></institution -->
 			<xsl:choose>
 				<xsl:when test="@orgname">
 					<xsl:apply-templates select="@*[name()!='id']"/>
@@ -976,44 +984,32 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
+	<xsl:template match="xref/@rid">
+		<xsl:attribute name="rid"><xsl:choose>
+			<xsl:when test="substring(.,string-length(.)-1,1)='0'">
+				<xsl:value-of select="substring(.,1,1)"/><xsl:value-of select="string(number(substring(.,2)))"/>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose></xsl:attribute>
+	</xsl:template>
 	<xsl:template match="xref[@ref-type='aff']/@rid">
-		<xsl:variable name="var_id">
-			<xsl:choose>
-				<xsl:when test="contains(.,' ')">aff<xsl:value-of select="substring-before(.,' ')"
-					/></xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="normalize-space(.)"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="contains($var_id,'a0')">aff<xsl:value-of
-					select="substring-after($var_id,'a0')"/></xsl:when>
-			<xsl:otherwise>aff<xsl:value-of select="substring-after($var_id,'a')"/></xsl:otherwise>
+			<xsl:when test="contains(.,'aff')"><xsl:value-of select="."/></xsl:when>
+			<xsl:otherwise>aff<xsl:value-of select="string(number(substring(.,2)))"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-
+	
 	<xsl:template match="aff/@id | normaff/@id">
 		<!-- FIXMEID -->
 		<!-- quando nao ha aff/label = author/xref enquanto author/@rid = aff/@id -->
-		<xsl:variable name="var_id">
-			<xsl:choose>
-				<xsl:when test="contains(.,' ')">aff<xsl:value-of select="substring-before(.,' ')"
-					/></xsl:when>
-				<xsl:otherwise>
-					<xsl:value-of select="normalize-space(.)"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
-		<xsl:attribute name="id"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if>
-			<xsl:choose>
-				<xsl:when test="contains($var_id,'a0')">aff<xsl:value-of
-						select="substring-after($var_id,'a0')"/></xsl:when>
-				<xsl:otherwise>aff<xsl:value-of select="substring-after($var_id,'a')"
-					/></xsl:otherwise>
-			</xsl:choose>
-		</xsl:attribute>
+		<xsl:choose>
+			<xsl:when test="contains(.,'aff')"><xsl:attribute name="id"><xsl:value-of select="."/></xsl:attribute></xsl:when>
+			<xsl:otherwise>
+				<xsl:attribute name="id">aff<xsl:value-of select="string(number(substring(.,2)))"/></xsl:attribute>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
+
 	<xsl:template match="normaff/orgname">
 		<xsl:if test="../@norgname!='Not normalized'">
 			<institution content-type="normalized"><xsl:value-of select="../@norgname"/></institution>
@@ -1563,21 +1559,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="xref[@ref-type='bibr']/@rid">
-		<xsl:variable name="rid">
-		<xsl:choose>
-			<xsl:when test="contains(., 'mkp_ref_')"><xsl:value-of
-						select="substring-before(substring-after(.,'mkp_ref_'),'_')"
-					/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="substring(.,2)"/></xsl:otherwise>
-		</xsl:choose></xsl:variable>
-		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length($rid))"/></xsl:variable>
-		<xsl:variable name="id">B<xsl:value-of select="$zeros"/><xsl:value-of select="$rid"/></xsl:variable>
-		<xsl:attribute name="rid"><xsl:value-of select="$id"/></xsl:attribute>
+		<xsl:attribute name="rid">B<xsl:value-of select="string(number(substring(.,2)))"/></xsl:attribute>
 	</xsl:template>
 
 	<xsl:template match="*[@standard]/*[contains(name(),'citat')]">
-		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length(position()))"/></xsl:variable>
-		<xsl:variable name="id"><xsl:value-of select="$zeros"/><xsl:value-of select="position()"/></xsl:variable>
+		<xsl:variable name="id"><xsl:value-of select="position()"/></xsl:variable>
 		<ref id="B{$id}">
 			<xsl:apply-templates select="no"/>
 			<!-- book, communication, letter, review, conf-proc, journal, list, patent, thesis, discussion, report, standard, and working-paper.  -->
@@ -1609,8 +1595,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ref>
 	</xsl:template>
 	<xsl:template match="ref">
-		<xsl:variable name="zeros"><xsl:value-of select="substring('0000000000',1, $reflen - string-length(position()))"/></xsl:variable>
-		<xsl:variable name="id"><xsl:value-of select="$zeros"/><xsl:value-of select="position()"/></xsl:variable>
+		<xsl:variable name="id"><xsl:value-of select="position()"/></xsl:variable>
 		<ref id="B{$id}">
 			<xsl:apply-templates select="label"/>
 			
@@ -1816,7 +1801,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="back//date | doc//date">
+	<xsl:template match="back//date | ref//date">
 		<xsl:call-template name="display_date">
 			<xsl:with-param name="dateiso">
 				<xsl:value-of select="@dateiso"/>
@@ -1850,25 +1835,38 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="*[contains(name(),'serial')]">
 		<xsl:apply-templates/>
 	</xsl:template>
+	<xsl:template match="*" mode="url-cited">
+		<xsl:param name="text"/>
+		<xsl:choose>
+			<xsl:when test="contains($text,'.')">
+				<xsl:apply-templates select="." mode="url-cited"><xsl:with-param name="text"><xsl:value-of select="substring-after($text,'.')"/></xsl:with-param></xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
     <xsl:template match="url">
-    	
 		<xsl:choose>
 			<xsl:when test="../cited">
 				<xsl:variable name="text">
 					<xsl:apply-templates select="..//text()" mode="text-only"/>
 				</xsl:variable>
 				<xsl:variable name="term"><xsl:choose>
-					<xsl:when test="contains($text,'Dispon')">Dispon</xsl:when><xsl:otherwise>Available</xsl:otherwise>
+					<xsl:when test="contains($text,'Dispon')">Dispon</xsl:when>
+					<xsl:when test="contains($text,'Available')">Available</xsl:when>
+					<xsl:otherwise></xsl:otherwise>
 				</xsl:choose></xsl:variable>
 				<xsl:variable name="comment">
-					<xsl:value-of select="substring-before(substring-after($text, substring-before($text, $term)),.)"/>
+					<xsl:choose>
+						<xsl:when test="$term=''"><xsl:apply-templates select="." mode="url-cited"><xsl:with-param name="text"><xsl:value-of select="substring-before($text,.)"/></xsl:with-param></xsl:apply-templates>
+						</xsl:when>
+						<xsl:otherwise><xsl:value-of select="substring-before(substring-after($text, substring-before($text, $term)),.)"/></xsl:otherwise>
+					</xsl:choose>
 				</xsl:variable>
 				
 				<comment content-type="cited">
 					<xsl:choose>
 						<xsl:when test="contains($comment, '&lt;')"><xsl:value-of select="substring-before($comment,'&lt;')"/></xsl:when>
-					<xsl:otherwise><xsl:value-of select="$comment"/></xsl:otherwise>
-			
+						<xsl:otherwise><xsl:value-of select="$comment"/></xsl:otherwise>
 					</xsl:choose>
 					<ext-link ext-link-type="uri">
 						<xsl:attribute name="xlink:href"><xsl:choose>
@@ -1928,8 +1926,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="figgrps[not(label)]">
 		<!-- FIXMEID -->
-		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
-		<fig-group id="{concat($parentid,@id)}">
+		<fig-group id="{@id}">
 			<xsl:apply-templates select="caption"/>
 			<xsl:apply-templates select=".//figgrp"/>
 		</fig-group>
@@ -1937,9 +1934,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="figgrps[label]">
 		<!-- FIXMEID -->
-		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
-	
-	<fig id="{concat($parentid,@id)}">
+		<fig id="{@id}">
 			<xsl:apply-templates select="label"/>
 			<xsl:apply-templates select="caption"/>
 			<xsl:apply-templates select=".//figgrp"/>
@@ -1947,11 +1942,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="figgrp">
+		<xsl:variable name="id">f<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
 		<p>
-			<!-- FIXMEID -->
-			<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
-			
-			<fig id="{concat($parentid,@id)}">
+			<fig id="{$id}">
 				<xsl:if test="@ftype!='other'">
 					<xsl:attribute name="fig-type">
 						<xsl:value-of select="@ftype"/>
@@ -1972,9 +1965,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="p/figgrp|figgrps/figgrp">
 		<!-- FIXMEID -->
-		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+		<xsl:variable name="id">f<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
 		
-		<fig id="{concat($parentid,@id)}">
+		<fig id="{$id}">
 			<xsl:if test="@ftype!='other'">
 				<xsl:attribute name="fig-type">
 					<xsl:value-of select="@ftype"/>
@@ -1987,21 +1980,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="tabwrap">
+		<xsl:variable name="id">t<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
+		
 		<p><!-- FIXMEID -->
-			<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
-			
-			<table-wrap id="{concat($parentid,@id)}">
+			<table-wrap id="{$id}">
 				<xsl:apply-templates select="label"/>
 				<xsl:apply-templates select=".//caption"/>
 				<xsl:apply-templates select="." mode="graphic"/>
 				<xsl:apply-templates select="." mode="notes"/>
-
-				<!-- xsl:if test=".//notes">
-				<table-wrap-foot>
-					<fn><p><xsl:value-of select=".//notes"/></p></fn>
-					
-				</table-wrap-foot>
-				</xsl:if> -->
 			</table-wrap>
 		</p>
 	</xsl:template>
@@ -2009,9 +1995,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="tabwrap//fntable" mode="table">
 		<xsl:param name="table_id"/>
 		<!-- FIXMEID -->
-		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+		<xsl:variable name="id">
+		<xsl:choose>
+			<xsl:when test="contains(@id,'TFN')"><xsl:value-of select="@id"/></xsl:when>
+			<xsl:otherwise>TFN<xsl:value-of select="string(number(substring(@id,4)))"/></xsl:otherwise>
+		</xsl:choose></xsl:variable>
 		
-		<fn id="{$parentid}{translate(@id,'tfn','TFN')}">
+		<fn id="{$id}">
 			<xsl:apply-templates select="label"/>
 			<p>
 				<xsl:apply-templates select="text()|*[name()!='label']"/>
@@ -2030,10 +2020,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="p/tabwrap">
-		<!-- FIXMEID -->
-		<xsl:variable name="parentid"><xsl:if test="ancestor::node()[name()='subart']"><xsl:value-of select="ancestor::node()[name()='subart']/@id"/></xsl:if></xsl:variable>
+		<xsl:variable name="id">t<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
 		
-		<table-wrap id="{$parentid}{@id}">
+		<table-wrap id="{$id}">
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
 			<xsl:apply-templates select="." mode="graphic"/>
@@ -2422,7 +2411,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="@*"/>
 					<xsl:apply-templates select="*|text()"/>
 				</xref>
-
 			</xsl:when>
 			<xsl:when test="name()='sup'">
 				<xsl:variable name="label" select="normalize-space(.)"/>
@@ -2431,7 +2419,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						test="$affs[normalize-space(label)=$label or normalize-space(.//sup//text())=$label]">
 						<!-- sup = aff -->
 						<xref ref-type="aff">
-							<xsl:attribute name="rid">AFF<xsl:value-of select="$label"
+							<xsl:attribute name="rid">aff<xsl:value-of select="$label"
 								/></xsl:attribute>
 							<sup>
 								<xsl:value-of select="$label"/>
@@ -2450,21 +2438,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="@ref-type='aff'">
 				<xsl:variable name="label" select="normalize-space(.)"/>
 				<xref ref-type="aff">
-					<!--xsl:choose>
-						<xsl:when
-							test="$affs[normalize-space(label)=$label or normalize-space(.//sup//text())=$label]">
-							<xsl:attribute name="rid">AFF<xsl:value-of select="$label"
-								/></xsl:attribute>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:attribute name="rid">
-								<xsl:value-of select="translate(@rid, 'a', 'A')"/>
-							</xsl:attribute>
-						</xsl:otherwise>
-					</xsl:choose-->
-					<xsl:attribute name="rid">
-						<xsl:apply-templates select="@rid"/>
-					</xsl:attribute>
+					<xsl:attribute name="rid"><xsl:apply-templates select="@rid"/></xsl:attribute>
 					<sup>
 						<xsl:value-of select="$label"/>
 					</sup>
@@ -3112,7 +3086,11 @@ et al.</copyright-statement>
 		</xsl:attribute>
 	</xsl:template>
 	<xsl:template match="supplmat">
-		<supplementary-material id="suppl{string(number(substring-after(@id,'smat')))}" xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">			
+		<xsl:variable name="id"><xsl:choose>
+			<xsl:when test="contains(@id,'smat')">suppl<xsl:value-of select="string(number(substring-after(@id,'smat')))"/></xsl:when>
+			<xsl:otherwise>suppl<xsl:value-of select="string(number(substring(@id,6)))"/></xsl:otherwise>
+		</xsl:choose></xsl:variable>
+		<supplementary-material id="{$id}" xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">			
 			<xsl:apply-templates select="*|text()"/>
 		</supplementary-material>
 	</xsl:template>
@@ -3122,13 +3100,16 @@ et al.</copyright-statement>
 		</inline-supplementary-material>
 	</xsl:template>
 	<xsl:template match="media">
-		<media  id="m{string(number(substring-after(@id,'m')))}" xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">	
+		<xsl:variable name="id">m<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
+		
+		<media  id="{$id}" xlink:href="{@href}" mimetype="replace{@href}" mime-subtype="replace">	
 			<xsl:apply-templates select="*|text()"/>
 		</media>
 	</xsl:template>
 	<xsl:template match="pubid"><xsl:element name="pub-id"><xsl:attribute name="pub-id-type"><xsl:value-of select="@idtype"/></xsl:attribute><xsl:value-of select="normalize-space(.)"/></xsl:element></xsl:template>
 
-	<xsl:template match="related">
+	<xsl:template match="related"><xsl:apply-templates select="*|text()"></xsl:apply-templates></xsl:template>
+	<xsl:template match="related" mode="front-related">
 		<xsl:variable name="teste"><xsl:value-of select="concat('|',@reltype,'|')"/></xsl:variable>
 		<xsl:variable name="type"><xsl:choose>
 			<xsl:when test="contains('|article|pr|', $teste)">document</xsl:when>
@@ -3176,6 +3157,33 @@ et al.</copyright-statement>
 			
 		</xsl:element>
 	</xsl:template>
+	<xsl:template match="related[@reltype='corrected-article']" mode="front-related">
+		<!-- link de ? para ?? -->
+		<!-- ﻿[related reltype="???" relid="????" relidtp="?????"] -->
+		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>
+	-->
+		<related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}">
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</related-article>
+	</xsl:template>
+	<xsl:template match="related[@reltype='pr']" mode="front-related">
+		<!-- link de article para press release -->
+		<!-- ﻿[related reltype="pr" relid="pr01" relidtp="press-release-id"] -->
+		<!-- <related-article related-article-type="press-release" id="01" specific-use="processing-only"/>
+ -->
+		<xsl:variable name="id"><xsl:choose><xsl:when test="contains(@relid,'pr')"><xsl:value-of select="substring-after(@relid,'pr')"/></xsl:when><xsl:otherwise><xsl:value-of select="@relid"/></xsl:otherwise></xsl:choose></xsl:variable>
+		<related-article related-article-type="press-release" id="{$id}" specific-use="processing-only"/>
+	</xsl:template>
+	<xsl:template match="related[@reltype='article']" mode="front-related">
+		<!-- link de press release para article -->
+		<!-- ﻿[related reltype="article" relid="<doi>" relidtp="doi"] -->
+		<!-- <related-article related-article-type="in-this-issue" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="doi"/>
+	 -->
+		<related-article related-article-type="in-this-issue" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="doi">
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</related-article>
+	</xsl:template>
+	
 	<xsl:template match="author">
 		<contrib><xsl:apply-templates select="*"></xsl:apply-templates></contrib>
 	</xsl:template>
@@ -3262,12 +3270,12 @@ et al.</copyright-statement>
 		<xsl:variable name="cccompl"><xsl:if test="@cccompl!='nd'"><xsl:value-of select="translate(@cccompl,'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>/</xsl:if></xsl:variable>
 		<xsl:variable name="licid"><xsl:value-of select="concat($ccid,$cversion,$cccompl)"/></xsl:variable>
 		<permissions>
-			<license license-type="{@ccid}" xlink:href="{$href}{$licid}">
+			<license license-type="open-access" xlink:href="{$href}{$licid}">
 				<license-p>
 					<graphic>
 						<xsl:attribute name="xlink:href">http://i.creativecommons.org/l/<xsl:value-of select="$licid"/>88x31.png</xsl:attribute>
 					</graphic>
-					CC <xsl:value-of select="concat(@ccid,' ',@cversion,' ',@cccompl)"/>
+					<xsl:apply-templates select="." mode="license-text"></xsl:apply-templates>
 				</license-p>
 			</license>
 		</permissions>
@@ -3280,12 +3288,13 @@ et al.</copyright-statement>
 		<xsl:variable name="cccompl"><xsl:value-of select="../license-complement"/></xsl:variable>
 		<xsl:variable name="licid"><xsl:value-of select="concat($ccid,'/',$cversion,'/',$cccompl)"/></xsl:variable>
 		<permissions>
-			<license license-type="{substring-before(../license-label,' ')}" xlink:href="{$href}">
+			<license license-type="open-access" xlink:href="{$href}">
 				<license-p>
 					<graphic>
 						<xsl:attribute name="xlink:href">http://i.creativecommons.org/l/<xsl:value-of select="$licid"/>88x31.png</xsl:attribute>
 					</graphic>
-					CC <xsl:value-of select="../license-label"/>
+					<!-- CC <xsl:value-of select="../license-label"/>-->
+					<xsl:apply-templates select="." mode="license-text"></xsl:apply-templates>
 				</license-p>
 			</license>
 		</permissions>
@@ -3397,5 +3406,9 @@ et al.</copyright-statement>
 			<xsl:apply-templates select="$fundsrc" mode="front-funding-group"/>
 			<xsl:apply-templates select="." mode="front-funding-group"/>
 		</award-group>
+	</xsl:template>
+	
+	<xsl:template match="edition/sup">
+		<xsl:apply-templates select="text()"/>
 	</xsl:template>
 </xsl:stylesheet>
