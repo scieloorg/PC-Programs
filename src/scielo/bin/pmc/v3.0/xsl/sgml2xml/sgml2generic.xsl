@@ -3137,12 +3137,33 @@ et al.</copyright-statement>
 			
 		</xsl:element>
 	</xsl:template>
+	<xsl:template match="related">
+		<!-- link de ? para ?? -->
+		<!-- ﻿[related reltype="???" relid="????" relidtp="?????"] -->
+		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>
+	-->
+		<related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}">
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</related-article>
+	</xsl:template>
 	<xsl:template match="related[@reltype='pr']">
+		<!-- link de article para press release -->
 		<!-- ﻿[related reltype="pr" relid="pr01" relidtp="press-release-id"] -->
 		<!-- <related-article related-article-type="press-release" id="01" specific-use="processing-only"/>
  -->
-		<related-article related-article-type="press-release" id="{substring(@relid,3)}" specific-use="processing-only"/></related-article>
+		<xsl:variable name="id"><xsl:choose><xsl:when test="contains(@relid,'pr')"><xsl:value-of select="substring-after(@relid,'pr')"/></xsl:when><xsl:otherwise><xsl:value-of select="@relid"/></xsl:otherwise></xsl:choose></xsl:variable>
+		<related-article related-article-type="press-release" id="{$id}" specific-use="processing-only"/>
 	</xsl:template>
+	<xsl:template match="related[@reltype='article']">
+		<!-- link de press release para article -->
+		<!-- ﻿[related reltype="article" relid="<doi>" relidtp="doi"] -->
+		<!-- <related-article related-article-type="in-this-issue" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="doi"/>
+	 -->
+		<related-article related-article-type="in-this-issue" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="doi">
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</related-article>
+	</xsl:template>
+	
 	<xsl:template match="author">
 		<contrib><xsl:apply-templates select="*"></xsl:apply-templates></contrib>
 	</xsl:template>

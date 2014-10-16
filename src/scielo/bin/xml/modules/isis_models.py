@@ -106,10 +106,13 @@ class ArticleRecords(object):
         for item in self.article.related_articles:
             new = {}
             new['i'] = item.get('{http://www.w3.org/1999/xlink}href')
-            new['t'] = 'pr' if item.get('related-article-type') == 'press-release' else 'article'
+            _t = item.get('related-article-type')
+            if _t == 'press-release':
+                _t = 'pr'
+            elif _t == 'in-this-issue':
+                _t = 'article'
+            new['t'] = _t
             new['n'] = item.get('ext-link-type')
-            new['r'] = item.get('related-article-type')
-            new['k'] = item['id']
             self._metadata['241'].append(new)
 
         if self.article.is_article_press_release or self.article.is_issue_press_release:
