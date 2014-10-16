@@ -1836,25 +1836,38 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="*[contains(name(),'serial')]">
 		<xsl:apply-templates/>
 	</xsl:template>
+	<xsl:template match="*" mode="url-cited">
+		<xsl:param name="text"/>
+		<xsl:choose>
+			<xsl:when test="contains($text,'.')">
+				<xsl:apply-templates select="." mode="url-cited"><xsl:with-param name="text"><xsl:value-of select="substring-after($text,'.')"/></xsl:with-param></xsl:apply-templates>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
     <xsl:template match="url">
-    	
 		<xsl:choose>
 			<xsl:when test="../cited">
 				<xsl:variable name="text">
 					<xsl:apply-templates select="..//text()" mode="text-only"/>
 				</xsl:variable>
 				<xsl:variable name="term"><xsl:choose>
-					<xsl:when test="contains($text,'Dispon')">Dispon</xsl:when><xsl:otherwise>Available</xsl:otherwise>
+					<xsl:when test="contains($text,'Dispon')">Dispon</xsl:when>
+					<xsl:when test="contains($text,'Available')">Available</xsl:when>
+					<xsl:otherwise></xsl:otherwise>
 				</xsl:choose></xsl:variable>
 				<xsl:variable name="comment">
-					<xsl:value-of select="substring-before(substring-after($text, substring-before($text, $term)),.)"/>
+					<xsl:choose>
+						<xsl:when test="$term=''"><xsl:apply-templates select="." mode="url-cited"><xsl:with-param name="text"><xsl:value-of select="substring-before($text,.)"/></xsl:with-param></xsl:apply-templates>
+						</xsl:when>
+						<xsl:otherwise><xsl:value-of select="substring-before(substring-after($text, substring-before($text, $term)),.)"/></xsl:otherwise>
+					</xsl:choose>
 				</xsl:variable>
 				
 				<comment content-type="cited">
 					<xsl:choose>
 						<xsl:when test="contains($comment, '&lt;')"><xsl:value-of select="substring-before($comment,'&lt;')"/></xsl:when>
-					<xsl:otherwise><xsl:value-of select="$comment"/></xsl:otherwise>
-			
+						<xsl:otherwise><xsl:value-of select="$comment"/></xsl:otherwise>
 					</xsl:choose>
 					<ext-link ext-link-type="uri">
 						<xsl:attribute name="xlink:href"><xsl:choose>
