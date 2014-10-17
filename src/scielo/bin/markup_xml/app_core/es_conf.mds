@@ -18,7 +18,7 @@ msgDeleting,Erro para borrar la tag. Seleccione el texto
 msgOpenFile,Abre solamente un archivo
 msgSure,Usted esta seguro?
 msgSureExit,Usted quiere salir?
-msgQuestionApplyAutomaticMarkupToTheTemplate,Aplicar marcación automática al modelo?
+msgQuestionApplyAutomaticMarkupToTheTemplate,El documento está de acuerdo con el modelo?
 msgAutomatic,Usted desea usar la marcación automática de citas?
 msgAutomaticErr,%JOURNAL% no tiene marcación automática %LABEL% para las citas. %FILE% no fue encontrado.
 msgDefaultDirectories,Asegure que existe el archivo 'html.dot'/'normal.dot'.
@@ -87,7 +87,7 @@ msgBeforExiting2,Guardar y generar XML
 msgBeforExiting3,Guardar y salir
 msgBeforExiting4,Salir sin guardar
 msgAutomaticStyles,Serán marcados los elementos de acuerdo con los estilos. Seguir?
-pmcVersion,v3.0
+msgQuestionBibrXrefPattern,Las citas en el texto están identificadas por (número)?
 timer,99999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
 msgFormXMLBody,"Verifique la identificación de las partes del texto completo. Corrija si necesario, seleccionando los itens de la lista, seleccionando la etiqueta que los identifica y  el botón Corregir."

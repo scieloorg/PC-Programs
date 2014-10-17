@@ -18,7 +18,7 @@ msgDeleting,Error deleting the tag. Select the text
 msgOpenFile,Open only one file
 msgSure,Are you sure?
 msgSureExit,Do you want to exit?
-msgQuestionApplyAutomaticMarkupToTheTemplate,Apply automatic markup to the template?
+msgQuestionApplyAutomaticMarkupToTheTemplate,Is the document according to the template?
 msgAutomatic,Do you wish to use the automatic markup of references?
 msgAutomaticErr,%JOURNAL% has no automatic markup %LABEL% for references. %FILE% not found.
 msgDefaultDirectories,Verify the 'html.dot' and/or 'normal.dot' files.
@@ -87,7 +87,7 @@ msgBeforExiting2,Save and generate XML
 msgBeforExiting3,Save and exit
 msgBeforExiting4,Exit without saving
 msgAutomaticStyles,The elements will be marked according to the styles. Do you want to continue?
-pmcVersion,v3.0
+msgQuestionBibrXrefPattern,Are the bibliographic references in the text identified such as (number)?
 timer,99999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
 msgFormXMLBody,"Check the identification of the parts of the text. Fix if necessary, selecting the list items, selecting the tag and clicking on Change button."
