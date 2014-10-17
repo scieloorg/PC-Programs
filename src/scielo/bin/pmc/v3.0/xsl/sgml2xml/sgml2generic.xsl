@@ -3116,79 +3116,34 @@ et al.</copyright-statement>
 	<xsl:template match="pubid"><xsl:element name="pub-id"><xsl:attribute name="pub-id-type"><xsl:value-of select="@idtype"/></xsl:attribute><xsl:value-of select="normalize-space(.)"/></xsl:element></xsl:template>
 
 	<xsl:template match="related"><xsl:apply-templates select="*|text()"></xsl:apply-templates></xsl:template>
-	<xsl:template match="related" mode="front-related">
-		<xsl:variable name="teste"><xsl:value-of select="concat('|',@reltype,'|')"/></xsl:variable>
-		<xsl:variable name="type"><xsl:choose>
-			<xsl:when test="contains('|article|pr|', $teste)">document</xsl:when>
-			<xsl:when test="contains('|other-related-article|unknown-related-article|addended-article|addendum|commentary-article|object-of-concern|companion|corrected-article|letter|retracted-article|peer-reviewed-article|peer-review|', $teste)">related-article</xsl:when>
-			<xsl:when test="contains('|other-object|unknown-object|vi|au|table|figure|', $teste)">object</xsl:when>
-			<xsl:when test="contains('|other-source|unknown-source|book|database|', $teste)">source</xsl:when>
-			<xsl:when test="contains('|other-document|unknown-source|book chapter|', $teste)">document</xsl:when>			
-			<xsl:otherwise>source</xsl:otherwise>
-		</xsl:choose></xsl:variable>
-		
-		<xsl:variable name="elem_name"><xsl:choose>
-			<xsl:when test="$type='related-article'">related-article</xsl:when>
-			<xsl:otherwise>related-object</xsl:otherwise></xsl:choose></xsl:variable>
-		
-		<xsl:variable name="attrib_prefix"><xsl:value-of select="$type"/></xsl:variable>
-		<xsl:element name="{$elem_name}">
-			<xsl:choose>
-				<xsl:when test="$type='related-article'">
-					<xsl:attribute name="id"><xsl:value-of select="$this_doi"/></xsl:attribute>
-					<xsl:attribute name="{$attrib_prefix}-type"><xsl:value-of select="@reltype"/></xsl:attribute>
-					<xsl:attribute name="href"><xsl:value-of select="@relid"/></xsl:attribute>
-					<xsl:attribute name="ext-link-type"><xsl:value-of select="@relidtp"/></xsl:attribute>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:attribute name="{$attrib_prefix}-type"><xsl:value-of select="@reltype"/></xsl:attribute>
-					<xsl:attribute name="{$attrib_prefix}-id"><xsl:value-of select="@relid"/></xsl:attribute>
-					
-					<xsl:choose>
-						<xsl:when test="@reltype='pr'">
-							<xsl:attribute name="{$attrib_prefix}-id-type">press-release</xsl:attribute>
-							<xsl:attribute name="specific-use">processing-only</xsl:attribute>
-						</xsl:when>
-						<xsl:when test="@reltype='article'">
-							<xsl:attribute name="{$attrib_prefix}-id-type"><xsl:value-of select="@relidtp"/></xsl:attribute>
-							<xsl:attribute name="link-type">article-has-press-release</xsl:attribute>
-							<xsl:attribute name="specific-use">processing-only</xsl:attribute>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:attribute name="{$attrib_prefix}-id-type"><xsl:value-of select="@relidtp"/></xsl:attribute>
-						</xsl:otherwise>
-					</xsl:choose>
-					
-				</xsl:otherwise>
-			</xsl:choose>
-			
-		</xsl:element>
+	
+	<xsl:template match="related[@reltype]" mode="front-related">
+		<related/>
 	</xsl:template>
-	<xsl:template match="related[@reltype='corrected-article']" mode="front-related">
+	<xsl:template match="related[@reltp]" mode="front-related">
 		<!-- link de ? para ?? -->
 		<!-- ﻿[related reltype="???" relid="????" relidtp="?????"] -->
 		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>
 	-->
-		<related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}">
+		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@id-or-doi}" ext-link-type="doi">
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
-	<xsl:template match="related[@reltype='pr']" mode="front-related">
+	<xsl:template match="related[@reltp='article']" mode="front-related">
+		<!-- link de ? para ?? -->
+		<!-- ﻿[related reltype="???" relid="????" relidtp="?????"] -->
+		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>
+	-->
+		<related-article related-article-type="article-reference" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@id-or-doi}" ext-link-type="doi" specific-use="processing-only">
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</related-article>
+	</xsl:template>
+	<xsl:template match="related[@reltp='press-release']" mode="front-related">
 		<!-- link de article para press release -->
 		<!-- ﻿[related reltype="pr" relid="pr01" relidtp="press-release-id"] -->
 		<!-- <related-article related-article-type="press-release" id="01" specific-use="processing-only"/>
  -->
-		<xsl:variable name="id"><xsl:choose><xsl:when test="contains(@relid,'pr')"><xsl:value-of select="substring-after(@relid,'pr')"/></xsl:when><xsl:otherwise><xsl:value-of select="@relid"/></xsl:otherwise></xsl:choose></xsl:variable>
-		<related-article related-article-type="press-release" id="{$id}" specific-use="processing-only"/>
-	</xsl:template>
-	<xsl:template match="related[@reltype='article']" mode="front-related">
-		<!-- link de press release para article -->
-		<!-- ﻿[related reltype="article" relid="<doi>" relidtp="doi"] -->
-		<!-- <related-article related-article-type="in-this-issue" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="doi"/>
-	 -->
-		<related-article related-article-type="in-this-issue" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="doi">
-			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
-		</related-article>
+		<related-article related-article-type="commentary" id="{@id-or-doi}" specific-use="processing-only"/>
 	</xsl:template>
 	
 	<xsl:template match="author">
