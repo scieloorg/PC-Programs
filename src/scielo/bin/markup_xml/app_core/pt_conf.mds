@@ -18,7 +18,7 @@ msgDeleting,Erro apagando a tag. Selecione o texto
 msgOpenFile,Abra somente um arquivo
 msgSure,Deseja continuar?
 msgSureExit,Deseja sair?
-msgQuestionApplyAutomaticMarkupToTheTemplate,Aplicar marcação automática ao modelo?
+msgQuestionApplyAutomaticMarkupToTheTemplate,O documento está de acordo com o modelo para efetuar a marcação automática?
 msgAutomatic,Você deseja usar a marcação automática de referências?
 msgAutomaticErr,%JOURNAL% não possui marcação automática %LABEL% para as refrerências. %FILE% não encontrado.
 msgDefaultDirectories,Verifique existência de 'html.dot'/'normal.dot'.
@@ -87,7 +87,7 @@ msgBeforExiting2,Salvar e gerar XML
 msgBeforExiting3,Salvar e sair
 msgBeforExiting4,Sair sem salvar
 msgAutomaticStyles,Os elementos serão marcados de acordo com os estilos. Continuar?
-pmcVersion,v3.0
+msgQuestionBibrXrefPattern,As referências bibliográficas no texto estão identificadas como (número)?
 timer,999999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
 msgFormXMLBody,"Verifique a identificação das partes no texto completo. Corrija se necessário, selecionando os itens da lista, escolhendo o rótulo que o identifica e clicando no botão Corrigir."
