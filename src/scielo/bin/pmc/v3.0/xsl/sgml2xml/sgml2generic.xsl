@@ -735,7 +735,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				select="front//report | back//bbibcom/report | back/ack//report | back/ack//funding" mode="front-funding-group"/>
 			<xsl:apply-templates
 				select="fngrp//report|fngrp//funding" mode="front-funding-group">
-				<xsl:with-param name="statement" select="'true'"/>
+				<xsl:with-param name="statement">true</xsl:with-param>
 			</xsl:apply-templates>
 			
 			<xsl:apply-templates
@@ -3351,7 +3351,6 @@ et al.</copyright-statement>
 			</xsl:choose>
 		</funding-source>
 	</xsl:template>
-	
 	<xsl:template match="report" mode="front-funding-group">
 		<xsl:param name="statement"/>
 		<xsl:if test=".//contract">
@@ -3376,7 +3375,7 @@ et al.</copyright-statement>
 		</xsl:if>
 	</xsl:template>
 	
-	<xsl:template match="ack//funding | fn//funding" mode="front-funding-group">
+	<xsl:template match="ack//funding|fngrp//funding" mode="front-funding-group">
 		<xsl:param name="statement"/>
 		<xsl:if test=".//contract">
 			<funding-group>
