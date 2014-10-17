@@ -105,11 +105,15 @@ class ArticleRecords(object):
 
         for item in self.article.related_articles:
             new = {}
-            new['i'] = item.get('{http://www.w3.org/1999/xlink}href')
+            new['i'] = item['href'] if item['ext-link-type'] == 'doi' else item['id']
             _t = item.get('related-article-type')
             if _t == 'press-release':
                 _t = 'pr'
             elif _t == 'in-this-issue':
+                _t = 'article'
+            if _t == 'commentary':
+                _t = 'pr'
+            elif _t == 'article-reference':
                 _t = 'article'
             new['t'] = _t
             new['n'] = item.get('ext-link-type')

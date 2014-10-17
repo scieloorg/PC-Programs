@@ -203,29 +203,6 @@ class ArticleXML(object):
             return element_lang(self.tree.find('.'))
 
     @property
-    def related_objects(self):
-        """
-        @id k
-        @document-id i
-        @document-id-type n
-        @document-type t
-        @object-id i
-        @object-id-type n
-        @object-type t
-        @source-id i
-        @source-id-type n
-        @source-type t
-        @link-type r
-        """
-        r = []
-        if self.article_meta is not None:
-            related = self.article_meta.findall('related-object')
-            for rel in related:
-                item = {k: v for k, v in rel.attrib.items()}
-                r.append(item)
-        return r
-
-    @property
     def related_articles(self):
         """
         @id k
@@ -234,14 +211,18 @@ class ArticleXML(object):
         . t article
         .//article-meta/related-article[@related-article-type='press-release' and @specific-use='processing-only'] 241
         @id k
-        . t pr  
-
+        . t pr
         """
         r = []
         if self.article_meta is not None:
             related = self.article_meta.findall('related-article')
             for rel in related:
-                item = {k: v for k, v in rel.attrib.items()}
+                item = {}
+                item['href'] = item.attrib.get('{http://www.w3.org/1999/xlink}href')
+                item['ext-link-type'] = item.attrib.get('ext-link-type')
+                if not item['ext-link-type'] == 'doi':
+                    item['id'] = ''.join([c for c in item['href'] if c.isdigit()])
+                item['related-article-type'] = item.attrib.get('related-article-type')
                 r.append(item)
         return r
 
@@ -642,10 +623,8 @@ class ArticleXML(object):
 
     @property
     def press_release_id(self):
-        if self.article_meta is not None:
-            related = self.article_meta.find('related-object[@document-type="pr"]')
-            if related is not None:
-                return related.attrib.get('document-id')
+        for related in self.related_articles:
+
 
     @property
     def issue_pub_date(self):
@@ -686,10 +665,15 @@ class ArticleXML(object):
 
     @property
     def is_article_press_release(self):
-        if self.article_meta is not None:
-            return (self.article_meta.find('.//related-document[@link-type="article-has-press-release"]') is not None)
-        else:
-            return False
+        r = False
+        for related in self.related_articles:
+            if related['related-article-type'] == 'article-reference':
+                r = True
+                break
+            if related['related-article-type'] == 'article':
+                r = True
+                break
+        return r
 
     @property
     def illustrative_materials(self):

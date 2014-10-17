@@ -219,5 +219,9 @@
 		
 	</xsl:template>
 	
-
+	<xsl:template match="related-article[@specific-use='processing-only']">
+		
+	</xsl:template>
+	
+	
 </xsl:stylesheet>

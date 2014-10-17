@@ -127,34 +127,17 @@ class ArticleContentValidation(object):
         return expected_values('@xml:lang', self.article.language, ['en', 'es', 'pt', 'de', 'fr'], 'FATAL ')
 
     @property
-    def related_objects(self):
-        """
-        @id k
-        @document-id i
-        @document-id-type n
-        @document-type t
-        @object-id i
-        @object-id-type n
-        @object-type t
-        @source-id i
-        @source-id-type n
-        @source-type t
-        @link-type r
-        """
-        return article_utils.display_values_with_attributes('related objects', self.article.related_objects)
-
-    @property
     def related_articles(self):
         """
         @id k
         @xlink:href i
         @ext-link-type n
         . t article
-        .//article-meta/related-article[@related-article-type='press-release' and @specific-use='processing-only'] 241
+        @related-article-type
         @id k
         . t pr
         """
-        return article_utils.display_values_with_attributes('related articles', self.article.related_objects)
+        return article_utils.display_values_with_attributes('related articles', self.article.related_articles)
 
     @property
     def journal_title(self):
