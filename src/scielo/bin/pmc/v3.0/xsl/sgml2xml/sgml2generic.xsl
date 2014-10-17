@@ -3279,9 +3279,9 @@ et al.</copyright-statement>
 		<permissions>
 			<license license-type="open-access" xlink:href="{$href}{$licid}">
 				<license-p>
-					<graphic>
+					<!--graphic>
 						<xsl:attribute name="xlink:href">http://i.creativecommons.org/l/<xsl:value-of select="$licid"/>88x31.png</xsl:attribute>
-					</graphic>
+					</graphic-->
 					<xsl:apply-templates select="." mode="license-text"></xsl:apply-templates>
 				</license-p>
 			</license>
@@ -3297,9 +3297,9 @@ et al.</copyright-statement>
 		<permissions>
 			<license license-type="open-access" xlink:href="{$href}">
 				<license-p>
-					<graphic>
+					<!--graphic>
 						<xsl:attribute name="xlink:href">http://i.creativecommons.org/l/<xsl:value-of select="$licid"/>88x31.png</xsl:attribute>
-					</graphic>
+					</graphic-->
 					<!-- CC <xsl:value-of select="../license-label"/>-->
 					<xsl:apply-templates select="." mode="license-text"></xsl:apply-templates>
 				</license-p>
