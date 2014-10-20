@@ -758,6 +758,8 @@ Version  Reason/Occasion                   (who) vx.x (yyyy-mm-dd)
 
 <!--                    UP/DOWN RENDITION ELEMENTS                 -->
 <!ENTITY % subsup.class "sub | sup"                                  >
+<!ENTITY % insti.class "sub | sup | named-content"             >
+
 
 
 <!-- ============================================================= -->

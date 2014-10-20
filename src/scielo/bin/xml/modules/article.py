@@ -623,8 +623,11 @@ class ArticleXML(object):
 
     @property
     def press_release_id(self):
+        _id = None
         for related in self.related_articles:
-
+            if related.get('id') is not None:
+                _id = related.get('id')
+        return _id
 
     @property
     def issue_pub_date(self):
