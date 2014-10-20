@@ -181,6 +181,8 @@ def format_new_name(doc, param_acron='', original_xml_name=''):
                 r = normalize_len(fpage)
                 if seq is not None:
                     r += '-' + seq
+                if r == '00000':
+                    r = None
         if r is None:
             if elocation_id is not None:
                 r = elocation_id
