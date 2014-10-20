@@ -718,7 +718,7 @@ class JSON_Article:
         print(issue.name)
         self.section = issue.toc.return_section(section)
         if self.section is None:
-            if 'ahead' in issue.name:
+            if 'ahead' in issue.name or section.title == 'Press Release':
                 section.code = 'nd'
             else:
                 section.code = section.title + ' (INVALID) ' + 'The sections of ' + issue.name + ': ' + issue.toc.return_sections()
@@ -934,7 +934,10 @@ class JSON_Article:
         """
         Validate the required data of front
         """
-        required = { 'doi': [237], 'publisher-name': [62], }
+        if 'pr' in self.json_data['f'].get('32'):
+            required = {'publisher-name': [62], }
+        else:
+            required = { 'doi': [237], 'publisher-name': [62], }
         errors = []
         for label, tags in required.items():
             value = ''
