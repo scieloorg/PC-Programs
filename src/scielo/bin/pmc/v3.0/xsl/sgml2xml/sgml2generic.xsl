@@ -1105,7 +1105,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</issue>
 				<issue-part>Pt <xsl:value-of select="substring-after(.,' Pt ')"/></issue-part>
 			</xsl:when>
-			<xsl:when test=".='ahead'">
+			<xsl:when test=".='ahead' or (number(.)=0 and (number(../@volid)=0 or not(../@volid)))">
 				<volume>00</volume>
 				<issue>00</issue>
 			</xsl:when>
@@ -1145,6 +1145,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="@fpage">
 		<fpage>
 			<xsl:choose>
+				<xsl:when test="number(.)=0">00</xsl:when>
 				<xsl:when test="contains(.,'-')">
 					<xsl:attribute name="seq"><xsl:value-of select="substring-after(.,'-')"/></xsl:attribute>
 					<xsl:value-of select="substring-before(.,'-')"/>
@@ -1158,6 +1159,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="@lpage">
 		<lpage>
 			<xsl:choose>
+				<xsl:when test="number(.)=0">00</xsl:when>
 				<xsl:when test="contains(.,'-')">
 					<xsl:attribute name="seq"><xsl:value-of select="substring-after(.,'-')"/></xsl:attribute>
 					<xsl:value-of select="substring-before(.,'-')"/>
