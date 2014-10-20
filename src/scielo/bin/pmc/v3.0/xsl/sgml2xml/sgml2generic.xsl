@@ -1539,7 +1539,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic | ref//italic | ref//bold">
-		<xsl:if test="not(contains(',. :;',text()))"><xsl:apply-templates select="text()"></xsl:apply-templates>
+		<xsl:if test="not(contains(',. :;',normalize-space(text())))"><xsl:apply-templates select="text()"></xsl:apply-templates>
 		</xsl:if>
 	</xsl:template>
 	<xsl:template
