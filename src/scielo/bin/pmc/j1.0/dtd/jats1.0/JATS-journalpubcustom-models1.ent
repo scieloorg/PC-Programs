@@ -311,7 +311,7 @@ Version  Reason/Occasion                   (who) vx.x (yyyy-mm-dd)
                         element
                         Removed %break.class; and %emphasis.class; -->
 <!ENTITY % institution-elements
-                        "| %subsup.class;"                           >
+                        "| %insti.class;"                           >
 
 
 <!--                    ISSUE TITLE ELEMENTS                       -->

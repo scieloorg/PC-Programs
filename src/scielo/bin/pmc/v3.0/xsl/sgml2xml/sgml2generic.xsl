@@ -916,6 +916,17 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<institution content-type="original"><xsl:apply-templates select="*|text()" mode="original"></xsl:apply-templates></institution>
 			<!--institution content-type="aff-pmc"><xsl:apply-templates select="*[name()!='label' and name()!='sup']|text()" mode="aff-pmc"/></institution -->
 			<xsl:choose>
+				<xsl:when test="@norgname">
+					<xsl:if test="@norgname!='Not normalized'">
+						<institution content-type="normalized"><xsl:value-of select="@norgname"/></institution>	
+					</xsl:if>
+					<xsl:apply-templates select="*[contains(name(),'org')]"/>
+					<xsl:if test="city or state or zipcode">
+						<addr-line>
+							<xsl:apply-templates select="city|state|zipcode"/>
+						</addr-line>
+					</xsl:if>
+				</xsl:when>				
 				<xsl:when test="@orgname">
 					<xsl:apply-templates select="@*[name()!='id']"/>
 					<xsl:if test="city or state or zipcode">
@@ -924,14 +935,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						</addr-line>
 					</xsl:if>
 				</xsl:when>
-				<xsl:when test="@norgname">
-					<xsl:apply-templates select="*[contains(name(),'org')]"/>
-					<xsl:if test="city or state or zipcode">
-						<addr-line>
-							<xsl:apply-templates select="city|state|zipcode"/>
-						</addr-line>
-					</xsl:if>
-				</xsl:when>
+				
 			</xsl:choose>
 			<xsl:choose>
 				<xsl:when test="@ncountry">
@@ -985,7 +989,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="aff/label" mode="aff-pmc">
 	</xsl:template>
 	
-	<xsl:template match="aff/email | normaff/email" mode="original"><named-content content-type="email"><xsl:value-of select="text()"/></named-content>
+	<xsl:template match="aff/email | normaff/email | aff/country | normaff/country" mode="original"><named-content content-type="{name()}"><xsl:value-of select="text()"/></named-content>
 	</xsl:template>
 	<xsl:template match="aff//text() | normaff//text()" mode="original">
 		<xsl:value-of select="."/>
@@ -1018,9 +1022,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="normaff/orgname">
-		<xsl:if test="../@norgname!='Not normalized'">
-			<institution content-type="normalized"><xsl:value-of select="../@norgname"/></institution>
-		</xsl:if>
 		<institution content-type="orgname"><xsl:value-of select="."/></institution>
 	</xsl:template>
 	<xsl:template match="normaff/*[contains(name(),'orgdiv')]">
