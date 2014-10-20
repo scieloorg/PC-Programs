@@ -149,10 +149,7 @@
     .//article-meta/abstract 83
       . a
       @xml:lang l 
-    .//article-meta/trans-abstract[1] 83
-      . a
-      @xml:lang l
-    .//article-meta/trans-abstract[2] 83
+    .//article-meta/trans-abstract 83
       . a
       @xml:lang l
     .//sub-article[@article-type='translation']//front-stub//abstract 83
