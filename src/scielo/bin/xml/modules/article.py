@@ -218,11 +218,11 @@ class ArticleXML(object):
             related = self.article_meta.findall('related-article')
             for rel in related:
                 item = {}
-                item['href'] = item.attrib.get('{http://www.w3.org/1999/xlink}href')
-                item['ext-link-type'] = item.attrib.get('ext-link-type')
+                item['href'] = rel.attrib.get('{http://www.w3.org/1999/xlink}href')
+                item['ext-link-type'] = rel.attrib.get('ext-link-type')
                 if not item['ext-link-type'] == 'doi':
                     item['id'] = ''.join([c for c in item['href'] if c.isdigit()])
-                item['related-article-type'] = item.attrib.get('related-article-type')
+                item['related-article-type'] = rel.attrib.get('related-article-type')
                 r.append(item)
         return r
 
@@ -785,7 +785,7 @@ class Article(ArticleXML):
         data = {}
         data['journal-title'] = self.journal_title
         data['journal id NLM'] = self.journal_id_nlm_ta
-        data['journal ISSN'] = ' '.join(self.journal_issns.values()) if self.journal_issns is not None else None
+        data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items()]) if self.journal_issns is not None else None
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_label
         data['issue pub date'] = format_date(self.issue_pub_date)

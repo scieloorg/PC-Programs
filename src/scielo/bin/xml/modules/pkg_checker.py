@@ -68,7 +68,7 @@ def validate_package(doc_files_info_list, dtd_files, report_path, validate_order
         new_name = doc_files_info.new_name
         report_name = doc_files_info.xml_name
         xml_filename = doc_files_info.new_xml_filename
-
+        print(new_name)
         article, sheet_data, result, xml_stats, data_stats = validate_article(xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order)
 
         f, e, w = xml_stats

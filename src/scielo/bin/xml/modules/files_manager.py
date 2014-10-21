@@ -208,7 +208,7 @@ class AheadManager(object):
             status = 'new'
         else:
             xml_filename = xml_name + '.xml'
-            msg_list.append('Find an "ahead of print version" for ' + article.doi + ' and ' + xml_filename)
+            msg_list.append('Try to find an "ahead of print version" for ' + article.doi + ' and ' + xml_filename)
             ahead = self.find_ahead(article.doi, xml_filename)
 
             if ahead is None:

@@ -6,8 +6,6 @@ import xml.etree.ElementTree as etree
 import HTMLParser
 from StringIO import StringIO
 
-import xml_utils
-
 
 ENTITIES_TABLE = {}
 
@@ -37,9 +35,9 @@ class XMLContent(object):
         self.content = self.content[0:self.content.rfind('>')+1]
         self.content = self.content[self.content.find('<'):]
         self.content = self.content.replace(' '*2, ' '*1)
-        if xml_utils.is_xml_well_formed(self.content) is None:
+        if is_xml_well_formed(self.content) is None:
             self._fix_style_tags()
-        if xml_utils.is_xml_well_formed(self.content) is None:
+        if is_xml_well_formed(self.content) is None:
             self._fix_open_close()
 
     def _fix_open_close(self):
@@ -176,7 +174,13 @@ def nodexmltostring(node):
             text, e = convert_entities_to_chars(text)
         else:
             text = node.text
+        text = strip(text)
     return text
+
+
+def strip(content):
+    r = content.split()
+    return ' '.join(r)
 
 
 def node_text(node):
@@ -185,7 +189,6 @@ def node_text(node):
         if text.startswith('<'):
             text = text[text.find('>')+1:]
             text = text[0:text.rfind('</')]
-            text = text.strip()
     return text
 
 
@@ -244,7 +247,7 @@ def register_remaining_named_entities(content):
             open('./named_entities.txt', 'w').write('\n'.join(entities))
 
 
-def number_ent_to_char(content):
+def all_ent_to_char(content):
     if '&' in content:
         h = HTMLParser.HTMLParser()
         if not isinstance(content, unicode):
@@ -267,8 +270,8 @@ def convert_entities_to_chars(content, debug=False):
     replaced_named_ent = []
     if '&' in content:
         content = preserve_xml_entities(content)
-        content = named_ent_to_char(content)
-        content, replaced_named_ent = number_ent_to_char(content)
+        content = all_ent_to_char(content)
+        content, replaced_named_ent = named_ent_to_char(content)
         register_remaining_named_entities(content)
 
         content = restore_xml_entities(content)
