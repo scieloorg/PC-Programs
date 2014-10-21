@@ -33,7 +33,7 @@ def doi_pid(doi):
         import json
 
         try:
-            f = urllib2.urlopen('http://dx.doi.org/' + doi)
+            f = urllib2.urlopen('http://dx.doi.org/' + doi, timeout=60)
             url = f.geturl()
 
             if 'scielo.php?script=sci_arttext&amp;pid=' in url:
@@ -41,7 +41,7 @@ def doi_pid(doi):
                 pid = pid[0:23]
 
                 try:
-                    f = urllib2.urlopen('http://200.136.72.162:7000/api/v1/article?code=' + pid + '&format=json')
+                    f = urllib2.urlopen('http://200.136.72.162:7000/api/v1/article?code=' + pid + '&format=json', timeout=60)
                     article_json = json.loads(f.read())
                     v880 = article_json['article'].get('v880')
                     v881 = article_json['article'].get('v881')

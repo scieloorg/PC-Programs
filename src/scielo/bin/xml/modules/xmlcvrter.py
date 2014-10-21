@@ -123,6 +123,7 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
 
         register_log('.'*80)
         register_log(result)
+        print(xml_name)
 
         valid_ahead, ahead_status, ahead_msg = ahead_manager.get_valid_ahead(article, xml_name)
         if valid_ahead is None:
@@ -149,6 +150,7 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
             article.section_code = section_code
             converted = convert_article(db_article, issue_record, issue_files, xml_name, article, valid_ahead)
         else:
+            converted = False
             register_log('FATAL ERROR: Unable to create "base". Fix all the fatal errors.')
 
         if converted:
@@ -200,8 +202,8 @@ def validate_issue_data(issue_record, article):
         if section_code is None:
             if not article.is_ahead:
                 f += 1
-                msg.append('FATAL ERROR: ' + article.toc_section + ' is not a registered section.')
-                msg.append('Registered sections:\n' + '\n'.join(IssueRecord(issue_record).section_titles))
+                msg.append('ERROR: ' + article.toc_section + ' is not a registered section.')
+                msg.append('Registered sections:\n' + '; '.join(IssueRecord(issue_record).section_titles))
         else:
             if matched_rate != 1:
                 w += 1

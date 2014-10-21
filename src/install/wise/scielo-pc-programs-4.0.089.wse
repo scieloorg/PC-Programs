@@ -28,7 +28,7 @@ item: Global
   FTP Cluster Size=20
   Per-User Version ID=1
   Dialogs Version=7
-  Version File=4.0.088
+  Version File=4.0.089
   Version Description=SciELO PC Programs
   Version Copyright=2014
   Version Company=SciELO
@@ -1291,6 +1291,11 @@ end
 item: Install File
   Source=w:\scielo\bin\xml\xml_package_maker.py
   Destination=%PROGDIR%\bin\xml\xml_package_maker.py
+  Flags=0000000010000010
+end
+item: Install File
+  Source=w:\scielo\bin\xml\tables\entities.csv
+  Destination=%PROGDIR%\bin\xml\tables\entities.csv
   Flags=0000000010000010
 end
 item: Install File

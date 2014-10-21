@@ -157,7 +157,17 @@ class ArticleContentValidation(object):
 
     @property
     def journal_issns(self):
-        return required_one('ISSN', self.article.journal_issns)
+        _valid = []
+        for k, v in self.article.journal_issns.items():
+            valid = False
+            if v[4:5] == '-':
+                if len(v) == 9:
+                    valid = True
+            status = 'OK' if valid else 'FATAL ERROR'
+            _valid.append((k + ' ISSN', status, v))
+        if len(_valid) == 0:
+            _valid.append(('ISSN', 'FATAL ERROR', 'Missing ISSN. Required at least one.'))
+        return _valid
 
     @property
     def toc_section(self):
@@ -180,7 +190,7 @@ class ArticleContentValidation(object):
 
     @property
     def contrib_collabs(self):
-        return [('collab', 'OK', collab) for collab in self.article.contrib_collabs]
+        return [('collab', 'OK', collab.collab) for collab in self.article.contrib_collabs]
 
     @property
     def titles(self):

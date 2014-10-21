@@ -73,18 +73,22 @@ class TOCReport(object):
                         part += html_report.format_list('found ' + label + ' "' + found_value + ' in:', 'ul', xml_files, 'issue-problem')
                 r += part
 
-        if not len(toc_data['fpage-and-seq']) == len(self.articles):
+        if not len(toc_data['fpage-and-seq'].items()) == len(self.articles):
             result = False
-            if len(toc_data['fpage-and-seq']) == 1:
-                found_values = toc_data['fpage-and-seq'].keys()
-                if found_values[0].isdigit():
-                    if int(found_values[0]) == 0 and len(toc_data['fpage-and-seq'].values()) == len(self.articles):
-                        result = True
+            values = []
+            for value, filename in toc_data['fpage-and-seq'].items():
+                if value.isdigit():
+                    values.append(str(int(value)))
+                else:
+                    values.append(value)
+            values = list(set(values))
+            if len(values) == 1:
+                if values[0] == '0':
+                    result = True
             if not result:
                 part = html_report.format_message('FATAL ERROR: unique value of fpage/seq is required for all the articles of the package')
                 for found_value, xml_files in toc_data['fpage-and-seq'].items():
-                    if len(xml_files) > 1:
-                        part += html_report.format_list('found fpage/seq "' + found_value + ' in:', 'ul', xml_files, 'issue-problem')
+                    part += html_report.format_list('found fpage/seq "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
                 r += part
         return html_report.tag('div', r, 'issue-messages')
 
@@ -193,7 +197,7 @@ class ArticleDisplayReport(object):
 
     @property
     def contrib_collabs(self):
-        r = [format_author(a) for a in self.article.contrib_collabs]
+        r = [a.collab for a in self.article.contrib_collabs]
         if len(r) > 0:
             r = html_report.format_list('collabs', 'ul', r)
         else:
@@ -335,20 +339,29 @@ class ArticleValidationReport(object):
         r += '</table></p>'
         return r
 
+    def _format_row(self, row):
+        r = ''
+        cell = ''
+        cell += html_report.tag('td', row[0], 'td_label')
+        cell += html_report.tag('td', row[1], 'td_status')
+        style = html_report.message_style(row[1] + ':')
+        value = row[2]
+        if '<' in value and '>' in value:
+            value = html_report.display_xml(value)
+        if style == 'ok':
+            value = html_report.tag('span', value, 'value')
+        cell += html_report.tag('td', value, 'td_message')
+        r += html_report.tag('tr', cell, style)
+        return r
+
     def format_validation_data(self, table_data):
         r = ''
         for row in table_data:
-            cell = ''
-            cell += html_report.tag('td', row[0], 'td_label')
-            cell += html_report.tag('td', row[1], 'td_status')
-            style = html_report.message_style(row[1] + ':')
-            value = row[2]
-            if '<' in value and '>' in value:
-                value = html_report.display_xml(value)
-            if style == 'ok':
-                value = html_report.tag('span', value, 'value')
-            cell += html_report.tag('td', value, 'td_message')
-            r += html_report.tag('tr', cell, style)
+            if isinstance(row, list):
+                for _row in row:
+                    r += self._format_row(_row)
+            else:
+                r += self._format_row(row)
         return r
 
     def report(self):

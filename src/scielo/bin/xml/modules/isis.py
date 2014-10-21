@@ -130,25 +130,36 @@ class IDFile(object):
                     rec_list.append(self.simplify_record(record))
                 record = {}
             else:
-                ign, tag, content = s.split('!')
-                tag = str(int(tag[1:]))
-                if not tag in record.keys():
-                    record[tag] = []
-                content = content.replace('^', 'BREAKSUBF^')
-                subfields = content.split('BREAKSUBF')
-                if len(subfields) == 1:
-                    content = subfields[0]
+                item = s.split('!')
+                tag = None
+                if len(item) == 3:
+                    ign, tag, content = item
+                elif len(item) > 3:
+                    tag = item[1]
+                    content = s[6:]
+                if tag is not None:
+                    tag = str(int(tag[1:]))
+                    if not tag in record.keys():
+                        record[tag] = []
+                    content = content.replace('^', 'BREAKSUBF^')
+                    subfields = content.split('BREAKSUBF')
+                    if len(subfields) == 1:
+                        content = subfields[0]
+                    else:
+                        content = {}
+                        for subf in subfields:
+                            if subf.startswith('^'):
+                                c = subf[1:2]
+                                v = subf[2:]
+                            else:
+                                c = '_'
+                                v = subf
+                            content[c] = v
+                    record[tag].append(content)
                 else:
-                    content = {}
-                    for subf in subfields:
-                        if subf.startswith('^'):
-                            c = subf[1:2]
-                            v = subf[2:]
-                        else:
-                            c = '_'
-                            v = subf
-                        content[c] = v
-                record[tag].append(content)
+                    print(filename)
+                    print(s)
+                    print(s[6:])
 
         # last record
         if len(record) > 0:
