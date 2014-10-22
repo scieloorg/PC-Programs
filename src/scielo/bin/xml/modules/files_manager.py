@@ -77,7 +77,7 @@ class Ahead(object):
 
     @property
     def order(self):
-        return self.record.get('121')
+        return self.record.get('121', '00000')
 
     @property
     def ahead_pid(self):
@@ -89,11 +89,11 @@ class Ahead(object):
     def article_title(self):
         title = self.record.get('12')
         if isinstance(title, dict):
-            t = title.get('t')
-        elif isinstance(title, []):
-            t = title[0].get('t')
+            t = title.get('_')
+        elif isinstance(title, list):
+            t = title[0].get('_')
         else:
-            t = None
+            t = 'None'
         return t
 
     @property
@@ -101,10 +101,10 @@ class Ahead(object):
         author = self.record.get('10')
         if isinstance(author, dict):
             a = author.get('s')
-        elif isinstance(author, []):
+        elif isinstance(author, list):
             a = author[0].get('s')
         else:
-            a = None
+            a = 'None'
         return a
 
 
@@ -181,9 +181,8 @@ class AheadManager(object):
         return r
 
     def matched_rate(self, article, ahead):
-        if ahead is None:
-            r = 0
-        else:
+        r = 0
+        if not ahead is None:
             r += how_similar(article.title, ahead.article_title)
             r += how_similar(article.first_author_surname, ahead.first_author_surname)
             r = (r * 100) / 2
@@ -221,6 +220,7 @@ class AheadManager(object):
                     is_valid_ahead = self.is_valid(ahead)
                     if is_valid_ahead:
                         status = 'valid'
+                        msg = ''
                         valid_ahead = ahead
                         if matched_rate != 100:
                             msg = 'WARNING: article and its "ahead of print version" are partially matched.'
@@ -233,10 +233,10 @@ class AheadManager(object):
                     msg = 'WARNING: article and "ahead of print version" are unmatched'
 
                 msg_list.append(msg)
-                msg_list.append(article.title)
-                msg_list.append(article.first_author_surname)
-                msg_list.append(ahead.title)
-                msg_list.append(ahead.first_author_surname)
+                msg_list.append('article title:' + article.title)
+                msg_list.append('ahead article title:' + ahead.article_title)
+                msg_list.append('article first author:' + article.first_author_surname)
+                msg_list.append('ahead first author:' + ahead.first_author_surname)
 
         return (valid_ahead, status, '\n'.join(['<p>' + item + '</p>' for item in msg_list]))
 
@@ -269,9 +269,11 @@ class AheadManager(object):
         if os.path.isfile(xml_file):
             shutil.move(xml_file, ex_ahead_markup_path)
             msg.append('move ' + xml_file + '\n    to ' + ex_ahead_markup_path)
-        if os.path.isfile(self.journal_files.ahead_id_filename(year, ahead.order)):
-            os.unlink(self.journal_files.ahead_id_filename(year, ahead.order))
-            msg.append('delete ' + self.journal_files.ahead_id_filename(year, ahead.order))
+
+        ahead_order = ahead.order
+        if os.path.isfile(self.journal_files.ahead_id_filename(year, ahead_order)):
+            os.unlink(self.journal_files.ahead_id_filename(year, ahead_order))
+            msg.append('delete ' + self.journal_files.ahead_id_filename(year, ahead_order))
         return '\n'.join(msg)
 
     def save_ex_ahead_record(self, ahead):
@@ -443,7 +445,7 @@ class JournalFiles(object):
     def ahead_id_filename(self, year, order):
         order = '00000' + order
         order = order[-5:]
-        return self.ahead_id_path + '/' + order + '.id'
+        return self.ahead_id_path(year) + '/' + order + '.id'
 
     def ahead_id_path(self, year):
         path = self.journal_path + '/' + year + 'nahead/id'

@@ -934,7 +934,7 @@ class JSON_Article:
         """
         Validate the required data of front
         """
-        if 'pr' in self.json_data['f'].get('32'):
+        if 'pr' in self.json_data['f'].get('32', ''):
             required = {'publisher-name': [62], }
         else:
             required = { 'doi': [237], 'publisher-name': [62], }

@@ -10,7 +10,7 @@ Methodology for XML
 .. toctree::
    :maxdepth: 1
 
-   guidelines_xml.rst
+   `SciELO Tagging Guidelines rules <http://docs.scielo.org/projects/scielo-publishing-schema/en/>`_.
 
 
 ----------------

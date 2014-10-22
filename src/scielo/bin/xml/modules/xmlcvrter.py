@@ -67,6 +67,8 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
     register_log(toc_stats_report)
     if toc_f + toc_e + toc_w > 0:
         register_log(html_report.link('file:///' + report_path + '/toc.html', 'toc.html'))
+    register_log(html_report.link('file:///' + report_path + '/authors.html', 'authors.html'))
+    register_log(html_report.link('file:///' + report_path + '/sources.html', 'sources.html'))
 
     if toc_f > 0:
         register_log('FATAL ERROR: Unable to create "base" because of fatal errors in the Table of Contents data.')

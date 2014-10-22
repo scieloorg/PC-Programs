@@ -35,10 +35,13 @@ class TOCReport(object):
     def report(self):
         invalid = []
         equal_data = ['journal-title', 'journal id NLM', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        if self.validate_order:
-            unique_data = ['order', 'doi', 'elocation id']
-        else:
-            unique_data = ['doi', 'elocation id']
+        unique_data = ['order', 'doi', 'elocation id']
+        unique_status = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR'}
+
+        if not self.validate_order:
+            unique_status['order'] = 'WARNING'
+        #else:
+        #    unique_data = ['doi', 'elocation id']
         conditional_unique_data = ['fpage-and-seq']
 
         toc_data = {}
@@ -60,18 +63,33 @@ class TOCReport(object):
 
         for label in equal_data:
             if len(toc_data[label]) > 1:
-                part = html_report.format_message('FATAL ERROR: equal value of ' + label + ' is required for all the articles of the package')
+                part = html_report.format_message('FATAL ERROR: same value for ' + label + ' is required for all the articles of the package')
                 for found_value, xml_files in toc_data[label].items():
-                    part += html_report.format_list('found ' + label + ' "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
+                    part += html_report.format_list('found ' + label + ' "' + html_report.display_xml(found_value) + '" in:', 'ul', xml_files, 'issue-problem')
                 r += part
 
         for label in unique_data:
             if len(toc_data[label]) > 0 and len(toc_data[label]) != len(self.articles):
-                part = html_report.format_message('FATAL ERROR: unique value of ' + label + ' is required for all the articles of the package')
+                unique_check = 0
+                invalid_unique = {}
+                none = []
                 for found_value, xml_files in toc_data[label].items():
-                    if len(xml_files) > 1:
-                        part += html_report.format_list('found ' + label + ' "' + found_value + ' in:', 'ul', xml_files, 'issue-problem')
-                r += part
+                    if found_value == 'None':
+                        none = xml_files
+                    else:
+                        invalid_unique[found_value] = xml_files
+                        if len(xml_files) > 0:
+                            unique_check += 1
+                if unique_check > 0:
+                    part = html_report.format_message(unique_status[label] + ': unique value of ' + label + ' is required for all the articles of the package')
+                    for found_value, xml_files in invalid_unique.items():
+                        if len(xml_files) > 1:
+                            part += html_report.format_list('found ' + label + ' "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
+                    r += part
+                if len(none) > 0:
+                    part = html_report.format_message('INFO: there is no value for ' + label + '.')
+                    part += html_report.format_list('no value for ' + label + ' in:', 'ul', none, 'issue-problem')
+                    r += part
 
         if not len(toc_data['fpage-and-seq'].items()) == len(self.articles):
             result = False
@@ -86,7 +104,7 @@ class TOCReport(object):
                 if values[0] == '0':
                     result = True
             if not result:
-                part = html_report.format_message('FATAL ERROR: unique value of fpage/seq is required for all the articles of the package')
+                part = html_report.format_message('ERROR: unique value of fpage/seq is required for all the articles of the package')
                 for found_value, xml_files in toc_data['fpage-and-seq'].items():
                     part += html_report.format_list('found fpage/seq "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
                 r += part

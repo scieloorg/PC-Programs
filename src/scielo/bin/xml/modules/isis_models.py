@@ -230,7 +230,10 @@ class ArticleRecords(object):
             rec_c['16'] = []
             rec_c['17'] = []
             for person in item.authors_list:
-                field = self.author_tag(person.role, isinstance(person, PersonAuthor), item.article_title or item.chapter_title)
+                is_analytic = False
+                if item.article_title is not None or item.chapter_title is not None:
+                    is_analytic = True
+                field = self.author_tag(person.role, isinstance(person, PersonAuthor), is_analytic)
                 if isinstance(person, PersonAuthor):
                     a = {}
                     a['n'] = person.fname
