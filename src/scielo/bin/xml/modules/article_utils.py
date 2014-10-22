@@ -148,6 +148,8 @@ def expected_values(label, value, expected):
 
 
 def add_new_value_to_index(dict_key_and_values, key, value):
+    if key is None:
+        key = 'None'
     if key is not None:
         if not key in dict_key_and_values.keys():
             dict_key_and_values[key] = []

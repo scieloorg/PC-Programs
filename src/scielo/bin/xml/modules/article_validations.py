@@ -230,15 +230,16 @@ class ArticleContentValidation(object):
                 else:
                     r = ('FATAL ERROR', 'Invalid format of order. Expected 99999.')
             return r
-        r = ('order', 'OK', self.article.order)
-        if self.validate_order:
-            r = valid(self.article.order)
-            if r[0] == '?':
-                r = required('order', self.article.order)
-            elif r[0] == 'FATAL ERROR':
-                r = ('order', 'FATAL ERROR', r[1])
-            else:
-                r = ('order', 'OK', self.article.order)
+        r = valid(self.article.order)
+        if r[0] == '?':
+            r = required('order', self.article.order)
+        elif r[0] == 'FATAL ERROR':
+            r = ('order', 'FATAL ERROR', r[1])
+        else:
+            r = ('order', 'OK', self.article.order)
+        if not self.validate_order:
+            if r[1] == 'FATAL ERROR':
+                r = ('order', 'WARNING', r[2])
         return r
 
     @property

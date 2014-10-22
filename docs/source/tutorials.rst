@@ -26,7 +26,7 @@ Programs for desktop
    markup.rst
    parser.rst
    xml_package_maker.rst
-   xml_converter_local.rst
+   xml_converter.rst
 
 
 ----------------

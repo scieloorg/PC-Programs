@@ -16,7 +16,7 @@ Usage:
     cd \scielo\bin\xml
 
 
-2. Use the command below to generate XML files according to JATS 1.0
+2. Use the command below to generate XML files according to SPS 1.1
 
 .. code::
 
@@ -120,15 +120,10 @@ Messages
 
 If you can not understand the messages, use our support: `SciELO XML Forum <support.html>`_
 
-Messages to ignore
-..................
-
-1. The content of element type "institution" must match "(sub|sup)"
-
 
 Report of SciELO Style Checker
 ------------------------------
-The document is checked against the `SciELO Tagging Guidelines rules <guidelines_xml.html>`_.
+The document is checked against the `SciELO Tagging Guidelines rules <http://docs.scielo.org/projects/scielo-publishing-schema/en/>`_.
 
 Report file name: <article filename>.rep.html
 
@@ -137,13 +132,7 @@ Example: article-v48n6p060.rep.html
 
 Report of Contents Validations
 ------------------------------
-It is a set of reports: 
-
-<article filename>_href.html
-  list the @href and files
-
-<article filename>_id.html
-  @id found in the XML
+This report displays the data and warnings/error/fatal errors related to the data.
 
 <article filename>.contents.html
   validations of the contents
@@ -152,8 +141,6 @@ Report file name: <article filename>
 
 Example: 
 
-  - article-v48n6p060_href.html
-  - article-v48n6p060_id.html
   - article-v48n6p060.contents.html
 
 
@@ -167,4 +154,4 @@ The document is checked against the PMC Tagging Guidelines rules
 
 ----------------
 
-Last update of this page: Abril 1, 2014
+Last update of this page: Octubre, 2014
