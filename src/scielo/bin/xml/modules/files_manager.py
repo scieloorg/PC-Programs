@@ -190,7 +190,9 @@ class AheadManager(object):
 
     def find_ahead(self, doi, filename):
         data = None
-        i = self.ahead_doi.get(doi, None)
+        i = None
+        if doi is not None:
+            i = self.ahead_doi.get(doi, None)
         if i is None:
             i = self.ahead_filename.get(filename, None)
         if i is not None:
@@ -207,7 +209,9 @@ class AheadManager(object):
             status = 'new'
         else:
             xml_filename = xml_name + '.xml'
-            msg_list.append('Try to find an "ahead of print version" for ' + article.doi + ' and ' + xml_filename)
+            msg_list.append('Try to find an "ahead of print version" for ' + xml_filename)
+            if article.doi is not None:
+                msg_list.append('Try to find an "ahead of print version" for ' + article.doi)
             ahead = self.find_ahead(article.doi, xml_filename)
 
             if ahead is None:
@@ -238,7 +242,7 @@ class AheadManager(object):
                 msg_list.append('article first author:' + article.first_author_surname)
                 msg_list.append('ahead first author:' + ahead.first_author_surname)
 
-        return (valid_ahead, status, '\n'.join(['<p>' + item + '</p>' for item in msg_list]))
+        return (valid_ahead, status, msg_list)
 
     def mark_ahead_as_deleted(self, ahead):
         """

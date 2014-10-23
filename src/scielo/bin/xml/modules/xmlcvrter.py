@@ -145,15 +145,15 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
 
         register_log(html_report.statistics_messages(f, e, w, '<h4>converter validations</h4>'))
         register_log('.'*80)
-        register_log(ahead_msg)
+        register_log(''.join([html_report.format_message(item) for item in ahead_msg]))
         register_log(issue_validations)
 
-        if f == 0:
+        if f + xml_stats[0] + data_stats[0] == 0:
             article.section_code = section_code
             converted = convert_article(db_article, issue_record, issue_files, xml_name, article, valid_ahead)
         else:
             converted = False
-            register_log('FATAL ERROR: Unable to create "base". Fix all the fatal errors.')
+            register_log('FATAL ERROR: Unable to create "base" for ' + xml_name + ', because it has fatal errors.')
 
         if converted:
             if valid_ahead is not None:

@@ -157,24 +157,12 @@ def restore_xml_file(xml_filename, temp_filename):
     shutil.rmtree(os.path.dirname(temp_filename))
 
 
-def normalize_space(s):
-    if s is not None:
-        s = s.replace('\n', ' ')
-        s = s.replace('\t', ' ')
-        s = s.replace('\r', ' ')
-        s = s.replace('  ', ' ')
-    return s
-
-
 def nodexmltostring(node):
     text = None
     if not node is None:
         text = etree.tostring(node)
         if '<' in text:
             text, e = convert_entities_to_chars(text)
-        else:
-            text = node.text
-        text = strip(text)
     return text
 
 
