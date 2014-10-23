@@ -1,6 +1,17 @@
 # coding=utf-8
 
+import urllib2
+
+
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
+
+
+def url_check(url):
+    try:
+        r = urllib2.urlopen(url, timeout=30)
+    except:
+        r = None
+    return (r is not None)
 
 
 def how_similar(this, that):
@@ -29,7 +40,7 @@ def doi_pid(doi):
     pid = None
 
     if doi is not None:
-        import urllib2
+        
         import json
 
         try:

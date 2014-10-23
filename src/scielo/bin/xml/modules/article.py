@@ -1,4 +1,5 @@
 # coding=utf-8
+import os
 
 import xml.etree.ElementTree as etree
 
@@ -52,16 +53,21 @@ class HRef(object):
             self.id = parent.attrib.get('id', None)
 
         self.parent = parent
-        self.isfile = (not element.tag == 'ext-link') and (not ':' in src) and (not '/' in src)
+        self.is_internal_file = (not element.tag == 'ext-link') and (not ':' in src) and (not '/' in src)
 
     def display(self, path):
         if self.src is not None and self.src != '':
-            if ':' in self.src:
-                return '<a href="' + self.src + '">' + self.src + '</a>'
-            elif self.element.tag == 'graphic':
-                return '<img src="' + path + '/' + self.src + '"/>'
+            _path = path.replace('file:///', '') + '/' + self.src
+            if 'graphic' in self.element.tag:
+                if os.path.isfile(_path):
+                    return '<img src="' + path + '/' + self.src + '"/>'
+                else:
+                    return '<img src="' + self.src + '"/>'
             else:
-                return '<a href="' + path + '/' + self.src + '">' + self.src + '</a>'
+                if os.path.isfile(_path):
+                    return '<a href="' + path + '/' + self.src + '">' + self.src + '</a>'
+                else:
+                    return '<a href="' + self.src + '">' + self.src + '</a>'
         else:
             return 'None'
 

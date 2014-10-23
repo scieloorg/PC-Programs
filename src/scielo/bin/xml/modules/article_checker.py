@@ -167,7 +167,7 @@ class ArticleDisplayReport(object):
     def files_and_href(self):
         r = ''
         r += html_report.tag('h2', 'Files in the package') + html_report.sheet(self.sheet_data.package_files(self.files))
-        r += html_report.tag('h2', 'Files in @href') + html_report.sheet(self.sheet_data.hrefs_sheet_data(self.xml_path))
+        r += html_report.tag('h2', '@href') + html_report.sheet(self.sheet_data.hrefs_sheet_data(self.xml_path))
         return r
 
     @property
@@ -530,14 +530,18 @@ class ArticleSheetData(object):
         t_header = ['href', 'display', 'xml']
         r = []
 
-        for item in self.article.href_files:
+        for item in self.article.hrefs:
             row = {}
             row['href'] = item.src
             msg = ''
-            if not ':' in item.src:
+            if item.is_internal_file:
                 if not os.path.isfile(path + '/' + item.src) and not os.path.isfile(path + '/' + item.src + '.jpg'):
                     msg = 'ERROR: ' + item.src + ' not found in package'
-            row['display'] = item.display('file:///' + path) + msg
+                row['display'] = item.display('file:///' + path) + '<p>' + msg + '</p>'
+            else:
+                if not article_utils.url_check(item.src):
+                    msg = 'ERROR: ' + item.src + ' is not working'
+                row['display'] = item.display(item.src) + '<p>' + msg + '</p>'
             row['xml'] = item.xml
             r.append(row)
         return (t_header, ['display', 'xml'], r)

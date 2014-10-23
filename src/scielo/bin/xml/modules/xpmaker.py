@@ -106,11 +106,27 @@ def extract_embedded_images(xml_name, content, html_filename, dest_path):
     if content.find('href="?' + xml_name):
         html_content = open(html_filename, 'r').read()
         embedded_img_files = html_img_src(html_content)
-        embedded_img_path = os.path.dirname(html_filename)
-        content = rename_embedded_img_href(content, xml_name, embedded_img_files)
-        for item in embedded_img_files:
-            if os.path.isfile(embedded_img_path + '/' + item):
-                shutil.copyfile(embedded_img_path + '/' + item, dest_path + '/' + xml_name + item)
+
+        print(html_filename)
+        embedded_img_path = None
+        path = os.path.dirname(html_filename)
+
+        name = os.path.basename(html_filename)
+        name = name[0:name.rfind('.')]
+        print(path)
+        print(name)
+        for p in os.listdir(path):
+            if os.path.isdir(path + '/' + p) and p.startswith(name):
+                embedded_img_path = path + '/' + p
+                break
+        if not embedded_img_path is None:
+            content = rename_embedded_img_href(content, xml_name, embedded_img_files)
+            for item in embedded_img_files:
+                print(embedded_img_path + '/' + item)
+
+                if os.path.isfile(embedded_img_path + '/' + item):
+                    shutil.copyfile(embedded_img_path + '/' + item, dest_path + '/' + xml_name + item)
+                    print(dest_path + '/' + xml_name + item)
     return content
 
 
@@ -260,14 +276,13 @@ def add_extension(curr_and_new_href_list, xml_path):
             if len(extensions) > 0:
                 new_href += extensions[0]
         r.append((href, new_href))
-    
     return r
 
 
 def get_attach_info(doc):
     items = []
     for href_info in doc.hrefs:
-        if href_info.isfile:
+        if href_info.is_internal_file:
             attach_type = href_attach_type(href_info.parent.tag, href_info.element.tag)
             attach_id = href_info.id
             items.append((href_info.src, attach_type, attach_id))
@@ -304,7 +319,7 @@ def pack_file_extended(src_path, dest_path, curr, new):
     r = []
     c = curr if not '.' in curr else curr[0:curr.rfind('.')]
     n = new if not '.' in new else new[0:new.rfind('.')]
-    found = [f for f in os.listdir(src_path) if (f == c or f.startswith(c + '.') or f.startswith(c + '-')) and not f.endswith('.sgm.xml') and not f.endswith('.replaced.txt') and not f.endswith('.xml.bkp')]
+    found = [f for f in os.listdir(src_path) if (f == curr or f.startswith(c + '.') or f.startswith(c + '-')) and not f.endswith('.sgm.xml') and not f.endswith('.replaced.txt') and not f.endswith('.xml.bkp')]
     for f in found:
         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(c, n))
         r.append((f, f.replace(c, n)))
