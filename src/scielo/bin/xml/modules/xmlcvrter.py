@@ -48,6 +48,7 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
     doc_files_info_list = []
     xml_filenames = sorted([xml_path + '/' + f for f in os.listdir(xml_path) if f.endswith('.xml')])
 
+    register_log('<h2>XML files</h2>')
     register_log('XML path: ' + xml_path)
     register_log('Total of XML files: ' + str(len(xml_filenames)))
     register_log(html_report.format_list('', 'ol', [os.path.basename(f) for f in xml_filenames]))
@@ -63,6 +64,7 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
     toc_stats_numbers, toc_stats_report = toc_results
     toc_f, toc_e, toc_w = toc_stats_numbers
 
+    register_log('<h2>XML/Data/TOC Validations</h2>')
     register_log(articles_stats)
     register_log(toc_stats_report)
     if toc_f + toc_e + toc_w > 0:
@@ -93,21 +95,22 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
             report_path = issue_files.base_reports_path
             convert_articles(ahead_manager, db_article, articles, article_results, issue_record, issue_files)
 
-    content = '\n'.join(converter_report_lines)
-
-    f, e, w = reports.statistics_numbers(content)
-    register_log('-'*80)
-    register_log(html_report.statistics_messages(f, e, w, 'Results of XML Conversion (XML to Database)'))
-    register_log('-'*80)
-
     html_report.title = 'XML Conversion (XML to Database) - ' + issue_label
+    content = '\n'.join(converter_report_lines)
     content = content.replace(old_report_path, report_path)
-    html_report.body = content
+    html_report.body = stats(content) + content
     converter_report_filename = report_path + '/xml_converter_result.html'
     html_report.save(converter_report_filename)
     print('\n\nXML Converter report:\n ' + converter_report_filename)
     pkg_checker.display_report(converter_report_filename)
     print('\n\n-- end --')
+
+
+def stats(content=None):
+    if content is None:
+        content = ''.join(converter_report_lines)
+    f, e, w = reports.statistics_numbers(content)
+    return html_report.statistics_messages(f, e, w, 'Results of XML Conversion (XML to Database)')
 
 
 def convert_articles(ahead_manager, db_article, articles, article_results, issue_record, issue_files):
@@ -119,6 +122,7 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
     not_loaded = []
     loaded = []
 
+    register_log('<h2>XML to Database</h2>')
     for xml_name, article in articles.items():
         #(xml_stats, data_stats, result)
         xml_stats, data_stats, result = article_results[xml_name]
@@ -127,7 +131,7 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
         register_log(result)
         print(xml_name)
 
-        valid_ahead, ahead_status, ahead_msg = ahead_manager.get_valid_ahead(article, xml_name)
+        valid_ahead, ahead_status, ahead_msg, ahead_comparison = ahead_manager.get_valid_ahead(article, xml_name)
         if valid_ahead is None:
             if ahead_status == 'new':
                 total_new_doc.append(xml_name)
@@ -144,8 +148,12 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
         article.section_code = section_code
 
         register_log(html_report.statistics_messages(f, e, w, '<h4>converter validations</h4>'))
-        register_log('.'*80)
+
+        register_log(html_report.tag('h4', 'checking ex-ahead'))
         register_log(''.join([html_report.format_message(item) for item in ahead_msg]))
+        register_log(''.join([html_report.tag('pre', item) for item in ahead_comparison]))
+
+        register_log(html_report.tag('h4', 'checking section'))
         register_log(issue_validations)
 
         if f + xml_stats[0] + data_stats[0] == 0:
@@ -155,32 +163,43 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
             converted = False
             register_log('FATAL ERROR: Unable to create "base" for ' + xml_name + ', because it has fatal errors.')
 
+        register_log(html_report.tag('h4', 'Result'))
         if converted:
             if valid_ahead is not None:
                 done, msg = ahead_manager.manage_ex_ahead(valid_ahead)
-                register_log(msg)
+                for item in msg:
+                    register_log(item)
             loaded.append(xml_name)
-            register_log('RESULT: converted')
+            register_log('Result: converted')
         else:
             not_loaded.append(xml_name)
             register_log('ERROR: not converted')
 
-    register_log('.'*80)
+    register_log('#'*80)
+
+    register_log(html_report.tag('h2', 'END'))
+    register_log(stats())
+    register_log(html_report.tag('h4', 'Converted/Not converted'))
 
     register_log(display_list('converted', loaded))
     register_log(display_list('not converted', not_loaded))
+
+    register_log(html_report.tag('h4', 'New/Ex-ahead'))
     register_log(display_list('new documents', total_new_doc))
     register_log(display_list('previous version (ahead of print)', total_ex_aop))
     register_log(display_list('previous version (ahead of print) partially matched', total_ex_aop_partially))
     register_log(display_list('previous version (ahead of print) without PID', total_ex_aop_invalid))
     register_log(display_list('previous version (ahead of print) unmatched', total_ex_aop_unmatched))
 
+    still_ahead = ahead_manager.finish_manage_ex_ahead()
+    if len(still_ahead) > 0:
+        register_log(display_list('ahead', still_ahead))
+
     if len(loaded) > 0:
         _loaded = db_article.finish_conversion(issue_record, issue_files)
-        register_log('Processing results: ' + html_report.link('file:///' + issue_files.issue_path, issue_files.issue_path))
 
-    if len(total_ex_aop) > 0:
-        register_log(ahead_manager.finish_manage_ex_ahead())
+        register_log(html_report.tag('h4', 'Processing result'))
+        register_log(html_report.link('file:///' + issue_files.issue_path, issue_files.issue_path))
 
     if len(loaded) > 0:
         register_log(issue_files.copy_files_to_web())

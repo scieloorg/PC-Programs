@@ -204,6 +204,7 @@ class AheadManager(object):
         ahead = None
         valid_ahead = None
         status = None
+        data = []
 
         if article.number == 'ahead':
             status = 'new'
@@ -227,22 +228,23 @@ class AheadManager(object):
                         msg = ''
                         valid_ahead = ahead
                         if matched_rate != 100:
-                            msg = 'WARNING: article and its "ahead of print version" are partially matched.'
+                            msg = 'WARNING: the title/author of article and its "ahead of print version" are partially matched.'
                             status = 'partially matched'
                     else:
                         status = 'not valid'
-                        msg = 'WARNING: "ahead of print version" has no PID'
+                        msg = 'WARNING: the title/author of "ahead of print version" has no PID'
                 else:
                     status = 'unmatched'
-                    msg = 'WARNING: article and "ahead of print version" are unmatched'
+                    msg = 'WARNING: the title/author of article and "ahead of print version" are unmatched'
 
                 msg_list.append(msg)
-                msg_list.append('article title:' + article.title)
-                msg_list.append('ahead article title:' + ahead.article_title)
-                msg_list.append('article first author:' + article.first_author_surname)
-                msg_list.append('ahead first author:' + ahead.first_author_surname)
 
-        return (valid_ahead, status, msg_list)
+                data.append('article title:' + article.title)
+                data.append('ahead article title:' + ahead.article_title)
+                data.append('article first author:' + article.first_author_surname)
+                data.append('ahead first author:' + ahead.first_author_surname)
+
+        return (valid_ahead, status, msg_list, data)
 
     def mark_ahead_as_deleted(self, ahead):
         """
@@ -278,7 +280,7 @@ class AheadManager(object):
         if os.path.isfile(self.journal_files.ahead_id_filename(year, ahead_order)):
             os.unlink(self.journal_files.ahead_id_filename(year, ahead_order))
             msg.append('delete ' + self.journal_files.ahead_id_filename(year, ahead_order))
-        return '\n'.join(msg)
+        return msg
 
     def save_ex_ahead_record(self, ahead):
         self.dao.append_records([ahead.record], self.journal_files.ahead_base('ex-' + ahead.ahead_db_name[0:4]))
@@ -289,10 +291,10 @@ class AheadManager(object):
         if ahead is not None:
             if ahead.ahead_pid is not None:
                 self.mark_ahead_as_deleted(ahead)
-                msg.append(self.manage_ex_ahead_files(ahead))
+                msg = self.manage_ex_ahead_files(ahead)
                 self.save_ex_ahead_record(ahead)
                 done = True
-        return (done, '\n'.join(msg))
+        return (done, msg)
 
     def finish_manage_ex_ahead(self):
         loaded = []
@@ -305,7 +307,7 @@ class AheadManager(object):
                 if f.endswith('.id') and f != '00000.id' and f != 'i.id':
                     self.dao.append_id_records(id_path + '/' + f, base)
                     loaded.append(ahead_db_name + ' ' + f)
-        return '\n'.join(loaded)
+        return loaded
 
 
 class ArticleFiles(object):
@@ -519,6 +521,8 @@ class ArticleDAO(object):
         loaded = []
         self.dao.save_records([issue_record], issue_files.base)
         for f in os.listdir(issue_files.id_path):
+            if f == '00000.id':
+                os.unlink(issue_files.id_path + '/' + f)
             if f.endswith('.id') and f != '00000.id' and f != 'i.id':
                 self.dao.append_id_records(issue_files.id_path + '/' + f, issue_files.base)
                 loaded.append(f)
