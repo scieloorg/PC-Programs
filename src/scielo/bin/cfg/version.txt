@@ -1,4 +1,4 @@
-﻿4.0.089 - 21/10/2014
+﻿4.0.089 - 24/10/2014
 ====================
 - XML Package Maker 
   - (bug) fix the file name of ahead of print articles
