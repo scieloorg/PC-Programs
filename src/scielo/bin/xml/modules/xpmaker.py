@@ -1,18 +1,19 @@
 # coding=utf-8
 import os
 import shutil
-import urllib 
+import urllib
 from datetime import datetime
 from mimetypes import MimeTypes
 
-from modules import article
-from modules import files_manager
-from modules import java_xml_utils
-from modules import xml_utils
-from modules import xml_versions
-from modules import pkg_checker
-from modules import xpchecker
-from modules import reports
+import article
+import files_manager
+import java_xml_utils
+import xml_utils
+import xml_versions
+import pkg_checker
+import xpchecker
+import reports
+
 
 mime = MimeTypes()
 html_report = reports.ReportHTML()
@@ -113,8 +114,7 @@ def extract_embedded_images(xml_name, content, html_filename, dest_path):
 
         name = os.path.basename(html_filename)
         name = name[0:name.rfind('.')]
-        print(path)
-        print(name)
+
         for p in os.listdir(path):
             if os.path.isdir(path + '/' + p) and p.startswith(name):
                 embedded_img_path = path + '/' + p
@@ -131,6 +131,7 @@ def extract_embedded_images(xml_name, content, html_filename, dest_path):
 
 
 def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
+    #content = fix_uppercase_tag(content)
     content = extract_embedded_images(xml_name, content, html_filename, src_path)
     if isinstance(content, unicode):
         content = content.encode('utf-8')
@@ -257,6 +258,8 @@ def get_curr_and_new_href_list(xml_name, new_name, href_list):
     for href, attach_type, attach_id in href_list:
         if attach_id is None:
             attach_name = href.replace(xml_name, '')
+            if attach_name[0:1] in '-_':
+                attach_name = attach_name[1:]
         else:
             attach_name = attach_id
             if '.' in href:
