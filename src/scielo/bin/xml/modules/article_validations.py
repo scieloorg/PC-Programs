@@ -48,7 +48,7 @@ def required_one(label, value):
     return (label, 'OK', display_attributes(value)) if value is not None else (label, 'ERROR', 'Required at least one ' + label + '.')
 
 
-def required(label, value, default_status='ERROR'):
+def required(label, value, default_status):
     status, message = validate_value(value)
     if not (value is None or value == ''):
         result = (label, status, message)
@@ -85,10 +85,8 @@ def invalid_characters_in_value(label, value, invalid_characters, error_or_warni
 
 def validate_name(label, value, invalid_characters):
     r = []
-    result = required(label, value)
+    result = required(label, value, 'WARNING')
     label, status, msg = result
-    if status == 'ERROR':
-        result = (label, 'WARNING', 'Missing ' + label)
     if status == 'OK':
         result = invalid_characters_in_value(label, value, invalid_characters, 'WARNING')
     r.append(result)
@@ -141,15 +139,15 @@ class ArticleContentValidation(object):
 
     @property
     def journal_title(self):
-        return required('journal title', self.article.journal_title)
+        return required('journal title', self.article.journal_title, 'FATAL ERROR')
 
     @property
     def publisher_name(self):
-        return required('publisher name', self.article.publisher_name)
+        return required('publisher name', self.article.publisher_name, 'FATAL ERROR')
 
     @property
     def journal_id(self):
-        return required('journal-id', self.article.journal_id)
+        return required('journal-id', self.article.journal_id, 'FATAL ERROR')
 
     @property
     def journal_id_nlm_ta(self):
@@ -171,7 +169,7 @@ class ArticleContentValidation(object):
 
     @property
     def toc_section(self):
-        return required('subject', self.article.toc_section)
+        return required('subject', self.article.toc_section, 'FATAL ERROR')
 
     @property
     def keywords(self):
@@ -211,36 +209,36 @@ class ArticleContentValidation(object):
 
     @property
     def doi(self):
-        return required('doi', self.article.doi)
+        if self.article.is_ahead:
+            return required('doi', self.article.doi, 'FATAL ERROR')
+        else:
+            return required('doi', self.article.doi, 'WARNING')
 
     @property
     def article_previous_id(self):
-        return display_value('article id (previous pid)', self.article.article_previous_id)
+        return display_value('article-id (previous pid)', self.article.article_previous_id)
 
     @property
     def order(self):
-        def valid(order):
-            r = ('?', order)
-            if order is not None:
+        def valid(order, status):
+            r = ('OK', order)
+            if order is None:
+                r = (status, 'Missing order')
+            else:
                 if order.isdigit():
                     if len(order) != 5:
-                        r = ('FATAL ERROR', 'Invalid format of order. Expected 99999.')
+                        r = (status, order + ': Invalid format of order. Expected 99999.')
                     if int(order) < 1 or int(order) > 99999:
-                        r = ('FATAL ERROR', 'Invalid format of order. Expected number 1 to 99999.')
+                        r = (status, order + ': Invalid format of order. Expected number 1 to 99999.')
                 else:
-                    r = ('FATAL ERROR', 'Invalid format of order. Expected 99999.')
+                    r = (status, order + ':Invalid format of order. Expected 99999.')
             return r
-        r = valid(self.article.order)
-        if r[0] == '?':
-            r = required('order', self.article.order)
-        elif r[0] == 'FATAL ERROR':
-            r = ('order', 'FATAL ERROR', r[1])
+        if self.validate_order:
+            status = 'FATAL ERROR'
         else:
-            r = ('order', 'OK', self.article.order)
-        if not self.validate_order:
-            if r[1] == 'FATAL ERROR':
-                r = ('order', 'WARNING', r[2])
-        return r
+            status = 'ERROR'
+        status, msg = valid(self.article.order, status)
+        return ('order', status, msg)
 
     @property
     def article_id_other(self):
@@ -358,15 +356,19 @@ class ArticleContentValidation(object):
         for aff in self.article.affiliations:
             r.append(('aff xml', 'OK', aff.xml))
             r.append(required('aff id', aff.id, 'FATAL ERROR'))
-            r.append(required('aff original', aff.original))
-            r.append(required('aff normalized', aff.norgname, 'WARNING'))
-            r.append(required('aff orgname', aff.orgname))
+            r.append(required('aff original', aff.original, 'ERROR'))
+            r.append(required('aff normalized', aff.norgname, 'ERROR'))
+            r.append(required('aff orgname', aff.orgname, 'ERROR'))
             r.append(required('aff country', aff.country, 'FATAL ERROR'))
         return r
 
     @property
-    def clinical_trial(self):
-        return display_value('clinical_trial', self.article.clinical_trial)
+    def clinical_trial_url(self):
+        return display_value('clinical trial url', self.article.clinical_trial_url)
+
+    @property
+    def clinical_trial_text(self):
+        return display_value('clinical trial text', self.article.clinical_trial_text)
 
     def _total(self, total, count, label_total, label_count):
         if count is None:
@@ -439,11 +441,11 @@ class ArticleContentValidation(object):
 
     @property
     def license_text(self):
-        return required('license-p', self.article.license_text)
+        return required('license-p', self.article.license_text, 'ERROR')
 
     @property
     def license_url(self):
-        return required('license/@href', self.article.license_url)
+        return required('license/@href', self.article.license_url, 'ERROR')
 
     @property
     def license_type(self):
@@ -517,7 +519,7 @@ class ReferenceContentValidation(object):
 
     @property
     def source(self):
-        return required('source', self.reference.source)
+        return required('source', self.reference.source, 'ERROR')
 
     def validate_element(self, label, value):
         res = attributes.validate_element(self.reference.publication_type, label, value)
@@ -552,7 +554,7 @@ class ReferenceContentValidation(object):
 
     @property
     def mixed_citation(self):
-        return required('mixed-citation', self.reference.mixed_citation)
+        return required('mixed-citation', self.reference.mixed_citation, 'ERROR')
 
     @property
     def authors_list(self):
@@ -569,15 +571,15 @@ class ReferenceContentValidation(object):
 
     @property
     def year(self):
-        return required('year', self.reference.year)
+        return required('year', self.reference.year, 'ERROR')
 
     @property
     def publisher_name(self):
-        return display_value('publisher_name', self.reference.publisher_name)
+        return display_value('publisher-name', self.reference.publisher_name)
 
     @property
     def publisher_loc(self):
-        return display_value('publisher_loc', self.reference.publisher_loc)
+        return display_value('publisher-loc', self.reference.publisher_loc)
 
     @property
     def fpage(self):

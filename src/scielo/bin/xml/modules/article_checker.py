@@ -106,7 +106,8 @@ class TOCReport(object):
             if not result:
                 part = html_report.format_message('ERROR: unique value of fpage/seq is required for all the articles of the package')
                 for found_value, xml_files in toc_data['fpage-and-seq'].items():
-                    part += html_report.format_list('found fpage/seq "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
+                    if len(xml_files) > 1:
+                        part += html_report.format_list('found fpage/seq "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
                 r += part
         return html_report.tag('div', r, 'issue-messages')
 
@@ -135,6 +136,7 @@ class ArticleDisplayReport(object):
             r += self.display_titles()
             r += self.doi
             r += self.article_id_other
+            r += self.article_previous_id
             r += self.order
             r += self.fpage
             r += self.fpage_seq
@@ -260,7 +262,11 @@ class ArticleDisplayReport(object):
 
     @property
     def article_id_other(self):
-        return self.display_labeled_value('.//article-id[@pub-id-type="other"]', self.article.article_id_other)
+        return self.display_labeled_value('article-id (other)', self.article.article_id_other)
+
+    @property
+    def article_previous_id(self):
+        return self.display_labeled_value('previous article id', self.article.article_previous_id)
 
     @property
     def sections(self):
@@ -408,7 +414,7 @@ class ArticleValidationReport(object):
         rows += self.format_validation_data(self.article_validation.titles)
         rows += self.format_validation_data(self.article_validation.contrib_names)
         rows += self.format_validation_data(self.article_validation.contrib_collabs)
-        rows += self.format_validation_data(self.affiliations)
+        rows += self.format_validation_data(self.article_validation.affiliations)
         rows += self.format_validation_data(self.article_validation.funding)
         items = [
                     self.article_validation.license_text,
@@ -422,13 +428,6 @@ class ArticleValidationReport(object):
         rows = self.validation_table(rows)
         rows += self.references
         return html_report.tag('div', html_report.tag('h2', 'Validations') + rows, 'article-messages')
-
-    @property
-    def affiliations(self):
-        r = []
-        for a in self.article_validation.affiliations:
-            label, status, xml = a
-        return r
 
     @property
     def references(self):
