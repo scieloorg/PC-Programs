@@ -177,7 +177,7 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
 
     register_log('#'*80)
 
-    register_log(html_report.tag('h2', 'END'))
+    register_log(html_report.tag('h2', 'SUMMARY'))
     register_log(stats())
     register_log(html_report.tag('h4', 'Converted/Not converted'))
 
