@@ -26,6 +26,8 @@ def get_valid_article(articles):
     for xml_name, article in articles.items():
         if article is not None:
             issue_label = article.issue_label
+            print('issue_label')
+            print(issue_label)
             if issue_label is not None:
                 a = article
                 break
@@ -44,9 +46,9 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
     old_report_path = report_path
 
     issue_record = None
-    issue_label = ''
+    issue_label = 'UNKNOWN'
     doc_files_info_list = []
-    xml_filenames = sorted([xml_path + '/' + f for f in os.listdir(xml_path) if f.endswith('.xml')])
+    xml_filenames = sorted([xml_path + '/' + f for f in os.listdir(xml_path) if f.endswith('.xml') and not 'incorrect' in f])
 
     register_log('<h2>XML files</h2>')
     register_log('XML path: ' + xml_path)
@@ -82,7 +84,10 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
             issue_record = get_issue_record(db_issue, article)
 
         if issue_record is None:
-            register_log('FATAL ERROR: Issue ' + issue_label + ' is not registered. (' + '/'.join([i for i in [article.print_issn, article.e_issn] if i is not None]) + ')')
+            if issue_label == 'UNKNOWN':
+                register_log('FATAL ERROR: Unable to identify the article\'s issue')
+            else:
+                register_log('FATAL ERROR: Issue ' + issue_label + ' is not registered. (' + '/'.join([i for i in [article.print_issn, article.e_issn] if i is not None]) + ')')
         else:
             #register_log('Issue: ' + issue_label + '.')
             issue_isis = IssueRecord(issue_record)

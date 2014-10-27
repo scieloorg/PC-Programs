@@ -422,6 +422,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     if isinstance(content, unicode):
         content = content.encode('utf-8')
     open(new_xml_filename, 'w').write(content)
+
     print(' ... created')
     register_log('end')
     return (new_name, new_xml_filename)
