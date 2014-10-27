@@ -79,8 +79,8 @@ def java_xml_utils_style_validation(xml_filename, doctype, report_filename, xsl_
     if os.path.isfile(temp_filename):
         xml_utils.restore_xml_file(xml_filename, temp_filename)
 
-    #if os.path.isfile(xml_report):
-    #    os.unlink(xml_report)
+    if os.path.isfile(xml_report):
+        os.unlink(xml_report)
     return is_valid_style
 
 

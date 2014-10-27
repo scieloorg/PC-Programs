@@ -1,7 +1,8 @@
 # coding=utf-8
 import os
+import shutil
 
-import files_manager
+import xml_utils
 import article_checker
 import xpchecker
 import reports
@@ -10,6 +11,29 @@ from article import Article
 
 
 html_report = reports.ReportHTML()
+
+
+def get_valid_xml(xml_filename, report_path, old_name):
+    xml, e = xml_utils.load_xml(xml_filename)
+    if xml is None:
+        if not os.path.isdir(report_path):
+            os.makedirs(report_path)
+        fname = os.path.basename(xml_filename)
+
+        _xml_content = open(xml_filename, 'r').read()
+        xml_content, replaced_named_ent = xml_utils.convert_entities_to_chars(_xml_content)
+        if xml_content != _xml_content:
+            if len(replaced_named_ent) > 0:
+                open(report_path + '/' + fname + '.replaced.txt', 'w').write('\n'.join(replaced_named_ent))
+
+            xml, e = xml_utils.load_xml(xml_content)
+            if not xml is None:
+                shutil.copyfile(xml_filename, report_path + '/' + fname + '.bkp')
+                open(xml_filename, 'w').write(xml_content)
+    if xml is None:
+        shutil.copyfile(xml_filename, report_path + '/' + fname.replace('.xml', '_incorrect.xml'))
+
+    return xml
 
 
 def validate_article_xml(new_name, xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename):
@@ -28,7 +52,7 @@ def validate_article_data(article, new_name, package_path, report_filename, vali
 
 
 def validate_article(xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order):
-    xml = article_checker.get_valid_xml(xml_filename)
+    xml = get_valid_xml(xml_filename, os.path.dirname(doc_files_info.dtd_report_filename), report_name)
 
     xml_f, xml_e, xml_w = validate_article_xml(new_name, xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
 
@@ -86,7 +110,8 @@ def validate_package(doc_files_info_list, dtd_files, report_path, validate_order
         if article is not None:
             if not article.issue_label in issues:
                 issues.append(article.issue_label)
-            articles[new_name] = article
+
+        articles[new_name] = article
 
         if sheet_data is not None:
             authors_h, authors_w, authors_data = sheet_data.authors_sheet_data(new_name)

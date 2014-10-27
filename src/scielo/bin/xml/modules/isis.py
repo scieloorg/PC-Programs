@@ -230,6 +230,11 @@ class CISIS(object):
             temp = id_filename.replace('.id', '')
             self.id2i(id_filename, temp)
             self.append(temp, mst_filename)
+            try:
+                os.unlink(temp + '.mst')
+                os.unlink(temp + '.xrf')
+            except:
+                pass
 
     def i2id(self, mst_filename, id_filename):
         cmd = self.cisis_path + '/i2id ' + mst_filename + ' > ' + id_filename

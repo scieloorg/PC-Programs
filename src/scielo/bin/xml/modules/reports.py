@@ -75,17 +75,21 @@ class ReportHTML(object):
         return anchor + '<' + style + '>' + title + '</' + style + '>' + sections + content
 
     def sheet(self, table_header_and_data, filename=None):
-        table_header, wider, table_data = table_header_and_data
-
+        table_header = None
         width = None
-        if len(table_header) > 2:
-            width = 100
-            width = 100 / len(table_header)
-            width = str(width)
+
+        if table_header_and_data is not None:
+            table_header, wider, table_data = table_header_and_data
+
         r = '<p>'
         if table_header is None:
             r += '<!-- no data to create sheet -->'
         else:
+            if len(table_header) > 2:
+                width = 100
+                width = 100 / len(table_header)
+                width = str(width)
+
             r += '<table class="sheet">'
             r += '<thead><tr>'
             if filename is not None:

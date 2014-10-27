@@ -732,7 +732,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:apply-templates>
 			
 			<xsl:apply-templates
-				select="front//report | back//bbibcom/report | back/ack//report | back/ack//funding" mode="front-funding-group"/>
+				select="front//report | back//bbibcom/report | back/ack//report | ack//funding" mode="front-funding-group"/>
 			<xsl:apply-templates
 				select="fngrp//report|fngrp//funding" mode="front-funding-group">
 				<xsl:with-param name="statement">true</xsl:with-param>
@@ -1542,8 +1542,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic | ref//italic | ref//bold">
-		<xsl:if test="not(contains(',. :;',normalize-space(text())))"><xsl:apply-templates select="text()"></xsl:apply-templates>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="normalize-space(translate(.,'(),.-:;','       '))=''"></xsl:when>
+			<xsl:otherwise><xsl:apply-templates select="text()"/></xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template
 		match="*[contains(name(),'citat')]/text() | ref/text()"/>

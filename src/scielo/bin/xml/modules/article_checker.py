@@ -14,18 +14,6 @@ from article import Article, PersonAuthor, CorpAuthor, format_author
 html_report = reports.ReportHTML()
 
 
-def get_valid_xml(xml_filename):
-    xml, e = xml_utils.load_xml(xml_filename)
-    if xml is None:
-        shutil.copyfile(xml_filename, xml_filename + '.bkp')
-        xml_content = open(xml_filename, 'r').read()
-        xml_content, replaced_named_ent = xml_utils.convert_entities_to_chars(xml_content)
-        open(xml_filename, 'w').write(xml_content)
-        open(xml_filename + '.replaced.txt', 'w').write('\n'.join(replaced_named_ent))
-        xml, e = xml_utils.load_xml(xml_content)
-    return xml
-
-
 class TOCReport(object):
 
     def __init__(self, articles, validate_order):
