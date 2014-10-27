@@ -110,40 +110,50 @@ class Ahead(object):
 
 class AheadManager(object):
 
-    def __init__(self, dao, journal_files):
+    def __init__(self, dao, journal_files, issue_db, issn_id):
         self.journal_files = journal_files
         self.dao = dao
-        self.load()
+        self.issue_db = issue_db
         self.deleted = {}
+        self.issn_id = issn_id
+        self.load()
+        self.prepare_ahead_id_files()
 
     def prepare_ahead_id_files(self):
         for db_filename in self.journal_files.ahead_bases:
-            name = os.basename(db_filename)[0:4]
-            id_path = self.journal_files.ahead_id_path(name)
+            year = os.path.basename(db_filename)[0:4]
+            id_path = self.journal_files.ahead_id_path(year)
+            i_id_filename = self.journal_files.ahead_i_id_filename(year)
             if not os.path.isdir(id_path):
                 os.makedirs(id_path)
-            if os.listdir(id_path) == 0:
-                #self.journal_files.create_ahead_id_files(name)
-                records = self.dao.get_records(db_filename)
+            if not os.path.isfile(i_id_filename):
+                records = self.issue_db.search(year + 'nahead', self.issn_id, None)
+                self.dao.save_id(i_id_filename, records)
+            records = self.dao.get_records(db_filename, expr=None)
+            if len(records) > 0:
                 previous = ''
-                order = '00000'
+                order = None
                 r = []
                 for rec in records:
                     if rec.get('706') == 'i':
-                        self.dao.save_id(id_path + '/i.id', [rec])
+                        if not os.path.isfile(id_path + '/i.id'):
+                            self.dao.save_id(id_path + '/i.id', [rec])
                     else:
                         current = rec.get('2')
                         if rec.get('706') == 'h':
                             order = '00000' + rec.get('121')
                             order = order[-5:]
                         if previous != current:
-                            if len(r) > 0:
-                                self.dao.save_id(id_path + '/' + order + '.id', r)
+                            if order is not None and len(r) > 0:
+                                if not os.path.isfile(id_path + '/' + order + '.id'):
+                                    self.dao.save_id(id_path + '/' + order + '.id', r)
+
                                 r = []
                             previous = current
                         r.append(rec)
-                if len(r) > 0:
-                    self.dao.save_id(id_path + '/' + order + '.id', r)
+                if order is not None and len(r) > 0:
+                    if not os.path.isfile(id_path + '/' + order + '.id'):
+                        self.dao.save_id(id_path + '/' + order + '.id', r)
 
     def load(self):
         self.ahead_doi = {}
@@ -260,21 +270,19 @@ class AheadManager(object):
         year = ahead.ahead_db_name[0:4]
 
         ex_ahead_markup_path, ex_ahead_body_path, ex_ahead_base_path = self.journal_files.ex_ahead_paths(year)
-        for path in [ex_ahead_markup_path, ex_ahead_body_path, ex_ahead_base_path]:
-            if not os.path.isdir(path):
-                os.makedirs(path)
 
         # move files to ex-ahead folder
         xml_file, markup_file, body_file = self.journal_files.ahead_xml_markup_body(year, ahead.filename)
         if os.path.isfile(markup_file):
+            if not os.path.isdir(ex_ahead_markup_path):
+                os.makedirs(ex_ahead_markup_path)
             shutil.move(markup_file, ex_ahead_markup_path)
             msg.append('move ' + markup_file + '\n    to ' + ex_ahead_markup_path)
         if os.path.isfile(body_file):
+            if not os.path.isdir(ex_ahead_body_path):
+                os.makedirs(ex_ahead_body_path)
             shutil.move(body_file, ex_ahead_body_path)
             msg.append('move ' + body_file + '\n    to ' + ex_ahead_body_path)
-        if os.path.isfile(xml_file):
-            shutil.move(xml_file, ex_ahead_markup_path)
-            msg.append('move ' + xml_file + '\n    to ' + ex_ahead_markup_path)
 
         ahead_order = ahead.order
         if os.path.isfile(self.journal_files.ahead_id_filename(year, ahead_order)):
@@ -303,10 +311,10 @@ class AheadManager(object):
             base = self.journal_files.ahead_base(ahead_db_name[0:4])
             if os.path.isfile(id_path + '/i.id'):
                 self.dao.save_id_records(id_path + '/i.id', base)
-            for f in os.listdir(id_path):
-                if f.endswith('.id') and f != '00000.id' and f != 'i.id':
-                    self.dao.append_id_records(id_path + '/' + f, base)
-                    loaded.append(ahead_db_name + ' ' + f)
+                for f in os.listdir(id_path):
+                    if f.endswith('.id') and f != '00000.id' and f != 'i.id':
+                        self.dao.append_id_records(id_path + '/' + f, base)
+                        loaded.append(ahead_db_name + ' ' + f)
         return loaded
 
 
@@ -436,16 +444,16 @@ class JournalFiles(object):
 
     def ahead_base(self, year):
         path = self.journal_path + '/' + year + 'nahead/base/' + year + 'nahead'
-        create_path(os.path.dirname(path))
+        #create_path(os.path.dirname(path))
         return path
 
     def ahead_xml_markup_body(self, year, filename):
         m = self.journal_path + '/' + year + 'nahead/markup'
         b = self.journal_path + '/' + year + 'nahead/body'
         x = self.journal_path + '/' + year + 'nahead/xml'
-        create_path(m)
-        create_path(b)
-        create_path(x)
+        #create_path(m)
+        #create_path(b)
+        #create_path(x)
         return (x + '/' + filename, m + '/' + filename, b + '/' + filename)
 
     def ahead_id_filename(self, year, order):
@@ -453,9 +461,12 @@ class JournalFiles(object):
         order = order[-5:]
         return self.ahead_id_path(year) + '/' + order + '.id'
 
+    def ahead_i_id_filename(self, year):
+        return self.ahead_id_path(year) + '/i.id'
+
     def ahead_id_path(self, year):
         path = self.journal_path + '/' + year + 'nahead/id'
-        create_path(path)
+        #create_path(path)
         return path
 
     def ex_ahead_paths(self, year):

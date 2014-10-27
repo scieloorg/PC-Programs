@@ -410,4 +410,7 @@ class IssueRecord(object):
         volume_suppl = self.record.get('131')
         number = self.record.get('32')
         number_suppl = self.record.get('132')
-        return Issue(acron, volume, number, year, volume_suppl, number_suppl)
+        i = Issue(acron, volume, number, year, volume_suppl, number_suppl)
+
+        i.issn_id = self.record.get('35')
+        return i

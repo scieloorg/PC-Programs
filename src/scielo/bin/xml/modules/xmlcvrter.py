@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import os
+import shutil
 
 from configuration import Configuration
 from isis_models import IssueRecord
@@ -10,6 +11,8 @@ import reports
 import pkg_checker
 import xml_versions
 
+
+curr_path = os.path.dirname(__file__).replace('\\', '/')
 
 html_report = reports.ReportHTML()
 converter_report_lines = []
@@ -87,13 +90,13 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
             if issue_label == 'UNKNOWN':
                 register_log('FATAL ERROR: Unable to identify the article\'s issue')
             else:
-                register_log('FATAL ERROR: Issue ' + issue_label + ' is not registered. (' + '/'.join([i for i in [article.print_issn, article.e_issn] if i is not None]) + ')')
+                register_log('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + db_issue + '. (' + '/'.join([i for i in [article.print_issn, article.e_issn] if i is not None]) + ')')
         else:
             #register_log('Issue: ' + issue_label + '.')
             issue_isis = IssueRecord(issue_record)
             issue = issue_isis.issue
             journal_files = files_manager.JournalFiles(serial_path, issue.acron)
-            ahead_manager = files_manager.AheadManager(db_ahead, journal_files)
+            ahead_manager = files_manager.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
             issue_files = files_manager.IssueFiles(journal_files, issue_label, xml_path, web_path)
             issue_files.move_reports(report_path)
             issue_files.save_source_files(xml_path)
@@ -277,6 +280,10 @@ def convert(path, config, version):
     elif len(xml_paths) > 0:
         web_path = config.serial_path.replace('serial', '4web') if config.web_path is None else config.web_path
         serial_path = config.serial_path
+
+        if open(curr_path + '/issue.fst', 'r').read() != open(config.issue_db + '.fst', 'r').read():
+            shutil.copyfile(curr_path + '/issue.fst', config.issue_db + '.fst')
+            config.isis_dao.update_indexes(config.issue_db, config.issue_db + '.fst')
         issue_dao = files_manager.IssueDAO(config.isis_dao, config.issue_db)
         article_dao = files_manager.ArticleDAO(config.isis_dao)
 
@@ -289,7 +296,6 @@ def convert(path, config, version):
 
 
 def read_configuration():
-    curr_path = os.path.dirname(__file__).replace('\\', '/')
     filename = curr_path + '/../../scielo_paths.ini'
 
     if os.path.isfile(filename):
