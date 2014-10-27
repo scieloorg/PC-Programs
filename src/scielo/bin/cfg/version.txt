@@ -1,11 +1,11 @@
-﻿4.0.089 - 24/10/2014
+﻿4.0.089 - 28/10/2014
 ====================
 - XML Package Maker 
   - (bug) fix the file name of ahead of print articles
   - (bug) fix generation of XML for ex-ahead and ahead of print articles
+  - (bug) fix the reports presentation
 - Markup SGML
   - (bug) add report in bibcom and bbibcom
-  
 - Markup XML - article and doc DTD
   - (new) fix @id according to SPS Guidelines 1.1
   - (new) article/@specific-use
@@ -34,6 +34,9 @@ the text (author date)
   - (new) remove some tag which are in ref
   - (bug) fix automatic identification of "review" article
   - (bug) as pressing on *kwdgrp do not display kwd
+- XML Converter
+  - (bug) fix the reports
+  - (bug) fix the ahead/ex-ahead management
 
 4.0.088 - 10/10/2014
 ====================

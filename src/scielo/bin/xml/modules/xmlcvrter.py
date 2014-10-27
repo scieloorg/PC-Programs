@@ -90,7 +90,7 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
             if issue_label == 'UNKNOWN':
                 register_log('FATAL ERROR: Unable to identify the article\'s issue')
             else:
-                register_log('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + db_issue + '. (' + '/'.join([i for i in [article.print_issn, article.e_issn] if i is not None]) + ')')
+                register_log('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + db_issue.db_filename + '. (' + '/'.join([i for i in [article.print_issn, article.e_issn] if i is not None]) + ')')
         else:
             #register_log('Issue: ' + issue_label + '.')
             issue_isis = IssueRecord(issue_record)
