@@ -357,7 +357,10 @@ class ArticleContentValidation(object):
             r.append(('aff xml', 'OK', aff.xml))
             r.append(required('aff id', aff.id, 'FATAL ERROR'))
             r.append(required('aff original', aff.original, 'ERROR'))
-            r.append(required('aff normalized', aff.norgname, 'ERROR'))
+            label, status, msg = required('aff normalized', aff.norgname, 'ERROR')
+            if status == 'ERROR':
+                msg += '. Please, ask to scielo@scielo.org or check http://wayta.scielo.org/ (trial version) to know how to normalize the name of this institution.'
+            r.append((label, status, msg))
             r.append(required('aff orgname', aff.orgname, 'ERROR'))
             r.append(required('aff country', aff.country, 'FATAL ERROR'))
         return r

@@ -24,6 +24,73 @@ class TOCReport(object):
         invalid = []
         equal_data = ['journal-title', 'journal id NLM', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
         unique_data = ['order', 'doi', 'elocation id']
+        unique_status = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-and-seq': 'ERROR'}
+
+        if not self.validate_order:
+            unique_status['order'] = 'WARNING'
+
+        toc_data = {}
+        for label in equal_data + unique_data:
+            toc_data[label] = {}
+
+        for xml_name, article in self.articles.items():
+            if article is None:
+                invalid.append(xml_name)
+            else:
+                art_data = article.summary()
+                for label in toc_data.keys():
+                    toc_data[label] = article_utils.add_new_value_to_index(toc_data[label], art_data[label], xml_name)
+
+        r = ''
+        if len(invalid) > 0:
+            r += html_report.tag('div', html_report.format_message('FATAL ERROR: Invalid XML files'))
+            r += html_report.tag('div', html_report.format_list('', 'ol', invalid, 'issue-problem'))
+
+        for label in equal_data:
+            if len(toc_data[label]) > 1:
+                part = html_report.format_message('FATAL ERROR: same value for ' + label + ' is required for all the articles of the package')
+                for found_value, xml_files in toc_data[label].items():
+                    part += html_report.format_list('found ' + label + ' "' + html_report.display_xml(found_value) + '" in:', 'ul', xml_files, 'issue-problem')
+                r += part
+
+        for label in unique_data:
+            if len(toc_data[label]) > 0 and len(toc_data[label]) != len(self.articles):
+                none = []
+                duplicated = {}
+                pages = {}
+                for found_value, xml_files in toc_data[label].items():
+                    if found_value == 'None':
+                        none = xml_files
+                    else:
+                        if len(xml_files) > 1:
+                            duplicated[found_value] = xml_files
+                        if label == 'fpage-and-seq':
+                            v = found_value
+                            if v.isdigit():
+                                v = str(int(found_value))
+                            if not v in pages.keys():
+                                pages[v] = []
+                            pages[v] += xml_files
+
+                if len(pages) == 1 and '0' in pages.keys():
+                    duplicated = []
+
+                if len(duplicated) > 0:
+                    part = html_report.format_message(unique_status[label] + ': unique value of ' + label + ' is required for all the articles of the package')
+                    for found_value, xml_files in duplicated.items():
+                        part += html_report.format_list('found ' + label + ' "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
+                    r += part
+                if len(none) > 0:
+                    part = html_report.format_message('INFO: there is no value for ' + label + '.')
+                    part += html_report.format_list('no value for ' + label + ' in:', 'ul', none, 'issue-problem')
+                    r += part
+
+        return html_report.tag('div', r, 'issue-messages')
+
+    def _report(self):
+        invalid = []
+        equal_data = ['journal-title', 'journal id NLM', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
+        unique_data = ['order', 'doi', 'elocation id']
         unique_status = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR'}
 
         if not self.validate_order:

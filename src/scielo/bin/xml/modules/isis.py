@@ -378,6 +378,9 @@ class IsisDAO(object):
             self.cisis.generate_indexes(db_filename, fst_filename, db_filename)
 
     def append_records(self, records, db_filename, fst_filename=None):
+        path = os.path.dirname(db_filename)
+        if not os.path.isdir(path):
+            os.makedirs(path)
         id_temp = mkdtemp().replace('\\', '/') + '/' + os.path.basename(db_filename) + '.id'
         IDFile().save(id_temp, records)
         self.cisis.append_id_to_master(id_temp, db_filename, False)

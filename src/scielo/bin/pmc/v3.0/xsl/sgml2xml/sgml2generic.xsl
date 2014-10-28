@@ -1454,6 +1454,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="@*|*|text()"/>
 		</sec>
 	</xsl:template>
+	
 	<xsl:template match="sectitle">
 		<title>
 			<xsl:apply-templates select="*|text()"/>
@@ -1461,7 +1462,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				mode="xref-in-sectitle"/>
 		</title>
 	</xsl:template>
-	<!--xsl:template match="@href">
+	<xsl:template match="app/sectitle">
+		<label>
+			<xsl:apply-templates select="*|text()"/>
+			<xsl:apply-templates select="following-sibling::node()[1 and name()='xref']"
+				mode="xref-in-sectitle"/>
+		</label>
+	</xsl:template><!--xsl:template match="@href">
 		<xsl:attribute name="xlink:href"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 	</xsl:template-->
 	<!-- BACK -->

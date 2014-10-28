@@ -1299,6 +1299,11 @@ item: Install File
   Flags=0000000010000010
 end
 item: Install File
+  Source=w:\scielo\serial\issue\issue.fst
+  Destination=%PROGDIR%\bin\xml\modules\issue.fst
+  Flags=0000000010000010
+end
+item: Install File
   Source=w:\scielo\bin\xml\modules\__init__.py
   Destination=%PROGDIR%\bin\xml\modules\__init__.py
   Flags=0000000010000010
