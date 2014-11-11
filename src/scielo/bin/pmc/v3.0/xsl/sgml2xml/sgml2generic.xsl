@@ -566,12 +566,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="toctitle">
 		<article-categories>
 			<subj-group subj-group-type="heading">
-				<xsl:variable name="t" select="normalize-space(.)"/>
-				<subject>
-					<xsl:apply-templates select="." mode="format-subject">
-						<xsl:with-param name="t" select="$t"/>
-					</xsl:apply-templates>
-				</subject>
+				<subject><xsl:value-of select="normalize-space(.)"/></subject>
 			</subj-group>
 		</article-categories>
 	</xsl:template>
