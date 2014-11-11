@@ -183,3 +183,6 @@ orgdiv1;Identify organization division 1
 orgdiv2;Identify organization division 2
 orgdiv3;Identify organization division 3
 text-ref;Identify the original form of the reference
+publoc;Identifica o local da editora
+*publoc-name;Identifica automaticamente o local e o nome da editora
+*pubname-loc;Identifica automaticamente o nome da editora e de seu local

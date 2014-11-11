@@ -941,12 +941,10 @@ authors;#TRUE#;#FALSE#
 arttitle;#TRUE#;#FALSE#
 chptitle;#TRUE#;#FALSE#
 cited;#FALSE#;#TRUE#
-city;#FALSE#;#TRUE#
 coltitle;#FALSE#;#TRUE#
 colvolid;#FALSE#;#TRUE#
 confgrp;#TRUE#;#FALSE#
 contract;#FALSE#;#FALSE#
-country;#FALSE#;#TRUE#
 date;#TRUE#;#TRUE#
 edition;#FALSE#;#TRUE#
 extent;#FALSE#;#TRUE#
@@ -958,11 +956,13 @@ pages;#FALSE#;#TRUE#
 part;#FALSE#;#TRUE#
 patentno;#FALSE#;#FALSE#
 pubid;#FALSE#;#TRUE#
+publoc;#FALSE#;#TRUE#
 pubname;#FALSE#;#TRUE#
+*publoc-name;#FALSE#;#TRUE#
+*pubname-loc;#FALSE#;#TRUE#
 reportid;#FALSE#;#FALSE#
 *source;#FALSE#;#FALSE#
 source;#FALSE#;#FALSE#
-state;#FALSE#;#TRUE#
 suppl;#FALSE#;#TRUE#
 thesgrp;#FALSE#;#FALSE#
 url;#TRUE#;#TRUE#
@@ -1019,4 +1019,10 @@ orgdiv2
 arttitle
 
 chptitle
+
+publoc
+
+*publoc-name
+
+*pubname-loc
 
