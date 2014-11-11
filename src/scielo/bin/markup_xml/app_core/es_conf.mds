@@ -92,7 +92,7 @@ timer,99999999
 DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
 msgFormXMLBody,"Verifique la identificación de las partes del texto completo. Corrija si necesario, seleccionando los itens de la lista, seleccionando la etiqueta que los identifica y  el botón Corregir."
 buttonChange2,Corregir
-msg_new_structure,"Markup usa uma nova estrutura. vbCrlfPonga los archivos marcados o para marcar en \markup_xml\scielo_markup (antíguo \pmc\pmc_markup). vbCrlfPonga los otros archivos en \markup_xml\src (antíguo \pmc\src)"
+msg_new_structure,"Para generar archivos XML, los archivos marcados deben estar en markup_xml\scielo_markup y los otros archivos en markup_xml\src"
 msg_ref_as_journal,El atributo reftype de ref será automáticamente completado con "journal". Arregle el valor de reftype por si acaso la cita no es de revista.
 msg_help_doc_license,"URL de Licencia Creative Commons, ej.: http://creativecommons.org/licenses/by/3.0/" 
 msg_help_doc_issueno,"Entre con el número del facículo. Caso sea un artículo publicado en ahead of print, entre ahead en este campo"
