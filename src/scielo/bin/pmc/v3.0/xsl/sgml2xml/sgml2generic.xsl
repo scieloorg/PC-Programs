@@ -1550,7 +1550,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template
-		match="*[contains(name(),'citat')]/text() | ref/text()"/>
+		match="*[contains(name(),'citat')]/text() | ref/text() | ref/bold | ref/italic | ref/sup | ref/sub"/>
 	<xsl:template
 		match="*[contains(name(),'citat')]//*[*]/text()"/>
 	
@@ -1678,6 +1678,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<label>
 			<xsl:value-of select="normalize-space(.)"/>
 		</label>
+	</xsl:template>
+	<xsl:template match="ref/publoc">
+		<publisher-loc>
+			<xsl:value-of select="normalize-space(.)"/>
+		</publisher-loc>
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'citat')]//country | ref/country">
 		<xsl:choose>
