@@ -60,7 +60,6 @@ def replace_mimetypes(content, path):
                 r += item
     else:
         print('.............')
-    print('end mimetype')
     return r
 
 
@@ -80,17 +79,30 @@ def rename_embedded_img_href(content, xml_name, new_href_list):
                 i += 1
             else:
                 new += item
+    else:
+        print('rename_embedded_img_href')
+        print(new_href_list)
+        print(len(new_href_list))
+        print(len(_items))
     return new
 
 
 def html_img_src(html_content):
     #[graphic href=&quot;?a20_115&quot;]</span><img border=0 width=508 height=314
     #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
+    if not '<html' in html_content.lower():
+        c = html_content
+        for c in html_content:
+            if ord(c) == 0:
+                break
+        html_content = html_content.replace(c, '')
+
     if 'href=&quot;?' in html_content:
-        html_content = html_content.replace('href=&quot;?', '--BREAKFIXHREF--FIXHREF')
+        html_content = html_content.replace('href=&quot;?', 'href="?')
     html_content = html_content.replace('href="?', 'href="?--BREAKFIXHREF--FIXHREF')
     _items = html_content.split('--BREAKFIXHREF--')
     items = [item for item in _items if item.startswith('FIXHREF')]
+
     img_src = []
     for item in items:
         if 'src="' in item:
@@ -107,8 +119,6 @@ def extract_embedded_images(xml_name, content, html_filename, dest_path):
     if content.find('href="?' + xml_name):
         html_content = open(html_filename, 'r').read()
         embedded_img_files = html_img_src(html_content)
-
-        print(html_filename)
         embedded_img_path = None
         path = os.path.dirname(html_filename)
 
@@ -122,8 +132,6 @@ def extract_embedded_images(xml_name, content, html_filename, dest_path):
         if not embedded_img_path is None:
             content = rename_embedded_img_href(content, xml_name, embedded_img_files)
             for item in embedded_img_files:
-                print(embedded_img_path + '/' + item)
-
                 if os.path.isfile(embedded_img_path + '/' + item):
                     shutil.copyfile(embedded_img_path + '/' + item, dest_path + '/' + xml_name + item)
                     print(dest_path + '/' + xml_name + item)
