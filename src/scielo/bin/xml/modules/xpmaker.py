@@ -67,7 +67,7 @@ def rename_embedded_img_href(content, xml_name, new_href_list):
     content = content.replace('<graphic href="?', '--FIXHREF--<graphic href="?')
     _items = content.split('--FIXHREF--')
     new = content
-
+    print(new_href_list)
     if len(new_href_list) == (len(_items) - 1):
         new = ''
         i = 0
@@ -87,7 +87,7 @@ def rename_embedded_img_href(content, xml_name, new_href_list):
     return new
 
 
-def html_img_src(html_content):
+def get_embedded_images_in_html(html_content):
     #[graphic href=&quot;?a20_115&quot;]</span><img border=0 width=508 height=314
     #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
     if not '<html' in html_content.lower():
@@ -118,16 +118,16 @@ def html_img_src(html_content):
 def extract_embedded_images(xml_name, content, html_filename, dest_path):
     if content.find('href="?' + xml_name):
         html_content = open(html_filename, 'r').read()
-        embedded_img_files = html_img_src(html_content)
+        embedded_img_files = get_embedded_images_in_html(html_content)
         embedded_img_path = None
-        path = os.path.dirname(html_filename)
 
-        name = os.path.basename(html_filename)
-        name = name[0:name.rfind('.')]
+        html_path = os.path.dirname(html_filename)
+        html_name = os.path.basename(html_filename)
+        html_name = html_name[0:html_name.rfind('.')]
 
-        for p in os.listdir(path):
-            if os.path.isdir(path + '/' + p) and p.startswith(name):
-                embedded_img_path = path + '/' + p
+        for item in os.listdir(html_path):
+            if os.path.isdir(html_path + '/' + item) and item.startswith(html_name):
+                embedded_img_path = html_path + '/' + item
                 break
         if not embedded_img_path is None:
             content = rename_embedded_img_href(content, xml_name, embedded_img_files)
