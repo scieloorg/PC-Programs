@@ -3141,6 +3141,11 @@ et al.</copyright-statement>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
+	<xsl:template match="related[@reltp='corrected-article']" mode="front-related">
+		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@id-or-doi}" ext-link-type="uri">
+			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+		</related-article>
+	</xsl:template>
 	<xsl:template match="related[@reltp='article']" mode="front-related">
 		<!-- link de ? para ?? -->
 		<!-- ﻿[related reltype="???" relid="????" relidtp="?????"] -->
