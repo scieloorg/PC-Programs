@@ -53,7 +53,9 @@ class HRef(object):
             self.id = parent.attrib.get('id', None)
 
         self.parent = parent
-        self.is_internal_file = (not element.tag == 'ext-link') and (not ':' in src) and (not '/' in src)
+        self.is_internal_file = True
+        if element.attrib.get('ext-link-type') is not None or element.tag in ['license', 'ext-link', 'uri', 'related-article']:
+            self.is_internal_file = False
 
     def display(self, path):
         if self.src is not None and self.src != '':
