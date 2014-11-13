@@ -497,6 +497,24 @@ class ArticleContentValidation(object):
     def previous_pid(self):
         return display_value('previous_pid', self.article.previous_pid)
 
+    @property
+    def xref_rids(self):
+        message = []
+        types = {'bibr': 'ref', 'table': 'table-wrap'}
+        id_and_tag = {node.attrib.get('id'):node.tag for node in self.article.elements_which_has_id_attribute if node.attrib.get('id') is not None}
+        #aff;app;author-notes;bibr;boxed-text;chem;contrib;corresp;disp-formula;fig;fn;kwd;list;other;plate;scheme;sec;statement;supplementary-material;table
+        for xref in self.article.xref_nodes:
+            tag = id_and_tag.get(xref['rid'])
+            if tag == xref['ref-type']:
+                valid = True
+            elif tag == types.get(xref['ref-type']):
+                valid = True
+            else:
+                valid = False
+            if not valid:
+                message.append(('xref/@rid', 'ERROR', xref['rid'] + '(' + xref['ref-type'] + ')' + ': invalid value of @rid for ' + xref['xml']))
+        return message
+
 
 class ReferenceContentValidation(object):
 

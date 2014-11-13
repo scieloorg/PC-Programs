@@ -480,6 +480,8 @@ class ArticleValidationReport(object):
         rows += self.format_validation_data(self.article_validation.history)
         rows += self.format_validation_data(self.article_validation.abstracts)
         rows += self.format_validation_data(self.article_validation.keywords)
+        rows += self.format_validation_data(self.article_validation.xref_rids)
+        
         rows = self.validation_table(rows)
         rows += self.references
         return html_report.tag('div', html_report.tag('h2', 'Validations') + rows, 'article-messages')
