@@ -933,7 +933,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				
 			</xsl:choose>
 			<xsl:choose>
-				<xsl:when test="@ncountry">
+				<xsl:when test="@ncountry and @ncountry!='Not normalized'">
 					<xsl:apply-templates select="@ncountry"></xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise><xsl:apply-templates select="country"></xsl:apply-templates></xsl:otherwise>
