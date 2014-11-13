@@ -10,6 +10,7 @@ import files_manager
 import reports
 import pkg_checker
 import xml_versions
+import article_utils
 
 
 curr_path = os.path.dirname(__file__).replace('\\', '/')
@@ -227,6 +228,8 @@ def validate_issue_data(issue_record, article):
     w = 0
     msg = []
     if article is not None:
+        # subject
+        msg.append('section: ' + article.toc_section + '.')
         section_code, matched_rate, similar_section_title = IssueRecord(issue_record).section_code(article.toc_section)
         if section_code is None:
             if not article.is_ahead:
@@ -237,9 +240,20 @@ def validate_issue_data(issue_record, article):
             if matched_rate != 1:
                 w += 1
                 msg.append('WARNING: section replaced: "' + similar_section_title + '" (instead of "' + article.toc_section + '")')
-            else:
-                msg.append('section: ' + article.toc_section + '.')
+
+        # @article-type
+        section_title = article.toc_section
+        if similar_section_title != article.toc_section:
+            section_title = similar_section_title
         msg.append('@article-type: ' + article.article_type)
+        rate = 0
+        max_rate = 0
+        for item in article.article_type.split('-'):
+            rate = article_utils.how_similar(section_title, item)
+            if rate > max_rate:
+                max_rate = rate
+        if max_rate < 0.7:
+            msg.append('WARNING: Check if ' + article.article_type + ' is a valid value for @article-type. (' + str(max_rate) + ')')
 
     msg = ''.join([html_report.format_message(item) for item in msg])
     return (f, e, w, msg, section_code)
