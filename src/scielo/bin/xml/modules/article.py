@@ -183,14 +183,16 @@ class ArticleXML(object):
         return r
 
     @property
-    def xref_list(self):
-        _xref_list = {}
+    def xref_nodes(self):
+        _xref_list = []
         if self.tree is not None:
-            for xref in self.tree.findall('.//xref'):
-                rid = xref.attrib.get('rid')
-                if not rid in _xref_list.keys():
-                    _xref_list[rid] = []
-                _xref_list[rid].append(node_xml(xref))
+            nodes = self.tree.findall('.//xref')
+            for node in nodes:
+                n = {}
+                n['ref-type'] = node.attrib.get('ref-type')
+                n['rid'] = node.attrib.get('rid')
+                n['xml'] = node_xml(node)
+                _xref_list.append(n)
         return _xref_list
 
     @property
