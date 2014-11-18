@@ -85,7 +85,7 @@ def get_issue_record(db_issue, article):
 
 def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_ahead, db_article, version='1.0'):
     old_report_path = report_path
-
+    scilista_item = None
     issue_record = None
     issue_label = 'UNKNOWN'
     doc_files_info_list = []
@@ -134,6 +134,7 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
             issue_isis = IssueRecord(issue_record)
             issue = issue_isis.issue
             journal_files = serial_files.JournalFiles(serial_path, issue.acron)
+            scilista_item = issue.acron + ' ' + issue_label
             ahead_manager = serial_files.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
             issue_files = serial_files.IssueFiles(journal_files, issue_label, xml_path, web_path)
             issue_files.move_reports(report_path)
@@ -150,7 +151,7 @@ def convert_package(serial_path, xml_path, report_path, web_path, db_issue, db_a
     print('\n\nXML Converter report:\n ' + converter_report_filename)
     pkg_checker.display_report(converter_report_filename)
     print('\n\n-- end --')
-    return report_path
+    return (report_path, scilista_item)
 
 
 def stats(content=None):
@@ -462,13 +463,19 @@ def call_converter(args, version='1.0'):
             queue_path = queue_packages(config.data.get('DOWNLOAD_PATH'), config.data.get('TEMP_PATH'), config.data.get('QUEUE_PATH'), email, config.data.get('EMAIL_TO'), config.data.get('EMAIL_SUBJECT_NOT_PROCESSED'), config.data.get('EMAIL_TEXT_NOT_PROCESSED'))
             xml_paths = [item for item in os.listdir(queue_path)]
 
+        scilista_items = []
         for xml_path in xml_paths:
             messages.append('*'*80)
             messages.append(xml_path + '\n')
             report_path = xml_path + '_base_reports'
-            report_path = convert_package(serial_path, xml_path, report_path, web_path, issue_dao, isis_dao, article_dao, version)
+            report_path, scilista_item = convert_package(serial_path, xml_path, report_path, web_path, issue_dao, isis_dao, article_dao, version)
             messages.append('*'*80)
+
+            scilista_items.append(scilista_item)
 
             if email is not None:
                 email_text = open(report_path + '/xml_converter_report.html', 'r').read()
                 email.send(config.data.get('EMAIL_TO'), config.data.get('EMAIL_SUBJECT'), email_header + email_text, attaches=os.listdir(report_path))
+
+        if config.data.get('SCILISTA') is not None:
+            open(config.data.get('SCILISTA'), 'a+').write('\n'.join(scilista_items))
