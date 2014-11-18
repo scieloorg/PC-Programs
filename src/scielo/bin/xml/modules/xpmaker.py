@@ -6,7 +6,7 @@ from datetime import datetime
 from mimetypes import MimeTypes
 
 import article
-import files_manager
+import serial_files
 import java_xml_utils
 import xml_utils
 import xml_versions
@@ -321,7 +321,7 @@ def pack_files(src_path, dest_path, xml_name, new_name, href_files_list):
             r_not_found.append((curr, new))
         else:
             r_href_files_list += s
-    files_manager.delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
+    serial_files.delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
 
     return (r_related_files_list, r_href_files_list, r_not_found)
 
@@ -513,7 +513,7 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
     print('Generate packages for ' + str(len(xml_files)) + ' files.')
     for xml_filename in xml_files:
 
-        doc_files_info = files_manager.DocumentFiles(xml_filename, report_path, wrk_path)
+        doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, wrk_path)
         doc_files_info.clean()
         if doc_files_info.is_sgmxml:
             do_toc_report = False
