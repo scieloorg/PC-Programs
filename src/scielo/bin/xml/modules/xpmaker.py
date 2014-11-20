@@ -484,6 +484,15 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     return r
 
 
+def zip_package(pkg_path, zip_name):
+    import zipfile
+    zipf = zipfile.ZipFile(zip_name, 'w')
+    for root, dirs, files in os.walk(pkg_path):
+        for file in files:
+            zipf.write(os.path.join(root, file), arcname=os.path.basename(file))
+    zipf.close()
+
+
 def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.0'):
     from_markup = any([f.endswith('.sgm.xml') for f in xml_files])
 
@@ -562,8 +571,11 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         new_pkg_path = os.path.dirname(scielo_pkg_path) + '/' + pkg_name
         if not os.path.isdir(new_pkg_path):
             os.makedirs(new_pkg_path)
+        for item in os.listdir(new_pkg_path):
+            os.unlink(new_pkg_path + '/' + item)
         for item in os.listdir(scielo_pkg_path):
             shutil.copyfile(scielo_pkg_path + '/' + item, new_pkg_path + '/' + item)
+        zip_package(new_pkg_path, new_pkg_path + '.zip')
 
     print('Result of the processing:')
     print(markup_xml_path)
