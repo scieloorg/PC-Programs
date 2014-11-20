@@ -27,8 +27,8 @@ class XMLConverterConfiguration(object):
         return self.data.get('PATH_CISIS_1660', CURRENT_PATH + '/../../cfg/cisis1660/')
 
     @property
-    def web_path(self):
-        path = self.data.get('WEB_PATH', self.data.get('SCI_LISTA_SITE'))
+    def web_app_path(self):
+        path = self.data.get('WEB_APP_PATH', self.data.get('SCI_LISTA_SITE'))
         if path is not None:
             path = path.replace('\\', '/')
             if '/proc/' in path:
@@ -41,7 +41,7 @@ class XMLConverterConfiguration(object):
 
     @property
     def issue_db(self):
-        return self.data.get('ISSUE_DB', self.data.get('Issue Database'))
+        return self.data.get('SOURCE_ISSUE_DB', self.data.get('Issue Database'))
 
     @property
     def issue_db_copy(self):
