@@ -687,6 +687,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:choose>
 				<xsl:when test="not(front/doi) and not(doi)">
 					<article-id pub-id-type="pii"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>	
+					
 				</xsl:when>
 				<xsl:when test="number($fpage)&lt;number(@order) or contains(@fpage,'-')">
 					<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>	
@@ -1010,7 +1011,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:otherwise>aff<xsl:value-of select="string(number(substring(.,2)))"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	
+	<xsl:template match="xref[@ref-type='bibr']/text()">
+		<xsl:choose>
+			<xsl:when test="substring(.,1,1)='(' and substring(.,string-length(.)-1)=')'">
+				<xsl:value-of select="substring(.,2,string-length(.)-2)"/>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	<xsl:template match="aff/@id | normaff/@id">
 		<!-- FIXMEID -->
 		<!-- quando nao ha aff/label = author/xref enquanto author/@rid = aff/@id -->
@@ -1215,7 +1223,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="substring-after($pages,'-')"/>
+				<xsl:value-of select="$pages"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -1231,50 +1239,31 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</elocation-id>
 			</xsl:when>
 			<xsl:when test="contains(.,';') or contains(.,',')">
-				<xsl:variable name="pagination" select="translate(.,',',';')"/>
-				<xsl:variable name="page1">
-					<xsl:value-of select="substring-before(.,'-')"/>
-				</xsl:variable>
-				<xsl:variable name="fpage">
-					<xsl:apply-templates select="." mode="get-fpage">
-						<xsl:with-param name="pages" select="substring-after($pagination,';')"/>
-					</xsl:apply-templates>
-				</xsl:variable>
+				<xsl:variable name="pagination" select="translate(normalize-space(.),',',';')"/>
+				<xsl:variable name="page" select="translate($pagination,'-',';')"/>
 				<xsl:variable name="lpage">
 					<xsl:apply-templates select="." mode="get-lpage">
 						<xsl:with-param name="pages" select="substring-after($pagination,';')"/>
 					</xsl:apply-templates>
 				</xsl:variable>
-
-				<fpage>
-					<xsl:value-of select="$page1"/>
-				</fpage>
+				<xsl:variable name="fpage"><xsl:value-of select="substring-before($page,';')"/></xsl:variable>
+				<fpage><xsl:value-of select="$fpage"/></fpage>
 				<lpage>
-					<xsl:if test="string-length($lpage)&lt;string-length($fpage)">
-						<xsl:value-of
+					<xsl:if test="string-length($lpage)&lt;string-length($fpage)"><xsl:value-of
 							select="substring($fpage,1,string-length($fpage) - string-length($lpage))"
-						/>
-					</xsl:if>
-					<xsl:value-of select="$lpage"/>
+						/></xsl:if><xsl:value-of select="$lpage"/>
 				</lpage>
-				<page-range>
-					<xsl:value-of select="normalize-space(.)"/>
-				</page-range>
+				<page-range><xsl:value-of select="normalize-space(.)"/></page-range>
 			</xsl:when>
 			<xsl:when test="contains(.,'-')">
 				<xsl:variable name="fpage" select="substring-before(normalize-space(.),'-')"/>
 				<xsl:variable name="lpage" select="substring-after(normalize-space(.),'-')"/>
 
-				<fpage>
-					<xsl:value-of select="$fpage"/>
-				</fpage>
+				<fpage><xsl:value-of select="$fpage"/></fpage>
 				<lpage>
-					<xsl:if test="string-length($lpage)&lt;string-length($fpage)">
-						<xsl:value-of
-							select="substring($fpage,1,string-length($fpage) - string-length($lpage))"
-						/>
-					</xsl:if>
-					<xsl:value-of select="$lpage"/>
+					<xsl:if test="string-length($lpage)&lt;string-length($fpage)"><xsl:value-of
+						select="substring($fpage,1,string-length($fpage) - string-length($lpage))"
+					/></xsl:if><xsl:value-of select="$lpage"/>
 				</lpage>
 
 			</xsl:when>
