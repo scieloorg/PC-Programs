@@ -495,6 +495,8 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
     report_path = markup_xml_path + '/errors'
     wrk_path = markup_xml_path + '/work'
 
+    pkg_name = None
+
     report_names = {}
     xml_to_validate = []
 
@@ -526,6 +528,9 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         report_names[new_name] = doc_files_info.xml_name
         xml_to_validate.append(doc_files_info)
 
+        if pkg_name is None:
+            pkg_name = new_name[0:new_name.rfind('-')-1]
+
         if not doc_files_info.is_sgmxml:
             loaded_xml, e = xml_utils.load_xml(new_xml_filename)
             if loaded_xml is not None:
@@ -552,6 +557,13 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         for f in os.listdir(scielo_pkg_path):
             if not f.endswith('.xml') and not f.endswith('.jpg'):
                 shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)
+
+    if pkg_name is not None:
+        new_pkg_path = os.path.dirname(scielo_pkg_path) + '/' + pkg_name
+        if not os.path.isdir(new_pkg_path):
+            os.makedirs(new_pkg_path)
+        for item in os.listdir(scielo_pkg_path):
+            shutil.copyfile(scielo_pkg_path + '/' + item, new_pkg_path + '/' + item)
 
     print('Result of the processing:')
     print(markup_xml_path)
