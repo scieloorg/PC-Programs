@@ -649,6 +649,10 @@ class ArticleXML(object):
         return _id
 
     @property
+    def issue_pub_dateiso(self):
+        return article_utils.format_date(self.issue_pub_date)
+
+    @property
     def issue_pub_date(self):
         _issue_pub_date = None
         if self.article_meta is not None:
@@ -1098,13 +1102,14 @@ class ReferenceXML(object):
 
 class Issue(object):
 
-    def __init__(self, acron, volume, number, year, volume_suppl, number_suppl):
+    def __init__(self, acron, volume, number, dateiso, volume_suppl, number_suppl):
         self.volume = volume
         self.number = number
-        self.year = year
+        self.dateiso = dateiso
         self.volume_suppl = volume_suppl
         self.number_suppl = number_suppl
         self.acron = acron
+        self.year = dateiso[0:4]
 
     @property
     def issue_label(self):

@@ -227,12 +227,18 @@ def validate_issue_data(issue_record, article):
     w = 0
     msg = []
     if article is not None:
-        section_code, matched_rate, similar_section_title = IssueRecord(issue_record).section_code(article.toc_section)
+        issue_record = IssueRecord(issue_record)
+
+        if article.issue_pub_dateiso != issue_record.dateiso:
+            f += 1
+            msg.append('ERROR: Invalid value of publication date: ' + article.issue_pub_dateiso + '. Expected value: ' + issue_record.dateiso)
+
+        section_code, matched_rate, similar_section_title = issue_record.section_code(article.toc_section)
         if section_code is None:
             if not article.is_ahead:
                 f += 1
                 msg.append('ERROR: ' + article.toc_section + ' is not a registered section.')
-                msg.append('Registered sections:\n' + '; '.join(IssueRecord(issue_record).section_titles))
+                msg.append('Registered sections:\n' + '; '.join(issue_record.section_titles))
         else:
             if matched_rate != 1:
                 w += 1

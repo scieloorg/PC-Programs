@@ -85,7 +85,14 @@ class TOCReport(object):
                     part += html_report.format_list('no value for ' + label + ' in:', 'ul', none, 'issue-problem')
                     r += part
 
-        return html_report.tag('div', r, 'issue-messages')
+        issue_common_data = ''
+        for label in equal_data:
+            for item in toc_data[label]:
+                message = ''
+                if len(item) > 0:
+                    message = '(ERROR: Unique value expected for ' + label + ')'
+                issue_common_data += html_report.format_list(label + message, 'ol', item.keys())
+        return html_report.tag('div', issue_common_data, 'issue-data') + html_report.tag('div', r, 'issue-messages')
 
     def _report(self):
         invalid = []
