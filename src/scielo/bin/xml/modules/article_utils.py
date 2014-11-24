@@ -158,10 +158,16 @@ def expected_values(label, value, expected):
     return display_value(label, value) if value in expected else 'ERROR: ' + value + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected)
 
 
-def add_new_value_to_index(dict_key_and_values, key, value):
+def add_new_value_to_index(dict_key_and_values, key, value, normalize_key=True):
+    def normalize_value(value):
+        if not isinstance(value, unicode):
+            value = value.decode('utf-8')
+        return ' '.join(value.split())
     if key is None:
         key = 'None'
     if key is not None:
+        if normalize_key:
+            key = normalize_value(key)
         if not key in dict_key_and_values.keys():
             dict_key_and_values[key] = []
         dict_key_and_values[key].append(value)
