@@ -378,7 +378,6 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
     #register_log(content)
-    
     if doc_files_info.is_sgmxml:
         register_log('normalize_sgmlxml')
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
@@ -481,7 +480,18 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     temp = xml_utils.apply_dtd(xml_filename, doctype)
     r = java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)
     xml_utils.restore_xml_file(xml_filename, temp)
+    if xml_filename.endswith('.bkp'):
+        os.unlink(xml_filename)
     return r
+
+
+def zip_package(pkg_path, zip_name):
+    import zipfile
+    zipf = zipfile.ZipFile(zip_name, 'w')
+    for root, dirs, files in os.walk(pkg_path):
+        for file in files:
+            zipf.write(os.path.join(root, file), arcname=os.path.basename(file))
+    zipf.close()
 
 
 def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.0'):
@@ -494,6 +504,8 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
     pmc_pkg_path = markup_xml_path + '/pmc_package'
     report_path = markup_xml_path + '/errors'
     wrk_path = markup_xml_path + '/work'
+
+    pkg_name = None
 
     report_names = {}
     xml_to_validate = []
@@ -526,6 +538,9 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         report_names[new_name] = doc_files_info.xml_name
         xml_to_validate.append(doc_files_info)
 
+        if pkg_name is None:
+            pkg_name = new_name[0:new_name.rfind('-')]
+
         if not doc_files_info.is_sgmxml:
             loaded_xml, e = xml_utils.load_xml(new_xml_filename)
             if loaded_xml is not None:
@@ -552,6 +567,16 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         for f in os.listdir(scielo_pkg_path):
             if not f.endswith('.xml') and not f.endswith('.jpg'):
                 shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)
+
+    if pkg_name is not None:
+        new_pkg_path = os.path.dirname(scielo_pkg_path) + '/' + pkg_name
+        if not os.path.isdir(new_pkg_path):
+            os.makedirs(new_pkg_path)
+        for item in os.listdir(new_pkg_path):
+            os.unlink(new_pkg_path + '/' + item)
+        for item in os.listdir(scielo_pkg_path):
+            shutil.copyfile(scielo_pkg_path + '/' + item, new_pkg_path + '/' + item)
+        zip_package(new_pkg_path, new_pkg_path + '.zip')
 
     print('Result of the processing:')
     print(markup_xml_path)
