@@ -662,7 +662,7 @@ class ArticleXML(object):
         return d
 
     @property
-    def ppub_date(self):
+    def epub_ppub_date(self):
         d = None
         if self.article_meta is not None:
             date = self.article_meta.find('pub-date[@pub-type="epub-ppub"]')
@@ -682,8 +682,6 @@ class ArticleXML(object):
             date = self.article_meta.find('pub-date[@pub-type="epub"]')
             if date is not None:
                 date = self.article_meta.find('pub-date[@date-type="preprint"]')
-            if date is None:
-                date = self.article_meta.find('pub-date[@pub-type="epub-ppub"]')
             if date is not None:
                 d = {}
                 d['season'] = date.findtext('season')
@@ -914,14 +912,16 @@ class Article(ArticleXML):
 
     @property
     def issue_pub_date(self):
-        d = self.ppub_date
+        d = self.epub_ppub_date
         if d is None:
             d = self.collection_date
+        if d is None:
+            d = self.epub_date
         return d
 
     @property
     def article_pub_date(self):
-        return self.epub_date
+        return self.epub_date if self.epub_date is not None else self.epub_ppub_date
 
 
 class ReferenceXML(object):

@@ -481,6 +481,8 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     temp = xml_utils.apply_dtd(xml_filename, doctype)
     r = java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)
     xml_utils.restore_xml_file(xml_filename, temp)
+    if xml_filename.endswith('.bkp'):
+        os.unlink(xml_filename)
     return r
 
 

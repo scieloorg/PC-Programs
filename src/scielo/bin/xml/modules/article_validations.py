@@ -469,13 +469,13 @@ class ArticleContentValidation(object):
     def article_date_types(self):
         r = []
         date_types = []
-        expected = ['epub and ppub', 'epub and collection', 'epub']
+        expected = ['epub-ppub', 'epub and collection', 'epub']
         if self.article.epub_date is not None:
             date_types.append('epub')
         if self.article.collection_date is not None:
             date_types.append('collection')
-        if self.article.ppub_date is not None:
-            date_types.append('ppub')
+        if self.article.epub_ppub_date is not None:
+            date_types.append('epub-ppub')
         c = ' and '.join(date_types)
         if not c in expected:
             r.append(('article dates', 'ERROR', 'Invalid combination of date types: ' + c + '. Expected values: ' + ' | '.join(expected)))

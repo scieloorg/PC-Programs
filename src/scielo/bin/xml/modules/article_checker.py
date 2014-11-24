@@ -264,7 +264,7 @@ class ArticleDisplayReport(object):
 
     @property
     def article_dates(self):
-        return self.display_labeled_value('date(ppub)', article_utils.format_date(self.article.ppub_date)) + self.display_labeled_value('date(epub)', article_utils.format_date(self.article.epub_date)) + self.display_labeled_value('date(collection)', article_utils.format_date(self.article.collection_date))
+        return self.display_labeled_value('date(epub-ppub)', article_utils.format_date(self.article.epub_ppub_date)) + self.display_labeled_value('date(epub)', article_utils.format_date(self.article.epub_date)) + self.display_labeled_value('date(collection)', article_utils.format_date(self.article.collection_date))
 
     @property
     def contrib_names(self):
