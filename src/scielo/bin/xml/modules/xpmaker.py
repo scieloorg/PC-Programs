@@ -538,7 +538,7 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         xml_to_validate.append(doc_files_info)
 
         if pkg_name is None:
-            pkg_name = new_name[0:new_name.rfind('-')-1]
+            pkg_name = new_name[0:new_name.rfind('-')]
 
         if not doc_files_info.is_sgmxml:
             loaded_xml, e = xml_utils.load_xml(new_xml_filename)

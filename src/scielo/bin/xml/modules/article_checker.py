@@ -196,7 +196,7 @@ class ArticleDisplayReport(object):
             r += self.fpage
             r += self.fpage_seq
             r += self.elocation_id
-            r += self.article_date
+            r += self.article_dates
             r += self.contrib_names
             r += self.contrib_collabs
             r += self.affiliations
@@ -263,8 +263,8 @@ class ArticleDisplayReport(object):
         return self.display_labeled_value('@article-type', self.article.article_type, 'article-type')
 
     @property
-    def article_date(self):
-        return self.display_labeled_value('@article-date', article_utils.format_date(self.article.article_pub_date))
+    def article_dates(self):
+        return self.display_labeled_value('date(ppub)', article_utils.format_date(self.article.ppub_date)) + self.display_labeled_value('date(epub)', article_utils.format_date(self.article.epub_date)) + self.display_labeled_value('date(collection)', article_utils.format_date(self.article.collection_date))
 
     @property
     def contrib_names(self):
@@ -454,6 +454,7 @@ class ArticleValidationReport(object):
                     self.article_validation.issue_label,
                     self.article_validation.language,
                     self.article_validation.article_type,
+                    self.article_validation.article_date_types,
                     self.article_validation.toc_section,
                     self.article_validation.order,
                     self.article_validation.doi,

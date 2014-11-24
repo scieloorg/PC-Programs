@@ -98,7 +98,7 @@ def validate_contrib_names(author, affiliations=[]):
     if len(affiliations) > 0:
         aff_ids = [aff.id for aff in affiliations if aff.id is not None]
         if len(author.xref) == 0:
-            results.append(('xref', 'WARNING', 'Author has no xref. Expected values: ' + '|'.join(aff_ids)))
+            results.append(('xref', 'FATAL ERROR', 'Author has no xref. Expected values: ' + '|'.join(aff_ids)))
         else:
             for xref in author.xref:
                 if not xref in aff_ids:

@@ -28,7 +28,8 @@ def get_valid_xml(xml_filename, report_path, old_name):
 
             xml, e = xml_utils.load_xml(xml_content)
             if not xml is None:
-                shutil.copyfile(xml_filename, report_path + '/' + fname + '.bkp')
+                if os.path.dirname(xml_filename) != report_path:
+                    shutil.copyfile(xml_filename, report_path + '/' + fname + '.bkp')
                 open(xml_filename, 'w').write(xml_content)
     if xml is None:
         shutil.copyfile(xml_filename, report_path + '/' + fname.replace('.xml', '_incorrect.xml'))
