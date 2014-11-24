@@ -88,9 +88,11 @@ class TOCReport(object):
         issue_common_data = ''
         for label in equal_data:
             message = ''
-            if len(toc_data[label].items()) > 1:
+            if len(toc_data[label].items()) == 1:
+                issue_common_data += html_report.display_labeled_value(label, toc_data[label].keys()[0])
+            else:
                 message = '(ERROR: Unique value expected for ' + label + ')'
-            issue_common_data += html_report.format_list(label + message, 'ol', toc_data[label].keys())
+                issue_common_data += html_report.format_list(label + message, 'ol', toc_data[label].keys())
         return html_report.tag('div', issue_common_data, 'issue-data') + html_report.tag('div', r, 'issue-messages')
 
     def _report(self):
