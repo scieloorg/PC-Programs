@@ -426,8 +426,8 @@ class ArticleContentValidation(object):
         if received is not None and accepted is not None:
             r = [('history', 'OK', received + ' - ' + accepted)]
             if received > accepted:
-                r = 'received (' + received + ')  must be a previous date than accepted (' + accepted + ').'
-                r = [('history', 'ERROR', r)]
+                r = 'received (' + received + ')  must be a date before accepted (' + accepted + ').'
+                r = [('history', 'FATAL ERROR', r)]
         else:
             r = []
             r.append(conditional_required('history: received', received))
@@ -477,7 +477,9 @@ class ArticleContentValidation(object):
         if self.article.epub_ppub_date is not None:
             date_types.append('epub-ppub')
         c = ' and '.join(date_types)
-        if not c in expected:
+        if c in expected:
+            r.append(('article dates', 'OK', c))
+        else:
             r.append(('article dates', 'ERROR', 'Invalid combination of date types: ' + c + '. Expected values: ' + ' | '.join(expected)))
         return r
 

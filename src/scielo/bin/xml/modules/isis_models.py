@@ -405,12 +405,12 @@ class IssueRecord(object):
     @property
     def issue(self):
         acron = self.record.get('930').lower()
-        year = self.record.get('65', '')[0:4]
+        dateiso = self.record.get('65', '')
         volume = self.record.get('31')
         volume_suppl = self.record.get('131')
         number = self.record.get('32')
         number_suppl = self.record.get('132')
-        i = Issue(acron, volume, number, year, volume_suppl, number_suppl)
+        i = Issue(acron, volume, number, dateiso, volume_suppl, number_suppl)
 
         i.issn_id = self.record.get('35')
         return i

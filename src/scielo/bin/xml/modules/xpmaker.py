@@ -378,7 +378,6 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
     #register_log(content)
-    
     if doc_files_info.is_sgmxml:
         register_log('normalize_sgmlxml')
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
