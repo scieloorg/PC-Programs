@@ -186,3 +186,4 @@ text-ref;Identifica la forma original de la cita
 publoc;Identifica la ubicación de la editora
 *publoc-name;Identifica automaticamente la ubicación y el nombre de la editora
 *pubname-loc;Identifica automaticamente el nombre de la editora y de su ubicación
+*fn;Identifica automaticamente todos las notas de pie de página y sus enlaces
