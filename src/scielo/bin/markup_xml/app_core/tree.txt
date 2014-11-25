@@ -11,6 +11,7 @@ element;#TRUE#;#TRUE#
 equation;#TRUE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
+*fn;#FALSE#;#TRUE#
 graphic;#FALSE#;#TRUE#
 ign;#TRUE#;#TRUE#
 list;#FALSE#;#TRUE#
@@ -264,6 +265,8 @@ caption;#FALSE#;#FALSE#
 figgrp;#FALSE#;#TRUE#
 
 fname
+
+*fn
 
 fngrp
 label;#FALSE#;#FALSE#

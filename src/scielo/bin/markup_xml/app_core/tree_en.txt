@@ -186,4 +186,4 @@ text-ref;Identify the original form of the reference
 publoc;Identify the publisher location
 *publoc-name;Identify automatically publisher location and name
 *pubname-loc;Identify automatically publisher name and location
-
+*fn;Identify all the footnotes and its links
