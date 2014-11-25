@@ -1604,10 +1604,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ref>
 	</xsl:template>
 	<xsl:template match="ref">
-		<xsl:variable name="id"><xsl:value-of select="position()"/></xsl:variable>
+		<xsl:variable name="id"><xsl:choose>
+			<xsl:when test="@id"><xsl:value-of select="substring(@id,2)"/></xsl:when><xsl:otherwise><xsl:value-of select="position()"/></xsl:otherwise>
+		</xsl:choose></xsl:variable>
 		<ref id="B{$id}">
 			<xsl:apply-templates select="label"/>
-			
 			<xsl:apply-templates select="." mode="text-ref"/>
 			<element-citation publication-type="{@reftype}">
 				<xsl:apply-templates select="*[name()!='no' and name()!='label' and name()!='text-ref']">
