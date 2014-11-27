@@ -2399,8 +2399,61 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>
-
-	<xsl:template match="xref[@rid!=''] | author//sup">
+	
+	<xsl:template match="author//sup">
+		<xsl:variable name="label" select="normalize-space(.)"/>
+		<xsl:choose>
+			<xsl:when
+				test="$affs[normalize-space(label)=$label or normalize-space(.//sup//text())=$label]">
+				<!-- sup = aff -->
+				<xref ref-type="aff">
+					<xsl:attribute name="rid">aff<xsl:value-of select="$label"
+					/></xsl:attribute>
+					<sup>
+						<xsl:value-of select="$label"/>
+					</sup>
+				</xref>
+			</xsl:when>
+			<xsl:otherwise>
+				<xref>
+					<sup>
+						<xsl:value-of select="$label"/>
+					</sup>
+				</xref>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="xref[@rid!='']">
+		<xref>
+			<xsl:apply-templates select="@*"/>
+			<xsl:choose>
+				<xsl:when test="@ref-type='fn'">
+					<sup><xsl:value-of select="substring(@rid,3)"/></sup>
+				</xsl:when>
+				<xsl:when test="@ref-type='bibr'">
+					<xsl:apply-templates select="*[name()!='graphic']|text()"/>
+				</xsl:when>
+				<xsl:when test=".//sup">
+					<xsl:apply-templates select="*[name()!='graphic']|text()" mode="ignore-style"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<sup>
+						<xsl:apply-templates select="*[name()!='graphic']|text()"/>
+					</sup>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xref>
+		<xsl:if test="graphic">
+			<graphic>
+				<xsl:apply-templates select="graphic/@*|graphic/*|graphic/text()"/>
+				<uri>#<xsl:value-of select="@rid"/>
+				</uri>
+			</graphic>
+		</xsl:if>
+	</xsl:template>
+	
+	<!--xsl:template match="xref[@rid!='']">
 		<xsl:variable name="rid" select="@rid"/>
 
 		<xsl:choose>
@@ -2409,29 +2462,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="@*"/>
 					<xsl:apply-templates select="*|text()"/>
 				</xref>
-			</xsl:when>
-			<xsl:when test="name()='sup'">
-				<xsl:variable name="label" select="normalize-space(.)"/>
-				<xsl:choose>
-					<xsl:when
-						test="$affs[normalize-space(label)=$label or normalize-space(.//sup//text())=$label]">
-						<!-- sup = aff -->
-						<xref ref-type="aff">
-							<xsl:attribute name="rid">aff<xsl:value-of select="$label"
-								/></xsl:attribute>
-							<sup>
-								<xsl:value-of select="$label"/>
-							</sup>
-						</xref>
-					</xsl:when>
-					<xsl:otherwise>
-						<xref>
-							<sup>
-								<xsl:value-of select="$label"/>
-							</sup>
-						</xref>
-					</xsl:otherwise>
-				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="@ref-type='aff'">
 				<xsl:variable name="label" select="normalize-space(.)"/>
@@ -2459,7 +2489,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:copy-of select="."/>
 			</xsl:otherwise>
 		</xsl:choose>
-	</xsl:template>
+	</xsl:template-->
 
 	<xsl:template match="*[@id]" mode="display-id">
 		<xsl:value-of select="@id"/>,</xsl:template>
