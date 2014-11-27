@@ -112,7 +112,7 @@
 <!ENTITY % cita SYSTEM "citation4_0.dtd">
 %cita;
 
-<!ELEMENT text  - - ( (doi?, url?, related*), (titlegrp? & authgrp? &
+<!ELEMENT text  - - ( (doi?, url?, related*), (titlegrp? & authgrp? & aff? & 
 ((#PCDATA) | xmlbody )? & back?)) +(%i.float;) >
 <!ATTLIST text
           pii      CDATA #REQUIRED
