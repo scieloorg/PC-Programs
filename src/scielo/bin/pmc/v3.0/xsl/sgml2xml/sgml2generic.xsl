@@ -915,8 +915,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<aff>
 			<xsl:apply-templates select="@id"/>
 			<xsl:apply-templates select="label|sup"/>
-			<institution content-type="original"><xsl:apply-templates select="*|text()" mode="original"></xsl:apply-templates></institution>
-			<!--institution content-type="aff-pmc"><xsl:apply-templates select="*[name()!='label' and name()!='sup']|text()" mode="aff-pmc"/></institution -->
+			<institution content-type="original"><xsl:apply-templates select="*|text()"/></institution>
 			<xsl:choose>
 				<xsl:when test="@norgname">
 					<xsl:if test="@norgname!='Not normalized'">
@@ -936,8 +935,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 							<xsl:apply-templates select="city|state|zipcode"/>
 						</addr-line>
 					</xsl:if>
-				</xsl:when>
-				
+				</xsl:when>				
 			</xsl:choose>
 			<xsl:choose>
 				<xsl:when test="@ncountry and @ncountry!='Not normalized'">
@@ -970,29 +968,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="aff/* | normaff/*" mode="aff-pmc">
-		<xsl:value-of select="text()"/>
-	</xsl:template>
-	
-	<xsl:template match="aff/label | normaff/label" mode="aff-pmc">
-	</xsl:template>
-	
-	<xsl:template match="aff/email | aff/country | normaff/email | normaff/country" mode="aff-pmc">
-		<named-content content-type="{name()}"><xsl:value-of select="normalize-space(.)"/></named-content>
-	</xsl:template>
-		
-	<xsl:template match="aff/text() | normaff/text()" mode="aff-pmc">
-		<xsl:value-of select="."/>
-	</xsl:template>
 	
 	<xsl:template match="aff/* | normaff/*" mode="original">
 		<xsl:value-of select="text()"/>
 	</xsl:template>
-	<xsl:template match="aff/label" mode="aff-pmc">
-	</xsl:template>
 	
 	<xsl:template match="aff/email | normaff/email | aff/country | normaff/country" mode="original"><named-content content-type="{name()}"><xsl:value-of select="text()"/></named-content>
 	</xsl:template>
+	
 	<xsl:template match="aff//text() | normaff//text()" mode="original">
 		<xsl:value-of select="."/>
 	</xsl:template>
