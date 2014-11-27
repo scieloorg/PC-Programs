@@ -84,7 +84,14 @@
 			<xsl:apply-templates select="@id | label"/>
 			<xsl:choose>
 				<xsl:when test="institution[@content-type='original']">
-					<xsl:apply-templates select="institution[@content-type='original']"/>
+					<xsl:choose>
+						<xsl:when test="email">
+							<xsl:value-of select="substring-before(institution[@content-type='original'],email)"/>
+							<email><xsl:value-of select="email"/></email>
+							<xsl:value-of select="substring-after(email,institution[@content-type='original'])"/>
+						</xsl:when>
+						<xsl:otherwise><xsl:apply-templates select="institution[@content-type='original']"/></xsl:otherwise>
+					</xsl:choose>
 				</xsl:when>
 				<xsl:when test="institution[@content-type='aff-pmc']">
 					<xsl:apply-templates select="institution[@content-type='aff-pmc']"/>
