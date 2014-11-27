@@ -915,7 +915,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<aff>
 			<xsl:apply-templates select="@id"/>
 			<xsl:apply-templates select="label|sup"/>
-			<institution content-type="original"><xsl:apply-templates select="*|text()"/></institution>
+			<institution content-type="original"><xsl:apply-templates select="*|text()" mode="original"/></institution>
 			<xsl:choose>
 				<xsl:when test="@norgname">
 					<xsl:if test="@norgname!='Not normalized'">
@@ -971,9 +971,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="aff/* | normaff/*" mode="original">
 		<xsl:value-of select="text()"/>
-	</xsl:template>
-	
-	<xsl:template match="aff/email | normaff/email | aff/country | normaff/country" mode="original"><named-content content-type="{name()}"><xsl:value-of select="text()"/></named-content>
 	</xsl:template>
 	
 	<xsl:template match="aff//text() | normaff//text()" mode="original">
