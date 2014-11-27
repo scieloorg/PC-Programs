@@ -710,6 +710,7 @@ text
 doi;#FALSE#;#TRUE#
 titlegrp;#FALSE#;#FALSE#
 authgrp;#FALSE#;#FALSE#
+aff;#TRUE#;#TRUE#
 back;#FALSE#;#FALSE#
 
 th
