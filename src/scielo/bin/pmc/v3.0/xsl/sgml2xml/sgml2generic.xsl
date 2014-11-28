@@ -875,46 +875,36 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template>
 
-	<xsl:template match="author/@rid">
-		<!-- quando nao existe author/xref -->
-		<!-- xref deve ser marcado -->
-		<!--xsl:variable name="rid" select="normalize-space(.)"/>
-
-		<xsl:apply-templates select="." mode="mult-rid">
-			<xsl:with-param name="rid_list" select="concat($rid, ' ')"/>
-		</xsl:apply-templates-->
+	<xsl:template match="aff|normaff" mode="label">
+		<xsl:variable name="label">
+			<xsl:choose>
+				<xsl:when test="label/sup">
+					<xsl:value-of select="label/sup"/>
+				</xsl:when>
+				<xsl:when test="sup/label">
+					<xsl:value-of select="sup/label"/>
+				</xsl:when>
+				<xsl:when test="label">
+					<xsl:value-of select="label"/>
+				</xsl:when>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:choose>
+			<xsl:when test="normalize-space($label)=''">
+				<xsl:choose>
+					<xsl:when test="contains(@id,'aff')"><label><xsl:value-of select="substring(@id,4)"/></label></xsl:when>
+					<xsl:when test="contains(@id,'a0')"><label><xsl:value-of select="substring(@id,3)"/></label></xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise><label><xsl:value-of select="$label"/></label></xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
-
-	<xsl:template match="author/@rid" mode="mult-rid">
-		<!-- quando nao existe author/xref -->
-		<!-- xref deve ser marcado -->
-		<xsl:param name="rid_list"/>
-		<xsl:variable name="next" select="substring-after($rid_list,' ')"/>
-		<xsl:variable name="rid" select="substring-before($rid_list,' ')"/>
-		<xref ref-type="aff" rid="{$rid}">
-
-			<xsl:value-of select="$rid"/>
-
-		</xref>
-		<xsl:if test="$next!=''">
-			<xsl:apply-templates select="." mode="mult-rid">
-				<xsl:with-param name="rid_list" select="$next"/>
-			</xsl:apply-templates>
-		</xsl:if>
-	</xsl:template>
-
-
 	<xsl:template match="aff | normaff">
 		<xsl:variable name="parentid"></xsl:variable>
-		<xsl:variable name="label">
-			<xsl:value-of select="normalize-space(label)"/>
-			<xsl:if test="not(label)">
-				<xsl:value-of select="normalize-space(sup)"/>
-			</xsl:if>
-		</xsl:variable>
+		
 		<aff>
 			<xsl:apply-templates select="@id"/>
-			<xsl:apply-templates select="label|sup"/>
+			<xsl:apply-templates select="." mode="label"/>
 			<institution content-type="original"><xsl:apply-templates select="*|text()" mode="original"/></institution>
 			<xsl:choose>
 				<xsl:when test="@norgname">
@@ -986,10 +976,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose></xsl:attribute>
 	</xsl:template>
 	<xsl:template match="xref[@ref-type='aff']/@rid">
-		<xsl:choose>
+		<xsl:attribute name="rid"><xsl:choose>
 			<xsl:when test="contains(.,'aff')"><xsl:value-of select="."/></xsl:when>
 			<xsl:otherwise>aff<xsl:value-of select="string(number(substring(.,2)))"/></xsl:otherwise>
-		</xsl:choose>
+		</xsl:choose></xsl:attribute>
 	</xsl:template>
 	<xsl:template match="xref[@ref-type='bibr']/text()">
 		<xsl:choose>
@@ -2397,31 +2387,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="author//sup">
-		<xsl:variable name="label" select="normalize-space(.)"/>
-		<xsl:choose>
-			<xsl:when
-				test="$affs[normalize-space(label)=$label or normalize-space(.//sup//text())=$label]">
-				<!-- sup = aff -->
-				<xref ref-type="aff">
-					<xsl:attribute name="rid">aff<xsl:value-of select="$label"
-					/></xsl:attribute>
-					<sup>
-						<xsl:value-of select="$label"/>
-					</sup>
-				</xref>
-			</xsl:when>
-			<xsl:otherwise>
-				<xref>
-					<sup>
-						<xsl:value-of select="$label"/>
-					</sup>
-				</xref>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 	
 	<xsl:template match="xref[@rid!='']">
+		<xsl:comment>xref</xsl:comment>
 		<xref>
 			<xsl:apply-templates select="@*"/>
 			<xsl:choose>
