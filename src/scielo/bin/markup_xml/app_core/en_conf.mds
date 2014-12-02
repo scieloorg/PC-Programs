@@ -87,9 +87,9 @@ msgBeforExiting2,Save and generate XML
 msgBeforExiting3,Save and exit
 msgBeforExiting4,Exit without saving
 msgAutomaticStyles,The elements will be marked according to the styles. Do you want to continue?
-msgQuestionBibrXrefPattern,Are the bibliographic references in the text identified such as (number)?
+msgQuestionBibrXrefPattern,Are the bibliographic references in the text according AUTHOR ... DATE standard?
 timer,99999999
-DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
+msgDoOrRedoHyperlinksBetweenTextAndBibliography,"Reinsert  in the text the links to the references?"
 msgFormXMLBody,"Check the identification of the parts of the text. Fix if necessary, selecting the list items, selecting the tag and clicking on Change button."
 buttonChange2,Change
 msg_new_structure,"To generate XML files, the marked files must to be in markup_xml\scielo_markup and the other files in markup_xml\src"
