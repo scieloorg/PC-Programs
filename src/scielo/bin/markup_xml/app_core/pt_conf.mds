@@ -87,9 +87,9 @@ msgBeforExiting2,Salvar e gerar XML
 msgBeforExiting3,Salvar e sair
 msgBeforExiting4,Sair sem salvar
 msgAutomaticStyles,Os elementos serão marcados de acordo com os estilos. Continuar?
-msgQuestionBibrXrefPattern,As referências bibliográficas no texto estão identificadas como (número)?
+msgQuestionBibrXrefPattern,As referências bibliográficas no texto seguem o padrão autor ... data?
 timer,999999999
-DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
+msgDoOrRedoHyperlinksBetweenTextAndBibliography,"Refazer os links das referências?"
 msgFormXMLBody,"Verifique a identificação das partes no texto completo. Corrija se necessário, selecionando os itens da lista, escolhendo o rótulo que o identifica e clicando no botão Corrigir."
 buttonChange2,Corrigir
 msg_new_structure,"Para gerar arquivos XML, os arquivos marcados devem estar em markup_xml\scielo_markup e os outros arquivos em markup_xml\src"
