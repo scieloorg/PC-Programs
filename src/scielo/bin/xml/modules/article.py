@@ -680,7 +680,7 @@ class ArticleXML(object):
         date = None
         if self.article_meta is not None:
             date = self.article_meta.find('pub-date[@pub-type="epub"]')
-            if date is not None:
+            if date is None:
                 date = self.article_meta.find('pub-date[@date-type="preprint"]')
             if date is not None:
                 d = {}
