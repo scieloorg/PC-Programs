@@ -960,7 +960,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="aff/* | normaff/*" mode="original">
-		<xsl:value-of select="text()"/>
+		<xsl:value-of select="."/>
 	</xsl:template>
 	
 	<xsl:template match="aff//text() | normaff//text()" mode="original">
