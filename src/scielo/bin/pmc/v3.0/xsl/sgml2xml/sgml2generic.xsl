@@ -874,18 +874,26 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-
+	
+	<xsl:template match="label/sup|sup/label|label">
+		<xsl:choose>
+			<xsl:when test=".='('">*</xsl:when>
+			<xsl:when test=".='(('">**</xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="aff|normaff" mode="label">
 		<xsl:variable name="label">
 			<xsl:choose>
 				<xsl:when test="label/sup">
-					<xsl:value-of select="label/sup"/>
+					<xsl:apply-templates select="label/sup"/>
 				</xsl:when>
 				<xsl:when test="sup/label">
-					<xsl:value-of select="sup/label"/>
+					<xsl:apply-templates select="sup/label"/>
 				</xsl:when>
 				<xsl:when test="label">
-					<xsl:value-of select="label"/>
+					<xsl:apply-templates select="label"/>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
@@ -2387,15 +2395,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template>
 	
-	
 	<xsl:template match="xref[@rid!='']">
-		<xsl:comment>xref</xsl:comment>
 		<xref>
 			<xsl:apply-templates select="@*"/>
 			<xsl:choose>
-				<xsl:when test="@ref-type='fn'">
+				<!--xsl:when test="@ref-type='fn'">
 					<sup><xsl:value-of select="substring(@rid,3)"/></sup>
-				</xsl:when>
+				</xsl:when-->
 				<xsl:when test="@ref-type='bibr'">
 					<xsl:apply-templates select="*[name()!='graphic']|text()"/>
 				</xsl:when>
@@ -2935,11 +2941,10 @@ et al.</copyright-statement>
 	<xsl:template match="quote">
 		<disp-quote>
 			<p>
-				<xsl:value-of select="normalize-space(.)"/>
+				<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 			</p>
 		</disp-quote>
 	</xsl:template>
-
 
 	<xsl:template match="confgrp">
 		<conference>
