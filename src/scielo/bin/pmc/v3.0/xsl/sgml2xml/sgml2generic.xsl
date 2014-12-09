@@ -245,6 +245,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:element>
 	</xsl:template>
 	
+	<xsl:template match="label[.//text()='(']//text()">*</xsl:template>
+	<xsl:template match="label[.//text()='((']//text()">**</xsl:template>
+	
 	<xsl:template match="app">
 		<xsl:param name="id"/>
 		<app-group>
@@ -875,36 +878,24 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="label/sup|sup/label|label">
+	<xsl:template match="*" mode="fix-label">
+		<xsl:param name="text"></xsl:param>
 		<xsl:choose>
-			<xsl:when test=".='('">*</xsl:when>
-			<xsl:when test=".='(('">**</xsl:when>
-			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+			<xsl:when test="$text='('">*</xsl:when>
+			<xsl:when test="$text='(('">**</xsl:when>
+			<xsl:otherwise><xsl:value-of select="$text"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="aff|normaff" mode="label">
-		<xsl:variable name="label">
-			<xsl:choose>
-				<xsl:when test="label/sup">
-					<xsl:apply-templates select="label/sup"/>
-				</xsl:when>
-				<xsl:when test="sup/label">
-					<xsl:apply-templates select="sup/label"/>
-				</xsl:when>
-				<xsl:when test="label">
-					<xsl:apply-templates select="label"/>
-				</xsl:when>
-			</xsl:choose>
-		</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="normalize-space($label)=''">
+			<xsl:when test="normalize-space(.//label//text())=''">
 				<xsl:choose>
 					<xsl:when test="contains(@id,'aff')"><label><xsl:value-of select="substring(@id,4)"/></label></xsl:when>
 					<xsl:when test="contains(@id,'a0')"><label><xsl:value-of select="substring(@id,3)"/></label></xsl:when>
 				</xsl:choose>
 			</xsl:when>
-			<xsl:otherwise><label><xsl:value-of select="$label"/></label></xsl:otherwise>
+			<xsl:otherwise><xsl:apply-templates select="label"></xsl:apply-templates></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="aff | normaff">
@@ -2399,9 +2390,21 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xref>
 			<xsl:apply-templates select="@*"/>
 			<xsl:choose>
-				<!--xsl:when test="@ref-type='fn'">
-					<sup><xsl:value-of select="substring(@rid,3)"/></sup>
-				</xsl:when-->
+				<xsl:when test="@ref-type='fn'">
+					<xsl:choose>
+						<xsl:when test="normalize-space(.//text())=''">
+							<sup><xsl:value-of select="substring(@rid,3)"/></sup>
+						</xsl:when>
+						<xsl:when test=".//sup">
+							<xsl:apply-templates select="*[name()!='graphic']|text()" mode="ignore-style"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<sup>
+								<xsl:apply-templates select="*[name()!='graphic']|text()"/>
+							</sup>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
 				<xsl:when test="@ref-type='bibr'">
 					<xsl:apply-templates select="*[name()!='graphic']|text()"/>
 				</xsl:when>
