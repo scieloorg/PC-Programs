@@ -114,19 +114,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<!-- 
-		mode=ignore-style
-	-->
-	<xsl:template match="text()" mode="ignore-style">
-		<xsl:value-of select="."/>
-	</xsl:template>
-	<xsl:template match="*" mode="ignore-style">
-		<xsl:apply-templates select="*|text()" mode="ignore-style"/>
-	</xsl:template>
-	<xsl:template match="bold | italic" mode="ignore-style">
-		<xsl:apply-templates select="*|text()" mode="ignore-style"/>
-	</xsl:template>
-	
 	<xsl:template match="@href">
 		<xsl:attribute name="xlink:href">
 			<xsl:value-of select="normalize-space(.)"/>
@@ -148,7 +135,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</title>
 		</caption>
 	</xsl:template>
-
 
 	<xsl:template match="et-al">
 		<etal/>
@@ -204,24 +190,36 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</fpage>
 	</xsl:template>
 	<xsl:template match="body"/>
-	<xsl:template match="bold | italic | sup" mode="formatted-text"/>
-	<xsl:template match="*[bold or italic or sup]" mode="formatted-text"><xsl:apply-templates select="text()" mode="formatted-text"></xsl:apply-templates></xsl:template>
-	<xsl:template match="*[bold or italic or sup]/text()" mode="formatted-text"><xsl:value-of select="."/></xsl:template>
-	<xsl:template match="bold | italic | sup">
+	
+	<xsl:template match="*" mode="keep-styles">
+		<xsl:apply-templates select="*|text()" mode="keep-styles"/>
+	</xsl:template>
+	
+	<xsl:template match="bold|italic" mode="keep-styles">
+		<xsl:element name="{name()}">
+			<xsl:apply-templates select="*|text()" mode="keep-styles"/>
+		</xsl:element>
+	</xsl:template>
+	
+	<xsl:template match="text()" mode="keep-styles">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="bold | italic">
 		<xsl:param name="id"/>
-		<xsl:variable name="all_levels_texts"><xsl:apply-templates select="parent::node()" mode="text-only"></xsl:apply-templates></xsl:variable>
-		<xsl:variable name="first_level_texts"><xsl:apply-templates select="parent::node()" mode="formatted-text"></xsl:apply-templates></xsl:variable>
+		<xsl:variable name="parent_textonly"><xsl:apply-templates select="parent::node()" mode="text-only"/></xsl:variable>
+		<xsl:variable name="textonly"><xsl:apply-templates select="*|text()" mode="text-only"/></xsl:variable>
 		<xsl:choose>
-			<xsl:when test="normalize-space($first_level_texts)=''"><xsl:apply-templates select="*|text()">
-					<xsl:with-param name="id" select="$id"/>
-				</xsl:apply-templates></xsl:when>
-			<xsl:when test="normalize-space($all_levels_texts)=normalize-space(.)"><xsl:apply-templates select="*|text()">
-					<xsl:with-param name="id" select="$id"/>
-				</xsl:apply-templates></xsl:when>
+			<xsl:when test="normalize-space($parent_textonly)!=normalize-space($textonly)">
+				<!-- mantem o bold ou italic se está inserido em um elemento que contem texto alem de bold e/ou italic -->
+				<xsl:element name="{name()}">
+					<xsl:apply-templates select="*|text()"/>
+				</xsl:element>
+			</xsl:when>
 			<xsl:otherwise>
-				<xsl:element name="{name()}"><xsl:apply-templates select="@* | * | text()">
-						<xsl:with-param name="id" select="$id"/>
-					</xsl:apply-templates></xsl:element></xsl:otherwise>
+				<!-- nao mantem o bold ou italic se está inserido em um elemento cujo conteudo e o mesmo de bold e/ou italic -->
+				<xsl:apply-templates select="*|text()"/>
+			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	
@@ -235,7 +233,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="anonym | isbn | glossary | term | def | response | sig |  p | sec | sub | label | subtitle | edition |  issn | corresp | ack | sig-block">
+	<xsl:template match="anonym | isbn | glossary | term | def | response | sig |  p | sec | sup | sub | label | subtitle | edition |  issn | corresp | ack | sig-block">
 		<xsl:param name="id"/>
 		
 		<xsl:element name="{name()}">
@@ -871,7 +869,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:otherwise>
 				<contrib contrib-type="author">
 					<collab>
-						<xsl:apply-templates select="orgname | orgdiv | text()" mode="ignore-style"/>
+						<xsl:apply-templates select="orgname | orgdiv | text()" mode="text-only"/>
 					</collab>
 				</contrib>
 			</xsl:otherwise>
@@ -2069,13 +2067,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="sertitle | stitle | vstitle/stitle">
-		<xsl:variable name="first_level_texts"><xsl:apply-templates select="." mode="formatted-text"></xsl:apply-templates></xsl:variable>
-		
-		<source><xsl:choose>
-			<xsl:when test="normalize-space($first_level_texts)=''"><xsl:apply-templates select="*"></xsl:apply-templates></xsl:when>
-			<xsl:when test="not(*)"><xsl:value-of select="normalize-space(.)"/></xsl:when>
-			<xsl:otherwise><xsl:apply-templates select="*|text()"></xsl:apply-templates></xsl:otherwise>
-		</xsl:choose></source>
+		<source><xsl:apply-templates select="*|text()"/></source>
 	</xsl:template>
 	
 	<xsl:template match="sertitle/text() | stitle/text()"><xsl:value-of select="."/></xsl:template>
@@ -2390,32 +2382,29 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xref>
 			<xsl:apply-templates select="@*"/>
 			<xsl:choose>
-				<xsl:when test="@ref-type='fn'">
-					<xsl:choose>
-						<xsl:when test="normalize-space(.//text())=''">
-							<sup><xsl:value-of select="substring(@rid,3)"/></sup>
-						</xsl:when>
-						<xsl:when test=".//sup">
-							<xsl:apply-templates select="*[name()!='graphic']|text()" mode="ignore-style"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<sup>
-								<xsl:apply-templates select="*[name()!='graphic']|text()"/>
-							</sup>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:when>
 				<xsl:when test="@ref-type='bibr'">
 					<xsl:apply-templates select="*[name()!='graphic']|text()"/>
 				</xsl:when>
+				<xsl:when test="normalize-space(.//text())=''">
+					<sup>
+					<xsl:choose>
+						<xsl:when test="contains(@rid, @ref-type)">
+							<xsl:value-of select="substring(@rid,string-length(@ref-type)+1)"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="@rid"/>
+						</xsl:otherwise>
+					</xsl:choose>
+					</sup>
+				</xsl:when>
 				<xsl:when test=".//sup">
-					<xsl:apply-templates select="*[name()!='graphic']|text()" mode="ignore-style"/>
+					<xsl:apply-templates select="*[name()!='graphic']|text()" mode="text-only"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<sup>
 						<xsl:apply-templates select="*[name()!='graphic']|text()"/>
 					</sup>
-				</xsl:otherwise>
+				</xsl:otherwise>					
 			</xsl:choose>
 		</xref>
 		<xsl:if test="graphic">
@@ -2493,12 +2482,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="fname">
 		<given-names>
-			<xsl:apply-templates select="*|text()" mode="ignore-style"/>
+			<xsl:apply-templates select="*|text()" mode="text-only"/>
 		</given-names>
 	</xsl:template>
 	<xsl:template match="surname">
 		<xsl:element name="{name()}">
-			<xsl:apply-templates select="*|text()" mode="ignore-style"/>
+			<xsl:apply-templates select="*|text()" mode="text-only"/>
 		</xsl:element>
 	</xsl:template>
 	<xsl:template match="isstitle">
