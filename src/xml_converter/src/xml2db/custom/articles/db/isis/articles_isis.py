@@ -373,7 +373,7 @@ class IssuePath:
             for f in os.listdir(dirname):
                 if f.startswith(fname + '-') or f.startswith(fname + '.'):
                     src_filename = dirname + '/' + f
-                    if src_filename.endswith('.pdf'):
+                    if src_filename.endswith('.pdf') and f.startswith(fname + '-'):
                         if not '="' + f + '"' in xml_content:
                             # ajusta o nome do arquivo pdf de traducao
                             rename_to = f[-6:-4] + '_' + fname + '.pdf'
