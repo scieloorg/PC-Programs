@@ -902,7 +902,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<aff>
 			<xsl:apply-templates select="@id"/>
 			<xsl:apply-templates select="." mode="label"/>
-			<institution content-type="original"><xsl:apply-templates select="*|text()" mode="original"/></institution>
+			<institution content-type="original"><xsl:apply-templates select="*[name()!='label']|text()" mode="original"/></institution>
 			<xsl:choose>
 				<xsl:when test="@norgname">
 					<xsl:if test="@norgname!='Not normalized'">
