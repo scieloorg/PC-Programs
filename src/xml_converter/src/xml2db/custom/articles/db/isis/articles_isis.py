@@ -162,10 +162,9 @@ class ISISManager4Articles:
                 if article.doi != '':
                     if ahead_manager.exclude_filename(article.doi):
                         excluded += 1
-        if excluded > 0:
-            ahead_manager.update_ahead_issue()
-            for folder in ahead_manager.ahead_folders:
-                self.add_issue_to_scilista(issue.journal.acron + ' ' + folder)
+        ahead_manager.update_ahead_issue()
+        for folder in ahead_manager.ahead_folders:
+            self.add_issue_to_scilista(issue.journal.acron + ' ' + folder)
 
         package.report.write('Generate issue db')
         self.generate_issue_db(issue, package, issue_paths)
