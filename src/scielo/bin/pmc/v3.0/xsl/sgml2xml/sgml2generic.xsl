@@ -22,7 +22,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:variable name="fn" select=".//fngrp"/>
 	<xsl:variable name="affs" select=".//aff"/>
 	<xsl:variable name="normalized_affs" select=".//normaff"/>
-	
 	<xsl:variable name="affs_xrefs" select=".//front//author"/>
 	<xsl:variable name="xref_id" select="//*[@id]"/>
 	<xsl:variable name="qtd_ref" select="count(//*[@standard]/*)"/>
@@ -36,12 +35,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:when test="node()/front/doi"><xsl:value-of select="node()/front/doi"/></xsl:when>
 		<xsl:otherwise><xsl:value-of select="node()/doi"/></xsl:otherwise>
 	</xsl:choose></xsl:variable>
+	
 	<xsl:variable name="journal_acron">
 		<xsl:choose>
 			<xsl:when test="//extra-scielo/journal-acron"><xsl:value-of select="//extra-scielo/journal-acron"/></xsl:when>
 			<xsl:when test="node()/@acron"><xsl:value-of select="node()/@acron"/></xsl:when>
 		</xsl:choose>
 	</xsl:variable>
+	
 	<xsl:variable name="JOURNAL_PID" select="node()/@issn"/>
 	<xsl:variable name="journal_vol" select="node()/@volid"/>
 	<xsl:variable name="journal_issue">
@@ -53,6 +54,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
+	
 	<xsl:variable name="zeros_page">00000<xsl:value-of select="node()/@fpage"/></xsl:variable>
 	<xsl:variable name="zeros_order">00000<xsl:value-of select="node()/@order"/></xsl:variable>
 	<xsl:variable name="normalized_page">
@@ -121,7 +123,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<!--xsl:value-of select="name()"/>="<xsl:value-of select="normalize-space(.)"/>" -->
 	</xsl:template>
 
-
 	<xsl:template match="isstitle">
 		<issue-title>
 			<xsl:value-of select="normalize-space(.)"/>
@@ -167,6 +168,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:choose>
 		</list-item>
 	</xsl:template>
+	
 	<xsl:template match="lilabel">
 		<label>
 			<xsl:value-of select="normalize-space(.)"/>
@@ -233,7 +235,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="anonym | isbn | glossary | term | def | response | sig |  p | sec | sup | sub | label | subtitle | edition |  issn | corresp | ack | sig-block">
+	<xsl:template match="anonym | isbn | glossary | term | def | response | p | sec | sup | sub | label | subtitle | edition |  issn | corresp | ack ">
 		<xsl:param name="id"/>
 		
 		<xsl:element name="{name()}">
@@ -249,11 +251,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="app">
 		<xsl:param name="id"/>
 		<app-group>
-		<xsl:element name="{name()}">
-			<xsl:apply-templates select="@* | * | text()">
-				<xsl:with-param name="id" select="$id"/>
-			</xsl:apply-templates>
-		</xsl:element></app-group>
+			<xsl:element name="{name()}">
+				<xsl:apply-templates select="@* | * | text()">
+					<xsl:with-param name="id" select="$id"/>
+				</xsl:apply-templates>
+			</xsl:element>
+		</app-group>
 	</xsl:template>
 	
 	<xsl:template match="graphic">
@@ -266,8 +269,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="sec/graphic"><p>
-		<xsl:choose>
+	
+	<xsl:template match="sec/graphic">
+		<p><xsl:choose>
 			<xsl:when test="substring(@href,1,1)='?'">
 				<graphic xlink:href="{substring(@href,2)}"></graphic>
 			</xsl:when>
@@ -276,6 +280,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:otherwise>
 		</xsl:choose></p>
 	</xsl:template>
+	
 	<xsl:template match="@resptp">
 		<xsl:attribute name="response-type"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 	</xsl:template>
@@ -361,6 +366,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
+	
 	<xsl:template match="@eqcontr">
 		<xsl:if test=".='yes'">
 			<xsl:if test="not($fn[@fntype='eq-contrib'])">
@@ -368,19 +374,31 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
+	
 	<xsl:template match="sigblock">
 		<xsl:param name="id"/>
 		<sig-block>
-			<xsl:apply-templates select="@*| * | text()">
+			<xsl:apply-templates select="@*| * | text()" mode="sig-block">
 				<xsl:with-param name="id" select="$id"/>
 			</xsl:apply-templates>
 		</sig-block>
 	</xsl:template>
+	
+	<xsl:template match="role" mode="sig-block">
+	</xsl:template>
+	
+	<xsl:template match="sig" mode="sig-block">
+		<xsl:element name="{name()}">
+			<xsl:apply-templates select=".//text()"/><xsl:if test="../role"><break/><xsl:apply-templates select="../role"/></xsl:if>
+		</xsl:element>
+	</xsl:template>
+	
 	<xsl:template match="version">
 		<edition>
 			<xsl:value-of select="normalize-space(.)"/>
 		</edition>
 	</xsl:template>
+	
 	<xsl:template match="issn">
 		<xsl:choose>
 			<xsl:when test="string-length(.)=9 and substring(.,5,1)='-'">
@@ -394,6 +412,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
 	<xsl:template match="@doctopic" mode="type">
 		<xsl:attribute name="article-type">
 			<xsl:choose>
@@ -480,7 +499,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		
 			<xsl:apply-templates select="." mode="front-contrib-group"/>
 			
-			<xsl:apply-templates select="../xmlbody/sigblock" mode="author"></xsl:apply-templates>
 			<xsl:apply-templates select=".//cltrial" mode="front-clinical-trial"/>
 			<xsl:apply-templates select=".//abstract|.//xmlabstr">
 				<xsl:with-param name="language" select="$language"/>
@@ -581,7 +599,22 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="article | text | response | subart" mode="front-contrib-group">
 		<xsl:apply-templates select="front/authgrp | authgrp" mode="front-contrib-group"/>
+		<xsl:if test="not(.//authgrp)">
+			<xsl:apply-templates select=".//sig[fname and surname]" mode="front-contrib-group"/>
+		</xsl:if>
 	</xsl:template>
+	
+	<xsl:template match="sig[fname and surname]" mode="front-contrib-group">
+		<contrib-group>
+			<!-- author front -->
+			<contrib>
+				<xsl:apply-templates select="@role"/>
+				<xsl:apply-templates select="."/>
+				<xsl:copy-of select="../role"/>
+			</contrib>
+		</contrib-group>
+	</xsl:template>
+	
 	<xsl:template match="authgrp" mode="front-contrib-group">
 		<contrib-group>
 			<xsl:apply-templates select="author|corpauth" mode="front-contrib"/>
@@ -598,12 +631,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="..//aff"/>
 		</xsl:if>
 	</xsl:template>
+	
 	<xsl:template match="doc | subdoc | docresp" mode="front-contrib-group">
 		<xsl:choose>
 			<xsl:when test=".//aff">
 				<aff content-type="USE normaff instead of aff"></aff>
 			</xsl:when>
-			<xsl:otherwise>
+			<xsl:when test="author or corpauth">
 				<contrib-group>
 					<xsl:apply-templates select="author|corpauth" mode="front-contrib"/>
 					<xsl:if test="onbehalf">
@@ -618,6 +652,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:if test="count(normaff)&gt;1">
 					<xsl:apply-templates select="normaff"/>
 				</xsl:if>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select=".//sig[fname and surname]" mode="front-contrib-group"/>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -633,43 +670,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:attribute name="xlink:href"><xsl:value-of select="ctreg/@cturl"/></xsl:attribute>
 			<xsl:apply-templates select=".//text()"></xsl:apply-templates>
 		</uri>
-	</xsl:template>
-	<xsl:template match="*" mode="given-names">
-		<xsl:param name="sig"></xsl:param>
-		<xsl:param name="prefix"></xsl:param>
-		<xsl:choose>
-			<xsl:when test="contains($sig, ' ')">
-				<xsl:value-of select="concat($prefix,substring-before($sig,' '))"/>
-				<xsl:apply-templates select="." mode="given-names">
-					<xsl:with-param name="sig"><xsl:value-of select="substring-after($sig,' ')"/></xsl:with-param>
-					<xsl:with-param name="prefix"><xsl:value-of select="concat(' ','')"/></xsl:with-param>
-				</xsl:apply-templates>
-			</xsl:when>
-			<xsl:otherwise>
-				
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	<xsl:template match="sigblock" mode="author">
-		<contrib-group>
-			<xsl:apply-templates select="sig" mode="author"></xsl:apply-templates>
-		</contrib-group>
-	</xsl:template>
-	<xsl:template match="sig" mode="author">
-		<xsl:variable name="given-names"><xsl:apply-templates select="." mode="given-names">
-			<xsl:with-param name="sig" select="."/>
-		</xsl:apply-templates></xsl:variable>
-		<xsl:variable name="contrib_type">
-			<xsl:choose><xsl:when test="contains(../text(),'ditor')">editor</xsl:when><xsl:when test="contains(../role,'ditor')">editor</xsl:when><xsl:otherwise>author</xsl:otherwise></xsl:choose>
-		</xsl:variable>
-		<xsl:variable name="position"><xsl:value-of select="position()"/></xsl:variable>
-		<contrib contrib-type="{$contrib_type}">
-			<name>
-				<surname><xsl:value-of select="substring-after(.,concat($given-names, ' '))"/></surname>
-				<given-names><xsl:value-of select="$given-names"/></given-names>
-			</name>
-		</contrib>
-		<xsl:copy-of select="..//role[$position]"/>
 	</xsl:template>
 	
 	<xsl:template match="article|text|doc" mode="article-meta">
@@ -687,8 +687,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			
 			<xsl:choose>
 				<xsl:when test="not(front/doi) and not(doi)">
-					<article-id pub-id-type="pii"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>	
-					
+					<article-id pub-id-type="pii"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>						
 				</xsl:when>
 				<xsl:when test="number($fpage)&lt;number(@order) or contains(@fpage,'-')">
 					<article-id pub-id-type="other"><xsl:value-of select="substring-after(string(100000 + number(@order)),'1')"/></article-id>	
@@ -705,7 +704,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="title-group">
 				<xsl:with-param name="language" select="$language"/>
 			</xsl:apply-templates>
-			<xsl:apply-templates select="xmlbody/sigblock" mode="author"></xsl:apply-templates>
 			<xsl:apply-templates select="." mode="front-contrib-group"/>
 			<xsl:apply-templates select="." mode="author-notes"/>
 
@@ -854,7 +852,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:copy-of select="../..//aff[@id=$author_rid]/role"/>
 		<xsl:copy-of select="../..//normaff[@id=$author_rid]/role"/>
 	</xsl:template>
-
+	
 	<xsl:template match="corpauth" mode="front-contrib">
 		<xsl:variable name="teste">
 			<xsl:apply-templates select="./../../authgrp//text()"/>
@@ -1094,7 +1092,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</issue>
 			</xsl:otherwise>
 		</xsl:choose>
-
 	</xsl:template>
 	<xsl:template match=" issueno">
 		<xsl:choose>
@@ -1260,7 +1257,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</lpage>
 			</xsl:otherwise>
 		</xsl:choose>
-
 	</xsl:template>
 	<xsl:template match="hist">
 		<history>
@@ -1758,6 +1754,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 		</name>
 	</xsl:template>
+	
 	<xsl:template match="*[contains(name(),'citat')]//*[previous]">
 		<xsl:param name="position"/>
 		<xsl:apply-templates select="." mode="try-previous">

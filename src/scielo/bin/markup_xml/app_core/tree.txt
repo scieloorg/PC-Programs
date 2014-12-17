@@ -649,6 +649,9 @@ sectitle
 sertitle
 
 sig
+surname-fname;#FALSE#;#FALSE#
+fname;#FALSE#;#FALSE#
+surname;#FALSE#;#FALSE#
 
 sigblock
 sig;#FALSE#;#TRUE#
