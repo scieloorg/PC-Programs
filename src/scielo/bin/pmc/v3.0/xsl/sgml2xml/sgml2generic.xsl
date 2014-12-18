@@ -1466,14 +1466,17 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
 			</fn-group>
 		</xsl:if>
-		<xsl:apply-templates select="glossary | app"></xsl:apply-templates>				
-		
+		<xsl:apply-templates select="glossary | app"></xsl:apply-templates>						
 	</xsl:template>
-
+	
+	<xsl:template match="fngrp/@label">
+		<label><xsl:value-of select="."/></label>
+	</xsl:template>
+	
 	<xsl:template match="*/fngrp[@fntype]">
 		<fn>
 			<xsl:apply-templates select="@*|label"/>
-			<xsl:if test="not(label) and @fntype='other'">
+			<xsl:if test="not(label) and not(@label) and @fntype='other'">
 				<label><xsl:value-of select="string(number(substring-after(@id,'fn')))"/></label>
 			</xsl:if>
 			<p>
@@ -2374,32 +2377,81 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>
-	
-	<xsl:template match="xref[@rid!='']">
+	<!--xsl:template match="xref[@rid!='']">
+		<xsl:variable name="display"><xsl:choose>
+			<xsl:when test="@ref-type='bibr'">
+				<xsl:apply-templates select="*[name()!='graphic']|text()"/>
+			</xsl:when>
+			<xsl:otherwise><xsl:value-of select="normalize-space(.//text())"/></xsl:otherwise>					
+		</xsl:choose></xsl:variable>
 		<xref>
-			<xsl:apply-templates select="@*"/>
+			<xsl:apply-templates select="@*[name()!='label']"/>
 			<xsl:choose>
 				<xsl:when test="@ref-type='bibr'">
 					<xsl:apply-templates select="*[name()!='graphic']|text()"/>
 				</xsl:when>
 				<xsl:when test="normalize-space(.//text())=''">
 					<sup>
-					<xsl:choose>
-						<xsl:when test="contains(@rid, @ref-type)">
-							<xsl:value-of select="substring(@rid,string-length(@ref-type)+1)"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="@rid"/>
-						</xsl:otherwise>
-					</xsl:choose>
+						<xsl:choose>
+							<xsl:when test="@label">
+								<xsl:value-of select="@label"/>
+							</xsl:when>
+							<xsl:when test="contains(@rid, @ref-type)">
+								<xsl:value-of select="substring(@rid,string-length(@ref-type)+1)"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:value-of select="@rid"/>
+							</xsl:otherwise>
+						</xsl:choose>
 					</sup>
 				</xsl:when>
 				<xsl:when test=".//sup">
 					<xsl:apply-templates select="*[name()!='graphic']|text()" mode="text-only"/>
+					<xsl:variable name="x"><xsl:apply-templates select="*[name()!='graphic']|text()" mode="text-only"/></xsl:variable>
+					<xsl:if test="normalize-space($x)=''"><xsl:value-of select="@label"/></xsl:if>
 				</xsl:when>
 				<xsl:otherwise>
 					<sup>
 						<xsl:apply-templates select="*[name()!='graphic']|text()"/>
+						<xsl:variable name="x"><xsl:apply-templates select="*[name()!='graphic']|text()"/></xsl:variable>
+						<xsl:if test="normalize-space($x)=''"><xsl:value-of select="@label"/></xsl:if>
+					</sup>
+				</xsl:otherwise>					
+			</xsl:choose>
+		</xref>
+		<xsl:if test="graphic">
+			<graphic>
+				<xsl:apply-templates select="graphic/@*|graphic/*|graphic/text()"/>
+				<uri>#<xsl:value-of select="@rid"/>
+				</uri>
+			</graphic>
+		</xsl:if>
+	</xsl:template-->
+	<xsl:template match="xref[@rid!='']">
+		<xsl:variable name="text"><xsl:apply-templates select="*[name()!='graphic']|text()" mode="text-only"/></xsl:variable>
+		<xsl:variable name="alt_display"><xsl:choose>
+						<xsl:when test="@label"><xsl:value-of select="@label"/></xsl:when>
+						<xsl:when test="contains(@rid, @ref-type)"><xsl:value-of select="substring(@rid,string-length(@ref-type)+1)"/></xsl:when>
+						<xsl:otherwise><xsl:value-of select="@rid"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
+		<xref>
+			<xsl:apply-templates select="@*[name()!='label']"/>
+			<xsl:choose>
+				<xsl:when test="@ref-type='bibr'">
+					<xsl:apply-templates select="*[name()!='graphic']|text()"/>
+				</xsl:when>
+				<xsl:when test="normalize-space($text)=''">
+					<sup>
+						<xsl:value-of select="$alt_display"/>
+					</sup>
+				</xsl:when>
+				<xsl:when test=".//sup">
+					<xsl:apply-templates select="*[name()!='graphic']|text()"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<sup>
+						<xsl:apply-templates select="*[name()!='graphic']|text()" mode="text-only"/>
 					</sup>
 				</xsl:otherwise>					
 			</xsl:choose>
