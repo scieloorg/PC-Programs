@@ -964,8 +964,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="xref/@rid">
 		<xsl:attribute name="rid"><xsl:choose>
-			<xsl:when test="substring(.,string-length(.)-1,1)='0'">
-				<xsl:value-of select="substring(.,1,1)"/><xsl:value-of select="string(number(substring(.,2)))"/>
+			<xsl:when test="not(contains(.,../@ref-type))"><xsl:value-of select="concat(../@ref-type,string(number(substring(.,2))))"/>
 			</xsl:when>
 			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 		</xsl:choose></xsl:attribute>
@@ -1410,8 +1409,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="sectitle">
 		<title>
-			<xsl:apply-templates select="*|text()"/>
-				<xsl:apply-templates select="following-sibling::node()[1 and name()='xref']"
+		<xsl:choose>
+			<xsl:when test="normalize-space(text())=''">
+				<xsl:apply-templates select="*|text()" mode="text-only"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates select="*|text()"/>
+			</xsl:otherwise>
+		</xsl:choose>
+			<xsl:apply-templates select="following-sibling::node()[1 and name()='xref']"
 				mode="xref-in-sectitle"/>
 		</title>
 	</xsl:template>
@@ -2431,7 +2437,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:variable name="text"><xsl:apply-templates select="*[name()!='graphic']|text()" mode="text-only"/></xsl:variable>
 		<xsl:variable name="alt_display"><xsl:choose>
 						<xsl:when test="@label"><xsl:value-of select="@label"/></xsl:when>
-						<xsl:when test="contains(@rid, @ref-type)"><xsl:value-of select="substring(@rid,string-length(@ref-type)+1)"/></xsl:when>
+						<xsl:when test="contains(@rid, @ref-type)"><xsl:value-of select="substring-after(@ref-type, @rid)"/></xsl:when>
 						<xsl:otherwise><xsl:value-of select="@rid"/></xsl:otherwise>
 					</xsl:choose>
 				</xsl:variable>
