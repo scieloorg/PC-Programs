@@ -12,6 +12,7 @@ equation;#TRUE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
 *fn;#FALSE#;#TRUE#
+fngrp;#TRUE#;#TRUE#
 graphic;#FALSE#;#TRUE#
 ign;#TRUE#;#TRUE#
 list;#FALSE#;#TRUE#

@@ -605,7 +605,7 @@ class JSON_Article:
         if not issue is None:
             if issue[-2:] == 'pr':
                 self.json_data.get['f']['32'] = issue[0:-2]
-            self.json_data['f']['41'] = 'pr'
+                self.json_data['f']['41'] = 'pr'
 
         self.json_data['f']['35'] = issn_id
 

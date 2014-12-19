@@ -77,7 +77,7 @@ subresp
 role
 
 xref
-ref-type;rid
+ref-type;rid;label
 
 patgrp
 country
@@ -104,7 +104,7 @@ sec
 sec-type
 
 fngrp
-id;fntype
+id;fntype;label
 
 fntable
 id
