@@ -88,66 +88,9 @@ Begin VB.Form Issue2
             Height          =   315
             Left            =   1560
             Style           =   2  'Dropdown List
-            TabIndex        =   108
+            TabIndex        =   102
             Top             =   360
             Width           =   3135
-         End
-         Begin VB.TextBox TextCreativeCommons 
-            Height          =   975
-            Index           =   2
-            Left            =   1560
-            Locked          =   -1  'True
-            MultiLine       =   -1  'True
-            TabIndex        =   103
-            Top             =   3120
-            Width           =   6855
-         End
-         Begin VB.TextBox TextCreativeCommons 
-            Height          =   975
-            Index           =   1
-            Left            =   1560
-            Locked          =   -1  'True
-            MultiLine       =   -1  'True
-            TabIndex        =   102
-            Top             =   2040
-            Width           =   6855
-         End
-         Begin VB.TextBox TextCreativeCommons 
-            Height          =   975
-            Index           =   0
-            Left            =   1560
-            Locked          =   -1  'True
-            MultiLine       =   -1  'True
-            TabIndex        =   101
-            Top             =   960
-            Width           =   6855
-         End
-         Begin VB.Label Label10 
-            Caption         =   "Espanhol"
-            Height          =   255
-            Index           =   2
-            Left            =   120
-            TabIndex        =   106
-            Top             =   3120
-            Width           =   1335
-         End
-         Begin VB.Label Label10 
-            Caption         =   "Português"
-            Height          =   255
-            Index           =   1
-            Left            =   120
-            TabIndex        =   105
-            Top             =   2040
-            Width           =   1335
-         End
-         Begin VB.Label Label10 
-            Caption         =   "Inglês"
-            Height          =   255
-            Index           =   0
-            Left            =   120
-            TabIndex        =   104
-            Top             =   960
-            Width           =   1335
          End
       End
       Begin VB.Frame FramFasc2 
@@ -160,14 +103,14 @@ Begin VB.Form Issue2
          Begin VB.TextBox Text_IssuePISSN 
             Height          =   285
             Left            =   6360
-            TabIndex        =   111
+            TabIndex        =   105
             Top             =   1680
             Width           =   2055
          End
          Begin VB.TextBox Text_IssueEISSN 
             Height          =   285
             Left            =   6360
-            TabIndex        =   109
+            TabIndex        =   103
             Top             =   2280
             Width           =   2055
          End
@@ -275,7 +218,7 @@ Begin VB.Form Issue2
             Caption         =   "Print ISSN"
             Height          =   195
             Left            =   6360
-            TabIndex        =   110
+            TabIndex        =   104
             Top             =   1440
             Width           =   735
          End
@@ -284,7 +227,7 @@ Begin VB.Form Issue2
             Caption         =   "e-ISSN"
             Height          =   195
             Left            =   6360
-            TabIndex        =   107
+            TabIndex        =   101
             Top             =   2040
             Width           =   510
          End
@@ -1185,42 +1128,44 @@ Private OldHeight As Long
 Private OldWidth As Long
 
 Private currDate As String
-
+Private journalSections As ClsTOC
 Private mfnSection As Long
 Private mfnIssue As Long
+Private myissue As ClsIssue
 Private CurrMonth As String
-
-Private myIssue As ClsIssue
-Private journalSections As ClsTOC
-Private journal_license As clsCreativeCommons
-
-
-Private CUSTOMIZED_FOR_JOURNAL As String
-Private CUSTOMIZED_FOR_issue As String
 Private Const MaxLenSectitle = 500
 
-Public Sub LoadIssue(Mfn As Long)
-    mfnIssue = Mfn
-    If Mfn > 0 Then
-        Set myIssue = Issue0.issueDAO.returnIssue(Mfn)
+Public Sub OpenIssueForm(mfn As Long)
+    
+    get_issue (mfn)
+    loadFormLayout
+    loadFormData
+    Show vbModal
+End Sub
+Private Sub get_issue(mfn As Long)
+    
+    mfnIssue = mfn
+    If mfn > 0 Then
+        Set myissue = Issue0.issueDAO.returnIssue(mfn)
     Else
-        Set myIssue = New ClsIssue
-        myIssue.volume = Issue1.TxtVolid.text
-        myIssue.number = Issue1.TxtIssueno.text
-        myIssue.suppl = Issue1.TxtSupplNo.text
-        myIssue.vsuppl = Issue1.TxtSupplVol.text
-        myIssue.issueorder = Issue1.TxtIseqNo.text
-        myIssue.idPart = Issue1.ComboIssueIdPart.text
+        Set myissue = New ClsIssue
+        myissue.volume = Issue1.TxtVolid.text
+        myissue.number = Issue1.TxtIssueno.text
+        myissue.suppl = Issue1.TxtSupplNo.text
+        myissue.vsuppl = Issue1.TxtSupplVol.text
+        myissue.issueorder = Issue1.TxtIseqNo.text
+        myissue.idPart = Issue1.ComboIssueIdPart.text
         
-        With myIssue.journal
+        With myissue.journal
         .JournalStandard = Issue1.Title_Standard
         .vocabulary = Issue1.Title_Scheme
         .ISSN = Issue1.issn_id
         End With
     End If
-    Set journal_license = journalDAO.getJournalCreativeCommons(journalDAO.existISSN(myIssue.journal.ISSN))
-    
-    With myIssue.journal
+    If myissue.license_code = "" Then
+        myissue.license_code = journalDAO.license_code(journalDAO.return_mfn_by_ISSN(myissue.journal.ISSN))
+    End If
+    With myissue.journal
         .shorttitle = Issue1.TxtStitle.Caption
         .Title = Issue1.TxtSerTitle.Caption
         .pubid = Issue1.SiglaPeriodico
@@ -1231,29 +1176,14 @@ Public Sub LoadIssue(Mfn As Long)
         .publisherName = Issue1.TxtPubl.text
     End With
     
-    loadFormLayout
-    loadFormData
-    
-    'LoadGeneral (mfn)
-    'LoadLegend (mfn)
-    
-    'LoadDispoSections
-    
-    Show vbModal
-    
 End Sub
 
 Private Sub loadFormLayout()
     Dim i As Long
     
-    
     With Fields
-    Caption = App.Title + " - " + myIssue.journal.pubid + " " + myIssue.issueId + " ISSN ID: " + Issue1.issn_id
-    
-    'Caption = TxtTitAbr(idiomidx).text + " " + TxtVol(idiomidx).text + " " + TxtSupplVol(idiomidx).text + " " + TxtNro(idiomidx).text + " " + TxtSupplNro(idiomidx).text
-    
+    Caption = App.Title + " - " + myissue.journal.pubid + " " + myissue.issueId + " ISSN ID: " + Issue1.issn_id
     For i = 1 To idiomsinfo.count
-        Label10(i - 1).Caption = idiomsinfo(i).label
         Label1(i).Caption = .getLabel("ser1_ShortTitle")
         Label2(i).Caption = .getLabel("Volume")
         Label3(i).Caption = .getLabel("Issueno")
@@ -1286,9 +1216,6 @@ Private Sub loadFormLayout()
     SSTab1.TabCaption(2) = .getLabel("Issue_Tableofcontents")
     SSTab1.TabCaption(3) = .getLabel("Issue_TabConfigurations")
     
-    CUSTOMIZED_FOR_JOURNAL = .getLabel("CUSTOMIZED_FOR_JOURNAL")
-    CUSTOMIZED_FOR_issue = .getLabel("CUSTOMIZED_FOR_ISSUE")
-    
     Label9.Caption = .getLabel("Issue_SelectSections")
     Frame2.Caption = .getLabel("Issue_Sectionsof")
     CmdNewSections.Caption = .getLabel("Issue_CreateSection")
@@ -1302,21 +1229,17 @@ Private Sub loadFormLayout()
     Call FillCombo(ComboStatus, CodeIssStatus)
     Call FillCombo(ComboStandard, CodeStandard)
     Call FillList(ListScheme, CodeScheme)
-    
+    Call FillCombo(ComboIssueLicText, codeLIcense, True)
     
     Label9.Caption = Label9.Caption + " " + Caption
     Frame2.Caption = Frame2.Caption + " " + Caption
     
     LVSections.ColumnHeaders(1).Width = LVSections.Width / 5
     
-    
-    
     OldHeight = Height
     OldWidth = Width
     NormalHeight = Height
     NormalWidth = Width
-    
-    
 End Sub
 
 Private Sub IdiomLoad()
@@ -1325,7 +1248,6 @@ Private Sub IdiomLoad()
     For i = 1 To idiomsinfo.count
         LabIdiom(i).Caption = idiomsinfo(i).label  '990316
         Legend(i).Caption = idiomsinfo(i).label
-        LabIdiom2(i).Caption = idiomsinfo(i).label
     Next
 End Sub
 
@@ -1338,38 +1260,16 @@ Private Sub LoadIssueData()
     Dim j As Long
     Dim bs As ClsBibStrip
     Dim lang As String
-    Dim customized As String
-    Dim chosen As String
     
-    Call FillCombo(ComboIssueLicText, CodeLicText, True)
+    ComboIssueLicText.text = myissue.license_code
     
-    chosen = journal_license.Code
-    If LicensesList.isCustomizedLicense(journal_license) Then
-        customized = journal_license.Code & "* " & CUSTOMIZED_FOR_JOURNAL
-        ComboIssueLicText.AddItem (customized)
-        chosen = customized
-    End If
-    
-    If Len(myIssue.licenses.Code) > 0 Then
-        chosen = myIssue.licenses.Code
-        If Not LicensesList.isEqual(journal_license, myIssue.licenses) Then
-            If LicensesList.isCustomizedLicense(myIssue.licenses) Then
-                customized = myIssue.licenses.Code & "** " & CUSTOMIZED_FOR_issue
-                ComboIssueLicText.AddItem (customized)
-                chosen = customized
-            End If
-        End If
-    End If
-    
-    ComboIssueLicText.text = chosen
-    
-    TxtDoccount.text = myIssue.doccount
-    currDate = myIssue.DateISO
+    TxtDoccount.text = myissue.doccount
+    currDate = myissue.DateISO
     TxtDateIso.text = currDate
     
     '???
-    Text_IssuePISSN.text = myIssue.pissn
-    Text_IssueEISSN.text = myIssue.eissn
+    Text_IssuePISSN.text = myissue.pissn
+    Text_IssueEISSN.text = myissue.eissn
     
     If Len(Text_IssuePISSN.text) = 0 Then
         Text_IssuePISSN.text = Issue1.pissn
@@ -1378,15 +1278,14 @@ Private Sub LoadIssueData()
         Text_IssueEISSN.text = Issue1.eissn
     End If
     
-    TxtIssuept.text = myIssue.issuepart
-    TxtIssSponsor.text = myIssue.issueSponsor
-    
-    
+    TxtIssuept.text = myissue.issuepart
+    TxtIssSponsor.text = myissue.issueSponsor
+        
     For i = 1 To idiomsinfo.count
         lang = idiomsinfo(i).Code
-        TxtIssTitle(i).text = myIssue.issueTitle.getItemByLang(lang).text
+        TxtIssTitle(i).text = myissue.issueTitle.getItemByLang(lang).text
         'TextCreativeCommons(i - 1).text = myIssue.licenses.getLicense(lang).text
-        Set bs = myIssue.bibstrips.getItemByLang(lang)
+        Set bs = myissue.bibstrips.getItemByLang(lang)
         
             With bs
                 TxtTitAbr(i).text = .stitle
@@ -1408,138 +1307,34 @@ Private Sub LoadIssueData()
                 
             End With
         
-            If myIssue.toc.names.getItemByLang(lang).text <> "" Then
-                TxtHeader(i).text = myIssue.toc.names.getItemByLang(lang).text
+            If myissue.toc.names.getItemByLang(lang).text <> "" Then
+                TxtHeader(i).text = myissue.toc.names.getItemByLang(lang).text
             End If
         
     Next
-    For j = 1 To myIssue.toc.sections.count
-        Call DispoSecTitleChecked(myIssue.toc.sections.item(j).sectionCode, True)
+    For j = 1 To myissue.toc.sections.count
+        Call DispoSecTitleChecked(myissue.toc.sections.item(j).sectionCode, True)
     Next
     
-    TxtIssPublisher.text = myIssue.issuePublisher
-    TxtCover.text = myIssue.issueCover
+    TxtIssPublisher.text = myissue.issuePublisher
+    TxtCover.text = myissue.issueCover
     
-    MkpCheck.value = Str2Int(myIssue.markupDone)
+    MkpCheck.value = Str2Int(myissue.markupDone)
     
-    If myIssue.status <> "" Then ComboStatus.text = CodeIssStatus.item(myIssue.status).value
+    If myissue.status <> "" Then ComboStatus.text = CodeIssStatus.item(myissue.status).value
     
     
-    If myIssue.journal.JournalStandard = "" Then myIssue.journal.JournalStandard = Issue1.Title_Standard
+    If myissue.journal.JournalStandard = "" Then myissue.journal.JournalStandard = Issue1.Title_Standard
     
-    ComboStandard.text = CodeStandard(myIssue.journal.JournalStandard).value
+    ComboStandard.text = CodeStandard(myissue.journal.JournalStandard).value
     If Len(ComboStandard.text) = 0 Then ComboStandard.text = Issue1.Title_Standard
     
-    If myIssue.journal.vocabulary = "" Then myIssue.journal.vocabulary = Issue1.Title_Scheme
+    If myissue.journal.vocabulary = "" Then myissue.journal.vocabulary = Issue1.Title_Scheme
     i = 0
     Dim found As Boolean
-    If myIssue.journal.vocabulary <> "" Then
+    If myissue.journal.vocabulary <> "" Then
         While i < ListScheme.ListCount And Not found
-            If ListScheme.list(i) = CodeScheme(myIssue.journal.vocabulary).value Then
-                ListScheme.selected(i) = True
-                found = True
-            End If
-            i = i + 1
-        Wend
-    End If
-
-End Sub
-Private Sub oldLoadIssueData()
-    Dim i As Long
-    Dim j As Long
-    Dim bs As ClsBibStrip
-    Dim lang As String
-    Dim customized As String
-    
-    Call FillCombo(ComboIssueLicText, CodeLicText, True)
-    If LicensesList.isCustomizedLicense(journal_license) Then
-        customized = journal_license.Code & "* " & CUSTOMIZED_FOR_JOURNAL
-        ComboIssueLicText.AddItem (customized)
-    End If
-    If (Len(customized) > 0) And (Not LicensesList.isEqual(journal_license, myIssue.licenses)) Then
-        customized = ""
-        If LicensesList.isCustomizedLicense(myIssue.licenses) Then
-            customized = myIssue.licenses.Code & "** " & CUSTOMIZED_FOR_issue
-            ComboIssueLicText.AddItem (customized)
-        End If
-    End If
-    
-    If Len(myIssue.licenses.Code) > 0 Then
-        If InStr(customized, "*") > 0 Then
-            ComboIssueLicText.text = customized
-        Else
-            ComboIssueLicText.text = myIssue.licenses.Code
-        End If
-    Else
-        ComboIssueLicText.text = journal_license.Code
-        
-    End If
-    
-    TxtDoccount.text = myIssue.doccount
-    currDate = myIssue.DateISO
-    TxtDateIso.text = currDate
-    '???
-    
-    
-    TxtIssuept.text = myIssue.issuepart
-    
-    TxtIssSponsor.text = myIssue.issueSponsor
-    
-    
-    For i = 1 To idiomsinfo.count
-        lang = idiomsinfo(i).Code
-        TxtIssTitle(i).text = myIssue.issueTitle.getItemByLang(lang).text
-        'TextCreativeCommons(i - 1).text = myIssue.licenses.getLicense(lang).text
-        Set bs = myIssue.bibstrips.getItemByLang(lang)
-        
-            With bs
-                TxtTitAbr(i).text = .stitle
-                TxtNro(i).text = .n
-                TxtSupplVol(i).text = .vs
-                TxtSupplNro(i).text = .s
-                TxtLoc(i).text = .loc
-                TxtMes(i) = .month
-                TxtAno(i) = .year
-                
-                If .stitle = "" Then TxtTitAbr(i).text = Issue1.TxtStitle.Caption
-                TxtVol(i).text = .v
-                TxtVol(i).text = addBSPrefix(TxtVol(i).text, Issue1.TxtVolid.text, .lang, "v.", "vol.")
-                TxtNro(i).text = addBSPrefix(TxtNro(i).text, Issue1.TxtIssueno.text, .lang, "n.", "no.")
-                TxtSupplVol(i).text = addBSPrefix(TxtSupplVol(i).text, Issue1.TxtSupplVol.text, .lang, "suppl.", "supl.")
-                TxtSupplNro(i).text = addBSPrefix(TxtSupplNro(i).text, Issue1.TxtSupplNo.text, .lang, "suppl.", "supl.")
-                If TxtLoc(i).text = "" Then TxtLoc(i).text = Issue1.Cidade
-                If TxtAno(i).text = "" Then TxtAno(i) = Mid(Issue1.TxtIseqNo.text, 1, 4)
-                
-            End With
-        
-            If myIssue.toc.names.getItemByLang(lang).text <> "" Then
-                TxtHeader(i).text = myIssue.toc.names.getItemByLang(lang).text
-            End If
-        
-    Next
-    For j = 1 To myIssue.toc.sections.count
-        Call DispoSecTitleChecked(myIssue.toc.sections.item(j).sectionCode, True)
-    Next
-    
-    TxtIssPublisher.text = myIssue.issuePublisher
-    TxtCover.text = myIssue.issueCover
-    
-    MkpCheck.value = Str2Int(myIssue.markupDone)
-    
-    If myIssue.status <> "" Then ComboStatus.text = CodeIssStatus.item(myIssue.status).value
-    
-    
-    If myIssue.journal.JournalStandard = "" Then myIssue.journal.JournalStandard = Issue1.Title_Standard
-    
-    ComboStandard.text = CodeStandard(myIssue.journal.JournalStandard).value
-    If Len(ComboStandard.text) = 0 Then ComboStandard.text = Issue1.Title_Standard
-    
-    If myIssue.journal.vocabulary = "" Then myIssue.journal.vocabulary = Issue1.Title_Scheme
-    i = 0
-    Dim found As Boolean
-    If myIssue.journal.vocabulary <> "" Then
-        While i < ListScheme.ListCount And Not found
-            If ListScheme.list(i) = CodeScheme(myIssue.journal.vocabulary).value Then
+            If ListScheme.list(i) = CodeScheme(myissue.journal.vocabulary).value Then
                 ListScheme.selected(i) = True
                 found = True
             End If
@@ -1561,8 +1356,6 @@ Private Function addBSPrefix(formerText As String, text As String, lang As Strin
     
     addBSPrefix = formerText
 End Function
-
-
 Private Sub LoadDispoSections()
     Dim i As Long
     Dim j As Long
@@ -1604,12 +1397,9 @@ Private Sub LoadDispoSections()
         
     Next
 End Sub
-
 Private Function applyStandard(t As String) As String
     applyStandard = t + Space(500 - Len(t))
 End Function
-
-
 Private Sub DispoSecTitleChecked(sectionCode As String, Flag As Boolean)
     Dim i As Long
     Dim index As Long
@@ -1626,63 +1416,20 @@ Private Sub DispoSecTitleChecked(sectionCode As String, Flag As Boolean)
         i = i + 1
     Wend
 End Sub
-
-
 Private Sub CmdClose_Click()
     Unload Me
 End Sub
-
 Private Sub CmdNewSections_Click()
     Call New_Section2.OpenSection(Issue1.TxtSerTitle.Caption, False)
     
     LoadDispoSections
 End Sub
-
-Private Sub ComboIssueLicText_Click()
-    Dim i As Long
-    
-    Dim cc As clsCreativeCommons
-    Set cc = myIssue.licenses
-    
-
-    If InStr(ComboIssueLicText.text, "**") > 0 Then
-        'customized
-        For i = 1 To idiomsinfo.count
-            TextCreativeCommons(i - 1).text = cc.getLicense(idiomsinfo(i).Code).text
-            TextCreativeCommons(i - 1).Locked = False
-        Next
-    ElseIf InStr(ComboIssueLicText.text, "*") > 0 Then
-        'customized
-        For i = 1 To idiomsinfo.count
-            TextCreativeCommons(i - 1).text = journal_license.getLicense(idiomsinfo(i).Code).text
-            TextCreativeCommons(i - 1).Locked = False
-        Next
-    Else
-         For i = 1 To idiomsinfo.count
-            TextCreativeCommons(i - 1).text = LicensesList.item(ComboIssueLicText.text).getLicense(idiomsinfo(i).Code).text
-            TextCreativeCommons(i - 1).Locked = False
-        Next
-    
-    End If
-    
-
-
-
-
-
-
-
-End Sub
-
-
-
 Private Sub DispoSecTitle_Click()
     Dim i As Long
     Dim Code As String
     Dim lvSection As ListItem
     'Dim LvDispo As ListItem
     Dim SelectedIdx As Long
-    
     
     SelectedIdx = DispoSecTitle.ListIndex
     DispoSecCode.selected(SelectedIdx) = DispoSecTitle.selected(SelectedIdx)
@@ -1717,9 +1464,6 @@ Private Sub Form_Unload(Cancel As Integer)
     Dim res As VbMsgBoxResult
     
     Dim QExit As Boolean
-    
-    
-    
     QExit = CheckYears And (Not WarnMandatoryFields)
     
     If Not QExit Then
@@ -1734,8 +1478,6 @@ Private Sub Form_Unload(Cancel As Integer)
             End If
         End If
     End If
-    
-    
     If QExit Then
         If Issue_ChangedContents Then
             res = MsgBox(ConfigLabels.getLabel("MsgSaveChanges"), vbYesNoCancel)
@@ -1863,12 +1605,9 @@ Private Sub LVSections_ColumnClick(ByVal ColumnHeader As ComctlLib.ColumnHeader)
 End Sub
 
 Private Sub TxtDateIso_Change()
-
     Dim idiomidx As Long
     Dim month As String
     Dim change As Boolean
-    
-    
     If Len(TxtDateIso.text) >= 4 Then
         If Len(TxtDateIso.text) >= 6 Then
             month = Mid(TxtDateIso.text, 5, 2)
@@ -1881,15 +1620,12 @@ Private Sub TxtDateIso_Change()
         Else
             CurrMonth = ""
         End If
-        
-        
-        
-        Set myIssue.bibstrips.nullObject = New ClsBibStrip
+        Set myissue.bibstrips.nullObject = New ClsBibStrip
         'Set myIssue.bibstrips.nullObject = bibstrip
         For idiomidx = 1 To idiomsinfo.count
             If month = CurrMonth Then
                 If mfnIssue > 0 Then
-                    TxtMes(idiomidx).text = myIssue.bibstrips.getItemByLang(idiomsinfo(idiomidx).Code).month
+                    TxtMes(idiomidx).text = myissue.bibstrips.getItemByLang(idiomsinfo(idiomidx).Code).month
                 Else
                     TxtMes(idiomidx).text = Months.GetMonth(idiomsinfo(idiomidx).Code, TxtDateIso.text, Issue1.Title_Freq)
                 End If
@@ -1897,7 +1633,6 @@ Private Sub TxtDateIso_Change()
                 TxtMes(idiomidx).text = Months.GetMonth(idiomsinfo(idiomidx).Code, TxtDateIso.text, Issue1.Title_Freq)
             End If
         Next
-               
         If Mid(TxtDateIso.text, 1, 4) <> Issue1.year Then
             If Len(TxtDateIso.text) = 8 Then MsgBox ConfigLabels.getLabel("MsgInvalidYear"), vbCritical
             TxtDateIso.text = Issue1.year ' + Mid(TxtDateIso.Text, 5)
@@ -1908,17 +1643,15 @@ Private Sub TxtDateIso_Change()
         End If
     End If
 End Sub
-
 Private Function Issue_ChangedContents() As Boolean
     Dim dbissue As ClsIssue
     UpdateData
     
     Set dbissue = Issue0.issueDAO.returnIssue(mfnIssue)
-    Debug.Print Issue0.issueDAO.tag(myIssue)
+    Debug.Print Issue0.issueDAO.tag(myissue)
     Debug.Print Issue0.issueDAO.tag(dbissue)
-    Issue_ChangedContents = (Issue0.issueDAO.tag(myIssue) <> Issue0.issueDAO.tag(dbissue))
+    Issue_ChangedContents = (Issue0.issueDAO.tag(myissue) <> Issue0.issueDAO.tag(dbissue))
 End Function
-
 
 Private Function WarnMandatoryFields() As Boolean
     Dim warning As String
@@ -1936,11 +1669,9 @@ Private Function WarnMandatoryFields() As Boolean
     If ListScheme.SelCount = 0 Then
         warning = warning + .isA_mandatoryField("", "Issue_Scheme")
     End If
-    
    
     warning = warning + .isA_mandatoryField(TxtDateIso.text, "Issue_DateISO")
     warning = warning + .isA_mandatoryField(TxtDoccount.text, "Issue_NumberofDocuments")
-    
     
     If Not IsNumber(TxtDoccount.text) Then MsgBox ConfigLabels.getLabel("Issue_InvalidNumDoc")
     
@@ -1953,10 +1684,7 @@ Private Function WarnMandatoryFields() As Boolean
     For i = 1 To idiomsinfo.count
         warning = warning + .isA_mandatoryField(TxtHeader(i).text, "Issue_Header")
     Next
-    
-    
     End With
-    
     If Len(warning) > 0 Then
         MsgBox ConfigLabels.getLabel("MsgMandatoryContent") + vbCrLf + warning
     End If
@@ -1968,7 +1696,6 @@ Private Function CheckYears() As Boolean
     Dim yearOK As Boolean
     Dim year As String
     
-    
     If Len(TxtDateIso.text) >= 4 Then
         year = Mid(TxtDateIso.text, 1, 4)
         yearOK = True
@@ -1979,9 +1706,6 @@ Private Function CheckYears() As Boolean
     Next
     
     yearOK = yearOK And (Mid(Issue1.TxtIseqNo.text, 1, 4) = year)
-    
-    
-    
     
     If Not yearOK Then
         Call MsgBox(ConfigLabels.getLabel("MsgInvalidYear"), vbCritical)
@@ -2005,37 +1729,28 @@ End Sub
 
 Private Function Issue_Save() As Boolean
     UpdateData
-    Issue_Save = Issue0.issueDAO.save(mfnIssue, myIssue)
+    Issue_Save = Issue0.issueDAO.save(mfnIssue, myissue)
 End Function
 
 Private Sub UpdateData()
-    With myIssue
     
+    With myissue
         Dim i As Long
         Dim t As ClsTextByLang
         Dim obj As ClsBibStrip
         Dim subf(8) As String
         Dim content(8) As String
         
-        
-        Set .licenses = New clsCreativeCommons
         Set .issueTitle = New ColTextByLang
         Set .bibstrips = New ColObjByLang
         Set .bibstrips.nullObject = New ClsBibStrip
-        
         
         For i = 1 To idiomsinfo.count
             Set t = New ClsTextByLang
             t.lang = idiomsinfo.item(i).Code
             t.text = Issue2.TxtIssTitle(i).text
-            
             .issueTitle.add t
-            If InStr(Issue2.ComboIssueLicText.text, "*") > 0 Then
-                .licenses.Code = Mid(Issue2.ComboIssueLicText.text, 1, InStr(Issue2.ComboIssueLicText.text, "*") - 1)
-            Else
-                .licenses.Code = Issue2.ComboIssueLicText.text
-            End If
-            Call .licenses.add(Issue2.TextCreativeCommons(i - 1).text, idiomsinfo.item(i).Code)
+            
             
             Set obj = New ClsBibStrip
             With obj
@@ -2050,15 +1765,12 @@ Private Sub UpdateData()
                 .lang = idiomsinfo.item(i).Code
             End With
             Call .bibstrips.add(obj)
-            
-            
         Next
         Set .toc = New ClsTOC
         Set .toc = getNewTOC
+        .license_code = Issue2.ComboIssueLicText.text
         .pissn = Issue2.Text_IssuePISSN.text
         .eissn = Issue2.Text_IssueEISSN.text
-        
-        
         .DateISO = Issue2.TxtDateIso.text
         .doccount = Issue2.TxtDoccount.text
         .issueCover = Issue2.TxtCover.text
@@ -2069,6 +1781,7 @@ Private Sub UpdateData()
         .journal.JournalStandard = CodeStandard(Issue2.ComboStandard.text).Code
         If Issue2.ComboStatus.text <> "" Then .status = CodeIssStatus(Issue2.ComboStatus.text).Code
     End With
+    
 End Sub
 
 Private Function getNewTOC() As ClsTOC
@@ -2089,10 +1802,7 @@ Private Function getNewTOC() As ClsTOC
         titleAndLang.text = TxtHeader(i).text
                 
         Call toc.names.add(titleAndLang)
-            
     Next
-    
-    
     For k = 1 To LVSections.ListItems.count
         Set section = New ClsSection
         section.sectionCode = LVSections.ListItems(k).text
