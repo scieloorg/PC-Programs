@@ -601,9 +601,11 @@ class JSON_Article:
         """
         Normalize the json structure for issue record
         """
-        if self.json_data['f']['32'][-2:] == 'pr':
-            self.json_data['f']['32'] = self.json_data['f']['32'][0:-2]
-            self.json_data['f']['41'] = 'pr'
+        issue = self.json_data.get['f'].get('32')
+        if not issue is None:
+            if issue[-2:] == 'pr':
+                self.json_data.get['f']['32'] = issue[0:-2]
+                self.json_data['f']['41'] = 'pr'
 
         self.json_data['f']['35'] = issn_id
 
