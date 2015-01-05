@@ -849,6 +849,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="@*[name()!='rid']"/>
 			<xsl:apply-templates select="."/>
 			<xsl:apply-templates select=".//xref|text()"/>
+			<xsl:if test="not(.//xref) and count(../..//normaff)+count(../..//aff)=1">
+				<xref ref-type="aff" rid="aff1"/>
+			</xsl:if>
 		</contrib>
 		<xsl:copy-of select="../..//aff[@id=$author_rid]/role"/>
 		<xsl:copy-of select="../..//normaff[@id=$author_rid]/role"/>
