@@ -1079,8 +1079,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</issue>
 				<issue-part>Pt <xsl:value-of select="substring-after(.,' Pt ')"/></issue-part>
 			</xsl:when>
-			<xsl:when test=".='ahead' or (number(.)=0 and (number(../@volid)=0 or not(../@volid)))">
-				<volume>00</volume>
+			<xsl:when test=".='ahead' or number(.)=0">
+				<xsl:if test="not(../@volid)">
+					<volume>00</volume>
+				</xsl:if>
 				<issue>00</issue>
 			</xsl:when>
 			<xsl:otherwise>
