@@ -448,7 +448,7 @@ End Sub
 
 Private Sub TxtISSN_LostFocus()
     If Not TxtISSN.Locked Then
-        If journalDAO.existISSN(TxtISSN.text) > 0 Then
+        If journalDAO.return_mfn_by_ISSN(TxtISSN.text) > 0 Then
             MsgBox "ISSN already exists" ' FIXME
             TxtISSN.SetFocus
         Else
@@ -496,6 +496,6 @@ Private Sub TxtHasSuppl_GotFocus()
     FrmInfo.ShowHelpMessage Fields.getHelp("ser1_HasSuppl")
 End Sub
 
-Sub OpenAgain(mfn As Long)
-    MyMfnTitle = mfn
+Sub OpenAgain(Mfn As Long)
+    MyMfnTitle = Mfn
 End Sub

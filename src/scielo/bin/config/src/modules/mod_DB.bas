@@ -26,15 +26,15 @@ Function Serial_CheckExisting(SerialTitle_to_find As String) As Long
     If p > 0 Then
         journalKey = Mid(SerialTitle_to_find, p + 1)
         journalKey = Mid(journalKey, 1, 9)
-        Serial_CheckExisting = journalDAO.existISSN(journalKey)
+        Serial_CheckExisting = journalDAO.return_mfn_by_ISSN(journalKey)
     Else
-        Serial_CheckExisting = journalDAO.existJournalTitle(SerialTitle_to_find)
+        Serial_CheckExisting = journalDAO.return_mfn_by_title(SerialTitle_to_find)
     End If
 End Function
 
-Function Serial_TxtContent(Mfn As Long, tag As Long, Optional language As String) As String
+Function Serial_TxtContent(mfn As Long, tag As Long, Optional language As String) As String
 'xxx
-    Serial_TxtContent = journalDAO.getFieldContentByLanguage(Mfn, tag, language)
+    Serial_TxtContent = journalDAO.getFieldContentByLanguage(mfn, tag, language)
 End Function
 
 Function Serial_ComboDefaultValue(Code As ColCode, DefaultOption As String) As String
@@ -55,8 +55,8 @@ Function Serial_ComboDefaultValue(Code As ColCode, DefaultOption As String) As S
     
     Serial_ComboDefaultValue = content
 End Function
-Function Serial_ComboContent(Code As ColCode, Mfn As Long, tag As Long, Optional DefaultOption As String) As String
-    Serial_ComboContent = journalDAO.getDecodedValue(Code, Mfn, tag, DefaultOption)
+Function Serial_ComboContent(Code As ColCode, mfn As Long, tag As Long, Optional DefaultOption As String) As String
+    Serial_ComboContent = journalDAO.getDecodedValue(Code, mfn, tag, DefaultOption)
 End Function
 
 Function TagTxtContent(content As String, tag As Long) As String
@@ -74,7 +74,7 @@ Function TagTxtContent(content As String, tag As Long) As String
         Wend
     TagTxtContent = NewContent
 End Function
-Sub serial_issn_get(Mfn As Long, ByRef pissn As String, ByRef eissn As String)
+Sub serial_issn_get(mfn As Long, ByRef pissn As String, ByRef eissn As String)
     Dim v435 As String
     Dim v35 As String
     Dim v935 As String
@@ -85,11 +85,11 @@ Sub serial_issn_get(Mfn As Long, ByRef pissn As String, ByRef eissn As String)
     
     pissn = ""
     eissn = ""
-    v435 = journalDAO.getRepetitiveFieldValue(Mfn, 435, "%")
+    v435 = journalDAO.getRepetitiveFieldValue(mfn, 435, "%")
     If Len(v435) = 0 Then
-        v35 = journalDAO.getRepetitiveFieldValue(Mfn, 35, "")
-        v935 = journalDAO.getRepetitiveFieldValue(Mfn, 935, "")
-        v400 = journalDAO.getRepetitiveFieldValue(Mfn, 400, "")
+        v35 = journalDAO.getRepetitiveFieldValue(mfn, 35, "")
+        v935 = journalDAO.getRepetitiveFieldValue(mfn, 935, "")
+        v400 = journalDAO.getRepetitiveFieldValue(mfn, 400, "")
         If v35 = "ONLIN" Then
             eissn = v935
             If v935 <> v400 Then
@@ -126,7 +126,7 @@ Sub serial_issn_build_field(ByRef pissn As String, ByRef eissn As String, ByRef 
         v935 = eissn
     End If
 End Sub
-Sub Serial_ListContent(list As ListBox, Code As ColCode, Mfn As Long, tag As Long)
+Sub Serial_ListContent(list As ListBox, Code As ColCode, mfn As Long, tag As Long)
     Dim content As String
     Dim exist As Boolean
     Dim itemCode As ClCode
@@ -137,7 +137,7 @@ Sub Serial_ListContent(list As ListBox, Code As ColCode, Mfn As Long, tag As Lon
     Dim found As Boolean
     
     sep = "%"
-    content = journalDAO.getRepetitiveFieldValue(Mfn, tag, sep)
+    content = journalDAO.getRepetitiveFieldValue(mfn, tag, sep)
     
     For i = 0 To list.ListCount - 1
         list.selected(i) = False
@@ -176,13 +176,6 @@ Function Serial_Save(MfnTitle As Long) As Long
     Dim msgwarning As String
     Dim OK As Boolean
         
-    'MousePointer = vbHourglass
-    
-    'Serial1.WarnMandatoryFields
-    'Serial2.WarnMandatoryFields
-    'Serial3.WarnMandatoryFields
-    'Serial4.WarnMandatoryFields
-    'SERIAL7.WarnMandatoryFields
     
     If Serial_ChangedContents(MfnTitle) Then
     
@@ -291,19 +284,10 @@ Function Serial_Save(MfnTitle As Long) As Long
     
     SERIAL8.TxtUpdateDate.text = getDateIso(Date)
     reccontent = reccontent + TagTxtContent(SERIAL8.TxtUpdateDate.text, 941)
-    
     reccontent = reccontent + SERIAL6.getDataToSave
-    
-    JOURNAL5.receiveData
-    reccontent = reccontent + journalDAO.tagCreativeCommons(JOURNAL5.getCreativeCommons)
-    If InStr(JOURNAL5.ComboLicText.text, "*") > 0 Then
-        reccontent = reccontent + TagTxtContent(Mid(JOURNAL5.ComboLicText.text, 1, InStr(JOURNAL5.ComboLicText.text, "*") - 1), 541)
-    Else
-        reccontent = reccontent + TagTxtContent(JOURNAL5.ComboLicText.text, 541)
-    End If
-    
+    reccontent = reccontent + TagTxtContent(JOURNAL5.ComboLicText.text, 541)
     If MfnTitle = 0 Then
-        If journalDAO.existISSN(Serial1.TxtISSN.text) > 0 Then
+        If journalDAO.return_mfn_by_ISSN(Serial1.TxtISSN.text) > 0 Then
         
         Else
             Call journalDAO.save(MfnTitle, reccontent)
@@ -312,9 +296,6 @@ Function Serial_Save(MfnTitle As Long) As Long
             Call journalDAO.save(MfnTitle, reccontent)
         End If
     End If
-    
-    
-    
     Serial_Save = MfnTitle
 End Function
 
@@ -331,7 +312,6 @@ Function TagComboContent(Code As ColCode, content As String, tag As Long) As Str
         
         End If
     End If
-    
     TagComboContent = TagContent(content, tag)
 End Function
 
@@ -468,7 +448,6 @@ Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     Dim pissn As String
     Dim eissn As String
     
-    
     change = (StrComp(Serial1.TxtISSN.text, Serial_TxtContent(MfnTitle, 400)) <> 0)
     change = change Or (StrComp(Serial1.TxtSerTitle.text, Serial_TxtContent(MfnTitle, 100)) <> 0)
     change = change Or (StrComp(Serial1.TxtSubtitle.text, Serial_TxtContent(MfnTitle, 110)) <> 0)
@@ -496,14 +475,9 @@ Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     change = change Or (StrComp(Serial3.ComboTreatLev.text, Serial_ComboContent(CodeTreatLevel, MfnTitle, 6)) <> 0)
     change = change Or (StrComp(Serial3.ComboPubLev.text, Serial_ComboContent(CodePubLevel, MfnTitle, 330)) <> 0)
     
-    
     change = change Or is_changed(Serial2.check_wok_scie.value, Serial_TxtContent(MfnTitle, 851))
     change = change Or is_changed(Serial2.check_wok_ssci.value, Serial_TxtContent(MfnTitle, 852))
     change = change Or is_changed(Serial2.check_wok_aehci.value, Serial_TxtContent(MfnTitle, 853))
-    
-    
-    
-    
     
     change = change Or (StrComp(Serial3.TxtInitVol.text, Serial_TxtContent(MfnTitle, 302)) <> 0)
     change = change Or (StrComp(Serial3.TxtInitNo.text, Serial_TxtContent(MfnTitle, 303)) <> 0)
@@ -528,6 +502,8 @@ Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     change = change Or (StrComp(Serial4.TxtPhone.text, Serial_TxtContent(MfnTitle, 631)) <> 0)
     change = change Or (StrComp(Serial4.TxtFaxNumber.text, Serial_TxtContent(MfnTitle, 632)) <> 0)
     change = change Or (StrComp(Serial4.TxtEmail.text, Serial_TxtContent(MfnTitle, 64)) <> 0)
+    
+    change = change Or (StrComp(JOURNAL5.ComboLicText.text, Serial_TxtContent(MfnTitle, 541)) <> 0)
     change = change Or (StrComp(JOURNAL5.TxtCprightDate.text, Serial_TxtContent(MfnTitle, 621)) <> 0)
     change = change Or (StrComp(JOURNAL5.TxtCprighter.text, Serial_TxtContent(MfnTitle, 62)) <> 0)
     change = change Or (StrComp(Serial4.TxtSponsor.text, Serial_TxtContent(MfnTitle, 140)) <> 0)
@@ -563,11 +539,8 @@ Function Serial_ChangedContents(MfnTitle As Long) As Boolean
     End If
     change = change Or (StrComp(SERIAL7.ScieloNetWrite, x) <> 0)
     change = change Or (StrComp(SERIAL8.TxtIdNumber.text, Serial_TxtContent(MfnTitle, 30)) <> 0)
-    'change = change Or (StrComp(SERIAL7.TxtDocCreation.Text, Serial_TxtContent(MfnTitle, 950)) <> 0)
-    'change = change Or (StrComp(SERIAL7.TxtCreatDate.Text, Serial_TxtContent(MfnTitle, 940)) <> 0)
     change = change Or (StrComp(SERIAL8.TxtDocUpdate.text, Serial_TxtContent(MfnTitle, 951)) <> 0)
-    'change = change Or (StrComp(SERIAL7.TxtUpdateDate.Text, Serial_TxtContent(MfnTitle, 941)) <> 0)
-
+    
     change = change Or Serial_ChangedListContent(Serial3.ListScheme, CodeScheme, MfnTitle, 85)
     change = change Or Serial_ChangedListContent(Serial3.ListTextIdiom, CodeTxtLanguage, MfnTitle, 350)
     change = change Or Serial_ChangedListContent(Serial3.ListAbstIdiom, CodeAbstLanguage, MfnTitle, 360)
@@ -691,8 +664,6 @@ Sub generateSciELOURL()
         End With
     Next
     Close fn
-        
-    
 End Sub
 Sub generateFile_JournalList4Automata()
     Dim i As Long
@@ -737,11 +708,8 @@ Sub generateFile_JournalList4Automata()
         End With
     Next
     Close fn
-        
-    
 End Sub
-Function isTitleFormCompleted(Mfn As Long) As Boolean
-    
+Function isTitleFormCompleted(mfn As Long) As Boolean
     Dim i As Long
     Dim completed As Boolean
     
@@ -751,7 +719,7 @@ Function isTitleFormCompleted(Mfn As Long) As Boolean
         
         i = i + 1
         
-        completed = (Len(journalDAO.getRepetitiveFieldValue(Mfn, CLng(Fields.getMandatoryFields.item(i)), "")) > 0)
+        completed = (Len(journalDAO.getRepetitiveFieldValue(mfn, CLng(Fields.getMandatoryFields.item(i)), "")) > 0)
     Wend
     
     isTitleFormCompleted = completed

@@ -33,7 +33,7 @@ Public status As String
 
 Public journal As ClsJournal
 Public issueTitle As ColTextByLang
-Public licenses As clsCreativeCommons
+Public license_code As String
 
 Public bibstrips As ColObjByLang
 Public toc As ClsTOC
@@ -67,7 +67,6 @@ Private Sub Class_Initialize()
     Set journal = New ClsJournal
     Set toc = New ClsTOC
     Set issueTitle = New ColTextByLang
-    Set licenses = New clsCreativeCommons
     Set bibstrips = New ColObjByLang
     Set bibstrips.nullObject = New ClsBibStrip
     
