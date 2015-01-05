@@ -379,38 +379,40 @@ class IssueRecord(object):
     def section_titles(self):
         return [sec.get('t') for sec in self.sections]
 
-    def section_code(self, section_title):
+    def most_similar_section_code(self, section_title, acceptable_result=0.80):
         best_result = 0
         seccode = None
-        similar = ''
+        similar = None
         if section_title is not None:
             for sec in self.sections:
                 if sec.get('t').lower() == section_title.lower():
-                    seccode = sec.get('c')
                     best_result = 1
+                    seccode = sec.get('c')
+                    similar = sec.get('t')
                     break
             if seccode is None:
                 import difflib
-                best_result = 0
-                acceptable_result = 0.80
                 for sec in self.sections:
-                    r = difflib.SequenceMatcher(None, section_title.lower(), sec.get('t', '').lower()).ratio()
-                    if r > acceptable_result:
-                        if r > best_result:
-                            seccode = sec.get('c')
-                            similar = sec.get('t')
-                            best_result = r
+                    sec_words = sec.get('t', '').lower().split(' ')
+                    section_title_words = section_title.lower().split(' ')
+                    for sec_word in sec_words:
+                        for section_title_word in section_title_words:
+                            r = difflib.SequenceMatcher(None, section_title_word, sec_word).ratio()
+                            if r > best_result:
+                                best_result = r
+                                seccode = sec.get('c')
+                                similar = sec.get('t')
         return (seccode, best_result, similar)
 
     @property
     def issue(self):
         acron = self.record.get('930').lower()
-        year = self.record.get('65', '')[0:4]
+        dateiso = self.record.get('65', '')
         volume = self.record.get('31')
         volume_suppl = self.record.get('131')
         number = self.record.get('32')
         number_suppl = self.record.get('132')
-        i = Issue(acron, volume, number, year, volume_suppl, number_suppl)
+        i = Issue(acron, volume, number, dateiso, volume_suppl, number_suppl)
 
         i.issn_id = self.record.get('35')
         return i

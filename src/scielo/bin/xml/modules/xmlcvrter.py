@@ -162,7 +162,7 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
         register_log(''.join([html_report.format_message(item) for item in ahead_msg]))
         register_log(''.join([html_report.tag('pre', item) for item in ahead_comparison]))
 
-        register_log(html_report.tag('h4', 'checking section'))
+        register_log(html_report.tag('h4', 'checking issue data'))
         register_log(issue_validations)
 
         if f + xml_stats[0] + data_stats[0] == 0:
@@ -228,35 +228,52 @@ def validate_issue_data(issue_record, article):
     w = 0
     msg = []
     if article is not None:
-        # subject
+        issue_record = IssueRecord(issue_record)
+
+        # issue date
+        msg.append(html_report.tag('h5', 'publication date'))
+        if article.issue_pub_dateiso != issue_record.issue.dateiso:
+            f += 1
+            msg.append('ERROR: Invalid value of publication date: ' + article.issue_pub_dateiso + '. Expected value: ' + issue_record.issue.dateiso)
+
+        # section
+        msg.append(html_report.tag('h5', 'section'))
         msg.append('section: ' + article.toc_section + '.')
-        section_code, matched_rate, similar_section_title = IssueRecord(issue_record).section_code(article.toc_section)
-        if section_code is None:
-            if not article.is_ahead:
-                f += 1
-                msg.append('ERROR: ' + article.toc_section + ' is not a registered section.')
-                msg.append('Registered sections:\n' + '; '.join(IssueRecord(issue_record).section_titles))
-        else:
-            if matched_rate != 1:
+        section_code, matched_rate, most_similar = issue_record.most_similar_section_code(article.toc_section)
+        if matched_rate != 1:
+            msg.append('Registered sections:\n' + '; '.join(issue_record.section_titles))
+            if section_code is None:
+                if not article.is_ahead:
+                    f += 1
+                    msg.append('ERROR: ' + article.toc_section + ' is not a registered section.')
+            else:
                 w += 1
-                msg.append('WARNING: section replaced: "' + similar_section_title + '" (instead of "' + article.toc_section + '")')
+                msg.append('WARNING: section replaced: "' + most_similar + '" (instead of "' + article.toc_section + '")')
 
         # @article-type
-        section_title = article.toc_section
-        if similar_section_title != article.toc_section:
-            section_title = similar_section_title
+        msg.append(html_report.tag('h5', 'article-type'))
         msg.append('@article-type: ' + article.article_type)
-        rate = 0
-        max_rate = 0
-        for item in article.article_type.split('-'):
-            rate = article_utils.how_similar(section_title, item)
-            if rate > max_rate:
-                max_rate = rate
-        if max_rate < 0.7:
-            msg.append('WARNING: Check if ' + article.article_type + ' is a valid value for @article-type. (' + str(max_rate) + ')')
+        if most_similar is not None:
+            section_title = most_similar
+        else:
+            section_title = article.toc_section
+        rate = compare_article_type_and_section(section_title, article.article_type)
+        if rate < 0.5:
+            msg.append('WARNING: Check if ' + article.article_type + ' is a valid value for @article-type.')
 
     msg = ''.join([html_report.format_message(item) for item in msg])
     return (f, e, w, msg, section_code)
+
+
+def compare_article_type_and_section(article_section, article_type):
+    rate = 0
+    max_rate = 0
+    for type_item in article_type.split('-'):
+        for part_item in article_section.lower():
+            rate = article_utils.how_similar(type_item, part_item)
+            if rate > max_rate:
+                max_rate = rate
+    return max_rate
 
 
 def convert_article(db_article, issue_record, issue_files, xml_name, article, ahead):

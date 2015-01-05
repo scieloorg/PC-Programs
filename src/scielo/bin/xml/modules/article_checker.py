@@ -85,7 +85,15 @@ class TOCReport(object):
                     part += html_report.format_list('no value for ' + label + ' in:', 'ul', none, 'issue-problem')
                     r += part
 
-        return html_report.tag('div', r, 'issue-messages')
+        issue_common_data = ''
+        for label in equal_data:
+            message = ''
+            if len(toc_data[label].items()) == 1:
+                issue_common_data += html_report.display_labeled_value(label, toc_data[label].keys()[0])
+            else:
+                message = '(ERROR: Unique value expected for ' + label + ')'
+                issue_common_data += html_report.format_list(label + message, 'ol', toc_data[label].keys())
+        return html_report.tag('div', issue_common_data, 'issue-data') + html_report.tag('div', r, 'issue-messages')
 
     def _report(self):
         invalid = []
@@ -196,7 +204,7 @@ class ArticleDisplayReport(object):
             r += self.fpage
             r += self.fpage_seq
             r += self.elocation_id
-            r += self.article_date
+            r += self.article_dates
             r += self.contrib_names
             r += self.contrib_collabs
             r += self.affiliations
@@ -263,8 +271,8 @@ class ArticleDisplayReport(object):
         return self.display_labeled_value('@article-type', self.article.article_type, 'article-type')
 
     @property
-    def article_date(self):
-        return self.display_labeled_value('@article-date', article_utils.format_date(self.article.article_pub_date))
+    def article_dates(self):
+        return self.display_labeled_value('date(epub-ppub)', article_utils.format_date(self.article.epub_ppub_date)) + self.display_labeled_value('date(epub)', article_utils.format_date(self.article.epub_date)) + self.display_labeled_value('date(collection)', article_utils.format_date(self.article.collection_date))
 
     @property
     def contrib_names(self):
@@ -454,6 +462,7 @@ class ArticleValidationReport(object):
                     self.article_validation.issue_label,
                     self.article_validation.language,
                     self.article_validation.article_type,
+                    self.article_validation.article_date_types,
                     self.article_validation.toc_section,
                     self.article_validation.order,
                     self.article_validation.doi,

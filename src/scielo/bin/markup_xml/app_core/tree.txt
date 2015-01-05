@@ -11,6 +11,8 @@ element;#TRUE#;#TRUE#
 equation;#TRUE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
+*fn;#FALSE#;#TRUE#
+fngrp;#TRUE#;#TRUE#
 graphic;#FALSE#;#TRUE#
 ign;#TRUE#;#TRUE#
 list;#FALSE#;#TRUE#
@@ -264,6 +266,8 @@ caption;#FALSE#;#FALSE#
 figgrp;#FALSE#;#TRUE#
 
 fname
+
+*fn
 
 fngrp
 label;#FALSE#;#FALSE#
@@ -646,6 +650,9 @@ sectitle
 sertitle
 
 sig
+surname-fname;#FALSE#;#FALSE#
+fname;#FALSE#;#FALSE#
+surname;#FALSE#;#FALSE#
 
 sigblock
 sig;#FALSE#;#TRUE#
@@ -707,6 +714,7 @@ text
 doi;#FALSE#;#TRUE#
 titlegrp;#FALSE#;#FALSE#
 authgrp;#FALSE#;#FALSE#
+aff;#TRUE#;#TRUE#
 back;#FALSE#;#FALSE#
 
 th

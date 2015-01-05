@@ -98,7 +98,7 @@ def validate_contrib_names(author, affiliations=[]):
     if len(affiliations) > 0:
         aff_ids = [aff.id for aff in affiliations if aff.id is not None]
         if len(author.xref) == 0:
-            results.append(('xref', 'WARNING', 'Author has no xref. Expected values: ' + '|'.join(aff_ids)))
+            results.append(('xref', 'FATAL ERROR', 'Author has no xref. Expected values: ' + '|'.join(aff_ids)))
         else:
             for xref in author.xref:
                 if not xref in aff_ids:
@@ -426,8 +426,8 @@ class ArticleContentValidation(object):
         if received is not None and accepted is not None:
             r = [('history', 'OK', received + ' - ' + accepted)]
             if received > accepted:
-                r = 'received (' + received + ')  must be a previous date than accepted (' + accepted + ').'
-                r = [('history', 'ERROR', r)]
+                r = 'received (' + received + ')  must be a date before accepted (' + accepted + ').'
+                r = [('history', 'FATAL ERROR', r)]
         else:
             r = []
             r.append(conditional_required('history: received', received))
@@ -464,6 +464,24 @@ class ArticleContentValidation(object):
     @property
     def press_release_id(self):
         return display_value('press_release_id', self.article.press_release_id)
+
+    @property
+    def article_date_types(self):
+        r = []
+        date_types = []
+        expected = ['epub-ppub', 'epub and collection', 'epub']
+        if self.article.epub_date is not None:
+            date_types.append('epub')
+        if self.article.collection_date is not None:
+            date_types.append('collection')
+        if self.article.epub_ppub_date is not None:
+            date_types.append('epub-ppub')
+        c = ' and '.join(date_types)
+        if c in expected:
+            r.append(('article dates', 'OK', c))
+        else:
+            r.append(('article dates', 'ERROR', 'Invalid combination of date types: ' + c + '. Expected values: ' + ' | '.join(expected)))
+        return r
 
     @property
     def issue_pub_date(self):

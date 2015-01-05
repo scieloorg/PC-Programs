@@ -649,41 +649,46 @@ class ArticleXML(object):
         return _id
 
     @property
-    def issue_pub_date(self):
-        _issue_pub_date = None
+    def collection_date(self):
+        d = None
         if self.article_meta is not None:
-            date = self.article_meta.find('pub-date[@date-type="pub"]')
-            if date is None:
-                date = self.article_meta.find('pub-date[@pub-type="epub-ppub"]')
-            if date is None:
-                date = self.article_meta.find('pub-date[@pub-type="ppub"]')
-            if date is None:
-                date = self.article_meta.find('pub-date[@pub-type="collection"]')
-            if date is None:
-                date = self.article_meta.find('pub-date[@pub-type="epub"]')
+            date = self.article_meta.find('pub-date[@pub-type="collection"]')
             if date is not None:
-                _issue_pub_date = {}
-                _issue_pub_date['season'] = date.findtext('season')
-                _issue_pub_date['month'] = date.findtext('month')
-                _issue_pub_date['year'] = date.findtext('year')
-                _issue_pub_date['day'] = date.findtext('day')
-        return _issue_pub_date
+                d = {}
+                d['season'] = date.findtext('season')
+                d['month'] = date.findtext('month')
+                d['year'] = date.findtext('year')
+                d['day'] = date.findtext('day')
+        return d
 
     @property
-    def article_pub_date(self):
-        _article_pub_date = None
+    def epub_ppub_date(self):
+        d = None
+        if self.article_meta is not None:
+            date = self.article_meta.find('pub-date[@pub-type="epub-ppub"]')
+            if date is not None:
+                d = {}
+                d['season'] = date.findtext('season')
+                d['month'] = date.findtext('month')
+                d['year'] = date.findtext('year')
+                d['day'] = date.findtext('day')
+        return d
+
+    @property
+    def epub_date(self):
+        d = None
         date = None
         if self.article_meta is not None:
-            date = self.article_meta.find('pub-date[@date-type="preprint"]')
+            date = self.article_meta.find('pub-date[@pub-type="epub"]')
             if date is None:
-                date = self.article_meta.find('pub-date[@pub-type="epub"]')
-        if date is not None:
-            _article_pub_date = {}
-            _article_pub_date['season'] = date.findtext('season')
-            _article_pub_date['month'] = date.findtext('month')
-            _article_pub_date['year'] = date.findtext('year')
-            _article_pub_date['day'] = date.findtext('day')
-        return _article_pub_date
+                date = self.article_meta.find('pub-date[@date-type="preprint"]')
+            if date is not None:
+                d = {}
+                d['season'] = date.findtext('season')
+                d['month'] = date.findtext('month')
+                d['year'] = date.findtext('year')
+                d['day'] = date.findtext('day')
+        return d
 
     @property
     def is_article_press_release(self):
@@ -905,6 +910,23 @@ class Article(ArticleXML):
     def issue_label(self):
         return format_issue_label(self.issue_pub_date.get('year', ''), self.volume, self.number, self.volume_suppl, self.number_suppl)
 
+    @property
+    def issue_pub_dateiso(self):
+        return format_date(self.issue_pub_date)
+
+    @property
+    def issue_pub_date(self):
+        d = self.epub_ppub_date
+        if d is None:
+            d = self.collection_date
+        if d is None:
+            d = self.epub_date
+        return d
+
+    @property
+    def article_pub_date(self):
+        return self.epub_date if self.epub_date is not None else self.epub_ppub_date
+
 
 class ReferenceXML(object):
 
@@ -1098,13 +1120,14 @@ class ReferenceXML(object):
 
 class Issue(object):
 
-    def __init__(self, acron, volume, number, year, volume_suppl, number_suppl):
+    def __init__(self, acron, volume, number, dateiso, volume_suppl, number_suppl):
         self.volume = volume
         self.number = number
-        self.year = year
+        self.dateiso = dateiso
         self.volume_suppl = volume_suppl
         self.number_suppl = number_suppl
         self.acron = acron
+        self.year = dateiso[0:4]
 
     @property
     def issue_label(self):

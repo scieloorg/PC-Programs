@@ -378,7 +378,6 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
     #register_log(content)
-    
     if doc_files_info.is_sgmxml:
         register_log('normalize_sgmlxml')
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
@@ -481,7 +480,18 @@ def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     temp = xml_utils.apply_dtd(xml_filename, doctype)
     r = java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)
     xml_utils.restore_xml_file(xml_filename, temp)
+    if xml_filename.endswith('.bkp'):
+        os.unlink(xml_filename)
     return r
+
+
+def zip_package(pkg_path, zip_name):
+    import zipfile
+    zipf = zipfile.ZipFile(zip_name, 'w')
+    for root, dirs, files in os.walk(pkg_path):
+        for file in files:
+            zipf.write(os.path.join(root, file), arcname=os.path.basename(file))
+    zipf.close()
 
 
 def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.0'):
@@ -494,6 +504,8 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
     pmc_pkg_path = markup_xml_path + '/pmc_package'
     report_path = markup_xml_path + '/errors'
     wrk_path = markup_xml_path + '/work'
+
+    pkg_name = None
 
     report_names = {}
     xml_to_validate = []
@@ -526,7 +538,7 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
         report_names[new_name] = doc_files_info.xml_name
         xml_to_validate.append(doc_files_info)
 
-        if not doc_files_info.is_sgmxml:
+        if not do_pmc_package:
             loaded_xml, e = xml_utils.load_xml(new_xml_filename)
             if loaded_xml is not None:
                 doc = article.Article(loaded_xml)
@@ -547,11 +559,14 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
     print('Generate validation reports...')
     validate_created_package(scielo_pkg_path, xml_to_validate, scielo_dtd_files, report_path, do_toc_report, not from_markup)
 
+    make_zip_packages(scielo_pkg_path)
+
     # termina de montar o pacote inteiro do pmc
     if do_pmc_package:
         for f in os.listdir(scielo_pkg_path):
             if not f.endswith('.xml') and not f.endswith('.jpg'):
                 shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)
+        make_zip_packages(pmc_pkg_path)
 
     print('Result of the processing:')
     print(markup_xml_path)
@@ -560,6 +575,37 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
     if isinstance(s, unicode):
         s = s.encode('utf-8')
     open(report_path + '/log.txt', 'w').write(s)
+
+
+def make_zip(src_pkg_path, pkg_name):
+    new_pkg_path = os.path.dirname(src_pkg_path) + '/' + pkg_name
+    if not os.path.isdir(new_pkg_path):
+        os.makedirs(new_pkg_path)
+    for item in os.listdir(new_pkg_path):
+        os.unlink(new_pkg_path + '/' + item)
+    for item in os.listdir(src_pkg_path):
+        if item.startswith(pkg_name):
+            shutil.copyfile(src_pkg_path + '/' + item, new_pkg_path + '/' + item)
+    zip_package(new_pkg_path, new_pkg_path + '.zip')
+
+
+def make_zip_packages(src_pkg_path):
+    names = [item[0:item.rfind('-')] for item in os.listdir(src_pkg_path) if item.endswith('.xml') and '-' in item]
+    names = list(set(names))
+    path = src_pkg_path + '_zips'
+    for name in names:
+        new_pkg_path = path + '/' + name
+        if not os.path.isdir(new_pkg_path):
+            os.makedirs(new_pkg_path)
+        for item in os.listdir(new_pkg_path):
+            os.unlink(new_pkg_path + '/' + item)
+        for item in os.listdir(src_pkg_path):
+            if item.startswith(name):
+                shutil.copyfile(src_pkg_path + '/' + item, new_pkg_path + '/' + item)
+        zip_package(new_pkg_path, new_pkg_path + '.zip')
+        for item in os.listdir(new_pkg_path):
+            os.unlink(new_pkg_path + '/' + item)
+        shutil.rmtree(new_pkg_path)
 
 
 def validate_created_package(scielo_pkg_path, doc_files_info_list, dtd_files, report_path, do_toc_report, display_report):
