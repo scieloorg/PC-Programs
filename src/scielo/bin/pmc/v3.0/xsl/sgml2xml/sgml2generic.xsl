@@ -678,6 +678,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="front/doi|doi"/>
 			
 			<xsl:variable name="fpage"><xsl:choose>
+				<xsl:when test="@fpageseq"><xsl:value-of select="@fpage"/></xsl:when>
 				<xsl:when test="contains(@fpage,'-')">
 					<xsl:value-of select="substring-before(@fpage,'-')"/>
 				</xsl:when>
@@ -1122,9 +1123,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:attribute name="seq"><xsl:value-of select="substring-after(.,'-')"/></xsl:attribute>
 					<xsl:value-of select="substring-before(.,'-')"/>
 				</xsl:when>
-				<xsl:when test="../@fpageseq"><xsl:attribute name="seq"><xsl:value-of select="../@fpageseq"/></xsl:attribute>
-				</xsl:when>
-				<xsl:otherwise><xsl:value-of select="normalize-space(.)"/></xsl:otherwise>
+				<xsl:otherwise>
+					<xsl:if test="../@fpageseq">
+						<xsl:attribute name="seq"><xsl:value-of select="../@fpageseq"/></xsl:attribute>
+					</xsl:if>
+					<xsl:value-of select="normalize-space(.)"/>
+				</xsl:otherwise>
 			</xsl:choose>
 		</fpage>
 	</xsl:template>
