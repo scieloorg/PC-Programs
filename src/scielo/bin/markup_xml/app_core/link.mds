@@ -77,7 +77,7 @@ subresp
 role
 
 xref
-ref-type;rid
+ref-type;rid;label
 
 patgrp
 country
@@ -86,7 +86,7 @@ deposit
 deposid;entrdate;embdate
 
 related
-reltype;relid;relidtp
+reltp;id-or-doi
 
 product
 prodtype
@@ -104,7 +104,7 @@ sec
 sec-type
 
 fngrp
-id;fntype
+id;fntype;label
 
 fntable
 id
@@ -125,7 +125,10 @@ attrib
 name;value
 
 supplmat
-id;href;mimetype;mimesubt
+id;href
+
+media
+id;href
 
 pubid
 idtype
@@ -177,4 +180,7 @@ align;colspan;rowspan
 
 th
 align;colspan;rowspan
+
+sig
+role
 

@@ -146,23 +146,12 @@ class JSON2IDFile:
         return r
 
     def _iso(self, content):
-        iso = content
-        if type(content) is str:
+        if not isinstance(content, unicode):
             try:
-                content = content.decode('utf-8', 'replace')
+                content = content.decode('utf-8')
             except:
-                try:
-                    content = content.decode('utf-8', 'xmlcharrefreplace')
-                except:
-                    content = content.decode('utf-8', 'ignore')
-        if type(content) is unicode:
-            try:
-                iso = content.encode('iso-8859-1', 'replace')
-            except:
-                try:
-                    iso = content.encode('iso-8859-1', 'xmlcharrefreplace')
-                except:
-                    iso = content.encode('iso-8859-1', 'ignore')
+                pass
+        iso = u_encode(content, 'iso-8859-1')
         return iso
 
     def __write__(self, content):
@@ -173,4 +162,16 @@ class JSON2IDFile:
             self.report.write('Unable to write content in id filename. ', True, True, True,  content )
             
         f.close()
-    
+
+
+def u_encode(u, encoding):
+    r = u
+    if isinstance(u, unicode):
+        try:
+            r = u.encode(encoding, 'xmlcharrefreplace')
+        except Exception as e:
+            try:
+                r = u.encode(encoding, 'replace')
+            except Exception as e:
+                r = u.encode(encoding, 'ignore')
+    return r

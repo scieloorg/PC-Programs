@@ -1,69 +1,60 @@
 !ID 000001
 !v001!doctopic^len
-!v002!^cab^vabstracts
-!v002!^cax^vannex
-!v002!^can^vannouncements
-!v002!^csc^vbrief communication
+!v002!^coa^vresearch article
+!v002!^cab^vabstract
+!v002!^cco^vcomments
 !v002!^ccr^vcase report
 !v002!^cct^vclinical trial
-!v002!^cco^vcomments
-!v002!^cer^vcorrection
 !v002!^ced^veditorial
-!v002!^cin^vinterview
+!v002!^cem^veditorial material (discussion, opinion, interview, ...)
+!v002!^cer^vcorrection
 !v002!^cle^vletter
-!v002!^cmt^vmethodology
-!v002!^coa^voriginal article
-!v002!^cpv^vpoint-of-view
-!v002!^cpr^vpress release
-!v002!^crc^vrecount
-!v002!^crn^vresearch note
+!v002!^cpr^vpress release (in brief)
 !v002!^cra^vreview article
+!v002!^crc^vbook review
+!v002!^cre^vretraction or disavowal of previously published material
+!v002!^crn^vbrief report / research note (research results)
+!v002!^csc^vbrief communication (research update or news)
 !v002!^ctr^vtechnical report
-!v002!^cup^vupdate
+!v002!^czz^vother
 !ID 000002
 !v001!doctopic^les
-!v002!^cax^vanexo
-!v002!^can^vanuncio
-!v002!^cup^vactualización
-!v002!^coa^vartículo original
-!v002!^cle^vcartas
-!v002!^cco^vcomentarios
-!v002!^csc^vcomunicación breve
+!v002!^coa^vartículo original (research article)
+!v002!^cab^vresumen (abstract)
+!v002!^cco^vcomentario (comments)
+!v002!^ccr^vinforme de caso (case report)
+!v002!^cct^vensayos clínicos (clinical trials)
 !v002!^ced^veditorial
-!v002!^cct^vensayos clínicos
-!v002!^cin^ventrevista
-!v002!^cer^verrata
-!v002!^ccr^vinforme de caso
+!v002!^cem^vmaterial editorial (discusión, opinión, entrevista, ...)
+!v002!^cer^verrata (corrections)
+!v002!^cle^vcarta (letter)
+!v002!^cpr^vpress release (in brief)
+!v002!^cra^vartículo de revisión (review article)
+!v002!^crc^vreseña (book review)
+!v002!^cre^vretractación o rectificación de lo qué fue anteriormente publicado (retraction)
+!v002!^crn^vnotas de investigación / resultados de pesquisa (brief report)
+!v002!^csc^vcomunicación breve (atualizaciones / novedades) (brief communication)
 !v002!^ctr^vinforme técnico
-!v002!^cmt^vmetodología
-!v002!^crn^vnota
-!v002!^cpv^vpunto de vista
-!v002!^cpr^vpress release
-!v002!^crc^vreseña
-!v002!^cab^vresumen
-!v002!^cra^vrevisión
+!v002!^czz^votro
 !ID 000003
 !v001!doctopic^lpt
-!v002!^cax^vanexo
-!v002!^can^vanúncio
-!v002!^coa^vartigo original
-!v002!^cup^vatualização
-!v002!^cle^vcartas
-!v002!^cco^vcomentários
-!v002!^csc^vcomunicação breve
+!v002!^coa^vartigo original (research article)
+!v002!^cab^vresumo (abstract)
+!v002!^cco^vcomentário (comments)
+!v002!^ccr^vrelato de caso (case report)
+!v002!^cct^vensaios clínicos (clinical trials)
 !v002!^ced^veditorial
-!v002!^cct^vensaios clínicos
-!v002!^cin^ventrevista
+!v002!^cem^vmaterial editorial (discussões, opiniões, entrevistas, ...)
 !v002!^cer^verrata
+!v002!^cle^vcarta
+!v002!^cpr^vpress release (in brief)
+!v002!^cra^vrevisão (review article)
+!v002!^crc^vresenha (book review)
+!v002!^cre^vretratação ou retificação (retraction)
+!v002!^crn^vnotas de pesquisa / resultados de pesquisa (brief report)
+!v002!^csc^vcomunicação breve (atualizações / novidades) (brief communication)
 !v002!^ctr^vinforme técnico
-!v002!^crn^vnota
-!v002!^cmt^vmetodologia
-!v002!^cpv^vponto de vista
-!v002!^cpr^vpress release
-!v002!^ccr^vrelato de caso
-!v002!^crc^vresenha
-!v002!^cab^vresumos
-!v002!^cra^vrevisão
+!v002!^czz^voutro
 !ID 000004
 !v001!role^len
 !v002!^cnd^vNot defined

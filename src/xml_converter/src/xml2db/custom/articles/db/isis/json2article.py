@@ -29,9 +29,10 @@ def normalized_issue_id(json):
     suppl = format(json, '132')
     compl = format(json, '41')
 
-    if ' pr' == num[-3:]:
-        num = num[0:-3]
-        compl = 'pr'
+    if ' pr' == num:
+        _i = num.split(' ')
+        num = _i[0]
+        compl = _i[1]
     n = num.lower().replace('(', '').replace(')', '').split('suppl')
     if len(n) == 2:
         # suppl
@@ -600,9 +601,11 @@ class JSON_Article:
         """
         Normalize the json structure for issue record
         """
-        if self.json_data['f']['32'][-2:] == 'pr':
-            self.json_data['f']['32'] = self.json_data['f']['32'][0:-2]
-            self.json_data['f']['41'] = 'pr'
+        issue = self.json_data.get['f'].get('32')
+        if not issue is None:
+            if issue[-2:] == 'pr':
+                self.json_data.get['f']['32'] = issue[0:-2]
+                self.json_data['f']['41'] = 'pr'
 
         self.json_data['f']['35'] = issn_id
 
@@ -711,12 +714,16 @@ class JSON_Article:
         #    self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
         #if 'epub' in self.json_data['f'].keys():
         #    del self.json_data['f']['epub']
-        
+
         section = Section(return_singleval(self.json_data['f'], '49'))
         print(section.title)
+        print(issue.name)
         self.section = issue.toc.return_section(section)
-        if self.section == None:
-            section.code = section.title + ' (INVALID) ' + 'It should be one of: ' + issue.toc.return_sections()
+        if self.section is None:
+            if 'ahead' in issue.name or section.title == 'Press Release':
+                section.code = 'nd'
+            else:
+                section.code = section.title + ' (INVALID) ' + 'The sections of ' + issue.name + ': ' + issue.toc.return_sections()
             self.section = section
         self.json_data['f']['49'] = self.section.code
 
@@ -735,6 +742,8 @@ class JSON_Article:
             self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
             del self.json_data['f']['epub']
         # ja esta normalizada self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '64', '65', '64')
+        if self.json_data['f'].get('65') != issue.json_data.get('65'):
+            self.json_data['f']['65'] = issue.json_data.get('65')
 
         self.json_data['h'] = self.json_normalizer.format_for_indexing(self.json_data['f'])
         self.json_data['l'] = self.json_normalizer.format_for_indexing(self.json_data['h'])
@@ -810,15 +819,19 @@ class JSON_Article:
         """
         Normalize the json structure for abstracts: 83
         """
-        
+        _lang = self.json_data['f']['40']
         abstracts = return_multval(self.json_data['f'], '83')
         norm_abstracts = []
         for t in abstracts:
             if type(t) == type({}):
+                if not 'l' in t.keys():
+                    t['l'] = _lang
                 norm_abstracts.append(t)
             elif type(t) == type([]):
                 for t1 in t:
                     if type(t1) == type({}):
+                        if not 'l' in t1.keys():
+                            t1['l'] = _lang
                         norm_abstracts.append(t1)
 
 
@@ -904,8 +917,12 @@ class JSON_Article:
         if len(new) > 0:
             self.json_data['f']['85'] = new   
 
-    def report_messages(self, errors, warnings, header_errors, header_warnings):
+    def report_messages(self, errors, warnings, header_errors, header_warnings, fatal_errors, header_fatal_errors):
         
+        if len(fatal_errors) > 0:
+            #self.article_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' +  '\n' + '\n'.join(errors), False, True, False)
+            #self.general_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
+            self.article_report.write('\n'+ ' ! FATAL ERROR: ' + header_fatal_errors +  ':\n' + '\n'.join(fatal_errors), True, True, False)
         if len(errors) > 0:
             #self.article_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' +  '\n' + '\n'.join(errors), False, True, False)
             #self.general_report.write('\n'+ ' ! ERROR: Missing required data in article front : ' + ', '.join(errors), False, True, False)
@@ -919,7 +936,10 @@ class JSON_Article:
         """
         Validate the required data of front
         """
-        required = { 'doi': [237], 'publisher-name': [62],  'journal-id (nlm-ta)': [421] }
+        if 'pr' in self.json_data['f'].get('32', ''):
+            required = {'publisher-name': [62], }
+        else:
+            required = { 'doi': [237], 'publisher-name': [62], }
         errors = []
         for label, tags in required.items():
             value = ''
@@ -968,6 +988,16 @@ class JSON_Article:
         
         return errors
 
+    def validate_doctopic(self):
+        """
+        Validate the doctopic
+        """
+        errors = []
+        doctopic = return_singleval(self.json_data['f'], '71')
+        if not doctopic in self.json_normalizer.conversion_tables.table('doctopic').values():
+            errors.append('Invalid value for doctopic: ' + doctopic)
+        return errors
+
     def validate_ack_or_funding(self):
         """
         Validate the funding x ack
@@ -992,6 +1022,8 @@ class JSON_Article:
 
         count_errors = 0
         count_warnings = 0
+
+        fatal_errors = []
         errors = [] 
         warnings = [] 
         
@@ -999,12 +1031,12 @@ class JSON_Article:
         # aff, authors (prefix and suffix), pub-dates, funding (58,60) x ack
         #conditional = { 'page': (14, 32), }
         
-        errors += self.validate_issn()
-        errors += self.validate_required()
-        errors += self.validate_section()
-        errors += self.validate_pages()
+        warnings += self.validate_issn()
+        warnings += self.validate_required()
+        fatal_errors += self.validate_section()
+        warnings += self.validate_pages()
         errors += self.validate_dates()
-        
+        fatal_errors += self.validate_doctopic()
         e, w = self.validate_affiliations()
         errors += e 
         warnings += w
@@ -1013,10 +1045,10 @@ class JSON_Article:
         count_warnings += len(warnings)
         count_errors += len(errors)
 
-        self.report_messages(errors, warnings, 'Required data in article front', 'Desirable data in article front')
+        self.report_messages(errors, warnings, 'Required data in article front', 'Desirable data in article front', fatal_errors, '')
 
         e, w = self.validate_href(img_files)
-        self.report_messages(e, w, 'Checking image files and their references inside of XML file', '')
+        self.report_messages(e, w, 'Checking image files and their references inside of XML file', '', [], '')
         count_errors += len(e)
         count_warnings += len(w)
 
@@ -1024,7 +1056,7 @@ class JSON_Article:
         count_warnings += w_count
         count_errors += e_count
 
-        return (count_errors, count_warnings, refcount)
+        return (fatal_errors, count_errors, count_warnings, refcount)
         
     def normalize_and_validate_citations(self):
         k = 0
@@ -1428,7 +1460,7 @@ class JSON2Article:
 
 
     def evaluate_data(self, img_files):
-        count_errors, count_warnings, refcount = self.json_article.validate(img_files)
+        return self.json_article.validate(img_files)
 
         #self.article_report.write(' References found:' + str(refcount), True, False, False)
         #self.article_report.write(' Errors found: ' + str(count_errors), True, True, False)

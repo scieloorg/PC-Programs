@@ -101,17 +101,16 @@ filename       CDATA #IMPLIED>
           name CDATA #REQUIRED 
           value CDATA #REQUIRED>
 
-<!ELEMENT supplmat - - (#PCDATA)   >
-<!ATTLIST supplmat
-          id       CDATA #REQUIRED
-          href       CDATA #REQUIRED
-          mimetype   CDATA #REQUIRED
-          mimesubt   CDATA #REQUIRED
-          >
 
 <!ELEMENT texmath - - CDATA  >
 <!ELEMENT mmlmath - - CDATA  >
       
+<!ELEMENT supplmat - - (label?, caption?, #PCDATA) >
+<!ATTLIST supplmat
+          id       CDATA #REQUIRED
+          href       CDATA #REQUIRED
+          >
+
 <!ELEMENT cltrial - - (ctreg+)>
 <!ELEMENT ctreg - - (#PCDATA) >
 <!ATTLIST ctreg

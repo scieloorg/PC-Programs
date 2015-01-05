@@ -11,6 +11,8 @@ element;#TRUE#;#TRUE#
 equation;#TRUE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
+*fn;#FALSE#;#TRUE#
+fngrp;#TRUE#;#TRUE#
 graphic;#FALSE#;#TRUE#
 ign;#TRUE#;#TRUE#
 list;#FALSE#;#TRUE#
@@ -18,6 +20,7 @@ product;#TRUE#;#TRUE#
 quote;#TRUE#;#TRUE#
 related;#TRUE#;#TRUE#
 supplmat;#FALSE#;#TRUE#
+media;#FALSE#;#TRUE#
 tabwrap;#FALSE#;#TRUE#
 uri;#FALSE#;#TRUE#
 xref;#TRUE#;#TRUE#
@@ -170,6 +173,7 @@ app;#FALSE#;#TRUE#
 bbibcom
 abstract;#FALSE#;#TRUE#
 keygrp;#FALSE#;#TRUE#
+report;#FALSE#;#TRUE#
 confgrp;#FALSE#;#FALSE#
 thesgrp;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
@@ -178,6 +182,7 @@ bibcom
 abstract;#FALSE#;#TRUE#
 xmlabstr;#FALSE#;#TRUE#
 keygrp;#FALSE#;#TRUE#
+report;#FALSE#;#TRUE#
 confgrp;#FALSE#;#FALSE#
 thesgrp;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
@@ -262,7 +267,10 @@ figgrp;#FALSE#;#TRUE#
 
 fname
 
+*fn
+
 fngrp
+label;#FALSE#;#FALSE#
 funding;#FALSE#;#FALSE#
 
 fntable
@@ -642,6 +650,9 @@ sectitle
 sertitle
 
 sig
+surname-fname;#FALSE#;#FALSE#
+fname;#FALSE#;#FALSE#
+surname;#FALSE#;#FALSE#
 
 sigblock
 sig;#FALSE#;#TRUE#
@@ -678,6 +689,10 @@ subtitle
 suppl
 
 supplmat
+label;#FALSE#;#FALSE#
+caption;#FALSE#;#FALSE#
+
+media
 
 surname
 
@@ -699,6 +714,7 @@ text
 doi;#FALSE#;#TRUE#
 titlegrp;#FALSE#;#FALSE#
 authgrp;#FALSE#;#FALSE#
+aff;#TRUE#;#TRUE#
 back;#FALSE#;#FALSE#
 
 th
@@ -933,30 +949,28 @@ authors;#TRUE#;#FALSE#
 arttitle;#TRUE#;#FALSE#
 chptitle;#TRUE#;#FALSE#
 cited;#FALSE#;#TRUE#
-city;#FALSE#;#TRUE#
 coltitle;#FALSE#;#TRUE#
 colvolid;#FALSE#;#TRUE#
 confgrp;#TRUE#;#FALSE#
 contract;#FALSE#;#FALSE#
-country;#FALSE#;#TRUE#
 date;#TRUE#;#TRUE#
-doi;#FALSE#;#TRUE#
 edition;#FALSE#;#TRUE#
 extent;#FALSE#;#TRUE#
-found-at;#FALSE#;#FALSE#
+issn;#TRUE#;#TRUE#
 isbn;#TRUE#;#TRUE#
 issueno;#FALSE#;#TRUE#
-letterto;#FALSE#;#FALSE#
 moreinfo;#TRUE#;#TRUE#
 pages;#FALSE#;#TRUE#
 part;#FALSE#;#TRUE#
 patentno;#FALSE#;#FALSE#
 pubid;#FALSE#;#TRUE#
+publoc;#FALSE#;#TRUE#
 pubname;#FALSE#;#TRUE#
+*publoc-name;#FALSE#;#TRUE#
+*pubname-loc;#FALSE#;#TRUE#
 reportid;#FALSE#;#FALSE#
 *source;#FALSE#;#FALSE#
 source;#FALSE#;#FALSE#
-state;#FALSE#;#TRUE#
 suppl;#FALSE#;#TRUE#
 thesgrp;#FALSE#;#FALSE#
 url;#TRUE#;#TRUE#
@@ -1013,4 +1027,10 @@ orgdiv2
 arttitle
 
 chptitle
+
+publoc
+
+*publoc-name
+
+*pubname-loc
 

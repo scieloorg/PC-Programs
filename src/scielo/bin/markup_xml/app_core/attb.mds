@@ -15,6 +15,10 @@ book;software;article;chapter;website;other
 book;software;article;chapter;website;other
 
 relidtp
+press-release-id;doi
+press-release-id;doi
+
+oldrelidtp
 press-release-id;doi;art-access-id;coden;doaj;medline;manuscript;rrn;pii;pmcid;pmid;publisher-id;sici
 press-release-id;doi;art-access-id;coden;doaj;medline;manuscript;rrn;pii;pmcid;pmid;publisher-id;sici
 
@@ -71,5 +75,18 @@ norgname
 
 
 descript
+
+
+
+reltp
+press-release;article;corrected-article;retracted-article
+press-release;article;corrected-article;retracted-article
+
+id-or-doi
+
+
+
+label
+
 
 

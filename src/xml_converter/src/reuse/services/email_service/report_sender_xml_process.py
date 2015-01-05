@@ -83,8 +83,6 @@ class ReportSender:
         attached_files += attaches
 
         if self.email_service.is_available_email_service:
-            self.email_service.send(bcc, [], 'roberta.takenaka@scielo.org', template.subject + ' ' + package_name + '(teste)', msg, attached_files)
             self.email_service.send(to, [], bcc, template.subject + ' ' + package_name, msg, attached_files)
         return self.log(to, [], bcc, template.subject + ' ' + package_name, msg, attached_files)
-
      

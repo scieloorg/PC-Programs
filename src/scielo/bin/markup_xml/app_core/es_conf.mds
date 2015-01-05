@@ -18,7 +18,7 @@ msgDeleting,Erro para borrar la tag. Seleccione el texto
 msgOpenFile,Abre solamente un archivo
 msgSure,Usted esta seguro?
 msgSureExit,Usted quiere salir?
-msgQuestionApplyAutomaticMarkupToTheTemplate,Aplicar marcación automática al modelo?
+msgQuestionApplyAutomaticMarkupToTheTemplate,El documento está de acuerdo con el modelo?
 msgAutomatic,Usted desea usar la marcación automática de citas?
 msgAutomaticErr,%JOURNAL% no tiene marcación automática %LABEL% para las citas. %FILE% no fue encontrado.
 msgDefaultDirectories,Asegure que existe el archivo 'html.dot'/'normal.dot'.
@@ -87,12 +87,12 @@ msgBeforExiting2,Guardar y generar XML
 msgBeforExiting3,Guardar y salir
 msgBeforExiting4,Salir sin guardar
 msgAutomaticStyles,Serán marcados los elementos de acuerdo con los estilos. Seguir?
-pmcVersion,v3.0
+msgQuestionBibrXrefPattern,Las citas en el texto están identificadas por autor ... fecha?
 timer,99999999
-DTD4localValidation,"pmc/v3.0/dtd/publishing/journalpublishing3.dtd"
+msgDoOrRedoHyperlinksBetweenTextAndBibliography,"Se necesita rehacer los enlaces de las citas en el texto?"
 msgFormXMLBody,"Verifique la identificación de las partes del texto completo. Corrija si necesario, seleccionando los itens de la lista, seleccionando la etiqueta que los identifica y  el botón Corregir."
 buttonChange2,Corregir
-msg_new_structure,"Markup usa uma nova estrutura. vbCrlfPonga los archivos marcados o para marcar en \markup_xml\scielo_markup (antíguo \pmc\pmc_markup). vbCrlfPonga los otros archivos en \markup_xml\src (antíguo \pmc\src)"
+msg_new_structure,"Para generar archivos XML, los archivos marcados deben estar en markup_xml\scielo_markup y los otros archivos en markup_xml\src"
 msg_ref_as_journal,El atributo reftype de ref será automáticamente completado con "journal". Arregle el valor de reftype por si acaso la cita no es de revista.
 msg_help_doc_license,"URL de Licencia Creative Commons, ej.: http://creativecommons.org/licenses/by/3.0/" 
 msg_help_doc_issueno,"Entre con el número del facículo. Caso sea un artículo publicado en ahead of print, entre ahead en este campo"

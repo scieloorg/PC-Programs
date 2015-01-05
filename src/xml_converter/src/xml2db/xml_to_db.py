@@ -102,65 +102,57 @@ class PackagesProcessor:
         for folder in os.listdir(self.input_path):
             package_folder = self.input_path + '/' + folder
             if os.path.isdir(package_folder):
-                
                 package = Package(package_folder, self.report_path + '/' + folder)
                 self.tracker.register(package.name, 'begin-open_package')
-
                 now = datetime.now().isoformat()
                 package.read_package_sender_email()
-                
                 self.tracker.register(package.name, 'img to jpg')
                 errors = img_converter.img_to_jpeg(package.package_path, package.package_path)
                 if len(errors) > 0:
                     package.report.write('Some files were unable to convert:\n' + '\n'.join(errors), True, True)
-        
                 self.tracker.register(package.name, 'analyze_package')
-                folders = information_analyst.analyze_package(package, documents_archiver.folder_table_name)
+                fatal_errors, folders = information_analyst.analyze_package(package, documents_archiver.folder_table_name)
 
-                
-                self.tracker.register(package.name, 'put_in_the_box')
-                documents_archiver.put_in_the_box(folders, package)
-                
+                package.report.write('='*80, True, True)
 
-                package.report.write(now + '\n' + datetime.now().isoformat(), True, True)
-                    
+                if len(fatal_errors) == 0:
+                    documents_archiver.put_in_the_box(folders, package)
+                else:
+                    package.report.result += 'FATAL ERRORS: ' + str(len(fatal_errors)) + '\nUNABLE TO PUBLISH THIS PACKAGE.'
 
+                package.report.write('='*80 + '\n' + now + '\n' + datetime.now().isoformat(), True, True)
+
+                result = '\n' + '='*80 + '\n' + package.report.result + '\n' + '='*80 + '\n'
+                package.report.write(result, True)
+                result += open(package.report.summary_filename, 'r').read()
+
+                open(package.report.summary_filename, 'w').write(result)
 
                 self.tracker.register(package.name, 'send report')
-                package.report.write(self.report_sender.send_package_evaluation_report(self.msg_template, package.name, [ package.report.summary_filename], information_analyst.reports_to_attach, package.package_sender_email))
-            
+                package.report.write(self.report_sender.send_package_evaluation_report(self.msg_template, package.name, [package.report.summary_filename], information_analyst.reports_to_attach, package.package_sender_email))
 
-                q_xml = [ f for f in os.listdir(package.package_path) if f.endswith('.xml') ]
-                
+                q_xml = [f for f in os.listdir(package.package_path) if f.endswith('.xml')]
                 if len(q_xml) == 0:
                     for f in os.listdir(package.package_path):
                         os.unlink(package.package_path + '/' + f)
                     os.rmdir(package.package_path)
-
-
                 self.tracker.register(package.name, 'end-open_package')
-                
    
     
 class Package:
     def __init__(self, package_path, report_path):
-        
         self.report_path = report_path
         if not os.path.exists(report_path):
             os.makedirs(report_path)
-
         self.package_path = package_path
         self.name = os.path.basename(package_path)
-        
         self.package_sender_email = ''
-        
-        files = ['detailed.log', 'error.log', 'summarized.txt'] 
-        self.report_files = [ report_path + '/' +  self.name + '_' + f for f in files ]
+        files = ['detailed.log', 'error.log', 'summarized.txt']
+        self.report_files = [report_path + '/' + self.name + '_' + f for f in files]
         log_filename, err_filename, summary_filename = self.report_files
-        self.report = Report(log_filename, err_filename, summary_filename, 0, False) 
-        self.report_files_to_send = [ summary_filename, err_filename ]
+        self.report = Report(log_filename, err_filename, summary_filename, 0, False)
+        self.report_files_to_send = [summary_filename, err_filename]
         self.identify_files()
-        
         
     def read_package_sender_email(self):
         if os.path.exists(self.package_path + '/email.txt'):
@@ -235,7 +227,7 @@ class Package:
         if len(unmatched_pdf) > 0:
             self.report.write('PDF files which there is no corresponding XML file: ' + '\n' + '\n'.join(unmatched_pdf), True, True, False)
 
-        self.report.write('XML Files: \n' + '\n'.join(self.package_xml_files), True)
+        self.report.write('XML Files: \n' + '\n'.join(sorted(self.package_xml_files)), True)
         
     
     def check_pdf_file(self, xml_filename):
@@ -253,30 +245,23 @@ class InformationAnalyst:
         self.registered_titles = registered_titles
         self.all_folders = all_folders
         self.ahead_articles = ahead_articles
-        
-        
-        
-    def analyze_package(self, package, folder_table_name):
 
+    def analyze_package(self, package, folder_table_name):
+        fatal_errors = []
         loaded_folders = {}
 
        # load all xml files of the package
         self.reports_to_attach = []
         for xml_fname in package.package_xml_files:
-            
             xml_filename = package.package_path + '/' + xml_fname        
             package.report.write('\n' + '-' * 80 + '\n' + 'File: ' + xml_fname + '\n', True, True, True)
-
-            
-            package.check_pdf_file(xml_filename)                
+            package.check_pdf_file(xml_filename)
             if self.check_and_load(xml_filename, package):
-                
-                document = self.process_document(xml_filename, package, folder_table_name)
-                if document != None:                            
+                fe, document = self.process_document(xml_filename, package, folder_table_name)
+                fatal_errors += fe
+                if document != None:
                     loaded_folders[document.folder.box.acron + document.folder.name] = document.folder
-                         
-        
-        return loaded_folders.values()
+        return (fatal_errors, loaded_folders.values())
 
     def check_and_load(self, xml_filename, package):
         is_valid_xml = self.check_xml_file(xml_filename, package)
@@ -373,13 +358,13 @@ class InformationAnalyst:
 
 
     def process_document(self, xml_filename, package, folder_table_name):
+        fatal_errors = []
         generic_document = None
         if self.extract_data(xml_filename, package.report):
             publication_title = self.json2model.publication_title
             registered = None
             if len(publication_title) > 0:
                 registered = self.registered_titles.return_registered(publication_title)
-            
             if registered == None:
                 package.report.write('Invalid publication title:' + publication_title, True, True)
             else:
@@ -394,24 +379,25 @@ class InformationAnalyst:
                             if not 'ahead' in specific_document.issue.name:
                                 pid, fname = self.ahead_articles.return_id_and_filename(specific_document.doi, specific_document.issue.journal.issn_id, specific_document.titles)
                                 specific_document.set_previous_id(pid)
-                        
                         generic_document = Document(specific_document)
                         package.report.write(generic_document.display(), True, True, False)
 
                         img_files = package.return_matching_files(xml_filename, '.jpg')
-                        self.json2model.evaluate_data(img_files)
-                    
+                        fatal_errors, e, w, ref_count = self.json2model.evaluate_data(img_files)
                         if generic_document.folder.documents == None:
                             generic_document.folder.documents = Documents()
 
                         if specific_document.doi == '' and specific_document.issue.name[-2:] != 'pr':
-                            package.report.write('Missing DOI, so it will not be loaded.', True, True, False)
-
+                            fatal_errors.append('FATAL ERROR: Missing DOI')
+                            package.report.write('FATAL ERROR: Missing DOI', True, True)
                         else:
-                            generic_document.folder.documents.insert(generic_document.document, True)
+                            if not generic_document.folder.documents.insert(generic_document.document, False):
+                                package.report.write('FATAL ERROR: This document has doi (' + generic_document.document.doi + ') or order(' + generic_document.document.order + ') of another document.', True, True)
+                                fatal_errors.append('FATAL ERROR: This document has doi (' + generic_document.document.doi + ') or order(' + generic_document.document.order + ') of another document.')
+
                 else:
                     package.report.write('', True, True)
-        return generic_document
+        return (fatal_errors, generic_document)
 
     def check_folder(self, document_folder, package, folder_table_name = 'issue'):
         
@@ -437,13 +423,12 @@ class DocumentsArchiver:
         self.db_manager = db_manager
         self.tracker = tracker
         self.folder_table_name = folder_table_name
-        
+
     def create_table(self, table_name, filename):
         self.db_manager.create_table(table_name, filename)
 
     def db2json(self, table_name):
         return self.db_manager.db2json(table_name)
-   
 
     def put_in_the_box(self, folders, package):
         return self.db_manager.update(folders, package)
@@ -451,9 +436,6 @@ class DocumentsArchiver:
     def return_validation_report_filenames(self, folders):
         print('1')
         return self.db_manager.return_validation_report_filenames(folders)
-    #def generate_issue_db_for_proc(self, table_name):
-    #    self.db_manager.generate_issue_db_for_proc(table_name)       
-    
 
 
 #JSON_Conversion

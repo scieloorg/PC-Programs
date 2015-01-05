@@ -41,6 +41,16 @@
 	<xsl:template match="text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
+	<xsl:template match="@article-type">
+		<xsl:attribute name="{name()}">
+			<xsl:choose>
+				<xsl:when test=".='clinical-trial'">research-article</xsl:when>
+				<xsl:when test=".='editorial-material'">editorial</xsl:when>
+				<xsl:when test=".='technical-report'">research-article</xsl:when>
+				<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:attribute>
+	</xsl:template>
 	<xsl:template match="sub-article[@article-type='translation']//front-stub//@xml:lang|sub-article[@article-type='translation']//front//@xml:lang"></xsl:template>
 	<xsl:template match="mixed-citation">
 		<xsl:choose>
@@ -53,18 +63,36 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<xsl:template match="aff/institution[@content-type='original']/text()">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	
+	<xsl:template match="aff/institution[@content-type='original']/*">
+		<xsl:copy-of select="."/>
+	</xsl:template>
+	
 	<xsl:template match="aff/institution[@content-type='aff-pmc']/text()">
 		<xsl:value-of select="."/>
 	</xsl:template>
-
+	
 	<xsl:template match="aff/institution[@content-type='aff-pmc']/*">
 		<xsl:copy-of select="."/>
 	</xsl:template>
-
+	
 	<xsl:template match="aff">
 		<aff>
 			<xsl:apply-templates select="@id | label"/>
 			<xsl:choose>
+				<xsl:when test="institution[@content-type='original']">
+					<xsl:choose>
+						<xsl:when test="email">
+							<xsl:value-of select="substring-before(institution[@content-type='original'],email)"/>
+							<email><xsl:value-of select="email"/></email>
+							<xsl:value-of select="substring-after(email,institution[@content-type='original'])"/>
+						</xsl:when>
+						<xsl:otherwise><xsl:apply-templates select="institution[@content-type='original']"/></xsl:otherwise>
+					</xsl:choose>
+				</xsl:when>
 				<xsl:when test="institution[@content-type='aff-pmc']">
 					<xsl:apply-templates select="institution[@content-type='aff-pmc']"/>
 				</xsl:when>
@@ -100,6 +128,15 @@
 		<xsl:element name="{@content-type}">
 			<xsl:value-of select="."/>
 		</xsl:element>
+	</xsl:template>
+	<xsl:template match="institution[@content-type='original']">
+		<xsl:apply-templates select="*|text()"></xsl:apply-templates>
+	</xsl:template>
+	<xsl:template match="institution[@content-type='original']/text()">
+		<xsl:value-of select="."/>
+	</xsl:template>
+	<xsl:template match="institution[@content-type='original']/named-content">
+		<xsl:value-of select="."/>
 	</xsl:template>
 	<xsl:template match="text()" mode="is_full">
 		<xsl:param name="inst"></xsl:param>
@@ -189,5 +226,9 @@
 		
 	</xsl:template>
 	
-
+	<xsl:template match="related-article[@specific-use='processing-only']">
+		
+	</xsl:template>
+	
+	
 </xsl:stylesheet>

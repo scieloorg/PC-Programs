@@ -182,4 +182,8 @@ normaff;Identifica afiliación normalizada
 orgdiv1;Identifica la primera división abajo de la organización
 orgdiv2;Identifica la segunda división abajo de la organización
 orgdiv3;Identifica la tercera división abajdo de la organización
-text-ref;Identify the original form of the reference
+text-ref;Identifica la forma original de la cita
+publoc;Identifica la ubicación de la editora
+*publoc-name;Identifica automaticamente la ubicación y el nombre de la editora
+*pubname-loc;Identifica automaticamente el nombre de la editora y de su ubicación
+*fn;Identifica automaticamente todos las notas de pie de página y sus enlaces

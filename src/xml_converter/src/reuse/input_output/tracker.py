@@ -1,6 +1,7 @@
 import os
 from datetime import date, datetime
 
+
 class Tracker:
     def __init__(self, path, filename):
         self.path = path
@@ -13,10 +14,10 @@ class Tracker:
     def daily(self):
         return date.today().isoformat()[0:10]
 
-    def register(self, name, status, frequency = 'daily'):
+    def register(self, name, status, frequency='daily'):
         suffix = ''
         if frequency == 'daily':
             suffix = '-' + self.daily
-        f = open(self.filename  + suffix + '.log', 'a+')
-        f.write(datetime.now().isoformat() + '|' + name +  '|' + status)
+        f = open(self.filename + suffix + '.log', 'a+')
+        f.write(datetime.now().isoformat() + '|' + name + '|' + status + '\n')
         f.close()
