@@ -912,7 +912,7 @@ class Article(ArticleXML):
 
     @property
     def issue_pub_dateiso(self):
-        return article_utils.format_date(self.issue_pub_date)
+        return format_date(self.issue_pub_date)
 
     @property
     def issue_pub_date(self):

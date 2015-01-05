@@ -55,7 +55,6 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     #temp_xml_filename = xml_utils.apply_dtd(xml_filename, '')
     cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
     os.system(cmd)
-    
     if not os.path.exists(temp_result_filename):
         print('  ERROR: Unable to create ' + os.path.basename(result_filename))
         open(temp_result_filename, 'w').write('ERROR: transformation error.\n' + cmd)
