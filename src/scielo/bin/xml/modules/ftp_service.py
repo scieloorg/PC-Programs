@@ -6,13 +6,13 @@ actions = []
 
 
 def register_action(action):
+    print(action)
     actions.append(action)
 
 
 class FTPService(object):
 
     def __init__(self, server, user, pswd):
-        self.server = server
         self.user = user
         self.pswd = pswd
         self.ftp = FTP(server)
@@ -47,12 +47,13 @@ class FTPService(object):
         files_or_folders = self.ftp.nlst()
         register_action('Files/Folders to download:\n' + '\n'.join(files_or_folders) + '\n' + str(len(files_or_folders)) + ' files/folders')
         for item in files_or_folders:
-            if os.path.isfile(path_in_ftp_server + '/' + item) and (item.endswith('.zip') or item.endswith('.tgz')):
+            if item.endswith('.zip') or item.endswith('.tgz'):
                 # must be a file
                 downloaded_file = self.download_and_delete_file(local_path, item)
                 if len(downloaded_file) > 0:
+                    print(downloaded_file)
                     downloaded_files.append(downloaded_file)
-            elif os.path.isdir(path_in_ftp_server + '/' + item):
+            else:
                 # supposed to be a folder
                 downloaded_files += self.download_files_of_subdir(local_path, item, False)
 

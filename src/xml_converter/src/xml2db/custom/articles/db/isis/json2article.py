@@ -130,7 +130,6 @@ class JSON_Citations:
 
         self.suggested_doctopic_order = [30, 18, 51, 53, 37, 150, 58, 95]
         self.suggested_doctopic_order = [ str(i) for i in self.suggested_doctopic_order ]
-        
         self.suggested_doctopic = {}
         self.suggested_doctopic['30'] = 'journal'
         self.suggested_doctopic['18'] = 'book'
@@ -140,14 +139,11 @@ class JSON_Citations:
         self.suggested_doctopic['58'] = 'report'
         self.suggested_doctopic['95'] = 'software'
         self.suggested_doctopic['37'] = 'web'
-        
         self._labels = {}
         self._labels['10'] = 'analytic authors'
         self._labels['11'] = 'corporative analytic authors'
-        
         self._labels['16'] = 'monographic authors'
         self._labels['17'] = 'corporative monographic authors'
-
         self._labels['12'] = 'chapter or article title'
         self._labels['14'] = 'pages'
         self._labels['30'] = 'journal title'
@@ -167,7 +163,6 @@ class JSON_Citations:
         self._labels['109'] = 'cited date'
         self._labels['37'] = 'URL'
         self._labels['authors'] = 'authors'
-        
 
 
     def return_doctopic(self, citation):

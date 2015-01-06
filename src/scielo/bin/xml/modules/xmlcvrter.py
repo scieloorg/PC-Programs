@@ -8,18 +8,19 @@ from datetime import datetime
 from isis_models import IssueRecord
 import ftp_service
 import email_service
-import file_extractor
+import files_extractor
 import serial_files
 import reports
 import pkg_checker
 import xml_versions
 import isis
-import xmlcvter_cfg
+import xmlcvrter_cfg
 import article_utils
 
 html_report = reports.ReportHTML()
 converter_report_lines = []
 CURRENT_PATH = os.path.dirname(__file__).replace('\\', '/')
+CONFIG_PATH = CURRENT_PATH + '/../config/'
 
 
 def register_log(message):
@@ -35,7 +36,7 @@ def extract_package(pkg_file, pkg_work_path):
     r = False
 
     if os.path.isfile(pkg_file):
-        if file_extractor.is_compressed_file(pkg_file):
+        if files_extractor.is_compressed_file(pkg_file):
             if not os.path.exists(pkg_work_path):
                 os.makedirs(pkg_work_path)
             # delete content of destination path
@@ -46,7 +47,7 @@ def extract_package(pkg_file, pkg_work_path):
             temp_dir = tempfile.mkdtemp().replace('\\', '/')
 
             # extract in tempdir
-            if file_extractor.extract_file(pkg_file, temp_dir):
+            if files_extractor.extract_file(pkg_file, temp_dir):
                 # eliminate folders
                 for item in os.listdir(temp_dir):
                     _file = temp_dir + '/' + item
@@ -83,7 +84,7 @@ def get_issue_record(db_issue, article):
     return issue_record
 
 
-def convert_package(serial_path, pkg_path, report_path, web_app_path, db_issue, db_ahead, db_article, version='1.0'):
+def convert_package(serial_path, pkg_path, report_path, website_folders_path, db_issue, db_ahead, db_article, version='1.0'):
     old_report_path = report_path
     scilista_item = None
     issue_record = None
@@ -136,7 +137,7 @@ def convert_package(serial_path, pkg_path, report_path, web_app_path, db_issue, 
             journal_files = serial_files.JournalFiles(serial_path, issue.acron)
             scilista_item = issue.acron + ' ' + issue_label
             ahead_manager = serial_files.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
-            issue_files = serial_files.IssueFiles(journal_files, issue_label, pkg_path, web_app_path)
+            issue_files = serial_files.IssueFiles(journal_files, issue_label, pkg_path, website_folders_path)
             issue_files.move_reports(report_path)
             issue_files.save_source_files(pkg_path)
             report_path = issue_files.base_reports_path
@@ -335,22 +336,31 @@ def delete_folder(folder):
                 shutil.rmtree(folder + '/' + item)
 
 
-def execute_download_packages(ftp, ftp_dir, download_path, email, email_to, email_subject, email_header):
-    r = []
+def download_packages(ftp, ftp_dir, download_path):
+    files = []
     log = ''
     if ftp is not None:
         if ftp_dir is not None and download_path is not None:
-            r = ftp.download_files(ftp_dir, download_path)
+            if not os.path.isdir(download_path):
+                os.makedirs(download_path)
+            print(download_path)
+            files = ftp.download_files(download_path, ftp_dir)
+            print('files')
+            print(files)
             log = ftp.registered_actions()
-            if email is not None:
-                email_header = ''
-                if os.path.isfile(email_header):
-                    email_header = open(email_header, 'r').read()
-                email.send(email_to, email_subject, email_header + log)
-    return (r, log)
+    return (files, log)
 
 
-def queue_packages(download_path, temp_path, queue_path, archive_path, email, email_to, email_subject, email_header):
+def send_email(email, email_to, email_subject, email_header, message):
+    if os.path.isfile(email_header):
+        email_header = open(email_header, 'r').read()
+    if email_header is None:
+        email_header = ''
+    print([email_to, email_subject, email_header + message])
+    email.send(email_to, email_subject, email_header + message)
+
+
+def queue_packages(download_path, temp_path, queue_path, archive_path):
     invalid_pkg_files = []
     proc_id = datetime.now().isoformat()[5:10].replace('-', '')
     temp_path = temp_path + '/' + proc_id
@@ -378,12 +388,7 @@ def queue_packages(download_path, temp_path, queue_path, archive_path, email, em
         os.unlink(temp_path + '/' + pkg_file)
     delete_folder(temp_path)
 
-    if len(invalid_pkg_files) > 0 and email is not None:
-        email_header = ''
-        if os.path.isfile(email_header):
-            email_header = open(email_header, 'r').read()
-        email.send(email_to, email_subject, email_header + '\n'.join(invalid_pkg_files))
-    return queue_path
+    return (queue_path, invalid_pkg_files)
 
 
 def find_xml_source_paths(path):
@@ -408,46 +413,66 @@ def run_rsync(source, user, server, dest):
     os.system('nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + ' &')
 
 
-def update_web(ue_id, web_app_path, user, server, destination):
-    # 'rsync -CrvK xmldata/col/scl/4web/htdocs/img/* roberta.takenaka@poseidon:/var/www/xml_scielo_br/htdocs/img/revistas'
-    # web_app_path = xmldata/col/scl/4web
-    # user_and_host = user@host
-    # destination = /var/www/xml_scielo_br
+def transfer_website_files(acron, issue_id, website_folders_path, user, server, destination):
+    # 'rsync -CrvK img/* user@server:/var/www/...../revistas'
     issue_id_path = acron + '/' + issue_id
 
     folders = ['/htdocs/img/revistas/', '/bases/pdf/', '/bases/xml/']
 
     for folder in folders:
         dest_path = destination + folder + issue_id_path
-        source_path = web_app_path + folder + issue_id_path
+        source_path = website_folders_path + folder + issue_id_path
         run_remote_mkdirs(user, server, dest_path)
         run_rsync(source_path, user, server, dest_path)
 
 
-def gera_padrao(gerapadrao_ctrl, col_scilista, proc_serial, gerapadrao_cmd, log_file):
-    status = open(gerapadrao_ctrl, 'r').read()
-    if status == 'UNLOCKED':
-        open(gerapadrao_ctrl, 'w').write('LOCKED')
-        scilista_items = [f.strip() for f in open(col_scilista, 'r').readlines()]
+def transfer_website_bases(bases_path, user, server, dest_path):
+    # 'rsync -CrvK img/* user@server:/var/www/...../revistas'
+    folders = ['artigo', 'issue', 'newissue', 'title']
+
+    for folder in folders:
+        run_remote_mkdirs(user, server, dest_path)
+        run_rsync(bases_path + '/' + folder, user, server, dest_path)
+
+
+def gera_padrao_command(proc_path, gerapadrao_status_filename):
+    return 'cd ' + proc_path + ';./GeraPadrao.bat;echo FINISHED> ' + gerapadrao_status_filename
+
+
+def gera_padrao(gerapadrao_status_filename, source_path, col_scilista, proc_serial_path, proc_path):
+    status = open(gerapadrao_status_filename, 'r').read()
+    path = os.path.dirname(gerapadrao_status_filename)
+
+    if 'FINISHED' in status:
+        gerapadrao_cmd = gera_padrao_command(proc_path, gerapadrao_status_filename)
+        open(gerapadrao_status_filename, 'w').write('RUNNING')
+
+        for item in ['title', 'issue']:
+            for ext in ['.mst', '.xrf']:
+                if os.path.isfile(source_path + '/' + item + '/' + item + ext):
+                    if not os.path.isdir(proc_serial_path + '/' + item):
+                        os.makedirs(proc_serial_path + '/' + item)
+                    shutil.copyfile(source_path + '/' + item + '/' + item + ext, proc_serial_path + '/' + item + '/' + item + ext)
+
+        scilista_items = list(set([f.strip() for f in open(col_scilista, 'r').readlines()]))
         if len(scilista_items) > 0:
             os.unlink(col_scilista)
             sorted_scilista_items = [f for f in scilista_items if ' pr' in f] + [f for f in scilista_items if not ' pr' in f]
 
-            proc_scilista = proc_serial + '/scilista.lst'
+            proc_scilista = proc_serial_path + '/scilista.lst'
             open(proc_scilista, 'w').write('\n'.join(sorted_scilista_items))
-            
-            now = datetime.now().isoformat()
 
-            open(log_file + now[8:10], 'a+').write(datetime.now().isoformat())
+            now = datetime.now().isoformat()[11:16].replace(':', '')
+
+            open(path + '/' + now, 'w').write(datetime.now().isoformat())
             os.system(gerapadrao_cmd)
-            open(log_file + now[8:10], 'a+').write(datetime.now().isoformat())
-            #open(gerapadrao_ctrl, 'w').write('UNLOCKED')
-            
+            open(path + '/' + now, 'a+').write(datetime.now().isoformat())
+
 
 def xml_converter_read_configuration(filename):
     r = None
     if os.path.isfile(filename):
-        r = xmlcvter_cfg.XMLConverterConfiguration(filename)
+        r = xmlcvrter_cfg.XMLConverterConfiguration(filename)
         if not r.valid():
             r = None
     return r
@@ -485,7 +510,7 @@ def xml_converter_read_inputs(args):
         messages.append('where:')
         messages.append('  <xml_folder> = path of folder which contains')
         messages.append('or')
-        messages.append('python xml_converter <collection_acron>')
+        messages.append('python xml_converter.py <collection_acron>')
         messages.append('where:')
         messages.append('  <collection_acron> = collection acron')
 
@@ -502,11 +527,28 @@ def update_issue_copy(issue_db, issue_db_copy):
     d = os.path.dirname(issue_db_copy)
     if not os.path.isdir(d):
         os.makedirs(d)
-
+    if not os.path.isfile(issue_db_copy + '.fst'):
+        shutil.copyfile(CURRENT_PATH + '/issue.fst', issue_db_copy + '.fst')
     if open(CURRENT_PATH + '/issue.fst', 'r').read() != open(issue_db_copy + '.fst', 'r').read():
         shutil.copyfile(CURRENT_PATH + '/issue.fst', issue_db_copy + '.fst')
     shutil.copyfile(issue_db + '.mst', issue_db_copy + '.mst')
     shutil.copyfile(issue_db + '.xrf', issue_db_copy + '.xrf')
+
+
+def call_download_packages(config, email):
+    package_paths = None
+    ftp = ftp_service.FTPService(config.data('FTP_SERVER'), config.data('FTP_USER'), config.data('FTP_PSWD'))
+
+    files, messages = download_packages(ftp, config.data('FTP_DIR'), config.data('DOWNLOAD_PATH'))
+
+    if len(files) > 0:
+        send_email(email, config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT_DOWNLOAD'), CONFIG_PATH + '/' + config.data('EMAIL_HEADER_DOWNLOAD'), messages)
+
+        queue_path, invalid_pkg_files = queue_packages(config.data('DOWNLOAD_PATH'), config.data('TEMP_PATH'), config.data('QUEUE_PATH'))
+        if len(invalid_pkg_files) > 0:
+            send_email(email, config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT_NOT_PROCESSED'), CONFIG_PATH + '/' + config.data('EMAIL_HEADER_NOT_PROCESSED'), '\n'.join(invalid_pkg_files))
+        package_paths = [queue_path + '/' + item for item in os.listdir(queue_path)]
+    return package_paths
 
 
 def call_converter(args, version='1.0'):
@@ -517,9 +559,6 @@ def call_converter(args, version='1.0'):
     else:
         config = xml_converter_read_configuration(configuration_filename)
 
-        serial_path = config.serial_path
-        web_app_path = config.web_app_path
-
         isis_dao = isis.IsisDAO(isis.UCISIS(isis.CISIS(config.cisis1030), isis.CISIS(config.cisis1660)))
 
         update_issue_copy(config.issue_db, config.issue_db_copy)
@@ -528,49 +567,48 @@ def call_converter(args, version='1.0'):
 
         article_dao = serial_files.ArticleDAO(isis_dao)
 
-        email_header = ''
-        if os.path.isfile(config.data.get('EMAIL_TEXT')):
-            email_header = open(config.data.get('EMAIL_TEXT'), 'r').read()
-
         email = None
+        email_header = ''
+        if config.data('EMAIL_SERVICE') == 'on':
+            email = email_service.EmailService(config.data('SENDER_NAME'), config.data('SENDER_EMAIL'))
+            if os.path.isfile(CONFIG_PATH + '/' + config.data('EMAIL_HEADER')):
+                email_header = open(CONFIG_PATH + '/' + config.data('EMAIL_HEADER'), 'r').read()
+
         if package_paths is None:
-            ftp = ftp_service.FTPService(config.data.get('FTP_SERVER'), config.data.get('FTP_USER'), config.data.get('FTP_PASSWORD'))
-            if config.data.get('EMAIL_SERVICE') == 'on':
-                email = email_service.EmailService(config.data.get('SENDER_NAME'), config.data.get('SENDER_EMAIL'))
+            package_paths = call_download_packages(config, email)
 
-            execute_download_packages(ftp, config.data.get('FTP_DIR'), config.data.get('DOWNLOAD_PATH'), email, config.data.get('EMAIL_TO'), config.data.get('EMAIL_SUBJECT_DOWNLOAD'), config.data.get('EMAIL_TEXT_DOWNLOAD'))
-            queue_path = queue_packages(config.data.get('DOWNLOAD_PATH'), config.data.get('TEMP_PATH'), config.data.get('QUEUE_PATH'), email, config.data.get('EMAIL_TO'), config.data.get('EMAIL_SUBJECT_NOT_PROCESSED'), config.data.get('EMAIL_TEXT_NOT_PROCESSED'))
-            package_paths = [queue_path + '/' + item for item in os.listdir(queue_path)]
+        if package_paths is not None:
+            scilista_items = []
+            for pkg_path in package_paths:
+                messages.append('*'*80)
+                messages.append(pkg_path + '\n')
+                report_path = pkg_path + '_base_reports'
+                report_path, scilista_item = convert_package(config.serial_path, pkg_path, report_path, config.website_folders_path, issue_dao, isis_dao, article_dao, version)
+                messages.append('*'*80)
 
-        scilista_items = []
-        for pkg_path in package_paths:
-            messages.append('*'*80)
-            messages.append(pkg_path + '\n')
-            report_path = pkg_path + '_base_reports'
-            report_path, scilista_item = convert_package(serial_path, pkg_path, report_path, web_app_path, issue_dao, isis_dao, article_dao, version)
-            messages.append('*'*80)
+                if scilista_item is not None:
+                    scilista_items.append(scilista_item)
 
-            if scilista_item is not None:
-                scilista_items.append(scilista_item)
-                acron, issue_id = scilista_item.split(' ')
-                if os.path.isdir(web_app_path):
-                    update_web(acron, issue_id, web_app_path, user, server, destination)
+                    if email is not None:
+                        email_text = open(report_path + '/xml_converter_report.html', 'r').read()
+                        email.send(config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT'), email_header + email_text, attaches=os.listdir(report_path))
+            if config.data('COL_SCILISTA') is not None and len(scilista_items) > 0:
+                if not os.path.isdir(os.path.dirname(config.data('COL_SCILISTA'))):
+                    os.makedirs(os.path.dirname(config.data('COL_SCILISTA')))
+                open(config.data('COL_SCILISTA'), 'a+').write('\n'.join(scilista_items))
 
-            if email is not None:
-                email_text = open(report_path + '/xml_converter_report.html', 'r').read()
-                email.send(config.data.get('EMAIL_TO'), config.data.get('EMAIL_SUBJECT'), email_header + email_text, attaches=os.listdir(report_path))
+            if len(scilista_items) > 0:
+                if config.data('GERAPADRAO_PROC_PATH') is not None:
+                    gera_padrao(config.data('GERAPADRAO_STATUS'), config.data('SOURCE_PATH'), config.data('COL_SCILISTA'), config.serial_path, config.data('GERAPADRAO_PROC_PATH'))
+                    if email is not None:
+                        email_header = open(CONFIG_PATH + '/' + config.data('EMAIL_HEADER_GERAPADRAO'), 'r').read()
+                        email_text = '\n'.join(scilista_items)
+                        email.send(config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT_GERAPADRAO'), email_header + email_text)
 
-        if config.data.get('GERAPADRAO_CMD') is not None:
-            if config.data.get('COL_SCILISTA') is not None and len(scilista_items) > 0:
-                open(config.data.get('COL_SCILISTA'), 'a+').write('\n'.join(scilista_items))
-                
-                shutil.copyfile(config.data.get('SOURCE_TITLE_DB') + '.mst', config.data.get('PROC_SERIAL') + '/title/title.mst')
-                shutil.copyfile(config.data.get('SOURCE_TITLE_DB') + '.xrf', config.data.get('PROC_SERIAL') + '/title/title.xrf')
-                shutil.copyfile(config.data.get('SOURCE_ISSUE_DB') + '.mst', config.data.get('PROC_SERIAL') + '/issue/issue.mst')
-                shutil.copyfile(config.data.get('SOURCE_ISSUE_DB') + '.xrf', config.data.get('PROC_SERIAL') + '/issue/issue.xrf')
+                if config.data('TRANSFER_DESTINATION') is not None:
+                    transfer_website_bases(config.website_folders_path + '/bases', config.data('TRANSFER_USER'), config.data('TRANSFER_SERVER'), config.data('TRANSFER_DESTINATION') + '/bases')
 
-                gera_padrao(config.data.get('GERAPADRAO_CTRL'), config.data.get('COL_SCILISTA'), config.data.get('PROC_SERIAL'), config.data.get('GERAPADRAO_CMD'), config.data.get('GERAPADRAO_LOG'))
-                if email is not None:
-                    email_header = open(config.data.get('EMAIL_TEXT_GERAPADRAO'), 'r').read()
-                    email_text = '\n'.join(scilista_items)
-                    email.send(config.data.get('EMAIL_TO'), config.data.get('EMAIL_SUBJECT_GERAPADRAO'), email_header + email_text)
+                    for scilista_item in scilista_items:
+                        acron, issue_id = scilista_item.split(' ')
+                        if os.path.isdir(config.website_folders_path):
+                            transfer_website_files(acron, issue_id, config.website_folders_path, config.data('TRANSFER_USER'), config.data('TRANSFER_SERVER'), config.data('TRANSFER_DESTINATION'))

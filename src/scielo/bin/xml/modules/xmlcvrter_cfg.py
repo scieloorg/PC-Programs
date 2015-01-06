@@ -8,27 +8,36 @@ CURRENT_PATH = os.path.dirname(__file__).replace('\\', '/')
 class XMLConverterConfiguration(object):
 
     def __init__(self, filename):
-        self.data = {}
+        self._data = {}
         for item in open(filename, 'r').readlines():
-            s = item.replace('\n', '').replace('\r', '')
-            if not item.startswith(';'):
-                if '=' in s:
-                    if ',' in s:
-                        s = s[0:s.rfind(',')]
-                    temp = s.split('=')
-                    self.data[temp[0]] = temp[1].replace('\\', '/')
+            s = item.strip()
+            if '=' in s:
+                if ',' in s:
+                    s = s[0:s.rfind(',')]
+                key, value = s.split('=')
+                value = value.replace('\\', '/').strip()
+                if value == '':
+                    self._data[key] = None
+                else:
+                    self._data[key] = value
+                if 'PATH' in key:
+                    if not os.path.isdir(value):
+                        os.makedirs(value)
+
+    def data(self, key):
+        return self._data.get(key)
 
     @property
     def cisis1030(self):
-        return self.data.get('PATH_CISIS_1030', CURRENT_PATH + '/../../cfg/')
+        return self._data.get('PATH_CISIS', CURRENT_PATH + '/../../cfg/')
 
     @property
     def cisis1660(self):
-        return self.data.get('PATH_CISIS_1660', CURRENT_PATH + '/../../cfg/cisis1660/')
+        return self._data.get('PATH_CISIS', CURRENT_PATH + '/../../cfg/cisis1660/')
 
     @property
-    def web_app_path(self):
-        path = self.data.get('WEB_APP_PATH', self.data.get('SCI_LISTA_SITE'))
+    def website_folders_path(self):
+        path = self._data.get('WEBSITE_FOLDERS_PATH', self._data.get('SCI_LISTA_SITE'))
         if path is not None:
             path = path.replace('\\', '/')
             if '/proc/' in path:
@@ -37,16 +46,18 @@ class XMLConverterConfiguration(object):
 
     @property
     def serial_path(self):
-        return self.data.get('SERIAL_PATH', self.data.get('Serial Directory'))
+        return self._data.get('PROC_SERIAL_PATH', self._data.get('Serial Directory'))
 
     @property
     def issue_db(self):
-        return self.data.get('SOURCE_ISSUE_DB', self.data.get('Issue Database'))
+        return self._data.get('SOURCE_ISSUE_DB', self._data.get('Issue Database'))
 
     @property
     def issue_db_copy(self):
-        copy = self.data.get('Issue Database').replace('/issue/', '/issue.tmp/')
-        return self.data.get('ISSUE_DB_COPY', copy)
+        copy = self._data.get('Issue Database')
+        if copy is not None:
+            copy = copy.replace('/issue/', '/issue.tmp/')
+        return self._data.get('ISSUE_DB_COPY', copy)
 
     def valid(self):
         r = True
@@ -59,8 +70,8 @@ class XMLConverterConfiguration(object):
         if not os.path.isfile(self.issue_db + '.mst'):
             r = False
             print('ERROR: Unable to find ' + self.issue_db + '.mst')
-        if not os.path.isdir(self.web_path):
-            print('WARNING: Unable to find ' + self.web_path)
+        if not os.path.isdir(self.website_folders_path):
+            print('WARNING: Unable to find ' + self.website_folders_path)
         if not os.path.isdir(self.serial_path):
             r = False
             print('ERROR: Unable to find ' + self.serial_path)
