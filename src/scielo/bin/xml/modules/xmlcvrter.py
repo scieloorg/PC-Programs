@@ -42,7 +42,7 @@ def extract_package(pkg_file, pkg_work_path):
             # delete content of destination path
             if os.path.exists(pkg_work_path):
                 for item in os.listdir(pkg_work_path):
-                    os.unlink(pkg_work_path + '/' + item)
+                    delete_item(pkg_work_path + '/' + item)
             # create tempdir
             temp_dir = tempfile.mkdtemp().replace('\\', '/')
 
@@ -52,11 +52,13 @@ def extract_package(pkg_file, pkg_work_path):
                 for item in os.listdir(temp_dir):
                     _file = temp_dir + '/' + item
                     if os.path.isfile(_file):
-                        shutil.move(_file, pkg_work_path)
+                        shutil.copyfile(_file, pkg_work_path + '/' + item)
+                        delete_item(_file)
                     elif os.path.isdir(_file):
                         for f in os.listdir(_file):
                             if os.path.isfile(_file + '/' + f):
-                                shutil.move(_file + '/' + f, pkg_work_path)
+                                shutil.copyfile(_file + '/' + f, pkg_work_path + '/' + f)
+                                delete_item(_file + '/' + f)
                         shutil.rmtree(_file)
                 shutil.rmtree(temp_dir)
                 r = True
@@ -152,7 +154,7 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
     print('\n\nXML Converter report:\n ' + converter_report_filename)
     pkg_checker.display_report(converter_report_filename)
     print('\n\n-- end --')
-    return (report_path, scilista_item)
+    return (converter_report_filename, report_path, scilista_item)
 
 
 def stats(content=None):
@@ -326,14 +328,13 @@ def convert_article(db_article, issue_record, issue_files, xml_name, article, ah
     return r
 
 
-def delete_folder(folder):
-    if os.path.isdir(folder):
-        for item in os.listdir(folder):
-            if os.path.isfile(folder + '/' + item):
-                os.unlink(folder + '/' + item)
-            else:
-                delete_folder(folder + '/' + item)
-                shutil.rmtree(folder + '/' + item)
+def delete_item(path):
+    if os.path.isdir(path):
+        for item in os.listdir(path):
+            delete_item(path + '/' + item)
+        shutil.rmtree(path)
+    elif os.path.isfile(path):
+        os.unlink(path)
 
 
 def download_packages(ftp, ftp_dir, download_path):
@@ -343,10 +344,7 @@ def download_packages(ftp, ftp_dir, download_path):
         if ftp_dir is not None and download_path is not None:
             if not os.path.isdir(download_path):
                 os.makedirs(download_path)
-            print(download_path)
             files = ftp.download_files(download_path, ftp_dir)
-            print('files')
-            print(files)
             log = ftp.registered_actions()
     return (files, log)
 
@@ -362,7 +360,7 @@ def send_email(email, email_to, email_subject, email_header, message):
 
 def queue_packages(download_path, temp_path, queue_path, archive_path):
     invalid_pkg_files = []
-    proc_id = datetime.now().isoformat()[5:10].replace('-', '')
+    proc_id = datetime.now().isoformat()[11:16].replace(':', '')
     temp_path = temp_path + '/' + proc_id
     queue_path = queue_path + '/' + proc_id
 
@@ -373,20 +371,28 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
         os.makedirs(temp_path)
 
     for pkg_file in os.listdir(download_path):
-        shutil.move(download_path + '/' + pkg_file, temp_path)
+        if is_valid_pkg_file(download_path + '/' + pkg_file):
+            shutil.copyfile(download_path + '/' + pkg_file, temp_path + '/' + pkg_file)
+        delete_item(download_path + '/' + pkg_file)
 
     for pkg_file in os.listdir(temp_path):
-        pkg_name = os.path.basename(pkg_file)
-        pkg_path = queue_path + '/' + pkg_name
-        os.makedirs(pkg_path)
+        if is_valid_pkg_file(temp_path + '/' + pkg_file):
+            pkg_name = os.path.basename(pkg_file)
+            queue_pkg_path = queue_path + '/' + pkg_name
+            if not os.path.isdir(queue_pkg_path):
+                os.makedirs(queue_pkg_path)
 
-        if extract_package(temp_path + '/' + pkg_file, pkg_path):
-            shutil.copyfile(temp_path + '/' + pkg_file, archive_path + '/' + pkg_file)
+            if extract_package(temp_path + '/' + pkg_file, queue_pkg_path):
+                shutil.copyfile(temp_path + '/' + pkg_file, archive_path + '/' + pkg_file)
+            else:
+                invalid_pkg_files.append(pkg_file)
+                delete_item(queue_pkg_path)
+            delete_item(temp_path + '/' + pkg_file)
         else:
             invalid_pkg_files.append(pkg_file)
-            delete_folder(pkg_path)
-        os.unlink(temp_path + '/' + pkg_file)
-    delete_folder(temp_path)
+            if os.path.isfile(temp_path + '/' + pkg_file):
+                delete_item
+    delete_item(temp_path)
 
     return (queue_path, invalid_pkg_files)
 
@@ -410,7 +416,7 @@ def run_remote_mkdirs(user, server, path):
 
 
 def run_rsync(source, user, server, dest):
-    os.system('nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + ' &')
+    os.system('nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&')
 
 
 def transfer_website_files(acron, issue_id, website_folders_path, user, server, destination):
@@ -456,7 +462,7 @@ def gera_padrao(gerapadrao_status_filename, source_path, col_scilista, proc_seri
 
         scilista_items = list(set([f.strip() for f in open(col_scilista, 'r').readlines()]))
         if len(scilista_items) > 0:
-            os.unlink(col_scilista)
+            delete_item(col_scilista)
             sorted_scilista_items = [f for f in scilista_items if ' pr' in f] + [f for f in scilista_items if not ' pr' in f]
 
             proc_scilista = proc_serial_path + '/scilista.lst'
@@ -523,6 +529,10 @@ def xml_converter_read_inputs(args):
     return (package_paths, configuration_filename, error_messages)
 
 
+def is_valid_pkg_file(filename):
+    return os.path.isfile(filename) and (filename.endswith('.zip') or filename.endswith('.tgz'))
+
+
 def update_issue_copy(issue_db, issue_db_copy):
     d = os.path.dirname(issue_db_copy)
     if not os.path.isdir(d):
@@ -536,18 +546,19 @@ def update_issue_copy(issue_db, issue_db_copy):
 
 
 def call_download_packages(config, email):
-    package_paths = None
+    package_paths = []
     ftp = ftp_service.FTPService(config.data('FTP_SERVER'), config.data('FTP_USER'), config.data('FTP_PSWD'))
 
     files, messages = download_packages(ftp, config.data('FTP_DIR'), config.data('DOWNLOAD_PATH'))
 
-    if len(files) > 0:
-        send_email(email, config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT_DOWNLOAD'), CONFIG_PATH + '/' + config.data('EMAIL_HEADER_DOWNLOAD'), messages)
+    queue_path, invalid_pkg_files = queue_packages(config.data('DOWNLOAD_PATH'), config.data('TEMP_PATH'), config.data('QUEUE_PATH'), config.data('ARCHIVE_PATH'))
+    if len(invalid_pkg_files) > 0:
+        send_email(email, config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT_NOT_PROCESSED'), CONFIG_PATH + '/' + config.data('EMAIL_HEADER_NOT_PROCESSED'), '\n'.join(invalid_pkg_files))
+    if os.path.isdir(queue_path):
+        package_paths = [queue_path + '/' + item for item in os.listdir(queue_path) if item.endswith('.zip') or item.endswith('.tgz')]
+    if len(package_paths) == 0:
+        package_paths = None
 
-        queue_path, invalid_pkg_files = queue_packages(config.data('DOWNLOAD_PATH'), config.data('TEMP_PATH'), config.data('QUEUE_PATH'))
-        if len(invalid_pkg_files) > 0:
-            send_email(email, config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT_NOT_PROCESSED'), CONFIG_PATH + '/' + config.data('EMAIL_HEADER_NOT_PROCESSED'), '\n'.join(invalid_pkg_files))
-        package_paths = [queue_path + '/' + item for item in os.listdir(queue_path)]
     return package_paths
 
 
@@ -580,18 +591,19 @@ def call_converter(args, version='1.0'):
         if package_paths is not None:
             scilista_items = []
             for pkg_path in package_paths:
+                pkg_name = os.path.basename(pkg_path)
                 messages.append('*'*80)
-                messages.append(pkg_path + '\n')
+                messages.append(pkg_name + '\n')
                 report_path = pkg_path + '_base_reports'
-                report_path, scilista_item = convert_package(config.serial_path, pkg_path, report_path, config.website_folders_path, issue_dao, isis_dao, article_dao, version)
+                converter_report, report_path, scilista_item = convert_package(config.serial_path, pkg_path, report_path, config.website_folders_path, issue_dao, isis_dao, article_dao, version)
                 messages.append('*'*80)
 
                 if scilista_item is not None:
                     scilista_items.append(scilista_item)
 
                     if email is not None:
-                        email_text = open(report_path + '/xml_converter_report.html', 'r').read()
-                        email.send(config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT'), email_header + email_text, attaches=os.listdir(report_path))
+                        email_text = open(converter_report, 'r').read()
+                        email.send(config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT') + ' ' + pkg_name, email_header + email_text, attaches=[report_path + '/' + f for f in os.listdir(report_path)])
             if config.data('COL_SCILISTA') is not None and len(scilista_items) > 0:
                 if not os.path.isdir(os.path.dirname(config.data('COL_SCILISTA'))):
                     os.makedirs(os.path.dirname(config.data('COL_SCILISTA')))

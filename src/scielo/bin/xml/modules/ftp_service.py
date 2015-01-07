@@ -51,7 +51,6 @@ class FTPService(object):
                 # must be a file
                 downloaded_file = self.download_and_delete_file(local_path, item)
                 if len(downloaded_file) > 0:
-                    print(downloaded_file)
                     downloaded_files.append(downloaded_file)
             else:
                 # supposed to be a folder

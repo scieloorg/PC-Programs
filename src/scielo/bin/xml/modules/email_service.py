@@ -71,7 +71,9 @@ class EmailService(object):
             msg['To'] = ', '.join(to)
             msg['Subject'] = Header(subject, 'utf-8')
             msg['BCC'] = ', '.join(bcc)
-            msg.attach(MIMEText(text, 'plain', 'utf-8'))
+            plain_or_html = 'html' if text.lower().startswith('<html') else 'plain'
+
+            msg.attach(MIMEText(text, plain_or_html, 'utf-8'))
 
             for f in attaches:
                 part = MIMEBase('application', "octet-stream")
@@ -84,13 +86,13 @@ class EmailService(object):
             smtp = smtplib.SMTP(self.server)
             try:
                 smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
-            except:
+            except Exception as e:
                 msg = MIMEMultipart()
                 msg['From'] = self.mail_from
                 msg['To'] = ', '.join(to)
                 msg['Subject'] = Header(subject, 'utf-8')
                 msg['BCC'] = ', '.join(bcc)
-                msg.attach(MIMEText(text, 'plain', 'utf-8'))
+                msg.attach(MIMEText(text, plain_or_html, 'utf-8'))
                 smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
 
             #except Exception as inst:
