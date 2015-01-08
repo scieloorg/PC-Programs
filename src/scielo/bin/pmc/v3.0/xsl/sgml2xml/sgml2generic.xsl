@@ -967,12 +967,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="xref/@rid">
+		<xsl:variable name="n1"><xsl:value-of select="substring(.,2)"/></xsl:variable>
+		<xsl:variable name="n2"><xsl:if test="contains(.,../@ref-type)"><xsl:value-of select="substring(.,string-length(../@ref-type)+1)"/></xsl:if></xsl:variable>
 		<xsl:attribute name="rid"><xsl:choose>
-			<xsl:when test="not(contains(.,../@ref-type))"><xsl:value-of select="concat(../@ref-type,string(number(substring(.,2))))"/>
-			</xsl:when>
+			<xsl:when test="substring($n1,1,1)='0'"><xsl:value-of select="substring(.,1,1)"/><xsl:value-of select="string(number($n1))"/></xsl:when>
+			<xsl:when test="substring($n2,1,1)='0'"><xsl:value-of select="../@ref-type"/><xsl:value-of select="string(number($n2))"/></xsl:when>
 			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 		</xsl:choose></xsl:attribute>
 	</xsl:template>
+	
 	<xsl:template match="xref[@ref-type='aff']/@rid">
 		<xsl:attribute name="rid"><xsl:choose>
 			<xsl:when test="contains(.,'aff')"><xsl:value-of select="."/></xsl:when>
@@ -1938,10 +1941,18 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</fig>
 	</xsl:template>
 
+	<xsl:template match="figgrp/@id | tabwrap/@id">
+		<xsl:choose>
+			<xsl:when test="substring(@id,1,1)='f'">f<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:when>
+			<xsl:when test="substring(@id,1,1)='t'">t<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="@id"/></xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="figgrp">
-		<xsl:variable name="id">f<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
 		<p>
-			<fig id="{$id}">
+			<fig>
+				<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
 				<xsl:if test="@ftype!='other'">
 					<xsl:attribute name="fig-type">
 						<xsl:value-of select="@ftype"/>
@@ -1962,9 +1973,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="p/figgrp|figgrps/figgrp">
 		<!-- FIXMEID -->
-		<xsl:variable name="id">f<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
-		
-		<fig id="{$id}">
+		<fig>
+			<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
 			<xsl:if test="@ftype!='other'">
 				<xsl:attribute name="fig-type">
 					<xsl:value-of select="@ftype"/>
@@ -1977,10 +1987,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="tabwrap">
-		<xsl:variable name="id">t<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
-		
 		<p><!-- FIXMEID -->
-			<table-wrap id="{$id}">
+			<table-wrap>
+				<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
 				<xsl:apply-templates select="label"/>
 				<xsl:apply-templates select=".//caption"/>
 				<xsl:apply-templates select="." mode="graphic"/>
