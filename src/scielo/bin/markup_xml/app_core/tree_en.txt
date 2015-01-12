@@ -138,6 +138,7 @@ xref;Identify a cross-reference
 zipcode;Identify a ZIP Code
 glossary;Identify a glossary
 deflist;Identify a list of definitions
+*deflist;Identify automatically a list of definitions
 defitem;Identify an item of a list of definitions
 term;Identify a term
 def;Identify the definition of a term

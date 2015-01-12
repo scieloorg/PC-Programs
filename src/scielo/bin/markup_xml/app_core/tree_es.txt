@@ -138,6 +138,7 @@ xref;Identifica una referencia cruzada
 zipcode;Código de dirección postal
 glossary;Identifica un glossario
 deflist;Identifica una lista de definiciones
+*deflist;Identifica automáticamente una lista de definiciones
 defitem;Identifica un item de la lista de definiciones
 term;Identifica un término
 def;Identifica la definición del término
