@@ -52,7 +52,7 @@ class ReportHTML(object):
         return s
 
     def javascript_for_collapse(self):
-        r += '<script language="JavaScript" type="text/javascript">'
+        r = '<script language="JavaScript" type="text/javascript">'
         r += '<!-- Copyright 2005, Sandeep Gangadharan -->'
         r += '<!-- For more free scripts go to http://www.sivamdesign.com/scripts/ -->'
         r += '<!--'
@@ -74,12 +74,22 @@ class ReportHTML(object):
         r += '</div>'
         return r
 
-    def filecontent_in_collapsible_block(self, section_id, xml_filename):
+    def filecontent_in_collapsible_block(self, section_id, filename, display=False):
         r = ''
-        if os.path.isfile(xml_filename):
-            name = os.path.basename(xml_filename)
-            r = self.collapsible_block(section_id, name, open(xml_filename).read())
-        return r
+        style = ''
+        name = os.path.basename(filename)
+        if os.path.isfile(filename):
+            content = open(filename).read()
+            if filename.endswith('.html'):
+                style = content[content.find('<style'):]
+                style = style[0:style.find('</style>')+len('</style>')]
+                content = content[content.find('<body>'):]
+                content = content[0:content.rfind('</body>')]
+            r = self.collapsible_block(section_id, name, content)
+        else:
+            if display:
+                r = self.tag('h4', name)
+        return (r, style)
 
     def statistics_messages(self, f, e, w, title='', files_list=[]):
         s = [('Total of fatal errors:', f), ('Total of errors:', e), ('Total of warnings:', w)]
@@ -105,7 +115,6 @@ class ReportHTML(object):
         if len(files) > 0:
             files = self.tag('p', 'Check the errors/warnings:') + files
         return files
-
 
     def body_section(self, style, anchor_name, title, content, sections=[]):
         anchor = anchor_name if anchor_name == '' else '<a name="' + anchor_name + '"/><a href="#top">^</a>'

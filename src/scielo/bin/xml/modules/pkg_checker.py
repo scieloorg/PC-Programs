@@ -73,7 +73,7 @@ def old_validate_article(xml_filename, new_name, report_name, doc_files_info, dt
     return (article, sheet_data, result, (xml_f, xml_e, xml_w), (data_f, data_e, data_w))
 
 
-def validate_article(label, xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order):
+def validate_article_report_data(xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order):
     xml = get_valid_xml(xml_filename, os.path.dirname(doc_files_info.dtd_report_filename), report_name)
 
     xml_f, xml_e, xml_w = validate_article_xml(new_name, xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
@@ -85,17 +85,32 @@ def validate_article(label, xml_filename, new_name, report_name, doc_files_info,
 
     data_f, data_e, data_w, sheet_data = validate_article_data(article, new_name, os.path.dirname(xml_filename), doc_files_info.data_report_filename, validate_order)
 
-    result = html_report.tag('h4', '-'*80)
-    result += html_report.tag('h4', label)
-    result += html_report.tag('h4', report_name)
+    return (article, sheet_data, (xml_f, xml_e, xml_w), (data_f, data_e, data_w))
 
-    result += html_report.tag('p', html_report.link('file:///' + xml_filename, os.path.basename(xml_filename)))
+
+def validate_article_report_display(label, report_name, xml_stats, data_stats, xml_filename, doc_files_info):
+    xml_f, xml_e, xml_w = xml_stats
+    data_f, data_e, data_w = data_stats
+
+    i = 0
+    html = html_report.tag('h4', '-'*80)
+    html += html_report.tag('h4', label)
+    html += html_report.tag('h4', report_name)
+    html += html_report.filecontent_in_collapsible_block(report_name, xml_filename, True)
     if xml_f + xml_e + xml_w > 0:
+        i += 1
+        content, style1 = html_report.filecontent_in_collapsible_block(report_name + str(i), doc_files_info.err_filename)
+        html += content
+        i += 1
+        content, style2 = html_report.filecontent_in_collapsible_block(report_name + str(i), doc_files_info.style_report_filename)
+        html += content
 
-    result += html_report.statistics_messages(xml_f, xml_e, xml_w, 'xml validations', [doc_files_info.err_filename, doc_files_info.style_report_filename])
+    if data_f + data_e + data_w > 0:
+        i += 1
+        content, style3 = html_report.filecontent_in_collapsible_block(report_name + str(i), doc_files_info.data_report_filename)
+        html += content
 
-    result += html_report.statistics_messages(data_f, data_e, data_w, 'data validations', [doc_files_info.data_report_filename])
-    return (article, sheet_data, result, (xml_f, xml_e, xml_w), (data_f, data_e, data_w))
+    return (style1 + style2 + style3, html)
 
 
 def validate_package(doc_files_info_list, dtd_files, report_path, validate_order, create_toc_report):
@@ -123,8 +138,9 @@ def validate_package(doc_files_info_list, dtd_files, report_path, validate_order
 
         index += 1
         print(new_name)
-        article, sheet_data, result, xml_stats, data_stats = validate_article(str(index) + n, xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order)
+        article, sheet_data, xml_stats, data_stats = validate_article_report_data(xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order)
 
+        css, result_html = validate_article_report_display(str(index) + n, report_name, xml_stats, data_stats, xml_filename, doc_files_info)
         f, e, w = xml_stats
         xml_f += f
         xml_e += e
@@ -135,7 +151,7 @@ def validate_package(doc_files_info_list, dtd_files, report_path, validate_order
         data_e += e
         data_w += w
 
-        article_results[new_name] = (xml_stats, data_stats, result)
+        article_results[new_name] = (xml_stats, data_stats, result_html)
 
         if article is not None:
             if not article.issue_label in issues:
