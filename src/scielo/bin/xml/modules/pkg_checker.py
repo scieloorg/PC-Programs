@@ -52,7 +52,7 @@ def validate_article_data(article, new_name, package_path, report_filename, vali
     return (f, e, w, sheet_data)
 
 
-def validate_article(xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order):
+def old_validate_article(xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order):
     xml = get_valid_xml(xml_filename, os.path.dirname(doc_files_info.dtd_report_filename), report_name)
 
     xml_f, xml_e, xml_w = validate_article_xml(new_name, xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
@@ -73,7 +73,34 @@ def validate_article(xml_filename, new_name, report_name, doc_files_info, dtd_fi
     return (article, sheet_data, result, (xml_f, xml_e, xml_w), (data_f, data_e, data_w))
 
 
+def validate_article(label, xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order):
+    xml = get_valid_xml(xml_filename, os.path.dirname(doc_files_info.dtd_report_filename), report_name)
+
+    xml_f, xml_e, xml_w = validate_article_xml(new_name, xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
+
+    if xml is None:
+        article = None
+    else:
+        article = Article(xml)
+
+    data_f, data_e, data_w, sheet_data = validate_article_data(article, new_name, os.path.dirname(xml_filename), doc_files_info.data_report_filename, validate_order)
+
+    result = html_report.tag('h4', '-'*80)
+    result += html_report.tag('h4', label)
+    result += html_report.tag('h4', report_name)
+
+    result += html_report.tag('p', html_report.link('file:///' + xml_filename, os.path.basename(xml_filename)))
+    if xml_f + xml_e + xml_w > 0:
+
+    result += html_report.statistics_messages(xml_f, xml_e, xml_w, 'xml validations', [doc_files_info.err_filename, doc_files_info.style_report_filename])
+
+    result += html_report.statistics_messages(data_f, data_e, data_w, 'data validations', [doc_files_info.data_report_filename])
+    return (article, sheet_data, result, (xml_f, xml_e, xml_w), (data_f, data_e, data_w))
+
+
 def validate_package(doc_files_info_list, dtd_files, report_path, validate_order, create_toc_report):
+    index = 0
+    n = '/' + str(doc_files_info_list)
 
     toc_authors_sheet_data = []
     toc_sources_sheet_data = []
@@ -93,8 +120,10 @@ def validate_package(doc_files_info_list, dtd_files, report_path, validate_order
         new_name = doc_files_info.new_name
         report_name = doc_files_info.xml_name
         xml_filename = doc_files_info.new_xml_filename
+
+        index += 1
         print(new_name)
-        article, sheet_data, result, xml_stats, data_stats = validate_article(xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order)
+        article, sheet_data, result, xml_stats, data_stats = validate_article(str(index) + n, xml_filename, new_name, report_name, doc_files_info, dtd_files, validate_order)
 
         f, e, w = xml_stats
         xml_f += f

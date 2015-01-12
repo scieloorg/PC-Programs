@@ -51,6 +51,36 @@ class ReportHTML(object):
 
         return s
 
+    def javascript_for_collapse(self):
+        r += '<script language="JavaScript" type="text/javascript">'
+        r += '<!-- Copyright 2005, Sandeep Gangadharan -->'
+        r += '<!-- For more free scripts go to http://www.sivamdesign.com/scripts/ -->'
+        r += '<!--'
+        r += 'if (document.getElementById) {'
+        r += 'document.writeln(\'<style type="text/css"><!--\')'
+        r += 'document.writeln(\'.texter {display:none} @media print {.texter {display:block;}}\')'
+        r += 'document.writeln(\'//--></style>\') }'
+        r += 'function openClose(theID) {'
+        r += 'if (document.getElementById(theID).style.display == "block") { document.getElementById(theID).style.display = "none" }'
+        r += 'else { document.getElementById(theID).style.display = "block" } }'
+        r += '// -->'
+        r += '</script>'
+        return r
+
+    def collapsible_block(self, section_id, section_title, content):
+        r = '<div onClick="openClose(\'' + section_id + '\')" style="cursor:hand; cursor:pointer"><b>' + section_title + '</b></div>'
+        r += '<div id="' + section_id + '" class="texter">'
+        r += content
+        r += '</div>'
+        return r
+
+    def filecontent_in_collapsible_block(self, section_id, xml_filename):
+        r = ''
+        if os.path.isfile(xml_filename):
+            name = os.path.basename(xml_filename)
+            r = self.collapsible_block(section_id, name, open(xml_filename).read())
+        return r
+
     def statistics_messages(self, f, e, w, title='', files_list=[]):
         s = [('Total of fatal errors:', f), ('Total of errors:', e), ('Total of warnings:', w)]
         s = ''.join([self.format_p_label_value(l, str(v)) for l, v in s])
@@ -60,14 +90,22 @@ class ReportHTML(object):
         if style == '' or style == 'ok':
             style = 'success'
 
+        title = self.tag('h4', title) if title != '' else ''
+        return self.tag('div', title + self.tag('div', s, style) + self.display_links_to_report(files_list), 'statistics')
+
+    def display_links_to_report(self, files_list, path_relative=False):
         files = ''
-        if len(files_list) > 0:
-            self.tag('p', 'Check the errors/warnings:')
         for item in files_list:
             if os.path.isfile(item):
-                files += self.tag('p', self.link('file:///' + item, os.path.basename(item)))
-        title = self.tag('h4', title) if title != '' else ''
-        return self.tag('div', title + self.tag('div', s, style) + files, 'statistics')
+                basename = os.path.basename(item)
+                if path_relative is True:
+                    files += self.tag('p', self.link('file:///' + basename, basename))
+                else:
+                    files += self.tag('p', self.link('file:///' + item, basename))
+        if len(files) > 0:
+            files = self.tag('p', 'Check the errors/warnings:') + files
+        return files
+
 
     def body_section(self, style, anchor_name, title, content, sections=[]):
         anchor = anchor_name if anchor_name == '' else '<a name="' + anchor_name + '"/><a href="#top">^</a>'
