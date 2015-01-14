@@ -65,106 +65,119 @@ def extract_package(pkg_file, pkg_work_path):
     return r
 
 
-def get_valid_article(articles):
-    a = None
-    for xml_name, article in articles.items():
-        if article is not None:
-            issue_label = article.issue_label
-            print('issue_label')
-            print(issue_label)
-            if issue_label is not None:
-                a = article
-                break
-    return a
-
-
-def get_issue_record(db_issue, article):
-    issue_record = None
-    issues_records = db_issue.search(article.issue_label, article.print_issn, article.e_issn)
+def get_i_record(db_issue, issue_label, print_issn, e_issn):
+    i_record = None
+    issues_records = db_issue.search(issue_label, print_issn, e_issn)
     if len(issues_records) > 0:
-        issue_record = issues_records[0]
-    return issue_record
+        i_record = issues_records[0]
+    return i_record
+
+
+def get_issue(issue_data, db_issue):
+    print(issue_data)
+    issue_label, p_issn, e_issn = issue_data
+    i_record = None
+    issue_record = None
+    msg = None
+
+    if issue_label is None:
+        issue_label = 'UNKNOWN'
+    else:
+        i_record = get_i_record(db_issue, issue_label, p_issn, e_issn)
+    print(i_record)
+    if i_record is None:
+        if issue_label == 'UNKNOWN':
+            msg = html_report.format_message('FATAL ERROR: Unable to identify the article\'s issue')
+        else:
+            msg = html_report.format_message('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + db_issue.db_filename + '. (' + '/'.join([i for i in [p_issn, e_issn] if i is not None]) + ')')
+    else:
+        issue_record = IssueRecord(i_record)
+
+    print(type(issue_record))
+    return (issue_record, msg)
 
 
 def convert_package(serial_path, pkg_path, report_path, website_folders_path, db_issue, db_ahead, db_article, version='1.0'):
     old_report_path = report_path
     scilista_item = None
     issue_record = None
-    issue_label = 'UNKNOWN'
-    doc_files_info_list = []
+    dtd_files = xml_versions.DTDFiles('scielo', version)
+
     xml_filenames = sorted([pkg_path + '/' + f for f in os.listdir(pkg_path) if f.endswith('.xml') and not 'incorrect' in f])
-
-    register_log('<h2>XML files</h2>')
-    register_log('XML path: ' + pkg_path)
-    register_log('Total of XML files: ' + str(len(xml_filenames)))
-    register_log(html_report.format_list('', 'ol', [os.path.basename(f) for f in xml_filenames]))
-
+    doc_files_info_list = []
     for xml_filename in xml_filenames:
         doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, None)
         doc_files_info.new_xml_filename = xml_filename
         doc_files_info_list.append(doc_files_info)
 
-    dtd_files = xml_versions.DTDFiles('scielo', version)
-    issues, toc_results, articles, articles_stats, article_results = pkg_checker.validate_package(doc_files_info_list, dtd_files, report_path, True, True)
+    validate_order = True
+    do_toc_report = True
 
-    toc_stats_numbers, toc_stats_report = toc_results
-    toc_f, toc_e, toc_w = toc_stats_numbers
+    articles, issue_data = pkg_checker.articles_and_issues(doc_files_info_list)
 
-    register_log('<h2>XML/Data/TOC Validations</h2>')
-    register_log(articles_stats)
-    register_log(toc_stats_report)
-    if toc_f + toc_e + toc_w > 0:
-        register_log(html_report.link('file:///' + report_path + '/toc.html', 'toc.html'))
-    register_log(html_report.link('file:///' + report_path + '/authors.html', 'authors.html'))
-    register_log(html_report.link('file:///' + report_path + '/sources.html', 'sources.html'))
+    issue_record, issue_error_msg = get_issue(issue_data, db_issue)
+    issue_label = issue_data[0]
+
+    toc_stats_and_report, articles_stats_and_reports, lists = pkg_checker.package_validations_data(articles, doc_files_info_list, dtd_files, report_path, validate_order, do_toc_report)
+
+    toc_stats, toc_report = toc_stats_and_report
+    toc_f, toc_e, toc_w = toc_stats
+
+    conversion_report = ''
+    validations_report = pkg_checker.package_validation_report_content(toc_stats_and_report, articles_stats_and_reports, lists)
 
     if toc_f > 0:
-        register_log('FATAL ERROR: Unable to create "base" because of fatal errors in the Table of Contents data.')
+        validations_report += html_report.format_message('FATAL ERROR: Unable to create "base" because of fatal errors in the Table of Contents data.')
+
+    issue = None
+    if not issue_record is None:
+        issue = issue_record.issue
+
+    if issue is None:
+        validations_report += issue_error_msg
     else:
-        article = get_valid_article(articles)
+        issue_label = issue.issue_label
+        journal_files = serial_files.JournalFiles(serial_path, issue.acron)
+        scilista_item = issue.acron + ' ' + issue_label
+        ahead_manager = serial_files.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
+        issue_files = serial_files.IssueFiles(journal_files, issue_label, pkg_path, website_folders_path)
+        issue_files.move_reports(report_path)
+        issue_files.save_source_files(pkg_path)
+        report_path = issue_files.base_reports_path
 
-        if article is not None:
-            issue_label = article.issue_label
-            issue_record = get_issue_record(db_issue, article)
+        summary, articles_conversion_result = convert_articles(ahead_manager, db_article, articles, articles_stats_and_reports, issue_record, issue_files)
 
-        if issue_record is None:
-            if issue_label == 'UNKNOWN':
-                register_log('FATAL ERROR: Unable to identify the article\'s issue')
-            else:
-                register_log('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + db_issue.db_filename + '. (' + '/'.join([i for i in [article.print_issn, article.e_issn] if i is not None]) + ')')
-        else:
-            #register_log('Issue: ' + issue_label + '.')
-            issue_isis = IssueRecord(issue_record)
-            issue = issue_isis.issue
-            journal_files = serial_files.JournalFiles(serial_path, issue.acron)
-            scilista_item = issue.acron + ' ' + issue_label
-            ahead_manager = serial_files.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
-            issue_files = serial_files.IssueFiles(journal_files, issue_label, pkg_path, website_folders_path)
-            issue_files.move_reports(report_path)
-            issue_files.save_source_files(pkg_path)
-            report_path = issue_files.base_reports_path
-            convert_articles(ahead_manager, db_article, articles, article_results, issue_record, issue_files)
+        articles_conversion_results = ''.join([html_report.tag('h4', k) + item[1] for k, item in articles_conversion_result.items()])
+        f, e, w = reports.statistics_numbers(articles_conversion_results)
 
-    html_report.title = 'XML Conversion (XML to Database) - ' + issue_label
-    content = '\n'.join(converter_report_lines)
-    content = content.replace(old_report_path, report_path)
-    html_report.body = stats(content) + content
-    converter_report_filename = report_path + '/xml_converter_result.html'
-    html_report.save(converter_report_filename)
-    print('\n\nXML Converter report:\n ' + converter_report_filename)
-    pkg_checker.display_report(converter_report_filename)
-    print('\n\n-- end --')
-    return (converter_report_filename, report_path, scilista_item)
+        conversion_report = ''
+        conversion_report += html_report.statistics_messages(f, e, w, 'conversion')
+        conversion_report += articles_conversion_results
+        conversion_report += summary
 
+    filename = report_path + '/xml_converter.html'
+    content = ''
+    content += normalize_coding(pkg_checker.xml_list(pkg_path, xml_filenames))
+    content += normalize_coding(validations_report)
+    content += normalize_coding(conversion_report)
+    content += normalize_coding(pkg_checker.processing_result_location(report_path))
 
-def stats(content=None):
-    if content is None:
-        content = ''.join(converter_report_lines)
-    f, e, w = reports.statistics_numbers(content)
-    return html_report.statistics_messages(f, e, w, 'Results of XML Conversion (XML to Database)')
+    if old_report_path in content:
+        content = content.replace(old_report_path, report_path)
+
+    pkg_checker.save_report(filename, ['XML Conversion (XML to Database)', issue_label], content)
+    pkg_checker.display_report(filename)
+
+    return (filename, report_path, scilista_item)
 
 
-def convert_articles(ahead_manager, db_article, articles, article_results, issue_record, issue_files):
+def normalize_coding(text):
+    if isinstance(text, str):
+        text = text.decode('utf-8', 'xmlcharrefreplace')
+    return text
+
+
+def convert_articles(ahead_manager, db_article, articles, articles_stats_and_reports, issue_record, issue_files):
     total_new_doc = []
     total_ex_aop = []
     total_ex_aop_unmatched = []
@@ -173,14 +186,13 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
     not_loaded = []
     loaded = []
 
-    register_log('<h2>XML to Database</h2>')
+    i = 0
+    summary = u''
+    articles_conversion_result = {}
     for xml_name, article in articles.items():
-        #(xml_stats, data_stats, result)
-        xml_stats, data_stats, result = article_results[xml_name]
-
-        register_log('.'*80)
-        register_log(result)
         print(xml_name)
+        i += 1
+        xml_stats, data_stats, validation_report = articles_stats_and_reports[xml_name]
 
         valid_ahead, ahead_status, ahead_msg, ahead_comparison = ahead_manager.get_valid_ahead(article, xml_name)
         if valid_ahead is None:
@@ -195,66 +207,61 @@ def convert_articles(ahead_manager, db_article, articles, article_results, issue
             if ahead_status == 'partially matched':
                 total_ex_aop_partially.append(xml_name)
 
-        f, e, w, issue_validations, section_code = validate_issue_data(issue_record, article)
+        section_code, issue_validations_msg = validate_xml_issue_data(issue_record, article)
         article.section_code = section_code
 
-        register_log(html_report.statistics_messages(f, e, w, '<h4>converter validations</h4>'))
+        msg = u''
+        msg += html_report.tag('h4', 'checking ex-ahead')
+        msg += ''.join([html_report.format_message(item) for item in ahead_msg])
+        msg += ''.join([html_report.tag('pre', item) for item in ahead_comparison])
+        msg += html_report.tag('h4', 'checking issue data')
+        msg += issue_validations_msg
 
-        register_log(html_report.tag('h4', 'checking ex-ahead'))
-        register_log(''.join([html_report.format_message(item) for item in ahead_msg]))
-        register_log(''.join([html_report.tag('pre', item) for item in ahead_comparison]))
+        article.section_code = section_code
 
-        register_log(html_report.tag('h4', 'checking issue data'))
-        register_log(issue_validations)
+        f, e, w = pkg_checker.sum_stats([xml_stats, data_stats])
+        conv_f, conv_e, conv_w = reports.statistics_numbers(msg)
 
-        if f + xml_stats[0] + data_stats[0] == 0:
-            article.section_code = section_code
-            converted = convert_article(db_article, issue_record, issue_files, xml_name, article, valid_ahead)
-        else:
-            converted = False
-            register_log('FATAL ERROR: Unable to create "base" for ' + xml_name + ', because it has fatal errors.')
+        converted = False
+        if f + conv_f == 0:
+            converted = convert_article(db_article, issue_record.record, issue_files, xml_name, article, valid_ahead)
 
-        register_log(html_report.tag('h4', 'Result'))
+        msg += html_report.tag('h4', 'Conversion result')
         if converted:
             if valid_ahead is not None:
                 done, msg = ahead_manager.manage_ex_ahead(valid_ahead)
-                for item in msg:
-                    register_log(item)
+                msg += ''.join([item for item in msg])
             loaded.append(xml_name)
-            register_log('Result: converted')
+            msg += '<p>converted</p>'
         else:
             not_loaded.append(xml_name)
-            register_log('ERROR: not converted')
+            msg += html_report.format_message('FATAL ERROR: not converted')
 
-    register_log('#'*80)
+        articles_conversion_result[xml_name] = ((conv_f, conv_e, conv_w), msg)
 
-    register_log(html_report.tag('h2', 'SUMMARY'))
-    register_log(stats())
-    register_log(html_report.tag('h4', 'Converted/Not converted'))
-
-    register_log(display_list('converted', loaded))
-    register_log(display_list('not converted', not_loaded))
-
-    register_log(html_report.tag('h4', 'New/Ex-ahead'))
-    register_log(display_list('new documents', total_new_doc))
-    register_log(display_list('previous version (ahead of print)', total_ex_aop))
-    register_log(display_list('previous version (ahead of print) partially matched', total_ex_aop_partially))
-    register_log(display_list('previous version (ahead of print) without PID', total_ex_aop_invalid))
-    register_log(display_list('previous version (ahead of print) unmatched', total_ex_aop_unmatched))
+    summary += '#'*80
+    summary += display_list('converted', loaded)
+    summary += display_list('not converted', not_loaded)
+    summary += display_list('new documents', total_new_doc)
+    summary += display_list('previous version (ahead of print)', total_ex_aop)
+    summary += display_list('previous version (ahead of print) partially matched', total_ex_aop_partially)
+    summary += display_list('previous version (ahead of print) without PID', total_ex_aop_invalid)
+    summary += display_list('previous version (ahead of print) unmatched', total_ex_aop_unmatched)
 
     still_ahead = ahead_manager.finish_manage_ex_ahead()
     if len(still_ahead) > 0:
-        register_log(display_list('ahead', still_ahead))
+        summary += display_list('ahead', still_ahead)
 
     if len(loaded) > 0:
-        _loaded = db_article.finish_conversion(issue_record, issue_files)
+        _loaded = db_article.finish_conversion(issue_record.record, issue_files)
 
-        register_log(html_report.tag('h4', 'Processing result'))
-        register_log(html_report.link('file:///' + issue_files.issue_path, issue_files.issue_path))
+        summary += html_report.tag('h4', 'Resulting folders/files:')
+        summary += html_report.link('file:///' + issue_files.issue_path, issue_files.issue_path)
 
     if len(loaded) > 0:
-        register_log(issue_files.copy_files_to_web())
-    register_log('end')
+        summary += issue_files.copy_files_to_web()
+    summary += 'Finished.'
+    return (summary, articles_conversion_result)
 
 
 def display_list(title, items):
@@ -264,18 +271,13 @@ def display_list(title, items):
     return '\n'.join(messages)
 
 
-def validate_issue_data(issue_record, article):
-    f = 0
-    e = 0
-    w = 0
+def validate_xml_issue_data(issue_record, article):
     msg = []
     if article is not None:
-        issue_record = IssueRecord(issue_record)
 
         # issue date
         msg.append(html_report.tag('h5', 'publication date'))
         if article.issue_pub_dateiso != issue_record.issue.dateiso:
-            f += 1
             msg.append('ERROR: Invalid value of publication date: ' + article.issue_pub_dateiso + '. Expected value: ' + issue_record.issue.dateiso)
 
         # section
@@ -286,10 +288,8 @@ def validate_issue_data(issue_record, article):
             msg.append('Registered sections:\n' + '; '.join(issue_record.section_titles))
             if section_code is None:
                 if not article.is_ahead:
-                    f += 1
                     msg.append('ERROR: ' + article.toc_section + ' is not a registered section.')
             else:
-                w += 1
                 msg.append('WARNING: section replaced: "' + most_similar + '" (instead of "' + article.toc_section + '")')
 
         # @article-type
@@ -304,7 +304,7 @@ def validate_issue_data(issue_record, article):
             msg.append('WARNING: Check if ' + article.article_type + ' is a valid value for @article-type.')
 
     msg = ''.join([html_report.format_message(item) for item in msg])
-    return (f, e, w, msg, section_code)
+    return (section_code, msg)
 
 
 def compare_article_type_and_section(article_section, article_type):
@@ -318,13 +318,13 @@ def compare_article_type_and_section(article_section, article_type):
     return max_rate
 
 
-def convert_article(db_article, issue_record, issue_files, xml_name, article, ahead):
+def convert_article(db_article, i_record, issue_files, xml_name, article, ahead):
     r = False
     if article is not None:
         if ahead is not None:
             article._ahead_pid = ahead.ahead_pid
         article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
-        r = db_article.create_id_file(issue_record, article, article_files)
+        r = db_article.create_id_file(i_record, article, article_files)
     return r
 
 
@@ -498,7 +498,7 @@ def xml_converter_read_inputs(args):
             param = param.replace('\\', '/')
             if os.path.isdir(param):
                 package_paths = find_xml_source_paths(param)
-            configuration_filename = CURRENT_PATH + '/../../cfg/scielo_paths.ini'
+            configuration_filename = CURRENT_PATH + '/../../scielo_paths.ini'
 
         else:
             configuration_filename = CURRENT_PATH + '/../config/' + param + '.xmlproc.ini'
@@ -588,6 +588,7 @@ def call_converter(args, version='1.0'):
         if package_paths is None:
             package_paths = call_download_packages(config, email)
 
+        print(package_paths)
         if package_paths is not None:
             scilista_items = []
             for pkg_path in package_paths:
@@ -624,3 +625,4 @@ def call_converter(args, version='1.0'):
                         acron, issue_id = scilista_item.split(' ')
                         if os.path.isdir(config.website_folders_path):
                             transfer_website_files(acron, issue_id, config.website_folders_path, config.data('TRANSFER_USER'), config.data('TRANSFER_SERVER'), config.data('TRANSFER_DESTINATION'))
+    print('\n'.join(messages))

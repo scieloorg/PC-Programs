@@ -1,4 +1,4 @@
-# code = utf-8
+# coding=utf-8
 
 import os
 
@@ -51,45 +51,12 @@ class ReportHTML(object):
 
         return s
 
-    def javascript_for_collapse(self):
-        r = '<script language="JavaScript" type="text/javascript">'
-        r += '<!-- Copyright 2005, Sandeep Gangadharan -->'
-        r += '<!-- For more free scripts go to http://www.sivamdesign.com/scripts/ -->'
-        r += '<!--'
-        r += 'if (document.getElementById) {'
-        r += 'document.writeln(\'<style type="text/css"><!--\')'
-        r += 'document.writeln(\'.texter {display:none} @media print {.texter {display:block;}}\')'
-        r += 'document.writeln(\'//--></style>\') }'
-        r += 'function openClose(theID) {'
-        r += 'if (document.getElementById(theID).style.display == "block") { document.getElementById(theID).style.display = "none" }'
-        r += 'else { document.getElementById(theID).style.display = "block" } }'
-        r += '// -->'
-        r += '</script>'
-        return r
-
     def collapsible_block(self, section_id, section_title, content):
         r = '<div onClick="openClose(\'' + section_id + '\')" style="cursor:hand; cursor:pointer"><b>' + section_title + '</b></div>'
-        r += '<div id="' + section_id + '" class="texter">'
+        r += '<div id="' + section_id + '" class="collapsibleblock">'
         r += content
         r += '</div>'
         return r
-
-    def filecontent_in_collapsible_block(self, section_id, filename, display=False):
-        r = ''
-        style = ''
-        name = os.path.basename(filename)
-        if os.path.isfile(filename):
-            content = open(filename).read()
-            if filename.endswith('.html'):
-                style = content[content.find('<style'):]
-                style = style[0:style.find('</style>')+len('</style>')]
-                content = content[content.find('<body>'):]
-                content = content[0:content.rfind('</body>')]
-            r = self.collapsible_block(section_id, name, content)
-        else:
-            if display:
-                r = self.tag('h4', name)
-        return (r, style)
 
     def statistics_messages(self, f, e, w, title='', files_list=[]):
         s = [('Total of fatal errors:', f), ('Total of errors:', e), ('Total of warnings:', w)]
@@ -275,7 +242,9 @@ class ReportHTML(object):
         return value
 
     def styles(self):
-        return '<style>' + open(os.path.dirname(os.path.realpath(__file__)) + '/report.css', 'r').read() + '</style>'
+        css = '<style>' + open(os.path.dirname(os.path.realpath(__file__)) + '/report.css', 'r').read() + '</style>'
+        js = open(os.path.dirname(os.path.realpath(__file__)) + '/collapsible.js', 'r').read()
+        return css + js
 
     def message_style(self, value, default='ok'):
         r = default
@@ -295,4 +264,3 @@ class ReportHTML(object):
 
     def format_p_label_value(self, label, value):
         return self.tag('p', self.display_label_value(label, value))
-

@@ -12,19 +12,11 @@ import xml_utils
 import xml_versions
 import pkg_checker
 import xpchecker
-import reports
 
 
 mime = MimeTypes()
-html_report = reports.ReportHTML()
 messages = []
 log_items = []
-
-
-def register_message(message):
-    if not '<' in message:
-        message = html_report.format_message(message)
-    messages.append(message)
 
 
 def register_log(text):
@@ -612,28 +604,21 @@ def validate_created_package(scielo_pkg_path, doc_files_info_list, dtd_files, re
 
     register_log('generate validations reports')
 
-    issues, toc_results, articles, articles_stats, article_results = pkg_checker.validate_package(doc_files_info_list, dtd_files, report_path, False, do_toc_report)
+    validate_order = False
 
-    register_message(articles_stats)
+    articles, issue_data = pkg_checker.articles_and_issues(doc_files_info_list)
 
-    if do_toc_report:
-        toc_stats_numbers, toc_stats_report = toc_results
-        toc_f, toc_e, toc_w = toc_stats_numbers
+    toc_stats_and_report, articles_stats_and_reports, lists = pkg_checker.package_validations_data(articles, doc_files_info_list, dtd_files, report_path, validate_order, do_toc_report)
 
-        register_message(toc_stats_report)
-        if toc_f + toc_e + toc_w > 0:
-            register_message(html_report.link('file:///' + report_path + '/toc.html', 'toc.html'))
-        register_message(html_report.link('file:///' + report_path + '/authors.html', 'authors.html'))
-        register_message(html_report.link('file:///' + report_path + '/sources.html', 'sources.html'))
+    content = pkg_checker.package_validation_report_content(None, articles_stats_and_reports, lists)
 
-    register_message('\n'.join([item[2] for item in article_results.values()]))
-    register_message('Result of the processing: ' + html_report.link('file:///' + os.path.dirname(scielo_pkg_path), os.path.dirname(scielo_pkg_path)))
-    html_report.title = ['Validations report', scielo_pkg_path]
-    html_report.body = '\n'.join(messages)
-    html_report.save(report_path + '/xml_package_maker.html')
-    print('\n\nXML Package Maker reports:\n ' + report_path + '/xml_package_maker.html')
+    content += pkg_checker.processing_result_location(scielo_pkg_path)
+
+    filename = report_path + '/xml_package_maker.html'
+    pkg_checker.save_report(filename, ['Validations report', scielo_pkg_path], content)
+
     if display_report:
-        pkg_checker.display_report(report_path + '/xml_package_maker.html')
+        pkg_checker.display_report(filename)
 
 
 def validate_path(path):

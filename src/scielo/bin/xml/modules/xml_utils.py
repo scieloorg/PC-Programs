@@ -216,6 +216,7 @@ def named_ent_to_char(content):
             if find in content:
                 replaced_named_ent.append(find + '=>' + replace)
                 content = content.replace(find, replace)
+    replaced_named_ent = list(set(replaced_named_ent))
     return (content, replaced_named_ent)
 
 
@@ -287,40 +288,38 @@ def handle_entities(content):
     return handle_mml_entities(content)
 
 
-def load_xml(content):
-    message = None
-    r = None
+def read_xml(content):
     if not '<' in content:
         # is a file
-        try:
-            r = etree.parse(content)
-        except Exception as e:
-            content = open(content, 'r').read()
+        content = open(content, 'r').read()
+    return content
 
-    if '<' in content:
-        try:
-            r = etree.parse(StringIO(content))
-        except Exception as e:
-            #print('XML is not well formed')
-            message = 'XML is not well formed\n'
-            msg = str(e)
-            if 'position ' in msg:
-                pos = msg.split('position ')
-                pos = pos[1]
-                pos = pos[0:pos.find(': ')]
-                if '-' in pos:
-                    pos = pos[0:pos.find('-')]
-                if pos.isdigit():
-                    pos = int(pos)
-                msg += '\n'
-                text = content[0:pos]
-                text = text[text.rfind('<'):]
-                msg += text + '[[['
-                msg += content[pos:pos+1]
-                text = content[pos+1:]
-                msg += ']]]' + text[0:text.find('>')+1]
-            message += msg
-            r = None
+
+def parse_xml(content):
+    message = None
+    try:
+        r = etree.parse(StringIO(content))
+    except Exception as e:
+        #print('XML is not well formed')
+        message = 'XML is not well formed\n'
+        msg = str(e)
+        if 'position ' in msg:
+            pos = msg.split('position ')
+            pos = pos[1]
+            pos = pos[0:pos.find(': ')]
+            if '-' in pos:
+                pos = pos[0:pos.find('-')]
+            if pos.isdigit():
+                pos = int(pos)
+            msg += '\n'
+            text = content[0:pos]
+            text = text[text.rfind('<'):]
+            msg += text + '[[['
+            msg += content[pos:pos+1]
+            text = content[pos+1:]
+            msg += ']]]' + text[0:text.find('>')+1]
+        message += msg
+        r = None
     return (r, message)
 
 
@@ -328,3 +327,14 @@ def is_xml_well_formed(content):
     node, e = load_xml(content)
     if e is None:
         return node
+
+
+def load_xml(content, fix=False):
+    content = read_xml(content)
+    xml, e = parse_xml(content)
+    if xml is None:
+        if fix:
+            fixed_content, replaced_named_ent = convert_entities_to_chars(content)
+            if content != fixed_content:
+                xml, e = parse_xml(fixed_content)
+    return (xml, e)
