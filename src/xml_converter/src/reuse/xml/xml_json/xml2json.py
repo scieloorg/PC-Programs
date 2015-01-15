@@ -144,28 +144,8 @@ class XML2JSON:
     def _convert_value_(self, value):
         enc = 'utf-8'
         if value != '':
-            try: 
-                test = value.encode(enc)
-            except:
-                
-                test = self.convert_chr(value)
-                print( 'xxxxxxx')
-                print(value)
-                print(test)
-            if type(test) == type(''):
-                value = test
-                value = ' '.join(value.split())
+            if not isinstance(value, unicode):
+                value = value.replace('&', '&amp;')
+            if isinstance(value, unicode):
+                value = value.encode(enc, 'xmlcharrefreplace')
         return value
-
-    def convert_chr(self, value):
-        v = ''
-        for c in value:
-            try:
-                v += c.encode('utf-8')
-            except:
-                try: 
-                    n = ord(c)
-                except:
-                    n = 256*ord(c[0]) + ord(c[1])
-                v += '&#' + str(hex(n)) + ';'
-        return v
