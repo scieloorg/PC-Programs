@@ -137,7 +137,7 @@ class JSON2IDFile:
         if self.convert2iso:
             r = self._iso(value)
         else:
-            r = value
+            r = value           
         r = r.replace('& ', '&amp; ')
         r = r.replace('<italic>', '<em>')
         r = r.replace('</italic>', '</em>')
