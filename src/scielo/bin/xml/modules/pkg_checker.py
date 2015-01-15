@@ -40,7 +40,6 @@ def article_validations_reports_content(filename):
             content = content[content.find('<body'):]
             content = content[0:content.rfind('</body>')]
             content = content[content.find('>')+1:]
-            content = html_report.display_xml(content)
     return content
 
 
@@ -163,9 +162,13 @@ def package_validations_data(articles, doc_files_info_list, dtd_files, report_pa
     return (toc_stats_and_report, articles_stats_and_reports, lists)
 
 
+def display_statistics_inline(f, e, w):
+    return ' | '.join([k + ': ' + v for k, v in {'fatal errors': str(f), 'errors': str(e), 'warnings': str(w)}.items()])
+
+
 def package_validation_report_content(toc_stats_and_report, articles_stats_and_reports, lists):
     text = ''
-
+    toc_f = 0
     if toc_stats_and_report is not None:
         toc_stats, toc_report = toc_stats_and_report
         toc_f, toc_e, toc_w = toc_stats
@@ -178,13 +181,24 @@ def package_validation_report_content(toc_stats_and_report, articles_stats_and_r
     text += lists
 
     if toc_f == 0:
+        n = '/' + str(len(articles_stats_and_reports))
+        index = 0
+        text += html_report.tag('h3', 'XML and Data Validations Report')
+
         for name, items in articles_stats_and_reports.items():
-            f, e, w
-        text += ''.join([html_report.tag('h4', key) + values[2] for key, values in articles_stats_and_reports.items()])
+            i = 0
+            index += 1
 
-    print('package_validation_report_content')
-    print(type(text))
+            text += html_report.tag('h4', str(index) + n)
+            text += html_report.tag('h4', name + '.xml')
 
+            items = {'xml validation': items[0], 'data validation': items[1]}
+            for report_name, item in items.items():
+                f, e, w, report = item
+                i += 1
+                title = name + '.xml ' + report_name + ' [' + display_statistics_inline(f, e, w) + ']'
+                if f + e + w > 0:
+                    text += html_report.collapsible_block(name + str(i), title, report)
     return text
 
 

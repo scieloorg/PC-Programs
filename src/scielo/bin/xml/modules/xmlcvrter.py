@@ -145,15 +145,8 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
         issue_files.save_source_files(pkg_path)
         report_path = issue_files.base_reports_path
 
-        summary, articles_conversion_result = convert_articles(ahead_manager, db_article, articles, articles_stats_and_reports, issue_record, issue_files)
-
-        articles_conversion_results = ''.join([html_report.tag('h4', k) + item[1] for k, item in articles_conversion_result.items()])
-        f, e, w = reports.statistics_numbers(articles_conversion_results)
-
-        conversion_report = ''
-        conversion_report += html_report.statistics_messages(f, e, w, 'conversion')
-        conversion_report += articles_conversion_results
-        conversion_report += summary
+        conversion_validation_result = validate_package_for_conversion(ahead_manager, articles, issue_record)
+        conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record.record, articles, articles_stats_and_reports, conversion_validation_result)
 
     filename = report_path + '/xml_converter.html'
     content = ''
@@ -177,7 +170,27 @@ def normalize_coding(text):
     return text
 
 
-def convert_articles(ahead_manager, db_article, articles, articles_stats_and_reports, issue_record, issue_files):
+def validate_package_for_conversion(ahead_manager, articles, issue_record):
+    result = {}
+    for xml_name, article in articles.items():
+        print(xml_name)
+
+        valid_ahead, ahead_status, ahead_msg, ahead_comparison = ahead_manager.get_valid_ahead(article, xml_name)
+        section_code, issue_validations_msg = validate_xml_issue_data(issue_record, article)
+
+        msg = ''
+        msg += html_report.tag('h4', 'checking ex-ahead')
+        msg += ''.join([html_report.format_message(item) for item in ahead_msg])
+        msg += ''.join([html_report.tag('pre', item) for item in ahead_comparison])
+        msg += html_report.tag('h4', 'checking issue data')
+        msg += issue_validations_msg
+        conv_f, conv_e, conv_w = reports.statistics_numbers(msg)
+
+        result[xml_name] = (conv_f, conv_e, conv_w, msg, valid_ahead, ahead_status, section_code)
+    return result
+
+
+def convert_articles(ahead_manager, db_article, issue_files, i_record, articles, articles_stats_and_reports, conversion_report):
     total_new_doc = []
     total_ex_aop = []
     total_ex_aop_unmatched = []
@@ -186,17 +199,22 @@ def convert_articles(ahead_manager, db_article, articles, articles_stats_and_rep
     not_loaded = []
     loaded = []
 
+    n = '/' + str(len(articles))
     i = 0
-    summary = u''
-    articles_conversion_result = {}
-    for xml_name, article in articles.items():
+
+    text = html_report.tag('h3', 'XML Conversion')
+
+    for xml_name, data in conversion_report.items():
+        conv_f, conv_e, conv_w, messages, valid_ahead, ahead_status, section_code = data
+        xml_stats, data_stats = articles_stats_and_reports[xml_name]
+        xml_f, xml_e, xml_w, xml_report = xml_stats
+        data_f, data_e, data_w, xml_data = data_stats
+        article = articles[xml_name]
+
         print(xml_name)
         i += 1
-        xml_validation_result, data_validation_result = articles_stats_and_reports[xml_name]
-        xml_stats, xml_validation_report = xml_validation_result
-        data_stats, data_validation_report = data_validation_result
+        text += html_report.tag('h3', str(i) + n)
 
-        valid_ahead, ahead_status, ahead_msg, ahead_comparison = ahead_manager.get_valid_ahead(article, xml_name)
         if valid_ahead is None:
             if ahead_status == 'new':
                 total_new_doc.append(xml_name)
@@ -209,39 +227,26 @@ def convert_articles(ahead_manager, db_article, articles, articles_stats_and_rep
             if ahead_status == 'partially matched':
                 total_ex_aop_partially.append(xml_name)
 
-        section_code, issue_validations_msg = validate_xml_issue_data(issue_record, article)
         article.section_code = section_code
-
-        msg = u''
-        msg += html_report.tag('h4', 'checking ex-ahead')
-        msg += ''.join([html_report.format_message(item) for item in ahead_msg])
-        msg += ''.join([html_report.tag('pre', item) for item in ahead_comparison])
-        msg += html_report.tag('h4', 'checking issue data')
-        msg += issue_validations_msg
-
-        article.section_code = section_code
-
-        f, e, w = pkg_checker.sum_stats([xml_stats, data_stats])
-        conv_f, conv_e, conv_w = reports.statistics_numbers(msg)
 
         converted = False
-        if f + conv_f == 0:
-            converted = convert_article(db_article, issue_record.record, issue_files, xml_name, article, valid_ahead)
+        if conv_f + xml_f + data_f == 0:
+            converted = convert_article(db_article, i_record, issue_files, xml_name, article, valid_ahead)
 
-        msg += html_report.tag('h4', 'Conversion result')
         if converted:
             if valid_ahead is not None:
-                done, msg = ahead_manager.manage_ex_ahead(valid_ahead)
-                msg += ''.join([item for item in msg])
+                done, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
+                messages += ''.join([item for item in ahead_msg])
             loaded.append(xml_name)
-            msg += '<p>converted</p>'
+            messages += '<p>converted</p>'
         else:
             not_loaded.append(xml_name)
-            msg += html_report.format_message('FATAL ERROR: not converted')
+            messages += html_report.format_message('FATAL ERROR: not converted')
 
-        articles_conversion_result[xml_name] = ((conv_f, conv_e, conv_w), msg)
+        title = xml_name + '.xml converter report [' + pkg_checker.display_statistics_inline(conv_f, conv_e, conv_w) + ']'
+        text += html_report.collapsible_block(xml_name + 'conv', title, messages)
 
-    summary += '#'*80
+    summary = '#'*80
     summary += display_list('converted', loaded)
     summary += display_list('not converted', not_loaded)
     summary += display_list('new documents', total_new_doc)
@@ -255,7 +260,7 @@ def convert_articles(ahead_manager, db_article, articles, articles_stats_and_rep
         summary += display_list('ahead', still_ahead)
 
     if len(loaded) > 0:
-        _loaded = db_article.finish_conversion(issue_record.record, issue_files)
+        _loaded = db_article.finish_conversion(i_record, issue_files)
 
         summary += html_report.tag('h4', 'Resulting folders/files:')
         summary += html_report.link('file:///' + issue_files.issue_path, issue_files.issue_path)
@@ -263,7 +268,7 @@ def convert_articles(ahead_manager, db_article, articles, articles_stats_and_rep
     if len(loaded) > 0:
         summary += issue_files.copy_files_to_web()
     summary += 'Finished.'
-    return (summary, articles_conversion_result)
+    return text + summary
 
 
 def display_list(title, items):
