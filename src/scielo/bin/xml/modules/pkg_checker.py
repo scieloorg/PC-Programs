@@ -28,23 +28,20 @@ def validate_article_data(article, new_name, package_path, report_filename, vali
     return (f, e, w, sheet_data)
 
 
-def article_validations_reports_content(doc_files_info):
-    items = {'dtd': doc_files_info.err_filename, 'style': doc_files_info.style_report_filename, 'data': doc_files_info.data_report_filename}
-    report_name = doc_files_info.xml_name
-    i = 0
-    html = ''
-    for name, filename in items.items():
-        content = ''
-        i += 1
-        if os.path.isfile(filename):
-            content = open(filename, 'r').read()
-            if name == 'dtd':
-                content = content.replace('\n', '<br/>')
-            elif name == 'style':
-                content = html_report.display_xml(content)
-        if len(content) > 0:
-            html += html_report.collapsible_block(report_name + str(i), name, content)
-    return html
+def article_validations_reports_content(filename):
+    content = ''
+    if os.path.isfile(filename):
+        content = open(filename, 'r').read()
+        if '</article>' in content:
+            content = html_report.display_xml(content)
+            content = content.replace('\n', '<br/>')
+
+        if '</body>' in content:
+            content = content[content.find('<body'):]
+            content = content[0:content.rfind('</body>')]
+            content = content[content.find('>')+1:]
+            content = html_report.display_xml(content)
+    return content
 
 
 def sum_stats(stats_items):
@@ -144,9 +141,9 @@ def package_validations_data(articles, doc_files_info_list, dtd_files, report_pa
             data_f, data_e, data_w, sheet_data = validate_article_data(articles[new_name], new_name, os.path.dirname(xml_filename), doc_files_info.data_report_filename, validate_order)
 
             #html += html_report.collapsible_block(os.path.basename(xml_filename), reports.body(xml_filename.replace()))
-            html = article_validations_reports_content(doc_files_info)
-
-            articles_stats_and_reports[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w), html)
+            xml_report = article_validations_reports_content(doc_files_info.dtd_report_filename) + article_validations_reports_content(doc_files_info.style_report_filename)
+            data_report = article_validations_reports_content(doc_files_info.data_report_filename)
+            articles_stats_and_reports[new_name] = ((xml_f, xml_e, xml_w, xml_report), (data_f, data_e, data_w, data_report))
 
             if create_toc_report and sheet_data is not None:
                 authors_h, authors_w, authors_data = sheet_data.authors_sheet_data(new_name)
@@ -156,10 +153,10 @@ def package_validations_data(articles, doc_files_info_list, dtd_files, report_pa
 
     if create_toc_report:
         authors = html_report.sheet((authors_h, authors_w, toc_authors_sheet_data))
-        authors = html_report.collapsible_block('authors', 'authors', authors)
+        authors = html_report.collapsible_block('authors', 'List of authors found in the package', authors)
 
         sources = html_report.sheet((sources_h, sources_w, toc_sources_sheet_data))
-        sources = html_report.collapsible_block('sources', 'sources', sources)
+        sources = html_report.collapsible_block('sources', 'List of sources found in the package', sources)
 
         lists = authors + sources
 
@@ -174,13 +171,15 @@ def package_validation_report_content(toc_stats_and_report, articles_stats_and_r
         toc_f, toc_e, toc_w = toc_stats
 
         if toc_f + toc_e + toc_w > 0:
+            text += html_report.tag('h3', 'Table of Contents Report')
             text += stats_report(toc_f, toc_e, toc_w, 'toc validations stats')
             text += html_report.collapsible_block('table of contents', 'table of contents', toc_report)
 
     text += lists
 
     if toc_f == 0:
-        text += articles_stats_report(articles_stats_and_reports)
+        for name, items in articles_stats_and_reports.items():
+            f, e, w
         text += ''.join([html_report.tag('h4', key) + values[2] for key, values in articles_stats_and_reports.items()])
 
     print('package_validation_report_content')

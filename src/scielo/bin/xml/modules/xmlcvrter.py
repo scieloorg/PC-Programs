@@ -192,7 +192,9 @@ def convert_articles(ahead_manager, db_article, articles, articles_stats_and_rep
     for xml_name, article in articles.items():
         print(xml_name)
         i += 1
-        xml_stats, data_stats, validation_report = articles_stats_and_reports[xml_name]
+        xml_validation_result, data_validation_result = articles_stats_and_reports[xml_name]
+        xml_stats, xml_validation_report = xml_validation_result
+        data_stats, data_validation_report = data_validation_result
 
         valid_ahead, ahead_status, ahead_msg, ahead_comparison = ahead_manager.get_valid_ahead(article, xml_name)
         if valid_ahead is None:
