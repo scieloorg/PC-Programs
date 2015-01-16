@@ -4,6 +4,8 @@ import shutil
 from datetime import datetime
 
 from article_utils import how_similar
+from isis_models import ArticleRecords2Article
+from isis import IDFile
 
 
 class DocumentFiles(object):
@@ -234,15 +236,15 @@ class AheadManager(object):
                 if matched_rate > 0:
                     is_valid_ahead = self.is_valid(ahead)
                     if is_valid_ahead:
-                        status = 'valid'
+                        status = 'matched'
                         msg = ''
                         valid_ahead = ahead
                         if matched_rate != 100:
                             msg = 'WARNING: the title/author of article and its "ahead of print version" are partially matched.'
                             status = 'partially matched'
                     else:
-                        status = 'not valid'
-                        msg = 'WARNING: the title/author of "ahead of print version" has no PID'
+                        status = 'invalid'
+                        msg = 'WARNING: the "ahead of print version" has no PID'
                 else:
                     status = 'unmatched'
                     msg = 'WARNING: the title/author of article and "ahead of print version" are unmatched'
@@ -305,7 +307,7 @@ class AheadManager(object):
         return (done, msg)
 
     def finish_manage_ex_ahead(self):
-        loaded = []
+        ahead_list = {}
         for ahead_db_name, ahead_list in self.deleted.items():
             id_path = self.journal_files.ahead_id_path(ahead_db_name[0:4])
             base = self.journal_files.ahead_base(ahead_db_name[0:4])
@@ -314,8 +316,10 @@ class AheadManager(object):
                 for f in os.listdir(id_path):
                     if f.endswith('.id') and f != '00000.id' and f != 'i.id':
                         self.dao.append_id_records(id_path + '/' + f, base)
-                        loaded.append(ahead_db_name + ' ' + f)
-        return loaded
+
+                        ahead_article = ArticleRecords2Article(IDFile(id_path + '/' + f).read())
+                        ahead_list[ahead_db_name[0:4] + os.path.basename(ahead_article.filename)] = (ahead_article.pid, ahead_article.doi, ahead_article.first_title)
+        return ahead_list
 
 
 class ArticleFiles(object):
@@ -520,12 +524,12 @@ class ArticleDAO(object):
             os.makedirs(os.path.dirname(article_files.issue_files.base))
 
         if article.order != '00000':
-            from isis_models import ArticleRecords
-            article_isis = ArticleRecords(article, i_record, article_files)
-            self.dao.save_id(article_files.id_filename, article_isis.records)
+            from isis_models import Article2ArticleRecords
+            article_records = Article2ArticleRecords(article, i_record, article_files)
+            self.dao.save_id(article_files.id_filename, article_records.records)
             if os.path.isfile(article_files.id_filename):
                 saved_records = self.dao.get_id_records(article_files.id_filename)
-                saved = (len(saved_records) == len(article_isis.records))
+                saved = (len(saved_records) == len(article_records.records))
         return saved
 
     def finish_conversion(self, issue_record, issue_files):

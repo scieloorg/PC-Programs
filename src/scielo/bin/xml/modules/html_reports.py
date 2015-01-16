@@ -52,9 +52,9 @@ class ReportHTML(object):
         return s
 
     def collapsible_block(self, section_id, section_title, content):
-        r = '<div id="show' + section_id + '" onClick="openClose(\'' + section_id + '\')" style="cursor:hand; cursor:pointer"><b>' + section_title + ' (show) </b></div>'
-        r += '<div id="hide' + section_id + '" class="collapsiblehidden" onClick="openClose(\'' + section_id + '\')" style="cursor:hand; cursor:pointer"><b>' + section_title + ' (hide) </b></div>'
-        r += '<div id="' + section_id + '" class="collapsible">'
+        r = '<div id="show' + section_id + '" onClick="openClose(\'' + section_id + '\')" style="cursor:hand; cursor:pointer">' + section_title + ' (show)</div>'
+        r += '<div id="hide' + section_id + '" class="collapsiblehidden" style="cursor:hand; cursor:pointer"><b>' + section_title + ' (hide) </b></div>'
+        r += '<div id="' + section_id + '" onClick="openClose(\'' + section_id + '\')" class="collapsible">'
         r += content
         r += '</div>'
         return r

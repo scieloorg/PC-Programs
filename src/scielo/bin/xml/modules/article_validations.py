@@ -1,7 +1,5 @@
 # coding=utf-8
 
-from isis_models import DOCTOPIC
-
 import attributes
 import article_utils
 
@@ -118,7 +116,7 @@ class ArticleContentValidation(object):
 
     @property
     def article_type(self):
-        return expected_values('@article-type', self.article.article_type, DOCTOPIC.keys())
+        return expected_values('@article-type', self.article.article_type, attributes.DOCTOPIC.keys(), 'FATAL ')
 
     @property
     def language(self):

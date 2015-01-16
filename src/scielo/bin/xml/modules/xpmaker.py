@@ -10,9 +10,12 @@ import serial_files
 import java_xml_utils
 import xml_utils
 import xml_versions
-import pkg_checker
+import pkg_reports
 import xpchecker
+import html_reports
 
+
+html_report = html_reports.ReportHTML()
 
 mime = MimeTypes()
 messages = []
@@ -606,19 +609,17 @@ def validate_created_package(scielo_pkg_path, doc_files_info_list, dtd_files, re
 
     validate_order = False
 
-    articles, issue_data = pkg_checker.articles_and_issues(doc_files_info_list)
+    articles, issue_data = pkg_reports.articles_and_issues(doc_files_info_list)
 
-    toc_stats_and_report, articles_stats_and_reports, lists = pkg_checker.package_validations_data(articles, doc_files_info_list, dtd_files, report_path, validate_order, do_toc_report)
+    content = pkg_reports.package_validations_report(articles, doc_files_info_list, dtd_files, validate_order, do_toc_report)
 
-    content = pkg_checker.package_validation_report_content(None, articles_stats_and_reports, lists)
-
-    content += pkg_checker.processing_result_location(scielo_pkg_path)
+    content += pkg_reports.processing_result_location(scielo_pkg_path)
 
     filename = report_path + '/xml_package_maker.html'
-    pkg_checker.save_report(filename, ['Validations report', scielo_pkg_path], content)
+    pkg_reports.save_report(filename, ['XML Package Maker Report', scielo_pkg_path], content)
 
     if display_report:
-        pkg_checker.display_report(filename)
+        pkg_reports.display_report(filename)
 
 
 def validate_path(path):

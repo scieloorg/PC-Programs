@@ -4,52 +4,7 @@ from datetime import datetime
 
 from article_utils import doi_pid, display_pages, format_dateiso
 from article import Issue, PersonAuthor
-
-
-DOCTOPIC = {
-                'research-article': 'oa',
-                'editorial': 'ed',
-                'abstract': 'ab',
-                'announcement': 'an',
-                'article-commentary': 'co',
-                'case-report': 'cr',
-                'letter': 'le',
-                'review-article': 'ra',
-                'rapid-communication': 'sc',
-                'addendum': 'ax',
-                'book-review': 'rc',
-                'books-received': '??',
-                'brief-report': 'rn',
-                'calendar': '??',
-                'collection': '??',
-                'correction': 'er',
-                'discussion': '??',
-                'dissertation': '??',
-                'in-brief': 'pr',
-                'introduction': '??',
-                'meeting-report': '??',
-                'news': '??',
-                'obituary': '??',
-                'oration': '??',
-                'partial-retraction': '??',
-                'product-review': '??',
-                'reply': '??',
-                'reprint': '??',
-                'retraction': '??',
-                'translation': '??',
-}
-
-ROLE = {
-    'author': 'ND',
-    'editor': 'ED',
-    'assignee': 'assignee',
-    'compiler': 'compiler',
-    'director': 'director',
-    'guest-editor': 'guest-editor',
-    'inventor': 'inventor',
-    'transed': 'transed',
-    'translator': 'TR',    
-}
+from attributes import ROLE, DOCTOPIC
 
 
 def normalize_role(_role):
@@ -62,7 +17,36 @@ def normalize_doctopic(_doctopic):
     return _doctopic if r == '??' else r
 
 
-class ArticleRecords(object):
+class ArticleRecords2Article(object):
+    def __init__(self, article_records):
+        self.article_records = article_records
+
+    @property
+    def filename(self):
+        return self.article_records[0]['702']
+
+    @property
+    def titles(self):
+        return self.article_records[1]['12']
+
+    @property
+    def first_title(self):
+        return self.titles[0]['_']
+
+    @property
+    def doi(self):
+        return self.article_records[1]['237']
+
+    @property
+    def pid(self):
+        return self.article_records[1]['880']
+
+    @property
+    def old_pid(self):
+        return self.article_records[1]['881']
+
+
+class Article2ArticleRecords(object):
 
     def __init__(self, article, i_record, article_files):
         self.article = article

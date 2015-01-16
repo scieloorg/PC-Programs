@@ -145,7 +145,11 @@ class XML2JSON:
         enc = 'utf-8'
         if value != '':
             if not isinstance(value, unicode):
-                value = value.replace('&', '&amp;')
+                if '&' in value and not ';' in value:
+                    value = value.replace('&', '&amp;')
             if isinstance(value, unicode):
-                value = value.encode(enc, 'xmlcharrefreplace')
+                try:
+                    value = value.encode(enc)
+                except:
+                    value = value.encode(enc, 'xmlcharrefreplace')
         return value

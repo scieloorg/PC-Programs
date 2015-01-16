@@ -490,7 +490,6 @@ class ArticleValidationReport(object):
         rows += self.format_validation_data(self.article_validation.abstracts)
         rows += self.format_validation_data(self.article_validation.keywords)
         rows += self.format_validation_data(self.article_validation.xref_rids)
-        
         rows = self.validation_table(rows)
         rows += self.references
         return html_report.tag('div', html_report.tag('h2', 'Validations') + rows, 'article-messages')
@@ -660,7 +659,7 @@ def package_files(path, xml_name):
     return r
 
 
-def toc_report(articles_and_filenames, validate_order):
+def toc_report_data(articles_and_filenames, validate_order):
     toc_report_content = TOCReport(articles_and_filenames, validate_order).report()
     toc_f, toc_e, toc_w = reports.statistics_numbers(toc_report_content)
     return (toc_f, toc_e, toc_w, toc_report_content)

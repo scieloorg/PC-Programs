@@ -10,14 +10,14 @@ import ftp_service
 import email_service
 import files_extractor
 import serial_files
-import reports
-import pkg_checker
+import html_reports
+import pkg_reports
 import xml_versions
 import isis
 import xmlcvrter_cfg
 import article_utils
 
-html_report = reports.ReportHTML()
+html_report = html_reports.ReportHTML()
 converter_report_lines = []
 CURRENT_PATH = os.path.dirname(__file__).replace('\\', '/')
 CONFIG_PATH = CURRENT_PATH + '/../config/'
@@ -102,29 +102,29 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
     scilista_item = None
     issue_record = None
     dtd_files = xml_versions.DTDFiles('scielo', version)
+    validate_order = True
+    do_toc_report = True
 
     xml_filenames = sorted([pkg_path + '/' + f for f in os.listdir(pkg_path) if f.endswith('.xml') and not 'incorrect' in f])
+
     doc_files_info_list = []
     for xml_filename in xml_filenames:
         doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, None)
         doc_files_info.new_xml_filename = xml_filename
         doc_files_info_list.append(doc_files_info)
 
-    validate_order = True
-    do_toc_report = True
+    articles, issue_data = pkg_reports.articles_and_issues(doc_files_info_list)
+    toc_stats_and_report = pkg_reports.validate_toc(articles, validate_order)
+    toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
 
-    articles, issue_data = pkg_checker.articles_and_issues(doc_files_info_list)
+    articles_stats, articles_reports, articles_sheets = pkg_reports.validate_package(articles, doc_files_info_list, dtd_files, validate_order)
 
+    validations_reports = pkg_reports.format_validation_report(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, do_toc_report)
+    validations_report = ''.join(validations_reports)
     issue_record, issue_error_msg = get_issue(issue_data, db_issue)
     issue_label = issue_data[0]
 
-    toc_stats_and_report, articles_stats_and_reports, lists = pkg_checker.package_validations_data(articles, doc_files_info_list, dtd_files, report_path, validate_order, do_toc_report)
-
-    toc_stats, toc_report = toc_stats_and_report
-    toc_f, toc_e, toc_w = toc_stats
-
     conversion_report = ''
-    validations_report = pkg_checker.package_validation_report_content(toc_stats_and_report, articles_stats_and_reports, lists)
 
     if toc_f > 0:
         validations_report += html_report.format_message('FATAL ERROR: Unable to create "base" because of fatal errors in the Table of Contents data.')
@@ -145,21 +145,21 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
         issue_files.save_source_files(pkg_path)
         report_path = issue_files.base_reports_path
 
-        conversion_validation_result = validate_package_for_conversion(ahead_manager, articles, issue_record)
-        conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record.record, articles, articles_stats_and_reports, conversion_validation_result)
+        conversion_validation_result = check_data(ahead_manager, articles, issue_record)
+        conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record.record, articles, articles_stats, conversion_validation_result)
 
     filename = report_path + '/xml_converter.html'
     content = ''
-    content += normalize_coding(pkg_checker.xml_list(pkg_path, xml_filenames))
+    content += normalize_coding(pkg_reports.xml_list(pkg_path, xml_filenames))
     content += normalize_coding(validations_report)
     content += normalize_coding(conversion_report)
-    content += normalize_coding(pkg_checker.processing_result_location(report_path))
+    content += normalize_coding(pkg_reports.processing_result_location(report_path))
 
     if old_report_path in content:
         content = content.replace(old_report_path, report_path)
 
-    pkg_checker.save_report(filename, ['XML Conversion (XML to Database)', issue_label], content)
-    pkg_checker.display_report(filename)
+    pkg_reports.save_report(filename, ['XML Conversion (XML to Database)', issue_label], content)
+    pkg_reports.display_report(filename)
 
     return (filename, report_path, scilista_item)
 
@@ -170,7 +170,7 @@ def normalize_coding(text):
     return text
 
 
-def validate_package_for_conversion(ahead_manager, articles, issue_record):
+def check_data(ahead_manager, articles, issue_record):
     result = {}
     for xml_name, article in articles.items():
         print(xml_name)
@@ -184,13 +184,13 @@ def validate_package_for_conversion(ahead_manager, articles, issue_record):
         msg += ''.join([html_report.tag('pre', item) for item in ahead_comparison])
         msg += html_report.tag('h4', 'checking issue data')
         msg += issue_validations_msg
-        conv_f, conv_e, conv_w = reports.statistics_numbers(msg)
+        conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
 
         result[xml_name] = (conv_f, conv_e, conv_w, msg, valid_ahead, ahead_status, section_code)
     return result
 
 
-def convert_articles(ahead_manager, db_article, issue_files, i_record, articles, articles_stats_and_reports, conversion_report):
+def convert_articles(ahead_manager, db_article, issue_files, i_record, articles, articles_stats, conversion_report):
     total_new_doc = []
     total_ex_aop = []
     total_ex_aop_unmatched = []
@@ -199,33 +199,30 @@ def convert_articles(ahead_manager, db_article, issue_files, i_record, articles,
     not_loaded = []
     loaded = []
 
+    articles_by_status = {}
+    status_text = ['converted', 'not converted', 'first version', 'previous version (aop)', 'previous version (aop) unmatched', 'previous version (aop) without PID', 'previous version (aop) partially matched', ]
+    order = ['converted', 'not converted', 'new', 'matched', 'unmatched', 'invalid', 'partially matched']
+
+    for item in order:
+        articles_by_status[item] = []
+
     n = '/' + str(len(articles))
     i = 0
 
     text = html_report.tag('h3', 'XML Conversion')
 
     for xml_name, data in conversion_report.items():
-        conv_f, conv_e, conv_w, messages, valid_ahead, ahead_status, section_code = data
-        xml_stats, data_stats = articles_stats_and_reports[xml_name]
-        xml_f, xml_e, xml_w, xml_report = xml_stats
-        data_f, data_e, data_w, xml_data = data_stats
+        conv_f, conv_e, conv_w, conv_messages, valid_ahead, ahead_status, section_code = data
+        xml_stats, data_stats = articles_stats[xml_name]
+        xml_f, xml_e, xml_w = xml_stats
+        data_f, data_e, data_w = data_stats
         article = articles[xml_name]
 
         print(xml_name)
         i += 1
-        text += html_report.tag('h3', str(i) + n)
+        text += html_report.tag('h3', str(i) + n + ' - ' + xml_name)
 
-        if valid_ahead is None:
-            if ahead_status == 'new':
-                total_new_doc.append(xml_name)
-            elif ahead_status == 'unmatched':
-                total_ex_aop_unmatched.append(xml_name)
-            elif ahead_status == 'not valid':
-                total_ex_aop_invalid.append(xml_name)
-        else:
-            total_ex_aop.append(xml_name)
-            if ahead_status == 'partially matched':
-                total_ex_aop_partially.append(xml_name)
+        articles_by_status[ahead_status].append(xml_name)
 
         article.section_code = section_code
 
@@ -233,31 +230,30 @@ def convert_articles(ahead_manager, db_article, issue_files, i_record, articles,
         if conv_f + xml_f + data_f == 0:
             converted = convert_article(db_article, i_record, issue_files, xml_name, article, valid_ahead)
 
-        if converted:
-            if valid_ahead is not None:
-                done, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
-                messages += ''.join([item for item in ahead_msg])
-            loaded.append(xml_name)
-            messages += '<p>converted</p>'
-        else:
-            not_loaded.append(xml_name)
-            messages += html_report.format_message('FATAL ERROR: not converted')
-
-        title = xml_name + '.xml converter report [' + pkg_checker.display_statistics_inline(conv_f, conv_e, conv_w) + ']'
-        text += html_report.collapsible_block(xml_name + 'conv', title, messages)
+            if converted:
+                if valid_ahead is not None:
+                    if ahead_status in ['matched', 'partially matched']:
+                        done, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
+                        conv_messages += ''.join([item for item in ahead_msg])
+                articles_by_status['converted'].append(xml_name)
+                conv_messages += html_report.format_message('OK: converted')
+            else:
+                articles_by_status['not converted'].append(xml_name)
+                conv_messages += html_report.format_message('FATAL ERROR: not converted')
+                conv_f += 1
+        title = pkg_reports.display_statistics_inline(conv_f, conv_e, conv_w)
+        text += html_report.collapsible_block(xml_name + 'conv', title, conv_messages)
 
     summary = '#'*80
-    summary += display_list('converted', loaded)
-    summary += display_list('not converted', not_loaded)
-    summary += display_list('new documents', total_new_doc)
-    summary += display_list('previous version (ahead of print)', total_ex_aop)
-    summary += display_list('previous version (ahead of print) partially matched', total_ex_aop_partially)
-    summary += display_list('previous version (ahead of print) without PID', total_ex_aop_invalid)
-    summary += display_list('previous version (ahead of print) unmatched', total_ex_aop_unmatched)
+    i = 0
+    for status in order:
+        summary += display_list(status_text[i], articles_by_status[status])
+        i += 1
 
     still_ahead = ahead_manager.finish_manage_ex_ahead()
     if len(still_ahead) > 0:
-        summary += display_list('ahead', still_ahead)
+        still_ahead = [still_ahead[k][0] + still_ahead[k][1] + still_ahead[k][2] for k in sorted(still_ahead.keys(), reverse=True)]
+        summary += display_list('ahead list', still_ahead)
 
     if len(loaded) > 0:
         _loaded = db_article.finish_conversion(i_record, issue_files)
@@ -267,7 +263,8 @@ def convert_articles(ahead_manager, db_article, issue_files, i_record, articles,
 
     if len(loaded) > 0:
         summary += issue_files.copy_files_to_web()
-    summary += 'Finished.'
+    summary += html_report.tag('p', 'Finished.')
+
     return text + summary
 
 
@@ -286,6 +283,7 @@ def validate_xml_issue_data(issue_record, article):
         msg.append(html_report.tag('h5', 'publication date'))
         if article.issue_pub_dateiso != issue_record.issue.dateiso:
             msg.append('ERROR: Invalid value of publication date: ' + article.issue_pub_dateiso + '. Expected value: ' + issue_record.issue.dateiso)
+            print(article.issue_pub_date)
 
         # section
         msg.append(html_report.tag('h5', 'section'))
