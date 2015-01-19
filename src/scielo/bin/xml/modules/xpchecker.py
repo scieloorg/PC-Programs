@@ -145,6 +145,8 @@ def _validate_xml_and_style(xml_filename, dtd_files, dtd_report_filename, style_
     is_valid_style = False
 
     xml, e = xml_utils.load_xml(xml_filename)
+    print('dtd_report_filename')
+    print(dtd_report_filename)
     is_valid_dtd = dtd_validation(xml_filename, dtd_report_filename, dtd_files.doctype_with_local_path, dtd_files.database_name)
     if e is None:
         is_valid_style = style_validation(xml_filename, dtd_files.doctype_with_local_path, style_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report, dtd_files.database_name)
@@ -153,29 +155,7 @@ def _validate_xml_and_style(xml_filename, dtd_files, dtd_report_filename, style_
     return (xml, is_valid_dtd, is_valid_style)
 
 
-def delete_unrequired_reports(ctrl_filename, is_valid_dtd, is_valid_style, dtd_validation_report, style_checker_report):
-    if ctrl_filename is None:
-        if is_valid_style is True:
-            os.unlink(style_checker_report)
-    else:
-        open(ctrl_filename, 'w').write('Finished')
-    if os.path.isfile(dtd_validation_report):
-        os.unlink(dtd_validation_report)
-
-
-def append_dtd_errors(err_filename, dtd_report):
-    if os.path.isfile(dtd_report):
-        separator = ''
-        if os.path.isfile(err_filename):
-            separator = '\n\n\n' + '.........\n\n\n'
-        open(err_filename, 'a+').write(separator + 'DTD errors\n' + '-'*len('DTD errors') + '\n' + open(dtd_report, 'r').read())
-
-
-def validate_article_xml(xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename):
+def validate_article_xml(xml_filename, dtd_files, dtd_report, style_report):
     loaded_xml, is_valid_dtd, is_valid_style = _validate_xml_and_style(xml_filename, dtd_files, dtd_report, style_report)
-
-    if not is_valid_dtd and err_filename is not None:
-        append_dtd_errors(err_filename, dtd_report)
     f, e, w = style_checker_statistics(style_report)
-    delete_unrequired_reports(ctrl_filename, is_valid_dtd, is_valid_style, dtd_report, style_report)
     return (loaded_xml, is_valid_dtd, (f, e, w))

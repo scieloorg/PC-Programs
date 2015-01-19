@@ -100,6 +100,7 @@ def get_issue(issue_data, db_issue):
 def convert_package(serial_path, pkg_path, report_path, website_folders_path, db_issue, db_ahead, db_article, version='1.0'):
     old_report_path = report_path
     scilista_item = None
+    label = 'acron issue'
     issue_record = None
     dtd_files = xml_versions.DTDFiles('scielo', version)
     validate_order = True
@@ -117,10 +118,12 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
     toc_stats_and_report = pkg_reports.validate_toc(articles, validate_order)
     toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
 
-    articles_stats, articles_reports, articles_sheets = pkg_reports.validate_package(articles, doc_files_info_list, dtd_files, validate_order)
+    articles_stats, articles_reports, articles_sheets = pkg_reports.validate_package(articles, doc_files_info_list, dtd_files, validate_order, False)
 
     validations_reports = pkg_reports.format_validation_report(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, do_toc_report)
-    validations_report = ''.join(validations_reports)
+
+    validations_report = pkg_reports.join_reports(validations_reports, './log_xc.txt')
+
     issue_record, issue_error_msg = get_issue(issue_data, db_issue)
     issue_label = issue_data[0]
 
@@ -139,6 +142,7 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
         issue_label = issue.issue_label
         journal_files = serial_files.JournalFiles(serial_path, issue.acron)
         scilista_item = issue.acron + ' ' + issue_label
+        label = scilista_item
         ahead_manager = serial_files.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
         issue_files = serial_files.IssueFiles(journal_files, issue_label, pkg_path, website_folders_path)
         issue_files.move_reports(report_path)
@@ -158,7 +162,7 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
     if old_report_path in content:
         content = content.replace(old_report_path, report_path)
 
-    pkg_reports.save_report(filename, ['XML Conversion (XML to Database)', issue_label], content)
+    pkg_reports.save_report(filename, ['XML Conversion (XML to Database)', label], content)
     pkg_reports.display_report(filename)
 
     return (filename, report_path, scilista_item)
@@ -218,9 +222,11 @@ def convert_articles(ahead_manager, db_article, issue_files, i_record, articles,
         data_f, data_e, data_w = data_stats
         article = articles[xml_name]
 
-        print(xml_name)
         i += 1
-        text += html_report.tag('h3', str(i) + n + ' - ' + xml_name)
+        item_label = str(i) + n + ' - ' + xml_name
+        print(item_label)
+
+        text += html_report.tag('h4', item_label)
 
         articles_by_status[ahead_status].append(xml_name)
 

@@ -3,7 +3,7 @@ import os
 
 import xml.etree.ElementTree as etree
 
-from article_utils import doi_pid, format_date
+from article_utils import doi_pid, format_date, format_dateiso
 from xml_utils import node_text, node_xml, element_lang
 
 
@@ -912,7 +912,7 @@ class Article(ArticleXML):
 
     @property
     def issue_pub_dateiso(self):
-        return format_date(self.issue_pub_date)
+        return format_dateiso(self.issue_pub_date)
 
     @property
     def issue_pub_date(self):

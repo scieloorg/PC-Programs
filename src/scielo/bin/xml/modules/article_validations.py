@@ -69,30 +69,51 @@ def display_attributes(attributes):
     return '; '.join(r)
 
 
-def invalid_characters_in_value(label, value, invalid_characters, error_or_warning):
+def invalid_terms_in_value(label, value, invalid_terms, error_or_warning):
     r = True
-    for c in value:
-        if c in invalid_characters:
+    invalid = ''
+    b = value.decode('utf-8') if not isinstance(value, unicode) else value
+
+    for term in invalid_terms:
+        a = term.decode('utf-8') if not isinstance(term, unicode) else term
+
+        if term.lower() in value.lower() or term in value or a in b:
             r = False
+            invalid = term
             break
     if not r:
-        return (label, error_or_warning, 'Invalid characteres (' + ';'.join(invalid_characters) + ') in ' + label + ': ' + value)
+        return (label, error_or_warning, 'Invalid character/word (' + invalid + ') in ' + label + ': ' + value)
     else:
         return (label, 'OK', value)
 
 
-def validate_name(label, value, invalid_characters):
+def validate_name(label, value, invalid_terms):
     r = []
     result = required(label, value, 'WARNING')
     label, status, msg = result
     if status == 'OK':
-        result = invalid_characters_in_value(label, value, invalid_characters, 'WARNING')
+        result = invalid_terms_in_value(label, value, invalid_terms, 'WARNING')
+    r.append(result)
+    return r
+
+
+def validate_surname(label, value):
+    r = []
+    result = required(label, value, 'WARNING')
+    label, status, msg = result
+    if status == 'OK':
+        result = invalid_terms_in_value(label, value, [' ', '_', 'neto', 'sobrinho', 'filho', u'júnior', 'junior', 'senior', ' sr', ' jr'], 'WARNING')
+        label, status, msg = result
+        if status == 'WARNING':
+            parts = value.split(' ')
+            if len(parts) == 2 and value[0:1] == value[0:1].lower():
+                status = 'OK'
     r.append(result)
     return r
 
 
 def validate_contrib_names(author, affiliations=[]):
-    results = validate_name('surname', author.surname, [' ', '_']) + validate_name('given-names', author.fname, ['_'])
+    results = validate_surname('surname', author.surname) + validate_name('given-names', author.fname, ['_'])
     if len(affiliations) > 0:
         aff_ids = [aff.id for aff in affiliations if aff.id is not None]
         if len(author.xref) == 0:
@@ -221,15 +242,13 @@ class ArticleContentValidation(object):
         def valid(order, status):
             r = ('OK', order)
             if order is None:
-                r = (status, 'Missing order')
+                r = (status, 'Missing order. Expected number 1 to 99999.')
             else:
                 if order.isdigit():
-                    if len(order) != 5:
-                        r = (status, order + ': Invalid format of order. Expected 99999.')
                     if int(order) < 1 or int(order) > 99999:
                         r = (status, order + ': Invalid format of order. Expected number 1 to 99999.')
                 else:
-                    r = (status, order + ':Invalid format of order. Expected 99999.')
+                    r = (status, order + ': Invalid format of order. Expected number 1 to 99999.')
             return r
         if self.validate_order:
             status = 'FATAL ERROR'
@@ -240,7 +259,11 @@ class ArticleContentValidation(object):
 
     @property
     def article_id_other(self):
-        return display_value('article-id (other)', self.article.article_id_other)
+        r = ('article-id (other)', 'OK', self.article.article_id_other)
+        if self.article.fpage is not None:
+            if self.article.fpage == '00' or not self.article.fpage.isdigit():
+                r = ('article-id (other)', 'FATAL ERROR', 'article-id[@pub-id-type="other"] is required if there is no fpage > 0 or fpage is not number.')
+        return r
 
     @property
     def issue_label(self):
@@ -333,20 +356,11 @@ class ArticleContentValidation(object):
         return display_value('ack xml', self.article.ack_xml)
 
     @property
-    def fpage(self):
-        return conditional_required('fpage', self.article.fpage)
-
-    @property
-    def fpage_seq(self):
-        return conditional_required('fpage/@seq', self.article.fpage_seq)
-
-    @property
-    def lpage(self):
-        return display_value('lpage', self.article.lpage)
-
-    @property
-    def elocation_id(self):
-        return conditional_required('elocation-id', self.article.elocation_id)
+    def pagination(self):
+        r = ('fpage', 'OK', self.article.fpage)
+        if self.article.fpage is None:
+            r = required('elocation-id', self.article.elocation_id, 'ERROR')
+        return r
 
     @property
     def affiliations(self):
@@ -357,7 +371,7 @@ class ArticleContentValidation(object):
             r.append(required('aff original', aff.original, 'ERROR'))
             label, status, msg = required('aff normalized', aff.norgname, 'ERROR')
             if status == 'ERROR':
-                msg += '. Please, ask to scielo@scielo.org or check http://wayta.scielo.org/ (trial version) to know how to normalize the name of this institution.'
+                msg += '. Please, ask to scielo@scielo.org or check http://wayta.scielo.org/ (trial version) to know how to normalize the name of this institution: ' + aff.original
             r.append((label, status, msg))
             r.append(required('aff orgname', aff.orgname, 'ERROR'))
             r.append(required('aff country', aff.country, 'FATAL ERROR'))
