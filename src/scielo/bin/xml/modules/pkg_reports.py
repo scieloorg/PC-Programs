@@ -136,23 +136,17 @@ def articles_and_issues(doc_files_info_list):
 
 def package_validations_report(articles, doc_files_info_list, dtd_files, validate_order, create_toc_report):
     toc_stats_and_report = validate_toc(articles, validate_order)
-    articles_stats, articles_reports, articles_sheets = validate_package(articles, doc_files_info_list, dtd_files, validate_order, not create_toc_report)
-    texts = get_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report)
+    articles_stats, articles_reports, articles_sheets = validate_package(articles, doc_files_info_list, dtd_files, validate_order, not create_toc_report)    
+    return package_validations_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report)
+
+
+def package_validations_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report):
+    texts = get_reports_texts(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report)
     return html_reports.join_texts(texts)
 
 
 def validate_toc(articles, validate_order):
     return article_reports.toc_report_data(articles, validate_order)
-
-
-def format_toc_report(toc_stats_and_report):
-    text = ''
-    if toc_stats_and_report is not None:
-        toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
-        if toc_f + toc_e + toc_w > 0:
-            text = html_reports.tag('h2', 'Table of contents Report')
-            text += html_reports.collapsible_block('toc', 'table of contents validations ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report)
-    return text
 
 
 def validate_package(articles, doc_files_info_list, dtd_files, validate_order, display_all):
@@ -176,7 +170,7 @@ def validate_package(articles, doc_files_info_list, dtd_files, validate_order, d
     return (articles_stats, articles_reports, articles_sheets)
 
 
-def get_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report):
+def get_reports_texts(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report):
     n = '/' + str(len(articles_reports))
     authors_h = None
     authors_w = None
@@ -189,7 +183,9 @@ def get_reports_text(articles_stats, articles_reports, articles_sheets, toc_stat
 
     toc_text = ''
     if create_toc_report:
-        toc_text = format_toc_report(toc_stats_and_report)
+        if toc_f + toc_e + toc_w > 0:
+            toc_text = html_reports.tag('h2', 'Table of contents Report')
+            toc_text += html_reports.collapsible_block('toc', 'table of contents validations ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report)
 
     if toc_f == 0:
         index = 0

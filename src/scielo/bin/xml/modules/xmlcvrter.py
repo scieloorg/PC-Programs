@@ -119,9 +119,7 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
 
     articles_stats, articles_reports, articles_sheets = pkg_reports.validate_package(articles, doc_files_info_list, dtd_files, validate_order, False)
 
-    validations_reports = pkg_reports.format_validation_report(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, do_toc_report)
-
-    validations_report = pkg_reports.join_reports(validations_reports, './log_xc.txt')
+    validations_report = pkg_reports.package_validations_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, do_toc_report)
 
     issue_record, issue_error_msg = get_issue(issue_data, db_issue)
     issue_label = issue_data[0]
@@ -246,7 +244,7 @@ def convert_articles(ahead_manager, db_article, issue_files, i_record, articles,
                 articles_by_status['not converted'].append(xml_name)
                 conv_messages += html_reports.format_message('FATAL ERROR: not converted')
                 conv_f += 1
-        title = pkg_reports.display_statistics_inline(conv_f, conv_e, conv_w)
+        title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
         text += html_reports.collapsible_block(xml_name + 'conv', title, conv_messages)
 
     summary = '#'*80
@@ -285,8 +283,8 @@ def validate_xml_issue_data(issue_record, article):
     if article is not None:
 
         # issue date
-        msg.append(html_reports.tag('h5', 'publication date'))
         if article.issue_pub_dateiso != issue_record.issue.dateiso:
+            msg.append(html_reports.tag('h5', 'publication date'))
             msg.append('ERROR: Invalid value of publication date: ' + article.issue_pub_dateiso + '. Expected value: ' + issue_record.issue.dateiso)
 
         # section

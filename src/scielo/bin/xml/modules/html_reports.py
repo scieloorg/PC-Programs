@@ -24,12 +24,12 @@ def statistics_numbers(content):
 
 def get_unicode(text):
     if not isinstance(text, unicode):
-        text = text.encode('utf-8', 'xmlcharrefreplace')
+        text = text.decode('utf-8', 'xmlcharrefreplace')
     return text
 
 
 def join_texts(texts):
-    text = ''.join([get_unicode(t) for t in texts])
+    text = u''.join([get_unicode(t) for t in texts])
     if isinstance(text, unicode):
         text = text.encode('utf-8')
     return text
@@ -83,7 +83,7 @@ def html(title, body):
     s += styles()
     s += '</head>'
     s += '<body>'
-    s += report_date
+    s += report_date()
     if isinstance(title, list):
         s += tag('h1', title[0])
         s += tag('h1', title[1])
@@ -98,8 +98,10 @@ def html(title, body):
 
 def statistics_display(f, e, w, inline=True):
     if inline:
+        element_name = 'span'
         stats = ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]])
     else:
+        element_name = 'div'
         stats = [('Total of fatal errors:', f), ('Total of errors:', e), ('Total of warnings:', w)]
         stats = ''.join([format_p_label_value(l, str(v)) for l, v in stats])
 
@@ -108,7 +110,7 @@ def statistics_display(f, e, w, inline=True):
     if style == '' or style == 'ok':
         style = 'success'
 
-    return tag('div', stats, style)
+    return tag(element_name, stats, style)
 
 
 def display_links_to_report(files_list, path_relative=False):
@@ -243,7 +245,7 @@ def save(filename, title, body):
         body = body
 
     f = open(filename, 'w')
-    r = html()
+    r = html(title, body)
     if isinstance(r, unicode):
         r = r.encode('utf-8')
     f.write(r)
