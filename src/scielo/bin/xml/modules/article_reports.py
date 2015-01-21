@@ -6,12 +6,9 @@ from datetime import datetime
 import xml_utils
 import article_utils
 import article_validations
-import reports
+import html_reports
 
 from article import Article, PersonAuthor, CorpAuthor, format_author
-
-
-html_report = reports.ReportHTML()
 
 
 class TOCReport(object):
@@ -43,14 +40,14 @@ class TOCReport(object):
 
         r = ''
         if len(invalid) > 0:
-            r += html_report.tag('div', html_report.format_message('FATAL ERROR: Invalid XML files'))
-            r += html_report.tag('div', html_report.format_list('', 'ol', invalid, 'issue-problem'))
+            r += html_reports.tag('div', html_reports.format_message('FATAL ERROR: Invalid XML files'))
+            r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid, 'issue-problem'))
 
         for label in equal_data:
             if len(toc_data[label]) > 1:
-                part = html_report.format_message('FATAL ERROR: same value for ' + label + ' is required for all the articles of the package')
+                part = html_reports.format_message('FATAL ERROR: same value for ' + label + ' is required for all the articles of the package')
                 for found_value, xml_files in toc_data[label].items():
-                    part += html_report.format_list('found ' + label + ' "' + html_report.display_xml(found_value) + '" in:', 'ul', xml_files, 'issue-problem')
+                    part += html_reports.format_list('found ' + label + ' "' + html_reports.display_xml(found_value) + '" in:', 'ul', xml_files, 'issue-problem')
                 r += part
 
         for label in unique_data:
@@ -76,24 +73,24 @@ class TOCReport(object):
                     duplicated = []
 
                 if len(duplicated) > 0:
-                    part = html_report.format_message(unique_status[label] + ': unique value of ' + label + ' is required for all the articles of the package')
+                    part = html_reports.format_message(unique_status[label] + ': unique value of ' + label + ' is required for all the articles of the package')
                     for found_value, xml_files in duplicated.items():
-                        part += html_report.format_list('found ' + label + ' "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
+                        part += html_reports.format_list('found ' + label + ' "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
                     r += part
                 if len(none) > 0:
-                    part = html_report.format_message('INFO: there is no value for ' + label + '.')
-                    part += html_report.format_list('no value for ' + label + ' in:', 'ul', none, 'issue-problem')
+                    part = html_reports.format_message('INFO: there is no value for ' + label + '.')
+                    part += html_reports.format_list('no value for ' + label + ' in:', 'ul', none, 'issue-problem')
                     r += part
 
         issue_common_data = ''
         for label in equal_data:
             message = ''
             if len(toc_data[label].items()) == 1:
-                issue_common_data += html_report.display_labeled_value(label, toc_data[label].keys()[0])
+                issue_common_data += html_reports.display_labeled_value(label, toc_data[label].keys()[0])
             else:
                 message = '(ERROR: Unique value expected for ' + label + ')'
-                issue_common_data += html_report.format_list(label + message, 'ol', toc_data[label].keys())
-        return html_report.tag('div', issue_common_data, 'issue-data') + html_report.tag('div', r, 'issue-messages')
+                issue_common_data += html_reports.format_list(label + message, 'ol', toc_data[label].keys())
+        return html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages')
 
 
 class ArticleDisplayReport(object):
@@ -132,7 +129,7 @@ class ArticleDisplayReport(object):
             r += self.abstracts
             r += self.keywords
 
-        return html_report.tag('h2', 'Article front') + html_report.tag('div', r, 'article-data')
+        return html_reports.tag('h2', 'Article front') + html_reports.tag('div', r, 'article-data')
 
     @property
     def article_body(self):
@@ -140,44 +137,44 @@ class ArticleDisplayReport(object):
         r += self.sections
         r += self.formulas
         r += self.tables
-        return html_report.tag('h2', 'Article body') + html_report.tag('div', r, 'article-data')
+        return html_reports.tag('h2', 'Article body') + html_reports.tag('div', r, 'article-data')
 
     @property
     def article_back(self):
         r = ''
         r += self.funding
         r += self.footnotes
-        return html_report.tag('h2', 'Article back') + html_report.tag('div', r, 'article-data')
+        return html_reports.tag('h2', 'Article back') + html_reports.tag('div', r, 'article-data')
 
     @property
     def files_and_href(self):
         r = ''
-        r += html_report.tag('h2', 'Files in the package') + html_report.sheet(self.sheet_data.package_files(self.files))
-        r += html_report.tag('h2', '@href') + html_report.sheet(self.sheet_data.hrefs_sheet_data(self.xml_path))
+        r += html_reports.tag('h2', 'Files in the package') + html_reports.sheet(self.sheet_data.package_files(self.files))
+        r += html_reports.tag('h2', '@href') + html_reports.sheet(self.sheet_data.hrefs_sheet_data(self.xml_path))
         return r
 
     @property
     def authors_sheet(self):
-        return html_report.tag('h2', 'Authors') + html_report.sheet(self.sheet_data.authors_sheet_data())
+        return html_reports.tag('h2', 'Authors') + html_reports.sheet(self.sheet_data.authors_sheet_data())
 
     @property
     def sources_sheet(self):
-        return html_report.tag('h2', 'Sources') + html_report.sheet(self.sheet_data.sources_sheet_data())
+        return html_reports.tag('h2', 'Sources') + html_reports.sheet(self.sheet_data.sources_sheet_data())
 
     def display_labeled_value(self, label, value, style=''):
-        return html_report.display_labeled_value(label, value, style)
+        return html_reports.display_labeled_value(label, value, style)
 
     def display_titles(self):
         r = ''
         for title in self.article.titles:
-            r += html_report.display_labeled_value(title.language, title.title)
+            r += html_reports.display_labeled_value(title.language, title.title)
         return r
 
     def display_text(self, label, items):
-        r = html_report.tag('p', label, 'label')
+        r = html_reports.tag('p', label, 'label')
         for item in items:
             r += self.display_labeled_value(item.language, item.text)
-        return html_report.tag('div', r)
+        return html_reports.tag('div', r)
 
     @property
     def language(self):
@@ -197,13 +194,13 @@ class ArticleDisplayReport(object):
 
     @property
     def contrib_names(self):
-        return html_report.format_list('authors:', 'ol', [format_author(a) for a in self.article.contrib_names])
+        return html_reports.format_list('authors:', 'ol', [format_author(a) for a in self.article.contrib_names])
 
     @property
     def contrib_collabs(self):
         r = [a.collab for a in self.article.contrib_collabs]
         if len(r) > 0:
-            r = html_report.format_list('collabs', 'ul', r)
+            r = html_reports.format_list('collabs', 'ul', r)
         else:
             r = self.display_labeled_value('collabs', 'None')
         return r
@@ -214,7 +211,7 @@ class ArticleDisplayReport(object):
 
     @property
     def keywords(self):
-        return html_report.format_list('keywords:', 'ol', ['(' + k['l'] + ') ' + k['k'] for k in self.article.keywords])
+        return html_reports.format_list('keywords:', 'ol', ['(' + k['l'] + ') ' + k['k'] for k in self.article.keywords])
 
     @property
     def order(self):
@@ -255,13 +252,13 @@ class ArticleDisplayReport(object):
     @property
     def sections(self):
         _sections = ['[' + sec_id + '] ' + sec_title + ' (' + str(sec_type) + ')' for sec_id, sec_type, sec_title in self.article.article_sections]
-        return html_report.format_list('sections:', 'ul', _sections)
+        return html_reports.format_list('sections:', 'ul', _sections)
 
     @property
     def formulas(self):
-        r = html_report.tag('p', 'disp-formulas:', 'label')
+        r = html_reports.tag('p', 'disp-formulas:', 'label')
         for item in self.article.formulas:
-            r += html_report.tag('p', item)
+            r += html_reports.tag('p', item)
         return r
 
     @property
@@ -269,44 +266,44 @@ class ArticleDisplayReport(object):
         r = ''
         for item in self.article.article_fn_list:
             scope, fn_xml = item
-            r += html_report.tag('p', scope, 'label')
-            r += html_report.tag('p', fn_xml)
+            r += html_reports.tag('p', scope, 'label')
+            r += html_reports.tag('p', fn_xml)
         if len(r) > 0:
-            r = html_report.tag('p', 'foot notes:', 'label') + r
+            r = html_reports.tag('p', 'foot notes:', 'label') + r
         return r
 
     @property
     def issue_header(self):
         if self.article is not None:
             r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, article_utils.format_date(self.article.issue_pub_date)]
-            return html_report.tag('div', '\n'.join([html_report.tag('h5', item) for item in r if item is not None]), 'issue-data')
+            return html_reports.tag('div', '\n'.join([html_reports.tag('h5', item) for item in r if item is not None]), 'issue-data')
         else:
             return ''
 
     @property
     def tables(self):
-        r = html_report.tag('p', 'Tables:', 'label')
+        r = html_reports.tag('p', 'Tables:', 'label')
         for t in self.article.tables:
-            header = html_report.tag('h3', t.id)
+            header = html_reports.tag('h3', t.id)
             table_data = ''
-            table_data += html_report.display_labeled_value('label', t.label, 'label')
-            table_data += html_report.display_labeled_value('caption',  t.caption, 'label')
-            table_data += html_report.tag('p', 'table-wrap/table (xml)', 'label')
-            table_data += html_report.tag('div', html_report.html_value(t.table), 'xml')
+            table_data += html_reports.display_labeled_value('label', t.label, 'label')
+            table_data += html_reports.display_labeled_value('caption',  t.caption, 'label')
+            table_data += html_reports.tag('p', 'table-wrap/table (xml)', 'label')
+            table_data += html_reports.tag('div', html_reports.html_value(t.table), 'xml')
             if t.table:
-                table_data += html_report.tag('p', 'table-wrap/table', 'label')
-                table_data += html_report.tag('div', t.table, 'element-table')
+                table_data += html_reports.tag('p', 'table-wrap/table', 'label')
+                table_data += html_reports.tag('div', t.table, 'element-table')
             if t.graphic:
-                table_data += html_report.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value')
-            r += header + html_report.tag('div', table_data, 'block')
+                table_data += html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value')
+            r += header + html_reports.tag('div', table_data, 'block')
         return r
 
     @property
     def affiliations(self):
-        r = html_report.tag('p', 'Affiliations:', 'label')
+        r = html_reports.tag('p', 'Affiliations:', 'label')
         for item in self.article.affiliations:
-            r += html_report.tag('p', html_report.html_value(item.xml))
-        r += html_report.sheet(self.sheet_data.affiliations_sheet_data())
+            r += html_reports.tag('p', html_reports.html_value(item.xml))
+        r += html_reports.sheet(self.sheet_data.affiliations_sheet_data())
         return r
 
     @property
@@ -319,8 +316,8 @@ class ArticleDisplayReport(object):
             row['xml'] = xml_utils.node_xml(item)
             row['xml'] = row['xml'][0:row['xml'].find('>')+1]
             sheet_data.append(row)
-        r = html_report.tag('h2', 'elements and @id:')
-        r += html_report.sheet((t_header, [], sheet_data))
+        r = html_reports.tag('h2', 'elements and @id:')
+        r += html_reports.sheet((t_header, [], sheet_data))
         return r
 
     @property
@@ -332,16 +329,15 @@ class ArticleDisplayReport(object):
             row['@id'] = item.attrib.get('id')
             row['tag'] = item.tag
             sheet_data.append(row)
-        r = html_report.tag('h2', 'elements and @id:')
-        r += html_report.sheet((t_header, [], sheet_data))
+        r = html_reports.tag('h2', 'elements and @id:')
+        r += html_reports.sheet((t_header, [], sheet_data))
         return r
 
 
 class ArticleValidationReport(object):
 
-    def __init__(self, article_validation, display_problems):
+    def __init__(self, article_validation):
         self.article_validation = article_validation
-        self.display_problems = display_problems
 
     def display_items(self, items):
         r = ''
@@ -350,7 +346,13 @@ class ArticleValidationReport(object):
         return r
 
     def display_item(self, item):
-        return html_report.format_message(item)
+        return html_reports.format_message(item)
+
+    def format_rows(self, items):
+        content = ''
+        for label, status, msg in items:
+            content += self.format_row(label, status, msg)
+        return content
 
     def format_table(self, content):
         r = '<p>'
@@ -367,81 +369,52 @@ class ArticleValidationReport(object):
     def format_row(self, label, status, message):
         r = ''
         cell = ''
-        display = (self.display_problems is False)
-        if not display:
-            display = status in ['FATAL ERROR', 'ERROR', 'WARNING', 'INFO']
-        if display:
-            cell += html_report.tag('td', label, 'td_label')
-            cell += html_report.tag('td', status, 'td_status')
-            style = html_report.message_style(status + ':')
-            value = message
-            if '<' in value and '>' in value:
-                value = html_report.display_xml(value)
-            if style == 'ok':
-                value = html_report.tag('span', value, 'value')
-            cell += html_report.tag('td', value, 'td_message')
-            r += html_report.tag('tr', cell, style)
+        cell += html_reports.tag('td', label, 'td_label')
+        cell += html_reports.tag('td', status, 'td_status')
+        style = html_reports.message_style(status + ':')
+        value = message
+        if '<' in value and '>' in value:
+            value = html_reports.display_xml(value)
+        if style == 'ok':
+            value = html_reports.tag('span', value, 'value')
+        cell += html_reports.tag('td', value, 'td_message')
+        r += html_reports.tag('tr', cell, style)
         return r
 
-    def get_rows(self, label_status_message_list):
-        r = ''
-        if isinstance(label_status_message_list, list):
-            for item in label_status_message_list:
-                r += self.get_rows(item)
-        else:
-            label, status, message = label_status_message_list
-            r += self.format_row(label, status, message)
-        return r
-
-    def report_results(self, display_problems):
+    def validations(self, display_problems):
+        items = self.article_validation.validations
+        for item in items:
+            if not isinstance(item, tuple):
+                print(item)
+            else:
+                if len(item) != 3:
+                    print(item)
         if display_problems:
-            self.display_problems = display_problems
-        rows = ''
-        items = [self.article_validation.journal_title,
-                    self.article_validation.publisher_name,
-                    self.article_validation.journal_id,
-                    self.article_validation.journal_id_nlm_ta,
-                    self.article_validation.journal_issns,
-                    self.article_validation.issue_label,
-                    self.article_validation.language,
-                    self.article_validation.article_type,
-                    self.article_validation.article_date_types,
-                    self.article_validation.toc_section,
-                    self.article_validation.order,
-                    self.article_validation.doi,
-                    self.article_validation.pagination,
-                    self.article_validation.total_of_pages,
-                    self.article_validation.total_of_equations,
-                    self.article_validation.total_of_tables,
-                    self.article_validation.total_of_figures,
-                    self.article_validation.total_of_references,
-                    self.article_validation.titles,
-                    self.article_validation.contrib_names,
-                    self.article_validation.contrib_collabs,
-                    self.article_validation.affiliations,
-                    self.article_validation.funding,
-                    self.article_validation.license_text,
-                    self.article_validation.license_url,
-                    self.article_validation.license_type,
-                    self.article_validation.history,
-                    self.article_validation.abstracts,
-                    self.article_validation.keywords,
-                    self.article_validation.xref_rids,
-                ]
-        rows = self.format_table(rows)
-        rows += self.references
-        return html_report.tag('div', html_report.tag('h2', 'Validations') + rows, 'article-messages')
+            items = [(label, status, msg) for label, status, msg in items if status != 'OK']
 
-    @property
-    def references(self):
+        r = ''
+        if len(items) > 0:
+            r += self.format_table(self.format_rows(items))
+
+        part = self.references(display_problems)
+        if len(part) > 0:
+            r += self.format_table(part)
+
+        if len(r) > 0:
+            r = html_reports.tag('div', html_reports.tag('h2', 'Validations') + r, 'article-messages')
+
+        return r
+
+    def references(self, display_problems):
         rows = ''
-        for ref in self.article_validation.references:
-            ref_result = ref.evaluate()
-            result = self.get_rows(ref_result)
-            if len(result) > 0:
-                rows += html_report.tag('h3', 'Reference ' + ref.id)
-                rows += html_report.display_xml(ref.reference.xml)
-                rows += self.format_table(result)
+        for ref, ref_result in self.article_validation.references:
+            if display_problems:
+                ref_result = [(label, status, msg) for label, status, msg in ref_result if status != 'OK']
+
+            if len(ref_result) > 0:
+                rows += html_reports.tag('h3', 'Reference ' + ref.id)
+                rows += html_reports.display_xml(ref.xml)
+                rows += self.format_table(self.format_rows(ref_result))
         return rows
 
 
@@ -591,20 +564,20 @@ class ArticleSheetData(object):
 def package_files(path, xml_name):
     r = []
     for item in os.listdir(path):
-        if not item.endswith('.xml'):
-            prefix = xml_name.replace('.xml', '')
-            if item.startswith(prefix + '.') or item.startswith(prefix + '-') or item.startswith(prefix + '_'):
+        prefix = xml_name.replace('.xml', '')
+        if item.startswith(prefix + '.') or item.startswith(prefix + '-') or item.startswith(prefix + '_'):
+            if not item.endswith('.xml'):
                 r.append(item)
     return r
 
 
 def toc_report_data(articles_and_filenames, validate_order):
     toc_report_content = TOCReport(articles_and_filenames, validate_order).report()
-    toc_f, toc_e, toc_w = reports.statistics_numbers(toc_report_content)
+    toc_f, toc_e, toc_w = html_reports.statistics_numbers(toc_report_content)
     return (toc_f, toc_e, toc_w, toc_report_content)
 
 
-def _validate_article_data(article, new_name, package_path, validate_order, display_sheets):
+def get_report_content(article, new_name, package_path, validate_order, display_all):
     if article is None:
         content = 'FATAL ERROR: Unable to get data of ' + new_name + '.'
         sheet_data = None
@@ -612,35 +585,28 @@ def _validate_article_data(article, new_name, package_path, validate_order, disp
         article_validation = article_validations.ArticleContentValidation(article, validate_order)
         sheet_data = ArticleSheetData(article, article_validation)
         article_display_report = ArticleDisplayReport(article, sheet_data, package_path, new_name)
-        article_validation_report = ArticleValidationReport(article_validation, False)
-        content = article_report_content(article_display_report, article_validation_report, display_sheets)
+        article_validation_report = ArticleValidationReport(article_validation)
+        content = validate_contents(article_display_report, article_validation_report, display_all)
 
     return (content, sheet_data)
 
 
-def validate_article_data(article, new_name, package_path, report_filename, validate_order, display_sheets):
-    content, sheet_data = _validate_article_data(article, new_name, package_path, validate_order, display_sheets)
-    f, e, w = reports.statistics_numbers(content)
-    stats = html_report.statistics_messages(f, e, w, '')
+def validate_contents(data_display, data_validation, display_all):
+    content = []
+    if display_all:
+        content.append(data_display.summary)
 
-    html_report.title = ['Contents validations required by SciELO ', new_name]
-    html_report.body = stats + content
-    html_report.save(report_filename)
-    return (f, e, w, sheet_data)
+    content.append(data_validation.validations(not display_all))
+    content.append(data_display.files_and_href)
 
+    if display_all:
+        content.append(data_display.article_body)
+        content.append(data_display.article_back)
+        #content.append(data_display.id_and_tag_list
+        content.append(data_display.authors_sheet)
+        content.append(data_display.sources_sheet)
 
-def article_report_content(data_display, data_validation, display_sheets):
-    content = ''
-    #content += data_display.summary
-    content += data_validation.report_results(True)
-    #content += data_display.article_back
-    #content += data_display.article_body
-    content += data_display.files_and_href
-    content += data_display.id_and_tag_list
-    if display_sheets:
-        content += data_display.authors_sheet
-        content += data_display.sources_sheet
-    return content
+    return html_reports.join_texts(content)
 
 
 def example():

@@ -10,9 +10,6 @@ import html_reports
 from article import Article
 
 
-html_report = html_reports.ReportHTML()
-
-
 def update_err_filename(err_filename, dtd_report):
     if os.path.isfile(dtd_report):
         separator = ''
@@ -31,7 +28,9 @@ def delete_irrelevant_reports(ctrl_filename, is_valid_style, dtd_validation_repo
         os.unlink(dtd_validation_report)
 
 
-def validate_article_xml(new_name, xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename):
+def get_article_xml_validations_reports(new_name, xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename):
+
+    print('validating xml')
     xml, valid_dtd, valid_style = xpchecker.validate_article_xml(xml_filename, dtd_files, dtd_report, style_report)
     f, e, w = valid_style
     update_err_filename(err_filename, dtd_report)
@@ -43,17 +42,29 @@ def validate_article_xml(new_name, xml_filename, dtd_files, dtd_report, style_re
     return (f, e, w)
 
 
-def validate_article_data(article, new_name, package_path, report_filename, validate_order, display_sheets):
-    f, e, w, sheet_data = article_reports.validate_article_data(article, new_name, package_path, report_filename, validate_order, display_sheets)
+def get_article_contents_validations_report(article, new_name, package_path, report_filename, validate_order, display_all):
+    print('validating contents')
+    content, sheet_data = article_reports.get_report_content(article, new_name, package_path, validate_order, display_all)
+
+    f, e, w = html_reports.statistics_numbers(content)
+
+    stats = ''
+    title = ''
+    if display_all:
+        stats = html_reports.statistics_display(f, e, w, False)
+        title = ['Contents validations required by SciELO ', new_name]
+
+    html_reports.save(report_filename, title, stats + content)
+
     return (f, e, w, sheet_data)
 
 
-def article_validations_text(filename):
+def get_report_text(filename):
     content = ''
     if os.path.isfile(filename):
         content = open(filename, 'r').read()
         if '</article>' in content:
-            content = html_report.display_xml(content)
+            content = html_reports.display_xml(content)
             content = content.replace('\n', '<br/>')
 
         if '</html>' in content:
@@ -77,7 +88,7 @@ def xml_list(pkg_path, xml_filenames):
     r += '<h2>XML files</h2>'
     r += '<p>XML path: ' + pkg_path + '</p>'
     r += '<p>Total of XML files: ' + str(len(xml_filenames)) + '</p>'
-    r += html_report.format_list('', 'ol', [os.path.basename(f) for f in xml_filenames])
+    r += html_reports.format_list('', 'ol', [os.path.basename(f) for f in xml_filenames])
     return r
 
 
@@ -105,11 +116,12 @@ def articles_and_issues(doc_files_info_list):
     e_issns = {}
     p_issns = {}
 
+    print('Loading articles and issue')
     for doc_files_info in doc_files_info_list:
         new_name = doc_files_info.new_name
         xml_filename = doc_files_info.new_xml_filename
         xml, e = xml_utils.load_xml(xml_filename)
-
+        print(new_name)
         articles[new_name] = Article(xml) if xml is not None else None
         if xml is not None:
             issue_labels = incr(issue_labels, articles[new_name].issue_label)
@@ -125,35 +137,8 @@ def articles_and_issues(doc_files_info_list):
 def package_validations_report(articles, doc_files_info_list, dtd_files, validate_order, create_toc_report):
     toc_stats_and_report = validate_toc(articles, validate_order)
     articles_stats, articles_reports, articles_sheets = validate_package(articles, doc_files_info_list, dtd_files, validate_order, not create_toc_report)
-    texts = format_validation_report(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report)
-    return join_reports(texts, './log_xpm.txt')
-
-
-def join_reports(texts, logfilename):
-    r = ''
-    for t in texts:
-        try:
-            r += t
-        except Exception as e:
-            print(e)
-            if 'position' in str(e):
-                e = str(e)
-                p = e[e.find('position ')+len('position '):]
-                print(p)
-                p = p[0:p.find(': ')]
-                print('.' + p + '.')
-                if p.isdigit():
-                    try:
-                        p = int(p)
-                        print(t[0:p])
-                        print(t[p:])
-                        open(logfilename, 'a+').write(p + '\n')
-                        open(logfilename, 'a+').write(t + '\n')
-                        open(logfilename, 'a+').write(t[0:p] + '\n')
-                        open(logfilename, 'a+').write(t[p:] + '\n')
-                    except Exception as e2:
-                        print(e2)
-    return r
+    texts = get_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report)
+    return html_reports.join_texts(texts)
 
 
 def validate_toc(articles, validate_order):
@@ -165,23 +150,24 @@ def format_toc_report(toc_stats_and_report):
     if toc_stats_and_report is not None:
         toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
         if toc_f + toc_e + toc_w > 0:
-            text = html_report.tag('h2', 'Table of contents Report')
-            text += html_report.collapsible_block('toc', 'table of contents validations ' + display_statistics_inline(toc_f, toc_e, toc_w), toc_report)
+            text = html_reports.tag('h2', 'Table of contents Report')
+            text += html_reports.collapsible_block('toc', 'table of contents validations ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report)
     return text
 
 
-def validate_package(articles, doc_files_info_list, dtd_files, validate_order, display_sheets):
+def validate_package(articles, doc_files_info_list, dtd_files, validate_order, display_all):
     articles_stats = {}
     articles_reports = {}
     articles_sheets = {}
 
+    print('Validating package')
     for doc_files_info in doc_files_info_list:
         new_name = doc_files_info.new_name
         xml_filename = doc_files_info.new_xml_filename
+        print(new_name)
+        xml_f, xml_e, xml_w = get_article_xml_validations_reports(new_name, xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
 
-        xml_f, xml_e, xml_w = validate_article_xml(new_name, xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
-
-        data_f, data_e, data_w, sheet_data = validate_article_data(articles[new_name], new_name, os.path.dirname(xml_filename), doc_files_info.data_report_filename, validate_order, display_sheets)
+        data_f, data_e, data_w, sheet_data = get_article_contents_validations_report(articles[new_name], new_name, os.path.dirname(xml_filename), doc_files_info.data_report_filename, validate_order, display_all)
 
         articles_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
         articles_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
@@ -190,7 +176,7 @@ def validate_package(articles, doc_files_info_list, dtd_files, validate_order, d
     return (articles_stats, articles_reports, articles_sheets)
 
 
-def format_validation_report(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report):
+def get_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report):
     n = '/' + str(len(articles_reports))
     authors_h = None
     authors_w = None
@@ -207,12 +193,12 @@ def format_validation_report(articles_stats, articles_reports, articles_sheets, 
 
     if toc_f == 0:
         index = 0
-        validations_text = html_report.tag('h2', 'XML Validations')
+        validations_text = html_reports.tag('h2', 'XML Validations')
         for new_name in sorted(articles_reports.keys()):
             index += 1
             item_label = str(index) + n + ' - ' + new_name
             print(item_label)
-            validations_text += html_report.tag('h4', item_label)
+            validations_text += html_reports.tag('h4', item_label)
             xml_f, xml_e, xml_w = articles_stats[new_name][0]
             data_f, data_e, data_w = articles_stats[new_name][1]
 
@@ -220,23 +206,23 @@ def format_validation_report(articles_stats, articles_reports, articles_sheets, 
 
             t = []
             v = []
-            content = article_validations_text(rep1)
+            content = get_report_text(rep1)
             if len(content) > 0:
                 t.append(os.path.basename(rep1))
                 v.append(content)
-            content = article_validations_text(rep2)
+            content = get_report_text(rep2)
             if len(content) > 0:
                 t.append(os.path.basename(rep2))
                 v.append(content)
 
             content = ''.join(v)
             if xml_f + xml_e + xml_w > 0:
-                s = display_statistics_inline(xml_f, xml_e, xml_w)
-                validations_text += html_report.collapsible_block('xmlrep' + str(index), '[' + s + ']' + ' and '.join(t), content)
+                s = html_reports.statistics_display(xml_f, xml_e, xml_w)
+                validations_text += html_reports.collapsible_block('xmlrep' + str(index), '[' + s + ']' + ' and '.join(t), content)
 
             if data_f + data_e + data_w > 0:
-                s = display_statistics_inline(data_f, data_e, data_w)
-                validations_text += html_report.collapsible_block('datarep' + str(index), '[' + s + ']' + os.path.basename(rep3), article_validations_text(rep3))
+                s = html_reports.statistics_display(data_f, data_e, data_w)
+                validations_text += html_reports.collapsible_block('datarep' + str(index), '[' + s + ']' + os.path.basename(rep3), get_report_text(rep3))
 
             if create_toc_report:
                 authors_h, authors_w, authors_data = articles_sheets[new_name][0]
@@ -247,28 +233,22 @@ def format_validation_report(articles_stats, articles_reports, articles_sheets, 
     lists_text = ''
     if create_toc_report:
 
-        lists_text = html_report.tag('h2', 'Authors and Sources Lists')
-        authors = html_report.sheet((authors_h, authors_w, toc_authors_sheet_data))
-        lists_text += html_report.collapsible_block('authors', 'Authors in the package', authors)
+        lists_text = html_reports.tag('h2', 'Authors and Sources Lists')
+        authors = html_reports.sheet((authors_h, authors_w, toc_authors_sheet_data))
+        lists_text += html_reports.collapsible_block('authors', 'Authors in the package', authors)
 
-        sources = html_report.sheet((sources_h, sources_w, toc_sources_sheet_data))
-        lists_text += html_report.collapsible_block('sources', 'Sources in the package', sources)
+        sources = html_reports.sheet((sources_h, sources_w, toc_sources_sheet_data))
+        lists_text += html_reports.collapsible_block('sources', 'Sources in the package', sources)
 
     return [toc_text, validations_text, lists_text]
 
 
-def display_statistics_inline(f, e, w):
-    return ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]])
-
-
 def processing_result_location(result_path):
-    return 'Result of the processing: ' + html_report.link('file:///' + os.path.dirname(result_path), os.path.dirname(result_path))
+    return 'Result of the processing: ' + html_reports.link('file:///' + os.path.dirname(result_path), os.path.dirname(result_path))
 
 
 def save_report(filename, title, content):
-    html_report.title = title
-    html_report.body = content
-    html_report.save(filename)
+    html_reports.save(filename, title, content)
     print('\n\nReport:\n ' + filename)
 
 

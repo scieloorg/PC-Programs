@@ -157,22 +157,13 @@ def restore_xml_file(xml_filename, temp_filename):
     shutil.rmtree(os.path.dirname(temp_filename))
 
 
-def nodexmltostring(node):
-    text = None
-    if not node is None:
-        text = etree.tostring(node)
-        if '<' in text:
-            text, e = convert_entities_to_chars(text)
-    return text
-
-
 def strip(content):
     r = content.split()
     return ' '.join(r)
 
 
 def node_text(node):
-    text = nodexmltostring(node)
+    text = node_xml(node)
     if not text is None:
         if text.startswith('<'):
             text = text[text.find('>')+1:]
@@ -181,7 +172,10 @@ def node_text(node):
 
 
 def node_xml(node):
-    return nodexmltostring(node)
+    text = None
+    if not node is None:
+        text = etree.tostring(node)
+    return text
 
 
 def preserve_xml_entities(content):
@@ -237,14 +231,19 @@ def register_remaining_named_entities(content):
 
 
 def all_ent_to_char(content):
+    unicode_input = isinstance(content, unicode)
+    r = ''
     if '&' in content:
         h = HTMLParser.HTMLParser()
+        u = content
         if not isinstance(content, unicode):
-            content = content.decode('utf-8')
-        content = h.unescape(content)
-        #if isinstance(content, unicode):
-        #    content = content.encode('utf-8')
-    return content
+            u = u.decode('utf-8')
+        u = h.unescape(u)
+        r = u
+        if isinstance(r, unicode):
+            if not unicode_input:
+                r = u.encode('utf-8')
+    return r
 
 
 def restore_xml_entities(content):
@@ -283,11 +282,6 @@ def handle_mml_entities(content):
     return content
 
 
-def handle_entities(content):
-    content, replaced_named_ent = convert_entities_to_chars(content)
-    return handle_mml_entities(content)
-
-
 def read_xml(content):
     if not '<' in content:
         # is a file
@@ -324,17 +318,12 @@ def parse_xml(content):
 
 
 def is_xml_well_formed(content):
-    node, e = load_xml(content)
+    node, e = parse_xml(content)
     if e is None:
         return node
 
 
-def load_xml(content, fix=False):
+def load_xml(content):
     content = read_xml(content)
     xml, e = parse_xml(content)
-    if xml is None:
-        if fix:
-            fixed_content, replaced_named_ent = convert_entities_to_chars(content)
-            if content != fixed_content:
-                xml, e = parse_xml(fixed_content)
     return (xml, e)

@@ -77,7 +77,7 @@ def invalid_terms_in_value(label, value, invalid_terms, error_or_warning):
     for term in invalid_terms:
         a = term.decode('utf-8') if not isinstance(term, unicode) else term
 
-        if term.lower() in value.lower() or term in value or a in b:
+        if term.upper() in value.upper() or term in value or a in b:
             r = False
             invalid = term
             break
@@ -98,17 +98,35 @@ def validate_name(label, value, invalid_terms):
 
 
 def validate_surname(label, value):
+    result = []
+    reject = []
+    suffix_list = [u'Nieto', u'Sobrino', u'Hijo', u'Neto', u'Sobrinho', u'Filho', u'Júnior', u'JÚNIOR', u'Junior', u'Senior', u'Sr', u'Jr']
     r = []
-    result = required(label, value, 'WARNING')
-    label, status, msg = result
+    label, status, msg = required(label, value, 'ERROR')
     if status == 'OK':
-        result = invalid_terms_in_value(label, value, [' ', '_', 'neto', 'sobrinho', 'filho', u'júnior', 'junior', 'senior', ' sr', ' jr'], 'WARNING')
-        label, status, msg = result
-        if status == 'WARNING':
-            parts = value.split(' ')
-            if len(parts) == 2 and value[0:1] == value[0:1].lower():
-                status = 'OK'
-    r.append(result)
+
+        parts = value.split(' ')
+        for i in range(0, len(parts)-2):
+            if not parts[i][0:1] == parts[i][0:1].lower():
+                reject.append(parts[i])
+        u = parts[len(parts)-1]
+        if not isinstance(u, unicode):
+            u = u.encode('utf-8')
+        suffix = ''
+        if u in suffix_list:
+            reject.append(parts[len(parts)-1])
+            suffix = parts[len(parts)-1]
+
+        if len(reject) > 0:
+            status = 'WARNING'
+            msg = 'Invalid terms (' + ','.join(reject) + ') in ' + value + '. '
+            if len(suffix) > 0:
+                msg += suffix + ' must be identified as <suffix>' + suffix + '</suffix>.'
+            r.append((label, status, msg))
+
+    if status == 'OK':
+        msg = value
+        r.append((label, status, msg))
     return r
 
 
@@ -130,6 +148,50 @@ class ArticleContentValidation(object):
     def __init__(self, article, validate_order):
         self.article = article
         self.validate_order = validate_order
+
+    def normalize_validations(self, validations_result_list):
+        r = []
+        if isinstance(validations_result_list, list):
+            for item in validations_result_list:
+                r += self.normalize_validations(item)
+        else:
+            r.append(validations_result_list)
+        return r
+
+    @property
+    def validations(self):
+        items = [self.journal_title,
+                    self.publisher_name,
+                    self.journal_id,
+                    self.journal_id_nlm_ta,
+                    self.journal_issns,
+                    self.issue_label,
+                    self.language,
+                    self.article_type,
+                    self.article_date_types,
+                    self.toc_section,
+                    self.order,
+                    self.doi,
+                    self.pagination,
+                    self.total_of_pages,
+                    self.total_of_equations,
+                    self.total_of_tables,
+                    self.total_of_figures,
+                    self.total_of_references,
+                    self.titles,
+                    self.contrib_names,
+                    self.contrib_collabs,
+                    self.affiliations,
+                    self.funding,
+                    self.license_text,
+                    self.license_url,
+                    self.license_type,
+                    self.history,
+                    self.abstracts,
+                    self.keywords,
+                    self.xref_rids,
+                ]
+        return self.normalize_validations(items)
 
     @property
     def dtd_version(self):
@@ -268,9 +330,9 @@ class ArticleContentValidation(object):
     @property
     def issue_label(self):
         if not self.article.volume and not self.article.number:
-            return 'ERROR: Required one of volume and/or number'
+            return ('issue label', 'ERROR', 'Required one of volume and/or number')
         else:
-            return self.volume + self.number
+            return [self.volume, self.number]
 
     @property
     def volume(self):
@@ -470,7 +532,7 @@ class ArticleContentValidation(object):
     def references(self):
         r = []
         for ref in self.article.references:
-            r.append(ReferenceContentValidation(ref))
+            r.append((ref, ReferenceContentValidation(ref).evaluate()))
         return r
 
     @property

@@ -17,7 +17,7 @@ import isis
 import xmlcvrter_cfg
 import article_utils
 
-html_report = html_reports.ReportHTML()
+
 converter_report_lines = []
 CURRENT_PATH = os.path.dirname(__file__).replace('\\', '/')
 CONFIG_PATH = CURRENT_PATH + '/../config/'
@@ -25,7 +25,7 @@ CONFIG_PATH = CURRENT_PATH + '/../config/'
 
 def register_log(message):
     if not '<' in message:
-        message = html_report.format_message(message)
+        message = html_reports.format_message(message)
     converter_report_lines.append(message)
 
 
@@ -84,16 +84,15 @@ def get_issue(issue_data, db_issue):
         issue_label = 'UNKNOWN'
     else:
         i_record = get_i_record(db_issue, issue_label, p_issn, e_issn)
-    print(i_record)
+
     if i_record is None:
         if issue_label == 'UNKNOWN':
-            msg = html_report.format_message('FATAL ERROR: Unable to identify the article\'s issue')
+            msg = html_reports.format_message('FATAL ERROR: Unable to identify the article\'s issue')
         else:
-            msg = html_report.format_message('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + db_issue.db_filename + '. (' + '/'.join([i for i in [p_issn, e_issn] if i is not None]) + ')')
+            msg = html_reports.format_message('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + db_issue.db_filename + '. (' + '/'.join([i for i in [p_issn, e_issn] if i is not None]) + ')')
     else:
         issue_record = IssueRecord(i_record)
 
-    print(type(issue_record))
     return (issue_record, msg)
 
 
@@ -130,7 +129,7 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
     conversion_report = ''
 
     if toc_f > 0:
-        validations_report += html_report.format_message('FATAL ERROR: Unable to create "base" because of fatal errors in the Table of Contents data.')
+        validations_report += html_reports.format_message('FATAL ERROR: Unable to create "base" because of fatal errors in the Table of Contents data.')
 
     issue = None
     if not issue_record is None:
@@ -183,10 +182,10 @@ def check_data(ahead_manager, articles, issue_record):
         section_code, issue_validations_msg = validate_xml_issue_data(issue_record, article)
 
         msg = ''
-        msg += html_report.tag('h4', 'checking ex-ahead')
-        msg += ''.join([html_report.format_message(item) for item in ahead_msg])
-        msg += ''.join([html_report.tag('pre', item) for item in ahead_comparison])
-        msg += html_report.tag('h4', 'checking issue data')
+        msg += html_reports.tag('h4', 'checking ex-ahead')
+        msg += ''.join([html_reports.format_message(item) for item in ahead_msg])
+        msg += ''.join([html_reports.tag('pre', item) for item in ahead_comparison])
+        msg += html_reports.tag('h4', 'checking issue data')
         msg += issue_validations_msg
         conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
 
@@ -213,7 +212,7 @@ def convert_articles(ahead_manager, db_article, issue_files, i_record, articles,
     n = '/' + str(len(articles))
     i = 0
 
-    text = html_report.tag('h3', 'XML Conversion')
+    text = html_reports.tag('h3', 'XML Conversion')
 
     for xml_name, data in conversion_report.items():
         conv_f, conv_e, conv_w, conv_messages, valid_ahead, ahead_status, section_code = data
@@ -226,7 +225,7 @@ def convert_articles(ahead_manager, db_article, issue_files, i_record, articles,
         item_label = str(i) + n + ' - ' + xml_name
         print(item_label)
 
-        text += html_report.tag('h4', item_label)
+        text += html_reports.tag('h4', item_label)
 
         articles_by_status[ahead_status].append(xml_name)
 
@@ -242,13 +241,13 @@ def convert_articles(ahead_manager, db_article, issue_files, i_record, articles,
                         done, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
                         conv_messages += ''.join([item for item in ahead_msg])
                 articles_by_status['converted'].append(xml_name)
-                conv_messages += html_report.format_message('OK: converted')
+                conv_messages += html_reports.format_message('OK: converted')
             else:
                 articles_by_status['not converted'].append(xml_name)
-                conv_messages += html_report.format_message('FATAL ERROR: not converted')
+                conv_messages += html_reports.format_message('FATAL ERROR: not converted')
                 conv_f += 1
         title = pkg_reports.display_statistics_inline(conv_f, conv_e, conv_w)
-        text += html_report.collapsible_block(xml_name + 'conv', title, conv_messages)
+        text += html_reports.collapsible_block(xml_name + 'conv', title, conv_messages)
 
     summary = '#'*80
     i = 0
@@ -264,12 +263,12 @@ def convert_articles(ahead_manager, db_article, issue_files, i_record, articles,
     if len(loaded) > 0:
         _loaded = db_article.finish_conversion(i_record, issue_files)
 
-        summary += html_report.tag('h4', 'Resulting folders/files:')
-        summary += html_report.link('file:///' + issue_files.issue_path, issue_files.issue_path)
+        summary += html_reports.tag('h4', 'Resulting folders/files:')
+        summary += html_reports.link('file:///' + issue_files.issue_path, issue_files.issue_path)
 
     if len(loaded) > 0:
         summary += issue_files.copy_files_to_web()
-    summary += html_report.tag('p', 'Finished.')
+    summary += html_reports.tag('p', 'Finished.')
 
     return text + summary
 
@@ -286,13 +285,12 @@ def validate_xml_issue_data(issue_record, article):
     if article is not None:
 
         # issue date
-        msg.append(html_report.tag('h5', 'publication date'))
+        msg.append(html_reports.tag('h5', 'publication date'))
         if article.issue_pub_dateiso != issue_record.issue.dateiso:
             msg.append('ERROR: Invalid value of publication date: ' + article.issue_pub_dateiso + '. Expected value: ' + issue_record.issue.dateiso)
-            print(article.issue_pub_date)
 
         # section
-        msg.append(html_report.tag('h5', 'section'))
+        msg.append(html_reports.tag('h5', 'section'))
         msg.append('section: ' + article.toc_section + '.')
         section_code, matched_rate, most_similar = issue_record.most_similar_section_code(article.toc_section)
         if matched_rate != 1:
@@ -304,7 +302,7 @@ def validate_xml_issue_data(issue_record, article):
                 msg.append('WARNING: section replaced: "' + most_similar + '" (instead of "' + article.toc_section + '")')
 
         # @article-type
-        msg.append(html_report.tag('h5', 'article-type'))
+        msg.append(html_reports.tag('h5', 'article-type'))
         msg.append('@article-type: ' + article.article_type)
         if most_similar is not None:
             section_title = most_similar
@@ -314,7 +312,7 @@ def validate_xml_issue_data(issue_record, article):
         if rate < 0.5:
             msg.append('WARNING: Check if ' + article.article_type + ' is a valid value for @article-type.')
 
-    msg = ''.join([html_report.format_message(item) for item in msg])
+    msg = ''.join([html_reports.format_message(item) for item in msg])
     return (section_code, msg)
 
 

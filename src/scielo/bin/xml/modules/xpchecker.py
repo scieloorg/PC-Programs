@@ -9,7 +9,7 @@ except:
 
 import java_xml_utils
 import xml_utils
-import reports
+import html_reports
 
 
 def save_packtools_style_report(content, report_filename):
@@ -20,15 +20,14 @@ def save_packtools_style_report(content, report_filename):
     except:
         pass
 
-    html_report = reports.ReportHTML()
     q = len(content.split('SPS-ERROR')) - 1
     msg = ''
-    html_report.title = 'Style Checker (packtools' + version + ')'
+    title = 'Style Checker (packtools' + version + ')'
     if q > 0:
-        msg = html_report.tag('div', 'Total of errors = ' + str(q), 'error')
+        msg = html_reports.tag('div', 'Total of errors = ' + str(q), 'error')
 
-    html_report.body = msg + ''.join([html_report.format_message(html_report.display_xml(item)) for item in content.split('\n')])
-    html_report.save(report_filename)
+    body = msg + ''.join([html_reports.format_message(html_reports.display_xml(item)) for item in content.split('\n')])
+    html_reports.save(report_filename, title, body)
 
 
 def packtools_dtd_validation(xml_filename, report_filename):
@@ -141,21 +140,14 @@ def style_validation(xml_filename, doctype, report_filename, xsl_prep_report, xs
         return java_xml_utils_style_validation(xml_filename, doctype, report_filename, xsl_prep_report, xsl_report)
 
 
-def _validate_xml_and_style(xml_filename, dtd_files, dtd_report_filename, style_report_filename):
+def validate_article_xml(xml_filename, dtd_files, dtd_report_filename, style_report_filename):
     is_valid_style = False
 
     xml, e = xml_utils.load_xml(xml_filename)
-    print('dtd_report_filename')
-    print(dtd_report_filename)
     is_valid_dtd = dtd_validation(xml_filename, dtd_report_filename, dtd_files.doctype_with_local_path, dtd_files.database_name)
     if e is None:
         is_valid_style = style_validation(xml_filename, dtd_files.doctype_with_local_path, style_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report, dtd_files.database_name)
     else:
         open(style_report_filename, 'w').write('FATAL ERROR: Unable to load ' + xml_filename + '\n' + str(e))
-    return (xml, is_valid_dtd, is_valid_style)
-
-
-def validate_article_xml(xml_filename, dtd_files, dtd_report, style_report):
-    loaded_xml, is_valid_dtd, is_valid_style = _validate_xml_and_style(xml_filename, dtd_files, dtd_report, style_report)
-    f, e, w = style_checker_statistics(style_report)
-    return (loaded_xml, is_valid_dtd, (f, e, w))
+    f, e, w = style_checker_statistics(style_report_filename)
+    return (xml, is_valid_dtd, (f, e, w))

@@ -12,10 +12,7 @@ import xml_utils
 import xml_versions
 import pkg_reports
 import xpchecker
-import html_reports
 
-
-html_report = html_reports.ReportHTML()
 
 mime = MimeTypes()
 messages = []
@@ -306,9 +303,12 @@ def pack_files(src_path, dest_path, xml_name, new_name, href_files_list):
     r_related_files_list = []
     r_href_files_list = []
     r_not_found = []
+
+    related_files_list = get_related_files(src_path, xml_name)
+
     if not os.path.isdir(dest_path):
         os.makedirs(dest_path)
-    for f in get_related_files(src_path, xml_name):
+    for f in related_files_list:
         r_related_files_list += pack_file_extended(src_path, dest_path, f, f.replace(xml_name, new_name))
     for curr, new in href_files_list:
         s = pack_file_extended(src_path, dest_path, curr, new)
@@ -366,12 +366,19 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     register_log('start')
     report_content = ''
     content = open(doc_files_info.xml_filename, 'r').read()
+    xml, e = xml_utils.load_xml(content)
+    if xml is None:
+        print('first load failed')
+        print(e)
+
     #register_log(content)
     register_log('remove_doctype')
     content = xml_utils.remove_doctype(content)
     #register_log(content)
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
+    if len(replaced_named_ent) > 0:
+        print('\n'.join(replaced_named_ent))
     #register_log(content)
     if doc_files_info.is_sgmxml:
         register_log('normalize_sgmlxml')
@@ -383,7 +390,7 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     xml, e = xml_utils.load_xml(content)
 
     if xml is None:
-        xml
+        print(e)
     else:
         doc = article.Article(xml)
         register_log('get_attach_info')
@@ -425,6 +432,8 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
         content = content.encode('utf-8')
     open(new_xml_filename, 'w').write(content)
 
+    if xml is None:
+        shutil.copyfile(new_xml_filename, new_xml_filename.replace('.xml', '_incorrect.xml'))
     print(' ... created')
     register_log('end')
     return (new_name, new_xml_filename)
@@ -454,16 +463,6 @@ def get_not_found_extended(path, href_list):
             if len(found) == 0:
                 not_found.append(href)
     return not_found
-
-
-def get_href_list(xml_filename):
-    href_list = []
-    xml, e = xml_utils.load_xml(xml_filename)
-    if not xml is None:
-        doc = article.Article(xml)
-        attach_info = get_attach_info(doc)
-        href_list = [href for href, attach_type, attach_id in attach_info]
-    return href_list
 
 
 def xml_output(xml_filename, doctype, xsl_filename, result_filename):
@@ -552,7 +551,7 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
             xml_output(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
 
     print('Generate validation reports...')
-    validate_created_package(scielo_pkg_path, xml_to_validate, scielo_dtd_files, report_path, do_toc_report, not from_markup)
+    generate_report(scielo_pkg_path, xml_to_validate, scielo_dtd_files, report_path, do_toc_report, not from_markup)
 
     make_zip_packages(scielo_pkg_path)
 
@@ -603,9 +602,7 @@ def make_zip_packages(src_pkg_path):
         shutil.rmtree(new_pkg_path)
 
 
-def validate_created_package(scielo_pkg_path, doc_files_info_list, dtd_files, report_path, do_toc_report, display_report):
-
-    register_log('generate validations reports')
+def generate_report(scielo_pkg_path, doc_files_info_list, dtd_files, report_path, do_toc_report, display_report):
 
     validate_order = False
 
