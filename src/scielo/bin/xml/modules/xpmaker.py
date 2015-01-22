@@ -133,14 +133,16 @@ def extract_embedded_images(xml_name, content, html_filename, dest_path):
 
 def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
     #content = fix_uppercase_tag(content)
+    register_log('normalize_sgmlxml')
+
     content = extract_embedded_images(xml_name, content, html_filename, src_path)
     if isinstance(content, unicode):
         content = content.encode('utf-8')
-    xml, e = xml_utils.load_xml(content)
+    xml = xml_utils.is_xml_well_formed(content)
     if xml is None:
         content = fix_sgml_xml(content)
-        xml, e = xml_utils.load_xml(content)
-    if e is None:
+        xml = xml_utils.is_xml_well_formed(content)
+    if not xml is None:
         content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
         content = replace_mimetypes(content, src_path)
     else:
@@ -187,7 +189,7 @@ def hdimages_to_jpeg(source_path, jpg_path, replace=False):
                         print(inst)
 
 
-def format_new_name(doc, param_acron='', original_xml_name=''):
+def generate_new_name(doc, param_acron='', original_xml_name=''):
     def format_last_part(fpage, seq, elocation_id, order, doi, issn):
         def normalize_len(fpage):
             fpage = '00000' + fpage
@@ -215,6 +217,9 @@ def format_new_name(doc, param_acron='', original_xml_name=''):
             if order is not None:
                 r = normalize_len(order)
         return r
+
+    register_log('generate_new_name')
+
     r = ''
     vol, issueno, fpage, seq, elocation_id, order, doi = doc.volume, doc.number, doc.fpage, doc.fpage_seq, doc.elocation_id, doc.order, doc.doi
 
@@ -253,7 +258,7 @@ def href_attach_type(parent_tag, tag):
     return attach_type
 
 
-def get_curr_and_new_href_list(xml_name, new_name, href_list):
+def generate_curr_and_new_href_list(xml_name, new_name, href_list):
     r = []
     attach_type = ''
     for href, attach_type, attach_id in href_list:
@@ -300,7 +305,11 @@ def normalize_hrefs(content, curr_and_new_href_list):
     return content
 
 
-def pack_files(src_path, dest_path, xml_name, new_name, href_files_list):
+def pack_files(doc_files_info, dest_path, href_files_list):
+    src_path = doc_files_info.xml_path
+    xml_name = doc_files_info.xml_name
+    new_name = doc_files_info.new_name
+
     r_related_files_list = []
     r_href_files_list = []
     r_not_found = []
@@ -333,7 +342,14 @@ def pack_file_extended(src_path, dest_path, curr, new):
     return r
 
 
-def packed_files_report(xml_name, new_name, src_path, dest_path, related_files_list, href_files_list, href_list, not_found):
+def generate_packed_files_report(doc_files_info, dest_path, related_packed, href_packed, curr_and_new_href_list, not_found):
+
+    def format(files_list):
+        return ['   ' + c + ' => ' + n for c, n in files_list]
+
+    xml_name = doc_files_info.xml_name
+    new_name = doc_files_info.new_name
+    src_path = doc_files_info.xml_path
 
     log = []
 
@@ -346,10 +362,10 @@ def packed_files_report(xml_name, new_name, src_path, dest_path, related_files_l
         log.append('Source XML name: ' + xml_name)
     log.append('Package XML name: ' + new_name)
 
-    log.append(message_file_list('Total of related files', related_files_list))
-    log.append(message_file_list('Total of @href in XML', href_list))
-    log.append(message_file_list('Total of @href files', href_files_list))
-    log.append(message_file_list('Total of @href files which were not found', not_found))
+    log.append(message_file_list('Total of related files', format(related_packed)))
+    log.append(message_file_list('Total of @href in XML', format(href_packed)))
+    log.append(message_file_list('Total of files in package', format(curr_and_new_href_list)))
+    log.append(message_file_list('Total of files not found in package', format(not_found)))
 
     return '\n'.join(log)
 
@@ -358,82 +374,116 @@ def message_file_list(label, file_list):
     return '\n' + label + ': ' + str(len(file_list)) + '\n' + '\n'.join(sorted(file_list))
 
 
-def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron):
-    print('.....')
-    print(doc_files_info.xml_name)
-    print('-'*len(doc_files_info.xml_name))
+def normalize_xml_content(doc_files_info, content, version):
+    register_log('normalize_xml_content')
 
-    register_log(doc_files_info.xml_name)
-    register_log('start')
-    report_content = ''
-    content = open(doc_files_info.xml_filename, 'r').read()
-
-    #register_log(content)
     register_log('remove_doctype')
     content = xml_utils.remove_doctype(content)
-    #register_log(content)
+
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
+
+    replaced_entities_report = ''
     if len(replaced_named_ent) > 0:
-        print('\n'.join(replaced_named_ent))
-    #register_log(content)
+        replaced_entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
+
     if doc_files_info.is_sgmxml:
-        register_log('normalize_sgmlxml')
         content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
-        #register_log(content)
 
+    return (content, replaced_entities_report)
+
+
+def get_new_name(doc_files_info, doc, acron):
     new_name = doc_files_info.xml_name
-    register_log('load_xml')
-    xml, e = xml_utils.load_xml(content)
+    if doc_files_info.is_sgmxml:
+        new_name = generate_new_name(doc, acron, doc_files_info.xml_name)
+    return new_name
 
-    if xml is None:
-        print(e)
+
+def get_curr_and_new_href_list(doc_files_info, doc):
+    attach_info = get_attach_info(doc)
+
+    if doc_files_info.is_sgmxml:
+        register_log('generate_curr_and_new_href_list')
+        curr_and_new_href_list = generate_curr_and_new_href_list(doc_files_info.xml_name, doc_files_info.new_name, attach_info)
     else:
-        doc = article.Article(xml)
-        register_log('get_attach_info')
-        attach_info = get_attach_info(doc)
-        if doc_files_info.is_sgmxml:
-            register_log('format_new_name')
-            new_name = format_new_name(doc, acron, doc_files_info.xml_name)
-            register_log('get_curr_and_new_href_list')
-            curr_and_new_href_list = get_curr_and_new_href_list(doc_files_info.xml_name, new_name, attach_info)
-            register_log('add_extension')
-            curr_and_new_href_list = add_extension(curr_and_new_href_list, doc_files_info.xml_path)
-            register_log('normalize_hrefs')
-            content = normalize_hrefs(content, curr_and_new_href_list)
-        else:
-            curr_and_new_href_list = [(href, href) for href, ign1, ign2 in attach_info]
-            register_log('add_extension')
-            curr_and_new_href_list = add_extension(curr_and_new_href_list, doc_files_info.xml_path)
+        curr_and_new_href_list = [(href, href) for href, ign1, ign2 in attach_info]
+    register_log('add_extension')
+    return add_extension(curr_and_new_href_list, doc_files_info.xml_path)
 
-        register_log('pack_files')
-        related_packed, href_packed, not_found = pack_files(doc_files_info.xml_path, scielo_pkg_path, doc_files_info.xml_name, new_name, curr_and_new_href_list)
-        register_log('pack_files_report')
-        param_related_packed = ['   ' + c + ' => ' + n for c, n in related_packed]
-        param_href_packed = ['   ' + c + ' => ' + n for c, n in href_packed]
-        param_curr_and_new_href_list = ['   ' + c + ' => ' + n for c, n in curr_and_new_href_list]
-        param_not_found = ['   ' + c + ' => ' + n for c, n in not_found]
 
-        if len(replaced_named_ent) > 0:
-            entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
-        else:
-            entities_report = ''
-        report_content = entities_report + packed_files_report(doc_files_info.xml_name, new_name, doc_files_info.xml_path, scielo_pkg_path, param_related_packed, param_href_packed, param_curr_and_new_href_list, param_not_found)
-        open(doc_files_info.err_filename, 'w').write(report_content)
-
-    new_xml_filename = scielo_pkg_path + '/' + new_name + '.xml'
-
-    register_log('new_xml_filename')
+def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False):
+    register_log('pack_xml_file')
     content = xml_utils.replace_doctype(content, xml_versions.DTDFiles('scielo', version).doctype)
     if isinstance(content, unicode):
         content = content.encode('utf-8')
     open(new_xml_filename, 'w').write(content)
 
-    if xml is None:
+    if do_incorrect_copy is None:
         shutil.copyfile(new_xml_filename, new_xml_filename.replace('.xml', '_incorrect.xml'))
+
+
+def build_package(doc_files_info, scielo_pkg_path, acron, version, content):
+    register_log('load_xml')
+    xml, e = xml_utils.load_xml(content)
+
+    packed_files_report = ''
+    doc = article.Article(xml) if xml is not None else None
+    doc_files_info.new_name = doc_files_info.xml_name
+    if doc is None:
+        packed_files_report = 'Unable to load ' + doc_files_info.xml_name
+        new_xml_filename = scielo_pkg_path + '/' + doc_files_info.new_name + '.xml'
+        pack_xml_file(content, version, new_xml_filename, True)
+    else:
+        register_log('get_attach_info')
+
+        doc_files_info.new_name = get_new_name(doc_files_info, doc, acron)
+        curr_and_new_href_list = get_curr_and_new_href_list(doc_files_info, doc)
+
+        if doc_files_info.is_sgmxml:
+            register_log('normalize_hrefs')
+            content = normalize_hrefs(content, curr_and_new_href_list)
+
+            xml, e = xml_utils.load_xml(content)
+            doc = article.Article(xml) if xml is not None else None
+
+        register_log('pack_files')
+        related_packed, href_packed, not_found = pack_files(doc_files_info, scielo_pkg_path, curr_and_new_href_list)
+
+        register_log('pack_files_report')
+        packed_files_report = generate_packed_files_report(doc_files_info, scielo_pkg_path, related_packed, href_packed, curr_and_new_href_list, not_found)
+
+        new_xml_filename = scielo_pkg_path + '/' + doc_files_info.new_name + '.xml'
+
+        pack_xml_file(content, version, new_xml_filename)
+
+    doc_files_info.new_xml_filename = new_xml_filename
+    doc_files_info.new_xml_path = scielo_pkg_path
+
+    return (doc, doc_files_info, packed_files_report)
+
+
+def generate_article_package(doc_files_info, scielo_pkg_path, version, acron):
+    packed_files_report = ''
+    content = open(doc_files_info.xml_filename, 'r').read()
+
+    print('.....')
+    print(doc_files_info.xml_name)
+    print('-'*len(doc_files_info.xml_name))
+
+    register_log(doc_files_info.xml_name)
+
+    register_log('normalize_xml_content')
+    content, replaced_entities_report = normalize_xml_content(doc_files_info, content, version)
+
+    register_log('build_package')
+    article, doc_files_info, packed_files_report = build_package(doc_files_info, scielo_pkg_path, acron, version, content)
+
+    open(doc_files_info.err_filename, 'w').write(replaced_entities_report + packed_files_report)
+
     print(' ... created')
-    register_log('end')
-    return (new_name, new_xml_filename)
+
+    return (article, doc_files_info)
 
 
 def get_related_files(path, name):
@@ -496,9 +546,8 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
     report_path = markup_xml_path + '/errors'
     wrk_path = markup_xml_path + '/work'
 
-    pkg_name = None
-
     report_names = {}
+    articles = {}
     xml_to_validate = []
 
     pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
@@ -518,26 +567,19 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
 
         doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, wrk_path)
         doc_files_info.clean()
-        if doc_files_info.is_sgmxml:
-            do_toc_report = False
 
-        new_name, new_xml_filename = generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron)
-        doc_files_info.new_name = new_name
-        doc_files_info.new_xml_filename = new_xml_filename
-        doc_files_info.new_xml_path = os.path.dirname(new_xml_filename)
+        doc, doc_files_info = generate_article_package(doc_files_info, scielo_pkg_path, version, acron)
 
-        report_names[new_name] = doc_files_info.xml_name
+        report_names[doc_files_info.new_name] = doc_files_info.xml_name
+        articles[doc_files_info.new_name] = doc
+
         xml_to_validate.append(doc_files_info)
 
         if not do_pmc_package:
-            loaded_xml, e = xml_utils.load_xml(new_xml_filename)
-            if loaded_xml is not None:
-                doc = article.Article(loaded_xml)
-                do_pmc_package = (doc.journal_id_nlm_ta is not None)
+            do_pmc_package = (doc.journal_id_nlm_ta is not None)
 
         if do_pmc_package:
-            register_log('xml_output')
-            pmc_xml_filename = pmc_pkg_path + '/' + new_name + '.xml'
+            pmc_xml_filename = pmc_pkg_path + '/' + doc_files_info.new_name + '.xml'
             xml_output(doc_files_info.new_xml_filename, scielo_dtd_files.doctype_with_local_path, scielo_dtd_files.xsl_output, pmc_xml_filename)
 
             print(' ... created pmc')
@@ -548,7 +590,7 @@ def generate_and_validate_package(xml_files, markup_xml_path, acron, version='1.
             xml_output(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
 
     print('Generate validation reports...')
-    generate_report(scielo_pkg_path, xml_to_validate, scielo_dtd_files, report_path, do_toc_report, not from_markup)
+    generate_report(articles, xml_to_validate, scielo_dtd_files, report_path, do_toc_report, not from_markup)
 
     make_zip_packages(scielo_pkg_path)
 
@@ -599,12 +641,11 @@ def make_zip_packages(src_pkg_path):
         shutil.rmtree(new_pkg_path)
 
 
-def generate_report(scielo_pkg_path, doc_files_info_list, dtd_files, report_path, do_toc_report, display_report):
+def generate_report(articles, doc_files_info_list, dtd_files, report_path, do_toc_report, display_report):
 
     validate_order = False
 
-    articles, issue_data = pkg_reports.articles_and_issues(doc_files_info_list)
-
+    scielo_pkg_path = doc_files_info_list[0].new_xml_path
     content = pkg_reports.package_validations_report(articles, doc_files_info_list, dtd_files, validate_order, do_toc_report)
 
     content += pkg_reports.processing_result_location(scielo_pkg_path)

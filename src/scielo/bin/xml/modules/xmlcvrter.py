@@ -70,17 +70,13 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
 
     xml_filenames = sorted([pkg_path + '/' + f for f in os.listdir(pkg_path) if f.endswith('.xml') and not 'incorrect' in f])
 
-    doc_files_info_list = []
-    for xml_filename in xml_filenames:
-        doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, None)
-        doc_files_info.new_xml_filename = xml_filename
-        doc_files_info_list.append(doc_files_info)
+    articles, doc_files_info_list = pkg_reports.get_package_info(xml_filenames, report_path)
+    issue_data = pkg_reports.issue_in_package(articles)
 
-    articles, issue_data = pkg_reports.articles_and_issues(doc_files_info_list)
     toc_stats_and_report = pkg_reports.validate_toc(articles, validate_order)
     toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
 
-    articles_stats, articles_reports, articles_sheets = pkg_reports.validate_package(articles, doc_files_info_list, dtd_files, validate_order, False)
+    articles_stats, articles_reports, articles_sheets = pkg_reports.validate_articles(articles, doc_files_info_list, dtd_files, validate_order, False)
 
     validations_report = pkg_reports.package_validations_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, do_toc_report)
 

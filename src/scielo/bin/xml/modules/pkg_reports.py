@@ -6,6 +6,7 @@ import xml_utils
 import article_reports
 import xpchecker
 import html_reports
+import serial_files
 
 from article import Article
 
@@ -115,33 +116,35 @@ def more_frequent(d):
     return r
 
 
-def articles_and_issues(doc_files_info_list):
+def get_package_info(xml_filenames, report_path):
     articles = {}
-    issue_labels = {}
-    e_issns = {}
-    p_issns = {}
+    doc_files_info_list = []
+    for xml_filename in xml_filenames:
+        doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, None)
+        doc_files_info.new_xml_filename = xml_filename
+        doc_files_info.new_xml_path = os.path.dirname(xml_filename)
+        doc_files_info_list.append(doc_files_info)
 
-    print('Loading articles and issue')
-    for doc_files_info in doc_files_info_list:
-        new_name = doc_files_info.new_name
-        xml_filename = doc_files_info.new_xml_filename
-        xml, e = xml_utils.load_xml(xml_filename)
-        print(new_name)
-        articles[new_name] = Article(xml) if xml is not None else None
-        if xml is not None:
-            issue_labels = incr(issue_labels, articles[new_name].issue_label)
-            p_issns = incr(p_issns, articles[new_name].print_issn)
-            e_issns = incr(e_issns, articles[new_name].e_issn)
+        xml, e = xml_utils.load_xml(doc_files_info.new_xml_filename)
+        articles[doc_files_info.new_name] = Article(xml) if xml is not None else None
+    return (articles, doc_files_info_list)
 
-    issue_label = more_frequent(issue_labels)
-    p_issn = more_frequent(p_issns)
-    e_issn = more_frequent(e_issns)
-    return (articles, (issue_label, p_issn, e_issn))
+
+def issue_in_package(articles):
+    issue_data = {}
+    print('Identifying issue')
+    for new_name, article in articles.items():
+        if article is not None:
+            items = [article.issue_label, article.print_issn, article.e_issn]
+            issue_data = incr(issue_data, ';'.join(['' if item is None else item for item in items]))
+    data = more_frequent(issue_data)
+    issue_label, p_issn, e_issn = data.split(';')
+    return (issue_label, p_issn, e_issn)
 
 
 def package_validations_report(articles, doc_files_info_list, dtd_files, validate_order, create_toc_report):
     toc_stats_and_report = validate_toc(articles, validate_order)
-    articles_stats, articles_reports, articles_sheets = validate_package(articles, doc_files_info_list, dtd_files, validate_order, not create_toc_report)
+    articles_stats, articles_reports, articles_sheets = validate_articles(articles, doc_files_info_list, dtd_files, validate_order, not create_toc_report)
     return package_validations_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report)
 
 
@@ -154,7 +157,7 @@ def validate_toc(articles, validate_order):
     return article_reports.toc_report_data(articles, validate_order)
 
 
-def validate_package(articles, doc_files_info_list, dtd_files, validate_order, display_all):
+def validate_articles(articles, doc_files_info_list, dtd_files, validate_order, display_all):
     articles_stats = {}
     articles_reports = {}
     articles_sheets = {}
