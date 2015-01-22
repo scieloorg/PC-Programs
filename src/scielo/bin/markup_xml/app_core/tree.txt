@@ -16,6 +16,7 @@ figgrps;#FALSE#;#TRUE#
 fngrp;#TRUE#;#TRUE#
 graphic;#FALSE#;#TRUE#
 ign;#TRUE#;#TRUE#
+*list;#FALSE#;#TRUE#
 list;#FALSE#;#TRUE#
 product;#TRUE#;#TRUE#
 quote;#TRUE#;#TRUE#
@@ -425,6 +426,8 @@ licensep
 
 licenses
 license;#FALSE#;#TRUE#
+
+*list
 
 list
 li;#FALSE#;#TRUE#
@@ -911,6 +914,7 @@ doi;#FALSE#;#FALSE#
 fngrp;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
+*kwdgrp;#FALSE#;#TRUE#
 kwdgrp;#FALSE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
 refs;#FALSE#;#FALSE#
@@ -931,6 +935,7 @@ doi;#FALSE#;#FALSE#
 fngrp;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
+*kwdgrp;#FALSE#;#TRUE#
 kwdgrp;#FALSE#;#TRUE#
 normaff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
