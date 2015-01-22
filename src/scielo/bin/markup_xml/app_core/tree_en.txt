@@ -65,7 +65,8 @@ li;Identify an item of a list
 license;Identify the text of a license
 licensep;Identify the paragraph of a license
 licenses;Group the elements of a license
-list;Identify the list
+*list;Identify automatically a list
+list;Identify a list
 medium;Identify the format of the media in which the document is published
 mmlmath;Math (MathML 2.0 Tag Set)
 no;Identify the number

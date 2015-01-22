@@ -65,6 +65,7 @@ li;Identifica un item de la lista
 license;Identifica el texto de la licencia
 licensep;Identifica un parágrafo de la licencia
 licenses;Agrupa los elementos de licencia
+*list;Identifica automáticamente una lista
 list;Identifica una lista
 medium;Identifica el formato del medio en lo cual el documento está siendo publicado
 mmlmath;Idetifica Math (MathML 2.0 Tag Set)
