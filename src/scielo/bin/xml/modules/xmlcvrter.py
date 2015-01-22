@@ -2,13 +2,11 @@
 
 import os
 import shutil
-import tempfile
 from datetime import datetime
 
 from isis_models import IssueRecord
 import ftp_service
 import email_service
-import files_extractor
 import serial_files
 import html_reports
 import pkg_reports
@@ -16,6 +14,7 @@ import xml_versions
 import isis
 import xmlcvrter_cfg
 import article_utils
+import fs_utils
 
 
 converter_report_lines = []
@@ -29,42 +28,6 @@ def register_log(message):
     converter_report_lines.append(message)
 
 
-def extract_package(pkg_file, pkg_work_path):
-    """
-    Extract files to pkg_work_path from compressed files that are in compressed_path
-    """
-    r = False
-
-    if os.path.isfile(pkg_file):
-        if files_extractor.is_compressed_file(pkg_file):
-            if not os.path.exists(pkg_work_path):
-                os.makedirs(pkg_work_path)
-            # delete content of destination path
-            if os.path.exists(pkg_work_path):
-                for item in os.listdir(pkg_work_path):
-                    delete_item(pkg_work_path + '/' + item)
-            # create tempdir
-            temp_dir = tempfile.mkdtemp().replace('\\', '/')
-
-            # extract in tempdir
-            if files_extractor.extract_file(pkg_file, temp_dir):
-                # eliminate folders
-                for item in os.listdir(temp_dir):
-                    _file = temp_dir + '/' + item
-                    if os.path.isfile(_file):
-                        shutil.copyfile(_file, pkg_work_path + '/' + item)
-                        delete_item(_file)
-                    elif os.path.isdir(_file):
-                        for f in os.listdir(_file):
-                            if os.path.isfile(_file + '/' + f):
-                                shutil.copyfile(_file + '/' + f, pkg_work_path + '/' + f)
-                                delete_item(_file + '/' + f)
-                        shutil.rmtree(_file)
-                shutil.rmtree(temp_dir)
-                r = True
-    return r
-
-
 def get_i_record(db_issue, issue_label, print_issn, e_issn):
     i_record = None
     issues_records = db_issue.search(issue_label, print_issn, e_issn)
@@ -74,7 +37,7 @@ def get_i_record(db_issue, issue_label, print_issn, e_issn):
 
 
 def get_issue(issue_data, db_issue):
-    print(issue_data)
+    #print(issue_data)
     issue_label, p_issn, e_issn = issue_data
     i_record = None
     issue_record = None
@@ -150,31 +113,34 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
         conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record.record, articles, articles_stats, conversion_validation_result)
 
     filename = report_path + '/xml_converter.html'
-    content = ''
-    content += normalize_coding(pkg_reports.xml_list(pkg_path, xml_filenames))
-    content += normalize_coding(validations_report)
-    content += normalize_coding(conversion_report)
-    content += normalize_coding(pkg_reports.processing_result_location(report_path))
+    texts = []
+    texts.append(pkg_reports.xml_list(pkg_path, xml_filenames))
+    texts.append(validations_report)
+    texts.append(conversion_report)
+    texts.append(pkg_reports.processing_result_location(report_path))
+
+    content = html_reports.join_texts(texts)
 
     if old_report_path in content:
-        content = content.replace(old_report_path, report_path)
-
+        content = html_reports.get_unicode(content)
+        content = content.replace(html_reports.get_unicode(old_report_path), html_reports.get_unicode(report_path))
+    if isinstance(content, unicode):
+        content = content.encode('utf-8')
     pkg_reports.save_report(filename, ['XML Conversion (XML to Database)', label], content)
     pkg_reports.display_report(filename)
 
     return (filename, report_path, scilista_item)
 
 
-def normalize_coding(text):
-    if isinstance(text, str):
-        text = text.decode('utf-8', 'xmlcharrefreplace')
-    return text
-
-
 def check_data(ahead_manager, articles, issue_record):
+    print('\nMatching articles and issue data...')
+    n = '/' + str(len(articles))
+    index = 0
     result = {}
     for xml_name, article in articles.items():
-        print(xml_name)
+        index += 1
+        item_label = str(index) + n + ' - ' + xml_name
+        print(item_label)
 
         valid_ahead, ahead_status, ahead_msg, ahead_comparison = ahead_manager.get_valid_ahead(article, xml_name)
         section_code, issue_validations_msg = validate_xml_issue_data(issue_record, article)
@@ -210,6 +176,7 @@ def convert_articles(ahead_manager, db_article, issue_files, i_record, articles,
     n = '/' + str(len(articles))
     i = 0
 
+    print('\nGenerating database')
     text = html_reports.tag('h3', 'XML Conversion')
 
     for xml_name, data in conversion_report.items():
@@ -335,15 +302,6 @@ def convert_article(db_article, i_record, issue_files, xml_name, article, ahead)
     return r
 
 
-def delete_item(path):
-    if os.path.isdir(path):
-        for item in os.listdir(path):
-            delete_item(path + '/' + item)
-        shutil.rmtree(path)
-    elif os.path.isfile(path):
-        os.unlink(path)
-
-
 def download_packages(ftp, ftp_dir, download_path):
     files = []
     log = ''
@@ -380,7 +338,7 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
     for pkg_file in os.listdir(download_path):
         if is_valid_pkg_file(download_path + '/' + pkg_file):
             shutil.copyfile(download_path + '/' + pkg_file, temp_path + '/' + pkg_file)
-        delete_item(download_path + '/' + pkg_file)
+        fs_utils.delete_file_or_folder(download_path + '/' + pkg_file)
 
     for pkg_file in os.listdir(temp_path):
         if is_valid_pkg_file(temp_path + '/' + pkg_file):
@@ -389,17 +347,17 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
             if not os.path.isdir(queue_pkg_path):
                 os.makedirs(queue_pkg_path)
 
-            if extract_package(temp_path + '/' + pkg_file, queue_pkg_path):
+            if fs_utils.extract_package(temp_path + '/' + pkg_file, queue_pkg_path):
                 shutil.copyfile(temp_path + '/' + pkg_file, archive_path + '/' + pkg_file)
             else:
                 invalid_pkg_files.append(pkg_file)
-                delete_item(queue_pkg_path)
-            delete_item(temp_path + '/' + pkg_file)
+                fs_utils.delete_file_or_folder(queue_pkg_path)
+            fs_utils.delete_file_or_folder(temp_path + '/' + pkg_file)
         else:
             invalid_pkg_files.append(pkg_file)
             if os.path.isfile(temp_path + '/' + pkg_file):
-                delete_item
-    delete_item(temp_path)
+                fs_utils.delete_file_or_folder(temp_path + '/' + pkg_file)
+    fs_utils.delete_file_or_folder(temp_path)
 
     return (queue_path, invalid_pkg_files)
 
@@ -469,7 +427,7 @@ def gera_padrao(gerapadrao_status_filename, source_path, col_scilista, proc_seri
 
         scilista_items = list(set([f.strip() for f in open(col_scilista, 'r').readlines()]))
         if len(scilista_items) > 0:
-            delete_item(col_scilista)
+            fs_utils.delete_file_or_folder(col_scilista)
             sorted_scilista_items = [f for f in scilista_items if ' pr' in f] + [f for f in scilista_items if not ' pr' in f]
 
             proc_scilista = proc_serial_path + '/scilista.lst'

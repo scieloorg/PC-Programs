@@ -428,12 +428,13 @@ class ArticleContentValidation(object):
     def affiliations(self):
         r = []
         for aff in self.article.affiliations:
+            text = aff.original if aff.original is not None else aff.xml
             r.append(('aff xml', 'OK', aff.xml))
             r.append(required('aff id', aff.id, 'FATAL ERROR'))
             r.append(required('aff original', aff.original, 'ERROR'))
             label, status, msg = required('aff normalized', aff.norgname, 'ERROR')
             if status == 'ERROR':
-                msg += '. Please, ask to scielo@scielo.org or check http://wayta.scielo.org/ (trial version) to know how to normalize the name of this institution: ' + aff.original
+                msg += '. Please, ask to scielo@scielo.org or check http://wayta.scielo.org/ (trial version) to know how to normalize the name of this institution: ' + text
             r.append((label, status, msg))
             r.append(required('aff orgname', aff.orgname, 'ERROR'))
             r.append(required('aff country', aff.country, 'FATAL ERROR'))

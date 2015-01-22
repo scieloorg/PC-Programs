@@ -12,6 +12,7 @@ import xml_utils
 import xml_versions
 import pkg_reports
 import xpchecker
+import fs_utils
 
 
 mime = MimeTypes()
@@ -366,10 +367,6 @@ def generate_article_xml_package(doc_files_info, scielo_pkg_path, version, acron
     register_log('start')
     report_content = ''
     content = open(doc_files_info.xml_filename, 'r').read()
-    xml, e = xml_utils.load_xml(content)
-    if xml is None:
-        print('first load failed')
-        print(e)
 
     #register_log(content)
     register_log('remove_doctype')
@@ -629,11 +626,13 @@ def validate_path(path):
         if len(path) > 0:
             if os.path.isdir(path):
                 xml_files = sorted([path + '/' + f for f in os.listdir(path) if f.endswith('.xml')])
-                now = datetime.now().isoformat().replace(':', '').replace('T', '').replace('-', '')
-                now = now[0:now.find('.')]
-                markup_xml_path = os.path.dirname(path) + '/' + now
-                if not os.path.isdir(markup_xml_path):
-                    os.makedirs(markup_xml_path)
+                #now = datetime.now().isoformat().replace(':', '').replace('T', '').replace('-', '')
+                #now = now[0:now.find('.')]
+                now = 'result'
+                markup_xml_path = path + '_' + now
+                fs_utils.delete_file_or_folder(markup_xml_path)
+                os.makedirs(markup_xml_path)
+
             elif os.path.isfile(path):
                 if path.endswith('.sgm.xml'):
                     # path = ?/markup_xml/work/<name>/<name>.sgm.xml

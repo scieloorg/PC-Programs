@@ -396,9 +396,7 @@ class ArticleValidationReport(object):
         if len(items) > 0:
             r += self.format_table(self.format_rows(items))
 
-        part = self.references(display_problems)
-        if len(part) > 0:
-            r += self.format_table(part)
+        r += self.references(display_problems)
 
         if len(r) > 0:
             r = html_reports.tag('div', html_reports.tag('h2', 'Validations') + r, 'article-messages')

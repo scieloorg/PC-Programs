@@ -126,6 +126,8 @@ class IDFile(object):
             s = line.replace('\n', '').replace('\r', '')
             if not isinstance(s, unicode):
                 s = s.decode('iso-8859-1')
+            if isinstance(s, unicode):
+                s = s.encode('utf-8')
             if '!ID ' in s:
                 if len(record) > 0:
                     rec_list.append(self.simplify_record(record))

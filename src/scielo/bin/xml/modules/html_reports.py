@@ -31,7 +31,7 @@ def get_unicode(text):
 def join_texts(texts):
     text = u''.join([get_unicode(t) for t in texts])
     if isinstance(text, unicode):
-        text = text.encode('utf-8')
+        text = text.encode('utf-8', 'xmlcharrefreplace')
     return text
 
 

@@ -43,7 +43,6 @@ def get_article_xml_validations_reports(new_name, xml_filename, dtd_files, dtd_r
 
 
 def get_article_contents_validations_report(article, new_name, package_path, report_filename, validate_order, display_all):
-    print('validating contents')
     content, sheet_data = article_reports.get_report_content(article, new_name, package_path, validate_order, display_all)
 
     f, e, w = html_reports.statistics_numbers(content)
@@ -64,6 +63,12 @@ def get_report_text(filename):
     if os.path.isfile(filename):
         content = open(filename, 'r').read()
         if '</article>' in content:
+            if 'DTD errors' in content and 'Line number: ' in content:
+                line_number = content[content.rfind('Line number:')+len('Line number:'):]
+                line_number = line_number[0:line_number.find('Column number:')]
+                line_number = line_number.strip()
+                if line_number.isdigit():
+                    content = content[0:content.find('\n' + str(int(line_number)+1) + ':')] + '...'
             content = html_reports.display_xml(content)
             content = content.replace('\n', '<br/>')
 
@@ -136,7 +141,7 @@ def articles_and_issues(doc_files_info_list):
 
 def package_validations_report(articles, doc_files_info_list, dtd_files, validate_order, create_toc_report):
     toc_stats_and_report = validate_toc(articles, validate_order)
-    articles_stats, articles_reports, articles_sheets = validate_package(articles, doc_files_info_list, dtd_files, validate_order, not create_toc_report)    
+    articles_stats, articles_reports, articles_sheets = validate_package(articles, doc_files_info_list, dtd_files, validate_order, not create_toc_report)
     return package_validations_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report)
 
 
@@ -214,11 +219,11 @@ def get_reports_texts(articles_stats, articles_reports, articles_sheets, toc_sta
             content = ''.join(v)
             if xml_f + xml_e + xml_w > 0:
                 s = html_reports.statistics_display(xml_f, xml_e, xml_w)
-                validations_text += html_reports.collapsible_block('xmlrep' + str(index), '[' + s + ']' + ' and '.join(t), content)
+                validations_text += html_reports.collapsible_block('xmlrep' + str(index), '[' + s + '] - ' + ' and '.join(t), content)
 
             if data_f + data_e + data_w > 0:
                 s = html_reports.statistics_display(data_f, data_e, data_w)
-                validations_text += html_reports.collapsible_block('datarep' + str(index), '[' + s + ']' + os.path.basename(rep3), get_report_text(rep3))
+                validations_text += html_reports.collapsible_block('datarep' + str(index), '[' + s + '] - ' + os.path.basename(rep3), get_report_text(rep3))
 
             if create_toc_report:
                 authors_h, authors_w, authors_data = articles_sheets[new_name][0]

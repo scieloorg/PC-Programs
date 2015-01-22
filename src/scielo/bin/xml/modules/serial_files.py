@@ -28,7 +28,7 @@ class DocumentFiles(object):
             wrk_path = wrk_path + '/' + self.xml_name
             if not os.path.isdir(wrk_path):
                 os.makedirs(wrk_path)
-            self.html_filename = wrk_path + '/' + self.xml_name + '.temp_10.htm'
+            self.html_filename = wrk_path + '/' + self.xml_name + '.temp.htm'
             if not os.path.isfile(self.html_filename):
                 self.html_filename += 'l'
             self.ctrl_filename = wrk_path + '/' + self.xml_name + '.ctrl.txt'
