@@ -83,13 +83,6 @@ def rename_embedded_img_href(content, xml_name, new_href_list):
 def get_embedded_images_in_html(html_content):
     #[graphic href=&quot;?a20_115&quot;]</span><img border=0 width=508 height=314
     #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
-    if not '<html' in html_content.lower():
-        c = html_content
-        for c in html_content:
-            if ord(c) == 0:
-                break
-        html_content = html_content.replace(c, '')
-
     if 'href=&quot;?' in html_content:
         html_content = html_content.replace('href=&quot;?', 'href="?')
     html_content = html_content.replace('href="?', 'href="?--BREAKFIXHREF--FIXHREF')
@@ -108,9 +101,8 @@ def get_embedded_images_in_html(html_content):
     return img_src
 
 
-def extract_embedded_images(xml_name, content, html_filename, dest_path):
+def extract_embedded_images(xml_name, content, html_content, html_filename, dest_path):
     if content.find('href="?' + xml_name):
-        html_content = open(html_filename, 'r').read()
         embedded_img_files = get_embedded_images_in_html(html_content)
         embedded_img_path = None
 
@@ -131,11 +123,115 @@ def extract_embedded_images(xml_name, content, html_filename, dest_path):
     return content
 
 
+def get_embedded_tables_in_html(html_content):
+    r = {}
+    start = 0
+    content = html_content
+    table_end = content.find('</table>')
+
+    while table_end > 0:
+        table_end = table_end + len('</table>')
+        text = content[start:table_end]
+        start = table_end + 1
+
+        table_id = ''
+        table = ''
+        table_start = text.rfind('<table-wrap')
+        if table_start > 0:
+            text = text[table_start:]
+            table_start = text.find('id="')
+            if table_start > 0:
+                table_start += len('id="')
+                text = text[table_start:]
+                if text.find('"') > 0:
+                    table_id = text[0:text.find('"')]
+                    table_start = text.find('<table')
+                    if table_start > 0:
+                        table = text[table_start:]
+        if len(table_id) > 0 and len(table) > 0:
+            r[table_id] = table
+        content = content[start:]
+        table_end = content.find('</table>')
+    return r
+
+
+def fix_html_tables(html_content):
+    html_content = html_content.replace('[', 'BREAK[')
+    html_content = html_content.replace(']', ']BREAK')
+    new = []
+    for item in html_content.split('BREAK'):
+        if item.startswith('[') and item.endswith(']') and '<' in item and '>' in item:
+            p1 = item.find('<')
+            p2 = item.find('>')
+            if p1 < p2:
+                r = item[p1:p2+1]
+                if r.startswith('</'):
+                    item = r + item[0:p1] + item[p2+1:]
+                else:
+                    item = item[0:p1] + item[p2+1:] + r
+
+        new.append(item)
+
+
+def extract_embedded_tables(xml_name, content, html_content, dest_path):
+    if content.find('</table>'):
+        html_content = fix_html_tables(html_content)
+        embedded_tables = get_embedded_tables_in_html(html_content)
+
+        for table_id, table in embedded_tables.items():
+            p = content.find('<tabwrap id="' + table_id + '"')
+            if p > 0:
+                t = content[p:]
+                p_end = t.find('</table>')
+                if p_end > 0:
+                    p_end += len('</table>')
+                    t = t[0:p_end]
+                    p = t.find('<table')
+            content = content.replace(content[p:p_end], table)
+    return content
+
+
+def get_embedded_tables_in_html(html_content):
+    #[graphic href=&quot;?a20_115&quot;]</span><img border=0 width=508 height=314
+    #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
+
+    if 'href=&quot;?' in html_content:
+        html_content = html_content.replace('href=&quot;?', 'href="?')
+    html_content = html_content.replace('href="?', 'href="?--BREAKFIXHREF--FIXHREF')
+    _items = html_content.split('--BREAKFIXHREF--')
+    items = [item for item in _items if item.startswith('FIXHREF')]
+
+    img_src = []
+    for item in items:
+        if 'src="' in item:
+            src = item[item.find('src="') + len('src="'):]
+            src = src[0:src.find('"')]
+            if '/' in src:
+                src = src[src.find('/') + 1:]
+            if len(src) > 0:
+                img_src.append(src)
+    return img_src
+
+
+def read_html(html_filename):
+    html_content = open(html_filename, 'r').read()
+    if not '<html' in html_content.lower():
+        c = html_content
+        for c in html_content:
+            if ord(c) == 0:
+                break
+        html_content = html_content.replace(c, '')
+    return html_content
+
+
 def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
     #content = fix_uppercase_tag(content)
     register_log('normalize_sgmlxml')
 
-    content = extract_embedded_images(xml_name, content, html_filename, src_path)
+    html_content = read_html(html_filename)
+    #content = extract_embedded_tables(xml_name, content, html_filename, src_path)
+    content = extract_embedded_images(xml_name, content, html_content, html_filename, src_path)
+
     if isinstance(content, unicode):
         content = content.encode('utf-8')
     xml = xml_utils.is_xml_well_formed(content)
