@@ -155,7 +155,8 @@ def get_embedded_tables_in_html(html_content):
     return r
 
 
-def fix_html_tables(html_content):
+def fix_htmltag_inside_sgmltag(html_content):
+    # [<span style='color:#666699'>/td]
     html_content = html_content.replace('[', 'BREAK[')
     html_content = html_content.replace(']', ']BREAK')
     new = []
@@ -171,11 +172,22 @@ def fix_html_tables(html_content):
                     item = item[0:p1] + item[p2+1:] + r
 
         new.append(item)
+    return ''.join(new)
 
+
+def fix_tabwrap_end(html_content):
+    html_content = html_content.replace('[tabwrap', 'BREAK[tabwrap')
+    parts = html_content.split('BREAK')
+    if parts.startswith('[tabwrap'):
+        p_table = parts.find('</table>')
+        p_tabwrap = parts.find('[/tabwrap]')
+
+        if p_tabwrap < p_table:
+            
 
 def extract_embedded_tables(xml_name, content, html_content, dest_path):
     if content.find('</table>'):
-        html_content = fix_html_tables(html_content)
+        html_content = fix_htmltag_inside_sgmltag(html_content)
         embedded_tables = get_embedded_tables_in_html(html_content)
 
         for table_id, table in embedded_tables.items():
