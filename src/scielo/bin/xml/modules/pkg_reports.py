@@ -195,7 +195,9 @@ def get_reports_texts(articles_stats, articles_reports, articles_sheets, toc_sta
             toc_text = html_reports.tag('h2', 'Table of contents Report')
             toc_text += html_reports.collapsible_block('toc', 'table of contents validations ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report)
 
+    validations_text = ''
     if toc_f == 0:
+
         index = 0
         validations_text = html_reports.tag('h2', 'XML Validations')
         for new_name in sorted(articles_reports.keys()):

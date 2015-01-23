@@ -232,7 +232,7 @@ def register_remaining_named_entities(content):
 
 def all_ent_to_char(content):
     unicode_input = isinstance(content, unicode)
-    r = ''
+    r = content
     if '&' in content:
         h = HTMLParser.HTMLParser()
         u = content

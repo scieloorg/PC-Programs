@@ -280,8 +280,10 @@ class ArticleContentValidation(object):
             else:
                 if item.language is None:
                     r.append(('title language', 'ERROR', 'Missing language for ' + item.title))
-                if item.title is None:
-                    r.append(('title', 'ERROR', 'Missing title for ' + item.title))
+                elif item.title is None:
+                    r.append(('title', 'ERROR', 'Missing title for ' + item.language))
+                else:
+                    r.append('title', 'ERROR', 'Missing titles')
         return r
 
     @property
