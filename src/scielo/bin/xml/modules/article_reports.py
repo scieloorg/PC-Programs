@@ -13,8 +13,8 @@ from article import Article, PersonAuthor, CorpAuthor, format_author
 
 class TOCReport(object):
 
-    def __init__(self, articles, validate_order):
-        self.articles = articles
+    def __init__(self, articles_data, validate_order):
+        self.articles_data = articles_data
         self.validate_order = validate_order
 
     def report(self):
@@ -30,7 +30,8 @@ class TOCReport(object):
         for label in equal_data + unique_data:
             toc_data[label] = {}
 
-        for xml_name, article in self.articles.items():
+        for article, doc_info in self.articles_data:
+            xml_name = doc_info.xml_name
             if article is None:
                 invalid.append(xml_name)
             else:
@@ -51,7 +52,7 @@ class TOCReport(object):
                 r += part
 
         for label in unique_data:
-            if len(toc_data[label]) > 0 and len(toc_data[label]) != len(self.articles):
+            if len(toc_data[label]) > 0 and len(toc_data[label]) != len(self.articles_data):
                 none = []
                 duplicated = {}
                 pages = {}

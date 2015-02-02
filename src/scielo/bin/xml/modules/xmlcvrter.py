@@ -59,7 +59,7 @@ def get_issue(issue_data, db_issue):
     return (issue_record, msg)
 
 
-def convert_package(serial_path, pkg_path, report_path, website_folders_path, db_issue, db_ahead, db_article, version='1.0'):
+def convert_package(serial_path, pkg_path, report_path, website_folders_path, db_issue, db_ahead, db_article, version):
     old_report_path = report_path
     scilista_item = None
     label = 'acron issue'
@@ -70,13 +70,13 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
 
     xml_filenames = sorted([pkg_path + '/' + f for f in os.listdir(pkg_path) if f.endswith('.xml') and not 'incorrect' in f])
 
-    articles, doc_files_info_list = pkg_reports.get_package_info(xml_filenames, report_path)
-    issue_data = pkg_reports.issue_in_package(articles)
+    package_info = pkg_reports.get_package_info(xml_filenames, report_path)
+    issue_data = pkg_reports.issue_in_package(package_info)
 
-    toc_stats_and_report = pkg_reports.validate_toc(articles, validate_order)
+    toc_stats_and_report = pkg_reports.validate_toc(package_info, validate_order)
     toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
 
-    articles_stats, articles_reports, articles_sheets = pkg_reports.validate_articles(articles, doc_files_info_list, dtd_files, validate_order, False)
+    articles_stats, articles_reports, articles_sheets = pkg_reports.validate_articles(package_info, dtd_files, validate_order, False)
 
     validations_report = pkg_reports.package_validations_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, do_toc_report)
 
@@ -154,12 +154,6 @@ def check_data(ahead_manager, articles, issue_record):
 
 
 def convert_articles(ahead_manager, db_article, issue_files, i_record, articles, articles_stats, conversion_report):
-    total_new_doc = []
-    total_ex_aop = []
-    total_ex_aop_unmatched = []
-    total_ex_aop_invalid = []
-    total_ex_aop_partially = []
-    not_loaded = []
     loaded = []
 
     articles_by_status = {}

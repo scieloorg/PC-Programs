@@ -117,23 +117,22 @@ def more_frequent(d):
 
 
 def get_package_info(xml_filenames, report_path):
-    articles = {}
-    doc_files_info_list = []
+    r = []
     for xml_filename in xml_filenames:
         doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, None)
         doc_files_info.new_xml_filename = xml_filename
         doc_files_info.new_xml_path = os.path.dirname(xml_filename)
-        doc_files_info_list.append(doc_files_info)
 
         xml, e = xml_utils.load_xml(doc_files_info.new_xml_filename)
-        articles[doc_files_info.new_name] = Article(xml) if xml is not None else None
-    return (articles, doc_files_info_list)
+        doc = Article(xml) if xml is not None else None
+        r.append((doc, doc_files_info))
+    return r
 
 
-def issue_in_package(articles):
+def issue_in_package(package_info):
     issue_data = {}
     print('Identifying issue')
-    for new_name, article in articles.items():
+    for article, doc_files_info in package_info:
         if article is not None:
             items = [article.issue_label, article.print_issn, article.e_issn]
             issue_data = incr(issue_data, ';'.join(['' if item is None else item for item in items]))
@@ -142,9 +141,9 @@ def issue_in_package(articles):
     return (issue_label, p_issn, e_issn)
 
 
-def package_validations_report(articles, doc_files_info_list, dtd_files, validate_order, create_toc_report):
-    toc_stats_and_report = validate_toc(articles, validate_order)
-    articles_stats, articles_reports, articles_sheets = validate_articles(articles, doc_files_info_list, dtd_files, validate_order, not create_toc_report)
+def package_validations_report(articles_data, dtd_files, validate_order, create_toc_report):
+    toc_stats_and_report = validate_toc(articles_data, validate_order)
+    articles_stats, articles_reports, articles_sheets = validate_articles(articles_data, dtd_files, validate_order, not create_toc_report)
     return package_validations_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report)
 
 
@@ -153,23 +152,23 @@ def package_validations_reports_text(articles_stats, articles_reports, articles_
     return html_reports.join_texts(texts)
 
 
-def validate_toc(articles, validate_order):
-    return article_reports.toc_report_data(articles, validate_order)
+def validate_toc(articles_data, validate_order):
+    return article_reports.toc_report_data(articles_data, validate_order)
 
 
-def validate_articles(articles, doc_files_info_list, dtd_files, validate_order, display_all):
+def validate_articles(articles_data, dtd_files, validate_order, display_all):
     articles_stats = {}
     articles_reports = {}
     articles_sheets = {}
 
     print('Validating package')
-    for doc_files_info in doc_files_info_list:
+    for doc, doc_files_info in articles_data:
         new_name = doc_files_info.new_name
         xml_filename = doc_files_info.new_xml_filename
         print(new_name)
         xml_f, xml_e, xml_w = get_article_xml_validations_reports(new_name, xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
 
-        data_f, data_e, data_w, sheet_data = get_article_contents_validations_report(articles[new_name], new_name, os.path.dirname(xml_filename), doc_files_info.data_report_filename, validate_order, display_all)
+        data_f, data_e, data_w, sheet_data = get_article_contents_validations_report(doc, new_name, os.path.dirname(xml_filename), doc_files_info.data_report_filename, validate_order, display_all)
 
         articles_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
         articles_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
