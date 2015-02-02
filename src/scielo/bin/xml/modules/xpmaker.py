@@ -124,38 +124,20 @@ def extract_embedded_images(xml_name, content, html_content, html_filename, dest
 
 
 def get_embedded_tables_in_html(html_content):
-    r = {}
-    start = 0
-    content = html_content
-    table_end = content.find('</table>')
-
-    while table_end > 0:
-        table_end = table_end + len('</table>')
-        text = content[start:table_end]
-        start = table_end + 1
-
-        table_id = ''
-        table = ''
-        table_start = text.rfind('<table-wrap')
-        if table_start > 0:
-            text = text[table_start:]
-            table_start = text.find('id="')
-            if table_start > 0:
-                table_start += len('id="')
-                text = text[table_start:]
-                if text.find('"') > 0:
-                    table_id = text[0:text.find('"')]
-                    table_start = text.find('<table')
-                    if table_start > 0:
-                        table = text[table_start:]
-        if len(table_id) > 0 and len(table) > 0:
-            r[table_id] = table
-        content = content[start:]
-        table_end = content.find('</table>')
-    return r
+    tables = {}
+    html_content = html_content.replace('[tabwrap', 'BREAK[tabwrap')
+    html_content = html_content.replace('[/tabwrap]', '[/tabwrap]BREAK')
+    for item in html_content.split('BREAK'):
+        if item.startswith('[tabwrap') and item.endswith('[/tabwrap]'):
+            table_id = item[item.find('id="')+len('id="'):]
+            table_id = table_id[0:table_id.find('"')]
+            table = item[item.find('<table'):]
+            table = table[0:table.find('</table>')]
+            tables[table_id] = insert_quotes_to_attributes(remove_sgml_tags(table))
+    return tables
 
 
-def fix_htmltag_inside_sgmltag(html_content):
+def remove_html_tags_from_sgml_tags(html_content):
     # [<span style='color:#666699'>/td]
     html_content = html_content.replace('[', 'BREAK[')
     html_content = html_content.replace(']', ']BREAK')
@@ -175,19 +157,59 @@ def fix_htmltag_inside_sgmltag(html_content):
     return ''.join(new)
 
 
+def remove_sgml_tags(html_content):
+    html_content = html_content.replace('[', 'BREAK[')
+    html_content = html_content.replace(']', ']BREAK')
+    parts = []
+    for part in html_content.split('BREAK'):
+        if not part.startswith('[') and not part.endswith(']'):
+            parts.append(part)
+    return ''.join(parts)
+
+
+def insert_quotes_to_attributes(html_content, html=True):
+    if html:
+        c1 = '<'
+        c2 = '>'
+    else:
+        c1 = '['
+        c2 = ']'
+    html_content = html_content.replace(c1, 'BREAK' + c1)
+    html_content = html_content.replace(c2, c2 + 'BREAK')
+
+    parts = []
+    for part in html_content.split('BREAK'):
+        if part.startswith(c1) and part.endswith(c2) and '=' in part:
+            tag = part.replace(c2, ' ' + c2)
+            tag = tag.replace('=', 'BREAK=').replace(' ', ' BREAK')
+            attributes = []
+            for attr in tag.split('BREAK'):
+                if attr.startswith('=') and attr.endswith(' ') and attr[1:2] != '"':
+                    attr = '="' + attr + '" '
+                attributes.append(attr)
+            part = ''.join(attributes).replace(' ' + c2, c2)
+        parts.append(part)
+    return ''.join(parts)
+
+
 def fix_tabwrap_end(html_content):
     html_content = html_content.replace('[tabwrap', 'BREAK[tabwrap')
-    parts = html_content.split('BREAK')
-    if parts.startswith('[tabwrap'):
-        p_table = parts.find('</table>')
-        p_tabwrap = parts.find('[/tabwrap]')
+    parts = []
+    for part in html_content.split('BREAK'):
+        if part.startswith('[tabwrap'):
+            p_table = part.find('</table>')
+            p_tabwrap = part.find('[/tabwrap]')
+            if p_tabwrap < p_table:
+                part = part.replace('[/tabwrap]', '')
+                part = part.replace('</table>', '</table>[/tabwrap]')
+        parts.append(part)
+    return ''.join(parts)
 
-        if p_tabwrap < p_table:
-            
 
 def extract_embedded_tables(xml_name, content, html_content, dest_path):
-    if content.find('</table>'):
-        html_content = fix_htmltag_inside_sgmltag(html_content)
+    if content.find('</tabwrap>'):
+        html_content = remove_html_tags_from_sgml_tags(html_content)
+        html_content = fix_tabwrap_end(html_content)
         embedded_tables = get_embedded_tables_in_html(html_content)
 
         for table_id, table in embedded_tables.items():
@@ -199,30 +221,8 @@ def extract_embedded_tables(xml_name, content, html_content, dest_path):
                     p_end += len('</table>')
                     t = t[0:p_end]
                     p = t.find('<table')
-            content = content.replace(content[p:p_end], table)
+                    content = content.replace(content[p:p_end], table)
     return content
-
-
-def get_embedded_tables_in_html(html_content):
-    #[graphic href=&quot;?a20_115&quot;]</span><img border=0 width=508 height=314
-    #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
-
-    if 'href=&quot;?' in html_content:
-        html_content = html_content.replace('href=&quot;?', 'href="?')
-    html_content = html_content.replace('href="?', 'href="?--BREAKFIXHREF--FIXHREF')
-    _items = html_content.split('--BREAKFIXHREF--')
-    items = [item for item in _items if item.startswith('FIXHREF')]
-
-    img_src = []
-    for item in items:
-        if 'src="' in item:
-            src = item[item.find('src="') + len('src="'):]
-            src = src[0:src.find('"')]
-            if '/' in src:
-                src = src[src.find('/') + 1:]
-            if len(src) > 0:
-                img_src.append(src)
-    return img_src
 
 
 def read_html(html_filename):
@@ -241,7 +241,7 @@ def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
     register_log('normalize_sgmlxml')
 
     html_content = read_html(html_filename)
-    #content = extract_embedded_tables(xml_name, content, html_filename, src_path)
+    content = extract_embedded_tables(xml_name, content, html_filename, src_path)
     content = extract_embedded_images(xml_name, content, html_content, html_filename, src_path)
 
     if isinstance(content, unicode):
