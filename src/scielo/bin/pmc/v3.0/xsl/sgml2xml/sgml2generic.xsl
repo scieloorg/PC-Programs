@@ -2026,9 +2026,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="p/tabwrap">
-		<xsl:variable name="id">t<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:variable>
 		
-		<table-wrap id="{$id}">
+		<table-wrap>
+			<xsl:attribute name="id"><xsl:apply-templates select="@id"/></xsl:attribute>
+			
 			<xsl:apply-templates select=".//label"/>
 			<xsl:apply-templates select=".//caption"/>
 			<xsl:apply-templates select="." mode="graphic"/>
