@@ -167,7 +167,7 @@ cc
 ccid;cversion;cccompl
 
 ref
-reftype
+id;reftype
 
 authors
 role
