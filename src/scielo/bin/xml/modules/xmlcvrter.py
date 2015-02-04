@@ -36,7 +36,7 @@ def get_i_record(db_issue, issue_label, print_issn, e_issn):
     return i_record
 
 
-def get_issue(issue_data, db_issue):
+def get_issue_record(issue_data, db_issue):
     #print(issue_data)
     issue_label, p_issn, e_issn = issue_data
     i_record = None
@@ -59,6 +59,108 @@ def get_issue(issue_data, db_issue):
     return (issue_record, msg)
 
 
+def validate_new_plus_previous(base_source_path, pkg_path, joined_path, report_path):
+    fs_utils.delete_file_or_folder(joined_path)
+    os.makedirs(joined_path)
+
+    r = {'new': [], 'previous': [], 'replaced': []}
+    for f in os.listdir(base_pkg_path):
+        if f in os.listdir(pkg_path):
+            if open(base_pkg_path + '/' + f).read() == open(pkg_path + '/' + f).read():
+                status = 'previous'
+            else:
+                status = 'replaced'
+        else:
+            status = 'previous'
+            shutil.copyfile(base_pkg_path + '/' + f, joined_path + '/' + f)
+        r[status].append(f)
+    for f in os.listdir(pkg_path):
+        if not f in os.listdir(base_pkg_path):
+            r['new'].append(f)
+        shutil.copyfile(pkg_path + '/' + f, joined_path + '/' + f)
+
+    report = ''.join([html_reports.format_list(status, 'ol', items) for status, items in r.items()])
+
+    pkg_plus_previous = pkg_reports.get_pkg_items([joined_path + '/' + f for f in os.listdir(joined_path)], report_path)
+
+    toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(pkg_plus_previous, validate_order)
+    return (toc_f, report + toc_report)
+
+
+def new_convert_package(src_path, pkg_path):
+    validations_report = ''
+
+    # normaliza os arquivos xml
+    # pkg_items = xpmaker.make_package(xml_files, report_path, wrk_path, pkg_path, version, acron)
+
+    # validate toc
+    toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(pkg_items, validate_order)
+
+    if toc_f == 0:
+        # identify the issue
+        issue_data = pkg_reports.issue_in_package(pkg_items)
+        issue_record, issue_error_msg = get_issue_record(issue_data, db_issue)
+
+        issue_label = issue_data[0]
+        issue = None
+
+        print(acron)
+        print(issue_label)
+
+        if issue_record is None:
+            validations_report += issue_error_msg
+        else:
+
+            issue = issue_record.issue
+
+            journal_files = serial_files.JournalFiles(serial_path, issue.acron)
+            scilista_item = issue.acron + ' ' + issue.issue_label
+            label = scilista_item
+
+            issue_files = serial_files.IssueFiles(journal_files, issue.issue_label, pkg_path, website_folders_path)
+            
+            toc_f, report = validate_new_plus_previous(base_source_path, pkg_path, joined_path, report_path)
+            if toc_f == 0:
+                pkg_items = [(doc, doc_file_info) for doc, doc_file_info in pkg_items if doc_file_info.xml_name + '.xml' in new_files + ]
+        
+    if toc_f > 0:
+        validations_report += html_reports.format_message('FATAL ERROR: Unable to create "base" because of fatal errors in the Table of Contents data.')
+    else:
+        articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(pkg_items, dtd_files, validate_order, False)
+
+        validations_report += pkg_reports.package_validations_reports_text(articles_stats, articles_reports, articles_sheets, (toc_f, toc_e, toc_w, toc_report), do_toc_report)
+
+        ahead_manager = serial_files.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
+        articles = [article for article, doc_file_info in pkg_items]
+        conversion_validation_result = check_data(ahead_manager, articles, issue_record)
+        conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record.record, articles, articles_stats, conversion_validation_result)
+
+        #issue_files.move_reports(report_path)
+        #issue_files.save_source_files(pkg_path)
+        report_path = issue_files.base_reports_path
+
+        
+
+    filename = report_path + '/xml_converter.html'
+    texts = []
+    texts.append(pkg_reports.xml_list(pkg_path, xml_filenames))
+    texts.append(validations_report)
+    texts.append(conversion_report)
+    texts.append(pkg_reports.processing_result_location(report_path))
+
+    content = html_reports.join_texts(texts)
+
+    if old_report_path in content:
+        content = html_reports.get_unicode(content)
+        content = content.replace(html_reports.get_unicode(old_report_path), html_reports.get_unicode(report_path))
+    if isinstance(content, unicode):
+        content = content.encode('utf-8')
+    pkg_reports.save_report(filename, ['XML Conversion (XML to Database)', label], content)
+    pkg_reports.display_report(filename)
+
+    return (filename, report_path, scilista_item)
+
+
 def convert_package(serial_path, pkg_path, report_path, website_folders_path, db_issue, db_ahead, db_article, version):
     old_report_path = report_path
     scilista_item = None
@@ -70,17 +172,16 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
 
     xml_filenames = sorted([pkg_path + '/' + f for f in os.listdir(pkg_path) if f.endswith('.xml') and not 'incorrect' in f])
 
-    package_info = pkg_reports.get_package_info(xml_filenames, report_path)
-    issue_data = pkg_reports.issue_in_package(package_info)
+    pkg_items = pkg_reports.get_pkg_items(xml_filenames, report_path)
+    issue_data = pkg_reports.issue_in_package(pkg_items)
 
-    toc_stats_and_report = pkg_reports.validate_toc(package_info, validate_order)
-    toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
+    toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(pkg_items, validate_order)
 
-    articles_stats, articles_reports, articles_sheets = pkg_reports.validate_articles(package_info, dtd_files, validate_order, False)
+    articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(pkg_items, dtd_files, validate_order, False)
 
     validations_report = pkg_reports.package_validations_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, do_toc_report)
 
-    issue_record, issue_error_msg = get_issue(issue_data, db_issue)
+    issue_record, issue_error_msg = get_issue_record(issue_data, db_issue)
     issue_label = issue_data[0]
 
     conversion_report = ''

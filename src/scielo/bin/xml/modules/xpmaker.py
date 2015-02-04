@@ -638,7 +638,7 @@ def zip_package(pkg_path, zip_name):
 
 
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron):
-    print('Generate packages for ' + str(len(xml_files)) + ' files.')
+    print('Make packages for ' + str(len(xml_files)) + ' files.')
     r = []
     for xml_filename in xml_files:
 
@@ -677,7 +677,7 @@ def make_pmc_package(articles, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, 
         zip_packages(pmc_pkg_path)
 
 
-def make_and_validate(xml_files, source_parent_path, acron, version, from_converter=False):
+def pack_and_validate(xml_files, source_parent_path, acron, version, from_converter=False):
     from_markup = any([f.endswith('.sgm.xml') for f in xml_files])
 
     do_toc_report = not from_markup
@@ -701,13 +701,13 @@ def make_and_validate(xml_files, source_parent_path, acron, version, from_conver
         path = os.path.dirname(path)
         hdimages_to_jpeg(path, path, False)
 
-        articles_data = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
+        pkg_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
-        generate_reports(articles_data, scielo_dtd_files, scielo_pkg_path, report_path, do_toc_report, not from_markup, from_converter)
+        generate_reports(pkg_items, scielo_dtd_files, scielo_pkg_path, report_path, do_toc_report, not from_markup, from_converter)
 
         if not from_converter:
             zip_packages(scielo_pkg_path)
-            make_pmc_package(articles_data, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+            make_pmc_package(pkg_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
 
         print('Result of the processing:')
         print(source_parent_path)
@@ -716,58 +716,6 @@ def make_and_validate(xml_files, source_parent_path, acron, version, from_conver
         if isinstance(s, unicode):
             s = s.encode('utf-8')
         open(report_path + '/log.txt', 'w').write(s)
-
-
-def xx_make_and_validate(xml_files, markup_xml_path, acron, version='1.0'):
-    from_markup = any([f.endswith('.sgm.xml') for f in xml_files])
-
-    do_toc_report = not from_markup
-
-    scielo_pkg_path = markup_xml_path + '/scielo_package'
-    pmc_pkg_path = markup_xml_path + '/pmc_package'
-    report_path = markup_xml_path + '/errors'
-    wrk_path = markup_xml_path + '/work'
-
-    pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
-    scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
-
-    for d in [scielo_pkg_path, pmc_pkg_path, report_path, wrk_path]:
-        if not os.path.isdir(d):
-            os.makedirs(d)
-
-    if len(xml_files) == 0:
-        print('No files to process')
-    else:
-        path = xml_files[0]
-        path = os.path.dirname(path)
-        hdimages_to_jpeg(path, path, False)
-
-        articles_data = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
-        zip_packages(scielo_pkg_path)
-
-        generate_reports(articles_data, scielo_dtd_files, scielo_pkg_path, report_path, do_toc_report, not from_markup)
-
-        make_pmc_package(articles_data, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
-
-        print('Result of the processing:')
-        print(markup_xml_path)
-
-        s = '\n'.join(log_items)
-        if isinstance(s, unicode):
-            s = s.encode('utf-8')
-        open(report_path + '/log.txt', 'w').write(s)
-
-
-def make_zip(src_pkg_path, pkg_name):
-    new_pkg_path = os.path.dirname(src_pkg_path) + '/' + pkg_name
-    if not os.path.isdir(new_pkg_path):
-        os.makedirs(new_pkg_path)
-    for item in os.listdir(new_pkg_path):
-        os.unlink(new_pkg_path + '/' + item)
-    for item in os.listdir(src_pkg_path):
-        if item.startswith(pkg_name):
-            shutil.copyfile(src_pkg_path + '/' + item, new_pkg_path + '/' + item)
-    zip_package(new_pkg_path, new_pkg_path + '.zip')
 
 
 def zip_packages(src_pkg_path):
@@ -789,11 +737,11 @@ def zip_packages(src_pkg_path):
         shutil.rmtree(new_pkg_path)
 
 
-def generate_reports(articles_data, dtd_files, scielo_pkg_path, report_path, do_toc_report, display_report, from_converter):
+def generate_reports(pkg_items, dtd_files, scielo_pkg_path, report_path, do_toc_report, display_report, from_converter):
 
     validate_order = from_converter
 
-    content = pkg_reports.package_validations_report(articles_data, dtd_files, validate_order, do_toc_report)
+    content = pkg_reports.package_validations_report(pkg_items, dtd_files, validate_order, do_toc_report)
 
     content += pkg_reports.processing_result_location(scielo_pkg_path)
 
@@ -855,7 +803,7 @@ def make_packages(path, acron, version):
         print(path)
         print(' must be an XML file or a folder which contains XML files.')
     else:
-        make_and_validate(xml_files, markup_xml_path, acron, version)
+        pack_and_validate(xml_files, markup_xml_path, acron, version)
         print('finished')
 
 

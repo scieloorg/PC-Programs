@@ -116,7 +116,7 @@ def more_frequent(d):
     return r
 
 
-def get_package_info(xml_filenames, report_path):
+def get_pkg_items(xml_filenames, report_path):
     r = []
     for xml_filename in xml_filenames:
         doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, None)
@@ -141,9 +141,9 @@ def issue_in_package(package_info):
     return (issue_label, p_issn, e_issn)
 
 
-def package_validations_report(articles_data, dtd_files, validate_order, create_toc_report):
-    toc_stats_and_report = validate_toc(articles_data, validate_order)
-    articles_stats, articles_reports, articles_sheets = validate_articles(articles_data, dtd_files, validate_order, not create_toc_report)
+def package_validations_report(pkg_items, dtd_files, validate_order, create_toc_report):
+    toc_stats_and_report = validate_package(pkg_items, validate_order)
+    articles_stats, articles_reports, articles_sheets = validate_pkg_items(pkg_items, dtd_files, validate_order, not create_toc_report)
     return package_validations_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report)
 
 
@@ -152,17 +152,17 @@ def package_validations_reports_text(articles_stats, articles_reports, articles_
     return html_reports.join_texts(texts)
 
 
-def validate_toc(articles_data, validate_order):
-    return article_reports.toc_report_data(articles_data, validate_order)
+def validate_package(pkg_items, validate_order):
+    return article_reports.toc_report_data(pkg_items, validate_order)
 
 
-def validate_articles(articles_data, dtd_files, validate_order, display_all):
+def validate_pkg_items(pkg_items, dtd_files, validate_order, display_all):
     articles_stats = {}
     articles_reports = {}
     articles_sheets = {}
 
     print('Validating package')
-    for doc, doc_files_info in articles_data:
+    for doc, doc_files_info in pkg_items:
         new_name = doc_files_info.new_name
         xml_filename = doc_files_info.new_xml_filename
         print(new_name)
