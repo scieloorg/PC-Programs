@@ -404,9 +404,10 @@ class ArticleXML(object):
     def volume(self):
         v = self.article_meta.findtext('volume')
         if v is not None:
-            v = str(int(v))
-            if v == '0':
-                v = None
+            if v.isdigit():
+                v = str(int(v))
+                if v == '0':
+                    v = None
         return v
 
     @property
