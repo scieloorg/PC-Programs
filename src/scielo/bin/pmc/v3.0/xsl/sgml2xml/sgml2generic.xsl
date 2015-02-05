@@ -1943,9 +1943,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="figgrp/@id | tabwrap/@id">
 		<xsl:choose>
-			<xsl:when test="substring(@id,1,1)='f'">f<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:when>
-			<xsl:when test="substring(@id,1,1)='t'">t<xsl:value-of select="string(number(substring(@id,2)))"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="@id"/></xsl:otherwise>
+			<xsl:when test="substring(.,1,1)='f'">f<xsl:value-of select="string(number(substring(.,2)))"/></xsl:when>
+			<xsl:when test="substring(.,1,1)='t'">t<xsl:value-of select="string(number(substring(.,2)))"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	
