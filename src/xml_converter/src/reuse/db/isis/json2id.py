@@ -70,26 +70,60 @@ class JSON2IDFile:
         if type(fields_info) == type({}):
             ##print(fields_info.keys())
             tag_list = [ int(tag) for tag in fields_info.keys() if tag.isdigit()]
-            
-
             tag_list.sort()
             ##print(tag_list)
             for t in tag_list:
-                
                 tag = str(t)
                 field_occs = fields_info[tag]
-                if type(field_occs) == type([]):
+                if tag == '18':
+                    print(field_occs)
+                if isinstance(field_occs, list):
                     for field_occ in field_occs:
                         self.__format_field_occ__(tag, field_occ)
                 else:
-                    self.__format_field_occ__(tag, field_occs)            
-        
+                    self.__format_field_occ__(tag, field_occs)
+
     def __format_field_occ__(self, t, field_occ):
+        """
+        field_occ -- str (string) or [] (repetitive field (with/without subf) or {} (field with subfields)
+        """
+        if t == '70' or t == '18':
+            print(field_occ)
+
+        if isinstance(field_occ, dict):
+            tagged = ''
+            if '_' in field_occ.keys():
+                tagged = field_occ['_']
+                if isinstance(tagged, list):
+                    tagged = '; '.join(tagged)
+
+            for subf_label, subf_occs in field_occ.items():
+                if len(field_occ) == 1 and isinstance(subf_occs, list):
+                    for subf_occ in subf_occs:
+                        s = self.__convert_value__(subf_occ)
+                        s = self.__format_subfield__(subf_label, s, '')
+                        s = self.__tag_it__(t, s)
+                        self.__write__(s)
+                else:
+                    if subf_label != '_':
+                        if isinstance(subf_occs, list):
+                            tagged += self.__format_subfield__(subf_label, ';'.join(list(set(subf_occs))), '')
+                        else:
+                            tagged += self.__format_subfield__(subf_label, subf_occs, '')
+                    s = self.__tag_it__(t, tagged)
+                    self.__write__(s)
+        else:
+            s = self.__convert_value__(field_occ)
+            s = self.__tag_it__(t, s)
+            self.__write__(s)
+
+    def old__format_field_occ__(self, t, field_occ):
         """
         field_occ -- str (string) or [] (repetitive field (with/without subf) or {} (field with subfields)
         """ 
         if type(field_occ) == type({}):
             tagged = ''
+            
             for subf_label, subf_occs in field_occ.items():
                 # subf_content = str or []
                 if type(subf_occs) == type([]):
@@ -115,7 +149,7 @@ class JSON2IDFile:
                     s = self.__convert_value__(field_occ)
                     s = self.__tag_it__(t, s)
                     self.__write__(s)
-        
+
     def __format_subfield__(self, subf_label, subf_content, content):
         if subf_label == '_':
             content = subf_content + content
@@ -125,10 +159,16 @@ class JSON2IDFile:
         return content
         
     def __tag_it__(self, tag, content):
-        tag = '000' + tag
-        r = ''
-        if tag[-3:].isdigit():
-            r = '!v' + tag[-3:] + '!' + content.replace('\n', ' ') + "\n"
+        try:
+            r = ''
+            if len(content) > 0:
+                tag = '000' + tag
+                if tag[-3:].isdigit():
+                    r = '!v' + tag[-3:] + '!' + content.replace('\n', ' ') + "\n"
+        except Exception as e:
+            print(e)
+            print(tag)
+            print(content)
         return r
             
            
@@ -139,6 +179,8 @@ class JSON2IDFile:
         else:
             r = value           
         r = r.replace('& ', '&amp; ')
+        if '&' in r and not ';' in r:
+            r = r.replace('&', '&amp;')
         r = r.replace('<italic>', '<em>')
         r = r.replace('</italic>', '</em>')
         r = r.replace('<bold>', '<strong>')
