@@ -67,7 +67,7 @@ class JSON2IDFile:
     
     
     def save_document_data(self, fields_info):
-        if type(fields_info) == type({}):
+        if isinstance(fields_info, dict):
             ##print(fields_info.keys())
             tag_list = [ int(tag) for tag in fields_info.keys() if tag.isdigit()]
             tag_list.sort()
@@ -75,7 +75,8 @@ class JSON2IDFile:
             for t in tag_list:
                 tag = str(t)
                 field_occs = fields_info[tag]
-                if tag == '18':
+                if tag == '17':
+                    print('+'*80)
                     print(field_occs)
                 if isinstance(field_occs, list):
                     for field_occ in field_occs:
@@ -83,37 +84,46 @@ class JSON2IDFile:
                 else:
                     self.__format_field_occ__(tag, field_occs)
 
-    def __format_field_occ__(self, t, field_occ):
+    def __format_field_occ__(self, t, field_data):
         """
-        field_occ -- str (string) or [] (repetitive field (with/without subf) or {} (field with subfields)
+        field_data -- str (string) or [] (repetitive field (with/without subf) or {} (field with subfields)
         """
-        if t == '70' or t == '18':
-            print(field_occ)
+        if t == '17':
+            print('$'*8)
+            print(field_data)
 
-        if isinstance(field_occ, dict):
+        if isinstance(field_data, dict):
             tagged = ''
-            if '_' in field_occ.keys():
-                tagged = field_occ['_']
+            if '_' in field_data.keys():
+                tagged = field_data['_']
                 if isinstance(tagged, list):
                     tagged = '; '.join(tagged)
 
-            for subf_label, subf_occs in field_occ.items():
-                if len(field_occ) == 1 and isinstance(subf_occs, list):
+            for subf_label, subf_occs in field_data.items():
+                if len(field_data) == 1 and isinstance(subf_occs, list):
                     for subf_occ in subf_occs:
                         s = self.__convert_value__(subf_occ)
                         s = self.__format_subfield__(subf_label, s, '')
                         s = self.__tag_it__(t, s)
                         self.__write__(s)
+                    tagged = ''
                 else:
                     if subf_label != '_':
                         if isinstance(subf_occs, list):
                             tagged += self.__format_subfield__(subf_label, ';'.join(list(set(subf_occs))), '')
                         else:
                             tagged += self.__format_subfield__(subf_label, subf_occs, '')
-                    s = self.__tag_it__(t, tagged)
-                    self.__write__(s)
+
+            if len(tagged) > 0:
+                s = self.__tag_it__(t, tagged)
+                self.__write__(s)
+        elif isinstance(field_data, list):
+            for occ in field_data:
+                s = self.__convert_value__(occ)
+                s = self.__tag_it__(t, s)
+                self.__write__(s)
         else:
-            s = self.__convert_value__(field_occ)
+            s = self.__convert_value__(field_data)
             s = self.__tag_it__(t, s)
             self.__write__(s)
 
@@ -170,14 +180,16 @@ class JSON2IDFile:
             print(tag)
             print(content)
         return r
-            
-           
+
     def __convert_value__(self, value):
-        value = value.replace('\n', ' ')
+        if isinstance(value, list):
+            print(value)
+            value = ', '.join(value)
+        value = ' '.join([item for item in value.split()])
         if self.convert2iso:
             r = self._iso(value)
         else:
-            r = value           
+            r = value
         r = r.replace('& ', '&amp; ')
         if '&' in r and not ';' in r:
             r = r.replace('&', '&amp;')
