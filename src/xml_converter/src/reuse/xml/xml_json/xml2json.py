@@ -35,12 +35,13 @@ class XML2JSON:
 
 
     def __convert__(self, node_rules, xml_parent_node, parent_xml_parent_node, num = 1):
-        
+        # node_rules.xpath = ./email
         if self.debug:
             self.report.write('__convert__ ')
             self.report.write('node_rules.xpath', False, False, False, node_rules.xpath)
         
         xml_nodes = self.xml_tree.return_nodes(node_rules.xpath, xml_parent_node)
+        # nodes = nodes de aff
         if self.debug: 
             self.report.write('xml_nodes', False, False, False, xml_nodes)
         
@@ -91,8 +92,12 @@ class XML2JSON:
             occ = {}
             number += 1
             for child in node_rules.children:
+                # ex.: child de aff
                 if self.debug:
                     self.report.write(node_rules.xpath + '=>' + child.xpath)
+                # child = email
+                # xml_node = node de aff
+                # v = array de email
                 v = self.__convert__(child, xml_node, xml_parent_node, number)
                 if len(v)>0:
                     if child.to == '' or child.to == '_':
@@ -142,10 +147,13 @@ class XML2JSON:
         return result
 
     def _convert_value_(self, value):
+        value = ' '.join([item for item in value.split()])
         enc = 'utf-8'
         if value != '':
             if not isinstance(value, unicode):
-                value = value.replace('&', '&amp;')
+                if '&' in value and not ';' in value:
+                    if not ' &' in value and not '& ' in value:
+                        value = value.replace('&', '&amp;')
             if isinstance(value, unicode):
-                value = value.encode(enc, 'xmlcharrefreplace')
+                value = value.encode(enc)
         return value

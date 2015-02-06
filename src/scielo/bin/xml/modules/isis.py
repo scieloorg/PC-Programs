@@ -110,6 +110,10 @@ class IDFile(object):
                     tag = '000' + tag
                     tag = tag[-3:]
                     r = '!v' + tag + '!' + format_value(value) + '\n'
+
+                    if tag == '70':
+                        print(value)
+                        print(r)
                 except Exception as e:
                     print('tag_value: ')
                     print(e)
