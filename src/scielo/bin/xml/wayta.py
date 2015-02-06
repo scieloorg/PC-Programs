@@ -29,7 +29,7 @@ def run_wayta(text):
         data = urllib.urlencode(values)
         full_url = url + '?' + data
         print(full_url)
-        response = urllib2.urlopen(full_url, timeout=30)
+        response = urllib2.urlopen(full_url, timeout=5)
         result = response.read()
     except Exception as e:
         print(e)
