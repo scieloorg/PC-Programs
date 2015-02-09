@@ -115,7 +115,8 @@ class JSON2IDFile:
                             tagged += self.__format_subfield__(subf_label, subf_occs, '')
 
             if len(tagged) > 0:
-                s = self.__tag_it__(t, tagged)
+                s = self.__convert_value__(tagged)
+                s = self.__tag_it__(t, s)
                 self.__write__(s)
         elif isinstance(field_data, list):
             for occ in field_data:
@@ -204,7 +205,7 @@ class JSON2IDFile:
             try:
                 content = content.decode('utf-8')
             except:
-                pass
+                content = content.decode('utf-8', 'xmlcharrefreplace')
         iso = u_encode(content, 'iso-8859-1')
         return iso
 
@@ -214,7 +215,6 @@ class JSON2IDFile:
             f.write(content)
         except:
             self.report.write('Unable to write content in id filename. ', True, True, True,  content )
-            
         f.close()
 
 
@@ -222,10 +222,10 @@ def u_encode(u, encoding):
     r = u
     if isinstance(u, unicode):
         try:
-            r = u.encode(encoding, 'xmlcharrefreplace')
+            r = u.encode(encoding)
         except Exception as e:
             try:
-                r = u.encode(encoding, 'replace')
+                r = u.encode(encoding, 'xmlcharrefreplace')
             except Exception as e:
-                r = u.encode(encoding, 'ignore')
+                r = u.encode(encoding, 'replace')
     return r
