@@ -259,7 +259,19 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<PubDate PubStatus="ppublish">
-					<xsl:apply-templates select="." mode="data"/>
+					<xsl:if test="substring(text(),1,4)!='0000'">
+						<Year>
+							<xsl:value-of select="substring(text(),1,4)"/>
+						</Year>
+					</xsl:if>
+					<xsl:choose>
+						<xsl:when test="../publishing_date">
+							<Month><xsl:apply-templates select="../publishing_date"/></Month>
+						</xsl:when>
+						<xsl:when test="substring(text(),5,2)!='00'">
+							<Month><xsl:value-of select="substring(text(),5,2)"/></Month>
+						</xsl:when>
+					</xsl:choose>
 				</PubDate>
 			</xsl:otherwise>
 		</xsl:choose>
