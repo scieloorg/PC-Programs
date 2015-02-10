@@ -259,17 +259,21 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<PubDate PubStatus="ppublish">
-					<xsl:if test="substring(text(),1,4)!='0000'">
-						<Year>
-							<xsl:value-of select="substring(text(),1,4)"/>
-						</Year>
+					<xsl:variable name="year"><xsl:value-of select="substring(occ,1,4)"/></xsl:variable>
+					<xsl:variable name="month"><xsl:value-of select="substring(occ,5,2)"/></xsl:variable>
+					
+					<xsl:if test="$year!='0000'">
+						<Year><xsl:value-of select="$year"/></Year>
 					</xsl:if>
 					<xsl:choose>
-						<xsl:when test="../publishing_date">
-							<Month><xsl:apply-templates select="../publishing_date"/></Month>
+						<xsl:when test="contains(../publishing_date/occ,$year)">
+							<Month><xsl:value-of select="substring-before(../publishing_date/occ,concat('/',$year))"/></Month>
 						</xsl:when>
-						<xsl:when test="substring(text(),5,2)!='00'">
-							<Month><xsl:value-of select="substring(text(),5,2)"/></Month>
+						<xsl:when test="../publishing_date/occ">
+							<Month><xsl:value-of select="../publishing_date/occ"/></Month>
+						</xsl:when>
+						<xsl:when test="$month!='00'">
+							<Month><xsl:value-of select="$month"/></Month>
 						</xsl:when>
 					</xsl:choose>
 				</PubDate>
