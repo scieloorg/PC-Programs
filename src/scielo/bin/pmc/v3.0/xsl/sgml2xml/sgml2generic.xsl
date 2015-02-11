@@ -142,12 +142,22 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="ign"/>
 	<xsl:template match="list">
-		<p>
-			<list>
-				<xsl:apply-templates select="@*|*"/>
-			</list>
-		</p>
+		<xsl:choose>
+			<xsl:when test="../li">
+				<list>
+					<xsl:apply-templates select="@*|*"/>
+				</list>
+			</xsl:when>
+			<xsl:otherwise>
+				<p>
+					<list>
+						<xsl:apply-templates select="@*|*"/>
+					</list>
+				</p>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
+	
 	<xsl:template match="@listtype">
 		<xsl:attribute name="list-type">
 			<xsl:value-of select="normalize-space(.)"/>
@@ -161,12 +171,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="litext"></xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
-					<p>
 						<xsl:apply-templates select="*[name()!='label'] |text()"/>
-					</p>
 				</xsl:otherwise>
 			</xsl:choose>
 		</list-item>
+	</xsl:template>
+	
+	<xsl:template match="li/text()">
+		<p><xsl:value-of select="."/></p>
 	</xsl:template>
 	
 	<xsl:template match="lilabel">
@@ -402,14 +414,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="issn">
 		<xsl:choose>
 			<xsl:when test="string-length(.)=9 and substring(.,5,1)='-'">
-				<issn><xsl:value-of select="."/></issn>
+				<issn><xsl:value-of select="normalize-space(.)"/></issn>
 			</xsl:when>
 			<xsl:when test="contains(.,'PMID:')">
 				<pub-id pub-id-type="pmid">
 					<xsl:value-of select="substring-after(., 'PMID:')"/>
 				</pub-id>
 			</xsl:when>
-			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+			<xsl:otherwise><xsl:value-of select="normalize-space(.)"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	
@@ -933,7 +945,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</aff>
 	</xsl:template>
 	<xsl:template match="@ncountry">
-		<country><xsl:value-of select="."/></country>
+		<country><xsl:value-of select="normalize-space(.)"/></country>
 	</xsl:template>
 	<xsl:template match="aff/country| aff/email | normaff/country| normaff/email">
 		<xsl:element name="{name()}">
@@ -956,7 +968,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="aff/* | normaff/*" mode="original">
-		<xsl:value-of select="."/>
+		<xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
 	
 	<xsl:template match="aff//text() | normaff//text()" mode="original">
@@ -969,13 +981,13 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:attribute name="rid"><xsl:choose>
 			<xsl:when test="substring($n1,1,1)='0'"><xsl:value-of select="substring(.,1,1)"/><xsl:value-of select="string(number($n1))"/></xsl:when>
 			<xsl:when test="substring($n2,1,1)='0'"><xsl:value-of select="../@ref-type"/><xsl:value-of select="string(number($n2))"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+			<xsl:otherwise><xsl:value-of select="normalize-space(.)"/></xsl:otherwise>
 		</xsl:choose></xsl:attribute>
 	</xsl:template>
 	
 	<xsl:template match="xref[@ref-type='aff']/@rid">
 		<xsl:attribute name="rid"><xsl:choose>
-			<xsl:when test="contains(.,'aff')"><xsl:value-of select="."/></xsl:when>
+			<xsl:when test="contains(.,'aff')"><xsl:value-of select="normalize-space(.)"/></xsl:when>
 			<xsl:otherwise>aff<xsl:value-of select="string(number(substring(.,2)))"/></xsl:otherwise>
 		</xsl:choose></xsl:attribute>
 	</xsl:template>
@@ -999,10 +1011,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="normaff/orgname">
-		<institution content-type="orgname"><xsl:value-of select="."/></institution>
+		<institution content-type="orgname"><xsl:value-of select="normalize-space(.)"/></institution>
 	</xsl:template>
 	<xsl:template match="normaff/*[contains(name(),'orgdiv')]">
-		<institution content-type="{name()}"><xsl:value-of select="."/></institution>
+		<institution content-type="{name()}"><xsl:value-of select="normalize-space(.)"/></institution>
 	</xsl:template>
 	<xsl:template match="aff/@*[contains(name(),'org')] | aff/*[contains(name(),'org')]">
 		<institution>
@@ -1149,7 +1161,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:choose>
 		</lpage>
 	</xsl:template>
-	<xsl:template match="@elocatid"><elocation-id><xsl:value-of select="."/></elocation-id></xsl:template>
+	<xsl:template match="@elocatid"><elocation-id><xsl:value-of select="normalize-space(.)"/></elocation-id></xsl:template>
 	<xsl:template match="fpage">
 		<fpage>
 			<xsl:value-of select="normalize-space(.)"/>
@@ -1485,7 +1497,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="fngrp/@label">
-		<label><xsl:value-of select="."/></label>
+		<label><xsl:value-of select="normalize-space(.)"/></label>
 	</xsl:template>
 	
 	<xsl:template match="*/fngrp[@fntype]">
@@ -1614,7 +1626,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="cauthor">
 		<collab>
-			<xsl:value-of select="."/>
+			<xsl:value-of select="normalize-space(.)"/>
 		</collab>
 	</xsl:template>
 	<xsl:template match="doctit">
@@ -1636,19 +1648,19 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="reportid">
 		<!-- <pub-id pub-id-type="other">Report No.: HETA2000-0139-2824</pub-id> -->
-		<pub-id pub-id-type="other"><xsl:value-of select="."/></pub-id>
+		<pub-id pub-id-type="other"><xsl:value-of select="normalize-space(.)"/></pub-id>
 	</xsl:template>
 	<xsl:template match="patentno">
-		<patent country="{@country}"><xsl:value-of select="."/></patent>
+		<patent country="{@country}"><xsl:value-of select="normalize-space(.)"/></patent>
 	</xsl:template>
 	<xsl:template match="letterto">
-		<source><xsl:value-of select="."/></source>
+		<source><xsl:value-of select="normalize-space(.)"/></source>
 	</xsl:template>
 	<xsl:template match="found-at|moreinfo">
-		<comment><xsl:value-of select="."/></comment>
+		<comment><xsl:value-of select="normalize-space(.)"/></comment>
 	</xsl:template>
 	<xsl:template match="ref/contract">
-		<comment content-type="award-id"><xsl:value-of select="."/></comment>
+		<comment content-type="award-id"><xsl:value-of select="normalize-space(.)"/></comment>
 	</xsl:template>
 	<xsl:template match="ref/date"></xsl:template>
 	<xsl:template match="back//no">
@@ -1942,7 +1954,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:choose>
 			<xsl:when test="substring(.,1,1)='f'">f<xsl:value-of select="string(number(substring(.,2)))"/></xsl:when>
 			<xsl:when test="substring(.,1,1)='t'">t<xsl:value-of select="string(number(substring(.,2)))"/></xsl:when>
-			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+			<xsl:otherwise><xsl:value-of select="normalize-space(.)"/></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
 	
@@ -2468,7 +2480,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						<xsl:value-of select="$alt_display"/>
 					</sup>
 				</xsl:when>
-				<xsl:when test=".//sup">
+				<xsl:when test=".//sup or contains(normalize-space($text),' ')">
 					<xsl:apply-templates select="*[name()!='graphic']|text()"/>
 				</xsl:when>
 				<xsl:otherwise>
@@ -2620,7 +2632,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="th/@*">
-		<xsl:attribute name="{name()}"><xsl:value-of select="."/></xsl:attribute>
+		<xsl:attribute name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:attribute>
 	</xsl:template>
 	<xsl:template match="thead | thead/tr | thead//th">
 		<xsl:element name="{name()}">
@@ -2721,7 +2733,7 @@ et al.</copyright-statement>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="degree"><comment content-type="degree"><xsl:value-of select="."/></comment></xsl:template>
+	<xsl:template match="degree"><comment content-type="degree"><xsl:value-of select="normalize-space(.)"/></comment></xsl:template>
 	<xsl:template match="thesis/date | thesgrp/date">
 	</xsl:template>
 	<xsl:template match="thesis/orgdiv | thesgrp/orgdiv"/>
@@ -2732,7 +2744,7 @@ et al.</copyright-statement>
 		<xsl:apply-templates select="orgname|orgdiv" mode="org"/>
 	</xsl:template>
 	<xsl:template match="orgname|orgdiv" mode="org">
-		<xsl:if test="position()!=1">, </xsl:if><xsl:value-of select="."/>
+		<xsl:if test="position()!=1">, </xsl:if><xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
 	
 	<xsl:template match="thesis/city | thesgrp/city | thesis/state | thesgrp/state | thesis/country | thesgrp/country">
@@ -2743,7 +2755,7 @@ et al.</copyright-statement>
 		<publisher-loc><xsl:apply-templates select="city|state|country" mode="location"/></publisher-loc>
 	</xsl:template>
 	<xsl:template match="city|state|country" mode="location">
-		<xsl:if test="position()!=1">, </xsl:if><xsl:value-of select="."/>
+		<xsl:if test="position()!=1">, </xsl:if><xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
 	<!--xsl:template match=" *[contains(name(),'contrib')]//bold |  *[contains(name(),'monog')]//bold"/-->
 	<xsl:template match="subsec/xref | sec/xref"> </xsl:template>
@@ -3064,7 +3076,7 @@ et al.</copyright-statement>
 		<xsl:if test="position()=2 and name()='no'">, </xsl:if><xsl:value-of select="normalize-space(.)"/>
 	</xsl:template>
 
-	<xsl:template match="colvolid"><volume><xsl:value-of select="."/></volume></xsl:template>
+	<xsl:template match="colvolid"><volume><xsl:value-of select="normalize-space(.)"/></volume></xsl:template>
 	<xsl:template match="coltitle">
 			<series>
 			<xsl:value-of select="normalize-space(.)"/>
@@ -3304,7 +3316,7 @@ et al.</copyright-statement>
 	</xsl:template>
 	
 	<xsl:template match="extra-scielo/license">
-		<xsl:variable name="href"><xsl:value-of select="."/></xsl:variable>
+		<xsl:variable name="href"><xsl:value-of select="normalize-space(.)"/></xsl:variable>
 		<xsl:variable name="ccid"><xsl:value-of select="../license-type"/></xsl:variable>
 		<xsl:variable name="cversion"><xsl:value-of select="../license-version"/></xsl:variable>
 		<xsl:variable name="cccompl"><xsl:value-of select="../license-complement"/></xsl:variable>
