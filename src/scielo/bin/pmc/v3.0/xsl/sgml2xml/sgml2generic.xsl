@@ -527,11 +527,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:value-of select=".//nlm-title"/>
 				</journal-id>
 			</xsl:if>
-			<xsl:if test="not(.//nlm-title) or .//nlm-title=''">
-				<journal-id journal-id-type="publisher-id">
-					<xsl:value-of select="$journal_acron"/>
-				</journal-id>
-			</xsl:if>
+			<journal-id journal-id-type="publisher-id">
+				<xsl:value-of select="$journal_acron"/>
+			</journal-id>
 			<journal-title-group>
 				<xsl:if test=".//journal-title!=''">
 					<xsl:copy-of select=".//journal-title"/>
