@@ -890,10 +890,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="aff|normaff" mode="label">
 		<xsl:choose>
 			<xsl:when test="normalize-space(.//label//text())=''">
-				<xsl:choose>
-					<xsl:when test="contains(@id,'aff')"><label><xsl:value-of select="substring(@id,4)"/></label></xsl:when>
-					<xsl:when test="contains(@id,'a0')"><label><xsl:value-of select="substring(@id,3)"/></label></xsl:when>
-				</xsl:choose>
+				<!-- nao gerar label -->
 			</xsl:when>
 			<xsl:otherwise><xsl:apply-templates select="label"></xsl:apply-templates></xsl:otherwise>
 		</xsl:choose>
