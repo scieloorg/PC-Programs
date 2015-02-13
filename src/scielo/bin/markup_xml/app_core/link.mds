@@ -2,7 +2,7 @@ aff
 id;orgname;orgdiv1;orgdiv2;orgdiv3
 
 normaff
-id;ncountry;norgname
+id;ncountry;norgname;icountry
 
 title
 language
