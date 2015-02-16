@@ -22,24 +22,24 @@ def validate_country(i_country, country_name):
     status = 'OK'
     import utils
 
-    code = country_services.get_code(country_name)
-    if not code == i_country:
-        names = country_services.get_names(i_country)
-        if not country_name in names:
-            if len(names) == 0:
-                msg.append(i_country + ': invalid value for country/@country.')
+    names = country_services.get_names(i_country)
+    if not country_name in names:
+        names = country_services.similar_names(country_name)
+        names = [name for name, code in names if code == i_country]
+
+        if len(names) == 0:
+            msg.append(i_country + ': invalid value for country/@country.')
+            status = 'ERROR'
+        else:
+            best_matches = utils.best_matches(utils.similarity_ranking(names, country_name))
+            if len(best_matches) == 0:
                 status = 'ERROR'
-            else:
-                best_matches = utils.best_matches(utils.similarity_ranking(names, country_name))
-                if len(best_matches) == 0:
-                    status = 'ERROR'
-                    msg.append(country_name + ': invalid value for country.')
-                    msg.append(i_country + ' is a valid value for country/@country of ' + '; '.join(names) + '.')
-    
+                msg.append(country_name + ': invalid value for country.')
+                msg.append(i_country + ' is a valid value for country/@country of ' + '; '.join(names) + '.')
+
                 best_matches = country_services.similar_names(country_name)
             if len(best_matches) == 0:
-                
-
+    
 
     return (status, '\n'.join(msg))
 

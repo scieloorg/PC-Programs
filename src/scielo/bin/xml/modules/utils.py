@@ -10,7 +10,7 @@ def how_similar(this, that):
     return difflib.SequenceMatcher(None, this.lower(), that.lower()).ratio()
 
 
-def similarity_ranking(items, text):
+def similarity(items, text):
     r = {}
     for item in items:
         rate = how_similar(item, text)
@@ -20,13 +20,13 @@ def similarity_ranking(items, text):
     return r
 
 
-def best_matches(ranking, expected_ratio=0):
+def ranking(similarity, expected_ratio=0):
     r = []
-    ratio_list = ranking.keys()
+    ratio_list = similarity.keys()
     ratio_list.reverse()
     for ratio in ratio_list:
         if ratio > expected_ratio:
-            for item in ranking[ratio]:
+            for item in similarity[ratio]:
                 r.append(item)
     print(r)
     return r
