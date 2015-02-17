@@ -52,10 +52,11 @@ class ArticleRecords2Article(object):
 
 class Article2ArticleRecords(object):
 
-    def __init__(self, article, i_record, article_files):
+    def __init__(self, article, i_record, article_files, creation_date=None):
         self.article = article
         self.article_files = article_files
         self.i_record = i_record
+        self.creation_date = creation_date
         self.add_issue_data()
         self.add_article_data()
         self.set_common_data(article_files.xml_name, article_files.issue_files.issue_folder, article_files.relative_xml_filename)
@@ -289,8 +290,13 @@ class Article2ArticleRecords(object):
 
     def outline(self, total_of_records):
         rec_o = {}
-        rec_o['91'] = datetime.now().isoformat()[0:10].replace('-', '')
-        rec_o['92'] = datetime.now().isoformat()[11:19].replace(':', '')
+        if self.creation_date is None:
+            rec_o['91'] = datetime.now().isoformat()[0:10].replace('-', '')
+            rec_o['92'] = datetime.now().isoformat()[11:19].replace(':', '')
+        else:
+            rec_o['91'] = self.creation_date[0]
+            rec_o['92'] = self.creation_date[1]
+            rec_o['93'] = datetime.now().isoformat()
         rec_o['703'] = total_of_records
         return rec_o
 

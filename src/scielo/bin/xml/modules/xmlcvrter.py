@@ -148,7 +148,7 @@ def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ah
 
             ahead_manager = serial_files.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
             articles = [article for article, doc_file_info in pkg_items]
-            scilista_item, conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record, articles, articles_stats)
+            scilista_item, conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record, articles, articles_stats, creation_date)
 
     filename = report_path + '/xml_converter.html'
     texts = []
@@ -170,7 +170,7 @@ def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ah
     return (filename, report_path, scilista_item)
 
 
-def convert_articles(ahead_manager, db_article, issue_files, issue_record, articles, articles_stats):
+def convert_articles(ahead_manager, db_article, issue_files, issue_record, articles, articles_stats, creation_date):
     index = 0
     articles_by_status = {}
     status_text = ['converted', 'not converted', 'first version', 'previous version (aop)', 'previous version (aop) unmatched', 'previous version (aop) without PID', 'previous version (aop) partially matched', ]
@@ -207,7 +207,7 @@ def convert_articles(ahead_manager, db_article, issue_files, issue_record, artic
             if valid_ahead is not None:
                 article._ahead_pid = valid_ahead.ahead_pid
             article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
-            done = db_article.create_id_file(issue_record.record, article, article_files)
+            done = db_article.create_id_file(issue_record.record, article, article_files, creation_date.get(xml_name))
             if done:
                 article_id_created += 1
                 if valid_ahead is not None:
