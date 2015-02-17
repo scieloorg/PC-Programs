@@ -2,13 +2,9 @@
 
 import os
 
-import xml_utils
 import article_reports
 import xpchecker
 import html_reports
-import serial_files
-
-from article import Article
 
 
 def update_err_filename(err_filename, dtd_report):
