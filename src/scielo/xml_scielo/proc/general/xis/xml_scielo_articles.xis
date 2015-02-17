@@ -407,6 +407,18 @@
 	<!-- trecho (acima) seria desnecessario, mas sem isso nao funciona, da erro no gizmo -->
 
 
+	<do task="mfnrange">
+		<parm name="db"><pft>v1002</pft></parm>
+		<parm name="from">1</parm>
+		<parm name="count">1</parm>
+		<loop>
+
+			<field action="replace" tag="9064"><pft>(if v43^l='en' then v43^m fi)</pft></field>
+			<field action="export" tag="list">9064</field>
+		</loop>
+		<field action="export" tag="list">9064</field>
+		
+	</do>
 	<do task="search">
 		<parm name="db"><pft>v1002</pft></parm>
 		<parm name="expression"><pft>'tipo=h or tipo=c'</pft></parm>
@@ -429,7 +441,6 @@
 
 		<loop>
 			<field action="import" tag="list">2013,350,2021,2025</field>
-
 			<!-- begin: skip reference if reg h was skiped -->
 			<field action="import" tag="list">1234</field>
 			<field action="delete" tag="list"><pft>if v706='h' then '1234' fi</pft></field>
@@ -447,9 +458,9 @@
 
             <field action="delete" tag="list"><pft>if p(v881) and (v881=v880 or size(v881) < size(v880)) then '881' fi</pft></field>
 			<field action="import" tag="list"><pft>if v706='c' then '880' fi</pft></field>
-			<field action="export" tag="list"><pft>if v706='h' then '880' fi</pft></field>
+			<field action="export" tag="list"><pft>if v706='h' then '880,9064' fi</pft></field>
 
-
+			<field action="replace" tag="list"><pft>if a(v64) then v9064 fi</pft></field>
 			<!-- caso o registro seja da versão ahead v2.0, migrar para v3.0 
 				versão 2.0:
 				registro antigo: v222 = new-pid

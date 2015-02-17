@@ -542,3 +542,10 @@ class ArticleDAO(object):
                 self.dao.append_id_records(issue_files.id_path + '/' + f, issue_files.base)
                 loaded.append(f)
         return loaded
+
+    def article_records(self, article_files):
+        return IDFile().readfile(article_files.id_filename)
+
+    def creation_date(self, article_files):
+        d = self.article_records(article_files)
+        return (d[0]['91'], d[0]['92'])

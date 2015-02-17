@@ -67,29 +67,74 @@ class JSON2IDFile:
     
     
     def save_document_data(self, fields_info):
-        if type(fields_info) == type({}):
+        if isinstance(fields_info, dict):
             ##print(fields_info.keys())
             tag_list = [ int(tag) for tag in fields_info.keys() if tag.isdigit()]
-            
-
             tag_list.sort()
             ##print(tag_list)
             for t in tag_list:
-                
                 tag = str(t)
                 field_occs = fields_info[tag]
-                if type(field_occs) == type([]):
+                if tag == '17':
+                    print('+'*80)
+                    print(field_occs)
+                if isinstance(field_occs, list):
                     for field_occ in field_occs:
                         self.__format_field_occ__(tag, field_occ)
                 else:
-                    self.__format_field_occ__(tag, field_occs)            
-        
-    def __format_field_occ__(self, t, field_occ):
+                    self.__format_field_occ__(tag, field_occs)
+
+    def __format_field_occ__(self, t, field_data):
+        """
+        field_data -- str (string) or [] (repetitive field (with/without subf) or {} (field with subfields)
+        """
+        if t == '17':
+            print('$'*8)
+            print(field_data)
+
+        if isinstance(field_data, dict):
+            tagged = ''
+            if '_' in field_data.keys():
+                tagged = field_data['_']
+                if isinstance(tagged, list):
+                    tagged = '; '.join(tagged)
+
+            for subf_label, subf_occs in field_data.items():
+                if len(field_data) == 1 and isinstance(subf_occs, list):
+                    for subf_occ in subf_occs:
+                        s = self.__convert_value__(subf_occ)
+                        s = self.__format_subfield__(subf_label, s, '')
+                        s = self.__tag_it__(t, s)
+                        self.__write__(s)
+                    tagged = ''
+                else:
+                    if subf_label != '_':
+                        if isinstance(subf_occs, list):
+                            tagged += self.__format_subfield__(subf_label, ';'.join(list(set(subf_occs))), '')
+                        else:
+                            tagged += self.__format_subfield__(subf_label, subf_occs, '')
+
+            if len(tagged) > 0:
+                s = self.__convert_value__(tagged)
+                s = self.__tag_it__(t, s)
+                self.__write__(s)
+        elif isinstance(field_data, list):
+            for occ in field_data:
+                s = self.__convert_value__(occ)
+                s = self.__tag_it__(t, s)
+                self.__write__(s)
+        else:
+            s = self.__convert_value__(field_data)
+            s = self.__tag_it__(t, s)
+            self.__write__(s)
+
+    def old__format_field_occ__(self, t, field_occ):
         """
         field_occ -- str (string) or [] (repetitive field (with/without subf) or {} (field with subfields)
         """ 
         if type(field_occ) == type({}):
             tagged = ''
+            
             for subf_label, subf_occs in field_occ.items():
                 # subf_content = str or []
                 if type(subf_occs) == type([]):
@@ -115,7 +160,7 @@ class JSON2IDFile:
                     s = self.__convert_value__(field_occ)
                     s = self.__tag_it__(t, s)
                     self.__write__(s)
-        
+
     def __format_subfield__(self, subf_label, subf_content, content):
         if subf_label == '_':
             content = subf_content + content
@@ -125,20 +170,30 @@ class JSON2IDFile:
         return content
         
     def __tag_it__(self, tag, content):
-        tag = '000' + tag
-        r = ''
-        if tag[-3:].isdigit():
-            r = '!v' + tag[-3:] + '!' + content.replace('\n', ' ') + "\n"
+        try:
+            r = ''
+            if len(content) > 0:
+                tag = '000' + tag
+                if tag[-3:].isdigit():
+                    r = '!v' + tag[-3:] + '!' + content.replace('\n', ' ') + "\n"
+        except Exception as e:
+            print(e)
+            print(tag)
+            print(content)
         return r
-            
-           
+
     def __convert_value__(self, value):
-        value = value.replace('\n', ' ')
+        if isinstance(value, list):
+            print(value)
+            value = ', '.join(value)
+        value = ' '.join([item for item in value.split()])
         if self.convert2iso:
             r = self._iso(value)
         else:
-            r = value           
+            r = value
         r = r.replace('& ', '&amp; ')
+        if '&' in r and not ';' in r:
+            r = r.replace('&', '&amp;')
         r = r.replace('<italic>', '<em>')
         r = r.replace('</italic>', '</em>')
         r = r.replace('<bold>', '<strong>')
@@ -150,7 +205,7 @@ class JSON2IDFile:
             try:
                 content = content.decode('utf-8')
             except:
-                pass
+                content = content.decode('utf-8', 'xmlcharrefreplace')
         iso = u_encode(content, 'iso-8859-1')
         return iso
 
@@ -160,7 +215,6 @@ class JSON2IDFile:
             f.write(content)
         except:
             self.report.write('Unable to write content in id filename. ', True, True, True,  content )
-            
         f.close()
 
 
@@ -168,10 +222,11 @@ def u_encode(u, encoding):
     r = u
     if isinstance(u, unicode):
         try:
-            r = u.encode(encoding, 'xmlcharrefreplace')
+            r = u.encode(encoding)
         except Exception as e:
             try:
-                r = u.encode(encoding, 'replace')
+                r = u.encode(encoding, 'xmlcharrefreplace')
             except Exception as e:
-                r = u.encode(encoding, 'ignore')
+                r = u.encode(encoding, 'replace')
     return r
+

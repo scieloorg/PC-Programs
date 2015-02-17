@@ -45,6 +45,10 @@ class ArticleRecords2Article(object):
     def old_pid(self):
         return self.article_records[1]['881']
 
+    @property
+    def creation_date(self):
+        return (self.article_records[0]['91'], self.article_records[0]['92'])
+
 
 class Article2ArticleRecords(object):
 

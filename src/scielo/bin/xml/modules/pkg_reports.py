@@ -43,14 +43,14 @@ def get_article_xml_validations_reports(new_name, xml_filename, dtd_files, dtd_r
     return (f, e, w)
 
 
-def get_article_contents_validations_report(article, new_name, package_path, report_filename, validate_order, display_all):
-    content, sheet_data = article_reports.get_report_content(article, new_name, package_path, validate_order, display_all)
+def get_article_contents_validations_report(article, new_name, package_path, report_filename, validate_order, display_title):
+    content, sheet_data = article_reports.get_report_content(article, new_name, package_path, validate_order, display_title)
 
     f, e, w = html_reports.statistics_numbers(content)
 
     stats = ''
     title = ''
-    if display_all:
+    if display_title:
         stats = html_reports.statistics_display(f, e, w, False)
         title = ['Contents validations required by SciELO ', new_name]
 
@@ -98,57 +98,24 @@ def xml_list(pkg_path, xml_filenames):
     return r
 
 
-def incr(d, value):
-    if value is not None:
-        if not value in d.keys():
-            d[value] = 0
-        d[value] += 1
-    return d
-
-
-def more_frequent(d):
-    r = None
-    t = 0
-    for k, v in d.items():
-        if v > t:
-            t = v
-            r = k
-    return r
-
-
-def get_pkg_items(xml_filenames, report_path):
-    r = []
-    for xml_filename in xml_filenames:
-        doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, None)
-        doc_files_info.new_xml_filename = xml_filename
-        doc_files_info.new_xml_path = os.path.dirname(xml_filename)
-
-        xml, e = xml_utils.load_xml(doc_files_info.new_xml_filename)
-        doc = Article(xml) if xml is not None else None
-        r.append((doc, doc_files_info))
-    return r
-
-
-def issue_in_package(package_info):
-    issue_data = {}
-    print('Identifying issue')
-    for article, doc_files_info in package_info:
-        if article is not None:
-            items = [article.issue_label, article.print_issn, article.e_issn]
-            issue_data = incr(issue_data, ';'.join(['' if item is None else item for item in items]))
-    data = more_frequent(issue_data)
-    issue_label, p_issn, e_issn = data.split(';')
-    return (issue_label, p_issn, e_issn)
-
-
 def package_validations_report(pkg_items, dtd_files, validate_order, create_toc_report):
     toc_stats_and_report = validate_package(pkg_items, validate_order)
+
     articles_stats, articles_reports, articles_sheets = validate_pkg_items(pkg_items, dtd_files, validate_order, not create_toc_report)
-    return package_validations_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report)
 
+    texts = []
 
-def package_validations_reports_text(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report):
-    texts = get_reports_texts(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report)
+    toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
+
+    if create_toc_report:
+        texts += get_toc_report_text(toc_f, toc_e, toc_w, toc_report)
+
+    if toc_f == 0:
+        texts += get_articles_report_text(articles_reports, articles_stats)
+
+    if create_toc_report:
+        texts += get_lists_report_text(articles_reports, articles_sheets)
+
     return html_reports.join_texts(texts)
 
 
@@ -177,75 +144,76 @@ def validate_pkg_items(pkg_items, dtd_files, validate_order, display_all):
     return (articles_stats, articles_reports, articles_sheets)
 
 
-def get_reports_texts(articles_stats, articles_reports, articles_sheets, toc_stats_and_report, create_toc_report):
+def get_toc_report_text(toc_f, toc_e, toc_w, toc_report):
+    toc_text = ''
+    if toc_f + toc_e + toc_w > 0:
+        toc_text = html_reports.tag('h2', 'Table of contents Report')
+        toc_text += html_reports.collapsible_block('toc', 'table of contents validations ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report)
+    return toc_text
+
+
+def get_articles_report_text(articles_reports, articles_stats):
     n = '/' + str(len(articles_reports))
+    validations_text = ''
+
+    index = 0
+    validations_text = html_reports.tag('h2', 'XML Validations')
+    for new_name in sorted(articles_reports.keys()):
+        index += 1
+        item_label = str(index) + n + ' - ' + new_name
+        print(item_label)
+        validations_text += html_reports.tag('h4', item_label)
+        xml_f, xml_e, xml_w = articles_stats[new_name][0]
+        data_f, data_e, data_w = articles_stats[new_name][1]
+
+        rep1, rep2, rep3 = articles_reports[new_name]
+
+        t = []
+        v = []
+        content = get_report_text(rep1)
+        if len(content) > 0:
+            t.append(os.path.basename(rep1))
+            v.append(content)
+        content = get_report_text(rep2)
+        if len(content) > 0:
+            t.append(os.path.basename(rep2))
+            v.append(content)
+
+        content = ''.join(v)
+        if xml_f + xml_e + xml_w > 0:
+            s = html_reports.statistics_display(xml_f, xml_e, xml_w)
+            validations_text += html_reports.collapsible_block('xmlrep' + str(index), '[' + s + '] - ' + ' and '.join(t), content)
+
+        if data_f + data_e + data_w > 0:
+            s = html_reports.statistics_display(data_f, data_e, data_w)
+            validations_text += html_reports.collapsible_block('datarep' + str(index), '[' + s + '] - ' + os.path.basename(rep3), get_report_text(rep3))
+
+    return validations_text
+
+
+def get_lists_report_text(articles_reports, articles_sheets):
+    toc_authors_sheet_data = []
+    toc_sources_sheet_data = []
     authors_h = None
     authors_w = None
     sources_h = None
     sources_w = None
 
-    toc_authors_sheet_data = []
-    toc_sources_sheet_data = []
-    toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
+    for new_name in sorted(articles_reports.keys()):
+        authors_h, authors_w, authors_data = articles_sheets[new_name][0]
+        toc_authors_sheet_data += authors_data
+        sources_h, sources_w, sources_data = articles_sheets[new_name][1]
+        toc_sources_sheet_data += sources_data
 
-    toc_text = ''
-    if create_toc_report:
-        if toc_f + toc_e + toc_w > 0:
-            toc_text = html_reports.tag('h2', 'Table of contents Report')
-            toc_text += html_reports.collapsible_block('toc', 'table of contents validations ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report)
+    lists_text = html_reports.tag('h2', 'Authors and Sources Lists')
 
-    validations_text = ''
-    if toc_f == 0:
+    authors = html_reports.sheet((authors_h, authors_w, toc_authors_sheet_data))
+    lists_text += html_reports.collapsible_block('authors', 'Authors in the package', authors)
 
-        index = 0
-        validations_text = html_reports.tag('h2', 'XML Validations')
-        for new_name in sorted(articles_reports.keys()):
-            index += 1
-            item_label = str(index) + n + ' - ' + new_name
-            print(item_label)
-            validations_text += html_reports.tag('h4', item_label)
-            xml_f, xml_e, xml_w = articles_stats[new_name][0]
-            data_f, data_e, data_w = articles_stats[new_name][1]
+    sources = html_reports.sheet((sources_h, sources_w, toc_sources_sheet_data))
+    lists_text += html_reports.collapsible_block('sources', 'Sources in the package', sources)
 
-            rep1, rep2, rep3 = articles_reports[new_name]
-
-            t = []
-            v = []
-            content = get_report_text(rep1)
-            if len(content) > 0:
-                t.append(os.path.basename(rep1))
-                v.append(content)
-            content = get_report_text(rep2)
-            if len(content) > 0:
-                t.append(os.path.basename(rep2))
-                v.append(content)
-
-            content = ''.join(v)
-            if xml_f + xml_e + xml_w > 0:
-                s = html_reports.statistics_display(xml_f, xml_e, xml_w)
-                validations_text += html_reports.collapsible_block('xmlrep' + str(index), '[' + s + '] - ' + ' and '.join(t), content)
-
-            if data_f + data_e + data_w > 0:
-                s = html_reports.statistics_display(data_f, data_e, data_w)
-                validations_text += html_reports.collapsible_block('datarep' + str(index), '[' + s + '] - ' + os.path.basename(rep3), get_report_text(rep3))
-
-            if create_toc_report:
-                authors_h, authors_w, authors_data = articles_sheets[new_name][0]
-                toc_authors_sheet_data += authors_data
-                sources_h, sources_w, sources_data = articles_sheets[new_name][1]
-                toc_sources_sheet_data += sources_data
-
-    lists_text = ''
-    if create_toc_report:
-
-        lists_text = html_reports.tag('h2', 'Authors and Sources Lists')
-        authors = html_reports.sheet((authors_h, authors_w, toc_authors_sheet_data))
-        lists_text += html_reports.collapsible_block('authors', 'Authors in the package', authors)
-
-        sources = html_reports.sheet((sources_h, sources_w, toc_sources_sheet_data))
-        lists_text += html_reports.collapsible_block('sources', 'Sources in the package', sources)
-
-    return [toc_text, validations_text, lists_text]
+    return lists_text
 
 
 def processing_result_location(result_path):

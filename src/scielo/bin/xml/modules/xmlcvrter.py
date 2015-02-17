@@ -4,7 +4,7 @@ import os
 import shutil
 from datetime import datetime
 
-from isis_models import IssueRecord
+from isis_models import IssueRecord, ArticleRecords2Article
 import ftp_service
 import email_service
 import serial_files
@@ -15,6 +15,7 @@ import isis
 import xmlcvrter_cfg
 import article_utils
 import fs_utils
+import xpmaker
 
 
 converter_report_lines = []
@@ -36,9 +37,9 @@ def get_i_record(db_issue, issue_label, print_issn, e_issn):
     return i_record
 
 
-def get_issue_record(issue_data, db_issue):
+def get_issue_record(issue_label, p_issn, e_issn, db_issue):
     #print(issue_data)
-    issue_label, p_issn, e_issn = issue_data
+
     i_record = None
     issue_record = None
     msg = None
@@ -59,92 +60,106 @@ def get_issue_record(issue_data, db_issue):
     return (issue_record, msg)
 
 
-def validate_new_plus_previous(base_source_path, pkg_path, joined_path, report_path):
-    fs_utils.delete_file_or_folder(joined_path)
-    os.makedirs(joined_path)
+def validate_whole_package(issue_files, pkg_path, whole_pkg_path, report_path):
+    previous_files = os.listdir(issue_files.base_source_path)
+    previous = []
+    update = []
+    ignore_update = []
+    new = []
+    creation_date = {}
+    if not os.path.isdir(whole_pkg_path):
+        os.makedirs(whole_pkg_path)
 
-    r = {'new': [], 'previous': [], 'replaced': []}
-    for f in os.listdir(base_pkg_path):
-        if f in os.listdir(pkg_path):
-            if open(base_pkg_path + '/' + f).read() == open(pkg_path + '/' + f).read():
-                status = 'previous'
+    for item in os.listdir(whole_pkg_path):
+        os.unlink(whole_pkg_path + '/' + item)
+
+    for item in os.listdir(pkg_path):
+        if not item in previous_files:
+            new.append(item)
+        shutil.copyfile(pkg_path + '/' + item, whole_pkg_path + '/' + item)
+
+    if len(previous_files) > 0:
+        for item in previous_files:
+            if item in os.listdir(whole_pkg_path):
+                if open(pkg_path + '/' + item, 'r').read() == open(issue_files.base_source_path + '/' + item, 'r').read():
+                    ignore_update.append(item)
+                else:
+                    update.append(item)
+                    records = isis.IDFile().readfile(issue_files.issue_id_path + '/' + item.replace('.xml', '.id'))
+                    creation_date[item] = ArticleRecords2Article(records).creation_date()
             else:
-                status = 'replaced'
-        else:
-            status = 'previous'
-            shutil.copyfile(base_pkg_path + '/' + f, joined_path + '/' + f)
-        r[status].append(f)
-    for f in os.listdir(pkg_path):
-        if not f in os.listdir(base_pkg_path):
-            r['new'].append(f)
-        shutil.copyfile(pkg_path + '/' + f, joined_path + '/' + f)
+                previous.append(item)
+                shutil.copyfile(issue_files.base_source_path + '/' + item, whole_pkg_path + '/' + item)
 
-    report = ''.join([html_reports.format_list(status, 'ol', items) for status, items in r.items()])
+    pkg_items = xpmaker.get_pkg_items([whole_pkg_path + '/' + f for f in os.listdir(whole_pkg_path)], report_path)
 
-    pkg_plus_previous = pkg_reports.get_pkg_items([joined_path + '/' + f for f in os.listdir(joined_path)], report_path)
+    toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(pkg_items, validate_order=True)
+    toc_report = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, toc_report)
 
-    toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(pkg_plus_previous, validate_order)
-    return (toc_f, report + toc_report)
+    status_report = ''
+    for status, items in {'new': new, 'previous': previous, 'ignored update': ignore_update, 'update': creation_date.keys()}.items():
+        status_report += pkg_reports.format_list(status, 'ol', items)
+
+    return (toc_f, status_report + toc_report, new, creation_date)
 
 
-def new_convert_package(src_path, pkg_path):
-    validations_report = ''
+def new_convert_package(src_path, acron, wrk_path, serial_path, pkg_path, report_path, website_folders_path, db_issue, db_ahead, db_article, version):
+    display_title = False
+    validate_order = True
+    dtd_files = xml_versions.DTDFiles('scielo', version)
+    conversion_report = ''
+    msg = []
+    old_report_path = report_path
 
+    xml_filenames = sorted([src_path + '/' + f for f in os.listdir(src_path) if f.endswith('.xml') and not 'incorrect' in f])
+    scilista_item = None
     # normaliza os arquivos xml
-    # pkg_items = xpmaker.make_package(xml_files, report_path, wrk_path, pkg_path, version, acron)
+    pkg_items = xpmaker.make_package(xml_filenames, report_path, wrk_path, pkg_path, version, acron)
 
-    # validate toc
-    toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(pkg_items, validate_order)
+    issue_label, p_issn, e_issn = xpmaker.package_issue(pkg_items)
 
-    if toc_f == 0:
-        # identify the issue
-        issue_data = pkg_reports.issue_in_package(pkg_items)
-        issue_record, issue_error_msg = get_issue_record(issue_data, db_issue)
+    acron_issue_label = acron + ' ' + issue_label
+    print(acron_issue_label)
 
-        issue_label = issue_data[0]
-        issue = None
-
-        print(acron)
-        print(issue_label)
-
-        if issue_record is None:
-            validations_report += issue_error_msg
-        else:
-
-            issue = issue_record.issue
-
-            journal_files = serial_files.JournalFiles(serial_path, issue.acron)
-            scilista_item = issue.acron + ' ' + issue.issue_label
-            label = scilista_item
-
-            issue_files = serial_files.IssueFiles(journal_files, issue.issue_label, pkg_path, website_folders_path)
-            
-            toc_f, report = validate_new_plus_previous(base_source_path, pkg_path, joined_path, report_path)
-            if toc_f == 0:
-                pkg_items = [(doc, doc_file_info) for doc, doc_file_info in pkg_items if doc_file_info.xml_name + '.xml' in new_files + ]
-        
-    if toc_f > 0:
-        validations_report += html_reports.format_message('FATAL ERROR: Unable to create "base" because of fatal errors in the Table of Contents data.')
+    if issue_label is None:
+        msg.append('ERROR: Unable to identify the issue.')
+        issue_label = 'unknown'
     else:
-        articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(pkg_items, dtd_files, validate_order, False)
+        journal_files = serial_files.JournalFiles(serial_path, acron)
+        issue_files = serial_files.IssueFiles(journal_files, issue_label, pkg_path, website_folders_path)
 
-        validations_report += pkg_reports.package_validations_reports_text(articles_stats, articles_reports, articles_sheets, (toc_f, toc_e, toc_w, toc_report), do_toc_report)
+        toc_f, toc_report, new, creation_date = validate_whole_package(issue_files, pkg_path, pkg_path + '.tmp')
 
-        ahead_manager = serial_files.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
-        articles = [article for article, doc_file_info in pkg_items]
-        conversion_validation_result = check_data(ahead_manager, articles, issue_record)
-        conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record.record, articles, articles_stats, conversion_validation_result)
+        msg.append(toc_report)
 
-        #issue_files.move_reports(report_path)
-        #issue_files.save_source_files(pkg_path)
-        report_path = issue_files.base_reports_path
+        if toc_f == 0:
 
-        
+            pkg_items = [(doc, doc_file_info) for doc, doc_file_info in pkg_items if doc_file_info.xml_name + '.xml' in new or doc_file_info.xml_name + '.xml' in creation_date.keys()]
+
+            articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(pkg_items, dtd_files, validate_order, display_title)
+            msg.append(pkg_reports.get_articles_report_text(articles_reports, articles_stats))
+            msg.append(pkg_reports.get_lists_report_text(articles_reports, articles_sheets))
+
+            issue_record, issue_error_msg = get_issue_record(issue_label, p_issn, e_issn, db_issue)
+            if issue_record is None:
+                msg.append(issue_error_msg)
+            else:
+                issue = issue_record.issue
+                scilista_item = issue.acron + ' ' + issue.issue_issue_label
+                acron_issue_label = scilista_item
+                issue_files.move_reports(report_path)
+                issue_files.save_source_files(pkg_path)
+                report_path = issue_files.base_reports_path
+
+                ahead_manager = serial_files.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
+                articles = [article for article, doc_file_info in pkg_items]
+                conversion_validation_result = check_data_for_conversion(ahead_manager, articles, issue_record)
+                conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record.record, articles, articles_stats, conversion_validation_result)
 
     filename = report_path + '/xml_converter.html'
     texts = []
     texts.append(pkg_reports.xml_list(pkg_path, xml_filenames))
-    texts.append(validations_report)
+    texts.append(''.join(msg))
     texts.append(conversion_report)
     texts.append(pkg_reports.processing_result_location(report_path))
 
@@ -155,7 +170,7 @@ def new_convert_package(src_path, pkg_path):
         content = content.replace(html_reports.get_unicode(old_report_path), html_reports.get_unicode(report_path))
     if isinstance(content, unicode):
         content = content.encode('utf-8')
-    pkg_reports.save_report(filename, ['XML Conversion (XML to Database)', label], content)
+    pkg_reports.save_report(filename, ['XML Conversion (XML to Database)', issue_label], content)
     pkg_reports.display_report(filename)
 
     return (filename, report_path, scilista_item)
@@ -172,7 +187,7 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
 
     xml_filenames = sorted([pkg_path + '/' + f for f in os.listdir(pkg_path) if f.endswith('.xml') and not 'incorrect' in f])
 
-    pkg_items = pkg_reports.get_pkg_items(xml_filenames, report_path)
+    pkg_items = xpmaker.get_pkg_items(xml_filenames, report_path)
     issue_data = pkg_reports.issue_in_package(pkg_items)
 
     toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(pkg_items, validate_order)
@@ -206,7 +221,7 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
         issue_files.save_source_files(pkg_path)
         report_path = issue_files.base_reports_path
 
-        conversion_validation_result = check_data(ahead_manager, articles, issue_record)
+        conversion_validation_result = check_data_for_conversion(ahead_manager, articles, issue_record)
         conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record.record, articles, articles_stats, conversion_validation_result)
 
     filename = report_path + '/xml_converter.html'
@@ -229,7 +244,7 @@ def convert_package(serial_path, pkg_path, report_path, website_folders_path, db
     return (filename, report_path, scilista_item)
 
 
-def check_data(ahead_manager, articles, issue_record):
+def check_data_for_conversion(ahead_manager, articles, issue_record):
     print('\nMatching articles and issue data...')
     n = '/' + str(len(articles))
     index = 0
