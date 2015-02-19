@@ -485,10 +485,14 @@ class ArticleXML(object):
             a.xml = node_xml(aff)
             a.id = aff.get('id')
             a.label = aff.findtext('label')
-            a.country = aff.findtext('country')
+            country = aff.find('country')
+            a.country = country.text
+            a.i_country = country.attrib.get('country')
             a.email = aff.findtext('email')
             a.original = aff.findtext('institution[@content-type="original"]')
             a.norgname = aff.findtext('institution[@content-type="normalized"]')
+            if a.norgname == '':
+                a.norgname = None
             a.orgname = aff.findtext('institution[@content-type="orgname"]')
             a.orgdiv1 = aff.findtext('institution[@content-type="orgdiv1"]')
             a.orgdiv2 = aff.findtext('institution[@content-type="orgdiv2"]')

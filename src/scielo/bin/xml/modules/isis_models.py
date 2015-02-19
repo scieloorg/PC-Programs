@@ -166,23 +166,7 @@ class Article2ArticleRecords(object):
         self._metadata['14']['l'] = self.article.lpage
         self._metadata['14']['e'] = self.article.elocation_id
 
-        self._metadata['70'] = []
-        for item in self.article.affiliations:
-            a = {}
-            a['l'] = item.label
-            a['i'] = item.id
-            a['p'] = item.country
-            a['e'] = item.email
-            a['c'] = item.city
-            a['s'] = item.state
-            a['4'] = item.norgname
-            a['3'] = item.orgdiv3
-            a['2'] = item.orgdiv2
-            a['1'] = item.orgdiv1
-            a['_'] = item.orgname
-            #a['9'] = item['original']
-            #self._metadata['170'].append(item['xml'])
-            self._metadata['70'].append(a)
+        self._metadata['70'] = fix_affiliations(self.article.fix_affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
         self._metadata['72'] = str(0 if self.article.total_of_references is None else self.article.total_of_references)
@@ -410,3 +394,35 @@ class IssueRecord(object):
 
         i.issn_id = self.record.get('35')
         return i
+
+
+def fix_affiliations(affiliations):
+    affs = []
+    for item in self.article.affiliations:
+        a = {}
+        result = validate_affiliation(item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
+        norm_orgname = item.norgname if item.norgname is not None else item.orgname
+        norm_country_code = item.i_country if item.i_country is not None else item.country
+        norm_country = item.country
+        norm_state = item.state
+        norm_city = item.city
+
+        if isinstance(result, tuple):
+            norm_orgname, norm_country, norm_country_code, norm_state, norm_city = result
+
+        a['l'] = item.label
+        a['i'] = item.id
+        a['e'] = item.email
+        a['4'] = item.orgname
+        a['3'] = item.orgdiv3
+        a['2'] = item.orgdiv2
+        a['1'] = item.orgdiv1
+        a['p'] = norm_country_code
+        a['q'] = norm_country
+        a['c'] = norm_city
+        a['s'] = norm_state
+        a['_'] = norm_orgname
+        #a['9'] = item['original']
+        #self._metadata['170'].append(item['xml'])
+        affs.append(a)
+    return affs
