@@ -3,45 +3,15 @@
 from isis_models import DOCTOPIC
 
 import attributes
-import utils
 import article_utils
 
 import article
-
-import country_services
 
 
 def format_value(value):
     if value is None:
         value = 'None'
     return value
-
-
-def validate_country(i_country, country_name):
-    msg = []
-    status = 'OK'
-    import utils
-
-    names = country_services.get_names(i_country)
-    if not country_name in names:
-        names = country_services.similar_names(country_name)
-        names = [name for name, code in names if code == i_country]
-
-        if len(names) == 0:
-            msg.append(i_country + ': invalid value for country/@country.')
-            status = 'ERROR'
-        else:
-            best_matches = utils.best_matches(utils.similarity_ranking(names, country_name))
-            if len(best_matches) == 0:
-                status = 'ERROR'
-                msg.append(country_name + ': invalid value for country.')
-                msg.append(i_country + ' is a valid value for country/@country of ' + '; '.join(names) + '.')
-
-                best_matches = country_services.similar_names(country_name)
-            if len(best_matches) == 0:
-    
-
-    return (status, '\n'.join(msg))
 
 
 def validate_value(value):
@@ -392,12 +362,7 @@ class ArticleContentValidation(object):
                 msg += '. Please, ask to scielo@scielo.org or check http://wayta.scielo.org/ (trial version) to know how to normalize the name of this institution.'
             r.append((label, status, msg))
             r.append(required('aff orgname', aff.orgname, 'ERROR'))
-            if aff.country is not None and aff.icountry is not None:
-                status, message = validate_country(aff.icountry, aff.country)
-                r.append(('aff country', status, message))
-            else:
-                r.append(required('aff country', aff.country, 'FATAL ERROR'))
-                r.append(required('aff country/@country', aff.icountry, 'ERROR'))
+            r.append(required('aff country', aff.country, 'FATAL ERROR'))
         return r
 
     @property

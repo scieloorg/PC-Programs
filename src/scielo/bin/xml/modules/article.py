@@ -485,9 +485,7 @@ class ArticleXML(object):
             a.xml = node_xml(aff)
             a.id = aff.get('id')
             a.label = aff.findtext('label')
-            country = aff.find('country')
-            a.country = country.text if country is not None else None
-            a.icountry = country.attrib.get('country') if country is not None else None
+            a.country = aff.findtext('country')
             a.email = aff.findtext('email')
             a.original = aff.findtext('institution[@content-type="original"]')
             a.norgname = aff.findtext('institution[@content-type="normalized"]')
