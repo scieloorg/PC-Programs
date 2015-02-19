@@ -43,32 +43,41 @@ def format_results(result):
     try:
         results = json.loads(result)
         for item in results.get('choices'):
-            if item.get('country') is not None and item.get('value') is not None:
+            if item.get('country', '') != '' and item.get('value', '') != '':
                 r.append(item.get('country') + ' - ' + item.get('value'))
     except Exception as e:
         print(e)
     return r
 
 
-def save_result(results, filename):
-    r = '\n'.join(results)
-    print(r)
-    if isinstance(r, unicode):
-        r = r.encode('cp1252')
-    open(filename, 'w').write(r)
+def encode_results(results):
+    r = []
+    for item in results:
+        text = ''
+        if isinstance(item, unicode):
+            try:
+                text = item.encode('cp1252')
+            except Exception as e:
+                try:
+                    text = item.encode('cp1252', 'xmlcharrefreplace')
+                except Exception as e:
+                    print(e)
+                    print(item)
+        if len(text) > 0:
+            r.append(text)
+    return '\n'.join(r)
 
 
 def search(text):
     text = remove_tags(text)
+    text = text.replace(' - ', ',')
+    text = text.replace(';', ',')
     parts = text.split(',')
     results = []
     for part in parts:
-        print(part)
         wayta_result = run_wayta(part)
         result = format_results(wayta_result)
-        print(result)
         results += result
-    print(results)
     r = sorted(list(set(results)))
     return r
 
@@ -83,7 +92,7 @@ if len(sys.argv) == 4:
         os.unlink(filename)
     if os.path.isfile(ctrl_filename):
         os.unlink(ctrl_filename)
-    save_result(search(text), filename)
+    open(filename, 'w').write(encode_results(search(text)))
     if os.path.isfile(filename):
         shutil.copyfile(filename, ctrl_filename)
     else:

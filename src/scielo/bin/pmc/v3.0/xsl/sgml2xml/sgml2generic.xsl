@@ -942,10 +942,22 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="email"></xsl:apply-templates>
 		</aff>
 	</xsl:template>
-	<xsl:template match="@ncountry">
-		<country><xsl:value-of select="normalize-space(.)"/></country>
+	<xsl:template match="@icountry">
+		<xsl:attribute name="country"><xsl:value-of select="."/></xsl:attribute>
 	</xsl:template>
-	<xsl:template match="aff/country| aff/email | normaff/country| normaff/email">
+	<xsl:template match="@ncountry">
+		<country>
+			<xsl:apply-templates select="../@icountry"/>
+			<xsl:value-of select="normalize-space(.)"/>
+		</country>
+	</xsl:template>
+	<xsl:template match="aff/country| normaff/country">
+		<xsl:element name="{name()}">
+			<xsl:apply-templates select="../@icountry"/>
+			<xsl:value-of select="normalize-space(.)"/>
+		</xsl:element>
+	</xsl:template>
+	<xsl:template match="aff/email | normaff/email">
 		<xsl:element name="{name()}">
 			<xsl:value-of select="normalize-space(.)"/>
 		</xsl:element>
