@@ -33,6 +33,8 @@ class DocumentFiles(object):
                 self.html_filename += 'l'
             self.ctrl_filename = wrk_path + '/' + self.xml_name + '.ctrl.txt'
 
+        if not os.path.isdir(report_path):
+            os.makedirs(report_path)
         self.dtd_report_filename = report_path + '/' + report_name + '.dtd.txt'
         self.style_report_filename = report_path + '/' + report_name + '.rep.html'
 

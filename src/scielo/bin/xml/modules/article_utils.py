@@ -44,7 +44,7 @@ def doi_pid(doi):
         import json
 
         try:
-            f = urllib2.urlopen('http://dx.doi.org/' + doi, timeout=60)
+            f = urllib2.urlopen('http://dx.doi.org/' + doi, timeout=1)
             url = f.geturl()
 
             if 'scielo.php?script=sci_arttext&amp;pid=' in url:

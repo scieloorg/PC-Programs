@@ -95,7 +95,7 @@ def validate_whole_package(issue_files, pkg_path, whole_pkg_path, report_path):
 
     status_report = ''
     for status, items in {'new': new, 'previous': previous, 'ignored update': ignore_update, 'update': creation_date.keys()}.items():
-        status_report += pkg_reports.format_list(status, 'ol', items)
+        status_report += html_reports.format_list(status, 'ol', items)
 
     return (toc_f, status_report + toc_report, new, creation_date)
 
@@ -131,7 +131,7 @@ def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ah
         journal_files = serial_files.JournalFiles(serial_path, issue.acron)
         issue_files = serial_files.IssueFiles(journal_files, issue.issue_label, pkg_path, website_folders_path)
 
-        toc_f, toc_report, new, creation_date = validate_whole_package(issue_files, pkg_path, pkg_path + '.tmp')
+        toc_f, toc_report, new, creation_date = validate_whole_package(issue_files, pkg_path, pkg_path + '.tmp', report_path)
 
         msg.append(toc_report)
 

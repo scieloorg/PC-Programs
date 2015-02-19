@@ -551,7 +551,7 @@ def normalize_package_name(doc_files_info, acron, content):
             xml, e = xml_utils.load_xml(content)
             doc = article.Article(xml) if xml is not None else None
 
-    doc_files_info.new_xml_filename = doc_files_info.scielo_pkg_path + '/' + doc_files_info.new_name + '.xml'
+    doc_files_info.new_xml_filename = doc_files_info.new_xml_path + '/' + doc_files_info.new_name + '.xml'
     return (doc, doc_files_info, curr_and_new_href_list, content)
 
 
@@ -585,7 +585,7 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
 
     print(' ... created')
 
-    return (article, doc_files_info)
+    return (doc, doc_files_info)
 
 
 def get_related_files(path, name):
@@ -804,7 +804,7 @@ def get_pkg_items(xml_filenames, report_path):
         doc_files_info.new_xml_path = os.path.dirname(xml_filename)
 
         xml, e = xml_utils.load_xml(doc_files_info.new_xml_filename)
-        doc = Article(xml) if xml is not None else None
+        doc = article.Article(xml) if xml is not None else None
         r.append((doc, doc_files_info))
     return r
 
@@ -813,13 +813,13 @@ def package_issue(package_info):
     issue_label = []
     e_issn = []
     print_issn = []
-    for article, doc_files_info in package_info:
-        if article is not None:
-            issue_label.append(article.issue_label)
-            if article.e_issn is not None:
-                e_issn.append(article.e_issn)
-            if article.print_issn is not None:
-                print_issn.append(article.print_issn)
+    for doc, doc_files_info in package_info:
+        if doc is not None:
+            issue_label.append(doc.issue_label)
+            if doc.e_issn is not None:
+                e_issn.append(doc.e_issn)
+            if doc.print_issn is not None:
+                print_issn.append(doc.print_issn)
     issue_label = list(set(issue_label))
     e_issn = list(set(e_issn))
     print_issn = list(set(print_issn))
