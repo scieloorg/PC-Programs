@@ -58,6 +58,11 @@ def get_issue_record(issue_label, p_issn, e_issn, db_issue):
 
 
 def validate_whole_package(issue_files, pkg_path, whole_pkg_path, report_path):
+    print('issue_files.base_source_path')
+    print(issue_files.base_source_path)
+    print('pkg_path')
+    print(pkg_path)
+
     previous_files = os.listdir(issue_files.base_source_path)
     previous = []
     update = []
@@ -147,7 +152,7 @@ def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ah
             report_path = issue_files.base_reports_path
 
             ahead_manager = serial_files.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
-            articles = [article for article, doc_file_info in pkg_items]
+            articles = {doc_file_info.xml_name: article for article, doc_file_info in pkg_items}
             scilista_item, conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record, articles, articles_stats, creation_date)
 
     filename = report_path + '/xml_converter.html'
@@ -172,9 +177,13 @@ def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ah
 
 def convert_articles(ahead_manager, db_article, issue_files, issue_record, articles, articles_stats, creation_date):
     index = 0
-    articles_by_status = {}
     status_text = ['converted', 'not converted', 'first version', 'previous version (aop)', 'previous version (aop) unmatched', 'previous version (aop) without PID', 'previous version (aop) partially matched', ]
     order = ['converted', 'not converted', 'new', 'matched', 'unmatched', 'invalid', 'partially matched']
+
+    articles_by_status = {}
+    for k in order:
+        articles_by_status[k] = []
+
     ex_ahead = 0
     article_id_created = 0
     n = '/' + str(len(articles))

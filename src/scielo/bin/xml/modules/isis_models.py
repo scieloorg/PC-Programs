@@ -397,18 +397,23 @@ class IssueRecord(object):
 
 
 def fix_affiliations(affiliations):
+    import affiliations_services
+
     affs = []
     for item in self.article.affiliations:
         a = {}
-        result = validate_affiliation(item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
-        norm_orgname = item.norgname if item.norgname is not None else item.orgname
-        norm_country_code = item.i_country if item.i_country is not None else item.country
-        norm_country = item.country
-        norm_state = item.state
-        norm_city = item.city
+        norm_orgname, norm_country, norm_country_code, norm_state, norm_city, errors = affiliations_services.validate_affiliation(item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
 
-        if isinstance(result, tuple):
-            norm_orgname, norm_country, norm_country_code, norm_state, norm_city = result
+        if norm_orgname is None:
+            norm_orgname = item.norgname if item.norgname is not None else item.orgname
+        if norm_country is None:
+            norm_country = item.country
+        if norm_country_code is None:
+            norm_country_code = item.i_country if item.i_country is not None else norm_country
+        if norm_state is None:
+            norm_state = item.state
+        if norm_city is None:
+            norm_city = item.city
 
         a['l'] = item.label
         a['i'] = item.id

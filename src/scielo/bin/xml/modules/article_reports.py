@@ -350,24 +350,27 @@ class ArticleValidationReport(object):
         return html_reports.format_message(item)
 
     def format_rows(self, items):
-        content = ''
+        content = []
         for label, status, msg in items:
-            content += self.format_row(label, status, msg)
-        return content
+            content.append(self.format_row(label, status, msg))
+        return html_reports.join_texts(content)
 
     def format_table(self, content):
-        r = '<p>'
-        r += '<table class="validation">'
-        r += '<thead>'
-        r += '<tr>'
+        r = []
+        r.append('<p>')
+        r.append('<table class="validation">')
+        r.append('<thead>')
+        r.append('<tr>')
         for label in ['label', 'status', 'message/value']:
-            r += '<th class="th">' + label + '</th>'
-        r += '</tr></thead>'
-        r += '<tbody>' + content + '</tbody>'
-        r += '</table></p>'
-        return r
+            r.append('<th class="th">' + label + '</th>')
+        r.append('</tr></thead>')
+        r.append('<tbody>' + content + '</tbody>')
+        r.append('</table></p>')
+        return html_reports.join_texts(r)
 
     def format_row(self, label, status, message):
+        if isinstance(message, unicode):
+            message = message.encode('utf-8')
         r = ''
         cell = ''
         cell += html_reports.tag('td', label, 'td_label')

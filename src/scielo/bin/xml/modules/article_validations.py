@@ -430,27 +430,22 @@ class ArticleContentValidation(object):
     def affiliations(self):
         import affiliations_services
         r = []
+        labels = ['institution[@content-type="normalized"]', 'country', 'country/@country', 'state', 'city']
         for aff in self.article.affiliations:
             text = aff.original if aff.original is not None else aff.xml
             r.append(('aff xml', 'OK', aff.xml))
             r.append(required('aff id', aff.id, 'FATAL ERROR'))
             r.append(required('aff original', aff.original, 'ERROR'))
 
-            results = affiliations_services.validate_affiliation(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
-            if isinstance(results, tuple):
-                norgname, ncountry, icountry, state, city = results
-                if norgname != aff.norgname:
-                    r.append(('aff normalized orgname', 'ERROR', 'Correct value is ' + norgname))
-                if ncountry != aff.country:
-                    r.append(('aff country', 'ERROR', 'Correct value is ' + ncountry))
-                if icountry != aff.country:
-                    r.append(('aff country/@country', 'ERROR', 'Correct value is ' + icountry))
-                if state != aff.state:
-                    r.append(('aff state', 'ERROR', 'Correct value is ' + state))
-                if city != aff.city:
-                    r.append(('aff city', 'ERROR', 'Correct value is ' + city))
-            else:
-                r.append(('aff orgname and country', 'ERROR', results + '. Please, get suggestions of organization names and country at http://wayta.scielo.org.'))
+            norgname, ncountry, icountry, state, city, errors = affiliations_services.validate_affiliation(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+            suggestions = [norgname, ncountry, icountry, state, city]
+            values = [aff.norgname, aff.country, aff.i_country, aff.state, aff.city]
+            for i in range(0, len(labels)):
+                if suggestions[i] is not None:
+                    if suggestions[i] != values[i]:
+                        r.append((labels[i], 'ERROR', 'Recommended ' + suggestions[i]))
+            if len(errors) > 0:
+                r.append(('aff orgname and country', 'ERROR', errors + '. Please, get suggestions of organization names and country at http://wayta.scielo.org.'))
         return r
 
     @property

@@ -7,7 +7,6 @@ import xml_utils
 
 
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
-
 JAVA_PATH = 'java'
 JAR_TRANSFORM = THIS_LOCATION + '/../../jar/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = THIS_LOCATION + '/../../jar/XMLCheck.jar'

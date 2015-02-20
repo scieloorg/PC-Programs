@@ -491,6 +491,8 @@ def normalize_xml_content(doc_files_info, content, version):
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
 
+    content = ' '.join(content.split())
+
     replaced_entities_report = ''
     if len(replaced_named_ent) > 0:
         replaced_entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30

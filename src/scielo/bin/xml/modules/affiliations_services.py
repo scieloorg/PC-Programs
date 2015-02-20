@@ -2,6 +2,9 @@
 
 import os
 
+import utils
+
+
 curr_path = os.path.dirname(__file__).replace('\\', '/')
 
 
@@ -40,12 +43,25 @@ class CodesAndNames(object):
         return code
 
     def get_similar_names(self, name):
-        import utils
-        return utils.ranking(utils.similarity(self.indexed_by_names.keys(), name), 0.5)
+        print('-')
+        print('get_similar_names')
+        print(name)
+        r = utils.most_similar(utils.similarity(self.indexed_by_names.keys(), name, 0.6))
+        print(r)
+        print('-')
+        return r
 
-    def is_similar(self, text, text_list):
-        import utils
-        return utils.ranking(utils.similarity(text_list, text), 0.5)
+    def get_similar_items(self, text, text_list):
+        r = []
+        if len(text_list) > 0:
+            print('-')
+            print('get_similar_items')
+            print(text)
+            print(text_list)
+            r = utils.most_similar(utils.similarity(text_list, text, 0.6))
+            print(r)
+            print('-')
+        return r
 
     def get_name_and_code_list(self, names):
         return [(name, self.indexed_by_names.get(name)) for name in names]
@@ -58,32 +74,10 @@ class CodesAndNames(object):
             names = [_name]
         else:
             if len(code_names) > 0:
-                names = self.is_similar(_name, code_names)
+                names = self.get_similar_items(_name, code_names)
             if len(names) == 0:
-                names = self.similar_names(_name)
-                if len(names) > 0:
-                    names = [names[0]]
+                names = self.get_similar_names(_name)
         return (code_names, names)
-
-    def match_names(self, code_names, names):
-        return [name for name in code_names if name in names]
-
-    def match_report(self, _code, _name, code_names, names):
-        msg = []
-        matched = [name for name in code_names if name in names]
-        if len(matched) == 0:
-            if len(code_names) > 0:
-                msg.append(_code + ': ' + '|'.join(code_names))
-            else:
-                msg.append(_code + ' is invalid.')
-            if len(names) > 0:
-                msg.append(_name + ': ' + '|'.join([name + '(' + self.get_code(name, False) + ')' for name in names]))
-            else:
-                msg.append(_name + ' is invalid.')
-        return '\n'.join(msg)
-
-    def select_names_by_code(self, name_and_code_items, selected_code):
-        return [name for name, code in name_and_code_items if code == selected_code]
 
 
 def load_iso_countries():
@@ -97,14 +91,15 @@ def load_iso_countries():
         if not code in indexed_by_codes.keys():
             indexed_by_codes[code] = []
         indexed_by_codes[code].append(name)
-    return (indexed_by_names, indexed_by_codes)
+    return (indexed_by_codes, indexed_by_names)
 
 
 def load_wos_countries():
     indexed_by_names = {}
     indexed_by_codes = {}
     for item in open(curr_path + '/../tables/country_en_pt_es.csv', 'r').readlines():
-        item = item.strip().split('|')
+        item = item.replace('"', '')
+        item = item.strip().split('\t')
         if len(item) == 3:
             en, pt, es = item
             indexed_by_codes[en] = item
@@ -130,9 +125,10 @@ def load_br_locations():
     indexed_by_codes = {}
     indexed_by_names = {}
     for item in open(curr_path + '/../tables/br_locations.csv', 'r').readlines():
+        item = item.replace('"', '')
         item = item.strip().split('\t')
-        if len(item) == 3:
-            state, ign, city = item
+        if len(item) == 2:
+            state, city = item
             if not city in indexed_by_names.keys():
                 indexed_by_names[city] = []
             indexed_by_names[city].append(state)
@@ -146,13 +142,23 @@ def load_normaff():
     indexed_by_codes = {}
     indexed_by_names = {}
     for item in open(curr_path + '/../tables/aff_normalized.txt', 'r').readlines():
-        item = item.strip().split('\t')
-        if len(item) == 2:
-            orgname, wos_country_en = item
-            indexed_by_names[orgname] = wos_country_en
-            if not wos_country_en in indexed_by_codes.keys():
-                indexed_by_codes[wos_country_en] = []
-            indexed_by_codes[wos_country_en].append(orgname)
+        try:
+            item = item.decode('iso-8859-1')
+            item = item.encode('utf-8')
+        except Exception as e:
+            print(item)
+            print(e)
+            item = ''
+
+        if len(item) > 0:
+            item = item.strip().split('\t')
+
+            if len(item) == 2:
+                orgname, wos_country_en = item
+                indexed_by_names[orgname] = wos_country_en
+                if not wos_country_en in indexed_by_codes.keys():
+                    indexed_by_codes[wos_country_en] = []
+                indexed_by_codes[wos_country_en].append(orgname)
     return (indexed_by_codes, indexed_by_names)
 
 
@@ -196,7 +202,7 @@ def find_state_code(state):
     return state_code
 
 
-def check_location(city, state):
+def normalize_location(city, state):
     global location_list
     global br_state_list
     if location_list is None:
@@ -204,13 +210,37 @@ def check_location(city, state):
     if br_state_list is None:
         br_state_list = get_br_states()
 
+    norm_state = None
+    norm_city = None
+    msg = []
+
     norm_state = br_state_list.find_code(state)
     state_cities, city_names = location_list.find_names(state, city)
-    valid_city_names = location_list.match_names(state_cities, city_names)
+    valid_city_names = [name for name in city_names if name in state_cities]
+
     if len(valid_city_names) > 0:
-        return (valid_city_names[0], norm_state)
-    else:
-        return location_list.match_report(norm_state, city, state_cities, city_names)
+        norm_city = valid_city_names[0]
+
+    if norm_city is None:
+        if len(city_names) > 0:
+            norm_city = city_names[0]
+
+    if norm_city is None:
+        msg.append(city + ' was not identified as city.')
+    if norm_state is None:
+        if state is None:
+            if not norm_city is None:
+                city_states = location_list.get_code(norm_city, False)
+                if len(city_states) > 0:
+                    norm_state = city_states[0]
+        else:
+            msg.append(state + ' was not identified as state.')
+
+    print('--- normalize_location: resultado ---')
+    print([city, state])
+    print([norm_city, norm_state, '\n'.join(msg)])
+
+    return (norm_city, norm_state, '\n'.join(msg))
 
 
 def find_country_names(country_name, country_code):
@@ -221,9 +251,6 @@ def find_country_names(country_name, country_code):
         iso_country_list = get_iso_country_items()
     if wos_country_list is None:
         wos_country_list = get_wos_country_items()
-
-    if country_code is None:
-        country_code = iso_country_list.get_code(country_name, True)
 
     if iso_country_list.get_code(country_name, False) is not None:
         iso_similar_name = country_name
@@ -244,6 +271,7 @@ def find_country_names(country_name, country_code):
             wos_similar_name = None
 
     code_names = iso_country_list.get_names(country_code)
+
     return (iso_similar_name, wos_similar_name, code_names)
 
 
@@ -267,7 +295,7 @@ def find_country_codes(iso_name, wos_name):
     return (iso_code, wos_en)
 
 
-def check_country(country_name, country_code):
+def normalize_country(country_name, country_code):
     global iso_country_list
     global wos_country_list
 
@@ -279,81 +307,101 @@ def check_country(country_name, country_code):
     iso_name, wos_name, code_names = find_country_names(country_name, country_code)
     iso_code, wos_en = find_country_codes(iso_name, wos_name)
 
-    matched = (iso_name in code_names) and wos_en is not None
-    if matched:
-        return (wos_name, iso_code)
+    if country_code is None:
+        country_code = iso_code
+        code_names = [iso_name]
+
+    msg = []
+    if iso_name in code_names:
+        norm_country_code = iso_code
     else:
-        msg = []
         if len(code_names) > 0:
-            msg.append(country_code + ': ' + '|'.join(code_names))
+            msg.append(country_code + ' is code of ' + '|'.join(code_names))
         else:
-            msg.append(country_code + ' is invalid.')
-        if wos_en is None:
-            msg.append(country_name + ' is invalid.')
-        if iso_code is not None:
-            msg.append(country_name + ': ' + iso_code)
-        return '\n'.join(msg)
+            msg.append('No country was found which code is ' + country_code)
+        msg.append('code of ' + country_name + ' is: ' + iso_code)
+
+    if wos_en is not None:
+        norm_country_name = wos_en
+
+    print('-- normalize_country - resultado')
+    print([country_name, country_code])
+    print([norm_country_name, norm_country_code, '\n'.join(msg)])
+
+    return (norm_country_name, norm_country_code, '\n'.join(msg))
 
 
-def check_orgname(orgname, country_name, country_code):
+def normalize_orgname(orgname, country_name, country_code):
     global orgname_list
 
     if orgname_list is None:
         orgname_list = get_orgnames()
 
-    r = None
     norm_country_name = None
     norm_country_code = None
-    result = check_country(country_name, country_code)
+    norm_orgname = None
+    msg = []
 
-    if isinstance(result, tuple):
-        norm_country_name, norm_country_code = result
+    norm_country_name, norm_country_code, errors = normalize_country(country_name, country_code)
+    if len(errors) > 0:
+        msg.append(errors)
 
     if not norm_country_name is None:
         norm_country_orgnames = orgname_list.get_names(norm_country_name)
         if orgname in norm_country_orgnames:
-            r = (orgname, norm_country_name, norm_country_code)
+            norm_orgname = orgname
         else:
-            similar_orgnames = orgname_list.is_similar(orgname, norm_country_orgnames)
+            similar_orgnames = orgname_list.get_similar_items(orgname, norm_country_orgnames)
             if len(similar_orgnames) > 0:
-                r = (similar_orgnames[0], norm_country_name, norm_country_code)
+                norm_orgname = similar_orgnames[0]
 
-    if r is None:
+    if norm_orgname is None:
+        orgname_and_country_items = {}
         similar_orgnames = orgname_list.get_similar_names(orgname)
+
         if len(similar_orgnames) > 0:
             orgname_and_country_items = {name:orgname_list.get_code(name, False) for name in similar_orgnames}
-            msg.append(orgname + ': ' + '|'.join([name + '(' + country + ')' for name, country in orgname_and_country_items.items()]))
-        else:
-            msg.append(orgname + ' is invalid')
 
-        if norm_country_name is None:
-            msg.append(result)
+        for name, code in orgname_and_country_items.items():
+            if code == country_code:
+                norm_orgname = name
+                break
 
-        r = '.\n'.join(msg)
-    return r
+        if norm_orgname is None:
+            if len(orgname_and_country_items) > 0:
+                msg.append(orgname + ' was found but country do not match: ' + '|'.join([name + '(' + country + ')' for name, country in orgname_and_country_items.items()]))
+            else:
+                msg.append(orgname + ' was not found in the normalized institutions list.')
+            norm_orgname = orgname
+
+    print('-- normalize_orgname -- resultado')
+    print([orgname, country_name, country_code])
+    print([norm_orgname, norm_country_name, norm_country_code, '\n'.join(msg)])
+    return (norm_orgname, norm_country_name, norm_country_code, '\n'.join(msg))
 
 
 def validate_affiliation(orgname, norgname, country_name, country_code, state, city):
+
     _orgname = norgname if norgname is not None else orgname
 
     norm_orgname = None
     norm_country_name = None
     norm_country_code = None
-    norm_state = state
-    norm_city = city
+    norm_state = None
+    norm_city = None
 
-    r = None
-    result = check_orgname(_orgname, country_name, country_code)
-    if isinstance(result, tuple):
-        norm_orgname, norm_country_name, norm_country_code = result
-        r = (norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city)
-        if norm_country_code == 'BR' or norm_country_name == 'Brazil':
-            result = check_location(city, state)
-            if isinstance(result, tuple):
-                norm_city, norm_state = result
-                r = (norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city)
+    msg = []
+    norm_orgname, norm_country_name, norm_country_code, errors = normalize_orgname(_orgname, country_name, country_code)
+    if len(errors) > 0:
+        msg.append(errors)
 
-    if isinstance(r, tuple):
-        return r
-    else:
-        return result
+    if norm_country_code == 'BR' or norm_country_name == 'Brazil':
+        norm_city, norm_state, errors = normalize_location(city, state)
+        if len(errors) > 0:
+            msg.append(errors)
+
+    print('--- validate_affiliation - resultado ---')
+    print([orgname, norgname, country_name, country_code, state, city])
+    print([norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city, '\n'.join(msg)])
+
+    return (norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city, '\n'.join(msg))

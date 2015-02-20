@@ -1,10 +1,8 @@
 # coding=utf-8
 import os
 
-import xml.etree.ElementTree as etree
-
-from article_utils import doi_pid, format_date, format_dateiso
-from xml_utils import node_text, node_xml, element_lang
+import article_utils
+import xml_utils
 
 
 def format_issue_label(year, volume, number, volume_suppl, number_suppl):
@@ -169,7 +167,7 @@ class ArticleXML(object):
         r = []
         if node is not None:
             for fn in node.findall('.//fn'):
-                r.append((scope, node_xml(fn)))
+                r.append((scope, xml_utils.node_xml(fn)))
         return r
 
     @property
@@ -191,7 +189,7 @@ class ArticleXML(object):
                 n = {}
                 n['ref-type'] = node.attrib.get('ref-type')
                 n['rid'] = node.attrib.get('rid')
-                n['xml'] = node_xml(node)
+                n['xml'] = xml_utils.node_xml(node)
                 _xref_list.append(n)
         return _xref_list
 
@@ -210,7 +208,7 @@ class ArticleXML(object):
     @property
     def language(self):
         if self.tree is not None:
-            return element_lang(self.tree.find('.'))
+            return xml_utils.element_lang(self.tree.find('.'))
 
     @property
     def related_articles(self):
@@ -289,14 +287,14 @@ class ArticleXML(object):
         k = []
         if not self.article_meta is None:
             for node in self.article_meta.findall('kwd-group'):
-                language = element_lang(node)
+                language = xml_utils.element_lang(node)
                 for kw in node.findall('kwd'):
-                    k.append({'l': language, 'k': node_text(kw)})
+                    k.append({'l': language, 'k': xml_utils.node_text(kw)})
         for subart in self.subarticles:
             for node in subart.findall('kwd-group'):
-                language = element_lang(node)
+                language = xml_utils.element_lang(node)
                 for kw in node.findall('kwd'):
-                    k.append({'l': language, 'k': node_text(kw)})
+                    k.append({'l': language, 'k': xml_utils.node_text(kw)})
         return k
 
     @property
@@ -345,24 +343,24 @@ class ArticleXML(object):
         if self.article_meta is not None:
             for node in self.article_meta.findall('.//title-group'):
                 t = Title()
-                t.title = node_text(node.find('article-title'))
-                t.subtitle = node_text(node.find('subtitle'))
+                t.title = xml_utils.node_text(node.find('article-title'))
+                t.subtitle = xml_utils.node_text(node.find('subtitle'))
                 t.language = self.language
                 k.append(t)
             for node in self.article_meta.findall('.//trans-title-group'):
                 t = Title()
-                t.title = node_text(node.find('trans-title'))
-                t.subtitle = node_text(node.find('trans-subtitle'))
-                t.language = element_lang(node)
+                t.title = xml_utils.node_text(node.find('trans-title'))
+                t.subtitle = xml_utils.node_text(node.find('trans-subtitle'))
+                t.language = xml_utils.element_lang(node)
                 k.append(t)
         if self.subarticles is not None:
             for subart in self.subarticles:
                 if subart.attrib.get('article-type') == 'translation':
                     for node in subart.findall('.//title-group'):
                         t = Title()
-                        t.title = node_text(node.find('article-title'))
-                        t.subtitle = node_text(node.find('subtitle'))
-                        t.language = element_lang(subart)
+                        t.title = xml_utils.node_text(node.find('article-title'))
+                        t.subtitle = xml_utils.node_text(node.find('subtitle'))
+                        t.language = xml_utils.element_lang(subart)
                         k.append(t)
         return k
 
@@ -371,7 +369,7 @@ class ArticleXML(object):
         k = []
         if self.subarticles is not None:
             for node in self.subarticles:
-                k.append(element_lang(node))
+                k.append(xml_utils.element_lang(node))
         return k
 
     @property
@@ -422,39 +420,39 @@ class ArticleXML(object):
 
     @property
     def funding_source(self):
-        return [node_text(item) for item in self.article_meta.findall('.//funding-source')]
+        return [xml_utils.node_text(item) for item in self.article_meta.findall('.//funding-source')]
 
     @property
     def principal_award_recipient(self):
-        return [node_text(item) for item in self.article_meta.findall('.//principal-award-recipient')]
+        return [xml_utils.node_text(item) for item in self.article_meta.findall('.//principal-award-recipient')]
 
     @property
     def principal_investigator(self):
-        return [node_text(item) for item in self.article_meta.findall('.//principal-investigator')]
+        return [xml_utils.node_text(item) for item in self.article_meta.findall('.//principal-investigator')]
 
     @property
     def award_id(self):
-        return [node_text(item) for item in self.article_meta.findall('.//award-id')]
+        return [xml_utils.node_text(item) for item in self.article_meta.findall('.//award-id')]
 
     @property
     def funding_statement(self):
-        return [node_text(item) for item in self.article_meta.findall('.//funding-statement')]
+        return [xml_utils.node_text(item) for item in self.article_meta.findall('.//funding-statement')]
 
     @property
     def ack_xml(self):
         #107
         if self.back is not None:
-            return node_xml(self.back.find('.//ack'))
+            return xml_utils.node_xml(self.back.find('.//ack'))
 
     @property
     def financial_disclosure(self):
         if self.tree is not None:
-            return node_text(self.tree.find('.//fn[@fn-type="financial-disclosure"]'))
+            return xml_utils.node_text(self.tree.find('.//fn[@fn-type="financial-disclosure"]'))
 
     @property
     def fn_financial_disclosure(self):
         if self.tree is not None:
-            return node_xml(self.tree.find('.//fn[@fn-type="financial-disclosure"]'))
+            return xml_utils.node_xml(self.tree.find('.//fn[@fn-type="financial-disclosure"]'))
 
     @property
     def fpage(self):
@@ -482,7 +480,7 @@ class ArticleXML(object):
         for aff in self.article_meta.findall('.//aff'):
             a = Affiliation()
 
-            a.xml = node_xml(aff)
+            a.xml = xml_utils.node_xml(aff)
             a.id = aff.get('id')
             a.label = aff.findtext('label')
             country = aff.find('country')
@@ -520,7 +518,7 @@ class ArticleXML(object):
         if self.tree is not None:
             node = self.tree.find('.//uri[@content-type="clinical-trial"]')
             if node is not None:
-                return node_text(node)
+                return xml_utils.node_text(node)
 
     @property
     def page_count(self):
@@ -583,10 +581,10 @@ class ArticleXML(object):
         r = []
         if self.tree.findall('.//disp-formula') is not None:
             for item in self.tree.findall('.//disp-formula'):
-                r.append(node_xml(item))
+                r.append(xml_utils.node_xml(item))
         if self.tree.findall('.//inline-formula') is not None:
             for item in self.tree.findall('.//inline-formula'):
-                r.append(node_xml(item))
+                r.append(xml_utils.node_xml(item))
         return r
 
     @property
@@ -596,24 +594,24 @@ class ArticleXML(object):
             for a in self.article_meta.findall('.//abstract'):
                 _abstract = Text()
                 _abstract.language = self.language
-                _abstract.text = node_text(a)
+                _abstract.text = xml_utils.node_text(a)
                 r.append(_abstract)
             for a in self.article_meta.findall('.//trans-abstract'):
                 _abstract = Text()
-                _abstract.language = element_lang(a)
-                _abstract.text = node_text(a)
+                _abstract.language = xml_utils.element_lang(a)
+                _abstract.text = xml_utils.node_text(a)
                 r.append(_abstract)
         for subart in self.subarticles:
-            subart_lang = element_lang(subart)
+            subart_lang = xml_utils.element_lang(subart)
             for a in subart.findall('.//abstract'):
                 _abstract = Text()
                 _abstract.language = subart_lang
-                _abstract.text = node_text(a)
+                _abstract.text = xml_utils.node_text(a)
                 r.append(_abstract)
             for a in subart.findall('.//trans-abstract'):
                 _abstract = Text()
-                _abstract.language = element_lang(a)
-                _abstract.text = node_text(a)
+                _abstract.language = xml_utils.element_lang(a)
+                _abstract.text = xml_utils.node_text(a)
                 r.append(_abstract)
         return r
 
@@ -735,7 +733,7 @@ class ArticleXML(object):
         if self.tree is not None:
             node = self.tree.find('.//license-p')
             if node is not None:
-                r = node_text(node)
+                r = xml_utils.node_text(node)
                 if '>' in r:
                     r = r[r.rfind('>')+1:]
         return r
@@ -774,7 +772,7 @@ class ArticleXML(object):
             for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
                 for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
                     href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                    _href = HRef(href, elem, parent, node_xml(parent))
+                    _href = HRef(href, elem, parent, xml_utils.node_xml(parent))
                     r.append(_href)
         return r
 
@@ -795,10 +793,10 @@ class ArticleXML(object):
                 _href = None
                 if graphic is not None:
                     src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
-                    xml = node_xml(graphic)
+                    xml = xml_utils.node_xml(graphic)
 
                     _href = HRef(src, graphic, t, xml)
-                _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), node_text(t.find('.//caption')), _href, node_xml(t.find('./table')))
+                _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), xml_utils.node_text(t.find('.//caption')), _href, xml_utils.node_xml(t.find('./table')))
                 r.append(_table)
         return r
 
@@ -817,7 +815,7 @@ class Article(ArticleXML):
         data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items()]) if self.journal_issns is not None else None
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_label
-        data['issue pub date'] = format_date(self.issue_pub_date)
+        data['issue pub date'] = article_utils.format_date(self.issue_pub_date)
         data['order'] = self.order
         data['doi'] = self.doi
         seq = '' if self.fpage_seq is None else self.fpage_seq
@@ -902,7 +900,7 @@ class Article(ArticleXML):
         d = self.article_previous_id
         if not is_valid(d):
             if self.doi is not None:
-                d = doi_pid(self.doi)
+                d = article_utils.doi_pid(self.doi)
         if not is_valid(d):
             d = self._ahead_pid
         if not is_valid(d):
@@ -917,7 +915,7 @@ class Article(ArticleXML):
 
     @property
     def issue_pub_dateiso(self):
-        return format_dateiso(self.issue_pub_date)
+        return article_utils.format_dateiso(self.issue_pub_date)
 
     @property
     def issue_pub_date(self):
@@ -944,7 +942,7 @@ class ReferenceXML(object):
 
     @property
     def source(self):
-        return node_text(self.root.find('.//source'))
+        return xml_utils.node_text(self.root.find('.//source'))
 
     @property
     def id(self):
@@ -955,7 +953,7 @@ class ReferenceXML(object):
         lang = None
         for elem in ['.//source', './/article-title', './/chapter-title']:
             if self.root.find(elem) is not None:
-                lang = element_lang(self.root.find(elem))
+                lang = xml_utils.element_lang(self.root.find(elem))
             if lang is not None:
                 break
         return lang
@@ -963,23 +961,23 @@ class ReferenceXML(object):
     @property
     def article_title(self):
         if self.root is not None:
-            return node_text(self.root.find('.//article-title'))
+            return xml_utils.node_text(self.root.find('.//article-title'))
 
     @property
     def chapter_title(self):
         if self.root is not None:
-            return node_text(self.root.find('.//chapter-title'))
+            return xml_utils.node_text(self.root.find('.//chapter-title'))
 
     @property
     def trans_title(self):
         if self.root is not None:
-            return node_text(self.root.find('.//trans-title'))
+            return xml_utils.node_text(self.root.find('.//trans-title'))
 
     @property
     def trans_title_language(self):
         if self.root is not None:
             if self.root.find('.//trans-title') is not None:
-                return element_lang(self.root.find('.//trans-title'))
+                return xml_utils.element_lang(self.root.find('.//trans-title'))
 
     @property
     def publication_type(self):
@@ -988,11 +986,11 @@ class ReferenceXML(object):
 
     @property
     def xml(self):
-        return node_xml(self.root)
+        return xml_utils.node_xml(self.root)
 
     @property
     def mixed_citation(self):
-        return node_text(self.root.find('.//mixed-citation'))
+        return xml_utils.node_text(self.root.find('.//mixed-citation'))
 
     @property
     def authors_list(self):
@@ -1009,7 +1007,7 @@ class ReferenceXML(object):
                 r.append(p)
             for collab in person_group.findall('.//collab'):
                 c = CorpAuthor()
-                c.collab = node_text(collab)
+                c.collab = xml_utils.node_text(collab)
                 c.role = person_group_id
                 r.append(c)
         return r
@@ -1112,7 +1110,7 @@ class ReferenceXML(object):
 
     @property
     def conference_name(self):
-        return node_text(self.root.find('.//conf-name'))
+        return xml_utils.node_text(self.root.find('.//conf-name'))
 
     @property
     def conference_location(self):

@@ -40,7 +40,6 @@ def doi_pid(doi):
     pid = None
 
     if doi is not None:
-        
         import json
 
         try:
