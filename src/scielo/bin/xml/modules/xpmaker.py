@@ -743,12 +743,12 @@ def generate_reports(pkg_items, dtd_files, scielo_pkg_path, report_path, do_toc_
 
     validate_order = from_converter
 
-    content = pkg_reports.package_validations_report(pkg_items, dtd_files, validate_order, do_toc_report)
-
+    content = pkg_reports.xml_list(scielo_pkg_path)
+    content += pkg_reports.package_validations_report(pkg_items, dtd_files, validate_order, do_toc_report)
     content += pkg_reports.processing_result_location(scielo_pkg_path)
 
     filename = report_path + '/xml_package_maker.html'
-    pkg_reports.save_report(filename, ['XML Package Maker Report', scielo_pkg_path], content)
+    pkg_reports.save_report(filename, 'XML Package Maker Report', content)
 
     if display_report:
         pkg_reports.display_report(filename)
@@ -766,7 +766,7 @@ def validate_path(path):
                 xml_files = sorted([path + '/' + f for f in os.listdir(path) if f.endswith('.xml')])
                 #now = datetime.now().isoformat().replace(':', '').replace('T', '').replace('-', '')
                 #now = now[0:now.find('.')]
-                now = 'result'
+                now = 'xml_package_maker_result'
                 markup_xml_path = path + '_' + now
                 fs_utils.delete_file_or_folder(markup_xml_path)
                 os.makedirs(markup_xml_path)
@@ -796,6 +796,16 @@ def validate_path(path):
                     if not os.path.isdir(markup_xml_path):
                         os.makedirs(markup_xml_path)
     return (xml_files, markup_xml_path)
+
+
+def get_articles(xml_path):
+    r = {}
+    for xml_filename in os.listdir(xml_path):
+        if xml_filename.endswith('.xml'):
+            xml, e = xml_utils.load_xml(xml_path + '/' + xml_filename)
+            doc = article.Article(xml) if xml is not None else None
+            r[xml_filename] = doc
+    return r
 
 
 def get_pkg_items(xml_filenames, report_path):

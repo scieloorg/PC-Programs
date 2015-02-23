@@ -429,23 +429,36 @@ class ArticleContentValidation(object):
     @property
     def affiliations(self):
         import affiliations_services
+
         r = []
         labels = ['institution[@content-type="normalized"]', 'country', 'country/@country', 'state', 'city']
         for aff in self.article.affiliations:
             text = aff.original if aff.original is not None else aff.xml
-            r.append(('aff xml', 'OK', aff.xml))
+            r.append(('aff xml', 'INFO', aff.xml))
             r.append(required('aff id', aff.id, 'FATAL ERROR'))
             r.append(required('aff original', aff.original, 'ERROR'))
 
             norgname, ncountry, icountry, state, city, errors = affiliations_services.validate_affiliation(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
             suggestions = [norgname, ncountry, icountry, state, city]
             values = [aff.norgname, aff.country, aff.i_country, aff.state, aff.city]
+            values = [value.encode('utf-8') if isinstance(value, unicode) else value for value in values]
+            if aff.orgname is None and aff.norgname is None and norgname is None:
+                r.append(('institution[@content-type="normalized"] or institution[@content-type="orgname"]', 'FATAL ERROR', 'Required'))
+            if aff.country is None and aff.i_country is None and ncountry is None and icountry is None:
+                r.append(('country or country/@country', 'FATAL ERROR', 'Required'))
+
             for i in range(0, len(labels)):
-                if suggestions[i] is not None:
+                if suggestions[i] is None:
+                    if values[i] is not None:
+                        r.append((labels[i], 'WARNING', values[i] + ' was not found in the normalized ' + labels[i] + ' list.'))
+                else:
                     if suggestions[i] != values[i]:
-                        r.append((labels[i], 'ERROR', 'Recommended ' + suggestions[i]))
+                        if values[i] is None:
+                            r.append((labels[i], 'WARNING', 'it will be completed with ' + suggestions[i] + '.'))
+                        else:
+                            r.append((labels[i], 'WARNING', values[i] + ' will be replaced by ' + suggestions[i] + '.'))
             if len(errors) > 0:
-                r.append(('aff orgname and country', 'ERROR', errors + '. Please, get suggestions of organization names and country at http://wayta.scielo.org.'))
+                r.append(('aff orgname and country', 'WARNING', errors))
         return r
 
     @property

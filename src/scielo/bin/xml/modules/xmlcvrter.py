@@ -57,52 +57,85 @@ def get_issue_record(issue_label, p_issn, e_issn, db_issue):
     return (issue_record, msg)
 
 
-def validate_whole_package(issue_files, pkg_path, whole_pkg_path, report_path):
+def get_creation_date(id_filename):
+    previous_creation_date = None
+    if os.path.isfile(id_filename):
+        records = isis.IDFile().read(id_filename)
+        previous_article = ArticleRecords2Article(records)
+        previous_creation_date = previous_article.creation_date
+    return previous_creation_date
+
+
+def check_previous_articles_order(previous_articles, articles):
+    inconsistent_orders = {}
+    for name, article in articles.items():
+        previous = previous_articles.get(name)
+
+        if previous is not None:
+            if previous.order != article.order:
+                inconsistent_orders[name] = (previous.order, article.order)
+    return inconsistent_orders
+
+
+def previous_and_current_package(issue_files, pkg_path, previous_articles, current_articles):
+
+    whole_pkg_path = pkg_path + '_complete'
+    if not os.path.isdir(whole_pkg_path):
+        os.makedirs(whole_pkg_path)
+
+    for name in os.listdir(whole_pkg_path):
+        os.unlink(whole_pkg_path + '/' + name)
+
+    for name in previous_articles.keys():
+        if not name in current_articles.keys():
+            shutil.copyfile(issue_files.base_source_path + '/' + name, whole_pkg_path + '/' + name)
+
+    update = []
+    new = []
+    for name, article in current_articles.items():
+        shutil.copyfile(pkg_path + '/' + name, whole_pkg_path + '/' + name)
+        if name in previous_articles.keys():
+            update.append(name)
+        else:
+            new.append(name)
+
+    for name in os.listdir(whole_pkg_path):
+        os.unlink(whole_pkg_path + '/' + name)
+
+    return (new, update, xpmaker.get_articles(whole_pkg_path))
+
+
+def validate_previous_and_current_package(issue_files, pkg_path):
     print('issue_files.base_source_path')
     print(issue_files.base_source_path)
     print('pkg_path')
     print(pkg_path)
 
-    previous_files = os.listdir(issue_files.base_source_path)
-    previous = []
-    update = []
-    ignore_update = []
-    new = []
-    creation_date = {}
-    if not os.path.isdir(whole_pkg_path):
-        os.makedirs(whole_pkg_path)
+    msg = ''
 
-    for item in os.listdir(whole_pkg_path):
-        os.unlink(whole_pkg_path + '/' + item)
+    previous_articles = xpmaker.get_articles(issue_files.base_source_path)
+    current_articles = xpmaker.get_articles(pkg_path)
 
-    for item in os.listdir(pkg_path):
-        if not item in previous_files:
-            new.append(item)
-        shutil.copyfile(pkg_path + '/' + item, whole_pkg_path + '/' + item)
+    inconsistent_orders = check_previous_articles_order(previous_articles, current_articles)
+    if len(inconsistent_orders) > 0:
+        msg += html_reports.tag('h4', 'checking order of previous version')
+    for name, orders in inconsistent_orders.items():
+        msg += html_reports.format_message('WARNING: Found inconsistence: previous ' + name + ' has order=' + orders[0])
+        msg += html_reports.format_message('WARNING: Found inconsistence: current  ' + name + ' has order=' + orders[1])
 
-    if len(previous_files) > 0:
-        for item in previous_files:
-            if item in os.listdir(whole_pkg_path):
-                if open(pkg_path + '/' + item, 'r').read() == open(issue_files.base_source_path + '/' + item, 'r').read():
-                    ignore_update.append(item)
-                else:
-                    update.append(item)
-                    records = isis.IDFile().readfile(issue_files.issue_id_path + '/' + item.replace('.xml', '.id'))
-                    creation_date[item] = ArticleRecords2Article(records).creation_date()
-            else:
-                previous.append(item)
-                shutil.copyfile(issue_files.base_source_path + '/' + item, whole_pkg_path + '/' + item)
+    new, update, complete_package = previous_and_current_package(issue_files, pkg_path, previous_articles, current_articles)
+    previous = [name for name in previous_articles.keys() if not name in new and not name in update]
 
-    pkg_items = xpmaker.get_pkg_items([whole_pkg_path + '/' + f for f in os.listdir(whole_pkg_path)], report_path)
+    toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(complete_package, validate_order=True)
 
-    toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(pkg_items, validate_order=True)
-    toc_report = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, toc_report)
+    toc_w += len(inconsistent_orders)
+    toc_report = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, msg + toc_report)
 
     status_report = ''
-    for status, items in {'new': new, 'previous': previous, 'ignored update': ignore_update, 'update': creation_date.keys()}.items():
-        status_report += html_reports.format_list(status, 'ol', items)
+    for status, items in {'new': new, 'previous': previous, 'update': update}.items():
+        status_report += html_reports.format_list(status, 'ol', items, 'label')
 
-    return (toc_f, status_report + toc_report, new, creation_date)
+    return (toc_f, status_report + toc_report, inconsistent_orders)
 
 
 def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ahead, db_article, version):
@@ -112,7 +145,7 @@ def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ah
     conversion_report = ''
     msg = []
 
-    result_path = src_path + '_results'
+    result_path = src_path + '_xml_converter_result'
     wrk_path = result_path + '/work'
     pkg_path = result_path + '/scielo_package'
     report_path = result_path + '/errors'
@@ -135,14 +168,13 @@ def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ah
         issue = issue_record.issue
         journal_files = serial_files.JournalFiles(serial_path, issue.acron)
         issue_files = serial_files.IssueFiles(journal_files, issue.issue_label, pkg_path, website_folders_path)
+        result_path = issue_files.issue_path
 
-        toc_f, toc_report, new, creation_date = validate_whole_package(issue_files, pkg_path, pkg_path + '.tmp', report_path)
+        toc_f, toc_report, inconsistent_orders = validate_previous_and_current_package(issue_files, pkg_path)
 
         msg.append(toc_report)
 
-        pkg_items = [(doc, doc_file_info) for doc, doc_file_info in pkg_items if doc_file_info.xml_name + '.xml' in new or doc_file_info.xml_name + '.xml' in creation_date.keys()]
-
-        if len(pkg_items) > 0:
+        if toc_f == 0 and len(pkg_items) > 0:
             articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(pkg_items, dtd_files, validate_order, display_title)
             msg.append(pkg_reports.get_articles_report_text(articles_reports, articles_stats))
             msg.append(pkg_reports.get_lists_report_text(articles_reports, articles_sheets))
@@ -153,14 +185,16 @@ def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ah
 
             ahead_manager = serial_files.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
             articles = {doc_file_info.xml_name: article for article, doc_file_info in pkg_items}
-            scilista_item, conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record, articles, articles_stats, creation_date)
+            scilista_item, conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record, articles, articles_stats, inconsistent_orders)
+            if scilista_item is not None:
+                acron_issue_label = scilista_item
 
     filename = report_path + '/xml_converter.html'
     texts = []
     texts.append(pkg_reports.xml_list(pkg_path, xml_filenames))
-    texts.append(''.join(msg))
+    texts.append(html_reports.join_texts(msg))
     texts.append(conversion_report)
-    texts.append(pkg_reports.processing_result_location(report_path))
+    texts.append(pkg_reports.processing_result_location(result_path))
 
     content = html_reports.join_texts(texts)
 
@@ -175,7 +209,7 @@ def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ah
     return (filename, report_path, scilista_item)
 
 
-def convert_articles(ahead_manager, db_article, issue_files, issue_record, articles, articles_stats, creation_date):
+def convert_articles(ahead_manager, db_article, issue_files, issue_record, articles, articles_stats, inconsistent_orders):
     index = 0
     status_text = ['converted', 'not converted', 'first version', 'previous version (aop)', 'previous version (aop) unmatched', 'previous version (aop) without PID', 'previous version (aop) partially matched', ]
     order = ['converted', 'not converted', 'new', 'matched', 'unmatched', 'invalid', 'partially matched']
@@ -194,30 +228,40 @@ def convert_articles(ahead_manager, db_article, issue_files, issue_record, artic
         item_label = str(index) + n + ' - ' + xml_name
         print(item_label)
 
+        msg = ''
+        xml_stats, data_stats = articles_stats[xml_name]
+        xml_f, xml_e, xml_w = xml_stats
+        data_f, data_e, data_w = data_stats
+
         valid_ahead, ahead_status, ahead_msg, ahead_comparison = ahead_manager.get_valid_ahead(article, xml_name)
+        articles_by_status[ahead_status].append(xml_name)
+
         section_code, issue_validations_msg = validate_xml_issue_data(issue_record, article)
 
-        msg = ''
         msg += html_reports.tag('h4', 'checking ex-ahead')
         msg += ''.join([html_reports.format_message(item) for item in ahead_msg])
         msg += ''.join([html_reports.tag('pre', item) for item in ahead_comparison])
         msg += html_reports.tag('h4', 'checking issue data')
         msg += issue_validations_msg
+
         conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
-
-        xml_stats, data_stats = articles_stats[xml_name]
-        xml_f, xml_e, xml_w = xml_stats
-        data_f, data_e, data_w = data_stats
-
-        articles_by_status[ahead_status].append(xml_name)
 
         if conv_f + xml_f + data_f == 0:
             article.section_code = section_code
             if valid_ahead is not None:
                 article._ahead_pid = valid_ahead.ahead_pid
+
             article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
-            done = db_article.create_id_file(issue_record.record, article, article_files, creation_date.get(xml_name))
+
+            creation_date = get_creation_date(article_files.id_filename)
+
+            done = db_article.create_id_file(issue_record.record, article, article_files, creation_date)
             if done:
+                if xml_name in inconsistent_orders.keys():
+                    prev_order, curr_order = inconsistent_orders[xml_name]
+                    prev_article_files = serial_files.ArticleFiles(issue_files, prev_order, xml_name)
+                    os.unlink(prev_article_files.id_filename)
+
                 article_id_created += 1
                 if valid_ahead is not None:
                     if ahead_status in ['matched', 'partially matched']:
@@ -247,7 +291,7 @@ def convert_articles(ahead_manager, db_article, issue_files, issue_record, artic
             summary += display_list('ahead list', still_ahead)
 
     scilista_item = None
-    if len(article_id_created) == len(articles):
+    if article_id_created == len(articles):
         if db_article.finish_conversion(issue_record.record, issue_files):
             scilista_item = issue_record.issue.acron + ' ' + issue_record.issue.issue_label
 

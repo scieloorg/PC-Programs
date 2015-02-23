@@ -24,7 +24,15 @@ def statistics_numbers(content):
 
 def get_unicode(text):
     if not isinstance(text, unicode):
-        text = text.decode('utf-8', 'xmlcharrefreplace')
+        try:
+            text = text.decode('utf-8')
+        except Exception as e:
+            try:
+                text = text.decode('utf-8', 'xmlcharrefreplace')
+            except Exception as e:
+                print(e)
+                print(text)
+                #text = u''
     return text
 
 

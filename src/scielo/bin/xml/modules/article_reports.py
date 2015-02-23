@@ -13,8 +13,8 @@ from article import Article, PersonAuthor, CorpAuthor, format_author
 
 class TOCReport(object):
 
-    def __init__(self, articles_data, validate_order):
-        self.articles_data = articles_data
+    def __init__(self, articles, validate_order):
+        self.articles = articles
         self.validate_order = validate_order
 
     def report(self):
@@ -30,8 +30,7 @@ class TOCReport(object):
         for label in equal_data + unique_data:
             toc_data[label] = {}
 
-        for article, doc_info in self.articles_data:
-            xml_name = doc_info.xml_name
+        for xml_name, article in self.articles.items():
             if article is None:
                 invalid.append(xml_name)
             else:
@@ -52,7 +51,7 @@ class TOCReport(object):
                 r += part
 
         for label in unique_data:
-            if len(toc_data[label]) > 0 and len(toc_data[label]) != len(self.articles_data):
+            if len(toc_data[label]) > 0 and len(toc_data[label]) != len(self.articles):
                 none = []
                 duplicated = {}
                 pages = {}
@@ -378,7 +377,7 @@ class ArticleValidationReport(object):
         style = html_reports.message_style(status + ':')
         value = message
         if '<' in value and '>' in value:
-            value = html_reports.display_xml(value)
+            value = html_reports.display_xml(value, "100")
         if style == 'ok':
             value = html_reports.tag('span', value, 'value')
         cell += html_reports.tag('td', value, 'td_message')
@@ -532,16 +531,15 @@ class ArticleSheetData(object):
         for item in files:
             row = {}
             row['files'] = item
+            status = ''
             if item in inxml:
                 status = 'found in XML'
             else:
-                if item.endswith('.jpg'):
+                if not item.endswith('.pdf'):
                     if item[:-4] in inxml:
                         status = 'found in XML'
                     else:
                         status = 'WARNING: not found in XML'
-                else:
-                    status = 'WARNING: not found in XML'
             row['status'] = status
             r.append(row)
         return (t_header, ['files', 'status'], r)
@@ -573,8 +571,8 @@ def package_files(path, xml_name):
     return r
 
 
-def toc_report_data(articles_and_filenames, validate_order):
-    toc_report_content = TOCReport(articles_and_filenames, validate_order).report()
+def toc_report_data(articles, validate_order):
+    toc_report_content = TOCReport(articles, validate_order).report()
     toc_f, toc_e, toc_w = html_reports.statistics_numbers(toc_report_content)
     return (toc_f, toc_e, toc_w, toc_report_content)
 

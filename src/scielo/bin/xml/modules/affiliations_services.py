@@ -46,7 +46,7 @@ class CodesAndNames(object):
         print('-')
         print('get_similar_names')
         print(name)
-        r = utils.most_similar(utils.similarity(self.indexed_by_names.keys(), name, 0.6))
+        r = utils.most_similar(utils.similarity(self.indexed_by_names.keys(), name, 0.8))
         print(r)
         print('-')
         return r
@@ -57,8 +57,8 @@ class CodesAndNames(object):
             print('-')
             print('get_similar_items')
             print(text)
-            print(text_list)
-            r = utils.most_similar(utils.similarity(text_list, text, 0.6))
+            #print(text_list)
+            r = utils.most_similar(utils.similarity(text_list, text, 0.8))
             print(r)
             print('-')
         return r
@@ -151,7 +151,7 @@ def load_normaff():
             item = ''
 
         if len(item) > 0:
-            item = item.strip().split('\t')
+            item = item.strip().split('|')
 
             if len(item) == 2:
                 orgname, wos_country_en = item
@@ -372,8 +372,6 @@ def normalize_orgname(orgname, country_name, country_code):
                 msg.append(orgname + ' was found but country do not match: ' + '|'.join([name + '(' + country + ')' for name, country in orgname_and_country_items.items()]))
             else:
                 msg.append(orgname + ' was not found in the normalized institutions list.')
-            norm_orgname = orgname
-
     print('-- normalize_orgname -- resultado')
     print([orgname, country_name, country_code])
     print([norm_orgname, norm_country_name, norm_country_code, '\n'.join(msg)])

@@ -49,6 +49,10 @@ class ArticleRecords2Article(object):
     def creation_date(self):
         return (self.article_records[0]['91'], self.article_records[0]['92'])
 
+    @property
+    def order(self):
+        return self.article_records[1]['121']
+
 
 class Article2ArticleRecords(object):
 
@@ -166,7 +170,7 @@ class Article2ArticleRecords(object):
         self._metadata['14']['l'] = self.article.lpage
         self._metadata['14']['e'] = self.article.elocation_id
 
-        self._metadata['70'] = fix_affiliations(self.article.fix_affiliations)
+        self._metadata['70'] = fix_affiliations(self.article.affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
         self._metadata['72'] = str(0 if self.article.total_of_references is None else self.article.total_of_references)
@@ -400,7 +404,7 @@ def fix_affiliations(affiliations):
     import affiliations_services
 
     affs = []
-    for item in self.article.affiliations:
+    for item in affiliations:
         a = {}
         norm_orgname, norm_country, norm_country_code, norm_state, norm_city, errors = affiliations_services.validate_affiliation(item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
 

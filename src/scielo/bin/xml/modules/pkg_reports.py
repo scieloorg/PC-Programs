@@ -85,17 +85,21 @@ def sum_stats(stats_items):
     return (f, e, w)
 
 
-def xml_list(pkg_path, xml_filenames):
+def xml_list(pkg_path, xml_filenames=None):
     r = ''
     r += '<h2>XML files</h2>'
     r += '<p>XML path: ' + pkg_path + '</p>'
+    if xml_filenames is None:
+        xml_filenames = [pkg_path + '/' + name for name in os.listdir(pkg_path) if name.endswith('.xml')]
     r += '<p>Total of XML files: ' + str(len(xml_filenames)) + '</p>'
     r += html_reports.format_list('', 'ol', [os.path.basename(f) for f in xml_filenames])
     return r
 
 
 def package_validations_report(pkg_items, dtd_files, validate_order, create_toc_report):
-    toc_stats_and_report = validate_package(pkg_items, validate_order)
+    #FIXME
+    articles = {doc_file_info.xml_name: article for article, doc_file_info in pkg_items}
+    toc_stats_and_report = validate_package(articles, validate_order)
 
     articles_stats, articles_reports, articles_sheets = validate_pkg_items(pkg_items, dtd_files, validate_order, not create_toc_report)
 
@@ -104,19 +108,19 @@ def package_validations_report(pkg_items, dtd_files, validate_order, create_toc_
     toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
 
     if create_toc_report:
-        texts += get_toc_report_text(toc_f, toc_e, toc_w, toc_report)
+        texts.append(get_toc_report_text(toc_f, toc_e, toc_w, toc_report))
 
     if toc_f == 0:
-        texts += get_articles_report_text(articles_reports, articles_stats)
+        texts.append(get_articles_report_text(articles_reports, articles_stats))
 
     if create_toc_report:
-        texts += get_lists_report_text(articles_reports, articles_sheets)
+        texts.append(get_lists_report_text(articles_reports, articles_sheets))
 
     return html_reports.join_texts(texts)
 
 
-def validate_package(pkg_items, validate_order):
-    return article_reports.toc_report_data(pkg_items, validate_order)
+def validate_package(articles, validate_order):
+    return article_reports.toc_report_data(articles, validate_order)
 
 
 def validate_pkg_items(pkg_items, dtd_files, validate_order, display_all):

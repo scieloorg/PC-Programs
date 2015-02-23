@@ -224,9 +224,9 @@ class AheadManager(object):
             status = 'new'
         else:
             xml_filename = xml_name + '.xml'
-            msg_list.append('Try to find an "ahead of print version" for ' + xml_filename)
+            msg_list.append('Checking if there is an "ahead of print version" for ' + xml_filename)
             if article.doi is not None:
-                msg_list.append('Try to find an "ahead of print version" for ' + article.doi)
+                msg_list.append('Checking if there is an "ahead of print version" for ' + article.doi)
             ahead = self.find_ahead(article.doi, xml_filename)
 
             if ahead is None:
@@ -364,11 +364,11 @@ class IssueFiles(object):
 
     @property
     def id_path(self):
-        return self.issue_path + '/id'
+        return self.issue_path + '/base_xml/id'
 
     @property
     def id_filename(self):
-        return self.issue_path + '/id/i.id'
+        return self.id_path + '/i.id'
 
     @property
     def base_path(self):
@@ -376,11 +376,11 @@ class IssueFiles(object):
 
     @property
     def base_reports_path(self):
-        return self.issue_path + '/base_reports'
+        return self.issue_path + '/base_xml/base_reports'
 
     @property
     def base_source_path(self):
-        return self.issue_path + '/base_source'
+        return self.issue_path + '/base_xml/base_source'
 
     @property
     def base(self):
@@ -456,7 +456,7 @@ class JournalFiles(object):
     def ahead_xml_markup_body(self, year, filename):
         m = self.journal_path + '/' + year + 'nahead/markup'
         b = self.journal_path + '/' + year + 'nahead/body'
-        x = self.journal_path + '/' + year + 'nahead/xml'
+        x = self.journal_path + '/' + year + 'nahead/base_xml/base_source'
         #create_path(m)
         #create_path(b)
         #create_path(x)
@@ -471,7 +471,7 @@ class JournalFiles(object):
         return self.ahead_id_path(year) + '/i.id'
 
     def ahead_id_path(self, year):
-        path = self.journal_path + '/' + year + 'nahead/id'
+        path = self.journal_path + '/' + year + 'nahead/base_xml/id'
         #create_path(path)
         return path
 
