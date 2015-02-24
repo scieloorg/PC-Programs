@@ -27,13 +27,6 @@ def most_similar(similarity):
     if len(ratio_list) > 0:
         ratio_list = sorted(ratio_list)
         ratio_list.reverse()
-
-        print('-')
-        for item in ratio_list:
-            print(item)
-            print(similarity[item])
-        print('-')
-
         highiest = ratio_list[0]
         r = similarity[highiest]
 

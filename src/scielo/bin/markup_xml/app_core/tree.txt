@@ -928,6 +928,7 @@ abstract;#FALSE#;#TRUE#
 ack;#FALSE#;#FALSE#
 app;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
+afftrans;#TRUE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 docresp;#FALSE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
@@ -937,7 +938,6 @@ glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
 *kwdgrp;#FALSE#;#TRUE#
 kwdgrp;#FALSE#;#TRUE#
-normaff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
 refs;#FALSE#;#FALSE#
 related;#FALSE#;#TRUE#
@@ -1019,6 +1019,9 @@ found-at
 patentno
 
 moreinfo
+
+afftrans
+label;#FALSE#;#FALSE#
 
 normaff
 label;#FALSE#;#FALSE#

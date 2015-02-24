@@ -4,6 +4,8 @@ import os
 
 from datetime import datetime
 
+import xml_utils
+
 
 def report_date():
     procdate = datetime.now().isoformat()
@@ -60,8 +62,8 @@ def css_class(style):
 
 
 def collapsible_block(section_id, section_title, content):
-    r = '<div id="show' + section_id + '" onClick="openClose(\'' + section_id + '\')" style="cursor:hand; cursor:pointer">' + section_title + ' (show)</div>'
-    r += '<div id="hide' + section_id + '" onClick="openClose(\'' + section_id + '\')" class="collapsiblehidden" style="cursor:hand; cursor:pointer"><b>' + section_title + ' (hide) </b></div>'
+    r = '<div id="show' + section_id + '" onClick="openClose(\'' + section_id + '\')" style="cursor:hand; cursor:pointer"><strong>' + section_title + ' (show)</strong></div>'
+    r += '<div id="hide' + section_id + '" onClick="openClose(\'' + section_id + '\')" class="collapsiblehidden" style="cursor:hand; cursor:pointer"><strong>' + section_title + ' (hide) </strong></div>'
     r += '<div id="' + section_id + '" class="collapsible">'
     r += content
     r += '</div>'
@@ -184,6 +186,9 @@ def sheet(table_header_and_data, filename=None):
 
 
 def display_xml(value, width=None):
+
+    value = xml_utils.pretty_print(value)
+
     value = value.replace('<', '&lt;')
     value = value.replace('>', '&gt;')
     if width is not None:

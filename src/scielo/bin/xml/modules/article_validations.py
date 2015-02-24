@@ -189,7 +189,8 @@ class ArticleContentValidation(object):
                     self.history,
                     self.abstracts,
                     self.keywords,
-                    self.xref_rids,
+                    self.validate_xref_reftype,
+                    self.missing_xref_list
                 ]
         return self.normalize_validations(items)
 
@@ -441,7 +442,7 @@ class ArticleContentValidation(object):
             norgname, ncountry, icountry, state, city, errors = affiliations_services.validate_affiliation(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
             suggestions = [norgname, ncountry, icountry, state, city]
             values = [aff.norgname, aff.country, aff.i_country, aff.state, aff.city]
-            values = [value.encode('utf-8') if isinstance(value, unicode) else value for value in values]
+
             if aff.orgname is None and aff.norgname is None and norgname is None:
                 r.append(('institution[@content-type="normalized"] or institution[@content-type="orgname"]', 'FATAL ERROR', 'Required'))
             if aff.country is None and aff.i_country is None and ncountry is None and icountry is None:
@@ -612,14 +613,16 @@ class ArticleContentValidation(object):
         return display_value('previous_pid', self.article.previous_pid)
 
     @property
-    def xref_rids(self):
+    def validate_xref_reftype(self):
         message = []
-        types = {'bibr': 'ref', 'table': 'table-wrap'}
+        types = {'bibr': 'ref', 'table': 'table-wrap', 'author-notes': 'fn', 'contrib': 'fn', 'other': None, 'statement': 'fn'}
         id_and_tag = {node.attrib.get('id'):node.tag for node in self.article.elements_which_has_id_attribute if node.attrib.get('id') is not None}
-        #aff;app;author-notes;bibr;boxed-text;chem;contrib;corresp;disp-formula;fig;fn;kwd;list;other;plate;scheme;sec;statement;supplementary-material;table
+
         for xref in self.article.xref_nodes:
             tag = id_and_tag.get(xref['rid'])
-            if tag == xref['ref-type']:
+            if tag is None:
+                valid = True
+            elif tag == xref['ref-type']:
                 valid = True
             elif tag == types.get(xref['ref-type']):
                 valid = True
@@ -627,6 +630,19 @@ class ArticleContentValidation(object):
                 valid = False
             if not valid:
                 message.append(('xref/@rid', 'ERROR', xref['rid'] + '(' + xref['ref-type'] + ')' + ': invalid value of @rid for ' + xref['xml']))
+        return message
+
+    @property
+    def missing_xref_list(self):
+        rid_list = [node['rid'] for node in self.article.xref_nodes]
+        message = []
+        for node in self.article.elements_which_has_id_attribute:
+            _id = node.attrib.get('id')
+            if _id is None:
+                message.append((node.tag, 'ERROR', 'Missing @id'))
+            else:
+                if not _id in rid_list:
+                    message.append((node.tag, 'WARNING', 'Missing @rid=' + _id))
         return message
 
 

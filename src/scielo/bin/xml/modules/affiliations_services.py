@@ -43,24 +43,24 @@ class CodesAndNames(object):
         return code
 
     def get_similar_names(self, name):
-        print('-')
-        print('get_similar_names')
-        print(name)
+        ##print('-')
+        ##print('get_similar_names')
+        #print(name)
         r = utils.most_similar(utils.similarity(self.indexed_by_names.keys(), name, 0.8))
-        print(r)
-        print('-')
+        #print(r)
+        #print('-')
         return r
 
     def get_similar_items(self, text, text_list):
         r = []
         if len(text_list) > 0:
-            print('-')
-            print('get_similar_items')
-            print(text)
-            #print(text_list)
+            #print('-')
+            #print('get_similar_items')
+            #print(text)
+            ##print(text_list)
             r = utils.most_similar(utils.similarity(text_list, text, 0.8))
-            print(r)
-            print('-')
+            #print(r)
+            #print('-')
         return r
 
     def get_name_and_code_list(self, names):
@@ -98,6 +98,8 @@ def load_wos_countries():
     indexed_by_names = {}
     indexed_by_codes = {}
     for item in open(curr_path + '/../tables/country_en_pt_es.csv', 'r').readlines():
+        if not isinstance(item, unicode):
+            item = item.decode('utf-8')
         item = item.replace('"', '')
         item = item.strip().split('\t')
         if len(item) == 3:
@@ -113,6 +115,8 @@ def load_br_states():
     indexed_by_names = {}
     indexed_by_codes = {}
     for item in open(curr_path + '/../tables/br_states.csv', 'r').readlines():
+        if not isinstance(item, unicode):
+            item = item.decode('utf-8')
         item = item.strip().split('|')
         if len(item) == 2:
             name, code = item
@@ -125,6 +129,8 @@ def load_br_locations():
     indexed_by_codes = {}
     indexed_by_names = {}
     for item in open(curr_path + '/../tables/br_locations.csv', 'r').readlines():
+        if not isinstance(item, unicode):
+            item = item.decode('utf-8')
         item = item.replace('"', '')
         item = item.strip().split('\t')
         if len(item) == 2:
@@ -142,14 +148,8 @@ def load_normaff():
     indexed_by_codes = {}
     indexed_by_names = {}
     for item in open(curr_path + '/../tables/aff_normalized.txt', 'r').readlines():
-        try:
+        if not isinstance(item, unicode):
             item = item.decode('iso-8859-1')
-            item = item.encode('utf-8')
-        except Exception as e:
-            print(item)
-            print(e)
-            item = ''
-
         if len(item) > 0:
             item = item.strip().split('|')
 
@@ -236,9 +236,9 @@ def normalize_location(city, state):
         else:
             msg.append(state + ' was not identified as state.')
 
-    print('--- normalize_location: resultado ---')
-    print([city, state])
-    print([norm_city, norm_state, '\n'.join(msg)])
+    #print('--- normalize_location: resultado ---')
+    #print([city, state])
+    #print([norm_city, norm_state, '\n'.join(msg)])
 
     return (norm_city, norm_state, '\n'.join(msg))
 
@@ -304,6 +304,10 @@ def normalize_country(country_name, country_code):
     if wos_country_list is None:
         wos_country_list = get_wos_country_items()
 
+    norm_country_name = None
+    norm_country_code = None
+    msg = []
+
     iso_name, wos_name, code_names = find_country_names(country_name, country_code)
     iso_code, wos_en = find_country_codes(iso_name, wos_name)
 
@@ -311,7 +315,6 @@ def normalize_country(country_name, country_code):
         country_code = iso_code
         code_names = [iso_name]
 
-    msg = []
     if iso_name in code_names:
         norm_country_code = iso_code
     else:
@@ -324,9 +327,9 @@ def normalize_country(country_name, country_code):
     if wos_en is not None:
         norm_country_name = wos_en
 
-    print('-- normalize_country - resultado')
-    print([country_name, country_code])
-    print([norm_country_name, norm_country_code, '\n'.join(msg)])
+    #print('-- normalize_country - resultado')
+    #print([country_name, country_code])
+    #print([norm_country_name, norm_country_code, '\n'.join(msg)])
 
     return (norm_country_name, norm_country_code, '\n'.join(msg))
 
@@ -369,12 +372,12 @@ def normalize_orgname(orgname, country_name, country_code):
 
         if norm_orgname is None:
             if len(orgname_and_country_items) > 0:
-                msg.append(orgname + ' was found but country do not match: ' + '|'.join([name + '(' + country + ')' for name, country in orgname_and_country_items.items()]))
+                msg.append(orgname + ' was not found. Found some similarity: ' + '|'.join([name + '(' + country + ')' for name, country in orgname_and_country_items.items()]))
             else:
                 msg.append(orgname + ' was not found in the normalized institutions list.')
-    print('-- normalize_orgname -- resultado')
-    print([orgname, country_name, country_code])
-    print([norm_orgname, norm_country_name, norm_country_code, '\n'.join(msg)])
+    #print('-- normalize_orgname -- resultado')
+    #print([orgname, country_name, country_code])
+    #print([norm_orgname, norm_country_name, norm_country_code, '\n'.join(msg)])
     return (norm_orgname, norm_country_name, norm_country_code, '\n'.join(msg))
 
 
@@ -398,8 +401,8 @@ def validate_affiliation(orgname, norgname, country_name, country_code, state, c
         if len(errors) > 0:
             msg.append(errors)
 
-    print('--- validate_affiliation - resultado ---')
-    print([orgname, norgname, country_name, country_code, state, city])
-    print([norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city, '\n'.join(msg)])
+    #print('--- validate_affiliation - resultado ---')
+    #print([orgname, norgname, country_name, country_code, state, city])
+    #print([norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city, '\n'.join(msg)])
 
     return (norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city, '\n'.join(msg))

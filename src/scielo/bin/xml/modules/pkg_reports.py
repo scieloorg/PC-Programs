@@ -56,26 +56,46 @@ def get_article_contents_validations_report(article, new_name, package_path, rep
 
 
 def get_report_text(filename):
-    content = ''
+    report = ''
     if os.path.isfile(filename):
         content = open(filename, 'r').read()
-        if '</article>' in content:
-            if 'DTD errors' in content and 'Line number: ' in content:
-                line_number = content[content.rfind('Line number:')+len('Line number:'):]
-                line_number = line_number[0:line_number.find('Column number:')]
-                line_number = line_number.strip()
-                if line_number.isdigit():
-                    content = content[0:content.find('\n' + str(int(line_number)+1) + ':')] + '...'
-            content = html_reports.display_xml(content)
-            content = content.replace('\n', '<br/>')
 
-        if '</html>' in content:
-            content = content[content.find('<body'):]
-            content = content[0:content.rfind('</body>')]
-            content = content[content.find('>')+1:]
-    if len(content) > 0:
-        content = '<p class="issue-data">content of ' + filename + '</p>' + content
-    return content
+        if 'Parse/validation finished' in content and '<!DOCTYPE' in content:
+            part1 = content[0:content.find('<!DOCTYPE')]
+            part2 = content[content.find('<!DOCTYPE'):]
+            part1 = part1.replace('\n', '<br/>')
+
+            l = part1[part1.rfind('Line number:')+len('Line number:'):]
+            l = l[0:l.find('Column')]
+            l = ''.join([item.strip() for item in l.split()])
+            if l.isdigit():
+                l += 1
+                l = str(l) + ':'
+                if l in part2:
+                    part2 = part2[0:part2.find(l)]
+
+            l = part1[part1.find('Line number:')+len('Line number:'):]
+            l = l[0:l.find('Column')]
+            l = ''.join([item.strip() for item in l.split()])
+            if l.isdigit():
+                l = str(l) + ':'
+                if l in part2:
+                    part2 = part2[part2.find(l):]
+
+            part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>')
+            report = part1 + part2
+        elif '</html>' in content:
+
+            report = '<iframe width="100%" height="400px" src="file:///' + filename + '"></iframe>'
+
+            #content = content[content.find('<body'):]
+            #content = content[0:content.rfind('</body>')]
+            #report = content[content.find('>')+1:]
+        else:
+            report = ''
+    if len(report) > 0:
+        report = '<div class="embedded-report"><h5>' + filename + '</h5>' + report + '</div>'
+    return report
 
 
 def sum_stats(stats_items):
@@ -155,7 +175,6 @@ def get_toc_report_text(toc_f, toc_e, toc_w, toc_report):
 def get_articles_report_text(articles_reports, articles_stats):
     n = '/' + str(len(articles_reports))
     validations_text = ''
-
     index = 0
     validations_text = html_reports.tag('h2', 'XML Validations')
     for new_name in sorted(articles_reports.keys()):
@@ -167,26 +186,23 @@ def get_articles_report_text(articles_reports, articles_stats):
         data_f, data_e, data_w = articles_stats[new_name][1]
 
         rep1, rep2, rep3 = articles_reports[new_name]
+        rep_index = 0
 
-        t = []
-        v = []
-        content = get_report_text(rep1)
-        if len(content) > 0:
-            t.append(os.path.basename(rep1))
-            v.append(content)
-        content = get_report_text(rep2)
-        if len(content) > 0:
-            t.append(os.path.basename(rep2))
-            v.append(content)
-
-        content = ''.join(v)
         if xml_f + xml_e + xml_w > 0:
+            t = []
+            v = []
+            for rep in [rep1, rep2]:
+                content = get_report_text(rep)
+                if len(content) > 0:
+                    t.append(os.path.basename(rep))
+                    v.append(content)
+            content = ''.join(v)
             s = html_reports.statistics_display(xml_f, xml_e, xml_w)
-            validations_text += html_reports.collapsible_block('xmlrep' + str(index), '[' + s + '] - ' + ' and '.join(t), content)
+            validations_text += html_reports.collapsible_block('xmlrep' + str(index), s + ' - XML validations - ' + ' and '.join(t), content)
 
         if data_f + data_e + data_w > 0:
             s = html_reports.statistics_display(data_f, data_e, data_w)
-            validations_text += html_reports.collapsible_block('datarep' + str(index), '[' + s + '] - ' + os.path.basename(rep3), get_report_text(rep3))
+            validations_text += html_reports.collapsible_block('datarep' + str(index), s + ' - contents validations - ' + os.path.basename(rep3), get_report_text(rep3))
 
     return validations_text
 

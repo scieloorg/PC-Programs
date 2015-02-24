@@ -1794,22 +1794,16 @@
 !v002!^caff^vafiliação
 !v002!^capp^vApêndice
 !v002!^cauthor-notes^vNotas de autor
-!v002!^cbibr^vReferencia bibliográfica.
+!v002!^cbibr^vReferencia bibliográfica
 !v002!^cboxed-text^vCaixa de texto ou barra lateral
-!v002!^cchem^vEstrutura química
 !v002!^ccontrib^vContribuição
 !v002!^ccorresp^vAutor correspondente
 !v002!^cdisp-formula^vFórmula
 !v002!^cfig^vFigura
 !v002!^cfn^vNota de rodapé
-!v002!^ckwd^vPalavra-chave
-!v002!^clist^vItem de lista
+!v002!^clist^vLista
 !v002!^cother^vOutro
-!v002!^cplate^vPlaca
-!v002!^cscheme^vEsquema
-!v002!^csec^vSeção
-!v002!^cstatement^vdeclaração
-!v002!^csupplementary-material^vInformação complementar
+!v002!^csupplementary-material^vMaterial suplementar
 !v002!^ctable^vTabela
 !ID 000123
 !v001!ref-type^les
@@ -1817,22 +1811,16 @@
 !v002!^caff^vafiliación
 !v002!^capp^vApendice
 !v002!^cauthor-notes^vNotas de autor
-!v002!^cbibr^vReferencia bibliográfica.
+!v002!^cbibr^vReferencia bibliográfica
 !v002!^cboxed-text^vCaja de texto o barra lateral
-!v002!^cchem^vEstructura química
 !v002!^ccontrib^vContribución
 !v002!^ccorresp^vAutor correspondiente
 !v002!^cdisp-formula^vFórmula
 !v002!^cfig^vFigura
 !v002!^cfn^vNota de pie de página
-!v002!^ckwd^vPalabra clave
-!v002!^clist^víten de lista
+!v002!^clist^vListado
 !v002!^cother^vOtro
-!v002!^cplate^vPlaca
-!v002!^cscheme^vEsquema
-!v002!^csec^vSección
-!v002!^cstatement^vdeclaración
-!v002!^csupplementary-material^vInformación complementar
+!v002!^csupplementary-material^vMaterial suplementario
 !v002!^ctable^vTabla
 !ID 000124
 !v001!ref-type^len
@@ -1842,20 +1830,14 @@
 !v002!^cauthor-notes^vAuthor notes
 !v002!^cbibr^vBibliographic reference
 !v002!^cboxed-text^vTextbox or sidebar
-!v002!^cchem^vChemical structure
 !v002!^ccontrib^vContributor
 !v002!^ccorresp^vCorresponding author
 !v002!^cdisp-formula^vDisplay formula
 !v002!^cfig^vFigure or group of figures
 !v002!^cfn^vFootnote
-!v002!^ckwd^vKeyword
-!v002!^clist^vList or list item
+!v002!^clist^vList
 !v002!^cother^vNone of the items listed
-!v002!^cplate^vPlate
-!v002!^cscheme^vScheme
-!v002!^csec^vSection
-!v002!^cstatement^vStatement
-!v002!^csupplementary-material^vSupplementary information
+!v002!^csupplementary-material^vSupplementary material
 !v002!^ctable^vTable or group of tables
 !ID 000125
 !v001!fntype^lpt

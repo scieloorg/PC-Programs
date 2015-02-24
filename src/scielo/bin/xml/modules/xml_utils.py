@@ -327,3 +327,17 @@ def load_xml(content):
     content = read_xml(content)
     xml, e = parse_xml(content)
     return (xml, e)
+
+
+def pretty_print(content):
+    content = ' '.join(content.split())
+    import xml.dom.minidom
+    xml = xml.dom.minidom.parseString(content)
+    xml = xml.toprettyxml()
+    if isinstance(xml, unicode):
+        xml = xml.encode('utf-8')
+    xml = xml.replace(' \n\t', '')
+    if not '<?xml' in content:
+        xml = xml[xml.find('?>\n'):]
+        xml = xml[xml.find('<'):]
+    return xml

@@ -593,8 +593,8 @@ def get_report_content(article, new_name, package_path, validate_order, display_
 
 def validate_contents(data_display, data_validation, display_all):
     content = []
-    if display_all:
-        content.append(data_display.summary)
+    #if display_all:
+    content.append(data_display.summary)
 
     content.append(data_validation.validations(not display_all))
     content.append(data_display.files_and_href)

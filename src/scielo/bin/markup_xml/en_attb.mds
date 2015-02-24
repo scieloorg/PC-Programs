@@ -147,8 +147,8 @@ filename
 
 
 ref-type
-Affiliation;Appendix;Author notes;Bibliographic reference;Textbox or sidebar;Chemical structure;Contributor;Corresponding author;Display formula;Figure or group of figures;Footnote;Keyword;List or list item;None of the items listed;Plate;Scheme;Section;Statement;Supplementary information;Table or group of tables
-aff;app;author-notes;bibr;boxed-text;chem;contrib;corresp;disp-formula;fig;fn;kwd;list;other;plate;scheme;sec;statement;supplementary-material;table
+Affiliation;Appendix;Author notes;Bibliographic reference;Textbox or sidebar;Contributor;Corresponding author;Display formula;Figure or group of figures;Footnote;List;None of the items listed;Supplementary material;Table or group of tables
+aff;app;author-notes;bibr;boxed-text;contrib;corresp;disp-formula;fig;fn;list;other;supplementary-material;table
 
 sec-type
 undefined;* Materials and Methodology;* Results and Discussion;* Results and Conclusions;* Results, Discussion, Conclusions;Cases/Case Reports;Conclusions/Comment;Discussion/Interpretation;Introduction/Synopsis;Materials;Methods/Methodology/Procedures;Results/Statement of Findings;Subjects/Participants/Patients;Supplementary materials

@@ -491,7 +491,7 @@ def normalize_xml_content(doc_files_info, content, version):
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
 
-    content = ' '.join(content.split())
+    content = xml_utils.pretty_print(content)
 
     replaced_entities_report = ''
     if len(replaced_named_ent) > 0:
@@ -539,6 +539,7 @@ def normalize_package_name(doc_files_info, acron, content):
 
     doc = article.Article(xml) if xml is not None else None
     doc_files_info.new_name = doc_files_info.xml_name
+    curr_and_new_href_list = None
 
     if not doc is None:
         register_log('get_attach_info')
