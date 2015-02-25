@@ -110,8 +110,7 @@ def validate_surname(label, value):
             if not parts[i][0:1] == parts[i][0:1].lower():
                 reject.append(parts[i])
         u = parts[len(parts)-1]
-        if not isinstance(u, unicode):
-            u = u.encode('utf-8')
+
         suffix = ''
         if u in suffix_list:
             reject.append(parts[len(parts)-1])
@@ -634,6 +633,7 @@ class ArticleContentValidation(object):
 
     @property
     def missing_xref_list(self):
+        alert_tags = ['fig', 'table-wrap', 'ref', ]
         rid_list = [node['rid'] for node in self.article.xref_nodes]
         message = []
         for node in self.article.elements_which_has_id_attribute:
@@ -642,7 +642,8 @@ class ArticleContentValidation(object):
                 message.append((node.tag, 'ERROR', 'Missing @id'))
             else:
                 if not _id in rid_list:
-                    message.append((node.tag, 'WARNING', 'Missing @rid=' + _id))
+                    if node.tag in alert_tags:
+                        message.append((node.tag, 'ERROR', 'Missing @rid=' + _id))
         return message
 
 

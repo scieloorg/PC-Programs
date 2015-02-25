@@ -7,7 +7,7 @@ import HTMLParser
 from StringIO import StringIO
 
 
-ENTITIES_TABLE = {}
+ENTITIES_TABLE = None
 
 
 def element_lang(node):
@@ -16,14 +16,17 @@ def element_lang(node):
 
 
 def load_entities_table():
-    if len(ENTITIES_TABLE) == 0:
-        curr_path = os.path.dirname(__file__).replace('\\', '/')
-        if os.path.isfile(curr_path + '/../tables/entities.csv'):
-            for item in open(curr_path + '/../tables/entities.csv', 'r').readlines():
-                symbol, number_ent, named_ent, descr, representation = item.split('|')
-                ENTITIES_TABLE[named_ent] = symbol
-        else:
-            print('NOT FOUND ' + curr_path + '/../tables/entities.csv')
+    table = {}
+    curr_path = os.path.dirname(__file__).replace('\\', '/')
+    if os.path.isfile(curr_path + '/../tables/entities.csv'):
+        for item in open(curr_path + '/../tables/entities.csv', 'r').readlines():
+            if not isinstance(item, unicode):
+                item.decode('utf-8')
+            symbol, number_ent, named_ent, descr, representation = item.split('|')
+            table[named_ent] = symbol
+    else:
+        print('NOT FOUND ' + curr_path + '/../tables/entities.csv')
+    return table
 
 
 class XMLContent(object):
@@ -204,13 +207,26 @@ def preserve_xml_entities(content):
 
 def named_ent_to_char(content):
     replaced_named_ent = []
-    load_entities_table()
+
     if '&' in content:
-        for find, replace in ENTITIES_TABLE.items():
-            if find in content:
-                replaced_named_ent.append(find + '=>' + replace)
-                content = content.replace(find, replace)
-    replaced_named_ent = list(set(replaced_named_ent))
+        text = content.replace('&', '_BREAK_&').replace(';', ';_BREAK_')
+        entities = list(set([item for item in text.split('_BREAK_') if item.startswith('&') and item.endswith(';')]))
+        if len(entities) > 0:
+            global ENTITIES_TABLE
+
+            if ENTITIES_TABLE is None:
+                ENTITIES_TABLE = load_entities_table()
+            if ENTITIES_TABLE is not None:
+                for ent in entities:
+                    new = ENTITIES_TABLE.get(ent, ent)
+
+                    print(type(new))
+                    print(type(ent))
+                    print(new)
+                    print(ent)
+                    if new != ent:
+                        replaced_named_ent.append(ent + '=>' + new)
+                        content = content.replace(ent, new)
     return (content, replaced_named_ent)
 
 
@@ -230,20 +246,37 @@ def register_remaining_named_entities(content):
             open('./named_entities.txt', 'w').write('\n'.join(entities))
 
 
-def all_ent_to_char(content):
-    unicode_input = isinstance(content, unicode)
-    r = content
+def htmlent2char(content):
     if '&' in content:
         h = HTMLParser.HTMLParser()
-        u = content
-        if not isinstance(content, unicode):
-            u = u.decode('utf-8')
-        u = h.unescape(u)
-        r = u
-        if isinstance(r, unicode):
-            if not unicode_input:
-                r = u.encode('utf-8')
-    return r
+        try:
+            if not isinstance(content, unicode):
+                content = content.decode('utf-8')
+            content = h.unescape(content)
+        except Exception as e:
+            content = content.replace('&', '_BREAK_&').replace(';', ';_BREAK_')
+            parts = content.split('_BREAK_')
+            new = u''
+            for part in parts:
+                if part.startswith('&') and part.endswith(';'):
+                    try:
+                        part = h.unescape(part)
+                    except Exception as e:
+                        print('h.unescape')
+                        print(e)
+                        print(part)
+                        part = '??'
+                try:
+                    new += part
+                except Exception as e:
+                    print(e)
+                    print(part)
+                    new += '??'
+                    print(type(content))
+                    print(type(part))
+                    x
+            content = new
+    return content
 
 
 def restore_xml_entities(content):
@@ -258,7 +291,7 @@ def convert_entities_to_chars(content, debug=False):
     replaced_named_ent = []
     if '&' in content:
         content = preserve_xml_entities(content)
-        content = all_ent_to_char(content)
+        content = htmlent2char(content)
         content, replaced_named_ent = named_ent_to_char(content)
         register_remaining_named_entities(content)
 
@@ -292,6 +325,8 @@ def read_xml(content):
 def parse_xml(content):
     message = None
     try:
+        if isinstance(content, unicode):
+            content = content.encode('utf-8')
         r = etree.parse(StringIO(content))
     except Exception as e:
         #print('XML is not well formed')
@@ -331,13 +366,37 @@ def load_xml(content):
 
 def pretty_print(content):
     content = ' '.join(content.split())
+    content = content.strip()
+
+    pretty = None
+
+    tag = None
+
+    if not content.startswith('<?xml'):
+        if not is_xml_well_formed(content):
+            tag = 'root'
+            content = '<' + tag + '>' + content + '</' + tag + '>'
+
     import xml.dom.minidom
-    xml = xml.dom.minidom.parseString(content)
-    xml = xml.toprettyxml()
-    if isinstance(xml, unicode):
-        xml = xml.encode('utf-8')
-    xml = xml.replace(' \n\t', '')
-    if not '<?xml' in content:
-        xml = xml[xml.find('?>\n'):]
-        xml = xml[xml.find('<'):]
-    return xml
+    try:
+        if isinstance(content, unicode):
+            content = content.encode('utf-8')
+        doc = xml.dom.minidom.parseString(content)
+        pretty = doc.toprettyxml()
+        pretty = pretty.replace(' \n\t', '')
+
+        if not '<?xml' in content:
+            pretty = pretty[pretty.find('?>\n'):]
+            pretty = pretty[pretty.find('<'):]
+
+    except Exception as e:
+        print('ERROR in pretty')
+        print(e)
+        open('./pretty_print.xml', 'w').write(content)
+        x
+
+    if pretty is None:
+        pretty = content
+    if tag is not None:
+        pretty = pretty.replace('<' + tag + '>', '').replace('</' + tag + '>', '')
+    return pretty

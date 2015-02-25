@@ -244,8 +244,6 @@ def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
     content = extract_embedded_tables(xml_name, content, html_filename, src_path)
     content = extract_embedded_images(xml_name, content, html_content, html_filename, src_path)
 
-    if isinstance(content, unicode):
-        content = content.encode('utf-8')
     xml = xml_utils.is_xml_well_formed(content)
     if xml is None:
         content = fix_sgml_xml(content)
@@ -255,9 +253,6 @@ def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
         content = replace_mimetypes(content, src_path)
     else:
         pass
-        #print(e[0:500])
-    if isinstance(content, unicode):
-        content = content.encode('utf-8')
     return content
 
 
@@ -525,9 +520,7 @@ def get_curr_and_new_href_list(doc_files_info, doc):
 def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False):
     register_log('pack_xml_file')
     content = xml_utils.replace_doctype(content, xml_versions.DTDFiles('scielo', version).doctype)
-    if isinstance(content, unicode):
-        content = content.encode('utf-8')
-    open(new_xml_filename, 'w').write(content)
+    fs_utils.write_file(new_xml_filename, content)
 
     if do_incorrect_copy is None:
         shutil.copyfile(new_xml_filename, new_xml_filename.replace('.xml', '_incorrect.xml'))
@@ -716,9 +709,8 @@ def pack_and_validate(xml_files, source_parent_path, acron, version, from_conver
         print(source_parent_path)
 
         s = '\n'.join(log_items)
-        if isinstance(s, unicode):
-            s = s.encode('utf-8')
-        open(report_path + '/log.txt', 'w').write(s)
+
+        fs_utils.write_file(report_path + '/log.txt', s)
 
 
 def zip_packages(src_pkg_path):

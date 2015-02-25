@@ -40,8 +40,6 @@ def get_unicode(text):
 
 def join_texts(texts):
     text = u''.join([get_unicode(t) for t in texts])
-    if isinstance(text, unicode):
-        text = text.encode('utf-8', 'xmlcharrefreplace')
     return text
 
 
@@ -295,6 +293,17 @@ def message_style(value, default='ok'):
     return r
 
 
+def get_message_style(f, e, w):
+    r = 'success'
+    if f > 0:
+        r = 'fatalerror'
+    elif e > 0:
+        r = 'error'
+    elif w > 0:
+        r = 'warning'
+    return r
+
+
 def message_css_class(style):
     return ' class="' + message_style(style) + '"'
 
@@ -305,3 +314,19 @@ def display_label_value(label, value):
 
 def format_p_label_value(label, value):
     return tag('p', display_label_value(label, value))
+
+
+def display_href(href, is_internal, is_image):
+    r = ''
+    if href is not None and href != '':
+        if is_internal:
+            _href = 'file:///' + href
+            href = os.path.basename(href)
+        else:
+            _href = href
+        if is_image:
+            r = '<img src="' + _href + '"/>'
+        else:
+            r = '<a target="_blank" href="' + _href + '">' + href + '</a>'
+    else:
+        return r

@@ -294,7 +294,8 @@ class ArticleDisplayReport(object):
                 table_data += html_reports.tag('p', 'table-wrap/table', 'label')
                 table_data += html_reports.tag('div', t.table, 'element-table')
             if t.graphic:
-                table_data += html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value')
+                #table_data += html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value')
+                table_data += html_reports.display_labeled_value('table-wrap/graphic', html_reports.display_href(self.xml_path, True, True), 'value')
             r += header + html_reports.tag('div', table_data, 'block')
         return r
 
@@ -303,7 +304,8 @@ class ArticleDisplayReport(object):
         r = html_reports.tag('p', 'Affiliations:', 'label')
         for item in self.article.affiliations:
             r += html_reports.tag('p', html_reports.html_value(item.xml))
-        r += html_reports.sheet(self.sheet_data.affiliations_sheet_data())
+        text = self.sheet_data.affiliations_sheet_data()
+        r += html_reports.sheet(text)
         return r
 
     @property
@@ -368,8 +370,6 @@ class ArticleValidationReport(object):
         return html_reports.join_texts(r)
 
     def format_row(self, label, status, message):
-        if isinstance(message, unicode):
-            message = message.encode('utf-8')
         r = ''
         cell = ''
         cell += html_reports.tag('td', label, 'td_label')
@@ -499,7 +499,8 @@ class ArticleSheetData(object):
             row = {}
             row['ID'] = t.graphic_parent.id
             row['label/caption'] = t.graphic_parent.label + '/' + t.graphic_parent.caption
-            row['table/graphic'] = t.table + t.graphic_parent.graphic.display('file:///' + path)
+            #row['table/graphic'] = t.table + t.graphic_parent.graphic.display('file:///' + path)
+            row['table/graphic'] = t.table + html_reports.display_href(path, True, True)
             r.append(row)
         return (t_header, ['label/caption', 'table/graphic'], r)
 
@@ -507,19 +508,21 @@ class ArticleSheetData(object):
         t_header = ['href', 'display', 'xml']
         r = []
 
-        for item in self.article.hrefs:
+        for hrefitem in self.article.hrefs:
             row = {}
-            row['href'] = item.src
+            row['href'] = hrefitem.src
             msg = ''
-            if item.is_internal_file:
-                if not os.path.isfile(path + '/' + item.src) and not os.path.isfile(path + '/' + item.src + '.jpg'):
-                    msg = 'ERROR: ' + item.src + ' not found in package'
-                row['display'] = item.display('file:///' + path) + '<p>' + msg + '</p>'
+
+            filename = hrefitem.src
+            if hrefitem.is_internal_file:
+                filename = hrefitem.filename(path)
+                if not os.path.isfile(filename):
+                    msg = 'ERROR: ' + hrefitem.src + ' not found in package'
             else:
-                if not article_utils.url_check(item.src):
-                    msg = 'ERROR: ' + item.src + ' is not working'
-                row['display'] = item.display(item.src) + '<p>' + msg + '</p>'
-            row['xml'] = item.xml
+                if not article_utils.url_check(hrefitem.src, 50):
+                    msg = 'ERROR: ' + hrefitem.src + ' is not working'
+            row['display'] = html_reports.display_href(filename, hrefitem.is_internal_file, hrefitem.is_image) + '<p>' + msg + '</p>'
+            row['xml'] = hrefitem.xml
             r.append(row)
         return (t_header, ['display', 'xml'], r)
 

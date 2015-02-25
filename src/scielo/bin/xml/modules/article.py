@@ -52,24 +52,22 @@ class HRef(object):
 
         self.parent = parent
         self.is_internal_file = True
+        self.is_image = (self.element.tag == 'graphic')
         if element.attrib.get('ext-link-type') is not None or element.tag in ['license', 'ext-link', 'uri', 'related-article']:
             self.is_internal_file = False
 
-    def display(self, path):
+    def filename(self, path):
+        _href = None
         if self.src is not None and self.src != '':
-            _path = path.replace('file:///', '') + '/' + self.src
-            if 'graphic' in self.element.tag:
-                if os.path.isfile(_path):
-                    return '<img src="' + path + '/' + self.src + '"/>'
-                else:
-                    return '<img src="' + self.src + '"/>'
-            else:
-                if os.path.isfile(_path):
-                    return '<a href="' + path + '/' + self.src + '">' + self.src + '</a>'
-                else:
-                    return '<a href="' + self.src + '">' + self.src + '</a>'
-        else:
-            return 'None'
+            if self.is_internal_file:
+                _href = path + '/' + self.src
+
+                if self.is_image:
+                    if _href.endswith('.tiff'):
+                        _href = _href.replace('.tiff', '.jpg')
+                    elif _href.endswith('.tif'):
+                        _href = _href.replace('.tif', '.jpg')
+        return _href
 
 
 class PersonAuthor(object):
@@ -484,8 +482,12 @@ class ArticleXML(object):
             a.id = aff.get('id')
             a.label = aff.findtext('label')
             country = aff.find('country')
-            a.country = country.text
-            a.i_country = country.attrib.get('country')
+            if country is None:
+                a.country = None
+                a.i_country = None
+            else:
+                a.country = country.text
+                a.i_country = country.attrib.get('country')
             a.email = aff.findtext('email')
             a.original = aff.findtext('institution[@content-type="original"]')
             a.norgname = aff.findtext('institution[@content-type="normalized"]')

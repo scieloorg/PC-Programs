@@ -14,7 +14,7 @@ debug = False
 def format_value(content):
     content = xml_utils.strip(content)
     if '&' in content:
-        content = xml_utils.all_ent_to_char(content)
+        content, replace = xml_utils.convert_entities_to_chars(content)
 
     if not isinstance(content, unicode):
         content = content.decode('utf-8')
@@ -65,6 +65,7 @@ class IDFile(object):
             print(data)
             print(e)
             print('-'*80)
+            x
         return s
 
     def format_subfields(self, subf_and_value_list):
@@ -85,6 +86,7 @@ class IDFile(object):
             print(value)
             print(e)
             print('-'*80)
+            x
         return first + value
 
     def tag_value(self, tag, value):
@@ -107,6 +109,7 @@ class IDFile(object):
                     print(value)
                     print(type(s))
                     print(type(value))
+                    x
         return r
 
     def read(self, filename):
@@ -116,8 +119,6 @@ class IDFile(object):
             s = line.replace('\n', '').replace('\r', '')
             if not isinstance(s, unicode):
                 s = s.decode('iso-8859-1')
-            if isinstance(s, unicode):
-                s = s.encode('utf-8')
             if '!ID ' in s:
                 if len(record) > 0:
                     rec_list.append(self.simplify_record(record))
@@ -178,6 +179,7 @@ class IDFile(object):
         except Exception as e:
             print('saving...')
             print(e)
+            x
 
 
 class CISIS(object):

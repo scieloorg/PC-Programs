@@ -345,9 +345,12 @@ def normalize_orgname(orgname, country_name, country_code):
     norm_orgname = None
     msg = []
 
-    norm_country_name, norm_country_code, errors = normalize_country(country_name, country_code)
-    if len(errors) > 0:
-        msg.append(errors)
+    if country_name is None and country_code is None:
+        msg.append('Missing country.')
+    else:
+        norm_country_name, norm_country_code, errors = normalize_country(country_name, country_code)
+        if len(errors) > 0:
+            msg.append(errors)
 
     if not norm_country_name is None:
         norm_country_orgnames = orgname_list.get_names(norm_country_name)
@@ -359,22 +362,26 @@ def normalize_orgname(orgname, country_name, country_code):
                 norm_orgname = similar_orgnames[0]
 
     if norm_orgname is None:
-        orgname_and_country_items = {}
-        similar_orgnames = orgname_list.get_similar_names(orgname)
 
-        if len(similar_orgnames) > 0:
-            orgname_and_country_items = {name:orgname_list.get_code(name, False) for name in similar_orgnames}
+        if orgname is None:
+            msg.append('Missing institution.')
+        else:
+            orgname_and_country_items = {}
+            similar_orgnames = orgname_list.get_similar_names(orgname)
 
-        for name, code in orgname_and_country_items.items():
-            if code == country_code:
-                norm_orgname = name
-                break
+            if len(similar_orgnames) > 0:
+                orgname_and_country_items = {name:orgname_list.get_code(name, False) for name in similar_orgnames}
 
-        if norm_orgname is None:
-            if len(orgname_and_country_items) > 0:
-                msg.append(orgname + ' was not found. Found some similarity: ' + '|'.join([name + '(' + country + ')' for name, country in orgname_and_country_items.items()]))
-            else:
-                msg.append(orgname + ' was not found in the normalized institutions list.')
+            for name, code in orgname_and_country_items.items():
+                if code == country_code:
+                    norm_orgname = name
+                    break
+
+            if norm_orgname is None:
+                if len(orgname_and_country_items) > 0:
+                    msg.append(orgname + ' was not found. Found some similarity: ' + '|'.join([name + '(' + country + ')' for name, country in orgname_and_country_items.items()]))
+                else:
+                    msg.append(orgname + ' was not found in the normalized institutions list.')
     #print('-- normalize_orgname -- resultado')
     #print([orgname, country_name, country_code])
     #print([norm_orgname, norm_country_name, norm_country_code, '\n'.join(msg)])

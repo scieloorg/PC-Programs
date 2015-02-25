@@ -5,6 +5,12 @@ import tempfile
 import files_extractor
 
 
+def write_file(filename, content):
+    if isinstance(content, unicode):
+        content = content.encode('utf-8')
+    open(filename, 'w').write(content)
+
+
 def delete_file_or_folder(path):
     if os.path.isdir(path):
         for item in os.listdir(path):

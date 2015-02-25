@@ -55,7 +55,7 @@ def get_article_contents_validations_report(article, new_name, package_path, rep
     return (f, e, w, sheet_data)
 
 
-def get_report_text(filename):
+def get_report_text(filename, status):
     report = ''
     if os.path.isfile(filename):
         content = open(filename, 'r').read()
@@ -63,30 +63,21 @@ def get_report_text(filename):
         if 'Parse/validation finished' in content and '<!DOCTYPE' in content:
             part1 = content[0:content.find('<!DOCTYPE')]
             part2 = content[content.find('<!DOCTYPE'):]
-            part1 = part1.replace('\n', '<br/>')
 
             l = part1[part1.rfind('Line number:')+len('Line number:'):]
             l = l[0:l.find('Column')]
             l = ''.join([item.strip() for item in l.split()])
             if l.isdigit():
-                l += 1
-                l = str(l) + ':'
+                l = str(int(l) + 1) + ':'
                 if l in part2:
-                    part2 = part2[0:part2.find(l)]
+                    part2 = part2[0:part2.find(l)] + '\n...'
 
-            l = part1[part1.find('Line number:')+len('Line number:'):]
-            l = l[0:l.find('Column')]
-            l = ''.join([item.strip() for item in l.split()])
-            if l.isdigit():
-                l = str(l) + ':'
-                if l in part2:
-                    part2 = part2[part2.find(l):]
-
-            part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>')
+            part1 = part1.replace('\n', '<br/>')
+            part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>').replace('\t', '&nbsp;'*4)
             report = part1 + part2
         elif '</html>' in content:
 
-            report = '<iframe width="100%" height="400px" src="file:///' + filename + '"></iframe>'
+            report = '<iframe width="95%" height="400px" src="file:///' + filename + '"></iframe>'
 
             #content = content[content.find('<body'):]
             #content = content[0:content.rfind('</body>')]
@@ -94,7 +85,7 @@ def get_report_text(filename):
         else:
             report = ''
     if len(report) > 0:
-        report = '<div class="embedded-report"><h5>' + filename + '</h5>' + report + '</div>'
+        report = '<div class="embedded-report-' + status + '"><h5>' + filename + '</h5>' + report + '</div>'
     return report
 
 
@@ -159,7 +150,10 @@ def validate_pkg_items(pkg_items, dtd_files, validate_order, display_all):
 
         articles_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
         articles_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
-        articles_sheets[new_name] = (sheet_data.authors_sheet_data(new_name), sheet_data.sources_sheet_data(new_name))
+        if sheet_data is not None:
+            articles_sheets[new_name] = (sheet_data.authors_sheet_data(new_name), sheet_data.sources_sheet_data(new_name))
+        else:
+            articles_sheets[new_name] = (None, None)
 
     return (articles_stats, articles_reports, articles_sheets)
 
@@ -192,7 +186,7 @@ def get_articles_report_text(articles_reports, articles_stats):
             t = []
             v = []
             for rep in [rep1, rep2]:
-                content = get_report_text(rep)
+                content = get_report_text(rep, html_reports.get_message_style(xml_f, xml_e, xml_w))
                 if len(content) > 0:
                     t.append(os.path.basename(rep))
                     v.append(content)
@@ -202,7 +196,7 @@ def get_articles_report_text(articles_reports, articles_stats):
 
         if data_f + data_e + data_w > 0:
             s = html_reports.statistics_display(data_f, data_e, data_w)
-            validations_text += html_reports.collapsible_block('datarep' + str(index), s + ' - contents validations - ' + os.path.basename(rep3), get_report_text(rep3))
+            validations_text += html_reports.collapsible_block('datarep' + str(index), s + ' - contents validations - ' + os.path.basename(rep3), get_report_text(rep3, html_reports.get_message_style(data_f, data_e, data_w)))
 
     return validations_text
 
@@ -215,13 +209,16 @@ def get_lists_report_text(articles_reports, articles_sheets):
     sources_h = None
     sources_w = None
 
-    for new_name in sorted(articles_reports.keys()):
-        authors_h, authors_w, authors_data = articles_sheets[new_name][0]
-        toc_authors_sheet_data += authors_data
-        sources_h, sources_w, sources_data = articles_sheets[new_name][1]
-        toc_sources_sheet_data += sources_data
-
     lists_text = html_reports.tag('h2', 'Authors and Sources Lists')
+
+    for new_name in sorted(articles_reports.keys()):
+        if not articles_sheets[new_name][0] is None:
+            authors_h, authors_w, authors_data = articles_sheets[new_name][0]
+            toc_authors_sheet_data += authors_data
+
+        if not articles_sheets[new_name][1] is None:
+            sources_h, sources_w, sources_data = articles_sheets[new_name][1]
+            toc_sources_sheet_data += sources_data
 
     authors = html_reports.sheet((authors_h, authors_w, toc_authors_sheet_data))
     lists_text += html_reports.collapsible_block('authors', 'Authors in the package', authors)

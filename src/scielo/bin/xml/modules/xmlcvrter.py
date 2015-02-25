@@ -201,8 +201,7 @@ def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ah
     if old_report_path in content:
         content = html_reports.get_unicode(content)
         content = content.replace(html_reports.get_unicode(old_report_path), html_reports.get_unicode(report_path))
-    if isinstance(content, unicode):
-        content = content.encode('utf-8')
+
     pkg_reports.save_report(filename, ['XML Conversion (XML to Database)', acron_issue_label], content)
     pkg_reports.display_report(filename)
 
