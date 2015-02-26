@@ -411,17 +411,22 @@ def fix_affiliations(affiliations):
     for item in affiliations:
         a = {}
         norm_orgname, norm_country, norm_country_code, norm_state, norm_city, errors = affiliations_services.validate_affiliation(item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
+        if norm_orgname in [item.orgname, item.norgname]:
+            _orgname = norm_orgname
+        else:
+            _orgname = item.norgname if item.norgname is not None else item.orgname
 
-        if norm_orgname is None:
-            norm_orgname = item.norgname if item.norgname is not None else item.orgname
-        if norm_country is None:
-            norm_country = item.country
-        if norm_country_code is None:
-            norm_country_code = item.i_country if item.i_country is not None else norm_country
-        if norm_state is None:
-            norm_state = item.state
-        if norm_city is None:
-            norm_city = item.city
+        _country = item.country if norm_country is None else norm_country
+        _country_code = item.country_code if norm_country_code is None else norm_country_code
+        if _country_code is None:
+            _country_code = item.country
+
+        if norm_city is not None and norm_state is not None:
+            _city = norm_city
+            _state = norm_state
+        else:
+            _city = item.city
+            _state = item.state
 
         a['l'] = item.label
         a['i'] = item.id
@@ -430,11 +435,11 @@ def fix_affiliations(affiliations):
         a['3'] = item.orgdiv3
         a['2'] = item.orgdiv2
         a['1'] = item.orgdiv1
-        a['p'] = norm_country_code
-        a['q'] = norm_country
-        a['c'] = norm_city
-        a['s'] = norm_state
-        a['_'] = norm_orgname
+        a['p'] = _country_code
+        a['q'] = _country
+        a['c'] = _city
+        a['s'] = _state
+        a['_'] = _orgname
         #a['9'] = item['original']
         #self._metadata['170'].append(item['xml'])
         affs.append(a)

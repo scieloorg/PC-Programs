@@ -4,6 +4,7 @@ import shutil
 import tempfile
 
 import xml_utils
+import fs_utils
 
 
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
@@ -26,15 +27,13 @@ def format_parameters(parameters):
 def xml_content_transform(content, xsl_filename):
     f = tempfile.NamedTemporaryFile(delete=False)
     f.close()
-    fp = open(f.name, 'w')
-    fp.write(content)
-    fp.close()
+
+    fs_utils.write_file(f.name, content)
+
     f2 = tempfile.NamedTemporaryFile(delete=False)
     f2.close()
     if xml_transform(f.name, xsl_filename, f2.name):
-        fp = open(f2.name, 'r')
-        content = fp.read()
-        fp.close()
+        content = open(f2.name, 'r').read()
         os.unlink(f2.name)
     if os.path.exists(f.name):
         os.unlink(f.name)

@@ -322,7 +322,9 @@ def normalize_country(country_name, country_code):
             msg.append(country_code + ' is code of ' + '|'.join(code_names))
         else:
             msg.append('No country was found which code is ' + country_code)
-        msg.append('code of ' + country_name + ' is: ' + iso_code)
+
+        if iso_code is not None:
+            msg.append('code of ' + country_name + ' is: ' + iso_code)
 
     if wos_en is not None:
         norm_country_name = wos_en
@@ -413,3 +415,97 @@ def validate_affiliation(orgname, norgname, country_name, country_code, state, c
     #print([norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city, '\n'.join(msg)])
 
     return (norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city, '\n'.join(msg))
+
+
+def remove_sgml_tags(text):
+    text = text.replace('[', '***BREAK***IGNORE[')
+    text = text.replace(']', ']IGNORE***BREAK***')
+    items = text.split('***BREAK***')
+    r = ''
+    for item in items:
+        if item.endswith(']IGNORE') or item.startswith('IGNORE['):
+            r += ''
+        else:
+            r += item
+    return r
+
+
+def wayta_request(text):
+    import urllib
+    import urllib2
+
+    result = None
+    values = {
+                'q': text,
+              }
+    url = 'http://wayta.scielo.org/api/v1/institution'
+    try:
+        data = urllib.urlencode(values)
+        full_url = url + '?' + data
+        print(full_url)
+        response = urllib2.urlopen(full_url, timeout=5)
+        result = response.read()
+    except Exception as e:
+        print(e)
+    return result
+
+
+def format_wayta_results(result):
+    import json
+    r = []
+
+    try:
+        results = json.loads(result)
+        for item in results.get('choices'):
+            if item.get('country', '') != '' and item.get('value', '') != '':
+                r.append(item.get('country') + ' - ' + item.get('value'))
+    except Exception as e:
+        print(e)
+    return r
+
+
+def unicode2cp1252(results):
+    r = []
+    for item in results:
+        text = ''
+        if isinstance(item, unicode):
+            try:
+                text = item.encode('cp1252')
+            except Exception as e:
+                try:
+                    text = item.encode('cp1252', 'xmlcharrefreplace')
+                except Exception as e:
+                    print(e)
+                    print(item)
+        if len(text) > 0:
+            r.append(text)
+    return '\n'.join(r)
+
+
+def normaff_search(text):
+    text = text.replace(' - ', ',')
+    text = text.replace(';', ',')
+    text = remove_sgml_tags(text)
+
+    orgname = text[0:text.rfind(',')].strip()
+    country = text[text.rfind(',')+1:].strip()
+
+    text = orgname + ', ' + country
+    parts = text.split(',')
+    results = []
+    for part in parts:
+        wayta_result = wayta_request(part)
+        result = format_wayta_results(wayta_result)
+        results += result
+
+    global orgname_list
+
+    if orgname_list is None:
+        orgname_list = get_orgnames()
+
+    iso_similar_name, wos_similar_name, code_names = find_country_names(country, None)
+
+    for item in orgname_list.get_names(wos_similar_name):
+        results.append(country + ' - ' + item)
+
+    return sorted(list(set(results)))

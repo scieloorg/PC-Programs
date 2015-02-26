@@ -27,10 +27,10 @@ def register_log(text):
 def replace_mimetypes(content, path):
     r = content
     if 'mimetype="replace' in content:
-        content = content.replace('mimetype="replace', '_BREAKMIME_MIME:')
-        content = content.replace('mime-subtype="replace"', '_BREAKMIME_')
+        content = content.replace('mimetype="replace', '_~BREAK~MIME_MIME:')
+        content = content.replace('mime-subtype="replace"', '_~BREAK~MIME_')
         r = ''
-        for item in content.split('_BREAKMIME_'):
+        for item in content.split('_~BREAK~MIME_'):
             if item.startswith('MIME:'):
                 f = item[5:]
                 f = f[0:f.rfind('"')]
@@ -85,8 +85,8 @@ def get_embedded_images_in_html(html_content):
     #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
     if 'href=&quot;?' in html_content:
         html_content = html_content.replace('href=&quot;?', 'href="?')
-    html_content = html_content.replace('href="?', 'href="?--BREAKFIXHREF--FIXHREF')
-    _items = html_content.split('--BREAKFIXHREF--')
+    html_content = html_content.replace('href="?', 'href="?--~BREAK~FIXHREF--FIXHREF')
+    _items = html_content.split('--~BREAK~FIXHREF--')
     items = [item for item in _items if item.startswith('FIXHREF')]
 
     img_src = []
@@ -123,26 +123,37 @@ def extract_embedded_images(xml_name, content, html_content, html_filename, dest
     return content
 
 
-def get_embedded_tables_in_html(html_content):
+def get_html_tables(html_content):
+    html_content = fix_sgml_tags(html_content)
+    #print(html_content)
+    html_content = fix_tabwrap_end(html_content)
+    #print(html_content)
+
     tables = {}
-    html_content = html_content.replace('[tabwrap', 'BREAK[tabwrap')
-    html_content = html_content.replace('[/tabwrap]', '[/tabwrap]BREAK')
-    for item in html_content.split('BREAK'):
+    html_content = html_content.replace('[tabwrap', '~BREAK~[tabwrap')
+    html_content = html_content.replace('[/tabwrap]', '[/tabwrap]~BREAK~')
+    for item in html_content.split('~BREAK~'):
         if item.startswith('[tabwrap') and item.endswith('[/tabwrap]'):
             table_id = item[item.find('id="')+len('id="'):]
             table_id = table_id[0:table_id.find('"')]
             table = item[item.find('<table'):]
-            table = table[0:table.find('</table>')]
-            tables[table_id] = insert_quotes_to_attributes(remove_sgml_tags(table))
+            table = table[0:table.rfind('</table>')+len('</table>')]
+
+            table = remove_sgml_tags(table)
+            table = ignore_html_tags_and_insert_quotes_to_attributes(table, ['table', 'a', 'img', 'tbody', 'thead', 'th', 'tr', 'td', 'b', 'i'])
+            print(table_id)
+            print(table)
+            x
+            tables[table_id] = table
     return tables
 
 
-def remove_html_tags_from_sgml_tags(html_content):
+def fix_sgml_tags(html_content):
     # [<span style='color:#666699'>/td]
-    html_content = html_content.replace('[', 'BREAK[')
-    html_content = html_content.replace(']', ']BREAK')
+    html_content = html_content.replace('[', '~BREAK~[')
+    html_content = html_content.replace(']', ']~BREAK~')
     new = []
-    for item in html_content.split('BREAK'):
+    for item in html_content.split('~BREAK~'):
         if item.startswith('[') and item.endswith(']') and '<' in item and '>' in item:
             p1 = item.find('<')
             p2 = item.find('>')
@@ -158,44 +169,64 @@ def remove_html_tags_from_sgml_tags(html_content):
 
 
 def remove_sgml_tags(html_content):
-    html_content = html_content.replace('[', 'BREAK[')
-    html_content = html_content.replace(']', ']BREAK')
+    html_content = html_content.replace('[', '~BREAK~[')
+    html_content = html_content.replace(']', ']~BREAK~')
     parts = []
-    for part in html_content.split('BREAK'):
+    for part in html_content.split('~BREAK~'):
         if not part.startswith('[') and not part.endswith(']'):
             parts.append(part)
     return ''.join(parts)
 
 
-def insert_quotes_to_attributes(html_content, html=True):
+def ignore_html_tags_and_insert_quotes_to_attributes(html_content, tags_to_keep, html=True):
     if html:
         c1 = '<'
         c2 = '>'
     else:
         c1 = '['
         c2 = ']'
-    html_content = html_content.replace(c1, 'BREAK' + c1)
-    html_content = html_content.replace(c2, c2 + 'BREAK')
+    html_content = html_content.replace(c1, '~BREAK~' + c1)
+    html_content = html_content.replace(c2, c2 + '~BREAK~')
 
+    html_content = html_content.replace(' nowrap', '')
     parts = []
-    for part in html_content.split('BREAK'):
-        if part.startswith(c1) and part.endswith(c2) and '=' in part:
-            tag = part.replace(c2, ' ' + c2)
-            tag = tag.replace('=', 'BREAK=').replace(' ', ' BREAK')
-            attributes = []
-            for attr in tag.split('BREAK'):
-                if attr.startswith('=') and attr.endswith(' ') and attr[1:2] != '"':
-                    attr = '="' + attr + '" '
-                attributes.append(attr)
-            part = ''.join(attributes).replace(' ' + c2, c2)
+    for part in html_content.split('~BREAK~'):
+        if part.startswith(c1) and part.endswith(c2):
+            tag = part[1:]
+            if tag.startswith('/'):
+                tag = tag[1:-1]
+            else:
+                if ' ' in tag:
+                    tag = tag[0:tag.find(' ')]
+                else:
+                    tag = tag[0:tag.find(c2)]
+
+            if tag in tags_to_keep:
+                if '=' in part:
+                    print('-'*80)
+                    print(part)
+                    open_tag = part.replace(c2, ' ' + c2)
+                    open_tag = open_tag.replace('=', '~BREAK~=')
+                    attributes = []
+                    for attr in open_tag.split('~BREAK~'):
+                        if attr.startswith('='):
+                            if not '"' in attr:
+                                attr = attr.replace('=', '="')
+                                p = attr.rfind(' ')
+                                attr = attr[0:p] + '"' + attr[p:]
+                        attributes.append(attr)
+                    part = ''.join(attributes).replace(' ' + c2, c2)
+                    print(part)
+            else:
+                part = ''
         parts.append(part)
     return ''.join(parts)
 
 
 def fix_tabwrap_end(html_content):
-    html_content = html_content.replace('[tabwrap', 'BREAK[tabwrap')
+    html_content = html_content.replace('[tabwrap', '~BREAK~[tabwrap')
     parts = []
-    for part in html_content.split('BREAK'):
+    for part in html_content.split('~BREAK~'):
         if part.startswith('[tabwrap'):
             p_table = part.find('</table>')
             p_tabwrap = part.find('[/tabwrap]')
@@ -206,22 +237,20 @@ def fix_tabwrap_end(html_content):
     return ''.join(parts)
 
 
-def extract_embedded_tables(xml_name, content, html_content, dest_path):
-    if content.find('</tabwrap>'):
-        html_content = remove_html_tags_from_sgml_tags(html_content)
-        html_content = fix_tabwrap_end(html_content)
-        embedded_tables = get_embedded_tables_in_html(html_content)
+def replace_tables_in_sgmlxml(content, embedded_tables):
+    for table_id, table in embedded_tables.items():
+        p = content.find('<tabwrap id="' + table_id + '"')
+        if p > 0:
+            t = content[p:]
+            p_end = t.find('</table>')
+            if p_end > 0:
+                p_end += len('</table>')
+                t = t[0:p_end]
+                p = t.find('<table')
+                if p > 0:
+                    t = t[p:]
+                    content = content.replace(t, table)
 
-        for table_id, table in embedded_tables.items():
-            p = content.find('<tabwrap id="' + table_id + '"')
-            if p > 0:
-                t = content[p:]
-                p_end = t.find('</table>')
-                if p_end > 0:
-                    p_end += len('</table>')
-                    t = t[0:p_end]
-                    p = t.find('<table')
-                    content = content.replace(content[p:p_end], table)
     return content
 
 
@@ -241,7 +270,9 @@ def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
     register_log('normalize_sgmlxml')
 
     html_content = read_html(html_filename)
-    content = extract_embedded_tables(xml_name, content, html_filename, src_path)
+
+    #embedded_tables = get_html_tables(html_content)
+    #content = replace_tables_in_sgmlxml(content, embedded_tables)
     content = extract_embedded_images(xml_name, content, html_content, html_filename, src_path)
 
     xml = xml_utils.is_xml_well_formed(content)

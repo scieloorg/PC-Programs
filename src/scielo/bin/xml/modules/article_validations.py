@@ -454,9 +454,9 @@ class ArticleContentValidation(object):
                 else:
                     if suggestions[i] != values[i]:
                         if values[i] is None:
-                            r.append((labels[i], 'WARNING', 'it will be completed with ' + suggestions[i] + '.'))
+                            r.append((labels[i], 'WARNING', 'it was suggested ' + suggestions[i] + '.'))
                         else:
-                            r.append((labels[i], 'WARNING', values[i] + ' will be replaced by ' + suggestions[i] + '.'))
+                            r.append((labels[i], 'WARNING', suggestions[i] + ' was suggested instead of ' + values[i] + '.'))
             if len(errors) > 0:
                 r.append(('aff orgname and country', 'WARNING', errors))
         return r
