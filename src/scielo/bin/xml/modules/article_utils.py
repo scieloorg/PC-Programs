@@ -171,5 +171,7 @@ def add_new_value_to_index(dict_key_and_values, key, value, normalize_key=True):
 
 
 def format_date(dates):
+    r = ''
     if dates is not None:
-        return ' '.join([k + ': ' + v for k, v in dates.items() if v is not None])
+        r = ' '.join([k + ': ' + v for k, v in dates.items() if v is not None])
+    return r

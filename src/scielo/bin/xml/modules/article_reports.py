@@ -542,7 +542,11 @@ class ArticleSheetData(object):
                     if item[:-4] in inxml:
                         status = 'found in XML'
                     else:
-                        status = 'WARNING: not found in XML'
+                        if item.endswith('.jpg') and item.replace('.jpg', '.tif') in ' '.join(inxml):
+                            # jpg was converted from a tif
+                            status = ''
+                        else:
+                            status = 'WARNING: not found in XML'
             row['status'] = status
             r.append(row)
         return (t_header, ['files', 'status'], r)

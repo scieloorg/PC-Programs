@@ -160,9 +160,8 @@ def restore_xml_file(xml_filename, temp_filename):
     shutil.rmtree(os.path.dirname(temp_filename))
 
 
-def strip(content):
-    r = content.split()
-    return ' '.join(r)
+def remove_unrequired_characters(content):
+    return ' '.join(content.split())
 
 
 def node_text(node):
@@ -219,7 +218,10 @@ def named_ent_to_char(content):
             if ENTITIES_TABLE is not None:
                 for ent in entities:
                     new = ENTITIES_TABLE.get(ent, ent)
-
+                    if not isinstance(new, unicode):
+                        new = new.decode('utf-8')
+                    if not isinstance(ent, unicode):
+                        ent = ent.decode('utf-8')
                     print(type(new))
                     print(type(ent))
                     print(new)
@@ -365,35 +367,32 @@ def load_xml(content):
 
 
 def pretty_print(content):
-    content = ' '.join(content.split())
-    content = content.strip()
-
     pretty = None
-
     tag = None
-
     if not content.startswith('<?xml'):
         if not is_xml_well_formed(content):
             tag = 'root'
             content = '<' + tag + '>' + content + '</' + tag + '>'
 
-    import xml.dom.minidom
-    try:
-        if isinstance(content, unicode):
-            content = content.encode('utf-8')
-        doc = xml.dom.minidom.parseString(content)
-        pretty = doc.toprettyxml()
-        pretty = pretty.replace(' \n\t', '')
+    if is_xml_well_formed(content):
+        content = remove_unrequired_characters(content)
+        import xml.dom.minidom
+        try:
+            if isinstance(content, unicode):
+                content = content.encode('utf-8')
+            doc = xml.dom.minidom.parseString(content)
+            pretty = doc.toprettyxml()
+            pretty = pretty.replace(' \n\t', '')
 
-        if not '<?xml' in content:
-            pretty = pretty[pretty.find('?>\n'):]
-            pretty = pretty[pretty.find('<'):]
+            if not '<?xml' in content:
+                pretty = pretty[pretty.find('?>\n'):]
+                pretty = pretty[pretty.find('<'):]
 
-    except Exception as e:
-        print('ERROR in pretty')
-        print(e)
-        open('./pretty_print.xml', 'w').write(content)
-        x
+        except Exception as e:
+            print('ERROR in pretty')
+            print(e)
+            open('./pretty_print.xml', 'w').write(content)
+            x
 
     if pretty is None:
         pretty = content

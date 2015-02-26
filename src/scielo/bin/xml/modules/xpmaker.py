@@ -577,6 +577,9 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
 
     pack_xml_file(content, version, doc_files_info.new_xml_filename, (doc is None))
 
+    if isinstance(replaced_entities_report, unicode):
+        replaced_entities_report = replaced_entities_report.encode('utf-8')
+
     open(doc_files_info.err_filename, 'w').write(replaced_entities_report + packed_files_report)
 
     print(' ... created')

@@ -126,6 +126,10 @@ class Article2ArticleRecords(object):
             new['z'] = item.suffix
             new['p'] = item.prefix
             new['r'] = normalize_role(item.role)
+            #if len(item.xref) == 0 and len(self.article.affiliations) > 0 and len(self.article.contrib_names) == 1:
+            #    new['1'] = ' '.join([aff.id for aff in self.article.affiliations if aff.id is not None])
+            #else:
+            #    new['1'] = ' '.join(item.xref)
             new['1'] = ' '.join(item.xref)
             new['k'] = item.contrib_id
             self._metadata['10'].append(new)

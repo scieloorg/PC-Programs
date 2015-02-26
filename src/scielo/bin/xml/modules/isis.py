@@ -12,7 +12,7 @@ debug = False
 
 
 def format_value(content):
-    content = xml_utils.strip(content)
+    content = xml_utils.remove_unrequired_characters(content)
     if '&' in content:
         content, replace = xml_utils.convert_entities_to_chars(content)
 

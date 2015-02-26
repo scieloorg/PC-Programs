@@ -328,5 +328,4 @@ def display_href(href, is_internal, is_image):
             r = '<img src="' + _href + '"/>'
         else:
             r = '<a target="_blank" href="' + _href + '">' + href + '</a>'
-    else:
-        return r
+    return r

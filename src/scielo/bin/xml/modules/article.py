@@ -913,7 +913,8 @@ class Article(ArticleXML):
 
     @property
     def issue_label(self):
-        return format_issue_label(self.issue_pub_date.get('year', ''), self.volume, self.number, self.volume_suppl, self.number_suppl)
+        year = self.issue_pub_date.get('year', '') if self.issue_pub_date is not None else ''
+        return format_issue_label(year, self.volume, self.number, self.volume_suppl, self.number_suppl)
 
     @property
     def issue_pub_dateiso(self):
