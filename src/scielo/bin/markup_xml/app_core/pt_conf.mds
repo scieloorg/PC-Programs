@@ -107,3 +107,4 @@ msg_help_doc_fpage_seq,"Obrigatório completar quando há um mesmo valor de primei
 msg_help_doc_ahpdate,"Obrigatório completar quando é um artigo ahead of print e quando este artigo foi um ahead of print, ou seja quando ele for incluido em um fascículo regular. Usar data em formato YYYYMMDD."
 msg_help_doc_ahppid,"Este campo é preenchido com o identificador do ahead of print. Esta informação será preenchida pela equipe SciELO"
 msg_help_doc_artdate,"Obrigatório completar com a data YYYYMMDD quando for um artigo rolling pass. Rolling pass é um modelo publicação onde o periódico publica seus artigos num volume único a medida em que estes ficam prontos."
+msg_mark_references,"Marque as referências antes de marcar o texto"
