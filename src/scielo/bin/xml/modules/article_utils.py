@@ -6,9 +6,9 @@ import urllib2
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 
 
-def url_check(url):
+def url_check(url, _timeout=30):
     try:
-        r = urllib2.urlopen(url, timeout=30)
+        r = urllib2.urlopen(url, timeout=_timeout)
     except:
         r = None
     return (r is not None)
@@ -40,11 +40,10 @@ def doi_pid(doi):
     pid = None
 
     if doi is not None:
-        
         import json
 
         try:
-            f = urllib2.urlopen('http://dx.doi.org/' + doi, timeout=60)
+            f = urllib2.urlopen('http://dx.doi.org/' + doi, timeout=1)
             url = f.geturl()
 
             if 'scielo.php?script=sci_arttext&amp;pid=' in url:
@@ -172,5 +171,7 @@ def add_new_value_to_index(dict_key_and_values, key, value, normalize_key=True):
 
 
 def format_date(dates):
+    r = ''
     if dates is not None:
-        return ' '.join([k + ': ' + v for k, v in dates.items() if v is not None])
+        r = ' '.join([k + ': ' + v for k, v in dates.items() if v is not None])
+    return r

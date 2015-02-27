@@ -1,4 +1,52 @@
 # coding=utf-8
+DOCTOPIC = {
+                'research-article': 'oa',
+                'editorial': 'ed',
+                'abstract': 'ab',
+                'announcement': 'an',
+                'article-commentary': 'co',
+                'case-report': 'cr',
+                'letter': 'le',
+                'review-article': 'ra',
+                'rapid-communication': 'sc',
+                'addendum': 'zz',
+                'book-review': 'rc',
+                'books-received': 'zz',
+                'brief-report': 'rn',
+                'calendar': 'zz',
+                'clinical-trial': 'ct',
+                'collection': 'zz',
+                'correction': 'er',
+                'discussion': 'em',
+                'dissertation': 'em',
+                'editorial-material': 'em',
+                'in-brief': 'pr',
+                'introduction': 'em',
+                'meeting-report': 'zz',
+                'news': 'zz',
+                'obituary': 'zz',
+                'oration': 'zz',
+                'partial-retraction': 're',
+                'product-review': 'rc',
+                'reply': 'zz',
+                'reprint': 'zz',
+                'retraction': 're',
+                'translation': 'zz',
+                'other': 'zz',
+}
+
+ROLE = {
+    'author': 'ND',
+    'editor': 'ED',
+    'assignee': 'assignee',
+    'compiler': 'compiler',
+    'director': 'director',
+    'guest-editor': 'guest-editor',
+    'inventor': 'inventor',
+    'transed': 'transed',
+    'translator': 'TR',    
+}
+
 
 PUBLICATION_TYPE = []
 PUBLICATION_TYPE.append('journal')

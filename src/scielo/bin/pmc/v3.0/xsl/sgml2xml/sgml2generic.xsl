@@ -658,9 +658,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:if test="count(normaff)=1">
 						<xsl:apply-templates select="normaff"/>
 					</xsl:if>
+					<xsl:if test="count(afftrans)=1">
+						<xsl:apply-templates select="afftrans"/>
+					</xsl:if>
 				</contrib-group>
 				<xsl:if test="count(normaff)&gt;1">
 					<xsl:apply-templates select="normaff"/>
+				</xsl:if>
+				<xsl:if test="count(afftrans)&gt;1">
+					<xsl:apply-templates select="afftrans"/>
 				</xsl:if>
 			</xsl:when>
 			<xsl:otherwise>
@@ -859,7 +865,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="@*[name()!='rid']"/>
 			<xsl:apply-templates select="."/>
 			<xsl:apply-templates select=".//xref|text()"/>
-			<xsl:if test="not(.//xref) and count(../..//normaff)+count(../..//aff)=1">
+			<xsl:if test="not(.//xref) and count(../..//afftrans)+count(../..//normaff)+count(../..//aff)=1">
 				<xref ref-type="aff" rid="aff1"/>
 			</xsl:if>
 		</contrib>
@@ -897,7 +903,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="aff|normaff" mode="label">
+	<xsl:template match="aff|normaff|afftrans" mode="label">
 		<xsl:choose>
 			<xsl:when test="normalize-space(.//label//text())=''">
 				<!-- nao gerar label -->
@@ -905,7 +911,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:otherwise><xsl:apply-templates select="label"></xsl:apply-templates></xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="aff | normaff">
+	<xsl:template match="aff | normaff | afftrans">
 		<xsl:variable name="parentid"></xsl:variable>
 		
 		<aff>
@@ -3425,9 +3431,17 @@ et al.</copyright-statement>
 	</xsl:template>
 	
 	<xsl:template match="award" mode="front-funding-group">
+		<!-- formato que pareia orgname e numero
 		<xsl:apply-templates select=".//fundsrc" mode="award-group">
 			<xsl:with-param name="contract" select=".//contract"/>
 		</xsl:apply-templates>
+		-->
+		<!-- agrupa todos orgnames + numero -->
+		<award-group>
+			<xsl:attribute name="award-type">contract</xsl:attribute>
+			<xsl:apply-templates select=".//fundsrc" mode="front-funding-group"/>
+			<xsl:apply-templates select=".//contract" mode="front-funding-group"/>
+		</award-group>
 	</xsl:template>
 	
 	<xsl:template match="report//rsponsor | funding//fundsrc" mode="award-group">

@@ -5,6 +5,7 @@ acitat;Identifica una referencia bibliográfica
 acontrib;Agrupa los elementos de contribución
 ack;Agrupa los elementos de agradecimientos
 aff;Identifica la afiliación del autor
+afftrans;Identifica en subdoc la afiliación del autor
 aiserial;Agrupa los elementos de seriada
 amonog;Agrupa los elementos de monografía
 anonym;Identifica autoría anónima

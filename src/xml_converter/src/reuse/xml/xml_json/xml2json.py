@@ -157,3 +157,4 @@ class XML2JSON:
             if isinstance(value, unicode):
                 value = value.encode(enc)
         return value
+

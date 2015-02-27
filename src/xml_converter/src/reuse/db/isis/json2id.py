@@ -229,3 +229,4 @@ def u_encode(u, encoding):
             except Exception as e:
                 r = u.encode(encoding, 'replace')
     return r
+

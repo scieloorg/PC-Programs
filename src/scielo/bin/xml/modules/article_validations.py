@@ -1,7 +1,5 @@
 # coding=utf-8
 
-from isis_models import DOCTOPIC
-
 import attributes
 import article_utils
 
@@ -71,30 +69,68 @@ def display_attributes(attributes):
     return '; '.join(r)
 
 
-def invalid_characters_in_value(label, value, invalid_characters, error_or_warning):
+def invalid_terms_in_value(label, value, invalid_terms, error_or_warning):
     r = True
-    for c in value:
-        if c in invalid_characters:
+    invalid = ''
+    b = value.decode('utf-8') if not isinstance(value, unicode) else value
+
+    for term in invalid_terms:
+        a = term.decode('utf-8') if not isinstance(term, unicode) else term
+
+        if term.upper() in value.upper() or term in value or a in b:
             r = False
+            invalid = term
             break
     if not r:
-        return (label, error_or_warning, 'Invalid characteres (' + ';'.join(invalid_characters) + ') in ' + label + ': ' + value)
+        return (label, error_or_warning, 'Invalid character/word (' + invalid + ') in ' + label + ': ' + value)
     else:
         return (label, 'OK', value)
 
 
-def validate_name(label, value, invalid_characters):
+def validate_name(label, value, invalid_terms):
     r = []
     result = required(label, value, 'WARNING')
     label, status, msg = result
     if status == 'OK':
-        result = invalid_characters_in_value(label, value, invalid_characters, 'WARNING')
+        result = invalid_terms_in_value(label, value, invalid_terms, 'WARNING')
     r.append(result)
     return r
 
 
+def validate_surname(label, value):
+    result = []
+    reject = []
+    suffix_list = [u'Nieto', u'Sobrino', u'Hijo', u'Neto', u'Sobrinho', u'Filho', u'Júnior', u'JÚNIOR', u'Junior', u'Senior', u'Sr', u'Jr']
+    r = []
+    label, status, msg = required(label, value, 'ERROR')
+    if status == 'OK':
+
+        parts = value.split(' ')
+        for i in range(0, len(parts)-2):
+            if not parts[i][0:1] == parts[i][0:1].lower():
+                reject.append(parts[i])
+        u = parts[len(parts)-1]
+
+        suffix = ''
+        if u in suffix_list:
+            reject.append(parts[len(parts)-1])
+            suffix = parts[len(parts)-1]
+
+        if len(reject) > 0:
+            status = 'WARNING'
+            msg = 'Invalid terms (' + ','.join(reject) + ') in ' + value + '. '
+            if len(suffix) > 0:
+                msg += suffix + ' must be identified as <suffix>' + suffix + '</suffix>.'
+            r.append((label, status, msg))
+
+    if status == 'OK':
+        msg = value
+        r.append((label, status, msg))
+    return r
+
+
 def validate_contrib_names(author, affiliations=[]):
-    results = validate_name('surname', author.surname, [' ', '_']) + validate_name('given-names', author.fname, ['_'])
+    results = validate_surname('surname', author.surname) + validate_name('given-names', author.fname, ['_'])
     if len(affiliations) > 0:
         aff_ids = [aff.id for aff in affiliations if aff.id is not None]
         if len(author.xref) == 0:
@@ -112,13 +148,58 @@ class ArticleContentValidation(object):
         self.article = article
         self.validate_order = validate_order
 
+    def normalize_validations(self, validations_result_list):
+        r = []
+        if isinstance(validations_result_list, list):
+            for item in validations_result_list:
+                r += self.normalize_validations(item)
+        else:
+            r.append(validations_result_list)
+        return r
+
+    @property
+    def validations(self):
+        items = [self.journal_title,
+                    self.publisher_name,
+                    self.journal_id,
+                    self.journal_id_nlm_ta,
+                    self.journal_issns,
+                    self.issue_label,
+                    self.language,
+                    self.article_type,
+                    self.article_date_types,
+                    self.toc_section,
+                    self.order,
+                    self.doi,
+                    self.pagination,
+                    self.total_of_pages,
+                    self.total_of_equations,
+                    self.total_of_tables,
+                    self.total_of_figures,
+                    self.total_of_references,
+                    self.titles,
+                    self.contrib_names,
+                    self.contrib_collabs,
+                    self.affiliations,
+                    self.funding,
+                    self.license_text,
+                    self.license_url,
+                    self.license_type,
+                    self.history,
+                    self.abstracts,
+                    self.keywords,
+                    self.validate_xref_reftype,
+                    self.missing_xref_list
+                ]
+        return self.normalize_validations(items)
+
     @property
     def dtd_version(self):
         return expected_values('@dtd-version', self.article.dtd_version, ['3.0', '1.0', 'j1.0'])
 
     @property
     def article_type(self):
-        return expected_values('@article-type', self.article.article_type, DOCTOPIC.keys())
+        return expected_values('@article-type', self.article.article_type, attributes.DOCTOPIC.keys(), 'FATAL ')
 
     @property
     def language(self):
@@ -199,8 +280,10 @@ class ArticleContentValidation(object):
             else:
                 if item.language is None:
                     r.append(('title language', 'ERROR', 'Missing language for ' + item.title))
-                if item.title is None:
-                    r.append(('title', 'ERROR', 'Missing title for ' + item.title))
+                elif item.title is None:
+                    r.append(('title', 'ERROR', 'Missing title for ' + item.language))
+                else:
+                    r.append('title', 'ERROR', 'Missing titles')
         return r
 
     @property
@@ -223,15 +306,13 @@ class ArticleContentValidation(object):
         def valid(order, status):
             r = ('OK', order)
             if order is None:
-                r = (status, 'Missing order')
+                r = (status, 'Missing order. Expected number 1 to 99999.')
             else:
                 if order.isdigit():
-                    if len(order) != 5:
-                        r = (status, order + ': Invalid format of order. Expected 99999.')
                     if int(order) < 1 or int(order) > 99999:
                         r = (status, order + ': Invalid format of order. Expected number 1 to 99999.')
                 else:
-                    r = (status, order + ':Invalid format of order. Expected 99999.')
+                    r = (status, order + ': Invalid format of order. Expected number 1 to 99999.')
             return r
         if self.validate_order:
             status = 'FATAL ERROR'
@@ -242,14 +323,18 @@ class ArticleContentValidation(object):
 
     @property
     def article_id_other(self):
-        return display_value('article-id (other)', self.article.article_id_other)
+        r = ('article-id (other)', 'OK', self.article.article_id_other)
+        if self.article.fpage is not None:
+            if self.article.fpage == '00' or not self.article.fpage.isdigit():
+                r = ('article-id (other)', 'FATAL ERROR', 'article-id[@pub-id-type="other"] is required if there is no fpage > 0 or fpage is not number.')
+        return r
 
     @property
     def issue_label(self):
         if not self.article.volume and not self.article.number:
-            return 'ERROR: Required one of volume and/or number'
+            return ('issue label', 'ERROR', 'Required one of volume and/or number')
         else:
-            return self.volume + self.number
+            return [self.volume, self.number]
 
     @property
     def volume(self):
@@ -335,34 +420,45 @@ class ArticleContentValidation(object):
         return display_value('ack xml', self.article.ack_xml)
 
     @property
-    def fpage(self):
-        return conditional_required('fpage', self.article.fpage)
-
-    @property
-    def fpage_seq(self):
-        return conditional_required('fpage/@seq', self.article.fpage_seq)
-
-    @property
-    def lpage(self):
-        return display_value('lpage', self.article.lpage)
-
-    @property
-    def elocation_id(self):
-        return conditional_required('elocation-id', self.article.elocation_id)
+    def pagination(self):
+        r = ('fpage', 'OK', self.article.fpage)
+        if self.article.fpage is None:
+            r = required('elocation-id', self.article.elocation_id, 'ERROR')
+        return r
 
     @property
     def affiliations(self):
+        import affiliations_services
+
         r = []
+        labels = ['institution[@content-type="normalized"]', 'country', 'country/@country', 'state', 'city']
         for aff in self.article.affiliations:
-            r.append(('aff xml', 'OK', aff.xml))
+            text = aff.original if aff.original is not None else aff.xml
+            r.append(('aff xml', 'INFO', aff.xml))
             r.append(required('aff id', aff.id, 'FATAL ERROR'))
             r.append(required('aff original', aff.original, 'ERROR'))
-            label, status, msg = required('aff normalized', aff.norgname, 'ERROR')
-            if status == 'ERROR':
-                msg += '. Please, ask to scielo@scielo.org or check http://wayta.scielo.org/ (trial version) to know how to normalize the name of this institution.'
-            r.append((label, status, msg))
-            r.append(required('aff orgname', aff.orgname, 'ERROR'))
-            r.append(required('aff country', aff.country, 'FATAL ERROR'))
+
+            norgname, ncountry, icountry, state, city, errors = affiliations_services.validate_affiliation(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+            suggestions = [norgname, ncountry, icountry, state, city]
+            values = [aff.norgname, aff.country, aff.i_country, aff.state, aff.city]
+
+            if aff.orgname is None and aff.norgname is None and norgname is None:
+                r.append(('institution[@content-type="normalized"] or institution[@content-type="orgname"]', 'FATAL ERROR', 'Required'))
+            if aff.country is None and aff.i_country is None and ncountry is None and icountry is None:
+                r.append(('country or country/@country', 'FATAL ERROR', 'Required'))
+
+            for i in range(0, len(labels)):
+                if suggestions[i] is None:
+                    if values[i] is not None:
+                        r.append((labels[i], 'WARNING', values[i] + ' was not found in the normalized ' + labels[i] + ' list.'))
+                else:
+                    if suggestions[i] != values[i]:
+                        if values[i] is None:
+                            r.append((labels[i], 'WARNING', 'it was suggested ' + suggestions[i] + '.'))
+                        else:
+                            r.append((labels[i], 'WARNING', suggestions[i] + ' was suggested instead of ' + values[i] + '.'))
+            if len(errors) > 0:
+                r.append(('aff orgname and country', 'WARNING', errors))
         return r
 
     @property
@@ -458,7 +554,7 @@ class ArticleContentValidation(object):
     def references(self):
         r = []
         for ref in self.article.references:
-            r.append(ReferenceContentValidation(ref))
+            r.append((ref, ReferenceContentValidation(ref).evaluate()))
         return r
 
     @property
@@ -516,14 +612,16 @@ class ArticleContentValidation(object):
         return display_value('previous_pid', self.article.previous_pid)
 
     @property
-    def xref_rids(self):
+    def validate_xref_reftype(self):
         message = []
-        types = {'bibr': 'ref', 'table': 'table-wrap'}
+        types = {'bibr': 'ref', 'table': 'table-wrap', 'author-notes': 'fn', 'contrib': 'fn', 'other': None, 'statement': 'fn'}
         id_and_tag = {node.attrib.get('id'):node.tag for node in self.article.elements_which_has_id_attribute if node.attrib.get('id') is not None}
-        #aff;app;author-notes;bibr;boxed-text;chem;contrib;corresp;disp-formula;fig;fn;kwd;list;other;plate;scheme;sec;statement;supplementary-material;table
+
         for xref in self.article.xref_nodes:
             tag = id_and_tag.get(xref['rid'])
-            if tag == xref['ref-type']:
+            if tag is None:
+                valid = True
+            elif tag == xref['ref-type']:
                 valid = True
             elif tag == types.get(xref['ref-type']):
                 valid = True
@@ -531,6 +629,21 @@ class ArticleContentValidation(object):
                 valid = False
             if not valid:
                 message.append(('xref/@rid', 'ERROR', xref['rid'] + '(' + xref['ref-type'] + ')' + ': invalid value of @rid for ' + xref['xml']))
+        return message
+
+    @property
+    def missing_xref_list(self):
+        alert_tags = ['fig', 'table-wrap', 'ref', ]
+        rid_list = [node['rid'] for node in self.article.xref_nodes]
+        message = []
+        for node in self.article.elements_which_has_id_attribute:
+            _id = node.attrib.get('id')
+            if _id is None:
+                message.append((node.tag, 'ERROR', 'Missing @id'))
+            else:
+                if not _id in rid_list:
+                    if node.tag in alert_tags:
+                        message.append((node.tag, 'ERROR', 'Missing @rid=' + _id))
         return message
 
 

@@ -130,7 +130,6 @@ class JSON_Citations:
 
         self.suggested_doctopic_order = [30, 18, 51, 53, 37, 150, 58, 95]
         self.suggested_doctopic_order = [ str(i) for i in self.suggested_doctopic_order ]
-        
         self.suggested_doctopic = {}
         self.suggested_doctopic['30'] = 'journal'
         self.suggested_doctopic['18'] = 'book'
@@ -140,14 +139,11 @@ class JSON_Citations:
         self.suggested_doctopic['58'] = 'report'
         self.suggested_doctopic['95'] = 'software'
         self.suggested_doctopic['37'] = 'web'
-        
         self._labels = {}
         self._labels['10'] = 'analytic authors'
         self._labels['11'] = 'corporative analytic authors'
-        
         self._labels['16'] = 'monographic authors'
         self._labels['17'] = 'corporative monographic authors'
-
         self._labels['12'] = 'chapter or article title'
         self._labels['14'] = 'pages'
         self._labels['30'] = 'journal title'
@@ -167,7 +163,6 @@ class JSON_Citations:
         self._labels['109'] = 'cited date'
         self._labels['37'] = 'URL'
         self._labels['authors'] = 'authors'
-        
 
 
     def return_doctopic(self, citation):
@@ -601,10 +596,10 @@ class JSON_Article:
         """
         Normalize the json structure for issue record
         """
-        issue = self.json_data.get['f'].get('32')
+        issue = self.json_data['f'].get('32')
         if not issue is None:
             if issue[-2:] == 'pr':
-                self.json_data.get['f']['32'] = issue[0:-2]
+                self.json_data['f']['32'] = issue[0:-2]
                 self.json_data['f']['41'] = 'pr'
 
         self.json_data['f']['35'] = issn_id
@@ -820,25 +815,47 @@ class JSON_Article:
         Normalize the json structure for abstracts: 83
         """
         _lang = self.json_data['f']['40']
+        _langs = []
+        _langs.append(_lang)
+
+        if '601' in self.json_data['f'].keys():
+            if len(self.json_data['f']['601']) == 1:
+                self.json_data['f']['601'] = [self.json_data['f']['601']]
+            print(self.json_data['f']['601'])
+            for item in self.json_data['f']['601']:
+                print(item)
+                item = item.get('_', '')
+                _langs.append(item)
+
         abstracts = return_multval(self.json_data['f'], '83')
         norm_abstracts = []
+        index = 0
         for t in abstracts:
             if type(t) == type({}):
                 if not 'l' in t.keys():
-                    t['l'] = _lang
+                    t['l'] = _langs[index]
+                    index += 1
                 norm_abstracts.append(t)
             elif type(t) == type([]):
                 for t1 in t:
                     if type(t1) == type({}):
                         if not 'l' in t1.keys():
-                            t1['l'] = _lang
+                            t1['l'] = _langs[index]
+                            index += 1
                         norm_abstracts.append(t1)
-
-
         if len(norm_abstracts) == 1:
             self.json_data['f']['83'] = norm_abstracts[0]
         elif len(norm_abstracts) > 1:
-            self.json_data['f']['83'] = norm_abstracts
+            abs = []
+            for a in norm_abstracts:
+                v = a.get('a', '')
+                l = a.get('l', '')
+                if '&#' in v and not l in ['en', 'es', 'pt']:
+                    if len(v) > 1000:
+                        v = v[0:1000]
+                        a['a'] = v[0:v.rfind(';')+1] + '...'
+                abs.append(a)
+            self.json_data['f']['83'] = abs
 
     def normalize_illustrative_materials(self):
         """

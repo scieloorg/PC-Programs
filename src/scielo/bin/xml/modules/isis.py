@@ -5,35 +5,21 @@ import os
 from tempfile import mkdtemp, NamedTemporaryFile
 
 from article_utils import u_encode
-from xml_utils import strip
+import xml_utils
 
 
 debug = False
 
 
-def format_value(value):
-    r = value
-    try:
-        r = strip(value)
-        if debug:
-            if '&' in r:
-                print(type(r))
-                print(r)
-                if isinstance(r, unicode):
-                    s = r.encode('utf-8')
-                    print(s)
-                    u = s.decode('utf-8')
-                    print(u)
-        if not isinstance(r, unicode):
-            r = r.decode('utf-8')
-    except Exception as e:
-        print('-'*10)
-        print('format_value')
-        print(type(value))
-        print(value)
-        print(r)
-        print(e)
-    return r
+def format_value(content):
+    content = xml_utils.remove_unrequired_characters(content)
+    if '&' in content:
+        content, replace = xml_utils.convert_entities_to_chars(content)
+
+    if not isinstance(content, unicode):
+        content = content.decode('utf-8')
+
+    return u_encode(content, 'iso-8859-1')
 
 
 class IDFile(object):
@@ -79,6 +65,7 @@ class IDFile(object):
             print(data)
             print(e)
             print('-'*80)
+            x
         return s
 
     def format_subfields(self, subf_and_value_list):
@@ -99,6 +86,7 @@ class IDFile(object):
             print(value)
             print(e)
             print('-'*80)
+            x
         return first + value
 
     def tag_value(self, tag, value):
@@ -121,6 +109,7 @@ class IDFile(object):
                     print(value)
                     print(type(s))
                     print(type(value))
+                    x
         return r
 
     def read(self, filename):
@@ -185,20 +174,12 @@ class IDFile(object):
             os.makedirs(path)
         content = self._format_file(records)
 
-        debug = False
-        if debug:
-            if '&' in content:
-                print(type(content))
-                print(content[content.find('083'):][0:400])
-        if not isinstance(content, unicode):
-            content = content.decode('utf-8')
-
-        iso = u_encode(content, 'iso-8859-1')
         try:
-            open(filename, 'w').write(iso)
+            open(filename, 'w').write(content)
         except Exception as e:
             print('saving...')
             print(e)
+            x
 
 
 class CISIS(object):
