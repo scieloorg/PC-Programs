@@ -107,3 +107,4 @@ msg_help_doc_fpage_seq,"Obligatorio completar cuando hay un mismo valor de prime
 msg_help_doc_ahpdate,"Obligatorio completar cuando es un artículo ahead of print y cuando este artículo ha sido un ahead of print, o sea, cuando el artículo es incluido en un facículo regular. Usar fecha en formato YYYYMMDD."
 msg_help_doc_ahppid,"Obligatorio completar cuando es un artículo que fue ahead of print con PID do ahead of print"
 msg_help_doc_artdate,"Obligatorio completar con fecha de publicación del artículo YYYYMMDD cuando es un artículo rolling pass. Rolling pass es una modalidad de publicación donde la revista publica sus artículo en un volume único en la medida en que los artículos están listos."
+msg_mark_references,"Identifique las refencias antes de marcar el texto"

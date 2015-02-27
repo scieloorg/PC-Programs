@@ -107,3 +107,4 @@ msg_help_doc_fpage_seq,"Mandatory fill it in if there is the same value for page
 msg_help_doc_ahpdate,"Mandatory fill it in if the article is an ahead of print or if the article was ahead of print. Use YYYYMMDD."
 msg_help_doc_ahppid,"Mandatory fill it in, if the article was ahead of print, with the ahead of print PID "
 msg_help_doc_artdate,"Mandatory fill it in with the article publication date (YYYYMMDD) if the article is rolling pass"
+msg_mark_references,"Identify the references before identifying the text"

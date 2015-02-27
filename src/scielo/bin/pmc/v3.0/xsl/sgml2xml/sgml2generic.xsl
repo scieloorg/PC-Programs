@@ -1318,18 +1318,30 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="abstract" mode="trans">
 		<trans-abstract xml:lang="{@language}">
-			<p>
-				<xsl:apply-templates/>
-			</p>
+			<xsl:choose>
+				<xsl:when test="sectitle">
+					<xsl:apply-templates select="*|text()"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<p>
+						<xsl:apply-templates select="*|text()"/>
+					</p>
+				</xsl:otherwise>
+			</xsl:choose>
 		</trans-abstract>
 	</xsl:template>
 	<xsl:template match="abstract">
 		<xsl:param name="language"/>
-		<abstract>
-			<p>
-				<xsl:apply-templates/>
-			</p>
-		</abstract>
+		<xsl:choose>
+			<xsl:when test="sectitle">
+				<xsl:apply-templates select="*|text()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<p>
+					<xsl:apply-templates select="*|text()"/>
+				</p>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="xmlabstr" mode="trans">
 		<trans-abstract xml:lang="{@language}">
@@ -1359,7 +1371,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:when test="@language"><xsl:attribute name="xml:lang"><xsl:value-of select="@language"/></xsl:attribute></xsl:when>
 				<xsl:when test="$language!=''"><xsl:attribute name="xml:lang"><xsl:value-of select="$language"/></xsl:attribute></xsl:when>
 			</xsl:choose>
-			<xsl:apply-templates select="kwd"/>
+			<xsl:apply-templates select="sectitle|kwd"/>
 		</kwd-group>
 	</xsl:template>
 	
@@ -1561,6 +1573,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="*[@standard] | refs">
 		<ref-list>
 			<xsl:choose>
+				<xsl:when test="sectitle">
+					<xsl:apply-templates select="sectitle"/>
+				</xsl:when>
 				<xsl:when test="contains(text(),'Ref')">
 					<title>
 						<xsl:value-of select="text()"/>

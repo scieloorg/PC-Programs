@@ -31,6 +31,7 @@ abnt6023
 acitat;#FALSE#;#TRUE#
 
 abstract
+sectitle;#FALSE#;#FALSE#
 
 accepted
 
@@ -841,6 +842,7 @@ subtitle;#FALSE#;#FALSE#
 tp;#FALSE#;#FALSE#
 
 xmlabstr
+sectitle;#FALSE#;#FALSE#
 sec;#FALSE#;#TRUE#
 p;#FALSE#;#TRUE#
 
@@ -891,6 +893,7 @@ xmlbody;#TRUE#;#FALSE#
 *kwdgrp
 
 kwdgrp
+sectitle;#FALSE#;#FALSE#
 kwd;#FALSE#;#TRUE#
 
 doctitle
@@ -951,6 +954,7 @@ kwd
 fundsrc
 
 refs
+sectitle;#FALSE#;#FALSE#
 ref;#FALSE#;#TRUE#
 
 ref
