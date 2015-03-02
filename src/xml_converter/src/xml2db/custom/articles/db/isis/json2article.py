@@ -12,6 +12,8 @@ from xml2db.box_folder_document import Section, TOC
 from xml2db.custom.articles.models.journal_issue_article import Journal, JournalIssue, Article, JournalsList, JournalIssuesList 
 #from models.json_functions import JSON_Values, JSON_Dates
 
+from xml2db.custom.articles.db.isis import affiliations_services
+
 
 def normalized_issue_id(json):
     def format(json, key):
@@ -884,10 +886,17 @@ class JSON_Article:
         if isinstance(affiliations, dict):
             affiliations = [affiliations]
 
+        print(affiliations)
         normaffs = []
         for item in affiliations:
-            if not item.get('p') in [None, ''] and not item.get('_') is None:
-                normaffs.append(item)
+            if not item.get('_') in [None, '']:
+                if item.get('p') in [None, '']:
+                    item['p'] = affiliations_services.get_code(item.get('c'))
+                if not item.get('p') in [None, '']:
+                    if item.get('c') is not None:
+                        del item['c']
+                    normaffs.append(item)
+        print(normaffs)
         self.json_data['f']['240'] = normaffs
 
         affiliations = return_multval(self.json_data['f'], '70')
