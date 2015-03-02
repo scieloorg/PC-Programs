@@ -174,7 +174,8 @@ class Article2ArticleRecords(object):
         self._metadata['14']['l'] = self.article.lpage
         self._metadata['14']['e'] = self.article.elocation_id
 
-        self._metadata['70'] = fix_affiliations(self.article.affiliations)
+        self._metadata['70'] = self.article.affiliations
+        self._metadata['240'] = normalized_affiliations(self.article.affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
         self._metadata['72'] = str(0 if self.article.total_of_references is None else self.article.total_of_references)
@@ -443,4 +444,27 @@ def fix_affiliations(affiliations):
         #a['9'] = item['original']
         #self._metadata['170'].append(item['xml'])
         affs.append(a)
+    return affs
+
+
+def normalized_affiliations(affiliations):
+    import affiliations_services
+
+    affs = []
+    for item in affiliations:
+        a = {}
+        norm_orgname, norm_country, norm_country_code, norm_state, norm_city, errors = affiliations_services.validate_affiliation(item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
+        if norm_orgname in [item.orgname, item.norgname]:
+            _orgname = norm_orgname
+
+        if item.country_code is None:
+            _country_code = norm_country_code
+        else:
+            _country_code = norm_country_code if norm_country_code == item.country_code else None
+
+        if item.id is not None and _country_code is not None and _orgname is not None:
+            a['i'] = item.id
+            a['p'] = _country_code
+            a['_'] = _orgname
+            affs.append(a)
     return affs

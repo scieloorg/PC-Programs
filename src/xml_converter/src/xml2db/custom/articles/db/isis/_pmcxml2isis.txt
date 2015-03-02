@@ -128,6 +128,11 @@
       elocation-id e
     .//article-meta/fpage 121
     .//article-meta/fpage/@seq 9121
+    .//article-meta//aff 240
+      @id i
+      institution[@content-type='normalized'] _
+      country/@country p
+      country c    
     .//article-meta//aff 70
       label l
       @id i
