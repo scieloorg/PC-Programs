@@ -1,10 +1,51 @@
-﻿4.0.088 - 10/10/2014
+﻿4.0.089 - 28/10/2014
+====================
+- XML Package Maker 
+  - (bug) fix the file name of ahead of print articles
+  - (bug) fix generation of XML for ex-ahead and ahead of print articles
+  - (bug) fix the reports presentation
+- Markup SGML
+  - (bug) add report in bibcom and bbibcom
+- Markup XML - article and doc DTD
+  - (new) fix @id according to SPS Guidelines 1.1
+  - (new) article/@specific-use
+  - (new) identification of clinical trial
+  - (new) refactoring of the tag related (less attributes)
+  - (new) country in aff must be mandatory
+  - (new) improvement on the identification of bibliographic references in 
+  - (new) automatic identification of mimetype and mime-subtype for supplementary-material, media and inline-supplementary material 
+  - (new) month in references must be number
+  - (new) remove <sup> from <edition>
+  - (new) fngrp has a new element: label
+  - (new) create label of fngrp automatically
+  - (bug) fix generation of <suffix> 
+  - (bug) fix the data inside front of article which has sub-article 
+  - (bug) remove @xml:lang from abstract and article-title
+  - (bug) fix generation of funding-group
+  - (bug) remove from ref the duplicated label
+  - (bug) fix generation of <comment content-type='cited'/>
+  - (bug) fix generation of elements of thesis and conferences in the references
+  - (bug) remove the puntuaction between tags in element-citation
+  - (bug) do not show error message for (sub | sup ) in institution
+  - (bug) remove institution[@content-type='aff-pmc']
+- Markup XML - doc DTD
+  - (new) testing the Creative Commons Licenses URL
+the text (author date)
+  - (new) remove some tag which are in ref
+  - (bug) fix automatic identification of "review" article
+  - (bug) as pressing on *kwdgrp do not display kwd
+- XML Converter
+  - (bug) fix the reports
+  - (bug) fix the ahead/ex-ahead management
+
+4.0.088 - 10/10/2014
 ====================
 - Milestone 4.0.088
   - Refactoring of Validations reports
   - Refactoring of XML Package Maker
     - Use of packtools, considering if it is already installed
   - XML Converter 
+  - new list of @article-type / doctopic
 
 4.0.087 - 27/08/2014
 ====================

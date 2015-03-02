@@ -1,6 +1,17 @@
 # coding=utf-8
 
+import urllib2
+
+
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
+
+
+def url_check(url, _timeout=30):
+    try:
+        r = urllib2.urlopen(url, timeout=_timeout)
+    except:
+        r = None
+    return (r is not None)
 
 
 def how_similar(this, that):
@@ -29,11 +40,10 @@ def doi_pid(doi):
     pid = None
 
     if doi is not None:
-        import urllib2
         import json
 
         try:
-            f = urllib2.urlopen('http://dx.doi.org/' + doi)
+            f = urllib2.urlopen('http://dx.doi.org/' + doi, timeout=1)
             url = f.geturl()
 
             if 'scielo.php?script=sci_arttext&amp;pid=' in url:
@@ -41,7 +51,7 @@ def doi_pid(doi):
                 pid = pid[0:23]
 
                 try:
-                    f = urllib2.urlopen('http://200.136.72.162:7000/api/v1/article?code=' + pid + '&format=json')
+                    f = urllib2.urlopen('http://200.136.72.162:7000/api/v1/article?code=' + pid + '&format=json', timeout=60)
                     article_json = json.loads(f.read())
                     v880 = article_json['article'].get('v880')
                     v881 = article_json['article'].get('v881')
@@ -63,13 +73,10 @@ def format_dateiso(adate):
         month = adate.get('season')
         if month is None:
             month = adate.get('month')
-        else:
-            if '-' in month:
-                month = month[0:month.find('-')]
+        if '-' in month:
+            month = month[0:month.find('-')]
+        if not month.isdigit():
             month = MONTHS.get(month, '00')
-
-        if month == '' or month is None:
-            month = '00'
         month = '00' + month
         month = month[-2:]
         y = adate.get('year', '0000')
@@ -147,8 +154,16 @@ def expected_values(label, value, expected):
     return display_value(label, value) if value in expected else 'ERROR: ' + value + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected)
 
 
-def add_new_value_to_index(dict_key_and_values, key, value):
+def add_new_value_to_index(dict_key_and_values, key, value, normalize_key=True):
+    def normalize_value(value):
+        if not isinstance(value, unicode):
+            value = value.decode('utf-8')
+        return ' '.join(value.split())
+    if key is None:
+        key = 'None'
     if key is not None:
+        if normalize_key:
+            key = normalize_value(key)
         if not key in dict_key_and_values.keys():
             dict_key_and_values[key] = []
         dict_key_and_values[key].append(value)
@@ -156,5 +171,7 @@ def add_new_value_to_index(dict_key_and_values, key, value):
 
 
 def format_date(dates):
+    r = ''
     if dates is not None:
-        return ' '.join([k + ': ' + v for k, v in dates.items() if v is not None])
+        r = ' '.join([k + ': ' + v for k, v in dates.items() if v is not None])
+    return r

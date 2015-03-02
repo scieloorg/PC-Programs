@@ -4,52 +4,7 @@ from datetime import datetime
 
 from article_utils import doi_pid, display_pages, format_dateiso
 from article import Issue, PersonAuthor
-
-
-DOCTOPIC = {
-                'research-article': 'oa',
-                'editorial': 'ed',
-                'abstract': 'ab',
-                'announcement': 'an',
-                'article-commentary': 'co',
-                'case-report': 'cr',
-                'letter': 'le',
-                'review-article': 'ra',
-                'rapid-communication': 'sc',
-                'addendum': 'ax',
-                'book-review': 'rc',
-                'books-received': '??',
-                'brief-report': 'rn',
-                'calendar': '??',
-                'collection': '??',
-                'correction': 'er',
-                'discussion': '??',
-                'dissertation': '??',
-                'in-brief': 'pr',
-                'introduction': '??',
-                'meeting-report': '??',
-                'news': '??',
-                'obituary': '??',
-                'oration': '??',
-                'partial-retraction': '??',
-                'product-review': '??',
-                'reply': '??',
-                'reprint': '??',
-                'retraction': '??',
-                'translation': '??',
-}
-
-ROLE = {
-    'author': 'ND',
-    'editor': 'ED',
-    'assignee': 'assignee',
-    'compiler': 'compiler',
-    'director': 'director',
-    'guest-editor': 'guest-editor',
-    'inventor': 'inventor',
-    'transed': 'transed',
-    'translator': 'TR',    
-}
+from attributes import ROLE, DOCTOPIC
 
 
 def normalize_role(_role):
@@ -62,12 +17,50 @@ def normalize_doctopic(_doctopic):
     return _doctopic if r == '??' else r
 
 
-class ArticleRecords(object):
+class ArticleRecords2Article(object):
+    def __init__(self, article_records):
+        self.article_records = article_records
 
-    def __init__(self, article, i_record, article_files):
+    @property
+    def filename(self):
+        return self.article_records[0]['702']
+
+    @property
+    def titles(self):
+        return self.article_records[1]['12']
+
+    @property
+    def first_title(self):
+        return self.titles[0]['_']
+
+    @property
+    def doi(self):
+        return self.article_records[1]['237']
+
+    @property
+    def pid(self):
+        return self.article_records[1]['880']
+
+    @property
+    def old_pid(self):
+        return self.article_records[1]['881']
+
+    @property
+    def creation_date(self):
+        return (self.article_records[0]['91'], self.article_records[0]['92'])
+
+    @property
+    def order(self):
+        return self.article_records[1]['121']
+
+
+class Article2ArticleRecords(object):
+
+    def __init__(self, article, i_record, article_files, creation_date=None):
         self.article = article
         self.article_files = article_files
         self.i_record = i_record
+        self.creation_date = creation_date
         self.add_issue_data()
         self.add_article_data()
         self.set_common_data(article_files.xml_name, article_files.issue_files.issue_folder, article_files.relative_xml_filename)
@@ -133,6 +126,10 @@ class ArticleRecords(object):
             new['z'] = item.suffix
             new['p'] = item.prefix
             new['r'] = normalize_role(item.role)
+            #if len(item.xref) == 0 and len(self.article.affiliations) > 0 and len(self.article.contrib_names) == 1:
+            #    new['1'] = ' '.join([aff.id for aff in self.article.affiliations if aff.id is not None])
+            #else:
+            #    new['1'] = ' '.join(item.xref)
             new['1'] = ' '.join(item.xref)
             new['k'] = item.contrib_id
             self._metadata['10'].append(new)
@@ -177,23 +174,7 @@ class ArticleRecords(object):
         self._metadata['14']['l'] = self.article.lpage
         self._metadata['14']['e'] = self.article.elocation_id
 
-        self._metadata['70'] = []
-        for item in self.article.affiliations:
-            a = {}
-            a['l'] = item.label
-            a['i'] = item.id
-            a['p'] = item.country
-            a['e'] = item.email
-            a['c'] = item.city
-            a['s'] = item.state
-            a['4'] = item.norgname
-            a['3'] = item.orgdiv3
-            a['2'] = item.orgdiv2
-            a['1'] = item.orgdiv1
-            a['_'] = item.orgname
-            #a['9'] = item['original']
-            #self._metadata['170'].append(item['xml'])
-            self._metadata['70'].append(a)
+        self._metadata['70'] = fix_affiliations(self.article.affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
         self._metadata['72'] = str(0 if self.article.total_of_references is None else self.article.total_of_references)
@@ -230,7 +211,10 @@ class ArticleRecords(object):
             rec_c['16'] = []
             rec_c['17'] = []
             for person in item.authors_list:
-                field = self.author_tag(person.role, isinstance(person, PersonAuthor), item.article_title or item.chapter_title)
+                is_analytic = False
+                if item.article_title is not None or item.chapter_title is not None:
+                    is_analytic = True
+                field = self.author_tag(person.role, isinstance(person, PersonAuthor), is_analytic)
                 if isinstance(person, PersonAuthor):
                     a = {}
                     a['n'] = person.fname
@@ -298,8 +282,13 @@ class ArticleRecords(object):
 
     def outline(self, total_of_records):
         rec_o = {}
-        rec_o['91'] = datetime.now().isoformat()[0:10].replace('-', '')
-        rec_o['92'] = datetime.now().isoformat()[11:19].replace(':', '')
+        if self.creation_date is None:
+            rec_o['91'] = datetime.now().isoformat()[0:10].replace('-', '')
+            rec_o['92'] = datetime.now().isoformat()[11:19].replace(':', '')
+        else:
+            rec_o['91'] = self.creation_date[0]
+            rec_o['92'] = self.creation_date[1]
+            rec_o['93'] = datetime.now().isoformat()
         rec_o['703'] = total_of_records
         return rec_o
 
@@ -376,35 +365,82 @@ class IssueRecord(object):
     def section_titles(self):
         return [sec.get('t') for sec in self.sections]
 
-    def section_code(self, section_title):
+    def most_similar_section_code(self, section_title, acceptable_result=0.80):
         best_result = 0
         seccode = None
-        similar = ''
+        similar = None
         if section_title is not None:
             for sec in self.sections:
                 if sec.get('t').lower() == section_title.lower():
-                    seccode = sec.get('c')
                     best_result = 1
+                    seccode = sec.get('c')
+                    similar = sec.get('t')
                     break
             if seccode is None:
                 import difflib
-                best_result = 0
-                acceptable_result = 0.80
                 for sec in self.sections:
-                    r = difflib.SequenceMatcher(None, section_title.lower(), sec.get('t', '').lower()).ratio()
-                    if r > acceptable_result:
-                        if r > best_result:
-                            seccode = sec.get('c')
-                            similar = sec.get('t')
-                            best_result = r
+                    sec_words = sec.get('t', '').lower().split(' ')
+                    section_title_words = section_title.lower().split(' ')
+                    for sec_word in sec_words:
+                        for section_title_word in section_title_words:
+                            r = difflib.SequenceMatcher(None, section_title_word, sec_word).ratio()
+                            if r > best_result:
+                                best_result = r
+                                seccode = sec.get('c')
+                                similar = sec.get('t')
         return (seccode, best_result, similar)
 
     @property
     def issue(self):
         acron = self.record.get('930').lower()
-        year = self.record.get('65', '')[0:4]
+        dateiso = self.record.get('65', '')
         volume = self.record.get('31')
         volume_suppl = self.record.get('131')
         number = self.record.get('32')
         number_suppl = self.record.get('132')
-        return Issue(acron, volume, number, year, volume_suppl, number_suppl)
+        i = Issue(acron, volume, number, dateiso, volume_suppl, number_suppl)
+
+        i.issn_id = self.record.get('35')
+        return i
+
+
+def fix_affiliations(affiliations):
+    import affiliations_services
+
+    affs = []
+    for item in affiliations:
+        a = {}
+        norm_orgname, norm_country, norm_country_code, norm_state, norm_city, errors = affiliations_services.validate_affiliation(item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
+        if norm_orgname in [item.orgname, item.norgname]:
+            _orgname = norm_orgname
+        else:
+            _orgname = item.norgname if item.norgname is not None else item.orgname
+
+        _country = item.country if norm_country is None else norm_country
+        _country_code = item.country_code if norm_country_code is None else norm_country_code
+        if _country_code is None:
+            _country_code = item.country
+
+        if norm_city is not None and norm_state is not None:
+            _city = norm_city
+            _state = norm_state
+        else:
+            _city = item.city
+            _state = item.state
+
+        a['l'] = item.label
+        a['i'] = item.id
+        a['e'] = item.email
+        a['4'] = item.orgname
+        a['3'] = item.orgdiv3
+        a['2'] = item.orgdiv2
+        a['1'] = item.orgdiv1
+        a['p'] = _country_code
+        a['q'] = _country
+        a['c'] = _city
+        a['s'] = _state
+        a['_'] = _orgname
+        #a['9'] = item['original']
+        #self._metadata['170'].append(item['xml'])
+        affs.append(a)
+    return affs

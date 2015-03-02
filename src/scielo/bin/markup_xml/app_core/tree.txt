@@ -7,12 +7,16 @@ ifloat
 cltrial;#TRUE#;#FALSE#
 corresp;#FALSE#;#FALSE#
 deflist;#FALSE#;#TRUE#
+*deflist;#FALSE#;#TRUE#
 element;#TRUE#;#TRUE#
 equation;#TRUE#;#TRUE#
 figgrp;#FALSE#;#TRUE#
 figgrps;#FALSE#;#TRUE#
+*fn;#FALSE#;#TRUE#
+fngrp;#TRUE#;#TRUE#
 graphic;#FALSE#;#TRUE#
 ign;#TRUE#;#TRUE#
+*list;#FALSE#;#TRUE#
 list;#FALSE#;#TRUE#
 product;#TRUE#;#TRUE#
 quote;#TRUE#;#TRUE#
@@ -27,6 +31,7 @@ abnt6023
 acitat;#FALSE#;#TRUE#
 
 abstract
+sectitle;#FALSE#;#FALSE#
 
 accepted
 
@@ -265,6 +270,8 @@ figgrp;#FALSE#;#TRUE#
 
 fname
 
+*fn
+
 fngrp
 label;#FALSE#;#FALSE#
 funding;#FALSE#;#FALSE#
@@ -286,11 +293,15 @@ label;#FALSE#;#FALSE#
 sectitle;#FALSE#;#FALSE#
 glossary;#FALSE#;#TRUE#
 deflist;#FALSE#;#FALSE#
+*deflist;#FALSE#;#FALSE#
 
 deflist
 sectitle;#FALSE#;#FALSE#
 defitem;#FALSE#;#TRUE#
 deflist;#FALSE#;#TRUE#
+*deflist;#FALSE#;#TRUE#
+
+*deflist
 
 defitem
 term;#FALSE#;#FALSE#
@@ -416,6 +427,8 @@ licensep
 
 licenses
 license;#FALSE#;#TRUE#
+
+*list
 
 list
 li;#FALSE#;#TRUE#
@@ -646,6 +659,9 @@ sectitle
 sertitle
 
 sig
+surname-fname;#FALSE#;#FALSE#
+fname;#FALSE#;#FALSE#
+surname;#FALSE#;#FALSE#
 
 sigblock
 sig;#FALSE#;#TRUE#
@@ -707,6 +723,7 @@ text
 doi;#FALSE#;#TRUE#
 titlegrp;#FALSE#;#FALSE#
 authgrp;#FALSE#;#FALSE#
+aff;#TRUE#;#TRUE#
 back;#FALSE#;#FALSE#
 
 th
@@ -825,6 +842,7 @@ subtitle;#FALSE#;#FALSE#
 tp;#FALSE#;#FALSE#
 
 xmlabstr
+sectitle;#FALSE#;#FALSE#
 sec;#FALSE#;#TRUE#
 p;#FALSE#;#TRUE#
 
@@ -832,6 +850,7 @@ xmlbody
 sec;#FALSE#;#TRUE#
 p;#FALSE#;#TRUE#
 deflist;#FALSE#;#TRUE#
+*deflist;#FALSE#;#TRUE#
 sigblock;#FALSE#;#FALSE#
 
 xref
@@ -874,6 +893,7 @@ xmlbody;#TRUE#;#FALSE#
 *kwdgrp
 
 kwdgrp
+sectitle;#FALSE#;#FALSE#
 kwd;#FALSE#;#TRUE#
 
 doctitle
@@ -897,6 +917,7 @@ doi;#FALSE#;#FALSE#
 fngrp;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
+*kwdgrp;#FALSE#;#TRUE#
 kwdgrp;#FALSE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
 refs;#FALSE#;#FALSE#
@@ -910,6 +931,7 @@ abstract;#FALSE#;#TRUE#
 ack;#FALSE#;#FALSE#
 app;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#
+afftrans;#TRUE#;#TRUE#
 corpauth;#FALSE#;#TRUE#
 docresp;#FALSE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
@@ -917,8 +939,8 @@ doi;#FALSE#;#FALSE#
 fngrp;#FALSE#;#TRUE#
 glossary;#FALSE#;#FALSE#
 hist;#FALSE#;#FALSE#
+*kwdgrp;#FALSE#;#TRUE#
 kwdgrp;#FALSE#;#TRUE#
-normaff;#TRUE#;#TRUE#
 onbehalf;#FALSE#;#FALSE#
 refs;#FALSE#;#FALSE#
 related;#FALSE#;#TRUE#
@@ -932,6 +954,7 @@ kwd
 fundsrc
 
 refs
+sectitle;#FALSE#;#FALSE#
 ref;#FALSE#;#TRUE#
 
 ref
@@ -941,12 +964,10 @@ authors;#TRUE#;#FALSE#
 arttitle;#TRUE#;#FALSE#
 chptitle;#TRUE#;#FALSE#
 cited;#FALSE#;#TRUE#
-city;#FALSE#;#TRUE#
 coltitle;#FALSE#;#TRUE#
 colvolid;#FALSE#;#TRUE#
 confgrp;#TRUE#;#FALSE#
 contract;#FALSE#;#FALSE#
-country;#FALSE#;#TRUE#
 date;#TRUE#;#TRUE#
 edition;#FALSE#;#TRUE#
 extent;#FALSE#;#TRUE#
@@ -958,11 +979,13 @@ pages;#FALSE#;#TRUE#
 part;#FALSE#;#TRUE#
 patentno;#FALSE#;#FALSE#
 pubid;#FALSE#;#TRUE#
+publoc;#FALSE#;#TRUE#
 pubname;#FALSE#;#TRUE#
+*publoc-name;#FALSE#;#TRUE#
+*pubname-loc;#FALSE#;#TRUE#
 reportid;#FALSE#;#FALSE#
 *source;#FALSE#;#FALSE#
 source;#FALSE#;#FALSE#
-state;#FALSE#;#TRUE#
 suppl;#FALSE#;#TRUE#
 thesgrp;#FALSE#;#FALSE#
 url;#TRUE#;#TRUE#
@@ -1001,6 +1024,9 @@ patentno
 
 moreinfo
 
+afftrans
+label;#FALSE#;#FALSE#
+
 normaff
 label;#FALSE#;#FALSE#
 role;#FALSE#;#FALSE#
@@ -1019,4 +1045,10 @@ orgdiv2
 arttitle
 
 chptitle
+
+publoc
+
+*publoc-name
+
+*pubname-loc
 

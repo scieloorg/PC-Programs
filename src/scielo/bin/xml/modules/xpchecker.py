@@ -9,7 +9,7 @@ except:
 
 import java_xml_utils
 import xml_utils
-import reports
+import html_reports
 
 
 def save_packtools_style_report(content, report_filename):
@@ -20,15 +20,14 @@ def save_packtools_style_report(content, report_filename):
     except:
         pass
 
-    html_report = reports.ReportHTML()
     q = len(content.split('SPS-ERROR')) - 1
     msg = ''
-    html_report.title = 'Style Checker (packtools' + version + ')'
+    title = 'Style Checker (packtools' + version + ')'
     if q > 0:
-        msg = html_report.tag('div', 'Total of errors = ' + str(q), 'error')
+        msg = html_reports.tag('div', 'Total of errors = ' + str(q), 'error')
 
-    html_report.body = msg + ''.join([html_report.format_message(html_report.display_xml(item)) for item in content.split('\n')])
-    html_report.save(report_filename)
+    body = msg + ''.join([html_reports.format_message(html_reports.display_xml(item)) for item in content.split('\n')])
+    html_reports.save(report_filename, title, body)
 
 
 def packtools_dtd_validation(xml_filename, report_filename):
@@ -79,8 +78,8 @@ def java_xml_utils_style_validation(xml_filename, doctype, report_filename, xsl_
     if os.path.isfile(temp_filename):
         xml_utils.restore_xml_file(xml_filename, temp_filename)
 
-    #if os.path.isfile(xml_report):
-    #    os.unlink(xml_report)
+    if os.path.isfile(xml_report):
+        os.unlink(xml_report)
     return is_valid_style
 
 
@@ -141,7 +140,7 @@ def style_validation(xml_filename, doctype, report_filename, xsl_prep_report, xs
         return java_xml_utils_style_validation(xml_filename, doctype, report_filename, xsl_prep_report, xsl_report)
 
 
-def _validate_xml_and_style(xml_filename, dtd_files, dtd_report_filename, style_report_filename):
+def validate_article_xml(xml_filename, dtd_files, dtd_report_filename, style_report_filename):
     is_valid_style = False
 
     xml, e = xml_utils.load_xml(xml_filename)
@@ -150,32 +149,5 @@ def _validate_xml_and_style(xml_filename, dtd_files, dtd_report_filename, style_
         is_valid_style = style_validation(xml_filename, dtd_files.doctype_with_local_path, style_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report, dtd_files.database_name)
     else:
         open(style_report_filename, 'w').write('FATAL ERROR: Unable to load ' + xml_filename + '\n' + str(e))
-    return (xml, is_valid_dtd, is_valid_style)
-
-
-def delete_unrequired_reports(ctrl_filename, is_valid_dtd, is_valid_style, dtd_validation_report, style_checker_report):
-    if ctrl_filename is None:
-        if is_valid_style is True:
-            os.unlink(style_checker_report)
-    else:
-        open(ctrl_filename, 'w').write('Finished')
-    if os.path.isfile(dtd_validation_report):
-        os.unlink(dtd_validation_report)
-
-
-def append_dtd_errors(err_filename, dtd_report):
-    if os.path.isfile(dtd_report):
-        separator = ''
-        if os.path.isfile(err_filename):
-            separator = '\n\n\n' + '.........\n\n\n'
-        open(err_filename, 'a+').write(separator + 'DTD errors\n' + '-'*len('DTD errors') + '\n' + open(dtd_report, 'r').read())
-
-
-def validate_article_xml(xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename):
-    loaded_xml, is_valid_dtd, is_valid_style = _validate_xml_and_style(xml_filename, dtd_files, dtd_report, style_report)
-
-    if not is_valid_dtd and err_filename is not None:
-        append_dtd_errors(err_filename, dtd_report)
-    f, e, w = style_checker_statistics(style_report)
-    delete_unrequired_reports(ctrl_filename, is_valid_dtd, is_valid_style, dtd_report, style_report)
-    return (loaded_xml, is_valid_dtd, (f, e, w))
+    f, e, w = style_checker_statistics(style_report_filename)
+    return (xml, is_valid_dtd, (f, e, w))

@@ -5,6 +5,7 @@ acitat;Identifica una referencia bibliográfica
 acontrib;Agrupa los elementos de contribución
 ack;Agrupa los elementos de agradecimientos
 aff;Identifica la afiliación del autor
+afftrans;Identifica en subdoc la afiliación del autor
 aiserial;Agrupa los elementos de seriada
 amonog;Agrupa los elementos de monografía
 anonym;Identifica autoría anónima
@@ -65,6 +66,7 @@ li;Identifica un item de la lista
 license;Identifica el texto de la licencia
 licensep;Identifica un parágrafo de la licencia
 licenses;Agrupa los elementos de licencia
+*list;Identifica automáticamente una lista
 list;Identifica una lista
 medium;Identifica el formato del medio en lo cual el documento está siendo publicado
 mmlmath;Idetifica Math (MathML 2.0 Tag Set)
@@ -138,6 +140,7 @@ xref;Identifica una referencia cruzada
 zipcode;Código de dirección postal
 glossary;Identifica un glossario
 deflist;Identifica una lista de definiciones
+*deflist;Identifica automáticamente una lista de definiciones
 defitem;Identifica un item de la lista de definiciones
 term;Identifica un término
 def;Identifica la definición del término
@@ -182,4 +185,8 @@ normaff;Identifica afiliación normalizada
 orgdiv1;Identifica la primera división abajo de la organización
 orgdiv2;Identifica la segunda división abajo de la organización
 orgdiv3;Identifica la tercera división abajdo de la organización
-text-ref;Identify the original form of the reference
+text-ref;Identifica la forma original de la cita
+publoc;Identifica la ubicación de la editora
+*publoc-name;Identifica automaticamente la ubicación y el nombre de la editora
+*pubname-loc;Identifica automaticamente el nombre de la editora y de su ubicación
+*fn;Identifica automaticamente todos las notas de pie de página y sus enlaces

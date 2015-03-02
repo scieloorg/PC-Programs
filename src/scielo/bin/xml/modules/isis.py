@@ -5,22 +5,21 @@ import os
 from tempfile import mkdtemp, NamedTemporaryFile
 
 from article_utils import u_encode
-from xml_utils import normalize_space
+import xml_utils
 
 
-def fix_encode(value):
-    r = value
-    if not isinstance(value, unicode):
-        r = value.decode('utf-8')
-        if value != r:
-            print('.'*10)
-            print('fix_encode:')
-            print('value=')
-            print(value)
-            print('r=')
-            print(r)
-            print('.'*10)
-    return r
+debug = False
+
+
+def format_value(content):
+    content = xml_utils.remove_unrequired_characters(content)
+    if '&' in content:
+        content, replace = xml_utils.convert_entities_to_chars(content)
+
+    if not isinstance(content, unicode):
+        content = content.decode('utf-8')
+
+    return u_encode(content, 'iso-8859-1')
 
 
 class IDFile(object):
@@ -45,77 +44,72 @@ class IDFile(object):
         if record is not None:
             for tag_i in sorted([int(s) for s in record.keys() if s.isdigit()]):
                 tag = str(tag_i)
-                items = record.get(tag)
-                r.append(self.tag_items(tag, items))
+                data = record.get(tag)
+                r.append(self.tag_data(tag, data))
         return ''.join(r)
 
-    def tag_items(self, tag, items):
+    def tag_data(self, tag, data):
         s = ''
         try:
-            if isinstance(items, dict):
-                s = self._tagged(tag, self._format_subfields(items))
-            elif isinstance(items, list):
-                s = ''
-                for item in items:
-                    s += self.tag_items(tag, item)
+            if isinstance(data, dict):
+                s = self.tag_value(tag, self.format_subfields(data))
+            elif isinstance(data, list):
+                for item in data:
+                    s += self.tag_data(tag, item)
             else:
-                s = self._tagged(tag, items)
+                s = self.tag_value(tag, data)
         except Exception as e:
             print('-'*80)
-            print('tag_items')
+            print('tag_data')
             print(tag)
-            print(items)
+            print(data)
             print(e)
             print('-'*80)
+            x
         return s
 
-    def _format_subfields(self, subfields_and_values):
+    def format_subfields(self, subf_and_value_list):
         first = ''
         value = ''
         try:
-            for k, v in subfields_and_values.items():
+            for k, v in subf_and_value_list.items():
                 if v is not None:
                     if k == '_':
-                        first = v
+                        first = format_value(v)
                     else:
                         if len(k) == 1 and k in 'abcdefghijklmnopqrstuvwxyz123456789':
-                            value += '^' + k + v
+                            value += '^' + k + format_value(v)
         except Exception as e:
             print('-'*80)
-            print('_format_subfields')
-            print(subfields_and_values)
+            print('format_subfields')
+            print(subf_and_value_list)
             print(value)
             print(e)
             print('-'*80)
+            x
         return first + value
 
-    def _tagged(self, tag, value):
+    def tag_value(self, tag, value):
         r = ''
         s = value
-        if value is not None and value != '':
-            if value is not None:
-                try:
-                    value = normalize_space(value)
-                except Exception as e:
-                    value = None
-                    print('_tagged: normalize_space')
-                    print(e)
-                    print(s)
-                    print(value)
-                    print(type(s))
-                    print(type(value))
-            if value is not None:
+        if int(tag) <= 999:
+            if value is not None and value != '':
                 try:
                     tag = '000' + tag
                     tag = tag[-3:]
-                    r = '!v' + tag + '!' + value + '\n'
+                    r = '!v' + tag + '!' + format_value(value) + '\n'
+
+                    if tag == '70':
+                        print(value)
+                        print(r)
                 except Exception as e:
-                    print('_tagged: ')
+                    print('tag_value: ')
                     print(e)
                     print(s)
                     print(value)
                     print(type(s))
                     print(type(value))
+                    x
         return r
 
     def read(self, filename):
@@ -130,25 +124,36 @@ class IDFile(object):
                     rec_list.append(self.simplify_record(record))
                 record = {}
             else:
-                ign, tag, content = s.split('!')
-                tag = str(int(tag[1:]))
-                if not tag in record.keys():
-                    record[tag] = []
-                content = content.replace('^', 'BREAKSUBF^')
-                subfields = content.split('BREAKSUBF')
-                if len(subfields) == 1:
-                    content = subfields[0]
+                item = s.split('!')
+                tag = None
+                if len(item) == 3:
+                    ign, tag, content = item
+                elif len(item) > 3:
+                    tag = item[1]
+                    content = s[6:]
+                if tag is not None:
+                    tag = str(int(tag[1:]))
+                    if not tag in record.keys():
+                        record[tag] = []
+                    content = content.replace('^', 'BREAKSUBF^')
+                    subfields = content.split('BREAKSUBF')
+                    if len(subfields) == 1:
+                        content = subfields[0]
+                    else:
+                        content = {}
+                        for subf in subfields:
+                            if subf.startswith('^'):
+                                c = subf[1:2]
+                                v = subf[2:]
+                            else:
+                                c = '_'
+                                v = subf
+                            content[c] = v
+                    record[tag].append(content)
                 else:
-                    content = {}
-                    for subf in subfields:
-                        if subf.startswith('^'):
-                            c = subf[1:2]
-                            v = subf[2:]
-                        else:
-                            c = '_'
-                            v = subf
-                        content[c] = v
-                record[tag].append(content)
+                    print(filename)
+                    print(s)
+                    print(s[6:])
 
         # last record
         if len(record) > 0:
@@ -168,15 +173,13 @@ class IDFile(object):
         if not os.path.isdir(path):
             os.makedirs(path)
         content = self._format_file(records)
-        if not isinstance(content, unicode):
-            content = content.decode('utf-8')
 
-        iso = u_encode(content, 'iso-8859-1')
         try:
-            open(filename, 'w').write(iso)
+            open(filename, 'w').write(content)
         except Exception as e:
             print('saving...')
             print(e)
+            x
 
 
 class CISIS(object):
@@ -212,6 +215,11 @@ class CISIS(object):
             temp = id_filename.replace('.id', '')
             self.id2i(id_filename, temp)
             self.append(temp, mst_filename)
+            try:
+                os.unlink(temp + '.mst')
+                os.unlink(temp + '.xrf')
+            except:
+                pass
 
     def i2id(self, mst_filename, id_filename):
         cmd = self.cisis_path + '/i2id ' + mst_filename + ' > ' + id_filename
@@ -355,6 +363,9 @@ class IsisDAO(object):
             self.cisis.generate_indexes(db_filename, fst_filename, db_filename)
 
     def append_records(self, records, db_filename, fst_filename=None):
+        path = os.path.dirname(db_filename)
+        if not os.path.isdir(path):
+            os.makedirs(path)
         id_temp = mkdtemp().replace('\\', '/') + '/' + os.path.basename(db_filename) + '.id'
         IDFile().save(id_temp, records)
         self.cisis.append_id_to_master(id_temp, db_filename, False)

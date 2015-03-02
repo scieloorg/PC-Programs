@@ -3,7 +3,7 @@ brazilian journal of chemical engineering;brazilian journal of genetics;brazilia
 bjce;bjg;bjmbr;bjp;conicyt;dados;br1.1;infomed;jbchs;jbcos;mioc;rbcs;rbgeo;rimtsp;rsp
 
 doctopic
-artículo original (research article);resumen (abstract);comentario (comments);informe de caso (case report);ensayos clínicos (clinical trials);editorial ;material editorial (discusión, opinión, entrevista, ...);errata (corrections);carta (letter);press release (in brief);artículo de revisión (review article);reseña (book review);retractación o rectificación de lo qué fue anteriormente publicado (retraction);notas de investigación / resultados de pesquisa (brief report);comunicación breve (atualizaciones / novedades) (brief communication);informe técnico;otro
+artículo original (research article);resumen (abstract);comentario (comments);informe de caso (case report);ensayos clínicos (clinical trials);editorial;material editorial (discusión, opinión, entrevista, ...);errata (corrections);carta (letter);press release (in brief);artículo de revisión (review article);reseña (book review);retractación o rectificación de lo qué fue anteriormente publicado (retraction);notas de investigación / resultados de pesquisa (brief report);comunicación breve (atualizaciones / novedades) (brief communication);informe técnico;otro
 oa;ab;co;cr;ct;ed;em;er;le;pr;ra;rc;re;rn;sc;tr;zz
 
 language
@@ -147,8 +147,8 @@ filename
 
 
 ref-type
-afiliación;Apendice;Notas de autor;Referencia bibliográfica.;Caja de texto o barra lateral;Estructura química;Contribución;Autor correspondiente;Fórmula;Figura;Nota de pie de página;Palabra clave;íten de lista;Otro;Placa;Esquema;Sección;declaración;Información complementar;Tabla
-aff;app;author-notes;bibr;boxed-text;chem;contrib;corresp;disp-formula;fig;fn;kwd;list;other;plate;scheme;sec;statement;supplementary-material;table
+afiliación;Apendice;Notas de autor;Referencia bibliográfica;Caja de texto o barra lateral;Contribución;Autor correspondiente;Fórmula;Figura;Nota de pie de página;Listado;Otro;Material suplementario;Tabla
+aff;app;author-notes;bibr;boxed-text;contrib;corresp;disp-formula;fig;fn;list;other;supplementary-material;table
 
 sec-type
 indefinido;Materiales y Metodologías;* Resultados y Discusión;* Resultados y Conclusiones;* Resultados, Discusión, Conclusiones;Informes de casos;Conclusiones o comentarios;Discusiones o interpretaciones;Introducción o sinopsis;Materiales;Métodos/Metodología/Procedimientos;Resultados/Declaración de descobiertas;Temas/Participantes/Pacientes;Materiales suplementares

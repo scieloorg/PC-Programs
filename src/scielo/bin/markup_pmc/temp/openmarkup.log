@@ -1,5 +1,0 @@
-path=c:\arquivos de programas\microsoft office\office11\winword.exe
-retDir=WINWORD.EXE
-paramProgram=winword.exe
-retDirExpected=winword.exe
-ShellExecute open winword.exe /lW:\scielo\bin\markup_pmc\markup.prg c:\arquivos de programas\microsoft office\office11\winword.exe 1

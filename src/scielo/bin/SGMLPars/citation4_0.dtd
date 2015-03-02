@@ -156,7 +156,7 @@
                         notes?  & isbn? & patgrp? ) -->
 
 
-<!ELEMENT icontrib - - ( ((author | corpauth)*, et-al?) , subresp* ,  date , 
+<!ELEMENT icontrib - - ( ((author | corpauth)*, et-al?) , subresp* ,  date? , 
                         (%m.title;)? ) >
 
 <!ELEMENT subresp  - - (%m.name;) >

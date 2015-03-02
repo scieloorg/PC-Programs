@@ -4,10 +4,10 @@ import shutil
 import tempfile
 
 import xml_utils
+import fs_utils
 
 
 THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
-
 JAVA_PATH = 'java'
 JAR_TRANSFORM = THIS_LOCATION + '/../../jar/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = THIS_LOCATION + '/../../jar/XMLCheck.jar'
@@ -27,15 +27,13 @@ def format_parameters(parameters):
 def xml_content_transform(content, xsl_filename):
     f = tempfile.NamedTemporaryFile(delete=False)
     f.close()
-    fp = open(f.name, 'w')
-    fp.write(content)
-    fp.close()
+
+    fs_utils.write_file(f.name, content)
+
     f2 = tempfile.NamedTemporaryFile(delete=False)
     f2.close()
     if xml_transform(f.name, xsl_filename, f2.name):
-        fp = open(f2.name, 'r')
-        content = fp.read()
-        fp.close()
+        content = open(f2.name, 'r').read()
         os.unlink(f2.name)
     if os.path.exists(f.name):
         os.unlink(f.name)
@@ -55,7 +53,6 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     #temp_xml_filename = xml_utils.apply_dtd(xml_filename, '')
     cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
     os.system(cmd)
-    
     if not os.path.exists(temp_result_filename):
         print('  ERROR: Unable to create ' + os.path.basename(result_filename))
         open(temp_result_filename, 'w').write('ERROR: transformation error.\n' + cmd)

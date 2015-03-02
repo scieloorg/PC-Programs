@@ -6,10 +6,8 @@ import xml.etree.ElementTree as etree
 import HTMLParser
 from StringIO import StringIO
 
-import xml_utils
 
-
-ENTITIES_TABLE = {}
+ENTITIES_TABLE = None
 
 
 def element_lang(node):
@@ -18,14 +16,17 @@ def element_lang(node):
 
 
 def load_entities_table():
-    if len(ENTITIES_TABLE) == 0:
-        curr_path = os.path.dirname(__file__).replace('\\', '/')
-        if os.path.isfile(curr_path + '/../tables/entities.csv'):
-            for item in open(curr_path + '/../tables/entities.csv', 'r').readlines():
-                symbol, number_ent, named_ent, descr, representation = item.split('|')
-                ENTITIES_TABLE[named_ent] = symbol
-        else:
-            print('NOT FOUND ' + curr_path + '/../tables/entities.csv')
+    table = {}
+    curr_path = os.path.dirname(__file__).replace('\\', '/')
+    if os.path.isfile(curr_path + '/../tables/entities.csv'):
+        for item in open(curr_path + '/../tables/entities.csv', 'r').readlines():
+            if not isinstance(item, unicode):
+                item.decode('utf-8')
+            symbol, number_ent, named_ent, descr, representation = item.split('|')
+            table[named_ent] = symbol
+    else:
+        print('NOT FOUND ' + curr_path + '/../tables/entities.csv')
+    return table
 
 
 class XMLContent(object):
@@ -37,9 +38,9 @@ class XMLContent(object):
         self.content = self.content[0:self.content.rfind('>')+1]
         self.content = self.content[self.content.find('<'):]
         self.content = self.content.replace(' '*2, ' '*1)
-        if xml_utils.is_xml_well_formed(self.content) is None:
+        if is_xml_well_formed(self.content) is None:
             self._fix_style_tags()
-        if xml_utils.is_xml_well_formed(self.content) is None:
+        if is_xml_well_formed(self.content) is None:
             self._fix_open_close()
 
     def _fix_open_close(self):
@@ -159,38 +160,24 @@ def restore_xml_file(xml_filename, temp_filename):
     shutil.rmtree(os.path.dirname(temp_filename))
 
 
-def normalize_space(s):
-    if s is not None:
-        s = s.replace('\n', ' ')
-        s = s.replace('\t', ' ')
-        s = s.replace('\r', ' ')
-        s = s.replace('  ', ' ')
-    return s
-
-
-def nodexmltostring(node):
-    text = None
-    if not node is None:
-        text = etree.tostring(node)
-        if '<' in text:
-            text, e = convert_entities_to_chars(text)
-        else:
-            text = node.text
-    return text
+def remove_unrequired_characters(content):
+    return ' '.join(content.split())
 
 
 def node_text(node):
-    text = nodexmltostring(node)
+    text = node_xml(node)
     if not text is None:
         if text.startswith('<'):
             text = text[text.find('>')+1:]
             text = text[0:text.rfind('</')]
-            text = text.strip()
     return text
 
 
 def node_xml(node):
-    return nodexmltostring(node)
+    text = None
+    if not node is None:
+        text = etree.tostring(node)
+    return text
 
 
 def preserve_xml_entities(content):
@@ -219,12 +206,29 @@ def preserve_xml_entities(content):
 
 def named_ent_to_char(content):
     replaced_named_ent = []
-    load_entities_table()
+
     if '&' in content:
-        for find, replace in ENTITIES_TABLE.items():
-            if find in content:
-                replaced_named_ent.append(find + '=>' + replace)
-                content = content.replace(find, replace)
+        text = content.replace('&', '_BREAK_&').replace(';', ';_BREAK_')
+        entities = list(set([item for item in text.split('_BREAK_') if item.startswith('&') and item.endswith(';')]))
+        if len(entities) > 0:
+            global ENTITIES_TABLE
+
+            if ENTITIES_TABLE is None:
+                ENTITIES_TABLE = load_entities_table()
+            if ENTITIES_TABLE is not None:
+                for ent in entities:
+                    new = ENTITIES_TABLE.get(ent, ent)
+                    if not isinstance(new, unicode):
+                        new = new.decode('utf-8')
+                    if not isinstance(ent, unicode):
+                        ent = ent.decode('utf-8')
+                    print(type(new))
+                    print(type(ent))
+                    print(new)
+                    print(ent)
+                    if new != ent:
+                        replaced_named_ent.append(ent + '=>' + new)
+                        content = content.replace(ent, new)
     return (content, replaced_named_ent)
 
 
@@ -244,14 +248,36 @@ def register_remaining_named_entities(content):
             open('./named_entities.txt', 'w').write('\n'.join(entities))
 
 
-def number_ent_to_char(content):
+def htmlent2char(content):
     if '&' in content:
         h = HTMLParser.HTMLParser()
-        if not isinstance(content, unicode):
-            content = content.decode('utf-8')
-        content = h.unescape(content)
-        #if isinstance(content, unicode):
-        #    content = content.encode('utf-8')
+        try:
+            if not isinstance(content, unicode):
+                content = content.decode('utf-8')
+            content = h.unescape(content)
+        except Exception as e:
+            content = content.replace('&', '_BREAK_&').replace(';', ';_BREAK_')
+            parts = content.split('_BREAK_')
+            new = u''
+            for part in parts:
+                if part.startswith('&') and part.endswith(';'):
+                    try:
+                        part = h.unescape(part)
+                    except Exception as e:
+                        print('h.unescape')
+                        print(e)
+                        print(part)
+                        part = '??'
+                try:
+                    new += part
+                except Exception as e:
+                    print(e)
+                    print(part)
+                    new += '??'
+                    print(type(content))
+                    print(type(part))
+                    x
+            content = new
     return content
 
 
@@ -267,8 +293,8 @@ def convert_entities_to_chars(content, debug=False):
     replaced_named_ent = []
     if '&' in content:
         content = preserve_xml_entities(content)
-        content = named_ent_to_char(content)
-        content, replaced_named_ent = number_ent_to_char(content)
+        content = htmlent2char(content)
+        content, replaced_named_ent = named_ent_to_char(content)
         register_remaining_named_entities(content)
 
         content = restore_xml_entities(content)
@@ -291,49 +317,85 @@ def handle_mml_entities(content):
     return content
 
 
-def handle_entities(content):
-    content, replaced_named_ent = convert_entities_to_chars(content)
-    return handle_mml_entities(content)
-
-
-def load_xml(content):
-    message = None
-    r = None
+def read_xml(content):
     if not '<' in content:
         # is a file
-        try:
-            r = etree.parse(content)
-        except Exception as e:
-            content = open(content, 'r').read()
+        content = open(content, 'r').read()
+    return content
 
-    if '<' in content:
-        try:
-            r = etree.parse(StringIO(content))
-        except Exception as e:
-            #print('XML is not well formed')
-            message = 'XML is not well formed\n'
-            msg = str(e)
-            if 'position ' in msg:
-                pos = msg.split('position ')
-                pos = pos[1]
-                pos = pos[0:pos.find(': ')]
-                if '-' in pos:
-                    pos = pos[0:pos.find('-')]
-                if pos.isdigit():
-                    pos = int(pos)
-                msg += '\n'
-                text = content[0:pos]
-                text = text[text.rfind('<'):]
-                msg += text + '[[['
-                msg += content[pos:pos+1]
-                text = content[pos+1:]
-                msg += ']]]' + text[0:text.find('>')+1]
-            message += msg
-            r = None
+
+def parse_xml(content):
+    message = None
+    try:
+        if isinstance(content, unicode):
+            content = content.encode('utf-8')
+        r = etree.parse(StringIO(content))
+    except Exception as e:
+        #print('XML is not well formed')
+        message = 'XML is not well formed\n'
+        msg = str(e)
+        if 'position ' in msg:
+            pos = msg.split('position ')
+            pos = pos[1]
+            pos = pos[0:pos.find(': ')]
+            if '-' in pos:
+                pos = pos[0:pos.find('-')]
+            if pos.isdigit():
+                pos = int(pos)
+            msg += '\n'
+            text = content[0:pos]
+            text = text[text.rfind('<'):]
+            msg += text + '[[['
+            msg += content[pos:pos+1]
+            text = content[pos+1:]
+            msg += ']]]' + text[0:text.find('>')+1]
+        message += msg
+        r = None
     return (r, message)
 
 
 def is_xml_well_formed(content):
-    node, e = load_xml(content)
+    node, e = parse_xml(content)
     if e is None:
         return node
+
+
+def load_xml(content):
+    content = read_xml(content)
+    xml, e = parse_xml(content)
+    return (xml, e)
+
+
+def pretty_print(content):
+    pretty = None
+    tag = None
+    if not content.startswith('<?xml'):
+        if not is_xml_well_formed(content):
+            tag = 'root'
+            content = '<' + tag + '>' + content + '</' + tag + '>'
+
+    if is_xml_well_formed(content):
+        content = remove_unrequired_characters(content)
+        import xml.dom.minidom
+        try:
+            if isinstance(content, unicode):
+                content = content.encode('utf-8')
+            doc = xml.dom.minidom.parseString(content)
+            pretty = doc.toprettyxml()
+            pretty = pretty.replace(' \n\t', '')
+
+            if not '<?xml' in content:
+                pretty = pretty[pretty.find('?>\n'):]
+                pretty = pretty[pretty.find('<'):]
+
+        except Exception as e:
+            print('ERROR in pretty')
+            print(e)
+            open('./pretty_print.xml', 'w').write(content)
+            x
+
+    if pretty is None:
+        pretty = content
+    if tag is not None:
+        pretty = pretty.replace('<' + tag + '>', '').replace('</' + tag + '>', '')
+    return pretty

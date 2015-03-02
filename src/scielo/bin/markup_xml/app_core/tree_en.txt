@@ -5,6 +5,7 @@ acitat;Identify a bibliography reference
 acontrib;Group the elements of a contribution
 ack;Group the elements of acknowledgment
 aff;Identify the organization to which the author is affiliated
+afftrans;Identify in subdoc the organization to which the author is affiliated
 aiserial;Group the elements of a serial publication
 amonog;Group the elements of a monograph
 anonym;Identify anonymous authorship
@@ -65,7 +66,8 @@ li;Identify an item of a list
 license;Identify the text of a license
 licensep;Identify the paragraph of a license
 licenses;Group the elements of a license
-list;Identify the list
+*list;Identify automatically a list
+list;Identify a list
 medium;Identify the format of the media in which the document is published
 mmlmath;Math (MathML 2.0 Tag Set)
 no;Identify the number
@@ -138,6 +140,7 @@ xref;Identify a cross-reference
 zipcode;Identify a ZIP Code
 glossary;Identify a glossary
 deflist;Identify a list of definitions
+*deflist;Identify automatically a list of definitions
 defitem;Identify an item of a list of definitions
 term;Identify a term
 def;Identify the definition of a term
@@ -183,3 +186,7 @@ orgdiv1;Identify organization division 1
 orgdiv2;Identify organization division 2
 orgdiv3;Identify organization division 3
 text-ref;Identify the original form of the reference
+publoc;Identify the publisher location
+*publoc-name;Identify automatically publisher location and name
+*pubname-loc;Identify automatically publisher name and location
+*fn;Identify all the footnotes and its links
