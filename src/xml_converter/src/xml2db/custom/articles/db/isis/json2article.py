@@ -861,12 +861,20 @@ class JSON_Article:
         """
         Normalize the json structure for affiliations: 70
         """
-        
+        affiliations = return_multval(self.json_data['f'], '240')
+        if isinstance(affiliations, dict):
+            affiliations = [affiliations]
+
+        normaffs = []
+        for item in affiliations:
+            if not item.get('p') in [None, ''] and not item.get('_') is None:
+                normaffs.append(item)
+        self.json_data['f']['240'] = normaffs
+
         affiliations = return_multval(self.json_data['f'], '70')
 
         new_affiliations = self.aff_handler.normalize_affiliations(affiliations)
 
-        
         id = ''
         if len(new_affiliations) > 0:
             self.json_data['f']['70'] = new_affiliations
