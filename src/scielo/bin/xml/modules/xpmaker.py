@@ -85,6 +85,11 @@ def get_embedded_images_in_html(html_content):
     #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
     if 'href=&quot;?' in html_content:
         html_content = html_content.replace('href=&quot;?', 'href="?')
+    if '“' in html_content:
+        html_content = html_content.replace('“', '"')
+    if '”' in html_content:
+        html_content = html_content.replace('”', '"')
+
     html_content = html_content.replace('href="?', 'href="?--~BREAK~FIXHREF--FIXHREF')
     _items = html_content.split('--~BREAK~FIXHREF--')
     items = [item for item in _items if item.startswith('FIXHREF')]
@@ -120,6 +125,9 @@ def extract_embedded_images(xml_name, content, html_content, html_filename, dest
                 if os.path.isfile(embedded_img_path + '/' + item):
                     shutil.copyfile(embedded_img_path + '/' + item, dest_path + '/' + xml_name + item)
                     print(dest_path + '/' + xml_name + item)
+        content = content.replace('"">', '">')
+        content = content.replace('href=""?', 'href="?')
+
     return content
 
 
