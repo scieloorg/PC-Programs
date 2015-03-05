@@ -1,13 +1,18 @@
+
+import os
+
 import Tkinter
 
 
 class XMLAppGUI(object):
 
-    def __init__(self, tkFrame, is_converter_enabled, default_xml_path):
+    def __init__(self, tkFrame, default_xml_path, xml_package_maker, xml_converter=None):
 
         self.tkFrame = tkFrame
         self.default_xml_path = default_xml_path
-        self.is_converter_enabled = is_converter_enabled
+        self.is_converter_enabled = xml_converter is not None
+        self.xml_package_maker = xml_package_maker
+        self.xml_converter = xml_converter
 
         self.tkFrame.acron_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.acron_labelframe.pack(fill="both", expand="yes")
@@ -39,7 +44,7 @@ class XMLAppGUI(object):
         self.tkFrame.button_close = Tkinter.Button(self.tkFrame.buttons_labelframe, text='close', command=lambda: self.tkFrame.quit())
         self.tkFrame.button_close.pack(side='right')
 
-        if is_converter_enabled:
+        if self.is_converter_enabled:
             self.tkFrame.button_xml_converter = Tkinter.Button(self.tkFrame.buttons_labelframe, text='XML Converter', command=self.run_xml_converter)
             self.tkFrame.button_xml_converter.pack(side='right')
 
@@ -58,10 +63,11 @@ class XMLAppGUI(object):
             self.selected_folder = ''
         self.acron = self.tkFrame.input_acron.get()
 
-    def display_message(self, action_name):
-        result = self.check_inputs()
-        color = 'green' if result else 'red'
+    def display_message(self, msg, color):
+        if len(msg) > 0:
+            self.tkFrame.label_msg.config(text=msg, bg=color)
 
+    def get_message(self, action_name, result):
         if result:
             msg = 'Executing ' + action_name + ' for ' + self.acron + ' using the files in ' + self.selected_folder + '\n'
         else:
@@ -70,29 +76,40 @@ class XMLAppGUI(object):
                 msg += 'Inform the acronym.\n'
             if self.selected_folder == '':
                 msg += 'Select a folder which contains the SPS XML Files.\n'
-        if len(msg) > 0:
-            self.tkFrame.label_msg.config(text=msg, bg=color)
-        return result
+        return msg
 
     def check_inputs(self):
-        return (self.acron != '' and self.selected_folder != '')
+        r = (self.acron != '' and self.selected_folder != '')
+        if r:
+            r = os.path.isdir(self.selected_folder)
+            if not r:
+                self.selected_folder = ''
+        return r
+
+    def is_app_ready(self, title):
+        self.read_inputs()
+        is_valid = self.check_inputs()
+        result = self.check_inputs()
+        color = 'green' if result else 'red'
+        self.display_message(self.get_message(title, result), color)
+        return is_valid
 
     def run_xml_package_maker(self):
-        self.read_inputs()
-        is_valid = self.check_inputs()
-        self.display_message('XML Package Maker')
-        if is_valid:
-            print('xml package maker')
+        if self.is_app_ready('XML Package Maker'):
+            if self.xml_package_maker is None:
+                print('xml package maker')
+            else:
+                self.xml_package_maker(self.selected_folder, self.acron)
 
     def run_xml_converter(self):
-        self.read_inputs()
-        is_valid = self.check_inputs()
-        self.display_message('XML Converter')
-        if is_valid:
-            print('XML Converter')
+        if self.is_app_ready('XML Converter'):
+            if self.xml_package_maker is None:
+                print('XML Converter')
+            else:
+                self.xml_converter(self.selected_folder, self.acron)
 
 
-def open_main_window(configurations=None):
+def open_main_window(xml_package_maker, xml_converter, configurations=None):
     if configurations is None:
         configurations = {'title': 'SPS XML Package Maker', 'is_converter_enabled': True, 'default_xml_path': '/Users/robertatakenaka/Documents/xml/'}
 
@@ -101,12 +118,12 @@ def open_main_window(configurations=None):
 
     tkFrame = Tkinter.Frame(tk_root)
 
-    main = XMLAppGUI(tkFrame, configurations['is_converter_enabled'], configurations['default_xml_path'])
+    main = XMLAppGUI(tkFrame, configurations['default_xml_path'], xml_package_maker, xml_converter)
     main.tkFrame.pack(side="top", fill="both", expand=True)
 
     tk_root.mainloop()
     tk_root.focus_set()
 
 
-if __name__ == "__main__":
-    open_main_window()
+#if __name__ == "__main__":
+#    open_main_window()
