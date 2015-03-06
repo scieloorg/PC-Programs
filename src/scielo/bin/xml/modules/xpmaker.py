@@ -936,7 +936,7 @@ def validate_inputs(xml_path, acron):
             if not xml_path.endswith('.xml'):
                 errors.append('Invalid file. XML file required.')
         elif not is_valid_xml_path(xml_path):
-            errors.append('Invalid folder. Folder must have XML files')
+            errors.append('Invalid folder. Folder must have XML files.')
     if acron is None:
         errors.append('Missing acronym.')
     return errors
