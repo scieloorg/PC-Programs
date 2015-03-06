@@ -162,6 +162,20 @@ def load_normaff():
     return (indexed_by_codes, indexed_by_names)
 
 
+def get_all_normaff():
+    results = []
+    for item in open(curr_path + '/../tables/aff_normalized.txt', 'r').readlines():
+        if not isinstance(item, unicode):
+            item = item.decode('iso-8859-1')
+        if len(item) > 0:
+            item = item.strip().split('|')
+
+            if len(item) == 2:
+                orgname, country = item
+                results.append(orgname + ' - ' + country)
+    return results
+
+
 def get_wos_country_items():
     codes, names = load_wos_countries()
     return CodesAndNames(codes, names)
@@ -458,7 +472,7 @@ def format_wayta_results(result):
         results = json.loads(result)
         for item in results.get('choices'):
             if item.get('country', '') != '' and item.get('value', '') != '':
-                r.append(item.get('country') + ' - ' + item.get('value'))
+                r.append(item.get('value') + ' - ' + item.get('country'))
     except Exception as e:
         print(e)
     return r
@@ -468,6 +482,8 @@ def unicode2cp1252(results):
     r = []
     for item in results:
         text = ''
+        if not isinstance(item, unicode):
+            item = item.decode('utf-8')
         if isinstance(item, unicode):
             try:
                 text = item.encode('cp1252')
@@ -490,6 +506,7 @@ def normaff_search(text):
     orgname = text[0:text.rfind(',')].strip()
     country = text[text.rfind(',')+1:].strip()
 
+    exact = orgname + ' - ' + country
     text = orgname + ', ' + country
     parts = text.split(',')
     results = []
@@ -505,7 +522,24 @@ def normaff_search(text):
 
     iso_similar_name, wos_similar_name, code_names = find_country_names(country, None)
 
-    for item in orgname_list.get_names(wos_similar_name):
-        results.append(country + ' - ' + item)
+    wos_results = []
+    if not wos_similar_name is None:
+        for item in orgname_list.get_names(wos_similar_name):
+            wos_results.append(item + ' - ' + wos_similar_name)
+    if len(wos_results) == 0:
+        wos_results = get_all_normaff()
+    if exact in wos_results:
+        wos_results = [exact]
+    else:
+        print(exact)
+    if len(wos_results) > 0:
+        for item in wos_results:
+            results.append(item)
+    print(results)
+    if exact in results:
+        results = [exact]
+    else:
+        print(exact)
 
+    print(results)
     return sorted(list(set(results)))

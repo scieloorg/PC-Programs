@@ -971,7 +971,7 @@ Universidade Estadual de Campinas|Brazil
 Universidade Estadual de Ciências da Saúde de Alagoas|Brazil
 Universidade Estadual de Feira de Santana|Brazil
 Universidade Estadual de Goiás|Brazil
-Universidade Estadual de Londrina |Brazil
+Universidade Estadual de Londrina|Brazil
 Universidade Estadual de Maringá|Brazil
 Universidade Estadual de Mato Grosso do Sul|Brazil
 Universidade Estadual de Montes Claros|Brazil
