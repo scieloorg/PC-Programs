@@ -726,7 +726,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 			<xsl:apply-templates select="." mode="pub-date"/>
 
-			<xsl:apply-templates select="@volid | @issueno  | @fpage | @lpage | @elocatid"/>
+			<xsl:apply-templates select="@volid"/>
+			<xsl:apply-templates select="@issueno"/>
+			<xsl:apply-templates select="@fpage"/>
+			<xsl:apply-templates select="@lpage"/>
+			<xsl:apply-templates select="@elocatid"/>
+			
 			<xsl:apply-templates select="product|front/product|xmlbody/product|back/product" mode="product-in-article-meta"/>
 			<xsl:apply-templates select="cltrial|front/cltrial|back//cltrial|xmlbody//cltrial" mode="front-clinical-trial"/>
 			<xsl:apply-templates select="hist|front//hist|back//hist"/>
@@ -1087,7 +1092,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="@volid">
 		<volume>
-			<xsl:value-of select="normalize-space(.)"/>
+			<xsl:choose>
+				<xsl:when test="number(.)=0">00</xsl:when>
+				<xsl:otherwise><xsl:value-of select="normalize-space(.)"/></xsl:otherwise>
+			</xsl:choose>
 		</volume>
 		<xsl:if test="not(../@issueno) and ../@supplvol"><issue>Suppl<xsl:if test="../@supplvol!='0'"> <xsl:value-of select="concat(' ',../@supplvol)"/></xsl:if>
 		</issue></xsl:if>
