@@ -82,6 +82,8 @@ class XMLAppGUI(object):
         r = (self.acron != '' and self.selected_folder != '')
         if r:
             r = os.path.isdir(self.selected_folder)
+            if r:
+                r = (len([item for item in os.listdir(self.selected_folder) if item.endswith('.xml')]) > 0)
             if not r:
                 self.selected_folder = ''
         return r
