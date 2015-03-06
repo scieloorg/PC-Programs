@@ -171,7 +171,8 @@ def get_all_normaff():
             item = item.strip().split('|')
 
             if len(item) == 2:
-                results.append(item.replace('|', ' - '))
+                orgname, country = item
+                results.append(orgname + ' - ' + country)
     return results
 
 
@@ -481,6 +482,8 @@ def unicode2cp1252(results):
     r = []
     for item in results:
         text = ''
+        if not isinstance(item, unicode):
+            item = item.decode('utf-8')
         if isinstance(item, unicode):
             try:
                 text = item.encode('cp1252')
@@ -525,9 +528,18 @@ def normaff_search(text):
             wos_results.append(item + ' - ' + wos_similar_name)
     if len(wos_results) == 0:
         wos_results = get_all_normaff()
-    if exact in results:
+    if exact in wos_results:
         wos_results = [exact]
     else:
         print(exact)
+    if len(wos_results) > 0:
+        for item in wos_results:
+            results.append(item)
+    print(results)
+    if exact in results:
+        results = [exact]
+    else:
+        print(exact)
 
+    print(results)
     return sorted(list(set(results)))
