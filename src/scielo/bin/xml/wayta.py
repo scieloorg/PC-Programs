@@ -16,7 +16,7 @@ if len(sys.argv) == 4:
     if os.path.isfile(ctrl_filename):
         os.unlink(ctrl_filename)
     normaff_result = affiliations_services.normaff_search(text)
-    open(filename, 'w').write(affiliations_services.unicode2cp1252(normaff_result))
+    open(filename, 'w').write(affiliations_services.unicode2cp1252(normaff_result) + '\n')
     if os.path.isfile(filename):
         shutil.copyfile(filename, ctrl_filename)
     else:
