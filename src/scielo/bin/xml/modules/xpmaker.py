@@ -715,15 +715,15 @@ def make_pmc_package(articles, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, 
         zip_packages(pmc_pkg_path)
 
 
-def pack_and_validate(xml_files, source_parent_path, acron, version, from_converter=False):
+def pack_and_validate(xml_files, results_path, acron, version, from_converter=False):
     from_markup = any([f.endswith('.sgm.xml') for f in xml_files])
 
     do_toc_report = not from_markup
 
-    scielo_pkg_path = source_parent_path + '/scielo_package'
-    pmc_pkg_path = source_parent_path + '/pmc_package'
-    report_path = source_parent_path + '/errors'
-    wrk_path = source_parent_path + '/work'
+    scielo_pkg_path = results_path + '/scielo_package'
+    pmc_pkg_path = results_path + '/pmc_package'
+    report_path = results_path + '/errors'
+    wrk_path = results_path + '/work'
 
     pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
     scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
@@ -748,11 +748,8 @@ def pack_and_validate(xml_files, source_parent_path, acron, version, from_conver
             make_pmc_package(pkg_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
 
         print('Result of the processing:')
-        print(source_parent_path)
-
-        s = '\n'.join(log_items)
-
-        fs_utils.write_file(report_path + '/log.txt', s)
+        print(results_path)
+        fs_utils.write_file(report_path + '/log.txt', '\n'.join(log_items))
 
 
 def zip_packages(src_pkg_path):
@@ -789,48 +786,46 @@ def generate_reports(pkg_items, dtd_files, scielo_pkg_path, report_path, do_toc_
         pkg_reports.display_report(filename)
 
 
-def validate_path(path):
+def get_xml_package_folders_info(input_pkg_path):
     xml_files = []
-    markup_xml_path = ''
-    if path is not None:
-        path = path.replace('\\', '/')
-        if path.endswith('/'):
-            path = path[0:-1]
-        if len(path) > 0:
-            if os.path.isdir(path):
-                xml_files = sorted([path + '/' + f for f in os.listdir(path) if f.endswith('.xml')])
-                #now = datetime.now().isoformat().replace(':', '').replace('T', '').replace('-', '')
-                #now = now[0:now.find('.')]
-                now = 'xml_package_maker_result'
-                markup_xml_path = path + '_' + now
-                fs_utils.delete_file_or_folder(markup_xml_path)
-                os.makedirs(markup_xml_path)
+    results_path = ''
 
-            elif os.path.isfile(path):
-                if path.endswith('.sgm.xml'):
-                    # path = ?/markup_xml/work/<name>/<name>.sgm.xml
-                    # f = <name>.sgm.xml
-                    f = os.path.basename(path)
-                    #src_path = ?/markup_xml/work/<name>
-                    markup_xml_path = os.path.dirname(path)
-                    #markup_xml_path = ?/markup_xml/work
-                    markup_xml_path = os.path.dirname(markup_xml_path)
-                    #markup_xml_path = ?/markup_xml
-                    markup_xml_path = os.path.dirname(markup_xml_path)
-                    #markup_xml_path = ?/src
-                    src_path = markup_xml_path + '/src'
-                    if not os.path.isdir(src_path):
-                        os.makedirs(src_path)
-                    shutil.copyfile(path, src_path + '/' + f)
-                    xml_files = [src_path + '/' + f]
-                elif path.endswith('.xml'):
-                    xml_files = [path]
-                    now = datetime.now().isoformat().replace(':', '').replace('T', '').replace('-', '')
-                    now = now[0:now.find('.')]
-                    markup_xml_path = os.path.dirname(os.path.dirname(path)) + '/' + now
-                    if not os.path.isdir(markup_xml_path):
-                        os.makedirs(markup_xml_path)
-    return (xml_files, markup_xml_path)
+    if os.path.isdir(input_pkg_path):
+        xml_files = sorted([input_pkg_path + '/' + f for f in os.listdir(input_pkg_path) if f.endswith('.xml') and not f.endswith('.sgm.xml')])
+        results_path = input_pkg_path + '_xml_package_maker_result'
+        fs_utils.delete_file_or_folder(results_path)
+        os.makedirs(results_path)
+
+    elif os.path.isfile(input_pkg_path):
+        if input_pkg_path.endswith('.sgm.xml'):
+            # input_pkg_path = ?/serial/<acron>/<issueid>/markup_xml/work/<name>/<name>.sgm.xml
+            # fname = <name>.sgm.xml
+            fname = os.path.basename(input_pkg_path)
+
+            #results_path = ?/serial/<acron>/<issueid>/markup_xml/work/<name>
+            results_path = os.path.dirname(input_pkg_path)
+
+            #results_path = ?/serial/<acron>/<issueid>/markup_xml/work
+            results_path = os.path.dirname(results_path)
+
+            #results_path = ?/serial/<acron>/<issueid>/markup_xml
+            results_path = os.path.dirname(results_path)
+
+            #src_path = ?/serial/<acron>/<issueid>/markup_xml/src
+            src_path = results_path + '/src'
+            if not os.path.isdir(src_path):
+                os.makedirs(src_path)
+            for item in os.listdir(src_path):
+                if item.endswith('.sgm.xml'):
+                    os.unlink(src_path + '/' + item)
+            shutil.copyfile(input_pkg_path, src_path + '/' + fname)
+            xml_files = [src_path + '/' + fname]
+        elif input_pkg_path.endswith('.xml'):
+            xml_files = [input_pkg_path]
+            results_path = os.path.dirname(input_pkg_path) + '_xml_package_maker_result'
+            if not os.path.isdir(results_path):
+                os.makedirs(results_path)
+    return (xml_files, results_path)
 
 
 def get_articles(xml_path):
@@ -878,49 +873,61 @@ def package_issue(package_info):
 
 
 def make_packages(path, acron, version):
-    xml_files, markup_xml_path = validate_path(path)
-    if len(xml_files) == 0:
-        print('There is nothing to process.\n')
-        print(path)
-        print(' must be an XML file or a folder which contains XML files.')
-    else:
-        pack_and_validate(xml_files, markup_xml_path, acron, version)
-        print('finished')
+    path = fix_path(path)
+    xml_files, results_path = get_xml_package_folders_info(path)
+    if len(xml_files) > 0:
+        pack_and_validate(xml_files, results_path, acron, version)
+    print('finished')
 
 
-def read_inputs(args):
+def fix_path(path):
+    path = path.replace('\\', '/')
+    if path.endswith('/'):
+        path = path[0:-1]
+    return path
+
+
+def get_inputs(args):
     script = args[0]
     path = None
-    acron = ''
+    acron = None
     if len(args) == 3:
         script, path, acron = args
-        path = path.replace('\\', '/')
-        if not os.path.isfile(path) and not os.path.isdir(path):
-            path = None
-
-    if path is None:
-        messages = []
-        messages.append('\n===== ATTENTION =====\n')
-        messages.append('ERROR: Incorrect parameters')
-        messages.append('\nUsage:')
-        messages.append('python ' + script + ' <xml_src> <acron>')
-        messages.append('where:')
-        messages.append('  <xml_src> = XML filename or path which contains XML files')
-        messages.append('  <acron> = journal acronym')
-        acron = '\n'.join(messages)
-        print(args)
-    return (path, acron)
+    return (script, path, acron)
 
 
 def call_make_packages(args, version):
-    path, acron = read_inputs(args)
-    if path is None:
-        print(acron)
+    script, path, acron = get_inputs(args)
+    if path is None and acron is None:
+        # GUI
+        import xml_gui
+        xml_gui.open_main_window(version, False, None)
+
     else:
-        make_packages(path, acron, version)
+        errors = validate_inputs(path, acron)
+        if len(errors) > 0:
+            messages = []
+            messages.append('\n===== ATTENTION =====\n')
+            messages.append('ERROR: Incorrect parameters')
+            messages.append('\nUsage:')
+            messages.append('python ' + script + ' <xml_src> <acron>')
+            messages.append('where:')
+            messages.append('  <xml_src> = XML filename or path which contains XML files')
+            messages.append('  <acron> = journal acronym')
+            messages.append('\n'.join(errors))
+            print('\n'.join(messages))
+        else:
+            make_packages(path, acron, version)
 
 
-def is_valid_xml_path(xml_path):
+def is_valid_xml_dir(xml_path):
+    r = False
+    if os.path.isfile(xml_path):
+        r = xml_path.endswith('.xml')
+    return r
+
+
+def is_valid_xml_file(xml_path):
     total = 0
     if os.path.isdir(xml_path):
         total = len([item for item in os.listdir(xml_path) if item.endswith('.xml')])
@@ -935,7 +942,7 @@ def validate_inputs(xml_path, acron):
         if os.path.isfile(xml_path):
             if not xml_path.endswith('.xml'):
                 errors.append('Invalid file. XML file required.')
-        elif not is_valid_xml_path(xml_path):
+        elif not is_valid_xml_dir(xml_path):
             errors.append('Invalid folder. Folder must have XML files.')
     if acron is None:
         errors.append('Missing acronym.')

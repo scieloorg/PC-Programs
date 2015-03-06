@@ -4,15 +4,25 @@ import os
 import Tkinter
 
 
+CURRENT_PATH = os.path.dirname(__file__).replace('\\', '/')
+XML_FOLDER_DEFAULT = CURRENT_PATH + '/../../'
+
+
 class XMLAppGUI(object):
 
-    def __init__(self, tkFrame, default_xml_path, xml_package_maker, xml_converter=None):
+    def __init__(self, tkFrame, default_xml_path, version, is_converter_enabled):
 
         self.tkFrame = tkFrame
-        self.default_xml_path = default_xml_path
-        self.is_converter_enabled = xml_converter is not None
+
+        if default_xml_path is None:
+            self.default_xml_path = XML_FOLDER_DEFAULT
+        else:
+            self.default_xml_path = default_xml_path
+
+        self.is_converter_enabled = is_converter_enabled
         self.xml_package_maker = xml_package_maker
         self.xml_converter = xml_converter
+        self.version = version
 
         self.tkFrame.acron_labelframe = Tkinter.LabelFrame(self.tkFrame, bd=0, padx=10, pady=10)
         self.tkFrame.acron_labelframe.pack(fill="both", expand="yes")
@@ -98,33 +108,39 @@ class XMLAppGUI(object):
 
     def run_xml_package_maker(self):
         if self.is_app_ready('XML Package Maker'):
-            if self.xml_package_maker is None:
-                print('xml package maker')
-            else:
-                self.xml_package_maker(self.selected_folder, self.acron)
+            xml_package_maker(self.selected_folder, self.acron, self.version)
 
     def run_xml_converter(self):
         if self.is_app_ready('XML Converter'):
-            if self.xml_package_maker is None:
-                print('XML Converter')
-            else:
-                self.xml_converter(self.selected_folder, self.acron)
+            xml_converter(self.selected_folder, self.acron, self.version)
 
 
-def open_main_window(xml_package_maker, xml_converter, configurations=None):
+def open_main_window(version, is_converter_enabled, configurations):
     if configurations is None:
-        configurations = {'title': 'SPS XML Package Maker', 'is_converter_enabled': True, 'default_xml_path': '/Users/robertatakenaka/Documents/xml/'}
+        configurations = {'title': 'SPS XML Package Maker', }
 
     tk_root = Tkinter.Tk()
     tk_root.title(configurations['title'])
 
     tkFrame = Tkinter.Frame(tk_root)
 
-    main = XMLAppGUI(tkFrame, configurations['default_xml_path'], xml_package_maker, xml_converter)
+    main = XMLAppGUI(tkFrame, configurations.get('default_xml_path'), version, is_converter_enabled)
     main.tkFrame.pack(side="top", fill="both", expand=True)
 
     tk_root.mainloop()
     tk_root.focus_set()
+
+
+def xml_package_maker(path, acron, version):
+    import xpmaker
+
+    xpmaker.make_packages(path, acron, version)
+
+
+def xml_converter(path, acron, version):
+    import xpmaker
+
+    xpmaker.make_packages(path, acron, version)
 
 
 #if __name__ == "__main__":
