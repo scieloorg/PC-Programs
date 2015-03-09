@@ -30,11 +30,16 @@ class TOCReport(object):
         for label in equal_data + unique_data:
             toc_data[label] = {}
 
+        print('TOCReport')
+        print(self.articles)
         for xml_name, article in self.articles.items():
             if article is None:
                 invalid.append(xml_name)
             else:
                 art_data = article.summary()
+                print(toc_data[label])
+                print(art_data[label])
+
                 for label in toc_data.keys():
                     toc_data[label] = article_utils.add_new_value_to_index(toc_data[label], art_data[label], xml_name)
 

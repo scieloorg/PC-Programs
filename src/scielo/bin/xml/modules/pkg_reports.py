@@ -230,7 +230,7 @@ def get_lists_report_text(articles_reports, articles_sheets):
 
 
 def processing_result_location(result_path):
-    return 'Result of the processing: ' + html_reports.link('file:///' + os.path.dirname(result_path), os.path.dirname(result_path))
+    return 'Result of the processing: ' + html_reports.link('file:///' + result_path, result_path)
 
 
 def save_report(filename, title, content):

@@ -12,14 +12,38 @@ debug = False
 
 
 def format_value(content):
-    content = xml_utils.remove_unrequired_characters(content)
-    if '&' in content:
-        content, replace = xml_utils.convert_entities_to_chars(content)
+    try:
+        if not isinstance(content, unicode):
+            content = content.decode('utf-8')
+    except Exception as e:
+        print('format_value 1:')
+        print(e)
+        print(content)
 
-    if not isinstance(content, unicode):
-        content = content.decode('utf-8')
+    try:
+        content = xml_utils.remove_unrequired_characters(content)
+    except Exception as e:
+        print('format_value: remove_unrequired_characters:')
+        print(e)
+        print(content)
 
-    return u_encode(content, 'iso-8859-1')
+    try:
+        if '&' in content:
+            content, replace = xml_utils.convert_entities_to_chars(content)
+    except Exception as e:
+        print('format_value:  convert_entities_to_chars:')
+        print(e)
+        print(content)
+
+    try:
+        if not isinstance(content, unicode):
+            content = content.decode('utf-8')
+    except Exception as e:
+        print('format_value: 2:')
+        print(e)
+        print(content)
+
+    return content
 
 
 class IDFile(object):
@@ -49,47 +73,40 @@ class IDFile(object):
         return ''.join(r)
 
     def tag_data(self, tag, data):
-        s = ''
-        try:
-            if isinstance(data, dict):
-                s = self.tag_value(tag, self.format_subfields(data))
-            elif isinstance(data, list):
-                for item in data:
-                    s += self.tag_data(tag, item)
-            else:
-                s = self.tag_value(tag, data)
-        except Exception as e:
-            print('-'*80)
-            print('tag_data')
-            print(tag)
-            print(data)
-            print(e)
-            print('-'*80)
-            x
+        occs = []
+        if not isinstance(data, list):
+            data = [data]
+        for item in data:
+            occs.append(self.tag_occ(tag, item))
+
+        return ''.join(occs)
+
+    def tag_occ(self, tag, data):
+        if isinstance(data, dict):
+            s = self.tag_content(tag, self.format_subfields(data))
+        else:
+            s = self.tag_content(tag, data)
         return s
 
     def format_subfields(self, subf_and_value_list):
-        first = ''
-        value = ''
         try:
+            first = u''
+            value = u''
             for k, v in subf_and_value_list.items():
-                if v is not None:
-                    if k == '_':
-                        first = format_value(v)
-                    else:
-                        if len(k) == 1 and k in 'abcdefghijklmnopqrstuvwxyz123456789':
-                            value += '^' + k + format_value(v)
+                if v is not None and v != '' and len(k) == 1:
+                    v = format_value(v)
+                    if k in 'abcdefghijklmnopqrstuvwxyz123456789':
+                        value += u'^' + k + v
+                    elif k in '_':
+                        first = v
         except Exception as e:
-            print('-'*80)
             print('format_subfields')
-            print(subf_and_value_list)
-            print(value)
             print(e)
-            print('-'*80)
-            x
+            print(subf_and_value_list)
+            print(first + value)
         return first + value
 
-    def tag_value(self, tag, value):
+    def tag_content(self, tag, value):
         r = ''
         s = value
         if int(tag) <= 999:
@@ -98,62 +115,57 @@ class IDFile(object):
                     tag = '000' + tag
                     tag = tag[-3:]
                     r = '!v' + tag + '!' + format_value(value) + '\n'
-
-                    if tag == '70':
-                        print(value)
-                        print(r)
                 except Exception as e:
-                    print('tag_value: ')
+                    print('tag_content: ')
                     print(e)
                     print(s)
                     print(value)
                     print(type(s))
                     print(type(value))
-                    x
         return r
 
     def read(self, filename):
         rec_list = []
         record = {}
         for line in open(filename, 'r').readlines():
-            s = line.replace('\n', '').replace('\r', '')
-            if not isinstance(s, unicode):
-                s = s.decode('iso-8859-1')
-            if '!ID ' in s:
+            line = line.strip()
+            if not isinstance(line, unicode):
+                line = line.decode('iso-8859-1')
+            if '!ID ' in line:
                 if len(record) > 0:
                     rec_list.append(self.simplify_record(record))
                 record = {}
             else:
-                item = s.split('!')
+                item = line.split('!')
                 tag = None
                 if len(item) == 3:
                     ign, tag, content = item
                 elif len(item) > 3:
                     tag = item[1]
-                    content = s[6:]
-                if tag is not None:
+                    content = line[6:]
+                if tag is not None and content != '':
                     tag = str(int(tag[1:]))
                     if not tag in record.keys():
                         record[tag] = []
                     content = content.replace('^', 'BREAKSUBF^')
                     subfields = content.split('BREAKSUBF')
-                    if len(subfields) == 1:
-                        content = subfields[0]
-                    else:
-                        content = {}
-                        for subf in subfields:
-                            if subf.startswith('^'):
-                                c = subf[1:2]
-                                v = subf[2:]
+                    content = {}
+                    for subf in subfields:
+                        if subf.startswith('^'):
+                            c = subf[1]
+                            v = subf[2:]
+                        else:
+                            if len(subfields) == 1:
+                                c = ''
+                                v = subf
                             else:
                                 c = '_'
                                 v = subf
+                        if len(c) > 0:
                             content[c] = v
+                        else:
+                            content = v
                     record[tag].append(content)
-                else:
-                    print(filename)
-                    print(s)
-                    print(s[6:])
 
         # last record
         if len(record) > 0:
@@ -166,6 +178,7 @@ class IDFile(object):
         for tag, content in record.items():
             if len(content) == 1:
                 record[tag] = content[0]
+        #print(record)
         return record
 
     def save(self, filename, records):
@@ -174,12 +187,13 @@ class IDFile(object):
             os.makedirs(path)
         content = self._format_file(records)
 
+        if isinstance(content, unicode):
+            content = u_encode(content, 'iso-8859-1')
         try:
             open(filename, 'w').write(content)
         except Exception as e:
             print('saving...')
             print(e)
-            x
 
 
 class CISIS(object):

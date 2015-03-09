@@ -4,7 +4,7 @@ import os
 import shutil
 from datetime import datetime
 
-from isis_models import IssueRecord, ArticleRecords2Article
+from isis_models import IssueModels, ArticleRecords2Article
 import ftp_service
 import email_service
 import serial_files
@@ -15,12 +15,25 @@ import isis
 import xmlcvrter_cfg
 import article_utils
 import fs_utils
+import xml_utils
 import xpmaker
 
 
 converter_report_lines = []
 CURRENT_PATH = os.path.dirname(__file__).replace('\\', '/')
 CONFIG_PATH = CURRENT_PATH + '/../config/'
+converter_env = None
+
+
+class ConverterEnv(object):
+
+    def __init__(self):
+        self.version = None
+        self.db_issue = None
+        self.db_article = None
+        self.db_isis = None
+        self.website_folders_path = None
+        self.serial_path = None
 
 
 def register_log(message):
@@ -29,32 +42,32 @@ def register_log(message):
     converter_report_lines.append(message)
 
 
-def get_i_record(db_issue, issue_label, print_issn, e_issn):
+def find_i_record(issue_label, print_issn, e_issn):
     i_record = None
-    issues_records = db_issue.search(issue_label, print_issn, e_issn)
+    issues_records = converter_env.db_issue.search(issue_label, print_issn, e_issn)
     if len(issues_records) > 0:
         i_record = issues_records[0]
     return i_record
 
 
-def get_issue_record(issue_label, p_issn, e_issn, db_issue):
+def find_issue_models(issue_label, p_issn, e_issn):
     #print(issue_data)
 
     i_record = None
-    issue_record = None
+    issue_models = None
     msg = None
 
     if issue_label is None:
         msg = html_reports.format_message('FATAL ERROR: Unable to identify the article\'s issue')
     else:
-        i_record = get_i_record(db_issue, issue_label, p_issn, e_issn)
+        i_record = find_i_record(issue_label, p_issn, e_issn)
 
         if i_record is None:
             msg = html_reports.format_message('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + db_issue.db_filename + '. (' + '/'.join([i for i in [p_issn, e_issn] if i is not None]) + ')')
         else:
-            issue_record = IssueRecord(i_record)
+            issue_models = IssueModels(i_record)
 
-    return (issue_record, msg)
+    return (issue_models, msg)
 
 
 def get_creation_date(id_filename):
@@ -99,10 +112,11 @@ def previous_and_current_package(issue_files, pkg_path, previous_articles, curre
         else:
             new.append(name)
 
+    complete_package = xpmaker.get_articles(whole_pkg_path)
     for name in os.listdir(whole_pkg_path):
         os.unlink(whole_pkg_path + '/' + name)
 
-    return (new, update, xpmaker.get_articles(whole_pkg_path))
+    return (new, update, complete_package)
 
 
 def validate_previous_and_current_package(issue_files, pkg_path):
@@ -115,6 +129,8 @@ def validate_previous_and_current_package(issue_files, pkg_path):
 
     previous_articles = xpmaker.get_articles(issue_files.base_source_path)
     current_articles = xpmaker.get_articles(pkg_path)
+    print(previous_articles)
+    print(current_articles)
 
     inconsistent_orders = check_previous_articles_order(previous_articles, current_articles)
     if len(inconsistent_orders) > 0:
@@ -124,12 +140,20 @@ def validate_previous_and_current_package(issue_files, pkg_path):
         msg += html_reports.format_message('WARNING: Found inconsistence: current  ' + name + ' has order=' + orders[1])
 
     new, update, complete_package = previous_and_current_package(issue_files, pkg_path, previous_articles, current_articles)
+
+    print(new)
+    print(update)
+    print(complete_package)
     previous = [name for name in previous_articles.keys() if not name in new and not name in update]
+    print(previous)
 
     toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(complete_package, validate_order=True)
 
+    print([toc_f, toc_e, toc_w, toc_report])
     toc_w += len(inconsistent_orders)
     toc_report = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, msg + toc_report)
+
+    print([toc_f, toc_e, toc_w, toc_report])
 
     status_report = ''
     for status, items in {'new': new, 'previous': previous, 'update': update}.items():
@@ -138,36 +162,44 @@ def validate_previous_and_current_package(issue_files, pkg_path):
     return (toc_f, status_report + toc_report, inconsistent_orders)
 
 
-def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ahead, db_article, version):
+def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
+    xml_filenames = sorted([src_path + '/' + f for f in os.listdir(src_path) if f.endswith('.xml') and not 'incorrect' in f])
+    pkg_items = xpmaker.make_package(xml_filenames, report_path, wrk_path, pkg_path, version, 'acron')
+    return (xml_filenames, pkg_items)
+
+
+def get_issue_models(pkg_items):
+    issue_label, p_issn, e_issn = xpmaker.package_issue(pkg_items)
+    return find_issue_models(issue_label, p_issn, e_issn)
+
+
+def get_issue_files(issue_models, pkg_path):
+    journal_files = serial_files.JournalFiles(converter_env.serial_path, issue_models.issue.acron)
+    return serial_files.IssueFiles(journal_files, issue_models.issue.issue_label, pkg_path, converter_env.website_folders_path)
+
+
+def convert_package(src_path):
     display_title = False
     validate_order = True
-    dtd_files = xml_versions.DTDFiles('scielo', version)
     conversion_report = ''
     msg = []
+    acron_issue_label = 'acron issue label'
+    scilista_item = None
 
+    dtd_files = xml_versions.DTDFiles('scielo', converter_env.version)
     result_path = src_path + '_xml_converter_result'
     wrk_path = result_path + '/work'
     pkg_path = result_path + '/scielo_package'
     report_path = result_path + '/errors'
-
     old_report_path = report_path
-    acron_issue_label = 'acron issue label'
-    xml_filenames = sorted([src_path + '/' + f for f in os.listdir(src_path) if f.endswith('.xml') and not 'incorrect' in f])
-    scilista_item = None
-    # normaliza os arquivos xml
 
-    result_path = os.path.dirname(src_path)
-    pkg_items = xpmaker.make_package(xml_filenames, report_path, wrk_path, pkg_path, version, 'acron')
+    xml_filenames, pkg_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
+    issue_models, issue_error_msg = get_issue_models(pkg_items)
 
-    issue_label, p_issn, e_issn = xpmaker.package_issue(pkg_items)
-    issue_record, issue_error_msg = get_issue_record(issue_label, p_issn, e_issn, db_issue)
-
-    if issue_record is None:
+    if issue_models is None:
         msg.append(issue_error_msg)
     else:
-        issue = issue_record.issue
-        journal_files = serial_files.JournalFiles(serial_path, issue.acron)
-        issue_files = serial_files.IssueFiles(journal_files, issue.issue_label, pkg_path, website_folders_path)
+        issue_files = get_issue_files(issue_models, pkg_path)
         result_path = issue_files.issue_path
 
         toc_f, toc_report, inconsistent_orders = validate_previous_and_current_package(issue_files, pkg_path)
@@ -183,13 +215,12 @@ def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ah
             issue_files.save_source_files(pkg_path)
             report_path = issue_files.base_reports_path
 
-            ahead_manager = serial_files.AheadManager(db_ahead, journal_files, db_issue, issue.issn_id)
             articles = {doc_file_info.xml_name: article for article, doc_file_info in pkg_items}
-            scilista_item, conversion_report = convert_articles(ahead_manager, db_article, issue_files, issue_record, articles, articles_stats, inconsistent_orders)
+            scilista_item, conversion_report = convert_articles(issue_files, issue_models, articles, articles_stats, inconsistent_orders)
             if scilista_item is not None:
                 acron_issue_label = scilista_item
 
-    filename = report_path + '/xml_converter.html'
+    report_filename = report_path + '/xml_converter.html'
     texts = []
     texts.append(pkg_reports.xml_list(pkg_path, xml_filenames))
     texts.append(html_reports.join_texts(msg))
@@ -202,13 +233,13 @@ def convert_package(serial_path, src_path, website_folders_path, db_issue, db_ah
         content = html_reports.get_unicode(content)
         content = content.replace(html_reports.get_unicode(old_report_path), html_reports.get_unicode(report_path))
 
-    pkg_reports.save_report(filename, ['XML Conversion (XML to Database)', acron_issue_label], content)
-    pkg_reports.display_report(filename)
+    pkg_reports.save_report(report_filename, ['XML Conversion (XML to Database)', acron_issue_label], content)
+    pkg_reports.display_report(report_filename)
 
-    return (filename, report_path, scilista_item)
+    return (report_filename, report_path, scilista_item)
 
 
-def convert_articles(ahead_manager, db_article, issue_files, issue_record, articles, articles_stats, inconsistent_orders):
+def convert_articles(issue_files, issue_models, articles, articles_stats, inconsistent_orders):
     index = 0
     status_text = ['converted', 'not converted', 'first version', 'previous version (aop)', 'previous version (aop) unmatched', 'previous version (aop) without PID', 'previous version (aop) partially matched', ]
     order = ['converted', 'not converted', 'new', 'matched', 'unmatched', 'invalid', 'partially matched']
@@ -220,6 +251,8 @@ def convert_articles(ahead_manager, db_article, issue_files, issue_record, artic
     ex_ahead = 0
     article_id_created = 0
     n = '/' + str(len(articles))
+
+    ahead_manager = serial_files.AheadManager(converter_env.db_isis, converter_env.db_issue, issue_files.journal_files, issue_models.issue.issn_id)
 
     text = ''
     for xml_name, article in articles.items():
@@ -235,7 +268,7 @@ def convert_articles(ahead_manager, db_article, issue_files, issue_record, artic
         valid_ahead, ahead_status, ahead_msg, ahead_comparison = ahead_manager.get_valid_ahead(article, xml_name)
         articles_by_status[ahead_status].append(xml_name)
 
-        section_code, issue_validations_msg = validate_xml_issue_data(issue_record, article)
+        section_code, issue_validations_msg = validate_xml_issue_data(issue_models, article)
 
         msg += html_reports.tag('h4', 'checking ex-ahead')
         msg += ''.join([html_reports.format_message(item) for item in ahead_msg])
@@ -254,7 +287,7 @@ def convert_articles(ahead_manager, db_article, issue_files, issue_record, artic
 
             creation_date = get_creation_date(article_files.id_filename)
 
-            done = db_article.create_id_file(issue_record.record, article, article_files, creation_date)
+            done = converter_env.db_article.create_id_file(issue_models.record, article, article_files, creation_date)
             if done:
                 if xml_name in inconsistent_orders.keys():
                     prev_order, curr_order = inconsistent_orders[xml_name]
@@ -291,13 +324,13 @@ def convert_articles(ahead_manager, db_article, issue_files, issue_record, artic
 
     scilista_item = None
     if article_id_created == len(articles):
-        if db_article.finish_conversion(issue_record.record, issue_files):
-            scilista_item = issue_record.issue.acron + ' ' + issue_record.issue.issue_label
+        if converter_env.db_article.finish_conversion(issue_models.record, issue_files):
+            scilista_item = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
 
     if scilista_item:
         summary += issue_files.copy_files_to_web()
     else:
-        summary += html_reports.format_message('FATAL ERROR: ' + issue_record.issue.issue_label + ' will not be updated or published in the website.')
+        summary += html_reports.format_message('FATAL ERROR: ' + issue_models.issue.issue_label + ' will not be updated or published in the website.')
 
     summary += html_reports.tag('h4', 'Resulting folders/files:')
     summary += html_reports.link('file:///' + issue_files.issue_path, issue_files.issue_path)
@@ -313,21 +346,21 @@ def display_list(title, items):
     return '\n'.join(messages)
 
 
-def validate_xml_issue_data(issue_record, article):
+def validate_xml_issue_data(issue_models, article):
     msg = []
     if article is not None:
 
         # issue date
-        if article.issue_pub_dateiso != issue_record.issue.dateiso:
+        if article.issue_pub_dateiso != issue_models.issue.dateiso:
             msg.append(html_reports.tag('h5', 'publication date'))
-            msg.append('ERROR: Invalid value of publication date: ' + article.issue_pub_dateiso + '. Expected value: ' + issue_record.issue.dateiso)
+            msg.append('ERROR: Invalid value of publication date: ' + article.issue_pub_dateiso + '. Expected value: ' + issue_models.issue.dateiso)
 
         # section
         msg.append(html_reports.tag('h5', 'section'))
         msg.append('section: ' + article.toc_section + '.')
-        section_code, matched_rate, most_similar = issue_record.most_similar_section_code(article.toc_section)
+        section_code, matched_rate, most_similar = issue_models.most_similar_section_code(article.toc_section)
         if matched_rate != 1:
-            msg.append('Registered sections:\n' + '; '.join(issue_record.section_titles))
+            msg.append('Registered sections:\n' + '; '.join(issue_models.section_titles))
             if section_code is None:
                 if not article.is_ahead:
                     msg.append('ERROR: ' + article.toc_section + ' is not a registered section.')
@@ -507,49 +540,53 @@ def xml_converter_read_configuration(filename):
     return r
 
 
-def xml_converter_read_inputs(args):
+def xml_converter_get_inputs(args):
+    # python xml_converter.py <xml_src>
+    # python xml_converter.py <collection_acron>
+    package_path = None
+    script = None
+    collection_acron = None
+    if len(args) == 2:
+        script, param = args
+        if os.path.isfile(param) or os.path.isdir(param):
+            package_path = param
+        else:
+            collection_acron = param
+
+    return (script, package_path, collection_acron)
+
+
+def xml_converter_validate_inputs(package_path, collection_acron):
     # python xml_converter.py <xml_src>
     # python xml_converter.py <collection_acron>
     messages = []
-    package_paths = None
-    script = None
-    param = None
-
-    if len(args) == 2:
-        script, param = args
-        if os.path.isdir(param):
-            param = param.replace('\\', '/')
-            if os.path.isdir(param):
-                package_paths = find_xml_source_paths(param)
-            configuration_filename = CURRENT_PATH + '/../../scielo_paths.ini'
-
-        else:
-            configuration_filename = CURRENT_PATH + '/../config/' + param + '.xmlproc.ini'
-
-        if not os.path.isfile(configuration_filename):
-            messages.append('\n===== ATTENTION =====\n')
-            messages.append('ERROR: unable to read XML Converter configuration file: ' + configuration_filename)
-            param = None
-
-    if param is None:
-        messages.append('\n===== ATTENTION =====\n')
-        messages.append('ERROR: Incorrect parameters')
-        messages.append('\nUsages:')
-        messages.append('python xml_converter.py <xml_folder>')
-        messages.append('where:')
-        messages.append('  <xml_folder> = path of folder which contains')
-        messages.append('or')
-        messages.append('python xml_converter.py <collection_acron>')
-        messages.append('where:')
-        messages.append('  <collection_acron> = collection acron')
-
+    errors = []
+    if package_path is None:
+        if collection_acron is None:
+            errors.append('Missing collection acronym')
     else:
-        if package_paths is not None:
-            if len(package_paths) == 0:
-                messages.append('ERROR: Missing <xml folder>')
-    error_messages = '\n'.join(messages)
+        errors = xml_utils.is_valid_xml_path(package_path)
+    return errors
 
-    return (package_paths, configuration_filename, error_messages)
+
+def xml_config_filename(collection_acron):
+    filename = configuration_filename = CURRENT_PATH + '/../../scielo_paths.ini'
+
+    if not os.path.isfile(filename):
+        if not collection_acron is None:
+            filename = CURRENT_PATH + '/../config/' + collection_acron + '.xmlproc.ini'
+    return filename
+
+
+def configuration_file_error(configuration_filename):
+    messages = []
+    if configuration_filename is None:
+        messages.append('\n===== ATTENTION =====\n')
+        messages.append('ERROR: No configuration file was informed')
+    elif not os.path.isfile(configuration_filename):
+        messages.append('\n===== ATTENTION =====\n')
+        messages.append('ERROR: unable to read XML Converter configuration file: ' + configuration_filename)
+    return messages
 
 
 def is_valid_pkg_file(filename):
@@ -586,65 +623,63 @@ def call_download_packages(config, email):
 
 
 def call_converter(args, version='1.0'):
-    messages = []
-    package_paths, configuration_filename, error_messages = xml_converter_read_inputs(args)
-    if len(error_messages) > 0:
-        messages.append(error_messages)
+    script, package_path, collection_acron = xml_converter_get_inputs(args)
+    if package_path is None and collection_acron is None:
+        # GUI
+        import xml_gui
+        xml_gui.open_main_window(True, None)
+
     else:
-        config = xml_converter_read_configuration(configuration_filename)
+        errors = xml_converter_validate_inputs(package_path, collection_acron)
+        if len(errors) > 0:
+            messages = []
+            messages.append('\n===== ATTENTION =====\n')
+            messages.append('ERROR: Incorrect parameters')
+            messages.append('\nUsages:')
+            messages.append('python xml_converter.py <xml_folder> | <collection_acron>')
+            messages.append('where:')
+            messages.append('  <xml_folder> = path of folder which contains')
+            messages.append('  <collection_acron> = collection acron')
 
-        isis_dao = isis.IsisDAO(isis.UCISIS(isis.CISIS(config.cisis1030), isis.CISIS(config.cisis1660)))
+            messages.append('\n'.join(errors))
+            print('\n'.join(messages))
+        else:
+            execute_converter(package_path, collection_acron)
 
-        update_issue_copy(config.issue_db, config.issue_db_copy)
-        isis_dao.update_indexes(config.issue_db_copy, config.issue_db_copy + '.fst')
-        issue_dao = serial_files.IssueDAO(isis_dao, config.issue_db_copy)
 
-        article_dao = serial_files.ArticleDAO(isis_dao)
+def execute_converter(package_path, collection_name=None):
+    #collection_names = {'Brasil': 'scl', u'Salud Pública': 'spa'}
+    collection_names = {}
+    print(collection_name)
+    collection_acron = collection_names.get(collection_name)
+    configuration_filename = xml_config_filename(collection_acron)
+    error = configuration_file_error(configuration_filename)
+    if len(error) > 0:
+        print('\n'.join(error))
+    else:
+        prepare_converter(configuration_filename)
+        if not isinstance(package_path, list):
+            package_paths = [package_path]
 
-        email = None
-        email_header = ''
-        if config.data('EMAIL_SERVICE') == 'on':
-            email = email_service.EmailService(config.data('SENDER_NAME'), config.data('SENDER_EMAIL'))
-            if os.path.isfile(CONFIG_PATH + '/' + config.data('EMAIL_HEADER')):
-                email_header = open(CONFIG_PATH + '/' + config.data('EMAIL_HEADER'), 'r').read()
+        for package_path in package_paths:
+            report_filename, report_path, scilista_item = convert_package(package_path)
 
-        if package_paths is None:
-            package_paths = call_download_packages(config, email)
 
-        print(package_paths)
-        if package_paths is not None:
-            scilista_items = []
-            for pkg_path in package_paths:
-                pkg_name = os.path.basename(pkg_path)
-                messages.append('*'*80)
-                messages.append(pkg_name + '\n')
-                report_filename, report_path, scilista_item = convert_package(config.serial_path, pkg_path, config.website_folders_path, issue_dao, isis_dao, article_dao, version)
-                messages.append('*'*80)
+def prepare_converter(configuration_filename):
+    global converter_env
 
-                if scilista_item is not None:
-                    scilista_items.append(scilista_item)
+    if converter_env is None:
+        converter_env = ConverterEnv()
+    config = xml_converter_read_configuration(configuration_filename)
 
-                    if email is not None:
-                        email_text = open(report_filename, 'r').read()
-                        email.send(config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT') + ' ' + pkg_name, email_header + email_text, attaches=[report_path + '/' + f for f in os.listdir(report_path)])
-            if config.data('COL_SCILISTA') is not None and len(scilista_items) > 0:
-                if not os.path.isdir(os.path.dirname(config.data('COL_SCILISTA'))):
-                    os.makedirs(os.path.dirname(config.data('COL_SCILISTA')))
-                open(config.data('COL_SCILISTA'), 'a+').write('\n'.join(scilista_items))
+    converter_env.db_isis = isis.IsisDAO(isis.UCISIS(isis.CISIS(config.cisis1030), isis.CISIS(config.cisis1660)))
 
-            if len(scilista_items) > 0:
-                if config.data('GERAPADRAO_PROC_PATH') is not None:
-                    gera_padrao(config.data('GERAPADRAO_STATUS'), config.data('SOURCE_PATH'), config.data('COL_SCILISTA'), config.serial_path, config.data('GERAPADRAO_PROC_PATH'))
-                    if email is not None:
-                        email_header = open(CONFIG_PATH + '/' + config.data('EMAIL_HEADER_GERAPADRAO'), 'r').read()
-                        email_text = '\n'.join(scilista_items)
-                        email.send(config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT_GERAPADRAO'), email_header + email_text)
+    update_issue_copy(config.issue_db, config.issue_db_copy)
+    converter_env.db_isis.update_indexes(config.issue_db_copy, config.issue_db_copy + '.fst')
+    converter_env.db_issue = serial_files.IssueDAO(converter_env.db_isis, config.issue_db_copy)
 
-                if config.data('TRANSFER_DESTINATION') is not None:
-                    transfer_website_bases(config.website_folders_path + '/bases', config.data('TRANSFER_USER'), config.data('TRANSFER_SERVER'), config.data('TRANSFER_DESTINATION') + '/bases')
+    converter_env.db_article = serial_files.ArticleDAO(converter_env.db_isis)
 
-                    for scilista_item in scilista_items:
-                        acron, issue_id = scilista_item.split(' ')
-                        if os.path.isdir(config.website_folders_path):
-                            transfer_website_files(acron, issue_id, config.website_folders_path, config.data('TRANSFER_USER'), config.data('TRANSFER_SERVER'), config.data('TRANSFER_DESTINATION'))
-    print('\n'.join(messages))
+    converter_env.website_folders_path = config.website_folders_path
+    converter_env.serial_path = config.serial_path
+    converter_env.version = '1.0'

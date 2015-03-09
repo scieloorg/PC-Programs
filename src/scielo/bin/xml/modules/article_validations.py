@@ -643,7 +643,7 @@ class ArticleContentValidation(object):
             else:
                 if not _id in rid_list:
                     if node.tag in alert_tags:
-                        message.append((node.tag, 'ERROR', 'Missing @rid=' + _id))
+                        message.append((node.tag, 'ERROR', 'Missing xref[@rid="' + _id + '"]'))
         return message
 
 

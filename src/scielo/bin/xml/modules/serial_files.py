@@ -114,7 +114,7 @@ class Ahead(object):
 
 class AheadManager(object):
 
-    def __init__(self, dao, journal_files, issue_db, issn_id):
+    def __init__(self, dao, issue_db, journal_files, issn_id):
         self.journal_files = journal_files
         self.dao = dao
         self.issue_db = issue_db

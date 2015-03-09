@@ -399,3 +399,33 @@ def pretty_print(content):
     if tag is not None:
         pretty = pretty.replace('<' + tag + '>', '').replace('</' + tag + '>', '')
     return pretty
+
+
+def is_valid_xml_dir(xml_path):
+    r = False
+    if os.path.isfile(xml_path):
+        r = xml_path.endswith('.xml')
+    return r
+
+
+def is_valid_xml_file(xml_path):
+    total = 0
+    if os.path.isdir(xml_path):
+        total = len([item for item in os.listdir(xml_path) if item.endswith('.xml')])
+    return total > 0
+
+
+def is_valid_xml_path(xml_path):
+    errors = []
+    if xml_path is None:
+        errors.append('Missing XML location.')
+    else:
+        if os.path.isfile(xml_path):
+            if not xml_path.endswith('.xml'):
+                errors.append('Invalid file. XML file required.')
+        elif not is_valid_xml_dir(xml_path):
+            errors.append('Invalid folder. Folder must have XML files.')
+    return errors
+
+
+
