@@ -1340,6 +1340,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="abstract">
 		<xsl:param name="language"/>
+		<abstract>
 		<xsl:choose>
 			<xsl:when test="sectitle">
 				<xsl:apply-templates select="*|text()"/>
@@ -1350,6 +1351,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				</p>
 			</xsl:otherwise>
 		</xsl:choose>
+		</abstract>
 	</xsl:template>
 	<xsl:template match="xmlabstr" mode="trans">
 		<trans-abstract xml:lang="{@language}">
