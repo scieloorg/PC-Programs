@@ -97,6 +97,7 @@ class Affiliation(object):
         self.city = ''
         self.state = ''
         self.country = ''
+        self.i_country = ''
         self.orgname = ''
         self.norgname = ''
         self.orgdiv1 = ''

@@ -174,7 +174,7 @@ class Article2ArticleRecords(object):
         self._metadata['14']['l'] = self.article.lpage
         self._metadata['14']['e'] = self.article.elocation_id
 
-        self._metadata['70'] = self.article.affiliations
+        self._metadata['70'] = format_affiliations(self.article.affiliations)
         self._metadata['240'] = normalized_affiliations(self.article.affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
@@ -350,7 +350,7 @@ class Article2ArticleRecords(object):
         return r
 
 
-class IssueRecord(object):
+class IssueModels(object):
 
     def __init__(self, record):
         self.record = record
@@ -418,7 +418,7 @@ def fix_affiliations(affiliations):
             _orgname = item.norgname if item.norgname is not None else item.orgname
 
         _country = item.country if norm_country is None else norm_country
-        _country_code = item.country_code if norm_country_code is None else norm_country_code
+        _country_code = item.i_country if norm_country_code is None else norm_country_code
         if _country_code is None:
             _country_code = item.country
 
@@ -447,6 +447,25 @@ def fix_affiliations(affiliations):
     return affs
 
 
+def format_affiliations(affiliations):
+    affs = []
+    for item in affiliations:
+        a = {}
+        a['l'] = item.label
+        a['i'] = item.id
+        a['e'] = item.email
+        a['3'] = item.orgdiv3
+        a['2'] = item.orgdiv2
+        a['1'] = item.orgdiv1
+        a['p'] = item.country if item.i_country is None else item.i_country
+        a['q'] = item.country if item.i_country is not None else None
+        a['c'] = item.city
+        a['s'] = item.state
+        a['_'] = item.orgname
+        affs.append(a)
+    return affs
+
+
 def normalized_affiliations(affiliations):
     import affiliations_services
 
@@ -457,10 +476,10 @@ def normalized_affiliations(affiliations):
         if norm_orgname in [item.orgname, item.norgname]:
             _orgname = norm_orgname
 
-        if item.country_code is None:
+        if item.i_country is None:
             _country_code = norm_country_code
         else:
-            _country_code = norm_country_code if norm_country_code == item.country_code else None
+            _country_code = norm_country_code if norm_country_code == item.i_country else None
 
         if item.id is not None and _country_code is not None and _orgname is not None:
             a['i'] = item.id

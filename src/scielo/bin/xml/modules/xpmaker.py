@@ -872,19 +872,12 @@ def package_issue(package_info):
     return (issue_label, e_issn, print_issn)
 
 
-def make_packages(path, acron, version):
-    path = fix_path(path)
+def make_packages(path, acron, version='1.0'):
+    path = fs_utils.fix_path(path)
     xml_files, results_path = get_xml_package_folders_info(path)
     if len(xml_files) > 0:
         pack_and_validate(xml_files, results_path, acron, version)
     print('finished')
-
-
-def fix_path(path):
-    path = path.replace('\\', '/')
-    if path.endswith('/'):
-        path = path[0:-1]
-    return path
 
 
 def get_inputs(args):
@@ -901,7 +894,7 @@ def call_make_packages(args, version):
     if path is None and acron is None:
         # GUI
         import xml_gui
-        xml_gui.open_main_window(version, False, None)
+        xml_gui.open_main_window(False, None)
 
     else:
         errors = validate_inputs(path, acron)
@@ -917,33 +910,11 @@ def call_make_packages(args, version):
             messages.append('\n'.join(errors))
             print('\n'.join(messages))
         else:
-            make_packages(path, acron, version)
-
-
-def is_valid_xml_dir(xml_path):
-    r = False
-    if os.path.isfile(xml_path):
-        r = xml_path.endswith('.xml')
-    return r
-
-
-def is_valid_xml_file(xml_path):
-    total = 0
-    if os.path.isdir(xml_path):
-        total = len([item for item in os.listdir(xml_path) if item.endswith('.xml')])
-    return total > 0
+            make_packages(path, acron)
 
 
 def validate_inputs(xml_path, acron):
-    errors = []
-    if xml_path is None:
-        errors.append('Missing XML location.')
-    else:
-        if os.path.isfile(xml_path):
-            if not xml_path.endswith('.xml'):
-                errors.append('Invalid file. XML file required.')
-        elif not is_valid_xml_dir(xml_path):
-            errors.append('Invalid folder. Folder must have XML files.')
+    errors = xml_utils.is_valid_xml_path(xml_path)
     if acron is None:
         errors.append('Missing acronym.')
     return errors

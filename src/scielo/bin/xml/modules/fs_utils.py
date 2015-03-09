@@ -53,3 +53,10 @@ def extract_package(pkg_file, pkg_work_path):
                 shutil.rmtree(temp_dir)
                 r = True
     return r
+
+
+def fix_path(path):
+    path = path.replace('\\', '/')
+    if path.endswith('/'):
+        path = path[0:-1]
+    return path
