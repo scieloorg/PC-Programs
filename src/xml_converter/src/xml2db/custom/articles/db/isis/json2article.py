@@ -66,6 +66,8 @@ def reset_issue_id(json_data):
             del json_data['32']
     if compl != '':
         json_data['41'] = compl
+    if vol == '' and json_data.get('31') is not None:
+        del json_data['31']
     return json_data
 
 

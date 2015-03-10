@@ -31,7 +31,6 @@ abnt6023
 acitat;#FALSE#;#TRUE#
 
 abstract
-sectitle;#FALSE#;#FALSE#
 
 accepted
 
@@ -907,7 +906,6 @@ contract;#FALSE#;#FALSE#
 fundsrc;#FALSE#;#TRUE#
 
 docresp
-abstract;#FALSE#;#TRUE#
 ack;#FALSE#;#FALSE#
 app;#FALSE#;#TRUE#
 author;#FALSE#;#TRUE#

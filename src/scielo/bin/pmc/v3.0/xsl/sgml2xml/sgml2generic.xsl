@@ -744,11 +744,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="back//abstract[@language=$language or not(@language)]|back//xmlabstr[@language=$language or not(@language)]"/>
 			
 			<xsl:apply-templates select="abstract[@language!=$language]|xmlabstr[@language!=$language]"
-				mode="trans"/>
+				><xsl:with-param name="trans" select="'trans-'"/></xsl:apply-templates>
 			<xsl:apply-templates select="front//abstract[@language!=$language]|front//xmlabstr[@language!=$language]"
-				mode="trans"/>
+				><xsl:with-param name="trans" select="'trans-'"/></xsl:apply-templates>
 			<xsl:apply-templates select="back//abstract[@language!=$language]|back//xmlabstr[@language!=$language]"
-				mode="trans"/>
+				><xsl:with-param name="trans" select="'trans-'"/></xsl:apply-templates>
 			
 			<xsl:apply-templates select="front/keygrp|back/keygrp|kwdgrp">
 				<xsl:with-param name="language" select="$language"/>
@@ -1324,10 +1324,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:call-template>
 		</date>
 	</xsl:template>
-	<xsl:template match="abstract" mode="trans">
-		<trans-abstract xml:lang="{@language}">
+	<xsl:template match="abstract|xmlabstr">
+		<xsl:param name="trans" select="''"/>
+		
+		<xsl:element name="{$trans}abstract">
+			<xsl:if test="$trans!=''">
+				<xsl:attribute name="xml:lang"><xsl:value-of select="@language"/></xsl:attribute>
+			</xsl:if>
 			<xsl:choose>
-				<xsl:when test="sectitle">
+				<xsl:when test="sectitle or p or sec">
 					<xsl:apply-templates select="*|text()"/>
 				</xsl:when>
 				<xsl:otherwise>
@@ -1336,34 +1341,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					</p>
 				</xsl:otherwise>
 			</xsl:choose>
-		</trans-abstract>
+		</xsl:element>
 	</xsl:template>
-	<xsl:template match="abstract">
-		<xsl:param name="language"/>
-		<abstract>
-		<xsl:choose>
-			<xsl:when test="sectitle">
-				<xsl:apply-templates select="*|text()"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<p>
-					<xsl:apply-templates select="*|text()"/>
-				</p>
-			</xsl:otherwise>
-		</xsl:choose>
-		</abstract>
-	</xsl:template>
-	<xsl:template match="xmlabstr" mode="trans">
-		<trans-abstract xml:lang="{@language}">
-			<xsl:apply-templates select="*"/>
-		</trans-abstract>
-	</xsl:template>
-	<xsl:template match="xmlabstr">
-		<xsl:param name="language"/>
-		<abstract>
-			<xsl:apply-templates select="*"/>
-		</abstract>
-	</xsl:template>
+	
 	<xsl:template match="keygrp">
 		<kwd-group xml:lang="{keyword[1]/@language}">
 			<xsl:apply-templates select="keyword"/>
