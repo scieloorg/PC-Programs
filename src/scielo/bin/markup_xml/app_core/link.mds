@@ -16,9 +16,6 @@ language
 xmlabstr
 language
 
-txtblock
-blcktype
-
 date
 dateiso;specyear
 
@@ -165,9 +162,6 @@ language
 
 doctitle
 language
-
-cc
-ccid;cversion;cccompl
 
 ref
 id;reftype
