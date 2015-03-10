@@ -614,21 +614,27 @@ class ArticleContentValidation(object):
     @property
     def validate_xref_reftype(self):
         message = []
-        types = {'bibr': 'ref', 'table': 'table-wrap', 'author-notes': 'fn', 'contrib': 'fn', 'other': None, 'statement': 'fn'}
-        id_and_tag = {node.attrib.get('id'):node.tag for node in self.article.elements_which_has_id_attribute if node.attrib.get('id') is not None}
+        reftypes_and_tag = {'aff': 'aff', 'app': 'app', 'author-notes': 'fn', 'bibr': 'ref', 'boxed-text': 'boxed-text', 'contrib': 'fn', 'corresp': 'corresp', 'disp-formula': 'disp-formula', 'fig': 'fig', 'fn': 'fn', 'list': 'list', 'other': '?', 'supplementary-material': 'supplementary-material', 'table': 'table-wrap'}
+
+        id_and_elem_name = {node.attrib.get('id'):node.tag for node in self.article.elements_which_has_id_attribute if node.attrib.get('id') is not None}
 
         for xref in self.article.xref_nodes:
-            tag = id_and_tag.get(xref['rid'])
-            if tag is None:
-                valid = True
-            elif tag == xref['ref-type']:
-                valid = True
-            elif tag == types.get(xref['ref-type']):
-                valid = True
-            else:
-                valid = False
-            if not valid:
-                message.append(('xref/@rid', 'ERROR', xref['rid'] + '(' + xref['ref-type'] + ')' + ': invalid value of @rid for ' + xref['xml']))
+            if xref['rid'] is None:
+                message.append('xref/@rid', 'FATAL ERROR', 'Missing @rid in ' + xref['xml'])
+            if xref['ref-type'] is None:
+                message.append('xref/@ref-type', 'FATAL ERROR', 'Missing @ref-type in ' + xref['xml'])
+            if xref['rid'] is not None and xref['ref-type'] is not None:
+                tag = id_and_elem_name.get(xref['rid'])
+                if tag is None:
+                    message.append(('xref/@rid', 'FATAL ERROR', 'Missing element[@id=' + xref['rid'] + ' and @ref-type=' + xref['ref-type'] + ']'))
+                elif reftypes_and_tag.get(xref['ref-type']) is None:
+                    # no need to validate
+                    valid = True
+                elif tag == reftypes_and_tag.get(xref['ref-type']):
+                    valid = True
+                elif tag != reftypes_and_tag.get(xref['ref-type']):
+                    reftypes = [reftype for reftype, _tag in reftypes_and_tag.items() if _tag == tag]
+                    message.append(('xref/@ref-type', 'ERROR', 'Unmatched @ref-type (' + xref['ref-type'] + ') and tag (' + tag + '): xref[@ref-type=' + xref['ref-type'] + '] is for ' + reftypes_and_tag.get(xref['ref-type']) + ', and valid values of @ref-type of ' + tag + '  is ' + '|'.join(reftypes)))
         return message
 
     @property

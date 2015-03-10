@@ -82,16 +82,19 @@ class XMLAppGUI(object):
         from tkFileDialog import askdirectory
         self.selected_folder = askdirectory(parent=self.tkFrame, initialdir=self.default_xml_path, title='Select a SPS XML package folder')
         self.tkFrame.input_folder.config(text=self.selected_folder)
+        self.display_message(self.acron + '\n' + self.selected_folder, 'green')
 
     def read_inputs(self):
         if self.selected_folder is None:
             self.selected_folder = ''
         self.acron = self.tkFrame.input_acron.get()
-        self.collection_name = self.tkFrame.input_collection_name.current()
+        if self.is_converter_enabled:
+            self.collection_name = self.tkFrame.input_collection_name.current()
 
     def display_message(self, msg, color):
         if len(msg) > 0:
             self.tkFrame.label_msg.config(text=msg, bg=color)
+            self.tkFrame.label_msg.update_idletasks()
 
     def get_message(self, action_name, result):
         if result:

@@ -777,7 +777,7 @@ def generate_reports(pkg_items, dtd_files, scielo_pkg_path, report_path, do_toc_
 
     content = pkg_reports.xml_list(scielo_pkg_path)
     content += pkg_reports.package_validations_report(pkg_items, dtd_files, validate_order, do_toc_report)
-    content += pkg_reports.processing_result_location(scielo_pkg_path)
+    content += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
 
     filename = report_path + '/xml_package_maker.html'
     pkg_reports.save_report(filename, 'XML Package Maker Report', content)
