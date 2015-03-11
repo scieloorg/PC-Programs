@@ -655,7 +655,7 @@ class ArticleContentValidation(object):
         return message
 
     def href_list(self, path):
-        href_items = {'ok': [], 'not found': []}
+        href_items = {'ok': [], 'warning': [], 'error': [], 'fatal error': []}
         for hrefitem in self.article.hrefs:
             filename = hrefitem.src
             if hrefitem.is_internal_file:
@@ -663,12 +663,12 @@ class ArticleContentValidation(object):
                 if os.path.isfile(filename):
                     href_items['ok'].append(hrefitem)
                 else:
-                    href_items['not found'].append(hrefitem)
+                    href_items['fatal error'].append(hrefitem)
             else:
                 if article_utils.url_check(hrefitem.src, 10):
                     href_items['ok'].append(hrefitem)
                 else:
-                    href_items['not found'].append(hrefitem)
+                    href_items['warning'].append(hrefitem)
         return href_items
 
 

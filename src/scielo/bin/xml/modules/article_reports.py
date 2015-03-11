@@ -523,11 +523,11 @@ class ArticleSheetData(object):
                 else:
                     row['display'] = html_reports.link(filename, hrefitem.src)
 
-                if status == 'not found':
+                if not status == 'ok':
                     if hrefitem.is_internal_file:
-                        row['display'] += '<p>ERROR: ' + hrefitem.src + ' not found in package</p>'
+                        row['display'] += '<p>' + status.upper() + ': ' + hrefitem.src + ' not found in package</p>'
                     else:
-                        row['display'] += '<p>ERROR: ' + hrefitem.src + ' is not working</p>'
+                        row['display'] += '<p>' + status.upper() + ': ' + hrefitem.src + ' is not working</p>'
 
                 row['xml'] = hrefitem.xml
                 r.append(row)
