@@ -107,29 +107,6 @@ def xml_list(pkg_path, xml_filenames=None):
     return r
 
 
-def package_validations_report(pkg_items, dtd_files, validate_order, create_toc_report):
-    #FIXME
-    articles = {doc_file_info.xml_name: article for article, doc_file_info in pkg_items}
-    toc_stats_and_report = validate_package(articles, validate_order)
-
-    articles_stats, articles_reports, articles_sheets = validate_pkg_items(pkg_items, dtd_files, validate_order, not create_toc_report)
-
-    texts = []
-
-    toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
-
-    if create_toc_report:
-        texts.append(get_toc_report_text(toc_f, toc_e, toc_w, toc_report))
-
-    if toc_f == 0:
-        texts.append(get_articles_report_text(articles_reports, articles_stats))
-
-    if create_toc_report:
-        texts.append(get_lists_report_text(articles_reports, articles_sheets))
-
-    return html_reports.join_texts(texts)
-
-
 def validate_package(articles, validate_order):
     return article_reports.toc_report_data(articles, validate_order)
 
@@ -180,8 +157,6 @@ def get_articles_report_text(articles_reports, articles_stats):
         data_f, data_e, data_w = articles_stats[new_name][1]
 
         rep1, rep2, rep3 = articles_reports[new_name]
-        rep_index = 0
-
         if xml_f + xml_e + xml_w > 0:
             t = []
             v = []
