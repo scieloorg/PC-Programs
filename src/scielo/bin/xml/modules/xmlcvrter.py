@@ -129,8 +129,6 @@ def validate_previous_and_current_package(issue_files, pkg_path):
 
     previous_articles = xpmaker.get_articles(issue_files.base_source_path)
     current_articles = xpmaker.get_articles(pkg_path)
-    print(previous_articles)
-    print(current_articles)
 
     inconsistent_orders = check_previous_articles_order(previous_articles, current_articles)
     if len(inconsistent_orders) > 0:
@@ -141,19 +139,12 @@ def validate_previous_and_current_package(issue_files, pkg_path):
 
     new, update, complete_package = previous_and_current_package(issue_files, pkg_path, previous_articles, current_articles)
 
-    print(new)
-    print(update)
-    print(complete_package)
     previous = [name for name in previous_articles.keys() if not name in new and not name in update]
-    print(previous)
 
     toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(complete_package, validate_order=True)
 
-    print([toc_f, toc_e, toc_w, toc_report])
     toc_w += len(inconsistent_orders)
     toc_report = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, msg + toc_report)
-
-    print([toc_f, toc_e, toc_w, toc_report])
 
     status_report = ''
     for status, items in {'new': new, 'previous': previous, 'update': update}.items():

@@ -1,5 +1,7 @@
 # coding=utf-8
 
+import os
+
 import attributes
 import article_utils
 
@@ -651,6 +653,23 @@ class ArticleContentValidation(object):
                     if node.tag in alert_tags:
                         message.append((node.tag, 'ERROR', 'Missing xref[@rid="' + _id + '"]'))
         return message
+
+    def href_list(self, path):
+        href_items = {'ok': [], 'not found': []}
+        for hrefitem in self.article.hrefs:
+            filename = hrefitem.src
+            if hrefitem.is_internal_file:
+                filename = hrefitem.filename(path)
+                if os.path.isfile(filename):
+                    href_items['ok'].append(hrefitem)
+                else:
+                    href_items['not found'].append(hrefitem)
+            else:
+                if article_utils.url_check(hrefitem.src, 10):
+                    href_items['ok'].append(hrefitem)
+                else:
+                    href_items['not found'].append(hrefitem)
+        return href_items
 
 
 class ReferenceContentValidation(object):

@@ -5,14 +5,16 @@ import urllib
 from datetime import datetime
 from mimetypes import MimeTypes
 
+import fs_utils
+import java_xml_utils
+import html_reports
+
 import article
 import serial_files
-import java_xml_utils
 import xml_utils
 import xml_versions
-import pkg_reports
 import xpchecker
-import fs_utils
+import pkg_reports
 
 
 mime = MimeTypes()
@@ -741,9 +743,28 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         pkg_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
-        generate_reports(pkg_items, scielo_dtd_files, scielo_pkg_path, report_path, do_toc_report, not from_markup, from_converter)
+        #generate_reports(pkg_items, scielo_dtd_files, scielo_pkg_path, report_path, do_toc_report, not from_markup, from_converter)
+        articles = {doc_file_info.xml_name: article for article, doc_file_info in pkg_items}
 
-        if not from_converter:
+        texts = []
+        toc_f = 0
+        if not from_markup:
+            toc_stats_and_report = pkg_reports.validate_package(articles, from_converter)
+            toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
+            texts.append(pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, toc_report))
+
+        if toc_f == 0:
+            articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(pkg_items, scielo_dtd_files, from_converter, from_markup)
+            texts.append(pkg_reports.get_articles_report_text(articles_reports, articles_stats))
+
+            if not from_markup:
+                texts.append(pkg_reports.get_lists_report_text(articles_reports, articles_sheets))
+
+        pkg_validation_report = html_reports.join_texts(texts)
+
+        generate_reports(scielo_pkg_path, report_path, not from_markup, pkg_validation_report)
+
+        if not from_converter and toc_f == 0:
             zip_packages(scielo_pkg_path)
             make_pmc_package(pkg_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
 
@@ -771,12 +792,10 @@ def zip_packages(src_pkg_path):
         shutil.rmtree(new_pkg_path)
 
 
-def generate_reports(pkg_items, dtd_files, scielo_pkg_path, report_path, do_toc_report, display_report, from_converter):
-
-    validate_order = from_converter
+def generate_reports(scielo_pkg_path, report_path, display_report, pkg_validation_report):
 
     content = pkg_reports.xml_list(scielo_pkg_path)
-    content += pkg_reports.package_validations_report(pkg_items, dtd_files, validate_order, do_toc_report)
+    content += pkg_validation_report
     content += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
 
     filename = report_path + '/xml_package_maker.html'

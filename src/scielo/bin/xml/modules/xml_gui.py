@@ -80,8 +80,11 @@ class XMLAppGUI(object):
 
     def open_file_explorer(self):
         from tkFileDialog import askdirectory
+        if self.selected_folder is not None:
+            self.default_xml_path = self.selected_folder
         self.selected_folder = askdirectory(parent=self.tkFrame, initialdir=self.default_xml_path, title='Select a SPS XML package folder')
         self.tkFrame.input_folder.config(text=self.selected_folder)
+        self.read_inputs()
         self.display_message(self.acron + '\n' + self.selected_folder, 'green')
 
     def read_inputs(self):

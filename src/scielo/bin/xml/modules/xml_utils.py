@@ -401,14 +401,14 @@ def pretty_print(content):
     return pretty
 
 
-def is_valid_xml_dir(xml_path):
+def is_valid_xml_file(xml_path):
     r = False
     if os.path.isfile(xml_path):
         r = xml_path.endswith('.xml')
     return r
 
 
-def is_valid_xml_file(xml_path):
+def is_valid_xml_dir(xml_path):
     total = 0
     if os.path.isdir(xml_path):
         total = len([item for item in os.listdir(xml_path) if item.endswith('.xml')])
@@ -426,6 +426,3 @@ def is_valid_xml_path(xml_path):
         elif not is_valid_xml_dir(xml_path):
             errors.append('Invalid folder. Folder must have XML files.')
     return errors
-
-
-

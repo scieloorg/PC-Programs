@@ -316,16 +316,5 @@ def format_p_label_value(label, value):
     return tag('p', display_label_value(label, value))
 
 
-def display_href(href, is_internal, is_image):
-    r = ''
-    if href is not None and href != '':
-        if is_internal:
-            _href = 'file:///' + href
-            href = os.path.basename(href)
-        else:
-            _href = href
-        if is_image:
-            r = '<img src="' + _href + '"/>'
-        else:
-            r = '<a target="_blank" href="' + _href + '">' + href + '</a>'
-    return r
+def image(path):
+    return '<img src="' + path + '"/>'

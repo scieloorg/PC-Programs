@@ -30,8 +30,6 @@ class TOCReport(object):
         for label in equal_data + unique_data:
             toc_data[label] = {}
 
-        print('TOCReport')
-        print(self.articles)
         for xml_name, article in self.articles.items():
             if article is None:
                 invalid.append(xml_name)
@@ -300,7 +298,7 @@ class ArticleDisplayReport(object):
                 table_data += html_reports.tag('div', t.table, 'element-table')
             if t.graphic:
                 #table_data += html_reports.display_labeled_value('table-wrap/graphic', t.graphic.display('file:///' + self.xml_path), 'value')
-                table_data += html_reports.display_labeled_value('table-wrap/graphic', html_reports.display_href(self.xml_path, True, True), 'value')
+                table_data += html_reports.display_labeled_value('table-wrap/graphic', html_reports.image('file:///' + self.xml_path), 'value')
             r += header + html_reports.tag('div', table_data, 'block')
         return r
 
@@ -505,30 +503,37 @@ class ArticleSheetData(object):
             row['ID'] = t.graphic_parent.id
             row['label/caption'] = t.graphic_parent.label + '/' + t.graphic_parent.caption
             #row['table/graphic'] = t.table + t.graphic_parent.graphic.display('file:///' + path)
-            row['table/graphic'] = t.table + html_reports.display_href(path, True, True)
+            row['table/graphic'] = t.table + html_reports.image('file:///' + path)
             r.append(row)
         return (t_header, ['label/caption', 'table/graphic'], r)
 
     def hrefs_sheet_data(self, path):
         t_header = ['href', 'display', 'xml']
         r = []
+        for status, href_items in self.article_validation.href_list(path).items():
+            for hrefitem in href_items:
+                row = {}
+                row['href'] = hrefitem.src
 
-        for hrefitem in self.article.hrefs:
-            row = {}
-            row['href'] = hrefitem.src
-            msg = ''
+                if hrefitem.is_internal_file:
+                    filename = 'file:///' + hrefitem.filename(path)
+                else:
+                    filename = hrefitem.src
 
-            filename = hrefitem.src
-            if hrefitem.is_internal_file:
-                filename = hrefitem.filename(path)
-                if not os.path.isfile(filename):
-                    msg = 'ERROR: ' + hrefitem.src + ' not found in package'
-            else:
-                if not article_utils.url_check(hrefitem.src, 50):
-                    msg = 'ERROR: ' + hrefitem.src + ' is not working'
-            row['display'] = html_reports.display_href(filename, hrefitem.is_internal_file, hrefitem.is_image) + '<p>' + msg + '</p>'
-            row['xml'] = hrefitem.xml
-            r.append(row)
+                row['display'] = ''
+                if hrefitem.is_image:
+                    row['display'] = html_reports.image(filename)
+                else:
+                    row['display'] = html_reports.link(filename, hrefitem.src)
+
+                if status == 'not found':
+                    if hrefitem.is_internal_file:
+                        row['display'] += '<p>ERROR: ' + hrefitem.src + ' not found in package</p>'
+                    else:
+                        row['display'] += '<p>ERROR: ' + hrefitem.src + ' is not working</p>'
+
+                row['xml'] = hrefitem.xml
+                r.append(row)
         return (t_header, ['display', 'xml'], r)
 
     def package_files(self, files):
