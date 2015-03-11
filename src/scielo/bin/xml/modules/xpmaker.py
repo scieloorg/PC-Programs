@@ -62,7 +62,7 @@ def rename_embedded_img_href(content, xml_name, new_href_list):
     content = content.replace('<graphic href="?', '--FIXHREF--<graphic href="?')
     _items = content.split('--FIXHREF--')
     new = content
-    print(new_href_list)
+
     if len(new_href_list) == (len(_items) - 1):
         new = ''
         i = 0
@@ -74,11 +74,6 @@ def rename_embedded_img_href(content, xml_name, new_href_list):
                 i += 1
             else:
                 new += item
-    else:
-        print('rename_embedded_img_href')
-        print(new_href_list)
-        print(len(new_href_list))
-        print(len(_items))
     return new
 
 
@@ -126,7 +121,6 @@ def extract_embedded_images(xml_name, content, html_content, html_filename, dest
             for item in embedded_img_files:
                 if os.path.isfile(embedded_img_path + '/' + item):
                     shutil.copyfile(embedded_img_path + '/' + item, dest_path + '/' + xml_name + item)
-                    print(dest_path + '/' + xml_name + item)
         content = content.replace('"">', '">')
         content = content.replace('href=""?', 'href="?')
 
