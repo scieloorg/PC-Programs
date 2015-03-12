@@ -34,6 +34,7 @@ class ConverterEnv(object):
         self.db_isis = None
         self.website_folders_path = None
         self.serial_path = None
+        self.is_windows = None
 
 
 def register_log(message):
@@ -315,13 +316,15 @@ def convert_articles(issue_files, issue_models, articles, articles_stats, incons
 
     scilista_item = None
     if article_id_created == len(articles):
-        if converter_env.db_article.finish_conversion(issue_models.record, issue_files):
+        if converter_env.db_article.finish_conversion(issue_models.record, issue_files) > 0:
             scilista_item = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
+            if not converter_env.is_windows:
+                converter_env.db_article.generate_windows_version(issue_files)
 
-    if scilista_item:
-        summary += issue_files.copy_files_to_web()
-    else:
+    if scilista_item is None:
         summary += html_reports.format_message('FATAL ERROR: ' + issue_models.issue.issue_label + ' will not be updated or published in the website.')
+    else:
+        summary += issue_files.copy_files_to_web()
 
     summary += html_reports.tag('h4', 'Resulting folders/files:')
     summary += html_reports.link('file:///' + issue_files.issue_path, issue_files.issue_path)
@@ -410,6 +413,7 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
     proc_id = datetime.now().isoformat()[11:16].replace(':', '')
     temp_path = temp_path + '/' + proc_id
     queue_path = queue_path + '/' + proc_id
+    pkg_paths = []
 
     if not os.path.isdir(archive_path):
         os.makedirs(archive_path)
@@ -431,6 +435,7 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
 
             if fs_utils.extract_package(temp_path + '/' + pkg_file, queue_pkg_path):
                 shutil.copyfile(temp_path + '/' + pkg_file, archive_path + '/' + pkg_file)
+                pkg_paths.append(queue_pkg_path)
             else:
                 invalid_pkg_files.append(pkg_file)
                 fs_utils.delete_file_or_folder(queue_pkg_path)
@@ -441,7 +446,7 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
                 fs_utils.delete_file_or_folder(temp_path + '/' + pkg_file)
     fs_utils.delete_file_or_folder(temp_path)
 
-    return (queue_path, invalid_pkg_files)
+    return (pkg_paths, invalid_pkg_files)
 
 
 def find_xml_source_paths(path):
@@ -569,7 +574,7 @@ def xml_config_filename(collection_acron):
     return filename
 
 
-def configuration_file_error(configuration_filename):
+def is_valid_configuration_file(configuration_filename):
     messages = []
     if configuration_filename is None:
         messages.append('\n===== ATTENTION =====\n')
@@ -620,7 +625,7 @@ def call_converter(args, version='1.0'):
         import xml_gui
         xml_gui.open_main_window(True, None)
 
-    else:
+    elif package_path is not None and collection_acron is not None:
         errors = xml_converter_validate_inputs(package_path, collection_acron)
         if len(errors) > 0:
             messages = []
@@ -636,19 +641,31 @@ def call_converter(args, version='1.0'):
             print('\n'.join(messages))
         else:
             execute_converter(package_path, collection_acron)
+    elif collection_acron is not None:
+        execute_converter(package_path, collection_acron)
 
 
 def execute_converter(package_path, collection_name=None):
     #collection_names = {'Brasil': 'scl', u'Salud Pública': 'spa'}
     collection_names = {}
-    print(collection_name)
+
     collection_acron = collection_names.get(collection_name)
+
     configuration_filename = xml_config_filename(collection_acron)
-    error = configuration_file_error(configuration_filename)
+    error = is_valid_configuration_file(configuration_filename)
+
     if len(error) > 0:
         print('\n'.join(error))
     else:
-        prepare_converter(configuration_filename)
+        config = xml_converter_read_configuration(configuration_filename)
+        prepare_converter(config)
+        if package_path is None:
+            package_paths, invalid_pkg_files = queue_packages(download_path, temp_path, queue_path, archive_path)
+
+            #FIXME
+            #if len(invalid_pkg_files) > 0:
+            #    send_email(email, config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT_NOT_PROCESSED'), CONFIG_PATH + '/' + config.data('EMAIL_HEADER_NOT_PROCESSED'), '\n'.join(invalid_pkg_files))
+
         if not isinstance(package_path, list):
             package_paths = [package_path]
 
@@ -656,12 +673,11 @@ def execute_converter(package_path, collection_name=None):
             report_filename, report_path, scilista_item = convert_package(package_path)
 
 
-def prepare_converter(configuration_filename):
+def prepare_converter(config):
     global converter_env
 
     if converter_env is None:
         converter_env = ConverterEnv()
-    config = xml_converter_read_configuration(configuration_filename)
 
     converter_env.db_isis = isis.IsisDAO(isis.UCISIS(isis.CISIS(config.cisis1030), isis.CISIS(config.cisis1660)))
 
@@ -674,3 +690,5 @@ def prepare_converter(configuration_filename):
     converter_env.website_folders_path = config.website_folders_path
     converter_env.serial_path = config.serial_path
     converter_env.version = '1.0'
+    converter_env.is_windows = config.is_windows
+    #converter_env.email_service = 

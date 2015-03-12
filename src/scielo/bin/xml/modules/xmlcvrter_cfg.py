@@ -23,6 +23,7 @@ class XMLConverterConfiguration(object):
                 if 'PATH' in key:
                     if not os.path.isdir(value):
                         os.makedirs(value)
+        self.is_windows = self._data.get('Serial Directory') is not None
 
     def data(self, key):
         return self._data.get(key)
@@ -76,3 +77,20 @@ class XMLConverterConfiguration(object):
             r = False
             print('ERROR: Unable to find ' + self.serial_path)
         return r
+
+    @property
+    def download_path(self):
+        return self._data.get('DOWNLOAD_PATH')
+
+    @property
+    def temp_path(self):
+        return self._data.get('TEMP_PATH')
+
+    @property
+    def queue_path(self):
+        return self._data.get('QUEUE_PATH')
+
+    @property
+    def archive_path(self):
+        return self._data.get('ARCHIVE_PATH')
+
