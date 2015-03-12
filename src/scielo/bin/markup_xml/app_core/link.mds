@@ -164,7 +164,7 @@ doctitle
 language
 
 ref
-id;reftype
+id;reftype;refstatus
 
 authors
 role
@@ -180,4 +180,7 @@ align;colspan;rowspan
 
 sig
 role
+
+boxedtxt
+id
 

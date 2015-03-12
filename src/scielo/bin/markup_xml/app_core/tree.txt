@@ -4,6 +4,8 @@ article;#FALSE#;#FALSE#
 text;#FALSE#;#FALSE#
 
 ifloat
+*boxedtxt;#TRUE#;#TRUE#
+boxedtxt;#TRUE#;#TRUE#
 cltrial;#TRUE#;#FALSE#
 corresp;#FALSE#;#FALSE#
 deflist;#FALSE#;#TRUE#
@@ -25,6 +27,7 @@ supplmat;#FALSE#;#TRUE#
 media;#FALSE#;#TRUE#
 tabwrap;#FALSE#;#TRUE#
 uri;#FALSE#;#TRUE#
+versegrp;#FALSE#;#TRUE#
 xref;#TRUE#;#TRUE#
 
 abnt6023
@@ -171,6 +174,7 @@ licenses;#FALSE#;#FALSE#
 bbibcom;#FALSE#;#FALSE#
 glossary;#FALSE#;#FALSE#
 app;#FALSE#;#TRUE#
+appgrp;#FALSE#;#TRUE#
 
 bbibcom
 abstract;#FALSE#;#TRUE#
@@ -261,6 +265,7 @@ figgrp
 label;#FALSE#;#FALSE#
 caption;#FALSE#;#FALSE#
 graphic;#FALSE#;#FALSE#
+alttext;#FALSE#;#FALSE#
 
 figgrps
 label;#FALSE#;#FALSE#
@@ -311,6 +316,7 @@ term
 def
 
 graphic
+alttext;#FALSE#;#FALSE#
 
 hist
 received;#FALSE#;#FALSE#
@@ -601,18 +607,16 @@ notes;#FALSE#;#TRUE#
 previous
 
 product
-*author;#FALSE#;#TRUE#
-author;#FALSE#;#TRUE#
-corpauth;#FALSE#;#TRUE#
-title;#FALSE#;#TRUE#
-sertitle;#FALSE#;#TRUE#
+authors;#TRUE#;#TRUE#
+chptitle;#FALSE#;#TRUE#
+source;#FALSE#;#TRUE#
 pubname;#FALSE#;#TRUE#
-city;#FALSE#;#TRUE#
-state;#FALSE#;#TRUE#
-country;#FALSE#;#TRUE#
+publoc;#FALSE#;#TRUE#
 date;#FALSE#;#FALSE#
 isbn;#FALSE#;#TRUE#
-othinfo;#FALSE#;#TRUE#
+extent;#FALSE#;#TRUE#
+series;#FALSE#;#FALSE#
+moreinfo;#FALSE#;#TRUE#
 
 projname
 
@@ -897,6 +901,7 @@ kwd;#FALSE#;#TRUE#
 
 doctitle
 subtitle;#FALSE#;#FALSE#
+alttitle;#FALSE#;#FALSE#
 
 funding
 award;#FALSE#;#TRUE#
@@ -962,8 +967,7 @@ authors;#TRUE#;#FALSE#
 arttitle;#TRUE#;#FALSE#
 chptitle;#TRUE#;#FALSE#
 cited;#FALSE#;#TRUE#
-coltitle;#FALSE#;#TRUE#
-colvolid;#FALSE#;#TRUE#
+series;#FALSE#;#TRUE#
 confgrp;#TRUE#;#FALSE#
 contract;#FALSE#;#FALSE#
 date;#TRUE#;#TRUE#
@@ -1050,3 +1054,26 @@ publoc
 
 *pubname-loc
 
+boxedtxt
+sec;#FALSE#;#TRUE#
+p;#FALSE#;#TRUE#
+
+*boxedtxt
+
+appgrp
+app;#RUE#;#TRUE#
+
+series
+
+versegrp
+versline;#FALSE#;#TRUE#
+versegrp;#FALSE;#TRUE#
+attrb;#FALSE;#TRUE#
+
+versline
+
+attrb
+
+alttitle
+
+alttext

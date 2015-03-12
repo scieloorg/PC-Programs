@@ -190,3 +190,14 @@ publoc;Identifica o local da editora
 *publoc-name;Identifica automaticamente o local e o nome da editora
 *pubname-loc;Identifica automaticamente o nome da editora e de seu local
 *fn;Identifica automaticamente todos as notas de rodapé e seus links
+boxedtxt;Identifica uma caixa de texto
+*boxedtxt;Identifica automaticamente uma caixa de texto
+appgrp;Identifica um grupo de apêndices
+series;Identifica seriada
+versegrp;Identifica canção, poema, verso
+versline;Identifica líneas de canção, poema, verso
+attrb;Identifica informação relacionada com a origem de uma citação, poesia, ou similar.
+alttext;Identifica um texto alternativo para descrever uma imagem.
+alttitle;Identifica um título alternativo do documento
+element;Identifica quaisquer elementos de XML
+attrib;Identifica quaisquer attributos de XML
