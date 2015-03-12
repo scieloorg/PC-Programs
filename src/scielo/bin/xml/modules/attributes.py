@@ -58,7 +58,7 @@ PUBLICATION_TYPE.append('software')
 PUBLICATION_TYPE.append('webpage')
 PUBLICATION_TYPE.append('database')
 PUBLICATION_TYPE.append('confproc')
-PUBLICATION_TYPE.append('legaldoc')
+PUBLICATION_TYPE.append('legal-doc')
 PUBLICATION_TYPE.append('other')
 
 

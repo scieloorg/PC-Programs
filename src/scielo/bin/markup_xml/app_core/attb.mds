@@ -24,7 +24,7 @@ specyear
 
 reftype
 journal;book;conference proceedings;scientific and technical report;thesis;patent;newspaper article;legal document;database or retrieval system;software;web page;other
-journal;book;confproc;report;thesis;patent;newspaper;legaldoc;database;software;webpage;other
+journal;book;confproc;report;thesis;patent;newspaper;legal-doc;database;software;webpage;other
 
 colspan
 
