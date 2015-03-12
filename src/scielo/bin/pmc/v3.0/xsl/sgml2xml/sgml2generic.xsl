@@ -247,7 +247,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="anonym | isbn | glossary | term | def | response | p | sec | sup | sub | label | subtitle | edition |  issn | corresp | ack ">
+	<xsl:template match="attrib | series | app | anonym | isbn | glossary | term | def | response | p | sec | sup | sub | label | subtitle | edition |  issn | corresp | ack ">
 		<xsl:param name="id"/>
 		
 		<xsl:element name="{name()}">
@@ -260,14 +260,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="label[.//text()='(']//text()">*</xsl:template>
 	<xsl:template match="label[.//text()='((']//text()">**</xsl:template>
 	
-	<xsl:template match="app">
+	<xsl:template match="appgrp">
 		<xsl:param name="id"/>
 		<app-group>
-			<xsl:element name="{name()}">
-				<xsl:apply-templates select="@* | * | text()">
-					<xsl:with-param name="id" select="$id"/>
-				</xsl:apply-templates>
-			</xsl:element>
+			<xsl:apply-templates select="*|text()">
+				<xsl:with-param name="id" select="$id"/>
+			</xsl:apply-templates>
 		</app-group>
 	</xsl:template>
 	
@@ -1624,7 +1622,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<ref id="B{$id}">
 			<xsl:apply-templates select="label"/>
 			<xsl:apply-templates select="." mode="text-ref"/>
-			<element-citation publication-type="{@reftype}">
+			<element-citation>
+				<xsl:apply-templates select="@*"/>
 				<xsl:apply-templates select="*[name()!='no' and name()!='label' and name()!='text-ref']">
 					<xsl:with-param name="position" select="position()"/>
 				</xsl:apply-templates>
@@ -1677,7 +1676,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="letterto">
 		<source><xsl:value-of select="normalize-space(.)"/></source>
 	</xsl:template>
-	<xsl:template match="found-at|moreinfo">
+	<xsl:template match="found-at|moreinfo|othinfo">
 		<comment><xsl:value-of select="normalize-space(.)"/></comment>
 	</xsl:template>
 	<xsl:template match="ref/contract">
@@ -1689,7 +1688,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:value-of select="normalize-space(.)"/>
 		</label>
 	</xsl:template>
-	<xsl:template match="ref/publoc">
+	<xsl:template match="publoc">
 		<publisher-loc>
 			<xsl:value-of select="normalize-space(.)"/>
 		</publisher-loc>
@@ -1747,7 +1746,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="orgname|orgdiv|text()"/>
 		</collab>
 	</xsl:template>
-	<xsl:template match="*[contains(name(),'citat')]//pubname | ref/pubname">
+	<xsl:template match="pubname">
 		<publisher-name>
 			<xsl:value-of select="normalize-space(.)"/>
 		</publisher-name>
@@ -2676,7 +2675,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="graphic"/>
 		</inline-formula>
 	</xsl:template>
-	<xsl:template match="p/graphic">
+	<xsl:template match="p/graphic | caption/graphic">
 		<inline-graphic>
 			<xsl:apply-templates select="@*"/>
 			<xsl:apply-templates select="." mode="graphic"/>
@@ -3251,12 +3250,10 @@ et al.</copyright-statement>
 		</product>
 	</xsl:template>
 	
-	<xsl:template match="product/*"  mode="product-in-article-meta"><xsl:element name="{name()}"><xsl:value-of select="normalize-space(.)"/></xsl:element>
+	<xsl:template match="product/*"  mode="product-in-article-meta">
+		<xsl:apply-templates select="."/>
 	</xsl:template>
-	<xsl:template match="product/author|product/corpauth"  mode="product-in-article-meta"><xsl:apply-templates select="."></xsl:apply-templates></xsl:template>
-	<xsl:template match="product/othinfo"  mode="product-in-article-meta"><comment><xsl:value-of select="normalize-space(.)"/></comment></xsl:template>
-	<xsl:template match="product/pubname"  mode="product-in-article-meta"><publisher-name><xsl:value-of select="normalize-space(.)"/></publisher-name>
-		</xsl:template>
+	
 	<xsl:template match="product/city | product/state | product/country"  mode="product-in-article-meta">
 		<xsl:choose>
 			<xsl:when test="../city">
@@ -3279,7 +3276,6 @@ et al.</copyright-statement>
 				<publisher-loc><xsl:value-of select="normalize-space(.)"/></publisher-loc>
 			</xsl:when>
 		</xsl:choose>
-		
 	</xsl:template>
 	<xsl:template match="product/date"  mode="product-in-article-meta">
 		<year><xsl:value-of select="substring(@dateiso,1,4)"/></year>
@@ -3473,4 +3469,43 @@ et al.</copyright-statement>
 	<xsl:template match="edition/sup">
 		<xsl:apply-templates select="text()"/>
 	</xsl:template>
+	
+	<xsl:template match="boxedtxt">
+		<boxed-text>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</boxed-text>
+	</xsl:template>
+	
+	<xsl:template match="@reftype">
+		<xsl:attribute name="publication-type"><xsl:value-of select="."/></xsl:attribute>
+	</xsl:template>
+	
+	<xsl:template match="@refstatus">
+		<xsl:if test=".='incomplete'">
+			<xsl:attribute name="specific-use"><xsl:value-of select="."/></xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+	
+	<xsl:template match="versegrp">
+		<verse-group>
+			<xsl:apply-templates select="@*|*|text()"/>
+		</verse-group>
+	</xsl:template>
+	
+	<xsl:template match="versline">
+		<verse-line><xsl:apply-templates select="@*|*|text()"/></verse-line>
+	</xsl:template>
+	
+	<xsl:template match="attrb">
+		<attrib><xsl:apply-templates select="@*|*|text()"/></attrib>
+	</xsl:template>
+	
+	<xsl:template match="alttitle">
+		<alt-title><xsl:apply-templates select="@*|*|text()"/></alt-title>
+	</xsl:template>
+	
+	<xsl:template match="alttext">
+		<alt-text><xsl:apply-templates select="@*|*|text()"/></alt-text>
+	</xsl:template>
+	
 </xsl:stylesheet>

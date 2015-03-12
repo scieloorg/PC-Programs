@@ -187,6 +187,17 @@ orgdiv2;Identifica la segunda división abajo de la organización
 orgdiv3;Identifica la tercera división abajdo de la organización
 text-ref;Identifica la forma original de la cita
 publoc;Identifica la ubicación de la editora
-*publoc-name;Identifica automaticamente la ubicación y el nombre de la editora
-*pubname-loc;Identifica automaticamente el nombre de la editora y de su ubicación
-*fn;Identifica automaticamente todos las notas de pie de página y sus enlaces
+*publoc-name;Identifica automaticámente la ubicación y el nombre de la editora
+*pubname-loc;Identifica automaticámente el nombre de la editora y de su ubicación
+*fn;Identifica automaticámente todos las notas de pie de página y sus enlaces
+boxedtxt;Identifica una caja de texto
+*boxedtxt;Identifica automaticámente una caja de texto
+appgrp;Identifica un grupo de apéndices
+series;Identifica seriada
+versegrp;Identifica canción, poema, verso
+versline;Identifica líneas de canción, poema, verso
+attrb;Identifica información relacionada con la origen de una cita, poesía, o similar.
+alttext;Identifica un texto alternativo para describir una imágen.
+alttitle;Identifica un título alternativo del documento
+element;Identifica cualquier elemento de XML
+attrib;Identifica cualquier attributo de XML
