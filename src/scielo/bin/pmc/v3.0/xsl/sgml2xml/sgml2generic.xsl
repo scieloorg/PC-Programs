@@ -171,14 +171,12 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="litext"></xsl:apply-templates>
 				</xsl:when>
 				<xsl:otherwise>
+					<p>
 						<xsl:apply-templates select="*[name()!='label'] |text()"/>
+					</p>
 				</xsl:otherwise>
 			</xsl:choose>
 		</list-item>
-	</xsl:template>
-	
-	<xsl:template match="li/text()">
-		<p><xsl:value-of select="."/></p>
 	</xsl:template>
 	
 	<xsl:template match="lilabel">
@@ -2675,7 +2673,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="graphic"/>
 		</inline-formula>
 	</xsl:template>
-	<xsl:template match="p/graphic | caption/graphic">
+	<xsl:template match="p/graphic | caption/graphic | li/graphic">
 		<inline-graphic>
 			<xsl:apply-templates select="@*"/>
 			<xsl:apply-templates select="." mode="graphic"/>
