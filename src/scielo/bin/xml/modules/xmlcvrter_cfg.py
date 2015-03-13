@@ -76,6 +76,19 @@ class XMLConverterConfiguration(object):
         if not os.path.isdir(self.serial_path):
             r = False
             print('ERROR: Unable to find ' + self.serial_path)
+        if not self.is_windows:
+            if self.download_path is None:
+                r = False
+                print('ERROR: Missing DOWNLOAD_PATH')
+            if self.temp_path is None:
+                r = False
+                print('ERROR: Missing TEMP_PATH')
+            if self.queue_path is None:
+                r = False
+                print('ERROR: Missing QUEUE_PATH')
+            if self.archive_path is None:
+                r = False
+                print('ERROR: Missing ARCHIVE_PATH')
         return r
 
     @property
@@ -93,4 +106,3 @@ class XMLConverterConfiguration(object):
     @property
     def archive_path(self):
         return self._data.get('ARCHIVE_PATH')
-

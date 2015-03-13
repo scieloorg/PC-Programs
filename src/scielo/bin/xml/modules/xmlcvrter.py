@@ -421,29 +421,25 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
     if not os.path.isdir(temp_path):
         os.makedirs(temp_path)
 
-    for pkg_file in os.listdir(download_path):
-        if is_valid_pkg_file(download_path + '/' + pkg_file):
-            shutil.copyfile(download_path + '/' + pkg_file, temp_path + '/' + pkg_file)
-        fs_utils.delete_file_or_folder(download_path + '/' + pkg_file)
-
-    for pkg_file in os.listdir(temp_path):
-        if is_valid_pkg_file(temp_path + '/' + pkg_file):
-            pkg_name = os.path.basename(pkg_file)
-            queue_pkg_path = queue_path + '/' + pkg_name
-            if not os.path.isdir(queue_pkg_path):
-                os.makedirs(queue_pkg_path)
-
-            if fs_utils.extract_package(temp_path + '/' + pkg_file, queue_pkg_path):
-                shutil.copyfile(temp_path + '/' + pkg_file, archive_path + '/' + pkg_file)
-                pkg_paths.append(queue_pkg_path)
-            else:
-                invalid_pkg_files.append(pkg_file)
-                fs_utils.delete_file_or_folder(queue_pkg_path)
-            fs_utils.delete_file_or_folder(temp_path + '/' + pkg_file)
+    for pkg_name in os.listdir(download_path):
+        if is_valid_pkg_file(download_path + '/' + pkg_name):
+            shutil.copyfile(download_path + '/' + pkg_name, temp_path + '/' + pkg_name)
         else:
-            invalid_pkg_files.append(pkg_file)
-            if os.path.isfile(temp_path + '/' + pkg_file):
-                fs_utils.delete_file_or_folder(temp_path + '/' + pkg_file)
+            pkg_paths.append(pkg_name)
+        fs_utils.delete_file_or_folder(download_path + '/' + pkg_name)
+
+    for pkg_name in os.listdir(temp_path):
+        queued_pkg_path = queue_path + '/' + pkg_name
+        if not os.path.isdir(queued_pkg_path):
+            os.makedirs(queued_pkg_path)
+
+        if fs_utils.extract_package(temp_path + '/' + pkg_name, queued_pkg_path):
+            shutil.copyfile(temp_path + '/' + pkg_name, archive_path + '/' + pkg_name)
+            pkg_paths.append(queued_pkg_path)
+        else:
+            invalid_pkg_files.append(pkg_name)
+            fs_utils.delete_file_or_folder(queued_pkg_path)
+        fs_utils.delete_file_or_folder(temp_path + '/' + pkg_name)
     fs_utils.delete_file_or_folder(temp_path)
 
     return (pkg_paths, invalid_pkg_files)
@@ -570,7 +566,7 @@ def xml_config_filename(collection_acron):
 
     if not os.path.isfile(filename):
         if not collection_acron is None:
-            filename = CURRENT_PATH + '/../config/' + collection_acron + '.xmlproc.ini'
+            filename = CURRENT_PATH + '/../config/' + collection_acron + '.xc.ini'
     return filename
 
 
@@ -648,29 +644,41 @@ def call_converter(args, version='1.0'):
 def execute_converter(package_path, collection_name=None):
     #collection_names = {'Brasil': 'scl', u'Salud Pública': 'spa'}
     collection_names = {}
-
     collection_acron = collection_names.get(collection_name)
-
     configuration_filename = xml_config_filename(collection_acron)
     error = is_valid_configuration_file(configuration_filename)
-
     if len(error) > 0:
         print('\n'.join(error))
     else:
         config = xml_converter_read_configuration(configuration_filename)
         prepare_converter(config)
+        invalid_pkg_files = []
+        scilista = []
         if package_path is None:
-            package_paths, invalid_pkg_files = queue_packages(download_path, temp_path, queue_path, archive_path)
-
+            package_paths, invalid_pkg_files = queue_packages(config.download_path, config.temp_path, config.queue_path, config.archive_path)
             #FIXME
             #if len(invalid_pkg_files) > 0:
             #    send_email(email, config.data('EMAIL_TO'), config.data('EMAIL_SUBJECT_NOT_PROCESSED'), CONFIG_PATH + '/' + config.data('EMAIL_HEADER_NOT_PROCESSED'), '\n'.join(invalid_pkg_files))
-
+        if package_path is None:
+            package_path = []
         if not isinstance(package_path, list):
             package_paths = [package_path]
 
         for package_path in package_paths:
-            report_filename, report_path, scilista_item = convert_package(package_path)
+            try:
+                report_filename, report_path, scilista_item = convert_package(package_path)
+            except Exception as e:
+                invalid_pkg_files.append(os.path.basename(package_path))
+                report_filename, report_path, scilista_item = [None, None, None]
+            if scilista_item is not None:
+                scilista.append(scilista_item)
+                #email result
+        if len(invalid_pkg_files) > 0:
+            #email invalid packages
+
+        if len(scilista) > 0:
+            open(config.scilista_path, 'a+').write('\n'.join(scilista))
+        print('finished')
 
 
 def prepare_converter(config):
