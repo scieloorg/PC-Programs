@@ -17,6 +17,7 @@ class FTPService(object):
         self.pswd = pswd
         self.ftp = FTP(server)
 
+    @property
     def registered_actions(self):
         return '\n'.join(actions)
 
