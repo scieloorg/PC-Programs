@@ -518,7 +518,9 @@ class IssueDAO(object):
 
     def search(self, issue_label, pissn, eissn):
         expr = self.expr(issue_label, pissn, eissn)
-        return self.dao.get_records(self.db_filename, expr)
+        print('debug: expr=')
+        print(expr)
+        return self.dao.get_records(self.db_filename, expr) if expr is not None else None
 
 
 class ArticleDAO(object):

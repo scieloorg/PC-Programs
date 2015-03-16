@@ -240,7 +240,8 @@ def normalize_location(city, state):
             norm_city = city_names[0]
 
     if norm_city is None:
-        msg.append(city + ' was not identified as city.')
+        if not city is None:
+            msg.append(city + ' was not identified as city.')
     if norm_state is None:
         if state is None:
             if not norm_city is None:

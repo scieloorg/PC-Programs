@@ -10,7 +10,7 @@ CURRENT_PATH = os.path.dirname(__file__).replace('\\', '/')
 
 
 def get_mailer(config):
-    if config.is_available_email_service:
+    if config.is_enabled_email_service:
         return email_service.EmailService(config.email_sender_name, config.email_sender_email)
 
 

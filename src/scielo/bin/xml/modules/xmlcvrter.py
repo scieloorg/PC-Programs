@@ -12,7 +12,7 @@ import html_reports
 import pkg_reports
 import xml_versions
 import isis
-import xmlcvrter_cfg
+import xc_config
 import article_utils
 import fs_utils
 import xml_utils
@@ -33,7 +33,7 @@ class ConverterEnv(object):
         self.db_issue = None
         self.db_article = None
         self.db_isis = None
-        self.web_app_path = None
+        self.local_web_app_path = None
         self.serial_path = None
         self.is_windows = None
 
@@ -46,6 +46,8 @@ def register_log(message):
 
 def find_i_record(issue_label, print_issn, e_issn):
     i_record = None
+    print('debug: find_i_record')
+    print([issue_label, print_issn, e_issn])
     issues_records = converter_env.db_issue.search(issue_label, print_issn, e_issn)
     if len(issues_records) > 0:
         i_record = issues_records[0]
@@ -65,7 +67,7 @@ def find_issue_models(issue_label, p_issn, e_issn):
         i_record = find_i_record(issue_label, p_issn, e_issn)
 
         if i_record is None:
-            msg = html_reports.format_message('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + db_issue.db_filename + '. (' + '/'.join([i for i in [p_issn, e_issn] if i is not None]) + ')')
+            msg = html_reports.format_message('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + converter_env.db_issue.db_filename + '. (' + '/'.join([i for i in [p_issn, e_issn] if i is not None]) + ')')
         else:
             issue_models = IssueModels(i_record)
 
@@ -168,10 +170,10 @@ def get_issue_models(pkg_items):
 
 def get_issue_files(issue_models, pkg_path):
     journal_files = serial_files.JournalFiles(converter_env.serial_path, issue_models.issue.acron)
-    return serial_files.IssueFiles(journal_files, issue_models.issue.issue_label, pkg_path, converter_env.web_app_path)
+    return serial_files.IssueFiles(journal_files, issue_models.issue.issue_label, pkg_path, converter_env.local_web_app_path)
 
 
-def convert_package(src_path):
+def convert_package(src_path, delete_src_path):
     display_title = False
     validate_order = True
     conversion_report = ''
@@ -185,6 +187,11 @@ def convert_package(src_path):
     pkg_path = result_path + '/scielo_package'
     report_path = result_path + '/errors'
     old_report_path = report_path
+    old_result_path = result_path
+
+    for path in [result_path, wrk_path, pkg_path, report_path]:
+        if not os.path.isdir(path):
+            os.makedirs(path)
 
     xml_filenames, pkg_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
     issue_models, issue_error_msg = get_issue_models(pkg_items)
@@ -229,7 +236,12 @@ def convert_package(src_path):
     pkg_reports.save_report(report_filename, ['XML Conversion (XML to Database)', acron_issue_label], content)
     pkg_reports.display_report(report_filename)
 
-    return (report_filename, report_path, scilista_item)
+    if delete_src_path:
+        fs_utils.delete_file_or_folder(src_path)
+    if old_result_path != result_path:
+        fs_utils.delete_file_or_folder(old_result_path)
+
+    return (report_filename, scilista_item)
 
 
 def convert_articles(issue_files, issue_models, articles, articles_stats, inconsistent_orders):
@@ -428,7 +440,7 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
 def xml_converter_read_configuration(filename):
     r = None
     if os.path.isfile(filename):
-        r = xmlcvrter_cfg.XMLConverterConfiguration(filename)
+        r = xc_config.XMLConverterConfiguration(filename)
         if not r.valid:
             r = None
     return r
@@ -528,13 +540,15 @@ def call_converter(args, version='1.0'):
 
 def send_message(mailer, to, subject, text, attaches=None):
     if mailer is not None:
-        mailer.send_message(to, subject, text, attaches=None)
+        mailer.send_message(to, subject, text, attaches)
 
 
 def execute_converter(package_paths, collection_name=None):
     #collection_names = {'Brasil': 'scl', u'Salud Pública': 'spa'}
     collection_names = {}
     collection_acron = collection_names.get(collection_name)
+    if collection_acron is None:
+        collection_acron = collection_name
 
     config = xc.get_configuration(collection_acron)
     if config is not None:
@@ -542,7 +556,7 @@ def execute_converter(package_paths, collection_name=None):
         invalid_pkg_files = []
         scilista = []
 
-        mailer = get_mailer(config)
+        mailer = xc.get_mailer(config)
 
         if package_paths is None:
             package_paths, invalid_pkg_files = queue_packages(config.download_path, config.temp_path, config.queue_path, config.archive_path)
@@ -553,21 +567,23 @@ def execute_converter(package_paths, collection_name=None):
 
         for package_path in package_paths:
             package_folder = os.path.basename(package_path)
-            try:
-                report_filename, report_path, scilista_item = convert_package(package_path)
-            except Exception as e:
-                invalid_pkg_files.append(package_folder)
-                report_filename, report_path, scilista_item = [None, None, None]
+            #try:
+            print(package_path)
+            report_filename, scilista_item = convert_package(package_path, not config.is_windows)
+            #except Exception as e:
+            #    invalid_pkg_files.append(package_folder)
+            #    report_filename, report_path, scilista_item = [None, None, None]
+
             if report_filename is not None:
-                send_message(mailer, config.email_to, config.email_subject_evaluation_report + ' ' + package_folder, config.email_text_evaluation_report, report_filename)
+                send_message(mailer, config.email_to, config.email_subject_package_evaluation + ' ' + package_folder, '', report_filename)
             if scilista_item is not None:
                 scilista.append(scilista_item)
 
         if len(invalid_pkg_files) > 0:
             send_message(mailer, config.email_to, config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
 
-        if len(scilista) > 0 and config.scilista_file is not None:
-            open(config.scilista_file, 'a+').write('\n'.join(scilista))
+        if len(scilista) > 0 and config.collection_scilista is not None:
+            open(config.collection_scilista, 'a+').write('\n'.join(scilista) + '\n')
     print('finished')
 
 
@@ -585,7 +601,7 @@ def prepare_env(config):
 
     converter_env.db_article = serial_files.ArticleDAO(converter_env.db_isis)
 
-    converter_env.web_app_path = config.web_app_path
+    converter_env.local_web_app_path = config.local_web_app_path
     converter_env.serial_path = config.serial_path
     converter_env.version = '1.0'
     converter_env.is_windows = config.is_windows

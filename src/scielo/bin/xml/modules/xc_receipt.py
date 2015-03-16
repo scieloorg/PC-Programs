@@ -9,8 +9,9 @@ import xc
 CURRENT_PATH = os.path.dirname(__file__).replace('\\', '/')
 CONFIG_PATH = CURRENT_PATH + '/../config/'
 
+
 def download_packages(config):
-    ftp = ftp_service.FTPService(config.ftp_server, config.ftp_user, config.ftp_user_pswd)
+    ftp = ftp_service.FTPService(config.ftp_server, config.ftp_user, config.ftp_pswd)
     if not os.path.isdir(config.download_path):
         os.makedirs(config.download_path)
     files = ftp.download_files(config.download_path, config.ftp_dir)
@@ -35,7 +36,7 @@ def xml_receipt_validate_inputs(collection_acron):
 
 
 def receive_xml_files(args):
-    collection_acron = xml_receipt_get_inputs(args)
+    script, collection_acron = xml_receipt_get_inputs(args)
     errors = xml_receipt_validate_inputs(collection_acron)
     if len(errors) > 0:
         print(errors)
