@@ -103,7 +103,7 @@ def transfer_website_files(acron, issue_id, local_web_app_path, user, server, re
     # 'rsync -CrvK img/* user@server:/var/www/...../revistas'
     issue_id_path = acron + '/' + issue_id
 
-    folders = ['/htdocs/img/revistas/', '/bases/pdf/', '/bases/xml/']
+    folders = ['/htdocs/reports/', '/htdocs/img/revistas/', '/bases/pdf/', '/bases/xml/']
 
     for folder in folders:
         dest_path = remote_web_app_path + folder + issue_id_path

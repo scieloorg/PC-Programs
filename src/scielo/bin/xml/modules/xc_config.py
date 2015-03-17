@@ -125,6 +125,10 @@ class XMLConverterConfiguration(object):
         return len(errors) == 0
 
     @property
+    def web_app_site(self):
+        return self._data.get('WEB_APP_SITE')
+
+    @property
     def collection_scilista(self):
         if self._data.get('COL_SCILISTA') != self.gerapadrao_scilista:
             return self._data.get('COL_SCILISTA')
@@ -329,5 +333,7 @@ class XMLConverterConfiguration(object):
             errors.append('Missing TRANSFER_SERVER')
         if self.transference_user is None:
             errors.append('Missing TRANSFER_USER')
+        if self.web_app_site is None:
+            errors.append('Missing WEB_APP_SITE')
         print('\n'.join(errors))
         return len(errors) == 0

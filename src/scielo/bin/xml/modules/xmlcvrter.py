@@ -18,6 +18,7 @@ import fs_utils
 import xml_utils
 import xpmaker
 import xc
+import utils
 
 
 converter_report_lines = []
@@ -178,8 +179,9 @@ def convert_package(src_path, delete_src_path):
     validate_order = True
     conversion_report = ''
     msg = []
-    acron_issue_label = 'acron issue label'
+    acron_issue_label = 'unidentified issue'
     scilista_item = None
+    issue_files = None
 
     dtd_files = xml_versions.DTDFiles('scielo', converter_env.version)
     result_path = src_path + '_xml_converter_result'
@@ -201,6 +203,7 @@ def convert_package(src_path, delete_src_path):
     else:
         issue_files = get_issue_files(issue_models, pkg_path)
         result_path = issue_files.issue_path
+        acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
 
         toc_f, toc_report, inconsistent_orders = validate_previous_and_current_package(issue_files, pkg_path)
 
@@ -211,21 +214,20 @@ def convert_package(src_path, delete_src_path):
             msg.append(pkg_reports.get_articles_report_text(articles_reports, articles_stats))
             msg.append(pkg_reports.get_lists_report_text(articles_reports, articles_sheets))
 
-            issue_files.move_reports(report_path)
+            issue_files.save_reports(report_path)
             issue_files.save_source_files(pkg_path)
             report_path = issue_files.base_reports_path
 
             articles = {doc_file_info.xml_name: article for article, doc_file_info in pkg_items}
             scilista_item, conversion_report = convert_articles(issue_files, issue_models, articles, articles_stats, inconsistent_orders)
             if scilista_item is not None:
-                acron_issue_label = scilista_item
+                issue_files.copy_files_to_local_web_app()
 
-    report_filename = report_path + '/xml_converter.html'
+    report_location = report_path + '/xml_converter.html'
     texts = []
     texts.append(pkg_reports.xml_list(pkg_path, xml_filenames))
     texts.append(html_reports.join_texts(msg))
     texts.append(conversion_report)
-    texts.append(pkg_reports.processing_result_location(result_path))
 
     content = html_reports.join_texts(texts)
 
@@ -233,15 +235,45 @@ def convert_package(src_path, delete_src_path):
         content = html_reports.get_unicode(content)
         content = content.replace(html_reports.get_unicode(old_report_path), html_reports.get_unicode(report_path))
 
-    pkg_reports.save_report(report_filename, ['XML Conversion (XML to Database)', acron_issue_label], content)
-    pkg_reports.display_report(report_filename)
+    pkg_reports.save_report(report_location, ['XML Conversion (XML to Database)', acron_issue_label], content)
+    pkg_reports.display_report(report_location)
 
     if delete_src_path:
         fs_utils.delete_file_or_folder(src_path)
     if old_result_path != result_path:
         fs_utils.delete_file_or_folder(old_result_path)
 
-    return (report_filename, scilista_item)
+    if not converter_env.is_windows:
+        link = converter_env.web_app_site + '/reports/' + acron_issue_label.replace(' ', '/') + '/' + os.path.basename(report_location)
+        print(link)
+        report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
+        print(report_location)
+        format_reports_for_web(report_path, pkg_path, acron_issue_label.replace(' ', '/'))
+
+    return (report_location, scilista_item)
+
+
+def format_reports_for_web(report_path, pkg_path, issue_path):
+    if not os.path.isdir(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path):
+        os.makedirs(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path)
+
+    for f in os.listdir(report_path):
+        if f.endswith('.zip') or f == 'xml_converter.txt':
+            os.unlink(report_path + '/' + f)
+        else:
+            content = open(report_path + '/' + f).read()
+            print(f)
+            print(type(content))
+            if not isinstance(content, unicode):
+                try:
+                    content = content.decode('utf-8')
+                except:
+                    content = content.decode('iso-8859-1')
+            content = content.replace('file:///' + pkg_path, '/img/revistas/' + issue_path)
+            content = content.replace('file:///' + report_path, '/reports/' + issue_path)
+            if isinstance(content, unicode):
+                content = content.encode('utf-8')
+            open(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path + '/' + f, 'w').write(content)
 
 
 def convert_articles(issue_files, issue_models, articles, articles_stats, inconsistent_orders):
@@ -259,12 +291,15 @@ def convert_articles(issue_files, issue_models, articles, articles_stats, incons
 
     ahead_manager = serial_files.AheadManager(converter_env.db_isis, converter_env.db_issue, issue_files.journal_files, issue_models.issue.issn_id)
 
-    text = ''
+    text = html_reports.tag('h2', 'XML Converter')
+
     for xml_name, article in articles.items():
         index += 1
+
         item_label = str(index) + n + ' - ' + xml_name
         print(item_label)
 
+        text += html_reports.tag('h4', item_label)
         msg = ''
         xml_stats, data_stats = articles_stats[xml_name]
         xml_f, xml_e, xml_w = xml_stats
@@ -313,7 +348,7 @@ def convert_articles(issue_files, issue_models, articles, articles_stats, incons
                 msg += html_reports.format_message('FATAL ERROR: not converted')
                 conv_f += 1
         title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
-        text += html_reports.collapsible_block(xml_name + 'conv', title, msg)
+        text += html_reports.collapsible_block(xml_name + 'conv', 'converter validations: ' + title, msg)
 
     summary = '#'*80
     i = 0
@@ -328,19 +363,21 @@ def convert_articles(issue_files, issue_models, articles, articles_stats, incons
             summary += display_list('ahead list', still_ahead)
 
     scilista_item = None
-    if article_id_created == len(articles):
+    print('article_id_created')
+    print(article_id_created)
+    print('len(articles)')
+    print(len(articles))
+    if article_id_created >= len(articles):
         if converter_env.db_article.finish_conversion(issue_models.record, issue_files) > 0:
             scilista_item = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
             if not converter_env.is_windows:
                 converter_env.db_article.generate_windows_version(issue_files)
-
-    if scilista_item is None:
-        summary += html_reports.format_message('FATAL ERROR: ' + issue_models.issue.issue_label + ' will not be updated or published in the website.')
     else:
-        summary += issue_files.copy_files_to_web()
+        summary += html_reports.format_message('FATAL ERROR: ' + issue_models.issue.issue_label + ' is not complete, so it will not be updated or published in the website.')
+        summary += html_reports.format_message('generated databases of ' + cstr(article_id_created) + '/' + cstr(len(articles)))
 
-    summary += html_reports.tag('h4', 'Resulting folders/files:')
-    summary += html_reports.link('file:///' + issue_files.issue_path, issue_files.issue_path)
+    if converter_env.is_windows:
+        summary += pkg_reports.processing_result_location(issue_files.issue_path)
     summary += html_reports.tag('p', 'Finished.')
 
     return (scilista_item, text + summary)
@@ -390,14 +427,7 @@ def validate_xml_issue_data(issue_models, article):
 
 
 def compare_article_type_and_section(article_section, article_type):
-    rate = 0
-    max_rate = 0
-    for type_item in article_type.split('-'):
-        for part_item in article_section.lower():
-            rate = article_utils.how_similar(type_item, part_item)
-            if rate > max_rate:
-                max_rate = rate
-    return max_rate
+    return utils.how_similar(article_section, article_type.replace('-', ' '))
 
 
 def queue_packages(download_path, temp_path, queue_path, archive_path):
@@ -540,6 +570,7 @@ def call_converter(args, version='1.0'):
 
 def send_message(mailer, to, subject, text, attaches=None):
     if mailer is not None:
+        print('sending message ' + subject)
         mailer.send_message(to, subject, text, attaches)
 
 
@@ -575,7 +606,8 @@ def execute_converter(package_paths, collection_name=None):
             #    report_filename, report_path, scilista_item = [None, None, None]
 
             if report_filename is not None:
-                send_message(mailer, config.email_to, config.email_subject_package_evaluation + ' ' + package_folder, '', report_filename)
+                if scilista_item is not None:
+                    send_message(mailer, config.email_to, config.email_subject_package_evaluation + ' ' + package_folder, report_filename)
             if scilista_item is not None:
                 scilista.append(scilista_item)
 
@@ -605,3 +637,4 @@ def prepare_env(config):
     converter_env.serial_path = config.serial_path
     converter_env.version = '1.0'
     converter_env.is_windows = config.is_windows
+    converter_env.web_app_site = config.web_app_site

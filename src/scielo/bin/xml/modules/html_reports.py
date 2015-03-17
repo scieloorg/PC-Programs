@@ -60,8 +60,8 @@ def css_class(style):
 
 
 def collapsible_block(section_id, section_title, content):
-    r = '<div id="show' + section_id + '" onClick="openClose(\'' + section_id + '\')" style="cursor:hand; cursor:pointer"><strong>' + section_title + ' (show)</strong></div>'
-    r += '<div id="hide' + section_id + '" onClick="openClose(\'' + section_id + '\')" class="collapsiblehidden" style="cursor:hand; cursor:pointer"><strong>' + section_title + ' (hide) </strong></div>'
+    r = '<div id="show' + section_id + '" onClick="openClose(\'' + section_id + '\')" style="cursor:hand; cursor:pointer"><strong>' + section_title + ' [+]</strong></div>'
+    r += '<div id="hide' + section_id + '" onClick="openClose(\'' + section_id + '\')" class="collapsiblehidden" style="cursor:hand; cursor:pointer"><strong>' + section_title + ' [-] </strong></div>'
     r += '<div id="' + section_id + '" class="collapsible">'
     r += content
     r += '</div>'

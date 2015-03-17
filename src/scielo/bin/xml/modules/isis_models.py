@@ -2,6 +2,7 @@
 
 from datetime import datetime
 
+import utils
 from article_utils import doi_pid, display_pages, format_dateiso
 from article import Issue, PersonAuthor
 from attributes import ROLE, DOCTOPIC
@@ -366,7 +367,21 @@ class IssueModels(object):
     def section_titles(self):
         return [sec.get('t') for sec in self.sections]
 
-    def most_similar_section_code(self, section_title, acceptable_result=0.80):
+    def most_similar_section_code(self, section_title, acceptable_result=0.85):
+        items = [sec.get('t', '') for sec in self.sections]
+        most_similar = utils.similarity(items, section_title, acceptable_result)
+        ratio, similar_list = utils.most_similar(most_similar)
+        seccode = None
+        similar = None
+        if similar_list is not None:
+            for sec in self.sections:
+                if sec.get('t') in similar_list:
+                    seccode = sec.get('c')
+                    similar = sec.get('t')
+                    break
+        return (seccode, ratio, similar)
+
+    def _most_similar_section_code(self, section_title, acceptable_result=0.85):
         best_result = 0
         seccode = None
         similar = None

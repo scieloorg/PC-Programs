@@ -77,7 +77,7 @@ def get_report_text(filename, status):
             report = part1 + part2
         elif '</html>' in content:
 
-            report = '<iframe width="95%" height="400px" src="file:///' + filename + '"></iframe>'
+            report = '<iframe width="95%" height="400px" src="file:///.' + os.path.basename(filename) + '"></iframe>'
 
             #content = content[content.find('<body'):]
             #content = content[0:content.rfind('</body>')]
@@ -139,7 +139,7 @@ def get_toc_report_text(toc_f, toc_e, toc_w, toc_report):
     toc_text = ''
     if toc_f + toc_e + toc_w > 0:
         toc_text = html_reports.tag('h2', 'Table of contents Report')
-        toc_text += html_reports.collapsible_block('toc', 'table of contents validations ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report)
+        toc_text += html_reports.collapsible_block('toc', 'table of contents validations: ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report)
     return toc_text
 
 
@@ -167,11 +167,11 @@ def get_articles_report_text(articles_reports, articles_stats):
                     v.append(content)
             content = ''.join(v)
             s = html_reports.statistics_display(xml_f, xml_e, xml_w)
-            validations_text += html_reports.collapsible_block('xmlrep' + str(index), s + ' - XML validations - ' + ' and '.join(t), content)
+            validations_text += html_reports.collapsible_block('xmlrep' + str(index), 'XML validations (' + ' and '.join(t) + '): ' + s, content)
 
         if data_f + data_e + data_w > 0:
             s = html_reports.statistics_display(data_f, data_e, data_w)
-            validations_text += html_reports.collapsible_block('datarep' + str(index), s + ' - contents validations - ' + os.path.basename(rep3), get_report_text(rep3, html_reports.get_message_style(data_f, data_e, data_w)))
+            validations_text += html_reports.collapsible_block('datarep' + str(index), 'Contents validations (' + os.path.basename(rep3) + '): ' + s, get_report_text(rep3, html_reports.get_message_style(data_f, data_e, data_w)))
 
     return validations_text
 

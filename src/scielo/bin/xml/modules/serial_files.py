@@ -394,14 +394,15 @@ class IssueFiles(object):
     def windows_base(self):
         return self.windows_base_path + '/' + self.issue_folder
 
-    def copy_files_to_web(self):
+    def copy_files_to_local_web_app(self):
         msg = ['\n']
         msg.append('copying files from ' + self.xml_path)
         path = {}
         path['pdf'] = self.web_path + '/bases/pdf/' + self.relative_issue_path
-        path['html'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
         path['xml'] = self.web_path + '/bases/xml/' + self.relative_issue_path
+        path['html'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
         path['img'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path
+
         for p in path.values():
             if not os.path.isdir(p):
                 os.makedirs(p)
@@ -416,10 +417,10 @@ class IssueFiles(object):
                 else:
                     shutil.copy(self.xml_path + '/' + f, path['img'])
                     msg.append('  ' + f + ' => ' + path['img'])
-        #return '\n'.join(['<p>' + item + '</p>' for item in msg])
-        return ''
 
-    def move_reports(self, report_path):
+        return '\n'.join(['<p>' + item + '</p>' for item in msg])
+
+    def save_reports(self, report_path):
         if not self.base_reports_path == report_path:
             if not os.path.isdir(self.base_reports_path):
                 os.makedirs(self.base_reports_path)
