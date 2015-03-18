@@ -663,7 +663,19 @@ class ArticleContentValidation(object):
                 if os.path.isfile(filename):
                     href_items['ok'].append(hrefitem)
                 else:
-                    href_items['fatal error'].append(hrefitem)
+                    if filename.endswith('.tiff') or filename.endswith('.tif'):
+                        if os.path.isfile(filename[0:filename.rfind('.')] + '.jpg'):
+                            href_items['ok'].append(hrefitem)
+                        else:
+                            href_items['fatal error'].append(hrefitem)
+                    else:
+                        if not '.' in filename[-5:]:
+                            if os.path.isfile(filename + '.jpg'):
+                                href_items['warning'].append(hrefitem)
+                            else:
+                                href_items['fatal error'].append(hrefitem)
+                        else:
+                            href_items['fatal error'].append(hrefitem)
             else:
                 if article_utils.url_check(hrefitem.src, 10):
                     href_items['ok'].append(hrefitem)

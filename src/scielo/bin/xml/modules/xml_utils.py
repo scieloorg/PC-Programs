@@ -160,8 +160,12 @@ def restore_xml_file(xml_filename, temp_filename):
     shutil.rmtree(os.path.dirname(temp_filename))
 
 
-def remove_unrequired_characters(content):
-    return ' '.join(content.split())
+def remove_break_lines_characters(content):
+    r = ' '.join(content.split())
+    r = r.replace('> <', '><')
+    r = r.replace('> ', '>')
+    r = r.replace(' </', '</')
+    return r
 
 
 def node_text(node):
@@ -366,28 +370,47 @@ def load_xml(content):
     return (xml, e)
 
 
+def fix_pretty(content):
+    r = []
+    is_data = False
+    for line in content.split('\n'):
+        if '</' in line:
+            if is_data:
+                line = line[line.find('</'):]
+                is_data = False
+        elif not '<' in line:
+            line = '{DADO}' + line.strip() + '{DADO}'
+            is_data = True
+        else:
+            is_data = False
+        r.append(line)
+    return '\n'.join(r).replace('\n{DADO}', '').replace('{DADO}\n', '').replace('{DADO}', '')
+
+
 def pretty_print(content):
     pretty = None
     tag = None
+    begin = ''
+    if content.startswith('<?xml'):
+        begin = content[0:content.find('?>')+2]
     if not content.startswith('<?xml'):
         if not is_xml_well_formed(content):
             tag = 'root'
             content = '<' + tag + '>' + content + '</' + tag + '>'
 
     if is_xml_well_formed(content):
-        content = remove_unrequired_characters(content)
+        content = remove_break_lines_characters(content)
         import xml.dom.minidom
         try:
             if isinstance(content, unicode):
                 content = content.encode('utf-8')
             doc = xml.dom.minidom.parseString(content)
             pretty = doc.toprettyxml()
-            pretty = pretty.replace(' \n\t', '')
-
-            if not '<?xml' in content:
-                pretty = pretty[pretty.find('?>\n'):]
+            pretty = fix_pretty(pretty)
+            if pretty.startswith('<?xml'):
+                pretty = pretty[pretty.find('?>'):]
                 pretty = pretty[pretty.find('<'):]
-
+            pretty = begin + '\n' + pretty
         except Exception as e:
             print('ERROR in pretty')
             print(e)

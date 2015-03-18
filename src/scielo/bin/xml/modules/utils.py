@@ -23,6 +23,7 @@ def similarity(items, text, min_ratio=0):
 
 def most_similar(similarity):
     r = []
+    highiest = 0
     ratio_list = similarity.keys()
     if len(ratio_list) > 0:
         ratio_list = sorted(ratio_list)
@@ -30,4 +31,4 @@ def most_similar(similarity):
         highiest = ratio_list[0]
         r = similarity[highiest]
 
-    return r
+    return (highiest, r)

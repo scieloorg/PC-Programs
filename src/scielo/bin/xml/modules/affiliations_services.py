@@ -46,7 +46,7 @@ class CodesAndNames(object):
         ##print('-')
         ##print('get_similar_names')
         #print(name)
-        r = utils.most_similar(utils.similarity(self.indexed_by_names.keys(), name, 0.85))
+        ratio, r = utils.most_similar(utils.similarity(self.indexed_by_names.keys(), name, 0.85))
         #print(r)
         #print('-')
         return r
@@ -58,7 +58,7 @@ class CodesAndNames(object):
             #print('get_similar_items')
             #print(text)
             ##print(text_list)
-            r = utils.most_similar(utils.similarity(text_list, text, 0.85))
+            ratio, r = utils.most_similar(utils.similarity(text_list, text, 0.85))
             #print(r)
             #print('-')
         return r
@@ -240,7 +240,8 @@ def normalize_location(city, state):
             norm_city = city_names[0]
 
     if norm_city is None:
-        msg.append(city + ' was not identified as city.')
+        if not city is None:
+            msg.append(city + ' was not identified as city.')
     if norm_state is None:
         if state is None:
             if not norm_city is None:

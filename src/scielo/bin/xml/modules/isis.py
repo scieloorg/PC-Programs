@@ -21,9 +21,9 @@ def format_value(content):
         print(content)
 
     try:
-        content = xml_utils.remove_unrequired_characters(content)
+        content = xml_utils.remove_break_lines_characters(content)
     except Exception as e:
-        print('format_value: remove_unrequired_characters:')
+        print('format_value: remove_break_lines_characters:')
         print(e)
         print(content)
 

@@ -375,6 +375,10 @@ class IssueFiles(object):
         return self.issue_path + '/base'
 
     @property
+    def windows_base_path(self):
+        return self.issue_path + '/windows'
+
+    @property
     def base_reports_path(self):
         return self.issue_path + '/base_xml/base_reports'
 
@@ -386,14 +390,19 @@ class IssueFiles(object):
     def base(self):
         return self.base_path + '/' + self.issue_folder
 
-    def copy_files_to_web(self):
+    @property
+    def windows_base(self):
+        return self.windows_base_path + '/' + self.issue_folder
+
+    def copy_files_to_local_web_app(self):
         msg = ['\n']
         msg.append('copying files from ' + self.xml_path)
         path = {}
         path['pdf'] = self.web_path + '/bases/pdf/' + self.relative_issue_path
-        path['html'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
         path['xml'] = self.web_path + '/bases/xml/' + self.relative_issue_path
+        path['html'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
         path['img'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path
+
         for p in path.values():
             if not os.path.isdir(p):
                 os.makedirs(p)
@@ -408,10 +417,10 @@ class IssueFiles(object):
                 else:
                     shutil.copy(self.xml_path + '/' + f, path['img'])
                     msg.append('  ' + f + ' => ' + path['img'])
-        #return '\n'.join(['<p>' + item + '</p>' for item in msg])
-        return ''
 
-    def move_reports(self, report_path):
+        return '\n'.join(['<p>' + item + '</p>' for item in msg])
+
+    def save_reports(self, report_path):
         if not self.base_reports_path == report_path:
             if not os.path.isdir(self.base_reports_path):
                 os.makedirs(self.base_reports_path)
@@ -510,7 +519,9 @@ class IssueDAO(object):
 
     def search(self, issue_label, pissn, eissn):
         expr = self.expr(issue_label, pissn, eissn)
-        return self.dao.get_records(self.db_filename, expr)
+        print('debug: expr=')
+        print(expr)
+        return self.dao.get_records(self.db_filename, expr) if expr is not None else None
 
 
 class ArticleDAO(object):
@@ -544,6 +555,12 @@ class ArticleDAO(object):
                 self.dao.append_id_records(issue_files.id_path + '/' + f, issue_files.base)
                 loaded.append(f)
         return loaded
+
+    def generate_windows_version(self, issue_files):
+        if not os.path.isdir(issue_files.windows_base_path):
+            os.makedirs(issue_files.windows_base_path)
+        self.dao.cisis.mst2iso(issue_files.base, issue_files.windows_base + '.iso')
+        self.dao.cisis.crunchmf(issue_files.base, issue_files.windows_base)
 
     def article_records(self, article_files):
         return IDFile().readfile(article_files.id_filename)

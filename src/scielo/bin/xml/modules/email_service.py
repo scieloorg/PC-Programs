@@ -15,15 +15,19 @@ from email.header import Header
 
 def strtolist(s):
     l = []
-    if isinstance(s, list):
-        l = s
-    else:
-        if ';' in s:
-            l = s.split(';')
-        elif ',' in s:
-            l = s.split(',')
+    print(s)
+    print(type(s))
+    if s is not None:
+        if isinstance(s, list):
+            l = s
         else:
-            l = [s]
+            if ';' in s:
+                l = s.split(';')
+            elif ',' in s:
+                l = s.split(',')
+            else:
+                l = [s]
+    print(l)
     return l
 
 
@@ -53,13 +57,12 @@ class EmailMessageTemplate(object):
 
 class EmailService(object):
 
-    def __init__(self, label_from, mail_from, server="localhost", is_available_email_service=True):
+    def __init__(self, label_from, mail_from, server="localhost"):
         self.mail_from = mail_from
         self.server = server
         self.label_from = label_from
-        self.is_available_email_service = is_available_email_service
 
-    def send(self, to, subject, text, cc=[], bcc=[], attaches=[]):
+    def send_message(self, to, subject, text, attaches=[], cc=[], bcc=[]):
         to = strtolist(to)
         attaches = strtolist(attaches)
         bcc = strtolist(bcc)
@@ -94,7 +97,7 @@ class EmailService(object):
                 msg['BCC'] = ', '.join(bcc)
                 msg.attach(MIMEText(text, plain_or_html, 'utf-8'))
                 smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
-
+                print(e)
             #except Exception as inst:
             #    msg = MIMEMultipart()
             #    msg['From'] = self.mail_from

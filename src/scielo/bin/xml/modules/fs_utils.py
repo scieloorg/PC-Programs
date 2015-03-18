@@ -60,3 +60,12 @@ def fix_path(path):
     if path.endswith('/'):
         path = path[0:-1]
     return path
+
+
+def zip_report(report_filename):
+    import zipfile
+    zip_path = report_filename.replace('.html', '.zip')
+    myZipFile = zipfile.ZipFile(zip_path, "w")
+    myZipFile.write(report_filename, os.path.basename(report_filename), zipfile.ZIP_DEFLATED)
+    return zip_path
+
