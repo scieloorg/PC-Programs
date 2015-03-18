@@ -13,6 +13,72 @@ iso_country_list = None
 br_state_list = None
 orgname_list = None
 location_list = None
+organizations_manager = None
+
+
+class OrgManager(object):
+
+    def __init__(self):
+        self.indexedby_orgname = {}
+        self.indexedby_isocountry = {}
+        self.indexedby_location = {}
+
+    def load(self):
+        for item in open(curr_path + '/../tables/orgname_location_country.csv', 'r').readlines():
+            item = item.replace('"', '').strip().split('\t')
+            if len(item) == 4:
+                orgname, city, state, iso_country = item
+
+                if not orgname in self.indexedby_orgname.keys():
+                    self.indexedby_orgname[orgname] = []
+                if not iso_country in self.indexedby_isocountry.keys():
+                    self.indexedby_isocountry[iso_country] = []
+
+                self.indexedby_orgname[orgname].append(location)
+                self.indexedby_isocountry[iso_country].append([orgname, city, state])
+
+    def _load(self):
+        for item in open(curr_path + '/../tables/orgname_location_country.csv', 'r').readlines():
+            item = item.replace('"', '').strip().split('\t')
+            if len(item) == 4:
+                orgname, city, state, iso_country = item
+                location = ', '.join([city, state, iso_country])
+                city_state = ', '.join([city, state])
+                city_country = ', '.join([city, iso_country])
+
+                if not orgname in self.indexedby_orgname.keys():
+                    self.indexedby_orgname[orgname] = []
+                if not location in self.indexedby_location.keys():
+                    self.indexedby_location[location] = []
+                if not iso_country in self.indexedby_isocountry.keys():
+                    self.indexedby_isocountry[iso_country] = []
+
+                self.indexedby_orgname[orgname].append(location)
+                self.indexedby_location[location].append(orgname)
+                self.indexedby_isocountry[iso_country].append([orgname, city, state])
+
+                if not city in self.indexedby_location.keys():
+                    self.indexedby_location[city] = []
+                if not city_state in self.indexedby_location.keys():
+                    self.indexedby_location[city_state] = []
+                if not city_country in self.indexedby_location.keys():
+                    self.indexedby_location[city_country] = []
+                self.indexedby_location[city].append([orgname, city, state, iso_country])
+                self.indexedby_location[city_state].append([orgname, city, state, iso_country])
+                self.indexedby_location[city_country].append([orgname, city, state, iso_country])
+
+    def country_orgnames(self, iso_country):
+        return self.indexedby_isocountry[iso_country]
+
+    def get_organizations(self, orgname, city, state, country):
+        valid = self.indexedby_orgname[orgname]
+        if city is not None and len(valid) > 0:
+            valid = [[_city, _state, _country] for _city, _state, _country in valid if _city == city]
+        if state is not None and len(valid) > 0:
+            valid = [[_city, _state, _country] for _city, _state, _country in valid if _state == state]
+        if country is not None and len(valid) > 0:
+            valid = [[_city, _state, _country] for _city, _state, _country in valid if _country == country]
+        return valid
 
 
 class CodesAndNames(object):
@@ -403,6 +469,36 @@ def normalize_orgname(orgname, country_name, country_code):
     #print([orgname, country_name, country_code])
     #print([norm_orgname, norm_country_name, norm_country_code, '\n'.join(msg)])
     return (norm_orgname, norm_country_name, norm_country_code, '\n'.join(msg))
+
+
+def new_validate_affiliation(orgname, norgname, country_name, country_code, state, city):
+    global organizations_manager
+
+    if organizations_manager is None:
+        organizations_manager = OrgManager()
+        organizations_manager.load()
+
+    norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city = [None, None, None, None, None]
+    msg = []
+
+    norm_country_name, norm_country_code, errors = normalize_country(country_name, country_code)
+
+    options = organizations_manager.get_organizations(norgname, city, state, norm_country_code)
+    _norm_orgname = norgname
+    if len(options) == 0:
+        options = organizations_manager.get_organizations(orgname, city, state, norm_country_code)
+        _norm_orgname = orgname
+    if len(options) > 0:
+        norm_orgname = _norm_orgname
+        if len(options) == 1:
+            norm_city, norm_state, norm_country = options[0]
+        else:
+            msg.append('Options:')
+            for item in options:
+                msg.append(', '.join(item))
+    else:
+        msg.append('Unable to identify normalized data of ' + ' or '.join([item for item in [orgname, norgname] if item is not None]))
+    return (norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city, '\n'.join(msg))
 
 
 def validate_affiliation(orgname, norgname, country_name, country_code, state, city):
