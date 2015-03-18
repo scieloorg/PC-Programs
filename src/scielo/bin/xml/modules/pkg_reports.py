@@ -55,7 +55,7 @@ def get_article_contents_validations_report(article, new_name, package_path, rep
     return (f, e, w, sheet_data)
 
 
-def get_report_text(filename, status):
+def get_report_text(filename):
     report = ''
     if os.path.isfile(filename):
         content = open(filename, 'r').read()
@@ -77,15 +77,13 @@ def get_report_text(filename, status):
             report = part1 + part2
         elif '</html>' in content:
 
-            report = '<iframe width="95%" height="400px" src="file:///.' + os.path.basename(filename) + '"></iframe>'
+            report = '<iframe width="95%" height="400px" src="' + os.path.basename(filename) + '"></iframe>'
 
             #content = content[content.find('<body'):]
             #content = content[0:content.rfind('</body>')]
             #report = content[content.find('>')+1:]
         else:
             report = ''
-    if len(report) > 0:
-        report = '<div class="embedded-report-' + status + '"><h5>' + filename + '</h5>' + report + '</div>'
     return report
 
 
@@ -139,7 +137,7 @@ def get_toc_report_text(toc_f, toc_e, toc_w, toc_report):
     toc_text = ''
     if toc_f + toc_e + toc_w > 0:
         toc_text = html_reports.tag('h2', 'Table of contents Report')
-        toc_text += html_reports.collapsible_block('toc', 'table of contents validations: ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report)
+        toc_text += html_reports.collapsible_block('toc', 'table of contents validations: ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report, html_reports.get_message_style(toc_f, toc_e, toc_w))
     return toc_text
 
 
@@ -161,17 +159,17 @@ def get_articles_report_text(articles_reports, articles_stats):
             t = []
             v = []
             for rep in [rep1, rep2]:
-                content = get_report_text(rep, html_reports.get_message_style(xml_f, xml_e, xml_w))
+                content = get_report_text(rep)
                 if len(content) > 0:
                     t.append(os.path.basename(rep))
                     v.append(content)
             content = ''.join(v)
             s = html_reports.statistics_display(xml_f, xml_e, xml_w)
-            validations_text += html_reports.collapsible_block('xmlrep' + str(index), 'XML validations (' + ' and '.join(t) + '): ' + s, content)
+            validations_text += html_reports.collapsible_block('xmlrep' + str(index), 'XML validations (' + ' and '.join(t) + '): ' + s, content, html_reports.get_message_style(xml_f, xml_e, xml_w))
 
         if data_f + data_e + data_w > 0:
             s = html_reports.statistics_display(data_f, data_e, data_w)
-            validations_text += html_reports.collapsible_block('datarep' + str(index), 'Contents validations (' + os.path.basename(rep3) + '): ' + s, get_report_text(rep3, html_reports.get_message_style(data_f, data_e, data_w)))
+            validations_text += html_reports.collapsible_block('datarep' + str(index), 'Contents validations (' + os.path.basename(rep3) + '): ' + s, get_report_text(rep3), html_reports.get_message_style(data_f, data_e, data_w))
 
     return validations_text
 

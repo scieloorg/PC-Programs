@@ -53,3 +53,11 @@ def is_valid_configuration_file(configuration_filename):
         messages.append('\n===== ATTENTION =====\n')
         messages.append('ERROR: unable to read the configuration file: ' + configuration_filename)
     return messages
+
+
+def run_remote_mkdirs(user, server, path):
+    os.system('ssh ' + user + '@' + server + ' "mkdir -p ' + path + '"')
+
+
+def run_rsync(source, user, server, dest):
+    os.system('nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n')

@@ -174,7 +174,7 @@ def get_issue_files(issue_models, pkg_path):
     return serial_files.IssueFiles(journal_files, issue_models.issue.issue_label, pkg_path, converter_env.local_web_app_path)
 
 
-def convert_package(src_path, delete_src_path):
+def convert_package(src_path):
     display_title = False
     validate_order = True
     conversion_report = ''
@@ -236,21 +236,15 @@ def convert_package(src_path, delete_src_path):
         content = content.replace(html_reports.get_unicode(old_report_path), html_reports.get_unicode(report_path))
 
     pkg_reports.save_report(report_location, ['XML Conversion (XML to Database)', acron_issue_label], content)
-    pkg_reports.display_report(report_location)
 
-    if delete_src_path:
+    if not converter_env.is_windows:
+        format_reports_for_web(report_path, pkg_path, acron_issue_label.replace(' ', '/'))
         fs_utils.delete_file_or_folder(src_path)
+
     if old_result_path != result_path:
         fs_utils.delete_file_or_folder(old_result_path)
 
-    if not converter_env.is_windows:
-        link = converter_env.web_app_site + '/reports/' + acron_issue_label.replace(' ', '/') + '/' + os.path.basename(report_location)
-        print(link)
-        report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
-        print(report_location)
-        format_reports_for_web(report_path, pkg_path, acron_issue_label.replace(' ', '/'))
-
-    return (report_location, scilista_item)
+    return (report_location, scilista_item, acron_issue_label)
 
 
 def format_reports_for_web(report_path, pkg_path, issue_path):
@@ -262,8 +256,6 @@ def format_reports_for_web(report_path, pkg_path, issue_path):
             os.unlink(report_path + '/' + f)
         else:
             content = open(report_path + '/' + f).read()
-            print(f)
-            print(type(content))
             if not isinstance(content, unicode):
                 try:
                     content = content.decode('utf-8')
@@ -348,9 +340,9 @@ def convert_articles(issue_files, issue_models, articles, articles_stats, incons
                 msg += html_reports.format_message('FATAL ERROR: not converted')
                 conv_f += 1
         title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
-        text += html_reports.collapsible_block(xml_name + 'conv', 'converter validations: ' + title, msg)
+        text += html_reports.collapsible_block(xml_name + 'conv', 'converter validations: ' + title, msg, html_reports.get_message_style(conv_f, conv_e, conv_w))
 
-    summary = '#'*80
+    summary = ''
     i = 0
     for status in order:
         summary += display_list(status_text[i], articles_by_status[status])
@@ -374,13 +366,39 @@ def convert_articles(issue_files, issue_models, articles, articles_stats, incons
                 converter_env.db_article.generate_windows_version(issue_files)
     else:
         summary += html_reports.format_message('FATAL ERROR: ' + issue_models.issue.issue_label + ' is not complete, so it will not be updated or published in the website.')
-        summary += html_reports.format_message('generated databases of ' + cstr(article_id_created) + '/' + cstr(len(articles)))
+        summary += html_reports.format_message('generated databases of ' + str(article_id_created) + '/' + str(len(articles)))
 
     if converter_env.is_windows:
         summary += pkg_reports.processing_result_location(issue_files.issue_path)
-    summary += html_reports.tag('p', 'Finished.')
 
-    return (scilista_item, text + summary)
+    summary = html_reports.tag('div', html_reports.tag('h2', 'XML Converter - results') + summary)
+    return (scilista_item, text + summary + html_reports.tag('p', 'Finished.'))
+
+
+def transfer_website_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path):
+    # 'rsync -CrvK img/* user@server:/var/www/...../revistas'
+    issue_id_path = acron + '/' + issue_id
+
+    folders = ['/htdocs/img/revistas/', '/bases/pdf/', '/bases/xml/']
+
+    for folder in folders:
+        dest_path = remote_web_app_path + folder + issue_id_path
+        source_path = local_web_app_path + folder + issue_id_path
+        xc.run_remote_mkdirs(user, server, dest_path)
+        xc.run_rsync(source_path, user, server, dest_path)
+
+
+def transfer_report_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path):
+    # 'rsync -CrvK img/* user@server:/var/www/...../revistas'
+    issue_id_path = acron + '/' + issue_id
+
+    folders = ['/htdocs/reports/']
+
+    for folder in folders:
+        dest_path = remote_web_app_path + folder + issue_id_path
+        source_path = local_web_app_path + folder + issue_id_path
+        xc.run_remote_mkdirs(user, server, dest_path)
+        xc.run_rsync(source_path, user, server, dest_path)
 
 
 def display_list(title, items):
@@ -600,16 +618,28 @@ def execute_converter(package_paths, collection_name=None):
             package_folder = os.path.basename(package_path)
             #try:
             print(package_path)
-            report_filename, scilista_item = convert_package(package_path, not config.is_windows)
+            report_location, scilista_item, acron_issue_label = convert_package(package_path)
             #except Exception as e:
             #    invalid_pkg_files.append(package_folder)
-            #    report_filename, report_path, scilista_item = [None, None, None]
+            #    report_location, report_path, scilista_item = [None, None, None]
 
-            if report_filename is not None:
-                if scilista_item is not None:
-                    send_message(mailer, config.email_to, config.email_subject_package_evaluation + ' ' + package_folder, report_filename)
+            acron, issue_id = acron_issue_label.split(' ')
+
             if scilista_item is not None:
                 scilista.append(scilista_item)
+                if config.is_enabled_transference:
+                    transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
+
+            if report_location is not None:
+                if config.is_windows:
+                    pkg_reports.display_report(report_location)
+                else:
+                    link = converter_env.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
+                    report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
+
+                if config.is_enabled_transference:
+                    transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
+                send_message(mailer, config.email_to, config.email_subject_package_evaluation + ' ' + package_folder, report_location)
 
         if len(invalid_pkg_files) > 0:
             send_message(mailer, config.email_to, config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))

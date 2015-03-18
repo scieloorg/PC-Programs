@@ -20,6 +20,7 @@ class QueueOrganizer:
         self.report = report
         self.queue_path = queue_path
         self.compressed_file_manager = CompressedFile(self.report)
+        self.temp_dir = os.path.dirname(self.queue_path) + '/tmp'
 
     def archive_and_extract_files(self, archive_path, work_path, report_sender):   
 
@@ -46,7 +47,7 @@ class QueueOrganizer:
             self.archive(package_filename, archive_path)
             
             self.report.write('Extract files from ' + package_filename + ' to ' + package_path, True, False, True)
-            self.compressed_file_manager.extract_files(package_filename, package_path)
+            self.compressed_file_manager.extract_files(package_filename, package_path, self.temp_dir)
             
             
             text =  'Files in the package\n' + '\n'.join(os.listdir(package_path))
