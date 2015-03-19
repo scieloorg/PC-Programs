@@ -478,8 +478,8 @@ def format_wayta_results(result):
         results = json.loads(result)
         for item in results.get('choices'):
             if item.get('country', '') != '' and item.get('value', '') != '':
-                location = [item.get('country'), item.get('state'), item.get('city')]
-                r.append(item.get('value') + ' - ' + ', '.join([item for item in location if item is not None]))
+                #location = [item.get('country'), item.get('state'), item.get('city')]
+                r.append(item.get('value') + ' - ' + item.get('country'))
     except Exception as e:
         print(e)
     return r
@@ -532,11 +532,8 @@ def validate_affiliation(orgname, norgname, country, i_country, state, city):
 
 
 def get_normalized_from_list(orgname, country):
-    results = []
     errors, orgname_and_location_items = normalized_affiliations(orgname, country, None, None, None)
-    for orgname, city, state, country in orgname_and_location_items:
-        results.append(orgname + ' - ' + country + ', ' + state + ', ' + city)
-    return results
+    return list(set([_orgname + ' - ' + _country for _orgname, city, state, _country in orgname_and_location_items]))
 
 
 def normaff_search(text):
