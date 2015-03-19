@@ -525,7 +525,10 @@ class ArticleSheetData(object):
 
                 if not status == 'ok':
                     if hrefitem.is_internal_file:
-                        row['display'] += '<p>' + status.upper() + ': ' + hrefitem.src + ' not found in package</p>'
+                        if status == 'warning':
+                            row['display'] += '<p>' + status.upper() + ': missing extension of ' + hrefitem.src + '.'
+                        else:
+                            row['display'] += '<p>' + status.upper() + ': ' + hrefitem.src + ' not found in package</p>'
                     else:
                         row['display'] += '<p>' + status.upper() + ': ' + hrefitem.src + ' is not working</p>'
 

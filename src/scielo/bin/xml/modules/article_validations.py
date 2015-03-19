@@ -611,9 +611,9 @@ class ArticleContentValidation(object):
 
         for xref in self.article.xref_nodes:
             if xref['rid'] is None:
-                message.append('xref/@rid', 'FATAL ERROR', 'Missing @rid in ' + xref['xml'])
+                message.append(('xref/@rid', 'FATAL ERROR', 'Missing @rid in ' + xref['xml']))
             if xref['ref-type'] is None:
-                message.append('xref/@ref-type', 'FATAL ERROR', 'Missing @ref-type in ' + xref['xml'])
+                message.append(('xref/@ref-type', 'ERROR', 'Missing @ref-type in ' + xref['xml']))
             if xref['rid'] is not None and xref['ref-type'] is not None:
                 tag = id_and_elem_name.get(xref['rid'])
                 if tag is None:
@@ -702,7 +702,7 @@ class ReferenceContentValidation(object):
     def validate_element(self, label, value):
         res = attributes.validate_element(self.reference.publication_type, label, value)
         if res != '':
-            return (label, 'ERROR', res)
+            return (label, 'FATAL ERROR', res)
         else:
             if not value is None and value != '':
                 return (label, 'OK', value)

@@ -47,7 +47,9 @@ class QueueOrganizer:
             self.archive(package_filename, archive_path)
             
             self.report.write('Extract files from ' + package_filename + ' to ' + package_path, True, False, True)
-            self.compressed_file_manager.extract_files(package_filename, package_path, self.temp_dir)
+
+            from datetime import datetime
+            self.compressed_file_manager.extract_files(package_filename, package_path, self.temp_dir + datetime.now().isoformat()[12:16].replace(':', ''))
             
             
             text =  'Files in the package\n' + '\n'.join(os.listdir(package_path))

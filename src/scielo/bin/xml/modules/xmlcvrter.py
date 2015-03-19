@@ -455,8 +455,9 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
     queue_path = queue_path + '/' + proc_id
     pkg_paths = []
 
-    if not os.path.isdir(archive_path):
-        os.makedirs(archive_path)
+    if archive_path is not None:
+        if not os.path.isdir(archive_path):
+            os.makedirs(archive_path)
 
     if not os.path.isdir(temp_path):
         os.makedirs(temp_path)
@@ -474,7 +475,8 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
             os.makedirs(queued_pkg_path)
 
         if fs_utils.extract_package(temp_path + '/' + pkg_name, queued_pkg_path):
-            shutil.copyfile(temp_path + '/' + pkg_name, archive_path + '/' + pkg_name)
+            if os.path.isdir(archive_path):
+                shutil.copyfile(temp_path + '/' + pkg_name, archive_path + '/' + pkg_name)
             pkg_paths.append(queued_pkg_path)
         else:
             invalid_pkg_files.append(pkg_name)

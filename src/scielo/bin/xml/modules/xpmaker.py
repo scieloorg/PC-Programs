@@ -521,6 +521,10 @@ def normalize_xml_content(doc_files_info, content, version):
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
 
+    content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
+    content = content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
+    content = content.replace('publication-type="web"', 'publication-type="webpage"')
+
     content = xml_utils.pretty_print(content)
 
     replaced_entities_report = ''
