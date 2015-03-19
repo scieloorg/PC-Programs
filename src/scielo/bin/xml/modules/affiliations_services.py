@@ -292,7 +292,7 @@ def normalize_location(city, state):
 
     norm_state = None
     norm_city = None
-    msg = []
+    errors = []
 
     norm_state = br_state_list.find_code(state)
     state_cities, city_names = location_list.find_names(state, city)
@@ -307,7 +307,7 @@ def normalize_location(city, state):
 
     if norm_city is None:
         if not city is None:
-            msg.append(city + ' was not identified as city.')
+            errors.append(city + ' was not identified as city.')
     if norm_state is None:
         if state is None:
             if not norm_city is None:
@@ -315,13 +315,13 @@ def normalize_location(city, state):
                 if len(city_states) > 0:
                     norm_state = city_states[0]
         else:
-            msg.append(state + ' was not identified as state.')
+            errors.append(state + ' was not identified as state.')
 
     #print('--- normalize_location: resultado ---')
     #print([city, state])
-    #print([norm_city, norm_state, '\n'.join(msg)])
+    #print([norm_city, norm_state, '\n'.join(errors)])
 
-    return (norm_city, norm_state, '\n'.join(msg))
+    return (norm_city, norm_state, errors)
 
 
 def find_country_names(country_name, country_code):
@@ -387,7 +387,7 @@ def normalize_country(country_name, country_code):
 
     norm_country_name = None
     norm_country_code = None
-    msg = []
+    errors = []
 
     iso_name, wos_name, code_names = find_country_names(country_name, country_code)
     iso_code, wos_en = find_country_codes(iso_name, wos_name)
@@ -400,132 +400,41 @@ def normalize_country(country_name, country_code):
         norm_country_code = iso_code
     else:
         if len(code_names) > 0:
-            msg.append(country_code + ' is code of ' + '|'.join(code_names))
+            errors.append(country_code + ' is code of ' + '|'.join(code_names))
         else:
-            msg.append('No country was found which code is ' + country_code)
+            errors.append('No country was found which code is ' + country_code)
 
         if iso_code is not None:
-            msg.append('code of ' + country_name + ' is: ' + iso_code)
+            errors.append('code of ' + country_name + ' is: ' + iso_code)
 
     if wos_en is not None:
         norm_country_name = wos_en
 
-    #print('-- normalize_country - resultado')
-    #print([country_name, country_code])
-    #print([norm_country_name, norm_country_code, '\n'.join(msg)])
-
-    return (norm_country_name, norm_country_code, '\n'.join(msg))
+    return (norm_country_name, norm_country_code, errors)
 
 
-def normalize_orgname(orgname, country_name, country_code):
-    global orgname_list
-
-    if orgname_list is None:
-        orgname_list = get_orgnames()
-
-    norm_country_name = None
-    norm_country_code = None
-    norm_orgname = None
-    msg = []
-
-    if country_name is None and country_code is None:
-        msg.append('Missing country.')
-    else:
-        norm_country_name, norm_country_code, errors = normalize_country(country_name, country_code)
-        if len(errors) > 0:
-            msg.append(errors)
-
-    if not norm_country_name is None:
-        norm_country_orgnames = orgname_list.get_names(norm_country_name)
-        if orgname in norm_country_orgnames:
-            norm_orgname = orgname
-        else:
-            similar_orgnames = orgname_list.get_similar_items(orgname, norm_country_orgnames)
-            if len(similar_orgnames) > 0:
-                norm_orgname = similar_orgnames[0]
-
-    if norm_orgname is None:
-
-        if orgname is None:
-            msg.append('Missing institution.')
-        else:
-            orgname_and_country_items = {}
-            similar_orgnames = orgname_list.get_similar_names(orgname)
-
-            if len(similar_orgnames) > 0:
-                orgname_and_country_items = {name:orgname_list.get_code(name, False) for name in similar_orgnames}
-
-            for name, code in orgname_and_country_items.items():
-                if code == country_code:
-                    norm_orgname = name
-                    break
-
-            if norm_orgname is None:
-                if len(orgname_and_country_items) > 0:
-                    msg.append(orgname + ' was not found. Found some similarity: ' + '|'.join([name + '(' + country + ')' for name, country in orgname_and_country_items.items()]))
-                else:
-                    msg.append(orgname + ' was not found in the normalized institutions list.')
-    #print('-- normalize_orgname -- resultado')
-    #print([orgname, country_name, country_code])
-    #print([norm_orgname, norm_country_name, norm_country_code, '\n'.join(msg)])
-    return (norm_orgname, norm_country_name, norm_country_code, '\n'.join(msg))
-
-
-def new_validate_affiliation(orgname, norgname, country_name, country_code, state, city):
+def normalized_affiliations(orgname, country_name, country_code, state, city):
     global organizations_manager
 
     if organizations_manager is None:
         organizations_manager = OrgManager()
         organizations_manager.load()
 
-    norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city = [None, None, None, None, None]
-    msg = []
-
+    normalized = []
     norm_country_name, norm_country_code, errors = normalize_country(country_name, country_code)
-
-    options = organizations_manager.get_organizations(norgname, city, state, norm_country_code)
-    _norm_orgname = norgname
-    if len(options) == 0:
+    if norm_country_code is not None:
         options = organizations_manager.get_organizations(orgname, city, state, norm_country_code)
-        _norm_orgname = orgname
-    if len(options) > 0:
-        norm_orgname = _norm_orgname
-        if len(options) == 1:
-            norm_city, norm_state, norm_country = options[0]
+        if len(options) == 0:
+            orgname_city_state_items = organizations_manager.country_orgnames(norm_country_code)
+            for _orgname, _city, _state in orgname_city_state_items:
+                for word in orgname.split(' '):
+                    if word in _orgname:
+                        normalized.append([_orgname, _city, _state, norm_country_code])
+                        break
         else:
-            msg.append('Options:')
-            for item in options:
-                msg.append(', '.join(item))
-    else:
-        msg.append('Unable to identify normalized data of ' + ' or '.join([item for item in [orgname, norgname] if item is not None]))
-    return (norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city, '\n'.join(msg))
+            normalized = [[orgname, _city, _state, _country] for _city, _state, _country in options]
 
-
-def validate_affiliation(orgname, norgname, country_name, country_code, state, city):
-
-    _orgname = norgname if norgname is not None else orgname
-
-    norm_orgname = None
-    norm_country_name = None
-    norm_country_code = None
-    norm_state = None
-    norm_city = None
-
-    msg = []
-    norm_orgname, norm_country_name, norm_country_code, errors = normalize_orgname(_orgname, country_name, country_code)
-    if len(errors) > 0:
-        msg.append(errors)
-
-    if norm_country_code == 'BR' or norm_country_name == 'Brazil':
-        norm_city, norm_state, errors = normalize_location(city, state)
-        if len(errors) > 0:
-            msg.append(errors)
-
-    #print('--- validate_affiliation - resultado ---')
-    #print([orgname, norgname, country_name, country_code, state, city])
-    #print([norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city, '\n'.join(msg)])
-
-    return (norm_orgname, norm_country_name, norm_country_code, norm_state, norm_city, '\n'.join(msg))
+    return (errors, normalized)
 
 
 def remove_sgml_tags(text):
@@ -569,7 +478,8 @@ def format_wayta_results(result):
         results = json.loads(result)
         for item in results.get('choices'):
             if item.get('country', '') != '' and item.get('value', '') != '':
-                r.append(item.get('value') + ' - ' + item.get('country'))
+                location = [item.get('country'), item.get('state'), item.get('city')]
+                r.append(item.get('value') + ' - ' + ', '.join([item for item in location if item is not None]))
     except Exception as e:
         print(e)
     return r
@@ -595,15 +505,7 @@ def unicode2cp1252(results):
     return '\n'.join(r)
 
 
-def normaff_search(text):
-    text = text.replace(' - ', ',')
-    text = text.replace(';', ',')
-    text = remove_sgml_tags(text)
-
-    orgname = text[0:text.rfind(',')].strip()
-    country = text[text.rfind(',')+1:].strip()
-
-    exact = orgname + ' - ' + country
+def get_normalized_from_wayta(orgname, country):
     text = orgname + ', ' + country
     parts = text.split(',')
     results = []
@@ -611,32 +513,40 @@ def normaff_search(text):
         wayta_result = wayta_request(part)
         result = format_wayta_results(wayta_result)
         results += result
+    return results
 
-    global orgname_list
 
-    if orgname_list is None:
-        orgname_list = get_orgnames()
+def validate_affiliation(orgname, norgname, country, i_country, state, city):
+    errors = []
+    orgname_and_location_items = []
 
-    iso_similar_name, wos_similar_name, code_names = find_country_names(country, None)
+    if norgname is not None:
+        errors, orgname_and_location_items = normalized_affiliations(norgname, country, i_country, state, city)
 
-    wos_results = []
-    if not wos_similar_name is None:
-        for item in orgname_list.get_names(wos_similar_name):
-            wos_results.append(item + ' - ' + wos_similar_name)
-    if len(wos_results) == 0:
-        wos_results = get_all_normaff()
-    if exact in wos_results:
-        wos_results = [exact]
-    else:
-        print(exact)
-    if len(wos_results) > 0:
-        for item in wos_results:
-            results.append(item)
-    print(results)
-    if exact in results:
-        results = [exact]
-    else:
-        print(exact)
+    if len(errors) == 0:
+        if len(orgname_and_location_items) == 0:
+            if orgname is not None:
+                errors, orgname_and_location_items = normalized_affiliations(orgname, country, i_country, state, city)
 
-    print(results)
+    return (errors, orgname_and_location_items)
+
+
+def get_normalized_from_list(orgname, country):
+    results = []
+    errors, orgname_and_location_items = normalized_affiliations(orgname, country, None, None, None)
+    for orgname, city, state, country in orgname_and_location_items:
+        results.append(orgname + ' - ' + country + ', ' + state + ', ' + city)
+    return results
+
+
+def normaff_search(text):
+    text = text.replace(' - ', ',')
+    text = text.replace(';', ',')
+    text = remove_sgml_tags(text)
+
+    orgname = text[0:text.rfind(',')].strip()
+    country = text[text.rfind(',')+1:].strip()
+    results = get_normalized_from_wayta(orgname, country)
+    results += get_normalized_from_list(orgname, country)
+
     return sorted(list(set(results)))
