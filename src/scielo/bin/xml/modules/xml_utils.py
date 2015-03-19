@@ -388,6 +388,20 @@ def fix_pretty(content):
 
 
 def pretty_print(content):
+    content = content.replace('>', '>=BREAK=').replace('<', '=BREAK=<')
+    items = content.split('=BREAK=')
+    new = []
+    for item in items:
+        if not '<' in item and not '>' in item:
+            check_item = ' '.join(item.split())
+            if len(check_item) > 0:
+                item = check_item
+        new.append(item)
+
+    return ''.join(new)
+
+
+def old_pretty_print(content):
     pretty = None
     tag = None
     begin = ''

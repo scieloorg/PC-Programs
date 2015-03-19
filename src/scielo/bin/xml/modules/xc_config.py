@@ -296,8 +296,6 @@ class XMLConverterConfiguration(object):
             errors.append('Missing QUEUE_PATH')
         if self.download_path is None:
             errors.append('Missing DOWNLOAD_PATH')
-        if self.archive_path is None:
-            errors.append('Missing ARCHIVE_PATH')
         print('\n'.join(errors))
         return len(errors) == 0
 
