@@ -447,7 +447,7 @@ class ArticleContentValidation(object):
                 if len(normalized_items) == 0:
                     r.append(('normalized aff', 'ERROR', 'Unable to find normalized data'))
                 elif len(normalized_items) == 1:
-                    r.append(('normalized aff', 'OK', 'aff is normalized')
+                    r.append(('normalized aff', 'OK', 'aff is normalized'))
                 else:
                     r.append(('normalized aff', 'WARNING', 'Suggestions: ' + '; '.join([', '.join(item) for item in normalized_items])))
         return r
