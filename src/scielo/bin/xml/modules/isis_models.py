@@ -420,48 +420,6 @@ class IssueModels(object):
         return i
 
 
-def fix_affiliations(affiliations):
-    import affiliations_services
-
-    affs = []
-    for item in affiliations:
-        a = {}
-        norm_orgname, norm_country, norm_country_code, norm_state, norm_city, errors = affiliations_services.validate_affiliation(item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
-        if norm_orgname in [item.orgname, item.norgname]:
-            _orgname = norm_orgname
-        else:
-            _orgname = item.norgname if item.norgname is not None else item.orgname
-
-        _country = item.country if norm_country is None else norm_country
-        _country_code = item.i_country if norm_country_code is None else norm_country_code
-        if _country_code is None:
-            _country_code = item.country
-
-        if norm_city is not None and norm_state is not None:
-            _city = norm_city
-            _state = norm_state
-        else:
-            _city = item.city
-            _state = item.state
-
-        a['l'] = item.label
-        a['i'] = item.id
-        a['e'] = item.email
-        a['4'] = item.orgname
-        a['3'] = item.orgdiv3
-        a['2'] = item.orgdiv2
-        a['1'] = item.orgdiv1
-        a['p'] = _country_code
-        a['q'] = _country
-        a['c'] = _city
-        a['s'] = _state
-        a['_'] = _orgname
-        #a['9'] = item['original']
-        #self._metadata['170'].append(item['xml'])
-        affs.append(a)
-    return affs
-
-
 def format_affiliations(affiliations):
     affs = []
     for item in affiliations:
@@ -486,19 +444,17 @@ def normalized_affiliations(affiliations):
 
     affs = []
     for item in affiliations:
-        a = {}
-        norm_orgname, norm_country, norm_country_code, norm_state, norm_city, errors = affiliations_services.validate_affiliation(item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
-        if norm_orgname in [item.orgname, item.norgname]:
-            _orgname = norm_orgname
+        errors, result_items = affiliations_services.validate_affiliation(item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
+        if len(errors) == 0:
+            if len(result_items) == 1:
+                norm_orgname, norm_city, norm_state, norm_country_code = result_items[0]
 
-        if item.i_country is None:
-            _country_code = norm_country_code
-        else:
-            _country_code = norm_country_code if norm_country_code == item.i_country else None
-
-        if item.id is not None and _country_code is not None and _orgname is not None:
-            a['i'] = item.id
-            a['p'] = _country_code
-            a['_'] = _orgname
-            affs.append(a)
+                if item.id is not None:
+                    a = {}
+                    a['i'] = item.id
+                    a['p'] = norm_country_code
+                    a['_'] = norm_orgname
+                    a['c'] = norm_city
+                    a['s'] = norm_state
+                    affs.append(a)
     return affs
