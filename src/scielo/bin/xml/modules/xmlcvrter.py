@@ -639,7 +639,6 @@ def execute_converter(package_paths, collection_name=None):
                     link = converter_env.web_app_site + '/reports/' + acron + '/' + issue_id + '/' + os.path.basename(report_location)
                     report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
 
-                if config.is_enabled_transference:
                     transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
                 send_message(mailer, config.email_to, config.email_subject_package_evaluation + ' ' + package_folder, report_location)
 
