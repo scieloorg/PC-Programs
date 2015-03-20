@@ -14,7 +14,7 @@ class XMLConverterConfiguration(object):
         for item in open(filename, 'r').readlines():
             s = item.strip()
             if '=' in s:
-                if ',' in s:
+                if ',' in s and not '@' in s:
                     s = s[0:s.rfind(',')]
                 key, value = s.split('=')
                 value = value.replace('\\', '/').strip()
@@ -111,9 +111,9 @@ class XMLConverterConfiguration(object):
                 errors.append('ERROR: Unable to find ' + self.serial_path)
         if not self.is_windows:
             if not self.is_enabled_package_receipt:
-                errors.append('ERROR: Package receipt is not enabled.')
+                warnings.append('WARNING: Package receipt is not enabled.')
             if not self.is_enabled_email_service:
-                errors.append('ERROR: Email service is not enabled.')
+                warnings.append('WARNING: Email service is not enabled.')
             if not self.is_enabled_gerapadrao:
                 warnings.append('WARNING: Gerapadrao is not enabled.')
             if not self.is_enabled_transference:
