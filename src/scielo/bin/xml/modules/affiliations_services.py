@@ -21,15 +21,15 @@ class OrgManager(object):
     def __init__(self):
         self.indexedby_orgname = {}
         self.indexedby_isocountry = {}
-        self.indexedby_location = {}
+        self.indexedby_country_name = {}
 
     def load(self):
         for item in open(curr_path + '/../tables/orgname_location_country.csv', 'r').readlines():
             if not isinstance(item, unicode):
                 item = item.decode('utf-8')
             item = item.replace('"', '').strip().split('\t')
-            if len(item) == 4:
-                orgname, city, state, iso_country = item
+            if len(item) == 5:
+                orgname, city, state, iso_country, country_name = item
 
                 if not orgname in self.indexedby_orgname.keys():
                     self.indexedby_orgname[orgname] = []
@@ -38,6 +38,7 @@ class OrgManager(object):
 
                 self.indexedby_orgname[orgname].append([city, state, iso_country])
                 self.indexedby_isocountry[iso_country].append([orgname, city, state])
+                self.indexedby_country_name[country_name] = iso_country
 
     def _load(self):
         for item in open(curr_path + '/../tables/orgname_location_country.csv', 'r').readlines():
@@ -441,15 +442,19 @@ def normalized_affiliations(orgname, country_name, country_code, state, city):
         organizations_manager.load()
 
     normalized = []
-    norm_country_name, norm_country_code, errors = normalize_country(country_name, country_code)
-    #print(norm_country_name)
-    #print(norm_country_code)
+    if country_code is None:
+        country_code = organizations_manager.indexedby_country_name.get(country_name)
+        if country_code is None:
+            country_name, country_code, errors = normalize_country(country_name, country_code)
+
+    #print(country_name)
+    #print(country_code)
     #print(orgname)
-    if norm_country_code is not None:
-        options = organizations_manager.get_organizations(orgname, city, state, norm_country_code)
+    if country_code is not None:
+        options = organizations_manager.get_organizations(orgname, city, state, country_code)
         #print(options)
         if len(options) == 0:
-            orgname_city_state_items = organizations_manager.country_orgnames(norm_country_code)
+            orgname_city_state_items = organizations_manager.country_orgnames(country_code)
 
             if city is not None and len(orgname_city_state_items) > 0:
                 orgname_city_state_items = [[_orgname, _city, _state] for _orgname, _city, _state in orgname_city_state_items if _city == city]
@@ -460,7 +465,7 @@ def normalized_affiliations(orgname, country_name, country_code, state, city):
                     #print('=>' + word)
                     if word in _orgname.split() and len(word) > 5:
                         #print('...' + _orgname)
-                        normalized.append(', '.join([_orgname, _city, _state, norm_country_code]))
+                        normalized.append(', '.join([_orgname, _city, _state, country_code]))
                         break
             normalized = [item.split(', ') for item in list(set(normalized))]
         else:
