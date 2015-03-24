@@ -443,7 +443,8 @@ def normalize_hrefs(content, curr_and_new_href_list):
     return content
 
 
-def pack_article_files(doc_files_info, dest_path, href_files_list):
+def __pack_article_files(doc_files_info, dest_path, href_files_list):
+    register_log('pack_article_files: inicio')
     src_path = doc_files_info.xml_path
     xml_name = doc_files_info.xml_name
     new_name = doc_files_info.new_name
@@ -452,24 +453,77 @@ def pack_article_files(doc_files_info, dest_path, href_files_list):
     r_href_files_list = []
     r_not_found = []
 
+    register_log('pack_article_files: get_related_files')
     related_files_list = get_related_files(src_path, xml_name)
 
     if not os.path.isdir(dest_path):
         os.makedirs(dest_path)
+
+    register_log('pack_article_files: related_files_list')
     for f in related_files_list:
         r_related_files_list += pack_file_extended(src_path, dest_path, f, f.replace(xml_name, new_name))
+
+    register_log('pack_article_files: href_files_list')
     for curr, new in href_files_list:
         s = pack_file_extended(src_path, dest_path, curr, new)
         if len(s) == 0:
             r_not_found.append((curr, new))
         else:
             r_href_files_list += s
-    serial_files.delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
 
+    register_log('pack_article_files: serial_files.delete_files')
+    serial_files.delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
+    register_log('pack_article_files: fim')
+    return (r_related_files_list, r_href_files_list, r_not_found)
+
+
+def pack_article_files(doc_files_info, dest_path, href_files_list):
+    register_log('pack_article_files: inicio')
+    src_path = doc_files_info.xml_path
+    xml_name = doc_files_info.xml_name
+    new_name = doc_files_info.new_name
+
+    r_related_files_list = []
+    r_href_files_list = []
+    r_not_found = []
+
+    if not os.path.isdir(dest_path):
+        os.makedirs(dest_path)
+
+    src_files = os.listdir(src_path)
+    href_names = []
+
+    for curr, new in href_files_list:
+        c = curr if not '.' in curr else curr[0:curr.rfind('.')]
+        n = new if not '.' in new else new[0:new.rfind('.')]
+        href_names.append(c)
+        found = [f for f in src_files if f.startswith(c + '.')]
+        for f in found:
+            dest_name = f.replace(c, n)
+            r_href_files_list.append((curr, dest_name))
+            shutil.copyfile(src_path + '/' + f, dest_path + '/' + dest_name)
+        if len(found) == 0:
+            r_not_found.append((curr, new))
+
+    r_related_files_list = []
+    for f in src_files:
+        if f.startswith(xml_name + '.'):
+            r_related_files_list.append((f, f.replace(xml_name, new_name)))
+            shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(xml_name, new_name))
+        elif f.startswith(xml_name + '-'):
+            item = f[0:f.rfind('.')]
+            if not item in href_names:
+                r_related_files_list.append((f, f.replace(xml_name, new_name)))
+                shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(xml_name, new_name))
+
+    register_log('pack_article_files: serial_files.delete_files')
+    serial_files.delete_files([dest_path + '/' + f for f in os.listdir(dest_path) if f.endswith('.sgm.xml')])
+    register_log('pack_article_files: fim')
     return (r_related_files_list, r_href_files_list, r_not_found)
 
 
 def pack_file_extended(src_path, dest_path, curr, new):
+    register_log('pack_file_extended: inicio')
     r = []
     c = curr if not '.' in curr else curr[0:curr.rfind('.')]
     n = new if not '.' in new else new[0:new.rfind('.')]
@@ -477,6 +531,7 @@ def pack_file_extended(src_path, dest_path, curr, new):
     for f in found:
         shutil.copyfile(src_path + '/' + f, dest_path + '/' + f.replace(c, n))
         r.append((f, f.replace(c, n)))
+    register_log('pack_file_extended: fim')
     return r
 
 
@@ -501,9 +556,9 @@ def generate_packed_files_report(doc_files_info, dest_path, related_packed, href
     log.append('Package XML name: ' + new_name)
 
     log.append(message_file_list('Total of related files', format(related_packed)))
-    log.append(message_file_list('Total of @href in XML', format(href_packed)))
-    log.append(message_file_list('Total of files in package', format(curr_and_new_href_list)))
-    log.append(message_file_list('Total of files not found in package', format(not_found)))
+    log.append(message_file_list('Total of files in package', format(href_packed)))
+    log.append(message_file_list('Total of @href in XML', format(curr_and_new_href_list)))
+    log.append(message_file_list('Total of @href not found in package', format(not_found)))
 
     return '\n'.join(log)
 
@@ -716,6 +771,7 @@ def make_pmc_package(articles, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, 
 
 
 def pack_and_validate(xml_files, results_path, acron, version, from_converter=False):
+    register_log('pack_and_validate: inicio')
     from_markup = any([f.endswith('.sgm.xml') for f in xml_files])
 
     do_toc_report = not from_markup
@@ -739,6 +795,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         path = os.path.dirname(path)
         hdimages_to_jpeg(path, path, False)
 
+        register_log('pack_and_validate: make_package')
         pkg_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
         #generate_reports(pkg_items, scielo_dtd_files, scielo_pkg_path, report_path, do_toc_report, not from_markup, from_converter)
@@ -747,15 +804,22 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         texts = []
         toc_f = 0
         if not from_markup:
+            register_log('pack_and_validate: pkg_reports.validate_package')
             toc_stats_and_report = pkg_reports.validate_package(articles, from_converter)
             toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
+
+            register_log('pack_and_validate: pkg_reports.get_toc_report_text')
             texts.append(pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, toc_report))
 
         if toc_f == 0:
+            register_log('pack_and_validate: pkg_reports.validate_pkg_items')
             articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(pkg_items, scielo_dtd_files, from_converter, from_markup)
+
+            register_log('pack_and_validate: pkg_reports.get_articles_report_text')
             texts.append(pkg_reports.get_articles_report_text(articles_reports, articles_stats))
 
             if not from_markup:
+                register_log('pack_and_validate: pkg_reports.get_lists_report_text')
                 texts.append(pkg_reports.get_lists_report_text(articles_reports, articles_sheets))
 
         pkg_validation_report = html_reports.join_texts(texts)
@@ -763,11 +827,14 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         generate_reports(scielo_pkg_path, report_path, not from_markup, pkg_validation_report)
 
         if not from_converter and toc_f == 0:
+            register_log('pack_and_validate: zip_packages')
             zip_packages(scielo_pkg_path)
+            register_log('pack_and_validate: make_pmc_package')
             make_pmc_package(pkg_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
 
         print('Result of the processing:')
         print(results_path)
+        register_log('pack_and_validate: fim')
         fs_utils.write_file(report_path + '/log.txt', '\n'.join(log_items))
 
 

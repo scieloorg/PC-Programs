@@ -2,6 +2,8 @@
 import os
 import shutil
 import tempfile
+from datetime import datetime
+
 
 import xml_utils
 import fs_utils
@@ -11,6 +13,13 @@ THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
 JAVA_PATH = 'java'
 JAR_TRANSFORM = THIS_LOCATION + '/../../jar/saxonb9-1-0-8j/saxon9.jar'
 JAR_VALIDATE = THIS_LOCATION + '/../../jar/XMLCheck.jar'
+
+
+log_items = []
+
+
+def register_log(text):
+    log_items.append(datetime.now().isoformat() + ' ' + text)
 
 
 def format_parameters(parameters):
@@ -41,6 +50,7 @@ def xml_content_transform(content, xsl_filename):
 
 
 def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
+    register_log('xml_transform: inicio')
     error = False
 
     temp_result_filename = tempfile.mkdtemp() + '/' + os.path.basename(result_filename)
@@ -51,19 +61,21 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
             os.unlink(f)
 
     #temp_xml_filename = xml_utils.apply_dtd(xml_filename, '')
-    cmd = JAVA_PATH + ' -jar ' + JAR_TRANSFORM + ' -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
+    cmd = JAVA_PATH + ' -jar "' + JAR_TRANSFORM + '" -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
     os.system(cmd)
+
     if not os.path.exists(temp_result_filename):
         print('  ERROR: Unable to create ' + os.path.basename(result_filename))
         open(temp_result_filename, 'w').write('ERROR: transformation error.\n' + cmd)
         error = True
     shutil.move(temp_result_filename, result_filename)
     #restore_xml_file(xml_filename, temp_xml_filename)
-
+    register_log('xml_transform: fim')
     return (not error)
 
 
 def xml_validate(xml_filename, result_filename, doctype=None):
+    register_log('xml_validate: inicio')
     validation_type = ''
     temp_xml_filename = ''
     if doctype is None:
@@ -78,7 +90,7 @@ def xml_validate(xml_filename, result_filename, doctype=None):
     if not os.path.isdir(os.path.dirname(result_filename)):
         os.makedirs(os.path.dirname(result_filename))
 
-    cmd = JAVA_PATH + ' -cp ' + JAR_VALIDATE + ' br.bireme.XMLCheck.XMLCheck ' + xml_filename + ' ' + validation_type + '>"' + temp_result_filename + '"'
+    cmd = JAVA_PATH + ' -cp "' + JAR_VALIDATE + '" br.bireme.XMLCheck.XMLCheck "' + xml_filename + '" ' + validation_type + '>"' + temp_result_filename + '"'
     os.system(cmd)
     result = ''
     if os.path.exists(temp_result_filename):
@@ -102,4 +114,5 @@ def xml_validate(xml_filename, result_filename, doctype=None):
 
     shutil.move(temp_result_filename, result_filename)
     shutil.move(temp_xml_filename, xml_filename)
+    register_log('xml_validate: fim')
     return valid

@@ -56,18 +56,21 @@ class HRef(object):
         if element.attrib.get('ext-link-type') is not None or element.tag in ['license', 'ext-link', 'uri', 'related-article']:
             self.is_internal_file = False
 
-    def filename(self, path):
-        _href = None
+    def file_location(self, path):
+        location = None
         if self.src is not None and self.src != '':
             if self.is_internal_file:
-                _href = path + '/' + self.src
+                location = path + '/' + self.src
 
                 if self.is_image:
-                    if _href.endswith('.tiff'):
-                        _href = _href.replace('.tiff', '.jpg')
-                    elif _href.endswith('.tif'):
-                        _href = _href.replace('.tif', '.jpg')
-        return _href
+                    if location.endswith('.tiff'):
+                        location = location.replace('.tiff', '.jpg')
+                    elif location.endswith('.tif'):
+                        location = location.replace('.tif', '.jpg')
+                    else:
+                        if location[-5:-4] != '.' and location[-4:-3] != '.':
+                            location += '.jpg'
+        return location
 
 
 class PersonAuthor(object):

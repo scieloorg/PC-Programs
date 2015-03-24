@@ -11,6 +11,13 @@ import html_reports
 from article import Article, PersonAuthor, CorpAuthor, format_author
 
 
+log_items = []
+
+
+def register_log(text):
+    log_items.append(datetime.now().isoformat() + ' ' + text)
+
+
 class TOCReport(object):
 
     def __init__(self, articles, validate_order):
@@ -513,7 +520,7 @@ class ArticleSheetData(object):
                 row['href'] = hrefitem.src
 
                 if hrefitem.is_internal_file:
-                    filename = 'file:///' + hrefitem.filename(path)
+                    filename = 'file:///' + hrefitem.file_location(path)
                 else:
                     filename = hrefitem.src
 
@@ -595,35 +602,77 @@ def toc_report_data(articles, validate_order):
 
 
 def get_report_content(article, new_name, package_path, validate_order, display_all):
+    register_log('get_report_content: inicio')
     if article is None:
         content = 'FATAL ERROR: Unable to get data of ' + new_name + '.'
         sheet_data = None
     else:
+        print('validating contents 1')
+        register_log('get_report_content: article_validations.ArticleContentValidation')
         article_validation = article_validations.ArticleContentValidation(article, validate_order)
-        sheet_data = ArticleSheetData(article, article_validation)
-        article_display_report = ArticleDisplayReport(article, sheet_data, package_path, new_name)
-        article_validation_report = ArticleValidationReport(article_validation)
-        content = validate_contents(article_display_report, article_validation_report, display_all)
 
-    return (content, sheet_data)
+        print('validating contents 2')
+        register_log('get_report_content: ArticleSheetData')
+        sheet_data = ArticleSheetData(article, article_validation)
+
+        print('validating contents 3')
+        register_log('get_report_content: ArticleDisplayReport')
+        article_display_report = ArticleDisplayReport(article, sheet_data, package_path, new_name)
+
+        print('validating contents 4')
+        register_log('get_report_content: ArticleValidationReport')
+        article_validation_report = ArticleValidationReport(article_validation)
+
+        print('validating contents 5')
+        register_log('get_report_content: validate_contents')
+        content = validate_contents(article_display_report, article_validation_report, display_all)
+    register_log('get_report_content: fim')
+
+    return (content, sheet_data, log_items)
 
 
 def validate_contents(data_display, data_validation, display_all):
     content = []
+    n = 0
     #if display_all:
+    register_log('validate_contents: data_display.summary')
+    print('validate_contents: ' + str(n))
+    n += 1
     content.append(data_display.summary)
-
+    register_log('validate_contents: data_validation.validations')
+    print('validate_contents: ' + str(n))
+    n += 1
     content.append(data_validation.validations(not display_all))
+    register_log('validate_contents: data_display.files_and_href')
+    print('validate_contents: ' + str(n))
+    n += 1
     content.append(data_display.files_and_href)
 
     if display_all:
+        register_log('validate_contents: data_display.article_body')
+        print('validate_contents: ' + str(n))
+        n += 1
         content.append(data_display.article_body)
-        content.append(data_display.article_back)
-        #content.append(data_display.id_and_tag_list
-        content.append(data_display.authors_sheet)
-        content.append(data_display.sources_sheet)
 
-    return html_reports.join_texts(content)
+        register_log('validate_contents: data_display.article_back')
+        print('validate_contents: ' + str(n))
+        n += 1
+        content.append(data_display.article_back)
+
+        register_log('validate_contents: data_display.authors_sheet')
+        print('validate_contents: ' + str(n))
+        n += 1
+        content.append(data_display.authors_sheet)
+
+        register_log('validate_contents: data_display.sources_sheet')
+        print('validate_contents: ' + str(n))
+        n += 1
+        content.append(data_display.sources_sheet)
+        print('validate_contents: ' + str(n))
+
+    res = html_reports.join_texts(content)
+    print('validate_contents: fim')
+    return res
 
 
 def example():

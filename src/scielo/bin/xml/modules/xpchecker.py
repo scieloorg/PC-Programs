@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+from datetime import datetime
 
 try:
     from packtools.catalogs import XML_CATALOG
@@ -7,9 +8,17 @@ try:
 except:
     os.environ['XML_CATALOG_FILES'] = ''
 
+
 import java_xml_utils
 import xml_utils
 import html_reports
+
+
+log_items = []
+
+
+def register_log(text):
+    log_items.append(datetime.now().isoformat() + ' ' + text)
 
 
 def save_packtools_style_report(content, report_filename):
@@ -52,11 +61,15 @@ def packtools_style_validation(xml_filename, report_filename):
 
 
 def java_xml_utils_dtd_validation(xml_filename, report_filename, doctype):
-    return java_xml_utils.xml_validate(xml_filename, report_filename, doctype)
+    register_log('java_xml_utils_dtd_validation: inicio')
+    r = java_xml_utils.xml_validate(xml_filename, report_filename, doctype)
+    register_log('java_xml_utils_dtd_validation: fim')
+    return r
 
 
 def java_xml_utils_style_validation(xml_filename, doctype, report_filename, xsl_prep_report, xsl_report):
     # STYLE CHECKER REPORT
+    register_log('java_xml_utils_style_validation: inicio')
     is_valid_style = False
     xml_report = report_filename.replace('.html', '.xml')
     if os.path.exists(xml_report):
@@ -80,6 +93,7 @@ def java_xml_utils_style_validation(xml_filename, doctype, report_filename, xsl_
 
     if os.path.isfile(xml_report):
         os.unlink(xml_report)
+    register_log('java_xml_utils_style_validation: fim')
     return is_valid_style
 
 
@@ -141,8 +155,10 @@ def style_validation(xml_filename, doctype, report_filename, xsl_prep_report, xs
 
 
 def validate_article_xml(xml_filename, dtd_files, dtd_report_filename, style_report_filename):
+    register_log('validate_article_xml: inicio')
     is_valid_style = False
 
+    register_log('validate_article_xml: inicio')
     xml, e = xml_utils.load_xml(xml_filename)
     is_valid_dtd = dtd_validation(xml_filename, dtd_report_filename, dtd_files.doctype_with_local_path, dtd_files.database_name)
     if e is None:
@@ -150,4 +166,6 @@ def validate_article_xml(xml_filename, dtd_files, dtd_report_filename, style_rep
     else:
         open(style_report_filename, 'w').write('FATAL ERROR: Unable to load ' + xml_filename + '\n' + str(e))
     f, e, w = style_checker_statistics(style_report_filename)
+    register_log('validate_article_xml: fim')
+    open(os.path.dirname(style_report_filename) + '/validate_article_xml.log', 'a+').write('\n'.join(log_items))
     return (xml, is_valid_dtd, (f, e, w))
