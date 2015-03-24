@@ -441,6 +441,7 @@ def normalized_affiliations(orgname, country_name, country_code, state, city):
         organizations_manager = OrgManager()
         organizations_manager.load()
 
+    errors = []
     normalized = []
     if country_code is None:
         country_code = organizations_manager.indexedby_country_name.get(country_name)

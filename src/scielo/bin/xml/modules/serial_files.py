@@ -415,8 +415,9 @@ class IssueFiles(object):
                     shutil.copy(self.xml_path + '/' + f, path[ext])
                     msg.append('  ' + f + ' => ' + path[ext])
                 else:
-                    shutil.copy(self.xml_path + '/' + f, path['img'])
-                    msg.append('  ' + f + ' => ' + path['img'])
+                    if not f.endswith('.tif') and not f.endswith('.tiff'):
+                        shutil.copy(self.xml_path + '/' + f, path['img'])
+                        msg.append('  ' + f + ' => ' + path['img'])
 
         return '\n'.join(['<p>' + item + '</p>' for item in msg])
 

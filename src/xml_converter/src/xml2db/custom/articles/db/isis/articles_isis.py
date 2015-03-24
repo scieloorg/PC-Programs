@@ -281,6 +281,7 @@ class Paths:
         return self.extension_path.get(ext, self.web_img_path)
 
     def move_file_to_path(self, filename, issue_folder):
+        r = False
         dest_path = self.get_destination_path(filename) + '/' + issue_folder
         f = os.path.basename(filename)
         if os.path.exists(filename):
@@ -288,8 +289,12 @@ class Paths:
                 os.unlink(dest_path + '/' + f)
             if not os.path.exists(dest_path):
                 os.makedirs(dest_path)
-            shutil.move(filename, dest_path)
-        return os.path.exists(dest_path + '/' + f)
+            if not filename.endswith('.tif') and not filename.endswith('.tiff'):
+                shutil.move(filename, dest_path)
+                r = os.path.exists(dest_path + '/' + f)
+            else:
+                r = True
+        return r
 
 
 class IssuePath:
