@@ -689,6 +689,14 @@ class ReferenceContentValidation(object):
             r.append(item)
         for item in self.authors_list:
             r.append(item)
+
+        if self.reference.specific_use == 'display-only':
+            items = []
+            for label, status, message in r:
+                if status != 'OK':
+                    status = 'IGNORED ' + status.lower()
+                items.append((label, status, message))
+            r = items
         return r
 
     @property
@@ -697,12 +705,12 @@ class ReferenceContentValidation(object):
 
     @property
     def source(self):
-        return required('source', self.reference.source, 'ERROR')
+        return required('source', self.reference.source, 'FATAL ERROR')
 
     def validate_element(self, label, value):
         res = attributes.validate_element(self.reference.publication_type, label, value)
         if res != '':
-            return (label, 'FATAL ERROR', res)
+            return (label, 'ERROR', res)
         else:
             if not value is None and value != '':
                 return (label, 'OK', value)
@@ -749,7 +757,7 @@ class ReferenceContentValidation(object):
 
     @property
     def year(self):
-        return required('year', self.reference.year, 'ERROR')
+        return required('year', self.reference.year, 'FATAL ERROR')
 
     @property
     def publisher_name(self):
