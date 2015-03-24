@@ -161,6 +161,7 @@ class ArticleContentValidation(object):
 
     @property
     def validations(self):
+        print('validations: 1')
         items = [self.journal_title,
                     self.publisher_name,
                     self.journal_id,
@@ -193,7 +194,10 @@ class ArticleContentValidation(object):
                     self.validate_xref_reftype,
                     self.missing_xref_list
                 ]
-        return self.normalize_validations(items)
+        print('validations: 2')
+        r = self.normalize_validations(items)
+        print('validations: 3')
+        return r
 
     @property
     def dtd_version(self):
@@ -646,25 +650,12 @@ class ArticleContentValidation(object):
     def href_list(self, path):
         href_items = {'ok': [], 'warning': [], 'error': [], 'fatal error': []}
         for hrefitem in self.article.hrefs:
-            filename = hrefitem.src
             if hrefitem.is_internal_file:
-                filename = hrefitem.filename(path)
-                if os.path.isfile(filename):
+                file_location = hrefitem.file_location(path)
+                if os.path.isfile(file_location):
                     href_items['ok'].append(hrefitem)
                 else:
-                    if filename.endswith('.tiff') or filename.endswith('.tif'):
-                        if os.path.isfile(filename[0:filename.rfind('.')] + '.jpg'):
-                            href_items['ok'].append(hrefitem)
-                        else:
-                            href_items['fatal error'].append(hrefitem)
-                    else:
-                        if not '.' in filename[-5:]:
-                            if os.path.isfile(filename + '.jpg'):
-                                href_items['warning'].append(hrefitem)
-                            else:
-                                href_items['fatal error'].append(hrefitem)
-                        else:
-                            href_items['fatal error'].append(hrefitem)
+                    href_items['fatal error'].append(hrefitem)
             else:
                 if article_utils.url_check(hrefitem.src, 10):
                     href_items['ok'].append(hrefitem)

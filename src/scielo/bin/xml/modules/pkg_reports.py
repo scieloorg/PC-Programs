@@ -1,10 +1,18 @@
 # coding=utf-8
 
 import os
+from datetime import datetime
 
 import article_reports
 import xpchecker
 import html_reports
+
+
+log_items = []
+
+
+def register_log(text):
+    log_items.append(datetime.now().isoformat() + ' ' + text)
 
 
 def update_err_filename(err_filename, dtd_report):
@@ -40,7 +48,7 @@ def get_article_xml_validations_reports(new_name, xml_filename, dtd_files, dtd_r
 
 
 def get_article_contents_validations_report(article, new_name, package_path, report_filename, validate_order, display_title):
-    content, sheet_data = article_reports.get_report_content(article, new_name, package_path, validate_order, display_title)
+    content, sheet_data, _log_items = article_reports.get_report_content(article, new_name, package_path, validate_order, display_title)
 
     f, e, w = html_reports.statistics_numbers(content)
 
@@ -51,7 +59,7 @@ def get_article_contents_validations_report(article, new_name, package_path, rep
         title = ['Contents validations required by SciELO ', new_name]
 
     html_reports.save(report_filename, title, stats + content)
-
+    open(report_filename + '.log', 'w').write('\n'.join(_log_items))
     return (f, e, w, sheet_data)
 
 
@@ -115,21 +123,33 @@ def validate_pkg_items(pkg_items, dtd_files, validate_order, display_all):
     articles_sheets = {}
 
     print('Validating package')
+    register_log('pkg_reports.validate_pkg_items: inicio')
     for doc, doc_files_info in pkg_items:
         new_name = doc_files_info.new_name
         xml_filename = doc_files_info.new_xml_filename
         print(new_name)
+        register_log(new_name)
+
+        register_log('pkg_reports.validate_pkg_items: get_article_xml_validations_reports')
+        print('validating xml')
         xml_f, xml_e, xml_w = get_article_xml_validations_reports(new_name, xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
 
+        print('validating contents')
+        register_log('pkg_reports.validate_pkg_items: get_article_contents_validations_report')
         data_f, data_e, data_w, sheet_data = get_article_contents_validations_report(doc, new_name, os.path.dirname(xml_filename), doc_files_info.data_report_filename, validate_order, display_all)
 
         articles_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
         articles_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
+
+        register_log('pkg_reports.validate_pkg_items: authors_sheet_data ...')
         if sheet_data is not None:
+            print('creating lists')
             articles_sheets[new_name] = (sheet_data.authors_sheet_data(new_name), sheet_data.sources_sheet_data(new_name))
         else:
             articles_sheets[new_name] = (None, None)
 
+    register_log('pkg_reports.validate_pkg_items: fim')
+    open(os.path.dirname(doc_files_info.style_report_filename) + '/validate_pkg_items.log', 'a+').write('\n'.join(log_items))
     return (articles_stats, articles_reports, articles_sheets)
 
 
