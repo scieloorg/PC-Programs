@@ -985,8 +985,13 @@ class ReferenceXML(object):
 
     @property
     def publication_type(self):
-        if self.root.find('.//element-citation') is not None:
-            return self.root.find('.//element-citation').attrib.get('publication-type')
+        if self.element_citation is not None:
+            return self.element_citation.attrib.get('publication-type')
+
+    @property
+    def specific_use(self):
+        if self.root is not None:
+            return self.root.attrib.get('specific-use')
 
     @property
     def xml(self):
