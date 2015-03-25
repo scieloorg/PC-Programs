@@ -5,6 +5,9 @@ import article_utils
 import xml_utils
 
 
+IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', ]
+
+
 def format_issue_label(year, volume, number, volume_suppl, number_suppl):
     year = year if number == 'ahead' else ''
     v = 'v' + volume if volume is not None else None
@@ -41,20 +44,19 @@ class Table(object):
 
 class HRef(object):
 
-    def __init__(self, src, element, parent, xml):
+    def __init__(self, src, element, parent, xml, xml_name):
         self.src = src
         self.element = element
         self.xml = xml
 
+        ext = '.jpg' if not '.' in src else src[src.rfind('.'):]
+
         self.id = element.attrib.get('id', None)
         if self.id is None and parent is not None:
             self.id = parent.attrib.get('id', None)
-
         self.parent = parent
-        self.is_internal_file = True
-        self.is_image = (self.element.tag == 'graphic')
-        if element.attrib.get('ext-link-type') is not None or element.tag in ['license', 'ext-link', 'uri', 'related-article']:
-            self.is_internal_file = False
+        self.is_internal_file = xml_name in src
+        self.is_image = ext in IMG_EXTENSIONS
 
     def file_location(self, path):
         location = None
@@ -128,7 +130,8 @@ class Text(object):
 
 class ArticleXML(object):
 
-    def __init__(self, tree):
+    def __init__(self, tree, xml_name):
+        self.xml_name = xml_name[0:xml_name.rfind('.')]
         self._ahead_pid = None
         self.tree = tree
         self.journal_meta = None
@@ -778,7 +781,7 @@ class ArticleXML(object):
             for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
                 for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
                     href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                    _href = HRef(href, elem, parent, xml_utils.node_xml(parent))
+                    _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.xml_name)
                     r.append(_href)
         return r
 
@@ -788,7 +791,7 @@ class ArticleXML(object):
 
     @property
     def href_files(self):
-        return [href for href in self.hrefs if href.isfile]
+        return [href for href in self.hrefs if href.is_internal_file]
 
     @property
     def tables(self):
@@ -801,7 +804,7 @@ class ArticleXML(object):
                     src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
                     xml = xml_utils.node_xml(graphic)
 
-                    _href = HRef(src, graphic, t, xml)
+                    _href = HRef(src, graphic, t, xml, self.xml_name)
                 _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), xml_utils.node_text(t.find('.//caption')), _href, xml_utils.node_xml(t.find('./table')))
                 r.append(_table)
         return r
@@ -809,8 +812,8 @@ class ArticleXML(object):
 
 class Article(ArticleXML):
 
-    def __init__(self, tree):
-        ArticleXML.__init__(self, tree)
+    def __init__(self, tree, xml_name):
+        ArticleXML.__init__(self, tree, xml_name)
         if self.tree is not None:
             self._issue_parts()
 

@@ -41,7 +41,7 @@ def xml_content_transform(content, xsl_filename):
 
     f2 = tempfile.NamedTemporaryFile(delete=False)
     f2.close()
-    if xml_transform(f.name, xsl_filename, f2.name):
+    if xml_transform(False, f.name, xsl_filename, f2.name):
         content = open(f2.name, 'r').read()
         os.unlink(f2.name)
     if os.path.exists(f.name):
@@ -49,18 +49,19 @@ def xml_content_transform(content, xsl_filename):
     return content
 
 
-def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
+def xml_transform(run_background, xml_filename, xsl_filename, result_filename, parameters={}):
     register_log('xml_transform: inicio')
     error = False
 
-    temp_result_filename = tempfile.mkdtemp() + '/' + os.path.basename(result_filename)
+    tmp_dir = tempfile.mkdtemp()
+    temp_result_filename = tmp_dir + '/' + os.path.basename(result_filename)
+
     if not os.path.isdir(os.path.dirname(result_filename)):
         os.makedirs(os.path.dirname(result_filename))
     for f in [result_filename, temp_result_filename]:
         if os.path.isfile(f):
             os.unlink(f)
 
-    #temp_xml_filename = xml_utils.apply_dtd(xml_filename, '')
     cmd = JAVA_PATH + ' -jar "' + JAR_TRANSFORM + '" -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
     os.system(cmd)
 
@@ -69,22 +70,28 @@ def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
         open(temp_result_filename, 'w').write('ERROR: transformation error.\n' + cmd)
         error = True
     shutil.move(temp_result_filename, result_filename)
-    #restore_xml_file(xml_filename, temp_xml_filename)
+
+    if os.path.isdir(tmp_dir):
+        try:
+            shutil.rmtree(tmp_dir)
+        except:
+            pass
     register_log('xml_transform: fim')
     return (not error)
 
 
-def xml_validate(xml_filename, result_filename, doctype=None):
+def xml_validate(run_background, xml_filename, result_filename, doctype=None):
     register_log('xml_validate: inicio')
     validation_type = ''
-    temp_xml_filename = ''
+
     if doctype is None:
-        temp_xml_filename = xml_utils.apply_dtd(xml_filename, '')
+        doctype = ''
     else:
         validation_type = '--validate'
-        temp_xml_filename = xml_utils.apply_dtd(xml_filename, doctype)
 
-    temp_result_filename = tempfile.mkdtemp() + '/' + os.path.basename(result_filename)
+    bkp_xml_filename = xml_utils.apply_dtd(xml_filename, doctype)
+    tmp_dir = tempfile.mkdtemp()
+    temp_result_filename = tmp_dir + '/' + os.path.basename(result_filename)
     if os.path.isfile(result_filename):
         os.unlink(result_filename)
     if not os.path.isdir(os.path.dirname(result_filename)):
@@ -92,9 +99,10 @@ def xml_validate(xml_filename, result_filename, doctype=None):
 
     cmd = JAVA_PATH + ' -cp "' + JAR_VALIDATE + '" br.bireme.XMLCheck.XMLCheck "' + xml_filename + '" ' + validation_type + '>"' + temp_result_filename + '"'
     os.system(cmd)
-    result = ''
+
     if os.path.exists(temp_result_filename):
         result = open(temp_result_filename, 'r').read()
+
         if 'ERROR' in result.upper():
             n = 0
             s = ''
@@ -103,16 +111,17 @@ def xml_validate(xml_filename, result_filename, doctype=None):
                     s += str(n) + ':' + line
                 n += 1
             result += '\n' + s
+            open(temp_result_filename, 'a+').write(result)
     else:
         result = 'ERROR: Not valid. Unknown error.\n' + cmd
-
-    if 'ERROR' in result.upper():
         open(temp_result_filename, 'a+').write(result)
-        valid = False
-    else:
-        valid = True
 
     shutil.move(temp_result_filename, result_filename)
-    shutil.move(temp_xml_filename, xml_filename)
+    shutil.move(bkp_xml_filename, xml_filename)
+    if os.path.isdir(tmp_dir):
+        try:
+            shutil.rmtree(tmp_dir)
+        except:
+            pass
     register_log('xml_validate: fim')
-    return valid
+    return not 'ERROR' in result.upper()

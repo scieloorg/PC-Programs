@@ -8,6 +8,9 @@ from article import Issue, PersonAuthor
 from attributes import ROLE, DOCTOPIC
 
 
+import affiliations_services
+
+
 def normalize_role(_role):
     r = ROLE.get(_role)
     return _role if r == '??' else r
@@ -57,7 +60,8 @@ class ArticleRecords2Article(object):
 
 class Article2ArticleRecords(object):
 
-    def __init__(self, article, i_record, article_files, creation_date=None):
+    def __init__(self, org_manager, article, i_record, article_files, creation_date=None):
+        self.org_manager = org_manager
         self.article = article
         self.article_files = article_files
         self.i_record = i_record
@@ -176,7 +180,7 @@ class Article2ArticleRecords(object):
         self._metadata['14']['e'] = self.article.elocation_id
 
         self._metadata['70'] = format_affiliations(self.article.affiliations)
-        self._metadata['240'] = normalized_affiliations(self.article.affiliations)
+        self._metadata['240'] = normalized_affiliations(self.org_manager, self.article.affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
         self._metadata['72'] = str(0 if self.article.total_of_references is None else self.article.total_of_references)
@@ -439,12 +443,10 @@ def format_affiliations(affiliations):
     return affs
 
 
-def normalized_affiliations(affiliations):
-    import affiliations_services
-
+def normalized_affiliations(org_manager, affiliations):
     affs = []
     for item in affiliations:
-        errors, result_items = affiliations_services.validate_affiliation(item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
+        errors, result_items = affiliations_services.validate_affiliation(org_manager, item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
         if len(errors) == 0:
             if len(result_items) == 1:
                 norm_orgname, norm_city, norm_state, norm_country_code = result_items[0]

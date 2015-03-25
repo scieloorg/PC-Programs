@@ -210,7 +210,7 @@ def convert_package(src_path):
         msg.append(toc_report)
 
         if toc_f == 0 and len(pkg_items) > 0:
-            articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(pkg_items, dtd_files, validate_order, display_title)
+            fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(converter_env.org_manager, pkg_items, dtd_files, validate_order, display_title)
             msg.append(pkg_reports.get_articles_report_text(articles_reports, articles_stats))
             msg.append(pkg_reports.get_lists_report_text(articles_reports, articles_sheets))
 
@@ -662,7 +662,12 @@ def prepare_env(config):
     converter_env.db_isis.update_indexes(config.issue_db_copy, config.issue_db_copy + '.fst')
     converter_env.db_issue = serial_files.IssueDAO(converter_env.db_isis, config.issue_db_copy)
 
-    converter_env.db_article = serial_files.ArticleDAO(converter_env.db_isis)
+    import affiliations_services
+
+    org_manager = affiliations_services.OrgManager()
+    org_manager.load()
+
+    converter_env.db_article = serial_files.ArticleDAO(converter_env.db_isis, org_manager)
 
     converter_env.local_web_app_path = config.local_web_app_path
     converter_env.serial_path = config.serial_path

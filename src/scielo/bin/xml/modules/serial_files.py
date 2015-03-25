@@ -527,7 +527,8 @@ class IssueDAO(object):
 
 class ArticleDAO(object):
 
-    def __init__(self, dao):
+    def __init__(self, dao, org_manager):
+        self.org_manager = org_manager
         self.dao = dao
 
     def create_id_file(self, i_record, article, article_files, creation_date=None):
@@ -539,7 +540,7 @@ class ArticleDAO(object):
 
         if article.order != '00000':
             from isis_models import Article2ArticleRecords
-            article_records = Article2ArticleRecords(article, i_record, article_files, creation_date)
+            article_records = Article2ArticleRecords(org_manager, article, i_record, article_files, creation_date)
             self.dao.save_id(article_files.id_filename, article_records.records)
             if os.path.isfile(article_files.id_filename):
                 saved_records = self.dao.get_id_records(article_files.id_filename)

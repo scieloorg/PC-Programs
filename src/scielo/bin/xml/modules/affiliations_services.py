@@ -1,6 +1,7 @@
 # code = utf-8
 
 import os
+from datetime import datetime
 
 import utils
 
@@ -13,7 +14,6 @@ iso_country_list = None
 br_state_list = None
 orgname_list = None
 location_list = None
-organizations_manager = None
 
 
 class OrgManager(object):
@@ -434,32 +434,28 @@ def get_country_name(country_code):
         return names[0]
 
 
-def normalized_affiliations(orgname, country_name, country_code, state, city):
-    global organizations_manager
-
-    if organizations_manager is None:
-        organizations_manager = OrgManager()
-        organizations_manager.load()
-
+def normalized_affiliations(organizations_manager, orgname, country_name, country_code, state, city):
     errors = []
     normalized = []
     if country_code is None:
+        #print(datetime.now().isoformat() + ' normalized_affiliations: indexedby_country_name')
         country_code = organizations_manager.indexedby_country_name.get(country_name)
         if country_code is None:
+            #print(datetime.now().isoformat() + ' normalized_affiliations: normalize_country')
             country_name, country_code, errors = normalize_country(country_name, country_code)
 
-    #print(country_name)
-    #print(country_code)
-    #print(orgname)
     if country_code is not None:
+        #print(datetime.now().isoformat() + ' normalized_affiliations: get_organizations')
         options = organizations_manager.get_organizations(orgname, city, state, country_code)
         #print(options)
         if len(options) == 0:
+            #print(datetime.now().isoformat() + ' normalized_affiliations: country_orgnames')
             orgname_city_state_items = organizations_manager.country_orgnames(country_code)
 
             if city is not None and len(orgname_city_state_items) > 0:
                 orgname_city_state_items = [[_orgname, _city, _state] for _orgname, _city, _state in orgname_city_state_items if _city == city]
 
+            #print(datetime.now().isoformat() + ' normalized_affiliations: orgname_city_state_items')
             for _orgname, _city, _state in orgname_city_state_items:
                 #print(_orgname)
                 for word in orgname.split(' '):
@@ -468,11 +464,15 @@ def normalized_affiliations(orgname, country_name, country_code, state, city):
                         #print('...' + _orgname)
                         normalized.append(', '.join([_orgname, _city, _state, country_code]))
                         break
+
+            #print(datetime.now().isoformat() + ' normalized_affiliations: list(set(normalized))')
             normalized = [item.split(', ') for item in list(set(normalized))]
         else:
+            #print(datetime.now().isoformat() + ' normalized_affiliations: if len(options) > 0')
             normalized = [[orgname, _city, _state, _country] for _city, _state, _country in options]
     #print(errors)
     #print(normalized)
+    #print(datetime.now().isoformat() + ' normalized_affiliations: fim')
     return (errors, normalized)
 
 
@@ -555,23 +555,28 @@ def get_normalized_from_wayta(orgname, country):
     return results
 
 
-def validate_affiliation(orgname, norgname, country, i_country, state, city):
+def validate_affiliation(org_manager, orgname, norgname, country, i_country, state, city):
     errors = []
     orgname_and_location_items = []
 
+    #print(datetime.now().isoformat() + ' validate_affiliation: inicio')
     if norgname is not None:
-        errors, orgname_and_location_items = normalized_affiliations(norgname, country, i_country, state, city)
+        #print(datetime.now().isoformat() + ' validate_affiliation: normalized_affiliations 1')
+        errors, orgname_and_location_items = normalized_affiliations(org_manager, norgname, country, i_country, state, city)
+        #print(datetime.now().isoformat() + ' validate_affiliation: normalized_affiliations 2')
         #print(orgname_and_location_items)
     if len(errors) == 0:
         if len(orgname_and_location_items) == 0:
             if orgname is not None:
-                errors, orgname_and_location_items = normalized_affiliations(orgname, country, i_country, state, city)
+                #print(datetime.now().isoformat() + ' validate_affiliation: normalized_affiliations 3')
+                errors, orgname_and_location_items = normalized_affiliations(org_manager, orgname, country, i_country, state, city)
+                #print(datetime.now().isoformat() + ' validate_affiliation: normalized_affiliations 4')
                 #print(orgname_and_location_items)
     return (errors, orgname_and_location_items)
 
 
-def get_normalized_from_list(orgname, country):
-    errors, orgname_and_location_items = normalized_affiliations(orgname, country, None, None, None)
+def get_normalized_from_list(org_manager, orgname, country):
+    errors, orgname_and_location_items = normalized_affiliations(org_manager, orgname, country, None, None, None)
     new = []
     for _orgname, city, state, _country in orgname_and_location_items:
         country_name = get_country_name(_country)
@@ -588,6 +593,8 @@ def normaff_search(text):
     orgname = text[0:text.rfind(',')].strip()
     country = text[text.rfind(',')+1:].strip()
     results = get_normalized_from_wayta(orgname, country)
-    results += get_normalized_from_list(orgname, country)
+    org_manager = OrgManager()
+    org_manager.load()
+    results += get_normalized_from_list(org_manager, orgname, country)
 
     return sorted(list(set(results)))

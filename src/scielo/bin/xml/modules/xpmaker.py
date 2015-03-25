@@ -624,7 +624,7 @@ def normalize_package_name(doc_files_info, acron, content):
     register_log('load_xml')
     xml, e = xml_utils.load_xml(content)
 
-    doc = article.Article(xml) if xml is not None else None
+    doc = article.Article(xml, doc_files_info.xml_name) if xml is not None else None
     doc_files_info.new_name = doc_files_info.xml_name
     curr_and_new_href_list = None
 
@@ -639,7 +639,7 @@ def normalize_package_name(doc_files_info, acron, content):
             content = normalize_hrefs(content, curr_and_new_href_list)
 
             xml, e = xml_utils.load_xml(content)
-            doc = article.Article(xml) if xml is not None else None
+            doc = article.Article(xml, doc_files_info.xml_name) if xml is not None else None
 
     doc_files_info.new_xml_filename = doc_files_info.new_xml_path + '/' + doc_files_info.new_name + '.xml'
     return (doc, doc_files_info, curr_and_new_href_list, content)
@@ -707,15 +707,19 @@ def get_not_found_extended(path, href_list):
     return not_found
 
 
-def xml_output(xml_filename, doctype, xsl_filename, result_filename):
+def xml_output(run_background, xml_filename, doctype, xsl_filename, result_filename):
     if result_filename == xml_filename:
         shutil.copyfile(xml_filename, xml_filename + '.bkp')
         xml_filename = xml_filename + '.bkp'
+
     if os.path.exists(result_filename):
         os.unlink(result_filename)
-    temp = xml_utils.apply_dtd(xml_filename, doctype)
-    r = java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)
-    xml_utils.restore_xml_file(xml_filename, temp)
+
+    bkp_xml_filename = xml_utils.apply_dtd(xml_filename, doctype)
+    r = java_xml_utils.xml_transform(run_background, xml_filename, xsl_filename, result_filename)
+
+    if not result_filename == xml_filename:
+        xml_utils.restore_xml_file(xml_filename, bkp_xml_filename)
     if xml_filename.endswith('.bkp'):
         os.unlink(xml_filename)
     return r
@@ -754,14 +758,14 @@ def make_pmc_package(articles, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, 
             print('-'*len(doc_files_info.xml_name))
 
             pmc_xml_filename = pmc_pkg_path + '/' + doc_files_info.new_name + '.xml'
-            xml_output(doc_files_info.new_xml_filename, scielo_dtd_files.doctype_with_local_path, scielo_dtd_files.xsl_output, pmc_xml_filename)
+            xml_output(False, doc_files_info.new_xml_filename, scielo_dtd_files.doctype_with_local_path, scielo_dtd_files.xsl_output, pmc_xml_filename)
 
             print(' ... created pmc')
             register_log(' ... created pmc')
             #validation of pmc.xml
             register_log('validate_article_xml pmc')
-            xpchecker.style_validation(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, doc_files_info.pmc_style_report_filename, pmc_dtd_files.xsl_prep_report, pmc_dtd_files.xsl_report, pmc_dtd_files.database_name)
-            xml_output(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
+            xpchecker.style_validation(True, pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, doc_files_info.pmc_style_report_filename, pmc_dtd_files.xsl_prep_report, pmc_dtd_files.xsl_report, pmc_dtd_files.database_name)
+            xml_output(True, pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
             done = True
     if done:
         for f in os.listdir(scielo_pkg_path):
@@ -813,7 +817,16 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         if toc_f == 0:
             register_log('pack_and_validate: pkg_reports.validate_pkg_items')
-            articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(pkg_items, scielo_dtd_files, from_converter, from_markup)
+            import affiliations_services
+
+            print(datetime.now().isoformat())
+            print('loading services...')
+            org_manager = affiliations_services.OrgManager()
+            org_manager.load()
+            print('services loaded!')
+            print(datetime.now().isoformat())
+
+            fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(org_manager, pkg_items, scielo_dtd_files, from_converter, from_markup)
 
             register_log('pack_and_validate: pkg_reports.get_articles_report_text')
             texts.append(pkg_reports.get_articles_report_text(articles_reports, articles_stats))
@@ -826,7 +839,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         generate_reports(scielo_pkg_path, report_path, not from_markup, pkg_validation_report)
 
-        if not from_converter and toc_f == 0:
+        if not from_converter and toc_f == 0 and fatal_errors == 0:
             register_log('pack_and_validate: zip_packages')
             zip_packages(scielo_pkg_path)
             register_log('pack_and_validate: make_pmc_package')
@@ -917,7 +930,7 @@ def get_articles(xml_path):
     for xml_filename in os.listdir(xml_path):
         if xml_filename.endswith('.xml'):
             xml, e = xml_utils.load_xml(xml_path + '/' + xml_filename)
-            doc = article.Article(xml) if xml is not None else None
+            doc = article.Article(xml, xml_filename) if xml is not None else None
             r[xml_filename] = doc
     return r
 
@@ -930,7 +943,7 @@ def get_pkg_items(xml_filenames, report_path):
         doc_files_info.new_xml_path = os.path.dirname(xml_filename)
 
         xml, e = xml_utils.load_xml(doc_files_info.new_xml_filename)
-        doc = article.Article(xml) if xml is not None else None
+        doc = article.Article(xml, xml_filename) if xml is not None else None
         r.append((doc, doc_files_info))
     return r
 

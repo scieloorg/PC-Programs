@@ -5,6 +5,10 @@ import shutil
 from modules import affiliations_services
 
 
+if affiliations_services.organizations_manager is None:
+    affiliations_services.organizations_manager = affiliations_services.OrgManager()
+    affiliations_services.organizations_manager.load()
+
 text = None
 filename = None
 ctrl_filename = None

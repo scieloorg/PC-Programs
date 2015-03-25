@@ -33,10 +33,9 @@ def delete_irrelevant_reports(ctrl_filename, is_valid_style, dtd_validation_repo
         os.unlink(dtd_validation_report)
 
 
-def get_article_xml_validations_reports(new_name, xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename):
+def get_article_xml_validations_reports(xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename, run_background):
 
-    print('validating xml')
-    xml, valid_dtd, valid_style = xpchecker.validate_article_xml(xml_filename, dtd_files, dtd_report, style_report)
+    xml, valid_dtd, valid_style = xpchecker.validate_article_xml(xml_filename, dtd_files, dtd_report, style_report, run_background)
     f, e, w = valid_style
     update_err_filename(err_filename, dtd_report)
     delete_irrelevant_reports(ctrl_filename, f + e + w == 0, dtd_report, style_report)
@@ -47,8 +46,7 @@ def get_article_xml_validations_reports(new_name, xml_filename, dtd_files, dtd_r
     return (f, e, w)
 
 
-def get_article_contents_validations_report(article, new_name, package_path, report_filename, validate_order, display_title):
-    content, sheet_data, _log_items = article_reports.get_report_content(article, new_name, package_path, validate_order, display_title)
+def write_article_contents_validations_report(new_name, report_filename, content, display_title):
 
     f, e, w = html_reports.statistics_numbers(content)
 
@@ -59,8 +57,7 @@ def get_article_contents_validations_report(article, new_name, package_path, rep
         title = ['Contents validations required by SciELO ', new_name]
 
     html_reports.save(report_filename, title, stats + content)
-    open(report_filename + '.log', 'w').write('\n'.join(_log_items))
-    return (f, e, w, sheet_data)
+    return (f, e, w)
 
 
 def get_report_text(filename):
@@ -117,12 +114,14 @@ def validate_package(articles, validate_order):
     return article_reports.toc_report_data(articles, validate_order)
 
 
-def validate_pkg_items(pkg_items, dtd_files, validate_order, display_all):
+def validate_pkg_items(org_manager, pkg_items, dtd_files, validate_order, display_all):
     articles_stats = {}
     articles_reports = {}
     articles_sheets = {}
 
-    print('Validating package')
+    fatal_errors = 0
+
+    print('Validating package: inicio')
     register_log('pkg_reports.validate_pkg_items: inicio')
     for doc, doc_files_info in pkg_items:
         new_name = doc_files_info.new_name
@@ -131,26 +130,33 @@ def validate_pkg_items(pkg_items, dtd_files, validate_order, display_all):
         register_log(new_name)
 
         register_log('pkg_reports.validate_pkg_items: get_article_xml_validations_reports')
-        print('validating xml')
-        xml_f, xml_e, xml_w = get_article_xml_validations_reports(new_name, xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
+        print(datetime.now().isoformat() + ' validating xml')
+        xml_f, xml_e, xml_w = get_article_xml_validations_reports(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all == False)
 
-        print('validating contents')
+        print(datetime.now().isoformat() + ' validating contents')
         register_log('pkg_reports.validate_pkg_items: get_article_contents_validations_report')
-        data_f, data_e, data_w, sheet_data = get_article_contents_validations_report(doc, new_name, os.path.dirname(xml_filename), doc_files_info.data_report_filename, validate_order, display_all)
+
+        content, sheet_data, _log_items = article_reports.get_report_content(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, display_all)
+        print(datetime.now().isoformat() + ' writing contents validations report')
+        data_f, data_e, data_w = write_article_contents_validations_report(new_name, doc_files_info.data_report_filename, content, display_all)
 
         articles_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
+
+        fatal_errors += xml_f + data_f
+
         articles_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
 
         register_log('pkg_reports.validate_pkg_items: authors_sheet_data ...')
         if sheet_data is not None:
-            print('creating lists')
+            print(datetime.now().isoformat() + ' creating lists')
             articles_sheets[new_name] = (sheet_data.authors_sheet_data(new_name), sheet_data.sources_sheet_data(new_name))
+            print(datetime.now().isoformat() + ' lists created')
         else:
             articles_sheets[new_name] = (None, None)
 
     register_log('pkg_reports.validate_pkg_items: fim')
-    open(os.path.dirname(doc_files_info.style_report_filename) + '/validate_pkg_items.log', 'a+').write('\n'.join(log_items))
-    return (articles_stats, articles_reports, articles_sheets)
+    print('Validating package: fim')
+    return (fatal_errors, articles_stats, articles_reports, articles_sheets)
 
 
 def get_toc_report_text(toc_f, toc_e, toc_w, toc_report):
