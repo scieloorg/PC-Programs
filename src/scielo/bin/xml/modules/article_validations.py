@@ -1,11 +1,14 @@
 # coding=utf-8
 
 import os
+from datetime import datetime
 
 import attributes
 import article_utils
 
 import article
+
+import affiliations_services
 
 
 def format_value(value):
@@ -146,9 +149,12 @@ def validate_contrib_names(author, affiliations=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, article, validate_order):
+    def __init__(self, org_manager, article, validate_order, check_url):
+        self.org_manager = org_manager
         self.article = article
         self.validate_order = validate_order
+        self.check_url = check_url
+        #self.check_url = validate_order
 
     def normalize_validations(self, validations_result_list):
         r = []
@@ -161,43 +167,76 @@ class ArticleContentValidation(object):
 
     @property
     def validations(self):
-        print('validations: 1')
-        items = [self.journal_title,
-                    self.publisher_name,
-                    self.journal_id,
-                    self.journal_id_nlm_ta,
-                    self.journal_issns,
-                    self.issue_label,
-                    self.language,
-                    self.article_type,
-                    self.article_date_types,
-                    self.toc_section,
-                    self.order,
-                    self.doi,
-                    self.pagination,
-                    self.total_of_pages,
-                    self.total_of_equations,
-                    self.total_of_tables,
-                    self.total_of_figures,
-                    self.total_of_references,
-                    self.titles,
-                    self.contrib_names,
-                    self.contrib_collabs,
-                    self.affiliations,
-                    self.funding,
-                    self.license_text,
-                    self.license_url,
-                    self.license_type,
-                    self.history,
-                    self.abstracts,
-                    self.keywords,
-                    self.validate_xref_reftype,
-                    self.missing_xref_list
-                ]
-        print('validations: 2')
+        performance = []
+        #print(datetime.now().isoformat() + ' validations 1')
+        items = []
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.journal_title)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.publisher_name)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.journal_id)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.journal_id_nlm_ta)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.journal_issns)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.issue_label)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.language)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.article_type)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.article_date_types)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.toc_section)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.order)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.doi)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.pagination)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.total_of_pages)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.total_of_equations)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.total_of_tables)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.total_of_figures)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.total_of_references)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.titles)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.contrib_names)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.contrib_collabs)
+        #print(datetime.now().isoformat() + ' validations affiliations')
+        items.append(self.affiliations)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.funding)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.license_text)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.license_url)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.license_type)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.history)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.abstracts)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.keywords)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.validate_xref_reftype)
+        #print(datetime.now().isoformat() + ' validations')
+        items.append(self.missing_xref_list)
+
+        #print(datetime.now().isoformat() + ' validations 2')
         r = self.normalize_validations(items)
-        print('validations: 3')
-        return r
+        #print(datetime.now().isoformat() + ' validations 3')
+        return (r, performance)
 
     @property
     def dtd_version(self):
@@ -434,8 +473,6 @@ class ArticleContentValidation(object):
 
     @property
     def affiliations(self):
-        import affiliations_services
-
         r = []
         labels = ['institution[@content-type="normalized"]', 'country', 'country/@country', 'state', 'city']
         for aff in self.article.affiliations:
@@ -444,7 +481,7 @@ class ArticleContentValidation(object):
             r.append(required('aff id', aff.id, 'FATAL ERROR'))
             r.append(required('aff original', aff.original, 'ERROR'))
 
-            errors, normalized_items = affiliations_services.validate_affiliation(aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+            errors, normalized_items = affiliations_services.validate_affiliation(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
             if len(errors) > 0:
                 r.append(('aff data', 'FATAL ERROR', '\n'.join(errors)))
             else:
@@ -653,12 +690,18 @@ class ArticleContentValidation(object):
             if hrefitem.is_internal_file:
                 file_location = hrefitem.file_location(path)
                 if os.path.isfile(file_location):
-                    href_items['ok'].append(hrefitem)
+                    if not '.' in hrefitem.src:
+                        href_items['warning'].append(hrefitem)
+                    else:
+                        href_items['ok'].append(hrefitem)
                 else:
                     href_items['fatal error'].append(hrefitem)
             else:
-                if article_utils.url_check(hrefitem.src, 10):
-                    href_items['ok'].append(hrefitem)
+                if self.check_url:
+                    if article_utils.url_check(hrefitem.src, 1):
+                        href_items['ok'].append(hrefitem)
+                    else:
+                        href_items['warning'].append(hrefitem)
                 else:
                     href_items['warning'].append(hrefitem)
         return href_items

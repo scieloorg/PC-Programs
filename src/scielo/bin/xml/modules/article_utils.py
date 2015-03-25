@@ -1,5 +1,6 @@
 # coding=utf-8
 
+from datetime import datetime
 import urllib2
 
 
@@ -7,10 +8,18 @@ MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '
 
 
 def url_check(url, _timeout=30):
+    print(datetime.now().isoformat() + ' url checking ' + url)
     try:
-        r = urllib2.urlopen(url, timeout=_timeout)
+        r = urllib2.urlopen(url, timeout=_timeout).read()
+    except urllib2.URLError, e:
+        r = None
+        print(datetime.now().isoformat() + " Oops, timed out?")
+    except urllib2.socket.timeout:
+        r = None
+        print(datetime.now().isoformat() + " Timed out!")
     except:
         r = None
+        print(datetime.now().isoformat() + " unknown")
     return (r is not None)
 
 
@@ -74,7 +83,7 @@ def format_dateiso(adate):
         if month is None:
             month = adate.get('month')
         if '-' in month:
-            month = month[0:month.find('-')]
+            month = month[month.find('-')+1:]
         if not month.isdigit():
             month = MONTHS.get(month, '00')
         month = '00' + month
