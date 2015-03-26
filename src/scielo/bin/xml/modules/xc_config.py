@@ -124,6 +124,10 @@ class XMLConverterConfiguration(object):
         return len(errors) == 0
 
     @property
+    def skip_identical_xml(self):
+        return self._data.get('SKIP_IDENTICAL_XML', 'no') == 'yes'
+
+    @property
     def web_app_site(self):
         return self._data.get('WEB_APP_SITE')
 

@@ -925,13 +925,16 @@ def get_xml_package_folders_info(input_pkg_path):
     return (xml_files, results_path)
 
 
+def get_article(xml_filename):
+    xml, e = xml_utils.load_xml(xml_filename)
+    return article.Article(xml, os.path.basename(xml_filename)) if xml is not None else None
+
+
 def get_articles(xml_path):
     r = {}
     for xml_filename in os.listdir(xml_path):
         if xml_filename.endswith('.xml'):
-            xml, e = xml_utils.load_xml(xml_path + '/' + xml_filename)
-            doc = article.Article(xml, xml_filename) if xml is not None else None
-            r[xml_filename] = doc
+            r[xml_filename] = get_article(xml_path + '/' + xml_filename)
     return r
 
 
@@ -941,10 +944,7 @@ def get_pkg_items(xml_filenames, report_path):
         doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, None)
         doc_files_info.new_xml_filename = xml_filename
         doc_files_info.new_xml_path = os.path.dirname(xml_filename)
-
-        xml, e = xml_utils.load_xml(doc_files_info.new_xml_filename)
-        doc = article.Article(xml, xml_filename) if xml is not None else None
-        r.append((doc, doc_files_info))
+        r.append((get_article(doc_files_info.new_xml_filename), doc_files_info))
     return r
 
 

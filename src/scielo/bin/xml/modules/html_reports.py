@@ -55,8 +55,8 @@ def body_section(style, anchor_name, title, content, sections=[]):
     return anchor + '<' + style + '>' + title + '</' + style + '>' + sections + content
 
 
-def css_class(style):
-    return ' class="' + style + '"' if style != '' else style
+def attr(name, value):
+    return ' ' + name + '="' + value + '"' if value is not None and name is not None else ''
 
 
 def collapsible_block(section_id, section_title, content, status='ok'):
@@ -68,25 +68,16 @@ def collapsible_block(section_id, section_title, content, status='ok'):
     return r
 
 
-def __collapsible_block(section_id, section_title, content, status='ok'):
-    r = '<div id="show' + section_id + '" onClick="openClose(\'' + section_id + '\')" style="cursor:hand; cursor:pointer"><strong>' + section_title + ' [+]</strong></div>'
-    r += '<div id="hide' + section_id + '" onClick="openClose(\'' + section_id + '\')" class="collapsiblehidden" style="cursor:hand; cursor:pointer"><strong>' + section_title + ' [-] </strong></div>'
-    r += '<div id="' + section_id + '" class="collapsible">'
-    r += '<div class="embedded-report-' + status + '">' + content + '</div>'
-    r += '</div>'
-    return r
-
-
 def link(href, label):
     return '<a href="' + href + '">' + label + '</a>'
 
 
-def tag(tag_name, content, style=''):
+def tag(tag_name, content, style=None):
     if content is None:
         content = ''
     if tag_name == 'p' and '</p>' in content:
         tag_name = 'div'
-    return '<' + tag_name + css_class(style) + '>' + content + '</' + tag_name + '>'
+    return '<' + tag_name + attr('class', style) + '>' + content + '</' + tag_name + '>'
 
 
 def html(title, body):
@@ -115,87 +106,67 @@ def html(title, body):
 
 def statistics_display(f, e, w, inline=True):
     if inline:
-        element_name = 'span'
+        tag_name = 'span'
         stats = ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]])
     else:
-        element_name = 'div'
+        tag_name = 'div'
         stats = [('Total of fatal errors:', f), ('Total of errors:', e), ('Total of warnings:', w)]
-        stats = ''.join([format_p_label_value(l, str(v)) for l, v in stats])
-
-    text = 'FATAL ERROR' if f > 0 else 'ERROR' if e > 0 else 'WARNING' if w > 0 else ''
-    style = message_style(text)
-    if style == '' or style == 'ok':
-        style = 'success'
-
-    return tag(element_name, stats, style)
+        stats = ''.join([tag('p', display_label_value(l, str(v))) for l, v in stats])
+    return tag(tag_name, stats, get_stats_numbers_style(f, e, w))
 
 
-def display_links_to_report(files_list, path_relative=False):
-    files = ''
-    for item in files_list:
-        if os.path.isfile(item):
-            basename = os.path.basename(item)
-            if path_relative is True:
-                files += tag('p', link('file:///' + basename, basename))
-            else:
-                files += tag('p', link('file:///' + item, basename))
-    if len(files) > 0:
-        files = tag('p', 'Check the errors/warnings:') + files
-    return files
-
-
-def sheet(table_header_and_data, filename=None):
-    table_header = None
+def sheet(table_header, wider, table_data, filename=None, table_style='sheet'):
+    r = ''
     width = None
-
-    if table_header_and_data is not None:
-        table_header, wider, table_data = table_header_and_data
-
-    r = '<p>'
-    if table_header is None:
-        r += '<!-- no data to create sheet -->'
-    else:
-        if len(table_header) > 2:
-            width = 100
-            width = 100 / len(table_header)
+    if not table_header is None:
+        if len(table_header) > 3:
+            width = 800
+            width = 800 / len(table_header)
             width = str(width)
 
-        r += '<table class="sheet">'
-        r += '<thead><tr>'
+        th = ''
         if filename is not None:
-            r += '<th class="th"></th>'
+            th += '<th class="th"></th>'
         for label in table_header:
-            r += '<th class="th">' + label + '</th>'
-        r += '</tr></thead>'
-        if len(table_data) == 0:
-            r += '<tbody><tr>'
-            for label in table_header:
-                r += '<td>-</td>'
-            r += '</tr></tbody>'
-        else:
-            r += '<tbody>'
-            for row in table_data:
-                r += '<tr>'
-                if filename is not None:
-                    r += '<td>' + filename + '</td>'
+            th += tag('th', label, 'th')
 
-                for label in table_header:
-                    r += '<td'
-                    if label == '@id':
-                        r += ' class="td_status"'
-                    r += '>'
-                    r += format_cell_data(row.get(label, ''), not label in ['filename', 'scope'], width) + '</td>'
-                r += '</tr>'
-            r += '</tbody>'
-        r += '</table>'
-    r += '</p>'
+        if len(table_data) == 0:
+            tr = ''
+            if filename is not None:
+                tr += '<td></td>'
+            for label in table_header:
+                tr += '<td>-</td>'
+            tbody = tag('tr', tr)
+
+        else:
+
+            if table_style == 'validation':
+                tbody = ''
+                for row in table_data:
+                    tr = ''
+                    for label in table_header:
+                        cell_content = format_html_data(row.get(label, ''))
+                        tr += tag('td', cell_content, 'td_' + label)
+                    tbody += tag('tr', tr, get_message_style(row.get('status')))
+            else:
+                tbody = ''
+                for row in table_data:
+                    tr = ''
+                    if filename is not None:
+                        tr += tag('td', filename)
+
+                    for label in table_header:
+                        cell_style = 'td_status' if label == '@id' else None
+                        cell_content = format_html_data(row.get(label, ''), not label in ['filename', 'scope', 'label', 'status'], width)
+                        tr += tag('td', cell_content, cell_style)
+                    tbody += tag('tr', tr)
+
+        r = tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', tbody), table_style))
     return r
 
 
 def display_xml(value, width=None):
-
     value = xml_utils.pretty_print(value)
-
     value = value.replace('<', '&lt;')
     value = value.replace('>', '&gt;')
     if width is not None:
@@ -206,54 +177,54 @@ def display_xml(value, width=None):
 
 
 def format_message(value):
-    if '</p>' in value:
-        tag = 'div'
-    else:
-        tag = 'p'
-    return '<' + tag + message_css_class(value) + '>' + value + '</' + tag + '>'
+    return tag('p', value, get_message_style(value))
+
+
+def li_from_dict(list_items):
+    li_items = ''
+    for k, v in list_items.items():
+        if isinstance(v, list):
+            #FIXME format_html_data?
+            v = ', '.join(v)
+        li_items += tag('li', display_label_value(k, v))
+    return li_items
 
 
 def format_list(label, list_type, list_items, style=''):
-    r = ''
-    r += '<div' + css_class(style) + '>'
-    r += tag('p', (tag('span', label)))
-    r += '<' + list_type + '>'
     if isinstance(list_items, dict):
-        r += ''.join(['<li>' + display_label_value(k, v) + '</li>' for k, v in list_items.items()])
+        ltype = list_type
+        li_items = li_from_dict(list_items)
     elif isinstance(list_items, list):
+        ltype = 'ol'
+        li_items = ''
         for item in list_items:
+            li = item
             if isinstance(item, dict):
-                for k, v in item.items():
-                    r += '<li>' + display_label_value(k, v) + '</li>'
-            else:
-                r += '<li>' + item + '</li>'
-    r += '</' + list_type + '>'
-    r += '</div>'
-    return r
+                li = format_list(label, list_type, item, style)
+            li_items += tag('li', li)
+    return tag('div', tag('p', label, 'label') + tag(ltype, li_items), style)
 
 
-def format_cell_data(value, is_data, width=None):
+def format_html_data(value, apply_message_style=False, width=None):
     r = '-'
     if isinstance(value, list):
-        r = ''
-        r += '<ul>'
-        for item in value:
-            r += '<li>' + html_value(item) + '</li>'
-        r += '</ul>'
+        r = format_list('', 'ol', value)
     elif isinstance(value, dict):
-        r = ''
-        r += '<ul>'
-        for k, v in value.items():
-            if k != 'ordered':
-                if isinstance(v, list):
-                    r += '<li>' + k + ': ' + ', '.join(html_value(v)) + '</li>'
-                else:
-                    r += '<li>' + display_label_value(k, v) + '</li>'
-        r += '</ul>'
-    elif value is not None:
+        r = format_list('', 'ul', value)
+    elif value is None:
         # str or unicode
-        r = html_value(value, width)
-    if is_data:
+        r = '-'
+    elif isinstance(value, int):
+        r = str(value)
+    else:
+        if '<img' in value or '</a>' in value:
+            r = value
+        else:
+            if '<' in value and '>' in value:
+                r = display_xml(value, width)
+            else:
+                r = value
+    if apply_message_style:
         r = format_message(r)
     return r
 
@@ -272,26 +243,7 @@ def save(filename, title, body):
     f.close()
 
 
-def display_labeled_value(label, value, style='', element_name='p'):
-    if label is None:
-        label = 'None'
-    return tag(element_name, tag('span', '[' + label + '] ', 'discret') + html_value(value), style)
-
-
-def html_value(value, width=None):
-    if value is None:
-        value = 'None'
-    if isinstance(value, int):
-        value = str(value)
-    if '<img' in value or '</a>' in value:
-        pass
-    else:
-        if '<' in value and '>' in value:
-            value = display_xml(value, width)
-    return value
-
-
-def message_style(value, default='ok'):
+def get_message_style(value, default='ok'):
     r = default
     if 'FATAL ERROR' in value:
         r = 'fatalerror'
@@ -302,7 +254,7 @@ def message_style(value, default='ok'):
     return r
 
 
-def get_message_style(f, e, w):
+def get_stats_numbers_style(f, e, w):
     r = 'success'
     if f > 0:
         r = 'fatalerror'
@@ -313,16 +265,14 @@ def get_message_style(f, e, w):
     return r
 
 
-def message_css_class(style):
-    return ' class="' + message_style(style) + '"'
+def display_labeled_value(label, value, style=''):
+    if label is None:
+        label = 'None'
+    return tag('p', tag('span', '[' + label + '] ', 'discret') + format_html_data(value), style)
 
 
 def display_label_value(label, value):
-    return tag('span', label) + ' ' + html_value(value)
-
-
-def format_p_label_value(label, value):
-    return tag('p', display_label_value(label, value))
+    return tag('span', label, 'label') + ': ' + format_html_data(value)
 
 
 def image(path):

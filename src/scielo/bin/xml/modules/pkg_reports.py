@@ -163,7 +163,7 @@ def get_toc_report_text(toc_f, toc_e, toc_w, toc_report):
     toc_text = ''
     if toc_f + toc_e + toc_w > 0:
         toc_text = html_reports.tag('h2', 'Table of contents Report')
-        toc_text += html_reports.collapsible_block('toc', 'table of contents validations: ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report, html_reports.get_message_style(toc_f, toc_e, toc_w))
+        toc_text += html_reports.collapsible_block('toc', 'table of contents validations: ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report, html_reports.get_stats_numbers_style(toc_f, toc_e, toc_w))
     return toc_text
 
 
@@ -191,11 +191,11 @@ def get_articles_report_text(articles_reports, articles_stats):
                     v.append(content)
             content = ''.join(v)
             s = html_reports.statistics_display(xml_f, xml_e, xml_w)
-            validations_text += html_reports.collapsible_block('xmlrep' + str(index), 'XML validations (' + ' and '.join(t) + '): ' + s, content, html_reports.get_message_style(xml_f, xml_e, xml_w))
+            validations_text += html_reports.collapsible_block('xmlrep' + str(index), 'XML validations (' + ' and '.join(t) + '): ' + s, content, html_reports.get_stats_numbers_style(xml_f, xml_e, xml_w))
 
         if data_f + data_e + data_w > 0:
             s = html_reports.statistics_display(data_f, data_e, data_w)
-            validations_text += html_reports.collapsible_block('datarep' + str(index), 'Contents validations (' + os.path.basename(rep3) + '): ' + s, get_report_text(rep3), html_reports.get_message_style(data_f, data_e, data_w))
+            validations_text += html_reports.collapsible_block('datarep' + str(index), 'Contents validations (' + os.path.basename(rep3) + '): ' + s, get_report_text(rep3), html_reports.get_stats_numbers_style(data_f, data_e, data_w))
 
     return validations_text
 
@@ -219,10 +219,10 @@ def get_lists_report_text(articles_reports, articles_sheets):
             sources_h, sources_w, sources_data = articles_sheets[new_name][1]
             toc_sources_sheet_data += sources_data
 
-    authors = html_reports.sheet((authors_h, authors_w, toc_authors_sheet_data))
+    authors = html_reports.sheet(authors_h, authors_w, toc_authors_sheet_data)
     lists_text += html_reports.collapsible_block('authors', 'Authors in the package', authors)
 
-    sources = html_reports.sheet((sources_h, sources_w, toc_sources_sheet_data))
+    sources = html_reports.sheet(sources_h, sources_w, toc_sources_sheet_data)
     lists_text += html_reports.collapsible_block('sources', 'Sources in the package', sources)
 
     return lists_text

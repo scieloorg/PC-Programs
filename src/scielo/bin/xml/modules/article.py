@@ -131,7 +131,8 @@ class Text(object):
 class ArticleXML(object):
 
     def __init__(self, tree, xml_name):
-        self.xml_name = xml_name[0:xml_name.rfind('.')]
+        self.xml_name = xml_name
+        self.prefix = xml_name[0:xml_name.rfind('.')]
         self._ahead_pid = None
         self.tree = tree
         self.journal_meta = None
@@ -781,7 +782,7 @@ class ArticleXML(object):
             for parent in self.tree.findall('.//*[@{http://www.w3.org/1999/xlink}href]/..'):
                 for elem in parent.findall('.//*[@{http://www.w3.org/1999/xlink}href]'):
                     href = elem.attrib.get('{http://www.w3.org/1999/xlink}href')
-                    _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.xml_name)
+                    _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
                     r.append(_href)
         return r
 
@@ -804,7 +805,7 @@ class ArticleXML(object):
                     src = graphic.attrib.get('{http://www.w3.org/1999/xlink}href')
                     xml = xml_utils.node_xml(graphic)
 
-                    _href = HRef(src, graphic, t, xml, self.xml_name)
+                    _href = HRef(src, graphic, t, xml, self.prefix)
                 _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), xml_utils.node_text(t.find('.//caption')), _href, xml_utils.node_xml(t.find('./table')))
                 r.append(_table)
         return r
