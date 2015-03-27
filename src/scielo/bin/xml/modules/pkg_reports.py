@@ -114,7 +114,7 @@ def validate_package(articles, validate_order):
     return article_reports.toc_report_data(articles, validate_order)
 
 
-def validate_pkg_items(org_manager, pkg_items, dtd_files, validate_order, display_all):
+def validate_pkg_items(org_manager, pkg_items, dtd_files, validate_order, display_all, xml_articles_status=None):
     articles_stats = {}
     articles_reports = {}
     articles_sheets = {}
@@ -124,35 +124,39 @@ def validate_pkg_items(org_manager, pkg_items, dtd_files, validate_order, displa
     print('Validating package: inicio')
     register_log('pkg_reports.validate_pkg_items: inicio')
     for doc, doc_files_info in pkg_items:
-        new_name = doc_files_info.new_name
-        xml_filename = doc_files_info.new_xml_filename
-        print(new_name)
-        register_log(new_name)
+        skip = False
+        if xml_articles_status is not None:
+            skip = xml_articles_status[doc_files_info.xml_name] == 'skip'
+        if not skip:
+            new_name = doc_files_info.new_name
+            xml_filename = doc_files_info.new_xml_filename
+            print(new_name)
+            register_log(new_name)
 
-        register_log('pkg_reports.validate_pkg_items: get_article_xml_validations_reports')
-        print(datetime.now().isoformat() + ' validating xml')
-        xml_f, xml_e, xml_w = get_article_xml_validations_reports(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all == False)
+            register_log('pkg_reports.validate_pkg_items: get_article_xml_validations_reports')
+            print(datetime.now().isoformat() + ' validating xml')
+            xml_f, xml_e, xml_w = get_article_xml_validations_reports(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all is False)
 
-        print(datetime.now().isoformat() + ' validating contents')
-        register_log('pkg_reports.validate_pkg_items: get_article_contents_validations_report')
+            print(datetime.now().isoformat() + ' validating contents')
+            register_log('pkg_reports.validate_pkg_items: get_article_contents_validations_report')
 
-        content, sheet_data, _log_items = article_reports.get_report_content(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, display_all)
-        print(datetime.now().isoformat() + ' writing contents validations report')
-        data_f, data_e, data_w = write_article_contents_validations_report(new_name, doc_files_info.data_report_filename, content, display_all)
+            content, sheet_data, _log_items = article_reports.get_report_content(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, display_all)
+            print(datetime.now().isoformat() + ' writing contents validations report')
+            data_f, data_e, data_w = write_article_contents_validations_report(new_name, doc_files_info.data_report_filename, content, display_all)
 
-        articles_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
+            articles_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
 
-        fatal_errors += xml_f + data_f
+            fatal_errors += xml_f + data_f
 
-        articles_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
+            articles_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
 
-        register_log('pkg_reports.validate_pkg_items: authors_sheet_data ...')
-        if sheet_data is not None:
-            print(datetime.now().isoformat() + ' creating lists')
-            articles_sheets[new_name] = (sheet_data.authors_sheet_data(new_name), sheet_data.sources_sheet_data(new_name))
-            print(datetime.now().isoformat() + ' lists created')
-        else:
-            articles_sheets[new_name] = (None, None)
+            register_log('pkg_reports.validate_pkg_items: authors_sheet_data ...')
+            if sheet_data is not None:
+                print(datetime.now().isoformat() + ' creating lists')
+                articles_sheets[new_name] = (sheet_data.authors_sheet_data(new_name), sheet_data.sources_sheet_data(new_name))
+                print(datetime.now().isoformat() + ' lists created')
+            else:
+                articles_sheets[new_name] = (None, None)
 
     register_log('pkg_reports.validate_pkg_items: fim')
     print('Validating package: fim')

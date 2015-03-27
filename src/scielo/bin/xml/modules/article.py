@@ -132,7 +132,7 @@ class ArticleXML(object):
 
     def __init__(self, tree, xml_name):
         self.xml_name = xml_name
-        self.prefix = xml_name[0:xml_name.rfind('.')]
+        self.prefix = xml_name.replace('.xml', '')
         self._ahead_pid = None
         self.tree = tree
         self.journal_meta = None

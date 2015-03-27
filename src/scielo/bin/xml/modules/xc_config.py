@@ -199,6 +199,10 @@ class XMLConverterConfiguration(object):
         return self._data.get('EMAIL_SUBJECT_GERAPADRAO')
 
     @property
+    def email_subject_website_update(self):
+        return self._data.get('EMAIL_SUBJECT_WEBSITE')
+
+    @property
     def email_text_packages_receipt(self):
         return self.email_header(self._data.get('EMAIL_TEXT_PACKAGES_RECEIPT'))
 
@@ -213,6 +217,10 @@ class XMLConverterConfiguration(object):
     @property
     def email_text_gerapadrao(self):
         return self.email_header(self._data.get('EMAIL_TEXT_GERAPADRAO'))
+
+    @property
+    def email_text_website_update(self):
+        return self.email_header(self._data.get('EMAIL_TEXT_WEBSITE'))
 
     @property
     def ftp_server(self):

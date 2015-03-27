@@ -38,7 +38,7 @@ def disable(permission_file):
     open(permission_file, 'w').write('running')
 
 
-def read_scilista(scilista_file):
+def read_collection_scilista(scilista_file):
     content = None
     if scilista_file is not None:
         if os.path.isfile(scilista_file):
@@ -47,6 +47,12 @@ def read_scilista(scilista_file):
                 content = content.decode('utf-8')
             os.unlink(scilista_file)
     return content
+
+
+def clean_collection_scilista(scilista_file):
+    if scilista_file is not None:
+        if os.path.isfile(scilista_file):
+            os.unlink(scilista_file)
 
 
 def sort_scilista(scilista_content):
@@ -66,19 +72,24 @@ def gerapadrao(args):
             if config.is_enabled_gerapadrao:
                 if is_enabled(config.gerapadrao_permission_file):
                     config.update_title_and_issue()
-                    scilista_content = read_scilista(config.collection_scilista)
+                    scilista_content = read_collection_scilista(config.collection_scilista)
                     if scilista_content is None:
                         print(config.collection_scilista + ' is empty')
                     else:
                         scilista_content = sort_scilista(scilista_content)
                         print(scilista_content)
-                        x
+
                         disable(config.gerapadrao_permission_file)
                         open(config.gerapadrao_scilista, 'w').write(scilista_content)
                         gerapadrao_cmd = gerapadrao_command(config.gerapadrao_proc_path, config.gerapadrao_permission_file)
 
+                        mailer = xc.get_mailer(config)
+                        if mailer is not None:
+                            mailer.send_message(config.email_to, config.email_subject_gerapadrao, config.email_text_gerapadrao + scilista_content)
+
                         open('./gerapadrao.log', 'w').write(datetime.now().isoformat() + ' - inicio gerapadrao\n')
                         os.system(gerapadrao_cmd)
+                        clean_collection_scilista(config.collection_scilista)
                         open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim gerapadrao\n')
 
                         if config.is_enabled_transference:
@@ -86,9 +97,8 @@ def gerapadrao(args):
                             transfer_website_bases(config.local_web_app_path + '/bases', config.transference_user, config.transference_server, config.remote_web_app_path + '/bases')
                             open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim transf\n')
 
-                        mailer = xc.get_mailer(config)
                         if mailer is not None:
-                            mailer.send_message(config.email_to, config.email_subject_gerapadrao, config.email_text_gerapadrao + scilista_content)
+                            mailer.send_message(config.email_to, config.email_subject_website_update, config.email_text_website_update + scilista_content)
 
                 else:
                     print('gerapadrao is running. Wait ...')
