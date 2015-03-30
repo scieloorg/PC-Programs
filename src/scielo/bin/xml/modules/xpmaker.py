@@ -927,14 +927,14 @@ def get_xml_package_folders_info(input_pkg_path):
 
 def get_article(xml_filename):
     xml, e = xml_utils.load_xml(xml_filename)
-    return article.Article(xml, os.path.basename(xml_filename)) if xml is not None else None
+    return article.Article(xml, os.path.basename(xml_filename).replace('.xml', '')) if xml is not None else None
 
 
 def get_articles(xml_path):
     r = {}
     for xml_filename in os.listdir(xml_path):
         if xml_filename.endswith('.xml'):
-            r[xml_filename] = get_article(xml_path + '/' + xml_filename)
+            r[xml_filename.replace('.xml', '')] = get_article(xml_path + '/' + xml_filename)
     return r
 
 

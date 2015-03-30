@@ -115,7 +115,7 @@ def statistics_display(f, e, w, inline=True):
     return tag(tag_name, stats, get_stats_numbers_style(f, e, w))
 
 
-def sheet(table_header, wider, table_data, filename=None, table_style='sheet'):
+def sheet(table_header, wider, table_data, filename=None, table_style='sheet', row_style=None):
     r = ''
     width = None
     if not table_header is None:
@@ -139,17 +139,8 @@ def sheet(table_header, wider, table_data, filename=None, table_style='sheet'):
             tbody = tag('tr', tr)
 
         else:
-
-            if table_style == 'validation':
-                tbody = ''
-                for row in table_data:
-                    tr = ''
-                    for label in table_header:
-                        cell_content = format_html_data(row.get(label, ''))
-                        tr += tag('td', cell_content, 'td_' + label)
-                    tbody += tag('tr', tr, get_message_style(row.get('status')))
-            else:
-                tbody = ''
+            tbody = ''
+            if table_style == 'sheet':
                 for row in table_data:
                     tr = ''
                     if filename is not None:
@@ -160,6 +151,20 @@ def sheet(table_header, wider, table_data, filename=None, table_style='sheet'):
                         cell_content = format_html_data(row.get(label, ''), not label in ['filename', 'scope', 'label', 'status'], width)
                         tr += tag('td', cell_content, cell_style)
                     tbody += tag('tr', tr)
+            else:
+                td_style = 'td_' if table_style == 'validations' else None
+                for row in table_data:
+                    tr = ''
+                    for label in table_header:
+                        cell_content = format_html_data(row.get(label, ''))
+                        if td_style is None:
+                            tr += tag('td', cell_content)
+                        else:
+                            tr += tag('td', cell_content, 'td_' + label)
+                    if row_style == 'status':
+                        tbody += tag('tr', tr, get_message_style(row.get(row_style), None))
+                    else:
+                        tbody += tag('tr', tr, get_message_style(row.get(row_style), None))
 
         r = tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', tbody), table_style))
     return r
@@ -177,7 +182,7 @@ def display_xml(value, width=None):
 
 
 def format_message(value):
-    return tag('p', value, get_message_style(value))
+    return tag('p', value, get_message_style(value, 'ok'))
 
 
 def li_from_dict(list_items):
@@ -243,14 +248,19 @@ def save(filename, title, body):
     f.close()
 
 
-def get_message_style(value, default='ok'):
-    r = default
+def get_message_style(value, default):
+    if value is None:
+        value = ''
     if 'FATAL ERROR' in value:
         r = 'fatalerror'
     elif 'ERROR' in value:
         r = 'error'
     elif 'WARNING' in value:
         r = 'warning'
+    elif default is None:
+        r = value
+    else:
+        r = default
     return r
 
 

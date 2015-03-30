@@ -35,12 +35,15 @@ def xc_read_configuration(filename):
 
 
 def xc_config_filename(collection_acron):
-    filename = CURRENT_PATH + '/../../scielo_paths.ini'
+    if collection_acron is None:
+        f = CURRENT_PATH + '/../../scielo_paths.ini'
+        if os.path.isfile(f):
+            filename = f
+        else:
+            filename = CURRENT_PATH + '/../config/default.xc.ini'
+    else:
+        filename = CURRENT_PATH + '/../config/' + collection_acron + '.xc.ini'
 
-    if not os.path.isfile(filename):
-        filename = None
-        if not collection_acron is None:
-            filename = CURRENT_PATH + '/../config/' + collection_acron + '.xc.ini'
     return filename
 
 
