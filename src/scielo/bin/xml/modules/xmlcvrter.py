@@ -4,21 +4,19 @@ import os
 import shutil
 from datetime import datetime
 
-from isis_models import IssueModels, ArticleRecords2Article
-import ftp_service
-import email_service
 import serial_files
-import html_reports
-import pkg_reports
-import xml_versions
-import isis
-import xc_config
-import article_utils
 import fs_utils
+import utils
+import html_reports
+import isis
+
+import xc_models
+import pkg_reports
 import xml_utils
+import xml_versions
 import xpmaker
 import xc
-import utils
+import xc_config
 
 
 converter_report_lines = []
@@ -37,6 +35,7 @@ class ConverterEnv(object):
         self.local_web_app_path = None
         self.serial_path = None
         self.is_windows = None
+        self.org_manager = None
 
 
 def register_log(message):
@@ -70,92 +69,162 @@ def find_issue_models(issue_label, p_issn, e_issn):
         if i_record is None:
             msg = html_reports.format_message('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + converter_env.db_issue.db_filename + '. (' + '/'.join([i for i in [p_issn, e_issn] if i is not None]) + ')')
         else:
-            issue_models = IssueModels(i_record)
+            issue_models = xc_models.IssueModels(i_record)
 
     return (issue_models, msg)
 
 
-def get_creation_date(id_filename):
-    previous_creation_date = None
-    if os.path.isfile(id_filename):
-        records = isis.IDFile().read(id_filename)
-        previous_article = ArticleRecords2Article(records)
-        previous_creation_date = previous_article.creation_date
-    return previous_creation_date
-
-
-def check_previous_articles_order(previous_articles, articles):
-    inconsistent_orders = {}
-    for name, article in articles.items():
-        previous = previous_articles.get(name)
-
-        if previous is not None:
-            if previous.order != article.order:
-                inconsistent_orders[name] = (previous.order, article.order)
-    return inconsistent_orders
-
-
-def previous_and_current_package(issue_files, pkg_path, previous_articles, current_articles):
-
-    whole_pkg_path = pkg_path + '_complete'
-    if not os.path.isdir(whole_pkg_path):
-        os.makedirs(whole_pkg_path)
-
-    for name in os.listdir(whole_pkg_path):
-        os.unlink(whole_pkg_path + '/' + name)
-
-    for name in previous_articles.keys():
-        if not name in current_articles.keys():
-            shutil.copyfile(issue_files.base_source_path + '/' + name, whole_pkg_path + '/' + name)
-
-    update = []
-    new = []
-    for name, article in current_articles.items():
-        shutil.copyfile(pkg_path + '/' + name, whole_pkg_path + '/' + name)
-        if name in previous_articles.keys():
-            update.append(name)
+def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_articles):
+    #actions = {'add': [], 'skip-update': [], 'update': [], '-': [], 'changed order': []}
+    xml_articles_status = {}
+    complete_issue_items = {}
+    for name in registered_articles.keys():
+        if not name in pkg_articles.keys():
+            xml_articles_status[name] = '-'
+            complete_issue_items[name] = registered_articles[name]
+    changed_orders = {}
+    for name, article in pkg_articles.items():
+        status = 'add'
+        if name in registered_articles.keys():
+            status = 'update'
+            if converter_env.skip_identical_xml:
+                if open(issue_files.base_source_path + '/' + name + '.xml', 'r').read() == open(pkg_path + '/' + name + '.xml', 'r').read():
+                    status = 'skip-update'
+            if status == 'update':
+                if registered_articles[name].order != pkg_articles[name].order:
+                    changed_orders[name].append((registered_articles[name].order, pkg_articles[name].order))
+        xml_articles_status[name] = status
+        if status == 'skip-update':
+            complete_issue_items[name] = registered_articles[name]
         else:
-            new.append(name)
-
-    complete_package = xpmaker.get_articles(whole_pkg_path)
-    for name in os.listdir(whole_pkg_path):
-        os.unlink(whole_pkg_path + '/' + name)
-
-    return (new, update, complete_package)
+            complete_issue_items[name] = pkg_articles[name]
+    return (complete_issue_items, xml_articles_status, changed_orders)
 
 
-def validate_previous_and_current_package(issue_files, pkg_path):
-    print('issue_files.base_source_path')
-    print(issue_files.base_source_path)
-    print('pkg_path')
-    print(pkg_path)
+def articles_sorted_by_order(articles):
+    sorted_by_order = {}
+    for xml_name, article in articles.items():
+        if not article.order in sorted_by_order.keys():
+            sorted_by_order[article.order] = []
+        sorted_by_order[article.order].append(article)
+    return sorted_by_order
 
-    msg = ''
 
-    previous_articles = xpmaker.get_articles(issue_files.base_source_path)
-    current_articles = xpmaker.get_articles(pkg_path)
+def complete_issue_items_row(article, status, creation_date, other_order=None):
+    values = []
+    values.append(status)
+    values.append(article.order)
+    if other_order is None:
+        values.append('')
+    else:
+        values.append(other_order)
+    values.append(article.xml_name)
+    values.append(creation_date)
+    values.append(article.toc_section)
+    values.append(article.article_type)
+    values.append(article.title)
+    return values
 
-    inconsistent_orders = check_previous_articles_order(previous_articles, current_articles)
-    if len(inconsistent_orders) > 0:
-        msg += html_reports.tag('h4', 'checking order of previous version')
-    for name, orders in inconsistent_orders.items():
-        msg += html_reports.format_message('WARNING: Found inconsistence: previous ' + name + ' has order=' + orders[0])
-        msg += html_reports.format_message('WARNING: Found inconsistence: current  ' + name + ' has order=' + orders[1])
 
-    new, update, complete_package = previous_and_current_package(issue_files, pkg_path, previous_articles, current_articles)
+def label_values(labels, values):
+    r = {}
+    for i in range(0, len(labels)):
+        r[labels[i]] = values[i]
+    return r
 
-    previous = [name for name in previous_articles.keys() if not name in new and not name in update]
 
-    toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(complete_package, validate_order=True)
+def complete_issue_items_previous_status_sheet(registered_articles, pkg_articles, xml_articles_status, status_column_label='action'):
+    labels = [status_column_label, 'order', 'new order', 'name', 'registration date', 'toc section', '@article-type', 'article title']
+    orders = [article.order for article in registered_articles.values()] + [article.order for article in pkg_articles.values()]
 
-    toc_w += len(inconsistent_orders)
-    toc_report = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, msg + toc_report)
+    orders = sorted(list(set([order for order in orders if order is not None])))
 
-    status_report = ''
-    for status, items in {'new': new, 'previous': previous, 'update': update}.items():
-        status_report += html_reports.format_list(status, 'ol', items, 'label')
+    sorted_registered = articles_sorted_by_order(registered_articles)
+    print('sorted_registered')
+    print(sorted_registered)
 
-    return (toc_f, status_report + toc_report, inconsistent_orders)
+    sorted_package = articles_sorted_by_order(pkg_articles)
+    print('sorted_package')
+    print(sorted_package)
+
+    items = []
+    print('orders')
+    print(orders)
+    for order in orders:
+        status = ''
+        print('order')
+        print(order)
+        print('sorted_registered.keys()')
+        print(sorted_registered.keys())
+        if order in sorted_registered.keys():
+            print(sorted_registered[order])
+            for article in sorted_registered[order]:
+                status = xml_articles_status[article.xml_name]
+                if status == 'update':
+                    name = article.xml_name
+                    if registered_articles[name].order != pkg_articles[name].order:
+                        status = 'delete'
+                values = complete_issue_items_row(article, status, article.creation_date[0], pkg_articles[name].order)
+                items.append(label_values(labels, values))
+
+        if not status == '-':
+            if order in sorted_package.keys():
+                for article in sorted_package[order]:
+                    status = xml_articles_status[article.xml_name]
+                    values = complete_issue_items_row(article, status, '')
+                    items.append(label_values(labels, values))
+    return html_reports.sheet(labels, None, items, None, 'dbstatus', status_column_label)
+
+
+def complete_issue_items_resulting_status_sheet(registered_articles, pkg_articles, xml_articles_status, unmatched_orders):
+    labels = ['action', 'order', 'previous order', 'name', 'registration date', 'toc section', '@article-type', 'article title']
+    status_labels = {'update': 'updated', 'add': 'added', '-': '-', 'skip-update': '-', 'order changed': 'order changed'}
+    orders = sorted(list(set([article.order for article in registered_articles.values()] + [article.order for article in pkg_articles.values()])))
+
+    sorted_registered = articles_sorted_by_order(registered_articles)
+    sorted_package = articles_sorted_by_order(pkg_articles)
+    items = []
+    for order in orders:
+        if order in sorted_registered.keys():
+            for article in sorted_registered[order]:
+                status = xml_articles_status[article.xml_name]
+                previous_order = ''
+                if status == 'update':
+                    name = article.xml_name
+                    if name in unmatched_orders.keys():
+                        previous_order, new_order = unmatched_orders[name]
+                        status = 'order changed'
+
+                values = complete_issue_items_row(article, status_labels[status], article.creation_date[0], previous_order)
+                items.append(label_values(labels, values))
+        else:
+            if order in sorted_package.keys():
+                for article in sorted_package[order]:
+                    status = xml_articles_status[article.xml_name]
+                    previous_order = ''
+
+                    if status != '-':
+                        if status == 'update':
+                            name = article.xml_name
+                            if name in unmatched_orders.keys():
+                                previous_order, new_order = unmatched_orders[name]
+                                status = 'change orders'
+                        status = 'ERROR: unable to ' + status
+                    values = complete_issue_items_row(article, status, '', previous_order)
+                    items.append(label_values(labels, values))
+
+    return html_reports.sheet(labels, None, items, None, 'dbstatus', 'action')
+
+
+def complete_issue_items_report(complete_issue_items, unmatched_orders):
+    unmatched_orders_errors = ''
+    if len(unmatched_orders) > 0:
+        unmatched_orders_errors = ''.join([html_reports.tag('p', html_reports.format_message('WARNING: ' + name + "'s orders: " + ' -> '.join(order.split()))) for name, order in unmatched_orders])
+
+    toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(complete_issue_items, validate_order=True)
+    toc_report = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, unmatched_orders_errors + toc_report)
+
+    return (toc_f, toc_report)
 
 
 def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
@@ -205,12 +274,34 @@ def convert_package(src_path):
         result_path = issue_files.issue_path
         acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
 
-        toc_f, toc_report, inconsistent_orders = validate_previous_and_current_package(issue_files, pkg_path)
+        registered_issue_models, registered_articles_list = converter_env.db_article.registered_items(issue_files)
 
+        registered_articles = {}
+        for article in registered_articles_list:
+            registered_articles[article.xml_name] = article
+
+        pkg_articles = xpmaker.get_articles(pkg_path)
+
+        complete_issue_items, xml_articles_status, unmatched_orders = get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_articles)
+
+        print('registered_articles')
+        print(registered_articles)
+        print('pkg_articles')
+        print(pkg_articles)
+        complete_issue_sheet = complete_issue_items_previous_status_sheet(registered_articles, pkg_articles, xml_articles_status)
+        toc_f, toc_report = complete_issue_items_report(complete_issue_items, unmatched_orders)
+
+        msg.append(complete_issue_sheet)
         msg.append(toc_report)
 
+        selected_pkg_items = []
+        for article, doc_file_info in pkg_items:
+            if xml_articles_status[doc_file_info.xml_name] in ['add', 'update']:
+                selected_pkg_items.append((article, doc_file_info))
+        pkg_items = selected_pkg_items
+
         if toc_f == 0 and len(pkg_items) > 0:
-            fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(converter_env.org_manager, pkg_items, dtd_files, validate_order, display_title)
+            fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, pkg_items, dtd_files, validate_order, display_title, xml_articles_status)
             msg.append(pkg_reports.get_articles_report_text(articles_reports, articles_stats))
             msg.append(pkg_reports.get_lists_report_text(articles_reports, articles_sheets))
 
@@ -218,8 +309,10 @@ def convert_package(src_path):
             issue_files.save_source_files(pkg_path)
             report_path = issue_files.base_reports_path
 
-            articles = {doc_file_info.xml_name: article for article, doc_file_info in pkg_items}
-            scilista_item, conversion_report = convert_articles(issue_files, issue_models, articles, articles_stats, inconsistent_orders)
+            articles = {}
+            for article, doc_file_info in pkg_items:
+                articles[doc_file_info.xml_name] = article
+            scilista_item, conversion_report = convert_articles(issue_files, issue_models, articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders)
             if scilista_item is not None:
                 issue_files.copy_files_to_local_web_app()
 
@@ -268,7 +361,7 @@ def format_reports_for_web(report_path, pkg_path, issue_path):
             open(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path + '/' + f, 'w').write(content)
 
 
-def convert_articles(issue_files, issue_models, articles, articles_stats, inconsistent_orders):
+def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders):
     index = 0
     status_text = ['converted', 'not converted', 'first version', 'previous version (aop)', 'previous version (aop) unmatched', 'previous version (aop) without PID', 'previous version (aop) partially matched', ]
     order = ['converted', 'not converted', 'new', 'matched', 'unmatched', 'invalid', 'partially matched']
@@ -279,13 +372,19 @@ def convert_articles(issue_files, issue_models, articles, articles_stats, incons
 
     ex_ahead = 0
     article_id_created = 0
-    n = '/' + str(len(articles))
+    n = '/' + str(len(pkg_articles))
 
-    ahead_manager = serial_files.AheadManager(converter_env.db_isis, converter_env.db_issue, issue_files.journal_files, issue_models.issue.issn_id)
+    i_ahead_records = {}
+    for db_filename in issue_files.journal_files.ahead_bases:
+        year = os.path.basename(db_filename)[0:4]
+        i_ahead_records[year] = find_i_record(year + 'nahead', issue_models.issue.issn_id, None)
+
+    ahead_manager = xc_models.AheadManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
 
     text = html_reports.tag('h2', 'XML Converter')
 
-    for xml_name, article in articles.items():
+    #FIXME - SKIP UPDATE, use xml_articles_status
+    for xml_name, article in pkg_articles.items():
         index += 1
 
         item_label = str(index) + n + ' - ' + xml_name
@@ -293,6 +392,7 @@ def convert_articles(issue_files, issue_models, articles, articles_stats, incons
 
         text += html_reports.tag('h4', item_label)
         msg = ''
+
         xml_stats, data_stats = articles_stats[xml_name]
         xml_f, xml_e, xml_w = xml_stats
         data_f, data_e, data_w = data_stats
@@ -317,12 +417,12 @@ def convert_articles(issue_files, issue_models, articles, articles_stats, incons
 
             article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
 
-            creation_date = get_creation_date(article_files.id_filename)
+            creation_date = None if not xml_name in registered_articles else registered_articles[xml_name].creation_date
 
             done = converter_env.db_article.create_id_file(issue_models.record, article, article_files, creation_date)
             if done:
-                if xml_name in inconsistent_orders.keys():
-                    prev_order, curr_order = inconsistent_orders[xml_name]
+                if xml_name in unmatched_orders.keys():
+                    prev_order, curr_order = unmatched_orders[xml_name]
                     prev_article_files = serial_files.ArticleFiles(issue_files, prev_order, xml_name)
                     os.unlink(prev_article_files.id_filename)
 
@@ -339,8 +439,8 @@ def convert_articles(issue_files, issue_models, articles, articles_stats, incons
                 articles_by_status['not converted'].append(xml_name)
                 msg += html_reports.format_message('FATAL ERROR: not converted')
                 conv_f += 1
-        title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
-        text += html_reports.collapsible_block(xml_name + 'conv', 'converter validations: ' + title, msg, html_reports.get_message_style(conv_f, conv_e, conv_w))
+            title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
+            text += html_reports.collapsible_block(xml_name + 'conv', 'converter validations: ' + title, msg, html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w))
 
     summary = ''
     i = 0
@@ -355,18 +455,27 @@ def convert_articles(issue_files, issue_models, articles, articles_stats, incons
             summary += display_list('ahead list', still_ahead)
 
     scilista_item = None
+
     print('article_id_created')
     print(article_id_created)
     print('len(articles)')
-    print(len(articles))
-    if article_id_created >= len(articles):
+    print(len(pkg_articles))
+
+    if article_id_created >= len(pkg_articles):
         if converter_env.db_article.finish_conversion(issue_models.record, issue_files) > 0:
             scilista_item = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
             if not converter_env.is_windows:
                 converter_env.db_article.generate_windows_version(issue_files)
     else:
         summary += html_reports.format_message('FATAL ERROR: ' + issue_models.issue.issue_label + ' is not complete, so it will not be updated or published in the website.')
-        summary += html_reports.format_message('generated databases of ' + str(article_id_created) + '/' + str(len(articles)))
+        summary += html_reports.format_message('generated databases of ' + str(article_id_created) + '/' + str(len(pkg_articles)))
+
+    registered_issue_models, registered_articles_list = converter_env.db_article.registered_items(issue_files)
+    registered_articles = {}
+    for article in registered_articles_list:
+        registered_articles[article.xml_name] = article
+
+    summary += complete_issue_items_resulting_status_sheet(registered_articles, pkg_articles, xml_articles_status, unmatched_orders)
 
     if converter_env.is_windows:
         summary += pkg_reports.processing_result_location(issue_files.issue_path)
@@ -502,6 +611,7 @@ def xml_converter_get_inputs(args):
     package_path = None
     script = None
     collection_acron = None
+    print(args)
     if len(args) == 2:
         script, param = args
         if os.path.isfile(param) or os.path.isdir(param):
@@ -586,6 +696,8 @@ def call_converter(args, version='1.0'):
             execute_converter(package_path, collection_acron)
     elif collection_acron is not None:
         execute_converter(package_path, collection_acron)
+    elif package_path is not None:
+        execute_converter(package_path, collection_acron)
 
 
 def send_message(mailer, to, subject, text, attaches=None):
@@ -618,12 +730,12 @@ def execute_converter(package_paths, collection_name=None):
 
         for package_path in package_paths:
             package_folder = os.path.basename(package_path)
-            #try:
             print(package_path)
-            report_location, scilista_item, acron_issue_label = convert_package(package_path)
-            #except Exception as e:
-            #    invalid_pkg_files.append(package_folder)
-            #    report_location, report_path, scilista_item = [None, None, None]
+            try:
+                report_location, scilista_item, acron_issue_label = convert_package(package_path)
+            except Exception as e:
+                invalid_pkg_files.append(package_folder)
+                report_location, report_path, scilista_item = [None, None, None]
 
             acron, issue_id = acron_issue_label.split(' ')
 
@@ -660,17 +772,18 @@ def prepare_env(config):
 
     update_issue_copy(config.issue_db, config.issue_db_copy)
     converter_env.db_isis.update_indexes(config.issue_db_copy, config.issue_db_copy + '.fst')
-    converter_env.db_issue = serial_files.IssueDAO(converter_env.db_isis, config.issue_db_copy)
+    converter_env.db_issue = xc_models.IssueDAO(converter_env.db_isis, config.issue_db_copy)
 
     import affiliations_services
 
     org_manager = affiliations_services.OrgManager()
     org_manager.load()
 
-    converter_env.db_article = serial_files.ArticleDAO(converter_env.db_isis, org_manager)
+    converter_env.db_article = xc_models.ArticleDAO(converter_env.db_isis, org_manager)
 
     converter_env.local_web_app_path = config.local_web_app_path
     converter_env.serial_path = config.serial_path
     converter_env.version = '1.0'
     converter_env.is_windows = config.is_windows
     converter_env.web_app_site = config.web_app_site
+    converter_env.skip_identical_xml = config.skip_identical_xml

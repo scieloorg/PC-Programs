@@ -546,12 +546,14 @@ def unicode2cp1252(results):
 
 def get_normalized_from_wayta(orgname, country):
     text = orgname + ', ' + country
-    parts = text.split(',')
     results = []
-    for part in parts:
-        wayta_result = wayta_request(part)
-        result = format_wayta_results(wayta_result)
-        results += result
+    for part in text.split(','):
+        try:
+            wayta_result = wayta_request(part)
+            result = format_wayta_results(wayta_result)
+            results += result
+        except:
+            pass
     return results
 
 

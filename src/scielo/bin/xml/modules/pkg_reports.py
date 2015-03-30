@@ -114,7 +114,7 @@ def validate_package(articles, validate_order):
     return article_reports.toc_report_data(articles, validate_order)
 
 
-def validate_pkg_items(org_manager, pkg_items, dtd_files, validate_order, display_all):
+def validate_pkg_items(org_manager, pkg_items, dtd_files, validate_order, display_all, xml_articles_status=None):
     articles_stats = {}
     articles_reports = {}
     articles_sheets = {}
@@ -124,35 +124,39 @@ def validate_pkg_items(org_manager, pkg_items, dtd_files, validate_order, displa
     print('Validating package: inicio')
     register_log('pkg_reports.validate_pkg_items: inicio')
     for doc, doc_files_info in pkg_items:
-        new_name = doc_files_info.new_name
-        xml_filename = doc_files_info.new_xml_filename
-        print(new_name)
-        register_log(new_name)
+        skip = False
+        if xml_articles_status is not None:
+            skip = xml_articles_status[doc_files_info.xml_name] == 'skip'
+        if not skip:
+            new_name = doc_files_info.new_name
+            xml_filename = doc_files_info.new_xml_filename
+            print(new_name)
+            register_log(new_name)
 
-        register_log('pkg_reports.validate_pkg_items: get_article_xml_validations_reports')
-        print(datetime.now().isoformat() + ' validating xml')
-        xml_f, xml_e, xml_w = get_article_xml_validations_reports(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all == False)
+            register_log('pkg_reports.validate_pkg_items: get_article_xml_validations_reports')
+            print(datetime.now().isoformat() + ' validating xml')
+            xml_f, xml_e, xml_w = get_article_xml_validations_reports(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all is False)
 
-        print(datetime.now().isoformat() + ' validating contents')
-        register_log('pkg_reports.validate_pkg_items: get_article_contents_validations_report')
+            print(datetime.now().isoformat() + ' validating contents')
+            register_log('pkg_reports.validate_pkg_items: get_article_contents_validations_report')
 
-        content, sheet_data, _log_items = article_reports.get_report_content(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, display_all)
-        print(datetime.now().isoformat() + ' writing contents validations report')
-        data_f, data_e, data_w = write_article_contents_validations_report(new_name, doc_files_info.data_report_filename, content, display_all)
+            content, sheet_data, _log_items = article_reports.get_report_content(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, display_all)
+            print(datetime.now().isoformat() + ' writing contents validations report')
+            data_f, data_e, data_w = write_article_contents_validations_report(new_name, doc_files_info.data_report_filename, content, display_all)
 
-        articles_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
+            articles_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
 
-        fatal_errors += xml_f + data_f
+            fatal_errors += xml_f + data_f
 
-        articles_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
+            articles_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
 
-        register_log('pkg_reports.validate_pkg_items: authors_sheet_data ...')
-        if sheet_data is not None:
-            print(datetime.now().isoformat() + ' creating lists')
-            articles_sheets[new_name] = (sheet_data.authors_sheet_data(new_name), sheet_data.sources_sheet_data(new_name))
-            print(datetime.now().isoformat() + ' lists created')
-        else:
-            articles_sheets[new_name] = (None, None)
+            register_log('pkg_reports.validate_pkg_items: authors_sheet_data ...')
+            if sheet_data is not None:
+                print(datetime.now().isoformat() + ' creating lists')
+                articles_sheets[new_name] = (sheet_data.authors_sheet_data(new_name), sheet_data.sources_sheet_data(new_name))
+                print(datetime.now().isoformat() + ' lists created')
+            else:
+                articles_sheets[new_name] = (None, None)
 
     register_log('pkg_reports.validate_pkg_items: fim')
     print('Validating package: fim')
@@ -163,7 +167,7 @@ def get_toc_report_text(toc_f, toc_e, toc_w, toc_report):
     toc_text = ''
     if toc_f + toc_e + toc_w > 0:
         toc_text = html_reports.tag('h2', 'Table of contents Report')
-        toc_text += html_reports.collapsible_block('toc', 'table of contents validations: ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report, html_reports.get_message_style(toc_f, toc_e, toc_w))
+        toc_text += html_reports.collapsible_block('toc', 'table of contents validations: ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report, html_reports.get_stats_numbers_style(toc_f, toc_e, toc_w))
     return toc_text
 
 
@@ -191,11 +195,11 @@ def get_articles_report_text(articles_reports, articles_stats):
                     v.append(content)
             content = ''.join(v)
             s = html_reports.statistics_display(xml_f, xml_e, xml_w)
-            validations_text += html_reports.collapsible_block('xmlrep' + str(index), 'XML validations (' + ' and '.join(t) + '): ' + s, content, html_reports.get_message_style(xml_f, xml_e, xml_w))
+            validations_text += html_reports.collapsible_block('xmlrep' + str(index), 'XML validations (' + ' and '.join(t) + '): ' + s, content, html_reports.get_stats_numbers_style(xml_f, xml_e, xml_w))
 
         if data_f + data_e + data_w > 0:
             s = html_reports.statistics_display(data_f, data_e, data_w)
-            validations_text += html_reports.collapsible_block('datarep' + str(index), 'Contents validations (' + os.path.basename(rep3) + '): ' + s, get_report_text(rep3), html_reports.get_message_style(data_f, data_e, data_w))
+            validations_text += html_reports.collapsible_block('datarep' + str(index), 'Contents validations (' + os.path.basename(rep3) + '): ' + s, get_report_text(rep3), html_reports.get_stats_numbers_style(data_f, data_e, data_w))
 
     return validations_text
 
@@ -219,10 +223,10 @@ def get_lists_report_text(articles_reports, articles_sheets):
             sources_h, sources_w, sources_data = articles_sheets[new_name][1]
             toc_sources_sheet_data += sources_data
 
-    authors = html_reports.sheet((authors_h, authors_w, toc_authors_sheet_data))
+    authors = html_reports.sheet(authors_h, authors_w, toc_authors_sheet_data)
     lists_text += html_reports.collapsible_block('authors', 'Authors in the package', authors)
 
-    sources = html_reports.sheet((sources_h, sources_w, toc_sources_sheet_data))
+    sources = html_reports.sheet(sources_h, sources_w, toc_sources_sheet_data)
     lists_text += html_reports.collapsible_block('sources', 'Sources in the package', sources)
 
     return lists_text

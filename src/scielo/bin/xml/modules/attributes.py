@@ -94,3 +94,12 @@ def validate_element(publication_type, label, value):
         if not is_allowed_element(publication_type, label):
             problem = label + ' is not allowed for @publication-type=' + publication_type
     return problem
+
+
+def doctopic_label(code):
+    label = [k for k, v in DOCTOPIC.items() if v == code]
+    if len(label) == 0:
+        label = None
+    else:
+        label = label[0]
+    return label

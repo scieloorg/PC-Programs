@@ -156,17 +156,23 @@ class ArticleDisplayReport(object):
     @property
     def files_and_href(self):
         r = ''
-        r += html_reports.tag('h2', 'Files in the package') + html_reports.sheet(self.sheet_data.package_files(self.files))
-        r += html_reports.tag('h2', '@href') + html_reports.sheet(self.sheet_data.hrefs_sheet_data(self.xml_path))
+        r += html_reports.tag('h2', 'Files in the package')
+        th, w, data = self.sheet_data.package_files(self.files)
+        r += html_reports.sheet(th, w, data)
+        r += html_reports.tag('h2', '@href')
+        th, w, data = self.sheet_data.hrefs_sheet_data(self.xml_path)
+        r += html_reports.sheet(th, w, data)
         return r
 
     @property
     def authors_sheet(self):
-        return html_reports.tag('h2', 'Authors') + html_reports.sheet(self.sheet_data.authors_sheet_data())
+        th, w, data = self.sheet_data.authors_sheet_data()
+        return html_reports.tag('h2', 'Authors') + html_reports.sheet(th, w, data)
 
     @property
     def sources_sheet(self):
-        return html_reports.tag('h2', 'Sources') + html_reports.sheet(self.sheet_data.sources_sheet_data())
+        th, w, data = self.sheet_data.sources_sheet_data()
+        return html_reports.tag('h2', 'Sources') + html_reports.sheet(th, w, data)
 
     def display_labeled_value(self, label, value, style=''):
         return html_reports.display_labeled_value(label, value, style)
@@ -296,7 +302,7 @@ class ArticleDisplayReport(object):
             table_data += html_reports.display_labeled_value('label', t.label, 'label')
             table_data += html_reports.display_labeled_value('caption',  t.caption, 'label')
             table_data += html_reports.tag('p', 'table-wrap/table (xml)', 'label')
-            table_data += html_reports.tag('div', html_reports.html_value(t.table), 'xml')
+            table_data += html_reports.tag('div', html_reports.format_html_data(t.table), 'xml')
             if t.table:
                 table_data += html_reports.tag('p', 'table-wrap/table', 'label')
                 table_data += html_reports.tag('div', t.table, 'element-table')
@@ -310,9 +316,9 @@ class ArticleDisplayReport(object):
     def affiliations(self):
         r = html_reports.tag('p', 'Affiliations:', 'label')
         for item in self.article.affiliations:
-            r += html_reports.tag('p', html_reports.html_value(item.xml))
-        text = self.sheet_data.affiliations_sheet_data()
-        r += html_reports.sheet(text)
+            r += html_reports.tag('p', html_reports.format_html_data(item.xml))
+        th, w, data = self.sheet_data.affiliations_sheet_data()
+        r += html_reports.sheet(th, w, data)
         return r
 
     @property
@@ -326,7 +332,7 @@ class ArticleDisplayReport(object):
             row['xml'] = row['xml'][0:row['xml'].find('>')+1]
             sheet_data.append(row)
         r = html_reports.tag('h2', 'elements and @id:')
-        r += html_reports.sheet((t_header, [], sheet_data))
+        r += html_reports.sheet(t_header, [], sheet_data)
         return r
 
     @property
@@ -339,7 +345,7 @@ class ArticleDisplayReport(object):
             row['tag'] = item.tag
             sheet_data.append(row)
         r = html_reports.tag('h2', 'elements and @id:')
-        r += html_reports.sheet((t_header, [], sheet_data))
+        r += html_reports.sheet(t_header, [], sheet_data)
         return r
 
 
@@ -360,36 +366,15 @@ class ArticleValidationReport(object):
     def format_rows(self, items):
         content = []
         for label, status, msg in items:
-            content.append(self.format_row(label, status, msg))
-        return html_reports.join_texts(content)
+            row = {}
+            row['label'] = label
+            row['status'] = status
+            row['message'] = msg
+            content.append(row)
+        return content
 
-    def format_table(self, content):
-        r = []
-        r.append('<p>')
-        r.append('<table class="validation">')
-        r.append('<thead>')
-        r.append('<tr>')
-        for label in ['label', 'status', 'message/value']:
-            r.append('<th class="th">' + label + '</th>')
-        r.append('</tr></thead>')
-        r.append('<tbody>' + content + '</tbody>')
-        r.append('</table></p>')
-        return html_reports.join_texts(r)
-
-    def format_row(self, label, status, message):
-        r = ''
-        cell = ''
-        cell += html_reports.tag('td', label, 'td_label')
-        cell += html_reports.tag('td', status, 'td_status')
-        style = html_reports.message_style(status + ':')
-        value = message
-        if '<' in value and '>' in value:
-            value = html_reports.display_xml(value, "100")
-        if style == 'ok':
-            value = html_reports.tag('span', value, 'value')
-        cell += html_reports.tag('td', value, 'td_message')
-        r += html_reports.tag('tr', cell, style)
-        return r
+    def validations_sheet(self, content):
+        return html_reports.sheet(['label', 'status', 'message'], None, self.format_rows(content), table_style='validation')
 
     def validations(self, display_problems):
         items, performance = self.article_validation.validations
@@ -399,7 +384,7 @@ class ArticleValidationReport(object):
 
         r = ''
         if len(items) > 0:
-            r += self.format_table(self.format_rows(items))
+            r += self.validations_sheet(items)
 
         r += self.references(display_problems)
 
@@ -417,7 +402,7 @@ class ArticleValidationReport(object):
             if len(ref_result) > 0:
                 rows += html_reports.tag('h3', 'Reference ' + ref.id)
                 rows += html_reports.display_xml(ref.xml)
-                rows += self.format_table(self.format_rows(ref_result))
+                rows += self.validations_sheet(ref_result)
         return rows
 
 

@@ -703,7 +703,7 @@ class ArticleContentValidation(object):
                     else:
                         href_items['warning'].append(hrefitem)
                 else:
-                    href_items['warning'].append(hrefitem)
+                    href_items['ok'].append(hrefitem)
         return href_items
 
 
