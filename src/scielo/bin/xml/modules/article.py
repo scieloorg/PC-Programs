@@ -1096,7 +1096,9 @@ class ReferenceXML(object):
 
     @property
     def comments(self):
-        c = [c.text for c in self._comments]
+        c = []
+        if self._comments is not None:
+            c = [c.text for c in self._comments if c.text is not None]
         return '; '.join(c)
 
     @property
