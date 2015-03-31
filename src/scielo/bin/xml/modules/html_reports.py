@@ -152,7 +152,7 @@ def sheet(table_header, wider, table_data, filename=None, table_style='sheet', r
                         tr += tag('td', cell_content, cell_style)
                     tbody += tag('tr', tr)
             else:
-                td_style = 'td_' if table_style == 'validations' else None
+                td_style = 'td_' if table_style == 'validation' else None
                 for row in table_data:
                     tr = ''
                     for label in table_header:

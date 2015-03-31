@@ -2,7 +2,7 @@ import os
 import sys
 
 try:
-    import Image
+    from PIL import Image
     IMG_CONVERTER = True
 except:
     IMG_CONVERTER = False
