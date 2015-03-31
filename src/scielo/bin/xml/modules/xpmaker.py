@@ -301,10 +301,11 @@ def fix_sgml_xml(content):
 
 def hdimages_to_jpeg(source_path, jpg_path, replace=False):
     try:
-        import Image
+        from PIL import Image
         IMG_CONVERTER = True
-    except:
+    except Exception as e:
         IMG_CONVERTER = False
+        print(e)
 
     if IMG_CONVERTER:
         for item in os.listdir(source_path):
@@ -322,6 +323,7 @@ def hdimages_to_jpeg(source_path, jpg_path, replace=False):
                         im = Image.open(image_filename)
                         im.thumbnail(im.size)
                         im.save(jpg_filename, "JPEG")
+                        print(jpg_filename)
                     except Exception as inst:
                         print('Unable to generate ' + jpg_filename)
                         print(inst)
@@ -735,6 +737,10 @@ def zip_package(pkg_path, zip_name):
 
 
 def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron):
+    if len(xml_files) > 0:
+        path = os.path.dirname(xml_files[0])
+        hdimages_to_jpeg(path, path, False)
+
     print('Make packages for ' + str(len(xml_files)) + ' files.')
     r = []
     for xml_filename in xml_files:
@@ -795,10 +801,6 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
     if len(xml_files) == 0:
         print('No files to process')
     else:
-        path = xml_files[0]
-        path = os.path.dirname(path)
-        hdimages_to_jpeg(path, path, False)
-
         register_log('pack_and_validate: make_package')
         pkg_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 

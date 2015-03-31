@@ -8,7 +8,7 @@ import serial_files
 import fs_utils
 import utils
 import html_reports
-import isis
+import dbm_isis
 
 import xc_models
 import pkg_reports
@@ -584,8 +584,9 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
             os.makedirs(queued_pkg_path)
 
         if fs_utils.extract_package(temp_path + '/' + pkg_name, queued_pkg_path):
-            if os.path.isdir(archive_path):
-                shutil.copyfile(temp_path + '/' + pkg_name, archive_path + '/' + pkg_name)
+            if archive_path is not None: 
+                if os.path.isdir(archive_path):
+                    shutil.copyfile(temp_path + '/' + pkg_name, archive_path + '/' + pkg_name)
             pkg_paths.append(queued_pkg_path)
         else:
             invalid_pkg_files.append(pkg_name)
@@ -717,6 +718,8 @@ def execute_converter(package_paths, collection_name=None):
     if config is not None:
         prepare_env(config)
         invalid_pkg_files = []
+        bad_pkg_files = []
+        bad_pkg_files_errors = []
         scilista = []
 
         mailer = xc.get_mailer(config)
@@ -733,11 +736,11 @@ def execute_converter(package_paths, collection_name=None):
             print(package_path)
             try:
                 report_location, scilista_item, acron_issue_label = convert_package(package_path)
+                acron, issue_id = acron_issue_label.split(' ')
             except Exception as e:
-                invalid_pkg_files.append(package_folder)
+                bad_pkg_files.append(package_folder)
+                bad_pkg_files_errors.append(str(e))
                 report_location, report_path, scilista_item = [None, None, None]
-
-            acron, issue_id = acron_issue_label.split(' ')
 
             if scilista_item is not None:
                 scilista.append(scilista_item)
@@ -756,6 +759,8 @@ def execute_converter(package_paths, collection_name=None):
 
         if len(invalid_pkg_files) > 0:
             send_message(mailer, config.email_to, config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
+        if len(bad_pkg_files) > 0:
+            send_message(mailer, config.email_to_adm, config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(bad_pkg_files) + '\n'.join(bad_pkg_files_errors))
 
         if len(scilista) > 0 and config.collection_scilista is not None:
             open(config.collection_scilista, 'a+').write('\n'.join(scilista) + '\n')
@@ -768,7 +773,7 @@ def prepare_env(config):
     if converter_env is None:
         converter_env = ConverterEnv()
 
-    converter_env.db_isis = isis.IsisDAO(isis.UCISIS(isis.CISIS(config.cisis1030), isis.CISIS(config.cisis1660)))
+    converter_env.db_isis = dbm_isis.IsisDAO(dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660)))
 
     update_issue_copy(config.issue_db, config.issue_db_copy)
     converter_env.db_isis.update_indexes(config.issue_db_copy, config.issue_db_copy + '.fst')

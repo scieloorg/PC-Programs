@@ -1,10 +1,9 @@
 # code = utf-8
 
 import os
-from datetime import datetime
 
 import utils
-
+import dbm_sql
 
 curr_path = os.path.dirname(__file__).replace('\\', '/')
 
@@ -14,6 +13,78 @@ iso_country_list = None
 br_state_list = None
 orgname_list = None
 location_list = None
+
+
+class xOrgManager(object):
+
+    def __init__(self):
+        self.manager = OrgDBManager()
+
+    def load(self):
+        pass
+
+    def country_orgnames(self, country_code):
+        return self.manager.country_orgnames(country_code)
+
+    def get_organizations(self, orgname, city, state, country):
+        return self.manager.get_organizations(orgname, country, country)
+
+    def get_country_code(self, country_name):
+        return self.manager.get_country_code(country_name)
+
+
+class OrgDBManager(object):
+
+    def __init__(self):
+        self.sql = dbm_sql.SQL(curr_path + '/../tables/orgnames.db')
+        self.csv_filename = curr_path + '/../tables/orgname_location_country.csv'
+        self.schema_filename = curr_path + '/../tables/aff.sql'
+        self.fields = ['orgname', 'city', 'state', 'country_code', 'country_name']
+        self.table_name = 'aff'
+
+        if not os.path.isfile(curr_path + '/../tables/orgnames.db'):
+            self.sql.create_db(self.schema_filename)
+            self.sql.insert_data(self.csv_filename, self.table_name, self.fields)
+
+    def format_expr(self, labels, values):
+        expr = []
+        for i in range(0, len(labels)):
+            expr.append(labels[i] + '="' + values[i] + '"')
+        return ' OR '.join(expr)
+
+    def country_orgnames(self, country_code):
+        expr = self.sql.format_expression(self.table_name, ['orgname', 'city', 'state'], 'country_code="' + country_code + '"')
+        r = self.sql.query(expr)
+        if len(r) > 0:
+            r = list(set(r))
+        return r
+
+    def get_country_code(self, country_name):
+        expr = self.sql.format_expression(self.table_name, self.fields, 'country_name="' + country_name + '"')
+        data = self.sql.query_one(expr)
+        return data[3] if data is not None else None
+
+    def get_organizations(self, orgname, country_name, country_code):
+        where_expr = []
+        print(type(orgname))
+        if orgname is not None:
+            where_expr.append('orgname="' + orgname.decode('utf-8') + '"')
+        expr = self.format_expr(['country_name', 'country_code'], [country_name, country_code])
+
+        print('where_expr')
+        print(where_expr)
+
+        if len(expr) > 0:
+            where_expr.append(expr)
+        where_expr = ' AND '.join(where_expr)
+        r = []
+        print('where_expr')
+        print(where_expr)
+        if len(where_expr) > 0:
+            expr = self.sql.format_expression(self.table_name, ['city', 'state', 'country_code'], where_expr)
+            print(expr)
+            r = list(set(self.sql.query(expr)))
+        return r
 
 
 class OrgManager(object):
@@ -40,36 +111,6 @@ class OrgManager(object):
                 self.indexedby_isocountry[iso_country].append([orgname, city, state])
                 self.indexedby_country_name[country_name] = iso_country
 
-    def _load(self):
-        for item in open(curr_path + '/../tables/orgname_location_country.csv', 'r').readlines():
-            item = item.replace('"', '').strip().split('\t')
-            if len(item) == 4:
-                orgname, city, state, iso_country = item
-                location = ', '.join([city, state, iso_country])
-                city_state = ', '.join([city, state])
-                city_country = ', '.join([city, iso_country])
-
-                if not orgname in self.indexedby_orgname.keys():
-                    self.indexedby_orgname[orgname] = []
-                if not location in self.indexedby_location.keys():
-                    self.indexedby_location[location] = []
-                if not iso_country in self.indexedby_isocountry.keys():
-                    self.indexedby_isocountry[iso_country] = []
-
-                self.indexedby_orgname[orgname].append(location)
-                self.indexedby_location[location].append(orgname)
-                self.indexedby_isocountry[iso_country].append([orgname, city, state])
-
-                if not city in self.indexedby_location.keys():
-                    self.indexedby_location[city] = []
-                if not city_state in self.indexedby_location.keys():
-                    self.indexedby_location[city_state] = []
-                if not city_country in self.indexedby_location.keys():
-                    self.indexedby_location[city_country] = []
-                self.indexedby_location[city].append([orgname, city, state, iso_country])
-                self.indexedby_location[city_state].append([orgname, city, state, iso_country])
-                self.indexedby_location[city_country].append([orgname, city, state, iso_country])
-
     def country_orgnames(self, iso_country):
         return self.indexedby_isocountry.get(iso_country, [])
 
@@ -88,6 +129,9 @@ class OrgManager(object):
             #print('get_organizations: step3')
             #print(valid)
         return valid
+
+    def get_country_code(self, country_name):
+        return self.indexedby_country_name.get(country_name)
 
 
 class CodesAndNames(object):
@@ -439,7 +483,7 @@ def normalized_affiliations(organizations_manager, orgname, country_name, countr
     normalized = []
     if country_code is None:
         #print(datetime.now().isoformat() + ' normalized_affiliations: indexedby_country_name')
-        country_code = organizations_manager.indexedby_country_name.get(country_name)
+        country_code = organizations_manager.get_country_code(country_name)
         if country_code is None:
             #print(datetime.now().isoformat() + ' normalized_affiliations: normalize_country')
             country_name, country_code, errors = normalize_country(country_name, country_code)
@@ -502,10 +546,11 @@ def wayta_request(text):
         data = urllib.urlencode(values)
         full_url = url + '?' + data
         #print(full_url)
-        response = urllib2.urlopen(full_url, timeout=5)
+        response = urllib2.urlopen(full_url, timeout=2)
         result = response.read()
     except Exception as e:
         print(e)
+        result = []
     return result
 
 
@@ -550,7 +595,12 @@ def get_normalized_from_wayta(orgname, country):
     for part in text.split(','):
         try:
             wayta_result = wayta_request(part)
+
+            print('wayta_result')
+            print(wayta_result)
             result = format_wayta_results(wayta_result)
+            print('result')
+            print(result)
             results += result
         except:
             pass
@@ -584,6 +634,7 @@ def get_normalized_from_list(org_manager, orgname, country):
         country_name = get_country_name(_country)
         if country_name is not None:
             new.append(_orgname + ' - ' + _country)
+    print(new)
     return list(set(new))
 
 
@@ -594,9 +645,12 @@ def normaff_search(text):
 
     orgname = text[0:text.rfind(',')].strip()
     country = text[text.rfind(',')+1:].strip()
+    print(orgname)
+    print(country)
     results = get_normalized_from_wayta(orgname, country)
     org_manager = OrgManager()
     org_manager.load()
+    print(results)
     results += get_normalized_from_list(org_manager, orgname, country)
 
     return sorted(list(set(results)))

@@ -374,7 +374,7 @@ class ArticleValidationReport(object):
         return content
 
     def validations_sheet(self, content):
-        return html_reports.sheet(['label', 'status', 'message'], None, self.format_rows(content), table_style='validation')
+        return html_reports.sheet(['label', 'status', 'message'], None, self.format_rows(content), table_style='validation', row_style='status')
 
     def validations(self, display_problems):
         items, performance = self.article_validation.validations

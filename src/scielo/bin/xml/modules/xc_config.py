@@ -179,6 +179,10 @@ class XMLConverterConfiguration(object):
         return self._data.get('SENDER_EMAIL')
 
     @property
+    def email_to_adm(self):
+        return self._data.get('EMAIL_TO_ADM')
+
+    @property
     def email_to(self):
         return self._data.get('EMAIL_TO')
 
