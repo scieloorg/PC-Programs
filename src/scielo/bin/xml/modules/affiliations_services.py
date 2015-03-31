@@ -15,7 +15,7 @@ orgname_list = None
 location_list = None
 
 
-class xOrgManager(object):
+class OrgManager(object):
 
     def __init__(self):
         self.manager = OrgDBManager()
@@ -26,11 +26,14 @@ class xOrgManager(object):
     def country_orgnames(self, country_code):
         return self.manager.country_orgnames(country_code)
 
-    def get_organizations(self, orgname, city, state, country):
-        return self.manager.get_organizations(orgname, country, country)
+    def get_organizations(self, orgname, city, state, country_code, country_name):
+        return self.manager.get_organizations(orgname, city, state, country_code, country_name)
 
     def get_country_code(self, country_name):
         return self.manager.get_country_code(country_name)
+
+    def get_orgname_and_country_code_items(self, orgname, country_name):
+        return self.manager.get_orgname_and_country_code_items(self, orgname, country_name)
 
 
 class OrgDBManager(object):
@@ -46,48 +49,42 @@ class OrgDBManager(object):
             self.sql.create_db(self.schema_filename)
             self.sql.insert_data(self.csv_filename, self.table_name, self.fields)
 
-    def format_expr(self, labels, values):
-        expr = []
-        for i in range(0, len(labels)):
-            expr.append(labels[i] + '="' + values[i] + '"')
-        return ' OR '.join(expr)
-
     def country_orgnames(self, country_code):
-        expr = self.sql.format_expression(self.table_name, ['orgname', 'city', 'state'], 'country_code="' + country_code + '"')
+        expr = self.sql.get_select_statement(self.table_name, ['orgname', 'city', 'state'], 'country_code="' + country_code + '"')
         r = self.sql.query(expr)
         if len(r) > 0:
             r = list(set(r))
         return r
 
     def get_country_code(self, country_name):
-        expr = self.sql.format_expression(self.table_name, self.fields, 'country_name="' + country_name + '"')
+        expr = self.sql.get_select_statement(self.table_name, self.fields, 'country_name="' + country_name + '"')
         data = self.sql.query_one(expr)
         return data[3] if data is not None else None
 
-    def get_organizations(self, orgname, country_name, country_code):
-        where_expr = []
-        print(type(orgname))
-        if orgname is not None:
-            where_expr.append('orgname="' + orgname.decode('utf-8') + '"')
-        expr = self.format_expr(['country_name', 'country_code'], [country_name, country_code])
-
-        print('where_expr')
-        print(where_expr)
-
-        if len(expr) > 0:
-            where_expr.append(expr)
-        where_expr = ' AND '.join(where_expr)
+    def get_organizations(self, orgname, city, state, country_code, country_name):
         r = []
-        print('where_expr')
-        print(where_expr)
+        and_expr = self.sql.format_expr(['orgname', 'city', 'state'], [orgname, city, state], ' AND ')
+        or_expr = self.sql.format_expr(['country_name', 'country_code'], [country_name, country_code])
+        if len(or_expr) > 0:
+            or_expr = '(' + or_expr + ')'
+
+        where_expr = ' AND '.join([and_expr, or_expr])
+
         if len(where_expr) > 0:
-            expr = self.sql.format_expression(self.table_name, ['city', 'state', 'country_code'], where_expr)
-            print(expr)
-            r = list(set(self.sql.query(expr)))
+            expr = self.sql.get_select_statement(self.table_name, ['orgname', 'city', 'state', 'country_code', 'country_name'], where_expr)
+            r = self.sql.query(expr)
+        return r
+
+    def get_orgname_and_country_code_items(self, orgname, country_name):
+        r = []
+        where_expr = self.sql.format_expr(['orgname', 'country_name'], [orgname, country_name], ' AND ')
+        if len(where_expr) > 0:
+            expr = self.sql.get_select_statement(self.table_name, ['orgname', 'country_code'], where_expr)
+            r = self.sql.query(expr)
         return r
 
 
-class OrgManager(object):
+class OrgListManager(object):
 
     def __init__(self):
         self.indexedby_orgname = {}
@@ -478,48 +475,6 @@ def get_country_name(country_code):
         return names[0]
 
 
-def normalized_affiliations(organizations_manager, orgname, country_name, country_code, state, city):
-    errors = []
-    normalized = []
-    if country_code is None:
-        #print(datetime.now().isoformat() + ' normalized_affiliations: indexedby_country_name')
-        country_code = organizations_manager.get_country_code(country_name)
-        if country_code is None:
-            #print(datetime.now().isoformat() + ' normalized_affiliations: normalize_country')
-            country_name, country_code, errors = normalize_country(country_name, country_code)
-
-    if country_code is not None:
-        #print(datetime.now().isoformat() + ' normalized_affiliations: get_organizations')
-        options = organizations_manager.get_organizations(orgname, city, state, country_code)
-        #print(options)
-        if len(options) == 0:
-            #print(datetime.now().isoformat() + ' normalized_affiliations: country_orgnames')
-            orgname_city_state_items = organizations_manager.country_orgnames(country_code)
-
-            if city is not None and len(orgname_city_state_items) > 0:
-                orgname_city_state_items = [[_orgname, _city, _state] for _orgname, _city, _state in orgname_city_state_items if _city == city]
-
-            #print(datetime.now().isoformat() + ' normalized_affiliations: orgname_city_state_items')
-            for _orgname, _city, _state in orgname_city_state_items:
-                #print(_orgname)
-                for word in orgname.split(' '):
-                    #print('=>' + word)
-                    if word in _orgname.split() and len(word) > 5:
-                        #print('...' + _orgname)
-                        normalized.append(', '.join([_orgname, _city, _state, country_code]))
-                        break
-
-            #print(datetime.now().isoformat() + ' normalized_affiliations: list(set(normalized))')
-            normalized = [item.split(', ') for item in list(set(normalized))]
-        else:
-            #print(datetime.now().isoformat() + ' normalized_affiliations: if len(options) > 0')
-            normalized = [[orgname, _city, _state, _country] for _city, _state, _country in options]
-    #print(errors)
-    #print(normalized)
-    #print(datetime.now().isoformat() + ' normalized_affiliations: fim')
-    return (errors, normalized)
-
-
 def remove_sgml_tags(text):
     text = text.replace('[', '***BREAK***IGNORE[')
     text = text.replace(']', ']IGNORE***BREAK***')
@@ -607,35 +562,24 @@ def get_normalized_from_wayta(orgname, country):
     return results
 
 
-def validate_affiliation(org_manager, orgname, norgname, country, i_country, state, city):
-    errors = []
+def find_normalized_organizations(org_manager, orgname, country_name, country_code, state, city):
+    return org_manager.get_organizations(orgname, city, state, country_code, country_name)
+
+
+def validate_organization(org_manager, orgname, norgname, country_name, country_code, state, city):
     orgname_and_location_items = []
-
-    #print(datetime.now().isoformat() + ' validate_affiliation: inicio')
     if norgname is not None:
-        #print(datetime.now().isoformat() + ' validate_affiliation: normalized_affiliations 1')
-        errors, orgname_and_location_items = normalized_affiliations(org_manager, norgname, country, i_country, state, city)
-        #print(datetime.now().isoformat() + ' validate_affiliation: normalized_affiliations 2')
-        #print(orgname_and_location_items)
-    if len(errors) == 0:
-        if len(orgname_and_location_items) == 0:
-            if orgname is not None:
-                #print(datetime.now().isoformat() + ' validate_affiliation: normalized_affiliations 3')
-                errors, orgname_and_location_items = normalized_affiliations(org_manager, orgname, country, i_country, state, city)
-                #print(datetime.now().isoformat() + ' validate_affiliation: normalized_affiliations 4')
-                #print(orgname_and_location_items)
-    return (errors, orgname_and_location_items)
+        orgname_and_location_items = find_normalized_organizations(org_manager, norgname, country_name, country_code, state, city)
+
+    if len(orgname_and_location_items) == 0:
+        if orgname is not None:
+            orgname_and_location_items = find_normalized_organizations(org_manager, orgname, country_name, country_code, state, city)
+    return orgname_and_location_items
 
 
-def get_normalized_from_list(org_manager, orgname, country):
-    errors, orgname_and_location_items = normalized_affiliations(org_manager, orgname, country, None, None, None)
-    new = []
-    for _orgname, city, state, _country in orgname_and_location_items:
-        country_name = get_country_name(_country)
-        if country_name is not None:
-            new.append(_orgname + ' - ' + _country)
-    print(new)
-    return list(set(new))
+def get_normalized_from_list(org_manager, orgname, country_name):
+    items = org_manager.get_orgname_and_country_name_code_items(orgname, country_name)
+    return [_orgname + ' - ' + _country_code for _orgname, _country_code in items]
 
 
 def normaff_search(text):
