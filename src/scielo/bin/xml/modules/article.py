@@ -1113,9 +1113,9 @@ class ReferenceXML(object):
     def doi(self):
         _doi = self.root.findtext('.//pub-id[@pub-id-type="doi"]')
         if not _doi:
-            for c in self._comments:
-                if 'doi:' in c.text:
-                    _doi = c.text
+            for c in self.comments:
+                if 'doi:' in c:
+                    _doi = c
         return _doi
 
     @property
