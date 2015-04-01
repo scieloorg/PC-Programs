@@ -819,11 +819,11 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         if toc_f == 0:
             register_log('pack_and_validate: pkg_reports.validate_pkg_items')
-            import affiliations_services
+            import institutions_service
 
             print(datetime.now().isoformat())
             print('loading services...')
-            org_manager = affiliations_services.OrgManager()
+            org_manager = institutions_service.OrgManager()
             org_manager.load()
             print('services loaded!')
             print(datetime.now().isoformat())

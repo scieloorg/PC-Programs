@@ -2,7 +2,7 @@
 import os
 
 
-THIS_LOCATION = os.path.dirname(os.path.realpath(__file__))
+THIS_LOCATION = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 
 DEFAULT_VERSION = '1.0'

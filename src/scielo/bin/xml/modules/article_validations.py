@@ -8,7 +8,7 @@ import article_utils
 
 import article
 
-import affiliations_services
+import institutions_service
 
 
 def format_value(value):
@@ -474,23 +474,23 @@ class ArticleContentValidation(object):
     @property
     def affiliations(self):
         r = []
-        labels = ['institution[@content-type="normalized"]', 'country', 'country/@country', 'state', 'city']
+        #labels = ['institution[@content-type="normalized"]', 'country', 'country/@country', 'state', 'city']
         for aff in self.article.affiliations:
             text = aff.original if aff.original is not None else aff.xml
             r.append(('aff xml', 'INFO', aff.xml))
-            r.append(required('aff id', aff.id, 'FATAL ERROR'))
-            r.append(required('aff original', aff.original, 'ERROR'))
+            r.append(required('aff/@id', aff.id, 'FATAL ERROR'))
+            r.append(required('aff/country/@country', aff.i_country, 'FATAL ERROR'))
+            r.append(required('aff/institution/[@content-type="normalized"]', aff.i_country, 'ERROR'))
+            r.append(required('aff/institution/[@content-type="original"]', aff.original, 'ERROR'))
 
-            errors, normalized_items = affiliations_services.validate_affiliation(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
-            if len(errors) > 0:
-                r.append(('aff data', 'FATAL ERROR', '\n'.join(errors)))
+            normalized_items = institutions_service.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+
+            if len(normalized_items) == 0:
+                r.append(('normalized aff', 'ERROR', 'Unable to find normalized data'))
+            elif len(normalized_items) == 1:
+                r.append(('normalized aff', 'OK', 'aff is normalized'))
             else:
-                if len(normalized_items) == 0:
-                    r.append(('normalized aff', 'ERROR', 'Unable to find normalized data'))
-                elif len(normalized_items) == 1:
-                    r.append(('normalized aff', 'OK', 'aff is normalized'))
-                else:
-                    r.append(('normalized aff', 'WARNING', 'Suggestions: ' + '; '.join([', '.join(item) for item in normalized_items])))
+                r.append(('normalized aff', 'WARNING', 'Suggestions: ' + '; '.join([', '.join(list(item)) for item in normalized_items])))
         return r
 
     @property

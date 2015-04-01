@@ -6,7 +6,7 @@ import Tkinter
 import ttk
 
 
-CURRENT_PATH = os.path.dirname(__file__).replace('\\', '/')
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 XML_FOLDER_DEFAULT = CURRENT_PATH + '/../../'
 
 COLLECTIONS_NAMES = ('Brasil', 'Salud Publica')
