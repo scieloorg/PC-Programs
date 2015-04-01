@@ -8,12 +8,11 @@ class SQL(object):
         self.db_filename = db_filename
 
     def create_db(self, schema_filename):
-        if not os.path.isfile(self.db_filename):
-            with sqlite3.connect(self.db_filename) as conn:
-                print 'Creating schema'
-                with open(schema_filename, 'rt') as f:
-                    schema = f.read()
-                conn.executescript(schema)
+        with sqlite3.connect(self.db_filename) as conn:
+            print 'Creating schema'
+            with open(schema_filename, 'rt') as f:
+                schema = f.read()
+            conn.executescript(schema)
 
     def insert_data(self, csv_filename, table_name, fields):
         conn = sqlite3.connect(self.db_filename)

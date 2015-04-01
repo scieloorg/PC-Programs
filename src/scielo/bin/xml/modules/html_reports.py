@@ -152,19 +152,19 @@ def sheet(table_header, wider, table_data, filename=None, table_style='sheet', r
                         tr += tag('td', cell_content, cell_style)
                     tbody += tag('tr', tr)
             else:
-                td_style = 'td_' if table_style == 'validation' else None
+                cell_style_prefix = 'td_' if row_style == 'status' else ''
                 for row in table_data:
                     tr = ''
                     for label in table_header:
                         cell_content = format_html_data(row.get(label, ''))
-                        if td_style is None:
-                            tr += tag('td', cell_content)
-                        else:
-                            tr += tag('td', cell_content, 'td_' + label)
+                        cell_style = cell_style_prefix + label
+                        if cell_style == label:
+                            cell_style = get_message_style(row.get(label), None)
+                        tr += tag('td', cell_content, cell_style)
+                    tr_style = None
                     if row_style == 'status':
-                        tbody += tag('tr', tr, get_message_style(row.get(row_style), None))
-                    else:
-                        tbody += tag('tr', tr, get_message_style(row.get(row_style), None))
+                        tr_style = get_message_style(row.get(row_style), None)
+                    tbody += tag('tr', tr, tr_style)
 
         r = tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', tbody), table_style))
     return r

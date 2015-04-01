@@ -9,7 +9,7 @@ from article_utils import how_similar
 from article import Issue, PersonAuthor
 from attributes import ROLE, DOCTOPIC, doctopic_label
 
-from isis import IDFile
+from dbm_isis import IDFile
 
 import institutions_service
 
