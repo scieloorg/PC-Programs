@@ -8,7 +8,7 @@ import article_utils
 
 import article
 
-import affiliations_services
+import institutions_service
 
 
 def format_value(value):
@@ -481,7 +481,7 @@ class ArticleContentValidation(object):
             r.append(required('aff id', aff.id, 'FATAL ERROR'))
             r.append(required('aff original', aff.original, 'ERROR'))
 
-            normalized_items = affiliations_services.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+            normalized_items = institutions_service.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
 
             if len(normalized_items) == 0:
                 r.append(('normalized aff', 'ERROR', 'Unable to find normalized data'))

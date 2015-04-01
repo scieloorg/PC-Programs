@@ -9,7 +9,7 @@ import xml_utils
 
 def report_date():
     procdate = datetime.now().isoformat()
-    return tag('h3', procdate[0:10] + ' ' + procdate[11:19])
+    return tag('p', procdate[0:10] + ' ' + procdate[11:19], 'report-date')
 
 
 def statistics(content, word):

@@ -6,7 +6,7 @@ import email_service
 import xc_config
 
 
-CURRENT_PATH = os.path.dirname(__file__).replace('\\', '/')
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 
 def get_mailer(config):

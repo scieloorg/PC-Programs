@@ -1,5 +1,4 @@
-﻿Institution_Name	Institution_City/Province	Institution_State/Region/Department	Institution_Contry_ISO	Institution_Contry
-Al Khawarizmi International College	Abu Dhabi	Emirate of Abu Dhabi	AE	United Arab Emirates
+﻿Al Khawarizmi International College	Abu Dhabi	Emirate of Abu Dhabi	AE	United Arab Emirates
 Alhosn University	Abu Dhabi	Emirate of Abu Dhabi	AE	United Arab Emirates
 Khalifa University	Abu Dhabi	Emirate of Abu Dhabi	AE	United Arab Emirates
 Khalifa University of Science, Technology and Research	Abu Dhabi	Emirate of Abu Dhabi	AE	United Arab Emirates
@@ -104,14 +103,12 @@ Universidad Tecnológica Nacional	Avellaneda	Buenos Aires	AR	Argentina
 Hospital Interzonal General de Agudos Dr. José Penna	Bahía Blanca	Buenos Aires	AR	Argentina
 Universidad Nacional del Sur	Bahía Blanca	Buenos Aires	AR	Argentina
 Academia Nacional de Medicina de Buenos Aires	Buenos Aires	Buenos Aires	AR	Argentina
-Administración Nacional de Laboratorios e Instituto de Salud	Buenos Aires	Buenos Aires	AR	Argentina
 Administración Nacional de Laboratorios e Institutos de Salud Dr. Carlos G. Malbrán	Buenos Aires	Buenos Aires	AR	Argentina
 Administración Nacional de Medicamentos, Alimentos y Tecnología Médica	Buenos Aires	Buenos Aires	AR	Argentina
 Agencia Nacional de Promoción Científica y Tecnológica	Buenos Aires	Buenos Aires	AR	Argentina
 Asociación Psicoanalítica Argentina	Buenos Aires	Buenos Aires	AR	Argentina
 Comisión de Investigación Científicas de la Provincia de Buenos Aires	Buenos Aires	Buenos Aires	AR	Argentina
 Comisión Nacional de Energía Atómica	Buenos Aires	Buenos Aires	AR	Argentina
-Consejo Nacional de Investigación Científicas y Tecnológicas	Buenos Aires	Buenos Aires	AR	Argentina
 Consejo Nacional de Investigaciones Científicas y Técnicas	Buenos Aires	Buenos Aires	AR	Argentina
 Escuela Argentina de Negocios	Buenos Aires	Buenos Aires	AR	Argentina
 ESEADE Instituto Universitario	Buenos Aires	Buenos Aires	AR	Argentina
@@ -123,7 +120,7 @@ Hospital de Pediatría Garrahan	Buenos Aires	Buenos Aires	AR	Argentina
 Hospital de Pediatría SAMIC Prof. Dr. Juan Pedro Garrahan	Buenos Aires	Buenos Aires	AR	Argentina
 Hospital Interzonal General de Agudos Abraham Piñeyro	Buenos Aires	Buenos Aires	AR	Argentina
 Hospital Interzonal General de Agudos Eva Perón	Buenos Aires	Buenos Aires	AR	Argentina
-Hospital Interzonal Gral. de Agudos San José	Buenos Aires	Buenos Aires	AR	Argentina
+Hospital Interzonal General de Agudos San José	Buenos Aires	Buenos Aires	AR	Argentina
 Hospital Local General Nuestra Señora del Carmen	Buenos Aires	Buenos Aires	AR	Argentina
 Hospital Zonal General de Agudos Dr. Enrique Erill	Buenos Aires	Buenos Aires	AR	Argentina
 Hospital Zonal General de Agudos Julio de Vedia	Buenos Aires	Buenos Aires	AR	Argentina
@@ -207,7 +204,7 @@ Universidad J. F. Kennedy	San Isidro	Buenos Aires	AR	Argentina
 Universidad Nacional de Gral. San Martín	San Martín	Buenos Aires	AR	Argentina
 Universidad Tecnológica Nacional	Tigre	Buenos Aires	AR	Argentina
 Universidad Nacional de Tres de Febrero	Tres de Febrero	Buenos Aires	AR	Argentina
-Univ. de Ciencias Empresariales y Sociales	Vicente López	Buenos Aires	AR	Argentina
+Universidad de Ciencias Empresariales y Sociales	Vicente López	Buenos Aires	AR	Argentina
 Hospital Subzonal Especializado de Médanos	Villarino	Buenos Aires	AR	Argentina
 Universidad Nacional de Catamarca	San Fernando del Valle de Catamarca	Catamarca	AR	Argentina
 Universidad Nacional del Nordeste	Resistencia	Chaco	AR	Argentina
@@ -320,7 +317,7 @@ Medizinische Universität Wien	Vienna	Vienna	AT	Austria
 Sigmund Freud Privat Universität Wien	Vienna	Vienna	AT	Austria
 Technische Universität Wien	Vienna	Vienna	AT	Austria
 Universität Wien	Vienna	Vienna	AT	Austria
- Fachhochschule Vorarlberg	Dornbirn	Vorarlberg	AT	Austria
+Fachhochschule Vorarlberg	Dornbirn	Vorarlberg	AT	Austria
 Australian National University	Canberra	Australian Capital Territory	AU	Australia
 University of Canberra	Canberra	Australian Capital Territory	AU	Australia
 University of New England	Armidale	New South Wales	AU	Australia
@@ -373,7 +370,7 @@ Murdoch University	Perth	Western Australia	AU	Australia
 University of Notre Dame Australia	Perth	Western Australia	AU	Australia
 University of Western Australia	Perth	Western Australia	AU	Australia
 Patuakhali Science & Technology University	Patuakhali	Barisal Division	BD	Bangladesh
-BGC Trust University, Bangladesh	Chattagam	Chittagong Division	BD	Bangladesh
+BGC Trust University	Chattagam	Chittagong Division	BD	Bangladesh
 Chittagong University of Engineering and Technology	Chattagam	Chittagong Division	BD	Bangladesh
 East Delta University	Chattagam	Chittagong Division	BD	Bangladesh
 International Islamic University Chittagong	Chattagam	Chittagong Division	BD	Bangladesh
@@ -416,7 +413,7 @@ Queens University	Dhaka	Dhaka Division	BD	Bangladesh
 Southeast University	Dhaka	Dhaka Division	BD	Bangladesh
 Stamford University	Dhaka	Dhaka Division	BD	Bangladesh
 United International University	Dhaka	Dhaka Division	BD	Bangladesh
-University of Asia Pacific, Dhanmondi	Dhaka	Dhaka Division	BD	Bangladesh
+University of Asia Pacific	Dhaka	Dhaka Division	BD	Bangladesh
 University of Development Alternative	Dhaka	Dhaka Division	BD	Bangladesh
 University of Dhaka	Dhaka	Dhaka Division	BD	Bangladesh
 University of Information Technology & Sciences	Dhaka	Dhaka Division	BD	Bangladesh
@@ -481,8 +478,6 @@ Universidad Unión Bolivariana	La Paz	La Paz	BO	Bolivia
 Universidad Nacional Siglo XX	Llallagua	Potosí	BO	Bolivia
 Universidad Autónoma Tomás Frías	Potosí	Potosí	BO	Bolivia
 Escuela Militar de Ingeniería	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
-Univ. Salesiana de Bolivia	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
-Univ. Tecnológica Priv. de Sta. Cruz	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
 Universidad Bethesda	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
 Universidad Católica Boliviana San Pablo	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
 Universidad Cristiana de Bolivia	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
@@ -490,9 +485,11 @@ Universidad Empresarial Mateo Kuljis	Santa Cruz de la Sierra	Santa Cruz	BO	Boliv
 Universidad Evangélica Boliviana	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
 Universidad Nacional del Oriente	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
 Universidad Nur	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
-Universidad Priv. de Aquino Bolivia	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
 Universidad Privada Cumbre	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
+Universidad Privada de Aquino Bolivia	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
 Universidad Privada Domingo Savio	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
+Universidad Salesiana de Bolivia	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
+Universidad Tecnológica Privada de Santa Cruz	Santa Cruz de la Sierra	Santa Cruz	BO	Bolivia
 Universidad Autónoma Juan Misael Saracho	Tarija	Tarija	BO	Bolivia
 Universidad Católica Boliviana San Pablo	Tarija	Tarija	BO	Bolivia
 Prefeitura Municipal de Acrelândia	Acrelândia	Acre	BR	Brazil
@@ -510,7 +507,10 @@ Secretaria Municipal de Saúde de Bujari	Bujari	Acre	BR	Brazil
 Prefeitura Municipal de Capixaba	Capixaba	Acre	BR	Brazil
 Secretaria Municipal de Educação de Capixaba	Capixaba	Acre	BR	Brazil
 Secretaria Municipal de Saúde de Capixaba	Capixaba	Acre	BR	Brazil
+Centro Universitário Clarentiano	Cruzeiro do Sul	Acre	BR	Brazil
 Instituto de Educação, Ciência e Tecnologia do Vale do Juruá	Cruzeiro do Sul	Acre	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Acre	Cruzeiro do Sul	Acre	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Acre	Cruzeiro do Sul	Acre	BR	Brazil
 Prefeitura Municipal de Cruzeiro do Sul	Cruzeiro do Sul	Acre	BR	Brazil
 Secretaria Municipal de Educação de Cruzeiro do Sul	Cruzeiro do Sul	Acre	BR	Brazil
 Secretaria Municipal de Saúde de Cruzeiro do Sul	Cruzeiro do Sul	Acre	BR	Brazil
@@ -541,6 +541,7 @@ Secretaria Municipal de Saúde de Porto Acre	Porto Acre	Acre	BR	Brazil
 Prefeitura Municipal de Porto Walter	Porto Walter	Acre	BR	Brazil
 Secretaria Municipal de Educação de Porto Walter	Porto Walter	Acre	BR	Brazil
 Secretaria Municipal de Saúde de Porto Walter	Porto Walter	Acre	BR	Brazil
+Centro Universitário Clarentiano	Rio Branco	Acre	BR	Brazil
 Embrapa Acre	Rio Branco	Acre	BR	Brazil
 Faculdade da Amazônia Ocidental	Rio Branco	Acre	BR	Brazil
 Faculdade de Educação Superior Acriano Euclides da Cunha	Rio Branco	Acre	BR	Brazil
@@ -549,30 +550,8 @@ Faculdade Diocesana São José	Rio Branco	Acre	BR	Brazil
 Faculdade Meta	Rio Branco	Acre	BR	Brazil
 Faculdade São Lucas	Rio Branco	Acre	BR	Brazil
 Instituto de Ensino Superior do Acre	Rio Branco	Acre	BR	Brazil
-Instituto Federal do Acre	Rio Branco	Acre	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Acre	Rio Branco	Acre	BR	Brazil
 Prefeitura Municipal de Rio Branco	Rio Branco	Acre	BR	Brazil
-Secretaria Municipal de Educação de Rio Branco	Rio Branco	Acre	BR	Brazil
-Secretaria Municipal de Saúde de Rio Branco	Rio Branco	Acre	BR	Brazil
-União Educacional do Norte	Rio Branco	Acre	BR	Brazil
-Universidade Federal do Acre	Rio Branco	Acre	BR	Brazil
-Prefeitura Municipal de Rodrigues Alves	Rodrigues Alves	Acre	BR	Brazil
-Secretaria Municipal de Educação de Rodrigues Alves	Rodrigues Alves	Acre	BR	Brazil
-Secretaria Municipal de Saúde de Rodrigues Alves	Rodrigues Alves	Acre	BR	Brazil
-Prefeitura Municipal de Santa Rosa do Purus	Santa Rosa do Purus	Acre	BR	Brazil
-Secretaria Municipal de Educação de Santa Rosa do Purus	Santa Rosa do Purus	Acre	BR	Brazil
-Secretaria Municipal de Saúde de Santa Rosa do Purus	Santa Rosa do Purus	Acre	BR	Brazil
-Prefeitura Municipal de Sena Madureira	Sena Madureira	Acre	BR	Brazil
-Secretaria Municipal de Educação de Sena Madureira	Sena Madureira	Acre	BR	Brazil
-Secretaria Municipal de Saúde de Sena Madureira	Sena Madureira	Acre	BR	Brazil
-Prefeitura Municipal de Senador Guiomard	Senador Guiomard	Acre	BR	Brazil
-Secretaria Municipal de Educação de Senador Guiomard	Senador Guiomard	Acre	BR	Brazil
-Secretaria Municipal de Saúde de Senador Guiomard	Senador Guiomard	Acre	BR	Brazil
-Prefeitura Municipal de Tarauacá	Tarauacá	Acre	BR	Brazil
-Secretaria Municipal de Educação de Tarauacá	Tarauacá	Acre	BR	Brazil
-Secretaria Municipal de Saúde de Tarauacá	Tarauacá	Acre	BR	Brazil
-Prefeitura Municipal de Xapuri	Xapuri	Acre	BR	Brazil
-Secretaria Municipal de Educação de Xapuri	Xapuri	Acre	BR	Brazil
-Secretaria Municipal de Saúde de Xapuri	Xapuri	Acre	BR	Brazil
 ‪‪‪Secretaria de Estado de Articulação Institucional do Acre	Rio Branco	Acre	BR	Brazil
 ‪‪‪Secretaria de Estado de Ciência e Tecnologia do Acre	Rio Branco	Acre	BR	Brazil
 ‪‪‪Secretaria de Estado de Comunicação do Acre	Rio Branco	Acre	BR	Brazil
@@ -592,6 +571,30 @@ Secretaria Municipal de Saúde de Xapuri	Xapuri	Acre	BR	Brazil
 Secretaria de Estado de Saúde do Acre	Rio Branco	Acre	BR	Brazil
 Secretaria de Estado de Segurança Pública do Acre	Rio Branco	Acre	BR	Brazil
 Secretaria de Estado de Turismo e Lazer do Acre	Rio Branco	Acre	BR	Brazil
+Secretaria Municipal de Educação de Rio Branco	Rio Branco	Acre	BR	Brazil
+Secretaria Municipal de Saúde de Rio Branco	Rio Branco	Acre	BR	Brazil
+União Educacional do Norte	Rio Branco	Acre	BR	Brazil
+Universidade Federal do Acre	Rio Branco	Acre	BR	Brazil
+Prefeitura Municipal de Rodrigues Alves	Rodrigues Alves	Acre	BR	Brazil
+Secretaria Municipal de Educação de Rodrigues Alves	Rodrigues Alves	Acre	BR	Brazil
+Secretaria Municipal de Saúde de Rodrigues Alves	Rodrigues Alves	Acre	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Acre	Santa Rosa do Purus	Acre	BR	Brazil
+Prefeitura Municipal de Santa Rosa do Purus	Santa Rosa do Purus	Acre	BR	Brazil
+Secretaria Municipal de Educação de Santa Rosa do Purus	Santa Rosa do Purus	Acre	BR	Brazil
+Secretaria Municipal de Saúde de Santa Rosa do Purus	Santa Rosa do Purus	Acre	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Acre	Sena Madureira	Acre	BR	Brazil
+Prefeitura Municipal de Sena Madureira	Sena Madureira	Acre	BR	Brazil
+Secretaria Municipal de Educação de Sena Madureira	Sena Madureira	Acre	BR	Brazil
+Secretaria Municipal de Saúde de Sena Madureira	Sena Madureira	Acre	BR	Brazil
+Prefeitura Municipal de Senador Guiomard	Senador Guiomard	Acre	BR	Brazil
+Secretaria Municipal de Educação de Senador Guiomard	Senador Guiomard	Acre	BR	Brazil
+Secretaria Municipal de Saúde de Senador Guiomard	Senador Guiomard	Acre	BR	Brazil
+Prefeitura Municipal de Tarauacá	Tarauacá	Acre	BR	Brazil
+Secretaria Municipal de Educação de Tarauacá	Tarauacá	Acre	BR	Brazil
+Secretaria Municipal de Saúde de Tarauacá	Tarauacá	Acre	BR	Brazil
+Prefeitura Municipal de Xapuri	Xapuri	Acre	BR	Brazil
+Secretaria Municipal de Educação de Xapuri	Xapuri	Acre	BR	Brazil
+Secretaria Municipal de Saúde de Xapuri	Xapuri	Acre	BR	Brazil
 Prefeitura Municipal de Água Branca	Água Branca	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Água Branca	Água Branca	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Água Branca	Água Branca	Alagoas	BR	Brazil
@@ -600,9 +603,11 @@ Secretaria Municipal de Educação de Anadia	Anadia	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Anadia	Anadia	Alagoas	BR	Brazil
 Centro de Ensino Superior Arcanjo Mikael de Arapiraca	Arapiraca	Alagoas	BR	Brazil
 Instituto de Ensino Superior Santa Cecília	Arapiraca	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Arapiraca	Alagoas	BR	Brazil
 Prefeitura Municipal de Arapiraca	Arapiraca	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Arapiraca	Arapiraca	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Arapiraca	Arapiraca	Alagoas	BR	Brazil
+Universidade Estadual de Alagoas	Arapiraca	Alagoas	BR	Brazil
 Universidade Estadual de Alagoas	Arapiraca	Alagoas	BR	Brazil
 Universidade Federal de Alagoas	Arapiraca	Alagoas	BR	Brazil
 Prefeitura Municipal de Atalaia	Atalaia	Alagoas	BR	Brazil
@@ -614,6 +619,7 @@ Secretaria Municipal de Saúde de Barra de Santo Antônio	Barra de Santo Antôni
 Prefeitura Municipal de Barra de São Miguel	Barra de São Miguel	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Barra de São Miguel	Barra de São Miguel	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Barra de São Miguel	Barra de São Miguel	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Batalha	Alagoas	BR	Brazil
 Prefeitura Municipal de Batalha	Batalha	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Batalha	Batalha	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Batalha	Batalha	Alagoas	BR	Brazil
@@ -665,6 +671,7 @@ Secretaria Municipal de Saúde de Colônia Leopoldina	Colônia Leopoldina	Alagoa
 Prefeitura Municipal de Coqueiro Seco	Coqueiro Seco	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Coqueiro Seco	Coqueiro Seco	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Coqueiro Seco	Coqueiro Seco	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Coruripe	Alagoas	BR	Brazil
 Prefeitura Municipal de Coruripe	Coruripe	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Coruripe	Coruripe	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Coruripe	Coruripe	Alagoas	BR	Brazil
@@ -749,7 +756,7 @@ Hemoal - Hemocentro de Alagoas	Maceió	Alagoas	BR	Brazil
 Instituto Batista de Ensino Superior de Alagoas	Maceió	Alagoas	BR	Brazil
 Instituto de Ensino Superior de Alagoas	Maceió	Alagoas	BR	Brazil
 Instituto de Ensino Superior do Nordeste	Maceió	Alagoas	BR	Brazil
-Instituto Federal de Alagoas	Maceió	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Maceió	Alagoas	BR	Brazil
 Prefeitura Municipal de Maceió	Maceió	Alagoas	BR	Brazil
 Santa Casa de Misericórdia de Maceió	Maceió	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Maceió	Maceió	Alagoas	BR	Brazil
@@ -764,12 +771,14 @@ Secretaria Municipal de Saúde de Major Isidoro	Major Isidoro	Alagoas	BR	Brazil
 Prefeitura Municipal de Mar Vermelho	Mar Vermelho	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Mar Vermelho	Mar Vermelho	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Mar Vermelho	Mar Vermelho	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Maragogi	Alagoas	BR	Brazil
 Prefeitura Municipal de Maragogi	Maragogi	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Maragogi	Maragogi	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Maragogi	Maragogi	Alagoas	BR	Brazil
 Prefeitura Municipal de Maravilha	Maravilha	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Maravilha	Maravilha	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Maravilha	Maravilha	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Marechal Deodoro	Alagoas	BR	Brazil
 Prefeitura Municipal de Marechal Deodoro	Marechal Deodoro	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Marechal Deodoro	Marechal Deodoro	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Marechal Deodoro	Marechal Deodoro	Alagoas	BR	Brazil
@@ -791,6 +800,7 @@ Secretaria Municipal de Saúde de Minador do Negrão	Minador do Negrão	Alagoas	
 Prefeitura Municipal de Monteirópolis	Monteirópolis	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Monteirópolis	Monteirópolis	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Monteirópolis	Monteirópolis	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Murici	Alagoas	BR	Brazil
 Prefeitura Municipal de Murici	Murici	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Murici	Murici	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Murici	Murici	Alagoas	BR	Brazil
@@ -816,6 +826,7 @@ Prefeitura Municipal de Palestina	Palestina	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Palestina	Palestina	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Palestina	Palestina	Alagoas	BR	Brazil
 Faculdade São Tomás de Aquino	Palmeira dos Índios	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Palmeira dos Índios	Alagoas	BR	Brazil
 Prefeitura Municipal de Palmeira dos Índios	Palmeira dos Índios	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Palmeira dos Índios	Palmeira dos Índios	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Palmeira dos Índios	Palmeira dos Índios	Alagoas	BR	Brazil
@@ -836,6 +847,7 @@ Secretaria Municipal de Saúde de Passo de Camaragibe	Passo de Camaragibe	Alagoa
 Prefeitura Municipal de Paulo Jacinto	Paulo Jacinto	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Paulo Jacinto	Paulo Jacinto	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Paulo Jacinto	Paulo Jacinto	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Penedo	Alagoas	BR	Brazil
 Prefeitura Municipal de Penedo	Penedo	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Penedo	Penedo	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Penedo	Penedo	Alagoas	BR	Brazil
@@ -848,6 +860,7 @@ Secretaria Municipal de Saúde de Pilar	Pilar	Alagoas	BR	Brazil
 Prefeitura Municipal de Pindoba	Pindoba	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Pindoba	Pindoba	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Pindoba	Pindoba	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Piranhas	Alagoas	BR	Brazil
 Prefeitura Municipal de Piranhas	Piranhas	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Piranhas	Piranhas	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Piranhas	Piranhas	Alagoas	BR	Brazil
@@ -866,6 +879,7 @@ Secretaria Municipal de Saúde de Porto Real do Colégio	Porto Real do Colégio	
 Prefeitura Municipal de Quebrangulo	Quebrangulo	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Quebrangulo	Quebrangulo	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Quebrangulo	Quebrangulo	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Rio Largo	Alagoas	BR	Brazil
 Prefeitura Municipal de Rio Largo	Rio Largo	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Rio Largo	Rio Largo	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Rio Largo	Rio Largo	Alagoas	BR	Brazil
@@ -875,6 +889,7 @@ Secretaria Municipal de Saúde de Roteiro	Roteiro	Alagoas	BR	Brazil
 Prefeitura Municipal de Santa Luzia do Norte	Santa Luzia do Norte	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Santa Luzia do Norte	Santa Luzia do Norte	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Santa Luzia do Norte	Santa Luzia do Norte	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Santana do Ipanema	Alagoas	BR	Brazil
 Prefeitura Municipal de Santana do Ipanema	Santana do Ipanema	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Santana do Ipanema	Santana do Ipanema	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Santana do Ipanema	Santana do Ipanema	Alagoas	BR	Brazil
@@ -893,6 +908,7 @@ Secretaria Municipal de Saúde de São José da Tapera	São José da Tapera	Alag
 Prefeitura Municipal de São Luís do Quitunde	São Luís do Quitunde	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de São Luís do Quitunde	São Luís do Quitunde	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de São Luís do Quitunde	São Luís do Quitunde	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	São Miguel dos Campos	Alagoas	BR	Brazil
 Prefeitura Municipal de São Miguel dos Campos	São Miguel dos Campos	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de São Miguel dos Campos	São Miguel dos Campos	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de São Miguel dos Campos	São Miguel dos Campos	Alagoas	BR	Brazil
@@ -902,6 +918,7 @@ Secretaria Municipal de Saúde de São Miguel dos Milagres	São Miguel dos Milag
 Prefeitura Municipal de São Sebastião	São Sebastião	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de São Sebastião	São Sebastião	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de São Sebastião	São Sebastião	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Satuba	Alagoas	BR	Brazil
 Prefeitura Municipal de Satuba	Satuba	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Satuba	Satuba	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Satuba	Satuba	Alagoas	BR	Brazil
@@ -923,6 +940,7 @@ Secretaria Municipal de Saúde de Traipu	Traipu	Alagoas	BR	Brazil
 Prefeitura Municipal de União dos Palmares	União dos Palmares	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de União dos Palmares	União dos Palmares	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de União dos Palmares	União dos Palmares	Alagoas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Alagoas	Viçosa	Alagoas	BR	Brazil
 Prefeitura Municipal de Viçosa	Viçosa	Alagoas	BR	Brazil
 Secretaria Municipal de Educação de Viçosa	Viçosa	Alagoas	BR	Brazil
 Secretaria Municipal de Saúde de Viçosa	Viçosa	Alagoas	BR	Brazil
@@ -941,7 +959,7 @@ Secretaria Municipal de Saúde de Ferreira Gomes	Ferreira Gomes	Amapá	BR	Brazil
 Prefeitura Municipal de Itaubal	Itaubal	Amapá	BR	Brazil
 Secretaria Municipal de Educação de Itaubal	Itaubal	Amapá	BR	Brazil
 Secretaria Municipal de Saúde de Itaubal	Itaubal	Amapá	BR	Brazil
-Instituto Federal do Amapá	Laranjal do Jari	Amapá	BR	Brazil
+ Instituto Federal de Educação, Ciência e Tecnologia do Amapá	Laranjal do Jari	Amapá	BR	Brazil
 Prefeitura Municipal de Laranjal do Jari	Laranjal do Jari	Amapá	BR	Brazil
 Secretaria Municipal de Educação de Laranjal do Jari	Laranjal do Jari	Amapá	BR	Brazil
 Secretaria Municipal de Saúde de Laranjal do Jari	Laranjal do Jari	Amapá	BR	Brazil
@@ -958,7 +976,7 @@ Faculdade de Teologia e Ciências Humanas	Macapá	Amapá	BR	Brazil
 Faculdade SEAMA 	Macapá	Amapá	BR	Brazil
 Hemoap - Hemocentro do Amapá	Macapá	Amapá	BR	Brazil
 Instituto de Ensino Superior do Amapá	Macapá	Amapá	BR	Brazil
-Instituto Federal do Amapá	Macapá	Amapá	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Amapá	Macapá	Amapá	BR	Brazil
 Instituto Macapaense de Ensino Superior	Macapá	Amapá	BR	Brazil
 Prefeitura Municipal de Macapá	Macapá	Amapá	BR	Brazil
 Secretaria Municipal de Educação de Macapá	Macapá	Amapá	BR	Brazil
@@ -1051,6 +1069,7 @@ Secretaria Municipal de Saúde de Careiro	Careiro	Amazonas	BR	Brazil
 Prefeitura Municipal de Careiro da Várzea	Careiro da Várzea	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Careiro da Várzea	Careiro da Várzea	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Careiro da Várzea	Careiro da Várzea	Amazonas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Amazonas 	Coari	Amazonas	BR	Brazil
 Prefeitura Municipal de Coari	Coari	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Coari	Coari	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Coari	Coari	Amazonas	BR	Brazil
@@ -1096,6 +1115,7 @@ Secretaria Municipal de Saúde de Juruá	Juruá	Amazonas	BR	Brazil
 Prefeitura Municipal de Jutaí	Jutaí	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Jutaí	Jutaí	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Jutaí	Jutaí	Amazonas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Amazonas 	Lábrea	Amazonas	BR	Brazil
 Prefeitura Municipal de Lábrea	Lábrea	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Lábrea	Lábrea	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Lábrea	Lábrea	Amazonas	BR	Brazil
@@ -1106,8 +1126,10 @@ Prefeitura Municipal de Manaquiri	Manaquiri	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Manaquiri	Manaquiri	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Manaquiri	Manaquiri	Amazonas	BR	Brazil
 Agência Nacional de Petróleo, Gás Natural e Biocombustíveis	Manaus	Amazonas	BR	Brazil
+Centro Universitário Clarentiano	Manaus	Amazonas	BR	Brazil
 Centro Universitário de Ensino Superior do Amazonas	Manaus	Amazonas	BR	Brazil
 Centro Universitário do Norte	Manaus	Amazonas	BR	Brazil
+Centro Universitário Luterano de Manaus	Manaus	Amazonas	BR	Brazil
 Centro Universitário Nilton Lins	Manaus	Amazonas	BR	Brazil
 Embrapa Amazônia Ocidental	Manaus	Amazonas	BR	Brazil
 Escola Superior Batista do Amazonas	Manaus	Amazonas	BR	Brazil
@@ -1122,7 +1144,7 @@ Fundação Oswaldo Cruz	Manaus	Amazonas	BR	Brazil
 Hemoam - Fundação Hospitalar de Hematologia e Hemoterapia do Amazonas	Manaus	Amazonas	BR	Brazil
 Instituto de Ensino Superior FUCAPI	Manaus	Amazonas	BR	Brazil
 Instituto de Ensino Superior Materdei	Manaus	Amazonas	BR	Brazil
-Instituto Federal do Amazonas	Manaus	Amazonas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Amazonas 	Manaus	Amazonas	BR	Brazil
 Instituto Nacional de Pesquisas da Amazônia	Manaus	Amazonas	BR	Brazil
 Prefeitura Municipal de Manaus	Manaus	Amazonas	BR	Brazil
 São Leopoldo Mandic	Manaus	Amazonas	BR	Brazil
@@ -1138,6 +1160,7 @@ Secretaria Municipal de Saúde de Manicoré	Manicoré	Amazonas	BR	Brazil
 Prefeitura Municipal de Maraã	Maraã	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Maraã	Maraã	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Maraã	Maraã	Amazonas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Amazonas 	Maués	Amazonas	BR	Brazil
 Prefeitura Municipal de Maués	Maués	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Maués	Maués	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Maués	Maués	Amazonas	BR	Brazil
@@ -1153,12 +1176,14 @@ Secretaria Municipal de Saúde de Novo Airão	Novo Airão	Amazonas	BR	Brazil
 Prefeitura Municipal de Novo Aripuanã	Novo Aripuanã	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Novo Aripuanã	Novo Aripuanã	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Novo Aripuanã	Novo Aripuanã	Amazonas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Amazonas 	Parintins	Amazonas	BR	Brazil
 Prefeitura Municipal de Parintins	Parintins	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Parintins	Parintins	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Parintins	Parintins	Amazonas	BR	Brazil
 Prefeitura Municipal de Pauini	Pauini	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Pauini	Pauini	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Pauini	Pauini	Amazonas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Amazonas 	Presidente Figueiredo	Amazonas	BR	Brazil
 Prefeitura Municipal de Presidente Figueiredo	Presidente Figueiredo	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Presidente Figueiredo	Presidente Figueiredo	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Presidente Figueiredo	Presidente Figueiredo	Amazonas	BR	Brazil
@@ -1171,10 +1196,11 @@ Secretaria Municipal de Saúde de Santa Isabel do Rio Negro	Santa Isabel do Rio 
 Prefeitura Municipal de Santo Antônio do Içá	Santo Antônio do Içá	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Santo Antônio do Içá	Santo Antônio do Içá	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Santo Antônio do Içá	Santo Antônio do Içá	Amazonas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Amazonas 	São Gabriel da Cachoeira	Amazonas	BR	Brazil
 Prefeitura Municipal de São Gabriel da Cachoeira	São Gabriel da Cachoeira	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de São Gabriel da Cachoeira	São Gabriel da Cachoeira	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de São Gabriel da Cachoeira	São Gabriel da Cachoeira	Amazonas	BR	Brazil
-Escola Agrotécnica Federal	São José Operário	Amazonas	BR	Brazil
+Escola Agrotécnica Federal de São José Operário	São José Operário	Amazonas	BR	Brazil
 Prefeitura Municipal de São Paulo de Olivença	São Paulo de Olivença	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de São Paulo de Olivença	São Paulo de Olivença	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de São Paulo de Olivença	São Paulo de Olivença	Amazonas	BR	Brazil
@@ -1184,6 +1210,7 @@ Secretaria Municipal de Saúde de São Sebastião do Uatumã	São Sebastião do 
 Prefeitura Municipal de Silves	Silves	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Silves	Silves	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Silves	Silves	Amazonas	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Amazonas 	Tabatinga	Amazonas	BR	Brazil
 Prefeitura Municipal de Tabatinga	Tabatinga	Amazonas	BR	Brazil
 Secretaria Municipal de Educação de Tabatinga	Tabatinga	Amazonas	BR	Brazil
 Secretaria Municipal de Saúde de Tabatinga	Tabatinga	Amazonas	BR	Brazil
@@ -1224,7 +1251,7 @@ Prefeitura Municipal de Aiquara	Aiquara	Bahia	BR	Brazil
 Secretaria Municipal de Educação de Aiquara	Aiquara	Bahia	BR	Brazil
 Secretaria Municipal de Saúde de Aiquara	Aiquara	Bahia	BR	Brazil
 Faculdade Santíssimo Sacramento	Alagoinhas	Bahia	BR	Brazil
-Faculdade Santo Antonio	Alagoinhas	Bahia	BR	Brazil
+Faculdade Santo Antônio	Alagoinhas	Bahia	BR	Brazil
 Prefeitura Municipal de Alagoinhas	Alagoinhas	Bahia	BR	Brazil
 Secretaria Municipal de Educação de Alagoinhas	Alagoinhas	Bahia	BR	Brazil
 Secretaria Municipal de Saúde de Alagoinhas	Alagoinhas	Bahia	BR	Brazil
@@ -1729,7 +1756,7 @@ Secretaria Municipal de Saúde de Inhambupe	Inhambupe	Bahia	BR	Brazil
 Prefeitura Municipal de Ipecaetá	Ipecaetá	Bahia	BR	Brazil
 Secretaria Municipal de Educação de Ipecaetá	Ipecaetá	Bahia	BR	Brazil
 Secretaria Municipal de Saúde de Ipecaetá	Ipecaetá	Bahia	BR	Brazil
-Faculdade Santo Aghostino	Ipiaú	Bahia	BR	Brazil
+Faculdade Santo Agostinho	Ipiaú	Bahia	BR	Brazil
 Prefeitura Municipal de Ipiaú	Ipiaú	Bahia	BR	Brazil
 Secretaria Municipal de Educação de Ipiaú	Ipiaú	Bahia	BR	Brazil
 Secretaria Municipal de Saúde de Ipiaú	Ipiaú	Bahia	BR	Brazil
@@ -2253,8 +2280,9 @@ Prefeitura Municipal de Salinas da Margarida	Salinas da Margarida	Bahia	BR	Brazi
 Secretaria Municipal de Educação de Salinas da Margarida	Salinas da Margarida	Bahia	BR	Brazil
 Secretaria Municipal de Saúde de Salinas da Margarida	Salinas da Margarida	Bahia	BR	Brazil
 Agência Nacional de Petróleo, Gás Natural e Biocombustíveis	Salvador	Bahia	BR	Brazil
+Centro Universitário Estácio da Bahia	Salvador	Bahia	BR	Brazil
 Centro Universitário Jorge Amado	Salvador	Bahia	BR	Brazil
-Empresa Baiana de Desenvolvimento Agricola	Salvador	Bahia	BR	Brazil
+Empresa Baiana de Desenvolvimento Agrícola	Salvador	Bahia	BR	Brazil
 Escola Bahiana de Medicina e Saúde Pública	Salvador	Bahia	BR	Brazil
 Escola de Administração do Exército	Salvador	Bahia	BR	Brazil
 Escola de Engenharia de Agrimensura	Salvador	Bahia	BR	Brazil
@@ -2286,7 +2314,8 @@ Fundação Oswaldo Cruz	Salvador	Bahia	BR	Brazil
 Hospital Português	Salvador	Bahia	BR	Brazil
 Instituto de Educação e Tecnologias 	Salvador	Bahia	BR	Brazil
 Instituto de Educação Superior Unyahna de Salvador	Salvador	Bahia	BR	Brazil
-Instituto Federal da Bahia	Salvador	Bahia	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia Baiano	Salvador	Bahia	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia da Bahia	Salvador	Bahia	BR	Brazil
 Instituto Superior de Educação Eugênio Gomes	Salvador	Bahia	BR	Brazil
 Instituto Superior de Educação Ocidente	Salvador	Bahia	BR	Brazil
 Prefeitura Municipal de Salvador	Salvador	Bahia	BR	Brazil
@@ -2734,6 +2763,8 @@ Academia Cearense de Odontologia	Fortaleza	Ceará	BR	Brazil
 Agência de Defesa Agropecuária do Estado do Ceará	Fortaleza	Ceará	BR	Brazil
 Agência Reguladora de Serviços Públicos Delegados do Estado Ceará	Fortaleza	Ceará	BR	Brazil
 Centro de Pneumologia e Alergia do Ceará	Fortaleza	Ceará	BR	Brazil
+Centro Universitário Christus	Fortaleza	Ceará	BR	Brazil
+Centro Universitário Estácio do Ceará	Fortaleza	Ceará	BR	Brazil
 Centro Visual Valter Justa	Fortaleza	Ceará	BR	Brazil
 Clínica Conceptus - Reprodução Assistida	Fortaleza	Ceará	BR	Brazil
 Companhia de Gestão dos Recursos Hídricos	Fortaleza	Ceará	BR	Brazil
@@ -2741,25 +2772,29 @@ Companhia Energética do Ceará	Fortaleza	Ceará	BR	Brazil
 Conselho Regional de Medicina do Estado do Ceará	Fortaleza	Ceará	BR	Brazil
 Embrapa Agroindústria Tropical	Fortaleza	Ceará	BR	Brazil
 Empresa de Assistência Técnica e Extensão Rural do Ceará	Fortaleza	Ceará	BR	Brazil
+Faculdade Ateneu	Fortaleza	Ceará	BR	Brazil
 Faculdade Católica de Fortaleza	Fortaleza	Ceará	BR	Brazil
 Faculdade Católica do Ceará	Fortaleza	Ceará	BR	Brazil
 Faculdade Cearense	Fortaleza	Ceará	BR	Brazil
-Faculdade Christus	Fortaleza	Ceará	BR	Brazil
+Faculdade Darcy Ribeiro	Fortaleza	Ceará	BR	Brazil
+Faculdade Darcy Ribeiro	Fortaleza	Ceará	BR	Brazil
 Faculdade de Ciências Humanas de Fortaleza	Fortaleza	Ceará	BR	Brazil
+Faculdade de Ciências Tecnológicas de Fortaleza	Fortaleza	Ceará	BR	Brazil
 Faculdade de Ensino e Cultura do Ceará	Fortaleza	Ceará	BR	Brazil
 Faculdade de Odontologia São Leopoldo Mandic	Fortaleza	Ceará	BR	Brazil
 Faculdade de Tecnologia Apoena	Fortaleza	Ceará	BR	Brazil
 Faculdade de Tecnologia Cariri	Fortaleza	Ceará	BR	Brazil
 Faculdade de Tecnologia CDL de Fortaleza	Fortaleza	Ceará	BR	Brazil
-Faculdade de Tecnologia Darcy Ribeiro	Fortaleza	Ceará	BR	Brazil
 Faculdade de Tecnologia do Nordeste	Fortaleza	Ceará	BR	Brazil
 Faculdade de Tecnologia Evolução	Fortaleza	Ceará	BR	Brazil
 Faculdade de Tecnologia Informática	Fortaleza	Ceará	BR	Brazil
 Faculdade de Tecnologia Intensiva	Fortaleza	Ceará	BR	Brazil
+Faculdade de Tecnologia Lourenço Filho	Fortaleza	Ceará	BR	Brazil
 Faculdade Evolutivo	Fortaleza	Ceará	BR	Brazil
 Faculdade Farias Brito	Fortaleza	Ceará	BR	Brazil
 Faculdade Integrada da Grande Fortaleza	Fortaleza	Ceará	BR	Brazil
 Faculdade Latino Americana de Educação	Fortaleza	Ceará	BR	Brazil
+Faculdade Maurício de Nassau de Fortaleza	Fortaleza	Ceará	BR	Brazil
 Faculdade Metropolitana da Grande Fortaleza	Fortaleza	Ceará	BR	Brazil
 Faculdade Nordeste	Fortaleza	Ceará	BR	Brazil
 Faculdade Oboé	Fortaleza	Ceará	BR	Brazil
@@ -2774,7 +2809,7 @@ Instituto de Ensino Superior de Fortaleza	Fortaleza	Ceará	BR	Brazil
 Instituto de Nefrologia do Ceará	Fortaleza	Ceará	BR	Brazil
 Instituto de Pesquisa e Estratégia Econômica do Ceará	Fortaleza	Ceará	BR	Brazil
 Instituto do Câncer do Ceará	Fortaleza	Ceará	BR	Brazil
-Instituto Federal do Ceará	Fortaleza	Ceará	BR	Brazil
+Instituto Federal de Educação Ciências e Tecnologia do Ceará	Fortaleza	Ceará	BR	Brazil
 Instituto Superior de Teologia Aplicada	Fortaleza	Ceará	BR	Brazil
 Museu do Ceará	Fortaleza	Ceará	BR	Brazil
 Prefeitura Municipal de Fortaleza	Fortaleza	Ceará	BR	Brazil
@@ -3180,8 +3215,10 @@ Agência Nacional de Águas	Brasília	Distrito Federal	BR	Brazil
 Agência Nacional de Petróleo, Gás Natural e Biocombustíveis	Brasília	Distrito Federal	BR	Brazil
 Agência Nacional de Saúde Suplementar	Brasília	Distrito Federal	BR	Brazil
 Agência Nacional de Vigilância Sanitária	Brasília	Distrito Federal	BR	Brazil
+Centro Educacional São Camilo	Brasília	Distrito Federal	BR	Brazil
 Centro Universitário de Brasília	Brasília	Distrito Federal	BR	Brazil
 Centro Universitário do Distrito Federal	Brasília	Distrito Federal	BR	Brazil
+Centro Universitário Estávio de Brasília	Brasília	Distrito Federal	BR	Brazil
 Centro Universitário Euro-Americano	Brasília	Distrito Federal	BR	Brazil
 Companhia de Saneamento Ambiental do Distrito Federal	Brasília	Distrito Federal	BR	Brazil
 Conselho Federal de Fisioterapia e Terapia Ocupacional	Brasília	Distrito Federal	BR	Brazil
@@ -3200,11 +3237,12 @@ Embrapa Quarentena Vegetal	Brasília	Distrito Federal	BR	Brazil
 Embrapa Recursos Genéticos e Biotecnologia	Brasília	Distrito Federal	BR	Brazil
 Empresa Brasileira de Hemoderivados e Biotecnologia	Brasília	Distrito Federal	BR	Brazil
 Empresa Brasileira de Infraestrutura Aeroportuária	Brasília	Distrito Federal	BR	Brazil
-Empresa Brasileira de Pesquisa Agropecuária	Brasília	Distrito Federal	BR	Brazil
+Escola de Direito de Brasília	Brasília	Distrito Federal	BR	Brazil
 Escola Superior Aberta do Brasil	Brasília	Distrito Federal	BR	Brazil
 Escola Superior de Ciências da Saúde	Brasília	Distrito Federal	BR	Brazil
 Escola Superior de Propaganda e Marketing	Brasília	Distrito Federal	BR	Brazil
 Faculdade AIEC	Brasília	Distrito Federal	BR	Brazil
+Faculdade Albert Einstein	Brasília	Distrito Federal	BR	Brazil
 Faculdade Alvorada de Informática e Processamento de Dados	Brasília	Distrito Federal	BR	Brazil
 Faculdade das Àguas Emendadas	Brasília	Distrito Federal	BR	Brazil
 Faculdade de Artes Dulcina de Moraes	Brasília	Distrito Federal	BR	Brazil
@@ -3214,8 +3252,7 @@ Faculdade de Tecnologia	Brasília	Distrito Federal	BR	Brazil
 Faculdade de Tecnologia do Transporte	Brasília	Distrito Federal	BR	Brazil
 Faculdade de Tecnologia Equipe Darwin	Brasília	Distrito Federal	BR	Brazil
 Faculdade de Tecnologia Regacionista	Brasília	Distrito Federal	BR	Brazil
-Faculdade de Tecnologia SENAC	Brasília	Distrito Federal	BR	Brazil
-Faculdade do Meio Ambiente e Tecnologia de Negocios	Brasília	Distrito Federal	BR	Brazil
+Faculdade do Meio Ambiente e Tecnologia de Negócios	Brasília	Distrito Federal	BR	Brazil
 Faculdade Evangélica	Brasília	Distrito Federal	BR	Brazil
 Faculdade Fortium	Brasília	Distrito Federal	BR	Brazil
 Faculdade IBMEC	Brasília	Distrito Federal	BR	Brazil
@@ -3226,7 +3263,6 @@ Faculdade Mauá de Brasília	Brasília	Distrito Federal	BR	Brazil
 Faculdade Processus	Brasília	Distrito Federal	BR	Brazil
 Faculdade Projeção	Brasília	Distrito Federal	BR	Brazil
 Faculdade Santa Terezinha	Brasília	Distrito Federal	BR	Brazil
-Faculdade São Camilo 	Brasília	Distrito Federal	BR	Brazil
 Faculdade Serrana de Ensino Superior	Brasília	Distrito Federal	BR	Brazil
 Faculdade UNISABER	Brasília	Distrito Federal	BR	Brazil
 Faculdades COC de Brasília	Brasília	Distrito Federal	BR	Brazil
@@ -3235,15 +3271,15 @@ Faculdades Integradas da União Educacional do Planalto Central	Brasília	Distri
 Faculdades Integradas da UPIS	Brasília	Distrito Federal	BR	Brazil
 Faculdades Integradas Promove da Brasília	Brasília	Distrito Federal	BR	Brazil
 Faculdades Planalto	Brasília	Distrito Federal	BR	Brazil
-Fundação Getulio Vargas	Brasília	Distrito Federal	BR	Brazil
-Institituto de Ensino Superior Planalto	Brasília	Distrito Federal	BR	Brazil
-Institituto Federal de Educação, Ciencia e Tecnologia de Brasília	Brasília	Distrito Federal	BR	Brazil
-Institituto Superior de Educação do CECAP	Brasília	Distrito Federal	BR	Brazil
-Institituto Superior de Educação do ICESP	Brasília	Distrito Federal	BR	Brazil
-Institituto Superior de Educação Franciscano Nossa Senhora de Fátima	Brasília	Distrito Federal	BR	Brazil
+Fundação Getúlio Vargas	Brasília	Distrito Federal	BR	Brazil
 Instituto Brasileiro de Informação em Ciência e Tecnologia	Brasília	Distrito Federal	BR	Brazil
 Instituto Brasilense de Tecnologia e Ciência	Brasília	Distrito Federal	BR	Brazil
 Instituto de Educação Superior de Brasília	Brasília	Distrito Federal	BR	Brazil
+Instituto de Ensino Superior Planalto	Brasília	Distrito Federal	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Brasília	Brasília	Distrito Federal	BR	Brazil
+Instituto Superior de Educação do CECAP	Brasília	Distrito Federal	BR	Brazil
+Instituto Superior de Educação do ICESP	Brasília	Distrito Federal	BR	Brazil
+Instituto Superior de Educação Franciscano Nossa Senhora de Fátima	Brasília	Distrito Federal	BR	Brazil
 Ministério da Agricultura, Pecuária e Abastecimento	Brasília	Distrito Federal	BR	Brazil
 Ministério da Ciência, Tecnologia e Inovação	Brasília	Distrito Federal	BR	Brazil
 Ministério da Cultura	Brasília	Distrito Federal	BR	Brazil
@@ -3284,8 +3320,8 @@ Prefeitura Municipal de Alegre	Alegre	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Alegre	Alegre	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Alegre	Alegre	Espírito Santo	BR	Brazil
 Escola Agrotécnica Federal de Alegre	Alegrete	Espírito Santo	BR	Brazil
-Faculdade de Filosofia Ciências e Letras de Alegre	Alegrete	Espírito Santo	BR	Brazil
-Instituto Federal do Espirito Santo	Alegrete	Espírito Santo	BR	Brazil
+Faculdade de Filosofia, Ciências e Letras de Alegre	Alegrete	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Alegrete	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Alfredo Chaves	Alfredo Chaves	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Alfredo Chaves	Alfredo Chaves	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Alfredo Chaves	Alfredo Chaves	Espírito Santo	BR	Brazil
@@ -3300,7 +3336,7 @@ Secretaria Municipal de Educação de Apiacá	Apiacá	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Apiacá	Apiacá	Espírito Santo	BR	Brazil
 Faculdade Casa do Estudante	Aracruz	Espírito Santo	BR	Brazil
 Faculdade de Aracruz	Aracruz	Espírito Santo	BR	Brazil
-Instituto Federal do Espirito Santo	Aracruz	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Aracruz	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Aracruz	Aracruz	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Aracruz	Aracruz	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Aracruz	Aracruz	Espírito Santo	BR	Brazil
@@ -3312,6 +3348,7 @@ Secretaria Municipal de Educação de Baixo Guandu	Baixo Guandu	Espírito Santo	
 Secretaria Municipal de Saúde de Baixo Guandu	Baixo Guandu	Espírito Santo	BR	Brazil
 Faculdade de Tecnologia São Francisco	Barra de São Francisco	Espírito Santo	BR	Brazil
 Faculdade Teológica de Ciências Humanas e Sociais Logos	Barra de São Francisco	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Barra de São Francisco	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Barra de São Francisco	Barra de São Francisco	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Barra de São Francisco	Barra de São Francisco	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Barra de São Francisco	Barra de São Francisco	Espírito Santo	BR	Brazil
@@ -3324,19 +3361,19 @@ Secretaria Municipal de Saúde de Bom Jesus do Norte	Bom Jesus do Norte	Espírit
 Prefeitura Municipal de Brejetuba	Brejetuba	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Brejetuba	Brejetuba	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Brejetuba	Brejetuba	Espírito Santo	BR	Brazil
-Centro Universitário São Camilo	Cachoeira do Itapemirim	Espírito Santo	BR	Brazil
+Centro Universitário São Camilo 	Cachoeira do Itapemirim	Espírito Santo	BR	Brazil
 Faculdade de Ciências, Contabilidade e Administração de Cachoeiro do Itapemirim	Cachoeira do Itapemirim	Espírito Santo	BR	Brazil
 Faculdade de Direito de Cachoeiro do Itapemirim	Cachoeira do Itapemirim	Espírito Santo	BR	Brazil
 Faculdade do Espírito Santo	Cachoeira do Itapemirim	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Cachoeiro de Itapemirim	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Cachoeiro de Itapemirim	Cachoeiro de Itapemirim	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Cachoeiro de Itapemirim	Cachoeiro de Itapemirim	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Cachoeiro de Itapemirim	Cachoeiro de Itapemirim	Espírito Santo	BR	Brazil
 Faculdade de Cariacica	Cariacica	Espírito Santo	BR	Brazil
 Faculdade de Educação Superior Pio XII	Cariacica	Espírito Santo	BR	Brazil
-Faculdade São Camilo	Cariacica	Espírito Santo	BR	Brazil
 Faculdade São Geraldo	Cariacica	Espírito Santo	BR	Brazil
 Insitituto Superior de Educação de Cariacica	Cariacica	Espírito Santo	BR	Brazil
-Instituto Federal do Espirito Santo	Cariacica	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Cariacica	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Cariacica	Cariacica	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Cariacica	Cariacica	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Cariacica	Cariacica	Espírito Santo	BR	Brazil
@@ -3344,9 +3381,10 @@ Faculdade de Castelo	Castelo	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Castelo	Castelo	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Castelo	Castelo	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Castelo	Castelo	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Centro-Serrano	Espírito Santo	BR	Brazil
 Centro Universitário do Espírito Santo	Colatina	Espírito Santo	BR	Brazil
 Faculdade Castelo Branco	Colatina	Espírito Santo	BR	Brazil
-Instituto Federal do Espirito Santo	Colatina	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Colatina	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Colatina	Colatina	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Colatina	Colatina	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Colatina	Colatina	Espírito Santo	BR	Brazil
@@ -3378,10 +3416,11 @@ Prefeitura Municipal de Guaçuí	Guaçuí	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Guaçuí	Guaçuí	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Guaçuí	Guaçuí	Espírito Santo	BR	Brazil
 Faculdade Pitágoras	Guarapari	Espírito Santo	BR	Brazil
-Instituto Federal do Espirito Santo	Guarapari	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Guarapari	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Guarapari	Guarapari	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Guarapari	Guarapari	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Guarapari	Guarapari	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Ibatiba	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Ibatiba	Ibatiba	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Ibatiba	Ibatiba	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Ibatiba	Ibatiba	Espírito Santo	BR	Brazil
@@ -3403,6 +3442,7 @@ Secretaria Municipal de Saúde de Itaguaçu	Itaguaçu	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Itapemirim	Itapemirim	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Itapemirim	Itapemirim	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Itapemirim	Itapemirim	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Itapina	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Itarana	Itarana	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Itarana	Itarana	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Itarana	Itarana	Espírito Santo	BR	Brazil
@@ -3422,6 +3462,7 @@ Secretaria Municipal de Saúde de João Neiva	João Neiva	Espírito Santo	BR	Bra
 Prefeitura Municipal de Laranja da Terra	Laranja da Terra	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Laranja da Terra	Laranja da Terra	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Laranja da Terra	Laranja da Terra	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Linhares	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Linhares	Linhares	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Linhares	Linhares	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Linhares	Linhares	Espírito Santo	BR	Brazil
@@ -3440,6 +3481,7 @@ Secretaria Municipal de Saúde de Marilândia	Marilândia	Espírito Santo	BR	Bra
 Prefeitura Municipal de Mimoso do Sul	Mimoso do Sul	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Mimoso do Sul	Mimoso do Sul	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Mimoso do Sul	Mimoso do Sul	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Montanha	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Montanha	Montanha	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Montanha	Montanha	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Montanha	Montanha	Espírito Santo	BR	Brazil
@@ -3453,7 +3495,7 @@ Prefeitura Municipal de Muqui	Muqui	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Muqui	Muqui	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Muqui	Muqui	Espírito Santo	BR	Brazil
 Faculdade Capixaba de Nova Venécia	Nova Venécia	Espírito Santo	BR	Brazil
-Instituto Federal do Espirito Santo	Nova Venécia	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Nova Venécia	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Nova Venécia	Nova Venécia	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Nova Venécia	Nova Venécia	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Nova Venécia	Nova Venécia	Espírito Santo	BR	Brazil
@@ -3466,6 +3508,7 @@ Secretaria Municipal de Saúde de Pedro Canário	Pedro Canário	Espírito Santo	
 Prefeitura Municipal de Pinheiros	Pinheiros	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Pinheiros	Pinheiros	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Pinheiros	Pinheiros	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Piúma	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Piúma	Piúma	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Piúma	Piúma	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Piúma	Piúma	Espírito Santo	BR	Brazil
@@ -3485,12 +3528,12 @@ Prefeitura Municipal de Santa Leopoldina	Santa Leopoldina	Espírito Santo	BR	Bra
 Secretaria Municipal de Educação de Santa Leopoldina	Santa Leopoldina	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Santa Leopoldina	Santa Leopoldina	Espírito Santo	BR	Brazil
 Faculdade da Região Serrana	Santa Maria de Jetibá	Espírito Santo	BR	Brazil
-Instituto Federal do Espirito Santo	Santa Maria de Jetibá	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Santa Maria de Jetibá	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Santa Maria de Jetibá	Santa Maria de Jetibá	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Santa Maria de Jetibá	Santa Maria de Jetibá	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Santa Maria de Jetibá	Santa Maria de Jetibá	Espírito Santo	BR	Brazil
 Escola Superior São Francisco de Assis	Santa Teresa	Espírito Santo	BR	Brazil
-Instituto Federal do Espirito Santo	Santa Teresa	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Santa Teresa	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Santa Teresa	Santa Teresa	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Santa Teresa	Santa Teresa	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Santa Teresa	Santa Teresa	Espírito Santo	BR	Brazil
@@ -3504,7 +3547,7 @@ Prefeitura Municipal de São José do Calçado	São José do Calçado	Espírito 
 Secretaria Municipal de Educação de São José do Calçado	São José do Calçado	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de São José do Calçado	São José do Calçado	Espírito Santo	BR	Brazil
 Faculdade Vale do Cricaré	São Mateus	Espírito Santo	BR	Brazil
-Instituto Federal do Espirito Santo	São Mateus	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	São Mateus	Espírito Santo	BR	Brazil
 Prefeitura Municipal de São Mateus	São Mateus	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de São Mateus	São Mateus	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de São Mateus	São Mateus	Espírito Santo	BR	Brazil
@@ -3518,6 +3561,7 @@ Faculdade de Educação da Serra	Serra	Espírito Santo	BR	Brazil
 Faculdade de Ensino Superior Blauro Cardoso de Mattos	Serra	Espírito Santo	BR	Brazil
 Faculdade do Centro Leste	Serra	Espírito Santo	BR	Brazil
 Insitituto Superior de Educação da Serra	Serra	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Serra	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Serra	Serra	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Serra	Serra	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Serra	Serra	Espírito Santo	BR	Brazil
@@ -3528,7 +3572,7 @@ Prefeitura Municipal de Vargem Alta	Vargem Alta	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Vargem Alta	Vargem Alta	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Vargem Alta	Vargem Alta	Espírito Santo	BR	Brazil
 Faculdade Venda Nova do Imigrante	Venda Nova do Imigrante	Espírito Santo	BR	Brazil
-Instituto Federal do Espirito Santo	Venda Nova do Imigrante	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Venda Nova do Imigrante	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Venda Nova do Imigrante	Venda Nova do Imigrante	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Venda Nova do Imigrante	Venda Nova do Imigrante	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Venda Nova do Imigrante	Venda Nova do Imigrante	Espírito Santo	BR	Brazil
@@ -3550,7 +3594,7 @@ Faculdade de Ciências Econômicas e Administrativas Vila Velha	Vila Velha	Espí
 Faculdade de Vila Velha	Vila Velha	Espírito Santo	BR	Brazil
 Faculdade Novo Milênio	Vila Velha	Espírito Santo	BR	Brazil
 Insitituto Superior de Educação Ateneu	Vila Velha	Espírito Santo	BR	Brazil
-Instituto Federal do Espirito Santo	Vila Velha	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Vila Velha	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Vila Velha	Vila Velha	Espírito Santo	BR	Brazil
 São Leopoldo Mandic	Vila Velha	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Vila Velha	Vila Velha	Espírito Santo	BR	Brazil
@@ -3565,7 +3609,6 @@ Faculdade Candido Mendes de Vitória	Vitória	Espírito Santo	BR	Brazil
 Faculdade Católica Salesiana do Espírito Santo	Vitória	Espírito Santo	BR	Brazil
 Faculdade de Administração Espírito-Santense	Vitória	Espírito Santo	BR	Brazil
 Faculdade de Música do Espírito Santo	Vitória	Espírito Santo	BR	Brazil
-Faculdade de Tecnologia FAESA	Vitória	Espírito Santo	BR	Brazil
 Faculdade FUCAPE	Vitória	Espírito Santo	BR	Brazil
 Faculdade Nacional	Vitória	Espírito Santo	BR	Brazil
 Faculdade Saberes	Vitória	Espírito Santo	BR	Brazil
@@ -3574,7 +3617,7 @@ Faculdade UNIVES	Vitória	Espírito Santo	BR	Brazil
 Faculdades Integradas de Vitória	Vitória	Espírito Santo	BR	Brazil
 Faculdades Integradas Espírito Santenses	Vitória	Espírito Santo	BR	Brazil
 Hospital Santa Casa de Misericórdia de Vitória	Vitória	Espírito Santo	BR	Brazil
-Instituto Federal do Espirito Santo	Vitória	Espírito Santo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Espirito Santo	Vitória	Espírito Santo	BR	Brazil
 Prefeitura Municipal de Vitória	Vitória	Espírito Santo	BR	Brazil
 Secretaria Municipal de Educação de Vitória	Vitória	Espírito Santo	BR	Brazil
 Secretaria Municipal de Saúde de Vitória	Vitória	Espírito Santo	BR	Brazil
@@ -3632,6 +3675,7 @@ Faculdade de Tecnologia SENAI	Anápolis	Goiás	BR	Brazil
 Faculdade do Norte Goiano	Anápolis	Goiás	BR	Brazil
 Faculdade Instituto Brasil	Anápolis	Goiás	BR	Brazil
 Faculdade Metropolitana de Anápolis	Anápolis	Goiás	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Goiás	Anápolis	Goiás	BR	Brazil
 Prefeitura Municipal de Anápolis	Anápolis	Goiás	BR	Brazil
 Secretaria Municipal de Educação de Anápolis	Anápolis	Goiás	BR	Brazil
 Secretaria Municipal de Saúde de Anápolis	Anápolis	Goiás	BR	Brazil
@@ -3860,6 +3904,7 @@ Secretaria Municipal de Educação de Flores de Goiás	Flores de Goiás	Goiás	B
 Secretaria Municipal de Saúde de Flores de Goiás	Flores de Goiás	Goiás	BR	Brazil
 Agência Goiana de Defesa Agropecuária	Formosa	Goiás	BR	Brazil
 Faculdades Integradas Iesgo	Formosa	Goiás	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Goiás	Formosa	Goiás	BR	Brazil
 Prefeitura Municipal de Formosa	Formosa	Goiás	BR	Brazil
 Secretaria Municipal de Educação de Formosa	Formosa	Goiás	BR	Brazil
 Secretaria Municipal de Saúde de Formosa	Formosa	Goiás	BR	Brazil
@@ -3890,7 +3935,6 @@ Faculdade Brasileira de Educação e Cultura	Goiânia	Goiás	BR	Brazil
 Faculdade Cambury	Goiânia	Goiás	BR	Brazil
 Faculdade da Igreja Ministério Fama	Goiânia	Goiás	BR	Brazil
 Faculdade de Goiânia	Goiânia	Goiás	BR	Brazil
-Faculdade de Tecnologia SENAC	Goiânia	Goiás	BR	Brazil
 Faculdade de Tecnologia SENAI	Goiânia	Goiás	BR	Brazil
 Faculdade Delta	Goiânia	Goiás	BR	Brazil
 Faculdade Lions	Goiânia	Goiás	BR	Brazil
@@ -3903,7 +3947,7 @@ Faculdade Teológica Sul Americana	Goiânia	Goiás	BR	Brazil
 Faculdade Unida de Campinas	Goiânia	Goiás	BR	Brazil
 Hemogo - Hemocentro de Goiás	Goiânia	Goiás	BR	Brazil
 Instituto de Filosofía e Tecnología de Goiás	Goiânia	Goiás	BR	Brazil
-Instituto Federal de Goiás	Goiânia	Goiás	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Goiás	Goiânia	Goiás	BR	Brazil
 Instituto Federal Goiano	Goiânia	Goiás	BR	Brazil
 Instituto Superior de Educação Pradão	Goiânia	Goiás	BR	Brazil
 Instituto Unificado de Ensino Superior Objetivo	Goiânia	Goiás	BR	Brazil
@@ -3960,6 +4004,7 @@ Secretaria Municipal de Saúde de Inaciolândia	Inaciolândia	Goiás	BR	Brazil
 Prefeitura Municipal de Indiara	Indiara	Goiás	BR	Brazil
 Secretaria Municipal de Educação de Indiara	Indiara	Goiás	BR	Brazil
 Secretaria Municipal de Saúde de Indiara	Indiara	Goiás	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Goiás	Inhumas	Goiás	BR	Brazil
 Prefeitura Municipal de Inhumas	Inhumas	Goiás	BR	Brazil
 Secretaria Municipal de Educação de Inhumas	Inhumas	Goiás	BR	Brazil
 Secretaria Municipal de Saúde de Inhumas	Inhumas	Goiás	BR	Brazil
@@ -4005,6 +4050,7 @@ Prefeitura Municipal de Itauçu	Itauçu	Goiás	BR	Brazil
 Secretaria Municipal de Educação de Itauçu	Itauçu	Goiás	BR	Brazil
 Secretaria Municipal de Saúde de Itauçu	Itauçu	Goiás	BR	Brazil
 Faculdade Santa Rita de Cássia	Itumbiara	Goiás	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Goiás	Itumbiara	Goiás	BR	Brazil
 Instituto Superior de Educação Santa Rita de Cássia	Itumbiara	Goiás	BR	Brazil
 Prefeitura Municipal de Itumbiara	Itumbiara	Goiás	BR	Brazil
 Secretaria Municipal de Educação de Itumbiara	Itumbiara	Goiás	BR	Brazil
@@ -4019,6 +4065,7 @@ Prefeitura Municipal de Jaraguá	Jaraguá	Goiás	BR	Brazil
 Secretaria Municipal de Educação de Jaraguá	Jaraguá	Goiás	BR	Brazil
 Secretaria Municipal de Saúde de Jaraguá	Jaraguá	Goiás	BR	Brazil
 Centro de Ensino Superior de Jataí	Jataí	Goiás	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Goiás	Jataí	Goiás	BR	Brazil
 Prefeitura Municipal de Jataí	Jataí	Goiás	BR	Brazil
 Secretaria Municipal de Educação de Jataí	Jataí	Goiás	BR	Brazil
 Secretaria Municipal de Saúde de Jataí	Jataí	Goiás	BR	Brazil
@@ -4041,6 +4088,7 @@ Prefeitura Municipal de Leopoldo de Bulhões	Leopoldo de Bulhões	Goiás	BR	Braz
 Secretaria Municipal de Educação de Leopoldo de Bulhões	Leopoldo de Bulhões	Goiás	BR	Brazil
 Secretaria Municipal de Saúde de Leopoldo de Bulhões	Leopoldo de Bulhões	Goiás	BR	Brazil
 Centro Universitário de Desenvolvimento do Centro-Oeste	Luziânia	Goiás	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Goiás	Luziânia	Goiás	BR	Brazil
 Prefeitura Municipal de Luziânia	Luziânia	Goiás	BR	Brazil
 Secretaria Municipal de Educação de Luziânia	Luziânia	Goiás	BR	Brazil
 Secretaria Municipal de Saúde de Luziânia	Luziânia	Goiás	BR	Brazil
@@ -4362,6 +4410,7 @@ Prefeitura Municipal de Uirapuru	Uirapuru	Goiás	BR	Brazil
 Secretaria Municipal de Educação de Uirapuru	Uirapuru	Goiás	BR	Brazil
 Secretaria Municipal de Saúde de Uirapuru	Uirapuru	Goiás	BR	Brazil
 Faculdade Serra da Mesa	Uruaçu	Goiás	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Goiás	Uruaçu	Goiás	BR	Brazil
 Prefeitura Municipal de Uruaçu	Uruaçu	Goiás	BR	Brazil
 Secretaria Municipal de Educação de Uruaçu	Uruaçu	Goiás	BR	Brazil
 Secretaria Municipal de Saúde de Uruaçu	Uruaçu	Goiás	BR	Brazil
@@ -4391,6 +4440,7 @@ Secretaria Municipal de Saúde de Vila Boa	Vila Boa	Goiás	BR	Brazil
 Prefeitura Municipal de Vila Propício	Vila Propício	Goiás	BR	Brazil
 Secretaria Municipal de Educação de Vila Propício	Vila Propício	Goiás	BR	Brazil
 Secretaria Municipal de Saúde de Vila Propício	Vila Propício	Goiás	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	Açailândia	Maranhão	BR	Brazil
 Prefeitura Municipal de Açailândia	Açailândia	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Açailândia	Açailândia	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Açailândia	Açailândia	Maranhão	BR	Brazil
@@ -4400,6 +4450,7 @@ Secretaria Municipal de Saúde de Afonso Cunha	Afonso Cunha	Maranhão	BR	Brazil
 Prefeitura Municipal de Água Doce do Maranhão	Água Doce do Maranhão	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Água Doce do Maranhão	Água Doce do Maranhão	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Água Doce do Maranhão	Água Doce do Maranhão	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	Alcântara	Maranhão	BR	Brazil
 Prefeitura Municipal de Alcântara	Alcântara	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Alcântara	Alcântara	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Alcântara	Alcântara	Maranhão	BR	Brazil
@@ -4449,6 +4500,7 @@ Prefeitura Municipal de Axixá	Axixá	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Axixá	Axixá	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Axixá	Axixá	Maranhão	BR	Brazil
 Faculdade de Educação de Bacabal	Bacabal	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	Bacabal	Maranhão	BR	Brazil
 Prefeitura Municipal de Bacabal	Bacabal	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Bacabal	Bacabal	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Bacabal	Bacabal	Maranhão	BR	Brazil
@@ -4472,6 +4524,7 @@ Secretaria Municipal de Saúde de Barão de Grajaú	Barão de Grajaú	Maranhão	
 Prefeitura Municipal de Barra do Corda	Barra do Corda	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Barra do Corda	Barra do Corda	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Barra do Corda	Barra do Corda	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	Barreirinhas	Maranhão	BR	Brazil
 Prefeitura Municipal de Barreirinhas	Barreirinhas	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Barreirinhas	Barreirinhas	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Barreirinhas	Barreirinhas	Maranhão	BR	Brazil
@@ -4514,6 +4567,7 @@ Secretaria Municipal de Saúde de Buriti	Buriti	Maranhão	BR	Brazil
 Prefeitura Municipal de Buriti Bravo	Buriti Bravo	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Buriti Bravo	Buriti Bravo	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Buriti Bravo	Buriti Bravo	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	Buriticupu	Maranhão	BR	Brazil
 Prefeitura Municipal de Buriticupu	Buriticupu	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Buriticupu	Buriticupu	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Buriticupu	Buriticupu	Maranhão	BR	Brazil
@@ -4549,6 +4603,7 @@ Secretaria Municipal de Educação de Carutapera	Carutapera	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Carutapera	Carutapera	Maranhão	BR	Brazil
 Faculdade de Ciência e Tecnologia do Maranhão	Caxias	Maranhão	BR	Brazil
 Faculdade do Vale do Itacurú	Caxias	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	Caxias	Maranhão	BR	Brazil
 Instituto Superior de Educação de Caxias	Caxias	Maranhão	BR	Brazil
 Prefeitura Municipal de Caxias	Caxias	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Caxias	Caxias	Maranhão	BR	Brazil
@@ -4573,6 +4628,7 @@ Universidade Federal do Maranhão	Chapadinha	Maranhão	BR	Brazil
 Prefeitura Municipal de Cidelândia	Cidelândia	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Cidelândia	Cidelândia	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Cidelândia	Cidelândia	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	Codó	Maranhão	BR	Brazil
 Prefeitura Municipal de Codó	Codó	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Codó	Codó	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Codó	Codó	Maranhão	BR	Brazil
@@ -4670,6 +4726,7 @@ Secretaria Municipal de Saúde de Igarapé Grande	Igarapé Grande	Maranhão	BR	B
 Faculdade de Educação Santa Terezinha	Imperatriz	Maranhão	BR	Brazil
 Faculdade de Imperatriz	Imperatriz	Maranhão	BR	Brazil
 Instituto de Ensino Superior do Sul do Maranhão	Imperatriz	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	Imperatriz	Maranhão	BR	Brazil
 Prefeitura Municipal de Imperatriz	Imperatriz	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Imperatriz	Imperatriz	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Imperatriz	Imperatriz	Maranhão	BR	Brazil
@@ -4835,6 +4892,7 @@ Secretaria Municipal de Saúde de Peritoró	Peritoró	Maranhão	BR	Brazil
 Prefeitura Municipal de Pindaré-Mirim	Pindaré-Mirim	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Pindaré-Mirim	Pindaré-Mirim	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Pindaré-Mirim	Pindaré-Mirim	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	Pinheiro	Maranhão	BR	Brazil
 Prefeitura Municipal de Pinheiro	Pinheiro	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Pinheiro	Pinheiro	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Pinheiro	Pinheiro	Maranhão	BR	Brazil
@@ -4893,6 +4951,7 @@ Secretaria Municipal de Saúde de Santa Filomena do Maranhão	Santa Filomena do 
 Prefeitura Municipal de Santa Helena	Santa Helena	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Santa Helena	Santa Helena	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Santa Helena	Santa Helena	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	Santa Inês	Maranhão	BR	Brazil
 Prefeitura Municipal de Santa Inês	Santa Inês	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Santa Inês	Santa Inês	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Santa Inês	Santa Inês	Maranhão	BR	Brazil
@@ -4953,6 +5012,7 @@ Secretaria Municipal de Saúde de São João do Paraíso	São João do Paraíso	
 Prefeitura Municipal de São João do Soter	São João do Soter	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de São João do Soter	São João do Soter	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de São João do Soter	São João do Soter	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	São João dos Patos	Maranhão	BR	Brazil
 Prefeitura Municipal de São João dos Patos	São João dos Patos	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de São João dos Patos	São João dos Patos	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de São João dos Patos	São João dos Patos	Maranhão	BR	Brazil
@@ -4975,14 +5035,16 @@ Faculdade Santa Fé	São Luís	Maranhão	BR	Brazil
 Faculdade Santa Terezinha	São Luís	Maranhão	BR	Brazil
 Faculdade São Luís	São Luís	Maranhão	BR	Brazil
 Instituto de Estudos Superiores do Maranhão	São Luís	Maranhão	BR	Brazil
-Instituto Federal do Maranhão	São Luís	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	São Luís	Maranhão	BR	Brazil
 Instituto Florence de Ensino Superior	São Luís	Maranhão	BR	Brazil
 Prefeitura Municipal de São Luís	São Luís	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de São Luís	São Luís	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de São Luís	São Luís	Maranhão	BR	Brazil
 Unidade de Ensino Superior Dom Bosco	São Luís	Maranhão	BR	Brazil
+Universidade do Ceuma	São Luís	Maranhão	BR	Brazil
 Universidade Estadual do Maranhão	São Luís	Maranhão	BR	Brazil
 Universidade Federal do Maranhão	São Luís	Maranhão	BR	Brazil
+Universidade Virtual do Maranhão	São Luís	Maranhão	BR	Brazil
 Prefeitura Municipal de São Luís Gonzaga do Maranhão	São Luís Gonzaga do Maranhão	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de São Luís Gonzaga do Maranhão	São Luís Gonzaga do Maranhão	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de São Luís Gonzaga do Maranhão	São Luís Gonzaga do Maranhão	Maranhão	BR	Brazil
@@ -4995,6 +5057,7 @@ Secretaria Municipal de Saúde de São Pedro da Água Branca	São Pedro da Água
 Prefeitura Municipal de São Pedro dos Crentes	São Pedro dos Crentes	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de São Pedro dos Crentes	São Pedro dos Crentes	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de São Pedro dos Crentes	São Pedro dos Crentes	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	São Raimundo das Mangabeiras	Maranhão	BR	Brazil
 Prefeitura Municipal de São Raimundo das Mangabeiras	São Raimundo das Mangabeiras	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de São Raimundo das Mangabeiras	São Raimundo das Mangabeiras	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de São Raimundo das Mangabeiras	São Raimundo das Mangabeiras	Maranhão	BR	Brazil
@@ -5036,6 +5099,7 @@ Secretaria Municipal de Educação de Timbiras	Timbiras	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Timbiras	Timbiras	Maranhão	BR	Brazil
 Faculdade Maranhense São José Dos Cocais	Timon	Maranhão	BR	Brazil
 Instituto de Ensino Superior Múltiplo	Timon	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	Timon	Maranhão	BR	Brazil
 Prefeitura Municipal de Timon	Timon	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Timon	Timon	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Timon	Timon	Maranhão	BR	Brazil
@@ -5075,6 +5139,7 @@ Secretaria Municipal de Saúde de Vitória do Mearim	Vitória do Mearim	Maranhã
 Prefeitura Municipal de Vitorino Freire	Vitorino Freire	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Vitorino Freire	Vitorino Freire	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Vitorino Freire	Vitorino Freire	Maranhão	BR	Brazil
+Instituto Federal de Educação Ciência e Tecnologia do Maranhão 	Zé Doca	Maranhão	BR	Brazil
 Prefeitura Municipal de Zé Doca	Zé Doca	Maranhão	BR	Brazil
 Secretaria Municipal de Educação de Zé Doca	Zé Doca	Maranhão	BR	Brazil
 Secretaria Municipal de Saúde de Zé Doca	Zé Doca	Maranhão	BR	Brazil
@@ -5132,6 +5197,7 @@ Secretaria Municipal de Saúde de Barão de Melgaço	Barão de Melgaço	Mato Gro
 Prefeitura Municipal de Barra do Bugres	Barra do Bugres	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Barra do Bugres	Barra do Bugres	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Barra do Bugres	Barra do Bugres	Mato Grosso	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso	Barra do Garças	Mato Grosso	BR	Brazil
 Prefeitura Municipal de Barra do Garças	Barra do Garças	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Barra do Garças	Barra do Garças	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Barra do Garças	Barra do Garças	Mato Grosso	BR	Brazil
@@ -5142,6 +5208,7 @@ Prefeitura Municipal de Brasnorte	Brasnorte	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Brasnorte	Brasnorte	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Brasnorte	Brasnorte	Mato Grosso	BR	Brazil
 Faculdade do Pantanal Matogrossense	Cáceres	Mato Grosso	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso	Cáceres	Mato Grosso	BR	Brazil
 Prefeitura Municipal de Cáceres	Cáceres	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Cáceres	Cáceres	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Cáceres	Cáceres	Mato Grosso	BR	Brazil
@@ -5149,6 +5216,7 @@ Universidade do Estado de Mato Grosso	Cáceres	Mato Grosso	BR	Brazil
 Prefeitura Municipal de Campinápolis	Campinápolis	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Campinápolis	Campinápolis	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Campinápolis	Campinápolis	Mato Grosso	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso	Campo Novo do Parecis	Mato Grosso	BR	Brazil
 Prefeitura Municipal de Campo Novo do Parecis	Campo Novo do Parecis	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Campo Novo do Parecis	Campo Novo do Parecis	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Campo Novo do Parecis	Campo Novo do Parecis	Mato Grosso	BR	Brazil
@@ -5190,6 +5258,7 @@ Secretaria Municipal de Saúde de Colniza	Colniza	Mato Grosso	BR	Brazil
 Prefeitura Municipal de Comodoro	Comodoro	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Comodoro	Comodoro	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Comodoro	Comodoro	Mato Grosso	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso	Confresa	Mato Grosso	BR	Brazil
 Prefeitura Municipal de Confresa	Confresa	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Confresa	Confresa	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Confresa	Confresa	Mato Grosso	BR	Brazil
@@ -5210,7 +5279,7 @@ Faculdade de Mato Grosso	Cuiabá	Mato Grosso	BR	Brazil
 Faculdade Mato-grossense de Ciências Contábeis e Administrativas	Cuiabá	Mato Grosso	BR	Brazil
 FVC Ensino Superior	Cuiabá	Mato Grosso	BR	Brazil
 Hemomat - Hemocentro Coordenador do Estado de Mato Grosso	Cuiabá	Mato Grosso	BR	Brazil
-Instituto Federal de Mato Grosso	Cuiabá	Mato Grosso	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso	Cuiabá	Mato Grosso	BR	Brazil
 Prefeitura Municipal de Cuiabá	Cuiabá	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Cuiabá	Cuiabá	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Cuiabá	Cuiabá	Mato Grosso	BR	Brazil
@@ -5280,6 +5349,7 @@ Secretaria Municipal de Saúde de Jauru	Jauru	Mato Grosso	BR	Brazil
 Prefeitura Municipal de Juara	Juara	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Juara	Juara	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Juara	Juara	Mato Grosso	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso	Juína	Mato Grosso	BR	Brazil
 Prefeitura Municipal de Juína	Juína	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Juína	Juína	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Juína	Juína	Mato Grosso	BR	Brazil
@@ -5396,6 +5466,7 @@ Secretaria Municipal de Saúde de Pontal do Araguaia	Pontal do Araguaia	Mato Gro
 Prefeitura Municipal de Ponte Branca	Ponte Branca	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Ponte Branca	Ponte Branca	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Ponte Branca	Ponte Branca	Mato Grosso	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso	Pontes e Lacerda	Mato Grosso	BR	Brazil
 Prefeitura Municipal de Pontes e Lacerda	Pontes e Lacerda	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Pontes e Lacerda	Pontes e Lacerda	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Pontes e Lacerda	Pontes e Lacerda	Mato Grosso	BR	Brazil
@@ -5437,6 +5508,7 @@ Secretaria Municipal de Educação de Rondolândia	Rondolândia	Mato Grosso	BR	B
 Secretaria Municipal de Saúde de Rondolândia	Rondolândia	Mato Grosso	BR	Brazil
 Faculdade Cândido Rondon de Rondonópolis	Rondonópolis	Mato Grosso	BR	Brazil
 Faculdade Cenecista de Rondonópolis	Rondonópolis	Mato Grosso	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso	Rondonópolis	Mato Grosso	BR	Brazil
 Prefeitura Municipal de Rondonópolis	Rondonópolis	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Rondonópolis	Rondonópolis	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Rondonópolis	Rondonópolis	Mato Grosso	BR	Brazil
@@ -5487,6 +5559,7 @@ Secretaria Municipal de Saúde de São José dos Quatro Marcos	São José dos Qu
 Prefeitura Municipal de São Pedro da Cipa	São Pedro da Cipa	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de São Pedro da Cipa	São Pedro da Cipa	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de São Pedro da Cipa	São Pedro da Cipa	Mato Grosso	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Mato Grosso	São Vicente	Mato Grosso	BR	Brazil
 Prefeitura Municipal de Sapezal	Sapezal	Mato Grosso	BR	Brazil
 Secretaria Municipal de Educação de Sapezal	Sapezal	Mato Grosso	BR	Brazil
 Secretaria Municipal de Saúde de Sapezal	Sapezal	Mato Grosso	BR	Brazil
@@ -5607,6 +5680,7 @@ Secretaria Municipal de Saúde de Camapuã	Camapuã	Mato Grosso do Sul	BR	Brazil
 Agência de Desenvolvimento Agrário e Extensão Rural de Mato Grosso do Sul	Campo Grande	Mato Grosso do Sul	BR	Brazil
 Agência Estadual de Defesa Sanitária Animal e Vegetal de Mato Grosso do Sul	Campo Grande	Mato Grosso do Sul	BR	Brazil
 Associação Beneficente de Campo Grande	Campo Grande	Mato Grosso do Sul	BR	Brazil
+Centro Universitário Anhaguera de Campo Grande	Campo Grande	Mato Grosso do Sul	BR	Brazil
 Embrapa Gado de Corte	Campo Grande	Mato Grosso do Sul	BR	Brazil
 Faculdade Anhanguera	Campo Grande	Mato Grosso do Sul	BR	Brazil
 Faculdade Campo Grande	Campo Grande	Mato Grosso do Sul	BR	Brazil
@@ -5870,7 +5944,7 @@ Prefeitura Municipal de Alfredo Vasconcelos	Alfredo Vasconcelos	Minas Gerais	BR	
 Secretaria Municipal de Educação de Alfredo Vasconcelos	Alfredo Vasconcelos	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Alfredo Vasconcelos	Alfredo Vasconcelos	Minas Gerais	BR	Brazil
 Faculdade de Almenara	Almenara	Minas Gerais	BR	Brazil
-Instituto Federal do Norte de Minas Gerais	Almenara	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Norte de Minas Gerais	Almenara	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Almenara	Almenara	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Almenara	Almenara	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Almenara	Almenara	Minas Gerais	BR	Brazil
@@ -5928,6 +6002,7 @@ Secretaria Municipal de Saúde de Araçaí	Araçaí	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Aracitaba	Aracitaba	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Aracitaba	Aracitaba	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Aracitaba	Aracitaba	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Norte de Minas Gerais	Araçuaí	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Araçuaí	Araçuaí	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Araçuaí	Araçuaí	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Araçuaí	Araçuaí	Minas Gerais	BR	Brazil
@@ -5968,6 +6043,7 @@ Secretaria Municipal de Saúde de Argirita	Argirita	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Aricanduva	Aricanduva	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Aricanduva	Aricanduva	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Aricanduva	Aricanduva	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Norte de Minas Gerais	Arinos	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Arinos	Arinos	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Arinos	Arinos	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Arinos	Arinos	Minas Gerais	BR	Brazil
@@ -6003,10 +6079,11 @@ Secretaria Municipal de Educação de Barão de Monte Alto	Barão de Monte Alto	
 Secretaria Municipal de Saúde de Barão de Monte Alto	Barão de Monte Alto	Minas Gerais	BR	Brazil
 Centro de Estudos Superiores Aprendiz	Barbacena	Minas Gerais	BR	Brazil
 Faculdade de Medicina de Barbacena	Barbacena	Minas Gerais	BR	Brazil
-Instituto Federal do Sudeste de Minas Gerais	Barbacena	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Sudeste de Minas 	Barbacena	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Barbacena	Barbacena	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Barbacena	Barbacena	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Barbacena	Barbacena	Minas Gerais	BR	Brazil
+Universidade Presidente Antônio Carlos	Barbacena	Minas Gerais	BR	Brazil
 Universidade Presidente Antônio Carlos	Barbacena	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Barra Longa	Barra Longa	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Barra Longa	Barra Longa	Minas Gerais	BR	Brazil
@@ -6026,10 +6103,16 @@ Celulose Nipo Brasileira	Belo Horizonte	Minas Gerais	BR	Brazil
 Centro de Educação Superior Barnabita	Belo Horizonte	Minas Gerais	BR	Brazil
 Centro de Educação Técnica	Belo Horizonte	Minas Gerais	BR	Brazil
 Centro Educacional em Aeronáutica	Belo Horizonte	Minas Gerais	BR	Brazil
+Centro Educacional São Camilo	Belo Horizonte	Minas Gerais	BR	Brazil
 Centro Federal de Educacão Tecnológica de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
 Centro Nefrológico de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Centro Univeristário da Faculdade Estácio de Sá de Belo Horizonte	Belo Horizonte	Minas Gerais	BR	Brazil
 Centro Universitário de Belo Horizonte	Belo Horizonte	Minas Gerais	BR	Brazil
+Centro Universitário de Belo Horizonte	Belo Horizonte	Minas Gerais	BR	Brazil
+Centro Universitário Metodista Izabela Hendrix	Belo Horizonte	Minas Gerais	BR	Brazil
 Centro Universitário Newton Paiva	Belo Horizonte	Minas Gerais	BR	Brazil
+Centro Universitário Newton Paiva	Belo Horizonte	Minas Gerais	BR	Brazil
+Centro Universitário Uma	Belo Horizonte	Minas Gerais	BR	Brazil
 Centro Universitário UNA	Belo Horizonte	Minas Gerais	BR	Brazil
 Companhia Energética de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
 Escola de Governo Professor Paulo Neves de Carvalho	Belo Horizonte	Minas Gerais	BR	Brazil
@@ -6049,10 +6132,9 @@ Faculdade de Estudos Superiores de Minas Gerais	Belo Horizonte	Minas Gerais	BR	B
 Faculdade de Minas	Belo Horizonte	Minas Gerais	BR	Brazil
 Faculdade de Tecnologia	Belo Horizonte	Minas Gerais	BR	Brazil
 Faculdade de Tecnologia do Comércio	Belo Horizonte	Minas Gerais	BR	Brazil
-Faculdade de Tecnologia SENAC	Belo Horizonte	Minas Gerais	BR	Brazil
 Faculdade del Rey	Belo Horizonte	Minas Gerais	BR	Brazil
 Faculdade do Centro Educacional Mineiro	Belo Horizonte	Minas Gerais	BR	Brazil
-Faculdade IBMEC 	Belo Horizonte	Minas Gerais	BR	Brazil
+Faculdade IBMEC	Belo Horizonte	Minas Gerais	BR	Brazil
 Faculdade Inconfidência	Belo Horizonte	Minas Gerais	BR	Brazil
 Faculdade Infórium	Belo Horizonte	Minas Gerais	BR	Brazil
 Faculdade Internacional de Ciências Empresariais	Belo Horizonte	Minas Gerais	BR	Brazil
@@ -6061,24 +6143,40 @@ Faculdade Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
 Faculdade Novos Horizontes	Belo Horizonte	Minas Gerais	BR	Brazil
 Faculdade Pedro II	Belo Horizonte	Minas Gerais	BR	Brazil
 Faculdade Promove de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Faculdade São Camilo	Belo Horizonte	Minas Gerais	BR	Brazil
 Faculdade Tecnológica	Belo Horizonte	Minas Gerais	BR	Brazil
 Fundação Dom Cabral	Belo Horizonte	Minas Gerais	BR	Brazil
 Fundação Hemoninas	Belo Horizonte	Minas Gerais	BR	Brazil
 Fundação Oswaldo Cruz	Belo Horizonte	Minas Gerais	BR	Brazil
 Instituto Belo Horizonte de Ensino Superior	Belo Horizonte	Minas Gerais	BR	Brazil
 Instituto de Previdência dos Servidores do Estado de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Instituto Federal de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Instituto Metodista Izabela Hendrix	Belo Horizonte	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
 Instituto Santo Tomás de Aquino	Belo Horizonte	Minas Gerais	BR	Brazil
 Instituto Superior de Ciências da Saúde	Belo Horizonte	Minas Gerais	BR	Brazil
 Instituto Superior de Educação Balão Vermelho	Belo Horizonte	Minas Gerais	BR	Brazil
 Instituto Superior de Educação Ibituruna	Belo Horizonte	Minas Gerais	BR	Brazil
 Instituto Terra Brasilis	Belo Horizonte	Minas Gerais	BR	Brazil
 Pontifícia Universidade Católica de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Pontifícia Universidade Católica de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Belo Horizonte	Belo Horizonte	Minas Gerais	BR	Brazil
 Santa Casa de Misericórdia de Belo Horizonte	Belo Horizonte	Minas Gerais	BR	Brazil
 São Leopoldo Mandic	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Agricultura, Pecuária e Abastecimento de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Casa Civil e de Relações Institucionais de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Ciência, Tecnologia e Ensino Superior de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Cultura de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Defesa Social de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Desenvolvimento e Integração do Norte e Nordeste de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Desenvolvimento Econômico de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Desenvolvimento Regional, Política Urbana e Gestão Metropolitana de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Educação de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Fazenda de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Governo de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Meio Ambiente e Desenvolvimento Sustentável de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Planejamento e Gestão de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Saúde de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Trabalho e Desenvolvimento Social de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Transportes e Obras Públicas de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
+Secretaria de Estado de Turismo e Esportes de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Belo Horizonte	Belo Horizonte	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Belo Horizonte	Belo Horizonte	Minas Gerais	BR	Brazil
 Universidade do Estado de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
@@ -6504,7 +6602,7 @@ Secretaria Municipal de Saúde de Confins	Confins	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Congonhal	Congonhal	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Congonhal	Congonhal	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Congonhal	Congonhal	Minas Gerais	BR	Brazil
-Faculdade de Filosofia Ciências e Letras de Congonhas	Congonhas	Minas Gerais	BR	Brazil
+Faculdade de Filosofia, Ciências e Letras de Congonhas	Congonhas	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Congonhas	Congonhas	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Congonhas	Congonhas	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Congonhas	Congonhas	Minas Gerais	BR	Brazil
@@ -6645,7 +6743,7 @@ Faculdade de Filosofia e Letras de Diamantina	Diamantina	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Diamantina	Diamantina	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Diamantina	Diamantina	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Diamantina	Diamantina	Minas Gerais	BR	Brazil
-Universidade Federal dos Vales do Jequitinhonha e Mucuru	Diamantina	Minas Gerais	BR	Brazil
+Universidade Federal dos Vales do Jequitinhonha e Mucuri	Diamantina	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Diogo de Vasconcelos	Diogo de Vasconcelos	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Diogo de Vasconcelos	Diogo de Vasconcelos	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Diogo de Vasconcelos	Diogo de Vasconcelos	Minas Gerais	BR	Brazil
@@ -7150,6 +7248,7 @@ Secretaria Municipal de Saúde de Jampruca	Jampruca	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Janaúba	Janaúba	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Janaúba	Janaúba	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Janaúba	Janaúba	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Norte de Minas Gerais	Januária	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Januária	Januária	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Januária	Januária	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Januária	Januária	Minas Gerais	BR	Brazil
@@ -7225,7 +7324,7 @@ Faculdade Juiz de Fora	Juiz de Fora	Minas Gerais	BR	Brazil
 Faculdade Metodista Granbery	Juiz de Fora	Minas Gerais	BR	Brazil
 Faculdades Integradas Vianna Júnior	Juiz de Fora	Minas Gerais	BR	Brazil
 Fundação Hemoninas	Juiz de Fora	Minas Gerais	BR	Brazil
-Instituto Federal do Sudeste de Minas Gerais	Juiz de Fora	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Sudeste de Minas 	Juiz de Fora	Minas Gerais	BR	Brazil
 Instituto Superior de Educação Carlos Chagas	Juiz de Fora	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Juiz de Fora	Juiz de Fora	Minas Gerais	BR	Brazil
 Santa Casa de Misericórdia de Juiz de Fora	Juiz de Fora	Minas Gerais	BR	Brazil
@@ -7499,7 +7598,7 @@ Faculdade de Saúde Ibituruna	Montes Claros	Minas Gerais	BR	Brazil
 Faculdades Integradas do Norte de Minas	Montes Claros	Minas Gerais	BR	Brazil
 Faculdades Integradas Pitágoras	Montes Claros	Minas Gerais	BR	Brazil
 Fundação Hemoninas	Montes Claros	Minas Gerais	BR	Brazil
-Instituto Federal do Norte de Minas Gerais	Montes Claros	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Norte de Minas Gerais	Montes Claros	Minas Gerais	BR	Brazil
 Instituto Superior de Educação Ibituruna	Montes Claros	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Montes Claros	Montes Claros	Minas Gerais	BR	Brazil
 Santa Casa Montes Claros	Montes Claros	Minas Gerais	BR	Brazil
@@ -7523,7 +7622,7 @@ Secretaria Municipal de Educação de Munhoz	Munhoz	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Munhoz	Munhoz	Minas Gerais	BR	Brazil
 Faculdade de Filosofia, Ciências e Letras Santa Marcelina	Muriaé	Minas Gerais	BR	Brazil
 Faculdade de Minas	Muriaé	Minas Gerais	BR	Brazil
-Instituto Federal do Sudeste de Minas Gerais	Muriaé	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Sudeste de Minas 	Muriaé	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Muriaé	Muriaé	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Muriaé	Muriaé	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Muriaé	Muriaé	Minas Gerais	BR	Brazil
@@ -7699,7 +7798,7 @@ Secretaria Municipal de Saúde de Passa-Vinte	Passa-Vinte	Minas Gerais	BR	Brazil
 Faculdade de Administração de Passos	Passos	Minas Gerais	BR	Brazil
 Faculdade de Comunicação Social de Passos	Passos	Minas Gerais	BR	Brazil
 Fundação de Ensino Superior de Passos	Passos	Minas Gerais	BR	Brazil
-Instituto Federal do Sul de Minas Gerais	Passos	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Sul de Minas	Passos	Minas Gerais	BR	Brazil
 Instituto Superior de Educaçao Anísio Teixeira	Passos	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Passos	Passos	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Passos	Passos	Minas Gerais	BR	Brazil
@@ -7831,7 +7930,7 @@ Prefeitura Municipal de Pirapetinga	Pirapetinga	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Pirapetinga	Pirapetinga	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Pirapetinga	Pirapetinga	Minas Gerais	BR	Brazil
 Faculdade de Tecnologia Alto Médio São Francisco	Pirapora	Minas Gerais	BR	Brazil
-Instituto Federal do Norte de Minas Gerais	Pirapora	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Norte de Minas Gerais	Pirapora	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Pirapora	Pirapora	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Pirapora	Pirapora	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Pirapora	Pirapora	Minas Gerais	BR	Brazil
@@ -8030,6 +8129,7 @@ Secretaria Municipal de Saúde de Sabinópolis	Sabinópolis	Minas Gerais	BR	Braz
 Prefeitura Municipal de Sacramento	Sacramento	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Sacramento	Sacramento	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Sacramento	Sacramento	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Norte de Minas Gerais	Salinas	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Salinas	Salinas	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Salinas	Salinas	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Salinas	Salinas	Minas Gerais	BR	Brazil
@@ -8169,7 +8269,7 @@ Prefeitura Municipal de Santo Hipólito	Santo Hipólito	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Santo Hipólito	Santo Hipólito	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Santo Hipólito	Santo Hipólito	Minas Gerais	BR	Brazil
 Fundação Educacional São José	Santos Dumont	Minas Gerais	BR	Brazil
-Instituto Federal do Sudeste de Minas Gerais	Santos Dumont	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Sudeste de Minas 	Santos Dumont	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Santos Dumont	Santos Dumont	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Santos Dumont	Santos Dumont	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Santos Dumont	Santos Dumont	Minas Gerais	BR	Brazil
@@ -8243,7 +8343,7 @@ Secretaria Municipal de Saúde de São João da Ponte	São João da Ponte	Minas 
 Prefeitura Municipal de São João das Missões	São João das Missões	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de São João das Missões	São João das Missões	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de São João das Missões	São João das Missões	Minas Gerais	BR	Brazil
-Instituto Federal do Sudeste de Minas Gerais	São João Del Rei	Minas Gerais	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Sudeste de Minas 	São João Del Rei	Minas Gerais	BR	Brazil
 Instituto Presidente Tancredo Neves	São João Del Rei	Minas Gerais	BR	Brazil
 Prefeitura Municipal de São João del Rei	São João del Rei	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de São João del Rei	São João del Rei	Minas Gerais	BR	Brazil
@@ -8653,23 +8753,6 @@ Secretaria Municipal de Saúde de Volta Grande	Volta Grande	Minas Gerais	BR	Braz
 Prefeitura Municipal de Wenceslau Braz	Wenceslau Braz	Minas Gerais	BR	Brazil
 Secretaria Municipal de Educação de Wenceslau Braz	Wenceslau Braz	Minas Gerais	BR	Brazil
 Secretaria Municipal de Saúde de Wenceslau Braz	Wenceslau Braz	Minas Gerais	BR	Brazil
-Secretaria de Estado de Agricultura, Pecuária e Abastecimento de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Casa Civil e de Relações Institucionais de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Ciência, Tecnologia e Ensino Superior de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Cultura de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Defesa Social de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Desenvolvimento e Integração do Norte e Nordeste de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Desenvolvimento Econômico de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Desenvolvimento Regional, Política Urbana e Gestão Metropolitana de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Educação de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Fazenda de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Governo de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Meio Ambiente e Desenvolvimento Sustentável de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Planejamento e Gestão de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Saúde de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Trabalho e Desenvolvimento Social de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Transportes e Obras Públicas de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
-Secretaria de Estado de Turismo e Esportes de Minas Gerais	Belo Horizonte	Minas Gerais	BR	Brazil
 Prefeitura Municipal de Abaetetuba	Abaetetuba	Pará	BR	Brazil
 Secretaria Municipal de Educação de Abaetetuba	Abaetetuba	Pará	BR	Brazil
 Secretaria Municipal de Saúde de Abaetetuba	Abaetetuba	Pará	BR	Brazil
@@ -8728,6 +8811,7 @@ Secretaria Municipal de Educação de Barcarena	Barcarena	Pará	BR	Brazil
 Secretaria Municipal de Saúde de Barcarena	Barcarena	Pará	BR	Brazil
 Agência de Defesa Agropecuária do Pará	Belém	Pará	BR	Brazil
 Centro de Instrução Almirante Braz de Aguiar	Belém	Pará	BR	Brazil
+Centro Universitário Clarentiano	Belém	Pará	BR	Brazil
 Centro Universitário do Estado do Pará	Belém	Pará	BR	Brazil
 Conservação Internacional	Belém	Pará	BR	Brazil
 Embrapa Amazônia Oriental	Belém	Pará	BR	Brazil
@@ -8747,7 +8831,7 @@ Faculdades Teológica Batista Equatorial	Belém	Pará	BR	Brazil
 Hemopa - Centro de Hemoterapia e Hematologia do Pará	Belém	Pará	BR	Brazil
 Hospital Ofir Loyola	Belém	Pará	BR	Brazil
 Instituto de Ensinos Superiores da Amazônia	Belém	Pará	BR	Brazil
-Instituto Federal do Pará	Belém	Pará	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Pará	Belém	Pará	BR	Brazil
 Prefeitura Municipal de Belém	Belém	Pará	BR	Brazil
 Santa Casa do Pará	Belém	Pará	BR	Brazil
 Secretaria Municipal de Educação de Belém	Belém	Pará	BR	Brazil
@@ -9277,7 +9361,7 @@ Secretaria Municipal de Saúde de Cacimbas	Cacimbas	Paraíba	BR	Brazil
 Prefeitura Municipal de Caiçara	Caiçara	Paraíba	BR	Brazil
 Secretaria Municipal de Educação de Caiçara	Caiçara	Paraíba	BR	Brazil
 Secretaria Municipal de Saúde de Caiçara	Caiçara	Paraíba	BR	Brazil
-Faculdade de Filosofia Ciências e Letras de Cajazeiras	Cajazeiras	Paraíba	BR	Brazil
+Faculdade de Filosofia, Ciências e Letras de Cajazeiras	Cajazeiras	Paraíba	BR	Brazil
 Faculdade Evilásio Formiga	Cajazeiras	Paraíba	BR	Brazil
 Faculdade Santa Maria	Cajazeiras	Paraíba	BR	Brazil
 Faculdade São Francisco da Paraíba	Cajazeiras	Paraíba	BR	Brazil
@@ -9444,7 +9528,7 @@ Faculdade de Enfermagem Nova Esperança	João Pessoa	Paraíba	BR	Brazil
 Faculdade de Enfermagem São Vicente de Paula	João Pessoa	Paraíba	BR	Brazil
 Faculdade de Ensino Superior da Paraíba	João Pessoa	Paraíba	BR	Brazil
 Faculdade de Ensino Superior do Nordeste	João Pessoa	Paraíba	BR	Brazil
-Faculdade de Tecnología da João Pessoa	João Pessoa	Paraíba	BR	Brazil
+Faculdade de Tecnologia de João Pessoa	João Pessoa	Paraíba	BR	Brazil
 Faculdade Maurício de Nassau	João Pessoa	Paraíba	BR	Brazil
 Faculdade Paraíbana	João Pessoa	Paraíba	BR	Brazil
 Faculdade Paraíbana de Processamento de Dados	João Pessoa	Paraíba	BR	Brazil
@@ -9454,7 +9538,7 @@ Faculdade Unibratec	João Pessoa	Paraíba	BR	Brazil
 Faculdade Unida da Paraíba	João Pessoa	Paraíba	BR	Brazil
 Faculdades Integradas Anglo-Americano	João Pessoa	Paraíba	BR	Brazil
 Insituto Paraibano de Ensino Renovado	João Pessoa	Paraíba	BR	Brazil
-Instituto Federal da Paraíba	João Pessoa	Paraíba	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia da Paraíba	João Pessoa	Paraíba	BR	Brazil
 Prefeitura Municipal de João Pessoa	João Pessoa	Paraíba	BR	Brazil
 Secretaria Municipal de Educação de João Pessoa	João Pessoa	Paraíba	BR	Brazil
 Secretaria Municipal de Saúde de João Pessoa	João Pessoa	Paraíba	BR	Brazil
@@ -9690,7 +9774,7 @@ Secretaria Municipal de Saúde de Santa Inês	Santa Inês	Paraíba	BR	Brazil
 Prefeitura Municipal de Santa Luzia	Santa Luzia	Paraíba	BR	Brazil
 Secretaria Municipal de Educação de Santa Luzia	Santa Luzia	Paraíba	BR	Brazil
 Secretaria Municipal de Saúde de Santa Luzia	Santa Luzia	Paraíba	BR	Brazil
-Faculdade de Filosofia Ciências e Letras	Santa Rita	Paraíba	BR	Brazil
+Faculdade de Filosofia, Ciências e Letras de Santa Rita	Santa Rita	Paraíba	BR	Brazil
 Prefeitura Municipal de Santa Rita	Santa Rita	Paraíba	BR	Brazil
 Secretaria Municipal de Educação de Santa Rita	Santa Rita	Paraíba	BR	Brazil
 Secretaria Municipal de Saúde de Santa Rita	Santa Rita	Paraíba	BR	Brazil
@@ -10042,6 +10126,7 @@ Secretaria Municipal de Saúde de Campo Largo	Campo Largo	Paraná	BR	Brazil
 Prefeitura Municipal de Campo Magro	Campo Magro	Paraná	BR	Brazil
 Secretaria Municipal de Educação de Campo Magro	Campo Magro	Paraná	BR	Brazil
 Secretaria Municipal de Saúde de Campo Magro	Campo Magro	Paraná	BR	Brazil
+Faculdade Integrado de Campo Mourão	Campo Mourão	Paraná	BR	Brazil
 Faculdade União de Campo Mourão	Campo Mourão	Paraná	BR	Brazil
 Prefeitura Municipal de Campo Mourão	Campo Mourão	Paraná	BR	Brazil
 Secretaria Municipal de Educação de Campo Mourão	Campo Mourão	Paraná	BR	Brazil
@@ -10070,7 +10155,7 @@ Secretaria Municipal de Saúde de Carlópolis	Carlópolis	Paraná	BR	Brazil
 Cooperativa Central de Pesquisa Agrícola	Cascavel	Paraná	BR	Brazil
 Faculdade Alfa Brasil	Cascavel	Paraná	BR	Brazil
 Faculdade Assis Gurgacz	Cascavel	Paraná	BR	Brazil
-Faculdade de Ciência Aplicadas de Cascavel	Cascavel	Paraná	BR	Brazil
+Faculdade de Ciências Aplicadas de Cascavel	Cascavel	Paraná	BR	Brazil
 Faculdade de Ciências Sociais Aplicadas de Cascavel	Cascavel	Paraná	BR	Brazil
 Faculdade Dinâmica das Cataratas	Cascavel	Paraná	BR	Brazil
 Faculdade Dom Bosco	Cascavel	Paraná	BR	Brazil
@@ -10176,7 +10261,6 @@ Faculdade de Ciências Sociais Aplicadas do Paraná	Curitiba	Paraná	BR	Brazil
 Faculdade de Educação São Braz	Curitiba	Paraná	BR	Brazil
 Faculdade de Educação Superior do Paraná	Curitiba	Paraná	BR	Brazil
 Faculdade de Odontologia São Leopoldo Mandic	Curitiba	Paraná	BR	Brazil
-Faculdade de Tecnologia CETE	Curitiba	Paraná	BR	Brazil
 Faculdade de Tecnologia de Curitiba	Curitiba	Paraná	BR	Brazil
 Faculdade de Tecnologia ENSITEC	Curitiba	Paraná	BR	Brazil
 Faculdade de Tecnologia Herrero	Curitiba	Paraná	BR	Brazil
@@ -10190,14 +10274,13 @@ Faculdade de Tecnologia Tupy	Curitiba	Paraná	BR	Brazil
 Faculdade de Teologia Evangelica	Curitiba	Paraná	BR	Brazil
 Faculdade Dom Bosco	Curitiba	Paraná	BR	Brazil
 Faculdade São Basílio Magno	Curitiba	Paraná	BR	Brazil
-Faculdade São Camilo	Curitiba	Paraná	BR	Brazil
 Faculdade Teológica Batista do Paraná	Curitiba	Paraná	BR	Brazil
 Faculdade Teológica da Assembléia de Deus	Curitiba	Paraná	BR	Brazil
 Faculdade Vicentina	Curitiba	Paraná	BR	Brazil
 Faculdades Integradas Camões	Curitiba	Paraná	BR	Brazil
 Faculdades Integradas do Brasil	Curitiba	Paraná	BR	Brazil
 Faculdades Integradas Espírita	Curitiba	Paraná	BR	Brazil
-Faculdades Integradas FAE 	Curitiba	Paraná	BR	Brazil
+Faculdades Integradas FAE	Curitiba	Paraná	BR	Brazil
 Faculdades Integradas Santa Cruz de Curitiba	Curitiba	Paraná	BR	Brazil
 Faculdades Opet	Curitiba	Paraná	BR	Brazil
 Faculdades Pequeno Príncipe	Curitiba	Paraná	BR	Brazil
@@ -10205,6 +10288,7 @@ Faculdades Spei	Curitiba	Paraná	BR	Brazil
 Fundação Oswaldo Cruz	Curitiba	Paraná	BR	Brazil
 Instituto de Esino Superior de Curitiba	Curitiba	Paraná	BR	Brazil
 Instituto Denton Cooley de Pesquisa, Ciência e Tecnologia	Curitiba	Paraná	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Paraná	Curitiba	Paraná	BR	Brazil
 Instituto Federal de Educação, Ciências e Tecnologia do Paraná	Curitiba	Paraná	BR	Brazil
 Instituto Superior de Educação Nossa Senhora de Sion	Curitiba	Paraná	BR	Brazil
 Pontifícia Universidade Católica do Paraná	Curitiba	Paraná	BR	Brazil
@@ -10531,7 +10615,7 @@ Centro Universitário Filadélfia	Londrina	Paraná	BR	Brazil
 Embrapa Soja	Londrina	Paraná	BR	Brazil
 Faculdade Arthur Thomas	Londrina	Paraná	BR	Brazil
 Faculdade de Tecnología IAPEC	Londrina	Paraná	BR	Brazil
-Faculdade de Tecnología Inesul do Paraná	Londrina	Paraná	BR	Brazil
+Faculdade de Tecnologia Inesul do Paraná	Londrina	Paraná	BR	Brazil
 Faculdade Pitágoras	Londrina	Paraná	BR	Brazil
 Faculdade Teológica Sul Americana	Londrina	Paraná	BR	Brazil
 Instituto Agronômico do Paraná	Londrina	Paraná	BR	Brazil
@@ -10561,7 +10645,7 @@ Secretaria Municipal de Saúde de Mamborê	Mamborê	Paraná	BR	Brazil
 Prefeitura Municipal de Mandaguaçu	Mandaguaçu	Paraná	BR	Brazil
 Secretaria Municipal de Educação de Mandaguaçu	Mandaguaçu	Paraná	BR	Brazil
 Secretaria Municipal de Saúde de Mandaguaçu	Mandaguaçu	Paraná	BR	Brazil
-Faculdade de Filosofia Ciências e Letras de Mandaguari	Mandaguari	Paraná	BR	Brazil
+Faculdade de Filosofia, Ciências e Letras de Mandaguari	Mandaguari	Paraná	BR	Brazil
 Prefeitura Municipal de Mandaguari	Mandaguari	Paraná	BR	Brazil
 Secretaria Municipal de Educação de Mandaguari	Mandaguari	Paraná	BR	Brazil
 Secretaria Municipal de Saúde de Mandaguari	Mandaguari	Paraná	BR	Brazil
@@ -10827,7 +10911,7 @@ Faculdade Sagrada Família	Ponta Grossa	Paraná	BR	Brazil
 Faculdade Sant'Ana	Ponta Grossa	Paraná	BR	Brazil
 Faculdades SECAL	Ponta Grossa	Paraná	BR	Brazil
 Hospital Regional de Ponta Grossa	Ponta Grossa	Paraná	BR	Brazil
-Instituto Superior de Educação Sant'Ana	Ponta Grossa	Paraná	BR	Brazil
+Instituto de Ensino Superior de Educação Sant'Ana	Ponta Grossa	Paraná	BR	Brazil
 Prefeitura Municipal de Ponta Grossa	Ponta Grossa	Paraná	BR	Brazil
 Santa Casa de Misericórdia de Ponta Grossa	Ponta Grossa	Paraná	BR	Brazil
 Secretaria Municipal de Educação de Ponta Grossa	Ponta Grossa	Paraná	BR	Brazil
@@ -11453,7 +11537,7 @@ Prefeitura Municipal de Ibirajuba	Ibirajuba	Pernambuco	BR	Brazil
 Secretaria Municipal de Educação de Ibirajuba	Ibirajuba	Pernambuco	BR	Brazil
 Secretaria Municipal de Saúde de Ibirajuba	Ibirajuba	Pernambuco	BR	Brazil
 Faculdade de Ciências Humanas e Sociais de Igarassu	Igarassu	Pernambuco	BR	Brazil
-Faculdade de Tecnología Integrada	Igarassu	Pernambuco	BR	Brazil
+Faculdade de Tecnologia Integrada	Igarassu	Pernambuco	BR	Brazil
 Prefeitura Municipal de Igarassu	Igarassu	Pernambuco	BR	Brazil
 Secretaria Municipal de Educação de Igarassu	Igarassu	Pernambuco	BR	Brazil
 Secretaria Municipal de Saúde de Igarassu	Igarassu	Pernambuco	BR	Brazil
@@ -11630,7 +11714,7 @@ Secretaria Municipal de Educação de Petrolândia	Petrolândia	Pernambuco	BR	Br
 Secretaria Municipal de Saúde de Petrolândia	Petrolândia	Pernambuco	BR	Brazil
 Embrapa Semiárido	Petrolina	Pernambuco	BR	Brazil
 Faculdade de Ciências Aplicadas e Sociais de Petrolina	Petrolina	Pernambuco	BR	Brazil
-Instituto Federal de Pernambuco	Petrolina	Pernambuco	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Sertão Pernanbucano 	Petrolina	Pernambuco	BR	Brazil
 Prefeitura Municipal de Petrolina	Petrolina	Pernambuco	BR	Brazil
 Secretaria Municipal de Educação de Petrolina	Petrolina	Pernambuco	BR	Brazil
 Secretaria Municipal de Saúde de Petrolina	Petrolina	Pernambuco	BR	Brazil
@@ -11666,10 +11750,9 @@ Faculdade de Ciências Humanas de Pernambuco	Recife	Pernambuco	BR	Brazil
 Faculdade de Ciências Humanas Esuda	Recife	Pernambuco	BR	Brazil
 Faculdade de Odontologia do Recife	Recife	Pernambuco	BR	Brazil
 Faculdade de Tecnologia e Ciências de Pernambuco	Recife	Pernambuco	BR	Brazil
-Faculdade de Tecnologia Gestão e Marketing	Recife	Pernambuco	BR	Brazil
-Faculdade de Tecnologia SENAC	Recife	Pernambuco	BR	Brazil
 Faculdade do Recife	Recife	Pernambuco	BR	Brazil
 Faculdade Frassinetti do Recife	Recife	Pernambuco	BR	Brazil
+Faculdade IBGM	Recife	Pernambuco	BR	Brazil
 Faculdade Integrada de Pernambuco	Recife	Pernambuco	BR	Brazil
 Faculdade Joaquim Nabuco	Recife	Pernambuco	BR	Brazil
 Faculdade Marista	Recife	Pernambuco	BR	Brazil
@@ -11693,7 +11776,7 @@ Instituto de Recursos Humanos de Pernambuco	Recife	Pernambuco	BR	Brazil
 Instituto de Tecnologia de Pernambuco	Recife	Pernambuco	BR	Brazil
 Instituto do Coração de Pernambuco	Recife	Pernambuco	BR	Brazil
 Instituto do Fígado de Pernambuco	Recife	Pernambuco	BR	Brazil
-Instituto Federal de Pernambuco	Recife	Pernambuco	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Pernambuco	Recife	Pernambuco	BR	Brazil
 Instituto Oceanário	Recife	Pernambuco	BR	Brazil
 Instituto Pernambucano de Ensino Superior	Recife	Pernambuco	BR	Brazil
 Instituto Salesiano de Filosofia	Recife	Pernambuco	BR	Brazil
@@ -11874,6 +11957,7 @@ Secretaria Municipal de Saúde de Vitória de Santo Antão	Vitória de Santo Ant
 Prefeitura Municipal de Xexéu	Xexéu	Pernambuco	BR	Brazil
 Secretaria Municipal de Educação de Xexéu	Xexéu	Pernambuco	BR	Brazil
 Secretaria Municipal de Saúde de Xexéu	Xexéu	Pernambuco	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Sertão Pernanbucano 	Petrolina	Pernanbuco	BR	Brazil
 Prefeitura Municipal de Acauã	Acauã	Piauí	BR	Brazil
 Secretaria Municipal de Educação de Acauã	Acauã	Piauí	BR	Brazil
 Secretaria Municipal de Saúde de Acauã	Acauã	Piauí	BR	Brazil
@@ -12553,7 +12637,7 @@ Hospital Mariano Castelo Branco	Teresina	Piauí	BR	Brazil
 Instituto Católico de Estudos Superiores do Piauí	Teresina	Piauí	BR	Brazil
 Instituto de Educação Superior Raimundo Sá	Teresina	Piauí	BR	Brazil
 Instituto de Ensino Superior de Teresina	Teresina	Piauí	BR	Brazil
-Instituto Federal do Piauí	Teresina	Piauí	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Piauí	Teresina	Piauí	BR	Brazil
 Instituto Superior de Educação Antonino Freire	Teresina	Piauí	BR	Brazil
 Prefeitura Municipal de Teresina	Teresina	Piauí	BR	Brazil
 Secretaria Municipal de Educação de Teresina	Teresina	Piauí	BR	Brazil
@@ -12835,7 +12919,6 @@ Centro Universitário Carioca	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Centro Universitario Celso Lisboa	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Centro Universitario da Cidade	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Centro Universitário Hermínio da Silveira	Rio de Janeiro	Rio de Janeiro	BR	Brazil
-Centro Universitário Metodista BENNETT 	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Centro Universitário Moacyr Sreder Bastos	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Comissão Nacional de Energia Nuclear	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Conservação Internacional	Rio de Janeiro	Rio de Janeiro	BR	Brazil
@@ -12861,8 +12944,7 @@ Faculdade de Ciências Agro-Ambientais	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdade de Ciências Médicas e Paramédicas Fluminense	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdade de Informática Lemos de Castro	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdade de Reabilitação da Asce	Rio de Janeiro	Rio de Janeiro	BR	Brazil
-Faculdade de Tecnologia SENAC	Rio de Janeiro	Rio de Janeiro	BR	Brazil
-Faculdade Evangélica de Tecnologia, Ciências e Biotec.	Rio de Janeiro	Rio de Janeiro	BR	Brazil
+Faculdade Evangélica de Tecnologia, Ciências e Biotecnologia	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdade Gama e Souza	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdade Germário Dantas	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdade IBMEC	Rio de Janeiro	Rio de Janeiro	BR	Brazil
@@ -12872,9 +12954,8 @@ Faculdade Machado de Assis	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdade Mercúrio	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdade Moraes Junior	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdade São Bento	Rio de Janeiro	Rio de Janeiro	BR	Brazil
-Faculdade São Camilo	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdade São José	Rio de Janeiro	Rio de Janeiro	BR	Brazil
-Faculdade São Judas Tedeu	Rio de Janeiro	Rio de Janeiro	BR	Brazil
+Faculdade São Judas Tadeu	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdade SENAI	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdade Teológica Evangélica do Rio de Janeiro	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdades Integradas Campo-Grandenses	Rio de Janeiro	Rio de Janeiro	BR	Brazil
@@ -12882,6 +12963,7 @@ Faculdades Integradas de Jacarepaguá	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdades Integradas Hélio Alonso	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdades Integradas Silva e Souza	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Faculdades Integradas Simonsen	Rio de Janeiro	Rio de Janeiro	BR	Brazil
+Faculdades São Camilo	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Fundação Getúlio Vargas	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Fundação Oswaldo Cruz	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Fundação Técnico-Educacional Souza Marques	Rio de Janeiro	Rio de Janeiro	BR	Brazil
@@ -12894,8 +12976,9 @@ Insitituto Isabel	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Insituto Superior de Educação Pró-Saber	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Insituto Superior de Informática	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Instituto Estadual de Cardiologia Aloysio de Castro	Rio de Janeiro	Rio de Janeiro	BR	Brazil
-Instituto Federal do Rio de Janeiro	Rio de Janeiro	Rio de Janeiro	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologiado Rio de Janeiro	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Instituto Fluminense de Saúde Mental	Rio de Janeiro	Rio de Janeiro	BR	Brazil
+Instituto Metodista Bennett	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Instituto Militar de Engenharia	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Instituto Nacional de Educacão de Surdos	Rio de Janeiro	Rio de Janeiro	BR	Brazil
 Instituto Nacional de Traumatologia e Ortopedia Jamil Haddad	Rio de Janeiro	Rio de Janeiro	BR	Brazil
@@ -12984,7 +13067,6 @@ Centro Universitário Serra dos Órgãos	Teresópolis	Rio de Janeiro	BR	Brazil
 Prefeitura Municipal de Teresópolis	Teresópolis	Rio de Janeiro	BR	Brazil
 Secretaria Municipal de Educação de Teresópolis	Teresópolis	Rio de Janeiro	BR	Brazil
 Secretaria Municipal de Saúde de Teresópolis	Teresópolis	Rio de Janeiro	BR	Brazil
-Faculdade São Camilo	Tijuca	Rio de Janeiro	BR	Brazil
 Prefeitura Municipal de Trajano de Moraes	Trajano de Moraes	Rio de Janeiro	BR	Brazil
 Secretaria Municipal de Educação de Trajano de Moraes	Trajano de Moraes	Rio de Janeiro	BR	Brazil
 Secretaria Municipal de Saúde de Trajano de Moraes	Trajano de Moraes	Rio de Janeiro	BR	Brazil
@@ -13290,7 +13372,7 @@ Hemonorte - Hemocentro Dalton Cunha	Natal	Rio Grande do Norte	BR	Brazil
 Hospital Giselda Trigueiro	Natal	Rio Grande do Norte	BR	Brazil
 Instituto de Educação Superior Presidente Kennedy	Natal	Rio Grande do Norte	BR	Brazil
 Instituto de Ensino Superior do Rio Grande do Norte	Natal	Rio Grande do Norte	BR	Brazil
-Instituto Federal do Rio Grande do Norte	Natal	Rio Grande do Norte	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Norte	Natal	Rio Grande do Norte	BR	Brazil
 Instituto Natalense de Educação Superior	Natal	Rio Grande do Norte	BR	Brazil
 Liga Norte Riograndense Contra o Câncer	Natal	Rio Grande do Norte	BR	Brazil
 Prefeitura Municipal de Natal	Natal	Rio Grande do Norte	BR	Brazil
@@ -13668,9 +13750,9 @@ Prefeitura Municipal de Benjamin Constant do Sul	Benjamin Constant do Sul	Rio Gr
 Secretaria Municipal de Educação de Benjamin Constant do Sul	Benjamin Constant do Sul	Rio Grande do Sul	BR	Brazil
 Secretaria Municipal de Saúde de Benjamin Constant do Sul	Benjamin Constant do Sul	Rio Grande do Sul	BR	Brazil
 Embrapa Uva e Vinho	Bento Gonçalves	Rio Grande do Sul	BR	Brazil
-Faculdade Cenecista 	Bento Gonçalves	Rio Grande do Sul	BR	Brazil
+Faculdade Cenecista	Bento Gonçalves	Rio Grande do Sul	BR	Brazil
 Faculdade de Tecnologia da Serra Gaúcha 	Bento Gonçalves	Rio Grande do Sul	BR	Brazil
-Instituto Federal do Rio Grande do Sul	Bento Gonçalves	Rio Grande do Sul	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia  do Rio Grande do Sul	Bento Gonçalves	Rio Grande do Sul	BR	Brazil
 Prefeitura Municipal de Bento Gonçalves	Bento Gonçalves	Rio Grande do Sul	BR	Brazil
 Secretaria Municipal de Educação de Bento Gonçalves	Bento Gonçalves	Rio Grande do Sul	BR	Brazil
 Secretaria Municipal de Saúde de Bento Gonçalves	Bento Gonçalves	Rio Grande do Sul	BR	Brazil
@@ -14006,7 +14088,7 @@ Secretaria Municipal de Saúde de Entre-Ijuís	Entre-Ijuís	Rio Grande do Sul	BR
 Prefeitura Municipal de Erebango	Erebango	Rio Grande do Sul	BR	Brazil
 Secretaria Municipal de Educação de Erebango	Erebango	Rio Grande do Sul	BR	Brazil
 Secretaria Municipal de Saúde de Erebango	Erebango	Rio Grande do Sul	BR	Brazil
-Faculdade Anglicana 	Erechim	Rio Grande do Sul	BR	Brazil
+Faculdade Anglicana	Erechim	Rio Grande do Sul	BR	Brazil
 Prefeitura Municipal de Erechim	Erechim	Rio Grande do Sul	BR	Brazil
 Secretaria Municipal de Educação de Erechim	Erechim	Rio Grande do Sul	BR	Brazil
 Secretaria Municipal de Saúde de Erechim	Erechim	Rio Grande do Sul	BR	Brazil
@@ -14051,7 +14133,7 @@ Prefeitura Municipal de Fagundes Varela	Fagundes Varela	Rio Grande do Sul	BR	Bra
 Secretaria Municipal de Educação de Fagundes Varela	Fagundes Varela	Rio Grande do Sul	BR	Brazil
 Secretaria Municipal de Saúde de Fagundes Varela	Fagundes Varela	Rio Grande do Sul	BR	Brazil
 Centro de Ensino Superior Cenecista de Farroupilha	Farroupilha	Rio Grande do Sul	BR	Brazil
-Instituto Federal do Rio Grande do Sul	Farroupilha	Rio Grande do Sul	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia  do Rio Grande do Sul	Farroupilha	Rio Grande do Sul	BR	Brazil
 Prefeitura Municipal de Farroupilha	Farroupilha	Rio Grande do Sul	BR	Brazil
 Secretaria Municipal de Educação de Farroupilha	Farroupilha	Rio Grande do Sul	BR	Brazil
 Secretaria Municipal de Saúde de Farroupilha	Farroupilha	Rio Grande do Sul	BR	Brazil
@@ -14496,7 +14578,6 @@ Embrapa Trigo	Passo Fundo	Rio Grande do Sul	BR	Brazil
 Faculdade Anhanguera	Passo Fundo	Rio Grande do Sul	BR	Brazil
 Faculdade de Saúde do Rio Grande do Sul	Passo Fundo	Rio Grande do Sul	BR	Brazil
 Faculdade de Tecnologia e Ciências Humanas	Passo Fundo	Rio Grande do Sul	BR	Brazil
-Faculdade de Tecnologia SENAC	Passo Fundo	Rio Grande do Sul	BR	Brazil
 Faculdade Ecoar	Passo Fundo	Rio Grande do Sul	BR	Brazil
 Faculdade Meriodional	Passo Fundo	Rio Grande do Sul	BR	Brazil
 Faculdades Integradas Anglo-Americano	Passo Fundo	Rio Grande do Sul	BR	Brazil
@@ -14569,6 +14650,7 @@ Secretaria Municipal de Educação de Portão	Portão	Rio Grande do Sul	BR	Brazi
 Secretaria Municipal de Saúde de Portão	Portão	Rio Grande do Sul	BR	Brazil
 Agência Nacional de Petróleo, Gás Natural e Biocombustíveis	Porto Alegre	Rio Grande do Sul	BR	Brazil
 Associação de Assistência à Criança Deficiente	Porto Alegre	Rio Grande do Sul	BR	Brazil
+Centro Educacional São Camilo	Porto Alegre	Rio Grande do Sul	BR	Brazil
 Centro Universitário Metodista	Porto Alegre	Rio Grande do Sul	BR	Brazil
 Centro Universitário Ritter dos Reis	Porto Alegre	Rio Grande do Sul	BR	Brazil
 Escola Superior de Administração, Direito e Economia	Porto Alegre	Rio Grande do Sul	BR	Brazil
@@ -14586,10 +14668,9 @@ Faculdade IBGEN	Porto Alegre	Rio Grande do Sul	BR	Brazil
 Faculdade IDC	Porto Alegre	Rio Grande do Sul	BR	Brazil
 Faculdade Monteiro Lobato	Porto Alegre	Rio Grande do Sul	BR	Brazil
 Faculdade Porto-Alegrense	Porto Alegre	Rio Grande do Sul	BR	Brazil
-Faculdade São Camilo	Porto Alegre	Rio Grande do Sul	BR	Brazil
 Faculdade São Francisco de Assis	Porto Alegre	Rio Grande do Sul	BR	Brazil
 Faculdade SOGIPA de Educação Física	Porto Alegre	Rio Grande do Sul	BR	Brazil
-Faculdades Integradas FAE 	Porto Alegre	Rio Grande do Sul	BR	Brazil
+Faculdades Integradas FAE	Porto Alegre	Rio Grande do Sul	BR	Brazil
 Faculdades Integradas São Judas Tadeu	Porto Alegre	Rio Grande do Sul	BR	Brazil
 Faculdades Riograndenses	Porto Alegre	Rio Grande do Sul	BR	Brazil
 Grupo Hospitalar Conceição	Porto Alegre	Rio Grande do Sul	BR	Brazil
@@ -15175,6 +15256,7 @@ Instituto Superior de Rondônia	Ariquemes	Rondônia	BR	Brazil
 Prefeitura Municipal de Ariquemes	Ariquemes	Rondônia	BR	Brazil
 Secretaria Municipal de Educação de Ariquemes	Ariquemes	Rondônia	BR	Brazil
 Secretaria Municipal de Saúde de Ariquemes	Ariquemes	Rondônia	BR	Brazil
+Centro Universitário Clarentiano	Buritis	Rondônia	BR	Brazil
 Prefeitura Municipal de Buritis	Buritis	Rondônia	BR	Brazil
 Secretaria Municipal de Educação de Buritis	Buritis	Rondônia	BR	Brazil
 Secretaria Municipal de Saúde de Buritis	Buritis	Rondônia	BR	Brazil
@@ -15185,7 +15267,7 @@ Prefeitura Municipal de Cacaulândia	Cacaulândia	Rondônia	BR	Brazil
 Secretaria Municipal de Educação de Cacaulândia	Cacaulândia	Rondônia	BR	Brazil
 Secretaria Municipal de Saúde de Cacaulândia	Cacaulândia	Rondônia	BR	Brazil
 Faculdade de Ciências Biomédicas de Cacoal	Cacoal	Rondônia	BR	Brazil
-Faculdade Santo Andrá	Cacoal	Rondônia	BR	Brazil
+Faculdade Santo André	Cacoal	Rondônia	BR	Brazil
 Prefeitura Municipal de Cacoal	Cacoal	Rondônia	BR	Brazil
 Secretaria Municipal de Educação de Cacoal	Cacoal	Rondônia	BR	Brazil
 Secretaria Municipal de Saúde de Cacoal	Cacoal	Rondônia	BR	Brazil
@@ -15233,6 +15315,7 @@ Faculdade Unicentro	Jaru	Rondônia	BR	Brazil
 Prefeitura Municipal de Jaru	Jaru	Rondônia	BR	Brazil
 Secretaria Municipal de Educação de Jaru	Jaru	Rondônia	BR	Brazil
 Secretaria Municipal de Saúde de Jaru	Jaru	Rondônia	BR	Brazil
+Centro Universitário Clarentiano	Ji-Paraná	Rondônia	BR	Brazil
 Faculdade Marechal Cândido Rondon	Ji-Paraná	Rondônia	BR	Brazil
 Faculdade Panamericana de Ji-Paraná	Ji-Paraná	Rondônia	BR	Brazil
 Prefeitura Municipal de Ji-Paraná	Ji-Paraná	Rondônia	BR	Brazil
@@ -15290,7 +15373,7 @@ Faculdade Madeira Mamoré	Porto Velho	Rondônia	BR	Brazil
 Faculdade Metropolitana	Porto Velho	Rondônia	BR	Brazil
 Faculdade São Lucas	Porto Velho	Rondônia	BR	Brazil
 Faculdades Integradas Aparício Carvalho	Porto Velho	Rondônia	BR	Brazil
-Instituto Federal de Rondônia	Porto Velho	Rondônia	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Rondônia	Porto Velho	Rondônia	BR	Brazil
 Instituto Luterano de Ensino Superior de Porto Velho	Porto Velho	Rondônia	BR	Brazil
 Instituto Metodista da Amazônia	Porto Velho	Rondônia	BR	Brazil
 Prefeitura Municipal de Porto Velho	Porto Velho	Rondônia	BR	Brazil
@@ -15351,13 +15434,14 @@ Secretaria Municipal de Saúde de Alto Alegre	Alto Alegre	Roraima	BR	Brazil
 Prefeitura Municipal de Amajari	Amajari	Roraima	BR	Brazil
 Secretaria Municipal de Educação de Amajari	Amajari	Roraima	BR	Brazil
 Secretaria Municipal de Saúde de Amajari	Amajari	Roraima	BR	Brazil
+Centro Universitário Clarentiano	Boa Vista	Roraima	BR	Brazil
 Embrapa Roraima	Boa Vista	Roraima	BR	Brazil
 Faculdade Cathedral	Boa Vista	Roraima	BR	Brazil
 Faculdade Ciências, Educação e Tecnologia do Norte do Brasil	Boa Vista	Roraima	BR	Brazil
 Faculdade de Teologia de Boa Vista	Boa Vista	Roraima	BR	Brazil
 Faculdade Roraimense de Ensino Superior	Boa Vista	Roraima	BR	Brazil
 Faculdade Teológica de Ciências Humanas e Sociais Logos	Boa Vista	Roraima	BR	Brazil
-Instituto Federal de Roraima	Boa Vista	Roraima	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Roraima	Boa Vista	Roraima	BR	Brazil
 Prefeitura Municipal de Boa Vista	Boa Vista	Roraima	BR	Brazil
 Secretaria Municipal de Educação de Boa Vista	Boa Vista	Roraima	BR	Brazil
 Secretaria Municipal de Saúde de Boa Vista	Boa Vista	Roraima	BR	Brazil
@@ -15515,7 +15599,6 @@ Prefeitura Municipal de Biguaçu	Biguaçu	Santa Catarina	BR	Brazil
 Secretaria Municipal de Educação de Biguaçu	Biguaçu	Santa Catarina	BR	Brazil
 Secretaria Municipal de Saúde de Biguaçu	Biguaçu	Santa Catarina	BR	Brazil
 Associação Catarinense de Preservação da Natureza	Blumenau	Santa Catarina	BR	Brazil
-Faculdade de Tecnologia SENAC	Blumenau	Santa Catarina	BR	Brazil
 Faculdade de Tecnologia SENAI	Blumenau	Santa Catarina	BR	Brazil
 Faculdades Integradas FAE	Blumenau	Santa Catarina	BR	Brazil
 HEMOSC - Centro de Hematologia e Hemoterapia de Santa Catarina	Blumenau	Santa Catarina	BR	Brazil
@@ -15702,8 +15785,23 @@ Faculdade de Ciências Sociais de Florianópolis	Florianópolis	Santa Catarina	B
 Faculdade Decisão	Florianópolis	Santa Catarina	BR	Brazil
 Faculdade Energia de Administração e Negócios	Florianópolis	Santa Catarina	BR	Brazil
 Faculdades Integradas ASSESC	Florianópolis	Santa Catarina	BR	Brazil
-Instituto Federal de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
 Prefeitura Municipal de Florianópolis	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado da Administração de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado da Agricultura e da Pesca de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado da Assistência Social, Trabalho e Habitação de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado da Casa Civil de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado da Defesa Civil de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado da Educação de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado da Fazenda de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado da Infraestrutura de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado da Justiça e Cidadania de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado da Saúde de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado da Segurança Pública de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado de Comunicação de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado de Turismo, Cultura e Esporte de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado do Desenvolvimento Econômico Sustentável de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
+Secretaria de Estado do Planejamento de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
 Secretaria Municipal de Educação de Florianópolis	Florianópolis	Santa Catarina	BR	Brazil
 Secretaria Municipal de Saúde de Florianópolis	Florianópolis	Santa Catarina	BR	Brazil
 Universidade do Estado de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
@@ -16363,21 +16461,6 @@ Secretaria Municipal de Saúde de Xaxim	Xaxim	Santa Catarina	BR	Brazil
 Prefeitura Municipal de Zortéa	Zortéa	Santa Catarina	BR	Brazil
 Secretaria Municipal de Educação de Zortéa	Zortéa	Santa Catarina	BR	Brazil
 Secretaria Municipal de Saúde de Zortéa	Zortéa	Santa Catarina	BR	Brazil
-Secretaria de Estado da Administração de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado da Agricultura e da Pesca de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado da Assistência Social, Trabalho e Habitação de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado da Casa Civil de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado da Defesa Civil de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado da Educação de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado da Fazenda de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado da Infraestrutura de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado da Justiça e Cidadania de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado da Saúde de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado da Segurança Pública de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado de Comunicação de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado de Turismo, Cultura e Esporte de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado do Desenvolvimento Econômico Sustentável de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
-Secretaria de Estado do Planejamento de Santa Catarina	Florianópolis	Santa Catarina	BR	Brazil
 Faculdades Municipal Adamantinenses Integradas	Adamantina	São Paulo	BR	Brazil
 Prefeitura Municipal de Adamantina	Adamantina	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Adamantina	Adamantina	São Paulo	BR	Brazil
@@ -16436,7 +16519,7 @@ Prefeitura Municipal de Alvinlândia	Alvinlândia	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Alvinlândia	Alvinlândia	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Alvinlândia	Alvinlândia	São Paulo	BR	Brazil
 Faculdade de Americana	Americana	São Paulo	BR	Brazil
-Faculdades de Tecnologia FATEC	Americana	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Americana	Americana	São Paulo	BR	Brazil
 Insituto de Ensino Superior de Americana	Americana	São Paulo	BR	Brazil
 Insituto de Ensino Superior de Bauru	Americana	São Paulo	BR	Brazil
 Prefeitura Municipal de Americana	Americana	São Paulo	BR	Brazil
@@ -16483,6 +16566,7 @@ Secretaria Municipal de Educação de Araçariguama	Araçariguama	São Paulo	BR	
 Secretaria Municipal de Saúde de Araçariguama	Araçariguama	São Paulo	BR	Brazil
 Centro Universitário Toledo	Araçatuba	São Paulo	BR	Brazil
 Faculdade da Fundação Educacional Araçatuba	Araçatuba	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Araçatuba	Araçatuba	São Paulo	BR	Brazil
 Prefeitura Municipal de Araçatuba	Araçatuba	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Araçatuba	Araçatuba	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Araçatuba	Araçatuba	São Paulo	BR	Brazil
@@ -16499,12 +16583,13 @@ Secretaria Municipal de Saúde de Arandu	Arandu	São Paulo	BR	Brazil
 Prefeitura Municipal de Arapeí	Arapeí	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Arapeí	Arapeí	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Arapeí	Arapeí	São Paulo	BR	Brazil
+Centro Universitário de Araraquara	Araraquara	São Paulo	BR	Brazil
 Faculdades Logatti	Araraquara	São Paulo	BR	Brazil
 Prefeitura Municipal de Araraquara	Araraquara	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Araraquara	Araraquara	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Araraquara	Araraquara	São Paulo	BR	Brazil
 Universidade Estadual Paulista	Araraquara	São Paulo	BR	Brazil
-Centro Universitário de Araras	Araras	São Paulo	BR	Brazil
+Centro Universitário de Araras " Dr. Edmundo Ulson"	Araras	São Paulo	BR	Brazil
 Centro Universitário Herminio Ometto de Araras	Araras	São Paulo	BR	Brazil
 Prefeitura Municipal de Araras	Araras	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Araras	Araras	São Paulo	BR	Brazil
@@ -16536,6 +16621,7 @@ Prefeitura Municipal de Aspásia	Aspásia	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Aspásia	Aspásia	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Aspásia	Aspásia	São Paulo	BR	Brazil
 Faculdade de Administração de Assis	Assis	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Assis	Assis	São Paulo	BR	Brazil
 Instituto Educacional de Assis	Assis	São Paulo	BR	Brazil
 Instituto Municipal de Ensino Superior de Assis	Assis	São Paulo	BR	Brazil
 Prefeitura Municipal de Assis	Assis	São Paulo	BR	Brazil
@@ -16609,6 +16695,7 @@ Secretaria Municipal de Educação de Barrinha	Barrinha	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Barrinha	Barrinha	São Paulo	BR	Brazil
 Dow AgroSciences Industrial Ltda	Barueri	São Paulo	BR	Brazil
 Faculdade Alfacastelo	Barueri	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Barueri	Barueri	São Paulo	BR	Brazil
 Prefeitura Municipal de Barueri	Barueri	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Barueri	Barueri	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Barueri	Barueri	São Paulo	BR	Brazil
@@ -16620,6 +16707,7 @@ Prefeitura Municipal de Batatais	Batatais	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Batatais	Batatais	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Batatais	Batatais	São Paulo	BR	Brazil
 AES Tietê	Bauru	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Bauru	Bauru	São Paulo	BR	Brazil
 Faculdades Integradas de Bauru 	Bauru	São Paulo	BR	Brazil
 Institução Toledo de Ensino 	Bauru	São Paulo	BR	Brazil
 Prefeitura Municipal de Bauru	Bauru	São Paulo	BR	Brazil
@@ -16662,6 +16750,7 @@ Prefeitura Municipal de Bofete	Bofete	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Bofete	Bofete	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Bofete	Bofete	São Paulo	BR	Brazil
 Faculdades Integradas de Boituva	Boituva	São Paulo	BR	Brazil
+Intituto de Educação Superior de Boituva	Boituva	São Paulo	BR	Brazil
 Prefeitura Municipal de Boituva	Boituva	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Boituva	Boituva	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Boituva	Boituva	São Paulo	BR	Brazil
@@ -16683,6 +16772,7 @@ Secretaria Municipal de Saúde de Borborema	Borborema	São Paulo	BR	Brazil
 Prefeitura Municipal de Borebi	Borebi	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Borebi	Borebi	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Borebi	Borebi	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Botucatu	Botucatu	São Paulo	BR	Brazil
 Faculdade Iteana	Botucatu	São Paulo	BR	Brazil
 Faculdades Integradas de Botucacu	Botucatu	São Paulo	BR	Brazil
 Prefeitura Municipal de Botucatu	Botucatu	São Paulo	BR	Brazil
@@ -16766,6 +16856,7 @@ Faculdade Birigui	Campinas	São Paulo	BR	Brazil
 Faculdade de Administração de Empresas	Campinas	São Paulo	BR	Brazil
 Faculdade de Odontologia São Leopoldo Mandic	Campinas	São Paulo	BR	Brazil
 Faculdade de Tecnologia BSG-U	Campinas	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Campinas	Campinas	São Paulo	BR	Brazil
 Faculdade Integrada Metropolitana de Campinas	Campinas	São Paulo	BR	Brazil
 Faculdade Nazarena do Brasil	Campinas	São Paulo	BR	Brazil
 Faculdade Politécnica de Campinas	Campinas	São Paulo	BR	Brazil
@@ -16802,6 +16893,7 @@ Secretaria Municipal de Saúde de Cândido Rodrigues	Cândido Rodrigues	São Pau
 Prefeitura Municipal de Canitar	Canitar	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Canitar	Canitar	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Canitar	Canitar	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Capão Bonito	Capão Bonito	São Paulo	BR	Brazil
 Prefeitura Municipal de Capão Bonito	Capão Bonito	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Capão Bonito	Capão Bonito	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Capão Bonito	Capão Bonito	São Paulo	BR	Brazil
@@ -16818,6 +16910,7 @@ Faculdade Nossa Cidade 	Caraguatatuba	São Paulo	BR	Brazil
 Prefeitura Municipal de Caraguatatuba	Caraguatatuba	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Caraguatatuba	Caraguatatuba	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Caraguatatuba	Caraguatatuba	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Carapicuíba	Carapicuíba	São Paulo	BR	Brazil
 Prefeitura Municipal de Carapicuíba	Carapicuíba	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Carapicuíba	Carapicuíba	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Carapicuíba	Carapicuíba	São Paulo	BR	Brazil
@@ -16834,6 +16927,7 @@ Secretaria Municipal de Saúde de Cássia dos Coqueiros	Cássia dos Coqueiros	S�
 Prefeitura Municipal de Castilho	Castilho	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Castilho	Castilho	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Castilho	Castilho	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Catanduva	Catanduva	São Paulo	BR	Brazil
 Faculdades Integradas Padre Albino	Catanduva	São Paulo	BR	Brazil
 Prefeitura Municipal de Catanduva	Catanduva	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Catanduva	Catanduva	São Paulo	BR	Brazil
@@ -16907,6 +17001,7 @@ Prefeitura Municipal de Cruzália	Cruzália	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Cruzália	Cruzália	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Cruzália	Cruzália	São Paulo	BR	Brazil
 Faculdade de Ciências Humanas de Cruzeiro	Cruzeiro	São Paulo	BR	Brazil
+Faculdade de Tecnologia Professor Waldomiro May	Cruzeiro	São Paulo	BR	Brazil
 Prefeitura Municipal de Cruzeiro	Cruzeiro	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Cruzeiro	Cruzeiro	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Cruzeiro	Cruzeiro	São Paulo	BR	Brazil
@@ -16919,6 +17014,7 @@ Secretaria Municipal de Saúde de Cunha	Cunha	São Paulo	BR	Brazil
 Prefeitura Municipal de Descalvado	Descalvado	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Descalvado	Descalvado	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Descalvado	Descalvado	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Diadema Luigi Papaiz 	Diadema	São Paulo	BR	Brazil
 Prefeitura Municipal de Diadema	Diadema	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Diadema	Diadema	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Diadema	Diadema	São Paulo	BR	Brazil
@@ -17029,13 +17125,13 @@ Secretaria Municipal de Educação de Florínia	Florínia	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Florínia	Florínia	São Paulo	BR	Brazil
 Centro Universitário de Franca 	Franca	São Paulo	BR	Brazil
 Faculdade de Direito de Franca	Franca	São Paulo	BR	Brazil
+Faculdade de Tecnologia Dr. Thomaz Novelino	Franca	São Paulo	BR	Brazil
 Prefeitura Municipal de Franca	Franca	São Paulo	BR	Brazil
 Santa Casa de Franca	Franca	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Franca	Franca	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Franca	Franca	São Paulo	BR	Brazil
 Universidade de Franca	Franca	São Paulo	BR	Brazil
 Universidade Estadual Paulista	Franca	São Paulo	BR	Brazil
-Faculdade de Tecnologia FUNDETEC	Francisco Morato	São Paulo	BR	Brazil
 Faculdade Francisco Morato	Francisco Morato	São Paulo	BR	Brazil
 Prefeitura Municipal de Francisco Morato	Francisco Morato	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Francisco Morato	Francisco Morato	São Paulo	BR	Brazil
@@ -17051,6 +17147,7 @@ Secretaria Municipal de Educação de Gália	Gália	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Gália	Gália	São Paulo	BR	Brazil
 Faculdade de Agronomia e Engenharia Florestal de Garça	Garça	São Paulo	BR	Brazil
 Faculdade de Medicina Veterinária e Zootecnia	Garça	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Garça	Garça	São Paulo	BR	Brazil
 Insituto de Ensino Superior de Garça	Garça	São Paulo	BR	Brazil
 Instituto Superior de Educação de Garça	Garça	São Paulo	BR	Brazil
 Prefeitura Municipal de Garça	Garça	São Paulo	BR	Brazil
@@ -17109,6 +17206,7 @@ Secretaria Municipal de Educação de Guararema	Guararema	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Guararema	Guararema	São Paulo	BR	Brazil
 Faculdade de Administração Ciências Econ e Contábeis de Guaratinguetá	Guaratinguetá	São Paulo	BR	Brazil
 Faculdade de Educação de Guaratinguetá	Guaratinguetá	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Guaratinguetá	Guaratinguetá	São Paulo	BR	Brazil
 Prefeitura Municipal de Guaratinguetá	Guaratinguetá	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Guaratinguetá	Guaratinguetá	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Guaratinguetá	Guaratinguetá	São Paulo	BR	Brazil
@@ -17125,6 +17223,7 @@ Secretaria Municipal de Educação de Guarujá	Guarujá	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Guarujá	Guarujá	São Paulo	BR	Brazil
 Centro Universitário Metropolitano de São Paulo	Guarulhos	São Paulo	BR	Brazil
 Escola Superior Paulista de Administração	Guarulhos	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Guarulhos	Guarulhos	São Paulo	BR	Brazil
 Faculdade de Tecnologia ENIAC 	Guarulhos	São Paulo	BR	Brazil
 Faculdade Integradas de Ciências Humanas, Saúde e Educação de Guarulhos	Guarulhos	São Paulo	BR	Brazil
 Faculdades Integradas Torricelli	Guarulhos	São Paulo	BR	Brazil
@@ -17208,6 +17307,7 @@ Universidade Estadual Paulista	Ilha Solteira	São Paulo	BR	Brazil
 Prefeitura Municipal de Ilhabela	Ilhabela	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Ilhabela	Ilhabela	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Ilhabela	Ilhabela	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Indaiatuba	Indaiatuba	São Paulo	BR	Brazil
 Faculdade Max Planck	Indaiatuba	São Paulo	BR	Brazil
 Prefeitura Municipal de Indaiatuba	Indaiatuba	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Indaiatuba	Indaiatuba	São Paulo	BR	Brazil
@@ -17276,6 +17376,7 @@ Secretaria Municipal de Educação de Itapecerica da Serra	Itapecerica da Serra	
 Secretaria Municipal de Saúde de Itapecerica da Serra	Itapecerica da Serra	São Paulo	BR	Brazil
 Faculdade de Ciências Contábeis de Itapetininga	Itapetininga	São Paulo	BR	Brazil
 Faculdade de Itapetininga	Itapetininga	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Itapetininga - Prof.Antônio Belizandro Barbosa Rezende	Itapetininga	São Paulo	BR	Brazil
 Faculdades AEI-OSE	Itapetininga	São Paulo	BR	Brazil
 Faculdades FKB	Itapetininga	São Paulo	BR	Brazil
 Fundação Karnig Bazarian	Itapetininga	São Paulo	BR	Brazil
@@ -17310,6 +17411,7 @@ Secretaria Municipal de Saúde de Itapuí	Itapuí	São Paulo	BR	Brazil
 Prefeitura Municipal de Itapura	Itapura	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Itapura	Itapura	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Itapura	Itapura	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Itapetininga de Itaquaquecetuba	Itaquaquecetuba	São Paulo	BR	Brazil
 Prefeitura Municipal de Itaquaquecetuba	Itaquaquecetuba	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Itaquaquecetuba	Itaquaquecetuba	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Itaquaquecetuba	Itaquaquecetuba	São Paulo	BR	Brazil
@@ -17352,6 +17454,7 @@ Secretaria Municipal de Saúde de Ituverava	Ituverava	São Paulo	BR	Brazil
 Prefeitura Municipal de Jaborandi	Jaborandi	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Jaborandi	Jaborandi	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Jaborandi	Jaborandi	São Paulo	BR	Brazil
+Faculda de Tecnologia de Jaboticabal	Jaboticabal	São Paulo	BR	Brazil
 Faculdade de Educação São Luís	Jaboticabal	São Paulo	BR	Brazil
 Faculdade de Jaboticabal	Jaboticabal	São Paulo	BR	Brazil
 Prefeitura Municipal de Jaboticabal	Jaboticabal	São Paulo	BR	Brazil
@@ -17359,6 +17462,7 @@ Secretaria Municipal de Educação de Jaboticabal	Jaboticabal	São Paulo	BR	Braz
 Secretaria Municipal de Saúde de Jaboticabal	Jaboticabal	São Paulo	BR	Brazil
 Universidade Estadual Paulista	Jaboticabal	São Paulo	BR	Brazil
 Faculdade De Educação Thereza Porto Marques	Jacareí	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Jacareí	Jacareí	São Paulo	BR	Brazil
 Faculdade de Tecnologia São Francisco	Jacareí	São Paulo	BR	Brazil
 Insituto Nacional de Ensino e Pesquisa	Jacareí	São Paulo	BR	Brazil
 Prefeitura Municipal de Jacareí	Jacareí	São Paulo	BR	Brazil
@@ -17376,6 +17480,7 @@ Prefeitura Municipal de Jaguariúna	Jaguariúna	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Jaguariúna	Jaguariúna	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Jaguariúna	Jaguariúna	São Paulo	BR	Brazil
 Centro Universitário de Jales	Jales	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Jales	Jales	São Paulo	BR	Brazil
 Prefeitura Municipal de Jales	Jales	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Jales	Jales	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Jales	Jales	São Paulo	BR	Brazil
@@ -17422,6 +17527,7 @@ Escola Superior de Educação Física de Jundaí	Jundaí	São Paulo	BR	Brazil
 Faculdade de Ciências Gerenciais Barão de Jundiaí	Jundaí	São Paulo	BR	Brazil
 Faculdade de Medicina de Jundiaí	Jundaí	São Paulo	BR	Brazil
 Faculdade Pitágoras	Jundaí	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Jundiaí	Jundiaí	São Paulo	BR	Brazil
 Hospital São Vicente de Paulo	Jundiaí	São Paulo	BR	Brazil
 Prefeitura Municipal de Jundiaí	Jundiaí	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Jundiaí	Jundiaí	São Paulo	BR	Brazil
@@ -17466,6 +17572,7 @@ Prefeitura Municipal de Lindóia	Lindóia	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Lindóia	Lindóia	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Lindóia	Lindóia	São Paulo	BR	Brazil
 Centro Universitário de Lins	Lins	São Paulo	BR	Brazil
+Faculdade de Tecnologia Professor Antônio Seabra	Lins	São Paulo	BR	Brazil
 Instituto Superior de Educação Auxilium	Lins	São Paulo	BR	Brazil
 Prefeitura Municipal de Lins	Lins	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Lins	Lins	São Paulo	BR	Brazil
@@ -17538,6 +17645,7 @@ Secretaria Municipal de Saúde de Mariápolis	Mariápolis	São Paulo	BR	Brazil
 Centro Universitário Eurípides de Marília	Marília	São Paulo	BR	Brazil
 Faculdade de Ensino Superior do Interior Paulista	Marília	São Paulo	BR	Brazil
 Faculdade de Medicina de Marília	Marília	São Paulo	BR	Brazil
+Faculdade de Tecnologia Estudante Rafael Almeida Camarinha	Marília	São Paulo	BR	Brazil
 Faculdade João Paulo II	Marília	São Paulo	BR	Brazil
 Prefeitura Municipal de Marília	Marília	São Paulo	BR	Brazil
 Santa Casa de Misericórdia de Marília	Marília	São Paulo	BR	Brazil
@@ -17557,6 +17665,7 @@ Secretaria Municipal de Educação de Matão	Matão	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Matão	Matão	São Paulo	BR	Brazil
 Faculdade de Desenho de Mauá	Mauá	São Paulo	BR	Brazil
 Faculdade de Mauá	Mauá	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Mauá	Mauá	São Paulo	BR	Brazil
 Prefeitura Municipal de Mauá	Mauá	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Mauá	Mauá	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Mauá	Mauá	São Paulo	BR	Brazil
@@ -17594,11 +17703,13 @@ União das Escolas do Grupo FAIMI de Educação	Mirassol	São Paulo	BR	Brazil
 Prefeitura Municipal de Mirassolândia	Mirassolândia	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Mirassolândia	Mirassolândia	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Mirassolândia	Mirassolândia	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Mococa	Mococa	São Paulo	BR	Brazil
 Faculdades da Fundação de Ensino de Mococa	Mococa	São Paulo	BR	Brazil
 Prefeitura Municipal de Mococa	Mococa	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Mococa	Mococa	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Mococa	Mococa	São Paulo	BR	Brazil
 Faculdade de Filosofia e Tecnologia Paulo VI	Mogi das Cruzes	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Mogi das Cruzes	Mogi das Cruzes	São Paulo	BR	Brazil
 Faculdade do Clube Náutico Mogiano	Mogi das Cruzes	São Paulo	BR	Brazil
 Prefeitura Municipal de Mogi das Cruzes	Mogi das Cruzes	São Paulo	BR	Brazil
 Santa Casa de Misericórdia de Mogi das Cruzes	Mogi das Cruzes	São Paulo	BR	Brazil
@@ -17607,7 +17718,7 @@ Secretaria Municipal de Saúde de Mogi das Cruzes	Mogi das Cruzes	São Paulo	BR	
 Universidade de Mogi das Cruzes	Mogi das Cruzes	São Paulo	BR	Brazil
 Faculdade Mogiana do Estado de São Paulo	Mogi Guaçu	São Paulo	BR	Brazil
 Faculdade Municipal Professor Franco Montoro	Mogi Guaçu	São Paulo	BR	Brazil
-Faculdades Integradas María Imaculada	Mogi Guaçu	São Paulo	BR	Brazil
+Faculdades Integradas Maria Imaculada	Mogi Guaçu	São Paulo	BR	Brazil
 Instituição de Ensino São Francisco	Mogi Guaçu	São Paulo	BR	Brazil
 Prefeitura Municipal de Mogi Guaçu	Mogi Guaçu	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Mogi Guaçu	Mogi Guaçu	São Paulo	BR	Brazil
@@ -17746,6 +17857,7 @@ Secretaria Municipal de Educação de Orlândia	Orlândia	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Orlândia	Orlândia	São Paulo	BR	Brazil
 Associação Brasileira de Odontologia	Osasco	São Paulo	BR	Brazil
 Centro Universitário FIEO	Osasco	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Osasco - Prefeito Hirant Sanazar	Osasco	São Paulo	BR	Brazil
 Faculdade Fernão Dias	Osasco	São Paulo	BR	Brazil
 Faculdade João Paulo Primeiro	Osasco	São Paulo	BR	Brazil
 Fundação Instituto Tecnológico de Osasco	Osasco	São Paulo	BR	Brazil
@@ -17759,6 +17871,7 @@ Secretaria Municipal de Saúde de Oscar Bressane	Oscar Bressane	São Paulo	BR	Br
 Prefeitura Municipal de Osvaldo Cruz	Osvaldo Cruz	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Osvaldo Cruz	Osvaldo Cruz	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Osvaldo Cruz	Osvaldo Cruz	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Ourinhos	Ourinhos	São Paulo	BR	Brazil
 Faculdades Integradas de Ourinhos 	Ourinhos	São Paulo	BR	Brazil
 Prefeitura Municipal de Ourinhos	Ourinhos	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Ourinhos	Ourinhos	São Paulo	BR	Brazil
@@ -17866,7 +17979,7 @@ Secretaria Municipal de Saúde de Pereira Barreto	Pereira Barreto	São Paulo	BR	
 Prefeitura Municipal de Pereiras	Pereiras	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Pereiras	Pereiras	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Pereiras	Pereiras	São Paulo	BR	Brazil
-Faculdade Peuríbe	Peruíbe	São Paulo	BR	Brazil
+Faculdade Peruíbe	Peruíbe	São Paulo	BR	Brazil
 Prefeitura Municipal de Peruíbe	Peruíbe	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Peruíbe	Peruíbe	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Peruíbe	Peruíbe	São Paulo	BR	Brazil
@@ -17880,6 +17993,7 @@ Prefeitura Municipal de Pilar do Sul	Pilar do Sul	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Pilar do Sul	Pilar do Sul	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Pilar do Sul	Pilar do Sul	São Paulo	BR	Brazil
 Faculdade de Pindamonhangaba	Pindamonhangaba	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Pindamonhangaba	Pindamonhangaba	São Paulo	BR	Brazil
 Faculdade Santa Cecília	Pindamonhangaba	São Paulo	BR	Brazil
 Prefeitura Municipal de Pindamonhangaba	Pindamonhangaba	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Pindamonhangaba	Pindamonhangaba	São Paulo	BR	Brazil
@@ -17907,7 +18021,7 @@ Secretaria Municipal de Saúde de Piracicaba	Piracicaba	São Paulo	BR	Brazil
 Universidade de São Paulo	Piracicaba	São Paulo	BR	Brazil
 Universidade Metodista de Piracicaba	Piracicaba	São Paulo	BR	Brazil
 Faculdade Corporativa CESPI	Piraju	São Paulo	BR	Brazil
-Faculdade de Filosofia Ciências e Letras de Piraju	Piraju	São Paulo	BR	Brazil
+Faculdade de Filosofia, Ciências e Letras de Piraju	Piraju	São Paulo	BR	Brazil
 Prefeitura Municipal de Piraju	Piraju	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Piraju	Piraju	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Piraju	Piraju	São Paulo	BR	Brazil
@@ -17925,7 +18039,7 @@ Secretaria Municipal de Educação de Pirapozinho	Pirapozinho	São Paulo	BR	Braz
 Secretaria Municipal de Saúde de Pirapozinho	Pirapozinho	São Paulo	BR	Brazil
 Academia da Força Aérea Brasileira	Pirassununga	São Paulo	BR	Brazil
 Faculdade de Engenharia e Agrimensura de Pirassununga	Pirassununga	São Paulo	BR	Brazil
-Faculdade de Tecnologia Ciëncias e Educação	Pirassununga	São Paulo	BR	Brazil
+Faculdade de Tecnologia Ciências e Educação	Pirassununga	São Paulo	BR	Brazil
 Prefeitura Municipal de Pirassununga	Pirassununga	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Pirassununga	Pirassununga	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Pirassununga	Pirassununga	São Paulo	BR	Brazil
@@ -17948,6 +18062,7 @@ Secretaria Municipal de Saúde de Poá	Poá	São Paulo	BR	Brazil
 Prefeitura Municipal de Poloni	Poloni	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Poloni	Poloni	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Poloni	Poloni	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Pompéia - Shunji Nishimura	Pompéia	São Paulo	BR	Brazil
 Prefeitura Municipal de Pompéia	Pompéia	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Pompéia	Pompéia	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Pompéia	Pompéia	São Paulo	BR	Brazil
@@ -17990,6 +18105,7 @@ Prefeitura Municipal de Pradópolis	Pradópolis	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Pradópolis	Pradópolis	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Pradópolis	Pradópolis	São Paulo	BR	Brazil
 Faculdade Alfa	Praia Grande	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Praia Grande	Praia Grande	São Paulo	BR	Brazil
 Faculdade de Tecnologia Porto Sul	Praia Grande	São Paulo	BR	Brazil
 Faculdade do Litoral Paulista	Praia Grande	São Paulo	BR	Brazil
 Prefeitura Municipal de Praia Grande	Praia Grande	São Paulo	BR	Brazil
@@ -18007,6 +18123,7 @@ Secretaria Municipal de Saúde de Presidente Bernardes	Presidente Bernardes	São
 Prefeitura Municipal de Presidente Epitácio	Presidente Epitácio	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Presidente Epitácio	Presidente Epitácio	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Presidente Epitácio	Presidente Epitácio	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Presidente Prudente	Presidente Prudente	São Paulo	BR	Brazil
 Prefeitura Municipal de Presidente Prudente	Presidente Prudente	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Presidente Prudente	Presidente Prudente	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Presidente Prudente	Presidente Prudente	São Paulo	BR	Brazil
@@ -18101,7 +18218,6 @@ Secretaria Municipal de Saúde de Rincão	Rincão	São Paulo	BR	Brazil
 Prefeitura Municipal de Rinópolis	Rinópolis	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Rinópolis	Rinópolis	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Rinópolis	Rinópolis	São Paulo	BR	Brazil
-Faculdade de Tecnologia FATEP 	Rio Claro	São Paulo	BR	Brazil
 Faculdades Claretianas	Rio Claro	São Paulo	BR	Brazil
 Prefeitura Municipal de Rio Claro	Rio Claro	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Rio Claro	Rio Claro	São Paulo	BR	Brazil
@@ -18156,7 +18272,7 @@ Prefeitura Municipal de Saltinho	Saltinho	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Saltinho	Saltinho	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Saltinho	Saltinho	São Paulo	BR	Brazil
 Centro Universitário Nossa Senhora do Patrocínio	Salto	São Paulo	BR	Brazil
-Faculdade Sant' Anna 	Salto	São Paulo	BR	Brazil
+Faculdade Sant' Anna	Salto	São Paulo	BR	Brazil
 Prefeitura Municipal de Salto	Salto	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Salto	Salto	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Salto	Salto	São Paulo	BR	Brazil
@@ -18246,8 +18362,10 @@ Faculdade Anhanguera	Santo André	São Paulo	BR	Brazil
 Faculdade de Medicina do ABC	Santo André	São Paulo	BR	Brazil
 Faculdade de Tecnologia Jardim	Santo André	São Paulo	BR	Brazil
 Faculdade de Tecnologia Pentágono	Santo André	São Paulo	BR	Brazil
+Faculdade de Tecnologia Santo André	Santo André	São Paulo	BR	Brazil
 Faculdades Integradas Coração de Jesus	Santo André	São Paulo	BR	Brazil
 Faculdades Integradas de Santo André	Santo André	São Paulo	BR	Brazil
+Fundação Universidade Federal do ABC	Santo André	São Paulo	BR	Brazil
 Hospital Estadual Mário Covas	Santo André	São Paulo	BR	Brazil
 Prefeitura Municipal de Santo André	Santo André	São Paulo	BR	Brazil
 Rhodia Poliamida e Especialidades Ltda	Santo André	São Paulo	BR	Brazil
@@ -18279,6 +18397,7 @@ Secretaria Municipal de Saúde de Santópolis do Aguapeí	Santópolis do Aguape�
 Centro Universitário Lusíada	Santos	São Paulo	BR	Brazil
 Centro Universitário Monte Serrat	Santos	São Paulo	BR	Brazil
 Escola Superior de Administração, Marketing e Comunicação	Santos	São Paulo	BR	Brazil
+Faculdade de Tecnologia Rubens Lara	Santos	São Paulo	BR	Brazil
 Prefeitura Municipal de Santos	Santos	São Paulo	BR	Brazil
 Santa Casa de Misericórdia de Santos	Santos	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Santos	Santos	São Paulo	BR	Brazil
@@ -18291,15 +18410,15 @@ Universidade Metropolitana de Santos	Santos	São Paulo	BR	Brazil
 Prefeitura Municipal de São Bento do Sapucaí	São Bento do Sapucaí	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de São Bento do Sapucaí	São Bento do Sapucaí	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de São Bento do Sapucaí	São Bento do Sapucaí	São Paulo	BR	Brazil
-Centro Universitário da Fundação Educ. de Iniciana	São Bernardo do Campo	São Paulo	BR	Brazil
 Faculdade de Direito de São Bernardo do Campo	São Bernardo do Campo	São Paulo	BR	Brazil
 Faculdade de São Bernardo do Campo	São Bernardo do Campo	São Paulo	BR	Brazil
-Faculdade de Tecnologia Termomecânica	São Bernardo do Campo	São Paulo	BR	Brazil
+Faculdade de Tecnologia de São Bernardo do Campo 	São Bernardo do Campo	São Paulo	BR	Brazil
 Faculdade FAPAN	São Bernardo do Campo	São Paulo	BR	Brazil
 Faculdade Interação Americana	São Bernardo do Campo	São Paulo	BR	Brazil
 Prefeitura Municipal de São Bernardo do Campo	São Bernardo do Campo	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de São Bernardo do Campo	São Bernardo do Campo	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de São Bernardo do Campo	São Bernardo do Campo	São Paulo	BR	Brazil
+Universidade Metodista de São Paulo	São Bernardo do Campo	São Paulo	BR	Brazil
 Associação Brasileira de Odontologia	São Caetano do Sul	São Paulo	BR	Brazil
 Faculdade Tijucussu	São Caetano do Sul	São Paulo	BR	Brazil
 Instituto Mauá de Tecnologia	São Caetano do Sul	São Paulo	BR	Brazil
@@ -18409,18 +18528,25 @@ Associação Paulista de Saúde Pública	São Paulo	São Paulo	BR	Brazil
 Associação Paulista para Desenvolvimento da Medicina	São Paulo	São Paulo	BR	Brazil
 Benemérita Sociedade de Beneficência Portuguesa de São Paulo	São Paulo	São Paulo	BR	Brazil
 Centro Brasileiro de Análise e Planejamento	São Paulo	São Paulo	BR	Brazil
+Centro Estadual de Educação Tecnológica Paula Souza	São Paulo	São Paulo	BR	Brazil
 Centro para Assistência Integral em Cardiologia	São Paulo	São Paulo	BR	Brazil
+Centro Superior de Estudos Jurídicos Carlos Drumond de Andrade	São Paulo	São Paulo	BR	Brazil
 Centro Universitário Adventista de São Paulo	São Paulo	São Paulo	BR	Brazil
+Centro Universitário Anhaguera de São Paulo	São Paulo	São Paulo	BR	Brazil
 Centro Universitário Assunção	São Paulo	São Paulo	BR	Brazil
 Centro Universitário Belas Artes de São Paulo	São Paulo	São Paulo	BR	Brazil
 Centro Universitário Capital	São Paulo	São Paulo	BR	Brazil
+Centro Universitário das Faculdades Metropolitanas Unidas	São Paulo	São Paulo	BR	Brazil
 Centro Universitário de Araraquara	São Paulo	São Paulo	BR	Brazil
+Centro Universitário Estácio Radial de São Paulo	São Paulo	São Paulo	BR	Brazil
 Centro Universitário FECAP 	São Paulo	São Paulo	BR	Brazil
 Centro Universitário FIAMFAAM	São Paulo	São Paulo	BR	Brazil
 Centro Universitário Ítalo-Brasileiro	São Paulo	São Paulo	BR	Brazil
 Centro Universitário Paulistano	São Paulo	São Paulo	BR	Brazil
 Centro Universitário Salesiano de São Paulo	São Paulo	São Paulo	BR	Brazil
+Centro Universitário Sant'Anna	São Paulo	São Paulo	BR	Brazil
 Centro Universitário São Camilo 	São Paulo	São Paulo	BR	Brazil
+Centro Universitário Senac	São Paulo	São Paulo	BR	Brazil
 Clínica São Vicente	São Paulo	São Paulo	BR	Brazil
 Companhia de Tecnologia de Saneamento Ambiental	São Paulo	São Paulo	BR	Brazil
 Companhia Paulista de Força e Luz	São Paulo	São Paulo	BR	Brazil
@@ -18434,8 +18560,10 @@ Escola Superior de Artes Célia Helena 	São Paulo	São Paulo	BR	Brazil
 Escola Superior de Engenharia e Gestão de São Paulo	São Paulo	São Paulo	BR	Brazil
 Escola Superior de Propaganda e Marketing	São Paulo	São Paulo	BR	Brazil
 Escola Superior Nacional de Seguros	São Paulo	São Paulo	BR	Brazil
+Faculdade Álvares de Azevedo	São Paulo	São Paulo	BR	Brazil
 Faculdade Anglo Latino	São Paulo	São Paulo	BR	Brazil
 Faculdade Assôciada Brasil	São Paulo	São Paulo	BR	Brazil
+Faculdade Autônoma de Direito	São Paulo	São Paulo	BR	Brazil
 Faculdade Cásper Líbero	São Paulo	São Paulo	BR	Brazil
 Faculdade CBES	São Paulo	São Paulo	BR	Brazil
 Faculdade Cruz Azul	São Paulo	São Paulo	BR	Brazil
@@ -18455,10 +18583,10 @@ Faculdade de Música Carlos Gomez	São Paulo	São Paulo	BR	Brazil
 Faculdade de Música Souza Lima	São Paulo	São Paulo	BR	Brazil
 Faculdade de Tecnologia Álvares de Azevedo	São Paulo	São Paulo	BR	Brazil
 Faculdade de Tecnologia Bandeirantes	São Paulo	São Paulo	BR	Brazil
+Faculdade de Tecnologia de São Paulo	São Paulo	São Paulo	BR	Brazil
 Faculdade de Tecnologia Diamante	São Paulo	São Paulo	BR	Brazil
-Faculdade de Tecnologia FINACI 	São Paulo	São Paulo	BR	Brazil
-Faculdade de Tecnologia IBTA 	São Paulo	São Paulo	BR	Brazil
 Faculdade de Tecnologia Interamérica	São Paulo	São Paulo	BR	Brazil
+Faculdade de Tecnologia Sebrae	São Paulo	São Paulo	BR	Brazil
 Faculdade de Teologia da Igreja Presbiteriana Independiente	São Paulo	São Paulo	BR	Brazil
 Faculdade de Teologia Umbandista	São Paulo	São Paulo	BR	Brazil
 Faculdade do Povo	São Paulo	São Paulo	BR	Brazil
@@ -18485,7 +18613,7 @@ Faculdade Paulista de Serviço Social	São Paulo	São Paulo	BR	Brazil
 Faculdade Paulus de Tecnologia e Comunicação	São Paulo	São Paulo	BR	Brazil
 Faculdade Práxis	São Paulo	São Paulo	BR	Brazil
 Faculdade Santa Marcelina	São Paulo	São Paulo	BR	Brazil
-Faculdade Santa Rita  	São Paulo	São Paulo	BR	Brazil
+Faculdade Santa Rita	São Paulo	São Paulo	BR	Brazil
 Faculdade São Bento	São Paulo	São Paulo	BR	Brazil
 Faculdade São Paulo	São Paulo	São Paulo	BR	Brazil
 Faculdade Sequencial	São Paulo	São Paulo	BR	Brazil
@@ -18536,13 +18664,14 @@ IED São Paulo	São Paulo	São Paulo	BR	Brazil
 Insituto de Ensino e Pesquisa	São Paulo	São Paulo	BR	Brazil
 Instituto Adolfo Lutz	São Paulo	São Paulo	BR	Brazil
 Instituto Bandeirante de Educação e Cultura	São Paulo	São Paulo	BR	Brazil
+Instituto Brasileiro de Tecnologia Avançada	São Paulo	São Paulo	BR	Brazil
 Instituto Butantan	São Paulo	São Paulo	BR	Brazil
 Instituto Dante Pazzanese de Cardiologia	São Paulo	São Paulo	BR	Brazil
 Instituto de Assistência Médica ao Servidor Público Estadual	São Paulo	São Paulo	BR	Brazil
 Instituto de Botânica	São Paulo	São Paulo	BR	Brazil
 Instituto de Pesquisas Energéticas e Nucleares	São Paulo	São Paulo	BR	Brazil
 Instituto de Pesquisas Tecnológicas do Estado de São Paulo	São Paulo	São Paulo	BR	Brazil
-Instituto Federal de São Paulo	São Paulo	São Paulo	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de São Paulo	São Paulo	São Paulo	BR	Brazil
 Instituto São Paulo de Estudos Superiores	São Paulo	São Paulo	BR	Brazil
 Instituto Superior de Educação Alborada Plus	São Paulo	São Paulo	BR	Brazil
 Instituto Superior de Educação de São Paulo	São Paulo	São Paulo	BR	Brazil
@@ -18573,14 +18702,14 @@ Universidade de Santo Amaro	São Paulo	São Paulo	BR	Brazil
 Universidade de São Paulo	São Paulo	São Paulo	BR	Brazil
 Universidade do ABC	São Paulo	São Paulo	BR	Brazil
 Universidade do Oeste Paulista	São Paulo	São Paulo	BR	Brazil
-Universidade Estadual Paulista	São Paulo	São Paulo	BR	Brazil
-Universidade Estadual Paulista	São Paulo	São Paulo	BR	Brazil
+Universidade Estadual Paulista Júlio de Mesquita Filho	São Paulo	São Paulo	BR	Brazil
 Universidade Federal de São Paulo	São Paulo	São Paulo	BR	Brazil
 Universidade Ibirapuera	São Paulo	São Paulo	BR	Brazil
 Universidade Metodista de São Paulo	São Paulo	São Paulo	BR	Brazil
 Universidade Nove de Julho	São Paulo	São Paulo	BR	Brazil
 Universidade Paulista	São Paulo	São Paulo	BR	Brazil
 Universidade Presbiteriana Mackenzie	São Paulo	São Paulo	BR	Brazil
+Universidade Santo Amaro	São Paulo	São Paulo	BR	Brazil
 Universidade São Francisco	São Paulo	São Paulo	BR	Brazil
 Universidade São Judas Tadeu	São Paulo	São Paulo	BR	Brazil
 Universidade São Marcos 	São Paulo	São Paulo	BR	Brazil
@@ -18590,9 +18719,11 @@ Secretaria Municipal de Saúde de São Pedro	São Pedro	São Paulo	BR	Brazil
 Prefeitura Municipal de São Pedro do Turvo	São Pedro do Turvo	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de São Pedro do Turvo	São Pedro do Turvo	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de São Pedro do Turvo	São Pedro do Turvo	São Paulo	BR	Brazil
+Faculdade de Tecnologia de São Roque	São Roque	São Paulo	BR	Brazil
 Prefeitura Municipal de São Roque	São Roque	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de São Roque	São Roque	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de São Roque	São Roque	São Paulo	BR	Brazil
+Faculdade de Tecnologia de São Sebastião	São Sebastião	São Paulo	BR	Brazil
 Faculdade São Sebastião	São Sebastião	São Paulo	BR	Brazil
 Prefeitura Municipal de São Sebastião	São Sebastião	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de São Sebastião	São Sebastião	São Paulo	BR	Brazil
@@ -18604,7 +18735,7 @@ Prefeitura Municipal de São Simão	São Simão	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de São Simão	São Simão	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de São Simão	São Simão	São Paulo	BR	Brazil
 Faculdade de São Vicente	São Vicente	São Paulo	BR	Brazil
-Faculdade de Tecnologia FATEF	São Vicente	São Paulo	BR	Brazil
+Faculdade de Tecnologia de São Vicente	São Vicente	São Paulo	BR	Brazil
 Hospital Ana Costa	São Vicente	São Paulo	BR	Brazil
 Prefeitura Municipal de São Vicente	São Vicente	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de São Vicente	São Vicente	São Paulo	BR	Brazil
@@ -18627,6 +18758,7 @@ Secretaria Municipal de Saúde de Serra Negra	Serra Negra	São Paulo	BR	Brazil
 Prefeitura Municipal de Serrana	Serrana	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Serrana	Serrana	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Serrana	Serrana	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Sertãozinho	Sertãozinho	São Paulo	BR	Brazil
 Faculdade Semar	Sertãozinho	São Paulo	BR	Brazil
 Prefeitura Municipal de Sertãozinho	Sertãozinho	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Sertãozinho	Sertãozinho	São Paulo	BR	Brazil
@@ -18646,6 +18778,7 @@ Secretaria Municipal de Educação de Socorro	Socorro	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Socorro	Socorro	São Paulo	BR	Brazil
 Faculdade de Direito de Sorocaba	Sorocaba	São Paulo	BR	Brazil
 Faculdade de Educação Física de Sorocaba	Sorocaba	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Sorocaba	Sorocaba	São Paulo	BR	Brazil
 Faculdade Ipanema	Sorocaba	São Paulo	BR	Brazil
 Insituto Manchester Paulista de Ensino Superior	Sorocaba	São Paulo	BR	Brazil
 Prefeitura Municipal de Sorocaba	Sorocaba	São Paulo	BR	Brazil
@@ -18704,6 +18837,7 @@ Secretaria Municipal de Saúde de Tapiratiba	Tapiratiba	São Paulo	BR	Brazil
 Prefeitura Municipal de Taquaral	Taquaral	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Taquaral	Taquaral	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Taquaral	Taquaral	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Taquaritinga	Taquaritinga	São Paulo	BR	Brazil
 Instituto Taquaritinguense de Ensino Superior	Taquaritinga	São Paulo	BR	Brazil
 Prefeitura Municipal de Taquaritinga	Taquaritinga	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Taquaritinga	Taquaritinga	São Paulo	BR	Brazil
@@ -18722,9 +18856,11 @@ Secretaria Municipal de Educação de Tarumã	Tarumã	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Tarumã	Tarumã	São Paulo	BR	Brazil
 Faculdade de Desenho de Tatuí	Tatuí	São Paulo	BR	Brazil
 Faculdade de Ensino Superior Santa Bárbara	Tatuí	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Tatuí - Professor Wilson Roberto Ribeiro de Camargo	Tatuí	São Paulo	BR	Brazil
 Prefeitura Municipal de Tatuí	Tatuí	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Tatuí	Tatuí	São Paulo	BR	Brazil
 Secretaria Municipal de Saúde de Tatuí	Tatuí	São Paulo	BR	Brazil
+Faculdade de Tecnologia de Taubaté	Taubaté	São Paulo	BR	Brazil
 Faculdade Dehoiana	Taubaté	São Paulo	BR	Brazil
 Prefeitura Municipal de Taubaté	Taubaté	São Paulo	BR	Brazil
 Secretaria Municipal de Educação de Taubaté	Taubaté	São Paulo	BR	Brazil
@@ -18868,7 +19004,7 @@ Faculdade São Luís de França	Aracaju	Sergipe	BR	Brazil
 Faculdade Sergipana	Aracaju	Sergipe	BR	Brazil
 Faculdade Serigy	Aracaju	Sergipe	BR	Brazil
 Faculdade Tobias Barreto	Aracaju	Sergipe	BR	Brazil
-Instituto Federal de Sergipe	Aracaju	Sergipe	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Sergipe	Aracaju	Sergipe	BR	Brazil
 Prefeitura Municipal de Aracaju	Aracaju	Sergipe	BR	Brazil
 Secretaria Municipal de Educação de Aracaju	Aracaju	Sergipe	BR	Brazil
 Secretaria Municipal de Saúde de Aracaju	Aracaju	Sergipe	BR	Brazil
@@ -18917,6 +19053,7 @@ Secretaria Municipal de Saúde de Cristinápolis	Cristinápolis	Sergipe	BR	Brazi
 Prefeitura Municipal de Cumbe	Cumbe	Sergipe	BR	Brazil
 Secretaria Municipal de Educação de Cumbe	Cumbe	Sergipe	BR	Brazil
 Secretaria Municipal de Saúde de Cumbe	Cumbe	Sergipe	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Sergipe	Divina Pastora	Sergipe	BR	Brazil
 Prefeitura Municipal de Divina Pastora	Divina Pastora	Sergipe	BR	Brazil
 Secretaria Municipal de Educação de Divina Pastora	Divina Pastora	Sergipe	BR	Brazil
 Secretaria Municipal de Saúde de Divina Pastora	Divina Pastora	Sergipe	BR	Brazil
@@ -18944,6 +19081,7 @@ Secretaria Municipal de Saúde de Ilha das Flores	Ilha das Flores	Sergipe	BR	Bra
 Prefeitura Municipal de Indiaroba	Indiaroba	Sergipe	BR	Brazil
 Secretaria Municipal de Educação de Indiaroba	Indiaroba	Sergipe	BR	Brazil
 Secretaria Municipal de Saúde de Indiaroba	Indiaroba	Sergipe	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Sergipe	Itabaiana	Sergipe	BR	Brazil
 Prefeitura Municipal de Itabaiana	Itabaiana	Sergipe	BR	Brazil
 Secretaria Municipal de Educação de Itabaiana	Itabaiana	Sergipe	BR	Brazil
 Secretaria Municipal de Saúde de Itabaiana	Itabaiana	Sergipe	BR	Brazil
@@ -18964,6 +19102,7 @@ Prefeitura Municipal de Japoatã	Japoatã	Sergipe	BR	Brazil
 Secretaria Municipal de Educação de Japoatã	Japoatã	Sergipe	BR	Brazil
 Secretaria Municipal de Saúde de Japoatã	Japoatã	Sergipe	BR	Brazil
 Faculdade José Augusto Vieira	Lagarto	Sergipe	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Sergipe	Lagarto	Sergipe	BR	Brazil
 Prefeitura Municipal de Lagarto	Lagarto	Sergipe	BR	Brazil
 Secretaria Municipal de Educação de Lagarto	Lagarto	Sergipe	BR	Brazil
 Secretaria Municipal de Saúde de Lagarto	Lagarto	Sergipe	BR	Brazil
@@ -18996,6 +19135,7 @@ Secretaria Municipal de Saúde de Muribeca	Muribeca	Sergipe	BR	Brazil
 Prefeitura Municipal de Neópolis	Neópolis	Sergipe	BR	Brazil
 Secretaria Municipal de Educação de Neópolis	Neópolis	Sergipe	BR	Brazil
 Secretaria Municipal de Saúde de Neópolis	Neópolis	Sergipe	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Sergipe	Nossa Senhora Aparecida	Sergipe	BR	Brazil
 Prefeitura Municipal de Nossa Senhora Aparecida	Nossa Senhora Aparecida	Sergipe	BR	Brazil
 Secretaria Municipal de Educação de Nossa Senhora Aparecida	Nossa Senhora Aparecida	Sergipe	BR	Brazil
 Secretaria Municipal de Saúde de Nossa Senhora Aparecida	Nossa Senhora Aparecida	Sergipe	BR	Brazil
@@ -19065,6 +19205,7 @@ Secretaria Municipal de Saúde de Santana do São Francisco	Santana do São Fran
 Prefeitura Municipal de Santo Amaro das Brotas	Santo Amaro das Brotas	Sergipe	BR	Brazil
 Secretaria Municipal de Educação de Santo Amaro das Brotas	Santo Amaro das Brotas	Sergipe	BR	Brazil
 Secretaria Municipal de Saúde de Santo Amaro das Brotas	Santo Amaro das Brotas	Sergipe	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia de Sergipe	São Cristóvão	Sergipe	BR	Brazil
 Prefeitura Municipal de São Cristóvão	São Cristóvão	Sergipe	BR	Brazil
 Secretaria Municipal de Educação de São Cristóvão	São Cristóvão	Sergipe	BR	Brazil
 Secretaria Municipal de Saúde de São Cristóvão	São Cristóvão	Sergipe	BR	Brazil
@@ -19131,7 +19272,7 @@ Secretaria Municipal de Educação de Araguaçu	Araguaçu	Tocantins	BR	Brazil
 Secretaria Municipal de Saúde de Araguaçu	Araguaçu	Tocantins	BR	Brazil
 Faculdade Católica Dom Orione	Araguaína	Tocantins	BR	Brazil
 Faculdade ITPAC	Araguaína	Tocantins	BR	Brazil
-Instituto Federal do Tocantins	Araguaína	Tocantins	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Tocantins	Araguaína	Tocantins	BR	Brazil
 Prefeitura Municipal de Araguaína	Araguaína	Tocantins	BR	Brazil
 Secretaria Municipal de Educação de Araguaína	Araguaína	Tocantins	BR	Brazil
 Secretaria Municipal de Saúde de Araguaína	Araguaína	Tocantins	BR	Brazil
@@ -19139,6 +19280,7 @@ Prefeitura Municipal de Araguanã	Araguanã	Tocantins	BR	Brazil
 Secretaria Municipal de Educação de Araguanã	Araguanã	Tocantins	BR	Brazil
 Secretaria Municipal de Saúde de Araguanã	Araguanã	Tocantins	BR	Brazil
 Faculdade Integrada de Araguatins	Araguatins	Tocantins	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Tocantins	Araguatins	Tocantins	BR	Brazil
 Prefeitura Municipal de Araguatins	Araguatins	Tocantins	BR	Brazil
 Secretaria Municipal de Educação de Araguatins	Araguatins	Tocantins	BR	Brazil
 Secretaria Municipal de Saúde de Araguatins	Araguatins	Tocantins	BR	Brazil
@@ -19278,6 +19420,7 @@ Prefeitura Municipal de Guaraí	Guaraí	Tocantins	BR	Brazil
 Secretaria Municipal de Educação de Guaraí	Guaraí	Tocantins	BR	Brazil
 Secretaria Municipal de Saúde de Guaraí	Guaraí	Tocantins	BR	Brazil
 Centro Universitário UNIRG	Gurupi	Tocantins	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Tocantins	Gurupi	Tocantins	BR	Brazil
 Prefeitura Municipal de Gurupi	Gurupi	Tocantins	BR	Brazil
 Secretaria Municipal de Educação de Gurupi	Gurupi	Tocantins	BR	Brazil
 Secretaria Municipal de Saúde de Gurupi	Gurupi	Tocantins	BR	Brazil
@@ -19378,7 +19521,7 @@ Faculdade ITOP	Palmas	Tocantins	BR	Brazil
 Faculdade Serra do Carmo	Palmas	Tocantins	BR	Brazil
 Faculdade Teológica de Ciências Humanas e Sociais Logos	Palmas	Tocantins	BR	Brazil
 Instituto de Ensino e Pesquisa Objetivo	Palmas	Tocantins	BR	Brazil
-Instituto Federal do Tocantins	Palmas	Tocantins	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Tocantins	Palmas	Tocantins	BR	Brazil
 Prefeitura Municipal de Palmas	Palmas	Tocantins	BR	Brazil
 Secretaria Municipal de Educação de Palmas	Palmas	Tocantins	BR	Brazil
 Secretaria Municipal de Saúde de Palmas	Palmas	Tocantins	BR	Brazil
@@ -19388,6 +19531,7 @@ Universidade Luterana do Brasil	Palmas	Tocantins	BR	Brazil
 Prefeitura Municipal de Palmeirante	Palmeirante	Tocantins	BR	Brazil
 Secretaria Municipal de Educação de Palmeirante	Palmeirante	Tocantins	BR	Brazil
 Secretaria Municipal de Saúde de Palmeirante	Palmeirante	Tocantins	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Tocantins	Palmeiras do Tocantins	Tocantins	BR	Brazil
 Prefeitura Municipal de Palmeiras do Tocantins	Palmeiras do Tocantins	Tocantins	BR	Brazil
 Secretaria Municipal de Educação de Palmeiras do Tocantins	Palmeiras do Tocantins	Tocantins	BR	Brazil
 Secretaria Municipal de Saúde de Palmeiras do Tocantins	Palmeiras do Tocantins	Tocantins	BR	Brazil
@@ -19435,6 +19579,7 @@ Secretaria Municipal de Educação de Porto Alegre do Tocantins	Porto Alegre do 
 Secretaria Municipal de Saúde de Porto Alegre do Tocantins	Porto Alegre do Tocantins	Tocantins	BR	Brazil
 Faculdade ITPAC	Porto Nacional	Tocantins	BR	Brazil
 Faculdade São Marcos	Porto Nacional	Tocantins	BR	Brazil
+Instituto Federal de Educação, Ciência e Tecnologia do Tocantins	Porto Nacional	Tocantins	BR	Brazil
 Prefeitura Municipal de Porto Nacional	Porto Nacional	Tocantins	BR	Brazil
 Secretaria Municipal de Educação de Porto Nacional	Porto Nacional	Tocantins	BR	Brazil
 Secretaria Municipal de Saúde de Porto Nacional	Porto Nacional	Tocantins	BR	Brazil
@@ -19688,6 +19833,7 @@ University of Applied Sciences and Arts of Western Switzerland	Neuchâtel	Neuch�
 University of Neuchâtel	Neuchâtel	Neuchâtel	CH	Switzerland
 Fachhochschule Nordwestschweiz	Solothurn	Solothurn	CH	Switzerland
 University of St. Gallen 	St Gallen	St Gallen	CH	Switzerland
+University of Applied Sciences and Arts of Southern Switzerland	Lugano	Ticino	CH	Switzerland
 University of Lugano	Lugano	Ticino	CH	Switzerland
 Les Roches Gruyère  University of Applied Sciences	Bluche	Valais	CH	Switzerland
 Haute école spécialisée de Suisse occidentale	Sion	Valais	CH	Switzerland
@@ -20335,7 +20481,7 @@ Centro de Química Farmacéutica		La Habana	CU	Cuba
 Centro Internac. de Restauración Neurológica		La Habana	CU	Cuba
 Centro Nacional de Investigaciones Científicas		La Habana	CU	Cuba
 Centro Nacional de Sanidad Agropecuaria		La Habana	CU	Cuba
-Inst. Cub. de Inv. de Derivados Caña de Azúcar		La Habana	CU	Cuba
+Instituto Cubano de Investigación de Derivados Caña de Azúcar		La Habana	CU	Cuba
 Instituto de Cibernética, Matemática y Física		La Habana	CU	Cuba
 Instituto de Ciencia Animal		La Habana	CU	Cuba
 Instituto de Investigación para la Industria Alimenticia		La Habana	CU	Cuba
@@ -20354,12 +20500,12 @@ Hochschule Aalen	Aalen	Baden-Württemberg	DE	Germany
 Duale Hochschule Baden-Württemberg Mosbach	Bad Mergentheim	Baden-Württemberg	DE	Germany
 Hochschule für Wirtschaft, Technik und Kultur Berlin	Baden-Baden	Baden-Württemberg	DE	Germany
 Hochschule Biberach	Biberach	Baden-Württemberg	DE	Germany
-Albert-Ludwigs-Universität Freiburg	Freiburg	Baden-Württemberg	DE	Germany
 Evangelische Fachhochschule Freiburg	Freiburg	Baden-Württemberg	DE	Germany
 Hochschule für Kunst, Design und Populäre Musik	Freiburg	Baden-Württemberg	DE	Germany
 Hochschule für Musik Freiburg	Freiburg	Baden-Württemberg	DE	Germany
 Pädagogische Hochschule Freiburg 	Freiburg	Baden-Württemberg	DE	Germany
 Steinbeis-Transfer-Institut ISW Business School Freiburg	Freiburg	Baden-Württemberg	DE	Germany
+Universität Freiburg	Freiburg	Baden-Württemberg	DE	Germany
 Hochschule für Internationales Management Heidelberg	Heidelberg	Baden-Württemberg	DE	Germany
 Hochschule für Jüdische Studien Heidelberg	Heidelberg	Baden-Württemberg	DE	Germany
 Hochschule für Kirchenmusik der Evangelischen Landeskirche in Baden	Heidelberg	Baden-Württemberg	DE	Germany
@@ -21389,6 +21535,7 @@ Institut Catholique de Toulouse	Toulouse	Midi-Pyrénées	FR	France
 Université Champollion	Toulouse	Midi-Pyrénées	FR	France
 Université de Toulouse II - Le Mirail	Toulouse	Midi-Pyrénées	FR	France
 Université Paul Sabatier	Toulouse	Midi-Pyrénées	FR	France
+Université Toulouse III - Paul Sabatier	Toulouse	Midi-Pyrénées	FR	France
 Université d'Artois	Arras	Nord-Pas de Calais	FR	France
 Université du Littoral	Dunkerque	Nord-Pas de Calais	FR	France
 Université Catholique de Lille	Lille	Nord-Pas de Calais	FR	France
@@ -23635,6 +23782,7 @@ Yamagata Prefectural University of Health Sciences	Yamagata	Tōhoku	JP	Japan
 Yamagata University	Yamagata	Tōhoku	JP	Japan
 Yonezawa Women's Junior College	Yamagata	Tōhoku	JP	Japan
 Chungnam National University	Daejeon	Chungnam	KR	South Korea
+The Catholic University of Daegu	Daegu	Daegu	KR	South Korea
 Chuncheon National University of Education	Chuncheon	Gangwon	KR	South Korea
 Kangwon National University	Chuncheon	Gangwon	KR	South Korea
 Wonju National University	Gangneung	Gangwon	KR	South Korea
@@ -27264,6 +27412,7 @@ Redeemer's University Redemption City	Osogbo	Osun	NG	Nigeria
 Fountain University, Osogbo	Osun	Osun	NG	Nigeria
 Citygate University	Ibadan	Oyo	NG	Nigeria
 Lead City University 	Ibadan	Oyo	NG	Nigeria
+University College Hospital	Ibadan	Oyo	NG	Nigeria
 University of Ibadan 	Ibadan	Oyo	NG	Nigeria
 Ladoke Akintola University of Technology 	Ogbomosho	Oyo	NG	Nigeria
 Ajayi Crowther University	Oyo	Oyo	NG	Nigeria
@@ -27276,34 +27425,34 @@ Taraba State University	Jalingo	Taraba	NG	Nigeria
 Bukar Abba Ibrahim University	Damaturu	Yobe	NG	Nigeria
 Federal University Gashua 	Gashua 	Yobe	NG	Nigeria
 Federal University Gusau 	Gusau	Zamfara	NG	Nigeria
-Noord Media Webdesign	Franeker	Friesland	NH	Netherlands
-Theologische Universiteit Apeldoorn	Apeldoorn	Gelderland	NH	Netherlands
-Radboud Universiteit	Nijmegen	Gelderland	NH	Netherlands
-University Medical Center St Radboud	Nijmegen	Gelderland	NH	Netherlands
-Wageningen UR	Wageningen	Gelderland	NH	Netherlands
-Rijksuniversiteit Groningen	Groningen	Groningen	NH	Netherlands
-Universitair Medisch Centrum Groningen	Groningen	Groningen	NH	Netherlands
-Academisch Ziekenhuis Maastricht	Maastricht	Limburg	NH	Netherlands
-Universiteit Maastricht	Maastricht	Limburg	NH	Netherlands
-University College Maastricht	Maastricht	Limburg	NH	Netherlands
-Universiteit van Tilburg	Tilburg	Noord-Brabant	NH	Netherlands
-Academisch Medisch Centrum	Amsterdam	North Holland	NH	Netherlands
-Amsterdam University College	Amsterdam	North Holland	NH	Netherlands
-Universiteit van Amsterdam	Amsterdam	North Holland	NH	Netherlands
-Universiteitsbibliotheek Vrije Universiteit	Amsterdam	North Holland	NH	Netherlands
-VU medisch centrum	Amsterdam	North Holland	NH	Netherlands
-Universiteit Twente	Enschede	Overijssel	NH	Netherlands
-Theologische Universiteit Kampen	Kampen	Overijssel	NH	Netherlands
-Technische Universiteit Delft	Delft	South Holland	NH	Netherlands
-Leids Universitair Medisch Centrum	Leiden	South Holland	NH	Netherlands
-Universiteit Leiden	Leiden	South Holland	NH	Netherlands
-Erasmus MC: Universitair Medisch Centrum Rotterdam	Rotterdam	South Holland	NH	Netherlands
-Erasmus Universiteit Rotterdam	Rotterdam	South Holland	NH	Netherlands
-Nyenrode Business Universiteit	Breukelen	Utrecht	NH	Netherlands
-Katholieke Theologische Universiteit te Utrecht	Utrecht	Utrecht	NH	Netherlands
-Universitair Medisch Centrum Utrecht	Utrecht	Utrecht	NH	Netherlands
-Universiteit Utrecht	Utrecht	Utrecht	NH	Netherlands
-Universiteit voor Humanistiek	Utrecht	Utrecht	NH	Netherlands
+Noord Media Webdesign	Franeker	Friesland	NL	Netherlands
+Theologische Universiteit Apeldoorn	Apeldoorn	Gelderland	NL	Netherlands
+Radboud Universiteit	Nijmegen	Gelderland	NL	Netherlands
+University Medical Center St Radboud	Nijmegen	Gelderland	NL	Netherlands
+Wageningen UR	Wageningen	Gelderland	NL	Netherlands
+Rijksuniversiteit Groningen	Groningen	Groningen	NL	Netherlands
+Universitair Medisch Centrum Groningen	Groningen	Groningen	NL	Netherlands
+Academisch Ziekenhuis Maastricht	Maastricht	Limburg	NL	Netherlands
+Universiteit Maastricht	Maastricht	Limburg	NL	Netherlands
+University College Maastricht	Maastricht	Limburg	NL	Netherlands
+Universiteit van Tilburg	Tilburg	Noord-Brabant	NL	Netherlands
+Academisch Medisch Centrum	Amsterdam	North Holland	NL	Netherlands
+Amsterdam University College	Amsterdam	North Holland	NL	Netherlands
+Universiteit van Amsterdam	Amsterdam	North Holland	NL	Netherlands
+Universiteitsbibliotheek Vrije Universiteit	Amsterdam	North Holland	NL	Netherlands
+VU medisch centrum	Amsterdam	North Holland	NL	Netherlands
+Universiteit Twente	Enschede	Overijssel	NL	Netherlands
+Theologische Universiteit Kampen	Kampen	Overijssel	NL	Netherlands
+Technische Universiteit Delft	Delft	South Holland	NL	Netherlands
+Leids Universitair Medisch Centrum	Leiden	South Holland	NL	Netherlands
+Universiteit Leiden	Leiden	South Holland	NL	Netherlands
+Erasmus MC: Universitair Medisch Centrum Rotterdam	Rotterdam	South Holland	NL	Netherlands
+Erasmus Universiteit Rotterdam	Rotterdam	South Holland	NL	Netherlands
+Nyenrode Business Universiteit	Breukelen	Utrecht	NL	Netherlands
+Katholieke Theologische Universiteit te Utrecht	Utrecht	Utrecht	NL	Netherlands
+Universitair Medisch Centrum Utrecht	Utrecht	Utrecht	NL	Netherlands
+Universiteit Utrecht	Utrecht	Utrecht	NL	Netherlands
+Universiteit voor Humanistiek	Utrecht	Utrecht	NL	Netherlands
 Universidad Nacional Toribio Rodríguez de Mendoza de Amazonas	Chachapoyas	Amazonas	PE	Peru
 Universidad San Pedro	Caraz	Ancash	PE	Peru
 Universidad Alas Peruanas	Chimbote	Ancash	PE	Peru

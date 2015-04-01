@@ -17,7 +17,7 @@ def element_lang(node):
 
 def load_entities_table():
     table = {}
-    curr_path = os.path.dirname(__file__).replace('\\', '/')
+    curr_path = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
     if os.path.isfile(curr_path + '/../tables/entities.csv'):
         for item in open(curr_path + '/../tables/entities.csv', 'r').readlines():
             if not isinstance(item, unicode):

@@ -20,7 +20,8 @@ import xc_config
 
 
 converter_report_lines = []
-CURRENT_PATH = os.path.dirname(__file__).replace('\\', '/')
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+
 CONFIG_PATH = CURRENT_PATH + '/../config/'
 converter_env = None
 
@@ -738,9 +739,14 @@ def execute_converter(package_paths, collection_name=None):
                 report_location, scilista_item, acron_issue_label = convert_package(package_path)
                 acron, issue_id = acron_issue_label.split(' ')
             except Exception as e:
+                print('ERROR!!!')
+                print(e)
                 bad_pkg_files.append(package_folder)
                 bad_pkg_files_errors.append(str(e))
                 report_location, report_path, scilista_item = [None, None, None]
+
+                report_location, scilista_item, acron_issue_label = convert_package(package_path)
+                acron, issue_id = acron_issue_label.split(' ')
 
             if scilista_item is not None:
                 scilista.append(scilista_item)
@@ -779,9 +785,9 @@ def prepare_env(config):
     converter_env.db_isis.update_indexes(config.issue_db_copy, config.issue_db_copy + '.fst')
     converter_env.db_issue = xc_models.IssueDAO(converter_env.db_isis, config.issue_db_copy)
 
-    import affiliations_services
+    import institutions_service
 
-    org_manager = affiliations_services.OrgManager()
+    org_manager = institutions_service.OrgManager()
     org_manager.load()
 
     converter_env.db_article = xc_models.ArticleDAO(converter_env.db_isis, org_manager)
