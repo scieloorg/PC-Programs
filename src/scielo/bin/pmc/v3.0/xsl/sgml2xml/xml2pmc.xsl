@@ -231,4 +231,5 @@
 	</xsl:template>
 	
 	<xsl:template match="contrib/xref[text()='']"></xsl:template>
+	<xsl:template match="ref/@specific-use"></xsl:template>
 </xsl:stylesheet>
