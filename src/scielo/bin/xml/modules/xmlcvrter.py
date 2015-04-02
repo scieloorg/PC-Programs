@@ -627,7 +627,6 @@ def xml_converter_get_inputs(args):
 def xml_converter_validate_inputs(package_path, collection_acron):
     # python xml_converter.py <xml_src>
     # python xml_converter.py <collection_acron>
-    messages = []
     errors = []
     if package_path is None:
         if collection_acron is None:
@@ -638,7 +637,7 @@ def xml_converter_validate_inputs(package_path, collection_acron):
 
 
 def xml_config_filename(collection_acron):
-    filename = configuration_filename = CURRENT_PATH + '/../../scielo_paths.ini'
+    filename = CURRENT_PATH + '/../../scielo_paths.ini'
 
     if not os.path.isfile(filename):
         if not collection_acron is None:
@@ -757,7 +756,7 @@ def execute_converter(package_paths, collection_name=None):
                     report_location = '<html><body>' + html_reports.link(link, link) + '</body></html>'
 
                     transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
-                send_message(mailer, config.email_to, config.email_subject_package_evaluation, report_location)
+                send_message(mailer, config.email_to, config.email_subject_package_evaluation + ' ' + package_folder, report_location)
 
         if len(invalid_pkg_files) > 0:
             send_message(mailer, config.email_to, config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
