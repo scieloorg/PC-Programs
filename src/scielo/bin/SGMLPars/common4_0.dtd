@@ -129,7 +129,7 @@ filename       CDATA #IMPLIED>
 <!ELEMENT xref - - (#PCDATA | graphic)    >
 <!ATTLIST xref
           ref-type  CDATA #IMPLIED 
-          rid       CDATA #REQUIRED>
+          rid       IDREFS #REQUIRED>
 
 <!ELEMENT table - - (thead?, tbody)    >
 <!ELEMENT thead - - (tr+)    >
@@ -318,6 +318,10 @@ filename       CDATA #IMPLIED>
 <!ELEMENT li  - - (label?, #PCDATA) +(%i.float;)>
 <!ELEMENT sigblock - - (sig, role)+ >
 <!ELEMENT sig - - (#PCDATA)   +(%i.float;) >
+<!ATTLIST sig
+          rid  IDREFS #IMPLIED
+          role CDATA #IMPLIED
+           >
 <!ELEMENT role - - (#PCDATA) >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->

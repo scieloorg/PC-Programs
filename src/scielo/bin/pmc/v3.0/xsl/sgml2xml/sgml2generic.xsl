@@ -612,20 +612,35 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	
 	<xsl:template match="article | text | response | subart" mode="front-contrib-group">
 		<xsl:apply-templates select="front/authgrp | authgrp" mode="front-contrib-group"/>
-		<xsl:if test="not(.//authgrp)">
-			<xsl:apply-templates select=".//sig[fname and surname]" mode="front-contrib-group"/>
+		
+		<xsl:if test="sigblock and not(authrgrp) and not(front/authgrp)">
+			<contrib-group>
+				<xsl:apply-templates select="sigblock/sig[fname and surname]" mode="front-contrib-group"/>
+				<xsl:if test="count(normaff)=1">
+					<xsl:apply-templates select="normaff"/>
+				</xsl:if>
+			</contrib-group>
+			<xsl:if test="count(normaff)&gt;1">
+				<xsl:apply-templates select="normaff"/>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="sig[fname and surname]" mode="front-contrib-group">
-		<contrib-group>
-			<!-- author front -->
-			<contrib>
-				<xsl:apply-templates select="@role"/>
-				<xsl:apply-templates select="."/>
-				<xsl:copy-of select="../role"/>
-			</contrib>
-		</contrib-group>
+		<!-- author front -->
+		<contrib>
+			<xsl:apply-templates select="@role"/>
+			<xsl:apply-templates select="."/>
+			<xsl:copy-of select="../role"/>
+			<xsl:choose>
+				<xsl:when test="xref">
+					<xsl:apply-templates select="xref"/>
+				</xsl:when>
+				<xsl:when test="@rid">
+					<xref ref-type="aff" rid="{@rid}"/>
+				</xsl:when>
+			</xsl:choose>
+		</contrib>
 	</xsl:template>
 	
 	<xsl:template match="authgrp" mode="front-contrib-group">
@@ -672,9 +687,17 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:apply-templates select="afftrans"/>
 				</xsl:if>
 			</xsl:when>
-			<xsl:otherwise>
-				<xsl:apply-templates select=".//sig[fname and surname]" mode="front-contrib-group"/>
-			</xsl:otherwise>
+			<xsl:when test="xmlbody/sigblock">
+				<contrib-group>
+					<xsl:apply-templates select="xmlbody/sigblock/sig[fname and surname]" mode="front-contrib-group"/>
+					<xsl:if test="count(normaff)=1">
+						<xsl:apply-templates select="normaff"/>
+					</xsl:if>
+				</contrib-group>
+				<xsl:if test="count(normaff)&gt;1">
+					<xsl:apply-templates select="normaff"/>
+				</xsl:if>
+			</xsl:when>
 		</xsl:choose>
 	</xsl:template>
 	<xsl:template match="cltrial" mode="front-clinical-trial">
@@ -925,7 +948,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<aff>
 			<xsl:apply-templates select="@id"/>
 			<xsl:apply-templates select="." mode="label"/>
-			<institution content-type="original"><xsl:apply-templates select="*[name()!='label']|text()" mode="original"/></institution>
+			<institution content-type="original"><xsl:apply-templates select="." mode="original"/></institution>
 			<xsl:choose>
 				<xsl:when test="@norgname">
 					<xsl:if test="@norgname!='Not normalized'">
@@ -991,12 +1014,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:choose>
 	</xsl:template>
 	
-	<xsl:template match="aff/* | normaff/*" mode="original">
-		<xsl:value-of select="normalize-space(.)"/>
+	<xsl:template match="aff | normaff" mode="original">
+		<xsl:apply-templates select="*|text()" mode="original"/>
 	</xsl:template>
-	
+	<xsl:template match="label" mode="original"></xsl:template>
+	<xsl:template match="aff//* | normaff//*" mode="original">
+		<xsl:value-of select="." xml:space="preserve"/>
+	</xsl:template>
 	<xsl:template match="aff//text() | normaff//text()" mode="original">
-		<xsl:value-of select="."/>
+		<xsl:value-of select="." xml:space="preserve"/>
 	</xsl:template>
 	
 	<xsl:template match="xref/@rid">
