@@ -472,11 +472,18 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="article|text|doc" mode="dtd-version">
 		<xsl:attribute name="dtd-version">3.0</xsl:attribute>
 	</xsl:template>
+	<xsl:template match="@sps">
+		<xsl:attribute name="specific-use">sps-<xsl:choose>
+			<xsl:when test="contains(.,'sps-')"><xsl:value-of select="substring-after(.,'sps-')"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="."/></xsl:otherwise>
+		</xsl:choose></xsl:attribute>
+	</xsl:template>
 	<xsl:template match="article|text|doc">
 		<article>
 			<xsl:apply-templates select="." mode="dtd-version"/>
 			<xsl:apply-templates select="@doctopic" mode="type"/>
 			<xsl:apply-templates select="@language"/>
+			<xsl:apply-templates select="@sps"/>
 			<xsl:apply-templates select="." mode="front">
 				<xsl:with-param name="language" select="@language"/>
 			</xsl:apply-templates>

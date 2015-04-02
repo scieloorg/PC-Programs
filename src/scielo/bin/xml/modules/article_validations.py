@@ -185,6 +185,7 @@ class ArticleContentValidation(object):
         #print(datetime.now().isoformat() + ' validations')
         items.append(self.language)
         #print(datetime.now().isoformat() + ' validations')
+        items.append(self.sps)
         items.append(self.article_type)
         #print(datetime.now().isoformat() + ' validations')
         items.append(self.article_date_types)
@@ -245,6 +246,14 @@ class ArticleContentValidation(object):
     @property
     def article_type(self):
         return expected_values('@article-type', self.article.article_type, attributes.DOCTOPIC.keys(), 'FATAL ')
+
+    @property
+    def sps(self):
+        label, status, msg = required('article/@specific-use', self.article.sps, 'FATAL ERROR')
+        if status == 'OK':
+            if not 'sps-' in self.article.sps:
+                label, status, msg = (label, 'FATAL ERROR', 'Invalid value of ' + label + ': ' + self.article.sps + '.')
+        return (label, status, msg)
 
     @property
     def language(self):

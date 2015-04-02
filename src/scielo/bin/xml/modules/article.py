@@ -206,6 +206,12 @@ class ArticleXML(object):
                 return self.tree.find('.').attrib.get('dtd-version')
 
     @property
+    def sps(self):
+        if self.tree is not None:
+            if self.tree.find('.') is not None:
+                return self.tree.find('.').attrib.get('specific-use')
+
+    @property
     def article_type(self):
         if self.tree is not None:
             if self.tree.find('.') is not None:
