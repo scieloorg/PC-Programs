@@ -2677,12 +2677,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="p/graphic | caption/graphic | li/graphic">
 		<inline-graphic>
 			<xsl:apply-templates select="@*"/>
-			<xsl:apply-templates select="." mode="graphic"/>
 		</inline-graphic>
-	</xsl:template>
-	<xsl:template match="graphic" mode="p-in-equation"> </xsl:template>
-	<xsl:template match="p" mode="p-in-equation">
-		<xsl:apply-templates select="*|text()" mode="p-in-equation"/>
 	</xsl:template>
 	<xsl:template match="licenses">
 		<permissions>
