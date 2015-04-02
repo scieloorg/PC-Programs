@@ -163,7 +163,6 @@ def restore_xml_file(xml_filename, temp_filename):
 def remove_break_lines_characters(content):
     r = ' '.join(content.split())
     r = r.replace('> <', '><')
-    r = r.replace('> ', '>')
     r = r.replace(' </', '</')
     return r
 
@@ -393,9 +392,15 @@ def pretty_print(content):
     new = []
     for item in items:
         if not '<' in item and not '>' in item:
+            if item.endswith(' '):
+                item += 'REPLACESPACE'
+            if item.startswith(' '):
+                item = 'REPLACESPACE' + item
+
             check_item = ' '.join(item.split())
             if len(check_item) > 0:
                 item = check_item
+            item = item.replace('REPLACESPACE', ' ')
         new.append(item)
 
     return ''.join(new)

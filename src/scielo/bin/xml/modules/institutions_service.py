@@ -88,16 +88,16 @@ class OrgDBManager(object):
         r = []
         where_expr = self.sql.format_expr(['name', 'country_name'], [orgname, country_name], ' AND ')
         if len(where_expr) > 0:
-            expr = self.sql.get_select_statement(self.table_name, ['name', 'country_code'], where_expr)
+            expr = self.sql.get_select_statement(self.table_name, ['name', 'country_name'], where_expr)
             r = self.sql.query(expr)
         if len(r) == 0:
             where_expr = ' AND '.join(['name LIKE ' + "'%" + word + "%'" for word in orgname.split(' ')])
-            expr = self.sql.get_select_statement(self.table_name, ['name', 'country_code'], where_expr)
+            expr = self.sql.get_select_statement(self.table_name, ['name', 'country_name'], where_expr)
             r += self.sql.query(expr)
         if len(r) == 0:
             for word in orgname.split(' '):
                 where_expr = 'name LIKE ' + "'%" + word + "%'"
-                expr = self.sql.get_select_statement(self.table_name, ['name', 'country_code'], where_expr)
+                expr = self.sql.get_select_statement(self.table_name, ['name', 'country_name'], where_expr)
                 r += self.sql.query(expr)
             r = list(set(r))
         return r
@@ -237,8 +237,8 @@ def get_normalized_from_wayta(orgname, country):
         except:
             pass
     results = sorted(list(set(results)))
-    print('\nWayta')
-    print('\n'.join(results))
+    #print('\nWayta')
+    #print('\n'.join(results))
     return results
 
 
@@ -259,9 +259,10 @@ def validate_organization(org_manager, orgname, norgname, country_name, country_
 
 def get_similars_from_normalized_list(org_manager, orgname, country_name):
     items = org_manager.get_similar_orgnames_in_country_name_items(orgname, country_name)
-    results = sorted(list(set([_orgname + ' - ' + country_name for _orgname, _country_code in items])))
-    print('\nNormalized')
-    print('\n'.join(results))
+    #print(items)
+    results = sorted(list(set([_orgname + ' - ' + _country_name for _orgname, _country_name in items])))
+    #print('\nNormalized')
+    #print('\n'.join(results))
     return results
 
 
@@ -274,12 +275,19 @@ def normaff_search(text):
     country = text[text.rfind(',')+1:].strip()
     print(orgname)
     print(country)
-    results = get_normalized_from_wayta(orgname, country)
-    org_manager = OrgManager()
-    org_manager.load()
-    results += get_similars_from_normalized_list(org_manager, orgname, country)
+    results = []
+    try:
+        results = get_normalized_from_wayta(orgname, country)
+    except:
+        pass
+
+    try:
+        org_manager = OrgManager()
+        org_manager.load()
+        results += get_similars_from_normalized_list(org_manager, orgname, country)
+    except:
+        pass
+
     results = sorted(list(set(results)))
 
-    print('\nResults:')
-    print('\n'.join(results))
     return results

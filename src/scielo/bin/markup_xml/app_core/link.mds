@@ -179,7 +179,7 @@ th
 align;colspan;rowspan
 
 sig
-role
+rid;role
 
 boxedtxt
 id
