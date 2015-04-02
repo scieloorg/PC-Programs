@@ -756,9 +756,12 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
 
 
 def make_pmc_package(articles, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files):
-    done = False
+    do_it = False
     for doc, doc_files_info in articles:
-        if doc.journal_id_nlm_ta is not None:
+        if doc.journal_id_nlm_ta is None:
+            html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', 'It is not a PMC article.')
+        else:
+            do_it = True
             print('.....')
             print(doc_files_info.xml_name)
             print('-'*len(doc_files_info.xml_name))
@@ -772,8 +775,8 @@ def make_pmc_package(articles, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, 
             register_log('validate_article_xml pmc')
             xpchecker.style_validation(True, pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, doc_files_info.pmc_style_report_filename, pmc_dtd_files.xsl_prep_report, pmc_dtd_files.xsl_report, pmc_dtd_files.database_name)
             xml_output(True, pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
-            done = True
-    if done:
+
+    if do_it:
         for f in os.listdir(scielo_pkg_path):
             if not f.endswith('.xml') and not f.endswith('.jpg'):
                 shutil.copyfile(scielo_pkg_path + '/' + f, pmc_pkg_path + '/' + f)
@@ -841,11 +844,12 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         generate_reports(scielo_pkg_path, report_path, not from_markup, pkg_validation_report)
 
-        if not from_converter and toc_f == 0 and fatal_errors == 0:
-            register_log('pack_and_validate: zip_packages')
-            zip_packages(scielo_pkg_path)
+        if not from_converter or (toc_f + fatal_errors == 0):
             register_log('pack_and_validate: make_pmc_package')
             make_pmc_package(pkg_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+
+            register_log('pack_and_validate: zip_packages')
+            zip_packages(scielo_pkg_path)
 
         print('Result of the processing:')
         print(results_path)
