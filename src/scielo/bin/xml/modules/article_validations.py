@@ -736,7 +736,7 @@ class ReferenceContentValidation(object):
         if self.reference.ref_status == 'display-only':
             found_fatal = list(set([status for label, status, message if status in ['FATAL ERROR']]))
             if len(found_fatal) == 0:
-                r.append('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only"')
+                r.append('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete.')
             else:
                 items = []
                 for label, status, message in r:
