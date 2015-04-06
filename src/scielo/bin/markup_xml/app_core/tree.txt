@@ -137,7 +137,7 @@ back;#FALSE#;#FALSE#
 response;#FALSE#;#TRUE#
 subart;#FALSE#;#TRUE#
 
-attrib
+elemattr
 
 app
 sectitle;#FALSE#;#FALSE#
@@ -248,7 +248,7 @@ dperiod
 edition
 
 element
-attrib;#FALSE#;#TRUE#
+elemattr;#FALSE#;#TRUE#
 
 email
 
@@ -262,10 +262,11 @@ et-al
 extent
 
 figgrp
-label;#FALSE#;#FALSE#
-caption;#FALSE#;#FALSE#
 graphic;#FALSE#;#FALSE#
 alttext;#FALSE#;#FALSE#
+attrib;#TRUE#;#FALSE#
+label;#FALSE#;#FALSE#
+caption;#FALSE#;#FALSE#
 
 figgrps
 label;#FALSE#;#FALSE#
@@ -1068,11 +1069,11 @@ series
 versegrp
 versline;#FALSE#;#TRUE#
 versegrp;#FALSE;#TRUE#
-attrb;#FALSE;#TRUE#
+attrib;#FALSE;#TRUE#
 
 versline
 
-attrb
+attrib
 
 alttitle
 

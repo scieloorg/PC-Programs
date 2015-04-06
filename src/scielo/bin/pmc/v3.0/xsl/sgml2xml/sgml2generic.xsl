@@ -3198,10 +3198,10 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="element">
 		<xsl:element name="{@name}">
-			<xsl:apply-templates select="attrib|element|text()"/>
+			<xsl:apply-templates select="*|text()"/>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="attrib">
+	<xsl:template match="elemattr">
 		<xsl:attribute name="{@name}">
 			<xsl:apply-templates select="@value"/>
 		</xsl:attribute>
@@ -3521,10 +3521,6 @@ et al.</copyright-statement>
 	
 	<xsl:template match="versline">
 		<verse-line><xsl:apply-templates select="@*|*|text()"/></verse-line>
-	</xsl:template>
-	
-	<xsl:template match="attrb">
-		<attrib><xsl:apply-templates select="@*|*|text()"/></attrib>
 	</xsl:template>
 	
 	<xsl:template match="alttitle">

@@ -196,8 +196,8 @@ appgrp;Identify a group of appendixes
 series;Identify series
 versegrp;Identify song, poem, or verse
 versline;Identify a song, poem, or verse line
-attrb;Identify information concerning the origin of an extract, display quote, poetry, or similar element.
+attrib;Identify information concerning the origin of an extract, display quote, poetry, or similar element.
 alttext;Identify an alternative text for a graphic or figure
 alttitle;Identify an alternative title for the document title
 element;Identify any element of XML
-attrib;Identify any attribute of XML
+elemattr;Identify any attribute of XML
