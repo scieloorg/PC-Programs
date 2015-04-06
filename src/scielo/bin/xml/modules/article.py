@@ -1002,7 +1002,7 @@ class ReferenceXML(object):
             return self.element_citation.attrib.get('publication-type')
 
     @property
-    def specific_use(self):
+    def ref_status(self):
         if self.root is not None:
             return self.root.attrib.get('specific-use')
 
