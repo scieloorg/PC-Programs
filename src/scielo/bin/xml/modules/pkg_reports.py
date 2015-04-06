@@ -42,7 +42,7 @@ def get_article_xml_validations_reports(xml_filename, dtd_files, dtd_report, sty
     if xml is None:
         f += 1
     if not valid_dtd:
-        w += 1
+        f += 1
     return (f, e, w)
 
 
