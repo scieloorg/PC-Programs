@@ -196,8 +196,8 @@ appgrp;Identifica un grupo de apéndices
 series;Identifica seriada
 versegrp;Identifica canción, poema, verso
 versline;Identifica líneas de canción, poema, verso
-attrb;Identifica información relacionada con la origen de una cita, poesía, o similar.
+attrib;Identifica información relacionada con la origen de una cita, poesía, o similar.
 alttext;Identifica un texto alternativo para describir una imágen.
 alttitle;Identifica un título alternativo del documento
 element;Identifica cualquier elemento de XML
-attrib;Identifica cualquier attributo de XML
+elemattr;Identifica cualquier attributo de XML
