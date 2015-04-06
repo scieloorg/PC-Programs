@@ -254,7 +254,9 @@
                         | moreinfo)+
             >
 <!ATTLIST ref     
-          reftype CDATA #REQUIRED >
+          id       ID   #REQUIRED   
+          reftype CDATA #REQUIRED 
+          status CDATA  #IMPLIED>
 
 <!ELEMENT authors     - - ((pauthor | cauthor)+, et-al?)* >
 <!ATTLIST authors     
