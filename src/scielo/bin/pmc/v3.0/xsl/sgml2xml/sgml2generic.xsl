@@ -2657,7 +2657,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:if test=".//table">
 			<xsl:apply-templates select=".//table" mode="pmc-table"></xsl:apply-templates>
 		</xsl:if>
-		<xsl:apply-templates select="mmlmath|texmath"></xsl:apply-templates>
+		<xsl:apply-templates select="mmlmath|texmath|label|attrib"></xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="tr/td | tr/th" mode="pmc-table-cols">
 		<col>
