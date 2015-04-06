@@ -733,13 +733,17 @@ class ReferenceContentValidation(object):
         for item in self.authors_list:
             r.append(item)
 
-        if self.reference.specific_use == 'display-only':
-            items = []
-            for label, status, message in r:
-                if status != 'OK':
-                    status = 'IGNORED ' + status.lower()
-                items.append((label, status, message))
-            r = items
+        if self.reference.ref_status == 'display-only':
+            found_fatal = list(set([status for label, status, message if status in ['FATAL ERROR']]))
+            if len(found_fatal) == 0:
+                r.append('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only"')
+            else:
+                items = []
+                for label, status, message in r:
+                    if status != 'OK':
+                        status = 'IGNORED ' + status.lower()
+                    items.append((label, status, message))
+                r = items
         return r
 
     @property
