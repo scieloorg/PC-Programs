@@ -1651,7 +1651,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="@id"><xsl:value-of select="substring(@id,2)"/></xsl:when><xsl:otherwise><xsl:value-of select="position()"/></xsl:otherwise>
 		</xsl:choose></xsl:variable>
 		<ref id="B{$id}">
-			<xsl:apply-templates select="@refstatus"/>
+			<xsl:apply-templates select="@status"/>
 			<xsl:apply-templates select="label"/>
 			<xsl:apply-templates select="." mode="text-ref"/>
 			<element-citation>
@@ -3507,7 +3507,7 @@ et al.</copyright-statement>
 		<xsl:attribute name="publication-type"><xsl:value-of select="."/></xsl:attribute>
 	</xsl:template>
 	
-	<xsl:template match="@refstatus">
+	<xsl:template match="ref/@status">
 		<xsl:if test=".='incomplete'">
 			<xsl:attribute name="specific-use">display-only</xsl:attribute>
 		</xsl:if>
