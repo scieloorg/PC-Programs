@@ -256,6 +256,7 @@ equation
 graphic;#FALSE#;#FALSE#
 texmath;#FALSE#;#FALSE#
 mmlmath;#FALSE#;#FALSE#
+label;#FALSE#;#FALSE#
 
 et-al
 
