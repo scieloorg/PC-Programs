@@ -82,7 +82,7 @@ filename       CDATA #IMPLIED>
 <!ATTLIST figgrps
           id       CDATA #REQUIRED
           >
-<!ELEMENT figgrp - - (  graphic, notes?, ( label?, caption)?   )   >
+<!ELEMENT figgrp - - (  graphic, notes?, alttext?, attrib?, ( label?, caption)?   )   >
 <!ATTLIST figgrp
           id       CDATA #REQUIRED
           ftype       CDATA #IMPLIED 
@@ -92,12 +92,12 @@ filename       CDATA #IMPLIED>
 <!ATTLIST equation
           id       CDATA #REQUIRED>
 
-<!ELEMENT element - - (attrib*, element*)   >
+<!ELEMENT element - - (elemattr*, element*)   >
 <!ATTLIST element
           name       CDATA #REQUIRED>
 
-<!ELEMENT attrib  - - (#PCDATA) >
-<!ATTLIST attrib
+<!ELEMENT elemattr  - - (#PCDATA) >
+<!ATTLIST elemattr
           name CDATA #REQUIRED 
           value CDATA #REQUIRED>
 
