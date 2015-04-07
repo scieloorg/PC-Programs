@@ -178,7 +178,8 @@ letterto;Identify the recipient of the letter
 found-at;Identify the location of the letter
 patentno;Identify the number of the patent
 moreinfo;Identify any other information to which there is no tag to identify it. Use the descript attribute to describe the data
-authors;Group of authors in the references
+*authors;Identifica automaticamente um grupo de autores da referência
+authors;Agrupa os autores da referência
 pauthor;Identify a (person) author
 *pauthor;Identify automatically a (person) author: surname and fname
 normaff;Identify normalized affiliation
