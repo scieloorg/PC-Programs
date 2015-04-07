@@ -178,6 +178,7 @@ letterto;Identifica el destinatario de la carta
 found-at;Identifica donde está localizado el documento
 patentno;Identifica el número de la patente
 moreinfo;Identifica cualquier otra información
+*authors;Identifica automáticamente un grupo de autores em referencias
 authors;Agrupa autores de una cita
 pauthor;Identifica autor persona
 *pauthor;Identifica automáticamente el autor persona: surname y fname

@@ -965,6 +965,7 @@ ref;#FALSE#;#TRUE#
 ref
 text-ref;#FALSE#;#FALSE#
 label;#FALSE#;#FALSE#
+*authors;#TRUE#;#FALSE#
 authors;#TRUE#;#FALSE#
 arttitle;#TRUE#;#FALSE#
 chptitle;#TRUE#;#FALSE#
