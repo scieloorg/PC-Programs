@@ -998,6 +998,8 @@ volid;#TRUE#;#TRUE#
 
 text-ref
 
+*authors
+
 authors
 *pauthor;#FALSE#;#TRUE#
 pauthor;#FALSE#;#TRUE#
