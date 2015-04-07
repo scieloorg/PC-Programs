@@ -78,6 +78,7 @@ class QueueOrganizer:
                 #shutil.copyfile(archived_file, archive_path2 + '/' + new_name)
             shutil.copy(filename, archive_path)
 
+
 class PackagesProcessor:
     def __init__(self, input_path, report_sender, msg_template, report_path, tracker, xmlpacker):
         self.input_path = input_path
@@ -86,7 +87,8 @@ class PackagesProcessor:
         self.tracker = tracker
         self.msg_template = msg_template
         self.xml_packer = xmlpacker
-        
+        self.invalid_packages = []
+
     def report_not_processed_packages(self, template_msg):
         items = []
         for package_folder in os.listdir(self.input_path):            
@@ -95,53 +97,56 @@ class PackagesProcessor:
                     items.append( self.input_path + '/' + package_folder + '/' + xml )
                 os.unlink(self.input_path + '/' + package_folder + '/' + xml)
             os.rmdir(self.input_path + '/' + package_folder)
-        if len(items)>0:
-            self.report_sender.send_to_adm(template_msg, '\n'.join(items))
-            
+        if len(self.invalid_packages)>0:
+            self.report_sender.send_to_adm(template_msg, '\n'.join(self.invalid_packages))
 
     def open_packages(self, information_analyst, documents_archiver, img_converter, fulltext_generator):
         information_analyst.xml_packer = self.xml_packer
         from datetime import datetime
         for folder in os.listdir(self.input_path):
             package_folder = self.input_path + '/' + folder
-            if os.path.isdir(package_folder):
-                package = Package(package_folder, self.report_path + '/' + folder)
-                self.tracker.register(package.name, 'begin-open_package')
-                now = datetime.now().isoformat()
-                package.read_package_sender_email()
-                self.tracker.register(package.name, 'img to jpg')
-                errors = img_converter.img_to_jpeg(package.package_path, package.package_path)
-                if len(errors) > 0:
-                    package.report.write('Some files were unable to convert:\n' + '\n'.join(errors), True, True)
-                self.tracker.register(package.name, 'analyze_package')
-                fatal_errors, folders = information_analyst.analyze_package(package, documents_archiver.folder_table_name)
 
-                package.report.write('='*80, True, True)
+            try:
+                if os.path.isdir(package_folder):
+                    package = Package(package_folder, self.report_path + '/' + folder)
+                    self.tracker.register(package.name, 'begin-open_package')
+                    now = datetime.now().isoformat()
+                    package.read_package_sender_email()
+                    self.tracker.register(package.name, 'img to jpg')
+                    errors = img_converter.img_to_jpeg(package.package_path, package.package_path)
+                    if len(errors) > 0:
+                        package.report.write('Some files were unable to convert:\n' + '\n'.join(errors), True, True)
+                    self.tracker.register(package.name, 'analyze_package')
+                    fatal_errors, folders = information_analyst.analyze_package(package, documents_archiver.folder_table_name)
 
-                if len(fatal_errors) == 0:
-                    documents_archiver.put_in_the_box(folders, package)
-                else:
-                    package.report.result += 'FATAL ERRORS: ' + str(len(fatal_errors)) + '\nUNABLE TO PUBLISH THIS PACKAGE.'
+                    package.report.write('='*80, True, True)
 
-                package.report.write('='*80 + '\n' + now + '\n' + datetime.now().isoformat(), True, True)
+                    if len(fatal_errors) == 0:
+                        documents_archiver.put_in_the_box(folders, package)
+                    else:
+                        package.report.result += 'FATAL ERRORS: ' + str(len(fatal_errors)) + '\nUNABLE TO PUBLISH THIS PACKAGE.'
 
-                result = '\n' + '='*80 + '\n' + package.report.result + '\n' + '='*80 + '\n'
-                package.report.write(result, True)
-                result += open(package.report.summary_filename, 'r').read()
+                    package.report.write('='*80 + '\n' + now + '\n' + datetime.now().isoformat(), True, True)
 
-                open(package.report.summary_filename, 'w').write(result)
+                    result = '\n' + '='*80 + '\n' + package.report.result + '\n' + '='*80 + '\n'
+                    package.report.write(result, True)
+                    result += open(package.report.summary_filename, 'r').read()
 
-                self.tracker.register(package.name, 'send report')
-                package.report.write(self.report_sender.send_package_evaluation_report(self.msg_template, package.name, [package.report.summary_filename], information_analyst.reports_to_attach, package.package_sender_email))
+                    open(package.report.summary_filename, 'w').write(result)
 
-                q_xml = [f for f in os.listdir(package.package_path) if f.endswith('.xml')]
-                if len(q_xml) == 0:
-                    for f in os.listdir(package.package_path):
-                        os.unlink(package.package_path + '/' + f)
-                    os.rmdir(package.package_path)
-                self.tracker.register(package.name, 'end-open_package')
-   
-    
+                    self.tracker.register(package.name, 'send report')
+                    package.report.write(self.report_sender.send_package_evaluation_report(self.msg_template, package.name, [package.report.summary_filename], information_analyst.reports_to_attach, package.package_sender_email))
+
+                    q_xml = [f for f in os.listdir(package.package_path) if f.endswith('.xml')]
+                    if len(q_xml) == 0:
+                        for f in os.listdir(package.package_path):
+                            os.unlink(package.package_path + '/' + f)
+                        os.rmdir(package.package_path)
+                    self.tracker.register(package.name, 'end-open_package')
+            except:
+                self.invalid_packages.append(folder)
+
+
 class Package:
     def __init__(self, package_path, report_path):
         self.report_path = report_path
