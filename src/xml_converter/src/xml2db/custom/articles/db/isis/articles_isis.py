@@ -81,8 +81,10 @@ class AheadManager:
             self.cisis.id2mst(id_filename, mst_filename, True)
 
             for id_name in os.listdir(id_path):
-                if id_name != 'i.id' and id_name != '00000.id' and id_name.endswith('.id'):
-                    self.cisis.id2mst(id_path + '/' + id_name, mst_filename, False)
+                order = id_name.replace('.id', '')
+                if order.isdigit():
+                    if id_name != 'i.id' and id_name != '00000.id' and id_name.endswith('.id'):
+                        self.cisis.id2mst(id_path + '/' + id_name, mst_filename, False)
 
 
 class ISISManager4Articles:
@@ -181,9 +183,16 @@ class ISISManager4Articles:
             os.unlink(issue_paths.issue_db_filename + '.mst')
             os.unlink(issue_paths.issue_db_filename + '.xrf')
 
+        for id_file in os.listdir(issue_paths.issue_id_path):
+            order = id_file.replace('.id', '')
+            if not order == 'i':
+                if not order.isdigit():
+                    os.unlink(issue_paths.issue_id_path + '/' + id_file)
         self.cisis.id2mst(issue_paths.issue_i_record_filename, issue_paths.issue_db_filename, False)
-        id_files = [f for f in os.listdir(issue_paths.issue_id_path) if f != 'i.id' and f != '00000.id' and f.endswith('.id')]
+        id_files = [f for f in os.listdir(issue_paths.issue_id_path) if f != 'i.id' and f != '00000.id' and f.endswith('.id') and f.replace('.id', '').isdigit()]
         for id_file in id_files:
+            #order = id_file.replace('.id', '')
+            #if order.isdigit():
             package.report.write(id_file, True, False, False)
             self.cisis.id2mst(issue_paths.issue_id_path + '/' + id_file, issue_paths.issue_db_filename, False)
 
@@ -244,6 +253,7 @@ class ISISManager4Articles:
 
         # identify files and paths
         id_filename = issue_paths.article_filename(article)
+
         if os.path.exists(id_filename):
             os.unlink(id_filename)
 
@@ -346,12 +356,14 @@ class IssuePath:
 
     def article_filename(self, article):
         id_filename = self.issue_id_path + '/' + os.path.basename(article.xml_filename.replace('.xml', '.id'))
-        order = '00000' + article.order
-
-        new_id_filename = self.issue_id_path + '/' + order[-5:] + '.id'
         if os.path.exists(id_filename):
             os.unlink(id_filename)
 
+        order = '00000' + article.order
+        print('article_filename')
+        print(order)
+
+        new_id_filename = self.issue_id_path + '/' + order[-5:] + '.id'
         return new_id_filename
 
     @property
