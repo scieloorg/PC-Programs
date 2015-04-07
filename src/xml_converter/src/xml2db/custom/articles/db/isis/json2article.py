@@ -385,6 +385,10 @@ class JSON_Article:
         #article = Article(doi, first_page, last_page)
         article = Article(doi, return_singleval(self.json_data['f'], '121'), first_page, last_page)
 
+        print('json2article')
+        print(self.json_data['f']['121'])
+        print(article.order)
+
         titles = return_multval(self.json_data['f'], '12')
         norm_titles = []
         for t in titles:

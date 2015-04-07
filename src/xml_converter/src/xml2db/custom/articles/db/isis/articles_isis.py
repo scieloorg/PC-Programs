@@ -183,9 +183,16 @@ class ISISManager4Articles:
             os.unlink(issue_paths.issue_db_filename + '.mst')
             os.unlink(issue_paths.issue_db_filename + '.xrf')
 
+        for id_file in os.listdir(issue_paths.issue_id_path):
+            order = id_file.replace('.id', '')
+            if not order == 'i':
+                if not order.isdigit():
+                    os.unlink(issue_paths.issue_id_path + '/' + id_file)
         self.cisis.id2mst(issue_paths.issue_i_record_filename, issue_paths.issue_db_filename, False)
-        id_files = [f for f in os.listdir(issue_paths.issue_id_path) if f != 'i.id' and f != '00000.id' and f.endswith('.id')]
+        id_files = [f for f in os.listdir(issue_paths.issue_id_path) if f != 'i.id' and f != '00000.id' and f.endswith('.id') and f.replace('.id', '').isdigit()]
         for id_file in id_files:
+            #order = id_file.replace('.id', '')
+            #if order.isdigit():
             package.report.write(id_file, True, False, False)
             self.cisis.id2mst(issue_paths.issue_id_path + '/' + id_file, issue_paths.issue_db_filename, False)
 
@@ -246,23 +253,21 @@ class ISISManager4Articles:
 
         # identify files and paths
         id_filename = issue_paths.article_filename(article)
-        order = id_filename.replace('.id', '')
 
         if os.path.exists(id_filename):
             os.unlink(id_filename)
 
-        if order.isdigit():
-            # generate id file for one article
-            self.json2idfile_article.set_file_data(id_filename, package.report)
+        # generate id file for one article
+        self.json2idfile_article.set_file_data(id_filename, package.report)
 
-            self.json2idfile_article.format_and_save_document_data(article.json_data, self.records_order, issue_paths.issue_db_name, issue_paths.xml_filename(article.xml_filename))
-            if not os.path.exists(id_filename):
-                package.report.write('Unable to create ' + id_filename, True, True)
-                package.report.write(article.json_data, True, True)
-            # archive files
-            #if article.issue.status != 'not_registered':
-            issue_paths.archive_article_files(article.xml_filename, article.issue, package)
-            #FIXME issue_files.archive_article_files(filename)
+        self.json2idfile_article.format_and_save_document_data(article.json_data, self.records_order, issue_paths.issue_db_name, issue_paths.xml_filename(article.xml_filename))
+        if not os.path.exists(id_filename):
+            package.report.write('Unable to create ' + id_filename, True, True)
+            package.report.write(article.json_data, True, True)
+        # archive files
+        #if article.issue.status != 'not_registered':
+        issue_paths.archive_article_files(article.xml_filename, article.issue, package)
+        #FIXME issue_files.archive_article_files(filename)
 
 
 class Paths:
@@ -351,12 +356,14 @@ class IssuePath:
 
     def article_filename(self, article):
         id_filename = self.issue_id_path + '/' + os.path.basename(article.xml_filename.replace('.xml', '.id'))
-        order = '00000' + article.order
-
-        new_id_filename = self.issue_id_path + '/' + order[-5:] + '.id'
         if os.path.exists(id_filename):
             os.unlink(id_filename)
 
+        order = '00000' + article.order
+        print('article_filename')
+        print(order)
+
+        new_id_filename = self.issue_id_path + '/' + order[-5:] + '.id'
         return new_id_filename
 
     @property
