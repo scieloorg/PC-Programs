@@ -3499,7 +3499,9 @@ et al.</copyright-statement>
 	
 	<xsl:template match="boxedtxt">
 		<boxed-text>
+			<sec>
 			<xsl:apply-templates select="@*|*|text()"/>
+			</sec>
 		</boxed-text>
 	</xsl:template>
 	
