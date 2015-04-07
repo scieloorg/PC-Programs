@@ -81,8 +81,10 @@ class AheadManager:
             self.cisis.id2mst(id_filename, mst_filename, True)
 
             for id_name in os.listdir(id_path):
-                if id_name != 'i.id' and id_name != '00000.id' and id_name.endswith('.id'):
-                    self.cisis.id2mst(id_path + '/' + id_name, mst_filename, False)
+                order = id_name.replace('.id', '')
+                if order.isdigit():
+                    if id_name != 'i.id' and id_name != '00000.id' and id_name.endswith('.id'):
+                        self.cisis.id2mst(id_path + '/' + id_name, mst_filename, False)
 
 
 class ISISManager4Articles:
@@ -244,20 +246,23 @@ class ISISManager4Articles:
 
         # identify files and paths
         id_filename = issue_paths.article_filename(article)
+        order = id_filename.replace('.id', '')
+
         if os.path.exists(id_filename):
             os.unlink(id_filename)
 
-        # generate id file for one article
-        self.json2idfile_article.set_file_data(id_filename, package.report)
+        if order.isdigit():
+            # generate id file for one article
+            self.json2idfile_article.set_file_data(id_filename, package.report)
 
-        self.json2idfile_article.format_and_save_document_data(article.json_data, self.records_order, issue_paths.issue_db_name, issue_paths.xml_filename(article.xml_filename))
-        if not os.path.exists(id_filename):
-            package.report.write('Unable to create ' + id_filename, True, True)
-            package.report.write(article.json_data, True, True)
-        # archive files
-        #if article.issue.status != 'not_registered':
-        issue_paths.archive_article_files(article.xml_filename, article.issue, package)
-        #FIXME issue_files.archive_article_files(filename)
+            self.json2idfile_article.format_and_save_document_data(article.json_data, self.records_order, issue_paths.issue_db_name, issue_paths.xml_filename(article.xml_filename))
+            if not os.path.exists(id_filename):
+                package.report.write('Unable to create ' + id_filename, True, True)
+                package.report.write(article.json_data, True, True)
+            # archive files
+            #if article.issue.status != 'not_registered':
+            issue_paths.archive_article_files(article.xml_filename, article.issue, package)
+            #FIXME issue_files.archive_article_files(filename)
 
 
 class Paths:

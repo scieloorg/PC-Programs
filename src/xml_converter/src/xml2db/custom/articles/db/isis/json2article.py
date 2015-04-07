@@ -1024,6 +1024,21 @@ class JSON_Article:
         
         return errors
 
+    def validate_order(self):
+        """
+        Validate the pages of front
+        """
+        errors = []
+        value = return_singleval(self.json_data['f'], '121')
+        if value.isdigit():
+            if 0 < int(value) < 100000:
+                pass
+            else:
+                errors.append('Order must be a number 1 to 99999')
+        else:
+            errors.append('Order must be a number 1 to 99999')
+        return errors
+
     def validate_doctopic(self):
         """
         Validate the doctopic
@@ -1069,6 +1084,7 @@ class JSON_Article:
         
         warnings += self.validate_issn()
         warnings += self.validate_required()
+        fatal_errors += self.validate_order()
         fatal_errors += self.validate_section()
         warnings += self.validate_pages()
         errors += self.validate_dates()
