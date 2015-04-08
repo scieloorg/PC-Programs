@@ -986,8 +986,8 @@ patentno;#FALSE#;#FALSE#
 pubid;#FALSE#;#TRUE#
 publoc;#FALSE#;#TRUE#
 pubname;#FALSE#;#TRUE#
-*publoc-name;#FALSE#;#TRUE#
-*pubname-loc;#FALSE#;#TRUE#
+*publoc-pubname;#FALSE#;#TRUE#
+*pubname-publoc;#FALSE#;#TRUE#
 reportid;#FALSE#;#FALSE#
 *source;#FALSE#;#FALSE#
 source;#FALSE#;#FALSE#
@@ -1055,9 +1055,9 @@ chptitle
 
 publoc
 
-*publoc-name
+*publoc-pubname
 
-*pubname-loc
+*pubname-publoc
 
 boxedtxt
 sec;#FALSE#;#TRUE#

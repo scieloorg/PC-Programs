@@ -188,8 +188,8 @@ orgdiv2;Identify organization division 2
 orgdiv3;Identify organization division 3
 text-ref;Identify the original form of the reference
 publoc;Identify the publisher location
-*publoc-name;Identify automatically publisher location and name
-*pubname-loc;Identify automatically publisher name and location
+*publoc-pubname;Identify automatically publisher location and name
+*pubname-publoc;Identify automatically publisher name and location
 *fn;Identify all the footnotes and its links
 boxedtxt;Identify a boxed text
 *boxedtxt;Identify automatically boxed text
