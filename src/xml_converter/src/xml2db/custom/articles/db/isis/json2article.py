@@ -371,19 +371,20 @@ class JSON_Article:
         return first_page, last_page, elocation           
 
     def return_article(self):
-        
         doi = return_singleval(self.json_data['f'], '237')
         titles = return_multval(self.json_data['f'], '12')
         authors = return_multval(self.json_data['f'], '10')
-        
         first_page, last_page, elocation = self.return_pagination()
-        
         if first_page == '':
-            first_page = elocation   
-        
-        
+            first_page = elocation
+
+        print('json2article')
+        print(self.json_data['f']['121'])
+
+        order = return_singleval(self.json_data['f'], '121')
+        self.json_data['f']['121'] = order
         #article = Article(doi, first_page, last_page)
-        article = Article(doi, return_singleval(self.json_data['f'], '121'), first_page, last_page)
+        article = Article(doi, order, first_page, last_page)
 
         print('json2article')
         print(self.json_data['f']['121'])
@@ -635,6 +636,11 @@ class JSON_Article:
         if article_id_pid is None:
             article_id_pid = '0'
 
+        if isinstance(article_id_pid, list):
+            article_id_pid = list(set(article_id_pid))
+        if isinstance(article_id_pid, list):
+            article_id_pid = article_id_pid[0]
+
         self.json_data['f']['121'] = article_id_pid[-5:]
 
         if '8121' in self.json_data['f'].keys():
@@ -707,7 +713,7 @@ class JSON_Article:
         """
         self.json_data['f']['120'] = 'XML_' + return_singleval(self.json_data['f'], '120')
         self.json_data['f']['42'] = '1'
-        
+
         self.normalize_article_titles()
         #seq = self.json_data.get('f', {}).get('9121', None)
         #if not seq is None:
@@ -1019,13 +1025,10 @@ class JSON_Article:
         """
         Validate the pages of front
         """
-        
         errors = []
-        
         section_title = return_singleval(self.json_data['f'], '49')
         if 'INVALID' in section_title:
-            errors.append( 'This section title is not registered: ' + section_title )
-        
+            errors.append('This section title is not registered: ' + section_title)
         return errors
 
     def validate_order(self):
@@ -1034,7 +1037,9 @@ class JSON_Article:
         """
         errors = []
         value = return_singleval(self.json_data['f'], '121')
-        if value.isdigit():
+        if isinstance(value, list):
+            errors.append('Order must be a number 1 to 99999. It is repeated: ' + '; '.join(value))
+        elif value.isdigit():
             if 0 < int(value) < 100000:
                 pass
             else:
@@ -1057,7 +1062,6 @@ class JSON_Article:
         """
         Validate the funding x ack
         """
-        
         warnings = []
         project_number = return_multval(self.json_data['f'], '60')
         if len(project_number) == 0:
@@ -1528,16 +1532,11 @@ class JSON2Article:
         """
         Return an article instance
         """
-
         alternative_id = self.return_alternative_id()
-
         self.json_article.normalize_document_data(issue, alternative_id)
-        
         article = self.json_article.return_article()
         article.issue = issue
         article.xml_filename = self.xml_filename
-        
-
         return article
     
     def return_alternative_id(self):
