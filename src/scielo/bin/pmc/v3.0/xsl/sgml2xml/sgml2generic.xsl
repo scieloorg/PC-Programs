@@ -217,6 +217,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
+	<xsl:template match="label//bold | label//italic">
+		<xsl:apply-templates select="*|text()"/>
+	</xsl:template>
+	
 	<xsl:template match="bold | italic">
 		<xsl:param name="id"/>
 		<xsl:variable name="parent_textonly"><xsl:apply-templates select="parent::node()" mode="text-only"/></xsl:variable>
@@ -2632,7 +2636,18 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="*[contains(name(),'citat')]//p | *[contains(name(),'citat')]/text()"> </xsl:template>
 	<xsl:template match="*" mode="debug"> </xsl:template>
-	<xsl:template match="figgrp | tabwrap | equation" mode="graphic">
+	<xsl:template match="equation" mode="graphic">
+		<xsl:variable name="standardname">
+			<xsl:value-of select="$prefix"/>
+			<xsl:choose>
+				<xsl:when test="name()='equation'">e</xsl:when>
+				<xsl:otherwise>g</xsl:otherwise>
+			</xsl:choose>
+			<xsl:value-of select="@id"/>
+		</xsl:variable>
+		<xsl:apply-templates select="label|graphic|text()"></xsl:apply-templates>
+	</xsl:template>
+	<xsl:template match="figgrp | tabwrap" mode="graphic">
 		<xsl:variable name="standardname">
 			<xsl:value-of select="$prefix"/>
 			<xsl:choose>
@@ -2657,7 +2672,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:if test=".//table">
 			<xsl:apply-templates select=".//table" mode="pmc-table"></xsl:apply-templates>
 		</xsl:if>
-		<xsl:apply-templates select="mmlmath|texmath|label|attrib"></xsl:apply-templates>
+		<xsl:apply-templates select="attrib"></xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="tr/td | tr/th" mode="pmc-table-cols">
 		<col>
