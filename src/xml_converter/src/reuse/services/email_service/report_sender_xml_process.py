@@ -54,9 +54,9 @@ class ReportSender:
 
     def send_to_adm(self, template, content):
         to = self.config.adm_email
-
-        
         msg = template.msg(self.adm_message_params(content))
+        if not content in msg:
+            msg += content
 
         if self.email_service.is_available_email_service:
             self.email_service.send(to, [], [], template.subject, msg, [])
