@@ -44,8 +44,8 @@ def join_texts(texts):
 
 
 def styles():
-    css = '<style>' + open(os.path.dirname(os.path.realpath(__file__)) + '/report.css', 'r').read() + '</style>'
-    js = open(os.path.dirname(os.path.realpath(__file__)) + '/collapsible.js', 'r').read()
+    css = '<style>' + open(os.path.dirname(os.path.realpath(__file__)) + '/html_reports.css', 'r').read() + '</style>'
+    js = open(os.path.dirname(os.path.realpath(__file__)) + '/html_reports_collapsible.js', 'r').read()
     return css + js
 
 
@@ -60,11 +60,16 @@ def attr(name, value):
 
 
 def collapsible_block(section_id, section_title, content, status='ok'):
-    r = '<div id="show' + section_id + '" onClick="openClose(\'' + section_id + '\')" class="collapsiblehidden" style="cursor:hand; cursor:pointer"><strong>' + section_title + ' [+]</strong></div>'
-    r += '<div id="hide' + section_id + '" onClick="openClose(\'' + section_id + '\')" class="collapsibleopen" style="cursor:hand; cursor:pointer"><strong>' + section_title + ' [-] </strong></div>'
+    r = '<a name="begin_' + section_id + '"/><div id="show' + section_id + '" onClick="openClose(\'' + section_id + '\')" class="collapsiblehidden" style="cursor:hand; cursor:pointer">' + section_title + ' <span class="button">[+]</span></div>'
+    r += '<div id="hide' + section_id + '" onClick="openClose(\'' + section_id + '\')" class="collapsibleopen" style="cursor:hand; cursor:pointer">' + section_title + '<span class="button">[-]</span></div>'
     r += '<div id="' + section_id + '" class="collapsibleopen">'
     r += '<div class="embedded-report-' + status + '">' + content + '</div>'
+    r += '<div class="endreport">'
+    r += '  <div>' + ' ~ '*10 + 'end of report ' + ' ~ '*10 + '</div>'
+    r += '  <div onClick="openClose(\'' + section_id + '\')" style="cursor:hand; cursor:pointer"><span class="button"> [ close ] </span></div>'
     r += '</div>'
+    r += '</div>'
+
     return r
 
 
@@ -119,11 +124,9 @@ def sheet(table_header, wider, table_data, filename=None, table_style='sheet', r
     r = ''
     width = None
     if not table_header is None:
-        if len(table_header) > 3:
-            width = 800
-            width = 800 / len(table_header)
-            width = str(width)
-
+        if len(table_header) > 1:
+            width = 90
+            width = width / len(table_header)
         th = ''
         if filename is not None:
             th += '<th class="th"></th>'
@@ -174,11 +177,18 @@ def display_xml(value, width=None):
     value = xml_utils.pretty_print(value)
     value = value.replace('<', '&lt;')
     value = value.replace('>', '&gt;')
-    if width is not None:
-        value = '<textarea cols="' + width + '" rows="10" readonly>' + value + '</textarea>'
+
+    w = width
+    if width is None:
+        w = 90
     else:
-        value = '<pre>' + value + '</pre>'
-    return value
+        if isinstance(width, str):
+            w = int(width)
+
+    rows_count = len(value) / w
+    if rows_count > 10:
+        rows_count = 10
+    return '<textarea cols="' + str(w) + '" rows="' + str(rows_count) + '" readonly>' + value + '</textarea>'
 
 
 def format_message(value):
@@ -221,14 +231,14 @@ def format_html_data(value, apply_message_style=False, width=None):
         r = '-'
     elif isinstance(value, int):
         r = str(value)
+    elif '<img' in value or '</a>' in value:
+        r = value
+    elif '<' in value and '>' in value:
+        r = display_xml(value, width)
+    elif value.startswith('Normalized forms: '):
+        r = 'Normalized forms: <select size="10">' + '\n'.join(['<option>' + op + '</option>' for op in sorted(value[value.find(':')+2:].split('|'))]) + '</select>'
     else:
-        if '<img' in value or '</a>' in value:
-            r = value
-        else:
-            if '<' in value and '>' in value:
-                r = display_xml(value, width)
-            else:
-                r = value
+        r = value
     if apply_message_style:
         r = format_message(r)
     return r

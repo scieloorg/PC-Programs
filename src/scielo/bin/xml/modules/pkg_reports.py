@@ -82,11 +82,12 @@ def get_report_text(filename):
             report = part1 + part2
         elif '</html>' in content:
 
-            report = '<iframe width="95%" height="400px" src="' + os.path.basename(filename) + '"></iframe>'
+            #report = '<iframe width="95%" height="400px" src="' + os.path.basename(filename) + '"></iframe>'
+            content = open(filename, 'r').read()
 
-            #content = content[content.find('<body'):]
-            #content = content[0:content.rfind('</body>')]
-            #report = content[content.find('>')+1:]
+            content = content[content.find('<body'):]
+            content = content[0:content.rfind('</body>')]
+            report = content[content.find('>')+1:]
         else:
             report = ''
     return report

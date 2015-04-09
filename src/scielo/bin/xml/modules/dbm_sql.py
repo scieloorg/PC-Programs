@@ -50,6 +50,7 @@ class SQL(object):
         return results
 
     def query_one(self, expr):
+        results = []
         with sqlite3.connect(self.db_filename) as conn:
             cursor = conn.cursor()
             cursor.execute(expr)
@@ -57,8 +58,12 @@ class SQL(object):
         conn.close()
         return results
 
-    def get_select_statement(self, table_name, fields, where_expr):
-        expr = 'select DISTINCT ' + ', '.join(fields) + ' from ' + table_name + ' where ' + where_expr
+    def get_select_statement(self, table_name, fields, where_expr=None):
+        if where_expr is None:
+            where_expr = ''
+        else:
+            where_expr = ' where ' + where_expr
+        expr = 'select DISTINCT ' + ', '.join(fields) + ' from ' + table_name + where_expr
         return expr
 
     def format_expr(self, labels, values, connector=' OR '):

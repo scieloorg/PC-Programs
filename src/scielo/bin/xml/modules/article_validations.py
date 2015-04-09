@@ -170,6 +170,8 @@ class ArticleContentValidation(object):
         performance = []
         #print(datetime.now().isoformat() + ' validations 1')
         items = []
+        items.append(self.sps)
+        items.append(self.language)
         #print(datetime.now().isoformat() + ' validations')
         items.append(self.journal_title)
         #print(datetime.now().isoformat() + ' validations')
@@ -183,9 +185,7 @@ class ArticleContentValidation(object):
         #print(datetime.now().isoformat() + ' validations')
         items.append(self.issue_label)
         #print(datetime.now().isoformat() + ' validations')
-        items.append(self.language)
         #print(datetime.now().isoformat() + ' validations')
-        items.append(self.sps)
         items.append(self.article_type)
         #print(datetime.now().isoformat() + ' validations')
         items.append(self.article_date_types)
@@ -497,9 +497,9 @@ class ArticleContentValidation(object):
             if len(normalized_items) == 0:
                 r.append(('normalized aff', 'ERROR', 'Unable to find normalized data'))
             elif len(normalized_items) == 1:
-                r.append(('normalized aff', 'OK', 'aff is normalized'))
+                r.append(('normalized aff', 'WARNING', 'Normalized form: ' + '; '.join([', '.join(list(item)) for item in normalized_items])))
             else:
-                r.append(('normalized aff', 'WARNING', 'Suggestions: ' + '; '.join([', '.join(list(item)) for item in normalized_items])))
+                r.append(('normalized aff', 'WARNING', 'Normalized forms: ' + '|'.join([', '.join(list(item)) for item in normalized_items])))
         return r
 
     @property
@@ -711,8 +711,8 @@ class ArticleContentValidation(object):
                         href_items['ok'].append(hrefitem)
                     else:
                         href_items['warning'].append(hrefitem)
-                else:
-                    href_items['ok'].append(hrefitem)
+                #else:
+                #    href_items['ok'].append(hrefitem)
         return href_items
 
 
