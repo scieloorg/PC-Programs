@@ -22,13 +22,13 @@ def similarity(items, text, min_ratio=0):
 
 
 def most_similar(similarity):
-    r = []
-    highiest = 0
+    items = []
+    highiest_rate = 0
     ratio_list = similarity.keys()
     if len(ratio_list) > 0:
         ratio_list = sorted(ratio_list)
         ratio_list.reverse()
-        highiest = ratio_list[0]
-        r = similarity[highiest]
+        highiest_rate = ratio_list[0]
+        items = similarity[highiest_rate]
 
-    return (highiest, r)
+    return (highiest_rate, items)
