@@ -173,7 +173,6 @@ fngrp;#FALSE#;#TRUE#
 licenses;#FALSE#;#FALSE#
 bbibcom;#FALSE#;#FALSE#
 glossary;#FALSE#;#FALSE#
-app;#FALSE#;#TRUE#
 appgrp;#FALSE#;#TRUE#
 
 bbibcom
@@ -876,7 +875,7 @@ doc
 author;#FALSE#;#TRUE#
 abstract;#FALSE#;#TRUE#
 ack;#TRUE#;#FALSE#
-app;#FALSE#;#TRUE#
+appgrp;#FALSE#;#FALSE#
 corpauth;#FALSE#;#TRUE#
 docresp;#TRUE#;#TRUE#
 doctitle;#FALSE#;#TRUE#
