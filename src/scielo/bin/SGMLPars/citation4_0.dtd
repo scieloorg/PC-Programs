@@ -176,7 +176,7 @@
                         issn)*) -->
 <!ELEMENT iiserial - - (isstitle? , ((author | corpauth)*, et-al?) , medium? 
                         , (stitle | sertitle)? ,  
-                        (update  | date | city | state | country | pubname | volid | issueno| pages | doi | pubid | notes)*, 
+                        (issn | update  | date | city | state | country | pubname | volid | issueno| pages | doi | pubid | notes)*, 
                         (url & cited)? ) >
 
 <!ELEMENT isstitle - - (#PCDATA) >
