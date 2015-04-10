@@ -1516,7 +1516,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 
 	<xsl:template match="doc|subdoc|docresp" mode="back">
-		<xsl:if test="ack or fngrp  or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or app">
+		<xsl:if test="ack or fngrp  or refs or other or vancouv or iso690 or abnt6023 or apa or glossary or appgrp">
 			<back>
 				<xsl:apply-templates select="ack"/>
 				<xsl:apply-templates select="other | vancouv | iso690 | abnt6023 | apa | refs"/>
@@ -1528,7 +1528,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 						<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
 					</fn-group>
 				</xsl:if>
-				<xsl:apply-templates select="glossary | app"></xsl:apply-templates>				
+				<xsl:apply-templates select="glossary | appgrp"></xsl:apply-templates>				
 			</back>
 		</xsl:if>
 	</xsl:template>
@@ -1544,7 +1544,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:apply-templates select="fngrp[@fntype]" mode="notfnauthors"/>
 			</fn-group>
 		</xsl:if>
-		<xsl:apply-templates select="glossary | app"></xsl:apply-templates>						
+		<xsl:apply-templates select="glossary | appgrp"></xsl:apply-templates>						
 	</xsl:template>
 	
 	<xsl:template match="fngrp/@label">
