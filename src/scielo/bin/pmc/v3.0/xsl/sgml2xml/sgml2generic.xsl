@@ -952,7 +952,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<aff>
 			<xsl:apply-templates select="@id"/>
 			<xsl:apply-templates select="." mode="label"/>
-			<institution content-type="original"><xsl:apply-templates select="." mode="original"/></institution>
+			<institution content-type="original"><xsl:apply-templates select="*[name()!='label']|text()" mode="original"/></institution>
 			<xsl:choose>
 				<xsl:when test="@norgname">
 					<xsl:if test="@norgname!='Not normalized'">
@@ -1024,10 +1024,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="aff//* | normaff//*" mode="original">
 		<xsl:value-of select="." xml:space="preserve"/>
 	</xsl:template>
-	<xsl:template match="label" mode="original"></xsl:template>
 	<xsl:template match="aff//text() | normaff//text()" mode="original">
 		<xsl:value-of select="." xml:space="preserve"/>
 	</xsl:template>
+	<xsl:template match="label|label/sup|label/text()" mode="original"></xsl:template>
 	
 	<xsl:template match="xref/@rid">
 		<xsl:variable name="n1"><xsl:value-of select="substring(.,2)"/></xsl:variable>
