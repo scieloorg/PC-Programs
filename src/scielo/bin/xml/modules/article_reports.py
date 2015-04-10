@@ -118,6 +118,7 @@ class ArticleDisplayReport(object):
         r = self.xml_name + ' is invalid.'
         if self.article is not None:
             r = ''
+            r += self.sps
             r += self.language
             r += self.toc_section
             r += self.article_type
@@ -192,6 +193,10 @@ class ArticleDisplayReport(object):
     @property
     def language(self):
         return self.display_labeled_value('@xml:lang', self.article.language)
+
+    @property
+    def sps(self):
+        return self.display_labeled_value('@specific-use', self.article.sps)
 
     @property
     def toc_section(self):
