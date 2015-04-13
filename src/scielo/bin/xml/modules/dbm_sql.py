@@ -19,6 +19,8 @@ class SQL(object):
         _fields = ', '.join(fields)
 
         for row in open(csv_filename, 'r').readlines():
+            if not isinstance(row, unicode):
+                row = row.decode('utf-8')
             row = row.strip()
             items = row.split('\t')
 
@@ -29,7 +31,6 @@ class SQL(object):
                         item = item.replace("'", "&apos;")
                     _values.append("'" + item.replace('  ', ' ').strip() + "'")
                 instruction = 'insert into ' + table_name + ' (' + _fields + ') ' + ' values (' + ', '.join(_values) + ')'
-                print(instruction)
                 conn.execute('\n' + instruction + '\n')
                 conn.commit()
         conn.close()
