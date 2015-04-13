@@ -184,3 +184,31 @@ def format_date(dates):
     if dates is not None:
         r = ' '.join([k + ': ' + v for k, v in dates.items() if v is not None])
     return r
+
+
+def remove_xref(article_title):
+    text = article_title
+    text = text.replace('>', '>_BREAK_IGNORE1')
+    text = text.replace('</', 'IGNORE2_BREAK_</')
+    parts = text.split('_BREAK_')
+    new = []
+    for part in parts:
+        if 'IGNORE2' in part and 'IGNORE1' in part:
+            c = part.replace('IGNORE1', '').replace('IGNORE2', '')
+            if len(c.strip()) > 1:
+                new.append(c)
+        else:
+            new.append(part.replace('IGNORE1', '').replace('IGNORE2', ''))
+    while '<xref' in text:
+        xref = text[text.find('<xref'):]
+        xref = xref[0:xref.find('>')+1]
+        text = text.replace(xref, '')
+    text = text.replace('</xref>', '')
+    text = text.replace('</sup>', '')
+    text = text.replace('<sup>', '')
+    text = text.replace('<sup/>', '')
+    text = text.strip()
+    if article_title != text:
+        print(article_title)
+        print(text)
+    return text
