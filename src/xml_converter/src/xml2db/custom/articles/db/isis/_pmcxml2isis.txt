@@ -132,7 +132,9 @@
       @id i
       institution[@content-type='normalized'] _
       country/@country p
-      country c    
+      addr-line/named-content[@content-type='city'] c
+      country n
+      institution[@content-type='orgname'] o
     .//article-meta//aff 70
       label l
       @id i
