@@ -488,18 +488,19 @@ class ArticleContentValidation(object):
             text = aff.original if aff.original is not None else aff.xml
             r.append(('aff xml', 'INFO', aff.xml))
             r.append(required('aff/@id', aff.id, 'FATAL ERROR'))
-            r.append(required('aff/country/@country', aff.i_country, 'FATAL ERROR'))
-            r.append(required('aff/institution/[@content-type="normalized"]', aff.i_country, 'ERROR'))
             r.append(required('aff/institution/[@content-type="original"]', aff.original, 'ERROR'))
+            r.append(required('aff/country/@country', aff.i_country, 'ERROR'))
+            r.append(required('aff/institution/[@content-type="normalized"]', aff.i_country, 'ERROR'))
 
             normalized_items = institutions_service.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
 
-            if len(normalized_items) == 0:
-                r.append(('normalized aff', 'ERROR', 'Unable to find normalized data'))
-            elif len(normalized_items) == 1:
+            if len(normalized_items) == 1:
                 r.append(('normalized aff', 'WARNING', 'Normalized form: ' + '; '.join([', '.join(list(item)) for item in normalized_items])))
             else:
-                r.append(('normalized aff', 'WARNING', 'Normalized forms: ' + '|'.join([', '.join(list(item)) for item in normalized_items])))
+                if len(normalized_items) == 0:
+                    r.append(('normalized aff', 'ERROR', 'Unable to find normalized data'))
+                else:
+                    r.append(('normalized aff', 'ERROR', 'Normalized forms: ' + '|'.join([', '.join(list(item)) for item in normalized_items])))
         return r
 
     @property

@@ -12,7 +12,10 @@ from xml2db.box_folder_document import Section, TOC
 from xml2db.custom.articles.models.journal_issue_article import Journal, JournalIssue, Article, JournalsList, JournalIssuesList 
 #from models.json_functions import JSON_Values, JSON_Dates
 
-from xml2db.custom.articles.db.isis import affiliations_services
+from xml2db.custom.articles.db.isis import institutions_service
+
+
+org_manager = institutions_service.OrgManager()
 
 
 def normalized_issue_id(json):
@@ -884,48 +887,59 @@ class JSON_Article:
                 if int(count)>0:
                     illustrative_materials.append(type)
                 del self.json_data['f'][tag]
-        
         if len(illustrative_materials) > 0:
             self.json_data['f']['38'] = illustrative_materials
         else:
             self.json_data['f']['38'] = 'ND'
-        
+
+    def get_normalized_affiliations(self, affiliations):
+        print('affiliations: v240')
+        new = []
+        if not isinstance(affiliations, list):
+            affiliations = [affiliations]
+        print(affiliations)
+        for aff in affiliations:
+            if aff.get('i') is not None:
+                #orgname, norgname, country_name, country_code, state, city
+                result_items = institutions_service.validate_organization(org_manager, aff.get('o'), aff.get('_'), aff.get('n'), aff.get('p'), None, aff.get('c'))
+                if len(result_items) > 1:
+                    result_items = list(set([(norm_orgname, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in result_items]))
+                if len(result_items) == 1:
+                    norm_city = None
+                    norm_state = None
+                    if len(result_items[0]) > 2:
+                        norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = result_items[0]
+                    else:
+                        norm_orgname, norm_country_code = result_items[0]
+                    a = {}
+                    a['i'] = aff.get("i")
+                    a['p'] = norm_country_code
+                    a['_'] = norm_orgname
+                    if norm_city is not None:
+                        a['c'] = norm_city
+                    if norm_state is not None:
+                        a['s'] = norm_state
+                    new.append(a)
+        print(new)
+        return new
+
     def normalize_affiliations(self):
         """
         Normalize the json structure for affiliations: 70
         """
-        affiliations = return_multval(self.json_data['f'], '240')
-        if isinstance(affiliations, dict):
-            affiliations = [affiliations]
+        self.json_data['f']['240'] = self.get_normalized_affiliations(return_multval(self.json_data['f'], '240'))
 
-        print(affiliations)
-        normaffs = []
-        for item in affiliations:
-            if not item.get('_') in [None, '']:
-                if item.get('p') in [None, '']:
-                    item['p'] = affiliations_services.get_code(item.get('c'))
-                if not item.get('p') in [None, '']:
-                    if item.get('c') is not None:
-                        del item['c']
-                    normaffs.append(item)
-        print(normaffs)
-        self.json_data['f']['240'] = normaffs
-
-        affiliations = return_multval(self.json_data['f'], '70')
-
-        new_affiliations = self.aff_handler.normalize_affiliations(affiliations)
-
+        new_affiliations = self.aff_handler.normalize_affiliations(return_multval(self.json_data['f'], '70'))
         id = ''
         if len(new_affiliations) > 0:
             self.json_data['f']['70'] = new_affiliations
             if 'i' in new_affiliations[0].keys():
                 id = new_affiliations[0]['i']
-    
         if id != '':
             authors = return_multval(self.json_data['f'], '10')
             new_authors = []
             for author in authors:
-                if author != None:
+                if author is None:
                     if not '1' in author:
                         author['1'] = id
                 new_authors.append(author)
@@ -933,7 +947,7 @@ class JSON_Article:
                 self.json_data['f']['10'] = new_authors
             elif len(new_authors) > 0:
                 self.json_data['f']['10'] = author
-            
+
     def normalize_keywords(self):
         """
         Normalize the json structure for affiliations: 85

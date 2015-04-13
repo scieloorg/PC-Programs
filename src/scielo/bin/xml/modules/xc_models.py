@@ -798,11 +798,17 @@ def format_affiliations(affiliations):
 def normalized_affiliations(org_manager, affiliations):
     affs = []
     for item in affiliations:
-        result_items = institutions_service.validate_organization(org_manager, item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
-        if len(result_items) == 1:
-            norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = result_items[0]
-
-            if item.id is not None:
+        if item.id is not None and (item.orgname is not None or item.norgname is not None):
+            result_items = institutions_service.validate_organization(org_manager, item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
+            if len(result_items) > 1:
+                result_items = list(set([(norm_orgname, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in result_items]))
+            if len(result_items) == 1:
+                norm_city = None
+                norm_state = None
+                if len(result_items[0]) > 2:
+                    norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = result_items[0]
+                else:
+                    norm_orgname, norm_country_code = result_items[0]
                 a = {}
                 a['i'] = item.id
                 a['p'] = norm_country_code
@@ -810,4 +816,5 @@ def normalized_affiliations(org_manager, affiliations):
                 a['c'] = norm_city
                 a['s'] = norm_state
                 affs.append(a)
+
     return affs
