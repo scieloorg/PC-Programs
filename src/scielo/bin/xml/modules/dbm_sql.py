@@ -19,6 +19,8 @@ class SQL(object):
         _fields = ', '.join(fields)
 
         for row in open(csv_filename, 'r').readlines():
+            if not isinstance(row, unicode):
+                row = row.decode('utf-8')
             row = row.strip()
             items = row.split('\t')
 
@@ -27,9 +29,8 @@ class SQL(object):
                 for item in items:
                     if "'" in item:
                         item = item.replace("'", "&apos;")
-                    _values.append("'" + item + "'")
+                    _values.append("'" + item.replace('  ', ' ').strip() + "'")
                 instruction = 'insert into ' + table_name + ' (' + _fields + ') ' + ' values (' + ', '.join(_values) + ')'
-                print(instruction)
                 conn.execute('\n' + instruction + '\n')
                 conn.commit()
         conn.close()
@@ -63,7 +64,7 @@ class SQL(object):
             where_expr = ''
         else:
             where_expr = ' where ' + where_expr
-        expr = 'select DISTINCT ' + ', '.join(fields) + ' from ' + table_name + where_expr
+        expr = 'select ' + ', '.join(fields) + ' from ' + table_name + where_expr
         return expr
 
     def format_expr(self, labels, values, connector=' OR '):

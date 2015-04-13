@@ -26,11 +26,11 @@ class OrgManager(object):
     def get_institutions(self, orgname, city, state, country_code, country_name):
         return self.manager.get_institutions(orgname, city, state, country_code, country_name)
 
-    def get_institutions_by_exactly_orgname(self, orgname, city, state, country_code, country_name):
-        return self.manager.get_institutions_by_exactly_orgname(orgname, city, state, country_code, country_name)
+    def institution_exists(self, orgname, city, state, country_code, country_name):
+        return self.manager.institution_exists(orgname, city, state, country_code, country_name)
 
-    def get_institutions_by_similar_orgnames(self, orgname, country_name):
-        return self.manager.get_institutions_by_similar_orgnames(orgname, country_name)
+    def similar_institutions(self, orgname, city, state, country_code, country_name):
+        return self.manager.similar_institutions(orgname, city, state, country_code, country_name)
 
     def create_db(self):
         self.manager.create_db()
@@ -65,35 +65,40 @@ class OrgDBManager(object):
                 items[country_name] = country_code
         return items
 
-    def get_normalized_country_names(self, country_name):
-        if country_name in self.normalized_country_items.keys():
-            r = [country_name]
+    def get_similar_country_names(self, country_name):
+        rate, most_similars = utils.most_similar(utils.similarity(self.normalized_country_items.keys(), country_name, 0.7))
+        return most_similars
+
+    def normalized_country_name(self, country_code, country_name):
+        if country_name is None:
+            if not country_code is None:
+                country_name = self.normalized_country_items.get(country_code)
         else:
-            rate, most_similars = utils.most_similar(utils.similarity(self.normalized_country_items.keys(), country_name, 0.7))
-            r = most_similars
-        return r
+            if not country_name in self.normalized_country_items.values():
+                country_name = None
+        return country_name
 
     def get_institutions(self, orgname, city, state, country_code, country_name):
-        results = []
-        if country_name is None:
-            if country_code is not None:
-                country_name = self.normalized_country_items[country_code]
-        country_items = self.get_normalized_country_names(country_name)
-        for country_name in country_items:
-            results += self.get_country_institutions(orgname, city, state, country_code, country_name)
+        if orgname is not None:
+            if not isinstance(orgname, unicode):
+                orgname = orgname.decode('utf-8')
+        if city is not None:
+            if not isinstance(city, unicode):
+                city = city.decode('utf-8')
+        if country_name is not None:
+            if not isinstance(country_name, unicode):
+                country_name = country_name.decode('utf-8')
+
+        norm_country_name = self.normalized_country_name(country_code, country_name)
+        results = self.institution_exists(orgname, city, state, country_code, norm_country_name)
+
+        if not len(results) == 1:
+            results += self.institution_exists(orgname, None, None, country_code, norm_country_name)
+
+        if len(results) == 0:
+            results += self.similar_institutions(orgname, city, state, country_code, country_name)
+
         return list(set(results))
-
-    def get_country_institutions(self, orgname, city, state, country_code, country_name):
-        r = self.get_institutions_by_exactly_orgname(orgname, city, state, country_code, country_name)
-        if len(r) == 0:
-            r = self.get_institutions_by_similar_orgnames(orgname, country_name)
-        return r
-
-    def get_orgnames(self, orgname, city, state, country_code, country_name):
-        r = self.get_institutions_by_exactly_orgname(orgname, city, state, country_code, country_name)
-        if len(r) == 0:
-            r = self.get_institutions_by_similar_orgnames(orgname, country_name)
-        return r
 
     def get_countries_expr(self, country_names):
         or_expr = self.sql.format_expr(['country_name' for item in country_names], country_names, ' OR ')
@@ -101,7 +106,7 @@ class OrgDBManager(object):
             or_expr = '(' + or_expr + ')'
         return or_expr
 
-    def get_institutions_by_exactly_orgname(self, orgname, city, state, country_code, country_name):
+    def institution_exists(self, orgname, city, state, country_code, country_name):
         r = []
         name_city_expr = self.sql.format_expr(['name', 'city'], [orgname, city], ' AND ')
         country_expr = self.sql.format_expr(['country_code', 'country_name'], [country_code, country_name], ' OR ')
@@ -115,17 +120,17 @@ class OrgDBManager(object):
             r = self.sql.query(expr)
         return r
 
-    def get_institutions_by_similar_orgnames(self, similar_name, country_name):
+    def similar_institutions(self, orgname, city, state, country_code, country_name):
         r = []
 
-        similar_name_expr = ' OR '.join(['name LIKE ' + "'%" + word + "%'" for word in similar_name.split(' ')])
-        if len(similar_name_expr) > 0:
-            similar_name_expr = '(' + similar_name_expr + ')'
-        country_expr = self.sql.format_expr(['country_name'], [country_name], ' OR ')
-        if len(country_expr) > 0:
-            country_expr = '(' + country_expr + ')'
-
-        where_expr = ' AND '.join([item for item in [similar_name_expr, country_expr] if item != ''])
+        similar_orgname_expr = ' OR '.join(['name LIKE ' + "'%" + word + "%'" for word in orgname.split(' ')])
+        if len(similar_orgname_expr) > 0:
+            similar_orgname_expr = '(' + similar_orgname_expr + ')'
+        country_expr = self.get_countries_expr(self.get_similar_country_names(country_name))
+        city_expr = self.sql.format_expr(['city'], [city], ' OR ')
+        country_code_expr = self.sql.format_expr(['country_code'], [country_code], ' OR ')
+        items = [item for item in [similar_orgname_expr, country_expr, city_expr, country_code_expr] if item != '']
+        where_expr = ' AND '.join(items)
 
         expr = self.sql.get_select_statement(self.table_name, self.fields, where_expr)
 
@@ -251,24 +256,21 @@ def get_normalized_from_wayta(orgname, country):
     return results
 
 
-def find_normalized_organizations(org_manager, orgname, country_name, country_code, state, city):
-    return org_manager.get_institutions(orgname, city, state, country_code, country_name)
-
-
 def validate_organization(org_manager, orgname, norgname, country_name, country_code, state, city):
     orgname_and_location_items = []
     if norgname is not None:
-        orgname_and_location_items = find_normalized_organizations(org_manager, norgname, country_name, country_code, state, city)
+        orgname_and_location_items += org_manager.get_institutions(norgname, city, state, country_code, country_name)
 
-    if len(orgname_and_location_items) == 0:
+    if not len(orgname_and_location_items) == 1:
         if orgname is not None:
-            orgname_and_location_items = find_normalized_organizations(org_manager, orgname, country_name, country_code, state, city)
-    return orgname_and_location_items
+            orgname_and_location_items += org_manager.get_institutions(orgname, city, state, country_code, country_name)
+
+    return list(set(orgname_and_location_items))
 
 
 def get_similars_from_normalized_list_for_wayta(org_manager, orgname, country_name):
-    items = org_manager.get_institutions_by_similar_orgnames(orgname, country_name)
-    results = sorted(list(set([_orgname + ' - ' + _country_name for _orgname, city, state, code, _country_name in items if _country_name == country_name])))
+    items = org_manager.get_institutions(orgname, None, None, None, country_name)
+    results = sorted(list(set([_orgname + ' - ' + _country_name for _orgname, city, state, code, _country_name in items])))
     #print('\nNormalized')
     #print('\n'.join(results))
     return results
@@ -289,6 +291,8 @@ def normaff_search(text):
     results = []
     try:
         results = get_normalized_from_wayta(orgname, country)
+        print('wayta results:')
+        print(len(results))
     except:
         pass
 
@@ -296,9 +300,13 @@ def normaff_search(text):
         org_manager = OrgManager()
         org_manager.load()
         results += get_similars_from_normalized_list_for_wayta(org_manager, orgname, country)
+        print('list results')
+        print(len(results))
     except:
         pass
 
     results = sorted(list(set(results)))
+    print('all results:')
+    print(len(results))
     display_results(results)
     return results
