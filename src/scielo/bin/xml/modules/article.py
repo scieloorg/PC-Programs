@@ -355,14 +355,14 @@ class ArticleXML(object):
         if self.article_meta is not None:
             for node in self.article_meta.findall('.//title-group'):
                 t = Title()
-                t.title = xml_utils.node_text(node.find('article-title'))
-                t.subtitle = xml_utils.node_text(node.find('subtitle'))
+                t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
+                t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
                 t.language = self.language
                 k.append(t)
             for node in self.article_meta.findall('.//trans-title-group'):
                 t = Title()
-                t.title = xml_utils.node_text(node.find('trans-title'))
-                t.subtitle = xml_utils.node_text(node.find('trans-subtitle'))
+                t.title = article_utils.remove_xref(xml_utils.node_text(node.find('trans-title')))
+                t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('trans-subtitle')))
                 t.language = xml_utils.element_lang(node)
                 k.append(t)
         if self.subarticles is not None:
@@ -370,8 +370,8 @@ class ArticleXML(object):
                 if subart.attrib.get('article-type') == 'translation':
                     for node in subart.findall('.//title-group'):
                         t = Title()
-                        t.title = xml_utils.node_text(node.find('article-title'))
-                        t.subtitle = xml_utils.node_text(node.find('subtitle'))
+                        t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
+                        t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
                         t.language = xml_utils.element_lang(subart)
                         k.append(t)
         return k
