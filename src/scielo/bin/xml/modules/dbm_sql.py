@@ -27,7 +27,7 @@ class SQL(object):
                 for item in items:
                     if "'" in item:
                         item = item.replace("'", "&apos;")
-                    _values.append("'" + item + "'")
+                    _values.append("'" + item.replace('  ', ' ').strip() + "'")
                 instruction = 'insert into ' + table_name + ' (' + _fields + ') ' + ' values (' + ', '.join(_values) + ')'
                 print(instruction)
                 conn.execute('\n' + instruction + '\n')
@@ -63,7 +63,7 @@ class SQL(object):
             where_expr = ''
         else:
             where_expr = ' where ' + where_expr
-        expr = 'select DISTINCT ' + ', '.join(fields) + ' from ' + table_name + where_expr
+        expr = 'select ' + ', '.join(fields) + ' from ' + table_name + where_expr
         return expr
 
     def format_expr(self, labels, values, connector=' OR '):
