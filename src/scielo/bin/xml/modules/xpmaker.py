@@ -760,7 +760,13 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
 
 def make_pmc_report(articles):
     for doc, doc_files_info in articles:
-        html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', 'It is not PMC article or it is missing journal-id (nlm-ta).')
+        msg = 'generating report...'
+        if doc is None:
+            msg = 'Unable to generate the XML file.'
+        else:
+            if doc.journal_id_nlm_ta is None:
+                msg = 'It is not PMC article or unable to find journal-id (nlm-ta) in the XML file.'
+        html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', msg)
 
 
 def make_pmc_package(articles, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files):
@@ -853,7 +859,6 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         if not from_converter:
             if from_markup:
-                print(articles)
                 make_pmc_report(pkg_items)
             if toc_f + fatal_errors == 0:
                 if is_pmc_journal(articles):
