@@ -899,7 +899,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<!-- xsl:if test="contains($corresp,.//fname) and contains($corresp,//surname)"><xsl:attribute name="corresp">yes</xsl:attribute></xsl:if> -->
 			<xsl:apply-templates select="@*[name()!='rid']"/>
 			<xsl:apply-templates select="."/>
-			<xsl:apply-templates select=".//xref|text()"/>
+			<xsl:apply-templates select=".//xref"/>
 			<xsl:if test="not(.//xref) and count(../..//afftrans)+count(../..//normaff)+count(../..//aff)=1">
 				<xref ref-type="aff" rid="aff1"/>
 			</xsl:if>
