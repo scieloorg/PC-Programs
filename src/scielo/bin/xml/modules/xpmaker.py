@@ -16,6 +16,8 @@ import xml_versions
 import xpchecker
 import pkg_reports
 
+import institutions_service
+
 
 mime = MimeTypes()
 messages = []
@@ -578,6 +580,7 @@ def normalize_xml_content(doc_files_info, content, version):
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
 
+    content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
     content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
     content = content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
     content = content.replace('publication-type="web"', 'publication-type="webpage"')
@@ -755,11 +758,16 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
     return r
 
 
+def make_pmc_report(articles):
+    for doc, doc_files_info in articles:
+        html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', 'It is not PMC article or it is missing journal-id (nlm-ta).')
+
+
 def make_pmc_package(articles, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files):
     do_it = False
     for doc, doc_files_info in articles:
         if doc.journal_id_nlm_ta is None:
-            html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', 'It is not a PMC article.')
+            html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', 'Missing journal-id (nlm-ta).')
         else:
             do_it = True
             print('.....')
@@ -822,7 +830,6 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         if toc_f == 0:
             register_log('pack_and_validate: pkg_reports.validate_pkg_items')
-            import institutions_service
 
             print(datetime.now().isoformat())
             print('loading services...')
@@ -844,17 +851,30 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         generate_reports(scielo_pkg_path, report_path, not from_markup, pkg_validation_report)
 
-        if not from_converter or (toc_f + fatal_errors == 0):
-            register_log('pack_and_validate: make_pmc_package')
-            make_pmc_package(pkg_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
-
-            register_log('pack_and_validate: zip_packages')
-            zip_packages(scielo_pkg_path)
+        if not from_converter:
+            if from_markup:
+                print(articles)
+                make_pmc_report(pkg_items)
+            if toc_f + fatal_errors == 0:
+                if is_pmc_journal(articles):
+                    register_log('pack_and_validate: make_pmc_package')
+                    make_pmc_package(pkg_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+                register_log('pack_and_validate: zip_packages')
+                zip_packages(scielo_pkg_path)
 
         print('Result of the processing:')
         print(results_path)
         register_log('pack_and_validate: fim')
         fs_utils.write_file(report_path + '/log.txt', '\n'.join(log_items))
+
+
+def is_pmc_journal(articles):
+    r = False
+    for doc, doc_files_info in articles:
+        if doc.journal_id_nlm_ta is not None:
+            r = True
+            break
+    return r
 
 
 def zip_packages(src_pkg_path):
