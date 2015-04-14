@@ -122,6 +122,11 @@ def validate_pkg_items(org_manager, pkg_items, dtd_files, validate_order, displa
 
     fatal_errors = 0
 
+    for doc, doc_files_info in pkg_items:
+        for f in [doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename, doc_files_info.pmc_style_report_filename]:
+            if os.path.isfile(f):
+                os.unlink(f)
+
     print('Validating package: inicio')
     register_log('pkg_reports.validate_pkg_items: inicio')
     for doc, doc_files_info in pkg_items:
