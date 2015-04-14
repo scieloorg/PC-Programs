@@ -1485,6 +1485,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="normalize-space(text())=''">
 				<xsl:apply-templates select="*|text()" mode="text-only"/>
 			</xsl:when>
+			<xsl:when test="bold">
+				<xsl:apply-templates select="bold|text()" mode="text-only"/>
+			</xsl:when>
 			<xsl:otherwise>
 				<xsl:apply-templates select="*|text()"/>
 			</xsl:otherwise>
