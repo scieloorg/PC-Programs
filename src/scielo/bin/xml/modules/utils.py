@@ -1,4 +1,4 @@
-# code = utf-8
+# coding=utf-8
 
 
 def how_similar(this, that):

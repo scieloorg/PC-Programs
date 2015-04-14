@@ -1,4 +1,4 @@
-# code = utf-8
+# coding=utf-8
 
 import os
 import utils
@@ -188,6 +188,13 @@ def wayta_request(text):
     import urllib
     import urllib2
 
+    print(text)
+    print(type(text))
+    if isinstance(text, unicode):
+        text = text.encode('utf-8')
+    print(text)
+    print(type(text))
+
     result = None
     values = {
                 'q': text,
@@ -196,7 +203,7 @@ def wayta_request(text):
     try:
         data = urllib.urlencode(values)
         full_url = url + '?' + data
-        #print(full_url)
+        print(full_url)
         response = urllib2.urlopen(full_url, timeout=30)
         result = response.read()
     except Exception as e:
@@ -281,6 +288,13 @@ def display_results(results):
 
 
 def normaff_search(text):
+    print(text)
+    print(type(text))
+    if not isinstance(text, unicode):
+        text = text.decode('cp1252')
+
+    print(text)
+    print(type(text))
     text = remove_sgml_tags(text)
 
     orgname, country = text.split('|')

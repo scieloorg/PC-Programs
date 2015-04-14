@@ -1,3 +1,4 @@
+# coding=utf-8
 import sys
 
 from modules import institutions_service
