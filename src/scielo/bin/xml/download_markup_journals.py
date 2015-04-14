@@ -1,6 +1,6 @@
 # code utf-8
-
-
+import sys
+import os
 import csv
 import urllib2
 import codecs
@@ -12,7 +12,7 @@ def read_source(filename):
     with open(filename, 'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter='\t')
         for item in spamreader:
-            if len(item) == 10:
+            if len(item) == 11:
                 if item[1] != 'ISSN':
                     j = {}
                     j['collection'] = item[0]
@@ -54,6 +54,8 @@ def journal_data_for_markup(collections):
 def write_files(path, collections_data):
     for key, file_content in collections_data.items():
         print('creating ' + path + '/markup_journals_' + key + '.csv')
+        print('total: ' + str(len(file_content.split('\n'))))
+        print('')
         write(path + '/markup_journals_' + key + '.csv', file_content)
 
 
@@ -85,9 +87,14 @@ def download_content(url):
 
 
 def main(url, source, dest_path, collection_name=None):
-    current = read_current(source)
+    path = os.path.dirname(source)
+    if not os.path.isdir(path):
+        os.makedirs(path)
+    current = ''
+    if not os.path.isfile(source):
+        current = read_current(source)
     new = download_content(url)
-    #new = ''
+
     if len(new) > len(current):
         open(source, 'w').write(new)
     r = read_source(source)
@@ -97,5 +104,11 @@ def main(url, source, dest_path, collection_name=None):
     else:
         write_file(dest_path, collection_name, r[collection_name])
 
+collection_name = None
+print(sys.argv)
+if len(sys.argv) > 1:
+    collection_name = sys.argv[1]
 
-main('http://static.scielo.org/sps/markup_journals.csv', './table.csv', '.')
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+source = CURRENT_PATH + '/markup/markup_journals.csv'
+main('http://static.scielo.org/sps/markup_journals.csv', source, os.path.dirname(source), collection_name)
