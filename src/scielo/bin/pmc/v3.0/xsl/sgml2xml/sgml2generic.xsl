@@ -825,7 +825,10 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:apply-templates>
 		</title-group>
 	</xsl:template>
-	<xsl:template match="doctitle//italic|doctitle//bold">
+	<xsl:template match="doctitle//italic">
+		<italic><xsl:apply-templates select="*|text()"/></italic>
+	</xsl:template>
+	<xsl:template match="doctitle//bold">
 		<xsl:apply-templates select="*|text()"/>
 	</xsl:template>
 	<xsl:template match="titlegrp/title">
