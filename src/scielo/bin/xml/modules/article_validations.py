@@ -772,10 +772,19 @@ class ReferenceContentValidation(object):
                 self.validate_element('conf-name', self.reference.conference_name), 
                 self.validate_element('date-in-citation[@content-type="access-date"]', self.reference.cited_date), 
                 self.validate_element('ext-link', self.reference.ext_link), 
+                self.ext_link
             ]
         for item in items:
             if item is not None:
                 r.append(item)
+        return r
+
+    @property
+    def ext_link(self):
+        r = None
+        if self.reference.ext_link is not None:
+            if not self.reference.ext_link in self.reference.mixed_citation:
+                r = ('ext-link', 'ERROR', self.reference.ext_link + ' is missing in ' + self.reference.mixed_citation)
         return r
 
     @property
