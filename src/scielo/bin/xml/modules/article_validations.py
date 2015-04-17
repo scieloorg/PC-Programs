@@ -783,8 +783,8 @@ class ReferenceContentValidation(object):
     def ext_link(self):
         r = None
         if self.reference.ext_link is not None:
-            if not self.reference.ext_link in self.reference.mixed_citation:
-                r = ('ext-link', 'ERROR', self.reference.ext_link + ' is missing in ' + self.reference.mixed_citation)
+            if not self.reference.ext_link.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;') in self.reference.mixed_citation:
+                r = ('ext-link', 'ERROR', '"' + self.reference.ext_link + '" is missing in "' + self.reference.mixed_citation + '')
         return r
 
     @property

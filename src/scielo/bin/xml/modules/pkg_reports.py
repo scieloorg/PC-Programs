@@ -115,21 +115,24 @@ def validate_package(articles, validate_order):
     return article_reports.toc_report_data(articles, validate_order)
 
 
-def validate_pkg_items(org_manager, pkg_items, dtd_files, validate_order, display_all, xml_articles_status=None):
+def validate_pkg_items(org_manager, doc_items, doc_files_info_items, dtd_files, validate_order, display_all, xml_articles_status=None):
     articles_stats = {}
     articles_reports = {}
     articles_sheets = {}
 
     fatal_errors = 0
 
-    for doc, doc_files_info in pkg_items:
+    for xml_name, doc_files_info in doc_files_info_items.items():
         for f in [doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename, doc_files_info.pmc_style_report_filename]:
             if os.path.isfile(f):
                 os.unlink(f)
 
     print('Validating package: inicio')
     register_log('pkg_reports.validate_pkg_items: inicio')
-    for doc, doc_files_info in pkg_items:
+    for xml_name in sorted_xml_name_by_order(doc_items):
+        doc = doc_items[xml_name]
+        doc_files_info = doc_files_info_items[xml_name]
+
         skip = False
         if xml_articles_status is not None:
             skip = xml_articles_status[doc_files_info.xml_name] == 'skip'
@@ -175,6 +178,36 @@ def get_toc_report_text(toc_f, toc_e, toc_w, toc_report):
         toc_text = html_reports.tag('h2', 'Table of contents Report')
         toc_text += html_reports.collapsible_block('toc', 'table of contents validations: ' + html_reports.statistics_display(toc_f, toc_e, toc_w), toc_report, html_reports.get_stats_numbers_style(toc_f, toc_e, toc_w))
     return toc_text
+
+
+def label_values(labels, values):
+    r = {}
+    for i in range(0, len(labels)):
+        r[labels[i]] = values[i]
+    return r
+
+
+def articles_sorted_by_order(articles):
+    sorted_by_order = {}
+    for xml_name, article in articles.items():
+        if not article.order in sorted_by_order.keys():
+            sorted_by_order[article.order] = []
+        sorted_by_order[article.order].append(article)
+    return sorted_by_order
+
+
+def sorted_xml_name_by_order(articles):
+    order_and_xml_name_items = {}
+    for xml_name, article in articles.items():
+        if not article.order in order_and_xml_name_items.keys():
+            order_and_xml_name_items[article.order] = []
+        order_and_xml_name_items[article.order].append(xml_name)
+
+    sorted_items = []
+    for order in sorted(order_and_xml_name_items.keys()):
+        for item in order_and_xml_name_items[order]:
+            sorted_items.append(item)
+    return sorted_items
 
 
 def get_articles_report_text(articles_reports, articles_stats):
