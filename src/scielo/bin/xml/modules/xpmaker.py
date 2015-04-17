@@ -905,7 +905,10 @@ def zip_packages(src_pkg_path):
 
 def generate_reports(scielo_pkg_path, report_path, display_report, pkg_validation_report):
 
-    content = pkg_reports.xml_list(scielo_pkg_path)
+    content = ''
+    f, e, w = html_reports.statistics_numbers(pkg_validation_report)
+    content += html_reports.statistics_display(f, e, w, False)
+    content += pkg_reports.xml_list(scielo_pkg_path)
     content += pkg_validation_report
     content += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
 

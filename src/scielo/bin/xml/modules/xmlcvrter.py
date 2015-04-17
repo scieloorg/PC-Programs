@@ -232,8 +232,12 @@ def get_issue_files(issue_models, pkg_path):
 def convert_package(src_path):
     display_title = False
     validate_order = True
+
+    validations_report = ''
     conversion_report = ''
-    msg = []
+    toc_report = ''
+    sheets = ''
+
     acron_issue_label = 'unidentified issue'
     scilista_item = None
     issue_files = None
@@ -250,12 +254,10 @@ def convert_package(src_path):
         if not os.path.isdir(path):
             os.makedirs(path)
 
-    xml_filenames, articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
-    issue_models, issue_error_msg = get_issue_models(articles)
+    xml_filenames, pkg_articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
+    issue_models, issue_error_msg = get_issue_models(pkg_articles)
 
-    if issue_models is None:
-        msg.append(issue_error_msg)
-    else:
+    if not issue_models is None:
         issue_files = get_issue_files(issue_models, pkg_path)
         result_path = issue_files.issue_path
         acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
@@ -266,51 +268,52 @@ def convert_package(src_path):
         for article in registered_articles_list:
             registered_articles[article.xml_name] = article
 
-        pkg_articles = xpmaker.get_articles(pkg_path)
-
         complete_issue_items, xml_articles_status, unmatched_orders = get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_articles)
 
         print('registered_articles')
         print(registered_articles)
         print('pkg_articles')
         print(pkg_articles)
+
         complete_issue_sheet = complete_issue_items_previous_status_sheet(registered_articles, pkg_articles, xml_articles_status)
         toc_f, toc_report = complete_issue_items_report(complete_issue_items, unmatched_orders)
 
-        msg.append(complete_issue_sheet)
-        msg.append(toc_report)
-
         selected_articles = []
-        for xml_name, article in articles.keys():
+        for xml_name, article in pkg_articles.keys():
             if xml_articles_status[xml_name] in ['add', 'update']:
                 selected_articles.append(article)
 
         if toc_f == 0 and len(selected_articles) > 0:
             fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_articles_status)
-            msg.append(pkg_reports.get_articles_report_text(articles_reports, articles_stats))
-            msg.append(pkg_reports.get_lists_report_text(articles_reports, articles_sheets))
+
+            validations_report = pkg_reports.get_articles_report_text(articles_reports, articles_stats)
+            sheets = pkg_reports.get_lists_report_text(articles_reports, articles_sheets)
 
             issue_files.save_reports(report_path)
             issue_files.save_source_files(pkg_path)
             report_path = issue_files.base_reports_path
 
-            scilista_item, conversion_report = convert_articles(issue_files, issue_models, articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders)
+            scilista_item, conversion_report = convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders)
             if scilista_item is not None:
                 issue_files.copy_files_to_local_web_app()
 
     report_location = report_path + '/xml_converter.html'
+
     texts = []
     texts.append(pkg_reports.xml_list(pkg_path, xml_filenames))
-    texts.append(html_reports.join_texts(msg))
+    texts.append(complete_issue_sheet)
+    texts.append(issue_error_msg)
+    texts.append(toc_report)
+    texts.append(validations_report)
+    texts.append(sheets)
     texts.append(conversion_report)
 
     content = html_reports.join_texts(texts)
 
     if old_report_path in content:
-        content = html_reports.get_unicode(content)
-        content = content.replace(html_reports.get_unicode(old_report_path), html_reports.get_unicode(report_path))
-
-    pkg_reports.save_report(report_location, ['XML Conversion (XML to Database)', acron_issue_label], content)
+        content = content.replace(old_report_path, report_path)
+    f, e, w = html_reports.statistics_numbers(content)
+    pkg_reports.save_report(report_location, ['XML Conversion (XML to Database)', acron_issue_label], html_reports.statistics_display(f, e, w, False), content)
 
     if not converter_env.is_windows:
         format_reports_for_web(report_path, pkg_path, acron_issue_label.replace(' ', '/'))

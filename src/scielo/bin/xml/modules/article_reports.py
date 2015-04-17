@@ -419,7 +419,7 @@ class ArticleSheetData(object):
 
     def authors_sheet_data(self, filename=None):
         r = []
-        t_header = ['xref', 'given-names', 'surname', 'suffix', 'prefix', 'collab', 'role']
+        t_header = ['xref', 'publication-type', 'role', 'given-names', 'surname', 'suffix', 'prefix', 'collab']
         if not filename is None:
             t_header = ['filename', 'scope'] + t_header
         for a in self.article.contrib_names:
@@ -427,17 +427,19 @@ class ArticleSheetData(object):
             row['scope'] = 'article meta'
             row['filename'] = filename
             row['xref'] = ' '.join(a.xref)
+            row['role'] = a.role
+            row['publication-type'] = self.article.article_type
             row['given-names'] = a.fname
             row['surname'] = a.surname
             row['suffix'] = a.suffix
             row['prefix'] = a.prefix
-            row['role'] = a.role
             r.append(row)
 
         for a in self.article.contrib_collabs:
             row = {}
             row['scope'] = 'article meta'
             row['filename'] = filename
+            row['publication-type'] = self.article.article_type
             row['collab'] = a.collab
             row['role'] = a.role
             r.append(row)
@@ -447,6 +449,8 @@ class ArticleSheetData(object):
                 row = {}
                 row['scope'] = ref.id
                 row['filename'] = filename
+                row['publication-type'] = ref.publication_type
+
                 if isinstance(item, PersonAuthor):
                     row['given-names'] = item.fname
                     row['surname'] = item.surname

@@ -115,7 +115,7 @@ def statistics_display(f, e, w, inline=True):
         stats = ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]])
     else:
         tag_name = 'div'
-        stats = [('Total of fatal errors:', f), ('Total of errors:', e), ('Total of warnings:', w)]
+        stats = [('Total of fatal errors', f), ('Total of errors', e), ('Total of warnings', w)]
         stats = ''.join([tag('p', display_label_value(l, str(v))) for l, v in stats])
     return tag(tag_name, stats, get_stats_numbers_style(f, e, w))
 
