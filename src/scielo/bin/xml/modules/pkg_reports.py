@@ -135,7 +135,7 @@ def validate_pkg_items(org_manager, doc_items, doc_files_info_items, dtd_files, 
 
         skip = False
         if xml_articles_status is not None:
-            skip = xml_articles_status[doc_files_info.xml_name] == 'skip'
+            skip = xml_articles_status[doc_files_info.xml_name] == 'skip-update'
         if not skip:
             new_name = doc_files_info.new_name
             xml_filename = doc_files_info.new_xml_filename
