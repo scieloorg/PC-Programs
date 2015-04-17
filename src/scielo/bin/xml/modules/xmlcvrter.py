@@ -102,15 +102,6 @@ def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_art
     return (complete_issue_items, xml_articles_status, changed_orders)
 
 
-def articles_sorted_by_order(articles):
-    sorted_by_order = {}
-    for xml_name, article in articles.items():
-        if not article.order in sorted_by_order.keys():
-            sorted_by_order[article.order] = []
-        sorted_by_order[article.order].append(article)
-    return sorted_by_order
-
-
 def complete_issue_items_row(article, status, creation_date, other_order=None):
     values = []
     values.append(status)
@@ -127,24 +118,17 @@ def complete_issue_items_row(article, status, creation_date, other_order=None):
     return values
 
 
-def label_values(labels, values):
-    r = {}
-    for i in range(0, len(labels)):
-        r[labels[i]] = values[i]
-    return r
-
-
 def complete_issue_items_previous_status_sheet(registered_articles, pkg_articles, xml_articles_status, status_column_label='action'):
     labels = [status_column_label, 'order', 'new order', 'name', 'registration date', 'toc section', '@article-type', 'article title']
     orders = [article.order for article in registered_articles.values()] + [article.order for article in pkg_articles.values()]
 
     orders = sorted(list(set([order for order in orders if order is not None])))
 
-    sorted_registered = articles_sorted_by_order(registered_articles)
+    sorted_registered = pkg_reports.articles_sorted_by_order(registered_articles)
     print('sorted_registered')
     print(sorted_registered)
 
-    sorted_package = articles_sorted_by_order(pkg_articles)
+    sorted_package = pkg_reports.articles_sorted_by_order(pkg_articles)
     print('sorted_package')
     print(sorted_package)
 
@@ -166,14 +150,14 @@ def complete_issue_items_previous_status_sheet(registered_articles, pkg_articles
                     if registered_articles[name].order != pkg_articles[name].order:
                         status = 'delete'
                 values = complete_issue_items_row(article, status, article.creation_date[0], pkg_articles[name].order)
-                items.append(label_values(labels, values))
+                items.append(pkg_reports.label_values(labels, values))
 
         if not status == '-':
             if order in sorted_package.keys():
                 for article in sorted_package[order]:
                     status = xml_articles_status[article.xml_name]
                     values = complete_issue_items_row(article, status, '')
-                    items.append(label_values(labels, values))
+                    items.append(pkg_reports.label_values(labels, values))
     return html_reports.sheet(labels, None, items, None, 'dbstatus', status_column_label)
 
 
@@ -182,9 +166,10 @@ def complete_issue_items_resulting_status_sheet(registered_articles, pkg_article
     status_labels = {'update': 'updated', 'add': 'added', '-': '-', 'skip-update': '-', 'order changed': 'order changed'}
     orders = sorted(list(set([article.order for article in registered_articles.values()] + [article.order for article in pkg_articles.values()])))
 
-    sorted_registered = articles_sorted_by_order(registered_articles)
-    sorted_package = articles_sorted_by_order(pkg_articles)
+    sorted_registered = pkg_reports.articles_sorted_by_order(registered_articles)
+    sorted_package = pkg_reports.articles_sorted_by_order(pkg_articles)
     items = []
+
     for order in orders:
         if order in sorted_registered.keys():
             for article in sorted_registered[order]:
@@ -197,7 +182,7 @@ def complete_issue_items_resulting_status_sheet(registered_articles, pkg_article
                         status = 'order changed'
 
                 values = complete_issue_items_row(article, status_labels[status], article.creation_date[0], previous_order)
-                items.append(label_values(labels, values))
+                items.append(pkg_reports.label_values(labels, values))
         else:
             if order in sorted_package.keys():
                 for article in sorted_package[order]:
@@ -212,7 +197,7 @@ def complete_issue_items_resulting_status_sheet(registered_articles, pkg_article
                                 status = 'change orders'
                         status = 'ERROR: unable to ' + status
                     values = complete_issue_items_row(article, status, '', previous_order)
-                    items.append(label_values(labels, values))
+                    items.append(pkg_reports.label_values(labels, values))
 
     return html_reports.sheet(labels, None, items, None, 'dbstatus', 'action')
 
@@ -230,12 +215,12 @@ def complete_issue_items_report(complete_issue_items, unmatched_orders):
 
 def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
     xml_filenames = sorted([src_path + '/' + f for f in os.listdir(src_path) if f.endswith('.xml') and not 'incorrect' in f])
-    pkg_items = xpmaker.make_package(xml_filenames, report_path, wrk_path, pkg_path, version, 'acron')
-    return (xml_filenames, pkg_items)
+    articles, doc_file_info_items = xpmaker.make_package(xml_filenames, report_path, wrk_path, pkg_path, version, 'acron')
+    return (xml_filenames, articles, doc_file_info_items)
 
 
-def get_issue_models(pkg_items):
-    issue_label, p_issn, e_issn = xpmaker.package_issue(pkg_items)
+def get_issue_models(articles):
+    issue_label, p_issn, e_issn = xpmaker.package_issue(articles)
     return find_issue_models(issue_label, p_issn, e_issn)
 
 
@@ -265,8 +250,8 @@ def convert_package(src_path):
         if not os.path.isdir(path):
             os.makedirs(path)
 
-    xml_filenames, pkg_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
-    issue_models, issue_error_msg = get_issue_models(pkg_items)
+    xml_filenames, articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
+    issue_models, issue_error_msg = get_issue_models(articles)
 
     if issue_models is None:
         msg.append(issue_error_msg)
@@ -295,14 +280,13 @@ def convert_package(src_path):
         msg.append(complete_issue_sheet)
         msg.append(toc_report)
 
-        selected_pkg_items = []
-        for article, doc_file_info in pkg_items:
-            if xml_articles_status[doc_file_info.xml_name] in ['add', 'update']:
-                selected_pkg_items.append((article, doc_file_info))
-        pkg_items = selected_pkg_items
+        selected_articles = []
+        for xml_name, article in articles.keys():
+            if xml_articles_status[xml_name] in ['add', 'update']:
+                selected_articles.append(article)
 
-        if toc_f == 0 and len(pkg_items) > 0:
-            fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, pkg_items, dtd_files, validate_order, display_title, xml_articles_status)
+        if toc_f == 0 and len(selected_articles) > 0:
+            fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_articles_status)
             msg.append(pkg_reports.get_articles_report_text(articles_reports, articles_stats))
             msg.append(pkg_reports.get_lists_report_text(articles_reports, articles_sheets))
 
@@ -310,9 +294,6 @@ def convert_package(src_path):
             issue_files.save_source_files(pkg_path)
             report_path = issue_files.base_reports_path
 
-            articles = {}
-            for article, doc_file_info in pkg_items:
-                articles[doc_file_info.xml_name] = article
             scilista_item, conversion_report = convert_articles(issue_files, issue_models, articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders)
             if scilista_item is not None:
                 issue_files.copy_files_to_local_web_app()
@@ -384,8 +365,8 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
 
     text = html_reports.tag('h2', 'XML Converter')
 
-    #FIXME - SKIP UPDATE, use xml_articles_status
-    for xml_name, article in pkg_articles.items():
+    for xml_name in pkg_reports.sorted_xml_name_by_order(pkg_articles):
+        article = pkg_articles[xml_name]
         index += 1
 
         item_label = str(index) + n + ' - ' + xml_name
@@ -394,54 +375,59 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
         text += html_reports.tag('h4', item_label)
         msg = ''
 
-        xml_stats, data_stats = articles_stats[xml_name]
-        xml_f, xml_e, xml_w = xml_stats
-        data_f, data_e, data_w = data_stats
+        if xml_articles_status[xml_name] in ['add', 'update']:
+            xml_stats, data_stats = articles_stats[xml_name]
+            xml_f, xml_e, xml_w = xml_stats
+            data_f, data_e, data_w = data_stats
 
-        valid_ahead, ahead_status, ahead_msg, ahead_comparison = ahead_manager.get_valid_ahead(article, xml_name)
-        articles_by_status[ahead_status].append(xml_name)
+            valid_ahead, ahead_status, ahead_msg, ahead_comparison = ahead_manager.get_valid_ahead(article, xml_name)
+            articles_by_status[ahead_status].append(xml_name)
 
-        section_code, issue_validations_msg = validate_xml_issue_data(issue_models, article)
+            section_code, issue_validations_msg = validate_xml_issue_data(issue_models, article)
 
-        msg += html_reports.tag('h4', 'checking ex-ahead')
-        msg += ''.join([html_reports.format_message(item) for item in ahead_msg])
-        msg += ''.join([html_reports.tag('pre', item) for item in ahead_comparison])
-        msg += html_reports.tag('h4', 'checking issue data')
-        msg += issue_validations_msg
+            msg += html_reports.tag('h4', 'checking ex-ahead')
+            msg += ''.join([html_reports.format_message(item) for item in ahead_msg])
+            msg += ''.join([html_reports.tag('pre', item) for item in ahead_comparison])
+            msg += html_reports.tag('h4', 'checking issue data')
+            msg += issue_validations_msg
 
-        conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
+            conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
 
-        if conv_f + xml_f + data_f == 0:
-            article.section_code = section_code
-            if valid_ahead is not None:
-                article._ahead_pid = valid_ahead.ahead_pid
-
-            article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
-
-            creation_date = None if not xml_name in registered_articles else registered_articles[xml_name].creation_date
-
-            done = converter_env.db_article.create_id_file(issue_models.record, article, article_files, creation_date)
-            if done:
-                if xml_name in unmatched_orders.keys():
-                    prev_order, curr_order = unmatched_orders[xml_name]
-                    prev_article_files = serial_files.ArticleFiles(issue_files, prev_order, xml_name)
-                    os.unlink(prev_article_files.id_filename)
-
-                article_id_created += 1
+            if conv_f + xml_f + data_f == 0:
+                article.section_code = section_code
                 if valid_ahead is not None:
-                    if ahead_status in ['matched', 'partially matched']:
-                        done, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
-                        msg += ''.join([item for item in ahead_msg])
-                        if done:
-                            ex_ahead += 1
-                articles_by_status['converted'].append(xml_name)
-                msg += html_reports.format_message('OK: converted')
+                    article._ahead_pid = valid_ahead.ahead_pid
+
+                article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
+
+                creation_date = None if not xml_name in registered_articles else registered_articles[xml_name].creation_date
+
+                done = converter_env.db_article.create_id_file(issue_models.record, article, article_files, creation_date)
+                if done:
+                    if xml_name in unmatched_orders.keys():
+                        prev_order, curr_order = unmatched_orders[xml_name]
+                        prev_article_files = serial_files.ArticleFiles(issue_files, prev_order, xml_name)
+                        os.unlink(prev_article_files.id_filename)
+
+                    article_id_created += 1
+                    if valid_ahead is not None:
+                        if ahead_status in ['matched', 'partially matched']:
+                            done, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
+                            msg += ''.join([item for item in ahead_msg])
+                            if done:
+                                ex_ahead += 1
+                    articles_by_status['converted'].append(xml_name)
+                    msg += html_reports.format_message('OK: converted')
+                else:
+                    articles_by_status['not converted'].append(xml_name)
+                    msg += html_reports.format_message('FATAL ERROR: not converted')
+                    conv_f += 1
+                title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
+                conv_stats = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
             else:
-                articles_by_status['not converted'].append(xml_name)
-                msg += html_reports.format_message('FATAL ERROR: not converted')
-                conv_f += 1
-            title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
-            text += html_reports.collapsible_block(xml_name + 'conv', 'converter validations: ' + title, msg, html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w))
+                msg += html_reports.tag('p', 'skipped')
+                conv_stats = ''
+            text += html_reports.collapsible_block(xml_name + 'conv', 'converter validations: ' + title, msg, conv_stats)
 
     summary = ''
     i = 0
@@ -585,7 +571,7 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
             os.makedirs(queued_pkg_path)
 
         if fs_utils.extract_package(temp_path + '/' + pkg_name, queued_pkg_path):
-            if archive_path is not None: 
+            if archive_path is not None:
                 if os.path.isdir(archive_path):
                     shutil.copyfile(temp_path + '/' + pkg_name, archive_path + '/' + pkg_name)
             pkg_paths.append(queued_pkg_path)

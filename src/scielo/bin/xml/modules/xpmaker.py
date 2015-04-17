@@ -745,7 +745,9 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
         hdimages_to_jpeg(path, path, False)
 
     print('Make packages for ' + str(len(xml_files)) + ' files.')
-    r = []
+    doc_items = {}
+    doc_files_info_items = {}
+
     for xml_filename in xml_files:
 
         doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, wrk_path)
@@ -753,25 +755,27 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
 
         doc, doc_files_info = make_article_package(doc_files_info, scielo_pkg_path, version, acron)
 
-        #report_names[doc_files_info.new_name] = doc_files_info.xml_name
-        r.append((doc, doc_files_info))
-    return r
+        doc_items[doc.xml_name] = doc
+        doc_files_info_items[doc.xml_name] = doc_files_info
+
+    return (doc_items, doc_files_info_items)
 
 
-def make_pmc_report(articles):
-    for doc, doc_files_info in articles:
+def make_pmc_report(articles, doc_files_info_items):
+    for xml_name, doc in articles.items():
         msg = 'generating report...'
         if doc is None:
             msg = 'Unable to generate the XML file.'
         else:
             if doc.journal_id_nlm_ta is None:
                 msg = 'It is not PMC article or unable to find journal-id (nlm-ta) in the XML file.'
-        html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', msg)
+        html_reports.save(doc_files_info_items[xml_name].pmc_style_report_filename, 'PMC Style Checker', msg)
 
 
-def make_pmc_package(articles, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files):
+def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files):
     do_it = False
-    for doc, doc_files_info in articles:
+    for xml_name, doc in articles.items():
+        doc_files_info = doc_files_info_items[xml_name]
         if doc.journal_id_nlm_ta is None:
             html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', 'Missing journal-id (nlm-ta).')
         else:
@@ -801,8 +805,6 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
     register_log('pack_and_validate: inicio')
     from_markup = any([f.endswith('.sgm.xml') for f in xml_files])
 
-    do_toc_report = not from_markup
-
     scielo_pkg_path = results_path + '/scielo_package'
     pmc_pkg_path = results_path + '/pmc_package'
     report_path = results_path + '/errors'
@@ -819,14 +821,14 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         print('No files to process')
     else:
         register_log('pack_and_validate: make_package')
-        pkg_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
-
-        #generate_reports(pkg_items, scielo_dtd_files, scielo_pkg_path, report_path, do_toc_report, not from_markup, from_converter)
-        articles = {doc_file_info.xml_name: article for article, doc_file_info in pkg_items}
+        articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
         texts = []
         toc_f = 0
         if not from_markup:
+            register_log('pack_and_validate: package_articles_sheet')
+            texts.append(package_articles_sheet(articles))
+
             register_log('pack_and_validate: pkg_reports.validate_package')
             toc_stats_and_report = pkg_reports.validate_package(articles, from_converter)
             toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
@@ -844,7 +846,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             print('services loaded!')
             print(datetime.now().isoformat())
 
-            fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(org_manager, pkg_items, scielo_dtd_files, from_converter, from_markup)
+            fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, from_markup)
 
             register_log('pack_and_validate: pkg_reports.get_articles_report_text')
             texts.append(pkg_reports.get_articles_report_text(articles_reports, articles_stats))
@@ -859,11 +861,11 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         if not from_converter:
             if from_markup:
-                make_pmc_report(pkg_items)
+                make_pmc_report(articles, doc_files_info_items)
             if toc_f + fatal_errors == 0:
                 if is_pmc_journal(articles):
                     register_log('pack_and_validate: make_pmc_package')
-                    make_pmc_package(pkg_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+                    make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
                 register_log('pack_and_validate: zip_packages')
                 zip_packages(scielo_pkg_path)
 
@@ -875,7 +877,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
 def is_pmc_journal(articles):
     r = False
-    for doc, doc_files_info in articles:
+    for doc in articles.values():
         if doc.journal_id_nlm_ta is not None:
             r = True
             break
@@ -979,11 +981,11 @@ def get_pkg_items(xml_filenames, report_path):
     return r
 
 
-def package_issue(package_info):
+def package_issue(articles):
     issue_label = []
     e_issn = []
     print_issn = []
-    for doc, doc_files_info in package_info:
+    for doc in articles.values():
         if doc is not None:
             issue_label.append(doc.issue_label)
             if doc.e_issn is not None:
@@ -1046,3 +1048,21 @@ def validate_inputs(xml_path, acron):
     if acron is None:
         errors.append('Missing acronym.')
     return errors
+
+
+def package_articles_sheet(pkg_articles):
+    labels = ['order', 'aop order', 'name', 'toc section', '@article-type', 'article title']
+
+    items = []
+    for xml_name in pkg_reports.sorted_xml_name_by_order(pkg_articles):
+        values = []
+        values.append(pkg_articles[xml_name].order)
+        values.append(pkg_articles[xml_name].article_previous_id)
+        values.append(xml_name)
+        values.append(pkg_articles[xml_name].toc_section)
+        values.append(pkg_articles[xml_name].article_type)
+        values.append(pkg_articles[xml_name].title)
+
+        items.append(pkg_reports.label_values(labels, values))
+
+    return html_reports.sheet(labels, None, items, None, 'dbstatus')
