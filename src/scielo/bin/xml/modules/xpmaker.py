@@ -755,8 +755,8 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
 
         doc, doc_files_info = make_article_package(doc_files_info, scielo_pkg_path, version, acron)
 
-        doc_items[doc.xml_name] = doc
-        doc_files_info_items[doc.xml_name] = doc_files_info
+        doc_items[doc_files_info.xml_name] = doc
+        doc_files_info_items[doc_files_info.xml_name] = doc_files_info
 
     return (doc_items, doc_files_info_items)
 
@@ -804,7 +804,7 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
 def pack_and_validate(xml_files, results_path, acron, version, from_converter=False):
     register_log('pack_and_validate: inicio')
     from_markup = any([f.endswith('.sgm.xml') for f in xml_files])
-
+    fatal_errors = 0
     scielo_pkg_path = results_path + '/scielo_package'
     pmc_pkg_path = results_path + '/pmc_package'
     report_path = results_path + '/errors'

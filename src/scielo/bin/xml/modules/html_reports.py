@@ -235,8 +235,11 @@ def format_html_data(value, apply_message_style=False, width=None):
         r = value
     elif '<' in value and '>' in value:
         r = display_xml(value, width)
-    elif value.startswith('Normalized forms: '):
-        r = 'Normalized forms: <select size="10">' + '\n'.join(['<option>' + op + '</option>' for op in sorted(value[value.find(':')+2:].split('|'))]) + '</select>'
+    elif 'options: ' in value:
+        msg, value = value.split('options: ')
+        value = value[len('options: '):]
+        value = value.split('|')
+        r = msg + '<select size="10">' + '\n'.join(['<option>' + op + '</option>' for op in sorted(value)]) + '</select>'
     else:
         r = value
     if apply_message_style:

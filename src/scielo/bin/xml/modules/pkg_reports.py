@@ -199,9 +199,10 @@ def articles_sorted_by_order(articles):
 def sorted_xml_name_by_order(articles):
     order_and_xml_name_items = {}
     for xml_name, article in articles.items():
-        if not article.order in order_and_xml_name_items.keys():
-            order_and_xml_name_items[article.order] = []
-        order_and_xml_name_items[article.order].append(xml_name)
+        if not article is None:
+            if not article.order in order_and_xml_name_items.keys():
+                order_and_xml_name_items[article.order] = []
+            order_and_xml_name_items[article.order].append(xml_name)
 
     sorted_items = []
     for order in sorted(order_and_xml_name_items.keys()):
