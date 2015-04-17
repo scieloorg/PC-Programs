@@ -8,6 +8,17 @@ import xml_utils
 IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', ]
 
 
+def nodetext(node, sep='|'):
+    if node is None:
+        r = None
+    elif isinstance(node, list):
+        r = sep.join([item.text for item in node])
+    else:
+        r = node.text
+    print(r)
+    return r
+
+
 def format_issue_label(year, volume, number, volume_suppl, number_suppl):
     year = year if number == 'ahead' else ''
     v = 'v' + volume if volume is not None else None
@@ -495,24 +506,21 @@ class ArticleXML(object):
             a.xml = xml_utils.node_xml(aff)
             a.id = aff.get('id')
             a.label = aff.findtext('label')
-            country = aff.find('country')
-            if country is None:
-                a.country = None
-                a.i_country = None
-            else:
-                a.country = country.text
-                a.i_country = country.attrib.get('country')
-            a.email = aff.findtext('email')
-            a.original = aff.findtext('institution[@content-type="original"]')
-            a.norgname = aff.findtext('institution[@content-type="normalized"]')
-            if a.norgname == '':
-                a.norgname = None
-            a.orgname = aff.findtext('institution[@content-type="orgname"]')
-            a.orgdiv1 = aff.findtext('institution[@content-type="orgdiv1"]')
-            a.orgdiv2 = aff.findtext('institution[@content-type="orgdiv2"]')
-            a.orgdiv3 = aff.findtext('institution[@content-type="orgdiv3"]')
-            a.city = aff.findtext('addr-line/named-content[@content-type="city"]')
-            a.state = aff.findtext('addr-line/named-content[@content-type="state"]')
+            country = aff.findall('country')
+            a.country = nodetext(country)
+            if not country is None:
+                if isinstance(country, list):
+                    a.i_country = '|'.join([item.attrib.get('country') for item in country if item.attrib.get('country') is not None])
+
+            a.email = nodetext(aff.findall('email'), ', ')
+            a.original = nodetext(aff.findall('institution[@content-type="original"]'))
+            a.norgname = nodetext(aff.findall('institution[@content-type="normalized"]'))
+            a.orgname = nodetext(aff.findall('institution[@content-type="orgname"]'))
+            a.orgdiv1 = nodetext(aff.findall('institution[@content-type="orgdiv1"]'))
+            a.orgdiv2 = nodetext(aff.findall('institution[@content-type="orgdiv2"]'))
+            a.orgdiv3 = nodetext(aff.findall('institution[@content-type="orgdiv3"]'))
+            a.city = nodetext(aff.findall('addr-line/named-content[@content-type="city"]'))
+            a.state = nodetext(aff.findall('addr-line/named-content[@content-type="state"]'))
 
             affs.append(a)
 
