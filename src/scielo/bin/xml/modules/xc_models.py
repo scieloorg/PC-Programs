@@ -673,35 +673,35 @@ class AheadManager(object):
         data = []
 
         if article.number == 'ahead':
-            status = 'new'
+            status = 'new aop'
         else:
             xml_filename = xml_name + '.xml'
-            msg_list.append('Checking if there is an "ahead of print version" for ' + xml_filename)
+            msg_list.append('Checking if there is an "aop version" for ' + xml_filename)
             if article.doi is not None:
-                msg_list.append('Checking if there is an "ahead of print version" for ' + article.doi)
+                msg_list.append('Checking if there is an "aop version" for ' + article.doi)
             ahead = self.find_ahead(article.doi, xml_filename)
 
             if ahead is None:
-                status = 'new'
-                msg_list.append('This article has not an "ahead of print version".')
+                status = 'new doc'
+                msg_list.append('This article has not an "aop version".')
             else:
-                msg_list.append('Found: "ahead of print version"')
+                msg_list.append('Found: "aop version"')
                 matched_rate = self.score(article, ahead, 90)
                 if matched_rate > 0:
                     is_valid_ahead = self.is_valid(ahead)
                     if is_valid_ahead:
-                        status = 'matched'
+                        status = 'matched aop'
                         msg = ''
                         valid_ahead = ahead
                         if matched_rate != 100:
-                            msg = 'WARNING: the title/author of article and its "ahead of print version" are partially matched.'
-                            status = 'partially matched'
+                            msg = 'WARNING: the title/author of article and its "aop version" are partially matched.'
+                            status = 'partially matched aop'
                     else:
-                        status = 'invalid'
-                        msg = 'WARNING: the "ahead of print version" has no PID'
+                        status = 'aop missing PID'
+                        msg = 'ERROR: the "aop version" has no PID'
                 else:
-                    status = 'unmatched'
-                    msg = 'WARNING: the title/author of article and "ahead of print version" are unmatched'
+                    status = 'unmatched aop'
+                    msg = 'FATAL ERROR: the title/author of article and "ahead of print version" are unmatched'
 
                 msg_list.append(msg)
 

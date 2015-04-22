@@ -25,6 +25,8 @@ def statistics_numbers(content):
 
 
 def get_unicode(text):
+    if text is None:
+        text = u''
     if not isinstance(text, unicode):
         try:
             text = text.decode('utf-8')
