@@ -585,6 +585,13 @@ def normalize_xml_content(doc_files_info, content, version):
     content = content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
     content = content.replace('publication-type="web"', 'publication-type="webpage"')
 
+    for style in ['sup', 'sub', 'bold', 'italic']:
+        content = content.replace('<' + style + '/>', '')
+        content = content.replace('<' + style + '> </' + style + '>', '')
+        content = content.replace('<' + style + '></' + style + '>', '')
+        content = content.replace('</' + style + '> <' + style + '>', '')
+        content = content.replace('</' + style + '><' + style + '>', '')
+
     content = xml_utils.pretty_print(content)
 
     replaced_entities_report = ''
