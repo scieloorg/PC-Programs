@@ -299,6 +299,8 @@ def normaff_search(text):
     text = remove_sgml_tags(text)
 
     orgname, country = text.split('|')
+    if '(' in country:
+        country = country[0:country.find('(')].strip()
 
     print(orgname)
     print(country)
