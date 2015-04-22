@@ -694,14 +694,14 @@ class AheadManager(object):
                         msg = ''
                         valid_ahead = ahead
                         if matched_rate != 100:
-                            msg = 'WARNING: the title/author of article and its "aop version" are partially matched.'
+                            msg = 'WARNING: the title/author of article and its "aop version" are similar.'
                             status = 'partially matched aop'
                     else:
                         status = 'aop missing PID'
                         msg = 'ERROR: the "aop version" has no PID'
                 else:
                     status = 'unmatched aop'
-                    msg = 'FATAL ERROR: the title/author of article and "ahead of print version" are unmatched'
+                    msg = 'FATAL ERROR: the title/author of article and "aop version" are different.'
 
                 msg_list.append(msg)
 
