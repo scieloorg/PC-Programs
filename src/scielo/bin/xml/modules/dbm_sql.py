@@ -28,11 +28,15 @@ class SQL(object):
             if len(items) == len(fields):
                 _values = []
                 for item in items:
-                    if "'" in item:
-                        item = item.replace("'", "&apos;")
-                    _values.append("'" + item.replace('  ', ' ').strip() + "'")
+                    if not '"' in item:
+                        _values.append('"' + item.replace('  ', ' ').strip() + '"')
+                    elif not "'" in item:
+                        _values.append("'" + item.replace('  ', ' ').strip() + "'")
+                    else:
+                        _values.append('`' + item.replace('  ', ' ').strip() + '`')
                 instruction = 'insert into ' + table_name + ' (' + _fields + ') ' + ' values (' + ', '.join(_values) + ')'
-                conn.execute('\n' + instruction + '\n')
+                print(instruction)
+                conn.execute(instruction + '\n')
                 conn.commit()
         conn.close()
 
