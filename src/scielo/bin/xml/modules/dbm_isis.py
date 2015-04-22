@@ -66,6 +66,7 @@ class IDFile(object):
     def _format_record(self, record):
         r = []
         if record is not None:
+            print(record)
             for tag_i in sorted([int(s) for s in record.keys() if s.isdigit()]):
                 tag = str(tag_i)
                 data = record.get(tag)

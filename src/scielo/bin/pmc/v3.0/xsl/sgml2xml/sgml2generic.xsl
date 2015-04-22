@@ -217,7 +217,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="label//bold | label//italic">
+	<xsl:template match="label//bold | label//italic | label//sup">
 		<xsl:apply-templates select="*|text()"/>
 	</xsl:template>
 	
@@ -249,7 +249,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="attrib | series | app | anonym | isbn | glossary | term | def | response | p | sec | sup | sub | label | subtitle | edition |  issn | corresp | ack ">
+	<xsl:template match="attrib | series | app | anonym | isbn | glossary | term | def | response | p | sec | label | subtitle | edition |  issn | corresp | ack ">
 		<xsl:param name="id"/>
 		
 		<xsl:element name="{name()}">
@@ -258,7 +258,19 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
-	
+	<xsl:template match="sup | sub ">
+		<xsl:param name="id"/>
+		<xsl:choose>
+			<xsl:when test="not(*) and normalize-space(.//text())=''"></xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="{name()}">
+					<xsl:apply-templates select="@* | * | text()">
+						<xsl:with-param name="id" select="$id"/>
+					</xsl:apply-templates>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	<xsl:template match="label[.//text()='(']//text()">*</xsl:template>
 	<xsl:template match="label[.//text()='((']//text()">**</xsl:template>
 	
