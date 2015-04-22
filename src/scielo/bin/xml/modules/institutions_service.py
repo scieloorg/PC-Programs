@@ -90,6 +90,8 @@ class OrgDBManager(object):
                 country_name = country_name.decode('utf-8')
 
         norm_country_name = self.normalized_country_name(country_code, country_name)
+        if norm_country_name is not None and country_code is None:
+            country_code = self.normalized_country_items.get(norm_country_name)
         results = self.institution_exists(orgname, city, state, country_code, norm_country_name)
 
         if not len(results) == 1:
@@ -114,7 +116,6 @@ class OrgDBManager(object):
             country_expr = '(' + country_expr + ')'
 
         where_expr = ' AND '.join([item for item in [name_city_expr, country_expr] if item != ''])
-
         if len(where_expr) > 0:
             expr = self.sql.get_select_statement(self.table_name, self.fields, where_expr)
             r = self.sql.query(expr)
@@ -133,7 +134,7 @@ class OrgDBManager(object):
         where_expr = ' AND '.join(items)
 
         expr = self.sql.get_select_statement(self.table_name, self.fields, where_expr)
-
+        
         r = self.sql.query(expr)
         r = list(set(r))
         return r

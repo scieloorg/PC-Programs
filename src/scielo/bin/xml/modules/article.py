@@ -15,7 +15,8 @@ def nodetext(node, sep='|'):
         r = sep.join([item.text for item in node])
     else:
         r = node.text
-    print(r)
+    if r == '':
+        r = None
     return r
 
 
@@ -511,6 +512,8 @@ class ArticleXML(object):
             if not country is None:
                 if isinstance(country, list):
                     a.i_country = '|'.join([item.attrib.get('country') for item in country if item.attrib.get('country') is not None])
+                    if a.i_country == '':
+                        a.i_country = None
 
             a.email = nodetext(aff.findall('email'), ', ')
             a.original = nodetext(aff.findall('institution[@content-type="original"]'))
