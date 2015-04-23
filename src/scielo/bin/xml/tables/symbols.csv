@@ -1,0 +1,188 @@
+&#8217;	&#8217;	Space
+!	&#33;	Exclamation mark
+#	&#35;	Number sign
+%	&#37;	Percent sign
+&#38;	&#38;	Ampersand
+(	&#40;	Left parenthesis
+)	&#41;	Right parenthesis
++	&#43;	Plus sign
+,	&#44;	Comma
+.	&#46;	Full stop
+/	&#47;	Solidus
+0	&#48;	Digit zero
+1	&#49;	Digit one
+2	&#50;	Digit two
+3	&#51;	Digit three
+4	&#52;	Digit four
+5	&#53;	Digit five
+6	&#54;	Digit six
+7	&#55;	Digit seven
+8	&#56;	Digit eight
+9	&#57;	Digit nine
+:	&#58;	Colon
+;	&#59;	Semicolon
+&lt;	&#60;	Less-than sign
+=	&#61;	Equals sign
+&gt;	&#62;	Greater-than sign
+?	&#63;	Question mark
+[	&#91;	Left square bracket
+]	&#93;	Right square bracket
+_	&#95;	Low line
+{	&#123;	Left curly bracket
+|	&#124;	Vertical line
+}	&#125;	Right curly bracket
+&#176;	&#176;	Degree sign
+&#177;	&#177;	Plus-minus sign
+&#180;	&#215;	Multiplication sign
+&#184;	&#247;	Division sign
+&#210;	&#174;	Registered sign (serif)
+&#211;	&#169;	Copyright sign (serif)
+&#216;	&#172;	Not sign
+&#226;	&#174;	Registered sign (sans-serif)
+&#227;	&#169;	Copyright sign (sans-serif)
+&#166;	&#402;	Latin small letter f with hook
+A	&#913;	Greek capital letter alpha
+B	&#914;	Greek capital letter beta
+G	&#915;	Greek capital letter gamma
+D	&#916;	Greek capital letter delta
+E	&#917;	Greek capital letter epsilon
+Z	&#918;	Greek capital letter zeta
+H	&#919;	Greek capital letter eta
+Q	&#920;	Greek capital letter theta
+I	&#921;	Greek capital letter iota
+K	&#922;	Greek capital letter kappa
+L	&#923;	Greek capital letter lamda
+M	&#924;	Greek capital letter mu
+N	&#925;	Greek capital letter nu
+X	&#926;	Greek capital letter xi
+O	&#927;	Greek capital letter omicron
+P	&#928;	Greek capital letter pi
+R	&#929;	Greek capital letter rho
+S	&#931;	Greek capital letter sigma
+T	&#932;	Greek capital letter tau
+U	&#933;	Greek capital letter upsilon
+F	&#934;	Greek capital letter phi
+C	&#935;	Greek capital letter chi
+Y	&#936;	Greek capital letter psi
+W	&#937;	Greek capital letter omega
+a	&#945;	Greek small letter alpha
+b	&#946;	Greek small letter beta
+g	&#947;	Greek small letter gamma
+d	&#948;	Greek small letter delta
+e	&#949;	Greek small letter epsilon
+z	&#950;	Greek small letter zeta
+h	&#951;	Greek small letter eta
+q	&#952;	Greek small letter theta
+i	&#953;	Greek small letter iota
+k	&#954;	Greek small letter kappa
+l	&#955;	Greek small letter lamda
+m	&#956;	Greek small letter mu
+n	&#957;	Greek small letter nu
+x	&#958;	Greek small letter xi
+o	&#959;	Greek small letter omicron
+p	&#960;	Greek small letter pi
+r	&#961;	Greek small letter rho
+V	&#962;	Greek small letter final sigma
+s	&#963;	Greek small letter sigma
+t	&#964;	Greek small letter tau
+u	&#965;	Greek small letter upsilon
+f	&#966;	Greek small letter phi
+c	&#967;	Greek small letter chi
+y	&#968;	Greek small letter psi
+w	&#969;	Greek small letter omega
+J	&#977;	Greek theta symbol
+j	&#981;	Greek phi symbol
+v	&#982;	Greek pi symbol
+&#161;	&#978;	Greek upsilon with hook symbol
+&#162;	&#8242;	Prime
+&#164;	&#8260;	Fraction slash
+&#178;	&#8243;	Double prime
+&#188;	&#8230;	Horizontal ellipsis
+&#192;	&#8501;	Alef symbol
+&#193;	&#8465;	Black-letter capital I
+&#194;	&#8476;	Black-letter capital R
+&#195;	&#8472;	Script capital P
+&#212;	&#8482;	Trade mark sign (serif)
+&#228;	&#8482;	Trade mark sign (sans-serif)
+&#240;	&#8364;	Euro sign
+&#171;	&#8596;	Left right arrow
+&#172;	&#8592;	Leftwards arrow
+&#173;	&#8593;	Upwards arrow
+&#174;	&#8594;	Rightwards arrow
+&#175;	&#8595;	Downwards arrow
+&#191;	&#8629;	Downwards arrow with corner leftwards
+&#219;	&#8660;	Left right double arrow
+&#220;	&#8656;	Leftwards double arrow
+&#221;	&#8657;	Upwards double arrow
+&#222;	&#8658;	Rightwards double arrow
+&#223;	&#8659;	Downwards double arrow
+&#34;	&#8704;	For all
+&#36;	&#8707;	There exists
+&#39;	&#8717;	Small contains as member
+&#42;	&#8727;	Asterisk operator
+&#45;	&#8722;	Minus sign
+&#64;	&#8773;	Approximately equal to
+&#92;	&#8756;	Therefore
+&#94;	&#8869;	Up tack
+&#126;	&#8764;	Tilde operator
+&#163;	&#8804;	Less-than or equal to
+&#165;	&#8734;	Infinity
+&#179;	&#8805;	Greater-than or equal to
+&#181;	&#8733;	Proportional to
+&#182;	&#8706;	Partial differential
+&#183;	&#8729;	Bullet operator
+&#185;	&#8800;	Not equal to
+&#186;	&#8801;	Identical to
+&#187;	&#8776;	Almost equal to
+&#196;	&#8855;	Circled times
+&#197;	&#8853;	Circled plus
+&#198;	&#8709;	Empty set
+&#199;	&#8745;	Intersection
+&#200;	&#8746;	Union
+&#201;	&#8835;	Superset of
+&#202;	&#8839;	Superset of or equal to
+&#203;	&#8836;	Not a subset of
+&#204;	&#8834;	Subset of
+&#205;	&#8838;	Subset of or equal to
+&#206;	&#8712;	Element of
+&#207;	&#8713;	Not an element of
+&#208;	&#8736;	Angle
+&#209;	&#8711;	Nabla
+&#213;	&#8719;	N-ary product
+&#214;	&#8730;	Square root
+&#215;	&#8901;	Dot operator
+&#217;	&#8743;	Logical and
+&#218;	&#8744;	Logical or
+&#229;	&#8721;	N-ary summation
+&#242;	&#8747;	Integral
+&#189;	&#9168;	Vertical line extension
+&#190;	&#9135;	Horizontal line extension
+&#225;	&#9001;	Left-pointing angle bracket
+&#230;	&#9115;	Left parenthesis upper hook
+&#231;	&#9116;	Left parenthesis extension
+&#232;	&#9117;	Left parenthesis lower hook
+&#233;	&#9121;	Left square bracket upper corner
+&#234;	&#9122;	Left square bracket extension
+&#235;	&#9123;	Left square bracket lower corner
+&#236;	&#9127;	Left curly bracket upper hook
+&#237;	&#9128;	Left curly bracket middle piece
+&#238;	&#9129;	Left curly bracket lower hook
+&#239;	&#9130;	Curly bracket extension
+&#241;	&#9002;	Right-pointing angle bracket
+&#243;	&#8992;	Top half integral
+&#244;	&#9134;	Integral extension
+&#245;	&#8993;	Bottom half integral
+&#246;	&#9118;	Right parenthesis upper hook
+&#247;	&#9119;	Right parenthesis extension
+&#248;	&#9120;	Right parenthesis lower hook
+&#249;	&#9124;	Right square bracket upper corner
+&#250;	&#9125;	Right square bracket extension
+&#251;	&#9126;	Right square bracket lower corner
+&#252;	&#9131;	Right curly bracket upper hook
+&#253;	&#9132;	Right curly bracket middle piece
+&#254;	&#9133;	Right curly bracket lower hook
+&#224;	&#9674;	Lozenge
+&#167;	&#9827;	Black club suit
+&#168;	&#9830;	Black diamond suit
+&#169;	&#9829;	Black heart suit
+&#170;	&#9824;	Black spade suit
