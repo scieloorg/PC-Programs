@@ -509,7 +509,7 @@ class ArticleContentValidation(object):
             if len(normalized_items) == 1:
                 orgname, city, state, country_code, country_name = normalized_items[0]
                 if orgname in [aff.orgname, aff.norgname] and country_code in [aff.i_country]:
-                    status = 'OK'
+                    status = 'INFO'
                     r.append(('normalized aff', status, 'Normalized institution is valid: ' + '; '.join([', '.join(list(item)) for item in normalized_items])))
                 else:
                     status = 'WARNING'
@@ -609,15 +609,15 @@ class ArticleContentValidation(object):
 
     @property
     def license_text(self):
-        return required('license-p', self.article.license_text, 'ERROR')
+        return required('license-p', self.article.license_text, 'FATAL ERROR')
 
     @property
     def license_url(self):
-        return required('license/@href', self.article.license_url, 'ERROR')
+        return required('license/@href', self.article.license_url, 'FATAL ERROR')
 
     @property
     def license_type(self):
-        return expected_values('@license-type', self.article.license_type, ['open-access'])
+        return expected_values('@license-type', self.article.license_type, ['open-access'], 'FATAL ')
 
     @property
     def references(self):
@@ -797,7 +797,7 @@ class ReferenceContentValidation(object):
                 self.validate_element('article-title', self.reference.article_title), 
                 self.validate_element('chapter-title', self.reference.chapter_title), 
                 self.validate_element('conf-name', self.reference.conference_name), 
-                self.validate_element('date-in-citation[@content-type="access-date"]', self.reference.cited_date), 
+                self.validate_element('date-in-citation[@content-type="access-date"] or date-in-citation[@content-type="update"]', self.reference.cited_date), 
                 self.validate_element('ext-link', self.reference.ext_link), 
                 self.ext_link
             ]
@@ -816,7 +816,7 @@ class ReferenceContentValidation(object):
 
     @property
     def publication_type(self):
-        return expected_values('@publication-type', self.reference.publication_type, attributes.PUBLICATION_TYPE)
+        return expected_values('@publication-type', self.reference.publication_type, attributes.PUBLICATION_TYPE, 'FATAL ')
 
     @property
     def xml(self):
