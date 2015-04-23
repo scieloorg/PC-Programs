@@ -1101,7 +1101,10 @@ class ReferenceXML(object):
 
     @property
     def cited_date(self):
-        return self.root.findtext('.//date-in-citation[@content-type="access-date"]')
+        _d = self.root.findtext('.//date-in-citation[@content-type="access-date"]')
+        if _d is None:
+            _d = self.root.findtext('.//date-in-citation[@content-type="update"]')
+        return _d
 
     @property
     def ext_link(self):
