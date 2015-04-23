@@ -17,6 +17,7 @@ import xpchecker
 import pkg_reports
 
 import institutions_service
+import symbols
 
 
 mime = MimeTypes()
@@ -280,6 +281,7 @@ def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
     #embedded_tables = get_html_tables(html_content)
     #content = replace_tables_in_sgmlxml(content, embedded_tables)
     content = extract_embedded_images(xml_name, content, html_content, html_filename, src_path)
+    content = replace_fontsymbols(content, html_content)
 
     xml = xml_utils.is_xml_well_formed(content)
     if xml is None:
@@ -1076,3 +1078,60 @@ def package_articles_sheet(pkg_articles):
         items.append(pkg_reports.label_values(labels, values))
 
     return html_reports.sheet(labels, None, items, None, 'dbstatus')
+
+
+def get_fontsymbols_in_html(html_content):
+    r = []
+    if '[fontsymbol]' in html_content.lower():
+        for style in ['italic', 'sup', 'sub', 'bold']:
+            html_content = html_content.replace('<' + style + '>', '[' + style + ']')
+            html_content = html_content.replace('</' + style + '>', '[/' + style + ']')
+
+        html_content = html_content.replace('[fontsymbol]'.upper(), '[fontsymbol]')
+        html_content = html_content.replace('[/fontsymbol]'.upper(), '[/fontsymbol]')
+        html_content = html_content.replace('[fontsymbol]', '~BREAK~[fontsymbol]')
+        html_content = html_content.replace('[/fontsymbol]', '[/fontsymbol]~BREAK~')
+
+        html_fontsymbol_items = [item for item in html_content.split('~BREAK~') if item.startswith('[fontsymbol]')]
+        for item in html_fontsymbol_items:
+            item = item.replace('[fontsymbol]', '').replace('[/fontsymbol]', '')
+            item = item.replace('<', '~BREAK~<').replace('>', '>~BREAK~')
+            item = item.replace('[', '~BREAK~[').replace(']', ']~BREAK~')
+            parts = [part for part in item.split('~BREAK~') if not part.endswith('>') and not part.startswith('<')]
+
+            new = ''
+            for part in parts:
+                if part.startswith('['):
+                    new += part
+                else:
+
+                    for c in part:
+                        _c = c.strip()
+                        if _c.isdigit() or _c == '':
+                            n = c
+                        else:
+                            try:
+                                n = symbols.get_symbol(c)
+                            except:
+                                n = '?'
+                        new += n
+            for style in ['italic', 'sup', 'sub', 'bold']:
+                new = new.replace('[' + style + ']', '<' + style + '>')
+                new = new.replace('[/' + style + ']', '</' + style + '>')
+            r.append(new)
+    return r
+
+
+def replace_fontsymbols(content, html_content):
+    if content.find('<fontsymbol>'):
+        html_fontsymbol_items = get_fontsymbols_in_html(html_content)
+        c = content.replace('<fontsymbol>', '~BREAK~<fontsymbol>')
+        c = c.replace('</fontsymbol>', '</fontsymbol>~BREAK~')
+
+        items = [item for item in c.split('~BREAK~') if item.startswith('<fontsymbol>') and item.endswith('</fontsymbol>')]
+
+        i = 0
+        for item in items:
+            content = content.replace(item, html_fontsymbol_items[i])
+            i += 1
+    return content
