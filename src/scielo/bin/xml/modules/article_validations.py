@@ -245,7 +245,7 @@ class ArticleContentValidation(object):
 
     @property
     def article_type(self):
-        return expected_values('@article-type', self.article.article_type, attributes.DOCTOPIC.keys(), 'FATAL ')
+        return expected_values('@article-type', self.article.article_type, attributes.DOCTOPIC_IN_USE, 'FATAL ')
 
     @property
     def sps(self):

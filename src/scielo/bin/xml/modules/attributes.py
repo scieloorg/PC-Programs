@@ -35,6 +35,30 @@ DOCTOPIC = {
                 'other': 'zz',
 }
 
+DOCTOPIC_IN_USE = [
+    'abstract', 
+    'announcement', 
+    'article-commentary', 
+    'book-review', 
+    'brief-report', 
+    'case-report', 
+    'clinical-trial', 
+    'correction', 
+    'editorial', 
+    'editorial-material', 
+    'in-brief', 
+    'letter', 
+    'other', 
+    'rapid-communication', 
+    'research-article', 
+    'retraction', 
+    'review-article', 
+    'technical-report', 
+    ]
+
+
+TOC_SECTIONS = { u'carta': u'letter', u'revisão': u'review', u'origin': u'research', u'informe': u'report', u'revisión': u'review', u'relato': u'report', u'artigo': u'article', u'artículo': u'article', u'errata': u'correction', u'erratum': u'correction'}
+
 ROLE = {
     'author': 'ND',
     'editor': 'ED',
@@ -103,3 +127,13 @@ def doctopic_label(code):
     else:
         label = label[0]
     return label
+
+
+def normalize_section_title(article_toc_section):
+    section = article_toc_section.lower().replace(' de ', ' ').replace('-', ' ')
+    section = ' '.join([item for item in sorted(section.split(' '))])
+    if section is not None:
+        for term, transl in TOC_SECTIONS.items():
+            section = section.replace(term, transl)
+    return section
+ 
