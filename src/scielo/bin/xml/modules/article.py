@@ -3,6 +3,7 @@ import os
 
 import article_utils
 import xml_utils
+import attributes
 
 
 IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', ]
@@ -305,6 +306,10 @@ class ArticleXML(object):
         if node is not None:
             r = node.findtext('subject')
         return r
+
+    @property
+    def normalized_toc_section(self):
+        return attributes.normalized_toc_section(self.toc_section)
 
     @property
     def keywords(self):

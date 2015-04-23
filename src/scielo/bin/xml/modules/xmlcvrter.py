@@ -18,6 +18,8 @@ import xpmaker
 import xc
 import xc_config
 
+import attributes
+
 
 converter_report_lines = []
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -541,12 +543,13 @@ def validate_xml_issue_data(issue_models, article):
         msg.append(html_reports.tag('h5', 'article-type'))
         msg.append('@article-type: ' + article.article_type)
         if most_similar is not None:
-            section_title = most_similar
+            _sectitle = most_similar
         else:
-            section_title = article.toc_section
-        rate = compare_article_type_and_section(section_title, article.article_type)
+            _sectitle = article.toc_section
+        _sectitle = attributes.normalize_section_title(_sectitle)
+        rate = compare_article_type_and_section(_sectitle, attributes.normalize_section_title(article.article_type))
         if rate < 0.5:
-            msg.append('WARNING: Check if ' + article.article_type + ' is a valid value for @article-type.')
+            msg.append('WARNING: Check if ' + article.article_type + ' is a valid value for @article-type. <!--' + _sectitle + ' -->')
 
     msg = ''.join([html_reports.format_message(item) for item in msg])
     return (section_code, msg)
