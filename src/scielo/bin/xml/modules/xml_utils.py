@@ -239,7 +239,8 @@ def register_remaining_named_entities(content):
     if '&' in content:
         entities = []
         if os.path.isfile('./named_entities.txt'):
-            entities = open('./named_entities.txt', 'r').readlines()
+            entities = open('./named_entities.txt', 'r').read()
+            entities = entities.decode('utf-8').split('\n')
         content = content[content.find('&'):]
         l = content.split('&')
         for item in l:
@@ -248,7 +249,7 @@ def register_remaining_named_entities(content):
                 entities.append('&' + ent + ';')
         entities = sorted(list(set(entities)))
         if len(entities) > 0:
-            open('./named_entities.txt', 'w').write('\n'.join(entities))
+            open('./named_entities.txt', 'w').write('\n'.join(entities).encode('utf-8'))
 
 
 def htmlent2char(content):

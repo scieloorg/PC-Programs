@@ -130,6 +130,8 @@ def doctopic_label(code):
 
 
 def normalize_section_title(article_toc_section):
+    if article_toc_section is None:
+        article_toc_section = ''
     section = article_toc_section.lower().replace(' de ', ' ').replace('-', ' ')
     section = ' '.join([item for item in sorted(section.split(' '))])
     if section is not None:

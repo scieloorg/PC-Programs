@@ -638,11 +638,11 @@ def normalize_package_name(doc_files_info, acron, content):
     register_log('load_xml')
     xml, e = xml_utils.load_xml(content)
 
-    doc = article.Article(xml, doc_files_info.xml_name) if xml is not None else None
+    doc = article.Article(xml, doc_files_info.xml_name)
     doc_files_info.new_name = doc_files_info.xml_name
     curr_and_new_href_list = None
 
-    if not doc is None:
+    if not doc.tree is None:
         register_log('get_attach_info')
 
         doc_files_info.new_name = get_new_name(doc_files_info, doc, acron)
@@ -653,7 +653,7 @@ def normalize_package_name(doc_files_info, acron, content):
             content = normalize_hrefs(content, curr_and_new_href_list)
 
             xml, e = xml_utils.load_xml(content)
-            doc = article.Article(xml, doc_files_info.xml_name) if xml is not None else None
+            doc = article.Article(xml, doc_files_info.xml_name)
 
     doc_files_info.new_xml_filename = doc_files_info.new_xml_path + '/' + doc_files_info.new_name + '.xml'
     return (doc, doc_files_info, curr_and_new_href_list, content)
@@ -676,14 +676,14 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
     doc_files_info.new_xml_path = scielo_pkg_path
     doc, doc_files_info, curr_and_new_href_list, content = normalize_package_name(doc_files_info, acron, content)
 
-    if not doc is None:
+    if not doc.tree is None:
         register_log('pack_article_files')
         related_packed, href_packed, not_found = pack_article_files(doc_files_info, scielo_pkg_path, curr_and_new_href_list)
 
         register_log('pack_article_files_report')
         packed_files_report = generate_packed_files_report(doc_files_info, scielo_pkg_path, related_packed, href_packed, curr_and_new_href_list, not_found)
 
-    pack_xml_file(content, version, doc_files_info.new_xml_filename, (doc is None))
+    pack_xml_file(content, version, doc_files_info.new_xml_filename, (doc.tree is None))
 
     if isinstance(replaced_entities_report, unicode):
         replaced_entities_report = replaced_entities_report.encode('utf-8')
@@ -773,7 +773,7 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
 def make_pmc_report(articles, doc_files_info_items):
     for xml_name, doc in articles.items():
         msg = 'generating report...'
-        if doc is None:
+        if doc.tree is None:
             msg = 'Unable to generate the XML file.'
         else:
             if doc.journal_id_nlm_ta is None:
@@ -998,7 +998,7 @@ def package_issue(articles):
     e_issn = []
     print_issn = []
     for doc in articles.values():
-        if doc is not None:
+        if doc.tree is not None:
             issue_label.append(doc.issue_label)
             if doc.e_issn is not None:
                 e_issn.append(doc.e_issn)

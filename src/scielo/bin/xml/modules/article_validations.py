@@ -51,8 +51,9 @@ def required_one(label, value):
     return (label, 'OK', display_attributes(value)) if value is not None else (label, 'ERROR', 'Required at least one ' + label + '.')
 
 
-def required(label, value, default_status):
-    status, message = validate_value(value)
+def required(label, value, default_status, validate_content=True):
+    if validate_content:
+        status, message = validate_value(value)
     if not (value is None or value == ''):
         result = (label, status, message)
     else:
@@ -609,11 +610,11 @@ class ArticleContentValidation(object):
 
     @property
     def license_text(self):
-        return required('license-p', self.article.license_text, 'FATAL ERROR')
+        return required('license-p', self.article.license_text, 'FATAL ERROR', False)
 
     @property
     def license_url(self):
-        return required('license/@href', self.article.license_url, 'FATAL ERROR')
+        return required('license/@href', self.article.license_url, 'FATAL ERROR', False)
 
     @property
     def license_type(self):

@@ -38,7 +38,7 @@ class TOCReport(object):
             toc_data[label] = {}
 
         for xml_name, article in self.articles.items():
-            if article is None:
+            if article.tree is None:
                 invalid.append(xml_name)
             else:
                 art_data = article.summary()
@@ -47,7 +47,7 @@ class TOCReport(object):
 
         r = ''
         if len(invalid) > 0:
-            r += html_reports.tag('div', html_reports.format_message('FATAL ERROR: Invalid XML files'))
+            r += html_reports.tag('div', html_reports.format_message('FATAL ERROR: Invalid XML files.'))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid, 'issue-problem'))
 
         for label in equal_data:
@@ -116,7 +116,7 @@ class ArticleDisplayReport(object):
     @property
     def article_front(self):
         r = self.xml_name + ' is invalid.'
-        if self.article is not None:
+        if self.article.tree is not None:
             r = ''
             r += self.sps
             r += self.language
@@ -292,7 +292,7 @@ class ArticleDisplayReport(object):
 
     @property
     def issue_header(self):
-        if self.article is not None:
+        if self.article.tree is not None:
             r = [self.article.journal_title, self.article.journal_id_nlm_ta, self.article.issue_label, article_utils.format_date(self.article.issue_pub_date)]
             return html_reports.tag('div', '\n'.join([html_reports.tag('h5', item) for item in r if item is not None]), 'issue-data')
         else:
@@ -588,7 +588,7 @@ def toc_report_data(articles, validate_order):
 
 def get_report_content(org_manager, article, new_name, package_path, validate_order, display_all):
     register_log('get_report_content: inicio')
-    if article is None:
+    if article.tree is None:
         content = 'FATAL ERROR: Unable to get data of ' + new_name + '.'
         sheet_data = None
     else:
