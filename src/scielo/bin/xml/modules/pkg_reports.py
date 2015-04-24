@@ -217,7 +217,7 @@ def sorted_xml_name_by_order(articles):
     return sorted_items
 
 
-def get_articles_report_text(articles_reports, articles_stats):
+def get_articles_report_text(articles_reports, articles_stats, conversion_reports=None):
     n = '/' + str(len(articles_reports))
     validations_text = ''
     index = 0
@@ -247,10 +247,12 @@ def get_articles_report_text(articles_reports, articles_stats):
             s = html_reports.statistics_display(data_f, data_e, data_w)
             validations_text += html_reports.collapsible_block('datarep' + str(index), 'Contents validations (' + os.path.basename(rep3) + '): ' + s, get_report_text(rep3), html_reports.get_stats_numbers_style(data_f, data_e, data_w))
 
+        if conversion_reports is not None:
+            validations_text += conversion_reports.get(new_name, '')
     return validations_text
 
 
-def get_lists_report_text(articles_reports, articles_sheets):
+def get_lists_report_text(articles_sheets):
     toc_authors_sheet_data = []
     toc_sources_sheet_data = []
     authors_h = None
@@ -260,7 +262,7 @@ def get_lists_report_text(articles_reports, articles_sheets):
 
     lists_text = html_reports.tag('h2', 'Authors and Sources Lists')
 
-    for new_name in sorted(articles_reports.keys()):
+    for new_name in sorted(articles_sheets.keys()):
         if not articles_sheets[new_name][0] is None:
             authors_h, authors_w, authors_data = articles_sheets[new_name][0]
             toc_authors_sheet_data += authors_data

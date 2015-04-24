@@ -862,7 +862,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
             if not from_markup:
                 register_log('pack_and_validate: pkg_reports.get_lists_report_text')
-                texts.append(pkg_reports.get_lists_report_text(articles_reports, articles_sheets))
+                texts.append(pkg_reports.get_lists_report_text(articles_sheets))
 
         pkg_validation_report = html_reports.join_texts(texts)
 

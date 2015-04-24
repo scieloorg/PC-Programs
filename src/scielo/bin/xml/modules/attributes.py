@@ -60,6 +60,8 @@ DOCTOPIC_IN_USE = [
 TOC_SECTIONS = { 
     u'carta': u'letter', 
     u'revisão': u'review', 
+    u'resenha': u'review', 
+    u'reseña': u'review', 
     u'origin': u'research', 
     u'informe': u'report', 
     u'revisión': u'review', 
@@ -148,6 +150,14 @@ def normalize_section_title(text):
     text = text.replace('update article', 'rapid communication')
     text = text.replace(u'artículo de actualización', 'rapid communication')
     text = text.replace(u'artigo de atualização', 'rapid communication')
+    text = text.replace(u'comunicação breve', 'rapid communication')
+    text = text.replace(u'comunicación breve', 'rapid communication')
+    text = text.replace(u'nota técnica', 'brief report')
+    text = text.replace(u'nota de pesquisa', 'brief report')
+    text = text.replace(u'nota de investigación', 'brief report')
+    text = text.replace(u'research note', 'brief report')
+    text = text.replace(u'relato breve', 'brief report')
+    text = text.replace(u'informe breve', 'brief report')
 
     text = ' '.join([item for item in text.split(' ') if len(item) > 2])
 
@@ -156,4 +166,3 @@ def normalize_section_title(text):
         for term, transl in TOC_SECTIONS.items():
             text = text.replace(term, transl)
     return text
- 
