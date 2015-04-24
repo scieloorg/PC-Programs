@@ -547,9 +547,11 @@ def validate_xml_issue_data(issue_models, article):
         else:
             _sectitle = article.toc_section
         _sectitle = attributes.normalize_section_title(_sectitle)
-        rate = compare_article_type_and_section(_sectitle, attributes.normalize_section_title(article.article_type))
+        _article_type = attributes.normalize_section_title(article.article_type)
+        rate = compare_article_type_and_section(_sectitle, _article_type)
         if rate < 0.5:
-            msg.append('WARNING: Check if ' + article.article_type + ' is a valid value for @article-type. <!--' + _sectitle + ' -->')
+            if not _article_type in _sectitle:
+                msg.append('WARNING: Check if ' + article.article_type + ' is a valid value for @article-type. <!--' + _sectitle + ' -->')
 
     msg = ''.join([html_reports.format_message(item) for item in msg])
     return (section_code, msg)
