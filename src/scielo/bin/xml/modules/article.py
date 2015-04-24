@@ -203,8 +203,7 @@ class ArticleXML(object):
     def xref_nodes(self):
         _xref_list = []
         if self.tree is not None:
-            nodes = self.tree.findall('.//xref')
-            for node in nodes:
+            for node in self.tree.findall('.//xref'):
                 n = {}
                 n['ref-type'] = node.attrib.get('ref-type')
                 n['rid'] = node.attrib.get('rid')
@@ -302,9 +301,10 @@ class ArticleXML(object):
     @property
     def toc_section(self):
         r = None
-        node = self.article_meta.find('.//subj-group[@subj-group-type="heading"]')
-        if node is not None:
-            r = node.findtext('subject')
+        if self.article_meta is not None:
+            node = self.article_meta.find('.//subj-group[@subj-group-type="heading"]')
+            if node is not None:
+                r = node.findtext('subject')
         return r
 
     @property
@@ -429,12 +429,14 @@ class ArticleXML(object):
 
     @property
     def volume(self):
-        v = self.article_meta.findtext('volume')
-        if v is not None:
-            if v.isdigit():
-                v = str(int(v))
-                if v == '0':
-                    v = None
+        v = None
+        if self.article_meta is not None:
+            v = self.article_meta.findtext('volume')
+            if v is not None:
+                if v.isdigit():
+                    v = str(int(v))
+                    if v == '0':
+                        v = None
         return v
 
     @property
@@ -506,31 +508,32 @@ class ArticleXML(object):
     @property
     def affiliations(self):
         affs = []
-        for aff in self.article_meta.findall('.//aff'):
-            a = Affiliation()
+        if self.article_meta is not None:
+            for aff in self.article_meta.findall('.//aff'):
+                a = Affiliation()
 
-            a.xml = xml_utils.node_xml(aff)
-            a.id = aff.get('id')
-            a.label = aff.findtext('label')
-            country = aff.findall('country')
-            a.country = nodetext(country)
-            if not country is None:
-                if isinstance(country, list):
-                    a.i_country = '|'.join([item.attrib.get('country') for item in country if item.attrib.get('country') is not None])
-                    if a.i_country == '':
-                        a.i_country = None
+                a.xml = xml_utils.node_xml(aff)
+                a.id = aff.get('id')
+                a.label = aff.findtext('label')
+                country = aff.findall('country')
+                a.country = nodetext(country)
+                if not country is None:
+                    if isinstance(country, list):
+                        a.i_country = '|'.join([item.attrib.get('country') for item in country if item.attrib.get('country') is not None])
+                        if a.i_country == '':
+                            a.i_country = None
 
-            a.email = nodetext(aff.findall('email'), ', ')
-            a.original = nodetext(aff.findall('institution[@content-type="original"]'))
-            a.norgname = nodetext(aff.findall('institution[@content-type="normalized"]'))
-            a.orgname = nodetext(aff.findall('institution[@content-type="orgname"]'))
-            a.orgdiv1 = nodetext(aff.findall('institution[@content-type="orgdiv1"]'))
-            a.orgdiv2 = nodetext(aff.findall('institution[@content-type="orgdiv2"]'))
-            a.orgdiv3 = nodetext(aff.findall('institution[@content-type="orgdiv3"]'))
-            a.city = nodetext(aff.findall('addr-line/named-content[@content-type="city"]'))
-            a.state = nodetext(aff.findall('addr-line/named-content[@content-type="state"]'))
+                a.email = nodetext(aff.findall('email'), ', ')
+                a.original = nodetext(aff.findall('institution[@content-type="original"]'))
+                a.norgname = nodetext(aff.findall('institution[@content-type="normalized"]'))
+                a.orgname = nodetext(aff.findall('institution[@content-type="orgname"]'))
+                a.orgdiv1 = nodetext(aff.findall('institution[@content-type="orgdiv1"]'))
+                a.orgdiv2 = nodetext(aff.findall('institution[@content-type="orgdiv2"]'))
+                a.orgdiv3 = nodetext(aff.findall('institution[@content-type="orgdiv3"]'))
+                a.city = nodetext(aff.findall('addr-line/named-content[@content-type="city"]'))
+                a.state = nodetext(aff.findall('addr-line/named-content[@content-type="state"]'))
 
-            affs.append(a)
+                affs.append(a)
 
         return affs
 
@@ -611,12 +614,13 @@ class ArticleXML(object):
     @property
     def formulas(self):
         r = []
-        if self.tree.findall('.//disp-formula') is not None:
-            for item in self.tree.findall('.//disp-formula'):
-                r.append(xml_utils.node_xml(item))
-        if self.tree.findall('.//inline-formula') is not None:
-            for item in self.tree.findall('.//inline-formula'):
-                r.append(xml_utils.node_xml(item))
+        if self.tree is not None:
+            if self.tree.findall('.//disp-formula') is not None:
+                for item in self.tree.findall('.//disp-formula'):
+                    r.append(xml_utils.node_xml(item))
+            if self.tree.findall('.//inline-formula') is not None:
+                for item in self.tree.findall('.//inline-formula'):
+                    r.append(xml_utils.node_xml(item))
         return r
 
     @property
@@ -649,22 +653,24 @@ class ArticleXML(object):
 
     @property
     def received(self):
-        item = self.article_meta.find('.//date[@date-type="received"]')
-        _hist = None
-        if item is not None:
-            _hist = {}
-            for tag in ['year', 'month', 'day', 'season']:
-                _hist[tag] = item.findtext(tag)
+        if self.article_meta is not None:
+            item = self.article_meta.find('.//date[@date-type="received"]')
+            _hist = None
+            if item is not None:
+                _hist = {}
+                for tag in ['year', 'month', 'day', 'season']:
+                    _hist[tag] = item.findtext(tag)
         return _hist
 
     @property
     def accepted(self):
-        item = self.article_meta.find('.//date[@date-type="accepted"]')
-        _hist = None
-        if item is not None:
-            _hist = {}
-            for tag in ['year', 'month', 'day', 'season']:
-                _hist[tag] = item.findtext(tag)
+        if self.article_meta is not None:
+            item = self.article_meta.find('.//date[@date-type="accepted"]')
+            _hist = None
+            if item is not None:
+                _hist = {}
+                for tag in ['year', 'month', 'day', 'season']:
+                    _hist[tag] = item.findtext(tag)
         return _hist
 
     @property

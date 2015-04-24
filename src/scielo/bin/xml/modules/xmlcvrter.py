@@ -122,7 +122,7 @@ def complete_issue_items_row(article, status, creation_date, other_order=None):
 
 def complete_issue_items_previous_status_sheet(registered_articles, pkg_articles, xml_articles_status, status_column_label='action'):
     labels = [status_column_label, 'order', 'new order', 'name', 'registration date', 'toc section', '@article-type', 'article title']
-    orders = [article.order for article in registered_articles.values()] + [article.order for article in pkg_articles.values()]
+    orders = [article.order if article.tree is not None else 'None' for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()]
 
     orders = sorted(list(set([order for order in orders if order is not None])))
 
@@ -166,7 +166,7 @@ def complete_issue_items_previous_status_sheet(registered_articles, pkg_articles
 def complete_issue_items_resulting_status_sheet(registered_articles, pkg_articles, xml_articles_status, unmatched_orders):
     labels = ['action', 'order', 'previous order', 'name', 'registration date', 'toc section', '@article-type', 'article title']
     status_labels = {'update': 'updated', 'add': 'added', '-': '-', 'skip-update': '-', 'order changed': 'order changed'}
-    orders = sorted(list(set([article.order for article in registered_articles.values()] + [article.order for article in pkg_articles.values()])))
+    orders = sorted(list(set([article.order if article.tree is not None else 'None' for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()])))
 
     sorted_registered = pkg_reports.articles_sorted_by_order(registered_articles)
     sorted_package = pkg_reports.articles_sorted_by_order(pkg_articles)
@@ -520,7 +520,7 @@ def display_list(title, items):
 
 def validate_xml_issue_data(issue_models, article):
     msg = []
-    if article is not None:
+    if article.tree is not None:
 
         # issue date
         if article.issue_pub_dateiso != issue_models.issue.dateiso:
