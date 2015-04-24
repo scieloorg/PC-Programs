@@ -102,7 +102,6 @@ def sum_stats(stats_items):
 
 def xml_list(pkg_path, xml_filenames=None):
     r = ''
-    r += '<h2>XML files</h2>'
     r += '<p>XML path: ' + pkg_path + '</p>'
     if xml_filenames is None:
         xml_filenames = [pkg_path + '/' + name for name in os.listdir(pkg_path) if name.endswith('.xml')]

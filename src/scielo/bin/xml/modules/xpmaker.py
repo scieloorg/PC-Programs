@@ -834,10 +834,10 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         texts = []
         toc_f = 0
-        if not from_markup:
-            register_log('pack_and_validate: package_articles_sheet')
-            texts.append(package_articles_sheet(articles))
+        register_log('pack_and_validate: package_articles_sheet')
+        texts.append(html_reports.section('Package status', package_articles_sheet(articles)))
 
+        if not from_markup:
             register_log('pack_and_validate: pkg_reports.validate_package')
             toc_stats_and_report = pkg_reports.validate_package(articles, from_converter)
             toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
@@ -917,7 +917,7 @@ def generate_reports(scielo_pkg_path, report_path, display_report, pkg_validatio
     content = ''
     f, e, w = html_reports.statistics_numbers(pkg_validation_report)
     content += html_reports.statistics_display(f, e, w, False)
-    content += pkg_reports.xml_list(scielo_pkg_path)
+    content += html_reports.section('Package: XML list', pkg_reports.xml_list(scielo_pkg_path))
     content += pkg_validation_report
     content += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
 
@@ -1069,7 +1069,7 @@ def package_articles_sheet(pkg_articles):
     for xml_name in pkg_reports.sorted_xml_name_by_order(pkg_articles):
         values = []
         values.append(pkg_articles[xml_name].order)
-        values.append(pkg_articles[xml_name].article_previous_id)
+        values.append(pkg_articles[xml_name].previous_pid)
         values.append(xml_name)
         values.append(pkg_articles[xml_name].toc_section)
         values.append(pkg_articles[xml_name].article_type)

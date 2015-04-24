@@ -98,7 +98,7 @@ h5 {
 }
 .sheet {
   border: 1px solid gray;
-  font-family: "Times New Roman";
+  font-family: "Verdana";
   font-size: 10;
   color: black; 
   width: 100%;
@@ -106,7 +106,7 @@ h5 {
 .sheet td {
   border: 1px solid gray;
    font-family: Arial;
-   font-size: 14;
+   font-size: 8pt;
    color: black;
    vertical-align: top;
    word-wrap:break-word;
@@ -147,7 +147,7 @@ h5 {
     color: white;
 }
 .ok {
-    background-color: white;
+    background-color: #C5E0DC;
     color: black;
     padding: 2px;
 }
@@ -280,6 +280,8 @@ td img {
   word-wrap:break-word;
   margin: 5px;
   padding: 5px;
+  font-family: Verdana;
+  font-size: 8pt;
 } 
 .dbstatus td {
   border: 1px solid gray;
@@ -312,4 +314,8 @@ td img {
   padding-top: 5px;
   padding-right: 10px;
   font-weight: bold;
+}
+
+.report-section {
+  margin-top: 100px;
 }

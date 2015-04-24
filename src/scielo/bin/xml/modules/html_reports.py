@@ -193,8 +193,12 @@ def display_xml(value, width=None):
     return '<textarea cols="' + str(w) + '" rows="' + str(rows_count) + '" readonly>' + value + '</textarea>'
 
 
-def format_message(value):
+def p_message(value):
     return tag('p', value, get_message_style(value, 'ok'))
+
+
+def format_message(value):
+    return tag('span', value, get_message_style(value, 'ok'))
 
 
 def li_from_dict(list_items):
@@ -302,3 +306,11 @@ def display_label_value(label, value):
 
 def image(path):
     return '<img src="' + path + '"/>'
+
+
+def section(title, content):
+    r = '<div class="report-section">'
+    r += '<h2>' + title + '</h2>'
+    r += content
+    r += '</div>'
+    return r

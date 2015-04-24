@@ -43,7 +43,7 @@ class ConverterEnv(object):
 
 def register_log(message):
     if not '<' in message:
-        message = html_reports.format_message(message)
+        message = html_reports.p_message(message)
     converter_report_lines.append(message)
 
 
@@ -65,12 +65,12 @@ def find_issue_models(issue_label, p_issn, e_issn):
     msg = None
 
     if issue_label is None:
-        msg = html_reports.format_message('FATAL ERROR: Unable to identify the article\'s issue')
+        msg = html_reports.p_message('FATAL ERROR: Unable to identify the article\'s issue')
     else:
         i_record = find_i_record(issue_label, p_issn, e_issn)
 
         if i_record is None:
-            msg = html_reports.format_message('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + converter_env.db_issue.db_filename + '. (' + '/'.join([i for i in [p_issn, e_issn] if i is not None]) + ')')
+            msg = html_reports.p_message('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + converter_env.db_issue.db_filename + '. (' + '/'.join([i for i in [p_issn, e_issn] if i is not None]) + ')')
         else:
             issue_models = xc_models.IssueModels(i_record)
 
@@ -104,16 +104,18 @@ def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_art
     return (complete_issue_items, xml_articles_status, changed_orders)
 
 
-def complete_issue_items_row(article, status, creation_date, other_order=None):
+def complete_issue_items_row(article, status, creation_date, source, other_order=None):
     values = []
     values.append(status)
     values.append(article.order)
+    values.append(article.previous_pid)
     if other_order is None:
         values.append('')
     else:
         values.append(other_order)
     values.append(article.xml_name)
     values.append(creation_date)
+    values.append(source)
     values.append(article.toc_section)
     values.append(article.article_type)
     values.append(article.title)
@@ -121,7 +123,7 @@ def complete_issue_items_row(article, status, creation_date, other_order=None):
 
 
 def complete_issue_items_previous_status_sheet(registered_articles, pkg_articles, xml_articles_status, status_column_label='action'):
-    labels = [status_column_label, 'order', 'new order', 'name', 'registration date', 'toc section', '@article-type', 'article title']
+    labels = [status_column_label, 'order', 'aop order', 'updated order', 'name', 'source', 'registration date', 'toc section', '@article-type', 'article title']
     orders = [article.order if article.tree is not None else 'None' for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()]
 
     orders = sorted(list(set([order for order in orders if order is not None])))
@@ -148,18 +150,16 @@ def complete_issue_items_previous_status_sheet(registered_articles, pkg_articles
             for article in sorted_registered[order]:
                 status = xml_articles_status[article.xml_name]
                 if status == 'update':
-                    name = article.xml_name
-                    if registered_articles[name].order != pkg_articles[name].order:
+                    if registered_articles[article.xml_name].order != pkg_articles[article.xml_name].order:
                         status = 'delete'
-                values = complete_issue_items_row(article, status, article.creation_date[0], pkg_articles[name].order)
+                values = complete_issue_items_row(article, status, article.creation_date[0], 'database', pkg_articles[article.xml_name].order)
                 items.append(pkg_reports.label_values(labels, values))
 
-        if not status == '-':
-            if order in sorted_package.keys():
-                for article in sorted_package[order]:
-                    status = xml_articles_status[article.xml_name]
-                    values = complete_issue_items_row(article, status, '')
-                    items.append(pkg_reports.label_values(labels, values))
+        if order in sorted_package.keys():
+            for article in sorted_package[order]:
+                status = xml_articles_status[article.xml_name]
+                values = complete_issue_items_row(article, status, '', 'package')
+                items.append(pkg_reports.label_values(labels, values))
     return html_reports.sheet(labels, None, items, None, 'dbstatus', status_column_label)
 
 
@@ -207,7 +207,7 @@ def complete_issue_items_resulting_status_sheet(registered_articles, pkg_article
 def complete_issue_items_report(complete_issue_items, unmatched_orders):
     unmatched_orders_errors = ''
     if len(unmatched_orders) > 0:
-        unmatched_orders_errors = ''.join([html_reports.tag('p', html_reports.format_message('WARNING: ' + name + "'s orders: " + ' -> '.join(order.split()))) for name, order in unmatched_orders])
+        unmatched_orders_errors = ''.join([html_reports.p_message('WARNING: ' + name + "'s orders: " + ' -> '.join(order.split())) for name, order in unmatched_orders])
 
     toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(complete_issue_items, validate_order=True)
     toc_report = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, unmatched_orders_errors + toc_report)
@@ -302,8 +302,8 @@ def convert_package(src_path):
     report_location = report_path + '/xml_converter.html'
 
     texts = []
-    texts.append(pkg_reports.xml_list(pkg_path, xml_filenames))
-    texts.append(complete_issue_sheet)
+    texts.append(html_reports.section('Package: XML list', pkg_reports.xml_list(pkg_path, xml_filenames)))
+    texts.append(html_reports.section('Documents status in the package/database - before conversion', complete_issue_sheet))
     texts.append(issue_error_msg)
     texts.append(toc_report)
     texts.append(validations_report)
@@ -351,21 +351,39 @@ def format_reports_for_web(report_path, pkg_path, issue_path):
 def aop_message(ahead_msg, ahead_comparison):
     msg = ''
     msg += html_reports.tag('h4', 'checking existence of aop version')
-    msg += ''.join([html_reports.format_message(item) for item in ahead_msg])
+    msg += ''.join([html_reports.p_message(item) for item in ahead_msg])
     msg += ''.join([html_reports.tag('pre', item) for item in ahead_comparison])
     return msg
 
 
 def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders):
     index = 0
-    status_text = ['converted', 'not converted', 'doc has no aop', 'aop version', 'doc has aop version', 'doc has an invalid aop version (title/author are not the same)', 'doc has aop version which has no PID', 'doc has aop version partially matched (title/author are similar)', ]
-    order = ['converted', 'not converted', 'new doc', 'new aop', 'matched aop', 'unmatched aop', 'aop missing PID', 'partially matched aop']
-
+    status_text = [
+        'converted', 
+        'not converted', 
+        'aop version', 
+        'doc has no aop', 
+        'doc has aop', 
+        'doc has aop version', 
+        'doc has aop version partially matched (title/author are similar)', 
+        'doc has aop version which has no PID', 
+        'doc has an invalid aop version (title/author are not the same)', 
+        ]
+    status_order = [
+        'converted', 
+        'not converted', 
+        'new aop', 
+        'new doc', 
+        'ex aop', 
+        'matched aop', 
+        'partially matched aop',
+        'aop missing PID', 
+        'unmatched aop', 
+        ]
     articles_by_status = {}
-    for k in order:
+    for k in status_order:
         articles_by_status[k] = []
 
-    ex_ahead = 0
     n = '/' + str(len(pkg_articles))
 
     i_ahead_records = {}
@@ -428,14 +446,14 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
                             if saved:
                                 ex_ahead += 1
                     articles_by_status['converted'].append(xml_name)
-                    msg += html_reports.format_message('OK: converted')
+                    msg += html_reports.p_message('OK: converted')
                 else:
                     articles_by_status['not converted'].append(xml_name)
-                    msg += html_reports.format_message('FATAL ERROR: not converted')
+                    msg += html_reports.p_message('FATAL ERROR: not converted')
                     conv_f += 1
             else:
                 articles_by_status['not converted'].append(xml_name)
-                msg += html_reports.format_message('FATAL ERROR: not converted')
+                msg += html_reports.p_message('FATAL ERROR: not converted')
 
             title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
             conv_stats = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
@@ -468,8 +486,8 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
             if not converter_env.is_windows:
                 converter_env.db_article.generate_windows_version(issue_files)
     else:
-        summary += html_reports.format_message('FATAL ERROR: ' + issue_models.issue.issue_label + ' is not complete (' + str(len(articles_by_status['not converted'])) + ' were not converted), so it will not be updated or published in the website.')
-        summary += html_reports.format_message('generated databases of ' + str(len(articles_by_status['converted'])) + '/' + str(len(pkg_articles)))
+        summary += html_reports.p_message('FATAL ERROR: ' + issue_models.issue.issue_label + ' is not complete (' + str(len(articles_by_status['not converted'])) + ' were not converted), so it will not be updated or published in the website.')
+        summary += html_reports.p_message('generated databases of ' + str(len(articles_by_status['converted'])) + '/' + str(len(pkg_articles)))
 
     registered_issue_models, registered_articles_list = converter_env.db_article.registered_items(issue_files)
     registered_articles = {}
@@ -553,7 +571,7 @@ def validate_xml_issue_data(issue_models, article):
             if not _article_type in _sectitle:
                 msg.append('WARNING: Check if ' + article.article_type + ' is a valid value for @article-type. <!--' + _sectitle + ' -->')
 
-    msg = ''.join([html_reports.format_message(item) for item in msg])
+    msg = ''.join([html_reports.p_message(item) for item in msg])
     return (section_code, msg)
 
 
