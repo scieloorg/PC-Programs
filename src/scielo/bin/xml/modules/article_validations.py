@@ -52,12 +52,16 @@ def required_one(label, value):
 
 
 def required(label, value, default_status, validate_content=True):
-    if validate_content:
-        status, message = validate_value(value)
-    if not (value is None or value == ''):
-        result = (label, status, message)
-    else:
+    if value is None:
         result = (label, default_status, 'Required')
+    elif value == '':
+        result = (label, default_status, 'Required')
+    else:
+        if validate_content:
+            status, message = validate_value(value)
+            result = (label, status, message)
+        else:
+            result = (label, 'OK', value)
     return result
 
 

@@ -57,7 +57,18 @@ DOCTOPIC_IN_USE = [
     ]
 
 
-TOC_SECTIONS = { u'carta': u'letter', u'revisão': u'review', u'origin': u'research', u'informe': u'report', u'revisión': u'review', u'relato': u'report', u'artigo': u'article', u'artículo': u'article', u'errata': u'correction', u'erratum': u'correction'}
+TOC_SECTIONS = { 
+    u'carta': u'letter', 
+    u'revisão': u'review', 
+    u'origin': u'research', 
+    u'informe': u'report', 
+    u'revisión': u'review', 
+    u'relato': u'report', 
+    u'artigo': u'article', 
+    u'artículo': u'article', 
+    u'errata': u'correction', 
+    u'erratum': u'correction'
+    }
 
 ROLE = {
     'author': 'ND',
@@ -129,13 +140,20 @@ def doctopic_label(code):
     return label
 
 
-def normalize_section_title(article_toc_section):
-    if article_toc_section is None:
-        article_toc_section = ''
-    section = article_toc_section.lower().replace(' de ', ' ').replace('-', ' ')
-    section = ' '.join([item for item in sorted(section.split(' '))])
-    if section is not None:
+def normalize_section_title(text):
+    if text is None:
+        text = ''
+
+    text = text.lower().replace('-', ' ')
+    text = text.replace('update article', 'rapid communication')
+    text = text.replace(u'artículo de actualización', 'rapid communication')
+    text = text.replace(u'artigo de atualização', 'rapid communication')
+
+    text = ' '.join([item for item in text.split(' ') if len(item) > 2])
+
+    text = ' '.join([item for item in sorted(text.split(' '))])
+    if text is not None:
         for term, transl in TOC_SECTIONS.items():
-            section = section.replace(term, transl)
-    return section
+            text = text.replace(term, transl)
+    return text
  
