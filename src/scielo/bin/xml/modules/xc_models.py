@@ -435,14 +435,22 @@ class IssueArticlesRecords(object):
         items = []
         article_records = None
         i_record = None
+        record_types = list(set([record.get('702') for record in self.records]))
+
         for record in self.records:
             if record.get('702') == 'i':
                 i_record = record
             elif record.get('702') == 'o':
+                # new article
                 if article_records is not None:
                     items.append(RegisteredArticle(article_records))
                 article_records = [record]
             elif record.get('702') == 'h':
+                if not 'o' in record_types:
+                    if article_records is not None:
+                        items.append(RegisteredArticle(article_records))
+                    if article_records is None:
+                        article_records = []
                 article_records.append(record)
 
         if article_records is not None:
@@ -518,7 +526,11 @@ class IssueDAO(object):
         expr = self.expr(issue_label, pissn, eissn)
         print('debug: expr=')
         print(expr)
-        return self.dao.get_records(self.db_filename, expr) if expr is not None else None
+        search_result = self.dao.get_records(self.db_filename, expr) if expr is not None else None
+        if 'ahead' in issue_label:
+            print('search_result')
+            print(search_result)
+        return search_result
 
 
 class ArticleDAO(object):
@@ -554,7 +566,11 @@ class ArticleDAO(object):
         return loaded
 
     def registered_items(self, issue_files):
-        i, article_records_items = IssueArticlesRecords(self.dao.get_records(issue_files.base)).articles()
+        records = self.dao.get_records(issue_files.base)
+        print('records of ')
+        print(issue_files.base)
+        print(records)
+        i, article_records_items = IssueArticlesRecords(records).articles()
         print(i)
         print(article_records_items)
         return (IssueModels(i), [RegisteredArticle(item) for item in article_records_items])
@@ -571,11 +587,22 @@ class AheadManager(object):
     def __init__(self, dao, journal_files, i_ahead_records):
         self.journal_files = journal_files
         self.dao = dao
-        self.deleted = {}
-        self.load()
-        self.prepare_ahead_id_files(i_ahead_records)
 
-    def prepare_ahead_id_files(self, i_ahead_records):
+        self.still_ahead = {}
+        self.ahead_to_delete = {}
+
+        self.indexed_by_doi = {}
+        self.indexed_by_xml_name = {}
+        self.load()
+        self.create_ahead_id_files(i_ahead_records)
+
+    def journal_has_aop(self):
+        total = 0
+        for dbname, items in self.still_ahead.items():
+            total += len(items)
+        return total > 0
+
+    def create_ahead_id_files(self, i_ahead_records):
         for db_filename in self.journal_files.ahead_bases:
             year = os.path.basename(db_filename)[0:4]
             id_path = self.journal_files.ahead_id_path(year)
@@ -584,7 +611,7 @@ class AheadManager(object):
                 os.makedirs(id_path)
             if not os.path.isfile(i_id_filename):
                 if year in i_ahead_records.keys():
-                    self.dao.save_id(i_id_filename, i_ahead_records[year])
+                    self.dao.save_id(i_id_filename, [i_ahead_records[year]])
             records = self.dao.get_records(db_filename, expr=None)
             if len(records) > 0:
                 previous = ''
@@ -612,16 +639,21 @@ class AheadManager(object):
                         self.dao.save_id(id_path + '/' + order + '.id', r)
 
     def load(self):
-        self.ahead_doi = {}
-        self.ahead_filename = {}
-        self.ahead_list = []
         for db_filename in self.journal_files.ahead_bases:
-            h_records = self.h_records(db_filename)
-            for h_record in h_records:
-                ahead = RegisteredAhead(h_record, os.path.basename(db_filename))
-                self.ahead_doi[ahead.doi] = len(self.ahead_list)
-                self.ahead_filename[ahead.filename] = len(self.ahead_list)
-                self.ahead_list.append(ahead)
+            dbname = os.path.basename(db_filename)
+            self.still_ahead[dbname] = {}
+            for h_record in self.h_records(db_filename):
+                ahead = RegisteredAhead(h_record, dbname)
+                self.indexed_by_doi[ahead.doi] = ahead
+                self.indexed_by_xml_name[ahead.filename] = ahead
+                self.still_ahead[dbname][ahead.order] = ahead
+
+    def still_ahead_items(self):
+        items = []
+        for dbname in sorted(self.still_ahead.keys()):
+            for order in sorted(self.still_ahead[dbname].keys()):
+                items.append(dbname + '/' + self.still_ahead[dbname][order].filename + ' [' + order + ']: ' + self.still_ahead[dbname][order].article_title[0:50] + '...')
+        return items
 
     def h_records(self, db_filename):
         return self._select_h(self.dao.get_records(db_filename))
@@ -658,71 +690,53 @@ class AheadManager(object):
         data = None
         i = None
         if doi is not None:
-            i = self.ahead_doi.get(doi, None)
+            i = self.indexed_by_doi.get(doi)
         if i is None:
-            i = self.ahead_filename.get(filename, None)
+            i = self.indexed_by_xml_name.get(filename)
         if i is not None:
-            data = self.ahead_list[i]
+            data = self.still_ahead[i]
         return data
 
-    def get_valid_ahead(self, article, xml_name):
-        msg_list = []
+    def get_valid_ahead(self, article):
         ahead = None
-        valid_ahead = None
         status = None
-        data = []
 
         if article.number == 'ahead':
             status = 'new aop'
         else:
-            xml_filename = xml_name + '.xml'
-            msg_list.append('Checking if there is an "aop version" for ' + xml_filename)
-            if article.doi is not None:
-                msg_list.append('Checking if there is an "aop version" for ' + article.doi)
-            ahead = self.find_ahead(article.doi, xml_filename)
-
-            if ahead is None:
+            if len(self.still_ahead) == 0:
                 status = 'new doc'
-                msg_list.append('This article has not an "aop version".')
             else:
-                msg_list.append('Found: "aop version"')
-                matched_rate = self.score(article, ahead, 90)
-                if matched_rate > 0:
-                    is_valid_ahead = self.is_valid(ahead)
-                    if is_valid_ahead:
-                        status = 'matched aop'
-                        msg = ''
-                        valid_ahead = ahead
-                        if matched_rate != 100:
-                            msg = 'WARNING: the title/author of article and its "aop version" are similar.'
-                            status = 'partially matched aop'
-                    else:
-                        status = 'aop missing PID'
-                        msg = 'ERROR: the "aop version" has no PID'
+                ahead = self.find_ahead(article.doi, article.xml_name)
+                if ahead is None:
+                    status = 'new doc'
                 else:
-                    status = 'unmatched aop'
-                    msg = 'FATAL ERROR: the title/author of article and "aop version" are different.'
-
-                msg_list.append(msg)
-
-                data.append('article title:' + article.title)
-                data.append('ahead article title:' + ahead.article_title)
-                data.append('article first author:' + article.first_author_surname)
-                data.append('ahead first author:' + ahead.first_author_surname)
-
-        return (valid_ahead, status, msg_list, data)
+                    matched_rate = self.score(article, ahead, 90)
+                    if matched_rate > 0:
+                        if ahead.ahead_pid is None:
+                            status = 'aop missing PID'
+                        else:
+                            status = 'matched aop'
+                            if matched_rate != 100:
+                                status = 'partially matched aop'
+                    else:
+                        status = 'unmatched aop'
+        return (ahead, status)
 
     def mark_ahead_as_deleted(self, ahead):
         """
         Mark as deleted
         """
-        if not ahead.ahead_db_name is self.deleted.keys():
-            self.deleted[ahead.ahead_db_name] = []
-        self.deleted[ahead.ahead_db_name].append(ahead)
+        if not ahead.ahead_db_name in self.ahead_to_delete.keys():
+            self.ahead_to_delete[ahead.ahead_db_name] = []
+        self.ahead_to_delete[ahead.ahead_db_name].append(ahead)
+        if ahead.ahead_db_name in self.still_ahead.keys():
+            if ahead.order in self.still_ahead[ahead.ahead_db_name].keys():
+                del self.still_ahead[ahead.ahead_db_name][ahead.order]
 
     def manage_ex_ahead_files(self, ahead):
         msg = []
-        msg.append('Exclude ahead files of ' + ahead.filename)
+        msg.append('Exclude aop files of ' + ahead.filename)
         year = ahead.ahead_db_name[0:4]
 
         ex_ahead_markup_path, ex_ahead_body_path, ex_ahead_base_path = self.journal_files.ex_ahead_paths(year)
@@ -733,18 +747,19 @@ class AheadManager(object):
             if not os.path.isdir(ex_ahead_markup_path):
                 os.makedirs(ex_ahead_markup_path)
             shutil.move(markup_file, ex_ahead_markup_path)
-            msg.append('move ' + markup_file + '\n    to ' + ex_ahead_markup_path)
+            msg.append('moved ' + markup_file + '\n    to ' + ex_ahead_markup_path)
         if os.path.isfile(body_file):
             if not os.path.isdir(ex_ahead_body_path):
                 os.makedirs(ex_ahead_body_path)
             shutil.move(body_file, ex_ahead_body_path)
-            msg.append('move ' + body_file + '\n    to ' + ex_ahead_body_path)
+            msg.append('moved ' + body_file + '\n    to ' + ex_ahead_body_path)
 
         ahead_order = ahead.order
-        if os.path.isfile(self.journal_files.ahead_id_filename(year, ahead_order)):
-            os.unlink(self.journal_files.ahead_id_filename(year, ahead_order))
-            msg.append('delete ' + self.journal_files.ahead_id_filename(year, ahead_order))
-        return msg
+        ahead_id_filename = self.journal_files.ahead_id_filename(year, ahead_order)
+        if os.path.isfile(ahead_id_filename):
+            os.unlink(ahead_id_filename)
+            msg.append('deleted ' + ahead_id_filename)
+        return (not os.path.isfile(ahead_id_filename), msg)
 
     def save_ex_ahead_record(self, ahead):
         self.dao.append_records([ahead.record], self.journal_files.ahead_base('ex-' + ahead.ahead_db_name[0:4]))
@@ -755,25 +770,29 @@ class AheadManager(object):
         if ahead is not None:
             if ahead.ahead_pid is not None:
                 self.mark_ahead_as_deleted(ahead)
-                msg = self.manage_ex_ahead_files(ahead)
-                self.save_ex_ahead_record(ahead)
-                done = True
+                deleted, msg = self.manage_ex_ahead_files(ahead)
+                if deleted:
+                    self.save_ex_ahead_record(ahead)
+                    done = True
+                    if ahead.doi in self.indexed_by_doi.keys():
+                        del self.indexed_by_doi[ahead.doi]
+                    if ahead.filename in self.indexed_by_xml_name.keys():
+                        del self.indexed_by_xml_name[ahead.filename]
         return (done, msg)
 
     def finish_manage_ex_ahead(self):
-        ahead_list = {}
-        for ahead_db_name, ahead_list in self.deleted.items():
-            id_path = self.journal_files.ahead_id_path(ahead_db_name[0:4])
-            base = self.journal_files.ahead_base(ahead_db_name[0:4])
+        updated = []
+        for ahead_db_name, still_ahead in self.ahead_to_delete.items():
+            year = ahead_db_name[0:4]
+            id_path = self.journal_files.ahead_id_path(year)
+            base = self.journal_files.ahead_base(year)
             if os.path.isfile(id_path + '/i.id'):
                 self.dao.save_id_records(id_path + '/i.id', base)
                 for f in os.listdir(id_path):
                     if f.endswith('.id') and f != '00000.id' and f != 'i.id':
                         self.dao.append_id_records(id_path + '/' + f, base)
-
-                        ahead_article = RegisteredArticle(IDFile(id_path + '/' + f).read())
-                        ahead_list[ahead_db_name[0:4] + os.path.basename(ahead_article.filename)] = (ahead_article.pid, ahead_article.doi, ahead_article.first_title)
-        return ahead_list
+                updated.append(ahead_db_name)
+        return updated
 
 
 def format_affiliations(affiliations):

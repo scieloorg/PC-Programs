@@ -52,7 +52,7 @@ class TOCReport(object):
 
         for label in equal_data:
             if len(toc_data[label]) > 1:
-                part = html_reports.format_message('FATAL ERROR: same value for ' + label + ' is required for all the articles of the package')
+                part = html_reports.p_message('FATAL ERROR: same value for ' + label + ' is required for all the articles of the package')
                 for found_value, xml_files in toc_data[label].items():
                     part += html_reports.format_list('found ' + label + ' "' + html_reports.display_xml(found_value) + '" in:', 'ul', xml_files, 'issue-problem')
                 r += part
@@ -80,12 +80,12 @@ class TOCReport(object):
                     duplicated = []
 
                 if len(duplicated) > 0:
-                    part = html_reports.format_message(unique_status[label] + ': unique value of ' + label + ' is required for all the articles of the package')
+                    part = html_reports.p_message(unique_status[label] + ': unique value of ' + label + ' is required for all the articles of the package')
                     for found_value, xml_files in duplicated.items():
                         part += html_reports.format_list('found ' + label + ' "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
                     r += part
                 if len(none) > 0:
-                    part = html_reports.format_message('INFO: there is no value for ' + label + '.')
+                    part = html_reports.p_message('INFO: there is no value for ' + label + '.')
                     part += html_reports.format_list('no value for ' + label + ' in:', 'ul', none, 'issue-problem')
                     r += part
 
@@ -164,16 +164,6 @@ class ArticleDisplayReport(object):
         th, w, data = self.sheet_data.hrefs_sheet_data(self.xml_path)
         r += html_reports.sheet(th, w, data)
         return r
-
-    @property
-    def authors_sheet(self):
-        th, w, data = self.sheet_data.authors_sheet_data()
-        return html_reports.tag('h2', 'Authors') + html_reports.sheet(th, w, data)
-
-    @property
-    def sources_sheet(self):
-        th, w, data = self.sheet_data.sources_sheet_data()
-        return html_reports.tag('h2', 'Sources') + html_reports.sheet(th, w, data)
 
     def display_labeled_value(self, label, value, style=''):
         return html_reports.display_labeled_value(label, value, style)
@@ -366,7 +356,7 @@ class ArticleValidationReport(object):
         return r
 
     def display_item(self, item):
-        return html_reports.format_message(item)
+        return html_reports.p_message(item)
 
     def format_rows(self, items):
         content = []

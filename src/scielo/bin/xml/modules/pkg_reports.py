@@ -64,7 +64,8 @@ def get_report_text(filename):
     report = ''
     if os.path.isfile(filename):
         content = open(filename, 'r').read()
-
+        if not isinstance(content, unicode):
+            content = content.decode('utf-8')
         if 'Parse/validation finished' in content and '<!DOCTYPE' in content:
             part1 = content[0:content.find('<!DOCTYPE')]
             part2 = content[content.find('<!DOCTYPE'):]
@@ -81,10 +82,6 @@ def get_report_text(filename):
             part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>').replace('\t', '&nbsp;'*4)
             report = part1 + part2
         elif '</html>' in content:
-
-            #report = '<iframe width="95%" height="400px" src="' + os.path.basename(filename) + '"></iframe>'
-            content = open(filename, 'r').read()
-
             content = content[content.find('<body'):]
             content = content[0:content.rfind('</body>')]
             report = content[content.find('>')+1:]
@@ -102,7 +99,6 @@ def sum_stats(stats_items):
 
 def xml_list(pkg_path, xml_filenames=None):
     r = ''
-    r += '<h2>XML files</h2>'
     r += '<p>XML path: ' + pkg_path + '</p>'
     if xml_filenames is None:
         xml_filenames = [pkg_path + '/' + name for name in os.listdir(pkg_path) if name.endswith('.xml')]
@@ -218,7 +214,7 @@ def sorted_xml_name_by_order(articles):
     return sorted_items
 
 
-def get_articles_report_text(articles_reports, articles_stats):
+def get_articles_report_text(articles_reports, articles_stats, conversion_reports=None):
     n = '/' + str(len(articles_reports))
     validations_text = ''
     index = 0
@@ -248,10 +244,14 @@ def get_articles_report_text(articles_reports, articles_stats):
             s = html_reports.statistics_display(data_f, data_e, data_w)
             validations_text += html_reports.collapsible_block('datarep' + str(index), 'Contents validations (' + os.path.basename(rep3) + '): ' + s, get_report_text(rep3), html_reports.get_stats_numbers_style(data_f, data_e, data_w))
 
+        if conversion_reports is not None:
+            r = conversion_reports.get(new_name)
+            if r is not None:
+                validations_text += r[3]
     return validations_text
 
 
-def get_lists_report_text(articles_reports, articles_sheets):
+def get_lists_report_text(articles_sheets):
     toc_authors_sheet_data = []
     toc_sources_sheet_data = []
     authors_h = None
@@ -261,7 +261,7 @@ def get_lists_report_text(articles_reports, articles_sheets):
 
     lists_text = html_reports.tag('h2', 'Authors and Sources Lists')
 
-    for new_name in sorted(articles_reports.keys()):
+    for new_name in sorted(articles_sheets.keys()):
         if not articles_sheets[new_name][0] is None:
             authors_h, authors_w, authors_data = articles_sheets[new_name][0]
             toc_authors_sheet_data += authors_data
