@@ -64,7 +64,8 @@ def get_report_text(filename):
     report = ''
     if os.path.isfile(filename):
         content = open(filename, 'r').read()
-
+        if not isinstance(content, unicode):
+            content = content.decode('utf-8')
         if 'Parse/validation finished' in content and '<!DOCTYPE' in content:
             part1 = content[0:content.find('<!DOCTYPE')]
             part2 = content[content.find('<!DOCTYPE'):]
@@ -81,10 +82,6 @@ def get_report_text(filename):
             part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>').replace('\t', '&nbsp;'*4)
             report = part1 + part2
         elif '</html>' in content:
-
-            #report = '<iframe width="95%" height="400px" src="' + os.path.basename(filename) + '"></iframe>'
-            content = open(filename, 'r').read()
-
             content = content[content.find('<body'):]
             content = content[0:content.rfind('</body>')]
             report = content[content.find('>')+1:]
@@ -231,6 +228,7 @@ def get_articles_report_text(articles_reports, articles_stats, conversion_report
         data_f, data_e, data_w = articles_stats[new_name][1]
 
         rep1, rep2, rep3 = articles_reports[new_name]
+        print(articles_reports[new_name])
         if xml_f + xml_e + xml_w > 0:
             t = []
             v = []
@@ -248,7 +246,9 @@ def get_articles_report_text(articles_reports, articles_stats, conversion_report
             validations_text += html_reports.collapsible_block('datarep' + str(index), 'Contents validations (' + os.path.basename(rep3) + '): ' + s, get_report_text(rep3), html_reports.get_stats_numbers_style(data_f, data_e, data_w))
 
         if conversion_reports is not None:
-            validations_text += conversion_reports.get(new_name, '')
+            r = conversion_reports.get(new_name)
+            if r is not None:
+                validations_text += r[3]
     return validations_text
 
 

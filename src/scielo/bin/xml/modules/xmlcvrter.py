@@ -28,29 +28,21 @@ CONFIG_PATH = CURRENT_PATH + '/../config/'
 converter_env = None
 
 
-categories = [
-        'converted', 
-        'not converted', 
-        'new aop', 
-        'new doc', 
-        'ex aop', 
-        'matched aop', 
-        'partially matched aop',
-        'aop missing PID', 
-        'unmatched aop', 
-        ]
-categories_messages = [
-    'converted', 
-    'not converted', 
-    'aop version', 
-    'doc has no aop', 
-    'aop is published in an issue', 
-    'doc has aop version', 
-    'doc has aop version partially matched (title/author are similar)', 
-    'doc has aop version which has no PID', 
-    'doc has an invalid aop version (title/author are not the same)', 
-    ]
-
+categories_messages = {
+    'converted': 'converted', 
+    'not converted': 'not converted', 
+    'skept': 'skept', 
+    'deleted ex-aop': 'deleted ex-aop', 
+    'deleted order': 'deleted order', 
+    'not deleted ex-aop': 'not deleted ex-aop', 
+    'new aop': 'aop version', 
+    'new doc': 'doc has no aop', 
+    'ex aop': 'aop is published in an issue', 
+    'matched aop': 'doc has aop version', 
+    'partially matched aop': 'doc has aop version partially matched (title/author are similar)', 
+    'aop missing PID': 'doc has aop version which has no PID', 
+    'unmatched aop': 'doc has an invalid aop version (title/author are not the same)', 
+}
 
 
 class ConverterEnv(object):
@@ -263,7 +255,8 @@ def convert_package(src_path):
     validations_report = ''
     toc_report = ''
     sheets = ''
-
+    conversion_status_summary_report = ''
+    aop_status_summary_report = ''
     after_conversion = ''
     acron_issue_label = 'unidentified issue'
     scilista_item = None
@@ -298,7 +291,9 @@ def convert_package(src_path):
         print('pkg_articles')
         print(pkg_articles)
 
-        before_conversion = display_status_before_conversion(registered_articles, pkg_articles, xml_articles_status)
+        before_conversion = html_reports.tag('h3', 'Documents status in the package/database - before conversion')
+        before_conversion += display_status_before_conversion(registered_articles, pkg_articles, xml_articles_status)
+
         toc_f, toc_report = complete_issue_items_report(complete_issue_items, unmatched_orders)
 
         selected_articles = {}
@@ -309,19 +304,24 @@ def convert_package(src_path):
         if toc_f == 0 and len(selected_articles) > 0:
             fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_articles_status)
 
-            #sheets = pkg_reports.get_lists_report_text(articles_sheets)
+            scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders)
+
+            validations_report = html_reports.tag('h2', 'Detail Report')
+            validations_report += pkg_reports.get_articles_report_text(articles_reports, articles_stats, conversion_stats_and_reports)
+
+            conclusion_msg = html_reports.tag('h2', 'Summary Report')
+            conclusion_msg += report_conclusion_message(scilista_item, acron_issue_label, len(conversion_status['converted']), len(conversion_status['not converted']), len(selected_articles))
+            after_conversion = html_reports.tag('h3', 'Documents status in the package/database - after conversion')
+            after_conversion += display_status_after_conversion(get_registered_articles(issue_files), pkg_articles, xml_articles_status, unmatched_orders)
+
+            conversion_status_summary_report = html_reports.tag('h3', 'Conversion results') + report_status(conversion_status)
+            aop_status_summary_report = html_reports.tag('h3', 'aop information') + report_status(aop_status)
+
+            sheets = pkg_reports.get_lists_report_text(articles_sheets)
 
             issue_files.save_reports(report_path)
             issue_files.save_source_files(pkg_path)
             report_path = issue_files.base_reports_path
-
-            conversion_reports, doc_status, scilista_item, still_ahead = convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders)
-
-            after_conversion = html_reports.section('Documents status in the package/database - after conversion', display_status_after_conversion(get_registered_articles(issue_files), pkg_articles, xml_articles_status, unmatched_orders))
-
-            validations_report = pkg_reports.get_articles_report_text(articles_reports, articles_stats, conversion_reports)
-            #FIXME
-            conclusion_msg = report_conclusion_message(scilista_item, acron_issue_label, converted, not_converted, len(selected_articles))
 
             if scilista_item is not None:
                 issue_files.copy_files_to_local_web_app()
@@ -330,13 +330,15 @@ def convert_package(src_path):
 
     texts = []
     texts.append(html_reports.section('Package: XML list', pkg_reports.xml_list(pkg_path, xml_filenames)))
-    texts.append(html_reports.section('Documents status in the package/database - before conversion', before_conversion))
-    texts.append(after_conversion)
     texts.append(issue_error_msg)
     texts.append(toc_report)
-    texts.append(validations_report)
     texts.append(conclusion_msg)
-    #texts.append(sheets)
+    texts.append(conversion_status_summary_report)
+    texts.append(aop_status_summary_report)
+    texts.append(before_conversion)
+    texts.append(after_conversion)
+    texts.append(validations_report)
+    texts.append(sheets)
 
     if converter_env.is_windows:
         texts.append(pkg_reports.processing_result_location(issue_files.issue_path))
@@ -381,20 +383,14 @@ def format_reports_for_web(report_path, pkg_path, issue_path):
             open(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path + '/' + f, 'w').write(content)
 
 
-def aop_message(ahead_msg, ahead_comparison):
-    msg = ''
-    msg += html_reports.tag('h4', 'checking existence of aop version')
-    msg += ''.join([html_reports.p_message(item) for item in ahead_msg])
-    msg += ''.join([html_reports.tag('pre', item) for item in ahead_comparison])
-    return msg
-
-
 def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders):
     index = 0
-    conversion_report = {}
-    doc_status = {}
-    for k in categories:
-        doc_status[k] = []
+    conversion_stats_and_reports = {}
+    conversion_status = {}
+    aop_status = {}
+
+    for k in ['converted', 'not converted', 'skept', 'deleted ex-aop', 'not deleted ex-aop', 'deleted order']:
+        conversion_status[k] = []
 
     n = '/' + str(len(pkg_articles))
 
@@ -415,16 +411,25 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
         msg = ''
 
         if not xml_articles_status[xml_name] in ['add', 'update']:
-            msg += html_reports.tag('p', 'skipped')
+            msg += html_reports.tag('p', 'skept')
+            conversion_status['skept'].append(xml_name)
             conv_stats = ''
         else:
             xml_stats, data_stats = articles_stats[xml_name]
             xml_f, xml_e, xml_w = xml_stats
             data_f, data_e, data_w = data_stats
 
-            valid_ahead, ahead_status, ahead_msg, ahead_comparison = ahead_manager.get_valid_ahead(article, xml_name)
-            doc_status[ahead_status].append(xml_name)
-            msg += aop_message(ahead_msg, ahead_comparison)
+            valid_ahead = None
+            if ahead_manager.journal_has_aop():
+                valid_ahead, doc_ahead_status = ahead_manager.get_valid_ahead(article)
+                if not doc_ahead_status in aop_status.keys():
+                    aop_status[doc_ahead_status] = []
+                aop_status[doc_ahead_status].append(xml_name)
+                msg += aop_message(article, valid_ahead, doc_ahead_status)
+
+                if valid_ahead is not None:
+                    if doc_ahead_status in ['unmatched aop', 'aop missing PID']:
+                        valid_ahead = None
 
             section_code, issue_validations_msg = validate_xml_issue_data(issue_models, article)
             msg += html_reports.tag('h4', 'checking issue data')
@@ -444,47 +449,83 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
                 if saved:
                     if xml_name in unmatched_orders.keys():
                         prev_order, curr_order = unmatched_orders[xml_name]
+                        msg += html_reports.p_message('WARNING: Replacing orders: ' + prev_order + ' by ' + curr_order)
                         prev_article_files = serial_files.ArticleFiles(issue_files, prev_order, xml_name)
+                        msg += html_reports.p_message('WARNING: Deleting ' + os.path.basename(prev_article_files.id_filename))
                         os.unlink(prev_article_files.id_filename)
+                        conversion_status['deleted order'].append(prev_order)
 
-                    if valid_ahead is not None:
-                        if ahead_status in ['matched aop', 'partially matched aop']:
-                            saved, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
-                            msg += ''.join([item for item in ahead_msg])
-                            if saved:
-                                doc_status['ex aop'].append(xml_name)
-                            else:
-                                msg += html_reports.p_message('FATAL ERROR: Unable to remove ex aop')
-                    doc_status['converted'].append(xml_name)
+                    if doc_ahead_status in ['matched aop', 'partially matched aop']:
+                        saved, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
+                        msg += ''.join([item for item in ahead_msg])
+                        if saved:
+                            conversion_status['deleted ex-aop'].append(xml_name)
+                            msg += html_reports.p_message('INFO: ex aop was deleted')
+                        else:
+                            conversion_status['not deleted ex-aop'].append(xml_name)
+                            msg += html_reports.p_message('ERROR: Unable to delete ex aop')
+                    conversion_status['converted'].append(xml_name)
                     msg += html_reports.p_message('OK: converted')
                 else:
-                    doc_status['not converted'].append(xml_name)
+                    conversion_status['not converted'].append(xml_name)
                     msg += html_reports.p_message('FATAL ERROR: not converted')
             else:
-                doc_status['not converted'].append(xml_name)
-                msg += html_reports.p_message('FATAL ERROR: not converted')
+                conversion_status['not converted'].append(xml_name)
+                #msg += html_reports.p_message('FATAL ERROR: not converted')
 
             conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
             title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
             conv_stats = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
-        conversion_report[xml_name] = html_reports.collapsible_block(xml_name + 'conv', 'converter validations: ' + title, msg, conv_stats)
+        conversion_stats_and_reports[xml_name] = (conv_f, conv_e, conv_w, html_reports.collapsible_block(xml_name + 'conv', 'Converter validations: ' + title, msg, conv_stats))
 
-    if len(doc_status['ex aop']) > 0:
-        still_ahead = ahead_manager.finish_manage_ex_ahead()
-        if len(still_ahead) > 0:
-            still_ahead = [still_ahead[k][0] + still_ahead[k][1] + still_ahead[k][2] for k in sorted(still_ahead.keys(), reverse=True)]
-
+    if ahead_manager.journal_has_aop():
+        if len(conversion_status['deleted ex-aop']) > 0:
+            updated = ahead_manager.finish_manage_ex_ahead()
+            if len(updated) > 0:
+                aop_status['updated bases'] = updated
+            aop_status['still aop'] = ahead_manager.still_ahead_items()
     scilista_item = None
-    if len(doc_status['not converted']) == 0:
+    if len(conversion_status['not converted']) == 0:
         saved = converter_env.db_article.finish_conversion(issue_models.record, issue_files)
         if saved > 0:
             scilista_item = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
             if not converter_env.is_windows:
                 converter_env.db_article.generate_windows_version(issue_files)
 
-    #registered_articles = get_registered_articles(issue_files)
+    return (scilista_item, conversion_stats_and_reports, conversion_status, aop_status)
 
-    return (conversion_report, doc_status, scilista_item, still_ahead)
+
+def aop_message(article, ahead, status):
+    data = []
+    msg_list = []
+    if status == 'new aop':
+        msg_list.append('This document is an "aop".')
+    else:
+        msg_list.append('Checking if ' + article.xml_name + ' has an "aop version"')
+        if article.doi is not None:
+            msg_list.append('Checking if ' + article.doi + ' has an "aop version"')
+
+        if status == 'new doc':
+            msg_list.append('WARNING: Not found an "aop version" of this document.')
+        else:
+            msg_list.append('WARNING: Found: "aop version"')
+            if status == 'partially matched aop':
+                msg_list.append('WARNING: the title/author of article and its "aop version" are similar.')
+            elif status == 'aop missing PID':
+                msg_list.append('ERROR: the "aop version" has no PID')
+            elif status == 'unmatched aop':
+                status = 'unmatched aop'
+                msg_list.append('FATAL ERROR: the title/author of article and "aop version" are different.')
+
+                data.append('doc title:' + article.title)
+                data.append('aop title:' + ahead.article_title)
+                data.append('doc first author:' + article.first_author_surname)
+                data.append('aop first author:' + ahead.first_author_surname)
+    msg = ''
+    msg += html_reports.tag('h4', 'checking existence of aop version')
+    msg += ''.join([html_reports.p_message(item) for item in msg_list])
+    msg += ''.join([html_reports.tag('pre', item) for item in data])
+    return msg
 
 
 def get_registered_articles(issue_files):
@@ -495,22 +536,11 @@ def get_registered_articles(issue_files):
     return registered_articles
 
 
-def report_articles_status(conversion_status, articles_conversion_status):
-    text = html_reports.tag('h4', 'Converted / Not converted')
-    i = 0
-    for category in ['converted', 'not converted']:
-        text += html_reports.format_list(categories_messages[i], 'ol', articles_by_category[category])
-        i += 1
-    text += html_reports.tag('h4', 'aop information')
+def report_status(status):
+    text = ''
+    for category in sorted(status.keys()):
+        text += html_reports.format_list(categories_messages.get(category, category), 'ol', status[category])
 
-
-    i = 0
-    for category in ['converted', 'not converted']:
-        text += html_reports.format_list(categories_messages[i], 'ol', articles_by_category[category])
-        i += 1
-
-    if len(still_ahead) > 0:
-        text += display_list('aop list', still_ahead)
     return text
 
 
@@ -520,155 +550,6 @@ def report_conclusion_message(scilista_item, issue_label, converted, not_convert
     if scilista_item is None:
         text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' is not complete (' + str(not_converted) + ' were not converted), so it will not be updated or published in the website.')
     return text
-
-
-def old_convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders):
-    index = 0
-    categories_messages = [
-        'converted', 
-        'not converted', 
-        'aop version', 
-        'doc has no aop', 
-        'aop is published in an issue', 
-        'doc has aop version', 
-        'doc has aop version partially matched (title/author are similar)', 
-        'doc has aop version which has no PID', 
-        'doc has an invalid aop version (title/author are not the same)', 
-        ]
-    categories = [
-        'converted', 
-        'not converted', 
-        'new aop', 
-        'new doc', 
-        'ex aop', 
-        'matched aop', 
-        'partially matched aop',
-        'aop missing PID', 
-        'unmatched aop', 
-        ]
-    converter_status = {}
-    articles_by_category = {}
-    for k in categories:
-        articles_by_category[k] = []
-
-    n = '/' + str(len(pkg_articles))
-
-    i_ahead_records = {}
-    for db_filename in issue_files.journal_files.ahead_bases:
-        year = os.path.basename(db_filename)[0:4]
-        i_ahead_records[year] = find_i_record(year + 'nahead', issue_models.issue.issn_id, None)
-
-    ahead_manager = xc_models.AheadManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
-
-    text = html_reports.tag('h2', 'XML Converter')
-
-    for xml_name in pkg_reports.sorted_xml_name_by_order(pkg_articles):
-        article = pkg_articles[xml_name]
-        index += 1
-
-        item_label = str(index) + n + ' - ' + xml_name
-        print(item_label)
-
-        text += html_reports.tag('h4', item_label)
-        msg = ''
-
-        if not xml_articles_status[xml_name] in ['add', 'update']:
-            msg += html_reports.tag('p', 'skipped')
-            conv_stats = ''
-        else:
-            xml_stats, data_stats = articles_stats[xml_name]
-            xml_f, xml_e, xml_w = xml_stats
-            data_f, data_e, data_w = data_stats
-
-            valid_ahead, ahead_status, ahead_msg, ahead_comparison = ahead_manager.get_valid_ahead(article, xml_name)
-            articles_by_category[ahead_status].append(xml_name)
-            msg += aop_message(ahead_msg, ahead_comparison)
-
-            section_code, issue_validations_msg = validate_xml_issue_data(issue_models, article)
-            msg += html_reports.tag('h4', 'checking issue data')
-            msg += issue_validations_msg
-            conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
-
-            if conv_f + xml_f + data_f == 0:
-                article.section_code = section_code
-                if valid_ahead is not None:
-                    article._ahead_pid = valid_ahead.ahead_pid
-
-                article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
-
-                creation_date = None if not xml_name in registered_articles else registered_articles[xml_name].creation_date
-
-                saved = converter_env.db_article.create_id_file(issue_models.record, article, article_files, creation_date)
-                if saved:
-                    if xml_name in unmatched_orders.keys():
-                        prev_order, curr_order = unmatched_orders[xml_name]
-                        prev_article_files = serial_files.ArticleFiles(issue_files, prev_order, xml_name)
-                        os.unlink(prev_article_files.id_filename)
-
-                    if valid_ahead is not None:
-                        if ahead_status in ['matched aop', 'partially matched aop']:
-                            saved, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
-                            msg += ''.join([item for item in ahead_msg])
-                            if saved:
-                                articles_by_category['ex aop'].append(xml_name)
-                            else:
-                                msg += html_reports.p_message('FATAL ERROR: Unable to remove ex aop')
-                    articles_by_category['converted'].append(xml_name)
-                    msg += html_reports.p_message('OK: converted')
-                else:
-                    articles_by_category['not converted'].append(xml_name)
-                    msg += html_reports.p_message('FATAL ERROR: not converted')
-            else:
-                articles_by_category['not converted'].append(xml_name)
-                msg += html_reports.p_message('FATAL ERROR: not converted')
-
-            conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
-            title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
-            conv_stats = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
-        converter_status[xml_name] = html_reports.collapsible_block(xml_name + 'conv', 'converter validations: ' + title, msg, conv_stats)
-        text += converter_status[xml_name]
-    summary = ''
-    i = 0
-    for status in categories:
-        summary += display_list(categories_messages[i], articles_by_category[status])
-        i += 1
-
-    if len(articles_by_category['ex aop']) > 0:
-        still_ahead = ahead_manager.finish_manage_ex_ahead()
-        if len(still_ahead) > 0:
-            still_ahead = [still_ahead[k][0] + still_ahead[k][1] + still_ahead[k][2] for k in sorted(still_ahead.keys(), reverse=True)]
-            summary += display_list('aop list', still_ahead)
-
-    scilista_item = None
-
-    print('not converted')
-    print(len(articles_by_category['not converted']))
-    print('converted')
-    print(len(articles_by_category['converted']))
-    print('len(articles)')
-    print(len(pkg_articles))
-
-    if len(articles_by_category['not converted']) == 0:
-        if converter_env.db_article.finish_conversion(issue_models.record, issue_files) > 0:
-            scilista_item = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
-            if not converter_env.is_windows:
-                converter_env.db_article.generate_windows_version(issue_files)
-    else:
-        summary += html_reports.p_message('FATAL ERROR: ' + issue_models.issue.issue_label + ' is not complete (' + str(len(articles_by_category['not converted'])) + ' were not converted), so it will not be updated or published in the website.')
-        summary += html_reports.p_message('generated databases of ' + str(len(articles_by_category['converted'])) + '/' + str(len(pkg_articles)))
-
-    registered_issue_models, registered_articles_list = converter_env.db_article.registered_items(issue_files)
-    registered_articles = {}
-    for article in registered_articles_list:
-        registered_articles[article.xml_name] = article
-
-    summary += display_status_after_conversion(registered_articles, pkg_articles, xml_articles_status, unmatched_orders)
-
-    if converter_env.is_windows:
-        summary += pkg_reports.processing_result_location(issue_files.issue_path)
-
-    summary = html_reports.tag('div', html_reports.tag('h2', 'XML Converter - results') + summary)
-    return (scilista_item, text + summary + html_reports.tag('p', 'Finished.'))
 
 
 def transfer_website_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path):
