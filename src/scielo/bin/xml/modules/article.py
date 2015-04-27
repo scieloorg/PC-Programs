@@ -13,7 +13,7 @@ def nodetext(node, sep='|'):
     if node is None:
         r = None
     elif isinstance(node, list):
-        r = sep.join([item.text for item in node])
+        r = sep.join([item.text for item in node if item.text is not None])
     else:
         r = node.text
     if r == '':

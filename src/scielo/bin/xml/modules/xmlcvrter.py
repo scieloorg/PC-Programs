@@ -31,9 +31,9 @@ converter_env = None
 categories_messages = {
     'converted': 'converted', 
     'not converted': 'not converted', 
-    'skept': 'skept', 
+    'skept': 'skept conversion', 
     'deleted ex-aop': 'deleted ex-aop', 
-    'deleted order': 'deleted order', 
+    'deleted incorrect order': 'deleted incorrect order', 
     'not deleted ex-aop': 'not deleted ex-aop', 
     'new aop': 'aop version', 
     'new doc': 'doc has no aop', 
@@ -124,15 +124,15 @@ def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_art
 def complete_issue_items_row(article, status, creation_date, source, other_order=None):
     values = []
     values.append(status)
+    values.append(source)
+    values.append(creation_date)
     values.append(article.order)
-    values.append(article.previous_pid)
     if other_order is None:
         values.append('')
     else:
         values.append(other_order)
+    values.append(article.previous_pid)
     values.append(article.xml_name)
-    values.append(creation_date)
-    values.append(source)
     values.append(article.toc_section)
     values.append(article.article_type)
     values.append(article.title)
@@ -140,7 +140,7 @@ def complete_issue_items_row(article, status, creation_date, source, other_order
 
 
 def display_status_before_conversion(registered_articles, pkg_articles, xml_articles_status, status_column_label='action'):
-    labels = [status_column_label, 'order', 'aop order', 'updated order', 'name', 'source', 'registration date', 'toc section', '@article-type', 'article title']
+    labels = [status_column_label, 'source', 'registration date', 'order', 'replaced order', 'aop PID', 'name', 'toc section', '@article-type', 'article title']
     orders = [article.order if article.tree is not None else 'None' for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()]
 
     orders = sorted(list(set([order for order in orders if order is not None])))
@@ -181,7 +181,7 @@ def display_status_before_conversion(registered_articles, pkg_articles, xml_arti
 
 
 def display_status_after_conversion(registered_articles, pkg_articles, xml_articles_status, unmatched_orders):
-    labels = ['action', 'order', 'previous order', 'name', 'registration date', 'toc section', '@article-type', 'article title']
+    labels = ['action', 'source', 'registration date', 'order', 'replaced order', 'aop PID', 'name', 'toc section', '@article-type', 'article title']
     status_labels = {'update': 'updated', 'add': 'added', '-': '-', 'skip-update': '-', 'order changed': 'order changed'}
     orders = sorted(list(set([article.order if article.tree is not None else 'None' for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()])))
 
@@ -315,7 +315,11 @@ def convert_package(src_path):
             after_conversion += display_status_after_conversion(get_registered_articles(issue_files), pkg_articles, xml_articles_status, unmatched_orders)
 
             conversion_status_summary_report = html_reports.tag('h3', 'Conversion results') + report_status(conversion_status)
-            aop_status_summary_report = html_reports.tag('h3', 'aop information') + report_status(aop_status)
+            aop_status_summary_report = html_reports.tag('h3', 'aop information')
+            if aop_status is None:
+                aop_status_summary_report += 'this journal has no aop.'
+            else:
+                aop_status_summary_report += report_status(aop_status)
 
             sheets = pkg_reports.get_lists_report_text(articles_sheets)
 
@@ -387,9 +391,8 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
     index = 0
     conversion_stats_and_reports = {}
     conversion_status = {}
-    aop_status = {}
 
-    for k in ['converted', 'not converted', 'skept', 'deleted ex-aop', 'not deleted ex-aop', 'deleted order']:
+    for k in ['converted', 'not converted', 'skept', 'deleted incorrect order']:
         conversion_status[k] = []
 
     n = '/' + str(len(pkg_articles))
@@ -399,8 +402,13 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
         year = os.path.basename(db_filename)[0:4]
         i_ahead_records[year] = find_i_record(year + 'nahead', issue_models.issue.issn_id, None)
 
-    ahead_manager = xc_models.AheadManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
+    print('i_ahead_records')
+    print(i_ahead_records)
 
+    ahead_manager = xc_models.AheadManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
+    aop_status = None
+    if ahead_manager.journal_has_aop():
+        aop_status = {'deleted ex-aop': [], 'not deleted ex-aop': []}
     for xml_name in pkg_reports.sorted_xml_name_by_order(pkg_articles):
         article = pkg_articles[xml_name]
         index += 1
@@ -420,7 +428,7 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
             data_f, data_e, data_w = data_stats
 
             valid_ahead = None
-            if ahead_manager.journal_has_aop():
+            if aop_status is not None:
                 valid_ahead, doc_ahead_status = ahead_manager.get_valid_ahead(article)
                 if not doc_ahead_status in aop_status.keys():
                     aop_status[doc_ahead_status] = []
@@ -453,17 +461,18 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
                         prev_article_files = serial_files.ArticleFiles(issue_files, prev_order, xml_name)
                         msg += html_reports.p_message('WARNING: Deleting ' + os.path.basename(prev_article_files.id_filename))
                         os.unlink(prev_article_files.id_filename)
-                        conversion_status['deleted order'].append(prev_order)
+                        conversion_status['deleted incorrect order'].append(prev_order)
 
-                    if doc_ahead_status in ['matched aop', 'partially matched aop']:
-                        saved, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
-                        msg += ''.join([item for item in ahead_msg])
-                        if saved:
-                            conversion_status['deleted ex-aop'].append(xml_name)
-                            msg += html_reports.p_message('INFO: ex aop was deleted')
-                        else:
-                            conversion_status['not deleted ex-aop'].append(xml_name)
-                            msg += html_reports.p_message('ERROR: Unable to delete ex aop')
+                    if aop_status is not None:
+                        if doc_ahead_status in ['matched aop', 'partially matched aop']:
+                            saved, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
+                            msg += ''.join([item for item in ahead_msg])
+                            if saved:
+                                aop_status['deleted ex-aop'].append(xml_name)
+                                msg += html_reports.p_message('INFO: ex aop was deleted')
+                            else:
+                                aop_status['not deleted ex-aop'].append(xml_name)
+                                msg += html_reports.p_message('ERROR: Unable to delete ex aop')
                     conversion_status['converted'].append(xml_name)
                     msg += html_reports.p_message('OK: converted')
                 else:
@@ -479,11 +488,11 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
         conversion_stats_and_reports[xml_name] = (conv_f, conv_e, conv_w, html_reports.collapsible_block(xml_name + 'conv', 'Converter validations: ' + title, msg, conv_stats))
 
     if ahead_manager.journal_has_aop():
-        if len(conversion_status['deleted ex-aop']) > 0:
+        if len(aop_status['deleted ex-aop']) > 0:
             updated = ahead_manager.finish_manage_ex_ahead()
             if len(updated) > 0:
                 aop_status['updated bases'] = updated
-            aop_status['still aop'] = ahead_manager.still_ahead_items()
+        aop_status['still aop'] = ahead_manager.still_ahead_items()
     scilista_item = None
     if len(conversion_status['not converted']) == 0:
         saved = converter_env.db_article.finish_conversion(issue_models.record, issue_files)
@@ -539,7 +548,13 @@ def get_registered_articles(issue_files):
 def report_status(status):
     text = ''
     for category in sorted(status.keys()):
-        text += html_reports.format_list(categories_messages.get(category, category), 'ol', status[category])
+        if len(status[category]) == 0:
+            ltype = 'ul'
+            list_items = ['None']
+        else:
+            ltype = 'ol'
+            list_items = status[category]
+        text += html_reports.format_list(categories_messages.get(category, category), ltype, list_items)
 
     return text
 
@@ -548,7 +563,7 @@ def report_conclusion_message(scilista_item, issue_label, converted, not_convert
     text = ''
     text += html_reports.p_message('converted: ' + str(converted) + '/' + str(total))
     if scilista_item is None:
-        text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' is not complete (' + str(not_converted) + ' were not converted), so it will not be updated or published in the website.')
+        text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' is not complete (' + str(not_converted) + ' were not converted), so ' + issue_label + ' will not be updated/published on ' + converter_env.web_app_site + '.')
     return text
 
 

@@ -228,7 +228,6 @@ def get_articles_report_text(articles_reports, articles_stats, conversion_report
         data_f, data_e, data_w = articles_stats[new_name][1]
 
         rep1, rep2, rep3 = articles_reports[new_name]
-        print(articles_reports[new_name])
         if xml_f + xml_e + xml_w > 0:
             t = []
             v = []

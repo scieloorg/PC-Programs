@@ -435,14 +435,22 @@ class IssueArticlesRecords(object):
         items = []
         article_records = None
         i_record = None
+        record_types = list(set([record.get('702') for record in self.records]))
+
         for record in self.records:
             if record.get('702') == 'i':
                 i_record = record
             elif record.get('702') == 'o':
+                # new article
                 if article_records is not None:
                     items.append(RegisteredArticle(article_records))
                 article_records = [record]
             elif record.get('702') == 'h':
+                if not 'o' in record_types:
+                    if article_records is not None:
+                        items.append(RegisteredArticle(article_records))
+                    if article_records is None:
+                        article_records = []
                 article_records.append(record)
 
         if article_records is not None:
@@ -518,7 +526,11 @@ class IssueDAO(object):
         expr = self.expr(issue_label, pissn, eissn)
         print('debug: expr=')
         print(expr)
-        return self.dao.get_records(self.db_filename, expr) if expr is not None else None
+        search_result = self.dao.get_records(self.db_filename, expr) if expr is not None else None
+        if 'ahead' in issue_label:
+            print('search_result')
+            print(search_result)
+        return search_result
 
 
 class ArticleDAO(object):
@@ -554,7 +566,11 @@ class ArticleDAO(object):
         return loaded
 
     def registered_items(self, issue_files):
-        i, article_records_items = IssueArticlesRecords(self.dao.get_records(issue_files.base)).articles()
+        records = self.dao.get_records(issue_files.base)
+        print('records of ')
+        print(issue_files.base)
+        print(records)
+        i, article_records_items = IssueArticlesRecords(records).articles()
         print(i)
         print(article_records_items)
         return (IssueModels(i), [RegisteredArticle(item) for item in article_records_items])
@@ -578,7 +594,7 @@ class AheadManager(object):
         self.indexed_by_doi = {}
         self.indexed_by_xml_name = {}
         self.load()
-        self.prepare_ahead_id_files(i_ahead_records)
+        self.create_ahead_id_files(i_ahead_records)
 
     def journal_has_aop(self):
         total = 0
@@ -586,7 +602,7 @@ class AheadManager(object):
             total += len(items)
         return total > 0
 
-    def prepare_ahead_id_files(self, i_ahead_records):
+    def create_ahead_id_files(self, i_ahead_records):
         for db_filename in self.journal_files.ahead_bases:
             year = os.path.basename(db_filename)[0:4]
             id_path = self.journal_files.ahead_id_path(year)
@@ -595,7 +611,7 @@ class AheadManager(object):
                 os.makedirs(id_path)
             if not os.path.isfile(i_id_filename):
                 if year in i_ahead_records.keys():
-                    self.dao.save_id(i_id_filename, i_ahead_records[year])
+                    self.dao.save_id(i_id_filename, [i_ahead_records[year]])
             records = self.dao.get_records(db_filename, expr=None)
             if len(records) > 0:
                 previous = ''
@@ -630,13 +646,13 @@ class AheadManager(object):
                 ahead = RegisteredAhead(h_record, dbname)
                 self.indexed_by_doi[ahead.doi] = ahead
                 self.indexed_by_xml_name[ahead.filename] = ahead
-                self.still_ahead[db_name][ahead.order] = ahead
+                self.still_ahead[dbname][ahead.order] = ahead
 
     def still_ahead_items(self):
         items = []
         for dbname in sorted(self.still_ahead.keys()):
             for order in sorted(self.still_ahead[dbname].keys()):
-                items.append(dname + ' ' + order + ' ' + self.still_ahead[dbname][order].filename + ' ' + self.still_ahead[dbname][order].article_title)
+                items.append(dbname + '/' + self.still_ahead[dbname][order].filename + ' [' + order + ']: ' + self.still_ahead[dbname][order].article_title[0:50] + '...')
         return items
 
     def h_records(self, db_filename):
@@ -711,9 +727,12 @@ class AheadManager(object):
         """
         Mark as deleted
         """
-        if not ahead.ahead_db_name is self.ahead_to_delete.keys():
+        if not ahead.ahead_db_name in self.ahead_to_delete.keys():
             self.ahead_to_delete[ahead.ahead_db_name] = []
         self.ahead_to_delete[ahead.ahead_db_name].append(ahead)
+        if ahead.ahead_db_name in self.still_ahead.keys():
+            if ahead.order in self.still_ahead[ahead.ahead_db_name].keys():
+                del self.still_ahead[ahead.ahead_db_name][ahead.order]
 
     def manage_ex_ahead_files(self, ahead):
         msg = []
@@ -755,7 +774,10 @@ class AheadManager(object):
                 if deleted:
                     self.save_ex_ahead_record(ahead)
                     done = True
-                    self.still_ahead.
+                    if ahead.doi in self.indexed_by_doi.keys():
+                        del self.indexed_by_doi[ahead.doi]
+                    if ahead.filename in self.indexed_by_xml_name.keys():
+                        del self.indexed_by_xml_name[ahead.filename]
         return (done, msg)
 
     def finish_manage_ex_ahead(self):
