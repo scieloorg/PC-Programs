@@ -447,7 +447,7 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
             msg += issue_validations_msg
             conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
 
-            
+            if conv_f + xml_f + data_f == 0:
                 article.section_code = section_code
                 if valid_ahead is not None:
                     article._ahead_pid = valid_ahead.ahead_pid
