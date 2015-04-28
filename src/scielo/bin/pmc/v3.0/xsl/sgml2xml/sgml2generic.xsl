@@ -1678,11 +1678,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="@id"><xsl:value-of select="substring(@id,2)"/></xsl:when><xsl:otherwise><xsl:value-of select="position()"/></xsl:otherwise>
 		</xsl:choose></xsl:variable>
 		<ref id="B{$id}">
-			<xsl:apply-templates select="@status|@refstatus"/>
 			<xsl:apply-templates select="label"/>
 			<xsl:apply-templates select="." mode="text-ref"/>
 			<element-citation>
 				<xsl:apply-templates select="@reftype"/>
+				<xsl:apply-templates select="@status|@refstatus"/>
 				<xsl:apply-templates select="*[name()!='no' and name()!='label' and name()!='text-ref']">
 					<xsl:with-param name="position" select="position()"/>
 				</xsl:apply-templates>
