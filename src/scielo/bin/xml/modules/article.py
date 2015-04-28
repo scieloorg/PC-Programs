@@ -1025,8 +1025,8 @@ class ReferenceXML(object):
 
     @property
     def ref_status(self):
-        if self.root is not None:
-            return self.root.attrib.get('specific-use')
+        if self.element_citation is not None:
+            return self.element_citation.attrib.get('specific-use')
 
     @property
     def xml(self):
