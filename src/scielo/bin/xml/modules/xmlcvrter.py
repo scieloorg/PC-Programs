@@ -395,7 +395,6 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
     conversion_stats_and_reports = {}
     conversion_status = {}
 
-    fatal_errors = 0
     for k in ['converted', 'not converted', 'skept', 'deleted incorrect order']:
         conversion_status[k] = []
 
@@ -448,43 +447,45 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
             msg += issue_validations_msg
             conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
 
-            article.section_code = section_code
-            if valid_ahead is not None:
-                article._ahead_pid = valid_ahead.ahead_pid
+            
+                article.section_code = section_code
+                if valid_ahead is not None:
+                    article._ahead_pid = valid_ahead.ahead_pid
 
-            article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
+                article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
 
-            creation_date = None if not xml_name in registered_articles else registered_articles[xml_name].creation_date
+                creation_date = None if not xml_name in registered_articles else registered_articles[xml_name].creation_date
 
-            saved = converter_env.db_article.create_id_file(issue_models.record, article, article_files, creation_date)
-            if saved:
-                if xml_name in unmatched_orders.keys():
-                    prev_order, curr_order = unmatched_orders[xml_name]
-                    msg += html_reports.p_message('WARNING: Replacing orders: ' + prev_order + ' by ' + curr_order)
-                    prev_article_files = serial_files.ArticleFiles(issue_files, prev_order, xml_name)
-                    msg += html_reports.p_message('WARNING: Deleting ' + os.path.basename(prev_article_files.id_filename))
-                    os.unlink(prev_article_files.id_filename)
-                    conversion_status['deleted incorrect order'].append(prev_order)
+                saved = converter_env.db_article.create_id_file(issue_models.record, article, article_files, creation_date)
+                if saved:
+                    if xml_name in unmatched_orders.keys():
+                        prev_order, curr_order = unmatched_orders[xml_name]
+                        msg += html_reports.p_message('WARNING: Replacing orders: ' + prev_order + ' by ' + curr_order)
+                        prev_article_files = serial_files.ArticleFiles(issue_files, prev_order, xml_name)
+                        msg += html_reports.p_message('WARNING: Deleting ' + os.path.basename(prev_article_files.id_filename))
+                        os.unlink(prev_article_files.id_filename)
+                        conversion_status['deleted incorrect order'].append(prev_order)
 
-                if aop_status is not None:
-                    if doc_ahead_status in ['matched aop', 'partially matched aop']:
-                        saved, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
-                        msg += ''.join([item for item in ahead_msg])
-                        if saved:
-                            aop_status['deleted ex-aop'].append(xml_name)
-                            msg += html_reports.p_message('INFO: ex aop was deleted')
-                        else:
-                            aop_status['not deleted ex-aop'].append(xml_name)
-                            msg += html_reports.p_message('ERROR: Unable to delete ex aop')
-                conversion_status['converted'].append(xml_name)
-                msg += html_reports.p_message('OK: converted')
+                    if aop_status is not None:
+                        if doc_ahead_status in ['matched aop', 'partially matched aop']:
+                            saved, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
+                            msg += ''.join([item for item in ahead_msg])
+                            if saved:
+                                aop_status['deleted ex-aop'].append(xml_name)
+                                msg += html_reports.p_message('INFO: ex aop was deleted')
+                            else:
+                                aop_status['not deleted ex-aop'].append(xml_name)
+                                msg += html_reports.p_message('ERROR: Unable to delete ex aop')
+                    conversion_status['converted'].append(xml_name)
+                    msg += html_reports.p_message('OK: converted')
+                else:
+                    conversion_status['not converted'].append(xml_name)
+                    msg += html_reports.p_message('FATAL ERROR: not converted')
             else:
                 conversion_status['not converted'].append(xml_name)
-                msg += html_reports.p_message('FATAL ERROR: not converted')
+                #msg += html_reports.p_message('FATAL ERROR: not converted')
 
             conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
-            fatal_errors += conv_f + xml_f + data_f
-
             title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
             conv_stats = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
         conversion_stats_and_reports[xml_name] = (conv_f, conv_e, conv_w, html_reports.collapsible_block(xml_name + 'conv', 'Converter validations: ' + title, msg, conv_stats))
@@ -496,7 +497,7 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
                 aop_status['updated bases'] = updated
         aop_status['still aop'] = ahead_manager.still_ahead_items()
     scilista_item = None
-    if fatal_errors == 0:
+    if len(conversion_status['not converted']) == 0:
         saved = converter_env.db_article.finish_conversion(issue_models.record, issue_files)
         if saved > 0:
             scilista_item = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
