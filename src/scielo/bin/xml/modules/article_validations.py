@@ -508,22 +508,24 @@ class ArticleContentValidation(object):
 
             r.append(required('aff/institution/[@content-type="original"]', aff.original, 'FATAL ERROR'))
             r.append(required('aff/country/@country', aff.i_country, 'FATAL ERROR'))
-            r.append(required('aff/institution/[@content-type="normalized"]', aff.i_country, 'FATAL ERROR'))
+            r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'ERROR'))
+            r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))
 
-            normalized_items = institutions_service.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
-            if len(normalized_items) == 1:
-                orgname, city, state, country_code, country_name = normalized_items[0]
-                if orgname in [aff.orgname, aff.norgname] and country_code in [aff.i_country]:
-                    status = 'INFO'
-                    r.append(('normalized aff', status, 'Normalized institution is valid: ' + '; '.join([', '.join(list(item)) for item in normalized_items])))
+            if aff.norgname is not None or aff.orgname is not None:
+                normalized_items = institutions_service.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+                if len(normalized_items) == 1:
+                    orgname, city, state, country_code, country_name = normalized_items[0]
+                    if orgname in [aff.orgname, aff.norgname] and country_code in [aff.i_country]:
+                        status = 'INFO'
+                        r.append(('normalized aff', status, 'Normalized institution is valid: ' + '; '.join([', '.join(list(item)) for item in normalized_items])))
+                    else:
+                        status = 'WARNING'
+                        r.append(('normalized aff', status, 'Similar normalized institution: ' + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
                 else:
-                    status = 'WARNING'
-                    r.append(('normalized aff', status, 'Similar normalized institution: ' + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
-            else:
-                if len(normalized_items) == 0:
-                    r.append(('normalized aff', 'FATAL ERROR', 'Unable to confirm/find the normalized affiliation data. Ask for normalized institution by email: scielo-xml@googlegroups.com'))
-                else:
-                    r.append(('normalized aff', 'FATAL ERROR', 'Use one of the suggestions or email to scielo-xml@googlegroups.com' + 'options: ' + '|'.join([', '.join(list(item)) for item in normalized_items])))
+                    if len(normalized_items) == 0:
+                        r.append(('normalized aff', 'ERROR', 'Unable to confirm/find the normalized affiliation for ' + ' or '.join(item for item in [aff.orgname, aff.norgname] if item is not None) + '. Ask for normalized institution by email: scielo-xml@googlegroups.com'))
+                    else:
+                        r.append(('normalized aff', 'ERROR', 'Use one of the suggestions or email to scielo-xml@googlegroups.com' + 'options: ' + '|'.join([', '.join(list(item)) for item in normalized_items])))
 
             values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.orgdiv3, aff.city, aff.state, aff.i_country, aff.country]
             i = 0
