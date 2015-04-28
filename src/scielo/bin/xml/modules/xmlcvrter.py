@@ -255,8 +255,11 @@ def convert_package(src_path):
     validations_report = ''
     toc_report = ''
     sheets = ''
+    conclusion_msg = ''
+
     conversion_status_summary_report = ''
     aop_status_summary_report = ''
+    before_conversion = ''
     after_conversion = ''
     acron_issue_label = 'unidentified issue'
     scilista_item = None
