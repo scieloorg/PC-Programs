@@ -594,7 +594,7 @@ class AheadManager(object):
         self.indexed_by_doi = {}
         self.indexed_by_xml_name = {}
         self.load()
-        self.create_ahead_id_files(i_ahead_records)
+        self.extract_id_files_from_master(i_ahead_records)
 
     def journal_has_aop(self):
         total = 0
@@ -602,7 +602,7 @@ class AheadManager(object):
             total += len(items)
         return total > 0
 
-    def create_ahead_id_files(self, i_ahead_records):
+    def extract_id_files_from_master(self, i_ahead_records):
         for db_filename in self.journal_files.ahead_bases:
             year = os.path.basename(db_filename)[0:4]
             id_path = self.journal_files.ahead_id_path(year)

@@ -41,9 +41,14 @@ pre {
     word-wrap:break-word;
     color: #113F8C;
 }
-h1, h2 {
+h1 {
     text-align: center;
     font-family: "Verdana";
+}
+h2 {
+    text-align: center;
+    font-family: "Verdana";
+    margin-top: 50px;
 }
 h3 {
     text-align: left;
