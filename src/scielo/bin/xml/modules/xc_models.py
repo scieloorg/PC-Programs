@@ -16,7 +16,9 @@ import institutions_service
 
 def normalize_role(_role):
     r = ROLE.get(_role)
-    return _role if r == '??' else r
+    if r == '??' or _role is None:
+        r = 'ND'
+    return r
 
 
 def normalize_doctopic(_doctopic):
@@ -34,7 +36,7 @@ class RegisteredArticle(object):
 
     @property
     def xml_name(self):
-        return os.path.basename(self.filename).replace('.xml', '')
+        return self.article_records[0]['2']
 
     @property
     def filename(self):
@@ -567,12 +569,7 @@ class ArticleDAO(object):
 
     def registered_items(self, issue_files):
         records = self.dao.get_records(issue_files.base)
-        print('records of ')
-        print(issue_files.base)
-        print(records)
         i, article_records_items = IssueArticlesRecords(records).articles()
-        print(i)
-        print(article_records_items)
         return (IssueModels(i), [RegisteredArticle(item) for item in article_records_items])
 
     def generate_windows_version(self, issue_files):
@@ -652,7 +649,7 @@ class AheadManager(object):
         items = []
         for dbname in sorted(self.still_ahead.keys()):
             for order in sorted(self.still_ahead[dbname].keys()):
-                items.append(dbname + '/' + self.still_ahead[dbname][order].filename + ' [' + order + ']: ' + self.still_ahead[dbname][order].article_title[0:50] + '...')
+                items.append(dbname + '/' + order + ' (' + self.still_ahead[dbname][order].filename + '): ' + self.still_ahead[dbname][order].article_title[0:50] + '...')
         return items
 
     def h_records(self, db_filename):

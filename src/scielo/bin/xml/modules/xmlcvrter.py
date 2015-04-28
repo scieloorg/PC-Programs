@@ -567,6 +567,9 @@ def report_conclusion_message(scilista_item, issue_label, converted, not_convert
     text += html_reports.p_message('converted: ' + str(converted) + '/' + str(total))
     if scilista_item is None:
         text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' is not complete (' + str(not_converted) + ' were not converted), so ' + issue_label + ' will not be updated/published on ' + converter_env.web_app_site + '.')
+    else:
+        text += html_reports.p_message('OK: ' + issue_label + ' will be updated/published on ' + converter_env.web_app_site + '.')
+
     return text
 
 

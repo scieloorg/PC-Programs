@@ -66,7 +66,7 @@ class ArticleFiles(object):
     def __init__(self, issue_files, order, xml_name):
         self.issue_files = issue_files
         self.order = order
-        self.xml_name = xml_name
+        self.xml_name = xml_name if xml_name.endswith('.xml') else xml_name + '.xml'
 
     @property
     def id_filename(self):
