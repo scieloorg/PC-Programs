@@ -208,9 +208,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="bold|italic" mode="keep-styles">
+		<xsl:if test="normalize-space(text())!='' or *">
 		<xsl:element name="{name()}">
 			<xsl:apply-templates select="*|text()" mode="keep-styles"/>
 		</xsl:element>
+		</xsl:if>
 	</xsl:template>
 	
 	<xsl:template match="text()" mode="keep-styles">
