@@ -296,7 +296,7 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
         print(sgmxml_filename)
         open(sgmxml_filename, 'w').write(_content)
         xml = xml_utils.is_xml_well_formed(content)
-    
+
     if not xml is None:
         content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
         content = replace_mimetypes(content, src_path)
