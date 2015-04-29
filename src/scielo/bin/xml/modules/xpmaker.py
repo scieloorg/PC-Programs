@@ -272,7 +272,7 @@ def read_html(html_filename):
     return html_content
 
 
-def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
+def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, html_filename):
     #content = fix_uppercase_tag(content)
     register_log('normalize_sgmlxml')
 
@@ -282,11 +282,19 @@ def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
     #content = replace_tables_in_sgmlxml(content, embedded_tables)
     content = extract_embedded_images(xml_name, content, html_content, html_filename, src_path)
     content = replace_fontsymbols(content, html_content)
+    for style in ['italic', 'bold', 'sup', 'sub']:
+        s = '<' + style + '>'
+        e = '</' + style + '>'
+        content = content.replace(s.upper(), s.lower()).replace(e.upper(), e.lower())
 
     xml = xml_utils.is_xml_well_formed(content)
     if xml is None:
         content = fix_sgml_xml(content)
         xml = xml_utils.is_xml_well_formed(content)
+
+    print(sgmxml_filename)
+    open(sgmxml_filename, 'w').write(content.encode('utf-8'))
+
     if not xml is None:
         content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
         content = replace_mimetypes(content, src_path)
@@ -582,6 +590,13 @@ def normalize_xml_content(doc_files_info, content, version):
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
 
+    replaced_entities_report = ''
+    if len(replaced_named_ent) > 0:
+        replaced_entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
+
+    if doc_files_info.is_sgmxml:
+        content = normalize_sgmlxml(doc_files_info.xml_filename, doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
+
     content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
     content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
     content = content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
@@ -595,13 +610,6 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace('</' + style + '><' + style + '>', '')
 
     content = xml_utils.pretty_print(content)
-
-    replaced_entities_report = ''
-    if len(replaced_named_ent) > 0:
-        replaced_entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
-
-    if doc_files_info.is_sgmxml:
-        content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
 
     return (content, replaced_entities_report)
 
