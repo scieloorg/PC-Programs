@@ -122,14 +122,15 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:variable name="textonly"><xsl:apply-templates select="*|text()" mode="text-only"/></xsl:variable>
 		
 		<xsl:choose>
-			<xsl:when test="not(*) and normalize-space(.//text())=''">
-				<!-- sup, sub, bold, italic é vazio --> 
+			<xsl:when test="not(*) and normalize-space(translate(text(),'(),.-:;[]/','          '))=''">
+				<!-- sup, sub, bold, italic é vazio: ignore --> 
 			</xsl:when>
 			<xsl:when test="normalize-space($parent_textonly)=normalize-space($textonly)">
-				<!-- mantem o bold ou italic se está inserido em um elemento que contem texto alem de bold e/ou italic -->
+				<!-- ignore styles -->
 				<xsl:apply-templates select="*|text()"/>
 			</xsl:when>
 			<xsl:otherwise>
+				<!-- mantem o bold ou italic se está inserido em um elemento que contem texto alem de bold e/ou italic -->
 				<xsl:element name="{name()}">
 					<xsl:apply-templates select="@* | * | text()">
 						<xsl:with-param name="id" select="$id"/>
@@ -236,7 +237,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:param name="id"/>
 		
 		<xsl:element name="{name()}">
-			<xsl:apply-templates select=".//text()">
+			<xsl:apply-templates select="*|text()">
 				<xsl:with-param name="id" select="$id"/>
 			</xsl:apply-templates>
 		</xsl:element>
@@ -1568,7 +1569,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ack>
 	</xsl:template>
 
-	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic | ref//italic | ref//bold">
+	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic">
 		<!--fixme styles-->
 		<xsl:choose>
 			<xsl:when test="normalize-space(translate(.,'(),.-:;','       '))=''"></xsl:when>
