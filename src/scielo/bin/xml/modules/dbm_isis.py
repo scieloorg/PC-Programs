@@ -66,7 +66,7 @@ class IDFile(object):
     def _format_record(self, record):
         r = []
         if record is not None:
-            print(record)
+            #print(record)
             for tag_i in sorted([int(s) for s in record.keys() if s.isdigit()]):
                 tag = str(tag_i)
                 data = record.get(tag)
@@ -173,8 +173,8 @@ class IDFile(object):
             rec_list.append(self.simplify_record(record))
 
         #print('Loaded ' + str(len(rec_list))) + ' issue(s).'
-        print(filename)
-        print(str(len(rec_list)))
+        #print(filename)
+        #print(str(len(rec_list)))
         return rec_list
 
     def simplify_record(self, record):
