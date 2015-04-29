@@ -16,7 +16,7 @@ import institutions_service
 
 def normalize_role(_role):
     r = ROLE.get(_role)
-    if r == '??' or _role is None:
+    if r == '??' or _role is None or r is None:
         r = 'ND'
     return r
 
@@ -240,7 +240,7 @@ class ArticleRecords(object):
                 rec_c['18'] = {}
                 rec_c['18']['_'] = item.source
                 rec_c['18']['l'] = item.language
-            rec_c['40'] = item.language
+            #rec_c['40'] = item.language
             rec_c['10'] = []
             rec_c['11'] = []
             rec_c['16'] = []

@@ -74,7 +74,7 @@ class ArticleFiles(object):
 
     @property
     def relative_xml_filename(self):
-        return self.issue_files.relative_issue_path + '/' + self.xml_name + '.xml'
+        return self.issue_files.relative_issue_path + '/' + self.xml_name
 
 
 class IssueFiles(object):
