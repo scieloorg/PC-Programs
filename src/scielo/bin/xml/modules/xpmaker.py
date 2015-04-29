@@ -290,11 +290,13 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
     xml = xml_utils.is_xml_well_formed(content)
     if xml is None:
         content = fix_sgml_xml(content)
+        _content = content
+        if isinstance(content, unicode):
+            _content = content.encode('utf-8')
+        print(sgmxml_filename)
+        open(sgmxml_filename, 'w').write(_content)
         xml = xml_utils.is_xml_well_formed(content)
-
-    print(sgmxml_filename)
-    open(sgmxml_filename, 'w').write(content.encode('utf-8'))
-
+    
     if not xml is None:
         content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
         content = replace_mimetypes(content, src_path)
