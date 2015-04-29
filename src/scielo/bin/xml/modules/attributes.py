@@ -72,6 +72,7 @@ TOC_SECTIONS = {
     u'erratum': u'correction'
     }
 
+
 ROLE = {
     'author': 'ND',
     'editor': 'ED',
@@ -83,6 +84,9 @@ ROLE = {
     'transed': 'transed',
     'translator': 'TR',    
 }
+
+
+BIBLIOMETRICS_USE = ['journal', 'book', 'thesis', 'conf-proc']
 
 
 PUBLICATION_TYPE = []

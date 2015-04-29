@@ -21,15 +21,20 @@ def validate_value(value):
     result = []
     status = 'OK'
     if value is not None:
-        if value.endswith(' '):
-            status = 'WARNING'
-            result.append(value + ' ends with "space"')
-        if value.startswith('.'):
-            status = 'WARNING'
-            result.append(value + ' starts with "."')
-        if value.startswith(' '):
-            status = 'WARNING'
-            result.append(value + ' starts with "space"')
+        _value = value.strip()
+        if _value == value:
+            pass
+        elif _value.startswith('<') and _value.endswith('>'):
+            pass
+        else:
+            status = 'ERROR'
+            if value.startswith(' '):
+                result.append(value + ' starts with "space"')
+            if value.endswith(' '):
+                result.append(value + ' ends with "space"')
+            if value.startswith('.'):
+                status = 'WARNING'
+                result.append(value + ' starts with "."')
     if status == 'OK':
         message = format_value(value)
     else:
@@ -108,43 +113,30 @@ def validate_name(label, value, invalid_terms):
 
 
 def validate_surname(label, value):
-    result = []
-    reject = []
-    suffix_list = [u'Nieto', u'Sobrino', u'Hijo', u'Neto', u'Sobrinho', u'Filho', u'Júnior', u'JÚNIOR', u'Junior', u'Senior', u'Sr', u'Jr']
     r = []
     label, status, msg = required(label, value, 'ERROR')
     if status == 'OK':
+        msg = value
+        suffix_list = [u'Nieto', u'Sobrino', u'Hijo', u'Neto', u'Sobrinho', u'Filho', u'Júnior', u'JÚNIOR', u'Junior', u'Senior', u'Sr', u'Jr']
 
         parts = value.split(' ')
-        for i in range(0, len(parts)-2):
-            if not parts[i][0:1] == parts[i][0:1].lower():
-                reject.append(parts[i])
-        u = parts[len(parts)-1]
+        if len(parts) > 1:
+            rejected = [item for item in parts if item in suffix_list]
+            suffix = ' '.join(rejected)
 
-        suffix = ''
-        if u in suffix_list:
-            reject.append(parts[len(parts)-1])
-            suffix = parts[len(parts)-1]
-
-        if len(reject) > 0:
-            status = 'WARNING'
-            msg = 'Invalid terms (' + ','.join(reject) + ') in ' + value + '. '
             if len(suffix) > 0:
+                msg = 'Invalid terms (' + suffix + ') in ' + value + '. '
                 msg += suffix + ' must be identified as <suffix>' + suffix + '</suffix>.'
-            r.append((label, status, msg))
-
-    if status == 'OK':
-        msg = value
-        r.append((label, status, msg))
+                status = 'ERROR'
+                r.append((label, status, msg))
     return r
 
 
-def validate_contrib_names(author, affiliations=[]):
+def validate_contrib_names(author, aff_ids=[]):
     results = validate_surname('surname', author.surname) + validate_name('given-names', author.fname, ['_'])
-    if len(affiliations) > 0:
-        aff_ids = [aff.id for aff in affiliations if aff.id is not None]
+    if len(aff_ids) > 0:
         if len(author.xref) == 0:
-            results.append(('xref', 'FATAL ERROR', 'Author has no xref. Expected values: ' + '|'.join(aff_ids)))
+            results.append(('xref', 'WARNING', 'Author "' + author.fname + ' ' + author.surname + '" has no xref. Expected values: ' + '|'.join(aff_ids)))
         else:
             for xref in author.xref:
                 if not xref in aff_ids:
@@ -321,9 +313,16 @@ class ArticleContentValidation(object):
     @property
     def contrib_names(self):
         r = []
+        author_xref_items = []
+        aff_ids = [aff.id for aff in self.article.affiliations if aff.id is not None]
         for item in self.article.contrib_names:
-            for result in validate_contrib_names(item, self.article.affiliations):
+            for xref in item.xref:
+                author_xref_items.append(xref)
+            for result in validate_contrib_names(item, aff_ids):
                 r.append(result)
+        for affid in aff_ids:
+            if not affid in author_xref_items:
+                r.append(('aff/@id', 'FATAL ERROR', 'Missing xref[@ref-type="aff"]/@rid="' + affid + '".'))
         return r
 
     @property
@@ -506,7 +505,7 @@ class ArticleContentValidation(object):
             r.append(('aff xml', 'INFO', aff.xml))
             r.append(required('aff/@id', aff.id, 'FATAL ERROR'))
 
-            r.append(required('aff/institution/[@content-type="original"]', aff.original, 'FATAL ERROR'))
+            r.append(required('aff/institution/[@content-type="original"]', aff.original, 'FATAL ERROR', False))
             r.append(required('aff/country/@country', aff.i_country, 'FATAL ERROR'))
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'ERROR'))
             r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))
@@ -789,10 +788,10 @@ class ReferenceContentValidation(object):
     def source(self):
         return required('source', self.reference.source, 'FATAL ERROR')
 
-    def validate_element(self, label, value):
+    def validate_element(self, label, value, error_level='FATAL ERROR'):
         res = attributes.validate_element(self.reference.publication_type, label, value)
         if res != '':
-            return (label, 'ERROR', res)
+            return (label, error_level, res)
         else:
             if not value is None and value != '':
                 return (label, 'OK', value)
@@ -803,9 +802,9 @@ class ReferenceContentValidation(object):
         items = [
                 self.validate_element('article-title', self.reference.article_title), 
                 self.validate_element('chapter-title', self.reference.chapter_title), 
-                self.validate_element('conf-name', self.reference.conference_name), 
-                self.validate_element('date-in-citation[@content-type="access-date"] or date-in-citation[@content-type="update"]', self.reference.cited_date), 
-                self.validate_element('ext-link', self.reference.ext_link), 
+                self.validate_element('conf-name', self.reference.conference_name, 'ERROR'), 
+                self.validate_element('date-in-citation[@content-type="access-date"] or date-in-citation[@content-type="update"]', self.reference.cited_date, 'ERROR'), 
+                self.validate_element('ext-link', self.reference.ext_link, 'ERROR'), 
                 self.ext_link
             ]
         for item in items:
@@ -831,7 +830,7 @@ class ReferenceContentValidation(object):
 
     @property
     def mixed_citation(self):
-        return required('mixed-citation', self.reference.mixed_citation, 'ERROR')
+        return required('mixed-citation', self.reference.mixed_citation, 'FATAL ERROR', False)
 
     @property
     def authors_list(self):
@@ -848,7 +847,10 @@ class ReferenceContentValidation(object):
 
     @property
     def year(self):
-        return required('year', self.reference.year, 'FATAL ERROR')
+        error_level = 'ERROR'
+        if self.reference.publication_type in attributes.BIBLIOMETRICS_USE or self.reference.article_title is not None:
+            error_level = 'FATAL ERROR'
+        return required('year', self.reference.year, error_level)
 
     @property
     def publisher_name(self):
