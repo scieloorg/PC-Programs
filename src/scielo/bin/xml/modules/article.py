@@ -21,15 +21,6 @@ def nodetext(node, sep='|'):
     return r
 
 
-def format_issue_label(year, volume, number, volume_suppl, number_suppl):
-    year = year if number == 'ahead' else ''
-    v = 'v' + volume if volume is not None else None
-    vs = 's' + volume_suppl if volume_suppl is not None else None
-    n = 'n' + number if number is not None else None
-    ns = 's' + number_suppl if number_suppl is not None else None
-    return ''.join([i for i in [year, v, vs, n, ns] if i is not None])
-
-
 def format_author(author):
     r = author.surname
     if author.suffix:
@@ -950,7 +941,7 @@ class Article(ArticleXML):
     @property
     def issue_label(self):
         year = self.issue_pub_date.get('year', '') if self.issue_pub_date is not None else ''
-        return format_issue_label(year, self.volume, self.number, self.volume_suppl, self.number_suppl)
+        return article_utils.format_issue_label(year, self.volume, self.number, self.volume_suppl, self.number_suppl)
 
     @property
     def issue_pub_dateiso(self):
@@ -1183,4 +1174,4 @@ class Issue(object):
 
     @property
     def issue_label(self):
-        return format_issue_label(self.year, self.volume, self.number, self.volume_suppl, self.number_suppl)
+        return article_utils.format_issue_label(self.year, self.volume, self.number, self.volume_suppl, self.number_suppl)

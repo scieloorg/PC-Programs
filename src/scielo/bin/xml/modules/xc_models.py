@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 import utils
-from article_utils import doi_pid, display_pages, format_dateiso
+from article_utils import doi_pid, display_pages, format_dateiso, format_issue_label
 from article_utils import how_similar
 from article import Issue, PersonAuthor
 from attributes import ROLE, DOCTOPIC, doctopic_label
@@ -27,8 +27,25 @@ def normalize_doctopic(_doctopic):
 
 
 class RegisteredArticle(object):
-    def __init__(self, article_records):
+    def __init__(self, article_records, i_record=None):
+        self.i_record = i_record
         self.article_records = article_records
+        if self.i_record is not None:
+            self.issn_id = self.i_record.get('35')
+            self.current_issns = self.i_record.get('435')
+
+            if self.current_issns is not None:
+                if not isinstance(self.current_issns, list):
+                    self.current_issns = [self.current_issns]
+                self.journal_issns = {}
+                print(self.current_issns)
+                for item in self.current_issns:
+                    if item['t'] == 'PRINT':
+                        issn_type = 'ppub'
+                    elif item['t'] == 'ONLIN':
+                        issn_type = 'epub'
+                    self.journal_issns[issn_type] = item['_']
+        #self.acron = self.article_records[0]['930'].lower()
 
     def summary(self):
         data = {}
@@ -37,18 +54,24 @@ class RegisteredArticle(object):
         data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items()]) if self.journal_issns is not None else None
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_label
-        data['issue pub date'] = article_utils.format_date(self.issue_pub_date)
+        data['issue pub date'] = self.issue_pub_date
         data['order'] = self.order
         data['doi'] = self.doi
-        seq = '' if self.fpage_seq is None else self.fpage_seq
-        fpage = '' if self.fpage is None else self.fpage
-        data['fpage-and-seq'] = fpage + seq
+        data['fpage-and-seq'] = self.fpage
         data['elocation id'] = self.elocation_id
         return data
 
     @property
     def tree(self):
         return True
+
+    @property
+    def elocation_id(self):
+        return self.article_records[1]['14'].get('e')
+
+    @property
+    def fpage(self):
+        return self.article_records[1]['14'].get('f')
 
     @property
     def article_type(self):
@@ -64,11 +87,18 @@ class RegisteredArticle(object):
 
     @property
     def journal_title(self):
-        return self.article_records[0]['100']
+        if self.i_record is not None:
+            return self.i_record['130']
+
+    @property
+    def journal_id_nlm_ta(self):
+        if self.i_record is not None:
+            return self.i_record.get('421')
 
     @property
     def publisher_name(self):
-        return self.journal_id_nlm_ta[0]['421']
+        if self.i_record is not None:
+            return self.i_record['480']
 
     @property
     def rel_path(self):
@@ -117,6 +147,34 @@ class RegisteredArticle(object):
     @property
     def toc_section(self):
         return self.article_records[1]['49']
+
+    @property
+    def volume(self):
+        return self.article_records[1].get('31')
+
+    @property
+    def number(self):
+        return self.article_records[1].get('32')
+
+    @property
+    def volume_suppl(self):
+        return self.article_records[1].get('131')
+
+    @property
+    def number_suppl(self):
+        return self.article_records[1].get('132')
+
+    @property
+    def number_suppl(self):
+        return self.article_records[1].get('132')
+
+    @property
+    def issue_pub_date(self):
+        return self.article_records[1].get('65')
+
+    @property
+    def issue_label(self):
+        return format_issue_label(self.issue_pub_date[0:4], self.volume, self.number, self.volume_suppl, self.number_suppl)
 
 
 class ArticleRecords(object):
@@ -485,7 +543,7 @@ class IssueArticlesRecords(object):
 
         items = []
         for xml_name, records in articles_records.items():
-            items.append(RegisteredArticle(records))
+            items.append(RegisteredArticle(records, i_record))
         return (i_record, items)
 
 
