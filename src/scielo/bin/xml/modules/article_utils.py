@@ -7,6 +7,15 @@ import urllib2
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 
 
+def format_issue_label(year, volume, number, volume_suppl, number_suppl):
+    year = year if number == 'ahead' else ''
+    v = 'v' + volume if volume is not None else None
+    vs = 's' + volume_suppl if volume_suppl is not None else None
+    n = 'n' + number if number is not None else None
+    ns = 's' + number_suppl if number_suppl is not None else None
+    return ''.join([i for i in [year, v, vs, n, ns] if i is not None])
+
+
 def url_check(url, _timeout=30):
     print(datetime.now().isoformat() + ' url checking ' + url)
     try:

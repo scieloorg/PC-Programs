@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 import utils
-from article_utils import doi_pid, display_pages, format_dateiso
+from article_utils import doi_pid, display_pages, format_dateiso, format_issue_label
 from article_utils import how_similar
 from article import Issue, PersonAuthor
 from attributes import ROLE, DOCTOPIC, doctopic_label
@@ -27,19 +27,81 @@ def normalize_doctopic(_doctopic):
 
 
 class RegisteredArticle(object):
-    def __init__(self, article_records):
+    def __init__(self, article_records, i_record=None):
+        self.i_record = i_record
         self.article_records = article_records
+        if self.i_record is not None:
+            self.issn_id = self.i_record.get('35')
+            self.current_issns = self.i_record.get('435')
+
+            if self.current_issns is not None:
+                if not isinstance(self.current_issns, list):
+                    self.current_issns = [self.current_issns]
+                self.journal_issns = {}
+                print(self.current_issns)
+                for item in self.current_issns:
+                    if item['t'] == 'PRINT':
+                        issn_type = 'ppub'
+                    elif item['t'] == 'ONLIN':
+                        issn_type = 'epub'
+                    self.journal_issns[issn_type] = item['_']
+        #self.acron = self.article_records[0]['930'].lower()
+
+    def summary(self):
+        data = {}
+        data['journal-title'] = self.journal_title
+        data['journal id NLM'] = self.journal_id_nlm_ta
+        data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items()]) if self.journal_issns is not None else None
+        data['publisher name'] = self.publisher_name
+        data['issue label'] = self.issue_label
+        data['issue pub date'] = self.issue_pub_date
+        data['order'] = self.order
+        data['doi'] = self.doi
+        data['fpage-and-seq'] = self.fpage
+        data['elocation id'] = self.elocation_id
+        return data
+
+    @property
+    def tree(self):
+        return True
+
+    @property
+    def elocation_id(self):
+        return self.article_records[1]['14'].get('e')
+
+    @property
+    def fpage(self):
+        return self.article_records[1]['14'].get('f')
 
     @property
     def article_type(self):
-        return doctopic_label(self.article_records[0]['71'])
+        return doctopic_label(self.article_records[1]['71'])
 
     @property
     def xml_name(self):
-        return self.article_records[0]['2']
+        return self.filename.replace('.xml', '')
 
     @property
     def filename(self):
+        return self.article_records[0]['2']
+
+    @property
+    def journal_title(self):
+        if self.i_record is not None:
+            return self.i_record['130']
+
+    @property
+    def journal_id_nlm_ta(self):
+        if self.i_record is not None:
+            return self.i_record.get('421')
+
+    @property
+    def publisher_name(self):
+        if self.i_record is not None:
+            return self.i_record['480']
+
+    @property
+    def rel_path(self):
         return self.article_records[0]['702']
 
     @property
@@ -56,15 +118,15 @@ class RegisteredArticle(object):
 
     @property
     def doi(self):
-        return self.article_records[1]['237']
+        return self.article_records[1].get('237')
 
     @property
     def pid(self):
-        return self.article_records[1]['880']
+        return self.article_records[1].get('880')
 
     @property
-    def old_pid(self):
-        return self.article_records[1]['881']
+    def previous_pid(self):
+        return self.article_records[1].get('881')
 
     @property
     def creation_date(self):
@@ -86,6 +148,34 @@ class RegisteredArticle(object):
     def toc_section(self):
         return self.article_records[1]['49']
 
+    @property
+    def volume(self):
+        return self.article_records[1].get('31')
+
+    @property
+    def number(self):
+        return self.article_records[1].get('32')
+
+    @property
+    def volume_suppl(self):
+        return self.article_records[1].get('131')
+
+    @property
+    def number_suppl(self):
+        return self.article_records[1].get('132')
+
+    @property
+    def number_suppl(self):
+        return self.article_records[1].get('132')
+
+    @property
+    def issue_pub_date(self):
+        return self.article_records[1].get('65')
+
+    @property
+    def issue_label(self):
+        return format_issue_label(self.issue_pub_date[0:4], self.volume, self.number, self.volume_suppl, self.number_suppl)
+
 
 class ArticleRecords(object):
 
@@ -97,7 +187,7 @@ class ArticleRecords(object):
         self.creation_date = creation_date
         self.add_issue_data()
         self.add_article_data()
-        self.set_common_data(article_files.xml_name, article_files.issue_files.issue_folder, article_files.relative_xml_filename)
+        self.set_common_data(article_files.filename, article_files.issue_files.issue_folder, article_files.relative_xml_filename)
 
     def add_issue_data(self):
         self._metadata = {}
@@ -434,29 +524,26 @@ class IssueArticlesRecords(object):
         self.records = records
 
     def articles(self):
-        items = []
-        article_records = None
         i_record = None
-        record_types = list(set([record.get('702') for record in self.records]))
 
+        record_types = list(set([record.get('706') for record in self.records]))
+
+        articles_records = {}
         for record in self.records:
-            if record.get('702') == 'i':
+            if record.get('706') == 'i':
                 i_record = record
-            elif record.get('702') == 'o':
+            elif record.get('706') == 'o':
                 # new article
-                if article_records is not None:
-                    items.append(RegisteredArticle(article_records))
-                article_records = [record]
-            elif record.get('702') == 'h':
+                articles_records[record.get('2')] = []
+                articles_records[record.get('2')].append(record)
+            elif record.get('706') == 'h':
                 if not 'o' in record_types:
-                    if article_records is not None:
-                        items.append(RegisteredArticle(article_records))
-                    if article_records is None:
-                        article_records = []
-                article_records.append(record)
+                    articles_records[record.get('2')] = []
+                articles_records[record.get('2')].append(record)
 
-        if article_records is not None:
-            items.append(article_records)
+        items = []
+        for xml_name, records in articles_records.items():
+            items.append(RegisteredArticle(records, i_record))
         return (i_record, items)
 
 
@@ -526,12 +613,7 @@ class IssueDAO(object):
 
     def search(self, issue_label, pissn, eissn):
         expr = self.expr(issue_label, pissn, eissn)
-        print('debug: expr=')
-        print(expr)
         search_result = self.dao.get_records(self.db_filename, expr) if expr is not None else None
-        if 'ahead' in issue_label:
-            print('search_result')
-            print(search_result)
         return search_result
 
 
@@ -568,9 +650,13 @@ class ArticleDAO(object):
         return loaded
 
     def registered_items(self, issue_files):
+        print('registered_items')
+        print('base=')
+        print(issue_files.base)
         records = self.dao.get_records(issue_files.base)
+        
         i, article_records_items = IssueArticlesRecords(records).articles()
-        return (IssueModels(i), [RegisteredArticle(item) for item in article_records_items])
+        return (IssueModels(i), article_records_items)
 
     def generate_windows_version(self, issue_files):
         if not os.path.isdir(issue_files.windows_base_path):

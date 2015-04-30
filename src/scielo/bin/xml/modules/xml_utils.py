@@ -388,7 +388,12 @@ def fix_pretty(content):
 
 
 def pretty_print(content):
-    content = content.replace('>', '>=BREAK=').replace('<', '=BREAK=<')
+    content = content.replace('</', '=BREAK=</')
+    content = content.replace(' <', '=BREAK=REPLACESPACE<')
+    content = content.replace('> ', '>REPLACESPACE=BREAK=')
+    content = content.replace('>', '>=BREAK=')
+    content = content.replace('<', '=BREAK=<')
+
     items = content.split('=BREAK=')
     new = []
     for item in items:

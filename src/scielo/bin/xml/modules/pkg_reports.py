@@ -186,10 +186,10 @@ def label_values(labels, values):
 def articles_sorted_by_order(articles):
     sorted_by_order = {}
     for xml_name, article in articles.items():
-        if article.tree is None:
-            _order = 'None'
-        else:
+        try:
             _order = article.order
+        except:
+            _order = 'None'
         if not _order in sorted_by_order.keys():
             sorted_by_order[_order] = []
         sorted_by_order[_order].append(article)
