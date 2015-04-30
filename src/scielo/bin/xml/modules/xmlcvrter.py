@@ -141,7 +141,7 @@ def complete_issue_items_row(article, status, creation_date, source, other_order
 
 def display_status_before_conversion(registered_articles, pkg_articles, xml_articles_status, status_column_label='action'):
     labels = [status_column_label, 'source', 'registration date', 'order', 'replaced order', 'aop PID', 'name', 'toc section', '@article-type', 'article title']
-    orders = [article.order if article.tree is not None else 'None' for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()]
+    orders = [article.order for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()]
 
     orders = sorted(list(set([order for order in orders if order is not None])))
 
@@ -183,10 +183,14 @@ def display_status_before_conversion(registered_articles, pkg_articles, xml_arti
 def display_status_after_conversion(registered_articles, pkg_articles, xml_articles_status, unmatched_orders):
     labels = ['action', 'source', 'registration date', 'order', 'replaced order', 'aop PID', 'name', 'toc section', '@article-type', 'article title']
     status_labels = {'update': 'updated', 'add': 'added', '-': '-', 'skip-update': '-', 'order changed': 'order changed'}
-    orders = sorted(list(set([article.order if article.tree is not None else 'None' for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()])))
+    orders = sorted(list(set([article.order for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()])))
 
+    print('display_status_after_conversion')
     sorted_registered = pkg_reports.articles_sorted_by_order(registered_articles)
+    print(sorted_registered)
+
     sorted_package = pkg_reports.articles_sorted_by_order(pkg_articles)
+    print(sorted_package)
     items = []
 
     for order in orders:
@@ -404,9 +408,6 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
     for db_filename in issue_files.journal_files.ahead_bases:
         year = os.path.basename(db_filename)[0:4]
         i_ahead_records[year] = find_i_record(year + 'nahead', issue_models.issue.issn_id, None)
-
-    print('i_ahead_records')
-    print(i_ahead_records)
 
     ahead_manager = xc_models.AheadManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
     aop_status = None

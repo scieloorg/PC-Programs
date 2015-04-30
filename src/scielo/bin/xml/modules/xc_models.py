@@ -30,16 +30,48 @@ class RegisteredArticle(object):
     def __init__(self, article_records):
         self.article_records = article_records
 
+    def summary(self):
+        data = {}
+        data['journal-title'] = self.journal_title
+        data['journal id NLM'] = self.journal_id_nlm_ta
+        data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items()]) if self.journal_issns is not None else None
+        data['publisher name'] = self.publisher_name
+        data['issue label'] = self.issue_label
+        data['issue pub date'] = article_utils.format_date(self.issue_pub_date)
+        data['order'] = self.order
+        data['doi'] = self.doi
+        seq = '' if self.fpage_seq is None else self.fpage_seq
+        fpage = '' if self.fpage is None else self.fpage
+        data['fpage-and-seq'] = fpage + seq
+        data['elocation id'] = self.elocation_id
+        return data
+
+    @property
+    def tree(self):
+        return True
+
     @property
     def article_type(self):
-        return doctopic_label(self.article_records[0]['71'])
+        return doctopic_label(self.article_records[1]['71'])
 
     @property
     def xml_name(self):
-        return self.article_records[0]['2']
+        return self.filename.replace('.xml', '')
 
     @property
     def filename(self):
+        return self.article_records[0]['2']
+
+    @property
+    def journal_title(self):
+        return self.article_records[0]['100']
+
+    @property
+    def publisher_name(self):
+        return self.journal_id_nlm_ta[0]['421']
+
+    @property
+    def rel_path(self):
         return self.article_records[0]['702']
 
     @property
@@ -56,15 +88,15 @@ class RegisteredArticle(object):
 
     @property
     def doi(self):
-        return self.article_records[1]['237']
+        return self.article_records[1].get('237')
 
     @property
     def pid(self):
-        return self.article_records[1]['880']
+        return self.article_records[1].get('880')
 
     @property
-    def old_pid(self):
-        return self.article_records[1]['881']
+    def previous_pid(self):
+        return self.article_records[1].get('881')
 
     @property
     def creation_date(self):
@@ -97,7 +129,7 @@ class ArticleRecords(object):
         self.creation_date = creation_date
         self.add_issue_data()
         self.add_article_data()
-        self.set_common_data(article_files.xml_name, article_files.issue_files.issue_folder, article_files.relative_xml_filename)
+        self.set_common_data(article_files.filename, article_files.issue_files.issue_folder, article_files.relative_xml_filename)
 
     def add_issue_data(self):
         self._metadata = {}
@@ -434,29 +466,26 @@ class IssueArticlesRecords(object):
         self.records = records
 
     def articles(self):
-        items = []
-        article_records = None
         i_record = None
-        record_types = list(set([record.get('702') for record in self.records]))
 
+        record_types = list(set([record.get('706') for record in self.records]))
+
+        articles_records = {}
         for record in self.records:
-            if record.get('702') == 'i':
+            if record.get('706') == 'i':
                 i_record = record
-            elif record.get('702') == 'o':
+            elif record.get('706') == 'o':
                 # new article
-                if article_records is not None:
-                    items.append(RegisteredArticle(article_records))
-                article_records = [record]
-            elif record.get('702') == 'h':
+                articles_records[record.get('2')] = []
+                articles_records[record.get('2')].append(record)
+            elif record.get('706') == 'h':
                 if not 'o' in record_types:
-                    if article_records is not None:
-                        items.append(RegisteredArticle(article_records))
-                    if article_records is None:
-                        article_records = []
-                article_records.append(record)
+                    articles_records[record.get('2')] = []
+                articles_records[record.get('2')].append(record)
 
-        if article_records is not None:
-            items.append(article_records)
+        items = []
+        for xml_name, records in articles_records.items():
+            items.append(RegisteredArticle(records))
         return (i_record, items)
 
 
@@ -526,12 +555,7 @@ class IssueDAO(object):
 
     def search(self, issue_label, pissn, eissn):
         expr = self.expr(issue_label, pissn, eissn)
-        print('debug: expr=')
-        print(expr)
         search_result = self.dao.get_records(self.db_filename, expr) if expr is not None else None
-        if 'ahead' in issue_label:
-            print('search_result')
-            print(search_result)
         return search_result
 
 
@@ -568,9 +592,13 @@ class ArticleDAO(object):
         return loaded
 
     def registered_items(self, issue_files):
+        print('registered_items')
+        print('base=')
+        print(issue_files.base)
         records = self.dao.get_records(issue_files.base)
+        
         i, article_records_items = IssueArticlesRecords(records).articles()
-        return (IssueModels(i), [RegisteredArticle(item) for item in article_records_items])
+        return (IssueModels(i), article_records_items)
 
     def generate_windows_version(self, issue_files):
         if not os.path.isdir(issue_files.windows_base_path):
