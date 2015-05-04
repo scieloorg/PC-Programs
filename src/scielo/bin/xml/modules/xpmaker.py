@@ -640,7 +640,7 @@ def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False):
     content = xml_utils.replace_doctype(content, xml_versions.DTDFiles('scielo', version).doctype)
     fs_utils.write_file(new_xml_filename, content)
 
-    if do_incorrect_copy is None:
+    if do_incorrect_copy:
         shutil.copyfile(new_xml_filename, new_xml_filename.replace('.xml', '_incorrect.xml'))
 
 
@@ -686,7 +686,10 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
     doc_files_info.new_xml_path = scielo_pkg_path
     doc, doc_files_info, curr_and_new_href_list, content = normalize_package_name(doc_files_info, acron, content)
 
-    if not doc.tree is None:
+    if doc.tree is None:
+        packed_files_report = 'ERROR: Unable to load ' + doc_files_info.new_xml_filename + '. Try to open it in an XML Editor to view the errors.'
+        pkg_reports.display_report(doc_files_info.new_xml_filename)
+    else:
         register_log('pack_article_files')
         related_packed, href_packed, not_found = pack_article_files(doc_files_info, scielo_pkg_path, curr_and_new_href_list)
 
