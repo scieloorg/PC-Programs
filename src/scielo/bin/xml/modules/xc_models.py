@@ -106,11 +106,18 @@ class RegisteredArticle(object):
 
     @property
     def titles(self):
-        return self.article_records[1]['12']
+        _titles = self.article_records[1].get('12')
+        if _titles is None:
+            _t = []
+        elif isinstance(_titles, list):
+            _t = _titles
+        else:
+            _t = [_titles]
+        return _t
 
     @property
     def first_title(self):
-        return self.titles[0]['_']
+        return self.titles[0].get('_')
 
     @property
     def title(self):
@@ -308,7 +315,7 @@ class ArticleRecords(object):
 
         self._metadata['83'] = []
         for item in self.article.abstracts:
-            self._metadata['83'].append({'l': item.language, '_': item.text})
+            self._metadata['83'].append({'l': item.language, 'a': item.text})
 
         self._metadata['111'] = format_dateiso(self.article.received)
         self._metadata['113'] = format_dateiso(self.article.accepted)
