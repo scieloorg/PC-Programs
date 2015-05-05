@@ -486,9 +486,9 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
                 conversion_status['not converted'].append(xml_name)
                 #msg += html_reports.p_message('FATAL ERROR: not converted')
 
-            conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
-            title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
-            conv_stats = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
+        conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
+        title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
+        conv_stats = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
         conversion_stats_and_reports[xml_name] = (conv_f, conv_e, conv_w, html_reports.collapsible_block(xml_name + 'conv', 'Converter validations: ' + title, msg, conv_stats))
 
     if ahead_manager.journal_has_aop():

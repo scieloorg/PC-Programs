@@ -30,21 +30,23 @@ class RegisteredArticle(object):
     def __init__(self, article_records, i_record=None):
         self.i_record = i_record
         self.article_records = article_records
-        if self.i_record is not None:
-            self.issn_id = self.i_record.get('35')
-            self.current_issns = self.i_record.get('435')
+        self.current_issns = self.article_records[1].get('435')
 
-            if self.current_issns is not None:
-                if not isinstance(self.current_issns, list):
-                    self.current_issns = [self.current_issns]
-                self.journal_issns = {}
-                print(self.current_issns)
-                for item in self.current_issns:
-                    if item['t'] == 'PRINT':
-                        issn_type = 'ppub'
-                    elif item['t'] == 'ONLIN':
-                        issn_type = 'epub'
-                    self.journal_issns[issn_type] = item['_']
+        if self.current_issns is None:
+            self.current_issns = i_record.get('435')
+        if self.current_issns is not None:
+            if not isinstance(self.current_issns, list):
+                self.current_issns = [self.current_issns]
+            self.journal_issns = {}
+            print(self.current_issns)
+            for item in self.current_issns:
+                if item['t'] == 'PRINT':
+                    issn_type = 'ppub'
+                elif item['t'] == 'ONLIN':
+                    issn_type = 'epub'
+                else:
+                    issn_type = item['t']
+                self.journal_issns[issn_type] = item['_']
         #self.acron = self.article_records[0]['930'].lower()
 
     def summary(self):
@@ -54,7 +56,7 @@ class RegisteredArticle(object):
         data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items()]) if self.journal_issns is not None else None
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_label
-        data['issue pub date'] = self.issue_pub_date
+        data['issue pub date'] = self.issue_pub_dateiso
         data['order'] = self.order
         data['doi'] = self.doi
         data['fpage-and-seq'] = self.fpage
@@ -176,12 +178,12 @@ class RegisteredArticle(object):
         return self.article_records[1].get('132')
 
     @property
-    def issue_pub_date(self):
+    def issue_pub_dateiso(self):
         return self.article_records[1].get('65')
 
     @property
     def issue_label(self):
-        return format_issue_label(self.issue_pub_date[0:4], self.volume, self.number, self.volume_suppl, self.number_suppl)
+        return format_issue_label(self.issue_pub_dateiso[0:4], self.volume, self.number, self.volume_suppl, self.number_suppl)
 
 
 class ArticleRecords(object):
@@ -213,6 +215,9 @@ class ArticleRecords(object):
         self._metadata['38'] = self.article.illustrative_materials
 
         self._metadata['709'] = 'text' if self.article.is_text else 'article'
+        self._metadata['435'] = []
+        for issn_type, issn_value in self.article.journal_issns.items():
+            self._metadata['435'].append({'_': issn_value, 't': issn_type})
 
         #registro de artigo, link para pr
         #<related-article related-article-type="press-release" id="01" specific-use="processing-only"/>

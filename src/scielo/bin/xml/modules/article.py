@@ -844,7 +844,7 @@ class Article(ArticleXML):
         data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items()]) if self.journal_issns is not None else None
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_label
-        data['issue pub date'] = article_utils.format_date(self.issue_pub_date)
+        data['issue pub date'] = self.issue_pub_dateiso
         data['order'] = self.order
         data['doi'] = self.doi
         seq = '' if self.fpage_seq is None else self.fpage_seq
