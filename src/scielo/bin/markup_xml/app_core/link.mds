@@ -86,7 +86,7 @@ deposit
 deposid;entrdate;embdate
 
 related
-reltp;id-or-doi
+reltp;id-doi
 
 product
 prodtype
