@@ -112,7 +112,7 @@ def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_art
                     status = 'skip-update'
             if status == 'update':
                 if registered_articles[name].order != pkg_articles[name].order:
-                    changed_orders[name].append((registered_articles[name].order, pkg_articles[name].order))
+                    changed_orders[name] = (registered_articles[name].order, pkg_articles[name].order)
         xml_articles_status[name] = status
         if status == 'skip-update':
             complete_issue_items[name] = registered_articles[name]
@@ -228,7 +228,7 @@ def display_status_after_conversion(registered_articles, pkg_articles, xml_artic
 def complete_issue_items_report(complete_issue_items, unmatched_orders):
     unmatched_orders_errors = ''
     if len(unmatched_orders) > 0:
-        unmatched_orders_errors = ''.join([html_reports.p_message('WARNING: ' + name + "'s orders: " + ' -> '.join(order.split())) for name, order in unmatched_orders])
+        unmatched_orders_errors = ''.join([html_reports.p_message('WARNING: ' + name + "'s orders: " + ' -> '.join(list(order))) for name, order in unmatched_orders.items()])
 
     toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_package(complete_issue_items, validate_order=True)
     toc_report = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, unmatched_orders_errors + toc_report)
