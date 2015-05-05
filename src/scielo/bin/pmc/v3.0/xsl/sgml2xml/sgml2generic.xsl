@@ -3244,32 +3244,39 @@ et al.</copyright-statement>
 	<xsl:template match="related[@reltp]" mode="front-related">
 		<!-- link de ? para ?? -->
 		<!-- ﻿[related reltype="???" relid="????" relidtp="?????"] -->
-		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>
-	-->
-		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@id-or-doi}" ext-link-type="doi">
+		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>-->
+		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink">
+			<xsl:attribute name="xlink:href"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/></xsl:attribute>
+			<xsl:attribute name="ext-link-type">doi</xsl:attribute>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
 	<xsl:template match="related[@reltp='corrected-article']" mode="front-related">
-		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@id-or-doi}" ext-link-type="uri">
+		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink">
+			<xsl:attribute name="xlink:href"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/></xsl:attribute>
+			<xsl:attribute name="ext-link-type">uri</xsl:attribute>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
 	<xsl:template match="related[@reltp='article']" mode="front-related">
 		<!-- link de ? para ?? -->
 		<!-- ﻿[related reltype="???" relid="????" relidtp="?????"] -->
-		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>
-	-->
-		<related-article related-article-type="article-reference" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@id-or-doi}" ext-link-type="doi" specific-use="processing-only">
+		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>-->
+		<related-article related-article-type="article-reference" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink">
+			<xsl:attribute name="xlink:href"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/></xsl:attribute>
+			<xsl:attribute name="ext-link-type">doi</xsl:attribute>
+			<xsl:attribute name="specific-use">processing-only</xsl:attribute>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
 	<xsl:template match="related[@reltp='press-release']" mode="front-related">
 		<!-- link de article para press release -->
 		<!-- ﻿[related reltype="pr" relid="pr01" relidtp="press-release-id"] -->
-		<!-- <related-article related-article-type="press-release" id="01" specific-use="processing-only"/>
- -->
-		<related-article related-article-type="commentary" id="{@id-or-doi}" specific-use="processing-only"/>
+		<!-- <related-article related-article-type="press-release" id="01" specific-use="processing-only"/>-->
+		<related-article related-article-type="commentary">
+			<xsl:attribute name="id"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/></xsl:attribute>
+			<xsl:attribute name="specific-use">processing-only</xsl:attribute>
+		</related-article>
 	</xsl:template>
 	
 	<xsl:template match="author">
