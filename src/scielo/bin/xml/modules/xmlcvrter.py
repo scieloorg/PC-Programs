@@ -607,7 +607,7 @@ def validate_xml_issue_data(issue_models, article):
         # issue date
         if article.issue_pub_dateiso != issue_models.issue.dateiso:
             msg.append(html_reports.tag('h5', 'publication date'))
-            msg.append('ERROR: Invalid value of publication date: ' + article.issue_pub_dateiso + '. Expected value: ' + issue_models.issue.dateiso)
+            msg.append('FATAL ERROR: Invalid value of publication date: ' + article.issue_pub_dateiso + '. Expected value: ' + issue_models.issue.dateiso)
 
         # section
         msg.append(html_reports.tag('h5', 'section'))
