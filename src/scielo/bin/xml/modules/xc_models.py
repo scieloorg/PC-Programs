@@ -315,7 +315,7 @@ class ArticleRecords(object):
 
         self._metadata['83'] = []
         for item in self.article.abstracts:
-            self._metadata['83'].append({'l': item.language, '_': item.text})
+            self._metadata['83'].append({'l': item.language, 'a': item.text})
 
         self._metadata['111'] = format_dateiso(self.article.received)
         self._metadata['113'] = format_dateiso(self.article.accepted)
