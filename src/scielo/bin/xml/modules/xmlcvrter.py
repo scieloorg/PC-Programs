@@ -140,7 +140,7 @@ def complete_issue_items_row(article, status, creation_date, source, other_order
 
 
 def display_status_before_conversion(registered_articles, pkg_articles, xml_articles_status, status_column_label='action'):
-    labels = [status_column_label, 'source', 'registration date', 'order', 'replaced order', 'aop PID', 'name', 'toc section', '@article-type', 'article title']
+    labels = [status_column_label, 'source', 'registration date', 'order', '(new) order', 'aop PID', 'name', 'toc section', '@article-type', 'article title']
     orders = [article.order for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()]
 
     orders = sorted(list(set([order for order in orders if order is not None])))
@@ -181,7 +181,7 @@ def display_status_before_conversion(registered_articles, pkg_articles, xml_arti
 
 
 def display_status_after_conversion(registered_articles, pkg_articles, xml_articles_status, unmatched_orders):
-    labels = ['action', 'source', 'registration date', 'order', 'replaced order', 'aop PID', 'name', 'toc section', '@article-type', 'article title']
+    labels = ['action', 'source', 'registration date', 'order', '(old) order', 'aop PID', 'name', 'toc section', '@article-type', 'article title']
     status_labels = {'update': 'updated', 'add': 'added', '-': '-', 'skip-update': '-', 'order changed': 'order changed'}
     orders = sorted(list(set([article.order for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()])))
 
@@ -204,7 +204,7 @@ def display_status_after_conversion(registered_articles, pkg_articles, xml_artic
                         previous_order, new_order = unmatched_orders[name]
                         status = 'order changed'
 
-                values = complete_issue_items_row(article, status_labels[status], article.creation_date[0], previous_order)
+                values = complete_issue_items_row(article, status_labels[status], article.creation_date[0], 'registered', previous_order)
                 items.append(pkg_reports.label_values(labels, values))
         else:
             if order in sorted_package.keys():
@@ -219,7 +219,7 @@ def display_status_after_conversion(registered_articles, pkg_articles, xml_artic
                                 previous_order, new_order = unmatched_orders[name]
                                 status = 'change orders'
                         status = 'ERROR: unable to ' + status
-                    values = complete_issue_items_row(article, status, '', previous_order)
+                    values = complete_issue_items_row(article, status, '', 'package', previous_order)
                     items.append(pkg_reports.label_values(labels, values))
 
     return html_reports.sheet(labels, None, items, None, 'dbstatus', 'action')
