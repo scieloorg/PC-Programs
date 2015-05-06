@@ -47,7 +47,7 @@ class AheadManager:
     def exclude_filename(self, doi):
         excluded = False
         filename = self.filename(doi)
-
+        print('exclude: ' + filename + '.')
         if len(filename) > 0:
             if os.path.exists(filename):
 
@@ -64,9 +64,16 @@ class AheadManager:
                 dest = id_path + '/' + os.path.basename(filename)
                 if os.path.exists(dest):
                     os.unlink(dest)
+                print('excluded ' + filename)
 
                 shutil.move(filename, dest)
                 excluded = True
+        else:
+            print('doi not found in ahead files')
+            existing = []
+            for doi, filename in self.ahead_filenames.items():
+                existing.append(doi + ' ' + filename)
+            print('\n'.join(sorted(existing)))
         return excluded
 
     def update_ahead_issue(self):
@@ -84,6 +91,7 @@ class AheadManager:
                 order = id_name.replace('.id', '')
                 if order.isdigit():
                     if id_name != 'i.id' and id_name != '00000.id' and id_name.endswith('.id'):
+                        print('update_ahead_issue:' + id_path + '/' + id_name)
                         self.cisis.id2mst(id_path + '/' + id_name, mst_filename, False)
 
 
@@ -152,7 +160,8 @@ class ISISManager4Articles:
             #     os.unlink(issue_paths.issue_id_path + '/' + f)
 
             ahead_manager = AheadManager(self.cisis, issue_paths.journal_path)
-
+            print('*'*20)
+            print('ahead_manager')
         package.report.write('Saving issue record')
         self.save_issue_record(package, issue, issue_paths)
 
@@ -160,13 +169,20 @@ class ISISManager4Articles:
         excluded = 0
         for article in issue.documents:
             self.save_article_records(package, article, issue_paths)
+            print('doi=')
+            print(article.doi)
             if ahead_manager is not None:
                 if article.doi != '':
                     if ahead_manager.exclude_filename(article.doi):
                         excluded += 1
-        if ahead_manager is not None:
+                        print('excluded aop id filename')
+        print('excluded=')
+        print(excluded)
+        if excluded > 0:
             ahead_manager.update_ahead_issue()
             for folder in ahead_manager.ahead_folders:
+                print('add to scilista')
+                print(issue.journal.acron + ' ' + folder)
                 self.add_issue_to_scilista(issue.journal.acron + ' ' + folder)
 
         package.report.write('Generate issue db')
@@ -212,16 +228,9 @@ class ISISManager4Articles:
             self.cisis.crunchmf(issue_paths.issue_db_filename, win_path + '/' + os.path.basename(issue_paths.issue_db_filename))
 
     def add_issue_to_scilista(self, scilista_item):
-        c = []
-        if os.path.exists(self.paths.scilista):
-            f = open(self.paths.scilista, 'r')
-            c = f.read()
-            f.close()
-
-        if not scilista_item + '\n' in c:
-            f = open(self.paths.scilista, 'a+')
-            f.write(scilista_item + '\n')
-            f.close()
+        f = open(self.paths.scilista, 'a+')
+        f.write(scilista_item + '\n')
+        f.close()
 
     def generate_issue_db_for_proc(self, table_name):
         proc_issue_db = self.filename(table_name)
