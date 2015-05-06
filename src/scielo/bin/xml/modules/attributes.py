@@ -130,10 +130,10 @@ def validate_element(publication_type, label, value):
     problem = ''
     if value is None or value == '':
         if is_required(publication_type, label):
-            problem = label + ' is required for @publication-type=' + publication_type
+            problem = label + ' is required for @publication-type=' + publication_type + '. ' + label + ' is missing or ' + publication_type + ' is not correct.'
     else:
         if not is_allowed_element(publication_type, label):
-            problem = label + ' is not allowed for @publication-type=' + publication_type
+            problem = label + ' is not allowed for @publication-type=' + publication_type + '. ' + label + ' is misplaced or ' + publication_type + ' is not correct.'
     return problem
 
 
