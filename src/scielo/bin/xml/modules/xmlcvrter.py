@@ -286,8 +286,7 @@ def convert_package(src_path):
     report_path = result_path + '/errors'
     old_report_path = report_path
     old_result_path = result_path
-    results = ''
-
+    
     for path in [result_path, wrk_path, pkg_path, report_path]:
         if not os.path.isdir(path):
             os.makedirs(path)
@@ -372,6 +371,7 @@ def convert_package(src_path):
     if old_report_path in content:
         content = content.replace(old_report_path, report_path)
     f, e, w = html_reports.statistics_numbers(content)
+    total_stats = ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]])
     pkg_reports.save_report(report_location, ['XML Conversion (XML to Database)', acron_issue_label], html_reports.statistics_display(f, e, w, False) + content)
 
     if not converter_env.is_windows:
@@ -381,7 +381,7 @@ def convert_package(src_path):
     if old_result_path != result_path:
         fs_utils.delete_file_or_folder(old_result_path)
 
-    return (report_location, scilista_item, acron_issue_label, results)
+    return (report_location, scilista_item, acron_issue_label, total_stats)
 
 
 def format_reports_for_web(report_path, pkg_path, issue_path):
@@ -830,7 +830,7 @@ def execute_converter(package_paths, collection_name=None):
         for package_path in package_paths:
             package_folder = os.path.basename(package_path)
             print(package_path)
-            report_location, scilista_item, acron_issue_label, results = convert_package(package_path)
+            report_location, scilista_item, acron_issue_label, total_stats = convert_package(package_path)
             acron, issue_id = acron_issue_label.split(' ')
             #except Exception as e:
             #    print('ERROR!!!')
@@ -853,8 +853,8 @@ def execute_converter(package_paths, collection_name=None):
 
                     transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
                 if config.email_subject_package_evaluation is not None:
-                    results = ': APPROVED ' if scilista_item is not None else ': REJECTED'
-                    send_message(mailer, config.email_to, config.email_subject_package_evaluation + ' ' + package_folder + results, report_location)
+                    results = 'APPROVED ' if scilista_item is not None else 'REJECTED'
+                    send_message(mailer, config.email_to, config.email_subject_package_evaluation + ' ' + package_folder + ': ' + results + ' (' + total_stats + ')', report_location)
 
         if len(invalid_pkg_files) > 0:
             send_message(mailer, config.email_to, config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))

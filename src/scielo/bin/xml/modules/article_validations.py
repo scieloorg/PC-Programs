@@ -775,7 +775,7 @@ class ReferenceContentValidation(object):
                 items = []
                 for label, status, message in r:
                     if status != 'OK':
-                        status = 'IGNORED ' + status.lower()
+                        status = 'WARNING: ignored ' + status.lower() + ' because of @specific-use=display-only'
                     items.append((label, status, message))
                 r = items
         return r
