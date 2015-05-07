@@ -91,12 +91,15 @@ def format_dateiso(adate):
         month = adate.get('season')
         if month is None:
             month = adate.get('month')
-        if '-' in month:
-            month = month[month.find('-')+1:]
-        if not month.isdigit():
-            month = MONTHS.get(month, '00')
-        month = '00' + month
-        month = month[-2:]
+        if month is None:
+            month = '00'
+        else:
+            if '-' in month:
+                month = month[month.find('-')+1:]
+            if not month.isdigit():
+                month = MONTHS.get(month, '00')
+            month = '00' + month
+            month = month[-2:]
         y = adate.get('year', '0000')
         if y is None:
             y = '0000'

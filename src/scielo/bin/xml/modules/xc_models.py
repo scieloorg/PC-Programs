@@ -14,6 +14,23 @@ from dbm_isis import IDFile
 import institutions_service
 
 
+def issn_items(fields):
+    issns = {}
+    if fields is not None:
+        if not isinstance(fields, list):
+            fields = [fields]
+        print(fields)
+        for item in fields:
+            if item['t'] == 'PRINT':
+                issn_type = 'ppub'
+            elif item['t'] == 'ONLIN':
+                issn_type = 'epub'
+            else:
+                issn_type = item['t']
+            issns[issn_type] = item['_']
+    return issns
+
+
 def normalize_role(_role):
     r = ROLE.get(_role)
     if r == '??' or _role is None or r is None:
@@ -28,26 +45,9 @@ def normalize_doctopic(_doctopic):
 
 class RegisteredArticle(object):
     def __init__(self, article_records, i_record=None):
-        self.i_record = i_record
+        self.issue_models = IssueModels(i_record)
         self.article_records = article_records
-        self.current_issns = self.article_records[1].get('435')
-
-        if self.current_issns is None:
-            self.current_issns = i_record.get('435')
-        if self.current_issns is not None:
-            if not isinstance(self.current_issns, list):
-                self.current_issns = [self.current_issns]
-            self.journal_issns = {}
-            print(self.current_issns)
-            for item in self.current_issns:
-                if item['t'] == 'PRINT':
-                    issn_type = 'ppub'
-                elif item['t'] == 'ONLIN':
-                    issn_type = 'epub'
-                else:
-                    issn_type = item['t']
-                self.journal_issns[issn_type] = item['_']
-        #self.acron = self.article_records[0]['930'].lower()
+        self.journal_issns = issn_items(self.article_records[1].get('435'))
 
     def summary(self):
         data = {}
@@ -55,13 +55,29 @@ class RegisteredArticle(object):
         data['journal id NLM'] = self.journal_id_nlm_ta
         data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items()]) if self.journal_issns is not None else None
         data['publisher name'] = self.publisher_name
-        data['issue label'] = self.issue_label
-        data['issue pub date'] = self.issue_pub_dateiso
+        data['issue label'] = self.issue_models.issue.issue_label
+        data['issue pub date'] = self.issue_models.issue.dateiso
         data['order'] = self.order
         data['doi'] = self.doi
         data['fpage-and-seq'] = self.fpage
         data['elocation id'] = self.elocation_id
         return data
+
+    @property
+    def journal_title(self):
+        return self.issue_models.issue.journal_title if self.issue_models.issue.journal_title else self.article_records[1].get('130')
+
+    @property
+    def journal_id_nlm(self):
+        return self.issue_models.issue.journal_id_nlm if self.issue_models.issue.journal_id_nlm else self.article_records[1].get('421')
+
+    @property
+    def journal_issns(self):
+        return issn_items(self.issue_models.issue.journal_issns if self.issue_models.issue.journal_issns else self.article_records[1].get('435'))
+
+    @property
+    def publisher_name(self):
+        return self.issue_models.issue.publisher_name if self.issue_models.issue.publisher_name else self.article_records[1].get('62', self.article_records[1].get('480'))
 
     @property
     def tree(self):
@@ -86,21 +102,6 @@ class RegisteredArticle(object):
     @property
     def filename(self):
         return self.article_records[0]['2']
-
-    @property
-    def journal_title(self):
-        if self.i_record is not None:
-            return self.i_record['130']
-
-    @property
-    def journal_id_nlm_ta(self):
-        if self.i_record is not None:
-            return self.i_record.get('421')
-
-    @property
-    def publisher_name(self):
-        if self.i_record is not None:
-            return self.i_record['480']
 
     @property
     def rel_path(self):
@@ -157,34 +158,6 @@ class RegisteredArticle(object):
     def toc_section(self):
         return self.article_records[1]['49']
 
-    @property
-    def volume(self):
-        return self.article_records[1].get('31')
-
-    @property
-    def number(self):
-        return self.article_records[1].get('32')
-
-    @property
-    def volume_suppl(self):
-        return self.article_records[1].get('131')
-
-    @property
-    def number_suppl(self):
-        return self.article_records[1].get('132')
-
-    @property
-    def number_suppl(self):
-        return self.article_records[1].get('132')
-
-    @property
-    def issue_pub_dateiso(self):
-        return self.article_records[1].get('65')
-
-    @property
-    def issue_label(self):
-        return format_issue_label(self.issue_pub_dateiso[0:4], self.volume, self.number, self.volume_suppl, self.number_suppl)
-
 
 class ArticleRecords(object):
 
@@ -194,15 +167,26 @@ class ArticleRecords(object):
         self.article_files = article_files
         self.i_record = i_record
         self.creation_date = creation_date
+        self.import_from_i_record()
         self.add_issue_data()
         self.add_article_data()
         self.set_common_data(article_files.filename, article_files.issue_files.issue_folder, article_files.relative_xml_filename)
 
-    def add_issue_data(self):
+    def import_from_i_record(self):
         self._metadata = {}
-        for k in ['30', '42', '62', '100', '35', '935', '421']:
+        for k in ['30', '42', '62', '130', '35', '435', '421', '65', '480']:
             if k in self.i_record.keys():
                 self._metadata[k] = self.i_record[k]
+
+    def add_issue_data(self):
+        if not '130' in self._metadata.keys():
+            self._metadata['130'] = self.article.journal_title
+        if not '62' in self._metadata.keys():
+            self._metadata['62'] = self.article.publisher_name
+        if not '421' in self._metadata.keys():
+            self._metadata['421'] = self.article.journal_id_nlm
+        if not '435' in self._metadata.keys():
+            self._metadata['435'] = self.article.journal_issns
 
     @property
     def metadata(self):
@@ -213,11 +197,7 @@ class ArticleRecords(object):
         self._metadata['71'] = normalize_doctopic(self.article.article_type)
         self._metadata['40'] = self.article.language
         self._metadata['38'] = self.article.illustrative_materials
-
         self._metadata['709'] = 'text' if self.article.is_text else 'article'
-        self._metadata['435'] = []
-        for issn_type, issn_value in self.article.journal_issns.items():
-            self._metadata['435'].append({'_': issn_value, 't': issn_type})
 
         #registro de artigo, link para pr
         #<related-article related-article-type="press-release" id="01" specific-use="processing-only"/>
@@ -301,7 +281,6 @@ class ArticleRecords(object):
         self._metadata['60'] = self.article.award_id
         self._metadata['102'] = self.article.funding_statement
 
-        self._metadata['62'] = self.article.publisher_name
         self._metadata['65'] = format_dateiso(self.article.issue_pub_date)
         self._metadata['223'] = format_dateiso(self.article.article_pub_date)
 
@@ -527,6 +506,10 @@ class IssueModels(object):
         i = Issue(acron, volume, number, dateiso, volume_suppl, number_suppl)
 
         i.issn_id = self.record.get('35')
+        i.journal_title = self.record.get('130')
+        i.journal_id_nlm_ta = self.record.get('421')
+        i.journal_issns = issn_items(self.record.get('435'))
+        i.publisher_name = self.record.get('62', self.record.get('480'))
         return i
 
 
@@ -666,7 +649,6 @@ class ArticleDAO(object):
         print('base=')
         print(issue_files.base)
         records = self.dao.get_records(issue_files.base)
-        
         i, article_records_items = IssueArticlesRecords(records).articles()
         return (IssueModels(i), article_records_items)
 

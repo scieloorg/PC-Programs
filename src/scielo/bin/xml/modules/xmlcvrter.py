@@ -383,7 +383,7 @@ def convert_package(src_path):
     subject_stats = ''
     subject_results = 'APPROVED ' if scilista_item is not None else 'REJECTED'
     if selected_articles is None:
-        subject_stats = '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]]) + ']'
+        subject_stats = ' [' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]]) + ']'
         header_status = html_reports.statistics_display(f, e, w, False)
     elif len(selected_articles) == 0:
         header_status = html_reports.p_message('WARNING: Package was ignored because it is already published and package content is unchanged.')
@@ -641,11 +641,22 @@ def transfer_report_files(acron, issue_id, local_web_app_path, user, server, rem
 def validate_xml_issue_data(issue_models, article):
     msg = []
     if article.tree is not None:
+        validations = []
+        validations.append(('journal title', article.journal_title, issue_models.issue.journal_title))
+        validations.append(('journal id NLM', article.journal_id_nlm_ta, issue_models.issue.journal_id_nlm_ta))
+        validations.append(('journal e-ISSN', article.journal_issns.get('epub'), issue_models.issue.journal_issns.get('epub')))
+        validations.append(('journal print ISSN', article.journal_issns.get('ppub'), issue_models.issue.journal_issns.get('ppub')))
+        validations.append(('publisher', article.publisher_name, issue_models.issue.publisher_name))
+        validations.append(('issue label', article.issue_label, issue_models.issue.issue_label))
+        validations.append(('issue date', article.issue_pub_dateiso, issue_models.issue.dateiso))
 
-        # issue date
-        if article.issue_pub_dateiso != issue_models.issue.dateiso:
-            msg.append(html_reports.tag('h5', 'publication date'))
-            msg.append('FATAL ERROR: Invalid value of publication date: ' + article.issue_pub_dateiso + '. Expected value: ' + issue_models.issue.dateiso)
+        for label, article_data, issue_data in validations:
+            if issue_data is not None:
+                if article_data is None:
+                    article_data = 'None'
+                if article_data != issue_data:
+                    msg.append(html_reports.tag('h5', label))
+                    msg.append('FATAL ERROR: Invalid value of ' + label + ': ' + article_data + '. Expected value: ' + issue_data)
 
         # section
         msg.append(html_reports.tag('h5', 'section'))
