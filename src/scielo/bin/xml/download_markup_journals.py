@@ -12,7 +12,7 @@ def read_source(filename):
     with open(filename, 'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter='\t')
         for item in spamreader:
-            if len(item) == 11:
+            if len(item) >= 10:
                 if item[1] != 'ISSN':
                     j = {}
                     j['collection'] = item[0]
@@ -27,6 +27,9 @@ def read_source(filename):
                     if not j['collection'] in collections.keys():
                         collections[j['collection']] = []
                     collections[j['collection']].append(j)
+            else:
+                print('ignored:')
+                print(item)
     return collections
 
 
