@@ -505,7 +505,7 @@ class ArticleContentValidation(object):
             r.append(('aff xml', 'INFO', aff.xml))
             r.append(required('aff/@id', aff.id, 'FATAL ERROR'))
 
-            r.append(required('aff/institution/[@content-type="original"]', aff.original, 'FATAL ERROR', False))
+            r.append(required('aff/institution/[@content-type="original"]', aff.original, 'ERROR', False))
             r.append(required('aff/country/@country', aff.i_country, 'FATAL ERROR'))
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'ERROR'))
             r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))
@@ -770,7 +770,7 @@ class ReferenceContentValidation(object):
         if self.reference.ref_status == 'display-only':
             found_fatal = list(set([status for label, status, message in r if status in ['FATAL ERROR']]))
             if len(found_fatal) == 0:
-                r.append('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete.')
+                r.append(('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete.'))
             else:
                 items = []
                 for label, status, message in r:

@@ -170,7 +170,8 @@ def remove_break_lines_characters(content):
 def node_text(node):
     text = node_xml(node)
     if not text is None:
-        if text.startswith('<'):
+        text = text.strip()
+        if text.startswith('<') and text.endswith('>'):
             text = text[text.find('>')+1:]
             text = text[0:text.rfind('</')]
     return text

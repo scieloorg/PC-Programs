@@ -286,13 +286,15 @@ def convert_package(src_path):
     report_path = result_path + '/errors'
     old_report_path = report_path
     old_result_path = result_path
-    
+
     for path in [result_path, wrk_path, pkg_path, report_path]:
         if not os.path.isdir(path):
             os.makedirs(path)
 
     xml_filenames, pkg_articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
     issue_models, issue_error_msg = get_issue_models(pkg_articles)
+
+    selected_articles = None
 
     if not issue_models is None:
         issue_files = get_issue_files(issue_models, pkg_path)
@@ -303,22 +305,22 @@ def convert_package(src_path):
 
         complete_issue_items, xml_articles_status, unmatched_orders = get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_articles)
 
-        print('registered_articles')
-        print(registered_articles)
-        print('pkg_articles')
-        print(pkg_articles)
-
         before_conversion = html_reports.tag('h3', 'Documents status in the package/database - before conversion')
         before_conversion += display_status_before_conversion(registered_articles, pkg_articles, xml_articles_status)
 
         toc_f, toc_report = complete_issue_items_report(complete_issue_items, unmatched_orders)
 
-        selected_articles = {}
-        for xml_name, article in pkg_articles.items():
-            if xml_articles_status[xml_name] in ['add', 'update']:
-                selected_articles[xml_name] = article
+        if toc_f == 0:
+            selected_articles = {}
+            for xml_name, article in pkg_articles.items():
+                if xml_articles_status[xml_name] in ['add', 'update']:
+                    selected_articles[xml_name] = article
 
-        if toc_f == 0 and len(selected_articles) > 0:
+        if selected_articles is None:
+            conclusion_msg = html_reports.tag('h2', 'Summary Report')
+            conclusion_msg += report_conclusion_message(scilista_item, acron_issue_label, 0, len(pkg_articles), None)
+
+        elif len(selected_articles) > 0:
             fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_articles_status)
 
             scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders)
@@ -328,6 +330,7 @@ def convert_package(src_path):
 
             conclusion_msg = html_reports.tag('h2', 'Summary Report')
             conclusion_msg += report_conclusion_message(scilista_item, acron_issue_label, len(conversion_status['converted']), len(conversion_status['not converted']), len(selected_articles))
+
             after_conversion = html_reports.tag('h3', 'Documents status in the package/database - after conversion')
             after_conversion += display_status_after_conversion(get_registered_articles(issue_files), pkg_articles, xml_articles_status, unmatched_orders)
 
@@ -346,6 +349,9 @@ def convert_package(src_path):
 
             if scilista_item is not None:
                 issue_files.copy_files_to_local_web_app()
+        else:
+            conclusion_msg = html_reports.tag('h2', 'Summary Report')
+            conclusion_msg += report_conclusion_message(scilista_item, acron_issue_label, 0, len(pkg_articles), len(selected_articles))
 
     report_location = report_path + '/xml_converter.html'
 
@@ -370,9 +376,25 @@ def convert_package(src_path):
 
     if old_report_path in content:
         content = content.replace(old_report_path, report_path)
+
     f, e, w = html_reports.statistics_numbers(content)
-    total_stats = ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]])
-    pkg_reports.save_report(report_location, ['XML Conversion (XML to Database)', acron_issue_label], html_reports.statistics_display(f, e, w, False) + content)
+
+    header_status = ''
+    subject_stats = ''
+    subject_results = 'APPROVED ' if scilista_item is not None else 'REJECTED'
+    if selected_articles is None:
+        subject_stats = '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]]) + ']'
+        header_status = html_reports.statistics_display(f, e, w, False)
+    elif len(selected_articles) == 0:
+        header_status = html_reports.p_message('WARNING: Package was ignored because it is already published and package content is unchanged.')
+        subject_stats = ''
+        subject_results = 'IGNORED'
+    else:
+        subject_stats = ' [' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]]) + ']'
+        header_status = html_reports.statistics_display(f, e, w, False)
+
+    pkg_reports.save_report(report_location, ['XML Conversion (XML to Database)', acron_issue_label], header_status + content)
+    subject_results += subject_stats
 
     if not converter_env.is_windows:
         format_reports_for_web(report_path, pkg_path, acron_issue_label.replace(' ', '/'))
@@ -381,7 +403,7 @@ def convert_package(src_path):
     if old_result_path != result_path:
         fs_utils.delete_file_or_folder(old_result_path)
 
-    return (report_location, scilista_item, acron_issue_label, total_stats)
+    return (report_location, scilista_item, acron_issue_label, subject_results)
 
 
 def format_reports_for_web(report_path, pkg_path, issue_path):
@@ -574,11 +596,16 @@ def report_status(status):
     return text
 
 
-def report_conclusion_message(scilista_item, issue_label, converted, not_converted, total):
+def report_conclusion_message(scilista_item, issue_label, converted, not_converted, selected_articles):
     text = ''
-    text += html_reports.p_message('converted: ' + str(converted) + '/' + str(total))
+    text += html_reports.p_message('converted: ' + str(converted) + '/' + str(selected_articles))
     if scilista_item is None:
-        text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' is not complete (' + str(not_converted) + ' were not converted), so ' + issue_label + ' will not be updated/published on ' + converter_env.web_app_site + '.')
+        if selected_articles is None:
+            text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' will not be updated/published on ' + converter_env.web_app_site + ' because it could not be processed.')
+        elif selected_articles == 0 and converted == 0:
+            text += html_reports.p_message('WARNING: ' + issue_label + ' will not be updated/published on ' + converter_env.web_app_site + ' because nothing was changed.')
+        else:
+            text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' is not complete (' + str(not_converted) + ' were not converted), so ' + issue_label + ' will not be updated/published on ' + converter_env.web_app_site + '.')
     else:
         text += html_reports.p_message('OK: ' + issue_label + ' will be updated/published on ' + converter_env.web_app_site + '.')
 
@@ -830,7 +857,7 @@ def execute_converter(package_paths, collection_name=None):
         for package_path in package_paths:
             package_folder = os.path.basename(package_path)
             print(package_path)
-            report_location, scilista_item, acron_issue_label, total_stats = convert_package(package_path)
+            report_location, scilista_item, acron_issue_label, results = convert_package(package_path)
             acron, issue_id = acron_issue_label.split(' ')
             #except Exception as e:
             #    print('ERROR!!!')
@@ -853,8 +880,7 @@ def execute_converter(package_paths, collection_name=None):
 
                     transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
                 if config.email_subject_package_evaluation is not None:
-                    results = 'APPROVED ' if scilista_item is not None else 'REJECTED'
-                    send_message(mailer, config.email_to, config.email_subject_package_evaluation + ' ' + package_folder + ': ' + results + ' (' + total_stats + ')', report_location)
+                    send_message(mailer, config.email_to, config.email_subject_package_evaluation + ' ' + package_folder + ': ' + results, report_location)
 
         if len(invalid_pkg_files) > 0:
             send_message(mailer, config.email_to, config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
