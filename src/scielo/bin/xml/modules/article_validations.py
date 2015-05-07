@@ -505,7 +505,7 @@ class ArticleContentValidation(object):
             r.append(('aff xml', 'INFO', aff.xml))
             r.append(required('aff/@id', aff.id, 'FATAL ERROR'))
 
-            r.append(required('aff/institution/[@content-type="original"]', aff.original, 'FATAL ERROR', False))
+            r.append(required('aff/institution/[@content-type="original"]', aff.original, 'ERROR', False))
             r.append(required('aff/country/@country', aff.i_country, 'FATAL ERROR'))
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'ERROR'))
             r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))

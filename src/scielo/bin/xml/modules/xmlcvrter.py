@@ -294,7 +294,8 @@ def convert_package(src_path):
     xml_filenames, pkg_articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
     issue_models, issue_error_msg = get_issue_models(pkg_articles)
 
-    skip = False
+    selected_articles = None
+
     if not issue_models is None:
         issue_files = get_issue_files(issue_models, pkg_path)
         result_path = issue_files.issue_path
@@ -309,13 +310,17 @@ def convert_package(src_path):
 
         toc_f, toc_report = complete_issue_items_report(complete_issue_items, unmatched_orders)
 
-        selected_articles = {}
         if toc_f == 0:
+            selected_articles = {}
             for xml_name, article in pkg_articles.items():
                 if xml_articles_status[xml_name] in ['add', 'update']:
                     selected_articles[xml_name] = article
 
-        if len(selected_articles) > 0:
+        if selected_articles is None:
+            conclusion_msg = html_reports.tag('h2', 'Summary Report')
+            conclusion_msg += report_conclusion_message(scilista_item, acron_issue_label, 0, len(pkg_articles), None)
+
+        elif len(selected_articles) > 0:
             fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_articles_status)
 
             scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders)
@@ -347,7 +352,6 @@ def convert_package(src_path):
         else:
             conclusion_msg = html_reports.tag('h2', 'Summary Report')
             conclusion_msg += report_conclusion_message(scilista_item, acron_issue_label, 0, len(pkg_articles), len(selected_articles))
-            skip = (toc_f == 0)
 
     report_location = report_path + '/xml_converter.html'
 
@@ -378,12 +382,15 @@ def convert_package(src_path):
     header_status = ''
     subject_stats = ''
     subject_results = 'APPROVED ' if scilista_item is not None else 'REJECTED'
-    if skip:
+    if selected_articles is None:
+        subject_stats = '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]]) + ']'
+        header_status = html_reports.statistics_display(f, e, w, False)
+    elif len(selected_articles) == 0:
         header_status = html_reports.p_message('WARNING: Package was ignored because it is already published and package content is unchanged.')
         subject_stats = ''
         subject_results = 'IGNORED'
     else:
-        subject_stats = '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]]) + ']'
+        subject_stats = ' [' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]]) + ']'
         header_status = html_reports.statistics_display(f, e, w, False)
 
     pkg_reports.save_report(report_location, ['XML Conversion (XML to Database)', acron_issue_label], header_status + content)
@@ -593,7 +600,9 @@ def report_conclusion_message(scilista_item, issue_label, converted, not_convert
     text = ''
     text += html_reports.p_message('converted: ' + str(converted) + '/' + str(selected_articles))
     if scilista_item is None:
-        if selected_articles == 0 and converted == 0:
+        if selected_articles is None:
+            text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' will not be updated/published on ' + converter_env.web_app_site + ' because it could not be processed.')
+        elif selected_articles == 0 and converted == 0:
             text += html_reports.p_message('WARNING: ' + issue_label + ' will not be updated/published on ' + converter_env.web_app_site + ' because nothing was changed.')
         else:
             text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' is not complete (' + str(not_converted) + ' were not converted), so ' + issue_label + ' will not be updated/published on ' + converter_env.web_app_site + '.')
