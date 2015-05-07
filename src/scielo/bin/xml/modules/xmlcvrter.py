@@ -347,7 +347,7 @@ def convert_package(src_path):
         else:
             conclusion_msg = html_reports.tag('h2', 'Summary Report')
             conclusion_msg += report_conclusion_message(scilista_item, acron_issue_label, 0, len(pkg_articles), len(selected_articles))
-            skip = True
+            skip = (toc_f == 0)
 
     report_location = report_path + '/xml_converter.html'
 
