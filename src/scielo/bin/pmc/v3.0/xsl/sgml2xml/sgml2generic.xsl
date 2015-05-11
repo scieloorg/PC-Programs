@@ -243,7 +243,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="attrib | series | app | anonym | isbn | glossary | term | def | response | p | sec | label | subtitle | edition |  issn | corresp | ack ">
+	<xsl:template match="attrib | series | app | anonym | isbn | glossary | term | def | response | p | sec | label | subtitle | edition |  issn | corresp | ack | tbody | td | tr">
 		<xsl:param name="id"/>
 		
 		<xsl:element name="{name()}">
@@ -1951,7 +1951,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<mixed-citation>
 			<xsl:choose>
 				<xsl:when test="text-ref and label and not(text-ref/*)">
-					<xsl:apply-templates select="substring-after(text-ref,label)"/>
+					<xsl:value-of select="substring-after(text-ref,label)"/>
 				</xsl:when>
 				<xsl:when test="text-ref">
 					<xsl:apply-templates select="text-ref"/>
@@ -2690,7 +2690,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					</xsl:choose>
 				</colgroup>
 			<xsl:apply-templates select="thead"></xsl:apply-templates>
-			<xsl:copy-of select="tbody"/>
+			<xsl:choose>
+				<xsl:when test="tbody//xref">
+					<xsl:apply-templates select="tbody"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:copy-of select="tbody"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</table>
 	</xsl:template>
 	<xsl:template match="th/bold">
