@@ -68,8 +68,8 @@ class RegisteredArticle(object):
         return self.issue_models.issue.journal_title if self.issue_models.issue.journal_title else self.article_records[1].get('130')
 
     @property
-    def journal_id_nlm(self):
-        return self.issue_models.issue.journal_id_nlm if self.issue_models.issue.journal_id_nlm else self.article_records[1].get('421')
+    def journal_id_nlm_ta(self):
+        return self.issue_models.issue.journal_id_nlm_ta if self.issue_models.issue.journal_id_nlm_ta else self.article_records[1].get('421')
 
     @property
     def journal_issns(self):
@@ -184,7 +184,7 @@ class ArticleRecords(object):
         if not '62' in self._metadata.keys():
             self._metadata['62'] = self.article.publisher_name
         if not '421' in self._metadata.keys():
-            self._metadata['421'] = self.article.journal_id_nlm
+            self._metadata['421'] = self.article.journal_id_nlm_ta
         if not '435' in self._metadata.keys():
             self._metadata['435'] = self.article.journal_issns
 

@@ -368,7 +368,7 @@ def convert_package(src_path):
     texts.append(sheets)
 
     if converter_env.is_windows:
-        texts.append(pkg_reports.processing_result_location(issue_files.issue_path))
+        texts.append(pkg_reports.processing_result_location(os.path.dirname(report_path)))
 
     texts.append(html_reports.tag('p', 'Finished.'))
 

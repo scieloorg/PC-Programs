@@ -35,6 +35,9 @@ def validate_value(value):
             if value.startswith('.'):
                 status = 'WARNING'
                 result.append(value + ' starts with "."')
+            differ = value.replace(_value, '')
+            if len(differ) > 0:
+                result.append('"' + value + '" contains invalid characteres: "' + differ + '"')
     if status == 'OK':
         message = format_value(value)
     else:
@@ -768,8 +771,8 @@ class ReferenceContentValidation(object):
             r.append(item)
 
         if self.reference.ref_status == 'display-only':
-            found_fatal = list(set([status for label, status, message in r if status in ['FATAL ERROR']]))
-            if len(found_fatal) == 0:
+            any_error_level = list(set([status for label, status, message in r if status in ['FATAL ERROR', 'ERROR']]))
+            if len(any_error_level) == 0:
                 r.append(('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete.'))
             else:
                 items = []
