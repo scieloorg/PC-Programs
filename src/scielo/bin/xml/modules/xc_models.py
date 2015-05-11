@@ -15,19 +15,26 @@ import institutions_service
 
 
 def issn_items(fields):
-    issns = {}
+    issns = None
     if fields is not None:
+        issns = {}
         if not isinstance(fields, list):
             fields = [fields]
         print(fields)
         for item in fields:
-            if item['t'] == 'PRINT':
-                issn_type = 'ppub'
-            elif item['t'] == 'ONLIN':
-                issn_type = 'epub'
-            else:
-                issn_type = item['t']
-            issns[issn_type] = item['_']
+            if 't' in item.keys():
+                if item['t'] == 'PRINT':
+                    issn_type = 'ppub'
+                elif item['t'] == 'ONLIN':
+                    issn_type = 'epub'
+                else:
+                    issn_type = item['t']
+                issns[issn_type] = item['_']
+            elif 'epub' in item.keys():
+                issns['epub'] = item['epub']
+            elif 'ppub' in item.keys():
+                issn['ppub'] = item['ppub']
+    print(issns)
     return issns
 
 
@@ -47,7 +54,7 @@ class RegisteredArticle(object):
     def __init__(self, article_records, i_record=None):
         self.issue_models = IssueModels(i_record)
         self.article_records = article_records
-        self.journal_issns = issn_items(self.article_records[1].get('435'))
+        #self.journal_issns = issn_items(self.article_records[1].get('435'))
 
     def summary(self):
         data = {}
@@ -73,7 +80,7 @@ class RegisteredArticle(object):
 
     @property
     def journal_issns(self):
-        return issn_items(self.issue_models.issue.journal_issns if self.issue_models.issue.journal_issns else self.article_records[1].get('435'))
+        return self.issue_models.issue.journal_issns if self.issue_models.issue.journal_issns else issn_items(self.article_records[1].get('435'))
 
     @property
     def publisher_name(self):
