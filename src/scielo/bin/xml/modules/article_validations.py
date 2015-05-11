@@ -35,6 +35,9 @@ def validate_value(value):
             if value.startswith('.'):
                 status = 'WARNING'
                 result.append(value + ' starts with "."')
+            differ = value.replace(_value, '')
+            if len(differ) > 0:
+                result.append('"<source>' + value + '</source> contains invalid characteres: "' + differ + '"')
     if status == 'OK':
         message = format_value(value)
     else:
@@ -507,6 +510,10 @@ class ArticleContentValidation(object):
 
             r.append(required('aff/institution/[@content-type="original"]', aff.original, 'ERROR', False))
             r.append(required('aff/country/@country', aff.i_country, 'FATAL ERROR'))
+            if aff.i_country is not None:
+                if len(aff.i_country) != 2 or aff.i_country.upper() != aff.i_country:
+                    r.append(('aff/country/@country', 'FATAL ERROR', aff.i_country + ': Invalid value. It must be ISO code of ' + aff.country))
+
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'ERROR'))
             r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))
 
@@ -768,8 +775,8 @@ class ReferenceContentValidation(object):
             r.append(item)
 
         if self.reference.ref_status == 'display-only':
-            found_fatal = list(set([status for label, status, message in r if status in ['FATAL ERROR']]))
-            if len(found_fatal) == 0:
+            any_error_level = list(set([status for label, status, message in r if status in ['FATAL ERROR', 'ERROR']]))
+            if len(any_error_level) == 0:
                 r.append(('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete.'))
             else:
                 items = []
