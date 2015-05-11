@@ -3560,5 +3560,12 @@ et al.</copyright-statement>
 	<xsl:template match="alttext">
 		<alt-text><xsl:apply-templates select="@*|*|text()"/></alt-text>
 	</xsl:template>
-
+	<xsl:template match="xref[@ref-type='other']">
+		<xsl:variable name="rid"><xsl:value-of select="@rid"/></xsl:variable>
+		<xsl:if test="$xref_id[@id=$rid]">
+			<xref>
+				<xsl:apply-templates select="@*|*|text()"></xsl:apply-templates>
+			</xref>
+		</xsl:if>
+	</xsl:template>
 </xsl:stylesheet>
