@@ -1950,6 +1950,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="*[contains(name(),'citat')]| ref" mode="mixed-citation">
 		<mixed-citation>
 			<xsl:choose>
+				<xsl:when test="text-ref and label and not(text-ref/*)">
+					<xsl:apply-templates select="substring-after(text-ref,label)"/>
+				</xsl:when>
 				<xsl:when test="text-ref">
 					<xsl:apply-templates select="text-ref"/>
 				</xsl:when>
@@ -1962,6 +1965,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 
 	<xsl:template match="*" mode="create-mixed-citation">
 		<xsl:apply-templates select=" * | text() " mode="create-mixed-citation"/>
+	</xsl:template>
+	
+	<xsl:template match="label" mode="create-mixed-citation">
 	</xsl:template>
 	
 	<xsl:template match="url | italic | sup | sub" mode="create-mixed-citation">
