@@ -167,6 +167,12 @@ class ISISManager4Articles:
 
         package.report.write('Saving article records')
         excluded = 0
+        print('-'*80)
+        print('issue.documents')
+        for article in issue.documents:
+            print(article.xml_filename)
+            print(os.path.isfile(article.xml_filename))
+        print('-'*80)
         for article in issue.documents:
             self.save_article_records(package, article, issue_paths)
             print('doi=')
@@ -270,6 +276,7 @@ class ISISManager4Articles:
         self.json2idfile_article.set_file_data(id_filename, package.report)
 
         self.json2idfile_article.format_and_save_document_data(article.json_data, self.records_order, issue_paths.issue_db_name, issue_paths.xml_filename(article.xml_filename))
+
         if not os.path.exists(id_filename):
             package.report.write('Unable to create ' + id_filename, True, True)
             package.report.write(article.json_data, True, True)
@@ -387,23 +394,29 @@ class IssuePath:
     def issue_db_name(self):
         return self.issue.name
 
-    def xml_filename(self, xml_filename):
-        return self.issue_folder + '/' + os.path.basename(xml_filename)
+    def xml_filename(self, _xml_filename):
+        return self.issue_folder + '/' + os.path.basename(_xml_filename)
 
     def archive_article_files(self, xml_filename, issue, package):
         package.report.write('Archiving ' + self.issue.journal.acron + ' ' + self.issue.name)
-        dirname = os.path.dirname(xml_filename)
-        fname = os.path.basename(xml_filename).replace('.xml', '')
-        xml_content = open(xml_filename).read()
-        if os.path.isdir(dirname):
-            for f in os.listdir(dirname):
-                if f.startswith(fname + '-') or f.startswith(fname + '.'):
-                    src_filename = dirname + '/' + f
-                    if src_filename.endswith('.pdf') and f.startswith(fname + '-'):
-                        if not '="' + f + '"' in xml_content:
-                            # ajusta o nome do arquivo pdf de traducao
-                            rename_to = f[-6:-4] + '_' + fname + '.pdf'
-                            shutil.copyfile(src_filename, dirname + '/' + rename_to)
-                            os.unlink(src_filename)
-                            src_filename = dirname + '/' + rename_to
-                    self.paths.move_file_to_path(src_filename, self.issue_folder)
+        xml_content = open(xml_filename).read() if os.path.isfile(xml_filename) else ''
+
+        if len(xml_content) > 0:
+            if not isinstance(xml_content, unicode):
+                xml_content = xml_content.decode('utf-8')
+            dirname = os.path.dirname(xml_filename)
+            fname = os.path.basename(xml_filename).replace('.xml', '')
+            if os.path.isdir(dirname):
+                for f in os.listdir(dirname):
+                    if f.startswith(fname + '-') or f.startswith(fname + '.'):
+                        src_filename = dirname + '/' + f
+                        if src_filename.endswith('.pdf') and f.startswith(fname + '-'):
+                            if not '="' + f + '"' in xml_content:
+                                # ajusta o nome do arquivo pdf de traducao
+                                rename_to = f[-6:-4] + '_' + fname + '.pdf'
+                                shutil.copyfile(src_filename, dirname + '/' + rename_to)
+                                os.unlink(src_filename)
+                                src_filename = dirname + '/' + rename_to
+
+                        self.paths.move_file_to_path(src_filename, self.issue_folder)
+        print('fim archive_article_files.')

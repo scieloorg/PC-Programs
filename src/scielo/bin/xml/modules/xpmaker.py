@@ -603,6 +603,8 @@ def normalize_xml_content(doc_files_info, content, version):
     content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
     content = content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
     content = content.replace('publication-type="web"', 'publication-type="webpage"')
+    content = content.replace(' rid=" ', ' rid="')
+    content = content.replace(' id=" ', ' id="')
 
     for style in ['sup', 'sub', 'bold', 'italic']:
         content = content.replace('<' + style + '/>', '')
