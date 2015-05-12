@@ -871,6 +871,11 @@ class JSON_Article:
                     if len(v) > 1000:
                         v = v[0:1000]
                         a['a'] = v[0:v.rfind(';')+1] + '...'
+                        if '>' in a['a'] and '>' in a['a']:
+                            _a = a['a'].replace('<' '_BREAK_<').replace('>' '>_BREAK_')
+                            _a = _a.split('_BREAK_')
+                            _a = ' '.join([item for item in _a if not item.startswith('<') and not item.endswith('>')])
+                            a['a'] = _a
                 abs.append(a)
             self.json_data['f']['83'] = abs
 
