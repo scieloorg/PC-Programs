@@ -648,7 +648,7 @@ def validate_xml_issue_data(issue_models, article):
         validations.append(('journal print ISSN', article.journal_issns.get('ppub'), issue_models.issue.journal_issns.get('ppub')))
         validations.append(('publisher', article.publisher_name, issue_models.issue.publisher_name))
         validations.append(('issue label', article.issue_label, issue_models.issue.issue_label))
-        validations.append(('issue date', article.issue_pub_dateiso, issue_models.issue.dateiso))
+        validations.append(('issue date', article.issue_pub_dateiso[0:4], issue_models.issue.dateiso[0:4]))
 
         for label, article_data, issue_data in validations:
             if issue_data is not None:
