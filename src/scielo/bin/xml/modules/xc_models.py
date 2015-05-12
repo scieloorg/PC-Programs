@@ -63,7 +63,7 @@ class RegisteredArticle(object):
         data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items()]) if self.journal_issns is not None else None
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_models.issue.issue_label
-        data['issue pub date'] = self.issue_models.issue.dateiso
+        data['issue pub date'] = self.issue_models.issue.dateiso[0:4]
         data['order'] = self.order
         data['doi'] = self.doi
         data['fpage-and-seq'] = self.fpage
@@ -288,7 +288,7 @@ class ArticleRecords(object):
         self._metadata['60'] = self.article.award_id
         self._metadata['102'] = self.article.funding_statement
 
-        self._metadata['65'] = format_dateiso(self.article.issue_pub_date)
+        #self._metadata['65'] = format_dateiso(self.article.issue_pub_date)
         self._metadata['223'] = format_dateiso(self.article.article_pub_date)
 
         self._metadata['14'] = {}
