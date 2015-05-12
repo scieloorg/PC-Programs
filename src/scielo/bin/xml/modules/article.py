@@ -173,6 +173,15 @@ class ArticleXML(object):
                     r.append(sec)
         return r
 
+    @property
+    def article_type_and_contrib_items(self):
+        r = []
+        for subart in self.subarticles:
+            r.append((subart.attrib.get('article-type'), subart.findall('.//contrib/collab') + subart.findall('.//contrib/name')))
+        for subart in self.responses:
+            r.append((subart.attrib.get('response-type'), subart.findall('.//contrib/collab') + subart.findall('.//contrib/name')))
+        return r
+        
     def fn_list(self, node, scope):
         r = []
         if node is not None:

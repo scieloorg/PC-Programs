@@ -314,6 +314,17 @@ class ArticleContentValidation(object):
         return r
 
     @property
+    def contrib(self):
+        r = []
+        if self.article.article_type in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC:
+            if len(self.article.contrib_names) == 0 and len(self.article.contrib_collabs) == 0:
+                r.append(('contrib', 'FATAL ERROR', self.article.article_type + ' requires contrib names or collabs.'))
+        for item in self.article.article_type_and_contrib_items:
+            if item[0] in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC and len(item[1]) == 0:
+                r.append(('contrib', 'FATAL ERROR', item[0] + ' requires contrib names or collabs.'))
+        return r
+
+    @property
     def contrib_names(self):
         r = []
         author_xref_items = []

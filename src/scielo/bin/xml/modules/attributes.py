@@ -56,6 +56,20 @@ DOCTOPIC_IN_USE = [
     'technical-report', 
     ]
 
+AUTHORS_REQUIRED_FOR_DOCTOPIC = [
+    'announcement', 
+    'article-commentary', 
+    'book-review', 
+    'brief-report', 
+    'case-report', 
+    'editorial', 
+    'letter', 
+    'rapid-communication', 
+    'research-article', 
+    'retraction', 
+    'reply', 
+    'review-article', 
+    ]
 
 TOC_SECTIONS = { 
     u'carta': u'letter', 
