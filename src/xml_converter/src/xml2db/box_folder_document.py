@@ -13,7 +13,8 @@ class AllFolders:
 
     def template(self, folder):
         found = self.registered.find(folder)
-        #print('registered')
+        print('template')
+        print(found)
         if found is None:
             # folder is not registered (in folder db)
             found = self.not_registered.find(folder)
