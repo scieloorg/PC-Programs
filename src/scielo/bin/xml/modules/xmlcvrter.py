@@ -290,6 +290,7 @@ def convert_package(src_path):
     for path in [result_path, wrk_path, pkg_path, report_path]:
         if not os.path.isdir(path):
             os.makedirs(path)
+            print(path)
 
     xml_filenames, pkg_articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
     issue_models, issue_error_msg = get_issue_models(pkg_articles)
@@ -298,7 +299,6 @@ def convert_package(src_path):
 
     if not issue_models is None:
         issue_files = get_issue_files(issue_models, pkg_path)
-        result_path = issue_files.issue_path
         acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
 
         registered_articles = get_registered_articles(issue_files)
@@ -346,6 +346,7 @@ def convert_package(src_path):
             issue_files.save_reports(report_path)
             issue_files.save_source_files(pkg_path)
             report_path = issue_files.base_reports_path
+            result_path = issue_files.issue_path
 
             if scilista_item is not None:
                 issue_files.copy_files_to_local_web_app()
@@ -368,7 +369,7 @@ def convert_package(src_path):
     texts.append(sheets)
 
     if converter_env.is_windows:
-        texts.append(pkg_reports.processing_result_location(os.path.dirname(report_path)))
+        texts.append(pkg_reports.processing_result_location(result_path))
 
     texts.append(html_reports.tag('p', 'Finished.'))
 
@@ -381,7 +382,7 @@ def convert_package(src_path):
 
     header_status = ''
     subject_stats = ''
-    subject_results = 'APPROVED ' if scilista_item is not None else 'REJECTED'
+    subject_results = u"\u2713" + ' APPROVED ' if scilista_item is not None else u"\u2718" + ' REJECTED'
     if selected_articles is None:
         subject_stats = ' [' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]]) + ']'
         header_status = html_reports.statistics_display(f, e, w, False)
@@ -598,16 +599,17 @@ def report_status(status):
 
 def report_conclusion_message(scilista_item, issue_label, converted, not_converted, selected_articles):
     text = ''
+    app_site = converter_env.web_app_site  if converter_env.web_app_site  is not None else 'scielo web site'
     text += html_reports.p_message('converted: ' + str(converted) + '/' + str(selected_articles))
     if scilista_item is None:
         if selected_articles is None:
-            text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' will not be updated/published on ' + converter_env.web_app_site + ' because it could not be processed.')
+            text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' will not be updated/published on ' + app_site + ' because it could not be processed.')
         elif selected_articles == 0 and converted == 0:
-            text += html_reports.p_message('WARNING: ' + issue_label + ' will not be updated/published on ' + converter_env.web_app_site + ' because nothing was changed.')
+            text += html_reports.p_message('WARNING: ' + issue_label + ' will not be updated/published on ' + app_site + ' because nothing was changed.')
         else:
-            text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' is not complete (' + str(not_converted) + ' were not converted), so ' + issue_label + ' will not be updated/published on ' + converter_env.web_app_site + '.')
+            text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' is not complete (' + str(not_converted) + ' were not converted), so ' + issue_label + ' will not be updated/published on ' + app_site + '.')
     else:
-        text += html_reports.p_message('OK: ' + issue_label + ' will be updated/published on ' + converter_env.web_app_site + '.')
+        text += html_reports.p_message('OK: ' + issue_label + ' will be updated/published on ' + app_site + '.')
 
     return text
 
@@ -651,16 +653,19 @@ def validate_xml_issue_data(issue_models, article):
         validations.append(('issue date', article.issue_pub_dateiso[0:4], issue_models.issue.dateiso[0:4]))
 
         for label, article_data, issue_data in validations:
-            if issue_data is not None:
-                if article_data is None:
-                    article_data = 'None'
-                if article_data != issue_data:
-                    msg.append(html_reports.tag('h5', label))
-                    msg.append('FATAL ERROR: Invalid value of ' + label + ': ' + article_data + '. Expected value: ' + issue_data)
+            if article_data is None:
+                article_data = 'None'
+            if issue_data is None:
+                issue_data = 'None'
+            msg.append(html_reports.tag('h5', label))
+            if article_data == issue_data:
+                msg.append(article_data)
+            else:
+                msg.append('FATAL ERROR: data mismatched. In article: "' + article_data + '" and in issue: "' + issue_data + '"')
 
         # section
         msg.append(html_reports.tag('h5', 'section'))
-        msg.append('section: ' + article.toc_section + '.')
+        msg.append(article.toc_section)
         section_code, matched_rate, most_similar = issue_models.most_similar_section_code(article.toc_section)
         if matched_rate != 1:
             msg.append('Registered sections:\n' + '; '.join(issue_models.section_titles))
