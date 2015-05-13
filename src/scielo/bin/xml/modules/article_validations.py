@@ -210,6 +210,7 @@ class ArticleContentValidation(object):
         #print(datetime.now().isoformat() + ' validations')
         items.append(self.titles)
         #print(datetime.now().isoformat() + ' validations')
+        items.append(self.contrib)
         items.append(self.contrib_names)
         #print(datetime.now().isoformat() + ' validations')
         items.append(self.contrib_collabs)
