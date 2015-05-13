@@ -207,6 +207,8 @@ def wayta_request(text):
         print(full_url)
         response = urllib2.urlopen(full_url, timeout=30)
         result = response.read()
+        print('result type')
+        print(type(result))
     except Exception as e:
         print(e)
         result = []
@@ -325,5 +327,5 @@ def normaff_search(text):
     results = sorted(list(set(results)))
     print('all results:')
     print(len(results))
-    display_results(results)
+    #display_results(results)
     return results
