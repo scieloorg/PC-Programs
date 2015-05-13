@@ -100,6 +100,34 @@ h5 {
    word-wrap:break-word;
    max-width:80%;  
 } 
+.fatalerror .td_label {
+   border: 1px solid gray;
+   font-weight: bold;
+   font-family: Arial;
+   font-size: 14;
+   color: white;
+   vertical-align: top;
+   width:10%; 
+   word-wrap:break-word;
+} 
+.fatalerror .td_status {
+   border: 1px solid gray;
+   font-family: Arial;
+   font-size: 14;
+   color: white;
+   vertical-align: top;
+   word-wrap:break-word;
+   width:10%;
+} 
+.fatalerror .td_message {
+   border: 1px solid gray;
+   font-family: Arial;
+   font-size: 14;
+   color: white;
+   vertical-align: top;
+   word-wrap:break-word;
+   max-width:80%;  
+} 
 .validation th {
   border: 1px solid gray;
   background-color: gray;

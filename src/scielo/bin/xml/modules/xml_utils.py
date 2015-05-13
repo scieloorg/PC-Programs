@@ -226,10 +226,10 @@ def named_ent_to_char(content):
                         new = new.decode('utf-8')
                     if not isinstance(ent, unicode):
                         ent = ent.decode('utf-8')
-                    print(type(new))
-                    print(type(ent))
-                    print(new)
-                    print(ent)
+                    #print(type(new))
+                    #print(type(ent))
+                    #print(new)
+                    #print(ent)
                     if new != ent:
                         replaced_named_ent.append(ent + '=>' + new)
                         content = content.replace(ent, new)

@@ -850,7 +850,7 @@ class Article(ArticleXML):
         data = {}
         data['journal-title'] = self.journal_title
         data['journal id NLM'] = self.journal_id_nlm_ta
-        data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items()]) if self.journal_issns is not None else None
+        data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items() if v is not None]) if self.journal_issns is not None else None
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_label
         data['issue pub date'] = self.issue_pub_dateiso[0:4]

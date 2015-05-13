@@ -17,24 +17,24 @@ import institutions_service
 def issn_items(fields):
     issns = None
     if fields is not None:
-        issns = {}
-        if not isinstance(fields, list):
-            fields = [fields]
+        print('issn_items: fields')
         print(fields)
-        for item in fields:
-            if 't' in item.keys():
-                if item['t'] == 'PRINT':
-                    issn_type = 'ppub'
-                elif item['t'] == 'ONLIN':
-                    issn_type = 'epub'
+        issns = {}
+        if isinstance(fields, dict):
+            if fields.get('t') is not None and fields.get('_') is not None:
+                fields = [fields]
+            elif fields.get('epub') is not None or fields.get('ppub') is not None:
+                issns = fields
+        if isinstance(fields, list):
+            print(fields)
+            for item in fields:
+                if item.get('t') is not None and item.get('_') is not None:
+                    issns[item.get('t').replace('PRINT', 'ppub').replace('ONLIN', 'epub')] = item.get('_')
                 else:
-                    issn_type = item['t']
-                issns[issn_type] = item['_']
-            elif 'epub' in item.keys():
-                issns['epub'] = item['epub']
-            elif 'ppub' in item.keys():
-                issn['ppub'] = item['ppub']
-    print(issns)
+                    print('item')
+                    print(item)
+        print('issns')
+        print(issns)
     return issns
 
 
@@ -60,7 +60,7 @@ class RegisteredArticle(object):
         data = {}
         data['journal-title'] = self.journal_title
         data['journal id NLM'] = self.journal_id_nlm_ta
-        data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items()]) if self.journal_issns is not None else None
+        data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items() if v is not None]) if self.journal_issns is not None else None
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_models.issue.issue_label
         data['issue pub date'] = self.issue_models.issue.dateiso[0:4]
@@ -515,7 +515,12 @@ class IssueModels(object):
         i.issn_id = self.record.get('35')
         i.journal_title = self.record.get('130')
         i.journal_id_nlm_ta = self.record.get('421')
-        i.journal_issns = issn_items(self.record.get('435'))
+        _issns = issn_items(self.record.get('435'))
+        if not _issns is None:
+            _issns = issn_items(_issns)
+        if _issns is None:
+            _issns = {'epub': None, 'ppub': None}
+        i.journal_issns = _issns
         i.publisher_name = self.record.get('62', self.record.get('480'))
         return i
 
