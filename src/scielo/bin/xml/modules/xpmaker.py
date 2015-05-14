@@ -886,12 +886,11 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         if not from_converter:
             if from_markup:
                 make_pmc_report(articles, doc_files_info_items)
-            if toc_f + fatal_errors == 0:
-                if is_pmc_journal(articles):
-                    register_log('pack_and_validate: make_pmc_package')
-                    make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
-                register_log('pack_and_validate: zip_packages')
-                zip_packages(scielo_pkg_path)
+            if is_pmc_journal(articles):
+                register_log('pack_and_validate: make_pmc_package')
+                make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
+            register_log('pack_and_validate: zip_packages')
+            zip_packages(scielo_pkg_path)
 
         print('Result of the processing:')
         print(results_path)

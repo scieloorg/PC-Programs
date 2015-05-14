@@ -648,17 +648,37 @@ def validate_xml_issue_data(issue_models, article):
         validations.append(('journal id NLM', article.journal_id_nlm_ta, issue_models.issue.journal_id_nlm_ta))
         validations.append(('journal e-ISSN', article.journal_issns.get('epub'), issue_models.issue.journal_issns.get('epub')))
         validations.append(('journal print ISSN', article.journal_issns.get('ppub'), issue_models.issue.journal_issns.get('ppub')))
-        validations.append(('publisher', article.publisher_name, issue_models.issue.publisher_name))
         validations.append(('issue label', article.issue_label, issue_models.issue.issue_label))
         validations.append(('issue date', article.issue_pub_dateiso[0:4], issue_models.issue.dateiso[0:4]))
 
         for label, article_data, issue_data in validations:
             if article_data is None:
                 article_data = 'None'
+            elif isinstance(article_data, list):
+                article_data = ' | '.join(article_data)
             if issue_data is None:
                 issue_data = 'None'
+            elif isinstance(issue_data, list):
+                issue_data = ' | '.join(issue_data)
             msg.append(html_reports.tag('h5', label))
             if article_data == issue_data:
+                msg.append(article_data)
+            else:
+                msg.append('FATAL ERROR: data mismatched. In article: "' + article_data + '" and in issue: "' + issue_data + '"')
+
+        validations = []
+        validations.append(('publisher', article.publisher_name, issue_models.issue.publisher_name))
+        for label, article_data, issue_data in validations:
+            if article_data is None:
+                article_data = 'None'
+            elif isinstance(article_data, list):
+                article_data = ' | '.join(article_data)
+            if issue_data is None:
+                issue_data = 'None'
+            elif isinstance(issue_data, list):
+                issue_data = ' | '.join(issue_data)
+            msg.append(html_reports.tag('h5', label))
+            if utils.how_similar(article_data, issue_data) > 0.8:
                 msg.append(article_data)
             else:
                 msg.append('FATAL ERROR: data mismatched. In article: "' + article_data + '" and in issue: "' + issue_data + '"')
@@ -703,6 +723,11 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
     temp_path = temp_path + '/' + proc_id
     queue_path = queue_path + '/' + proc_id
     pkg_paths = []
+
+    if os.path.isdir(temp_path):
+        fs_utils.delete_file_or_folder(temp_path)
+    if os.path.isdir(queue_path):
+        fs_utils.delete_file_or_folder(queue_path)
 
     if archive_path is not None:
         if not os.path.isdir(archive_path):
@@ -842,7 +867,7 @@ def call_converter(args, version='1.0'):
 
 def send_message(mailer, to, subject, text, attaches=None):
     if mailer is not None:
-        print('sending message ' + subject)
+        #print('sending message ' + subject)
         mailer.send_message(to, subject, text, attaches)
 
 
