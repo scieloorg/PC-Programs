@@ -47,7 +47,7 @@ class AheadManager:
     def exclude_filename(self, doi):
         excluded = False
         filename = self.filename(doi)
-
+        print('exclude: ' + filename + '.')
         if len(filename) > 0:
             if os.path.exists(filename):
 
@@ -64,9 +64,16 @@ class AheadManager:
                 dest = id_path + '/' + os.path.basename(filename)
                 if os.path.exists(dest):
                     os.unlink(dest)
+                print('excluded ' + filename)
 
                 shutil.move(filename, dest)
                 excluded = True
+        else:
+            print('doi not found in ahead files')
+            existing = []
+            for doi, filename in self.ahead_filenames.items():
+                existing.append(doi + ' ' + filename)
+            print('\n'.join(sorted(existing)))
         return excluded
 
     def update_ahead_issue(self):
@@ -84,6 +91,7 @@ class AheadManager:
                 order = id_name.replace('.id', '')
                 if order.isdigit():
                     if id_name != 'i.id' and id_name != '00000.id' and id_name.endswith('.id'):
+                        print('update_ahead_issue:' + id_path + '/' + id_name)
                         self.cisis.id2mst(id_path + '/' + id_name, mst_filename, False)
 
 
@@ -152,21 +160,35 @@ class ISISManager4Articles:
             #     os.unlink(issue_paths.issue_id_path + '/' + f)
 
             ahead_manager = AheadManager(self.cisis, issue_paths.journal_path)
-
+            print('*'*20)
+            print('ahead_manager')
         package.report.write('Saving issue record')
         self.save_issue_record(package, issue, issue_paths)
 
         package.report.write('Saving article records')
         excluded = 0
+        print('-'*80)
+        print('issue.documents')
+        for article in issue.documents:
+            print(article.xml_filename)
+            print(os.path.isfile(article.xml_filename))
+        print('-'*80)
         for article in issue.documents:
             self.save_article_records(package, article, issue_paths)
+            print('doi=')
+            print(article.doi)
             if ahead_manager is not None:
                 if article.doi != '':
                     if ahead_manager.exclude_filename(article.doi):
                         excluded += 1
-        if ahead_manager is not None:
+                        print('excluded aop id filename')
+        print('excluded=')
+        print(excluded)
+        if excluded > 0:
             ahead_manager.update_ahead_issue()
             for folder in ahead_manager.ahead_folders:
+                print('add to scilista')
+                print(issue.journal.acron + ' ' + folder)
                 self.add_issue_to_scilista(issue.journal.acron + ' ' + folder)
 
         package.report.write('Generate issue db')
@@ -212,16 +234,9 @@ class ISISManager4Articles:
             self.cisis.crunchmf(issue_paths.issue_db_filename, win_path + '/' + os.path.basename(issue_paths.issue_db_filename))
 
     def add_issue_to_scilista(self, scilista_item):
-        c = []
-        if os.path.exists(self.paths.scilista):
-            f = open(self.paths.scilista, 'r')
-            c = f.read()
-            f.close()
-
-        if not scilista_item + '\n' in c:
-            f = open(self.paths.scilista, 'a+')
-            f.write(scilista_item + '\n')
-            f.close()
+        f = open(self.paths.scilista, 'a+')
+        f.write(scilista_item + '\n')
+        f.close()
 
     def generate_issue_db_for_proc(self, table_name):
         proc_issue_db = self.filename(table_name)
@@ -261,6 +276,7 @@ class ISISManager4Articles:
         self.json2idfile_article.set_file_data(id_filename, package.report)
 
         self.json2idfile_article.format_and_save_document_data(article.json_data, self.records_order, issue_paths.issue_db_name, issue_paths.xml_filename(article.xml_filename))
+
         if not os.path.exists(id_filename):
             package.report.write('Unable to create ' + id_filename, True, True)
             package.report.write(article.json_data, True, True)
@@ -378,23 +394,29 @@ class IssuePath:
     def issue_db_name(self):
         return self.issue.name
 
-    def xml_filename(self, xml_filename):
-        return self.issue_folder + '/' + os.path.basename(xml_filename)
+    def xml_filename(self, _xml_filename):
+        return self.issue_folder + '/' + os.path.basename(_xml_filename)
 
     def archive_article_files(self, xml_filename, issue, package):
         package.report.write('Archiving ' + self.issue.journal.acron + ' ' + self.issue.name)
-        dirname = os.path.dirname(xml_filename)
-        fname = os.path.basename(xml_filename).replace('.xml', '')
-        xml_content = open(xml_filename).read()
-        if os.path.isdir(dirname):
-            for f in os.listdir(dirname):
-                if f.startswith(fname + '-') or f.startswith(fname + '.'):
-                    src_filename = dirname + '/' + f
-                    if src_filename.endswith('.pdf') and f.startswith(fname + '-'):
-                        if not '="' + f + '"' in xml_content:
-                            # ajusta o nome do arquivo pdf de traducao
-                            rename_to = f[-6:-4] + '_' + fname + '.pdf'
-                            shutil.copyfile(src_filename, dirname + '/' + rename_to)
-                            os.unlink(src_filename)
-                            src_filename = dirname + '/' + rename_to
-                    self.paths.move_file_to_path(src_filename, self.issue_folder)
+        xml_content = open(xml_filename).read() if os.path.isfile(xml_filename) else ''
+
+        if len(xml_content) > 0:
+            if not isinstance(xml_content, unicode):
+                xml_content = xml_content.decode('utf-8')
+            dirname = os.path.dirname(xml_filename)
+            fname = os.path.basename(xml_filename).replace('.xml', '')
+            if os.path.isdir(dirname):
+                for f in os.listdir(dirname):
+                    if f.startswith(fname + '-') or f.startswith(fname + '.'):
+                        src_filename = dirname + '/' + f
+                        if src_filename.endswith('.pdf') and f.startswith(fname + '-'):
+                            if not '="' + f + '"' in xml_content:
+                                # ajusta o nome do arquivo pdf de traducao
+                                rename_to = f[-6:-4] + '_' + fname + '.pdf'
+                                shutil.copyfile(src_filename, dirname + '/' + rename_to)
+                                os.unlink(src_filename)
+                                src_filename = dirname + '/' + rename_to
+
+                        self.paths.move_file_to_path(src_filename, self.issue_folder)
+        print('fim archive_article_files.')

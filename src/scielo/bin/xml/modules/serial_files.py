@@ -66,7 +66,8 @@ class ArticleFiles(object):
     def __init__(self, issue_files, order, xml_name):
         self.issue_files = issue_files
         self.order = order
-        self.xml_name = xml_name if xml_name.endswith('.xml') else xml_name + '.xml'
+        self.filename = xml_name if xml_name.endswith('.xml') else xml_name + '.xml'
+        self.xml_name = xml_name.replace('.xml', '')
 
     @property
     def id_filename(self):
@@ -74,7 +75,7 @@ class ArticleFiles(object):
 
     @property
     def relative_xml_filename(self):
-        return self.issue_files.relative_issue_path + '/' + self.xml_name + '.xml'
+        return self.issue_files.relative_issue_path + '/' + self.filename
 
 
 class IssueFiles(object):

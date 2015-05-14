@@ -664,9 +664,6 @@ def validate_xml_issue_data(issue_models, article):
             if article_data == issue_data:
                 msg.append(article_data)
             else:
-                print(label)
-                print(article_data)
-                print(issue_data)
                 msg.append('FATAL ERROR: data mismatched. In article: "' + article_data + '" and in issue: "' + issue_data + '"')
 
         validations = []
@@ -684,9 +681,6 @@ def validate_xml_issue_data(issue_models, article):
             if utils.how_similar(article_data, issue_data) > 0.8:
                 msg.append(article_data)
             else:
-                print(label)
-                print(article_data)
-                print(issue_data)
                 msg.append('FATAL ERROR: data mismatched. In article: "' + article_data + '" and in issue: "' + issue_data + '"')
 
         # section

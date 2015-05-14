@@ -116,6 +116,30 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
+	<xsl:template match="sup | sub | bold | italic">
+		<xsl:param name="id"/>
+		<xsl:variable name="parent_textonly"><xsl:apply-templates select="parent::node()" mode="text-only"/></xsl:variable>
+		<xsl:variable name="textonly"><xsl:apply-templates select="*|text()" mode="text-only"/></xsl:variable>
+		
+		<xsl:choose>
+			<xsl:when test="not(*) and normalize-space(translate(text(),'(),.-:;[]/','          '))=''">
+				<!-- sup, sub, bold, italic é vazio: ignore --> 
+			</xsl:when>
+			<xsl:when test="normalize-space($parent_textonly)=normalize-space($textonly)">
+				<!-- ignore styles -->
+				<xsl:apply-templates select="*|text()"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- mantem o bold ou italic se está inserido em um elemento que contem texto alem de bold e/ou italic -->
+				<xsl:element name="{name()}">
+					<xsl:apply-templates select="@* | * | text()">
+						<xsl:with-param name="id" select="$id"/>
+					</xsl:apply-templates>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>	
+	
 	<xsl:template match="@href">
 		<xsl:attribute name="xlink:href">
 			<xsl:value-of select="normalize-space(.)"/>
@@ -203,55 +227,23 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	<xsl:template match="body"/>
 	
-	<xsl:template match="*" mode="keep-styles">
-		<xsl:apply-templates select="*|text()" mode="keep-styles"/>
-	</xsl:template>
-	
-	<xsl:template match="bold|italic" mode="keep-styles">
-		<xsl:if test="normalize-space(text())!='' or *">
-		<xsl:element name="{name()}">
-			<xsl:apply-templates select="*|text()" mode="keep-styles"/>
-		</xsl:element>
-		</xsl:if>
-	</xsl:template>
-	
-	<xsl:template match="text()" mode="keep-styles">
-		<xsl:value-of select="."/>
-	</xsl:template>
-	
+	<!--FIXME-STYLE
 	<xsl:template match="label//bold | label//italic | label//sup">
 		<xsl:apply-templates select="*|text()"/>
 	</xsl:template>
-	
-	<xsl:template match="bold | italic">
-		<xsl:param name="id"/>
-		<xsl:variable name="parent_textonly"><xsl:apply-templates select="parent::node()" mode="text-only"/></xsl:variable>
-		<xsl:variable name="textonly"><xsl:apply-templates select="*|text()" mode="text-only"/></xsl:variable>
-		<xsl:choose>
-			<xsl:when test="normalize-space($parent_textonly)!=normalize-space($textonly)">
-				<!-- mantem o bold ou italic se está inserido em um elemento que contem texto alem de bold e/ou italic -->
-				<xsl:element name="{name()}">
-					<xsl:apply-templates select="*|text()"/>
-				</xsl:element>
-			</xsl:when>
-			<xsl:otherwise>
-				<!-- nao mantem o bold ou italic se está inserido em um elemento cujo conteudo e o mesmo de bold e/ou italic -->
-				<xsl:apply-templates select="*|text()"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-	
+	-->
+
 	<xsl:template match="source">
 		<xsl:param name="id"/>
 		
 		<xsl:element name="{name()}">
-			<xsl:apply-templates select=".//text()">
+			<xsl:apply-templates select="*|text()">
 				<xsl:with-param name="id" select="$id"/>
 			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
 	
-	<xsl:template match="attrib | series | app | anonym | isbn | glossary | term | def | response | p | sec | label | subtitle | edition |  issn | corresp | ack ">
+	<xsl:template match="attrib | series | app | anonym | isbn | glossary | term | def | response | p | sec | label | subtitle | edition |  issn | corresp | ack | tbody | td | tr">
 		<xsl:param name="id"/>
 		
 		<xsl:element name="{name()}">
@@ -260,19 +252,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:apply-templates>
 		</xsl:element>
 	</xsl:template>
-	<xsl:template match="sup | sub ">
-		<xsl:param name="id"/>
-		<xsl:choose>
-			<xsl:when test="not(*) and normalize-space(.//text())=''"></xsl:when>
-			<xsl:otherwise>
-				<xsl:element name="{name()}">
-					<xsl:apply-templates select="@* | * | text()">
-						<xsl:with-param name="id" select="$id"/>
-					</xsl:apply-templates>
-				</xsl:element>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
+	
 	<xsl:template match="label[.//text()='(']//text()">*</xsl:template>
 	<xsl:template match="label[.//text()='((']//text()">**</xsl:template>
 	
@@ -838,12 +818,6 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 				<xsl:with-param name="subtitles" select="titlegrp/subtitle[position()!=1]"/>
 			</xsl:apply-templates>
 		</title-group>
-	</xsl:template>
-	<xsl:template match="doctitle//italic">
-		<italic><xsl:apply-templates select="*|text()"/></italic>
-	</xsl:template>
-	<xsl:template match="doctitle//bold">
-		<xsl:apply-templates select="*|text()"/>
 	</xsl:template>
 	<xsl:template match="titlegrp/title">
 		<article-title>
@@ -1500,18 +1474,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	</xsl:template>
 	
 	<xsl:template match="sectitle">
-		<title>
-		<xsl:choose>
-			<xsl:when test="normalize-space(text())=''">
-				<xsl:apply-templates select="*|text()" mode="text-only"/>
-			</xsl:when>
-			<xsl:when test="bold">
-				<xsl:apply-templates select="bold|text()" mode="text-only"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:apply-templates select="*|text()"/>
-			</xsl:otherwise>
-		</xsl:choose>
+		<title><!--fixme bold|italic|sub|sup-->
+			<xsl:apply-templates select="*|text()"/>
 			<xsl:apply-templates select="following-sibling::node()[1 and name()='xref']"
 				mode="xref-in-sectitle"/>
 		</title>
@@ -1605,7 +1569,8 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ack>
 	</xsl:template>
 
-	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic | ref//italic | ref//bold">
+	<xsl:template match="*[contains(name(),'citat')]//bold | *[contains(name(),'citat')]//italic">
+		<!--fixme styles-->
 		<xsl:choose>
 			<xsl:when test="normalize-space(translate(.,'(),.-:;','       '))=''"></xsl:when>
 			<xsl:otherwise><xsl:apply-templates select="text()"/></xsl:otherwise>
@@ -1665,7 +1630,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					<xsl:otherwise>other</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
-			<xsl:apply-templates select="." mode="text-ref"/>
+			<xsl:apply-templates select="." mode="mixed-citation"/>
 			<element-citation publication-type="{$type}">
 				<xsl:apply-templates select="*[name()!='no' and name()!='label' and name()!='text-ref']">
 					<xsl:with-param name="position" select="position()"/>
@@ -1678,11 +1643,11 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:when test="@id"><xsl:value-of select="substring(@id,2)"/></xsl:when><xsl:otherwise><xsl:value-of select="position()"/></xsl:otherwise>
 		</xsl:choose></xsl:variable>
 		<ref id="B{$id}">
-			<xsl:apply-templates select="@status|@refstatus"/>
 			<xsl:apply-templates select="label"/>
-			<xsl:apply-templates select="." mode="text-ref"/>
+			<xsl:apply-templates select="." mode="mixed-citation"/>
 			<element-citation>
 				<xsl:apply-templates select="@reftype"/>
+				<xsl:apply-templates select="@status|@refstatus"/>
 				<xsl:apply-templates select="*[name()!='no' and name()!='label' and name()!='text-ref']">
 					<xsl:with-param name="position" select="position()"/>
 				</xsl:apply-templates>
@@ -1982,26 +1947,36 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		</ext-link>
 	</xsl:template>
 
-	<xsl:template match="*[contains(name(),'citat')]| ref" mode="text-ref">
+	<xsl:template match="*[contains(name(),'citat')]| ref" mode="mixed-citation">
 		<mixed-citation>
 			<xsl:choose>
+				<xsl:when test="text-ref and label and not(text-ref/*)">
+					<xsl:value-of select="substring-after(text-ref,label)"/>
+				</xsl:when>
 				<xsl:when test="text-ref">
-					<xsl:apply-templates select="text-ref"></xsl:apply-templates>
+					<xsl:apply-templates select="text-ref"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:apply-templates select="." mode="create-text-ref"/>
+					<xsl:apply-templates select="." mode="create-mixed-citation"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</mixed-citation>
 	</xsl:template>
 
-	<xsl:template match="*" mode="create-text-ref">
-		<xsl:apply-templates select=" * | text() " mode="create-text-ref"/>
+	<xsl:template match="*" mode="create-mixed-citation">
+		<xsl:apply-templates select=" * | text() " mode="create-mixed-citation"/>
 	</xsl:template>
+	
+	<xsl:template match="label" mode="create-mixed-citation">
+	</xsl:template>
+	
+	<xsl:template match="url | italic | sup | sub" mode="create-mixed-citation">
+		<xsl:apply-templates select="."/>
+	</xsl:template>
+	
+	<xsl:template match="@*" mode="create-mixed-citation"/>
 
-	<xsl:template match="@*" mode="create-text-ref"/>
-
-	<xsl:template match="text()" mode="create-text-ref">
+	<xsl:template match="text()" mode="create-mixed-citation">
 		<xsl:value-of select="." disable-output-escaping="no"/>
 	</xsl:template>
 
@@ -2715,7 +2690,14 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 					</xsl:choose>
 				</colgroup>
 			<xsl:apply-templates select="thead"></xsl:apply-templates>
-			<xsl:copy-of select="tbody"/>
+			<xsl:choose>
+				<xsl:when test="tbody//xref">
+					<xsl:apply-templates select="tbody"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:copy-of select="tbody"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</table>
 	</xsl:template>
 	<xsl:template match="th/bold">
@@ -3275,32 +3257,39 @@ et al.</copyright-statement>
 	<xsl:template match="related[@reltp]" mode="front-related">
 		<!-- link de ? para ?? -->
 		<!-- ﻿[related reltype="???" relid="????" relidtp="?????"] -->
-		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>
-	-->
-		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@id-or-doi}" ext-link-type="doi">
+		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>-->
+		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink">
+			<xsl:attribute name="xlink:href"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/></xsl:attribute>
+			<xsl:attribute name="ext-link-type">doi</xsl:attribute>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
 	<xsl:template match="related[@reltp='corrected-article']" mode="front-related">
-		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@id-or-doi}" ext-link-type="uri">
+		<related-article related-article-type="{@reltp}" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink">
+			<xsl:attribute name="xlink:href"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/></xsl:attribute>
+			<xsl:attribute name="ext-link-type">uri</xsl:attribute>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
 	<xsl:template match="related[@reltp='article']" mode="front-related">
 		<!-- link de ? para ?? -->
 		<!-- ﻿[related reltype="???" relid="????" relidtp="?????"] -->
-		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>
-	-->
-		<related-article related-article-type="article-reference" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@id-or-doi}" ext-link-type="doi" specific-use="processing-only">
+		<!-- <related-article related-article-type="{@reltype}" id="{$this_doi}" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{@relid}" ext-link-type="{@relidtp}"/>-->
+		<related-article related-article-type="article-reference" id="A01" xmlns:xlink="http://www.w3.org/1999/xlink">
+			<xsl:attribute name="xlink:href"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/></xsl:attribute>
+			<xsl:attribute name="ext-link-type">doi</xsl:attribute>
+			<xsl:attribute name="specific-use">processing-only</xsl:attribute>
 			<xsl:apply-templates select="*|text()"></xsl:apply-templates>
 		</related-article>
 	</xsl:template>
 	<xsl:template match="related[@reltp='press-release']" mode="front-related">
 		<!-- link de article para press release -->
 		<!-- ﻿[related reltype="pr" relid="pr01" relidtp="press-release-id"] -->
-		<!-- <related-article related-article-type="press-release" id="01" specific-use="processing-only"/>
- -->
-		<related-article related-article-type="commentary" id="{@id-or-doi}" specific-use="processing-only"/>
+		<!-- <related-article related-article-type="press-release" id="01" specific-use="processing-only"/>-->
+		<related-article related-article-type="commentary">
+			<xsl:attribute name="id"><xsl:value-of select="@id-or-doi"/><xsl:value-of select="@id-doi"/></xsl:attribute>
+			<xsl:attribute name="specific-use">processing-only</xsl:attribute>
+		</related-article>
 	</xsl:template>
 	
 	<xsl:template match="author">
@@ -3537,8 +3526,9 @@ et al.</copyright-statement>
 	
 	<xsl:template match="boxedtxt">
 		<boxed-text>
+			<xsl:apply-templates select="@id"/>
 			<sec>
-			<xsl:apply-templates select="@*|*|text()"/>
+			<xsl:apply-templates select="*|text()"/>
 			</sec>
 		</boxed-text>
 	</xsl:template>
@@ -3570,5 +3560,12 @@ et al.</copyright-statement>
 	<xsl:template match="alttext">
 		<alt-text><xsl:apply-templates select="@*|*|text()"/></alt-text>
 	</xsl:template>
-	
+	<xsl:template match="xref[@ref-type='other']">
+		<xsl:variable name="rid"><xsl:value-of select="@rid"/></xsl:variable>
+		<xsl:if test="$xref_id[@id=$rid]">
+			<xref>
+				<xsl:apply-templates select="@*|*|text()"></xsl:apply-templates>
+			</xref>
+		</xsl:if>
+	</xsl:template>
 </xsl:stylesheet>

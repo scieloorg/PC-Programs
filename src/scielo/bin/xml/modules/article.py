@@ -21,15 +21,6 @@ def nodetext(node, sep='|'):
     return r
 
 
-def format_issue_label(year, volume, number, volume_suppl, number_suppl):
-    year = year if number == 'ahead' else ''
-    v = 'v' + volume if volume is not None else None
-    vs = 's' + volume_suppl if volume_suppl is not None else None
-    n = 'n' + number if number is not None else None
-    ns = 's' + number_suppl if number_suppl is not None else None
-    return ''.join([i for i in [year, v, vs, n, ns] if i is not None])
-
-
 def format_author(author):
     r = author.surname
     if author.suffix:
@@ -182,6 +173,15 @@ class ArticleXML(object):
                     r.append(sec)
         return r
 
+    @property
+    def article_type_and_contrib_items(self):
+        r = []
+        for subart in self.subarticles:
+            r.append((subart.attrib.get('article-type'), subart.findall('.//contrib/collab') + subart.findall('.//contrib/name')))
+        for subart in self.responses:
+            r.append((subart.attrib.get('response-type'), subart.findall('.//contrib/collab') + subart.findall('.//contrib/name')))
+        return r
+        
     def fn_list(self, node, scope):
         r = []
         if node is not None:
@@ -850,10 +850,10 @@ class Article(ArticleXML):
         data = {}
         data['journal-title'] = self.journal_title
         data['journal id NLM'] = self.journal_id_nlm_ta
-        data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items()]) if self.journal_issns is not None else None
+        data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items() if v is not None]) if self.journal_issns is not None else None
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_label
-        data['issue pub date'] = article_utils.format_date(self.issue_pub_date)
+        data['issue pub date'] = self.issue_pub_dateiso[0:4]
         data['order'] = self.order
         data['doi'] = self.doi
         seq = '' if self.fpage_seq is None else self.fpage_seq
@@ -950,7 +950,7 @@ class Article(ArticleXML):
     @property
     def issue_label(self):
         year = self.issue_pub_date.get('year', '') if self.issue_pub_date is not None else ''
-        return format_issue_label(year, self.volume, self.number, self.volume_suppl, self.number_suppl)
+        return article_utils.format_issue_label(year, self.volume, self.number, self.volume_suppl, self.number_suppl)
 
     @property
     def issue_pub_dateiso(self):
@@ -1025,8 +1025,8 @@ class ReferenceXML(object):
 
     @property
     def ref_status(self):
-        if self.root is not None:
-            return self.root.attrib.get('specific-use')
+        if self.element_citation is not None:
+            return self.element_citation.attrib.get('specific-use')
 
     @property
     def xml(self):
@@ -1188,4 +1188,4 @@ class Issue(object):
 
     @property
     def issue_label(self):
-        return format_issue_label(self.year, self.volume, self.number, self.volume_suppl, self.number_suppl)
+        return article_utils.format_issue_label(self.year, self.volume, self.number, self.volume_suppl, self.number_suppl)

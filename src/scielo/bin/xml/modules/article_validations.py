@@ -21,15 +21,23 @@ def validate_value(value):
     result = []
     status = 'OK'
     if value is not None:
-        if value.endswith(' '):
-            status = 'WARNING'
-            result.append(value + ' ends with "space"')
-        if value.startswith('.'):
-            status = 'WARNING'
-            result.append(value + ' starts with "."')
-        if value.startswith(' '):
-            status = 'WARNING'
-            result.append(value + ' starts with "space"')
+        _value = value.strip()
+        if _value == value:
+            pass
+        elif _value.startswith('<') and _value.endswith('>'):
+            pass
+        else:
+            status = 'ERROR'
+            if value.startswith(' '):
+                result.append(value + ' starts with "space"')
+            if value.endswith(' '):
+                result.append(value + ' ends with "space"')
+            if value.startswith('.'):
+                status = 'WARNING'
+                result.append(value + ' starts with "."')
+            differ = value.replace(_value, '')
+            if len(differ) > 0:
+                result.append('"<source>' + value + '</source> contains invalid characteres: "' + differ + '"')
     if status == 'OK':
         message = format_value(value)
     else:
@@ -108,47 +116,34 @@ def validate_name(label, value, invalid_terms):
 
 
 def validate_surname(label, value):
-    result = []
-    reject = []
-    suffix_list = [u'Nieto', u'Sobrino', u'Hijo', u'Neto', u'Sobrinho', u'Filho', u'Júnior', u'JÚNIOR', u'Junior', u'Senior', u'Sr', u'Jr']
     r = []
     label, status, msg = required(label, value, 'ERROR')
     if status == 'OK':
+        msg = value
+        suffix_list = [u'Nieto', u'Sobrino', u'Hijo', u'Neto', u'Sobrinho', u'Filho', u'Júnior', u'JÚNIOR', u'Junior', u'Senior', u'Sr', u'Jr']
 
         parts = value.split(' ')
-        for i in range(0, len(parts)-2):
-            if not parts[i][0:1] == parts[i][0:1].lower():
-                reject.append(parts[i])
-        u = parts[len(parts)-1]
+        if len(parts) > 1:
+            rejected = [item for item in parts if item in suffix_list]
+            suffix = ' '.join(rejected)
 
-        suffix = ''
-        if u in suffix_list:
-            reject.append(parts[len(parts)-1])
-            suffix = parts[len(parts)-1]
-
-        if len(reject) > 0:
-            status = 'WARNING'
-            msg = 'Invalid terms (' + ','.join(reject) + ') in ' + value + '. '
             if len(suffix) > 0:
+                msg = 'Invalid terms (' + suffix + ') in ' + value + '. '
                 msg += suffix + ' must be identified as <suffix>' + suffix + '</suffix>.'
-            r.append((label, status, msg))
-
-    if status == 'OK':
-        msg = value
-        r.append((label, status, msg))
+                status = 'ERROR'
+                r.append((label, status, msg))
     return r
 
 
-def validate_contrib_names(author, affiliations=[]):
+def validate_contrib_names(author, aff_ids=[]):
     results = validate_surname('surname', author.surname) + validate_name('given-names', author.fname, ['_'])
-    if len(affiliations) > 0:
-        aff_ids = [aff.id for aff in affiliations if aff.id is not None]
+    if len(aff_ids) > 0:
         if len(author.xref) == 0:
-            results.append(('xref', 'FATAL ERROR', 'Author has no xref. Expected values: ' + '|'.join(aff_ids)))
+            results.append(('xref', 'WARNING', 'Author "' + author.fname + ' ' + author.surname + '" has no xref. Expected values: ' + '|'.join(aff_ids)))
         else:
             for xref in author.xref:
                 if not xref in aff_ids:
-                    results.append(('xref', 'ERROR', 'Invalid value of xref/@rid. Valid values: ' + '|'.join(aff_ids)))
+                    results.append(('xref', 'FATAL ERROR', 'Invalid value of xref[@ref-type="aff"]/@rid. Valid values: ' + '|'.join(aff_ids)))
     return results
 
 
@@ -215,6 +210,7 @@ class ArticleContentValidation(object):
         #print(datetime.now().isoformat() + ' validations')
         items.append(self.titles)
         #print(datetime.now().isoformat() + ' validations')
+        items.append(self.contrib)
         items.append(self.contrib_names)
         #print(datetime.now().isoformat() + ' validations')
         items.append(self.contrib_collabs)
@@ -319,11 +315,29 @@ class ArticleContentValidation(object):
         return r
 
     @property
+    def contrib(self):
+        r = []
+        if self.article.article_type in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC:
+            if len(self.article.contrib_names) == 0 and len(self.article.contrib_collabs) == 0:
+                r.append(('contrib', 'FATAL ERROR', self.article.article_type + ' requires contrib names or collabs.'))
+        for item in self.article.article_type_and_contrib_items:
+            if item[0] in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC and len(item[1]) == 0:
+                r.append(('contrib', 'FATAL ERROR', item[0] + ' requires contrib names or collabs.'))
+        return r
+
+    @property
     def contrib_names(self):
         r = []
+        author_xref_items = []
+        aff_ids = [aff.id for aff in self.article.affiliations if aff.id is not None]
         for item in self.article.contrib_names:
-            for result in validate_contrib_names(item, self.article.affiliations):
+            for xref in item.xref:
+                author_xref_items.append(xref)
+            for result in validate_contrib_names(item, aff_ids):
                 r.append(result)
+        for affid in aff_ids:
+            if not affid in author_xref_items:
+                r.append(('aff/@id', 'FATAL ERROR', 'Missing xref[@ref-type="aff"]/@rid="' + affid + '".'))
         return r
 
     @property
@@ -506,8 +520,12 @@ class ArticleContentValidation(object):
             r.append(('aff xml', 'INFO', aff.xml))
             r.append(required('aff/@id', aff.id, 'FATAL ERROR'))
 
-            r.append(required('aff/institution/[@content-type="original"]', aff.original, 'FATAL ERROR'))
+            r.append(required('aff/institution/[@content-type="original"]', aff.original, 'ERROR', False))
             r.append(required('aff/country/@country', aff.i_country, 'FATAL ERROR'))
+            if aff.i_country is not None:
+                if len(aff.i_country) != 2 or aff.i_country.upper() != aff.i_country:
+                    r.append(('aff/country/@country', 'FATAL ERROR', aff.i_country + ': Invalid value. It must be ISO code of ' + aff.country))
+
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'ERROR'))
             r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))
 
@@ -772,14 +790,14 @@ class ReferenceContentValidation(object):
             r.append(item)
 
         if self.reference.ref_status == 'display-only':
-            found_error = list(set([status for label, status, message in r if status in ['FATAL ERROR', 'ERROR']]))
-            if len(found_error) == 0:
+            any_error_level = list(set([status for label, status, message in r if status in ['FATAL ERROR', 'ERROR']]))
+            if len(any_error_level) == 0:
                 r.append(('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete.'))
             else:
                 items = []
                 for label, status, message in r:
                     if status != 'OK':
-                        status = 'IGNORED ' + status.lower()
+                        status = 'WARNING: ignored ' + status.lower() + ' because of @specific-use=display-only'
                     items.append((label, status, message))
                 r = items
         print(r)
@@ -793,10 +811,10 @@ class ReferenceContentValidation(object):
     def source(self):
         return required('source', self.reference.source, 'FATAL ERROR')
 
-    def validate_element(self, label, value):
+    def validate_element(self, label, value, error_level='FATAL ERROR'):
         res = attributes.validate_element(self.reference.publication_type, label, value)
         if res != '':
-            return (label, 'ERROR', res)
+            return (label, error_level, res)
         else:
             if not value is None and value != '':
                 return (label, 'OK', value)
@@ -837,7 +855,7 @@ class ReferenceContentValidation(object):
     def ext_link(self):
         r = None
         if self.reference.ext_link is not None:
-            if not self.reference.ext_link.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;') in self.reference.mixed_citation:
+            if not self.reference.ext_link.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').strip() in self.reference.mixed_citation:
                 r = ('ext-link', 'ERROR', '"' + self.reference.ext_link + '" is missing in "' + self.reference.mixed_citation + '')
         return r
 
@@ -851,7 +869,7 @@ class ReferenceContentValidation(object):
 
     @property
     def mixed_citation(self):
-        return required('mixed-citation', self.reference.mixed_citation, 'ERROR')
+        return required('mixed-citation', self.reference.mixed_citation, 'FATAL ERROR', False)
 
     @property
     def authors_list(self):
@@ -868,7 +886,10 @@ class ReferenceContentValidation(object):
 
     @property
     def year(self):
-        return required('year', self.reference.year, 'FATAL ERROR')
+        error_level = 'ERROR'
+        if self.reference.publication_type in attributes.BIBLIOMETRICS_USE or self.reference.article_title is not None:
+            error_level = 'FATAL ERROR'
+        return required('year', self.reference.year, error_level)
 
     @property
     def publisher_name(self):

@@ -165,6 +165,16 @@ class ArticleDisplayReport(object):
         r += html_reports.sheet(th, w, data)
         return r
 
+    @property
+    def authors_sheet(self):
+        labels, width, data = self.sheet_data.authors_sheet_data()
+        return html_reports.tag('h2', 'Authors') + html_reports.sheet(labels, width, data)
+
+    @property
+    def sources_sheet(self):
+        labels, width, data = self.sheet_data.sources_sheet_data()
+        return html_reports.tag('h2', 'Sources') + html_reports.sheet(labels, width, data)
+
     def display_labeled_value(self, label, value, style=''):
         return html_reports.display_labeled_value(label, value, style)
 

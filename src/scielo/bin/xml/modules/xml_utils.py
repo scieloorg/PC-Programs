@@ -170,7 +170,8 @@ def remove_break_lines_characters(content):
 def node_text(node):
     text = node_xml(node)
     if not text is None:
-        if text.startswith('<'):
+        text = text.strip()
+        if text.startswith('<') and text.endswith('>'):
             text = text[text.find('>')+1:]
             text = text[0:text.rfind('</')]
     return text
@@ -225,10 +226,10 @@ def named_ent_to_char(content):
                         new = new.decode('utf-8')
                     if not isinstance(ent, unicode):
                         ent = ent.decode('utf-8')
-                    print(type(new))
-                    print(type(ent))
-                    print(new)
-                    print(ent)
+                    #print(type(new))
+                    #print(type(ent))
+                    #print(new)
+                    #print(ent)
                     if new != ent:
                         replaced_named_ent.append(ent + '=>' + new)
                         content = content.replace(ent, new)
@@ -388,7 +389,12 @@ def fix_pretty(content):
 
 
 def pretty_print(content):
-    content = content.replace('>', '>=BREAK=').replace('<', '=BREAK=<')
+    content = content.replace('</', '=BREAK=</')
+    content = content.replace(' <', '=BREAK=REPLACESPACE<')
+    content = content.replace('> ', '>REPLACESPACE=BREAK=')
+    content = content.replace('>', '>=BREAK=')
+    content = content.replace('<', '=BREAK=<')
+
     items = content.split('=BREAK=')
     new = []
     for item in items:

@@ -117,6 +117,7 @@ class PackagesProcessor:
                     if len(errors) > 0:
                         package.report.write('Some files were unable to convert:\n' + '\n'.join(errors), True, True)
                     self.tracker.register(package.name, 'analyze_package')
+                    
                     fatal_errors, folders = information_analyst.analyze_package(package, documents_archiver.folder_table_name)
 
                     package.report.write('='*80, True, True)
@@ -260,15 +261,31 @@ class InformationAnalyst:
 
        # load all xml files of the package
         self.reports_to_attach = []
+        print('='*80)
+        print('package files:')
+        print('\n'.join(package.package_xml_files))
+        print('='*80)
         for xml_fname in package.package_xml_files:
             xml_filename = package.package_path + '/' + xml_fname        
             package.report.write('\n' + '-' * 80 + '\n' + 'File: ' + xml_fname + '\n', True, True, True)
             package.check_pdf_file(xml_filename)
             if self.check_and_load(xml_filename, package):
+                print('+'*80)
+                print('antes loaded_folders.values():')
+                for k, item in loaded_folders.items():
+                    print(k)
+                    print(item.documents.elements)
+                print('+'*80)
                 fe, document = self.process_document(xml_filename, package, folder_table_name)
                 fatal_errors += fe
                 if document != None:
                     loaded_folders[document.folder.box.acron + document.folder.name] = document.folder
+                    print('x'*80)
+                    print('loaded_folders.values():')
+                    for item in loaded_folders.values():
+                        print(item.documents.elements)
+                    print('x'*80)
+
         return (fatal_errors, loaded_folders.values())
 
     def check_and_load(self, xml_filename, package):
@@ -377,21 +394,64 @@ class InformationAnalyst:
                 package.report.write('Invalid publication title:' + publication_title, True, True)
             else:
                 document_folder = self.json2model.return_folder(registered)
+                print(';'*20)
+                print('document_folder')
+                print(document_folder)
+                if document_folder is not None:
+                    print(document_folder.documents)
+                    if document_folder.documents is not None:
+                        print(document_folder.documents.elements)
+                print(';'*20)
 
                 selected_folder = self.check_folder(document_folder, package)
                 if selected_folder.status == 'registered':
-                    specific_document = self.json2model.return_doc(selected_folder)
+                    print('-'*20)
+                    print('selected_folder')
+                    print(selected_folder)
+                    if selected_folder is not None:
+                        print(selected_folder.documents)
+                        if selected_folder.documents is not None:
+                            print(selected_folder.documents.elements)
+                    print('-'*20)
 
+                    specific_document = self.json2model.return_doc(selected_folder)
+                    print(':'*20)
+                    print('specific_document')
+                    print(specific_document)
+                    print(specific_document.folder)
+                    if specific_document.folder is not None:
+                        print(specific_document.folder.documents)
+                        if specific_document.folder.documents is not None:
+                            print(specific_document.folder.documents.elements)
+                    
+                    print(':'*20)
                     if specific_document != None:
                         if not specific_document.doi == '':
                             if not 'ahead' in specific_document.issue.name:
                                 pid, fname = self.ahead_articles.return_id_and_filename(specific_document.doi, specific_document.issue.journal.issn_id, specific_document.titles)
                                 specific_document.set_previous_id(pid)
+                        print(':'*20)
+                        print('generic_document')
+                        print(generic_document)
+                        print(':'*20)
+
                         generic_document = Document(specific_document)
+
+                        print('>'*20)
+                        print('generic_document depois')
+                        print(generic_document)
+                        print(generic_document.folder)
+                        print(generic_document.folder.documents)
+                        if generic_document.folder.documents is not None:
+                            print(generic_document.folder.documents.elements)
+                        print('>'*20)
+                        
                         package.report.write(generic_document.display(), True, True, False)
 
                         img_files = package.return_matching_files(xml_filename, '.jpg')
                         fatal_errors, e, w, ref_count = self.json2model.evaluate_data(img_files)
+
+
                         if generic_document.folder.documents == None:
                             generic_document.folder.documents = Documents()
 
@@ -405,12 +465,26 @@ class InformationAnalyst:
 
                 else:
                     package.report.write('', True, True)
+        print('^'*80)
+        print(xml_filename)
+        print(len(generic_document.folder.documents.elements))
+        print('^'*80)
+
         return (fatal_errors, generic_document)
 
     def check_folder(self, document_folder, package, folder_table_name = 'issue'):
         
         selected_folder = self.all_folders.template(document_folder)
-        
+
+        print('v'*20)
+        print('check_folder.selected_folder')
+        print(selected_folder)
+        if selected_folder is not None:
+            print(selected_folder.documents)
+            if selected_folder.documents is not None:
+                print(selected_folder.documents.elements)
+        print('v'*20)
+
         package.report.write(selected_folder.status)
 
         if selected_folder.status != 'registered':

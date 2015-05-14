@@ -56,6 +56,20 @@ DOCTOPIC_IN_USE = [
     'technical-report', 
     ]
 
+AUTHORS_REQUIRED_FOR_DOCTOPIC = [
+    'announcement', 
+    'article-commentary', 
+    'book-review', 
+    'brief-report', 
+    'case-report', 
+    'editorial', 
+    'letter', 
+    'rapid-communication', 
+    'research-article', 
+    'retraction', 
+    'reply', 
+    'review-article', 
+    ]
 
 TOC_SECTIONS = { 
     u'carta': u'letter', 
@@ -72,6 +86,7 @@ TOC_SECTIONS = {
     u'erratum': u'correction'
     }
 
+
 ROLE = {
     'author': 'ND',
     'editor': 'ED',
@@ -83,6 +98,9 @@ ROLE = {
     'transed': 'transed',
     'translator': 'TR',    
 }
+
+
+BIBLIOMETRICS_USE = ['journal', 'book', 'thesis', 'conf-proc']
 
 
 PUBLICATION_TYPE = []

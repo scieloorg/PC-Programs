@@ -272,7 +272,7 @@ def read_html(html_filename):
     return html_content
 
 
-def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
+def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, html_filename):
     #content = fix_uppercase_tag(content)
     register_log('normalize_sgmlxml')
 
@@ -282,11 +282,21 @@ def normalize_sgmlxml(xml_name, content, src_path, version, html_filename):
     #content = replace_tables_in_sgmlxml(content, embedded_tables)
     content = extract_embedded_images(xml_name, content, html_content, html_filename, src_path)
     content = replace_fontsymbols(content, html_content)
+    for style in ['italic', 'bold', 'sup', 'sub']:
+        s = '<' + style + '>'
+        e = '</' + style + '>'
+        content = content.replace(s.upper(), s.lower()).replace(e.upper(), e.lower())
 
     xml = xml_utils.is_xml_well_formed(content)
     if xml is None:
         content = fix_sgml_xml(content)
+        _content = content
+        if isinstance(content, unicode):
+            _content = content.encode('utf-8')
+        print(sgmxml_filename)
+        open(sgmxml_filename, 'w').write(_content)
         xml = xml_utils.is_xml_well_formed(content)
+
     if not xml is None:
         content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
         content = replace_mimetypes(content, src_path)
@@ -582,10 +592,19 @@ def normalize_xml_content(doc_files_info, content, version):
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
 
+    replaced_entities_report = ''
+    if len(replaced_named_ent) > 0:
+        replaced_entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
+
+    if doc_files_info.is_sgmxml:
+        content = normalize_sgmlxml(doc_files_info.xml_filename, doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
+
     content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
     content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
     content = content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
     content = content.replace('publication-type="web"', 'publication-type="webpage"')
+    content = content.replace(' rid=" ', ' rid="')
+    content = content.replace(' id=" ', ' id="')
 
     for style in ['sup', 'sub', 'bold', 'italic']:
         content = content.replace('<' + style + '/>', '')
@@ -595,13 +614,6 @@ def normalize_xml_content(doc_files_info, content, version):
         content = content.replace('</' + style + '><' + style + '>', '')
 
     content = xml_utils.pretty_print(content)
-
-    replaced_entities_report = ''
-    if len(replaced_named_ent) > 0:
-        replaced_entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
-
-    if doc_files_info.is_sgmxml:
-        content = normalize_sgmlxml(doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
 
     return (content, replaced_entities_report)
 
@@ -630,7 +642,7 @@ def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False):
     content = xml_utils.replace_doctype(content, xml_versions.DTDFiles('scielo', version).doctype)
     fs_utils.write_file(new_xml_filename, content)
 
-    if do_incorrect_copy is None:
+    if do_incorrect_copy:
         shutil.copyfile(new_xml_filename, new_xml_filename.replace('.xml', '_incorrect.xml'))
 
 
@@ -676,7 +688,10 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
     doc_files_info.new_xml_path = scielo_pkg_path
     doc, doc_files_info, curr_and_new_href_list, content = normalize_package_name(doc_files_info, acron, content)
 
-    if not doc.tree is None:
+    if doc.tree is None:
+        packed_files_report = 'ERROR: Unable to load ' + doc_files_info.new_xml_filename + '. Try to open it in an XML Editor to view the errors.'
+        pkg_reports.display_report(doc_files_info.new_xml_filename)
+    else:
         register_log('pack_article_files')
         related_packed, href_packed, not_found = pack_article_files(doc_files_info, scielo_pkg_path, curr_and_new_href_list)
 

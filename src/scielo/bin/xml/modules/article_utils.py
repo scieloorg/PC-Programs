@@ -7,6 +7,15 @@ import urllib2
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 
 
+def format_issue_label(year, volume, number, volume_suppl, number_suppl):
+    year = year if number == 'ahead' else ''
+    v = 'v' + volume if volume is not None else None
+    vs = 's' + volume_suppl if volume_suppl is not None else None
+    n = 'n' + number if number is not None else None
+    ns = 's' + number_suppl if number_suppl is not None else None
+    return ''.join([i for i in [year, v, vs, n, ns] if i is not None])
+
+
 def url_check(url, _timeout=30):
     print(datetime.now().isoformat() + ' url checking ' + url)
     try:
@@ -82,12 +91,15 @@ def format_dateiso(adate):
         month = adate.get('season')
         if month is None:
             month = adate.get('month')
-        if '-' in month:
-            month = month[month.find('-')+1:]
-        if not month.isdigit():
-            month = MONTHS.get(month, '00')
-        month = '00' + month
-        month = month[-2:]
+        if month is None:
+            month = '00'
+        else:
+            if '-' in month:
+                month = month[month.find('-')+1:]
+            if not month.isdigit():
+                month = MONTHS.get(month, '00')
+            month = '00' + month
+            month = month[-2:]
         y = adate.get('year', '0000')
         if y is None:
             y = '0000'
@@ -189,26 +201,18 @@ def format_date(dates):
 def remove_xref(article_title):
     text = article_title
     if text is not None:
-        text = text.replace('>', '>_BREAK_IGNORE1')
-        text = text.replace('</', 'IGNORE2_BREAK_</')
+        text = text.replace('<xref', '_BREAK_<xref')
+        text = text.replace('</xref>', '</xref>_BREAK_')
         parts = text.split('_BREAK_')
         new = []
         for part in parts:
-            if 'IGNORE2' in part and 'IGNORE1' in part:
-                c = part.replace('IGNORE1', '').replace('IGNORE2', '')
-                if len(c.strip()) > 1:
-                    new.append(c)
+            if '<xref' in part and '</xref>' in part:
+                pass
             else:
-                new.append(part.replace('IGNORE1', '').replace('IGNORE2', ''))
+                new.append(part)
 
         text = ''.join(new)
-        while '<xref' in text:
-            xref = text[text.find('<xref'):]
-            xref = xref[0:xref.find('>')+1]
-            text = text.replace(xref, '')
-        text = text.replace('</xref>', '')
-        text = text.replace('</sup>', '')
-        text = text.replace('<sup>', '')
+        text = text.replace('<sup></sup>', '')
         text = text.replace('<sup/>', '')
         text = text.strip()
         if article_title != text:
