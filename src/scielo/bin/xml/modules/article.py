@@ -1126,6 +1126,11 @@ class ReferenceXML(object):
         return self.root.findall('.//comment')
 
     @property
+    def degree(self):
+        if self.publication_type == 'thesis':
+            return self.root.findtext('.//comment')
+
+    @property
     def comments(self):
         c = []
         if self._comments is not None:

@@ -763,15 +763,18 @@ class ReferenceContentValidation(object):
         r.append(self.publication_type)
         r.append(self.year)
         r.append(self.source)
+        if self.ext_link is not None:
+            r.append(self.ext_link)
+
         for item in self.publication_type_dependence:
             r.append(item)
         for item in self.authors_list:
             r.append(item)
 
         if self.reference.ref_status == 'display-only':
-            found_fatal = list(set([status for label, status, message in r if status in ['FATAL ERROR']]))
-            if len(found_fatal) == 0:
-                r.append('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete.')
+            found_error = list(set([status for label, status, message in r if status in ['FATAL ERROR', 'ERROR']]))
+            if len(found_error) == 0:
+                r.append(('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete.'))
             else:
                 items = []
                 for label, status, message in r:
@@ -779,6 +782,7 @@ class ReferenceContentValidation(object):
                         status = 'IGNORED ' + status.lower()
                     items.append((label, status, message))
                 r = items
+        print(r)
         return r
 
     @property
@@ -800,13 +804,29 @@ class ReferenceContentValidation(object):
     @property
     def publication_type_dependence(self):
         r = []
+        authors = None
+        if len(self.reference.authors_list) > 0:
+            for item in self.reference.authors_list:
+                if isinstance(item, article.PersonAuthor):
+                    authors = item.surname + ' ...'
+                elif isinstance(item, article.CorpAuthor):
+                    authors = item.collab
+
         items = [
+                self.validate_element('person-group', authors), 
                 self.validate_element('article-title', self.reference.article_title), 
                 self.validate_element('chapter-title', self.reference.chapter_title), 
+                self.validate_element('publisher-name', self.reference.publisher_name), 
+                self.validate_element('publisher-loc', self.reference.publisher_loc), 
+                self.validate_element('comment (thesis degree)', self.reference.degree), 
                 self.validate_element('conf-name', self.reference.conference_name), 
                 self.validate_element('date-in-citation[@content-type="access-date"] or date-in-citation[@content-type="update"]', self.reference.cited_date), 
                 self.validate_element('ext-link', self.reference.ext_link), 
-                self.ext_link
+                self.validate_element('volume', self.reference.volume), 
+                self.validate_element('issue', self.reference.issue), 
+                self.validate_element('fpage', self.reference.fpage), 
+                self.validate_element('publisher-name', self.reference.publisher_name), 
+                self.validate_element('publisher-loc', self.reference.publisher_loc), 
             ]
         for item in items:
             if item is not None:
