@@ -779,27 +779,14 @@ class ReferenceContentValidation(object):
         r.append(self.xml)
         r.append(self.mixed_citation)
         r.append(self.publication_type)
-        r.append(self.year)
-        r.append(self.source)
-        if self.ext_link is not None:
-            r.append(self.ext_link)
 
         for item in self.publication_type_dependence:
             r.append(item)
         for item in self.authors_list:
             r.append(item)
+        #if self.ext_link is not None:
+        #    r.append(self.ext_link)
 
-        if self.reference.ref_status == 'display-only':
-            any_error_level = list(set([status for label, status, message in r if status in ['FATAL ERROR', 'ERROR']]))
-            if len(any_error_level) == 0:
-                r.append(('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete.'))
-            else:
-                items = []
-                for label, status, message in r:
-                    if status != 'OK':
-                        status = 'WARNING: ignored ' + status.lower() + ' because of @specific-use=display-only'
-                    items.append((label, status, message))
-                r = items
         print(r)
         return r
 
@@ -843,12 +830,31 @@ class ReferenceContentValidation(object):
                 self.validate_element('volume', self.reference.volume), 
                 self.validate_element('issue', self.reference.issue), 
                 self.validate_element('fpage', self.reference.fpage), 
-                self.validate_element('publisher-name', self.reference.publisher_name), 
-                self.validate_element('publisher-loc', self.reference.publisher_loc), 
             ]
+
+        _mixed = self.reference.mixed_citation.lower()
+        if 'conference' in _mixed or 'proceeding' in _mixed:
+            if self.reference.publication_type != 'confproc':
+                r.append(('@publication-type', 'ERROR', 'Check if @publication-type is correct. This reference looks like confproc.'))
+        if 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed:
+            if self.reference.publication_type != 'thesis':
+                r.append(('@publication-type', 'ERROR', 'Check if @publication-type is correct. This reference looks like thesis.'))
+
         for item in items:
             if item is not None:
                 r.append(item)
+
+        any_error_level = list(set([status for label, status, message in r if status in ['FATAL ERROR']]))
+        if len(any_error_level) == 0:
+            if self.reference.ref_status == 'display-only':
+                r.append(('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete.'))
+        else:
+            if self.reference.ref_status == 'display-only' and self.reference.publication_type == 'journal':
+                items.append(('Incomplete Reference', 'WARNING', 'Check if the elements of this reference is properly identified.'))
+                items = []
+                for label, status, message in r:
+                    items.append((label, 'WARNING: ignored ' + status.lower(), message))
+                r = items
         return r
 
     @property

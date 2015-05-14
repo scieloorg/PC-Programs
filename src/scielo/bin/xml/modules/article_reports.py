@@ -594,7 +594,8 @@ def get_report_content(org_manager, article, new_name, package_path, validate_or
     else:
         print(datetime.now().isoformat() + ' - validating contents 1')
         register_log('get_report_content: article_validations.ArticleContentValidation')
-        article_validation = article_validations.ArticleContentValidation(org_manager, article, validate_order, display_all)
+        #article_validation = article_validations.ArticleContentValidation(org_manager, article, validate_order, display_all)
+        article_validation = article_validations.ArticleContentValidation(org_manager, article, validate_order, False)
 
         print(datetime.now().isoformat() + ' - validating contents 2')
         register_log('get_report_content: ArticleSheetData')

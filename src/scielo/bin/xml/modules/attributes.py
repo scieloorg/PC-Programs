@@ -118,17 +118,17 @@ PUBLICATION_TYPE.append('other')
 
 
 REFERENCE_REQUIRED_SUBELEMENTS = {}
-REFERENCE_REQUIRED_SUBELEMENTS['journal'] = ['article-title', 'person-group']
-REFERENCE_REQUIRED_SUBELEMENTS['book'] = ['publisher-name', 'publisher-loc']
-REFERENCE_REQUIRED_SUBELEMENTS['confproc'] = ['conf-name']
-REFERENCE_REQUIRED_SUBELEMENTS['thesis'] = ['comment']
-REFERENCE_REQUIRED_SUBELEMENTS['webpage'] = ['ext-link', 'date-in-citation[@content-type="access-date"]']
+REFERENCE_REQUIRED_SUBELEMENTS['journal'] = ['article-title', 'person-group', 'year', 'source']
+REFERENCE_REQUIRED_SUBELEMENTS['book'] = ['year', 'source']
+REFERENCE_REQUIRED_SUBELEMENTS['confproc'] = ['conf-name', 'source', 'year']
+REFERENCE_REQUIRED_SUBELEMENTS['thesis'] = ['comment', 'source', 'year']
+REFERENCE_REQUIRED_SUBELEMENTS['webpage'] = ['ext-link', 'date-in-citation[@content-type="access-date"]', 'source']
 
 
 REFERENCE_NOT_ALLOWED_SUBELEMENTS = {}
 REFERENCE_NOT_ALLOWED_SUBELEMENTS['journal'] = ['chapter-title']
 REFERENCE_NOT_ALLOWED_SUBELEMENTS['book'] = ['article-title']
-REFERENCE_NOT_ALLOWED_SUBELEMENTS['webpage'] = ['volume', 'issue', 'fpage', 'publisher-name', 'publisher-loc']
+REFERENCE_NOT_ALLOWED_SUBELEMENTS['webpage'] = ['volume', 'issue', 'fpage']
 
 
 def is_required(publication_type, label):
@@ -149,7 +149,7 @@ def validate_element(publication_type, label, value):
     if value is None or value == '':
         if is_required(publication_type, label):
             problem = '@publication-type="' + publication_type + '" requires ' + label
-            items = ['@publication-type', label]
+            items = ['@publication-type', 'the elements of this reference']
     else:
         if not is_allowed_element(publication_type, label):
             problem = label + ' is not allowed for @publication-type=' + publication_type

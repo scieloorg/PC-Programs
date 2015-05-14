@@ -724,6 +724,11 @@ def queue_packages(download_path, temp_path, queue_path, archive_path):
     queue_path = queue_path + '/' + proc_id
     pkg_paths = []
 
+    if os.path.isdir(temp_path):
+        fs_utils.delete_file_or_folder(temp_path)
+    if os.path.isdir(queue_path):
+        fs_utils.delete_file_or_folder(queue_path)
+
     if archive_path is not None:
         if not os.path.isdir(archive_path):
             os.makedirs(archive_path)
@@ -862,7 +867,7 @@ def call_converter(args, version='1.0'):
 
 def send_message(mailer, to, subject, text, attaches=None):
     if mailer is not None:
-        print('sending message ' + subject)
+        #print('sending message ' + subject)
         mailer.send_message(to, subject, text, attaches)
 
 

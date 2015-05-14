@@ -55,11 +55,15 @@ def journal_data_for_markup(collections):
 
 
 def write_files(path, collections_data):
+    keys = []
     for key, file_content in collections_data.items():
-        print('creating ' + path + '/markup_journals_' + key + '.csv')
-        print('total: ' + str(len(file_content.split('\n'))))
-        print('')
-        write(path + '/markup_journals_' + key + '.csv', file_content)
+        if key != 'Symbol':
+            print('creating ' + path + '/markup_journals_' + key + '.csv')
+            print('total: ' + str(len(file_content.split('\n'))))
+            print('')
+            write(path + '/markup_journals_' + key + '.csv', file_content)
+            keys.append(key)
+    return keys
 
 
 def write_file(path, collection_name, file_content):
@@ -103,9 +107,12 @@ def main(url, source, dest_path, collection_name=None):
     r = read_source(source)
     r = journal_data_for_markup(r)
     if collection_name is None:
-        write_files(dest_path, r)
+        collections = write_files(dest_path, r)
+        if os.path.isdir(CURRENT_PATH + '/../markup'):
+            write(CURRENT_PATH + '/../markup/collections.csv', '\n'.join(collections))
     else:
         write_file(dest_path, collection_name, r[collection_name])
+
 
 collection_name = None
 print(sys.argv)

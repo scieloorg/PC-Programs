@@ -1074,7 +1074,11 @@ class ReferenceXML(object):
 
     @property
     def year(self):
-        return self.root.findtext('.//year')
+        _year = self.root.findtext('.//year')
+        if _year is None:
+            if self.publication_type == 'confproc':
+                _year = self.conference_date
+        return _year
 
     @property
     def publisher_name(self):
