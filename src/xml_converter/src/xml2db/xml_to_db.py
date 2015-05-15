@@ -465,10 +465,6 @@ class InformationAnalyst:
 
                 else:
                     package.report.write('', True, True)
-        print('^'*80)
-        print(xml_filename)
-        print(len(generic_document.folder.documents.elements))
-        print('^'*80)
 
         return (fatal_errors, generic_document)
 
