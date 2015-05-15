@@ -155,7 +155,7 @@ def validate_element(publication_type, label, value):
             problem = label + ' is not allowed for @publication-type=' + publication_type
             items = ['@publication-type', label, value]
     if len(problem) > 0:
-        problem += '. Be sure you have correctly identified: ' + ' or '.join(items)
+        problem += '. Be sure that you have correctly identified: ' + ' or '.join(items)
     return problem
 
 
