@@ -123,6 +123,8 @@ if len(sys.argv) > 1:
         collection_name = collection_name_or_ctrl_file
     elif os.path.isdir(os.path.dirname(collection_name_or_ctrl_file)):
         ctrl_file = collection_name_or_ctrl_file
+    if collection_name == 'None':
+        collection_name = None
 if len(sys.argv) > 2:
     ctrl_file = sys.argv[2]
     if os.path.isfile(ctrl_file):
