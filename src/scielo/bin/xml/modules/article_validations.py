@@ -258,7 +258,12 @@ class ArticleContentValidation(object):
 
     @property
     def language(self):
-        return expected_values('@xml:lang', self.article.language, ['en', 'es', 'pt', 'de', 'fr'], 'FATAL ')
+        label, status, msg = required('@xml:lang', self.article.language, 'FATAL ERROR')
+        if status == 'OK':
+            if not self.article.language.lower() == self.article.language or len(self.article.language) != 2:
+                status = 'FATAL ERROR'
+                msg = 'Invalid format for language. It requires two lower case letters.'
+        return (label, status, msg)
 
     @property
     def related_articles(self):
