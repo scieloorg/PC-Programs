@@ -225,9 +225,6 @@ h5 {
     color: #B22222;
     margin: 5px;
 }
-.order {
-    color: #13BC00;
-}
 .fpage {
     color: #006F00;
 }
@@ -332,7 +329,7 @@ td img {
 } 
 .dbstatus th {
   border: 1px solid gray;
-    background-color: #634C46;
+    background-color: #699CA7;
     color: white;
 }
 .report-date {
@@ -360,4 +357,24 @@ td img {
 
 .report-section {
   margin-top: 100px;
+}
+.pid {
+  color: #B38295;
+  background-color: #295876;
+}
+.aop {
+  color: #8C48A2;
+  background-color: white;
+}
+.order {
+  color: #13BC00;
+  background-color: #ED146F;
+}
+.notes {
+  color: #EDB9DC;
+  background-color: #FC025C;
+}
+.conversion {
+  color: black;
+  background-color: white;
 }

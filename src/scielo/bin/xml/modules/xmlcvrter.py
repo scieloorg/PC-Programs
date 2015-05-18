@@ -66,8 +66,6 @@ def register_log(message):
 
 def find_i_record(issue_label, print_issn, e_issn):
     i_record = None
-    print('debug: find_i_record')
-    print([issue_label, print_issn, e_issn])
     issues_records = converter_env.db_issue.search(issue_label, print_issn, e_issn)
     if len(issues_records) > 0:
         i_record = issues_records[0]
@@ -121,15 +119,12 @@ def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_art
     return (complete_issue_items, xml_articles_status, changed_orders)
 
 
-def complete_issue_items_row(article, status, creation_date, source, other_order=None):
+def complete_issue_items_row(article, status, creation_date, source, notes=''):
     values = []
     values.append(status)
     values.append(article.order)
     values.append(article.xml_name)
-    if other_order is None:
-        values.append('')
-    else:
-        values.append(other_order)
+    values.append(notes)
     values.append(source)
     values.append(creation_date)
     values.append(article.previous_pid)
@@ -146,20 +141,10 @@ def display_status_before_conversion(registered_articles, pkg_articles, xml_arti
     orders = sorted(list(set([order for order in orders if order is not None])))
 
     sorted_registered = pkg_reports.articles_sorted_by_order(registered_articles)
-    print('sorted_registered')
-    print(sorted_registered)
-
     sorted_package = pkg_reports.articles_sorted_by_order(pkg_articles)
-    print('sorted_package')
-    print(sorted_package)
-
     items = []
-    print('orders')
-    print(orders)
     for order in orders:
         status = ''
-        print('order')
-        print(order)
         if order in sorted_registered.keys():
             for article in sorted_registered[order]:
                 status = xml_articles_status[article.xml_name]
@@ -188,12 +173,10 @@ def display_status_after_conversion(registered_articles, pkg_articles, xml_artic
     status_labels = {'update': 'updated', 'add': 'added', '-': '-', 'skip-update': 'skept', 'order changed': 'order changed'}
     orders = sorted(list(set([article.order for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()])))
 
-    print('display_status_after_conversion')
     sorted_registered = pkg_reports.articles_sorted_by_order(registered_articles)
-    print(sorted_registered)
 
     sorted_package = pkg_reports.articles_sorted_by_order(pkg_articles)
-    print(sorted_package)
+
     items = []
 
     for order in orders:
@@ -334,12 +317,12 @@ def convert_package(src_path):
             after_conversion = html_reports.tag('h3', 'Documents status in the package/database - after conversion')
             after_conversion += display_status_after_conversion(get_registered_articles(issue_files), pkg_articles, xml_articles_status, unmatched_orders)
 
-            conversion_status_summary_report = html_reports.tag('h3', 'Conversion results') + report_status(conversion_status)
-            aop_status_summary_report = html_reports.tag('h3', 'aop information')
-            if aop_status is None:
-                aop_status_summary_report += 'this journal has no aop.'
-            else:
-                aop_status_summary_report += report_status(aop_status)
+            conversion_status_summary_report = html_reports.tag('h3', 'Conversion results') + report_status(conversion_status, 'conversion')
+
+            aop_status_summary_report = 'this journal has no aop.'
+            if not aop_status is None:
+                aop_status_summary_report = report_status(aop_status, 'aop')
+            aop_status_summary_report = html_reports.tag('h3', 'AOP status') + aop_status_summary_report
 
             sheets = pkg_reports.get_lists_report_text(articles_sheets)
 
@@ -564,14 +547,14 @@ def aop_message(article, ahead, status):
                 status = 'unmatched aop'
                 msg_list.append('FATAL ERROR: the title/author of article and "aop version" are different.')
 
-                data.append('doc title:' + article.title)
-                data.append('aop title:' + ahead.article_title)
-                data.append('doc first author:' + article.first_author_surname)
-                data.append('aop first author:' + ahead.first_author_surname)
+            data.append('doc title:' + article.title)
+            data.append('aop title:' + ahead.article_title)
+            data.append('doc first author:' + article.first_author_surname)
+            data.append('aop first author:' + ahead.first_author_surname)
     msg = ''
     msg += html_reports.tag('h4', 'checking existence of aop version')
     msg += ''.join([html_reports.p_message(item) for item in msg_list])
-    msg += ''.join([html_reports.tag('pre', item) for item in data])
+    msg += ''.join([html_reports.display_xml(item) for item in data])
     return msg
 
 
@@ -583,7 +566,7 @@ def get_registered_articles(issue_files):
     return registered_articles
 
 
-def report_status(status):
+def report_status(status, style=None):
     text = ''
     for category in sorted(status.keys()):
         if len(status[category]) == 0:
@@ -592,14 +575,14 @@ def report_status(status):
         else:
             ltype = 'ol'
             list_items = status[category]
-        text += html_reports.format_list(categories_messages.get(category, category), ltype, list_items)
+        text += html_reports.format_list(categories_messages.get(category, category), ltype, list_items, style)
 
     return text
 
 
 def report_conclusion_message(scilista_item, issue_label, converted, not_converted, selected_articles):
     text = ''
-    app_site = converter_env.web_app_site  if converter_env.web_app_site  is not None else 'scielo web site'
+    app_site = converter_env.web_app_site if converter_env.web_app_site  is not None else 'scielo web site'
     text += html_reports.p_message('converted: ' + str(converted) + '/' + str(selected_articles))
     if scilista_item is None:
         if selected_articles is None:
@@ -777,7 +760,6 @@ def xml_converter_get_inputs(args):
     package_path = None
     script = None
     collection_acron = None
-    print(args)
     if len(args) == 2:
         script, param = args
         if os.path.isfile(param) or os.path.isdir(param):
@@ -862,7 +844,7 @@ def call_converter(args, version='1.0'):
     elif collection_acron is not None:
         execute_converter(package_path, collection_acron)
     elif package_path is not None:
-        execute_converter(package_path, collection_acron)
+        execute_converter(package_path)
 
 
 def send_message(mailer, to, subject, text, attaches=None):

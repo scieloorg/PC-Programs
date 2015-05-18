@@ -164,7 +164,7 @@ def sheet(table_header, wider, table_data, filename=None, table_style='sheet', r
                         cell_content = format_html_data(row.get(label, ''))
                         cell_style = cell_style_prefix + label
                         if cell_style == label:
-                            cell_style = get_message_style(row.get(label), None)
+                            cell_style = get_message_style(row.get(label), label)
                         tr += tag('td', cell_content, cell_style)
                     tr_style = None
                     if row_style == 'status':
@@ -276,8 +276,8 @@ def get_message_style(value, default):
         r = 'error'
     elif 'WARNING' in value:
         r = 'warning'
-    elif default is None:
-        r = value
+    #elif default is None:
+    #    r = value
     else:
         r = default
     return r

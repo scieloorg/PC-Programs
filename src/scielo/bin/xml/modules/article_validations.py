@@ -582,7 +582,12 @@ class ArticleContentValidation(object):
 
     @property
     def total_of_pages(self):
-        return self._total(self.article.total_of_pages, self.article.page_count, 'total of pages', 'page-count')
+        if self.article.total_of_pages is not None:
+            return self._total(self.article.total_of_pages, self.article.page_count, 'total of pages', 'page-count')
+        else:
+            pages = [self.article.fpage, self.article.lpage]
+            pages = '-'.join([item for item in pages if item is not None])
+            return ('page-count', 'WARNING', pages)
 
     @property
     def total_of_references(self):
@@ -789,10 +794,6 @@ class ReferenceContentValidation(object):
             r.append(item)
         for item in self.authors_list:
             r.append(item)
-        #if self.ext_link is not None:
-        #    r.append(self.ext_link)
-
-        print(r)
         return r
 
     @property
