@@ -584,10 +584,13 @@ class ArticleContentValidation(object):
     def total_of_pages(self):
         if self.article.total_of_pages is not None:
             return self._total(self.article.total_of_pages, self.article.page_count, 'total of pages', 'page-count')
+        elif self.article.elocation_id:
+            return ('total of pages of ' + self.article.elocation_id, 'WARNING', 'Unable to calculate')
         else:
             pages = [self.article.fpage, self.article.lpage]
             pages = '-'.join([item for item in pages if item is not None])
-            return ('page-count', 'WARNING', pages)
+            if pages != '':
+                return ('total of pages of ' + pages, 'WARNING', 'Unable to calculate')
 
     @property
     def total_of_references(self):
@@ -841,10 +844,10 @@ class ReferenceContentValidation(object):
         _mixed = self.reference.mixed_citation.lower()
         if 'conference' in _mixed or 'proceeding' in _mixed:
             if self.reference.publication_type != 'confproc':
-                r.append(('@publication-type', 'ERROR', 'Check if @publication-type is correct. This reference looks like confproc.'))
+                r.append(('@publication-type', 'WARNING', 'Check if @publication-type is correct. This reference looks like confproc.'))
         if 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed:
             if self.reference.publication_type != 'thesis':
-                r.append(('@publication-type', 'ERROR', 'Check if @publication-type is correct. This reference looks like thesis.'))
+                r.append(('@publication-type', 'WARNING', 'Check if @publication-type is correct. This reference looks like thesis.'))
 
         for item in items:
             if item is not None:
@@ -859,7 +862,8 @@ class ReferenceContentValidation(object):
                 items.append(('Incomplete Reference', 'WARNING', 'Check if the elements of this reference is properly identified.'))
                 items = []
                 for label, status, message in r:
-                    items.append((label, 'WARNING: ignored ' + status.lower(), message))
+                    if status != 'OK':
+                        items.append((label, 'WARNING: ignored ' + status.lower(), message))
                 r = items
         return r
 

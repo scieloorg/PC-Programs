@@ -362,17 +362,25 @@ td img {
   color: #B38295;
   background-color: #295876;
 }
-.aop {
-  color: #8C48A2;
-  background-color: white;
+.aop-block {
+  color: white;
+  background-color: #ED146F;
+  margin-top: 35px;
+  margin-bottom: 35px;
+  padding: 10px;
 }
-.order {
-  color: #13BC00;
+.aop {
+  color: white;
   background-color: #ED146F;
 }
+
+.order {
+  color: white;
+  background-color: #D678C2;
+}
 .notes {
-  color: #EDB9DC;
-  background-color: #FC025C;
+  color: white;
+  background-color: #8C48A2;
 }
 .conversion {
   color: black;

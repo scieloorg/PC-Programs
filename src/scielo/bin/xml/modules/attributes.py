@@ -145,17 +145,20 @@ def is_allowed_element(publication_type, label):
 
 def validate_element(publication_type, label, value):
     problem = ''
+    compl = ''
     items = []
     if value is None or value == '':
         if is_required(publication_type, label):
             problem = '@publication-type="' + publication_type + '" requires ' + label
             items = ['@publication-type', 'the elements of this reference']
+            compl = '. If the reference has no ' + label + ', use element-citation/@specific-use=display-only'
     else:
         if not is_allowed_element(publication_type, label):
             problem = label + ' is not allowed for @publication-type=' + publication_type
             items = ['@publication-type', label, value]
     if len(problem) > 0:
         problem += '. Be sure that you have correctly identified: ' + ' or '.join(items)
+        problem += compl
     return problem
 
 

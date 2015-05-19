@@ -238,12 +238,11 @@ def format_html_data(value, apply_message_style=False, width=None):
     elif isinstance(value, int):
         r = str(value)
     elif '<img' in value or '</a>' in value:
-        r = value
+        r = value.replace('<img', '<br/><img')
     elif '<' in value and '>' in value:
         r = display_xml(value, width)
     elif 'options: ' in value:
         msg, value = value.split('options: ')
-        value = value[len('options: '):]
         value = value.split('|')
         r = msg + '<select size="10">' + '\n'.join(['<option>' + op + '</option>' for op in sorted(value)]) + '</select>'
     else:

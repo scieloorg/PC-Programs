@@ -321,7 +321,7 @@ def convert_package(src_path):
 
             aop_status_summary_report = 'this journal has no aop.'
             if not aop_status is None:
-                aop_status_summary_report = report_status(aop_status, 'aop')
+                aop_status_summary_report = report_status(aop_status, 'aop-block')
             aop_status_summary_report = html_reports.tag('h3', 'AOP status') + aop_status_summary_report
 
             sheets = pkg_reports.get_lists_report_text(articles_sheets)
@@ -569,13 +569,15 @@ def get_registered_articles(issue_files):
 def report_status(status, style=None):
     text = ''
     for category in sorted(status.keys()):
+        _style = style
         if len(status[category]) == 0:
             ltype = 'ul'
             list_items = ['None']
+            _style = None
         else:
             ltype = 'ol'
             list_items = status[category]
-        text += html_reports.format_list(categories_messages.get(category, category), ltype, list_items, style)
+        text += html_reports.format_list(categories_messages.get(category, category), ltype, list_items, _style)
 
     return text
 
