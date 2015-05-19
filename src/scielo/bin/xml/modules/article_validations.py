@@ -143,7 +143,7 @@ def validate_contrib_names(author, aff_ids=[]):
         else:
             for xref in author.xref:
                 if not xref in aff_ids:
-                    results.append(('xref', 'FATAL ERROR', 'Invalid value of xref[@ref-type="aff"]/@rid. Valid values: ' + '|'.join(aff_ids)))
+                    results.append(('xref', 'FATAL ERROR', xref + ' of ' + author.surname + ': Invalid value of xref[@ref-type="aff"]/@rid. Valid values: ' + '|'.join(aff_ids)))
     return results
 
 
