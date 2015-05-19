@@ -932,7 +932,7 @@ class Article(ArticleXML):
         def is_valid(pid):
             r = False
             if not d is None:
-                r = (len(d) == 23)
+                r = (len(d) == 23) or (d.isdigit() and 0 < int(d) <= 99999)
             return r
 
         d = self.article_previous_id
@@ -941,8 +941,8 @@ class Article(ArticleXML):
                 d = article_utils.doi_pid(self.doi)
         if not is_valid(d):
             d = self._ahead_pid
-        if not is_valid(d):
-            d = self.article_id_other
+        #if not is_valid(d):
+        #    d = self.article_id_other
         if not is_valid(d):
             d = None
         return d

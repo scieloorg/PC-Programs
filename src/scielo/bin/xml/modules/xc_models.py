@@ -17,8 +17,6 @@ import institutions_service
 def issn_items(fields):
     issns = None
     if fields is not None:
-        print('issn_items: fields')
-        print(fields)
         issns = {}
         if isinstance(fields, dict):
             if fields.get('t') is not None and fields.get('_') is not None:
@@ -26,15 +24,9 @@ def issn_items(fields):
             elif fields.get('epub') is not None or fields.get('ppub') is not None:
                 issns = fields
         if isinstance(fields, list):
-            print(fields)
             for item in fields:
                 if item.get('t') is not None and item.get('_') is not None:
                     issns[item.get('t').replace('PRINT', 'ppub').replace('ONLIN', 'epub')] = item.get('_')
-                else:
-                    print('item')
-                    print(item)
-        print('issns')
-        print(issns)
     return issns
 
 
@@ -569,6 +561,10 @@ class RegisteredAhead(object):
         return self.record.get('2')
 
     @property
+    def xml_name(self):
+        return self.record.get('2', '').replace('.xml', '')
+
+    @property
     def order(self):
         return self.record.get('121', '00000')
 
@@ -734,8 +730,12 @@ class AheadManager(object):
             for h_record in self.h_records(db_filename):
                 ahead = RegisteredAhead(h_record, dbname)
                 self.indexed_by_doi[ahead.doi] = ahead
-                self.indexed_by_xml_name[ahead.filename] = ahead
+                self.indexed_by_xml_name[ahead.xml_name] = ahead
                 self.still_ahead[dbname][ahead.order] = ahead
+        print('~'*20)
+        print('\n'.join(self.indexed_by_doi.keys()))
+        print('\n'.join(self.indexed_by_xml_name.keys()))
+        print('~'*20)
 
     def still_ahead_items(self):
         items = []
@@ -777,19 +777,16 @@ class AheadManager(object):
 
     def find_ahead(self, doi, filename):
         data = None
-        i = None
+        aop = None
         if doi is not None:
-            i = self.indexed_by_doi.get(doi)
-        if i is None:
-            i = self.indexed_by_xml_name.get(filename)
-        if i is not None:
-            data = self.still_ahead[i]
-        return data
+            aop = self.indexed_by_doi.get(doi)
+        if aop is None:
+            aop = self.indexed_by_xml_name.get(filename)
+        return aop
 
     def get_valid_ahead(self, article):
         ahead = None
         status = None
-
         if article.number == 'ahead':
             status = 'new aop'
         else:
@@ -806,7 +803,7 @@ class AheadManager(object):
                             status = 'aop missing PID'
                         else:
                             status = 'matched aop'
-                            if matched_rate != 100:
+                            if matched_rate != 1:
                                 status = 'partially matched aop'
                     else:
                         status = 'unmatched aop'
