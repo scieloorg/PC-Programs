@@ -238,7 +238,7 @@ def format_html_data(value, apply_message_style=False, width=None):
     elif isinstance(value, int):
         r = str(value)
     elif '<img' in value or '</a>' in value:
-        r = value.replace('<img', '<br/><img')
+        r = value
     elif '<' in value and '>' in value:
         r = display_xml(value, width)
     elif 'options: ' in value:
