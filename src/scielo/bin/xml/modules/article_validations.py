@@ -123,7 +123,7 @@ def validate_surname(label, value):
         suffix_list = [u'Nieto', u'Sobrino', u'Hijo', u'Neto', u'Sobrinho', u'Filho', u'Júnior', u'JÚNIOR', u'Junior', u'Senior', u'Sr', u'Jr']
 
         parts = value.split(' ')
-        if len(parts) > 1:
+        if len(parts) > 0:
             rejected = [item for item in parts if item in suffix_list]
             suffix = ' '.join(rejected)
 
@@ -839,6 +839,8 @@ class ReferenceContentValidation(object):
                 self.validate_element('volume', self.reference.volume), 
                 self.validate_element('issue', self.reference.issue), 
                 self.validate_element('fpage', self.reference.fpage), 
+                self.validate_element('source', self.reference.source), 
+                self.validate_element('year', self.reference.year), 
             ]
 
         _mixed = self.reference.mixed_citation.lower()

@@ -31,9 +31,6 @@ def journals_by_collection(filename):
                     if not _col in collections.keys():
                         collections[_col] = []
                     collections[_col].append(j)
-            else:
-                print('ignored:')
-                print(item)
         if 'Symbol' in collections.keys():
             del collections['Symbol']
         if 'Collection Name' in collections.keys():
@@ -69,7 +66,7 @@ def get_collection_journals_list(collections, collection_name):
         column.append(item['pissn'])
         column.append(item['eissn'])
         column.append(item['publisher-name'])
-        journals[item['journal-title'].lower()] = '|'.join(column)
+        journals[item['journal-title'].lower()] = collection_name + '|' + '|'.join(column)
     return journals
 
 
@@ -86,7 +83,7 @@ def get_all_journals_list(collections):
             column.append(item['pissn'])
             column.append(item['eissn'])
             column.append(item['publisher-name'])
-            journals[item['journal-title'].lower()] = '|'.join(column)
+            journals[item['collection-name'].lower() + ' | ' + item['journal-title'].lower()] = collection_key + '|' + '|'.join(column)
     return journals
 
 
