@@ -2643,7 +2643,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:choose>
 			<xsl:value-of select="@id"/>
 		</xsl:variable>
-		<xsl:apply-templates select="label|graphic|text()"></xsl:apply-templates>
+		<xsl:apply-templates select="label|graphic|text()|texmath|mmlmath"></xsl:apply-templates>
 	</xsl:template>
 	<xsl:template match="figgrp | tabwrap" mode="graphic">
 		<xsl:variable name="standardname">
@@ -2762,10 +2762,22 @@ et al.</copyright-statement>
 	<xsl:template match="mmlmath">
 		<xsl:choose>
 			<xsl:when test="*">
-				<xsl:copy-of select="*"/>
+				<xsl:apply-templates select="@*|*|text()" mode="mathml"></xsl:apply-templates>
 			</xsl:when>
 			<xsl:otherwise>
 				<xsl:value-of select="." disable-output-escaping="yes"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="mmlmath//*">
+		<xsl:choose>
+			<xsl:when test="contains(name(),'mml:')">
+				<xsl:copy-of select="."/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="mml:{name()}">
+					<xsl:apply-templates select="@*|*|text()" mode="mathml"/>
+				</xsl:element>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
