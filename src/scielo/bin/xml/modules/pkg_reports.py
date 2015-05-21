@@ -54,7 +54,7 @@ def write_article_contents_validations_report(new_name, report_filename, content
     title = ''
     if display_title:
         stats = html_reports.statistics_display(f, e, w, False)
-        title = ['Contents validations required by SciELO ', new_name]
+        title = ['Data Quality Control', new_name]
 
     html_reports.save(report_filename, title, stats + content)
     return (f, e, w)
@@ -111,11 +111,87 @@ def validate_package(articles, validate_order):
     return article_reports.toc_report_data(articles, validate_order)
 
 
+def pkg_references_stats(doc_items):
+    pkg_refs_stats = {}
+    rows = []
+
+    for xml_name in sorted_xml_name_by_order(doc_items):
+        doc = doc_items[xml_name]
+        columns = {}
+        columns['xml'] = xml_name
+        columns['references types'] = '; '.join([k + ': ' + str(doc.refstats[k]) for k in sorted(doc.refstats.keys())])
+        rows.append(columns)
+
+        for reftp, q in doc.refstats.items():
+            if not reftp in pkg_refs_stats.keys():
+                pkg_refs_stats[reftp] = 0
+            pkg_refs_stats[reftp] += q
+
+    columns = {}
+    columns['xml'] = 'total in the package'
+    columns['references types'] = '; '.join([k + ': ' + str(doc.refstats[k]) for k in sorted(doc.refstats.keys())])
+    rows.append(columns)
+
+    r = ''
+    r += html_reports.tag('h2', 'References types')
+    r += html_reports.sheet(['xml', 'references types'], [], rows)
+    return r
+
+
+def pkg_affiliations_stats(doc_items):
+    """
+    x autores com afiliação
+    x do país y
+    x sem estado
+    x sem cidade
+    x com instituição normalizada
+    """
+    pkg_stats = {}
+    rows = []
+
+    for xml_name in sorted_xml_name_by_order(doc_items):
+        doc = doc_items[xml_name]
+        with_aff, no_aff, mismatched_aff = doc.authors_aff_xref_stats
+
+        columns = {}
+        columns['xml'] = xml_name
+        columns['label'] = 'authors with aff'
+        columns['numbers'] = with_aff
+        rows.append(columns)
+
+        columns = {}
+        columns['xml'] = xml_name
+        columns['label'] = 'authors no aff'
+        columns['numbers'] = no_aff
+        rows.append(columns)
+
+        columns = {}
+        columns['xml'] = xml_name
+        columns['label'] = 'authors with aff, but incorrect @id or @rid'
+        columns['numbers'] = mismatched_aff
+        rows.append(columns)
+
+        for reftp, q in doc.refstats.items():
+            if not reftp in pkg_stats.keys():
+                pkg_stats[reftp] = 0
+            pkg_stats[reftp] += q
+
+    columns = {}
+    columns['xml'] = xml_name
+    columns['label'] = 'total in the package'
+    columns['numbers'] = '; '.join([k + ': ' + str(doc.refstats[k]) for k in sorted(doc.refstats.keys())])
+    rows.append(columns)
+
+    r = ''
+    r += html_reports.tag('h2', 'Affiations Statistics')
+    r += html_reports.sheet(['label', 'numbers'], [], rows)
+    return r
+
+
 def validate_pkg_items(org_manager, doc_items, doc_files_info_items, dtd_files, validate_order, display_all, xml_articles_status=None):
     articles_stats = {}
     articles_reports = {}
     articles_sheets = {}
-
     fatal_errors = 0
 
     for xml_name, doc_files_info in doc_files_info_items.items():
@@ -124,29 +200,31 @@ def validate_pkg_items(org_manager, doc_items, doc_files_info_items, dtd_files, 
                 os.unlink(f)
 
     print('Validating package: inicio')
-    register_log('pkg_reports.validate_pkg_items: inicio')
+
     for xml_name in sorted_xml_name_by_order(doc_items):
         doc = doc_items[xml_name]
         doc_files_info = doc_files_info_items[xml_name]
 
+        new_name = doc_files_info.new_name
+        print(new_name)
+        register_log(new_name)
+
         skip = False
         if xml_articles_status is not None:
             skip = xml_articles_status[doc_files_info.xml_name] == 'skip-update'
-        if not skip:
-            new_name = doc_files_info.new_name
-            xml_filename = doc_files_info.new_xml_filename
-            print(new_name)
-            register_log(new_name)
 
-            register_log('pkg_reports.validate_pkg_items: get_article_xml_validations_reports')
-            print(datetime.now().isoformat() + ' validating xml')
+        if skip:
+            print(' -- skept')
+        else:
+            xml_filename = doc_files_info.new_xml_filename
             xml_f, xml_e, xml_w = get_article_xml_validations_reports(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all is False)
 
-            print(datetime.now().isoformat() + ' validating contents')
-            register_log('pkg_reports.validate_pkg_items: get_article_contents_validations_report')
+            article_display_report, article_validation_report, sheet_data = article_reports.get_article_report_data(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order)
+            if article_display_report is None:
+                content = 'FATAL ERROR: Unable to get data of ' + new_name + '.'
+            else:
+                content = article_reports.format_report(article_display_report, article_validation_report, display_all)
 
-            content, sheet_data, _log_items = article_reports.get_report_content(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, display_all)
-            print(datetime.now().isoformat() + ' writing contents validations report')
             data_f, data_e, data_w = write_article_contents_validations_report(new_name, doc_files_info.data_report_filename, content, display_all)
 
             articles_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
@@ -155,15 +233,11 @@ def validate_pkg_items(org_manager, doc_items, doc_files_info_items, dtd_files, 
 
             articles_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
 
-            register_log('pkg_reports.validate_pkg_items: authors_sheet_data ...')
             if sheet_data is not None:
-                print(datetime.now().isoformat() + ' creating lists')
                 articles_sheets[new_name] = (sheet_data.authors_sheet_data(new_name), sheet_data.sources_sheet_data(new_name))
-                print(datetime.now().isoformat() + ' lists created')
             else:
                 articles_sheets[new_name] = (None, None)
 
-    register_log('pkg_reports.validate_pkg_items: fim')
     print('Validating package: fim')
     return (fatal_errors, articles_stats, articles_reports, articles_sheets)
 
@@ -242,7 +316,7 @@ def get_articles_report_text(articles_reports, articles_stats, conversion_report
 
         if data_f + data_e + data_w > 0:
             s = html_reports.statistics_display(data_f, data_e, data_w)
-            validations_text += html_reports.collapsible_block('datarep' + str(index), 'Contents validations (' + os.path.basename(rep3) + '): ' + s, get_report_text(rep3), html_reports.get_stats_numbers_style(data_f, data_e, data_w))
+            validations_text += html_reports.collapsible_block('datarep' + str(index), 'Data quality control (' + os.path.basename(rep3) + '): ' + s, get_report_text(rep3), html_reports.get_stats_numbers_style(data_f, data_e, data_w))
 
         if conversion_reports is not None:
             r = conversion_reports.get(new_name)

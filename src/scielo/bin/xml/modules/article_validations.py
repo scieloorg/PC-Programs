@@ -208,6 +208,9 @@ class ArticleContentValidation(object):
         #print(datetime.now().isoformat() + ' validations')
         items.append(self.total_of_references)
         #print(datetime.now().isoformat() + ' validations')
+        items.append(self.refstats)
+        items.append(('total of references', 'INFO', self.article.total_of_references))
+        items.append(self.ref_display_only_stats)
         items.append(self.titles)
         #print(datetime.now().isoformat() + ' validations')
         items.append(self.contrib)
@@ -277,6 +280,29 @@ class ArticleContentValidation(object):
         . t pr
         """
         return article_utils.display_values_with_attributes('related articles', self.article.related_articles)
+
+    @property
+    def refstats(self):
+        r = []
+        non_scholar_types = [k for k in self.article.refstats.keys() if not k in attributes.BIBLIOMETRICS_USE]
+        sch1 = sum([t for k, t in self.article.refstats.items() if k in attributes.scholars_level1])
+        sch2 = sum([t for k, t in self.article.refstats.items() if k in attributes.scholars_level2])
+        total = sum(self.article.refstats.values())
+        nonsch = total - sch1 - sch2
+        msg = '; '.join([k + ': ' + str(t) for k, t in self.article.refstats.items()])
+        status = 'INFO'
+        if nonsch >= sch1 + sch2 or sch1 < sch2:
+            status = 'WARNING'
+            msg += '. Check the element-citation/@publication-type.'
+        r.append(('quantity of reference types', status, msg))
+        return r
+
+    @property
+    def ref_display_only_stats(self):
+        r = []
+        if self.article.display_only_stats > 0:
+            r.append(('element-citation/@specific-use="display-only"', 'WARNING', self.article.display_only_stats))
+        return r
 
     @property
     def journal_title(self):
@@ -723,7 +749,7 @@ class ArticleContentValidation(object):
         message = []
         reftypes_and_tag = {'aff': 'aff', 'app': 'app', 'author-notes': 'fn', 'bibr': 'ref', 'boxed-text': 'boxed-text', 'contrib': 'fn', 'corresp': 'corresp', 'disp-formula': 'disp-formula', 'fig': 'fig', 'fn': 'fn', 'list': 'list', 'other': '?', 'supplementary-material': 'supplementary-material', 'table': 'table-wrap'}
 
-        id_and_elem_name = {node.attrib.get('id'):node.tag for node in self.article.elements_which_has_id_attribute if node.attrib.get('id') is not None}
+        id_and_elem_name = {node.attrib.get('id'): node.tag for node in self.article.elements_which_has_id_attribute if node.attrib.get('id') is not None}
 
         for xref in self.article.xref_nodes:
             if xref['rid'] is None:
@@ -797,6 +823,8 @@ class ReferenceContentValidation(object):
             r.append(item)
         for item in self.authors_list:
             r.append(item)
+        for item in self.year:
+            r.append(item)
         return r
 
     @property
@@ -832,7 +860,7 @@ class ReferenceContentValidation(object):
                 self.validate_element('chapter-title', self.reference.chapter_title), 
                 self.validate_element('publisher-name', self.reference.publisher_name), 
                 self.validate_element('publisher-loc', self.reference.publisher_loc), 
-                self.validate_element('comment (thesis degree)', self.reference.degree), 
+                self.validate_element('comment[@content-type="degree"]', self.reference.degree), 
                 self.validate_element('conf-name', self.reference.conference_name), 
                 self.validate_element('date-in-citation[@content-type="access-date"] or date-in-citation[@content-type="update"]', self.reference.cited_date), 
                 self.validate_element('ext-link', self.reference.ext_link), 
@@ -847,7 +875,7 @@ class ReferenceContentValidation(object):
         if 'conference' in _mixed or 'proceeding' in _mixed:
             if self.reference.publication_type != 'confproc':
                 r.append(('@publication-type', 'WARNING', 'Check if @publication-type is correct. This reference looks like confproc.'))
-        if 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed:
+        if ' dissert' in _mixed or 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed:
             if self.reference.publication_type != 'thesis':
                 r.append(('@publication-type', 'WARNING', 'Check if @publication-type is correct. This reference looks like thesis.'))
 
@@ -858,7 +886,7 @@ class ReferenceContentValidation(object):
         any_error_level = list(set([status for label, status, message in r if status in ['FATAL ERROR']]))
         if len(any_error_level) == 0:
             if self.reference.ref_status == 'display-only':
-                r.append(('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete.'))
+                r.append(('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete. Expected at least the elements: ' + ' | '.join(attributes.REFERENCE_REQUIRED_SUBELEMENTS.get(self.reference.publication_type))))
         else:
             if self.reference.ref_status == 'display-only' and self.reference.publication_type == 'journal':
                 items.append(('Incomplete Reference', 'WARNING', 'Check if the elements of this reference is properly identified.'))
@@ -874,7 +902,7 @@ class ReferenceContentValidation(object):
         r = None
         if self.reference.ext_link is not None:
             if not self.reference.ext_link.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').strip() in self.reference.mixed_citation:
-                r = ('ext-link', 'ERROR', '"' + self.reference.ext_link + '" is missing in "' + self.reference.mixed_citation + '')
+                r = ('ext-link', 'ERROR', '"' + self.reference.ext_link + '" is missing in "' + self.reference.mixed_citation + '"')
         return r
 
     @property
@@ -904,10 +932,19 @@ class ReferenceContentValidation(object):
 
     @property
     def year(self):
-        error_level = 'ERROR'
-        if self.reference.publication_type in attributes.BIBLIOMETRICS_USE or self.reference.article_title is not None:
-            error_level = 'FATAL ERROR'
-        return required('year', self.reference.year, error_level)
+        r = []
+        _y = self.reference.formatted_year
+        if _y is not None:
+            if _y.isdigit():
+                if int(_y) > datetime.now().isoformat()[0:4]:
+                    r.append(('year', 'FATAL ERROR', _y + ' must not be greater than ' + datetime.now().isoformat()[0:4]))
+            elif 's.d' in _y:
+                r.append(('year', 'INFO', _y))
+            elif 's/d' in _y:
+                r.append(('year', 'INFO', _y))
+            else:
+                r.append(('year', 'FATAL ERROR', _y + ' is not a number nor in an expected format.'))
+        return r
 
     @property
     def publisher_name(self):

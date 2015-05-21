@@ -100,8 +100,10 @@ ROLE = {
 }
 
 
-BIBLIOMETRICS_USE = ['journal', 'book', 'thesis', 'conf-proc']
+BIBLIOMETRICS_USE = ['journal', 'book', 'thesis', 'confproc']
 
+scholars_level1 = ['journal', 'book']
+scholars_level2 = ['thesis', 'confproc']
 
 PUBLICATION_TYPE = []
 PUBLICATION_TYPE.append('journal')

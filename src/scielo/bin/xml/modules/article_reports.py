@@ -110,10 +110,6 @@ class ArticleDisplayReport(object):
         self.sheet_data = sheet_data
 
     @property
-    def summary(self):
-        return self.issue_header + self.article_front
-
-    @property
     def article_front(self):
         r = self.xml_name + ' is invalid.'
         if self.article.tree is not None:
@@ -353,6 +349,18 @@ class ArticleDisplayReport(object):
         r += html_reports.sheet(t_header, [], sheet_data)
         return r
 
+    @property
+    def references_stats(self):
+        r = html_reports.tag('h2', 'references')
+        sheet_data = []
+        for ref_type, q in self.article.refstats.items():
+            row = {}
+            row['element-citation/@publication-type'] = ref_type
+            row['quantity'] = q
+            sheet_data.append(row)
+        r += html_reports.sheet(['element-citation/@publication-type', 'quantity'], [], sheet_data)
+        return r
+
 
 class ArticleValidationReport(object):
 
@@ -586,74 +594,35 @@ def toc_report_data(articles, validate_order):
     return (toc_f, toc_e, toc_w, toc_report_content)
 
 
-def get_report_content(org_manager, article, new_name, package_path, validate_order, display_all):
-    register_log('get_report_content: inicio')
+def get_article_report_data(org_manager, article, new_name, package_path, validate_order):
     if article.tree is None:
-        content = 'FATAL ERROR: Unable to get data of ' + new_name + '.'
         sheet_data = None
+        article_display_report = None
+        article_validation_report = None
     else:
-        print(datetime.now().isoformat() + ' - validating contents 1')
-        register_log('get_report_content: article_validations.ArticleContentValidation')
-        #article_validation = article_validations.ArticleContentValidation(org_manager, article, validate_order, display_all)
         article_validation = article_validations.ArticleContentValidation(org_manager, article, validate_order, False)
-
-        print(datetime.now().isoformat() + ' - validating contents 2')
-        register_log('get_report_content: ArticleSheetData')
         sheet_data = ArticleSheetData(article, article_validation)
-
-        print(datetime.now().isoformat() + ' - validating contents 3')
-        register_log('get_report_content: ArticleDisplayReport')
         article_display_report = ArticleDisplayReport(article, sheet_data, package_path, new_name)
-
-        print(datetime.now().isoformat() + ' - validating contents 4')
-        register_log('get_report_content: ArticleValidationReport')
         article_validation_report = ArticleValidationReport(article_validation)
-
-        print(datetime.now().isoformat() + ' - validating contents 5')
-        register_log('get_report_content: validate_contents')
-        content = validate_contents(article_display_report, article_validation_report, display_all)
-    register_log('get_report_content: fim')
-    print(datetime.now().isoformat() + ' - validating contents fim')
-    return (content, sheet_data, log_items)
+    return (article_display_report, article_validation_report, sheet_data)
 
 
-def validate_contents(data_display, data_validation, display_all):
+def format_report(article_display_report, article_validation_report, display_all):
     content = []
-    print(datetime.now().isoformat() + ' - validate_contents: inicio')
-
-    register_log('validate_contents: data_display.summary')
-    print(datetime.now().isoformat() + ' - validate_contents: summary')
-    content.append(data_display.summary)
-
-    register_log('validate_contents: data_validation.validations')
-    print(datetime.now().isoformat() + ' - validate_contents: contents')
-    content.append(data_validation.validations(not display_all))
-
-    register_log('validate_contents: data_display.files_and_href')
-    print(datetime.now().isoformat() + ' - validate_contents: files_and_href')
-    content.append(data_display.files_and_href)
 
     if display_all:
-        register_log('validate_contents: data_display.article_body')
-        print(datetime.now().isoformat() + ' - validate_contents: article_body')
-        content.append(data_display.article_body)
+        content.append(article_display_report.issue_header)
 
-        register_log('validate_contents: data_display.article_back')
-        print(datetime.now().isoformat() + ' - validate_contents: article_back')
-        content.append(data_display.article_back)
-
-        register_log('validate_contents: data_display.authors_sheet')
-        print(datetime.now().isoformat() + ' - validate_contents: authors_sheet')
-        content.append(data_display.authors_sheet)
-
-        register_log('validate_contents: data_display.sources_sheet')
-        print(datetime.now().isoformat() + ' - validate_contents: sources_sheet')
-        content.append(data_display.sources_sheet)
-
-    print(datetime.now().isoformat() + ' - validate_contents: join reports')
-    res = html_reports.join_texts(content)
-    print(datetime.now().isoformat() + ' - validate_contents: fim')
-    return res
+    content.append(article_display_report.article_front)
+    content.append(article_validation_report.validations(not display_all))
+    content.append(article_display_report.files_and_href)
+    content.append(article_display_report.references_stats)
+    if display_all:
+        content.append(article_display_report.article_body)
+        content.append(article_display_report.article_back)
+        content.append(article_display_report.authors_sheet)
+        content.append(article_display_report.sources_sheet)
+    return html_reports.join_texts(content)
 
 
 def example():

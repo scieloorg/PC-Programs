@@ -253,6 +253,7 @@ def convert_package(src_path):
     toc_report = ''
     sheets = ''
     conclusion_msg = ''
+    references_stats = ''
 
     conversion_status_summary_report = ''
     aop_status_summary_report = ''
@@ -304,6 +305,9 @@ def convert_package(src_path):
             conclusion_msg += report_conclusion_message(scilista_item, acron_issue_label, 0, len(pkg_articles), None)
 
         elif len(selected_articles) > 0:
+
+            references_stats = pkg_reports.pkg_affiliations_stats(pkg_articles) + pkg_reports.pkg_references_stats(pkg_articles)
+
             fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_articles_status)
 
             scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders)
@@ -342,12 +346,13 @@ def convert_package(src_path):
     texts = []
     texts.append(html_reports.section('Package: XML list', pkg_reports.xml_list(pkg_path, xml_filenames)))
     texts.append(issue_error_msg)
-    texts.append(toc_report)
     texts.append(conclusion_msg)
-    texts.append(conversion_status_summary_report)
-    texts.append(aop_status_summary_report)
     texts.append(before_conversion)
     texts.append(after_conversion)
+    texts.append(conversion_status_summary_report)
+    texts.append(aop_status_summary_report)
+    texts.append(references_stats)
+    texts.append(toc_report)
     texts.append(validations_report)
     texts.append(sheets)
 
@@ -584,7 +589,7 @@ def report_status(status, style=None):
 
 def report_conclusion_message(scilista_item, issue_label, converted, not_converted, selected_articles):
     text = ''
-    app_site = converter_env.web_app_site if converter_env.web_app_site  is not None else 'scielo web site'
+    app_site = converter_env.web_app_site if converter_env.web_app_site is not None else 'scielo web site'
     text += html_reports.p_message('converted: ' + str(converted) + '/' + str(selected_articles))
     if scilista_item is None:
         if selected_articles is None:

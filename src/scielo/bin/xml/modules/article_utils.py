@@ -219,3 +219,23 @@ def remove_xref(article_title):
             print(article_title)
             print(text)
     return text
+
+
+def four_digits_year(year):
+    if year is not None:
+        if not year.isdigit():
+            if not 's/d' in year and not 's.d' in year:
+                year = year.replace('/', '-')
+                if '-' in year:
+                    year = year.split('-')
+                    year = [y for y in year if len(y) == 4]
+                    if len(year) == 1:
+                        year = year[0]
+                    else:
+                        year = ''
+                if len(year) > 4:
+                    if year[0:4].isdigit():
+                        year = year[0:4]
+                    elif year[1:5].isdigit():
+                        year = year[1:5]
+    return year

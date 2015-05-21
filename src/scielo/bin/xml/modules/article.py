@@ -345,6 +345,43 @@ class ArticleXML(object):
         return k
 
     @property
+    def authors_aff_xref_stats(self):
+        with_aff = []
+        no_aff = []
+        aff_ids = [aff.id for aff in self.affiliations if aff.id is not None]
+        for contrib in self.contrib_names:
+            if len(contrib.xref) == 0:
+                no_aff.append(contrib)
+            else:
+                q = 0
+                for xref in contrib.xref:
+                    if xref in aff_ids:
+                        q += 1
+                if q != len(contrib.xref):
+                    mismatched_aff_id.append(contrib)
+                else:
+                    with_aff.append(contrib)
+        return (with_aff, no_aff, mismatched_aff_id)
+
+    @property
+    def authors_without_aff(self):
+        k = []
+        if self.article_meta is not None:
+            for contrib in self.article_meta.findall('.//contrib'):
+                if contrib.findall('name'):
+                    p = PersonAuthor()
+                    p.fname = contrib.findtext('name/given-names')
+                    p.surname = contrib.findtext('name/surname')
+                    p.suffix = contrib.findtext('name/suffix')
+                    p.prefix = contrib.findtext('name/prefix')
+                    p.contrib_id = contrib.findtext('contrib-id[@contrib-id-type="orcid"]')
+                    p.role = contrib.attrib.get('contrib-type')
+                    for xref_item in contrib.findall('xref[@ref-type="aff"]'):
+                        p.xref.append(xref_item.attrib.get('rid'))
+                    k.append(p)
+        return k
+
+    @property
     def first_author_surname(self):
         surname = None
         authors = self.contrib_names
@@ -680,6 +717,24 @@ class ArticleXML(object):
             for ref in self.back.findall('.//ref'):
                 refs.append(ReferenceXML(ref))
         return refs
+
+    @property
+    def refstats(self):
+        _refstats = {}
+        for ref in self.references:
+            if not ref.publication_type in _refstats.keys():
+                _refstats[ref.publication_type] = 0
+            _refstats[ref.publication_type] += 1
+        return _refstats
+
+    @property
+    def display_only_stats(self):
+        q = 0
+        for ref in self.references:
+            if not ref.ref_status is None:
+                if ref.ref_status == 'display-only':
+                    q += 1
+        return q
 
     @property
     def press_release_id(self):
@@ -1079,6 +1134,10 @@ class ReferenceXML(object):
             if self.publication_type == 'confproc':
                 _year = self.conference_date
         return _year
+
+    @property
+    def formatted_year(self):
+        return article_utils.four_digits_year(self.year)
 
     @property
     def publisher_name(self):
