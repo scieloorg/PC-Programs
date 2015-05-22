@@ -146,7 +146,6 @@ def pkg_affiliations_stats(doc_items):
     x sem cidade
     x com instituição normalizada
     """
-    pkg_stats = {}
     rows = []
 
     for xml_name in sorted_xml_name_by_order(doc_items):
@@ -156,35 +155,24 @@ def pkg_affiliations_stats(doc_items):
         columns = {}
         columns['xml'] = xml_name
         columns['label'] = 'authors with aff'
-        columns['numbers'] = with_aff
+        columns['numbers'] = len(with_aff)
         rows.append(columns)
 
         columns = {}
         columns['xml'] = xml_name
         columns['label'] = 'authors no aff'
-        columns['numbers'] = no_aff
+        columns['numbers'] = len(no_aff)
         rows.append(columns)
 
         columns = {}
         columns['xml'] = xml_name
         columns['label'] = 'authors with aff, but incorrect @id or @rid'
-        columns['numbers'] = mismatched_aff
+        columns['numbers'] = len(mismatched_aff)
         rows.append(columns)
-
-        for reftp, q in doc.refstats.items():
-            if not reftp in pkg_stats.keys():
-                pkg_stats[reftp] = 0
-            pkg_stats[reftp] += q
-
-    columns = {}
-    columns['xml'] = xml_name
-    columns['label'] = 'total in the package'
-    columns['numbers'] = '; '.join([k + ': ' + str(doc.refstats[k]) for k in sorted(doc.refstats.keys())])
-    rows.append(columns)
 
     r = ''
     r += html_reports.tag('h2', 'Affiations Statistics')
-    r += html_reports.sheet(['label', 'numbers'], [], rows)
+    r += html_reports.sheet(['xml', 'label', 'numbers'], [], rows)
     return r
 
 

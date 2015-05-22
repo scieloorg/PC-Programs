@@ -348,6 +348,7 @@ class ArticleXML(object):
     def authors_aff_xref_stats(self):
         with_aff = []
         no_aff = []
+        mismatched_aff_id = []
         aff_ids = [aff.id for aff in self.affiliations if aff.id is not None]
         for contrib in self.contrib_names:
             if len(contrib.xref) == 0:
