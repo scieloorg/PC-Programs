@@ -83,7 +83,7 @@ def get_all_journals_list(collections):
             column.append(item['pissn'])
             column.append(item['eissn'])
             column.append(item['publisher-name'])
-            journals[item['collection-name'].lower() + ' | ' + item['journal-title'].lower()] = collection_key + '|' + '|'.join(column)
+            journals[item['journal-title'].lower() + ' | ' + item['collection-name'].lower()] = collection_key + '|' + '|'.join(column)
     return journals
 
 
