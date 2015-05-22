@@ -870,8 +870,10 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             print('services loaded!')
             print(datetime.now().isoformat())
 
+            texts.append(pkg_reports.pkg_authors_and_affiliations_stats(articles))
             texts.append(pkg_reports.pkg_affiliations_stats(articles))
-            texts.append(pkg_reports.pkg_references_stats(articles))
+            #texts.append(pkg_reports.pkg_references_stats(articles))
+            texts.append(pkg_reports.pkg_year_references_stats(articles))
 
             fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, from_markup)
 

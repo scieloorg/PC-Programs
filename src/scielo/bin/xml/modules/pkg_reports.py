@@ -119,7 +119,7 @@ def pkg_references_stats(doc_items):
         doc = doc_items[xml_name]
         columns = {}
         columns['xml'] = xml_name
-        columns['references types'] = '; '.join([k + ': ' + str(doc.refstats[k]) for k in sorted(doc.refstats.keys())])
+        columns['references types'] = [k + ': ' + str(doc.refstats[k]) for k in sorted(doc.refstats.keys())]
         rows.append(columns)
 
         for reftp, q in doc.refstats.items():
@@ -129,12 +129,119 @@ def pkg_references_stats(doc_items):
 
     columns = {}
     columns['xml'] = 'total in the package'
-    columns['references types'] = '; '.join([k + ': ' + str(doc.refstats[k]) for k in sorted(doc.refstats.keys())])
+    columns['references types'] = [k + ': ' + str(pkg_refs_stats[k]) for k in sorted(pkg_refs_stats.keys())]
     rows.append(columns)
 
     r = ''
     r += html_reports.tag('h2', 'References types')
     r += html_reports.sheet(['xml', 'references types'], [], rows)
+    return r
+
+
+def pkg_year_references_stats(doc_items):
+    rows = []
+    issue_year_type = {}
+    pkg_type = {}
+    for xml_name in sorted_xml_name_by_order(doc_items):
+        doc = doc_items[xml_name]
+        year_type = {}
+        for ref in doc.references:
+            if ref.year is None:
+                key = ref.publication_type + ' None'
+            else:
+                key = ref.publication_type + ' ' + ref.year
+            if not key in year_type.keys():
+                year_type[key] = 0
+                issue_year_type[key] = 0
+            year_type[key] += 1
+            issue_year_type[key] += 1
+            if not ref.publication_type in pkg_type.keys():
+                pkg_type[ref.publication_type] = 0
+            pkg_type[ref.publication_type] += 1
+
+        columns = {}
+        columns['xml'] = xml_name
+        columns['sorted by'] = 'ref types'
+        columns['statistics'] = [k + ': ' + str(doc.refstats[k]) for k in sorted(doc.refstats.keys())]
+        rows.append(columns)
+
+        columns = {}
+        columns['xml'] = xml_name
+        columns['sorted by'] = 'ref types vs year'
+        columns['statistics'] = [k + ': ' + str(year_type[k]) for k in sorted(year_type.keys())]
+        rows.append(columns)
+
+    columns = {}
+    columns['xml'] = 'total in the package'
+    columns['sorted by'] = 'ref types'
+    columns['statistics'] = [k + ': ' + str(pkg_type[k]) for k in sorted(pkg_type.keys())]
+    rows.append(columns)
+
+    columns = {}
+    columns['xml'] = 'total in the package'
+    columns['sorted by'] = 'ref types vs year'
+    columns['statistics'] = [k + ': ' + str(issue_year_type[k]) for k in sorted(issue_year_type.keys())]
+    rows.append(columns)
+
+    r = ''
+    r += html_reports.tag('h2', 'References Types')
+    r += html_reports.sheet(['xml', 'sorted by', 'statistics'], [], rows)
+    return r
+
+
+def pkg_authors_and_affiliations_stats(doc_items):
+    """
+    x autores com afiliação
+    x do país y
+    x sem estado
+    x sem cidade
+    x com instituição normalizada
+    """
+    pkg_xref_counts = {}
+    statistics = []
+    for xml_name in sorted_xml_name_by_order(doc_items):
+        doc = doc_items[xml_name]
+
+        doc_xref_counts = {}
+        doc_invalid_xref = {}
+        aff_ids = [aff.id for aff in doc.affiliations if aff.id is not None]
+        for contrib in doc.contrib_names:
+            for xref in contrib.xref:
+                if not xref in aff_ids:
+                    if not 'not found aff/@id=' + xref in doc_invalid_xref.keys():
+                        doc_invalid_xref['not found aff/@id=' + xref] = 0
+                    doc_invalid_xref['not found aff/@id=' + xref] += 1
+            label = 'authors with ' + str(len(contrib.xref)) + ' affs'
+            if not label in doc_xref_counts.keys():
+                doc_xref_counts[label] = 0
+            if not label in pkg_xref_counts.keys():
+                pkg_xref_counts[label] = 0
+            doc_xref_counts[label] += 1
+            pkg_xref_counts[label] += 1
+
+        columns = {}
+        columns['xml'] = xml_name
+        columns['notes'] = ''
+
+        columns['statistics'] = doc_xref_counts
+        statistics.append(columns)
+        if len(doc_invalid_xref) > 0:
+            columns = {}
+            columns['xml'] = xml_name
+            columns['notes'] = 'invalid xref'
+
+            columns['statistics'] = doc_invalid_xref
+            statistics.append(columns)
+
+    columns = {}
+    columns['xml'] = xml_name
+    columns['notes'] = ''
+    columns['statistics'] = pkg_xref_counts
+    statistics.append(columns)
+
+    r = ''
+    r += html_reports.tag('h2', 'Authors and their affiliations')
+    r += html_reports.sheet(['xml', 'notes', 'statistics'], [], statistics)
     return r
 
 
@@ -146,33 +253,68 @@ def pkg_affiliations_stats(doc_items):
     x sem cidade
     x com instituição normalizada
     """
+    pkg_affs = {}
+    pkg_norm_affs = {}
     rows = []
-
+    normalized = {}
     for xml_name in sorted_xml_name_by_order(doc_items):
         doc = doc_items[xml_name]
-        with_aff, no_aff, mismatched_aff = doc.authors_aff_xref_stats
+
+        doc_affs = {}
+        doc_norm_affs = {}
+        for aff in doc.affiliations:
+            items = []
+            for item in [aff.orgname, aff.norgname, aff.city, aff.state, aff.i_country, aff.country]:
+                if item is None:
+                    item = 'None'
+                items.append(item)
+            key = ' | '.join(items)
+            if not key in doc_affs.keys():
+                doc_affs[key] = 0
+            if not key in pkg_affs.keys():
+                pkg_affs[key] = 0
+            doc_affs[key] += 1
+            pkg_affs[key] += 1
+
+            items = []
+            for item in [aff.i_country, aff.norgname]:
+                if item is None:
+                    item = 'None'
+                items.append(item)
+            key = ' | '.join(items)
+            if not key in doc_norm_affs.keys():
+                doc_norm_affs[key] = 0
+            if not key in pkg_norm_affs.keys():
+                pkg_norm_affs[key] = 0
+            doc_norm_affs[key] += 1
+            pkg_norm_affs[key] += 1
 
         columns = {}
         columns['xml'] = xml_name
-        columns['label'] = 'authors with aff'
-        columns['numbers'] = len(with_aff)
+        columns['notes'] = 'full'
+        columns['statistics'] = doc_affs
         rows.append(columns)
-
         columns = {}
         columns['xml'] = xml_name
-        columns['label'] = 'authors no aff'
-        columns['numbers'] = len(no_aff)
+        columns['notes'] = 'normalized'
+        columns['statistics'] = doc_norm_affs
         rows.append(columns)
 
-        columns = {}
-        columns['xml'] = xml_name
-        columns['label'] = 'authors with aff, but incorrect @id or @rid'
-        columns['numbers'] = len(mismatched_aff)
-        rows.append(columns)
+    columns = {}
+    columns['xml'] = 'package'
+    columns['notes'] = 'full'
+    columns['statistics'] = {k: pkg_affs[k] for k in sorted(pkg_affs.keys())}
+    rows.append(columns)
+
+    columns = {}
+    columns['xml'] = 'package'
+    columns['notes'] = 'normalized'
+    columns['statistics'] = {k: pkg_norm_affs[k] for k in sorted(pkg_norm_affs.keys())}
+    rows.append(columns)
 
     r = ''
-    r += html_reports.tag('h2', 'Affiations Statistics')
-    r += html_reports.sheet(['xml', 'label', 'numbers'], [], rows)
+    r += html_reports.tag('h2', 'Affiliations Statistics')
+    r += html_reports.sheet(['xml', 'notes', 'statistics'], [], rows)
     return r
 
 
