@@ -1070,6 +1070,7 @@ app;#RUE#;#TRUE#
 series
 
 versegrp
+label;#FALSE#;#FALSE#
 versline;#FALSE#;#TRUE#
 versegrp;#FALSE;#TRUE#
 attrib;#FALSE;#TRUE#
