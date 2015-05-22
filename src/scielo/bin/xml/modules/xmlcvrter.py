@@ -306,7 +306,10 @@ def convert_package(src_path):
 
         elif len(selected_articles) > 0:
 
-            references_stats = pkg_reports.pkg_affiliations_stats(pkg_articles) + pkg_reports.pkg_references_stats(pkg_articles)
+            references_stats = pkg_reports.pkg_authors_and_affiliations_stats(pkg_articles)
+            references_stats += pkg_reports.pkg_affiliations_stats(pkg_articles)
+            #references_stats += pkg_reports.pkg_references_stats(pkg_articles)
+            references_stats += pkg_reports.pkg_year_references_stats(pkg_articles)
 
             fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_articles_status)
 

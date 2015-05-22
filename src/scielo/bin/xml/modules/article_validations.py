@@ -649,18 +649,28 @@ class ArticleContentValidation(object):
 
     @property
     def history(self):
+        article_year = self.article.article_pub_date.get('year')
+        if article_year is None:
+            article_year = self.article.issue_pub_date.get('year')
+        if article_year is None:
+            article_year = datetime.now().isoformat()[0:4]
         received = article_utils.format_dateiso(self.article.received)
         accepted = article_utils.format_dateiso(self.article.accepted)
 
         if received is not None and accepted is not None:
-            r = [('history', 'OK', received + ' - ' + accepted)]
-            if received > accepted:
-                r = 'received (' + received + ')  must be a date before accepted (' + accepted + ').'
-                r = [('history', 'FATAL ERROR', r)]
+            r = [('history', 'INFO', received + ' - ' + accepted)]
+            if not received < accepted < article_year:
+                r = 'received (' + received + '); accepted (' + accepted + '); publication (' + article_year + ').'
+                r = [('dates are not correct', 'FATAL ERROR', r)]
+        elif received is None and accepted is None:
+            r = [('history', 'INFO', 'there is no history dates')]
         else:
             r = []
-            r.append(conditional_required('history: received', received))
-            r.append(conditional_required('history: accepted', accepted))
+            if received is None:
+                r.append(required('history: received', received))
+            if accepted is None:
+                r.append(required('history: accepted', accepted))
+
         return r
 
     @property
@@ -686,8 +696,15 @@ class ArticleContentValidation(object):
     @property
     def references(self):
         r = []
+        year = self.article.received
+        if year is None:
+            year = self.article.accepted
+        if year is None:
+            year = self.article.article_pub_date.get('year')
+        if year is None:
+            year = self.article.issue_pub_date.get('year')
         for ref in self.article.references:
-            r.append((ref, ReferenceContentValidation(ref).evaluate()))
+            r.append((ref, ReferenceContentValidation(ref).evaluate(year)))
         return r
 
     @property
@@ -813,7 +830,7 @@ class ReferenceContentValidation(object):
     def __init__(self, reference):
         self.reference = reference
 
-    def evaluate(self):
+    def evaluate(self, article_year):
         r = []
         r.append(self.xml)
         r.append(self.mixed_citation)
@@ -823,7 +840,7 @@ class ReferenceContentValidation(object):
             r.append(item)
         for item in self.authors_list:
             r.append(item)
-        for item in self.year:
+        for item in self.year(article_year):
             r.append(item)
         return r
 
@@ -930,13 +947,14 @@ class ReferenceContentValidation(object):
                 r.append(('invalid person', 'WARNING', type(person)))
         return r
 
-    @property
-    def year(self):
+    def year(self, article_year):
         r = []
+        if article_year is None:
+            article_year = datetime.now().isoformat()[0:4]
         _y = self.reference.formatted_year
         if _y is not None:
             if _y.isdigit():
-                if int(_y) > datetime.now().isoformat()[0:4]:
+                if int(_y) > article_year:
                     r.append(('year', 'FATAL ERROR', _y + ' must not be greater than ' + datetime.now().isoformat()[0:4]))
             elif 's.d' in _y:
                 r.append(('year', 'INFO', _y))
