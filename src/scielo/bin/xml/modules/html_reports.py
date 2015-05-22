@@ -313,3 +313,12 @@ def section(title, content):
     r += content
     r += '</div>'
     return r
+
+
+#def pie_graphic(data):
+#    fig = matplotlib.pyplot.figure(figsize=(2, 1))
+#    #p1 = fig.add_subplot(1,2,1)
+#    #p1.pie(amino_values, labels=amino_names)
+#    p2 = fig.add_subplot(1, 2, 2)
+#    p2.pie(data.values(), labels=data.keys())
+#    fig.show()

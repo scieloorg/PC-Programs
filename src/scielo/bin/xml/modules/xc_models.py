@@ -345,7 +345,10 @@ class ArticleRecords(object):
             rec_c['32']['_'] = item.issue
             rec_c['32']['s'] = item.supplement
             rec_c['63'] = item.edition
-            rec_c['65'] = item.year + '0000' if item.year is not None else None
+            rec_c['64'] = item.year
+            if item.formatted_year is not None:
+                if item.formatted_year.isdigit():
+                    rec_c['65'] = str(int(item.formatted_year) + 100000000)[1:]
             rec_c['66'] = item.publisher_loc
             rec_c['62'] = item.publisher_name
             rec_c['514'] = {'f': item.fpage, 'l': item.lpage, 'r': item.page_range}
