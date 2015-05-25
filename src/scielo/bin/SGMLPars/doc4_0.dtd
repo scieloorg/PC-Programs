@@ -129,7 +129,7 @@
                     ack | glossary | deflist | app |
                     refs |
                     fngrp | cc |
-                    docresp | subdoc 
+                    docresp | subdoc  | appgrp
                     )+
                     +(%i.float;)>
 <!ATTLIST doc
@@ -147,11 +147,11 @@
           supplvol CDATA #IMPLIED
           issueno  CDATA #IMPLIED
           supplno  CDATA #IMPLIED 
-          isidpart CDATA #IMPLIED 
           dateiso  CDATA #REQUIRED
+          season CDATA #IMPLIED 
           order CDATA #REQUIRED
           fpage    CDATA #REQUIRED
-          fpageseq    CDATA #REQUIRED
+          fpageseq    CDATA #IMPLIED
           lpage    CDATA #REQUIRED
           elocatid CDATA #IMPLIED 
           artdate CDATA #IMPLIED
@@ -211,7 +211,7 @@
 <!ATTLIST abstract
           language CDATA #REQUIRED >
 
-<!ELEMENT kwdgrp   - - (kwd)+  >
+<!ELEMENT kwdgrp   - - (sectitle?, (kwd)+)  >
 <!ATTLIST kwdgrp
           language CDATA #REQUIRED >
           
@@ -219,7 +219,7 @@
 
 <!ELEMENT doctitle   - - (subtitle | (#PCDATA))  >
 <!ATTLIST doctitle
-          language CDATA #REQUIRED >
+          language CDATA #IMPLIED >
 
 <!ELEMENT rdoctitl   - - (#PCDATA)  >
 
@@ -242,13 +242,13 @@
 <!ATTLIST accepted
           dateiso  CDATA #REQUIRED >
 
-<!ELEMENT refs     - - (ref+) >
+<!ELEMENT refs    - - (sectitle?, ref+) >
 <!ELEMENT ref     - - ( text-ref | label? | authors* 
                         | arttitle | chptitle | source
                         | date | pages
-                        | volid | issueno | suppl | part | coltitle | colvolid 
-                        | isbn | extent | edition | city | state | country | pubname
-                        | confgrp | reportid | contract | letterto | found-at 
+                        | volid | issueno | suppl | part | series | issn
+                        | isbn | extent | edition | publoc | pubname
+                        | confgrp | reportid | contract 
                         | thesgrp | patentno 
                         | url | cited | doi | pubid 
                         | moreinfo)+

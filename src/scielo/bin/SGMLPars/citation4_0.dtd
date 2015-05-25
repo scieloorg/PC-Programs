@@ -134,6 +134,7 @@
 <!ELEMENT edition  - - (#PCDATA) >
 <!ELEMENT version  - - (#PCDATA) >
 <!ELEMENT pubname  - - (#PCDATA) >
+<!ELEMENT publoc  - - (#PCDATA) >
 
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
