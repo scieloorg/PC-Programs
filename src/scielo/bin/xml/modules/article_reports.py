@@ -616,7 +616,6 @@ def format_report(article_display_report, article_validation_report, display_all
     content.append(article_display_report.article_front)
     content.append(article_validation_report.validations(not display_all))
     content.append(article_display_report.files_and_href)
-    content.append(article_display_report.references_stats)
     if display_all:
         content.append(article_display_report.article_body)
         content.append(article_display_report.article_back)

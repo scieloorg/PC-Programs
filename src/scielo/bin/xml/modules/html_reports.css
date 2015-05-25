@@ -16,21 +16,21 @@ div {
 }
 .element-table table {
    border: 1px solid gray;
-   font-family: Arial;
+   font-family: Courier;
    font-size: 10;
    color: black;
    background-color: white;
 } 
 .element-table td {
    border: 1px solid gray;
-   font-family: Arial;
+   font-family: Courier;
    font-size: 10;
    color: black;
    background-color: white;
 } 
 .element-table th {
    border: 1px solid gray;
-   font-family: Arial;
+   font-family: Courier;
    font-size: 10;
    color: black;
    background-color: white;
@@ -75,7 +75,7 @@ h5 {
 .td_label {
    border: 1px solid gray;
    font-weight: bold;
-   font-family: Arial;
+   font-family: Courier;
    font-size: 14;
    color: black;
    vertical-align: top;
@@ -84,7 +84,7 @@ h5 {
 } 
 .td_status {
    border: 1px solid gray;
-   font-family: Arial;
+   font-family: Courier;
    font-size: 14;
    color: black;
    vertical-align: top;
@@ -93,7 +93,7 @@ h5 {
 } 
 .td_message {
    border: 1px solid gray;
-   font-family: Arial;
+   font-family: Courier;
    font-size: 14;
    color: black;
    vertical-align: top;
@@ -103,7 +103,7 @@ h5 {
 .fatalerror .td_label {
    border: 1px solid gray;
    font-weight: bold;
-   font-family: Arial;
+   font-family: Courier;
    font-size: 14;
    color: white;
    vertical-align: top;
@@ -112,7 +112,7 @@ h5 {
 } 
 .fatalerror .td_status {
    border: 1px solid gray;
-   font-family: Arial;
+   font-family: Courier;
    font-size: 14;
    color: white;
    vertical-align: top;
@@ -121,7 +121,7 @@ h5 {
 } 
 .fatalerror .td_message {
    border: 1px solid gray;
-   font-family: Arial;
+   font-family: Courier;
    font-size: 14;
    color: white;
    vertical-align: top;
@@ -142,7 +142,7 @@ h5 {
 } 
 .sheet td {
   border: 1px solid gray;
-   font-family: Arial;
+   font-family: Courier;
    font-size: 8pt;
    color: black;
    vertical-align: top;
@@ -190,13 +190,13 @@ h5 {
 }
 .label {
     font-weight: bold;
-    font-family: Arial;
+    font-family: Courier;
 }
 .value{
     background-color: #EDE5E2;
 }
 .discret {
-    font-family: Arial;
+    font-family: Courier;
     color: gray;
     font-size: 8pt;
 }

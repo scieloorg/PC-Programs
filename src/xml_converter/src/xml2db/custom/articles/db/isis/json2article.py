@@ -738,18 +738,27 @@ class JSON_Article:
                 section.code = section.title + ' (INVALID) ' + 'The sections of ' + issue.name + ': ' + issue.toc.return_sections()
             self.section = section
         self.json_data['f']['49'] = self.section.code
-
+        
+        print('normalize_document_data - abstracts')
         self.normalize_metadata_abstracts()
         #self.normalize_metadata_subtitles()
+        print('normalize_document_data - authors')
         self.normalize_metadata_authors()
+        print('normalize_document_data - illustrative_materials')
         self.normalize_illustrative_materials()
+        print('normalize_document_data - affiliations')
         self.normalize_affiliations()
+        print('normalize_document_data - keywords')
         self.normalize_keywords()
 
+        print('normalize_document_data - convert_value')
         self.json_data['f'] = self.json_normalizer.convert_value(self.json_data['f'], '71', 'doctopic')
+        print('normalize_document_data - normalize_dates')
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '111', '112', '111')
+        print('normalize_document_data - normalize_dates')
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '113', '114', '113')
 
+        print('normalize_document_data - normalize_dates')
         if 'epub' in self.json_data['f'].keys():
             self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
             del self.json_data['f']['epub']
@@ -757,21 +766,26 @@ class JSON_Article:
         if self.json_data['f'].get('65') != issue.json_data.get('65'):
             self.json_data['f']['65'] = issue.json_data.get('65')
 
+        print('normalize_document_data - format_for_indexing')
         self.json_data['h'] = self.json_normalizer.format_for_indexing(self.json_data['f'])
+        print('normalize_document_data - format_for_indexing')
         self.json_data['l'] = self.json_normalizer.format_for_indexing(self.json_data['h'])
         #self.json_data['h'] = self.json_data['f']
         #self.json_data['l'] = self.json_data['f']
+        print('normalize_document_data - fim')
     
     def normalize_metadata_authors(self):
         """
         Normalize the json structure for authors: 10
         """
-        
         authors = return_multval(self.json_data['f'], '10')
+        print(authors)
         changed = False
         new_authors = []
         for author in authors:
             if 'z' in author.keys():
+                if not 's' in author.keys():
+                    author['s'] = ''
                 author['s'] += ' ' + author['z']
             if '1' in author.keys():
                 if type(author['1']) == type([]):
@@ -787,6 +801,7 @@ class JSON_Article:
                 self.json_data['f']['10'] = new_authors[0]
             else:
                 self.json_data['f']['10'] = new_authors
+            print(self.json_data['f']['10'])
         
     def normalize_metadata_subtitles(self):
         """
