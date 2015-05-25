@@ -659,7 +659,7 @@ class ArticleContentValidation(object):
 
         if received is not None and accepted is not None:
             r = [('history', 'INFO', received + ' - ' + accepted)]
-            if not received < accepted < article_year:
+            if not received < accepted:
                 r = 'received (' + received + '); accepted (' + accepted + '); publication (' + article_year + ').'
                 r = [('dates are not correct', 'FATAL ERROR', r)]
         elif received is None and accepted is None:
@@ -667,9 +667,9 @@ class ArticleContentValidation(object):
         else:
             r = []
             if received is None:
-                r.append(required('history: received', received))
+                r.append(required('history: received', received, 'ERROR'))
             if accepted is None:
-                r.append(required('history: accepted', accepted))
+                r.append(required('history: accepted', accepted, 'ERROR'))
 
         return r
 

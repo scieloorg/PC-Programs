@@ -201,37 +201,36 @@ def format_message(value):
     return tag('span', value, get_message_style(value, 'ok'))
 
 
-def li_from_dict(list_items):
-    li_items = ''
-    for k, v in list_items.items():
-        if isinstance(v, list):
-            #FIXME format_html_data?
-            v = ', '.join(v)
-        li_items += tag('li', display_label_value(k, v))
-    return li_items
-
-
 def format_list(label, list_type, list_items, style=''):
     if isinstance(list_items, dict):
-        ltype = list_type
-        li_items = li_from_dict(list_items)
+        list_items = format_html_data_dict(list_items, list_type)
     elif isinstance(list_items, list):
-        ltype = 'ol'
-        li_items = ''
-        for item in list_items:
-            li = item
-            if isinstance(item, dict):
-                li = format_list(label, list_type, item, style)
-            li_items += tag('li', li)
-    return tag('div', tag('p', label, 'label') + tag(ltype, li_items), style)
+        li_items = format_html_data_list(list_items, list_type)
+    return tag('div', tag('p', label, 'label') + li_items, style)
+
+
+def format_html_data_dict(value, list_type='ul'):
+    r = '<' + list_type + '>'
+    for k, v in value.items():
+        r += tag('li', display_label_value(k, v))
+    r += '</' + list_type + '>'
+    return r
+
+
+def format_html_data_list(value, list_type='ol'):
+    r = '<' + list_type + '>'
+    for v in value:
+        r += tag('li', format_html_data(v))
+    r += '</' + list_type + '>'
+    return r
 
 
 def format_html_data(value, apply_message_style=False, width=None):
     r = '-'
     if isinstance(value, list):
-        r = format_list('', 'ol', value)
+        r = format_html_data_list(value)
     elif isinstance(value, dict):
-        r = format_list('', 'ul', value)
+        r = format_html_data_dict(value)
     elif value is None:
         # str or unicode
         r = '-'

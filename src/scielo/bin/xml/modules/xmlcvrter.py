@@ -307,11 +307,9 @@ def convert_package(src_path):
         elif len(selected_articles) > 0:
 
             references_stats = pkg_reports.pkg_authors_and_affiliations_stats(pkg_articles)
-            references_stats += pkg_reports.pkg_affiliations_stats(pkg_articles)
-            #references_stats += pkg_reports.pkg_references_stats(pkg_articles)
-            references_stats += pkg_reports.pkg_year_references_stats(pkg_articles)
+            references_stats += pkg_reports.pkg_references_stats(pkg_articles)
 
-            fatal_errors, articles_stats, articles_reports, articles_sheets = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_articles_status)
+            fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_articles_status)
 
             scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders)
 
@@ -331,7 +329,7 @@ def convert_package(src_path):
                 aop_status_summary_report = report_status(aop_status, 'aop-block')
             aop_status_summary_report = html_reports.tag('h3', 'AOP status') + aop_status_summary_report
 
-            sheets = pkg_reports.get_lists_report_text(articles_sheets)
+            #sheets = pkg_reports.get_lists_report_text(articles_sheets)
 
             issue_files.save_reports(report_path)
             issue_files.save_source_files(pkg_path)
@@ -357,7 +355,7 @@ def convert_package(src_path):
     texts.append(references_stats)
     texts.append(toc_report)
     texts.append(validations_report)
-    texts.append(sheets)
+    #texts.append(sheets)
 
     if converter_env.is_windows:
         texts.append(pkg_reports.processing_result_location(result_path))

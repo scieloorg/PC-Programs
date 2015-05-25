@@ -144,8 +144,10 @@ class PackagesProcessor:
                             os.unlink(package.package_path + '/' + f)
                         os.rmdir(package.package_path)
                     self.tracker.register(package.name, 'end-open_package')
-            except:
+            except Exception as e:
                 self.invalid_packages.append(folder)
+                print('ERROR: package not processed')
+                print(e)
 
 
 class Package:
