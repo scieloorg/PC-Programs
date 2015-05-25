@@ -34,7 +34,7 @@
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 <!ELEMENT ign - - CDATA >
-<!ELEMENT xmlabstr - - (sec | p | list)+ >
+<!ELEMENT xmlabstr - - (sectitle?, (sec | p)+) >
 <!ATTLIST xmlabstr
           language CDATA    #REQUIRED >
 <!ELEMENT txtblock - - (sec | p | list)+ >
@@ -45,7 +45,7 @@
 
 <!ELEMENT corresp - - (email+ & (#PCDATA)?)>
 <!ATTLIST corresp
-          id CDATA    #REQUIRED >
+          id ID    #REQUIRED >
 
 <!ELEMENT aff - - (label? & role? & city? & state? & country? & zipcode? & email* & (#PCDATA)?)>
 <!ATTLIST aff
@@ -65,6 +65,7 @@
           id       ID    #REQUIRED
           ncountry CDATA #REQUIRED
           norgname  CDATA #REQUIRED
+          icountry CDATA #REQUIRED
           >
 <!ELEMENT orgdiv1   - - (#PCDATA)>
 <!ELEMENT orgdiv2   - - (#PCDATA)>
@@ -78,17 +79,19 @@ filename       CDATA #IMPLIED>
 <!ELEMENT label - - (#PCDATA | sup) >
 <!ELEMENT caption - - (#PCDATA) >
 
-<!ELEMENT figgrps - - ( label?,caption?, figgrp+   )   >
+<!ELEMENT figgrps - - ( label?, caption?, figgrp+   )   >
 <!ATTLIST figgrps
           id       CDATA #REQUIRED
           >
-<!ELEMENT figgrp - - (  graphic, notes?, alttext?, attrib?, ( label?, caption)?   )   >
+<!ELEMENT figgrp - - (((graphic | mmlmath | texmath)+ & notes? & alttext? & attrib?)+, (label?, caption)?)  >
 <!ATTLIST figgrp
           id       CDATA #REQUIRED
           ftype       CDATA #IMPLIED 
   filename       CDATA #IMPLIED>
 
-<!ELEMENT equation - - (  graphic | texmath | mmlmath   )   >
+<!ELEMENT attrib - - CDATA >
+
+<!ELEMENT equation - - ((graphic | mmlmath | texmath)+, label?)   >
 <!ATTLIST equation
           id       CDATA #REQUIRED>
 
@@ -184,7 +187,7 @@ filename       CDATA #IMPLIED>
 
 <!ELEMENT related     - O EMPTY >
 <!ATTLIST related
-          id CDATA #IMPLIED
+          id ID #IMPLIED
           reltype CDATA #REQUIRED 
 	     relid CDATA #REQUIRED 
           relidtp CDATA #REQUIRED
@@ -287,20 +290,22 @@ filename       CDATA #IMPLIED>
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 
 
-<!ELEMENT xmlbody  - - (sec | p | txtblock | sigblock | deflist)+  >
-<!ELEMENT sec  - - (sectitle, (subsec | p | list )+ )  >
+<!ELEMENT xmlbody  - - (sec | p | txtblock | boxedtxt | versegrp | sigblock | deflist | list )+  >
+<!ELEMENT sec  - - (sectitle, (subsec | p | boxedtxt | versegrp | deflist | list )+ )  >
 <!ATTLIST sec
           sec-type  CDATA #IMPLIED>
 
-<!ELEMENT glossary  - - (label?, sectitle?, glossary?, deflist)  >
-<!ATTLIST glossary 
-          id CDATA #REQUIRED >
+<!ELEMENT glossary  - - (sectitle?, (glossary | deflist)+)  >
 
-<!ELEMENT app  - - (label?, sectitle?, (sec | p)+) >
+<!ELEMENT appgrp  - - (app+) >
+<!ELEMENT app  - - (sectitle?, (sec | p)*) +(%i.float;) >
 <!ATTLIST app 
-          id CDATA #REQUIRED >
+          id ID #REQUIRED >
+
 
 <!ELEMENT deflist  - - (sectitle?, defitem+)  >
+<!ATTLIST deflist 
+          id ID #REQUIRED >
 <!ELEMENT defitem  - - (term, def+)  >
 <!ELEMENT term     - - (#PCDATA) >
 <!ELEMENT def     - - (#PCDATA) >
@@ -337,3 +342,12 @@ filename       CDATA #IMPLIED>
 
 
 <!ELEMENT ack  - - (sectitle, p)  >
+
+
+<!ELEMENT boxedtxt - - (sectitle?, p+)>
+<!ATTLIST boxedtxt 
+          id ID #REQUIRED >
+
+
+<!ELEMENT versegrp - - (label?, (versline | versegrp)+, attrib?) >
+<!ELEMENT versline - - (#PCDATA)   +(%i.float;) >
