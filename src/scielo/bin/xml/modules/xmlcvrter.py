@@ -391,6 +391,8 @@ def format_email_subject(scilista_item, selected_articles, pkg_quality_fatal_err
     inline_stats = '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]]) + ']'
     if scilista_item is None:
         if selected_articles is None:
+            email_subject_status = u"\u274C" + ' REJECTED ' + inline_stats
+        elif len(selected_articles) == 0:
             email_subject_status = 'IGNORED'
         else:
             email_subject_status = u"\u274C" + ' REJECTED ' + inline_stats
@@ -552,7 +554,7 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
                 aop_status['updated bases'] = updated
         aop_status['still aop'] = ahead_manager.still_ahead_items()
     scilista_item = None
-    if len(conversion_status['not converted']) == 0:
+    if len(conversion_status['not converted']) + len(conversion_status['rejected']) == 0:
         saved = converter_env.db_article.finish_conversion(issue_models.record, issue_files)
         if saved > 0:
             scilista_item = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
