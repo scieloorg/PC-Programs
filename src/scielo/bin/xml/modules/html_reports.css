@@ -14,6 +14,15 @@ div {
     border: none;
     margin: 5px;
 }
+
+.subtitle {
+  margin: 50px;
+  font-size: 8pt;
+  font-family: Arial;
+  color: #3D3832;
+  background-color: #F0CEC2;
+  padding: 10px;
+}
 .element-table table {
    border: 1px solid gray;
    font-family: Courier;

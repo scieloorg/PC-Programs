@@ -383,6 +383,13 @@ def pkg_authors_and_affiliations_stats(doc_items):
     return r
 
 
+def error_msg_subtitle():
+    msg = html_reports.tag('p', 'Fatal error - indicates errors which impact on the quality of the bibliometric indicators and other services')
+    msg += html_reports.tag('p', 'Error - indicates the other kinds of errors')
+    msg += html_reports.tag('p', 'Warning - indicates that something can be an error or something needs more attention')
+    return html_reports.tag('div', msg, 'subtitle')
+
+
 def validate_pkg_items(org_manager, doc_items, doc_files_info_items, dtd_files, validate_order, display_all, xml_articles_status=None):
     articles_stats = {}
     articles_reports = {}

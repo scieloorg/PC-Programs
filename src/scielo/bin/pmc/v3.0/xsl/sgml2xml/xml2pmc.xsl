@@ -233,4 +233,14 @@
 	<xsl:template match="contrib/xref[text()='']"></xsl:template>
 	<xsl:template match="ref/@specific-use|element-citation/@specific-use"></xsl:template>
 	<xsl:template match="article/@specific-use"></xsl:template>
+	
+	<xsl:template match="equation/alternatives">
+		<xsl:copy-of select="graphic"/>
+		<xsl:if test="not(graphic)">
+			<xsl:copy-of select="mml:math"/>
+			<xsl:if test="not(mml:math)">
+				<xsl:copy-of select="tex-math"/>
+			</xsl:if>
+		</xsl:if>
+	</xsl:template>
 </xsl:stylesheet>

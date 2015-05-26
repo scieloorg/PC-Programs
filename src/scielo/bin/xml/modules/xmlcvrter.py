@@ -30,6 +30,7 @@ converter_env = None
 
 categories_messages = {
     'converted': 'converted', 
+    'rejected': 'rejected', 
     'not converted': 'not converted', 
     'skept': 'skept conversion', 
     'deleted ex-aop': 'deleted ex-aop', 
@@ -251,10 +252,11 @@ def convert_package(src_path):
 
     validations_report = ''
     toc_report = ''
-    sheets = ''
+
     conclusion_msg = ''
     references_stats = ''
-
+    conversion_status = {}
+    pkg_quality_fatal_errors = 0
     conversion_status_summary_report = ''
     aop_status_summary_report = ''
     before_conversion = ''
@@ -301,23 +303,21 @@ def convert_package(src_path):
                     selected_articles[xml_name] = article
 
         if selected_articles is None:
-            conclusion_msg = html_reports.tag('h2', 'Summary Report')
-            conclusion_msg += report_conclusion_message(scilista_item, acron_issue_label, 0, len(pkg_articles), None)
+            conclusion_msg = report_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 
         elif len(selected_articles) > 0:
 
             references_stats = pkg_reports.pkg_authors_and_affiliations_stats(pkg_articles)
             references_stats += pkg_reports.pkg_references_stats(pkg_articles)
 
-            fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_articles_status)
+            pkg_quality_fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_articles_status)
 
             scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders)
 
             validations_report = html_reports.tag('h2', 'Detail Report')
             validations_report += pkg_reports.get_articles_report_text(articles_reports, articles_stats, conversion_stats_and_reports)
 
-            conclusion_msg = html_reports.tag('h2', 'Summary Report')
-            conclusion_msg += report_conclusion_message(scilista_item, acron_issue_label, len(conversion_status['converted']), len(conversion_status['not converted']), len(selected_articles))
+            conclusion_msg = report_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 
             after_conversion = html_reports.tag('h3', 'Documents status in the package/database - after conversion')
             after_conversion += display_status_after_conversion(get_registered_articles(issue_files), pkg_articles, xml_articles_status, unmatched_orders)
@@ -339,8 +339,7 @@ def convert_package(src_path):
             if scilista_item is not None:
                 issue_files.copy_files_to_local_web_app()
         else:
-            conclusion_msg = html_reports.tag('h2', 'Summary Report')
-            conclusion_msg += report_conclusion_message(scilista_item, acron_issue_label, 0, len(pkg_articles), len(selected_articles))
+            conclusion_msg = report_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 
     report_location = report_path + '/xml_converter.html'
 
@@ -369,22 +368,14 @@ def convert_package(src_path):
 
     f, e, w = html_reports.statistics_numbers(content)
 
-    header_status = ''
-    subject_stats = ''
-    subject_results = u"\u2713" + ' APPROVED ' if scilista_item is not None else u"\u2718" + ' REJECTED'
+    email_subject = format_email_subject(scilista_item, selected_articles, pkg_quality_fatal_errors, f, e, w)
+
+    header_status = html_reports.statistics_display(f, e, w, False)
     if selected_articles is None:
-        subject_stats = ' [' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]]) + ']'
-        header_status = html_reports.statistics_display(f, e, w, False)
-    elif len(selected_articles) == 0:
-        header_status = html_reports.p_message('WARNING: Package was ignored because it is already published and package content is unchanged.')
-        subject_stats = ''
-        subject_results = 'IGNORED'
-    else:
-        subject_stats = ' [' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]]) + ']'
-        header_status = html_reports.statistics_display(f, e, w, False)
+        header_status = html_reports.p_message('WARNING: Package was ignored because it is already published and the package content is unchanged.')
+    header_status += pkg_reports.error_msg_subtitle()
 
     pkg_reports.save_report(report_location, ['XML Conversion (XML to Database)', acron_issue_label], header_status + content)
-    subject_results += subject_stats
 
     if not converter_env.is_windows:
         format_reports_for_web(report_path, pkg_path, acron_issue_label.replace(' ', '/'))
@@ -393,7 +384,21 @@ def convert_package(src_path):
     if old_result_path != result_path:
         fs_utils.delete_file_or_folder(old_result_path)
 
-    return (report_location, scilista_item, acron_issue_label, subject_results)
+    return (report_location, scilista_item, acron_issue_label, email_subject)
+
+
+def format_email_subject(scilista_item, selected_articles, pkg_quality_fatal_errors, f, e, w):
+    inline_stats = '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]]) + ']'
+    if scilista_item is None:
+        if selected_articles is None:
+            email_subject_status = 'IGNORED'
+        else:
+            email_subject_status = u"\u274C" + ' REJECTED ' + inline_stats
+    elif pkg_quality_fatal_errors > 0:
+        email_subject_status = u"\u2713" + ' ' + u"\u270D" + ' ACCEPTED but corrections required ' + inline_stats
+    else:
+        email_subject_status = u"\u2705" + ' APPROVED ' + inline_stats
+    return email_subject_status
 
 
 def format_reports_for_web(report_path, pkg_path, issue_path):
@@ -417,12 +422,38 @@ def format_reports_for_web(report_path, pkg_path, issue_path):
             open(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path + '/' + f, 'w').write(content)
 
 
+def is_conversion_allowed(pub_year, ref_count, xml_f, xml_e, xml_w, data_f, data_e, data_w, conv_f, conv_e, conv_w):
+
+    def max_score(quote, score):
+        return ((score * quote) / 100) + 1
+    doit = False
+    score = (ref_count + 20)
+    if conv_f == 0:
+        if pub_year is not None:
+            if pub_year[0:4].isdigit():
+                if int(pub_year[0:4]) < (int(datetime.now().isoformat()[0:4]) - 1):
+                    #doc anterior a dois anos atrás)
+                    doit = True
+        if doit is False:
+            doit = True
+            if converter_env.max_fatal_error is not None:
+                if xml_f + data_f > max_score(converter_env.max_fatal_error, score):
+                    doit = False
+            if converter_env.max_error is not None:
+                if xml_e + data_e > max_score(converter_env.max_error, score):
+                    doit = False
+            if converter_env.max_warning is not None:
+                if xml_w + data_w > max_score(converter_env.max_warning, score):
+                    doit = False
+    return doit
+
+
 def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_articles_status, registered_articles, unmatched_orders):
     index = 0
     conversion_stats_and_reports = {}
     conversion_status = {}
 
-    for k in ['converted', 'not converted', 'skept', 'deleted incorrect order']:
+    for k in ['converted', 'rejected', 'not converted', 'skept', 'deleted incorrect order']:
         conversion_status[k] = []
 
     n = '/' + str(len(pkg_articles))
@@ -471,7 +502,7 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
             msg += issue_validations_msg
             conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
 
-            if conv_f + xml_f + data_f == 0:
+            if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), xml_f, xml_e, xml_w, data_f, data_e, data_w, conv_f, conv_e, conv_w):
                 article.section_code = section_code
                 if valid_ahead is not None:
                     article._ahead_pid = valid_ahead.ahead_pid
@@ -506,8 +537,8 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
                     conversion_status['not converted'].append(xml_name)
                     msg += html_reports.p_message('FATAL ERROR: not converted')
             else:
-                conversion_status['not converted'].append(xml_name)
-                #msg += html_reports.p_message('FATAL ERROR: not converted')
+                conversion_status['rejected'].append(xml_name)
+                msg += html_reports.p_message('FATAL ERROR: rejected')
 
         conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
         title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
@@ -588,20 +619,39 @@ def report_status(status, style=None):
     return text
 
 
-def report_conclusion_message(scilista_item, issue_label, converted, not_converted, selected_articles):
-    text = ''
+def report_conclusion_message(scilista_item, issue_label, pkg_articles, selected_articles, xc_status, pkg_quality_fatal_errors):
+    total = len(selected_articles)
+    converted = len(xc_status.get('converted', []))
+    failed = total - converted
     app_site = converter_env.web_app_site if converter_env.web_app_site is not None else 'scielo web site'
-    text += html_reports.p_message('converted: ' + str(converted) + '/' + str(selected_articles))
+    status = ''
+    action = ''
+    result = 'be updated/published on ' + app_site
+    reason = ''
     if scilista_item is None:
+        action = ' not'
         if selected_articles is None:
-            text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' will not be updated/published on ' + app_site + ' because it could not be processed.')
-        elif selected_articles == 0 and converted == 0:
-            text += html_reports.p_message('WARNING: ' + issue_label + ' will not be updated/published on ' + app_site + ' because nothing was changed.')
+            status = 'FATAL ERROR'
+            reason = 'because there are errors in the package.'
+        elif len(selected_articles) == 0:
+            status = 'WARNING'
+            reason = 'because no document was changed.'
+        elif failed > 0:
+            status = 'FATAL ERROR'
+            reason = 'because it is not complete (' + str(failed) + ' were not converted).'
         else:
-            text += html_reports.p_message('FATAL ERROR: ' + issue_label + ' is not complete (' + str(not_converted) + ' were not converted), so ' + issue_label + ' will not be updated/published on ' + app_site + '.')
+            status = 'FATAL ERROR'
+            reason = 'because it was unable to save the database.'
     else:
-        text += html_reports.p_message('OK: ' + issue_label + ' will be updated/published on ' + app_site + '.')
+        if pkg_quality_fatal_errors > 0:
+            status = 'WARNING'
+            reason = ' even though there are some FATAL ERRORS. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services.'
+        else:
+            status = 'OK'
+            reason = ''
 
+    text = status + ': ' + issue_label + ' will' + action + ' ' + result + ' ' + reason
+    text = html_reports.tag('h2', 'Summary Report') + html_reports.p_message('converted: ' + str(converted) + '/' + str(total)) + html_reports.p_message(text)
     return text
 
 
@@ -948,3 +998,6 @@ def prepare_env(config):
     converter_env.is_windows = config.is_windows
     converter_env.web_app_site = config.web_app_site
     converter_env.skip_identical_xml = config.skip_identical_xml
+    converter_env.max_fatal_error = config.max_fatal_error
+    converter_env.max_error = config.max_error
+    converter_env.max_warning = config.max_warning

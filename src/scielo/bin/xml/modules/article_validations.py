@@ -5,7 +5,7 @@ from datetime import datetime
 
 import attributes
 import article_utils
-
+import xml_utils
 import article
 
 import institutions_service
@@ -37,7 +37,7 @@ def validate_value(value):
                 result.append(value + ' starts with "."')
             differ = value.replace(_value, '')
             if len(differ) > 0:
-                result.append('"<source>' + value + '</source> contains invalid characteres: "' + differ + '"')
+                result.append('"<data>' + value + '</data> contains invalid characteres: "' + differ + '"')
     if status == 'OK':
         message = format_value(value)
     else:
@@ -112,6 +112,20 @@ def validate_name(label, value, invalid_terms):
     if status == 'OK':
         result = invalid_terms_in_value(label, value, invalid_terms, 'WARNING')
     r.append(result)
+    _test_number = warn_unexpected_numbers(label, value)
+    if _test_number is not None:
+        r.append(_test_number)
+    return r
+
+
+def warn_unexpected_numbers(label, value, max_number=0):
+    r = None
+    if value is not None:
+        value = xml_utils.htmlent2char(value)
+        q_numbers = len([c for c in value if c.isdigit()])
+        q_others = len(value) - q_numbers
+        if q_numbers > q_others:
+            r = (label, 'WARNING', 'Be sure that <' + label + '>' + value + '</' + label + '> is correct.')
     return r
 
 
@@ -132,6 +146,9 @@ def validate_surname(label, value):
                 msg += suffix + ' must be identified as <suffix>' + suffix + '</suffix>.'
                 status = 'ERROR'
                 r.append((label, status, msg))
+    _test_number = warn_unexpected_numbers(label, value)
+    if _test_number is not None:
+        r.append(_test_number)
     return r
 
 
@@ -842,6 +859,10 @@ class ReferenceContentValidation(object):
             r.append(item)
         for item in self.year(article_year):
             r.append(item)
+        if self.reference.source is not None:
+            _test_number = warn_unexpected_numbers('source', self.reference.source, 4)
+            if _test_number is not None:
+                r.append(_test_number)
         return r
 
     @property
@@ -850,7 +871,12 @@ class ReferenceContentValidation(object):
 
     @property
     def source(self):
-        return required('source', self.reference.source, 'FATAL ERROR')
+        r = required('source', self.reference.source, 'FATAL ERROR')
+        if r[1] == 'OK':
+            _test_number = warn_unexpected_numbers('source', self.reference.source, 4)
+            if _test_number is not None:
+                r = _test_number
+        return r
 
     def validate_element(self, label, value, error_level='FATAL ERROR'):
         res = attributes.validate_element(self.reference.publication_type, label, value)
