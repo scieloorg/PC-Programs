@@ -253,7 +253,10 @@ class ArticleXML(object):
                 item['href'] = rel.attrib.get('{http://www.w3.org/1999/xlink}href')
                 item['ext-link-type'] = rel.attrib.get('ext-link-type')
                 if not item['ext-link-type'] == 'doi':
-                    item['id'] = ''.join([c for c in item['href'] if c.isdigit()])
+                    if item['href'] is None:
+                        item['id'] = None
+                    else:
+                        item['id'] = ''.join([c for c in item['href'] if c.isdigit()])
                 item['related-article-type'] = rel.attrib.get('related-article-type')
                 r.append(item)
         return r

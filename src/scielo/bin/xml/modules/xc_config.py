@@ -62,6 +62,18 @@ class XMLConverterConfiguration(object):
             copy = copy.replace('/issue/', '/issue.tmp/')
         return self._data.get('ISSUE_DB_COPY', copy)
 
+    @property
+    def max_fatal_error(self):
+        return self._data.get('MAX_FATAL_ERROR')
+
+    @property
+    def max_error(self):
+        return self._data.get('MAX_ERROR')
+
+    @property
+    def max_warning(self):
+        return self._data.get('MAX_WARNING')
+
     def update_title_and_issue(self):
         for item in [self._data.get('SOURCE_TITLE_DB'), self._data.get('SOURCE_ISSUE_DB')]:
             for ext in ['.mst', '.xrf']:
