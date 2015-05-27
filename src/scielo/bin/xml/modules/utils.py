@@ -1,6 +1,12 @@
 # coding=utf-8
 
 
+def display_datetime(dateiso, timeiso):
+    y = dateiso[0:4]
+    md = dateiso[4:]
+    return y + '-' + '-'.join([md[i*2:i*2+2] for i in range(0, 2)]) + ' ' + ':'.join([timeiso[i*2:i*2+2] for i in range(0, 2)])
+
+
 def how_similar(this, that):
     import difflib
     if this is None:
