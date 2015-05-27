@@ -138,6 +138,10 @@ class RegisteredArticle(object):
         return self.article_records[1].get('881')
 
     @property
+    def creation_date_display(self):
+        return utils.display_datetime(self.article_records[0]['91'], self.article_records[0]['92'])
+
+    @property
     def creation_date(self):
         return (self.article_records[0]['91'], self.article_records[0]['92'])
 
@@ -146,7 +150,11 @@ class RegisteredArticle(object):
         #2015-03-26T14:43:50.272660
         last = self.article_records[0].get('93')
         if last is not None:
-            last = last.replace('-', '').replace('T', '')[0:8]
+            if '-' in last:
+                last = last.replace('T', ' ')[0:16]
+            else:
+                last = last.split(' ')
+                last = utils.display_datetime(last[0], last[1])
         return last
 
     @property
@@ -401,12 +409,13 @@ class ArticleRecords(object):
     def outline(self, total_of_records):
         rec_o = {}
         if self.creation_date is None:
-            rec_o['91'] = datetime.now().isoformat()[0:10].replace('-', '')
-            rec_o['92'] = datetime.now().isoformat()[11:19].replace(':', '')
+            rec_o['91'] = datetime.now().isoformat().replace('-', '').replace(':', '').replace('T', ' ')[0:13]
+            rec_o['93'] = rec_o['91']
+            rec_o['91'], rec_o['92'] = rec_o['91'].split(' ')
         else:
             rec_o['91'] = self.creation_date[0]
             rec_o['92'] = self.creation_date[1]
-            rec_o['93'] = datetime.now().isoformat()
+            rec_o['93'] = datetime.now().isoformat().replace('-', '').replace('T', ' ').replace(':', '')[0:13]
         rec_o['703'] = total_of_records
         return rec_o
 

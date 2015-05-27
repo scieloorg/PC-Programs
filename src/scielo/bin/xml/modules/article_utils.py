@@ -7,6 +7,43 @@ import urllib2
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 
 
+def normalize_number(number):
+    if number is not None:
+        number = number.strip()
+        if number.isdigit():
+            number = str(int(number))
+    return number
+
+
+def get_number_suppl_compl(issue_element_content):
+    number = None
+    suppl = None
+    compl = None
+    if issue_element_content is not None:
+        parts = issue_element_content.strip().lower().split(' ')
+        if len(parts) == 1:
+            # suppl or n
+            if parts[0].startswith('sup'):
+                suppl = parts[0]
+            else:
+                number = parts[0]
+        elif len(parts) == 2:
+            #n suppl or suppl s or n pr
+            if parts[0].startswith('sup'):
+                suppl = parts[1]
+            elif parts[1].startswith('sup'):
+                number, suppl = parts
+            else:
+                number, compl = parts
+        elif len(parts) == 3:
+            # n suppl s
+            number, ign, suppl = parts
+    if suppl is not None:
+        if suppl.startswith('sup'):
+            suppl = '0'
+    return (number, suppl, compl)
+
+
 def format_issue_label(year, volume, number, volume_suppl, number_suppl):
     year = year if number == 'ahead' else ''
     v = 'v' + volume if volume is not None else None

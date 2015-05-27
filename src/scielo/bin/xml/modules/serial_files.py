@@ -3,6 +3,8 @@ import os
 import shutil
 from datetime import datetime
 
+import fs_utils
+
 
 class DocumentFiles(object):
 
@@ -86,11 +88,22 @@ class IssueFiles(object):
         self.xml_path = xml_path
         self.web_path = web_path
         self.create_folders()
+        self.move_old_id_folder()
 
     def create_folders(self):
         for path in [self.id_path, self.base_path, self.base_reports_path, self.base_source_path]:
             if not os.path.isdir(path):
                 os.makedirs(path)
+
+    def move_old_id_folder(self):
+        if os.path.isdir(self.old_id_path):
+            for item in os.listdir(self.old_id_path):
+                if not os.path.isfile(self.id_path + '/' + item):
+                    shutil.copyfile(self.old_id_path + '/' + item, self.id_path + '/' + item)
+            try:
+                fs_utils.delete_file_or_folder(self.old_id_path)
+            except:
+                pass
 
     @property
     def issue_path(self):
@@ -99,6 +112,10 @@ class IssueFiles(object):
     @property
     def relative_issue_path(self):
         return self.journal_files.acron + '/' + self.issue_folder
+
+    @property
+    def old_id_path(self):
+        return self.issue_path + '/base/id'
 
     @property
     def id_path(self):

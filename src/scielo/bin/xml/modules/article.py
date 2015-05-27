@@ -473,11 +473,9 @@ class ArticleXML(object):
         v = None
         if self.article_meta is not None:
             v = self.article_meta.findtext('volume')
-            if v is not None:
-                if v.isdigit():
-                    v = str(int(v))
-                    if v == '0':
-                        v = None
+            v = article_utils.normalize_number(v)
+            if v == '0':
+                v = None
         return v
 
     @property
@@ -929,46 +927,27 @@ class Article(ArticleXML):
         return titles
 
     def _issue_parts(self):
-        self.number = None
-        self.number_suppl = None
-        self.volume_suppl = None
-        self.compl = None
-        suppl = None
-        if self.issue is not None:
-            parts = self.issue.split(' ')
-            if len(parts) == 1:
-                if 'sup' in parts[0].lower():
-                    suppl = parts[0]
-                else:
-                    self.number = parts[0]
-            elif len(parts) == 2:
-                #n suppl or suppl s
-                if 'sup' in parts[0].lower():
-                    suppl = parts[1]
-                elif 'sup' in parts[1].lower():
-                    self.number, suppl = parts
-                else:
-                    self.number, self.compl = parts
-            elif len(parts) == 3:
-                # n suppl s
-                self.number, ign, suppl = parts
-            if self.number is not None:
-                if self.number.isdigit():
-                    self.number = str(int(self.number))
-            if suppl is not None:
-                if self.number is None:
-                    self.number_suppl = suppl
-                    if self.number_suppl.isdigit():
-                        self.number_suppl = str(int(self.number_suppl))
-                else:
-                    self.volume_suppl = suppl
-                    if self.volume_suppl.isdigit():
-                        self.volume_suppl = str(int(self.volume_suppl))
-            if self.number == '0':
-                self.number = None
+        number_suppl = None
+        volume_suppl = None
 
-        if self.volume is None and self.number is None:
-            self.number = 'ahead'
+        number, suppl, compl = article_utils.get_number_suppl_compl(self.issue)
+        number = article_utils.normalize_number(number)
+        if number == '0':
+            number = None
+        if number is None and self.volume is None:
+            number = 'ahead'
+
+        suppl = article_utils.normalize_number(suppl)
+        if suppl is not None:
+            if number is None:
+                volume_suppl = suppl
+            else:
+                number_suppl = suppl
+
+        self.number = number
+        self.number_suppl = number_suppl
+        self.volume_suppl = volume_suppl
+        self.compl = compl
 
     @property
     def is_issue_press_release(self):
