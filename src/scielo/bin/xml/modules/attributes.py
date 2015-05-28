@@ -84,7 +84,7 @@ TOC_SECTIONS = {
     u'artículo': u'article', 
     u'errata': u'correction', 
     u'erratum': u'correction'
-    }
+}
 
 
 ROLE = {
@@ -129,9 +129,11 @@ REFERENCE_REQUIRED_SUBELEMENTS['webpage'] = ['ext-link', 'date-in-citation[@cont
 
 
 REFERENCE_NOT_ALLOWED_SUBELEMENTS = {}
-REFERENCE_NOT_ALLOWED_SUBELEMENTS['journal'] = ['chapter-title']
-REFERENCE_NOT_ALLOWED_SUBELEMENTS['book'] = ['article-title']
-REFERENCE_NOT_ALLOWED_SUBELEMENTS['webpage'] = ['volume', 'issue', 'fpage']
+REFERENCE_NOT_ALLOWED_SUBELEMENTS['journal'] = ['chapter-title', 'conf-date', 'conf-loc', 'conf-name', 'conf-num', 'conf-sponsor', 'conf-theme', 'conference', 'patent']
+REFERENCE_NOT_ALLOWED_SUBELEMENTS['book'] = ['article-title', 'conf-date', 'conf-loc', 'conf-name', 'conf-num', 'conf-sponsor', 'conf-theme', 'conference', 'patent']
+REFERENCE_NOT_ALLOWED_SUBELEMENTS['thesis'] = ['article-title', 'conf-date', 'conf-loc', 'conf-name', 'conf-num', 'conf-sponsor', 'conf-theme', 'conference', 'patent']
+REFERENCE_NOT_ALLOWED_SUBELEMENTS['webpage'] = ['article-title', 'chapter-title']
+REFERENCE_NOT_ALLOWED_SUBELEMENTS['confproc'] = ['chapter-title', 'patent']
 
 
 def is_required(publication_type, label):
