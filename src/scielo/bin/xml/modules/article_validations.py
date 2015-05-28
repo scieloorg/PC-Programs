@@ -931,7 +931,7 @@ class ReferenceContentValidation(object):
             if self.reference.ref_status == 'display-only':
                 r.append(('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete. Expected at least the elements: ' + ' | '.join(attributes.REFERENCE_REQUIRED_SUBELEMENTS.get(self.reference.publication_type))))
         else:
-            if self.reference.ref_status == 'display-only' and self.reference.publication_type == 'journal':
+            if self.reference.ref_status == 'display-only':
                 items.append(('Incomplete Reference', 'WARNING', 'Check if the elements of this reference is properly identified.'))
                 items = []
                 for label, status, message in r:
