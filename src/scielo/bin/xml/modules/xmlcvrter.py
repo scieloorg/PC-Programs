@@ -383,7 +383,9 @@ def convert_package(src_path):
 
     header_status = html_reports.statistics_display(f, e, w, False)
     if selected_articles is None:
-        header_status = html_reports.p_message('WARNING: Package was ignored because it is already published and the package content is unchanged.')
+        header_status = ''
+    elif len(selected_articles) == 0:
+        header_status = ''
     header_status += pkg_reports.error_msg_subtitle()
 
     pkg_reports.save_report(report_location, ['XML Conversion (XML to Database)', acron_issue_label], header_status + content)
