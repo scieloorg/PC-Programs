@@ -272,7 +272,7 @@ def convert_package(src_path):
     aop_status_summary_report = ''
     before_conversion = ''
     after_conversion = ''
-    acron_issue_label = 'unidentified issue'
+    acron_issue_label = 'unidentified ' + os.path.basename(src_path)[-4:]
     scilista_item = None
     issue_files = None
 
