@@ -7,6 +7,14 @@ import urllib2
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 
 
+def display_date(dateiso):
+    return dateiso[0:4] + '/' + dateiso[4:6] + '/' + dateiso[6:8]
+
+
+def dateiso2datetime(dateiso):
+    return datetime(int(dateiso[0:4]), int(dateiso[4:6]), int(dateiso[6:8]))
+
+
 def normalize_number(number):
     if number is not None:
         number = number.strip()

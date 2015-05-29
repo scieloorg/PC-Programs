@@ -121,7 +121,7 @@ def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_art
 
 
 def complete_issue_items_row(article, action, result, creation_date, last_update, source, notes=''):
-    labels = ['name', 'package or database(creation date | last update)', 'order', 'notes', 'action', 'result', 'aop PID', 'toc section', '@article-type', 'article title']
+    labels = ['name', 'package or database (creation date | last update)', 'order', 'notes', 'action', 'result', 'aop PID', 'toc section', '@article-type', 'article title']
     _source = source
     if source == 'registered':
         _source = 'database (' + str(creation_date) + ' | ' + str(last_update) + ')'
@@ -272,7 +272,7 @@ def convert_package(src_path):
     aop_status_summary_report = ''
     before_conversion = ''
     after_conversion = ''
-    acron_issue_label = 'unidentified ' + os.path.basename(src_path)[-4:]
+    acron_issue_label = 'unidentified ' + os.path.basename(src_path)[:-4]
     scilista_item = None
     issue_files = None
 
@@ -292,9 +292,12 @@ def convert_package(src_path):
     xml_filenames, pkg_articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
     issue_models, issue_error_msg = get_issue_models(pkg_articles)
 
+    pkg_overview = pkg_reports.package_articles_overview(pkg_articles)
     selected_articles = None
 
-    if not issue_models is None:
+    if issue_models is None:
+        acron_issue_label = 'not_registered ' + os.path.basename(src_path)[:-4]
+    else:
         issue_files = get_issue_files(issue_models, pkg_path)
         acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
 
@@ -318,8 +321,8 @@ def convert_package(src_path):
 
         elif len(selected_articles) > 0:
 
-            references_stats = pkg_reports.pkg_authors_and_affiliations_stats(pkg_articles)
-            references_stats += pkg_reports.pkg_references_stats(pkg_articles)
+            #references_stats = pkg_reports.pkg_authors_and_affiliations_stats(pkg_articles)
+            #references_stats += pkg_reports.pkg_references_stats(pkg_articles)
 
             pkg_quality_fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_doc_actions)
 
@@ -356,13 +359,15 @@ def convert_package(src_path):
 
     texts = []
     texts.append(html_reports.section('Package: XML list', pkg_reports.xml_list(pkg_path, xml_filenames)))
+
     texts.append(issue_error_msg)
     texts.append(conclusion_msg)
     texts.append(before_conversion)
     texts.append(after_conversion)
     texts.append(conversion_status_summary_report)
     texts.append(aop_status_summary_report)
-    texts.append(references_stats)
+    #texts.append(references_stats)
+    texts.append(pkg_overview)
     texts.append(toc_report)
     texts.append(validations_report)
     #texts.append(sheets)
@@ -638,7 +643,7 @@ def report_status(status, style=None):
 
 
 def report_conclusion_message(scilista_item, issue_label, pkg_articles, selected_articles, xc_status, pkg_quality_fatal_errors):
-    total = len(selected_articles)
+    total = len(selected_articles) if selected_articles is not None else 0
     converted = len(xc_status.get('converted', []))
     failed = total - converted
     app_site = converter_env.web_app_site if converter_env.web_app_site is not None else 'scielo web site'

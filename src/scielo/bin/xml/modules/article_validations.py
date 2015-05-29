@@ -671,14 +671,14 @@ class ArticleContentValidation(object):
             article_year = self.article.issue_pub_date.get('year')
         if article_year is None:
             article_year = datetime.now().isoformat()[0:4]
-        received = article_utils.format_dateiso(self.article.received)
-        accepted = article_utils.format_dateiso(self.article.accepted)
+        received = self.article.received_dateiso
+        accepted = self.article.accepted_dateiso
 
         if received is not None and accepted is not None:
-            r = [('history', 'INFO', received + ' - ' + accepted)]
+            r = [('history', 'INFO', accepted + '-' + received + '=' + str(self.article.history_days) + ' days')]
             if not received < accepted:
                 r = 'received (' + received + '); accepted (' + accepted + '); publication (' + article_year + ').'
-                r = [('dates are not correct', 'FATAL ERROR', r)]
+                r = [('history', 'FATAL ERROR', r)]
         elif received is None and accepted is None:
             r = [('history', 'INFO', 'there is no history dates')]
         else:

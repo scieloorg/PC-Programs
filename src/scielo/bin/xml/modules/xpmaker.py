@@ -849,8 +849,8 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         texts = []
         toc_f = 0
-        register_log('pack_and_validate: package_articles_sheet')
-        texts.append(html_reports.section('Package status', package_articles_sheet(articles)))
+        register_log('pack_and_validate: package_articles_overview')
+        texts.append(html_reports.section('Package status', pkg_reports.package_articles_overview(articles)))
 
         if not from_markup:
             register_log('pack_and_validate: pkg_reports.validate_package')
@@ -870,8 +870,8 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             print('services loaded!')
             print(datetime.now().isoformat())
 
-            texts.append(pkg_reports.pkg_authors_and_affiliations_stats(articles))
-            texts.append(pkg_reports.pkg_references_stats(articles))
+            #texts.append(pkg_reports.pkg_authors_and_affiliations_stats(articles))
+            #texts.append(pkg_reports.pkg_references_stats(articles))
 
             fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, from_markup)
 
@@ -1078,24 +1078,6 @@ def validate_inputs(xml_path, acron):
     if acron is None:
         errors.append('Missing acronym.')
     return errors
-
-
-def package_articles_sheet(pkg_articles):
-    labels = ['order', 'name', 'aop order', 'toc section', '@article-type', 'article title']
-
-    items = []
-    for xml_name in pkg_reports.sorted_xml_name_by_order(pkg_articles):
-        values = []
-        values.append(pkg_articles[xml_name].order)
-        values.append(xml_name)
-        values.append(pkg_articles[xml_name].previous_pid)
-        values.append(pkg_articles[xml_name].toc_section)
-        values.append(pkg_articles[xml_name].article_type)
-        values.append(pkg_articles[xml_name].title)
-
-        items.append(pkg_reports.label_values(labels, values))
-
-    return html_reports.sheet(labels, None, items, None, 'dbstatus')
 
 
 def get_fontsymbols_in_html(html_content):

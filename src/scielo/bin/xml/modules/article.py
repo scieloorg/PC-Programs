@@ -1007,6 +1007,36 @@ class Article(ArticleXML):
     def article_pub_date(self):
         return self.epub_date if self.epub_date is not None else self.epub_ppub_date
 
+    @property
+    def article_pub_dateiso(self):
+        return article_utils.format_dateiso(self.issue_pub_date)
+
+    @property
+    def received_dateiso(self):
+        return article_utils.format_dateiso(self.received)
+
+    @property
+    def accepted_dateiso(self):
+        return article_utils.format_dateiso(self.accepted)
+
+    @property
+    def history_days(self):
+        h = 0
+        if self.received is not None and self.accepted is not None:
+            h = (article_utils.dateiso2datetime(self.accepted_dateiso) - article_utils.dateiso2datetime(self.received_dateiso)).days
+        return h
+
+    @property
+    def publication_days(self):
+        h = 0
+        d1 = '00000000'
+        d2 = '00000000'
+        if self.accepted is not None:
+            d1 = self.accepted_dateiso
+            d2 = self.article_pub_dateiso if self.article_pub_dateiso else self.issue_pub_dateiso
+            h = (article_utils.dateiso2datetime(d2) - article_utils.dateiso2datetime(d1)).days
+        return h
+
 
 class ReferenceXML(object):
 

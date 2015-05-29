@@ -30,7 +30,7 @@
 	<!--
 		Reference 
 	-->
-	<xsl:template match="ref">[ref reftype="<xsl:value-of select=".//@citation-type"/>"]<xsl:apply-templates select="originalRef"/><xsl:apply-templates select="nlm-citation/*"/>[/ref]
+	<xsl:template match="ref">[ref reftype="<xsl:value-of select=".//@citation-type"/>"]<xsl:apply-templates select="originalRef"/><xsl:if test="not(label)">[label]<xsl:value-of select="substring(@id,2)"/>[/label]</xsl:if><xsl:apply-templates select="nlm-citation/*"/>[/ref]
 </xsl:template>
 	<!--
 		Unknown
@@ -47,7 +47,7 @@
 	<xsl:template match="collab">[cauthor]<xsl:apply-templates select="*|text()"/>[/cauthor]</xsl:template>
 	<xsl:template match="*[@citation-type='journal']/article-title">[doctitle]<xsl:apply-templates select="*|text()"/>[/doctitle]</xsl:template>
 	<xsl:template match="*[@citation-type='book']/article-title">[chptitle]<xsl:apply-templates select="*|text()"/>[/chptitle]</xsl:template>
-	<xsl:template match="year">[date dateiso="<xsl:value-of select="."/>0000"]<xsl:apply-templates select="*|text()"/>[/dateiso]</xsl:template>
+	<xsl:template match="year">[date dateiso="<xsl:value-of select="."/>0000"]<xsl:apply-templates select="*|text()"/>[/date]</xsl:template>
 	<xsl:template match="volume">[volid]<xsl:apply-templates select="*|text()"/>[/volid]</xsl:template>
 	<xsl:template match="fpage">[pages]<xsl:apply-templates select="*|text()"/><xsl:if test="../lpage">-<xsl:value-of select="../lpage"/></xsl:if>[/pages]</xsl:template>
 	<xsl:template match="lpage"></xsl:template>

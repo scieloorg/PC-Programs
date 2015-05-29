@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 
 import article_reports
+import article_utils
 import xpchecker
 import html_reports
 
@@ -109,6 +110,122 @@ def xml_list(pkg_path, xml_filenames=None):
 
 def validate_package(articles, validate_order):
     return article_reports.toc_report_data(articles, validate_order)
+
+
+def package_articles_overview(pkg_articles):
+    items = []
+    items.append(package_articles_languages_overview(pkg_articles))
+    items.append(package_articles_dates_overview(pkg_articles))
+    items.append(package_articles_affiliations_overview(pkg_articles))
+    #items.append(package_articles_references_overview(pkg_articles))
+    return ''.join(items)
+
+
+def package_articles_languages_overview(pkg_articles):
+    labels = ['name', 'toc section', '@article-type', 'article titles', 
+        'abstracts', 'key words', 'versions']
+
+    items = []
+    for xml_name in sorted_xml_name_by_order(pkg_articles):
+        values = []
+        values.append(xml_name)
+        values.append(pkg_articles[xml_name].toc_section)
+        values.append(pkg_articles[xml_name].article_type)
+        values.append(['[' + t.language + '] ' + t.title for t in pkg_articles[xml_name].titles])
+        values.append([t.language for t in pkg_articles[xml_name].abstracts])
+        k = {}
+        for item in pkg_articles[xml_name].keywords:
+            if not item.get('l') in k.keys():
+                k[item.get('l')] = []
+            k[item.get('l')].append(item.get('k'))
+        values.append(k)
+        values.append(pkg_articles[xml_name].trans_languages)
+        items.append(label_values(labels, values))
+    return html_reports.tag('h3', 'Package languages overview') + html_reports.sheet(labels, None, items, None, 'dbstatus')
+
+
+def package_articles_dates_overview(pkg_articles):
+    labels = ['name', 'toc section', '@article-type', 'article title', 
+    'received', 'accepted', 'receive to accepted (days)' 'article date', 'issue date', 'accepted to publication (days)']
+
+    items = []
+    for xml_name in sorted_xml_name_by_order(pkg_articles):
+        values = []
+        values.append(xml_name)
+        values.append(pkg_articles[xml_name].toc_section)
+        values.append(pkg_articles[xml_name].article_type)
+        values.append(pkg_articles[xml_name].title)
+        values.append(article_utils.display_date(pkg_articles[xml_name].received_dateiso))
+        values.append(article_utils.display_date(pkg_articles[xml_name].accepted_dateiso))
+        values.append(str(pkg_articles[xml_name].history_days))
+        values.append(article_utils.display_date(pkg_articles[xml_name].article_pub_dateiso))
+        values.append(article_utils.display_date(pkg_articles[xml_name].issue_pub_dateiso))
+        values.append(str(pkg_articles[xml_name].publication_days))
+        items.append(label_values(labels, values))
+    return html_reports.tag('h3', 'Package dates overview') + html_reports.sheet(labels, None, items, None, 'dbstatus')
+
+
+def package_articles_affiliations_overview(pkg_articles):
+    evaluation = {}
+    for xml_name in sorted_xml_name_by_order(pkg_articles):
+        evaluation[xml_name] = []
+        aff_ids = [aff.id for aff in pkg_articles[xml_name].affiliations]
+        for contrib in pkg_articles[xml_name].contrib_names:
+            if len(contrib.xref) == 0:
+                evaluation[xml_name].append('author without aff')
+            elif len(contrib.xref) > 1:
+                evaluation[xml_name].append('author with more than 1 affs')
+            else:
+                for xref in contrib.xref:
+                    if not xref in aff_ids:
+                        evaluation[xml_name].append('invalid xref[@ref-type=aff]')
+        for aff in pkg_articles[xml_name].affiliations:
+            if None in [aff.id, aff.i_country, aff.norgname, aff.orgname, aff.city, aff.state, aff.country]:
+                evaluation[xml_name].append('missing data in aff')
+    labels = ['name', 'problems']
+    items = []
+
+    for xml_name, problems in evaluation:
+        items.append({'name': xml_name, 'problems': problems})
+    return html_reports.tag('h3', 'Package affiliations overview') + html_reports.sheet(labels, None, items, None, 'dbstatus')
+
+"""
+quantidade de cada tipo
+mesma fonte com tipos diferentes
+ref sem os dados obrigatórios (year, source)
+ano estranho
+source estranho (números)
+
+"""
+
+def package_articles_references_overview(pkg_articles):
+    labels = ['name', 'toc section', '@article-type', 'article title', 
+    'received', 'accepted', 'published', 
+    'authors', 'affs', 'abstracts', 'sub-articles',  'refs']
+
+    items = []
+    for xml_name in sorted_xml_name_by_order(pkg_articles):
+        values = []
+        values.append(xml_name)
+        values.append(pkg_articles[xml_name].toc_section)
+        values.append(pkg_articles[xml_name].article_type)
+        values.append(['[' + t.language + '] ' + t.title for t in pkg_articles[xml_name].titles])
+
+        values.append(article_utils.display_date(pkg_articles[xml_name].received_dateiso))
+        values.append(article_utils.display_date(pkg_articles[xml_name].accepted_dateiso))
+
+        text = []
+        if pkg_articles[xml_name].issue_pub_dateiso is not None:
+            text.append(article_utils.display_date(pkg_articles[xml_name].issue_pub_dateiso))
+        if pkg_articles[xml_name].article_pub_date is not None:
+            text.append(article_utils.display_date(pkg_articles[xml_name].article_pub_dateiso))
+        values.append(text)
+
+        values.append(str(len(pkg_articles[xml_name].references)))
+        
+        items.append(label_values(labels, values))
+
+    return html_reports.tag('h3', 'Package data overview') + html_reports.sheet(labels, None, items, None, 'dbstatus')
 
 
 def pkg_references_stats(doc_items):
