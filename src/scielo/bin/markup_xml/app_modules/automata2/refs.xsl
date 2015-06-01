@@ -30,7 +30,7 @@
 	<!--
 		Reference 
 	-->
-	<xsl:template match="ref">[ref id="r<xsl:value-of select="position()"/>" reftype="<xsl:value-of select=".//@citation-type"/>"]<xsl:apply-templates select="originalRef"/><xsl:apply-templates select="nlm-citation/*"/>[/ref]
+	<xsl:template match="ref">[ref id="r<xsl:value-of select="position()"/>" reftype="<xsl:value-of select=".//@citation-type"/>"]<xsl:apply-templates select="originalRef"/><xsl:if test="not(label)">[label]<xsl:value-of select="substring(@id,2)"/>[/label]</xsl:if><xsl:apply-templates select="nlm-citation/*"/>[/ref]
 </xsl:template>
 	<!--
 		Unknown

@@ -6,6 +6,8 @@ from datetime import datetime
 
 import xml_utils
 
+XML_WIDTH = 140
+
 
 def report_date():
     procdate = datetime.now().isoformat()
@@ -124,11 +126,13 @@ def statistics_display(f, e, w, inline=True):
 
 def sheet(table_header, wider, table_data, filename=None, table_style='sheet', row_style=None):
     r = ''
-    width = None
     if not table_header is None:
         if len(table_header) > 1:
-            width = 90
-            width = width / len(table_header)
+            width = XML_WIDTH / len(table_header)
+            if width < 30:
+                width = 30
+            if len(table_header) == 3:
+                width = XML_WIDTH / 2
         th = ''
         if filename is not None:
             th += '<th class="th"></th>'
@@ -161,7 +165,7 @@ def sheet(table_header, wider, table_data, filename=None, table_style='sheet', r
                 for row in table_data:
                     tr = ''
                     for label in table_header:
-                        cell_content = format_html_data(row.get(label, ''))
+                        cell_content = format_html_data(row.get(label, ''), False, width)
                         cell_style = cell_style_prefix + label
                         if cell_style == label:
                             cell_style = get_message_style(row.get(label), label)
@@ -175,22 +179,15 @@ def sheet(table_header, wider, table_data, filename=None, table_style='sheet', r
     return r
 
 
-def display_xml(value, width=None):
+def display_xml(value, width=30):
     value = xml_utils.pretty_print(value)
     value = value.replace('<', '&lt;')
     value = value.replace('>', '&gt;')
 
-    w = width
-    if width is None:
-        w = 90
-    else:
-        if isinstance(width, str):
-            w = int(width)
-
-    rows_count = len(value) / w
+    rows_count = len(value) / width
     if rows_count > 10:
         rows_count = 10
-    return '<textarea cols="' + str(w) + '" rows="' + str(rows_count) + '" readonly>' + value + '</textarea>'
+    return '<textarea cols="' + str(width) + '" rows="' + str(rows_count) + '" readonly>' + value + '</textarea>'
 
 
 def p_message(value):
@@ -225,7 +222,7 @@ def format_html_data_list(value, list_type='ol'):
     return r
 
 
-def format_html_data(value, apply_message_style=False, width=None):
+def format_html_data(value, apply_message_style=False, width=30):
     r = '-'
     if isinstance(value, list):
         r = format_html_data_list(value)
@@ -295,7 +292,7 @@ def get_stats_numbers_style(f, e, w):
 def display_labeled_value(label, value, style=''):
     if label is None:
         label = 'None'
-    return tag('p', tag('span', '[' + label + '] ', 'discret') + format_html_data(value), style)
+    return tag('p', tag('span', '[' + label + '] ', 'discret') + format_html_data(value, False, XML_WIDTH), style)
 
 
 def display_label_value(label, value):

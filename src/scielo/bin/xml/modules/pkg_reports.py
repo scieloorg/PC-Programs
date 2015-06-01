@@ -3,7 +3,9 @@
 import os
 from datetime import datetime
 
+import attributes
 import article_reports
+import article_utils
 import xpchecker
 import html_reports
 
@@ -109,6 +111,173 @@ def xml_list(pkg_path, xml_filenames=None):
 
 def validate_package(articles, validate_order):
     return article_reports.toc_report_data(articles, validate_order)
+
+
+def package_articles_overview(pkg_articles):
+    items = []
+    items.append(package_articles_languages_overview(pkg_articles))
+    items.append(package_articles_dates_overview(pkg_articles))
+    items.append(package_articles_affiliations_overview(pkg_articles))
+    items.append(package_articles_references_overview(pkg_articles))
+    return html_reports.section('Package status', ''.join(items))
+
+
+def package_articles_languages_overview(pkg_articles):
+    labels = ['name', 'toc section', '@article-type', 'article titles', 
+        'abstracts', 'key words', '@xml:lang', 'versions']
+
+    items = []
+    for xml_name in sorted_xml_name_by_order(pkg_articles):
+        values = []
+        values.append(xml_name)
+        values.append(pkg_articles[xml_name].toc_section)
+        values.append(pkg_articles[xml_name].article_type)
+        values.append(['[' + t.language + '] ' + t.title for t in pkg_articles[xml_name].titles])
+        values.append([t.language for t in pkg_articles[xml_name].abstracts])
+        k = {}
+        for item in pkg_articles[xml_name].keywords:
+            if not item.get('l') in k.keys():
+                k[item.get('l')] = []
+            k[item.get('l')].append(item.get('k'))
+        values.append(k)
+        values.append(pkg_articles[xml_name].language)
+        values.append(pkg_articles[xml_name].trans_languages)
+        items.append(label_values(labels, values))
+    return html_reports.tag('h3', 'Package languages overview') + html_reports.sheet(labels, None, items, None, 'dbstatus')
+
+
+def package_articles_dates_overview(pkg_articles):
+    labels = ['name', 'toc section', '@article-type', 'article title', 
+    'received', 'accepted', 'receive to accepted (days)', 'article date', 'issue date', 'accepted to publication (days)', 'accepted to today (days)']
+
+    items = []
+    for xml_name in sorted_xml_name_by_order(pkg_articles):
+        values = []
+        values.append(xml_name)
+        values.append(pkg_articles[xml_name].toc_section)
+        values.append(pkg_articles[xml_name].article_type)
+        values.append(pkg_articles[xml_name].title)
+        values.append(article_utils.display_date(pkg_articles[xml_name].received_dateiso))
+        values.append(article_utils.display_date(pkg_articles[xml_name].accepted_dateiso))
+        values.append(str(pkg_articles[xml_name].history_days))
+        values.append(article_utils.display_date(pkg_articles[xml_name].article_pub_dateiso))
+        values.append(article_utils.display_date(pkg_articles[xml_name].issue_pub_dateiso))
+        values.append(str(pkg_articles[xml_name].publication_days))
+        values.append(str(pkg_articles[xml_name].registration_days))
+        items.append(label_values(labels, values))
+    return html_reports.tag('h3', 'Package dates overview') + html_reports.sheet(labels, None, items, None, 'dbstatus')
+
+
+def package_articles_affiliations_overview(pkg_articles):
+    evaluation = {}
+    keys = ['authors without aff', 
+            'authors with more than 1 affs', 
+            'authors with invalid xref[@ref-type=aff]', 
+            'incomplete affiliations']
+    for k in keys:
+        evaluation[k] = 0
+
+    for xml_name in sorted_xml_name_by_order(pkg_articles):
+        aff_ids = [aff.id for aff in pkg_articles[xml_name].affiliations]
+        for contrib in pkg_articles[xml_name].contrib_names:
+            if len(contrib.xref) == 0:
+                evaluation['authors without aff'] += 1
+            elif len(contrib.xref) > 1:
+                valid_xref = [xref for xref in contrib.xref if xref in aff_ids]
+                if len(valid_xref) != len(contrib.xref):
+                    evaluation['authors with invalid xref[@ref-type=aff]'] += 1
+                elif len(valid_xref) > 1:
+                    evaluation['authors with more than 1 affs'] += 1
+                elif len(valid_xref) == 0:
+                    evaluation['authors without aff'] += 1
+        for aff in pkg_articles[xml_name].affiliations:
+            if None in [aff.id, aff.i_country, aff.norgname, aff.orgname, aff.city, aff.state, aff.country]:
+                evaluation['incomplete affiliations'] += 1
+    labels = ['label', 'quantity']
+    items = []
+
+    for label, q in evaluation.items():
+        items.append({'label': label, 'quantity': str(q)})
+    return html_reports.tag('h3', 'Package affiliations overview') + html_reports.sheet(labels, None, items, None, 'dbstatus')
+
+
+def package_articles_references_overview(pkg_articles):
+    unusual_sources = []
+    unusual_years = []
+    no_year = {}
+    no_sources = {}
+
+    pkg_type = {}
+    pkg_source_and_type = {}
+
+    for xml_name in sorted_xml_name_by_order(pkg_articles):
+        doc = pkg_articles[xml_name]
+        for ref in doc.references:
+            if ref.publication_type in attributes.BIBLIOMETRICS_USE:
+                if ref.year is None:
+                    if not ref.publication_type in no_year.keys():
+                        no_year[ref.publication_type] = 0
+                    no_year[ref.publication_type] += 1
+                if ref.source is None:
+                    if not ref.publication_type in no_sources.keys():
+                        no_sources[ref.publication_type] = 0
+                    no_sources[ref.publication_type] += 1
+
+            if ref.source is not None:
+                if not ref.source in pkg_source_and_type.keys():
+                    pkg_source_and_type[ref.source] = {}
+                if not ref.publication_type in pkg_source_and_type[ref.source].keys():
+                    pkg_source_and_type[ref.source][ref.publication_type] = 0
+                pkg_source_and_type[ref.source][ref.publication_type] += 1
+                numbers = len([n for n in ref.source if n.isdigit()])
+                not_numbers = len(ref.source) - numbers
+                if not_numbers < numbers:
+                    unusual_sources.append(ref.source)
+
+            if ref.year is not None:
+                numbers = len([n for n in ref.year if n.isdigit()])
+                not_numbers = len(ref.year) - numbers
+                if not_numbers > numbers:
+                    unusual_years.append(ref.year)
+
+            if not ref.publication_type in pkg_type.keys():
+                pkg_type[ref.publication_type] = 0
+            pkg_type[ref.publication_type] += 1
+
+    no_sources = {k: str(q) for k, q in no_sources.items()}
+    no_year = {k: str(q) for k, q in no_year.items()}
+
+    pkg_source_and_type = {source: reftypes for source, reftypes in pkg_source_and_type.items() if len(reftypes) > 1}
+    new_pkg_source_and_type = {}
+    for source, reftypes in pkg_source_and_type.items():
+        new_pkg_source_and_type[source] = {reftype: str(q) for reftype, q in reftypes.items()}
+
+    labels = ['label', 'quantity/details']
+    items = []
+    items.append({'label': 'references by type', 'quantity/details': {k:str(v) for k, v in pkg_type.items()}})
+
+    if len(new_pkg_source_and_type) == 0:
+        new_pkg_source_and_type = '0'
+    if len(no_sources) == 0:
+        no_sources = '0'
+    if len(no_year) == 0:
+        no_year = '0'
+    if len(unusual_sources) == 0:
+        unusual_sources = '0'
+    if len(unusual_years) == 0:
+        unusual_years = '0'
+
+    items.append({'label': 'same sources as different types', 'quantity/details': new_pkg_source_and_type})
+    items.append({'label': 'references without source', 'quantity/details': no_sources})
+    items.append({'label': 'references without year', 'quantity/details': no_year})
+    items.append({'label': 'references with unusual value for source', 'quantity/details': unusual_sources})
+    items.append({'label': 'references with unusual value for year', 'quantity/details': unusual_years})
+
+    print(new_pkg_source_and_type)
+    print(unusual_sources)
+    print(unusual_years)
+
+    return html_reports.tag('h3', 'Package references overview') + html_reports.sheet(labels, None, items, None, 'dbstatus')
 
 
 def pkg_references_stats(doc_items):
