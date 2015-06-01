@@ -119,7 +119,7 @@ def package_articles_overview(pkg_articles):
     items.append(package_articles_dates_overview(pkg_articles))
     items.append(package_articles_affiliations_overview(pkg_articles))
     items.append(package_articles_references_overview(pkg_articles))
-    return html_reports.section('Package status', ''.join(items))
+    return html_reports.section('Package overview', ''.join(items))
 
 
 def package_articles_languages_overview(pkg_articles):
@@ -132,7 +132,7 @@ def package_articles_languages_overview(pkg_articles):
         values.append(xml_name)
         values.append(pkg_articles[xml_name].toc_section)
         values.append(pkg_articles[xml_name].article_type)
-        values.append(['[' + t.language + '] ' + t.title for t in pkg_articles[xml_name].titles])
+        values.append(['[' + str(t.language) + '] ' + str(t.title) for t in pkg_articles[xml_name].titles])
         values.append([t.language for t in pkg_articles[xml_name].abstracts])
         k = {}
         for item in pkg_articles[xml_name].keywords:
