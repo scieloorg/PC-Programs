@@ -54,7 +54,7 @@ class TOCReport(object):
             if len(toc_data[label]) > 1:
                 part = html_reports.p_message('FATAL ERROR: same value for ' + label + ' is required for all the articles of the package')
                 for found_value, xml_files in toc_data[label].items():
-                    part += html_reports.format_list('found ' + label + ' "' + html_reports.display_xml(found_value, 60) + '" in:', 'ul', xml_files, 'issue-problem')
+                    part += html_reports.format_list('found ' + label + ' "' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" in:', 'ul', xml_files, 'issue-problem')
                 r += part
 
         for label in unique_data:

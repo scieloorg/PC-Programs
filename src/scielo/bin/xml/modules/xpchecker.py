@@ -35,7 +35,7 @@ def save_packtools_style_report(content, report_filename):
     if q > 0:
         msg = html_reports.tag('div', 'Total of errors = ' + str(q), 'error')
 
-    body = msg + ''.join([html_reports.display_xml(item, 100) for item in content.split('\n')])
+    body = msg + ''.join([html_reports.display_xml(item, html_reports.XML_WIDTH*0.9) for item in content.split('\n')])
     html_reports.save(report_filename, title, body)
 
 
