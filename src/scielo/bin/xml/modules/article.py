@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+from datetime import datetime
 
 import article_utils
 import xml_utils
@@ -1035,6 +1036,16 @@ class Article(ArticleXML):
             d1 = self.accepted_dateiso
             d2 = self.article_pub_dateiso if self.article_pub_dateiso else self.issue_pub_dateiso
             h = (article_utils.dateiso2datetime(d2) - article_utils.dateiso2datetime(d1)).days
+        return h
+
+    @property
+    def registration_days(self):
+        h = 0
+        d1 = '00000000'
+        d2 = '00000000'
+        if self.accepted is not None:
+            d1 = self.accepted_dateiso
+            h = (datetime.now() - article_utils.dateiso2datetime(d1)).days
         return h
 
 

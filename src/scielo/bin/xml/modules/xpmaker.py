@@ -850,7 +850,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         texts = []
         toc_f = 0
         register_log('pack_and_validate: package_articles_overview')
-        texts.append(html_reports.section('Package status', pkg_reports.package_articles_overview(articles)))
+        texts.append(pkg_reports.package_articles_overview(articles))
 
         if not from_markup:
             register_log('pack_and_validate: pkg_reports.validate_package')

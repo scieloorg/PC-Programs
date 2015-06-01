@@ -54,7 +54,7 @@ class TOCReport(object):
             if len(toc_data[label]) > 1:
                 part = html_reports.p_message('FATAL ERROR: same value for ' + label + ' is required for all the articles of the package')
                 for found_value, xml_files in toc_data[label].items():
-                    part += html_reports.format_list('found ' + label + ' "' + html_reports.display_xml(found_value) + '" in:', 'ul', xml_files, 'issue-problem')
+                    part += html_reports.format_list('found ' + label + ' "' + html_reports.display_xml(found_value, 60) + '" in:', 'ul', xml_files, 'issue-problem')
                 r += part
 
         for label in unique_data:
@@ -303,7 +303,7 @@ class ArticleDisplayReport(object):
             table_data += html_reports.display_labeled_value('label', t.label, 'label')
             table_data += html_reports.display_labeled_value('caption',  t.caption, 'label')
             table_data += html_reports.tag('p', 'table-wrap/table (xml)', 'label')
-            table_data += html_reports.tag('div', html_reports.format_html_data(t.table), 'xml')
+            table_data += html_reports.tag('div', html_reports.format_html_data(t.table, False, html_reports.XML_WIDTH), 'xml')
             if t.table:
                 table_data += html_reports.tag('p', 'table-wrap/table', 'label')
                 table_data += html_reports.tag('div', t.table, 'element-table')
@@ -317,7 +317,7 @@ class ArticleDisplayReport(object):
     def affiliations(self):
         r = html_reports.tag('p', 'Affiliations:', 'label')
         for item in self.article.affiliations:
-            r += html_reports.tag('p', html_reports.format_html_data(item.xml))
+            r += html_reports.tag('p', html_reports.format_html_data(item.xml, False, html_reports.XML_WIDTH))
         th, w, data = self.sheet_data.affiliations_sheet_data()
         r += html_reports.sheet(th, w, data)
         return r
@@ -414,7 +414,7 @@ class ArticleValidationReport(object):
 
             if len(ref_result) > 0:
                 rows += html_reports.tag('h3', 'Reference ' + ref.id)
-                rows += html_reports.display_xml(ref.xml)
+                rows += html_reports.display_xml(ref.xml, html_reports.XML_WIDTH*0.9)
                 rows += self.validations_sheet(ref_result)
         return rows
 

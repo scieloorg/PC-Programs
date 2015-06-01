@@ -8,11 +8,22 @@ MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '
 
 
 def display_date(dateiso):
-    return dateiso[0:4] + '/' + dateiso[4:6] + '/' + dateiso[6:8]
+    if dateiso is None:
+        dateiso = ''
+    else:
+        dateiso = dateiso[0:4] + '/' + dateiso[4:6] + '/' + dateiso[6:8]
+    return dateiso
 
 
 def dateiso2datetime(dateiso):
-    return datetime(int(dateiso[0:4]), int(dateiso[4:6]), int(dateiso[6:8]))
+    y = int(dateiso[0:4])
+    m = int(dateiso[4:6])
+    d = int(dateiso[6:8])
+    if d == 0:
+        d = 1
+    if m == 0:
+        m = 1
+    return datetime(y, m, d)
 
 
 def normalize_number(number):
