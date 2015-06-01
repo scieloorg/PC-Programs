@@ -359,7 +359,7 @@ def convert_package(src_path):
 
     texts = []
     texts.append(html_reports.section('Package: XML list', pkg_reports.xml_list(pkg_path, xml_filenames)))
-
+    texts.append(pkg_overview)
     texts.append(issue_error_msg)
     texts.append(conclusion_msg)
     texts.append(before_conversion)
@@ -367,7 +367,6 @@ def convert_package(src_path):
     texts.append(conversion_status_summary_report)
     texts.append(aop_status_summary_report)
     #texts.append(references_stats)
-    texts.append(pkg_overview)
     texts.append(toc_report)
     texts.append(validations_report)
     #texts.append(sheets)
