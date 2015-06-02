@@ -87,9 +87,15 @@ def get_all_journals_list(collections):
     return journals
 
 
-def generate_input_for_markup(journals, filename):
-    c = '\n'.join(journals)
-    codecs.open(filename, mode='w+').write(c)
+def generate_input_for_markup(journals, filename, downloaded_file_encoding):
+    new_items = []
+    for item in journals:
+        if not isinstance(item, unicode):
+            item = item.decode(downloaded_file_encoding)
+        new_items.append(item.encode('cp1252'))
+    codecs.open(filename, mode='w+').write('\n\r'.join(new_items))
+    print(filename)
+    print('fim')
 
 
 def download_content(url):
@@ -101,14 +107,15 @@ def download_content(url):
     return new
 
 
-def main(url, downloaded_filename, dest_filename, collection_name=None):
-    new = download_content(url)
-    codecs.open(downloaded_filename, mode='w+').write(new)
-    print(downloaded_filename)
+def main(url, downloaded_filename, dest_filename, collection_name=None, downloaded_file_encoding='utf-8'):
+    if url is not None:
+        new = download_content(url)
+        codecs.open(downloaded_filename, mode='w+').write(new)
+        print(downloaded_filename)
     journals_collections = journals_by_collection(downloaded_filename)
     codecs.open(dest_filename.replace('.csv', '_collections.csv'), mode='w+').write('\n'.join(sorted(journals_collections.keys())))
     journals = get_journals_list(journals_collections, collection_name)
-    generate_input_for_markup(journals, dest_filename)
+    generate_input_for_markup(journals, dest_filename, downloaded_file_encoding)
 
 
 collection_name = None
@@ -154,7 +161,10 @@ if os.path.isfile(temp_markup_journals_filename):
     except:
         pass
 
-main('http://static.scielo.org/sps/markup_journals.csv', downloaded_filename, temp_markup_journals_filename, collection_name)
+url = 'http://static.scielo.org/sps/markup_journals.csv'
+url = 'http://static.scielo.org/sps/titles-tab-utf-8.csv'
+
+main(url, downloaded_filename, temp_markup_journals_filename, collection_name)
 
 while not os.path.isfile(temp_markup_journals_filename):
     pass
