@@ -933,8 +933,7 @@ def generate_reports(scielo_pkg_path, report_path, display_report, pkg_validatio
 
     content = ''
     f, e, w = html_reports.statistics_numbers(pkg_validation_report)
-    content += html_reports.statistics_display(f, e, w, False)
-    content += pkg_reports.error_msg_subtitle()
+    content += pkg_reports.statistics_and_subtitle(f, e, w)
     content += html_reports.section('Package: XML list', pkg_reports.xml_list(scielo_pkg_path))
     content += pkg_validation_report
     content += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))

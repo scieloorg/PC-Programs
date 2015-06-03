@@ -139,7 +139,7 @@ def complete_issue_items_row(article, action, result, creation_date, last_update
     return (labels, values)
 
 
-def display_status_before_conversion(registered_articles, pkg_articles, xml_doc_actions, status_column_label='action'):
+def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions, status_column_label='action'):
     orders = [article.order for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()]
 
     orders = sorted(list(set([order for order in orders if order is not None])))
@@ -173,7 +173,7 @@ def display_status_before_conversion(registered_articles, pkg_articles, xml_doc_
     return html_reports.sheet(labels, None, items, None, 'dbstatus', 'action')
 
 
-def display_status_after_conversion(previous_registered_articles, registered_articles, pkg_articles, xml_doc_actions, unmatched_orders):
+def display_status_after_xc(previous_registered_articles, registered_articles, pkg_articles, xml_doc_actions, unmatched_orders):
     actions_result_labels = {'delete': 'deleted', 'update': 'updated', 'add': 'added', '-': '-', 'skip-update': 'skept', 'order changed': 'order changed', 'fail': 'update/add failed'}
     orders = sorted(list(set([article.order for article in previous_registered_articles.values()] + [article.order for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()])))
 
@@ -262,16 +262,15 @@ def convert_package(src_path):
     validate_order = True
 
     validations_report = ''
-    toc_report = ''
+    xc_toc_report = ''
 
-    conclusion_msg = ''
-    references_stats = ''
+    xc_conclusion_msg = ''
     conversion_status = {}
     pkg_quality_fatal_errors = 0
-    conversion_status_summary_report = ''
-    aop_status_summary_report = ''
-    before_conversion = ''
-    after_conversion = ''
+    xc_results_report = ''
+    aop_results_report = ''
+    before_conversion_report = ''
+    after_conversion_report = ''
     acron_issue_label = 'unidentified ' + os.path.basename(src_path)[:-4]
     scilista_item = None
     issue_files = None
@@ -292,7 +291,7 @@ def convert_package(src_path):
     xml_filenames, pkg_articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
     issue_models, issue_error_msg = get_issue_models(pkg_articles)
 
-    pkg_overview = pkg_reports.package_articles_overview(pkg_articles)
+    pkg_overview_report = pkg_reports.package_articles_overview(pkg_articles)
     selected_articles = None
 
     if issue_models is None:
@@ -305,10 +304,10 @@ def convert_package(src_path):
 
         complete_issue_items, xml_doc_actions, unmatched_orders = get_complete_issue_items(issue_files, pkg_path, previous_registered_articles, pkg_articles)
 
-        before_conversion = html_reports.tag('h3', 'Documents status in the package/database - before conversion')
-        before_conversion += display_status_before_conversion(previous_registered_articles, pkg_articles, xml_doc_actions)
+        before_conversion_report = html_reports.tag('h3', 'Documents status in the package/database - before conversion')
+        before_conversion_report += display_status_before_xc(previous_registered_articles, pkg_articles, xml_doc_actions)
 
-        toc_f, toc_report = complete_issue_items_report(complete_issue_items, unmatched_orders)
+        toc_f, xc_toc_report = complete_issue_items_report(complete_issue_items, unmatched_orders)
 
         if toc_f == 0:
             selected_articles = {}
@@ -317,7 +316,7 @@ def convert_package(src_path):
                     selected_articles[xml_name] = article
 
         if selected_articles is None:
-            conclusion_msg = report_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
+            xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 
         elif len(selected_articles) > 0:
 
@@ -331,17 +330,17 @@ def convert_package(src_path):
             validations_report = html_reports.tag('h2', 'Detail Report')
             validations_report += pkg_reports.get_articles_report_text(articles_reports, articles_stats, conversion_stats_and_reports)
 
-            conclusion_msg = report_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
+            xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 
-            after_conversion = html_reports.tag('h3', 'Documents status in the package/database - after conversion')
-            after_conversion += display_status_after_conversion(previous_registered_articles, get_registered_articles(issue_files), pkg_articles, xml_doc_actions, unmatched_orders)
+            after_conversion_report = html_reports.tag('h3', 'Documents status in the package/database - after conversion')
+            after_conversion_report += display_status_after_xc(previous_registered_articles, get_registered_articles(issue_files), pkg_articles, xml_doc_actions, unmatched_orders)
 
-            conversion_status_summary_report = html_reports.tag('h3', 'Conversion results') + report_status(conversion_status, 'conversion')
+            xc_results_report = html_reports.tag('h3', 'Conversion results') + report_status(conversion_status, 'conversion')
 
-            aop_status_summary_report = 'this journal has no aop.'
+            aop_results_report = 'this journal has no aop.'
             if not aop_status is None:
-                aop_status_summary_report = report_status(aop_status, 'aop-block')
-            aop_status_summary_report = html_reports.tag('h3', 'AOP status') + aop_status_summary_report
+                aop_results_report = report_status(aop_status, 'aop-block')
+            aop_results_report = html_reports.tag('h3', 'AOP status') + aop_results_report
 
             #sheets = pkg_reports.get_lists_report_text(articles_sheets)
 
@@ -353,21 +352,21 @@ def convert_package(src_path):
             if scilista_item is not None:
                 issue_files.copy_files_to_local_web_app()
         else:
-            conclusion_msg = report_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
+            xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 
     report_location = report_path + '/xml_converter.html'
 
     texts = []
     texts.append(html_reports.section('Package: XML list', pkg_reports.xml_list(pkg_path, xml_filenames)))
-    texts.append(pkg_overview)
+    texts.append(pkg_overview_report)
     texts.append(issue_error_msg)
-    texts.append(conclusion_msg)
-    texts.append(before_conversion)
-    texts.append(after_conversion)
-    texts.append(conversion_status_summary_report)
-    texts.append(aop_status_summary_report)
+    texts.append(xc_conclusion_msg)
+    texts.append(before_conversion_report)
+    texts.append(after_conversion_report)
+    texts.append(xc_results_report)
+    texts.append(aop_results_report)
     #texts.append(references_stats)
-    texts.append(toc_report)
+    texts.append(xc_toc_report)
     texts.append(validations_report)
     #texts.append(sheets)
 
@@ -385,12 +384,12 @@ def convert_package(src_path):
 
     email_subject = format_email_subject(scilista_item, selected_articles, pkg_quality_fatal_errors, f, e, w)
 
-    header_status = html_reports.statistics_display(f, e, w, False)
     if selected_articles is None:
         header_status = ''
     elif len(selected_articles) == 0:
         header_status = ''
-    header_status += pkg_reports.error_msg_subtitle()
+    else:
+        header_status = pkg_reports.statistics_and_subtitle(f, e, w)
 
     pkg_reports.save_report(report_location, ['XML Conversion (XML to Database)', acron_issue_label], header_status + content)
 
@@ -517,8 +516,10 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
                         valid_ahead = None
 
             section_code, issue_validations_msg = validate_xml_issue_data(issue_models, article)
-            msg += html_reports.tag('h4', 'Checking issue data')
-            msg += issue_validations_msg
+
+            if len(issue_validations_msg) > 0:
+                msg += html_reports.tag('h4', 'Checking issue data')
+                msg += issue_validations_msg
             conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
 
             msg += html_reports.tag('h4', 'Converting xml to database')
@@ -588,7 +589,7 @@ def aop_message(article, ahead, status):
     data = []
     msg_list = []
     if status == 'new aop':
-        msg_list.append('This document is an "aop".')
+        msg_list.append('INFO: This document is an "aop".')
     else:
         msg_list.append('Checking if ' + article.xml_name + ' has an "aop version"')
         if article.doi is not None:
@@ -641,7 +642,7 @@ def report_status(status, style=None):
     return text
 
 
-def report_conclusion_message(scilista_item, issue_label, pkg_articles, selected_articles, xc_status, pkg_quality_fatal_errors):
+def xc_conclusion_message(scilista_item, issue_label, pkg_articles, selected_articles, xc_status, pkg_quality_fatal_errors):
     total = len(selected_articles) if selected_articles is not None else 0
     converted = len(xc_status.get('converted', []))
     failed = total - converted
@@ -714,6 +715,7 @@ def validate_xml_issue_data(issue_models, article):
         validations.append(('issue label', article.issue_label, issue_models.issue.issue_label))
         validations.append(('issue date', article.issue_pub_dateiso[0:4], issue_models.issue.dateiso[0:4]))
 
+        # check issue data
         for label, article_data, issue_data in validations:
             if article_data is None:
                 article_data = 'None'
@@ -723,10 +725,8 @@ def validate_xml_issue_data(issue_models, article):
                 issue_data = 'None'
             elif isinstance(issue_data, list):
                 issue_data = ' | '.join(issue_data)
-            msg.append(html_reports.tag('h5', label))
-            if article_data == issue_data:
-                msg.append(article_data)
-            else:
+            if not article_data == issue_data:
+                msg.append(html_reports.tag('h5', label))
                 msg.append('FATAL ERROR: data mismatched. In article: "' + article_data + '" and in issue: "' + issue_data + '"')
 
         validations = []
@@ -740,43 +740,57 @@ def validate_xml_issue_data(issue_models, article):
                 issue_data = 'None'
             elif isinstance(issue_data, list):
                 issue_data = ' | '.join(issue_data)
-            msg.append(html_reports.tag('h5', label))
-            if utils.how_similar(article_data, issue_data) > 0.8:
-                msg.append(article_data)
-            else:
+            if utils.how_similar(article_data, issue_data) < 0.8:
+                msg.append(html_reports.tag('h5', label))
                 msg.append('FATAL ERROR: data mismatched. In article: "' + article_data + '" and in issue: "' + issue_data + '"')
 
         # section
-        msg.append(html_reports.tag('h5', 'section'))
-        msg.append(article.toc_section)
-        section_code, matched_rate, most_similar = issue_models.most_similar_section_code(article.toc_section)
+        section_msg = []
+        section_code, matched_rate, fixed_sectitle = issue_models.most_similar_section_code(article.toc_section)
         if matched_rate != 1:
-            msg.append('Registered sections:\n' + '; '.join(issue_models.section_titles))
-            if section_code is None:
-                if not article.is_ahead:
-                    msg.append('ERROR: ' + article.toc_section + ' is not a registered section.')
-            else:
-                msg.append('WARNING: section replaced: "' + most_similar + '" (instead of "' + article.toc_section + '")')
+            if not article.is_ahead:
+                section_msg.append('Registered sections:\n' + '; '.join(issue_models.section_titles))
+                if section_code is None:
+                    section_msg.append('ERROR: ' + article.toc_section + ' is not a registered section.')
+                else:
+                    section_msg.append('WARNING: section replaced: "' + fixed_sectitle + '" (instead of "' + article.toc_section + '")')
 
         # @article-type
-        msg.append(html_reports.tag('h5', 'article-type'))
-        msg.append('@article-type: ' + article.article_type)
-        if most_similar is not None:
-            _sectitle = most_similar
+        if fixed_sectitle is not None:
+            _sectitle = fixed_sectitle
         else:
             _sectitle = article.toc_section
-        _sectitle = attributes.normalize_section_title(_sectitle)
-        _article_type = attributes.normalize_section_title(article.article_type)
-        rate = compare_article_type_and_section(_sectitle, _article_type)
-        if rate < 0.5:
-            if not _article_type in _sectitle:
-                msg.append('WARNING: Check if ' + article.article_type + ' is a valid value for @article-type. <!--' + _sectitle + ' -->')
+        article_type_msg = validate_article_type_and_section(article.article_type, _sectitle)
+        if len(article_type_msg) > 0 or len(section_msg) > 0:
+            msg.append(html_reports.tag('h5', 'section'))
+            msg.append(article.toc_section)
+            for m in section_msg:
+                msg.append(m)
+            msg.append(html_reports.tag('h5', 'article-type'))
+            msg.append(article.article_type)
+            if len(article_type_msg) > 0:
+                msg.append(article_type_msg)
 
     msg = ''.join([html_reports.p_message(item) for item in msg])
     return (section_code, msg)
 
 
-def compare_article_type_and_section(article_section, article_type):
+def validate_article_type_and_section(article_type, article_section):
+    #DOCTOPIC_IN_USE
+    msg = ''
+    _sectitle = attributes.normalize_section_title(article_section)
+    _article_type = attributes.normalize_section_title(article_type)
+    rate = compare_article_type_and_section(_article_type, _sectitle)
+    rate2, similars = utils.most_similar(utils.similarity(attributes.DOCTOPIC_IN_USE, _sectitle))
+    if rate < 0.5 and rate2 < 0.5:
+        if not _article_type in _sectitle:
+            msg = 'WARNING: Check if ' + article_type + ' is a valid value for @article-type. <!-- ' + _sectitle + ' -->'
+    elif rate2 > rate:
+        msg = 'ERROR: Check @article-type. Maybe it should be ' + ' or '.join(similars) + ' instead of ' + article_type + '.'
+    return msg
+
+
+def compare_article_type_and_section(article_type, article_section):
     return utils.how_similar(article_section, article_type.replace('-', ' '))
 
 

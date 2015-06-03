@@ -311,6 +311,12 @@ def section(title, content):
     return r
 
 
+def tab_block(tab_id, content, status='hidden'):
+    r = '<div id="' + tab_id + '" class="tab_content' + status + '">'
+    r += content
+    r += '</div>'
+    return r
+
 #def pie_graphic(data):
 #    fig = matplotlib.pyplot.figure(figsize=(2, 1))
 #    #p1 = fig.add_subplot(1,2,1)

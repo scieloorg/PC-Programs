@@ -612,8 +612,7 @@ def format_report(article_display_report, article_validation_report, display_all
 
     if display_all:
         content.append(article_display_report.issue_header)
-
-    content.append(article_display_report.article_front)
+        content.append(article_display_report.article_front)
     content.append(article_validation_report.validations(not display_all))
     content.append(article_display_report.files_and_href)
     if display_all:

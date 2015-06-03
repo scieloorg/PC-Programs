@@ -252,32 +252,21 @@ def package_articles_references_overview(pkg_articles):
     for source, reftypes in pkg_source_and_type.items():
         new_pkg_source_and_type[source] = {reftype: str(q) for reftype, q in reftypes.items()}
 
-    labels = ['label', 'quantity/details']
+    labels = ['label', 'status', 'message']
     items = []
-    items.append({'label': 'references by type', 'quantity/details': {k:str(v) for k, v in pkg_type.items()}})
+    items.append({'label': 'references by type', 'status': 'INFO', 'message': {k:str(v) for k, v in pkg_type.items()}})
+    if len(new_pkg_source_and_type) > 0:
+        items.append({'label': 'same sources as different types', 'status': 'WARNING', 'message': new_pkg_source_and_type})
+    if len(no_sources) > 0:
+        items.append({'label': 'references without source', 'status': 'WARNING', 'message': no_sources})
+    if len(no_year) > 0:
+        items.append({'label': 'references without year', 'status': 'WARNING', 'message': no_year})
+    if len(unusual_sources) > 0:
+        items.append({'label': 'references with unusual value for source', 'status': 'WARNING', 'message': unusual_sources})
+    if len(unusual_years) > 0:
+        items.append({'label': 'references with unusual value for year', 'status': 'WARNING', 'message': unusual_years})
 
-    if len(new_pkg_source_and_type) == 0:
-        new_pkg_source_and_type = '0'
-    if len(no_sources) == 0:
-        no_sources = '0'
-    if len(no_year) == 0:
-        no_year = '0'
-    if len(unusual_sources) == 0:
-        unusual_sources = '0'
-    if len(unusual_years) == 0:
-        unusual_years = '0'
-
-    items.append({'label': 'same sources as different types', 'quantity/details': new_pkg_source_and_type})
-    items.append({'label': 'references without source', 'quantity/details': no_sources})
-    items.append({'label': 'references without year', 'quantity/details': no_year})
-    items.append({'label': 'references with unusual value for source', 'quantity/details': unusual_sources})
-    items.append({'label': 'references with unusual value for year', 'quantity/details': unusual_years})
-
-    print(new_pkg_source_and_type)
-    print(unusual_sources)
-    print(unusual_years)
-
-    return html_reports.tag('h3', 'Package references overview') + html_reports.sheet(labels, None, items, None, 'dbstatus')
+    return html_reports.tag('h3', 'Package references overview') + html_reports.sheet(labels, None, items, None, table_style='validation', row_style='status')
 
 
 def pkg_references_stats(doc_items):
@@ -738,3 +727,9 @@ def display_report(report_filename):
         os.system('python -mwebbrowser file:///' + report_filename.replace('//', '/'))
     except:
         pass
+
+
+def statistics_and_subtitle(f, e, w):
+    x = error_msg_subtitle()
+    x += html_reports.statistics_display(f, e, w, False)
+    return x
