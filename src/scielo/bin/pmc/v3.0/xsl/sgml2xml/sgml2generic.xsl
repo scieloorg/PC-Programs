@@ -2861,8 +2861,239 @@ et al.</copyright-statement>
 			</p>
 		</caption>
 	</xsl:template>
-
+	<xsl:template match="*" mode="norm-abbrev-month">
+		<xsl:param name="date"/>
+		<xsl:param name="month_number"/>
+		<xsl:choose>
+			<xsl:when test="$month_number='01'">
+				<xsl:choose>
+					<xsl:when test="contains($date,'Jan')">Jan</xsl:when>
+					<xsl:when test="contains($date,'jan')">jan</xsl:when>
+					<xsl:when test="contains($date,'ene')">ene</xsl:when>
+					<xsl:when test="contains($date,'Ene')">Ene</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="$month_number='02'">
+				<xsl:choose>
+					<xsl:when test="contains($date,'Feb')">Feb</xsl:when>
+					<xsl:when test="contains($date,'Fev')">Fev</xsl:when>
+					<xsl:when test="contains($date,'fev')">fev</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="$month_number='03'">
+				<xsl:choose>
+					<xsl:when test="contains($date,'Mar')">Mar</xsl:when>
+					<xsl:when test="contains($date,'mar')">mar</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="$month_number='04'">
+				<xsl:choose>
+					<xsl:when test="contains($date,'Apr')">Apr</xsl:when>
+					<xsl:when test="contains($date,'apr')">apr</xsl:when>
+					<xsl:when test="contains($date,'abr')">abr</xsl:when>
+					<xsl:when test="contains($date,'Abr')">Abr</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="$month_number='05'">
+				<xsl:choose>
+					<xsl:when test="contains($date,'May')">May</xsl:when>
+					<xsl:when test="contains($date,'may')">may</xsl:when>
+					<xsl:when test="contains($date,'mai')">mai</xsl:when>
+					<xsl:when test="contains($date,'Mai')">Mai</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="$month_number='06'">
+				<xsl:choose>
+					<xsl:when test="contains($date,'Jun')">Jun</xsl:when>
+					<xsl:when test="contains($date,'jun')">jun</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="$month_number='07'">
+				<xsl:choose>
+					<xsl:when test="contains($date,'Jul')">Jul</xsl:when>
+					<xsl:when test="contains($date,'jul')">jul</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="$month_number='08'">
+				<xsl:choose>
+					<xsl:when test="contains($date,'Aug')">Aug</xsl:when>
+					<xsl:when test="contains($date,'ago')">ago</xsl:when>
+					<xsl:when test="contains($date,'Ago')">Ago</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="$month_number='09'">
+				<xsl:choose>
+					<xsl:when test="contains($date,'Sep')">Sep</xsl:when>
+					<xsl:when test="contains($date,'sep')">sep</xsl:when>
+					<xsl:when test="contains($date,'Set')">Set</xsl:when>
+					<xsl:when test="contains($date,'set')">set</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="$month_number='10'">
+				<xsl:choose>
+					<xsl:when test="contains($date,'Oct')">Oct</xsl:when>
+					<xsl:when test="contains($date,'oct')">oct</xsl:when>
+					<xsl:when test="contains($date,'out')">out</xsl:when>
+					<xsl:when test="contains($date,'Out')">Out</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="$month_number='11'">
+				<xsl:choose>
+					<xsl:when test="contains($date,'Nov')">Nov</xsl:when>
+					<xsl:when test="contains($date,'nov')">nov</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="$month_number='12'">
+				<xsl:choose>
+					<xsl:when test="contains($date,'Dec')">Dec</xsl:when>
+					<xsl:when test="contains($date,'dez')">dez</xsl:when>
+					<xsl:when test="contains($date,'Dez')">Dez</xsl:when>
+					<xsl:when test="contains($date,'dic')">dic</xsl:when>
+					<xsl:when test="contains($date,'Dic')">Dic</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:choose>
+					<xsl:when test="contains($date,'Dec')">Dec</xsl:when>
+					<xsl:when test="contains($date,'dez')">dez</xsl:when>
+					<xsl:when test="contains($date,'Dez')">Dez</xsl:when>
+					<xsl:when test="contains($date,'dic')">dic</xsl:when>
+					<xsl:when test="contains($date,'Dic')">Dic</xsl:when>
+					<xsl:when test="contains($date,'Nov')">Nov</xsl:when>
+					<xsl:when test="contains($date,'nov')">nov</xsl:when>
+					<xsl:when test="contains($date,'Oct')">Oct</xsl:when>
+					<xsl:when test="contains($date,'oct')">oct</xsl:when>
+					<xsl:when test="contains($date,'out')">out</xsl:when>
+					<xsl:when test="contains($date,'Out')">Out</xsl:when>
+					<xsl:when test="contains($date,'Sep')">Sep</xsl:when>
+					<xsl:when test="contains($date,'sep')">sep</xsl:when>
+					<xsl:when test="contains($date,'Set')">Set</xsl:when>
+					<xsl:when test="contains($date,'set')">set</xsl:when>
+					<xsl:when test="contains($date,'Aug')">Aug</xsl:when>
+					<xsl:when test="contains($date,'ago')">ago</xsl:when>
+					<xsl:when test="contains($date,'Ago')">Ago</xsl:when>
+					<xsl:when test="contains($date,'Jul')">Jul</xsl:when>
+					<xsl:when test="contains($date,'jul')">jul</xsl:when>
+					<xsl:when test="contains($date,'Jun')">Jun</xsl:when>
+					<xsl:when test="contains($date,'jun')">jun</xsl:when>
+					<xsl:when test="contains($date,'May')">May</xsl:when>
+					<xsl:when test="contains($date,'may')">may</xsl:when>
+					<xsl:when test="contains($date,'mai')">mai</xsl:when>
+					<xsl:when test="contains($date,'Mai')">Mai</xsl:when>
+					<xsl:when test="contains($date,'Apr')">Apr</xsl:when>
+					<xsl:when test="contains($date,'apr')">apr</xsl:when>
+					<xsl:when test="contains($date,'abr')">abr</xsl:when>
+					<xsl:when test="contains($date,'Abr')">Abr</xsl:when>
+					<xsl:when test="contains($date,'Mar')">Mar</xsl:when>
+					<xsl:when test="contains($date,'mar')">mar</xsl:when>
+					<xsl:when test="contains($date,'Feb')">Feb</xsl:when>
+					<xsl:when test="contains($date,'Fev')">Fev</xsl:when>
+					<xsl:when test="contains($date,'fev')">fev</xsl:when>
+					<xsl:when test="contains($date,'Jan')">Jan</xsl:when>
+					<xsl:when test="contains($date,'jan')">jan</xsl:when>
+					<xsl:when test="contains($date,'ene')">ene</xsl:when>
+					<xsl:when test="contains($date,'Ene')">Ene</xsl:when>
+				</xsl:choose>
+			</xsl:otherwise>
+	</xsl:choose></xsl:template>
+	<xsl:template match="*" mode="month-number">
+		<xsl:param name="date"></xsl:param>
+		<xsl:choose>
+			<xsl:when test="contains($date,'Dec')">12</xsl:when>
+			<xsl:when test="contains($date,'dez')">12</xsl:when>
+			<xsl:when test="contains($date,'Dez')">12</xsl:when>
+			<xsl:when test="contains($date,'dic')">12</xsl:when>
+			<xsl:when test="contains($date,'Dic')">12</xsl:when>
+			<xsl:when test="contains($date,'Nov')">11</xsl:when>
+			<xsl:when test="contains($date,'nov')">11</xsl:when>
+			<xsl:when test="contains($date,'Oct')">10</xsl:when>
+			<xsl:when test="contains($date,'oct')">10</xsl:when>
+			<xsl:when test="contains($date,'out')">10</xsl:when>
+			<xsl:when test="contains($date,'Out')">10</xsl:when>
+			<xsl:when test="contains($date,'Sep')">09</xsl:when>
+			<xsl:when test="contains($date,'sep')">09</xsl:when>
+			<xsl:when test="contains($date,'Set')">09</xsl:when>
+			<xsl:when test="contains($date,'set')">09</xsl:when>
+			<xsl:when test="contains($date,'Aug')">08</xsl:when>
+			<xsl:when test="contains($date,'ago')">08</xsl:when>
+			<xsl:when test="contains($date,'Ago')">08</xsl:when>
+			<xsl:when test="contains($date,'Jul')">07</xsl:when>
+			<xsl:when test="contains($date,'jul')">07</xsl:when>
+			<xsl:when test="contains($date,'Jun')">06</xsl:when>
+			<xsl:when test="contains($date,'jun')">06</xsl:when>
+			<xsl:when test="contains($date,'May')">05</xsl:when>
+			<xsl:when test="contains($date,'may')">05</xsl:when>
+			<xsl:when test="contains($date,'mai')">05</xsl:when>
+			<xsl:when test="contains($date,'Mai')">05</xsl:when>
+			<xsl:when test="contains($date,'Apr')">04</xsl:when>
+			<xsl:when test="contains($date,'apr')">04</xsl:when>
+			<xsl:when test="contains($date,'abr')">04</xsl:when>
+			<xsl:when test="contains($date,'Abr')">04</xsl:when>
+			<xsl:when test="contains($date,'Mar')">03</xsl:when>
+			<xsl:when test="contains($date,'mar')">03</xsl:when>
+			<xsl:when test="contains($date,'Feb')">02</xsl:when>
+			<xsl:when test="contains($date,'Fev')">02</xsl:when>
+			<xsl:when test="contains($date,'fev')">02</xsl:when>
+			<xsl:when test="contains($date,'Jan')">01</xsl:when>
+			<xsl:when test="contains($date,'jan')">01</xsl:when>
+			<xsl:when test="contains($date,'ene')">01</xsl:when>
+			<xsl:when test="contains($date,'Ene')">01</xsl:when>
+		</xsl:choose>
+	</xsl:template>
 	<xsl:template name="display_date">
+		<xsl:param name="dateiso"/>
+		<xsl:param name="date" select="''"/>
+		<xsl:param name="format">number</xsl:param>
+		<xsl:param name="specyear"></xsl:param>
+		
+		<xsl:variable name="iso_day"><xsl:if test="string-length($dateiso)=8"><xsl:value-of select="substring($dateiso,7,2)"/></xsl:if></xsl:variable>
+		<xsl:variable name="iso_month"><xsl:if test="string-length($dateiso)=8"><xsl:value-of select="substring($dateiso,5,2)"/></xsl:if></xsl:variable>
+		<xsl:variable name="iso_year"><xsl:if test="string-length($dateiso)=8"><xsl:value-of select="substring($dateiso,1,4)"/></xsl:if></xsl:variable>
+		<xsl:variable name="norm_date"><xsl:value-of select="translate(translate(translate($date,' ',''),'.',''),'/','-')"/></xsl:variable>
+		<xsl:variable name="season"><xsl:choose>
+			<xsl:when test="contains($norm_date,$iso_year)"><xsl:value-of select="substring-before($norm_date,$iso_year)"/><xsl:value-of select="substring-after($norm_date,$iso_year)"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="$norm_date"/></xsl:otherwise>
+		</xsl:choose></xsl:variable>
+		<xsl:variable name="norm_season"><xsl:choose>
+			<xsl:when test="contains($season,'Summer') or contains($season,'Winter') or contains($season,'Autumn') or contains($season,'Spring') or contains($season,'Fall')"><xsl:value-of select="$season"/></xsl:when>
+			<xsl:when test="contains($season,'-')"><xsl:value-of select="substring(substring-before($season,'-'),1,3)"/>-<xsl:value-of select="substring(substring-after($season,'-'),1,3)"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="substring($season,1,3)"/></xsl:otherwise>
+		</xsl:choose></xsl:variable>
+		
+		<xsl:if test="$iso_day!='00' and string-length($iso_day)=2">
+			<day>
+				<xsl:value-of select="$iso_day"/>
+			</day>
+		</xsl:if>
+		<xsl:variable name="month">
+		<xsl:choose>
+			<xsl:when test="$format='number'">
+				<xsl:choose>
+					<xsl:when test="$iso_month!='00' and string-length($iso_month)=2">
+						<month><xsl:value-of select="$iso_month"/></month>
+					</xsl:when>
+					<xsl:when test="$date!=''">
+						<month><xsl:apply-templates select="." mode="month-number"><xsl:with-param name="date"><xsl:value-of select="$date"/></xsl:with-param></xsl:apply-templates></month>
+					</xsl:when>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:when test="$format!='number'">
+				<xsl:apply-templates select="." mode="norm-abbrev-month">
+					<xsl:with-param name="date" select="$date"/>
+					<xsl:with-param name="month_number" select="$iso_month"/>
+				</xsl:apply-templates>
+			</xsl:when>
+		</xsl:choose></xsl:variable>
+		<xsl:if test="$month!=''"><month><xsl:value-of select="$month"/></month></xsl:if>
+		<xsl:variable name="year">
+			<xsl:choose>
+				<xsl:when test="$specyear!=''"><xsl:value-of select="$specyear"/></xsl:when>
+				<xsl:otherwise><xsl:value-of select="$iso_year"/></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:if test="$year!=''"><year><xsl:value-of select="$year"/></year></xsl:if>
+	</xsl:template>
+	<xsl:template name="old_display_date">
 		<xsl:param name="dateiso"/>
 		<xsl:param name="date" select="''"/>
 		<xsl:param name="format">number</xsl:param>
@@ -2870,7 +3101,7 @@ et al.</copyright-statement>
 		<xsl:variable name="y">
 			<xsl:value-of select="substring($dateiso,1,4)"/>
 		</xsl:variable>
-
+		
 		<xsl:choose>
 			<xsl:when test="$date=''">
 				<xsl:if test="substring($dateiso,7,2)!='00'">
@@ -2884,7 +3115,7 @@ et al.</copyright-statement>
 					</month>
 				</xsl:if>
 			</xsl:when>
-
+			
 			<xsl:when
 				test="contains($date,'-') or contains($date,'/') or contains($date,'Summer') or contains($date,'Winter') or contains($date,'Autumn') or contains($date,'Fall') or contains($date,'Spring')">
 				<xsl:choose>
@@ -2897,7 +3128,7 @@ et al.</copyright-statement>
 							<xsl:value-of
 								select="translate(translate(translate($d,' ',''),'.',''),'/','-')"/>
 						</xsl:variable>
-
+						
 						<xsl:if test="$season!=''">
 							<season>
 								<xsl:apply-templates select="." mode="fix_season">
@@ -2916,7 +3147,7 @@ et al.</copyright-statement>
 						</season>
 					</xsl:otherwise>
 				</xsl:choose>
-
+				
 			</xsl:when>
 			<xsl:when test="$format='number'">
 				<xsl:if test="substring($dateiso,7,2)!='00'">
@@ -3026,7 +3257,7 @@ et al.</copyright-statement>
 									<xsl:when test="contains($date,'Dez')">Dez</xsl:when>
 									<xsl:when test="contains($date,'dic')">dic</xsl:when>
 									<xsl:when test="contains($date,'Dic')">Dic</xsl:when>
-
+									
 								</xsl:choose>
 							</xsl:when>
 						</xsl:choose>
@@ -3050,7 +3281,7 @@ et al.</copyright-statement>
 									<xsl:value-of select="substring-after($date,$month)"/>
 								</xsl:otherwise>
 							</xsl:choose>
-
+							
 						</month>
 					</xsl:if>
 				</xsl:if>
@@ -3069,9 +3300,9 @@ et al.</copyright-statement>
 			</xsl:otherwise>
 		</xsl:choose>
 		<year><xsl:choose>
-				<xsl:when test="$specyear!=''"><xsl:value-of select="$specyear"/></xsl:when>
-				<xsl:otherwise><xsl:value-of select="substring($dateiso,1,4)"/></xsl:otherwise>
-			</xsl:choose></year>
+			<xsl:when test="$specyear!=''"><xsl:value-of select="$specyear"/></xsl:when>
+			<xsl:otherwise><xsl:value-of select="substring($dateiso,1,4)"/></xsl:otherwise>
+		</xsl:choose></year>
 	</xsl:template>
 	<xsl:template match="season">
 		<xsl:apply-templates select="." mode="fix_season">
