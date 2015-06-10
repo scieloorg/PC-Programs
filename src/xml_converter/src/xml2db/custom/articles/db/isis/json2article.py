@@ -462,8 +462,11 @@ class JSON_Article:
 
     def set_display(self):
         r = {}
+        print('\nset_display -- inicio\n')
 
         fpage, lpage, eloc = self.return_pagination()
+        print([fpage, lpage, eloc])
+
         if len(fpage) > 0:
             r['pages'] = fpage
             if len(lpage) > 0:
@@ -471,11 +474,10 @@ class JSON_Article:
         if len(eloc) > 0:
             r['pages'] = eloc + ' (e-location)'
 
+        print('set_display - issuelabel')
         r['issue label'] = self.issuelabel()
         r['order'] = self.json_data['f'].get('121')
-
         r['nlm-ta'] = return_singleval(self.json_data['f'], '421')
-
         r['print issn'] = self.issns('ppub')
         r['online issn'] = self.issns('epub')
         r['@article-type'] = return_singleval(self.json_data['f'], '71')
@@ -485,10 +487,14 @@ class JSON_Article:
         r['publication date (epub)'] = return_singleval(self.json_data['f'], '223')
         r['publication date (ppub)'] = return_singleval(self.json_data['f'], '65')
         r['publishers'] = return_multval(self.json_data['f'], '62')
+
+        print('set_display - publishers')
         if type(r['publishers']) == type([]):
             r['publishers'] = '\n'.join(r['publishers'])
 
+        print('set_display - publishers')
         authors = return_multval(self.json_data['f'], '10')
+        print(authors)
         s = ''
         for a in authors:
             s += self.format_author(a)
@@ -496,25 +502,34 @@ class JSON_Article:
         collab = return_multval(self.json_data['f'], '11')
         r['corporative authors'] = '\n'.join(collab)
         titles = return_multval(self.json_data['f'], '12')
+
+        print('set_display - titles')
+        print(titles)
+
         s = ''
         for t in titles:
             s += self.format_title(t)
         r['titles'] = s
 
         abstracts = return_multval(self.json_data['f'], '83')
+        print('set_display - abstracts')
+        print(abstracts)
+
         s = ''
         for a in abstracts:
             s += self.format_abstract(a)
         r['abstracts'] = s
-        
-        
+
         kwg = return_multval(self.json_data['f'], '85')
+        print('set_display - kwg')
+        print(kwg)
+
         s = ''
         for a in kwg:
             s += self.format_kwd(a)
         r['keywords'] = s
-        
-       
+
+        print('\nset_display -- fim\n')
         return r
 
         
