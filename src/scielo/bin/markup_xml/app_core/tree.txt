@@ -873,7 +873,6 @@ surname-fname
 
 doc
 author;#FALSE#;#TRUE#
-abstract;#FALSE#;#TRUE#
 ack;#TRUE#;#FALSE#
 appgrp;#FALSE#;#FALSE#
 corpauth;#FALSE#;#TRUE#
