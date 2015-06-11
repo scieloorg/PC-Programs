@@ -45,13 +45,17 @@
 	<xsl:template match="name">[pauthor]<xsl:apply-templates select="*"/>[/pauthor]</xsl:template>
 	<xsl:template match="given-names">[fname]<xsl:apply-templates select="*|text()"/>[/fname]</xsl:template>
 	<xsl:template match="collab">[cauthor]<xsl:apply-templates select="*|text()"/>[/cauthor]</xsl:template>
-	<xsl:template match="*[@citation-type='journal']/article-title">[doctitle]<xsl:apply-templates select="*|text()"/>[/doctitle]</xsl:template>
+	<xsl:template match="subtitle"></xsl:template>
+	<xsl:template match="*[@citation-type='journal']/article-title">[arttitle]<xsl:apply-templates select="*|text()"/><xsl:if test="../subtitle"><xsl:apply-templates select="concat(' ',../subtitle)"/></xsl:if>[/arttitle]</xsl:template>
 	<xsl:template match="*[@citation-type='book']/article-title">[chptitle]<xsl:apply-templates select="*|text()"/>[/chptitle]</xsl:template>
-	<xsl:template match="year">[date dateiso="<xsl:value-of select="."/>0000"]<xsl:apply-templates select="*|text()"/>[/date]</xsl:template>
+	<xsl:template match="year"><xsl:variable name="dateiso"><xsl:value-of select="."/><xsl:value-of select="month"/><xsl:value-of select="day"/></xsl:variable>[date<xsl:if test="string-length($dateiso)=8"> dateiso="<xsl:value-of select="$dateiso"/></xsl:if>]<xsl:apply-templates select="*|text()"/>[/date]</xsl:template>
 	<xsl:template match="volume">[volid]<xsl:apply-templates select="*|text()"/>[/volid]</xsl:template>
 	<xsl:template match="issue">[issueno]<xsl:apply-templates select="*|text()"/>[/issueno]</xsl:template>
 	<xsl:template match="fpage">[pages]<xsl:apply-templates select="*|text()"/><xsl:if test="../lpage">-<xsl:value-of select="../lpage"/></xsl:if>[/pages]</xsl:template>
 	<xsl:template match="lpage"></xsl:template>
 	<xsl:template match="publisher-loc">[publoc]<xsl:apply-templates select="*|text()"/>[/publoc]</xsl:template>
 	<xsl:template match="publisher-name">[pubname]<xsl:apply-templates select="*|text()"/>[/pubname]</xsl:template>
+	<xsl:template match="pub-id">[pubid<xsl:apply-templates select="@*"/>]<xsl:apply-templates select="*|text()"/>[/pubid]</xsl:template>
+	<xsl:template match="@pub-id-type"><xsl:value-of select="concat(' idtype=',.)"/></xsl:template>
+	
 </xsl:stylesheet>
