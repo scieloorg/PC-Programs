@@ -12,7 +12,6 @@ p {
 }
 div {
     border: none;
-    margin: 5px;
 }
 
 
@@ -396,4 +395,36 @@ td img {
 .conversion {
   color: black;
   background-color: white;
+}
+
+.not-selected-tab {
+  background-color: gray;
+  color: white;
+  padding: 10px;
+  border: 1px solid white;
+}
+.selected-tab {
+  background-color: #004C75;
+  color: #C8E7EA;
+  padding: 10px;
+  font-weight: bold;
+  border: 1px solid white;
+}
+.not-selected-tab-content {
+  display: none;
+  border: 5px solid #004C75;
+  margin: 5px;
+  padding: 5px;
+}
+.selected-tab-content {
+  display: block;
+  border: 5px solid #004C75;
+  margin: 5px;
+  padding: 5px;
+}
+.tabs {
+  padding: 5px;
+}
+.xmllist {
+  margin: 20px;
 }

@@ -311,16 +311,19 @@ def section(title, content):
     return r
 
 
-def tab_block(tab_id, content, status='hidden'):
-    r = '<div id="' + tab_id + '" class="tab_content' + status + '">'
+def tab_block(tab_id, content, status='not-selected-tab-content'):
+    r = '<div id="tab-content-' + tab_id + '" class="' + status + '">'
     r += content
     r += '</div>'
     return r
 
-#def pie_graphic(data):
-#    fig = matplotlib.pyplot.figure(figsize=(2, 1))
-#    #p1 = fig.add_subplot(1,2,1)
-#    #p1.pie(amino_values, labels=amino_names)
-#    p2 = fig.add_subplot(1, 2, 2)
-#    p2.pie(data.values(), labels=data.keys())
-#    fig.show()
+
+def tabs_items(tabs, tabs_order, selected):
+    r = ''
+    for tab_id in tabs_order:
+        tab_label = tabs[tab_id]
+        style = 'not-selected-tab'
+        if tab_id == selected:
+            style = 'selected-tab'
+        r += '<span id="tab-label-' + tab_id + '"  onClick="display_tab_content(\'' + tab_id + '\', \'' + selected + '\')" class="' + style + '">' + tab_label + '</span>'
+    return '<div class="tabs">' + r + '</div>'

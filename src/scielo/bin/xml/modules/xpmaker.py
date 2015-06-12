@@ -834,6 +834,9 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
     report_path = results_path + '/errors'
     wrk_path = results_path + '/work'
 
+    report_components = {}
+    report_components_labels = {}
+
     pmc_dtd_files = xml_versions.DTDFiles('pmc', version)
     scielo_dtd_files = xml_versions.DTDFiles('scielo', version)
 
@@ -847,10 +850,10 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         register_log('pack_and_validate: make_package')
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
-        texts = []
         toc_f = 0
         register_log('pack_and_validate: package_articles_overview')
-        texts.append(pkg_reports.package_articles_overview(articles))
+        report_components['pkg_overview'] = pkg_reports.package_articles_overview(articles)
+        report_components_labels['pkg_overview'] = 'Package overview'
 
         if not from_markup:
             register_log('pack_and_validate: pkg_reports.validate_package')
@@ -858,33 +861,24 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
 
             register_log('pack_and_validate: pkg_reports.get_toc_report_text')
-            texts.append(pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, toc_report))
-
+            report_components['toc'] = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, toc_report)
+            report_components_labels['toc'] = 'Package Validation'
         if toc_f == 0:
             register_log('pack_and_validate: pkg_reports.validate_pkg_items')
 
-            print(datetime.now().isoformat())
-            print('loading services...')
             org_manager = institutions_service.OrgManager()
             org_manager.load()
-            print('services loaded!')
-            print(datetime.now().isoformat())
-
-            #texts.append(pkg_reports.pkg_authors_and_affiliations_stats(articles))
-            #texts.append(pkg_reports.pkg_references_stats(articles))
 
             fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, from_markup)
 
             register_log('pack_and_validate: pkg_reports.get_articles_report_text')
-            texts.append(pkg_reports.get_articles_report_text(articles_reports, articles_stats))
-
+            report_components['articles'] = pkg_reports.get_articles_report_text(articles_reports, articles_stats)
+            report_components_labels['articles'] = 'Documents Validation'
             #if not from_markup:
             #    register_log('pack_and_validate: pkg_reports.get_lists_report_text')
             #    texts.append(pkg_reports.get_lists_report_text(articles_sheets))
 
-        pkg_validation_report = html_reports.join_texts(texts)
-
-        generate_reports(scielo_pkg_path, report_path, not from_markup, pkg_validation_report)
+        generate_reports(scielo_pkg_path, report_path, not from_markup, report_components, report_components_labels)
 
         if not from_converter:
             if from_markup:
@@ -929,14 +923,40 @@ def zip_packages(src_pkg_path):
         shutil.rmtree(new_pkg_path)
 
 
-def generate_reports(scielo_pkg_path, report_path, display_report, pkg_validation_report):
-
+def generate_reports(scielo_pkg_path, report_path, display_report, report_components, report_components_labels):
     content = ''
+
+    tabs = {'result': 'Result'}
+    tabs_contents = {}
+    tabs_order = ['result']
+
+    pkg_validation_report = ''
+    for k, v in report_components.items():
+        if v != '':
+            tabs[k] = report_components_labels[k]
+            tabs_contents[k] = v
+            pkg_validation_report += v
+    for tab_id in ['pkg_overview', 'toc', 'articles']:
+        if tab_id in tabs.keys():
+            tabs_order.append(tab_id)
+
     f, e, w = html_reports.statistics_numbers(pkg_validation_report)
-    content += pkg_reports.statistics_and_subtitle(f, e, w)
-    content += html_reports.section('Package: XML list', pkg_reports.xml_list(scielo_pkg_path))
-    content += pkg_validation_report
-    content += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
+
+    tabs_contents['result'] = pkg_reports.statistics_and_subtitle(f, e, w)
+    tabs_contents['result'] += pkg_reports.xml_list(scielo_pkg_path)
+    tabs_contents['result'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
+
+    content += html_reports.tabs_items(tabs, tabs_order, 'result')
+    for tab_id, tab_content in tabs_contents.items():
+        if tab_id == 'result':
+            content += html_reports.tab_block(tab_id, tab_content, 'selected-tab-content')
+        else:
+            content += html_reports.tab_block(tab_id, tab_content, 'not-selected-tab-content')
+
+    #content += pkg_reports.statistics_and_subtitle(f, e, w)
+    #content += html_reports.section('Package: XML list', pkg_reports.xml_list(scielo_pkg_path))
+    #content += pkg_validation_report
+    #content += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
 
     filename = report_path + '/xml_package_maker.html'
     pkg_reports.save_report(filename, 'XML Package Maker Report', content)
