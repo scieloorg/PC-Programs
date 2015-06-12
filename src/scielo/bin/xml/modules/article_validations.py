@@ -413,10 +413,15 @@ class ArticleContentValidation(object):
 
     @property
     def doi(self):
+        r = []
         if self.article.is_ahead:
-            return required('doi', self.article.doi, 'FATAL ERROR')
+            r.append(required('doi', self.article.doi, 'FATAL ERROR'))
         else:
-            return required('doi', self.article.doi, 'WARNING')
+            r.append(required('doi', self.article.doi, 'WARNING'))
+        if self.article.doi is not None:
+            if not (self.article.print_issn in self.article.doi or self.article.e_issn in self.article.doi):
+                r.append(('doi', 'ERROR', 'Be sure that this DOI belongs to this journal.'))
+        return r
 
     @property
     def article_previous_id(self):

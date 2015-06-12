@@ -106,7 +106,7 @@ def xml_list(pkg_path, xml_filenames=None):
         xml_filenames = [pkg_path + '/' + name for name in os.listdir(pkg_path) if name.endswith('.xml')]
     r += '<p>Total of XML files: ' + str(len(xml_filenames)) + '</p>'
     r += html_reports.format_list('', 'ol', [os.path.basename(f) for f in xml_filenames])
-    return r
+    return '<div class="xmllist">' + r + '</div>'
 
 
 def validate_package(articles, validate_order):
@@ -733,3 +733,4 @@ def statistics_and_subtitle(f, e, w):
     x = error_msg_subtitle()
     x += html_reports.statistics_display(f, e, w, False)
     return x
+
