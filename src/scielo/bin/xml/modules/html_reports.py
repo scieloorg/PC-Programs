@@ -78,7 +78,7 @@ def collapsible_block(section_id, section_title, content, status='ok'):
 
 
 def link(href, label):
-    return '<a href="' + href + '">' + label + '</a>'
+    return '<a href="' + href + '" target="_blank">' + label + '</a>'
 
 
 def tag(tag_name, content, style=None):
@@ -124,25 +124,23 @@ def statistics_display(f, e, w, inline=True):
     return tag(tag_name, stats, get_stats_numbers_style(f, e, w))
 
 
-def sheet(table_header, wider, table_data, filename=None, table_style='sheet', row_style=None):
+def sheet(table_header, table_data, table_style='sheet', row_style=None, html_cell_content=[]):
     r = ''
     if not table_header is None:
+        width = XML_WIDTH
         if len(table_header) > 1:
             width = XML_WIDTH / len(table_header)
-            if width < 30:
-                width = 30
-            if len(table_header) == 3:
-                width = XML_WIDTH / 2
+        if width < 30:
+            width = 30
+        if len(table_header) == 3:
+            width = XML_WIDTH / 2
+
         th = ''
-        if filename is not None:
-            th += '<th class="th"></th>'
         for label in table_header:
             th += tag('th', label, 'th')
 
         if len(table_data) == 0:
             tr = ''
-            if filename is not None:
-                tr += '<td></td>'
             for label in table_header:
                 tr += '<td>-</td>'
             tbody = tag('tr', tr)
@@ -152,20 +150,38 @@ def sheet(table_header, wider, table_data, filename=None, table_style='sheet', r
             if table_style == 'sheet':
                 for row in table_data:
                     tr = ''
-                    if filename is not None:
-                        tr += tag('td', filename)
-
                     for label in table_header:
                         cell_style = 'td_status' if label == '@id' else None
                         cell_content = format_html_data(row.get(label, ''), not label in ['filename', 'scope', 'label', 'status'], width)
                         tr += tag('td', cell_content, cell_style)
                     tbody += tag('tr', tr)
+            elif table_style == 'reports-sheet':
+                cell_style_prefix = 'td_' if row_style == 'status' else ''
+                for row in table_data:
+                    tr = ''
+                    tr_style = None
+                    if len(row) == len(table_header):
+                        for label in table_header:
+                            cell_content = row.get(label, '')
+                            if not label in html_cell_content:
+                                cell_content = format_html_data(cell_content, False, width)
+                            cell_style = cell_style_prefix + label
+                            if cell_style == label:
+                                cell_style = get_message_style(row.get(label), label)
+                            tr += tag('td', cell_content, cell_style)
+                        if row_style == 'status':
+                            tr_style = get_message_style(row.get(row_style), None)
+                    elif row.get('reports') is not None:
+                        tr += '<td class="td-reports" colspan="' + str(len(table_header)) + '">' + row.get('reports', '') + '</td>'
+                    tbody += tag('tr', tr, tr_style)
             else:
                 cell_style_prefix = 'td_' if row_style == 'status' else ''
                 for row in table_data:
                     tr = ''
                     for label in table_header:
-                        cell_content = format_html_data(row.get(label, ''), False, width)
+                        cell_content = row.get(label, '')
+                        if not label in html_cell_content:
+                            cell_content = format_html_data(cell_content, False, width)
                         cell_style = cell_style_prefix + label
                         if cell_style == label:
                             cell_style = get_message_style(row.get(label), label)
@@ -318,12 +334,22 @@ def tab_block(tab_id, content, status='not-selected-tab-content'):
     return r
 
 
-def tabs_items(tabs, tabs_order, selected):
+def tabs_items(tabs, selected):
     r = ''
-    for tab_id in tabs_order:
-        tab_label = tabs[tab_id]
+    for tab_id, tab_label in tabs:
         style = 'not-selected-tab'
         if tab_id == selected:
             style = 'selected-tab'
         r += '<span id="tab-label-' + tab_id + '"  onClick="display_tab_content(\'' + tab_id + '\', \'' + selected + '\')" class="' + style + '">' + tab_label + '</span>'
     return '<div class="tabs">' + r + '</div>'
+
+
+def report_link(report_id, report_label, status):
+    return '<a name="begin_label-' + report_id + '"/>&#160;<span id="label-' + report_id + '" class="' + status + '" onClick="display_article_report(\'' + report_id + '\')">' + report_label.replace(' ', '&#160;') + '</span>'
+
+
+def report_block(report_id, content, status):
+    r = '<div id="' + report_id + '" class="hidden-report-' + status + '">'
+    r += content
+    r += '</div>'
+    return r

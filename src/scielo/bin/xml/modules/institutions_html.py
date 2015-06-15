@@ -35,7 +35,7 @@ if os.path.isdir(path):
             tr['city'] = city
             tr['state'] = state
             rows.append(tr)
-        content = html_reports.sheet(labels, None, rows)
+        content = html_reports.sheet(labels, rows)
         print(path + '/' + code + '.html')
         html_reports.save(path + '/' + code + '.html', country, content)
 

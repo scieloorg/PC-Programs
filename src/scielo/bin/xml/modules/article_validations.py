@@ -156,7 +156,7 @@ def validate_contrib_names(author, aff_ids=[]):
     results = validate_surname('surname', author.surname) + validate_name('given-names', author.fname, ['_'])
     if len(aff_ids) > 0:
         if len(author.xref) == 0:
-            results.append(('xref', 'WARNING', 'Author "' + author.fname + ' ' + author.surname + '" has no xref. Expected values: ' + '|'.join(aff_ids)))
+            results.append(('xref', 'ERROR', 'Author "' + author.fname + ' ' + author.surname + '" has no xref. Expected values: ' + '|'.join(aff_ids)))
         else:
             for xref in author.xref:
                 if not xref in aff_ids:
@@ -419,8 +419,13 @@ class ArticleContentValidation(object):
         else:
             r.append(required('doi', self.article.doi, 'WARNING'))
         if self.article.doi is not None:
-            if not (self.article.print_issn in self.article.doi or self.article.e_issn in self.article.doi):
-                r.append(('doi', 'ERROR', 'Be sure that this DOI belongs to this journal.'))
+            found = False
+            for issn in [self.article.print_issn, self.article.e_issn]:
+                if issn is not None:
+                    if issn in self.article.doi:
+                        found = True
+            if not found:
+                r.append(('doi', 'ERROR', 'Be sure that this DOI (' + self.article.doi + ') belongs to this journal.'))
         return r
 
     @property

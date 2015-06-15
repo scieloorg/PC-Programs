@@ -83,9 +83,12 @@ def get_report_text(filename):
             part1 = part1.replace('\n', '<br/>')
             part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>').replace('\t', '&nbsp;'*4)
             report = part1 + part2
-        elif '</html>' in content:
+        elif '</body>' in content:
             content = content[content.find('<body'):]
             content = content[0:content.rfind('</body>')]
+            report = content[content.find('>')+1:]
+        elif '<body' in content:
+            content = content[content.find('<body'):]
             report = content[content.find('>')+1:]
         else:
             report = ''
@@ -119,7 +122,7 @@ def package_articles_overview(pkg_articles):
     items.append(package_articles_dates_overview(pkg_articles))
     items.append(package_articles_affiliations_overview(pkg_articles))
     items.append(package_articles_references_overview(pkg_articles))
-    return html_reports.section('Package overview', ''.join(items))
+    return ''.join(items)
 
 
 def package_articles_languages_overview(pkg_articles):
@@ -143,7 +146,7 @@ def package_articles_languages_overview(pkg_articles):
         values.append(pkg_articles[xml_name].language)
         values.append(pkg_articles[xml_name].trans_languages)
         items.append(label_values(labels, values))
-    return html_reports.tag('h3', 'Package languages overview') + html_reports.sheet(labels, None, items, None, 'dbstatus')
+    return html_reports.tag('h3', 'Package languages overview') + html_reports.sheet(labels, items, 'dbstatus')
 
 
 def package_articles_dates_overview(pkg_articles):
@@ -165,7 +168,7 @@ def package_articles_dates_overview(pkg_articles):
         values.append(str(pkg_articles[xml_name].publication_days))
         values.append(str(pkg_articles[xml_name].registration_days))
         items.append(label_values(labels, values))
-    return html_reports.tag('h3', 'Package dates overview') + html_reports.sheet(labels, None, items, None, 'dbstatus')
+    return html_reports.tag('h3', 'Package dates overview') + html_reports.sheet(labels, items, 'dbstatus')
 
 
 def package_articles_affiliations_overview(pkg_articles):
@@ -198,7 +201,7 @@ def package_articles_affiliations_overview(pkg_articles):
 
     for label, q in evaluation.items():
         items.append({'label': label, 'quantity': str(q)})
-    return html_reports.tag('h3', 'Package affiliations overview') + html_reports.sheet(labels, None, items, None, 'dbstatus')
+    return html_reports.tag('h3', 'Package affiliations overview') + html_reports.sheet(labels, items, 'dbstatus')
 
 
 def package_articles_references_overview(pkg_articles):
@@ -266,7 +269,7 @@ def package_articles_references_overview(pkg_articles):
     if len(unusual_years) > 0:
         items.append({'label': 'references with unusual value for year', 'status': 'WARNING', 'message': unusual_years})
 
-    return html_reports.tag('h3', 'Package references overview') + html_reports.sheet(labels, None, items, None, table_style='validation', row_style='status')
+    return html_reports.tag('h3', 'Package references overview') + html_reports.sheet(labels, items, table_style='validation', row_style='status')
 
 
 def pkg_references_stats(doc_items):
@@ -424,7 +427,7 @@ def pkg_references_stats(doc_items):
 
     r = ''
     r += html_reports.tag('h2', 'References statistics')
-    r += html_reports.sheet(['filename', 'notes', 'statistics'], [], rows)
+    r += html_reports.sheet(['filename', 'notes', 'statistics'], rows)
     return r
 
 
@@ -537,7 +540,7 @@ def pkg_authors_and_affiliations_stats(doc_items):
 
     r = ''
     r += html_reports.tag('h2', 'Authors and affiliations statistics')
-    r += html_reports.sheet(['filename', 'notes', 'statistics'], [], statistics)
+    r += html_reports.sheet(['filename', 'notes', 'statistics'], statistics)
     return r
 
 
@@ -648,7 +651,68 @@ def sorted_xml_name_by_order(articles):
     return sorted_items
 
 
-def get_articles_report_text(articles_reports, articles_stats, conversion_reports=None):
+def get_articles_report_text(pkg_articles, articles_reports, articles_stats, conversion_reports=None):
+    labels = ['name', 'order', 'fpage', 'aop pid', 'toc section', '@article-type', 'article title', 'reports']
+    items = []
+
+    n = '/' + str(len(articles_reports))
+    validations_text = ''
+    index = 0
+
+    for new_name in sorted(articles_reports.keys()):
+        index += 1
+        item_label = str(index) + n + ' - ' + new_name
+        print(item_label)
+
+        xml_f, xml_e, xml_w = articles_stats[new_name][0]
+        data_f, data_e, data_w = articles_stats[new_name][1]
+        rep1, rep2, rep3 = articles_reports[new_name]
+
+        links = ''
+        block = ''
+        if xml_f + xml_e + xml_w > 0:
+            t = []
+            v = []
+            for rep in [rep1, rep2]:
+                content = get_report_text(rep)
+                if len(content) > 0:
+                    t.append(os.path.basename(rep))
+                    v.append(content)
+            content = ''.join(v)
+            status = html_reports.get_stats_numbers_style(xml_f, xml_e, xml_w)
+            links += html_reports.report_link('xmlrep' + new_name, ' [ style ] ', status)
+            block += html_reports.report_block('xmlrep' + new_name, content, status)
+
+        if data_f + data_e + data_w > 0:
+            status = html_reports.get_stats_numbers_style(data_f, data_e, data_w)
+            links += html_reports.report_link('datarep' + new_name, ' [ quality control ] ', status)
+            block += html_reports.report_block('datarep' + new_name, get_report_text(rep3), status)
+
+        if conversion_reports is not None:
+            r = conversion_reports.get(new_name)
+            if r is not None:
+                conv_f, conv_e, conv_w, conv_rep = r
+                status = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
+                links += html_reports.report_link('xcrep' + new_name, ' [ converter ] ', status)
+                block += html_reports.report_block('xcrep' + new_name, conv_rep, status)
+
+        values = []
+        values.append(new_name)
+        values.append(pkg_articles[new_name].order)
+        values.append(pkg_articles[new_name].fpage)
+        values.append(pkg_articles[new_name].previous_pid)
+        values.append(pkg_articles[new_name].toc_section)
+        values.append(pkg_articles[new_name].article_type)
+        values.append(pkg_articles[new_name].title)
+        values.append(links)
+
+        items.append(label_values(labels, values))
+        items.append({'reports': block})
+
+    return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=['reports'])
+
+
+def get_articles_report_text_v1(articles_reports, articles_stats, conversion_reports=None):
     n = '/' + str(len(articles_reports))
     validations_text = ''
     index = 0
@@ -704,10 +768,10 @@ def get_lists_report_text(articles_sheets):
             sources_h, sources_w, sources_data = articles_sheets[new_name][1]
             toc_sources_sheet_data += sources_data
 
-    authors = html_reports.sheet(authors_h, authors_w, toc_authors_sheet_data)
+    authors = html_reports.sheet(authors_h, toc_authors_sheet_data)
     lists_text += html_reports.collapsible_block('authors', 'Authors in the package', authors)
 
-    sources = html_reports.sheet(sources_h, sources_w, toc_sources_sheet_data)
+    sources = html_reports.sheet(sources_h, toc_sources_sheet_data)
     lists_text += html_reports.collapsible_block('sources', 'Sources in the package', sources)
 
     return lists_text
@@ -734,3 +798,29 @@ def statistics_and_subtitle(f, e, w):
     x += html_reports.statistics_display(f, e, w, False)
     return x
 
+
+def format_complete_report(report_components, result_folder=None):
+    content = ''
+    order = ['summary-report', 'detail-report', 'xml-files', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc']
+    labels = {
+        'summary-report': 'Summary report', 
+        'detail-report': 'Detail report', 
+        'xml-files': 'XML Files',
+        'db-overview': 'Database overview',
+        'pkg_overview': 'Package overview',
+        'issue-not-registered': 'Issue validations',
+        'toc': 'Issue validations',
+    }
+    f, e, w = html_reports.statistics_numbers(''.join(report_components.values()))
+    report_components['summary-report'] = statistics_and_subtitle(f, e, w) + report_components['summary-report']
+
+    content += html_reports.tabs_items([(tab_id, labels[tab_id]) for tab_id in order if tab_id in report_components.keys() and report_components.get(tab_id) != ''], 'summary-report')
+    for tab_id in order:
+        if tab_id in report_components.keys() and report_components.get(tab_id) != '':
+            if tab_id == 'summary-report':
+                content += html_reports.tab_block(tab_id, report_components.get(tab_id, ''), 'selected-tab-content')
+            else:
+                content += html_reports.tab_block(tab_id, report_components.get(tab_id, ''), 'not-selected-tab-content')
+
+    content += html_reports.tag('p', 'Finished.')
+    return (f, e, w, content)

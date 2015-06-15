@@ -155,21 +155,21 @@ class ArticleDisplayReport(object):
         r = ''
         r += html_reports.tag('h2', 'Files in the package')
         th, w, data = self.sheet_data.package_files(self.files)
-        r += html_reports.sheet(th, w, data)
+        r += html_reports.sheet(th, data)
         r += html_reports.tag('h2', '@href')
         th, w, data = self.sheet_data.hrefs_sheet_data(self.xml_path)
-        r += html_reports.sheet(th, w, data)
+        r += html_reports.sheet(th, data)
         return r
 
     @property
     def authors_sheet(self):
         labels, width, data = self.sheet_data.authors_sheet_data()
-        return html_reports.tag('h2', 'Authors') + html_reports.sheet(labels, width, data)
+        return html_reports.tag('h2', 'Authors') + html_reports.sheet(labels, data)
 
     @property
     def sources_sheet(self):
         labels, width, data = self.sheet_data.sources_sheet_data()
-        return html_reports.tag('h2', 'Sources') + html_reports.sheet(labels, width, data)
+        return html_reports.tag('h2', 'Sources') + html_reports.sheet(labels, data)
 
     def display_labeled_value(self, label, value, style=''):
         return html_reports.display_labeled_value(label, value, style)
@@ -319,7 +319,7 @@ class ArticleDisplayReport(object):
         for item in self.article.affiliations:
             r += html_reports.tag('p', html_reports.format_html_data(item.xml, False, html_reports.XML_WIDTH))
         th, w, data = self.sheet_data.affiliations_sheet_data()
-        r += html_reports.sheet(th, w, data)
+        r += html_reports.sheet(th, data)
         return r
 
     @property
@@ -333,7 +333,7 @@ class ArticleDisplayReport(object):
             row['xml'] = row['xml'][0:row['xml'].find('>')+1]
             sheet_data.append(row)
         r = html_reports.tag('h2', 'elements and @id:')
-        r += html_reports.sheet(t_header, [], sheet_data)
+        r += html_reports.sheet(t_header, sheet_data)
         return r
 
     @property
@@ -346,7 +346,7 @@ class ArticleDisplayReport(object):
             row['tag'] = item.tag
             sheet_data.append(row)
         r = html_reports.tag('h2', 'elements and @id:')
-        r += html_reports.sheet(t_header, [], sheet_data)
+        r += html_reports.sheet(t_header, sheet_data)
         return r
 
     @property
@@ -358,7 +358,7 @@ class ArticleDisplayReport(object):
             row['element-citation/@publication-type'] = ref_type
             row['quantity'] = q
             sheet_data.append(row)
-        r += html_reports.sheet(['element-citation/@publication-type', 'quantity'], [], sheet_data)
+        r += html_reports.sheet(['element-citation/@publication-type', 'quantity'], sheet_data)
         return r
 
 
@@ -387,7 +387,7 @@ class ArticleValidationReport(object):
         return content
 
     def validations_sheet(self, content):
-        return html_reports.sheet(['label', 'status', 'message'], None, self.format_rows(content), table_style='validation', row_style='status')
+        return html_reports.sheet(['label', 'status', 'message'], self.format_rows(content), table_style='validation', row_style='status')
 
     def validations(self, display_problems):
         items, performance = self.article_validation.validations
@@ -402,7 +402,7 @@ class ArticleValidationReport(object):
         r += self.references(display_problems)
 
         if len(r) > 0:
-            r = html_reports.tag('div', html_reports.tag('h2', 'Validations') + r, 'article-messages')
+            r = html_reports.tag('div', r, 'article-messages')
 
         return r
 

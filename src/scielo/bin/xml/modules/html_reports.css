@@ -271,30 +271,30 @@ h5 {
 .collapsibleopen {display:block}
 
 .embedded-report-ok{
-    border: 5px solid black;
+    border: 2px solid black;
     margin: 5px;
     padding: 5px;
 }
 
 .embedded-report-success {
-    border: 5px solid #61AE24;
+    border: 2px solid #61AE24;
     margin: 5px;
     padding: 5px;
 }
 .embedded-report-warning{
-    border: 5px solid #DAA520;
+    border: 2px solid #DAA520;
     margin: 5px;
     padding: 5px;
 }
 
 .embedded-report-error{
-    border: 5px solid #E00022;
+    border: 2px solid #E00022;
     margin: 5px;
     padding: 5px;
 }
 
 .embedded-report-fatalerror{
-    border: 5px solid #990215;
+    border: 2px solid #990215;
     margin: 5px;
     padding: 5px;
 }
@@ -366,7 +366,7 @@ td img {
 }
 
 .report-section {
-  margin-top: 100px;
+  margin-top: 50px;
 }
 .pid {
   color: #B38295;
@@ -412,13 +412,13 @@ td img {
 }
 .not-selected-tab-content {
   display: none;
-  border: 5px solid #004C75;
+  border: 2px solid #004C75;
   margin: 5px;
   padding: 5px;
 }
 .selected-tab-content {
   display: block;
-  border: 5px solid #004C75;
+  border: 2px solid #004C75;
   margin: 5px;
   padding: 5px;
 }
@@ -427,4 +427,71 @@ td img {
 }
 .xmllist {
   margin: 20px;
+}
+.read {
+  background-color: gray;
+}
+.replink {
+  background-color: 
+}
+.hidden-report-ok{
+    border: 2px solid black;
+    margin: 5px;
+    padding: 5px;
+    display: none;
+}
+
+.hidden-report-success {
+    border: 2px solid #61AE24;
+    margin: 5px;
+    padding: 5px;
+    display: none;
+}
+.hidden-report-warning{
+    border: 2px solid #DAA520;
+    margin: 5px;
+    padding: 5px;
+    display: none;
+}
+
+.hidden-report-error{
+    border: 2px solid #E00022;
+    margin: 5px;
+    padding: 5px;
+    display: none;
+}
+
+.hidden-report-fatalerror{
+    border: 2px solid #990215;
+    margin: 5px;
+    padding: 5px;
+    display: none;
+}
+
+.reports-sheet {
+  border: 1px solid gray;
+  color: black;
+  vertical-align: top;
+  max-width: 90%;
+  margin: 5px;
+  font-family: Verdana;
+  font-size: 8pt;
+} 
+.reports-sheet td {
+  border: 0.5px solid gray;
+  word-wrap: break-word;
+  padding: 10px;
+} 
+.reports-sheet th {
+  border: 0.5px solid gray;
+    background-color: #699CA7;
+    color: white;
+}
+.reports-sheet tr .td-reports {
+  border: 0.1px solid white;
+  padding: 0px;
+}
+.reports-sheet td .td-reports {
+  border: 0.1px solid white;
+  padding: 0px;
 }
