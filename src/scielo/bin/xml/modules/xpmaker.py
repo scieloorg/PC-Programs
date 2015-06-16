@@ -873,7 +873,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
             register_log('pack_and_validate: pkg_reports.get_articles_report_text')
             report_components['detail-report'] = pkg_reports.get_articles_report_text(articles, articles_reports, articles_stats)
-            report_components['summary-report'] = pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
+            report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
             #if not from_markup:
             #    register_log('pack_and_validate: pkg_reports.get_lists_report_text')
             #    texts.append(pkg_reports.get_lists_report_text(articles_sheets))

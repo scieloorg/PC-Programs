@@ -270,12 +270,10 @@ def save(filename, title, body):
     if body is not None:
         body = body
 
-    f = open(filename, 'w')
     r = html(title, body)
     if isinstance(r, unicode):
         r = r.encode('utf-8')
-    f.write(r)
-    f.close()
+    open(filename, 'w').write(r)
 
 
 def get_message_style(value, default):
@@ -328,6 +326,8 @@ def section(title, content):
 
 
 def tab_block(tab_id, content, status='not-selected-tab-content'):
+    if content is None:
+        content = ''
     r = '<div id="tab-content-' + tab_id + '" class="' + status + '">'
     r += content
     r += '</div>'

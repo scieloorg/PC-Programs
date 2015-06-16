@@ -778,7 +778,7 @@ def get_lists_report_text(articles_sheets):
 
 
 def processing_result_location(result_path):
-    return 'Result of the processing: ' + html_reports.link('file:///' + result_path, result_path)
+    return '<h5>Result of the processing: </h5>' + '<p>' + html_reports.link('file:///' + result_path, result_path) + '</p>'
 
 
 def save_report(filename, title, content):
@@ -799,20 +799,20 @@ def statistics_and_subtitle(f, e, w):
     return x
 
 
-def format_complete_report(report_components, result_folder=None):
+def format_complete_report(report_components):
     content = ''
     order = ['summary-report', 'detail-report', 'xml-files', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc']
     labels = {
         'summary-report': 'Summary report', 
         'detail-report': 'Detail report', 
-        'xml-files': 'XML Files',
+        'xml-files': 'Files/Folders',
         'db-overview': 'Database overview',
         'pkg_overview': 'Package overview',
         'issue-not-registered': 'Issue validations',
         'toc': 'Issue validations',
     }
-    f, e, w = html_reports.statistics_numbers(''.join(report_components.values()))
-    report_components['summary-report'] = statistics_and_subtitle(f, e, w) + report_components['summary-report']
+    f, e, w = html_reports.statistics_numbers(html_reports.join_texts(report_components.values()))
+    report_components['summary-report'] = statistics_and_subtitle(f, e, w) + report_components.get('summary-report', '')
 
     content += html_reports.tabs_items([(tab_id, labels[tab_id]) for tab_id in order if tab_id in report_components.keys() and report_components.get(tab_id) != ''], 'summary-report')
     for tab_id in order:

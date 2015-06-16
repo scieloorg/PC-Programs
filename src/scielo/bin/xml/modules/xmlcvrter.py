@@ -330,7 +330,7 @@ def convert_package(src_path):
             scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_doc_actions, previous_registered_articles, unmatched_orders)
 
             validations_report = html_reports.tag('h2', 'Detail Report')
-            validations_report += pkg_reports.get_articles_report_text(articles, articles_reports, articles_stats, conversion_stats_and_reports)
+            validations_report += pkg_reports.get_articles_report_text(selected_articles, articles_reports, articles_stats, conversion_stats_and_reports)
 
             xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 
@@ -359,16 +359,16 @@ def convert_package(src_path):
     report_location = report_path + '/xml_converter.html'
 
     report_components['xml-list'] = pkg_reports.xml_list(pkg_path, xml_filenames)
-    report_components['db-overview'] = before_conversion_report + after_conversion_report
-
-    report_components['summary-report'] += xc_conclusion_msg + xc_results_report + aop_results_report
     if converter_env.is_windows:
-        report_components['summary-report'] += pkg_reports.processing_result_location(result_path)
+        report_components['xml-list'] += pkg_reports.processing_result_location(result_path)
+
+    report_components['db-overview'] = before_conversion_report + after_conversion_report
+    report_components['summary-report'] = xc_conclusion_msg + xc_results_report + aop_results_report
 
     report_components['toc'] = xc_toc_report
     report_components['detail-report'] = validations_report
 
-    f, e, w, content = pkg_reports.format_complete_report(result_path)
+    f, e, w, content = pkg_reports.format_complete_report(report_components)
     if old_report_path in content:
         content = content.replace(old_report_path, report_path)
 
@@ -457,7 +457,7 @@ def old_convert_package(src_path):
             scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_doc_actions, previous_registered_articles, unmatched_orders)
 
             validations_report = html_reports.tag('h2', 'Detail Report')
-            validations_report += pkg_reports.get_articles_report_text(articles, articles_reports, articles_stats, conversion_stats_and_reports)
+            validations_report += pkg_reports.get_articles_report_text(selected_articles, articles_reports, articles_stats, conversion_stats_and_reports)
 
             xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 
