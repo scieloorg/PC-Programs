@@ -292,8 +292,18 @@ def convert_package(src_path):
     xml_filenames, pkg_articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
     issue_models, issue_error_msg = get_issue_models(pkg_articles)
 
-    report_components['issue-not-registered'] = issue_error_msg
+    if issue_error_msg is not None:
+        report_components['issue-not-registered'] = issue_error_msg
+
+    sources_at, sources_and_reftypes, reftype_and_sources, missing_source, missing_year, unusual_sources, unusual_years = pkg_reports.pkg_references_sources_and_types(pkg_articles)
+
     report_components['pkg_overview'] = pkg_reports.package_articles_overview(pkg_articles)
+    if len(reftype_and_sources) > 0:
+        bad_sources_and_reftypes = {source: reftypes for source, reftypes in sources_and_reftypes.items() if len(reftypes) > 1}
+        report_components['pkg_overview'] += pkg_reports.package_articles_references_overview(sources_at, bad_sources_and_reftypes, reftype_and_sources, missing_source, missing_year, unusual_sources, unusual_years)
+    if len(reftype_and_sources) > 0:
+        report_components['references'] = pkg_reports.package_articles_sources_overview(reftype_and_sources)
+
     selected_articles = None
 
     if issue_models is None:
@@ -693,9 +703,7 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
             msg += html_reports.p_message('Result: ' + xc_result)
 
         conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
-        title = html_reports.statistics_display(conv_f, conv_e, conv_w, True)
-        conv_stats = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
-        conversion_stats_and_reports[xml_name] = (conv_f, conv_e, conv_w, html_reports.collapsible_block(xml_name + 'conv', 'Converter validations: ' + title, msg, conv_stats))
+        conversion_stats_and_reports[xml_name] = (conv_f, conv_e, conv_w, msg)
 
     if ahead_manager.journal_has_aop():
         if len(aop_status['deleted ex-aop']) > 0:

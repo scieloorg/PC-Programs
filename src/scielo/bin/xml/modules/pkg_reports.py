@@ -121,7 +121,6 @@ def package_articles_overview(pkg_articles):
     items.append(package_articles_languages_overview(pkg_articles))
     items.append(package_articles_dates_overview(pkg_articles))
     items.append(package_articles_affiliations_overview(pkg_articles))
-    items.append(package_articles_references_overview(pkg_articles))
     return ''.join(items)
 
 
@@ -204,7 +203,7 @@ def package_articles_affiliations_overview(pkg_articles):
     return html_reports.tag('h3', 'Package affiliations overview') + html_reports.sheet(labels, items, 'dbstatus')
 
 
-def package_articles_references_overview(pkg_articles):
+def old_package_articles_references_overview(pkg_articles):
     unusual_sources = []
     unusual_years = []
     no_year = {}
@@ -259,17 +258,124 @@ def package_articles_references_overview(pkg_articles):
     items = []
     items.append({'label': 'references by type', 'status': 'INFO', 'message': {k:str(v) for k, v in pkg_type.items()}})
     if len(new_pkg_source_and_type) > 0:
-        items.append({'label': 'same sources as different types', 'status': 'WARNING', 'message': new_pkg_source_and_type})
+        items.append({'label': 'same sources as different types', 'status': 'ERROR', 'message': new_pkg_source_and_type})
     if len(no_sources) > 0:
-        items.append({'label': 'references without source', 'status': 'WARNING', 'message': no_sources})
+        items.append({'label': 'references without source', 'status': 'ERROR', 'message': no_sources})
     if len(no_year) > 0:
-        items.append({'label': 'references without year', 'status': 'WARNING', 'message': no_year})
+        items.append({'label': 'references without year', 'status': 'ERROR', 'message': no_year})
     if len(unusual_sources) > 0:
-        items.append({'label': 'references with unusual value for source', 'status': 'WARNING', 'message': unusual_sources})
+        items.append({'label': 'references with unusual value for source', 'status': 'ERROR', 'message': unusual_sources})
     if len(unusual_years) > 0:
-        items.append({'label': 'references with unusual value for year', 'status': 'WARNING', 'message': unusual_years})
+        items.append({'label': 'references with unusual value for year', 'status': 'ERROR', 'message': unusual_years})
 
     return html_reports.tag('h3', 'Package references overview') + html_reports.sheet(labels, items, table_style='validation', row_style='status')
+
+
+def package_articles_sources_overview(reftype_and_sources):
+    labels = ['source', 'total']
+    h = ''
+    for reftype, sources in reftype_and_sources.items():
+        h += html_reports.tag('h4', reftype)
+        for source in sorted(sources.keys()):
+            items.append({'source': source, 'total': str(sources[source])})
+        h += html_reports.sheet(labels, items)
+    return h
+
+
+def package_articles_references_overview(sources_at, bad_sources_and_reftypes, reftype_and_sources, missing_source, missing_year, unusual_sources, unusual_years):
+    labels = ['label', 'status', 'message']
+    items = []
+
+    values = []
+    values.append('references by type')
+    values.append('INFO')
+    values.append({reftype: str(sum(sources.values())) for reftype, sources in reftype_and_sources.items()})
+    items.append(label_values(labels, values))
+
+    #message = {source: reftypes for source, reftypes in sources_and_reftypes.items() if len(reftypes) > 1}}
+    if len(bad_sources_and_reftypes) > 0:
+        values = []
+        values.append('same sources as different types')
+        values.append('ERROR')
+        values.append(bad_sources_and_reftypes)
+        items.append(label_values(labels, values))
+        values = []
+        values.append('same sources as different types')
+        values.append('INFO')
+        values.append({source: sources_at.get(source) for source in bad_sources_and_reftypes.keys()])
+        items.append(label_values(labels, values))
+
+    if len(missing_source) > 0:
+        items.append({'label': 'references missing source', 'status': 'ERROR', 'message': [' - '.join(item) for item in missing_source]})
+    if len(missing_year) > 0:
+        items.append({'label': 'references missing year', 'status': 'ERROR', 'message': [' - '.join(item) for item in missing_year]})
+    if len(unusual_sources) > 0:
+        items.append({'label': 'references with unusual value for source', 'status': 'ERROR', 'message': [' - '.join(item) for item in unusual_sources]})
+    if len(unusual_years) > 0:
+        items.append({'label': 'references with unusual value for year', 'status': 'ERROR', 'message': [' - '.join(item) for item in unusual_years]})
+
+    return html_reports.tag('h3', 'Package references overview') + html_reports.sheet(labels, items, table_style='validation', row_style='status')
+
+
+def pkg_references_sources_and_types(pkg_articles):
+    sources_and_reftypes = {}
+    sources_at = {}
+    reftype_and_sources = {}
+    missing_source = []
+    missing_year = []
+    unusual_sources = []
+    unusual_years = []
+    for xml_name in sorted_xml_name_by_order(pkg_articles):
+        doc = pkg_articles[xml_name]
+        for ref in doc.references:
+            if not ref.source in sources_and_reftypes.keys():
+                sources_and_reftypes[ref.source] = {}
+            if not ref.publication_type in sources_and_reftypes[ref.source].keys():
+                sources_and_reftypes[ref.source][ref.publication_type] = 0
+            sources_and_reftypes[ref.source][ref.publication_type] += 1
+            if not ref.source in sources_at.keys():
+                sources_at[ref.source] = []
+            if not xml_name in sources_at[ref.source]:
+                sources_at[ref.source].append(ref.id + ' - ' + xml_name)
+            if not ref.publication_type in reftype_and_sources.keys():
+                reftype_and_sources[ref.publication_type] = {}
+            if not ref.source in reftype_and_sources[ref.publication_type].keys():
+                reftype_and_sources[ref.publication_type][ref.source] = 0
+            reftype_and_sources[ref.publication_type][ref.source] += 1
+
+            # year
+            if ref.publication_type in attributes.BIBLIOMETRICS_USE:
+                if ref.year is None:
+                    missing_year.append([ref.id, xml_name])
+                else:
+                    numbers = len([n for n in ref.year if n.isdigit()])
+                    not_numbers = len(ref.year) - numbers
+                    if not_numbers > numbers:
+                        unusual_years.append([ref.year, ref.id, xml_name])
+
+                if ref.source is None:
+                    missing_source.append([ref.id, xml_name])
+                else:
+                    numbers = len([n for n in ref.source if n.isdigit()])
+                    not_numbers = len(ref.source) - numbers
+                    if not_numbers < numbers:
+                        unusual_sources.append([ref.source, ref.id, xml_name])
+
+    return (sources_at, sources_and_reftypes, reftype_and_sources, missing_source, missing_year, unusual_sources, unusual_years)
+
+
+def pkg_sources_reports(sources, sources_at):
+    labels = ['source', '@publication-type', 'xml name']
+    items = []
+    #bad_sources = {k:v for k, v in sources.items() if len(v) > 1}
+    for source, reftypes in bad_sources.items():
+        values = []
+        values.append(source)
+        values.append(reftypes)
+        values.append(sources_at.get(source))
+        items.append(label_values(labels, values))
+
+    return html_reports.sheet(labels, items)
 
 
 def pkg_references_stats(doc_items):
@@ -801,7 +907,7 @@ def statistics_and_subtitle(f, e, w):
 
 def format_complete_report(report_components):
     content = ''
-    order = ['summary-report', 'detail-report', 'xml-files', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc']
+    order = ['summary-report', 'detail-report', 'xml-files', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc', 'references']
     labels = {
         'summary-report': 'Summary report', 
         'detail-report': 'Detail report', 
@@ -810,17 +916,17 @@ def format_complete_report(report_components):
         'pkg_overview': 'Package overview',
         'issue-not-registered': 'Issue validations',
         'toc': 'Issue validations',
+        'references': 'Sources'
     }
     f, e, w = html_reports.statistics_numbers(html_reports.join_texts(report_components.values()))
     report_components['summary-report'] = statistics_and_subtitle(f, e, w) + report_components.get('summary-report', '')
 
-    content += html_reports.tabs_items([(tab_id, labels[tab_id]) for tab_id in order if tab_id in report_components.keys() and report_components.get(tab_id) != ''], 'summary-report')
+    content += html_reports.tabs_items([(tab_id, labels[tab_id]) for tab_id in order if report_components.get(tab_id) is not None], 'summary-report')
     for tab_id in order:
-        if tab_id in report_components.keys() and report_components.get(tab_id) != '':
-            if tab_id == 'summary-report':
-                content += html_reports.tab_block(tab_id, report_components.get(tab_id, ''), 'selected-tab-content')
-            else:
-                content += html_reports.tab_block(tab_id, report_components.get(tab_id, ''), 'not-selected-tab-content')
+        c = report_components.get(tab_id)
+        if c is not None:
+            style = 'selected-tab-content' if tab_id == 'summary-report' else style = 'not-selected-tab-content'
+            content += html_reports.tab_block(tab_id, c, style)
 
     content += html_reports.tag('p', 'Finished.')
     return (f, e, w, content)

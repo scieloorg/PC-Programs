@@ -109,12 +109,14 @@ class RegisteredArticle(object):
     @property
     def titles(self):
         _titles = self.article_records[1].get('12')
+        print('_titles')
+        print(_titles)
         if _titles is None:
-            _t = []
-        elif isinstance(_titles, list):
-            _t = _titles
-        else:
+            _t = [{'_': None}]
+        elif not isinstance(_titles, list):
             _t = [_titles]
+        else:
+            _t = _titles
         return _t
 
     @property
