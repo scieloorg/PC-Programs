@@ -622,10 +622,3 @@ def format_report(article_display_report, article_validation_report, display_all
         content.append(article_display_report.sources_sheet)
     return html_reports.join_texts(content)
 
-
-def example():
-    xml_path = '/Users/robertatakenaka/Documents/vm_dados/scielo_data/serial/pab/v48n7/markup_xml/scielo_package'
-    report_path = '/Users/robertatakenaka/Documents/vm_dados/scielo_data/_xpm_reports_'
-    report_filenames = {v:v.replace('.xml', '') for v in os.listdir(xml_path) if v.endswith('.xml') and not 'incorre' in v }
-    generate_contents_reports(xml_path, report_path, report_filenames)
-    print('Reports in ' + report_path)

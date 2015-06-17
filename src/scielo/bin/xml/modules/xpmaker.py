@@ -853,7 +853,14 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         toc_f = 0
         register_log('pack_and_validate: package_articles_overview')
+        sources_at, sources_and_reftypes, reftype_and_sources, missing_source, missing_year, unusual_sources, unusual_years = pkg_reports.pkg_references_sources_and_types(articles)
+
         report_components['pkg_overview'] = pkg_reports.package_articles_overview(articles)
+        if len(reftype_and_sources) > 0:
+            bad_sources_and_reftypes = {source: reftypes for source, reftypes in sources_and_reftypes.items() if len(reftypes) > 1}
+            report_components['pkg_overview'] += pkg_reports.package_articles_references_overview(sources_at, bad_sources_and_reftypes, reftype_and_sources, missing_source, missing_year, unusual_sources, unusual_years)
+        if len(reftype_and_sources) > 0:
+            report_components['references'] = pkg_reports.package_articles_sources_overview(reftype_and_sources)
 
         if not from_markup:
             register_log('pack_and_validate: pkg_reports.validate_package')

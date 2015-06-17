@@ -13,6 +13,183 @@ import html_reports
 log_items = []
 
 
+class ArticlePackage(object):
+
+    def __init__(self, articles):
+        self.articles = articles
+
+    @property
+    def xml_name_sorted_by_order(self):
+        if self.__xml_name_sorted_by_order is None:
+            self.__xml_name_sorted_by_order = self.sort_xml_name_by_order()
+        return self.__xml_name_sorted_by_order
+
+    def sort_xml_name_by_order(self):
+        order_and_xml_name_items = {}
+        for xml_name, doc in self.articles.items():
+            _order = str(doc.order)
+            if not _order in order_and_xml_name_items.keys():
+                order_and_xml_name_items[_order] = []
+            order_and_xml_name_items[_order].append(xml_name)
+
+        sorted_items = []
+        for order in sorted(order_and_xml_name_items.keys()):
+            for item in order_and_xml_name_items[order]:
+                sorted_items.append(item)
+        return sorted_items
+
+    @property
+    def indexed_by_order(self):
+        if self._indexed_by_order is None:
+            self._indexed_by_order = self.index_by_order()
+        return self._indexed_by_order
+
+    def index_by_order(self):
+        indexed = {}
+        for xml_name, article in self.articles.items():
+            _order = str(article.order)
+            if not _order in indexed.keys():
+                indexed[_order] = []
+            indexed[_order].append(article)
+        return indexed
+
+    @property
+    def compiled_affiliations(self):
+        if self._compiled_affilitions is None:
+            self._compiled_affilitions = self.compile_affiliations()
+        return self._compiled_affilitions
+
+    def compile_affiliations(self):
+        evaluation = {}
+        keys = ['authors without aff', 
+                'authors with more than 1 affs', 
+                'authors with invalid xref[@ref-type=aff]', 
+                'incomplete affiliations']
+        for k in keys:
+            evaluation[k] = 0
+
+        for xml_name, doc in self.articles.items():
+            aff_ids = [aff.id for aff in doc.affiliations]
+            for contrib in doc.contrib_names:
+                if len(contrib.xref) == 0:
+                    evaluation['authors without aff'] += 1
+                elif len(contrib.xref) > 1:
+                    valid_xref = [xref for xref in contrib.xref if xref in aff_ids]
+                    if len(valid_xref) != len(contrib.xref):
+                        evaluation['authors with invalid xref[@ref-type=aff]'] += 1
+                    elif len(valid_xref) > 1:
+                        evaluation['authors with more than 1 affs'] += 1
+                    elif len(valid_xref) == 0:
+                        evaluation['authors without aff'] += 1
+            for aff in doc.affiliations:
+                if None in [aff.id, aff.i_country, aff.norgname, aff.orgname, aff.city, aff.state, aff.country]:
+                    evaluation['incomplete affiliations'] += 1
+        return evaluation
+
+    def compile_references(self):
+        self.sources_and_reftypes = {}
+        self.sources_at = {}
+        self.reftype_and_sources = {}
+        self.missing_source = []
+        self.missing_year = []
+        self.unusual_sources = []
+        self.unusual_years = []
+        for xml_name, doc in self.articles.items():
+            doc = pkg_articles[xml_name]
+            for ref in doc.references:
+                if not ref.source in self.sources_and_reftypes.keys():
+                    self.sources_and_reftypes[ref.source] = {}
+                if not ref.publication_type in self.sources_and_reftypes[ref.source].keys():
+                    self.sources_and_reftypes[ref.source][ref.publication_type] = 0
+                self.sources_and_reftypes[ref.source][ref.publication_type] += 1
+                if not ref.source in self.sources_at.keys():
+                    self.sources_at[ref.source] = []
+                if not xml_name in self.sources_at[ref.source]:
+                    self.sources_at[ref.source].append(ref.id + ' - ' + xml_name)
+                if not ref.publication_type in self.reftype_and_sources.keys():
+                    self.reftype_and_sources[ref.publication_type] = {}
+                if not ref.source in self.reftype_and_sources[ref.publication_type].keys():
+                    self.reftype_and_sources[ref.publication_type][ref.source] = 0
+                self.reftype_and_sources[ref.publication_type][ref.source] += 1
+
+                # year
+                if ref.publication_type in attributes.BIBLIOMETRICS_USE:
+                    if ref.year is None:
+                        self.missing_year.append([ref.id, xml_name])
+                    else:
+                        numbers = len([n for n in ref.year if n.isdigit()])
+                        not_numbers = len(ref.year) - numbers
+                        if not_numbers > numbers:
+                            self.unusual_years.append([ref.year, ref.id, xml_name])
+
+                    if ref.source is None:
+                        self.missing_source.append([ref.id, xml_name])
+                    else:
+                        numbers = len([n for n in ref.source if n.isdigit()])
+                        not_numbers = len(ref.source) - numbers
+                        if not_numbers < numbers:
+                            self.unusual_sources.append([ref.source, ref.id, xml_name])
+
+    def tabulate_languages(self):
+        labels = ['name', 'toc section', '@article-type', 'article titles', 
+            'abstracts', 'key words', '@xml:lang', 'versions']
+
+        items = []
+        for xml_name, doc in self.articles.items():
+            values = []
+            values.append(xml_name)
+            values.append(doc.toc_section)
+            values.append(doc.article_type)
+            values.append(['[' + str(t.language) + '] ' + str(t.title) for t in doc.titles])
+            values.append([t.language for t in doc.abstracts])
+            k = {}
+            for item in doc.keywords:
+                if not item.get('l') in k.keys():
+                    k[item.get('l')] = []
+                k[item.get('l')].append(item.get('k'))
+            values.append(k)
+            values.append(doc.language)
+            values.append(doc.trans_languages)
+            items.append(label_values(labels, values))
+        return (labels, items)
+
+    def tabulate_dates(self):
+        labels = ['name', 'toc section', '@article-type', 'article title', 
+        'received', 'accepted', 'receive to accepted (days)', 'article date', 'issue date', 'accepted to publication (days)', 'accepted to today (days)']
+
+        items = []
+        for xml_name, doc in self.articles.items():
+            values = []
+            values.append(xml_name)
+            values.append(doc.toc_section)
+            values.append(doc.article_type)
+            values.append(doc.title)
+            values.append(article_utils.display_date(doc.received_dateiso))
+            values.append(article_utils.display_date(doc.accepted_dateiso))
+            values.append(str(doc.history_days))
+            values.append(article_utils.display_date(doc.article_pub_dateiso))
+            values.append(article_utils.display_date(doc.issue_pub_dateiso))
+            values.append(str(doc.publication_days))
+            values.append(str(doc.registration_days))
+            items.append(label_values(labels, values))
+        return (labels, items)
+
+    def check_consistency(self, equal_data, unique_data):
+        invalid = []
+        toc_data = {}
+        for label in equal_data + unique_data:
+            toc_data[label] = {}
+
+        for xml_name, article in self.articles.items():
+            if article.tree is None:
+                invalid.append(xml_name)
+            else:
+                art_data = article.summary()
+                for label in toc_data.keys():
+                    toc_data[label] = article_utils.add_new_value_to_index(toc_data[label], art_data[label], xml_name)
+        return (invalid, toc_data)
+
+
 def register_log(text):
     log_items.append(datetime.now().isoformat() + ' ' + text)
 
@@ -203,77 +380,10 @@ def package_articles_affiliations_overview(pkg_articles):
     return html_reports.tag('h3', 'Package affiliations overview') + html_reports.sheet(labels, items, 'dbstatus')
 
 
-def old_package_articles_references_overview(pkg_articles):
-    unusual_sources = []
-    unusual_years = []
-    no_year = {}
-    no_sources = {}
-
-    pkg_type = {}
-    pkg_source_and_type = {}
-
-    for xml_name in sorted_xml_name_by_order(pkg_articles):
-        doc = pkg_articles[xml_name]
-        for ref in doc.references:
-            if ref.publication_type in attributes.BIBLIOMETRICS_USE:
-                if ref.year is None:
-                    if not ref.publication_type in no_year.keys():
-                        no_year[ref.publication_type] = 0
-                    no_year[ref.publication_type] += 1
-                if ref.source is None:
-                    if not ref.publication_type in no_sources.keys():
-                        no_sources[ref.publication_type] = 0
-                    no_sources[ref.publication_type] += 1
-
-            if ref.source is not None:
-                if not ref.source in pkg_source_and_type.keys():
-                    pkg_source_and_type[ref.source] = {}
-                if not ref.publication_type in pkg_source_and_type[ref.source].keys():
-                    pkg_source_and_type[ref.source][ref.publication_type] = 0
-                pkg_source_and_type[ref.source][ref.publication_type] += 1
-                numbers = len([n for n in ref.source if n.isdigit()])
-                not_numbers = len(ref.source) - numbers
-                if not_numbers < numbers:
-                    unusual_sources.append(ref.source)
-
-            if ref.year is not None:
-                numbers = len([n for n in ref.year if n.isdigit()])
-                not_numbers = len(ref.year) - numbers
-                if not_numbers > numbers:
-                    unusual_years.append(ref.year)
-
-            if not ref.publication_type in pkg_type.keys():
-                pkg_type[ref.publication_type] = 0
-            pkg_type[ref.publication_type] += 1
-
-    no_sources = {k: str(q) for k, q in no_sources.items()}
-    no_year = {k: str(q) for k, q in no_year.items()}
-
-    pkg_source_and_type = {source: reftypes for source, reftypes in pkg_source_and_type.items() if len(reftypes) > 1}
-    new_pkg_source_and_type = {}
-    for source, reftypes in pkg_source_and_type.items():
-        new_pkg_source_and_type[source] = {reftype: str(q) for reftype, q in reftypes.items()}
-
-    labels = ['label', 'status', 'message']
-    items = []
-    items.append({'label': 'references by type', 'status': 'INFO', 'message': {k:str(v) for k, v in pkg_type.items()}})
-    if len(new_pkg_source_and_type) > 0:
-        items.append({'label': 'same sources as different types', 'status': 'ERROR', 'message': new_pkg_source_and_type})
-    if len(no_sources) > 0:
-        items.append({'label': 'references without source', 'status': 'ERROR', 'message': no_sources})
-    if len(no_year) > 0:
-        items.append({'label': 'references without year', 'status': 'ERROR', 'message': no_year})
-    if len(unusual_sources) > 0:
-        items.append({'label': 'references with unusual value for source', 'status': 'ERROR', 'message': unusual_sources})
-    if len(unusual_years) > 0:
-        items.append({'label': 'references with unusual value for year', 'status': 'ERROR', 'message': unusual_years})
-
-    return html_reports.tag('h3', 'Package references overview') + html_reports.sheet(labels, items, table_style='validation', row_style='status')
-
-
 def package_articles_sources_overview(reftype_and_sources):
     labels = ['source', 'total']
     h = ''
+    items = []
     for reftype, sources in reftype_and_sources.items():
         h += html_reports.tag('h4', reftype)
         for source in sorted(sources.keys()):
@@ -302,7 +412,7 @@ def package_articles_references_overview(sources_at, bad_sources_and_reftypes, r
         values = []
         values.append('same sources as different types')
         values.append('INFO')
-        values.append({source: sources_at.get(source) for source in bad_sources_and_reftypes.keys()])
+        values.append({source: sources_at.get(source) for source in bad_sources_and_reftypes.keys()})
         items.append(label_values(labels, values))
 
     if len(missing_source) > 0:
@@ -925,7 +1035,7 @@ def format_complete_report(report_components):
     for tab_id in order:
         c = report_components.get(tab_id)
         if c is not None:
-            style = 'selected-tab-content' if tab_id == 'summary-report' else style = 'not-selected-tab-content'
+            style = 'selected-tab-content' if tab_id == 'summary-report' else 'not-selected-tab-content'
             content += html_reports.tab_block(tab_id, c, style)
 
     content += html_reports.tag('p', 'Finished.')
