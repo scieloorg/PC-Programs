@@ -383,8 +383,8 @@ def package_articles_affiliations_overview(pkg_articles):
 def package_articles_sources_overview(reftype_and_sources):
     labels = ['source', 'total']
     h = ''
-    items = []
     for reftype, sources in reftype_and_sources.items():
+        items = []
         h += html_reports.tag('h4', reftype)
         for source in sorted(sources.keys()):
             items.append({'source': source, 'total': str(sources[source])})
@@ -438,15 +438,18 @@ def pkg_references_sources_and_types(pkg_articles):
     for xml_name in sorted_xml_name_by_order(pkg_articles):
         doc = pkg_articles[xml_name]
         for ref in doc.references:
-            if not ref.source in sources_and_reftypes.keys():
-                sources_and_reftypes[ref.source] = {}
-            if not ref.publication_type in sources_and_reftypes[ref.source].keys():
-                sources_and_reftypes[ref.source][ref.publication_type] = 0
-            sources_and_reftypes[ref.source][ref.publication_type] += 1
-            if not ref.source in sources_at.keys():
-                sources_at[ref.source] = []
-            if not xml_name in sources_at[ref.source]:
-                sources_at[ref.source].append(ref.id + ' - ' + xml_name)
+            norm_source = str(ref.source).strip().upper()
+            if not norm_source in sources_and_reftypes.keys():
+                sources_and_reftypes[norm_source] = {}
+            if not ref.publication_type in sources_and_reftypes[norm_source].keys():
+                sources_and_reftypes[norm_source][ref.publication_type] = 0
+            sources_and_reftypes[norm_source][ref.publication_type] += 1
+
+            if not norm_source in sources_at.keys():
+                sources_at[norm_source] = []
+            if not xml_name in sources_at[norm_source]:
+                sources_at[norm_source].append(xml_name + ' - ' + ref.id)
+
             if not ref.publication_type in reftype_and_sources.keys():
                 reftype_and_sources[ref.publication_type] = {}
             if not ref.source in reftype_and_sources[ref.publication_type].keys():
@@ -464,12 +467,12 @@ def pkg_references_sources_and_types(pkg_articles):
                         unusual_years.append([ref.year, ref.id, xml_name])
 
                 if ref.source is None:
-                    missing_source.append([ref.id, xml_name])
+                    missing_source.append([xml_name, ref.id])
                 else:
                     numbers = len([n for n in ref.source if n.isdigit()])
                     not_numbers = len(ref.source) - numbers
                     if not_numbers < numbers:
-                        unusual_sources.append([ref.source, ref.id, xml_name])
+                        unusual_sources.append([xml_name, ref.id, ref.source])
 
     return (sources_at, sources_and_reftypes, reftype_and_sources, missing_source, missing_year, unusual_sources, unusual_years)
 
@@ -478,7 +481,7 @@ def pkg_sources_reports(sources, sources_at):
     labels = ['source', '@publication-type', 'xml name']
     items = []
     #bad_sources = {k:v for k, v in sources.items() if len(v) > 1}
-    for source, reftypes in bad_sources.items():
+    for source, reftypes in sources.items():
         values = []
         values.append(source)
         values.append(reftypes)
@@ -1024,12 +1027,20 @@ def format_complete_report(report_components):
         'xml-files': 'Files/Folders',
         'db-overview': 'Database overview',
         'pkg_overview': 'Package overview',
-        'issue-not-registered': 'Issue validations',
-        'toc': 'Issue validations',
+        'issue-not-registered': 'Issue validations (not registered)',
+        'toc': 'Issue validations (toc)',
         'references': 'Sources'
     }
     f, e, w = html_reports.statistics_numbers(html_reports.join_texts(report_components.values()))
     report_components['summary-report'] = statistics_and_subtitle(f, e, w) + report_components.get('summary-report', '')
+
+    print('issue-not-registered')
+    print(report_components.get('issue-not-registered'))
+    print(type(report_components.get('issue-not-registered')))
+
+    print('toc')
+    print(report_components.get('toc'))
+    print(type(report_components.get('toc')))
 
     content += html_reports.tabs_items([(tab_id, labels[tab_id]) for tab_id in order if report_components.get(tab_id) is not None], 'summary-report')
     for tab_id in order:

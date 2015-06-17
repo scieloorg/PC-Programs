@@ -868,7 +868,9 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
 
             register_log('pack_and_validate: pkg_reports.get_toc_report_text')
-            report_components['toc'] = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, toc_report)
+            toc_report = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, toc_report)
+            if toc_report != '':
+                report_components['toc'] = toc_report
 
         if toc_f == 0:
             register_log('pack_and_validate: pkg_reports.validate_pkg_items')
