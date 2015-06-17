@@ -17,6 +17,7 @@ class ArticlePackage(object):
 
     def __init__(self, articles):
         self.articles = articles
+        self.compile_references()
 
     @property
     def xml_name_sorted_by_order(self):
@@ -95,7 +96,6 @@ class ArticlePackage(object):
         self.unusual_sources = []
         self.unusual_years = []
         for xml_name, doc in self.articles.items():
-            doc = pkg_articles[xml_name]
             for ref in doc.references:
                 if not ref.source in self.sources_and_reftypes.keys():
                     self.sources_and_reftypes[ref.source] = {}
@@ -129,6 +129,7 @@ class ArticlePackage(object):
                         not_numbers = len(ref.source) - numbers
                         if not_numbers < numbers:
                             self.unusual_sources.append([ref.source, ref.id, xml_name])
+        self.bad_sources_and_reftypes = {source: reftypes for source, reftypes in self.sources_and_reftypes.items() if len(reftypes) > 1}
 
     def tabulate_languages(self):
         labels = ['name', 'toc section', '@article-type', 'article titles', 
@@ -154,16 +155,14 @@ class ArticlePackage(object):
         return (labels, items)
 
     def tabulate_dates(self):
-        labels = ['name', 'toc section', '@article-type', 'article title', 
+        labels = ['name', '@article-type', 
         'received', 'accepted', 'receive to accepted (days)', 'article date', 'issue date', 'accepted to publication (days)', 'accepted to today (days)']
 
         items = []
         for xml_name, doc in self.articles.items():
             values = []
             values.append(xml_name)
-            values.append(doc.toc_section)
             values.append(doc.article_type)
-            values.append(doc.title)
             values.append(article_utils.display_date(doc.received_dateiso))
             values.append(article_utils.display_date(doc.accepted_dateiso))
             values.append(str(doc.history_days))
@@ -174,20 +173,19 @@ class ArticlePackage(object):
             items.append(label_values(labels, values))
         return (labels, items)
 
-    def check_consistency(self, equal_data, unique_data):
-        invalid = []
-        toc_data = {}
-        for label in equal_data + unique_data:
-            toc_data[label] = {}
+    def journal_and_issue_metadata(self, labels):
+        invalid_xml_name_items = []
+        pkg_metadata = {label: {} for label in labels}
 
         for xml_name, article in self.articles.items():
             if article.tree is None:
-                invalid.append(xml_name)
+                invalid_xml_name_items.append(xml_name)
             else:
                 art_data = article.summary()
-                for label in toc_data.keys():
-                    toc_data[label] = article_utils.add_new_value_to_index(toc_data[label], art_data[label], xml_name)
-        return (invalid, toc_data)
+                for label in labels:
+                    pkg_metadata[label] = article_utils.add_new_value_to_index(pkg_metadata[label], art_data[label], xml_name)
+
+        return (invalid_xml_name_items, pkg_metadata)
 
 
 def register_log(text):
@@ -212,7 +210,7 @@ def delete_irrelevant_reports(ctrl_filename, is_valid_style, dtd_validation_repo
         os.unlink(dtd_validation_report)
 
 
-def get_article_xml_validations_reports(xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename, run_background):
+def generate_article_xml_validations_reports(xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename, run_background):
 
     xml, valid_dtd, valid_style = xpchecker.validate_article_xml(xml_filename, dtd_files, dtd_report, style_report, run_background)
     f, e, w = valid_style
@@ -289,98 +287,134 @@ def xml_list(pkg_path, xml_filenames=None):
     return '<div class="xmllist">' + r + '</div>'
 
 
+def articles_pkg_consistency_report(articles_pkg, validate_order):
+    equal_data = ['journal-title', 'journal id NLM', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
+    unique_data = ['order', 'doi', 'elocation id']
+    unique_status = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-and-seq': 'ERROR'}
+
+    if not validate_order:
+        unique_status['order'] = 'WARNING'
+
+    invalid_xml_name_items, pkg_metadata = articles_pkg.journal_and_issue_metadata(equal_data + unique_data)
+
+    r = ''
+    if len(invalid_xml_name_items) > 0:
+        r += html_reports.tag('div', html_reports.format_message('FATAL ERROR: Invalid XML files.'))
+        r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid_xml_name_items, 'issue-problem'))
+
+    for label in equal_data:
+        if len(pkg_metadata[label]) > 1:
+            part = html_reports.p_message('FATAL ERROR: same value for ' + label + ' is required for all the documents in the package')
+            for found_value, xml_files in pkg_metadata[label].items():
+                part += html_reports.format_list('found ' + label + ' "' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" in:', 'ul', xml_files, 'issue-problem')
+            r += part
+
+    for label in unique_data:
+        if len(pkg_metadata[label]) > 0 and len(pkg_metadata[label]) != len(articles_pkg.articles):
+            none = []
+            duplicated = {}
+            pages = {}
+            for found_value, xml_files in pkg_metadata[label].items():
+                if found_value == 'None':
+                    none = xml_files
+                else:
+                    if len(xml_files) > 1:
+                        duplicated[found_value] = xml_files
+                    if label == 'fpage-and-seq':
+                        v = found_value
+                        if v.isdigit():
+                            v = str(int(found_value))
+                        if not v in pages.keys():
+                            pages[v] = []
+                        pages[v] += xml_files
+
+            if len(pages) == 1 and '0' in pages.keys():
+                duplicated = []
+
+            if len(duplicated) > 0:
+                part = html_reports.p_message(unique_status[label] + ': unique value of ' + label + ' is required for all the documents in the package')
+                for found_value, xml_files in duplicated.items():
+                    part += html_reports.format_list('found ' + label + ' "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
+                r += part
+            if len(none) > 0:
+                part = html_reports.p_message('INFO: there is no value for ' + label + '.')
+                part += html_reports.format_list('no value for ' + label + ' in:', 'ul', none, 'issue-problem')
+                r += part
+
+    issue_common_data = ''
+    for label in equal_data:
+        message = ''
+        if len(pkg_metadata[label].items()) == 1:
+            issue_common_data += html_reports.display_labeled_value(label, pkg_metadata[label].keys()[0])
+        else:
+            message = '(ERROR: Unique value expected for ' + label + ')'
+            issue_common_data += html_reports.format_list(label + message, 'ol', pkg_metadata[label].keys())
+    return html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages')
+
+
+def articles_pkg_consistency_stats(articles_pkg_constency_report):
+    return html_reports.statistics_numbers(articles_pkg_constency_report)
+
+
 def validate_package(articles, validate_order):
     return article_reports.toc_report_data(articles, validate_order)
 
 
-def package_articles_overview(pkg_articles):
+def articles_pkg_overview_report(articles_pkg):
+    r = ''
+    r += html_reports.tag('h4', 'Languages overview')
+    labels, items = articles_pkg.tabulate_languages()
+    r += html_reports.sheet(labels, items, 'dbstatus')
+
+    r += html_reports.tag('h4', 'Dates overview')
+    labels, items = articles_pkg.tabulate_dates()
+    r += html_reports.sheet(labels, items, 'dbstatus')
+
+    r += html_reports.tag('h4', 'Affiliations overview')
     items = []
-    items.append(package_articles_languages_overview(pkg_articles))
-    items.append(package_articles_dates_overview(pkg_articles))
-    items.append(package_articles_affiliations_overview(pkg_articles))
-    return ''.join(items)
-
-
-def package_articles_languages_overview(pkg_articles):
-    labels = ['name', 'toc section', '@article-type', 'article titles', 
-        'abstracts', 'key words', '@xml:lang', 'versions']
-
-    items = []
-    for xml_name in sorted_xml_name_by_order(pkg_articles):
-        values = []
-        values.append(xml_name)
-        values.append(pkg_articles[xml_name].toc_section)
-        values.append(pkg_articles[xml_name].article_type)
-        values.append(['[' + str(t.language) + '] ' + str(t.title) for t in pkg_articles[xml_name].titles])
-        values.append([t.language for t in pkg_articles[xml_name].abstracts])
-        k = {}
-        for item in pkg_articles[xml_name].keywords:
-            if not item.get('l') in k.keys():
-                k[item.get('l')] = []
-            k[item.get('l')].append(item.get('k'))
-        values.append(k)
-        values.append(pkg_articles[xml_name].language)
-        values.append(pkg_articles[xml_name].trans_languages)
-        items.append(label_values(labels, values))
-    return html_reports.tag('h3', 'Package languages overview') + html_reports.sheet(labels, items, 'dbstatus')
-
-
-def package_articles_dates_overview(pkg_articles):
-    labels = ['name', 'toc section', '@article-type', 'article title', 
-    'received', 'accepted', 'receive to accepted (days)', 'article date', 'issue date', 'accepted to publication (days)', 'accepted to today (days)']
-
-    items = []
-    for xml_name in sorted_xml_name_by_order(pkg_articles):
-        values = []
-        values.append(xml_name)
-        values.append(pkg_articles[xml_name].toc_section)
-        values.append(pkg_articles[xml_name].article_type)
-        values.append(pkg_articles[xml_name].title)
-        values.append(article_utils.display_date(pkg_articles[xml_name].received_dateiso))
-        values.append(article_utils.display_date(pkg_articles[xml_name].accepted_dateiso))
-        values.append(str(pkg_articles[xml_name].history_days))
-        values.append(article_utils.display_date(pkg_articles[xml_name].article_pub_dateiso))
-        values.append(article_utils.display_date(pkg_articles[xml_name].issue_pub_dateiso))
-        values.append(str(pkg_articles[xml_name].publication_days))
-        values.append(str(pkg_articles[xml_name].registration_days))
-        items.append(label_values(labels, values))
-    return html_reports.tag('h3', 'Package dates overview') + html_reports.sheet(labels, items, 'dbstatus')
-
-
-def package_articles_affiliations_overview(pkg_articles):
-    evaluation = {}
-    keys = ['authors without aff', 
-            'authors with more than 1 affs', 
-            'authors with invalid xref[@ref-type=aff]', 
-            'incomplete affiliations']
-    for k in keys:
-        evaluation[k] = 0
-
-    for xml_name in sorted_xml_name_by_order(pkg_articles):
-        aff_ids = [aff.id for aff in pkg_articles[xml_name].affiliations]
-        for contrib in pkg_articles[xml_name].contrib_names:
-            if len(contrib.xref) == 0:
-                evaluation['authors without aff'] += 1
-            elif len(contrib.xref) > 1:
-                valid_xref = [xref for xref in contrib.xref if xref in aff_ids]
-                if len(valid_xref) != len(contrib.xref):
-                    evaluation['authors with invalid xref[@ref-type=aff]'] += 1
-                elif len(valid_xref) > 1:
-                    evaluation['authors with more than 1 affs'] += 1
-                elif len(valid_xref) == 0:
-                    evaluation['authors without aff'] += 1
-        for aff in pkg_articles[xml_name].affiliations:
-            if None in [aff.id, aff.i_country, aff.norgname, aff.orgname, aff.city, aff.state, aff.country]:
-                evaluation['incomplete affiliations'] += 1
-    labels = ['label', 'quantity']
-    items = []
-
-    for label, q in evaluation.items():
+    affs_compiled = articles_pkg.compile_affiliations()
+    for label, q in affs_compiled.items():
         items.append({'label': label, 'quantity': str(q)})
-    return html_reports.tag('h3', 'Package affiliations overview') + html_reports.sheet(labels, items, 'dbstatus')
+    r += html_reports.sheet(['label', 'quantity'], items, 'dbstatus')
+    return r
 
 
-def package_articles_sources_overview(reftype_and_sources):
+def articles_pkg_references_overview_report(articles_pkg):
+    labels = ['label', 'status', 'message']
+    items = []
+
+    values = []
+    values.append('references by type')
+    values.append('INFO')
+    values.append({reftype: str(sum(sources.values())) for reftype, sources in articles_pkg.reftype_and_sources.items()})
+    items.append(label_values(labels, values))
+
+    #message = {source: reftypes for source, reftypes in sources_and_reftypes.items() if len(reftypes) > 1}}
+    if len(articles_pkg.bad_sources_and_reftypes) > 0:
+        values = []
+        values.append('same sources as different types')
+        values.append('ERROR')
+        values.append(articles_pkg.bad_sources_and_reftypes)
+        items.append(label_values(labels, values))
+        values = []
+        values.append('same sources as different types references')
+        values.append('INFO')
+        values.append({source: articles_pkg.sources_at.get(source) for source in articles_pkg.bad_sources_and_reftypes.keys()})
+        items.append(label_values(labels, values))
+
+    if len(articles_pkg.missing_source) > 0:
+        items.append({'label': 'references missing source', 'status': 'ERROR', 'message': [' - '.join(item) for item in articles_pkg.missing_source]})
+    if len(articles_pkg.missing_year) > 0:
+        items.append({'label': 'references missing year', 'status': 'ERROR', 'message': [' - '.join(item) for item in articles_pkg.missing_year]})
+    if len(articles_pkg.unusual_sources) > 0:
+        items.append({'label': 'references with unusual value for source', 'status': 'ERROR', 'message': [' - '.join(item) for item in articles_pkg.unusual_sources]})
+    if len(articles_pkg.unusual_years) > 0:
+        items.append({'label': 'references with unusual value for year', 'status': 'ERROR', 'message': [' - '.join(item) for item in articles_pkg.unusual_years]})
+
+    return html_reports.tag('h4', 'Package references overview') + html_reports.sheet(labels, items, table_style='dbstatus')
+
+
+def articles_pkg_sources_overview_report(reftype_and_sources):
     labels = ['source', 'total']
     h = ''
     for reftype, sources in reftype_and_sources.items():
@@ -388,7 +422,7 @@ def package_articles_sources_overview(reftype_and_sources):
         h += html_reports.tag('h4', reftype)
         for source in sorted(sources.keys()):
             items.append({'source': source, 'total': str(sources[source])})
-        h += html_reports.sheet(labels, items)
+        h += html_reports.sheet(labels, items, 'dbstatus')
     return h
 
 
@@ -799,7 +833,117 @@ def validate_pkg_items(org_manager, doc_items, doc_files_info_items, dtd_files, 
             print(' -- skept')
         else:
             xml_filename = doc_files_info.new_xml_filename
-            xml_f, xml_e, xml_w = get_article_xml_validations_reports(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all is False)
+            xml_f, xml_e, xml_w = generate_article_xml_validations_reports(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all is False)
+
+            article_display_report, article_validation_report, sheet_data = article_reports.get_article_report_data(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order)
+            if article_display_report is None:
+                content = 'FATAL ERROR: Unable to get data of ' + new_name + '.'
+            else:
+                content = article_reports.format_report(article_display_report, article_validation_report, display_all)
+
+            data_f, data_e, data_w = write_article_contents_validations_report(new_name, doc_files_info.data_report_filename, content, display_all)
+
+            articles_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
+
+            fatal_errors += xml_f + data_f
+
+            articles_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
+
+            #if sheet_data is not None:
+            #    articles_sheets[new_name] = (sheet_data.authors_sheet_data(new_name), sheet_data.sources_sheet_data(new_name))
+            #else:
+            #    articles_sheets[new_name] = (None, None)
+
+    print('Validating package: fim')
+    return (fatal_errors, articles_stats, articles_reports)
+
+
+def articles_pkg_xml_and_data_validation_report(org_manager, doc_items, doc_files_info_items, dtd_files, validate_order, display_all, xml_articles_status=None):
+    #FIXME
+    articles_stats = {}
+    articles_reports = {}
+    articles_sheets = {}
+    fatal_errors = 0
+
+    for xml_name, doc_files_info in doc_files_info_items.items():
+        for f in [doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename, doc_files_info.pmc_style_report_filename]:
+            if os.path.isfile(f):
+                os.unlink(f)
+
+    print('Validating package: inicio')
+
+    for xml_name in sorted_xml_name_by_order(doc_items):
+        doc = doc_items[xml_name]
+        doc_files_info = doc_files_info_items[xml_name]
+
+        new_name = doc_files_info.new_name
+        print(new_name)
+        register_log(new_name)
+
+        skip = False
+        if xml_articles_status is not None:
+            skip = xml_articles_status[doc_files_info.xml_name] == 'skip-update'
+
+        if skip:
+            print(' -- skept')
+        else:
+            xml_filename = doc_files_info.new_xml_filename
+            xml_f, xml_e, xml_w = generate_article_xml_validations_reports(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all is False)
+
+            article_display_report, article_validation_report, sheet_data = article_reports.get_article_report_data(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order)
+            if article_display_report is None:
+                content = 'FATAL ERROR: Unable to get data of ' + new_name + '.'
+            else:
+                content = article_reports.format_report(article_display_report, article_validation_report, display_all)
+
+            data_f, data_e, data_w = write_article_contents_validations_report(new_name, doc_files_info.data_report_filename, content, display_all)
+
+            articles_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
+
+            fatal_errors += xml_f + data_f
+
+            articles_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
+
+            #if sheet_data is not None:
+            #    articles_sheets[new_name] = (sheet_data.authors_sheet_data(new_name), sheet_data.sources_sheet_data(new_name))
+            #else:
+            #    articles_sheets[new_name] = (None, None)
+
+    print('Validating package: fim')
+    return (fatal_errors, articles_stats, articles_reports)
+
+
+def validate_articles_pkg_xml_and_data(org_manager, pkg_articles, doc_files_info_items, dtd_files, validate_order, display_all, xml_articles_status=None):
+    #FIXME
+    articles_stats = {}
+    articles_reports = {}
+    articles_sheets = {}
+    fatal_errors = 0
+
+    for xml_name, doc_files_info in doc_files_info_items.items():
+        for f in [doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename, doc_files_info.pmc_style_report_filename]:
+            if os.path.isfile(f):
+                os.unlink(f)
+
+    print('Validating package: inicio')
+    articles_pkg = ArticlePackage(pkg_articles)
+    for xml_name in articles_pkg.sorted_xml_name_by_order:
+        doc = articles_pkg.articles[xml_name]
+        doc_files_info = doc_files_info_items[xml_name]
+
+        new_name = doc_files_info.new_name
+        print(new_name)
+        register_log(new_name)
+
+        skip = False
+        if xml_articles_status is not None:
+            skip = xml_articles_status[doc_files_info.xml_name] == 'skip-update'
+
+        if skip:
+            print(' -- skept')
+        else:
+            xml_filename = doc_files_info.new_xml_filename
+            xml_f, xml_e, xml_w = generate_article_xml_validations_reports(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all is False)
 
             article_display_report, article_validation_report, sheet_data = article_reports.get_article_report_data(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order)
             if article_display_report is None:

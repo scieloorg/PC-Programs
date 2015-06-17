@@ -849,28 +849,28 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         register_log('pack_and_validate: make_package')
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
+        articles_pkg = pkg_reports.ArticlePackage(articles)
+
         report_components['xml-files'] = pkg_reports.xml_list(scielo_pkg_path)
 
         toc_f = 0
         register_log('pack_and_validate: package_articles_overview')
         sources_at, sources_and_reftypes, reftype_and_sources, missing_source, missing_year, unusual_sources, unusual_years = pkg_reports.pkg_references_sources_and_types(articles)
 
-        report_components['pkg_overview'] = pkg_reports.package_articles_overview(articles)
-        if len(reftype_and_sources) > 0:
-            bad_sources_and_reftypes = {source: reftypes for source, reftypes in sources_and_reftypes.items() if len(reftypes) > 1}
-            report_components['pkg_overview'] += pkg_reports.package_articles_references_overview(sources_at, bad_sources_and_reftypes, reftype_and_sources, missing_source, missing_year, unusual_sources, unusual_years)
-        if len(reftype_and_sources) > 0:
-            report_components['references'] = pkg_reports.package_articles_sources_overview(reftype_and_sources)
+        report_components['pkg_overview'] = pkg_reports.articles_pkg_overview_report(articles_pkg)
+        report_components['pkg_overview'] += pkg_reports.articles_pkg_references_overview_report(articles_pkg)
+
+        if len(articles_pkg.reftype_and_sources) > 0:
+            report_components['references'] = pkg_reports.articles_pkg_sources_overview_report(articles_pkg.reftype_and_sources)
 
         if not from_markup:
             register_log('pack_and_validate: pkg_reports.validate_package')
-            toc_stats_and_report = pkg_reports.validate_package(articles, from_converter)
-            toc_f, toc_e, toc_w, toc_report = toc_stats_and_report
 
-            register_log('pack_and_validate: pkg_reports.get_toc_report_text')
-            toc_report = pkg_reports.get_toc_report_text(toc_f, toc_e, toc_w, toc_report)
-            if toc_report != '':
-                report_components['toc'] = toc_report
+            toc_report = pkg_reports.articles_pkg_consistency_report(articles_pkg, from_converter)
+            toc_f, toc_e, toc_w = pkg_reports.articles_pkg_consistency_stats(toc_report)
+            if toc_f + toc_e + toc_w == 0:
+                toc_report = None
+            report_components['toc'] = toc_report
 
         if toc_f == 0:
             register_log('pack_and_validate: pkg_reports.validate_pkg_items')
