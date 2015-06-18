@@ -234,14 +234,17 @@ def complete_issue_items_report(complete_issue_items, unmatched_orders):
     unmatched_orders_errors = ''
     if len(unmatched_orders) > 0:
         unmatched_orders_errors = ''.join([html_reports.p_message('WARNING: ' + name + "'s orders: " + ' -> '.join(list(order))) for name, order in unmatched_orders.items()])
+        f, e, w = html_reports.statistics_numbers(unmatched_orders_errors)
 
     articles_pkg = pkg_reports.ArticlePackage(complete_issue_items)
-    toc_report = unmatched_orders_errors + pkg_reports.articles_pkg_consistency_report(articles_pkg, validate_order=True)
-    toc_f, toc_e, toc_w = pkg_reports.articles_pkg_consistency_stats(toc_report)
-    if toc_f + toc_e + toc_w == 0:
-        toc_report = None
+    toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_articles_pkg_consistency(articles_pkg, validate_order=True)
 
-    return (toc_f, toc_report)
+    report = unmatched_orders_errors
+    if toc_report is not None:
+        report += toc_report
+    if len(report) == 0:
+        report = None
+    return (toc_f + f, report)
 
 
 def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
@@ -316,7 +319,7 @@ def convert_package(src_path):
 
         complete_issue_items, xml_doc_actions, unmatched_orders = get_complete_issue_items(issue_files, pkg_path, previous_registered_articles, pkg_articles)
 
-        before_conversion_report = html_reports.tag('h3', 'Documents status in the package/database - before conversion')
+        before_conversion_report = html_reports.tag('h4', 'Documents status in the package/database - before conversion')
         before_conversion_report += display_status_before_xc(previous_registered_articles, pkg_articles, xml_doc_actions)
 
         toc_f, xc_toc_report = complete_issue_items_report(complete_issue_items, unmatched_orders)
@@ -332,19 +335,17 @@ def convert_package(src_path):
 
         elif len(selected_articles) > 0:
 
-            #references_stats = pkg_reports.pkg_authors_and_affiliations_stats(pkg_articles)
-            #references_stats += pkg_reports.pkg_references_stats(pkg_articles)
+            selected_articles_pkg = pkg_reports.ArticlePackage(selected_articles)
+            selected_articles_pkg.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, validate_order, display_title, xml_doc_actions)
+            pkg_quality_fatal_errors = selected_articles_pkg.pkg_fatal_errors
 
-            pkg_quality_fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(converter_env.db_article.org_manager, selected_articles, doc_file_info_items, dtd_files, validate_order, display_title, xml_doc_actions)
+            scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, selected_articles_pkg.articles_stats, xml_doc_actions, previous_registered_articles, unmatched_orders)
 
-            scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_doc_actions, previous_registered_articles, unmatched_orders)
-
-            validations_report = html_reports.tag('h2', 'Detail Report')
-            validations_report += pkg_reports.get_articles_report_text(selected_articles, articles_reports, articles_stats, conversion_stats_and_reports)
+            validations_report = pkg_reports.get_articles_pkg_detail_report(selected_articles_pkg, conversion_stats_and_reports)
 
             xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 
-            after_conversion_report = html_reports.tag('h3', 'Documents status in the package/database - after conversion')
+            after_conversion_report = html_reports.tag('h4', 'Documents status in the package/database - after conversion')
             after_conversion_report += display_status_after_xc(previous_registered_articles, get_registered_articles(issue_files), pkg_articles, xml_doc_actions, unmatched_orders)
 
             xc_results_report = html_reports.tag('h3', 'Conversion results') + report_status(conversion_status, 'conversion')
