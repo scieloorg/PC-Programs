@@ -237,7 +237,8 @@ def complete_issue_items_report(complete_issue_items, unmatched_orders):
         f, e, w = html_reports.statistics_numbers(unmatched_orders_errors)
 
     articles_pkg = pkg_reports.ArticlePackage(complete_issue_items)
-    toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_articles_pkg_consistency(articles_pkg, validate_order=True)
+    articles_pkg_reports = pkg_reports.ArticlesPkgReport(articles_pkg)
+    toc_f, toc_e, toc_w, toc_report = articles_pkg_reports.validate_consistency(validate_order=True)
 
     report = unmatched_orders_errors
     if toc_report is not None:
@@ -302,10 +303,11 @@ def convert_package(src_path):
         report_components['issue-not-registered'] = issue_error_msg
 
     articles_pkg = pkg_reports.ArticlePackage(pkg_articles)
-    report_components['pkg_overview'] = pkg_reports.articles_pkg_overview_report(articles_pkg)
-    report_components['pkg_overview'] += pkg_reports.articles_pkg_references_overview_report(articles_pkg)
-    if len(articles_pkg.reftype_and_sources) > 0:
-        report_components['references'] = pkg_reports.articles_pkg_sources_overview_report(articles_pkg.reftype_and_sources)
+    articles_pkg_reports = pkg_reports.ArticlesPkgReport(articles_pkg)
+
+    report_components['pkg_overview'] = articles_pkg_reports.overview_report()
+    report_components['pkg_overview'] += articles_pkg_reports.references_overview_report()
+    report_components['references'] = articles_pkg_reports.sources_overview_report()
 
     selected_articles = None
 
@@ -336,12 +338,14 @@ def convert_package(src_path):
         elif len(selected_articles) > 0:
 
             selected_articles_pkg = pkg_reports.ArticlePackage(selected_articles)
+            selected_articles_pkg_reports = pkg_reports.ArticlesPkgReport(selected_articles_pkg)
+
             selected_articles_pkg.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, validate_order, display_title, xml_doc_actions)
             pkg_quality_fatal_errors = selected_articles_pkg.pkg_fatal_errors
 
             scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, selected_articles_pkg.articles_stats, xml_doc_actions, previous_registered_articles, unmatched_orders)
 
-            validations_report = pkg_reports.get_articles_pkg_detail_report(selected_articles_pkg, conversion_stats_and_reports)
+            validations_report = selected_articles_pkg_reports.detail_report(conversion_stats_and_reports)
 
             xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 

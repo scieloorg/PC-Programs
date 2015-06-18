@@ -344,12 +344,12 @@ def tabs_items(tabs, selected):
     return '<div class="tabs">' + r + '</div>'
 
 
-def report_link(report_id, report_label, status):
-    return '<a name="begin_label-' + report_id + '"/>&#160;<span id="label-' + report_id + '" class="' + status + '" onClick="display_article_report(\'' + report_id + '\')">' + report_label.replace(' ', '&#160;') + '</span>'
+def report_link(report_id, report_label, style):
+    return '<a name="begin_label-' + report_id + '"/>&#160;<span id="label-' + report_id + '" onClick="display_article_report(\'' + report_id + '\', this)" class="report-link-' + style + '">' + report_label.replace(' ', '&#160;') + '</span>'
 
 
-def report_block(report_id, content, status):
-    r = '<div id="' + report_id + '" class="hidden-report-' + status + '">'
+def report_block(report_id, content, style):
+    r = '<div id="' + report_id + '" class="report-block-' + style + '">'
     r += content
     r += '</div>'
     return r

@@ -235,8 +235,8 @@ class ArticlesPkgReport(object):
     def __init__(self, package):
         self.package = package
 
-    def validate_articles_pkg_consistency(self, validate_order):
-        toc_report = self.articles_pkg_consistency_report(validate_order)
+    def validate_consistency(self, validate_order):
+        toc_report = self.consistency_report(validate_order)
         toc_f, toc_e, toc_w = html_reports.statistics_numbers(toc_report)
         if toc_f + toc_e + toc_w == 0:
             toc_report = None
@@ -359,7 +359,7 @@ class ArticlesPkgReport(object):
 
         return html_reports.tag('h4', 'Package references overview') + html_reports.sheet(labels, items, table_style='dbstatus')
 
-    def get_articles_pkg_detail_report(self, conversion_reports=None):
+    def detail_report(self, conversion_reports=None):
         labels = ['name', 'order', 'fpage', 'aop pid', 'toc section', '@article-type', 'article title', 'reports']
         items = []
 
@@ -388,21 +388,21 @@ class ArticlesPkgReport(object):
                         v.append(content)
                 content = ''.join(v)
                 status = html_reports.get_stats_numbers_style(xml_f, xml_e, xml_w)
-                links += html_reports.report_link('xmlrep' + new_name, ' [ style ] ', status)
-                block += html_reports.report_block('xmlrep' + new_name, content, status)
+                links += html_reports.report_link('xmlrep' + new_name, '[ XML Validations ]', 'xmlrep')
+                block += html_reports.report_block('xmlrep' + new_name, content, 'xmlrep')
 
             if data_f + data_e + data_w > 0:
                 status = html_reports.get_stats_numbers_style(data_f, data_e, data_w)
-                links += html_reports.report_link('datarep' + new_name, ' [ quality control ] ', status)
-                block += html_reports.report_block('datarep' + new_name, get_report_text(rep3), status)
+                links += html_reports.report_link('datarep' + new_name, '[ Data Quality Control ]', 'datarep')
+                block += html_reports.report_block('datarep' + new_name, get_report_text(rep3), 'datarep')
 
             if conversion_reports is not None:
                 r = conversion_reports.get(new_name)
                 if r is not None:
                     conv_f, conv_e, conv_w, conv_rep = r
                     status = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
-                    links += html_reports.report_link('xcrep' + new_name, ' [ converter ] ', status)
-                    block += html_reports.report_block('xcrep' + new_name, conv_rep, status)
+                    links += html_reports.report_link('xcrep' + new_name, '[ Converter ]', 'xcrep')
+                    block += html_reports.report_block('xcrep' + new_name, conv_rep, 'xcrep')
 
             values = []
             values.append(new_name)
@@ -421,13 +421,15 @@ class ArticlesPkgReport(object):
 
     def sources_overview_report(self):
         labels = ['source', 'total']
-        h = ''
-        for reftype, sources in self.package.reftype_and_sources.items():
-            items = []
-            h += html_reports.tag('h4', reftype)
-            for source in sorted(sources.keys()):
-                items.append({'source': source, 'total': str(sources[source])})
-            h += html_reports.sheet(labels, items, 'dbstatus')
+        h = None
+        if len(self.package.reftype_and_sources) > 0:
+            h = ''
+            for reftype, sources in self.package.reftype_and_sources.items():
+                items = []
+                h += html_reports.tag('h4', reftype)
+                for source in sorted(sources.keys()):
+                    items.append({'source': source, 'total': str(sources[source])})
+                h += html_reports.sheet(labels, items, 'dbstatus')
         return h
 
 
@@ -516,146 +518,6 @@ def xml_list(pkg_path, xml_filenames=None):
     return '<div class="xmllist">' + r + '</div>'
 
 
-def validate_articles_pkg_consistency(articles_pkg, validate_order):
-    toc_report = articles_pkg_consistency_report(articles_pkg, validate_order)
-    toc_f, toc_e, toc_w = html_reports.statistics_numbers(toc_report)
-    if toc_f + toc_e + toc_w == 0:
-        toc_report = None
-
-    return (toc_f, toc_e, toc_w, toc_report)
-
-
-def articles_pkg_consistency_report(articles_pkg, validate_order):
-    equal_data = ['journal-title', 'journal id NLM', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-    unique_data = ['order', 'doi', 'elocation id']
-    unique_status = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-and-seq': 'ERROR'}
-
-    if not validate_order:
-        unique_status['order'] = 'WARNING'
-
-    invalid_xml_name_items, pkg_metadata = articles_pkg.journal_and_issue_metadata(equal_data + unique_data)
-
-    r = ''
-    if len(invalid_xml_name_items) > 0:
-        r += html_reports.tag('div', html_reports.format_message('FATAL ERROR: Invalid XML files.'))
-        r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid_xml_name_items, 'issue-problem'))
-
-    for label in equal_data:
-        if len(pkg_metadata[label]) > 1:
-            part = html_reports.p_message('FATAL ERROR: same value for ' + label + ' is required for all the documents in the package')
-            for found_value, xml_files in pkg_metadata[label].items():
-                part += html_reports.format_list('found ' + label + ' "' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" in:', 'ul', xml_files, 'issue-problem')
-            r += part
-
-    for label in unique_data:
-        if len(pkg_metadata[label]) > 0 and len(pkg_metadata[label]) != len(articles_pkg.articles):
-            none = []
-            duplicated = {}
-            pages = {}
-            for found_value, xml_files in pkg_metadata[label].items():
-                if found_value == 'None':
-                    none = xml_files
-                else:
-                    if len(xml_files) > 1:
-                        duplicated[found_value] = xml_files
-                    if label == 'fpage-and-seq':
-                        v = found_value
-                        if v.isdigit():
-                            v = str(int(found_value))
-                        if not v in pages.keys():
-                            pages[v] = []
-                        pages[v] += xml_files
-
-            if len(pages) == 1 and '0' in pages.keys():
-                duplicated = []
-
-            if len(duplicated) > 0:
-                part = html_reports.p_message(unique_status[label] + ': unique value of ' + label + ' is required for all the documents in the package')
-                for found_value, xml_files in duplicated.items():
-                    part += html_reports.format_list('found ' + label + ' "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
-                r += part
-            if len(none) > 0:
-                part = html_reports.p_message('INFO: there is no value for ' + label + '.')
-                part += html_reports.format_list('no value for ' + label + ' in:', 'ul', none, 'issue-problem')
-                r += part
-
-    issue_common_data = ''
-    for label in equal_data:
-        message = ''
-        if len(pkg_metadata[label].items()) == 1:
-            issue_common_data += html_reports.display_labeled_value(label, pkg_metadata[label].keys()[0])
-        else:
-            message = '(ERROR: Unique value expected for ' + label + ')'
-            issue_common_data += html_reports.format_list(label + message, 'ol', pkg_metadata[label].keys())
-    return html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages')
-
-
-def articles_pkg_overview_report(articles_pkg):
-    r = ''
-    r += html_reports.tag('h4', 'Languages overview')
-    labels, items = articles_pkg.tabulate_languages()
-    r += html_reports.sheet(labels, items, 'dbstatus')
-
-    r += html_reports.tag('h4', 'Dates overview')
-    labels, items = articles_pkg.tabulate_dates()
-    r += html_reports.sheet(labels, items, 'dbstatus')
-
-    r += html_reports.tag('h4', 'Affiliations overview')
-    items = []
-    affs_compiled = articles_pkg.compile_affiliations()
-    for label, q in affs_compiled.items():
-        items.append({'label': label, 'quantity': str(q)})
-    r += html_reports.sheet(['label', 'quantity'], items, 'dbstatus')
-    return r
-
-
-def articles_pkg_references_overview_report(articles_pkg):
-    labels = ['label', 'status', 'message']
-    items = []
-
-    values = []
-    values.append('references by type')
-    values.append('INFO')
-    values.append({reftype: str(sum(sources.values())) for reftype, sources in articles_pkg.reftype_and_sources.items()})
-    items.append(label_values(labels, values))
-
-    #message = {source: reftypes for source, reftypes in sources_and_reftypes.items() if len(reftypes) > 1}}
-    if len(articles_pkg.bad_sources_and_reftypes) > 0:
-        values = []
-        values.append('same sources as different types')
-        values.append('ERROR')
-        values.append(articles_pkg.bad_sources_and_reftypes)
-        items.append(label_values(labels, values))
-        values = []
-        values.append('same sources as different types references')
-        values.append('INFO')
-        values.append({source: articles_pkg.sources_at.get(source) for source in articles_pkg.bad_sources_and_reftypes.keys()})
-        items.append(label_values(labels, values))
-
-    if len(articles_pkg.missing_source) > 0:
-        items.append({'label': 'references missing source', 'status': 'ERROR', 'message': [' - '.join(item) for item in articles_pkg.missing_source]})
-    if len(articles_pkg.missing_year) > 0:
-        items.append({'label': 'references missing year', 'status': 'ERROR', 'message': [' - '.join(item) for item in articles_pkg.missing_year]})
-    if len(articles_pkg.unusual_sources) > 0:
-        items.append({'label': 'references with unusual value for source', 'status': 'ERROR', 'message': [' - '.join(item) for item in articles_pkg.unusual_sources]})
-    if len(articles_pkg.unusual_years) > 0:
-        items.append({'label': 'references with unusual value for year', 'status': 'ERROR', 'message': [' - '.join(item) for item in articles_pkg.unusual_years]})
-
-    return html_reports.tag('h4', 'Package references overview') + html_reports.sheet(labels, items, table_style='dbstatus')
-
-
-def articles_pkg_sources_overview_report(reftype_and_sources):
-    labels = ['source', 'total']
-    h = ''
-    for reftype, sources in reftype_and_sources.items():
-        items = []
-        h += html_reports.tag('h4', reftype)
-        for source in sorted(sources.keys()):
-            items.append({'source': source, 'total': str(sources[source])})
-        h += html_reports.sheet(labels, items, 'dbstatus')
-    return h
-
-
 def error_msg_subtitle():
     msg = html_reports.tag('p', 'Fatal error - indicates errors which impact on the quality of the bibliometric indicators and other services')
     msg += html_reports.tag('p', 'Error - indicates the other kinds of errors')
@@ -699,67 +561,6 @@ def sorted_xml_name_by_order(articles):
         for item in order_and_xml_name_items[order]:
             sorted_items.append(item)
     return sorted_items
-
-
-def get_articles_pkg_detail_report(articles_pkg, conversion_reports=None):
-    labels = ['name', 'order', 'fpage', 'aop pid', 'toc section', '@article-type', 'article title', 'reports']
-    items = []
-
-    n = '/' + str(len(articles_pkg.articles))
-    validations_text = ''
-    index = 0
-
-    for new_name in articles_pkg.xml_name_sorted_by_order:
-        index += 1
-        item_label = str(index) + n + ' - ' + new_name
-        print(item_label)
-
-        xml_f, xml_e, xml_w = articles_pkg.pkg_stats[new_name][0]
-        data_f, data_e, data_w = articles_pkg.pkg_stats[new_name][1]
-        rep1, rep2, rep3 = articles_pkg.pkg_reports[new_name]
-
-        links = ''
-        block = ''
-        if xml_f + xml_e + xml_w > 0:
-            t = []
-            v = []
-            for rep in [rep1, rep2]:
-                content = get_report_text(rep)
-                if len(content) > 0:
-                    t.append(os.path.basename(rep))
-                    v.append(content)
-            content = ''.join(v)
-            status = html_reports.get_stats_numbers_style(xml_f, xml_e, xml_w)
-            links += html_reports.report_link('xmlrep' + new_name, ' [ style ] ', status)
-            block += html_reports.report_block('xmlrep' + new_name, content, status)
-
-        if data_f + data_e + data_w > 0:
-            status = html_reports.get_stats_numbers_style(data_f, data_e, data_w)
-            links += html_reports.report_link('datarep' + new_name, ' [ quality control ] ', status)
-            block += html_reports.report_block('datarep' + new_name, get_report_text(rep3), status)
-
-        if conversion_reports is not None:
-            r = conversion_reports.get(new_name)
-            if r is not None:
-                conv_f, conv_e, conv_w, conv_rep = r
-                status = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
-                links += html_reports.report_link('xcrep' + new_name, ' [ converter ] ', status)
-                block += html_reports.report_block('xcrep' + new_name, conv_rep, status)
-
-        values = []
-        values.append(new_name)
-        values.append(articles_pkg.articles[new_name].order)
-        values.append(articles_pkg.articles[new_name].fpage)
-        values.append(articles_pkg.articles[new_name].previous_pid)
-        values.append(articles_pkg.articles[new_name].toc_section)
-        values.append(articles_pkg.articles[new_name].article_type)
-        values.append(articles_pkg.articles[new_name].title)
-        values.append(links)
-
-        items.append(label_values(labels, values))
-        items.append({'reports': block})
-
-    return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=['reports'])
 
 
 def processing_result_location(result_path):

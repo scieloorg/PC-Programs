@@ -270,7 +270,7 @@ class ArticleContentValidation(object):
 
     @property
     def sps(self):
-        label, status, msg = required('article/@specific-use', self.article.sps, 'FATAL ERROR')
+        label, status, msg = required('article/@specific-use', self.article.sps, 'ERROR')
         if status == 'OK':
             if not 'sps-' in self.article.sps:
                 label, status, msg = (label, 'FATAL ERROR', 'Invalid value of ' + label + ': ' + self.article.sps + '.')
@@ -308,9 +308,10 @@ class ArticleContentValidation(object):
         nonsch = total - sch1 - sch2
         msg = '; '.join([k + ': ' + str(t) for k, t in self.article.refstats.items()])
         status = 'INFO'
-        if nonsch >= sch1 + sch2 or sch1 < sch2:
-            status = 'WARNING'
-            msg += '. Check the element-citation/@publication-type.'
+        if total > 0:
+            if (nonsch >= sch1 + sch2) or (sch1 < sch2):
+                status = 'WARNING'
+                msg += '. Check the element-citation/@publication-type.'
         r.append(('quantity of reference types', status, msg))
         return r
 
@@ -425,7 +426,7 @@ class ArticleContentValidation(object):
                     if issn in self.article.doi:
                         found = True
             if not found:
-                r.append(('doi', 'ERROR', 'Be sure that this DOI (' + self.article.doi + ') belongs to this journal.'))
+                r.append(('doi', 'ERROR', 'Be sure that this DOI "' + self.article.doi + '" belongs to this journal.'))
         return r
 
     @property
@@ -529,10 +530,10 @@ class ArticleContentValidation(object):
         if len(self.article.award_id) == 0:
             found, c = has_number(self.article.ack_xml)
             if found is True:
-                r.append(('award-id', 'WARNING', 'Found number ' + c + ' in ack. ' + self.article.ack_xml))
+                r.append(('award-id', 'ERROR', 'Found number "' + c + '" in ack. ' + self.article.ack_xml))
             found, c = has_number(self.article.financial_disclosure)
             if found is True:
-                r.append(('award-id', 'WARNING', 'Found number ' + c + ' in fn[@fn-type="financial-disclosure"]. ' + self.article.fn_financial_disclosure))
+                r.append(('award-id', 'ERROR', 'Found number "' + c + '" in fn[@fn-type="financial-disclosure"]. ' + self.article.fn_financial_disclosure))
         else:
             for item in self.article.award_id:
                 r.append(('award-id', 'OK', item))
@@ -595,13 +596,14 @@ class ArticleContentValidation(object):
                         status = 'INFO'
                         r.append(('normalized aff', status, 'Normalized institution is valid: ' + '; '.join([', '.join(list(item)) for item in normalized_items])))
                     else:
-                        status = 'WARNING'
+                        status = 'ERROR'
                         r.append(('normalized aff', status, 'Similar normalized institution: ' + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
                 else:
+                    msg = 'Unable to confirm/find the normalized affiliation for ' + ' or '.join(item for item in [aff.orgname, aff.norgname] if item is not None)
                     if len(normalized_items) == 0:
-                        r.append(('normalized aff', 'ERROR', 'Unable to confirm/find the normalized affiliation for ' + ' or '.join(item for item in [aff.orgname, aff.norgname] if item is not None) + '. Ask for normalized institution by email: scielo-xml@googlegroups.com'))
+                        r.append(('normalized aff', 'ERROR', msg + '. Ask for normalized institution by email: scielo-xml@googlegroups.com'))
                     else:
-                        r.append(('normalized aff', 'ERROR', 'Use one of the suggestions or email to scielo-xml@googlegroups.com' + 'options: ' + '|'.join([', '.join(list(item)) for item in normalized_items])))
+                        r.append(('normalized aff', 'ERROR', msg + '. Similar valid institutions are: ' + 'options: ' + '|'.join([', '.join(list(item)) for item in normalized_items])))
 
             values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.orgdiv3, aff.city, aff.state, aff.i_country, aff.country]
             i = 0
@@ -669,7 +671,7 @@ class ArticleContentValidation(object):
                 r.append(('abstract: ', 'OK', item.language + ':' + item.text))
             else:
                 if item.language is None:
-                    r.append(('abstract: ', 'WARNING', 'Missing language for ' + item.text))
+                    r.append(('abstract: ', 'ERROR', 'Missing language for ' + item.text))
                 if item.text is None:
                     r.append(('abstract: ', 'ERROR', 'Missing text for ' + item.language))
         return r
@@ -683,16 +685,14 @@ class ArticleContentValidation(object):
             article_year = datetime.now().isoformat()[0:4]
         received = self.article.received_dateiso
         accepted = self.article.accepted_dateiso
-
+        r = []
         if received is not None and accepted is not None:
-            r = [('history', 'INFO', accepted + '-' + received + '=' + str(self.article.history_days) + ' days')]
             if not received < accepted:
                 r = 'received (' + received + '); accepted (' + accepted + '); publication (' + article_year + ').'
-                r = [('history', 'FATAL ERROR', r)]
+                r = [('history', 'ERROR', r)]
         elif received is None and accepted is None:
             r = [('history', 'INFO', 'there is no history dates')]
         else:
-            r = []
             if received is None:
                 r.append(required('history: received', received, 'ERROR'))
             if accepted is None:

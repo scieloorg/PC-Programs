@@ -828,7 +828,7 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
 def pack_and_validate(xml_files, results_path, acron, version, from_converter=False):
     register_log('pack_and_validate: inicio')
     from_markup = any([f.endswith('.sgm.xml') for f in xml_files])
-    fatal_errors = 0
+
     scielo_pkg_path = results_path + '/scielo_package'
     pmc_pkg_path = results_path + '/pmc_package'
     report_path = results_path + '/errors'
@@ -857,15 +857,13 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         toc_f = 0
         register_log('pack_and_validate: package_articles_overview')
         report_components['pkg_overview'] = articles_pkg_reports.overview_report()
-        report_components['pkg_overview'] += articles_pkg_reports.references_overview_report(articles_pkg)
-
-        if len(articles_pkg.reftype_and_sources) > 0:
-            report_components['references'] = articles_pkg_reports.sources_overview_report(articles_pkg.reftype_and_sources)
+        report_components['pkg_overview'] += articles_pkg_reports.references_overview_report()
+        report_components['references'] = articles_pkg_reports.sources_overview_report()
 
         if not from_markup:
             register_log('pack_and_validate: pkg_reports.validate_package')
 
-            toc_f, toc_e, toc_w, toc_report = pkg_reports.validate_articles_pkg_consistency(articles_pkg, from_converter)
+            toc_f, toc_e, toc_w, toc_report = articles_pkg_reports.validate_consistency(from_converter)
             report_components['toc'] = toc_report
 
         if toc_f == 0:
@@ -875,10 +873,10 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             org_manager.load()
 
             #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, from_markup)
-            articles_pkg.validate_articles_pkg_xml_and_data(org_manager,  doc_files_info_items, scielo_dtd_files, from_converter, from_markup)
+            articles_pkg.validate_articles_pkg_xml_and_data(org_manager, doc_files_info_items, scielo_dtd_files, from_converter, from_markup)
 
             register_log('pack_and_validate: pkg_reports.get_articles_report_text')
-            report_components['detail-report'] = pkg_reports.get_articles_pkg_detail_report(articles_pkg)
+            report_components['detail-report'] = articles_pkg_reports.detail_report()
             report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
             #if not from_markup:
             #    register_log('pack_and_validate: pkg_reports.get_lists_report_text')
