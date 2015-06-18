@@ -155,21 +155,21 @@ class ArticleDisplayReport(object):
         r = ''
         r += html_reports.tag('h2', 'Files in the package')
         th, w, data = self.sheet_data.package_files(self.files)
-        r += html_reports.sheet(th, w, data)
+        r += html_reports.sheet(th, data)
         r += html_reports.tag('h2', '@href')
         th, w, data = self.sheet_data.hrefs_sheet_data(self.xml_path)
-        r += html_reports.sheet(th, w, data)
+        r += html_reports.sheet(th, data)
         return r
 
     @property
     def authors_sheet(self):
         labels, width, data = self.sheet_data.authors_sheet_data()
-        return html_reports.tag('h2', 'Authors') + html_reports.sheet(labels, width, data)
+        return html_reports.tag('h2', 'Authors') + html_reports.sheet(labels, data)
 
     @property
     def sources_sheet(self):
         labels, width, data = self.sheet_data.sources_sheet_data()
-        return html_reports.tag('h2', 'Sources') + html_reports.sheet(labels, width, data)
+        return html_reports.tag('h2', 'Sources') + html_reports.sheet(labels, data)
 
     def display_labeled_value(self, label, value, style=''):
         return html_reports.display_labeled_value(label, value, style)
@@ -319,7 +319,7 @@ class ArticleDisplayReport(object):
         for item in self.article.affiliations:
             r += html_reports.tag('p', html_reports.format_html_data(item.xml, False, html_reports.XML_WIDTH))
         th, w, data = self.sheet_data.affiliations_sheet_data()
-        r += html_reports.sheet(th, w, data)
+        r += html_reports.sheet(th, data)
         return r
 
     @property
@@ -333,7 +333,7 @@ class ArticleDisplayReport(object):
             row['xml'] = row['xml'][0:row['xml'].find('>')+1]
             sheet_data.append(row)
         r = html_reports.tag('h2', 'elements and @id:')
-        r += html_reports.sheet(t_header, [], sheet_data)
+        r += html_reports.sheet(t_header, sheet_data)
         return r
 
     @property
@@ -346,7 +346,7 @@ class ArticleDisplayReport(object):
             row['tag'] = item.tag
             sheet_data.append(row)
         r = html_reports.tag('h2', 'elements and @id:')
-        r += html_reports.sheet(t_header, [], sheet_data)
+        r += html_reports.sheet(t_header, sheet_data)
         return r
 
     @property
@@ -358,7 +358,7 @@ class ArticleDisplayReport(object):
             row['element-citation/@publication-type'] = ref_type
             row['quantity'] = q
             sheet_data.append(row)
-        r += html_reports.sheet(['element-citation/@publication-type', 'quantity'], [], sheet_data)
+        r += html_reports.sheet(['element-citation/@publication-type', 'quantity'], sheet_data)
         return r
 
 
@@ -387,29 +387,29 @@ class ArticleValidationReport(object):
         return content
 
     def validations_sheet(self, content):
-        return html_reports.sheet(['label', 'status', 'message'], None, self.format_rows(content), table_style='validation', row_style='status')
+        return html_reports.sheet(['label', 'status', 'message'], self.format_rows(content), table_style='validation', row_style='status')
 
-    def validations(self, display_problems):
+    def validations(self, display_all):
         items, performance = self.article_validation.validations
 
-        if display_problems:
+        if not display_all:
             items = [(label, status, msg) for label, status, msg in items if status != 'OK']
 
         r = ''
         if len(items) > 0:
             r += self.validations_sheet(items)
 
-        r += self.references(display_problems)
+        r += self.references(display_all)
 
         if len(r) > 0:
-            r = html_reports.tag('div', html_reports.tag('h2', 'Validations') + r, 'article-messages')
+            r = html_reports.tag('div', r, 'article-messages')
 
         return r
 
-    def references(self, display_problems):
+    def references(self, display_all):
         rows = ''
         for ref, ref_result in self.article_validation.references:
-            if display_problems:
+            if not display_all:
                 ref_result = [(label, status, msg) for label, status, msg in ref_result if status != 'OK']
 
             if len(ref_result) > 0:
@@ -613,7 +613,7 @@ def format_report(article_display_report, article_validation_report, display_all
     if display_all:
         content.append(article_display_report.issue_header)
         content.append(article_display_report.article_front)
-    content.append(article_validation_report.validations(not display_all))
+    content.append(article_validation_report.validations(display_all))
     content.append(article_display_report.files_and_href)
     if display_all:
         content.append(article_display_report.article_body)
@@ -623,9 +623,41 @@ def format_report(article_display_report, article_validation_report, display_all
     return html_reports.join_texts(content)
 
 
-def example():
-    xml_path = '/Users/robertatakenaka/Documents/vm_dados/scielo_data/serial/pab/v48n7/markup_xml/scielo_package'
-    report_path = '/Users/robertatakenaka/Documents/vm_dados/scielo_data/_xpm_reports_'
-    report_filenames = {v:v.replace('.xml', '') for v in os.listdir(xml_path) if v.endswith('.xml') and not 'incorre' in v }
-    generate_contents_reports(xml_path, report_path, report_filenames)
-    print('Reports in ' + report_path)
+def validate_article_data(org_manager, article, new_name, package_path, validate_order, display_all, report_filename):
+    if article.tree is None:
+        sheet_data = None
+        article_display_report = None
+        article_validation_report = None
+        content = 'FATAL ERROR: Unable to get data of ' + new_name + '.'
+    else:
+        article_validation = article_validations.ArticleContentValidation(org_manager, article, validate_order, False)
+        sheet_data = ArticleSheetData(article, article_validation)
+        article_display_report = ArticleDisplayReport(article, sheet_data, package_path, new_name)
+        article_validation_report = ArticleValidationReport(article_validation)
+
+        content = []
+
+        if display_all:
+            content.append(article_display_report.issue_header)
+            content.append(article_display_report.article_front)
+
+        content.append(article_validation_report.validations(display_all))
+        content.append(article_display_report.files_and_href)
+
+        if display_all:
+            content.append(article_display_report.article_body)
+            content.append(article_display_report.article_back)
+            content.append(article_display_report.authors_sheet)
+            content.append(article_display_report.sources_sheet)
+        content = html_reports.join_texts(content)
+
+    f, e, w = html_reports.statistics_numbers(content)
+
+    stats = ''
+    title = ''
+    if display_all:
+        stats = html_reports.statistics_display(f, e, w, False)
+        title = ['Data Quality Control', new_name]
+
+    html_reports.save(report_filename, title, stats + content)
+    return (f, e, w)

@@ -44,7 +44,7 @@
 	<xsl:template match="person-group">[authors role="<xsl:value-of select="@person-group-type"/>"]<xsl:apply-templates select="*"/>[/authors]</xsl:template>
 	<xsl:template match="name">[pauthor]<xsl:apply-templates select="*"/>[/pauthor]</xsl:template>
 	<xsl:template match="given-names">[fname]<xsl:apply-templates select="*|text()"/>[/fname]</xsl:template>
-	<xsl:template match="collab">[cauthor]<xsl:apply-templates select="*|text()"/>[/cauthor]</xsl:template>
+	<xsl:template match="collab">[authors][cauthor]<xsl:apply-templates select="*|text()"/>[/cauthor][/authors]</xsl:template>
 	<xsl:template match="subtitle"></xsl:template>
 	<xsl:template match="*[@citation-type='journal']/article-title">[arttitle]<xsl:apply-templates select="*|text()"/><xsl:if test="../subtitle"><xsl:apply-templates select="concat(' ',../subtitle)"/></xsl:if>[/arttitle]</xsl:template>
 	<xsl:template match="*[@citation-type='book']/article-title">[chptitle]<xsl:apply-templates select="*|text()"/>[/chptitle]</xsl:template>

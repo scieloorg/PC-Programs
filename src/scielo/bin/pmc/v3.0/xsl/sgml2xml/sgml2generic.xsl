@@ -3780,9 +3780,16 @@ et al.</copyright-statement>
 	<xsl:template match="boxedtxt">
 		<boxed-text>
 			<xsl:apply-templates select="@id"/>
-			<sec>
-			<xsl:apply-templates select="*|text()"/>
-			</sec>
+			<xsl:choose>
+				<xsl:when test="sectitle">
+					<sec>
+						<xsl:apply-templates select="*|text()"/>
+					</sec>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:apply-templates select="*|text()"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</boxed-text>
 	</xsl:template>
 	

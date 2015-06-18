@@ -693,9 +693,9 @@ class ArticleXML(object):
 
     @property
     def received(self):
+        _hist = None
         if self.article_meta is not None:
             item = self.article_meta.find('.//date[@date-type="received"]')
-            _hist = None
             if item is not None:
                 _hist = {}
                 for tag in ['year', 'month', 'day', 'season']:
@@ -704,9 +704,9 @@ class ArticleXML(object):
 
     @property
     def accepted(self):
+        _hist = None
         if self.article_meta is not None:
             item = self.article_meta.find('.//date[@date-type="accepted"]')
-            _hist = None
             if item is not None:
                 _hist = {}
                 for tag in ['year', 'month', 'day', 'season']:

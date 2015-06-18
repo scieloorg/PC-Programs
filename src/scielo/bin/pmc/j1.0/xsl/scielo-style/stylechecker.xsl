@@ -82,7 +82,7 @@
         </xsl:choose>
     </xsl:variable>
   
-	<xsl:template match="aff">
+	<xsl:template match="article-meta//aff">
 		<!-- overwrite stylecheck-match-templates.xsl -->
 		<xsl:call-template name="ms-stream-id-test"/>
 		<xsl:if test="not(institution)">
@@ -223,11 +223,11 @@
         <xsl:with-param name="value" select="."/>
         </xsl:call-template>
       </xsl:if>
-      <xsl:if test="not(..//article-id[@pub-id-type='doi'])"><xsl:call-template name="make-error">
+      <!--xsl:if test="not(..//article-id[@pub-id-type='doi'])"><xsl:call-template name="make-error">
                 <xsl:with-param name="error-type">DOI check</xsl:with-param>
                 <xsl:with-param name="description">article must have DOI</xsl:with-param>
 
-            </xsl:call-template></xsl:if>
+            </xsl:call-template></xsl:if-->
       <xsl:apply-templates select="." mode="output"/>
     </xsl:template>
 
