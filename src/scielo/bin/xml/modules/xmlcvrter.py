@@ -232,9 +232,10 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
 
 def complete_issue_items_report(complete_issue_items, unmatched_orders):
     unmatched_orders_errors = ''
+
     if len(unmatched_orders) > 0:
         unmatched_orders_errors = ''.join([html_reports.p_message('WARNING: ' + name + "'s orders: " + ' -> '.join(list(order))) for name, order in unmatched_orders.items()])
-        f, e, w = html_reports.statistics_numbers(unmatched_orders_errors)
+    f, e, w = html_reports.statistics_numbers(unmatched_orders_errors)
 
     articles_pkg = pkg_reports.ArticlePackage(complete_issue_items)
     articles_pkg_reports = pkg_reports.ArticlesPkgReport(articles_pkg)
@@ -270,7 +271,7 @@ def convert_package(src_path):
 
     validations_report = ''
     xc_toc_report = None
-
+    xc_conclusion_msg = ''
     conversion_status = {}
     pkg_quality_fatal_errors = 0
     xc_results_report = ''
@@ -343,7 +344,7 @@ def convert_package(src_path):
             selected_articles_pkg.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, validate_order, display_title, xml_doc_actions)
             pkg_quality_fatal_errors = selected_articles_pkg.pkg_fatal_errors
 
-            scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, selected_articles_pkg.articles_stats, xml_doc_actions, previous_registered_articles, unmatched_orders)
+            scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, selected_articles_pkg.pkg_stats, xml_doc_actions, previous_registered_articles, unmatched_orders)
 
             validations_report = selected_articles_pkg_reports.detail_report(conversion_stats_and_reports)
 
