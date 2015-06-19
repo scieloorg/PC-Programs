@@ -213,15 +213,18 @@ h5 {
 .article-type {
     color: #ED146F;
     margin: 5px;
+    background-color: #FFF3C6;
+    
 }
 .toc-section {
     color: #6B3A7B;
-    font-size: 18pt;
+    background-color: #FFF3C6;
+    font-size: 10pt;
     margin: 5px;
 }
 .article-title {
     color: #787940;
-    font-size: 16pt;
+    font-size: 10pt;
     margin: 5px;
     font-weight: bold;
 }
@@ -535,7 +538,7 @@ td img {
     color: yellow;
 } 
 
-.report-link-xc {
+.report-link-xcrep {
   cursor:pointer;
   color: white;
   text-decoration:underline;
@@ -543,12 +546,12 @@ td img {
   margin: 5px;
   padding: 5px;
 }
-.report-link-xc:hover {
+.report-link-xcrep:hover {
   text-decoration:none;
   font-weight: bold;
   
 }
-.report-link-xc:visited {
+.report-link-xcrep:visited {
     color: yellow;
 } 
 
@@ -568,3 +571,7 @@ td img {
     display: none;
 }
 
+.aop-pid {
+  color: white;
+  background-color: #ED146F;
+}

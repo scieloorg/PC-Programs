@@ -168,6 +168,7 @@ def sheet(table_header, table_data, table_style='sheet', row_style=None, html_ce
                             cell_style = cell_style_prefix + label
                             if cell_style == label:
                                 cell_style = get_message_style(row.get(label), label)
+
                             tr += tag('td', cell_content, cell_style)
                         if row_style == 'status':
                             tr_style = get_message_style(row.get(row_style), None)
@@ -289,6 +290,8 @@ def get_message_style(value, default):
     #    r = value
     else:
         r = default
+        if r is not None:
+            r = r.replace(' ', '-').replace('@', '')
     return r
 
 

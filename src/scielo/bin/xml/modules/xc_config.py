@@ -91,48 +91,46 @@ class XMLConverterConfiguration(object):
 
     @property
     def valid(self):
-        errors = []
-        warnings = []
+        problems = []
         if self.cisis1030 is None:
-            errors.append('ERROR: Missing cisis1030')
+            problems.append('ERROR: Missing cisis1030')
         else:
             if not os.path.isdir(self.cisis1030):
-                errors.append('ERROR: Unable to find ' + self.cisis1030)
+                problems.append('ERROR: Unable to find ' + self.cisis1030)
         if self.cisis1660 is None:
-            errors.append('ERROR: Missing cisis1660')
+            problems.append('ERROR: Missing cisis1660')
         else:
             if not os.path.isdir(self.cisis1660):
-                errors.append('ERROR: Unable to find ' + self.cisis1660)
+                problems.append('ERROR: Unable to find ' + self.cisis1660)
 
         if self.issue_db is None:
-            errors.append('ERROR: Missing SOURCE_ISSUE_DB or Issue Database')
+            problems.append('ERROR: Missing SOURCE_ISSUE_DB or Issue Database')
         else:
             if not os.path.isfile(self.issue_db + '.mst'):
-                errors.append('ERROR: Unable to find ' + self.issue_db + '.mst')
+                problems.append('ERROR: Unable to find ' + self.issue_db + '.mst')
 
         if self.local_web_app_path is None:
-            errors.append('ERROR: Missing LOCAL_WEB_APP_PATH')
+            problems.append('ERROR: Missing LOCAL_WEB_APP_PATH')
         else:
             if not os.path.isdir(self.local_web_app_path):
-                errors.append('WARNING: Unable to find ' + self.local_web_app_path)
+                problems.append('WARNING: Unable to find ' + self.local_web_app_path)
 
         if self.serial_path is None:
-            errors.append('ERROR: Missing PROC_SERIAL_PATH or Serial Directory')
+            problems.append('ERROR: Missing PROC_SERIAL_PATH or Serial Directory')
         else:
             if not os.path.isdir(self.serial_path):
-                errors.append('ERROR: Unable to find ' + self.serial_path)
+                problems.append('ERROR: Unable to find ' + self.serial_path)
         if not self.is_windows:
             if not self.is_enabled_package_receipt:
-                warnings.append('WARNING: Package receipt is not enabled.')
+                problems.append('WARNING: Package receipt is not enabled.')
             if not self.is_enabled_email_service:
-                warnings.append('WARNING: Email service is not enabled.')
+                problems.append('WARNING: Email service is not enabled.')
             if not self.is_enabled_gerapadrao:
-                warnings.append('WARNING: Gerapadrao is not enabled.')
+                problems.append('WARNING: Gerapadrao is not enabled.')
             if not self.is_enabled_transference:
-                warnings.append('WARNING: Files Transference is not enabled.')
-        print('\n'.join(errors))
-        print('\n'.join(warnings))
-
+                problems.append('WARNING: Files Transference is not enabled.')
+        print('\n'.join(problems))
+        errors = [e for e in problems if 'ERROR:' in e]
         return len(errors) == 0
 
     @property

@@ -360,7 +360,7 @@ class ArticlesPkgReport(object):
         return html_reports.tag('h4', 'Package references overview') + html_reports.sheet(labels, items, table_style='dbstatus')
 
     def detail_report(self, conversion_reports=None):
-        labels = ['name', 'order', 'fpage', 'aop pid', 'toc section', '@article-type', 'article title', 'reports']
+        labels = ['name', 'order', 'fpage', 'doi', 'aop pid', 'toc section', '@article-type', 'article title', 'reports']
         items = []
 
         n = '/' + str(len(self.package.articles))
@@ -408,6 +408,7 @@ class ArticlesPkgReport(object):
             values.append(new_name)
             values.append(self.package.articles[new_name].order)
             values.append(self.package.articles[new_name].fpage)
+            values.append(self.package.articles[new_name].doi)
             values.append(self.package.articles[new_name].previous_pid)
             values.append(self.package.articles[new_name].toc_section)
             values.append(self.package.articles[new_name].article_type)
@@ -594,8 +595,8 @@ def format_complete_report(report_components):
         'xml-files': 'Files/Folders',
         'db-overview': 'Database overview',
         'pkg_overview': 'Package overview',
-        'issue-not-registered': 'Issue validations (not registered)',
-        'toc': 'Issue validations (toc)',
+        'issue-not-registered': 'Issue validation',
+        'toc': 'Issue validation',
         'references': 'Sources'
     }
     f, e, w = html_reports.statistics_numbers(html_reports.join_texts(report_components.values()))
