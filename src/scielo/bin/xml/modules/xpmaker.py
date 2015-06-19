@@ -864,7 +864,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             register_log('pack_and_validate: pkg_reports.validate_package')
 
             toc_f, toc_e, toc_w, toc_report = articles_pkg_reports.validate_consistency(from_converter)
-            report_components['toc'] = toc_report
+            report_components['detail-report'] = toc_report
 
         if toc_f == 0:
             register_log('pack_and_validate: pkg_reports.validate_pkg_items')

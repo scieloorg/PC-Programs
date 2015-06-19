@@ -903,6 +903,10 @@ class Article(ArticleXML):
         ArticleXML.__init__(self, tree, xml_name)
         if self.tree is not None:
             self._issue_parts()
+        self.pid = None
+        self.creation_date_display = None
+        self.creation_date = None
+        self.last_update = None
 
     def summary(self):
         data = {}

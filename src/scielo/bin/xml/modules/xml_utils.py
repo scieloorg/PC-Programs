@@ -326,6 +326,8 @@ def read_xml(content):
     if not '<' in content:
         # is a file
         content = open(content, 'r').read()
+        if not isinstance(content, unicode):
+            content = content.decode('utf-8')
     return content
 
 

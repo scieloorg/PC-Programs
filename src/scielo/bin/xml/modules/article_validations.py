@@ -107,10 +107,10 @@ def invalid_terms_in_value(label, value, invalid_terms, error_or_warning):
 
 def validate_name(label, value, invalid_terms):
     r = []
-    result = required(label, value, 'WARNING')
+    result = required(label, value, 'ERROR')
     label, status, msg = result
     if status == 'OK':
-        result = invalid_terms_in_value(label, value, invalid_terms, 'WARNING')
+        result = invalid_terms_in_value(label, value, invalid_terms, 'ERROR')
     r.append(result)
     _test_number = warn_unexpected_numbers(label, value)
     if _test_number is not None:

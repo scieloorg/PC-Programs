@@ -4,9 +4,11 @@ import os
 from datetime import datetime
 
 import utils
+import xml_utils
+
 from article_utils import doi_pid, display_pages, format_dateiso, format_issue_label
 from article_utils import how_similar
-from article import Issue, PersonAuthor
+from article import Issue, PersonAuthor, Article
 from attributes import ROLE, DOCTOPIC, doctopic_label
 
 from dbm_isis import IDFile
@@ -554,9 +556,10 @@ class IssueArticlesRecords(object):
                     articles_records[record.get('2')] = []
                 articles_records[record.get('2')].append(record)
 
-        items = []
+        items = {}
         for xml_name, records in articles_records.items():
-            items.append(RegisteredArticle(records, i_record))
+            a = RegisteredArticle(records, i_record)
+            items[a.xml_name] = a
         return (i_record, items)
 
 
@@ -670,9 +673,29 @@ class ArticleDAO(object):
         print('registered_items')
         print('base=')
         print(issue_files.base)
+        articles = {}
+
         records = self.dao.get_records(issue_files.base)
-        i, article_records_items = IssueArticlesRecords(records).articles()
-        return (IssueModels(i), article_records_items)
+        i, registered_articles = IssueArticlesRecords(records).articles()
+
+        for item in issue_files.base_source_xml_files:
+            xml, e = xml_utils.load_xml(item)
+            xml_name = os.path.basename(item).replace('.xml', '')
+            doc = Article(xml, xml_name)
+
+            registered_doc = registered_articles.get(xml_name)
+
+            if registered_doc is None:
+                print(xml_name)
+                print(registered_articles.keys())
+            else:
+                doc.pid = registered_doc.pid
+                doc.creation_date_display = registered_doc.creation_date_display
+                doc.creation_date = registered_doc.creation_date
+                doc.last_update = registered_doc.last_update
+
+            articles[xml_name] = doc
+        return (IssueModels(i), articles)
 
     def generate_windows_version(self, issue_files):
         if not os.path.isdir(issue_files.windows_base_path):

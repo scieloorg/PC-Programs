@@ -124,74 +124,56 @@ def statistics_display(f, e, w, inline=True):
     return tag(tag_name, stats, get_stats_numbers_style(f, e, w))
 
 
+def cell_width(table_header):
+    width = XML_WIDTH
+    if len(table_header) > 1:
+        width = XML_WIDTH / len(table_header)
+    if width < 30:
+        width = 30
+    if len(table_header) == 3:
+        width = XML_WIDTH / 2
+    return width
+
+
 def sheet(table_header, table_data, table_style='sheet', row_style=None, html_cell_content=[]):
     r = ''
     if not table_header is None:
-        width = XML_WIDTH
-        if len(table_header) > 1:
-            width = XML_WIDTH / len(table_header)
-        if width < 30:
-            width = 30
-        if len(table_header) == 3:
-            width = XML_WIDTH / 2
+        width = cell_width(table_header)
 
-        th = ''
-        for label in table_header:
-            th += tag('th', label, 'th')
+        th = ''.join([tag('th', label, 'th') for label in table_header])
 
         if len(table_data) == 0:
-            tr = ''
-            for label in table_header:
-                tr += '<td>-</td>'
-            tbody = tag('tr', tr)
-
+            tbody = tag('tr', ''.join(['<td>-</td>' for label in table_header]))
         else:
+            cell_style_prefix = 'td_' if table_style == 'validation' else ''
             tbody = ''
-            if table_style == 'sheet':
-                for row in table_data:
-                    tr = ''
-                    for label in table_header:
-                        cell_style = 'td_status' if label == '@id' else None
-                        cell_content = format_html_data(row.get(label, ''), not label in ['filename', 'scope', 'label', 'status'], width)
-                        tr += tag('td', cell_content, cell_style)
-                    tbody += tag('tr', tr)
-            elif table_style == 'reports-sheet':
-                cell_style_prefix = 'td_' if row_style == 'status' else ''
-                for row in table_data:
-                    tr = ''
-                    tr_style = None
-                    if len(row) == len(table_header):
-                        for label in table_header:
-                            cell_content = row.get(label, '')
-                            if not label in html_cell_content:
-                                cell_content = format_html_data(cell_content, False, width)
-                            cell_style = cell_style_prefix + label
-                            if cell_style == label:
-                                cell_style = get_message_style(row.get(label), label)
 
-                            tr += tag('td', cell_content, cell_style)
-                        if row_style == 'status':
-                            tr_style = get_message_style(row.get(row_style), None)
-                    elif row.get('reports') is not None:
-                        tr += '<td class="td-reports" colspan="' + str(len(table_header)) + '">' + row.get('reports', '') + '</td>'
-                    tbody += tag('tr', tr, tr_style)
-            else:
-                cell_style_prefix = 'td_' if row_style == 'status' else ''
-                for row in table_data:
-                    tr = ''
+            for row in table_data:
+                tr = ''
+                if len(row) == len(table_header):
                     for label in table_header:
+                        # cell content
                         cell_content = row.get(label, '')
                         if not label in html_cell_content:
-                            cell_content = format_html_data(cell_content, False, width)
-                        cell_style = cell_style_prefix + label
+                            cell_content = format_html_data(cell_content, width)
+                        if table_style == 'sheet':
+                            cell_content = color_text(cell_content)
+
+                        # cell style
+                        cell_style = 'td_status' if label == '@id' else cell_style_prefix + label
                         if cell_style == label:
                             cell_style = get_message_style(row.get(label), label)
-                        tr += tag('td', cell_content, cell_style)
-                    tr_style = None
-                    if row_style == 'status':
-                        tr_style = get_message_style(row.get(row_style), None)
-                    tbody += tag('tr', tr, tr_style)
 
+                        tr += tag('td', cell_content, cell_style)
+                elif len(row) == 1:
+                    # hidden tr
+                    tr += '<td colspan="' + str(len(table_header)) + '" class="' + label + '-hidden-block">' + row.get(label, '') + '</td>'
+
+                # row style
+                tr_style = None
+                if row_style is not None:
+                    tr_style = get_message_style(row.get(row_style), '')
+                tbody += tag('tr', tr, tr_style)
         r = tag('p', tag('table', tag('thead', tag('tr', th)) + tag('tbody', tbody), table_style))
     return r
 
@@ -211,7 +193,7 @@ def p_message(value):
     return tag('p', value, get_message_style(value, 'ok'))
 
 
-def format_message(value):
+def color_text(value):
     return tag('span', value, get_message_style(value, 'ok'))
 
 
@@ -239,7 +221,7 @@ def format_html_data_list(value, list_type='ol'):
     return r
 
 
-def format_html_data(value, apply_message_style=False, width=30):
+def format_html_data(value, width=30):
     r = '-'
     if isinstance(value, list):
         r = format_html_data_list(value)
@@ -260,8 +242,6 @@ def format_html_data(value, apply_message_style=False, width=30):
         r = msg + '<select size="10">' + '\n'.join(['<option>' + op + '</option>' for op in sorted(value)]) + '</select>'
     else:
         r = value
-    if apply_message_style:
-        r = format_message(r)
     return r
 
 
@@ -286,12 +266,12 @@ def get_message_style(value, default):
         r = 'error'
     elif 'WARNING' in value:
         r = 'warning'
-    #elif default is None:
-    #    r = value
+    elif default is None or default == '':
+        r = value
     else:
         r = default
-        if r is not None:
-            r = r.replace(' ', '-').replace('@', '')
+    if r is not None:
+        r = r.replace(' ', '-').replace('@', '')
     return r
 
 
@@ -309,7 +289,7 @@ def get_stats_numbers_style(f, e, w):
 def display_labeled_value(label, value, style=''):
     if label is None:
         label = 'None'
-    return tag('p', tag('span', '[' + label + '] ', 'discret') + format_html_data(value, False, XML_WIDTH), style)
+    return tag('p', tag('span', '[' + label + '] ', 'discret') + format_html_data(value, XML_WIDTH), style)
 
 
 def display_label_value(label, value):
@@ -348,11 +328,12 @@ def tabs_items(tabs, selected):
 
 
 def report_link(report_id, report_label, style):
-    return '<a name="begin_label-' + report_id + '"/>&#160;<span id="label-' + report_id + '" onClick="display_article_report(\'' + report_id + '\', this)" class="report-link-' + style + '">' + report_label.replace(' ', '&#160;') + '</span>'
+    return '<a name="begin_label-' + report_id + '"/>&#160;<span id="label-' + report_id + '" onClick="display_article_report(\'' + report_id + '\', \'label-' + report_id + '\')" class="report-link-' + style + '">' + report_label.replace(' ', '&#160;') + '</span>'
 
 
 def report_block(report_id, content, style):
     r = '<div id="' + report_id + '" class="report-block-' + style + '">'
     r += content
+    r += '<div class="endreport"><span class="button" onClick="display_article_report(\'' + report_id + '\', \'label-' + report_id + '\')"> close </span></div>'
     r += '</div>'
     return r
