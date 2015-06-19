@@ -86,7 +86,7 @@ def find_issue_models(issue_label, p_issn, e_issn):
         i_record = find_i_record(issue_label, p_issn, e_issn)
 
         if i_record is None:
-            msg = html_reports.p_message('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + converter_env.db_issue.db_filename + ' using the ISSN: ' + ' or'.join([i for i in [p_issn, e_issn] if i is not None]) + '.')
+            msg = html_reports.p_message('FATAL ERROR: Issue ' + issue_label + ' is not registered in ' + converter_env.db_issue.db_filename + ' using ISSN: ' + ' or '.join([i for i in [p_issn, e_issn] if i is not None]) + '.')
         else:
             issue_models = xc_models.IssueModels(i_record)
 
@@ -120,21 +120,23 @@ def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_art
     return (complete_issue_items, xml_doc_actions, changed_orders)
 
 
-def complete_issue_items_row(article, action, result, creation_date, last_update, source, notes=''):
-    labels = ['name', 'package or database (creation date | last update)', 'order', 'notes', 'action', 'result', 'aop PID', 'toc section', '@article-type', 'article title']
+def complete_issue_items_row(article, action, result, source, notes=''):
+    labels = ['name', 'package or database', 'creation date | last update', 'action', 'result', 'order', 'notes', 'aop PID', 'doi', 'article title']
     _source = source
+
     if source == 'registered':
-        _source = 'database (' + str(creation_date) + ' | ' + str(last_update) + ')'
+        _source = 'database'
+    _dates = str(article.creation_date_display) + ' / ' + str(article.last_update)
     values = []
     values.append(article.xml_name)
     values.append(_source)
-    values.append(article.order)
-    values.append(notes)
+    values.append(_dates)
     values.append(action)
     values.append(result)
+    values.append(article.order)
+    values.append(notes)
     values.append(article.previous_pid)
-    values.append(article.toc_section)
-    values.append(article.article_type)
+    values.append(article.doi)
     values.append(article.title)
     return (labels, values)
 
@@ -158,7 +160,7 @@ def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions,
                     if registered_articles[article.xml_name].order != pkg_articles[article.xml_name].order:
                         action = 'delete'
                         _notes = 'new order=' + pkg_articles[article.xml_name].order
-                labels, values = complete_issue_items_row(article, action, '', article.creation_date_display, article.last_update, 'registered', _notes)
+                labels, values = complete_issue_items_row(article, action, '', 'registered', _notes)
                 items.append(pkg_reports.label_values(labels, values))
 
         if order in sorted_package.keys():
@@ -168,9 +170,9 @@ def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions,
                 if registered_articles.get(article.xml_name) is not None:
                     if registered_articles[article.xml_name].order != pkg_articles[article.xml_name].order:
                         _notes = 'replacing ' + registered_articles[article.xml_name].order
-                labels, values = complete_issue_items_row(article, action, '', '-', '-', 'package', _notes)
+                labels, values = complete_issue_items_row(article, action, '', 'package', _notes)
                 items.append(pkg_reports.label_values(labels, values))
-    return html_reports.sheet(labels, items, 'dbstatus', 'action')
+    return html_reports.sheet(labels, items, 'dbstatus', 'package or database')
 
 
 def display_status_after_xc(previous_registered_articles, registered_articles, pkg_articles, xml_doc_actions, unmatched_orders):
@@ -201,7 +203,7 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
                         _notes = previous_order + '=>' + new_order
                         if result == 'error':
                             _notes = 'ERROR: Unable to replace ' + _notes
-                labels, values = complete_issue_items_row(article, action, result, article.creation_date_display, article.last_update, 'registered', _notes)
+                labels, values = complete_issue_items_row(article, action, result, 'registered', _notes)
                 items.append(pkg_reports.label_values(labels, values))
         elif order in sorted_package.keys():
             # documento no pacote mas nao na base
@@ -214,7 +216,7 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
                     _notes = previous_order + '=>' + new_order
                     _notes = 'ERROR: Unable to replace ' + _notes
 
-                labels, values = complete_issue_items_row(article, action, 'error', '-', '-', 'package', _notes)
+                labels, values = complete_issue_items_row(article, action, 'error', 'package', _notes)
                 items.append(pkg_reports.label_values(labels, values))
         elif order in sorted_previous_registered.keys():
             # documento anteriormente na base
@@ -225,9 +227,9 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
                 if name in unmatched_orders.keys():
                     previous_order, new_order = unmatched_orders[name]
                     _notes = 'deleted ' + previous_order + '=> new: ' + new_order
-                labels, values = complete_issue_items_row(article, '?', 'deleted', article.creation_date_display, article.last_update, 'excluded', _notes)
+                labels, values = complete_issue_items_row(article, '?', 'deleted', 'excluded', _notes)
                 items.append(pkg_reports.label_values(labels, values))
-    return html_reports.sheet(labels, items, 'dbstatus', 'action')
+    return html_reports.sheet(labels, items, 'dbstatus', 'package or database')
 
 
 def complete_issue_items_report(complete_issue_items, unmatched_orders):
@@ -269,7 +271,7 @@ def convert_package(src_path):
     display_title = False
     validate_order = True
 
-    validations_report = ''
+    validations_report = None
     xc_toc_report = None
     xc_conclusion_msg = ''
     conversion_status = {}
@@ -301,7 +303,7 @@ def convert_package(src_path):
     issue_models, issue_error_msg = get_issue_models(pkg_articles)
 
     if issue_error_msg is not None:
-        report_components['issue-not-registered'] = issue_error_msg
+        report_components['detail-report'] = issue_error_msg
 
     articles_pkg = pkg_reports.ArticlePackage(pkg_articles)
     articles_pkg_reports = pkg_reports.ArticlesPkgReport(articles_pkg)
@@ -326,7 +328,8 @@ def convert_package(src_path):
         before_conversion_report += display_status_before_xc(previous_registered_articles, pkg_articles, xml_doc_actions)
 
         toc_f, xc_toc_report = complete_issue_items_report(complete_issue_items, unmatched_orders)
-
+        if xc_toc_report is not None:
+            report_components['detail-report'] = xc_toc_report
         if toc_f == 0:
             selected_articles = {}
             for xml_name, article in pkg_articles.items():
@@ -381,8 +384,8 @@ def convert_package(src_path):
     report_components['db-overview'] = before_conversion_report + after_conversion_report
     report_components['summary-report'] = xc_conclusion_msg + xc_results_report + aop_results_report
 
-    report_components['toc'] = xc_toc_report
-    report_components['detail-report'] = validations_report
+    if validations_report is not None:
+        report_components['detail-report'] = validations_report
 
     f, e, w, content = pkg_reports.format_complete_report(report_components)
     if old_report_path in content:
@@ -496,7 +499,6 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
         if not xml_doc_actions[xml_name] in ['add', 'update']:
             msg += html_reports.tag('p', 'skept')
             conversion_status['skept'].append(xml_name)
-            conv_stats = ''
         else:
             xml_stats, data_stats = articles_stats[xml_name]
             xml_f, xml_e, xml_w = xml_stats
@@ -530,7 +532,11 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
 
                 article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
 
-                creation_date = None if not xml_name in registered_articles else registered_articles[xml_name].creation_date
+                if not xml_name in registered_articles.keys():
+                    print(xml_name)
+                    print(registered_articles.keys())
+
+                creation_date = None if not xml_name in registered_articles.keys() else registered_articles[xml_name].creation_date
 
                 saved = converter_env.db_article.create_id_file(issue_models.record, article, article_files, creation_date)
                 if saved:
@@ -616,10 +622,7 @@ def aop_message(article, ahead, status):
 
 
 def get_registered_articles(issue_files):
-    registered_issue_models, registered_articles_list = converter_env.db_article.registered_items(issue_files)
-    registered_articles = {}
-    for article in registered_articles_list:
-        registered_articles[article.xml_name] = article
+    registered_issue_models, registered_articles = converter_env.db_article.registered_items(issue_files)
     return registered_articles
 
 

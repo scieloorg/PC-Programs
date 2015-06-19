@@ -595,8 +595,6 @@ def format_complete_report(report_components):
         'xml-files': 'Files/Folders',
         'db-overview': 'Database overview',
         'pkg_overview': 'Package overview',
-        'issue-not-registered': 'Issue validation',
-        'toc': 'Issue validation',
         'references': 'Sources'
     }
     f, e, w = html_reports.statistics_numbers(html_reports.join_texts(report_components.values()))

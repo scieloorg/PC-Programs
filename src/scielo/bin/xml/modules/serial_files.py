@@ -142,6 +142,10 @@ class IssueFiles(object):
         return self.issue_path + '/base_xml/base_source'
 
     @property
+    def base_source_xml_files(self):
+        return [self.base_source_path + '/' + item for item in os.listdir(self.base_source_path) if item.endswith('.xml')]
+
+    @property
     def base(self):
         return self.base_path + '/' + self.issue_folder
 
