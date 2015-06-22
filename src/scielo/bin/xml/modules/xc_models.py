@@ -20,7 +20,7 @@ def author_tag(is_person, is_analytic_author):
     r = {}
     r[True] = {True: '10', False: '16'}
     r[False] = {True: '11', False: '17'}
-    return r[is_analytic][is_person]
+    return r[is_person][is_analytic_author]
 
 
 def issn_items(fields):
@@ -211,7 +211,9 @@ class ArticleRecords(object):
             self._metadata['100'] = self._metadata['130']
             del self._metadata['130']
         if '435' in self._metadata.keys():
-            self._metadata['435'] = {k.replace('ONLIN', 'epub').replace('PRINT', 'ppub'): v for k, v in self.article.journal_issns.items()}
+            self._metadata['435'] = self.article.journal_issns.items()
+        if '480' in self._metadata.keys():
+            del self._metadata['480']
 
     @property
     def metadata(self):
@@ -319,15 +321,15 @@ class ArticleRecords(object):
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
         self._metadata['72'] = str(0 if self.article.total_of_references is None else self.article.total_of_references)
-        self._metadata['901'] = str(0 if self.article.total_of_tables is None else self.article.total_of_tables)
-        self._metadata['902'] = str(0 if self.article.total_of_figures is None else self.article.total_of_figures)
+        #self._metadata['901'] = str(0 if self.article.total_of_tables is None else self.article.total_of_tables)
+        #self._metadata['902'] = str(0 if self.article.total_of_figures is None else self.article.total_of_figures)
 
         self._metadata['83'] = []
         for item in self.article.abstracts:
             self._metadata['83'].append({'l': item.language, 'a': item.text})
 
-        self._metadata['111'] = format_dateiso(self.article.received)
-        self._metadata['113'] = format_dateiso(self.article.accepted)
+        self._metadata['112'] = format_dateiso(self.article.received)
+        self._metadata['114'] = format_dateiso(self.article.accepted)
 
     @property
     def references(self):

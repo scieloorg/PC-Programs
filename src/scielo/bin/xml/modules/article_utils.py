@@ -295,3 +295,4 @@ def four_digits_year(year):
                     elif year[1:5].isdigit():
                         year = year[1:5]
     return year
+
