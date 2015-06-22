@@ -678,7 +678,7 @@ class ArticleDAO(object):
         records = self.dao.get_records(issue_files.base)
         i, registered_articles = IssueArticlesRecords(records).articles()
 
-        for xml_name, reg_doc in registered_articles.items():
+        for xml_name, registered_doc in registered_articles.items():
             f = issue_files.base_source_path + '/' + xml_name + '.xml'
             if os.path.isfile(f):
 
