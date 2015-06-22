@@ -3,6 +3,8 @@
 import os
 from datetime import datetime
 
+import languages
+
 import attributes
 import article_utils
 import xml_utils

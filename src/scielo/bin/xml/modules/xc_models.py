@@ -16,6 +16,13 @@ from dbm_isis import IDFile
 import institutions_service
 
 
+def author_tag(is_person, is_analytic_author):
+    r = {}
+    r[True] = {True: '10', False: '16'}
+    r[False] = {True: '11', False: '17'}
+    return r[is_analytic][is_person]
+
+
 def issn_items(fields):
     issns = None
     if fields is not None:
@@ -197,7 +204,14 @@ class ArticleRecords(object):
         if not '421' in self._metadata.keys():
             self._metadata['421'] = self.article.journal_id_nlm_ta
         if not '435' in self._metadata.keys():
-            self._metadata['435'] = self.article.journal_issns
+            self._metadata['435'] = self.article.journal_issns.items()
+
+    def fix_issue_data(self):
+        if '130' in self._metadata.keys():
+            self._metadata['100'] = self._metadata['130']
+            del self._metadata['130']
+        if '435' in self._metadata.keys():
+            self._metadata['435'] = {k.replace('ONLIN', 'epub').replace('PRINT', 'ppub'): v for k, v in self.article.journal_issns.items()}
 
     @property
     def metadata(self):
@@ -341,7 +355,7 @@ class ArticleRecords(object):
                 is_analytic = False
                 if item.article_title is not None or item.chapter_title is not None:
                     is_analytic = True
-                field = self.author_tag(person.role, isinstance(person, PersonAuthor), is_analytic)
+                field = author_tag(isinstance(person, PersonAuthor), is_analytic)
                 if isinstance(person, PersonAuthor):
                     a = {}
                     a['n'] = person.fname
@@ -359,8 +373,9 @@ class ArticleRecords(object):
             rec_c['63'] = item.edition
             rec_c['64'] = item.year
             if item.formatted_year is not None:
-                if item.formatted_year.isdigit():
-                    rec_c['65'] = str(int(item.formatted_year) + 100000000)[1:]
+                y = item.formatted_year[0:4]
+                if y.isdigit():
+                    rec_c['65'] = y + '0000'
             rec_c['66'] = item.publisher_loc
             rec_c['62'] = item.publisher_name
             rec_c['514'] = {'f': item.fpage, 'l': item.lpage, 'r': item.page_range}
@@ -395,21 +410,6 @@ class ArticleRecords(object):
             return 'org'
         return role
 
-    def author_tag(self, role, is_person, is_analytic_author):
-        other = ['transed', 'translator']
-        monographic = ['compiler', 'director', 'editor', 'guest-editor', ]
-        analytical = ['allauthors', 'assignee', 'author', 'inventor', ]
-        r = {}
-        r[True] = {True: '10', False: '16'}
-        r[False] = {True: '11', False: '17'}
-        if role in analytical:
-            is_analytic = True
-        elif role in monographic:
-            is_analytic = False
-        else:
-            is_analytic = is_analytic_author
-        return r[is_analytic][is_person]
-
     def outline(self, total_of_records):
         rec_o = {}
         if self.creation_date is None:
@@ -426,6 +426,7 @@ class ArticleRecords(object):
     @property
     def records(self):
         r = []
+        self.fix_issue_data()
 
         rec = self.outline(str(4 + len(self.references)))
         rec.update(self.common_data)
