@@ -678,17 +678,13 @@ class ArticleDAO(object):
         records = self.dao.get_records(issue_files.base)
         i, registered_articles = IssueArticlesRecords(records).articles()
 
-        for item in issue_files.base_source_xml_files:
-            xml, e = xml_utils.load_xml(item)
-            xml_name = os.path.basename(item).replace('.xml', '')
-            doc = Article(xml, xml_name)
+        for xml_name, reg_doc in registered_articles.items():
+            f = issue_files.base_source_path + '/' + xml_name + '.xml'
+            if os.path.isfile(f):
 
-            registered_doc = registered_articles.get(xml_name)
+                xml, e = xml_utils.load_xml(f)
+                doc = Article(xml, xml_name)
 
-            if registered_doc is None:
-                print(xml_name)
-                print(registered_articles.keys())
-            else:
                 doc.pid = registered_doc.pid
                 doc.creation_date_display = registered_doc.creation_date_display
                 doc.creation_date = registered_doc.creation_date
