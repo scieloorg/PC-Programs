@@ -690,7 +690,7 @@ class ArticleDAO(object):
                 doc.creation_date = registered_doc.creation_date
                 doc.last_update = registered_doc.last_update
 
-            articles[xml_name] = doc
+                articles[xml_name] = doc
         return (IssueModels(i), articles)
 
     def generate_windows_version(self, issue_files):
