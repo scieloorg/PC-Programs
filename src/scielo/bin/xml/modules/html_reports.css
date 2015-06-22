@@ -512,7 +512,6 @@ td img {
 }
 .report-link-xmlrep:hover {
   text-decoration:none;
-  font-weight: bold;
 
 }
 .report-link-xmlrep:visited {
@@ -529,7 +528,6 @@ td img {
 }
 .report-link-datarep:hover {
   text-decoration:none;
-  font-weight: bold;
   
 }
 .report-link-datarep:visited {
@@ -546,7 +544,6 @@ td img {
 }
 .report-link-xcrep:hover {
   text-decoration:none;
-  font-weight: bold;
   
 }
 .report-link-xcrep:visited {
