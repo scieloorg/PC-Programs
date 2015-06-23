@@ -72,9 +72,14 @@ def rename_embedded_img_href(content, xml_name, new_href_list):
         i = 0
         for item in _items:
             if item.startswith('<graphic href="?'):
-                s = item[item.find('?'):]
-                s = s[s.find('"'):]
-                new += '<graphic href="' + xml_name + new_href_list[i] + s
+                continuation = item[item.find('?'):]
+                continuation = continuation[continuation.find('"'):]
+                new_href_item = new_href_list[i]
+                if new_href_item.startswith('image'):
+                    print(new_href_item)
+                    new_href_item = new_href_item[len('image'):]
+                    print(new_href_item)
+                new += '<graphic href="' + xml_name + new_href_item + continuation
                 i += 1
             else:
                 new += item
@@ -124,7 +129,12 @@ def extract_embedded_images(xml_name, content, html_content, html_filename, dest
             content = rename_embedded_img_href(content, xml_name, embedded_img_files)
             for item in embedded_img_files:
                 if os.path.isfile(embedded_img_path + '/' + item):
-                    shutil.copyfile(embedded_img_path + '/' + item, dest_path + '/' + xml_name + item)
+                    new_img_name = item
+                    if new_img_name.startswith('image'):
+                        print(new_img_name)
+                        new_img_name = new_img_name[len('image'):]
+                        print(new_img_name)
+                    shutil.copyfile(embedded_img_path + '/' + item, dest_path + '/' + xml_name + new_img_name)
         content = content.replace('"">', '">')
         content = content.replace('href=""?', 'href="?')
 
@@ -653,6 +663,7 @@ def normalize_package_name(doc_files_info, acron, content):
 
     doc = article.Article(xml, doc_files_info.xml_name)
     doc_files_info.new_name = doc_files_info.xml_name
+
     curr_and_new_href_list = None
 
     if not doc.tree is None:

@@ -132,7 +132,8 @@ filename       CDATA #IMPLIED>
 <!ELEMENT xref - - (#PCDATA | graphic)    >
 <!ATTLIST xref
           ref-type  CDATA #IMPLIED 
-          rid       IDREFS #REQUIRED>
+          rid       IDREFS #REQUIRED
+          label CDATA #IMPLIED>
 
 <!ELEMENT table - - (thead?, tbody)    >
 <!ELEMENT thead - - (tr+)    >
