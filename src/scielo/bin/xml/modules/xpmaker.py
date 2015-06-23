@@ -5,6 +5,7 @@ import urllib
 from datetime import datetime
 from mimetypes import MimeTypes
 
+from __init__ import _
 import fs_utils
 import java_xml_utils
 import html_reports
@@ -897,7 +898,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             register_log('pack_and_validate: zip_packages')
             zip_packages(scielo_pkg_path)
 
-        print('Result of the processing:')
+        print(_('Result of the processing:'))
         print(results_path)
         register_log('pack_and_validate: fim')
         fs_utils.write_file(report_path + '/log.txt', '\n'.join(log_items))

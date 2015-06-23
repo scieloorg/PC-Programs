@@ -83,7 +83,11 @@ class IDFile(object):
         return ''.join(occs)
 
     def tag_occ(self, tag, data):
-        if isinstance(data, dict):
+        if isinstance(data, tuple):
+            print(tag)
+            print(data)
+            s = ''
+        elif isinstance(data, dict):
             s = self.tag_content(tag, self.format_subfields(data))
         else:
             s = self.tag_content(tag, data)

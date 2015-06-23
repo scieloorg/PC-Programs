@@ -1140,6 +1140,27 @@ class ReferenceXML(object):
         return r
 
     @property
+    def authors_by_group(self):
+        groups = []
+        for person_group in self.root.findall('.//person-group'):
+            role = person_group.attrib.get('person-group-type', 'author')
+            authors = []
+            for person in person_group.findall('.//name'):
+                p = PersonAuthor()
+                p.fname = person.findtext('given-names')
+                p.surname = person.findtext('surname')
+                p.suffix = person.findtext('suffix')
+                p.role = role
+                authors.append(p)
+            for collab in person_group.findall('.//collab'):
+                c = CorpAuthor()
+                c.collab = xml_utils.node_text(collab)
+                c.role = role
+                authors.append(c)
+            groups.append(authors)
+        return groups
+
+    @property
     def volume(self):
         return self.root.findtext('.//volume')
 

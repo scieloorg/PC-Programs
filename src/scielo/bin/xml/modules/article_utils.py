@@ -184,7 +184,7 @@ def display_pages(fpage, lpage):
         r.append(fpage)
     if lpage is not None:
         r.append(lpage)
-    return '-'.join(r) + '\n'
+    return '-'.join(r)
 
 
 def display_value(label, value):
@@ -295,3 +295,4 @@ def four_digits_year(year):
                     elif year[1:5].isdigit():
                         year = year[1:5]
     return year
+
