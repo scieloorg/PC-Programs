@@ -213,7 +213,7 @@ class ArticlePackage(object):
 
             skip = False
             if xc_actions is not None:
-                skip = xc_actions[doc_files_info.xml_name] == 'skip-update'
+                skip = xc_actions[xml_name] == 'skip-update'
 
             if skip:
                 print(' -- skept')
@@ -224,8 +224,8 @@ class ArticlePackage(object):
                 data_f, data_e, data_w = article_reports.validate_article_data(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, display_all, doc_files_info.data_report_filename)
 
                 self.pkg_fatal_errors += xml_f + data_f
-                self.pkg_stats[new_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
-                self.pkg_reports[new_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
+                self.pkg_stats[xml_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
+                self.pkg_reports[xml_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
 
         print('Validating package: fim')
 
@@ -367,6 +367,8 @@ class ArticlesPkgReport(object):
         validations_text = ''
         index = 0
 
+        print(self.package.pkg_stats)
+        print(self.package.xml_name_sorted_by_order)
         for new_name in self.package.xml_name_sorted_by_order:
             index += 1
             item_label = str(index) + n + ' - ' + new_name

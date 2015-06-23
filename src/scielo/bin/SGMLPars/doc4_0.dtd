@@ -149,14 +149,14 @@
           supplno  CDATA #IMPLIED 
           dateiso  CDATA #REQUIRED
           season CDATA #IMPLIED 
-          order CDATA #REQUIRED
+          order CDATA #IMPLIED
           fpage    CDATA #REQUIRED
           fpageseq    CDATA #IMPLIED
           lpage    CDATA #REQUIRED
           elocatid CDATA #IMPLIED 
           artdate CDATA #IMPLIED
           ahpdate CDATA #IMPLIED  
-          pagcount CDATA #REQUIRED
+          pagcount CDATA #IMPLIED
           doctopic CDATA #REQUIRED
           language CDATA #REQUIRED
           version CDATA #IMPLIED
@@ -274,6 +274,7 @@
 <!ELEMENT source - - (#PCDATA) > 
 <!ELEMENT reportid - - (#PCDATA) > 
 <!ELEMENT letterto - - (#PCDATA) > 
+<!ELEMENT series - - (#PCDATA) > 
 <!ELEMENT found-at - - (#PCDATA) > 
 <!ELEMENT patentno - - (#PCDATA) > 
 <!ATTLIST patentno
