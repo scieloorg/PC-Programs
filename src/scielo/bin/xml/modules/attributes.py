@@ -1,4 +1,8 @@
 # coding=utf-8
+
+from __init__ import _
+
+
 DOCTOPIC = {
                 'research-article': 'oa',
                 'editorial': 'ed',
@@ -154,15 +158,15 @@ def validate_element(publication_type, label, value):
     items = []
     if value is None or value == '':
         if is_required(publication_type, label):
-            problem = '@publication-type="' + publication_type + '" requires ' + label
-            items = ['@publication-type', 'the elements of this reference']
-            compl = '. If the reference has no ' + label + ', use element-citation/@specific-use=display-only'
+            problem = '@publication-type="' + publication_type + '" ' + _('requires') + ' ' + label
+            items = ['@publication-type', _('the elements of this reference')]
+            compl = '. ' + _('If the reference has no ') + label + ', ' + _('use') + ' element-citation/@specific-use=display-only'
     else:
         if not is_allowed_element(publication_type, label):
-            problem = label + ' is not allowed for @publication-type=' + publication_type
+            problem = label + _(' is not allowed for ') + '@publication-type=' + publication_type
             items = ['@publication-type', label, value]
     if len(problem) > 0:
-        problem += '. Be sure that you have correctly identified: ' + ' or '.join(items)
+        problem += _('. Be sure that you have correctly identified: ') + _(' or ').join(items)
         problem += compl
     return problem
 

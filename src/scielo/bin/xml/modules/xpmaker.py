@@ -573,19 +573,19 @@ def generate_packed_files_report(doc_files_info, dest_path, related_packed, href
 
     log = []
 
-    log.append('Report of files\n' + '-'*len('Report of files') + '\n')
+    log.append(_('Report of files') + '\n' + '-'*len(_('Report of files')) + '\n')
 
     if src_path != dest_path:
-        log.append('Source path:   ' + src_path)
-    log.append('Package path:  ' + dest_path)
+        log.append(_('Source path') + ':   ' + src_path)
+    log.append(_('Package path') + ':  ' + dest_path)
     if src_path != dest_path:
-        log.append('Source XML name: ' + xml_name)
-    log.append('Package XML name: ' + new_name)
+        log.append(_('Source XML name') + ': ' + xml_name)
+    log.append(_('Package XML name') + ': ' + new_name)
 
-    log.append(message_file_list('Total of related files', format(related_packed)))
-    log.append(message_file_list('Total of files in package', format(href_packed)))
-    log.append(message_file_list('Total of @href in XML', format(curr_and_new_href_list)))
-    log.append(message_file_list('Total of @href not found in package', format(not_found)))
+    log.append(message_file_list(_('Total of related files'), format(related_packed)))
+    log.append(message_file_list(_('Total of files in package'), format(href_packed)))
+    log.append(message_file_list(_('Total of @href in XML'), format(curr_and_new_href_list)))
+    log.append(message_file_list(_('Total of @href not found in package'), format(not_found)))
 
     return '\n'.join(log)
 
@@ -701,7 +701,7 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
     doc, doc_files_info, curr_and_new_href_list, content = normalize_package_name(doc_files_info, acron, content)
 
     if doc.tree is None:
-        packed_files_report = 'ERROR: Unable to load ' + doc_files_info.new_xml_filename + '. Try to open it in an XML Editor to view the errors.'
+        packed_files_report = 'ERROR: ' + _('Unable to load') + ' ' + doc_files_info.new_xml_filename + _('. Try to open it in an XML Editor to view the errors.')
         pkg_reports.display_report(doc_files_info.new_xml_filename)
     else:
         register_log('pack_article_files')
@@ -780,7 +780,7 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
         path = os.path.dirname(xml_files[0])
         hdimages_to_jpeg(path, path, False)
 
-    print('Make packages for ' + str(len(xml_files)) + ' files.')
+    print(_('Make packages for ') + str(len(xml_files)) + _(' files.'))
     doc_items = {}
     doc_files_info_items = {}
 
@@ -799,12 +799,12 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
 
 def make_pmc_report(articles, doc_files_info_items):
     for xml_name, doc in articles.items():
-        msg = 'generating report...'
+        msg = _('generating report...')
         if doc.tree is None:
-            msg = 'Unable to generate the XML file.'
+            msg = _('Unable to generate the XML file.')
         else:
             if doc.journal_id_nlm_ta is None:
-                msg = 'It is not PMC article or unable to find journal-id (nlm-ta) in the XML file.'
+                msg = _('It is not PMC article or unable to find journal-id (nlm-ta) in the XML file.')
         html_reports.save(doc_files_info_items[xml_name].pmc_style_report_filename, 'PMC Style Checker', msg)
 
 
@@ -813,7 +813,7 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
     for xml_name, doc in articles.items():
         doc_files_info = doc_files_info_items[xml_name]
         if doc.journal_id_nlm_ta is None:
-            html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', 'Missing journal-id (nlm-ta).')
+            html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', _('Missing journal-id (nlm-ta).'))
         else:
             do_it = True
             print('.....')
@@ -856,7 +856,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             os.makedirs(d)
 
     if len(xml_files) == 0:
-        print('No files to process')
+        print(_('No files to process'))
     else:
         register_log('pack_and_validate: make_package')
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
@@ -896,7 +896,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         f, e, w, content = pkg_reports.format_complete_report(report_components)
         filename = report_path + '/xml_package_maker.html'
-        pkg_reports.save_report(filename, 'XML Package Maker Report', content)
+        pkg_reports.save_report(filename, _('XML Package Maker Report'), content)
         if not from_markup:
             pkg_reports.display_report(filename)
 
@@ -1058,12 +1058,12 @@ def call_make_packages(args, version):
         if len(errors) > 0:
             messages = []
             messages.append('\n===== ATTENTION =====\n')
-            messages.append('ERROR: Incorrect parameters')
-            messages.append('\nUsage:')
+            messages.append('ERROR: ' + _('Incorrect parameters'))
+            messages.append('\n' + _('Usage') + ':')
             messages.append('python ' + script + ' <xml_src> <acron>')
-            messages.append('where:')
-            messages.append('  <xml_src> = XML filename or path which contains XML files')
-            messages.append('  <acron> = journal acronym')
+            messages.append(_('where:'))
+            messages.append('  <xml_src> = ' + _('XML filename or path which contains XML files'))
+            messages.append('  <acron> = ' + _('journal acronym'))
             messages.append('\n'.join(errors))
             print('\n'.join(messages))
         else:
@@ -1073,7 +1073,7 @@ def call_make_packages(args, version):
 def validate_inputs(xml_path, acron):
     errors = xml_utils.is_valid_xml_path(xml_path)
     if acron is None:
-        errors.append('Missing acronym.')
+        errors.append(_('Missing acronym.'))
     return errors
 
 

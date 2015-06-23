@@ -29,15 +29,15 @@ def validate_value(value):
         else:
             status = 'ERROR'
             if value.startswith(' '):
-                result.append(value + ' starts with "space"')
+                result.append(value + _(' starts with') + _(' "space"'))
             if value.endswith(' '):
-                result.append(value + ' ends with "space"')
+                result.append(value + _(' ends with') + _(' "space"'))
             if value.startswith('.'):
                 status = 'WARNING'
-                result.append(value + ' starts with "."')
+                result.append(value + _(' starts with') + ' "."')
             differ = value.replace(_value, '')
             if len(differ) > 0:
-                result.append('"<data>' + value + '</data> contains invalid characteres: "' + differ + '"')
+                result.append('<data>' + value + '</data> ' + _('contains invalid characteres:') + ' "' + differ + '"')
     if status == 'OK':
         message = format_value(value)
     else:
@@ -52,18 +52,18 @@ def display_value(label, value):
 
 def conditional_required(label, value):
     status, message = validate_value(value)
-    return (label, status, message) if value is not None else (label, 'WARNING', 'Required, if exists.')
+    return (label, status, message) if value is not None else (label, 'WARNING', _('Required, if exists.'))
 
 
 def required_one(label, value):
-    return (label, 'OK', display_attributes(value)) if value is not None else (label, 'ERROR', 'Required at least one ' + label + '.')
+    return (label, 'OK', display_attributes(value)) if value is not None else (label, 'ERROR', _('Required at least one ') + label + '.')
 
 
 def required(label, value, default_status, validate_content=True):
     if value is None:
-        result = (label, default_status, 'Required')
+        result = (label, default_status, _('Required'))
     elif value == '':
-        result = (label, default_status, 'Required')
+        result = (label, default_status, _('Required'))
     else:
         if validate_content:
             status, message = validate_value(value)
@@ -74,7 +74,7 @@ def required(label, value, default_status, validate_content=True):
 
 
 def expected_values(label, value, expected, fatal=''):
-    return (label, 'OK', value) if value in expected else (label, fatal + 'ERROR', format_value(value) + ' - Invalid value for ' + label + '. Expected values ' + ', '.join(expected))
+    return (label, 'OK', value) if value in expected else (label, fatal + 'ERROR', format_value(value) + ' - ' + _('Invalid value for ') + label + '. ' + _('Expected values') + ': ' + ', '.join(expected))
 
 
 def display_attributes(attributes):
@@ -100,7 +100,7 @@ def invalid_terms_in_value(label, value, invalid_terms, error_or_warning):
             invalid = term
             break
     if not r:
-        return (label, error_or_warning, 'Invalid character/word (' + invalid + ') in ' + label + ': ' + value)
+        return (label, error_or_warning, _('Invalid character/word') + ' (' + invalid + ') ' + _('in') + ' ' + label + ': ' + value)
     else:
         return (label, 'OK', value)
 
@@ -125,7 +125,7 @@ def warn_unexpected_numbers(label, value, max_number=0):
         q_numbers = len([c for c in value if c.isdigit()])
         q_others = len(value) - q_numbers
         if q_numbers > q_others:
-            r = (label, 'WARNING', 'Be sure that <' + label + '>' + value + '</' + label + '> is correct.')
+            r = (label, 'WARNING', _('Be sure that') + ' <' + label + '>' + value + '</' + label + '> ' + _('is correct') + '.')
     return r
 
 
@@ -142,8 +142,8 @@ def validate_surname(label, value):
             suffix = ' '.join(rejected)
 
             if len(suffix) > 0:
-                msg = 'Invalid terms (' + suffix + ') in ' + value + '. '
-                msg += suffix + ' must be identified as <suffix>' + suffix + '</suffix>.'
+                msg = _('Invalid terms') + ' (' + suffix + ') ' + _('in') + ' ' + value + '. '
+                msg += suffix + ' ' + _('must be identified as') + ' <suffix>' + suffix + '</suffix>.'
                 status = 'ERROR'
                 r.append((label, status, msg))
     _test_number = warn_unexpected_numbers(label, value)
@@ -156,11 +156,11 @@ def validate_contrib_names(author, aff_ids=[]):
     results = validate_surname('surname', author.surname) + validate_name('given-names', author.fname, ['_'])
     if len(aff_ids) > 0:
         if len(author.xref) == 0:
-            results.append(('xref', 'ERROR', 'Author "' + author.fname + ' ' + author.surname + '" has no xref. Expected values: ' + '|'.join(aff_ids)))
+            results.append(('xref', 'ERROR', _('Author') + ' "' + author.fname + ' ' + author.surname + '" ' + _('has no') + ' xref' + '. ' + _('Expected values') + ': ' + '|'.join(aff_ids)))
         else:
             for xref in author.xref:
                 if not xref in aff_ids:
-                    results.append(('xref', 'FATAL ERROR', xref + ' of ' + author.surname + ': Invalid value of xref[@ref-type="aff"]/@rid. Valid values: ' + '|'.join(aff_ids)))
+                    results.append(('xref', 'FATAL ERROR', xref + ' ' + _('of') + ' "' + author.fname + ' ' + author.surname + '" ' + ': ' + _('Invalid value of') + ' xref[@ref-type="aff"]/@rid' + '. ' + _('Valid values: ') + '|'.join(aff_ids)))
     return results
 
 
@@ -273,7 +273,7 @@ class ArticleContentValidation(object):
         label, status, msg = required('article/@specific-use', self.article.sps, 'ERROR')
         if status == 'OK':
             if not 'sps-' in self.article.sps:
-                label, status, msg = (label, 'FATAL ERROR', 'Invalid value of ' + label + ': ' + self.article.sps + '.')
+                label, status, msg = (label, 'FATAL ERROR', _('Invalid value of') + ' ' + label + ': ' + self.article.sps + '.')
         return (label, status, msg)
 
     @property
@@ -282,7 +282,7 @@ class ArticleContentValidation(object):
         if status == 'OK':
             if not self.article.language.lower() == self.article.language or len(self.article.language) != 2:
                 status = 'FATAL ERROR'
-                msg = 'Invalid format for language. It requires two lower case letters.'
+                msg = _('Invalid format for language. It requires two lower case letters.')
         return (label, status, msg)
 
     @property
@@ -311,7 +311,7 @@ class ArticleContentValidation(object):
         if total > 0:
             if (nonsch >= sch1 + sch2) or (sch1 < sch2):
                 status = 'WARNING'
-                msg += '. Check the element-citation/@publication-type.'
+                msg += '. ' + _('Check the value of') + ' element-citation/@publication-type.'
         r.append(('quantity of reference types', status, msg))
         return r
 
@@ -349,7 +349,7 @@ class ArticleContentValidation(object):
             status = 'OK' if valid else 'FATAL ERROR'
             _valid.append((k + ' ISSN', status, v))
         if len(_valid) == 0:
-            _valid.append(('ISSN', 'FATAL ERROR', 'Missing ISSN. Required at least one.'))
+            _valid.append(('ISSN', 'FATAL ERROR', _('Missing ISSN. Required at least one.')))
         return _valid
 
     @property
@@ -360,7 +360,7 @@ class ArticleContentValidation(object):
     def keywords(self):
         r = []
         for item in self.article.keywords:
-            r.append(('keyword: ' + item['l'], 'OK', item['k']))
+            r.append(('kwd: ' + item['l'], 'OK', item['k']))
         return r
 
     @property
@@ -368,10 +368,10 @@ class ArticleContentValidation(object):
         r = []
         if self.article.article_type in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC:
             if len(self.article.contrib_names) == 0 and len(self.article.contrib_collabs) == 0:
-                r.append(('contrib', 'FATAL ERROR', self.article.article_type + ' requires contrib names or collabs.'))
+                r.append(('contrib', 'FATAL ERROR', self.article.article_type + _(' requires contrib names or collabs.')))
         for item in self.article.article_type_and_contrib_items:
             if item[0] in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC and len(item[1]) == 0:
-                r.append(('contrib', 'FATAL ERROR', item[0] + ' requires contrib names or collabs.'))
+                r.append(('contrib', 'FATAL ERROR', item[0] + _(' requires contrib names or collabs.')))
         return r
 
     @property
@@ -386,7 +386,7 @@ class ArticleContentValidation(object):
                 r.append(result)
         for affid in aff_ids:
             if not affid in author_xref_items:
-                r.append(('aff/@id', 'FATAL ERROR', 'Missing xref[@ref-type="aff"]/@rid="' + affid + '".'))
+                r.append(('aff/@id', 'FATAL ERROR', _('Missing') + ' xref[@ref-type="aff"]/@rid="' + affid + '".'))
         return r
 
     @property
@@ -401,11 +401,11 @@ class ArticleContentValidation(object):
                 r.append(('title', 'OK', item.language + ': ' + item.title))
             else:
                 if item.language is None:
-                    r.append(('title language', 'ERROR', 'Missing language for ' + item.title))
+                    r.append(('title language', 'ERROR', _('Missing language for ') + item.title))
                 elif item.title is None:
-                    r.append(('title', 'ERROR', 'Missing title for ' + item.language))
+                    r.append(('title', 'ERROR', _('Missing title for ') + item.language))
                 else:
-                    r.append('title', 'ERROR', 'Missing titles')
+                    r.append('title', 'ERROR', _('Missing titles'))
         return r
 
     @property
@@ -426,7 +426,7 @@ class ArticleContentValidation(object):
                     if issn in self.article.doi:
                         found = True
             if not found:
-                r.append(('doi', 'ERROR', 'Be sure that this DOI "' + self.article.doi + '" belongs to this journal.'))
+                r.append(('doi', 'ERROR', _('Be sure that this DOI') + ' "' + self.article.doi + '" ' + _('belongs to this journal.')))
         return r
 
     @property
@@ -438,13 +438,13 @@ class ArticleContentValidation(object):
         def valid(order, status):
             r = ('OK', order)
             if order is None:
-                r = (status, 'Missing order. Expected number 1 to 99999.')
+                r = (status, _('Missing order. Expected number 1 to 99999.'))
             else:
                 if order.isdigit():
                     if int(order) < 1 or int(order) > 99999:
-                        r = (status, order + ': Invalid format of order. Expected number 1 to 99999.')
+                        r = (status, order + ': ' + _('Invalid format of order. Expected number 1 to 99999.'))
                 else:
-                    r = (status, order + ': Invalid format of order. Expected number 1 to 99999.')
+                    r = (status, order + ': ' + _('Invalid format of order. Expected number 1 to 99999.'))
             return r
         if self.validate_order:
             status = 'FATAL ERROR'
@@ -455,16 +455,16 @@ class ArticleContentValidation(object):
 
     @property
     def article_id_other(self):
-        r = ('article-id (other)', 'OK', self.article.article_id_other)
+        r = ('article-id[@pub-id-type="other"]', 'OK', self.article.article_id_other)
         if self.article.fpage is not None:
             if self.article.fpage == '00' or not self.article.fpage.isdigit():
-                r = ('article-id (other)', 'FATAL ERROR', 'article-id[@pub-id-type="other"] is required if there is no fpage > 0 or fpage is not number.')
+                r = ('article-id[@pub-id-type="other"]', 'FATAL ERROR', 'article-id[@pub-id-type="other"] ' + _('is required if there is no fpage > 0 or fpage is not number.'))
         return r
 
     @property
     def issue_label(self):
         if not self.article.volume and not self.article.number:
-            return ('issue label', 'ERROR', 'Required one of volume and/or number')
+            return ('issue label', 'ERROR', _('Required volume and/or number'))
         else:
             return [self.volume, self.number]
 
@@ -530,10 +530,10 @@ class ArticleContentValidation(object):
         if len(self.article.award_id) == 0:
             found, c = has_number(self.article.ack_xml)
             if found is True:
-                r.append(('award-id', 'ERROR', 'Found number "' + c + '" in ack. ' + self.article.ack_xml))
+                r.append(('award-id', 'ERROR', _('Found') + ' "' + c + '" ' + _('in') + ' ack. ' + self.article.ack_xml))
             found, c = has_number(self.article.financial_disclosure)
             if found is True:
-                r.append(('award-id', 'ERROR', 'Found number "' + c + '" in fn[@fn-type="financial-disclosure"]. ' + self.article.fn_financial_disclosure))
+                r.append(('award-id', 'ERROR', _('Found') + ' "' + c + '" ' + _('in') + ' fn[@fn-type="financial-disclosure"]. ' + self.article.fn_financial_disclosure))
         else:
             for item in self.article.award_id:
                 r.append(('award-id', 'OK', item))
@@ -583,7 +583,7 @@ class ArticleContentValidation(object):
             r.append(required('aff/country/@country', aff.i_country, 'FATAL ERROR'))
             if aff.i_country is not None:
                 if len(aff.i_country) != 2 or aff.i_country.upper() != aff.i_country:
-                    r.append(('aff/country/@country', 'FATAL ERROR', aff.i_country + ': Invalid value. It must be ISO code of ' + aff.country))
+                    r.append(('aff/country/@country', 'FATAL ERROR', aff.i_country + ': ' + _('Invalid value') + '. ' + _('It must be ISO code of ') + aff.country))
 
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'ERROR'))
             r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))
@@ -594,23 +594,23 @@ class ArticleContentValidation(object):
                     orgname, city, state, country_code, country_name = normalized_items[0]
                     if orgname in [aff.orgname, aff.norgname] and country_code in [aff.i_country]:
                         status = 'INFO'
-                        r.append(('normalized aff', status, 'Normalized institution is valid: ' + '; '.join([', '.join(list(item)) for item in normalized_items])))
+                        r.append(('normalized aff', status, _('Normalized institution is valid: ') + '; '.join([', '.join(list(item)) for item in normalized_items])))
                     else:
                         status = 'ERROR'
-                        r.append(('normalized aff', status, 'Similar normalized institution: ' + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
+                        r.append(('normalized aff', status, _('Similar normalized institution: ') + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
                 else:
-                    msg = 'Unable to confirm/find the normalized affiliation for ' + ' or '.join(item for item in [aff.orgname, aff.norgname] if item is not None)
+                    msg = _('Unable to confirm/find the normalized affiliation for ') + ' or '.join(item for item in [aff.orgname, aff.norgname] if item is not None)
                     if len(normalized_items) == 0:
-                        r.append(('normalized aff', 'ERROR', msg + '. Ask for normalized institution by email: scielo-xml@googlegroups.com'))
+                        r.append(('normalized aff', 'ERROR', msg + _('. Ask for normalized institution by email: scielo-xml@googlegroups.com')))
                     else:
-                        r.append(('normalized aff', 'ERROR', msg + '. Similar valid institutions are: ' + 'options: ' + '|'.join([', '.join(list(item)) for item in normalized_items])))
+                        r.append(('normalized aff', 'ERROR', msg + _('. Similar valid institutions are: ') + _('options: ') + '|'.join([', '.join(list(item)) for item in normalized_items])))
 
             values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.orgdiv3, aff.city, aff.state, aff.i_country, aff.country]
             i = 0
             for label in labels:
                 if values[i] is not None:
                     if '|' in values[i]:
-                        r.append((label, 'FATAL ERROR', 'only one occurrence of ' + label + ' is allowed.'))
+                        r.append((label, 'FATAL ERROR', _('only one occurrence of ') + label + _(' is allowed.')))
                 i += 1
 
         return r
@@ -632,7 +632,7 @@ class ArticleContentValidation(object):
         if total == count:
             r = (label_total, 'OK', str(total))
         else:
-            r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', 'ERROR', 'They must have the same value')
+            r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', 'ERROR', _('They must have the same value'))
         return r
 
     @property
@@ -640,28 +640,28 @@ class ArticleContentValidation(object):
         if self.article.total_of_pages is not None:
             return self._total(self.article.total_of_pages, self.article.page_count, 'total of pages', 'page-count')
         elif self.article.elocation_id:
-            return ('total of pages of ' + self.article.elocation_id, 'WARNING', 'Unable to calculate')
+            return ('total of pages of ' + self.article.elocation_id, 'WARNING', _('Unable to calculate'))
         else:
             pages = [self.article.fpage, self.article.lpage]
             pages = '-'.join([item for item in pages if item is not None])
             if pages != '':
-                return ('total of pages of ' + pages, 'WARNING', 'Unable to calculate')
+                return ('total of pages of ' + pages, 'WARNING', _('Unable to calculate'))
 
     @property
     def total_of_references(self):
-        return self._total(self.article.total_of_references, self.article.ref_count, 'total of references', 'ref-count')
+        return self._total(self.article.total_of_references, self.article.ref_count, _('total of references'), 'ref-count')
 
     @property
     def total_of_tables(self):
-        return self._total(self.article.total_of_tables, self.article.table_count, 'total of tables', 'table-count')
+        return self._total(self.article.total_of_tables, self.article.table_count, _('total of tables'), 'table-count')
 
     @property
     def total_of_equations(self):
-        return self._total(self.article.total_of_equations, self.article.equation_count, 'total of equations', 'equation-count')
+        return self._total(self.article.total_of_equations, self.article.equation_count, _('total of equations'), 'equation-count')
 
     @property
     def total_of_figures(self):
-        return self._total(self.article.total_of_figures, self.article.fig_count, 'total of figures', 'fig-count')
+        return self._total(self.article.total_of_figures, self.article.fig_count, _('total of figures'), 'fig-count')
 
     @property
     def abstracts(self):
@@ -671,9 +671,9 @@ class ArticleContentValidation(object):
                 r.append(('abstract: ', 'OK', item.language + ':' + item.text))
             else:
                 if item.language is None:
-                    r.append(('abstract: ', 'ERROR', 'Missing language for ' + item.text))
+                    r.append(('abstract: ', 'ERROR', _('Missing language for ') + item.text))
                 if item.text is None:
-                    r.append(('abstract: ', 'ERROR', 'Missing text for ' + item.language))
+                    r.append(('abstract: ', 'ERROR', _('Missing text for ') + item.language))
         return r
 
     @property
@@ -688,7 +688,7 @@ class ArticleContentValidation(object):
         r = []
         if received is not None and accepted is not None:
             if not received < accepted:
-                r = 'received (' + received + '); accepted (' + accepted + '); publication (' + article_year + ').'
+                r = 'received (' + received + '); accepted (' + accepted + '); pub-date (' + article_year + ').'
                 r = [('history', 'ERROR', r)]
         elif received is None and accepted is None:
             r = [('history', 'INFO', 'there is no history dates')]
@@ -742,18 +742,18 @@ class ArticleContentValidation(object):
     def article_date_types(self):
         r = []
         date_types = []
-        expected = ['epub-ppub', 'epub and collection', 'epub']
+        expected = ['epub-ppub', 'epub' + _(' and ') + 'collection', 'epub']
         if self.article.epub_date is not None:
             date_types.append('epub')
         if self.article.collection_date is not None:
             date_types.append('collection')
         if self.article.epub_ppub_date is not None:
             date_types.append('epub-ppub')
-        c = ' and '.join(date_types)
+        c = _(' and ').join(date_types)
         if c in expected:
             r.append(('article dates', 'OK', c))
         else:
-            r.append(('article dates', 'ERROR', 'Invalid combination of date types: ' + c + '. Expected values: ' + ' | '.join(expected)))
+            r.append(('article dates', 'ERROR', _('Invalid combination of date types: ') + c + '. ' + _('Expected values') + ': ' + ' | '.join(expected)))
         return r
 
     @property
@@ -797,13 +797,13 @@ class ArticleContentValidation(object):
 
         for xref in self.article.xref_nodes:
             if xref['rid'] is None:
-                message.append(('xref/@rid', 'FATAL ERROR', 'Missing @rid in ' + xref['xml']))
+                message.append(('xref/@rid', 'FATAL ERROR', _('Missing') + ' @rid in ' + xref['xml']))
             if xref['ref-type'] is None:
-                message.append(('xref/@ref-type', 'ERROR', 'Missing @ref-type in ' + xref['xml']))
+                message.append(('xref/@ref-type', 'ERROR', _('Missing') + ' @ref-type in ' + xref['xml']))
             if xref['rid'] is not None and xref['ref-type'] is not None:
                 tag = id_and_elem_name.get(xref['rid'])
                 if tag is None:
-                    message.append(('xref/@rid', 'FATAL ERROR', 'Missing element[@id=' + xref['rid'] + ' and @ref-type=' + xref['ref-type'] + ']'))
+                    message.append(('xref/@rid', 'FATAL ERROR', _('Missing') + ' element[@id=' + xref['rid'] + _(' and ') + '@ref-type=' + xref['ref-type'] + ']'))
                 elif reftypes_and_tag.get(xref['ref-type']) is None:
                     # no need to validate
                     valid = True
@@ -811,7 +811,18 @@ class ArticleContentValidation(object):
                     valid = True
                 elif tag != reftypes_and_tag.get(xref['ref-type']):
                     reftypes = [reftype for reftype, _tag in reftypes_and_tag.items() if _tag == tag]
-                    message.append(('xref/@ref-type', 'ERROR', 'Unmatched @ref-type (' + xref['ref-type'] + ') and tag (' + tag + '): xref[@ref-type=' + xref['ref-type'] + '] is for ' + reftypes_and_tag.get(xref['ref-type']) + ', and valid values of @ref-type of ' + tag + '  is ' + '|'.join(reftypes)))
+                    _msg = _('Unmatched')
+                    _msg += ' @ref-type (' + xref['ref-type'] + ')'
+                    _msg += _(' and ') + tag + ': '
+                    _msg += 'xref[@ref-type="' + xref['ref-type'] + '"] '
+                    _msg += _('is for') + ' ' + reftypes_and_tag.get(xref['ref-type'])
+                    _msg += _(' and ') + _('valid values of') + ' @ref-type ' + _('of') + ' '
+                    _msg += tag + ' ' + _('are') + ' '
+                    _msg += '|'.join(reftypes)
+
+                    #_msg = _('Unmatched @ref-type (%s), and %s: xref[@ref-type="%s"] is for %s and valid values of  @ref-type of %s are %s') % (xref['ref-type'], tag, xref['ref-type'], reftypes_and_tag.get(xref['ref-type']), tag, '|'.join(reftypes))
+
+                    message.append(_msg)
         return message
 
     @property
@@ -822,11 +833,11 @@ class ArticleContentValidation(object):
         for node in self.article.elements_which_has_id_attribute:
             _id = node.attrib.get('id')
             if _id is None:
-                message.append((node.tag, 'ERROR', 'Missing @id'))
+                message.append((node.tag, 'ERROR', _('Missing') + ' @id'))
             else:
                 if not _id in rid_list:
                     if node.tag in alert_tags:
-                        message.append((node.tag, 'ERROR', 'Missing xref[@rid="' + _id + '"]'))
+                        message.append((node.tag, 'ERROR', _('Missing') + ' xref[@rid="' + _id + '"]'))
         return message
 
     def href_list(self, path):
@@ -915,7 +926,7 @@ class ReferenceContentValidation(object):
                 self.validate_element('publisher-loc', self.reference.publisher_loc), 
                 self.validate_element('comment[@content-type="degree"]', self.reference.degree), 
                 self.validate_element('conf-name', self.reference.conference_name), 
-                self.validate_element('date-in-citation[@content-type="access-date"] or date-in-citation[@content-type="update"]', self.reference.cited_date), 
+                self.validate_element('date-in-citation[@content-type="access-date"] ' + _('or') + ' date-in-citation[@content-type="update"]', self.reference.cited_date), 
                 self.validate_element('ext-link', self.reference.ext_link), 
                 self.validate_element('volume', self.reference.volume), 
                 self.validate_element('issue', self.reference.issue), 
@@ -927,10 +938,10 @@ class ReferenceContentValidation(object):
         _mixed = self.reference.mixed_citation.lower()
         if 'conference' in _mixed or 'proceeding' in _mixed:
             if self.reference.publication_type != 'confproc':
-                r.append(('@publication-type', 'WARNING', 'Check if @publication-type is correct. This reference looks like confproc.'))
+                r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' confproc.'))
         if ' dissert' in _mixed or 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed:
             if self.reference.publication_type != 'thesis':
-                r.append(('@publication-type', 'WARNING', 'Check if @publication-type is correct. This reference looks like thesis.'))
+                r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' thesis.'))
 
         for item in items:
             if item is not None:
@@ -941,17 +952,17 @@ class ReferenceContentValidation(object):
             if self.reference.ref_status == 'display-only':
                 minimum_required_elements = attributes.REFERENCE_REQUIRED_SUBELEMENTS.get(self.reference.publication_type)
                 if minimum_required_elements is None:
-                    r.append(('@specific-use', 'ERROR', 'Remove @specific-use="display-only". It is required to identify incomplete references which @publication-type is equal to ' + ' | '.join(attributes.REFERENCE_REQUIRED_SUBELEMENTS.keys())))
+                    r.append(('@specific-use', 'ERROR', _('Remove @specific-use="display-only". It is required to identify incomplete references which @publication-type is equal to ') + ' | '.join(attributes.REFERENCE_REQUIRED_SUBELEMENTS.keys())))
                 else:
-                    r.append(('@specific-use', 'FATAL ERROR', 'Remove @specific-use="display-only". It must be used only if reference is incomplete. Expected at least the elements: ' + ' | '.join(minimum_required_elements)))
+                    r.append(('@specific-use', 'FATAL ERROR', _('Remove @specific-use="display-only". It is required to identify incomplete references which @publication-type is equal to ') + ' | '.join(attributes.REFERENCE_REQUIRED_SUBELEMENTS.keys()) + '. ' + _('Expected at least the elements: ') + ' | '.join(minimum_required_elements)))
 
         else:
             if self.reference.ref_status == 'display-only':
-                items.append(('Incomplete Reference', 'WARNING', 'Check if the elements of this reference is properly identified.'))
+                items.append((_('Incomplete Reference'), 'WARNING', _('Check if the elements of this reference is properly identified.')))
                 items = []
                 for label, status, message in r:
                     if status != 'OK':
-                        items.append((label, 'WARNING: ignored ' + status.lower(), message))
+                        items.append((label, 'WARNING' + _(' ignored ') + status.lower(), message))
                 r = items
         return r
 
@@ -960,7 +971,7 @@ class ReferenceContentValidation(object):
         r = None
         if self.reference.ext_link is not None:
             if not self.reference.ext_link.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').strip() in self.reference.mixed_citation:
-                r = ('ext-link', 'ERROR', '"' + self.reference.ext_link + '" is missing in "' + self.reference.mixed_citation + '"')
+                r = ('ext-link', 'ERROR', '"' + self.reference.ext_link + '" ' + _('is missing in') + ' "' + self.reference.mixed_citation + '"')
         return r
 
     @property
@@ -985,7 +996,7 @@ class ReferenceContentValidation(object):
             elif isinstance(person, article.CorpAuthor):
                 r.append(('collab', 'OK', person.collab))
             else:
-                r.append(('invalid person', 'WARNING', type(person)))
+                r.append((_('invalid person'), 'WARNING', type(person)))
         return r
 
     def year(self, article_year):
@@ -996,13 +1007,13 @@ class ReferenceContentValidation(object):
         if _y is not None:
             if _y.isdigit():
                 if int(_y) > article_year:
-                    r.append(('year', 'FATAL ERROR', _y + ' must not be greater than ' + datetime.now().isoformat()[0:4]))
+                    r.append(('year', 'FATAL ERROR', _y + _(' must not be greater than ') + datetime.now().isoformat()[0:4]))
             elif 's.d' in _y:
                 r.append(('year', 'INFO', _y))
             elif 's/d' in _y:
                 r.append(('year', 'INFO', _y))
             else:
-                r.append(('year', 'FATAL ERROR', _y + ' is not a number nor in an expected format.'))
+                r.append(('year', 'FATAL ERROR', _y + _(' is not a number nor in an expected format.')))
         return r
 
     @property

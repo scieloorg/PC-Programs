@@ -3,6 +3,7 @@ import os
 
 from datetime import datetime
 
+from __init__ import _
 import xml_utils
 import article_utils
 import article_validations
@@ -16,88 +17,6 @@ log_items = []
 
 def register_log(text):
     log_items.append(datetime.now().isoformat() + ' ' + text)
-
-
-class TOCReport(object):
-
-    def __init__(self, articles, validate_order):
-        self.articles = articles
-        self.validate_order = validate_order
-
-    def report(self):
-        invalid = []
-        equal_data = ['journal-title', 'journal id NLM', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        unique_data = ['order', 'doi', 'elocation id']
-        unique_status = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-and-seq': 'ERROR'}
-
-        if not self.validate_order:
-            unique_status['order'] = 'WARNING'
-
-        toc_data = {}
-        for label in equal_data + unique_data:
-            toc_data[label] = {}
-
-        for xml_name, article in self.articles.items():
-            if article.tree is None:
-                invalid.append(xml_name)
-            else:
-                art_data = article.summary()
-                for label in toc_data.keys():
-                    toc_data[label] = article_utils.add_new_value_to_index(toc_data[label], art_data[label], xml_name)
-
-        r = ''
-        if len(invalid) > 0:
-            r += html_reports.tag('div', html_reports.color_text('FATAL ERROR: Invalid XML files.'))
-            r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid, 'issue-problem'))
-
-        for label in equal_data:
-            if len(toc_data[label]) > 1:
-                part = html_reports.p_message('FATAL ERROR: same value for ' + label + ' is required for all the articles of the package')
-                for found_value, xml_files in toc_data[label].items():
-                    part += html_reports.format_list('found ' + label + ' "' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" in:', 'ul', xml_files, 'issue-problem')
-                r += part
-
-        for label in unique_data:
-            if len(toc_data[label]) > 0 and len(toc_data[label]) != len(self.articles):
-                none = []
-                duplicated = {}
-                pages = {}
-                for found_value, xml_files in toc_data[label].items():
-                    if found_value == 'None':
-                        none = xml_files
-                    else:
-                        if len(xml_files) > 1:
-                            duplicated[found_value] = xml_files
-                        if label == 'fpage-and-seq':
-                            v = found_value
-                            if v.isdigit():
-                                v = str(int(found_value))
-                            if not v in pages.keys():
-                                pages[v] = []
-                            pages[v] += xml_files
-
-                if len(pages) == 1 and '0' in pages.keys():
-                    duplicated = []
-
-                if len(duplicated) > 0:
-                    part = html_reports.p_message(unique_status[label] + ': unique value of ' + label + ' is required for all the articles of the package')
-                    for found_value, xml_files in duplicated.items():
-                        part += html_reports.format_list('found ' + label + ' "' + found_value + '" in:', 'ul', xml_files, 'issue-problem')
-                    r += part
-                if len(none) > 0:
-                    part = html_reports.p_message('INFO: there is no value for ' + label + '.')
-                    part += html_reports.format_list('no value for ' + label + ' in:', 'ul', none, 'issue-problem')
-                    r += part
-
-        issue_common_data = ''
-        for label in equal_data:
-            message = ''
-            if len(toc_data[label].items()) == 1:
-                issue_common_data += html_reports.display_labeled_value(label, toc_data[label].keys()[0])
-            else:
-                message = '(ERROR: Unique value expected for ' + label + ')'
-                issue_common_data += html_reports.format_list(label + message, 'ol', toc_data[label].keys())
-        return html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages')
 
 
 class ArticleDisplayReport(object):
@@ -153,10 +72,10 @@ class ArticleDisplayReport(object):
     @property
     def files_and_href(self):
         r = ''
-        r += html_reports.tag('h2', 'Files in the package')
+        r += html_reports.tag('h4', _('Files in the package'))
         th, w, data = self.sheet_data.package_files(self.files)
         r += html_reports.sheet(th, data)
-        r += html_reports.tag('h2', '@href')
+        r += html_reports.tag('h4', '@href')
         th, w, data = self.sheet_data.hrefs_sheet_data(self.xml_path)
         r += html_reports.sheet(th, data)
         return r
@@ -164,12 +83,12 @@ class ArticleDisplayReport(object):
     @property
     def authors_sheet(self):
         labels, width, data = self.sheet_data.authors_sheet_data()
-        return html_reports.tag('h2', 'Authors') + html_reports.sheet(labels, data)
+        return html_reports.tag('h2', _('Authors')) + html_reports.sheet(labels, data)
 
     @property
     def sources_sheet(self):
         labels, width, data = self.sheet_data.sources_sheet_data()
-        return html_reports.tag('h2', 'Sources') + html_reports.sheet(labels, data)
+        return html_reports.tag('h2', _('Sources')) + html_reports.sheet(labels, data)
 
     def display_labeled_value(self, label, value, style=''):
         return html_reports.display_labeled_value(label, value, style)
@@ -196,7 +115,7 @@ class ArticleDisplayReport(object):
 
     @property
     def toc_section(self):
-        return self.display_labeled_value('toc section', self.article.toc_section, 'toc-section')
+        return self.display_labeled_value('subject', self.article.toc_section, 'toc-section')
 
     @property
     def article_type(self):
@@ -526,11 +445,11 @@ class ArticleSheetData(object):
                 if not status == 'ok':
                     if hrefitem.is_internal_file:
                         if status == 'warning':
-                            row['display'] += status.upper() + ': missing extension of ' + hrefitem.src + '.'
+                            row['display'] += status.upper() + ': ' + _('missing extension of ') + hrefitem.src + '.'
                         else:
-                            row['display'] += status.upper() + ': ' + hrefitem.src + ' not found in package'
+                            row['display'] += status.upper() + ': ' + hrefitem.src + _(' not found in package')
                     else:
-                        row['display'] += status.upper() + ': ' + hrefitem.src + ' is not working'
+                        row['display'] += status.upper() + ': ' + hrefitem.src + _(' is not working')
 
                 row['xml'] = hrefitem.xml
                 r.append(row)
@@ -546,17 +465,17 @@ class ArticleSheetData(object):
             row['files'] = item
             status = ''
             if item in inxml:
-                status = 'found in XML'
+                status = _('found in XML')
             else:
                 if not item.endswith('.pdf'):
                     if item[:-4] in inxml:
-                        status = 'found in XML'
+                        status = _('found in XML')
                     else:
                         if item.endswith('.jpg') and item.replace('.jpg', '.tif') in ' '.join(inxml):
                             # jpg was converted from a tif
                             status = ''
                         else:
-                            status = 'WARNING: not found in XML'
+                            status = 'WARNING: ' + _('not found in XML')
             row['status'] = status
             r.append(row)
         return (t_header, ['files', 'status'], r)
@@ -586,12 +505,6 @@ def package_files(path, xml_name):
             if not item.endswith('.xml'):
                 r.append(item)
     return r
-
-
-def toc_report_data(articles, validate_order):
-    toc_report_content = TOCReport(articles, validate_order).report()
-    toc_f, toc_e, toc_w = html_reports.statistics_numbers(toc_report_content)
-    return (toc_f, toc_e, toc_w, toc_report_content)
 
 
 def get_article_report_data(org_manager, article, new_name, package_path, validate_order):
@@ -628,7 +541,7 @@ def validate_article_data(org_manager, article, new_name, package_path, validate
         sheet_data = None
         article_display_report = None
         article_validation_report = None
-        content = 'FATAL ERROR: Unable to get data of ' + new_name + '.'
+        content = 'FATAL ERROR: ' + _('Unable to get data of ') + new_name + '.'
     else:
         article_validation = article_validations.ArticleContentValidation(org_manager, article, validate_order, False)
         sheet_data = ArticleSheetData(article, article_validation)
@@ -657,7 +570,7 @@ def validate_article_data(org_manager, article, new_name, package_path, validate
     title = ''
     if display_all:
         stats = html_reports.statistics_display(f, e, w, False)
-        title = ['Data Quality Control', new_name]
+        title = [_('Data Quality Control'), new_name]
 
     html_reports.save(report_filename, title, stats + content)
     return (f, e, w)
