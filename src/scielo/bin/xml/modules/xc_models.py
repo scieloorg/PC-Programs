@@ -16,6 +16,9 @@ from dbm_isis import IDFile
 import institutions_service
 
 
+ISSN_CONVERSION = {'ONLIN': 'epub', 'PRINT': 'ppub'}
+
+
 def author_tag(is_person, is_analytic_author):
     r = {}
     r[True] = {True: '10', False: '16'}
@@ -23,20 +26,37 @@ def author_tag(is_person, is_analytic_author):
     return r[is_person][is_analytic_author]
 
 
-def issn_items(fields):
-    issns = None
+def read_issn_fields(fields):
+    _issns = None
     if fields is not None:
-        issns = {}
-        if isinstance(fields, dict):
-            if fields.get('t') is not None and fields.get('_') is not None:
-                fields = [fields]
-            elif fields.get('epub') is not None or fields.get('ppub') is not None:
-                issns = fields
-        if isinstance(fields, list):
-            for item in fields:
-                if item.get('t') is not None and item.get('_') is not None:
-                    issns[item.get('t').replace('PRINT', 'ppub').replace('ONLIN', 'epub')] = item.get('_')
-    return issns
+        if not isinstance(fields, list):
+            fields = [fields]
+        _issns = {}
+        for item in fields:
+            if isinstance(item, dict):
+                if 't' in item.keys() and '_' in item.keys():
+                    _issns[ISSN_CONVERSION.get(item.get('t'))] = item.get('_')
+                elif 'epub' in item.keys() or 'ppub' in item.keys():
+                    for k, v in item.items():
+                        _issns[k] = v
+            elif isinstance(item, tuple):
+                _issns[item[0]] = item[1]
+    return _issns
+
+
+def format_issn_fields(issns):
+    fields = []
+    if issns is not None:
+        if not isinstance(issns, list):
+            issns = [issns]
+        for issn in issns:
+            if isinstance(issn, dict):
+                for k, v in issn.items():
+                    issn = {}
+                    issn['t'] = k
+                    issn['_'] = v
+                    fields.append(issn)
+    return fields
 
 
 def normalize_role(_role):
@@ -55,7 +75,7 @@ class RegisteredArticle(object):
     def __init__(self, article_records, i_record=None):
         self.issue_models = IssueModels(i_record)
         self.article_records = article_records
-        #self.journal_issns = issn_items(self.article_records[1].get('435'))
+        #self.journal_issns = read_issn_fields(self.article_records[1].get('435'))
 
     def summary(self):
         data = {}
@@ -81,7 +101,7 @@ class RegisteredArticle(object):
 
     @property
     def journal_issns(self):
-        return self.issue_models.issue.journal_issns if self.issue_models.issue.journal_issns else issn_items(self.article_records[1].get('435'))
+        return self.issue_models.issue.journal_issns if self.issue_models.issue.journal_issns else read_issn_fields(self.article_records[1].get('435'))
 
     @property
     def publisher_name(self):
@@ -118,8 +138,6 @@ class RegisteredArticle(object):
     @property
     def titles(self):
         _titles = self.article_records[1].get('12')
-        print('_titles')
-        print(_titles)
         if _titles is None:
             _t = [{'_': None}]
         elif not isinstance(_titles, list):
@@ -211,7 +229,7 @@ class ArticleRecords(object):
             self._metadata['100'] = self._metadata['130']
             del self._metadata['130']
         if '435' in self._metadata.keys():
-            self._metadata['435'] = self.article.journal_issns.items()
+            self._metadata['435'] = format_issn_fields(read_issn_fields(self.article.journal_issns.items()))
         if '480' in self._metadata.keys():
             del self._metadata['480']
 
@@ -353,21 +371,24 @@ class ArticleRecords(object):
             rec_c['11'] = []
             rec_c['16'] = []
             rec_c['17'] = []
-            for person in item.authors_list:
-                is_analytic = False
-                if item.article_title is not None or item.chapter_title is not None:
-                    is_analytic = True
-                field = author_tag(isinstance(person, PersonAuthor), is_analytic)
-                if isinstance(person, PersonAuthor):
-                    a = {}
-                    a['n'] = person.fname
-                    a['s'] = person.surname
-                    a['z'] = person.suffix
-                    a['r'] = normalize_role(self.author_role(person.role))
-                else:
-                    # collab
-                    a = person.collab
-                rec_c[field].append(a)
+
+            grp_idx = 0
+            for grp in item.authors_by_group:
+                is_analytic = (len(item.authors_by_group) > 1) and (grp_idx == 0) and (item.article_title is not None or item.chapter_title is not None)
+                grp_idx += 1
+
+                for author in grp:
+                    field = author_tag(isinstance(author, PersonAuthor), is_analytic)
+                    if isinstance(author, PersonAuthor):
+                        a = {}
+                        a['n'] = author.fname
+                        a['s'] = author.surname
+                        a['z'] = author.suffix
+                        a['r'] = normalize_role(author.role)
+                    else:
+                        # collab
+                        a = author.collab
+                    rec_c[field].append(a)
             rec_c['31'] = item.volume
             rec_c['32'] = {}
             rec_c['32']['_'] = item.issue
@@ -401,17 +422,6 @@ class ArticleRecords(object):
             records_c.append(rec_c)
         return records_c
 
-    def author_role(self, role):
-        if role == 'editor':
-            return 'ed'
-        if role == 'author':
-            return 'nd'
-        if role == 'translator':
-            return 'tr'
-        if role == 'compiler':
-            return 'org'
-        return role
-
     def outline(self, total_of_records):
         rec_o = {}
         if self.creation_date is None:
@@ -429,7 +439,6 @@ class ArticleRecords(object):
     def records(self):
         r = []
         self.fix_issue_data()
-
         rec = self.outline(str(4 + len(self.references)))
         rec.update(self.common_data)
         rec.update(self.record_info('1', 'o', '1', '1'))
@@ -526,12 +535,8 @@ class IssueModels(object):
         i.issn_id = self.record.get('35')
         i.journal_title = self.record.get('130')
         i.journal_id_nlm_ta = self.record.get('421')
-        _issns = issn_items(self.record.get('435'))
-        if not _issns is None:
-            _issns = issn_items(_issns)
-        if _issns is None:
-            _issns = {'epub': None, 'ppub': None}
-        i.journal_issns = _issns
+
+        i.journal_issns = read_issn_fields(self.record.get('435'))
         i.publisher_name = self.record.get('62', self.record.get('480'))
         return i
 

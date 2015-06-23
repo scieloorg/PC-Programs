@@ -1,6 +1,6 @@
 # coding=utf-8
 import os
-import shutil
+
 from datetime import datetime
 
 import xml_utils
@@ -8,7 +8,7 @@ import article_utils
 import article_validations
 import html_reports
 
-from article import Article, PersonAuthor, CorpAuthor, format_author
+from article import PersonAuthor, CorpAuthor, format_author
 
 
 log_items = []

@@ -255,7 +255,7 @@ class ArticlesPkgReport(object):
 
         r = ''
         if len(invalid_xml_name_items) > 0:
-            r += html_reports.tag('div', html_reports.format_message('FATAL ERROR: Invalid XML files.'))
+            r += html_reports.tag('div', html_reports.color_text('FATAL ERROR: Invalid XML files.'))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid_xml_name_items, 'issue-problem'))
 
         for label in equal_data:
