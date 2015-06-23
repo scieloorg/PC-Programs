@@ -16,7 +16,10 @@ from dbm_isis import IDFile
 import institutions_service
 
 
-ISSN_CONVERSION = {'ONLIN': 'epub', 'PRINT': 'ppub'}
+ISSN_CONVERSION = { 
+    'ONLIN': 'epub',
+    'PRINT': 'ppub',
+    }
 
 
 def author_tag(is_person, is_analytic_author):
@@ -35,7 +38,7 @@ def read_issn_fields(fields):
         for item in fields:
             if isinstance(item, dict):
                 if 't' in item.keys() and '_' in item.keys():
-                    _issns[ISSN_CONVERSION.get(item.get('t'))] = item.get('_')
+                    _issns[ISSN_CONVERSION.get(item.get('t'), item.get('t'))] = item.get('_')
                 elif 'epub' in item.keys() or 'ppub' in item.keys():
                     for k, v in item.items():
                         _issns[k] = v
@@ -222,14 +225,14 @@ class ArticleRecords(object):
         if not '421' in self._metadata.keys():
             self._metadata['421'] = self.article.journal_id_nlm_ta
         if not '435' in self._metadata.keys():
-            self._metadata['435'] = self.article.journal_issns.items()
+            self._metadata['435'] = self.article.journal_issns
 
     def fix_issue_data(self):
         if '130' in self._metadata.keys():
             self._metadata['100'] = self._metadata['130']
             del self._metadata['130']
         if '435' in self._metadata.keys():
-            self._metadata['435'] = format_issn_fields(read_issn_fields(self.article.journal_issns.items()))
+            self._metadata['435'] = format_issn_fields(read_issn_fields(self.article.journal_issns))
         if '480' in self._metadata.keys():
             del self._metadata['480']
 

@@ -11,7 +11,7 @@ import xml_utils
 debug = False
 
 
-def format_value(content, scope=None):
+def format_value(content):
     try:
         if not isinstance(content, unicode):
             content = content.decode('utf-8')
