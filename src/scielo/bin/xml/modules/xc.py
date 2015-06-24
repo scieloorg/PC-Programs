@@ -59,8 +59,14 @@ def is_valid_configuration_file(configuration_filename):
 
 
 def run_remote_mkdirs(user, server, path):
-    os.system('ssh ' + user + '@' + server + ' "mkdir -p ' + path + '"')
+    try:
+        os.system('ssh ' + user + '@' + server + ' "mkdir -p ' + path + '"')
+    except:
+        pass
 
 
 def run_rsync(source, user, server, dest):
-    os.system('nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n')
+    try:
+        os.system('nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n')
+    except:
+        pass

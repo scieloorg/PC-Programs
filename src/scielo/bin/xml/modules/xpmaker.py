@@ -714,6 +714,8 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
 
     if isinstance(replaced_entities_report, unicode):
         replaced_entities_report = replaced_entities_report.encode('utf-8')
+    if isinstance(packed_files_report, unicode):
+        packed_files_report = packed_files_report.encode('utf-8')
 
     open(doc_files_info.err_filename, 'w').write(replaced_entities_report + packed_files_report)
 
@@ -887,17 +889,19 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, from_markup)
             articles_pkg.validate_articles_pkg_xml_and_data(org_manager, doc_files_info_items, scielo_dtd_files, from_converter, from_markup)
 
-            register_log('pack_and_validate: pkg_reports.get_articles_report_text')
-            report_components['detail-report'] = articles_pkg_reports.detail_report()
-            report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
+            if not from_markup:
+                register_log('pack_and_validate: pkg_reports.get_articles_report_text')
+                report_components['detail-report'] = articles_pkg_reports.detail_report()
+                articles_pkg_reports.delete_pkg_xml_and_data_reports()
+                report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
             #if not from_markup:
             #    register_log('pack_and_validate: pkg_reports.get_lists_report_text')
             #    texts.append(pkg_reports.get_lists_report_text(articles_sheets))
 
-        f, e, w, content = pkg_reports.format_complete_report(report_components)
-        filename = report_path + '/xml_package_maker.html'
-        pkg_reports.save_report(filename, _('XML Package Maker Report'), content)
         if not from_markup:
+            f, e, w, content = pkg_reports.format_complete_report(report_components)
+            filename = report_path + '/xml_package_maker.html'
+            pkg_reports.save_report(filename, _('XML Package Maker Report'), content)
             pkg_reports.display_report(filename)
 
         if not from_converter:
@@ -1061,7 +1065,7 @@ def call_make_packages(args, version):
             messages.append('ERROR: ' + _('Incorrect parameters'))
             messages.append('\n' + _('Usage') + ':')
             messages.append('python ' + script + ' <xml_src> <acron>')
-            messages.append(_('where:'))
+            messages.append(_('where') + ':')
             messages.append('  <xml_src> = ' + _('XML filename or path which contains XML files'))
             messages.append('  <acron> = ' + _('journal acronym'))
             messages.append('\n'.join(errors))

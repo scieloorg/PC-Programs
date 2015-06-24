@@ -3,6 +3,7 @@
 import os
 from datetime import datetime
 
+from __init__ import _
 import attributes
 import article_utils
 import xml_utils
@@ -401,7 +402,7 @@ class ArticleContentValidation(object):
                 r.append(('title', 'OK', item.language + ': ' + item.title))
             else:
                 if item.language is None:
-                    r.append(('title language', 'ERROR', _('Missing language for ') + item.title))
+                    r.append(('title language', 'ERROR', _('Missing @xml:lang for ') + item.title))
                 elif item.title is None:
                     r.append(('title', 'ERROR', _('Missing title for ') + item.language))
                 else:
@@ -431,7 +432,7 @@ class ArticleContentValidation(object):
 
     @property
     def article_previous_id(self):
-        return display_value('article-id (previous pid)', self.article.article_previous_id)
+        return display_value('article-id[@specific-use="previous-pid"]', self.article.article_previous_id)
 
     @property
     def order(self):
@@ -594,16 +595,16 @@ class ArticleContentValidation(object):
                     orgname, city, state, country_code, country_name = normalized_items[0]
                     if orgname in [aff.orgname, aff.norgname] and country_code in [aff.i_country]:
                         status = 'INFO'
-                        r.append(('normalized aff', status, _('Normalized institution is valid: ') + '; '.join([', '.join(list(item)) for item in normalized_items])))
+                        r.append(('normalized aff', status, _('Normalized institution name is valid: ') + '; '.join([', '.join(list(item)) for item in normalized_items])))
                     else:
                         status = 'ERROR'
-                        r.append(('normalized aff', status, _('Similar normalized institution: ') + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
+                        r.append(('normalized aff', status, _('Similar normalized institution names: ') + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
                 else:
-                    msg = _('Unable to confirm/find the normalized affiliation for ') + ' or '.join(item for item in [aff.orgname, aff.norgname] if item is not None)
+                    msg = _('Unable to confirm/find the normalized institution name for ') + ' or '.join(item for item in [aff.orgname, aff.norgname] if item is not None)
                     if len(normalized_items) == 0:
-                        r.append(('normalized aff', 'ERROR', msg + _('. Ask for normalized institution by email: scielo-xml@googlegroups.com')))
+                        r.append(('normalized aff', 'ERROR', msg + _('. Ask for normalized institution name by email: scielo-xml@googlegroups.com')))
                     else:
-                        r.append(('normalized aff', 'ERROR', msg + _('. Similar valid institutions are: ') + _('options: ') + '|'.join([', '.join(list(item)) for item in normalized_items])))
+                        r.append(('normalized aff', 'ERROR', msg + _('. Similar valid institution names are: ') + '<OPTIONS/>' + '|'.join([', '.join(list(item)) for item in normalized_items])))
 
             values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.orgdiv3, aff.city, aff.state, aff.i_country, aff.country]
             i = 0
@@ -640,12 +641,12 @@ class ArticleContentValidation(object):
         if self.article.total_of_pages is not None:
             return self._total(self.article.total_of_pages, self.article.page_count, 'total of pages', 'page-count')
         elif self.article.elocation_id:
-            return ('total of pages of ' + self.article.elocation_id, 'WARNING', _('Unable to calculate'))
+            return (_('total of pages of ') + self.article.elocation_id, 'WARNING', _('Unable to calculate'))
         else:
             pages = [self.article.fpage, self.article.lpage]
             pages = '-'.join([item for item in pages if item is not None])
             if pages != '':
-                return ('total of pages of ' + pages, 'WARNING', _('Unable to calculate'))
+                return (_('total of pages of ') + pages, 'WARNING', _('Unable to calculate'))
 
     @property
     def total_of_references(self):
@@ -671,7 +672,7 @@ class ArticleContentValidation(object):
                 r.append(('abstract: ', 'OK', item.language + ':' + item.text))
             else:
                 if item.language is None:
-                    r.append(('abstract: ', 'ERROR', _('Missing language for ') + item.text))
+                    r.append(('abstract: ', 'ERROR', _('Missing @xml:lang for ') + item.text))
                 if item.text is None:
                     r.append(('abstract: ', 'ERROR', _('Missing text for ') + item.language))
         return r
@@ -736,7 +737,7 @@ class ArticleContentValidation(object):
 
     @property
     def press_release_id(self):
-        return display_value('press_release_id', self.article.press_release_id)
+        return display_value(_('press release id'), self.article.press_release_id)
 
     @property
     def article_date_types(self):
@@ -758,35 +759,35 @@ class ArticleContentValidation(object):
 
     @property
     def issue_pub_date(self):
-        return required_one('issue_pub_date', self.article.issue_pub_date)
+        return required_one(_('issue pub-date'), self.article.issue_pub_date)
 
     @property
     def article_pub_date(self):
-        return display_attributes('article_pub_date', self.article.article_pub_date)
+        return display_attributes(_('article pub-date'), self.article.article_pub_date)
 
     @property
     def is_ahead(self):
-        return display_value('is_ahead', self.article.is_ahead)
+        return display_value(_('is aop'), self.article.is_ahead)
 
     @property
     def ahpdate(self):
-        return display_value('ahpdate', self.article.ahpdate)
+        return display_value(_('aop'), self.article.ahpdate)
 
     @property
     def is_article_press_release(self):
-        return display_value('is_article_press_release', self.article.is_article_press_release)
+        return display_value(_('is press_release'), self.article.is_article_press_release)
 
     @property
     def illustrative_materials(self):
-        return article_utils.display_values('illustrative_materials', self.article.illustrative_materials)
+        return article_utils.display_values(_('illustrative materials'), self.article.illustrative_materials)
 
     @property
     def is_text(self):
-        return display_value('is_text', self.article.is_text)
+        return display_value(_('is text'), self.article.is_text)
 
     @property
     def previous_pid(self):
-        return display_value('previous_pid', self.article.previous_pid)
+        return display_value(_('previous pid'), self.article.previous_pid)
 
     @property
     def validate_xref_reftype(self):
@@ -935,13 +936,14 @@ class ReferenceContentValidation(object):
                 self.validate_element('year', self.reference.year), 
             ]
 
-        _mixed = self.reference.mixed_citation.lower()
-        if 'conference' in _mixed or 'proceeding' in _mixed:
-            if self.reference.publication_type != 'confproc':
-                r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' confproc.'))
-        if ' dissert' in _mixed or 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed:
-            if self.reference.publication_type != 'thesis':
-                r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' thesis.'))
+        if self.reference.issue is None and self.reference.volume is None:
+            _mixed = self.reference.mixed_citation.lower()
+            if 'conference' in _mixed or 'proceeding' in _mixed:
+                if self.reference.publication_type != 'confproc':
+                    r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' confproc.'))
+            if ' dissert' in _mixed or 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed:
+                if self.reference.publication_type != 'thesis':
+                    r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' thesis.'))
 
         for item in items:
             if item is not None:
@@ -996,7 +998,7 @@ class ReferenceContentValidation(object):
             elif isinstance(person, article.CorpAuthor):
                 r.append(('collab', 'OK', person.collab))
             else:
-                r.append((_('invalid person'), 'WARNING', type(person)))
+                r.append((_('invalid author'), 'WARNING', str(type(person))))
         return r
 
     def year(self, article_year):

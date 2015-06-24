@@ -732,7 +732,10 @@ class AheadManager(object):
         return total > 0
 
     def extract_id_files_from_master(self, i_ahead_records):
+        print('extract_id_files_from_master')
         for db_filename in self.journal_files.ahead_bases:
+            print(db_filename)
+
             year = os.path.basename(db_filename)[0:4]
             id_path = self.journal_files.ahead_id_path(year)
             i_id_filename = self.journal_files.ahead_i_id_filename(year)
@@ -766,6 +769,7 @@ class AheadManager(object):
                 if order is not None and len(r) > 0:
                     if not os.path.isfile(id_path + '/' + order + '.id'):
                         self.dao.save_id(id_path + '/' + order + '.id', r)
+        print('extract_id_files_from_master--fim')
 
     def load(self):
         for db_filename in self.journal_files.ahead_bases:
@@ -829,6 +833,7 @@ class AheadManager(object):
         return aop
 
     def get_valid_ahead(self, article):
+        print('get_valid_ahead - inicio')
         ahead = None
         status = None
         if article.number == 'ahead':
@@ -851,6 +856,8 @@ class AheadManager(object):
                                 status = 'partially matched aop'
                     else:
                         status = 'unmatched aop'
+        print('get_valid_ahead - fim')
+        
         return (ahead, status)
 
     def mark_ahead_as_deleted(self, ahead):
@@ -866,7 +873,7 @@ class AheadManager(object):
 
     def manage_ex_ahead_files(self, ahead):
         msg = []
-        msg.append('Exclude aop files of ' + ahead.filename)
+        msg.append(_('Exclude aop files of ') + ahead.filename)
         year = ahead.ahead_db_name[0:4]
 
         ex_ahead_markup_path, ex_ahead_body_path, ex_ahead_base_path = self.journal_files.ex_ahead_paths(year)

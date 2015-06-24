@@ -271,9 +271,6 @@ def remove_xref(article_title):
         text = text.replace('<sup></sup>', '')
         text = text.replace('<sup/>', '')
         text = text.strip()
-        if article_title != text:
-            print(article_title)
-            print(text)
     return text
 
 

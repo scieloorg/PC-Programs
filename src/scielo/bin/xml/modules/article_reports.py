@@ -52,7 +52,7 @@ class ArticleDisplayReport(object):
             r += self.abstracts
             r += self.keywords
 
-        return html_reports.tag('h2', 'Article front') + html_reports.tag('div', r, 'article-data')
+        return html_reports.tag('h2', 'article/front') + html_reports.tag('div', r, 'article-data')
 
     @property
     def article_body(self):
@@ -60,14 +60,14 @@ class ArticleDisplayReport(object):
         r += self.sections
         r += self.formulas
         r += self.tables
-        return html_reports.tag('h2', 'Article body') + html_reports.tag('div', r, 'article-data')
+        return html_reports.tag('h2', 'article/body') + html_reports.tag('div', r, 'article-data')
 
     @property
     def article_back(self):
         r = ''
         r += self.funding
         r += self.footnotes
-        return html_reports.tag('h2', 'Article back') + html_reports.tag('div', r, 'article-data')
+        return html_reports.tag('h2', 'article/back') + html_reports.tag('div', r, 'article-data')
 
     @property
     def files_and_href(self):
@@ -176,7 +176,7 @@ class ArticleDisplayReport(object):
 
     @property
     def article_id_other(self):
-        return self.display_labeled_value('article-id (other)', self.article.article_id_other)
+        return self.display_labeled_value('article-id[@pub-id-type="other"]', self.article.article_id_other)
 
     @property
     def article_previous_id(self):

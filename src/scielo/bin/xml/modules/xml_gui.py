@@ -3,14 +3,12 @@
 import os
 
 import Tkinter
-import ttk
+
+from __init__ import _
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 XML_FOLDER_DEFAULT = CURRENT_PATH + '/../../'
-
-COLLECTIONS_NAMES = ('Brasil', 'Salud Publica')
-COLLECTIONS = {'Brasil': 'scl', 'Salud Publica': 'spa', }
 
 
 class XMLAppGUI(object):
@@ -99,17 +97,6 @@ class XMLAppGUI(object):
             self.tkFrame.label_msg.config(text=msg, bg=color)
             self.tkFrame.label_msg.update_idletasks()
 
-    def __get_message(self, action_name, is_app_ready):
-        if is_app_ready:
-            msg = 'Executing ' + action_name + ' for ' + self.selected_folder + '\n'
-        else:
-            msg = ''
-            if self.acron == '':
-                msg += 'Inform the acronym.\n'
-            if self.selected_folder == '':
-                msg += 'Select a folder which contains the SPS XML Files.\n'
-        return msg
-
     def is_valid_folder(self):
         r = (self.selected_folder != '')
         if r:
@@ -125,11 +112,11 @@ class XMLAppGUI(object):
         color = 'green' if self.is_valid_folder() and self.acron != '' else 'red'
         msg = ''
         if self.acron == '':
-            msg += 'Inform the acronym.\n'
+            msg += _('Inform the acronym.') + '\n'
         if self.selected_folder == '':
-            msg += 'Select a folder which contains the SPS XML Files.\n'
+            msg += _('Select a folder which contains the SPS XML Files.') + '\n'
         if len(msg) == 0:
-            msg = 'Executing XML Package Maker for ' + self.selected_folder + '\n'
+            msg = _('Executing XML Package Maker for ') + self.selected_folder + '\n'
         self.display_message(msg, color)
         if color == 'green':
             xml_package_maker(self.selected_folder, self.acron)
@@ -139,9 +126,9 @@ class XMLAppGUI(object):
         color = 'green' if self.is_valid_folder() else 'red'
         msg = ''
         if self.selected_folder == '':
-            msg += 'Select a folder which contains the SPS XML Files.\n'
+            msg += _('Select a folder which contains the SPS XML Files.') + '\n'
         if len(msg) == 0:
-            msg = 'Executing XML Converter for ' + self.selected_folder + '\n'
+            msg = _('Executing XML Converter for ') + self.selected_folder + '\n'
         self.display_message(msg, color)
         if color == 'green':
             xml_converter(self.selected_folder)
@@ -149,7 +136,10 @@ class XMLAppGUI(object):
 
 def open_main_window(is_converter_enabled, configurations):
     if configurations is None:
-        configurations = {'title': 'SPS XML Package Maker', }
+        t = 'SPS XML Package Maker'
+        if is_converter_enabled:
+            t += _(' and ') + 'XML Converter'
+        configurations = {'title': t}
 
     tk_root = Tkinter.Tk()
     tk_root.title(configurations['title'])

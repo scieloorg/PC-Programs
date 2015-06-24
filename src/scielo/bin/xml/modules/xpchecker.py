@@ -87,7 +87,7 @@ def java_xml_utils_style_validation(run_background, xml_filename, doctype, repor
         #parameters = {'filename': xml_report}
         java_xml_utils.xml_transform(run_background, xml_report, xsl_report, report_filename, parameters)
     else:
-        open(report_filename, 'w').write('FATAL ERROR: ' _('Unable to create') + ' ' + report_filename)
+        open(report_filename, 'w').write('FATAL ERROR: ' + _('Unable to create') + ' ' + report_filename)
     if os.path.isfile(report_filename):
         c = open(report_filename, 'r').read()
         is_valid_style = ('Total of errors = 0' in c) and (('Total of warnings = 0' in c) or (not 'Total of warnings =' in c))

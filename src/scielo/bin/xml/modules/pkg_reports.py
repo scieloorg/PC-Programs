@@ -3,6 +3,7 @@
 import os
 from datetime import datetime
 
+from __init__ import _
 import attributes
 import article_reports
 import article_utils
@@ -380,7 +381,9 @@ class ArticlesPkgReport(object):
             data_f, data_e, data_w = self.package.pkg_stats[new_name][1]
             rep1, rep2, rep3 = self.package.pkg_reports[new_name]
 
-            links = ''
+            a_name = 'view-reports-' + new_name
+            links = '<a name="' + a_name + '"/>'
+
             block = ''
             if xml_f + xml_e + xml_w > 0:
                 t = []
@@ -392,21 +395,21 @@ class ArticlesPkgReport(object):
                         v.append(content)
                 content = ''.join(v)
                 status = html_reports.get_stats_numbers_style(xml_f, xml_e, xml_w)
-                links += html_reports.report_link('xmlrep' + new_name, '[ ' + _('XML Validations') + ' ]', 'xmlrep')
-                block += html_reports.report_block('xmlrep' + new_name, content, 'xmlrep')
+                links += html_reports.report_link('xmlrep' + new_name, '[ ' + _('XML Validations') + ' ]', 'xmlrep', a_name)
+                block += html_reports.report_block('xmlrep' + new_name, content, 'xmlrep', a_name)
 
             if data_f + data_e + data_w > 0:
                 status = html_reports.get_stats_numbers_style(data_f, data_e, data_w)
-                links += html_reports.report_link('datarep' + new_name, '[ ' + _('Data Quality Control') + ' ]', 'datarep')
-                block += html_reports.report_block('datarep' + new_name, get_report_text(rep3), 'datarep')
+                links += html_reports.report_link('datarep' + new_name, '[ ' + _('Data Quality Control') + ' ]', 'datarep', a_name)
+                block += html_reports.report_block('datarep' + new_name, get_report_text(rep3), 'datarep', a_name)
 
             if conversion_reports is not None:
                 r = conversion_reports.get(new_name)
                 if r is not None:
                     conv_f, conv_e, conv_w, conv_rep = r
                     status = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
-                    links += html_reports.report_link('xcrep' + new_name, '[ ' + _('Converter') + ' ]', 'xcrep')
-                    block += html_reports.report_block('xcrep' + new_name, conv_rep, 'xcrep')
+                    links += html_reports.report_link('xcrep' + new_name, '[ ' + _('Converter') + ' ]', 'xcrep', a_name)
+                    block += html_reports.report_block('xcrep' + new_name, conv_rep, 'xcrep', a_name)
 
             values = []
             values.append(new_name)
@@ -423,6 +426,17 @@ class ArticlesPkgReport(object):
             items.append({'reports': block})
 
         return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=['reports'])
+
+    def delete_pkg_xml_and_data_reports(self):
+        for new_name in self.package.xml_name_sorted_by_order:
+            for f in list(self.package.pkg_reports[new_name]):
+                if os.path.isfile(f):
+                    print('delete ' + f)
+                    try:
+                        os.unlink(f)
+                        print('deleted ' + f)
+                    except:
+                        pass
 
     def sources_overview_report(self):
         labels = ['source', 'total']
@@ -569,12 +583,12 @@ def sorted_xml_name_by_order(articles):
 
 
 def processing_result_location(result_path):
-    return '<h5>Result of the processing: </h5>' + '<p>' + html_reports.link('file:///' + result_path, result_path) + '</p>'
+    return '<h5>' + _('Result of the processing:') + '</h5>' + '<p>' + html_reports.link('file:///' + result_path, result_path) + '</p>'
 
 
 def save_report(filename, title, content):
     html_reports.save(filename, title, content)
-    print('\n\nReport:\n ' + filename)
+    print('\n\nReport:' + '\n ' + filename)
 
 
 def display_report(report_filename):
@@ -611,5 +625,5 @@ def format_complete_report(report_components):
             style = 'selected-tab-content' if tab_id == 'summary-report' else 'not-selected-tab-content'
             content += html_reports.tab_block(tab_id, c, style)
 
-    content += html_reports.tag('p', _('Finished'))
+    content += html_reports.tag('p', _('finished'))
     return (f, e, w, content)
