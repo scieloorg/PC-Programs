@@ -968,7 +968,7 @@ class Article(ArticleXML):
 
     @property
     def is_text(self):
-        return len(self.keywords) == 0
+        return len(self.keywords) == 0 and len(self.abstracts) == 0
 
     @property
     def previous_pid(self):

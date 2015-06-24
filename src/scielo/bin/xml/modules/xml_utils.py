@@ -6,6 +6,8 @@ import xml.etree.ElementTree as etree
 import HTMLParser
 from StringIO import StringIO
 
+from __init__ import _
+
 
 ENTITIES_TABLE = None
 
@@ -469,11 +471,11 @@ def is_valid_xml_dir(xml_path):
 def is_valid_xml_path(xml_path):
     errors = []
     if xml_path is None:
-        errors.append('Missing XML location.')
+        errors.append(_('Missing XML location.'))
     else:
         if os.path.isfile(xml_path):
             if not xml_path.endswith('.xml'):
-                errors.append('Invalid file. XML file required.')
+                errors.append(_('Invalid file. XML file required.'))
         elif not is_valid_xml_dir(xml_path):
-            errors.append('Invalid folder. Folder must have XML files.')
+            errors.append(_('Invalid folder. Folder must have XML files.'))
     return errors

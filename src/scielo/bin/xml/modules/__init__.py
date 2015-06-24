@@ -18,5 +18,5 @@ if not current_locale in os.listdir(locale_path):
     current_locale = 'en_US'
     encoding = 'UTF-8'
 
-t = gettext.translation('f', locale_path, [current_locale])
+t = gettext.translation('xpm-xc', locale_path, [current_locale])
 _ = t.ugettext

@@ -4,6 +4,7 @@ import os
 
 from datetime import datetime
 
+from __init__ import _
 import xml_utils
 
 
@@ -233,14 +234,14 @@ def format_html_data(value, width=30):
         r = '-'
     elif isinstance(value, int):
         r = str(value)
+    elif '<OPTIONS/>' in value:
+        msg, value = value.split('<OPTIONS/>')
+        value = value.split('|')
+        r = msg + '<select size="10">' + '\n'.join(['<option>' + op + '</option>' for op in sorted(value)]) + '</select>'
     elif '<img' in value or '</a>' in value:
         r = value
     elif '<' in value and '>' in value:
         r = display_xml(value, width)
-    elif 'options: ' in value:
-        msg, value = value.split('options: ')
-        value = value.split('|')
-        r = msg + '<select size="10">' + '\n'.join(['<option>' + op + '</option>' for op in sorted(value)]) + '</select>'
     else:
         r = value
     return r
@@ -251,7 +252,6 @@ def save(filename, title, body):
         title = title
     if body is not None:
         body = body
-
     r = html(title, body)
     if isinstance(r, unicode):
         r = r.encode('utf-8')
@@ -328,13 +328,13 @@ def tabs_items(tabs, selected):
     return '<div class="tabs">' + r + '</div>'
 
 
-def report_link(report_id, report_label, style):
-    return '<a name="begin_label-' + report_id + '"/>&#160;<span id="label-' + report_id + '" onClick="display_article_report(\'' + report_id + '\', \'label-' + report_id + '\')" class="report-link-' + style + '">' + report_label.replace(' ', '&#160;') + '</span>'
+def report_link(report_id, report_label, style, location):
+    return '<a name="begin_label-' + report_id + '"/>&#160;<p id="label-' + report_id + '" onClick="display_article_report(\'' + report_id + '\', \'label-' + report_id + '\', \'' + location + '\')" class="report-link-' + style + '">' + report_label.replace(' ', '&#160;') + '</p>'
 
 
-def report_block(report_id, content, style):
+def report_block(report_id, content, style, location):
     r = '<div id="' + report_id + '" class="report-block-' + style + '">'
     r += content
-    r += '<div class="endreport"><span class="button" onClick="display_article_report(\'' + report_id + '\', \'label-' + report_id + '\')"> close </span></div>'
+    r += '<div class="endreport"><span class="button" onClick="display_article_report(\'' + report_id + '\', \'label-' + report_id + '\', \'' + location + '\')"> ' + _('close') + ' </span></div>'
     r += '</div>'
     return r

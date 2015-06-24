@@ -33,8 +33,8 @@ function display_tab_content(theID, selected) {
 }
 
 
-function display_article_report(clicked_report_id, label_id) {
-    window.location = '#begin_label-' + clicked_report_id;
+function display_article_report(clicked_report_id, label_id, location) {
+    window.location = '#' + location;
     document.getElementById(label_id).style.textDecoration = "line-through"
     if (open_report_id != null) {
         if (open_report_id != clicked_report_id) {
@@ -52,7 +52,7 @@ function display_article_report(clicked_report_id, label_id) {
         document.getElementById(clicked_report_id).style.display = "none"
         open_report_id = null
     }
-    window.location = '#begin_label-' + clicked_report_id;
+    window.location = '#' + location;
 }
 
 // -->
