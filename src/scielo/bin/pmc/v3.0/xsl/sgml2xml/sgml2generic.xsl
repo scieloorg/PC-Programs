@@ -893,7 +893,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<!-- xsl:if test="contains($corresp,.//fname) and contains($corresp,//surname)"><xsl:attribute name="corresp">yes</xsl:attribute></xsl:if> -->
 			<xsl:apply-templates select="@*[name()!='rid']"/>
 			<xsl:apply-templates select="."/>
-			<xsl:apply-templates select=".//xref"/>
+			<xsl:apply-templates select=".//xref|role"/>
 			<xsl:if test="not(.//xref) and count(../..//afftrans)+count(../..//normaff)+count(../..//aff)=1">
 				<xref ref-type="aff" rid="aff1"/>
 			</xsl:if>
@@ -901,7 +901,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:copy-of select="../..//aff[@id=$author_rid]/role"/>
 		<xsl:copy-of select="../..//normaff[@id=$author_rid]/role"/>
 	</xsl:template>
-	
+	<xsl:template match="role"><role><xsl:apply-templates/></role></xsl:template>
 	<xsl:template match="corpauth" mode="front-contrib">
 		<xsl:variable name="teste">
 			<xsl:apply-templates select="./../../authgrp//text()"/>
