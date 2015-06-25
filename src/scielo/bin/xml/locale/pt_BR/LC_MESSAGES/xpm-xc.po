@@ -393,8 +393,8 @@ msgid "If the reference has no "
 msgstr "Se o elemento não tem "
 
 #: modules/attributes.py:163
-msgid "use"
-msgstr "use"
+msgid "ignore this message"
+msgstr "ignore esta mensagem"
 
 #: modules/attributes.py:166
 msgid " is not allowed for "

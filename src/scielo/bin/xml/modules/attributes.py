@@ -160,7 +160,7 @@ def validate_element(publication_type, label, value):
         if is_required(publication_type, label):
             problem = '@publication-type="' + publication_type + '" ' + _('requires') + ' ' + label
             items = ['@publication-type', _('the elements of this reference')]
-            compl = '. ' + _('If the reference has no ') + label + ', ' + _('use') + ' element-citation/@specific-use=display-only'
+            compl = '. ' + _('If the reference has no ') + label + ', ' + _('ignore this message')
     else:
         if not is_allowed_element(publication_type, label):
             problem = label + _(' is not allowed for ') + '@publication-type=' + publication_type
