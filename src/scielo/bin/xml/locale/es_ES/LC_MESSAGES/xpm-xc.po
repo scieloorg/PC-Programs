@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-24 17:25-0300\n"
+"POT-Creation-Date: 2015-06-25 10:22-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: modules/article_reports.py:75
@@ -335,49 +335,50 @@ msgstr ""
 msgid "are"
 msgstr ""
 
-#: modules/article_validations.py:930
+#: modules/article_validations.py:930 modules/article_validations.py:972
 msgid "or"
 msgstr ""
 
 #: modules/article_validations.py:943 modules/article_validations.py:946
+#: modules/article_validations.py:985 modules/article_validations.py:988
 msgid "Check if @publication-type is correct. This reference looks like"
 msgstr ""
 
-#: modules/article_validations.py:957 modules/article_validations.py:959
+#: modules/article_validations.py:999 modules/article_validations.py:1001
 msgid ""
 "Remove @specific-use=\"display-only\". It is required to identify incomplete "
 "references which @publication-type is equal to "
 msgstr ""
 
-#: modules/article_validations.py:959
+#: modules/article_validations.py:1001
 msgid "Expected at least the elements: "
 msgstr ""
 
-#: modules/article_validations.py:963
+#: modules/article_validations.py:1005
 msgid "Incomplete Reference"
 msgstr ""
 
-#: modules/article_validations.py:963
+#: modules/article_validations.py:1005
 msgid "Check if the elements of this reference is properly identified."
 msgstr ""
 
-#: modules/article_validations.py:967
+#: modules/article_validations.py:1009
 msgid " ignored "
 msgstr ""
 
-#: modules/article_validations.py:976
+#: modules/article_validations.py:1018
 msgid "is missing in"
 msgstr ""
 
-#: modules/article_validations.py:1001
+#: modules/article_validations.py:1043
 msgid "invalid author"
 msgstr ""
 
-#: modules/article_validations.py:1012
+#: modules/article_validations.py:1054
 msgid " must not be greater than "
 msgstr ""
 
-#: modules/article_validations.py:1018
+#: modules/article_validations.py:1060
 msgid " is not a number nor in an expected format."
 msgstr ""
 
@@ -394,7 +395,7 @@ msgid "If the reference has no "
 msgstr ""
 
 #: modules/attributes.py:163
-msgid "use"
+msgid "ignore this message"
 msgstr ""
 
 #: modules/attributes.py:166

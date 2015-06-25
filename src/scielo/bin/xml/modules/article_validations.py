@@ -948,6 +948,48 @@ class ReferenceContentValidation(object):
         for item in items:
             if item is not None:
                 r.append(item)
+        return r
+
+    @property
+    def ignore_publication_type_dependence(self):
+        r = []
+        authors = None
+        if len(self.reference.authors_list) > 0:
+            for item in self.reference.authors_list:
+                if isinstance(item, article.PersonAuthor):
+                    authors = item.surname + ' ...'
+                elif isinstance(item, article.CorpAuthor):
+                    authors = item.collab
+
+        items = [
+                self.validate_element('person-group', authors), 
+                self.validate_element('article-title', self.reference.article_title), 
+                self.validate_element('chapter-title', self.reference.chapter_title), 
+                self.validate_element('publisher-name', self.reference.publisher_name), 
+                self.validate_element('publisher-loc', self.reference.publisher_loc), 
+                self.validate_element('comment[@content-type="degree"]', self.reference.degree), 
+                self.validate_element('conf-name', self.reference.conference_name), 
+                self.validate_element('date-in-citation[@content-type="access-date"] ' + _('or') + ' date-in-citation[@content-type="update"]', self.reference.cited_date), 
+                self.validate_element('ext-link', self.reference.ext_link), 
+                self.validate_element('volume', self.reference.volume), 
+                self.validate_element('issue', self.reference.issue), 
+                self.validate_element('fpage', self.reference.fpage), 
+                self.validate_element('source', self.reference.source), 
+                self.validate_element('year', self.reference.year), 
+            ]
+
+        if self.reference.issue is None and self.reference.volume is None:
+            _mixed = self.reference.mixed_citation.lower()
+            if 'conference' in _mixed or 'proceeding' in _mixed:
+                if self.reference.publication_type != 'confproc':
+                    r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' confproc.'))
+            if ' dissert' in _mixed or 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed:
+                if self.reference.publication_type != 'thesis':
+                    r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' thesis.'))
+
+        for item in items:
+            if item is not None:
+                r.append(item)
 
         any_error_level = list(set([status for label, status, message in r if status in ['FATAL ERROR']]))
         if len(any_error_level) == 0:
