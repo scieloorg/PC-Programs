@@ -3,6 +3,7 @@
 import os
 from datetime import datetime
 
+from __init__ import _
 import utils
 import xml_utils
 

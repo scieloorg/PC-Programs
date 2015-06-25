@@ -7,6 +7,14 @@ locale_path = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/') + '
 
 current_locale, encoding = locale.getdefaultlocale()
 
+print('current_locale')
+print(current_locale)
+
+if encoding is None:
+    encoding = 'UTF-8'
+if current_locale is None:
+    current_locale = 'en_US'
+
 if not current_locale in os.listdir(locale_path):
     lang, country = current_locale.split('_')
     encoding = 'UTF-8'
