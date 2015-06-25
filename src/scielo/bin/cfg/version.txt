@@ -1,4 +1,89 @@
-﻿4.0.089 - 28/10/2014
+﻿4.0.090 - /2015
+====================
+- Markup
+  - (bug) fix cint(4.0) problem which happened to SciELO Portugal
+- Markup XML - doc DTD
+  - (new) download de markup journals list
+  - (new) institution names normalizer
+  - (new) requires .doc files at markup_xml/scielo_markup
+  - (new) prefix for Chart (ch1)
+  - New elements/attributes:
+    - (new) versgrp, versline
+    - (new) attrib
+    - (new) ref/series
+    - (new) alttext, alttitle
+    - (new) country/@country
+    - (new) product
+    - (new) author/role
+    - (new) sectitle in key words, abstracts, etc
+    - (new) boxedtxt
+    - (new) appgrp
+    - (new) afftrans
+    - (new) equation/label
+  - Modified elements/attributes:
+    - (new) city, state, country by publoc
+    - (bug) related/@reltp, related/@pid-doi
+  - Automations:
+    - (new) front according to a new template
+    - (new) *kwdgrp, considering sectitle
+    - (new) body/sec
+    - refs:
+      - (new) Vancouver (Automata 2)
+      - (new) *authors, et-al
+      - (new) publoc-pubname, pubname-publoc
+      - (bug) fix identification of previous author
+    - (bug) fix bibr xref: (20,21) (20-24) (20,22-25)
+    - (bug) fix fig or table xref which @rid has more than 1 digit (Figure 10)
+
+- XML generation
+  - always generate article-id although there is no DOI
+  - (bug) font symbols
+  - (new) sigblock -> contrib-group
+  - (new) appgrp -> app-group
+  - (new) afftrans -> sub-article/aff
+  - (new) equation/label -> disp-formula/label
+  - New elements/attributes:
+    - (new) alternatives: graphic, mml:math, texmath
+    - (new) title in key words, abstracts, etc
+    - (new) boxed-text
+  - Modified elements/attributes:
+    - (bug) sub-article (translation): aff and contrib-group
+  - Removed elements/attributes:
+    - (bug) institution/named-content
+    
+- XPM / XC
+  - (new) GUI
+  - (new) reports in Portuguese
+  - (new) element-citation/@publication-type validations
+  - (new) @article-type vs subject validation
+  - (new) improving contents validations
+
+- XPM
+  - (new) generate scielo_package_zips, pmc_package_zips
+  - (bug) file names of special number or volume and inline-graphic
+  - (bug) fix extraction of embedded images
+
+- XC
+  - (bug) fix some data in the database
+  - (new) v240 for normalized aff
+  - (bug) fix encoding
+  - (new) validate new files against registered articles
+
+- Markup SGML (article/text):
+  - (bug) contaje de citas
+  - (bug) a01 a02
+  - (bug) text/aff
+  - (bug) toccode
+  - (bug) doctopic = editorial
+
+- SGML Parser
+  - complete doc4_0.dtd with the new/missing elements/attributes
+
+- Title Manager
+  - license code only
+  - new licenses
+
+4.0.089 - 28/10/2014
 ====================
 - XML Package Maker 
   - (bug) fix the file name of ahead of print articles
