@@ -189,9 +189,8 @@ filename       CDATA #IMPLIED>
 <!ELEMENT related     - O EMPTY >
 <!ATTLIST related
           id ID #IMPLIED
-          reltype CDATA #REQUIRED 
-	     relid CDATA #REQUIRED 
-          relidtp CDATA #REQUIRED
+          reltp CDATA #REQUIRED 
+	     pid-doi CDATA #REQUIRED 
       >
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
