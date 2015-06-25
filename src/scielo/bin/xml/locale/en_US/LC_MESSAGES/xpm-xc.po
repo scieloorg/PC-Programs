@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-25 10:22-0300\n"
+"POT-Creation-Date: 2015-06-25 17:50-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -565,7 +565,7 @@ msgstr ""
 msgid "finished"
 msgstr ""
 
-#: modules/xc_models.py:876
+#: modules/xc_models.py:877
 msgid "Exclude aop files of "
 msgstr ""
 
