@@ -153,6 +153,7 @@ author
 surname-fname;#FALSE#;#FALSE#
 fname;#FALSE#;#FALSE#
 surname;#FALSE#;#FALSE#
+role;#FALSE#;#FALSE#
 previous;#FALSE#;#FALSE#
 
 awarded
