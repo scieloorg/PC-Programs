@@ -33,7 +33,7 @@ categories_messages = {
     'converted': _('converted'), 
     'rejected': _('rejected'), 
     'not converted': _('not converted'), 
-    'skept': _('skept conversion'), 
+    'skipped': _('skipped conversion'), 
     'deleted ex-aop': _('deleted ex-aop'), 
     'deleted incorrect order': _('deleted incorrect order'), 
     'not deleted ex-aop': _('not deleted ex-aop'), 
@@ -177,7 +177,7 @@ def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions,
 
 
 def display_status_after_xc(previous_registered_articles, registered_articles, pkg_articles, xml_doc_actions, unmatched_orders):
-    actions_result_labels = {'delete': 'deleted', 'update': 'updated', 'add': 'added', '-': '-', 'skip-update': 'skept', 'order changed': 'order changed', 'fail': 'update/add failed'}
+    actions_result_labels = {'delete': 'deleted', 'update': 'updated', 'add': 'added', '-': '-', 'skip-update': 'skipped', 'order changed': 'order changed', 'fail': 'update/add failed'}
     orders = sorted(list(set([article.order for article in previous_registered_articles.values()] + [article.order for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()])))
 
     sorted_previous_registered = pkg_reports.articles_sorted_by_order(previous_registered_articles)
@@ -495,7 +495,7 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
     conversion_stats_and_reports = {}
     conversion_status = {}
 
-    for k in ['converted', 'rejected', 'not converted', 'skept', 'deleted incorrect order']:
+    for k in ['converted', 'rejected', 'not converted', 'skipped', 'deleted incorrect order']:
         conversion_status[k] = []
 
     n = '/' + str(len(pkg_articles))
@@ -520,8 +520,8 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
         msg = ''
 
         if not xml_doc_actions[xml_name] in ['add', 'update']:
-            msg += html_reports.tag('p', 'skept')
-            conversion_status['skept'].append(xml_name)
+            msg += html_reports.tag('p', 'skipped')
+            conversion_status['skipped'].append(xml_name)
         else:
             xml_stats, data_stats = articles_stats[xml_name]
             xml_f, xml_e, xml_w = xml_stats

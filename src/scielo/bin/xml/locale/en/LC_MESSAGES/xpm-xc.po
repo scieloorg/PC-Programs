@@ -3,841 +3,853 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-25 17:50-0300\n"
-"PO-Revision-Date: 2015-06-26 11:32-0600\n"
-"Language: es\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"X-Generator: Poedit 1.8.1\n"
 
 #: modules/article_reports.py:75
 msgid "Files in the package"
-msgstr "Ficheros en el paquete"
+msgstr ""
 
 #: modules/article_reports.py:86
 msgid "Authors"
-msgstr "Autores"
+msgstr ""
 
 #: modules/article_reports.py:91 modules/pkg_reports.py:616
 msgid "Sources"
-msgstr "Fuentes"
+msgstr ""
 
 #: modules/article_reports.py:448
 msgid "missing extension of "
-msgstr "no se encontró la extensión de "
+msgstr ""
 
 #: modules/article_reports.py:450
 msgid " not found in package"
-msgstr " no encontrado en el paquete"
+msgstr ""
 
 #: modules/article_reports.py:452
 msgid " is not working"
-msgstr " no funciona"
+msgstr ""
 
 #: modules/article_reports.py:468 modules/article_reports.py:472
 msgid "found in XML"
-msgstr "encontrado en el fichero XML"
+msgstr ""
 
 #: modules/article_reports.py:478
 msgid "not found in XML"
-msgstr "no encontrado en el fichero XML"
+msgstr ""
 
 #: modules/article_reports.py:544
 msgid "Unable to get data of "
-msgstr "No fue posible obtener los datos de "
+msgstr ""
 
 #: modules/article_reports.py:573 modules/pkg_reports.py:403
 msgid "Data Quality Control"
-msgstr "Validaciones de contenido"
+msgstr ""
 
 #: modules/article_validations.py:33 modules/article_validations.py:38
 msgid " starts with"
-msgstr " empieza con"
+msgstr ""
 
 #: modules/article_validations.py:33 modules/article_validations.py:35
 msgid " \"space\""
-msgstr " \"espacio\""
+msgstr ""
 
 #: modules/article_validations.py:35
 msgid " ends with"
-msgstr " termina con"
+msgstr ""
 
 #: modules/article_validations.py:41
 msgid "contains invalid characteres:"
-msgstr "contiene caracteres inválidos:"
+msgstr ""
 
 #: modules/article_validations.py:56
 msgid "Required, if exists."
-msgstr "Si existe es requerido."
+msgstr ""
 
 #: modules/article_validations.py:60
 msgid "Required at least one "
-msgstr "Al menos uno es requerido "
+msgstr ""
 
 #: modules/article_validations.py:65 modules/article_validations.py:67
 msgid "Required"
-msgstr "Requerido"
+msgstr ""
 
 #: modules/article_validations.py:78
 msgid "Invalid value for "
-msgstr "Valor inválido para"
+msgstr ""
 
-#: modules/article_validations.py:78 modules/article_validations.py:160 modules/article_validations.py:757
+#: modules/article_validations.py:78 modules/article_validations.py:160
+#: modules/article_validations.py:757
 msgid "Expected values"
-msgstr "Valores esperados"
+msgstr ""
 
 #: modules/article_validations.py:104
 msgid "Invalid character/word"
-msgstr "Palabra/carácter inválido"
+msgstr ""
 
-#: modules/article_validations.py:104 modules/article_validations.py:146 modules/article_validations.py:534
-#: modules/article_validations.py:537 modules/pkg_reports.py:267 modules/pkg_reports.py:296 modules/pkg_reports.py:300
+#: modules/article_validations.py:104 modules/article_validations.py:146
+#: modules/article_validations.py:534 modules/article_validations.py:537
+#: modules/pkg_reports.py:267 modules/pkg_reports.py:296
+#: modules/pkg_reports.py:300
 msgid "in"
-msgstr "en"
+msgstr ""
 
 #: modules/article_validations.py:129
 msgid "Be sure that"
-msgstr "Asegúrese que"
+msgstr ""
 
 #: modules/article_validations.py:129
 msgid "is correct"
-msgstr "sea correcto"
+msgstr ""
 
 #: modules/article_validations.py:146
 msgid "Invalid terms"
-msgstr "Términos inválidos"
+msgstr ""
 
 #: modules/article_validations.py:147
 msgid "must be identified as"
-msgstr "debe ser identificado como"
+msgstr ""
 
 #: modules/article_validations.py:160
 msgid "Author"
-msgstr "Autor"
+msgstr ""
 
 #: modules/article_validations.py:160
 msgid "has no"
-msgstr "no tiene"
+msgstr ""
 
-#: modules/article_validations.py:164 modules/article_validations.py:820 modules/xmlcvrter.py:240
+#: modules/article_validations.py:164 modules/article_validations.py:820
+#: modules/xmlcvrter.py:240
 msgid "of"
-msgstr "de"
+msgstr ""
 
 #: modules/article_validations.py:164 modules/article_validations.py:277
 msgid "Invalid value of"
-msgstr "Valor inválido de"
+msgstr ""
 
 #: modules/article_validations.py:164
 msgid "Valid values: "
-msgstr "Valores válidos: "
+msgstr ""
 
 #: modules/article_validations.py:286
 msgid "Invalid format for language. It requires two lower case letters."
-msgstr "Formato inválido para @xml:lang. Son necesarias dos letras minúsculas."
+msgstr ""
 
 #: modules/article_validations.py:315
 msgid "Check the value of"
-msgstr "Verificar el valor de"
+msgstr ""
 
 #: modules/article_validations.py:353
 msgid "Missing ISSN. Required at least one."
-msgstr "ISSN no encontrado. Se requiere al menos uno."
+msgstr ""
 
 #: modules/article_validations.py:372 modules/article_validations.py:375
 msgid " requires contrib names or collabs."
-msgstr " se requiere contrib names o collabs."
+msgstr ""
 
-#: modules/article_validations.py:390 modules/article_validations.py:801 modules/article_validations.py:803
-#: modules/article_validations.py:807 modules/article_validations.py:837 modules/article_validations.py:841
+#: modules/article_validations.py:390 modules/article_validations.py:801
+#: modules/article_validations.py:803 modules/article_validations.py:807
+#: modules/article_validations.py:837 modules/article_validations.py:841
 msgid "Missing"
-msgstr "No encontrado"
+msgstr ""
 
 #: modules/article_validations.py:405 modules/article_validations.py:675
 msgid "Missing @xml:lang for "
-msgstr "No se encontró @xml:lang para "
+msgstr ""
 
 #: modules/article_validations.py:407
 msgid "Missing title for "
-msgstr "No se encontró title para"
+msgstr ""
 
 #: modules/article_validations.py:409
 msgid "Missing titles"
-msgstr "No se encontró titles"
+msgstr ""
 
 #: modules/article_validations.py:430
 msgid "Be sure that this DOI"
-msgstr "Asegúrese que este DOI"
+msgstr ""
 
 #: modules/article_validations.py:430
 msgid "belongs to this journal."
-msgstr "pertenezca a esta revista."
+msgstr ""
 
 #: modules/article_validations.py:442
 msgid "Missing order. Expected number 1 to 99999."
-msgstr "No se encontró order. Se esperaba un número del 1 a 99999."
+msgstr ""
 
 #: modules/article_validations.py:446 modules/article_validations.py:448
 msgid "Invalid format of order. Expected number 1 to 99999."
-msgstr "Formato inválido para order. Se esperaba un número del 1 a 99999."
+msgstr ""
 
 #: modules/article_validations.py:462
 msgid "is required if there is no fpage > 0 or fpage is not number."
-msgstr "es requerido si fpage no es mayor a 0  o fpage no es un número."
+msgstr ""
 
 #: modules/article_validations.py:468
 msgid "Required volume and/or number"
-msgstr "volumen y/o número requerido"
+msgstr ""
 
 #: modules/article_validations.py:534 modules/article_validations.py:537
 msgid "Found"
-msgstr "Encontrado"
+msgstr ""
 
 #: modules/article_validations.py:587
 msgid "Invalid value"
-msgstr "Valor inválido"
+msgstr ""
 
 #: modules/article_validations.py:587
 msgid "It must be ISO code of "
-msgstr "Debe ser el código ISO de "
+msgstr ""
 
 #: modules/article_validations.py:598
 msgid "Normalized institution name is valid: "
-msgstr "Nombre normalizado de institución válido: "
+msgstr ""
 
 #: modules/article_validations.py:601
 msgid "Similar normalized institution names: "
-msgstr "Nombres normalizados de institución similares: "
+msgstr ""
 
 #: modules/article_validations.py:603
 msgid "Unable to confirm/find the normalized institution name for "
-msgstr "No fue posible confirmar/encontrar el nombre normalizado de la institución para "
+msgstr ""
 
 #: modules/article_validations.py:605
-msgid ". Ask for normalized institution name by email: scielo-xml@googlegroups.com"
-msgstr ". Pregunte por el nombre normalizado de la institución escribiendo a: scielo-xml@googlegroups.com"
+msgid ""
+". Ask for normalized institution name by email: scielo-xml@googlegroups.com"
+msgstr ""
 
 #: modules/article_validations.py:607
 msgid ". Similar valid institution names are: "
-msgstr ". Los nombres similares de la institución válidos son: "
+msgstr ""
 
 #: modules/article_validations.py:614
 msgid "only one occurrence of "
-msgstr "solamente una ocurrencia de "
+msgstr ""
 
 #: modules/article_validations.py:614
 msgid " is allowed."
-msgstr " es permitido."
+msgstr ""
 
 #: modules/article_validations.py:636
 msgid "They must have the same value"
-msgstr "Debe tener el mismo valor"
+msgstr ""
 
 #: modules/article_validations.py:644 modules/article_validations.py:649
 msgid "total of pages of "
-msgstr "el total de páginas de "
+msgstr ""
 
 #: modules/article_validations.py:644 modules/article_validations.py:649
 msgid "Unable to calculate"
-msgstr "No se pudo calcular"
+msgstr ""
 
 #: modules/article_validations.py:653
 msgid "total of references"
-msgstr "total de citas"
+msgstr ""
 
 #: modules/article_validations.py:657
 msgid "total of tables"
-msgstr "total de tablas"
+msgstr ""
 
 #: modules/article_validations.py:661
 msgid "total of equations"
-msgstr "total de ecuaciones"
+msgstr ""
 
 #: modules/article_validations.py:665
 msgid "total of figures"
-msgstr "total de figuras"
+msgstr ""
 
 #: modules/article_validations.py:677
 msgid "Missing text for "
-msgstr "No se encontró el texto para "
+msgstr ""
 
 #: modules/article_validations.py:740
 msgid "press release id"
-msgstr "ID de press release"
+msgstr ""
 
-#: modules/article_validations.py:746 modules/article_validations.py:753 modules/article_validations.py:807
-#: modules/article_validations.py:817 modules/article_validations.py:820 modules/xml_gui.py:141
+#: modules/article_validations.py:746 modules/article_validations.py:753
+#: modules/article_validations.py:807 modules/article_validations.py:817
+#: modules/article_validations.py:820 modules/xml_gui.py:141
 msgid " and "
 msgstr ""
 
 #: modules/article_validations.py:757
 msgid "Invalid combination of date types: "
-msgstr "Combinación inválida de tipos de fecha: "
+msgstr ""
 
 #: modules/article_validations.py:762 modules/xmlcvrter.py:758
 msgid "issue pub-date"
-msgstr "pub-date del fascículo"
+msgstr ""
 
 #: modules/article_validations.py:766
 msgid "article pub-date"
-msgstr "pub-date del artículo"
+msgstr ""
 
 #: modules/article_validations.py:770
 msgid "is aop"
-msgstr "es un aop (publicación avanzada)"
+msgstr ""
 
 #: modules/article_validations.py:774
 msgid "aop"
-msgstr "aop"
+msgstr ""
 
 #: modules/article_validations.py:778
 msgid "is press_release"
-msgstr "es un press_release"
+msgstr ""
 
 #: modules/article_validations.py:782
 msgid "illustrative materials"
-msgstr "materiales ilustrativos"
+msgstr ""
 
 #: modules/article_validations.py:786
 msgid "is text"
-msgstr "es texto"
+msgstr ""
 
 #: modules/article_validations.py:790
 msgid "previous pid"
-msgstr "PID anterior"
+msgstr ""
 
 #: modules/article_validations.py:815
 msgid "Unmatched"
-msgstr "No coincide"
+msgstr ""
 
 #: modules/article_validations.py:819
 msgid "is for"
-msgstr "es para"
+msgstr ""
 
 #: modules/article_validations.py:820
 msgid "valid values of"
-msgstr "valores válidos de"
+msgstr ""
 
 #: modules/article_validations.py:821
 msgid "are"
-msgstr "son"
+msgstr ""
 
 #: modules/article_validations.py:930 modules/article_validations.py:972
 msgid "or"
-msgstr "o"
+msgstr ""
 
-#: modules/article_validations.py:943 modules/article_validations.py:946 modules/article_validations.py:985
-#: modules/article_validations.py:988
+#: modules/article_validations.py:943 modules/article_validations.py:946
+#: modules/article_validations.py:985 modules/article_validations.py:988
 msgid "Check if @publication-type is correct. This reference looks like"
-msgstr "Verifique si @publication-type es correcto. Esta cita se parece a"
+msgstr ""
 
 #: modules/article_validations.py:999 modules/article_validations.py:1001
-msgid "Remove @specific-use=\"display-only\". It is required to identify incomplete references which @publication-type is equal to "
-msgstr "Elimine @specific-use=\"display-only\". Es requerido para identificar citas incompletas cuyo @publication-type es igual a "
+msgid ""
+"Remove @specific-use=\"display-only\". It is required to identify incomplete "
+"references which @publication-type is equal to "
+msgstr ""
 
 #: modules/article_validations.py:1001
 msgid "Expected at least the elements: "
-msgstr "Se esperaban al menos los elementos: "
+msgstr ""
 
 #: modules/article_validations.py:1005
 msgid "Incomplete Reference"
-msgstr "Cita incompleta"
+msgstr ""
 
 #: modules/article_validations.py:1005
 msgid "Check if the elements of this reference is properly identified."
-msgstr "Verifique si los elementos de esta cita están identificados correctamente."
+msgstr ""
 
 #: modules/article_validations.py:1009
 msgid " ignored "
-msgstr " ignorado "
+msgstr ""
 
 #: modules/article_validations.py:1018
 msgid "is missing in"
-msgstr "no fue encontrado en"
+msgstr ""
 
 #: modules/article_validations.py:1043
 msgid "invalid author"
-msgstr "autor inválido"
+msgstr ""
 
 #: modules/article_validations.py:1054
 msgid " must not be greater than "
-msgstr " no debe ser mayor que "
+msgstr ""
 
 #: modules/article_validations.py:1060
 msgid " is not a number nor in an expected format."
-msgstr " no es un número ni está en el formato esperado."
+msgstr ""
 
 #: modules/attributes.py:161
 msgid "requires"
-msgstr "requiere"
+msgstr ""
 
 #: modules/attributes.py:162
 msgid "the elements of this reference"
-msgstr "los elementos de esta cita"
+msgstr ""
 
 #: modules/attributes.py:163
 msgid "If the reference has no "
-msgstr "Si la cita no tiene "
+msgstr ""
 
 #: modules/attributes.py:163
 msgid "ignore this message"
-msgstr "ignore este mensaje"
+msgstr ""
 
 #: modules/attributes.py:166
 msgid " is not allowed for "
-msgstr " no es permitido para "
+msgstr ""
 
 #: modules/attributes.py:169
 msgid ". Be sure that you have correctly identified: "
-msgstr ". Asegúrese de que lo identifico correctamente: "
+msgstr ""
 
 #: modules/attributes.py:169 modules/xmlcvrter.py:90 modules/xmlcvrter.py:832
 msgid " or "
-msgstr " o "
+msgstr ""
 
 #: modules/html_reports.py:338
 msgid "close"
-msgstr "cerrar"
+msgstr ""
 
-#: modules/pkg_reports.py:68 modules/pkg_reports.py:79 modules/pkg_reports.py:87
+#: modules/pkg_reports.py:68 modules/pkg_reports.py:79
+#: modules/pkg_reports.py:87
 msgid "authors without aff"
-msgstr "autores sin afiliaciones"
+msgstr ""
 
 #: modules/pkg_reports.py:69 modules/pkg_reports.py:85
 msgid "authors with more than 1 affs"
-msgstr "autores que tienen más de una afiliación"
+msgstr ""
 
 #: modules/pkg_reports.py:70 modules/pkg_reports.py:83
 msgid "authors with invalid xref[@ref-type=aff]"
-msgstr "autores con xref[@ref-type=aff] inválidos"
+msgstr ""
 
 #: modules/pkg_reports.py:71 modules/pkg_reports.py:90
 msgid "incomplete affiliations"
-msgstr "afiliaciones incompletas"
+msgstr ""
 
 #: modules/pkg_reports.py:259
 msgid "Invalid XML files."
-msgstr "Ficheros XML inválidos."
+msgstr ""
 
 #: modules/pkg_reports.py:264
 #, python-format
 msgid "same value for %s is required for all the documents in the package"
-msgstr "el mismo valor para %s es requerido para todos los documentos del paquete"
+msgstr ""
 
 #: modules/pkg_reports.py:267 modules/pkg_reports.py:296
 msgid "found"
-msgstr "encontrado"
+msgstr ""
 
 #: modules/pkg_reports.py:293
 #, python-format
 msgid ": unique value of %s is required for all the documents in the package"
-msgstr ": valor único de %s es requerido para todos los documentos del paquete"
+msgstr ""
 
 #: modules/pkg_reports.py:299
 msgid "there is no value for "
-msgstr "no es un valor para "
+msgstr ""
 
 #: modules/pkg_reports.py:300
 msgid "no value for "
-msgstr "ningún valor para "
+msgstr ""
 
 #: modules/pkg_reports.py:309
 msgid "Unique value expected for "
-msgstr "Se esperaba un valor único para "
+msgstr ""
 
 #: modules/pkg_reports.py:315
 msgid "Languages overview"
-msgstr "Visión general de los idiomas"
+msgstr ""
 
 #: modules/pkg_reports.py:319
 msgid "Dates overview"
-msgstr "Visión general de las fechas"
+msgstr ""
 
 #: modules/pkg_reports.py:323
 msgid "Affiliations overview"
-msgstr "Visión general de afiliaciones"
+msgstr ""
 
 #: modules/pkg_reports.py:336
 msgid "references by type"
-msgstr "citas por tipo"
+msgstr ""
 
 #: modules/pkg_reports.py:344
 msgid "same sources as different types"
-msgstr "mismas fuentes como tipos diferentes"
+msgstr ""
 
 #: modules/pkg_reports.py:349
 msgid "same sources as different types references"
-msgstr "mismas fuentes como tipos diferentes de citas"
+msgstr ""
 
 #: modules/pkg_reports.py:355
 msgid "references missing source"
-msgstr "citas sin fuente"
+msgstr ""
 
 #: modules/pkg_reports.py:357
 msgid "references missing year"
-msgstr "citas sin año"
+msgstr ""
 
 #: modules/pkg_reports.py:359
 msgid "references with unusual value for source"
-msgstr "citas con un valor inusual para la fuente"
+msgstr ""
 
 #: modules/pkg_reports.py:361
 msgid "references with unusual value for year"
-msgstr "citas con un valor inusual para año"
+msgstr ""
 
 #: modules/pkg_reports.py:363
 msgid "Package references overview"
-msgstr "Visión general las citas del paquete"
+msgstr ""
 
 #: modules/pkg_reports.py:398
 msgid "XML Validations"
-msgstr "Validaciones del XML"
+msgstr ""
 
 #: modules/pkg_reports.py:411
 msgid "Converter"
-msgstr "Converter"
+msgstr ""
 
 #: modules/pkg_reports.py:532
 msgid "XML path"
-msgstr "Ruta del XML"
+msgstr ""
 
 #: modules/pkg_reports.py:535
 msgid "Total of XML files"
-msgstr "Total de ficheros XML"
+msgstr ""
 
 #: modules/pkg_reports.py:541
-msgid "Fatal error - indicates errors which impact on the quality of the bibliometric indicators and other services"
-msgstr "Fatal error - indica errores que impactan a la calidad de los indicadores bibliométricos y otros servicios"
+msgid ""
+"Fatal error - indicates errors which impact on the quality of the "
+"bibliometric indicators and other services"
+msgstr ""
 
 #: modules/pkg_reports.py:542
 msgid "Error - indicates the other kinds of errors"
-msgstr "Error - indica otro tipo de errores"
+msgstr ""
 
 #: modules/pkg_reports.py:543
-msgid "Warning - indicates that something can be an error or something needs more attention"
-msgstr "Warning - indica que algo puede estar incorrecto o necesita atención"
+msgid ""
+"Warning - indicates that something can be an error or something needs more "
+"attention"
+msgstr ""
 
 #: modules/pkg_reports.py:586 modules/xpmaker.py:916
 msgid "Result of the processing:"
-msgstr "Resultado del procesamiento:"
+msgstr ""
 
 #: modules/pkg_reports.py:611 modules/xmlcvrter.py:710
 msgid "Summary report"
-msgstr "Informe resumido"
+msgstr ""
 
 #: modules/pkg_reports.py:612
 msgid "Detail report"
-msgstr "Informe detallado"
+msgstr ""
 
 #: modules/pkg_reports.py:613
 msgid "Files/Folders"
-msgstr "Ficheros/Directorios"
+msgstr ""
 
 #: modules/pkg_reports.py:614
 msgid "Database overview"
-msgstr "Visión general de la base de datos"
+msgstr ""
 
 #: modules/pkg_reports.py:615
 msgid "Package overview"
-msgstr "Visión general del paquete"
+msgstr ""
 
 #: modules/pkg_reports.py:628 modules/xmlcvrter.py:1055
 msgid "finished"
-msgstr "terminado"
+msgstr ""
 
 #: modules/xc_models.py:877
 msgid "Exclude aop files of "
-msgstr "Excluir ficheros aop de "
+msgstr ""
 
 #: modules/xml_gui.py:115
 msgid "Inform the acronym."
-msgstr "Informe el acrónimo."
+msgstr ""
 
 #: modules/xml_gui.py:117 modules/xml_gui.py:129
 msgid "Select a folder which contains the SPS XML Files."
-msgstr "Selecciona el directorio que contiene ficheros XML."
+msgstr ""
 
 #: modules/xml_gui.py:119
 msgid "Executing XML Package Maker for "
-msgstr "Ejecutando XML Package Maker para "
+msgstr ""
 
 #: modules/xml_gui.py:131
 msgid "Executing XML Converter for "
-msgstr "Ejecutando XML Converter para "
+msgstr ""
 
 #: modules/xml_utils.py:474
 msgid "Missing XML location."
-msgstr "No se encontró la ubicación del fichero XML."
+msgstr ""
 
 #: modules/xml_utils.py:478
 msgid "Invalid file. XML file required."
-msgstr "Archivo inválido. Archivo XML requerido."
+msgstr ""
 
 #: modules/xml_utils.py:480
 msgid "Invalid folder. Folder must have XML files."
-msgstr "Directorio inválido. Debe contener ficheros XML."
+msgstr ""
 
 #: modules/xmlcvrter.py:33 modules/xmlcvrter.py:710
 msgid "converted"
-msgstr "convertido"
+msgstr ""
 
 #: modules/xmlcvrter.py:34
 msgid "rejected"
-msgstr "rechazado"
+msgstr ""
 
 #: modules/xmlcvrter.py:35
 msgid "not converted"
-msgstr "no convertido"
+msgstr ""
 
 #: modules/xmlcvrter.py:36
 msgid "skipped conversion"
-msgstr "no se necesita la conversión"
+msgstr ""
 
 #: modules/xmlcvrter.py:37
 msgid "deleted ex-aop"
-msgstr "ex-aop borrado"
+msgstr ""
 
 #: modules/xmlcvrter.py:38
 msgid "deleted incorrect order"
-msgstr "order incorrecto borrado"
+msgstr ""
 
 #: modules/xmlcvrter.py:39
 msgid "not deleted ex-aop"
-msgstr "ex-aop no borrado"
+msgstr ""
 
 #: modules/xmlcvrter.py:40
 msgid "aop version"
-msgstr "versión aop"
+msgstr ""
 
 #: modules/xmlcvrter.py:41
 msgid "doc has no aop"
-msgstr "artículo no tiene versión aop"
+msgstr ""
 
 #: modules/xmlcvrter.py:42
 msgid "aop is published in an issue"
-msgstr "aop está publicado en un fascículo"
+msgstr ""
 
 #: modules/xmlcvrter.py:43
 msgid "doc has aop version"
-msgstr "artículo tiene versión aop"
+msgstr ""
 
 #: modules/xmlcvrter.py:44
 msgid "doc has aop version partially matched (title/author are similar)"
-msgstr "artículo tiene versión aop con datos parcialmente identificados (título/autor son similares)"
+msgstr ""
 
 #: modules/xmlcvrter.py:45
 msgid "doc has aop version which has no PID"
-msgstr "artículo tiene versión aop que no tiene PID"
+msgstr ""
 
 #: modules/xmlcvrter.py:46
 msgid "doc has an invalid aop version (title/author are not the same)"
-msgstr "el artículo tiene una versión oap inválida (titulo/autor no son los mismos)"
+msgstr ""
 
 #: modules/xmlcvrter.py:85
 msgid "Unable to identify the article's issue"
-msgstr "No fue posible identificar el fascículo del artículo"
+msgstr ""
 
 #: modules/xmlcvrter.py:90
 msgid "Issue "
-msgstr "Fascículo "
+msgstr ""
 
 #: modules/xmlcvrter.py:90
 msgid " is not registered in "
-msgstr " no está registrado en "
+msgstr ""
 
 #: modules/xmlcvrter.py:90
 msgid " using ISSN: "
-msgstr " usando ISSN: "
+msgstr ""
 
 #: modules/xmlcvrter.py:173
 msgid "replacing "
-msgstr "reemplazando "
+msgstr ""
 
 #: modules/xmlcvrter.py:206 modules/xmlcvrter.py:218
 msgid "Unable to replace "
-msgstr "No fue posible reemplazar "
+msgstr ""
 
 #: modules/xmlcvrter.py:240
 msgid "orders"
-msgstr "orders"
+msgstr ""
 
 #: modules/xmlcvrter.py:284
 msgid "unidentified "
-msgstr "no definido "
+msgstr ""
 
 #: modules/xmlcvrter.py:319
 msgid "not registered"
-msgstr "no registrado"
+msgstr ""
 
 #: modules/xmlcvrter.py:328
 msgid "Documents status in the package/database - before conversion"
-msgstr "Situación de los documentos en el paquete/bases de datos - antes de la conversión"
+msgstr ""
 
 #: modules/xmlcvrter.py:362
 msgid "Documents status in the package/database - after conversion"
-msgstr "Situación de los documentos en el paquete/bases de datos - después de la conversión"
+msgstr ""
 
 #: modules/xmlcvrter.py:367
 msgid "Conversion results"
-msgstr "Resultados de la conversión"
+msgstr ""
 
 #: modules/xmlcvrter.py:370
 msgid "this journal has no aop."
-msgstr "esta revista no tiene ficheros aop."
+msgstr ""
 
 #: modules/xmlcvrter.py:373
 msgid "AOP status"
-msgstr "Situación de AOP"
+msgstr ""
 
 #: modules/xmlcvrter.py:411
 msgid "XML Conversion (XML to Database)"
-msgstr "XML Conversion (XML a base de datos)"
+msgstr ""
 
 #: modules/xmlcvrter.py:429 modules/xmlcvrter.py:433
 msgid " REJECTED "
-msgstr " RECHAZADO "
+msgstr ""
 
 #: modules/xmlcvrter.py:431
 msgid "IGNORED"
-msgstr "IGNORADO"
+msgstr ""
 
 #: modules/xmlcvrter.py:435
 msgid " ACCEPTED but corrections required "
-msgstr " ACEPTADO pero son necesarias correcciones "
+msgstr ""
 
 #: modules/xmlcvrter.py:437
 msgid " APPROVED "
-msgstr " APROBADO "
+msgstr ""
 
 #: modules/xmlcvrter.py:547
 msgid "Checking issue data"
-msgstr "Verificando datos del fascículo"
+msgstr ""
 
 #: modules/xmlcvrter.py:551
 msgid "Converting xml to database"
-msgstr "Convirtiendo XML para base de datos"
+msgstr ""
 
 #: modules/xmlcvrter.py:573
 msgid "Replacing orders: "
-msgstr "Reemplazando orders: "
+msgstr ""
 
 #: modules/xmlcvrter.py:573
 msgid " by "
-msgstr " por "
+msgstr ""
 
 #: modules/xmlcvrter.py:575
 msgid "Deleting "
-msgstr "Borrando "
+msgstr ""
 
 #: modules/xmlcvrter.py:586
 msgid "ex aop was deleted"
-msgstr "ex aop fueron borrados"
+msgstr ""
 
 #: modules/xmlcvrter.py:589
 msgid "Unable to delete ex aop"
-msgstr "No fue posible borrar ex aop"
+msgstr ""
 
 #: modules/xmlcvrter.py:598
 msgid "Result: "
-msgstr "Resultado: "
+msgstr ""
 
 #: modules/xmlcvrter.py:628
 msgid "This document is an \"aop\"."
-msgstr "Este artículo es un \"aop\"."
+msgstr ""
 
 #: modules/xmlcvrter.py:630 modules/xmlcvrter.py:632
 msgid "Checking if "
-msgstr "Verificando si "
+msgstr ""
 
 #: modules/xmlcvrter.py:630 modules/xmlcvrter.py:632
 msgid " has an \"aop version\""
-msgstr " contiene \"aop version\""
+msgstr ""
 
 #: modules/xmlcvrter.py:635
 msgid "Not found an \"aop version\" of this document."
-msgstr "No se encontró una versión \"aop\" de este artículo."
+msgstr ""
 
 #: modules/xmlcvrter.py:637
 msgid "Found: \"aop version\""
-msgstr "Encontrada una versión \"aop\""
+msgstr ""
 
 #: modules/xmlcvrter.py:639
 msgid "the title/author of article and its \"aop version\" are similar."
-msgstr "title/author del artículo y su versión aop son similares."
+msgstr ""
 
 #: modules/xmlcvrter.py:641
 msgid "the \"aop version\" has no PID"
-msgstr "la versión aop no tiene PID"
+msgstr ""
 
 #: modules/xmlcvrter.py:644
 msgid "the title/author of article and \"aop version\" are different."
-msgstr "title/author del artículo y su versión aop son distintos."
+msgstr ""
 
 #: modules/xmlcvrter.py:646
 msgid "doc title"
-msgstr "título del artículo"
+msgstr ""
 
 #: modules/xmlcvrter.py:647
 msgid "aop title"
-msgstr "título del aop"
+msgstr ""
 
 #: modules/xmlcvrter.py:648
 msgid "doc first author"
-msgstr "primer autor del artículo"
+msgstr ""
 
 #: modules/xmlcvrter.py:649
 msgid "aop first author"
-msgstr "primer autor del aop"
+msgstr ""
 
 #: modules/xmlcvrter.py:651
 msgid "Checking existence of aop version"
-msgstr "Verificando existencia de una versión aop"
+msgstr ""
 
 #: modules/xmlcvrter.py:682
 msgid "scielo web site"
-msgstr "sitio web SciELO"
+msgstr ""
 
 #: modules/xmlcvrter.py:685
 msgid "be updated/published on "
-msgstr "será actualizado/publicado en "
+msgstr ""
 
 #: modules/xmlcvrter.py:688
 msgid " not"
-msgstr " no"
+msgstr ""
 
 #: modules/xmlcvrter.py:691
 msgid "because there are errors in the package."
-msgstr "debido a que hay errores en el paquete."
+msgstr ""
 
 #: modules/xmlcvrter.py:694
 msgid "because no document was changed."
-msgstr "debido a que ningún fichero XML fue cambiado."
+msgstr ""
 
 #: modules/xmlcvrter.py:697
 msgid "because it is not complete ("
-msgstr "debido a que esta incompleto ("
+msgstr ""
 
 #: modules/xmlcvrter.py:697
 msgid " were not converted)."
-msgstr " no fueron convertidos)."
+msgstr ""
 
 #: modules/xmlcvrter.py:700
 msgid "because it was unable to save the database."
-msgstr "debido a que no fue posible guardar la base de datos."
+msgstr ""
 
 #: modules/xmlcvrter.py:704
 msgid ""
-" even though there are some FATAL ERRORS. Note: These errors must be fixed in order to have good quality of bibliometric indicators and "
-"services."
+" even though there are some FATAL ERRORS. Note: These errors must be fixed "
+"in order to have good quality of bibliometric indicators and services."
 msgstr ""
-"aunque hay algunos FATAL ERRORS. Nota: Éstos errores deben ser corregidos para tener buena calidad de los indicadores bibliométricos y "
-"servicios."
 
 #: modules/xmlcvrter.py:709
 msgid " will"
@@ -845,184 +857,185 @@ msgstr ""
 
 #: modules/xmlcvrter.py:744
 msgid "journal title"
-msgstr "título de la revista"
+msgstr ""
 
 #: modules/xmlcvrter.py:745
 msgid "journal id NLM"
-msgstr "ID de la revista en NLM"
+msgstr ""
 
 #: modules/xmlcvrter.py:750
 msgid "journal e-ISSN"
-msgstr "e-ISSN de la revista"
+msgstr ""
 
 #: modules/xmlcvrter.py:755
 msgid "journal print ISSN"
-msgstr "ISSN impreso de la revista"
+msgstr ""
 
 #: modules/xmlcvrter.py:757
 msgid "issue label"
-msgstr "etiqueta del fascículo"
+msgstr ""
 
 #: modules/xmlcvrter.py:772 modules/xmlcvrter.py:787
 msgid "data mismatched. In article: \""
-msgstr "datos no consistentes. En el artículo: \""
+msgstr ""
 
 #: modules/xmlcvrter.py:772 modules/xmlcvrter.py:787
 msgid "\" and in issue: \""
-msgstr "\" y en el fascículo: \""
+msgstr ""
 
 #: modules/xmlcvrter.py:794
 msgid "Registered sections"
-msgstr "Secciones registradas"
+msgstr ""
 
 #: modules/xmlcvrter.py:796
 msgid " is not a registered section."
-msgstr " no es una sección registrada."
+msgstr ""
 
 #: modules/xmlcvrter.py:798
 msgid "section replaced: \""
-msgstr "sección reemplazada: \""
+msgstr ""
 
 #: modules/xmlcvrter.py:798 modules/xmlcvrter.py:832
 msgid "instead of"
-msgstr "en lugar de"
+msgstr ""
 
 #: modules/xmlcvrter.py:829
 msgid "Check if "
-msgstr "Verifique si "
+msgstr ""
 
 #: modules/xmlcvrter.py:829
 msgid " is a valid value for"
-msgstr " es un valor válido para"
+msgstr ""
 
 #: modules/xmlcvrter.py:832
 msgid "Check @article-type. Maybe it should be "
-msgstr "Verifique @article-type. Tal vez deba ser "
+msgstr ""
 
 #: modules/xmlcvrter.py:916
 msgid "Missing collection acronym"
-msgstr "Acrónimo de la colección no encontrado"
+msgstr ""
 
 #: modules/xmlcvrter.py:934 modules/xmlcvrter.py:937 modules/xmlcvrter.py:969
 msgid "ATTENTION"
-msgstr "ATENCIÓN"
+msgstr ""
 
 #: modules/xmlcvrter.py:935
 msgid "No configuration file was informed"
-msgstr "No de proporciono un fichero de configuración"
+msgstr ""
 
 #: modules/xmlcvrter.py:938
 msgid "unable to read XML Converter configuration file: "
-msgstr "no se pudo leer el fichero de configuración de XML Converter: "
+msgstr ""
 
 #: modules/xmlcvrter.py:970 modules/xpmaker.py:1065
 msgid "Incorrect parameters"
-msgstr "Parámetros incorrectos"
+msgstr ""
 
 #: modules/xmlcvrter.py:971 modules/xpmaker.py:1066
 msgid "Usage"
-msgstr "Uso"
+msgstr ""
 
 #: modules/xmlcvrter.py:973 modules/xpmaker.py:1068
 msgid "where"
-msgstr "donde"
+msgstr ""
 
 #: modules/xmlcvrter.py:974
 msgid "path of folder which contains"
-msgstr "ruta del directorio que contiene"
+msgstr ""
 
 #: modules/xmlcvrter.py:975
 msgid "collection acron"
-msgstr "acrónimo de la colección"
+msgstr ""
 
 #: modules/xpchecker.py:90
 msgid "Unable to create"
-msgstr "No fue posible crear"
+msgstr ""
 
 #: modules/xpchecker.py:169 modules/xpmaker.py:704
 msgid "Unable to load"
-msgstr "No fue posible cargar"
+msgstr ""
 
 #: modules/xpmaker.py:576
 msgid "Report of files"
-msgstr "Informe de los ficheros"
+msgstr ""
 
 #: modules/xpmaker.py:579
 msgid "Source path"
-msgstr "Ruta de origen"
+msgstr ""
 
 #: modules/xpmaker.py:580
 msgid "Package path"
-msgstr "Ruta del paquete"
+msgstr ""
 
 #: modules/xpmaker.py:582
 msgid "Source XML name"
-msgstr "Nombre del fichero XML original"
+msgstr ""
 
 #: modules/xpmaker.py:583
 msgid "Package XML name"
-msgstr "Nombre del fichero XML en el paquete normalizado"
+msgstr ""
 
 #: modules/xpmaker.py:585
 msgid "Total of related files"
-msgstr "Total de ficheros vinculados"
+msgstr ""
 
 #: modules/xpmaker.py:586
 msgid "Total of files in package"
-msgstr "Total de ficheros en el paquete"
+msgstr ""
 
 #: modules/xpmaker.py:587
 msgid "Total of @href in XML"
-msgstr "Total de @href en el fichero XML"
+msgstr ""
 
 #: modules/xpmaker.py:588
 msgid "Total of @href not found in package"
-msgstr "Total de @href no encontrados en el paquete"
+msgstr ""
 
 #: modules/xpmaker.py:704
 msgid ". Try to open it in an XML Editor to view the errors."
-msgstr ". Intente abrirlo en un Editor XML para ver los errores."
+msgstr ""
 
 #: modules/xpmaker.py:785
 msgid "Make packages for "
-msgstr "Hacer paquetes para "
+msgstr ""
 
 #: modules/xpmaker.py:785
 msgid " files."
-msgstr " ficheros."
+msgstr ""
 
 #: modules/xpmaker.py:804
 msgid "generating report..."
-msgstr "generando informe..."
+msgstr ""
 
 #: modules/xpmaker.py:806
 msgid "Unable to generate the XML file."
-msgstr "No fue posible generar el fichero XML."
+msgstr ""
 
 #: modules/xpmaker.py:809
-msgid "It is not PMC article or unable to find journal-id (nlm-ta) in the XML file."
-msgstr "No es un artículo PMC o no fue posible encontrar journal-id (nlm-ta) en el fichero XML."
+msgid ""
+"It is not PMC article or unable to find journal-id (nlm-ta) in the XML file."
+msgstr ""
 
 #: modules/xpmaker.py:818
 msgid "Missing journal-id (nlm-ta)."
-msgstr "No se encontró journal-id (nlm-ta)."
+msgstr ""
 
 #: modules/xpmaker.py:861
 msgid "No files to process"
-msgstr "Ningún fichero para procesar"
+msgstr ""
 
 #: modules/xpmaker.py:904
 msgid "XML Package Maker Report"
-msgstr "Informe XML Package Maker"
+msgstr ""
 
 #: modules/xpmaker.py:1069
 msgid "XML filename or path which contains XML files"
-msgstr "Archivo XML o ruta que contiene los ficheros XML"
+msgstr ""
 
 #: modules/xpmaker.py:1070
 msgid "journal acronym"
-msgstr "acrónimo de la revista"
+msgstr ""
 
 #: modules/xpmaker.py:1080
 msgid "Missing acronym."
-msgstr "Acrónimo no encontrado."
+msgstr ""
