@@ -17,14 +17,11 @@ if current_locale is None:
 
 if not current_locale in os.listdir(locale_path):
     lang, country = current_locale.split('_')
-    encoding = 'UTF-8'
-    for name in os.listdir(locale_path):
-        if name.startswith(lang):
-            current_locale = name
+    if lang in os.listdir(locale_path):
+        current_locale = lang
 
 if not current_locale in os.listdir(locale_path):
     current_locale = 'en_US'
-    encoding = 'UTF-8'
 
 t = gettext.translation('xpm-xc', locale_path, [current_locale])
 _ = t.ugettext
