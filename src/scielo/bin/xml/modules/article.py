@@ -915,7 +915,7 @@ class Article(ArticleXML):
         data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items() if v is not None]) if self.journal_issns is not None else None
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_label
-        data['issue pub date'] = self.issue_pub_dateiso[0:4]
+        data['issue pub date'] = self.issue_pub_dateiso[0:4] if self.issue_pub_dateiso is not None else None
         data['order'] = self.order
         data['doi'] = self.doi
         seq = '' if self.fpage_seq is None else self.fpage_seq
@@ -1017,6 +1017,16 @@ class Article(ArticleXML):
         return article_utils.format_dateiso(self.issue_pub_date)
 
     @property
+    def pub_date_year(self):
+        pubdate = self.article_pub_date
+        if pubdate is None:
+            pubdate = self.issue_pub_date
+        year = None
+        if not pubdate is None:
+            year = pubdate.get('year')
+        return year
+
+    @property
     def received_dateiso(self):
         return article_utils.format_dateiso(self.received)
 
@@ -1033,23 +1043,19 @@ class Article(ArticleXML):
 
     @property
     def publication_days(self):
-        h = 0
-        d1 = '00000000'
-        d2 = '00000000'
-        if self.accepted is not None:
-            d1 = self.accepted_dateiso
-            d2 = self.article_pub_dateiso if self.article_pub_dateiso else self.issue_pub_dateiso
+        d1 = self.accepted_dateiso
+        d2 = self.article_pub_dateiso if self.article_pub_dateiso else self.issue_pub_dateiso
+        if d1 is None or d2 is None:
+            h = None
+        else:
             h = (article_utils.dateiso2datetime(d2) - article_utils.dateiso2datetime(d1)).days
         return h
 
     @property
     def registration_days(self):
-        h = 0
-        d1 = '00000000'
-        d2 = '00000000'
+        h = None
         if self.accepted is not None:
-            d1 = self.accepted_dateiso
-            h = (datetime.now() - article_utils.dateiso2datetime(d1)).days
+            h = (datetime.now() - article_utils.dateiso2datetime(self.accepted_dateiso)).days
         return h
 
 

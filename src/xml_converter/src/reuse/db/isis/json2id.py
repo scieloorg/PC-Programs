@@ -162,13 +162,16 @@ class JSON2IDFile:
                     self.__write__(s)
 
     def __format_subfield__(self, subf_label, subf_content, content):
+        if isinstance(content, list):
+            content = ', '.join(content)
+        if isinstance(subf_content, list):
+            subf_content = ', '.join(subf_content)
         if subf_label == '_':
             content = subf_content + content
         else:
             content += '^' + subf_label + subf_content
-            
         return content
-        
+
     def __tag_it__(self, tag, content):
         try:
             r = ''
@@ -201,6 +204,8 @@ class JSON2IDFile:
         return r
 
     def _iso(self, content):
+        if isinstance(content, list):
+            content = ', '.join(content)
         if not isinstance(content, unicode):
             try:
                 content = content.decode('utf-8')

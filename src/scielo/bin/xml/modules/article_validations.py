@@ -679,17 +679,12 @@ class ArticleContentValidation(object):
 
     @property
     def history(self):
-        article_year = self.article.article_pub_date.get('year')
-        if article_year is None:
-            article_year = self.article.issue_pub_date.get('year')
-        if article_year is None:
-            article_year = datetime.now().isoformat()[0:4]
         received = self.article.received_dateiso
         accepted = self.article.accepted_dateiso
         r = []
         if received is not None and accepted is not None:
             if not received < accepted:
-                r = 'received (' + received + '); accepted (' + accepted + '); pub-date (' + article_year + ').'
+                r = 'received (' + received + '); accepted (' + accepted + '); pub-date (' + self.article.pub_date_year + ').'
                 r = [('history', 'ERROR', r)]
         elif received is None and accepted is None:
             r = [('history', 'INFO', 'there is no history dates')]
@@ -724,13 +719,13 @@ class ArticleContentValidation(object):
     @property
     def references(self):
         r = []
-        year = self.article.received
+        year = self.article.received.get('year') if self.article.received is not None else None
         if year is None:
-            year = self.article.accepted
+            year = self.article.accepted.get('year') if self.article.accepted is not None else None
         if year is None:
-            year = self.article.article_pub_date.get('year')
+            year = self.article.pub_date_year
         if year is None:
-            year = self.article.issue_pub_date.get('year')
+            year = datetime.now().isoformat()[0:4]
         for ref in self.article.references:
             r.append((ref, ReferenceContentValidation(ref).evaluate(year)))
         return r

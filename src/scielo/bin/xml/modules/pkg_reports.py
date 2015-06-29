@@ -164,33 +164,68 @@ class ArticlePackage(object):
 
         items = []
         for xml_name in self.xml_name_sorted_by_order:
+            #print(xml_name)
             doc = self.articles[xml_name]
+            #print(doc)
             values = []
             values.append(xml_name)
+
+            #print('doc.article_type')
+            #print(doc.article_type)
             values.append(doc.article_type)
+
+            #print('doc.received_dateiso')
+            #print(doc.received_dateiso)
             values.append(article_utils.display_date(doc.received_dateiso))
+
+            #print('doc.accepted_dateiso')
+            #print(doc.accepted_dateiso)
             values.append(article_utils.display_date(doc.accepted_dateiso))
+
+            #print('doc.history_days')
+            #print(doc.history_days)
             values.append(str(doc.history_days))
+
+            #print('doc.article_pub_dateiso')
+            #print(doc.article_pub_dateiso)
             values.append(article_utils.display_date(doc.article_pub_dateiso))
+
+            #print('doc.issue_pub_dateiso')
+            #print(doc.issue_pub_dateiso)
             values.append(article_utils.display_date(doc.issue_pub_dateiso))
+
+            #print('doc.publication_days')
+            #print(doc.publication_days)
             values.append(str(doc.publication_days))
+
+            #print('doc.registration_days')
+            #print(doc.registration_days)
             values.append(str(doc.registration_days))
+
+            #print(values)
             items.append(label_values(labels, values))
+            #print(items)
+
         return (labels, items)
 
-    def journal_and_issue_metadata(self, labels):
+    def journal_and_issue_metadata(self, labels, required_data):
         invalid_xml_name_items = []
         pkg_metadata = {label: {} for label in labels}
-
+        missing_data = {}
         for xml_name, article in self.articles.items():
+            print(xml_name)
             if article.tree is None:
                 invalid_xml_name_items.append(xml_name)
             else:
                 art_data = article.summary()
                 for label in labels:
+                    if art_data[label] is None and label in required_data:
+                        if not label in missing_data.keys():
+                            missing_data[label] = []
+                        missing_data[label].append(xml_name)
                     pkg_metadata[label] = article_utils.add_new_value_to_index(pkg_metadata[label], art_data[label], xml_name)
 
-        return (invalid_xml_name_items, pkg_metadata)
+        return (invalid_xml_name_items, pkg_metadata, missing_data)
 
     def validate_articles_pkg_xml_and_data(self, org_manager, doc_files_info_items, dtd_files, validate_order, display_all, xc_actions=None):
         #FIXME
@@ -222,8 +257,10 @@ class ArticlePackage(object):
                 xml_filename = doc_files_info.new_xml_filename
 
                 xml_f, xml_e, xml_w = validate_article_xml(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all is False)
+                print([xml_f, xml_e, xml_w])
                 data_f, data_e, data_w = article_reports.validate_article_data(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, display_all, doc_files_info.data_report_filename)
-
+                print([data_f, data_e, data_w])
+                
                 self.pkg_fatal_errors += xml_f + data_f
                 self.pkg_stats[xml_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
                 self.pkg_reports[xml_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
@@ -237,7 +274,10 @@ class ArticlesPkgReport(object):
         self.package = package
 
     def validate_consistency(self, validate_order):
+        print('validate_consistency')
         toc_report = self.consistency_report(validate_order)
+        print('validate_consistency - fim')
+        print(toc_report)
         toc_f, toc_e, toc_w = html_reports.statistics_numbers(toc_report)
         if toc_f + toc_e + toc_w == 0:
             toc_report = None
@@ -248,16 +288,26 @@ class ArticlesPkgReport(object):
         equal_data = ['journal-title', 'journal id NLM', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
         unique_data = ['order', 'doi', 'elocation id']
         unique_status = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-and-seq': 'ERROR'}
+        required_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
 
         if not validate_order:
             unique_status['order'] = 'WARNING'
 
-        invalid_xml_name_items, pkg_metadata = self.package.journal_and_issue_metadata(equal_data + unique_data)
+        invalid_xml_name_items, pkg_metadata, missing_data = self.package.journal_and_issue_metadata(equal_data + unique_data, required_data)
+        print('invalid_xml_name_items')
+        print(invalid_xml_name_items)
+
+        print('pkg_metadata')
+        print(pkg_metadata)
 
         r = ''
         if len(invalid_xml_name_items) > 0:
-            r += html_reports.tag('div', html_reports.color_text('FATAL ERROR: ' + _('Invalid XML files.')))
+            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Invalid XML files.')))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid_xml_name_items, 'issue-problem'))
+
+        for label, items in missing_data.items():
+            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Missing') + ' ' + label + ' ' + _('in') + ':'))
+            r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
 
         for label in equal_data:
             if len(pkg_metadata[label]) > 1:
@@ -312,6 +362,7 @@ class ArticlesPkgReport(object):
 
     def overview_report(self):
         r = ''
+
         r += html_reports.tag('h4', _('Languages overview'))
         labels, items = self.package.tabulate_languages()
         r += html_reports.sheet(labels, items, 'dbstatus')
@@ -325,6 +376,7 @@ class ArticlesPkgReport(object):
         affs_compiled = self.package.compile_affiliations()
         for label, q in affs_compiled.items():
             items.append({'label': label, 'quantity': str(q)})
+
         r += html_reports.sheet(['label', 'quantity'], items, 'dbstatus')
         return r
 

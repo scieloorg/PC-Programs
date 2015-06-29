@@ -242,6 +242,7 @@ def complete_issue_items_report(complete_issue_items, unmatched_orders):
 
     articles_pkg = pkg_reports.ArticlePackage(complete_issue_items)
     articles_pkg_reports = pkg_reports.ArticlesPkgReport(articles_pkg)
+
     toc_f, toc_e, toc_w, toc_report = articles_pkg_reports.validate_consistency(validate_order=True)
 
     report = unmatched_orders_errors
@@ -301,48 +302,77 @@ def convert_package(src_path):
             print(path)
 
     xml_filenames, pkg_articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
+
+    print('normalized package')
+
+    print('get_issue_models')
     issue_models, issue_error_msg = get_issue_models(pkg_articles)
 
     if issue_error_msg is not None:
         report_components['detail-report'] = issue_error_msg
 
+    print('pkg_reports.ArticlePackage')
     articles_pkg = pkg_reports.ArticlePackage(pkg_articles)
+
+    print('pkg_reports.ArticlesPkgReport')
     articles_pkg_reports = pkg_reports.ArticlesPkgReport(articles_pkg)
 
+    print('articles_pkg_reports.overview_report')
     report_components['pkg_overview'] = articles_pkg_reports.overview_report()
+
+    print('articles_pkg_reports.references_overview_report')
     report_components['pkg_overview'] += articles_pkg_reports.references_overview_report()
+
+    print('articles_pkg_reports.sources_overview_report')
     report_components['references'] = articles_pkg_reports.sources_overview_report()
 
     selected_articles = None
 
     if issue_models is None:
-        acron_issue_label = _('not registered') + ' ' + os.path.basename(src_path)[:-4]
+        acron_issue_label = 'not_registered' + ' ' + os.path.basename(src_path)[:-4]
     else:
         issue_files = get_issue_files(issue_models, pkg_path)
         acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
-
+        print('acron_issue_label')
+        print(acron_issue_label)
+        print('get_registered_articles')
         previous_registered_articles = get_registered_articles(issue_files)
 
+        print('get_complete_issue_items')
         complete_issue_items, xml_doc_actions, unmatched_orders = get_complete_issue_items(issue_files, pkg_path, previous_registered_articles, pkg_articles)
 
+        print('display_status_before_xc')
         before_conversion_report = html_reports.tag('h4', _('Documents status in the package/database - before conversion'))
         before_conversion_report += display_status_before_xc(previous_registered_articles, pkg_articles, xml_doc_actions)
 
+        print('complete_issue_items_report')
         toc_f, xc_toc_report = complete_issue_items_report(complete_issue_items, unmatched_orders)
+
+        print('xc_toc_report is not None?')
         if xc_toc_report is not None:
+            print('xc_toc_report is not None.')
             report_components['detail-report'] = xc_toc_report
         if toc_f == 0:
+            print('toc_f == 0')
             selected_articles = {}
             for xml_name, article in pkg_articles.items():
+                print(xml_name)
+                print(xml_doc_actions[xml_name])
                 if xml_doc_actions[xml_name] in ['add', 'update']:
                     selected_articles[xml_name] = article
 
         if selected_articles is None:
+            print('selected_articles is None')
+            print('xc_conclusion_message')
             xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 
         elif len(selected_articles) > 0:
+            print('len(selected_articles) > 0')
 
+            print('pkg_reports.ArticlePackage')
             selected_articles_pkg = pkg_reports.ArticlePackage(selected_articles)
+
+            print('pkg_reports.ArticlesPkgReport')
             selected_articles_pkg_reports = pkg_reports.ArticlesPkgReport(selected_articles_pkg)
             print('validate_articles_pkg_xml_and_data')
             selected_articles_pkg.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, validate_order, display_title, xml_doc_actions)
@@ -383,6 +413,8 @@ def convert_package(src_path):
             if scilista_item is not None:
                 issue_files.copy_files_to_local_web_app()
         else:
+            print('else:')
+            print('xc_conclusion_msg')
             xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 
     print('-report_location-')
@@ -755,7 +787,7 @@ def validate_xml_issue_data(issue_models, article):
             validations.append((_('journal print ISSN'), a_issn, i_issn))
 
         validations.append((_('issue label'), article.issue_label, issue_models.issue.issue_label))
-        validations.append((_('issue pub-date'), article.issue_pub_dateiso[0:4], issue_models.issue.dateiso[0:4]))
+        validations.append((_('issue pub-date'), article.pub_date_year, issue_models.issue.dateiso[0:4]))
 
         # check issue data
         for label, article_data, issue_data in validations:
@@ -1043,7 +1075,17 @@ def execute_converter(package_paths, collection_name=None):
 
                     transfer_report_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
                 if config.email_subject_package_evaluation is not None:
-                    send_message(mailer, config.email_to, config.email_subject_package_evaluation + ' ' + package_folder + ': ' + results, report_location)
+                    print('email_subject_package_evaluation')
+                    print(type(config.email_subject_package_evaluation))
+                    print(config.email_subject_package_evaluation)
+                    print('package_folder')
+                    print(type(package_folder))
+                    print(package_folder)
+                    print('results')
+                    print(type(results))
+                    print(results)
+
+                    send_message(mailer, config.email_to, config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
 
         if len(invalid_pkg_files) > 0:
             send_message(mailer, config.email_to, config.email_subject_invalid_packages, config.email_text_invalid_packages + '\n'.join(invalid_pkg_files))
