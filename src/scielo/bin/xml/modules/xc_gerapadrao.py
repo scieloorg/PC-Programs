@@ -22,7 +22,7 @@ def gerapadrao_validate_inputs(collection_acron):
     return errors
 
 
-def is_enabled(permission_file):
+def is_unblocked_gerapadrao(permission_file):
     ret = False
     if permission_file is not None:
         if os.path.isfile(permission_file):
@@ -34,7 +34,7 @@ def is_enabled(permission_file):
     return ret
 
 
-def disable(permission_file):
+def block_gerapadrao(permission_file):
     open(permission_file, 'w').write('running')
 
 
@@ -70,7 +70,7 @@ def gerapadrao(args):
         config = xc.get_configuration(collection_acron)
         if config is not None:
             if config.is_enabled_gerapadrao:
-                if is_enabled(config.gerapadrao_permission_file):
+                if is_unblocked_gerapadrao(config.gerapadrao_permission_file):
                     config.update_title_and_issue()
                     scilista_content = read_collection_scilista(config.collection_scilista)
                     if scilista_content is None:
@@ -79,7 +79,7 @@ def gerapadrao(args):
                         scilista_content = sort_scilista(scilista_content)
                         print(scilista_content)
 
-                        disable(config.gerapadrao_permission_file)
+                        block_gerapadrao(config.gerapadrao_permission_file)
                         open(config.gerapadrao_scilista, 'w').write(scilista_content)
                         gerapadrao_cmd = gerapadrao_command(config.gerapadrao_proc_path, config.gerapadrao_permission_file)
 
@@ -105,7 +105,7 @@ def gerapadrao(args):
 
 
 def gerapadrao_command(proc_path, gerapadrao_status_filename):
-    return 'cd ' + proc_path + ';./GeraPadrao.bat;echo FINISHED> ' + gerapadrao_status_filename
+    return 'cd ' + proc_path + ';./GeraPadrao.bat;echo FINISHED>' + gerapadrao_status_filename
 
 
 def transfer_website_bases(local_bases_path, user, server, remote_bases_path):

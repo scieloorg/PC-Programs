@@ -13,6 +13,8 @@ class XMLConverterConfiguration(object):
         self._data = {}
         for item in open(filename, 'r').readlines():
             s = item.strip()
+            if not isinstance(s, unicode):
+                s = s.decode('utf-8')
             if '=' in s:
                 if ',' in s and not '@' in s:
                     s = s[0:s.rfind(',')]
@@ -258,6 +260,8 @@ class XMLConverterConfiguration(object):
             filename = CONFIG_PATH + '/' + filename
             if os.path.isfile(filename):
                 header = open(filename, 'r').read()
+                if not isinstance(header, unicode):
+                    header = header.decode('utf-8')
         return header
 
     @property

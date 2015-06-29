@@ -958,10 +958,32 @@ class JSON_Article:
         print(new)
         return new
 
+    def fix_aff(self, affiliations):
+        fixed = False
+        #affiliations = return_multval(self.json_data['f'], '70')
+        new = []
+        if not isinstance(affiliations, list):
+            affiliations = [affiliations]
+        for aff in affiliations:
+            for k, v in aff.items():
+                if isinstance(v, list):
+                    fixed = True
+                    aff[k] = ', '.join(v)
+            new.append(aff)
+        if fixed:
+            print('\nfixed affiliations:')
+            print(affiliations)
+            print(new)
+            print('-'*10)
+        return new
+
     def normalize_affiliations(self):
         """
         Normalize the json structure for affiliations: 70
         """
+        self.json_data['f']['70'] = self.fix_aff(return_multval(self.json_data['f'], '70'))
+        self.json_data['f']['240'] = self.fix_aff(return_multval(self.json_data['f'], '240'))
+
         self.json_data['f']['240'] = self.get_normalized_affiliations(return_multval(self.json_data['f'], '240'))
 
         new_affiliations = self.aff_handler.normalize_affiliations(return_multval(self.json_data['f'], '70'))
