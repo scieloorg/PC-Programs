@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-25 17:50-0300\n"
-"PO-Revision-Date: 2015-06-26 11:32-0600\n"
+"PO-Revision-Date: 2015-06-30 12:36-0600\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,7 +27,7 @@ msgstr "Autores"
 
 #: modules/article_reports.py:91 modules/pkg_reports.py:616
 msgid "Sources"
-msgstr "Fuentes"
+msgstr "Fuentes de información"
 
 #: modules/article_reports.py:448
 msgid "missing extension of "
@@ -35,7 +35,7 @@ msgstr "no se encontró la extensión de "
 
 #: modules/article_reports.py:450
 msgid " not found in package"
-msgstr " no encontrado en el paquete"
+msgstr " no se encontró en el paquete"
 
 #: modules/article_reports.py:452
 msgid " is not working"
@@ -47,7 +47,7 @@ msgstr "encontrado en el fichero XML"
 
 #: modules/article_reports.py:478
 msgid "not found in XML"
-msgstr "no encontrado en el fichero XML"
+msgstr "no se encuentra en el fichero XML"
 
 #: modules/article_reports.py:544
 msgid "Unable to get data of "
@@ -157,7 +157,7 @@ msgstr " se requiere contrib names o collabs."
 #: modules/article_validations.py:390 modules/article_validations.py:801 modules/article_validations.py:803
 #: modules/article_validations.py:807 modules/article_validations.py:837 modules/article_validations.py:841
 msgid "Missing"
-msgstr "No encontrado"
+msgstr "No se encontró"
 
 #: modules/article_validations.py:405 modules/article_validations.py:675
 msgid "Missing @xml:lang for "
@@ -173,7 +173,7 @@ msgstr "No se encontró titles"
 
 #: modules/article_validations.py:430
 msgid "Be sure that this DOI"
-msgstr "Asegúrese que este DOI"
+msgstr "Asegúrese que el DOI"
 
 #: modules/article_validations.py:430
 msgid "belongs to this journal."
@@ -395,7 +395,7 @@ msgstr " no es permitido para "
 
 #: modules/attributes.py:169
 msgid ". Be sure that you have correctly identified: "
-msgstr ". Asegúrese de que lo identifico correctamente: "
+msgstr ". Asegúrese que identificó correctamente: "
 
 #: modules/attributes.py:169 modules/xmlcvrter.py:90 modules/xmlcvrter.py:832
 msgid " or "
@@ -505,7 +505,7 @@ msgstr "Converter"
 
 #: modules/pkg_reports.py:532
 msgid "XML path"
-msgstr "Ruta del XML"
+msgstr "Ruta de los ficheros XML"
 
 #: modules/pkg_reports.py:535
 msgid "Total of XML files"
@@ -525,7 +525,7 @@ msgstr "Warning - indica que algo puede estar incorrecto o necesita atención"
 
 #: modules/pkg_reports.py:586 modules/xpmaker.py:916
 msgid "Result of the processing:"
-msgstr "Resultado del procesamiento:"
+msgstr "Resultado del proceso:"
 
 #: modules/pkg_reports.py:611 modules/xmlcvrter.py:710
 msgid "Summary report"
@@ -557,7 +557,7 @@ msgstr "Excluir ficheros aop de "
 
 #: modules/xml_gui.py:115
 msgid "Inform the acronym."
-msgstr "Informe el acrónimo."
+msgstr "Proporcione el acrónimo."
 
 #: modules/xml_gui.py:117 modules/xml_gui.py:129
 msgid "Select a folder which contains the SPS XML Files."
@@ -836,7 +836,7 @@ msgid ""
 " even though there are some FATAL ERRORS. Note: These errors must be fixed in order to have good quality of bibliometric indicators and "
 "services."
 msgstr ""
-"aunque hay algunos FATAL ERRORS. Nota: Éstos errores deben ser corregidos para tener buena calidad de los indicadores bibliométricos y "
+"aunque hay algunos FATAL ERRORS. Nota: Estos errores deben ser corregidos para tener buena calidad de los indicadores bibliométricos y "
 "servicios."
 
 #: modules/xmlcvrter.py:709
