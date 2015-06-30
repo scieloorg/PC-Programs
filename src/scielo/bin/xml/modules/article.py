@@ -146,6 +146,7 @@ class ArticleXML(object):
         self.back = None
         self.subarticles = []
         self.responses = []
+        self._language = None
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
             self.article_meta = self.tree.find('./front/article-meta')
@@ -182,7 +183,7 @@ class ArticleXML(object):
         for subart in self.responses:
             r.append((subart.attrib.get('response-type'), subart.findall('.//contrib/collab') + subart.findall('.//contrib/name')))
         return r
-        
+
     def fn_list(self, node, scope):
         r = []
         if node is not None:
@@ -232,8 +233,10 @@ class ArticleXML(object):
 
     @property
     def language(self):
-        if self.tree is not None:
-            return xml_utils.element_lang(self.tree.find('.'))
+        if self._language is None:
+            if self.tree is not None:
+                self._language = xml_utils.element_lang(self.tree.find('.'))
+        return self._language
 
     @property
     def related_articles(self):
@@ -874,11 +877,12 @@ class ArticleXML(object):
 
     @property
     def elements_which_has_id_attribute(self):
-        return self.tree.findall('.//*[@id]')
+        if self.tree is not None:
+            return self.tree.findall('.//*[@id]')
 
     @property
     def href_files(self):
-        return [href for href in self.hrefs if href.is_internal_file]
+        return [href for href in self.hrefs if href.is_internal_file] if self.hrefs is not None else []
 
     @property
     def tables(self):
@@ -1063,14 +1067,15 @@ class ReferenceXML(object):
 
     def __init__(self, root):
         self.root = root
-
-    @property
-    def element_citation(self):
-        return self.root.find('.//element-citation')
+        self.element_citation = self.root.find('.//element-citation')
+        self._source = None
 
     @property
     def source(self):
-        return xml_utils.node_text(self.root.find('.//source'))
+        if self._source is None:
+            if self.element_citation is not None:
+                self._source = xml_utils.node_text(self.element_citation.find('.//source'))
+        return self._source
 
     @property
     def id(self):
@@ -1088,24 +1093,24 @@ class ReferenceXML(object):
 
     @property
     def article_title(self):
-        if self.root is not None:
-            return xml_utils.node_text(self.root.find('.//article-title'))
+        if self.element_citation is not None:
+            return xml_utils.node_text(self.element_citation.find('.//article-title'))
 
     @property
     def chapter_title(self):
-        if self.root is not None:
-            return xml_utils.node_text(self.root.find('.//chapter-title'))
+        if self.element_citation is not None:
+            return xml_utils.node_text(self.element_citation.find('.//chapter-title'))
 
     @property
     def trans_title(self):
-        if self.root is not None:
-            return xml_utils.node_text(self.root.find('.//trans-title'))
+        if self.element_citation is not None:
+            return xml_utils.node_text(self.element_citation.find('.//trans-title'))
 
     @property
     def trans_title_language(self):
-        if self.root is not None:
-            if self.root.find('.//trans-title') is not None:
-                return xml_utils.element_lang(self.root.find('.//trans-title'))
+        if self.element_citation is not None:
+            if self.element_citation.find('.//trans-title') is not None:
+                return xml_utils.element_lang(self.element_citation.find('.//trans-title'))
 
     @property
     def publication_type(self):
@@ -1128,63 +1133,70 @@ class ReferenceXML(object):
     @property
     def authors_list(self):
         r = []
-
-        for person_group in self.root.findall('.//person-group'):
-            person_group_id = person_group.attrib.get('person-group-type', 'author')
-            for person in person_group.findall('.//name'):
-                p = PersonAuthor()
-                p.fname = person.findtext('given-names')
-                p.surname = person.findtext('surname')
-                p.suffix = person.findtext('suffix')
-                p.role = person_group_id
-                r.append(p)
-            for collab in person_group.findall('.//collab'):
-                c = CorpAuthor()
-                c.collab = xml_utils.node_text(collab)
-                c.role = person_group_id
-                r.append(c)
+        if self.element_citation is not None:
+            for person_group in self.element_citation.findall('.//person-group'):
+                person_group_id = person_group.attrib.get('person-group-type', 'author')
+                for person in person_group.findall('.//name'):
+                    p = PersonAuthor()
+                    p.fname = person.findtext('given-names')
+                    p.surname = person.findtext('surname')
+                    p.suffix = person.findtext('suffix')
+                    p.role = person_group_id
+                    r.append(p)
+                for collab in person_group.findall('.//collab'):
+                    c = CorpAuthor()
+                    c.collab = xml_utils.node_text(collab)
+                    c.role = person_group_id
+                    r.append(c)
         return r
 
     @property
     def authors_by_group(self):
         groups = []
-        for person_group in self.root.findall('.//person-group'):
-            role = person_group.attrib.get('person-group-type', 'author')
-            authors = []
-            for person in person_group.findall('.//name'):
-                p = PersonAuthor()
-                p.fname = person.findtext('given-names')
-                p.surname = person.findtext('surname')
-                p.suffix = person.findtext('suffix')
-                p.role = role
-                authors.append(p)
-            for collab in person_group.findall('.//collab'):
-                c = CorpAuthor()
-                c.collab = xml_utils.node_text(collab)
-                c.role = role
-                authors.append(c)
-            groups.append(authors)
+        if self.element_citation is not None:
+            for person_group in self.element_citation.findall('.//person-group'):
+                role = person_group.attrib.get('person-group-type', 'author')
+                authors = []
+                for person in person_group.findall('.//name'):
+                    p = PersonAuthor()
+                    p.fname = person.findtext('given-names')
+                    p.surname = person.findtext('surname')
+                    p.suffix = person.findtext('suffix')
+                    p.role = role
+                    authors.append(p)
+                for collab in person_group.findall('.//collab'):
+                    c = CorpAuthor()
+                    c.collab = xml_utils.node_text(collab)
+                    c.role = role
+                    authors.append(c)
+                groups.append(authors)
         return groups
 
     @property
     def volume(self):
-        return self.root.findtext('.//volume')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//volume')
 
     @property
     def issue(self):
-        return self.root.findtext('.//issue')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//issue')
 
     @property
     def supplement(self):
-        return self.root.findtext('.//supplement')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//supplement')
 
     @property
     def edition(self):
-        return self.root.findtext('.//edition')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//edition')
 
     @property
     def year(self):
-        _year = self.root.findtext('.//year')
+        _year = None
+        if self.element_citation is not None:
+            _year = self.element_citation.findtext('.//year')
         if _year is None:
             if self.publication_type == 'confproc':
                 _year = self.conference_date
@@ -1196,101 +1208,124 @@ class ReferenceXML(object):
 
     @property
     def publisher_name(self):
-        return self.root.findtext('.//publisher-name')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//publisher-name')
 
     @property
     def publisher_loc(self):
-        return self.root.findtext('.//publisher-loc')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//publisher-loc')
 
     @property
     def fpage(self):
-        return self.root.findtext('.//fpage')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//fpage')
 
     @property
     def lpage(self):
-        return self.root.findtext('.//lpage')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//lpage')
 
     @property
     def page_range(self):
-        return self.root.findtext('.//page-range')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//page-range')
 
     @property
     def size(self):
-        node = self.root.find('size')
-        if node is not None:
-            return {'size': node.text, 'units': node.attrib.get('units')} 
+        if self.element_citation is not None:
+            node = self.element_citation.find('size')
+            if node is not None:
+                return {'size': node.text, 'units': node.attrib.get('units')} 
 
     @property
     def label(self):
-        return self.root.findtext('.//label')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//label')
 
     @property
     def etal(self):
-        return self.root.findtext('.//etal')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//etal')
 
     @property
     def cited_date(self):
-        _d = self.root.findtext('.//date-in-citation[@content-type="access-date"]')
-        if _d is None:
-            _d = self.root.findtext('.//date-in-citation[@content-type="update"]')
+        _d = None
+        if self.element_citation is not None:
+            _d = self.element_citation.findtext('.//date-in-citation[@content-type="access-date"]')
+            if _d is None:
+                _d = self.element_citation.findtext('.//date-in-citation[@content-type="update"]')
         return _d
 
     @property
     def ext_link(self):
-        return self.root.findtext('.//ext-link')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//ext-link')
 
     @property
     def _comments(self):
-        return self.root.findall('.//comment')
+        if self.element_citation is not None:
+            return self.element_citation.findall('.//comment')
 
     @property
     def degree(self):
-        if self.publication_type == 'thesis':
-            return self.root.findtext('.//comment')
+        if self.element_citation is not None:
+            if self.publication_type == 'thesis':
+                return self.element_citation.findtext('.//comment')
 
     @property
     def comments(self):
         c = []
-        if self._comments is not None:
-            c = [c.text for c in self._comments if c.text is not None]
+        if self.element_citation is not None:
+            if self._comments is not None:
+                c = [c.text for c in self._comments if c.text is not None]
         return '; '.join(c)
 
     @property
     def notes(self):
-        return self.root.findtext('.//notes')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//notes')
 
     @property
     def contract_number(self):
-        return self.root.findtext('.//comment[@content-type="award-id"]')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//comment[@content-type="award-id"]')
 
     @property
     def doi(self):
-        _doi = self.root.findtext('.//pub-id[@pub-id-type="doi"]')
-        if not _doi:
-            for c in self.comments:
-                if 'doi:' in c:
-                    _doi = c
+        _doi = None
+        if self.element_citation is not None:
+            _doi = self.element_citation.findtext('.//pub-id[@pub-id-type="doi"]')
+            if not _doi:
+                for c in self.comments:
+                    if 'doi:' in c:
+                        _doi = c
         return _doi
 
     @property
     def pmid(self):
-        return self.root.findtext('.//pub-id[@pub-id-type="pmid"]')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//pub-id[@pub-id-type="pmid"]')
 
     @property
     def pmcid(self):
-        return self.root.findtext('.//pub-id[@pub-id-type="pmcid"]')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//pub-id[@pub-id-type="pmcid"]')
 
     @property
     def conference_name(self):
-        return xml_utils.node_text(self.root.find('.//conf-name'))
+        if self.element_citation is not None:
+            return xml_utils.node_text(self.element_citation.find('.//conf-name'))
 
     @property
     def conference_location(self):
-        return self.root.findtext('.//conf-loc')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//conf-loc')
 
     @property
     def conference_date(self):
-        return self.root.findtext('.//conf-date')
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//conf-date')
 
 
 class Issue(object):

@@ -1053,9 +1053,11 @@ def execute_converter(package_paths, collection_name=None):
                 acron, issue_id = acron_issue_label.split(' ')
             except Exception as e:
                 print('-'*10)
+                print('XCINTERRUPTED')
                 print(package_path)
                 print(e)
                 print('-'*10)
+                raise
                 bad_pkg_files.append(package_path)
                 bad_pkg_files.append(str(e))
                 report_location, report_path, scilista_item = [None, None, None]
@@ -1077,13 +1079,13 @@ def execute_converter(package_paths, collection_name=None):
                 if config.email_subject_package_evaluation is not None:
                     print('email_subject_package_evaluation')
                     print(type(config.email_subject_package_evaluation))
-                    print(config.email_subject_package_evaluation)
+                    #print(config.email_subject_package_evaluation)
                     print('package_folder')
                     print(type(package_folder))
-                    print(package_folder)
+                    #print(package_folder)
                     print('results')
                     print(type(results))
-                    print(results)
+                    #print(results)
 
                     send_message(mailer, config.email_to, config.email_subject_package_evaluation + u' ' + package_folder + u': ' + results, report_location)
 

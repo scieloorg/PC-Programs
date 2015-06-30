@@ -260,7 +260,6 @@ class ArticlePackage(object):
                 print([xml_f, xml_e, xml_w])
                 data_f, data_e, data_w = article_reports.validate_article_data(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, display_all, doc_files_info.data_report_filename)
                 print([data_f, data_e, data_w])
-                
                 self.pkg_fatal_errors += xml_f + data_f
                 self.pkg_stats[xml_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
                 self.pkg_reports[xml_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
@@ -277,7 +276,6 @@ class ArticlesPkgReport(object):
         print('validate_consistency')
         toc_report = self.consistency_report(validate_order)
         print('validate_consistency - fim')
-        print(toc_report)
         toc_f, toc_e, toc_w = html_reports.statistics_numbers(toc_report)
         if toc_f + toc_e + toc_w == 0:
             toc_report = None
@@ -301,14 +299,17 @@ class ArticlesPkgReport(object):
         print(pkg_metadata)
 
         r = ''
+        print('invalid_xml_name_items')
+        
         if len(invalid_xml_name_items) > 0:
             r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Invalid XML files.')))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid_xml_name_items, 'issue-problem'))
-
+        print('missing_data')
         for label, items in missing_data.items():
             r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Missing') + ' ' + label + ' ' + _('in') + ':'))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
 
+        print('equal_data')
         for label in equal_data:
             if len(pkg_metadata[label]) > 1:
                 _m = _('same value for %s is required for all the documents in the package') % (label)
@@ -317,6 +318,7 @@ class ArticlesPkgReport(object):
                     part += html_reports.format_list(_('found') + ' ' + label + '="' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
                 r += part
 
+        print('unique_data')
         for label in unique_data:
             if len(pkg_metadata[label]) > 0 and len(pkg_metadata[label]) != len(self.package.articles):
                 none = []
@@ -351,6 +353,7 @@ class ArticlesPkgReport(object):
                     r += part
 
         issue_common_data = ''
+        print('...')
         for label in equal_data:
             message = ''
             if len(pkg_metadata[label].items()) == 1:
@@ -358,6 +361,7 @@ class ArticlesPkgReport(object):
             else:
                 message = 'ERROR: ' + _('Unique value expected for ') + label
                 issue_common_data += html_reports.format_list(label + message, 'ol', pkg_metadata[label].keys())
+        print('end toc report')
         return html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages')
 
     def overview_report(self):

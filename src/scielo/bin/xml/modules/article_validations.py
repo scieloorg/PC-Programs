@@ -307,7 +307,7 @@ class ArticleContentValidation(object):
         sch2 = sum([t for k, t in self.article.refstats.items() if k in attributes.scholars_level2])
         total = sum(self.article.refstats.values())
         nonsch = total - sch1 - sch2
-        msg = '; '.join([k + ': ' + str(t) for k, t in self.article.refstats.items()])
+        msg = '; '.join([str(k) + ': ' + str(t) for k, t in self.article.refstats.items()])
         status = 'INFO'
         if total > 0:
             if (nonsch >= sch1 + sch2) or (sch1 < sch2):
@@ -876,10 +876,8 @@ class ReferenceContentValidation(object):
             r.append(item)
         for item in self.year(article_year):
             r.append(item)
-        if self.reference.source is not None:
-            _test_number = warn_unexpected_numbers('source', self.reference.source, 4)
-            if _test_number is not None:
-                r.append(_test_number)
+        for item in self.source:
+            r.append(item)
         return r
 
     @property
@@ -888,61 +886,80 @@ class ReferenceContentValidation(object):
 
     @property
     def source(self):
-        r = required('source', self.reference.source, 'FATAL ERROR')
-        if r[1] == 'OK':
+        r = []
+        if self.reference.source is not None:
             _test_number = warn_unexpected_numbers('source', self.reference.source, 4)
             if _test_number is not None:
-                r = _test_number
+                r.append(_test_number)
+            if self.reference.source is not None:
+                if self.reference.source[0:1] != self.reference.source[0:1].upper():
+                    r.append(('source', 'ERROR', self.reference.source + '-' + _('Invalid value for ') + 'source' + '. '))
         return r
 
     def validate_element(self, label, value, error_level='FATAL ERROR'):
-        res = attributes.validate_element(self.reference.publication_type, label, value)
-        if res != '':
-            return (label, error_level, res)
-        else:
-            if not value is None and value != '':
-                return (label, 'OK', value)
+        if not self.reference.publication_type is None:
+            res = attributes.validate_element(self.reference.publication_type, label, value)
+            if res != '':
+                return (label, error_level, res)
+            else:
+                if not value is None and value != '':
+                    return (label, 'OK', value)
 
     @property
     def publication_type_dependence(self):
         r = []
-        authors = None
-        if len(self.reference.authors_list) > 0:
-            for item in self.reference.authors_list:
-                if isinstance(item, article.PersonAuthor):
-                    authors = item.surname + ' ...'
-                elif isinstance(item, article.CorpAuthor):
-                    authors = item.collab
+        if not self.reference.publication_type is None:
+            authors = None
+            if len(self.reference.authors_list) > 0:
+                for item in self.reference.authors_list:
+                    if isinstance(item, article.PersonAuthor):
+                        authors = item.surname + ' ...'
+                    elif isinstance(item, article.CorpAuthor):
+                        authors = item.collab
 
-        items = [
-                self.validate_element('person-group', authors), 
-                self.validate_element('article-title', self.reference.article_title), 
-                self.validate_element('chapter-title', self.reference.chapter_title), 
-                self.validate_element('publisher-name', self.reference.publisher_name), 
-                self.validate_element('publisher-loc', self.reference.publisher_loc), 
-                self.validate_element('comment[@content-type="degree"]', self.reference.degree), 
-                self.validate_element('conf-name', self.reference.conference_name), 
-                self.validate_element('date-in-citation[@content-type="access-date"] ' + _('or') + ' date-in-citation[@content-type="update"]', self.reference.cited_date), 
-                self.validate_element('ext-link', self.reference.ext_link), 
-                self.validate_element('volume', self.reference.volume), 
-                self.validate_element('issue', self.reference.issue), 
-                self.validate_element('fpage', self.reference.fpage), 
-                self.validate_element('source', self.reference.source), 
-                self.validate_element('year', self.reference.year), 
-            ]
+            items = [
+                    self.validate_element('person-group', authors), 
+                    self.validate_element('article-title', self.reference.article_title), 
+                    self.validate_element('chapter-title', self.reference.chapter_title), 
+                    self.validate_element('publisher-name', self.reference.publisher_name), 
+                    self.validate_element('publisher-loc', self.reference.publisher_loc), 
+                    self.validate_element('comment[@content-type="degree"]', self.reference.degree), 
+                    self.validate_element('conf-name', self.reference.conference_name), 
+                    self.validate_element('date-in-citation[@content-type="access-date"] ' + _('or') + ' date-in-citation[@content-type="update"]', self.reference.cited_date), 
+                    self.validate_element('ext-link', self.reference.ext_link), 
+                    self.validate_element('volume', self.reference.volume), 
+                    self.validate_element('issue', self.reference.issue), 
+                    self.validate_element('fpage', self.reference.fpage), 
+                    self.validate_element('source', self.reference.source), 
+                    self.validate_element('year', self.reference.year), 
+                ]
 
-        if self.reference.issue is None and self.reference.volume is None:
-            _mixed = self.reference.mixed_citation.lower()
-            if 'conference' in _mixed or 'proceeding' in _mixed:
-                if self.reference.publication_type != 'confproc':
-                    r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' confproc.'))
-            if ' dissert' in _mixed or 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed:
-                if self.reference.publication_type != 'thesis':
-                    r.append(('@publication-type', 'WARNING', _('Check if @publication-type is correct. This reference looks like') + ' thesis.'))
+            looks_like = None
+            _mixed = self.reference.mixed_citation.lower() if self.reference.mixed_citation is not None else ''
+            _source = self.reference.source.lower() if self.reference.source is not None else ''
+            if self.reference.publication_type != 'journal':
+                if self.reference.source is not None:
+                    if 'journal' in _source or 'revista' in _source or 'J ' in self.reference.source or self.reference.source.endswith('J') or 'J. ' in self.reference.source or self.reference.source.endswith('J.'):
+                        looks_like = 'journal'
+            if self.reference.issue is None and self.reference.volume is None:
+                if not 'legal' in self.reference.publication_type:
+                    if self.reference.source is not None:
+                        if 'Lei' in self.reference.source or ('Di' in self.reference.source and 'Oficial' in self.reference.source):
+                            looks_like = 'legal-doc'
+                        if 'portaria' in _source:
+                            looks_like = 'legal-doc'
+                if 'conference' in _mixed or 'proceeding' in _mixed:
+                    if self.reference.publication_type != 'confproc':
+                        looks_like = 'confproc'
+                if 'thesis' in _mixed or 'dissert' in _mixed or 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed:
+                    if self.reference.publication_type != 'thesis':
+                        looks_like = 'thesis'
+            if looks_like is not None:
+                r.append(('@publication-type', 'ERROR', _('Check if @publication-type is correct. This reference looks like') + ' ' + looks_like))
 
-        for item in items:
-            if item is not None:
-                r.append(item)
+            for item in items:
+                if item is not None:
+                    r.append(item)
         return r
 
     @property
