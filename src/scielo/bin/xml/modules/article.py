@@ -1067,7 +1067,7 @@ class ReferenceXML(object):
 
     def __init__(self, root):
         self.root = root
-        self.element_citation = self.root.find('.//element-citation')
+        self.element_citation = self.root.find('.//element-citation') if self.root is not None else None
         self._source = None
 
     @property
