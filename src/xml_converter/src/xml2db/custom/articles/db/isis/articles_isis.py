@@ -184,7 +184,7 @@ class ISISManager4Articles:
                         print('excluded aop id filename')
         print('excluded=')
         print(excluded)
-        if excluded > 0:
+        if ahead_manager is not None:
             ahead_manager.update_ahead_issue()
             for folder in ahead_manager.ahead_folders:
                 print('add to scilista')
