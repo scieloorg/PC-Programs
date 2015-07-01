@@ -1001,12 +1001,15 @@ def get_pkg_items(xml_filenames, report_path):
     return r
 
 
-def package_issue(articles):
+def package_journal_and_issue_data(articles):
     issue_label = []
     e_issn = []
     print_issn = []
+    journal_title = None
     for doc in articles.values():
         if doc.tree is not None:
+            if journal_title is None:
+                journal_title = doc.journal_title
             issue_label.append(doc.issue_label)
             if doc.e_issn is not None:
                 e_issn.append(doc.e_issn)
@@ -1019,7 +1022,7 @@ def package_issue(articles):
     issue_label = issue_label[0] if len(issue_label) == 1 else None
     e_issn = e_issn[0] if len(e_issn) > 0 else None
     print_issn = print_issn[0] if len(print_issn) > 0 else None
-    return (issue_label, e_issn, print_issn)
+    return (journal_title, issue_label, e_issn, print_issn)
 
 
 def make_packages(path, acron, version='1.0'):

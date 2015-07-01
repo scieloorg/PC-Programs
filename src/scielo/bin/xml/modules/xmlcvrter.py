@@ -53,6 +53,7 @@ class ConverterEnv(object):
         self.version = None
         self.db_issue = None
         self.db_article = None
+        self.db_title = None
         self.db_isis = None
         self.local_web_app_path = None
         self.serial_path = None
@@ -66,32 +67,20 @@ def register_log(message):
     converter_report_lines.append(message)
 
 
+def find_journal_record(journal_title, print_issn, e_issn):
+    record = None
+    records = converter_env.db_title.search(print_issn, e_issn, journal_title)
+    if len(records) > 0:
+        record = records[0]
+    return record
+
+
 def find_i_record(issue_label, print_issn, e_issn):
     i_record = None
     issues_records = converter_env.db_issue.search(issue_label, print_issn, e_issn)
     if len(issues_records) > 0:
         i_record = issues_records[0]
     return i_record
-
-
-def find_issue_models(issue_label, p_issn, e_issn):
-    #utils.debugging(issue_data)
-
-    i_record = None
-    issue_models = None
-    msg = None
-
-    if issue_label is None:
-        msg = html_reports.p_message('FATAL ERROR: ' + _('Unable to identify the article\'s issue'))
-    else:
-        i_record = find_i_record(issue_label, p_issn, e_issn)
-
-        if i_record is None:
-            msg = html_reports.p_message('FATAL ERROR: ' + _('Issue ') + issue_label + _(' is not registered in ') + converter_env.db_issue.db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
-        else:
-            issue_models = xc_models.IssueModels(i_record)
-
-    return (issue_models, msg)
 
 
 def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_articles):
@@ -259,9 +248,26 @@ def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
     return (xml_filenames, articles, doc_file_info_items)
 
 
-def get_issue_models(articles):
-    issue_label, p_issn, e_issn = xpmaker.package_issue(articles)
-    return find_issue_models(issue_label, p_issn, e_issn)
+def get_issue_models(journal_title, issue_label, p_issn, e_issn):
+    issue_models = None
+    msg = None
+
+    if issue_label is None:
+        msg = html_reports.p_message('FATAL ERROR: ' + _('Unable to identify the article\'s issue'))
+    else:
+        i_record = find_i_record(issue_label, p_issn, e_issn)
+        if i_record is None:
+            msg = html_reports.p_message('FATAL ERROR: ' + _('Issue ') + issue_label + _(' is not registered in ') + converter_env.db_issue.db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
+        else:
+            issue_models = xc_models.IssueModels(i_record)
+            if issue_models.issue.license is None:
+                j_record = find_journal_record(p_issn, e_issn, journal_title)
+                if j_record is None:
+                    msg = html_reports.p_message('ERROR: ' + _('Unable to get the license of') + ' ' + journal_title)
+                else:
+                    t = xc_models.RegisteredTitle(j_record)
+                    issue_models.issue.license = t.license
+    return (issue_models, msg)
 
 
 def get_issue_files(issue_models, pkg_path):
@@ -303,10 +309,9 @@ def convert_package(src_path):
 
     xml_filenames, pkg_articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
 
-    #utils.debugging('normalized package')
+    journal_title, issue_label, p_issn, e_issn = xpmaker.package_journal_and_issue_data(pkg_articles)
 
-    #utils.debugging('get_issue_models')
-    issue_models, issue_error_msg = get_issue_models(pkg_articles)
+    issue_models, issue_error_msg = get_issue_models(journal_title, issue_label, p_issn, e_issn)
 
     if issue_error_msg is not None:
         report_components['detail-report'] = issue_error_msg
@@ -814,6 +819,14 @@ def validate_xml_issue_data(issue_models, article):
                 msg.append(html_reports.tag('h5', label))
                 msg.append('FATAL ERROR: ' + _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"')
 
+        # license
+        if not '/' + issue_models.issue.license.lower() + '/' in article.license_url.lower():
+            msg.append(html_reports.tag('h5', 'license'))
+            msg.append('ERROR: ' + _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + issue_models.issue.license + '"')
+        else:
+            msg.append(html_reports.tag('h5', 'license'))
+            msg.append('INFO: ' + _('In article: "') + article.license_url + _('" and in issue: "') + issue_models.issue.license + '"')
+
         # section
         section_msg = []
         section_code, matched_rate, fixed_sectitle = issue_models.most_similar_section_code(article.toc_section)
@@ -971,16 +984,16 @@ def is_valid_pkg_file(filename):
     return os.path.isfile(filename) and (filename.endswith('.zip') or filename.endswith('.tgz'))
 
 
-def update_issue_copy(issue_db, issue_db_copy):
-    d = os.path.dirname(issue_db_copy)
+def update_db_copy(isis_db, isis_db_copy, fst_file):
+    d = os.path.dirname(isis_db_copy)
     if not os.path.isdir(d):
         os.makedirs(d)
-    if not os.path.isfile(issue_db_copy + '.fst'):
-        shutil.copyfile(CURRENT_PATH + '/issue.fst', issue_db_copy + '.fst')
-    if open(CURRENT_PATH + '/issue.fst', 'r').read() != open(issue_db_copy + '.fst', 'r').read():
-        shutil.copyfile(CURRENT_PATH + '/issue.fst', issue_db_copy + '.fst')
-    shutil.copyfile(issue_db + '.mst', issue_db_copy + '.mst')
-    shutil.copyfile(issue_db + '.xrf', issue_db_copy + '.xrf')
+    if not os.path.isfile(isis_db_copy + '.fst'):
+        shutil.copyfile(fst_file, isis_db_copy + '.fst')
+    if open(fst_file, 'r').read() != open(isis_db_copy + '.fst', 'r').read():
+        shutil.copyfile(fst_file, isis_db_copy + '.fst')
+    shutil.copyfile(isis_db + '.mst', isis_db_copy + '.mst')
+    shutil.copyfile(isis_db + '.xrf', isis_db_copy + '.xrf')
 
 
 def call_converter(args, version='1.0'):
@@ -1093,9 +1106,13 @@ def prepare_env(config):
 
     converter_env.db_isis = dbm_isis.IsisDAO(dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660)))
 
-    update_issue_copy(config.issue_db, config.issue_db_copy)
+    update_db_copy(config.issue_db, config.issue_db_copy, CURRENT_PATH + '/issue.fst')
     converter_env.db_isis.update_indexes(config.issue_db_copy, config.issue_db_copy + '.fst')
     converter_env.db_issue = xc_models.IssueDAO(converter_env.db_isis, config.issue_db_copy)
+
+    update_db_copy(config.title_db, config.title_db_copy, CURRENT_PATH + '/title.fst')
+    converter_env.db_isis.update_indexes(config.title_db_copy, config.title_db_copy + '.fst')
+    converter_env.db_title = xc_models.TitleDAO(converter_env.db_isis, config.title_db_copy)
 
     import institutions_service
 

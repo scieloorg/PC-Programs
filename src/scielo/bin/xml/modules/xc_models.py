@@ -496,6 +496,16 @@ class ArticleRecords(object):
         return r
 
 
+class RegisteredTitle(object):
+
+    def __init__(self, record):
+        self.record = record
+
+    def license(self):
+        if self.record is not None:
+            return self.record.get('541')
+
+
 class IssueModels(object):
 
     def __init__(self, record):
@@ -534,14 +544,15 @@ class IssueModels(object):
         volume_suppl = self.record.get('131')
         number = self.record.get('32')
         number_suppl = self.record.get('132')
+
         i = Issue(acron, volume, number, dateiso, volume_suppl, number_suppl)
 
         i.issn_id = self.record.get('35')
         i.journal_title = self.record.get('130')
         i.journal_id_nlm_ta = self.record.get('421')
-
         i.journal_issns = read_issn_fields(self.record.get('435'))
         i.publisher_name = self.record.get('62', self.record.get('480'))
+        i.license = self.record.get('541')
         return i
 
 
@@ -626,6 +637,25 @@ class RegisteredAhead(object):
         return a
 
 
+class TitleDAO(object):
+
+    def __init__(self, dao, db_filename):
+        self.dao = dao
+        self.db_filename = db_filename
+
+    def expr(self, pissn, eissn, journal_title):
+        _expr = []
+        if pissn is not None:
+            _expr.append(pissn + issue_id)
+        if eissn is not None:
+            _expr.append(eissn + issue_id)
+        return ' OR '.join(_expr) if len(_expr) > 0 else None
+
+    def search(self, pissn, eissn, journal_title):
+        expr = self.expr(pissn, eissn, journal_title)
+        return self.dao.get_records(self.db_filename, expr) if expr is not None else None
+
+
 class IssueDAO(object):
 
     def __init__(self, dao, db_filename):
@@ -640,13 +670,11 @@ class IssueDAO(object):
             _expr.append(eissn + issue_id)
         if acron is not None:
             _expr.append(acron)
-        r = ' OR '.join(_expr) if len(_expr) > 0 else None
-        return r
+        return ' OR '.join(_expr) if len(_expr) > 0 else None
 
     def search(self, issue_label, pissn, eissn):
         expr = self.expr(issue_label, pissn, eissn)
-        search_result = self.dao.get_records(self.db_filename, expr) if expr is not None else None
-        return search_result
+        return self.dao.get_records(self.db_filename, expr) if expr is not None else None
 
 
 class ArticleDAO(object):
@@ -682,9 +710,6 @@ class ArticleDAO(object):
         return loaded
 
     def registered_items(self, issue_files):
-        print('registered_items')
-        print('base=')
-        print(issue_files.base)
         articles = {}
 
         records = self.dao.get_records(issue_files.base)
@@ -733,9 +758,7 @@ class AheadManager(object):
         return total > 0
 
     def extract_id_files_from_master(self, i_ahead_records):
-        print('extract_id_files_from_master')
         for db_filename in self.journal_files.ahead_bases:
-            print(db_filename)
 
             year = os.path.basename(db_filename)[0:4]
             id_path = self.journal_files.ahead_id_path(year)
@@ -770,7 +793,6 @@ class AheadManager(object):
                 if order is not None and len(r) > 0:
                     if not os.path.isfile(id_path + '/' + order + '.id'):
                         self.dao.save_id(id_path + '/' + order + '.id', r)
-        print('extract_id_files_from_master--fim')
 
     def load(self):
         for db_filename in self.journal_files.ahead_bases:
@@ -781,10 +803,10 @@ class AheadManager(object):
                 self.indexed_by_doi[ahead.doi] = ahead
                 self.indexed_by_xml_name[ahead.xml_name] = ahead
                 self.still_ahead[dbname][ahead.order] = ahead
-        print('~'*20)
-        print('\n'.join(self.indexed_by_doi.keys()))
-        print('\n'.join(self.indexed_by_xml_name.keys()))
-        print('~'*20)
+        utils.debugging('~'*20)
+        utils.debugging('\n'.join(self.indexed_by_doi.keys()))
+        utils.debugging('\n'.join(self.indexed_by_xml_name.keys()))
+        utils.debugging('~'*20)
 
     def still_ahead_items(self):
         items = []
@@ -834,7 +856,7 @@ class AheadManager(object):
         return aop
 
     def get_valid_ahead(self, article):
-        print('get_valid_ahead - inicio')
+        utils.debugging('get_valid_ahead - inicio')
         ahead = None
         status = None
         if article.number == 'ahead':
@@ -857,8 +879,8 @@ class AheadManager(object):
                                 status = 'partially matched aop'
                     else:
                         status = 'unmatched aop'
-        print('get_valid_ahead - fim')
-        
+        utils.debugging('get_valid_ahead - fim')
+
         return (ahead, status)
 
     def mark_ahead_as_deleted(self, ahead):

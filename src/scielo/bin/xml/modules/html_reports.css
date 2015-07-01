@@ -476,12 +476,12 @@ td img {
   max-width: 90%;
   margin: 5px;
   font-family: Verdana;
-  font-size: 7pt;
+  font-size: 9pt;
 } 
 .reports-sheet td {
   border: 0.5px solid gray;
   word-wrap: break-word;
-  padding: 10px;
+  padding: 5px;
 } 
 .reports-sheet th {
   border: 0.5px solid gray;
@@ -500,7 +500,7 @@ td img {
 
 .reports {
   font-family: "Verdana";
-  font-size: 10pt;
+  font-size: 9pt;
 }
 .report-link-xmlrep {
   cursor:pointer;

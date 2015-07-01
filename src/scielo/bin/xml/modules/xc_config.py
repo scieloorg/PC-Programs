@@ -65,6 +65,17 @@ class XMLConverterConfiguration(object):
         return self._data.get('ISSUE_DB_COPY', copy)
 
     @property
+    def title_db(self):
+        return self._data.get('SOURCE_TITLE_DB', self._data.get('Title Database'))
+
+    @property
+    def title_db_copy(self):
+        copy = self._data.get('Title Database')
+        if copy is not None:
+            copy = copy.replace('/issue/', '/issue.tmp/')
+        return self._data.get('TITLE_DB_COPY', copy)
+
+    @property
     def max_fatal_error(self):
         return self._data.get('MAX_FATAL_ERROR')
 
@@ -110,6 +121,18 @@ class XMLConverterConfiguration(object):
         else:
             if not os.path.isfile(self.issue_db + '.mst'):
                 problems.append('ERROR: Unable to find ' + self.issue_db + '.mst')
+
+        if self.title_db is None:
+            problems.append('ERROR: Missing SOURCE_TITLE_DB or Title Database')
+        else:
+            if not os.path.isfile(self.title_db + '.mst'):
+                problems.append('ERROR: Unable to find ' + self.title_db + '.mst')
+
+        if self.issue_db_copy is None:
+            problems.append('ERROR: Missing ISSUE_DB_COPY or Issue Database')
+
+        if self.title_db_copy is None:
+            problems.append('ERROR: Missing TITLE_DB_COPY or Title Database')
 
         if self.local_web_app_path is None:
             problems.append('ERROR: Missing LOCAL_WEB_APP_PATH')
@@ -340,8 +363,6 @@ class XMLConverterConfiguration(object):
             errors.append('Missing PROC_SERIAL_PATH')
         if self.collection_scilista is None:
             errors.append('Missing COL_SCILISTA')
-        if self.gerapadrao_script is None:
-            errors.append('Missing GERAPADRAO_SCRIPT')
         if self._data.get('SOURCE_TITLE_DB') is None:
             errors.append('Missing SOURCE_TITLE_DB')
         if self._data.get('SOURCE_ISSUE_DB') is None:
