@@ -15,19 +15,21 @@ from email.header import Header
 
 def strtolist(s):
     l = []
-    print(s)
-    print(type(s))
+
     if s is not None:
         if isinstance(s, list):
             l = s
         else:
+            print(s)
+            print(type(s))
+            print(l)
+
             if ';' in s:
                 l = s.split(';')
             elif ',' in s:
                 l = s.split(',')
             else:
                 l = [s]
-    print(l)
     return l
 
 

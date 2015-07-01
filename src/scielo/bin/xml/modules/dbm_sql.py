@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import sqlite3
+import utils
 
 
 class SQL(object):
@@ -35,7 +36,7 @@ class SQL(object):
                     else:
                         _values.append('`' + item.replace('  ', ' ').strip() + '`')
                 instruction = 'insert into ' + table_name + ' (' + _fields + ') ' + ' values (' + ', '.join(_values) + ')'
-                print(instruction)
+                utils.debugging(instruction)
                 conn.execute(instruction + '\n')
                 conn.commit()
         conn.close()
@@ -49,9 +50,9 @@ class SQL(object):
                 for row in cursor.fetchall():
                     results.append(row)
             except Exception as e:
-                print('ERROR: query')
-                print(expr)
-                print(e)
+                utils.debugging('ERROR: query')
+                utils.debugging(expr)
+                utils.debugging(e)
         conn.close()
         return results
 

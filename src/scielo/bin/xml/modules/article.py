@@ -146,7 +146,13 @@ class ArticleXML(object):
         self.back = None
         self.subarticles = []
         self.responses = []
+        self._languages = None
         self._language = None
+        self._trans_languages = None
+        self._titles_by_lang = None
+        self._abstracts_by_lang = None
+        self._keywords_by_lang = None
+
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
             self.article_meta = self.tree.find('./front/article-meta')
@@ -319,6 +325,35 @@ class ArticleXML(object):
         return attributes.normalized_toc_section(self.toc_section)
 
     @property
+    def keywords_by_lang(self):
+        if self._keywords_by_lang is None:
+            k = {}
+            if not self.article_meta is None:
+                for node in self.article_meta.findall('kwd-group'):
+                    language = xml_utils.element_lang(node)
+                    if language is None:
+                        language = self.language
+                    kw_items = []
+                    for kw in node.findall('kwd'):
+                        t = Text()
+                        t.language = language
+                        t.text = xml_utils.node_text(kw)
+                        kw_items.append(t)
+                    k[language] = kw_items
+            for subart in self.subarticles:
+                for node in subart.findall('kwd-group'):
+                    language = xml_utils.element_lang(node)
+                    kw_items = []
+                    for kw in node.findall('kwd'):
+                        t = Text()
+                        t.language = language
+                        t.text = xml_utils.node_text(kw)
+                        kw_items.append(t)
+                    k[language] = kw_items
+            self._keywords_by_lang = k
+        return self._keywords_by_lang
+
+    @property
     def keywords(self):
         k = []
         if not self.article_meta is None:
@@ -439,12 +474,56 @@ class ArticleXML(object):
         return k
 
     @property
+    def titles_by_lang(self):
+        if self._titles_by_lang is None:
+            k = {}
+            if self.article_meta is not None:
+                language = self.language
+                for node in self.article_meta.findall('.//title-group'):
+                    t = Title()
+                    t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
+                    t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
+                    t.language = language
+                    k[language] = t
+                for node in self.article_meta.findall('.//trans-title-group'):
+                    language = xml_utils.element_lang(node)
+                    t = Title()
+                    t.title = article_utils.remove_xref(xml_utils.node_text(node.find('trans-title')))
+                    t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('trans-subtitle')))
+                    t.language = language
+                    k[language] = t
+            if self.subarticles is not None:
+                for subart in self.subarticles:
+                    if subart.attrib.get('article-type') == 'translation':
+                        for node in subart.findall('.//title-group'):
+                            language = xml_utils.element_lang(subart)
+                            t = Title()
+                            t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
+                            t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
+                            t.language = language
+                            k[language] = t
+            self._titles_by_lang = k
+        return self._titles_by_lang
+
+    @property
+    def languages(self):
+        if self._languages is None:
+            k = []
+            k.append(self.language)
+            for l in self.trans_languages:
+                k.append(l)
+            self._languages = k
+        return self._languages
+
+    @property
     def trans_languages(self):
-        k = []
-        if self.subarticles is not None:
-            for node in self.subarticles:
-                k.append(xml_utils.element_lang(node))
-        return k
+        if self._trans_languages is None:
+            k = []
+            if self.subarticles is not None:
+                for node in self.subarticles:
+                    k.append(xml_utils.element_lang(node))
+            self._trans_languages = k
+        return self._trans_languages
 
     @property
     def doi(self):
@@ -665,6 +744,33 @@ class ArticleXML(object):
                 for item in self.tree.findall('.//inline-formula'):
                     r.append(xml_utils.node_xml(item))
         return r
+
+    @property
+    def abstracts_by_lang(self):
+        if self._abstracts_by_lang is None:
+            r = {}
+            if self.article_meta is not None:
+                language = self.language
+                for a in self.article_meta.findall('.//abstract'):
+                    _abstract = Text()
+                    _abstract.language = language
+                    _abstract.text = xml_utils.node_text(a)
+                    r[language] = _abstract
+                for a in self.article_meta.findall('.//trans-abstract'):
+                    language = xml_utils.element_lang(a)
+                    _abstract = Text()
+                    _abstract.language = language
+                    _abstract.text = xml_utils.node_text(a)
+                    r[language] = _abstract
+            for subart in self.subarticles:
+                language = xml_utils.element_lang(subart)
+                for a in subart.findall('.//abstract'):
+                    _abstract = Text()
+                    _abstract.language = language
+                    _abstract.text = xml_utils.node_text(a)
+                    r[language] = _abstract
+            self._abstracts_by_lang = r
+        return self._abstracts_by_lang
 
     @property
     def abstracts(self):
