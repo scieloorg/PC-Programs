@@ -186,79 +186,74 @@ class ArticleContentValidation(object):
     @property
     def validations(self):
         performance = []
-        #print(datetime.now().isoformat() + ' validations 1')
+        #utils.debugging(datetime.now().isoformat() + ' validations 1')
         items = []
         items.append(self.sps)
         items.append(self.language)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_title)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.publisher_name)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_id)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_id_nlm_ta)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_issns)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.issue_label)
-        #print(datetime.now().isoformat() + ' validations')
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.article_type)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.article_date_types)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.toc_section)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.order)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.doi)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.pagination)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.total_of_pages)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.total_of_equations)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.total_of_tables)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.total_of_figures)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.total_of_references)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.refstats)
         items.append(('total of references', 'INFO', self.article.total_of_references))
         items.append(self.ref_display_only_stats)
-        items.append(self.titles)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.contrib)
         items.append(self.contrib_names)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.contrib_collabs)
-        #print(datetime.now().isoformat() + ' validations affiliations')
+        #utils.debugging(datetime.now().isoformat() + ' validations affiliations')
         items.append(self.affiliations)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.funding)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.license_text)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.license_url)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.license_type)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.history)
-        #print(datetime.now().isoformat() + ' validations')
-        items.append(self.abstracts)
-        #print(datetime.now().isoformat() + ' validations')
-        items.append(self.keywords)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.validate_xref_reftype)
-        #print(datetime.now().isoformat() + ' validations')
+        #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.missing_xref_list)
-
-        #print(datetime.now().isoformat() + ' validations 2')
+        items.append(self.titles_abstracts_keywords)
+        #utils.debugging(datetime.now().isoformat() + ' validations 2')
         r = self.normalize_validations(items)
-        #print(datetime.now().isoformat() + ' validations 3')
+        #utils.debugging(datetime.now().isoformat() + ' validations 3')
         return (r, performance)
 
     @property
@@ -358,13 +353,6 @@ class ArticleContentValidation(object):
         return required('subject', self.article.toc_section, 'FATAL ERROR')
 
     @property
-    def keywords(self):
-        r = []
-        for item in self.article.keywords:
-            r.append(('kwd: ' + item['l'], 'OK', item['k']))
-        return r
-
-    @property
     def contrib(self):
         r = []
         if self.article.article_type in attributes.AUTHORS_REQUIRED_FOR_DOCTOPIC:
@@ -393,21 +381,6 @@ class ArticleContentValidation(object):
     @property
     def contrib_collabs(self):
         return [('collab', 'OK', collab.collab) for collab in self.article.contrib_collabs]
-
-    @property
-    def titles(self):
-        r = []
-        for item in self.article.titles:
-            if item.title is not None and item.language is not None:
-                r.append(('title', 'OK', item.language + ': ' + item.title))
-            else:
-                if item.language is None:
-                    r.append(('title language', 'ERROR', _('Missing @xml:lang for ') + item.title))
-                elif item.title is None:
-                    r.append(('title', 'ERROR', _('Missing title for ') + item.language))
-                else:
-                    r.append('title', 'ERROR', _('Missing titles'))
-        return r
 
     @property
     def trans_languages(self):
@@ -665,6 +638,55 @@ class ArticleContentValidation(object):
         return self._total(self.article.total_of_figures, self.article.fig_count, _('total of figures'), 'fig-count')
 
     @property
+    def titles_abstracts_keywords(self):
+        r = []
+        for lang in self.article.languages:
+            t = self.article.titles_by_lang.get(lang)
+            if t is None:
+                r.append(('title-group', 'ERROR', _('Missing title for ') + lang))
+            else:
+                text = None if t.title == '' else t.title
+                if text is None:
+                    r.append(('article title', 'FATAL ERROR', _('Missing title for ') + lang))
+                if lang is None:
+                    r.append(('article title @xml:lang', 'FATAL ERROR', _('Missing @xml:lang for ') + text))
+
+            t = self.article.abstracts_by_lang.get(lang)
+            if t is None:
+                r.append(('abstract', 'ERROR', _('Missing abstract for ') + lang))
+            else:
+                text = None if t.text == '' else t.text
+                if text is None:
+                    r.append(('abstract', 'FATAL ERROR', _('Missing text for ') + lang))
+                if lang is None:
+                    r.append(('abstract @xml:lang', 'FATAL ERROR', _('Missing @xml:lang for ') + text))
+
+            t = self.article.keywords_by_lang.get(lang)
+            if t is None:
+                r.append(('kwd-group', 'ERROR', _('Missing kwd-group for ') + lang))
+            else:
+                if len(t) == 0:
+                    r.append(('kwd', 'FATAL ERROR', _('Missing kwd for ') + lang))
+                if lang is None:
+                    r.append(('kwd-group @xml:lang', 'FATAL ERROR', _('Missing @xml:lang for ') + '; '.join([item.text for item in t])))
+        return r
+
+    @property
+    def titles(self):
+        r = []
+        for item in self.article.titles:
+            if item.title is not None and item.language is not None:
+                r.append(('title', 'OK', item.language + ': ' + item.title))
+            else:
+                if item.language is None:
+                    r.append(('title language', 'ERROR', _('Missing @xml:lang for ') + item.title))
+                elif item.title is None:
+                    r.append(('title', 'ERROR', _('Missing title for ') + item.language))
+                else:
+                    r.append('title', 'ERROR', _('Missing titles'))
+        return r
+
+    @property
     def abstracts(self):
         r = []
         for item in self.article.abstracts:
@@ -675,6 +697,13 @@ class ArticleContentValidation(object):
                     r.append(('abstract: ', 'ERROR', _('Missing @xml:lang for ') + item.text))
                 if item.text is None:
                     r.append(('abstract: ', 'ERROR', _('Missing text for ') + item.language))
+        return r
+
+    @property
+    def keywords(self):
+        r = []
+        for item in self.article.keywords:
+            r.append(('kwd: ' + item['l'], 'OK', item['k']))
         return r
 
     @property

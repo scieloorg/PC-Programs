@@ -1,5 +1,7 @@
 # coding=utf-8
 
+IMDEBUGGING = False
+
 
 def display_datetime(dateiso, timeiso):
     y = dateiso[0:4]
@@ -38,3 +40,12 @@ def most_similar(similarity):
         items = similarity[highiest_rate]
 
     return (highiest_rate, items)
+
+
+def debugging(text):
+    if IMDEBUGGING:
+        print(text)
+
+
+def display_message(text):
+    print(text)

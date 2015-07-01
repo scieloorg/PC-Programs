@@ -6,6 +6,7 @@ from datetime import datetime
 from mimetypes import MimeTypes
 
 from __init__ import _
+import utils
 import fs_utils
 import java_xml_utils
 import html_reports
@@ -58,7 +59,7 @@ def replace_mimetypes(content, path):
             else:
                 r += item
     else:
-        print('.............')
+        utils.debugging('.............')
     return r
 
 
@@ -76,9 +77,9 @@ def rename_embedded_img_href(content, xml_name, new_href_list):
                 continuation = continuation[continuation.find('"'):]
                 new_href_item = new_href_list[i]
                 if new_href_item.startswith('image'):
-                    print(new_href_item)
+                    utils.debugging(new_href_item)
                     new_href_item = new_href_item[len('image'):]
-                    print(new_href_item)
+                    utils.debugging(new_href_item)
                 new += '<graphic href="' + xml_name + new_href_item + continuation
                 i += 1
             else:
@@ -131,9 +132,9 @@ def extract_embedded_images(xml_name, content, html_content, html_filename, dest
                 if os.path.isfile(embedded_img_path + '/' + item):
                     new_img_name = item
                     if new_img_name.startswith('image'):
-                        print(new_img_name)
+                        utils.debugging(new_img_name)
                         new_img_name = new_img_name[len('image'):]
-                        print(new_img_name)
+                        utils.debugging(new_img_name)
                     shutil.copyfile(embedded_img_path + '/' + item, dest_path + '/' + xml_name + new_img_name)
         content = content.replace('"">', '">')
         content = content.replace('href=""?', 'href="?')
@@ -143,9 +144,9 @@ def extract_embedded_images(xml_name, content, html_content, html_filename, dest
 
 def get_html_tables(html_content):
     html_content = fix_sgml_tags(html_content)
-    #print(html_content)
+    #utils.debugging(html_content)
     html_content = fix_tabwrap_end(html_content)
-    #print(html_content)
+    #utils.debugging(html_content)
 
     tables = {}
     html_content = html_content.replace('[tabwrap', '~BREAK~[tabwrap')
@@ -159,8 +160,8 @@ def get_html_tables(html_content):
 
             table = remove_sgml_tags(table)
             table = ignore_html_tags_and_insert_quotes_to_attributes(table, ['table', 'a', 'img', 'tbody', 'thead', 'th', 'tr', 'td', 'b', 'i'])
-            print(table_id)
-            print(table)
+            utils.debugging(table_id)
+            utils.debugging(table)
             x
             tables[table_id] = table
     return tables
@@ -221,8 +222,8 @@ def ignore_html_tags_and_insert_quotes_to_attributes(html_content, tags_to_keep,
 
             if tag in tags_to_keep:
                 if '=' in part:
-                    print('-'*80)
-                    print(part)
+                    utils.debugging('-'*80)
+                    utils.debugging(part)
                     open_tag = part.replace(c2, ' ' + c2)
                     open_tag = open_tag.replace('=', '~BREAK~=')
                     attributes = []
@@ -234,7 +235,7 @@ def ignore_html_tags_and_insert_quotes_to_attributes(html_content, tags_to_keep,
                                 attr = attr[0:p] + '"' + attr[p:]
                         attributes.append(attr)
                     part = ''.join(attributes).replace(' ' + c2, c2)
-                    print(part)
+                    utils.debugging(part)
             else:
                 part = ''
         parts.append(part)
@@ -304,7 +305,7 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
         _content = content
         if isinstance(content, unicode):
             _content = content.encode('utf-8')
-        print(sgmxml_filename)
+        utils.debugging(sgmxml_filename)
         open(sgmxml_filename, 'w').write(_content)
         xml = xml_utils.is_xml_well_formed(content)
 
@@ -330,7 +331,7 @@ def hdimages_to_jpeg(source_path, jpg_path, replace=False):
         IMG_CONVERTER = True
     except Exception as e:
         IMG_CONVERTER = False
-        print(e)
+        utils.display_message(e)
 
     if IMG_CONVERTER:
         for item in os.listdir(source_path):
@@ -348,10 +349,10 @@ def hdimages_to_jpeg(source_path, jpg_path, replace=False):
                         im = Image.open(image_filename)
                         im.thumbnail(im.size)
                         im.save(jpg_filename, "JPEG")
-                        print(jpg_filename)
+                        utils.display_message(jpg_filename)
                     except Exception as inst:
-                        print('Unable to generate ' + jpg_filename)
-                        print(inst)
+                        utils.display_message('Unable to generate ' + jpg_filename)
+                        utils.display_message(inst)
 
 
 def generate_new_name(doc, param_acron='', original_xml_name=''):
@@ -359,7 +360,7 @@ def generate_new_name(doc, param_acron='', original_xml_name=''):
         def normalize_len(fpage):
             fpage = '00000' + fpage
             return fpage[-5:]
-        #print((fpage, seq, elocation_id, order, doi, issn))
+        #utils.debugging((fpage, seq, elocation_id, order, doi, issn))
         r = None
         if r is None:
             if fpage is not None:
@@ -465,7 +466,7 @@ def get_attach_info(doc):
 
 def normalize_hrefs(content, curr_and_new_href_list):
     for current, new in curr_and_new_href_list:
-        print(current + ' => ' + new)
+        utils.display_message(current + ' => ' + new)
         content = content.replace('href="' + current, 'href="' + new)
     return content
 
@@ -687,16 +688,8 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
     packed_files_report = ''
     content = open(doc_files_info.xml_filename, 'r').read()
 
-    print('.....')
-    print(doc_files_info.xml_name)
-    print('-'*len(doc_files_info.xml_name))
-
-    register_log(doc_files_info.xml_name)
-
-    register_log('normalize_xml_content')
     content, replaced_entities_report = normalize_xml_content(doc_files_info, content, version)
 
-    register_log('normalize_package_name')
     doc_files_info.new_xml_path = scielo_pkg_path
     doc, doc_files_info, curr_and_new_href_list, content = normalize_package_name(doc_files_info, acron, content)
 
@@ -704,10 +697,8 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
         packed_files_report = 'ERROR: ' + _('Unable to load') + ' ' + doc_files_info.new_xml_filename + _('. Try to open it in an XML Editor to view the errors.')
         pkg_reports.display_report(doc_files_info.new_xml_filename)
     else:
-        register_log('pack_article_files')
         related_packed, href_packed, not_found = pack_article_files(doc_files_info, scielo_pkg_path, curr_and_new_href_list)
 
-        register_log('pack_article_files_report')
         packed_files_report = generate_packed_files_report(doc_files_info, scielo_pkg_path, related_packed, href_packed, curr_and_new_href_list, not_found)
 
     pack_xml_file(content, version, doc_files_info.new_xml_filename, (doc.tree is None))
@@ -718,8 +709,6 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
         packed_files_report = packed_files_report.encode('utf-8')
 
     open(doc_files_info.err_filename, 'w').write(replaced_entities_report + packed_files_report)
-
-    print(' ... created')
 
     return (doc, doc_files_info)
 
@@ -782,14 +771,22 @@ def make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acr
         path = os.path.dirname(xml_files[0])
         hdimages_to_jpeg(path, path, False)
 
-    print(_('Make packages for ') + str(len(xml_files)) + _(' files.'))
+    utils.display_message('\n')
+    utils.display_message(_('Make packages for ') + str(len(xml_files)) + _(' files.'))
     doc_items = {}
     doc_files_info_items = {}
+
+    n = '/' + str(len(xml_files))
+    index = 0
 
     for xml_filename in xml_files:
 
         doc_files_info = serial_files.DocumentFiles(xml_filename, report_path, wrk_path)
         doc_files_info.clean()
+
+        index += 1
+        item_label = str(index) + n + ': ' + doc_files_info.xml_name
+        utils.display_message(item_label)
 
         doc, doc_files_info = make_article_package(doc_files_info, scielo_pkg_path, version, acron)
 
@@ -812,23 +809,26 @@ def make_pmc_report(articles, doc_files_info_items):
 
 def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files):
     do_it = False
+
+    utils.display_message('\n')
+    utils.display_message(_('Generating PMC Package'))
+    n = '/' + str(len(articles))
+    index = 0
+
     for xml_name, doc in articles.items():
         doc_files_info = doc_files_info_items[xml_name]
         if doc.journal_id_nlm_ta is None:
             html_reports.save(doc_files_info.pmc_style_report_filename, 'PMC Style Checker', _('Missing journal-id (nlm-ta).'))
         else:
             do_it = True
-            print('.....')
-            print(doc_files_info.xml_name)
-            print('-'*len(doc_files_info.xml_name))
+
+            index += 1
+            item_label = str(index) + n + ': ' + doc_files_info.xml_name
+            utils.display_message(item_label)
 
             pmc_xml_filename = pmc_pkg_path + '/' + doc_files_info.new_name + '.xml'
             xml_output(False, doc_files_info.new_xml_filename, scielo_dtd_files.doctype_with_local_path, scielo_dtd_files.xsl_output, pmc_xml_filename)
 
-            print(' ... created pmc')
-            register_log(' ... created pmc')
-            #validation of pmc.xml
-            register_log('validate_article_xml pmc')
             xpchecker.style_validation(True, pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, doc_files_info.pmc_style_report_filename, pmc_dtd_files.xsl_prep_report, pmc_dtd_files.xsl_report, pmc_dtd_files.database_name)
             xml_output(True, pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
 
@@ -840,7 +840,6 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
 
 
 def pack_and_validate(xml_files, results_path, acron, version, from_converter=False):
-    register_log('pack_and_validate: inicio')
     from_markup = any([f.endswith('.sgm.xml') for f in xml_files])
 
     scielo_pkg_path = results_path + '/scielo_package'
@@ -858,9 +857,8 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             os.makedirs(d)
 
     if len(xml_files) == 0:
-        print(_('No files to process'))
+        utils.display_message(_('No files to process'))
     else:
-        register_log('pack_and_validate: make_package')
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
         articles_pkg = pkg_reports.ArticlePackage(articles)
@@ -869,20 +867,15 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         report_components['xml-files'] = pkg_reports.xml_list(scielo_pkg_path)
 
         toc_f = 0
-        register_log('pack_and_validate: package_articles_overview')
         report_components['pkg_overview'] = articles_pkg_reports.overview_report()
         report_components['pkg_overview'] += articles_pkg_reports.references_overview_report()
         report_components['references'] = articles_pkg_reports.sources_overview_report()
 
         if not from_markup:
-            register_log('pack_and_validate: pkg_reports.validate_package')
-
             toc_f, toc_e, toc_w, toc_report = articles_pkg_reports.validate_consistency(from_converter)
             report_components['detail-report'] = toc_report
 
         if toc_f == 0:
-            register_log('pack_and_validate: pkg_reports.validate_pkg_items')
-
             org_manager = institutions_service.OrgManager()
             org_manager.load()
 
@@ -890,7 +883,6 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             articles_pkg.validate_articles_pkg_xml_and_data(org_manager, doc_files_info_items, scielo_dtd_files, from_converter, from_markup)
 
             if not from_markup:
-                register_log('pack_and_validate: pkg_reports.get_articles_report_text')
                 report_components['detail-report'] = articles_pkg_reports.detail_report()
                 articles_pkg_reports.delete_pkg_xml_and_data_reports()
                 report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
@@ -908,14 +900,11 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             if from_markup:
                 make_pmc_report(articles, doc_files_info_items)
             if is_pmc_journal(articles):
-                register_log('pack_and_validate: make_pmc_package')
                 make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)
-            register_log('pack_and_validate: zip_packages')
             zip_packages(scielo_pkg_path)
 
-        print(_('Result of the processing:'))
-        print(results_path)
-        register_log('pack_and_validate: fim')
+        utils.display_message(_('Result of the processing:'))
+        utils.display_message(results_path)
         fs_utils.write_file(report_path + '/log.txt', '\n'.join(log_items))
 
 
@@ -1038,7 +1027,7 @@ def make_packages(path, acron, version='1.0'):
     xml_files, results_path = get_xml_package_folders_info(path)
     if len(xml_files) > 0:
         pack_and_validate(xml_files, results_path, acron, version)
-    print('finished')
+    utils.display_message('finished')
 
 
 def get_inputs(args):
@@ -1069,7 +1058,7 @@ def call_make_packages(args, version):
             messages.append('  <xml_src> = ' + _('XML filename or path which contains XML files'))
             messages.append('  <acron> = ' + _('journal acronym'))
             messages.append('\n'.join(errors))
-            print('\n'.join(messages))
+            utils.display_message('\n'.join(messages))
         else:
             make_packages(path, acron)
 

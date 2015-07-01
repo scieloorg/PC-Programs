@@ -7,8 +7,6 @@ locale_path = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/') + '
 
 current_locale, encoding = locale.getdefaultlocale()
 
-print('current_locale')
-print(current_locale)
 
 if encoding is None:
     encoding = 'UTF-8'

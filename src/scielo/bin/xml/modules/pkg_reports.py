@@ -9,6 +9,7 @@ import article_reports
 import article_utils
 import xpchecker
 import html_reports
+import utils
 
 
 log_items = []
@@ -158,53 +159,83 @@ class ArticlePackage(object):
             items.append(label_values(labels, values))
         return (labels, items)
 
+    def tabulate_elements_by_languages(self):
+        labels = ['name', 'toc section', '@article-type', 'article titles, abstracts, key words', '@xml:lang', 'sub-article/@xml:lang']
+        items = []
+        for xml_name in self.xml_name_sorted_by_order:
+            doc = self.articles[xml_name]
+            lang_dep = {}
+            for lang in doc.languages:
+
+                elements = {}
+                elem = doc.titles_by_lang.get(lang)
+                if elem is not None:
+                    elements['title'] = elem.title
+                elem = doc.abstracts_by_lang.get(lang)
+                if elem is not None:
+                    elements['abstract'] = elem.text
+                elem = doc.keywords_by_lang.get(lang)
+                if elem is not None:
+                    elements['keywords'] = [k.text for k in elem]
+                lang_dep[lang] = elements
+
+            values = []
+            values.append(xml_name)
+            values.append(doc.toc_section)
+            values.append(doc.article_type)
+            values.append(lang_dep)
+            values.append(doc.language)
+            values.append(doc.trans_languages)
+            items.append(label_values(labels, values))
+        return (labels, items)
+
     def tabulate_dates(self):
         labels = ['name', '@article-type', 
         'received', 'accepted', 'receive to accepted (days)', 'article date', 'issue date', 'accepted to publication (days)', 'accepted to today (days)']
 
         items = []
         for xml_name in self.xml_name_sorted_by_order:
-            #print(xml_name)
+            #utils.debugging(xml_name)
             doc = self.articles[xml_name]
-            #print(doc)
+            #utils.debugging(doc)
             values = []
             values.append(xml_name)
 
-            #print('doc.article_type')
-            #print(doc.article_type)
+            #utils.debugging('doc.article_type')
+            #utils.debugging(doc.article_type)
             values.append(doc.article_type)
 
-            #print('doc.received_dateiso')
-            #print(doc.received_dateiso)
+            #utils.debugging('doc.received_dateiso')
+            #utils.debugging(doc.received_dateiso)
             values.append(article_utils.display_date(doc.received_dateiso))
 
-            #print('doc.accepted_dateiso')
-            #print(doc.accepted_dateiso)
+            #utils.debugging('doc.accepted_dateiso')
+            #utils.debugging(doc.accepted_dateiso)
             values.append(article_utils.display_date(doc.accepted_dateiso))
 
-            #print('doc.history_days')
-            #print(doc.history_days)
+            #utils.debugging('doc.history_days')
+            #utils.debugging(doc.history_days)
             values.append(str(doc.history_days))
 
-            #print('doc.article_pub_dateiso')
-            #print(doc.article_pub_dateiso)
+            #utils.debugging('doc.article_pub_dateiso')
+            #utils.debugging(doc.article_pub_dateiso)
             values.append(article_utils.display_date(doc.article_pub_dateiso))
 
-            #print('doc.issue_pub_dateiso')
-            #print(doc.issue_pub_dateiso)
+            #utils.debugging('doc.issue_pub_dateiso')
+            #utils.debugging(doc.issue_pub_dateiso)
             values.append(article_utils.display_date(doc.issue_pub_dateiso))
 
-            #print('doc.publication_days')
-            #print(doc.publication_days)
+            #utils.debugging('doc.publication_days')
+            #utils.debugging(doc.publication_days)
             values.append(str(doc.publication_days))
 
-            #print('doc.registration_days')
-            #print(doc.registration_days)
+            #utils.debugging('doc.registration_days')
+            #utils.debugging(doc.registration_days)
             values.append(str(doc.registration_days))
 
-            #print(values)
+            #utils.debugging(values)
             items.append(label_values(labels, values))
-            #print(items)
+            #utils.debugging(items)
 
         return (labels, items)
 
@@ -212,8 +243,17 @@ class ArticlePackage(object):
         invalid_xml_name_items = []
         pkg_metadata = {label: {} for label in labels}
         missing_data = {}
+
+        n = '/' + str(len(self.articles))
+        index = 0
+
+        utils.display_message('\n')
+        utils.display_message('Package report')
         for xml_name, article in self.articles.items():
-            print(xml_name)
+            index += 1
+            item_label = str(index) + n + ': ' + xml_name
+            utils.display_message(item_label)
+
             if article.tree is None:
                 invalid_xml_name_items.append(xml_name)
             else:
@@ -238,33 +278,39 @@ class ArticlePackage(object):
                 if os.path.isfile(f):
                     os.unlink(f)
 
-        print('Validating package: inicio')
+        n = '/' + str(len(self.articles))
+        index = 0
+
+        utils.display_message('\n')
+        utils.display_message(_('Validating XML files'))
+        #utils.debugging('Validating package: inicio')
         for xml_name in self.xml_name_sorted_by_order:
             doc = self.articles[xml_name]
             doc_files_info = doc_files_info_items[xml_name]
 
             new_name = doc_files_info.new_name
-            print(new_name)
-            register_log(new_name)
+
+            index += 1
+            item_label = str(index) + n + ': ' + new_name
+            utils.display_message(item_label)
 
             skip = False
             if xc_actions is not None:
                 skip = xc_actions[xml_name] == 'skip-update'
 
             if skip:
-                print(' -- skept')
+                utils.display_message(' -- skept')
             else:
                 xml_filename = doc_files_info.new_xml_filename
 
                 xml_f, xml_e, xml_w = validate_article_xml(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all is False)
-                print([xml_f, xml_e, xml_w])
                 data_f, data_e, data_w = article_reports.validate_article_data(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, display_all, doc_files_info.data_report_filename)
-                print([data_f, data_e, data_w])
+
                 self.pkg_fatal_errors += xml_f + data_f
                 self.pkg_stats[xml_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
                 self.pkg_reports[xml_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
 
-        print('Validating package: fim')
+        #utils.debugging('Validating package: fim')
 
 
 class ArticlesPkgReport(object):
@@ -273,9 +319,7 @@ class ArticlesPkgReport(object):
         self.package = package
 
     def validate_consistency(self, validate_order):
-        print('validate_consistency')
         toc_report = self.consistency_report(validate_order)
-        print('validate_consistency - fim')
         toc_f, toc_e, toc_w = html_reports.statistics_numbers(toc_report)
         if toc_f + toc_e + toc_w == 0:
             toc_report = None
@@ -292,24 +336,16 @@ class ArticlesPkgReport(object):
             unique_status['order'] = 'WARNING'
 
         invalid_xml_name_items, pkg_metadata, missing_data = self.package.journal_and_issue_metadata(equal_data + unique_data, required_data)
-        print('invalid_xml_name_items')
-        print(invalid_xml_name_items)
-
-        print('pkg_metadata')
-        print(pkg_metadata)
 
         r = ''
-        print('invalid_xml_name_items')
-        
+
         if len(invalid_xml_name_items) > 0:
             r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Invalid XML files.')))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid_xml_name_items, 'issue-problem'))
-        print('missing_data')
         for label, items in missing_data.items():
             r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Missing') + ' ' + label + ' ' + _('in') + ':'))
             r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
 
-        print('equal_data')
         for label in equal_data:
             if len(pkg_metadata[label]) > 1:
                 _m = _('same value for %s is required for all the documents in the package') % (label)
@@ -318,7 +354,6 @@ class ArticlesPkgReport(object):
                     part += html_reports.format_list(_('found') + ' ' + label + '="' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
                 r += part
 
-        print('unique_data')
         for label in unique_data:
             if len(pkg_metadata[label]) > 0 and len(pkg_metadata[label]) != len(self.package.articles):
                 none = []
@@ -353,7 +388,7 @@ class ArticlesPkgReport(object):
                     r += part
 
         issue_common_data = ''
-        print('...')
+
         for label in equal_data:
             message = ''
             if len(pkg_metadata[label].items()) == 1:
@@ -361,14 +396,14 @@ class ArticlesPkgReport(object):
             else:
                 message = 'ERROR: ' + _('Unique value expected for ') + label
                 issue_common_data += html_reports.format_list(label + message, 'ol', pkg_metadata[label].keys())
-        print('end toc report')
+
         return html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages')
 
     def overview_report(self):
         r = ''
 
         r += html_reports.tag('h4', _('Languages overview'))
-        labels, items = self.package.tabulate_languages()
+        labels, items = self.package.tabulate_elements_by_languages()
         r += html_reports.sheet(labels, items, 'dbstatus')
 
         r += html_reports.tag('h4', _('Dates overview'))
@@ -423,15 +458,18 @@ class ArticlesPkgReport(object):
         items = []
 
         n = '/' + str(len(self.package.articles))
-        validations_text = ''
         index = 0
 
-        print(self.package.pkg_stats)
-        print(self.package.xml_name_sorted_by_order)
+        validations_text = ''
+
+        #utils.debugging(self.package.pkg_stats)
+        #utils.debugging(self.package.xml_name_sorted_by_order)
+        utils.display_message('\n')
+        utils.display_message(_('Generating Detail report'))
         for new_name in self.package.xml_name_sorted_by_order:
             index += 1
-            item_label = str(index) + n + ' - ' + new_name
-            print(item_label)
+            item_label = str(index) + n + ': ' + new_name
+            utils.display_message(item_label)
 
             xml_f, xml_e, xml_w = self.package.pkg_stats[new_name][0]
             data_f, data_e, data_w = self.package.pkg_stats[new_name][1]
@@ -487,10 +525,10 @@ class ArticlesPkgReport(object):
         for new_name in self.package.xml_name_sorted_by_order:
             for f in list(self.package.pkg_reports[new_name]):
                 if os.path.isfile(f):
-                    print('delete ' + f)
+                    #utils.debugging('delete ' + f)
                     try:
                         os.unlink(f)
-                        print('deleted ' + f)
+                        #utils.debugging('deleted ' + f)
                     except:
                         pass
 
@@ -644,7 +682,7 @@ def processing_result_location(result_path):
 
 def save_report(filename, title, content):
     html_reports.save(filename, title, content)
-    print('\n\nReport:' + '\n ' + filename)
+    utils.display_message('\n\nReport:' + '\n ' + filename)
 
 
 def display_report(report_filename):

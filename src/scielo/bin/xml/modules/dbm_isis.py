@@ -6,9 +6,7 @@ from tempfile import mkdtemp, NamedTemporaryFile
 
 from article_utils import u_encode
 import xml_utils
-
-
-debug = False
+import utils
 
 
 def format_value(content):
@@ -16,32 +14,32 @@ def format_value(content):
         if not isinstance(content, unicode):
             content = content.decode('utf-8')
     except Exception as e:
-        print('format_value 1:')
-        print(e)
-        print(content)
+        utils.debbuging('format_value 1:')
+        utils.debbuging(e)
+        utils.debbuging(content)
 
     try:
         content = xml_utils.remove_break_lines_characters(content)
     except Exception as e:
-        print('format_value: remove_break_lines_characters:')
-        print(e)
-        print(content)
+        utils.debbuging('format_value: remove_break_lines_characters:')
+        utils.debbuging(e)
+        utils.debbuging(content)
 
     try:
         if '&' in content:
             content, replace = xml_utils.convert_entities_to_chars(content)
     except Exception as e:
-        print('format_value:  convert_entities_to_chars:')
-        print(e)
-        print(content)
+        utils.debbuging('format_value:  convert_entities_to_chars:')
+        utils.debbuging(e)
+        utils.debbuging(content)
 
     try:
         if not isinstance(content, unicode):
             content = content.decode('utf-8')
     except Exception as e:
-        print('format_value: 2:')
-        print(e)
-        print(content)
+        utils.debbuging('format_value: 2:')
+        utils.debbuging(e)
+        utils.debbuging(content)
 
     return content
 
@@ -66,7 +64,7 @@ class IDFile(object):
     def _format_record(self, record):
         r = []
         if record is not None:
-            #print(record)
+            #utils.debbuging(record)
             for tag_i in sorted([int(s) for s in record.keys() if s.isdigit()]):
                 tag = str(tag_i)
                 data = record.get(tag)
@@ -84,8 +82,8 @@ class IDFile(object):
 
     def tag_occ(self, tag, data):
         if isinstance(data, tuple):
-            print(tag)
-            print(data)
+            utils.debbuging(tag)
+            utils.debbuging(data)
             s = ''
         elif isinstance(data, dict):
             s = self.tag_content(tag, self.format_subfields(data))
@@ -105,10 +103,10 @@ class IDFile(object):
                     elif k in '_':
                         first = v
         except Exception as e:
-            print('format_subfields')
-            print(e)
-            print(subf_and_value_list)
-            print(first + value)
+            utils.debbuging('format_subfields')
+            utils.debbuging(e)
+            utils.debbuging(subf_and_value_list)
+            utils.debbuging(first + value)
         return first + value
 
     def tag_content(self, tag, value):
@@ -121,12 +119,12 @@ class IDFile(object):
                     tag = tag[-3:]
                     r = '!v' + tag + '!' + format_value(value) + '\n'
                 except Exception as e:
-                    print('tag_content: ')
-                    print(e)
-                    print(s)
-                    print(value)
-                    print(type(s))
-                    print(type(value))
+                    utils.debbuging('tag_content: ')
+                    utils.debbuging(e)
+                    utils.debbuging(s)
+                    utils.debbuging(value)
+                    utils.debbuging(type(s))
+                    utils.debbuging(type(value))
         return r
 
     def read(self, filename):
@@ -195,8 +193,8 @@ class IDFile(object):
         try:
             open(filename, 'w').write(content)
         except Exception as e:
-            print('saving...')
-            print(e)
+            utils.debbuging('saving...')
+            utils.debbuging(e)
 
 
 class CISIS(object):
@@ -207,7 +205,7 @@ class CISIS(object):
         if os.path.exists(cisis_path):
             self.cisis_path = cisis_path
         else:
-            print('Invalid cisis path: ' + cisis_path)
+            utils.debbuging('Invalid cisis path: ' + cisis_path)
 
     def crunchmf(self, mst_filename, wmst_filename):
         cmd = self.cisis_path + '/crunchmf ' + mst_filename + ' ' + wmst_filename
