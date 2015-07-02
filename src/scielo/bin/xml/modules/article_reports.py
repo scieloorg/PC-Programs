@@ -460,7 +460,7 @@ class ArticleSheetData(object):
         r = []
         inxml = [item.src for item in self.article.hrefs]
 
-        for item in files:
+        for item in sorted(files):
             row = {}
             row['files'] = item
             status = ''
@@ -471,9 +471,9 @@ class ArticleSheetData(object):
                     if item[:-4] in inxml:
                         status = _('found in XML')
                     else:
-                        if item.endswith('.jpg') and item.replace('.jpg', '.tif') in ' '.join(inxml):
+                        if item.endswith('.jpg') and (item.replace('.jpg', '.tif') in ' '.join(inxml) or item.replace('.jpg', '.tiff') in ' '.join(inxml)):
                             # jpg was converted from a tif
-                            status = ''
+                            status = 'OK'
                         else:
                             status = 'WARNING: ' + _('not found in XML')
             row['status'] = status
