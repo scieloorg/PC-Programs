@@ -341,7 +341,7 @@ class ArticleXML(object):
                         kw_items.append(t)
                     k[language] = kw_items
             for subart in self.subarticles:
-                for node in subart.findall('kwd-group'):
+                for node in subart.findall('.//kwd-group'):
                     language = xml_utils.element_lang(node)
                     kw_items = []
                     for kw in node.findall('kwd'):
@@ -362,7 +362,7 @@ class ArticleXML(object):
                 for kw in node.findall('kwd'):
                     k.append({'l': language, 'k': xml_utils.node_text(kw)})
         for subart in self.subarticles:
-            for node in subart.findall('kwd-group'):
+            for node in subart.findall('.//kwd-group'):
                 language = xml_utils.element_lang(node)
                 for kw in node.findall('kwd'):
                     k.append({'l': language, 'k': xml_utils.node_text(kw)})
