@@ -69,7 +69,10 @@ def register_log(message):
 
 def find_journal_record(journal_title, print_issn, e_issn):
     record = None
+    print('find_journal_record: journal_title')
+    print(journal_title)
     records = converter_env.db_title.search(print_issn, e_issn, journal_title)
+
     if len(records) > 0:
         record = records[0]
     return record
@@ -251,7 +254,7 @@ def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
 def get_issue_models(journal_title, issue_label, p_issn, e_issn):
     issue_models = None
     msg = None
-
+    print(list((journal_title, issue_label, p_issn, e_issn)))
     if issue_label is None:
         msg = html_reports.p_message('FATAL ERROR: ' + _('Unable to identify the article\'s issue'))
     else:
@@ -260,13 +263,22 @@ def get_issue_models(journal_title, issue_label, p_issn, e_issn):
             msg = html_reports.p_message('FATAL ERROR: ' + _('Issue ') + issue_label + _(' is not registered in ') + converter_env.db_issue.db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
         else:
             issue_models = xc_models.IssueModels(i_record)
+            print('i_record')
+            print(i_record)
+            print(issue_models.issue)
             if issue_models.issue.license is None:
-                j_record = find_journal_record(p_issn, e_issn, journal_title)
+                j_record = find_journal_record(journal_title, p_issn, e_issn)
+                print('j_record')
+                print(j_record)
                 if j_record is None:
                     msg = html_reports.p_message('ERROR: ' + _('Unable to get the license of') + ' ' + journal_title)
                 else:
                     t = xc_models.RegisteredTitle(j_record)
-                    issue_models.issue.license = t.license
+                    print('t.license')
+                    print(t.license())
+                    issue_models.issue.license = t.license()
+                    print(issue_models.issue.license)
+    print('get_issue_models - ifm')
     return (issue_models, msg)
 
 
@@ -820,12 +832,16 @@ def validate_xml_issue_data(issue_models, article):
                 msg.append('FATAL ERROR: ' + _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"')
 
         # license
-        if not '/' + issue_models.issue.license.lower() + '/' in article.license_url.lower():
+        if issue_models.issue.license is None:
             msg.append(html_reports.tag('h5', 'license'))
-            msg.append('ERROR: ' + _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + issue_models.issue.license + '"')
-        else:
-            msg.append(html_reports.tag('h5', 'license'))
-            msg.append('INFO: ' + _('In article: "') + article.license_url + _('" and in issue: "') + issue_models.issue.license + '"')
+            msg.append('ERROR: ' + _('Unable to identify issue license'))
+        elif article.license_url is not None:
+            if not '/' + issue_models.issue.license.lower() + '/' in article.license_url.lower():
+                msg.append(html_reports.tag('h5', 'license'))
+                msg.append('ERROR: ' + _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + issue_models.issue.license + '"')
+            else:
+                msg.append(html_reports.tag('h5', 'license'))
+                msg.append('INFO: ' + _('In article: "') + article.license_url + _('" and in issue: "') + issue_models.issue.license + '"')
 
         # section
         section_msg = []

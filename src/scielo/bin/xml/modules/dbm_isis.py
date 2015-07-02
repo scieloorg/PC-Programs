@@ -403,18 +403,26 @@ class IsisDAO(object):
             temp_file = NamedTemporaryFile(delete=False)
             base = temp_file.name
             self.cisis.search(db_filename, expr, base)
+
         id_filename = base + '.id'
+
         self.cisis.i2id(base, id_filename)
         r = IDFile().read(id_filename)
-        if temp_file is not None:
+        if len(r) > 0:
+            if temp_file is not None:
+                try:
+                    os.unlink(temp_file.name)
+                except:
+                    pass
             try:
-                os.unlink(temp_file.name)
+                os.unlink(id_filename)
             except:
                 pass
-        try:
-            os.unlink(id_filename)
-        except:
-            pass
+        else:
+            print('get_records: verificar')
+            print(db_filename)
+            print(expr)
+            print(id_filename)
         return r
 
     def get_id_records(self, id_filename):

@@ -76,7 +76,7 @@ def normalize_doctopic(_doctopic):
 
 
 class RegisteredArticle(object):
-    def __init__(self, article_records, i_record=None):
+    def __init__(self, article_records, i_record):
         self.issue_models = IssueModels(i_record)
         self.article_records = article_records
         #self.journal_issns = read_issn_fields(self.article_records[1].get('435'))
@@ -510,6 +510,7 @@ class IssueModels(object):
 
     def __init__(self, record):
         self.record = record
+        self.issue = self.__issue(record)
 
     @property
     def sections(self):
@@ -536,23 +537,22 @@ class IssueModels(object):
                     break
         return (seccode, ratio, similar)
 
-    @property
-    def issue(self):
-        acron = self.record.get('930').lower()
-        dateiso = self.record.get('65', '')
-        volume = self.record.get('31')
-        volume_suppl = self.record.get('131')
-        number = self.record.get('32')
-        number_suppl = self.record.get('132')
+    def __issue(self, record):
+        acron = record.get('930').lower()
+        dateiso = record.get('65', '')
+        volume = record.get('31')
+        volume_suppl = record.get('131')
+        number = record.get('32')
+        number_suppl = record.get('132')
 
         i = Issue(acron, volume, number, dateiso, volume_suppl, number_suppl)
 
-        i.issn_id = self.record.get('35')
-        i.journal_title = self.record.get('130')
-        i.journal_id_nlm_ta = self.record.get('421')
-        i.journal_issns = read_issn_fields(self.record.get('435'))
-        i.publisher_name = self.record.get('62', self.record.get('480'))
-        i.license = self.record.get('541')
+        i.issn_id = record.get('35')
+        i.journal_title = record.get('130')
+        i.journal_id_nlm_ta = record.get('421')
+        i.journal_issns = read_issn_fields(record.get('435'))
+        i.publisher_name = record.get('62', record.get('480'))
+        i.license = record.get('541')
         return i
 
 
@@ -646,9 +646,12 @@ class TitleDAO(object):
     def expr(self, pissn, eissn, journal_title):
         _expr = []
         if pissn is not None:
-            _expr.append(pissn + issue_id)
+            _expr.append(pissn)
         if eissn is not None:
-            _expr.append(eissn + issue_id)
+            _expr.append(eissn)
+        if journal_title is not None:
+            _expr.append("'" + journal_title + "'")
+            utils.display_message(journal_title)
         return ' OR '.join(_expr) if len(_expr) > 0 else None
 
     def search(self, pissn, eissn, journal_title):
@@ -714,7 +717,6 @@ class ArticleDAO(object):
 
         records = self.dao.get_records(issue_files.base)
         i, registered_articles = IssueArticlesRecords(records).articles()
-
         for xml_name, registered_doc in registered_articles.items():
             f = issue_files.base_source_path + '/' + xml_name + '.xml'
             if os.path.isfile(f):
@@ -728,7 +730,9 @@ class ArticleDAO(object):
                 doc.last_update = registered_doc.last_update
 
                 articles[xml_name] = doc
-        return (IssueModels(i), articles)
+
+        issue_models = IssueModels(i) if i is not None else None
+        return (issue_models, articles)
 
     def generate_windows_version(self, issue_files):
         if not os.path.isdir(issue_files.windows_base_path):
