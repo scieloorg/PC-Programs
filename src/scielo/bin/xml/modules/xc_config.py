@@ -14,7 +14,10 @@ class XMLConverterConfiguration(object):
         for item in open(filename, 'r').readlines():
             s = item.strip()
             if not isinstance(s, unicode):
-                s = s.decode('utf-8')
+                if filename.endswith('scielo_paths.ini'):
+                    s = s.decode('iso-8859-1')
+                else:
+                    s = s.decode('utf-8')
             if '=' in s:
                 if ',' in s and not '@' in s:
                     s = s[0:s.rfind(',')]
@@ -61,6 +64,7 @@ class XMLConverterConfiguration(object):
     def issue_db_copy(self):
         copy = self._data.get('Issue Database')
         if copy is not None:
+            copy = copy.lower().replace('\\', '/')
             copy = copy.replace('/issue/', '/issue.tmp/')
         return self._data.get('ISSUE_DB_COPY', copy)
 
@@ -72,7 +76,8 @@ class XMLConverterConfiguration(object):
     def title_db_copy(self):
         copy = self._data.get('Title Database')
         if copy is not None:
-            copy = copy.replace('/issue/', '/issue.tmp/')
+            copy = copy.lower().replace('\\', '/')
+            copy = copy.replace('/title/', '/title.tmp/')
         return self._data.get('TITLE_DB_COPY', copy)
 
     @property
