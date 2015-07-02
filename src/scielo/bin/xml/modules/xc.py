@@ -17,11 +17,12 @@ def get_mailer(config):
 def get_configuration(collection_acron):
     config = None
     f = xc_config_filename(collection_acron)
-    errors = is_valid_configuration_file(f)
+    errors = is_config_file(f)
     if len(errors) > 0:
         print('\n'.join(errors))
     else:
         config = xc_read_configuration(f)
+
     return config
 
 
@@ -47,7 +48,7 @@ def xc_config_filename(collection_acron):
     return filename
 
 
-def is_valid_configuration_file(configuration_filename):
+def is_config_file(configuration_filename):
     messages = []
     if configuration_filename is None:
         messages.append('\n===== ATTENTION =====\n')
