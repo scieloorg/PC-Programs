@@ -1,8 +1,9 @@
+
 # coding=utf-8
 
 from datetime import datetime
 import urllib2
-
+import json
 
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Ago': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 
@@ -114,7 +115,6 @@ def doi_pid(doi):
     pid = None
 
     if doi is not None:
-        import json
 
         try:
             f = urllib2.urlopen('http://dx.doi.org/' + doi, timeout=1)
@@ -293,3 +293,31 @@ def four_digits_year(year):
                         year = year[1:5]
     return year
 
+
+def doi_journal_and_article(doi):
+    r = None
+    journal_titles = None
+    article_titles = None
+    if doi is not None:
+        if 'dx.doi.org' in doi:
+            doi = doi[doi.find('dx.doi.org/')+len('dx.doi.org/'):]
+        try:
+            r = urllib2.urlopen('http://api.crossref.org/works/' + doi, timeout=20).read()
+        except urllib2.URLError, e:
+            r = None
+            print(datetime.now().isoformat() + " Oops, timed out?")
+        except urllib2.socket.timeout:
+            r = None
+            print(datetime.now().isoformat() + " Timed out!")
+        except:
+            r = None
+            print(datetime.now().isoformat() + " unknown")
+        if r is not None:
+            article_json = json.loads(r)
+            journal_titles = article_json.get('message', {}).get('container-title')
+            if not isinstance(journal_titles, list):
+                journal_titles = [journal_titles]
+            article_titles = article_json.get('message', {}).get('title')
+            if not isinstance(article_titles, list):
+                article_titles = [article_titles]
+    return (journal_titles, article_titles)

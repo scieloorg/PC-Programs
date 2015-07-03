@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-03 09:37-0300\n"
+"POT-Creation-Date: 2015-07-03 16:50-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,43 +60,49 @@ msgid "Data Quality Control"
 msgstr "Validaciones de contenido"
 
 #: modules/article_validations.py:33 modules/article_validations.py:38
+#: modules/article_validations.py:34 modules/article_validations.py:39
 msgid " starts with"
 msgstr " empieza con"
 
 #: modules/article_validations.py:33 modules/article_validations.py:35
+#: modules/article_validations.py:34 modules/article_validations.py:36
 msgid " \"space\""
 msgstr " \"espacio\""
 
-#: modules/article_validations.py:35
+#: modules/article_validations.py:35 modules/article_validations.py:36
 msgid " ends with"
 msgstr " termina con"
 
-#: modules/article_validations.py:41
+#: modules/article_validations.py:41 modules/article_validations.py:42
 msgid "contains invalid characteres:"
 msgstr "contiene caracteres inválidos:"
 
-#: modules/article_validations.py:56
+#: modules/article_validations.py:56 modules/article_validations.py:57
 msgid "Required, if exists."
 msgstr "Si existe es requerido."
 
-#: modules/article_validations.py:60
+#: modules/article_validations.py:60 modules/article_validations.py:61
 msgid "Required at least one "
 msgstr "Al menos uno es requerido "
 
 #: modules/article_validations.py:65 modules/article_validations.py:67
+#: modules/article_validations.py:66 modules/article_validations.py:68
 msgid "Required"
 msgstr "Requerido"
 
 #: modules/article_validations.py:78 modules/article_validations.py:925
+#: modules/article_validations.py:79 modules/article_validations.py:952
 msgid "Invalid value for "
 msgstr "Valor inválido para"
 
 #: modules/article_validations.py:78 modules/article_validations.py:160
 #: modules/article_validations.py:757 modules/article_validations.py:781
+#: modules/article_validations.py:79 modules/article_validations.py:161
+#: modules/article_validations.py:808
 msgid "Expected values"
 msgstr "Valores esperados"
 
-#: modules/article_validations.py:104
+#: modules/article_validations.py:104 modules/article_validations.py:105
 msgid "Invalid character/word"
 msgstr "Palabra/carácter inválido"
 
@@ -106,63 +112,70 @@ msgstr "Palabra/carácter inválido"
 #: modules/pkg_reports.py:300 modules/article_validations.py:507
 #: modules/article_validations.py:510 modules/pkg_reports.py:346
 #: modules/pkg_reports.py:354 modules/pkg_reports.py:383
-#: modules/pkg_reports.py:387
+#: modules/pkg_reports.py:387 modules/article_validations.py:105
+#: modules/article_validations.py:147
 msgid "in"
 msgstr "en"
 
-#: modules/article_validations.py:129
+#: modules/article_validations.py:129 modules/article_validations.py:130
 msgid "Be sure that"
 msgstr "Asegúrese que"
 
-#: modules/article_validations.py:129
+#: modules/article_validations.py:129 modules/article_validations.py:130
 msgid "is correct"
 msgstr "sea correcto"
 
-#: modules/article_validations.py:146
+#: modules/article_validations.py:146 modules/article_validations.py:147
 msgid "Invalid terms"
 msgstr "Términos inválidos"
 
-#: modules/article_validations.py:147
+#: modules/article_validations.py:147 modules/article_validations.py:148
 msgid "must be identified as"
 msgstr "debe ser identificado como"
 
-#: modules/article_validations.py:160
+#: modules/article_validations.py:160 modules/article_validations.py:161
 msgid "Author"
 msgstr "Autor"
 
-#: modules/article_validations.py:160
+#: modules/article_validations.py:160 modules/article_validations.py:161
 msgid "has no"
 msgstr "no tiene"
 
 #: modules/article_validations.py:164 modules/article_validations.py:820
 #: modules/xmlcvrter.py:240 modules/article_validations.py:844
-#: modules/xmlcvrter.py:232
+#: modules/xmlcvrter.py:232 modules/article_validations.py:165
+#: modules/article_validations.py:871
 msgid "of"
 msgstr "de"
 
 #: modules/article_validations.py:164 modules/article_validations.py:277
-#: modules/article_validations.py:272
+#: modules/article_validations.py:272 modules/article_validations.py:165
+#: modules/article_validations.py:273
 msgid "Invalid value of"
 msgstr "Valor inválido de"
 
-#: modules/article_validations.py:164
+#: modules/article_validations.py:164 modules/article_validations.py:165
 msgid "Valid values: "
 msgstr "Valores válidos: "
 
 #: modules/article_validations.py:286 modules/article_validations.py:281
+#: modules/article_validations.py:282
 msgid "Invalid format for language. It requires two lower case letters."
 msgstr "Formato inválido para @xml:lang. Son necesarias dos letras minúsculas."
 
 #: modules/article_validations.py:315 modules/article_validations.py:310
+#: modules/article_validations.py:311
 msgid "Check the value of"
 msgstr "Verificar el valor de"
 
 #: modules/article_validations.py:353 modules/article_validations.py:348
+#: modules/article_validations.py:349
 msgid "Missing ISSN. Required at least one."
 msgstr "ISSN no encontrado. Se requiere al menos uno."
 
 #: modules/article_validations.py:372 modules/article_validations.py:375
 #: modules/article_validations.py:360 modules/article_validations.py:363
+#: modules/article_validations.py:361 modules/article_validations.py:364
 msgid " requires contrib names or collabs."
 msgstr " se requiere contrib names o collabs."
 
@@ -172,23 +185,31 @@ msgstr " se requiere contrib names o collabs."
 #: modules/article_validations.py:378 modules/article_validations.py:825
 #: modules/article_validations.py:827 modules/article_validations.py:831
 #: modules/article_validations.py:861 modules/article_validations.py:865
-#: modules/pkg_reports.py:346
+#: modules/pkg_reports.py:346 modules/article_validations.py:379
+#: modules/article_validations.py:852 modules/article_validations.py:854
+#: modules/article_validations.py:858 modules/article_validations.py:888
+#: modules/article_validations.py:892
 msgid "Missing"
 msgstr "No se encontró"
 
 #: modules/article_validations.py:405 modules/article_validations.py:675
 #: modules/article_validations.py:652 modules/article_validations.py:662
 #: modules/article_validations.py:671 modules/article_validations.py:682
-#: modules/article_validations.py:697
+#: modules/article_validations.py:697 modules/article_validations.py:679
+#: modules/article_validations.py:689 modules/article_validations.py:698
+#: modules/article_validations.py:709 modules/article_validations.py:724
 msgid "Missing @xml:lang for "
 msgstr "No se encontró @xml:lang para "
 
 #: modules/article_validations.py:407 modules/article_validations.py:646
 #: modules/article_validations.py:650 modules/article_validations.py:684
+#: modules/article_validations.py:673 modules/article_validations.py:677
+#: modules/article_validations.py:711
 msgid "Missing title for "
 msgstr "No se encontró title para"
 
 #: modules/article_validations.py:409 modules/article_validations.py:686
+#: modules/article_validations.py:713
 msgid "Missing titles"
 msgstr "No se encontró titles"
 
@@ -294,11 +315,13 @@ msgid "total of figures"
 msgstr "total de figuras"
 
 #: modules/article_validations.py:677 modules/article_validations.py:660
-#: modules/article_validations.py:699
+#: modules/article_validations.py:699 modules/article_validations.py:687
+#: modules/article_validations.py:726
 msgid "Missing text for "
 msgstr "No se encontró el texto para "
 
 #: modules/article_validations.py:740 modules/article_validations.py:764
+#: modules/article_validations.py:791
 msgid "press release id"
 msgstr "ID de press release"
 
@@ -307,77 +330,95 @@ msgstr "ID de press release"
 #: modules/article_validations.py:820 modules/xml_gui.py:141
 #: modules/article_validations.py:770 modules/article_validations.py:777
 #: modules/article_validations.py:831 modules/article_validations.py:841
-#: modules/article_validations.py:844
+#: modules/article_validations.py:844 modules/article_validations.py:797
+#: modules/article_validations.py:804 modules/article_validations.py:858
+#: modules/article_validations.py:868 modules/article_validations.py:871
 msgid " and "
 msgstr " y "
 
 #: modules/article_validations.py:757 modules/article_validations.py:781
+#: modules/article_validations.py:808
 msgid "Invalid combination of date types: "
 msgstr "Combinación inválida de tipos de fecha: "
 
 #: modules/article_validations.py:762 modules/xmlcvrter.py:758
 #: modules/article_validations.py:786 modules/xmlcvrter.py:803
+#: modules/article_validations.py:813
 msgid "issue pub-date"
 msgstr "pub-date del fascículo"
 
 #: modules/article_validations.py:766 modules/article_validations.py:790
+#: modules/article_validations.py:817
 msgid "article pub-date"
 msgstr "pub-date del artículo"
 
 #: modules/article_validations.py:770 modules/article_validations.py:794
+#: modules/article_validations.py:821
 msgid "is aop"
 msgstr "es un aop (publicación avanzada)"
 
 #: modules/article_validations.py:774 modules/article_validations.py:798
+#: modules/article_validations.py:825
 msgid "aop"
 msgstr "aop"
 
 #: modules/article_validations.py:778 modules/article_validations.py:802
+#: modules/article_validations.py:829
 msgid "is press_release"
 msgstr "es un press_release"
 
 #: modules/article_validations.py:782 modules/article_validations.py:806
+#: modules/article_validations.py:833
 msgid "illustrative materials"
 msgstr "materiales ilustrativos"
 
 #: modules/article_validations.py:786 modules/article_validations.py:810
+#: modules/article_validations.py:837
 msgid "is text"
 msgstr "es texto"
 
 #: modules/article_validations.py:790 modules/article_validations.py:814
+#: modules/article_validations.py:841
 msgid "previous pid"
 msgstr "PID anterior"
 
 #: modules/article_validations.py:815 modules/article_validations.py:839
+#: modules/article_validations.py:866
 msgid "Unmatched"
 msgstr "No coincide"
 
 #: modules/article_validations.py:819 modules/article_validations.py:843
+#: modules/article_validations.py:870
 msgid "is for"
 msgstr "es para"
 
 #: modules/article_validations.py:820 modules/article_validations.py:844
+#: modules/article_validations.py:871
 msgid "valid values of"
 msgstr "valores válidos de"
 
 #: modules/article_validations.py:821 modules/article_validations.py:845
+#: modules/article_validations.py:872
 msgid "are"
 msgstr "son"
 
 #: modules/article_validations.py:930 modules/article_validations.py:972
 #: modules/article_validations.py:957 modules/article_validations.py:1013
+#: modules/article_validations.py:984 modules/article_validations.py:1040
 msgid "or"
 msgstr "o"
 
 #: modules/article_validations.py:943 modules/article_validations.py:946
 #: modules/article_validations.py:985 modules/article_validations.py:988
 #: modules/article_validations.py:987 modules/article_validations.py:1026
-#: modules/article_validations.py:1029
+#: modules/article_validations.py:1029 modules/article_validations.py:1014
+#: modules/article_validations.py:1053 modules/article_validations.py:1056
 msgid "Check if @publication-type is correct. This reference looks like"
 msgstr "Verifique si @publication-type es correcto. Esta cita se parece a"
 
 #: modules/article_validations.py:999 modules/article_validations.py:1001
 #: modules/article_validations.py:1040 modules/article_validations.py:1042
+#: modules/article_validations.py:1067 modules/article_validations.py:1069
 msgid ""
 "Remove @specific-use=\"display-only\". It is required to identify incomplete "
 "references which @publication-type is equal to "
@@ -386,35 +427,43 @@ msgstr ""
 "incompletas cuyo @publication-type es igual a "
 
 #: modules/article_validations.py:1001 modules/article_validations.py:1042
+#: modules/article_validations.py:1069
 msgid "Expected at least the elements: "
 msgstr "Se esperaban al menos los elementos: "
 
 #: modules/article_validations.py:1005 modules/article_validations.py:1046
+#: modules/article_validations.py:1073
 msgid "Incomplete Reference"
 msgstr "Cita incompleta"
 
 #: modules/article_validations.py:1005 modules/article_validations.py:1046
+#: modules/article_validations.py:1073
 msgid "Check if the elements of this reference is properly identified."
 msgstr ""
 "Verifique si los elementos de esta cita están identificados correctamente."
 
 #: modules/article_validations.py:1009 modules/article_validations.py:1050
+#: modules/article_validations.py:1077
 msgid " ignored "
 msgstr " ignorado "
 
 #: modules/article_validations.py:1018 modules/article_validations.py:1059
+#: modules/article_validations.py:1086
 msgid "is missing in"
 msgstr "no fue encontrado en"
 
 #: modules/article_validations.py:1043 modules/article_validations.py:1084
+#: modules/article_validations.py:1111
 msgid "invalid author"
 msgstr "autor inválido"
 
 #: modules/article_validations.py:1054 modules/article_validations.py:1095
+#: modules/article_validations.py:1122
 msgid " must not be greater than "
 msgstr " no debe ser mayor que "
 
 #: modules/article_validations.py:1060 modules/article_validations.py:1101
+#: modules/article_validations.py:1128
 msgid " is not a number nor in an expected format."
 msgstr " no es un número ni está en el formato esperado."
 
@@ -1110,15 +1159,15 @@ msgstr "acrónimo de la revista"
 msgid "Missing acronym."
 msgstr "Acrónimo no encontrado."
 
-#: modules/article_validations.py:656
+#: modules/article_validations.py:656 modules/article_validations.py:683
 msgid "Missing abstract for "
 msgstr "No se encontró abstract para @xml:lang="
 
-#: modules/article_validations.py:666
+#: modules/article_validations.py:666 modules/article_validations.py:693
 msgid "Missing kwd-group for "
 msgstr "No se encontró kwd-group para @xml:lang="
 
-#: modules/article_validations.py:669
+#: modules/article_validations.py:669 modules/article_validations.py:696
 msgid "Missing kwd for "
 msgstr "No se encontró kwd para @xml:lang="
 
@@ -1145,3 +1194,11 @@ msgstr "En el artículo: \""
 #: modules/xpmaker.py:814
 msgid "Generating PMC Package"
 msgstr "Generando el paquete para PMC"
+
+#: modules/article_validations.py:408
+msgid "belongs to"
+msgstr "pertenece a"
+
+#: modules/article_validations.py:421
+msgid "is already registered to"
+msgstr "ya está registrado para"
