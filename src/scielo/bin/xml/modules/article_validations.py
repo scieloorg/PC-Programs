@@ -7,6 +7,7 @@ from __init__ import _
 import attributes
 import article_utils
 import xml_utils
+import utils
 import article
 
 import institutions_service
@@ -393,14 +394,47 @@ class ArticleContentValidation(object):
             r.append(required('doi', self.article.doi, 'FATAL ERROR'))
         else:
             r.append(required('doi', self.article.doi, 'WARNING'))
+
         if self.article.doi is not None:
-            found = False
-            for issn in [self.article.print_issn, self.article.e_issn]:
-                if issn is not None:
-                    if issn in self.article.doi:
-                        found = True
-            if not found:
-                r.append(('doi', 'ERROR', _('Be sure that this DOI') + ' "' + self.article.doi + '" ' + _('belongs to this journal.')))
+
+            journal_titles, article_titles = article_utils.doi_journal_and_article(self.article.doi)
+
+            if not journal_titles is None:
+                status = 'INFO'
+                if not self.article.journal_title in journal_titles:
+                    max_rate = 0
+                    selected = None
+                    for j in journal_titles:
+                        rate = utils.how_similar(j, self.article.journal_title)
+                        if rate > max_rate:
+                            max_rate = rate
+                            selected = j
+                    if max_rate < 0.8:
+                        status = 'ERROR'
+                r.append(('doi', status, self.article.doi + ' ' + _('belongs to') + ' ' + '|'.join(journal_titles)))
+
+            if not article_titles is None:
+                status = 'INFO'
+                max_rate = 0
+                selected = None
+                for t in self.article.titles:
+                    for a_title in article_titles:
+                        rate = utils.how_similar(t.title, a_title)
+                        if rate > max_rate:
+                            max_rate = rate
+                            selected = t.title
+                if max_rate < 0.8:
+                    status = 'ERROR'
+                r.append(('doi', status, self.article.doi + ' ' + _('is already registered to') + ' ' + '|'.join(article_titles)))
+
+            if journal_titles is None:
+                found = False
+                for issn in [self.article.print_issn, self.article.e_issn]:
+                    if issn is not None:
+                        if issn in self.article.doi:
+                            found = True
+                if not found:
+                    r.append(('doi', 'ERROR', _('Be sure that this DOI') + ' "' + self.article.doi + '" ' + _('belongs to this journal.')))
         return r
 
     @property
