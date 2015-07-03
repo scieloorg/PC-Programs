@@ -402,14 +402,8 @@ class ArticleContentValidation(object):
             if not journal_titles is None:
                 status = 'INFO'
                 if not self.article.journal_title in journal_titles:
-                    max_rate = 0
-                    selected = None
-                    for j in journal_titles:
-                        rate = utils.how_similar(j, self.article.journal_title)
-                        if rate > max_rate:
-                            max_rate = rate
-                            selected = j
-                    if max_rate < 0.8:
+                    max_rate, items = utils.most_similar(utils.similarity(journal_titles, self.article.journal_title))
+                    if max_rate < 0.7:
                         status = 'ERROR'
                 r.append(('doi', status, self.article.doi + ' ' + _('belongs to') + ' ' + '|'.join(journal_titles)))
 
@@ -418,13 +412,12 @@ class ArticleContentValidation(object):
                 max_rate = 0
                 selected = None
                 for t in self.article.titles:
-                    for a_title in article_titles:
-                        rate = utils.how_similar(t.title, a_title)
-                        if rate > max_rate:
-                            max_rate = rate
-                            selected = t.title
-                if max_rate < 0.8:
+                    rate, items = utils.most_similar(utils.similarity(article_titles, t.title))
+                    if rate > max_rate:
+                        max_rate = rate
+                if max_rate < 0.7:
                     status = 'ERROR'
+
                 r.append(('doi', status, self.article.doi + ' ' + _('is already registered to') + ' ' + '|'.join(article_titles)))
 
             if journal_titles is None:
@@ -674,6 +667,7 @@ class ArticleContentValidation(object):
     @property
     def titles_abstracts_keywords(self):
         r = []
+        
         for lang in self.article.languages:
             t = self.article.titles_by_lang.get(lang)
             if t is None:

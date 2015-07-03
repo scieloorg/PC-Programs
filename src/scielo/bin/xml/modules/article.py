@@ -508,11 +508,8 @@ class ArticleXML(object):
     @property
     def languages(self):
         if self._languages is None:
-            k = []
-            k.append(self.language)
-            for l in self.trans_languages:
-                k.append(l)
-            self._languages = k
+            if self.tree is not None:
+                self._languages = list(set([xml_utils.element_lang(node) for node in self.tree.findall('.//*[@{http://www.w3.org/XML/1998/namespace}lang]')]))
         return self._languages
 
     @property
