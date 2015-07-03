@@ -46,8 +46,7 @@ def update_files_content(scilista_items, source, user_and_host, destination):
 
 
 def get_status(ctrl_filename):
-    status = 'finished'
-
+    status = None
     if ctrl_filename != '':
         if os.path.exists(ctrl_filename):
             content = open(ctrl_filename, 'r').read()
@@ -59,7 +58,16 @@ def get_status(ctrl_filename):
                 status = 'finished'
             elif 'on' in content:
                 status = 'running'
-
+    if status is None:
+        status = 'running'
+        print('controle:')
+        print(ctrl_filename)
+        if os.path.exists(ctrl_filename):
+            print(open(ctrl_filename, 'r').read())
+        else:
+            print('not found')
+    print('status=')
+    print(status)
     return status
 
 
@@ -203,7 +211,11 @@ if parameters.check_parameters(sys.argv):
                 report.write('---', True, False, False)
                 report.write(config.parameters['RUN_GERAPADRAO_AND_UPDATE_BASES'], True, False, False)
 
-                os.system(config.parameters['RUN_GERAPADRAO_AND_UPDATE_BASES'])
+                print('gerapadrao - inicio')
+                print(datetime.now().isoformat())
+                os.system(config.parameters['RUN_GERAPADRAO_AND_UPDATE_BASES'] + ';echo "' + datetime.now().isoformat() + '">hora.txt')
+                print('gerapadrao - fim')
+                print(datetime.now().isoformat())
 
                 try:
                     report.write('writing transf_files.sh', True, False, False)
@@ -218,7 +230,7 @@ if parameters.check_parameters(sys.argv):
                     report.write(str(e), True, False, False)
 
                 report.write('set status as finished', True, False, False)
-                set_status(config.parameters['CTRL_FILE'], 'finished')
+                #set_status(config.parameters['CTRL_FILE'], 'finished')
                 report.write('status:', True, False, False)
                 report.write(get_status(config.parameters['CTRL_FILE']), True, False, False)
                 report.write('envia email', True, False, False)
