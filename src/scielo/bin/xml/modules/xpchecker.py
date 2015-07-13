@@ -166,7 +166,10 @@ def validate_article_xml(xml_filename, dtd_files, dtd_report_filename, style_rep
     if e is None:
         is_valid_style = style_validation(run_background, xml_filename, dtd_files.doctype_with_local_path, style_report_filename, dtd_files.xsl_prep_report, dtd_files.xsl_report, dtd_files.database_name)
     else:
-        open(style_report_filename, 'w').write('FATAL ERROR: ' + _('Unable to load') + ' ' + xml_filename + '\n' + str(e))
+        text = 'FATAL ERROR: ' + _('Unable to load') + ' ' + xml_filename + '\n' + str(e).decode('utf-8')
+        if isinstance(text, unicode):
+            text = text.encode('utf-8')
+        open(style_report_filename, 'w').write(text)
     f, e, w = style_checker_statistics(style_report_filename)
     register_log('validate_article_xml: fim')
     #open(os.path.dirname(style_report_filename) + '/validate_article_xml.log', 'a+').write('\n'.join(log_items))
