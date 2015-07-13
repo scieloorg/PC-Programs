@@ -667,7 +667,7 @@ class ArticleContentValidation(object):
     @property
     def titles_abstracts_keywords(self):
         r = []
-        
+
         for lang in self.article.languages:
             t = self.article.titles_by_lang.get(lang)
             if t is None:
