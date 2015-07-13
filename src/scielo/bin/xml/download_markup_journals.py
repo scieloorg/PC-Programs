@@ -25,6 +25,8 @@ def journals_by_collection(filename):
                     j['journal-title'] = item[7]
                     j['nlm-title'] = item[8]
                     j['publisher-name'] = item[9]
+                    if len(item) == 12:
+                        j['license'] = item[11]
                     _col = j.get('collection-name')
                     if _col == '':
                         _col = j.get('collection')
@@ -54,19 +56,25 @@ def get_journals_list(collections, collection_name=None):
     return c
 
 
+def generate_row(item):
+    column = []
+    column.append(item['journal-title'])
+    column.append(item['nlm-title'])
+    column.append(item['short-title'])
+    column.append(item['acron'])
+    column.append(item['issn-id'])
+    column.append(item['pissn'])
+    column.append(item['eissn'])
+    column.append(item['publisher-name'])
+    if item.get('license'):
+        column.append(item.get('license'))
+    return '|'.join(column)
+
+
 def get_collection_journals_list(collections, collection_name):
     journals = {}
     for item in collections.get(collection_name, []):
-        column = []
-        column.append(item['journal-title'])
-        column.append(item['nlm-title'])
-        column.append(item['short-title'])
-        column.append(item['acron'])
-        column.append(item['issn-id'])
-        column.append(item['pissn'])
-        column.append(item['eissn'])
-        column.append(item['publisher-name'])
-        journals[item['journal-title'].lower()] = collection_name + '|' + '|'.join(column)
+        journals[item['journal-title'].lower()] = collection_name + '|' + generate_row(item)
     return journals
 
 
@@ -74,16 +82,7 @@ def get_all_journals_list(collections):
     journals = {}
     for collection_key, collection_journals in collections.items():
         for item in collection_journals:
-            column = []
-            column.append(item['journal-title'])
-            column.append(item['nlm-title'])
-            column.append(item['short-title'])
-            column.append(item['acron'])
-            column.append(item['issn-id'])
-            column.append(item['pissn'])
-            column.append(item['eissn'])
-            column.append(item['publisher-name'])
-            journals[item['journal-title'].lower() + ' | ' + item['collection-name'].lower()] = collection_key + '|' + '|'.join(column)
+            journals[item['journal-title'].lower() + ' | ' + item['collection-name'].lower()] = collection_key + '|' + generate_row(item)
     return journals
 
 
@@ -107,11 +106,7 @@ def download_content(url):
     return new
 
 
-def main(url, downloaded_filename, dest_filename, collection_name=None, downloaded_file_encoding='utf-8'):
-    if url is not None:
-        new = download_content(url)
-        codecs.open(downloaded_filename, mode='w+').write(new)
-        print(downloaded_filename)
+def generate_csv(downloaded_filename, dest_filename, collection_name=None, downloaded_file_encoding='utf-8'):
     journals_collections = journals_by_collection(downloaded_filename)
     codecs.open(dest_filename.replace('.csv', '_collections.csv'), mode='w+').write('\n'.join(sorted(journals_collections.keys())))
     journals = get_journals_list(journals_collections, collection_name)
@@ -162,9 +157,17 @@ if os.path.isfile(temp_markup_journals_filename):
         pass
 
 url = 'http://static.scielo.org/sps/markup_journals.csv'
-url = 'http://static.scielo.org/sps/titles-tab-utf-8.csv'
+url = 'http://static.scielo.org/sps/titles-tab-v2-utf-8.csv'
+alt_url = 'http://static.scielo.org/sps/titles-tab-utf-8.csv'
 
-main(url, downloaded_filename, temp_markup_journals_filename, collection_name)
+if url is not None:
+    new = download_content(url)
+if new == '':
+    new = download_content(alt_url)
+if new != '':
+    codecs.open(downloaded_filename, mode='w+').write(new)
+
+generate_csv(downloaded_filename, temp_markup_journals_filename, collection_name)
 
 while not os.path.isfile(temp_markup_journals_filename):
     pass
