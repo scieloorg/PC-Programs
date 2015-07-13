@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import sys
 import os
 import shutil
 from datetime import datetime
@@ -1058,7 +1059,6 @@ def execute_converter(package_paths, collection_name=None):
         prepare_env(config)
         invalid_pkg_files = []
         bad_pkg_files = []
-        bad_pkg_files_errors = []
         scilista = []
 
         mailer = xc.get_mailer(config)

@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import sys
 import os
 from datetime import datetime
 
@@ -585,9 +586,10 @@ def get_report_text(filename):
     report = ''
     if os.path.isfile(filename):
         content = open(filename, 'r').read()
-        if not isinstance(content, unicode):
-            content = content.decode('utf-8')
         if 'Parse/validation finished' in content and '<!DOCTYPE' in content:
+            if not isinstance(content, unicode):
+                content = content.decode(encoding=sys.getfilesystemencoding())
+
             part1 = content[0:content.find('<!DOCTYPE')]
             part2 = content[content.find('<!DOCTYPE'):]
 
@@ -603,10 +605,14 @@ def get_report_text(filename):
             part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>').replace('\t', '&nbsp;'*4)
             report = part1 + part2
         elif '</body>' in content:
+            if not isinstance(content, unicode):
+                content = content.decode('utf-8')
             content = content[content.find('<body'):]
             content = content[0:content.rfind('</body>')]
             report = content[content.find('>')+1:]
         elif '<body' in content:
+            if not isinstance(content, unicode):
+                content = content.decode('utf-8')
             content = content[content.find('<body'):]
             report = content[content.find('>')+1:]
         else:
@@ -687,7 +693,7 @@ def save_report(filename, title, content):
 
 def display_report(report_filename):
     try:
-        os.system('python -mwebbrowser file:///' + report_filename.replace('//', '/'))
+        os.system('python -mwebbrowser file:///' + report_filename.replace('//', '/').encode(encoding=sys.getfilesystemencoding()))
     except:
         pass
 
