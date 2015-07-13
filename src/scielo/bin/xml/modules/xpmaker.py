@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import sys
 import shutil
 import urllib
 from datetime import datetime
@@ -1039,6 +1040,7 @@ def get_inputs(args):
     acron = None
     if len(args) == 3:
         script, path, acron = args
+    print(type(path))
     return (script, path, acron)
 
 

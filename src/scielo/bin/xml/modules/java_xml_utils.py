@@ -1,4 +1,5 @@
 # coding=utf-8
+import sys
 import os
 import shutil
 import tempfile
@@ -63,6 +64,7 @@ def xml_transform(run_background, xml_filename, xsl_filename, result_filename, p
             os.unlink(f)
 
     cmd = JAVA_PATH + ' -jar "' + JAR_TRANSFORM + '" -novw -w0 -o "' + temp_result_filename + '" "' + xml_filename + '"  "' + xsl_filename + '" ' + format_parameters(parameters)
+    cmd = cmd.encode(encoding=sys.getfilesystemencoding())
     os.system(cmd)
 
     if not os.path.exists(temp_result_filename):
@@ -98,6 +100,7 @@ def xml_validate(run_background, xml_filename, result_filename, doctype=None):
         os.makedirs(os.path.dirname(result_filename))
 
     cmd = JAVA_PATH + ' -cp "' + JAR_VALIDATE + '" br.bireme.XMLCheck.XMLCheck "' + xml_filename + '" ' + validation_type + '>"' + temp_result_filename + '"'
+    cmd = cmd.encode(encoding=sys.getfilesystemencoding())
     os.system(cmd)
 
     if os.path.exists(temp_result_filename):
