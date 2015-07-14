@@ -695,11 +695,16 @@ class ArticleDAO(object):
 
         if article.order != '00000':
             article_records = ArticleRecords(self.org_manager, article, i_record, article_files, creation_date)
-            self.dao.save_id(article_files.id_filename, article_records.records)
             if os.path.isfile(article_files.id_filename):
-                saved_records = self.dao.get_id_records(article_files.id_filename)
-                saved = (len(saved_records) == len(article_records.records))
-        return saved
+                try:
+                    os.unlink(article_files.id_filename)
+                except:
+                    print('Unable to delete ' + article_files.id_filename)
+            found = os.path.isfile(article_files.id_filename)
+
+            self.dao.save_id(article_files.id_filename, article_records.records)
+            saved = os.path.isfile(article_files.id_filename)
+        return (not found and saved)
 
     def finish_conversion(self, issue_record, issue_files):
         loaded = []

@@ -264,22 +264,14 @@ def get_issue_models(journal_title, issue_label, p_issn, e_issn):
             msg = html_reports.p_message('FATAL ERROR: ' + _('Issue ') + issue_label + _(' is not registered in ') + converter_env.db_issue.db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
         else:
             issue_models = xc_models.IssueModels(i_record)
-            print('i_record')
-            print(i_record)
-            print(issue_models.issue)
             if issue_models.issue.license is None:
                 j_record = find_journal_record(journal_title, p_issn, e_issn)
-                print('j_record')
-                print(j_record)
                 if j_record is None:
                     msg = html_reports.p_message('ERROR: ' + _('Unable to get the license of') + ' ' + journal_title)
                 else:
                     t = xc_models.RegisteredTitle(j_record)
-                    print('t.license')
-                    print(t.license())
                     issue_models.issue.license = t.license()
-                    print(issue_models.issue.license)
-    print('get_issue_models - ifm')
+                    
     return (issue_models, msg)
 
 
