@@ -1463,10 +1463,10 @@ msgstr "Faltando {required} para {demander}"
 
 #: modules/article_validations.py:702
 msgid "Required at least more than one kwd"
-msgstr ""
+msgstr "Requer pelo menos mais do que um kwd"
 
 #: modules/article_validations.py:714
 #, python-brace-format
 msgid ""
 "Unexpected {unexpected} for {demander}. Be sure that {demander} is correct."
-msgstr ""
+msgstr "Inesperado {unexpected} para {demaner}. Tenha certeza de que {demander} esteja correto."

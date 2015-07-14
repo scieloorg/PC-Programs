@@ -111,30 +111,17 @@ def u_encode(u, encoding):
     return r
 
 
-def doi_pid(doi):
+def doi_pid(doi_query_result):
     pid = None
-
-    if doi is not None:
-
-        try:
-            f = urllib2.urlopen('http://dx.doi.org/' + doi, timeout=1)
-            url = f.geturl()
-
-            if 'scielo.php?script=sci_arttext&amp;pid=' in url:
-                pid = url[url.find('pid=')+4:]
-                pid = pid[0:23]
-
-                try:
-                    f = urllib2.urlopen('http://200.136.72.162:7000/api/v1/article?code=' + pid + '&format=json', timeout=60)
-                    article_json = json.loads(f.read())
-                    v880 = article_json['article'].get('v880')
-                    v881 = article_json['article'].get('v881')
-
-                    pid = v881 if v881 is not None else v880
-                except:
-                    pass
-        except:
-            pass
+    if doi_query_result is not None:
+        article_json = json.loads(doi_query_result)
+        alt_id_items = article_json.get('message', {}).get('alternative-id')
+        pid = None
+        if alt_id_items is not None:
+            if isinstance(alt_id_items, list):
+                pid = alt_id_items[0]
+            else:
+                pid = alt_id_items
     return pid
 
 
@@ -294,30 +281,40 @@ def four_digits_year(year):
     return year
 
 
-def doi_journal_and_article(doi):
+def doi_query(doi):
     r = None
-    journal_titles = None
-    article_titles = None
     if doi is not None:
         if 'dx.doi.org' in doi:
             doi = doi[doi.find('dx.doi.org/')+len('dx.doi.org/'):]
+        _url = 'http://api.crossref.org/works/' + doi
         try:
-            r = urllib2.urlopen('http://api.crossref.org/works/' + doi, timeout=20).read()
+            r = urllib2.urlopen(_url, timeout=20).read()
         except urllib2.URLError, e:
-            r = None
+            r = '{}'
+            print(_url)
             print(datetime.now().isoformat() + " Oops, timed out?")
         except urllib2.socket.timeout:
             r = None
+            print(_url)
             print(datetime.now().isoformat() + " Timed out!")
         except:
+            print(_url)
             r = None
             print(datetime.now().isoformat() + " unknown")
-        if r is not None:
-            article_json = json.loads(r)
-            journal_titles = article_json.get('message', {}).get('container-title')
+    return r
+
+
+def doi_journal_and_article(doi_query_result):
+    journal_titles = None
+    article_titles = None
+    if doi_query_result is not None:
+        article_json = json.loads(doi_query_result)
+        journal_titles = article_json.get('message', {}).get('container-title')
+        if journal_titles is not None:
             if not isinstance(journal_titles, list):
                 journal_titles = [journal_titles]
-            article_titles = article_json.get('message', {}).get('title')
+        article_titles = article_json.get('message', {}).get('title')
+        if article_titles is not None:
             if not isinstance(article_titles, list):
                 article_titles = [article_titles]
     return (journal_titles, article_titles)

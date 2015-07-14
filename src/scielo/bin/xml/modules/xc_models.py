@@ -7,7 +7,7 @@ from __init__ import _
 import utils
 import xml_utils
 
-from article_utils import doi_pid, display_pages, format_dateiso, format_issue_label
+from article_utils import display_pages, format_dateiso, format_issue_label
 from article_utils import how_similar
 from article import Issue, PersonAuthor, Article
 from attributes import ROLE, DOCTOPIC, doctopic_label
