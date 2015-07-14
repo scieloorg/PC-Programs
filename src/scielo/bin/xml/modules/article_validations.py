@@ -228,7 +228,7 @@ class ArticleContentValidation(object):
         items.append(self.total_of_references)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.refstats)
-        items.append(('total of references', 'INFO', self.article.total_of_references))
+
         items.append(self.ref_display_only_stats)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.contrib)
@@ -650,7 +650,12 @@ class ArticleContentValidation(object):
 
     @property
     def total_of_references(self):
-        return self._total(self.article.total_of_references, self.article.ref_count, _('total of references'), 'ref-count')
+        r = []
+        r.append(self._total(self.article.total_of_references, self.article.ref_count, _('total of references'), 'ref-count'))
+        if self.article.article_type in attributes.REFS_REQUIRED_FOR_DOCTOPIC:
+            if self.article.total_of_references == 0:
+                r.append((_('total of references'), 'FATAL ERROR', self.article.article_type + ' ' + _('requires references')))
+        return r
 
     @property
     def total_of_tables(self):
@@ -671,32 +676,42 @@ class ArticleContentValidation(object):
         for lang in self.article.languages:
             t = self.article.titles_by_lang.get(lang)
             if t is None:
-                r.append(('title-group', 'ERROR', _('Missing title for ') + lang))
+                r.append(('title-group', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='title', demander='@xml:lang=' + lang)))
             else:
                 text = None if t.title == '' else t.title
                 if text is None:
-                    r.append(('article title', 'FATAL ERROR', _('Missing title for ') + lang))
+                    r.append(('article title', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='title', demander='@xml:lang=' + lang)))
                 if lang is None:
-                    r.append(('article title @xml:lang', 'FATAL ERROR', _('Missing @xml:lang for ') + text))
+                    r.append(('article title @xml:lang', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='@xml:lang', demander=text)))
 
-            t = self.article.abstracts_by_lang.get(lang)
-            if t is None:
-                r.append(('abstract', 'ERROR', _('Missing abstract for ') + lang))
-            else:
-                text = None if t.text == '' else t.text
-                if text is None:
-                    r.append(('abstract', 'FATAL ERROR', _('Missing text for ') + lang))
-                if lang is None:
-                    r.append(('abstract @xml:lang', 'FATAL ERROR', _('Missing @xml:lang for ') + text))
+            if self.article.article_type in attributes.ABSTRACT_REQUIRED_FOR_DOCTOPIC:
+                t = self.article.abstracts_by_lang.get(lang)
+                if t is None:
+                    r.append(('abstract', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='abstract', demander='@xml:lang=' + lang)))
+                else:
+                    text = None if t.text == '' else t.text
+                    if text is None:
+                        r.append(('abstract', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='abstract', demander='@xml:lang=' + lang)))
+                    if lang is None:
+                        r.append(('abstract @xml:lang', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='@xml:lang', demander=text)))
 
-            t = self.article.keywords_by_lang.get(lang)
-            if t is None:
-                r.append(('kwd-group', 'ERROR', _('Missing kwd-group for ') + lang))
+                t = self.article.keywords_by_lang.get(lang)
+                if t is None:
+                    r.append(('kwd-group', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='kwd-group', demander='@xml:lang=' + lang)))
+                elif len(t) == 1:
+                    r.append(('kwd', 'FATAL ERROR', _('Required at least more than one kwd')))
+                else:
+                    if len(t) == 0:
+                        r.append(('kwd', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='kwd', demander='@xml:lang=' + lang)))
+                    if lang is None:
+                        r.append(('kwd-group @xml:lang', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='@xml:lang', demander='; '.join([item.text for item in t]))))
             else:
-                if len(t) == 0:
-                    r.append(('kwd', 'FATAL ERROR', _('Missing kwd for ') + lang))
-                if lang is None:
-                    r.append(('kwd-group @xml:lang', 'FATAL ERROR', _('Missing @xml:lang for ') + '; '.join([item.text for item in t])))
+                a = self.article.abstracts_by_lang.get(lang)
+                b = self.article.keywords_by_lang.get(lang)
+                a = 0 if a is None else len(a)
+                b = 0 if b is None else len(b)
+                if a + b > 0:
+                    r.append(('abstract/kwd-group', 'WARNING', _('Unexpected {unexpected} for {demander}. Be sure that {demander} is correct.').format(unexpected='abstract/kwd-group', demander='@article-type=' + self.article.article_type)))
         return r
 
     @property
@@ -707,9 +722,9 @@ class ArticleContentValidation(object):
                 r.append(('title', 'OK', item.language + ': ' + item.title))
             else:
                 if item.language is None:
-                    r.append(('title language', 'ERROR', _('Missing @xml:lang for ') + item.title))
+                    r.append(('title language', 'ERROR', _('Missing {required} for {demander}').format(required='@xml:lang', demander=item.title)))
                 elif item.title is None:
-                    r.append(('title', 'ERROR', _('Missing title for ') + item.language))
+                    r.append(('title', 'ERROR', _('Missing {required} for {demander}').format(required='title', demander=item.language)))
                 else:
                     r.append('title', 'ERROR', _('Missing titles'))
         return r
@@ -999,18 +1014,19 @@ class ReferenceContentValidation(object):
                     if 'journal' in _source or 'revista' in _source or 'J ' in self.reference.source or self.reference.source.endswith('J') or 'J. ' in self.reference.source or self.reference.source.endswith('J.'):
                         looks_like = 'journal'
             if self.reference.issue is None and self.reference.volume is None:
+                if self.reference.fpage is None:
+                    if 'thesis' in _mixed or 'dissert' in _mixed or 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed or 'tese' in _mixed:
+                        if self.reference.publication_type != 'thesis':
+                            looks_like = 'thesis'
                 if not 'legal' in self.reference.publication_type:
                     if self.reference.source is not None:
                         if 'Lei' in self.reference.source or ('Di' in self.reference.source and 'Oficial' in self.reference.source):
                             looks_like = 'legal-doc'
                         if 'portaria' in _source:
                             looks_like = 'legal-doc'
-                if 'conference' in _mixed or 'proceeding' in _mixed:
+                if 'conference' in _mixed or 'proceeding' in _mixed or 'meeting' in _mixed:
                     if self.reference.publication_type != 'confproc':
                         looks_like = 'confproc'
-                if 'thesis' in _mixed or 'dissert' in _mixed or 'master' in _mixed or 'doctor' in _mixed or 'mestrado' in _mixed or 'doutorado' in _mixed or 'maestr' in _mixed:
-                    if self.reference.publication_type != 'thesis':
-                        looks_like = 'thesis'
             if looks_like is not None:
                 r.append(('@publication-type', 'ERROR', _('Check if @publication-type is correct. This reference looks like') + ' ' + looks_like))
 
