@@ -255,7 +255,7 @@ def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
 def get_issue_models(journal_title, issue_label, p_issn, e_issn):
     issue_models = None
     msg = None
-    print(list((journal_title, issue_label, p_issn, e_issn)))
+
     if issue_label is None:
         msg = html_reports.p_message('FATAL ERROR: ' + _('Unable to identify the article\'s issue'))
     else:
@@ -271,7 +271,6 @@ def get_issue_models(journal_title, issue_label, p_issn, e_issn):
                 else:
                     t = xc_models.RegisteredTitle(j_record)
                     issue_models.issue.license = t.license()
-                    
     return (issue_models, msg)
 
 
