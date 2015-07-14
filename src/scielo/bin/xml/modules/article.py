@@ -1018,6 +1018,27 @@ class Article(ArticleXML):
         self.creation_date_display = None
         self.creation_date = None
         self.last_update = None
+        self._doi_query_result = None
+        self._doi_pid = None
+        self._doi_journal_and_article = None
+
+    @property
+    def doi_query_result(self):
+        if self._doi_query_result is None:
+            self._doi_query_result = article_utils.doi_query(self.doi)
+        return self._doi_query_result
+
+    @property
+    def doi_pid(self):
+        if self._doi_pid is None:
+            self._doi_pid = article_utils.doi_pid(self.doi_query_result)
+        return self._doi_pid
+
+    @property
+    def doi_journal_and_article(self):
+        if self._doi_journal_and_article is None:
+            self._doi_journal_and_article = article_utils.doi_journal_and_article(self.doi_query_result)
+        return self._doi_journal_and_article
 
     def summary(self):
         data = {}
@@ -1092,7 +1113,7 @@ class Article(ArticleXML):
         d = self.article_previous_id
         if not is_valid(d):
             if self.doi is not None:
-                d = article_utils.doi_pid(self.doi)
+                d = self.doi_pid
         if not is_valid(d):
             d = self._ahead_pid
         #if not is_valid(d):

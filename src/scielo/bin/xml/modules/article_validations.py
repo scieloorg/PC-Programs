@@ -397,7 +397,7 @@ class ArticleContentValidation(object):
 
         if self.article.doi is not None:
 
-            journal_titles, article_titles = article_utils.doi_journal_and_article(self.article.doi)
+            journal_titles, article_titles = self.article.doi_journal_and_article
 
             if not journal_titles is None:
                 status = 'INFO'

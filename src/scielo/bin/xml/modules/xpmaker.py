@@ -1040,7 +1040,6 @@ def get_inputs(args):
     acron = None
     if len(args) == 3:
         script, path, acron = args
-    print(type(path))
     return (script, path, acron)
 
 
