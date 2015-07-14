@@ -80,7 +80,7 @@ def return_journals_list(json):
     json_title = JSON_Journal()
     for json_item in json:
         json_title.load(json_item)
-        #print(json_title.journal_title+ '.')
+        ##print(json_title.journal_title+ '.')
         j = Journal(json_title.journal_title, json_title.journal_issn_id, json_title.journal_acron)
         j.publishers = json_title.publishers
         j.abbrev_title = json_title.journal_abbrev_title
@@ -381,17 +381,17 @@ class JSON_Article:
         if first_page == '':
             first_page = elocation
 
-        print('json2article')
-        print(self.json_data['f']['121'])
+        #print('json2article')
+        #print(self.json_data['f']['121'])
 
         order = return_singleval(self.json_data['f'], '121')
         self.json_data['f']['121'] = order
         #article = Article(doi, first_page, last_page)
         article = Article(doi, order, first_page, last_page)
 
-        print('json2article')
-        print(self.json_data['f']['121'])
-        print(article.order)
+        #print('json2article')
+        #print(self.json_data['f']['121'])
+        #print(article.order)
 
         titles = return_multval(self.json_data['f'], '12')
         norm_titles = []
@@ -440,7 +440,7 @@ class JSON_Article:
         prev = 0
         prev_label = ''
         if len(dates) > 0:
-            print(dates)
+            #print(dates)
             for label, test_date in dates:
                 c = test_date
                 if prev > c:
@@ -462,10 +462,10 @@ class JSON_Article:
 
     def set_display(self):
         r = {}
-        print('\nset_display -- inicio\n')
+        #print('\nset_display -- inicio\n')
 
         fpage, lpage, eloc = self.return_pagination()
-        print([fpage, lpage, eloc])
+        #print([fpage, lpage, eloc])
 
         if len(fpage) > 0:
             r['pages'] = fpage
@@ -474,7 +474,7 @@ class JSON_Article:
         if len(eloc) > 0:
             r['pages'] = eloc + ' (e-location)'
 
-        print('set_display - issuelabel')
+        #print('set_display - issuelabel')
         r['issue label'] = self.issuelabel()
         r['order'] = self.json_data['f'].get('121')
         r['nlm-ta'] = return_singleval(self.json_data['f'], '421')
@@ -488,13 +488,13 @@ class JSON_Article:
         r['publication date (ppub)'] = return_singleval(self.json_data['f'], '65')
         r['publishers'] = return_multval(self.json_data['f'], '62')
 
-        print('set_display - publishers')
+        #print('set_display - publishers')
         if type(r['publishers']) == type([]):
             r['publishers'] = '\n'.join(r['publishers'])
 
-        print('set_display - publishers')
+        #print('set_display - publishers')
         authors = return_multval(self.json_data['f'], '10')
-        print(authors)
+        #print(authors)
         s = ''
         for a in authors:
             s += self.format_author(a)
@@ -503,8 +503,8 @@ class JSON_Article:
         r['corporative authors'] = '\n'.join(collab)
         titles = return_multval(self.json_data['f'], '12')
 
-        print('set_display - titles')
-        print(titles)
+        #print('set_display - titles')
+        #print(titles)
 
         s = ''
         for t in titles:
@@ -512,8 +512,8 @@ class JSON_Article:
         r['titles'] = s
 
         abstracts = return_multval(self.json_data['f'], '83')
-        print('set_display - abstracts')
-        print(abstracts)
+        #print('set_display - abstracts')
+        #print(abstracts)
 
         s = ''
         for a in abstracts:
@@ -521,15 +521,15 @@ class JSON_Article:
         r['abstracts'] = s
 
         kwg = return_multval(self.json_data['f'], '85')
-        print('set_display - kwg')
-        print(kwg)
+        #print('set_display - kwg')
+        #print(kwg)
 
         s = ''
         for a in kwg:
             s += self.format_kwd(a)
         r['keywords'] = s
 
-        print('\nset_display -- fim\n')
+        #print('\nset_display -- fim\n')
         return r
 
         
@@ -697,15 +697,15 @@ class JSON_Article:
             titles = [titles]
         new_titles = []
         for title in titles:
-            print(title)
+            #print(title)
             if type(title) is dict:
                 new_titles.append(title)
             elif type(title) is list:
                 for t in title:
                     new_titles.append(t)
 
-        print(langs)
-        print(new_titles)
+        #print(langs)
+        #print(new_titles)
         i = 0
         k = 0
         for title in new_titles:
@@ -721,8 +721,8 @@ class JSON_Article:
                 new_titles[i]['_'] += sep + title.get('s')
                 del new_titles[i]['s']
             i += 1
-        print('=========normalized=======')
-        print(new_titles)
+        #print('=========normalized=======')
+        #print(new_titles)
         self.json_data['f']['12'] = new_titles
 
     def normalize_document_data(self, issue, alternative_id):
@@ -743,8 +743,8 @@ class JSON_Article:
         #    del self.json_data['f']['epub']
 
         section = Section(return_singleval(self.json_data['f'], '49'))
-        print(section.title)
-        print(issue.name)
+        #print(section.title)
+        #print(issue.name)
         self.section = issue.toc.return_section(section)
         if self.section is None:
             if 'ahead' in issue.name or section.title == 'Press Release':
@@ -754,26 +754,26 @@ class JSON_Article:
             self.section = section
         self.json_data['f']['49'] = self.section.code
         
-        print('normalize_document_data - abstracts')
+        #print('normalize_document_data - abstracts')
         self.normalize_metadata_abstracts()
         #self.normalize_metadata_subtitles()
-        print('normalize_document_data - authors')
+        #print('normalize_document_data - authors')
         self.normalize_metadata_authors()
-        print('normalize_document_data - illustrative_materials')
+        #print('normalize_document_data - illustrative_materials')
         self.normalize_illustrative_materials()
-        print('normalize_document_data - affiliations')
+        #print('normalize_document_data - affiliations')
         self.normalize_affiliations()
-        print('normalize_document_data - keywords')
+        #print('normalize_document_data - keywords')
         self.normalize_keywords()
 
-        print('normalize_document_data - convert_value')
+        #print('normalize_document_data - convert_value')
         self.json_data['f'] = self.json_normalizer.convert_value(self.json_data['f'], '71', 'doctopic')
-        print('normalize_document_data - normalize_dates')
+        #print('normalize_document_data - normalize_dates')
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '111', '112', '111')
-        print('normalize_document_data - normalize_dates')
+        #print('normalize_document_data - normalize_dates')
         self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], '113', '114', '113')
 
-        print('normalize_document_data - normalize_dates')
+        #print('normalize_document_data - normalize_dates')
         if 'epub' in self.json_data['f'].keys():
             self.json_data['f'] = self.json_normalizer.normalize_dates(self.json_data['f'], 'epub', '223', 'epub')
             del self.json_data['f']['epub']
@@ -781,20 +781,20 @@ class JSON_Article:
         if self.json_data['f'].get('65') != issue.json_data.get('65'):
             self.json_data['f']['65'] = issue.json_data.get('65')
 
-        print('normalize_document_data - format_for_indexing')
+        #print('normalize_document_data - format_for_indexing')
         self.json_data['h'] = self.json_normalizer.format_for_indexing(self.json_data['f'])
-        print('normalize_document_data - format_for_indexing')
+        #print('normalize_document_data - format_for_indexing')
         self.json_data['l'] = self.json_normalizer.format_for_indexing(self.json_data['h'])
         #self.json_data['h'] = self.json_data['f']
         #self.json_data['l'] = self.json_data['f']
-        print('normalize_document_data - fim')
+        #print('normalize_document_data - fim')
     
     def normalize_metadata_authors(self):
         """
         Normalize the json structure for authors: 10
         """
         authors = return_multval(self.json_data['f'], '10')
-        print(authors)
+        #print(authors)
         changed = False
         new_authors = []
         for author in authors:
@@ -804,9 +804,9 @@ class JSON_Article:
                 author['s'] += ' ' + author['z']
             if '1' in author.keys():
                 if type(author['1']) == type([]):
-                    #print(self.json_json_data['f']['10'])
+                    ##print(self.json_json_data['f']['10'])
                     author['1'] = ' '.join(author['1'])
-                    #print(self.json_json_data['f']['10'])
+                    ##print(self.json_json_data['f']['10'])
                     changed = True
             if 'r' in author.keys():
                 author['r'] = self.json_normalizer.normalize_role(author['r'])
@@ -816,7 +816,7 @@ class JSON_Article:
                 self.json_data['f']['10'] = new_authors[0]
             else:
                 self.json_data['f']['10'] = new_authors
-            print(self.json_data['f']['10'])
+            #print(self.json_data['f']['10'])
         
     def normalize_metadata_subtitles(self):
         """
@@ -840,7 +840,7 @@ class JSON_Article:
 
             if 'x' in t.keys():
                 t['_'] = t['_'][0:t['_'].find('<xref')]
-                print(t['_'])
+                #print(t['_'])
             if 's' in t.keys():
                 #print(t)
                 if ':' in t['_']:
@@ -868,9 +868,9 @@ class JSON_Article:
         if '601' in self.json_data['f'].keys():
             if len(self.json_data['f']['601']) == 1:
                 self.json_data['f']['601'] = [self.json_data['f']['601']]
-            print(self.json_data['f']['601'])
+            #print(self.json_data['f']['601'])
             for item in self.json_data['f']['601']:
-                print(item)
+                #print(item)
                 item = item.get('_', '')
                 _langs.append(item)
 
@@ -928,11 +928,11 @@ class JSON_Article:
             self.json_data['f']['38'] = 'ND'
 
     def get_normalized_affiliations(self, affiliations):
-        print('affiliations: v240')
+        #print('affiliations: v240')
         new = []
         if not isinstance(affiliations, list):
             affiliations = [affiliations]
-        print(affiliations)
+        #print(affiliations)
         for aff in affiliations:
             if aff.get('i') is not None:
                 #orgname, norgname, country_name, country_code, state, city
@@ -955,7 +955,7 @@ class JSON_Article:
                     if norm_state is not None:
                         a['s'] = norm_state
                     new.append(a)
-        print(new)
+        #print(new)
         return new
 
     def fix_aff(self, affiliations):
@@ -970,11 +970,11 @@ class JSON_Article:
                     fixed = True
                     aff[k] = ', '.join(v)
             new.append(aff)
-        if fixed:
-            print('\nfixed affiliations:')
-            print(affiliations)
-            print(new)
-            print('-'*10)
+        #if fixed:
+        #    #print('\nfixed affiliations:')
+        #    #print(affiliations)
+        #    #print(new)
+        #    #print('-'*10)
         return new
 
     def normalize_affiliations(self):
@@ -1400,7 +1400,7 @@ class AffiliationsHandler:
                             present.append(required_label+': ' + str(aff[required_key]) + status)
                         except:
                             present.append(required_label+': ' + required_key + status)
-                            print(aff[required_key])
+                            #print(aff[required_key])
                     
                 else:
                     missing_parts.append(required_label)

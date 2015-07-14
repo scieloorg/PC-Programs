@@ -75,9 +75,6 @@ class JSON2IDFile:
             for t in tag_list:
                 tag = str(t)
                 field_occs = fields_info[tag]
-                if tag == '17':
-                    print('+'*80)
-                    print(field_occs)
                 if isinstance(field_occs, list):
                     for field_occ in field_occs:
                         self.__format_field_occ__(tag, field_occ)
@@ -88,10 +85,6 @@ class JSON2IDFile:
         """
         field_data -- str (string) or [] (repetitive field (with/without subf) or {} (field with subfields)
         """
-        if t == '17':
-            print('$'*8)
-            print(field_data)
-
         if isinstance(field_data, dict):
             tagged = ''
             if '_' in field_data.keys():
@@ -187,7 +180,6 @@ class JSON2IDFile:
 
     def __convert_value__(self, value):
         if isinstance(value, list):
-            print(value)
             value = ', '.join(value)
         value = ' '.join([item for item in value.split()])
         if self.convert2iso:
@@ -210,7 +202,19 @@ class JSON2IDFile:
             try:
                 content = content.decode('utf-8')
             except:
-                content = content.decode('utf-8', 'xmlcharrefreplace')
+                print('_iso:')
+                print(type(content))
+                print(content)
+                try:
+                    content = content.decode('utf-8', 'xmlcharrefreplace')
+                    print('xmlcharrefreplace')
+                except:
+                    try:
+                        content = content.decode('utf-8', 'replace')
+                        print('replace')
+                    except:
+                        content = ''
+                        print('pass')
         iso = u_encode(content, 'iso-8859-1')
         return iso
 
@@ -219,7 +223,7 @@ class JSON2IDFile:
         try:
             f.write(content)
         except:
-            self.report.write('Unable to write content in id filename. ', True, True, True,  content )
+            self.report.write('Unable to write content in id filename. ', True, True, True, content)
         f.close()
 
 

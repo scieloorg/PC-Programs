@@ -880,14 +880,18 @@ def validate_article_type_and_section(article_type, article_section):
     msg = ''
     _sectitle = attributes.normalize_section_title(article_section)
     _article_type = attributes.normalize_section_title(article_type)
-    rate = compare_article_type_and_section(_article_type, _sectitle)
-    rate2, similars = utils.most_similar(utils.similarity(attributes.DOCTOPIC_IN_USE, _sectitle))
-    if rate < 0.5 and rate2 < 0.5:
-        if not _article_type in _sectitle:
-            msg = 'WARNING: ' + _('Check if ') + article_type + _(' is a valid value for') + ' @article-type. <!-- ' + _sectitle + ' -->'
-    elif rate2 > rate:
-        if not article_type in similars:
-            msg = 'ERROR: ' + _('Check @article-type. Maybe it should be ') + _(' or ').join(similars) + ' ' + _('instead of') + ' ' + article_type + '.'
+    if not _article_type in _sectitle:
+        # article_type vs sectitle
+        rate = compare_article_type_and_section(_article_type, _sectitle)
+        # attributes.DOCTOPIC_IN_USE vs sectitle
+        rate2, similars = utils.most_similar(utils.similarity(attributes.DOCTOPIC_IN_USE, _sectitle))
+
+        if rate < 0.6 and rate2 < 0.6:
+            msg = 'WARNING: ' + _('Check if ') + article_type + _(' is a valid value for') + ' @article-type. <!-- ' + _article_type + ' ' + _sectitle + ' ' + str(rate) + ' ' + str(rate2) + ' -->'
+        else:
+            if rate2 > rate:
+                if not article_type in similars:
+                    msg = 'ERROR: ' + _('Check @article-type. Maybe it should be ') + _(' or ').join(similars) + ' ' + _('instead of') + ' ' + article_type + '.'
     return msg
 
 

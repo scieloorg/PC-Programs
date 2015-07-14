@@ -273,21 +273,21 @@ class InformationAnalyst:
             package.report.write('\n' + '-' * 80 + '\n' + 'File: ' + xml_fname + '\n', True, True, True)
             package.check_pdf_file(xml_filename)
             if self.check_and_load(xml_filename, package):
-                print('+'*80)
-                print('antes loaded_folders.values():')
-                for k, item in loaded_folders.items():
-                    print(k)
-                    print(item.documents.elements)
-                print('+'*80)
+                #print('+'*80)
+                #print('antes loaded_folders.values():')
+                #for k, item in loaded_folders.items():
+                #    print(k)
+                #    print(item.documents.elements)
+                #print('+'*80)
                 fe, document = self.process_document(xml_filename, package, folder_table_name)
                 fatal_errors += fe
                 if document != None:
                     loaded_folders[document.folder.box.acron + document.folder.name] = document.folder
-                    print('x'*80)
-                    print('loaded_folders.values():')
-                    for item in loaded_folders.values():
-                        print(item.documents.elements)
-                    print('x'*80)
+                    #print('x'*80)
+                    #print('loaded_folders.values():')
+                    #for item in loaded_folders.values():
+                    #    print(item.documents.elements)
+                    #print('x'*80)
 
         return (fatal_errors, loaded_folders.values())
 
@@ -397,57 +397,57 @@ class InformationAnalyst:
                 package.report.write('Invalid publication title:' + publication_title, True, True)
             else:
                 document_folder = self.json2model.return_folder(registered)
-                print(';'*20)
-                print('document_folder')
-                print(document_folder)
-                if document_folder is not None:
-                    print(document_folder.documents)
-                    if document_folder.documents is not None:
-                        print(document_folder.documents.elements)
-                print(';'*20)
+                #print(';'*20)
+                #print('document_folder')
+                #print(document_folder)
+                #if document_folder is not None:
+                #    #print(document_folder.documents)
+                #    #if document_folder.documents is not None:
+                #        #print(document_folder.documents.elements)
+                #print(';'*20)
 
                 selected_folder = self.check_folder(document_folder, package)
                 if selected_folder.status == 'registered':
-                    print('-'*20)
-                    print('selected_folder')
-                    print(selected_folder)
-                    if selected_folder is not None:
-                        print(selected_folder.documents)
-                        if selected_folder.documents is not None:
-                            print(selected_folder.documents.elements)
-                    print('-'*20)
+                    #print('-'*20)
+                    #print('selected_folder')
+                    #print(selected_folder)
+                    #if selected_folder is not None:
+                    #    #print(selected_folder.documents)
+                    #    if selected_folder.documents is not None:
+                    #        print(selected_folder.documents.elements)
+                    #print('-'*20)
 
                     specific_document = self.json2model.return_doc(selected_folder)
-                    print(':'*20)
-                    print('specific_document')
-                    print(specific_document)
-                    print(specific_document.folder)
-                    if specific_document.folder is not None:
-                        print(specific_document.folder.documents)
-                        if specific_document.folder.documents is not None:
-                            print(specific_document.folder.documents.elements)
+                    #print(':'*20)
+                    #print('specific_document')
+                    #print(specific_document)
+                    #print(specific_document.folder)
+                    #if specific_document.folder is not None:
+                    #    print(specific_document.folder.documents)
+                    #    if specific_document.folder.documents is not None:
+                    #        print(specific_document.folder.documents.elements)
                     
-                    print(':'*20)
+                    #print(':'*20)
                     if specific_document != None:
                         if not specific_document.doi == '':
                             if not 'ahead' in specific_document.issue.name:
                                 pid, fname = self.ahead_articles.return_id_and_filename(specific_document.doi, specific_document.issue.journal.issn_id, specific_document.titles)
                                 specific_document.set_previous_id(pid)
-                        print(':'*20)
-                        print('generic_document')
-                        print(generic_document)
-                        print(':'*20)
+                        #print(':'*20)
+                        #print('generic_document')
+                        #print(generic_document)
+                        #print(':'*20)
 
                         generic_document = Document(specific_document)
 
-                        print('>'*20)
-                        print('generic_document depois')
-                        print(generic_document)
-                        print(generic_document.folder)
-                        print(generic_document.folder.documents)
-                        if generic_document.folder.documents is not None:
-                            print(generic_document.folder.documents.elements)
-                        print('>'*20)
+                        #print('>'*20)
+                        #print('generic_document depois')
+                        #print(generic_document)
+                        #print(generic_document.folder)
+                        #print(generic_document.folder.documents)
+                        #if generic_document.folder.documents is not None:
+                        #    print(generic_document.folder.documents.elements)
+                        #print('>'*20)
                         
                         package.report.write(generic_document.display(), True, True, False)
 
@@ -475,14 +475,14 @@ class InformationAnalyst:
         
         selected_folder = self.all_folders.template(document_folder)
 
-        print('v'*20)
-        print('check_folder.selected_folder')
-        print(selected_folder)
-        if selected_folder is not None:
-            print(selected_folder.documents)
-            if selected_folder.documents is not None:
-                print(selected_folder.documents.elements)
-        print('v'*20)
+        #print('v'*20)
+        #print('check_folder.selected_folder')
+        #print(selected_folder)
+        #if selected_folder is not None:
+        #    print(selected_folder.documents)
+        #    if selected_folder.documents is not None:
+        #        print(selected_folder.documents.elements)
+        #print('v'*20)
 
         package.report.write(selected_folder.status)
 
@@ -515,7 +515,7 @@ class DocumentsArchiver:
         return self.db_manager.update(folders, package)
 
     def return_validation_report_filenames(self, folders):
-        print('1')
+        #print('1')
         return self.db_manager.return_validation_report_filenames(folders)
 
 
@@ -554,7 +554,7 @@ class AheadArticles:
                     k += 1
 
     def return_id_and_filename(self, doi, issn, titles):
-        print(doi)
+        #print(doi)
         if type(titles) == type(''):
             titles = [ titles ]
         
@@ -574,6 +574,6 @@ class AheadArticles:
         
         if not len(r) == 23:
             r = ''
-        print(r)
+        #print(r)
 
         return r , filename

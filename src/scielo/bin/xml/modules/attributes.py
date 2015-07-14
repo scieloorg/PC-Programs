@@ -75,6 +75,28 @@ AUTHORS_REQUIRED_FOR_DOCTOPIC = [
     'review-article', 
     ]
 
+ABSTRACT_REQUIRED_FOR_DOCTOPIC = [
+    'article-commentary', 
+    'brief-report', 
+    'case-report', 
+    'clinical-trial', 
+    'rapid-communication', 
+    'research-article', 
+    'review-article', 
+    'technical-report', 
+    ]
+
+REFS_REQUIRED_FOR_DOCTOPIC = [
+    'article-commentary', 
+    'brief-report', 
+    'case-report', 
+    'clinical-trial', 
+    'rapid-communication', 
+    'research-article', 
+    'review-article', 
+    'technical-report', 
+    ]
+
 TOC_SECTIONS = { 
     u'carta': u'letter', 
     u'revisão': u'review', 

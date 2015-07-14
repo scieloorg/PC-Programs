@@ -16,9 +16,7 @@ class AheadManager:
             for id_filename in os.listdir(journal_path + '/' + ahead_folder + '/id'):
                 if id_filename != 'i.id':
                     filename = journal_path + '/' + ahead_folder + '/id/' + id_filename
-                    print(filename)
                     j = IDFile().id2json(filename)
-                    print(j)
                     doi = self.doi(j)
                     if doi != '':
                         self.ahead_filenames[doi] = filename
@@ -133,7 +131,6 @@ class ISISManager4Articles:
                 package.report.result += issue.journal.acron + '  ' + issue.name + '\n'
 
     def return_validation_report_filenames(self, issues):
-        print('2')
         f = []
         for issue in issues:
             issue_paths = IssuePath(self.paths, issue)
@@ -160,28 +157,18 @@ class ISISManager4Articles:
             #     os.unlink(issue_paths.issue_id_path + '/' + f)
 
             ahead_manager = AheadManager(self.cisis, issue_paths.journal_path)
-            print('*'*20)
-            print('ahead_manager')
+    
         package.report.write('Saving issue record')
         self.save_issue_record(package, issue, issue_paths)
 
         package.report.write('Saving article records')
         excluded = 0
-        print('-'*80)
-        print('issue.documents')
-        for article in issue.documents:
-            print(article.xml_filename)
-            print(os.path.isfile(article.xml_filename))
-        print('-'*80)
         for article in issue.documents:
             self.save_article_records(package, article, issue_paths)
-            print('doi=')
-            print(article.doi)
             if ahead_manager is not None:
                 if article.doi != '':
                     if ahead_manager.exclude_filename(article.doi):
                         excluded += 1
-                        print('excluded aop id filename')
         print('excluded=')
         print(excluded)
         if ahead_manager is not None:
@@ -334,11 +321,8 @@ class IssuePath:
         return path
 
     def return_validation_report_filenames(self, startswith):
-        print('3')
         files = []
         path = self.paths.web_outs_path + '/' + self.issue_folder
-        print(path)
-        print(startswith)
         for f in os.listdir(path):
             if f.endswith('.rep.html'):
                 test = f[0:-len('.rep.html')].replace('.pmc', '')
@@ -376,9 +360,7 @@ class IssuePath:
             os.unlink(id_filename)
 
         order = '00000' + article.order
-        print('article_filename')
-        print(order)
-
+        
         new_id_filename = self.issue_id_path + '/' + order[-5:] + '.id'
         return new_id_filename
 
