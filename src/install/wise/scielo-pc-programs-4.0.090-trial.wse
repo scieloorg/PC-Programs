@@ -106,22 +106,20 @@ item: Set Variable
 end
 item: Set Variable
   Variable=MAINDIR
-  Value=c:\SciELO
+  Value=C:
   Flags=10000000
 end
 item: Set Variable
   Variable=PROGDIR
   Value=c:\scielo
-  Flags=10000000
-end
-item: Set Variable
-  Variable=MYSCIELOURL
-  Value=www.myscielo.org
-  Flags=10000000
 end
 item: Set Variable
   Variable=DATADIR
-  Value=C:\Scielo
+  Value=%PROGDIR%
+end
+item: Set Variable
+  Variable=MYSCIELOURL
+  Value=www.scielo.br
   Flags=10000000
 end
 item: Set Variable
@@ -613,7 +611,7 @@ item: Custom Dialog Set
     end
     item: Static
       Control Name=%PROGDIR%
-      Rectangle=95 127 211 138
+      Rectangle=95 127 210 141
       Destination Dialog=2
       Create Flags=01010000000000000000000000000000
       Text=%PROGDIR%
@@ -649,6 +647,7 @@ item: Custom Dialog Set
     item: Static
       Control Name=%DATADIR%
       Rectangle=95 159 210 170
+      Destination Dialog=2
       Enabled Color=00000000000000001111111111111111
       Create Flags=01010000000000000000000000000000
       Text=%DATADIR%
@@ -765,6 +764,7 @@ item: Custom Dialog Set
       Text Swedish=OK
     end
     item: Push Button
+      Control Name=%PROGDIR%
       Rectangle=167 25 212 40
       Variable=PROGDIR
       Value=%PROGDIR_SAVE%
@@ -794,7 +794,7 @@ item: Custom Dialog Set
       Rectangle=5 5 160 152
       Variable=DATADIR
       Create Flags=01010000100000010000000101000001
-      Flags=0000110000000010
+      Flags=0000110000001010
       Text=%DATADIR%
       Text=
       Text French=%MAINDIR%
@@ -824,9 +824,10 @@ item: Custom Dialog Set
       Text Swedish=OK
     end
     item: Push Button
+      Control Name=%DATADIR%
       Rectangle=165 25 210 40
-      Variable=MAINDIR
-      Value=%MAINDIR_SAVE%
+      Variable=DATADIR
+      Value=%DATADIR_SAVE%
       Create Flags=01010000000000010000000000000000
       Flags=0000000000000001
       Text=Cancel
@@ -1096,6 +1097,46 @@ remarked item: Custom Dialog Set
 end
 remarked item: End Block
 end
+item: If/While Statement
+  Variable=DATADIR
+  Value=scielo
+end
+item: Set Variable
+  Variable=DATADIR
+  Value=c:\scielo
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=DATADIR
+  Value=c:
+end
+item: Set Variable
+  Variable=DATADIR
+  Value=c:\scielo
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=PROGDIR
+  Value=scielo
+end
+item: Set Variable
+  Variable=PROGDIR
+  Value=c:\scielo
+end
+item: End Block
+end
+item: If/While Statement
+  Variable=PROGDIR
+  Value=c:
+end
+item: Set Variable
+  Variable=PROGDIR
+  Value=c:\scielo
+end
+item: End Block
+end
 item: Custom Dialog Set
   Name=Start Installation
   Display Variable=DISPLAY
@@ -1309,6 +1350,11 @@ item: Check Disk Space
   Component=COMPONENTS
 end
 item: Install File
+  Source=c:\src\scielo\uninstall.py
+  Destination=%PROGDIR%\uninstall.py
+  Flags=0000000010000010
+end
+item: Install File
   Source=c:\src\scielo\bin\xml\locale\pt_BR\Lc_messages\xpm-xc.po
   Destination=%PROGDIR%\bin\xml\locale\pt_BR\Lc_messages\xpm-xc.po
   Flags=0000000010000010
@@ -1326,16 +1372,6 @@ end
 item: Install File
   Source=c:\src\scielo\bin\xml\locale\es_MX\Lc_messages\xpm-xc.mo
   Destination=%PROGDIR%\bin\xml\locale\es_MX\Lc_messages\xpm-xc.mo
-  Flags=0000000010000010
-end
-item: Install File
-  Source=c:\src\scielo\bin\xml\locale\es_ES\Lc_messages\xpm-xc.po
-  Destination=%PROGDIR%\bin\xml\locale\es_ES\Lc_messages\xpm-xc.po
-  Flags=0000000010000010
-end
-item: Install File
-  Source=c:\src\scielo\bin\xml\locale\es_ES\Lc_messages\xpm-xc.mo
-  Destination=%PROGDIR%\bin\xml\locale\es_ES\Lc_messages\xpm-xc.mo
   Flags=0000000010000010
 end
 item: Install File
@@ -4445,11 +4481,6 @@ item: Install File
 end
 item: End Block
 end
-item: Install File
-  Source=c:\InstallBuilder\Unwise.exe
-  Destination=%PROGDIR%\Unwise.exe
-  Flags=0000000010000010
-end
 item: If/While Statement
   Variable=COMPONENTS
   Value=D
@@ -6011,7 +6042,65 @@ item: Create Shortcut
 end
 item: End Block
 end
+item: Create Shortcut
+  Source=%PROGDIR%\bin\xml\xml_converter.py
+  Destination=%GROUP%\XML Converter.lnk
+  Working Directory=%PROGDIR%\bin\xml
+  Icon Number=0
+  Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
+end
+item: Create Shortcut
+  Source=%PROGDIR%\bin\xml\xml_package_maker.py
+  Destination=%GROUP%\XML Package Maker.lnk
+  Working Directory=%PROGDIR%\bin\xml\
+  Icon Number=0
+  Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
+end
+item: Create Shortcut
+  Source=%PROGDIR%\bin\xml\download_markup_journals.py
+  Destination=%GROUP%\Markup - update journals list.lnk
+  Working Directory=%PROGDIR%\bin\xml\
+  Icon Number=0
+  Icon Pathname=%PROGDIR%\bin\SGMLPars\scielo.ico
+end
+item: Create Shortcut
+  Source=%PROGDIR%\uninstall.py
+  Destination=%GROUP%\uninstall.lnk
+  Icon Number=0
+  Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
+end
 item: Else Statement
+end
+item: Add ProgMan Icon
+  Group=%GROUP%
+  Icon Name=uninstall
+  Command Line=%PROGDIR%\uninstall.py
+  Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
+  Flags=01000000
+end
+item: Add ProgMan Icon
+  Group=%GROUP%
+  Icon Name=XML Converter
+  Command Line=%PROGDIR%\bin\xml\xml_converter.py
+  Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
+  Default Directory=%PROGDIR%\bin\xml
+  Flags=01000000
+end
+item: Add ProgMan Icon
+  Group=%GROUP%
+  Icon Name=XML Package Maker
+  Command Line=%PROGDIR%\bin\xml\xml_package_maker.py
+  Icon Pathname=%PROGDIR%\bin\SGMLPars\Scielo.ico
+  Default Directory=%PROGDIR%\bin\xml\
+  Flags=01000000
+end
+item: Add ProgMan Icon
+  Group=%GROUP%
+  Icon Name=Markup - update journals list
+  Command Line=%PROGDIR%\bin\xml\download_markup_journals.py
+  Icon Pathname=%PROGDIR%\bin\SGMLPars\scielo.ico
+  Default Directory=%PROGDIR%\bin\xml\
+  Flags=01000000
 end
 item: Add ProgMan Icon
   Group=%GROUP%
@@ -6109,9 +6198,6 @@ remarked item: Add to AUTOEXEC.BAT
   Search Text=SET BAP=OS23470a
   Line Number=0
   Flags=00101000
-end
-item: Add Text to INSTALL.LOG
-  Text=Delete in-use files: On
 end
 item: Wizard Block
   Direction Variable=DIRECTION
