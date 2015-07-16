@@ -708,8 +708,8 @@ class ArticleContentValidation(object):
             else:
                 a = self.article.abstracts_by_lang.get(lang)
                 b = self.article.keywords_by_lang.get(lang)
-                a = 0 if a is None else len(a)
-                b = 0 if b is None else len(b)
+                a = 0 if a is None else 1
+                b = 0 if b is None else 1
                 if a + b > 0:
                     r.append(('abstract/kwd-group', 'WARNING', _('Unexpected {unexpected} for {demander}. Be sure that {demander} is correct.').format(unexpected='abstract/kwd-group', demander='@article-type=' + self.article.article_type)))
         return r
