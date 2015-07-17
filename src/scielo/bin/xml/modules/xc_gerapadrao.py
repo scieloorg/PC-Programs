@@ -93,9 +93,12 @@ def gerapadrao(args):
                         open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim gerapadrao\n')
 
                         if config.is_enabled_transference:
-                            open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - inicio transf\n')
+                            open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - inicio transf bases\n')
                             transfer_website_bases(config.local_web_app_path + '/bases', config.transference_user, config.transference_server, config.remote_web_app_path + '/bases')
-                            open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim transf\n')
+                            open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim transf bases\n')
+
+                            #transfer_website_files(config.local_web_app_path + '/bases', config.transference_user, config.transference_server, config.remote_web_app_path + '/bases')
+                            #open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim transf\n')
 
                         if mailer is not None:
                             mailer.send_message(config.email_to, config.email_subject_website_update, config.email_text_website_update + scilista_content)
@@ -109,9 +112,8 @@ def gerapadrao_command(proc_path, gerapadrao_status_filename):
 
 
 def transfer_website_bases(local_bases_path, user, server, remote_bases_path):
-    # 'rsync -CrvK img/* user@server:/var/www/...../revistas'
     folders = ['artigo', 'issue', 'newissue', 'title']
 
     for folder in folders:
-        xc.run_remote_mkdirs(user, server, remote_bases_path)
-        xc.run_rsync(local_bases_path + '/' + folder, user, server, remote_bases_path)
+        xc.run_remote_mkdirs(user, server, remote_bases_path + '/' + folder)
+        xc.run_scp(local_bases_path + '/' + folder, user, server, remote_bases_path)
