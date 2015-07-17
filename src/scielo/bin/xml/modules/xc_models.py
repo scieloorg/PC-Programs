@@ -853,6 +853,9 @@ class AheadManager(object):
             r += how_similar(article.title, ahead.article_title)
             r += how_similar(article.first_author_surname, ahead.first_author_surname)
             r = (r * 100) / 2
+            if r < 80:
+                print((article.title, ahead.article_title))
+                print((article.first_author_surname, ahead.first_author_surname))
         return r
 
     def find_ahead(self, doi, filename):
@@ -878,7 +881,7 @@ class AheadManager(object):
                 if ahead is None:
                     status = 'new doc'
                 else:
-                    matched_rate = self.score(article, ahead, 90)
+                    matched_rate = self.score(article, ahead, 80)
                     if matched_rate > 0:
                         if ahead.ahead_pid is None:
                             status = 'aop missing PID'

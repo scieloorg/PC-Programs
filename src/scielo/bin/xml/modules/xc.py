@@ -71,3 +71,10 @@ def run_rsync(source, user, server, dest):
         os.system('nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n')
     except:
         pass
+
+
+def run_scp(source, user, server, dest):
+    try:
+        os.system('nohup scp -r ' + source + ' ' + user + '@' + server + ':' + dest + '&\n')
+    except:
+        pass
