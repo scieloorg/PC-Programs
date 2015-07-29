@@ -711,7 +711,8 @@ class ArticleContentValidation(object):
                 a = 0 if a is None else 1
                 b = 0 if b is None else 1
                 if a + b > 0:
-                    r.append(('abstract/kwd-group', 'WARNING', _('Unexpected {unexpected} for {demander}. Be sure that {demander} is correct.').format(unexpected='abstract/kwd-group', demander='@article-type=' + self.article.article_type)))
+                    article_type = '@article-type=' + self.article.article_type
+                    r.append(('abstract/kwd-group', 'WARNING', _('Unexpected {unexpected} for {demander}. Be sure that {demander} is correct.').format(unexpected='abstract/kwd-group', demander=article_type)))
         return r
 
     @property
