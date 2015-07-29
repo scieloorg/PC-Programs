@@ -168,6 +168,8 @@ if parameters.check_parameters(sys.argv):
                     if os.path.exists(collection_config.parameter('COL_SCILISTA')):
                         col_scilista_items = [f.replace('\n', '').replace('\r', '') for f in open(collection_config.parameter('COL_SCILISTA'), 'r').readlines() if ' ' in f]
                         scilista_files.append(collection_config.parameter('COL_SCILISTA'))
+                        if os.path.isfile(collection_config.parameter('COL_SCILISTA')):
+                            os.unlink(collection_config.parameter('COL_SCILISTA'))
                         all_the_scilista_items += col_scilista_items
                         report.write('collection scilista:' + '\n'.join(col_scilista_items), True, False, False)
 
@@ -197,6 +199,8 @@ if parameters.check_parameters(sys.argv):
             if os.path.isfile(proc_scilista_del):
                 all_the_scilista_items = open(proc_scilista_del, 'r').readlines() + all_the_scilista_items
                 scilista_files.append(proc_scilista_del)
+                if os.path.isfile(proc_scilista_del):
+                    os.unlink(proc_scilista_del)
 
             all_the_scilista_items = list(set([f.replace('\n', '').replace('\r', '') for f in all_the_scilista_items if ' ' in f]))
 
@@ -237,9 +241,9 @@ if parameters.check_parameters(sys.argv):
                 print(report_sender.send_to_adm(template, '\n'.join(all_the_scilista_items)))
                 report.write('fim', True, False, False)
 
-                for scilista_file in scilista_files:
-                    if os.path.isfile(scilista_file):
-                        os.unlink(scilista_file)
+                #for scilista_file in scilista_files:
+                #    if os.path.isfile(scilista_file):
+                #        os.unlink(scilista_file)
 
             else:
                 report.write('set status as finished. No item in scilista.', True, False, False)
