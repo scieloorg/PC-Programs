@@ -9,6 +9,7 @@ Requirements
 
 - JAVA
 - PYTHON 2.7.x
+- Pillow
 
 .. note:: Add the Java and Python paths to PATH (environment variable)
 
@@ -30,21 +31,20 @@ How to install
 
 .. image:: img/installation_setup.jpg
 
+
 6. Select the programs you want to install in your computer, according to the purpose of the computer:
 
-- Local server (only one computer)
+- Local server (only one installation)
 
   - Title Manager: program to manage journal and issues data
-  - Markup: program to identify the bibliographic elements in the articles/texts
-  - Markup - Automata files (optional): examples of files for automatic markup
-  - Converter: program to load the marked documents in the database
+  - Converter: program to load the marked documents into the database
   - XML SciELO: (optional) program to create XML format for PubMed and ISI
 
-- Markup Computer (one or more computers)
+- Desktop Computer (one or more installations)
 
   - Markup: program to identify the bibliographic elements in the articles/texts
   - Markup - Automata files (optional): examples of files for automatic markup
-
+  - XML Converter: program to load XML files into the database
 
 7. For local server installation, set OS23470a to the environment variable BAP, by accessing the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
   Check if the variable already exists. 
@@ -64,5 +64,5 @@ So, copy the SciELO folder to All Users folder
 
 ----------------
 
-Last update of this page: Feb 6, 2014
+Last update of this page: July 17, 2015
 
