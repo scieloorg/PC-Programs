@@ -48,7 +48,7 @@
 	<xsl:template match="subtitle"></xsl:template>
 	<xsl:template match="*[@citation-type='journal']/article-title">[arttitle]<xsl:apply-templates select="*|text()"/><xsl:if test="../subtitle"><xsl:value-of select="concat(' ',../subtitle)"/></xsl:if>[/arttitle]</xsl:template>
 	<xsl:template match="*[@citation-type='book']/article-title">[chptitle]<xsl:apply-templates select="*|text()"/>[/chptitle]</xsl:template>
-	<xsl:template match="year"><xsl:variable name="dateiso"><xsl:value-of select="."/><xsl:value-of select="month"/><xsl:value-of select="day"/></xsl:variable>[date<xsl:if test="string-length($dateiso)=8"> dateiso="<xsl:value-of select="$dateiso"/></xsl:if>]<xsl:apply-templates select="*|text()"/>[/date]</xsl:template>
+	<xsl:template match="year"><xsl:variable name="dateiso"><xsl:value-of select="."/><xsl:value-of select="month"/><xsl:value-of select="day"/></xsl:variable>[date<xsl:if test="string-length($dateiso)=8"> dateiso="<xsl:value-of select="$dateiso"/></xsl:if> specyear="<xsl:value-of select="substring($dateiso,1,4)"/>"]<xsl:apply-templates select="*|text()"/>[/date]</xsl:template>
 	<xsl:template match="volume">[volid]<xsl:apply-templates select="*|text()"/>[/volid]</xsl:template>
 	<xsl:template match="issue">[issueno]<xsl:apply-templates select="*|text()"/>[/issueno]</xsl:template>
 	<xsl:template match="fpage">[pages]<xsl:apply-templates select="*|text()"/><xsl:if test="../lpage">-<xsl:value-of select="../lpage"/></xsl:if>[/pages]</xsl:template>
