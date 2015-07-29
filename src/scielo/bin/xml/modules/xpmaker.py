@@ -65,9 +65,10 @@ def replace_mimetypes(content, path):
 
 
 def rename_embedded_img_href(content, xml_name, new_href_list):
+    new = content
+    content = content.replace('<graphic href=&quot;?', '<graphic href="?')
     content = content.replace('<graphic href="?', '--FIXHREF--<graphic href="?')
     _items = content.split('--FIXHREF--')
-    new = content
 
     if len(new_href_list) == (len(_items) - 1):
         new = ''
@@ -75,16 +76,30 @@ def rename_embedded_img_href(content, xml_name, new_href_list):
         for item in _items:
             if item.startswith('<graphic href="?'):
                 continuation = item[item.find('?'):]
-                continuation = continuation[continuation.find('"'):]
+                find_aspas = continuation.find('"')
+                find_quote = continuation.find('&quot;')
+                chosen = sorted([e for e in [find_aspas, find_quote] if e > 0])
+                if len(chosen) > 0:
+                    continuation = continuation[chosen[0]:]
                 new_href_item = new_href_list[i]
-                if new_href_item.startswith('image'):
-                    utils.debugging(new_href_item)
-                    new_href_item = new_href_item[len('image'):]
-                    utils.debugging(new_href_item)
-                new += '<graphic href="' + xml_name + new_href_item + continuation
+                if new_href_item == 'None':
+                    graphic_content = item[item.find('>')+1:]
+                    graphic_content = graphic_content[0:graphic_content.find('</graphic>')]
+                    new += graphic_content + continuation[continuation.find('</graphic>')+len('</graphic>'):]
+                else:
+                    if new_href_item.startswith('image'):
+                        utils.debugging(new_href_item)
+                        new_href_item = new_href_item.replace('image', '')
+                        utils.debugging(new_href_item)
+                    new += '<graphic href="' + xml_name + new_href_item + continuation
                 i += 1
             else:
                 new += item
+    else:
+        print('\n'.join([item for item in sorted(new_href_list)]))
+        print(str(len(new_href_list)))
+        print(str(len(_items)))
+
     return new
 
 
@@ -93,10 +108,10 @@ def get_embedded_images_in_html(html_content):
     #src="a20_115.temp_arquivos/image001.jpg"><span style='color:#33CCCC'>[/graphic]
     if 'href=&quot;?' in html_content:
         html_content = html_content.replace('href=&quot;?', 'href="?')
-    if '“' in html_content:
-        html_content = html_content.replace('“', '"')
-    if '”' in html_content:
-        html_content = html_content.replace('”', '"')
+    #if '“' in html_content:
+    #    html_content = html_content.replace('“', '"')
+    #if '”' in html_content:
+    #    html_content = html_content.replace('”', '"')
 
     html_content = html_content.replace('href="?', 'href="?--~BREAK~FIXHREF--FIXHREF')
     _items = html_content.split('--~BREAK~FIXHREF--')
@@ -111,10 +126,13 @@ def get_embedded_images_in_html(html_content):
                 src = src[src.find('/') + 1:]
             if len(src) > 0:
                 img_src.append(src)
+        else:
+            img_src.append('None')
     return img_src
 
 
 def extract_embedded_images(xml_name, content, html_content, html_filename, dest_path):
+    content = content.replace('href=&quot;?', 'href="?')
     if content.find('href="?' + xml_name):
         embedded_img_files = get_embedded_images_in_html(html_content)
         embedded_img_path = None
@@ -276,6 +294,8 @@ def replace_tables_in_sgmlxml(content, embedded_tables):
 
 def read_html(html_filename):
     html_content = open(html_filename, 'r').read()
+    if not isinstance(html_content, unicode):
+        html_content = html_content.decode(encoding=sys.getfilesystemencoding())
     if not '<html' in html_content.lower():
         c = html_content
         for c in html_content:
@@ -290,7 +310,6 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
     register_log('normalize_sgmlxml')
 
     html_content = read_html(html_filename)
-
     #embedded_tables = get_html_tables(html_content)
     #content = replace_tables_in_sgmlxml(content, embedded_tables)
     content = extract_embedded_images(xml_name, content, html_content, html_filename, src_path)
