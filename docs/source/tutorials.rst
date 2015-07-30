@@ -14,8 +14,7 @@ Programs for local server
    titlemanager.rst
    converter.rst
    xml_exporter.rst   
-   
-   * `SciELO Website for Windows <http://docs.scielo.org/projects/scielo-web-windows/en/latest/>`_.
+
 
 Programs for desktop
 --------------------

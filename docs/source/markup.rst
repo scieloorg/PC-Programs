@@ -7,15 +7,18 @@ Markup Program
 
 Markup program is a desktop Application (macro in Microsoft Office Word), to identify bibliographic elements in the articles and texts, according to SciELO DTD for `article <dtd.html#article>`_ and for `text <dtd.html#text>`_, based on standard ISO 8879-1986 (SGML - Standard Generalized Markup Language) and ISO 12083-1994 (Electronic Manuscript Preparation and Markup).
 
+Nowadays there is a new SciELO DTD: doc. It is simpler than article and text because there are less levels, but by the other hand, there are more elements to identify. It must be used to identify the elements to generate XML according to `SPS <http://docs.scielo.org/projects/scielo-publishing-schema/>`_. 
+
 
 Functionalities
 ---------------
 
 - identify the elements of articles and texts, in a .doc or .html format file
-- identify semiautomatically the elements of references.
-- validate the identification according to `article <dtd.html#article>`_ and for `text <dtd.html#text>`_
-- generate XML files according to `SciELO DTD <http://scieloorg.github.io/scielo_publishing_schema/>`_ and `PMC DTD <http://dtd.nlm.nih.gov/publishing/3.0/>`_.
-- validate XML files according to `SciELO DTD <http://scieloorg.github.io/scielo_publishing_schema/>`_ and `PMC DTD <http://dtd.nlm.nih.gov/publishing/3.0/>`_.
+- identify semiautomatically the elements of the references.
+- validate the identification according to `article <https://raw.githubusercontent.com/scieloorg/PC-Programs/master/src/scielo/bin/SGMLPars/art4_0.dtd>`_, `text <https://raw.githubusercontent.com/scieloorg/PC-Programs/master/src/scielo/bin/SGMLPars/text4_0.dtd>`_, and `doc <https://raw.githubusercontent.com/scieloorg/PC-Programs/master/src/scielo/bin/SGMLPars/doc4_0.dtd>`_.
+- generate XML files according to `SPS <http://docs.scielo.org/projects/scielo-publishing-schema/>`_ and `JATS DTD <http://jats.nlm.nih.gov/publishing/1.0/>`_.
+- validate XML files according to `SPS <http://docs.scielo.org/projects/scielo-publishing-schema/>`_ and `JATS DTD <http://jats.nlm.nih.gov/publishing/1.0/>`_.
+
 
 Before starting
 ---------------
@@ -23,13 +26,23 @@ Before starting
 File specification
 ..................
 
-- one article/text by file
+For both methodologies:
+- one document (article or text) by file
 - .doc or .html
-- all the files related to the article must have the same name or start with. For instance, a01.pdf, a01.html (body file), a01f01.jpg (image of the figure 1)
+
+For SGML:
+
+- all the files related to the document must have the same name. For instance, a01.pdf, a01.html (body file)
+
+For XML:
+
+- all the files related to the document must have the same name or start with same name and hyphen. For instance, a01.pdf, a01.html (body file), a01-f01.jpg (image of the figure 1), a01-en.pdf (PDF of the English version)
 
 
-Files location for SGML Markup
-.............................
+Files location
+..............
+
+For SGML:
 
 - .doc or .html file: 
     /scielo/serial/<acron>/<issue_identification>/markup
@@ -44,8 +57,7 @@ Files location for SGML Markup
 .. image:: img/concepts_serial_abc.jpg
 
 
-Files location for XML Markup
-..............................
+For XML:
 
 - .doc or .html file: /scielo/serial/<acron>/<issue_identification>/markup_xml/scielo_markup
 - other files: /scielo/serial/<acron>/<issue_identification>/markup_xml/src (images, PDF, etc)
@@ -56,33 +68,34 @@ Files location for XML Markup
 Input files
 ...........
 
-Title Manager and Code Manager programs generate, in the `local server <concepts.html#local-server>`_, at /scielo/bin/markup/, the following files:
+Title Manager and Code Manager programs generate, in /scielo/bin/markup/ of the `local server <concepts.html#local-server>`, the following files:
 
 - ??_attb.mds - updated when code database is updated
 - ??_issue.mds - updated when any issue number's data is updated/created
 - issue.mds - updated when any issue number's data is updated/created
 - journal-standard.txt - updated when any journal's data is updated/created
 
-Opening the program
--------------------
+
+How to open
+-----------
 
 Use the Windows menu to open the program.
 
 .. image:: img/scielo_menu.png
 
-By the path of the program, clicking on markup.exe: 
+Or use Windows Explorer and click on markup.exe: 
 
   c:\\scielo\\bin\\markup\\markup.exe
 
 
-Informing the Word Program location
-...................................
+Word Program location
+.....................
 
-Markup will try to open the Microsoft Office Word Program. If it is not in the correct path, Markup program will ask for the right path of Microsoft Office Word Program.
+Markup Program will try to open the Microsoft Office Word Program. If it is unable to open it, inform the correct path of Microsoft Office Word Program.
 
 .. image:: img/markup_word_path.jpg
 
-Or edit, c:\\scielo\\bin\\markup\\start.mds, inserting the Microsoft Office Word path:
+Or edit, c:\\scielo\\bin\\markup\\start.mds, inserting the Microsoft Office Word path. E.g.:
 
   "c:\\arquivos de programas\\microsoft office\\office11\\winword.exe"
 
@@ -90,7 +103,7 @@ Or edit, c:\\scielo\\bin\\markup\\start.mds, inserting the Microsoft Office Word
 Enabling macro execution
 ........................
 
-Possibly a warning about enable macro will be displayed.
+Markup Program requires permission to run macros
 
 .. image:: img/markup_2007_habilitar_macros.jpg
 
@@ -103,7 +116,7 @@ If Word program opens properly, Markup bar will appear at the bottom of the scre
 .. image:: img/markup_botao_markup.jpg
 
 
-In Word 2007, it is different. The Markup bar will appear inside the Supplement group.
+From Word 2007, it is different. The Markup bar will appear inside the Supplement group.
 
 .. image:: img/markup_2007_botao_suplementos.jpg
 
@@ -123,8 +136,8 @@ Remove the incorrect item and inform the right path corresponding to c:\\scielo\
 .. image:: img/markup_habilitarmacro2.jpg
 
 
-Opening a file
---------------
+How to use
+----------
 
 #. Open only one file of article or a text file (.doc or .html).
 
@@ -133,16 +146,14 @@ Opening a file
 #. Click on Markup DTD-SciELO.
 
 
-The Microsof Office Word bars will disappear, remaining only the Markup bars:
-
-- white: files operations: edit or eraser a tag and automatic markup
+- white: operations over the document: edit or eraser a tag and automatic markup
 - orange: floating tags, which can be used in any part of the document
 - green: tags which requires an hierarchical structure
 
 .. image:: img/markup_barras.jpg
 
 
-In Word 2007, all these tags bars are grouped in Supplements.
+From Word 2007, all these tags bars are grouped in Supplements.
 
 .. image:: img/markup_2007_posicao_das_barras.jpg
 
@@ -170,7 +181,7 @@ Edition tag's attribute button
 
 .. image:: img/markup_operations_bar_edit.jpg
 
-To edit attributes of an element, click on the element name, then click on the edit button (pencil). The program will ask for changing the values of the attributes.
+To edit attributes of an element, click on the element name, then click on the edit button (pencil). Edit the values of the attributes, then confirm this action.
 
 
 Delete tag button
@@ -196,12 +207,12 @@ Automata 1 button
 
 To identify automatically the elements of the bibliographic references:
 
-It requires that the journal has to have an automata file (read `how to programming an automata <automata.html>`_), which configures the rules to identify the references elements.
+It requires that the journal has an automata file (read `how to program an automata <automata.html>`_), which configures the rules to identify the references elements.
 
 1. Click on a paragraph of one bibliographic reference
 2. Click on the Automata 1 button.
 
-This action will activate a tool which will try to identify automatically the bibliographic reference elements. The tool will present the several possibilities of identification. So the user have to choose the correct one. 
+This action will activate a tool which will try to identify automatically the bibliographic reference elements. The tool will present the several possibilities of identification. Choose the correct one. 
 
 .. image:: img/automata1b.jpg
 
@@ -237,7 +248,7 @@ It requires that the journal has to adopt a standard (APA, Vancouver, ABNT, ISO)
 1. Click on a paragraph of one bibliographic reference
 2. Click on the Automata 3 button.
 
-This action will activate a tool which will try to identify automatically the bibliographic reference elements. The tool will present the several possibilities of identification. So the user have to choose the correct one. 
+This action will activate a tool which will try to identify automatically the bibliographic reference elements. The tool will present the several possibilities of identification. Choose the correct one. 
 
 .. image:: img/automata1b.jpg
 
@@ -256,7 +267,7 @@ SGML Parser button
 .. image:: img/markup_operations_bar_parser.jpg
 
 Click on this button to validate the SGML Markup.
-It will convert the file to .txt and will run the `SGML Parser program <parser.html>`_.
+It will convert the file to .txt and will open it in the `SGML Parser program <parser.html>`_.
 
 
 Generate XML button
@@ -264,11 +275,11 @@ Generate XML button
 
 .. image:: img/markup_operations_bar_xml.jpg
 
-After identifying all the elements of the text, click on this button to generate the XML file.
+After identifying all the elements of the document, click on this button to generate the XML file.
 
 
-Files/DTD errors report button
-..............................
+Files and DTD errors report button
+.........................................
 
 .. image:: img/markup_operations_bar_err_report.jpg
 
@@ -314,7 +325,7 @@ Click on this button to view the SGML file.
 Floating tags bar
 -----------------
 
-The floating tags are for the elements which appear in any part of the text.
+The floating tags are for the elements which appear in any part of the document.
 
 .. image:: img/markup_bar_floating.png
 
@@ -322,21 +333,29 @@ The floating tags are for the elements which appear in any part of the text.
 Hierarchical tags bar
 ---------------------
 
-This bar groups the elements which must be in an hierarchical level. 
+This bar groups the elements which follow an hierarchical structure. 
 
-The highest level is article or text (other text than articles). But use article to generate XML files.
+The highest level are doc, article, text.
 
-.. image:: img/markup_inicial.jpg
+.. image:: img/markup_inicial.png
+
+
+Tag
+...
+
+#. Select the text you want to identify.
+#. Click on the tag button which identifies the text. For example: to identify the first name of an author, select the text corresponding to the first name, then click on fname.
+#. Some elements have attributes. Complete the form with the values of their attributes.
+#. Some elements have children (agroup other elements). As it is identified, the bar of the lower level is displayed.
+
+Read the `Tags of Article and Text DTD <markup_tags.html>`_
+Read the `Tags of Article and Text DTD <markup_tags.html>`_
 
 
 Navigation
 ...........
 
-As the user identify an element which has elements in a lower level, the bars show the tags of the lower level. 
-
 The down and up arrows button are used to navigate between the levels. 
-
-As the user clicks on the tags button of new level will be displayed.
 
 .. image:: img/markup_barra_hierarquica2.jpg
 
@@ -364,23 +383,12 @@ Up
 
 .. image:: img/markup_barra_title_sobe.jpg
 
+
 .. image:: img/markup_barra_titlegrp_paracima.jpg
+
 
 .. image:: img/markup_barra_front_0.jpg
 
-
-Identifying the elements
-------------------------
-
-#. Select the text to identify
-#. Click on the tag button which identify the text. For example: to identify the whole document, select the whole document, then click on article or text.
-#. article and text tags have attributes. Fill in the form with the data which are the attributes values of article/text tags.
-#. The new level, lower than article or text, will be displayed.
-#. Again select the next part, which is front, that groups metadata of the article or text (authors, title, it means, part before the text body)
-#. Click on front tag.
-
-
-Read the `Markup Tags <markup_tags.html>`_
 
 Error messages
 --------------
