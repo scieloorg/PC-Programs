@@ -136,8 +136,8 @@ Remove the incorrect item and inform the right path corresponding to c:\\scielo\
 .. image:: img/markup_habilitarmacro2.jpg
 
 
-How to use
-----------
+Overview
+--------
 
 #. Open only one file of article or a text file (.doc or .html).
 
@@ -348,8 +348,7 @@ Tag
 #. Some elements have attributes. Complete the form with the values of their attributes.
 #. Some elements have children (agroup other elements). As it is identified, the bar of the lower level is displayed.
 
-Read the `Tags of Article and Text DTD <markup_tags.html>`_
-Read the `Tags of Article and Text DTD <markup_tags.html>`_
+Read the `Tags of Article, Text, and Doc DTD <markup_tags.html>`_
 
 
 Navigation
@@ -390,6 +389,12 @@ Up
 .. image:: img/markup_barra_front_0.jpg
 
 
+How to use
+----------
+
+`How to use Markup Program <markup_how_to_use.html>`_.
+
+
 Error messages
 --------------
 
@@ -416,5 +421,5 @@ This message is also displayed if the selected text contains tags or part of tag
 
 ----------------
 
-Last update of this page: Abril 2, 2014
+Last update of this page: July 2015
 

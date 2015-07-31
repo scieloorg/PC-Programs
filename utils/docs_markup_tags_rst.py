@@ -1,9 +1,27 @@
 error = []
+contains = {}
+found = {}
+tag = ''
+for line in open('../src/scielo/bin/markup_xml/app_core/tree.txt', 'r').readlines():
+    line = line.strip()
+    if ';' in line:
+        parts = line.split(';')
+        contains[tag].append(parts[0])
+        if parts[0] is not found.keys():
+            found[parts[0]] = []
+        found[parts[0]].append(tag)
+    else:
+        if len(line) > 0:
+            tag = line
+            contains[tag] = []
 
 
 def links(a_list, address=''):
-    a = ['`' + item + '`_' for item in a_list]
-    return ', '.join(a)
+    if isinstance(a_list, list):
+        a = ['`' + item + '`_' for item in sorted(a_list)]
+        return ', '.join(a)
+    else:
+        return ''
 
 
 def links_to_attr(a_list, address=''):
@@ -16,29 +34,31 @@ def links_other_page(a_list, other_page):
     return ', '.join(a)
 
 
-def navigate(tree, definition, contains, attributes, tag):
-    children = ''
-    
+def element(definition, contains, found, attributes, tag):
     print(tag)
     print('-'*len(tag))
     print('\nElement')
     print('\n' + definition[tag])
-    print('\nContained in: ' + links(contains[tag]))
+    if found.get(tag) is not None:
+        if len(found[tag]) > 0:
+            print('\nContained in: ' + links(found.get(tag)))
 
-    if tag in tree:
-        if len(tree[tag]) > 0:
-            children = 'Contains:'
-            sep = ' '
-            for item in tree[tag]:
-                children += sep + '`' + item[0] + '`_'
-                sep = ', '
-            print('\n' + children)
-    else:
-        error.append(tag)
+    if contains.get(tag) is not None:
+        if len(contains[tag]) > 0:
+            print('\nContains: ' + links(contains.get(tag)))
+
     if tag in attributes.keys():
         print('\nAttributes: ' + links_to_attr(attributes[tag]))
     else:
         print('\nAttributes: none')
+    print('')
+
+
+def auto_element(definition, contains, found, attributes, tag):
+    print(tag)
+    print('-'*len(tag))
+    print('\nAutomatic identification of `' + tag[1:] + '`_')
+    print('\n' + definition[tag])
     print('')
 
 
@@ -75,17 +95,6 @@ def print_attribute(attributes_data, attribute_in, attribute_name):
     print_attribute_values(attributes_data[attribute_name][1], attributes_data[attribute_name][2])
     print('\n')
 
-f = open('../src/scielo/bin/markup_xml/app_core/tree.txt', 'r')
-lines = f.readlines()
-f.close()
-
-f = open('../src/scielo/bin/markup_xml/app_core/tree_en.txt', 'r')
-translations = f.readlines()
-f.close()
-
-f = open('../src/scielo/bin/markup_xml/app_core/link.mds', 'r')
-tags_with_attrib = f.readlines()
-f.close()
 
 f = open('attributes_data.txt', 'r')
 attributes_data_content = f.readlines()
@@ -98,13 +107,13 @@ f.close()
 attribute_in = {}
 attributes_list = {}
 for item in attributes_def_content:
-    k, v = item.replace('\n', '').replace('\r', '').split('|')
+    k, v = item.strip().split('|')
     attributes_list[k] = []
     attributes_list[k].append(v)
     attribute_in[k] = []
 
 for item in attributes_data_content:
-    item = item.replace('\n', '').replace('\r', '')
+    item = item.strip()
     if item.startswith('sec-type'):
         k, values, codes = item.split('#')
     else:
@@ -116,8 +125,8 @@ for item in attributes_data_content:
 tag = ''
 i = 0
 tag_attributes = {}
-for item in tags_with_attrib:
-    item = item.replace('\n', '').replace('\r', '')
+for item in open('../src/scielo/bin/markup_xml/app_core/link.mds', 'r').readlines():
+    item = item.strip()
     i += 1
     if i == 1:
         tag = item
@@ -130,33 +139,31 @@ for item in tags_with_attrib:
     elif i == 3:
         i = 0
 
-trans = {}
-for item in translations:
-    i = item.replace('\n', '').replace('\r', '')
+definitions = {}
+for item in open('../src/scielo/bin/markup_xml/app_core/tree_en.txt', 'r').readlines():
+    i = item.strip()
     k, v = i.split(';')
-    trans[k] = v
+    definitions[k] = v
 
-contains = {}
-d = {}
-for item in lines:
-    i = item.replace('\n', '').replace('\r', '')
-    if i != '':
-        parts = i.split(';')
-        if len(parts) == 1:
-            d[i] = []
-            key = i
+title = 'SciELO Markup Elements and Attributes'
+print('='*len(title))
+print(title)
+print('='*len(title))
 
-        elif len(parts) == 2:
-            d[key].append(parts)
-            if not parts[0] in contains.keys():
-                contains[parts[0]] = []
-            contains[parts[0]].append(key)
+
+print('Automations')
+print('===========')
+
+for item in sorted(definitions.keys()):
+    if '*' in item:
+        auto_element(definitions, contains, found, tag_attributes, item)
 
 print('Elements')
 print('========')
 
-for item in sorted(trans.keys()):
-    navigate(d, trans, contains, tag_attributes, item)
+for item in sorted(definitions.keys()):
+    if not '*' in item:
+        element(definitions, contains, found, tag_attributes, item)
 
 print('Attributes')
 print('==========')
