@@ -1,6 +1,105 @@
-============================
-SGML Elements and attributes
-============================
+=====================================
+SciELO Markup Elements and Attributes
+=====================================
+Automations
+===========
+*author
+-------
+
+Automatic identification of `author`_
+
+Identify automatically one author
+
+*authors
+--------
+
+Automatic identification of `authors`_
+
+Identify automatically a group of authors in the references
+
+*boxedtxt
+---------
+
+Automatic identification of `boxedtxt`_
+
+Identify automatically boxed text
+
+*deflist
+--------
+
+Automatic identification of `deflist`_
+
+Identify automatically a list of definitions
+
+*fn
+---
+
+Automatic identification of `fn`_
+
+Identify all the footnotes and its links
+
+*kwdgrp
+-------
+
+Automatic identification of `kwdgrp`_
+
+Identify automatically more than one key word
+
+*list
+-----
+
+Automatic identification of `list`_
+
+Identify automatically a list
+
+*oauthor
+--------
+
+Automatic identification of `oauthor`_
+
+Identify automatically one oauthor
+
+*pauthor
+--------
+
+Automatic identification of `pauthor`_
+
+Identify automatically a (person) author: surname and fname
+
+*publoc-pubname
+---------------
+
+Automatic identification of `publoc-pubname`_
+
+Identify automatically publisher location and name
+
+*pubname-publoc
+---------------
+
+Automatic identification of `pubname-publoc`_
+
+Identify automatically publisher name and location
+
+*sertitle
+---------
+
+Automatic identification of `sertitle`_
+
+Identify all the journal titles which match with the selected text.
+
+*source
+-------
+
+Automatic identification of `source`_
+
+Identify automatically the document source (book title, journal title, etc)
+
+*stitle
+-------
+
+Automatic identification of `stitle`_
+
+Identify all the journal titles which match with the selected text.
 
 Elements
 ========
@@ -24,7 +123,7 @@ Element
 
 Identify the abstract of the article
 
-Contained in: `bbibcom`_, `bibcom`_
+Contained in: `subdoc`_
 
 Attributes: `language <markup_tags.html#attribute-language>`_
 
@@ -48,7 +147,7 @@ Identify a bibliography reference
 
 Contained in: `abnt6023`_
 
-Contains: `no`_, `acontrib`_, `amonog`_, `aiserial`_, `confgrp`_
+Contains: `acontrib`_, `aiserial`_, `amonog`_, `confgrp`_, `no`_
 
 Attributes: none
 
@@ -59,9 +158,9 @@ Element
 
 Group the elements of acknowledgment
 
-Contained in: `back`_
+Contained in: `subdoc`_
 
-Contains: `sectitle`_, `p`_
+Contains: `p`_, `sectitle`_
 
 Attributes: none
 
@@ -74,7 +173,7 @@ Group the elements of a contribution
 
 Contained in: `acitat`_
 
-Contains: `author`_, `corpauth`_, `et-al`_, `title`_, `subtitle`_, `volid`_, `pages`_, `patgrp`_
+Contains: `*author`_, `author`_, `corpauth`_, `et-al`_, `pages`_, `patgrp`_, `subtitle`_, `title`_, `volid`_
 
 Attributes: none
 
@@ -85,11 +184,24 @@ Element
 
 Identify the organization to which the author is affiliated
 
-Contained in: `ifloat`_
+Contained in: `text`_
 
-Contains: `label`_, `city`_, `state`_, `country`_, `zipcode`_, `email`_
+Contains: `city`_, `country`_, `email`_, `label`_, `role`_, `state`_, `zipcode`_
 
 Attributes: `id <markup_tags.html#attribute-id>`_, `orgname <markup_tags.html#attribute-orgname>`_, `orgdiv1 <markup_tags.html#attribute-orgdiv1>`_, `orgdiv2 <markup_tags.html#attribute-orgdiv2>`_, `orgdiv3 <markup_tags.html#attribute-orgdiv3>`_
+
+afftrans
+--------
+
+Element
+
+Identify in subdoc the organization to which the author is affiliated
+
+Contained in: `subdoc`_
+
+Contains: `label`_
+
+Attributes: `id <markup_tags.html#attribute-id>`_
 
 aiserial
 --------
@@ -100,7 +212,29 @@ Group the elements of a serial publication
 
 Contained in: `acitat`_
 
-Contains: `sertitle`_, `stitle`_, `isstitle`_, `date`_, `volid`_, `issueno`_, `suppl`_, `pages`_, `extent`_, `url`_, `cited`_, `doi`_, `pubid`_, `issn`_, `city`_, `state`_, `country`_, `pubname`_, `notes`_
+Contains: `*sertitle`_, `*stitle`_, `cited`_, `city`_, `country`_, `date`_, `doi`_, `extent`_, `issn`_, `isstitle`_, `issueno`_, `notes`_, `pages`_, `pubid`_, `pubname`_, `sertitle`_, `state`_, `stitle`_, `suppl`_, `url`_, `volid`_
+
+Attributes: none
+
+alttext
+-------
+
+Element
+
+Identify an alternative text for a graphic or figure
+
+Contained in: `graphic`_
+
+Attributes: none
+
+alttitle
+--------
+
+Element
+
+Identify an alternative title for the document title
+
+Contained in: `doctitle`_
 
 Attributes: none
 
@@ -113,7 +247,7 @@ Group the elements of a monograph
 
 Contained in: `acitat`_
 
-Contains: `author`_, `corpauth`_, `et-al`_, `title`_, `subtitle`_, `date`_, `edition`_, `volid`_, `part`_, `tome`_, `coltitle`_, `colvolid`_, `pages`_, `extent`_, `city`_, `state`_, `country`_, `pubname`_, `patgrp`_, `confgrp`_, `thesis`_, `report`_, `isbn`_, `url`_, `cited`_, `doi`_, `pubid`_, `subresp`_, `notes`_
+Contains: `*author`_, `author`_, `cited`_, `city`_, `coltitle`_, `colvolid`_, `confgrp`_, `corpauth`_, `country`_, `date`_, `doi`_, `edition`_, `et-al`_, `extent`_, `isbn`_, `notes`_, `pages`_, `part`_, `patgrp`_, `pubid`_, `pubname`_, `report`_, `state`_, `subresp`_, `subtitle`_, `thesis`_, `title`_, `tome`_, `url`_, `volid`_
 
 Attributes: none
 
@@ -148,11 +282,24 @@ Element
 
 Identify the appendix
 
-Contained in: `back`_
+Contained in: `appgrp`_
 
-Contains: `sectitle`_, `sec`_, `p`_
+Contains: `p`_, `sec`_, `sectitle`_
 
 Attributes: `id <markup_tags.html#attribute-id>`_
+
+appgrp
+------
+
+Element
+
+Identify a group of appendixes
+
+Contained in: `doc`_
+
+Contains: `app`_
+
+Attributes: none
 
 article
 -------
@@ -163,7 +310,29 @@ Identify the article
 
 Contained in: `start`_
 
-Contains: `deposit`_, `front`_, `xmlbody`_, `body`_, `back`_, `response`_, `subart`_
+Contains: `back`_, `body`_, `deposit`_, `front`_, `response`_, `subart`_, `xmlbody`_
+
+Attributes: none
+
+arttitle
+--------
+
+Element
+
+Identify the article title in a reference
+
+Contained in: `ref`_
+
+Attributes: none
+
+attrib
+------
+
+Element
+
+Identify information concerning the origin of an extract, display quote, poetry, or similar element.
+
+Contained in: `versegrp`_
 
 Attributes: none
 
@@ -174,9 +343,9 @@ Element
 
 Group the authors of the document
 
-Contained in: `front`_, `text`_
+Contained in: `text`_
 
-Contains: `author+`_, `author`_, `onbehalf`_, `corpauth`_
+Contains: `author`_, `corpauth`_, `onbehalf`_
 
 Attributes: none
 
@@ -187,11 +356,37 @@ Element
 
 Group the elements of the author, such as name, last name and role
 
-Contained in: `acontrib`_, `amonog`_, `authgrp`_, `icontrib`_, `iiserial`_, `imonog`_, `pcontrib`_, `pmonog`_, `product`_, `vcontrib`_, `vmonog`_
+Contained in: `subdoc`_
 
-Contains: `fname`_, `surname`_, `previous`_
+Contains: `fname`_, `previous`_, `role`_, `surname`_, `surname-fname`_
 
 Attributes: `role <markup_tags.html#attribute-role>`_, `rid <markup_tags.html#attribute-rid>`_, `corresp <markup_tags.html#attribute-corresp>`_, `deceased <markup_tags.html#attribute-deceased>`_, `eqcontr <markup_tags.html#attribute-eqcontr>`_
+
+authors
+-------
+
+Element
+
+Group of authors in the references
+
+Contained in: `ref`_
+
+Contains: `*pauthor`_, `cauthor`_, `et-al`_, `pauthor`_
+
+Attributes: `role <markup_tags.html#attribute-role>`_
+
+award
+-----
+
+Element
+
+Group the contract and funding sources
+
+Contained in: `funding`_
+
+Contains: `contract`_, `fundsrc`_
+
+Attributes: none
 
 back
 ----
@@ -200,9 +395,9 @@ Element
 
 Identify the back part of the document
 
-Contained in: `article`_, `response`_, `subart`_, `text`_
+Contained in: `text`_
 
-Contains: `ack`_, `vancouv`_, `iso690`_, `abnt6023`_, `apa`_, `other`_, `fngrp`_, `licenses`_, `bbibcom`_, `glossary`_, `app`_
+Contains: `abnt6023`_, `ack`_, `apa`_, `appgrp`_, `bbibcom`_, `fngrp`_, `glossary`_, `iso690`_, `licenses`_, `other`_, `vancouv`_
 
 Attributes: none
 
@@ -215,7 +410,7 @@ Group other elements that are in the back
 
 Contained in: `back`_
 
-Contains: `abstract`_, `keygrp`_, `confgrp`_, `report`_, `thesgrp`_, `hist`_
+Contains: `abstract`_, `confgrp`_, `hist`_, `keygrp`_, `report`_, `thesgrp`_
 
 Attributes: none
 
@@ -228,7 +423,7 @@ Group other elements that are in front
 
 Contained in: `front`_
 
-Contains: `abstract`_, `xmlabstr`_, `keygrp`_, `confgrp`_, `report`_, `thesgrp`_, `hist`_
+Contains: `abstract`_, `confgrp`_, `hist`_, `keygrp`_, `report`_, `thesgrp`_, `xmlabstr`_
 
 Attributes: none
 
@@ -239,9 +434,22 @@ Element
 
 Identify the body of the document, without details
 
-Contained in: `article`_, `response`_, `text`_
+Contained in: `article`_
 
 Attributes: none
+
+boxedtxt
+--------
+
+Element
+
+Identify a boxed text
+
+Contained in: `ifloat`_
+
+Contains: `p`_, `sec`_
+
+Attributes: `id <markup_tags.html#attribute-id>`_
 
 caption
 -------
@@ -250,7 +458,38 @@ Element
 
 Identify the caption
 
-Contained in: `figgrp`_, `figgrps`_, `tabwrap`_
+Contained in: `tabwrap`_
+
+Attributes: none
+
+cauthor
+-------
+
+Element
+
+Identify corporative author
+
+Contained in: `authors`_
+
+Attributes: none
+
+cc
+--
+
+Element
+
+Group the data of Creative Commons license
+
+Attributes: none
+
+chptitle
+--------
+
+Element
+
+Identify the chapter title in a reference
+
+Contained in: `ref`_
 
 Attributes: none
 
@@ -261,7 +500,7 @@ Element
 
 Identify the date in which the article was accessed
 
-Contained in: `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `viserial`_, `vmonog`_
+Contained in: `ref`_
 
 Attributes: `dateiso <markup_tags.html#attribute-dateiso>`_
 
@@ -272,7 +511,7 @@ Element
 
 Identify the city
 
-Contained in: `aff`_, `aiserial`_, `amonog`_, `confgrp`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `pmonog`_, `product`_, `thesgrp`_, `thesis`_, `vmonog`_
+Contained in: `normaff`_
 
 Attributes: none
 
@@ -296,7 +535,7 @@ Element
 
 Identify the title of a collection
 
-Contained in: `amonog`_, `imonog`_, `omonog`_, `pmonog`_, `vmonog`_
+Contained in: `vmonog`_
 
 Attributes: none
 
@@ -307,7 +546,7 @@ Element
 
 Identify the volume of a collection
 
-Contained in: `amonog`_, `pmonog`_
+Contained in: `pmonog`_
 
 Attributes: none
 
@@ -318,9 +557,9 @@ Element
 
 Group the elements of a conference
 
-Contained in: `acitat`_, `amonog`_, `bbibcom`_, `bibcom`_, `ocitat`_, `omonog`_, `pmonog`_, `vmonog`_
+Contained in: `ref`_
 
-Contains: `confname`_, `no`_, `date`_, `city`_, `state`_, `country`_, `sponsor`_
+Contains: `city`_, `confname`_, `country`_, `date`_, `no`_, `sponsor`_, `state`_
 
 Attributes: none
 
@@ -342,7 +581,7 @@ Element
 
 Identify the contract/project number given by the sponsor
 
-Contained in: `report`_
+Contained in: `ref`_
 
 Attributes: none
 
@@ -353,9 +592,9 @@ Element
 
 Identify the corporative author
 
-Contained in: `acontrib`_, `amonog`_, `authgrp`_, `icontrib`_, `iiserial`_, `imonog`_, `pcontrib`_, `pmonog`_, `product`_, `vcontrib`_, `vmonog`_
+Contained in: `subdoc`_
 
-Contains: `orgname`_, `orgdiv`_, `previous`_
+Contains: `orgdiv`_, `orgname`_, `previous`_
 
 Attributes: none
 
@@ -366,7 +605,7 @@ Element
 
 Identify the country
 
-Contained in: `aff`_, `aiserial`_, `amonog`_, `confgrp`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `pmonog`_, `product`_, `thesgrp`_, `thesis`_, `vmonog`_
+Contained in: `normaff`_
 
 Attributes: none
 
@@ -386,9 +625,9 @@ date
 
 Element
 
-Identify the date of registration of the patent
+Identify the date related to the context (publication, conference, patent registration, etc)
 
-Contained in: `aiserial`_, `amonog`_, `confgrp`_, `icontrib`_, `iiserial`_, `imonog`_, `ocontrib`_, `oiserial`_, `omonog`_, `patgrp`_, `pcontrib`_, `pmonog`_, `product`_, `thesgrp`_, `thesis`_, `viserial`_, `vmonog`_
+Contained in: `ref`_
 
 Attributes: `dateiso <markup_tags.html#attribute-dateiso>`_, `specyear <markup_tags.html#attribute-specyear>`_
 
@@ -412,7 +651,7 @@ Identify an item of a list of definitions
 
 Contained in: `deflist`_
 
-Contains: `term`_, `def`_
+Contains: `def`_, `term`_
 
 Attributes: none
 
@@ -423,9 +662,9 @@ Element
 
 Identify a list of definitions
 
-Contained in: `ifloat`_, `glossary`_, `deflist`_, `xmlbody`_
+Contained in: `xmlbody`_
 
-Contains: `sectitle`_, `defitem`_, `deflist`_
+Contains: `*deflist`_, `defitem`_, `deflist`_, `sectitle`_
 
 Attributes: `id <markup_tags.html#attribute-id>`_
 
@@ -436,7 +675,7 @@ Element
 
  Identify the degree of the thesis, such as Master, Doctor etc
 
-Contained in: `thesgrp`_, `thesis`_
+Contained in: `thesis`_
 
 Attributes: none
 
@@ -451,6 +690,54 @@ Contained in: `article`_
 
 Attributes: `deposid <markup_tags.html#attribute-deposid>`_, `entrdate <markup_tags.html#attribute-entrdate>`_, `embdate <markup_tags.html#attribute-embdate>`_
 
+doc
+---
+
+Element
+
+Group the data of a document (for XML generation)
+
+Contained in: `start`_
+
+Contains: `*kwdgrp`_, `ack`_, `appgrp`_, `author`_, `corpauth`_, `docresp`_, `doctitle`_, `doi`_, `fngrp`_, `glossary`_, `hist`_, `kwdgrp`_, `normaff`_, `onbehalf`_, `refs`_, `related`_, `subdoc`_, `toctitle`_, `xmlabstr`_, `xmlbody`_
+
+Attributes: none
+
+docresp
+-------
+
+Element
+
+Group the response data
+
+Contained in: `subdoc`_
+
+Contains: `*kwdgrp`_, `ack`_, `app`_, `author`_, `corpauth`_, `doctitle`_, `doi`_, `fngrp`_, `glossary`_, `hist`_, `kwdgrp`_, `onbehalf`_, `refs`_, `related`_, `toctitle`_, `xmlabstr`_, `xmlbody`_
+
+Attributes: `id <markup_tags.html#attribute-id>`_, `resptp <markup_tags.html#attribute-resptp>`_, `language <markup_tags.html#attribute-language>`_
+
+doctit
+------
+
+Element
+
+Identify the document title in a reference
+
+Attributes: none
+
+doctitle
+--------
+
+Element
+
+Identify the title of the document
+
+Contained in: `subdoc`_
+
+Contains: `alttitle`_, `subtitle`_
+
+Attributes: `language <markup_tags.html#attribute-language>`_
+
 doi
 ---
 
@@ -458,7 +745,7 @@ Element
 
 Identify the DOI
 
-Contained in: `aiserial`_, `amonog`_, `front`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `text`_, `viserial`_, `vmonog`_
+Contained in: `subdoc`_
 
 Attributes: none
 
@@ -469,8 +756,6 @@ Element
 
 Identify the período of time tratado at the content of the document
 
-Contained in: `keygrp`_
-
 Attributes: `from <markup_tags.html#attribute-from>`_, `to <markup_tags.html#attribute-to>`_
 
 edition
@@ -480,9 +765,33 @@ Element
 
 Identify the edition number
 
-Contained in: `amonog`_, `iiserial`_, `imonog`_, `omonog`_, `pmonog`_, `vmonog`_
+Contained in: `ref`_
 
 Attributes: none
+
+elemattr
+--------
+
+Element
+
+Identify any attribute of XML
+
+Contained in: `element`_
+
+Attributes: `name <markup_tags.html#attribute-name>`_, `value <markup_tags.html#attribute-value>`_
+
+element
+-------
+
+Element
+
+Identify any element of XML
+
+Contained in: `ifloat`_
+
+Contains: `elemattr`_
+
+Attributes: `name <markup_tags.html#attribute-name>`_
 
 email
 -----
@@ -491,7 +800,7 @@ Element
 
 Electronic address of the author
 
-Contained in: `aff`_, `corresp`_
+Contained in: `normaff`_
 
 Attributes: none
 
@@ -504,9 +813,9 @@ Identify the elements of a equation
 
 Contained in: `ifloat`_
 
-Contains: `graphic`_, `texmath`_, `mmlmath`_
+Contains: `graphic`_, `label`_, `mmlmath`_, `texmath`_
 
-Attributes: `id <markup_tags.html#attribute-id>`_, `filename <markup_tags.html#attribute-filename>`_
+Attributes: `id <markup_tags.html#attribute-id>`_
 
 et-al
 -----
@@ -515,7 +824,7 @@ Element
 
 Indicate non cited authors
 
-Contained in: `acontrib`_, `amonog`_, `icontrib`_, `iiserial`_, `imonog`_, `ocontrib`_, `omonog`_, `vcontrib`_, `vmonog`_
+Contained in: `authors`_
 
 Attributes: none
 
@@ -526,7 +835,7 @@ Element
 
 Identify the extension of the document (number of pages)
 
-Contained in: `aiserial`_, `amonog`_, `imonog`_, `oiserial`_, `omonog`_, `viserial`_, `vmonog`_
+Contained in: `ref`_
 
 Attributes: none
 
@@ -537,11 +846,11 @@ Element
 
 Group the elements of a figure
 
-Contained in: `ifloat`_, `figgrps`_
+Contained in: `figgrps`_
 
-Contains: `label`_, `caption`_, `graphic`_
+Contains: `alttext`_, `attrib`_, `caption`_, `graphic`_, `label`_
 
-Attributes: `id <markup_tags.html#attribute-id>`_, `ftype <markup_tags.html#attribute-ftype>`_, `filename <markup_tags.html#attribute-filename>`_
+Attributes: `id <markup_tags.html#attribute-id>`_
 
 figgrps
 -------
@@ -552,7 +861,7 @@ Group a group of figures (Fig 1A, 1B,...)
 
 Contained in: `ifloat`_
 
-Contains: `label`_, `caption`_, `figgrp`_
+Contains: `caption`_, `figgrp`_, `label`_
 
 Attributes: `id <markup_tags.html#attribute-id>`_
 
@@ -563,7 +872,7 @@ Element
 
 Identify the first names of an individual author
 
-Contained in: `author`_, `awarded`_, `oauthor`_, `subresp`_
+Contained in: `pauthor`_
 
 Attributes: none
 
@@ -574,9 +883,20 @@ Element
 
 Group the elements of a footnote
 
-Contained in: `back`_
+Contained in: `subdoc`_
 
-Attributes: `id <markup_tags.html#attribute-id>`_, `fntype <markup_tags.html#attribute-fntype>`_
+Contains: `funding`_, `label`_
+
+Attributes: `id <markup_tags.html#attribute-id>`_, `fntype <markup_tags.html#attribute-fntype>`_, `label <markup_tags.html#attribute-label>`_
+
+found-at
+--------
+
+Element
+
+Identify the location of the letter
+
+Attributes: none
 
 front
 -----
@@ -585,9 +905,33 @@ Element
 
 Identify the front of a document
 
-Contained in: `article`_, `response`_, `subart`_
+Contained in: `subart`_
 
-Contains: `related`_, `toctitle`_, `doi`_, `titlegrp`_, `authgrp`_, `bibcom`_
+Contains: `aff`_, `authgrp`_, `bibcom`_, `doi`_, `related`_, `titlegrp`_, `toctitle`_
+
+Attributes: none
+
+funding
+-------
+
+Element
+
+Group the data related to funding
+
+Contained in: `p`_
+
+Contains: `award`_
+
+Attributes: none
+
+fundsrc
+-------
+
+Element
+
+Identify the funding source
+
+Contained in: `award`_
 
 Attributes: none
 
@@ -598,11 +942,11 @@ Element
 
 Identify a glossary
 
-Contained in: `back`_, `glossary`_
+Contained in: `subdoc`_
 
-Contains: `label`_, `sectitle`_, `glossary`_, `deflist`_
+Contains: `*deflist`_, `deflist`_, `glossary`_, `label`_, `sectitle`_
 
-Attributes: `id <markup_tags.html#attribute-id>`_
+Attributes: none
 
 graphic
 -------
@@ -611,7 +955,9 @@ Element
 
 Identify an image
 
-Contained in: `ifloat`_, `equation`_, `figgrp`_, `tabwrap`_
+Contained in: `tabwrap`_
+
+Contains: `alttext`_
 
 Attributes: `href <markup_tags.html#attribute-href>`_
 
@@ -622,9 +968,9 @@ Element
 
 Identify the history of an article (received and accepted dates)
 
-Contained in: `bbibcom`_, `bibcom`_
+Contained in: `subdoc`_
 
-Contains: `received`_, `revised`_, `accepted`_
+Contains: `accepted`_, `received`_, `revised`_
 
 Attributes: none
 
@@ -637,7 +983,7 @@ Identify a reference in ISO 690/87
 
 Contained in: `iso690`_
 
-Contains: `no`_, `icontrib`_, `imonog`_, `iiserial`_
+Contains: `icontrib`_, `iiserial`_, `imonog`_, `no`_
 
 Attributes: none
 
@@ -650,7 +996,7 @@ Group the elements of contribution
 
 Contained in: `icitat`_
 
-Contains: `author`_, `corpauth`_, `et-al`_, `subresp`_, `date`_, `title`_, `subtitle`_
+Contains: `*author`_, `author`_, `corpauth`_, `date`_, `et-al`_, `subresp`_, `subtitle`_, `title`_
 
 Attributes: none
 
@@ -674,7 +1020,7 @@ Group the elements of serial
 
 Contained in: `icitat`_
 
-Contains: `isstitle`_, `author`_, `corpauth`_, `et-al`_, `medium`_, `sertitle`_, `stitle`_, `city`_, `state`_, `country`_, `edition`_, `pubname`_, `date`_, `update`_, `volid`_, `issueno`_, `pages`_, `isdesig`_, `notes`_, `issn`_, `url`_, `cited`_, `doi`_, `pubid`_
+Contains: `*author`_, `*sertitle`_, `*stitle`_, `author`_, `cited`_, `city`_, `corpauth`_, `country`_, `date`_, `doi`_, `edition`_, `et-al`_, `isdesig`_, `issn`_, `isstitle`_, `issueno`_, `medium`_, `notes`_, `pages`_, `pubid`_, `pubname`_, `sertitle`_, `state`_, `stitle`_, `update`_, `url`_, `volid`_
 
 Attributes: none
 
@@ -687,7 +1033,7 @@ Group the elements of monograph
 
 Contained in: `icitat`_
 
-Contains: `author`_, `corpauth`_, `et-al`_, `subresp`_, `title`_, `subtitle`_, `medium`_, `edition`_, `city`_, `state`_, `country`_, `pubname`_, `date`_, `update`_, `volid`_, `part`_, `pages`_, `extent`_, `coltitle`_, `report`_, `notes`_, `url`_, `cited`_, `doi`_, `pubid`_, `isbn`_, `patgrp`_
+Contains: `*author`_, `author`_, `cited`_, `city`_, `coltitle`_, `corpauth`_, `country`_, `date`_, `doi`_, `edition`_, `et-al`_, `extent`_, `isbn`_, `medium`_, `notes`_, `pages`_, `part`_, `patgrp`_, `pubid`_, `pubname`_, `report`_, `state`_, `subresp`_, `subtitle`_, `title`_, `update`_, `url`_, `volid`_
 
 Attributes: none
 
@@ -698,7 +1044,7 @@ Element
 
 Identify the document is in press status
 
-Contained in: `viserial`_, `vmonog`_
+Contained in: `vmonog`_
 
 Attributes: none
 
@@ -709,7 +1055,7 @@ Element
 
 Identify the Internacional Standard Book Number (ISBN)
 
-Contained in: `amonog`_, `imonog`_, `omonog`_, `product`_
+Contained in: `ref`_
 
 Attributes: none
 
@@ -744,7 +1090,7 @@ Element
 
 Identify the Internacional Standard Serial  Number (ISSN)
 
-Contained in: `aiserial`_, `iiserial`_, `oiserial`_
+Contained in: `ref`_
 
 Attributes: none
 
@@ -755,7 +1101,7 @@ Element
 
 Identify the title of an issue number
 
-Contained in: `aiserial`_, `iiserial`_, `oiserial`_
+Contained in: `oiserial`_
 
 Attributes: none
 
@@ -766,7 +1112,7 @@ Element
 
 Identify the issue number
 
-Contained in: `aiserial`_, `iiserial`_, `oiserial`_, `piserial`_, `viserial`_
+Contained in: `ref`_
 
 Attributes: none
 
@@ -777,9 +1123,9 @@ Element
 
 Group the key words of a document
 
-Contained in: `bbibcom`_, `bibcom`_
+Contained in: `bibcom`_
 
-Contains: `keyword`_, `subkey`_, `dperiod`_
+Contains: `keyword`_
 
 Attributes: `scheme <markup_tags.html#attribute-scheme>`_
 
@@ -792,7 +1138,31 @@ Identify a key word of the document
 
 Contained in: `keygrp`_
 
-Attributes: `keyword priority level <markup_tags.html#attribute-keyword-priority-level>`_, `language <markup_tags.html#attribute-language>`_, `id <markup_tags.html#attribute-id>`_
+Attributes: `keyword priority level <markup_tags.html#attribute-keyword-priority-level>`_, `language <markup_tags.html#attribute-language>`_
+
+kwd
+---
+
+Element
+
+Identify a keyword
+
+Contained in: `kwdgrp`_
+
+Attributes: none
+
+kwdgrp
+------
+
+Element
+
+Group the key words related to one language
+
+Contained in: `subdoc`_
+
+Contains: `kwd`_, `sectitle`_
+
+Attributes: `language <markup_tags.html#attribute-language>`_
 
 label
 -----
@@ -801,7 +1171,16 @@ Element
 
 Identify a label
 
-Contained in: `aff`_, `figgrp`_, `figgrps`_, `fntable`_, `glossary`_, `tabwrap`_
+Contained in: `versegrp`_
+
+Attributes: none
+
+letterto
+--------
+
+Element
+
+Identify the recipient of the letter
 
 Attributes: none
 
@@ -814,7 +1193,7 @@ Identify an item of a list
 
 Contained in: `list`_
 
-Contains: `lilabel`_, `litext`_
+Contains: `label`_
 
 Attributes: none
 
@@ -855,40 +1234,18 @@ Contains: `license`_
 
 Attributes: none
 
-lilabel
--------
-
-Element
-
-Identify the label of a item of a list
-
-Contained in: `li`_
-
-Attributes: none
-
 list
 ----
 
 Element
 
-Identify the list
+Identify a list
 
 Contained in: `ifloat`_
 
 Contains: `li`_
 
 Attributes: `listtype <markup_tags.html#attribute-listtype>`_
-
-litext
-------
-
-Element
-
-Identify the text of a item of a list
-
-Contained in: `li`_
-
-Attributes: none
 
 medium
 ------
@@ -897,7 +1254,7 @@ Element
 
 Identify the format of the media in which the document is published
 
-Contained in: `iiserial`_, `imonog`_
+Contained in: `imonog`_
 
 Attributes: none
 
@@ -912,6 +1269,17 @@ Contained in: `equation`_
 
 Attributes: none
 
+moreinfo
+--------
+
+Element
+
+Identify any other information to which there is no tag to identify it. Use the descript attribute to describe the data
+
+Contained in: `ref`_
+
+Attributes: none
+
 no
 --
 
@@ -919,9 +1287,22 @@ Element
 
 Identify the number
 
-Contained in: `acitat`_, `confgrp`_, `icitat`_, `ocitat`_, `pcitat`_, `report`_, `vcitat`_
+Contained in: `vcitat`_
 
 Attributes: none
+
+normaff
+-------
+
+Element
+
+Identify normalized affiliation
+
+Contained in: `doc`_
+
+Contains: `city`_, `country`_, `email`_, `label`_, `orgdiv1`_, `orgdiv2`_, `orgname`_, `role`_, `state`_
+
+Attributes: `id <markup_tags.html#attribute-id>`_, `ncountry <markup_tags.html#attribute-ncountry>`_, `norgname <markup_tags.html#attribute-norgname>`_, `icountry <markup_tags.html#attribute-icountry>`_
 
 notes
 -----
@@ -930,7 +1311,7 @@ Element
 
 Identify notes
 
-Contained in: `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `pmonog`_
+Contained in: `pmonog`_
 
 Attributes: none
 
@@ -941,11 +1322,11 @@ Element
 
 Group the elements of an individual author
 
-Contained in: `ocontrib`_, `omonog`_
+Contained in: `omonog`_
 
-Contains: `fname`_, `surname`_, `anonym`_, `previous`_
+Contains: `anonym`_, `fname`_, `previous`_, `surname`_, `surname-fname`_
 
-Attributes: `role <markup_tags.html#attribute-role>`_, `rid <markup_tags.html#attribute-rid>`_
+Attributes: `role <markup_tags.html#attribute-role>`_
 
 ocitat
 ------
@@ -956,7 +1337,7 @@ Identify a reference
 
 Contained in: `other`_
 
-Contains: `no`_, `ocontrib`_, `omonog`_, `oiserial`_, `confgrp`_
+Contains: `confgrp`_, `no`_, `ocontrib`_, `oiserial`_, `omonog`_
 
 Attributes: none
 
@@ -969,7 +1350,7 @@ Group the elements of a contribution
 
 Contained in: `ocitat`_
 
-Contains: `oauthor`_, `ocorpaut`_, `et-al`_, `title`_, `subtitle`_, `date`_, `pages`_, `patgrp`_
+Contains: `*oauthor`_, `date`_, `et-al`_, `oauthor`_, `ocorpaut`_, `pages`_, `patgrp`_, `subtitle`_, `title`_
 
 Attributes: none
 
@@ -980,9 +1361,9 @@ Element
 
 Identify a corporative author
 
-Contained in: `ocontrib`_, `omonog`_
+Contained in: `omonog`_
 
-Contains: `orgname`_, `orgdiv`_, `previous`_
+Contains: `orgdiv`_, `orgname`_, `previous`_
 
 Attributes: none
 
@@ -995,7 +1376,7 @@ Group the elements of serial
 
 Contained in: `ocitat`_
 
-Contains: `sertitle`_, `stitle`_, `isstitle`_, `date`_, `volid`_, `issueno`_, `suppl`_, `pages`_, `extent`_, `issn`_, `url`_, `cited`_, `doi`_, `pubid`_, `othinfo`_, `city`_, `country`_, `pubname`_
+Contains: `*sertitle`_, `*stitle`_, `cited`_, `city`_, `country`_, `date`_, `doi`_, `extent`_, `issn`_, `isstitle`_, `issueno`_, `othinfo`_, `pages`_, `pubid`_, `pubname`_, `sertitle`_, `stitle`_, `suppl`_, `url`_, `volid`_
 
 Attributes: none
 
@@ -1008,7 +1389,7 @@ Group the elements of monograph
 
 Contained in: `ocitat`_
 
-Contains: `oauthor`_, `ocorpaut`_, `et-al`_, `title`_, `subtitle`_, `date`_, `pages`_, `extent`_, `edition`_, `thesis`_, `confgrp`_, `report`_, `patgrp`_, `city`_, `state`_, `country`_, `pubname`_, `coltitle`_, `volid`_, `part`_, `url`_, `cited`_, `doi`_, `pubid`_, `isbn`_, `othinfo`_
+Contains: `*oauthor`_, `cited`_, `city`_, `coltitle`_, `confgrp`_, `country`_, `date`_, `doi`_, `edition`_, `et-al`_, `extent`_, `isbn`_, `oauthor`_, `ocorpaut`_, `othinfo`_, `pages`_, `part`_, `patgrp`_, `pubid`_, `pubname`_, `report`_, `state`_, `subtitle`_, `thesis`_, `title`_, `url`_, `volid`_
 
 Attributes: none
 
@@ -1019,7 +1400,7 @@ Element
 
 Identify the institution which the contributor represents. Example: John Smith on behalf of Instituition ABCD
 
-Contained in: `authgrp`_
+Contained in: `subdoc`_
 
 Attributes: none
 
@@ -1030,7 +1411,38 @@ Element
 
 Identify the division of an institution
 
-Contained in: `awarded`_, `corpauth`_, `ocorpaut`_, `rsponsor`_, `sponsor`_, `thesgrp`_, `thesis`_
+Contained in: `thesis`_
+
+Attributes: none
+
+orgdiv1
+-------
+
+Element
+
+Identify organization division 1
+
+Contained in: `normaff`_
+
+Attributes: none
+
+orgdiv2
+-------
+
+Element
+
+Identify organization division 2
+
+Contained in: `normaff`_
+
+Attributes: none
+
+orgdiv3
+-------
+
+Element
+
+Identify organization division 3
 
 Attributes: none
 
@@ -1041,7 +1453,7 @@ Element
 
 Identify the name of an institution
 
-Contained in: `awarded`_, `corpauth`_, `ocorpaut`_, `patgrp`_, `rsponsor`_, `sponsor`_, `thesgrp`_, `thesis`_
+Contained in: `normaff`_
 
 Attributes: none
 
@@ -1065,7 +1477,7 @@ Element
 
 Group any other information
 
-Contained in: `oiserial`_, `omonog`_, `product`_
+Contained in: `omonog`_
 
 Attributes: none
 
@@ -1076,9 +1488,9 @@ Element
 
 Identify a paragraph
 
-Contained in: `ack`_, `app`_, `sec`_, `subsec`_, `xmlabstr`_, `xmlbody`_
+Contained in: `boxedtxt`_
 
-Contains: `report`_
+Contains: `funding`_
 
 Attributes: none
 
@@ -1089,7 +1501,7 @@ Element
 
 Identify the pagination
 
-Contained in: `acontrib`_, `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `ocontrib`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `viserial`_, `vmonog`_
+Contained in: `ref`_
 
 Attributes: none
 
@@ -1100,7 +1512,7 @@ Element
 
 Identify the part of the volume/issue number
 
-Contained in: `amonog`_, `imonog`_, `omonog`_, `pmonog`_, `viserial`_, `vmonog`_
+Contained in: `ref`_
 
 Attributes: none
 
@@ -1115,6 +1527,17 @@ Contained in: `patgrp`_
 
 Attributes: none
 
+patentno
+--------
+
+Element
+
+Identify the number of the patent
+
+Contained in: `ref`_
+
+Attributes: `country <markup_tags.html#attribute-country>`_
+
 patgrp
 ------
 
@@ -1122,11 +1545,24 @@ Element
 
 Group the elements of patent
 
-Contained in: `acontrib`_, `amonog`_, `imonog`_, `ocontrib`_, `omonog`_, `vcontrib`_, `vmonog`_
+Contained in: `vmonog`_
 
-Contains: `orgname`_, `patent`_, `date`_
+Contains: `date`_, `orgname`_, `patent`_
 
 Attributes: `country <markup_tags.html#attribute-country>`_
+
+pauthor
+-------
+
+Element
+
+Identify a (person) author
+
+Contained in: `authors`_
+
+Contains: `fname`_, `surname`_, `surname-fname`_
+
+Attributes: none
 
 pcitat
 ------
@@ -1137,7 +1573,7 @@ Identify a bibliography reference
 
 Contained in: `apa`_
 
-Contains: `no`_, `pcontrib`_, `pmonog`_, `piserial`_
+Contains: `no`_, `pcontrib`_, `piserial`_, `pmonog`_
 
 Attributes: none
 
@@ -1150,7 +1586,7 @@ Group the elements of contribution
 
 Contained in: `pcitat`_
 
-Contains: `author`_, `corpauth`_, `date`_, `title`_, `subtitle`_
+Contains: `*author`_, `author`_, `corpauth`_, `date`_, `subtitle`_, `title`_
 
 Attributes: none
 
@@ -1163,7 +1599,7 @@ Group the elements of serial
 
 Contained in: `pcitat`_
 
-Contains: `sertitle`_, `volid`_, `issueno`_, `suppl`_, `pages`_, `url`_, `cited`_, `doi`_, `pubid`_
+Contains: `*sertitle`_, `cited`_, `doi`_, `issueno`_, `pages`_, `pubid`_, `sertitle`_, `suppl`_, `url`_, `volid`_
 
 Attributes: none
 
@@ -1176,7 +1612,7 @@ Group the elements of monograph
 
 Contained in: `pcitat`_
 
-Contains: `author`_, `corpauth`_, `date`_, `title`_, `volid`_, `part`_, `subtitle`_, `confgrp`_, `thesis`_, `coltitle`_, `colvolid`_, `pages`_, `edition`_, `city`_, `state`_, `country`_, `pubname`_, `report`_, `url`_, `cited`_, `doi`_, `pubid`_, `notes`_
+Contains: `*author`_, `author`_, `cited`_, `city`_, `coltitle`_, `colvolid`_, `confgrp`_, `corpauth`_, `country`_, `date`_, `doi`_, `edition`_, `notes`_, `pages`_, `part`_, `pubid`_, `pubname`_, `report`_, `state`_, `subtitle`_, `thesis`_, `title`_, `url`_, `volid`_
 
 Attributes: none
 
@@ -1187,7 +1623,7 @@ Element
 
 Identify the author is the same author of the previous reference
 
-Contained in: `author`_, `corpauth`_, `oauthor`_, `ocorpaut`_
+Contained in: `ocorpaut`_
 
 Attributes: none
 
@@ -1209,9 +1645,20 @@ Element
 
 Identify an id of any external database, such as DOI, pmid (PubMed), pmcid (PMC), etc
 
-Contained in: `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `viserial`_, `vmonog`_
+Contained in: `ref`_
 
 Attributes: `idtype <markup_tags.html#attribute-idtype>`_
+
+publoc
+------
+
+Element
+
+Identify the publisher location
+
+Contained in: `ref`_
+
+Attributes: none
 
 pubname
 -------
@@ -1220,7 +1667,7 @@ Element
 
 Identify the publisher
 
-Contained in: `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `pmonog`_, `product`_, `vmonog`_
+Contained in: `ref`_
 
 Attributes: none
 
@@ -1235,6 +1682,32 @@ Contained in: `hist`_
 
 Attributes: `dateiso <markup_tags.html#attribute-dateiso>`_
 
+ref
+---
+
+Element
+
+Group the reference elements
+
+Contained in: `refs`_
+
+Contains: `*authors`_, `*publoc-pubname`_, `*pubname-publoc`_, `*source`_, `arttitle`_, `authors`_, `chptitle`_, `cited`_, `confgrp`_, `contract`_, `date`_, `edition`_, `extent`_, `isbn`_, `issn`_, `issueno`_, `label`_, `moreinfo`_, `pages`_, `part`_, `patentno`_, `pubid`_, `publoc`_, `pubname`_, `reportid`_, `series`_, `source`_, `suppl`_, `text-ref`_, `thesgrp`_, `url`_, `volid`_
+
+Attributes: `id <markup_tags.html#attribute-id>`_, `reftype <markup_tags.html#attribute-reftype>`_
+
+refs
+----
+
+Element
+
+Group the references
+
+Contained in: `subdoc`_
+
+Contains: `ref`_, `sectitle`_
+
+Attributes: none
+
 related
 -------
 
@@ -1242,9 +1715,9 @@ Element
 
 Identify related documents
 
-Contained in: `ifloat`_, `front`_
+Contained in: `subdoc`_
 
-Attributes: `reltype <markup_tags.html#attribute-reltype>`_, `relid <markup_tags.html#attribute-relid>`_, `relidtp <markup_tags.html#attribute-relidtp>`_
+Attributes: `reltp <markup_tags.html#attribute-reltp>`_, `pid-doi <markup_tags.html#attribute-pid-doi>`_
 
 report
 ------
@@ -1253,9 +1726,20 @@ Element
 
 Group the elements of funding
 
-Contained in: `amonog`_, `bbibcom`_, `bibcom`_, `imonog`_, `omonog`_, `p`_, `pmonog`_, `vmonog`_
+Contained in: `vmonog`_
 
-Contains: `no`_, `rsponsor`_, `awarded`_, `projname`_, `contract`_
+Contains: `contract`_, `no`_, `projname`_, `rsponsor`_
+
+Attributes: none
+
+reportid
+--------
+
+Element
+
+Identify the number or name of the report
+
+Contained in: `ref`_
 
 Attributes: none
 
@@ -1266,9 +1750,9 @@ Element
 
 Group the elements of a response to an article
 
-Contained in: `article`_, `subart`_
+Contained in: `subart`_
 
-Contains: `front`_, `body`_, `back`_
+Contains: `back`_, `front`_, `xmlbody`_
 
 Attributes: `id <markup_tags.html#attribute-id>`_, `resptp <markup_tags.html#attribute-resptp>`_, `language <markup_tags.html#attribute-language>`_
 
@@ -1283,6 +1767,17 @@ Contained in: `hist`_
 
 Attributes: `dateiso <markup_tags.html#attribute-dateiso>`_
 
+role
+----
+
+Element
+
+Identify the role of the author
+
+Contained in: `normaff`_
+
+Attributes: none
+
 rsponsor
 --------
 
@@ -1292,7 +1787,7 @@ Identify the sponsor or funding institution
 
 Contained in: `report`_
 
-Contains: `orgname`_, `orgdiv`_
+Contains: `contract`_, `orgdiv`_, `orgname`_
 
 Attributes: none
 
@@ -1303,8 +1798,6 @@ Element
 
 Identify scientific names
 
-Contained in: `ifloat`_
-
 Attributes: none
 
 sec
@@ -1314,9 +1807,9 @@ Element
 
 Identify a section
 
-Contained in: `app`_, `xmlabstr`_, `xmlbody`_
+Contained in: `boxedtxt`_
 
-Contains: `sectitle`_, `subsec`_, `p`_
+Contains: `p`_, `sectitle`_, `subsec`_
 
 Attributes: `sec-type <markup_tags.html#attribute-sec-type>`_
 
@@ -1327,7 +1820,18 @@ Element
 
 Identify a section title
 
-Contained in: `ack`_, `app`_, `glossary`_, `deflist`_, `sec`_, `subsec`_
+Contained in: `refs`_
+
+Attributes: none
+
+series
+------
+
+Element
+
+Identify series
+
+Contained in: `ref`_
 
 Attributes: none
 
@@ -1338,7 +1842,18 @@ Element
 
 Identify the journal title
 
-Contained in: `aiserial`_, `iiserial`_, `oiserial`_, `piserial`_, `product`_
+Contained in: `piserial`_
+
+Attributes: none
+
+source
+------
+
+Element
+
+Identify the document source (book title, journal title, etc)
+
+Contained in: `ref`_
 
 Attributes: none
 
@@ -1351,7 +1866,7 @@ Identify the sponsor or funding institution
 
 Contained in: `confgrp`_
 
-Contains: `orgname`_, `orgdiv`_
+Contains: `orgdiv`_, `orgname`_
 
 Attributes: none
 
@@ -1362,7 +1877,7 @@ Element
 
 Identify the state/region
 
-Contained in: `aff`_, `aiserial`_, `amonog`_, `confgrp`_, `iiserial`_, `imonog`_, `omonog`_, `pmonog`_, `product`_, `thesgrp`_, `thesis`_, `vmonog`_
+Contained in: `normaff`_
 
 Attributes: none
 
@@ -1373,7 +1888,7 @@ Element
 
 Identify the short title of a journal
 
-Contained in: `aiserial`_, `iiserial`_, `oiserial`_, `vstitle`_
+Contained in: `vstitle`_
 
 Attributes: none
 
@@ -1384,9 +1899,22 @@ Element
 
 Identify the text which is related to the article
 
-Contained in: `article`_, `subart`_
+Contained in: `subart`_
 
-Contains: `front`_, `xmlbody`_, `back`_, `response`_, `subart`_
+Contains: `back`_, `front`_, `response`_, `subart`_, `xmlbody`_
+
+Attributes: `id <markup_tags.html#attribute-id>`_, `subarttp <markup_tags.html#attribute-subarttp>`_, `language <markup_tags.html#attribute-language>`_
+
+subdoc
+------
+
+Element
+
+Group the sub-document data
+
+Contained in: `subdoc`_
+
+Contains: `*kwdgrp`_, `abstract`_, `ack`_, `afftrans`_, `app`_, `author`_, `corpauth`_, `docresp`_, `doctitle`_, `doi`_, `fngrp`_, `glossary`_, `hist`_, `kwdgrp`_, `onbehalf`_, `refs`_, `related`_, `subdoc`_, `toctitle`_, `xmlabstr`_, `xmlbody`_
 
 Attributes: `id <markup_tags.html#attribute-id>`_, `subarttp <markup_tags.html#attribute-subarttp>`_, `language <markup_tags.html#attribute-language>`_
 
@@ -1397,9 +1925,7 @@ Element
 
 Identify the subkey of a key word
 
-Contained in: `keygrp`_
-
-Attributes: `rid <markup_tags.html#attribute-rid>`_
+Attributes: none
 
 subresp
 -------
@@ -1408,9 +1934,9 @@ Element
 
 Identify the secondary responsabilities
 
-Contained in: `amonog`_, `icontrib`_, `imonog`_
+Contained in: `imonog`_
 
-Contains: `fname`_, `surname`_
+Contains: `fname`_, `surname`_, `surname-fname`_
 
 Attributes: `role <markup_tags.html#attribute-role>`_
 
@@ -1423,7 +1949,7 @@ Identify a sub-section
 
 Contained in: `sec`_
 
-Contains: `sectitle`_, `p`_
+Contains: `p`_, `sectitle`_
 
 Attributes: none
 
@@ -1434,7 +1960,7 @@ Element
 
 Identify the subtitle
 
-Contained in: `acontrib`_, `amonog`_, `icontrib`_, `imonog`_, `ocontrib`_, `omonog`_, `pcontrib`_, `pmonog`_, `titlegrp`_, `vtitle`_
+Contained in: `doctitle`_
 
 Attributes: none
 
@@ -1445,7 +1971,7 @@ Element
 
 Identify the supplement
 
-Contained in: `aiserial`_, `oiserial`_, `piserial`_, `viserial`_
+Contained in: `ref`_
 
 Attributes: none
 
@@ -1456,7 +1982,18 @@ Element
 
 Identify the last name
 
-Contained in: `author`_, `awarded`_, `oauthor`_, `subresp`_
+Contained in: `pauthor`_
+
+Attributes: none
+
+surname-fname
+-------------
+
+Element
+
+Identify surname and fname of one author (surname separator fname or fname separator surname)
+
+Contained in: `pauthor`_
 
 Attributes: none
 
@@ -1469,9 +2006,9 @@ Group the elements of a table
 
 Contained in: `ifloat`_
 
-Contains: `label`_, `caption`_, `graphic`_, `table`_, `fntable`_
+Contains: `caption`_, `fntable`_, `graphic`_, `label`_, `table`_
 
-Attributes: `id <markup_tags.html#attribute-id>`_, `filename <markup_tags.html#attribute-filename>`_
+Attributes: `id <markup_tags.html#attribute-id>`_
 
 term
 ----
@@ -1504,7 +2041,18 @@ Identify a text
 
 Contained in: `start`_
 
-Contains: `doi`_, `titlegrp`_, `authgrp`_, `body`_, `back`_
+Contains: `aff`_, `authgrp`_, `back`_, `doi`_, `titlegrp`_
+
+Attributes: none
+
+text-ref
+--------
+
+Element
+
+Identify the original form of the reference
+
+Contained in: `ref`_
 
 Attributes: none
 
@@ -1515,9 +2063,9 @@ Element
 
 Group the elements of a thesis
 
-Contained in: `bbibcom`_, `bibcom`_
+Contained in: `ref`_
 
-Contains: `city`_, `state`_, `country`_, `date`_, `degree`_, `orgname`_, `orgdiv`_
+Contains: `city`_, `country`_, `date`_, `degree`_, `orgdiv`_, `orgname`_, `state`_
 
 Attributes: none
 
@@ -1528,9 +2076,9 @@ Element
 
 Group the elements of a thesis
 
-Contained in: `amonog`_, `omonog`_, `pmonog`_, `vmonog`_
+Contained in: `vmonog`_
 
-Contains: `city`_, `state`_, `country`_, `date`_, `degree`_, `orgname`_, `orgdiv`_
+Contains: `city`_, `country`_, `date`_, `degree`_, `orgdiv`_, `orgname`_, `state`_
 
 Attributes: none
 
@@ -1541,7 +2089,7 @@ Element
 
 Identify the title of the document
 
-Contained in: `acontrib`_, `amonog`_, `icontrib`_, `imonog`_, `ocontrib`_, `omonog`_, `pcontrib`_, `pmonog`_, `product`_, `titlegrp`_, `vtitle`_
+Contained in: `vtitle`_
 
 Attributes: `language <markup_tags.html#attribute-language>`_
 
@@ -1552,9 +2100,9 @@ Element
 
 Group the titles of the document
 
-Contained in: `front`_, `text`_
+Contained in: `text`_
 
-Contains: `title`_, `subtitle`_
+Contains: `subtitle`_, `title`_
 
 Attributes: none
 
@@ -1565,7 +2113,7 @@ Element
 
 Identify the TOC section title. It is mandatory to the generation of XML files.
 
-Contained in: `front`_
+Contained in: `subdoc`_
 
 Attributes: none
 
@@ -1587,7 +2135,7 @@ Element
 
 Identify the type of publication
 
-Contained in: `vstitle`_, `vtitle`_
+Contained in: `vtitle`_
 
 Attributes: none
 
@@ -1598,7 +2146,7 @@ Element
 
 Identify the information of update
 
-Contained in: `iiserial`_, `imonog`_
+Contained in: `imonog`_
 
 Attributes: none
 
@@ -1611,7 +2159,7 @@ Identify an uri
 
 Contained in: `ifloat`_
 
-Attributes: none
+Attributes: `href <markup_tags.html#attribute-href>`_
 
 url
 ---
@@ -1620,7 +2168,7 @@ Element
 
 Identify the electronic address of the document
 
-Contained in: `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `viserial`_, `vmonog`_
+Contained in: `ref`_
 
 Attributes: none
 
@@ -1659,7 +2207,20 @@ Group the elements of contribution
 
 Contained in: `vcitat`_
 
-Contains: `author`_, `corpauth`_, `et-al`_, `vtitle`_, `patgrp`_
+Contains: `*author`_, `author`_, `corpauth`_, `et-al`_, `patgrp`_, `vtitle`_
+
+Attributes: none
+
+versegrp
+--------
+
+Element
+
+Identify song, poem, or verse
+
+Contained in: `versegrp`_
+
+Contains: `attrib`_, `label`_, `versegrp`_, `versline`_
 
 Attributes: none
 
@@ -1674,6 +2235,17 @@ Contained in: `vmonog`_
 
 Attributes: none
 
+versline
+--------
+
+Element
+
+Identify a song, poem, or verse line
+
+Contained in: `versegrp`_
+
+Attributes: none
+
 viserial
 --------
 
@@ -1683,7 +2255,7 @@ Group the elements of serial
 
 Contained in: `vcitat`_
 
-Contains: `vstitle`_, `date`_, `inpress`_, `volid`_, `issueno`_, `suppl`_, `part`_, `extent`_, `pages`_, `url`_, `cited`_, `doi`_, `pubid`_
+Contains: `cited`_, `date`_, `doi`_, `extent`_, `inpress`_, `issueno`_, `pages`_, `part`_, `pubid`_, `suppl`_, `url`_, `volid`_, `vstitle`_
 
 Attributes: none
 
@@ -1696,7 +2268,7 @@ Group the elements of monograph
 
 Contained in: `vcitat`_
 
-Contains: `author`_, `corpauth`_, `et-al`_, `vtitle`_, `edition`_, `volid`_, `part`_, `version`_, `confgrp`_, `city`_, `state`_, `country`_, `pubname`_, `inpress`_, `date`_, `pages`_, `extent`_, `report`_, `thesis`_, `url`_, `cited`_, `doi`_, `pubid`_, `patgrp`_, `coltitle`_
+Contains: `*author`_, `author`_, `cited`_, `city`_, `coltitle`_, `confgrp`_, `corpauth`_, `country`_, `date`_, `doi`_, `edition`_, `et-al`_, `extent`_, `inpress`_, `pages`_, `part`_, `patgrp`_, `pubid`_, `pubname`_, `report`_, `state`_, `thesis`_, `url`_, `version`_, `volid`_, `vtitle`_
 
 Attributes: none
 
@@ -1707,7 +2279,7 @@ Element
 
 Identify the volume
 
-Contained in: `acontrib`_, `aiserial`_, `amonog`_, `iiserial`_, `imonog`_, `oiserial`_, `omonog`_, `piserial`_, `pmonog`_, `viserial`_, `vmonog`_
+Contained in: `ref`_
 
 Attributes: none
 
@@ -1731,9 +2303,9 @@ Element
 
 Group the elements of title in Vancouver
 
-Contained in: `vcontrib`_, `vmonog`_
+Contained in: `vmonog`_
 
-Contains: `title`_, `subtitle`_, `tp`_
+Contains: `subtitle`_, `title`_, `tp`_
 
 Attributes: none
 
@@ -1744,9 +2316,9 @@ Element
 
 Identify the abstract with sections
 
-Contained in: `bibcom`_
+Contained in: `subdoc`_
 
-Contains: `sec`_, `p`_
+Contains: `p`_, `sec`_, `sectitle`_
 
 Attributes: `language <markup_tags.html#attribute-language>`_
 
@@ -1757,9 +2329,9 @@ Element
 
 Identify the body of the document, in details
 
-Contained in: `article`_, `subart`_
+Contained in: `subdoc`_
 
-Contains: `sec`_, `p`_, `deflist`_, `sigblock`_
+Contains: `*deflist`_, `deflist`_, `p`_, `sec`_, `sigblock`_
 
 Attributes: none
 
@@ -1772,7 +2344,7 @@ Identify a cross-reference
 
 Contained in: `ifloat`_
 
-Attributes: `ref-type <markup_tags.html#attribute-ref-type>`_, `rid <markup_tags.html#attribute-rid>`_
+Attributes: `ref-type <markup_tags.html#attribute-ref-type>`_, `rid <markup_tags.html#attribute-rid>`_, `label <markup_tags.html#attribute-label>`_
 
 zipcode
 -------
@@ -1794,7 +2366,7 @@ Attribute
 
 Identify the text block type
 
-Is attribute of: `txtblock`_
+Is attribute of: 
 
 
 +---+-----------+
@@ -1877,7 +2449,7 @@ Attribute
 
 Identify the quantity
 
-Is attribute of: `vancouv`_, `iso690`_, `abnt6023`_, `apa`_, `other`_
+Is attribute of: `abnt6023`_, `apa`_, `iso690`_, `other`_, `vancouv`_
 
 
 +-+-+
@@ -1894,7 +2466,7 @@ Attribute
 
 Identify the country
 
-Is attribute of: `patgrp`_
+Is attribute of: `patentno`_, `patgrp`_
 
 
 +--+----------------------------+
@@ -2380,7 +2952,7 @@ Attribute
 
 Identify the date in format YYYYMMDD (YYYY = 4 digits for year, 2 digits for month, 2 digits for day)
 
-Is attribute of: `date`_, `received`_, `accepted`_, `revised`_, `cited`_
+Is attribute of: `accepted`_, `cited`_, `date`_, `received`_, `revised`_
 
 
 +--------+--------+
@@ -2541,7 +3113,7 @@ Attribute
 
 Identify the filename of a figure or table or equation
 
-Is attribute of: `tabwrap`_, `figgrp`_, `equation`_
+Is attribute of: 
 
 
 
@@ -2627,7 +3199,7 @@ Attribute
 
 Identify the type of the figure
 
-Is attribute of: `figgrp`_
+Is attribute of: 
 
 
 +------------------+------------------+
@@ -2701,7 +3273,7 @@ Attribute
 
 Identify the href of a file
 
-Is attribute of: `license`_, `graphic`_, `supplmat`_
+Is attribute of: `graphic`_, `license`_, `media`_, `supplmat`_, `uri`_
 
 
 
@@ -2713,7 +3285,7 @@ Attribute
 
 Identify an ID
 
-Is attribute of: `aff`_, `keyword`_, `tabwrap`_, `figgrp`_, `figgrps`_, `equation`_, `fngrp`_, `fntable`_, `corresp`_, `response`_, `subart`_, `glossary`_, `deflist`_, `app`_
+Is attribute of: `aff`_, `afftrans`_, `app`_, `boxedtxt`_, `corresp`_, `deflist`_, `docresp`_, `equation`_, `figgrp`_, `figgrps`_, `fngrp`_, `fntable`_, `media`_, `normaff`_, `ref`_, `response`_, `subart`_, `subdoc`_, `supplmat`_, `tabwrap`_
 
 
 +--+-----------+
@@ -2815,7 +3387,7 @@ Attribute
 
 Identify the language
 
-Is attribute of: `title`_, `abstract`_, `xmlabstr`_, `keyword`_, `license`_, `response`_, `subart`_
+Is attribute of: `abstract`_, `docresp`_, `doctitle`_, `keyword`_, `kwdgrp`_, `license`_, `response`_, `subart`_, `subdoc`_, `title`_, `xmlabstr`_
 
 
 +--+-----------+
@@ -2958,7 +3530,7 @@ Attribute
 
 Identify the name of the element or attribute
 
-Is attribute of: `element`_, `attrib`_
+Is attribute of: `elemattr`_, `element`_
 
 
 
@@ -3173,7 +3745,7 @@ Attribute
 
 Identify the relation between the documents
 
-Is attribute of: `related`_
+Is attribute of: 
 
 
 
@@ -3185,7 +3757,7 @@ Attribute
 
 Identify the type of relation between documents
 
-Is attribute of: `related`_
+Is attribute of: 
 
 
 +-------------+-------------+
@@ -3226,7 +3798,7 @@ Attribute
 
 Identify the type of the related document
 
-Is attribute of: `related`_
+Is attribute of: 
 
 
 +---------------------+-----------------------------------+
@@ -3293,7 +3865,7 @@ Attribute
 
 Identify the response type
 
-Is attribute of: `response`_
+Is attribute of: `docresp`_, `response`_
 
 
 +----------+----------+
@@ -3312,9 +3884,9 @@ Attribute rid
 
 Attribute
 
-Identify an reference to an ID 
+Identify an reference to an ID
 
-Is attribute of: `author`_, `oauthor`_, `subkey`_, `xref`_
+Is attribute of: `author`_, `sig`_, `xref`_
 
 
 +--+-----------+
@@ -3331,7 +3903,7 @@ Attribute
 
 Identify the Role of the author
 
-Is attribute of: `author`_, `oauthor`_, `subresp`_
+Is attribute of: `author`_, `authors`_, `oauthor`_, `sig`_, `subresp`_
 
 
 +-----+-----------+
@@ -3447,7 +4019,7 @@ Attribute
 
 Identify the standard adopted by the journal
 
-Is attribute of: `vancouv`_, `iso690`_, `abnt6023`_, `apa`_, `other`_
+Is attribute of: `abnt6023`_, `apa`_, `iso690`_, `other`_, `vancouv`_
 
 
 +-------+-------------------------------------------------------------------------------------------+
@@ -3472,7 +4044,7 @@ Attribute
 
 Identify the type of the sub-article
 
-Is attribute of: `subart`_
+Is attribute of: `subart`_, `subdoc`_
 
 
 +-------------------+-------------------+
@@ -3583,7 +4155,7 @@ Attribute
 
 Identify the value of the element or attribute
 
-Is attribute of: `attrib`_
+Is attribute of: `elemattr`_
 
 
 
@@ -3607,6 +4179,4 @@ Is attribute of:
 
 
 
------
-
-Last update Feb 13, 2014
+[]
