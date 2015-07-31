@@ -198,7 +198,7 @@ class ISISManager4Articles:
                 if not order.isdigit():
                     os.unlink(issue_paths.issue_id_path + '/' + id_file)
         self.cisis.id2mst(issue_paths.issue_i_record_filename, issue_paths.issue_db_filename, False)
-        id_files = [f for f in os.listdir(issue_paths.issue_id_path) if f != 'i.id' and f != '00000.id' and f.endswith('.id') and f.replace('.id', '').isdigit()]
+        id_files = [f for f in os.listdir(issue_paths.issue_id_path) if f.endswith('.id') and f.replace('.id', '').isdigit()]
         for id_file in id_files:
             #order = id_file.replace('.id', '')
             #if order.isdigit():
@@ -254,13 +254,20 @@ class ISISManager4Articles:
     def save_article_records(self, package, article, issue_paths):
 
         # identify files and paths
+        creation_date = None
+
         id_filename = issue_paths.article_filename(article)
+        if os.path.isfile(id_filename):
+            j = IDFile().id2json(id_filename)
+            if len(j) > 0:
+                if j[0].get('91') is not None and j[0].get('92') is not None:
+                    creation_date = (j[0].get('91'), j[0].get('92'))
 
         if os.path.exists(id_filename):
             os.unlink(id_filename)
 
         # generate id file for one article
-        self.json2idfile_article.set_file_data(id_filename, package.report)
+        self.json2idfile_article.set_file_data(id_filename, package.report, creation_date)
 
         self.json2idfile_article.format_and_save_document_data(article.json_data, self.records_order, issue_paths.issue_db_name, issue_paths.xml_filename(article.xml_filename))
 
@@ -356,8 +363,8 @@ class IssuePath:
 
     def article_filename(self, article):
         id_filename = self.issue_id_path + '/' + os.path.basename(article.xml_filename.replace('.xml', '.id'))
-        if os.path.exists(id_filename):
-            os.unlink(id_filename)
+        #if os.path.exists(id_filename):
+        #    os.unlink(id_filename)
 
         order = '00000' + article.order
         

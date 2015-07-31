@@ -148,7 +148,7 @@ class PackagesProcessor:
                 self.invalid_packages.append(folder)
                 print('ERROR: package not processed')
                 print(e)
-                raise
+                #raise
 
 
 class Package:
