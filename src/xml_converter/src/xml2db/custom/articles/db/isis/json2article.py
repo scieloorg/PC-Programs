@@ -1113,10 +1113,13 @@ class JSON_Article:
         elif value.isdigit():
             if 0 < int(value) < 100000:
                 pass
+            elif self.json_data['f']['65'].startswith('2013') and int(value) == 0:
+                pass
             else:
                 errors.append('Order must be a number 1 to 99999')
         else:
             errors.append('Order must be a number 1 to 99999')
+
         return errors
 
     def validate_doctopic(self):

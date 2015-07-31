@@ -11,14 +11,16 @@ class JSON2IDFile_Article:
     """
     def __init__(self, json2idfile):
         self.json2idfile = json2idfile
+        self.creation_date = None
 
-    def set_file_data(self, filename, report):
+    def set_file_data(self, filename, report, creation_date=None):
         """
         Arguments: 
         filename -- path and file name for ID file
         report   -- object Report
         """
         self.json2idfile.set_file_data(filename, report)
+        self.creation_date = creation_date
 
         
     def format_and_save_document_data(self, json_data, records_order, db_name, xml_filename = ''):
@@ -51,13 +53,14 @@ class JSON2IDFile_Article:
                 except:
                     pass
             if data == None:
-                record_index += 1
-                record_number += 1
-                self.json2idfile.save_record_number(record_number)
-                data = {}
-                data = self.add_record_data(data, record_name, record_number, record_index, 1, total)
-                data = self.add_file_data(xml_filename, db_name, data)
-                self.json2idfile.save_document_data(data)
+                if record_name != 'c':
+                    record_index += 1
+                    record_number += 1
+                    self.json2idfile.save_record_number(record_number)
+                    data = {}
+                    data = self.add_record_data(data, record_name, record_number, record_index, 1, total)
+                    data = self.add_file_data(xml_filename, db_name, data)
+                    self.json2idfile.save_document_data(data)
             else:
                 if type([]) == type(data):
                     # is a list of record of same type
@@ -92,7 +95,7 @@ class JSON2IDFile_Article:
         
         return data
       
-    def add_record_data(self, data, record_name, record_number, record_index, total_of_record_type, total_of_records ):
+    def add_record_data(self, data, record_name, record_number, record_index, total_of_record_type, total_of_records):
         
         data['700'] = str(record_number)
         data['701'] = str(record_index)
@@ -101,8 +104,13 @@ class JSON2IDFile_Article:
         data['708'] = str(total_of_record_type)
 
         if record_name == 'o':
-            data['91'] = datetime.now().isoformat()[0:10].replace('-', '')
-            data['92'] = datetime.now().isoformat()[11:19].replace(':', '')
+            if self.creation_date is None:
+                data['91'] = datetime.now().isoformat()[0:10].replace('-', '')
+                data['92'] = datetime.now().isoformat()[11:19].replace(':', '')
+            else:
+                data['91'] = self.creation_date[0]
+                data['92'] = self.creation_date[1]
+                data['93'] = datetime.now().isoformat()[0:10].replace('-', '')
             data['703'] = str(total_of_records)
         else:
             data['1'] = 'br1.1'
