@@ -1077,7 +1077,7 @@ def execute_converter(package_paths, collection_name=None):
                 utils.display_message(package_path)
                 utils.display_message(e)
                 utils.display_message('-'*10)
-                raise
+                #raise
                 bad_pkg_files.append(package_path)
                 bad_pkg_files.append(str(e))
                 report_location, report_path, scilista_item = [None, None, None]

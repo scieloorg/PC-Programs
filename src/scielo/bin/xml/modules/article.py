@@ -956,10 +956,11 @@ class ArticleXML(object):
             node = self.tree.find('.//license')
             if node is not None:
                 r = node.attrib.get('{http://www.w3.org/1999/xlink}href')
-                if r.find('/deed.'):
-                    r = r[0:r.find('/deed.')]
-                if r.endswith('/'):
-                    r = r[:-1]
+                if r is not None:
+                    if r.find('/deed.'):
+                        r = r[0:r.find('/deed.')]
+                    if r.endswith('/'):
+                        r = r[:-1]
         return r
 
     @property
