@@ -47,6 +47,7 @@ How to install
   - XML Converter: program to load XML files into the database
 
 7. For local server installation, set OS23470a to the environment variable BAP, by accessing the Windows menu: Control Panel -> Performance and Maintenance -> System -> Advanced Settings -> Environment variables.
+
   Check if the variable already exists. 
   If it does not, click New and enter the value.
 
