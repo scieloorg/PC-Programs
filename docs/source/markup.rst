@@ -2,12 +2,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. toctree::
+   :maxdepth: 3
+
 Markup Program
 ==============
 
-Markup program is a desktop Application (macro in Microsoft Office Word), to identify bibliographic elements in the articles and texts, according to SciELO DTD for `article <dtd.html#article>`_ and for `text <dtd.html#text>`_, based on standard ISO 8879-1986 (SGML - Standard Generalized Markup Language) and ISO 12083-1994 (Electronic Manuscript Preparation and Markup).
-
-Nowadays there is a new SciELO DTD: doc. It is simpler than article and text because there are less levels, but by the other hand, there are more elements to identify. It must be used to identify the elements to generate XML according to `SPS <http://docs.scielo.org/projects/scielo-publishing-schema/>`_. 
+Markup program is a desktop Application (macro in Microsoft Office Word), to identify bibliographic elements in documents, according to SciELO DTD for `article <dtd.html#article>`_ and for `text <dtd.html#text>`_, based on standard ISO 8879-1986 (SGML - Standard Generalized Markup Language) and ISO 12083-1994 (Electronic Manuscript Preparation and Markup). Nowadays there is a new SciELO DTD: `doc <dtd.html#doc>`_. It is simpler than article and text because there are less levels, but by the other hand, there are more elements to identify. It must be used to identify the elements to generate XML according to `SPS <http://docs.scielo.org/projects/scielo-publishing-schema/>`_. 
 
 
 Functionalities
@@ -81,7 +82,7 @@ How to open
 
 Use the Windows menu to open the program.
 
-.. image:: img/scielo_menu.png
+.. image:: img/scielo_menu_markup.png
 
 Or use Windows Explorer and click on markup.exe: 
 
@@ -283,7 +284,7 @@ Files and DTD errors report button
 
 .. image:: img/markup_operations_bar_err_report.jpg
 
-Click on this button to view the `report of files and DTD errors  <xml_package_maker.html#report-of-files-and-dtd-errors>`_.
+Click on this button to view the `report of files and DTD errors  <markup_reports.html#report-of-files-and-dtd-errors>`_.
 
 
 SciELO Style Checker report button
@@ -291,7 +292,7 @@ SciELO Style Checker report button
 
 .. image:: img/markup_operations_bar_xml_style_report.jpg
 
-Click on this button to view the `report of SciELO Style Checker <xml_package_maker.html#report-of-scielo-style-checker>`_.
+Click on this button to view the `report of SciELO Style Checker <markup_reports.html#report-of-scielo-style-checker>`_.
 
 
 Contents Validations report button
@@ -299,7 +300,7 @@ Contents Validations report button
 
 .. image:: img/markup_operations_bar_data_val_report.jpg
 
-Click on this button to view the `report of Contents Validations <xml_package_maker.html#report-of-contents-validations>`_.
+Click on this button to view the `report of Contents Validations <markup_reports.html#report-of-contents-validations>`_.
 
 
 PMC Style Checker report button
@@ -307,7 +308,7 @@ PMC Style Checker report button
 
 .. image:: img/markup_operations_bar_pmc_style_report.jpg
 
-Click on this button to view the `report of PMC Style Checker <xml_package_maker.html#report-of-pmc-style-checker>`_.
+Click on this button to view the `report of PMC Style Checker <markup_reports.html#report-of-pmc-style-checker>`_.
 
 
 View Markup button
@@ -392,7 +393,7 @@ Up
 How to use
 ----------
 
-`How to use Markup Program <markup_how_to_use.html>`_.
+`How to identify a document using DOC DTD <markup_doc.html>`_.
 
 
 Error messages

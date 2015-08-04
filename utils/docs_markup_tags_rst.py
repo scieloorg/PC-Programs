@@ -1,19 +1,20 @@
 error = []
-contains = {}
-found = {}
+children = {}
+parents = {}
 tag = ''
 for line in open('../src/scielo/bin/markup_xml/app_core/tree.txt', 'r').readlines():
     line = line.strip()
     if ';' in line:
         parts = line.split(';')
-        contains[tag].append(parts[0])
-        if parts[0] is not found.keys():
-            found[parts[0]] = []
-        found[parts[0]].append(tag)
+        child_name = parts[0]
+        children[tag].append(child_name)
+        if not child_name in parents.keys():
+            parents[child_name] = []
+        parents[child_name].append(tag)
     else:
         if len(line) > 0:
             tag = line
-            contains[tag] = []
+            children[tag] = []
 
 
 def links(a_list, address=''):
@@ -34,18 +35,18 @@ def links_other_page(a_list, other_page):
     return ', '.join(a)
 
 
-def element(definition, contains, found, attributes, tag):
+def element(definition, children, parents, attributes, tag):
     print(tag)
     print('-'*len(tag))
     print('\nElement')
-    print('\n' + definition[tag])
-    if found.get(tag) is not None:
-        if len(found[tag]) > 0:
-            print('\nContained in: ' + links(found.get(tag)))
+    print('\n' + definition)
+    if parents.get(tag) is not None:
+        if len(parents[tag]) > 0:
+            print('\nContained in: ' + links(parents.get(tag)))
 
-    if contains.get(tag) is not None:
-        if len(contains[tag]) > 0:
-            print('\nContains: ' + links(contains.get(tag)))
+    if children.get(tag) is not None:
+        if len(children[tag]) > 0:
+            print('\nContains: ' + links(children.get(tag)))
 
     if tag in attributes.keys():
         print('\nAttributes: ' + links_to_attr(attributes[tag]))
@@ -54,11 +55,11 @@ def element(definition, contains, found, attributes, tag):
     print('')
 
 
-def auto_element(definition, contains, found, attributes, tag):
+def auto_element(definition, children, parents, attributes, tag):
     print(tag)
     print('-'*len(tag))
     print('\nAutomatic identification of `' + tag[1:] + '`_')
-    print('\n' + definition[tag])
+    print('\n' + definition)
     print('')
 
 
@@ -154,16 +155,16 @@ print('='*len(title))
 print('Automations')
 print('===========')
 
-for item in sorted(definitions.keys()):
+for item in sorted(children.keys()):
     if '*' in item:
-        auto_element(definitions, contains, found, tag_attributes, item)
+        auto_element(definitions.get(item, ''), children, parents, tag_attributes, item)
 
 print('Elements')
 print('========')
 
-for item in sorted(definitions.keys()):
+for item in sorted(children.keys()):
     if not '*' in item:
-        element(definitions, contains, found, tag_attributes, item)
+        element(definitions.get(item, ''), children, parents, tag_attributes, item)
 
 print('Attributes')
 print('==========')
