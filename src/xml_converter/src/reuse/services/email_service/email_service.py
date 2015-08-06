@@ -61,6 +61,17 @@ class EmailService:
         bcc = strtolist(bcc)
         cc = strtolist(cc)
 
+        print('attaching...')
+        valid_attaches = []
+        for att in attaches:
+            print(att)
+            if os.path.isfile(att):
+                valid_attaches.append(att)
+                print('attached')
+            else:
+                print('not found')
+        attaches = valid_attaches
+        
         assert type(to)==type([])
         assert type(attaches)==type([])
         assert type(bcc)==type([])

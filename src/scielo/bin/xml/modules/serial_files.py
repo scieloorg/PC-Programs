@@ -97,6 +97,8 @@ class IssueFiles(object):
 
     def move_old_id_folder(self):
         if os.path.isdir(self.old_id_path):
+            if not os.path.isdir(self.id_path):
+                os.makedirs(self.id_path)
             for item in os.listdir(self.old_id_path):
                 if not os.path.isfile(self.id_path + '/' + item):
                     shutil.copyfile(self.old_id_path + '/' + item, self.id_path + '/' + item)
@@ -115,7 +117,7 @@ class IssueFiles(object):
 
     @property
     def old_id_path(self):
-        return self.issue_path + '/base/id'
+        return self.issue_path + '/id'
 
     @property
     def id_path(self):
@@ -162,23 +164,45 @@ class IssueFiles(object):
         path['html'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
         path['img'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path
 
+        xml_content = ''.join([open(self.xml_path + '/' + xml_filename).read().decode('utf-8') for xml_filename in os.listdir(self.xml_path) if xml_filename.endswith('.xml')])
+
         for p in path.values():
             if not os.path.isdir(p):
                 os.makedirs(p)
         for f in os.listdir(self.xml_path):
-            if f.endswith('.xml.bkp') or f.endswith('.xml.replaced.txt'):
+            if f.endswith('.xml.bkp') or f.endswith('.xml.replaced.txt') or f.endswith('.rep.xml'):
                 pass
             elif os.path.isfile(self.xml_path + '/' + f):
                 ext = f[f.rfind('.')+1:]
-                if path.get(ext) is not None:
-                    shutil.copy(self.xml_path + '/' + f, path[ext])
-                    msg.append('  ' + f + ' => ' + path[ext])
-                else:
+
+                if path.get(ext) is None:
                     if not f.endswith('.tif') and not f.endswith('.tiff'):
                         shutil.copy(self.xml_path + '/' + f, path['img'])
                         msg.append('  ' + f + ' => ' + path['img'])
-
+                elif ext == 'pdf':
+                    pdf_filename = self.fix_pdf_name(f, xml_content)
+                    if os.path.isfile(path[ext] + '/' + pdf_filename):
+                        os.unlink(path[ext] + '/' + pdf_filename)
+                    shutil.copyfile(self.xml_path + '/' + f, path[ext] + '/' + pdf_filename)
+                    print(pdf_filename)
+                    msg.append('  ' + f + ' => ' + path[ext] + '/' + pdf_filename)
+                else:
+                    shutil.copy(self.xml_path + '/' + f, path[ext])
+                    msg.append('  ' + f + ' => ' + path[ext])
         return '\n'.join(['<p>' + item + '</p>' for item in msg])
+
+    def fix_pdf_name(self, filename, xml_content):
+        new_name = filename
+        if not filename in xml_content:
+            print(filename)
+            prefix = filename[0:-len('-??.pdf')]
+
+            n = filename[0:-(len('.pdf'))]
+            n = n[-3:]
+            if n.startswith('-'):
+                lang = n[1:]
+                new_name = lang + '_' + prefix + '.pdf'
+        return new_name
 
     def save_reports(self, report_path):
         if not self.base_reports_path == report_path:
@@ -216,6 +240,8 @@ class JournalFiles(object):
         self.acron = acron
         self.journal_path = serial_path + '/' + acron
         self.years = [str(int(datetime.now().isoformat()[0:4])+1 - y) for y in range(0, 5)]
+        for y in self.years:
+            self.move_ahead_old_id_folder(y)
 
     def ahead_base(self, year):
         path = self.journal_path + '/' + year + 'nahead/base/' + year + 'nahead'
@@ -244,6 +270,11 @@ class JournalFiles(object):
         #create_path(path)
         return path
 
+    def ahead_old_id_path(self, year):
+        path = self.journal_path + '/' + year + 'nahead/id'
+        #create_path(path)
+        return path
+
     def ex_ahead_paths(self, year):
         path = self.journal_path + '/ex-' + year + 'nahead'
         m = path + '/markup/'
@@ -258,3 +289,16 @@ class JournalFiles(object):
             if os.path.isfile(self.ahead_base(y) + '.mst'):
                 bases.append(self.ahead_base(y))
         return bases
+
+    def move_ahead_old_id_folder(self, year):
+        if os.path.isdir(self.ahead_old_id_path(year)):
+            if not os.path.isdir(self.ahead_id_path(year)):
+                os.makedirs(self.ahead_id_path(year))
+            for item in os.listdir(self.ahead_old_id_path(year)):
+
+                if not os.path.isfile(self.ahead_id_path(year) + '/' + item):
+                    shutil.copyfile(self.ahead_old_id_path(year) + '/' + item, self.ahead_id_path(year) + '/' + item)
+            try:
+                fs_utils.delete_file_or_folder(self.ahead_old_id_path(year))
+            except:
+                pass

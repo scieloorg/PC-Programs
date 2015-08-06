@@ -61,6 +61,7 @@ def is_config_file(configuration_filename):
 
 def run_remote_mkdirs(user, server, path):
     try:
+        print('ssh ' + user + '@' + server + ' "mkdir -p ' + path + '"')
         os.system('ssh ' + user + '@' + server + ' "mkdir -p ' + path + '"')
     except:
         pass
@@ -68,6 +69,7 @@ def run_remote_mkdirs(user, server, path):
 
 def run_rsync(source, user, server, dest):
     try:
+        print('nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n')
         os.system('nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n')
     except:
         pass
@@ -75,6 +77,7 @@ def run_rsync(source, user, server, dest):
 
 def run_scp(source, user, server, dest):
     try:
+        print('nohup scp -r ' + source + ' ' + user + '@' + server + ':' + dest + '&\n')
         os.system('nohup scp -r ' + source + ' ' + user + '@' + server + ':' + dest + '&\n')
     except:
         pass

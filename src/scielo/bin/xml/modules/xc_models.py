@@ -185,9 +185,11 @@ class RegisteredArticle(object):
         if last is not None:
             if '-' in last:
                 last = last.replace('T', ' ')[0:16]
-            else:
+            if ' ' in last:
                 last = last.split(' ')
                 last = utils.display_datetime(last[0], last[1])
+            else:
+                last = utils.display_datetime(last, '')
         return last
 
     @property
@@ -288,7 +290,9 @@ class ArticleRecords(object):
             new = {}
             new['n'] = item.fname
             new['s'] = item.surname
-            new['z'] = item.suffix
+            if item.suffix is not None:
+                if item.suffix != '':
+                    new['s'] += ' ' + item.suffix
             new['p'] = item.prefix
             new['r'] = normalize_role(item.role)
             #if len(item.xref) == 0 and len(self.article.affiliations) > 0 and len(self.article.contrib_names) == 1:
@@ -387,7 +391,10 @@ class ArticleRecords(object):
                         a = {}
                         a['n'] = author.fname
                         a['s'] = author.surname
-                        a['z'] = author.suffix
+                        if author.suffix is not None:
+                            if author.suffix != '':
+                                a['s'] += ' ' + author.suffix
+                        #a['z'] = author.suffix
                         a['r'] = normalize_role(author.role)
                     else:
                         # collab
@@ -565,7 +572,7 @@ class IssueArticlesRecords(object):
         i_record = None
 
         record_types = list(set([record.get('706') for record in self.records]))
-
+        print(record_types)
         articles_records = {}
         for record in self.records:
             if record.get('706') == 'i':
@@ -722,6 +729,8 @@ class ArticleDAO(object):
 
         records = self.dao.get_records(issue_files.base)
         i, registered_articles = IssueArticlesRecords(records).articles()
+        print('REGISTERED')
+        print(str(len(registered_articles)))
         for xml_name, registered_doc in registered_articles.items():
             f = issue_files.base_source_path + '/' + xml_name + '.xml'
             if os.path.isfile(f):
