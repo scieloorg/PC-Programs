@@ -828,7 +828,7 @@ def validate_xml_issue_data(issue_models, article):
             msg.append(html_reports.tag('h5', 'license'))
             msg.append('ERROR: ' + _('Unable to identify issue license'))
         elif article.license_url is not None:
-            if not '/' + issue_models.issue.license.lower() + '/' in article.license_url.lower():
+            if not '/' + issue_models.issue.license.lower() in article.license_url.lower():
                 msg.append(html_reports.tag('h5', 'license'))
                 msg.append('ERROR: ' + _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + issue_models.issue.license + '"')
             else:
