@@ -579,12 +579,18 @@ class IssueArticlesRecords(object):
                 i_record = record
             elif record.get('706') == 'o':
                 # new article
-                articles_records[record.get('2')] = []
-                articles_records[record.get('2')].append(record)
+                xml_name = record.get('2')
+                if xml_name.endswith('.xml'):
+                    xml_name = xml_name[0:-4]
+                articles_records[xml_name] = []
+                articles_records[xml_name].append(record)
             elif record.get('706') == 'h':
                 if not 'o' in record_types:
-                    articles_records[record.get('2')] = []
-                articles_records[record.get('2')].append(record)
+                    xml_name = record.get('2')
+                    if xml_name.endswith('.xml'):
+                        xml_name = xml_name[0:-4]
+                    articles_records[xml_name] = []
+                articles_records[xml_name].append(record)
 
         items = {}
         for xml_name, records in articles_records.items():

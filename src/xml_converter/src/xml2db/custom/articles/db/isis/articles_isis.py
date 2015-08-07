@@ -13,9 +13,22 @@ class AheadManager:
 
         for ahead_folder in self.ahead_folders:
             # 2013nahead
-            for id_filename in os.listdir(journal_path + '/' + ahead_folder + '/id'):
+            id_path = journal_path + '/' + ahead_folder + '/base_xml/id'
+            if not os.path.isdir(id_path):
+                os.makedirs(id_path)
+            old_id_path = journal_path + '/' + ahead_folder + '/id'
+            if os.path.isdir(old_id_path):
+                for id_filename in os.listdir(old_id_path):
+                    if not os.path.isfile(id_path + '/' + id_filename):
+                        shutil.copy(old_id_path + '/' + id_filename, id_path)
+                try:
+                    import fs_utils
+                    fs_utils.delete_file_or_folder(old_id_path)
+                except:
+                    pass
+            for id_filename in os.listdir(id_path):
                 if id_filename != 'i.id':
-                    filename = journal_path + '/' + ahead_folder + '/id/' + id_filename
+                    filename = id_path + '/' + id_filename
                     j = IDFile().id2json(filename)
                     doi = self.doi(j)
                     if doi != '':
@@ -76,7 +89,7 @@ class AheadManager:
 
     def update_ahead_issue(self):
         for ahead_issue_folder in self.ahead_folders:
-            id_path = self.journal_path + '/' + ahead_issue_folder + '/id'
+            id_path = self.journal_path + '/' + ahead_issue_folder + '/base_xml/id'
             db_path = self.journal_path + '/' + ahead_issue_folder + '/base'
 
             db_name = ahead_issue_folder
@@ -321,6 +334,7 @@ class IssuePath:
     def __init__(self, paths, issue):
         self.issue = issue
         self.paths = paths
+        self.move_old_id_folder()
 
     def existing_path(self, path):
         if not os.path.exists(path):
@@ -351,6 +365,14 @@ class IssuePath:
 
     @property
     def issue_id_path(self):
+        return self.existing_path(self.issue_path + '/base_xml/id')
+
+    @property
+    def issue_base_source_path(self):
+        return self.existing_path(self.issue_path + '/base_xml/base_source')
+
+    @property
+    def issue_old_id_path(self):
         return self.existing_path(self.issue_path + '/id')
 
     @property
@@ -367,7 +389,7 @@ class IssuePath:
         #    os.unlink(id_filename)
 
         order = '00000' + article.order
-        
+
         new_id_filename = self.issue_id_path + '/' + order[-5:] + '.id'
         return new_id_filename
 
@@ -389,7 +411,8 @@ class IssuePath:
     def archive_article_files(self, xml_filename, issue, package):
         package.report.write('Archiving ' + self.issue.journal.acron + ' ' + self.issue.name)
         xml_content = open(xml_filename).read() if os.path.isfile(xml_filename) else ''
-
+        if not os.path.isdir(self.issue_base_source_path):
+            os.makedirs(self.issue_base_source_path)
         if len(xml_content) > 0:
             if not isinstance(xml_content, unicode):
                 xml_content = xml_content.decode('utf-8')
@@ -399,6 +422,7 @@ class IssuePath:
                 for f in os.listdir(dirname):
                     if f.startswith(fname + '-') or f.startswith(fname + '.'):
                         src_filename = dirname + '/' + f
+                        shutil.copy(src_filename, self.issue_base_source_path)
                         if src_filename.endswith('.pdf') and f.startswith(fname + '-'):
                             if not '="' + f + '"' in xml_content:
                                 # ajusta o nome do arquivo pdf de traducao
@@ -409,3 +433,16 @@ class IssuePath:
 
                         self.paths.move_file_to_path(src_filename, self.issue_folder)
         print('fim archive_article_files.')
+
+    def move_old_id_folder(self):
+        if os.path.isdir(self.issue_old_id_path):
+            if not os.path.isdir(self.issue_id_path):
+                os.makedirs(self.issue_id_path)
+            for item in os.listdir(self.issue_old_id_path):
+                if not os.path.isfile(self.issue_id_path + '/' + item):
+                    shutil.copyfile(self.issue_old_id_path + '/' + item, self.issue_id_path + '/' + item)
+            try:
+                import fs_utils
+                fs_utils.delete_file_or_folder(self.issue_old_id_path)
+            except:
+                pass
