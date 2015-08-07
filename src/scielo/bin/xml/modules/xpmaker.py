@@ -333,11 +333,19 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
         content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
         content = replace_mimetypes(content, src_path)
     else:
-        pass
+        print('Unable to convert SGML 2 XML')
+        content = u''
     return content
 
 
 def fix_sgml_xml(content):
+    if '<doc ' in content:
+        content = content[0:content.find('</doc>') + len('</doc>')]
+    elif '<article ' in content:
+        content = content[0:content.find('</article>') + len('</article>')]
+    elif '<text ' in content:
+        content = content[0:content.find('</text>') + len('</text>')]
+
     xml_fix = xml_utils.XMLContent(content)
     xml_fix.fix()
     if not xml_fix.content == content:
@@ -408,7 +416,7 @@ def generate_new_name(doc, param_acron='', original_xml_name=''):
 
     r = ''
     vol, issueno, fpage, seq, elocation_id, order, doi = doc.volume, doc.number, doc.fpage, doc.fpage_seq, doc.elocation_id, doc.order, doc.doi
-
+    print([vol, issueno, fpage, seq, elocation_id, order, doi])
     issns = [issn for issn in [doc.e_issn, doc.print_issn] if issn is not None]
     if original_xml_name[0:9] in issns:
         issn = original_xml_name[0:9]
@@ -651,9 +659,11 @@ def normalize_xml_content(doc_files_info, content, version):
 
 
 def get_new_name(doc_files_info, doc, acron):
+    print('get_new_name')
     new_name = doc_files_info.xml_name
     if doc_files_info.is_sgmxml:
         new_name = generate_new_name(doc, acron, doc_files_info.xml_name)
+    print(new_name)
     return new_name
 
 
@@ -681,7 +691,6 @@ def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False):
 def normalize_package_name(doc_files_info, acron, content):
     register_log('load_xml')
     xml, e = xml_utils.load_xml(content)
-
     doc = article.Article(xml, doc_files_info.xml_name)
     doc_files_info.new_name = doc_files_info.xml_name
 

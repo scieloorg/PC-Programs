@@ -38,7 +38,7 @@ def block_gerapadrao(permission_file):
     open(permission_file, 'w').write('running')
 
 
-def read_collection_scilista(scilista_file):
+def consume_collection_scilista(scilista_file):
     content = None
     if scilista_file is not None:
         if os.path.isfile(scilista_file):
@@ -69,10 +69,16 @@ def gerapadrao(args):
     else:
         config = xc.get_configuration(collection_acron)
         if config is not None:
+            mailer = xc.get_mailer(config)
+
+            if config.is_enabled_transference:
+                open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - inicio transf files\n')
+                transfer_website_files(config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path, open(config.collection_scilista, 'r').readlines())
+                open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim transf files\n')
             if config.is_enabled_gerapadrao:
                 if is_unblocked_gerapadrao(config.gerapadrao_permission_file):
                     config.update_title_and_issue()
-                    scilista_content = read_collection_scilista(config.collection_scilista)
+                    scilista_content = consume_collection_scilista(config.collection_scilista)
                     if scilista_content is None:
                         print(config.collection_scilista + ' is empty')
                     else:
@@ -80,16 +86,17 @@ def gerapadrao(args):
                         print(scilista_content)
 
                         block_gerapadrao(config.gerapadrao_permission_file)
-                        open(config.gerapadrao_scilista, 'w').write(scilista_content)
+                        open(config.gerapadrao_scilista, 'a+').write(scilista_content)
                         gerapadrao_cmd = gerapadrao_command(config.gerapadrao_proc_path, config.gerapadrao_permission_file)
 
-                        mailer = xc.get_mailer(config)
                         if mailer is not None:
                             mailer.send_message(config.email_to, config.email_subject_gerapadrao, config.email_text_gerapadrao + scilista_content)
 
-                        open('./gerapadrao.log', 'w').write(datetime.now().isoformat() + ' - inicio gerapadrao\n')
+                        open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - inicio gerapadrao\n')
+                        open('./gerapadrao.log', 'a+').write(gerapadrao_cmd)
+                        open('./gerapadrao.log', 'a+').write(scilista_content)
                         os.system(gerapadrao_cmd)
-                        clean_collection_scilista(config.collection_scilista)
+                        #clean_collection_scilista(config.collection_scilista)
                         open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim gerapadrao\n')
 
                         if config.is_enabled_transference:
@@ -97,14 +104,14 @@ def gerapadrao(args):
                             transfer_website_bases(config.local_web_app_path + '/bases', config.transference_user, config.transference_server, config.remote_web_app_path + '/bases')
                             open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim transf bases\n')
 
-                            #transfer_website_files(config.local_web_app_path + '/bases', config.transference_user, config.transference_server, config.remote_web_app_path + '/bases')
-                            #open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim transf\n')
-
                         if mailer is not None:
                             mailer.send_message(config.email_to, config.email_subject_website_update, config.email_text_website_update + scilista_content)
 
                 else:
                     print('gerapadrao is running. Wait ...')
+                    if mailer is not None:
+                        if os.path.isfile(config.collection_scilista):
+                            mailer.send_message(config.email_to_adm, 'gerapadrao is busy', open(config.collection_scilista, 'r').read())
 
 
 def gerapadrao_command(proc_path, gerapadrao_status_filename):
@@ -117,3 +124,22 @@ def transfer_website_bases(local_bases_path, user, server, remote_bases_path):
     for folder in folders:
         xc.run_remote_mkdirs(user, server, remote_bases_path + '/' + folder)
         xc.run_scp(local_bases_path + '/' + folder, user, server, remote_bases_path)
+
+
+def transfer_website_files(local_web_app_path, user, server, remote_web_app_path, scilista_items):
+    scilista_items = [item.strip().split(' ') for item in scilista_items if ' ' in item]
+    for acron, issue_id in scilista_items:
+        transfer_issue_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path)
+
+
+def transfer_issue_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path):
+    # 'rsync -CrvK img/* user@server:/var/www/...../revistas'
+    issue_id_path = acron + '/' + issue_id
+
+    folders = ['/htdocs/img/revistas/', '/bases/pdf/', '/bases/xml/']
+
+    for folder in folders:
+        dest_path = remote_web_app_path + folder + issue_id_path
+        source_path = local_web_app_path + folder + issue_id_path
+        xc.run_remote_mkdirs(user, server, dest_path)
+        xc.run_rsync(source_path, user, server, dest_path)

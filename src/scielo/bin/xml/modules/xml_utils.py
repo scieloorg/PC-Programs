@@ -37,9 +37,9 @@ class XMLContent(object):
         self.content = content
 
     def fix(self):
-        self.content = self.content[0:self.content.rfind('>')+1]
         self.content = self.content[self.content.find('<'):]
         self.content = self.content.replace(' '*2, ' '*1)
+
         if is_xml_well_formed(self.content) is None:
             self._fix_style_tags()
         if is_xml_well_formed(self.content) is None:
@@ -367,6 +367,8 @@ def is_xml_well_formed(content):
     node, e = parse_xml(content)
     if e is None:
         return node
+    else:
+        print(e)
 
 
 def load_xml(content):

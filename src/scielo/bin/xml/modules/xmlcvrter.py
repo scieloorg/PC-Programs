@@ -806,7 +806,10 @@ def validate_xml_issue_data(issue_models, article):
                 issue_data = ' | '.join(issue_data)
             if not article_data == issue_data:
                 msg.append(html_reports.tag('h5', label))
-                msg.append('FATAL ERROR: ' + _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"')
+                if issue_data == 'None':
+                    msg.append('ERROR: ' + _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"')
+                else:
+                    msg.append('FATAL ERROR: ' + _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"')
 
         validations = []
         validations.append(('publisher', article.publisher_name, issue_models.issue.publisher_name))
@@ -821,14 +824,14 @@ def validate_xml_issue_data(issue_models, article):
                 issue_data = ' | '.join(issue_data)
             if utils.how_similar(article_data, issue_data) < 0.8:
                 msg.append(html_reports.tag('h5', label))
-                msg.append('FATAL ERROR: ' + _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"')
+                msg.append('ERROR: ' + _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"')
 
         # license
         if issue_models.issue.license is None:
             msg.append(html_reports.tag('h5', 'license'))
             msg.append('ERROR: ' + _('Unable to identify issue license'))
         elif article.license_url is not None:
-            if not '/' + issue_models.issue.license.lower() + '/' in article.license_url.lower():
+            if not '/' + issue_models.issue.license.lower() in article.license_url.lower():
                 msg.append(html_reports.tag('h5', 'license'))
                 msg.append('ERROR: ' + _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + issue_models.issue.license + '"')
             else:

@@ -42,7 +42,7 @@ It will generate
 in the folder which contains XML package files plus the current time.
 
 
-.. image:: img/xpm_result_folder.png
+.. image:: img/xpm_result_folders.png
 
 
 Results
