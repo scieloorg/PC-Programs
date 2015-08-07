@@ -891,7 +891,7 @@ class ArticleContentValidation(object):
 
                     #_msg = _('Unmatched @ref-type (%s), and %s: xref[@ref-type="%s"] is for %s and valid values of  @ref-type of %s are %s') % (xref['ref-type'], tag, xref['ref-type'], reftypes_and_tag.get(xref['ref-type']), tag, '|'.join(reftypes))
 
-                    message.append(_msg)
+                    message.append(('xref/@rid', 'FATAL ERROR', _msg))
         return message
 
     @property
