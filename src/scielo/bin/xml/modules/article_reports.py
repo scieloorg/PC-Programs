@@ -312,7 +312,17 @@ class ArticleValidationReport(object):
         items, performance = self.article_validation.validations
 
         if not display_all:
-            items = [(label, status, msg) for label, status, msg in items if status != 'OK']
+            #items = [(label, status, msg) for label, status, msg in items if status != 'OK']
+            new_items = []
+            for item in items:
+                if len(item) != 3:
+                    print('article_reports.validations()')
+                    print(item)
+                else:
+                    label, status, msg = item
+                    if status != 'OK':
+                        new_items.append((label, status, msg))
+            items = new_items
 
         r = ''
         if len(items) > 0:
