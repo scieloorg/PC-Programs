@@ -56,18 +56,42 @@ Navigate among the tabs.
 Summary report
 ..............
 
-.. image:: img/xpm_report.png
+Validations Statistics
+::::::::::::::::::::::
 
+Presents the total of fatal errors, errors, and warnings, found in the whole package.
+
+FATAL ERRORS
+   represents errors related to Bibliometrics Indicators.
+
+ERRORS
+   represents other types of errors
+
+WARNINGS
+   represents something that needs more attencion
+
+
+.. image:: img/xpm_report.png
 
 
 Detail report
 ..............
 
-.. image:: img/xpm_report_detail.png
+Presents the documents in a table.
 
+The columns order, aop pid, toc section, @article-type are hightlighted because contains important data.
+
+The column "reports" contains "buttons" to open/close the detail reports of each document.
+
+
+.. image:: img/xpm_report_detail.png
 
 Detail report - Validations
 :::::::::::::::::::::::::::
+
+Click on "Data Quality Control" to view the problems.
+The detail report is displayed below the row
+
 
 .. image:: img/xpm_report_detail_validations.png
 
@@ -75,7 +99,10 @@ Detail report - Validations
 Folders/Files
 .............
 
+Displays the files/folders which are inputs and outputs.
+
 .. image:: img/xpm_report_folder.png
+
 
 Overview report
 ...............
@@ -83,10 +110,15 @@ Overview report
 Overview report - languages
 :::::::::::::::::::::::::::
 
+Displays the elements which contains @xml:lang. 
+
 .. image:: img/xpm_report_overview_lang.png
 
 Overview report - dates
 :::::::::::::::::::::::
+
+Displays the dates found in the document: publication and history.
+Displays the spent time between received and accepted, accepted and published, accepted and the present date.
 
 .. image:: img/xpm_report_overview_date.png
 
