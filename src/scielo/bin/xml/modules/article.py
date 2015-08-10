@@ -146,7 +146,7 @@ class ArticleXML(object):
         self.back = None
         self.subarticles = []
         self.responses = []
-        self._languages = None
+        self._title_abstract_kwd_languages = None
         self._language = None
         self._trans_languages = None
         self._titles_by_lang = None
@@ -506,11 +506,10 @@ class ArticleXML(object):
         return self._titles_by_lang
 
     @property
-    def languages(self):
-        if self._languages is None:
-            self._languages = list(set(self.keywords_by_lang.keys() + self.abstracts_by_lang.keys() + self.titles_by_lang.keys()))
-
-        return self._languages
+    def title_abstract_kwd_languages(self):
+        if self._title_abstract_kwd_languages is None:
+            self._title_abstract_kwd_languages = list(set(self.keywords_by_lang.keys() + self.abstracts_by_lang.keys() + self.titles_by_lang.keys()))
+        return self._title_abstract_kwd_languages
 
     @property
     def trans_languages(self):
