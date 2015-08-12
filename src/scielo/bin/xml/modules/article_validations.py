@@ -686,9 +686,10 @@ class ArticleContentValidation(object):
                 if text is None:
                     not_found.append(('article title (@xml:lang=' + lang + ')', err_level, _('not found')))
                 else:
-                    found.append(('title-group (@xml:lang=' + lang + ')', 'INFO', text))
                     if lang is None:
                         not_found.append(('@xml:lang of title-group', err_level, _('Invalid value') + ': None' + ':' + text))
+                    else:
+                        found.append(('title-group (@xml:lang=' + lang + ')', 'INFO', text))
 
             if self.article.article_type in attributes.ABSTRACT_REQUIRED_FOR_DOCTOPIC:
                 t = self.article.abstracts_by_lang.get(lang)
@@ -699,9 +700,10 @@ class ArticleContentValidation(object):
                     if text is None:
                         not_found.append(('abstract (@xml:lang=' + lang + ')', err_level, _('not found')))
                     else:
-                        found.append(('abstract (@xml:lang=' + lang + ')', 'INFO', text))
                         if lang is None:
                             not_found.append(('@xml:lang of abstract', err_level, _('Invalid value') + ': None') + ': ' + text)
+                        else:
+                            found.append(('abstract (@xml:lang=' + lang + ')', 'INFO', text))
 
                 t = self.article.keywords_by_lang.get(lang)
                 if t is None:
@@ -712,9 +714,10 @@ class ArticleContentValidation(object):
                     if len(t) == 0:
                         not_found.append(('kwd (@xml:lang=' + lang + ')', err_level, _('not found')))
                     else:
-                        found.append(('kwd-group (@xml:lang=' + lang + ')', 'INFO', '; '.join([item.text for item in t])))
                         if lang is None:
                             not_found.append(('@xml:lang of kwd-group', err_level, _('Invalid value') + ': None') + ': ' + '; '.join([item.text for item in t]))
+                        else:
+                            found.append(('kwd-group (@xml:lang=' + lang + ')', 'INFO', '; '.join([item.text for item in t])))
             else:
                 a = self.article.abstracts_by_lang.get(lang)
                 b = self.article.keywords_by_lang.get(lang)

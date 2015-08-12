@@ -96,7 +96,7 @@ Fist of all, XPM validates some package's data:
 - Some data must have unique value in all the XML files, such as:
 
  * doi
- * elocation-id, if it is applicable
+ * elocation-id, if applicable
  * fpage and fpage/@seq
  * order (used to generated article PID)
 

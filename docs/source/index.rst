@@ -16,9 +16,10 @@ Welcome to SciELO PC Programs' documentation!
 
     programs.rst
 
-    workflow_xml.rst
-    workflow_html.rst
-    
+    workflow_markup_xml.rst
+    workflow_markup_sgml.rst
+    workflow_publishing.rst
+
     databases_isis.rst
 
     concepts.rst
