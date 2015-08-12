@@ -166,7 +166,7 @@ class ArticlePackage(object):
         for xml_name in self.xml_name_sorted_by_order:
             doc = self.articles[xml_name]
             lang_dep = {}
-            for lang in doc.languages:
+            for lang in doc.title_abstract_kwd_languages:
 
                 elements = {}
                 elem = doc.titles_by_lang.get(lang)

@@ -248,10 +248,11 @@ class ArticleContentValidation(object):
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.history)
         #utils.debugging(datetime.now().isoformat() + ' validations')
+        items.append(self.titles_abstracts_keywords)
         items.append(self.validate_xref_reftype)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.missing_xref_list)
-        items.append(self.titles_abstracts_keywords)
+
         #utils.debugging(datetime.now().isoformat() + ' validations 2')
         r = self.normalize_validations(items)
         #utils.debugging(datetime.now().isoformat() + ' validations 3')
@@ -404,7 +405,7 @@ class ArticleContentValidation(object):
                 if not self.article.journal_title in journal_titles:
                     max_rate, items = utils.most_similar(utils.similarity(journal_titles, self.article.journal_title))
                     if max_rate < 0.7:
-                        status = 'ERROR'
+                        status = 'FATAL ERROR'
                 r.append(('doi', status, self.article.doi + ' ' + _('belongs to') + ' ' + '|'.join(journal_titles)))
 
             if not article_titles is None:
@@ -416,7 +417,7 @@ class ArticleContentValidation(object):
                     if rate > max_rate:
                         max_rate = rate
                 if max_rate < 0.7:
-                    status = 'ERROR'
+                    status = 'FATAL ERROR'
 
                 r.append(('doi', status, self.article.doi + ' ' + _('is already registered to') + ' ' + '|'.join(article_titles)))
 
@@ -673,38 +674,47 @@ class ArticleContentValidation(object):
     def titles_abstracts_keywords(self):
         r = []
 
-        for lang in self.article.languages:
+        for lang in self.article.title_abstract_kwd_languages:
+            err_level = 'ERROR' if lang != self.article.language else 'FATAL ERROR'
+            found = []
+            not_found = []
             t = self.article.titles_by_lang.get(lang)
             if t is None:
-                r.append(('title-group', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='title', demander='@xml:lang=' + lang)))
+                not_found.append(('title-group (@xml:lang=' + lang + ')', err_level, _('not found')))
             else:
                 text = None if t.title == '' else t.title
                 if text is None:
-                    r.append(('article title', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='title', demander='@xml:lang=' + lang)))
-                if lang is None:
-                    r.append(('article title @xml:lang', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='@xml:lang', demander=text)))
+                    not_found.append(('article title (@xml:lang=' + lang + ')', err_level, _('not found')))
+                else:
+                    found.append(('title-group (@xml:lang=' + lang + ')', 'INFO', text))
+                    if lang is None:
+                        not_found.append(('@xml:lang of title-group', err_level, _('Invalid value') + ': None' + ':' + text))
 
             if self.article.article_type in attributes.ABSTRACT_REQUIRED_FOR_DOCTOPIC:
                 t = self.article.abstracts_by_lang.get(lang)
                 if t is None:
-                    r.append(('abstract', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='abstract', demander='@xml:lang=' + lang)))
+                    not_found.append(('abstract (@xml:lang=' + lang + ')', err_level, _('not found')))
                 else:
                     text = None if t.text == '' else t.text
                     if text is None:
-                        r.append(('abstract', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='abstract', demander='@xml:lang=' + lang)))
-                    if lang is None:
-                        r.append(('abstract @xml:lang', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='@xml:lang', demander=text)))
+                        not_found.append(('abstract (@xml:lang=' + lang + ')', err_level, _('not found')))
+                    else:
+                        found.append(('abstract (@xml:lang=' + lang + ')', 'INFO', text))
+                        if lang is None:
+                            not_found.append(('@xml:lang of abstract', err_level, _('Invalid value') + ': None') + ': ' + text)
 
                 t = self.article.keywords_by_lang.get(lang)
                 if t is None:
-                    r.append(('kwd-group', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='kwd-group', demander='@xml:lang=' + lang)))
+                    not_found.append(('kwd-group (@xml:lang=' + lang + ')', err_level, _('not found')))
                 elif len(t) == 1:
-                    r.append(('kwd', 'FATAL ERROR', _('Required at least more than one kwd')))
+                    not_found.append(('kwd (@xml:lang=' + lang + ')', err_level, _('Required at least more than one kwd')))
                 else:
                     if len(t) == 0:
-                        r.append(('kwd', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='kwd', demander='@xml:lang=' + lang)))
-                    if lang is None:
-                        r.append(('kwd-group @xml:lang', 'FATAL ERROR', _('Missing {required} for {demander}').format(required='@xml:lang', demander='; '.join([item.text for item in t]))))
+                        not_found.append(('kwd (@xml:lang=' + lang + ')', err_level, _('not found')))
+                    else:
+                        found.append(('kwd-group (@xml:lang=' + lang + ')', 'INFO', '; '.join([item.text for item in t])))
+                        if lang is None:
+                            not_found.append(('@xml:lang of kwd-group', err_level, _('Invalid value') + ': None') + ': ' + '; '.join([item.text for item in t]))
             else:
                 a = self.article.abstracts_by_lang.get(lang)
                 b = self.article.keywords_by_lang.get(lang)
@@ -712,7 +722,13 @@ class ArticleContentValidation(object):
                 b = 0 if b is None else 1
                 if a + b > 0:
                     article_type = '@article-type=' + self.article.article_type
-                    r.append(('abstract/kwd-group', 'WARNING', _('Unexpected {unexpected} for {demander}. Be sure that {demander} is correct.').format(unexpected='abstract/kwd-group', demander=article_type)))
+                    not_found.append(('abstract/kwd-group', 'WARNING', _('Unexpected {unexpected} for {demander}. Be sure that {demander} is correct.').format(unexpected='abstract/kwd-group', demander=article_type)))
+            if len(not_found) > 0:
+                if len(found) > 0:
+                    for item in found:
+                        r.append(item)
+                for item in not_found:
+                    r.append(item)
         return r
 
     @property
@@ -899,6 +915,7 @@ class ArticleContentValidation(object):
         alert_tags = ['fig', 'table-wrap', 'ref', ]
         rid_list = [node['rid'] for node in self.article.xref_nodes]
         message = []
+        missing = {}
         for node in self.article.elements_which_has_id_attribute:
             _id = node.attrib.get('id')
             if _id is None:
@@ -906,7 +923,14 @@ class ArticleContentValidation(object):
             else:
                 if not _id in rid_list:
                     if node.tag in alert_tags:
-                        message.append((node.tag, 'ERROR', _('Missing') + ' xref[@rid="' + _id + '"]'))
+                        if not node.tag in missing.keys():
+                            missing[node.tag] = []
+                        missing[node.tag].append(_id)
+
+        for tag, not_found in missing.items():
+            msg = ', '.join(['xref[@rid="' + _id + '"]' for _id in sorted(not_found)])
+            message.append((tag, 'ERROR', _('Missing') + ': ' + msg))
+
         return message
 
     def href_list(self, path):
