@@ -1363,6 +1363,11 @@ class ReferenceXML(object):
             return self.element_citation.findtext('.//page-range')
 
     @property
+    def elocation_id(self):
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//elocation-id')
+
+    @property
     def size(self):
         if self.element_citation is not None:
             node = self.element_citation.find('size')

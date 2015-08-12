@@ -1,8 +1,12 @@
-=====================================
+.. toctree::
+   :maxdepth: 1
+
 SciELO Markup Elements and Attributes
 =====================================
+
 Automations
-===========
+...........
+
 *author
 -------
 
@@ -102,7 +106,8 @@ Automatic identification of `stitle`_
 Identify all the journal titles which match with the selected text.
 
 Elements
-========
+........
+
 abnt6023
 --------
 
@@ -2530,7 +2535,8 @@ Contained in: `aff`_
 Attributes: none
 
 Attributes
-==========
+..........
+
 Attribute blcktype
 ------------------
 
