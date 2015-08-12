@@ -412,8 +412,14 @@ class ArticleRecords(object):
                     rec_c['65'] = y + '0000'
             rec_c['66'] = item.publisher_loc
             rec_c['62'] = item.publisher_name
-            rec_c['514'] = {'f': item.fpage, 'l': item.lpage, 'r': item.page_range}
-            rec_c['14'] = display_pages(item.fpage, item.lpage)
+            rec_c['514'] = {'f': item.fpage, 'l': item.lpage, 'r': item.page_range, 'e': item.elocation_id}
+
+            if item.fpage is not None or item.lpage is not None:
+                rec_c['14'] = display_pages(item.fpage, item.lpage)
+            elif item.page_range is not None:
+                rec_c['14'] = item.page_range
+            elif item.elocation_id is not None:
+                rec_c['14'] = item.elocation_id
             if item.size:
                 rec_c['20'] = {}
                 rec_c['20']['_'] = item.size['size']
@@ -430,6 +436,8 @@ class ArticleRecords(object):
             rec_c['53'] = item.conference_name
             rec_c['56'] = item.conference_location
             rec_c['54'] = item.conference_date
+
+            rec_c['51'] = item.degree
             records_c.append(rec_c)
         return records_c
 

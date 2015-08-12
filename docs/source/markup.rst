@@ -294,7 +294,7 @@ Tag
 #. Some elements have attributes. Complete the form with the values of their attributes.
 #. Some elements have children (agroup other elements). As it is identified, the bar of the lower level is displayed.
 
-Read the `Tags of Article, Text, and Doc DTD <markup_tags.html>`_
+Read the `SciELO Markup Elements and Attributes <markup_tags.html>`_
 
 
 Navigation
