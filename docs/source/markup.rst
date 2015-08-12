@@ -5,76 +5,21 @@
 .. toctree::
    :maxdepth: 3
 
+
 Markup Program
 ==============
 
-Markup program is a desktop Application (macro in Microsoft Office Word), to identify bibliographic elements in documents, according to SciELO DTD for `article <dtd.html#article>`_ and for `text <dtd.html#text>`_, based on standard ISO 8879-1986 (SGML - Standard Generalized Markup Language) and ISO 12083-1994 (Electronic Manuscript Preparation and Markup). Nowadays there is a new SciELO DTD: `doc <dtd.html#doc>`_. It is simpler than article and text because there are less levels, but by the other hand, there are more elements to identify. It must be used to identify the elements to generate XML according to `SPS <http://docs.scielo.org/projects/scielo-publishing-schema/>`_. 
+Markup program is a desktop Application (macro in Microsoft Office Word), to identify bibliographic elements in documents, according to SciELO DTD for `article <https://raw.githubusercontent.com/scieloorg/PC-Programs/master/src/scielo/bin/SGMLPars/art4_0.dtd>`_ and for `text <https://raw.githubusercontent.com/scieloorg/PC-Programs/master/src/scielo/bin/SGMLPars/text4_0.dtd>`_, based on standard ISO 8879-1986 (SGML - Standard Generalized Markup Language) and ISO 12083-1994 (Electronic Manuscript Preparation and Markup). Nowadays there is a new SciELO DTD: `doc <https://raw.githubusercontent.com/scieloorg/PC-Programs/master/src/scielo/bin/SGMLPars/doc4_0.dtd>`_. It is simpler than article and text because there are less levels, but by the other hand, there are more elements to identify. It must be used to identify the elements to generate XML according to `SPS <http://docs.scielo.org/projects/scielo-publishing-schema/>`_. 
 
 
 Functionalities
 ---------------
 
-- identify the elements of articles and texts, in a .doc or .html format file
+- identify the elements of articles and texts in a Word Document
 - identify semiautomatically the elements of the references.
-- validate the identification according to `article <https://raw.githubusercontent.com/scieloorg/PC-Programs/master/src/scielo/bin/SGMLPars/art4_0.dtd>`_, `text <https://raw.githubusercontent.com/scieloorg/PC-Programs/master/src/scielo/bin/SGMLPars/text4_0.dtd>`_, and `doc <https://raw.githubusercontent.com/scieloorg/PC-Programs/master/src/scielo/bin/SGMLPars/doc4_0.dtd>`_.
+- validate the markup according to `article <https://raw.githubusercontent.com/scieloorg/PC-Programs/master/src/scielo/bin/SGMLPars/art4_0.dtd>`_, `text <https://raw.githubusercontent.com/scieloorg/PC-Programs/master/src/scielo/bin/SGMLPars/text4_0.dtd>`_, and `doc <https://raw.githubusercontent.com/scieloorg/PC-Programs/master/src/scielo/bin/SGMLPars/doc4_0.dtd>`_.
 - generate XML files according to `SPS <http://docs.scielo.org/projects/scielo-publishing-schema/>`_ and `JATS DTD <http://jats.nlm.nih.gov/publishing/1.0/>`_.
 - validate XML files according to `SPS <http://docs.scielo.org/projects/scielo-publishing-schema/>`_ and `JATS DTD <http://jats.nlm.nih.gov/publishing/1.0/>`_.
-
-
-Before starting
----------------
-
-File specification
-..................
-
-For both methodologies:
-- one document (article or text) by file
-- .doc or .html
-
-For SGML:
-
-- all the files related to the document must have the same name. For instance, a01.pdf, a01.html (body file)
-
-For XML:
-
-- all the files related to the document must have the same name or start with same name and hyphen. For instance, a01.pdf, a01.html (body file), a01-f01.jpg (image of the figure 1), a01-en.pdf (PDF of the English version)
-
-
-Files location
-..............
-
-For SGML:
-
-- .doc or .html file: 
-    /scielo/serial/<acron>/<issue_identification>/markup
-- body: 
-    /scielo/serial/<acron>/<issue_identification>/body
-- images: 
-    /scielo/serial/<acron>/<issue_identification>/img
-- pdf: 
-    /scielo/serial/<acron>/<issue_identification>/pdf
-
-
-.. image:: img/concepts_serial_abc.jpg
-
-
-For XML:
-
-- .doc or .html file: /scielo/serial/<acron>/<issue_identification>/markup_xml/scielo_markup
-- other files: /scielo/serial/<acron>/<issue_identification>/markup_xml/src (images, PDF, etc)
-
-.. image:: img/markup_file_system.png
-
-
-Input files
-...........
-
-Title Manager and Code Manager programs generate, in /scielo/bin/markup/ of the `local server <concepts.html#local-server>`, the following files:
-
-- ??_attb.mds - updated when code database is updated
-- ??_issue.mds - updated when any issue number's data is updated/created
-- issue.mds - updated when any issue number's data is updated/created
-- journal-standard.txt - updated when any journal's data is updated/created
 
 
 How to open

@@ -14,11 +14,12 @@ Welcome to SciELO PC Programs' documentation!
 
     installation.rst
 
-    tutorials.rst
+    programs.rst
 
-    xml_methodology.rst
-    sgml_methodology.rst
-    
+    workflow_markup_xml.rst
+    workflow_markup_sgml.rst
+    workflow_publishing.rst
+
     databases_isis.rst
 
     concepts.rst

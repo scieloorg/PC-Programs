@@ -242,6 +242,8 @@ class ArticleXML(object):
         if self._language is None:
             if self.tree is not None:
                 self._language = xml_utils.element_lang(self.tree.find('.'))
+        if self._language is None:
+            print('@xml:lang=None')
         return self._language
 
     @property
@@ -509,6 +511,7 @@ class ArticleXML(object):
     def title_abstract_kwd_languages(self):
         if self._title_abstract_kwd_languages is None:
             self._title_abstract_kwd_languages = list(set(self.keywords_by_lang.keys() + self.abstracts_by_lang.keys() + self.titles_by_lang.keys()))
+            self._title_abstract_kwd_languages = [item for item in self._title_abstract_kwd_languages if item is not None]
         return self._title_abstract_kwd_languages
 
     @property

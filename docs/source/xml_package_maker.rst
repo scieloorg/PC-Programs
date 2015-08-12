@@ -28,29 +28,31 @@ Select the folder which contains XML package files
 
 Inform the journal acronym which will be used to form the files and package names
 
-.. image:: img/xpm_acron.png
+.. image:: img/xpm_gui_acron.png
 
 
-Press XML Package Maker
-
-It will generate
-
-* XML files for SciELO (scielo_package and/or scielo_package_zips folders)
-* XML files for PMC (pmc_package folder)
-* report files (errors folder)
-
-in the folder which contains XML package files plus the current time.
-
-
-.. image:: img/xpm_result_folders.png
+Press **XML Package Maker**.
 
 
 Results
 -------
 
+* XML files for SciELO (scielo_package and/or scielo_package_zips folders)
+* XML files for PMC (pmc_package folder)
+* report files (errors folder)
+
+The output folder (0103-2070-ts-08-02_xml_package_maker_result) is generated in the same folder in which contains the input folder (0103-2070-ts-08-02)
+
+
+.. image:: img/xpm_result_folders.png
+
+
+Reports
+-------
+
 After finishing the processing the reports are displayed in a Web browser.
 
-Navigate among the tabs.
+Switch between the tabs.
 
 
 Summary report
@@ -68,7 +70,7 @@ ERRORS
    represents other types of errors
 
 WARNINGS
-   represents something that needs more attencion
+   represents something that needs more attention
 
 
 .. image:: img/xpm_report.png
@@ -77,19 +79,61 @@ WARNINGS
 Detail report
 ..............
 
+Detail report - package validations
+:::::::::::::::::::::::::::::::::::
+
+Fist of all, XPM validates some package's data:
+
+- Some data must have same value in all the XML files, such as:
+
+ * journal-title
+ * journal id NLM
+ * journal ISSN
+ * publisher name
+ * issue label
+ * issue pub date
+
+- Some data must have unique value in all the XML files, such as:
+
+ * doi
+ * elocation-id, if applicable
+ * fpage and fpage/@seq
+ * order (used to generated article PID)
+
+
+Example of fatal error because of different values for publisher-name. 
+
+ .. image:: img/xml_reports__toc_fatal_error_required_equal_publisher.jpg
+
+
+Example of fatal error because of different values for pub-date. 
+
+ .. image:: img/xml_reports_toc_fatal_error_required_equal_date.png
+
+
+Example of fatal error because unique value is required
+
+ .. image:: img/xml_reports_toc_fatal_error_unique.png.jpg
+
+
+Detail report - documents' validations
+::::::::::::::::::::::::::::::::::::::
+
 Presents the documents in a table.
 
 The columns order, aop pid, toc section, @article-type are hightlighted because contains important data.
 
-The column "reports" contains "buttons" to open/close the detail reports of each document.
+The column **reports** contains **buttons** to open/close the detail reports of each document.
 
+Each row has the document's data
 
 .. image:: img/xpm_report_detail.png
+
 
 Detail report - Validations
 :::::::::::::::::::::::::::
 
-Click on "Data Quality Control" to view the problems.
+Click on **Data Quality Control** to view the problems.
 The detail report is displayed below the row
 
 
