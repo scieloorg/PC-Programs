@@ -302,6 +302,7 @@ def read_html(html_filename):
             if ord(c) == 0:
                 break
         html_content = html_content.replace(c, '')
+    print(type(html_content))
     return html_content
 
 
@@ -309,6 +310,10 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
     #content = fix_uppercase_tag(content)
     register_log('normalize_sgmlxml')
 
+    if not isinstance(content, unicode):
+        print('content type')
+        print(type(content))
+        content = content.decode('utf-8')
     html_content = read_html(html_filename)
     #embedded_tables = get_html_tables(html_content)
     #content = replace_tables_in_sgmlxml(content, embedded_tables)
@@ -625,13 +630,13 @@ def message_file_list(label, file_list):
 
 def normalize_xml_content(doc_files_info, content, version):
     register_log('normalize_xml_content')
-
+    
     register_log('remove_doctype')
     content = xml_utils.remove_doctype(content)
-
+    
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
-
+    
     replaced_entities_report = ''
     if len(replaced_named_ent) > 0:
         replaced_entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
@@ -716,6 +721,9 @@ def normalize_package_name(doc_files_info, acron, content):
 def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
     packed_files_report = ''
     content = open(doc_files_info.xml_filename, 'r').read()
+
+    if not isinstance(content, unicode):
+        content = content.decode('utf-8')
 
     content, replaced_entities_report = normalize_xml_content(doc_files_info, content, version)
 
