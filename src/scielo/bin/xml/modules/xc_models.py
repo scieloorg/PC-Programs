@@ -326,7 +326,7 @@ class ArticleRecords(object):
             self._metadata['32'] = self.article.number
             self._metadata['131'] = self.article.volume_suppl
             self._metadata['132'] = self.article.number_suppl
-            self._metadata['223'] = self.article.article_pub_date
+            self._metadata['223'] = self.article.article_pub_dateiso
 
         self._metadata['58'] = self.article.funding_source
         self._metadata['591'] = [{'_': item for item in self.article.principal_award_recipient}]
@@ -335,7 +335,6 @@ class ArticleRecords(object):
         self._metadata['102'] = self.article.funding_statement
 
         #self._metadata['65'] = format_dateiso(self.article.issue_pub_date)
-        self._metadata['223'] = format_dateiso(self.article.article_pub_date)
 
         self._metadata['14'] = {}
         self._metadata['14']['f'] = self.article.fpage

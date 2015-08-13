@@ -1145,11 +1145,11 @@ class Article(ArticleXML):
 
     @property
     def article_pub_date(self):
-        return self.epub_date if self.epub_date is not None else self.epub_ppub_date
+        return self.epub_date
 
     @property
     def article_pub_dateiso(self):
-        return article_utils.format_dateiso(self.issue_pub_date)
+        return article_utils.format_dateiso(self.article_pub_date)
 
     @property
     def pub_date_year(self):
