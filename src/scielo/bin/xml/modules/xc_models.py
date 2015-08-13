@@ -320,7 +320,7 @@ class ArticleRecords(object):
 
         if self.article.is_ahead:
             self._metadata['32'] = 'ahead'
-            self._metadata['223'] = self.article.ahead_dateiso
+            self._metadata['223'] = self.article.ahpdate_dateiso
         else:
             self._metadata['31'] = self.article.volume
             self._metadata['32'] = self.article.number
