@@ -257,19 +257,26 @@ class ArticleXML(object):
         @id k
         . t pr
         """
+        #registro de artigo, link para pr
+        #<related-article related-article-type="press-release" id="01" specific-use="processing-only"/>
+        # ^i<PID>^tpr^rfrom-article-to-press-release
+        #
+        #registro de pr, link para artigo
+        #<related-article related-article-type="in-this-issue" id="pr01" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="10.1590/S0102-311X2013000500014 " ext-link-type="doi"/>
+        # ^i<doi>^tdoi^rfrom-press-release-to-article
+        #
+        #registro de errata, link para artigo
+        #<related-article related-article-type="corrected-article" vol="29" page="970" id="RA1" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="10.1590/S0102-311X2013000500014" ext-link-type="doi"/>
+        # ^i<doi>^tdoi^rfrom-corrected-article-to-article
         r = []
         if self.article_meta is not None:
             related = self.article_meta.findall('related-article')
             for rel in related:
                 item = {}
                 item['href'] = rel.attrib.get('{http://www.w3.org/1999/xlink}href')
-                item['ext-link-type'] = rel.attrib.get('ext-link-type')
-                if not item['ext-link-type'] == 'doi':
-                    if item['href'] is None:
-                        item['id'] = None
-                    else:
-                        item['id'] = ''.join([c for c in item['href'] if c.isdigit()])
                 item['related-article-type'] = rel.attrib.get('related-article-type')
+                item['ext-link-type'] = rel.attrib.get('ext-link-type')
+                item['id'] = rel.attrib.get('id')
                 r.append(item)
         return r
 
@@ -900,14 +907,8 @@ class ArticleXML(object):
     @property
     def is_article_press_release(self):
         r = False
-        for related in self.related_articles:
-            if related['related-article-type'] == 'article-reference':
-                r = True
-                break
-            if related['related-article-type'] == 'article':
-                r = True
-                break
-        return r
+        types = [related.get('related-article-type') for related in self.related_articles if not related.get('related-article-type') in ['corrected-article', 'press-release']]
+        return (len(types) > 0)
 
     @property
     def illustrative_materials(self):

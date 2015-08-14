@@ -265,7 +265,7 @@ class ArticleRecords(object):
 
         for item in self.article.related_articles:
             new = {}
-            new['i'] = item['href'] if item['ext-link-type'] == 'doi' else item['id']
+            new['i'] = item.get('href') if item.get('href') is not None else item.get('id')
             _t = item.get('related-article-type')
             if _t == 'press-release':
                 _t = 'pr'
