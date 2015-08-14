@@ -335,12 +335,6 @@ Up
 .. image:: img/markup_barra_front_0.jpg
 
 
-How to use
-----------
-
-`How to identify a document using DOC DTD <markup_doc.html>`_.
-
-
 Error messages
 --------------
 
