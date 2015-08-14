@@ -12,13 +12,8 @@ Download by FTP
 - user: produtos-scielo
 - password: produtos@scielo
 
-There are:
 
-- version.txt: list of corrections and new functionalities by version
-- trial_versions: not largely tested 
-- current_versions: approved versions
-- previous_versions: previous approved versions
 
 -----
 
-Last update of this page: Feb 6, 2014
+Last update of this page: August, 2015
