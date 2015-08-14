@@ -179,7 +179,7 @@ For these elements, you have to select their whole block, it means, for table, f
 
 
 Recommended ID/RID prefixes
-,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
 
 +----------------+--------------------+---------+--------------------+
