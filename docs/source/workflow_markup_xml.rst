@@ -69,11 +69,13 @@ Separators: comma, semicolon.
 
 <body>
 ......
+
 - Body section: use bold, centralized, size=16
 - Subsection (level 1): use bold, centralized, size=14
 - Subsection (level 2): use bold, centralized, size=13
 - quote: identation 4 cm from left margin
-- required format for citations (references):  
+- required format for citations (references): 
+
   - last name, year
   - :sup:`(number)`
   - :sup:`(number, number)`
@@ -85,6 +87,7 @@ Separators: comma, semicolon.
 tables
 ......
 Required order:
+
 - label: bold
 - allowed separators between label and caption: (label. caption or label - caption or label: caption)
 - caption: in the same line of label
@@ -97,6 +100,7 @@ Required order:
 figures
 .......
 Required order:
+
 - image: 
 - attribution: source of the image, photo, graphic, etc 
 - label: bold
@@ -125,6 +129,7 @@ Other journals
 You must not have /scielo/bin/markup/markup_journals_list.csv. If you do, delete it.
 
 Instead, you must have:
+
 - ??_issue.mds: updated/created as any issue number’s data is updated/created
 - issue.mds: updated/created as any issue number’s data is updated/created
 - journal-standard.txt: updated/created as any journal’s data is updated/created
@@ -146,13 +151,11 @@ Use the Markup program according to `its documentation <markup.html>`_.
 How to identify the document using doc DTD
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 
-Select [doc] tag. The program will select the whole document, will open a form to complete.
+Select [doc] tag. The program will display a form to complete.
 
 The program will ask if the document is according to the template.
 
-If it is true, it will try to identify some elements from the top to affiliations.
-
-The program will apply doc tag from the beginnig to the end of the document.
+If it is true, it will try to identify automatically some elements from the top to affiliations.
 
 These elements are not complete identified, you have to complete the markup.
 
