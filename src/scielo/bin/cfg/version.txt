@@ -1,5 +1,8 @@
-﻿4.0.090 trial - 13/08/2015
+﻿4.0.090 trial - 14/08/2015
 ==========================
+- XML for PubMed
+  - filter registers by article data for rolling pass as it is done for aop
+  - force day=01 if absent for received and accepted dates
 - Markup
   - (bug) fix cint(4.0) problem which happened to SciELO Portugal
 - Markup XML - doc DTD
