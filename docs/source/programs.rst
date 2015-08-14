@@ -8,7 +8,7 @@ Programs for local server
 -------------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    codemanager.rst
    titlemanager.rst
@@ -20,7 +20,7 @@ Programs for desktop
 --------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    markup.rst
    parser.rst

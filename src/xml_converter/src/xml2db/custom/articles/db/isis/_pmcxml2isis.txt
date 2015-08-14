@@ -225,6 +225,7 @@
       fpage f
       lpage l
       page-range r
+      elocation-id e
     .//size 20
       . _
       @units u
@@ -234,6 +235,7 @@
     .//date-in-citation[@content-type='access-date'] 109
     .//comment 61    
     .//comment[@content-type='award-id'] 60   
+    .//comment[@content-type='degree'] 51   
     .//element-citation[@publication-type='report']//comment 60    
     .//notes 61    
     .//pub-id[@pub-id-type='doi'] 237    

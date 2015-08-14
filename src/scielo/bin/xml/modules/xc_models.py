@@ -320,13 +320,13 @@ class ArticleRecords(object):
 
         if self.article.is_ahead:
             self._metadata['32'] = 'ahead'
-            self._metadata['223'] = self.article.ahpdate
+            self._metadata['223'] = self.article.ahpdate_dateiso
         else:
             self._metadata['31'] = self.article.volume
             self._metadata['32'] = self.article.number
             self._metadata['131'] = self.article.volume_suppl
             self._metadata['132'] = self.article.number_suppl
-            self._metadata['223'] = self.article.article_pub_date
+            self._metadata['223'] = self.article.article_pub_dateiso
 
         self._metadata['58'] = self.article.funding_source
         self._metadata['591'] = [{'_': item for item in self.article.principal_award_recipient}]
@@ -335,7 +335,6 @@ class ArticleRecords(object):
         self._metadata['102'] = self.article.funding_statement
 
         #self._metadata['65'] = format_dateiso(self.article.issue_pub_date)
-        self._metadata['223'] = format_dateiso(self.article.article_pub_date)
 
         self._metadata['14'] = {}
         self._metadata['14']['f'] = self.article.fpage
@@ -412,8 +411,14 @@ class ArticleRecords(object):
                     rec_c['65'] = y + '0000'
             rec_c['66'] = item.publisher_loc
             rec_c['62'] = item.publisher_name
-            rec_c['514'] = {'f': item.fpage, 'l': item.lpage, 'r': item.page_range}
-            rec_c['14'] = display_pages(item.fpage, item.lpage)
+            rec_c['514'] = {'f': item.fpage, 'l': item.lpage, 'r': item.page_range, 'e': item.elocation_id}
+
+            if item.fpage is not None or item.lpage is not None:
+                rec_c['14'] = display_pages(item.fpage, item.lpage)
+            elif item.page_range is not None:
+                rec_c['14'] = item.page_range
+            elif item.elocation_id is not None:
+                rec_c['14'] = item.elocation_id
             if item.size:
                 rec_c['20'] = {}
                 rec_c['20']['_'] = item.size['size']
@@ -430,6 +435,8 @@ class ArticleRecords(object):
             rec_c['53'] = item.conference_name
             rec_c['56'] = item.conference_location
             rec_c['54'] = item.conference_date
+
+            rec_c['51'] = item.degree
             records_c.append(rec_c)
         return records_c
 

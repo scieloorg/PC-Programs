@@ -1102,6 +1102,10 @@ class Article(ArticleXML):
         return self.article_pub_date if self.is_ahead else None
 
     @property
+    def ahpdate_dateiso(self):
+        return article_utils.format_dateiso(self.ahpdate)
+
+    @property
     def is_text(self):
         return len(self.keywords) == 0 and len(self.abstracts) == 0
 
@@ -1145,11 +1149,14 @@ class Article(ArticleXML):
 
     @property
     def article_pub_date(self):
-        return self.epub_date if self.epub_date is not None else self.epub_ppub_date
+        if self.epub_date is not None:
+            if self.epub_date.get('day') is not None:
+                if int(self.epub_date.get('day')) != 0:
+                    return self.epub_date
 
     @property
     def article_pub_dateiso(self):
-        return article_utils.format_dateiso(self.issue_pub_date)
+        return article_utils.format_dateiso(self.article_pub_date)
 
     @property
     def pub_date_year(self):
@@ -1361,6 +1368,11 @@ class ReferenceXML(object):
     def page_range(self):
         if self.element_citation is not None:
             return self.element_citation.findtext('.//page-range')
+
+    @property
+    def elocation_id(self):
+        if self.element_citation is not None:
+            return self.element_citation.findtext('.//elocation-id')
 
     @property
     def size(self):

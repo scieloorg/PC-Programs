@@ -9,7 +9,7 @@ class AheadManager:
         self.journal_path = journal_path
         self.ahead_filenames = {}
 
-        self.ahead_folders = [folder for folder in os.listdir(journal_path) if 'ahead' in folder and not 'ex-' in folder]
+        self.ahead_folders = [folder for folder in os.listdir(journal_path) if folder.endswith('ahead') and not folder.startswith('ex-')]
 
         for ahead_folder in self.ahead_folders:
             # 2013nahead

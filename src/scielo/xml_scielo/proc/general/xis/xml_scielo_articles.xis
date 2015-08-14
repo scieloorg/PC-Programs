@@ -82,8 +82,12 @@
 
 
 		<field action="export" tag="list">70</field>
-
+		<parm name="buffersize">90000</parm>
 		<field action="import" tag="list">10</field>
+		
+		<field action="replace" tag="10" split="occ"><pft>if nocc(v10)>20 then (if iocc<20 then v10/ fi) fi</pft></field>
+		<field action="replace" tag="810"><pft>if nocc(v10)>20 then 'et al' fi</pft></field>
+
 		<field action="replace" tag="10" split="occ"><pft>if p(v10) then ('<Author><FirstName><![CDATA[',v10^n,']]></FirstName><LastName><![CDATA[',v10^s,']]></LastName>',|<Suffix><![CDATA[|v10^y|]]></Suffix>|,
 		if p(v10^1) then
 			'<aff-id>'v10^1'</aff-id>'
@@ -234,7 +238,7 @@
 	<field action="cgi" tag="2021">ahpdate</field>
 	<field action="cgi" tag="2025">maxdate</field>
 	<field action="cgi" tag="1031">xml</field>
-
+	<parm name="buffersize">90000</parm>
 	<display><pft>ALL</pft></display>
 	<!--field action="replace" tag="5003"><pft>v1005</pft></field-->
 	<field action="replace" tag="5003">iso-8859-1</field>
@@ -482,17 +486,19 @@
 			<field action="replace" tag="2025"><pft>if a(v2025) then v2021 fi</pft></field>
 			
 			
-			<field action="replace" tag="1234"><pft>,if v32='ahead' and p(v223) and p(v2021) then
-						,if val(v223) >= val(v2021) and val(v223) <= val(v2025) then
-
+			<field action="replace" tag="1234">
+                <pft>,if p(v2021) then
+						,if p(v223) then 
+							,if val(v223) >= val(v2021) and val(v223) <= val(v2025) then
 						,else
-						,'Next'
+							,'Next'
 						,fi, 
-					
-				,fi
-				</pft></field>
+					,else
+						,'Next',
+					,fi
+			    ,fi</pft></field>
 			<field action="replace" tag="1234"><pft>if v32='review' and p(v224) and p(v2021) then if val(v224) < val(v2021) then 'Next' fi, fi</pft></field>
-
+			<display><pft>'<!-- ',v223,' -->'</pft></display>
 			<field action="replace" tag="949"><pft>if p(v2013) and v706='h' then (if v2013=v49[1] then 'true' break, fi) fi</pft></field>
 			
 			

@@ -321,32 +321,24 @@ class JSON_Citations:
         return doctopic, required, desirable
 
     def join_pages(self, citation, k):
-        if '514' in citation.keys():
-            citation['14'] = ''
-            if type(citation['514']) is dict:
-                if 'r' in citation['514'].keys():
-                    citation['14'] = citation['514']['r']
-                else:
-                    if 'f' in citation['514'].keys():
-                        citation['14'] = citation['514']['f']
-                        if 'l' in citation['514'].keys():
-                            if type(citation['514']['l']) == type('') and type(citation['14']) == type(''):
-                                if citation['14'].isdigit() and citation['514']['l'].isdigit():
-                                    if len(citation['14']) != len(citation['514']['l']):
-                                        citation['14'] += '-' + citation['514']['l']
-                                    else:
-                                        i = 0
-                                        citation['14'] += '-'
-                                        for c in citation['514']['l']:
-                                            if not citation['14'][i:1] == c:
-                                                citation['14'] += c
-                                            i += 1
-                                else:
-                                    citation['14'] += '-' + citation['514']['l']
-            else:
-                print(type(citation['514']))
-                print(citation['514'])
+        v514 = citation.get('514')
+        if v514 is not None:
+            f = v514.get('f')
+            l = v514.get('l')
+            if f is not None or l is not None:
+                v14 = []
+                if f is not None:
+                    v14.append(f)
+                if l is not None:
+                    v14.append(l)
+                v14 = list(set(v14))
+                citation['14'] = '-'.join(v14)
+            elif v514.get('r') is not None:
+                citation['14'] = v514.get('r')
+            elif v514.get('e') is not None:
+                citation['14'] = v514.get('e')
         return citation
+
 
 class JSON_Article:
     def __init__(self, aff_handler, json_citations):
