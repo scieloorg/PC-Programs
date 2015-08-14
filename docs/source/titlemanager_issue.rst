@@ -113,7 +113,9 @@ How to list the issue numbers of a volume
 
 1. Fill in the volume field.
 2. Click on the 
+
 .. image:: img/titlemanager_list_button.jpg 
+
 button.
 
 
@@ -121,7 +123,9 @@ How to list all
 ...............
 
 1. Click on the 
+
 .. image:: img/titlemanager_list_button.jpg 
+
 button.
 
 
