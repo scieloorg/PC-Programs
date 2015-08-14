@@ -183,6 +183,7 @@
 		<xsl:value-of select="substring(text(),1,4)"/>
 	</xsl:template>
 	<xsl:template match="occ|date" mode="data">
+		<xsl:param name="day"></xsl:param>
 		<xsl:if test="substring(text(),1,4)!='0000'">
 			<Year>
 				<xsl:value-of select="substring(text(),1,4)"/>
@@ -193,11 +194,11 @@
 				<xsl:value-of select="substring(text(),5,2)"/>
 			</Month>
 		</xsl:if>
-		<xsl:if test="substring(text(),7,2)!='00'">
-			<Day>
-				<xsl:value-of select="substring(text(),7,2)"/>
-			</Day>
-		</xsl:if>
+		<xsl:choose>
+			<xsl:when test="substring(text(),7,2)!='00'"><Day><xsl:value-of select="substring(text(),7,2)"/></Day></xsl:when>
+			<xsl:when test="$day!=''"><Day><xsl:value-of select="$day"/></Day></xsl:when>
+			<xsl:otherwise></xsl:otherwise>
+			</xsl:choose>
 	</xsl:template>
 	<xsl:template match="abstract">
 		<Abstract>
@@ -283,13 +284,13 @@
 	<xsl:template match="accepted_dateiso"/>
 	<xsl:template match="accepted_dateiso[occ]">
 		<PubDate PubStatus="accepted">
-			<xsl:apply-templates select="." mode="data"/>
+			<xsl:apply-templates select="." mode="data"><xsl:with-param name="day">01</xsl:with-param></xsl:apply-templates>
 		</PubDate>
 	</xsl:template>
 	<xsl:template match="received_dateiso"/>
 	<xsl:template match="received_dateiso[occ]">
 		<PubDate PubStatus="received">
-			<xsl:apply-templates select="." mode="data"/>
+			<xsl:apply-templates select="." mode="data"><xsl:with-param name="day">01</xsl:with-param></xsl:apply-templates>
 		</PubDate>
 	</xsl:template>
 	<xsl:template match="*[occ]" mode="data">
