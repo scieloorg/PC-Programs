@@ -260,11 +260,13 @@ class ArticlePackage(object):
             else:
                 art_data = article.summary()
                 for label in labels:
-                    if art_data[label] is None and label in required_data:
-                        if not label in missing_data.keys():
-                            missing_data[label] = []
-                        missing_data[label].append(xml_name)
-                    pkg_metadata[label] = article_utils.add_new_value_to_index(pkg_metadata[label], art_data[label], xml_name)
+                    if art_data[label] is None:
+                        if label in required_data:
+                            if not label in missing_data.keys():
+                                missing_data[label] = []
+                            missing_data[label].append(xml_name)
+                    else:
+                        pkg_metadata[label] = article_utils.add_new_value_to_index(pkg_metadata[label], art_data[label], xml_name)
 
         return (invalid_xml_name_items, pkg_metadata, missing_data)
 
@@ -328,13 +330,13 @@ class ArticlesPkgReport(object):
         return (toc_f, toc_e, toc_w, toc_report)
 
     def consistency_report(self, validate_order):
-        equal_data = ['journal-title', 'journal id NLM', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
+        equal_data = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
         unique_data = ['order', 'doi', 'elocation id']
-        unique_status = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-and-seq': 'ERROR'}
+        error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-and-seq': 'ERROR'}
         required_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
 
         if not validate_order:
-            unique_status['order'] = 'WARNING'
+            error_level_for_unique['order'] = 'WARNING'
 
         invalid_xml_name_items, pkg_metadata, missing_data = self.package.journal_and_issue_metadata(equal_data + unique_data, required_data)
 
@@ -379,7 +381,7 @@ class ArticlesPkgReport(object):
 
                 if len(duplicated) > 0:
                     _m = _(': unique value of %s is required for all the documents in the package') % (label)
-                    part = html_reports.p_message(unique_status[label] + _m)
+                    part = html_reports.p_message(error_level_for_unique[label] + _m)
                     for found_value, xml_files in duplicated.items():
                         part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
                     r += part
@@ -395,8 +397,8 @@ class ArticlesPkgReport(object):
             if len(pkg_metadata[label].items()) == 1:
                 issue_common_data += html_reports.display_labeled_value(label, pkg_metadata[label].keys()[0])
             else:
-                message = 'ERROR: ' + _('Unique value expected for ') + label
-                issue_common_data += html_reports.format_list(label + message, 'ol', pkg_metadata[label].keys())
+                issue_common_data += html_reports.format_list(label, 'ol', pkg_metadata[label].keys())
+                #issue_common_data += html_reports.p_message('FATAL ERROR: ' + _('Unique value expected for ') + label)
 
         return html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages')
 

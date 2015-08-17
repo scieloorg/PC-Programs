@@ -46,8 +46,8 @@ def format_value(content):
 
 class IDFile(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, content_formatter=None):
+        self.content_formatter = content_formatter
 
     def _format_file(self, records):
         r = ''
@@ -62,14 +62,19 @@ class IDFile(object):
         return '!ID ' + i[-6:] + '\n'
 
     def _format_record(self, record):
-        r = []
+        result = ''
         if record is not None:
             #utils.debbuging(record)
+            r = []
             for tag_i in sorted([int(s) for s in record.keys() if s.isdigit()]):
                 tag = str(tag_i)
                 data = record.get(tag)
                 r.append(self.tag_data(tag, data))
-        return ''.join(r)
+            result = ''.join(r)
+
+            if self.content_formatter is not None:
+                result = self.content_formatter(result)
+        return result
 
     def tag_data(self, tag, data):
         occs = []
@@ -428,5 +433,5 @@ class IsisDAO(object):
     def get_id_records(self, id_filename):
         return IDFile().read(id_filename)
 
-    def save_id(self, id_filename, records):
-        IDFile().save(id_filename, records)
+    def save_id(self, id_filename, records, content_formatter=None):
+        IDFile(content_formatter).save(id_filename, records)

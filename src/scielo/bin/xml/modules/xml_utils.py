@@ -481,3 +481,16 @@ def is_valid_xml_path(xml_path):
         elif not is_valid_xml_dir(xml_path):
             errors.append(_('Invalid folder. Folder must have XML files.'))
     return errors
+
+
+def remove_tags(content):
+    content = content.replace('<', '~BREAK~<')
+    content = content.replace('>', '>~BREAK~')
+    parts = content.split('~BREAK~')
+    new = []
+    for item in parts:
+        if item.startswith('<') and item.endswith('>'):
+            pass
+        else:
+            new.append(item)
+    return ''.join(new)
