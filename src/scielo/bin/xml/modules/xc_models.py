@@ -17,7 +17,7 @@ from dbm_isis import IDFile
 import institutions_service
 
 
-ISSN_CONVERSION = { 
+ISSN_CONVERSION = {
     'ONLIN': 'epub',
     'PRINT': 'ppub',
     }
@@ -77,9 +77,9 @@ def normalize_doctopic(_doctopic):
 
 class RegisteredArticle(object):
     def __init__(self, article_records, i_record):
-        self.issue_models = IssueModels(i_record)
+        self._issue = None
+        self.i_record = i_record
         self.article_records = article_records
-        #self.journal_issns = read_issn_fields(self.article_records[1].get('435'))
 
     def summary(self):
         data = {}
@@ -96,20 +96,38 @@ class RegisteredArticle(object):
         return data
 
     @property
+    def issue(self):
+        if self._issue is None:
+            issue_models = IssueModels(self.i_record)
+            self._issue = issue_models.issue
+        return self._issue
+
+    @property
     def journal_title(self):
-        return self.issue_models.issue.journal_title if self.issue_models.issue.journal_title else self.article_records[1].get('130')
+        return self.issue.journal_title if self.issue.journal_title else self.article_records[1].get('130')
 
     @property
     def journal_id_nlm_ta(self):
-        return self.issue_models.issue.journal_id_nlm_ta if self.issue_models.issue.journal_id_nlm_ta else self.article_records[1].get('421')
+        return self.issue.journal_id_nlm_ta if self.issue.journal_id_nlm_ta else self.article_records[1].get('421')
 
     @property
     def journal_issns(self):
-        return self.issue_models.issue.journal_issns if self.issue_models.issue.journal_issns else read_issn_fields(self.article_records[1].get('435'))
+        if self.issue is not None:
+            return self.issue.journal_issns
+
+    @property
+    def print_issn(self):
+        if self.issue is not None:
+            return self.issue.print_issn
+
+    @property
+    def e_issn(self):
+        if self.issue is not None:
+            return self.issue.e_issn
 
     @property
     def publisher_name(self):
-        return self.issue_models.issue.publisher_name if self.issue_models.issue.publisher_name else self.article_records[1].get('62', self.article_records[1].get('480'))
+        return self.issue.publisher_name if self.issue.publisher_name else self.article_records[1].get('62', self.article_records[1].get('480'))
 
     @property
     def tree(self):
@@ -524,7 +542,7 @@ class IssueModels(object):
 
     def __init__(self, record):
         self.record = record
-        self.issue = self.__issue(record)
+        self._issue = None
 
     @property
     def sections(self):
@@ -551,6 +569,12 @@ class IssueModels(object):
                     break
         return (seccode, ratio, similar)
 
+    @property
+    def issue(self):
+        if self._issue is None:
+            self._issue = self.__issue(self.record)
+        return self._issue
+
     def __issue(self, record):
         acron = record.get('930').lower()
         dateiso = record.get('65', '')
@@ -558,13 +582,21 @@ class IssueModels(object):
         volume_suppl = record.get('131')
         number = record.get('32')
         number_suppl = record.get('132')
+        compl = record.get('41')
 
-        i = Issue(acron, volume, number, dateiso, volume_suppl, number_suppl)
+        i = Issue(acron, volume, number, dateiso, volume_suppl, number_suppl, compl)
 
         i.issn_id = record.get('35')
         i.journal_title = record.get('130')
         i.journal_id_nlm_ta = record.get('421')
+        issns = record.get('435')
+        print(issns)
+        # 0011-5258^tPRINT
+        # 1678-4588^tONLIN
+        # [{'_': 1234-567, 't': PRINT}, {'_': 1678-4588, 't': ONLIN}]
         i.journal_issns = read_issn_fields(record.get('435'))
+        i.e_issn = i.journal_issns.get('epub')
+        i.print_issn = i.journal_issns.get('ppub')
         i.publisher_name = record.get('62', record.get('480'))
         i.license = record.get('541')
         return i
@@ -722,9 +754,23 @@ class ArticleDAO(object):
                     print('Unable to delete ' + article_files.id_filename)
             found = os.path.isfile(article_files.id_filename)
 
-            self.dao.save_id(article_files.id_filename, article_records.records)
+            self.dao.save_id(article_files.id_filename, article_records.records, self.content_formatter)
             saved = os.path.isfile(article_files.id_filename)
         return (not found and saved)
+
+    def content_formatter(self, content):
+        if '!v706!f' in content:
+            content = content.replace('<italic>', '<em>')
+            content = content.replace('</italic>', '</em>')
+            content = content.replace('<bold>', '<strong>')
+            content = content.replace('</bold>', '</strong>')
+        elif '!v706!c' in content or '!v706!h' in content:
+            content = content.replace('<italic>', '')
+            content = content.replace('</italic>', '')
+            content = content.replace('<bold>', '')
+            content = content.replace('</bold>', '')
+            content = xml_utils.remove_tags(content)
+        return content
 
     def finish_conversion(self, issue_record, issue_files):
         loaded = []

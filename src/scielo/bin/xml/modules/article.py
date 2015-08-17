@@ -277,6 +277,8 @@ class ArticleXML(object):
                 item['related-article-type'] = rel.attrib.get('related-article-type')
                 item['ext-link-type'] = rel.attrib.get('ext-link-type')
                 item['id'] = rel.attrib.get('id')
+                if not item['related-article-type'] in ['corrected-article', 'press-release']:
+                    item['id'] = ''.join([c for c in item['id'] if c.isdigit()])
                 r.append(item)
         return r
 
@@ -1049,6 +1051,8 @@ class Article(ArticleXML):
         data['journal-title'] = self.journal_title
         data['journal id NLM'] = self.journal_id_nlm_ta
         data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items() if v is not None]) if self.journal_issns is not None else None
+        data['print ISSN'] = self.print_issn
+        data['e-ISSN'] = self.e_issn
         data['publisher name'] = self.publisher_name
         data['issue label'] = self.issue_label
         data['issue pub date'] = self.issue_pub_dateiso[0:4] if self.issue_pub_dateiso is not None else None
@@ -1133,7 +1137,7 @@ class Article(ArticleXML):
     @property
     def issue_label(self):
         year = self.issue_pub_date.get('year', '') if self.issue_pub_date is not None else ''
-        return article_utils.format_issue_label(year, self.volume, self.number, self.volume_suppl, self.number_suppl)
+        return article_utils.format_issue_label(year, self.volume, self.number, self.volume_suppl, self.number_suppl, self.compl)
 
     @property
     def issue_pub_dateiso(self):
@@ -1474,7 +1478,7 @@ class ReferenceXML(object):
 
 class Issue(object):
 
-    def __init__(self, acron, volume, number, dateiso, volume_suppl, number_suppl):
+    def __init__(self, acron, volume, number, dateiso, volume_suppl, number_suppl, compl):
         self.volume = volume
         self.number = number
         self.dateiso = dateiso
@@ -1482,7 +1486,8 @@ class Issue(object):
         self.number_suppl = number_suppl
         self.acron = acron
         self.year = dateiso[0:4]
+        self.compl = compl
 
     @property
     def issue_label(self):
-        return article_utils.format_issue_label(self.year, self.volume, self.number, self.volume_suppl, self.number_suppl)
+        return article_utils.format_issue_label(self.year, self.volume, self.number, self.volume_suppl, self.number_suppl, self.compl)

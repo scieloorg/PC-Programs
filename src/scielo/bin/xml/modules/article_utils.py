@@ -64,13 +64,13 @@ def get_number_suppl_compl(issue_element_content):
     return (number, suppl, compl)
 
 
-def format_issue_label(year, volume, number, volume_suppl, number_suppl):
+def format_issue_label(year, volume, number, volume_suppl, number_suppl, compl):
     year = year if number == 'ahead' else ''
     v = 'v' + volume if volume is not None else None
     vs = 's' + volume_suppl if volume_suppl is not None else None
     n = 'n' + number if number is not None else None
     ns = 's' + number_suppl if number_suppl is not None else None
-    return ''.join([i for i in [year, v, vs, n, ns] if i is not None])
+    return ''.join([i for i in [year, v, vs, n, ns, compl] if i is not None])
 
 
 def url_check(url, _timeout=30):
