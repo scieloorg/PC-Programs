@@ -480,8 +480,9 @@ class ArticlesPkgReport(object):
 
             a_name = 'view-reports-' + new_name
             links = '<a name="' + a_name + '"/>'
-
+            status = ''
             block = ''
+
             if xml_f + xml_e + xml_w > 0:
                 t = []
                 v = []
@@ -491,21 +492,24 @@ class ArticlesPkgReport(object):
                         t.append(os.path.basename(rep))
                         v.append(content)
                 content = ''.join(v)
-                status = html_reports.get_stats_numbers_style(xml_f, xml_e, xml_w)
-                links += html_reports.report_link('xmlrep' + new_name, '[ ' + _('XML Validations') + ' ]', 'xmlrep', a_name)
+                status = html_reports.statistics_display(xml_f, xml_e, xml_w)
+                links += html_reports.report_link('xmlrep' + new_name, '[ ' + _('Structure Validations') + ' ]', 'xmlrep', a_name)
+                links += status
                 block += html_reports.report_block('xmlrep' + new_name, content, 'xmlrep', a_name)
 
             if data_f + data_e + data_w > 0:
-                status = html_reports.get_stats_numbers_style(data_f, data_e, data_w)
-                links += html_reports.report_link('datarep' + new_name, '[ ' + _('Data Quality Control') + ' ]', 'datarep', a_name)
+                status = html_reports.statistics_display(data_f, data_e, data_w)
+                links += html_reports.report_link('datarep' + new_name, '[ ' + _('Contents Validations') + ' ]', 'datarep', a_name)
+                links += status
                 block += html_reports.report_block('datarep' + new_name, get_report_text(rep3), 'datarep', a_name)
 
             if conversion_reports is not None:
                 r = conversion_reports.get(new_name)
                 if r is not None:
                     conv_f, conv_e, conv_w, conv_rep = r
-                    status = html_reports.get_stats_numbers_style(conv_f, conv_e, conv_w)
-                    links += html_reports.report_link('xcrep' + new_name, '[ ' + _('Converter') + ' ]', 'xcrep', a_name)
+                    status = html_reports.statistics_display(conv_f, conv_e, conv_w)
+                    links += html_reports.report_link('xcrep' + new_name, '[ ' + _('Converter Validations') + ' ]', 'xcrep', a_name)
+                    links += status
                     block += html_reports.report_block('xcrep' + new_name, conv_rep, 'xcrep', a_name)
 
             values = []
@@ -730,3 +734,25 @@ def format_complete_report(report_components):
 
     content += html_reports.tag('p', _('finished'))
     return (f, e, w, content)
+
+
+def label_errors_type(content, error_type, prefix):
+    new = []
+    i = 0
+    content = content.replace(error_type, '~BREAK~' + error_type)
+    for part in content.split('~BREAK~'):
+        if part.startswith(error_type):
+            i += 1
+            part = part.replace(error_type, error_type + ' [' + prefix + str(i) + ']')
+        new.append(part)
+    return ''.join(new)
+
+
+def label_errors(content):
+    content = content.replace('ERROR', '[ERROR')
+    content = content.replace('FATAL [ERROR', 'FATAL ERROR')
+    content = label_errors_type(content, 'FATAL ERROR', 'F')
+    content = label_errors_type(content, '[ERROR', 'E')
+    content = label_errors_type(content, 'WARNING', 'W')
+    content = content.replace('[ERROR', 'ERROR')
+    return content
