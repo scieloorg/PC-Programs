@@ -708,8 +708,9 @@ def statistics_and_subtitle(f, e, w):
 
 def format_complete_report(report_components):
     content = ''
-    order = ['summary-report', 'detail-report', 'xml-files', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc', 'references']
+    order = ['summary-report', 'issue-report', 'detail-report', 'xml-files', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc', 'references']
     labels = {
+        'issue-report': 'journal/issue',
         'summary-report': _('Summary report'), 
         'detail-report': _('Detail report'), 
         'xml-files': _('Files/Folders'),
