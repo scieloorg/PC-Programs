@@ -226,24 +226,36 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
     return html_reports.sheet(labels, items, 'dbstatus', 'package or database')
 
 
-def complete_issue_items_report(complete_issue_items, unmatched_orders):
+def complete_issue_items_report(previous_registered_articles, pkg_articles, complete_issue_items, unmatched_orders):
     unmatched_orders_errors = ''
 
     if len(unmatched_orders) > 0:
         unmatched_orders_errors = ''.join([html_reports.p_message('WARNING: ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order))) for name, order in unmatched_orders.items()])
     f, e, w = html_reports.statistics_numbers(unmatched_orders_errors)
 
-    articles_pkg = pkg_reports.ArticlePackage(complete_issue_items)
-    articles_pkg_reports = pkg_reports.ArticlesPkgReport(articles_pkg)
+    issue_items = pkg_reports.ArticlePackage(complete_issue_items)
+    issue_items_reports = pkg_reports.ArticlesPkgReport(issue_items)
 
-    toc_f, toc_e, toc_w, toc_report = articles_pkg_reports.validate_consistency(validate_order=True)
+    issue_items_f, issue_items_e, issue_items_w, issue_items_report = issue_items_reports.validate_consistency(validate_order=True)
+    pkg_report = ''
+    pkg_f = 0
+    if issue_items_f > 0:
+        if len(complete_issue_items) - len(pkg_articles) > 0:
+            # there are previous registered
+            #issue_items_report = issue_items_report.replace('FATAL ', '')
+            package = pkg_reports.ArticlePackage(pkg_articles)
+            package_reports = pkg_reports.ArticlesPkgReport(package)
+            pkg_f, pkg_e, pkg_w, pkg_report = package_reports.validate_consistency(validate_order=True)
 
     report = unmatched_orders_errors
-    if toc_report is not None:
-        report += toc_report
+    if issue_items_report is not None:
+        report += issue_items_report
+    if pkg_report is not None:
+        report += pkg_report
+
     if len(report) == 0:
         report = None
-    return (toc_f + f, report)
+    return (f, issue_items_f, pkg_f, report)
 
 
 def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
@@ -318,7 +330,7 @@ def convert_package(src_path):
     issue_models, issue_error_msg = get_issue_models(journal_title, issue_label, p_issn, e_issn)
 
     if issue_error_msg is not None:
-        report_components['detail-report'] = issue_error_msg
+        report_components['issue-report'] = issue_error_msg
 
     #utils.debugging('pkg_reports.ArticlePackage')
     articles_pkg = pkg_reports.ArticlePackage(pkg_articles)
@@ -354,14 +366,13 @@ def convert_package(src_path):
         before_conversion_report = html_reports.tag('h4', _('Documents status in the package/database - before conversion'))
         before_conversion_report += display_status_before_xc(previous_registered_articles, pkg_articles, xml_doc_actions)
 
-        #utils.debugging('complete_issue_items_report')
-        toc_f, xc_toc_report = complete_issue_items_report(complete_issue_items, unmatched_orders)
+        unmatched_orders_f, complete_issue_f, pkg_f, xc_toc_report = complete_issue_items_report(previous_registered_articles, pkg_articles, complete_issue_items, unmatched_orders)
 
         #utils.debugging('xc_toc_report is not None?')
         if xc_toc_report is not None:
             #utils.debugging('xc_toc_report is not None.')
-            report_components['detail-report'] = xc_toc_report
-        if toc_f == 0:
+            report_components['issue-report'] = xc_toc_report
+        if pkg_f == 0 or complete_issue_f == 0:
             #utils.debugging('toc_f == 0')
             selected_articles = {}
             for xml_name, article in pkg_articles.items():
