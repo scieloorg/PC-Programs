@@ -930,6 +930,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         if not from_markup:
             f, e, w, content = pkg_reports.format_complete_report(report_components)
             filename = report_path + '/xml_package_maker.html'
+            content = pkg_reports.label_errors(content)
             pkg_reports.save_report(filename, _('XML Package Maker Report'), content)
             pkg_reports.display_report(filename)
 

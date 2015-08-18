@@ -460,6 +460,7 @@ def convert_package(src_path):
 
     #utils.debugging(type(content))
     #utils.debugging('-save_report-')
+    content = pkg_reports.label_errors(content)
     pkg_reports.save_report(report_location, [_('XML Conversion (XML to Database)'), acron_issue_label], content)
 
     #utils.debugging('-saved report-')
