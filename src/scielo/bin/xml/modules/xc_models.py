@@ -595,8 +595,12 @@ class IssueModels(object):
         # 1678-4588^tONLIN
         # [{'_': 1234-567, 't': PRINT}, {'_': 1678-4588, 't': ONLIN}]
         i.journal_issns = read_issn_fields(record.get('435'))
-        i.e_issn = i.journal_issns.get('epub')
-        i.print_issn = i.journal_issns.get('ppub')
+        if i.journal_issns is None:
+            i.e_issn = None
+            i.print_issn = None
+        else:
+            i.e_issn = i.journal_issns.get('epub')
+            i.print_issn = i.journal_issns.get('ppub')
         i.publisher_name = record.get('62', record.get('480'))
         i.license = record.get('541')
         return i
