@@ -136,7 +136,12 @@ def complete_issue_items_row(article, action, result, source, notes=''):
 
 
 def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions, status_column_label='action'):
-    orders = [article.order for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()]
+    orders = [article.order for article in registered_articles.values()]
+    for article in pkg_articles.values():
+        if article.tree is None:
+            orders.append('None')
+        else:
+            orders.append(article.order)
 
     orders = sorted(list(set([order for order in orders if order is not None])))
 
@@ -236,26 +241,14 @@ def complete_issue_items_report(previous_registered_articles, pkg_articles, comp
     issue_items = pkg_reports.ArticlePackage(complete_issue_items)
     issue_items_reports = pkg_reports.ArticlesPkgReport(issue_items)
 
-    issue_items_f, issue_items_e, issue_items_w, issue_items_report = issue_items_reports.validate_consistency(validate_order=True)
-    pkg_report = ''
-    pkg_f = 0
-    if issue_items_f > 0:
-        if len(complete_issue_items) - len(pkg_articles) > 0:
-            # there are previous registered
-            #issue_items_report = issue_items_report.replace('FATAL ', '')
-            package = pkg_reports.ArticlePackage(pkg_articles)
-            package_reports = pkg_reports.ArticlesPkgReport(package)
-            pkg_f, pkg_e, pkg_w, pkg_report = package_reports.validate_consistency(validate_order=True)
-
+    critical, issue_items_f, issue_items_e, issue_items_w, issue_items_report = issue_items_reports.validate_consistency(validate_order=True)
     report = unmatched_orders_errors
     if issue_items_report is not None:
         report += issue_items_report
-    if pkg_report is not None:
-        report += pkg_report
 
     if len(report) == 0:
         report = None
-    return (f, issue_items_f, pkg_f, report)
+    return (f, issue_items_f, critical, report)
 
 
 def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
@@ -366,13 +359,13 @@ def convert_package(src_path):
         before_conversion_report = html_reports.tag('h4', _('Documents status in the package/database - before conversion'))
         before_conversion_report += display_status_before_xc(previous_registered_articles, pkg_articles, xml_doc_actions)
 
-        unmatched_orders_f, complete_issue_f, pkg_f, xc_toc_report = complete_issue_items_report(previous_registered_articles, pkg_articles, complete_issue_items, unmatched_orders)
+        unmatched_orders_f, complete_issue_f, critical, xc_toc_report = complete_issue_items_report(previous_registered_articles, pkg_articles, complete_issue_items, unmatched_orders)
 
         #utils.debugging('xc_toc_report is not None?')
         if xc_toc_report is not None:
             #utils.debugging('xc_toc_report is not None.')
             report_components['issue-report'] = xc_toc_report
-        if pkg_f == 0 or complete_issue_f == 0:
+        if critical == 0:
             #utils.debugging('toc_f == 0')
             selected_articles = {}
             for xml_name, article in pkg_articles.items():
@@ -788,6 +781,7 @@ def transfer_report_files(acron, issue_id, local_web_app_path, user, server, rem
 
 def validate_xml_issue_data(issue_models, article):
     msg = []
+    section_code = None
     if article.tree is not None:
         validations = []
         validations.append((_('journal title'), article.journal_title, issue_models.issue.journal_title))
