@@ -167,7 +167,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="ign"/>
 	<xsl:template match="list">
 		<xsl:choose>
-			<xsl:when test="../li">
+			<xsl:when test="parent::li or parent::quote" >
 				<list>
 					<xsl:apply-templates select="@*|*"/>
 				</list>
@@ -193,6 +193,9 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:choose>
 				<xsl:when test="litext">
 					<xsl:apply-templates select="litext"></xsl:apply-templates>
+				</xsl:when>
+				<xsl:when test="p">
+					<xsl:apply-templates select="*[name()!='label']"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<p>
@@ -3335,9 +3338,16 @@ et al.</copyright-statement>
 	</xsl:template>
 	<xsl:template match="quote">
 		<disp-quote>
-			<p>
-				<xsl:apply-templates select="*|text()"></xsl:apply-templates>
-			</p>
+			<xsl:choose>
+				<xsl:when test="p">
+					<xsl:apply-templates select="*"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<p>
+						<xsl:apply-templates select="*|text()"/>
+					</p>
+				</xsl:otherwise>
+			</xsl:choose>
 		</disp-quote>
 	</xsl:template>
 
