@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-18 09:48-0300\n"
+"POT-Creation-Date: 2015-08-24 10:07-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,6 +28,7 @@ msgstr "Autores"
 #: modules/article_reports.py:91 modules/pkg_reports.py:602
 #: modules/pkg_reports.py:616 modules/pkg_reports.py:710
 #: modules/pkg_reports.py:716 modules/pkg_reports.py:723
+#: modules/pkg_reports.py:724
 msgid "Sources"
 msgstr "Fontes"
 
@@ -910,6 +911,7 @@ msgstr "Warning - indica que algo pode ser erro ou que precisa de atenção"
 #: modules/pkg_reports.py:680 modules/xpmaker.py:906
 #: modules/pkg_reports.py:686 modules/xpmaker.py:907 modules/xpmaker.py:926
 #: modules/xpmaker.py:935 modules/pkg_reports.py:692 modules/xpmaker.py:944
+#: modules/xpmaker.py:969
 msgid "Result of the processing:"
 msgstr "Resultado do processamento:"
 
@@ -922,31 +924,31 @@ msgstr "Relatório"
 #: modules/pkg_reports.py:705 modules/xmlcvrter.py:755
 #: modules/pkg_reports.py:711 modules/xmlcvrter.py:756
 #: modules/xmlcvrter.py:747 modules/pkg_reports.py:718
-#: modules/xmlcvrter.py:759
+#: modules/xmlcvrter.py:759 modules/pkg_reports.py:719
 msgid "Summary report"
 msgstr "Relatório resumido"
 
 #: modules/pkg_reports.py:598 modules/pkg_reports.py:612
 #: modules/pkg_reports.py:706 modules/pkg_reports.py:712
-#: modules/pkg_reports.py:719
+#: modules/pkg_reports.py:719 modules/pkg_reports.py:720
 msgid "Detail report"
 msgstr "Relatório detalhado"
 
 #: modules/pkg_reports.py:599 modules/pkg_reports.py:613
 #: modules/pkg_reports.py:707 modules/pkg_reports.py:713
-#: modules/pkg_reports.py:720
+#: modules/pkg_reports.py:720 modules/pkg_reports.py:721
 msgid "Files/Folders"
 msgstr "Arquivos/Pastas"
 
 #: modules/pkg_reports.py:600 modules/pkg_reports.py:614
 #: modules/pkg_reports.py:708 modules/pkg_reports.py:714
-#: modules/pkg_reports.py:721
+#: modules/pkg_reports.py:721 modules/pkg_reports.py:722
 msgid "Database overview"
 msgstr "Visão geral da base de dados"
 
 #: modules/pkg_reports.py:601 modules/pkg_reports.py:615
 #: modules/pkg_reports.py:709 modules/pkg_reports.py:715
-#: modules/pkg_reports.py:722
+#: modules/pkg_reports.py:722 modules/pkg_reports.py:723
 msgid "Package overview"
 msgstr "Visão geral do pacote"
 
@@ -956,11 +958,13 @@ msgstr "Visão geral do pacote"
 #: modules/pkg_reports.py:728 modules/xmlcvrter.py:1118
 #: modules/xmlcvrter.py:1109 modules/xmlcvrter.py:1112
 #: modules/pkg_reports.py:735 modules/xmlcvrter.py:1124
+#: modules/pkg_reports.py:736
 msgid "finished"
 msgstr "finalizado"
 
 #: modules/xc_models.py:869 modules/xc_models.py:877 modules/xc_models.py:903
 #: modules/xc_models.py:911 modules/xc_models.py:926 modules/xc_models.py:979
+#: modules/xc_models.py:983
 msgid "Exclude aop files of "
 msgstr "Exclui arquivos aop de "
 
@@ -1432,6 +1436,7 @@ msgstr "não foi possível ler o arquivo de configuração de XML Converter"
 #: modules/xmlcvrter.py:1028 modules/xpmaker.py:1059 modules/xmlcvrter.py:1032
 #: modules/xmlcvrter.py:1023 modules/xpmaker.py:1077 modules/xmlcvrter.py:1026
 #: modules/xpmaker.py:1086 modules/xmlcvrter.py:1038 modules/xpmaker.py:1095
+#: modules/xpmaker.py:1120
 msgid "Incorrect parameters"
 msgstr "Parâmetros incorretos"
 
@@ -1440,6 +1445,7 @@ msgstr "Parâmetros incorretos"
 #: modules/xmlcvrter.py:1029 modules/xpmaker.py:1060 modules/xmlcvrter.py:1033
 #: modules/xmlcvrter.py:1024 modules/xpmaker.py:1078 modules/xmlcvrter.py:1027
 #: modules/xpmaker.py:1087 modules/xmlcvrter.py:1039 modules/xpmaker.py:1096
+#: modules/xpmaker.py:1121
 msgid "Usage"
 msgstr "Uso"
 
@@ -1448,6 +1454,7 @@ msgstr "Uso"
 #: modules/xmlcvrter.py:1031 modules/xpmaker.py:1062 modules/xmlcvrter.py:1035
 #: modules/xmlcvrter.py:1026 modules/xpmaker.py:1080 modules/xmlcvrter.py:1029
 #: modules/xpmaker.py:1089 modules/xmlcvrter.py:1041 modules/xpmaker.py:1098
+#: modules/xpmaker.py:1123
 msgid "where"
 msgstr "onde"
 
@@ -1471,84 +1478,97 @@ msgstr "Não foi possível criar"
 
 #: modules/xpchecker.py:169 modules/xpmaker.py:704 modules/xpmaker.py:697
 #: modules/xpmaker.py:698 modules/xpmaker.py:717 modules/xpmaker.py:726
-#: modules/xpmaker.py:734
+#: modules/xpmaker.py:734 modules/xpmaker.py:759
 msgid "Unable to load"
 msgstr "Não foi possível carregar"
 
 #: modules/xpmaker.py:576 modules/xpmaker.py:577 modules/xpmaker.py:578
 #: modules/xpmaker.py:597 modules/xpmaker.py:605 modules/xpmaker.py:610
+#: modules/xpmaker.py:635
 msgid "Report of files"
 msgstr "Relatório dos arquivos"
 
 #: modules/xpmaker.py:579 modules/xpmaker.py:580 modules/xpmaker.py:581
 #: modules/xpmaker.py:600 modules/xpmaker.py:608 modules/xpmaker.py:613
+#: modules/xpmaker.py:638
 msgid "Source path"
 msgstr "Localização da pasta original"
 
 #: modules/xpmaker.py:580 modules/xpmaker.py:581 modules/xpmaker.py:582
 #: modules/xpmaker.py:601 modules/xpmaker.py:609 modules/xpmaker.py:614
+#: modules/xpmaker.py:639
 msgid "Package path"
 msgstr "Localização do pacote final normalizado"
 
 #: modules/xpmaker.py:582 modules/xpmaker.py:583 modules/xpmaker.py:584
 #: modules/xpmaker.py:603 modules/xpmaker.py:611 modules/xpmaker.py:616
+#: modules/xpmaker.py:641
 msgid "Source XML name"
 msgstr "Nome do arquivo XML original"
 
 #: modules/xpmaker.py:583 modules/xpmaker.py:584 modules/xpmaker.py:585
 #: modules/xpmaker.py:604 modules/xpmaker.py:612 modules/xpmaker.py:617
+#: modules/xpmaker.py:642
 msgid "Package XML name"
 msgstr "Nome do arquivo XML final normalizado"
 
 #: modules/xpmaker.py:585 modules/xpmaker.py:586 modules/xpmaker.py:587
 #: modules/xpmaker.py:606 modules/xpmaker.py:614 modules/xpmaker.py:619
+#: modules/xpmaker.py:644
 msgid "Total of related files"
 msgstr "Total dos arquivos relacionados"
 
 #: modules/xpmaker.py:586 modules/xpmaker.py:587 modules/xpmaker.py:588
 #: modules/xpmaker.py:607 modules/xpmaker.py:615 modules/xpmaker.py:620
+#: modules/xpmaker.py:645
 msgid "Total of files in package"
 msgstr "Total dos arquivos no pacote"
 
 #: modules/xpmaker.py:587 modules/xpmaker.py:588 modules/xpmaker.py:589
 #: modules/xpmaker.py:608 modules/xpmaker.py:616 modules/xpmaker.py:621
+#: modules/xpmaker.py:646
 msgid "Total of @href in XML"
 msgstr "Total de @href no XML"
 
 #: modules/xpmaker.py:588 modules/xpmaker.py:589 modules/xpmaker.py:590
 #: modules/xpmaker.py:609 modules/xpmaker.py:617 modules/xpmaker.py:622
+#: modules/xpmaker.py:647
 msgid "Total of @href not found in package"
 msgstr "Total de @href não encontrado no pacote"
 
 #: modules/xpmaker.py:704 modules/xpmaker.py:697 modules/xpmaker.py:698
 #: modules/xpmaker.py:717 modules/xpmaker.py:726 modules/xpmaker.py:734
+#: modules/xpmaker.py:759
 msgid ". Try to open it in an XML Editor to view the errors."
 msgstr ". Tente abrí-lo em um editor XML para ver os erros."
 
 #: modules/xpmaker.py:783 modules/xpmaker.py:785 modules/xpmaker.py:775
 #: modules/xpmaker.py:776 modules/xpmaker.py:795 modules/xpmaker.py:804
-#: modules/xpmaker.py:812
+#: modules/xpmaker.py:812 modules/xpmaker.py:837
 msgid "Make packages for "
 msgstr "Fazer pacotes para "
 
 #: modules/xpmaker.py:783 modules/xpmaker.py:785 modules/xpmaker.py:775
 #: modules/xpmaker.py:776 modules/xpmaker.py:795 modules/xpmaker.py:804
-#: modules/xpmaker.py:812
+#: modules/xpmaker.py:812 modules/xpmaker.py:837
 msgid " files."
 msgstr " arquivos."
 
 #: modules/xpmaker.py:802 modules/xpmaker.py:804 modules/xpmaker.py:801
 #: modules/xpmaker.py:821 modules/xpmaker.py:830 modules/xpmaker.py:838
+#: modules/xpmaker.py:863
 msgid "generating report..."
 msgstr "gerando relatório..."
 
 #: modules/xpmaker.py:804 modules/xpmaker.py:806 modules/xpmaker.py:803
 #: modules/xpmaker.py:823 modules/xpmaker.py:832 modules/xpmaker.py:840
+#: modules/xpmaker.py:865
 msgid "Unable to generate the XML file."
 msgstr "Não foi possível gerar o arquivo XML."
 
 #: modules/xpmaker.py:807 modules/xpmaker.py:809 modules/xpmaker.py:806
 #: modules/xpmaker.py:826 modules/xpmaker.py:835 modules/xpmaker.py:843
+#: modules/xpmaker.py:868
 msgid ""
 "It is not PMC article or unable to find journal-id (nlm-ta) in the XML file."
 msgstr ""
@@ -1557,36 +1577,37 @@ msgstr ""
 
 #: modules/xpmaker.py:816 modules/xpmaker.py:818 modules/xpmaker.py:821
 #: modules/xpmaker.py:822 modules/xpmaker.py:841 modules/xpmaker.py:850
-#: modules/xpmaker.py:858
+#: modules/xpmaker.py:858 modules/xpmaker.py:883
 msgid "Missing journal-id (nlm-ta)."
 msgstr "Faltando journal-id (nlm-ta)."
 
 #: modules/xpmaker.py:859 modules/xpmaker.py:861 modules/xpmaker.py:860
 #: modules/xpmaker.py:880 modules/xpmaker.py:889 modules/xpmaker.py:897
+#: modules/xpmaker.py:922
 msgid "No files to process"
 msgstr "Nenhum arquivo para processar"
 
 #: modules/xpmaker.py:899 modules/xpmaker.py:904 modules/xpmaker.py:896
 #: modules/xpmaker.py:897 modules/xpmaker.py:916 modules/xpmaker.py:925
-#: modules/xpmaker.py:934
+#: modules/xpmaker.py:934 modules/xpmaker.py:959
 msgid "XML Package Maker Report"
 msgstr "Relatório do XML Package Maker"
 
 #: modules/xpmaker.py:1065 modules/xpmaker.py:1069 modules/xpmaker.py:1061
 #: modules/xpmaker.py:1063 modules/xpmaker.py:1081 modules/xpmaker.py:1090
-#: modules/xpmaker.py:1099
+#: modules/xpmaker.py:1099 modules/xpmaker.py:1124
 msgid "XML filename or path which contains XML files"
 msgstr "Arquivo XML ou pasta que contenha arquivos XML"
 
 #: modules/xpmaker.py:1066 modules/xpmaker.py:1070 modules/xpmaker.py:1062
 #: modules/xpmaker.py:1064 modules/xpmaker.py:1082 modules/xpmaker.py:1091
-#: modules/xpmaker.py:1100
+#: modules/xpmaker.py:1100 modules/xpmaker.py:1125
 msgid "journal acronym"
 msgstr "acrônimo do periódico"
 
 #: modules/xpmaker.py:1076 modules/xpmaker.py:1080 modules/xpmaker.py:1072
 #: modules/xpmaker.py:1074 modules/xpmaker.py:1092 modules/xpmaker.py:1101
-#: modules/xpmaker.py:1110
+#: modules/xpmaker.py:1110 modules/xpmaker.py:1135
 msgid "Missing acronym."
 msgstr "Faltando acrônimo."
 
@@ -1634,7 +1655,7 @@ msgid "In article: \""
 msgstr "No artigo: \""
 
 #: modules/xpmaker.py:814 modules/xpmaker.py:815 modules/xpmaker.py:834
-#: modules/xpmaker.py:843 modules/xpmaker.py:851
+#: modules/xpmaker.py:843 modules/xpmaker.py:851 modules/xpmaker.py:876
 msgid "Generating PMC Package"
 msgstr "Gerando o pacote PMC"
 
@@ -1697,3 +1718,7 @@ msgstr "Validações de conteúdo"
 #: modules/pkg_reports.py:511
 msgid "Converter Validations"
 msgstr "Validações do Converter"
+
+#: modules/pkg_reports.py:696
+msgid "report generated by XPM "
+msgstr "relatório gerado por XPM "

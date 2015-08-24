@@ -1,4 +1,4 @@
-﻿4.0.090 trial - 14/08/2015
+﻿4.0.090 trial - 24/08/2015
 ==========================
 - XML for PubMed
   - filter registers by article data for rolling pass as it is done for aop

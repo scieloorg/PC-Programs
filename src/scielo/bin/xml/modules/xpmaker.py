@@ -28,6 +28,23 @@ messages = []
 log_items = []
 
 
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
+
+
+def xpm_version():
+    f = None
+    if os.path.isfile(CURRENT_PATH + '/../../xpm_version.txt'):
+        f = CURRENT_PATH + '/../../xpm_version.txt'
+    elif os.path.isfile(CURRENT_PATH + '/../../cfg/xpm_version.txt'):
+        f = CURRENT_PATH + '/../../cfg/xpm_version.txt'
+    version = ''
+    if f is not None:
+        print(f)
+        version = open(f).readlines()[0].decode('utf-8')
+        print(version)
+    return version
+
+
 def register_log(text):
     log_items.append(datetime.now().isoformat() + ' ' + text)
 
@@ -939,7 +956,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
             f, e, w, content = pkg_reports.format_complete_report(report_components)
             filename = report_path + '/xml_package_maker.html'
             content = pkg_reports.label_errors(content)
-            pkg_reports.save_report(filename, _('XML Package Maker Report'), content)
+            pkg_reports.save_report(filename, _('XML Package Maker Report'), content, xpm_version())
             pkg_reports.display_report(filename)
 
         if not from_converter:
