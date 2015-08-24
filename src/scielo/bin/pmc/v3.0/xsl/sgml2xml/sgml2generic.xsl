@@ -2737,7 +2737,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:apply-templates select="." mode="graphic"/>
 		</inline-formula>
 	</xsl:template>
-	<xsl:template match="p/graphic | caption/graphic | li/graphic">
+	<xsl:template match="p/graphic | caption/graphic | li/graphic | p/equation//graphic">
 		<inline-graphic>
 			<xsl:apply-templates select="@*"/>
 		</inline-graphic>
