@@ -33,15 +33,16 @@ CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 def xpm_version():
     f = None
+    print(CURRENT_PATH + '/../../xpm_version.txt')
+    print(CURRENT_PATH + '/../../cfg/xpm_version.txt')
     if os.path.isfile(CURRENT_PATH + '/../../xpm_version.txt'):
         f = CURRENT_PATH + '/../../xpm_version.txt'
     elif os.path.isfile(CURRENT_PATH + '/../../cfg/xpm_version.txt'):
         f = CURRENT_PATH + '/../../cfg/xpm_version.txt'
     version = ''
+    print(f)
     if f is not None:
-        print(f)
         version = open(f).readlines()[0].decode('utf-8')
-        print(version)
     return version
 
 
@@ -934,7 +935,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         report_components['references'] = articles_pkg_reports.sources_overview_report()
 
         if not from_markup:
-            toc_f, toc_e, toc_w, toc_report = articles_pkg_reports.validate_consistency(from_converter)
+            critical, toc_f, toc_e, toc_w, toc_report = articles_pkg_reports.validate_consistency(from_converter)
             report_components['detail-report'] = toc_report
 
         if toc_f == 0:
