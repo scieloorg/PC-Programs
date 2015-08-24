@@ -314,6 +314,14 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
         print('content type')
         print(type(content))
         content = content.decode('utf-8')
+    if 'mml:' in content and not 'xmlns:mml="http://www.w3.org/1998/Math/MathML"' in content:
+        if '<doc' in content:
+            content = content.replace('<doc ', '<doc xmlns:mml="http://www.w3.org/1998/Math/MathML" ')
+        elif '<article' in content:
+            content = content.replace('<article ', '<article xmlns:mml="http://www.w3.org/1998/Math/MathML" ')
+        elif '<text' in content:
+            content = content.replace('<text ', '<text xmlns:mml="http://www.w3.org/1998/Math/MathML" ')
+
     html_content = read_html(html_filename)
     #embedded_tables = get_html_tables(html_content)
     #content = replace_tables_in_sgmlxml(content, embedded_tables)
