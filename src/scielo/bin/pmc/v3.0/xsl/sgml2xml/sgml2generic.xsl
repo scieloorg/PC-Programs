@@ -1953,7 +1953,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 	<xsl:template match="*[contains(name(),'citat')]| ref" mode="mixed-citation">
 		<mixed-citation>
 			<xsl:choose>
-				<xsl:when test="text-ref and label and not(text-ref/*)">
+				<xsl:when test="text-ref and label and not(text-ref/*) and contains(text-ref, label)">
 					<xsl:value-of select="substring-after(text-ref,label)"/>
 				</xsl:when>
 				<xsl:when test="text-ref">
