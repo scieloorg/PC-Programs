@@ -101,7 +101,7 @@ def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_art
         if name in registered_articles.keys():
             action = 'update'
             if converter_env.skip_identical_xml:
-                if open(issue_files.base_source_path + '/' + name + '.xml', 'r').read() == open(pkg_path + '/' + name + '.xml', 'r').read():
+                if fs_utils.read_file(issue_files.base_source_path + '/' + name + '.xml') == fs_utils.read_file(pkg_path + '/' + name + '.xml'):
                     action = 'skip-update'
             if action == 'update':
                 if registered_articles[name].order != pkg_articles[name].order:
@@ -504,17 +504,12 @@ def format_reports_for_web(report_path, pkg_path, issue_path):
             os.unlink(report_path + '/' + f)
         else:
             #utils.debugging(report_path + '/' + f)
-            content = open(report_path + '/' + f).read()
-            if not isinstance(content, unicode):
-                try:
-                    content = content.decode('utf-8')
-                except:
-                    content = content.decode('iso-8859-1')
+            content = fs_utils.read_file(report_path + '/' + f)
             content = content.replace('file:///' + pkg_path, '/img/revistas/' + issue_path)
             content = content.replace('file:///' + report_path, '/reports/' + issue_path)
             if isinstance(content, unicode):
                 content = content.encode('utf-8')
-            open(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path + '/' + f, 'w').write(content)
+            fs_utils.write_file(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path + '/' + f, content)
 
 
 def is_conversion_allowed(pub_year, ref_count, xml_f, xml_e, xml_w, data_f, data_e, data_w, conv_f, conv_e, conv_w):
@@ -1017,7 +1012,7 @@ def update_db_copy(isis_db, isis_db_copy, fst_file):
         os.makedirs(d)
     if not os.path.isfile(isis_db_copy + '.fst'):
         shutil.copyfile(fst_file, isis_db_copy + '.fst')
-    if open(fst_file, 'r').read() != open(isis_db_copy + '.fst', 'r').read():
+    if fs_utils.read_file(fst_file) != fs_utils.read_file(isis_db_copy + '.fst'):
         shutil.copyfile(fst_file, isis_db_copy + '.fst')
     shutil.copyfile(isis_db + '.mst', isis_db_copy + '.mst')
     shutil.copyfile(isis_db + '.xrf', isis_db_copy + '.xrf')

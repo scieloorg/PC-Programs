@@ -164,7 +164,7 @@ class IssueFiles(object):
         path['html'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
         path['img'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path
 
-        xml_content = ''.join([open(self.xml_path + '/' + xml_filename).read().decode('utf-8') for xml_filename in os.listdir(self.xml_path) if xml_filename.endswith('.xml')])
+        xml_content = ''.join([fs_utils.read_file(self.xml_path + '/' + xml_filename) for xml_filename in os.listdir(self.xml_path) if xml_filename.endswith('.xml')])
 
         for p in path.values():
             if not os.path.isdir(p):

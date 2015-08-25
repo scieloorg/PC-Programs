@@ -32,8 +32,9 @@ def html2table():
 
 def load_symbols():
     symbols_items = {}
-    content = open(path + '/symbols.csv', 'r').readlines()
-    for row in content:
+    for row in open(path + '/symbols.csv', 'r').readlines():
+        if not isinstance(row, unicode):
+            row = row.decode('utf-8')
         cells = row.split('\t')
         if len(cells) == 3:
             char, ent, descr = cells
