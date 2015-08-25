@@ -666,18 +666,14 @@ def normalize_xml_content(doc_files_info, content, version):
     content = xml_utils.remove_doctype(content)
 
     register_log('convert_entities_to_chars')
-    print('xml_utils.convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
-    print(type(content))
 
     replaced_entities_report = ''
     if len(replaced_named_ent) > 0:
         replaced_entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
 
     if doc_files_info.is_sgmxml:
-        print('normalize_sgmlxml')
         content = normalize_sgmlxml(doc_files_info.xml_filename, doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
-        print(type(content))
 
     content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
     content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
