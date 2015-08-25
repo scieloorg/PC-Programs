@@ -267,7 +267,7 @@ class CISIS(object):
         r = mst_filename + expression
         cmd = self.cisis_path + '/mx ' + mst_filename + ' "bool=' + expression + '"  lw=999 "pft=mfn/" now > ' + r
         os.system(cmd)
-        return [l.replace('\n', '') for l in open(r, 'r').readlines()]
+        return [l.strip().decode('utf-8') for l in open(r, 'r').readlines()]
 
     def new(self, mst_filename):
         cmd = self.cisis_path + '/mx null count=0 create="' + mst_filename + '" now -all'

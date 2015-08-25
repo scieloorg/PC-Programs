@@ -6,9 +6,16 @@ import tempfile
 import files_extractor
 
 
-def write_file(filename, content):
+def read_file(filename, encode='utf-8'):
+    content = open(filename, 'r').read()
+    if not isinstance(content, unicode):
+        content = content.decode(encode)
+    return content
+
+
+def write_file(filename, content, encode='utf-8'):
     if isinstance(content, unicode):
-        content = content.encode('utf-8')
+        content = content.encode(encode)
     open(filename, 'w').write(content)
 
 

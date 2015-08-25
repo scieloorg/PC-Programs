@@ -33,14 +33,11 @@ CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
 
 def xpm_version():
     f = None
-    print(CURRENT_PATH + '/../../xpm_version.txt')
-    print(CURRENT_PATH + '/../../cfg/xpm_version.txt')
     if os.path.isfile(CURRENT_PATH + '/../../xpm_version.txt'):
         f = CURRENT_PATH + '/../../xpm_version.txt'
     elif os.path.isfile(CURRENT_PATH + '/../../cfg/xpm_version.txt'):
         f = CURRENT_PATH + '/../../cfg/xpm_version.txt'
     version = ''
-    print(f)
     if f is not None:
         version = open(f).readlines()[0].decode('utf-8')
     return version
@@ -311,15 +308,14 @@ def replace_tables_in_sgmlxml(content, embedded_tables):
 
 
 def read_html(html_filename):
-    html_content = open(html_filename, 'r').read()
-    if not isinstance(html_content, unicode):
-        html_content = html_content.decode(encoding=sys.getfilesystemencoding())
+    html_content = fs_utils.read_file(html_filename, sys.getfilesystemencoding())
     if not '<html' in html_content.lower():
         c = html_content
         for c in html_content:
             if ord(c) == 0:
                 break
         html_content = html_content.replace(c, '')
+    print('html_content type=')
     print(type(html_content))
     return html_content
 
@@ -344,24 +340,33 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
     #embedded_tables = get_html_tables(html_content)
     #content = replace_tables_in_sgmlxml(content, embedded_tables)
     content = extract_embedded_images(xml_name, content, html_content, html_filename, src_path)
+
+    print('extract_embedded_images')
+    print(type(content))
+
     content = replace_fontsymbols(content, html_content)
     for style in ['italic', 'bold', 'sup', 'sub']:
         s = '<' + style + '>'
         e = '</' + style + '>'
         content = content.replace(s.upper(), s.lower()).replace(e.upper(), e.lower())
+    print('replace_fontsymbols')
+    print(type(content))
 
     xml = xml_utils.is_xml_well_formed(content)
     if xml is None:
         content = fix_sgml_xml(content)
-        _content = content
-        if isinstance(content, unicode):
-            _content = content.encode('utf-8')
         utils.debugging(sgmxml_filename)
-        open(sgmxml_filename, 'w').write(_content)
+        fs_utils.write_file(sgmxml_filename, content)
         xml = xml_utils.is_xml_well_formed(content)
+
+    print('xml_utils.is_xml_well_formed')
+    print(type(content))
 
     if not xml is None:
         content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
+        print('java_xml_utils.xml_content_transform')
+        print(type(content))
+
         content = replace_mimetypes(content, src_path)
     else:
         print('Unable to convert SGML 2 XML')
@@ -656,19 +661,23 @@ def message_file_list(label, file_list):
 
 def normalize_xml_content(doc_files_info, content, version):
     register_log('normalize_xml_content')
-    
+
     register_log('remove_doctype')
     content = xml_utils.remove_doctype(content)
-    
+
     register_log('convert_entities_to_chars')
+    print('xml_utils.convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
-    
+    print(type(content))
+
     replaced_entities_report = ''
     if len(replaced_named_ent) > 0:
         replaced_entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
 
     if doc_files_info.is_sgmxml:
+        print('normalize_sgmlxml')
         content = normalize_sgmlxml(doc_files_info.xml_filename, doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
+        print(type(content))
 
     content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
     content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
@@ -721,6 +730,7 @@ def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False):
 
 def normalize_package_name(doc_files_info, acron, content):
     register_log('load_xml')
+    
     xml, e = xml_utils.load_xml(content)
     doc = article.Article(xml, doc_files_info.xml_name)
     doc_files_info.new_name = doc_files_info.xml_name
@@ -746,10 +756,7 @@ def normalize_package_name(doc_files_info, acron, content):
 
 def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
     packed_files_report = ''
-    content = open(doc_files_info.xml_filename, 'r').read()
-
-    if not isinstance(content, unicode):
-        content = content.decode('utf-8')
+    content = fs_utils.read_file(doc_files_info.xml_filename)
 
     content, replaced_entities_report = normalize_xml_content(doc_files_info, content, version)
 
@@ -766,12 +773,7 @@ def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
 
     pack_xml_file(content, version, doc_files_info.new_xml_filename, (doc.tree is None))
 
-    if isinstance(replaced_entities_report, unicode):
-        replaced_entities_report = replaced_entities_report.encode('utf-8')
-    if isinstance(packed_files_report, unicode):
-        packed_files_report = packed_files_report.encode('utf-8')
-
-    open(doc_files_info.err_filename, 'w').write(replaced_entities_report + packed_files_report)
+    fs_utils.write_file(doc_files_info.err_filename, replaced_entities_report + packed_files_report)
 
     return (doc, doc_files_info)
 
@@ -1098,6 +1100,7 @@ def make_packages(path, acron, version='1.0'):
 
 
 def get_inputs(args):
+    args = [arg.decode(encoding=sys.getfilesystemencoding()) for arg in args]
     script = args[0]
     path = None
     acron = None
@@ -1108,6 +1111,7 @@ def get_inputs(args):
 
 def call_make_packages(args, version):
     script, path, acron = get_inputs(args)
+
     if path is None and acron is None:
         # GUI
         import xml_gui
