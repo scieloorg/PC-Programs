@@ -12,9 +12,9 @@ def display_datetime(dateiso, timeiso):
 def how_similar(this, that):
     import difflib
     if this is None:
-        this = ''
+        this = 'None'
     if that is None:
-        that = ''
+        that = 'None'
     return difflib.SequenceMatcher(None, this.lower(), that.lower()).ratio()
 
 

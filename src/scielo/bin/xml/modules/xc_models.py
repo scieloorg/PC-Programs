@@ -8,7 +8,7 @@ import utils
 import xml_utils
 
 from article_utils import display_pages, format_dateiso, format_issue_label
-from article_utils import how_similar
+from utils import how_similar
 from article import Issue, PersonAuthor, Article
 from attributes import ROLE, DOCTOPIC, doctopic_label
 
@@ -922,9 +922,19 @@ class AheadManager(object):
     def matched_rate(self, article, ahead):
         r = 0
         if not ahead is None:
+            print(article.title)
+            print(ahead.article_title)
+            print(article.first_author_surname)
+            print(ahead.first_author_surname)
+            print(type(article.first_author_surname))
+            print(type(ahead.first_author_surname))
+
             r += how_similar(article.title, ahead.article_title)
+            print(r)
             r += how_similar(article.first_author_surname, ahead.first_author_surname)
+            print(r)
             r = (r * 100) / 2
+            print(r)
             if r < 80:
                 print((article.title, ahead.article_title))
                 print((article.first_author_surname, ahead.first_author_surname))
