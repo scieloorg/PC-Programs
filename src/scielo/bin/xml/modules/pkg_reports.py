@@ -270,6 +270,33 @@ class ArticlePackage(object):
 
         return (invalid_xml_name_items, pkg_metadata, missing_data)
 
+    def pages(self):
+        for xml_name in self.xml_name_sorted_by_order:
+            fpage = self.articles[xml_name].fpage
+            lpage = self.articles[xml_name].lpage
+            if fpage is None:
+                errors.append('WARNING: fpage (' + xml_name + ')=None')
+            if lpage is None:
+                errors.append('WARNING: lpage (' + xml_name + ')=None')
+
+            if fpage is not None and lpage is not None:
+                if fpage.isdigit() and lpage.isdigit():
+                    f = int(fpage)
+                    l = int(lpage)
+                    p = int(previous)
+                    if p > f:
+                        errors.append('FATAL ERROR:' + _('Invalid pages') + ': ' + 'fpage (' + xml_name + ')=' + fpage + _(' must be less than or equal to') + ' lpage (' + previous_xmlname + ')=' + previous)
+                    elif p == f:
+                        errors.append('WARNING:' + xml_name + ': ' + 'fpage (' + xml_name + ')=' + fpage + ' = ' + ' lpage (' + previous_xmlname + ')=' + str(previous))
+                    elif p + 1 < f:
+                        errors.append('WARNING:' + _('there is a gap between the previous page of previous article ({previous_xmlname})={previous} and page of the current article({xml_name})={fpage}').format(previous_xmlname=previous_xmlname, previous=previous, xml_name=xml_name, fpage=fpage))
+                    if f > l:
+                        errors.append('FATAL ERROR:' + xml_name + ': ' + _('Invalid range of pages: ') + fpage + '-' + lpage)
+                    previous = lpage
+                    previous_xmlname = xml_name
+
+        return errors
+
     def validate_articles_pkg_xml_and_data(self, org_manager, doc_files_info_items, dtd_files, validate_order, display_all, xc_actions=None):
         #FIXME
         self.pkg_stats = {}
@@ -333,7 +360,7 @@ class ArticlesPkgReport(object):
     def consistency_report(self, validate_order):
         critical = 0
         equal_data = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        unique_data = ['order', 'doi', 'elocation id']
+        unique_data = ['order', 'doi', 'elocation id', 'fpage-and-seq', 'lpage']
         error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-and-seq': 'ERROR'}
         required_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
 
