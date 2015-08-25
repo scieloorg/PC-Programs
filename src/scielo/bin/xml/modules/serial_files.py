@@ -239,9 +239,30 @@ class JournalFiles(object):
             serial_path = serial_path[0:-1]
         self.acron = acron
         self.journal_path = serial_path + '/' + acron
+        self._issues_files = None
+        self.setup()
+
+    def setup(self):
         self.years = [str(int(datetime.now().isoformat()[0:4])+1 - y) for y in range(0, 5)]
         for y in self.years:
             self.move_ahead_old_id_folder(y)
+
+    @property
+    def issues_files(self):
+        if self._issues_files is None:
+            self._issues_files = {}
+            for item in os.listdir(self.journal_path):
+                if os.path.isdir(self.journal_path + '/' + item):
+                    self._issues_files[item] = IssueFiles(self, item, None, None)
+        return self._issues_files
+
+    def publishes_aop(self):
+        return len(self.aop_issue_files) > 0
+
+    @property
+    def aop_issue_files(self):
+        if self.issues_files is not None:
+            return {k:v for k, v in self.issues_files.items() if 'ahead' in k and not 'ex-' in k}
 
     def ahead_base(self, year):
         path = self.journal_path + '/' + year + 'nahead/base/' + year + 'nahead'

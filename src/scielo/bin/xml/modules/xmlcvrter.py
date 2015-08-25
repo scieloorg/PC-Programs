@@ -300,7 +300,7 @@ def convert_package(src_path):
     acron_issue_label = _('unidentified ') + os.path.basename(src_path)[:-4]
     scilista_item = None
     issue_files = None
-
+    ex_aop_items = None
     report_components = {}
 
     dtd_files = xml_versions.DTDFiles('scielo', converter_env.version)
@@ -393,6 +393,13 @@ def convert_package(src_path):
 
             #utils.debugging('convert_articles')
             scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, selected_articles_pkg.pkg_stats, xml_doc_actions, previous_registered_articles, unmatched_orders)
+            if scilista_item is not None:
+                if aop_status is not None:
+                    if aop_status.get('updated bases') is not None:
+                        ex_aop_items = []
+
+                        for _aop in aop_status.get('updated bases'):
+                            ex_aop_items.append(issue_models.issue.acron + ' ' + _aop)
 
             #utils.debugging('detail_report')
             validations_report = selected_articles_pkg_reports.detail_report(conversion_stats_and_reports)
@@ -465,7 +472,7 @@ def convert_package(src_path):
     if old_result_path != result_path:
         fs_utils.delete_file_or_folder(old_result_path)
     #utils.debugging('-fim-')
-    return (report_location, scilista_item, acron_issue_label, email_subject)
+    return (report_location, scilista_item, acron_issue_label, email_subject, ex_aop_items)
 
 
 def format_email_subject(scilista_item, selected_articles, pkg_quality_fatal_errors, f, e, w):
@@ -553,7 +560,7 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
 
     ahead_manager = xc_models.AheadManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
     aop_status = None
-    if ahead_manager.journal_has_aop():
+    if ahead_manager.journal_publishes_aop():
         aop_status = {'deleted ex-aop': [], 'not deleted ex-aop': []}
     for xml_name in pkg_reports.sorted_xml_name_by_order(pkg_articles):
         article = pkg_articles[xml_name]
@@ -643,11 +650,10 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
         conversion_stats_and_reports[xml_name] = (conv_f, conv_e, conv_w, msg)
 
     #utils.debugging('convert_articles: journal_has_aop()')
-    if ahead_manager.journal_has_aop():
-        if len(aop_status['deleted ex-aop']) > 0:
-            updated = ahead_manager.finish_manage_ex_ahead()
-            if len(updated) > 0:
-                aop_status['updated bases'] = updated
+    if ahead_manager.journal_publishes_aop():
+        #if len(aop_status['deleted ex-aop']) > 0:
+        #    updated = ahead_manager.finish_manage_ex_ahead()
+        aop_status['updated bases'] = ahead_manager.update_all_ahead_db()
         aop_status['still aop'] = ahead_manager.still_ahead_items()
 
     scilista_item = None
@@ -685,10 +691,10 @@ def aop_message(article, ahead, status):
                 status = 'unmatched aop'
                 msg_list.append('FATAL ERROR: ' + _('the title/author of article and "aop version" are different.'))
 
-            data.append(_('doc title') + ':' + article.title)
-            data.append(_('aop title') + ':' + ahead.article_title)
-            data.append(_('doc first author') + ':' + article.first_author_surname)
-            data.append(_('aop first author') + ':' + ahead.first_author_surname)
+            data.append(_('doc title') + ':' + str(article.title))
+            data.append(_('aop title') + ':' + str(ahead.article_title))
+            data.append(_('doc first author') + ':' + str(article.first_author_surname))
+            data.append(_('aop first author') + ':' + str(ahead.first_author_surname))
     msg = ''
     msg += html_reports.tag('h4', _('Checking existence of aop version'))
     msg += ''.join([html_reports.p_message(item) for item in msg_list])
@@ -1078,7 +1084,7 @@ def execute_converter(package_paths, collection_name=None):
             package_folder = os.path.basename(package_path)
             utils.display_message(package_path)
             try:
-                report_location, scilista_item, acron_issue_label, results = convert_package(package_path)
+                report_location, scilista_item, acron_issue_label, results, ex_aop_items = convert_package(package_path)
                 acron, issue_id = acron_issue_label.split(' ')
             except Exception as e:
                 utils.display_message('-'*10)
@@ -1093,6 +1099,9 @@ def execute_converter(package_paths, collection_name=None):
                 fs_utils.delete_file_or_folder(package_path)
 
             if scilista_item is not None:
+                if ex_aop_items is not None:
+                    for ex_aop_item in ex_aop_items:
+                        scilista.append(ex_aop_item)
                 scilista.append(scilista_item)
                 if config.is_enabled_transference:
                     transfer_website_files(acron, issue_id, config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path)
