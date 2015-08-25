@@ -89,15 +89,6 @@ def url_check(url, _timeout=30):
     return (r is not None)
 
 
-def how_similar(this, that):
-    import difflib
-    if this is None:
-        this = ''
-    if that is None:
-        that = ''
-    return difflib.SequenceMatcher(None, this.lower(), that.lower()).ratio()
-
-
 def u_encode(u, encoding):
     r = u
     if isinstance(u, unicode):
