@@ -838,6 +838,9 @@ class AheadManager(object):
             total += len(items)
         return total > 0
 
+    def journal_publishes_aop(self):
+        return self.journal_files.publishes_aop()
+
     def extract_id_files_from_master(self, i_ahead_records):
         for db_filename in self.journal_files.ahead_bases:
 
@@ -922,19 +925,9 @@ class AheadManager(object):
     def matched_rate(self, article, ahead):
         r = 0
         if not ahead is None:
-            print(article.title)
-            print(ahead.article_title)
-            print(article.first_author_surname)
-            print(ahead.first_author_surname)
-            print(type(article.first_author_surname))
-            print(type(ahead.first_author_surname))
-
             r += how_similar(article.title, ahead.article_title)
-            print(r)
             r += how_similar(article.first_author_surname, ahead.first_author_surname)
-            print(r)
             r = (r * 100) / 2
-            print(r)
             if r < 80:
                 print((article.title, ahead.article_title))
                 print((article.first_author_surname, ahead.first_author_surname))
@@ -1046,6 +1039,19 @@ class AheadManager(object):
                     if f.endswith('.id') and f != '00000.id' and f != 'i.id':
                         self.dao.append_id_records(id_path + '/' + f, base)
                 updated.append(ahead_db_name)
+        return updated
+
+    def update_all_ahead_db(self):
+        updated = []
+        if self.journal_files.publishes_aop():
+            for issue_label, issue_files in self.journal_files.aop_issue_files.items():
+                id_path = issue_files.id_path
+                if os.path.isfile(issue_files.id_filename):
+                    self.dao.save_id_records(issue_files.id_filename, issue_files.base)
+                    for f in os.listdir(issue_files.id_path):
+                        if f.endswith('.id') and f != '00000.id' and f != 'i.id':
+                            self.dao.append_id_records(issue_files.id_path + '/' + f, issue_files.base)
+                    updated.append(issue_label)
         return updated
 
 
