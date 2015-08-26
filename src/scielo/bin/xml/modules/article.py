@@ -1125,6 +1125,15 @@ class Article(ArticleXML):
         return (self.volume is None) and (self.number == 'ahead')
 
     @property
+    def is_rolling_pass(self):
+        r = False
+        if self.epub_date is not None:
+            if not self.is_ahead:
+                if self.epub_ppub_date is None:
+                    r = True
+        return r
+
+    @property
     def ahpdate(self):
         return self.article_pub_date if self.is_ahead else None
 
@@ -1155,6 +1164,18 @@ class Article(ArticleXML):
         if not is_valid(d):
             d = None
         return d
+
+    @property
+    def collection_dateiso(self):
+        return article_utils.format_dateiso(self.collection_date)
+
+    @property
+    def epub_dateiso(self):
+        return article_utils.format_dateiso(self.epub_date)
+
+    @property
+    def epub_ppub_dateiso(self):
+        return article_utils.format_dateiso(self.epub_ppub_date)
 
     @property
     def issue_label(self):
