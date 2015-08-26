@@ -270,6 +270,42 @@ class ArticlePackage(object):
 
         return (invalid_xml_name_items, pkg_metadata, missing_data)
 
+    def pages(self):
+        results = []
+        previous_lpage = None
+        previous_xmlname = None
+        int_previous_lpage = None
+        for xml_name in self.xml_name_sorted_by_order:
+            fpage = self.articles[xml_name].fpage
+            lpage = self.articles[xml_name].lpage
+            msg = []
+            status = ''
+            if self.articles[xml_name].pages == '':
+                msg.append(_('no pagination was found'))
+                status = 'ERROR'
+            if fpage is not None and lpage is not None:
+                if fpage.isdigit() and lpage.isdigit():
+                    int_fpage = int(fpage)
+                    int_lpage = int(lpage)
+                    if int_previous_lpage is not None:
+                        if int_previous_lpage > int_fpage:
+                            status = 'FATAL ERROR'
+                            msg.append(_('Invalid pages') + ': ' + _('check lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
+                        elif int_previous_lpage == int_fpage:
+                            status = 'WARNING'
+                            msg.append(_('lpage of {previous_article} and fpage of {xml_name} are the same').format(previous_article=previous_xmlname, xml_name=xml_name))
+                        elif int_previous_lpage + 1 < int_fpage:
+                            status = 'WARNING'
+                            msg.append(_('there is a gap between the lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
+                    if int_fpage > int_lpage:
+                        status = 'FATAL ERROR'
+                        msg.append(_('Invalid page range'))
+                    int_previous_lpage = int_lpage
+                    previous_lpage = lpage
+                    previous_xmlname = xml_name
+            results.append({'label': xml_name, 'status': status, 'message': self.articles[xml_name].pages + '. ' + '; '.join(msg)})
+        return results
+
     def validate_articles_pkg_xml_and_data(self, org_manager, doc_files_info_items, dtd_files, validate_order, display_all, xc_actions=None):
         #FIXME
         self.pkg_stats = {}
@@ -333,7 +369,7 @@ class ArticlesPkgReport(object):
     def consistency_report(self, validate_order):
         critical = 0
         equal_data = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        unique_data = ['order', 'doi', 'elocation id']
+        unique_data = ['order', 'doi', 'elocation id', 'fpage-and-seq', 'lpage']
         error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-and-seq': 'ERROR'}
         required_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
 
@@ -404,7 +440,9 @@ class ArticlesPkgReport(object):
                 issue_common_data += html_reports.format_list(label, 'ol', pkg_metadata[label].keys())
                 #issue_common_data += html_reports.p_message('FATAL ERROR: ' + _('Unique value expected for ') + label)
 
-        return (critical, html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages'))
+        pages = html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.package.pages(), table_style='validation', row_style='status'))
+
+        return (critical, html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages') + pages)
 
     def overview_report(self):
         r = ''
@@ -461,7 +499,7 @@ class ArticlesPkgReport(object):
         return html_reports.tag('h4', _('Package references overview')) + html_reports.sheet(labels, items, table_style='dbstatus')
 
     def detail_report(self, conversion_reports=None):
-        labels = ['name', 'order', 'fpage', 'doi', 'aop pid', 'toc section', '@article-type', 'article title', 'reports']
+        labels = ['name', 'order', 'fpage', 'pagination', 'doi', 'aop pid', 'toc section', '@article-type', 'article title', 'reports']
         items = []
 
         n = '/' + str(len(self.package.articles))
@@ -520,6 +558,8 @@ class ArticlesPkgReport(object):
             values.append(new_name)
             values.append(self.package.articles[new_name].order)
             values.append(self.package.articles[new_name].fpage)
+            values.append(self.package.articles[new_name].pages)
+
             values.append(self.package.articles[new_name].doi)
             values.append(self.package.articles[new_name].previous_pid)
             values.append(self.package.articles[new_name].toc_section)
