@@ -687,10 +687,14 @@ def aop_message(article, ahead, status):
                 status = 'unmatched aop'
                 msg_list.append('FATAL ERROR: ' + _('the title/author of article and "aop version" are different.'))
 
-            data.append(_('doc title') + ':' + str(article.title))
-            data.append(_('aop title') + ':' + str(ahead.article_title))
-            data.append(_('doc first author') + ':' + str(article.first_author_surname))
-            data.append(_('aop first author') + ':' + str(ahead.first_author_surname))
+            t = '' if article.title is None else article.title
+            data.append(_('doc title') + ':' + t)
+            t = '' if ahead.article_title is None else ahead.article_title
+            data.append(_('aop title') + ':' + t)
+            t = '' if article.first_author_surname is None else article.first_author_surname
+            data.append(_('doc first author') + ':' + t)
+            t = '' if ahead.first_author_surname is None else ahead.first_author_surname
+            data.append(_('aop first author') + ':' + t)
     msg = ''
     msg += html_reports.tag('h4', _('Checking existence of aop version'))
     msg += ''.join([html_reports.p_message(item) for item in msg_list])
