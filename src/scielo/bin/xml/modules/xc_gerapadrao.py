@@ -56,8 +56,8 @@ def clean_collection_scilista(scilista_file):
 
 
 def sort_scilista(scilista_content):
-    scilista_items = list(set([item.strip() for item in scilista_content.split('\n')]))
-    scilista_items = [item for item in scilista_items if ' pr' in item] + [item for item in scilista_items if not ' pr' in item]
+    scilista_items = list(set([item.strip() for item in scilista_content.split('\n') if len(item) if ' ' in item]))
+    scilista_items = [item for item in scilista_items if item.endswith('pr')] + [item for item in scilista_items if not item.endswith('pr')]
     return '\n'.join(scilista_items) + '\n'
 
 
@@ -70,11 +70,8 @@ def gerapadrao(args):
         config = xc.get_configuration(collection_acron)
         if config is not None:
             mailer = xc.get_mailer(config)
-
-            if config.is_enabled_transference:
-                open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - inicio transf files\n')
-                transfer_website_files(config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path, open(config.collection_scilista, 'r').readlines())
-                open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim transf files\n')
+            start_time = datetime.now().isoformat()[11:11+5].replace(':', '')
+            log_filename = './gerapadrao_' + start_time + '.log'
             if config.is_enabled_gerapadrao:
                 if is_unblocked_gerapadrao(config.gerapadrao_permission_file):
                     config.update_title_and_issue()
@@ -86,27 +83,28 @@ def gerapadrao(args):
                         print(scilista_content)
 
                         block_gerapadrao(config.gerapadrao_permission_file)
-                        open(config.gerapadrao_scilista, 'a+').write(scilista_content)
+                        open(config.gerapadrao_scilista, 'w').write(scilista_content)
                         gerapadrao_cmd = gerapadrao_command(config.gerapadrao_proc_path, config.gerapadrao_permission_file)
 
                         if mailer is not None:
-                            mailer.send_message(config.email_to, config.email_subject_gerapadrao, config.email_text_gerapadrao + scilista_content)
+                            mailer.send_message(config.email_to, config.email_subject_gerapadrao.replace('Gerapadrao', 'Gerapadrao ' + start_time + ' '), config.email_text_gerapadrao + scilista_content)
 
-                        open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - inicio gerapadrao\n')
-                        open('./gerapadrao.log', 'a+').write(gerapadrao_cmd)
-                        open('./gerapadrao.log', 'a+').write(scilista_content)
+                        open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - inicio gerapadrao\n')
+                        open(log_filename, 'a+').write(gerapadrao_cmd)
+                        open(log_filename, 'a+').write(scilista_content)
                         os.system(gerapadrao_cmd)
                         #clean_collection_scilista(config.collection_scilista)
-                        open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim gerapadrao\n')
+                        open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - fim gerapadrao\n')
 
                         if config.is_enabled_transference:
-                            open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - inicio transf bases\n')
+                            open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - inicio transf bases\n')
                             transfer_website_bases(config.local_web_app_path + '/bases', config.transference_user, config.transference_server, config.remote_web_app_path + '/bases')
-                            open('./gerapadrao.log', 'a+').write(datetime.now().isoformat() + ' - fim transf bases\n')
-
+                            open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - fim transf bases\n')
+                            open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - inicio transf files\n')
+                            transfer_website_files(config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path, open(config.collection_scilista, 'r').readlines())
+                            open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - fim transf files\n')
                         if mailer is not None:
-                            mailer.send_message(config.email_to, config.email_subject_website_update, config.email_text_website_update + scilista_content)
-
+                            mailer.send_message(config.email_to, config.email_subject_website_update.replace('Gerapadrao', 'Gerapadrao ' + start_time + ' '), config.email_text_website_update + scilista_content)
                 else:
                     print('gerapadrao is running. Wait ...')
                     if mailer is not None:

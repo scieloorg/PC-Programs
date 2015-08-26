@@ -270,40 +270,57 @@ class ArticlePackage(object):
 
         return (invalid_xml_name_items, pkg_metadata, missing_data)
 
+    @property
+    def is_processed_in_batches(self):
+        r = False
+        epub_dates = [a.epub_dateiso for a in self.articles.values() if a.epub_date is not None]
+        ppub_dates = [a.epub_ppub_date for a in self.articles.values() if a.epub_ppub_date is not None]
+        if not self.articles is None:
+            if len(self.articles) == len(epub_dates) and len(list(set(epub_dates))) > 1 and len(ppub_dates) == 0:
+                r = True
+        return r
+
     def pages(self):
         results = []
         previous_lpage = None
         previous_xmlname = None
         int_previous_lpage = None
+
         for xml_name in self.xml_name_sorted_by_order:
+            #if self.articles[xml_name].is_rolling_pass or self.articles[xml_name].is_ahead:
+            #else:
             fpage = self.articles[xml_name].fpage
             lpage = self.articles[xml_name].lpage
             msg = []
             status = ''
             if self.articles[xml_name].pages == '':
                 msg.append(_('no pagination was found'))
-                status = 'ERROR'
+                if not self.articles[xml_name].is_ahead:
+                    status = 'ERROR'
             if fpage is not None and lpage is not None:
                 if fpage.isdigit() and lpage.isdigit():
                     int_fpage = int(fpage)
                     int_lpage = int(lpage)
-                    if int_previous_lpage is not None:
-                        if int_previous_lpage > int_fpage:
-                            status = 'FATAL ERROR'
-                            msg.append(_('Invalid pages') + ': ' + _('check lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
-                        elif int_previous_lpage == int_fpage:
-                            status = 'WARNING'
-                            msg.append(_('lpage of {previous_article} and fpage of {xml_name} are the same').format(previous_article=previous_xmlname, xml_name=xml_name))
-                        elif int_previous_lpage + 1 < int_fpage:
-                            status = 'WARNING'
-                            msg.append(_('there is a gap between the lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
+                    if not self.is_processed_in_batches:
+                        if not self.articles[xml_name].is_rolling_pass and not self.articles[xml_name].is_ahead:
+                            if int_previous_lpage is not None:
+                                if int_previous_lpage > int_fpage:
+                                    status = 'FATAL ERROR'
+                                    msg.append(_('Invalid pages') + ': ' + _('check lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
+                                elif int_previous_lpage == int_fpage:
+                                    status = 'WARNING'
+                                    msg.append(_('lpage of {previous_article} and fpage of {xml_name} are the same').format(previous_article=previous_xmlname, xml_name=xml_name))
+                                elif int_previous_lpage + 1 < int_fpage:
+                                    status = 'WARNING'
+                                    msg.append(_('there is a gap between the lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
                     if int_fpage > int_lpage:
                         status = 'FATAL ERROR'
                         msg.append(_('Invalid page range'))
                     int_previous_lpage = int_lpage
                     previous_lpage = lpage
                     previous_xmlname = xml_name
-            results.append({'label': xml_name, 'status': status, 'message': self.articles[xml_name].pages + '. ' + '; '.join(msg)})
+            dates = '|'.join([item if item is not None else 'none' for item in [self.articles[xml_name].epub_ppub_dateiso, self.articles[xml_name].collection_dateiso, self.articles[xml_name].epub_dateiso]])
+            results.append({'label': xml_name, 'status': status, 'message': self.articles[xml_name].pages + ' (' + dates + ')' + '; '.join(msg)})
         return results
 
     def validate_articles_pkg_xml_and_data(self, org_manager, doc_files_info_items, dtd_files, validate_order, display_all, xc_actions=None):
@@ -369,7 +386,9 @@ class ArticlesPkgReport(object):
     def consistency_report(self, validate_order):
         critical = 0
         equal_data = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        unique_data = ['order', 'doi', 'elocation id', 'fpage-and-seq', 'lpage']
+        unique_data = ['order', 'doi', 'elocation id', ]
+        if not self.package.is_processed_in_batches:
+            unique_data += ['fpage-and-seq', 'lpage']
         error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-and-seq': 'FATAL ERROR', 'lpage': 'WARNING'}
         required_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
 
