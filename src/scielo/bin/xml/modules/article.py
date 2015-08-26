@@ -1081,6 +1081,7 @@ class Article(ArticleXML):
         fpage = '' if self.fpage is None else self.fpage
         data['fpage-and-seq'] = fpage + seq
         data['lpage'] = self.lpage
+        data['fpage'] = self.fpage
         data['elocation id'] = self.elocation_id
 
         return data
