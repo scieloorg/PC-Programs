@@ -328,6 +328,7 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
         print('content type')
         print(type(content))
         content = content.decode('utf-8')
+    content = xml_utils.remove_doctype(content)
     if 'mml:' in content and not 'xmlns:mml="http://www.w3.org/1998/Math/MathML"' in content:
         if '<doc' in content:
             content = content.replace('<doc ', '<doc xmlns:mml="http://www.w3.org/1998/Math/MathML" ')
@@ -662,9 +663,6 @@ def message_file_list(label, file_list):
 def normalize_xml_content(doc_files_info, content, version):
     register_log('normalize_xml_content')
 
-    register_log('remove_doctype')
-    content = xml_utils.remove_doctype(content)
-
     register_log('convert_entities_to_chars')
     content, replaced_named_ent = xml_utils.convert_entities_to_chars(content)
 
@@ -673,6 +671,7 @@ def normalize_xml_content(doc_files_info, content, version):
         replaced_entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
 
     if doc_files_info.is_sgmxml:
+        register_log('remove_doctype')
         content = normalize_sgmlxml(doc_files_info.xml_filename, doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
 
     content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
