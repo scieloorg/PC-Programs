@@ -115,7 +115,7 @@ def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_art
 
 
 def complete_issue_items_row(article, action, result, source, notes=''):
-    labels = ['name', 'package or database', 'creation date | last update', 'action', 'result', 'order', 'notes', 'aop PID', 'doi', 'article title']
+    labels = ['name', 'package or database', 'creation date | last update', 'action', 'result', 'order', 'pages', 'notes', 'aop PID', 'doi', 'article title']
     _source = source
 
     if source == 'registered':
@@ -128,6 +128,7 @@ def complete_issue_items_row(article, action, result, source, notes=''):
     values.append(action)
     values.append(result)
     values.append(article.order)
+    values.append(article.pages)
     values.append(notes)
     values.append(article.previous_pid)
     values.append(article.doi)

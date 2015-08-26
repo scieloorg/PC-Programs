@@ -1029,6 +1029,25 @@ class Article(ArticleXML):
         self._doi_journal_and_article = None
 
     @property
+    def page_range(self):
+        _page_range = []
+        if self.fpage is not None:
+            _page_range.append(self.fpage)
+        if self.lpage is not None:
+            _page_range.append(self.lpage)
+        _page_range = '-'.join(_page_range)
+        return None if len(_page_range) == 0 else _page_range
+
+    @property
+    def pages(self):
+        _pages = []
+        if self.page_range is not None:
+            _pages.append(self.page_range)
+        if self.elocation_id is not None:
+            _pages.append(self.elocation_id)
+        return '; '.join(_pages)
+
+    @property
     def doi_query_result(self):
         if self._doi_query_result is None:
             self._doi_query_result = article_utils.doi_query(self.doi)

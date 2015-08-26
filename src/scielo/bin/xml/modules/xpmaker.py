@@ -695,11 +695,9 @@ def normalize_xml_content(doc_files_info, content, version):
 
 
 def get_new_name(doc_files_info, doc, acron):
-    print('get_new_name')
     new_name = doc_files_info.xml_name
     if doc_files_info.is_sgmxml:
         new_name = generate_new_name(doc, acron, doc_files_info.xml_name)
-    print(new_name)
     return new_name
 
 
@@ -934,7 +932,7 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
 
         if not from_markup:
             critical, toc_f, toc_e, toc_w, toc_report = articles_pkg_reports.validate_consistency(from_converter)
-            report_components['detail-report'] = toc_report
+            report_components['issue-report'] = toc_report
 
         if toc_f == 0:
             org_manager = institutions_service.OrgManager()
