@@ -9,22 +9,23 @@ Requirements
 
 - JAVA
 - PYTHON 2.7.x
-- Pillow
+- Pillow (http://effbot.org/downloads/PIL-1.1.7.win32-py2.7.exe)
 
-.. note:: Add the Java and Python paths to PATH (environment variable)
+Add the `Java and Python paths to PATH (environment variable) <howtoinstall_path.html>`_
+
 
 
 How to install
 ==============
 
 1. Download the `installer <download.html>`_
-2. Install the requirements
+2. Check the `Requirements`_
 3. Run the installer
 4. Follow the instructions given in each screen
 
-.. attention:: Use a drive in which the user can have full access 
+.. attention:: Use a drive in which the user can have full permissions. 
 
-.. warning:: DO NOT use names with spaces
+.. warning:: DO NOT use names with spaces or with diacrits
 
 
 5. Complete the data of the installation
@@ -65,5 +66,5 @@ So, copy the SciELO folder to All Users folder
 
 ----------------
 
-Last update of this page: July 17, 2015
+Last update of this page: August, 2015
 
