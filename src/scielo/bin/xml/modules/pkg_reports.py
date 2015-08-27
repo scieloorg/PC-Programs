@@ -286,7 +286,7 @@ class ArticlePackage(object):
             epub_ppub_dates = list(set([a.epub_ppub_dateiso for a in self.articles.values() if a.epub_ppub_dateiso is not None]))
             collection_dates = list(set([a.collection_dateiso for a in self.articles.values() if a.collection_dateiso is not None]))
             if len(epub_dates) > 0:
-                if len(epub_ppub_dates) == 0 and len(collection_dates) == 0:
+                if len(epub_ppub_dates) + len(collection_dates) == 0:
                     _is_rolling_pass = True
                 elif len(epub_ppub_dates) + len(collection_dates) > 1:
                     _is_rolling_pass = True
