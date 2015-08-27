@@ -272,13 +272,25 @@ class ArticlePackage(object):
 
     @property
     def is_processed_in_batches(self):
-        r = False
-        epub_dates = [a.epub_dateiso for a in self.articles.values() if a.epub_date is not None]
-        ppub_dates = [a.epub_ppub_date for a in self.articles.values() if a.epub_ppub_date is not None]
-        if not self.articles is None:
-            if len(self.articles) == len(epub_dates) and len(list(set(epub_dates))) > 1 and len(ppub_dates) == 0:
-                r = True
-        return r
+        return any([self.is_aop_issue, self.is_rolling_pass])
+
+    @property
+    def is_aop_issue(self):
+        return any([a.is_ahead for a in self.articles.values()])
+
+    @property
+    def is_rolling_pass(self):
+        _is_rolling_pass = False
+        if not self.is_aop_issue:
+            epub_dates = list(set([a.epub_dateiso for a in self.articles.values() if a.epub_dateiso is not None]))
+            epub_ppub_dates = list(set([a.epub_ppub_dateiso for a in self.articles.values() if a.epub_ppub_dateiso is not None]))
+            collection_dates = list(set([a.collection_dateiso for a in self.articles.values() if a.collection_dateiso is not None]))
+            if len(epub_dates) > 0:
+                if len(epub_ppub_dates) == 0 and len(collection_dates) == 0:
+                    _is_rolling_pass = True
+                elif len(epub_ppub_dates) + len(collection_dates) > 1:
+                    _is_rolling_pass = True
+        return _is_rolling_pass
 
     def pages(self):
         results = []
@@ -319,8 +331,11 @@ class ArticlePackage(object):
                     int_previous_lpage = int_lpage
                     previous_lpage = lpage
                     previous_xmlname = xml_name
-            dates = '|'.join([item if item is not None else 'none' for item in [self.articles[xml_name].epub_ppub_dateiso, self.articles[xml_name].collection_dateiso, self.articles[xml_name].epub_dateiso]])
-            results.append({'label': xml_name, 'status': status, 'message': self.articles[xml_name].pages + ' (' + dates + ')' + '; '.join(msg)})
+            #dates = '|'.join([item if item is not None else 'none' for item in [self.articles[xml_name].epub_ppub_dateiso, self.articles[xml_name].collection_dateiso, self.articles[xml_name].epub_dateiso]])
+            msg = '; '.join(msg)
+            if len(msg) > 0:
+                msg = '. ' + msg
+            results.append({'label': xml_name, 'status': status, 'message': self.articles[xml_name].pages + msg})
         return results
 
     def validate_articles_pkg_xml_and_data(self, org_manager, doc_files_info_items, dtd_files, validate_order, display_all, xc_actions=None):

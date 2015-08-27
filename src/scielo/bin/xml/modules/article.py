@@ -152,6 +152,11 @@ class ArticleXML(object):
         self._titles_by_lang = None
         self._abstracts_by_lang = None
         self._keywords_by_lang = None
+        self._collection_date = None
+        self._epub_date = None
+        self._epub_ppub_date = None
+        self._received_date = None
+        self._accepted_date = None
 
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
@@ -809,28 +814,6 @@ class ArticleXML(object):
         return r
 
     @property
-    def received(self):
-        _hist = None
-        if self.article_meta is not None:
-            item = self.article_meta.find('.//date[@date-type="received"]')
-            if item is not None:
-                _hist = {}
-                for tag in ['year', 'month', 'day', 'season']:
-                    _hist[tag] = item.findtext(tag)
-        return _hist
-
-    @property
-    def accepted(self):
-        _hist = None
-        if self.article_meta is not None:
-            item = self.article_meta.find('.//date[@date-type="accepted"]')
-            if item is not None:
-                _hist = {}
-                for tag in ['year', 'month', 'day', 'season']:
-                    _hist[tag] = item.findtext(tag)
-        return _hist
-
-    @property
     def references(self):
         refs = []
         if self.back is not None:
@@ -865,46 +848,42 @@ class ArticleXML(object):
         return _id
 
     @property
+    def received(self):
+        if self._received_date is None:
+            if self.article_meta is not None:
+                self._received_date = xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="received"]'))
+        return self._received_date
+
+    @property
+    def accepted(self):
+        if self._accepted_date is None:
+            if self.article_meta is not None:
+                self._accepted_date = xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="accepted"]'))
+        return self._accepted_date
+
+    @property
     def collection_date(self):
-        d = None
-        if self.article_meta is not None:
-            date = self.article_meta.find('pub-date[@pub-type="collection"]')
-            if date is not None:
-                d = {}
-                d['season'] = date.findtext('season')
-                d['month'] = date.findtext('month')
-                d['year'] = date.findtext('year')
-                d['day'] = date.findtext('day')
-        return d
+        if self._collection_date is None:
+            if self.article_meta is not None:
+                self._collection_date = xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="collection"]'))
+        return self._collection_date
 
     @property
     def epub_ppub_date(self):
-        d = None
-        if self.article_meta is not None:
-            date = self.article_meta.find('pub-date[@pub-type="epub-ppub"]')
-            if date is not None:
-                d = {}
-                d['season'] = date.findtext('season')
-                d['month'] = date.findtext('month')
-                d['year'] = date.findtext('year')
-                d['day'] = date.findtext('day')
-        return d
+        if self._epub_ppub_date is None:
+            if self.article_meta is not None:
+                self._epub_ppub_date = xml_utils.date_element(self.article_meta.find('pub-date[@pub-type="epub-ppub"]'))
+        return self._epub_ppub_date
 
     @property
     def epub_date(self):
-        d = None
-        date = None
-        if self.article_meta is not None:
-            date = self.article_meta.find('pub-date[@pub-type="epub"]')
-            if date is None:
-                date = self.article_meta.find('pub-date[@date-type="preprint"]')
-            if date is not None:
-                d = {}
-                d['season'] = date.findtext('season')
-                d['month'] = date.findtext('month')
-                d['year'] = date.findtext('year')
-                d['day'] = date.findtext('day')
-        return d
+        if self._epub_date is None:
+            if self.article_meta is not None:
+                date_node = self.article_meta.find('pub-date[@pub-type="epub"]')
+                if date_node is None:
+                    date_node = self.article_meta.find('pub-date[@date-type="preprint"]')
+                self._epub_date = xml_utils.date_element(date_node)
+        return self._epub_date
 
     @property
     def is_article_press_release(self):
