@@ -12,6 +12,17 @@ from __init__ import _
 ENTITIES_TABLE = None
 
 
+def date_element(date_node):
+    d = None
+    if date_node is not None:
+        d = {}
+        d['season'] = date_node.findtext('season')
+        d['month'] = date_node.findtext('month')
+        d['year'] = date_node.findtext('year')
+        d['day'] = date_node.findtext('day')
+    return d
+
+
 def element_lang(node):
     if node is not None:
         return node.attrib.get('{http://www.w3.org/XML/1998/namespace}lang')
