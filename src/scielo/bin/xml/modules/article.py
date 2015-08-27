@@ -1108,7 +1108,7 @@ class Article(ArticleXML):
         r = False
         if self.epub_date is not None:
             if not self.is_ahead:
-                if self.epub_ppub_date is None:
+                if self.epub_ppub_date is None and self.collection_date is None:
                     r = True
         return r
 

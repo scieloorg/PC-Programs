@@ -283,12 +283,14 @@ class ArticlePackage(object):
         _is_rolling_pass = False
         if not self.is_aop_issue:
             epub_dates = list(set([a.epub_dateiso for a in self.articles.values() if a.epub_dateiso is not None]))
-            epub_ppub_dates = list(set([a.epub_ppub_dateiso for a in self.articles.values() if a.epub_ppub_dateiso is not None]))
-            collection_dates = list(set([a.collection_dateiso for a in self.articles.values() if a.collection_dateiso is not None]))
+            epub_ppub_dates = [a.epub_ppub_dateiso for a in self.articles.values() if a.epub_ppub_dateiso is not None]
+            collection_dates = [a.collection_dateiso for a in self.articles.values() if a.collection_dateiso is not None]
+
+            other_dates = list(set(epub_ppub_dates + collection_dates))
             if len(epub_dates) > 0:
-                if len(epub_ppub_dates) + len(collection_dates) == 0:
+                if len(other_dates) == 0:
                     _is_rolling_pass = True
-                elif len(epub_ppub_dates) + len(collection_dates) > 1:
+                elif len(other_dates) > 1:
                     _is_rolling_pass = True
         return _is_rolling_pass
 
@@ -313,18 +315,18 @@ class ArticlePackage(object):
                 if fpage.isdigit() and lpage.isdigit():
                     int_fpage = int(fpage)
                     int_lpage = int(lpage)
-                    if not self.is_processed_in_batches:
-                        if not self.articles[xml_name].is_rolling_pass and not self.articles[xml_name].is_ahead:
-                            if int_previous_lpage is not None:
-                                if int_previous_lpage > int_fpage:
-                                    status = 'FATAL ERROR'
-                                    msg.append(_('Invalid pages') + ': ' + _('check lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
-                                elif int_previous_lpage == int_fpage:
-                                    status = 'WARNING'
-                                    msg.append(_('lpage of {previous_article} and fpage of {xml_name} are the same').format(previous_article=previous_xmlname, xml_name=xml_name))
-                                elif int_previous_lpage + 1 < int_fpage:
-                                    status = 'WARNING'
-                                    msg.append(_('there is a gap between the lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
+
+                    #if not self.articles[xml_name].is_rolling_pass and not self.articles[xml_name].is_ahead:
+                    if int_previous_lpage is not None:
+                        if int_previous_lpage > int_fpage:
+                            status = 'FATAL ERROR' if not self.articles[xml_name].is_rolling_pass and not self.articles[xml_name].is_ahead else 'WARNING'
+                            msg.append(_('Invalid pages') + ': ' + _('check lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
+                        elif int_previous_lpage == int_fpage:
+                            status = 'WARNING'
+                            msg.append(_('lpage of {previous_article} and fpage of {xml_name} are the same').format(previous_article=previous_xmlname, xml_name=xml_name))
+                        elif int_previous_lpage + 1 < int_fpage:
+                            status = 'WARNING'
+                            msg.append(_('there is a gap between the lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
                     if int_fpage > int_lpage:
                         status = 'FATAL ERROR'
                         msg.append(_('Invalid page range'))
