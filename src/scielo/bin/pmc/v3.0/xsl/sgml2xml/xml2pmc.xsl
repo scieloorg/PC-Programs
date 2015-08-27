@@ -243,4 +243,10 @@
 			</xsl:if>
 		</xsl:if>
 	</xsl:template>
+	<xsl:template match="ext-link[@ext-link-type='clinical-trial']">
+		<uri>
+			<xsl:attribute name="content-type"><xsl:value-of select="@ext-link-type"/></xsl:attribute>
+			<xsl:apply-templates select="@xlink:href|*|text()"/>
+		</uri>
+	</xsl:template>
 </xsl:stylesheet>

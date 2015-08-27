@@ -701,7 +701,7 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>
-	<xsl:template match="cltrial" mode="front-clinical-trial">
+	<!--xsl:template match="cltrial" mode="front-clinical-trial">
 		<uri>
 			<xsl:attribute name="content-type">clinical-trial</xsl:attribute>
 			<xsl:attribute name="xlink:href"><xsl:value-of select="ctreg/@cturl"/></xsl:attribute>
@@ -713,6 +713,19 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 			<xsl:attribute name="xlink:href"><xsl:value-of select="ctreg/@cturl"/></xsl:attribute>
 			<xsl:apply-templates select=".//text()"></xsl:apply-templates>
 		</uri>
+	</xsl:template-->
+	<xsl:template match="cltrial" mode="front-clinical-trial">
+		<ext-link>
+			<xsl:attribute name="ext-link-type">clinical-trial</xsl:attribute>
+			<xsl:attribute name="xlink:href"><xsl:value-of select="ctreg/@cturl"/></xsl:attribute>
+			<xsl:apply-templates select=".//text()"></xsl:apply-templates>
+		</ext-link>
+	</xsl:template>
+	<xsl:template match="cltrial">
+		<ext-link>
+			<xsl:attribute name="xlink:href"><xsl:value-of select="ctreg/@cturl"/></xsl:attribute>
+			<xsl:apply-templates select=".//text()"></xsl:apply-templates>
+		</ext-link>
 	</xsl:template>
 	
 	<xsl:template match="article|text|doc" mode="article-meta">
