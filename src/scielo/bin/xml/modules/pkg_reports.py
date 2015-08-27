@@ -555,13 +555,13 @@ class ArticlesPkgReport(object):
                 content = ''.join(v)
                 status = html_reports.statistics_display(xml_f, xml_e, xml_w)
                 links += html_reports.report_link('xmlrep' + new_name, '[ ' + _('Structure Validations') + ' ]', 'xmlrep', a_name)
-                links += status
+                links += html_reports.tag('span', status, 'smaller')
                 block += html_reports.report_block('xmlrep' + new_name, content, 'xmlrep', a_name)
 
             if data_f + data_e + data_w > 0:
                 status = html_reports.statistics_display(data_f, data_e, data_w)
                 links += html_reports.report_link('datarep' + new_name, '[ ' + _('Contents Validations') + ' ]', 'datarep', a_name)
-                links += status
+                links += html_reports.tag('span', status, 'smaller')
                 block += html_reports.report_block('datarep' + new_name, get_report_text(rep3), 'datarep', a_name)
 
             if conversion_reports is not None:
@@ -570,7 +570,7 @@ class ArticlesPkgReport(object):
                     conv_f, conv_e, conv_w, conv_rep = r
                     status = html_reports.statistics_display(conv_f, conv_e, conv_w)
                     links += html_reports.report_link('xcrep' + new_name, '[ ' + _('Converter Validations') + ' ]', 'xcrep', a_name)
-                    links += status
+                    links += html_reports.tag('span', status, 'smaller')
                     block += html_reports.report_block('xcrep' + new_name, conv_rep, 'xcrep', a_name)
 
             values = []
