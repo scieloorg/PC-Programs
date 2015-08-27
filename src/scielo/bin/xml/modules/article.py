@@ -673,7 +673,7 @@ class ArticleXML(object):
         return affs
 
     @property
-    def clinical_trial_url(self):
+    def uri_clinical_trial_href(self):
         #FIXME nao existe clinical-trial 
         #<uri content-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
         if self.tree is not None:
@@ -682,11 +682,29 @@ class ArticleXML(object):
                 return node.attrib.get('{http://www.w3.org/1999/xlink}href')
 
     @property
-    def clinical_trial_text(self):
+    def uri_clinical_trial_text(self):
         #FIXME nao existe clinical-trial 
         #<uri content-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</uri>
         if self.tree is not None:
             node = self.tree.find('.//uri[@content-type="clinical-trial"]')
+            if node is not None:
+                return xml_utils.node_text(node)
+
+    @property
+    def ext_link_clinical_trial_href(self):
+        #FIXME nao existe clinical-trial 
+        #<ext-link ext-link-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
+        if self.tree is not None:
+            node = self.tree.find('.//ext-link[@ext-link-type="clinical-trial"]')
+            if node is not None:
+                return node.attrib.get('{http://www.w3.org/1999/xlink}href')
+
+    @property
+    def ext_link_clinical_trial_text(self):
+        #FIXME nao existe clinical-trial 
+        #<ext-link ext-link-type="clinical-trial" xlink:href="http://www.ensaiosclinicos.gov.br/rg/RBR-7bqxm2/">The study was registered in the Brazilian Clinical Trials Registry (RBR-7bqxm2)</ext-link>
+        if self.tree is not None:
+            node = self.tree.find('.//ext-link[@ext-link-type="clinical-trial"]')
             if node is not None:
                 return xml_utils.node_text(node)
 
@@ -1006,6 +1024,14 @@ class Article(ArticleXML):
         self._doi_query_result = None
         self._doi_pid = None
         self._doi_journal_and_article = None
+
+    @property
+    def clinical_trial_url(self):
+        return self.ext_link_clinical_trial_href if self.ext_link_clinical_trial_href is not None else self.uri_clinical_trial_href
+
+    @property
+    def clinical_trial_text(self):
+        return self.ext_link_clinical_trial_text if self.ext_link_clinical_trial_text is not None else self.uri_clinical_trial_text
 
     @property
     def page_range(self):
