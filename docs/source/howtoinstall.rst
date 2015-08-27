@@ -9,10 +9,9 @@ Requirements
 
 - JAVA
 - PYTHON 2.7.x
-- Pillow
+- Pillow (http://effbot.org/downloads/PIL-1.1.7.win32-py2.7.exe)
 
 Add the `Java and Python paths to PATH (environment variable) <howtoinstall_path.html>`_
-
 
 
 
