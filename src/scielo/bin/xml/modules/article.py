@@ -1015,6 +1015,10 @@ class Article(ArticleXML):
 
     def __init__(self, tree, xml_name):
         ArticleXML.__init__(self, tree, xml_name)
+        self.number = None
+        self.number_suppl = None
+        self.volume_suppl = None
+        self.compl = None
         if self.tree is not None:
             self._issue_parts()
         self.pid = None

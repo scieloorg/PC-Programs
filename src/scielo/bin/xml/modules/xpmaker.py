@@ -323,11 +323,6 @@ def read_html(html_filename):
 def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, html_filename):
     #content = fix_uppercase_tag(content)
     register_log('normalize_sgmlxml')
-
-    if not isinstance(content, unicode):
-        print('content type')
-        print(type(content))
-        content = content.decode('utf-8')
     content = xml_utils.remove_doctype(content)
     if 'mml:' in content and not 'xmlns:mml="http://www.w3.org/1998/Math/MathML"' in content:
         if '<doc' in content:
@@ -341,9 +336,6 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
     #embedded_tables = get_html_tables(html_content)
     #content = replace_tables_in_sgmlxml(content, embedded_tables)
     content = extract_embedded_images(xml_name, content, html_content, html_filename, src_path)
-
-    print('extract_embedded_images')
-    print(type(content))
 
     content = replace_fontsymbols(content, html_content)
     for style in ['italic', 'bold', 'sup', 'sub']:
@@ -360,18 +352,12 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
         fs_utils.write_file(sgmxml_filename, content)
         xml = xml_utils.is_xml_well_formed(content)
 
-    print('xml_utils.is_xml_well_formed')
-    print(type(content))
-
     if not xml is None:
         content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
         print('java_xml_utils.xml_content_transform')
         print(type(content))
 
         content = replace_mimetypes(content, src_path)
-    else:
-        print('Unable to convert SGML 2 XML')
-        content = u''
     return content
 
 
@@ -671,24 +657,25 @@ def normalize_xml_content(doc_files_info, content, version):
         replaced_entities_report = 'Converted entities:' + '\n'.join(replaced_named_ent) + '-'*30
 
     if doc_files_info.is_sgmxml:
-        register_log('remove_doctype')
         content = normalize_sgmlxml(doc_files_info.xml_filename, doc_files_info.xml_name, content, doc_files_info.xml_path, version, doc_files_info.html_filename)
 
-    content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
-    content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
-    content = content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
-    content = content.replace('publication-type="web"', 'publication-type="webpage"')
-    content = content.replace(' rid=" ', ' rid="')
-    content = content.replace(' id=" ', ' id="')
+    xml = xml_utils.is_xml_well_formed(content)
+    if xml is not None:
+        content = content.replace('dtd-version="3.0"', 'dtd-version="1.0"')
+        content = content.replace('publication-type="conf-proc"', 'publication-type="confproc"')
+        content = content.replace('publication-type="legaldoc"', 'publication-type="legal-doc"')
+        content = content.replace('publication-type="web"', 'publication-type="webpage"')
+        content = content.replace(' rid=" ', ' rid="')
+        content = content.replace(' id=" ', ' id="')
 
-    for style in ['sup', 'sub', 'bold', 'italic']:
-        content = content.replace('<' + style + '/>', '')
-        content = content.replace('<' + style + '> </' + style + '>', '')
-        content = content.replace('<' + style + '></' + style + '>', '')
-        content = content.replace('</' + style + '> <' + style + '>', '')
-        content = content.replace('</' + style + '><' + style + '>', '')
+        for style in ['sup', 'sub', 'bold', 'italic']:
+            content = content.replace('<' + style + '/>', '')
+            content = content.replace('<' + style + '> </' + style + '>', '')
+            content = content.replace('<' + style + '></' + style + '>', '')
+            content = content.replace('</' + style + '> <' + style + '>', '')
+            content = content.replace('</' + style + '><' + style + '>', '')
 
-    content = xml_utils.pretty_print(content)
+        content = xml_utils.pretty_print(content)
 
     return (content, replaced_entities_report)
 
@@ -723,7 +710,7 @@ def pack_xml_file(content, version, new_xml_filename, do_incorrect_copy=False):
 
 def normalize_package_name(doc_files_info, acron, content):
     register_log('load_xml')
-    
+
     xml, e = xml_utils.load_xml(content)
     doc = article.Article(xml, doc_files_info.xml_name)
     doc_files_info.new_name = doc_files_info.xml_name
@@ -745,6 +732,24 @@ def normalize_package_name(doc_files_info, acron, content):
 
     doc_files_info.new_xml_filename = doc_files_info.new_xml_path + '/' + doc_files_info.new_name + '.xml'
     return (doc, doc_files_info, curr_and_new_href_list, content)
+
+
+def get_normalized_package_name(doc, doc_files_info, acron):
+    new_name = doc_files_info.xml_name
+
+    if not doc.tree is None:
+        new_name = get_new_name(doc_files_info, doc, acron)
+
+    return new_name
+
+
+def apply_normalized_package_name(doc, doc_files_info, content):
+    curr_and_new_href_list = None
+    if not doc.tree is None:
+        curr_and_new_href_list = get_curr_and_new_href_list(doc_files_info, doc)
+        if doc_files_info.is_sgmxml:
+            content = normalize_hrefs(content, curr_and_new_href_list)
+    return (curr_and_new_href_list, content)
 
 
 def make_article_package(doc_files_info, scielo_pkg_path, version, acron):
