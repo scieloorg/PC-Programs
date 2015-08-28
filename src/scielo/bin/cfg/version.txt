@@ -1,4 +1,11 @@
-﻿4.0.090 trial - 24/08/2015
+﻿4.0.090 trial - 28/08/2015
+==========================
+- XPM
+  - (bug) Fix the absence of DOCTYPE in scielo_package
+  - (bug) Accept use of paths with diacritics in their names
+  - (new) Paginations report
+
+4.0.090 trial - 24/08/2015
 ==========================
 - XML for PubMed
   - filter registers by article data for rolling pass as it is done for aop
