@@ -744,6 +744,7 @@ class ArticleDAO(object):
 
     def create_id_file(self, i_record, article, article_files, creation_date=None):
         saved = False
+        found = False
         if not os.path.isdir(article_files.issue_files.id_path):
             os.makedirs(article_files.issue_files.id_path)
         if not os.path.isdir(os.path.dirname(article_files.issue_files.base)):
