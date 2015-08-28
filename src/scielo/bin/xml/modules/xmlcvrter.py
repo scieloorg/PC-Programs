@@ -617,8 +617,9 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
                         prev_order, curr_order = unmatched_orders[xml_name]
                         msg += html_reports.p_message('WARNING: ' + _('Replacing orders: ') + prev_order + _(' by ') + curr_order)
                         prev_article_files = serial_files.ArticleFiles(issue_files, prev_order, xml_name)
-                        msg += html_reports.p_message('WARNING: ' + _('Deleting ') + os.path.basename(prev_article_files.id_filename))
-                        os.unlink(prev_article_files.id_filename)
+                        if os.path.isfile(prev_article_files.id_filename):
+                            msg += html_reports.p_message('WARNING: ' + _('Deleting ') + os.path.basename(prev_article_files.id_filename))
+                            os.unlink(prev_article_files.id_filename)
                         conversion_status['deleted incorrect order'].append(prev_order)
 
                     #utils.debugging('convert_articles: aop_status is not None')
