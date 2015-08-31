@@ -16,6 +16,17 @@ import utils
 log_items = []
 
 
+class ValidationsResults(object):
+
+    def __init__(self, message):
+        self.fatal_errors, self.errors, self.warnings = html_reports.statistics_numbers(message)
+        self.message = message
+
+    @property
+    def total(self):
+        return sum([self.fatal_errors, self.errors, self.warnings])
+
+
 class ArticlePackage(object):
 
     def __init__(self, articles):
@@ -794,11 +805,12 @@ def statistics_and_subtitle(f, e, w):
 
 def format_complete_report(report_components):
     content = ''
-    order = ['summary-report', 'issue-report', 'detail-report', 'xml-files', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc', 'references']
+    order = ['summary-report', 'issue-report', 'detail-report', 'conversion-report', 'xml-files', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc', 'references']
     labels = {
         'issue-report': 'journal/issue',
         'summary-report': _('Summary report'), 
         'detail-report': _('Detail report'), 
+        'conversion-report': _('Converter report'),
         'xml-files': _('Files/Folders'),
         'db-overview': _('Database overview'),
         'pkg_overview': _('Package overview'),
