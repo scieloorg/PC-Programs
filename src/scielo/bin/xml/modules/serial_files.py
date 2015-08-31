@@ -163,7 +163,7 @@ class IssueFiles(object):
         path['xml'] = self.web_path + '/bases/xml/' + self.relative_issue_path
         path['html'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path + '/html/'
         path['img'] = self.web_path + '/htdocs/img/revistas/' + self.relative_issue_path
-
+        xml_files = [f for f in os.listdir(self.xml_path) if f.endswith('.xml') and not f.endswith('.rep.xml')]
         xml_content = ''.join([fs_utils.read_file(self.xml_path + '/' + xml_filename) for xml_filename in os.listdir(self.xml_path) if xml_filename.endswith('.xml')])
 
         for p in path.values():
@@ -180,11 +180,12 @@ class IssueFiles(object):
                         shutil.copy(self.xml_path + '/' + f, path['img'])
                         msg.append('  ' + f + ' => ' + path['img'])
                 elif ext == 'pdf':
-                    pdf_filename = self.fix_pdf_name(f, xml_content)
+                    pdf_filename = f
+                    if not pdf_filename.replace('.pdf', '.xml') in xml_files:
+                        pdf_filename = self.fix_pdf_name(f, xml_content)
                     if os.path.isfile(path[ext] + '/' + pdf_filename):
                         os.unlink(path[ext] + '/' + pdf_filename)
                     shutil.copyfile(self.xml_path + '/' + f, path[ext] + '/' + pdf_filename)
-                    print(pdf_filename)
                     msg.append('  ' + f + ' => ' + path[ext] + '/' + pdf_filename)
                 else:
                     shutil.copy(self.xml_path + '/' + f, path[ext])
@@ -194,14 +195,15 @@ class IssueFiles(object):
     def fix_pdf_name(self, filename, xml_content):
         new_name = filename
         if not filename in xml_content:
-            print(filename)
             prefix = filename[0:-len('-??.pdf')]
 
             n = filename[0:-(len('.pdf'))]
             n = n[-3:]
             if n.startswith('-'):
                 lang = n[1:]
-                new_name = lang + '_' + prefix + '.pdf'
+                if not lang.isdigit():
+                    new_name = lang + '_' + prefix + '.pdf'
+                    print(new_name)
         return new_name
 
     def save_reports(self, report_path):

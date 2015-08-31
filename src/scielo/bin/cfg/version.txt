@@ -1,4 +1,9 @@
-﻿4.0.090 trial - 31/08/2015
+﻿4.0.090 trial
+=============
+- XC
+  - (bug) Fix name of PDF (0104-530X-gp-0104-530X1387-14 was renamed to 14_0104-530X-gp-0104-530X1387)
+
+4.0.090 trial - 31/08/2015
 ==========================
 - XPM
   - (bug) Fix the absence of DOCTYPE in scielo_package
