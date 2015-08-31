@@ -423,11 +423,6 @@ class IsisDAO(object):
                 os.unlink(id_filename)
             except:
                 pass
-        else:
-            print('get_records: verificar')
-            print(db_filename)
-            print(expr)
-            print(id_filename)
         return r
 
     def get_id_records(self, id_filename):

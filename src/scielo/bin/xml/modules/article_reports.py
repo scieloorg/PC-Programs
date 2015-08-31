@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 
 from __init__ import _
+import utils
 import xml_utils
 import article_utils
 import article_validations
@@ -316,8 +317,8 @@ class ArticleValidationReport(object):
             new_items = []
             for item in items:
                 if len(item) != 3:
-                    print('article_reports.validations()')
-                    print(item)
+                    utils.display_message('article_reports.validations()')
+                    utils.display_message(item)
                 else:
                     label, status, msg = item
                     if status != 'OK':

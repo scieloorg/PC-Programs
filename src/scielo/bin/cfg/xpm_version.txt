@@ -1,4 +1,4 @@
-﻿4.0.090 trial - 28/08/2015
+﻿4.0.090 trial - 31/08/2015
 ==========================
   - (bug) Fix the absence of DOCTYPE in scielo_package
   - (bug) Accept use of paths with diacritics in their names

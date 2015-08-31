@@ -5,6 +5,8 @@ from datetime import datetime
 import urllib2
 import json
 
+import utils
+
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 
 
@@ -74,18 +76,18 @@ def format_issue_label(year, volume, number, volume_suppl, number_suppl, compl):
 
 
 def url_check(url, _timeout=30):
-    print(datetime.now().isoformat() + ' url checking ' + url)
+    utils.display_message(datetime.now().isoformat() + ' url checking ' + url)
     try:
         r = urllib2.urlopen(url, timeout=_timeout).read()
     except urllib2.URLError, e:
         r = None
-        print(datetime.now().isoformat() + " Oops, timed out?")
+        utils.display_message(datetime.now().isoformat() + " Oops, timed out?")
     except urllib2.socket.timeout:
         r = None
-        print(datetime.now().isoformat() + " Timed out!")
+        utils.display_message(datetime.now().isoformat() + " Timed out!")
     except:
         r = None
-        print(datetime.now().isoformat() + " unknown")
+        utils.display_message(datetime.now().isoformat() + " unknown")
     return (r is not None)
 
 
@@ -282,16 +284,16 @@ def doi_query(doi):
             r = urllib2.urlopen(_url, timeout=20).read()
         except urllib2.URLError, e:
             r = '{}'
-            print(_url)
-            print(datetime.now().isoformat() + " Oops, timed out?")
+            utils.display_message(_url)
+            utils.display_message(datetime.now().isoformat() + " Oops, timed out?")
         except urllib2.socket.timeout:
             r = None
-            print(_url)
-            print(datetime.now().isoformat() + " Timed out!")
+            utils.display_message(_url)
+            utils.display_message(datetime.now().isoformat() + " Timed out!")
         except:
-            print(_url)
+            utils.display_message(_url)
             r = None
-            print(datetime.now().isoformat() + " unknown")
+            utils.display_message(datetime.now().isoformat() + " unknown")
     return r
 
 

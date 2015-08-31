@@ -15,15 +15,8 @@ from email.header import Header
 
 def strtolist(s):
     l = []
-
     if s is not None:
-        if isinstance(s, list):
-            l = s
-        else:
-            print(s)
-            print(type(s))
-            print(l)
-
+        if not isinstance(s, list):
             if ';' in s:
                 l = s.split(';')
             elif ',' in s:
@@ -86,7 +79,6 @@ class EmailService(object):
                 encoders.encode_base64(part)
                 part.add_header('Content-Disposition', 'attachment; filename="%s"' % os.path.basename(f))
                 msg.attach(part)
-                print('attaching ' + f)
 
             smtp = smtplib.SMTP(self.server)
             try:
@@ -99,7 +91,6 @@ class EmailService(object):
                 msg['BCC'] = ', '.join(bcc)
                 msg.attach(MIMEText(text, plain_or_html, 'utf-8'))
                 smtp.sendmail(self.label_from + '<' + self.mail_from + '>', to, msg.as_string())
-                print(e)
             #except Exception as inst:
             #    msg = MIMEMultipart()
             #    msg['From'] = self.mail_from

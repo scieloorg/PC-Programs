@@ -110,11 +110,6 @@ def rename_embedded_img_href(content, xml_name, new_href_list):
                 i += 1
             else:
                 new += item
-    else:
-        print('\n'.join([item for item in sorted(new_href_list)]))
-        print(str(len(new_href_list)))
-        print(str(len(_items)))
-
     return new
 
 
@@ -315,8 +310,6 @@ def read_html(html_filename):
             if ord(c) == 0:
                 break
         html_content = html_content.replace(c, '')
-    print('html_content type=')
-    print(type(html_content))
     return html_content
 
 
@@ -342,8 +335,6 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
         s = '<' + style + '>'
         e = '</' + style + '>'
         content = content.replace(s.upper(), s.lower()).replace(e.upper(), e.lower())
-    print('replace_fontsymbols')
-    print(type(content))
 
     xml = xml_utils.is_xml_well_formed(content)
     if xml is None:
@@ -354,9 +345,6 @@ def normalize_sgmlxml(sgmxml_filename, xml_name, content, src_path, version, htm
 
     if not xml is None:
         content = java_xml_utils.xml_content_transform(content, xml_versions.xsl_sgml2xml(version))
-        print('java_xml_utils.xml_content_transform')
-        print(type(content))
-
         content = replace_mimetypes(content, src_path)
     return content
 
@@ -439,7 +427,6 @@ def generate_new_name(doc, param_acron='', original_xml_name=''):
 
     r = ''
     vol, issueno, fpage, seq, elocation_id, order, doi = doc.volume, doc.number, doc.fpage, doc.fpage_seq, doc.elocation_id, doc.order, doc.doi
-    print([vol, issueno, fpage, seq, elocation_id, order, doi])
     issns = [issn for issn in [doc.e_issn, doc.print_issn] if issn is not None]
     if original_xml_name[0:9] in issns:
         issn = original_xml_name[0:9]

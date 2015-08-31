@@ -247,8 +247,6 @@ class ArticleXML(object):
         if self._language is None:
             if self.tree is not None:
                 self._language = xml_utils.element_lang(self.tree.find('.'))
-        if self._language is None:
-            print('@xml:lang=None')
         return self._language
 
     @property
