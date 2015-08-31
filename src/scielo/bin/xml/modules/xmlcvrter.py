@@ -70,8 +70,6 @@ def register_log(message):
 
 def find_journal_record(journal_title, print_issn, e_issn):
     record = None
-    print('find_journal_record: journal_title')
-    print(journal_title)
     records = converter_env.db_title.search(print_issn, e_issn, journal_title)
 
     if len(records) > 0:
