@@ -805,14 +805,14 @@ def statistics_and_subtitle(f, e, w):
 
 def format_complete_report(report_components):
     content = ''
-    order = ['summary-report', 'issue-report', 'detail-report', 'conversion-report', 'xml-files', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc', 'references']
+    order = ['xml-files', 'summary-report', 'issue-report', 'detail-report', 'conversion-report', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc', 'references']
     labels = {
         'issue-report': 'journal/issue',
         'summary-report': _('Summary report'), 
-        'detail-report': _('Detail report'), 
-        'conversion-report': _('Converter report'),
+        'detail-report': _('XML Validations report'), 
+        'conversion-report': _('Conversion report'),
         'xml-files': _('Files/Folders'),
-        'db-overview': _('Database overview'),
+        'db-overview': _('Database'),
         'pkg_overview': _('Package overview'),
         'references': _('Sources')
     }
@@ -850,3 +850,13 @@ def label_errors(content):
     content = label_errors_type(content, 'WARNING', 'W')
     content = content.replace('[ERROR', 'ERROR')
     return content
+
+
+def join_reports(reports, errors_only=False):
+    _reports = ''
+    if reports is not None:
+        for xml_name, results in reports.items():
+            if results.total > 0 or errors_only is False:
+                _reports += html_reports.tag('h4', xml_name)
+                _reports += results.message
+    return _reports

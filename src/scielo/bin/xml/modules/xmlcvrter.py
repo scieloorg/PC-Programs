@@ -70,6 +70,7 @@ class PkgManager(object):
         self.pkg_issue_data_validations = None
         self._blocking_errors = None
         self._pkg_issue_data_errors_report = None
+        self.conversion_results = None
 
     @property
     def blocking_errors(self):
@@ -85,11 +86,8 @@ class PkgManager(object):
             if self.pkg_issue_data_validations is None:
                 self.validate_pkg_issue_data()
             if not self.pkg_issue_data_validations is None:
-                for xml_name, validations_results in self.pkg_issue_data_validations.items():
-                    if validations_results.total > 0:
-                        self._pkg_issue_data_errors_report += html_reports.tag('h4', xml_name)
-                        self._pkg_issue_data_errors_report += validations_results.message
-                    self._blocking_errors += validations_results.fatal_errors
+                self._pkg_issue_data_errors_report = pkg_reports.join_reports(self.pkg_issue_data_validations, errors_only=True)
+                self._blocking_errors = sum([validations_results.fatal_errors for validations_results in self.pkg_issue_data_validations.values()])
         return self._pkg_issue_data_errors_report
 
     def validate_pkg_issue_data(self):
@@ -532,7 +530,7 @@ def convert_package(src_path):
             pkg_quality_fatal_errors = selected_articles_pkg.pkg_fatal_errors
 
             #utils.debugging('convert_articles')
-            scilista_item, conversion_results, conversion_status, aop_status = convert_articles(issue_files, pkg_manager, selected_articles_pkg.pkg_stats, xml_doc_actions, previous_registered_articles, unmatched_orders)
+            scilista_item, pkg_manager.conversion_results, conversion_status, aop_status = convert_articles(issue_files, pkg_manager, selected_articles_pkg.pkg_stats, xml_doc_actions, previous_registered_articles, unmatched_orders)
             if scilista_item is not None:
                 if aop_status is not None:
                     if aop_status.get('updated bases') is not None:
@@ -540,6 +538,8 @@ def convert_package(src_path):
 
                         for _aop in aop_status.get('updated bases'):
                             ex_aop_items.append(issue_models.issue.acron + ' ' + _aop)
+
+            report_components['conversion-report'] = pkg_reports.join_reports(pkg_manager.conversion_results)
 
             #utils.debugging('detail_report')
             validations_report = selected_articles_pkg_reports.detail_report()
@@ -731,7 +731,7 @@ def convert_articles(issue_files, pkg_manager, articles_stats, xml_doc_actions, 
             msg += html_reports.tag('h4', _('Converting xml to database'))
             xc_result = 'None'
             #utils.debugging('convert_articles: is_conversion_allowed issue data')
-            if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), xml_f, xml_e, xml_w, data_f, data_e, data_w, article.pkg_issue_data_validations):
+            if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), xml_f, xml_e, xml_w, data_f, data_e, data_w, pkg_manager.pkg_issue_data_validations[xml_name]):
 
                 if valid_ahead is not None:
                     article._ahead_pid = valid_ahead.ahead_pid
@@ -774,7 +774,7 @@ def convert_articles(issue_files, pkg_manager, articles_stats, xml_doc_actions, 
                 xc_result += '. FATAL ERROR!'
             msg += html_reports.p_message(_('Result: ') + xc_result)
 
-        conversion_results[xml_name] = pkg_reports.ValidationsResults(msg)
+            conversion_results[xml_name] = pkg_reports.ValidationsResults(msg)
 
     #utils.debugging('convert_articles: journal_has_aop()')
     if ahead_manager.journal_publishes_aop():
