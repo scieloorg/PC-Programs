@@ -311,14 +311,23 @@ td img {
 .delete {
   background-color: gray;
 }
+.deleted {
+  background-color: gray;
+}
 .none {
   background-color: white;
 }
 .add {
-  background-color: #B2D9D8;
+  background-color: #AACCB1;
+}
+.added {
+  background-color: #AACCB1;
 }
 .update {
-  background-color: #F6938E;
+  background-color: #AACCB1;
+}
+.updated {
+  background-color: #AACCB1;
 }
 .skip-update {
   background-color: #FDD186;

@@ -219,13 +219,19 @@ def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_art
     return (complete_issue_items, xml_doc_actions, changed_orders)
 
 
-def complete_issue_items_row(article, action, result, source, notes=''):
-    labels = ['name', 'package or database', 'creation date | last update', 'action', 'result', 'order', 'pages', 'notes', 'aop PID', 'doi', 'article title']
+def complete_issue_items_row(article, action, result, source, notes='', results=False):
+    if results:
+        labels = ['name', 'package or database', 'creation date | last update', 'action', 'result', 'order', 'pages', 'notes', 'aop PID', 'doi', 'article title']
+    else:
+        labels = ['name', 'package or database', 'creation date | last update', 'action', 'order', 'pages', 'notes', 'aop PID', 'doi', 'article title']
     _source = source
-
     if source == 'registered':
         _source = 'database'
-    _dates = str(article.creation_date_display) + ' / ' + str(article.last_update)
+        _dates = str(article.creation_date_display) + ' / ' + str(article.last_update)
+        action = ''
+    else:
+        _dates = ''
+
     values = []
     values.append(article.xml_name)
     values.append(_source)
@@ -265,7 +271,7 @@ def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions,
                     if registered_articles[article.xml_name].order != pkg_articles[article.xml_name].order:
                         action = 'delete'
                         _notes = 'new order=' + pkg_articles[article.xml_name].order
-                labels, values = complete_issue_items_row(article, action, '', 'registered', _notes)
+                labels, values = complete_issue_items_row(article, '', '', 'registered', _notes)
                 items.append(pkg_reports.label_values(labels, values))
 
         if order in sorted_package.keys():
@@ -275,9 +281,9 @@ def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions,
                 if registered_articles.get(article.xml_name) is not None:
                     if registered_articles[article.xml_name].order != pkg_articles[article.xml_name].order:
                         _notes = _('replacing ') + registered_articles[article.xml_name].order
-                labels, values = complete_issue_items_row(article, action, '', 'package', _notes)
+                labels, values = complete_issue_items_row(article, action, '', 'package', _notes, True)
                 items.append(pkg_reports.label_values(labels, values))
-    return html_reports.sheet(labels, items, 'dbstatus', 'package or database')
+    return html_reports.sheet(labels, items, 'dbstatus', 'action')
 
 
 def display_status_after_xc(previous_registered_articles, registered_articles, pkg_articles, xml_doc_actions, unmatched_orders):
@@ -308,7 +314,7 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
                         _notes = previous_order + '=>' + new_order
                         if result == 'error':
                             _notes = 'ERROR: ' + _('Unable to replace ') + _notes
-                labels, values = complete_issue_items_row(article, action, result, 'registered', _notes)
+                labels, values = complete_issue_items_row(article, action, result, 'registered', _notes, True)
                 items.append(pkg_reports.label_values(labels, values))
         elif order in sorted_package.keys():
             # documento no pacote mas nao na base
@@ -321,7 +327,7 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
                     _notes = previous_order + '=>' + new_order
                     _notes = 'ERROR: ' + _('Unable to replace ') + _notes
 
-                labels, values = complete_issue_items_row(article, action, 'error', 'package', _notes)
+                labels, values = complete_issue_items_row(article, action, 'error', 'package', _notes, True)
                 items.append(pkg_reports.label_values(labels, values))
         elif order in sorted_previous_registered.keys():
             # documento anteriormente na base
@@ -332,9 +338,9 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
                 if name in unmatched_orders.keys():
                     previous_order, new_order = unmatched_orders[name]
                     _notes = 'deleted ' + previous_order + '=> new: ' + new_order
-                labels, values = complete_issue_items_row(article, '?', 'deleted', 'excluded', _notes)
+                labels, values = complete_issue_items_row(article, '?', 'deleted', 'excluded', _notes, True)
                 items.append(pkg_reports.label_values(labels, values))
-    return html_reports.sheet(labels, items, 'dbstatus', 'package or database')
+    return html_reports.sheet(labels, items, 'dbstatus', 'result')
 
 
 def complete_issue_items_report(previous_registered_articles, pkg_articles, complete_issue_items, unmatched_orders):
@@ -586,7 +592,7 @@ def convert_package(src_path):
     if not converter_env.is_windows:
         #utils.debugging('-format_reports_for_web-')
         format_reports_for_web(report_path, pkg_path, acron_issue_label.replace(' ', '/'))
-        fs_utils.delete_file_or_folder(src_path)
+        #fs_utils.delete_file_or_folder(src_path)
 
     if old_result_path != result_path:
         fs_utils.delete_file_or_folder(old_result_path)
