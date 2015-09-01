@@ -789,7 +789,7 @@ def get_not_found_extended(path, href_list):
     return not_found
 
 
-def xml_output(run_background, xml_filename, doctype, xsl_filename, result_filename):
+def xml_output(xml_filename, doctype, xsl_filename, result_filename):
     if result_filename == xml_filename:
         shutil.copyfile(xml_filename, xml_filename + '.bkp')
         xml_filename = xml_filename + '.bkp'
@@ -798,7 +798,7 @@ def xml_output(run_background, xml_filename, doctype, xsl_filename, result_filen
         os.unlink(result_filename)
 
     bkp_xml_filename = xml_utils.apply_dtd(xml_filename, doctype)
-    r = java_xml_utils.xml_transform(run_background, xml_filename, xsl_filename, result_filename)
+    r = java_xml_utils.xml_transform(xml_filename, xsl_filename, result_filename)
 
     if not result_filename == xml_filename:
         xml_utils.restore_xml_file(xml_filename, bkp_xml_filename)
@@ -877,10 +877,10 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
             utils.display_message(item_label)
 
             pmc_xml_filename = pmc_pkg_path + '/' + doc_files_info.new_name + '.xml'
-            xml_output(False, doc_files_info.new_xml_filename, scielo_dtd_files.doctype_with_local_path, scielo_dtd_files.xsl_output, pmc_xml_filename)
+            xml_output(doc_files_info.new_xml_filename, scielo_dtd_files.doctype_with_local_path, scielo_dtd_files.xsl_output, pmc_xml_filename)
 
-            xpchecker.style_validation(True, pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, doc_files_info.pmc_style_report_filename, pmc_dtd_files.xsl_prep_report, pmc_dtd_files.xsl_report, pmc_dtd_files.database_name)
-            xml_output(True, pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
+            xpchecker.style_validation(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, doc_files_info.pmc_style_report_filename, pmc_dtd_files.xsl_prep_report, pmc_dtd_files.xsl_report, pmc_dtd_files.database_name)
+            xml_output(pmc_xml_filename, pmc_dtd_files.doctype_with_local_path, pmc_dtd_files.xsl_output, pmc_xml_filename)
 
     if do_it:
         for f in os.listdir(scielo_pkg_path):
@@ -890,7 +890,7 @@ def make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_pa
 
 
 def pack_and_validate(xml_files, results_path, acron, version, from_converter=False):
-    from_markup = any([f.endswith('.sgm.xml') for f in xml_files])
+    xml_generation = any([f.endswith('.sgm.xml') for f in xml_files])
 
     scielo_pkg_path = results_path + '/scielo_package'
     pmc_pkg_path = results_path + '/pmc_package'
@@ -921,34 +921,33 @@ def pack_and_validate(xml_files, results_path, acron, version, from_converter=Fa
         report_components['pkg_overview'] += articles_pkg_reports.references_overview_report()
         report_components['references'] = articles_pkg_reports.sources_overview_report()
 
-        if not from_markup:
-            critical, toc_f, toc_e, toc_w, toc_report = articles_pkg_reports.validate_consistency(from_converter)
-            report_components['issue-report'] = toc_report
+        if not xml_generation:
+            critical, toc_validations = articles_pkg_reports.validate_consistency(from_converter)
+            report_components['issue-report'] = toc_validations.message
+            toc_f = toc_validations.fatal_errors
 
         if toc_f == 0:
             org_manager = institutions_service.OrgManager()
             org_manager.load()
 
-            #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, from_markup)
-            articles_pkg.validate_articles_pkg_xml_and_data(org_manager, doc_files_info_items, scielo_dtd_files, from_converter, from_markup)
+            #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, from_converter, xml_generation)
+            articles_pkg.validate_articles_pkg_xml_and_data(org_manager, doc_files_info_items, scielo_dtd_files, from_converter, xml_generation)
 
-            if not from_markup:
+            if not xml_generation:
                 report_components['detail-report'] = articles_pkg_reports.detail_report()
-                articles_pkg_reports.delete_pkg_xml_and_data_reports()
                 report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
-            #if not from_markup:
+            #if not xml_generation:
             #    register_log('pack_and_validate: pkg_reports.get_lists_report_text')
             #    texts.append(pkg_reports.get_lists_report_text(articles_sheets))
 
-        if not from_markup:
-            f, e, w, content = pkg_reports.format_complete_report(report_components)
+        if not xml_generation:
+            xpm_validations = pkg_reports.format_complete_report(report_components)
             filename = report_path + '/xml_package_maker.html'
-            content = pkg_reports.label_errors(content)
-            pkg_reports.save_report(filename, _('XML Package Maker Report'), content, xpm_version())
+            pkg_reports.save_report(filename, _('XML Package Maker Report'), xpm_validations.message, xpm_version())
             pkg_reports.display_report(filename)
 
         if not from_converter:
-            if from_markup:
+            if xml_generation:
                 make_pmc_report(articles, doc_files_info_items)
             if is_pmc_journal(articles):
                 make_pmc_package(articles, doc_files_info_items, scielo_pkg_path, pmc_pkg_path, scielo_dtd_files, pmc_dtd_files)

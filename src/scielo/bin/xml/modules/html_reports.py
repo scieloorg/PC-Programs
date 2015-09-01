@@ -125,15 +125,15 @@ def html(title, body):
     return s
 
 
-def statistics_display(f, e, w, inline=True):
+def statistics_display(validations_results, inline=True):
     if inline:
         tag_name = 'span'
-        stats = ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(f)), ('errors', str(e)), ('warnings', str(w))]])
+        stats = ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(validations_results.fatal_errors)), ('errors', str(validations_results.errors)), ('warnings', str(validations_results.warnings))]])
     else:
         tag_name = 'div'
-        stats = [('Total of fatal errors', f), ('Total of errors', e), ('Total of warnings', w)]
+        stats = [('Total of fatal errors', validations_results.fatal_errors), ('Total of errors', validations_results.errors), ('Total of warnings', validations_results.warnings)]
         stats = ''.join([tag('p', display_label_value(l, str(v))) for l, v in stats])
-    return tag(tag_name, stats, get_stats_numbers_style(f, e, w))
+    return tag(tag_name, stats, get_stats_numbers_style(validations_results.fatal_errors, validations_results.errors, validations_results.warnings))
 
 
 def cell_width(table_header):

@@ -237,7 +237,8 @@ def complete_issue_items_row(article, action, result, source, notes='', results=
     values.append(_source)
     values.append(_dates)
     values.append(action)
-    values.append(result)
+    if results:
+        values.append(result)
     values.append(article.order)
     values.append(article.pages)
     values.append(notes)
@@ -281,7 +282,7 @@ def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions,
                 if registered_articles.get(article.xml_name) is not None:
                     if registered_articles[article.xml_name].order != pkg_articles[article.xml_name].order:
                         _notes = _('replacing ') + registered_articles[article.xml_name].order
-                labels, values = complete_issue_items_row(article, action, '', 'package', _notes, True)
+                labels, values = complete_issue_items_row(article, action, '', 'package', _notes)
                 items.append(pkg_reports.label_values(labels, values))
     return html_reports.sheet(labels, items, 'dbstatus', 'action')
 
@@ -353,14 +354,14 @@ def complete_issue_items_report(previous_registered_articles, pkg_articles, comp
     issue_items = pkg_reports.ArticlePackage(complete_issue_items)
     issue_items_reports = pkg_reports.ArticlesPkgReport(issue_items)
 
-    critical, issue_items_f, issue_items_e, issue_items_w, issue_items_report = issue_items_reports.validate_consistency(validate_order=True)
+    critical, toc_validations = issue_items_reports.validate_consistency(validate_order=True)
     report = unmatched_orders_errors
-    if issue_items_report is not None:
-        report += issue_items_report
+    if toc_validations.total > 0:
+        report += toc_validations.message
 
     if len(report) == 0:
         report = None
-    return (f, issue_items_f, critical, report)
+    return (f, toc_validations.fatal_errors, critical, report)
 
 
 def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
@@ -397,7 +398,6 @@ def get_issue_files(issue_models, pkg_path):
 
 
 def convert_package(src_path):
-    display_title = False
     validate_order = True
 
     validations_report = None
@@ -508,7 +508,7 @@ def convert_package(src_path):
             #utils.debugging('pkg_reports.ArticlesPkgReport')
             selected_articles_pkg_reports = pkg_reports.ArticlesPkgReport(selected_articles_pkg)
             #utils.debugging('validate_articles_pkg_xml_and_data')
-            selected_articles_pkg.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, validate_order, display_title, xml_doc_actions)
+            selected_articles_pkg.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, validate_order, False, xml_doc_actions)
             pkg_quality_fatal_errors = selected_articles_pkg.pkg_fatal_errors
 
             #utils.debugging('convert_articles')
@@ -525,7 +525,6 @@ def convert_package(src_path):
 
             #utils.debugging('detail_report')
             validations_report = selected_articles_pkg_reports.detail_report()
-            selected_articles_pkg_reports.delete_pkg_xml_and_data_reports()
 
             #utils.debugging('xc_conclusion_message')
             xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
@@ -576,16 +575,16 @@ def convert_package(src_path):
         report_components['detail-report'] = validations_report
 
     #utils.debugging('-format_complete_report-')
-    f, e, w, content = pkg_reports.format_complete_report(report_components)
+    xc_validations = pkg_reports.format_complete_report(report_components)
+    content = xc_validations.message
     if old_report_path in content:
         content = content.replace(old_report_path, report_path)
 
     #utils.debugging('-format_email_subject-')
-    email_subject = format_email_subject(scilista_item, selected_articles, pkg_quality_fatal_errors, f, e, w)
+    email_subject = format_email_subject(scilista_item, selected_articles, pkg_quality_fatal_errors, xc_validations.fatal_errors, xc_validations.errors, xc_validations.warnings)
 
     #utils.debugging(type(content))
     #utils.debugging('-save_report-')
-    content = pkg_reports.label_errors(content)
     pkg_reports.save_report(report_location, [_('XML Conversion (XML to Database)'), acron_issue_label], content)
 
     #utils.debugging('-saved report-')

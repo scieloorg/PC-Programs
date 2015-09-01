@@ -503,36 +503,7 @@ def package_files(path, xml_name):
     return r
 
 
-def get_article_report_data(org_manager, article, new_name, package_path, validate_order):
-    if article.tree is None:
-        sheet_data = None
-        article_display_report = None
-        article_validation_report = None
-    else:
-        article_validation = article_validations.ArticleContentValidation(org_manager, article, validate_order, False)
-        sheet_data = ArticleSheetData(article, article_validation)
-        article_display_report = ArticleDisplayReport(article, sheet_data, package_path, new_name)
-        article_validation_report = ArticleValidationReport(article_validation)
-    return (article_display_report, article_validation_report, sheet_data)
-
-
-def format_report(article_display_report, article_validation_report, display_all):
-    content = []
-
-    if display_all:
-        content.append(article_display_report.issue_header)
-        content.append(article_display_report.article_front)
-    content.append(article_validation_report.validations(display_all))
-    content.append(article_display_report.files_and_href)
-    if display_all:
-        content.append(article_display_report.article_body)
-        content.append(article_display_report.article_back)
-        content.append(article_display_report.authors_sheet)
-        content.append(article_display_report.sources_sheet)
-    return html_reports.join_texts(content)
-
-
-def validate_article_data(org_manager, article, new_name, package_path, validate_order, display_all, report_filename):
+def article_data_and_validations_report(org_manager, article, new_name, package_path, validate_order, xml_generation):
     if article.tree is None:
         sheet_data = None
         article_display_report = None
@@ -546,27 +517,18 @@ def validate_article_data(org_manager, article, new_name, package_path, validate
 
         content = []
 
-        if display_all:
+        if xml_generation:
             content.append(article_display_report.issue_header)
             content.append(article_display_report.article_front)
 
-        content.append(article_validation_report.validations(display_all))
+        content.append(article_validation_report.validations(xml_generation))
         content.append(article_display_report.files_and_href)
 
-        if display_all:
+        if xml_generation:
             content.append(article_display_report.article_body)
             content.append(article_display_report.article_back)
             content.append(article_display_report.authors_sheet)
             content.append(article_display_report.sources_sheet)
         content = html_reports.join_texts(content)
 
-    f, e, w = html_reports.statistics_numbers(content)
-
-    stats = ''
-    title = ''
-    if display_all:
-        stats = html_reports.statistics_display(f, e, w, False)
-        title = [_('Data Quality Control'), new_name]
-
-    html_reports.save(report_filename, title, stats + content)
-    return (f, e, w)
+    return content

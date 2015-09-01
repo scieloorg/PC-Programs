@@ -11,6 +11,7 @@ import article_utils
 import xpchecker
 import html_reports
 import utils
+import fs_utils
 
 
 log_items = []
@@ -23,6 +24,10 @@ class PackageValidationsResults(object):
             self.validations_results_items = {}
         else:
             self.validations_results_items = validations_results_items
+
+    def item(self, name):
+        if self.validations_results_items is not None:
+            return self.validations_results_items.get(name)
 
     def add(self, name, validations_results):
         self.validations_results_items[name] = validations_results
@@ -380,11 +385,10 @@ class ArticlePackage(object):
             results.append({'label': xml_name, 'status': status, 'message': self.articles[xml_name].pages + msg})
         return results
 
-    def validate_articles_pkg_xml_and_data(self, org_manager, doc_files_info_items, dtd_files, validate_order, display_all, xc_actions=None):
+    def validate_articles_pkg_xml_and_data(self, org_manager, doc_files_info_items, dtd_files, validate_order, xml_generation, xc_actions=None):
         #FIXME
-        self.pkg_stats = {}
-        self.pkg_reports = {}
-        self.pkg_fatal_errors = 0
+        self.pkg_xml_structure_validations = PackageValidationsResults()
+        self.pkg_xml_content_validations = PackageValidationsResults()
 
         for xml_name, doc_files_info in doc_files_info_items.items():
             for f in [doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename, doc_files_info.pmc_style_report_filename]:
@@ -409,19 +413,39 @@ class ArticlePackage(object):
 
             skip = False
             if xc_actions is not None:
-                skip = xc_actions[xml_name] == 'skip-update'
+                skip = (xc_actions[xml_name] == 'skip-update')
 
             if skip:
                 utils.display_message(' -- skept')
             else:
                 xml_filename = doc_files_info.new_xml_filename
 
-                xml_f, xml_e, xml_w = validate_article_xml(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename, display_all is False)
-                data_f, data_e, data_w = article_reports.validate_article_data(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, display_all, doc_files_info.data_report_filename)
+                # XML structure validations
+                xml_f, xml_e, xml_w = validate_article_xml(xml_filename, dtd_files, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename, doc_files_info.ctrl_filename, doc_files_info.err_filename)
+                report_content = ''
+                for rep_file in [doc_files_info.err_filename, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename]:
+                    if os.path.isfile(rep_file):
+                        report_content += extract_report_core(fs_utils.read_file(rep_file))
+                        if xml_generation is False:
+                            fs_utils.delete_file_or_folder(rep_file)
+                data_validations = ValidationsResults(report_content)
+                data_validations.fatal_errors = xml_f
+                data_validations.errors = xml_e
+                data_validations.warnings = xml_w
+                self.pkg_xml_structure_validations.add(xml_name, data_validations)
 
-                self.pkg_fatal_errors += xml_f + data_f
-                self.pkg_stats[xml_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
-                self.pkg_reports[xml_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
+                # XML Content validations
+                report_content = article_reports.article_data_and_validations_report(org_manager, doc, new_name, os.path.dirname(xml_filename), validate_order, xml_generation)
+                data_validations = ValidationsResults(report_content)
+                self.pkg_xml_content_validations.add(xml_name, data_validations)
+                if xml_generation:
+                    stats = html_reports.statistics_display(data_validations, False)
+                    title = [_('Data Quality Control'), new_name]
+                    html_reports.save(doc_files_info.data_report_filename, title, stats + report_content)
+
+                #self.pkg_fatal_errors += xml_f + data_f
+                #self.pkg_stats[xml_name] = ((xml_f, xml_e, xml_w), (data_f, data_e, data_w))
+                #self.pkg_reports[xml_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
 
         #utils.debugging('Validating package: fim')
 
@@ -433,12 +457,8 @@ class ArticlesPkgReport(object):
 
     def validate_consistency(self, validate_order):
         critical, toc_report = self.consistency_report(validate_order)
-        toc_f, toc_e, toc_w = html_reports.statistics_numbers(toc_report)
-
-        if toc_f + toc_e + toc_w == 0:
-            toc_report = None
-
-        return (critical, toc_f, toc_e, toc_w, toc_report)
+        toc_validations = ValidationsResults(toc_report)
+        return (critical, toc_validations)
 
     def consistency_report(self, validate_order):
         critical = 0
@@ -574,7 +594,7 @@ class ArticlesPkgReport(object):
 
         return html_reports.tag('h4', _('Package references overview')) + html_reports.sheet(labels, items, table_style='dbstatus')
 
-    def detail_report(self, conversion_reports=None):
+    def detail_report(self, pkg_conversion_validations=None):
         labels = ['name', 'order', 'fpage', 'pagination', 'doi', 'aop pid', 'toc section', '@article-type', 'article title', 'reports']
         items = []
 
@@ -592,43 +612,30 @@ class ArticlesPkgReport(object):
             item_label = str(index) + n + ': ' + new_name
             utils.display_message(item_label)
 
-            xml_f, xml_e, xml_w = self.package.pkg_stats[new_name][0]
-            data_f, data_e, data_w = self.package.pkg_stats[new_name][1]
-            rep1, rep2, rep3 = self.package.pkg_reports[new_name]
-
             a_name = 'view-reports-' + new_name
             links = '<a name="' + a_name + '"/>'
             status = ''
             block = ''
 
-            if xml_f + xml_e + xml_w > 0:
-                t = []
-                v = []
-                for rep in [rep1, rep2]:
-                    content = get_report_text(rep)
-                    if len(content) > 0:
-                        t.append(os.path.basename(rep))
-                        v.append(content)
-                content = ''.join(v)
-                status = html_reports.statistics_display(xml_f, xml_e, xml_w)
+            if self.package.pkg_xml_structure_validations.item(new_name).total > 0:
+                status = html_reports.statistics_display(self.package.pkg_xml_structure_validations.item(new_name))
                 links += html_reports.report_link('xmlrep' + new_name, '[ ' + _('Structure Validations') + ' ]', 'xmlrep', a_name)
                 links += html_reports.tag('span', status, 'smaller')
-                block += html_reports.report_block('xmlrep' + new_name, content, 'xmlrep', a_name)
+                block += html_reports.report_block('xmlrep' + new_name, self.package.pkg_xml_structure_validations.item(new_name).message, 'xmlrep', a_name)
 
-            if data_f + data_e + data_w > 0:
-                status = html_reports.statistics_display(data_f, data_e, data_w)
+            if self.package.pkg_xml_content_validations.item(new_name).total > 0:
+                status = html_reports.statistics_display(self.package.pkg_xml_content_validations.item(new_name))
                 links += html_reports.report_link('datarep' + new_name, '[ ' + _('Contents Validations') + ' ]', 'datarep', a_name)
                 links += html_reports.tag('span', status, 'smaller')
-                block += html_reports.report_block('datarep' + new_name, get_report_text(rep3), 'datarep', a_name)
+                block += html_reports.report_block('datarep' + new_name, self.package.pkg_xml_content_validations.item(new_name).message, 'datarep', a_name)
 
-            if conversion_reports is not None:
-                r = conversion_reports.get(new_name)
-                if r is not None:
-                    conv_f, conv_e, conv_w, conv_rep = r
-                    status = html_reports.statistics_display(conv_f, conv_e, conv_w)
+            if pkg_conversion_validations is not None:
+                conversion_validations = pkg_conversion_validations.item(new_name)
+                if conversion_validations is not None:
+                    status = html_reports.statistics_display(conversion_validations)
                     links += html_reports.report_link('xcrep' + new_name, '[ ' + _('Converter Validations') + ' ]', 'xcrep', a_name)
                     links += html_reports.tag('span', status, 'smaller')
-                    block += html_reports.report_block('xcrep' + new_name, conv_rep, 'xcrep', a_name)
+                    block += html_reports.report_block('xcrep' + new_name, conversion_validations.message, 'xcrep', a_name)
 
             values = []
             values.append(new_name)
@@ -647,17 +654,6 @@ class ArticlesPkgReport(object):
             items.append({'reports': block})
 
         return html_reports.sheet(labels, items, table_style='reports-sheet', html_cell_content=['reports'])
-
-    def delete_pkg_xml_and_data_reports(self):
-        for new_name in self.package.xml_name_sorted_by_order:
-            for f in list(self.package.pkg_reports[new_name]):
-                if os.path.isfile(f):
-                    #utils.debugging('delete ' + f)
-                    try:
-                        os.unlink(f)
-                        #utils.debugging('deleted ' + f)
-                    except:
-                        pass
 
     def sources_overview_report(self):
         labels = ['source', 'total']
@@ -695,9 +691,9 @@ def delete_irrelevant_reports(ctrl_filename, is_valid_style, dtd_validation_repo
         os.unlink(dtd_validation_report)
 
 
-def validate_article_xml(xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename, run_background):
+def validate_article_xml(xml_filename, dtd_files, dtd_report, style_report, ctrl_filename, err_filename):
 
-    xml, valid_dtd, valid_style = xpchecker.validate_article_xml(xml_filename, dtd_files, dtd_report, style_report, run_background)
+    xml, valid_dtd, valid_style = xpchecker.validate_article_xml(xml_filename, dtd_files, dtd_report, style_report)
     f, e, w = valid_style
     update_err_filename(err_filename, dtd_report)
     if xml is None:
@@ -708,41 +704,34 @@ def validate_article_xml(xml_filename, dtd_files, dtd_report, style_report, ctrl
     return (f, e, w)
 
 
-def get_report_text(filename):
+def extract_report_core(content):
     report = ''
-    if os.path.isfile(filename):
-        content = open(filename, 'r').read()
-        if 'Parse/validation finished' in content and '<!DOCTYPE' in content:
-            if not isinstance(content, unicode):
-                content = content.decode(encoding=sys.getfilesystemencoding())
+    if 'Parse/validation finished' in content and '<!DOCTYPE' in content:
+        part1 = content[0:content.find('<!DOCTYPE')]
+        part2 = content[content.find('<!DOCTYPE'):]
 
-            part1 = content[0:content.find('<!DOCTYPE')]
-            part2 = content[content.find('<!DOCTYPE'):]
+        l = part1[part1.rfind('Line number:')+len('Line number:'):]
+        l = l[0:l.find('Column')]
+        l = ''.join([item.strip() for item in l.split()])
+        if l.isdigit():
+            l = str(int(l) + 1) + ':'
+            if l in part2:
+                part2 = part2[0:part2.find(l)] + '\n...'
 
-            l = part1[part1.rfind('Line number:')+len('Line number:'):]
-            l = l[0:l.find('Column')]
-            l = ''.join([item.strip() for item in l.split()])
-            if l.isdigit():
-                l = str(int(l) + 1) + ':'
-                if l in part2:
-                    part2 = part2[0:part2.find(l)] + '\n...'
-
-            part1 = part1.replace('\n', '<br/>')
-            part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>').replace('\t', '&nbsp;'*4)
-            report = part1 + part2
-        elif '</body>' in content:
-            if not isinstance(content, unicode):
-                content = content.decode('utf-8')
-            content = content[content.find('<body'):]
-            content = content[0:content.rfind('</body>')]
-            report = content[content.find('>')+1:]
-        elif '<body' in content:
-            if not isinstance(content, unicode):
-                content = content.decode('utf-8')
-            content = content[content.find('<body'):]
-            report = content[content.find('>')+1:]
-        else:
-            report = ''
+        part1 = part1.replace('\n', '<br/>')
+        part2 = part2.replace('<', '&lt;').replace('>', '&gt;').replace('\n', '<br/>').replace('\t', '&nbsp;'*4)
+        report = part1 + part2
+    elif '</body>' in content:
+        if not isinstance(content, unicode):
+            content = content.decode('utf-8')
+        content = content[content.find('<body'):]
+        content = content[0:content.rfind('</body>')]
+        report = content[content.find('>')+1:]
+    elif '<body' in content:
+        if not isinstance(content, unicode):
+            content = content.decode('utf-8')
+        content = content[content.find('<body'):]
+        report = content[content.find('>')+1:]
     return report
 
 
@@ -826,12 +815,6 @@ def display_report(report_filename):
         pass
 
 
-def statistics_and_subtitle(f, e, w):
-    x = error_msg_subtitle()
-    x += html_reports.statistics_display(f, e, w, False)
-    return x
-
-
 def format_complete_report(report_components):
     content = ''
     order = ['xml-files', 'summary-report', 'issue-report', 'detail-report', 'conversion-report', 'pkg_overview', 'db-overview', 'issue-not-registered', 'toc', 'references']
@@ -845,8 +828,8 @@ def format_complete_report(report_components):
         'pkg_overview': _('Package overview'),
         'references': _('Sources')
     }
-    f, e, w = html_reports.statistics_numbers(html_reports.join_texts(report_components.values()))
-    report_components['summary-report'] = statistics_and_subtitle(f, e, w) + report_components.get('summary-report', '')
+    validations = ValidationsResults(html_reports.join_texts(report_components.values()))
+    report_components['summary-report'] = error_msg_subtitle() + html_reports.statistics_display(validations, False) + report_components.get('summary-report', '')
 
     content += html_reports.tabs_items([(tab_id, labels[tab_id]) for tab_id in order if report_components.get(tab_id) is not None], 'summary-report')
     for tab_id in order:
@@ -856,7 +839,8 @@ def format_complete_report(report_components):
             content += html_reports.tab_block(tab_id, c, style)
 
     content += html_reports.tag('p', _('finished'))
-    return (f, e, w, content)
+    validations.message = label_errors(content)
+    return validations
 
 
 def label_errors_type(content, error_type, prefix):
