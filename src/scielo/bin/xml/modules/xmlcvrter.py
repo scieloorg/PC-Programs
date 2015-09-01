@@ -106,7 +106,10 @@ class PkgManager(object):
                 validations.append((_('journal print ISSN'), a_issn, i_issn))
 
             validations.append((_('issue label'), article.issue_label, self.issue_models.issue.issue_label))
-            validations.append((_('issue pub-date'), article.issue_pub_dateiso[0:4], self.issue_models.issue.dateiso[0:4]))
+            a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
+            i_year = self.issue_models.issue.dateiso[0:4] if self.issue_models.issue.dateiso is not None else ''
+
+            validations.append((_('issue pub-date'), a_year, i_year))
 
             # check issue data
             for label, article_data, issue_data in validations:
