@@ -590,7 +590,6 @@ class IssueModels(object):
         i.journal_title = record.get('130')
         i.journal_id_nlm_ta = record.get('421')
         issns = record.get('435')
-        print(issns)
         # 0011-5258^tPRINT
         # 1678-4588^tONLIN
         # [{'_': 1234-567, 't': PRINT}, {'_': 1678-4588, 't': ONLIN}]
@@ -615,7 +614,6 @@ class IssueArticlesRecords(object):
         i_record = None
 
         record_types = list(set([record.get('706') for record in self.records]))
-        print(record_types)
         articles_records = {}
         for record in self.records:
             if record.get('706') == 'i':
@@ -777,7 +775,7 @@ class ArticleDAO(object):
             content = xml_utils.remove_tags(content)
         return content
 
-    def finish_conversion(self, issue_record, issue_files):
+    def finish_conversion(self, issue_record, issue_files, pkg_path):
         loaded = []
         self.dao.save_records([issue_record], issue_files.base)
         for f in os.listdir(issue_files.id_path):
@@ -786,15 +784,14 @@ class ArticleDAO(object):
             if f.endswith('.id') and f != '00000.id' and f != 'i.id':
                 self.dao.append_id_records(issue_files.id_path + '/' + f, issue_files.base)
                 loaded.append(f)
+        issue_files.save_source_files(pkg_path)
         return loaded
 
     def registered_items(self, issue_files):
         articles = {}
-
         records = self.dao.get_records(issue_files.base)
         i, registered_articles = IssueArticlesRecords(records).articles()
-        print('REGISTERED')
-        print(str(len(registered_articles)))
+
         for xml_name, registered_doc in registered_articles.items():
             f = issue_files.base_source_path + '/' + xml_name + '.xml'
             if os.path.isfile(f):
@@ -806,7 +803,6 @@ class ArticleDAO(object):
                 doc.creation_date_display = registered_doc.creation_date_display
                 doc.creation_date = registered_doc.creation_date
                 doc.last_update = registered_doc.last_update
-
                 articles[xml_name] = doc
 
         issue_models = IssueModels(i) if i is not None else None

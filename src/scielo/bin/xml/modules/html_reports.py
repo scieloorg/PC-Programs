@@ -11,6 +11,16 @@ import xml_utils
 XML_WIDTH = 140
 
 
+def validations_table(results):
+    r = ''
+    if results is not None:
+        rows = []
+        for label, status, msg in results:
+            rows.append({'label': label, 'status': status, 'message': msg})
+        r = tag('div', sheet(['label', 'status', 'message'], rows, table_style='validation', row_style='status'))
+    return r
+
+
 def report_date():
     procdate = datetime.now().isoformat()
     return tag('p', procdate[0:10] + ' ' + procdate[11:19], 'report-date')

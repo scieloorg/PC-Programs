@@ -296,19 +296,6 @@ class ArticleValidationReport(object):
     def display_item(self, item):
         return html_reports.p_message(item)
 
-    def format_rows(self, items):
-        content = []
-        for label, status, msg in items:
-            row = {}
-            row['label'] = label
-            row['status'] = status
-            row['message'] = msg
-            content.append(row)
-        return content
-
-    def validations_sheet(self, content):
-        return html_reports.sheet(['label', 'status', 'message'], self.format_rows(content), table_style='validation', row_style='status')
-
     def validations(self, display_all):
         items, performance = self.article_validation.validations
 
@@ -325,9 +312,7 @@ class ArticleValidationReport(object):
                         new_items.append((label, status, msg))
             items = new_items
 
-        r = ''
-        if len(items) > 0:
-            r += self.validations_sheet(items)
+        r = html_reports.validations_table(items)
 
         r += self.references(display_all)
 
@@ -345,7 +330,7 @@ class ArticleValidationReport(object):
             if len(ref_result) > 0:
                 rows += html_reports.tag('h3', 'Reference ' + ref.id)
                 rows += html_reports.display_xml(ref.xml, html_reports.XML_WIDTH*0.9)
-                rows += self.validations_sheet(ref_result)
+                rows += html_reports.validations_table(ref_result)
         return rows
 
 

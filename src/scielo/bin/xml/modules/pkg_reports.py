@@ -16,6 +16,35 @@ import utils
 log_items = []
 
 
+class PackageValidationsResults(object):
+
+    def __init__(self, validations_results_items=None):
+        if validations_results_items is None:
+            self.validations_results_items = {}
+        else:
+            self.validations_results_items = validations_results_items
+
+    def add(self, name, validations_results):
+        self.validations_results_items[name] = validations_results
+
+    @property
+    def total(self):
+        return sum([item.total for item in self.validations_results_items.values()])
+
+    @property
+    def fatal_errors(self):
+        return sum([item.fatal_errors for item in self.validations_results_items.values()])
+
+    def report(self, errors_only=False):
+        _reports = ''
+        if self.validations_results_items is not None:
+            for xml_name, results in self.validations_results_items.items():
+                if results.total > 0 or errors_only is False:
+                    _reports += html_reports.tag('h4', xml_name)
+                    _reports += results.message
+        return _reports
+
+
 class ValidationsResults(object):
 
     def __init__(self, message):
