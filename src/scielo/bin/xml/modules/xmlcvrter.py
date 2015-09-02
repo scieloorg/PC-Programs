@@ -509,10 +509,13 @@ def convert_package(src_path):
             selected_articles_pkg_reports = pkg_reports.ArticlesPkgReport(selected_articles_pkg)
             #utils.debugging('validate_articles_pkg_xml_and_data')
             selected_articles_pkg.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, validate_order, False, xml_doc_actions)
-            pkg_quality_fatal_errors = selected_articles_pkg.pkg_fatal_errors
+            pkg_quality_fatal_errors = selected_articles_pkg.pkg_xml_structure_validations.fatal_errors + selected_articles_pkg.pkg_xml_content_validations.fatal_errors
+
+            pkg_manager.pkg_xml_structure_validations = selected_articles_pkg.pkg_xml_structure_validations
+            pkg_manager.pkg_xml_content_validations = selected_articles_pkg.pkg_xml_content_validations
 
             #utils.debugging('convert_articles')
-            scilista_item, pkg_manager.pkg_conversion_results, conversion_status, aop_status = convert_articles(issue_files, pkg_manager, selected_articles_pkg.pkg_stats, xml_doc_actions, previous_registered_articles, unmatched_orders, pkg_path)
+            scilista_item, pkg_manager.pkg_conversion_results, conversion_status, aop_status = convert_articles(issue_files, pkg_manager, xml_doc_actions, previous_registered_articles, unmatched_orders, pkg_path)
             if scilista_item is not None:
                 if aop_status is not None:
                     if aop_status.get('updated bases') is not None:
@@ -636,13 +639,14 @@ def format_reports_for_web(report_path, pkg_path, issue_path):
             fs_utils.write_file(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path + '/' + f, content)
 
 
-def is_conversion_allowed(pub_year, ref_count, xml_f, xml_e, xml_w, data_f, data_e, data_w, pkg_issue_data_validations):
+def is_conversion_allowed(pub_year, ref_count, pkg_manager):
 
     def max_score(quote, score):
         return ((score * quote) / 100) + 1
+
     doit = False
     score = (ref_count + 20)
-    if pkg_issue_data_validations.fatal_errors == 0:
+    if pkg_manager.pkg_issue_data_validations.fatal_errors == 0:
         if pub_year is not None:
             if pub_year[0:4].isdigit():
                 if int(pub_year[0:4]) < (int(datetime.now().isoformat()[0:4]) - 1):
@@ -651,18 +655,18 @@ def is_conversion_allowed(pub_year, ref_count, xml_f, xml_e, xml_w, data_f, data
         if doit is False:
             doit = True
             if converter_env.max_fatal_error is not None:
-                if xml_f + data_f > max_score(converter_env.max_fatal_error, score):
+                if pkg_manager.pkg_xml_structure_validations.fatal_errors + pkg_manager.pkg_xml_content_validations.fatal_errors > max_score(converter_env.max_fatal_error, score):
                     doit = False
             if converter_env.max_error is not None:
-                if xml_e + data_e > max_score(converter_env.max_error, score):
+                if pkg_manager.pkg_xml_structure_validations.errors + pkg_manager.pkg_xml_content_validations.errors > max_score(converter_env.max_error, score):
                     doit = False
             if converter_env.max_warning is not None:
-                if xml_w + data_w > max_score(converter_env.max_warning, score):
+                if pkg_manager.pkg_xml_structure_validations.warnings + pkg_manager.pkg_xml_content_validations.warnings > max_score(converter_env.max_warning, score):
                     doit = False
     return doit
 
 
-def convert_articles(issue_files, pkg_manager, articles_stats, xml_doc_actions, registered_articles, unmatched_orders, pkg_path):
+def convert_articles(issue_files, pkg_manager, xml_doc_actions, registered_articles, unmatched_orders, pkg_path):
     index = 0
     pkg_conversion_results = pkg_reports.PackageValidationsResults()
     conversion_status = {}
@@ -694,10 +698,6 @@ def convert_articles(issue_files, pkg_manager, articles_stats, xml_doc_actions, 
         if not xml_doc_actions[xml_name] in ['add', 'update']:
             xc_result = 'skipped'
         else:
-            xml_stats, data_stats = articles_stats[xml_name]
-            xml_f, xml_e, xml_w = xml_stats
-            data_f, data_e, data_w = data_stats
-
             valid_ahead = None
             #utils.debugging('convert_articles: aop')
             if aop_status is not None:
@@ -713,7 +713,7 @@ def convert_articles(issue_files, pkg_manager, articles_stats, xml_doc_actions, 
 
             xc_result = 'None'
             #utils.debugging('convert_articles: is_conversion_allowed issue data')
-            if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), xml_f, xml_e, xml_w, data_f, data_e, data_w, pkg_manager.pkg_issue_data_validations):
+            if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), pkg_manager):
 
                 if valid_ahead is not None:
                     article._ahead_pid = valid_ahead.ahead_pid
