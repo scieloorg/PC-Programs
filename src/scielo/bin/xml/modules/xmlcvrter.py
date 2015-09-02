@@ -465,7 +465,8 @@ def convert_package(src_path):
         pkg_manager = PkgManager(issue_models, pkg_articles)
 
         if pkg_manager.pkg_issue_data_validations is not None:
-            report_components['issue-report'] = html_reports.tag('h2', 'Comparision of issue and articles data') + pkg_manager.pkg_issue_data_validations.report(errors_only=True)
+            if pkg_manager.pkg_issue_data_validations.fatal_errors > 0:
+                report_components['issue-report'] = html_reports.tag('h2', 'Comparision of issue and articles data') + pkg_manager.pkg_issue_data_validations.report(errors_only=True)
 
         previous_registered_articles = get_registered_articles(issue_files)
 
