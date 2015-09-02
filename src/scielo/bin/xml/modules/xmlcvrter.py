@@ -1115,7 +1115,8 @@ def execute_converter(package_paths, collection_name=None):
                 bad_pkg_files.append(package_path)
                 bad_pkg_files.append(str(e))
                 report_location, report_path, scilista_item = [None, None, None]
-                #fs_utils.delete_file_or_folder(package_path)
+                if config.queue_path is not None:
+                    fs_utils.delete_file_or_folder(package_path)
 
             if scilista_item is not None:
                 if ex_aop_items is not None:
