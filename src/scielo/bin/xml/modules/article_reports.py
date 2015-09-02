@@ -296,19 +296,6 @@ class ArticleValidationReport(object):
     def display_item(self, item):
         return html_reports.p_message(item)
 
-    def format_rows(self, items):
-        content = []
-        for label, status, msg in items:
-            row = {}
-            row['label'] = label
-            row['status'] = status
-            row['message'] = msg
-            content.append(row)
-        return content
-
-    def validations_sheet(self, content):
-        return html_reports.sheet(['label', 'status', 'message'], self.format_rows(content), table_style='validation', row_style='status')
-
     def validations(self, display_all):
         items, performance = self.article_validation.validations
 
@@ -325,9 +312,7 @@ class ArticleValidationReport(object):
                         new_items.append((label, status, msg))
             items = new_items
 
-        r = ''
-        if len(items) > 0:
-            r += self.validations_sheet(items)
+        r = html_reports.validations_table(items)
 
         r += self.references(display_all)
 
@@ -345,7 +330,7 @@ class ArticleValidationReport(object):
             if len(ref_result) > 0:
                 rows += html_reports.tag('h3', 'Reference ' + ref.id)
                 rows += html_reports.display_xml(ref.xml, html_reports.XML_WIDTH*0.9)
-                rows += self.validations_sheet(ref_result)
+                rows += html_reports.validations_table(ref_result)
         return rows
 
 
@@ -518,36 +503,7 @@ def package_files(path, xml_name):
     return r
 
 
-def get_article_report_data(org_manager, article, new_name, package_path, validate_order):
-    if article.tree is None:
-        sheet_data = None
-        article_display_report = None
-        article_validation_report = None
-    else:
-        article_validation = article_validations.ArticleContentValidation(org_manager, article, validate_order, False)
-        sheet_data = ArticleSheetData(article, article_validation)
-        article_display_report = ArticleDisplayReport(article, sheet_data, package_path, new_name)
-        article_validation_report = ArticleValidationReport(article_validation)
-    return (article_display_report, article_validation_report, sheet_data)
-
-
-def format_report(article_display_report, article_validation_report, display_all):
-    content = []
-
-    if display_all:
-        content.append(article_display_report.issue_header)
-        content.append(article_display_report.article_front)
-    content.append(article_validation_report.validations(display_all))
-    content.append(article_display_report.files_and_href)
-    if display_all:
-        content.append(article_display_report.article_body)
-        content.append(article_display_report.article_back)
-        content.append(article_display_report.authors_sheet)
-        content.append(article_display_report.sources_sheet)
-    return html_reports.join_texts(content)
-
-
-def validate_article_data(org_manager, article, new_name, package_path, validate_order, display_all, report_filename):
+def article_data_and_validations_report(org_manager, article, new_name, package_path, validate_order, xml_generation):
     if article.tree is None:
         sheet_data = None
         article_display_report = None
@@ -561,27 +517,18 @@ def validate_article_data(org_manager, article, new_name, package_path, validate
 
         content = []
 
-        if display_all:
+        if xml_generation:
             content.append(article_display_report.issue_header)
             content.append(article_display_report.article_front)
 
-        content.append(article_validation_report.validations(display_all))
+        content.append(article_validation_report.validations(xml_generation))
         content.append(article_display_report.files_and_href)
 
-        if display_all:
+        if xml_generation:
             content.append(article_display_report.article_body)
             content.append(article_display_report.article_back)
             content.append(article_display_report.authors_sheet)
             content.append(article_display_report.sources_sheet)
         content = html_reports.join_texts(content)
 
-    f, e, w = html_reports.statistics_numbers(content)
-
-    stats = ''
-    title = ''
-    if display_all:
-        stats = html_reports.statistics_display(f, e, w, False)
-        title = [_('Data Quality Control'), new_name]
-
-    html_reports.save(report_filename, title, stats + content)
-    return (f, e, w)
+    return content

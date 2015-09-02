@@ -62,6 +62,113 @@ class ConverterEnv(object):
         self.org_manager = None
 
 
+class PkgManager(object):
+
+    def __init__(self, issue_models, pkg_articles):
+        self.pkg_articles = pkg_articles
+        self.issue_models = issue_models
+        self._pkg_issue_data_validations = None
+        self._blocking_errors = None
+        self.pkg_conversion_results = None
+
+    @property
+    def blocking_errors(self):
+        if self._blocking_errors is None:
+            if self.pkg_issue_data_validations is not None:
+                self._blocking_errors = self.pkg_issue_data_validations.fatal_errors
+        return self._blocking_errors
+
+    @property
+    def pkg_issue_data_validations(self):
+        if self._pkg_issue_data_validations is None:
+            self._pkg_issue_data_validations = pkg_reports.PackageValidationsResults()
+            for xml_name, article in self.pkg_articles.items():
+                self.pkg_articles[xml_name].section_code, issue_validations_msg = self.validate_article_issue_data(article)
+                self._pkg_issue_data_validations.add(xml_name, pkg_reports.ValidationsResults(issue_validations_msg))
+        return self._pkg_issue_data_validations
+
+    def validate_article_issue_data(self, article):
+        results = []
+        section_code = None
+        if article.tree is not None:
+            validations = []
+            validations.append((_('journal title'), article.journal_title, self.issue_models.issue.journal_title))
+            validations.append((_('journal id NLM'), article.journal_id_nlm_ta, self.issue_models.issue.journal_id_nlm_ta))
+
+            a_issn = article.journal_issns.get('epub') if article.journal_issns is not None else None
+            if a_issn is not None:
+                i_issn = self.issue_models.issue.journal_issns.get('epub') if self.issue_models.issue.journal_issns is not None else None
+                validations.append((_('journal e-ISSN'), a_issn, i_issn))
+
+            a_issn = article.journal_issns.get('ppub') if article.journal_issns is not None else None
+            if a_issn is not None:
+                i_issn = self.issue_models.issue.journal_issns.get('ppub') if self.issue_models.issue.journal_issns is not None else None
+                validations.append((_('journal print ISSN'), a_issn, i_issn))
+
+            validations.append((_('issue label'), article.issue_label, self.issue_models.issue.issue_label))
+            a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
+            i_year = self.issue_models.issue.dateiso[0:4] if self.issue_models.issue.dateiso is not None else ''
+
+            validations.append((_('issue pub-date'), a_year, i_year))
+
+            # check issue data
+            for label, article_data, issue_data in validations:
+                if article_data is None:
+                    article_data = 'None'
+                elif isinstance(article_data, list):
+                    article_data = ' | '.join(article_data)
+                if issue_data is None:
+                    issue_data = 'None'
+                elif isinstance(issue_data, list):
+                    issue_data = ' | '.join(issue_data)
+                if not article_data == issue_data:
+                    _msg = _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"'
+                    if issue_data == 'None':
+                        status = 'ERROR'
+                    else:
+                        status = 'FATAL ERROR'
+                    results.append((label, status, _msg))
+
+            validations = []
+            validations.append(('publisher', article.publisher_name, self.issue_models.issue.publisher_name))
+            for label, article_data, issue_data in validations:
+                if article_data is None:
+                    article_data = 'None'
+                elif isinstance(article_data, list):
+                    article_data = ' | '.join(article_data)
+                if issue_data is None:
+                    issue_data = 'None'
+                elif isinstance(issue_data, list):
+                    issue_data = ' | '.join(issue_data)
+                if utils.how_similar(article_data, issue_data) < 0.8:
+                    _msg = _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"'
+                    results.append((label, 'ERROR', _msg))
+
+            # license
+            if self.issue_models.issue.license is None:
+                results.append(('license', 'ERROR', _('Unable to identify issue license')))
+            elif article.license_url is not None:
+                if not '/' + self.issue_models.issue.license.lower() in article.license_url.lower():
+                    results.append(('license', 'ERROR', _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + self.issue_models.issue.license + '"'))
+                else:
+                    results.append(('license', 'INFO', _('In article: "') + article.license_url + _('" and in issue: "') + self.issue_models.issue.license + '"'))
+
+            # section
+            section_code, matched_rate, fixed_sectitle = self.issue_models.most_similar_section_code(article.toc_section)
+            if matched_rate != 1:
+                if not article.is_ahead:
+                    registered_sections = _('Registered sections') + ':\n' + '; '.join(self.issue_models.section_titles)
+                    if section_code is None:
+                        results.append(('section', 'ERROR', article.toc_section + _(' is not a registered section.') + ' ' + registered_sections))
+                    else:
+                        results.append(('section', 'WARNING', _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article.toc_section + '")' + ' ' + registered_sections))
+            # @article-type
+            _sectitle = article.toc_section if fixed_sectitle is None else fixed_sectitle
+            for item in validate_article_type_and_section(article.article_type, _sectitle):
+                results.append(item)
+        return (section_code, html_reports.tag('div', html_reports.validations_table(results)))
+
+
 def register_log(message):
     if not '<' in message:
         message = html_reports.p_message(message)
@@ -112,19 +219,26 @@ def get_complete_issue_items(issue_files, pkg_path, registered_articles, pkg_art
     return (complete_issue_items, xml_doc_actions, changed_orders)
 
 
-def complete_issue_items_row(article, action, result, source, notes=''):
-    labels = ['name', 'package or database', 'creation date | last update', 'action', 'result', 'order', 'pages', 'notes', 'aop PID', 'doi', 'article title']
+def complete_issue_items_row(article, action, result, source, notes='', results=False):
+    if results:
+        labels = ['name', 'package or database', 'creation date | last update', 'action', 'result', 'order', 'pages', 'notes', 'aop PID', 'doi', 'article title']
+    else:
+        labels = ['name', 'package or database', 'creation date | last update', 'action', 'order', 'pages', 'notes', 'aop PID', 'doi', 'article title']
     _source = source
-
     if source == 'registered':
         _source = 'database'
-    _dates = str(article.creation_date_display) + ' / ' + str(article.last_update)
+        _dates = str(article.creation_date_display) + ' / ' + str(article.last_update)
+        action = ''
+    else:
+        _dates = ''
+
     values = []
     values.append(article.xml_name)
     values.append(_source)
     values.append(_dates)
     values.append(action)
-    values.append(result)
+    if results:
+        values.append(result)
     values.append(article.order)
     values.append(article.pages)
     values.append(notes)
@@ -158,7 +272,7 @@ def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions,
                     if registered_articles[article.xml_name].order != pkg_articles[article.xml_name].order:
                         action = 'delete'
                         _notes = 'new order=' + pkg_articles[article.xml_name].order
-                labels, values = complete_issue_items_row(article, action, '', 'registered', _notes)
+                labels, values = complete_issue_items_row(article, '', '', 'registered', _notes)
                 items.append(pkg_reports.label_values(labels, values))
 
         if order in sorted_package.keys():
@@ -170,7 +284,7 @@ def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions,
                         _notes = _('replacing ') + registered_articles[article.xml_name].order
                 labels, values = complete_issue_items_row(article, action, '', 'package', _notes)
                 items.append(pkg_reports.label_values(labels, values))
-    return html_reports.sheet(labels, items, 'dbstatus', 'package or database')
+    return html_reports.sheet(labels, items, 'dbstatus', 'action')
 
 
 def display_status_after_xc(previous_registered_articles, registered_articles, pkg_articles, xml_doc_actions, unmatched_orders):
@@ -201,7 +315,7 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
                         _notes = previous_order + '=>' + new_order
                         if result == 'error':
                             _notes = 'ERROR: ' + _('Unable to replace ') + _notes
-                labels, values = complete_issue_items_row(article, action, result, 'registered', _notes)
+                labels, values = complete_issue_items_row(article, action, result, 'registered', _notes, True)
                 items.append(pkg_reports.label_values(labels, values))
         elif order in sorted_package.keys():
             # documento no pacote mas nao na base
@@ -214,7 +328,7 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
                     _notes = previous_order + '=>' + new_order
                     _notes = 'ERROR: ' + _('Unable to replace ') + _notes
 
-                labels, values = complete_issue_items_row(article, action, 'error', 'package', _notes)
+                labels, values = complete_issue_items_row(article, action, 'error', 'package', _notes, True)
                 items.append(pkg_reports.label_values(labels, values))
         elif order in sorted_previous_registered.keys():
             # documento anteriormente na base
@@ -225,9 +339,9 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
                 if name in unmatched_orders.keys():
                     previous_order, new_order = unmatched_orders[name]
                     _notes = 'deleted ' + previous_order + '=> new: ' + new_order
-                labels, values = complete_issue_items_row(article, '?', 'deleted', 'excluded', _notes)
+                labels, values = complete_issue_items_row(article, '?', 'deleted', 'excluded', _notes, True)
                 items.append(pkg_reports.label_values(labels, values))
-    return html_reports.sheet(labels, items, 'dbstatus', 'package or database')
+    return html_reports.sheet(labels, items, 'dbstatus', 'result')
 
 
 def complete_issue_items_report(previous_registered_articles, pkg_articles, complete_issue_items, unmatched_orders):
@@ -240,14 +354,14 @@ def complete_issue_items_report(previous_registered_articles, pkg_articles, comp
     issue_items = pkg_reports.ArticlePackage(complete_issue_items)
     issue_items_reports = pkg_reports.ArticlesPkgReport(issue_items)
 
-    critical, issue_items_f, issue_items_e, issue_items_w, issue_items_report = issue_items_reports.validate_consistency(validate_order=True)
+    critical, toc_validations = issue_items_reports.validate_consistency(validate_order=True)
     report = unmatched_orders_errors
-    if issue_items_report is not None:
-        report += issue_items_report
+    if toc_validations.total > 0:
+        report += toc_validations.message
 
     if len(report) == 0:
         report = None
-    return (f, issue_items_f, critical, report)
+    return (f, toc_validations.fatal_errors, critical, report)
 
 
 def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
@@ -284,7 +398,6 @@ def get_issue_files(issue_models, pkg_path):
 
 
 def convert_package(src_path):
-    display_title = False
     validate_order = True
 
     validations_report = None
@@ -349,6 +462,11 @@ def convert_package(src_path):
         #utils.debugging('acron_issue_label')
         #utils.debugging(acron_issue_label)
         #utils.debugging('get_registered_articles')
+        pkg_manager = PkgManager(issue_models, pkg_articles)
+
+        if pkg_manager.pkg_issue_data_validations is not None:
+            report_components['issue-report'] = html_reports.tag('h2', 'Comparision of issue and articles data') + pkg_manager.pkg_issue_data_validations.report(errors_only=True)
+
         previous_registered_articles = get_registered_articles(issue_files)
 
         #utils.debugging('get_complete_issue_items')
@@ -363,8 +481,11 @@ def convert_package(src_path):
         #utils.debugging('xc_toc_report is not None?')
         if xc_toc_report is not None:
             #utils.debugging('xc_toc_report is not None.')
-            report_components['issue-report'] = xc_toc_report
-        if critical == 0:
+            if report_components.get('issue-report') is None:
+                report_components['issue-report'] = ''
+            report_components['issue-report'] = xc_toc_report + report_components['issue-report']
+
+        if critical + pkg_manager.blocking_errors == 0:
             #utils.debugging('toc_f == 0')
             selected_articles = {}
             for xml_name, article in pkg_articles.items():
@@ -387,11 +508,14 @@ def convert_package(src_path):
             #utils.debugging('pkg_reports.ArticlesPkgReport')
             selected_articles_pkg_reports = pkg_reports.ArticlesPkgReport(selected_articles_pkg)
             #utils.debugging('validate_articles_pkg_xml_and_data')
-            selected_articles_pkg.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, validate_order, display_title, xml_doc_actions)
-            pkg_quality_fatal_errors = selected_articles_pkg.pkg_fatal_errors
+            selected_articles_pkg.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, validate_order, False, xml_doc_actions)
+            pkg_quality_fatal_errors = selected_articles_pkg.pkg_xml_structure_validations.fatal_errors + selected_articles_pkg.pkg_xml_content_validations.fatal_errors
+
+            pkg_manager.pkg_xml_structure_validations = selected_articles_pkg.pkg_xml_structure_validations
+            pkg_manager.pkg_xml_content_validations = selected_articles_pkg.pkg_xml_content_validations
 
             #utils.debugging('convert_articles')
-            scilista_item, conversion_stats_and_reports, conversion_status, aop_status = convert_articles(issue_files, issue_models, pkg_articles, selected_articles_pkg.pkg_stats, xml_doc_actions, previous_registered_articles, unmatched_orders)
+            scilista_item, pkg_manager.pkg_conversion_results, conversion_status, aop_status = convert_articles(issue_files, pkg_manager, xml_doc_actions, previous_registered_articles, unmatched_orders, pkg_path)
             if scilista_item is not None:
                 if aop_status is not None:
                     if aop_status.get('updated bases') is not None:
@@ -400,17 +524,21 @@ def convert_package(src_path):
                         for _aop in aop_status.get('updated bases'):
                             ex_aop_items.append(issue_models.issue.acron + ' ' + _aop)
 
+            report_components['conversion-report'] = pkg_manager.pkg_conversion_results.report()
+
             #utils.debugging('detail_report')
-            validations_report = selected_articles_pkg_reports.detail_report(conversion_stats_and_reports)
-            selected_articles_pkg_reports.delete_pkg_xml_and_data_reports()
+            validations_report = selected_articles_pkg_reports.detail_report(pkg_manager.pkg_issue_data_validations)
 
             #utils.debugging('xc_conclusion_message')
             xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
 
-            #utils.debugging('after_conversion_report')
-            after_conversion_report = html_reports.tag('h4', _('Documents status in the package/database - after conversion'))
-            #utils.debugging('after_conversion_report')
-            after_conversion_report += display_status_after_xc(previous_registered_articles, get_registered_articles(issue_files), pkg_articles, xml_doc_actions, unmatched_orders)
+            if pkg_manager.pkg_conversion_results.fatal_errors == 0:
+                #utils.debugging('after_conversion_report')
+                after_conversion_report = html_reports.tag('h4', _('Documents status in the package/database - after conversion'))
+                #utils.debugging('after_conversion_report')
+                after_conversion_report += display_status_after_xc(previous_registered_articles, get_registered_articles(issue_files), pkg_articles, xml_doc_actions, unmatched_orders)
+            else:
+                after_conversion_report = xc_conclusion_msg
 
             #utils.debugging('xc_results_report')
             xc_results_report = html_reports.tag('h3', _('Conversion results')) + report_status(conversion_status, 'conversion')
@@ -425,7 +553,7 @@ def convert_package(src_path):
 
             #utils.debugging('save_reports')
             issue_files.save_reports(report_path)
-            issue_files.save_source_files(pkg_path)
+
             report_path = issue_files.base_reports_path
             result_path = issue_files.issue_path
 
@@ -450,23 +578,23 @@ def convert_package(src_path):
         report_components['detail-report'] = validations_report
 
     #utils.debugging('-format_complete_report-')
-    f, e, w, content = pkg_reports.format_complete_report(report_components)
+    xc_validations = pkg_reports.format_complete_report(report_components)
+    content = xc_validations.message
     if old_report_path in content:
         content = content.replace(old_report_path, report_path)
 
     #utils.debugging('-format_email_subject-')
-    email_subject = format_email_subject(scilista_item, selected_articles, pkg_quality_fatal_errors, f, e, w)
+    email_subject = format_email_subject(scilista_item, selected_articles, pkg_quality_fatal_errors, xc_validations.fatal_errors, xc_validations.errors, xc_validations.warnings)
 
     #utils.debugging(type(content))
     #utils.debugging('-save_report-')
-    content = pkg_reports.label_errors(content)
     pkg_reports.save_report(report_location, [_('XML Conversion (XML to Database)'), acron_issue_label], content)
 
     #utils.debugging('-saved report-')
     if not converter_env.is_windows:
         #utils.debugging('-format_reports_for_web-')
         format_reports_for_web(report_path, pkg_path, acron_issue_label.replace(' ', '/'))
-        fs_utils.delete_file_or_folder(src_path)
+        #fs_utils.delete_file_or_folder(src_path)
 
     if old_result_path != result_path:
         fs_utils.delete_file_or_folder(old_result_path)
@@ -511,13 +639,14 @@ def format_reports_for_web(report_path, pkg_path, issue_path):
             fs_utils.write_file(converter_env.local_web_app_path + '/htdocs/reports/' + issue_path + '/' + f, content)
 
 
-def is_conversion_allowed(pub_year, ref_count, xml_f, xml_e, xml_w, data_f, data_e, data_w, conv_f, conv_e, conv_w):
+def is_conversion_allowed(pub_year, ref_count, pkg_manager):
 
     def max_score(quote, score):
         return ((score * quote) / 100) + 1
+
     doit = False
     score = (ref_count + 20)
-    if conv_f == 0:
+    if pkg_manager.pkg_issue_data_validations.fatal_errors == 0:
         if pub_year is not None:
             if pub_year[0:4].isdigit():
                 if int(pub_year[0:4]) < (int(datetime.now().isoformat()[0:4]) - 1):
@@ -526,54 +655,49 @@ def is_conversion_allowed(pub_year, ref_count, xml_f, xml_e, xml_w, data_f, data
         if doit is False:
             doit = True
             if converter_env.max_fatal_error is not None:
-                if xml_f + data_f > max_score(converter_env.max_fatal_error, score):
+                if pkg_manager.pkg_xml_structure_validations.fatal_errors + pkg_manager.pkg_xml_content_validations.fatal_errors > max_score(converter_env.max_fatal_error, score):
                     doit = False
             if converter_env.max_error is not None:
-                if xml_e + data_e > max_score(converter_env.max_error, score):
+                if pkg_manager.pkg_xml_structure_validations.errors + pkg_manager.pkg_xml_content_validations.errors > max_score(converter_env.max_error, score):
                     doit = False
             if converter_env.max_warning is not None:
-                if xml_w + data_w > max_score(converter_env.max_warning, score):
+                if pkg_manager.pkg_xml_structure_validations.warnings + pkg_manager.pkg_xml_content_validations.warnings > max_score(converter_env.max_warning, score):
                     doit = False
     return doit
 
 
-def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xml_doc_actions, registered_articles, unmatched_orders):
+def convert_articles(issue_files, pkg_manager, xml_doc_actions, registered_articles, unmatched_orders, pkg_path):
     index = 0
-    conversion_stats_and_reports = {}
+    pkg_conversion_results = pkg_reports.PackageValidationsResults()
     conversion_status = {}
 
     for k in ['converted', 'rejected', 'not converted', 'skipped', 'deleted incorrect order']:
         conversion_status[k] = []
 
-    n = '/' + str(len(pkg_articles))
+    n = '/' + str(len(pkg_manager.pkg_articles))
 
     i_ahead_records = {}
     for db_filename in issue_files.journal_files.ahead_bases:
         year = os.path.basename(db_filename)[0:4]
-        i_ahead_records[year] = find_i_record(year + 'nahead', issue_models.issue.issn_id, None)
+        i_ahead_records[year] = find_i_record(year + 'nahead', pkg_manager.issue_models.issue.issn_id, None)
 
     ahead_manager = xc_models.AheadManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
     aop_status = None
-    if ahead_manager.journal_publishes_aop():
+    if ahead_manager.journal_has_aop():
         aop_status = {'deleted ex-aop': [], 'not deleted ex-aop': []}
-    for xml_name in pkg_reports.sorted_xml_name_by_order(pkg_articles):
-        article = pkg_articles[xml_name]
+
+    utils.display_message('Converting...')
+    for xml_name in pkg_reports.sorted_xml_name_by_order(pkg_manager.pkg_articles):
+        article = pkg_manager.pkg_articles[xml_name]
         index += 1
 
-        utils.display_message('converting...')
         item_label = str(index) + n + ' - ' + xml_name
         utils.display_message(item_label)
 
         msg = ''
-
         if not xml_doc_actions[xml_name] in ['add', 'update']:
-            msg += html_reports.tag('p', 'skipped')
-            conversion_status['skipped'].append(xml_name)
+            xc_result = 'skipped'
         else:
-            xml_stats, data_stats = articles_stats[xml_name]
-            xml_f, xml_e, xml_w = xml_stats
-            data_f, data_e, data_w = data_stats
-
             valid_ahead = None
             #utils.debugging('convert_articles: aop')
             if aop_status is not None:
@@ -587,19 +711,10 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
                     if doc_ahead_status in ['unmatched aop', 'aop missing PID']:
                         valid_ahead = None
 
-            #utils.debugging('convert_articles: validate_xml_issue_data')
-            section_code, issue_validations_msg = validate_xml_issue_data(issue_models, article)
-
-            if len(issue_validations_msg) > 0:
-                msg += html_reports.tag('h4', _('Checking issue data'))
-                msg += issue_validations_msg
-            conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
-
-            msg += html_reports.tag('h4', _('Converting xml to database'))
             xc_result = 'None'
             #utils.debugging('convert_articles: is_conversion_allowed issue data')
-            if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), xml_f, xml_e, xml_w, data_f, data_e, data_w, conv_f, conv_e, conv_w):
-                article.section_code = section_code
+            if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), pkg_manager):
+
                 if valid_ahead is not None:
                     article._ahead_pid = valid_ahead.ahead_pid
 
@@ -608,7 +723,7 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
                 creation_date = None if not xml_name in registered_articles.keys() else registered_articles[xml_name].creation_date
 
                 #utils.debugging('convert_articles: create_id_file')
-                saved = converter_env.db_article.create_id_file(issue_models.record, article, article_files, creation_date)
+                saved = converter_env.db_article.create_id_file(pkg_manager.issue_models.record, article, article_files, creation_date)
                 if saved:
                     #utils.debugging('convert_articles: unmatched_orders')
                     if xml_name in unmatched_orders.keys():
@@ -636,32 +751,33 @@ def convert_articles(issue_files, issue_models, pkg_articles, articles_stats, xm
                     xc_result = 'not converted'
             else:
                 xc_result = 'rejected'
-            conversion_status[xc_result].append(xml_name)
-            if not xc_result in ['converted']:
-                xc_result += '. FATAL ERROR!'
-            msg += html_reports.p_message(_('Result: ') + xc_result)
 
-        conv_f, conv_e, conv_w = html_reports.statistics_numbers(msg)
-        conversion_stats_and_reports[xml_name] = (conv_f, conv_e, conv_w, msg)
+        conversion_status[xc_result].append(xml_name)
+
+        msg += html_reports.p_message(_('Result: ') + xc_result)
+        if not xc_result in ['converted', 'skipped']:
+            msg += html_reports.p_message('FATAL ERROR')
+        pkg_conversion_results.add(xml_name, pkg_reports.ValidationsResults(msg))
 
     #utils.debugging('convert_articles: journal_has_aop()')
     if ahead_manager.journal_publishes_aop():
         #if len(aop_status['deleted ex-aop']) > 0:
         #    updated = ahead_manager.finish_manage_ex_ahead()
+        if aop_status is None:
+            aop_status = {}
         aop_status['updated bases'] = ahead_manager.update_all_ahead_db()
         aop_status['still aop'] = ahead_manager.still_ahead_items()
 
     scilista_item = None
-
     #utils.debugging('convert_articles: conclusion')
-    if len(conversion_status['not converted']) + len(conversion_status['rejected']) == 0:
-        saved = converter_env.db_article.finish_conversion(issue_models.record, issue_files)
+    if pkg_conversion_results.fatal_errors == 0:
+        saved = converter_env.db_article.finish_conversion(pkg_manager.issue_models.record, issue_files, pkg_path)
         if saved > 0:
-            scilista_item = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
+            scilista_item = pkg_manager.issue_models.issue.acron + ' ' + pkg_manager.issue_models.issue.issue_label
             if not converter_env.is_windows:
                 converter_env.db_article.generate_windows_version(issue_files)
     #utils.debugging('convert_articles: fim')
-    return (scilista_item, conversion_stats_and_reports, conversion_status, aop_status)
+    return (scilista_item, pkg_conversion_results, conversion_status, aop_status)
 
 
 def aop_message(article, ahead, status):
@@ -695,7 +811,7 @@ def aop_message(article, ahead, status):
             t = '' if ahead.first_author_surname is None else ahead.first_author_surname
             data.append(_('aop first author') + ':' + t)
     msg = ''
-    msg += html_reports.tag('h4', _('Checking existence of aop version'))
+    msg += html_reports.tag('h5', _('Checking existence of aop version'))
     msg += ''.join([html_reports.p_message(item) for item in msg_list])
     msg += ''.join([html_reports.display_xml(item, html_reports.XML_WIDTH*0.9) for item in data])
     return msg
@@ -784,108 +900,9 @@ def transfer_report_files(acron, issue_id, local_web_app_path, user, server, rem
         xc.run_rsync(source_path, user, server, dest_path)
 
 
-def validate_xml_issue_data(issue_models, article):
-    msg = []
-    section_code = None
-    if article.tree is not None:
-        validations = []
-        validations.append((_('journal title'), article.journal_title, issue_models.issue.journal_title))
-        validations.append((_('journal id NLM'), article.journal_id_nlm_ta, issue_models.issue.journal_id_nlm_ta))
-
-        a_issn = article.journal_issns.get('epub') if article.journal_issns is not None else None
-        if a_issn is not None:
-            i_issn = issue_models.issue.journal_issns.get('epub') if issue_models.issue.journal_issns is not None else None
-            validations.append((_('journal e-ISSN'), a_issn, i_issn))
-
-        a_issn = article.journal_issns.get('ppub') if article.journal_issns is not None else None
-        if a_issn is not None:
-            i_issn = issue_models.issue.journal_issns.get('ppub') if issue_models.issue.journal_issns is not None else None
-            validations.append((_('journal print ISSN'), a_issn, i_issn))
-
-        validations.append((_('issue label'), article.issue_label, issue_models.issue.issue_label))
-        a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
-        i_year = issue_models.issue.dateiso[0:4] if issue_models.issue.dateiso is not None else ''
-
-        validations.append((_('issue pub-date'), a_year, i_year))
-
-        # check issue data
-        for label, article_data, issue_data in validations:
-            if article_data is None:
-                article_data = 'None'
-            elif isinstance(article_data, list):
-                article_data = ' | '.join(article_data)
-            if issue_data is None:
-                issue_data = 'None'
-            elif isinstance(issue_data, list):
-                issue_data = ' | '.join(issue_data)
-            if not article_data == issue_data:
-                msg.append(html_reports.tag('h5', label))
-                if issue_data == 'None':
-                    msg.append('ERROR: ' + _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"')
-                else:
-                    msg.append('FATAL ERROR: ' + _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"')
-
-        validations = []
-        validations.append(('publisher', article.publisher_name, issue_models.issue.publisher_name))
-        for label, article_data, issue_data in validations:
-            if article_data is None:
-                article_data = 'None'
-            elif isinstance(article_data, list):
-                article_data = ' | '.join(article_data)
-            if issue_data is None:
-                issue_data = 'None'
-            elif isinstance(issue_data, list):
-                issue_data = ' | '.join(issue_data)
-            if utils.how_similar(article_data, issue_data) < 0.8:
-                msg.append(html_reports.tag('h5', label))
-                msg.append('ERROR: ' + _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"')
-
-        # license
-        if issue_models.issue.license is None:
-            msg.append(html_reports.tag('h5', 'license'))
-            msg.append('ERROR: ' + _('Unable to identify issue license'))
-        elif article.license_url is not None:
-            if not '/' + issue_models.issue.license.lower() in article.license_url.lower():
-                msg.append(html_reports.tag('h5', 'license'))
-                msg.append('ERROR: ' + _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + issue_models.issue.license + '"')
-            else:
-                msg.append(html_reports.tag('h5', 'license'))
-                msg.append('INFO: ' + _('In article: "') + article.license_url + _('" and in issue: "') + issue_models.issue.license + '"')
-
-        # section
-        section_msg = []
-        section_code, matched_rate, fixed_sectitle = issue_models.most_similar_section_code(article.toc_section)
-        if matched_rate != 1:
-            if not article.is_ahead:
-                section_msg.append(_('Registered sections') + ':\n' + '; '.join(issue_models.section_titles))
-                if section_code is None:
-                    section_msg.append('ERROR: ' + article.toc_section + _(' is not a registered section.'))
-                else:
-                    section_msg.append('WARNING: ' + _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article.toc_section + '")')
-
-        # @article-type
-        if fixed_sectitle is not None:
-            _sectitle = fixed_sectitle
-        else:
-            _sectitle = article.toc_section
-        article_type_msg = validate_article_type_and_section(article.article_type, _sectitle)
-        if len(article_type_msg) > 0 or len(section_msg) > 0:
-            msg.append(html_reports.tag('h5', 'section'))
-            msg.append(article.toc_section)
-            for m in section_msg:
-                msg.append(m)
-            msg.append(html_reports.tag('h5', 'article-type'))
-            msg.append(article.article_type)
-            if len(article_type_msg) > 0:
-                msg.append(article_type_msg)
-
-    msg = ''.join([html_reports.p_message(item) for item in msg])
-    return (section_code, msg)
-
-
 def validate_article_type_and_section(article_type, article_section):
     #DOCTOPIC_IN_USE
-    msg = ''
+    results = []
     _sectitle = attributes.normalize_section_title(article_section)
     _article_type = attributes.normalize_section_title(article_type)
     if not _article_type in _sectitle:
@@ -895,12 +912,12 @@ def validate_article_type_and_section(article_type, article_section):
         rate2, similars = utils.most_similar(utils.similarity(attributes.DOCTOPIC_IN_USE, _sectitle))
 
         if rate < 0.6 and rate2 < 0.6:
-            msg = 'WARNING: ' + _('Check if ') + article_type + _(' is a valid value for') + ' @article-type. <!-- ' + _article_type + ' ' + _sectitle + ' ' + str(rate) + ' ' + str(rate2) + ' -->'
+            results.append(('@article-type', 'WARNING', _('Check if ') + article_type + _(' is a valid value for') + ' @article-type. (section title=' + _sectitle + ')'))
         else:
             if rate2 > rate:
                 if not article_type in similars:
-                    msg = 'ERROR: ' + _('Check @article-type. Maybe it should be ') + _(' or ').join(similars) + ' ' + _('instead of') + ' ' + article_type + '.'
-    return msg
+                    results.append(('@article-type', 'ERROR', _('Check @article-type. Maybe it should be ') + _(' or ').join(similars) + ' ' + _('instead of') + ' ' + article_type + '.'))
+    return results
 
 
 def compare_article_type_and_section(article_type, article_section):
@@ -1098,7 +1115,7 @@ def execute_converter(package_paths, collection_name=None):
                 bad_pkg_files.append(package_path)
                 bad_pkg_files.append(str(e))
                 report_location, report_path, scilista_item = [None, None, None]
-                fs_utils.delete_file_or_folder(package_path)
+                #fs_utils.delete_file_or_folder(package_path)
 
             if scilista_item is not None:
                 if ex_aop_items is not None:

@@ -50,7 +50,7 @@ def xml_content_transform(content, xsl_filename):
     return content
 
 
-def xml_transform(run_background, xml_filename, xsl_filename, result_filename, parameters={}):
+def xml_transform(xml_filename, xsl_filename, result_filename, parameters={}):
     register_log('xml_transform: inicio')
     error = False
 
@@ -81,7 +81,7 @@ def xml_transform(run_background, xml_filename, xsl_filename, result_filename, p
     return (not error)
 
 
-def xml_validate(run_background, xml_filename, result_filename, doctype=None):
+def xml_validate(xml_filename, result_filename, doctype=None):
     register_log('xml_validate: inicio')
     validation_type = ''
 

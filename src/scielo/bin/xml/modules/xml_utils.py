@@ -160,10 +160,11 @@ def replace_doctype(content, new_doctype):
 
 
 def apply_dtd(xml_filename, doctype):
+    import fs_utils
     temp_filename = tempfile.mkdtemp() + '/' + os.path.basename(xml_filename)
     shutil.copyfile(xml_filename, temp_filename)
-    content = replace_doctype(open(xml_filename, 'r').read(), doctype)
-    open(xml_filename, 'w').write(content)
+    content = replace_doctype(fs_utils.read_file(xml_filename), doctype)
+    fs_utils.write_file(xml_filename, content)
     return temp_filename
 
 

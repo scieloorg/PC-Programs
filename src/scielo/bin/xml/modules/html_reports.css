@@ -311,14 +311,23 @@ td img {
 .delete {
   background-color: gray;
 }
+.deleted {
+  background-color: gray;
+}
 .none {
   background-color: white;
 }
 .add {
-  background-color: #B2D9D8;
+  background-color: #91CEE8;
+}
+.added {
+  background-color: #91CEE8;
 }
 .update {
-  background-color: #F6938E;
+  background-color: #91CEE8;
+}
+.updated {
+  background-color: #91CEE8;
 }
 .skip-update {
   background-color: #FDD186;
@@ -572,7 +581,8 @@ td img {
 }
 
 .package {
-  background-color: #EFF5C5;
+  background-color: #69D2E7;
+  font-weight: bold;
 }
 
 .smaller {
