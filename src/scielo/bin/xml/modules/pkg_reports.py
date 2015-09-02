@@ -536,7 +536,7 @@ class ArticlesPkgReport(object):
                 issue_common_data += html_reports.format_list(label, 'ol', pkg_metadata[label].keys())
                 #issue_common_data += html_reports.p_message('FATAL ERROR: ' + _('Unique value expected for ') + label)
 
-        pages = html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.package.pages(), table_style='validation', row_style='status'))
+        pages = html_reports.tag('h2', 'Pages Report') + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.package.pages(), table_style='validation', row_style='status'))
 
         return (critical, html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages') + pages)
 
@@ -632,10 +632,11 @@ class ArticlesPkgReport(object):
             if pkg_conversion_validations is not None:
                 conversion_validations = pkg_conversion_validations.item(new_name)
                 if conversion_validations is not None:
-                    status = html_reports.statistics_display(conversion_validations)
-                    links += html_reports.report_link('xcrep' + new_name, '[ ' + _('Converter Validations') + ' ]', 'xcrep', a_name)
-                    links += html_reports.tag('span', status, 'smaller')
-                    block += html_reports.report_block('xcrep' + new_name, conversion_validations.message, 'xcrep', a_name)
+                    if conversion_validations.total > 0:
+                        status = html_reports.statistics_display(conversion_validations)
+                        links += html_reports.report_link('xcrep' + new_name, '[ ' + _('Converter Validations') + ' ]', 'xcrep', a_name)
+                        links += html_reports.tag('span', status, 'smaller')
+                        block += html_reports.report_block('xcrep' + new_name, conversion_validations.message, 'xcrep', a_name)
 
             values = []
             values.append(new_name)

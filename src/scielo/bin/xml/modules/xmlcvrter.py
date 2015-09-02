@@ -465,7 +465,7 @@ def convert_package(src_path):
         pkg_manager = PkgManager(issue_models, pkg_articles)
 
         if pkg_manager.pkg_issue_data_validations is not None:
-            report_components['issue-report'] = pkg_manager.pkg_issue_data_validations.report()
+            report_components['issue-report'] = html_reports.tag('h2', 'Comparision of issue and articles data') + pkg_manager.pkg_issue_data_validations.report(errors_only=True)
 
         previous_registered_articles = get_registered_articles(issue_files)
 
@@ -483,7 +483,7 @@ def convert_package(src_path):
             #utils.debugging('xc_toc_report is not None.')
             if report_components.get('issue-report') is None:
                 report_components['issue-report'] = ''
-            report_components['issue-report'] += xc_toc_report
+            report_components['issue-report'] = xc_toc_report + report_components['issue-report']
 
         if critical + pkg_manager.blocking_errors == 0:
             #utils.debugging('toc_f == 0')
@@ -527,7 +527,7 @@ def convert_package(src_path):
             report_components['conversion-report'] = pkg_manager.pkg_conversion_results.report()
 
             #utils.debugging('detail_report')
-            validations_report = selected_articles_pkg_reports.detail_report()
+            validations_report = selected_articles_pkg_reports.detail_report(pkg_manager.pkg_issue_data_validations)
 
             #utils.debugging('xc_conclusion_message')
             xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, selected_articles, conversion_status, pkg_quality_fatal_errors)
@@ -912,7 +912,7 @@ def validate_article_type_and_section(article_type, article_section):
         rate2, similars = utils.most_similar(utils.similarity(attributes.DOCTOPIC_IN_USE, _sectitle))
 
         if rate < 0.6 and rate2 < 0.6:
-            results.append(('@article-type', 'WARNING', _('Check if ') + article_type + _(' is a valid value for') + ' @article-type. <!-- ' + _article_type + ' ' + _sectitle + ' ' + str(rate) + ' ' + str(rate2) + ' -->'))
+            results.append(('@article-type', 'WARNING', _('Check if ') + article_type + _(' is a valid value for') + ' @article-type. (section title=' + _sectitle + ')'))
         else:
             if rate2 > rate:
                 if not article_type in similars:
