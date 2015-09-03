@@ -365,13 +365,13 @@ class ArticlePackage(object):
                     if int_previous_lpage is not None:
                         if int_previous_lpage > int_fpage:
                             status = 'FATAL ERROR' if not self.articles[xml_name].is_rolling_pass and not self.articles[xml_name].is_ahead else 'WARNING'
-                            msg.append(_('Invalid pages') + ': ' + _('check lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
+                            msg.append(_('Invalid pages') + ': ' + _('check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                         elif int_previous_lpage == int_fpage:
                             status = 'WARNING'
-                            msg.append(_('lpage of {previous_article} and fpage of {xml_name} are the same').format(previous_article=previous_xmlname, xml_name=xml_name))
+                            msg.append(_('lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}) are the same').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                         elif int_previous_lpage + 1 < int_fpage:
                             status = 'WARNING'
-                            msg.append(_('there is a gap between the lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
+                            msg.append(_('there is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                     if int_fpage > int_lpage:
                         status = 'FATAL ERROR'
                         msg.append(_('Invalid page range'))
