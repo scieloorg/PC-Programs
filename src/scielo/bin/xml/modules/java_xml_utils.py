@@ -42,7 +42,7 @@ def xml_content_transform(content, xsl_filename):
 
     f2 = tempfile.NamedTemporaryFile(delete=False)
     f2.close()
-    if xml_transform(False, f.name, xsl_filename, f2.name):
+    if xml_transform(f.name, xsl_filename, f2.name):
         content = fs_utils.read_file(f2.name)
         os.unlink(f2.name)
     if os.path.exists(f.name):
