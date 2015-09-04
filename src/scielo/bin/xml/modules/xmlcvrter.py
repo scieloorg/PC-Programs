@@ -864,7 +864,7 @@ def xc_conclusion_message(scilista_item, issue_label, pkg_articles, selected_art
     else:
         if pkg_quality_fatal_errors > 0:
             status = 'WARNING'
-            reason = _(' even though there are some FATAL ERRORS. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services.')
+            reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services.')
         else:
             status = 'OK'
             reason = ''

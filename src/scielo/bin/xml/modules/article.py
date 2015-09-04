@@ -621,7 +621,7 @@ class ArticleXML(object):
     @property
     def fpage(self):
         if self.article_meta is not None:
-            return self.article_meta.findtext('fpage')
+            return article_utils.normalize_number(self.article_meta.findtext('fpage'))
 
     @property
     def fpage_seq(self):
@@ -631,7 +631,7 @@ class ArticleXML(object):
     @property
     def lpage(self):
         if self.article_meta is not None:
-            return self.article_meta.findtext('lpage')
+            return article_utils.normalize_number(self.article_meta.findtext('lpage'))
 
     @property
     def elocation_id(self):
@@ -1084,9 +1084,7 @@ class Article(ArticleXML):
         data['issue pub date'] = self.issue_pub_dateiso[0:4] if self.issue_pub_dateiso is not None else None
         data['order'] = self.order
         data['doi'] = self.doi
-        seq = '' if self.fpage_seq is None else self.fpage_seq
-        fpage = '' if self.fpage is None else self.fpage
-        data['fpage-and-seq'] = fpage + seq
+        data['fpage-lpage-seq'] = '-'.join([str(item) for item in [self.fpage, self.lpage, self.fpage_seq]])
         data['lpage'] = self.lpage
         data['fpage'] = self.fpage
         data['elocation id'] = self.elocation_id

@@ -465,8 +465,8 @@ class ArticlesPkgReport(object):
         equal_data = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
         unique_data = ['order', 'doi', 'elocation id', ]
         if not self.package.is_processed_in_batches:
-            unique_data += ['fpage-and-seq', 'lpage']
-        error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-and-seq': 'FATAL ERROR', 'lpage': 'WARNING'}
+            unique_data += ['fpage-lpage-seq', 'lpage']
+        error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq': 'FATAL ERROR', 'lpage': 'WARNING'}
         required_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
 
         if not validate_order:
@@ -493,25 +493,10 @@ class ArticlesPkgReport(object):
 
         for label in unique_data:
             if len(pkg_metadata[label]) > 0 and len(pkg_metadata[label]) != len(self.package.articles):
-                none = []
                 duplicated = {}
-                pages = {}
                 for found_value, xml_files in pkg_metadata[label].items():
-                    if found_value == 'None':
-                        none = xml_files
-                    else:
-                        if len(xml_files) > 1:
-                            duplicated[found_value] = xml_files
-                        if label == 'fpage-and-seq':
-                            v = found_value
-                            if v.isdigit():
-                                v = str(int(found_value))
-                            if not v in pages.keys():
-                                pages[v] = []
-                            pages[v] += xml_files
-
-                if len(pages) == 1 and '0' in pages.keys():
-                    duplicated = []
+                    if len(xml_files) > 1:
+                        duplicated[found_value] = xml_files
 
                 if len(duplicated) > 0:
                     _m = _(': unique value of %s is required for all the documents in the package') % (label)
@@ -521,11 +506,7 @@ class ArticlesPkgReport(object):
                     for found_value, xml_files in duplicated.items():
                         part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
                     r += part
-                if len(none) > 0:
-                    part = html_reports.p_message('INFO: ' + _('there is no value for ') + label + '.')
-                    part += html_reports.format_list(_('no value for ') + label + ' ' + _('in') + ':', 'ul', none, 'issue-problem')
-                    r += part
-
+                
         issue_common_data = ''
 
         for label in equal_data:
