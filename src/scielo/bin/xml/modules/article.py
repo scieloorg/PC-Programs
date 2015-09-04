@@ -144,7 +144,8 @@ class ArticleXML(object):
         self.article_meta = None
         self.body = None
         self.back = None
-        self.subarticles = []
+        self.translations = []
+        self.sub_articles = []
         self.responses = []
         self._title_abstract_kwd_languages = None
         self._language = None
@@ -163,7 +164,10 @@ class ArticleXML(object):
             self.article_meta = self.tree.find('./front/article-meta')
             self.body = self.tree.find('./body')
             self.back = self.tree.find('./back')
-            self.subarticles = self.tree.findall('./sub-article')
+            self.translations = self.tree.findall('./sub-article[@article-type="translation"]')
+            for s in self.tree.findall('./sub-article'):
+                if s.attrib.get('article-type') != 'translation':
+                    self.sub_articles.append(s)
             self.responses = self.tree.findall('./response')
 
     def sections(self, node, scope):
@@ -180,8 +184,8 @@ class ArticleXML(object):
     @property
     def article_sections(self):
         r = self.sections(self.body, 'article')
-        if self.subarticles is not None:
-            for item in self.subarticles:
+        if self.translations is not None:
+            for item in self.translations:
                 for sec in self.sections(item.find('.//body'), 'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]'):
                     r.append(sec)
         return r
@@ -189,7 +193,7 @@ class ArticleXML(object):
     @property
     def article_type_and_contrib_items(self):
         r = []
-        for subart in self.subarticles:
+        for subart in self.translations:
             r.append((subart.attrib.get('article-type'), subart.findall('.//contrib/collab') + subart.findall('.//contrib/name')))
         for subart in self.responses:
             r.append((subart.attrib.get('response-type'), subart.findall('.//contrib/collab') + subart.findall('.//contrib/name')))
@@ -205,8 +209,8 @@ class ArticleXML(object):
     @property
     def article_fn_list(self):
         r = self.fn_list(self.back, 'article')
-        if self.subarticles is not None:
-            for item in self.subarticles:
+        if self.translations is not None:
+            for item in self.translations:
                 scope = 'sub-article/[@id="' + item.attrib.get('id', 'None') + '"]'
                 for fn in self.fn_list(item.find('.//back'), scope):
                     r.append(fn)
@@ -354,7 +358,7 @@ class ArticleXML(object):
                         t.text = xml_utils.node_text(kw)
                         kw_items.append(t)
                     k[language] = kw_items
-            for subart in self.subarticles:
+            for subart in self.translations:
                 for node in subart.findall('.//kwd-group'):
                     language = xml_utils.element_lang(node)
                     kw_items = []
@@ -375,7 +379,7 @@ class ArticleXML(object):
                 language = xml_utils.element_lang(node)
                 for kw in node.findall('kwd'):
                     k.append({'l': language, 'k': xml_utils.node_text(kw)})
-        for subart in self.subarticles:
+        for subart in self.translations:
             for node in subart.findall('.//kwd-group'):
                 language = xml_utils.element_lang(node)
                 for kw in node.findall('kwd'):
@@ -476,15 +480,14 @@ class ArticleXML(object):
                 t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('trans-subtitle')))
                 t.language = xml_utils.element_lang(node)
                 k.append(t)
-        if self.subarticles is not None:
-            for subart in self.subarticles:
-                if subart.attrib.get('article-type') == 'translation':
-                    for node in subart.findall('.//title-group'):
-                        t = Title()
-                        t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
-                        t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
-                        t.language = xml_utils.element_lang(subart)
-                        k.append(t)
+        if self.translations is not None:
+            for subart in self.translations:
+                for node in subart.findall('.//title-group'):
+                    t = Title()
+                    t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
+                    t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
+                    t.language = xml_utils.element_lang(subart)
+                    k.append(t)
         return k
 
     @property
@@ -506,16 +509,15 @@ class ArticleXML(object):
                     t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('trans-subtitle')))
                     t.language = language
                     k[language] = t
-            if self.subarticles is not None:
-                for subart in self.subarticles:
-                    if subart.attrib.get('article-type') == 'translation':
-                        for node in subart.findall('.//title-group'):
-                            language = xml_utils.element_lang(subart)
-                            t = Title()
-                            t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
-                            t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
-                            t.language = language
-                            k[language] = t
+            if self.translations is not None:
+                for subart in self.translations:
+                    for node in subart.findall('.//title-group'):
+                        language = xml_utils.element_lang(subart)
+                        t = Title()
+                        t.title = article_utils.remove_xref(xml_utils.node_text(node.find('article-title')))
+                        t.subtitle = article_utils.remove_xref(xml_utils.node_text(node.find('subtitle')))
+                        t.language = language
+                        k[language] = t
             self._titles_by_lang = k
         return self._titles_by_lang
 
@@ -530,8 +532,8 @@ class ArticleXML(object):
     def trans_languages(self):
         if self._trans_languages is None:
             k = []
-            if self.subarticles is not None:
-                for node in self.subarticles:
+            if self.translations is not None:
+                for node in self.translations:
                     k.append(xml_utils.element_lang(node))
             self._trans_languages = k
         return self._trans_languages
@@ -621,7 +623,7 @@ class ArticleXML(object):
     @property
     def fpage(self):
         if self.article_meta is not None:
-            return self.article_meta.findtext('fpage')
+            return article_utils.normalize_number(self.article_meta.findtext('fpage'))
 
     @property
     def fpage_seq(self):
@@ -631,7 +633,7 @@ class ArticleXML(object):
     @property
     def lpage(self):
         if self.article_meta is not None:
-            return self.article_meta.findtext('lpage')
+            return article_utils.normalize_number(self.article_meta.findtext('lpage'))
 
     @property
     def elocation_id(self):
@@ -791,7 +793,7 @@ class ArticleXML(object):
                     _abstract.language = language
                     _abstract.text = xml_utils.node_text(a)
                     r[language] = _abstract
-            for subart in self.subarticles:
+            for subart in self.translations:
                 language = xml_utils.element_lang(subart)
                 for a in subart.findall('.//abstract'):
                     _abstract = Text()
@@ -815,7 +817,7 @@ class ArticleXML(object):
                 _abstract.language = xml_utils.element_lang(a)
                 _abstract.text = xml_utils.node_text(a)
                 r.append(_abstract)
-        for subart in self.subarticles:
+        for subart in self.translations:
             subart_lang = xml_utils.element_lang(subart)
             for a in subart.findall('.//abstract'):
                 _abstract = Text()
@@ -1084,9 +1086,7 @@ class Article(ArticleXML):
         data['issue pub date'] = self.issue_pub_dateiso[0:4] if self.issue_pub_dateiso is not None else None
         data['order'] = self.order
         data['doi'] = self.doi
-        seq = '' if self.fpage_seq is None else self.fpage_seq
-        fpage = '' if self.fpage is None else self.fpage
-        data['fpage-and-seq'] = fpage + seq
+        data['fpage-lpage-seq'] = '-'.join([str(item) for item in [self.fpage, self.lpage, self.fpage_seq]])
         data['lpage'] = self.lpage
         data['fpage'] = self.fpage
         data['elocation id'] = self.elocation_id
@@ -1132,7 +1132,7 @@ class Article(ArticleXML):
         return (self.volume is None) and (self.number == 'ahead')
 
     @property
-    def is_rolling_pass(self):
+    def is_epub_only(self):
         r = False
         if self.epub_date is not None:
             if not self.is_ahead:

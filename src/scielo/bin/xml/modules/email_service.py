@@ -33,6 +33,8 @@ class EmailMessageTemplate(object):
         self.message_template = ''
         if len(message_template_filename) > 0 and os.path.isfile(message_template_filename):
             self.message_template = open(message_template_filename, 'r').read()
+            if not isinstance(self.message_template, unicode):
+                self.message_template = self.message_template.decode('utf-8')
 
     def msg(self, parameters={}):
         message = self.message_template
@@ -43,9 +45,9 @@ class EmailMessageTemplate(object):
     def msg_from_files(self, param_files):
         msg = ''
         for f in param_files:
-            fn = open(f, 'r')
-            content = fn.read()
-            fn.close()
+            content = open(f, 'r').read()
+            if not isinstance(content, unicode):
+                content = content.decode('utf-8')
             msg += content + '\n' + '='*80 + '\n'
         return msg
 

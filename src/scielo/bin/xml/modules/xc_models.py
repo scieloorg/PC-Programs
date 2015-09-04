@@ -356,6 +356,7 @@ class ArticleRecords(object):
 
         self._metadata['14'] = {}
         self._metadata['14']['f'] = self.article.fpage
+        self._metadata['14']['s'] = self.article.fpage_seq
         self._metadata['14']['l'] = self.article.lpage
         self._metadata['14']['e'] = self.article.elocation_id
 

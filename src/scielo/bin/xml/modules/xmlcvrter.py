@@ -1,6 +1,5 @@
 # coding=utf-8
 
-import sys
 import os
 import shutil
 from datetime import datetime
@@ -108,7 +107,10 @@ class PkgManager(object):
             validations.append((_('issue label'), article.issue_label, self.issue_models.issue.issue_label))
             a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
             i_year = self.issue_models.issue.dateiso[0:4] if self.issue_models.issue.dateiso is not None else ''
-
+            if self.issue_models.issue.dateiso is not None:
+                _status = 'FATAL ERROR'
+                if self.issue_models.issue.dateiso.endswith('0000'):
+                    _status = 'WARNING'
             validations.append((_('issue pub-date'), a_year, i_year))
 
             # check issue data
@@ -126,7 +128,10 @@ class PkgManager(object):
                     if issue_data == 'None':
                         status = 'ERROR'
                     else:
-                        status = 'FATAL ERROR'
+                        if label == 'issue pub-date':
+                            status = _status
+                        else:
+                            status = 'FATAL ERROR'
                     results.append((label, status, _msg))
 
             validations = []
@@ -865,7 +870,7 @@ def xc_conclusion_message(scilista_item, issue_label, pkg_articles, selected_art
     else:
         if pkg_quality_fatal_errors > 0:
             status = 'WARNING'
-            reason = _(' even though there are some FATAL ERRORS. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services.')
+            reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services.')
         else:
             status = 'OK'
             reason = ''

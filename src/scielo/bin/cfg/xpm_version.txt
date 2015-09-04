@@ -1,4 +1,9 @@
-﻿4.0.090 trial - 31/08/2015
+﻿4.0.090 trial - 08/09/2015
+==========================
+  - (improvement) Present the fpage and lpage values in the messages of Paginations report
+  - (bug) Fix some institution names
+
+4.0.090 trial - 31/08/2015
 ==========================
   - (bug) Fix the absence of DOCTYPE in scielo_package
   - (bug) Accept use of paths with diacritics in their names

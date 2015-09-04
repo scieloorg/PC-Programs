@@ -328,14 +328,16 @@ class ArticlePackage(object):
         _is_rolling_pass = False
         if not self.is_aop_issue:
             epub_dates = list(set([a.epub_dateiso for a in self.articles.values() if a.epub_dateiso is not None]))
+
             epub_ppub_dates = [a.epub_ppub_dateiso for a in self.articles.values() if a.epub_ppub_dateiso is not None]
             collection_dates = [a.collection_dateiso for a in self.articles.values() if a.collection_dateiso is not None]
-
             other_dates = list(set(epub_ppub_dates + collection_dates))
             if len(epub_dates) > 0:
                 if len(other_dates) == 0:
                     _is_rolling_pass = True
                 elif len(other_dates) > 1:
+                    _is_rolling_pass = True
+                elif len([None for a in self.articles.values() if a.collection_dateiso is None]) > 0:
                     _is_rolling_pass = True
         return _is_rolling_pass
 
@@ -364,14 +366,14 @@ class ArticlePackage(object):
                     #if not self.articles[xml_name].is_rolling_pass and not self.articles[xml_name].is_ahead:
                     if int_previous_lpage is not None:
                         if int_previous_lpage > int_fpage:
-                            status = 'FATAL ERROR' if not self.articles[xml_name].is_rolling_pass and not self.articles[xml_name].is_ahead else 'WARNING'
-                            msg.append(_('Invalid pages') + ': ' + _('check lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
+                            status = 'FATAL ERROR' if not self.articles[xml_name].is_epub_only else 'WARNING'
+                            msg.append(_('Invalid pages') + ': ' + _('check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                         elif int_previous_lpage == int_fpage:
                             status = 'WARNING'
-                            msg.append(_('lpage of {previous_article} and fpage of {xml_name} are the same').format(previous_article=previous_xmlname, xml_name=xml_name))
+                            msg.append(_('lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name}) are the same').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                         elif int_previous_lpage + 1 < int_fpage:
                             status = 'WARNING'
-                            msg.append(_('there is a gap between the lpage of {previous_article} and fpage of {xml_name}').format(previous_article=previous_xmlname, xml_name=xml_name))
+                            msg.append(_('there is a gap between lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                     if int_fpage > int_lpage:
                         status = 'FATAL ERROR'
                         msg.append(_('Invalid page range'))
@@ -464,13 +466,17 @@ class ArticlesPkgReport(object):
         critical = 0
         equal_data = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
         unique_data = ['order', 'doi', 'elocation id', ]
-        if not self.package.is_processed_in_batches:
-            unique_data += ['fpage-and-seq', 'lpage']
-        error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-and-seq': 'FATAL ERROR', 'lpage': 'WARNING'}
+
+        error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq': 'FATAL ERROR'}
         required_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
 
         if not validate_order:
             error_level_for_unique['order'] = 'WARNING'
+
+        if self.package.is_processed_in_batches:
+            error_level_for_unique['fpage-lpage-seq'] = 'WARNING'
+        else:
+            unique_data += ['fpage-lpage-seq']
 
         invalid_xml_name_items, pkg_metadata, missing_data = self.package.journal_and_issue_metadata(equal_data + unique_data, required_data)
 
@@ -485,33 +491,22 @@ class ArticlesPkgReport(object):
 
         for label in equal_data:
             if len(pkg_metadata[label]) > 1:
+                _status = 'FATAL ERROR'
+                if label == 'issue pub date':
+                    if self.package.is_rolling_pass:
+                        _status = 'WARNING'
                 _m = _('same value for %s is required for all the documents in the package') % (label)
-                part = html_reports.p_message('FATAL ERROR: ' + _m + '.')
+                part = html_reports.p_message(_status + ': ' + _m + '.')
                 for found_value, xml_files in pkg_metadata[label].items():
                     part += html_reports.format_list(_('found') + ' ' + label + '="' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
                 r += part
 
         for label in unique_data:
             if len(pkg_metadata[label]) > 0 and len(pkg_metadata[label]) != len(self.package.articles):
-                none = []
                 duplicated = {}
-                pages = {}
                 for found_value, xml_files in pkg_metadata[label].items():
-                    if found_value == 'None':
-                        none = xml_files
-                    else:
-                        if len(xml_files) > 1:
-                            duplicated[found_value] = xml_files
-                        if label == 'fpage-and-seq':
-                            v = found_value
-                            if v.isdigit():
-                                v = str(int(found_value))
-                            if not v in pages.keys():
-                                pages[v] = []
-                            pages[v] += xml_files
-
-                if len(pages) == 1 and '0' in pages.keys():
-                    duplicated = []
+                    if len(xml_files) > 1:
+                        duplicated[found_value] = xml_files
 
                 if len(duplicated) > 0:
                     _m = _(': unique value of %s is required for all the documents in the package') % (label)
@@ -520,10 +515,6 @@ class ArticlesPkgReport(object):
                         critical += 1
                     for found_value, xml_files in duplicated.items():
                         part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
-                    r += part
-                if len(none) > 0:
-                    part = html_reports.p_message('INFO: ' + _('there is no value for ') + label + '.')
-                    part += html_reports.format_list(_('no value for ') + label + ' ' + _('in') + ':', 'ul', none, 'issue-problem')
                     r += part
 
         issue_common_data = ''
