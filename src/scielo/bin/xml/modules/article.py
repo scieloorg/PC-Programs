@@ -165,7 +165,6 @@ class ArticleXML(object):
             self.body = self.tree.find('./body')
             self.back = self.tree.find('./back')
             self.translations = self.tree.findall('./sub-article[@article-type="translation"]')
-            sub_articles = self.tree.findall('./sub-article')
             for s in self.tree.findall('./sub-article'):
                 if s.attrib.get('article-type') != 'translation':
                     self.sub_articles.append(s)
@@ -1133,7 +1132,7 @@ class Article(ArticleXML):
         return (self.volume is None) and (self.number == 'ahead')
 
     @property
-    def is_rolling_pass(self):
+    def is_epub_only(self):
         r = False
         if self.epub_date is not None:
             if not self.is_ahead:

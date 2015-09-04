@@ -328,14 +328,16 @@ class ArticlePackage(object):
         _is_rolling_pass = False
         if not self.is_aop_issue:
             epub_dates = list(set([a.epub_dateiso for a in self.articles.values() if a.epub_dateiso is not None]))
+
             epub_ppub_dates = [a.epub_ppub_dateiso for a in self.articles.values() if a.epub_ppub_dateiso is not None]
             collection_dates = [a.collection_dateiso for a in self.articles.values() if a.collection_dateiso is not None]
-
             other_dates = list(set(epub_ppub_dates + collection_dates))
             if len(epub_dates) > 0:
                 if len(other_dates) == 0:
                     _is_rolling_pass = True
                 elif len(other_dates) > 1:
+                    _is_rolling_pass = True
+                elif len([None for a in self.articles.values() if a.collection_dateiso is None]) > 0:
                     _is_rolling_pass = True
         return _is_rolling_pass
 
@@ -364,7 +366,7 @@ class ArticlePackage(object):
                     #if not self.articles[xml_name].is_rolling_pass and not self.articles[xml_name].is_ahead:
                     if int_previous_lpage is not None:
                         if int_previous_lpage > int_fpage:
-                            status = 'FATAL ERROR' if not self.articles[xml_name].is_rolling_pass and not self.articles[xml_name].is_ahead else 'WARNING'
+                            status = 'FATAL ERROR' if not self.articles[xml_name].is_epub_only else 'WARNING'
                             msg.append(_('Invalid pages') + ': ' + _('check lpage={lpage} ({previous_article}) and fpage={fpage} ({xml_name})').format(previous_article=previous_xmlname, xml_name=xml_name, lpage=previous_lpage, fpage=fpage))
                         elif int_previous_lpage == int_fpage:
                             status = 'WARNING'
@@ -464,13 +466,17 @@ class ArticlesPkgReport(object):
         critical = 0
         equal_data = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
         unique_data = ['order', 'doi', 'elocation id', ]
-        if not self.package.is_processed_in_batches:
-            unique_data += ['fpage-lpage-seq', 'lpage']
-        error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq': 'FATAL ERROR', 'lpage': 'WARNING'}
+
+        error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq': 'FATAL ERROR'}
         required_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
 
         if not validate_order:
             error_level_for_unique['order'] = 'WARNING'
+
+        if self.package.is_processed_in_batches:
+            error_level_for_unique['fpage-lpage-seq'] = 'WARNING'
+        else:
+            unique_data += ['fpage-lpage-seq']
 
         invalid_xml_name_items, pkg_metadata, missing_data = self.package.journal_and_issue_metadata(equal_data + unique_data, required_data)
 
@@ -485,8 +491,12 @@ class ArticlesPkgReport(object):
 
         for label in equal_data:
             if len(pkg_metadata[label]) > 1:
+                _status = 'FATAL ERROR'
+                if label == 'issue pub date':
+                    if self.package.is_rolling_pass:
+                        _status = 'WARNING'
                 _m = _('same value for %s is required for all the documents in the package') % (label)
-                part = html_reports.p_message('FATAL ERROR: ' + _m + '.')
+                part = html_reports.p_message(_status + ': ' + _m + '.')
                 for found_value, xml_files in pkg_metadata[label].items():
                     part += html_reports.format_list(_('found') + ' ' + label + '="' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
                 r += part
@@ -506,7 +516,7 @@ class ArticlesPkgReport(object):
                     for found_value, xml_files in duplicated.items():
                         part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
                     r += part
-                
+
         issue_common_data = ''
 
         for label in equal_data:
