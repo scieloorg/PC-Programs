@@ -6,6 +6,8 @@ import urllib2
 import json
 
 import utils
+import attributes
+
 
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 
@@ -311,3 +313,27 @@ def doi_journal_and_article(doi_query_result):
             if not isinstance(article_titles, list):
                 article_titles = [article_titles]
     return (journal_titles, article_titles)
+
+
+def validate_article_type_and_section(article_type, article_section):
+    #DOCTOPIC_IN_USE
+    results = []
+    _sectitle = attributes.normalize_section_title(article_section)
+    _article_type = attributes.normalize_section_title(article_type)
+    if not _article_type in _sectitle:
+        # article_type vs sectitle
+        rate = compare_article_type_and_section(_article_type, _sectitle)
+        # attributes.DOCTOPIC_IN_USE vs sectitle
+        rate2, similars = utils.most_similar(utils.similarity(attributes.DOCTOPIC_IN_USE, _sectitle))
+
+        if rate < 0.6 and rate2 < 0.6:
+            results.append(('@article-type', 'WARNING', _('Check if ') + article_type + _(' is a valid value for') + ' @article-type. (section title=' + _sectitle + ')'))
+        else:
+            if rate2 > rate:
+                if not article_type in similars:
+                    results.append(('@article-type', 'ERROR', _('Check @article-type. Maybe it should be ') + _(' or ').join(similars) + ' ' + _('instead of') + ' ' + article_type + '.'))
+    return results
+
+
+def compare_article_type_and_section(article_type, article_section):
+    return utils.how_similar(article_section, article_type.replace('-', ' '))

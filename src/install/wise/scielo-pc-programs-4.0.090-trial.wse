@@ -34,7 +34,7 @@ item: Global
   Version Company=SciELO
   Distribute Path=C:\2007\scielo
   Distribute Type=1
-  Step View=All
+  Step View=Properties
   Variable Name1=_SYS_
   Variable Default1=C:\WINNT\system32
   Variable Flags1=00001000
@@ -5132,11 +5132,6 @@ item: Install File
   Source=c:\src\scielo\bin\config\tables\en\part.ini
   Destination=%PROGDIR%\bin\config\tables\en\part.ini
   Flags=0000000010000010
-end
-item: Install File
-  Source=c:\src\scielo\bin\config\Tabctl32.ocx
-  Destination=%SYS32%\Tabctl32.ocx
-  Flags=0001000010000011
 end
 item: Install File
   Source=c:\src\scielo\bin\config\Tabctl32.ocx

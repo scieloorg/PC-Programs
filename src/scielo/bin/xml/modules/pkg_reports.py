@@ -17,6 +17,279 @@ import fs_utils
 log_items = []
 
 
+class PkgManager(object):
+
+    def __init__(self, pkg_articles, issue_models, issue_files):
+        self.pkg_articles = pkg_articles
+        self.issue_models = issue_models
+        self.issue_files = issue_files
+        self._pkg_issue_data_validations = None
+        self._blocking_errors = None
+        self.pkg_conversion_results = None
+
+    @property
+    def blocking_errors(self):
+        if self._blocking_errors is None:
+            if self.pkg_issue_data_validations is not None:
+                self._blocking_errors = self.pkg_issue_data_validations.fatal_errors
+        return self._blocking_errors
+
+    @property
+    def pkg_issue_data_validations(self):
+        if self._pkg_issue_data_validations is None:
+            self._pkg_issue_data_validations = pkg_reports.PackageValidationsResults()
+            for xml_name, article in self.pkg_articles.items():
+                self.pkg_articles[xml_name].section_code, issue_validations_msg = self.validate_article_issue_data(article)
+                self._pkg_issue_data_validations.add(xml_name, pkg_reports.ValidationsResults(issue_validations_msg))
+        return self._pkg_issue_data_validations
+
+    def validate_article_issue_data(self, article):
+        results = []
+        section_code = None
+        if article.tree is not None:
+            validations = []
+            validations.append((_('journal title'), article.journal_title, self.issue_models.issue.journal_title))
+            validations.append((_('journal id NLM'), article.journal_id_nlm_ta, self.issue_models.issue.journal_id_nlm_ta))
+
+            a_issn = article.journal_issns.get('epub') if article.journal_issns is not None else None
+            if a_issn is not None:
+                i_issn = self.issue_models.issue.journal_issns.get('epub') if self.issue_models.issue.journal_issns is not None else None
+                validations.append((_('journal e-ISSN'), a_issn, i_issn))
+
+            a_issn = article.journal_issns.get('ppub') if article.journal_issns is not None else None
+            if a_issn is not None:
+                i_issn = self.issue_models.issue.journal_issns.get('ppub') if self.issue_models.issue.journal_issns is not None else None
+                validations.append((_('journal print ISSN'), a_issn, i_issn))
+
+            validations.append((_('issue label'), article.issue_label, self.issue_models.issue.issue_label))
+            a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
+            i_year = self.issue_models.issue.dateiso[0:4] if self.issue_models.issue.dateiso is not None else ''
+            if self.issue_models.issue.dateiso is not None:
+                _status = 'FATAL ERROR'
+                if self.issue_models.issue.dateiso.endswith('0000'):
+                    _status = 'WARNING'
+            validations.append((_('issue pub-date'), a_year, i_year))
+
+            # check issue data
+            for label, article_data, issue_data in validations:
+                if article_data is None:
+                    article_data = 'None'
+                elif isinstance(article_data, list):
+                    article_data = ' | '.join(article_data)
+                if issue_data is None:
+                    issue_data = 'None'
+                elif isinstance(issue_data, list):
+                    issue_data = ' | '.join(issue_data)
+                if not article_data == issue_data:
+                    _msg = _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"'
+                    if issue_data == 'None':
+                        status = 'ERROR'
+                    else:
+                        if label == 'issue pub-date':
+                            status = _status
+                        else:
+                            status = 'FATAL ERROR'
+                    results.append((label, status, _msg))
+
+            validations = []
+            validations.append(('publisher', article.publisher_name, self.issue_models.issue.publisher_name))
+            for label, article_data, issue_data in validations:
+                if article_data is None:
+                    article_data = 'None'
+                elif isinstance(article_data, list):
+                    article_data = ' | '.join(article_data)
+                if issue_data is None:
+                    issue_data = 'None'
+                elif isinstance(issue_data, list):
+                    issue_data = ' | '.join(issue_data)
+                if utils.how_similar(article_data, issue_data) < 0.8:
+                    _msg = _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"'
+                    results.append((label, 'ERROR', _msg))
+
+            # license
+            if self.issue_models.issue.license is None:
+                results.append(('license', 'ERROR', _('Unable to identify issue license')))
+            elif article.license_url is not None:
+                if not '/' + self.issue_models.issue.license.lower() in article.license_url.lower():
+                    results.append(('license', 'ERROR', _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + self.issue_models.issue.license + '"'))
+                else:
+                    results.append(('license', 'INFO', _('In article: "') + article.license_url + _('" and in issue: "') + self.issue_models.issue.license + '"'))
+
+            # section
+            section_code, matched_rate, fixed_sectitle = self.issue_models.most_similar_section_code(article.toc_section)
+            if matched_rate != 1:
+                if not article.is_ahead:
+                    registered_sections = _('Registered sections') + ':\n' + '; '.join(self.issue_models.section_titles)
+                    if section_code is None:
+                        results.append(('section', 'ERROR', article.toc_section + _(' is not a registered section.') + ' ' + registered_sections))
+                    else:
+                        results.append(('section', 'WARNING', _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article.toc_section + '")' + ' ' + registered_sections))
+            # @article-type
+            _sectitle = article.toc_section if fixed_sectitle is None else fixed_sectitle
+            for item in article_utils.validate_article_type_and_section(article.article_type, _sectitle):
+                results.append(item)
+        return (section_code, html_reports.tag('div', html_reports.validations_table(results)))
+
+    def get_complete_issue_items(self, registered_articles, pkg_path=None, base_source_path=None):
+        #actions = {'add': [], 'skip-update': [], 'update': [], '-': [], 'changed order': []}
+        self.xml_doc_actions = {}
+        self.complete_issue_items = {}
+        for name in registered_articles.keys():
+            if not name in self.pkg_articles.keys():
+                self.xml_doc_actions[name] = '-'
+                self.complete_issue_items[name] = registered_articles[name]
+        self.changed_orders = {}
+        for name, article in self.pkg_articles.items():
+            action = 'add'
+            if name in registered_articles.keys():
+                action = 'update'
+                if pkg_path is not None and base_source_path is not None:
+                    if fs_utils.read_file(base_source_path + '/' + name + '.xml') == fs_utils.read_file(pkg_path + '/' + name + '.xml'):
+                        action = 'skip-update'
+                if action == 'update':
+                    if registered_articles[name].order != self.pkg_articles[name].order:
+                        self.changed_orders[name] = (registered_articles[name].order, self.pkg_articles[name].order)
+            self.xml_doc_actions[name] = action
+            if action == 'skip-update':
+                self.complete_issue_items[name] = registered_articles[name]
+            else:
+                self.complete_issue_items[name] = self.pkg_articles[name]
+
+    def complete_issue_items_report(self, validate_order):
+        unmatched_orders_errors = ''
+        if self.changed_orders is not None:
+            unmatched_orders_errors = ''.join([html_reports.p_message('WARNING: ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order))) for name, order in self.changed_orders.items()])
+        self.changed_orders_validations = ValidationsResults(unmatched_orders_errors)
+
+        self.toc_critical_errors, toc_report = self.consistency_report(validate_order)
+        self.toc_validations = ValidationsResults(toc_report)
+        # self.changed_orders_validations.message + self.toc_validations.message
+
+    @property
+    def is_processed_in_batches(self):
+        return any([self.is_aop_issue, self.is_rolling_pass])
+
+    @property
+    def is_aop_issue(self):
+        return any([a.is_ahead for a in self.pkg_articles.values()])
+
+    @property
+    def is_rolling_pass(self):
+        _is_rolling_pass = False
+        if not self.is_aop_issue:
+            epub_dates = list(set([a.epub_dateiso for a in self.pkg_articles.values() if a.epub_dateiso is not None]))
+
+            epub_ppub_dates = [a.epub_ppub_dateiso for a in self.pkg_articles.values() if a.epub_ppub_dateiso is not None]
+            collection_dates = [a.collection_dateiso for a in self.pkg_articles.values() if a.collection_dateiso is not None]
+            other_dates = list(set(epub_ppub_dates + collection_dates))
+            if len(epub_dates) > 0:
+                if len(other_dates) == 0:
+                    _is_rolling_pass = True
+                elif len(other_dates) > 1:
+                    _is_rolling_pass = True
+                elif len([None for a in self.articles.values() if a.collection_dateiso is None]) > 0:
+                    _is_rolling_pass = True
+        return _is_rolling_pass
+
+    def journal_and_issue_metadata(self, labels, required_data):
+        invalid_xml_name_items = []
+        pkg_metadata = {label: {} for label in labels}
+        missing_data = {}
+
+        n = '/' + str(len(self.articles))
+        index = 0
+
+        utils.display_message('\n')
+        utils.display_message('Package report')
+        for xml_name, article in self.pkg_articles.items():
+            index += 1
+            item_label = str(index) + n + ': ' + xml_name
+            utils.display_message(item_label)
+
+            if article.tree is None:
+                invalid_xml_name_items.append(xml_name)
+            else:
+                art_data = article.summary()
+                for label in labels:
+                    if art_data[label] is None:
+                        if label in required_data:
+                            if not label in missing_data.keys():
+                                missing_data[label] = []
+                            missing_data[label].append(xml_name)
+                    else:
+                        pkg_metadata[label] = article_utils.add_new_value_to_index(pkg_metadata[label], art_data[label], xml_name)
+        return (invalid_xml_name_items, pkg_metadata, missing_data)
+
+    def consistency_report(self, validate_order):
+        critical = 0
+        equal_data = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
+        unique_data = ['order', 'doi', 'elocation id', ]
+
+        error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq': 'FATAL ERROR'}
+        required_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
+
+        if not validate_order:
+            error_level_for_unique['order'] = 'WARNING'
+
+        if self.is_processed_in_batches:
+            error_level_for_unique['fpage-lpage-seq'] = 'WARNING'
+        else:
+            unique_data += ['fpage-lpage-seq']
+
+        invalid_xml_name_items, pkg_metadata, missing_data = self.journal_and_issue_metadata(equal_data + unique_data, required_data)
+
+        r = ''
+
+        if len(invalid_xml_name_items) > 0:
+            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Invalid XML files.')))
+            r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid_xml_name_items, 'issue-problem'))
+        for label, items in missing_data.items():
+            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Missing') + ' ' + label + ' ' + _('in') + ':'))
+            r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
+
+        for label in equal_data:
+            if len(pkg_metadata[label]) > 1:
+                _status = 'FATAL ERROR'
+                if label == 'issue pub date':
+                    if self.package.is_rolling_pass:
+                        _status = 'WARNING'
+                _m = _('same value for %s is required for all the documents in the package') % (label)
+                part = html_reports.p_message(_status + ': ' + _m + '.')
+                for found_value, xml_files in pkg_metadata[label].items():
+                    part += html_reports.format_list(_('found') + ' ' + label + '="' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
+                r += part
+
+        for label in unique_data:
+            if len(pkg_metadata[label]) > 0 and len(pkg_metadata[label]) != len(self.package.articles):
+                duplicated = {}
+                for found_value, xml_files in pkg_metadata[label].items():
+                    if len(xml_files) > 1:
+                        duplicated[found_value] = xml_files
+
+                if len(duplicated) > 0:
+                    _m = _(': unique value of %s is required for all the documents in the package') % (label)
+                    part = html_reports.p_message(error_level_for_unique[label] + _m)
+                    if error_level_for_unique[label] == 'FATAL ERROR':
+                        critical += 1
+                    for found_value, xml_files in duplicated.items():
+                        part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
+                    r += part
+
+        issue_common_data = ''
+
+        for label in equal_data:
+            message = ''
+            if len(pkg_metadata[label].items()) == 1:
+                issue_common_data += html_reports.display_labeled_value(label, pkg_metadata[label].keys()[0])
+            else:
+                issue_common_data += html_reports.format_list(label, 'ol', pkg_metadata[label].keys())
+                #issue_common_data += html_reports.p_message('FATAL ERROR: ' + _('Unique value expected for ') + label)
+
+        pages = html_reports.tag('h2', 'Pages Report') + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.package.pages(), table_style='validation', row_style='status'))
+
+        return (critical, html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages') + pages)
+
+
 class PackageValidationsResults(object):
 
     def __init__(self, validations_results_items=None):
@@ -865,3 +1138,5 @@ def join_reports(reports, errors_only=False):
                 _reports += html_reports.tag('h4', xml_name)
                 _reports += results.message
     return _reports
+
+

@@ -61,119 +61,6 @@ class ConverterEnv(object):
         self.org_manager = None
 
 
-class PkgManager(object):
-
-    def __init__(self, issue_models, pkg_articles):
-        self.pkg_articles = pkg_articles
-        self.issue_models = issue_models
-        self._pkg_issue_data_validations = None
-        self._blocking_errors = None
-        self.pkg_conversion_results = None
-
-    @property
-    def blocking_errors(self):
-        if self._blocking_errors is None:
-            if self.pkg_issue_data_validations is not None:
-                self._blocking_errors = self.pkg_issue_data_validations.fatal_errors
-        return self._blocking_errors
-
-    @property
-    def pkg_issue_data_validations(self):
-        if self._pkg_issue_data_validations is None:
-            self._pkg_issue_data_validations = pkg_reports.PackageValidationsResults()
-            for xml_name, article in self.pkg_articles.items():
-                self.pkg_articles[xml_name].section_code, issue_validations_msg = self.validate_article_issue_data(article)
-                self._pkg_issue_data_validations.add(xml_name, pkg_reports.ValidationsResults(issue_validations_msg))
-        return self._pkg_issue_data_validations
-
-    def validate_article_issue_data(self, article):
-        results = []
-        section_code = None
-        if article.tree is not None:
-            validations = []
-            validations.append((_('journal title'), article.journal_title, self.issue_models.issue.journal_title))
-            validations.append((_('journal id NLM'), article.journal_id_nlm_ta, self.issue_models.issue.journal_id_nlm_ta))
-
-            a_issn = article.journal_issns.get('epub') if article.journal_issns is not None else None
-            if a_issn is not None:
-                i_issn = self.issue_models.issue.journal_issns.get('epub') if self.issue_models.issue.journal_issns is not None else None
-                validations.append((_('journal e-ISSN'), a_issn, i_issn))
-
-            a_issn = article.journal_issns.get('ppub') if article.journal_issns is not None else None
-            if a_issn is not None:
-                i_issn = self.issue_models.issue.journal_issns.get('ppub') if self.issue_models.issue.journal_issns is not None else None
-                validations.append((_('journal print ISSN'), a_issn, i_issn))
-
-            validations.append((_('issue label'), article.issue_label, self.issue_models.issue.issue_label))
-            a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
-            i_year = self.issue_models.issue.dateiso[0:4] if self.issue_models.issue.dateiso is not None else ''
-            if self.issue_models.issue.dateiso is not None:
-                _status = 'FATAL ERROR'
-                if self.issue_models.issue.dateiso.endswith('0000'):
-                    _status = 'WARNING'
-            validations.append((_('issue pub-date'), a_year, i_year))
-
-            # check issue data
-            for label, article_data, issue_data in validations:
-                if article_data is None:
-                    article_data = 'None'
-                elif isinstance(article_data, list):
-                    article_data = ' | '.join(article_data)
-                if issue_data is None:
-                    issue_data = 'None'
-                elif isinstance(issue_data, list):
-                    issue_data = ' | '.join(issue_data)
-                if not article_data == issue_data:
-                    _msg = _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"'
-                    if issue_data == 'None':
-                        status = 'ERROR'
-                    else:
-                        if label == 'issue pub-date':
-                            status = _status
-                        else:
-                            status = 'FATAL ERROR'
-                    results.append((label, status, _msg))
-
-            validations = []
-            validations.append(('publisher', article.publisher_name, self.issue_models.issue.publisher_name))
-            for label, article_data, issue_data in validations:
-                if article_data is None:
-                    article_data = 'None'
-                elif isinstance(article_data, list):
-                    article_data = ' | '.join(article_data)
-                if issue_data is None:
-                    issue_data = 'None'
-                elif isinstance(issue_data, list):
-                    issue_data = ' | '.join(issue_data)
-                if utils.how_similar(article_data, issue_data) < 0.8:
-                    _msg = _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"'
-                    results.append((label, 'ERROR', _msg))
-
-            # license
-            if self.issue_models.issue.license is None:
-                results.append(('license', 'ERROR', _('Unable to identify issue license')))
-            elif article.license_url is not None:
-                if not '/' + self.issue_models.issue.license.lower() in article.license_url.lower():
-                    results.append(('license', 'ERROR', _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + self.issue_models.issue.license + '"'))
-                else:
-                    results.append(('license', 'INFO', _('In article: "') + article.license_url + _('" and in issue: "') + self.issue_models.issue.license + '"'))
-
-            # section
-            section_code, matched_rate, fixed_sectitle = self.issue_models.most_similar_section_code(article.toc_section)
-            if matched_rate != 1:
-                if not article.is_ahead:
-                    registered_sections = _('Registered sections') + ':\n' + '; '.join(self.issue_models.section_titles)
-                    if section_code is None:
-                        results.append(('section', 'ERROR', article.toc_section + _(' is not a registered section.') + ' ' + registered_sections))
-                    else:
-                        results.append(('section', 'WARNING', _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article.toc_section + '")' + ' ' + registered_sections))
-            # @article-type
-            _sectitle = article.toc_section if fixed_sectitle is None else fixed_sectitle
-            for item in validate_article_type_and_section(article.article_type, _sectitle):
-                results.append(item)
-        return (section_code, html_reports.tag('div', html_reports.validations_table(results)))
-
-
 def register_log(message):
     if not '<' in message:
         message = html_reports.p_message(message)
@@ -467,7 +354,7 @@ def convert_package(src_path):
         #utils.debugging('acron_issue_label')
         #utils.debugging(acron_issue_label)
         #utils.debugging('get_registered_articles')
-        pkg_manager = PkgManager(issue_models, pkg_articles)
+        pkg_manager = pkg_reports.PkgManager(pkg_articles, issue_models, issue_files)
 
         if pkg_manager.pkg_issue_data_validations is not None:
             if pkg_manager.pkg_issue_data_validations.fatal_errors > 0:
@@ -475,7 +362,10 @@ def convert_package(src_path):
 
         previous_registered_articles = get_registered_articles(issue_files)
 
-        #utils.debugging('get_complete_issue_items')
+        #if converter_env.skip_identical_xml:
+        #   pkg_manager.get_complete_issue_items(registered_articles, pkg_path, base_source_path=issue_files.base_source_path)
+        #else:
+        #   pkg_manager.get_complete_issue_items(registered_articles)
         complete_issue_items, xml_doc_actions, unmatched_orders = get_complete_issue_items(issue_files, pkg_path, previous_registered_articles, pkg_articles)
 
         #utils.debugging('display_status_before_xc')
@@ -904,30 +794,6 @@ def transfer_report_files(acron, issue_id, local_web_app_path, user, server, rem
         source_path = local_web_app_path + folder + issue_id_path
         xc.run_remote_mkdirs(user, server, dest_path)
         xc.run_rsync(source_path, user, server, dest_path)
-
-
-def validate_article_type_and_section(article_type, article_section):
-    #DOCTOPIC_IN_USE
-    results = []
-    _sectitle = attributes.normalize_section_title(article_section)
-    _article_type = attributes.normalize_section_title(article_type)
-    if not _article_type in _sectitle:
-        # article_type vs sectitle
-        rate = compare_article_type_and_section(_article_type, _sectitle)
-        # attributes.DOCTOPIC_IN_USE vs sectitle
-        rate2, similars = utils.most_similar(utils.similarity(attributes.DOCTOPIC_IN_USE, _sectitle))
-
-        if rate < 0.6 and rate2 < 0.6:
-            results.append(('@article-type', 'WARNING', _('Check if ') + article_type + _(' is a valid value for') + ' @article-type. (section title=' + _sectitle + ')'))
-        else:
-            if rate2 > rate:
-                if not article_type in similars:
-                    results.append(('@article-type', 'ERROR', _('Check @article-type. Maybe it should be ') + _(' or ').join(similars) + ' ' + _('instead of') + ' ' + article_type + '.'))
-    return results
-
-
-def compare_article_type_and_section(article_type, article_section):
-    return utils.how_similar(article_section, article_type.replace('-', ' '))
 
 
 def queue_packages(download_path, temp_path, queue_path, archive_path):
