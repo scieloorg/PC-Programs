@@ -5595,7 +5595,7 @@ item: Install File
   Destination=%PROGDIR%\bin\markup\app_modules\refIdentifier\Readme.txt
   Flags=0000000010000010
 end
-item: Install File
+remarked item: Install File
   Source=c:\src\scielo\bin\markup_xml\automata.dll
   Destination=%SYS32%\automata.dll
   Flags=0001000010000010
