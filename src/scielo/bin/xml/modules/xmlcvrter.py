@@ -19,8 +19,6 @@ import xpmaker
 import xc
 import xc_config
 
-import attributes
-
 
 converter_report_lines = []
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -51,14 +49,10 @@ class ConverterEnv(object):
 
     def __init__(self):
         self.version = None
-        self.db_issue = None
-        self.db_article = None
-        self.db_title = None
-        self.db_isis = None
         self.local_web_app_path = None
         self.serial_path = None
         self.is_windows = None
-        self.org_manager = None
+        self.issue_manager = None
 
 
 def register_log(message):
@@ -69,7 +63,7 @@ def register_log(message):
 
 def find_i_record(issue_label, print_issn, e_issn):
     i_record = None
-    issues_records = converter_env.db_issue.search(issue_label, print_issn, e_issn)
+    issues_records = converter_env.issues_manager.db_issue.search(issue_label, print_issn, e_issn)
     if len(issues_records) > 0:
         i_record = issues_records[0]
     return i_record
@@ -236,7 +230,6 @@ def convert_package(src_path):
 
     xml_filenames, pkg_articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
 
-    issue_manager = xc_models.IssueManager(converter_env.db_title, converter_env.db_issue)
     pkg_manager = pkg_reports.PkgManager(pkg_articles)
     pkg_manager.is_db_generation = True
 
@@ -255,7 +248,7 @@ def convert_package(src_path):
         pkg_manager.issue_files = issue_manager.get_issue_files(pkg_manager.issue_models, pkg_path)
         acron_issue_label = pkg_manager.issue_models.issue.acron + ' ' + pkg_manager.issue_models.issue.issue_label
 
-        previous_registered_articles = get_registered_articles(issue_files)
+        previous_registered_articles = get_registered_articles(pkg_manager.issue_files)
 
         if converter_env.skip_identical_xml:
             pkg_manager.select_articles_to_convert(previous_registered_articles, pkg_path, base_source_path=issue_files.base_source_path)
@@ -270,7 +263,7 @@ def convert_package(src_path):
 
         if len(pkg_manager.selected_articles) > 0:
 
-            pkg_manager.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, False)
+            pkg_manager.validate_articles_pkg_xml_and_data(converter_env.issues_manager.db_article.org_manager, doc_file_info_items, dtd_files, False)
             pkg_quality_fatal_errors = pkg_manager.pkg_xml_structure_validations.fatal_errors + pkg_manager.pkg_xml_content_validations.fatal_errors
 
             scilista_item, pkg_manager.pkg_conversion_results, conversion_status, aop_status = convert_articles(issue_files, pkg_manager, previous_registered_articles, pkg_path)
@@ -280,7 +273,7 @@ def convert_package(src_path):
                         ex_aop_items = []
 
                         for _aop in aop_status.get('updated bases'):
-                            ex_aop_items.append(issue_models.issue.acron + ' ' + _aop)
+                            ex_aop_items.append(issue_manager.issue_models.issue.acron + ' ' + _aop)
 
             report_components['conversion-report'] = pkg_manager.pkg_conversion_results.report()
 
@@ -434,7 +427,7 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
         year = os.path.basename(db_filename)[0:4]
         i_ahead_records[year] = find_i_record(year + 'nahead', pkg_manager.issue_models.issue.issn_id, None)
 
-    ahead_manager = xc_models.AheadManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
+    ahead_manager = xc_models.AheadManager(converter_env.issues_manager.db_isis, issue_files.journal_files, i_ahead_records)
     aop_status = None
     if ahead_manager.journal_has_aop():
         aop_status = {'deleted ex-aop': [], 'not deleted ex-aop': []}
@@ -476,7 +469,7 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
                 creation_date = None if not xml_name in registered_articles.keys() else registered_articles[xml_name].creation_date
 
                 #utils.debugging('convert_articles: create_id_file')
-                saved = converter_env.db_article.create_id_file(pkg_manager.issue_models.record, article, article_files, creation_date)
+                saved = converter_env.issues_manager.db_article.create_id_file(pkg_manager.issue_models.record, article, article_files, creation_date)
                 if saved:
                     #utils.debugging('convert_articles: unmatched_orders')
                     if xml_name in pkg_manager.changed_orders.keys():
@@ -524,11 +517,11 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
     scilista_item = None
     #utils.debugging('convert_articles: conclusion')
     if pkg_conversion_results.fatal_errors == 0:
-        saved = converter_env.db_article.finish_conversion(pkg_manager.issue_models.record, issue_files, pkg_path)
+        saved = converter_env.issues_manager.db_article.finish_conversion(pkg_manager.issue_models.record, issue_files, pkg_path)
         if saved > 0:
             scilista_item = pkg_manager.issue_models.issue.acron + ' ' + pkg_manager.issue_models.issue.issue_label
             if not converter_env.is_windows:
-                converter_env.db_article.generate_windows_version(issue_files)
+                converter_env.issues_manager.db_article.generate_windows_version(issue_files)
     #utils.debugging('convert_articles: fim')
     return (scilista_item, pkg_conversion_results, conversion_status, aop_status)
 
@@ -571,7 +564,7 @@ def aop_message(article, ahead, status):
 
 
 def get_registered_articles(issue_files):
-    registered_issue_models, registered_articles = converter_env.db_article.registered_items(issue_files)
+    registered_issue_models, registered_articles = converter_env.issues_manager.db_article.registered_items(issue_files)
     return registered_articles
 
 
@@ -882,22 +875,19 @@ def prepare_env(config):
     if converter_env is None:
         converter_env = ConverterEnv()
 
-    converter_env.db_isis = dbm_isis.IsisDAO(dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660)))
-
-    update_db_copy(config.issue_db, config.issue_db_copy, CURRENT_PATH + '/issue.fst')
-    converter_env.db_isis.update_indexes(config.issue_db_copy, config.issue_db_copy + '.fst')
-    converter_env.db_issue = xc_models.IssueDAO(converter_env.db_isis, config.issue_db_copy)
-
-    update_db_copy(config.title_db, config.title_db_copy, CURRENT_PATH + '/title.fst')
-    converter_env.db_isis.update_indexes(config.title_db_copy, config.title_db_copy + '.fst')
-    converter_env.db_title = xc_models.TitleDAO(converter_env.db_isis, config.title_db_copy)
-
     import institutions_service
 
     org_manager = institutions_service.OrgManager()
     org_manager.load()
 
-    converter_env.db_article = xc_models.ArticleDAO(converter_env.db_isis, org_manager)
+    db_isis = dbm_isis.IsisDAO(dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660)))
+    converter_env.issues_manager = xc_models.IssuesManager(db_isis, config.title_db_copy, config.issue_db_copy, org_manager)
+
+    update_db_copy(config.issue_db, config.issue_db_copy, CURRENT_PATH + '/issue.fst')
+    converter_env.issues_manager.db_isis.update_indexes(config.issue_db_copy, config.issue_db_copy + '.fst')
+
+    update_db_copy(config.title_db, config.title_db_copy, CURRENT_PATH + '/title.fst')
+    converter_env.issues_manager.db_isis.update_indexes(config.title_db_copy, config.title_db_copy + '.fst')
 
     converter_env.local_web_app_path = config.local_web_app_path
     converter_env.serial_path = config.serial_path

@@ -68,8 +68,12 @@ class ArticleFiles(object):
     def __init__(self, issue_files, order, xml_name):
         self.issue_files = issue_files
         self.order = order
-        self.filename = xml_name if xml_name.endswith('.xml') else xml_name + '.xml'
-        self.xml_name = xml_name.replace('.xml', '')
+        if xml_name is None:
+            self.filename = None
+            self.xml_name = None
+        else:
+            self.filename = xml_name if xml_name.endswith('.xml') else xml_name + '.xml'
+            self.xml_name = xml_name.replace('.xml', '')
 
     @property
     def id_filename(self):
@@ -89,6 +93,17 @@ class IssueFiles(object):
         self.web_path = web_path
         self.create_folders()
         self.move_old_id_folder()
+        self._articles_files = None
+
+    @property
+    def articles_files(self):
+        if self._articles_files is None:
+            self._articles_files = {}
+            for item in os.listdir(self.id_path):
+                if os.path.isfile(self.id_path + '/' + item) and item.endswith('.id'):
+                    order = item.replace('.id', '')
+                    self._articles_files[order] = ArticlesFiles(self, order, None)
+        return self._articles_files
 
     def create_folders(self):
         for path in [self.id_path, self.base_path, self.base_reports_path, self.base_source_path]:
@@ -242,6 +257,10 @@ class JournalFiles(object):
         self.acron = acron
         self.journal_path = serial_path + '/' + acron
         self._issues_files = None
+        self._aop_issues_files = None
+        self._ex_aop_issues_files = None
+        self._regular_issues_files = None
+        self._pr_issues_files = None
         self.setup()
 
     def setup(self):
@@ -262,9 +281,32 @@ class JournalFiles(object):
         return len(self.aop_issue_files) > 0
 
     @property
+    def pr_issues_files(self):
+        if self._pr_issues_files is None:
+            if self.issue_files is not None:
+                self._pr_issues_files = {k:v for k, v in self.issues_files.items() if k.endswith('pr') and not k.startswith('ex-')}
+        return self._pr_issues_files
+
+    @property
+    def regular_issues_files(self):
+        if self._regular_issues_files is None:
+            if self.issue_files is not None:
+                self._regular_issues_files = {k:v for k, v in self.issues_files.items() if k is not self.aop_issue_files.keys() and k is not self.ex_aop_issue_files.keys() and k is not self.pr_issue_files.keys()}
+        return self._regular_issues_files
+
+    @property
     def aop_issue_files(self):
-        if self.issues_files is not None:
-            return {k:v for k, v in self.issues_files.items() if 'ahead' in k and not 'ex-' in k}
+        if self._aop_issue_files is None:
+            if self.issues_files is not None:
+                self._aop_issue_files = {k:v for k, v in self.issues_files.items() if k.endswith('ahead') and not k.startswith('ex-')}
+        return self._aop_issue_files
+
+    @property
+    def ex_aop_issue_files(self):
+        if self._ex_aop_issue_files is None:
+            if self.issues_files is not None:
+                self._ex_aop_issue_files = {k:v for k, v in self.issues_files.items() if k.endswith('ahead') and k.startswith('ex-')}
+        return self._ex_aop_issue_files
 
     def ahead_base(self, year):
         path = self.journal_path + '/' + year + 'nahead/base/' + year + 'nahead'

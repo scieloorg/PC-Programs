@@ -212,7 +212,8 @@ class RegisteredArticle(object):
 
     @property
     def order(self):
-        return self.article_records[1]['121']
+        _order = '0'*5 + self.article_records[1]['121']
+        return _order[-5:]
 
     @property
     def toc_section(self):
@@ -661,7 +662,8 @@ class RegisteredAhead(object):
 
     @property
     def order(self):
-        return self.record.get('121', '00000')
+        _order = '0'*5 + self.record.get('121', '00000')
+        return _order[-5:]
 
     @property
     def ahead_pid(self):
@@ -804,7 +806,11 @@ class ArticleDAO(object):
                 doc.creation_date_display = registered_doc.creation_date_display
                 doc.creation_date = registered_doc.creation_date
                 doc.last_update = registered_doc.last_update
-                articles[xml_name] = doc
+                doc.order = registered_doc.order
+                doc.previous_pid = registered_doc.previous_pid
+            else:
+                doc = None
+            articles[xml_name] = doc
 
         issue_models = IssueModels(i) if i is not None else None
         return (issue_models, articles)
@@ -814,6 +820,69 @@ class ArticleDAO(object):
             os.makedirs(issue_files.windows_base_path)
         self.dao.cisis.mst2iso(issue_files.base, issue_files.windows_base + '.iso')
         self.dao.cisis.crunchmf(issue_files.base, issue_files.windows_base)
+
+
+class ArticleDB(object):
+
+    def __init__(self, dao, issue_files):
+        self.issue_files = issue_files
+        self.dao = dao
+        self._registered_articles = None
+        self.indexed_by_doi = {}
+        self.indexed_by_order = {}
+
+    def registered_articles(self, issue_record=None):
+        if self._registered_articles is None:
+
+            if not os.path.isdir(self.issue_files.id_path):
+                os.makedirs(self.issue_files.id_path)
+
+            i_record = None
+            self._registered_articles = None
+            records = self.dao.get_records(self.issue_files.base, expr=None)
+            if len(records) > 0:
+                i_record, self._registered_articles = IssueArticlesRecords(records).articles()
+
+                self.issue_files._articles_files = {}
+
+                for name, registered_article in self._registered_articles.items():
+                    article_files = ArticleFiles(issue_files, registered_article.order, registered_article.xml_name)
+                    self.issue_files._articles_files[registered_article.order] = article_files
+
+                    if registered_article.doi is not None:
+                        if not registered_article.doi in self.indexed_by_doi.keys():
+                            self.indexed_by_doi[registered_article.doi] = []
+                        self.indexed_by_doi[registered_article.doi].append(registered_article.xml_name)
+                    if registered_article.order is not None:
+                        if not registered_article.order in self.indexed_by_order.keys():
+                            self.indexed_by_order[registered_article.order] = []
+                        self.indexed_by_order[registered_article.order].append(registered_article.xml_name)
+
+                    if not os.path.isfile(article_files.id_filename):
+                        self.dao.save_id(article_files.id_filename, registered_article.article_records)
+
+            if not os.path.isfile(self.issue_files.id_filename):
+                if i_record is None and issue_record is not None:
+                    i_record = issue_record
+                if not i_record is None:
+                    self.dao.save_id(self.issue_files.id_filename, [i_record])
+        return self._registered_articles
+
+    def find_article_by_order(self, order):
+        if self.registered_articles() is not None:
+            xml_name = self.indexed_by_order.get(order)
+            if xml_name is not None:
+                return self.registered_articles().get(xml_name)
+
+    def find_article_by_doi(self, doi):
+        if self.registered_articles() is not None:
+            xml_name = self.indexed_by_doi.get(doi)
+            if xml_name is not None:
+                return self.registered_articles().get(xml_name)
+
+    def find_article_by_name(self, name):
+        if self.registered_articles() is not None:
+            return self.registered_articles().get(name)
 
 
 class AheadManager(object):
@@ -827,8 +896,7 @@ class AheadManager(object):
 
         self.indexed_by_doi = {}
         self.indexed_by_xml_name = {}
-        self.load()
-        self.extract_id_files_from_master(i_ahead_records)
+        self._aop_db_items = None
 
     def journal_has_aop(self):
         total = 0
@@ -839,69 +907,37 @@ class AheadManager(object):
     def journal_publishes_aop(self):
         return self.journal_files.publishes_aop()
 
-    def extract_id_files_from_master(self, i_ahead_records):
-        for db_filename in self.journal_files.ahead_bases:
+    def aop_db_items(self, i_ahead_records=None):
+        if self._aop_db_items is None:
+            self._aop_db_items = {}
+            for name, aop_issue_files in self.journal_files.aop_issue_files.items():
 
-            year = os.path.basename(db_filename)[0:4]
-            id_path = self.journal_files.ahead_id_path(year)
-            i_id_filename = self.journal_files.ahead_i_id_filename(year)
-            if not os.path.isdir(id_path):
-                os.makedirs(id_path)
-            if not os.path.isfile(i_id_filename):
-                if year in i_ahead_records.keys():
-                    self.dao.save_id(i_id_filename, [i_ahead_records[year]])
-            records = self.dao.get_records(db_filename, expr=None)
-            if len(records) > 0:
-                previous = ''
-                order = None
-                r = []
-                for rec in records:
-                    if rec.get('706') == 'i':
-                        if not os.path.isfile(id_path + '/i.id'):
-                            self.dao.save_id(id_path + '/i.id', [rec])
-                    else:
-                        current = rec.get('2')
-                        if rec.get('706') == 'h':
-                            order = '00000' + rec.get('121')
-                            order = order[-5:]
-                        if previous != current:
-                            if order is not None and len(r) > 0:
-                                if not os.path.isfile(id_path + '/' + order + '.id'):
-                                    self.dao.save_id(id_path + '/' + order + '.id', r)
+                dbname = os.path.basename(aop_issue_files.base)
+                self._aop_db[dbname] = ArticleDB(self.dao, aop_issue_files)
 
-                                r = []
-                            previous = current
-                        r.append(rec)
-                if order is not None and len(r) > 0:
-                    if not os.path.isfile(id_path + '/' + order + '.id'):
-                        self.dao.save_id(id_path + '/' + order + '.id', r)
+                i_record = None
+                if i_ahead_records is not None:
+                    year = dbname[0:4]
+                    if year in i_ahead_records.keys():
+                        i_record = i_ahead_records[year]
 
-    def load(self):
-        for db_filename in self.journal_files.ahead_bases:
-            dbname = os.path.basename(db_filename)
-            self.still_ahead[dbname] = {}
-            for h_record in self.h_records(db_filename):
-                ahead = RegisteredAhead(h_record, dbname)
-                self.indexed_by_doi[ahead.doi] = ahead
-                self.indexed_by_xml_name[ahead.xml_name] = ahead
-                self.still_ahead[dbname][ahead.order] = ahead
-        utils.debugging('~'*20)
-        utils.debugging('\n'.join(self.indexed_by_doi.keys()))
-        utils.debugging('\n'.join(self.indexed_by_xml_name.keys()))
-        utils.debugging('~'*20)
+                if self._aop_db[dbname].registered_articles(i_record) is not None:
+                    for xml_name, registered_article in self._aop_db[dbname].registered_articles.items():
+
+                        registered_aop = RegisteredAhead(registered_article.article_records[1], dbname)
+                        self.indexed_by_doi[registered_aop.doi] = registered_aop.xml_name
+                        self.indexed_by_xml_name[registered_aop.xml_name] = registered_aop
+                        self.still_ahead[dbname][registered_aop.order] = registered_aop.xml_name
+        return self._aop_db_items
 
     def still_ahead_items(self):
         items = []
         for dbname in sorted(self.still_ahead.keys()):
             for order in sorted(self.still_ahead[dbname].keys()):
-                items.append(dbname + '/' + order + ' (' + self.still_ahead[dbname][order].filename + '): ' + self.still_ahead[dbname][order].article_title[0:50] + '...')
+                xml_name = self.still_ahead[dbname][order]
+                aop = self.indexed_by_xml_name[xml_name]
+                items.append(dbname + '/' + order + ' (' + aop.filename + '): ' + aop.article_title[0:50] + '...')
         return items
-
-    def h_records(self, db_filename):
-        return self._select_h(self.dao.get_records(db_filename))
-
-    def _select_h(self, records):
-        return [rec for rec in records if rec.get('706') == 'h']
 
     def name(self, db_filename):
         return os.path.basename(db_filename)
@@ -912,30 +948,24 @@ class AheadManager(object):
             r = (ahead.ahead_pid is not None)
         return r
 
-    def score(self, article, ahead, min_score):
-        rate = self.matched_rate(article, ahead)
-        if rate >= min_score:
-            r = rate
-        else:
-            r = 0
-        return r
+    def is_acceptable_rate(self, rate, min_score):
+        return rate if rate >= min_score else 0
 
-    def matched_rate(self, article, ahead):
+    def similarity_rate(self, article, ahead):
         r = 0
         if not ahead is None:
             r += how_similar(article.title, ahead.article_title)
             r += how_similar(article.first_author_surname, ahead.first_author_surname)
             r = (r * 100) / 2
-            if r < 80:
-                print((article.title, ahead.article_title))
-                print((article.first_author_surname, ahead.first_author_surname))
         return r
 
     def find_ahead(self, doi, filename):
         data = None
         aop = None
         if doi is not None:
-            aop = self.indexed_by_doi.get(doi)
+            xml_name = self.indexed_by_doi.get(doi)
+            if xml_name is not None:
+                aop = self.indexed_by_xml_name.get(xml_name)
         if aop is None:
             aop = self.indexed_by_xml_name.get(filename)
         return aop
@@ -954,13 +984,14 @@ class AheadManager(object):
                 if ahead is None:
                     status = 'new doc'
                 else:
-                    matched_rate = self.score(article, ahead, 80)
-                    if matched_rate > 0:
+                    rate = self.score(article, ahead)
+                    rate = self.is_acceptable_rate(rate, 80)
+                    if rate > 0:
                         if ahead.ahead_pid is None:
                             status = 'aop missing PID'
                         else:
                             status = 'matched aop'
-                            if matched_rate != 1:
+                            if rate != 1:
                                 status = 'partially matched aop'
                     else:
                         status = 'unmatched aop'
@@ -1097,11 +1128,13 @@ def normalized_affiliations(org_manager, affiliations):
     return affs
 
 
-class IssueManager(object):
+class IssuesManager(object):
 
-    def __init__(self, db_title, db_issue):
-        self.db_title = db_title
-        self.db_issue = db_issue
+    def __init__(self, db_isis, title_filename, issue_filename, org_manager):
+        self.db_title = TitleDAO(db_isis, title_filename)
+        self.db_issue = IssueDAO(db_isis, issue_filename)
+        self.db_article = ArticleDAO(db_isis, org_manager)
+        self.db_isis = db_isis
 
     def get_issue_models(self, journal_title, issue_label, p_issn, e_issn):
         issue_models = None
@@ -1114,13 +1147,13 @@ class IssueManager(object):
             if i_record is None:
                 msg = html_reports.p_message('FATAL ERROR: ' + _('Issue ') + issue_label + _(' is not registered in ') + converter_env.db_issue.db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
             else:
-                issue_models = xc_models.IssueModels(i_record)
+                issue_models = IssueModels(i_record)
                 if issue_models.issue.license is None:
                     j_record = self.find_journal_record(journal_title, p_issn, e_issn)
                     if j_record is None:
                         msg = html_reports.p_message('ERROR: ' + _('Unable to get the license of') + ' ' + journal_title)
                     else:
-                        t = xc_models.RegisteredTitle(j_record)
+                        t = RegisteredTitle(j_record)
                         issue_models.issue.license = t.license()
         return (issue_models, msg)
 
@@ -1142,3 +1175,11 @@ class IssueManager(object):
         if len(issues_records) > 0:
             i_record = issues_records[0]
         return i_record
+
+
+class PkgIssue(object):
+
+    def __init__(self, issue_models, issue_files):
+        self.issue_models = issue_models
+        self.issue_files = issue_files
+        self.aop_manager = 
