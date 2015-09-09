@@ -1095,3 +1095,50 @@ def normalized_affiliations(org_manager, affiliations):
                 affs.append(a)
 
     return affs
+
+
+class IssueManager(object):
+
+    def __init__(self, db_title, db_issue):
+        self.db_title = db_title
+        self.db_issue = db_issue
+
+    def get_issue_models(self, journal_title, issue_label, p_issn, e_issn):
+        issue_models = None
+        msg = None
+
+        if issue_label is None:
+            msg = html_reports.p_message('FATAL ERROR: ' + _('Unable to identify the article\'s issue'))
+        else:
+            i_record = self.find_i_record(issue_label, p_issn, e_issn)
+            if i_record is None:
+                msg = html_reports.p_message('FATAL ERROR: ' + _('Issue ') + issue_label + _(' is not registered in ') + converter_env.db_issue.db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
+            else:
+                issue_models = xc_models.IssueModels(i_record)
+                if issue_models.issue.license is None:
+                    j_record = self.find_journal_record(journal_title, p_issn, e_issn)
+                    if j_record is None:
+                        msg = html_reports.p_message('ERROR: ' + _('Unable to get the license of') + ' ' + journal_title)
+                    else:
+                        t = xc_models.RegisteredTitle(j_record)
+                        issue_models.issue.license = t.license()
+        return (issue_models, msg)
+
+    def get_issue_files(self, issue_models, pkg_path):
+        journal_files = serial_files.JournalFiles(converter_env.serial_path, issue_models.issue.acron)
+        return serial_files.IssueFiles(journal_files, issue_models.issue.issue_label, pkg_path, converter_env.local_web_app_path)
+
+    def find_journal_record(self, journal_title, print_issn, e_issn):
+        record = None
+        records = self.db_title.search(print_issn, e_issn, journal_title)
+
+        if len(records) > 0:
+            record = records[0]
+        return record
+
+    def find_i_record(self, issue_label, print_issn, e_issn):
+        i_record = None
+        issues_records = self.db_issue.search(issue_label, print_issn, e_issn)
+        if len(issues_records) > 0:
+            i_record = issues_records[0]
+        return i_record

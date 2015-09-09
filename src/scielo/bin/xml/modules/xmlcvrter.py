@@ -67,15 +67,6 @@ def register_log(message):
     converter_report_lines.append(message)
 
 
-def find_journal_record(journal_title, print_issn, e_issn):
-    record = None
-    records = converter_env.db_title.search(print_issn, e_issn, journal_title)
-
-    if len(records) > 0:
-        record = records[0]
-    return record
-
-
 def find_i_record(issue_label, print_issn, e_issn):
     i_record = None
     issues_records = converter_env.db_issue.search(issue_label, print_issn, e_issn)
@@ -113,7 +104,7 @@ def complete_issue_items_row(article, action, result, source, notes='', results=
     return (labels, values)
 
 
-def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions, status_column_label='action'):
+def display_status_before_xc(registered_articles, pkg_articles, actions, status_column_label='action'):
     orders = [article.order for article in registered_articles.values()]
     for article in pkg_articles.values():
         if article.tree is None:
@@ -131,7 +122,7 @@ def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions,
         action = ''
         if order in sorted_registered.keys():
             for article in sorted_registered[order]:
-                action = xml_doc_actions[article.xml_name]
+                action = actions[article.xml_name]
                 _notes = ''
                 if action == 'update':
                     if registered_articles[article.xml_name].order != pkg_articles[article.xml_name].order:
@@ -142,7 +133,7 @@ def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions,
 
         if order in sorted_package.keys():
             for article in sorted_package[order]:
-                action = xml_doc_actions[article.xml_name]
+                action = actions[article.xml_name]
                 _notes = ''
                 if registered_articles.get(article.xml_name) is not None:
                     if registered_articles[article.xml_name].order != pkg_articles[article.xml_name].order:
@@ -152,7 +143,7 @@ def display_status_before_xc(registered_articles, pkg_articles, xml_doc_actions,
     return html_reports.sheet(labels, items, 'dbstatus', 'action')
 
 
-def display_status_after_xc(previous_registered_articles, registered_articles, pkg_articles, xml_doc_actions, unmatched_orders):
+def display_status_after_xc(previous_registered_articles, registered_articles, pkg_articles, actions, unmatched_orders):
     actions_result_labels = {'delete': 'deleted', 'update': 'updated', 'add': 'added', '-': '-', 'skip-update': 'skipped', 'order changed': 'order changed', 'fail': 'update/add failed'}
     orders = sorted(list(set([article.order for article in previous_registered_articles.values()] + [article.order for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()])))
 
@@ -166,7 +157,7 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
         if order in sorted_registered.keys():
             # documento na base
             for article in sorted_registered[order]:
-                action = xml_doc_actions[article.xml_name]
+                action = actions[article.xml_name]
                 result = actions_result_labels[action]
                 _notes = ''
                 if action == 'update':
@@ -185,7 +176,7 @@ def display_status_after_xc(previous_registered_articles, registered_articles, p
         elif order in sorted_package.keys():
             # documento no pacote mas nao na base
             for article in sorted_package[order]:
-                action = xml_doc_actions[article.xml_name]
+                action = actions[article.xml_name]
                 name = article.xml_name
                 _notes = ''
                 if name in unmatched_orders.keys():
@@ -215,36 +206,7 @@ def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
     return (xml_filenames, articles, doc_file_info_items)
 
 
-def get_issue_models(journal_title, issue_label, p_issn, e_issn):
-    issue_models = None
-    msg = None
-
-    if issue_label is None:
-        msg = html_reports.p_message('FATAL ERROR: ' + _('Unable to identify the article\'s issue'))
-    else:
-        i_record = find_i_record(issue_label, p_issn, e_issn)
-        if i_record is None:
-            msg = html_reports.p_message('FATAL ERROR: ' + _('Issue ') + issue_label + _(' is not registered in ') + converter_env.db_issue.db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
-        else:
-            issue_models = xc_models.IssueModels(i_record)
-            if issue_models.issue.license is None:
-                j_record = find_journal_record(journal_title, p_issn, e_issn)
-                if j_record is None:
-                    msg = html_reports.p_message('ERROR: ' + _('Unable to get the license of') + ' ' + journal_title)
-                else:
-                    t = xc_models.RegisteredTitle(j_record)
-                    issue_models.issue.license = t.license()
-    return (issue_models, msg)
-
-
-def get_issue_files(issue_models, pkg_path):
-    journal_files = serial_files.JournalFiles(converter_env.serial_path, issue_models.issue.acron)
-    return serial_files.IssueFiles(journal_files, issue_models.issue.issue_label, pkg_path, converter_env.local_web_app_path)
-
-
 def convert_package(src_path):
-    is_db_generation = True
-
     validations_report = None
     xc_conclusion_msg = ''
     conversion_status = {}
@@ -274,49 +236,41 @@ def convert_package(src_path):
 
     xml_filenames, pkg_articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
 
-    journal_title, issue_label, p_issn, e_issn = xpmaker.package_journal_and_issue_data(pkg_articles)
+    issue_manager = xc_models.IssueManager(converter_env.db_title, converter_env.db_issue)
+    pkg_manager = pkg_reports.PkgManager(pkg_articles)
+    pkg_manager.is_db_generation = True
 
-    issue_models, issue_error_msg = get_issue_models(journal_title, issue_label, p_issn, e_issn)
+    pkg_manager.issue_models, issue_error_msg = issue_manager.get_issue_models(pkg_manager.pkg_journal_title, pkg_manager.pkg_issue_label, pkg_manager.pkg_p_issn, pkg_manager.pkg_e_issn)
 
     if issue_error_msg is not None:
         report_components['issue-report'] = issue_error_msg
 
-    pkg_manager = pkg_reports.PkgManager(pkg_articles, issue_models, issue_files)
     report_components['pkg_overview'] = pkg_manager.overview_report()
     report_components['pkg_overview'] += pkg_manager.references_overview_report()
     report_components['references'] = pkg_manager.sources_overview_report()
 
-    if issue_models is None:
+    if pkg_manager.issue_models is None:
         acron_issue_label = 'not_registered' + ' ' + os.path.basename(src_path)[:-4]
     else:
-        issue_files = get_issue_files(issue_models, pkg_path)
-        acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
-
-        pkg_manager.issue_models = issue_models
-        pkg_manager.issue_files = issue_files
+        pkg_manager.issue_files = issue_manager.get_issue_files(pkg_manager.issue_models, pkg_path)
+        acron_issue_label = pkg_manager.issue_models.issue.acron + ' ' + pkg_manager.issue_models.issue.issue_label
 
         previous_registered_articles = get_registered_articles(issue_files)
 
         if converter_env.skip_identical_xml:
-            pkg_manager.get_complete_issue_items(previous_registered_articles, pkg_path, base_source_path=issue_files.base_source_path)
+            pkg_manager.select_articles_to_convert(previous_registered_articles, pkg_path, base_source_path=issue_files.base_source_path)
         else:
-            pkg_manager.get_complete_issue_items(previous_registered_articles)
+            pkg_manager.select_articles_to_convert(previous_registered_articles)
 
         #utils.debugging('display_status_before_xc')
         before_conversion_report = html_reports.tag('h4', _('Documents status in the package/database - before conversion'))
-        before_conversion_report += display_status_before_xc(previous_registered_articles, pkg_articles, pkg_manager.xml_doc_actions)
+        before_conversion_report += display_status_before_xc(previous_registered_articles, pkg_articles, pkg_manager.actions)
 
-        pkg_manager.complete_issue_items_report(is_db_generation)
         report_components['issue-report'] = pkg_manager.issue_report
 
-        if pkg_manager.selected_articles is None:
-            #utils.debugging('selected_articles is None')
-            #utils.debugging('xc_conclusion_message')
-            xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, pkg_manager.selected_articles, conversion_status, pkg_quality_fatal_errors)
+        if len(pkg_manager.selected_articles) > 0:
 
-        elif len(pkg_manager.selected_articles) > 0:
-
-            pkg_manager.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, is_db_generation, False)
+            pkg_manager.validate_articles_pkg_xml_and_data(converter_env.db_article.org_manager, doc_file_info_items, dtd_files, False)
             pkg_quality_fatal_errors = pkg_manager.pkg_xml_structure_validations.fatal_errors + pkg_manager.pkg_xml_content_validations.fatal_errors
 
             scilista_item, pkg_manager.pkg_conversion_results, conversion_status, aop_status = convert_articles(issue_files, pkg_manager, previous_registered_articles, pkg_path)
@@ -331,18 +285,13 @@ def convert_package(src_path):
             report_components['conversion-report'] = pkg_manager.pkg_conversion_results.report()
 
             #utils.debugging('detail_report')
-            validations_report = pkg_manager.detail_report(is_db_generation)
-
-            #utils.debugging('xc_conclusion_message')
-            xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, pkg_manager.selected_articles, conversion_status, pkg_quality_fatal_errors)
+            validations_report = pkg_manager.detail_report()
 
             if pkg_manager.pkg_conversion_results.fatal_errors == 0:
                 #utils.debugging('after_conversion_report')
                 after_conversion_report = html_reports.tag('h4', _('Documents status in the package/database - after conversion'))
                 #utils.debugging('after_conversion_report')
-                after_conversion_report += display_status_after_xc(previous_registered_articles, get_registered_articles(issue_files), pkg_articles, pkg_manager.xml_doc_actions, pkg_manager.changed_orders)
-            else:
-                after_conversion_report = xc_conclusion_msg
+                after_conversion_report += display_status_after_xc(previous_registered_articles, get_registered_articles(issue_files), pkg_articles, pkg_manager.actions, pkg_manager.changed_orders)
 
             #utils.debugging('xc_results_report')
             xc_results_report = html_reports.tag('h3', _('Conversion results')) + report_status(conversion_status, 'conversion')
@@ -363,10 +312,10 @@ def convert_package(src_path):
 
             if scilista_item is not None:
                 issue_files.copy_files_to_local_web_app()
-        else:
-            #utils.debugging('else:')
-            #utils.debugging('xc_conclusion_msg')
-            xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, pkg_manager.selected_articles, conversion_status, pkg_quality_fatal_errors)
+
+        xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, pkg_manager.selected_articles, conversion_status, pkg_quality_fatal_errors)
+        if len(after_conversion_report) == 0:
+            after_conversion_report = xc_conclusion_msg
 
     #utils.debugging('-report_location-')
     report_location = report_path + '/xml_converter.html'
@@ -499,7 +448,7 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
         utils.display_message(item_label)
 
         msg = ''
-        if not pkg_manager.xml_doc_actions[xml_name] in ['add', 'update']:
+        if not pkg_manager.actions[xml_name] in ['add', 'update']:
             xc_result = 'skipped'
         else:
             valid_ahead = None

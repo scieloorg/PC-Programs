@@ -911,8 +911,8 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
     else:
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
-        pkg_manager = pkg_reports.PkgManager(articles, None, None)
-
+        pkg_manager = pkg_reports.PkgManager(articles)
+        pkg_manager.is_db_generation = is_db_generation
         report_components['xml-files'] = pkg_reports.xml_list(scielo_pkg_path)
 
         toc_f = 0
@@ -921,19 +921,18 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
         report_components['references'] = pkg_manager.sources_overview_report()
 
         if not is_xml_generation:
-            pkg_manager.complete_issue_items_report(is_db_generation)
             report_components['issue-report'] = pkg_manager.issue_report
-            toc_f = pkg_manager.toc_validations.fatal_errors
+            toc_f = pkg_manager.blocking_errors
 
         if toc_f == 0:
             org_manager = institutions_service.OrgManager()
             org_manager.load()
 
             #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, is_db_generation, is_xml_generation)
-            pkg_manager.validate_articles_pkg_xml_and_data(org_manager, doc_files_info_items, scielo_dtd_files, is_db_generation, is_xml_generation)
+            pkg_manager.validate_articles_pkg_xml_and_data(org_manager, doc_files_info_items, scielo_dtd_files, is_xml_generation)
 
             if not is_xml_generation:
-                report_components['detail-report'] = pkg_manager.detail_report(is_db_generation)
+                report_components['detail-report'] = pkg_manager.detail_report()
                 report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
             #if not is_xml_generation:
             #    register_log('pack_and_validate: pkg_reports.get_lists_report_text')
@@ -1048,30 +1047,6 @@ def get_pkg_items(xml_filenames, report_path):
         doc_files_info.new_xml_path = os.path.dirname(xml_filename)
         r.append((get_article(doc_files_info.new_xml_filename), doc_files_info))
     return r
-
-
-def package_journal_and_issue_data(articles):
-    issue_label = []
-    e_issn = []
-    print_issn = []
-    journal_title = None
-    for doc in articles.values():
-        if doc.tree is not None:
-            if journal_title is None:
-                journal_title = doc.journal_title
-            issue_label.append(doc.issue_label)
-            if doc.e_issn is not None:
-                e_issn.append(doc.e_issn)
-            if doc.print_issn is not None:
-                print_issn.append(doc.print_issn)
-    issue_label = list(set(issue_label))
-    e_issn = list(set(e_issn))
-    print_issn = list(set(print_issn))
-
-    issue_label = issue_label[0] if len(issue_label) == 1 else None
-    e_issn = e_issn[0] if len(e_issn) > 0 else None
-    print_issn = print_issn[0] if len(print_issn) > 0 else None
-    return (journal_title, issue_label, e_issn, print_issn)
 
 
 def make_packages(path, acron, version='1.0'):
