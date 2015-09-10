@@ -833,10 +833,8 @@ class ArticleDB(object):
 
     def registered_articles(self, issue_record=None):
         if self._registered_articles is None:
-
             if not os.path.isdir(self.issue_files.id_path):
                 os.makedirs(self.issue_files.id_path)
-
             i_record = None
             self._registered_articles = None
             records = self.dao.get_records(self.issue_files.base, expr=None)
@@ -868,6 +866,15 @@ class ArticleDB(object):
                     self.dao.save_id(self.issue_files.id_filename, [i_record])
         return self._registered_articles
 
+    def create_db(self):
+        if os.path.isfile(self.issue_files.id_filename):
+            self.dao.save_id_records(self.issue_files.id_filename, self.issue_files.base)
+            for f in os.listdir(self.issue_files.id_path):
+                if f == '00000.id':
+                    os.unlink(self.issue_files.id_path + '/' + f)
+                if f.endswith('.id') and f != '00000.id' and f != 'i.id':
+                    self.dao.append_id_records(self.issue_files.id_path + '/' + f, self.issue_files.base)
+
     def find_article_by_order(self, order):
         if self.registered_articles() is not None:
             xml_name = self.indexed_by_order.get(order)
@@ -887,56 +894,53 @@ class ArticleDB(object):
 
 class AheadManager(object):
 
-    def __init__(self, dao, journal_files, i_ahead_records):
-        self.journal_files = journal_files
+    def __init__(self, dao, journal_files, i_ahead_records=None):
         self.dao = dao
-
-        self.still_ahead = {}
-        self.ahead_to_delete = {}
-
+        self.journal_files = journal_files
+        self.i_ahead_records = i_ahead_records
+        self.still_aop = {}
         self.indexed_by_doi = {}
         self.indexed_by_xml_name = {}
         self._aop_db_items = None
+        self.setup()
 
     def journal_has_aop(self):
-        total = 0
-        for dbname, items in self.still_ahead.items():
-            total += len(items)
-        return total > 0
+        return len(self.indexed_by_xml_name[registered_aop.xml_name]) > 0
 
     def journal_publishes_aop(self):
         return self.journal_files.publishes_aop()
 
-    def aop_db_items(self, i_ahead_records=None):
-        if self._aop_db_items is None:
-            self._aop_db_items = {}
-            for name, aop_issue_files in self.journal_files.aop_issue_files.items():
+    def setup(self):
+        self._aop_db_items = {}
+        for name, aop_issue_files in self.journal_files.aop_issue_files.items():
+            self._aop_db[aop_issue_files.issue_folder] = ArticleDB(self.dao, aop_issue_files)
+            i_record = None
+            if self.i_ahead_records is not None:
+                year = aop_issue_files.issue_folder[0:4]
+                if year in self.i_ahead_records.keys():
+                    i_record = self.i_ahead_records[year]
 
-                dbname = os.path.basename(aop_issue_files.base)
-                self._aop_db[dbname] = ArticleDB(self.dao, aop_issue_files)
+            if self._aop_db[aop_issue_files.issue_folder].registered_articles(i_record) is not None:
+                for xml_name, registered_article in self._aop_db[aop_issue_files.issue_folder].registered_articles.items():
 
-                i_record = None
-                if i_ahead_records is not None:
-                    year = dbname[0:4]
-                    if year in i_ahead_records.keys():
-                        i_record = i_ahead_records[year]
+                    registered_aop = RegisteredAhead(registered_article.article_records[1], aop_issue_files.issue_folder)
+                    self.indexed_by_doi[registered_aop.doi] = registered_aop.xml_name
+                    self.indexed_by_xml_name[registered_aop.xml_name] = registered_aop
+                    if self.still_aop[aop_issue_files.issue_folder] is None:
+                        self.still_aop[aop_issue_files.issue_folder] = {}
+                        self.still_aop[aop_issue_files.issue_folder][registered_aop.order] = registered_aop.xml_name
 
-                if self._aop_db[dbname].registered_articles(i_record) is not None:
-                    for xml_name, registered_article in self._aop_db[dbname].registered_articles.items():
-
-                        registered_aop = RegisteredAhead(registered_article.article_records[1], dbname)
-                        self.indexed_by_doi[registered_aop.doi] = registered_aop.xml_name
-                        self.indexed_by_xml_name[registered_aop.xml_name] = registered_aop
-                        self.still_ahead[dbname][registered_aop.order] = registered_aop.xml_name
+    @property
+    def aop_db_items(self):
         return self._aop_db_items
 
-    def still_ahead_items(self):
+    def still_aop_items(self):
         items = []
-        for dbname in sorted(self.still_ahead.keys()):
-            for order in sorted(self.still_ahead[dbname].keys()):
-                xml_name = self.still_ahead[dbname][order]
+        for dbname in sorted(self.still_aop.keys()):
+            for order in sorted(self.still_aop[dbname].keys()):
+                xml_name = self.still_aop[dbname][order]
                 aop = self.indexed_by_xml_name[xml_name]
-                items.append(dbname + '/' + order + ' (' + aop.filename + '): ' + aop.article_title[0:50] + '...')
+                items.append(dbname + '|' + order + '|' + aop.filename + '|' + aop.article_title[0:50] + '...')
         return items
 
     def name(self, db_filename):
@@ -977,7 +981,7 @@ class AheadManager(object):
         if article.number == 'ahead':
             status = 'new aop'
         else:
-            if len(self.still_ahead) == 0:
+            if len(self.still_aop) == 0:
                 status = 'new doc'
             else:
                 ahead = self.find_ahead(article.doi, article.xml_name)
@@ -999,88 +1003,51 @@ class AheadManager(object):
 
         return (ahead, status)
 
-    def mark_ahead_as_deleted(self, ahead):
+    def mark_aop_as_deleted(self, aop):
         """
         Mark as deleted
         """
-        if not ahead.ahead_db_name in self.ahead_to_delete.keys():
-            self.ahead_to_delete[ahead.ahead_db_name] = []
-        self.ahead_to_delete[ahead.ahead_db_name].append(ahead)
-        if ahead.ahead_db_name in self.still_ahead.keys():
-            if ahead.order in self.still_ahead[ahead.ahead_db_name].keys():
-                del self.still_ahead[ahead.ahead_db_name][ahead.order]
+        if aop.ahead_db_name in self.still_aop.keys():
+            if aop.order in self.still_aop[aop.ahead_db_name].keys():
+                del self.still_aop[aop.ahead_db_name][aop.order]
+        if aop.doi in self.indexed_by_doi.keys():
+            del self.indexed_by_doi[aop.doi]
+        if aop.filename in self.indexed_by_xml_name.keys():
+            del self.indexed_by_xml_name[aop.filename]
 
-    def manage_ex_ahead_files(self, ahead):
-        msg = []
-        msg.append(_('Exclude aop files of ') + ahead.filename)
-        year = ahead.ahead_db_name[0:4]
-
-        ex_ahead_markup_path, ex_ahead_body_path, ex_ahead_base_path = self.journal_files.ex_ahead_paths(year)
-
-        # move files to ex-ahead folder
-        xml_file, markup_file, body_file = self.journal_files.ahead_xml_markup_body(year, ahead.filename)
-        if os.path.isfile(markup_file):
-            if not os.path.isdir(ex_ahead_markup_path):
-                os.makedirs(ex_ahead_markup_path)
-            shutil.move(markup_file, ex_ahead_markup_path)
-            msg.append('moved ' + markup_file + '\n    to ' + ex_ahead_markup_path)
-        if os.path.isfile(body_file):
-            if not os.path.isdir(ex_ahead_body_path):
-                os.makedirs(ex_ahead_body_path)
-            shutil.move(body_file, ex_ahead_body_path)
-            msg.append('moved ' + body_file + '\n    to ' + ex_ahead_body_path)
-
-        ahead_order = ahead.order
-        ahead_id_filename = self.journal_files.ahead_id_filename(year, ahead_order)
-        if os.path.isfile(ahead_id_filename):
-            os.unlink(ahead_id_filename)
-            msg.append('deleted ' + ahead_id_filename)
-        return (not os.path.isfile(ahead_id_filename), msg)
-
-    def save_ex_ahead_record(self, ahead):
-        self.dao.append_records([ahead.record], self.journal_files.ahead_base('ex-' + ahead.ahead_db_name[0:4]))
-
-    def manage_ex_ahead(self, ahead):
+    def archive_ex_aop_files(self, aop, db_name):
+        aop_issue_files = None
+        ex_aop_issue_files = None
         done = False
-        msg = []
-        if ahead is not None:
-            if ahead.ahead_pid is not None:
-                self.mark_ahead_as_deleted(ahead)
-                deleted, msg = self.manage_ex_ahead_files(ahead)
-                if deleted:
-                    self.save_ex_ahead_record(ahead)
-                    done = True
-                    if ahead.doi in self.indexed_by_doi.keys():
-                        del self.indexed_by_doi[ahead.doi]
-                    if ahead.filename in self.indexed_by_xml_name.keys():
-                        del self.indexed_by_xml_name[ahead.filename]
+        msg = None
+        if self.journal_files.ex_aop_issue_files is not None:
+            ex_aop_issue_files = self.journal_files.ex_aop_issue_files.get(db_name)
+        if self.journal_files.aop_issue_files is not None:
+            aop_issue_files = self.journal_files.aop_issue_files.get('ex-' + db_name)
+        if aop_issue_files is not None and ex_aop_issue_files is not None:
+            fs_utils.move_file(aop_issue_files.markup_path + '/' + aop.filename, ex_aop_issue_files.markup_path + '/' + aop.filename)
+            fs_utils.move_file(aop_issue_files.body_path + '/' + aop.filename, ex_aop_issue_files.body_path + '/' + aop.filename)
+            fs_utils.move_file(aop_issue_files.base_source_path + '/' + aop.filename, ex_aop_issue_files.base_source_path + '/' + aop.filename)
+            msg = fs_utils.move_file(aop_issue_files.id_path + '/' + aop.filename, ex_aop_issue_files.id_path + '/' + aop.filename)
+            done = (not os.path.isfile(aop_issue_files.id_path + '/' + aop.filename))
         return (done, msg)
 
-    def finish_manage_ex_ahead(self):
-        updated = []
-        for ahead_db_name, still_ahead in self.ahead_to_delete.items():
-            year = ahead_db_name[0:4]
-            id_path = self.journal_files.ahead_id_path(year)
-            base = self.journal_files.ahead_base(year)
-            if os.path.isfile(id_path + '/i.id'):
-                self.dao.save_id_records(id_path + '/i.id', base)
-                for f in os.listdir(id_path):
-                    if f.endswith('.id') and f != '00000.id' and f != 'i.id':
-                        self.dao.append_id_records(id_path + '/' + f, base)
-                updated.append(ahead_db_name)
-        return updated
+    def manage_ex_aop(self, aop):
+        done = False
+        msg = []
+        if aop is not None:
+            if aop.ahead_pid is not None:
+                done, msg = self.archive_ex_aop_files(aop)
+                if done:
+                    self.mark_aop_as_deleted(aop)
+        return (done, msg)
 
-    def update_all_ahead_db(self):
+    def update_all_aop_db(self):
         updated = []
-        if self.journal_files.publishes_aop():
-            for issue_label, issue_files in self.journal_files.aop_issue_files.items():
-                id_path = issue_files.id_path
-                if os.path.isfile(issue_files.id_filename):
-                    self.dao.save_id_records(issue_files.id_filename, issue_files.base)
-                    for f in os.listdir(issue_files.id_path):
-                        if f.endswith('.id') and f != '00000.id' and f != 'i.id':
-                            self.dao.append_id_records(issue_files.id_path + '/' + f, issue_files.base)
-                    updated.append(issue_label)
+        if self._aop_db_items is not None:
+            for dbname, aop_db in self._aop_db_items.items():
+                aop_db.create_db()
+                updated.append(dbname)
         return updated
 
 
@@ -1130,11 +1097,13 @@ def normalized_affiliations(org_manager, affiliations):
 
 class IssuesManager(object):
 
-    def __init__(self, db_isis, title_filename, issue_filename, org_manager):
+    def __init__(self, db_isis, title_filename, issue_filename, org_manager, serial_path, local_web_app_path):
         self.db_title = TitleDAO(db_isis, title_filename)
         self.db_issue = IssueDAO(db_isis, issue_filename)
         self.db_article = ArticleDAO(db_isis, org_manager)
         self.db_isis = db_isis
+        self.local_web_app_path = local_web_app_path
+        self.serial_path = serial_path
 
     def get_issue_models(self, journal_title, issue_label, p_issn, e_issn):
         issue_models = None
@@ -1145,7 +1114,7 @@ class IssuesManager(object):
         else:
             i_record = self.find_i_record(issue_label, p_issn, e_issn)
             if i_record is None:
-                msg = html_reports.p_message('FATAL ERROR: ' + _('Issue ') + issue_label + _(' is not registered in ') + converter_env.db_issue.db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
+                msg = html_reports.p_message('FATAL ERROR: ' + _('Issue ') + issue_label + _(' is not registered in ') + self.db_issue.db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
             else:
                 issue_models = IssueModels(i_record)
                 if issue_models.issue.license is None:
@@ -1158,8 +1127,8 @@ class IssuesManager(object):
         return (issue_models, msg)
 
     def get_issue_files(self, issue_models, pkg_path):
-        journal_files = serial_files.JournalFiles(converter_env.serial_path, issue_models.issue.acron)
-        return serial_files.IssueFiles(journal_files, issue_models.issue.issue_label, pkg_path, converter_env.local_web_app_path)
+        journal_files = serial_files.JournalFiles(self.serial_path, issue_models.issue.acron)
+        return serial_files.IssueFiles(journal_files, issue_models.issue.issue_label, pkg_path, self.local_web_app_path)
 
     def find_journal_record(self, journal_title, print_issn, e_issn):
         record = None
@@ -1176,10 +1145,3 @@ class IssuesManager(object):
             i_record = issues_records[0]
         return i_record
 
-
-class PkgIssue(object):
-
-    def __init__(self, issue_models, issue_files):
-        self.issue_models = issue_models
-        self.issue_files = issue_files
-        self.aop_manager = 

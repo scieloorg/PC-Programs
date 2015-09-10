@@ -423,11 +423,11 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
     n = '/' + str(len(pkg_manager.pkg_articles))
 
     i_ahead_records = {}
-    for db_filename in issue_files.journal_files.ahead_bases:
-        year = os.path.basename(db_filename)[0:4]
+    current_year = datetime.now().isoformat()[0:4]
+    for year in range(current_year-2, current_year+1):
         i_ahead_records[year] = find_i_record(year + 'nahead', pkg_manager.issue_models.issue.issn_id, None)
 
-    ahead_manager = xc_models.AheadManager(converter_env.issues_manager.db_isis, issue_files.journal_files, i_ahead_records)
+    ahead_manager = xc_models.AheadManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
     aop_status = None
     if ahead_manager.journal_has_aop():
         aop_status = {'deleted ex-aop': [], 'not deleted ex-aop': []}
@@ -484,7 +484,7 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
                     #utils.debugging('convert_articles: aop_status is not None')
                     if aop_status is not None:
                         if doc_ahead_status in ['matched aop', 'partially matched aop']:
-                            saved, ahead_msg = ahead_manager.manage_ex_ahead(valid_ahead)
+                            saved, ahead_msg = ahead_manager.manage_ex_aop(valid_ahead)
                             msg += ''.join([item for item in ahead_msg])
                             if saved:
                                 aop_status['deleted ex-aop'].append(xml_name)
@@ -507,12 +507,10 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
 
     #utils.debugging('convert_articles: journal_has_aop()')
     if ahead_manager.journal_publishes_aop():
-        #if len(aop_status['deleted ex-aop']) > 0:
-        #    updated = ahead_manager.finish_manage_ex_ahead()
         if aop_status is None:
             aop_status = {}
-        aop_status['updated bases'] = ahead_manager.update_all_ahead_db()
-        aop_status['still aop'] = ahead_manager.still_ahead_items()
+        aop_status['updated bases'] = ahead_manager.update_all_aop_db()
+        aop_status['still aop'] = ahead_manager.still_aop_items()
 
     scilista_item = None
     #utils.debugging('convert_articles: conclusion')
@@ -881,7 +879,7 @@ def prepare_env(config):
     org_manager.load()
 
     db_isis = dbm_isis.IsisDAO(dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660)))
-    converter_env.issues_manager = xc_models.IssuesManager(db_isis, config.title_db_copy, config.issue_db_copy, org_manager)
+    converter_env.issues_manager = xc_models.IssuesManager(db_isis, config.title_db_copy, config.issue_db_copy, org_manager, config.serial_path, config.local_web_app_path)
 
     update_db_copy(config.issue_db, config.issue_db_copy, CURRENT_PATH + '/issue.fst')
     converter_env.issues_manager.db_isis.update_indexes(config.issue_db_copy, config.issue_db_copy + '.fst')
@@ -890,7 +888,6 @@ def prepare_env(config):
     converter_env.issues_manager.db_isis.update_indexes(config.title_db_copy, config.title_db_copy + '.fst')
 
     converter_env.local_web_app_path = config.local_web_app_path
-    converter_env.serial_path = config.serial_path
     converter_env.version = '1.0'
     converter_env.is_windows = config.is_windows
     converter_env.web_app_site = config.web_app_site
