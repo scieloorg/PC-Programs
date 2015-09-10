@@ -892,7 +892,7 @@ class ArticleDB(object):
             return self.registered_articles().get(name)
 
 
-class AheadManager(object):
+class AopManager(object):
 
     def __init__(self, dao, journal_files, i_ahead_records=None):
         self.dao = dao
@@ -963,7 +963,7 @@ class AheadManager(object):
             r = (r * 100) / 2
         return r
 
-    def find_ahead(self, doi, filename):
+    def find_aop(self, doi, filename):
         data = None
         aop = None
         if doi is not None:
@@ -974,9 +974,9 @@ class AheadManager(object):
             aop = self.indexed_by_xml_name.get(filename)
         return aop
 
-    def get_valid_ahead(self, article):
-        utils.debugging('get_valid_ahead - inicio')
-        ahead = None
+    def get_valid_aop(self, article):
+        utils.debugging('get_valid_aop - inicio')
+        aop = None
         status = None
         if article.number == 'ahead':
             status = 'new aop'
@@ -984,14 +984,14 @@ class AheadManager(object):
             if len(self.still_aop) == 0:
                 status = 'new doc'
             else:
-                ahead = self.find_ahead(article.doi, article.xml_name)
-                if ahead is None:
+                aop = self.find_aop(article.doi, article.xml_name)
+                if aop is None:
                     status = 'new doc'
                 else:
-                    rate = self.score(article, ahead)
+                    rate = self.score(article, aop)
                     rate = self.is_acceptable_rate(rate, 80)
                     if rate > 0:
-                        if ahead.ahead_pid is None:
+                        if aop.ahead_pid is None:
                             status = 'aop missing PID'
                         else:
                             status = 'matched aop'
@@ -999,9 +999,9 @@ class AheadManager(object):
                                 status = 'partially matched aop'
                     else:
                         status = 'unmatched aop'
-        utils.debugging('get_valid_ahead - fim')
+        utils.debugging('get_valid_aop - fim')
 
-        return (ahead, status)
+        return (aop, status)
 
     def mark_aop_as_deleted(self, aop):
         """
@@ -1095,7 +1095,7 @@ def normalized_affiliations(org_manager, affiliations):
     return affs
 
 
-class IssuesManager(object):
+class DBManager(object):
 
     def __init__(self, db_isis, title_filename, issue_filename, org_manager, serial_path, local_web_app_path):
         self.db_title = TitleDAO(db_isis, title_filename)

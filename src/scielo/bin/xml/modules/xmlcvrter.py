@@ -52,7 +52,7 @@ class ConverterEnv(object):
         self.local_web_app_path = None
         self.serial_path = None
         self.is_windows = None
-        self.issue_manager = None
+        self.db_manager = None
 
 
 def register_log(message):
@@ -63,7 +63,7 @@ def register_log(message):
 
 def find_i_record(issue_label, print_issn, e_issn):
     i_record = None
-    issues_records = converter_env.issues_manager.db_issue.search(issue_label, print_issn, e_issn)
+    issues_records = converter_env.db_manager.db_issue.search(issue_label, print_issn, e_issn)
     if len(issues_records) > 0:
         i_record = issues_records[0]
     return i_record
@@ -263,7 +263,7 @@ def convert_package(src_path):
 
         if len(pkg_manager.selected_articles) > 0:
 
-            pkg_manager.validate_articles_pkg_xml_and_data(converter_env.issues_manager.db_article.org_manager, doc_file_info_items, dtd_files, False)
+            pkg_manager.validate_articles_pkg_xml_and_data(converter_env.db_manager.db_article.org_manager, doc_file_info_items, dtd_files, False)
             pkg_quality_fatal_errors = pkg_manager.pkg_xml_structure_validations.fatal_errors + pkg_manager.pkg_xml_content_validations.fatal_errors
 
             scilista_item, pkg_manager.pkg_conversion_results, conversion_status, aop_status = convert_articles(issue_files, pkg_manager, previous_registered_articles, pkg_path)
@@ -427,9 +427,9 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
     for year in range(current_year-2, current_year+1):
         i_ahead_records[year] = find_i_record(year + 'nahead', pkg_manager.issue_models.issue.issn_id, None)
 
-    ahead_manager = xc_models.AheadManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
     aop_status = None
-    if ahead_manager.journal_has_aop():
+    aop_manager = xc_models.AopManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
+    if aop_manager.journal_has_aop():
         aop_status = {'deleted ex-aop': [], 'not deleted ex-aop': []}
 
     utils.display_message('Converting...')
@@ -444,32 +444,32 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
         if not pkg_manager.actions[xml_name] in ['add', 'update']:
             xc_result = 'skipped'
         else:
-            valid_ahead = None
+            valid_aop = None
             #utils.debugging('convert_articles: aop')
             if aop_status is not None:
-                valid_ahead, doc_ahead_status = ahead_manager.get_valid_ahead(article)
-                if not doc_ahead_status in aop_status.keys():
-                    aop_status[doc_ahead_status] = []
-                aop_status[doc_ahead_status].append(xml_name)
-                msg += aop_message(article, valid_ahead, doc_ahead_status)
+                valid_aop, doc_aop_status = aop_manager.get_valid_aop(article)
+                if not doc_aop_status in aop_status.keys():
+                    aop_status[doc_aop_status] = []
+                aop_status[doc_aop_status].append(xml_name)
+                msg += aop_message(article, valid_aop, doc_aop_status)
 
-                if valid_ahead is not None:
-                    if doc_ahead_status in ['unmatched aop', 'aop missing PID']:
-                        valid_ahead = None
+                if valid_aop is not None:
+                    if doc_aop_status in ['unmatched aop', 'aop missing PID']:
+                        valid_aop = None
 
             xc_result = 'None'
             #utils.debugging('convert_articles: is_conversion_allowed issue data')
             if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), pkg_manager):
 
-                if valid_ahead is not None:
-                    article._ahead_pid = valid_ahead.ahead_pid
+                if valid_aop is not None:
+                    article._ahead_pid = valid_aop.ahead_pid
 
                 article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
 
                 creation_date = None if not xml_name in registered_articles.keys() else registered_articles[xml_name].creation_date
 
                 #utils.debugging('convert_articles: create_id_file')
-                saved = converter_env.issues_manager.db_article.create_id_file(pkg_manager.issue_models.record, article, article_files, creation_date)
+                saved = converter_env.db_manager.db_article.create_id_file(pkg_manager.issue_models.record, article, article_files, creation_date)
                 if saved:
                     #utils.debugging('convert_articles: unmatched_orders')
                     if xml_name in pkg_manager.changed_orders.keys():
@@ -483,9 +483,9 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
 
                     #utils.debugging('convert_articles: aop_status is not None')
                     if aop_status is not None:
-                        if doc_ahead_status in ['matched aop', 'partially matched aop']:
-                            saved, ahead_msg = ahead_manager.manage_ex_aop(valid_ahead)
-                            msg += ''.join([item for item in ahead_msg])
+                        if doc_aop_status in ['matched aop', 'partially matched aop']:
+                            saved, aop_msg = aop_manager.manage_ex_aop(valid_aop)
+                            msg += ''.join([item for item in aop_msg])
                             if saved:
                                 aop_status['deleted ex-aop'].append(xml_name)
                                 msg += html_reports.p_message('INFO: ' + _('ex aop was deleted'))
@@ -506,20 +506,20 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
         pkg_conversion_results.add(xml_name, pkg_reports.ValidationsResults(msg))
 
     #utils.debugging('convert_articles: journal_has_aop()')
-    if ahead_manager.journal_publishes_aop():
+    if aop_manager.journal_publishes_aop():
         if aop_status is None:
             aop_status = {}
-        aop_status['updated bases'] = ahead_manager.update_all_aop_db()
-        aop_status['still aop'] = ahead_manager.still_aop_items()
+        aop_status['updated bases'] = aop_manager.update_all_aop_db()
+        aop_status['still aop'] = aop_manager.still_aop_items()
 
     scilista_item = None
     #utils.debugging('convert_articles: conclusion')
     if pkg_conversion_results.fatal_errors == 0:
-        saved = converter_env.issues_manager.db_article.finish_conversion(pkg_manager.issue_models.record, issue_files, pkg_path)
+        saved = converter_env.db_manager.db_article.finish_conversion(pkg_manager.issue_models.record, issue_files, pkg_path)
         if saved > 0:
             scilista_item = pkg_manager.issue_models.issue.acron + ' ' + pkg_manager.issue_models.issue.issue_label
             if not converter_env.is_windows:
-                converter_env.issues_manager.db_article.generate_windows_version(issue_files)
+                converter_env.db_manager.db_article.generate_windows_version(issue_files)
     #utils.debugging('convert_articles: fim')
     return (scilista_item, pkg_conversion_results, conversion_status, aop_status)
 
@@ -562,7 +562,7 @@ def aop_message(article, ahead, status):
 
 
 def get_registered_articles(issue_files):
-    registered_issue_models, registered_articles = converter_env.issues_manager.db_article.registered_items(issue_files)
+    registered_issue_models, registered_articles = converter_env.db_manager.db_article.registered_items(issue_files)
     return registered_articles
 
 
@@ -879,13 +879,13 @@ def prepare_env(config):
     org_manager.load()
 
     db_isis = dbm_isis.IsisDAO(dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660)))
-    converter_env.issues_manager = xc_models.IssuesManager(db_isis, config.title_db_copy, config.issue_db_copy, org_manager, config.serial_path, config.local_web_app_path)
+    converter_env.db_manager = xc_models.DBManager(db_isis, config.title_db_copy, config.issue_db_copy, org_manager, config.serial_path, config.local_web_app_path)
 
     update_db_copy(config.issue_db, config.issue_db_copy, CURRENT_PATH + '/issue.fst')
-    converter_env.issues_manager.db_isis.update_indexes(config.issue_db_copy, config.issue_db_copy + '.fst')
+    converter_env.db_manager.db_isis.update_indexes(config.issue_db_copy, config.issue_db_copy + '.fst')
 
     update_db_copy(config.title_db, config.title_db_copy, CURRENT_PATH + '/title.fst')
-    converter_env.issues_manager.db_isis.update_indexes(config.title_db_copy, config.title_db_copy + '.fst')
+    converter_env.db_manager.db_isis.update_indexes(config.title_db_copy, config.title_db_copy + '.fst')
 
     converter_env.local_web_app_path = config.local_web_app_path
     converter_env.version = '1.0'
