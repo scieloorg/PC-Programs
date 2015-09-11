@@ -16,10 +16,10 @@ Welcome to SciELO PC Programs' documentation!
 
     programs.rst
 
+    how_to_use_the_programs.rst
+
     markup_tags.rst
-
-    workflows.rst
-
+    
     databases_isis.rst
 
     concepts.rst
