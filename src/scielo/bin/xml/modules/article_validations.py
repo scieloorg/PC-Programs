@@ -1013,7 +1013,7 @@ class ReferenceContentValidation(object):
             if len(self.reference.authors_list) > 0:
                 for item in self.reference.authors_list:
                     if isinstance(item, article.PersonAuthor):
-                        authors = item.surname + ' ...'
+                        authors = item.surname + ' ...' if item.surname is not None else str(item.fname)
                     elif isinstance(item, article.CorpAuthor):
                         authors = item.collab
 
