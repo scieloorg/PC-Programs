@@ -1,5 +1,5 @@
-SGML Markup workflow
-====================
+How to generate SGML files (article and text DTD)
+=================================================
 
 .. toctree::
    :maxdepth: 3
