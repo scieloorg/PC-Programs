@@ -1,4 +1,4 @@
-.. _gerando-xml:
+.. pt_how_to_generate_xml-reports:
 
 Gerando o Arquivo .xml
 ======================

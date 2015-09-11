@@ -1,4 +1,4 @@
-.. _marcando-elementos:
+.. pt_how_to_generate_xml-markup:
 
 Marcação automática do 'front'
 ==============================

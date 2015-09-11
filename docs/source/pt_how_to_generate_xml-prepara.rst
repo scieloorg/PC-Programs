@@ -1,5 +1,4 @@
-
-.. _doc-mkp:
+.. _pt_how_to_generate_xml-prepara:
 
 Documentação de uso Markup
 ==========================

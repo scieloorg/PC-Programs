@@ -1,4 +1,4 @@
-.. _relatorios:
+.. pt_how_to_generate_xml-results:
 
 Relatórios
 ==========
