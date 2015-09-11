@@ -233,7 +233,7 @@ def convert_package(src_path):
     pkg_manager = pkg_reports.PkgManager(pkg_articles)
     pkg_manager.is_db_generation = True
 
-    pkg_manager.issue_models, issue_error_msg = issue_manager.get_issue_models(pkg_manager.pkg_journal_title, pkg_manager.pkg_issue_label, pkg_manager.pkg_p_issn, pkg_manager.pkg_e_issn)
+    pkg_manager.issue_models, issue_error_msg = converter_env.db_manager.get_issue_models(pkg_manager.pkg_journal_title, pkg_manager.pkg_issue_label, pkg_manager.pkg_p_issn, pkg_manager.pkg_e_issn)
 
     if issue_error_msg is not None:
         report_components['issue-report'] = issue_error_msg
@@ -245,7 +245,7 @@ def convert_package(src_path):
     if pkg_manager.issue_models is None:
         acron_issue_label = 'not_registered' + ' ' + os.path.basename(src_path)[:-4]
     else:
-        pkg_manager.issue_files = issue_manager.get_issue_files(pkg_manager.issue_models, pkg_path)
+        pkg_manager.issue_files = converter_env.db_manager.get_issue_files(pkg_manager.issue_models, pkg_path)
         acron_issue_label = pkg_manager.issue_models.issue.acron + ' ' + pkg_manager.issue_models.issue.issue_label
 
         previous_registered_articles = get_registered_articles(pkg_manager.issue_files)
@@ -273,7 +273,7 @@ def convert_package(src_path):
                         ex_aop_items = []
 
                         for _aop in aop_status.get('updated bases'):
-                            ex_aop_items.append(issue_manager.issue_models.issue.acron + ' ' + _aop)
+                            ex_aop_items.append(converter_env.db_manager.issue_models.issue.acron + ' ' + _aop)
 
             report_components['conversion-report'] = pkg_manager.pkg_conversion_results.report()
 
@@ -412,6 +412,61 @@ def is_conversion_allowed(pub_year, ref_count, pkg_manager):
     return doit
 
 
+class Conversion(object):
+
+    def __init__(self, aop_manager):
+        self.aop_manager = aop_manager
+        self.aop_status = None
+
+    def get_article_aop(self, article):
+        valid_aop = None
+        if self.aop_status is not None:
+            valid_aop, doc_aop_status = self.aop_manager.get_valid_aop(article)
+            if not doc_aop_status in self.aop_status.keys():
+                self.aop_status[doc_aop_status] = []
+            self.aop_status[doc_aop_status].append(xml_name)
+            msg += aop_message(article, valid_aop, doc_aop_status)
+
+            if valid_aop is not None:
+                if doc_aop_status in ['unmatched aop', 'aop missing PID']:
+                    valid_aop = None
+
+    def aop_message(self, article, aop, status):
+        data = []
+        msg_list = []
+        if status == 'new aop':
+            msg_list.append('INFO: ' + _('This document is an "aop".'))
+        else:
+            msg_list.append(_('Checking if ') + article.xml_name + _(' has an "aop version"'))
+            if article.doi is not None:
+                msg_list.append(_('Checking if ') + article.doi + _(' has an "aop version"'))
+
+            if status == 'new doc':
+                msg_list.append('WARNING: ' + _('Not found an "aop version" of this document.'))
+            else:
+                msg_list.append('WARNING: ' + _('Found: "aop version"'))
+                if status == 'partially matched aop':
+                    msg_list.append('WARNING: ' + _('the title/author of article and its "aop version" are similar.'))
+                elif status == 'aop missing PID':
+                    msg_list.append('ERROR: ' + _('the "aop version" has no PID'))
+                elif status == 'unmatched aop':
+                    status = 'unmatched aop'
+                    msg_list.append('FATAL ERROR: ' + _('the title/author of article and "aop version" are different.'))
+
+                t = '' if article.title is None else article.title
+                data.append(_('doc title') + ':' + t)
+                t = '' if aop.article_title is None else aop.article_title
+                data.append(_('aop title') + ':' + t)
+                t = '' if article.first_author_surname is None else article.first_author_surname
+                data.append(_('doc first author') + ':' + t)
+                t = '' if aop.first_author_surname is None else aop.first_author_surname
+                data.append(_('aop first author') + ':' + t)
+        msg = ''
+        msg += html_reports.tag('h5', _('Checking existence of aop version'))
+        msg += ''.join([html_reports.p_message(item) for item in msg_list])
+        msg += ''.join([html_reports.display_xml(item, html_reports.XML_WIDTH*0.9) for item in data])
+        return msg
+
 def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
     index = 0
     pkg_conversion_results = pkg_reports.PackageValidationsResults()
@@ -444,25 +499,25 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
         if not pkg_manager.actions[xml_name] in ['add', 'update']:
             xc_result = 'skipped'
         else:
-            valid_aop = None
+            doc_aop = None
             #utils.debugging('convert_articles: aop')
             if aop_status is not None:
-                valid_aop, doc_aop_status = aop_manager.get_valid_aop(article)
+                doc_aop, doc_aop_status = aop_manager.get_aop(article)
                 if not doc_aop_status in aop_status.keys():
                     aop_status[doc_aop_status] = []
                 aop_status[doc_aop_status].append(xml_name)
-                msg += aop_message(article, valid_aop, doc_aop_status)
+                msg += aop_message(article, doc_aop, doc_aop_status)
 
-                if valid_aop is not None:
+                if doc_aop is not None:
                     if doc_aop_status in ['unmatched aop', 'aop missing PID']:
-                        valid_aop = None
+                        doc_aop = None
 
             xc_result = 'None'
             #utils.debugging('convert_articles: is_conversion_allowed issue data')
             if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), pkg_manager):
 
-                if valid_aop is not None:
-                    article._ahead_pid = valid_aop.ahead_pid
+                if doc_aop is not None:
+                    article._ahead_pid = doc_aop.ahead_pid
 
                 article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
 

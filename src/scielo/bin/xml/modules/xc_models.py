@@ -946,23 +946,6 @@ class AopManager(object):
     def name(self, db_filename):
         return os.path.basename(db_filename)
 
-    def is_valid(self, ahead):
-        r = False
-        if ahead is not None:
-            r = (ahead.ahead_pid is not None)
-        return r
-
-    def is_acceptable_rate(self, rate, min_score):
-        return rate if rate >= min_score else 0
-
-    def similarity_rate(self, article, ahead):
-        r = 0
-        if not ahead is None:
-            r += how_similar(article.title, ahead.article_title)
-            r += how_similar(article.first_author_surname, ahead.first_author_surname)
-            r = (r * 100) / 2
-        return r
-
     def find_aop(self, doi, filename):
         data = None
         aop = None
@@ -974,8 +957,11 @@ class AopManager(object):
             aop = self.indexed_by_xml_name.get(filename)
         return aop
 
-    def get_valid_aop(self, article):
-        utils.debugging('get_valid_aop - inicio')
+    def get_aop(self, article):
+        aop, status = self.get_aop_and_status(article)
+        return (aop, self.aop_message(article, aop, status))
+
+    def get_aop_and_status(self, article):
         aop = None
         status = None
         if article.number == 'ahead':
@@ -999,9 +985,54 @@ class AopManager(object):
                                 status = 'partially matched aop'
                     else:
                         status = 'unmatched aop'
-        utils.debugging('get_valid_aop - fim')
-
         return (aop, status)
+
+    def is_acceptable_rate(self, rate, min_score):
+        return rate if rate >= min_score else 0
+
+    def similarity_rate(self, article, aop):
+        r = 0
+        if not aop is None:
+            r += how_similar(article.title, aop.article_title)
+            r += how_similar(article.first_author_surname, aop.first_author_surname)
+            r = (r * 100) / 2
+        return r
+
+    def aop_message(self, article, aop, status):
+        data = []
+        msg_list = []
+        if status == 'new aop':
+            msg_list.append('INFO: ' + _('This document is an "aop".'))
+        else:
+            msg_list.append(_('Checking if ') + article.xml_name + _(' has an "aop version"'))
+            if article.doi is not None:
+                msg_list.append(_('Checking if ') + article.doi + _(' has an "aop version"'))
+
+            if status == 'new doc':
+                msg_list.append('WARNING: ' + _('Not found an "aop version" of this document.'))
+            else:
+                msg_list.append('WARNING: ' + _('Found: "aop version"'))
+                if status == 'partially matched aop':
+                    msg_list.append('WARNING: ' + _('the title/author of article and its "aop version" are similar.'))
+                elif status == 'aop missing PID':
+                    msg_list.append('ERROR: ' + _('the "aop version" has no PID'))
+                elif status == 'unmatched aop':
+                    status = 'unmatched aop'
+                    msg_list.append('FATAL ERROR: ' + _('the title/author of article and "aop version" are different.'))
+
+                t = '' if article.title is None else article.title
+                data.append(_('doc title') + ':' + t)
+                t = '' if aop.article_title is None else aop.article_title
+                data.append(_('aop title') + ':' + t)
+                t = '' if article.first_author_surname is None else article.first_author_surname
+                data.append(_('doc first author') + ':' + t)
+                t = '' if aop.first_author_surname is None else aop.first_author_surname
+                data.append(_('aop first author') + ':' + t)
+        msg = ''
+        msg += html_reports.tag('h5', _('Checking existence of aop version'))
+        msg += ''.join([html_reports.p_message(item) for item in msg_list])
+        msg += ''.join([html_reports.display_xml(item, html_reports.XML_WIDTH*0.9) for item in data])
+        return msg
 
     def mark_aop_as_deleted(self, aop):
         """
