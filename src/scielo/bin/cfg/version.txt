@@ -1,4 +1,8 @@
-﻿4.0.090 trial - 08/09/2015
+﻿4.0.090 trial - 14/09/2015
+==========================
+ - (bug) Solve encoding problem which occurres in some computers as reading the DTD report
+
+4.0.090 trial - 08/09/2015
 ==========================
 - Markup
   - (new) Identify xmlbody which starts with p and subsec
