@@ -595,6 +595,7 @@ class ArticleContentValidation(object):
 
             if aff.norgname is not None or aff.orgname is not None:
                 normalized_items = institutions_service.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+                
                 if len(normalized_items) == 1:
                     orgname, city, state, country_code, country_name = normalized_items[0]
                     if orgname in [aff.orgname, aff.norgname] and country_code in [aff.i_country]:
