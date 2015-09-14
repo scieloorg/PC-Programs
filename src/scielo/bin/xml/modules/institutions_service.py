@@ -268,14 +268,17 @@ def get_normalized_from_wayta(orgname, country):
 
 def validate_organization(org_manager, orgname, norgname, country_name, country_code, state, city):
     orgname_and_location_items = []
-    if norgname is not None:
-        orgname_and_location_items += org_manager.get_institutions(norgname, city, state, country_code, country_name)
+    for name in list(set([orgname, norgname])):
+        if name is not None:
+            orgname_and_location_items += org_manager.get_institutions(name, city, state, country_code, country_name)
 
-    if not len(orgname_and_location_items) == 1:
-        if orgname is not None:
-            orgname_and_location_items += org_manager.get_institutions(orgname, city, state, country_code, country_name)
-
-    return list(set(orgname_and_location_items))
+    orgname_and_location_items = list(set(orgname_and_location_items))
+    if len(orgname_and_location_items) > 1:
+        fixed = []
+        for orgname, city, state, country_code, country_name in orgname_and_location_items:
+            fixed.append((orgname, '', '', country_code, country_name))
+        orgname_and_location_items = list(set(fixed))
+    return orgname_and_location_items
 
 
 def get_similars_from_normalized_list_for_wayta(org_manager, orgname, country_name):

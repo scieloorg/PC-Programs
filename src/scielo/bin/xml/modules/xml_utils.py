@@ -195,6 +195,8 @@ def node_xml(node):
     text = None
     if not node is None:
         text = etree.tostring(node)
+        if '&' in text:
+            text, replaced_named_ent = convert_entities_to_chars(text)
     return text
 
 
