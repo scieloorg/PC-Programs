@@ -426,28 +426,16 @@ class ArticleSheetData(object):
     def hrefs_sheet_data(self, path):
         t_header = ['href', 'display', 'xml']
         r = []
-        for status, href_items in self.article_validation.href_list(path).items():
-            for hrefitem in href_items:
+        href_items = self.article_validation.href_list(path)
+        for src in sorted(href_items.keys()):
+            hrefitem = href_items.get(src)
+            if hrefitem['elem'].is_internal_file:
                 row = {}
-                row['href'] = hrefitem.src
-                hreflocation = hrefitem.src if not hrefitem.is_internal_file else 'file:///' + hrefitem.file_location(path)
-
-                row['display'] = ''
-                if hrefitem.is_image:
-                    row['display'] = html_reports.image(hreflocation)
-                else:
-                    row['display'] = html_reports.link(hreflocation, hrefitem.src)
-
-                if not status == 'ok':
-                    if hrefitem.is_internal_file:
-                        if status == 'warning':
-                            row['display'] += status.upper() + ': ' + _('missing extension of ') + hrefitem.src + '.'
-                        else:
-                            row['display'] += status.upper() + ': ' + hrefitem.src + _(' not found in package')
-                    else:
-                        row['display'] += status.upper() + ': ' + hrefitem.src + _(' is not working')
-
-                row['xml'] = hrefitem.xml
+                row['href'] = src
+                row['display'] = hrefitem['display']
+                if hrefitem['status'] != 'OK':
+                    row['display'] += hrefitem['status'] + ': ' + hrefitem['msg']
+                row['xml'] = hrefitem['elem'].xml
                 r.append(row)
         return (t_header, ['display', 'xml'], r)
 
