@@ -116,7 +116,33 @@ xmlns:ie5="http://www.w3.org/TR/WD-xsl"
 		<xsl:value-of select="."/>
 	</xsl:template>
 	
-	<xsl:template match="sup | sub | bold | italic">
+	<xsl:template match="sup">
+		<xsl:param name="id"/>
+		<xsl:choose>
+			<xsl:when test=".='(' and following-sibling::node()[1][@ref-type='bibr']">
+				<!--ignore ( que é para identificar xref numerico bibr -->
+			</xsl:when>
+			<xsl:when test=".=')' and preceding-sibling::node()[1][@ref-type='bibr']">
+				<!--ignore ) que é para identificar xref numerico bibr  -->
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:element name="{name()}">
+					<xsl:apply-templates select="@* | * | text()">
+						<xsl:with-param name="id" select="$id"/>
+					</xsl:apply-templates>
+				</xsl:element>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+	<xsl:template match="sub | bold | italic">
+		<xsl:param name="id"/>
+		<xsl:element name="{name()}">
+			<xsl:apply-templates select="@* | * | text()">
+				<xsl:with-param name="id" select="$id"/>
+			</xsl:apply-templates>
+		</xsl:element>
+	</xsl:template>
+	<xsl:template match="ref//sup | ref//sub | ref//bold | ref//italic">
 		<xsl:param name="id"/>
 		<xsl:variable name="parent_textonly"><xsl:apply-templates select="parent::node()" mode="text-only"/></xsl:variable>
 		<xsl:variable name="textonly"><xsl:apply-templates select="*|text()" mode="text-only"/></xsl:variable>
