@@ -636,8 +636,9 @@ class IssueArticlesRecords(object):
 
         items = {}
         for xml_name, records in articles_records.items():
-            a = RegisteredArticle(records, i_record)
-            items[a.xml_name] = a
+            if len(records) > 1:
+                a = RegisteredArticle(records, i_record)
+                items[a.xml_name] = a
         return (i_record, items)
 
 
@@ -763,6 +764,29 @@ class ArticleDAO(object):
         return (not found and saved)
 
     def content_formatter(self, content):
+
+        def reduce_content(content):
+            languages = ['ru', 'zh', 'ch', 'cn', 'fr', 'es', ]
+            alternative = [u'абстрактный доступен в Полный текст', u'抽象是在全文可', u'抽象是在全文可', u'抽象是在全文可', u'résumé est disponible dans le document', u'resumen está disponible en el texto completo']
+            i = 0
+            while (len(content) > 10000) and (i < len(languages)):
+                content = remove_abstract(content, languages[i], alternative[i])
+                i += 1
+            return content
+
+        def remove_abstract(content, language, alternative):
+            new = content
+            if len(content) > 10000:
+                new = ''
+                abstract = content.replace('!v', 'BREAK-ABSTRACT!v')
+                for a in abstract.split('BREAK-ABSTRACT'):
+                    l = '^l' + language
+                    if a.startswith('!v083') and l in a:
+                        new += '!v083!^a' + alternative + l + '\n'
+                    else:
+                        new += a
+            return new
+
         if '!v706!f' in content:
             content = content.replace('<italic>', '<em>')
             content = content.replace('</italic>', '</em>')
@@ -774,6 +798,8 @@ class ArticleDAO(object):
             content = content.replace('<bold>', '')
             content = content.replace('</bold>', '')
             content = xml_utils.remove_tags(content)
+        if len(content) > 10000:
+            content = reduce_content(content)
         return content
 
     def finish_conversion(self, issue_record, issue_files, pkg_path):
