@@ -418,10 +418,6 @@ class ArticleContentValidation(object):
                         max_rate = rate
                 if max_rate < 0.7:
                     status = 'FATAL ERROR'
-                    print(article_titles)
-                    for t in self.article.titles:
-                        print(xml_utils.remove_tags(t.title))
-
                 r.append(('doi', status, self.article.doi + ' ' + _('is already registered to') + ' ' + '|'.join(article_titles)))
 
             if journal_titles is None:
