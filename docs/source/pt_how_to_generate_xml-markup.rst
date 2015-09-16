@@ -256,7 +256,7 @@ Resumos
 Os resumos devem ser identificados manualmente. Para marcação de resumos simples (não apresentam seções) e para os resumos estruturados (apresentam seções) utilizar o elemento [xmlabstr]. Na marcação selecione o título do resumo e o texto e em seguida marque com o botão [xmlabstr], dessa forma a interface web do SciELO assumirá a forma como o periódico adota para identificar o elemento.
 Observe que ao utilizar o [xmlabstr] para resumos simples, o programa marca automaticamente o título e o parágrafo do resumo:
 
-Resumo sem seção:
+Resumo sem Seção:
 -----------------
 
 **selecionando:** 
@@ -286,7 +286,7 @@ Note que ao clicar em [xmlabstr] o programa abrirá uma janela a qual deverá se
 Já resumos estruturados, além do programa identificar o título automaticamente é identificado também cada seção do resumo e seus respectivos parágrafos. Veja:
 
 
-Resumo com seção:
+Resumo com Seção:
 -----------------
 
 **selecionando:** 
@@ -319,7 +319,7 @@ Keywords
 O programa Markup apresenta duas tags para identificação de palavra-chave, a tag [*kwdgrp] e [kwdgrp].
 A tag [*kwdgrp], com asterisco, é utilizada para identificação automática de cada palavra-chave e também do título. Para isso, selecione toda a informação inclusive o título e identifique os dados com o elemento [*kwdgrp].
 
-Marcação automática:
+Marcação Automática:
 --------------------
 
 **selecionando:**
@@ -344,7 +344,7 @@ Note que ao clicar em [*kwdgrp] o programa abrirá uma janela a qual deverá ser
    :align: center
           
 
-Marcação manual:
+Marcação Manual:
 ----------------
 
 A tag [kwdgrp], sem asterisco, deve ser utilizada caso a identificação automática não funcione, porém a especificação das palavras deve ser manual. Ou seja, selecione e marque item por item. Primeiramente selecione o título das palavras-chave e as palavras descritas e em seguida identifique com o elemento [kwdgrp]:
@@ -403,7 +403,7 @@ Caso haja a data de revisado, selecione o dado e identifique com o elemento [rev
 
 .. _correspondencia:
 
-Correspondencia
+Correspondência
 ===============
 
 Com o elemento [corresp] é possível fazer a identificação dos dados de correspondência do autor. Note que essa tag possui um subnível para identificação do e-mail do autor. 
@@ -451,7 +451,7 @@ Para encontrar a URL do ensaio clínico faça uma busca na internet pelo número
 
 .. _referencias:
 
-Referencias
+Referências
 ===========
 
 As referências bibliográficas são identificadas elemento a elemento e seu formato original é mantido para apresentação no SciELO.
@@ -1010,7 +1010,7 @@ Após a marcação automática do corpo do texto o próximo passo é verificar o
 
 .. _seção:
 
-Seções e subseções
+Seções e Subseções
 ------------------
 
 Após a marcação automática do xmlbody, certifique-se de que os tipos de seções foram selecionados corretamente.
@@ -1179,7 +1179,7 @@ Tabelas
 As tabelas podem ser apresentadas como imagem ou em texto para codificação dos elementos que compõem a tabela. Note que tabelas que estão como imagem devem apresentar o label, caption e notas (essa última, se existir) em texto, para que todos os elementos sejam identificados.
 
 
-Tabelas em imagem
+Tabelas em Imagem
 ^^^^^^^^^^^^^^^^^
 
 Ao fazer a marcação de [xmlbody] o programa identifica automaticamente o "graphic" da tabela, entretanto o responsável pela marcação do documento deve completar a marcação dos dados como label, caption e notas de rodapé (esse último, se existir).
@@ -1206,7 +1206,7 @@ Certifique-se de que o id de figura é único no documento. Veja o resultado:
 .. note:: O programa faz a marcação automática de label, caption e notas de rodapé de tabela.
 
 
-Tabelas em texto
+Tabelas em Texto
 ^^^^^^^^^^^^^^^^
 
 O programa também codifica tabelas em texto. Para isso, selecionte toda a informação de tabela (label, caption, corpo da tabela e notas de rodapé, esse ultimo se existir) e identifique com o elemento [tabwrap]. Veja:
@@ -1296,7 +1296,7 @@ Perceba que ao fazer a marcação da equação o programa identifica o elemento 
 
 .. _caixa-de-texto:
 
-Caixa de texto
+Caixa de Texto
 --------------
 
 As caixas de texto podem apresentar figuras, equações, listas, glossários ou um texto. Para identificar esse elemento selecione toda a informação de caixa de texto, inclusive o label e caption e identifique com o botão [*boxedtxt]:
@@ -1324,7 +1324,7 @@ Caso a caixa de texto apresente uma figura, uma tabela, listas etc, é possível
 
 .. _verso:
 
-Marcação de versos
+Marcação de Versos
 ------------------
 
 Para identificar versos ou poemas no corpo do texto, selecione toda a informação, inclusive título e autoria, se existir, e identifique com o elemento [versegrp]: 
@@ -1500,7 +1500,7 @@ Material Suplementar
 A identificação de materiais suplementares deve ser feita pela tag [supplmat]. A indicação de Material suplementar pode estar em linha, como um parágrafo "solto" no documento ou como apêndice.
 
 
-Material suplementar
+Material Suplementar
 ^^^^^^^^^^^^^^^^^^^^
 
 Selecione toda a informação de material suplementar, incluindo label e caption - se existir - e identifique com o elemento [supplmat]:
@@ -1522,7 +1522,7 @@ Feito isso, faça a identificação do label do material suplementar e em seguid
    :align: center
 
 
-Material suplementar em linha
+Material Suplementar em Linha
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Selecione a informação de material suplementar e identifique com o elemento [supplmat]:

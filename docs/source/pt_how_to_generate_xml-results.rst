@@ -124,6 +124,6 @@ Essa estrutura de pastas é a mesma apresentada se o usuário utilizar o program
 Suporte SciELO
 ==============
 
-Em caso de dúvidas com relação à utilização do programa Markup ou erros apresentados ao gerar o arquivo .xml, enviar e-mail para a lista de discussões SciELO-discuss:
+Em caso de dúvidas com relação à utilização do programa Markup ou erros apresentados ao gerar o arquivo .xml, enviar e-mail para a lista de discussões SciELO-XML:
 
 <scielo-xml@googlegroups.com>
