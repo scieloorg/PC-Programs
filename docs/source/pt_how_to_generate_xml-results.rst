@@ -33,6 +33,7 @@ Relatório de Erros de Arquivos
 Perceba que ao clicar em "Markup: Gerar o XML" o programa apresenta um Relatório com as informações das alterações feitas no documento.
 
 .. image:: img/doc-mkp-report-name.jpg
+   :height: 450px
 
 O resultado disso, é um relatório que apresenta as ações do programa ao gerar o XML a partir do arquivo .doc. O programa altera o nome do arquivo que, em .doc, era apresentado como "12-Artigo.doc" para ISSN-acronimo-volume-numero-paginação.xml e as imagens são extraídas do documento já com a nomeação convertida para o padrão SciELO.
 
@@ -46,13 +47,12 @@ Em seguida clique no botão ao lado "Relatório de Estilos SciELO" e verifique s
 
 .. image:: img/doc-mkp-gerar-report-scielo.jpg
    :align: center
-   :height: 300px
 
 O programa apresentará um relatório parecido com o que segue abaixo:
 
 .. image:: img/doc-mkp-report-style.jpg
    :align: center
-   :height: 300px
+   :height: 450px
 
 Veja que o relatório de erros não apresenta nenhum erro. Isso porque o xml gerado está de acordo com a estrutura de estilos requerida.
 
