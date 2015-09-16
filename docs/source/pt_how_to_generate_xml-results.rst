@@ -46,6 +46,49 @@ Feita a verificação no Relatório de Estilos SciELO, o próximo passo é gerar
 Esse relatório é exatamente o mesmo que o programa Package Maker gera. Portanto, para verificar o manual de uso para validação e verificação dos erros apresentados, vá para o projeto :ref:`` e confira as funcionalidades dessa ferramenta.
 
 
+.. _relatorios-pastas:
+
+Pastas Geradas
+==============
+
+Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src" e "scielo_markup". Veja abaixo as pastas geradas e o que cada uma apresenta.
+
+.. image:: img/doc-mkp-pastas-geradas.jpg
+
+
+	*pasta erros:*
+	Nessa pasta há o relatório de erros de cada um dos arquivos .xml e ao final há o mesmo relatório que abre automaticamente
+	em uma página do seu navegador.
+
+
+	*pmc_package:*
+	Para revistas que apresentam o título abreviado NLM, o programa retira os elementos de especificação SciELO e mantém apenas
+	os elementos necessários para envio ao PMC.
+	Os elementos que são retirados do documento XML para envio ao PMC são: detalhamento em afiliação, informação de financiamento
+	em <funding-group> e <mixed-citation>.
+
+
+	*pmc_package_zips:*
+	Ao validar o pacote pmc_package o programa, automaticamente, zipa a pasta que está pronta para envio.
+
+
+	*scielo_package:*
+	No momento da validação do pacote XML o programa verifica as entidades (numéricas ou alfa-numéricas) que existem no documento
+	e, automaticamente, converte para o caractere correspondente. Evitando futuros problemas de entidades. O ideal é utilizar os 
+	arquivos .xml validados nessa pasta em vez de utilizar os xmls do pacote.
+
+
+	*scielo_package_zips:*
+	Ao validar o pacote scielo_package o programa, automaticamente, zipa a pasta já com a nomeação padrão SciELO que está pronta 
+	para envio.
+
+
+	*work:*
+	é uma pasta de arquivos temporários usadas para a geração do resultado. ela pode ser apagada se desejável, mas também pode ser 
+	usada para fins de suporte.
+
+Essa estrutura de pastas é a mesma apresentada se o usuário utilizar o programa Package Maker (AQUI REFERENCIAR). Para verificar os relatórios apresentados, basta entrar na pasta "errors" e abrir o documento com extensão: ".contents.html".
+
 
 Suporte SciELO
 ==============
