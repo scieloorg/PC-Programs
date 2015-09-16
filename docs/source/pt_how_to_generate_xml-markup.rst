@@ -1,7 +1,143 @@
 .. pt_how_to_generate_xml-markup:
 
-Marcação automática do 'front'
+==================
+Como usar o Markup
+==================
+
+Introdução
+==========
+
+Este manual tem como objetivo apresentar o uso do programa de marcação Markup `Markup <markup.html>`_ 
+
+
+.. _sugestao-id:
+
+Sugestão de Atribuição de “ID”
 ==============================
+
+Alguns elementos exigem o atributo "ID".
+Para composição do “ID” combine o prefixo do tipo do elemento e um número inteiro, como segue:
+
++------------------------+---------------------------+---------+---------------------+
+| Elemento XML           | Descrição                 | Prefixo | Exemplo             |
++========================+===========================+=========+=====================+
+| aff                    | Afiliação                 | aff     | aff1, aff2, ...     |
++------------------------+---------------------------+---------+---------------------+
+| app                    | Apêndice                  | app     | app1, app2, ...     |
++------------------------+---------------------------+---------+---------------------+
+| author-notes/fn |      | Notas de rodapé do artigo | fn      | fn1, fn2, ...       | 
+| fn-group/fn            |                           |         |                     |
++------------------------+---------------------------+---------+---------------------+
+| boxed-text             | Caixa de texto            | bx      | bx1, bx2, ...       |
++------------------------+---------------------------+---------+---------------------+
+| corresp                | Correspondência           | c       | c1, c2, ...         |
++------------------------+---------------------------+---------+---------------------+
+| def-list               | Lista de Definições       | d       | d1, d2, ...         |
++------------------------+---------------------------+---------+---------------------+
+| disp-formula           | Equações                  | e       | e1, e2, ...         |
++------------------------+---------------------------+---------+---------------------+
+| fig                    | Figuras                   | f       | f1, f2, ...         |
++------------------------+---------------------------+---------+---------------------+
+| glossary               | Glossário                 | gl      | gl1, gl2, ...       |
++------------------------+---------------------------+---------+---------------------+
+| media                  | Media                     | m       | m1, m2, ...         |
++------------------------+---------------------------+---------+---------------------+
+| ref                    | Referência bibliográfica  | B       | B1, B2, ...         |
++------------------------+---------------------------+---------+---------------------+
+| sec                    | Seções                    | sec     | sec1, sec2, ...     |
++------------------------+---------------------------+---------+---------------------+
+| sub-article            | sub-artigo                | S       | S1, S2, ...         |
++------------------------+---------------------------+---------+---------------------+
+| supplementary-material | Suplemento                | suppl   | suppl1, suppl2, ... |
++------------------------+---------------------------+---------+---------------------+
+| table-wrap-foot/fn     | Notas de rodapé de tabela | TFN     | TFN1, TFN2, ...     |
++------------------------+---------------------------+---------+---------------------+
+| table-wrap             | Tabela                    | t       | t1, t2, ...         |
++------------------------+---------------------------+---------+---------------------+
+
+
+.. _elementos-markup:
+
+Dados Básicos
+=============
+
+Estando o arquivo formatado de acordo com o manual `Preparação de Arquivos para o Programa Markup <pt_how_to_generate_xml-prepara.html>`_ e aberto no programa `Markup <markup.html>`_, selecione a tag [doc]:
+
+.. image:: img/doc-mkp-formulario.jpg
+   :height: 400px
+   :align: center
+
+
+Perceba que ao clicar em [doc] o programa irá abrir uma caixa de diálogo onde deverá ser completado com os dados básicos do documento:
+
+Insira o nome do periódico no campo jtitle* que o programa irá inserir as informações da revista automaticamente. 
+Feito isso, o próximo passo é completar as informações nos demais campos. Veja abaixo os campos que devem ser preenchidos:
+
+
++-------------------+---------------------------------------------------------------------------------------+
+| Campo             | Descrição                                                                             |
++===================+=======================================================================================+
+| license           | se não for inserido automaticamente, preencher com a URL da licença creative commons  |
+|                   | adotada pelo periódico                                                                |
++-------------------+---------------------------------------------------------------------------------------+
+| volid             | Inserir volume, se existir                                                            |
++-------------------+---------------------------------------------------------------------------------------+
+| supplvol          | Caso seja um suplemento de volume incluir sua parte ou número correspondente.         |
+|                   | **Exemplo: vol.12 supl.A**, então preencha com **A**, neste campo                     |
++-------------------+---------------------------------------------------------------------------------------+
+| issueno           | Entre com o número do fascículo. Caso seja um artigo publicado em ahead of            |
+|                   | print, insira ahead neste campo                                                       |
++-------------------+---------------------------------------------------------------------------------------+
+| supplno           | Caso seja um suplemento de fascículo incluir sua parte ou número                      |
+|                   | correspondente. **Exemplo: n.37, supl.A**, então preencha com **A** neste campo       |
++-------------------+---------------------------------------------------------------------------------------+
+| isidpart          | Usar em casos de press release, incluindo a sigla pr                                  |
++-------------------+---------------------------------------------------------------------------------------+
+| dateiso           | Data de publicação formada por ano, mês e dia **(YYYYMMDD)**. Preencher sempre        |
+|                   | com o último mês da periodicidade. Por exemplo, se o periódico é bimestral            |
+|                   | preencher **20140600**. Use **00** para mês e dia nos casos em não haja sua           |
+|                   | identificação. **Exemplo: 20140000**.                                                 |
++-------------------+---------------------------------------------------------------------------------------+
+| month/season      | Entre o mês ou mês inicial barra final, em inglês (três letras) e ponto,              |
+|                   | exceto para May, June e July. **Ex.: May/June, July/Aug.**                            |
++-------------------+---------------------------------------------------------------------------------------+
+| fpage             | Primeira página do documento                                                          |
++-------------------+---------------------------------------------------------------------------------------+
+| @seq              | Para artigos que iniciam na mesma página de um artigo anterior, incluir a             |
+|                   | sequência com letra                                                                   |
++-------------------+---------------------------------------------------------------------------------------+
+| lpage             | Inserir a última página do documento                                                  |
++-------------------+---------------------------------------------------------------------------------------+
+| elocatid          | Elocatid                                                                              |
++-------------------+---------------------------------------------------------------------------------------+
+| order (in TOC)    | Incluir a ordem do artigo no sumário do fascículo. Deve ter, no mínimo, dois          |
+|                   | dígitos. Por exemplo, se o artigo for o primeiro do sumário, preencha este            |
+|                   | campo com **01** e assim por diante.                                                  |
++-------------------+---------------------------------------------------------------------------------------+
+| pagcount*         | Inserir o total de paginação                                                          |
++-------------------+---------------------------------------------------------------------------------------+
+| doctopic*         | Informar o tipo de documento a ser marcado. Por exemplo: artigo original, resenha,    | 
+|                   | carta, comentário, etc                                                                |
++-------------------+---------------------------------------------------------------------------------------+
+| language*         | Informe o idioma principal do texto a ser marcado                                     |
++-------------------+---------------------------------------------------------------------------------------+
+| version*          | Identifica a versão da DTD usada no processo de marcação (A versão atual é 4.0)       |
++-------------------+---------------------------------------------------------------------------------------+
+| artdate (rolling) | Obrigatório completar com a data **YYYYMMDD** quando for um artigo rolling pass.      |
+|                   | Rolling pass é um modelo publicação onde o periódico publica seus artigos num volume  |
+|                   | único a medida em que estes ficam prontos                                             |
++-------------------+---------------------------------------------------------------------------------------+
+| ahpdate           | Indicar a data de publicação de um artigo publicado em ahead of print                 |
++-------------------+---------------------------------------------------------------------------------------+
+
+
+.. note:: Os campos que apresentam um asterisco ao lado, são campos obrigatórios.
+
+
+.. _front:
+
+Front
+=====
 
 Tendo preenchido todos os campos, ao clicar em [Ok] o programa irá abrir uma janela perguntando se o documento está de acordo com o modelo para efetuar a marcação automática:
 
@@ -337,7 +473,7 @@ Para marcar referências bibliográficas selecione o grupo de referências, incl
 .. _tipos-de-referencias:
 
 Tipos de Referências
-====================
+--------------------
 
 A partir da marcação feita, alguns tipos de referência serão alterados automaticamente sem intervenção manual (ex.: tese, conferência e artigo de periódico); já para os demais casos, será necessário a alteração manual.
 Para alterar o tipo de referência clique no elemento [ref] e em seguida clique no lápis "Editar Atributos" e em "reftype" selecione o tipo correto. Veja:
@@ -363,28 +499,42 @@ Entretanto, recomendamos que edite o "reftype" somente **após** marcar todos os
 Veja abaixo os tipos de referência suportados por SciELO e a marcação de cada ref.
 
 
-.. _lei:
+.. _tese:
 
-legal-doc
----------
-Utilizada para referenciar documentos jurídicos, incluem informações sobre, legislação, jurisprudência e doutrina. Ex.:
+Thesis
+^^^^^^
+Utilizada para referenciar monografias, dissertações ou teses para obtenção de um grau acadêmico, tais como livre-docência, doutorado, mestrado, bacharelado, licenciatura, etc. Ex.:
 
 
-	*Brasil. Portaria no 1169/GM em 15 de junho de 2004. Institui a Política Nacional de Atenção Cardiovascular de Alta Complexidade, e dá outras providências. Diário Oficial 2004; seção 1, n.115, p.57.*
+   *PINHEIRO, Fernanda Domingos. Em defesa da liberdade: libertos e livres de cor nos tribu¬nais do Antigo Regime português (Mariana e Lisboa, 1720-1819). Tese de doutorado, Departamento de História, Instituto de Filosofia e Ciências Humanas, Univer¬sidade Estadual de Campinas, 2013*
 
-.. image:: img/doc-mkp-ref-legal-doc1.jpg
-   :height: 180px
+.. image:: img/doc-mkp-ref-thesis.jpg
+   :height: 200px
+   :align: center
+
+.. _conferencia:
+
+Confproc
+^^^^^^^^
+Utilizada para referenciar documentos relacionados à eventos: atas, anais, resultados, proceedings, convenções, conferências entre outros. Ex.:
+
+
+   *FABRE, C. Interpretation of nominal compounds: combining domain-independent and domain-specific information. In: INTERNATIONAL CONFERENCE ON COMPUTATIONAL LINGUISTICS (COLING), 16, 1996, Stroudsburg. Proceedings... Stroudsburg: Association of Computational Linguistics, 1996. v.1, p.364-369.*
+
+
+.. image:: img/doc-mkp-ref-confproc.jpg
+   :height: 250px
    :align: center
 
 
 .. _relatorio:
 
 Report
-------
+^^^^^^
 Utilizada para referenciar relatórios técnicos, normalmente de autoria institucional. Ex.:
 
 
-	*AMES, A.; MACHADO, F.; RENNÓ, L. R. SAMUELS, D.; SMITH, A.E.; ZUCCO, C. The Brazilian Electoral Panel Studies (BEPS): Brazilian Public Opinion in the 2010 Presidential Elections. Technical Note No. IDB-TN-508, Inter-American Development Bank, Department of Research and Chief Economist, 2013.*
+   *AMES, A.; MACHADO, F.; RENNÓ, L. R. SAMUELS, D.; SMITH, A.E.; ZUCCO, C. The Brazilian Electoral Panel Studies (BEPS): Brazilian Public Opinion in the 2010 Presidential Elections. Technical Note No. IDB-TN-508, Inter-American Development Bank, Department of Research and Chief Economist, 2013.*
 
 
 .. image:: img/doc-mkp-ref-report.jpg
@@ -392,15 +542,57 @@ Utilizada para referenciar relatórios técnicos, normalmente de autoria institu
    :align: center
 
 
+.. _patente:
+
+Patent
+^^^^^^
+
+Utilizada para referenciar patentes; a patente representa um título de propriedade que confere ao seu titular o direito de impedir terceiros explorarem sua criação.. Ex.:
+
+
+   *SCHILLING, C.; DOS SANTOS, J. Method and Device for Linking at Least Two Adjoinig Work Pieces by Friction Welding, U.S. Patent WO/2001/036144, 2005.*
+
+.. image:: img/doc-mkp-patent.jpg
+   :align: center
+
+
+.. _lei:
+
+legal-doc
+^^^^^^^^^
+
+Utilizada para referenciar documentos jurídicos, incluem informações sobre, legislação, jurisprudência e doutrina. Ex.:
+
+
+   *Brasil. Portaria no 1169/GM em 15 de junho de 2004. Institui a Política Nacional de Atenção Cardiovascular de Alta Complexidade, e dá outras providências. Diário Oficial 2004; seção 1, n.115, p.57.*
+
+.. image:: img/doc-mkp-ref-legal-doc1.jpg
+   :height: 180px
+   :align: center
+
+
+.. _jornal:
+
+Newspaper
+^^^^^^^^^
+Utilizada para referenciar publicações seriadas sem cunho científico, como revistas e jornais. Ex.:
+
+
+   *TAVARES de ALMEIDA, M. H. "Mais do que meros rótulos". Artigo publicado no Jornal Folha de S. Paulo, no dia 25/02/2006, na coluna Opinião, p. A. 3.*
+
+.. image:: img/doc-mkp-newspaper.jpg
+   :align: center
+
+
 .. _livro:
 
 Book
------
+^^^^
 
 Utilizada para referenciar livros ou parte deles (capítulos, tomos, séries e etc), manuais, guias, catálogos, enciclopédias, dicionários entre outros.
 Ex.: 
 
-	*LORD, A. B. The singer of tales. 4th. Cambridge: Harvard University Press, 1981.*
+   *LORD, A. B. The singer of tales. 4th. Cambridge: Harvard University Press, 1981.*
 
 
 .. image:: img/doc-mkp-ref-book.jpg
@@ -411,11 +603,12 @@ Ex.:
 .. _livro-inpress:
 
 Book no prelo
--------------
+^^^^^^^^^^^^^
+
 Livros finalizados, porém em fase de edição geralmente ao final da referência é apresentado a informação "no prelo", "forthcomming" ou "inpress". A marcação para referências do tipo book com essa particularidade deve ser feita conforme segue na imagem abaixo:
 
 
-	*CIRENO, F.; LUBAMBO, C. Estratégia eleitoral e eleições para Câmara dos Deputados no Brasil em 2006, no prelo.*
+   *CIRENO, F.; LUBAMBO, C. Estratégia eleitoral e eleições para Câmara dos Deputados no Brasil em 2006, no prelo.*
 
 .. image:: img/doc-mkp-ref-book-no-prelo.jpg
    :height: 180px
@@ -425,90 +618,30 @@ Livros finalizados, porém em fase de edição geralmente ao final da referênci
 .. _capitulo-de-livro:
 
 Book Chapter
-------------
+^^^^^^^^^^^^
+
 Divisão de um documento (título do artigo e seus respectivos autores - Podendo ou não constar informação de autores- , seguido do título do livro e seus respectivos autores) numerado ou não
 
 
-	*Lastres, H.M.M.; Ferraz, J.C. Economia da informação, do conhecimento e do aprendizado. In: Lastres, H.M.M.; Albagli, S. (Org.). Informação e globalização na era do conhecimento. Rio de Janeiro: Campus, 1999. p.27-57.*
+   *Lastres, H.M.M.; Ferraz, J.C. Economia da informação, do conhecimento e do aprendizado. In: Lastres, H.M.M.; Albagli, S. (Org.). Informação e globalização na era do conhecimento. Rio de Janeiro: Campus, 1999. p.27-57.*
 
 .. image:: img/doc-mkp-ref-chapter-book.jpg
    :height: 300px
    :align: center
 
 
-.. _tese:
-
-Thesis
-------
-Utilizada para referenciar monografias, dissertações ou teses para obtenção de um grau acadêmico, tais como livre-docência, doutorado, mestrado, bacharelado, licenciatura, etc. Ex.:
-
-
-	*PINHEIRO, Fernanda Domingos. Em defesa da liberdade: libertos e livres de cor nos tribu¬nais do Antigo Regime português (Mariana e Lisboa, 1720-1819). Tese de doutorado, Departamento de História, Instituto de Filosofia e Ciências Humanas, Univer¬sidade Estadual de Campinas, 2013*
-
-.. image:: img/doc-mkp-ref-thesis.jpg
-   :height: 200px
-   :align: center
-
-.. _conferencia:
-
-Confproc
---------
-Utilizada para referenciar documentos relacionados à eventos: atas, anais, resultados, proceedings, convenções, conferências entre outros. Ex.:
-
-
-	*FABRE, C. Interpretation of nominal compounds: combining domain-independent and domain-specific information. In: INTERNATIONAL CONFERENCE ON COMPUTATIONAL LINGUISTICS (COLING), 16, 1996, Stroudsburg. Proceedings... Stroudsburg: Association of Computational Linguistics, 1996. v.1, p.364-369.*
-
-
-.. image:: img/doc-mkp-ref-confproc.jpg
-   :height: 250px
-   :align: center
-
-.. _web:
-
-Webpage
--------
-Utilizada para referenciar, web sites ou informações contidas em blogs, twiter, facebook, listas de discussões dentre outros. 
-
-**Exemplo 1**
-
-	*UOL JOGOS. Fórum de jogos online: Por que os portugas falam que o sotaque português do Brasil é açucarado???, 2011. Disponível em <http://forum.jogos.uol.com.br/_t_1293567>. Acessado em 06 de fevereiro de 2014.*
-
-.. image:: img/doc-mkp-ref-web-uol.jpg
-   :align: center
-
-
-**Exemplo 2**
-
-	*BANCO CENTRAL DO BRASIL. Disponível em: www.bcb.gov.br.*
-
-.. image:: img/doc-mkp-ref-web-bb.jpg
-   :align: center
-
-
 .. _revista:
 
 journal
--------
+^^^^^^^
+
 Utilizada para referenciar publicações seriadas científicas, como revistas, boletins e jornais, editadas em unidades sucessivas, com designações numéricas e/ou cronológicas e destinada a ser continuada indefinidamente. Ex.:
 
 
-	*Cardinalli, I. (2011). A saúde e a doença mental segundo a fenomenologia existencial. Revista da Associação Brasileira de Daseinsanalyse, São Paulo, 16, 98-114.*
+   *Cardinalli, I. (2011). A saúde e a doença mental segundo a fenomenologia existencial. Revista da Associação Brasileira de Daseinsanalyse, São Paulo, 16, 98-114.*
 
 .. image:: img/doc-mkp-ref-journal.jpg
    :height: 200px
-   :align: center
-
-
-.. _outro:
-
-Other
------
-Utilizada para referenciar tipos não previstos pelo SciELO. Ex.:
-
-
-	*INAC. Grupo Nacional de Canto e Dança da República Popular de Moçambique. Maputo, [s.d.].*
-
-.. image:: img/doc-mkp-ref-other.jpg
    :align: center
 
 
@@ -516,7 +649,8 @@ Utilizada para referenciar tipos não previstos pelo SciELO. Ex.:
 .. _base-de-dados:
 
 Database
---------
+^^^^^^^^ 
+
 Utilizada para referenciar bases e bancos de dados. Ex.:
 
 
@@ -530,7 +664,8 @@ Utilizada para referenciar bases e bancos de dados. Ex.:
 .. _software:
 
 Software
---------
+^^^^^^^^
+
 Utilizada para referenciar um software, um programa de computador. Ex.:
 
 
@@ -541,30 +676,40 @@ Utilizada para referenciar um software, um programa de computador. Ex.:
    :align: center
 
 
+.. _web:
 
-.. _jornal:
+Webpage
+^^^^^^^
 
-Newspaper
----------
-Utilizada para referenciar publicações seriadas sem cunho científico, como revistas e jornais. Ex.:
+Utilizada para referenciar, web sites ou informações contidas em blogs, twiter, facebook, listas de discussões dentre outros. 
 
+**Exemplo 1**
 
-   *TAVARES de ALMEIDA, M. H. "Mais do que meros rótulos". Artigo publicado no Jornal Folha de S. Paulo, no dia 25/02/2006, na coluna Opinião, p. A. 3.*
+   *UOL JOGOS. Fórum de jogos online: Por que os portugas falam que o sotaque português do Brasil é açucarado???, 2011. Disponível em <http://forum.jogos.uol.com.br/_t_1293567>. Acessado em 06 de fevereiro de 2014.*
 
-.. image:: img/doc-mkp-newspaper.jpg
+.. image:: img/doc-mkp-ref-web-uol.jpg
    :align: center
 
-.. _patente:
 
-Patent
-------
+**Exemplo 2**
 
-Utilizada para referenciar patentes; a patente representa um título de propriedade que confere ao seu titular o direito de impedir terceiros explorarem sua criação.. Ex.:
+   *BANCO CENTRAL DO BRASIL. Disponível em: www.bcb.gov.br.*
+
+.. image:: img/doc-mkp-ref-web-bb.jpg
+   :align: center
 
 
-   *SCHILLING, C.; DOS SANTOS, J. Method and Device for Linking at Least Two Adjoinig Work Pieces by Friction Welding, U.S. Patent WO/2001/036144, 2005.*
+.. _outro:
 
-.. image:: img/doc-mkp-patent.jpg
+Other
+^^^^^
+
+Utilizada para referenciar tipos não previstos pelo SciELO. Ex.:
+
+
+   *INAC. Grupo Nacional de Canto e Dança da República Popular de Moçambique. Maputo, [s.d.].*
+
+.. image:: img/doc-mkp-ref-other.jpg
    :align: center
 
 
@@ -811,11 +956,11 @@ Feito isso, verifique abaixo o resultado da marcação de glossário:
 
 .. _xmlbody:
 
-Identificação [xmlbody]
-=======================
+xmlbody
+=======
 
 
-Tendo formatado o corpo do texto de acordo com o ítem :ref:`formato-scielo` e após a identificação das referências bibliográficas, é possível fazer a marcação do [xmlbody].
+Tendo formatado o corpo do texto de acordo com o ítem `Formatação do Arquivo <pt_how_to_generate_xml-prepara.html#formatacao-do-arquivo>`_ e após a identificação das referências bibliográficas, é possível fazer a marcação do [xmlbody].
 
 Primeiramente, selecione todo o corpo do texto e clique no botão [xmlbody], confira as informações de seções, subseções, citações etc que é apresentado na caixa de diálogo que abrirá e se necessário, corrija em seguida e clique em “Aplicar”.
 
@@ -853,7 +998,7 @@ Ao clicar em "Aplicar" o programa abrirá uma janela perguntando se as referênc
    :align: center
 
 
-Perceba que com a formatação do documento indicada no :ref:`formato-scielo` o programa faz a marcação automática de seções, subseções, parágrafos, referências de autores no corpo do texto, chamadas de figuras e tabelas, equações em linha etc. Veja:
+Perceba que com a formatação do documento indicada no `Formatação do Arquivo <pt_how_to_generate_xml-prepara.html#formatacao-do-arquivo>`_ o programa faz a marcação automática de seções, subseções, parágrafos, referências de autores no corpo do texto, chamadas de figuras e tabelas, equações em linha etc. Veja:
 
 .. image:: img/doc-mkp-complete.jpg
    :height: 300px
@@ -1022,7 +1167,7 @@ Certifique-se de que o id de figura é único no documento. Veja o resultado:
 
 
 .. note:: Note que o programa faz a marcação automática de label e caption, isso porque esses dados estão em conformidade com 
-          a :ref:`formato-scielo`, com label e caption abaixo da imagem no arquivo .doc. A informação de fonte deve estar acima 
+          a `Formatação do Arquivo <pt_how_to_generate_xml-prepara.html#formatacao-do-arquivo>`_, com label e caption abaixo da imagem no arquivo .doc. A informação de fonte deve estar acima 
           da imagem. Veja o exemplo da imagem acima.
 
 
@@ -1399,7 +1544,7 @@ A marcação deverá ser conforme segue abaixo:
    :align: center
 
 .. note:: Antes de iniciar a marcação de material suplementar certifique-se de que o PDF suplementar foi incluído na 
-          pasta "src" comentado em :ref:`estrutura-de-pastas`.
+          pasta "src" comentado em `Estrutura de Pastas <pt_how_to_generate_xml-prepara.html#estrutura-de-pastas>`_.
 
 
 
@@ -1434,3 +1579,4 @@ Após a marcação de [supplmat] identifique o objeto do material com as tags fl
    :height: 400px
    :width: 350px
    :align: center
+
