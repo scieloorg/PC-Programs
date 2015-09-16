@@ -66,9 +66,9 @@ Para otimizar o processo de marcação dos elementos básicos do arquivo, é nec
  * Pular 1 linha para separar afiliação de resumos;
  * Resumos estruturados: negrito no nome da seção;
  * Palavras-chave: os separadores devem ser ou ponto-e-vírgula ou vírgula;
- * Seções: negrito, Times New Roman, 16, centralizadas;
- * Subseções: negrito, Times New Roman, 14, centralizadas;
- * Subseção de subseção: negrito Times New Roman, 13, centralizadas;
+ * Seções: negrito, 16, centralizadas;
+ * Subseções: negrito, 14, centralizadas;
+ * Subseção de subseção: negrito, 13, centralizadas;
  * Texto: formatação livre;
  * Para tabelas, label e caption na linha antes da imagem, mas os demais, após a imagem;
  * Separador de label e caption: dois-pontos e espaço ou espaço + hífen + espaço ou ponto + espaço;
