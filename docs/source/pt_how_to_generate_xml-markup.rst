@@ -7,7 +7,7 @@ Como usar o Markup
 Introdução
 ==========
 
-Este manual tem como objetivo apresentar o uso do programa de marcação Markup `Markup <markup.html>`_ 
+Este manual tem como objetivo apresentar o uso do programa de marcação `Markup <markup.html>`_ 
 
 
 .. _sugestao-id:
