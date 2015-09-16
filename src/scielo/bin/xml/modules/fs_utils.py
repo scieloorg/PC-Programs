@@ -19,6 +19,12 @@ def write_file(filename, content, encode='utf-8'):
     open(filename, 'w').write(content)
 
 
+def append_file(filename, content, encode='utf-8'):
+    if isinstance(content, unicode):
+        content = content.encode(encode)
+    open(filename, 'a+').write(content)
+
+
 def delete_file_or_folder(path):
     if os.path.isdir(path):
         for item in os.listdir(path):

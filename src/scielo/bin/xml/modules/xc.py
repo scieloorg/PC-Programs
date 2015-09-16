@@ -1,9 +1,11 @@
 # coding=utf-8
 
 import os
+from datetime import datetime
 
 import email_service
 import xc_config
+import fs_utils
 
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__)).replace('\\', '/')
@@ -59,25 +61,29 @@ def is_config_file(configuration_filename):
     return messages
 
 
-def run_remote_mkdirs(user, server, path):
+def run_cmd(cmd, log_filename=None):
+    print(cmd)
+    if log_filename is not None:
+        fs_utils.append_file(log_filename, datetime.now().isoformat() + ' ' + cmd)
     try:
-        print('ssh ' + user + '@' + server + ' "mkdir -p ' + path + '"')
-        os.system('ssh ' + user + '@' + server + ' "mkdir -p ' + path + '"')
+        os.system(cmd)
+        if log_filename is not None:
+            fs_utils.append_file(log_filename, 'done')
     except:
-        pass
+        if log_filename is not None:
+            fs_utils.append_file(log_filename, 'failure')
 
 
-def run_rsync(source, user, server, dest):
-    try:
-        print('nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n')
-        os.system('nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n')
-    except:
-        pass
+def run_remote_mkdirs(user, server, path, log_filename=None):
+    cmd = 'ssh ' + user + '@' + server + ' "mkdir -p ' + path + '"'
+    run_cmd(cmd, log_filename)
 
 
-def run_scp(source, user, server, dest):
-    try:
-        print('nohup scp -r ' + source + ' ' + user + '@' + server + ':' + dest + '&\n')
-        os.system('nohup scp -r ' + source + ' ' + user + '@' + server + ':' + dest + '&\n')
-    except:
-        pass
+def run_rsync(source, user, server, dest, log_filename=None):
+    cmd = 'nohup rsync -CrvK ' + source + '/* ' + user + '@' + server + ':' + dest + '&\n'
+    run_cmd(cmd, log_filename)
+
+
+def run_scp(source, user, server, dest, log_filename=None):
+    cmd = 'nohup scp -r ' + source + ' ' + user + '@' + server + ':' + dest + '&\n'
+    run_cmd(cmd, log_filename)
