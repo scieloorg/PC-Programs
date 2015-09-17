@@ -5,6 +5,7 @@ from datetime import datetime
 import article_utils
 import xml_utils
 import attributes
+import utils
 
 
 IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', ]
@@ -138,7 +139,6 @@ class ArticleXML(object):
     def __init__(self, tree, xml_name):
         self.xml_name = xml_name
         self.prefix = xml_name.replace('.xml', '')
-        self._ahead_pid = None
         self.tree = tree
         self.journal_meta = None
         self.article_meta = None
@@ -544,7 +544,7 @@ class ArticleXML(object):
             return self.article_meta.findtext('article-id[@pub-id-type="doi"]')
 
     @property
-    def article_previous_id(self):
+    def xml_previous_id(self):
         if self.article_meta is not None:
             return self.article_meta.findtext('article-id[@specific-use="previous-pid"]')
 
@@ -1025,9 +1025,11 @@ class Article(ArticleXML):
         self.creation_date_display = None
         self.creation_date = None
         self.last_update = None
-        self._doi_query_result = None
-        self._doi_pid = None
+        self._api_crossref_doi_query_result = None
         self._doi_journal_and_article = None
+        self._queried_doi_pid = None
+        self.registered_aop_pid = None
+        self._previous_pid = None
 
     @property
     def clinical_trial_url(self):
@@ -1057,21 +1059,26 @@ class Article(ArticleXML):
         return '; '.join(_pages)
 
     @property
-    def doi_query_result(self):
-        if self._doi_query_result is None:
-            self._doi_query_result = article_utils.doi_query(self.doi)
-        return self._doi_query_result
+    def api_crossref_doi_query_result(self):
+        if self.doi is not None:
+            if self._api_crossref_doi_query_result is None:
+                self._api_crossref_doi_query_result = article_utils.api_crossref_doi_query(self.doi)
+            if self._api_crossref_doi_query_result is None:
+                self._api_crossref_doi_query_result = '{}'
+        return self._api_crossref_doi_query_result
 
     @property
-    def doi_pid(self):
-        if self._doi_pid is None:
-            self._doi_pid = article_utils.doi_pid(self.doi_query_result)
-        return self._doi_pid
+    def queried_doi_pid(self):
+        if self._queried_doi_pid is None:
+            self._queried_doi_pid = article_utils.query_doi_pid(self.api_crossref_doi_query_result)
+            if self._queried_doi_pid is None:
+                self._queried_doi_pid = ''
+        return self._queried_doi_pid
 
     @property
     def doi_journal_and_article(self):
         if self._doi_journal_and_article is None:
-            self._doi_journal_and_article = article_utils.doi_journal_and_article(self.doi_query_result)
+            self._doi_journal_and_article = article_utils.api_crossref_doi_journal_and_article(self.api_crossref_doi_query_result)
         return self._doi_journal_and_article
 
     def summary(self):
@@ -1156,21 +1163,23 @@ class Article(ArticleXML):
     def previous_pid(self):
         def is_valid(pid):
             r = False
-            if not d is None:
-                r = (len(d) == 23) or (d.isdigit() and 0 < int(d) <= 99999)
+            if not pid is None:
+                r = (len(pid) == 23) or (pid.isdigit() and 0 < int(pid) <= 99999)
             return r
-
-        d = self.article_previous_id
-        if not is_valid(d):
-            if self.doi is not None:
-                d = self.doi_pid
-        if not is_valid(d):
-            d = self._ahead_pid
-        #if not is_valid(d):
-        #    d = self.article_id_other
-        if not is_valid(d):
-            d = None
-        return d
+        if not self.is_ahead:
+            if self._previous_pid is None:
+                d = None
+                if self.xml_previous_id is not None:
+                    if is_valid(self.xml_previous_id):
+                        d = self.xml_previous_id
+                if d is None:
+                    if self.registered_aop_pid is not None:
+                        if is_valid(self.registered_aop_pid):
+                            d = self.registered_aop_pid
+                if d is None:
+                    d = ''
+                self._previous_pid = d
+        return self._previous_pid
 
     @property
     def collection_dateiso(self):
