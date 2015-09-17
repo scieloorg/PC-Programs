@@ -722,7 +722,7 @@ def convert_articles(issue_files, pkg_manager, xml_doc_actions, registered_artic
             if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), pkg_manager):
 
                 if valid_ahead is not None:
-                    article._ahead_pid = valid_ahead.ahead_pid
+                    article.registered_aop_pid = valid_ahead.ahead_pid
 
                 article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
 
