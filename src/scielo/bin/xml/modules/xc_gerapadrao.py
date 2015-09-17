@@ -71,16 +71,19 @@ def gerapadrao(args):
         if config is not None:
             mailer = xc.get_mailer(config)
             start_time = datetime.now().isoformat()[11:11+5].replace(':', '')
-            log_filename = './gerapadrao_' + start_time + '.log'
+            log_filename = './gerapadrao_' + collection_acron + '-' + start_time + '.log'
             if config.is_enabled_gerapadrao:
                 if is_unblocked_gerapadrao(config.gerapadrao_permission_file):
                     config.update_title_and_issue()
                     scilista_content = consume_collection_scilista(config.collection_scilista)
+
                     if scilista_content is None:
                         print(config.collection_scilista + ' is empty')
                     else:
                         scilista_content = sort_scilista(scilista_content)
                         print(scilista_content)
+                        scilista_items = scilista_content.split('\n')
+                        print(scilista_items)
 
                         block_gerapadrao(config.gerapadrao_permission_file)
                         open(config.gerapadrao_scilista, 'w').write(scilista_content)
@@ -98,10 +101,10 @@ def gerapadrao(args):
 
                         if config.is_enabled_transference:
                             open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - inicio transf bases\n')
-                            transfer_website_bases(config.local_web_app_path + '/bases', config.transference_user, config.transference_server, config.remote_web_app_path + '/bases')
+                            transfer_website_bases(config.local_web_app_path + '/bases', config.transference_user, config.transference_server, config.remote_web_app_path + '/bases', log_filename)
                             open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - fim transf bases\n')
                             open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - inicio transf files\n')
-                            transfer_website_files(config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path, open(config.collection_scilista, 'r').readlines())
+                            transfer_website_files(config.local_web_app_path, config.transference_user, config.transference_server, config.remote_web_app_path, scilista_items, log_filename)
                             open(log_filename, 'a+').write(datetime.now().isoformat() + ' ' + start_time + ' - fim transf files\n')
                         if mailer is not None:
                             mailer.send_message(config.email_to, config.email_subject_website_update.replace('Gerapadrao', 'Gerapadrao ' + start_time + ' '), config.email_text_website_update + scilista_content)
@@ -116,21 +119,21 @@ def gerapadrao_command(proc_path, gerapadrao_status_filename):
     return 'cd ' + proc_path + ';./GeraPadrao.bat;echo FINISHED>' + gerapadrao_status_filename
 
 
-def transfer_website_bases(local_bases_path, user, server, remote_bases_path):
+def transfer_website_bases(local_bases_path, user, server, remote_bases_path, log_filename):
     folders = ['artigo', 'issue', 'newissue', 'title']
 
     for folder in folders:
-        xc.run_remote_mkdirs(user, server, remote_bases_path + '/' + folder)
-        xc.run_scp(local_bases_path + '/' + folder, user, server, remote_bases_path)
+        xc.run_remote_mkdirs(user, server, remote_bases_path + '/' + folder, log_filename)
+        xc.run_scp(local_bases_path + '/' + folder, user, server, remote_bases_path, log_filename)
 
 
-def transfer_website_files(local_web_app_path, user, server, remote_web_app_path, scilista_items):
+def transfer_website_files(local_web_app_path, user, server, remote_web_app_path, scilista_items, log_filename):
     scilista_items = [item.strip().split(' ') for item in scilista_items if ' ' in item]
     for acron, issue_id in scilista_items:
-        transfer_issue_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path)
+        transfer_issue_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path, log_filename)
 
 
-def transfer_issue_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path):
+def transfer_issue_files(acron, issue_id, local_web_app_path, user, server, remote_web_app_path, log_filename):
     # 'rsync -CrvK img/* user@server:/var/www/...../revistas'
     issue_id_path = acron + '/' + issue_id
 
@@ -139,5 +142,5 @@ def transfer_issue_files(acron, issue_id, local_web_app_path, user, server, remo
     for folder in folders:
         dest_path = remote_web_app_path + folder + issue_id_path
         source_path = local_web_app_path + folder + issue_id_path
-        xc.run_remote_mkdirs(user, server, dest_path)
-        xc.run_rsync(source_path, user, server, dest_path)
+        xc.run_remote_mkdirs(user, server, dest_path, log_filename)
+        xc.run_rsync(source_path, user, server, dest_path, log_filename)

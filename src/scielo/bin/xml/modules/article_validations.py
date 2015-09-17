@@ -9,7 +9,7 @@ import article_utils
 import xml_utils
 import utils
 import article
-
+import html_reports
 import institutions_service
 
 
@@ -413,12 +413,11 @@ class ArticleContentValidation(object):
                 max_rate = 0
                 selected = None
                 for t in self.article.titles:
-                    rate, items = utils.most_similar(utils.similarity(article_titles, t.title))
+                    rate, items = utils.most_similar(utils.similarity(article_titles, xml_utils.remove_tags(t.title)))
                     if rate > max_rate:
                         max_rate = rate
                 if max_rate < 0.7:
                     status = 'FATAL ERROR'
-
                 r.append(('doi', status, self.article.doi + ' ' + _('is already registered to') + ' ' + '|'.join(article_titles)))
 
             if journal_titles is None:
@@ -601,7 +600,7 @@ class ArticleContentValidation(object):
                         status = 'ERROR'
                         r.append(('normalized aff', status, _('Similar normalized institution names: ') + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
                 else:
-                    msg = _('Unable to confirm/find the normalized institution name for ') + ' or '.join(item for item in [aff.orgname, aff.norgname] if item is not None)
+                    msg = _('Unable to confirm/find the normalized institution name for ') + ' or '.join(item for item in list(set([aff.orgname, aff.norgname])) if item is not None)
                     if len(normalized_items) == 0:
                         r.append(('normalized aff', 'ERROR', msg + _('. Ask for normalized institution name by email: scielo-xml@googlegroups.com')))
                     else:
@@ -936,7 +935,7 @@ class ArticleContentValidation(object):
 
         return message
 
-    def href_list(self, path):
+    def old_href_list(self, path):
         href_items = {'ok': [], 'warning': [], 'error': [], 'fatal error': []}
         for hrefitem in self.article.hrefs:
             if hrefitem.is_internal_file:
@@ -956,6 +955,40 @@ class ArticleContentValidation(object):
                         href_items['warning'].append(hrefitem)
                 #else:
                 #    href_items['ok'].append(hrefitem)
+        return href_items
+
+    def href_list(self, path):
+        href_items = {}
+        for hrefitem in self.article.hrefs:
+            status = 'OK'
+            message = ''
+            if hrefitem.is_internal_file:
+                file_location = hrefitem.file_location(path)
+                if os.path.isfile(file_location):
+                    if not '.' in hrefitem.src:
+                        message = _('missing extension of ') + hrefitem.src + '.'
+                        status = 'WARNING'
+                else:
+                    if file_location.endswith(hrefitem.src):
+                        message = hrefitem.src + _(' not found in package')
+                        status = 'FATAL ERROR'
+                    elif file_location.endswith('.jpg') and (hrefitem.src.endswith('.tif') or hrefitem.src.endswith('.tiff')):
+                        message = os.path.basename(file_location) + _(' not found in package')
+                        status = 'FATAL ERROR'
+                hreflocation = 'file:///' + file_location
+            else:
+                hreflocation = hrefitem.src
+                if self.check_url:
+                    if not article_utils.url_check(hrefitem.src, 1):
+                        status = 'WARNING'
+                        message = hrefitem.src + _(' is not working')
+
+            if hrefitem.is_image:
+                display = html_reports.image(hreflocation)
+            else:
+                display = html_reports.link(hreflocation, hrefitem.src)
+
+            href_items[hrefitem.src] = {'display': display, 'msg': message, 'status': status, 'elem': hrefitem}
         return href_items
 
 

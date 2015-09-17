@@ -95,11 +95,14 @@ class OrgDBManager(object):
         results = self.institution_exists(orgname, city, state, country_code, norm_country_name)
 
         if not len(results) == 1:
-            results += self.institution_exists(orgname, None, None, country_code, norm_country_name)
+            _results = self.institution_exists(orgname, None, None, country_code, norm_country_name)
+            if len(_results) == 1:
+                results = _results
+            else:
+                results += _results
 
         if len(results) == 0:
             results += self.similar_institutions(orgname, city, state, country_code, country_name)
-
         return list(set(results))
 
     def get_countries_expr(self, country_names):
@@ -134,7 +137,7 @@ class OrgDBManager(object):
         where_expr = ' AND '.join(items)
 
         expr = self.sql.get_select_statement(self.table_name, self.fields, where_expr)
-        
+
         r = self.sql.query(expr)
         r = list(set(r))
         return r
@@ -267,15 +270,35 @@ def get_normalized_from_wayta(orgname, country):
 
 
 def validate_organization(org_manager, orgname, norgname, country_name, country_code, state, city):
-    orgname_and_location_items = []
-    if norgname is not None:
-        orgname_and_location_items += org_manager.get_institutions(norgname, city, state, country_code, country_name)
+    normalized_results = []
+    not_normalized_results = []
+    if orgname is not None and norgname is not None:
+        if orgname != norgname:
+            if norgname is not None:
+                normalized_results = org_manager.get_institutions(norgname, city, state, country_code, country_name)
+            if orgname is not None:
+                not_normalized_results = org_manager.get_institutions(orgname, city, state, country_code, country_name)
+        else:
+            if norgname is not None:
+                normalized_results = org_manager.get_institutions(norgname, city, state, country_code, country_name)
+    elif orgname is not None:
+        not_normalized_results = org_manager.get_institutions(orgname, city, state, country_code, country_name)
+    elif norgname is not None:
+        normalized_results = org_manager.get_institutions(norgname, city, state, country_code, country_name)
 
-    if not len(orgname_and_location_items) == 1:
-        if orgname is not None:
-            orgname_and_location_items += org_manager.get_institutions(orgname, city, state, country_code, country_name)
+    _results = normalized_results + not_normalized_results
+    if len(normalized_results) == 1:
+        if normalized_results[0] in not_normalized_results:
+            _results = normalized_results
 
-    return list(set(orgname_and_location_items))
+    _results = list(set(_results))
+    if len(_results) > 1:
+        fixed = []
+        for orgname, city, state, country_code, country_name in _results:
+            fixed.append((orgname, '', '', country_code, country_name))
+        if len(fixed) == 1:
+            _results = list(set(fixed))
+    return _results
 
 
 def get_similars_from_normalized_list_for_wayta(org_manager, orgname, country_name):

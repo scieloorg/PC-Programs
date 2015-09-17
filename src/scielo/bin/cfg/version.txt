@@ -1,11 +1,20 @@
-﻿4.0.090 trial - 14/09/2015
+﻿4.0.090 trial - 16/09/2015
 ==========================
- - (bug) Solve encoding problem which occurres in some computers as reading the DTD report
+- Markup
+  - (bug) Fix identification of xref (bibr) which is numeric an which pattern is (1,2-3)
+- XC
+  - (bug) Solve saving record problem because it is very large
+- XPM
+  - (bug) Solve encoding problem which occurres in some computers as reading the DTD report
+  - (bug) Fix the article title to check doi
+  - (bug) Fix message of missing tiff (the correct is missing jpg generated from tiff)
+  - (improvement) Ignore city/state to have a perfect match as normalizing the institution name 
 
 4.0.090 trial - 08/09/2015
 ==========================
 - Markup
   - (new) Identify xmlbody which starts with p and subsec
+  - (bug) Chinese abbreviation must be zh, instead of ch
 - XC
   - (bug) Fix name of PDF (0104-530X-gp-0104-530X1387-14 was renamed to 14_0104-530X-gp-0104-530X1387)
   - (new) Reorganize Converter messages
