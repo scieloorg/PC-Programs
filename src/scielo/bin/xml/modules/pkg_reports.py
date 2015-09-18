@@ -667,6 +667,104 @@ class PkgManager(object):
                 #self.pkg_reports[xml_name] = (doc_files_info.err_filename, doc_files_info.style_report_filename, doc_files_info.data_report_filename)
 
         #utils.debugging('Validating package: fim')
+
+
+class ArticlesPkgReport(object):
+
+    def __init__(self, package):
+        self.package = package
+
+    def validate_consistency(self, validate_order):
+        critical, toc_report = self.consistency_report(validate_order)
+        toc_validations = ValidationsResults(toc_report)
+        return (critical, toc_validations)
+
+    def consistency_report(self, validate_order):
+        critical = 0
+        equal_data = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
+        unique_data = ['order', 'doi', 'elocation id', ]
+
+        error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq': 'FATAL ERROR'}
+        required_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
+
+        if not validate_order:
+            error_level_for_unique['order'] = 'WARNING'
+
+        if self.package.is_processed_in_batches:
+            error_level_for_unique['fpage-lpage-seq'] = 'WARNING'
+        else:
+            unique_data += ['fpage-lpage-seq']
+
+        invalid_xml_name_items, pkg_metadata, missing_data = self.package.journal_and_issue_metadata(equal_data + unique_data, required_data)
+
+        r = ''
+
+        if len(invalid_xml_name_items) > 0:
+            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Invalid XML files.')))
+            r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid_xml_name_items, 'issue-problem'))
+        for label, items in missing_data.items():
+            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Missing') + ' ' + label + ' ' + _('in') + ':'))
+            r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
+
+        for label in equal_data:
+            if len(pkg_metadata[label]) > 1:
+                _status = 'FATAL ERROR'
+                if label == 'issue pub date':
+                    if self.package.is_rolling_pass:
+                        _status = 'WARNING'
+                _m = _('same value for %s is required for all the documents in the package') % (label)
+                part = html_reports.p_message(_status + ': ' + _m + '.')
+                for found_value, xml_files in pkg_metadata[label].items():
+                    part += html_reports.format_list(_('found') + ' ' + label + '="' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
+                r += part
+
+        for label in unique_data:
+            if len(pkg_metadata[label]) > 0 and len(pkg_metadata[label]) != len(self.package.articles):
+                duplicated = {}
+                for found_value, xml_files in pkg_metadata[label].items():
+                    if len(xml_files) > 1:
+                        duplicated[found_value] = xml_files
+
+                if len(duplicated) > 0:
+                    _m = _(': unique value of %s is required for all the documents in the package') % (label)
+                    part = html_reports.p_message(error_level_for_unique[label] + _m)
+                    if error_level_for_unique[label] == 'FATAL ERROR':
+                        critical += 1
+                    for found_value, xml_files in duplicated.items():
+                        part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
+                    r += part
+
+        if validate_order:
+            invalid_order = []
+            for order, xml_files in pkg_metadata['order'].items():
+                if order.isdigit():
+                    if 0 < int(order) <= 99999:
+                        pass
+                    else:
+                        critical += 1
+                        invalid_order.append(xml_files)
+                else:
+                    critical += 1
+                    invalid_order.append(xml_files)
+            if len(invalid_order) > 0:
+                r += html_reports.p_message('FATAL ERROR: ' + _('Invalid format of order. Expected number 1 to 99999.'))
+                r += html_reports.format_list('order (article-id)', 'ol', invalid_order)
+
+        issue_common_data = ''
+
+        for label in equal_data:
+            message = ''
+            if len(pkg_metadata[label].items()) == 1:
+                issue_common_data += html_reports.display_labeled_value(label, pkg_metadata[label].keys()[0])
+            else:
+                issue_common_data += html_reports.format_list(label, 'ol', pkg_metadata[label].keys())
+                #issue_common_data += html_reports.p_message('FATAL ERROR: ' + _('Unique value expected for ') + label)
+
+        pages = html_reports.tag('h2', 'Pages Report') + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.package.pages(), table_style='validation', row_style='status'))
+
+        return (critical, html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages') + pages)
+
+
     def overview_report(self):
         r = ''
 

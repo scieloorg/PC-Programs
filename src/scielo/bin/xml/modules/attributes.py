@@ -161,6 +161,49 @@ REFERENCE_NOT_ALLOWED_SUBELEMENTS['thesis'] = ['article-title', 'conf-date', 'co
 REFERENCE_NOT_ALLOWED_SUBELEMENTS['webpage'] = ['article-title', 'chapter-title']
 REFERENCE_NOT_ALLOWED_SUBELEMENTS['confproc'] = ['chapter-title', 'patent']
 
+LANGUAGES = {
+    'en': _('English'),
+    'pt': _('Portuguese'),
+    'es': _('Spanish'),
+    'af': _('Afrikaans'),
+    'ar': _('Arabic'),
+    'bg': _('Bulgarian'),
+    'zh': _('Chinese'),
+    'cs': _('Czech'),
+    'da': _('Danish'),
+    'nl': _('Dutch'),
+    'eo': _('Esperanto'),
+    'fr': _('French'),
+    'de': _('German'),
+    'gr': _('Greek'),
+    'he': _('Hebrew'),
+    'hi': _('Hindi'),
+    'hu': _('Hungarian'),
+    'in': _('Indonesian'),
+    'ia': _('Interlingua'),
+    'ie': _('Interlingue'),
+    'it': _('Italian'),
+    'ja': _('Japanese'),
+    'ko': _('Korean'),
+    'la': _('Latin'),
+    'no': _('Norwergian'),
+    'pl': _('Polish'),
+    'ro': _('Romanian'),
+    'ru': _('Russian'),
+    'sa': _('Sanskrit'),
+    'sh': _('Serbo-Croat'),
+    'sk': _('Slovak'),
+    'sn': _('Slovenian'),
+    'sv': _('Swedish'),
+    'tr': _('Turkish'),
+    'uk': _('Ukrainian'),
+    'ur': _('Urdu'),
+    'zz': _('Other'),
+    'gl': _('Galician'),
+    'eu': _('Basque'),
+    'ca': _('Catalan'),
+}
+
 
 def is_required(publication_type, label):
     return label in REFERENCE_REQUIRED_SUBELEMENTS.get(publication_type, [])
@@ -226,3 +269,10 @@ def normalize_section_title(text):
         for term, transl in TOC_SECTIONS.items():
             text = text.replace(term, transl)
     return text
+
+
+def check_lang(lang):
+    if lang in LANGUAGES.keys():
+        return (True, LANGUAGES.get(lang))
+    else:
+        return (False, lang + ': ' + _('Invalid value for ') + '@xml:lang. ' + _('Expected values') + ': ' + ', '.join(sorted(LANGUAGES.keys())) + '. ' + '|'.join(sorted([k + '(' + v + ')' for k, v in LANGUAGES.items()])))
