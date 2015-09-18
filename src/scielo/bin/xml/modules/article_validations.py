@@ -199,6 +199,7 @@ class ArticleContentValidation(object):
         items = []
         items.append(self.sps)
         items.append(self.language)
+        items.append(self.languages)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.journal_title)
         #utils.debugging(datetime.now().isoformat() + ' validations')
@@ -289,13 +290,13 @@ class ArticleContentValidation(object):
     @property
     def languages(self):
         msg = []
-        for lang in self.trans_languages:
+        for lang in self.article.trans_languages:
             msg.append(check_lang('sub-article', lang))
-        for lang in self.titles_by_lang.keys():
+        for lang in self.article.titles_by_lang.keys():
             msg.append(check_lang('article-title', lang))
-        for lang in self.abstracts_by_lang.keys():
+        for lang in self.article.abstracts_by_lang.keys():
             msg.append(check_lang('abstract', lang))
-        for lang in self.keywords_by_lang.keys():
+        for lang in self.article.keywords_by_lang.keys():
             msg.append(check_lang('kwd-group', lang))
         return msg
 
