@@ -9,6 +9,14 @@ def display_datetime(dateiso, timeiso):
     return y + '-' + '-'.join([md[i*2:i*2+2] for i in range(0, 2)]) + ' ' + ':'.join([timeiso[i*2:i*2+2] for i in range(0, 2)])
 
 
+def is_similar(text, items, min_rate=0.8):
+    if not isinstance(items, list):
+        items = [items]
+    highiest_rate, most_similar_items = most_similar(similarity(items, text, min_rate))
+    print([highiest_rate, most_similar_items])
+    return (highiest_rate > min_rate)
+
+
 def how_similar(this, that):
     import difflib
     if this is None:

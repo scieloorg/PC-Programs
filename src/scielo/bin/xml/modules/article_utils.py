@@ -8,6 +8,8 @@ import json
 import utils
 import attributes
 
+from __init__ import _
+
 
 MONTHS = {'': '00', 'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06', 'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12', }
 
@@ -77,20 +79,39 @@ def format_issue_label(year, volume, number, volume_suppl, number_suppl, compl):
     return ''.join([i for i in [year, v, vs, n, ns, compl] if i is not None])
 
 
-def url_check(url, _timeout=30):
-    utils.display_message(datetime.now().isoformat() + ' url checking ' + url)
+def request(url, _timeout=30, debug=False):
+    r = None
     try:
         r = urllib2.urlopen(url, timeout=_timeout).read()
     except urllib2.URLError, e:
-        r = None
-        utils.display_message(datetime.now().isoformat() + " Oops, timed out?")
+        if debug:
+            utils.display_message(datetime.now().isoformat() + " Oops, timed out?")
     except urllib2.socket.timeout:
-        r = None
-        utils.display_message(datetime.now().isoformat() + " Timed out!")
+        if debug:
+            utils.display_message(datetime.now().isoformat() + " Timed out!")
     except:
-        r = None
-        utils.display_message(datetime.now().isoformat() + " unknown")
+        if debug:
+            utils.display_message(datetime.now().isoformat() + " unknown")
+    if debug:
+        if r is None:
+            utils.display_message(datetime.now().isoformat() + ' ' + url)
+    return r
+
+
+def url_check(url, _timeout=10):
+    r = request(url, _timeout)
     return (r is not None)
+
+
+def api_crossref_doi_query(doi):
+    #PID|oldpid
+    r = None
+    if doi is not None:
+        if 'dx.doi.org' in doi:
+            doi = doi[doi.find('dx.doi.org/')+len('dx.doi.org/'):]
+        _url = 'http://api.crossref.org/works/' + doi
+        r = request(_url, 20)
+    return r
 
 
 def u_encode(u, encoding):
@@ -104,20 +125,6 @@ def u_encode(u, encoding):
             except Exception as e:
                 r = u.encode(encoding, 'ignore')
     return r
-
-
-def doi_pid(doi_query_result):
-    pid = None
-    if doi_query_result is not None:
-        article_json = json.loads(doi_query_result)
-        alt_id_items = article_json.get('message', {}).get('alternative-id')
-        pid = None
-        if alt_id_items is not None:
-            if isinstance(alt_id_items, list):
-                pid = alt_id_items[0]
-            else:
-                pid = alt_id_items
-    return pid
 
 
 def format_dateiso_from_date(year, month, day):
@@ -276,30 +283,7 @@ def four_digits_year(year):
     return year
 
 
-def doi_query(doi):
-    r = None
-    if doi is not None:
-        if 'dx.doi.org' in doi:
-            doi = doi[doi.find('dx.doi.org/')+len('dx.doi.org/'):]
-        _url = 'http://api.crossref.org/works/' + doi
-        try:
-            r = urllib2.urlopen(_url, timeout=20).read()
-        except urllib2.URLError, e:
-            r = '{}'
-            utils.display_message(_url)
-            utils.display_message(datetime.now().isoformat() + " Oops, timed out?")
-        except urllib2.socket.timeout:
-            r = None
-            utils.display_message(_url)
-            utils.display_message(datetime.now().isoformat() + " Timed out!")
-        except:
-            utils.display_message(_url)
-            r = None
-            utils.display_message(datetime.now().isoformat() + " unknown")
-    return r
-
-
-def doi_journal_and_article(doi_query_result):
+def api_crossref_doi_journal_and_article(doi_query_result):
     journal_titles = None
     article_titles = None
     if doi_query_result is not None:
@@ -337,3 +321,21 @@ def validate_article_type_and_section(article_type, article_section):
 
 def compare_article_type_and_section(article_type, article_section):
     return utils.how_similar(article_section, article_type.replace('-', ' '))
+
+
+def api_crossref_doi_pid(doi_query_result):
+    pid = None
+    if doi_query_result is not None:
+        article_json = json.loads(doi_query_result)
+        alt_id_items = article_json.get('message', {}).get('alternative-id')
+        pid = None
+        if alt_id_items is not None:
+            if isinstance(alt_id_items, list):
+                pid = alt_id_items[0]
+            else:
+                pid = alt_id_items
+    return pid
+
+
+def query_doi_pid(api_crossref_doi_query_result):
+    return api_crossref_doi_pid(api_crossref_doi_query_result)

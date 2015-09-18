@@ -450,7 +450,7 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
             if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), pkg_manager):
 
                 if aop_manager.aop_info.get(article.xml_name) is not None:
-                    article._ahead_pid = aop_manager.aop_info.get(article.xml_name)[0].ahead_pid
+                    article.registered_aop_pid = aop_manager.aop_info.get(article.xml_name)[0].ahead_pid
 
                 article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
 
