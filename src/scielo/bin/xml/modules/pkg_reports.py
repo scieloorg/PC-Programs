@@ -496,6 +496,7 @@ class PkgManager(object):
                 elem = doc.keywords_by_lang.get(lang)
                 if elem is not None:
                     elements['keywords'] = [k.text for k in elem]
+                lang += ' (' + str(attributes.LANGUAGES.get(lang)).encode('utf-8') + ')'
                 lang_dep[lang] = elements
 
             values = []
