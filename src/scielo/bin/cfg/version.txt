@@ -1,4 +1,14 @@
-﻿4.0.090 trial - 16/09/2015
+﻿4.0.090 trial - 28/09/2015
+==========================
+- XC
+  - (bug) Do not use any api to find previous PID
+  - (bug) Fix the transference of articles files (it was using the collection scilista instead of gerapadrao scilista)
+  - (bug) Include order validation in journal/issue report, and considere it as a critical error
+  - (bug) Solve how to save large records (Chinese, Russian, Arabic abstracts)
+- XPM
+  - (improvement) Present the "translation" of code languages
+
+4.0.090 trial - 16/09/2015
 ==========================
 - Markup
   - (bug) Fix identification of xref (bibr) which is numeric an which pattern is (1,2-3)
