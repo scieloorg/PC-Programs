@@ -427,7 +427,6 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
     for year in range(current_year-2, current_year+1):
         i_ahead_records[year] = find_i_record(year + 'nahead', pkg_manager.issue_models.issue.issn_id, None)
 
-    aop_status = None
     aop_manager = xc_models.AopManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
     db_article = xc_models.ArticleDB(converter_env.db_isis, issue_files)
 
@@ -443,22 +442,23 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
         if not pkg_manager.actions[xml_name] in ['add', 'update']:
             xc_result = 'skipped'
         else:
-            aop_manager.get_aop(article)
+            aop_manager.check_aop(article)
 
             xc_result = 'None'
 
             if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), pkg_manager):
-
-                if aop_manager.aop_info.get(article.xml_name) is not None:
-                    article.registered_aop_pid = aop_manager.aop_info.get(article.xml_name)[0].ahead_pid
+                valid_aop = aop_manager.aop_article(article.xml_name)
+                doc_aop_status = aop_manager.aop_status(article.xml_name)
+                if valid_aop is not None:
+                    article.registered_aop_pid = valid_aop.ahead_pid
 
                 article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
 
+                # FIXME
                 article.creation_date = None if not xml_name in registered_articles.keys() else registered_articles[xml_name].creation_date
 
                 saved = db_article.save_article(pkg_manager.issue_models.record, article, article_files)
                 if saved:
-                    #utils.debugging('convert_articles: unmatched_orders')
                     if xml_name in pkg_manager.changed_orders.keys():
                         prev_order, curr_order = pkg_manager.changed_orders[xml_name]
                         msg += html_reports.p_message('WARNING: ' + _('Replacing orders: ') + prev_order + _(' by ') + curr_order)
@@ -468,17 +468,9 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
                             os.unlink(prev_article_files.id_filename)
                         conversion_status['deleted incorrect order'].append(prev_order)
 
-                    #utils.debugging('convert_articles: aop_status is not None')
-                    if aop_status is not None:
-                        if doc_aop_status in ['matched aop', 'partially matched aop']:
-                            saved, aop_msg = aop_manager.manage_ex_aop(valid_aop)
-                            msg += ''.join([item for item in aop_msg])
-                            if saved:
-                                aop_status['deleted ex-aop'].append(xml_name)
-                                msg += html_reports.p_message('INFO: ' + _('ex aop was deleted'))
-                            else:
-                                aop_status['not deleted ex-aop'].append(xml_name)
-                                msg += html_reports.p_message('ERROR: ' + _('Unable to delete ex aop'))
+                    if doc_aop_status in ['matched aop', 'partially matched aop']:
+                        msg += aop_manager.manage_ex_aop(valid_aop)
+
                     xc_result = 'converted'
                 else:
                     xc_result = 'not converted'

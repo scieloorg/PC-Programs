@@ -15,6 +15,7 @@ from attributes import ROLE, DOCTOPIC, doctopic_label
 from dbm_isis import IDFile
 import pkg_reports
 import institutions_service
+import html_reports
 
 
 ISSN_CONVERSION = {
@@ -1076,7 +1077,19 @@ class AopManager(object):
             aop = self.indexed_by_xml_name.get(filename)
         return aop
 
-    def get_aop(self, article):
+    @property
+    def aop_article(self, xml_name):
+        return self.aop_info.get(xml_name, [None, None])[0]
+
+    @property
+    def aop_status(self, xml_name):
+        return self.aop_info.get(xml_name, [None, None])[1]
+
+    @property
+    def aop_items_status(self):
+        return self.aop_sorted_by_status
+
+    def check_aop(self, article):
         aop = None
         status = None
         if self.journal_has_aop():
@@ -1193,7 +1206,7 @@ class AopManager(object):
             done = (not os.path.isfile(aop_issue_files.id_path + '/' + aop.filename))
         return (done, msg)
 
-    def manage_ex_aop(self, aop):
+    def __manage_ex_aop(self, aop):
         done = False
         msg = []
         if aop is not None:
@@ -1202,6 +1215,19 @@ class AopManager(object):
                 if done:
                     self.mark_aop_as_deleted(aop)
         return (done, msg)
+
+    def manage_ex_aop(self, aop):
+        if self.aop_status(aop.xml_name) in ['matched aop', 'partially matched aop']:
+            if doc_aop_status in ['matched aop', 'partially matched aop']:
+                saved, aop_msg = aop_manager.__manage_ex_aop(aop)
+                msg += ''.join([item for item in aop_msg])
+                if saved:
+                    self.aop_sorted_by_status['deleted ex-aop'].append(aop.xml_name)
+                    msg += html_reports.p_message('INFO: ' + _('ex aop was deleted'))
+                else:
+                    self.aop_sorted_by_status['not deleted ex-aop'].append(aop.xml_name)
+                    msg += html_reports.p_message('ERROR: ' + _('Unable to delete ex aop'))
+        return msg
 
     def update_all_aop_db(self):
         updated = []
