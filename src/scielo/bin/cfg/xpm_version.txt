@@ -1,4 +1,9 @@
-﻿4.0.090 trial - 16/09/2015
+﻿4.0.090 trial - 28/09/2015
+==========================
+ - (improvement) Present the "translation" of code languages
+
+
+4.0.090 trial - 16/09/2015
 ==========================
  - (bug) Solve encoding problem which occurres in some computers as reading the DTD report
  - (bug) Fix the article title to check doi
