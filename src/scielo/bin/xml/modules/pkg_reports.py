@@ -517,6 +517,22 @@ class ArticlesPkgReport(object):
                         part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
                     r += part
 
+        if validate_order:
+            invalid_order = []
+            for order, xml_files in pkg_metadata['order'].items():
+                if order.isdigit():
+                    if 0 < int(order) <= 99999:
+                        pass
+                    else:
+                        critical += 1
+                        invalid_order.append(xml_files)
+                else:
+                    critical += 1
+                    invalid_order.append(xml_files)
+            if len(invalid_order) > 0:
+                r += html_reports.p_message('FATAL ERROR: ' + _('Invalid format of order. Expected number 1 to 99999.'))
+                r += html_reports.format_list('order (article-id)', 'ol', invalid_order)
+
         issue_common_data = ''
 
         for label in equal_data:
