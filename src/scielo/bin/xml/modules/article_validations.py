@@ -280,7 +280,7 @@ class ArticleContentValidation(object):
         label, status, msg = required('article/@specific-use', self.article.sps, 'ERROR')
         if status == 'OK':
             if not 'sps-' in self.article.sps:
-                label, status, msg = (label, 'FATAL ERROR', _('Invalid value of') + ' ' + label + ': ' + self.article.sps + '.')
+                label, status, msg = (label, 'FATAL ERROR', _('Invalid value for ') + ' ' + label + ': ' + self.article.sps + '.')
         return (label, status, msg)
 
     @property

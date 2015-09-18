@@ -275,4 +275,4 @@ def check_lang(lang):
     if lang in LANGUAGES.keys():
         return (True, LANGUAGES.get(lang))
     else:
-        return (False, lang + ' ' + _('invalid value for') + ' @xml:lang. ' + _('Expected values: ') + ', '.join(sorted(LANGUAGES.keys())) + '. ' + '|'.join(sorted([k + '(' + v + ')' for k, v in LANGUAGES.items()])))
+        return (False, lang + ': ' + _('Invalid value for ') + '@xml:lang. ' + _('Expected values') + ': ' + ', '.join(sorted(LANGUAGES.keys())) + '. ' + '|'.join(sorted([k + '(' + v + ')' for k, v in LANGUAGES.items()])))
