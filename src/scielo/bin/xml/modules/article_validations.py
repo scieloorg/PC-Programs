@@ -13,6 +13,14 @@ import html_reports
 import institutions_service
 
 
+def check_lang(elem_name, lang):
+    label, status, msg = required(elem_name + '/@xml:lang', lang, 'FATAL ERROR')
+    if status == 'OK':
+        status, msg = attributes.check_lang(lang)
+        status = 'OK' if status else 'FATAL ERROR'
+    return (label, status, msg)
+
+
 def format_value(value):
     if value is None:
         value = 'None'
@@ -276,12 +284,20 @@ class ArticleContentValidation(object):
 
     @property
     def language(self):
-        label, status, msg = required('@xml:lang', self.article.language, 'FATAL ERROR')
-        if status == 'OK':
-            if not self.article.language.lower() == self.article.language or len(self.article.language) != 2:
-                status = 'FATAL ERROR'
-                msg = _('Invalid format for language. It requires two lower case letters.')
-        return (label, status, msg)
+        return check_lang('article', self.article.language)
+
+    @property
+    def languages(self):
+        msg = []
+        for lang in self.trans_languages:
+            msg.append(check_lang('sub-article', lang))
+        for lang in self.titles_by_lang.keys():
+            msg.append(check_lang('article-title', lang))
+        for lang in self.abstracts_by_lang.keys():
+            msg.append(check_lang('abstract', lang))
+        for lang in self.keywords_by_lang.keys():
+            msg.append(check_lang('kwd-group', lang))
+        return msg
 
     @property
     def related_articles(self):
