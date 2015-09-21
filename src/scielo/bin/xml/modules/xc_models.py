@@ -696,229 +696,65 @@ class RegisteredAhead(object):
         return a
 
 
-class ArticleDAO(object):
-
-    def __init__(self, db_isis, org_manager):
-        self.org_manager = org_manager
-        self.db_isis = db_isis
-
-    def create_id_file(self, i_record, article, article_files, creation_date=None):
-        saved = False
-        found = False
-        if not os.path.isdir(article_files.issue_files.id_path):
-            os.makedirs(article_files.issue_files.id_path)
-        if not os.path.isdir(os.path.dirname(article_files.issue_files.base)):
-            os.makedirs(os.path.dirname(article_files.issue_files.base))
-
-        if article.order != '00000':
-            article_records = ArticleRecords(self.org_manager, article, i_record, article_files, creation_date)
-            if os.path.isfile(article_files.id_filename):
-                try:
-                    os.unlink(article_files.id_filename)
-                except:
-                    print('Unable to delete ' + article_files.id_filename)
-            found = os.path.isfile(article_files.id_filename)
-
-            self.db_isis.save_id(article_files.id_filename, article_records.records, self.content_formatter)
-            saved = os.path.isfile(article_files.id_filename)
-        return (not found and saved)
-
-    def content_formatter(self, content):
-
-        def reduce_content(content):
-            languages = ['ru', 'zh', 'ch', 'cn', 'fr', 'es', ]
-            alternative = [u'абстрактный доступен в Полный текст', u'抽象是在全文可', u'抽象是在全文可', u'抽象是在全文可', u'résumé est disponible dans le document', u'resumen está disponible en el texto completo']
-            i = 0
-            while (len(content) > 10000) and (i < len(languages)):
-                content = remove_abstract(content, languages[i], alternative[i])
-                i += 1
-            return content
-
-        def remove_abstract(content, language, alternative):
-            new = content
-            if len(content) > 10000:
-                new = ''
-                abstract = content.replace('!v', 'BREAK-ABSTRACT!v')
-                for a in abstract.split('BREAK-ABSTRACT'):
-                    l = '^l' + language
-                    if a.startswith('!v083') and l in a:
-                        new += '!v083!^a' + alternative + l + '\n'
-                    else:
-                        new += a
-            return new
-
-        if '!v706!f' in content:
-            content = content.replace('<italic>', '<em>')
-            content = content.replace('</italic>', '</em>')
-            content = content.replace('<bold>', '<strong>')
-            content = content.replace('</bold>', '</strong>')
-        elif '!v706!c' in content or '!v706!h' in content:
-            content = content.replace('<italic>', '')
-            content = content.replace('</italic>', '')
-            content = content.replace('<bold>', '')
-            content = content.replace('</bold>', '')
-            content = xml_utils.remove_tags(content)
-        if len(content) > 10000:
-            content = reduce_content(content)
-        return content
-
-    def finish_conversion(self, issue_record, issue_files, pkg_path):
-        loaded = []
-        self.db_isis.save_records([issue_record], issue_files.base)
-        for f in os.listdir(issue_files.id_path):
-            if f == '00000.id':
-                os.unlink(issue_files.id_path + '/' + f)
-            if f.endswith('.id') and f != '00000.id' and f != 'i.id':
-                self.db_isis.append_id_records(issue_files.id_path + '/' + f, issue_files.base)
-                loaded.append(f)
-        issue_files.save_source_files(pkg_path)
-        return loaded
-
-    def registered_items(self, issue_files):
-        articles = {}
-        records = self.db_isis.get_records(issue_files.base)
-        i, registered_articles = IssueArticlesRecords(records).articles()
-
-        for xml_name, registered_doc in registered_articles.items():
-            f = issue_files.base_source_path + '/' + xml_name + '.xml'
-            if os.path.isfile(f):
-
-                xml, e = xml_utils.load_xml(f)
-                doc = Article(xml, xml_name)
-
-                doc.pid = registered_doc.pid
-                doc.creation_date_display = registered_doc.creation_date_display
-                doc.creation_date = registered_doc.creation_date
-                doc.last_update = registered_doc.last_update
-                doc.order = registered_doc.order
-                doc.previous_pid = registered_doc.previous_pid
-            else:
-                doc = None
-            articles[xml_name] = doc
-
-        issue_models = IssueModels(i) if i is not None else None
-        return (issue_models, articles)
-
-    def generate_windows_version(self, issue_files):
-        if not os.path.isdir(issue_files.windows_base_path):
-            os.makedirs(issue_files.windows_base_path)
-        self.db_isis.cisis.mst2iso(issue_files.base, issue_files.windows_base + '.iso')
-        self.db_isis.cisis.crunchmf(issue_files.base, issue_files.windows_base)
-
-
 class ArticleDB(object):
 
     def __init__(self, db_isis, issue_files, aop_manager):
         self.issue_files = issue_files
         self.db_isis = db_isis
-        self._registered_articles = None
-        self.indexed_by_doi = {}
-        self.indexed_by_order = {}
-        self.i_record = None
-        self._registered_items = None
-        self._articles = None
         self.aop_manager = aop_manager
+        self._registered_articles = None
+        self._issue_models = None
+        self._registered_articles_records = None
+        self._registered_i_record = None
 
-    def get_registered_items(self):
-        records = self.db_isis.get_records(self.issue_files.base)
-        self.i_record, self._registered_items = IssueArticlesRecords(records).articles()
+    def restore_missing_id_files(self):
+        self._registered_i_record, self._registered_articles_records = self.registered_records
+        if self._registered_articles_records is not None:
+            for name, registered_article in self._registered_articles.items():
+                article_files = ArticleFiles(self.issue_files, registered_article.order, registered_article.xml_name)
+                if not os.path.isfile(article_files.id_filename):
+                    self.db_isis.save_id(article_files.id_filename, registered_article.article_records)
 
-    def get_articles(self):
-        self.get_registered_items()
-        self._articles = {}
-        for xml_name, registered_doc in self._registered_items.items():
-            f = self.issue_files.base_source_path + '/' + xml_name + '.xml'
-            if os.path.isfile(f):
+    def reset_registered_records(self):
+        self._registered_articles_records = None
+        self._registered_articles = None
 
-                xml, e = xml_utils.load_xml(f)
-                doc = Article(xml, xml_name)
+    @property
+    def registered_records(self):
+        if self._registered_i_record is None or self._registered_articles_records is None:
+            records = self.db_isis.get_records(self.issue_files.base)
+            self._registered_i_record, self._registered_articles_records = IssueArticlesRecords(records).articles()
+        return (self._registered_i_record, self._registered_articles_records)
 
-                doc.pid = registered_doc.pid
-                doc.creation_date_display = registered_doc.creation_date_display
-                doc.creation_date = registered_doc.creation_date
-                doc.last_update = registered_doc.last_update
-                doc.order = registered_doc.order
-                doc.previous_pid = registered_doc.previous_pid
-            else:
-                doc = None
-            self._articles[xml_name] = doc
-
-    def get_issue_models(self):
-        if self.i_record is None:
-            self.get_registered_items()
-        return IssueModels(self.i_record) if self.i_record is not None else None
-
-    def create_id_filenames(self):
-        #FIXME
+    @property
+    def registered_articles(self):
         if self._registered_articles is None:
-            if not os.path.isdir(self.issue_files.id_path):
-                os.makedirs(self.issue_files.id_path)
-            i_record = None
-            self._registered_articles = None
-            records = self.db_isis.get_records(self.issue_files.base, expr=None)
-            if len(records) > 0:
-                i_record, self._registered_articles = IssueArticlesRecords(records).articles()
+            self._registered_articles = {}
+            self._registered_i_record, self._registered_articles_records = self.registered_records
 
-                self.issue_files._articles_files = {}
+            for xml_name, registered_article in self._registered_articles_records.items():
+                f = issue_files.base_source_path + '/' + xml_name + '.xml'
+                if os.path.isfile(f):
 
-                for name, registered_article in self._registered_articles.items():
-                    article_files = ArticleFiles(self.issue_files, registered_article.order, registered_article.xml_name)
-                    self.issue_files._articles_files[registered_article.order] = article_files
+                    xml, e = xml_utils.load_xml(f)
+                    doc = Article(xml, xml_name)
 
-                    if registered_article.doi is not None:
-                        if not registered_article.doi in self.indexed_by_doi.keys():
-                            self.indexed_by_doi[registered_article.doi] = []
-                        self.indexed_by_doi[registered_article.doi].append(registered_article.xml_name)
-                    if registered_article.order is not None:
-                        if not registered_article.order in self.indexed_by_order.keys():
-                            self.indexed_by_order[registered_article.order] = []
-                        self.indexed_by_order[registered_article.order].append(registered_article.xml_name)
-
-                    if not os.path.isfile(article_files.id_filename):
-                        self.db_isis.save_id(article_files.id_filename, registered_article.article_records)
-
-            if not os.path.isfile(self.issue_files.id_filename):
-                if i_record is None and issue_record is not None:
-                    i_record = issue_record
-                if not i_record is None:
-                    self.db_isis.save_id(self.issue_files.id_filename, [i_record])
+                    doc.pid = registered_article.pid
+                    doc.creation_date_display = registered_article.creation_date_display
+                    doc.creation_date = registered_article.creation_date
+                    doc.last_update = registered_article.last_update
+                    doc.order = registered_article.order
+                    doc.previous_pid = registered_article.previous_pid
+                else:
+                    doc = None
+                self._registered_articles[xml_name] = doc
         return self._registered_articles
 
-    def registered_articles(self, issue_record=None):
-        #FIXME
-        if self._registered_articles is None:
-            if not os.path.isdir(self.issue_files.id_path):
-                os.makedirs(self.issue_files.id_path)
-            i_record = None
-            self._registered_articles = None
-            records = self.db_isis.get_records(self.issue_files.base, expr=None)
-            if len(records) > 0:
-                i_record, self._registered_articles = IssueArticlesRecords(records).articles()
-
-                self.issue_files._articles_files = {}
-
-                for name, registered_article in self._registered_articles.items():
-                    article_files = ArticleFiles(self.issue_files, registered_article.order, registered_article.xml_name)
-                    self.issue_files._articles_files[registered_article.order] = article_files
-
-                    if registered_article.doi is not None:
-                        if not registered_article.doi in self.indexed_by_doi.keys():
-                            self.indexed_by_doi[registered_article.doi] = []
-                        self.indexed_by_doi[registered_article.doi].append(registered_article.xml_name)
-                    if registered_article.order is not None:
-                        if not registered_article.order in self.indexed_by_order.keys():
-                            self.indexed_by_order[registered_article.order] = []
-                        self.indexed_by_order[registered_article.order].append(registered_article.xml_name)
-
-                    if not os.path.isfile(article_files.id_filename):
-                        self.db_isis.save_id(article_files.id_filename, registered_article.article_records)
-
-            if not os.path.isfile(self.issue_files.id_filename):
-                if i_record is None and issue_record is not None:
-                    i_record = issue_record
-                if not i_record is None:
-                    self.db_isis.save_id(self.issue_files.id_filename, [i_record])
-        return self._registered_articles
+    @property
+    def registered_issue_models(self):
+        if self._issue_models is None:
+            self._issue_models = IssueModels(self._registered_i_record) if self._registered_i_record is not None else None
+        return self._issue_models
 
     def content_formatter(self, content):
 
@@ -960,19 +796,14 @@ class ArticleDB(object):
         return content
 
     def create_db(self):
-        loaded = []
         if os.path.isfile(self.issue_files.id_filename):
             self.db_isis.save_id_records(self.issue_files.id_filename, self.issue_files.base)
             for f in os.listdir(self.issue_files.id_path):
                 if f == '00000.id':
                     os.unlink(self.issue_files.id_path + '/' + f)
                 if f.endswith('.id') and f != '00000.id' and f != 'i.id':
-                    loaded.append(f)
                     self.db_isis.append_id_records(self.issue_files.id_path + '/' + f, self.issue_files.base)
-
-    def save_i_record(self):
-        if os.path.isfile(self.issue_files.id_filename):
-            self.db_isis.save_id_records(self.issue_files.id_filename, self.issue_files.base)
+        self.reset_registered_records()
 
     def article_records(self, institution_normalizer, i_record, article, article_files):
         _article_records = None
@@ -980,7 +811,10 @@ class ArticleDB(object):
             _article_records = ArticleRecords(institution_normalizer, article, i_record, article_files)
         return _article_records
 
-    def save_article(self, article_records, article_files):
+    def create_issue_id_file(self, i_record):
+        self.db_isis.save_id(self.issue_files.id_filename, [i_record])
+
+    def create_article_id_file(self, article_records, article_files):
         saved = False
         previous = False
         if not os.path.isdir(article_files.issue_files.id_path):
@@ -1009,7 +843,7 @@ class ArticleDB(object):
 
         article_files = serial_files.ArticleFiles(self.issue_files, article.order, article.xml_name)
         article_records = self.article_records(institution_normalizer, i_record, article, article_files)
-        saved = self.save_article(article_records, article_files)
+        saved = self.create_article_id_file(article_records, article_files)
         if saved:
             if incorrect_order is not None:
                 incorrect_article_files = serial_files.ArticleFiles(self.issue_files, incorrect_order, article.xml_name)
@@ -1023,9 +857,8 @@ class ArticleDB(object):
         return (saved, is_excluded_incorrect_order, is_excluded_aop)
 
     def finish_conversion(self, pkg_path):
-        loaded = self.create_db()
+        self.create_db()
         self.issue_files.save_source_files(pkg_path)
-        return loaded
 
     def generate_windows_version(self):
         if not os.path.isdir(self.issue_files.windows_base_path):
@@ -1036,10 +869,9 @@ class ArticleDB(object):
 
 class AopManager(object):
 
-    def __init__(self, db_isis, journal_files, i_ahead_records=None):
+    def __init__(self, db_isis, journal_files):
         self.db_isis = db_isis
         self.journal_files = journal_files
-        self.i_ahead_records = i_ahead_records
         self.still_aop = {}
         self.indexed_by_doi = {}
         self.indexed_by_xml_name = {}
@@ -1059,21 +891,18 @@ class AopManager(object):
         self._aop_db_items = {}
         for name, aop_issue_files in self.journal_files.aop_issue_files.items():
             self._aop_db[aop_issue_files.issue_folder] = ArticleDB(self.db_isis, aop_issue_files)
-            i_record = None
-            if self.i_ahead_records is not None:
-                year = aop_issue_files.issue_folder[0:4]
-                if year in self.i_ahead_records.keys():
-                    i_record = self.i_ahead_records[year]
+            self._aop_db[aop_issue_files.issue_folder].restore_missing_id_files()
 
-            if self._aop_db[aop_issue_files.issue_folder].registered_articles(i_record) is not None:
-                for xml_name, registered_article in self._aop_db[aop_issue_files.issue_folder].registered_articles.items():
+            registered_i_record, registered_articles = self._aop_db[aop_issue_files.issue_folder].registered_records
 
+            if registered_articles is not None:
+                for xml_name, registered_article in registered_articles.items():
                     registered_aop = RegisteredAhead(registered_article.article_records[1], aop_issue_files.issue_folder)
                     self.indexed_by_doi[registered_aop.doi] = registered_aop.xml_name
                     self.indexed_by_xml_name[registered_aop.xml_name] = registered_aop
                     if self.still_aop[aop_issue_files.issue_folder] is None:
                         self.still_aop[aop_issue_files.issue_folder] = {}
-                        self.still_aop[aop_issue_files.issue_folder][registered_aop.order] = registered_aop.xml_name
+                    self.still_aop[aop_issue_files.issue_folder][registered_aop.order] = registered_aop.xml_name
 
     @property
     def aop_db_items(self):
@@ -1088,7 +917,7 @@ class AopManager(object):
             for order in sorted(self.still_aop[dbname].keys()):
                 xml_name = self.still_aop[dbname][order]
                 aop = self.indexed_by_xml_name[xml_name]
-                self.aop_sorted_by_status['still aop'].append(dbname + '|' + order + '|' + aop.filename + '|' + aop.article_title[0:50] + '...')       
+                self.aop_sorted_by_status['still aop'].append(dbname + '|' + order + '|' + aop.filename + '|' + aop.article_title[0:50] + '...')
 
     def name(self, db_filename):
         return os.path.basename(db_filename)
@@ -1300,10 +1129,9 @@ def normalize_affiliations(institution_normalizer, found_institutions):
 
 class DBManager(object):
 
-    def __init__(self, db_isis, title_filename, issue_filename, org_manager, serial_path, local_web_app_path):
+    def __init__(self, db_isis, title_filename, issue_filename, serial_path, local_web_app_path):
         self.title_db_filename = title_filename
         self.issue_db_filename = issue_filename
-        self.db_article = ArticleDAO(db_isis, org_manager)
         self.db_isis = db_isis
         self.local_web_app_path = local_web_app_path
         self.serial_path = serial_path
