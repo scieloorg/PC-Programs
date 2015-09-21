@@ -426,7 +426,7 @@ def convert_articles(db_article, pkg_manager, pkg_path):
                 xc_result = 'not converted'
                 valid_aop = db_article.aop_manager.aop_article(article.xml_name)
                 if valid_aop is not None:
-                    article.registered_aop_pid = valid_aop.ahead_pid
+                    article.registered_aop_pid = valid_aop.pid
 
                 incorrect_order = None
                 if xml_name in pkg_manager.changed_orders.keys():
@@ -464,7 +464,7 @@ def convert_articles(db_article, pkg_manager, pkg_path):
     scilista_item = None
     #utils.debugging('convert_articles: conclusion')
     if pkg_conversion_results.fatal_errors == 0:
-        db_article.finish_conversion(pkg_path)
+        db_article.finish_conversion(pkg_path, pkg_manager.issue_models.record)
         if len(db_article.registered_articles) >= len(pkg_manager.pkg_articles):
             scilista_item = pkg_manager.issue_models.issue.acron + ' ' + pkg_manager.issue_models.issue.issue_label
             if not converter_env.is_windows:

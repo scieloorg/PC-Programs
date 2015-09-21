@@ -137,9 +137,7 @@ class Text(object):
 
 class ArticleXML(object):
 
-    def __init__(self, tree, xml_name):
-        self.xml_name = xml_name
-        self.prefix = xml_name.replace('.xml', '')
+    def __init__(self, tree):
         self.tree = tree
         self.journal_meta = None
         self.article_meta = None
@@ -159,7 +157,6 @@ class ArticleXML(object):
         self._epub_ppub_date = None
         self._received_date = None
         self._accepted_date = None
-        self._found_institutions = None
 
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
@@ -461,6 +458,17 @@ class ArticleXML(object):
                 collab.collab = contrib.text
                 k.append(collab)
         return k
+
+    def short_article_title(self, size=None):
+        if size is None:
+            return self.title
+        elif not size.isdigit():
+            return self.title
+        elif self.title is not None:
+            if len(self.title) > size:
+                return self.title[0:size] + '...'
+            else:
+                return self.title
 
     @property
     def title(self):
@@ -977,6 +985,41 @@ class ArticleXML(object):
         return r
 
     @property
+    def elements_which_has_id_attribute(self):
+        if self.tree is not None:
+            return self.tree.findall('.//*[@id]')
+
+    @property
+    def href_files(self):
+        return [href for href in self.hrefs if href.is_internal_file] if self.hrefs is not None else []
+
+
+class Article(ArticleXML):
+
+    def __init__(self, tree, xml_name):
+        ArticleXML.__init__(self, tree)
+        self.xml_name = xml_name
+        self.prefix = xml_name.replace('.xml', '')
+        self.filename = xml_name if xml_name.endswith('.xml') else xml_name + '.xml'
+        self.number = None
+        self.number_suppl = None
+        self.volume_suppl = None
+        self.compl = None
+        if self.tree is not None:
+            self._issue_parts()
+        self.pid = None
+        self.creation_date_display = None
+        self.creation_date = None
+        self.last_update = None
+        self._api_crossref_doi_query_result = None
+        self._doi_journal_and_article = None
+        self._queried_doi_pid = None
+        self.registered_aop_pid = None
+        self._previous_pid = None
+        self._found_institutions = None
+        self._normalized_affiliations = None
+
+    @property
     def hrefs(self):
         r = []
         if self.tree is not None:
@@ -986,15 +1029,6 @@ class ArticleXML(object):
                     _href = HRef(href, elem, parent, xml_utils.node_xml(parent), self.prefix)
                     r.append(_href)
         return r
-
-    @property
-    def elements_which_has_id_attribute(self):
-        if self.tree is not None:
-            return self.tree.findall('.//*[@id]')
-
-    @property
-    def href_files(self):
-        return [href for href in self.hrefs if href.is_internal_file] if self.hrefs is not None else []
 
     @property
     def tables(self):
@@ -1012,27 +1046,6 @@ class ArticleXML(object):
                 r.append(_table)
         return r
 
-
-class Article(ArticleXML):
-
-    def __init__(self, tree, xml_name):
-        ArticleXML.__init__(self, tree, xml_name)
-        self.number = None
-        self.number_suppl = None
-        self.volume_suppl = None
-        self.compl = None
-        if self.tree is not None:
-            self._issue_parts()
-        self.pid = None
-        self.creation_date_display = None
-        self.creation_date = None
-        self.last_update = None
-        self._api_crossref_doi_query_result = None
-        self._doi_journal_and_article = None
-        self._queried_doi_pid = None
-        self.registered_aop_pid = None
-        self._previous_pid = None
-
     def found_institutions(self, aff_normalizer):
         if self._found_institutions is None:
             self._found_institutions = {}
@@ -1040,6 +1053,17 @@ class Article(ArticleXML):
                 if aff.id is not None:
                     self._found_institutions[aff.id] = aff_normalizer.find_institutions(aff)
         return self._found_institutions
+
+    @property
+    def normalized_affiliations(self, aff_normalizer):
+        if self._normalized_affiliations is None:
+            self._normalized_affiliations = []
+            if self.found_institutions(aff_normalizer) is not None:
+                for aff_id, found_institutions in self.found_institutions(aff_normalizer):
+                    norm_aff = institution_normalizer.normalized_institution(aff_id, found_institutions)
+                    if norm_aff is not None:
+                        self._normalized_affiliations.append(norm_aff)
+        return self._normalized_affiliations
 
     @property
     def clinical_trial_url(self):
@@ -1591,7 +1615,7 @@ class InstitutionNormalizer(object):
                 r.append(('normalized aff', 'ERROR', msg + _('. Similar valid institution names are: ') + '<OPTIONS/>' + '|'.join([', '.join(list(item)) for item in found_institutions])))
         return r
 
-    def normalized_institution(self, found_institutions):
+    def normalized_institution(self, aff_id, found_institutions):
         aff = None
         if len(found_institutions) > 1:
             found_institutions = list(set([(norm_orgname, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions]))
@@ -1602,5 +1626,13 @@ class InstitutionNormalizer(object):
                 norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = found_institutions[0]
             else:
                 norm_orgname, norm_country_code = found_institutions[0]
-            aff = (norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name)
+
+            aff = Affiliation()
+            aff.id = aff_id
+            aff.norgname = norm_orgname
+            aff.city = norm_city
+            aff.state = norm_state
+            aff.i_country = norm_country_code
+            aff.country = norm_country_name
+
         return aff

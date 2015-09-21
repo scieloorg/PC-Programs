@@ -82,112 +82,12 @@ class RegisteredArticle(object):
         self.i_record = i_record
         self.article_records = article_records
 
-    def summary(self):
-        data = {}
-        data['journal-title'] = self.journal_title
-        data['journal id NLM'] = self.journal_id_nlm_ta
-        data['journal ISSN'] = ','.join([k + ':' + v for k, v in self.journal_issns.items() if v is not None]) if self.journal_issns is not None else None
-        data['publisher name'] = self.publisher_name
-        data['issue label'] = self.issue_models.issue.issue_label
-        data['issue pub date'] = self.issue_models.issue.dateiso[0:4]
-        data['order'] = self.order
-        data['doi'] = self.doi
-        data['fpage-and-seq'] = self.fpage
-        data['elocation id'] = self.elocation_id
-        return data
-
-    @property
-    def issue(self):
-        if self._issue is None:
-            issue_models = IssueModels(self.i_record)
-            self._issue = issue_models.issue
-        return self._issue
-
-    @property
-    def journal_title(self):
-        return self.issue.journal_title if self.issue.journal_title else self.article_records[1].get('130')
-
-    @property
-    def journal_id_nlm_ta(self):
-        return self.issue.journal_id_nlm_ta if self.issue.journal_id_nlm_ta else self.article_records[1].get('421')
-
-    @property
-    def journal_issns(self):
-        if self.issue is not None:
-            return self.issue.journal_issns
-
-    @property
-    def print_issn(self):
-        if self.issue is not None:
-            return self.issue.print_issn
-
-    @property
-    def e_issn(self):
-        if self.issue is not None:
-            return self.issue.e_issn
-
-    @property
-    def publisher_name(self):
-        return self.issue.publisher_name if self.issue.publisher_name else self.article_records[1].get('62', self.article_records[1].get('480'))
-
-    @property
-    def tree(self):
-        return True
-
-    @property
-    def elocation_id(self):
-        return self.article_records[1]['14'].get('e')
-
-    @property
-    def fpage(self):
-        return self.article_records[1]['14'].get('f')
-
-    @property
-    def article_type(self):
-        return doctopic_label(self.article_records[1]['71'])
-
-    @property
-    def xml_name(self):
-        return self.filename.replace('.xml', '')
-
-    @property
-    def filename(self):
-        return self.article_records[0]['2']
-
-    @property
-    def rel_path(self):
-        return self.article_records[0]['702']
-
-    @property
-    def titles(self):
-        _titles = self.article_records[1].get('12')
-        if _titles is None:
-            _t = [{'_': None}]
-        elif not isinstance(_titles, list):
-            _t = [_titles]
-        else:
-            _t = _titles
-        return _t
-
-    @property
-    def first_title(self):
-        return self.titles[0].get('_')
-
-    @property
-    def title(self):
-        return self.first_title
-
-    @property
-    def doi(self):
-        return self.article_records[1].get('237')
-
     @property
     def pid(self):
-        return self.article_records[1].get('880')
-
-    @property
-    def previous_pid(self):
-        return self.article_records[1].get('881')
+        #FIXME
+        i_order = '0'*4 + i_record.get('36')[4:]
+        r = 'S' + i_record.get('35') + i_record.get('36')[0:4] + i_order[-4:] + self.order
+        return r if len(r) == 23 else None
 
     @property
     def creation_date_display(self):
@@ -215,10 +115,6 @@ class RegisteredArticle(object):
     def order(self):
         _order = '0'*5 + self.article_records[1]['121']
         return _order[-5:]
-
-    @property
-    def toc_section(self):
-        return self.article_records[1]['49']
 
 
 class ArticleRecords(object):
@@ -363,7 +259,7 @@ class ArticleRecords(object):
 
         self._metadata['70'] = format_affiliations(self.article.affiliations)
 
-        self._metadata['240'] = normalize_affiliations(self.institution_normalizer, self.article.found_institutions(self.institution_normalizer))
+        self._metadata['240'] = format_normalized_affiliations(self.article.normalized_affiliations(self.institution_normalizer))
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
         self._metadata['72'] = str(0 if self.article.total_of_references is None else self.article.total_of_references)
@@ -644,58 +540,6 @@ class IssueArticlesRecords(object):
         return (i_record, items)
 
 
-class RegisteredAhead(object):
-
-    def __init__(self, record, ahead_db_name):
-        self.record = record
-        self.ahead_db_name = ahead_db_name
-
-    @property
-    def doi(self):
-        return self.record.get('237')
-
-    @property
-    def filename(self):
-        return self.record.get('2')
-
-    @property
-    def xml_name(self):
-        return self.record.get('2', '').replace('.xml', '')
-
-    @property
-    def order(self):
-        _order = '0'*5 + self.record.get('121', '00000')
-        return _order[-5:]
-
-    @property
-    def ahead_pid(self):
-        _order = '00000' + self.order
-        r = 'S' + self.record.get('35') + self.ahead_db_name[0:4] + '0050' + _order[-5:]
-        return r if len(r) == 23 else None
-
-    @property
-    def article_title(self):
-        title = self.record.get('12')
-        if isinstance(title, dict):
-            t = title.get('_')
-        elif isinstance(title, list):
-            t = title[0].get('_')
-        else:
-            t = 'None'
-        return t
-
-    @property
-    def first_author_surname(self):
-        author = self.record.get('10')
-        if isinstance(author, dict):
-            a = author.get('s')
-        elif isinstance(author, list):
-            a = author[0].get('s')
-        else:
-            a = 'None'
-        return a
-
-
 class ArticleDB(object):
 
     def __init__(self, db_isis, issue_files, aop_manager):
@@ -743,8 +587,8 @@ class ArticleDB(object):
                     doc.creation_date_display = registered_article.creation_date_display
                     doc.creation_date = registered_article.creation_date
                     doc.last_update = registered_article.last_update
-                    doc.order = registered_article.order
-                    doc.previous_pid = registered_article.previous_pid
+                    #doc.order = registered_article.order
+                    #doc.previous_pid = registered_article.previous_pid
                 else:
                     doc = None
                 self._registered_articles[xml_name] = doc
@@ -839,7 +683,7 @@ class ArticleDB(object):
         is_excluded_incorrect_order = None
         is_excluded_aop = None
         if valid_aop is not None:
-            article.registered_aop_pid = valid_aop.ahead_pid
+            article.registered_aop_pid = valid_aop.pid
 
         article_files = serial_files.ArticleFiles(self.issue_files, article.order, article.xml_name)
         article_records = self.article_records(institution_normalizer, i_record, article, article_files)
@@ -856,7 +700,8 @@ class ArticleDB(object):
 
         return (saved, is_excluded_incorrect_order, is_excluded_aop)
 
-    def finish_conversion(self, pkg_path):
+    def finish_conversion(self, pkg_path, i_record):
+        self.create_issue_id_file(i_record)
         self.create_db()
         self.issue_files.save_source_files(pkg_path)
 
@@ -893,11 +738,8 @@ class AopManager(object):
             self._aop_db[aop_issue_files.issue_folder] = ArticleDB(self.db_isis, aop_issue_files)
             self._aop_db[aop_issue_files.issue_folder].restore_missing_id_files()
 
-            registered_i_record, registered_articles = self._aop_db[aop_issue_files.issue_folder].registered_records
-
-            if registered_articles is not None:
-                for xml_name, registered_article in registered_articles.items():
-                    registered_aop = RegisteredAhead(registered_article.article_records[1], aop_issue_files.issue_folder)
+            if self._aop_db[aop_issue_files.issue_folder].registered_articles is not None:
+                for xml_name, registered_aop in self._aop_db[aop_issue_files.issue_folder].registered_articles.items():
                     self.indexed_by_doi[registered_aop.doi] = registered_aop.xml_name
                     self.indexed_by_xml_name[registered_aop.xml_name] = registered_aop
                     if self.still_aop[aop_issue_files.issue_folder] is None:
@@ -917,7 +759,7 @@ class AopManager(object):
             for order in sorted(self.still_aop[dbname].keys()):
                 xml_name = self.still_aop[dbname][order]
                 aop = self.indexed_by_xml_name[xml_name]
-                self.aop_sorted_by_status['still aop'].append(dbname + '|' + order + '|' + aop.filename + '|' + aop.article_title[0:50] + '...')
+                self.aop_sorted_by_status['still aop'].append(dbname + '|' + order + '|' + aop.filename + '|' + aop.short_article_title())
 
     def name(self, db_filename):
         return os.path.basename(db_filename)
@@ -976,7 +818,7 @@ class AopManager(object):
                     rate = self.score(article, aop)
                     rate = self.is_acceptable_rate(rate, 80)
                     if rate > 0:
-                        if aop.ahead_pid is None:
+                        if aop.pid is None:
                             status = 'aop missing PID'
                         else:
                             status = 'matched aop'
@@ -992,7 +834,7 @@ class AopManager(object):
     def similarity_rate(self, article, aop):
         r = 0
         if not aop is None:
-            r += how_similar(article.title, aop.article_title)
+            r += how_similar(article.title, aop.title)
             r += how_similar(article.first_author_surname, aop.first_author_surname)
             r = (r * 100) / 2
         return r
@@ -1021,7 +863,7 @@ class AopManager(object):
 
                 t = '' if article.title is None else article.title
                 data.append(_('doc title') + ':' + t)
-                t = '' if aop.article_title is None else aop.article_title
+                t = '' if aop.title is None else aop.title
                 data.append(_('aop title') + ':' + t)
                 t = '' if article.first_author_surname is None else article.first_author_surname
                 data.append(_('doc first author') + ':' + t)
@@ -1037,9 +879,9 @@ class AopManager(object):
         """
         Mark as deleted
         """
-        if aop.ahead_db_name in self.still_aop.keys():
-            if aop.order in self.still_aop[aop.ahead_db_name].keys():
-                del self.still_aop[aop.ahead_db_name][aop.order]
+        if aop.issue_label in self.still_aop.keys():
+            if aop.order in self.still_aop[aop.issue_label].keys():
+                del self.still_aop[aop.issue_label][aop.order]
         if aop.doi in self.indexed_by_doi.keys():
             del self.indexed_by_doi[aop.doi]
         if aop.filename in self.indexed_by_xml_name.keys():
@@ -1066,7 +908,7 @@ class AopManager(object):
         done = False
         msg = []
         if aop is not None:
-            if aop.ahead_pid is not None:
+            if aop.pid is not None:
                 done, msg = self.archive_ex_aop_files(aop)
                 if done:
                     self.mark_aop_as_deleted(aop)
@@ -1111,19 +953,16 @@ def format_affiliations(affiliations):
     return affs
 
 
-def normalize_affiliations(institution_normalizer, found_institutions):
-    aff = []
-    for aff_id, results in found_institutions:
-        aff = institution_normalizer.normalized_institution(results)
-        if aff is not None:
-            norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = aff
-            a = {}
-            a['i'] = item.id
-            a['p'] = norm_country_code
-            a['_'] = norm_orgname
-            a['c'] = norm_city
-            a['s'] = norm_state
-            affs.append(a)
+def format_normalized_affiliations(affiliations):
+    affs = []
+    for item in affiliations:
+        a = {}
+        a['i'] = item.id
+        a['p'] = norm_country_code
+        a['_'] = norm_orgname
+        a['c'] = norm_city
+        a['s'] = norm_state
+        affs.append(a)
     return affs
 
 
