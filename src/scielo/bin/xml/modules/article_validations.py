@@ -176,11 +176,11 @@ def validate_contrib_names(author, aff_ids=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, org_manager, article, validate_order, check_url):
-        self.org_manager = org_manager
-        self.article = article
+    def __init__(self, institution_normalizer, _article, validate_order, check_url):
+        self.article = _article
         self.validate_order = validate_order
         self.check_url = check_url
+        self.institution_normalizer = institution_normalizer
         #self.check_url = validate_order
 
     def normalize_validations(self, validations_result_list):
@@ -592,6 +592,7 @@ class ArticleContentValidation(object):
         labels.append('country')
         labels.append('country/@country')
 
+        found_institutions = self.article.found_institutions(self.institution_normalizer)
         for aff in self.article.affiliations:
             text = aff.original if aff.original is not None else aff.xml
             r.append(('aff xml', 'INFO', aff.xml))
@@ -606,22 +607,10 @@ class ArticleContentValidation(object):
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'ERROR'))
             r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))
 
-            if aff.norgname is not None or aff.orgname is not None:
-                normalized_items = institutions_service.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
-                if len(normalized_items) == 1:
-                    orgname, city, state, country_code, country_name = normalized_items[0]
-                    if orgname in [aff.orgname, aff.norgname] and country_code in [aff.i_country]:
-                        status = 'INFO'
-                        r.append(('normalized aff', status, _('Normalized institution name is valid: ') + '; '.join([', '.join(list(item)) for item in normalized_items])))
-                    else:
-                        status = 'ERROR'
-                        r.append(('normalized aff', status, _('Similar normalized institution names: ') + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
-                else:
-                    msg = _('Unable to confirm/find the normalized institution name for ') + ' or '.join(item for item in list(set([aff.orgname, aff.norgname])) if item is not None)
-                    if len(normalized_items) == 0:
-                        r.append(('normalized aff', 'ERROR', msg + _('. Ask for normalized institution name by email: scielo-xml@googlegroups.com')))
-                    else:
-                        r.append(('normalized aff', 'ERROR', msg + _('. Similar valid institution names are: ') + '<OPTIONS/>' + '|'.join([', '.join(list(item)) for item in normalized_items])))
+            if aff.id is not None:
+                if found_institutions.get(aff.id) is not None:
+                    for result in self.institution_normalizer.validate_institution(found_institutions.get(aff.id)):
+                        r.append(result)
 
             values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.orgdiv3, aff.city, aff.state, aff.i_country, aff.country]
             i = 0

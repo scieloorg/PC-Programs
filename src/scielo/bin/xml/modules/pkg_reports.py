@@ -204,6 +204,7 @@ class PkgManager(object):
                     if fs_utils.read_file(base_source_path + '/' + name + '.xml') == fs_utils.read_file(pkg_path + '/' + name + '.xml'):
                         action = 'skip-update'
                 if action == 'update':
+                    self.pkg_articles[name].creation_date = registered_articles[name].creation_date
                     if registered_articles[name].order != self.pkg_articles[name].order:
                         self.changed_orders[name] = (registered_articles[name].order, self.pkg_articles[name].order)
             self.actions[name] = action
@@ -605,7 +606,7 @@ class PkgManager(object):
             results.append({'label': xml_name, 'status': status, 'message': self.pkg_articles[xml_name].pages + msg})
         return results
 
-    def validate_articles_pkg_xml_and_data(self, org_manager, doc_files_info_items, dtd_filesml_generation):
+    def validate_articles_pkg_xml_and_data(self, institution_normalizer, doc_files_info_items, dtd_files, sgml_generation):
         #FIXME
         self.pkg_xml_structure_validations = PackageValidationsResults()
         self.pkg_xml_content_validations = PackageValidationsResults()
@@ -655,7 +656,7 @@ class PkgManager(object):
                 self.pkg_xml_structure_validations.add(xml_name, data_validations)
 
                 # XML Content validations
-                report_content = article_reports.article_data_and_validations_report(org_manager, doc, new_name, os.path.dirname(xml_filename)ml_generation)
+                report_content = article_reports.article_data_and_validations_report(institution_normalizer, doc, new_name, os.path.dirname(xml_filename)ml_generation)
                 data_validations = ValidationsResults(report_content)
                 self.pkg_xml_content_validations.add(xml_name, data_validations)
                 if is_xml_generation:

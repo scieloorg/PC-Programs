@@ -927,9 +927,10 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
         if toc_f == 0:
             org_manager = institutions_service.OrgManager()
             org_manager.load()
+            institution_normalizer = article.InstitutionNormalizer(org_manager)
 
             #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, is_db_generation, is_xml_generation)
-            pkg_manager.validate_articles_pkg_xml_and_data(org_manager, doc_files_info_items, scielo_dtd_files, is_xml_generation)
+            pkg_manager.validate_articles_pkg_xml_and_data(institution_normalizer, doc_files_info_items, scielo_dtd_files, is_xml_generation)
 
             if not is_xml_generation:
                 report_components['detail-report'] = pkg_manager.detail_report()

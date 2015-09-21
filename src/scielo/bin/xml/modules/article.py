@@ -2,6 +2,7 @@
 import os
 from datetime import datetime
 
+import institutions_service
 import article_utils
 import xml_utils
 import attributes
@@ -158,6 +159,7 @@ class ArticleXML(object):
         self._epub_ppub_date = None
         self._received_date = None
         self._accepted_date = None
+        self._found_institutions = None
 
         if tree is not None:
             self.journal_meta = self.tree.find('./front/journal-meta')
@@ -1031,6 +1033,14 @@ class Article(ArticleXML):
         self.registered_aop_pid = None
         self._previous_pid = None
 
+    def found_institutions(self, aff_normalizer):
+        if self._found_institutions is None:
+            self._found_institutions = {}
+            for aff in self.affiliations:
+                if aff.id is not None:
+                    self._found_institutions[aff.id] = aff_normalizer.find_institutions(aff)
+        return self._found_institutions
+
     @property
     def clinical_trial_url(self):
         return self.ext_link_clinical_trial_href if self.ext_link_clinical_trial_href is not None else self.uri_clinical_trial_href
@@ -1550,3 +1560,47 @@ class Issue(object):
     @property
     def issue_label(self):
         return article_utils.format_issue_label(self.year, self.volume, self.number, self.volume_suppl, self.number_suppl, self.compl)
+
+
+class InstitutionNormalizer(object):
+
+    def __init__(self, org_manager):
+        self.org_manager = org_manager
+
+    @property
+    def find_institutions(self, aff):
+        if aff.norgname is not None or aff.orgname is not None:
+            return institutions_service.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
+
+    @property
+    def validate_institution(self, found_institutions):
+        r = []
+        if len(found_institutions) == 1:
+            orgname, city, state, country_code, country_name = found_institutions[0]
+            if orgname in [aff.orgname, aff.norgname] and country_code in [aff.i_country]:
+                status = 'INFO'
+                r.append(('normalized aff', status, _('Normalized institution name is valid: ') + '; '.join([', '.join(list(item)) for item in found_institutions])))
+            else:
+                status = 'ERROR'
+                r.append(('normalized aff', status, _('Similar normalized institution names: ') + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
+        else:
+            msg = _('Unable to confirm/find the normalized institution name for ') + ' or '.join(item for item in list(set([aff.orgname, aff.norgname])) if item is not None)
+            if len(found_institutions) == 0:
+                r.append(('normalized aff', 'ERROR', msg + _('. Ask for normalized institution name by email: scielo-xml@googlegroups.com')))
+            else:
+                r.append(('normalized aff', 'ERROR', msg + _('. Similar valid institution names are: ') + '<OPTIONS/>' + '|'.join([', '.join(list(item)) for item in found_institutions])))
+        return r
+
+    def normalized_institution(self, found_institutions):
+        aff = None
+        if len(found_institutions) > 1:
+            found_institutions = list(set([(norm_orgname, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions]))
+        if len(found_institutions) == 1:
+            norm_city = None
+            norm_state = None
+            if len(found_institutions[0]) > 2:
+                norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = found_institutions[0]
+            else:
+                norm_orgname, norm_country_code = found_institutions[0]
+            aff = (norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name)
+        return aff

@@ -223,8 +223,8 @@ class RegisteredArticle(object):
 
 class ArticleRecords(object):
 
-    def __init__(self, org_manager, article, i_record, article_files):
-        self.org_manager = org_manager
+    def __init__(self, institution_normalizer, article, i_record, article_files):
+        self.institution_normalizer = institution_normalizer
         self.article = article
         self.article_files = article_files
         self.i_record = i_record
@@ -362,7 +362,8 @@ class ArticleRecords(object):
         self._metadata['14']['e'] = self.article.elocation_id
 
         self._metadata['70'] = format_affiliations(self.article.affiliations)
-        self._metadata['240'] = normalized_affiliations(self.org_manager, self.article.affiliations)
+
+        self._metadata['240'] = normalize_affiliations(self.institution_normalizer, self.article.found_institutions(self.institution_normalizer))
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
         self._metadata['72'] = str(0 if self.article.total_of_references is None else self.article.total_of_references)
@@ -695,49 +696,6 @@ class RegisteredAhead(object):
         return a
 
 
-class TitleDAO(object):
-
-    def __init__(self, db_isis, db_filename):
-        self.db_isis = db_isis
-        self.db_filename = db_filename
-
-    def expr(self, pissn, eissn, journal_title):
-        _expr = []
-        if pissn is not None:
-            _expr.append(pissn)
-        if eissn is not None:
-            _expr.append(eissn)
-        if journal_title is not None:
-            _expr.append("'" + journal_title + "'")
-            utils.display_message(journal_title)
-        return ' OR '.join(_expr) if len(_expr) > 0 else None
-
-    def search(self, pissn, eissn, journal_title):
-        expr = self.expr(pissn, eissn, journal_title)
-        return self.db_isis.get_records(self.db_filename, expr) if expr is not None else None
-
-
-class IssueDAO(object):
-
-    def __init__(self, db_isis, db_filename):
-        self.db_isis = db_isis
-        self.db_filename = db_filename
-
-    def expr(self, issue_id, pissn, eissn, acron=None):
-        _expr = []
-        if pissn is not None:
-            _expr.append(pissn + issue_id)
-        if eissn is not None:
-            _expr.append(eissn + issue_id)
-        if acron is not None:
-            _expr.append(acron)
-        return ' OR '.join(_expr) if len(_expr) > 0 else None
-
-    def search(self, issue_label, pissn, eissn):
-        expr = self.expr(issue_label, pissn, eissn)
-        return self.db_isis.get_records(self.db_filename, expr) if expr is not None else None
-
-
 class ArticleDAO(object):
 
     def __init__(self, db_isis, org_manager):
@@ -850,7 +808,7 @@ class ArticleDAO(object):
 
 class ArticleDB(object):
 
-    def __init__(self, db_isis, issue_files):
+    def __init__(self, db_isis, issue_files, aop_manager):
         self.issue_files = issue_files
         self.db_isis = db_isis
         self._registered_articles = None
@@ -859,6 +817,7 @@ class ArticleDB(object):
         self.i_record = None
         self._registered_items = None
         self._articles = None
+        self.aop_manager = aop_manager
 
     def get_registered_items(self):
         records = self.db_isis.get_records(self.issue_files.base)
@@ -961,6 +920,45 @@ class ArticleDB(object):
                     self.db_isis.save_id(self.issue_files.id_filename, [i_record])
         return self._registered_articles
 
+    def content_formatter(self, content):
+
+        def reduce_content(content):
+            languages = ['ru', 'zh', 'ch', 'cn', 'fr', 'es', ]
+            alternative = [u'абстрактный доступен в Полный текст', u'抽象是在全文可', u'抽象是在全文可', u'抽象是在全文可', u'résumé est disponible dans le document', u'resumen está disponible en el texto completo']
+            i = 0
+            while (len(content) > 10000) and (i < len(languages)):
+                content = remove_abstract(content, languages[i], alternative[i])
+                i += 1
+            return content
+
+        def remove_abstract(content, language, alternative):
+            new = content
+            if len(content) > 10000:
+                new = ''
+                abstract = content.replace('!v', 'BREAK-ABSTRACT!v')
+                for a in abstract.split('BREAK-ABSTRACT'):
+                    l = '^l' + language
+                    if a.startswith('!v083') and l in a:
+                        new += '!v083!^a' + alternative + l + '\n'
+                    else:
+                        new += a
+            return new
+
+        if '!v706!f' in content:
+            content = content.replace('<italic>', '<em>')
+            content = content.replace('</italic>', '</em>')
+            content = content.replace('<bold>', '<strong>')
+            content = content.replace('</bold>', '</strong>')
+        elif '!v706!c' in content or '!v706!h' in content:
+            content = content.replace('<italic>', '')
+            content = content.replace('</italic>', '')
+            content = content.replace('<bold>', '')
+            content = content.replace('</bold>', '')
+            content = xml_utils.remove_tags(content)
+        if len(content) > 10000:
+            content = reduce_content(content)
+        return content
+
     def create_db(self):
         loaded = []
         if os.path.isfile(self.issue_files.id_filename):
@@ -976,7 +974,13 @@ class ArticleDB(object):
         if os.path.isfile(self.issue_files.id_filename):
             self.db_isis.save_id_records(self.issue_files.id_filename, self.issue_files.base)
 
-    def save_article(self, i_record, article, article_files):
+    def article_records(self, institution_normalizer, i_record, article, article_files):
+        _article_records = None
+        if article.order != '00000':
+            _article_records = ArticleRecords(institution_normalizer, article, i_record, article_files)
+        return _article_records
+
+    def save_article(self, article_records, article_files):
         saved = False
         previous = False
         if not os.path.isdir(article_files.issue_files.id_path):
@@ -984,8 +988,7 @@ class ArticleDB(object):
         if not os.path.isdir(article_files.issue_files.base_path):
             os.makedirs(article_files.issue_files.base_path)
 
-        if article.order != '00000':
-            article_records = ArticleRecords(self.org_manager, article, i_record, article_files)
+        if article_records is not None:
             if os.path.isfile(article_files.id_filename):
                 try:
                     os.unlink(article_files.id_filename)
@@ -996,6 +999,28 @@ class ArticleDB(object):
             self.db_isis.save_id(article_files.id_filename, article_records.records, self.content_formatter)
             saved = os.path.isfile(article_files.id_filename)
         return saved and not previous
+
+    def insert_article(self, institution_normalizer, i_record, article, valid_aop, incorrect_order):
+        msg = ''
+        is_excluded_incorrect_order = None
+        is_excluded_aop = None
+        if valid_aop is not None:
+            article.registered_aop_pid = valid_aop.ahead_pid
+
+        article_files = serial_files.ArticleFiles(self.issue_files, article.order, article.xml_name)
+        article_records = self.article_records(institution_normalizer, i_record, article, article_files)
+        saved = self.save_article(article_records, article_files)
+        if saved:
+            if incorrect_order is not None:
+                incorrect_article_files = serial_files.ArticleFiles(self.issue_files, incorrect_order, article.xml_name)
+                if os.path.isfile(incorrect_article_files.id_filename):
+                    os.unlink(incorrect_article_files.id_filename)
+                is_excluded_incorrect_order = not os.path.isfile(incorrect_article_files.id_filename)
+
+            if valid_aop is not None:
+                is_excluded_aop, excluded_aop_msg = self.aop_manager.manage_ex_aop(valid_aop)
+
+        return (saved, is_excluded_incorrect_order, is_excluded_aop)
 
     def finish_conversion(self, pkg_path):
         loaded = self.create_db()
@@ -1055,13 +1080,15 @@ class AopManager(object):
         return self._aop_db_items
 
     def still_aop_items(self):
-        items = []
+        if self.aop_sorted_by_status is None:
+            self.aop_sorted_by_status = {}
+        self.aop_sorted_by_status['still aop'] = []
+
         for dbname in sorted(self.still_aop.keys()):
             for order in sorted(self.still_aop[dbname].keys()):
                 xml_name = self.still_aop[dbname][order]
                 aop = self.indexed_by_xml_name[xml_name]
-                items.append(dbname + '|' + order + '|' + aop.filename + '|' + aop.article_title[0:50] + '...')
-        return items
+                self.aop_sorted_by_status['still aop'].append(dbname + '|' + order + '|' + aop.filename + '|' + aop.article_title[0:50] + '...')       
 
     def name(self, db_filename):
         return os.path.basename(db_filename)
@@ -1218,24 +1245,22 @@ class AopManager(object):
 
     def manage_ex_aop(self, aop):
         if self.aop_status(aop.xml_name) in ['matched aop', 'partially matched aop']:
-            if doc_aop_status in ['matched aop', 'partially matched aop']:
-                saved, aop_msg = aop_manager.__manage_ex_aop(aop)
-                msg += ''.join([item for item in aop_msg])
-                if saved:
-                    self.aop_sorted_by_status['deleted ex-aop'].append(aop.xml_name)
-                    msg += html_reports.p_message('INFO: ' + _('ex aop was deleted'))
-                else:
-                    self.aop_sorted_by_status['not deleted ex-aop'].append(aop.xml_name)
-                    msg += html_reports.p_message('ERROR: ' + _('Unable to delete ex aop'))
-        return msg
+            is_excluded_aop, aop_msg = aop_manager.__manage_ex_aop(aop)
+            msg += ''.join([item for item in aop_msg])
+            if is_excluded_aop is True:
+                self.aop_sorted_by_status['deleted ex-aop'].append(aop.xml_name)
+            else:
+                self.aop_sorted_by_status['not deleted ex-aop'].append(aop.xml_name)
+        return (saved, msg)
 
     def update_all_aop_db(self):
-        updated = []
+        if self.aop_sorted_by_status is None:
+            self.aop_sorted_by_status = {}
+        self.aop_sorted_by_status['aop scilista item to update'] = []
         if self._aop_db_items is not None:
             for dbname, aop_db in self._aop_db_items.items():
                 aop_db.create_db()
-                updated.append(dbname)
-        return updated
+                self.aop_sorted_by_status['aop scilista item to update'].append(self.journal_files.acron + ' ' + dbname)
 
 
 def format_affiliations(affiliations):
@@ -1257,40 +1282,60 @@ def format_affiliations(affiliations):
     return affs
 
 
-def normalized_affiliations(org_manager, affiliations):
-    affs = []
-    for item in affiliations:
-        if item.id is not None and (item.orgname is not None or item.norgname is not None):
-            result_items = institutions_service.validate_organization(org_manager, item.orgname, item.norgname, item.country, item.i_country, item.state, item.city)
-            if len(result_items) > 1:
-                result_items = list(set([(norm_orgname, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in result_items]))
-            if len(result_items) == 1:
-                norm_city = None
-                norm_state = None
-                if len(result_items[0]) > 2:
-                    norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = result_items[0]
-                else:
-                    norm_orgname, norm_country_code = result_items[0]
-                a = {}
-                a['i'] = item.id
-                a['p'] = norm_country_code
-                a['_'] = norm_orgname
-                a['c'] = norm_city
-                a['s'] = norm_state
-                affs.append(a)
-
+def normalize_affiliations(institution_normalizer, found_institutions):
+    aff = []
+    for aff_id, results in found_institutions:
+        aff = institution_normalizer.normalized_institution(results)
+        if aff is not None:
+            norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = aff
+            a = {}
+            a['i'] = item.id
+            a['p'] = norm_country_code
+            a['_'] = norm_orgname
+            a['c'] = norm_city
+            a['s'] = norm_state
+            affs.append(a)
     return affs
 
 
 class DBManager(object):
 
     def __init__(self, db_isis, title_filename, issue_filename, org_manager, serial_path, local_web_app_path):
-        self.db_title = TitleDAO(db_isis, title_filename)
-        self.db_issue = IssueDAO(db_isis, issue_filename)
+        self.title_db_filename = title_filename
+        self.issue_db_filename = issue_filename
         self.db_article = ArticleDAO(db_isis, org_manager)
         self.db_isis = db_isis
         self.local_web_app_path = local_web_app_path
         self.serial_path = serial_path
+
+    def search_journal_expr(self, pissn, eissn, journal_title):
+        _expr = []
+        if pissn is not None:
+            _expr.append(pissn)
+        if eissn is not None:
+            _expr.append(eissn)
+        if journal_title is not None:
+            _expr.append("'" + journal_title + "'")
+            utils.display_message(journal_title)
+        return ' OR '.join(_expr) if len(_expr) > 0 else None
+
+    def search_journal(self, pissn, eissn, journal_title):
+        expr = self.search_journal_expr(pissn, eissn, journal_title)
+        return self.db_isis.get_records(self.title_db_filename, expr) if expr is not None else None
+
+    def search_issue_expr(self, issue_id, pissn, eissn, acron=None):
+        _expr = []
+        if pissn is not None:
+            _expr.append(pissn + issue_id)
+        if eissn is not None:
+            _expr.append(eissn + issue_id)
+        if acron is not None:
+            _expr.append(acron)
+        return ' OR '.join(_expr) if len(_expr) > 0 else None
+
+    def search_issue(self, issue_label, pissn, eissn):
+        expr = self.search_issue_expr(issue_label, pissn, eissn)
+        return self.db_isis.get_records(self.issue_db_filename, expr) if expr is not None else None
 
     def get_issue_models(self, journal_title, issue_label, p_issn, e_issn):
         issue_models = None
@@ -1319,7 +1364,7 @@ class DBManager(object):
 
     def find_journal_record(self, journal_title, print_issn, e_issn):
         record = None
-        records = self.db_title.search(print_issn, e_issn, journal_title)
+        records = self.search_journal(print_issn, e_issn, journal_title)
 
         if len(records) > 0:
             record = records[0]
@@ -1327,7 +1372,7 @@ class DBManager(object):
 
     def find_i_record(self, issue_label, print_issn, e_issn):
         i_record = None
-        issues_records = self.db_issue.search(issue_label, print_issn, e_issn)
+        issues_records = self.search_issue(issue_label, print_issn, e_issn)
         if len(issues_records) > 0:
             i_record = issues_records[0]
         return i_record

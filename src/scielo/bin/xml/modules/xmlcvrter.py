@@ -5,7 +5,6 @@ import shutil
 from datetime import datetime
 
 from __init__ import _
-import serial_files
 import fs_utils
 import utils
 import html_reports
@@ -59,14 +58,6 @@ def register_log(message):
     if not '<' in message:
         message = html_reports.p_message(message)
     converter_report_lines.append(message)
-
-
-def find_i_record(issue_label, print_issn, e_issn):
-    i_record = None
-    issues_records = converter_env.db_manager.db_issue.search(issue_label, print_issn, e_issn)
-    if len(issues_records) > 0:
-        i_record = issues_records[0]
-    return i_record
 
 
 def complete_issue_items_row(article, action, result, source, notes='', results=False):
@@ -212,7 +203,7 @@ def convert_package(src_path):
     acron_issue_label = _('unidentified ') + os.path.basename(src_path)[:-4]
     scilista_item = None
     issue_files = None
-    ex_aop_items = None
+    aop_issues_to_update = None
     report_components = {}
 
     dtd_files = xml_versions.DTDFiles('scielo', converter_env.version)
@@ -263,17 +254,10 @@ def convert_package(src_path):
 
         if len(pkg_manager.selected_articles) > 0:
 
-            pkg_manager.validate_articles_pkg_xml_and_data(converter_env.db_manager.db_article.org_manager, doc_file_info_items, dtd_files, False)
+            pkg_manager.validate_articles_pkg_xml_and_data(converter_env.institution_normalizer, doc_file_info_items, dtd_files, False)
             pkg_quality_fatal_errors = pkg_manager.pkg_xml_structure_validations.fatal_errors + pkg_manager.pkg_xml_content_validations.fatal_errors
 
-            scilista_item, pkg_manager.pkg_conversion_results, conversion_status, aop_status = convert_articles(issue_files, pkg_manager, previous_registered_articles, pkg_path)
-            if scilista_item is not None:
-                if aop_status is not None:
-                    if aop_status.get('updated bases') is not None:
-                        ex_aop_items = []
-
-                        for _aop in aop_status.get('updated bases'):
-                            ex_aop_items.append(converter_env.db_manager.issue_models.issue.acron + ' ' + _aop)
+            scilista_item, pkg_manager.pkg_conversion_results, conversion_status, aop_status = convert_articles(issue_files, pkg_manager, pkg_path)
 
             report_components['conversion-report'] = pkg_manager.pkg_conversion_results.report()
 
@@ -294,8 +278,6 @@ def convert_package(src_path):
             if not aop_status is None:
                 aop_results_report = report_status(aop_status, 'aop-block')
             aop_results_report = html_reports.tag('h3', _('AOP status')) + aop_results_report
-
-            #sheets = pkg_reports.get_lists_report_text(articles_sheets)
 
             #utils.debugging('save_reports')
             issue_files.save_reports(report_path)
@@ -345,7 +327,7 @@ def convert_package(src_path):
     if old_result_path != result_path:
         fs_utils.delete_file_or_folder(old_result_path)
     #utils.debugging('-fim-')
-    return (report_location, scilista_item, acron_issue_label, email_subject, ex_aop_items)
+    return (report_location, scilista_item, acron_issue_label, email_subject, aop_status.get('aop scilista item to update'))
 
 
 def format_email_subject(scilista_item, selected_articles, pkg_quality_fatal_errors, f, e, w):
@@ -412,7 +394,7 @@ def is_conversion_allowed(pub_year, ref_count, pkg_manager):
     return doit
 
 
-def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
+def convert_articles(issue_files, pkg_manager, pkg_path):
     index = 0
     pkg_conversion_results = pkg_reports.PackageValidationsResults()
     conversion_status = {}
@@ -422,13 +404,13 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
 
     n = '/' + str(len(pkg_manager.pkg_articles))
 
+    #FIXME
     i_ahead_records = {}
     current_year = datetime.now().isoformat()[0:4]
     for year in range(current_year-2, current_year+1):
-        i_ahead_records[year] = find_i_record(year + 'nahead', pkg_manager.issue_models.issue.issn_id, None)
+        i_ahead_records[year] = converter_env.db_manager.find_i_record(year + 'nahead', pkg_manager.issue_models.issue.issn_id, None)
 
-    aop_manager = xc_models.AopManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records)
-    db_article = xc_models.ArticleDB(converter_env.db_isis, issue_files)
+    db_article = xc_models.ArticleDB(converter_env.db_isis, issue_files, xc_models.AopManager(converter_env.db_isis, issue_files.journal_files, i_ahead_records))
 
     utils.display_message('Converting...')
     for xml_name in pkg_reports.sorted_xml_name_by_order(pkg_manager.pkg_articles):
@@ -442,38 +424,35 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
         if not pkg_manager.actions[xml_name] in ['add', 'update']:
             xc_result = 'skipped'
         else:
-            aop_manager.check_aop(article)
-
             xc_result = 'None'
 
+            db_article.aop_manager.check_aop(article)
+            msg += db_article.aop_manager.aop_validations.item(article.xml_name).message
+
             if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), pkg_manager):
-                valid_aop = aop_manager.aop_article(article.xml_name)
-                doc_aop_status = aop_manager.aop_status(article.xml_name)
+                xc_result = 'not converted'
+                valid_aop = db_article.aop_manager.aop_article(article.xml_name)
                 if valid_aop is not None:
                     article.registered_aop_pid = valid_aop.ahead_pid
 
-                article_files = serial_files.ArticleFiles(issue_files, article.order, xml_name)
+                incorrect_order = None
+                if xml_name in pkg_manager.changed_orders.keys():
+                    incorrect_order, curr_order = pkg_manager.changed_orders[xml_name]
 
-                # FIXME
-                article.creation_date = None if not xml_name in registered_articles.keys() else registered_articles[xml_name].creation_date
-
-                saved = db_article.save_article(pkg_manager.issue_models.record, article, article_files)
+                saved, is_excluded_incorrect_order, is_excluded_aop = db_article.insert_article(converter_env.institution_normalizer, pkg_manager.issue_models.record, article, valid_aop, incorrect_order)
                 if saved:
-                    if xml_name in pkg_manager.changed_orders.keys():
-                        prev_order, curr_order = pkg_manager.changed_orders[xml_name]
-                        msg += html_reports.p_message('WARNING: ' + _('Replacing orders: ') + prev_order + _(' by ') + curr_order)
-                        prev_article_files = serial_files.ArticleFiles(issue_files, prev_order, xml_name)
-                        if os.path.isfile(prev_article_files.id_filename):
-                            msg += html_reports.p_message('WARNING: ' + _('Deleting ') + os.path.basename(prev_article_files.id_filename))
-                            os.unlink(prev_article_files.id_filename)
-                        conversion_status['deleted incorrect order'].append(prev_order)
-
-                    if doc_aop_status in ['matched aop', 'partially matched aop']:
-                        msg += aop_manager.manage_ex_aop(valid_aop)
-
+                    if is_excluded_incorrect_order is not None:
+                        msg += html_reports.p_message('WARNING: ' + _('Replacing orders: ') + incorrect_order + _(' by ') + article.order)
+                        if is_excluded_incorrect_order is True:
+                            conversion_status['deleted incorrect order'].append(incorrect_order)
+                        else:
+                            msg += html_reports.p_message('ERROR: ' + _('Unable to exclude ') + incorrect_order)
+                    if is_excluded_aop is not None:
+                        if is_excluded_aop is True:
+                            msg += html_reports.p_message('INFO: ' + _('ex aop was excluded'))
+                        else:
+                            msg += html_reports.p_message('ERROR: ' + _('Unable to exclude ex aop'))
                     xc_result = 'converted'
-                else:
-                    xc_result = 'not converted'
             else:
                 xc_result = 'rejected'
 
@@ -485,11 +464,9 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
         pkg_conversion_results.add(xml_name, pkg_reports.ValidationsResults(msg))
 
     #utils.debugging('convert_articles: journal_has_aop()')
-    if aop_manager.journal_publishes_aop():
-        if aop_status is None:
-            aop_status = {}
-        aop_status['updated bases'] = aop_manager.update_all_aop_db()
-        aop_status['still aop'] = aop_manager.still_aop_items()
+    if db_article.aop_manager.journal_publishes_aop():
+        db_article.aop_manager.update_all_aop_db()
+        db_article.aop_manager.still_aop_items()
 
     scilista_item = None
     #utils.debugging('convert_articles: conclusion')
@@ -500,7 +477,7 @@ def convert_articles(issue_files, pkg_manager, registered_articles, pkg_path):
             if not converter_env.is_windows:
                 db_article.generate_windows_version()
     #utils.debugging('convert_articles: fim')
-    return (scilista_item, pkg_conversion_results, conversion_status, aop_status)
+    return (scilista_item, pkg_conversion_results, conversion_status, db_article.aop_manager.aop_sorted_by_status)
 
 
 def aop_message(article, ahead, status):
@@ -802,7 +779,7 @@ def execute_converter(package_paths, collection_name=None):
             package_folder = os.path.basename(package_path)
             utils.display_message(package_path)
             try:
-                report_location, scilista_item, acron_issue_label, results, ex_aop_items = convert_package(package_path)
+                report_location, scilista_item, acron_issue_label, results, aop_issues_to_update = convert_package(package_path)
                 acron, issue_id = acron_issue_label.split(' ')
             except Exception as e:
                 utils.display_message('-'*10)
@@ -818,8 +795,8 @@ def execute_converter(package_paths, collection_name=None):
                     fs_utils.delete_file_or_folder(package_path)
 
             if scilista_item is not None:
-                if ex_aop_items is not None:
-                    for ex_aop_item in ex_aop_items:
+                if aop_issues_to_update is not None:
+                    for ex_aop_item in aop_issues_to_update:
                         scilista.append(ex_aop_item)
                 scilista.append(scilista_item)
                 if config.is_enabled_transference:
@@ -856,6 +833,9 @@ def prepare_env(config):
 
     org_manager = institutions_service.OrgManager()
     org_manager.load()
+
+    from article import InstitutionNormalizer
+    converter_env.institution_normalizer = InstitutionNormalizer(org_manager)
 
     db_isis = dbm_isis.IsisDAO(dbm_isis.UCISIS(dbm_isis.CISIS(config.cisis1030), dbm_isis.CISIS(config.cisis1660)))
     converter_env.db_manager = xc_models.DBManager(db_isis, config.title_db_copy, config.issue_db_copy, org_manager, config.serial_path, config.local_web_app_path)
