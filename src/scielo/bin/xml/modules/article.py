@@ -8,6 +8,8 @@ import xml_utils
 import attributes
 import utils
 
+from __init__ import _
+
 
 IMG_EXTENSIONS = ['.tif', '.tiff', '.eps', '.gif', '.png', '.jpg', ]
 
@@ -1572,13 +1574,11 @@ class InstitutionNormalizer(object):
     def __init__(self, org_manager):
         self.org_manager = org_manager
 
-    @property
     def find_institution(self, aff):
         if aff.norgname is not None or aff.orgname is not None:
             return institutions_service.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
 
-    @property
-    def validate_institution(self, found_institutions):
+    def validate_institution(self, aff, found_institutions):
         r = []
         if len(found_institutions) == 1:
             orgname, city, state, country_code, country_name = found_institutions[0]
@@ -1627,16 +1627,16 @@ class InstitutionNormalizer(object):
 
     def normalized_institution_items(self, found_institutions):
         normalized = []
-        for aff_id, found in found_institutions:
+        for aff_id, found in found_institutions.items():
             norm_aff = self.normalized_institution(aff_id, found)
             if norm_aff is not None:
                 normalized.append(norm_aff)
         return normalized
 
-    def validations(self, found_institutions):
+    def validations(self, affiliations, found_institutions):
         results = {}
-        for aff_id, found in found_institutions:
-            validation = self.validate_institution(aff_id, found)
+        for aff_id, found in found_institutions.items():
+            validation = self.validate_institution([aff for aff in affiliations if aff.id == aff_id][0], found)
             if validation is not None:
-                results[aff_id].append(validation)
+                results[aff_id] = validation
         return results

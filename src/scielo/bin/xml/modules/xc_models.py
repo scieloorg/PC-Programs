@@ -670,18 +670,15 @@ class ArticleDB(object):
             for xml_name, registered_article in self._registered_articles_records.items():
                 f = issue_files.base_source_path + '/' + xml_name + '.xml'
                 if os.path.isfile(f):
-
                     xml, e = xml_utils.load_xml(f)
-                    doc = Article(xml, xml_name)
-
-                    doc.pid = registered_article.pid
-                    doc.creation_date_display = registered_article.creation_date_display
-                    doc.creation_date = registered_article.creation_date
-                    doc.last_update = registered_article.last_update
-                    #doc.order = registered_article.order
-                    #doc.previous_pid = registered_article.previous_pid
                 else:
-                    doc = None
+                    xml = None
+                doc = Article(xml, xml_name)
+                doc.pid = registered_article.pid
+                doc.creation_date_display = registered_article.creation_date_display
+                doc.creation_date = registered_article.creation_date
+                doc.last_update = registered_article.last_update
+
                 self._registered_articles[xml_name] = doc
         return self._registered_articles
 

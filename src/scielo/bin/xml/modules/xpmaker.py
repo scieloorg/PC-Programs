@@ -911,9 +911,9 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
     else:
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
-        pkg_manager = pkg_reports.PkgManager(articles)
+        pkg_manager = pkg_reports.PkgManager(articles, scielo_pkg_path)
         pkg_manager.is_db_generation = is_db_generation
-        report_components['xml-files'] = pkg_reports.xml_list(scielo_pkg_path)
+        report_components['xml-files'] = pkg_manager.xml_list()
 
         toc_f = 0
         report_components['pkg_overview'] = pkg_manager.overview_report()

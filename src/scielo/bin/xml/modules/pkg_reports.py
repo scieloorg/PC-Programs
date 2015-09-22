@@ -52,6 +52,7 @@ class PkgManager(object):
         else:
             self.expected_unique_value += ['fpage-lpage-seq']
 
+    @property
     def xml_name_sorted_by_order(self):
         if self._xml_name_sorted_by_order is None:
             self._xml_name_sorted_by_order = self.sort_xml_name_by_order()
@@ -91,44 +92,19 @@ class PkgManager(object):
         if self._blocking_errors is None:
             if self.registered_issue_data_validations is not None:
                 self._blocking_errors = self.registered_issue_data_validations.fatal_errors
+            if self.registered_issue_data_validations is None:
+                self._blocking_errors = 0
         return self._blocking_errors + self.consistence_blocking_errors
 
     @property
     def registered_issue_data_validations(self):
         if self._registered_issue_data_validations is None:
-            self._registered_issue_data_validations = PackageValidationsResults()
-            for xml_name, article in self.pkg_articles.items():
-                self.pkg_articles[xml_name].section_code, issue_validations_msg = self.issue_models.validate_article_issue_data(article)
-                self._registered_issue_data_validations.add(xml_name, ValidationsResults(issue_validations_msg))
+            if self.issue_models is not None:
+                self._registered_issue_data_validations = PackageValidationsResults()
+                for xml_name, article in self.pkg_articles.items():
+                    self.pkg_articles[xml_name].section_code, issue_validations_msg = self.issue_models.validate_article_issue_data(article)
+                    self._registered_issue_data_validations.add(xml_name, ValidationsResults(issue_validations_msg))
         return self._registered_issue_data_validations
-
-    def compare_package_to_registered_articles(self, registered_articles):
-        #actions = {'add': [], 'skip-update': [], 'update': [], '-': [], 'changed order': []}
-        self.expected_registered = len(registered_articles)
-        self.actions = {}
-        for name in registered_articles.keys():
-            if not name in self.pkg_articles.keys():
-                self.actions[name] = '-'
-                #self.complete_issue_items[name] = registered_articles[name]
-        self.changed_orders = {}
-        for name, article in self.pkg_articles.items():
-            action = 'add'
-            if name in registered_articles.keys():
-                action = 'update'
-                if self.skip_identical_xml:
-                    if fs_utils.read_file(self.issue_files.base_source_path + '/' + name + '.xml') == fs_utils.read_file(self.pkg_path + '/' + name + '.xml'):
-                        action = 'skip-update'
-                if action == 'update':
-                    self.pkg_articles[name].creation_date = registered_articles[name].creation_date
-                    if registered_articles[name].order != self.pkg_articles[name].order:
-                        self.changed_orders[name] = (registered_articles[name].order, self.pkg_articles[name].order)
-            self.actions[name] = action
-            if action == 'add':
-                self.expected_registered += 1
-        unmatched_orders_errors = ''
-        if self.changed_orders is not None:
-            unmatched_orders_errors = ''.join([html_reports.p_message('WARNING: ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order))) for name, order in self.changed_orders.items()])
-        self.changed_orders_validations = ValidationsResults(unmatched_orders_errors)
 
     @property
     def issue_report(self):
@@ -180,7 +156,7 @@ class PkgManager(object):
         self.invalid_xml_name_items = []
         self._compiled_pkg_metadata = {label: {} for label in self.expected_equal_values + self.expected_unique_value}
         self.pkg_missing_items = {}
-
+        labels = self.expected_equal_values + self.expected_unique_value
         for xml_name, article in self.pkg_articles.items():
             if article.tree is None:
                 self.invalid_xml_name_items.append(xml_name)
@@ -518,7 +494,7 @@ class PkgManager(object):
             results.append({'label': xml_name, 'status': status, 'message': self.pkg_articles[xml_name].pages + msg})
         return results
 
-    def validate_articles_pkg_xml_and_data(self, institution_normalizer, doc_files_info_items, dtd_files, sgml_generation):
+    def validate_articles_pkg_xml_and_data(self, institution_normalizer, doc_files_info_items, dtd_files, is_sgml_generation):
         #FIXME
         self.pkg_xml_structure_validations = PackageValidationsResults()
         self.pkg_xml_content_validations = PackageValidationsResults()
@@ -541,7 +517,7 @@ class PkgManager(object):
             found_institutions = institution_normalizer.find_institution_items(self.pkg_articles[xml_name].affiliations)
 
             self.pkg_articles[xml_name].normalized_affiliations = institution_normalizer.normalized_institution_items(found_institutions)
-            self.pkg_articles[xml_name].affiliations_validations = institution_normalizer.validations(found_institutions)
+            self.pkg_articles[xml_name].affiliations_validations = institution_normalizer.validations(self.pkg_articles[xml_name].affiliations, found_institutions)
 
             index += 1
             item_label = str(index) + n + ': ' + new_name
@@ -562,7 +538,7 @@ class PkgManager(object):
                 for rep_file in [doc_files_info.err_filename, doc_files_info.dtd_report_filename, doc_files_info.style_report_filename]:
                     if os.path.isfile(rep_file):
                         report_content += extract_report_core(fs_utils.read_file(rep_file))
-                        if is_xml_generation is False:
+                        if is_sgml_generation is False:
                             fs_utils.delete_file_or_folder(rep_file)
                 data_validations = ValidationsResults(report_content)
                 data_validations.fatal_errors = xml_f
@@ -571,113 +547,16 @@ class PkgManager(object):
                 self.pkg_xml_structure_validations.add(xml_name, data_validations)
 
                 # XML Content validations
-                report_content = article_reports.article_data_and_validations_report(self.pkg_articles[xml_name], new_name, os.path.dirname(xml_filename)ml_generation)
+                report_content = article_reports.article_data_and_validations_report(self.pkg_articles[xml_name], new_name, os.path.dirname(xml_filename), self.is_db_generation, is_sgml_generation)
                 data_validations = ValidationsResults(report_content)
                 self.pkg_xml_content_validations.add(xml_name, data_validations)
-                if is_xml_generation:
+                if is_sgml_generation:
                     stats = html_reports.statistics_display(data_validations, False)
                     title = [_('Data Quality Control'), new_name]
                     html_reports.save(doc_files_info.data_report_filename, title, stats + report_content)
 
-
-class ArticlesPkgReport(object):
-
-    def __init__(self, package):
-        self.package = package
-
-    def validate_consistency(self, validate_order):
-        critical, toc_report = self.consistency_report(validate_order)
-        toc_validations = ValidationsResults(toc_report)
-        return (critical, toc_validations)
-
-    def consistency_report(self, validate_order):
-        critical = 0
-        equal_data = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        unique_data = ['order', 'doi', 'elocation id', ]
-
-        error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq': 'FATAL ERROR'}
-        required_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-
-        if not validate_order:
-            error_level_for_unique['order'] = 'WARNING'
-
-        if self.package.is_processed_in_batches:
-            error_level_for_unique['fpage-lpage-seq'] = 'WARNING'
-        else:
-            unique_data += ['fpage-lpage-seq']
-
-        invalid_xml_name_items, pkg_metadata, missing_data = self.package.journal_and_issue_metadata(equal_data + unique_data, required_data)
-
-        r = ''
-
-        if len(invalid_xml_name_items) > 0:
-            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Invalid XML files.')))
-            r += html_reports.tag('div', html_reports.format_list('', 'ol', invalid_xml_name_items, 'issue-problem'))
-        for label, items in missing_data.items():
-            r += html_reports.tag('div', html_reports.p_message('FATAL ERROR: ' + _('Missing') + ' ' + label + ' ' + _('in') + ':'))
-            r += html_reports.tag('div', html_reports.format_list('', 'ol', items, 'issue-problem'))
-
-        for label in equal_data:
-            if len(pkg_metadata[label]) > 1:
-                _status = 'FATAL ERROR'
-                if label == 'issue pub date':
-                    if self.package.is_rolling_pass:
-                        _status = 'WARNING'
-                _m = _('same value for %s is required for all the documents in the package') % (label)
-                part = html_reports.p_message(_status + ': ' + _m + '.')
-                for found_value, xml_files in pkg_metadata[label].items():
-                    part += html_reports.format_list(_('found') + ' ' + label + '="' + html_reports.display_xml(found_value, html_reports.XML_WIDTH*0.6) + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
-                r += part
-
-        for label in unique_data:
-            if len(pkg_metadata[label]) > 0 and len(pkg_metadata[label]) != len(self.package.articles):
-                duplicated = {}
-                for found_value, xml_files in pkg_metadata[label].items():
-                    if len(xml_files) > 1:
-                        duplicated[found_value] = xml_files
-
-                if len(duplicated) > 0:
-                    _m = _(': unique value of %s is required for all the documents in the package') % (label)
-                    part = html_reports.p_message(error_level_for_unique[label] + _m)
-                    if error_level_for_unique[label] == 'FATAL ERROR':
-                        critical += 1
-                    for found_value, xml_files in duplicated.items():
-                        part += html_reports.format_list(_('found') + ' ' + label + '="' + found_value + '" ' + _('in') + ':', 'ul', xml_files, 'issue-problem')
-                    r += part
-
-        if validate_order:
-            invalid_order = []
-            for order, xml_files in pkg_metadata['order'].items():
-                if order.isdigit():
-                    if 0 < int(order) <= 99999:
-                        pass
-                    else:
-                        critical += 1
-                        invalid_order.append(xml_files)
-                else:
-                    critical += 1
-                    invalid_order.append(xml_files)
-            if len(invalid_order) > 0:
-                r += html_reports.p_message('FATAL ERROR: ' + _('Invalid format of order. Expected number 1 to 99999.'))
-                r += html_reports.format_list('order (article-id)', 'ol', invalid_order)
-
-        issue_common_data = ''
-
-        for label in equal_data:
-            message = ''
-            if len(pkg_metadata[label].items()) == 1:
-                issue_common_data += html_reports.display_labeled_value(label, pkg_metadata[label].keys()[0])
-            else:
-                issue_common_data += html_reports.format_list(label, 'ol', pkg_metadata[label].keys())
-                #issue_common_data += html_reports.p_message('FATAL ERROR: ' + _('Unique value expected for ') + label)
-
-        pages = html_reports.tag('h2', 'Pages Report') + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.package.pages(), table_style='validation', row_style='status'))
-
-        return (critical, html_reports.tag('div', issue_common_data, 'issue-data') + html_reports.tag('div', r, 'issue-messages') + pages)
-
     def overview_report(self):
         r = ''
-
         r += html_reports.tag('h4', _('Languages overview'))
         labels, items = self.tabulate_elements_by_languages()
         r += html_reports.sheet(labels, items, 'dbstatus')
@@ -809,6 +688,15 @@ class ArticlesPkgReport(object):
                 h += html_reports.sheet(labels, items, 'dbstatus')
         return h
 
+    def xml_list(self, xml_filenames=None):
+        r = ''
+        r += '<p>' + _('XML path') + ': ' + self.pkg_path + '</p>'
+        if xml_filenames is None:
+            xml_filenames = [self.pkg_path + '/' + name for name in os.listdir(self.pkg_path) if name.endswith('.xml')]
+        r += '<p>' + _('Total of XML files') + ': ' + str(len(xml_filenames)) + '</p>'
+        r += html_reports.format_list('', 'ol', [os.path.basename(f) for f in xml_filenames])
+        return '<div class="xmllist">' + r + '</div>'
+
 
 class PackageValidationsResults(object):
 
@@ -925,16 +813,6 @@ def sum_stats(stats_items):
     e = sum([i[1] for i in stats_items])
     w = sum([i[2] for i in stats_items])
     return (f, e, w)
-
-
-def xml_list(pkg_path, xml_filenames=None):
-    r = ''
-    r += '<p>' + _('XML path') + ': ' + pkg_path + '</p>'
-    if xml_filenames is None:
-        xml_filenames = [pkg_path + '/' + name for name in os.listdir(pkg_path) if name.endswith('.xml')]
-    r += '<p>' + _('Total of XML files') + ': ' + str(len(xml_filenames)) + '</p>'
-    r += html_reports.format_list('', 'ol', [os.path.basename(f) for f in xml_filenames])
-    return '<div class="xmllist">' + r + '</div>'
 
 
 def error_msg_subtitle():

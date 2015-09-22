@@ -192,6 +192,35 @@ def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
     return (xml_filenames, articles, doc_file_info_items)
 
 
+def compare_package_to_registered_articles(pkg_articles, registered_articles):
+    #actions = {'add': [], 'skip-update': [], 'update': [], '-': [], 'changed order': []}
+    self.expected_registered = len(registered_articles)
+    self.actions = {}
+    for name in registered_articles.keys():
+        if not name in pkg_articles.keys():
+            self.actions[name] = '-'
+            #self.complete_issue_items[name] = registered_articles[name]
+    self.changed_orders = {}
+    for name, article in pkg_articles.items():
+        action = 'add'
+        if name in registered_articles.keys():
+            action = 'update'
+            if self.skip_identical_xml:
+                if fs_utils.read_file(self.issue_files.base_source_path + '/' + name + '.xml') == fs_utils.read_file(self.pkg_path + '/' + name + '.xml'):
+                    action = 'skip-update'
+            if action == 'update':
+                pkg_articles[name].creation_date = registered_articles[name].creation_date
+                if registered_articles[name].order != pkg_articles[name].order:
+                    self.changed_orders[name] = (registered_articles[name].order, pkg_articles[name].order)
+        self.actions[name] = action
+        if action == 'add':
+            self.expected_registered += 1
+    unmatched_orders_errors = ''
+    if self.changed_orders is not None:
+        unmatched_orders_errors = ''.join([html_reports.p_message('WARNING: ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order))) for name, order in self.changed_orders.items()])
+    self.changed_orders_validations = ValidationsResults(unmatched_orders_errors)
+
+
 def convert_package(src_path):
     validations_report = None
     xc_conclusion_msg = ''
@@ -225,14 +254,13 @@ def convert_package(src_path):
     pkg_manager.is_db_generation = True
     pkg_manager.skip_identical_xml = converter_env.skip_identical_xml
 
-    pkg_manager.issue_models, issue_error_msg = converter_env.db_manager.get_issue_models(pkg_manager.pkg_journal_title, pkg_manager.pkg_issue_label, pkg_manager.pkg_p_issn, pkg_manager.pkg_e_issn)
-
-    if issue_error_msg is not None:
-        report_components['issue-report'] = issue_error_msg
-
     report_components['pkg_overview'] = pkg_manager.overview_report()
     report_components['pkg_overview'] += pkg_manager.references_overview_report()
     report_components['references'] = pkg_manager.sources_overview_report()
+
+    pkg_manager.issue_models, issue_error_msg = converter_env.db_manager.get_issue_models(pkg_manager.pkg_journal_title, pkg_manager.pkg_issue_label, pkg_manager.pkg_p_issn, pkg_manager.pkg_e_issn)
+    if issue_error_msg is not None:
+        report_components['issue-report'] = issue_error_msg
 
     if pkg_manager.issue_models is None:
         acron_issue_label = 'not_registered' + ' ' + os.path.basename(src_path)[:-4]
