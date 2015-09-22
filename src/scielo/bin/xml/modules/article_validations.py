@@ -176,12 +176,10 @@ def validate_contrib_names(author, aff_ids=[]):
 
 class ArticleContentValidation(object):
 
-    def __init__(self, institution_normalizer, _article, validate_order, check_url):
+    def __init__(self, _article, validate_order, check_url):
         self.article = _article
         self.validate_order = validate_order
         self.check_url = check_url
-        self.institution_normalizer = institution_normalizer
-        #self.check_url = validate_order
 
     def normalize_validations(self, validations_result_list):
         r = []
@@ -592,7 +590,6 @@ class ArticleContentValidation(object):
         labels.append('country')
         labels.append('country/@country')
 
-        found_institutions = self.article.found_institutions(self.institution_normalizer)
         for aff in self.article.affiliations:
             text = aff.original if aff.original is not None else aff.xml
             r.append(('aff xml', 'INFO', aff.xml))
@@ -607,10 +604,9 @@ class ArticleContentValidation(object):
             r.append(required('aff/institution/[@content-type="orgname"]', aff.orgname, 'ERROR'))
             r.append(required('aff/institution/[@content-type="normalized"]', aff.norgname, 'ERROR'))
 
-            if aff.id is not None:
-                if found_institutions.get(aff.id) is not None:
-                    for result in self.institution_normalizer.validate_institution(found_institutions.get(aff.id)):
-                        r.append(result)
+            if self.article.affiliations_validations.get(aff.id) is not None:
+                for result in self.article.affiliations_validations.get(aff.id):
+                    r.append(result)
 
             values = [aff.original, aff.norgname, aff.orgname, aff.orgdiv1, aff.orgdiv2, aff.orgdiv3, aff.city, aff.state, aff.i_country, aff.country]
             i = 0

@@ -1016,8 +1016,8 @@ class Article(ArticleXML):
         self._queried_doi_pid = None
         self.registered_aop_pid = None
         self._previous_pid = None
-        self._found_institutions = None
-        self._normalized_affiliations = None
+        self.affiliations_validations = None
+        self.normalized_affiliations = None
 
     @property
     def hrefs(self):
@@ -1045,25 +1045,6 @@ class Article(ArticleXML):
                 _table = Table(t.tag, t.attrib.get('id'), t.findtext('.//label'), xml_utils.node_text(t.find('.//caption')), _href, xml_utils.node_xml(t.find('./table')))
                 r.append(_table)
         return r
-
-    def found_institutions(self, aff_normalizer):
-        if self._found_institutions is None:
-            self._found_institutions = {}
-            for aff in self.affiliations:
-                if aff.id is not None:
-                    self._found_institutions[aff.id] = aff_normalizer.find_institutions(aff)
-        return self._found_institutions
-
-    @property
-    def normalized_affiliations(self, aff_normalizer):
-        if self._normalized_affiliations is None:
-            self._normalized_affiliations = []
-            if self.found_institutions(aff_normalizer) is not None:
-                for aff_id, found_institutions in self.found_institutions(aff_normalizer):
-                    norm_aff = institution_normalizer.normalized_institution(aff_id, found_institutions)
-                    if norm_aff is not None:
-                        self._normalized_affiliations.append(norm_aff)
-        return self._normalized_affiliations
 
     @property
     def clinical_trial_url(self):
@@ -1592,7 +1573,7 @@ class InstitutionNormalizer(object):
         self.org_manager = org_manager
 
     @property
-    def find_institutions(self, aff):
+    def find_institution(self, aff):
         if aff.norgname is not None or aff.orgname is not None:
             return institutions_service.validate_organization(self.org_manager, aff.orgname, aff.norgname, aff.country, aff.i_country, aff.state, aff.city)
 
@@ -1636,3 +1617,26 @@ class InstitutionNormalizer(object):
             aff.country = norm_country_name
 
         return aff
+
+    def find_institution_items(self, affs):
+        found_institutions = {}
+        for aff in affs:
+            if aff.id is not None:
+                found_institutions[aff.id] = self.find_institution(aff)
+        return found_institutions
+
+    def normalized_institution_items(self, found_institutions):
+        normalized = []
+        for aff_id, found in found_institutions:
+            norm_aff = self.normalized_institution(aff_id, found)
+            if norm_aff is not None:
+                normalized.append(norm_aff)
+        return normalized
+
+    def validations(self, found_institutions):
+        results = {}
+        for aff_id, found in found_institutions:
+            validation = self.validate_institution(aff_id, found)
+            if validation is not None:
+                results[aff_id].append(validation)
+        return results

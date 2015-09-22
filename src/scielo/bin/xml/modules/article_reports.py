@@ -491,14 +491,14 @@ def package_files(path, xml_name):
     return r
 
 
-def article_data_and_validations_report(institution_normalizer, article, new_name, package_path, validate_order, xml_generation):
+def article_data_and_validations_report(article, new_name, package_path, validate_order, xml_generation):
     if article.tree is None:
         sheet_data = None
         article_display_report = None
         article_validation_report = None
         content = 'FATAL ERROR: ' + _('Unable to get data of ') + new_name + '.'
     else:
-        article_validation = article_validations.ArticleContentValidation(institution_normalizer, article, validate_order, False)
+        article_validation = article_validations.ArticleContentValidation(article, validate_order, False)
         sheet_data = ArticleSheetData(article, article_validation)
         article_display_report = ArticleDisplayReport(article, sheet_data, package_path, new_name)
         article_validation_report = ArticleValidationReport(article_validation)

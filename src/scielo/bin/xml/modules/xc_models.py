@@ -85,8 +85,8 @@ class RegisteredArticle(object):
     @property
     def pid(self):
         #FIXME
-        i_order = '0'*4 + i_record.get('36')[4:]
-        r = 'S' + i_record.get('35') + i_record.get('36')[0:4] + i_order[-4:] + self.order
+        i_order = '0'*4 + self.i_record.get('36')[4:]
+        r = 'S' + self.i_record.get('35') + self.i_record.get('36')[0:4] + i_order[-4:] + self.order
         return r if len(r) == 23 else None
 
     @property
@@ -119,8 +119,7 @@ class RegisteredArticle(object):
 
 class ArticleRecords(object):
 
-    def __init__(self, institution_normalizer, article, i_record, article_files):
-        self.institution_normalizer = institution_normalizer
+    def __init__(self, article, i_record, article_files):
         self.article = article
         self.article_files = article_files
         self.i_record = i_record
@@ -259,7 +258,7 @@ class ArticleRecords(object):
 
         self._metadata['70'] = format_affiliations(self.article.affiliations)
 
-        self._metadata['240'] = format_normalized_affiliations(self.article.normalized_affiliations(self.institution_normalizer))
+        self._metadata['240'] = format_normalized_affiliations(self.article.normalized_affiliations)
         #CT^uhttp://www.clinicaltrials.gov/ct2/show/NCT01358773^aNCT01358773
         self._metadata['770'] = {'u': self.article.clinical_trial_url}
         self._metadata['72'] = str(0 if self.article.total_of_references is None else self.article.total_of_references)
@@ -503,6 +502,94 @@ class IssueModels(object):
         i.license = record.get('541')
         return i
 
+    def validate_article_issue_data(self, article):
+        results = []
+        section_code = None
+        if self.issue_models is not None:
+            if article.tree is not None:
+                validations = []
+                validations.append((_('journal title'), article.journal_title, self.issue.journal_title))
+                validations.append((_('journal id NLM'), article.journal_id_nlm_ta, self.issue.journal_id_nlm_ta))
+
+                a_issn = article.journal_issns.get('epub') if article.journal_issns is not None else None
+                if a_issn is not None:
+                    i_issn = self.issue.journal_issns.get('epub') if self.issue.journal_issns is not None else None
+                    validations.append((_('journal e-ISSN'), a_issn, i_issn))
+
+                a_issn = article.journal_issns.get('ppub') if article.journal_issns is not None else None
+                if a_issn is not None:
+                    i_issn = self.issue.journal_issns.get('ppub') if self.issue.journal_issns is not None else None
+                    validations.append((_('journal print ISSN'), a_issn, i_issn))
+
+                validations.append((_('issue label'), article.issue_label, self.issue.issue_label))
+                a_year = article.issue_pub_dateiso[0:4] if article.issue_pub_dateiso is not None else ''
+                i_year = self.issue.dateiso[0:4] if self.issue.dateiso is not None else ''
+                if self.issue.dateiso is not None:
+                    _status = 'FATAL ERROR'
+                    if self.issue.dateiso.endswith('0000'):
+                        _status = 'WARNING'
+                validations.append((_('issue pub-date'), a_year, i_year))
+
+                # check issue data
+                for label, article_data, issue_data in validations:
+                    if article_data is None:
+                        article_data = 'None'
+                    elif isinstance(article_data, list):
+                        article_data = ' | '.join(article_data)
+                    if issue_data is None:
+                        issue_data = 'None'
+                    elif isinstance(issue_data, list):
+                        issue_data = ' | '.join(issue_data)
+                    if not article_data == issue_data:
+                        _msg = _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"'
+                        if issue_data == 'None':
+                            status = 'ERROR'
+                        else:
+                            if label == 'issue pub-date':
+                                status = _status
+                            else:
+                                status = 'FATAL ERROR'
+                        results.append((label, status, _msg))
+
+                validations = []
+                validations.append(('publisher', article.publisher_name, self.issue.publisher_name))
+                for label, article_data, issue_data in validations:
+                    if article_data is None:
+                        article_data = 'None'
+                    elif isinstance(article_data, list):
+                        article_data = ' | '.join(article_data)
+                    if issue_data is None:
+                        issue_data = 'None'
+                    elif isinstance(issue_data, list):
+                        issue_data = ' | '.join(issue_data)
+                    if utils.how_similar(article_data, issue_data) < 0.8:
+                        _msg = _('data mismatched. In article: "') + article_data + _('" and in issue: "') + issue_data + '"'
+                        results.append((label, 'ERROR', _msg))
+
+                # license
+                if self.issue.license is None:
+                    results.append(('license', 'ERROR', _('Unable to identify issue license')))
+                elif article.license_url is not None:
+                    if not '/' + self.issue.license.lower() in article.license_url.lower():
+                        results.append(('license', 'ERROR', _('data mismatched. In article: "') + article.license_url + _('" and in issue: "') + self.issue.license + '"'))
+                    else:
+                        results.append(('license', 'INFO', _('In article: "') + article.license_url + _('" and in issue: "') + self.issue.license + '"'))
+
+                # section
+                section_code, matched_rate, fixed_sectitle = self.most_similar_section_code(article.toc_section)
+                if matched_rate != 1:
+                    if not article.is_ahead:
+                        registered_sections = _('Registered sections') + ':\n' + '; '.join(self.section_titles)
+                        if section_code is None:
+                            results.append(('section', 'ERROR', article.toc_section + _(' is not a registered section.') + ' ' + registered_sections))
+                        else:
+                            results.append(('section', 'WARNING', _('section replaced: "') + fixed_sectitle + '" (' + _('instead of') + ' "' + article.toc_section + '")' + ' ' + registered_sections))
+                # @article-type
+                _sectitle = article.toc_section if fixed_sectitle is None else fixed_sectitle
+                for item in article_utils.validate_article_type_and_section(article.article_type, _sectitle):
+                    results.append(item)
+        return (section_code, html_reports.tag('div', html_reports.validations_table(results)))
+
 
 class IssueArticlesRecords(object):
 
@@ -550,6 +637,10 @@ class ArticleDB(object):
         self._issue_models = None
         self._registered_articles_records = None
         self._registered_i_record = None
+
+        self._conversion_messages = {}
+        self._insert_article_messages = {}
+        self._insertion_result = {}
 
     def restore_missing_id_files(self):
         self._registered_i_record, self._registered_articles_records = self.registered_records
@@ -649,10 +740,10 @@ class ArticleDB(object):
                     self.db_isis.append_id_records(self.issue_files.id_path + '/' + f, self.issue_files.base)
         self.reset_registered_records()
 
-    def article_records(self, institution_normalizer, i_record, article, article_files):
+    def article_records(self, i_record, article, article_files):
         _article_records = None
         if article.order != '00000':
-            _article_records = ArticleRecords(institution_normalizer, article, i_record, article_files)
+            _article_records = ArticleRecords(article, i_record, article_files)
         return _article_records
 
     def create_issue_id_file(self, i_record):
@@ -678,17 +769,14 @@ class ArticleDB(object):
             saved = os.path.isfile(article_files.id_filename)
         return saved and not previous
 
-    def insert_article(self, institution_normalizer, i_record, article, valid_aop, incorrect_order):
-        msg = ''
+    def insert_article(self, i_record, article, valid_aop, incorrect_order):
         is_excluded_incorrect_order = None
         is_excluded_aop = None
-        if valid_aop is not None:
-            article.registered_aop_pid = valid_aop.pid
 
         article_files = serial_files.ArticleFiles(self.issue_files, article.order, article.xml_name)
-        article_records = self.article_records(institution_normalizer, i_record, article, article_files)
-        saved = self.create_article_id_file(article_records, article_files)
-        if saved:
+        article_records = self.article_records(i_record, article, article_files)
+        id_created = self.create_article_id_file(article_records, article_files)
+        if id_created:
             if incorrect_order is not None:
                 incorrect_article_files = serial_files.ArticleFiles(self.issue_files, incorrect_order, article.xml_name)
                 if os.path.isfile(incorrect_article_files.id_filename):
@@ -697,8 +785,25 @@ class ArticleDB(object):
 
             if valid_aop is not None:
                 is_excluded_aop, excluded_aop_msg = self.aop_manager.manage_ex_aop(valid_aop)
+        self._insertion_result[article.xml_name] = (id_created, is_excluded_aop, is_excluded_incorrect_order)
 
-        return (saved, is_excluded_incorrect_order, is_excluded_aop)
+    def insert_article_messages(self, article):
+        if self._insert_article_messages.get(article.xml_name) is None:
+            id_created, is_excluded_aop, is_excluded_incorrect_order = self._insertion_result[article.xml_name]
+            msg = ''
+            if is_excluded_incorrect_order is not None:
+                msg += html_reports.p_message('WARNING: ' + _('Replacing orders: ') + incorrect_order + _(' by ') + article.order)
+                if is_excluded_incorrect_order is True:
+                    msg += html_reports.p_message('INFO: ' + _('Done'))
+                else:
+                    msg += html_reports.p_message('ERROR: ' + _('Unable to exclude ') + incorrect_order)
+            if is_excluded_aop is not None:
+                if is_excluded_aop is True:
+                    msg += html_reports.p_message('INFO: ' + _('ex aop was excluded'))
+                else:
+                    msg += html_reports.p_message('ERROR: ' + _('Unable to exclude ex aop'))
+            self._insert_article_messages[article.xml_name] = msg
+        return self._insert_article_messages[article.xml_name]
 
     def finish_conversion(self, pkg_path, i_record):
         self.create_issue_id_file(i_record)
@@ -1043,4 +1148,3 @@ class DBManager(object):
         if len(issues_records) > 0:
             i_record = issues_records[0]
         return i_record
-

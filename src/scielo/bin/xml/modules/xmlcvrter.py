@@ -31,9 +31,10 @@ categories_messages = {
     'rejected': _('rejected'), 
     'not converted': _('not converted'), 
     'skipped': _('skipped conversion'), 
-    'deleted ex-aop': _('deleted ex-aop'), 
-    'deleted incorrect order': _('deleted incorrect order'), 
-    'not deleted ex-aop': _('not deleted ex-aop'), 
+    'excluded ex-aop': _('excluded ex-aop'), 
+    'excluded incorrect order': _('excluded incorrect order'), 
+    'not excluded incorrect order': _('not excluded incorrect order'), 
+    'not excluded ex-aop': _('not excluded ex-aop'), 
     'new aop': _('aop version'), 
     'new doc': _('doc has no aop'), 
     'ex aop': _('aop is published in an issue'), 
@@ -220,8 +221,9 @@ def convert_package(src_path):
 
     xml_filenames, pkg_articles, doc_file_info_items = normalized_package(src_path, report_path, wrk_path, pkg_path, converter_env.version)
 
-    pkg_manager = pkg_reports.PkgManager(pkg_articles)
+    pkg_manager = pkg_reports.PkgManager(pkg_articles, pkg_path)
     pkg_manager.is_db_generation = True
+    pkg_manager.skip_identical_xml = converter_env.skip_identical_xml
 
     pkg_manager.issue_models, issue_error_msg = converter_env.db_manager.get_issue_models(pkg_manager.pkg_journal_title, pkg_manager.pkg_issue_label, pkg_manager.pkg_p_issn, pkg_manager.pkg_e_issn)
 
@@ -242,12 +244,8 @@ def convert_package(src_path):
 
         previous_registered_articles = db_article.registered_articles
 
-        if converter_env.skip_identical_xml:
-            pkg_manager.select_articles_to_convert(previous_registered_articles, pkg_path, base_source_path=issue_files.base_source_path)
-        else:
-            pkg_manager.select_articles_to_convert(previous_registered_articles)
+        pkg_manager.compare_package_to_registered_articles(previous_registered_articles)
 
-        #utils.debugging('display_status_before_xc')
         before_conversion_report = html_reports.tag('h4', _('Documents status in the package/database - before conversion'))
         before_conversion_report += display_status_before_xc(previous_registered_articles, pkg_articles, pkg_manager.actions)
 
@@ -398,16 +396,17 @@ def is_conversion_allowed(pub_year, ref_count, pkg_manager):
 def convert_articles(db_article, pkg_manager, pkg_path):
     index = 0
     pkg_conversion_results = pkg_reports.PackageValidationsResults()
+    xc_messages = {}
     conversion_status = {}
 
-    for k in ['converted', 'rejected', 'not converted', 'skipped', 'deleted incorrect order']:
+    for k in ['converted', 'rejected', 'not converted', 'skipped', 'excluded incorrect order', 'not excluded incorrect order']:
         conversion_status[k] = []
 
     n = '/' + str(len(pkg_manager.pkg_articles))
 
     utils.display_message('Converting...')
-    for xml_name in pkg_reports.sorted_xml_name_by_order(pkg_manager.pkg_articles):
-        article = pkg_manager.pkg_articles[xml_name]
+    for xml_name in pkg_manager.xml_name_sorted_by_order:
+
         index += 1
 
         item_label = str(index) + n + ' - ' + xml_name
@@ -419,95 +418,62 @@ def convert_articles(db_article, pkg_manager, pkg_path):
         else:
             xc_result = 'None'
 
-            db_article.aop_manager.check_aop(article)
-            msg += db_article.aop_manager.aop_validations.item(article.xml_name).message
+            permission = is_conversion_allowed(pkg_manager.pkg_articles[xml_name].issue_pub_dateiso, len(pkg_manager.pkg_articles[xml_name].references), pkg_manager)
 
-            if is_conversion_allowed(article.issue_pub_dateiso, len(article.references), pkg_manager):
+            db_article.aop_manager.check_aop(pkg_manager.pkg_articles[xml_name])
+            msg += db_article.aop_manager.aop_validations.item(xml_name).message
+
+            if permission:
                 xc_result = 'not converted'
-                valid_aop = db_article.aop_manager.aop_article(article.xml_name)
+
+                valid_aop = db_article.aop_manager.aop_article(xml_name)
                 if valid_aop is not None:
-                    article.registered_aop_pid = valid_aop.pid
+                    pkg_manager.pkg_articles[xml_name].registered_aop_pid = valid_aop.pid
 
                 incorrect_order = None
                 if xml_name in pkg_manager.changed_orders.keys():
                     incorrect_order, curr_order = pkg_manager.changed_orders[xml_name]
 
-                saved, is_excluded_incorrect_order, is_excluded_aop = db_article.insert_article(converter_env.institution_normalizer, pkg_manager.issue_models.record, article, valid_aop, incorrect_order)
-                if saved:
-                    if is_excluded_incorrect_order is not None:
-                        msg += html_reports.p_message('WARNING: ' + _('Replacing orders: ') + incorrect_order + _(' by ') + article.order)
-                        if is_excluded_incorrect_order is True:
-                            conversion_status['deleted incorrect order'].append(incorrect_order)
-                        else:
-                            msg += html_reports.p_message('ERROR: ' + _('Unable to exclude ') + incorrect_order)
-                    if is_excluded_aop is not None:
-                        if is_excluded_aop is True:
-                            msg += html_reports.p_message('INFO: ' + _('ex aop was excluded'))
-                        else:
-                            msg += html_reports.p_message('ERROR: ' + _('Unable to exclude ex aop'))
+                db_article.insert_article(pkg_manager.issue_models.record, pkg_manager.pkg_articles[xml_name], valid_aop, incorrect_order)
+                id_created, is_excluded_aop, is_excluded_incorrect_order = db_article._insertion_result[xml_name]
+                #self._insertion_result[article.xml_name] = (id_created, is_excluded_aop, is_excluded_incorrect_order)
+                if is_excluded_incorrect_order is True:
+                    conversion_status['excluded incorrect order'].append(xml_name)
+                else:
+                    conversion_status['excluded incorrect order'].append(xml_name)
+                if all([id_created is not False, is_excluded_aop is not False, is_excluded_incorrect_order is not False]):
                     xc_result = 'converted'
+                msg += db_article.insert_article_messages(pkg_manager.pkg_articles[xml_name])
+
             else:
                 xc_result = 'rejected'
-
+        xc_messages[xml_name].append(msg)
         conversion_status[xc_result].append(xml_name)
 
-        msg += html_reports.p_message(_('Result: ') + xc_result)
-        if not xc_result in ['converted', 'skipped']:
-            msg += html_reports.p_message('FATAL ERROR')
-        pkg_conversion_results.add(xml_name, pkg_reports.ValidationsResults(msg))
-
-    #utils.debugging('convert_articles: journal_has_aop()')
     if db_article.aop_manager.journal_publishes_aop():
         db_article.aop_manager.update_all_aop_db()
         db_article.aop_manager.still_aop_items()
 
     scilista_item = None
-    #utils.debugging('convert_articles: conclusion')
     if pkg_conversion_results.fatal_errors == 0:
         db_article.finish_conversion(pkg_path, pkg_manager.issue_models.record)
-        if len(db_article.registered_articles) >= len(pkg_manager.pkg_articles):
+        if len(db_article.registered_articles) == pkg_manager.expected_registered:
             scilista_item = pkg_manager.issue_models.issue.acron + ' ' + pkg_manager.issue_models.issue.issue_label
             if not converter_env.is_windows:
                 db_article.generate_windows_version()
-    #utils.debugging('convert_articles: fim')
+
+    conversion_status['not converted'] = [xml_name for xml_name in pkg_manager.pkg_articles.keys() if not xml_name in db_article.registered_articles.keys()]
+    conversion_status['converted'] = [xml_name for xml_name in pkg_manager.pkg_articles.keys() if xml_name in db_article.registered_articles.keys()]
+
+    for xc_result in conversion_status.keys():
+        for xml_name in conversion_status[xc_result]:
+            msg = xc_messages[xml_name]
+            msg += html_reports.p_message(_('Result: ') + xc_result)
+            if not xc_result in ['converted', 'skipped']:
+                msg += html_reports.p_message('FATAL ERROR')
+            pkg_conversion_results.add(xml_name, pkg_reports.ValidationsResults(msg))
+
     return (scilista_item, pkg_conversion_results, conversion_status, db_article.aop_manager.aop_sorted_by_status)
-
-
-def aop_message(article, ahead, status):
-    data = []
-    msg_list = []
-    if status == 'new aop':
-        msg_list.append('INFO: ' + _('This document is an "aop".'))
-    else:
-        msg_list.append(_('Checking if ') + article.xml_name + _(' has an "aop version"'))
-        if article.doi is not None:
-            msg_list.append(_('Checking if ') + article.doi + _(' has an "aop version"'))
-
-        if status == 'new doc':
-            msg_list.append('WARNING: ' + _('Not found an "aop version" of this document.'))
-        else:
-            msg_list.append('WARNING: ' + _('Found: "aop version"'))
-            if status == 'partially matched aop':
-                msg_list.append('WARNING: ' + _('the title/author of article and its "aop version" are similar.'))
-            elif status == 'aop missing PID':
-                msg_list.append('ERROR: ' + _('the "aop version" has no PID'))
-            elif status == 'unmatched aop':
-                status = 'unmatched aop'
-                msg_list.append('FATAL ERROR: ' + _('the title/author of article and "aop version" are different.'))
-
-            t = '' if article.title is None else article.title
-            data.append(_('doc title') + ':' + t)
-            t = '' if ahead.article_title is None else ahead.article_title
-            data.append(_('aop title') + ':' + t)
-            t = '' if article.first_author_surname is None else article.first_author_surname
-            data.append(_('doc first author') + ':' + t)
-            t = '' if ahead.first_author_surname is None else ahead.first_author_surname
-            data.append(_('aop first author') + ':' + t)
-    msg = ''
-    msg += html_reports.tag('h5', _('Checking existence of aop version'))
-    msg += ''.join([html_reports.p_message(item) for item in msg_list])
-    msg += ''.join([html_reports.display_xml(item, html_reports.XML_WIDTH*0.9) for item in data])
-    return msg
 
 
 def report_status(status, style=None):
