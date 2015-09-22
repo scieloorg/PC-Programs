@@ -911,18 +911,22 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
     else:
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
-        pkg_manager = pkg_reports.PkgManager(articles, scielo_pkg_path)
-        pkg_manager.is_db_generation = is_db_generation
-        report_components['xml-files'] = pkg_manager.xml_list()
+        pkg = pkg_reports.ArticlesPkg(articles, scielo_pkg_path)
+        pkg.is_db_generation = is_db_generation
+
+        package_reports = pkg_reports.PkgReports(pkg)
+        pkg_validator = pkg_reports.PkgValidator(pkg)
+
+        report_components['xml-files'] = pkg.xml_list()
 
         toc_f = 0
-        report_components['pkg_overview'] = pkg_manager.overview_report()
-        report_components['pkg_overview'] += pkg_manager.references_overview_report()
-        report_components['references'] = pkg_manager.sources_overview_report()
+        report_components['pkg_overview'] = package_reports.overview_report()
+        report_components['pkg_overview'] += package_reports.references_overview_report()
+        report_components['references'] = package_reports.sources_overview_report()
 
         if not is_xml_generation:
-            report_components['issue-report'] = pkg_manager.issue_report
-            toc_f = pkg_manager.blocking_errors
+            report_components['issue-report'] = pkg_validator.issue_report
+            toc_f = pkg_validator.blocking_errors
 
         if toc_f == 0:
             org_manager = institutions_service.OrgManager()
@@ -930,10 +934,10 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
             institution_normalizer = article.InstitutionNormalizer(org_manager)
 
             #fatal_errors, articles_stats, articles_reports = pkg_reports.validate_pkg_items(org_manager, articles, doc_files_info_items, scielo_dtd_files, is_db_generation, is_xml_generation)
-            pkg_manager.validate_articles_pkg_xml_and_data(institution_normalizer, doc_files_info_items, scielo_dtd_files, is_xml_generation)
+            pkg_validator.validate_articles_pkg_xml_and_data(institution_normalizer, doc_files_info_items, scielo_dtd_files, is_xml_generation)
 
             if not is_xml_generation:
-                report_components['detail-report'] = pkg_manager.detail_report()
+                report_components['detail-report'] = pkg_validator.detail_report()
                 report_components['xml-files'] += pkg_reports.processing_result_location(os.path.dirname(scielo_pkg_path))
             #if not is_xml_generation:
             #    register_log('pack_and_validate: pkg_reports.get_lists_report_text')

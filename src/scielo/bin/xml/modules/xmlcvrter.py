@@ -192,33 +192,53 @@ def normalized_package(src_path, report_path, wrk_path, pkg_path, version):
     return (xml_filenames, articles, doc_file_info_items)
 
 
-def compare_package_to_registered_articles(pkg_articles, registered_articles):
-    #actions = {'add': [], 'skip-update': [], 'update': [], '-': [], 'changed order': []}
-    self.expected_registered = len(registered_articles)
-    self.actions = {}
-    for name in registered_articles.keys():
-        if not name in pkg_articles.keys():
-            self.actions[name] = '-'
-            #self.complete_issue_items[name] = registered_articles[name]
-    self.changed_orders = {}
-    for name, article in pkg_articles.items():
-        action = 'add'
-        if name in registered_articles.keys():
-            action = 'update'
-            if self.skip_identical_xml:
-                if fs_utils.read_file(self.issue_files.base_source_path + '/' + name + '.xml') == fs_utils.read_file(self.pkg_path + '/' + name + '.xml'):
-                    action = 'skip-update'
-            if action == 'update':
-                pkg_articles[name].creation_date = registered_articles[name].creation_date
-                if registered_articles[name].order != pkg_articles[name].order:
-                    self.changed_orders[name] = (registered_articles[name].order, pkg_articles[name].order)
-        self.actions[name] = action
-        if action == 'add':
-            self.expected_registered += 1
-    unmatched_orders_errors = ''
-    if self.changed_orders is not None:
-        unmatched_orders_errors = ''.join([html_reports.p_message('WARNING: ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order))) for name, order in self.changed_orders.items()])
-    self.changed_orders_validations = ValidationsResults(unmatched_orders_errors)
+class Conversion(object):
+
+    def __init__(self, pkg_manager):
+        self.pkg_manager = pkg_manager
+        self.skip_identical_xml = False
+        self.is_db_generation = False
+        self.actions = None
+        self.pkg_conversion_results = None
+
+    def compare_package_to_registered_articles(self):
+        #actions = {'add': [], 'skip-update': [], 'update': [], '-': [], 'changed order': []}
+        self.expected_registered = len(self.db.registered_articles)
+        self.actions = {}
+        for name in self.db.registered_articles.keys():
+            if not name in self.pkg_manager.pkg_articles.keys():
+                self.actions[name] = '-'
+                #self.complete_issue_items[name] = self.db.registered_articles[name]
+        self.changed_orders = {}
+        for name, article in self.pkg_manager.pkg_articles.items():
+            action = 'add'
+            if name in self.db.registered_articles.keys():
+                action = 'update'
+                if self.skip_identical_xml:
+                    if fs_utils.read_file(self.issue_files.base_source_path + '/' + name + '.xml') == fs_utils.read_file(self.pkg_path + '/' + name + '.xml'):
+                        action = 'skip-update'
+                if action == 'update':
+                    self.pkg_manager.pkg_articles[name].creation_date = self.db.registered_articles[name].creation_date
+                    if self.db.registered_articles[name].order != self.pkg_manager.pkg_articles[name].order:
+                        self.changed_orders[name] = (self.db.registered_articles[name].order, self.pkg_manager.pkg_articles[name].order)
+            self.actions[name] = action
+            if action == 'add':
+                self.expected_registered += 1
+        unmatched_orders_errors = ''
+        if self.changed_orders is not None:
+            unmatched_orders_errors = ''.join([html_reports.p_message('WARNING: ' + _('orders') + ' ' + _('of') + ' ' + name + ': ' + ' -> '.join(list(order))) for name, order in self.changed_orders.items()])
+        self.changed_orders_validations = pkg_reports.ValidationsResults(unmatched_orders_errors)
+
+    @property
+    def selected_articles(self):
+        _selected_articles = None
+        if self.blocking_errors == 0:
+            #utils.debugging('toc_f == 0')
+            _selected_articles = {}
+            for xml_name, status in self.actions.items():
+                if status in ['add', 'update']:
+                    _selected_articles[xml_name] = self.pkg_manager.pkg_article[xml_name]
+        return _selected_articles
 
 
 def convert_package(src_path):
@@ -281,7 +301,7 @@ def convert_package(src_path):
 
         if len(pkg_manager.selected_articles) > 0:
 
-            pkg_manager.validate_articles_pkg_xml_and_data(converter_env.institution_normalizer, doc_file_info_items, dtd_files, False)
+            pkg_manager.validate_articles_pkg_xml_and_data(converter_env.institution_normalizer, doc_file_info_items, dtd_files, False, pkg_manager.selected_articles.keys())
             pkg_quality_fatal_errors = pkg_manager.pkg_xml_structure_validations.fatal_errors + pkg_manager.pkg_xml_content_validations.fatal_errors
 
             scilista_item, pkg_manager.pkg_conversion_results, conversion_status, aop_status = convert_articles(db_article, pkg_manager, pkg_path)
