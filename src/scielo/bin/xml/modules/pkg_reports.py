@@ -31,7 +31,6 @@ class ArticlesPkg(object):
         self.expected_equal_values = ['journal-title', 'journal id NLM', 'e-ISSN', 'print ISSN', 'publisher name', 'issue label', 'issue pub date', ]
         self.expected_unique_value = ['order', 'doi', 'elocation id', ]
         self.required_journal_data = ['journal-title', 'journal ISSN', 'publisher name', 'issue label', 'issue pub date', ]
-        self.is_db_generation = None
 
         if not self.is_processed_in_batches:
             self.expected_unique_value += ['fpage-lpage-seq']
@@ -146,16 +145,18 @@ class ArticlesPkg(object):
 
 class PkgValidator(object):
 
-    def __init__(self, pkg):
+    def __init__(self, pkg, is_db_generation):
         self.pkg = pkg
         self._registered_issue_data_validations = None
         self._blocking_errors = None
         self.consistence_blocking_errors = None
         self.changed_orders_validations = None
+        self.is_db_generation = is_db_generation
+        self.reftype_and_sources = None
 
         self.error_level_for_unique = {'order': 'FATAL ERROR', 'doi': 'FATAL ERROR', 'elocation id': 'FATAL ERROR', 'fpage-lpage-seq': 'FATAL ERROR'}
 
-        if not self.pkg.is_db_generation:
+        if not self.is_db_generation:
             self.error_level_for_unique['order'] = 'WARNING'
         if self.pkg.is_processed_in_batches:
             self.error_level_for_unique['fpage-lpage-seq'] = 'WARNING'
@@ -182,7 +183,7 @@ class PkgValidator(object):
     @property
     def issue_report(self):
         report = []
-        if self.pkg.is_db_generation:
+        if self.is_db_generation:
             if self.registered_issue_data_validations is not None:
                 if self.registered_issue_data_validations.total > 0:
                     report.append(html_reports.tag('h2', 'Comparision of issue and articles data') + self.registered_issue_data_validations.report(True))
@@ -302,7 +303,7 @@ class PkgValidator(object):
                 self.pkg_xml_structure_validations.add(xml_name, data_validations)
 
                 # XML Content validations
-                report_content = article_reports.article_data_and_validations_report(self.pkg.articles[xml_name], new_name, os.path.dirname(xml_filename), self.pkg.is_db_generation, is_sgml_generation)
+                report_content = article_reports.article_data_and_validations_report(self.pkg.articles[xml_name], new_name, os.path.dirname(xml_filename), self.is_db_generation, is_sgml_generation)
                 data_validations = ValidationsResults(report_content)
                 self.pkg_xml_content_validations.add(xml_name, data_validations)
                 if is_sgml_generation:
@@ -345,7 +346,7 @@ class PkgValidator(object):
                 links += html_reports.tag('span', status, 'smaller')
                 block += html_reports.report_block('datarep' + new_name, self.pkg_xml_content_validations.item(new_name).message, 'datarep', a_name)
 
-            if self.pkg.is_db_generation:
+            if self.is_db_generation:
                 if self.registered_issue_data_validations is not None:
                     conversion_validations = self.registered_issue_data_validations.item(new_name)
                     if conversion_validations is not None:
@@ -418,13 +419,6 @@ class PkgValidator(object):
                 msg = '. ' + msg
             results.append({'label': xml_name, 'status': status, 'message': self.pkg.articles[xml_name].pages + msg})
         return results
-
-
-class PkgReports(object):
-
-    def __init__(self, pkg):
-        self.pkg = pkg
-        self.reftype_and_sources = None
 
     @property
     def compiled_affiliations(self):

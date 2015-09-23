@@ -912,17 +912,15 @@ def pack_and_validate(xml_files, results_path, acron, version, is_db_generation=
         articles, doc_files_info_items = make_package(xml_files, report_path, wrk_path, scielo_pkg_path, version, acron)
 
         pkg = pkg_reports.ArticlesPkg(articles, scielo_pkg_path)
-        pkg.is_db_generation = is_db_generation
 
-        package_reports = pkg_reports.PkgReports(pkg)
-        pkg_validator = pkg_reports.PkgValidator(pkg)
+        pkg_validator = pkg_reports.PkgValidator(pkg, is_db_generation)
 
         report_components['xml-files'] = pkg.xml_list()
 
         toc_f = 0
-        report_components['pkg_overview'] = package_reports.overview_report()
-        report_components['pkg_overview'] += package_reports.references_overview_report()
-        report_components['references'] = package_reports.sources_overview_report()
+        report_components['pkg_overview'] = pkg_validator.overview_report()
+        report_components['pkg_overview'] += pkg_validator.references_overview_report()
+        report_components['references'] = pkg_validator.sources_overview_report()
 
         if not is_xml_generation:
             report_components['issue-report'] = pkg_validator.issue_report
