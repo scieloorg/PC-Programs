@@ -9,6 +9,10 @@ import xml_utils
 import utils
 
 
+def change_circ(content):
+    return content.replace('^', '&#94;')
+
+
 def format_value(content):
     try:
         if not isinstance(content, unicode):
@@ -103,6 +107,7 @@ class IDFile(object):
             for k, v in subf_and_value_list.items():
                 if v is not None and v != '' and len(k) == 1:
                     v = format_value(v)
+                    v = change_circ(v)
                     if k in 'abcdefghijklmnopqrstuvwxyz123456789':
                         value += u'^' + k + v
                     elif k in '_':
@@ -122,7 +127,9 @@ class IDFile(object):
                 try:
                     tag = '000' + tag
                     tag = tag[-3:]
-                    r = '!v' + tag + '!' + format_value(value) + '\n'
+                    value = format_value(value)
+                    value = change_circ(value)
+                    r = '!v' + tag + '!' + value + '\n'
                 except Exception as e:
                     utils.debbuging('tag_content: ')
                     utils.debbuging(e)
