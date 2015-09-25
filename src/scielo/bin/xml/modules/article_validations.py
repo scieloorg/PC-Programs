@@ -1083,9 +1083,9 @@ class ReferenceContentValidation(object):
                             looks_like = 'thesis'
                 if not 'legal' in self.reference.publication_type:
                     if self.reference.source is not None:
-                        if 'Lei' in self.reference.source or ('Di' in self.reference.source and 'Oficial' in self.reference.source):
+                        if 'Lei ' in self.reference.source or ('Di' in self.reference.source and 'Oficial' in self.reference.source):
                             looks_like = 'legal-doc'
-                        if 'portaria' in _source:
+                        if 'portaria ' in _source:
                             looks_like = 'legal-doc'
                 if 'conference' in _mixed or 'proceeding' in _mixed or 'meeting' in _mixed:
                     if self.reference.publication_type != 'confproc':
