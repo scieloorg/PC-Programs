@@ -90,9 +90,6 @@ def complete_issue_items_row(article, action, result, source, notes='', results=
     return (labels, values)
 
 
-
-
-
 def display_status_after_xc(previous_registered_articles, registered_articles, pkg_articles, actions, unmatched_orders):
     actions_result_labels = {'delete': 'deleted', 'update': 'updated', 'add': 'added', '-': '-', 'skip-update': 'skipped', 'order changed': 'order changed', 'fail': 'update/add failed'}
     orders = sorted(list(set([article.order for article in previous_registered_articles.values()] + [article.order for article in registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in pkg_articles.values()])))
@@ -162,29 +159,34 @@ class Conversion(object):
         self.pkg = pkg
         self.db = db
         self.actions = None
-        self.pkg_conversion_results = None
+        self._pkg_conversion_results = None
         self.changed_orders = None
 
     def evaluate_pkg_and_registered_items(self, skip_identical_xml):
         #actions = {'add': [], 'skip-update': [], 'update': [], '-': [], 'changed order': []}
         self.expected_registered = len(self.db.registered_articles)
+
+        self.previous_registered_articles = {}
+        for k, v in self.db.registered_articles.items():
+            self.previous_registered_articles[k] = v
+
         self.actions = {}
-        for name in self.db.registered_articles.keys():
+        for name in self.previous_registered_articles.keys():
             if not name in self.pkg.articles.keys():
                 self.actions[name] = '-'
-                #self.complete_issue_items[name] = self.db.registered_articles[name]
+                #self.complete_issue_items[name] = self.previous_registered_articles[name]
         self.changed_orders = {}
         for name, article in self.pkg.articles.items():
             action = 'add'
-            if name in self.db.registered_articles.keys():
+            if name in self.previous_registered_articles.keys():
                 action = 'update'
                 if skip_identical_xml:
                     if fs_utils.read_file(self.pkg.issue_files.base_source_path + '/' + name + '.xml') == fs_utils.read_file(self.pkg.pkg_path + '/' + name + '.xml'):
                         action = 'skip-update'
                 if action == 'update':
-                    self.pkg.articles[name].creation_date = self.db.registered_articles[name].creation_date
-                    if self.db.registered_articles[name].order != self.pkg.articles[name].order:
-                        self.changed_orders[name] = (self.db.registered_articles[name].order, self.pkg.articles[name].order)
+                    self.pkg.articles[name].creation_date = self.previous_registered_articles[name].creation_date
+                    if self.previous_registered_articles[name].order != self.pkg.articles[name].order:
+                        self.changed_orders[name] = (self.previous_registered_articles[name].order, self.pkg.articles[name].order)
             self.actions[name] = action
             if action == 'add':
                 self.expected_registered += 1
@@ -207,7 +209,7 @@ class Conversion(object):
     def initial_status_report(self):
         report = html_reports.tag('h4', _('Documents status in the package/database - before conversion'))
 
-        orders = [article.order for article in self.db.registered_articles.values()]
+        orders = [article.order for article in self.previous_registered_articles.values()]
         for article in self.pkg.articles.values():
             if article.tree is None:
                 orders.append('None')
@@ -216,7 +218,7 @@ class Conversion(object):
 
         orders = sorted(list(set([order for order in orders if order is not None])))
 
-        sorted_registered = pkg_reports.articles_sorted_by_order(self.db.registered_articles)
+        sorted_registered = pkg_reports.articles_sorted_by_order(self.previous_registered_articles)
         sorted_package = pkg_reports.articles_sorted_by_order(self.pkg.articles)
         items = []
 
@@ -227,7 +229,7 @@ class Conversion(object):
                     action = self.actions[article.xml_name]
                     _notes = ''
                     if action == 'update':
-                        if self.db.registered_articles[article.xml_name].order != self.pkg.articles[article.xml_name].order:
+                        if self.previous_registered_articles[article.xml_name].order != self.pkg.articles[article.xml_name].order:
                             action = 'delete'
                             _notes = 'new order=' + self.pkg.articles[article.xml_name].order
                     labels, values = complete_issue_items_row(article, '', '', 'registered', _notes)
@@ -237,12 +239,184 @@ class Conversion(object):
                 for article in sorted_package[order]:
                     action = self.actions[article.xml_name]
                     _notes = ''
-                    if self.db.registered_articles.get(article.xml_name) is not None:
-                        if self.db.registered_articles[article.xml_name].order != self.pkg.articles[article.xml_name].order:
-                            _notes = _('replacing ') + self.db.registered_articles[article.xml_name].order
+                    if self.previous_registered_articles.get(article.xml_name) is not None:
+                        if self.previous_registered_articles[article.xml_name].order != self.pkg.articles[article.xml_name].order:
+                            _notes = _('replacing ') + self.previous_registered_articles[article.xml_name].order
                     labels, values = complete_issue_items_row(article, action, '', 'package', _notes)
                     items.append(pkg_reports.label_values(labels, values))
         return report + html_reports.sheet(labels, items, 'dbstatus', 'action')
+
+    def final_status_report(self):
+        actions_result_labels = {'delete': 'deleted', 'update': 'updated', 'add': 'added', '-': '-', 'skip-update': 'skipped', 'order changed': 'order changed', 'fail': 'update/add failed'}
+        orders = sorted(list(set([article.order for article in self.previous_registered_articles.values()] + [article.order for article in self.db.registered_articles.values()] + [article.order if article.tree is not None else 'None' for article in self.pkg.articles.values()])))
+
+        sorted_previous_registered = pkg_reports.articles_sorted_by_order(self.previous_registered_articles)
+        sorted_registered = pkg_reports.articles_sorted_by_order(self.db.registered_articles)
+        sorted_package = pkg_reports.articles_sorted_by_order(self.pkg.articles)
+
+        items = []
+
+        for order in orders:
+            if order in sorted_registered.keys():
+                # documento na base
+                for article in sorted_registered[order]:
+                    action = self.actions[article.xml_name]
+                    result = actions_result_labels[action]
+                    _notes = ''
+                    if action == 'update':
+                        if article.last_update is None:
+                            result = 'error'
+                        elif self.previous_registered_articles.get(article.xml_name).last_update == article.last_update:
+                            result = 'error'
+                        name = article.xml_name
+                        if name in self.changed_orders.keys():
+                            previous_order, new_order = self.changed_orders[name]
+                            _notes = previous_order + '=>' + new_order
+                            if result == 'error':
+                                _notes = 'ERROR: ' + _('Unable to replace ') + _notes
+                    labels, values = complete_issue_items_row(article, action, result, 'registered', _notes, True)
+                    items.append(pkg_reports.label_values(labels, values))
+            elif order in sorted_package.keys():
+                # documento no pacote mas nao na base
+                for article in sorted_package[order]:
+                    action = self.actions[article.xml_name]
+                    name = article.xml_name
+                    _notes = ''
+                    if name in self.changed_orders.keys():
+                        previous_order, new_order = self.changed_orders[name]
+                        _notes = previous_order + '=>' + new_order
+                        _notes = 'ERROR: ' + _('Unable to replace ') + _notes
+
+                    labels, values = complete_issue_items_row(article, action, 'error', 'package', _notes, True)
+                    items.append(pkg_reports.label_values(labels, values))
+            elif order in sorted_previous_registered.keys():
+                # documento anteriormente na base
+                for article in sorted_previous_registered[order]:
+                    action = 'delete'
+                    name = article.xml_name
+                    _notes = ''
+                    if name in self.changed_orders.keys():
+                        previous_order, new_order = self.changed_orders[name]
+                        _notes = 'deleted ' + previous_order + '=> new: ' + new_order
+                    labels, values = complete_issue_items_row(article, '?', 'deleted', 'excluded', _notes, True)
+                    items.append(pkg_reports.label_values(labels, values))
+        after_conversion_report = html_reports.tag('h4', _('Documents status in the package/database - after conversion'))
+        after_conversion_report += html_reports.sheet(labels, items, 'dbstatus', 'result')
+        return after_conversion_report
+
+    def convert_articles(self):
+        index = 0
+        self.conversion_status = {}
+
+        for k in ['converted?', 'converted', 'rejected', 'not converted', 'skipped', 'excluded incorrect order', 'not excluded incorrect order']:
+            self.conversion_status[k] = []
+
+        n = '/' + str(len(self.pkg.articles))
+
+        utils.display_message('Converting...')
+        for xml_name in self.pkg.xml_name_sorted_by_order:
+
+            index += 1
+
+            item_label = str(index) + n + ' - ' + xml_name
+            utils.display_message(item_label)
+
+            xc_result = None
+            if not self.actions[xml_name] in ['add', 'update']:
+                xc_result = 'skipped'
+            else:
+                permission = is_conversion_allowed(self.pkg.articles[xml_name].issue_pub_dateiso, len(self.pkg.articles[xml_name].references), self.pkg)
+
+                self.db_article.aop_manager.check_aop(self.pkg.articles[xml_name])
+
+                if permission:
+                    valid_aop = self.db_article.aop_manager.aop_article(xml_name)
+                    if valid_aop is not None:
+                        self.pkg.articles[xml_name].registered_aop_pid = valid_aop.pid
+
+                    incorrect_order = None
+                    if xml_name in self.changed_orders.keys():
+                        incorrect_order, curr_order = self.changed_orders[xml_name]
+
+                    self.db_article.insert_article(self.pkg.issue_models.record, self.pkg.articles[xml_name], valid_aop, incorrect_order)
+                    if self.db_article.is_excluded_incorrect_order(xml_name) is True:
+                        self.conversion_status['excluded incorrect order'].append(xml_name)
+                    elif self.db_article.is_excluded_incorrect_order(xml_name) is False:
+                        self.conversion_status['not excluded incorrect order'].append(xml_name)
+                else:
+                    xc_result = 'rejected'
+            if xc_result is not None:
+                self.conversion_status[xc_result].append(xml_name)
+
+        if self.db_article.aop_manager.journal_publishes_aop():
+            self.db_article.aop_manager.update_all_aop_db()
+            self.db_article.aop_manager.still_aop_items()
+
+        scilista_item = self.close()
+        return scilista_item
+
+    def close(self):
+        scilista_item = None
+        if self.pkg_conversion_results.fatal_errors == 0:
+            self._pkg_conversion_results = None
+            self.db_article.finish_conversion(self.pkg.pkg_path, self.pkg.issue_models.record)
+            self.conversion_status['converted'] = self.db_article.is_converted
+            self.conversion_status['not converted'] = self.db_article.is_not_converted
+            if len(self.db_article.is_not_converted) > 0:
+                scilista_item = self.pkg.issue_models.issue.acron + ' ' + self.pkg.issue_models.issue.issue_label
+                if not converter_env.is_windows:
+                    self.db_article.generate_windows_version()
+
+        return scilista_item
+
+    @property
+    def pkg_conversion_results(self):
+        if self._pkg_conversion_results is None:
+            self._pkg_conversion_results = {}
+            for xc_result in self.conversion_status.keys():
+                for xml_name in self.conversion_status[xc_result]:
+                    msg = ''
+                    msg += self.db_article.aop_manager.aop_validations.item(xml_name).message
+                    msg += self.db_article.insert_article_messages(self.pkg.articles[xml_name])
+                    msg += self.db_article.is_registered_msg(xml_name)
+                    validation = pkg_reports.ValidationsResults(msg)
+                    self._pkg_conversion_results.add(xml_name, validation)
+        return self._pkg_conversion_results
+
+    def conclusion(self, scilista_item, acron_issue_label, pkg_quality_fatal_errors):
+        total = len(self.selected_articles) if self.selected_articles is not None else 0
+        converted = len(self.conversion_status.get('converted', []))
+        failed = total - converted
+        app_site = converter_env.web_app_site if converter_env.web_app_site is not None else _('scielo web site')
+        status = ''
+        action = ''
+        result = _('be updated/published on ') + app_site
+        reason = ''
+        if scilista_item is None:
+            action = _(' not')
+            if self.selected_articles is None:
+                status = 'FATAL ERROR'
+                reason = _('because there are errors in the package.')
+            elif len(self.selected_articles) == 0:
+                status = 'WARNING'
+                reason = _('because no document was changed.')
+            elif failed > 0:
+                status = 'FATAL ERROR'
+                reason = _('because it is not complete (') + str(failed) + _(' were not converted).')
+            else:
+                status = 'FATAL ERROR'
+                reason = _('because it was unable to save the database.')
+        else:
+            if pkg_quality_fatal_errors > 0:
+                status = 'WARNING'
+                reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services.')
+            else:
+                status = 'OK'
+                reason = ''
+
+        text = status + ': ' + acron_issue_label + _(' will') + action + ' ' + result + ' ' + reason
+        text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(converted) + '/' + str(total)) + html_reports.p_message(text)
+        return text
 
 
 def package_paths_preparation(src_path):
@@ -260,7 +434,6 @@ def package_paths_preparation(src_path):
 def convert_package(src_path):
     validations_report = None
     xc_conclusion_msg = ''
-    conversion_status = {}
     pkg_quality_fatal_errors = 0
     xc_results_report = ''
     aop_results_report = ''
@@ -299,43 +472,34 @@ def convert_package(src_path):
         db_article = xc_models.ArticleDB(converter_env.db_isis, pkg.issue_files, xc_models.AopManager(converter_env.db_isis, pkg.issue_files.journal_files))
 
         conversion = Conversion(pkg, db_article)
-        previous_registered_articles = db_article.registered_articles
-
         conversion.evaluate_pkg_and_registered_items(converter_env.skip_identical_xml)
 
         before_conversion_report = conversion.initial_status_report()
 
         report_components['issue-report'] = pkg_validator.issue_report
 
-        if len(self.selected_articles) > 0:
+        if len(conversion.selected_articles) > 0:
 
-            pkg_validator.validate_articles_pkg_xml_and_data(converter_env.institution_normalizer, doc_file_info_items, dtd_files, False, self.selected_articles.keys())
+            pkg_validator.validate_articles_pkg_xml_and_data(converter_env.institution_normalizer, doc_file_info_items, dtd_files, False, conversion.selected_articles.keys())
             pkg_quality_fatal_errors = pkg_validator.pkg_xml_structure_validations.fatal_errors + pkg_validator.pkg_xml_content_validations.fatal_errors
 
-            scilista_item, self.pkg_conversion_results, conversion_status, aop_status = convert_articles(db_article, pkg, pkg_path)
+            scilista_item = conversion.convert_articles()
+            aop_status = conversion.db_article.aop_manager.aop_sorted_by_status
 
-            report_components['conversion-report'] = self.pkg_conversion_results.report()
+            report_components['conversion-report'] = conversion.pkg_conversion_results.report()
 
-            #utils.debugging('detail_report')
             validations_report = pkg_validator.detail_report()
 
-            if pkg_validator.pkg_conversion_results.fatal_errors == 0:
-                #utils.debugging('after_conversion_report')
-                after_conversion_report = html_reports.tag('h4', _('Documents status in the package/database - after conversion'))
-                #utils.debugging('after_conversion_report')
-                after_conversion_report += display_status_after_xc(previous_registered_articles, db_article.registered_articles, pkg_articles, self.actions, self.changed_orders)
+            if conversion.pkg_conversion_results.fatal_errors == 0:
+                after_conversion_report = conversion.final_status_report()
 
-            #utils.debugging('xc_results_report')
-            xc_results_report = html_reports.tag('h3', _('Conversion results')) + report_status(conversion_status, 'conversion')
+            xc_results_report = report_status(_('Conversion results'), conversion.conversion_status, 'conversion')
 
-            #utils.debugging('aop_results_report')
-            aop_results_report = _('this journal has no aop.')
-            if not aop_status is None:
-                aop_results_report = report_status(aop_status, 'aop-block')
-            aop_results_report = html_reports.tag('h3', _('AOP status')) + aop_results_report
+            aop_results_report = report_status(_('AOP status'), conversion.db_article.aop_manager.aop_sorted_by_status, 'aop-block')
+            if len(aop_results_report) == 0:
+                aop_results_report = _('this journal has no aop.')
 
-            #utils.debugging('save_reports')
-            pkg.issue_files.save_reports(final_report_path)
+            pkg.issue_files.save_reports(tmp_report_path)
 
             final_report_path = pkg.issue_files.base_reports_path
             final_result_path = pkg.issue_files.issue_path
@@ -343,14 +507,13 @@ def convert_package(src_path):
             if scilista_item is not None:
                 pkg.issue_files.copy_files_to_local_web_app()
 
-        xc_conclusion_msg = xc_conclusion_message(scilista_item, acron_issue_label, pkg_articles, self.selected_articles, conversion_status, pkg_quality_fatal_errors)
+        xc_conclusion_msg = conversion.conclusion(scilista_item, acron_issue_label, pkg_quality_fatal_errors)
         if len(after_conversion_report) == 0:
             after_conversion_report = xc_conclusion_msg
 
     #utils.debugging('-report_location-')
     report_location = final_report_path + '/xml_converter.html'
 
-    
     if converter_env.is_windows:
         report_components['xml-files'] += pkg_reports.processing_result_location(final_result_path)
 
@@ -449,138 +612,21 @@ def is_conversion_allowed(pub_year, ref_count, pkg_manager):
     return doit
 
 
-def convert_articles(db_article, pkg_manager, pkg_path):
-    index = 0
-    pkg_conversion_results = pkg_reports.PackageValidationsResults()
-    xc_messages = {}
-    conversion_status = {}
-
-    for k in ['converted', 'rejected', 'not converted', 'skipped', 'excluded incorrect order', 'not excluded incorrect order']:
-        conversion_status[k] = []
-
-    n = '/' + str(len(pkg.articles))
-
-    utils.display_message('Converting...')
-    for xml_name in pkg_manager.xml_name_sorted_by_order:
-
-        index += 1
-
-        item_label = str(index) + n + ' - ' + xml_name
-        utils.display_message(item_label)
-
-        msg = ''
-        if not pkg_manager.actions[xml_name] in ['add', 'update']:
-            xc_result = 'skipped'
-        else:
-            xc_result = 'None'
-
-            permission = is_conversion_allowed(pkg_manager.pkg_articles[xml_name].issue_pub_dateiso, len(pkg_manager.pkg_articles[xml_name].references), pkg_manager)
-
-            db_article.aop_manager.check_aop(pkg_manager.pkg_articles[xml_name])
-            msg += db_article.aop_manager.aop_validations.item(xml_name).message
-
-            if permission:
-                xc_result = 'not converted'
-
-                valid_aop = db_article.aop_manager.aop_article(xml_name)
-                if valid_aop is not None:
-                    pkg_manager.pkg_articles[xml_name].registered_aop_pid = valid_aop.pid
-
-                incorrect_order = None
-                if xml_name in pkg_manager.changed_orders.keys():
-                    incorrect_order, curr_order = pkg_manager.changed_orders[xml_name]
-
-                db_article.insert_article(pkg_manager.issue_models.record, pkg_manager.pkg_articles[xml_name], valid_aop, incorrect_order)
-                id_created, is_excluded_aop, is_excluded_incorrect_order = db_article._insertion_result[xml_name]
-                #self._insertion_result[article.xml_name] = (id_created, is_excluded_aop, is_excluded_incorrect_order)
-                if is_excluded_incorrect_order is True:
-                    conversion_status['excluded incorrect order'].append(xml_name)
-                else:
-                    conversion_status['excluded incorrect order'].append(xml_name)
-                if all([id_created is not False, is_excluded_aop is not False, is_excluded_incorrect_order is not False]):
-                    xc_result = 'converted'
-                msg += db_article.insert_article_messages(pkg_manager.pkg_articles[xml_name])
-
-            else:
-                xc_result = 'rejected'
-        xc_messages[xml_name].append(msg)
-        conversion_status[xc_result].append(xml_name)
-
-    if db_article.aop_manager.journal_publishes_aop():
-        db_article.aop_manager.update_all_aop_db()
-        db_article.aop_manager.still_aop_items()
-
-    scilista_item = None
-    if pkg_conversion_results.fatal_errors == 0:
-        db_article.finish_conversion(pkg_path, pkg_manager.issue_models.record)
-        if len(db_article.registered_articles) == pkg_manager.expected_registered:
-            scilista_item = pkg_manager.issue_models.issue.acron + ' ' + pkg_manager.issue_models.issue.issue_label
-            if not converter_env.is_windows:
-                db_article.generate_windows_version()
-
-    conversion_status['not converted'] = [xml_name for xml_name in pkg_manager.pkg_articles.keys() if not xml_name in db_article.registered_articles.keys()]
-    conversion_status['converted'] = [xml_name for xml_name in pkg_manager.pkg_articles.keys() if xml_name in db_article.registered_articles.keys()]
-
-    for xc_result in conversion_status.keys():
-        for xml_name in conversion_status[xc_result]:
-            msg = xc_messages[xml_name]
-            msg += html_reports.p_message(_('Result: ') + xc_result)
-            if not xc_result in ['converted', 'skipped']:
-                msg += html_reports.p_message('FATAL ERROR')
-            pkg_conversion_results.add(xml_name, pkg_reports.ValidationsResults(msg))
-
-    return (scilista_item, pkg_conversion_results, conversion_status, db_article.aop_manager.aop_sorted_by_status)
-
-
-def report_status(status, style=None):
+def report_status(title, status, style=None):
     text = ''
-    for category in sorted(status.keys()):
-        _style = style
-        if len(status[category]) == 0:
-            ltype = 'ul'
-            list_items = ['None']
-            _style = None
-        else:
-            ltype = 'ol'
-            list_items = status[category]
-        text += html_reports.format_list(categories_messages.get(category, category), ltype, list_items, _style)
-
-    return text
-
-
-def xc_conclusion_message(scilista_item, issue_label, pkg_articles, selected_articles, xc_status, pkg_quality_fatal_errors):
-    total = len(selected_articles) if selected_articles is not None else 0
-    converted = len(xc_status.get('converted', []))
-    failed = total - converted
-    app_site = converter_env.web_app_site if converter_env.web_app_site is not None else _('scielo web site')
-    status = ''
-    action = ''
-    result = _('be updated/published on ') + app_site
-    reason = ''
-    if scilista_item is None:
-        action = _(' not')
-        if selected_articles is None:
-            status = 'FATAL ERROR'
-            reason = _('because there are errors in the package.')
-        elif len(selected_articles) == 0:
-            status = 'WARNING'
-            reason = _('because no document was changed.')
-        elif failed > 0:
-            status = 'FATAL ERROR'
-            reason = _('because it is not complete (') + str(failed) + _(' were not converted).')
-        else:
-            status = 'FATAL ERROR'
-            reason = _('because it was unable to save the database.')
-    else:
-        if pkg_quality_fatal_errors > 0:
-            status = 'WARNING'
-            reason = _(' even though there are some fatal errors. Note: These errors must be fixed in order to have good quality of bibliometric indicators and services.')
-        else:
-            status = 'OK'
-            reason = ''
-
-    text = status + ': ' + issue_label + _(' will') + action + ' ' + result + ' ' + reason
-    text = html_reports.tag('h2', _('Summary report')) + html_reports.p_message(_('converted') + ': ' + str(converted) + '/' + str(total)) + html_reports.p_message(text)
+    if status is not None:
+        for category in sorted(status.keys()):
+            _style = style
+            if len(status[category]) == 0:
+                ltype = 'ul'
+                list_items = ['None']
+                _style = None
+            else:
+                ltype = 'ol'
+                list_items = status[category]
+            text += html_reports.format_list(categories_messages.get(category, category), ltype, list_items, _style)
+    if len(text) > 0:
+        text = html_reports.tag('h3', title) + text
     return text
 
 

@@ -637,7 +637,8 @@ class ArticleDB(object):
         self._issue_models = None
         self._registered_articles_records = None
         self._registered_i_record = None
-
+        self.is_converted = None
+        self.is_not_converted = None
         self._conversion_messages = {}
         self._insert_article_messages = {}
         self._insertion_result = {}
@@ -784,10 +785,38 @@ class ArticleDB(object):
                 is_excluded_aop, excluded_aop_msg = self.aop_manager.manage_ex_aop(valid_aop)
         self._insertion_result[article.xml_name] = (id_created, is_excluded_aop, is_excluded_incorrect_order)
 
+    def is_registered_msg(self, xml_name):
+        msg = ''
+        if self.is_converted is not None:
+            if xml_name in self.is_converted:
+                xc_result = 'converted'
+            elif xml_name in self.is_not_converted:
+                xc_result = 'not converted'
+            msg += html_reports.p_message(_('Result: ') + xc_result)
+            if not xc_result in ['converted', 'skipped']:
+                msg += html_reports.p_message('FATAL ERROR')
+        return msg
+
+    def is_excluded_incorrect_order(self, xml_name):
+        is_excluded_incorrect_order = None
+        r = self._insertion_result.get(article.xml_name)
+        if r is not None:
+            id_created, is_excluded_aop, is_excluded_incorrect_order = r
+        return is_excluded_incorrect_order
+
+    def is_id_created(self, xml_name):
+        id_created = None
+        r = self._insertion_result.get(article.xml_name)
+        if r is not None:
+            id_created, is_excluded_aop, is_excluded_incorrect_order = r
+        return id_created
+
     def insert_article_messages(self, article):
         if self._insert_article_messages.get(article.xml_name) is None:
             id_created, is_excluded_aop, is_excluded_incorrect_order = self._insertion_result[article.xml_name]
             msg = ''
+            if id_created is False:
+                msg += html_reports.p_message('FATAL ERROR: ' + _('<article>.id not updated/created'))
             if is_excluded_incorrect_order is not None:
                 msg += html_reports.p_message('WARNING: ' + _('Replacing orders: ') + incorrect_order + _(' by ') + article.order)
                 if is_excluded_incorrect_order is True:
@@ -802,9 +831,22 @@ class ArticleDB(object):
             self._insert_article_messages[article.xml_name] = msg
         return self._insert_article_messages[article.xml_name]
 
+    def check_registration(self):
+        self.is_converted = []
+        self.is_not_converted = []
+        for xml_name in self._insertion_result.keys():
+            if self.is_id_created(xml_name) is True:
+                if xml_name in self.registered_articles.keys():
+                    self.is_converted.append(xml_name)
+                else:
+                    self.is_not_converted.append(xml_name)
+            else:
+                self.is_not_converted.append(xml_name)
+
     def finish_conversion(self, pkg_path, i_record):
         self.create_issue_id_file(i_record)
         self.create_db()
+        self.check_registration()
         self.issue_files.save_source_files(pkg_path)
 
     def generate_windows_version(self):

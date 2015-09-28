@@ -95,9 +95,9 @@ def get_page(page_uri, script, pid, lang):
 
 
 def main():
-    homolog_uri = 'http://homolog.xml.scielo.br'
-    prod_uri = 'http://homolog.scielo.br'
-    pid = '0102-330620150002'
+    homolog_uri = 'http://homolog.xml.scielosp.org'
+    prod_uri = 'http://homolog.scielosp.org'
+    pid = '0042-968620150006'
     script = ISSUETOC
     #['en', 'es', 'pt']
     for lang in ['en']:
