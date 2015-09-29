@@ -641,7 +641,11 @@ class ArticleDB(object):
         self.is_not_converted = None
         self._conversion_messages = {}
         self._insert_article_messages = {}
-        self._insertion_result = {}
+        self.validations = {}
+        self.is_id_created = {}
+        self.is_excluded_incorrect_order = {}
+        self.is_excluded_aop = {}
+        self.eval_msg = {}
 
     def restore_missing_id_files(self):
         self._registered_i_record, self._registered_articles_records = self.registered_records
@@ -767,7 +771,7 @@ class ArticleDB(object):
             saved = os.path.isfile(article_files.id_filename)
         return saved and not previous
 
-    def insert_article(self, i_record, article, valid_aop, incorrect_order):
+    def eval_to_insert(self, i_record, article, valid_aop, incorrect_order):
         is_excluded_incorrect_order = None
         is_excluded_aop = None
 
@@ -780,62 +784,52 @@ class ArticleDB(object):
                 if os.path.isfile(incorrect_article_files.id_filename):
                     os.unlink(incorrect_article_files.id_filename)
                 is_excluded_incorrect_order = not os.path.isfile(incorrect_article_files.id_filename)
-
             if valid_aop is not None:
                 is_excluded_aop, excluded_aop_msg = self.aop_manager.manage_ex_aop(valid_aop)
-        self._insertion_result[article.xml_name] = (id_created, is_excluded_aop, is_excluded_incorrect_order)
+        self.validations[article.xml_name] = all([item for item in [id_created, is_excluded_aop, is_excluded_incorrect_order] if item is not None])
+
+        self.is_id_created[article.xml_name] = id_created
+        if is_excluded_aop is not None:
+            self.is_excluded_aop[article.xml_name] = is_excluded_aop
+        if is_excluded_incorrect_order is not None:
+            self.is_excluded_incorrect_order[article.xml_name] = is_excluded_incorrect_order
+
+        msg = ''
+        if id_created is False:
+            msg += html_reports.p_message('FATAL ERROR: ' + _('<article>.id not updated/created'))
+        if is_excluded_incorrect_order is not None:
+            msg += html_reports.p_message('WARNING: ' + _('Replacing orders: ') + incorrect_order + _(' by ') + article.order)
+            if is_excluded_incorrect_order is True:
+                msg += html_reports.p_message('INFO: ' + _('Done'))
+            else:
+                msg += html_reports.p_message('ERROR: ' + _('Unable to exclude ') + incorrect_order)
+        if is_excluded_aop is True:
+            msg += html_reports.p_message('INFO: ' + _('ex aop was excluded'))
+        elif is_excluded_aop is False:
+            msg += html_reports.p_message('ERROR: ' + _('Unable to exclude ex aop'))
+        self.eval_msg[article.xml_name] = msg
 
     def is_registered_msg(self, xml_name):
+        #FIXME
         msg = ''
         if self.is_converted is not None:
             if xml_name in self.is_converted:
                 xc_result = 'converted'
             elif xml_name in self.is_not_converted:
                 xc_result = 'not converted'
+            else:
+                xc_result = 'skipped'
             msg += html_reports.p_message(_('Result: ') + xc_result)
             if not xc_result in ['converted', 'skipped']:
                 msg += html_reports.p_message('FATAL ERROR')
         return msg
 
-    def is_excluded_incorrect_order(self, xml_name):
-        is_excluded_incorrect_order = None
-        r = self._insertion_result.get(article.xml_name)
-        if r is not None:
-            id_created, is_excluded_aop, is_excluded_incorrect_order = r
-        return is_excluded_incorrect_order
-
-    def is_id_created(self, xml_name):
-        id_created = None
-        r = self._insertion_result.get(article.xml_name)
-        if r is not None:
-            id_created, is_excluded_aop, is_excluded_incorrect_order = r
-        return id_created
-
-    def insert_article_messages(self, article):
-        if self._insert_article_messages.get(article.xml_name) is None:
-            id_created, is_excluded_aop, is_excluded_incorrect_order = self._insertion_result[article.xml_name]
-            msg = ''
-            if id_created is False:
-                msg += html_reports.p_message('FATAL ERROR: ' + _('<article>.id not updated/created'))
-            if is_excluded_incorrect_order is not None:
-                msg += html_reports.p_message('WARNING: ' + _('Replacing orders: ') + incorrect_order + _(' by ') + article.order)
-                if is_excluded_incorrect_order is True:
-                    msg += html_reports.p_message('INFO: ' + _('Done'))
-                else:
-                    msg += html_reports.p_message('ERROR: ' + _('Unable to exclude ') + incorrect_order)
-            if is_excluded_aop is not None:
-                if is_excluded_aop is True:
-                    msg += html_reports.p_message('INFO: ' + _('ex aop was excluded'))
-                else:
-                    msg += html_reports.p_message('ERROR: ' + _('Unable to exclude ex aop'))
-            self._insert_article_messages[article.xml_name] = msg
-        return self._insert_article_messages[article.xml_name]
-
     def check_registration(self):
+        #FIXME relacionado com validations
         self.is_converted = []
         self.is_not_converted = []
-        for xml_name in self._insertion_result.keys():
-            if self.is_id_created(xml_name) is True:
+        for xml_name in self.validations.keys():
+            if self.is_id_created.get(xml_name) is True:
                 if xml_name in self.registered_articles.keys():
                     self.is_converted.append(xml_name)
                 else:
@@ -844,8 +838,10 @@ class ArticleDB(object):
                 self.is_not_converted.append(xml_name)
 
     def finish_conversion(self, pkg_path, i_record):
+        #FIXME somente se nenhum validations é false
         self.create_issue_id_file(i_record)
         self.create_db()
+        #FIXME relacionado com validations
         self.check_registration()
         self.issue_files.save_source_files(pkg_path)
 
@@ -1151,15 +1147,17 @@ class DBManager(object):
     def get_issue_models(self, journal_title, issue_label, p_issn, e_issn):
         issue_models = None
         msg = None
-
+        acron_issue_label = 'unidentified issue'
         if issue_label is None:
             msg = html_reports.p_message('FATAL ERROR: ' + _('Unable to identify the article\'s issue'))
         else:
             i_record = self.find_i_record(issue_label, p_issn, e_issn)
             if i_record is None:
+                acron_issue_label = 'not_registered issue'
                 msg = html_reports.p_message('FATAL ERROR: ' + _('Issue ') + issue_label + _(' is not registered in ') + self.db_issue.db_filename + _(' using ISSN: ') + _(' or ').join([i for i in [p_issn, e_issn] if i is not None]) + '.')
             else:
                 issue_models = IssueModels(i_record)
+                acron_issue_label = issue_models.issue.acron + ' ' + issue_models.issue.issue_label
                 if issue_models.issue.license is None:
                     j_record = self.find_journal_record(journal_title, p_issn, e_issn)
                     if j_record is None:
@@ -1167,7 +1165,7 @@ class DBManager(object):
                     else:
                         t = RegisteredTitle(j_record)
                         issue_models.issue.license = t.license()
-        return (issue_models, msg)
+        return (acron_issue_label, issue_models, msg)
 
     def get_issue_files(self, issue_models, pkg_path):
         journal_files = serial_files.JournalFiles(self.serial_path, issue_models.issue.acron)

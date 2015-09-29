@@ -89,6 +89,11 @@ class ArticlesPkg(object):
                     _is_rolling_pass = True
         return _is_rolling_pass
 
+    def identify_issue(self, db_manager, pkg_name):
+        self.acron_issue_label, self.issue_models, issue_error_msg = db_manager.get_issue_models(self.pkg_journal_title, self.pkg_issue_label, self.pkg_p_issn, self.pkg_e_issn)
+        self.acron_issue_label = self.acron_issue_label.replace('issue', pkg_name)
+        return issue_error_msg
+
     @property
     def compiled_pkg_metadata(self):
         if self._compiled_pkg_metadata is None:
@@ -118,29 +123,25 @@ class ArticlesPkg(object):
     def pkg_journal_title(self):
         if self._compiled_pkg_metadata is None:
             self.compile_pkg_metadata()
-        if len(self._compiled_pkg_metadata['journal-title']) > 0:
-            return self._compiled_pkg_metadata['journal-title'].keys()[0]
+        return more_frequent(self._compiled_pkg_metadata['journal-title'])
 
     @property
     def pkg_issue_label(self):
         if self._compiled_pkg_metadata is None:
             self.compile_pkg_metadata()
-        if len(self._compiled_pkg_metadata['issue label']) > 0:
-            return self._compiled_pkg_metadata['issue label'].keys()[0]
+        return more_frequent(self._compiled_pkg_metadata.get('issue label'))
 
     @property
     def pkg_e_issn(self):
         if self._compiled_pkg_metadata is None:
             self.compile_pkg_metadata()
-        if len(self._compiled_pkg_metadata['e-ISSN']) > 0:
-            return self._compiled_pkg_metadata['e-ISSN'].keys()[0]
+        return more_frequent(self._compiled_pkg_metadata['e-ISSN'])
 
     @property
     def pkg_p_issn(self):
         if self._compiled_pkg_metadata is None:
             self.compile_pkg_metadata()
-        if len(self._compiled_pkg_metadata['print ISSN']) > 0:
-            return self._compiled_pkg_metadata['print ISSN'].keys()[0]
+        return more_frequent(self._compiled_pkg_metadata['print ISSN'])
 
 
 class PkgValidator(object):
@@ -334,17 +335,19 @@ class PkgValidator(object):
             status = ''
             block = ''
 
-            if self.pkg_xml_structure_validations.item(new_name).total > 0:
-                status = html_reports.statistics_display(self.pkg_xml_structure_validations.item(new_name))
-                links += html_reports.report_link('xmlrep' + new_name, '[ ' + _('Structure Validations') + ' ]', 'xmlrep', a_name)
-                links += html_reports.tag('span', status, 'smaller')
-                block += html_reports.report_block('xmlrep' + new_name, self.pkg_xml_structure_validations.item(new_name).message, 'xmlrep', a_name)
+            if self.pkg_xml_structure_validations.item(new_name) is not None:
+                if self.pkg_xml_structure_validations.item(new_name).total > 0:
+                    status = html_reports.statistics_display(self.pkg_xml_structure_validations.item(new_name))
+                    links += html_reports.report_link('xmlrep' + new_name, '[ ' + _('Structure Validations') + ' ]', 'xmlrep', a_name)
+                    links += html_reports.tag('span', status, 'smaller')
+                    block += html_reports.report_block('xmlrep' + new_name, self.pkg_xml_structure_validations.item(new_name).message, 'xmlrep', a_name)
 
-            if self.pkg_xml_content_validations.item(new_name).total > 0:
-                status = html_reports.statistics_display(self.pkg_xml_content_validations.item(new_name))
-                links += html_reports.report_link('datarep' + new_name, '[ ' + _('Contents Validations') + ' ]', 'datarep', a_name)
-                links += html_reports.tag('span', status, 'smaller')
-                block += html_reports.report_block('datarep' + new_name, self.pkg_xml_content_validations.item(new_name).message, 'datarep', a_name)
+            if self.pkg_xml_content_validations.item(new_name) is not None:
+                if self.pkg_xml_content_validations.item(new_name).total > 0:
+                    status = html_reports.statistics_display(self.pkg_xml_content_validations.item(new_name))
+                    links += html_reports.report_link('datarep' + new_name, '[ ' + _('Contents Validations') + ' ]', 'datarep', a_name)
+                    links += html_reports.tag('span', status, 'smaller')
+                    block += html_reports.report_block('datarep' + new_name, self.pkg_xml_content_validations.item(new_name).message, 'datarep', a_name)
 
             if self.is_db_generation:
                 if self.registered_issue_data_validations is not None:
@@ -893,3 +896,18 @@ def join_reports(reports, errors_only=False):
                 _reports += html_reports.tag('h4', xml_name)
                 _reports += results.message
     return _reports
+
+
+def more_frequent(data):
+    if data is not None:
+        items = self.data.keys()
+        if len(items) == 1:
+            return items[0]
+        elif len(items) > 1:
+            more = 0
+            value = None
+            for item in items:
+                if len(self.data[item]) > more:
+                    more = len(self.data[item])
+                    value = item
+            return value
