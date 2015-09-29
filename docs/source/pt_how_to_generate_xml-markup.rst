@@ -1021,7 +1021,7 @@ Ao clicar em "Aplicar" o programa abrirá uma janela perguntando se as referênc
    :width: 200px
    :align: center
 
-O próximo passo após a marcação automática do corpo do texto o próximo passo é verificar se os dados foram marcados corretamente e completar a marcação dos elementos disponíveis no documento.
+O próximo passo após a marcação automática do corpo do texto é verificar se os dados foram marcados corretamente e completar a marcação dos elementos disponíveis no documento.
 
 
 .. _seção:
@@ -1187,7 +1187,7 @@ Certifique-se de que o id de figura é único no documento.
    :align: center
 
 .. note:: A marcação completa de figura é de extrema  importância. Se a figura não for marcada com o elemento [figgrp] 
-          e seus respectivos dados, o programa não irá gerar o documento .xml
+          e seus respectivos dados, o programa não gerará o elemento [fig] correspondente no documento.
 
 
 * Após a marcação de [figgrp] caso a imagem apresente informação de fonte, selecione o dado e identique com o elemento [attrib]:

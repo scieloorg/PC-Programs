@@ -72,7 +72,7 @@ Esse relatório é exatamente o mesmo que o programa Package Maker gera. Portant
 Pastas Geradas
 ==============
 
-Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src" e "scielo_markup". conforme segue:
+Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src" e "scielo_markup", conforme segue:
 
 .. image:: img/doc-mkp-pastas-geradas.jpg
    :align: center
