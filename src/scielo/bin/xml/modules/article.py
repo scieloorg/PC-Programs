@@ -869,14 +869,14 @@ class ArticleXML(object):
     def received(self):
         if self._received_date is None:
             if self.article_meta is not None:
-                self._received_date = xml_utils.date_element(self.article_meta.find('date[@pub-type="received"]'))
+                self._received_date = xml_utils.date_element(self.article_meta.find('history/date[@date-type="received"]'))
         return self._received_date
 
     @property
     def accepted(self):
         if self._accepted_date is None:
             if self.article_meta is not None:
-                self._accepted_date = xml_utils.date_element(self.article_meta.find('date[@pub-type="accepted"]'))
+                self._accepted_date = xml_utils.date_element(self.article_meta.find('history/date[@date-type="accepted"]'))
         return self._accepted_date
 
     @property
