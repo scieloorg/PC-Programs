@@ -22,7 +22,7 @@ Em seguida clique no botão "Markup: Gerar o XML":
 Relatórios
 ==========
 Ao gerar o arquivo .xml o programa Markup apresenta três relatórios: :ref:`report-arquivos`, :ref:`report-estilos` e :ref:`report-conteudo`.
-Veja abaixo a função de cada relatório apresentado.
+Abaixo a função de cada relatório apresentado.
 
 
 .. _report-arquivos:
@@ -30,7 +30,7 @@ Veja abaixo a função de cada relatório apresentado.
 Relatório de Erros de Arquivos
 ------------------------------
 
-Perceba que ao clicar em "Markup: Gerar o XML" o programa apresenta um Relatório com as informações das alterações feitas no documento.
+Ao clicar em "Markup: Gerar o XML" o programa apresenta um Relatório com as informações das alterações feitas no documento.
 
 .. image:: img/doc-mkp-report-name.jpg
    :height: 450px
@@ -72,7 +72,7 @@ Esse relatório é exatamente o mesmo que o programa Package Maker gera. Portant
 Pastas Geradas
 ==============
 
-Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src" e "scielo_markup". Veja abaixo as pastas geradas e o que cada uma apresenta.
+Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src" e "scielo_markup", conforme segue:
 
 .. image:: img/doc-mkp-pastas-geradas.jpg
    :align: center
@@ -81,8 +81,7 @@ Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src
 
 **pasta erros:**
 
-	Nessa pasta há o relatório de erros de cada um dos arquivos .xml e ao final há o mesmo relatório que abre automaticamente
-	em uma página do seu navegador.
+	Nessa pasta há o relatório de erros de cada um dos arquivos .xml.  O arquivo final .rep apresenta os possíveis erros de estilo e o final .contents de conteúdo. São os mesmos relatórios apresentados no programa de marcação.
 
 
 **pmc_package:**
@@ -101,7 +100,7 @@ Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src
 **scielo_package:**
 
 	No momento da validação do pacote XML o programa verifica as entidades (numéricas ou alfa-numéricas) que existem no documento
-	e, automaticamente, converte para o caractere correspondente. Evitando futuros problemas de entidades. O ideal é utilizar os 
+	e, automaticamente, converte para o caractere correspondente, evitando futuros problemas de entidades. O ideal é utilizar os 
 	arquivos .xml validados nessa pasta em vez de utilizar os xmls do pacote.
 
 
@@ -113,8 +112,7 @@ Ao gerar o arquivo .xml o programa Markup cria 6 pastas no mesmo nível que "src
 
 **work:**
 
-	é uma pasta de arquivos temporários usadas para a geração do resultado. ela pode ser apagada se desejável, mas também pode ser 
-	usada para fins de suporte.
+	é uma pasta de arquivos temporários usadas para a geração do resultado. Ela pode ser apagada se desejado, mas também pode ser usada para fins de suporte.
 
 Essa estrutura de pastas é a mesma apresentada se o usuário utilizar o programa `Package Maker <pt_how_to_validate_xml_package.html>`_. Para verificar os relatórios apresentados, basta entrar na pasta "errors" e abrir o documento com extensão: ".contents.html".
 
