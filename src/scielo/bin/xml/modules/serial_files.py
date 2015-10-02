@@ -246,10 +246,11 @@ class IssueFiles(object):
             if not os.path.isdir(self.base_source_path):
                 os.makedirs(self.base_source_path)
             for f in os.listdir(xml_path):
-                try:
-                    shutil.copy(xml_path + '/' + f, self.base_source_path)
-                except:
-                    pass
+                if f.endswith('.xml'):
+                    try:
+                        shutil.copy(xml_path + '/' + f, self.base_source_path)
+                    except:
+                        pass
 
 
 def create_path(path):
@@ -294,19 +295,36 @@ class JournalFiles(object):
     def regular_issues_files(self):
         if self._regular_issues_files is None:
             if self.issue_files is not None:
-                self._regular_issues_files = {k:v for k, v in self.issues_files.items() if k is not self.aop_issue_files.keys() and k is not self.ex_aop_issue_files.keys() and k is not self.pr_issue_files.keys()}
+                self._regular_issues_files = {k:v for k, v in self.issues_files.items() if k is not self.aop_issue_files.keys() and k is not self.ex_aop_issues_files.keys() and k is not self.pr_issue_files.keys()}
         return self._regular_issues_files
 
     @property
     def aop_issue_files(self):
-        if self._aop_issue_files is None:
+        if self._aop_issues_files is None:
             if self.issues_files is not None:
-                self._aop_issue_files = {k:v for k, v in self.issues_files.items() if k.endswith('ahead') and not k.startswith('ex-')}
-        return self._aop_issue_files
+                self._aop_issues_files = {k:v for k, v in self.issues_files.items() if k.endswith('ahead') and not k.startswith('ex-')}
+        return self._aop_issues_files
 
     @property
-    def ex_aop_issue_files(self):
-        if self._ex_aop_issue_files is None:
+    def ex_aop_issues_files(self):
+        if self._ex_aop_issues_files is None:
             if self.issues_files is not None:
-                self._ex_aop_issue_files = {k:v for k, v in self.issues_files.items() if k.endswith('ahead') and k.startswith('ex-')}
-        return self._ex_aop_issue_files
+                self._ex_aop_issues_files = {k:v for k, v in self.issues_files.items() if k.endswith('ahead') and k.startswith('ex-')}
+        return self._ex_aop_issues_files
+
+    def archive_ex_aop_files(self, aop, db_name):
+        aop_issue_files = None
+        ex_aop_issues_files = None
+        done = False
+        msg = None
+        if self.ex_aop_issues_files is not None:
+            ex_aop_issues_files = self.ex_aop_issues_files.get(db_name)
+        if self.aop_issue_files is not None:
+            aop_issue_files = self.aop_issue_files.get('ex-' + db_name)
+        if aop_issue_files is not None and ex_aop_issues_files is not None:
+            fs_utils.move_file(aop_issue_files.markup_path + '/' + aop.filename, ex_aop_issues_files.markup_path + '/' + aop.filename)
+            fs_utils.move_file(aop_issue_files.body_path + '/' + aop.filename, ex_aop_issues_files.body_path + '/' + aop.filename)
+            fs_utils.move_file(aop_issue_files.base_source_path + '/' + aop.filename, ex_aop_issues_files.base_source_path + '/' + aop.filename)
+            msg = fs_utils.move_file(aop_issue_files.id_path + '/' + aop.filename, ex_aop_issues_files.id_path + '/' + aop.filename)
+            done = (not os.path.isfile(aop_issue_files.id_path + '/' + aop.filename))
+        return (done, msg)

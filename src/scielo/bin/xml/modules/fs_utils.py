@@ -22,7 +22,7 @@ def write_file(filename, content, encode='utf-8'):
 def append_file(filename, content, encode='utf-8'):
     if isinstance(content, unicode):
         content = content.encode(encode)
-    open(filename, 'a+').write(content)
+    open(filename, 'a+').write(content + '\n')
 
 
 def delete_file_or_folder(path):

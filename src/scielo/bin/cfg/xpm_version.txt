@@ -1,14 +1,14 @@
-﻿4.0.090 trial - 28/09/2015
+﻿4.0.090 trial - 13/10/2015
 ==========================
  - (improvement) Present the "translation" of code languages
-
+ - (improvement) Ignore city/state to have a perfect match as normalizing the institution name 
+ - (bug) Fix the message about history absence
 
 4.0.090 trial - 16/09/2015
 ==========================
  - (bug) Solve encoding problem which occurres in some computers as reading the DTD report
  - (bug) Fix the article title to check doi
  - (bug) Fix message of missing tiff (the correct is missing jpg generated from tiff)
- - (improvement) Ignore city/state to have a perfect match as normalizing the institution name 
 
 4.0.090 trial - 08/09/2015
 ==========================

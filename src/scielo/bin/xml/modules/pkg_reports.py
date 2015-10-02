@@ -92,6 +92,7 @@ class ArticlesPkg(object):
     def identify_issue(self, db_manager, pkg_name):
         self.acron_issue_label, self.issue_models, issue_error_msg = db_manager.get_issue_models(self.pkg_journal_title, self.pkg_issue_label, self.pkg_p_issn, self.pkg_e_issn)
         self.acron_issue_label = self.acron_issue_label.replace('issue', pkg_name)
+        self.issue_files = db_manager.get_issue_files(self.issue_models, self.pkg_path)
         return issue_error_msg
 
     @property
@@ -243,7 +244,7 @@ class PkgValidator(object):
             if len(self.pkg._compiled_pkg_metadata[label].items()) == 1:
                 issue_common_data += html_reports.display_labeled_value(label, self.pkg._compiled_pkg_metadata[label].keys()[0])
             else:
-                issue_common_data += html_reports.format_list(label, 'ol', self.pkg_compiled_pkg_metadata[label].keys())
+                issue_common_data += html_reports.format_list(label, 'ol', self.pkg._compiled_pkg_metadata[label].keys())
                 #issue_common_data += html_reports.p_message('FATAL ERROR: ' + _('Unique value expected for ') + label)
 
         pages = html_reports.tag('h2', 'Pages Report') + html_reports.tag('div', html_reports.sheet(['label', 'status', 'message'], self.pages(), table_style='validation', row_style='status'))
@@ -277,6 +278,7 @@ class PkgValidator(object):
             found_institutions = institution_normalizer.find_institution_items(self.pkg.articles[xml_name].affiliations)
 
             self.pkg.articles[xml_name].normalized_affiliations = institution_normalizer.normalized_institution_items(found_institutions)
+
             self.pkg.articles[xml_name].affiliations_validations = institution_normalizer.validations(self.pkg.articles[xml_name].affiliations, found_institutions)
 
             index += 1
@@ -699,6 +701,14 @@ class PackageValidationsResults(object):
     def fatal_errors(self):
         return sum([item.fatal_errors for item in self.validations_results_items.values()])
 
+    @property
+    def errors(self):
+        return sum([item.errors for item in self.validations_results_items.values()])
+
+    @property
+    def warnings(self):
+        return sum([item.warnings for item in self.validations_results_items.values()])
+
     def report(self, errors_only=False):
         _reports = ''
         if self.validations_results_items is not None:
@@ -707,6 +717,9 @@ class PackageValidationsResults(object):
                     _reports += html_reports.tag('h4', xml_name)
                     _reports += results.message
         return _reports
+
+    def statistics_message(self):
+        return '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(self.fatal_errors)), ('errors', str(self.errors)), ('warnings', str(self.warnings))]]) + ']'
 
 
 class ValidationsResults(object):
@@ -718,6 +731,9 @@ class ValidationsResults(object):
     @property
     def total(self):
         return sum([self.fatal_errors, self.errors, self.warnings])
+
+    def statistics_message(self):
+        return '[' + ' | '.join([k + ': ' + v for k, v in [('fatal errors', str(self.fatal_errors)), ('errors', str(self.errors)), ('warnings', str(self.warnings))]]) + ']'
 
 
 def register_log(text):
@@ -900,14 +916,14 @@ def join_reports(reports, errors_only=False):
 
 def more_frequent(data):
     if data is not None:
-        items = self.data.keys()
+        items = data.keys()
         if len(items) == 1:
             return items[0]
         elif len(items) > 1:
             more = 0
             value = None
             for item in items:
-                if len(self.data[item]) > more:
-                    more = len(self.data[item])
+                if len(data[item]) > more:
+                    more = len(data[item])
                     value = item
             return value

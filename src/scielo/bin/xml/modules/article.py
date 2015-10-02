@@ -1580,41 +1580,43 @@ class InstitutionNormalizer(object):
 
     def validate_institution(self, aff, found_institutions):
         r = []
-        if len(found_institutions) == 1:
-            orgname, city, state, country_code, country_name = found_institutions[0]
-            if orgname in [aff.orgname, aff.norgname] and country_code in [aff.i_country]:
-                status = 'INFO'
-                r.append(('normalized aff', status, _('Normalized institution name is valid: ') + '; '.join([', '.join(list(item)) for item in found_institutions])))
+        if found_institutions is not None:
+            if len(found_institutions) == 1:
+                orgname, city, state, country_code, country_name = found_institutions[0]
+                if orgname in [aff.orgname, aff.norgname] and country_code in [aff.i_country]:
+                    status = 'INFO'
+                    r.append(('normalized aff', status, _('Normalized institution name is valid: ') + '; '.join([', '.join(list(item)) for item in found_institutions])))
+                else:
+                    status = 'ERROR'
+                    r.append(('normalized aff', status, _('Similar normalized institution names: ') + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
             else:
-                status = 'ERROR'
-                r.append(('normalized aff', status, _('Similar normalized institution names: ') + orgname + ', ' + country_code + ' (' + ', '.join([orgname, city, state, country_code, country_name]) + ')'))
-        else:
-            msg = _('Unable to confirm/find the normalized institution name for ') + ' or '.join(item for item in list(set([aff.orgname, aff.norgname])) if item is not None)
-            if len(found_institutions) == 0:
-                r.append(('normalized aff', 'ERROR', msg + _('. Ask for normalized institution name by email: scielo-xml@googlegroups.com')))
-            else:
-                r.append(('normalized aff', 'ERROR', msg + _('. Similar valid institution names are: ') + '<OPTIONS/>' + '|'.join([', '.join(list(item)) for item in found_institutions])))
+                msg = _('Unable to confirm/find the normalized institution name for ') + ' or '.join(item for item in list(set([aff.orgname, aff.norgname])) if item is not None)
+                if len(found_institutions) == 0:
+                    r.append(('normalized aff', 'ERROR', msg + _('. Ask for normalized institution name by email: scielo-xml@googlegroups.com')))
+                else:
+                    r.append(('normalized aff', 'ERROR', msg + _('. Similar valid institution names are: ') + '<OPTIONS/>' + '|'.join([', '.join(list(item)) for item in found_institutions])))
         return r
 
     def normalized_institution(self, aff_id, found_institutions):
         aff = None
-        if len(found_institutions) > 1:
-            found_institutions = list(set([(norm_orgname, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions]))
-        if len(found_institutions) == 1:
-            norm_city = None
-            norm_state = None
-            if len(found_institutions[0]) > 2:
-                norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = found_institutions[0]
-            else:
-                norm_orgname, norm_country_code = found_institutions[0]
+        if found_institutions is not None:
+            if len(found_institutions) > 1:
+                found_institutions = list(set([(norm_orgname, norm_country_code) for norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name in found_institutions]))
+            if len(found_institutions) == 1:
+                norm_city = None
+                norm_state = None
+                if len(found_institutions[0]) > 2:
+                    norm_orgname, norm_city, norm_state, norm_country_code, norm_country_name = found_institutions[0]
+                else:
+                    norm_orgname, norm_country_code = found_institutions[0]
 
-            aff = Affiliation()
-            aff.id = aff_id
-            aff.norgname = norm_orgname
-            aff.city = norm_city
-            aff.state = norm_state
-            aff.i_country = norm_country_code
-            aff.country = norm_country_name
+                aff = Affiliation()
+                aff.id = aff_id
+                aff.norgname = norm_orgname
+                aff.city = norm_city
+                aff.state = norm_state
+                aff.i_country = norm_country_code
+                aff.country = norm_country_name
 
         return aff
 
