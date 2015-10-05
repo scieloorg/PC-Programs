@@ -7,7 +7,7 @@ DOCTOPIC = {
                 'research-article': 'oa',
                 'editorial': 'ed',
                 'abstract': 'ab',
-                'announcement': 'an',
+                'announcement': 'zz',
                 'article-commentary': 'co',
                 'case-report': 'cr',
                 'letter': 'le',
@@ -40,8 +40,6 @@ DOCTOPIC = {
 }
 
 DOCTOPIC_IN_USE = [
-    'abstract', 
-    'announcement', 
     'article-commentary', 
     'book-review', 
     'brief-report', 
@@ -61,7 +59,6 @@ DOCTOPIC_IN_USE = [
     ]
 
 AUTHORS_REQUIRED_FOR_DOCTOPIC = [
-    'announcement', 
     'article-commentary', 
     'book-review', 
     'brief-report', 

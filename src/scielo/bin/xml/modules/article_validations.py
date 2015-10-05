@@ -482,7 +482,7 @@ class ArticleContentValidation(object):
     @property
     def issue_label(self):
         if not self.article.volume and not self.article.number:
-            return ('issue label', 'ERROR', _('Required volume and/or number'))
+            return ('issue label', 'WARNING', _('There is no volume and no issue. It will be considered ahead of print.'))
         else:
             return [self.volume, self.number]
 
@@ -642,15 +642,14 @@ class ArticleContentValidation(object):
         return display_value('clinical trial text', self.article.clinical_trial_text)
 
     def _total(self, total, count, label_total, label_count):
-        if count is None:
-            count = 0
-        elif count.isdigit():
-            count = int(count)
+        if count is not None:
+            if count.isdigit():
+                count = int(count)
 
-        if total == count:
-            r = (label_total, 'OK', str(total))
-        else:
-            r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', 'ERROR', _('They must have the same value'))
+            if total == count:
+                r = (label_total, 'OK', str(total))
+            else:
+                r = (label_count + ' (' + str(count) + ') x ' + label_total + ' (' + str(total) + ')', 'ERROR', _('They must have the same value'))
         return r
 
     @property
