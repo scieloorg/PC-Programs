@@ -268,6 +268,7 @@ class ArticleContentValidation(object):
         items.append(self.validate_xref_reftype)
         #utils.debugging(datetime.now().isoformat() + ' validations')
         items.append(self.missing_xref_list)
+        items.append(self.missing_bibr_xref)
 
         #utils.debugging(datetime.now().isoformat() + ' validations 2')
         r = self.normalize_validations(items)
@@ -966,7 +967,7 @@ class ArticleContentValidation(object):
         missing = []
         invalid_reftype = []
         for ref in self.article.references:
-            found = [item for item in self.xref_nodes if item['rid'] == ref.id]
+            found = [item for item in self.article.xref_nodes if item['rid'] == ref.id]
             for item in found:
                 if item['ref-type'] != 'bibr':
                     invalid_reftype.append(item)
@@ -978,10 +979,10 @@ class ArticleContentValidation(object):
         if len(missing) > 0:
             is_valid = evaluate_missing_bibr_xref(len(self.article.references), len(missing))
             if is_valid:
-                message.append(('xref[@ref-type=bibr]', 'ERROR', _('Missing') + ' xref[@ref-type=bibr]'))
+                message.append(('xref[@ref-type=bibr]', 'ERROR', _('Missing') + ' xref[@ref-type=bibr]: ' + ', '.join(missing)))
             else:
-                message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', _('To many missing') + ' xref[@ref-type=bibr]'))
-            message.append(', '.join(missing))
+                message.append(('xref[@ref-type=bibr]', 'FATAL ERROR', _('To many missing') + ' xref[@ref-type=bibr]: ' + ', '.join(missing)))
+
         return message
 
     def old_href_list(self, path):
